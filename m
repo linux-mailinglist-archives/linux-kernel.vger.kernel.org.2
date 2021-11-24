@@ -2,35 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3797145BCCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:29:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03CD145BE9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:47:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244949AbhKXMci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:32:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41754 "EHLO mail.kernel.org"
+        id S1343665AbhKXMtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:49:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244082AbhKXMZo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:25:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 328186101D;
-        Wed, 24 Nov 2021 12:16:02 +0000 (UTC)
+        id S1344361AbhKXMqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:46:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DCD261153;
+        Wed, 24 Nov 2021 12:27:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756162;
-        bh=sPbK820DBBRh6lGObVOcc8bEDww4XtroRxe5x8/B/9I=;
+        s=korg; t=1637756836;
+        bh=3HQ2vW4wUkzX2Dcpvz/0BL+jrTkxDa0MoUWP4fWHcP0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZH9D4lhSl315DU8/uUc1X3xPRo2EPQj9A51yzjVHkmTWY7Tc6T5nN6LNATeYnQC5N
-         Ae/CT0yoc0ppQZsuslJTyteG7IBcjeV6dy6JKZ9WdGrNNncIBf54gF+zyF3xvam+vu
-         P3qbpR3/EAwkUvMzf2GTpQzq8GlhNl2dNcWQgcg0=
+        b=GOsAnRxIKCJtLLSkLkXgjFgdlEcMY6d4ol0Hzlgs2ROUJsK05Abh4xBnAuvkMnUn3
+         H+R3KwEGB9a0Jpmq0w03aoryIAQ+ZvvN1R9MhvtNAIm1LBC+hRYUDjuEb7nCenC2yk
+         0V9hEwVvnvkEsjrEfH/AzYuq0kVmkFcSPr5NFeNU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Schnelle <svens@stackframe.org>,
-        Helge Deller <deller@gmx.de>
-Subject: [PATCH 4.9 194/207] parisc/sticon: fix reverse colors
-Date:   Wed, 24 Nov 2021 12:57:45 +0100
-Message-Id: <20211124115710.231058125@linuxfoundation.org>
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Artur Rojek <contact@artur-rojek.eu>,
+        Paul Cercueil <paul@crapouillou.net>,
+        linux-mips@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 224/251] mips: bcm63xx: add support for clk_get_parent()
+Date:   Wed, 24 Nov 2021 12:57:46 +0100
+Message-Id: <20211124115718.074046610@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +52,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Schnelle <svens@stackframe.org>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-commit bec05f33ebc1006899c6d3e59a00c58881fe7626 upstream.
+[ Upstream commit e8f67482e5a4bc8d0b65d606d08cb60ee123b468 ]
 
-sticon_build_attr() checked the reverse argument and flipped
-background and foreground color, but returned the non-reverse
-value afterwards. Fix this and also add two local variables
-for foreground and background color to make the code easier
-to read.
+BCM63XX selects HAVE_LEGACY_CLK but does not provide/support
+clk_get_parent(), so add a simple implementation of that
+function so that callers of it will build without errors.
 
-Signed-off-by: Sven Schnelle <svens@stackframe.org>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Helge Deller <deller@gmx.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes these build errors:
+
+mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
+ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
+mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
+ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
+
+Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs." )
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Suggested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Cc: Artur Rojek <contact@artur-rojek.eu>
+Cc: Paul Cercueil <paul@crapouillou.net>
+Cc: linux-mips@vger.kernel.org
+Cc: Jonathan Cameron <jic23@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: linux-iio@vger.kernel.org
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: bcm-kernel-feedback-list@broadcom.com
+Cc: Jonas Gorski <jonas.gorski@gmail.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/console/sticon.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ arch/mips/bcm63xx/clk.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/video/console/sticon.c
-+++ b/drivers/video/console/sticon.c
-@@ -290,13 +290,13 @@ static unsigned long sticon_getxy(struct
- static u8 sticon_build_attr(struct vc_data *conp, u8 color, u8 intens,
- 			    u8 blink, u8 underline, u8 reverse, u8 italic)
+diff --git a/arch/mips/bcm63xx/clk.c b/arch/mips/bcm63xx/clk.c
+index 19577f771c1f0..d2a5054b0492b 100644
+--- a/arch/mips/bcm63xx/clk.c
++++ b/arch/mips/bcm63xx/clk.c
+@@ -337,6 +337,12 @@ void clk_disable(struct clk *clk)
+ 
+ EXPORT_SYMBOL(clk_disable);
+ 
++struct clk *clk_get_parent(struct clk *clk)
++{
++	return NULL;
++}
++EXPORT_SYMBOL(clk_get_parent);
++
+ unsigned long clk_get_rate(struct clk *clk)
  {
--    u8 attr = ((color & 0x70) >> 1) | ((color & 7));
-+	u8 fg = color & 7;
-+	u8 bg = (color & 0x70) >> 4;
- 
--    if (reverse) {
--	color = ((color >> 3) & 0x7) | ((color & 0x7) << 3);
--    }
--
--    return attr;
-+	if (reverse)
-+		return (fg << 3) | bg;
-+	else
-+		return (bg << 3) | fg;
- }
- 
- static void sticon_invert_region(struct vc_data *conp, u16 *p, int count)
+ 	if (!clk)
+-- 
+2.33.0
+
 
 
