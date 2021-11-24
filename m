@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4161B45C675
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:06:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3751745C3AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355214AbhKXOIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:08:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51224 "EHLO mail.kernel.org"
+        id S1353342AbhKXNlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:41:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350511AbhKXOEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:04:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36369633F5;
-        Wed, 24 Nov 2021 13:11:39 +0000 (UTC)
+        id S1349548AbhKXNji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:39:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A100F63227;
+        Wed, 24 Nov 2021 12:56:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759499;
-        bh=Jlfirz+BwWLf5ecEDiZggdtR6MEbXDnXvmVQ5Yh6Mgg=;
+        s=korg; t=1637758595;
+        bh=UtI8oZQYedgNqDAT0GxmJgSH1NypOYlmWQnUMbG6Ieg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XBYkfCl7ALBWJAgJ3UR/9KbKNm+r4WNy9gODFzjsgYhViyedlJ3k7RKmrn+Tj1l10
-         xprGUXsT2nEKmTvxMMTZ+izB9vewqASC4itxOXB6Y0ePaZT6krqgT/lmVTvPokx0MZ
-         ab8qqxCqiRGvwhmVyZ1yVWtqRWJ41kVjAlTMkkhE=
+        b=XAHQgCzSLbDdhUSc4ko2a55isLY6AJ/d0w61Rp4WAC06iWhDYncW3UepPOAzBUJtg
+         wMkHGBb1vISQ82a6Yd+sWPKkJ3URN0ZPC/6JjaRjrO6aoTl/eFE0rn3MjAhpGvXMQr
+         zN4rPens6FOosOuUGG5elx7pyWYAZEYaeHprOSV0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Meng Li <Meng.Li@windriver.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.15 230/279] net: stmmac: socfpga: add runtime suspend/resume callback for stratix10 platform
+        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 121/154] hexagon: export raw I/O routines for modules
 Date:   Wed, 24 Nov 2021 12:58:37 +0100
-Message-Id: <20211124115726.691947445@linuxfoundation.org>
+Message-Id: <20211124115706.200464438@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,58 +42,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Meng Li <meng.li@windriver.com>
+From: Nathan Chancellor <nathan@kernel.org>
 
-commit 9119570039481d56350af1c636f040fb300b8cf3 upstream.
+commit ffb92ce826fd801acb0f4e15b75e4ddf0d189bde upstream.
 
-According to upstream commit 5ec55823438e("net: stmmac:
-add clocks management for gmac driver"), it improve clocks
-management for stmmac driver. So, it is necessary to implement
-the runtime callback in dwmac-socfpga driver because it doesn't
-use the common stmmac_pltfr_pm_ops instance. Otherwise, clocks
-are not disabled when system enters suspend status.
+Patch series "Fixes for ARCH=hexagon allmodconfig", v2.
 
-Fixes: 5ec55823438e ("net: stmmac: add clocks management for gmac driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Meng Li <Meng.Li@windriver.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+This series fixes some issues noticed with ARCH=hexagon allmodconfig.
+
+This patch (of 3):
+
+When building ARCH=hexagon allmodconfig, the following errors occur:
+
+  ERROR: modpost: "__raw_readsl" [drivers/i3c/master/svc-i3c-master.ko] undefined!
+  ERROR: modpost: "__raw_writesl" [drivers/i3c/master/dw-i3c-master.ko] undefined!
+  ERROR: modpost: "__raw_readsl" [drivers/i3c/master/dw-i3c-master.ko] undefined!
+  ERROR: modpost: "__raw_writesl" [drivers/i3c/master/i3c-master-cdns.ko] undefined!
+  ERROR: modpost: "__raw_readsl" [drivers/i3c/master/i3c-master-cdns.ko] undefined!
+
+Export these symbols so that modules can use them without any errors.
+
+Link: https://lkml.kernel.org/r/20211115174250.1994179-1-nathan@kernel.org
+Link: https://lkml.kernel.org/r/20211115174250.1994179-2-nathan@kernel.org
+Fixes: 013bf24c3829 ("Hexagon: Provide basic implementation and/or stubs for I/O routines.")
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Acked-by: Brian Cain <bcain@codeaurora.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c |   24 ++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
+ arch/hexagon/lib/io.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
-@@ -485,8 +485,28 @@ static int socfpga_dwmac_resume(struct d
+--- a/arch/hexagon/lib/io.c
++++ b/arch/hexagon/lib/io.c
+@@ -27,6 +27,7 @@ void __raw_readsw(const void __iomem *ad
+ 		*dst++ = *src;
+ 
  }
- #endif /* CONFIG_PM_SLEEP */
++EXPORT_SYMBOL(__raw_readsw);
  
--static SIMPLE_DEV_PM_OPS(socfpga_dwmac_pm_ops, stmmac_suspend,
--					       socfpga_dwmac_resume);
-+static int __maybe_unused socfpga_dwmac_runtime_suspend(struct device *dev)
-+{
-+	struct net_device *ndev = dev_get_drvdata(dev);
-+	struct stmmac_priv *priv = netdev_priv(ndev);
-+
-+	stmmac_bus_clks_config(priv, false);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused socfpga_dwmac_runtime_resume(struct device *dev)
-+{
-+	struct net_device *ndev = dev_get_drvdata(dev);
-+	struct stmmac_priv *priv = netdev_priv(ndev);
-+
-+	return stmmac_bus_clks_config(priv, true);
-+}
-+
-+static const struct dev_pm_ops socfpga_dwmac_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(stmmac_suspend, socfpga_dwmac_resume)
-+	SET_RUNTIME_PM_OPS(socfpga_dwmac_runtime_suspend, socfpga_dwmac_runtime_resume, NULL)
-+};
+ /*
+  * __raw_writesw - read words a short at a time
+@@ -47,6 +48,7 @@ void __raw_writesw(void __iomem *addr, c
  
- static const struct socfpga_dwmac_ops socfpga_gen5_ops = {
- 	.set_phy_mode = socfpga_gen5_set_phy_mode,
+ 
+ }
++EXPORT_SYMBOL(__raw_writesw);
+ 
+ /*  Pretty sure len is pre-adjusted for the length of the access already */
+ void __raw_readsl(const void __iomem *addr, void *data, int len)
+@@ -62,6 +64,7 @@ void __raw_readsl(const void __iomem *ad
+ 
+ 
+ }
++EXPORT_SYMBOL(__raw_readsl);
+ 
+ void __raw_writesl(void __iomem *addr, const void *data, int len)
+ {
+@@ -76,3 +79,4 @@ void __raw_writesl(void __iomem *addr, c
+ 
+ 
+ }
++EXPORT_SYMBOL(__raw_writesl);
 
 
