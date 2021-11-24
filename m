@@ -2,61 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3ACE45CF1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9BE45CF1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:36:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245071AbhKXVin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 16:38:43 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:50896 "EHLO vps0.lunn.ch"
+        id S1344059AbhKXVjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 16:39:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229920AbhKXVin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 16:38:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=EI7GShQSKTvjqRLbX+UM0VPPE9bnZ8M+LNJiC6UWQsc=; b=HscuuQondF46GO197L39boqbtv
-        VQrmhfrngPlMwPA6h7kDARGUPKWAw+mL5g88U/0LLYYeJ1HcQeH7r0dFpMTgK6wQ/1qJAMexl82oj
-        7HOMva1KyxyuLR8DMIRpI4r7SXsJSfT6kZAO1BVGCFM0ySWln0GJMoySiu8RttMM4AOo=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mpzvI-00EY0k-OS; Wed, 24 Nov 2021 22:35:24 +0100
-Date:   Wed, 24 Nov 2021 22:35:24 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     David Heidelberg <david@ixit.cz>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        ~okias/devicetree@lists.sr.ht, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: net: ethernet-controller: add 2.5G and 10G
- speeds
-Message-ID: <YZ6wHOu07okJ1p+3@lunn.ch>
-References: <20211124202046.81136-1-david@ixit.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211124202046.81136-1-david@ixit.cz>
+        id S229920AbhKXVjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 16:39:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7373461038;
+        Wed, 24 Nov 2021 21:36:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1637789762;
+        bh=1qxWEC18le/A8a+N+COfBev7NdB1IPDGt4hnJIvrNwg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=P8rTHiQ7DBWjiMEGFw33451N0sRxqPFqWieczHCkX39OnJt1bfR04SQCx6RSFGpf6
+         iZPDUWsPtC46QiCzMnjhqucmerI0qtIJFG5RF0r6FSi2rKwoWEz25ZRPikr/diwjTX
+         bLlVbbqKsSNKUYFowE542Io7+4i1PFNHCZ+sZNU8=
+Date:   Wed, 24 Nov 2021 13:36:00 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Will Deacon <will@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/3] Avoid live-lock in fault-in+uaccess loops with
+ sub-page faults
+Message-Id: <20211124133600.94f0b9a6c611ee663c9a8d6d@linux-foundation.org>
+In-Reply-To: <20211124192024.2408218-1-catalin.marinas@arm.com>
+References: <20211124192024.2408218-1-catalin.marinas@arm.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 09:20:46PM +0100, David Heidelberg wrote:
-> Both are already used by HW and drivers inside Linux.
+On Wed, 24 Nov 2021 19:20:21 +0000 Catalin Marinas <catalin.marinas@arm.com> wrote:
+
+> Hi,
 > 
-> Fix warnings as:
-> arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var2.dt.yaml: ethernet@0,2: fixed-link:speed:0:0: 2500 is not one of [10, 100, 1000]
->         From schema: Documentation/devicetree/bindings/net/ethernet-controller.yaml
+> There are a few places in the filesystem layer where a uaccess is
+> performed in a loop with page faults disabled, together with a
+> fault_in_*() call to pre-fault the pages. On architectures like arm64
+> with MTE (memory tagging extensions) or SPARC ADI, even if the
+> fault_in_*() succeeded, the uaccess can still fault indefinitely.
 > 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
+> In general this is not an issue since such code restarts the
+> fault_in_*() from where the uaccess failed, therefore guaranteeing
+> forward progress. The btrfs search_ioctl(), however, rewinds the
+> fault_in_*() position and it can live-lock. This was reported by Al
+> here:
 
-This is valid for the binding, but not all Linux implementations of
-fixed-link support > 1G. Only the phylink one does. But that is
-outside the scope of the binding document.
+Btrfs livelock on some-of-arm sounds fairly serious.  Should we
+backport this?  If so, a48b73eca4ce ("btrfs: fix potential deadlock in
+the search ioctl") appears to be a suitable Fixes: target?
 
-You probably should list all speeds in
-drivers/net/phy/phy-core.c:phy_setting settings[]. They are all valid
-when using phylink and fixed-link.
-
-	Andrew
