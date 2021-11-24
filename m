@@ -2,159 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1609245CD6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 20:40:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1757545CD74
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 20:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233722AbhKXTnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 14:43:53 -0500
-Received: from mail-dm6nam08on2047.outbound.protection.outlook.com ([40.107.102.47]:20403
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229557AbhKXTnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 14:43:49 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ahKEJWSXGDFg6Zw8Z06RCXznPWT1jOHxeB7O04M0TKWmnHZewuLCLZC4kgDbVQju7HT22J8+fR5qk7LhDzxlxmXk2rCYg98Em4GtQa2aRTEnronD/32kQTQ/d1nKw8zKD7UY+OBLJZcHB0tOVsyCG4I+IqRWVPAYezBo27t7iDiULuqUD3GW5/7DJDZcxLrATAsprXAYzonxEORd4s/kEd+6ifvLQL7oAK8eGosqUcU3/bR6AcVppofPXXjvr0IqlCbEsf1k/XT+nUWvhP8oQUm89q8k07BOX0YLR8pyrObKK/fJWeBdtaLXFTWTuZu30sgKNTU0TEwUgybMiu/+/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=K2DNW0At5jQoy7e5O9nmpPAwtSoiukQncX/v6irjAm4=;
- b=OKOUczbBp7yV3w1zZkYPgg0H6FtSgMJHDBCnIkgx+Pz8FLxqgoqVjfqsUrP2lA9UP+Kk4iU6/8nSZNag6NGrwuKutyo+/YWv6CBEEPJu3XJgYxRjhxHxsh+MQU/8sEud5qjqS1bxvcHnmSPbAQdJTryD3s2G3G8DXrGAua0tlQTWTG0BDNUG8jXtTOWJy0A3zarE5kEyJpDOtBT6tZauke62Yx+KUs3VrAgdkZ2sOibKRYB3JikrUP4NUeLgTeB3uRpdlvpntssCxDCY7m+SagkP2PLv6FjdH7ps+lIAqdJHbtKCcs19izvd3avJQbrc7cpEY9pJ6QjYLnA9nVniBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K2DNW0At5jQoy7e5O9nmpPAwtSoiukQncX/v6irjAm4=;
- b=QWAhc96tuw+Zg2Jo17ZEn01tgP9BBksW+C1zPsvZjYy9oRJ7Cs/l5Jy4UcOFc916xllTQzSBi4SQZdIWZjnoCaZZ/uO2YMQW/9kqVXBPryTsoadwT3TAYUTLCOO1ezJt3AVFXF7yELshgJx7j7MYv+cl81/uO0S61pb4w7qdIFQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CH2PR12MB5564.namprd12.prod.outlook.com (2603:10b6:610:65::24)
- by CH2PR12MB5564.namprd12.prod.outlook.com (2603:10b6:610:65::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Wed, 24 Nov
- 2021 19:40:37 +0000
-Received: from CH2PR12MB5564.namprd12.prod.outlook.com
- ([fe80::6147:a3dc:dba5:60ea]) by CH2PR12MB5564.namprd12.prod.outlook.com
- ([fe80::6147:a3dc:dba5:60ea%9]) with mapi id 15.20.4713.025; Wed, 24 Nov 2021
- 19:40:37 +0000
-Subject: Re: [PATCH] drm/amd/display: Fix warning comparing pointer to 0
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        harry.wentland@amd.com
-Cc:     sunpeng.li@amd.com, Rodrigo.Siqueira@amd.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@linux.ie, daniel@ffwll.ch,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        id S235335AbhKXTre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 14:47:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229557AbhKXTrb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 14:47:31 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C418C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 11:44:21 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id 14so4684224ioe.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 11:44:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TVY0xbbNHGxOoTnm29wKJKABb+CBuNHDgBMwoMorQ2g=;
+        b=IDGj76q2VEC2WdGF9jr62e6uYamT9DHKLSk8HUTszRtO/fvegN5T6t6alvqlzZGJLv
+         k3eGKKCfDj9MuJiowcN0nzQlexrBpkv3mnYfkn8V2jnXpFduH1yAk2yw1DpF2XPOVRyC
+         YVqa3ZgzhcdsnD80Lec3EX2uFl/RlaS/d8IAYT0+EXaCmCaBkmsGVTbkmqLP5RbpGhgI
+         7jZjizXNHUh5Pz0nr/U2mz5oc9JJwhi5PJKCs/Gmzh7fgqfKUTahpZAiw6Zhf0pbyBy5
+         g1lD3l5cTvfAwQH2a0xMhPZBQNIbftQCc6hxWho0K5WYUNdfwnxi5UqhLra0Incfibt5
+         rhgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TVY0xbbNHGxOoTnm29wKJKABb+CBuNHDgBMwoMorQ2g=;
+        b=mTjIpujgDR7V5BhaT2OlK1JBlhqgihhD7VO9HehsDHavNIpP9E6cnFzyMMAXU0udN4
+         vYbECHyoQf3fdkfX9a/brpyXJEEbeTuYL4Rl5w3Tz34S5DMCUIdWnI+z7/ctALRLS/jI
+         Y0iRUSllK1Z+XTNJCfKxYxCNGu5fluyp2KNdM6irOp0d5snKYvTJ5pcrvafa/6ZZuTXH
+         8XDfp1++Zrnmgb0UH8hJ+hamkbfNo5VE2nbL7Kss1xrINsqQme0d/Qwv7XDYQl5aXKdW
+         i+5aqiCm7WpK7wAnNhYEUxJq90IlEvNVi8udQkKbpbvic0aEJlZbmmB51y9tUG12Regg
+         DeDw==
+X-Gm-Message-State: AOAM531b61S4rodlozOnOUGNEBS8gSD18Ksuwd/hiLKKBeTSiRgq7Vby
+        5HEC3unWISzw1pgsnweNi2LQQR2msc5gUDcS
+X-Google-Smtp-Source: ABdhPJzSvYeWShlZpzbONR090fnXMSi5s3F8BjV1BxpHOETC4EcWCjEhxVc0xZ1ZcHQs4HImdxpapQ==
+X-Received: by 2002:a05:6638:12d6:: with SMTP id v22mr20175309jas.6.1637783060762;
+        Wed, 24 Nov 2021 11:44:20 -0800 (PST)
+Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id r14sm490145iov.14.2021.11.24.11.44.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 11:44:20 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     pkurapat@codeaurora.org, avuyyuru@codeaurora.org,
+        bjorn.andersson@linaro.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, evgreen@chromium.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <1637749236-27107-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Rodrigo Siqueira Jordao <rjordrigo@amd.com>
-Message-ID: <5be550b1-361f-1028-764c-62020e1f23ac@amd.com>
-Date:   Wed, 24 Nov 2021 14:40:34 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <1637749236-27107-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0222.namprd13.prod.outlook.com
- (2603:10b6:208:2bf::17) To CH2PR12MB5564.namprd12.prod.outlook.com
- (2603:10b6:610:65::24)
+Subject: [PATCH net-next 0/2] net: ipa: GSI channel flow control
+Date:   Wed, 24 Nov 2021 13:44:14 -0600
+Message-Id: <20211124194416.707007-1-elder@linaro.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Received: from [IPv6:2607:fea8:56e0:6d60:eb8c:d5ab:cfa1:462] (2607:fea8:56e0:6d60:eb8c:d5ab:cfa1:462) by BL1PR13CA0222.namprd13.prod.outlook.com (2603:10b6:208:2bf::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.13 via Frontend Transport; Wed, 24 Nov 2021 19:40:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 18625548-cde6-4509-236e-08d9af8249d7
-X-MS-TrafficTypeDiagnostic: CH2PR12MB5564:
-X-Microsoft-Antispam-PRVS: <CH2PR12MB5564D1A66BDAB83EA96A25C598619@CH2PR12MB5564.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8Fc42Ve5ZCO9cLMTgP9JDtbD+TEOyunSt5QSwT751BKyL7IFi3aMmDPL3GDD3Wy2fBPIjqQb2rFmkDZF/5cSHmzwNSzcldpZ+oC0oRwJ4DP9+DpEeQuY8gAdx5/EprpckaTeiDB5hpFH5qiNYWqe2hgMV9zrHWiCVXdNNP7h5EP2hrWPydMS0ROySTnnW3IJLM31OR1rlmOc4JmPKpuZct4exe/lgo3uHHLFNnxeAyliCjOHI2UQS9uLW5+ZpiHfGhDxz38YVh91xwsnZ8dXll+E8WJyxZ5jAlUsZGQdSM8s2EmtlmFH/iZFf43u4JAARHe+/COIheBjSM1W4NrAW8llRB96jSqNTqTkEWzAjhk0s6EG3xdn3udM5kZcVZHQe2gdEfEyT80GkdJNoG2KeuRQZ12Hr3DmAYNFcdyn+USqqs+Q4zKUpS4LqI2C17kPZUWL932X+7tI3WOWlxFYjCrE9L+Y6VfP2uIt+D4HppV1BGPjQ97e7b877AMhcRr+0+daLfazVO+l1FQHUWDA2wfhipIZuEgH+ZC7QHeaH5AxMW8gfCVIE521b9A0TbUzrfaluzusAfLOpCmyRLcSkylHt4RMPHCDw9PL85KN/0swIg3hQh0lT5Qxw8b0hTDyKwlvyfUEJk63bmJDwgxTFcF2K2l0ARZbbH3GWKWhaNa3FIzzXpLu/HMBB+Z1444jie8V0TtN4Lt1bLId6F+m2teZgV7/DuHsLwfZrtvV2qQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR12MB5564.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(508600001)(53546011)(6636002)(8676002)(6486002)(8936002)(2906002)(31696002)(31686004)(66946007)(4326008)(5660300002)(36756003)(38100700002)(2616005)(316002)(66476007)(83380400001)(4001150100001)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RTNLM2k1b0hEL054aVFtTkpVbnRDaW1jRVVjMng5Z3ZQUXl4emhncGRQc1Rt?=
- =?utf-8?B?Y1l6blQwaHFZN2dhWkk5cjN6bXlmd0djRm1ic0hHUkNLQjlTdTB4S1d6djZR?=
- =?utf-8?B?VlZjYUxwTUZyU1UyUzRtTmFLN1JGREhiaGg1RHQ5UGprUWxqb0Y2ZjVTaWY0?=
- =?utf-8?B?eEtIOE9LM05qWXkzOU8wemJ3Wlh1K1JEeTF1Y2xKbUNjMVErdGR2ZWs5b2FJ?=
- =?utf-8?B?Vnd6eUVPa3ZpbzZPaHZTQk0vVlE3L3VRTmgyWjhVVVFZaGZzOEhRcUhqSzY2?=
- =?utf-8?B?aEdHbFRCc1I5R0JwOGZXa21DcGJWaDJzMFJoK3pkNWVqMWJWWElQdnBNWFo4?=
- =?utf-8?B?Y1hZMUxONTFEeWpGSUdlVVkwQ2VvZUNPazMydDNldzlsWVI0dVlqR1dBRDZ4?=
- =?utf-8?B?Mnkvb3dEYytEREhsUVlCeFUyVjNOYm5POFZjaHBlQlFCSlRLZ1dxZERXQXBQ?=
- =?utf-8?B?MG82TE8xdzc3VEtHeTZBaXpFT2xEWnlYM0pja0RtRWpqTHUzNStjREY5ZGsw?=
- =?utf-8?B?OTN5cWlYY0tWZEl0SUYwWEpVL0Jabk5BbXJnaXpkVVVISmNiVk1DNFhQYTh3?=
- =?utf-8?B?T2xBaU1VSitRL3cvaWhCalpiUnRKZktnaDM5c0M1ZUJ5elBWQ3BoRlBiNHli?=
- =?utf-8?B?bVBSNnA5dzNrUXhrOGQxVDlSVkZQNlBwOGRPeXdwNmpDakhKendJbHVnM2tD?=
- =?utf-8?B?TXkyZXJDNC9TUlQ2NW15SmI4MHZhaXlQckxQV0tiOTlSR01wMTl4UlpST2p6?=
- =?utf-8?B?d0o1aE1HSllFOHlEMGVuTnAySVVLakxKbHprT0Q5MWdGUE5KdzdxY0IyS2hP?=
- =?utf-8?B?em1IYm53RXBxZ2k0Rks5YTQwWStRTEk1c05mcEdodEVkZWtoUUswdHlmOTBk?=
- =?utf-8?B?YWpNRWdydVBnWFc1SUplc0FsUTMyN3JDVzZvNStmd0JMa0wzV1VFbTF3MkJM?=
- =?utf-8?B?N282bklUTk1PeW1JaENGZ2xFYmd1a0w1N05HS1VSNDYyWXBuejQ4bjcxLzEw?=
- =?utf-8?B?ZW8yU3VYQkRRN2U0NWRFVHJBNjRkdXBIalFlMko4dkhKZXExSjU0cm5vUkdt?=
- =?utf-8?B?bVZyN1RJZ2hwcjFLdlMwS0s0U3huOHZXRXJ1bmtEQ1dyWHQzb2ZkWUs2MWNH?=
- =?utf-8?B?eXgyc3Y4NU5zelo3aEV3YzNPN2ZVWHpONmNhYkNreEt3bG5IdnBtMlBzU3ZU?=
- =?utf-8?B?bW9FcDZ5UFNnaTA5QUtKUTFlME9wTzNkNnNPSW1WRjlIK2w3NXRTVnc0Q1kw?=
- =?utf-8?B?M2hscUVSekJHOXhuK2tyclhmd096UmlydjJlTElHMDJRZW4vUFZwaW1KamZv?=
- =?utf-8?B?dUtDR3NMaGZ1RHBKWWloaVhmbnBRRzBJUUliNmRzZVJZcVUwdGtlc2ZyRTNs?=
- =?utf-8?B?MTd3WFBJWjdjbTlWczV6UG1zRjNrbzI3T3NUdVNmM2paYVd6eS9JL3lXcjlD?=
- =?utf-8?B?Vm5hZ09HRkpRRDdZbmc4dXpNd0FQOWZmRzBxam9tWEd2RjY2ekV3Sm1DcFQ0?=
- =?utf-8?B?T3V3MTQ0UDB3SEtSY1ZlNkFXbUJ3WFZKSDZvaFp1bDVhbnNFK2NzR0V1OC9y?=
- =?utf-8?B?VHdqVHRVSkhiN3VqZmJ4bTdvb3FjNmFhWHYvZFN0cDd6STdNQ2NjY2s1WHBW?=
- =?utf-8?B?MFY1RTVZQnJHdk5rb0JVM2lXbXJqaTlHN0RqOWxXSlUzQzR5Wm4xNTM3RHZl?=
- =?utf-8?B?dURDZGI1MVk3eEt4cW1tdGxtWXZSUmxlaHBuanJIbENvN2h6bVlHYVlqek03?=
- =?utf-8?B?Ym1sa3FTSHBYTUs3Ym9HS3NQOTNEQnJYSHE2YTBaUUVYTmUxbDJUdW1yM0lj?=
- =?utf-8?B?eFV4dnNhN3hwV1RmcUdYR1VvZzVpYU5tS1BlT2VBWmdSazZnN3J2a21kY05s?=
- =?utf-8?B?MHl6MThQVFE3eTRWNGN1V3dzWUR0cHFTVXZua0JiOUxSRVV4Y3JabC8yWXpV?=
- =?utf-8?B?R0VNKzZMNStvT1B5UTBkb0xzSE15aUdyZEhjUHJSZjZkTU9saS9GdU1RbTVv?=
- =?utf-8?B?OVA4Y0kxSUdrS25TN2tJUHU1V0kzVy9IcW15QTU0UExnMzZ2TVNBS3JLNnZi?=
- =?utf-8?B?M3NPUTJyWmovOFJnTDNoUFFzbDdKT3V0TGdPM1Y4bjBZNmJReXVVbmpad2pM?=
- =?utf-8?B?aGIydGYvenhFSlhxL05Nd0lKcERrRTAwdTZIN1BOOExndCtUM3MydWcxbDJo?=
- =?utf-8?B?SVczdTg0Rm5zRW90d1RKa1ptWVRCTTlFR2RQWEZGOXl3YVE5WCtZdVJtOUg2?=
- =?utf-8?Q?xXzvAtjsgUqqf0fRSWo5Go3rx77OF5OrG3pJh6rAcY=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 18625548-cde6-4509-236e-08d9af8249d7
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR12MB5564.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2021 19:40:37.1560
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mIbhENKXYhGqkDwwDHMXNxNFNJFhmGUFKA08XNqIQmTmndob2Rzh7nPR3uV+PXjW1JqifNmJK0C7YJsl2Y3NuA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB5564
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Starting with IPA v4.2, endpoint DELAY mode (which prevents data
+transfer on TX endpoints) does not work properly.  To address this,
+changes were made to allow underlying GSI channels to be put into
+a "flow controlled" state, which achieves a similar objective.
+The first patch in this series implements the flow controlled
+channel state and the commands used to control it.  It arranges
+to use the new mechanism--instead of DELAY mode--for IPA v4.2+.
 
+In IPA v4.11, the notion of GSI channel flow control was enhanced,
+and implemented in a slightly different way.  For the most part this
+doesn't affect the way the IPA driver uses flow control, but the
+second patch adds support for the newer mechanism.
 
-On 2021-11-24 5:20 a.m., Jiapeng Chong wrote:
-> Fix the following coccicheck warning:
-> 
-> ./drivers/gpu/drm/amd/display/dc/dml/dsc/rc_calc_fpu.c:96:14-15: WARNING
-> comparing pointer to 0.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->   drivers/gpu/drm/amd/display/dc/dml/dsc/rc_calc_fpu.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/display/dc/dml/dsc/rc_calc_fpu.c b/drivers/gpu/drm/amd/display/dc/dml/dsc/rc_calc_fpu.c
-> index 122ba29..ec636d0 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dml/dsc/rc_calc_fpu.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dml/dsc/rc_calc_fpu.c
-> @@ -93,7 +93,7 @@ static void get_qp_set(qp_set qps, enum colour_mode cm, enum bits_per_comp bpc,
->   		TABLE_CASE(420, 12, min);
->   	}
->   
-> -	if (table == 0)
-> +	if (!table)
->   		return;
->   
->   	index = (bpp - table[0].bpp) * 2;
-> 
+					-Alex
 
-Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Alex Elder (2):
+  net: ipa: introduce channel flow control
+  net: ipa: support enhanced channel flow control
 
-Applied to amd-staging-drm-next
+ drivers/net/ipa/gsi.c          | 70 ++++++++++++++++++++++++++--------
+ drivers/net/ipa/gsi.h          | 10 +++++
+ drivers/net/ipa/gsi_reg.h      |  4 ++
+ drivers/net/ipa/ipa_endpoint.c | 50 ++++++++++++++----------
+ 4 files changed, 99 insertions(+), 35 deletions(-)
 
-Thanks
+-- 
+2.32.0
+
