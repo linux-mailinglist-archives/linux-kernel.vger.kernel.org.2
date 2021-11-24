@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F1345C3EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B50845C6D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:09:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351110AbhKXNop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:44:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32976 "EHLO mail.kernel.org"
+        id S1355322AbhKXOMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:12:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343711AbhKXNmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:42:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F25B76327D;
-        Wed, 24 Nov 2021 12:58:04 +0000 (UTC)
+        id S1354174AbhKXOGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:06:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC9E7633F8;
+        Wed, 24 Nov 2021 13:11:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758685;
-        bh=kfxHU8qIo2PZPVzqIxw/GyWJwPHjufvuseYbHck9cJk=;
+        s=korg; t=1637759516;
+        bh=5eVFlKmiOGa5MfTM9+XMxFBysfDmMBpwdNLvuurY28g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s9+jzoKgnWiIpoq33FDEaVtRSpjGR7HY3YDSweacI2Oj5Y6Ia5amtlQ16RNvxXp4U
-         IVJVynEx6PfVjn9ONcpdFZLJI6Lu9gPQzOahwLlxS9M64PYKd+aE6Wj/jeCaDGeLGk
-         FBqMdEiEFfFb/QQe9N8MmisnN3OIm+BhTkq1xAdc=
+        b=zM6LTTXFnXabiz3uI2lYbRjzhrHESCOg2WQVpGi97C1eLbrFVTzAhGd2q6rymkORd
+         sn4fhgeyLQjBQcum2GQMQKsBNals5FDFENxaOuF2+0QDzuem81D95G+xnrzd6AHytf
+         weP/Njw1qOL7NOMNE/sJZZsbe9leGdrnbHzg7Qsc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 151/154] ice: Delete always true check of PF pointer
-Date:   Wed, 24 Nov 2021 12:59:07 +0100
-Message-Id: <20211124115707.365131663@linuxfoundation.org>
+        stable@vger.kernel.org, David Miller <davem@davemloft.net>,
+        sparclinux@vger.kernel.org,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Thomas Backlund <tmb@iki.fi>
+Subject: [PATCH 5.15 261/279] signal/sparc32: In setup_rt_frame and setup_fram use force_fatal_sig
+Date:   Wed, 24 Nov 2021 12:59:08 +0100
+Message-Id: <20211124115727.732846259@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,32 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Eric W. Biederman <ebiederm@xmission.com>
 
-commit 2ff04286a9569675948f39cec2c6ad47c3584633 upstream.
+commit 086ec444f86660e103de8945d0dcae9b67132ac9 upstream.
 
-PF pointer is always valid when PCI core calls its .shutdown() and
-.remove() callbacks. There is no need to check it again.
+Modify the 32bit version of setup_rt_frame and setup_frame to act
+similar to the 64bit version of setup_rt_frame and fail with a signal
+instead of calling do_exit.
 
-Fixes: 837f08fdecbe ("ice: Add basic driver framework for Intel(R) E800 Series")
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Replacing do_exit(SIGILL) with force_fatal_signal(SIGILL) ensures that
+the process will be terminated cleanly when the stack frame is
+invalid, instead of just killing off a single thread and leaving the
+process is a weird state.
+
+Cc: David Miller <davem@davemloft.net>
+Cc: sparclinux@vger.kernel.org
+Link: https://lkml.kernel.org/r/20211020174406.17889-16-ebiederm@xmission.com
+Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+Cc: Thomas Backlund <tmb@iki.fi>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/ice/ice_main.c |    3 ---
- 1 file changed, 3 deletions(-)
+ arch/sparc/kernel/signal_32.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -4361,9 +4361,6 @@ static void ice_remove(struct pci_dev *p
- 	struct ice_pf *pf = pci_get_drvdata(pdev);
- 	int i;
+--- a/arch/sparc/kernel/signal_32.c
++++ b/arch/sparc/kernel/signal_32.c
+@@ -244,7 +244,7 @@ static int setup_frame(struct ksignal *k
+ 		get_sigframe(ksig, regs, sigframe_size);
  
--	if (!pf)
--		return;
--
- 	for (i = 0; i < ICE_MAX_RESET_WAIT; i++) {
- 		if (!ice_is_reset_in_progress(pf->state))
- 			break;
+ 	if (invalid_frame_pointer(sf, sigframe_size)) {
+-		do_exit(SIGILL);
++		force_fatal_sig(SIGILL);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -336,7 +336,7 @@ static int setup_rt_frame(struct ksignal
+ 	sf = (struct rt_signal_frame __user *)
+ 		get_sigframe(ksig, regs, sigframe_size);
+ 	if (invalid_frame_pointer(sf, sigframe_size)) {
+-		do_exit(SIGILL);
++		force_fatal_sig(SIGILL);
+ 		return -EINVAL;
+ 	}
+ 
 
 
