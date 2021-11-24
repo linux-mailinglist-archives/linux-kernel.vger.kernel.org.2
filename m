@@ -2,127 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDFF45C70F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:18:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F144645C714
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:18:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351276AbhKXOVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:21:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44446 "EHLO
+        id S1347741AbhKXOVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:21:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353236AbhKXOSo (ORCPT
+        with ESMTP id S1353396AbhKXOSv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:18:44 -0500
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C25CC098770;
-        Wed, 24 Nov 2021 04:29:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=In-Reply-To:Content-Type:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description; bh=9+IhnhZkeGeP3d3+paaerLIadQ5w4iduEImB/rgB1WA=; b=3a7MW
-        mWmTgpFBgZT86bDzr5fnZd/OMYxslaVS+9JWm3M/wHb3PUyH2IM59c+QY7S5vtgUn5ij1k16gNk19
-        vbTNmxU8OeTpbUr2zaKyfoH+LNFs1LJldMLziMejnvGPmiP4zPa3YlxkEZ49W4SNuyjn7Cp7xJ/FU
-        pJCFi9umswPkuHxMQHWOYTO8/RznXlzuJST3Y7rCCxJoI77t1foOVL7CqtplAxKZ48wUj1lWMGbwx
-        lHYFbM7O7XZKD77NRV/TSODrmOdOz77FZAsQREgQmiWtgoEHpHIzJgeDy3Bs3DcZnguQYWvWocfDr
-        gME50F0neKQFoCt+WnjSRb4GUCZQQ==;
-Received: from [81.174.171.191] (helo=donbot)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1mprPO-0003p9-3u; Wed, 24 Nov 2021 12:29:54 +0000
-Date:   Wed, 24 Nov 2021 12:29:52 +0000
-From:   John Keeping <john@metanate.com>
-To:     Jaehoon Chung <jh80.chung@samsung.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mmc: dw_mmc: use standard "mmc" alias stem
-Message-ID: <YZ4wQOcHEDHdCGlY@donbot>
-References: <20211116190244.1417591-1-john@metanate.com>
- <20211116190244.1417591-3-john@metanate.com>
- <CGME20211123193506epcas1p49d0d0a2d66c6e560ee26077da9c0202b@epcas1p4.samsung.com>
- <CAPDyKFp1zMBUfK7LteW0yEfTpqtU+P+EybLsJBFx_r54HwFdMg@mail.gmail.com>
- <315972c2-2253-ad10-b712-2d2c96b3da26@samsung.com>
+        Wed, 24 Nov 2021 09:18:51 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 878AEC09DADF;
+        Wed, 24 Nov 2021 04:30:57 -0800 (PST)
+Date:   Wed, 24 Nov 2021 12:30:54 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637757056;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=SmJkv/73K7AIfKmQv+NqpEF7xbC8bJ5CMN8mL52NsPs=;
+        b=GXSFt9L+tB4IsTpDEagl1pSJeDmulxKwlBnpXlZS7sOwDZvT8KsrxQSU2NHGAhaVCa1CgK
+        4K4zSO/9NX1dxDbKP898NLYY8u+BxPVDJoU/B25WNfgLT0eQwGdi6hfM0wvIUc0BrGbBMs
+        cz8SymN8HipMimbQsCJFO8uQN/LHuzAs/CskuAEhIyZGQpLaLHkJuZ40zsLpR0s0XYoXPT
+        cjg3dK5235nS7BvELPTHe66wLv2iWe1IUwDpcapW6PKdDFqX/Z2zO4VLVJc3X6La5ezABL
+        o4XuVRI81SXN85gkH4XKnRW9GHlLm1YZaZ86lyz6cMITAcOEecrhjpXyQxUrSQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637757056;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=SmJkv/73K7AIfKmQv+NqpEF7xbC8bJ5CMN8mL52NsPs=;
+        b=unk0yRg5yE8zrkqtsLyda0Z2djMcRgz1SWQvF3U5HCMpf/YHnPGQ+rsHnsU/dIQyJUUV/S
+        M1nTzLaOz9ZS5vCw==
+From:   "tip-bot2 for Mark Rutland" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/urgent] sched/scs: Reset task stack state in bringup_cpu()
+Cc:     Qian Cai <quic_qiancai@quicinc.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <315972c2-2253-ad10-b712-2d2c96b3da26@samsung.com>
-X-Authenticated: YES
+Message-ID: <163775705481.11128.5927783579382442225.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 06:54:12PM +0900, Jaehoon Chung wrote:
-> On 11/24/21 4:34 AM, Ulf Hansson wrote:
-> > On Tue, 16 Nov 2021 at 20:02, John Keeping <john@metanate.com> wrote:
-> >>
-> >> The standard stem for MMC aliases is "mmc" and this is used by the MMC
-> >> core to set the slot index.
-> > 
-> > This isn't the correct description of the mmc aliases. The below text
-> > is copied from the DT doc:
-> > 
-> > "It is possible to assign a fixed index mmcN to an MMC host controller
-> > (and the corresponding mmcblkN devices) by defining an alias in the
-> > /aliases device tree node."
-> > 
-> >>
-> >> Use this in preference to the non-standard "mshc" stem when setting the
-> >> controller ID to avoid needing two aliases for each MMC device in order
-> >> to cover both the core and dw_mmc-specific functionality.
-> >>
-> >> The old "mshc" lookup is kept for backwards compatibility.
-> > 
-> > The mshc alias is really weird!
-> > 
-> > It looks like some leftover from when the dw_mmc controller supported
-> > multiple slots. This support was dropped a long time ago, simply
-> > because it never really worked - and it was not worth trying to. Only
-> > one slot per controller is supported.
-> 
-> As Ulf mentioned, dw_mmc controller can be supported multiple slot.
-> But I didn't see its case to use multiple slot. And I had been done to drop a long time ago.
-> 
-> mshc was used because of Mobile Storage Host Controller.
-> 
-> > 
-> > Rather than re-using the mmc alias in the same weird way as the mshc
-> > alias, I suggest we try to remove parsing of the mshc aliases
-> > completely. By looking at the corresponding code and in combination
-> > with the DTS files, it certainly looks doable to me. Do you want to
-> > have a look at it?
-> 
-> If possible to remove mshc, it's best.
-> I will check that removing mshc parsing in dw_mmc.c.
+The following commit has been merged into the sched/urgent branch of tip:
 
-Unfortunately it doesn't look like it's easy to remove as there is some
-behaviour depending on this via dw_mci_drv_data::caps, as well as
-different timing setup in dw_mmc-k3.c which uses
-dw_mci_of_alias_get_id() to identify SD and SDIO hosts.
+Commit-ID:     dce1ca0525bfdc8a69a9343bc714fbc19a2f04b3
+Gitweb:        https://git.kernel.org/tip/dce1ca0525bfdc8a69a9343bc714fbc19a2f04b3
+Author:        Mark Rutland <mark.rutland@arm.com>
+AuthorDate:    Tue, 23 Nov 2021 11:40:47 
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Wed, 24 Nov 2021 12:20:27 +01:00
 
-Looking across the dw_mmc-*.c files that use dw_mci_drv_data::caps to
-set capabilities per host controller:
+sched/scs: Reset task stack state in bringup_cpu()
 
-- dw_mmc-exynos.c sets additional capabilities for mshc0, although both
-  MMC_CAP_1_8V_DDR and MMC_CAP_8_BIT_DATA should be set via DT (in fact
-  in some cases it looks like device trees are setting bus-width = <4>
-  so MMC_CAP_8_BIT_DATA seems wrong!); I can't see any device trees
-  setting mmc-ddr-1_8v for these devices at the moment though, so
-  removing that is a change in behaviour
+To hot unplug a CPU, the idle task on that CPU calls a few layers of C
+code before finally leaving the kernel. When KASAN is in use, poisoned
+shadow is left around for each of the active stack frames, and when
+shadow call stacks are in use. When shadow call stacks (SCS) are in use
+the task's saved SCS SP is left pointing at an arbitrary point within
+the task's shadow call stack.
 
-- dw_mmc-k3.c sets different capabilities for mshc2 and, as mentioned
-  above, uses the alias index to select timing parameters and change
-  voltage switching behaviour
+When a CPU is offlined than onlined back into the kernel, this stale
+state can adversely affect execution. Stale KASAN shadow can alias new
+stackframes and result in bogus KASAN warnings. A stale SCS SP is
+effectively a memory leak, and prevents a portion of the shadow call
+stack being used. Across a number of hotplug cycles the idle task's
+entire shadow call stack can become unusable.
 
-- dw_mmc-hi3798cv200.c and dw_mmc-rockchip.c set the same caps for all
-  slots, so can easily remove the dependency on the alias
+We previously fixed the KASAN issue in commit:
 
+  e1b77c92981a5222 ("sched/kasan: remove stale KASAN poison after hotplug")
 
-I'm mostly interested in Rockchip myself, which is one of the easy ones,
-so I'm not that familiar with Exynos or K3 - I'd guess the Exynos
-version can remove its dependency on the mshc alias pretty easily, but
-the use in dw_mmc-k3.c looks much more difficult given that I can't see
-any other way to derive the necessary info from the current device
-trees.
+... by removing any stale KASAN stack poison immediately prior to
+onlining a CPU.
 
+Subsequently in commit:
 
-Regards,
-John
+  f1a0a376ca0c4ef1 ("sched/core: Initialize the idle task with preemption disabled")
+
+... the refactoring left the KASAN and SCS cleanup in one-time idle
+thread initialization code rather than something invoked prior to each
+CPU being onlined, breaking both as above.
+
+We fixed SCS (but not KASAN) in commit:
+
+  63acd42c0d4942f7 ("sched/scs: Reset the shadow stack when idle_task_exit")
+
+... but as this runs in the context of the idle task being offlined it's
+potentially fragile.
+
+To fix these consistently and more robustly, reset the SCS SP and KASAN
+shadow of a CPU's idle task immediately before we online that CPU in
+bringup_cpu(). This ensures the idle task always has a consistent state
+when it is running, and removes the need to so so when exiting an idle
+task.
+
+Whenever any thread is created, dup_task_struct() will give the task a
+stack which is free of KASAN shadow, and initialize the task's SCS SP,
+so there's no need to specially initialize either for idle thread within
+init_idle(), as this was only necessary to handle hotplug cycles.
+
+I've tested this on arm64 with:
+
+* gcc 11.1.0, defconfig +KASAN_INLINE, KASAN_STACK
+* clang 12.0.0, defconfig +KASAN_INLINE, KASAN_STACK, SHADOW_CALL_STACK
+
+... offlining and onlining CPUS with:
+
+| while true; do
+|   for C in /sys/devices/system/cpu/cpu*/online; do
+|     echo 0 > $C;
+|     echo 1 > $C;
+|   done
+| done
+
+Fixes: f1a0a376ca0c4ef1 ("sched/core: Initialize the idle task with preemption disabled")
+Reported-by: Qian Cai <quic_qiancai@quicinc.com>
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Tested-by: Qian Cai <quic_qiancai@quicinc.com>
+Link: https://lore.kernel.org/lkml/20211115113310.35693-1-mark.rutland@arm.com/
+---
+ kernel/cpu.c        | 7 +++++++
+ kernel/sched/core.c | 4 ----
+ 2 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 192e43a..407a256 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -31,6 +31,7 @@
+ #include <linux/smpboot.h>
+ #include <linux/relay.h>
+ #include <linux/slab.h>
++#include <linux/scs.h>
+ #include <linux/percpu-rwsem.h>
+ #include <linux/cpuset.h>
+ 
+@@ -588,6 +589,12 @@ static int bringup_cpu(unsigned int cpu)
+ 	int ret;
+ 
+ 	/*
++	 * Reset stale stack state from the last time this CPU was online.
++	 */
++	scs_task_reset(idle);
++	kasan_unpoison_task_stack(idle);
++
++	/*
+ 	 * Some architectures have to walk the irq descriptors to
+ 	 * setup the vector space for the cpu which comes online.
+ 	 * Prevent irq alloc/free across the bringup.
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 3c9b0fd..76f9dee 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8619,9 +8619,6 @@ void __init init_idle(struct task_struct *idle, int cpu)
+ 	idle->flags |= PF_IDLE | PF_KTHREAD | PF_NO_SETAFFINITY;
+ 	kthread_set_per_cpu(idle, cpu);
+ 
+-	scs_task_reset(idle);
+-	kasan_unpoison_task_stack(idle);
+-
+ #ifdef CONFIG_SMP
+ 	/*
+ 	 * It's possible that init_idle() gets called multiple times on a task,
+@@ -8777,7 +8774,6 @@ void idle_task_exit(void)
+ 		finish_arch_post_lock_switch();
+ 	}
+ 
+-	scs_task_reset(current);
+ 	/* finish_cpu(), as ran on the BP, will clean up the active_mm state */
+ }
+ 
