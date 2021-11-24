@@ -2,122 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DFD645B898
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 11:44:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1287945B8A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 11:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232891AbhKXKr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 05:47:26 -0500
-Received: from mout.kundenserver.de ([212.227.17.10]:60301 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhKXKrY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 05:47:24 -0500
-Received: from mail-wr1-f44.google.com ([209.85.221.44]) by
- mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MQeI4-1n1QaZ1oyE-00Nftt; Wed, 24 Nov 2021 11:44:13 +0100
-Received: by mail-wr1-f44.google.com with SMTP id r8so3343353wra.7;
-        Wed, 24 Nov 2021 02:44:13 -0800 (PST)
-X-Gm-Message-State: AOAM530VHEW/qLUHJ612faaJDB+f4Top7myvtPt6hy4lmPFcyyTo2eoG
-        cWF2zO9iJy/tOdAreMlEFSmqKigiBw93k7Q/YQM=
-X-Google-Smtp-Source: ABdhPJxfKmbt+vf7yW7iEZ+Pe1Z0V7tK3T1pBVG5pdSDlxjUaEAk6QQCj7BdeGupZ5+9VcvgxO0WFCpGajEcoNKFPl8=
-X-Received: by 2002:adf:f088:: with SMTP id n8mr17540560wro.411.1637750652924;
- Wed, 24 Nov 2021 02:44:12 -0800 (PST)
+        id S241294AbhKXKu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 05:50:56 -0500
+Received: from mga18.intel.com ([134.134.136.126]:41222 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240440AbhKXKuz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 05:50:55 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="222129462"
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="222129462"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 02:47:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="607149526"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 24 Nov 2021 02:47:43 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mppoU-0004fD-HG; Wed, 24 Nov 2021 10:47:42 +0000
+Date:   Wed, 24 Nov 2021 18:46:49 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>, Vinod Koul <vkoul@kernel.org>
+Cc:     kbuild-all@lists.01.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: qcom: clk-alpha-pll: Don't reconfigure running Trion
+Message-ID: <202111241836.A2WvIKic-lkp@intel.com>
+References: <20211123161630.123222-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-References: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
- <CAK8P3a1NhpNxWfj3gDnuf4bWK_fiE8cjcRyN7e8j95NmvOzbGw@mail.gmail.com> <8767803d-57b9-698c-ca27-d47e7117758d@landley.net>
-In-Reply-To: <8767803d-57b9-698c-ca27-d47e7117758d@landley.net>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 24 Nov 2021 11:43:56 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a08wiu4uGrCvh+1Ezm2q2ta=DJMoZ1MFhUgjaMYJ0Be6A@mail.gmail.com>
-Message-ID: <CAK8P3a08wiu4uGrCvh+1Ezm2q2ta=DJMoZ1MFhUgjaMYJ0Be6A@mail.gmail.com>
-Subject: Re: spinlock.c:306:9: error: implicit declaration of function '__raw_write_lock_nested'
-To:     Rob Landley <rob@landley.net>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Galbraith <umgwanakikbuti@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:cd7TT7udPC5q/AA2Et3O+w8pDqXvjI/521RNNmptP9MB0W1/YRZ
- gWusxm9RhnhMBipi6uS8siCGiZs1c2YIHLRl8409NxraCCnBJYh6k1bQdzT9Ajo4OUNt9K0
- U5+4AJmTihhjPaGQQrpCPnacBUQwvgIFzaYCJKcjxj0LY/Y6p3JQ49cLyofppvEcYr9YOBC
- VCIG1Am0ttoqpn7SwIvEA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/ID+ibo8dEI=:4R2wsP3Dr/9hPbL11wSFcD
- 7eDbi3MyV6Fjx0ZrlGLi3BuSDeQA0FHestmIobX1zhrvnE+qBAwh+k2qnQ7cWIrKLkfNswcRO
- xXHeIGTLfxCcJPz0XoxZi+v/b1U4VENDZEipwAOylCX35SwlfvpQEjshdbzrqKgYeaP2lOovo
- q2Q74h1tssT0aK8zz99kVMXXPklATYhXgtgnlxRaIT71umYOPxgRvMSQLqOP3ZIaK5erMQIdj
- rLXA7C+Nz5+IqNfmLB7+0yKVZpLLZQSMFG0TIOyy6Aq1FTWKaLRCZsq1ozoCcjArclpqUfgOw
- axfPGNSuIQulW5nvFGhR5LINe+xbbU5SM8qyBOG83ivlhtBYu8oCVx1IJZQAimhAPiuh6Ivnd
- Fd1jUCQ36p0ZTGtJUD5D0E2BHPdLZEZgP1Mg2bcXIjCbkGbJJoZAsVVO+cCQskdBEk59iyAbu
- 9uyEgdwIWdc0BJB9y40EUWC+M2+bWMcQrbAHHoOe0QXRb517F5a4eLMyU9Mc5MKvZgT5QMmN/
- fU8tdFIqLoT4mCupPIUBsMCAytXma1YRw4BuapRrHpdEhCWPeQpB4uwcSzsdi0QwUvmD5mkqE
- tvoU+qth0DVIANpb62yvlpOpJejdBWL9N01GcKAZqFOPjJWq3rLEeRuGV9t01SsK6gkWhSyTh
- ZJV0CiOYMVDH1mDNwrtbMESZyLMtKZAPkANuhBATVgqNxADMpy84kBALQaRTnQzkUZyfYKxO0
- iZQkcTb0RkC9a2xoOOyOT5jaOrbBmZLM9l1zAdp7uT3iB6Ci/+2hSTC348fAdtG7f1ThPHpbB
- mzGO/f+RlMnW2+7piZVtfmNMg+dT908XMrIqo8L0AZ5OamwpRs=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211123161630.123222-1-bjorn.andersson@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 11:01 AM Rob Landley <rob@landley.net> wrote:
-> On 11/23/21 7:19 AM, Arnd Bergmann wrote:
-> >
-> > These happen with any compiler version, someone needs to write the correct
-> > entry code for clone3 and hook up futex_waitv().
->
-> I did a naieve "add them both to the .tbl" patch and the result booted to a
-> shell prompt, but that doesn't mean much. What arch-specific entry code does
-> clone3 need here? The SYSCALL_DEFINE2(clone3) in kernel/fork.c seems reasonably
-> straightforward? (Unlike the #ifdef stack around the previous clone...)
+Hi Bjorn,
 
-I forget the exact issue, but I can see that 4 out of the 13
-architectures that set
-__ARCH_WANT_SYS_CLONE3 provide a custom version: arc, m68k,
-mips and parisc. Have a look at what those do to see if you need the same
-changes.
+I love your patch! Yet something to improve:
 
-> >> include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements
-> >
-> > These are old bugs, they show up in any kernel version with gcc-8 or higher.
->
-> I looked at trying to fix that but it seems to be a compiler bug. Gcc is warning
-> about an ? : else case that's dead code eliminated. It's already GOT a test
-> protecting it from being evaluated...
+[auto build test ERROR on clk/clk-next]
+[also build test ERROR on v5.16-rc2 next-20211124]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-I wouldn't call it a bug in the compiler, as there is no definite
-correct ordering
-between dead-code-elimination and warning generation. IIRC I fixed a bunch
-of these on other architectures, and those did turn out to be actual code issues
-that would go unnoticed otherwise.
+url:    https://github.com/0day-ci/linux/commits/Bjorn-Andersson/clk-qcom-clk-alpha-pll-Don-t-reconfigure-running-Trion/20211124-001628
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git clk-next
+config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20211124/202111241836.A2WvIKic-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/1c6539db17125d4d4eaf17c4071063fe8a7e2ca6
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Bjorn-Andersson/clk-qcom-clk-alpha-pll-Don-t-reconfigure-running-Trion/20211124-001628
+        git checkout 1c6539db17125d4d4eaf17c4071063fe8a7e2ca6
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=m68k 
 
-> >> fs/mpage.c:336:1: warning: the frame size of 1092 bytes is larger than
-> >
-> > I see these going back to gcc-6, it looks like this is caused by
-> > CONFIG_PAGE_SIZE_64KB.
->
-> In which case the stack size is going to be 64k as well?
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-No, the stack is still 4KB or 8KB, depending on CONFIG_4KSTACKS, it gets
-allocated using
+All errors (new ones prefixed by >>):
 
-        stack = kmem_cache_alloc_node(thread_stack_cache, THREADINFO_GFP, node);
+   drivers/clk/qcom/clk-alpha-pll.c: In function 'clk_trion_pll_configure':
+>> drivers/clk/qcom/clk-alpha-pll.c:1437:17: error: implicit declaration of function 'pr_dbg'; did you mean 'pr_debug'? [-Werror=implicit-function-declaration]
+    1437 |                 pr_dbg("Trion PLL is already enabled, skipping configuration\n");
+         |                 ^~~~~~
+         |                 pr_debug
+   cc1: some warnings being treated as errors
 
-from a THREAD_SIZE-sized naturally-aligned kmem cache in this case.
-Using 1KB of stack space is definitely a red flag that something is going
-wrong. This could be a bug in kernel code, in the compiler, or in the
-combination of the two.
 
-        Arnd
+vim +1437 drivers/clk/qcom/clk-alpha-pll.c
+
+  1421	
+  1422	/**
+  1423	 * clk_lucid_pll_configure - configure the lucid pll
+  1424	 *
+  1425	 * @pll: clk alpha pll
+  1426	 * @regmap: register map
+  1427	 * @config: configuration to apply for pll
+  1428	 */
+  1429	void clk_trion_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
+  1430				     const struct alpha_pll_config *config)
+  1431	{
+  1432		/*
+  1433		 * If the bootloader left the PLL enabled it's likely that there are
+  1434		 * RCGs that will lock up if we disable the PLL below.
+  1435		 */
+  1436		if (trion_pll_is_enabled(pll, regmap)) {
+> 1437			pr_dbg("Trion PLL is already enabled, skipping configuration\n");
+  1438			return;
+  1439		}
+  1440	
+  1441		clk_alpha_pll_write_config(regmap, PLL_L_VAL(pll), config->l);
+  1442		regmap_write(regmap, PLL_CAL_L_VAL(pll), TRION_PLL_CAL_VAL);
+  1443		clk_alpha_pll_write_config(regmap, PLL_ALPHA_VAL(pll), config->alpha);
+  1444		clk_alpha_pll_write_config(regmap, PLL_CONFIG_CTL(pll),
+  1445					     config->config_ctl_val);
+  1446		clk_alpha_pll_write_config(regmap, PLL_CONFIG_CTL_U(pll),
+  1447					     config->config_ctl_hi_val);
+  1448		clk_alpha_pll_write_config(regmap, PLL_CONFIG_CTL_U1(pll),
+  1449					     config->config_ctl_hi1_val);
+  1450		clk_alpha_pll_write_config(regmap, PLL_USER_CTL(pll),
+  1451						config->user_ctl_val);
+  1452		clk_alpha_pll_write_config(regmap, PLL_USER_CTL_U(pll),
+  1453						config->user_ctl_hi_val);
+  1454		clk_alpha_pll_write_config(regmap, PLL_USER_CTL_U1(pll),
+  1455						config->user_ctl_hi1_val);
+  1456		clk_alpha_pll_write_config(regmap, PLL_TEST_CTL(pll),
+  1457						config->test_ctl_val);
+  1458		clk_alpha_pll_write_config(regmap, PLL_TEST_CTL_U(pll),
+  1459						config->test_ctl_hi_val);
+  1460		clk_alpha_pll_write_config(regmap, PLL_TEST_CTL_U1(pll),
+  1461						config->test_ctl_hi1_val);
+  1462	
+  1463		regmap_update_bits(regmap, PLL_MODE(pll), PLL_UPDATE_BYPASS,
+  1464				   PLL_UPDATE_BYPASS);
+  1465	
+  1466		/* Disable PLL output */
+  1467		regmap_update_bits(regmap, PLL_MODE(pll),  PLL_OUTCTRL, 0);
+  1468	
+  1469		/* Set operation mode to OFF */
+  1470		regmap_write(regmap, PLL_OPMODE(pll), PLL_STANDBY);
+  1471	
+  1472		/* Place the PLL in STANDBY mode */
+  1473		regmap_update_bits(regmap, PLL_MODE(pll), PLL_RESET_N, PLL_RESET_N);
+  1474	}
+  1475	EXPORT_SYMBOL_GPL(clk_trion_pll_configure);
+  1476	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
