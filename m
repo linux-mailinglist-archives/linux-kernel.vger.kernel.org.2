@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA35745C67A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:06:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 227E645C25E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:24:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347410AbhKXOJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:09:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51916 "EHLO mail.kernel.org"
+        id S1349370AbhKXN1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:27:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351582AbhKXOFa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:05:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 556D76333C;
-        Wed, 24 Nov 2021 13:11:50 +0000 (UTC)
+        id S1350364AbhKXNZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:25:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 620CA61B62;
+        Wed, 24 Nov 2021 12:49:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759510;
-        bh=OV0T2JPS0EtjdRspJ/JuY1a146QKnOp9P0d33wotH0g=;
+        s=korg; t=1637758182;
+        bh=Zty3CVMBZk4RNp1kekEFFjSMGMoZUMY08NMObyzMbuk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dRSMZPLHxSbwzqQkLDYd1C/ZsUvLfUpsXsfK/FnAQyIGTtbAgUSILrp7QnF13MYgs
-         02IJ16AH399Jy2V7KUW8pqM191slZUqTXS6IVF/XpP/BfenFoSgpd61vRjPPuWZ+5o
-         H60xJwRiK8H3RtRJu3sJXofqQezygydPxV+5J9m0=
+        b=u9gv5ip4DWLP9Gmsw4otZFDD5znS0d8YdIGWpK99inJLspdLBXFwcUML3AhHeBJ/R
+         bchbPLZhIAcOZgxVwsPTEWryy6o+MGm/9Un7cFbK54OgGycjZLZ5+HTLWmTm7qJwMA
+         aqeusZw7aGM5O1yZmsTaOEzxMGE1+9qPx2dfS8fk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Benedikt Spranger <b.spranger@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kurt Kanzenbach <kurt@linutronix.de>
-Subject: [PATCH 5.15 234/279] net: stmmac: Fix signed/unsigned wreckage
-Date:   Wed, 24 Nov 2021 12:58:41 +0100
-Message-Id: <20211124115726.825822807@linuxfoundation.org>
+        stable@vger.kernel.org, Nguyen Dinh Phi <phind.uet@gmail.com>,
+        syzbot+bbf402b783eeb6d908db@syzkaller.appspotmail.com,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 5.4 086/100] cfg80211: call cfg80211_stop_ap when switch from P2P_GO type
+Date:   Wed, 24 Nov 2021 12:58:42 +0100
+Message-Id: <20211124115657.633936265@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,116 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Nguyen Dinh Phi <phind.uet@gmail.com>
 
-commit 3751c3d34cd5a750c86d1c8eaf217d8faf7f9325 upstream.
+commit 563fbefed46ae4c1f70cffb8eb54c02df480b2c2 upstream.
 
-The recent addition of timestamp correction to compensate the CDC error
-introduced a subtle signed/unsigned bug in stmmac_get_tx_hwtstamp() while
-it managed for some obscure reason to avoid that in stmmac_get_rx_hwtstamp().
+If the userspace tools switch from NL80211_IFTYPE_P2P_GO to
+NL80211_IFTYPE_ADHOC via send_msg(NL80211_CMD_SET_INTERFACE), it
+does not call the cleanup cfg80211_stop_ap(), this leads to the
+initialization of in-use data. For example, this path re-init the
+sdata->assigned_chanctx_list while it is still an element of
+assigned_vifs list, and makes that linked list corrupt.
 
-The issue is:
-
-    s64 adjust = 0;
-    u64 ns;
-
-    adjust += -(2 * (NSEC_PER_SEC / priv->plat->clk_ptp_rate));
-    ns += adjust;
-
-works by chance on 64bit, but falls apart on 32bit because the compiler
-knows that adjust fits into 32bit and then treats the addition as a u64 +
-u32 resulting in an off by ~2 seconds failure.
-
-The RX variant uses an u64 for adjust and does the adjustment via
-
-    ns -= adjust;
-
-because consistency is obviously overrated.
-
-Get rid of the pointless zero initialized adjust variable and do:
-
-	ns -= (2 * NSEC_PER_SEC) / priv->plat->clk_ptp_rate;
-
-which is obviously correct and spares the adjust obfuscation. Aside of that
-it yields a more accurate result because the multiplication takes place
-before the integer divide truncation and not afterwards.
-
-Stick the calculation into an inline so it can't be accidentally
-disimproved. Return an u32 from that inline as the result is guaranteed
-to fit which lets the compiler optimize the substraction.
-
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+Reported-by: syzbot+bbf402b783eeb6d908db@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/r/20211027173722.777287-1-phind.uet@gmail.com
 Cc: stable@vger.kernel.org
-Fixes: 3600be5f58c1 ("net: stmmac: add timestamp correction to rid CDC sync error")
-Reported-by: Benedikt Spranger <b.spranger@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Benedikt Spranger <b.spranger@linutronix.de>
-Tested-by: Kurt Kanzenbach <kurt@linutronix.de> # Intel EHL
-Link: https://lore.kernel.org/r/87mtm578cs.ffs@tglx
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: ac800140c20e ("cfg80211: .stop_ap when interface is going down")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |   23 +++++++++-------------
- 1 file changed, 10 insertions(+), 13 deletions(-)
+ net/wireless/util.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -511,6 +511,14 @@ bool stmmac_eee_init(struct stmmac_priv
- 	return true;
- }
+--- a/net/wireless/util.c
++++ b/net/wireless/util.c
+@@ -991,6 +991,7 @@ int cfg80211_change_iface(struct cfg8021
  
-+static inline u32 stmmac_cdc_adjust(struct stmmac_priv *priv)
-+{
-+	/* Correct the clk domain crossing(CDC) error */
-+	if (priv->plat->has_gmac4 && priv->plat->clk_ptp_rate)
-+		return (2 * NSEC_PER_SEC) / priv->plat->clk_ptp_rate;
-+	return 0;
-+}
-+
- /* stmmac_get_tx_hwtstamp - get HW TX timestamps
-  * @priv: driver private structure
-  * @p : descriptor pointer
-@@ -524,7 +532,6 @@ static void stmmac_get_tx_hwtstamp(struc
- {
- 	struct skb_shared_hwtstamps shhwtstamp;
- 	bool found = false;
--	s64 adjust = 0;
- 	u64 ns = 0;
- 
- 	if (!priv->hwts_tx_en)
-@@ -543,12 +550,7 @@ static void stmmac_get_tx_hwtstamp(struc
- 	}
- 
- 	if (found) {
--		/* Correct the clk domain crossing(CDC) error */
--		if (priv->plat->has_gmac4 && priv->plat->clk_ptp_rate) {
--			adjust += -(2 * (NSEC_PER_SEC /
--					 priv->plat->clk_ptp_rate));
--			ns += adjust;
--		}
-+		ns -= stmmac_cdc_adjust(priv);
- 
- 		memset(&shhwtstamp, 0, sizeof(struct skb_shared_hwtstamps));
- 		shhwtstamp.hwtstamp = ns_to_ktime(ns);
-@@ -573,7 +575,6 @@ static void stmmac_get_rx_hwtstamp(struc
- {
- 	struct skb_shared_hwtstamps *shhwtstamp = NULL;
- 	struct dma_desc *desc = p;
--	u64 adjust = 0;
- 	u64 ns = 0;
- 
- 	if (!priv->hwts_rx_en)
-@@ -586,11 +587,7 @@ static void stmmac_get_rx_hwtstamp(struc
- 	if (stmmac_get_rx_timestamp_status(priv, p, np, priv->adv_ts)) {
- 		stmmac_get_timestamp(priv, desc, priv->adv_ts, &ns);
- 
--		/* Correct the clk domain crossing(CDC) error */
--		if (priv->plat->has_gmac4 && priv->plat->clk_ptp_rate) {
--			adjust += 2 * (NSEC_PER_SEC / priv->plat->clk_ptp_rate);
--			ns -= adjust;
--		}
-+		ns -= stmmac_cdc_adjust(priv);
- 
- 		netdev_dbg(priv->dev, "get valid RX hw timestamp %llu\n", ns);
- 		shhwtstamp = skb_hwtstamps(skb);
+ 		switch (otype) {
+ 		case NL80211_IFTYPE_AP:
++		case NL80211_IFTYPE_P2P_GO:
+ 			cfg80211_stop_ap(rdev, dev, true);
+ 			break;
+ 		case NL80211_IFTYPE_ADHOC:
 
 
