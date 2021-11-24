@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A7045BE91
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:47:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80EC445BC85
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:29:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345689AbhKXMsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:48:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50510 "EHLO mail.kernel.org"
+        id S245065AbhKXMbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:31:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345037AbhKXMqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:46:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7144D61440;
-        Wed, 24 Nov 2021 12:26:54 +0000 (UTC)
+        id S245135AbhKXMYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:24:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82FE361155;
+        Wed, 24 Nov 2021 12:15:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756814;
-        bh=T8Xd1nsfnBiyD8c1nofywRIz1BrHf431p4/cAfcbR4s=;
+        s=korg; t=1637756121;
+        bh=e/Vi5Df7LjFKYT9izrScWDuFVZvrl8QTcRNpa0HFoiI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qGqeq54jPuainWkcTgGb7Zo2OQyMS4zjxMD2Ctfrij/inoYqZnrHW5DHsHH05y0ki
-         dNm9KrHxDrRzVMwskGj8Y4qdN1XXDG61+UIA46OMWLMqHTvYKVNUsc4SnUqynebZiv
-         Ccom3cQ+y06rv9LCfsiuepptViZR6qraRWL9Conk=
+        b=Y2RddEzhHzu44gGWY8DUm4zqLKnU/R+MwY6qvO1dYBEeNyp/TUoS0mCBriTx8FojF
+         DZzmDhsrgKZMAADa9J8tRVP9dGAbWkxvZ5loJM1sbXoc7jhvCFjkr6NAtQFtyT/baj
+         J+yoWvmlDoI06TN64rmkt5LoA7exb7iQN30IIp2M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, linux-mips@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@vger.kernel.org, Jing-Ting Wu <jing-ting.wu@mediatek.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 209/251] MIPS: sni: Fix the build
+Subject: [PATCH 4.9 180/207] sched/core: Mitigate race cpus_share_cache()/update_top_cache_domain()
 Date:   Wed, 24 Nov 2021 12:57:31 +0100
-Message-Id: <20211124115717.532836596@linuxfoundation.org>
+Message-Id: <20211124115709.800462008@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Vincent Donnefort <vincent.donnefort@arm.com>
 
-[ Upstream commit c91cf42f61dc77b289784ea7b15a8531defa41c0 ]
+[ Upstream commit 42dc938a590c96eeb429e1830123fef2366d9c80 ]
 
-This patch fixes the following gcc 10 build error:
+Nothing protects the access to the per_cpu variable sd_llc_id. When testing
+the same CPU (i.e. this_cpu == that_cpu), a race condition exists with
+update_top_cache_domain(). One scenario being:
 
-arch/mips/sni/time.c: In function ‘a20r_set_periodic’:
-arch/mips/sni/time.c:15:26: error: unsigned conversion from ‘int’ to ‘u8’ {aka ‘volatile unsigned char’} changes value from ‘576’ to ‘64’ [-Werror=overflow]
-   15 | #define SNI_COUNTER0_DIV ((SNI_CLOCK_TICK_RATE / SNI_COUNTER2_DIV) / HZ)
-      |                          ^
-arch/mips/sni/time.c:21:45: note: in expansion of macro ‘SNI_COUNTER0_DIV’
-   21 |  *(volatile u8 *)(A20R_PT_CLOCK_BASE + 0) = SNI_COUNTER0_DIV;
-      |                                             ^~~~~~~~~~~~~~~~
+              CPU1                            CPU2
+  ==================================================================
 
-Cc: linux-mips@vger.kernel.org
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+  per_cpu(sd_llc_id, CPUX) => 0
+                                    partition_sched_domains_locked()
+      				      detach_destroy_domains()
+  cpus_share_cache(CPUX, CPUX)          update_top_cache_domain(CPUX)
+    per_cpu(sd_llc_id, CPUX) => 0
+                                          per_cpu(sd_llc_id, CPUX) = CPUX
+    per_cpu(sd_llc_id, CPUX) => CPUX
+    return false
+
+ttwu_queue_cond() wouldn't catch smp_processor_id() == cpu and the result
+is a warning triggered from ttwu_queue_wakelist().
+
+Avoid a such race in cpus_share_cache() by always returning true when
+this_cpu == that_cpu.
+
+Fixes: 518cd6234178 ("sched: Only queue remote wakeups when crossing cache boundaries")
+Reported-by: Jing-Ting Wu <jing-ting.wu@mediatek.com>
+Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Link: https://lore.kernel.org/r/20211104175120.857087-1-vincent.donnefort@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/sni/time.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/sched/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/mips/sni/time.c b/arch/mips/sni/time.c
-index 0eb7d1e8821be..d741e24a21879 100644
---- a/arch/mips/sni/time.c
-+++ b/arch/mips/sni/time.c
-@@ -18,14 +18,14 @@ static int a20r_set_periodic(struct clock_event_device *evt)
- {
- 	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 12) = 0x34;
- 	wmb();
--	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 0) = SNI_COUNTER0_DIV;
-+	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 0) = SNI_COUNTER0_DIV & 0xff;
- 	wmb();
- 	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 0) = SNI_COUNTER0_DIV >> 8;
- 	wmb();
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index c7c7ba8807f83..b1bfd44aa9f01 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1875,6 +1875,9 @@ out:
  
- 	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 12) = 0xb4;
- 	wmb();
--	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 8) = SNI_COUNTER2_DIV;
-+	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 8) = SNI_COUNTER2_DIV & 0xff;
- 	wmb();
- 	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 8) = SNI_COUNTER2_DIV >> 8;
- 	wmb();
+ bool cpus_share_cache(int this_cpu, int that_cpu)
+ {
++	if (this_cpu == that_cpu)
++		return true;
++
+ 	return per_cpu(sd_llc_id, this_cpu) == per_cpu(sd_llc_id, that_cpu);
+ }
+ #endif /* CONFIG_SMP */
 -- 
 2.33.0
 
