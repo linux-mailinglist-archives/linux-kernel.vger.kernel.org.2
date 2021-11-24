@@ -2,96 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB5645D0DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:07:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF3945D0DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:10:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345314AbhKXXKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 18:10:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54754 "EHLO
+        id S1343775AbhKXXOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 18:14:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242988AbhKXXKo (ORCPT
+        with ESMTP id S243588AbhKXXOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 18:10:44 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808CFC06173E;
-        Wed, 24 Nov 2021 15:07:34 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HzxVN0Pm9z4xYy;
-        Thu, 25 Nov 2021 10:07:23 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1637795249;
-        bh=7pRov1sIZwpusxuBiujaI38cmBz+hmwQh8SiJxJ6V4A=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=BTvkGcA6sRe76Gy1isc7w2/xkrLYnxKe2cqBq0GZkmo3MfAC6f/yy2152OFmF8hfz
-         ERp6yUMEqynlekax8tGND0PUYTdPjimS7umZwMJD2eEZzHm6xM0TCeCZystvsXoEp/
-         dOGb08CEJi0M0EKZ9GRPnCe+PY71tEutUo8DfZqK0BjfkRucFJoV5j9uqB76ejU77I
-         tGRBKn0ErgMMddWkhbwZK7yiSBERddMcgmePyxpK0lviq3ImeJm2W3PY0TXuDBx5FS
-         M0XMRHP0ACm+GBzFbMCEaC7auxJI5gaumq9uoq16TBuJyv1mTCSEe+pFI8yY/AowXU
-         AQXHNLAwb3lmA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@collabora.com>,
-        linux-kernel@vger.kernel.org, arnd@arndb.de, geert@linux-m68k.org,
-        monstr@monstr.eu, ysato@users.sourceforge.jp, dalias@libc.org,
-        davem@davemloft.net, chris@zankel.net, jcmvbkbc@gmail.com,
-        linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org
-Cc:     akpm@linux-foundation.org, andrealmeid@collabora.com,
-        bigeasy@linutronix.de, boqun.feng@gmail.com,
-        linux-next@vger.kernel.org, lkft-triage@lists.linaro.org,
-        longman@redhat.com, minchan@kernel.org, mingo@redhat.com,
-        naresh.kamboju@linaro.org, peterz@infradead.org, rob@landley.net,
-        senozhatsky@chromium.org, sfr@canb.auug.org.au,
-        umgwanakikbuti@gmail.com, will@kernel.org
-Subject: Re: [PATCH 1/1] futex: Wireup futex_waitv syscall
-In-Reply-To: <20211124132112.11641-1-andrealmeid@collabora.com>
-References: <CAK8P3a3pQW59NVF=5P+ZiBjNJmnWh+iTZUHvqHBrXkHA6pMd4g@mail.gmail.com>
- <20211124132112.11641-1-andrealmeid@collabora.com>
-Date:   Thu, 25 Nov 2021 10:07:23 +1100
-Message-ID: <87lf1dp2z8.fsf@mpe.ellerman.id.au>
+        Wed, 24 Nov 2021 18:14:01 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6B3C06173E
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 15:10:51 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id c4so4096406pfj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 15:10:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Swlp/EDwl52MALOj9TDs7eiM3OyX943lD6zJZmjHC4g=;
+        b=MmKJeaIsBv2CJin5wZ74nmdLIDJzCtxX72xYb4484fB7ipFe5RVHGVYUUtIbGjQjhU
+         /pEvtOLjbX537Dd18/m08R3f7LlVxNGmUmTb2TK69KyYOeEpqkCQStTze/zRzn4Yruib
+         x28A/s2dsmYfRY6k3w5bMtCAbOnVHqAndeCho=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Swlp/EDwl52MALOj9TDs7eiM3OyX943lD6zJZmjHC4g=;
+        b=Xlrv9SqrO023r3d/SlUazGrunbkojG5IooIMLG0Bv7NzIMJWuYGcyskNj7n/jKlMxW
+         w0nfWnlpLRXGyiBx4n67+8qBoanrI+Cd5bWsJzjBf6obROs3nTA6RVx8bIP7XTl/Ngg2
+         vE2w3SXlaGYQxIymisZsg8ibCw+Wh2RpFHqPPrNyaWEgRHI5uPjSe+e/GCEUUFq4RLwd
+         nT3PHbdnMC+TUVnUy7G9stOj9bQGOWEvKnJDVm1K/Io88zMTMKNpY17cieGzOXLp48zY
+         Db/csibVCn+DBxqbg5/W56FJO8S4zEWiiuS7LkRXMUN8nL79bFSK7ADUPifosNV4jkf5
+         d5Ow==
+X-Gm-Message-State: AOAM531wkmn5XuIzL5OsO5k4scljaQLXttxVA4jMpzgjc5vIs7nn2e1v
+        PCjCovc1X+f7rB1gsvgeLsEXhCrtX1OLwg==
+X-Google-Smtp-Source: ABdhPJwh3tgQhmfHg74oXNzlJTegsSlt+0KSe6u/ypuZIH0GgNjKlkV9Q4wWoJOs+IsVIuYSNswdlw==
+X-Received: by 2002:a63:d047:: with SMTP id s7mr13105838pgi.470.1637795450371;
+        Wed, 24 Nov 2021 15:10:50 -0800 (PST)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:6bc9:896a:9df2:5d61])
+        by smtp.gmail.com with ESMTPSA id nn15sm5783296pjb.11.2021.11.24.15.10.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 15:10:50 -0800 (PST)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Cc:     wonchung@google.com, bleung@chromium.org,
+        heikki.krogerus@linux.intel.com,
+        Prashant Malani <pmalani@chromium.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        =?UTF-8?q?Noralf=20Tr=C3=B8nnes?= <noralf@tronnes.org>,
+        Rajat Jain <rajatja@google.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH 0/4] usb: Use notifier for linking Type C ports.
+Date:   Wed, 24 Nov 2021 15:10:06 -0800
+Message-Id: <20211124231028.696982-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andr=C3=A9 Almeida <andrealmeid@collabora.com> writes:
-> diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl b/arch/powerpc/kern=
-el/syscalls/syscall.tbl
-> index 7bef917cc84e..15109af9d075 100644
-> --- a/arch/powerpc/kernel/syscalls/syscall.tbl
-> +++ b/arch/powerpc/kernel/syscalls/syscall.tbl
-> @@ -528,3 +528,4 @@
->  446	common	landlock_restrict_self		sys_landlock_restrict_self
->  # 447 reserved for memfd_secret
->  448	common	process_mrelease		sys_process_mrelease
-> +449	common  futex_waitv                     sys_futex_waitv
+This series resolves the cyclic dependency error which was introduced by
+commit 63cd78617350 ("usb: Link the ports to the connectors they are
+attached to") which lead to it being reverted. The approach here is to
+use a notifier to link a new Type C port to pre-existing USB ports
+instead of calling an iterator of usb ports from the Type C connector
+class. This allows commit 63cd78617350 ("usb: Link the ports to the
+connectors they are attached to") to then be submitted without any
+depmod cyclic dependency error.
 
-Tested-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+The final patch removes the usb port iterator since it is no longer
+needed.
 
-The selftest doesn't build with old headers, I needed this:
+Heikki Krogerus (1):
+  usb: Link the ports to the connectors they are attached to
 
-diff --git a/tools/testing/selftests/futex/include/futex2test.h b/tools/tes=
-ting/selftests/futex/include/futex2test.h
-index 9d305520e849..e6422321e9d0 100644
---- a/tools/testing/selftests/futex/include/futex2test.h
-+++ b/tools/testing/selftests/futex/include/futex2test.h
-@@ -8,6 +8,10 @@
+Prashant Malani (3):
+  usb: typec: Add port registration notifier
+  usb: Use notifier to link Type C ports
+  Revert "usb: Iterator for ports"
 
- #define u64_to_ptr(x) ((void *)(uintptr_t)(x))
+ Documentation/ABI/testing/sysfs-bus-usb |  9 +++++
+ drivers/usb/core/hub.h                  |  3 ++
+ drivers/usb/core/port.c                 | 20 +++++++++++
+ drivers/usb/core/usb.c                  | 46 -------------------------
+ drivers/usb/typec/class.c               | 33 ++++++++++++++++--
+ drivers/usb/typec/class.h               |  1 -
+ drivers/usb/typec/port-mapper.c         | 41 ----------------------
+ include/linux/usb.h                     |  9 -----
+ include/linux/usb/typec.h               | 13 +++++++
+ 9 files changed, 75 insertions(+), 100 deletions(-)
 
-+#ifndef __NR_futex_waitv
-+#define __NR_futex_waitv 449
-+#endif
-+
- /**
-  * futex_waitv - Wait at multiple futexes, wake on any
-  * @waiters:    Array of waiters
+-- 
+2.34.0.rc2.393.gf8c9666880-goog
 
-
-cheers
