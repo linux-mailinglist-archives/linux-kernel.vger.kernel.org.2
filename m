@@ -2,137 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E0B45B27D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 04:12:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F9545B27A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 04:11:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236198AbhKXDP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 22:15:58 -0500
-Received: from smtp161.vfemail.net ([146.59.185.161]:41659 "EHLO
-        smtp161.vfemail.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233913AbhKXDP4 (ORCPT
+        id S234789AbhKXDO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 22:14:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233913AbhKXDOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 22:15:56 -0500
-Received: (qmail 5375 invoked from network); 24 Nov 2021 03:12:46 +0000
-Received: from localhost (HELO nl101-3.vfemail.net) ()
-  by smtpout.vfemail.net with ESMTPS (ECDHE-RSA-AES256-GCM-SHA384 encrypted); 24 Nov 2021 03:12:46 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=vfemail.net; h=date:from
-        :to:cc:subject:message-id:in-reply-to:references:mime-version
-        :content-type:content-transfer-encoding; s=2018; bh=IJ3maCvdDBep
-        jC+VBuaf0rHuv1D9SuN0aOu4sfd9Jv4=; b=osAgjpo4m744VjIPhGLKafh+T+Im
-        p4Fh3cZC90BZYEykSyF/eVJIatr+BWkgI3VAFH+XlnFn5lcAZkAIYngMd8fLP+k+
-        zZOOlOQTtkaZKidiV/eA2qGKR3/xXFIoBiM7di0g+MfP9q7UGkEyG4ThAV9C/yTF
-        Mzm8d1gIitOQt/0=
-Received: (qmail 72259 invoked from network); 24 Nov 2021 03:12:16 -0000
-Received: by simscan 1.4.0 ppid: 72241, pid: 72253, t: 0.4285s
-         scanners:none
-Received: from unknown (HELO bmwxMDEudmZlbWFpbC5uZXQ=) (aGdudGt3aXNAdmZlbWFpbC5uZXQ=@MTkyLjE2OC4xLjE5Mg==)
-  by nl101.vfemail.net with ESMTPA; 24 Nov 2021 03:12:15 -0000
-Date:   Tue, 23 Nov 2021 22:12:41 -0500
-From:   David Niklas <Hgntkwis@vfemail.net>
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Filipe =?ISO-8859-1?Q?La=EDns?= <lains@archlinux.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Jiri Kosina <jikos@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Linux USB Mailing List <linux-usb@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>
-Subject: Re: I need advice with UPS connection. (ping)
-Message-ID: <20211123221241.3cdb4e66@Zen-II-x12.niklas.com>
-In-Reply-To: <CAO-hwJJtQ_1S76HTaHK=oUeP1M24QnC6z1J5CvTuU7m=oZe6zg@mail.gmail.com>
-References: <20201109220000.2ae98fa5@Phenom-II-x6.niklas.com>
-        <20211114144842.72463ccc@Zen-II-x12.niklas.com>
-        <20211114211435.GA87082@rowland.harvard.edu>
-        <20211114220222.31755871@Zen-II-x12.niklas.com>
-        <20211115160918.GB109771@rowland.harvard.edu>
-        <20211117002359.03b36ec6@Zen-II-x12.niklas.com>
-        <20211117170817.GD172151@rowland.harvard.edu>
-        <20211119171915.6a8cac47@Zen-II-x12.niklas.com>
-        <YZm03KTcWOwtMtCN@rowland.harvard.edu>
-        <20211122112526.501c5f66@Zen-II-x12.niklas.com>
-        <YZv55KMsuSYanfYp@rowland.harvard.edu>
-        <667c2c8307e0e738ed54e34f6c83ea1df99c7528.camel@archlinux.org>
-        <CAO-hwJJtQ_1S76HTaHK=oUeP1M24QnC6z1J5CvTuU7m=oZe6zg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+        Tue, 23 Nov 2021 22:14:55 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E32C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 19:11:46 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id o4so2305280oia.10
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 19:11:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fN/Dl6TxJyEsFt6u9NU+sGC5XUURVMgjTKQkCfW2T3U=;
+        b=uH7Wf/5iE4N6KcT0ASOtp1c43wElMx55biNOwUI52oUdDHLao+sKCDGtIRbA29w/9m
+         OKlPXBfisQZtai87FrCo+E0p56YO55MkA1lUvyZWqn3kXehEZicvMHhJatwBDWEJoagH
+         F9oACMqvZH9nppWw939vd42XcQ2s/Fjqts1IdI1Wafa6sL7/omMrBRAimM8tEtADuCMz
+         pV9qC19MeTYDTdJaB1MyCmhSKZjYlIVCEupBw+XT7ec4RRlyrVfGFsNzJzC/ImeAsR5R
+         JjoM6Ul4YHLwF2vDKrdTHuPZccQTau+hutNr+eod+x7xE9m88TGgMTd1shzWiDJh+7tR
+         RqgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fN/Dl6TxJyEsFt6u9NU+sGC5XUURVMgjTKQkCfW2T3U=;
+        b=m41Xwvx422yMLWP5oCXQo+frEg4mXcwMgNNfwnoHKPlSWm/rRRTM8HBnJIBrOSEhhN
+         O7IH+LyZ28afp96sxv6T7LGlbG3amimnb1FdRiPlh7nvJeQ6O6uk+knywz4+DtAQ1n/7
+         gTJTdH1xnxxooLfccEyuNFnTpvkVSOdkjTLpre4lJdmHDYpa8xvmHEHnoEVKeiC+MR1o
+         TEDaKV3ocMHdaYG17reIijj4ElXhJzBZx61BfRQWCY+6E20naDx6nYvIp2z2fHjNfRKT
+         bFQTpg+bfoEBhgKGXUgI0/8THymcP8JrU86pqJAvwvNTbu+sHSw/5yuPfhO3h7e63uT9
+         CoqA==
+X-Gm-Message-State: AOAM532P5cPNpkjxYfKfET7lC1EbngAuS0V+RmeFj70pSVGujsAT1lPh
+        geJ/LmvEvM5biHZNUBiGhD5mZg==
+X-Google-Smtp-Source: ABdhPJwIQ//gQ7KWi26qOY7SvR6fhEiF5FLmJ878n5ss82BwHOI30ESrg+s5mW/82/sJ+68HVlTQqg==
+X-Received: by 2002:aca:2b09:: with SMTP id i9mr2411519oik.14.1637723505553;
+        Tue, 23 Nov 2021 19:11:45 -0800 (PST)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id n23sm2789913oig.4.2021.11.23.19.11.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 19:11:45 -0800 (PST)
+Date:   Tue, 23 Nov 2021 19:13:27 -0800
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Dominik Kobinski <dominikkobinski314@gmail.com>
+Cc:     agross@kernel.org, linus.walleij@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
+Subject: Re: [PATCH 1/4] pinctrl: qcom: spmi-gpio: Add pm8226 compatibility
+Message-ID: <YZ2t19wBLvuUVKfk@ripper>
+References: <20211123174127.2261-1-dominikkobinski314@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211123174127.2261-1-dominikkobinski314@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021 17:33:08 +0100
-Benjamin Tissoires <benjamin.tissoires@redhat.com> wrote:
+On Tue 23 Nov 09:41 PST 2021, Dominik Kobinski wrote:
 
-> On Mon, Nov 22, 2021 at 10:35 PM Filipe La=C3=ADns <lains@archlinux.org>
-> wrote:
-> >
-> > On Mon, 2021-11-22 at 15:13 -0500, Alan Stern wrote: =20
-> > > On Mon, Nov 22, 2021 at 11:25:26AM -0500, David Niklas wrote: =20
-> > > > Ok, I first edited the kernel to return -ENOMEM like you
-> > > > suggested but the UPS still disconnected. I then edited it again
-> > > > to re-add the 1060 byte request and the UPS still disconnected.
-> > > >
-> > > > I'm attaching the usbmon traces.
-> > > > If you need any additional info I'll do my best to provide it. =20
-> > >
-> > > Holy cow!  I just realized what's going on.  And these little
-> > > changes we've been messing around with have nothing to do with it.
-> > >
-> > > For the first time, I looked at the timestamps in the usbmon
-> > > traces.  It turns out that the disconnects occur several seconds
-> > > after the kernel retrieves the HID report descriptor from the
-> > > device.  Under normal conditions we would expect to see report
-> > > packets coming in from the device, starting just a fraction of a
-> > > second after the descriptor is received.  But that isn't happening
-> > > in the Linux traces, whereas it does happen in the Windows pcap log.
-> > >
-> > > I would guess that the UPS is programmed to disconnect itself
-> > > electronically from the USB bus if it doesn't get any requests for
-> > > reports within a couple of seconds.  That certainly would explain
-> > > what you've been seeing.  I can't imagine why it would be
-> > > programmed to behave this way, but companies have been known to do
-> > > stranger things.
-> > >
-> > > As for why the kernel doesn't try to get the reports...  That's a
-> > > little harder to answer.  Maybe Jiri or Benjamin will know
-> > > something about it. =20
->=20
-> I am not sure exactly what is going on there.
-> There are a couple of things that come to my mind:
-> - for quite some time now, we don't fetch all reports whenever we
-> connect a new device. This was known to be problematic on some devices
-> (see all the devices with HID_QUIRK_NOGET or
-> HID_QUIRK_NO_INIT_REPORT), and the default to not poll input values on
-> plug for devices is actually safer. If you want to revert, we will
-> have to have a special driver for this one I guess
-> - HID_QUIRK_ALWAYS_POLL *might* be a way to force the device to stay
-> with a USB connection up.
->=20
-> > >
-> > > The UPS's vendor ID is 0d9f (POWERCOM) and the product ID is 0004.
-> > > Now, the drivers/hid/hid-quirks.c file contains a quirk entry for
-> > > 0d9f:0002 (product POWERCOM_UPS), which is probably an earlier
-> > > model of the same device, or a very similar device.  This quirk
-> > > entry is in the hid_ignore_list; it tells the HID core not to
-> > > handle the device at all.
-> > >
-> > > I don't know why that quirk entry is present, and furthermore, it
-> > > can't directly affect what is happening with your device because
-> > > the product IDs are different.  Still, it is an indication that
-> > > something strange is going on behind the scenes.
-> > >
-> > > Perhaps there is no kernel driver for these UPS devices?  Perhaps
-> > > the intention is that some user program will handle all the
-> > > communication when one of them is detected?  A quick search on
-> > > Google turns up usbhid-ups, part of Network USB Tools (NUT) --
-> > > maybe you need to install that package in order to use the device. =20
->=20
-> I don't have enough experience with UPS here to be helpful,
-> unfortunately. But What Alan said made a lot of sense. Maybe the NUT
-> people will have a better insight.
-<snip>
+> Add support for pm8226 SPMI GPIOs. The PMIC features
+> 8 GPIOs, with no holes inbetween.
+> 
 
-I'll send a message their way.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Thanks,
-David
+Regards,
+Bjorn
+
+> Suggested-by: Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
+> Signed-off-by: Dominik Kobinski <dominikkobinski314@gmail.com>
+> ---
+>  drivers/pinctrl/qcom/pinctrl-spmi-gpio.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+> index 5283d5e9e8bc..0f0102f38cbb 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+> @@ -1159,6 +1159,7 @@ static const struct of_device_id pmic_gpio_of_match[] = {
+>  	/* pm8150l has 12 GPIOs with holes on 7 */
+>  	{ .compatible = "qcom,pm8150l-gpio", .data = (void *) 12 },
+>  	{ .compatible = "qcom,pmc8180c-gpio", .data = (void *) 12 },
+> +	{ .compatible = "qcom,pm8226-gpio", .data = (void *) 8 },
+>  	{ .compatible = "qcom,pm8350-gpio", .data = (void *) 10 },
+>  	{ .compatible = "qcom,pm8350b-gpio", .data = (void *) 8 },
+>  	{ .compatible = "qcom,pm8350c-gpio", .data = (void *) 9 },
+> -- 
+> 2.34.0
+> 
