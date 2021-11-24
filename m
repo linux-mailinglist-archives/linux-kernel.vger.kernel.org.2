@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7721845C580
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AEAC45C2AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:28:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355581AbhKXN6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:58:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45632 "EHLO mail.kernel.org"
+        id S1349545AbhKXNbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:31:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352517AbhKXNzB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:55:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 180F263279;
-        Wed, 24 Nov 2021 13:06:23 +0000 (UTC)
+        id S1350817AbhKXN2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:28:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0932D6152A;
+        Wed, 24 Nov 2021 12:51:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759184;
-        bh=5PNjzlBel9KDYt3xT8Jbgk0wgbl01SLDkbauO+lNL/M=;
+        s=korg; t=1637758280;
+        bh=anNM17j2qQ320cTbZ6Fs1UMAGeraF7RaUY0LOIlNUx4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r1iwxHpw6tFzeh04Jxe7m9dqmCbLqff9LyxPQN8XTC6XGnRIyxbuzDl1vUXULklNt
-         P1vazIoed9aYF16QRLmn6OZ9KeAa60jyrpruLlP2iZomgsqLF/9SNINJ/vJVQJKDlc
-         ATlBeYgthBiUakVxL1Aq8WJ5Ox9p1pVJENnHwskE=
+        b=UCzml8MCO+uK+QNod6sGRJ2v3zXsYUhFNvxMxSLgOg82c8zpTq+Bnik0c1ctNYbOa
+         1YslVXIJWNZjIcrnN0WDxX5DUUxZc20ZPo+JNkFxTKoyf0i3x2mTPc3MMgLx6DTkZ8
+         /sHWCi16Eb53SIyjUVKN4kUd5yeYJiLk0lGqSLU4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Piotr Marczak <piotr.marczak@intel.com>,
-        Tony Brelinski <tony.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+        Christian Lamparter <chunkeey@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 127/279] iavf: Fix failure to exit out from last all-multicast mode
+Subject: [PATCH 5.10 018/154] ARM: BCM53016: Specify switch ports for Meraki MR32
 Date:   Wed, 24 Nov 2021 12:56:54 +0100
-Message-Id: <20211124115723.197420201@linuxfoundation.org>
+Message-Id: <20211124115702.964650271@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +42,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Piotr Marczak <piotr.marczak@intel.com>
+From: Christian Lamparter <chunkeey@gmail.com>
 
-[ Upstream commit 8905072a192fffe9389255489db250c73ecab008 ]
+[ Upstream commit 6abc4ca5a28070945e0d68cb4160b309bfbf4b8b ]
 
-The driver could only quit allmulti when allmulti and promisc modes are
-turn on at the same time. If promisc had been off there was no way to turn
-off allmulti mode.
-The patch corrects this behavior. Switching allmulti does not depends on
-promisc state mode anymore
+the switch identifies itself as a BCM53012 (rev 5)...
+This patch has been tested & verified on OpenWrt's
+snapshot with Linux 5.10 (didn't test any older kernels).
+The MR32 is able to "talk to the network" as before with
+OpenWrt's SWITCHDEV b53 driver.
 
-Fixes: f42a5c74da99 ("i40e: Add allmulti support for the VF")
-Signed-off-by: Piotr Marczak <piotr.marczak@intel.com>
-Tested-by: Tony Brelinski <tony.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+| b53-srab-switch 18007000.ethernet-switch: found switch: BCM53012, rev 5
+| libphy: dsa slave smi: probed
+| b53-srab-switch 18007000.ethernet-switch poe (uninitialized):
+|	PHY [dsa-0.0:00] driver [Generic PHY] (irq=POLL)
+| b53-srab-switch 18007000.ethernet-switch: Using legacy PHYLIB callbacks.
+|	Please migrate to PHYLINK!
+| DSA: tree 0 setup
+
+Reported-by: Rafał Miłecki <zajec5@gmail.com>
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/iavf/iavf_main.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/arm/boot/dts/bcm53016-meraki-mr32.dts | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
-index f64ccf6286ec1..44ea67cb3716b 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_main.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
-@@ -1630,8 +1630,7 @@ static int iavf_process_aq_command(struct iavf_adapter *adapter)
- 		iavf_set_promiscuous(adapter, FLAG_VF_MULTICAST_PROMISC);
- 		return 0;
- 	}
--
--	if ((adapter->aq_required & IAVF_FLAG_AQ_RELEASE_PROMISC) &&
-+	if ((adapter->aq_required & IAVF_FLAG_AQ_RELEASE_PROMISC) ||
- 	    (adapter->aq_required & IAVF_FLAG_AQ_RELEASE_ALLMULTI)) {
- 		iavf_set_promiscuous(adapter, 0);
- 		return 0;
+diff --git a/arch/arm/boot/dts/bcm53016-meraki-mr32.dts b/arch/arm/boot/dts/bcm53016-meraki-mr32.dts
+index 612d61852bfb9..577a4dc604d93 100644
+--- a/arch/arm/boot/dts/bcm53016-meraki-mr32.dts
++++ b/arch/arm/boot/dts/bcm53016-meraki-mr32.dts
+@@ -195,3 +195,25 @@
+ 		};
+ 	};
+ };
++
++&srab {
++	status = "okay";
++
++	ports {
++		port@0 {
++			reg = <0>;
++			label = "poe";
++		};
++
++		port@5 {
++			reg = <5>;
++			label = "cpu";
++			ethernet = <&gmac0>;
++
++			fixed-link {
++				speed = <1000>;
++				duplex-full;
++			};
++		};
++	};
++};
 -- 
 2.33.0
 
