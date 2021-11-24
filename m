@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5EB345C397
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:38:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD9445C5CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:59:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352629AbhKXNkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:40:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32918 "EHLO mail.kernel.org"
+        id S1349195AbhKXOAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:00:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350426AbhKXNiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:38:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 716DB630EE;
-        Wed, 24 Nov 2021 12:55:55 +0000 (UTC)
+        id S1350739AbhKXN5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:57:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0D86633BC;
+        Wed, 24 Nov 2021 13:07:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758557;
-        bh=kUtZBQ3U2UQLmUDuqQBx/hfO/pbPh1zjZNNjDYJHO20=;
+        s=korg; t=1637759273;
+        bh=rHni45b9N8bbtKhNNzet3MwnCTEfRmZ0/6rtEHGNQyM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NXlj6FtcN0afE/S3QgZ1ZVaVo40f69ogjk7OSDgoMacGwLKJJ2Jiz9rBUIsSsdvPX
-         7+Y5HMsmIB29r+ooUi0gs8WKGoWNBsNw57Z3hlYV0ZMniaCCIkjLxVx7Qv+mlLeJ4y
-         IDMkOw9+ToTsWWXIYRjkHuoruUxm7RzHtleKRwXA=
+        b=2GHHENUbwGtQexeJ5omUuPRJLeDwEDgmoh5XAddnhYEPJbyOJ3sB6+H+7CKBLb/nA
+         1p9b5tmvZFvoBiVLbB3si3ayZZdIBuPLxwS9lbnQ+IjpcllxMvpSxUFcWZyDt8ztPq
+         qQwMRS2gDiyyAU4GmU8EjZrvu6EgORuVO3SMxclc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Marcelo Ricardo Leitner <mleitner@redhat.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 075/154] bnxt_en: reject indirect blk offload when hw-tc-offload is off
-Date:   Wed, 24 Nov 2021 12:57:51 +0100
-Message-Id: <20211124115704.757272451@linuxfoundation.org>
+Subject: [PATCH 5.15 185/279] s390/kexec: fix return code handling
+Date:   Wed, 24 Nov 2021 12:57:52 +0100
+Message-Id: <20211124115725.119795149@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,44 +39,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-[ Upstream commit b0757491a118ae5727cf9f1c3a11544397d46596 ]
+[ Upstream commit 20c76e242e7025bd355619ba67beb243ba1a1e95 ]
 
-The driver does not check if hw-tc-offload is enabled for the device
-before offloading a flow in the context of indirect block callback.
-Fix this by checking NETIF_F_HW_TC in the features flag and rejecting
-the offload request.  This will avoid unnecessary dmesg error logs when
-hw-tc-offload is disabled, such as these:
+kexec_file_add_ipl_report ignores that ipl_report_finish may fail and
+can return an error pointer instead of a valid pointer.
+Fix this and simplify by returning NULL in case of an error and let
+the only caller handle this case.
 
-bnxt_en 0000:19:00.1 eno2np1: dev(ifindex=294) not on same switch
-bnxt_en 0000:19:00.1 eno2np1: Error: bnxt_tc_add_flow: cookie=0xffff8dace1c88000 error=-22
-bnxt_en 0000:19:00.0 eno1np0: dev(ifindex=294) not on same switch
-bnxt_en 0000:19:00.0 eno1np0: Error: bnxt_tc_add_flow: cookie=0xffff8dace1c88000 error=-22
-
-Reported-by: Marcelo Ricardo Leitner <mleitner@redhat.com>
-Fixes: 627c89d00fb9 ("bnxt_en: flow_offload: offload tunnel decap rules via indirect callbacks")
-Signed-off-by: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 99feaa717e55 ("s390/kexec_file: Create ipl report and pass to next kernel")
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/s390/kernel/ipl.c                | 3 ++-
+ arch/s390/kernel/machine_kexec_file.c | 8 +++++++-
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c
-index 2186706cf9130..3e9b1f59e381d 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c
-@@ -1854,7 +1854,7 @@ static int bnxt_tc_setup_indr_block_cb(enum tc_setup_type type,
- 	struct flow_cls_offload *flower = type_data;
- 	struct bnxt *bp = priv->bp;
+diff --git a/arch/s390/kernel/ipl.c b/arch/s390/kernel/ipl.c
+index e2cc35775b996..5ad1dde23dc59 100644
+--- a/arch/s390/kernel/ipl.c
++++ b/arch/s390/kernel/ipl.c
+@@ -2156,7 +2156,7 @@ void *ipl_report_finish(struct ipl_report *report)
  
--	if (flower->common.chain_index)
-+	if (!tc_cls_can_offload_and_chain0(bp->dev, type_data))
- 		return -EOPNOTSUPP;
+ 	buf = vzalloc(report->size);
+ 	if (!buf)
+-		return ERR_PTR(-ENOMEM);
++		goto out;
+ 	ptr = buf;
  
- 	switch (type) {
+ 	memcpy(ptr, report->ipib, report->ipib->hdr.len);
+@@ -2195,6 +2195,7 @@ void *ipl_report_finish(struct ipl_report *report)
+ 	}
+ 
+ 	BUG_ON(ptr > buf + report->size);
++out:
+ 	return buf;
+ }
+ 
+diff --git a/arch/s390/kernel/machine_kexec_file.c b/arch/s390/kernel/machine_kexec_file.c
+index f9e4baa64b675..c1090f0b1f6a6 100644
+--- a/arch/s390/kernel/machine_kexec_file.c
++++ b/arch/s390/kernel/machine_kexec_file.c
+@@ -170,6 +170,7 @@ static int kexec_file_add_ipl_report(struct kimage *image,
+ 	struct kexec_buf buf;
+ 	unsigned long addr;
+ 	void *ptr, *end;
++	int ret;
+ 
+ 	buf.image = image;
+ 
+@@ -199,7 +200,10 @@ static int kexec_file_add_ipl_report(struct kimage *image,
+ 		ptr += len;
+ 	}
+ 
++	ret = -ENOMEM;
+ 	buf.buffer = ipl_report_finish(data->report);
++	if (!buf.buffer)
++		goto out;
+ 	buf.bufsz = data->report->size;
+ 	buf.memsz = buf.bufsz;
+ 
+@@ -209,7 +213,9 @@ static int kexec_file_add_ipl_report(struct kimage *image,
+ 		data->kernel_buf + offsetof(struct lowcore, ipl_parmblock_ptr);
+ 	*lc_ipl_parmblock_ptr = (__u32)buf.mem;
+ 
+-	return kexec_add_buffer(&buf);
++	ret = kexec_add_buffer(&buf);
++out:
++	return ret;
+ }
+ 
+ void *kexec_file_add_components(struct kimage *image,
 -- 
 2.33.0
 
