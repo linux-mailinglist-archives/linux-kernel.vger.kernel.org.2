@@ -2,169 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F39845B890
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 11:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DFD645B898
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 11:44:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241580AbhKXKqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 05:46:19 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:41722 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241577AbhKXKqR (ORCPT
+        id S232891AbhKXKr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 05:47:26 -0500
+Received: from mout.kundenserver.de ([212.227.17.10]:60301 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229540AbhKXKrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 05:46:17 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8CFBA1FD2F;
-        Wed, 24 Nov 2021 10:43:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637750586; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5qH2vJRimoEPVvlz5XMmKpBZ8jTT26Izpiz+YPSs0Tk=;
-        b=Cyyg3gwb5k1srIn7DejZQ0ESlHeR2Ep4lAdhJets6Tw+kK4KcXoIjcKb4OvDS4yFgjB1gF
-        DxmbMkZr3OMr+8iMx8ePSq8ICExc+v/Z2CiZeK+uSbsVzhIV7R/REBv+0NtYWldZY9bbqR
-        8jpsFkuIyRJrxacfDPt8zcnCyZESlEU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637750586;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5qH2vJRimoEPVvlz5XMmKpBZ8jTT26Izpiz+YPSs0Tk=;
-        b=VNIPV+myXL4PfJWKpp1XMA9vX4rHnJH0Sidi9Fw3+5Z7rrKsjVbMANky+AnfXkmvQESWH5
-        2PS1rlxE7hUKsCDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 529FD13F05;
-        Wed, 24 Nov 2021 10:43:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id HchyEzoXnmF0bAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Wed, 24 Nov 2021 10:43:06 +0000
-Message-ID: <cbf91d44-8c8f-15b4-a093-58c04d668156@suse.cz>
-Date:   Wed, 24 Nov 2021 11:43:05 +0100
+        Wed, 24 Nov 2021 05:47:24 -0500
+Received: from mail-wr1-f44.google.com ([209.85.221.44]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MQeI4-1n1QaZ1oyE-00Nftt; Wed, 24 Nov 2021 11:44:13 +0100
+Received: by mail-wr1-f44.google.com with SMTP id r8so3343353wra.7;
+        Wed, 24 Nov 2021 02:44:13 -0800 (PST)
+X-Gm-Message-State: AOAM530VHEW/qLUHJ612faaJDB+f4Top7myvtPt6hy4lmPFcyyTo2eoG
+        cWF2zO9iJy/tOdAreMlEFSmqKigiBw93k7Q/YQM=
+X-Google-Smtp-Source: ABdhPJxfKmbt+vf7yW7iEZ+Pe1Z0V7tK3T1pBVG5pdSDlxjUaEAk6QQCj7BdeGupZ5+9VcvgxO0WFCpGajEcoNKFPl8=
+X-Received: by 2002:adf:f088:: with SMTP id n8mr17540560wro.411.1637750652924;
+ Wed, 24 Nov 2021 02:44:12 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH 3/8] mm/vmscan: Throttle reclaim when no progress is being
- made
-Content-Language: en-US
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        NeilBrown <neilb@suse.de>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Rik van Riel <riel@surriel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20211022144651.19914-1-mgorman@techsingularity.net>
- <20211022144651.19914-4-mgorman@techsingularity.net>
- <20211124011912.GA265983@magnolia>
- <20211124103221.GD3366@techsingularity.net>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20211124103221.GD3366@techsingularity.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
+ <CAK8P3a1NhpNxWfj3gDnuf4bWK_fiE8cjcRyN7e8j95NmvOzbGw@mail.gmail.com> <8767803d-57b9-698c-ca27-d47e7117758d@landley.net>
+In-Reply-To: <8767803d-57b9-698c-ca27-d47e7117758d@landley.net>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 24 Nov 2021 11:43:56 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a08wiu4uGrCvh+1Ezm2q2ta=DJMoZ1MFhUgjaMYJ0Be6A@mail.gmail.com>
+Message-ID: <CAK8P3a08wiu4uGrCvh+1Ezm2q2ta=DJMoZ1MFhUgjaMYJ0Be6A@mail.gmail.com>
+Subject: Re: spinlock.c:306:9: error: implicit declaration of function '__raw_write_lock_nested'
+To:     Rob Landley <rob@landley.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Galbraith <umgwanakikbuti@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:cd7TT7udPC5q/AA2Et3O+w8pDqXvjI/521RNNmptP9MB0W1/YRZ
+ gWusxm9RhnhMBipi6uS8siCGiZs1c2YIHLRl8409NxraCCnBJYh6k1bQdzT9Ajo4OUNt9K0
+ U5+4AJmTihhjPaGQQrpCPnacBUQwvgIFzaYCJKcjxj0LY/Y6p3JQ49cLyofppvEcYr9YOBC
+ VCIG1Am0ttoqpn7SwIvEA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:/ID+ibo8dEI=:4R2wsP3Dr/9hPbL11wSFcD
+ 7eDbi3MyV6Fjx0ZrlGLi3BuSDeQA0FHestmIobX1zhrvnE+qBAwh+k2qnQ7cWIrKLkfNswcRO
+ xXHeIGTLfxCcJPz0XoxZi+v/b1U4VENDZEipwAOylCX35SwlfvpQEjshdbzrqKgYeaP2lOovo
+ q2Q74h1tssT0aK8zz99kVMXXPklATYhXgtgnlxRaIT71umYOPxgRvMSQLqOP3ZIaK5erMQIdj
+ rLXA7C+Nz5+IqNfmLB7+0yKVZpLLZQSMFG0TIOyy6Aq1FTWKaLRCZsq1ozoCcjArclpqUfgOw
+ axfPGNSuIQulW5nvFGhR5LINe+xbbU5SM8qyBOG83ivlhtBYu8oCVx1IJZQAimhAPiuh6Ivnd
+ Fd1jUCQ36p0ZTGtJUD5D0E2BHPdLZEZgP1Mg2bcXIjCbkGbJJoZAsVVO+cCQskdBEk59iyAbu
+ 9uyEgdwIWdc0BJB9y40EUWC+M2+bWMcQrbAHHoOe0QXRb517F5a4eLMyU9Mc5MKvZgT5QMmN/
+ fU8tdFIqLoT4mCupPIUBsMCAytXma1YRw4BuapRrHpdEhCWPeQpB4uwcSzsdi0QwUvmD5mkqE
+ tvoU+qth0DVIANpb62yvlpOpJejdBWL9N01GcKAZqFOPjJWq3rLEeRuGV9t01SsK6gkWhSyTh
+ ZJV0CiOYMVDH1mDNwrtbMESZyLMtKZAPkANuhBATVgqNxADMpy84kBALQaRTnQzkUZyfYKxO0
+ iZQkcTb0RkC9a2xoOOyOT5jaOrbBmZLM9l1zAdp7uT3iB6Ci/+2hSTC348fAdtG7f1ThPHpbB
+ mzGO/f+RlMnW2+7piZVtfmNMg+dT908XMrIqo8L0AZ5OamwpRs=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/21 11:32, Mel Gorman wrote:
-> On Tue, Nov 23, 2021 at 05:19:12PM -0800, Darrick J. Wong wrote:
->> On Fri, Oct 22, 2021 at 03:46:46PM +0100, Mel Gorman wrote:
->> > Memcg reclaim throttles on congestion if no reclaim progress is made.
->> > This makes little sense, it might be due to writeback or a host of
->> > other factors.
->> > 
->> > For !memcg reclaim, it's messy. Direct reclaim primarily is throttled
->> > in the page allocator if it is failing to make progress. Kswapd
->> > throttles if too many pages are under writeback and marked for
->> > immediate reclaim.
->> > 
->> > This patch explicitly throttles if reclaim is failing to make progress.
->> 
->> Hi Mel,
->> 
->> Ever since Christoph broke swapfiles, I've been carrying around a little
->> fstest in my dev tree[1] that tries to exercise paging things in and out
->> of a swapfile.  Sadly I've been trapped in about three dozen customer
->> escalations for over a month, which means I haven't been able to do much
->> upstream in weeks.  Like submit this test upstream. :(
->> 
->> Now that I've finally gotten around to trying out a 5.16-rc2 build, I
->> notice that the runtime of this test has gone from ~5s to 2 hours.
->> Among other things that it does, the test sets up a cgroup with a memory
->> controller limiting the memory usage to 25MB, then runs a program that
->> tries to dirty 50MB of memory.  There's 2GB of memory in the VM, so
->> we're not running reclaim globally, but the cgroup gets throttled very
->> severely.
->> 
-> 
-> Ok, so this test cannot make progress until some of the cgroup pages get
-> cleaned. What is the expectation for the test? Should it OOM or do you
-> expect it to have spin-like behaviour until some writeback completes?
-> I'm guessing you'd prefer it to spin and right now it's sleeping far
-> too much.
-> 
->> AFAICT the system is mostly idle, but it's difficult to tell because ps
->> and top also get stuck waiting for this cgroup for whatever reason. 
-> 
-> But this is surprising because I expect that ps and top are not running
-> within the cgroup. Was /proc/PID/stack readable? 
-> 
->> My
->> uninformed spculation is that usemem_and_swapoff takes a page fault
->> while dirtying the 50MB memory buffer, prepares to pull a page in from
->> swap, tries to evict another page to stay under the memcg limit, but
->> that decides that it's making no progress and calls
->> reclaim_throttle(..., VMSCAN_THROTTLE_NOPROGRESS).
->> 
->> The sleep is uninterruptible, so I can't even kill -9 fstests to shut it
->> down.  Eventually we either finish the test or (for the mlock part) the
->> OOM killer actually kills the process, but this takes a very long time.
->> 
-> 
-> The sleep can be interruptible.
-> 
->> Any thoughts?  For now I can just hack around this by skipping
->> reclaim_throttle if cgroup_reclaim() == true, but that's probably not
->> the correct fix. :)
->> 
-> 
-> No, it wouldn't be but a possibility is throttling for only 1 jiffy if
-> reclaiming within a memcg and the zone is balanced overall.
-> 
-> The interruptible part should just be the patch below. I need to poke at
-> the cgroup limit part a bit
+On Wed, Nov 24, 2021 at 11:01 AM Rob Landley <rob@landley.net> wrote:
+> On 11/23/21 7:19 AM, Arnd Bergmann wrote:
+> >
+> > These happen with any compiler version, someone needs to write the correct
+> > entry code for clone3 and hook up futex_waitv().
+>
+> I did a naieve "add them both to the .tbl" patch and the result booted to a
+> shell prompt, but that doesn't mean much. What arch-specific entry code does
+> clone3 need here? The SYSCALL_DEFINE2(clone3) in kernel/fork.c seems reasonably
+> straightforward? (Unlike the #ifdef stack around the previous clone...)
 
-As the throttle timeout is short anyway, will the TASK_UNINTERRUPTIBLE vs
-TASK_INTERRUPTIBLE make a difference for the (ability to kill? AFAIU
-typically this inability to kill is because of a loop that doesn't check for
-fatal_signal_pending().
+I forget the exact issue, but I can see that 4 out of the 13
+architectures that set
+__ARCH_WANT_SYS_CLONE3 provide a custom version: arc, m68k,
+mips and parisc. Have a look at what those do to see if you need the same
+changes.
 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index fb9584641ac7..07db03883062 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1068,7 +1068,7 @@ void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason)
->  		break;
->  	}
->  
-> -	prepare_to_wait(wqh, &wait, TASK_UNINTERRUPTIBLE);
-> +	prepare_to_wait(wqh, &wait, TASK_INTERRUPTIBLE);
->  	ret = schedule_timeout(timeout);
->  	finish_wait(wqh, &wait);
->  
-> 
+> >> include/linux/sh_intc.h:100:63: warning: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements
+> >
+> > These are old bugs, they show up in any kernel version with gcc-8 or higher.
+>
+> I looked at trying to fix that but it seems to be a compiler bug. Gcc is warning
+> about an ? : else case that's dead code eliminated. It's already GOT a test
+> protecting it from being evaluated...
 
+I wouldn't call it a bug in the compiler, as there is no definite
+correct ordering
+between dead-code-elimination and warning generation. IIRC I fixed a bunch
+of these on other architectures, and those did turn out to be actual code issues
+that would go unnoticed otherwise.
+
+> >> fs/mpage.c:336:1: warning: the frame size of 1092 bytes is larger than
+> >
+> > I see these going back to gcc-6, it looks like this is caused by
+> > CONFIG_PAGE_SIZE_64KB.
+>
+> In which case the stack size is going to be 64k as well?
+
+No, the stack is still 4KB or 8KB, depending on CONFIG_4KSTACKS, it gets
+allocated using
+
+        stack = kmem_cache_alloc_node(thread_stack_cache, THREADINFO_GFP, node);
+
+from a THREAD_SIZE-sized naturally-aligned kmem cache in this case.
+Using 1KB of stack space is definitely a red flag that something is going
+wrong. This could be a bug in kernel code, in the compiler, or in the
+combination of the two.
+
+        Arnd
