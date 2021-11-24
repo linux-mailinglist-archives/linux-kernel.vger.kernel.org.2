@@ -2,70 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE82745D01F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:35:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4AAD45D023
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:39:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345330AbhKXWiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 17:38:15 -0500
-Received: from gandalf.ozlabs.org ([150.107.74.76]:45447 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243451AbhKXWiJ (ORCPT
+        id S1345409AbhKXWmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 17:42:33 -0500
+Received: from relay10.mail.gandi.net ([217.70.178.230]:59427 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242545AbhKXWmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:38:09 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Hzwmw4294z4xbC;
-        Thu, 25 Nov 2021 09:34:56 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1637793297;
-        bh=VE6ywgXDc5ARYmbnjMdxfl9Cysjsei4YMDMFRtpcZs4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=EpMGMGimlu+zzxOMdQEPMnAXhvMm8RLamGGMuiFBurebn0lzKi3C9NzMK5Azx8J2R
-         Ff4Mu3yqv2IK5vQNV7XsWbTcZNnLEeAumtYW6ozjHUJcrOrS6481iKV0FlrdKrGMW1
-         y9sncSGXfuYobI89Kk1Vfx3rwEtuFSntMxvmE6uzysakUYUrIQyGnqoden90/EvBwM
-         TRRwZvQNslddpkLGHvCVQ6gQVwm7xyNznkHDeDtcWzXNehN1fo+guPCtt4qeGN8IrF
-         9FWzPy8Ec81vJ0du1BY668GonvjvqQz3npz6CYA7VT/xtmEd3xLyHzswoZmSdi3CC+
-         /zePjev5c1jHQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     live-patching@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/5] Implement livepatch on PPC32
-In-Reply-To: <cover.1635423081.git.christophe.leroy@csgroup.eu>
-References: <cover.1635423081.git.christophe.leroy@csgroup.eu>
-Date:   Thu, 25 Nov 2021 09:34:52 +1100
-Message-ID: <87r1b5p4hf.fsf@mpe.ellerman.id.au>
+        Wed, 24 Nov 2021 17:42:32 -0500
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id CAC05240006;
+        Wed, 24 Nov 2021 22:39:20 +0000 (UTC)
+Date:   Wed, 24 Nov 2021 23:39:20 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Mateusz =?utf-8?Q?Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
+Cc:     linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Alessandro Zummo <a.zummo@towertech.it>
+Subject: Re: [PATCH RESEND v3 3/7] rtc-mc146818-lib: extract
+ mc146818_do_avoiding_UIP
+Message-ID: <YZ6/GC3xouzEZmEh@piout.net>
+References: <20211119204221.66918-1-mat.jonczyk@o2.pl>
+ <20211119204221.66918-4-mat.jonczyk@o2.pl>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211119204221.66918-4-mat.jonczyk@o2.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> This series implements livepatch on PPC32.
->
-> This is largely copied from what's done on PPC64.
->
-> Christophe Leroy (5):
->   livepatch: Fix build failure on 32 bits processors
->   powerpc/ftrace: No need to read LR from stack in _mcount()
->   powerpc/ftrace: Add module_trampoline_target() for PPC32
->   powerpc/ftrace: Activate HAVE_DYNAMIC_FTRACE_WITH_REGS on PPC32
->   powerpc/ftrace: Add support for livepatch to PPC32
+On 19/11/2021 21:42:17+0100, Mateusz Jończyk wrote:
+> Function mc146818_get_time() contains an elaborate mechanism of reading
+> the RTC time while no RTC update is in progress. It turns out that
+> reading the RTC alarm clock also requires avoiding the RTC update (see
+> following patches). Therefore, the mechanism in mc146818_get_time()
+> should be reused - so extract it into a separate function.
+> 
+> The logic in mc146818_do_avoiding_UIP() is same as in
+> mc146818_get_time() except that after every
+> 
+>         if (CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP) {
+> 
+> there is now "mdelay(1)".
+> 
+> To avoid producing an unreadable diff, mc146818_get_time() will be
+> refactored to use mc146818_do_avoiding_UIP() in the next patch.
+> 
+> Signed-off-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
+> Cc: Alessandro Zummo <a.zummo@towertech.it>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> 
+> ---
+>  drivers/rtc/rtc-mc146818-lib.c | 69 ++++++++++++++++++++++++++++++++++
+>  include/linux/mc146818rtc.h    |  3 ++
+>  2 files changed, 72 insertions(+)
+> 
+> diff --git a/drivers/rtc/rtc-mc146818-lib.c b/drivers/rtc/rtc-mc146818-lib.c
+> index b50612ce1a6d..946ad43a512c 100644
+> --- a/drivers/rtc/rtc-mc146818-lib.c
+> +++ b/drivers/rtc/rtc-mc146818-lib.c
+> @@ -8,6 +8,75 @@
+>  #include <linux/acpi.h>
+>  #endif
+>  
+> +/*
+> + * Execute a function while the UIP (Update-in-progress) bit of the RTC is
+> + * unset.
+> + *
+> + * Warning: callback may be executed more then once.
+> + */
+> +bool mc146818_do_avoiding_UIP(mc146818_callback_t callback, void *param)
 
-I think we know patch 5 will need a respin because of the STRICT RWX vs
-livepatching issue (https://github.com/linuxppc/issues/issues/375).
+mc146818_avoid_UIP would be a simpler name. Also, I'm pretty sure we can
+avoid the mc146818_callback_t typedef
 
-So should I take patches 2,3,4 for now?
+> +{
+> +	int i;
+> +	unsigned long flags;
+> +	unsigned char seconds;
+> +
+> +	for (i = 0; i < 10; i++) {
+> +		spin_lock_irqsave(&rtc_lock, flags);
+> +
+> +		/*
+> +		 * Check whether there is an update in progress during which the
+> +		 * readout is unspecified. The maximum update time is ~2ms. Poll
+> +		 * every msec for completion.
+> +		 *
+> +		 * Store the second value before checking UIP so a long lasting
+> +		 * NMI which happens to hit after the UIP check cannot make
+> +		 * an update cycle invisible.
+> +		 */
+> +		seconds = CMOS_READ(RTC_SECONDS);
+> +
+> +		if (CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP) {
+> +			spin_unlock_irqrestore(&rtc_lock, flags);
+> +			mdelay(1);
+> +			continue;
+> +		}
+> +
+> +		/* Revalidate the above readout */
+> +		if (seconds != CMOS_READ(RTC_SECONDS)) {
+> +			spin_unlock_irqrestore(&rtc_lock, flags);
+> +			continue;
+> +		}
+> +
+> +		if (callback)
+> +			callback(seconds, param);
+> +
+> +		/*
+> +		 * Check for the UIP bit again. If it is set now then
+> +		 * the above values may contain garbage.
+> +		 */
+> +		if (CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP) {
+> +			spin_unlock_irqrestore(&rtc_lock, flags);
+> +			mdelay(1);
+> +			continue;
+> +		}
+> +
+> +		/*
+> +		 * A NMI might have interrupted the above sequence so check
+> +		 * whether the seconds value has changed which indicates that
+> +		 * the NMI took longer than the UIP bit was set. Unlikely, but
+> +		 * possible and there is also virt...
+> +		 */
+> +		if (seconds != CMOS_READ(RTC_SECONDS)) {
+> +			spin_unlock_irqrestore(&rtc_lock, flags);
+> +			continue;
+> +		}
+> +		spin_unlock_irqrestore(&rtc_lock, flags);
+> +
+> +		return true;
+> +	}
+> +	return false;
+> +}
+> +EXPORT_SYMBOL_GPL(mc146818_do_avoiding_UIP);
+> +
+>  /*
+>   * If the UIP (Update-in-progress) bit of the RTC is set for more then
+>   * 10ms, the RTC is apparently broken or not present.
+> diff --git a/include/linux/mc146818rtc.h b/include/linux/mc146818rtc.h
+> index 69c80c4325bf..c0cea97461a0 100644
+> --- a/include/linux/mc146818rtc.h
+> +++ b/include/linux/mc146818rtc.h
+> @@ -127,4 +127,7 @@ bool mc146818_does_rtc_work(void);
+>  unsigned int mc146818_get_time(struct rtc_time *time);
+>  int mc146818_set_time(struct rtc_time *time);
+>  
+> +typedef void (*mc146818_callback_t)(unsigned char seconds, void *param);
+> +bool mc146818_do_avoiding_UIP(mc146818_callback_t callback, void *param);
+> +
+>  #endif /* _MC146818RTC_H */
+> -- 
+> 2.25.1
+> 
 
-cheers
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
