@@ -2,36 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7656A45C1A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:17:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D1745C289
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:27:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347907AbhKXNUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:20:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39750 "EHLO mail.kernel.org"
+        id S1351096AbhKXN34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:29:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344286AbhKXNRa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:17:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DB4561440;
-        Wed, 24 Nov 2021 12:45:11 +0000 (UTC)
+        id S1349010AbhKXN1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:27:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69BCD61B56;
+        Wed, 24 Nov 2021 12:50:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757912;
-        bh=0rhx9y8YyyPiD2eIe6rtUuurQSxReZk+CqKFodVZtjU=;
+        s=korg; t=1637758222;
+        bh=XCbR+A0WrLMbzFAmvpR6zv7QCPVmxTFYHAqNqOsHiHg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gOZ6z0hBBF/Ml876RKn7kUHdY8K7QJYSaSXDCGyjfXBaA4vrPzqaqlGltMSBYwhpg
-         gr0JJX9VudydJqKULLj7/oWttKZcwiavXNDbZaK1ZhfdPeOs64w7EnIQXpQf/n4Sto
-         sfKKHfWlAdtpDpysZy0Vit/H/1On6vh44caYpRR4=
+        b=oDm3zcolepoovrzMsrk83ZzD1NeJvMyETFv1qhFe8Ze0xMIuCyhnKH90Bb2Cca/qK
+         0aL5+PSNbWlDoxdEMoFs8lVfGRGpld7Y3k2k0w1/WDRKzLw/6WFTE2GlmR7OC0VS7O
+         AXYqNStEPMDbZOXMV2yjLo9dZ16VDWjrD7SfADOs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?q?Linus=20L=FCssing?= <linus.luessing@c0d3.blue>,
-        Sven Eckelmann <sven@narfation.org>,
-        Simon Wunderlich <sw@simonwunderlich.de>
-Subject: [PATCH 4.19 317/323] batman-adv: Consider fragmentation for needed_headroom
+        stable@vger.kernel.org, Sohaib Mohamed <sohaib.amhmd@gmail.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Hitoshi Mitake <h.mitake@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Paul Russel <rusty@rustcorp.com.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Pierre Gondois <pierre.gondois@arm.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 071/100] perf bench: Fix two memory leaks detected with ASan
 Date:   Wed, 24 Nov 2021 12:58:27 +0100
-Message-Id: <20211124115729.623163259@linuxfoundation.org>
+Message-Id: <20211124115657.161360042@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +49,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Eckelmann <sven@narfation.org>
+From: Sohaib Mohamed <sohaib.amhmd@gmail.com>
 
-commit 4ca23e2c2074465bff55ea14221175fecdf63c5f upstream.
+[ Upstream commit 92723ea0f11d92496687db8c9725248e9d1e5e1d ]
 
-If a batman-adv packets has to be fragmented, then the original batman-adv
-packet header is not stripped away. Instead, only a new header is added in
-front of the packet after it was split.
+ASan reports memory leaks while running:
 
-This size must be considered to avoid cost intensive reallocations during
-the transmission through the various device layers.
+  $ perf bench sched all
 
-Fixes: 7bca68c7844b ("batman-adv: Add lower layer needed_(head|tail)room to own ones")
-Reported-by: Linus Lüssing <linus.luessing@c0d3.blue>
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: e27454cc6352c422 ("perf bench: Add sched-messaging.c: Benchmark for scheduler and IPC mechanisms based on hackbench")
+Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
+Acked-by: Ian Rogers <irogers@google.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Hitoshi Mitake <h.mitake@gmail.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Paul Russel <rusty@rustcorp.com.au>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Pierre Gondois <pierre.gondois@arm.com>
+Link: http://lore.kernel.org/lkml/20211110022012.16620-1-sohaib.amhmd@gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/batman-adv/hard-interface.c |    3 +++
- 1 file changed, 3 insertions(+)
+ tools/perf/bench/sched-messaging.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/net/batman-adv/hard-interface.c
-+++ b/net/batman-adv/hard-interface.c
-@@ -565,6 +565,9 @@ static void batadv_hardif_recalc_extra_s
- 	needed_headroom = lower_headroom + (lower_header_len - ETH_HLEN);
- 	needed_headroom += batadv_max_header_len();
- 
-+	/* fragmentation headers don't strip the unicast/... header */
-+	needed_headroom += sizeof(struct batadv_frag_packet);
+diff --git a/tools/perf/bench/sched-messaging.c b/tools/perf/bench/sched-messaging.c
+index b142d87337be8..9e6e0ca6a2002 100644
+--- a/tools/perf/bench/sched-messaging.c
++++ b/tools/perf/bench/sched-messaging.c
+@@ -223,6 +223,8 @@ static unsigned int group(pthread_t *pth,
+ 		snd_ctx->out_fds[i] = fds[1];
+ 		if (!thread_mode)
+ 			close(fds[0]);
 +
- 	soft_iface->needed_headroom = needed_headroom;
- 	soft_iface->needed_tailroom = lower_tailroom;
++		free(ctx);
+ 	}
+ 
+ 	/* Now we have all the fds, fork the senders */
+@@ -239,6 +241,8 @@ static unsigned int group(pthread_t *pth,
+ 		for (i = 0; i < num_fds; i++)
+ 			close(snd_ctx->out_fds[i]);
+ 
++	free(snd_ctx);
++
+ 	/* Return number of children to reap */
+ 	return num_fds * 2;
  }
+-- 
+2.33.0
+
 
 
