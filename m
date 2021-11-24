@@ -2,248 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FE945C975
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02DF045C978
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:03:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347777AbhKXQEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:04:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240899AbhKXQEN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:04:13 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7352EC061714
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 08:01:03 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id k37so8535102lfv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 08:01:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uDIkuwm2DEbdWoKLg3faezc8ngMrw8G/6t1s5qdiZ1s=;
-        b=oSxgAL04L9coz89nvFqlOSCRJj9FWO+A0Xgk2Ak3gxw8ghVVzjDYsXAqbg0ujFpVb6
-         RfIsUjZX2YERgyJcziYdgpat5BNzghfJ7XnFthqxO2rFbt7P5GKgGcxc87StkdhV1IZU
-         8EtD7e4yLSwwjkd4DVUilD36ys/pBlRuso3rcdbf/h5p/L2UtDCVtdmLAnrCEtcKVXdE
-         b6XhKSrpBlOhCVtZuQ/hHvbvzHDcQ/my/mteJf05X0YVz6ianVUZ5yTuPf0e4yn3P76j
-         l+WDwMDsLrwprINf0uEkqy2IqFLk91YQNA9jeTmGeVoUITDx40uWkC6iGr1S0e1vCFMH
-         GfSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uDIkuwm2DEbdWoKLg3faezc8ngMrw8G/6t1s5qdiZ1s=;
-        b=EO/JyQiAV2NSxu0Vpj6VXFLfCsPs3i9vZ+EFFgoV6SDgDNapNxA0E3798Og/0h1Iu2
-         HL9b6je0E4o7inFmyT1MjIgGSXGcOs9EQimBNfiJU1XxD4WmffJ6VAK1WlnVhOL+rRAq
-         sBBEHuA9KbtK3Yci99bqNHjzubP/U+FmvsYRCTnx9nbX4aPxoeUTY1Wbnl3dLC3valhZ
-         LW8m2/vLHgo7w16EZXyuzAMVdYdlwJFk//jtyXfEzFMrBECeMOPJwqRhP0F0bsZax+CG
-         jtyjt+UEC8u9tznwmODHX38PbYfqtP5QwKMcMg9gUTp41cccZ6T5uBMI9WAt3OyihVGC
-         ruNw==
-X-Gm-Message-State: AOAM531m81NXY7K8WtDAwle1F361DwQnOrleMzqpUpEagsmWHV9J4hjj
-        smsd0CW2gDRr1+XKuROZ7OLVMQ==
-X-Google-Smtp-Source: ABdhPJxav31tn7OR0ESHUj6PrQU3MjNZWl9xawSdI1YSrLLc4QTJKSP0E7SbT48zMgTq5poNlU+pMQ==
-X-Received: by 2002:a05:6512:104e:: with SMTP id c14mr16218846lfb.30.1637769661531;
-        Wed, 24 Nov 2021 08:01:01 -0800 (PST)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id 27sm18444lft.299.2021.11.24.08.01.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 08:01:01 -0800 (PST)
-Subject: Re: [PATCH v3 10/13] drm/msm/disp/dpu1: Add DSC support in RM
-To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-References: <20211116062256.2417186-1-vkoul@kernel.org>
- <20211116062256.2417186-11-vkoul@kernel.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <26315aac-02ef-1e79-4564-08c75e334634@linaro.org>
-Date:   Wed, 24 Nov 2021 19:01:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S240960AbhKXQGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:06:36 -0500
+Received: from mail-sn1anam02on2061.outbound.protection.outlook.com ([40.107.96.61]:10431
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229961AbhKXQGf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 11:06:35 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YR+z47ubrz4vyMcHV3y/0yUB4AEu5C0Coxux9BgSW81e0PQjP5AUe7bYJPzNt3PRKgPKa1qlk2hMlrLHfmU1mUNQKf0Bz+jHG/gC5A49oT9Eec6LLSB0M0N/0U3KS18UhVTCrHPJk09ZnZH1mYkfdouFpS3uQ1iL0cEwnbIuFmsQTGzK24UXMskEjOEUaE1/4fJcgMDJHwaeinae2VIptyV5tAxxsyumg5yycw/NMsQ2gQVhybYz1aSFn/mCDIUB9Dk6RqyN+SlPrPD3dPLFcZ1fWRQD+Zbrdj4UlqyP2Fr4B8QOq7fbxeUeBy8iAVVeGazklVqL7qvrRIsQkjvXNw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nBHftbLvocSey+dJXNRqAy1saukbwhnpvwoNajaaePo=;
+ b=GlYqvWxzK8EQMQBqaHNx6ccI46QGbvYUCdkpaJexrmxCgAfrSAde2x1Buh71mPXUkMdFdvuFt12YZwLA4Be6zkbPxxGX4g8rIZeirz8jy/f4SbuC+Zi4UGqFmiUMz1QqnhyhyMakuHxcKi5huUZO8hwD6rggmpBqg8i0X3Q0ooYsKU7YBKA5hXTXflZoAHFvqe5/4DHesLN38frV8ozUivBXsGKbZyDQ6nqgNNxKGRLKPvEilhJahdwiDidw4NiIBtbLgDI7xMW8sQ9avUw67AA1QzKFJP9/7cxrP/FOHDbpb0A0jQzINp75FRfurYveBb5eCkjU55zeOoppsuo2Yw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nBHftbLvocSey+dJXNRqAy1saukbwhnpvwoNajaaePo=;
+ b=brN6sGytj4dWRrr/BNBjTOD+KvBvXqRihMDn6m+b10bjNNe/m5n63wCwqB30vD5zTnO7wrqbq7KrjHEpd8KJuFlc0vFO8kIyLDj0qL8KAXuWHaDqiSOWyomm+wL6PRh5UtoiuZxoUajLD2q+Rc2jv6DaQ+ubHhdVwEcIfXwU550=
+Received: from BN0PR10CA0007.namprd10.prod.outlook.com (2603:10b6:408:143::25)
+ by DM5PR12MB1402.namprd12.prod.outlook.com (2603:10b6:3:73::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Wed, 24 Nov
+ 2021 16:03:23 +0000
+Received: from BN8NAM11FT037.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:143:cafe::d9) by BN0PR10CA0007.outlook.office365.com
+ (2603:10b6:408:143::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.24 via Frontend
+ Transport; Wed, 24 Nov 2021 16:03:23 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN8NAM11FT037.mail.protection.outlook.com (10.13.177.182) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4713.20 via Frontend Transport; Wed, 24 Nov 2021 16:03:23 +0000
+Received: from [127.0.1.1] (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Wed, 24 Nov
+ 2021 10:03:14 -0600
+Subject: [PATCH v2] hwmon: (k10temp) Support up to 12 CCDs on AMD Family of
+ processors
+From:   Babu Moger <babu.moger@amd.com>
+To:     <clemens@ladisch.de>, <jdelvare@suse.com>, <linux@roeck-us.net>
+CC:     <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Date:   Wed, 24 Nov 2021 10:03:13 -0600
+Message-ID: <163776976762.904164.5618896687524494215.stgit@bmoger-ubuntu>
+User-Agent: StGit/1.1.dev103+g5369f4c
 MIME-Version: 1.0
-In-Reply-To: <20211116062256.2417186-11-vkoul@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d9b7ddaf-e7dc-4467-8ad1-08d9af63f13e
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1402:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB14028C1AD27FCE01DB0334C795619@DM5PR12MB1402.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rPsM1RAeEr8XjJIuFTCruIFbB7bQSSfm/hUi/hSGpwqCDN4Du1XZWLGKKbzIYQDMqyG7U7kDMzTyFUho6h9DQowQtr3gCwlNlUAu9wDxqJv2kljpSz5mXhEm2DKOfpk1citPcq6Mln+OesBgdVRuLbs3qyn+KkXcB6UrGg+POVxou+37DlfZufNA048TUme6Xqp/UA3gqrvuxHXSvbi7HRXGNCeg1qsoVbBNy3jPPiOpjG+Y1SVi7sjqMqc6sCQs3UUTWIzl4cDmXPcuGMMVnV5QCEa/bd32tCBXVYN3E1MFdzD4s6uFIO5tUMqbZMKJy1o6u/e8hTUwp28/XB2uTDmVtBqMJX4JeexpZ8GB8FaK5Xw/3hoxNTnc+IiTVWz9kIuaMvW+0NIielAl2A8QtyfFlv1mAvPxuAlrHKrECbN6s+p4v1ZBIr+oCfF0lbv0Ix90GPyuFv9W8lvZiRllE9GHewRBQy/o4G5qEOl0lp7oYK0Hh/teVVNGZ1VxMd+YGdQrOZ3xly+cdD97z17rBRxR8BwQ98pBwuFZFEaamGWtaInjaOPG6t9Y+o2fFAXZ9T/Y8HcIWOgyzQJneQNLL/cQ3b35mGQHbQtXsJN6zu0LzKtlhLUopiOfhbR0EExLs5y2JmPwTQQsEz11+czmRUY9ljcwdLX6IkYJ8FoZx4lupZ2I5XEOsqia40BjNyLf36S0FgvVsbQP3NAoOktdnKPxTQR2qjYvvgkNF1gzrZ+3rEBpQOXc6Wihzl/qNfPEWiVvMtgwCDTwPkctoe04yqDH+Z4Zp64xoqbM9Xz9kyJy0jnBSJILLQzuzKS0i/Qg/gOY8LOfoDmnoo7Bv4KqjpFpF+Gmg7UzzbyAaisF7NU=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(7916004)(4636009)(36840700001)(46966006)(70586007)(70206006)(44832011)(33716001)(36860700001)(4326008)(186003)(5660300002)(9686003)(508600001)(356005)(81166007)(83380400001)(966005)(16526019)(8936002)(47076005)(26005)(103116003)(426003)(8676002)(336012)(82310400004)(110136005)(54906003)(2906002)(86362001)(316002)(16576012)(71626007)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2021 16:03:23.3247
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d9b7ddaf-e7dc-4467-8ad1-08d9af63f13e
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT037.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1402
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2021 09:22, Vinod Koul wrote:
-> This add the bits in RM to enable the DSC blocks
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h |  1 +
->   drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c  | 66 +++++++++++++++++++++++++
->   drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h  |  1 +
->   3 files changed, 68 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> index 775bcbda860f..fd6672efb096 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h
-> @@ -146,6 +146,7 @@ struct dpu_global_state {
->   	uint32_t ctl_to_enc_id[CTL_MAX - CTL_0];
->   	uint32_t intf_to_enc_id[INTF_MAX - INTF_0];
->   	uint32_t dspp_to_enc_id[DSPP_MAX - DSPP_0];
-> +	uint32_t dsc_to_enc_id[DSC_MAX - DSC_0];
->   };
->   
->   struct dpu_global_state
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
-> index f9c83d6e427a..c9d0fc765aaf 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
-> @@ -11,6 +11,7 @@
->   #include "dpu_hw_intf.h"
->   #include "dpu_hw_dspp.h"
->   #include "dpu_hw_merge3d.h"
-> +#include "dpu_hw_dsc.h"
->   #include "dpu_encoder.h"
->   #include "dpu_trace.h"
->   
-> @@ -75,6 +76,14 @@ int dpu_rm_destroy(struct dpu_rm *rm)
->   			dpu_hw_intf_destroy(hw);
->   		}
->   	}
-> +	for (i = 0; i < ARRAY_SIZE(rm->dsc_blks); i++) {
-> +		struct dpu_hw_dsc *hw;
-> +
-> +		if (rm->dsc_blks[i]) {
-> +			hw = to_dpu_hw_dsc(rm->dsc_blks[i]);
-> +			dpu_hw_dsc_destroy(hw);
-> +		}
-> +	}
->   
->   	return 0;
->   }
-> @@ -221,6 +230,19 @@ int dpu_rm_init(struct dpu_rm *rm,
->   		rm->dspp_blks[dspp->id - DSPP_0] = &hw->base;
->   	}
->   
-> +	for (i = 0; i < cat->dsc_count; i++) {
-> +		struct dpu_hw_dsc *hw;
-> +		const struct dpu_dsc_cfg *dsc = &cat->dsc[i];
-> +
-> +		hw = dpu_hw_dsc_init(dsc->id, mmio, cat);
-> +		if (IS_ERR_OR_NULL(hw)) {
-> +			rc = PTR_ERR(hw);
-> +			DPU_ERROR("failed dsc object creation: err %d\n", rc);
-> +			goto fail;
-> +		}
-> +		rm->dsc_blks[dsc->id - DSC_0] = &hw->base;
-> +	}
-> +
->   	return 0;
->   
->   fail:
-> @@ -476,6 +498,7 @@ static int _dpu_rm_reserve_intf(
->   	}
->   
->   	global_state->intf_to_enc_id[idx] = enc_id;
-> +
->   	return 0;
->   }
->   
-> @@ -500,6 +523,38 @@ static int _dpu_rm_reserve_intf_related_hw(
->   	return ret;
->   }
->   
-> +static int _dpu_rm_reserve_dsc(struct dpu_rm *rm,
-> +			       struct dpu_global_state *global_state,
-> +			       struct drm_encoder *enc,
-> +			       const struct msm_display_topology *top)
-> +{
-> +	struct msm_drm_private *priv;
-> +	int num_dsc = top->num_dsc;
-> +	int i;
-> +
-> +	priv = enc->dev->dev_private;
-> +
-> +	if (!priv)
-> +		return -EIO;
-> +
-> +	/* check if DSC is supported */
-> +	if (!priv->dsc)
-> +		return 0;
+The current driver can read the temperatures from upto 8 CCDs=0A=
+(Core-Complex Die).=0A=
+=0A=
+The newer AMD Family 19h Models 10h-1Fh and A0h-AFh can support up to=0A=
+12 CCDs. Update the driver to read up to 12 CCDs.=0A=
+=0A=
+Signed-off-by: Babu Moger <babu.moger@amd.com>=0A=
+---=0A=
+v2:=0A=
+Removed the date structure changes based on comment from Guenter.=0A=
+v1:=0A=
+https://lore.kernel.org/lkml/163770219414.777059.5794961910830381329.stgit@=
+bmoger-ubuntu/=0A=
+=0A=
+ drivers/hwmon/k10temp.c |   17 ++++++++++++++---=0A=
+ 1 file changed, 14 insertions(+), 3 deletions(-)=0A=
+=0A=
+diff --git a/drivers/hwmon/k10temp.c b/drivers/hwmon/k10temp.c=0A=
+index 880990fa4795..4e239bd75b1d 100644=0A=
+--- a/drivers/hwmon/k10temp.c=0A=
++++ b/drivers/hwmon/k10temp.c=0A=
+@@ -171,6 +171,10 @@ static const char *k10temp_temp_label[] =3D {=0A=
+ 	"Tccd6",=0A=
+ 	"Tccd7",=0A=
+ 	"Tccd8",=0A=
++	"Tccd9",=0A=
++	"Tccd10",=0A=
++	"Tccd11",=0A=
++	"Tccd12",=0A=
+ };=0A=
+ =0A=
+ static int k10temp_read_labels(struct device *dev,=0A=
+@@ -206,7 +210,7 @@ static int k10temp_read_temp(struct device *dev, u32 at=
+tr, int channel,=0A=
+ 			if (*val < 0)=0A=
+ 				*val =3D 0;=0A=
+ 			break;=0A=
+-		case 2 ... 9:		/* Tccd{1-8} */=0A=
++		case 2 ... 13:		/* Tccd{1-12} */=0A=
+ 			amd_smn_read(amd_pci_dev_to_node_id(data->pdev),=0A=
+ 				     ZEN_CCD_TEMP(data->ccd_offset, channel - 2),=0A=
+ 						  &regval);=0A=
+@@ -341,6 +345,10 @@ static const struct hwmon_channel_info *k10temp_info[]=
+ =3D {=0A=
+ 			   HWMON_T_INPUT | HWMON_T_LABEL,=0A=
+ 			   HWMON_T_INPUT | HWMON_T_LABEL,=0A=
+ 			   HWMON_T_INPUT | HWMON_T_LABEL,=0A=
++			   HWMON_T_INPUT | HWMON_T_LABEL,=0A=
++			   HWMON_T_INPUT | HWMON_T_LABEL,=0A=
++			   HWMON_T_INPUT | HWMON_T_LABEL,=0A=
++			   HWMON_T_INPUT | HWMON_T_LABEL,=0A=
+ 			   HWMON_T_INPUT | HWMON_T_LABEL),=0A=
+ 	NULL=0A=
+ };=0A=
+@@ -433,12 +441,15 @@ static int k10temp_probe(struct pci_dev *pdev, const =
+struct pci_device_id *id)=0A=
+ 			data->ccd_offset =3D 0x154;=0A=
+ 			k10temp_get_ccd_support(pdev, data, 8);=0A=
+ 			break;=0A=
+-		case 0x10 ... 0x1f:=0A=
+ 		case 0x40 ... 0x4f:	/* Yellow Carp */=0A=
+-		case 0xa0 ... 0xaf:=0A=
+ 			data->ccd_offset =3D 0x300;=0A=
+ 			k10temp_get_ccd_support(pdev, data, 8);=0A=
+ 			break;=0A=
++		case 0x10 ... 0x1f:=0A=
++		case 0xa0 ... 0xaf:=0A=
++			data->ccd_offset =3D 0x300;=0A=
++			k10temp_get_ccd_support(pdev, data, 12);=0A=
++			break;=0A=
+ 		}=0A=
+ 	} else {=0A=
+ 		data->read_htcreg =3D read_htcreg_pci;=0A=
+=0A=
 
-I don't think this check is necessary. If topology requests the DSC, 
-just give away required amount of hw blocks.
-
-> +
-> +	/* check if DSC required are allocated or not */
-> +	for (i = 0; i < num_dsc; i++) {
-> +		if (global_state->dsc_to_enc_id[i]) {
-> +			DPU_ERROR("DSC %d is already allocated\n", i);
-> +			return -EIO;
-> +		}
-> +	}
-> +
-> +	for (i = 0; i < num_dsc; i++)
-> +		global_state->dsc_to_enc_id[i] = enc->base.id;
-> +
-> +	return 0;
-> +}
-> +
->   static int _dpu_rm_make_reservation(
->   		struct dpu_rm *rm,
->   		struct dpu_global_state *global_state,
-> @@ -526,6 +581,10 @@ static int _dpu_rm_make_reservation(
->   	if (ret)
->   		return ret;
->   
-> +	ret  = _dpu_rm_reserve_dsc(rm, global_state, enc, &reqs->topology);
-> +	if (ret)
-> +		return ret;
-> +
->   	return ret;
->   }
->   
-> @@ -567,6 +626,8 @@ void dpu_rm_release(struct dpu_global_state *global_state,
->   		ARRAY_SIZE(global_state->ctl_to_enc_id), enc->base.id);
->   	_dpu_rm_clear_mapping(global_state->intf_to_enc_id,
->   		ARRAY_SIZE(global_state->intf_to_enc_id), enc->base.id);
-> +	_dpu_rm_clear_mapping(global_state->dsc_to_enc_id,
-> +		ARRAY_SIZE(global_state->dsc_to_enc_id), enc->base.id);
->   }
->   
->   int dpu_rm_reserve(
-> @@ -640,6 +701,11 @@ int dpu_rm_get_assigned_resources(struct dpu_rm *rm,
->   		hw_to_enc_id = global_state->dspp_to_enc_id;
->   		max_blks = ARRAY_SIZE(rm->dspp_blks);
->   		break;
-> +	case DPU_HW_BLK_DSC:
-> +		hw_blks = rm->dsc_blks;
-> +		hw_to_enc_id = global_state->dsc_to_enc_id;
-> +		max_blks = ARRAY_SIZE(rm->dsc_blks);
-> +		break;
->   	default:
->   		DPU_ERROR("blk type %d not managed by rm\n", type);
->   		return 0;
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
-> index 1f12c8d5b8aa..278d2a510b80 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
-> @@ -30,6 +30,7 @@ struct dpu_rm {
->   	struct dpu_hw_blk *intf_blks[INTF_MAX - INTF_0];
->   	struct dpu_hw_blk *dspp_blks[DSPP_MAX - DSPP_0];
->   	struct dpu_hw_blk *merge_3d_blks[MERGE_3D_MAX - MERGE_3D_0];
-> +	struct dpu_hw_blk *dsc_blks[DSC_MAX - DSC_0];
->   
->   	uint32_t lm_max_width;
->   };
-> 
-
-
--- 
-With best wishes
-Dmitry
