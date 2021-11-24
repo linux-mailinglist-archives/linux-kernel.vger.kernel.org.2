@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E5C45C5A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C313345C120
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:12:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350595AbhKXN7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:59:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45402 "EHLO mail.kernel.org"
+        id S1346959AbhKXNPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:15:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353070AbhKXN4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:56:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D6B5632A1;
-        Wed, 24 Nov 2021 13:06:57 +0000 (UTC)
+        id S1348036AbhKXNMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:12:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7068061A7F;
+        Wed, 24 Nov 2021 12:42:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759218;
-        bh=BlYd/U8THHIw243/HjfEvoNnvy6CPnMNnmxdlAQxViA=;
+        s=korg; t=1637757760;
+        bh=ekGkWyvr1AOi1A4EPhmMoP6o15FOejt0ou6yPowyidI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0pUQATCdBtFYeGl+reaCuUP6D0yfpBq5LcjlZi3QS5/1jxBldYElbVo+SR42s3zCQ
-         IV0kLoFF+LQKqpF1MFzSNDYpheSxqh94t6ngYM0n1sng1poSvzNuDwt2sQ1JUmZ3Da
-         EDnmmGDOOTRH40WrQFk8hyngUi+lQsg5wQ5AfNs8=
+        b=sMaJfiEv7g5UkSb7imjei2eyHri3wyc3tLuIN2dVKR9sgoUXgxK6qHRjvxjaMigCc
+         mx38YxTmO8W7retKHugvPfB0z1o7aBfjki56RVcFBeCa29k7wGVfSj8pU2V8845hfO
+         QwEwmLotX+FgrCOmr4KzeeAWYtz2lGlS8sMDlrAc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Alexey Kuznetsov <axet@me.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 171/279] e100: fix device suspend/resume
+Subject: [PATCH 4.19 268/323] firmware_loader: fix pre-allocated buf built-in firmware use
 Date:   Wed, 24 Nov 2021 12:57:38 +0100
-Message-Id: <20211124115724.646661590@linuxfoundation.org>
+Message-Id: <20211124115727.922086375@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,92 +39,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesse Brandeburg <jesse.brandeburg@intel.com>
+From: Luis Chamberlain <mcgrof@kernel.org>
 
-[ Upstream commit 5d2ca2e12dfb2aff3388ca57b06f570fa6206ced ]
+[ Upstream commit f7a07f7b96033df7709042ff38e998720a3f7119 ]
 
-As reported in [1], e100 was no longer working for suspend/resume
-cycles. The previous commit mentioned in the fixes appears to have
-broken things and this attempts to practice best known methods for
-device power management and keep wake-up working while allowing
-suspend/resume to work. To do this, I reorder a little bit of code
-and fix the resume path to make sure the device is enabled.
+The firmware_loader can be used with a pre-allocated buffer
+through the use of the API calls:
 
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=214933
+  o request_firmware_into_buf()
+  o request_partial_firmware_into_buf()
 
-Fixes: 69a74aef8a18 ("e100: use generic power management")
-Cc: Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Reported-by: Alexey Kuznetsov <axet@me.com>
-Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Tested-by: Alexey Kuznetsov <axet@me.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+If the firmware was built-in and present, our current check
+for if the built-in firmware fits into the pre-allocated buffer
+does not return any errors, and we proceed to tell the caller
+that everything worked fine. It's a lie and no firmware would
+end up being copied into the pre-allocated buffer. So if the
+caller trust the result it may end up writing a bunch of 0's
+to a device!
+
+Fix this by making the function that checks for the pre-allocated
+buffer return non-void. Since the typical use case is when no
+pre-allocated buffer is provided make this return successfully
+for that case. If the built-in firmware does *not* fit into the
+pre-allocated buffer size return a failure as we should have
+been doing before.
+
+I'm not aware of users of the built-in firmware using the API
+calls with a pre-allocated buffer, as such I doubt this fixes
+any real life issue. But you never know... perhaps some oddball
+private tree might use it.
+
+In so far as upstream is concerned this just fixes our code for
+correctness.
+
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Link: https://lore.kernel.org/r/20210917182226.3532898-2-mcgrof@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/e100.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ drivers/base/firmware_loader/main.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/e100.c b/drivers/net/ethernet/intel/e100.c
-index 09ae1939e6db4..36d52246bdc66 100644
---- a/drivers/net/ethernet/intel/e100.c
-+++ b/drivers/net/ethernet/intel/e100.c
-@@ -3003,9 +3003,10 @@ static void __e100_shutdown(struct pci_dev *pdev, bool *enable_wake)
- 	struct net_device *netdev = pci_get_drvdata(pdev);
- 	struct nic *nic = netdev_priv(netdev);
+diff --git a/drivers/base/firmware_loader/main.c b/drivers/base/firmware_loader/main.c
+index 24410a0d6df07..cfa5e598a0dc8 100644
+--- a/drivers/base/firmware_loader/main.c
++++ b/drivers/base/firmware_loader/main.c
+@@ -97,12 +97,15 @@ static struct firmware_cache fw_cache;
+ extern struct builtin_fw __start_builtin_fw[];
+ extern struct builtin_fw __end_builtin_fw[];
  
-+	netif_device_detach(netdev);
-+
- 	if (netif_running(netdev))
- 		e100_down(nic);
--	netif_device_detach(netdev);
- 
- 	if ((nic->flags & wol_magic) | e100_asf(nic)) {
- 		/* enable reverse auto-negotiation */
-@@ -3022,7 +3023,7 @@ static void __e100_shutdown(struct pci_dev *pdev, bool *enable_wake)
- 		*enable_wake = false;
- 	}
- 
--	pci_clear_master(pdev);
-+	pci_disable_device(pdev);
- }
- 
- static int __e100_power_off(struct pci_dev *pdev, bool wake)
-@@ -3042,8 +3043,6 @@ static int __maybe_unused e100_suspend(struct device *dev_d)
- 
- 	__e100_shutdown(to_pci_dev(dev_d), &wake);
- 
--	device_wakeup_disable(dev_d);
--
- 	return 0;
- }
- 
-@@ -3051,6 +3050,14 @@ static int __maybe_unused e100_resume(struct device *dev_d)
+-static void fw_copy_to_prealloc_buf(struct firmware *fw,
++static bool fw_copy_to_prealloc_buf(struct firmware *fw,
+ 				    void *buf, size_t size)
  {
- 	struct net_device *netdev = dev_get_drvdata(dev_d);
- 	struct nic *nic = netdev_priv(netdev);
-+	int err;
-+
-+	err = pci_enable_device(to_pci_dev(dev_d));
-+	if (err) {
-+		netdev_err(netdev, "Resume cannot enable PCI device, aborting\n");
-+		return err;
-+	}
-+	pci_set_master(to_pci_dev(dev_d));
- 
- 	/* disable reverse auto-negotiation */
- 	if (nic->phy == phy_82552_v) {
-@@ -3062,10 +3069,11 @@ static int __maybe_unused e100_resume(struct device *dev_d)
- 		           smartspeed & ~(E100_82552_REV_ANEG));
- 	}
- 
--	netif_device_attach(netdev);
- 	if (netif_running(netdev))
- 		e100_up(nic);
- 
-+	netif_device_attach(netdev);
-+
- 	return 0;
+-	if (!buf || size < fw->size)
+-		return;
++	if (!buf)
++		return true;
++	if (size < fw->size)
++		return false;
+ 	memcpy(buf, fw->data, fw->size);
++	return true;
  }
+ 
+ static bool fw_get_builtin_firmware(struct firmware *fw, const char *name,
+@@ -114,9 +117,7 @@ static bool fw_get_builtin_firmware(struct firmware *fw, const char *name,
+ 		if (strcmp(name, b_fw->name) == 0) {
+ 			fw->size = b_fw->size;
+ 			fw->data = b_fw->data;
+-			fw_copy_to_prealloc_buf(fw, buf, size);
+-
+-			return true;
++			return fw_copy_to_prealloc_buf(fw, buf, size);
+ 		}
+ 	}
  
 -- 
 2.33.0
