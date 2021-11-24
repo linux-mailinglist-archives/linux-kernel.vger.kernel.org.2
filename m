@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A86645BDAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A9945BB57
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245435AbhKXMj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:39:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52018 "EHLO mail.kernel.org"
+        id S243947AbhKXMTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:19:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244455AbhKXMf2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:35:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F33DA610FB;
-        Wed, 24 Nov 2021 12:21:36 +0000 (UTC)
+        id S243574AbhKXMOM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:14:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D54E6113A;
+        Wed, 24 Nov 2021 12:09:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756497;
-        bh=TslBu8qF10g5S/5SN3YoqK+yp13DOd4gZDb9BGhTW18=;
+        s=korg; t=1637755759;
+        bh=ppjQpJ3BT+IxHTPIg1arb5LdUzdb7vcG/rv012g1/8c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ssi9cebyQjGQi6p3EoP+6UnPCEGaGgHd5C7Ou7rIH2J7PRVqYpgehvk4bdHscoDux
-         yyAiE5DRyjerjKHQKGkgh16jnCUhtpRN20ElvS74Oy4QXAEmWEU5BZ0wBcG88epihL
-         VR7rCQk5JlGRbVdSzIR21PRR9HA22OXBnCSXzudo=
+        b=ONdq2RvZbVLgLRXUiv7d+va2sPaM0ZN/a2aXrHOtEIQvh5B/t1wsLRJ0r3BG7Ymqp
+         NIVJo8/TjS48d697DlDoykaeAq82xi3e3OC4v7XZ8a1kJJ5IKrxdCf9auwatfNJ68x
+         itm0Vlmjii1CpBdD2bD9ePTm8nqKm068fmZvGR5M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+3f91de0b813cc3d19a80@syzkaller.appspotmail.com,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 074/251] smackfs: Fix use-after-free in netlbl_catmap_walk()
-Date:   Wed, 24 Nov 2021 12:55:16 +0100
-Message-Id: <20211124115712.826831674@linuxfoundation.org>
+        stable@vger.kernel.org, Xiaoming Ni <nixiaoming@huawei.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.9 046/207] powerpc/85xx: Fix oops when mpc85xx_smp_guts_ids node cannot be found
+Date:   Wed, 24 Nov 2021 12:55:17 +0100
+Message-Id: <20211124115705.425733167@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,55 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+From: Xiaoming Ni <nixiaoming@huawei.com>
 
-[ Upstream commit 0817534ff9ea809fac1322c5c8c574be8483ea57 ]
+commit 3c2172c1c47b4079c29f0e6637d764a99355ebcd upstream.
 
-Syzkaller reported use-after-free bug as described in [1]. The bug is
-triggered when smk_set_cipso() tries to free stale category bitmaps
-while there are concurrent reader(s) using the same bitmaps.
+When the field described in mpc85xx_smp_guts_ids[] is not configured in
+dtb, the mpc85xx_setup_pmc() does not assign a value to the "guts"
+variable. As a result, the oops is triggered when
+mpc85xx_freeze_time_base() is executed.
 
-Wait for RCU grace period to finish before freeing the category bitmaps
-in smk_set_cipso(). This makes sure that there are no more readers using
-the stale bitmaps and freeing them should be safe.
-
-[1] https://lore.kernel.org/netdev/000000000000a814c505ca657a4e@google.com/
-
-Reported-by: syzbot+3f91de0b813cc3d19a80@syzkaller.appspotmail.com
-Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 56f1ba280719 ("powerpc/mpc85xx: refactor the PM operations")
+Cc: stable@vger.kernel.org # v4.6+
+Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210929033646.39630-2-nixiaoming@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- security/smack/smackfs.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/powerpc/platforms/85xx/mpc85xx_pm_ops.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
-index 009e83ee2d002..25705a72d31bc 100644
---- a/security/smack/smackfs.c
-+++ b/security/smack/smackfs.c
-@@ -859,6 +859,7 @@ static int smk_open_cipso(struct inode *inode, struct file *file)
- static ssize_t smk_set_cipso(struct file *file, const char __user *buf,
- 				size_t count, loff_t *ppos, int format)
- {
-+	struct netlbl_lsm_catmap *old_cat;
- 	struct smack_known *skp;
- 	struct netlbl_lsm_secattr ncats;
- 	char mapcatset[SMK_CIPSOLEN];
-@@ -948,9 +949,11 @@ static ssize_t smk_set_cipso(struct file *file, const char __user *buf,
- 
- 	rc = smk_netlbl_mls(maplevel, mapcatset, &ncats, SMK_CIPSOLEN);
- 	if (rc >= 0) {
--		netlbl_catmap_free(skp->smk_netlabel.attr.mls.cat);
-+		old_cat = skp->smk_netlabel.attr.mls.cat;
- 		skp->smk_netlabel.attr.mls.cat = ncats.attr.mls.cat;
- 		skp->smk_netlabel.attr.mls.lvl = ncats.attr.mls.lvl;
-+		synchronize_rcu();
-+		netlbl_catmap_free(old_cat);
- 		rc = count;
+--- a/arch/powerpc/platforms/85xx/mpc85xx_pm_ops.c
++++ b/arch/powerpc/platforms/85xx/mpc85xx_pm_ops.c
+@@ -98,9 +98,8 @@ int __init mpc85xx_setup_pmc(void)
+ 			pr_err("Could not map guts node address\n");
+ 			return -ENOMEM;
+ 		}
++		qoriq_pm_ops = &mpc85xx_pm_ops;
  	}
  
--- 
-2.33.0
-
+-	qoriq_pm_ops = &mpc85xx_pm_ops;
+-
+ 	return 0;
+ }
 
 
