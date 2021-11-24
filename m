@@ -2,111 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9272B45B5DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 08:49:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A6645B5E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 08:49:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240917AbhKXHvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 02:51:55 -0500
-Received: from mailgw01.mediatek.com ([60.244.123.138]:58022 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S238609AbhKXHvr (ORCPT
+        id S238317AbhKXHwe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Nov 2021 02:52:34 -0500
+Received: from mout.kundenserver.de ([212.227.17.24]:60939 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229734AbhKXHwc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 02:51:47 -0500
-X-UUID: b730eac1133e47b9a7f7dcb5a804854f-20211124
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=jmFRbgHXyWQM9FuS/EWE6h1VSjBn50PLdJLWIThLNL0=;
-        b=Bo92atUM6tOsHv+8jYWbRJsgoU+CkbTpfbuHG2e+oQcmDKKYF/uNV8liUj3/KKnbm8layIiD7Rr5rKHd/COnwx078u3Mv36BU1vAe+mBLDw+JzSVWuOPJ/lxyClgt7OUiWnUuzHolffLdmFC2LSfF7PdkpgYLQ87OgRrpKKYnXM=;
-X-UUID: b730eac1133e47b9a7f7dcb5a804854f-20211124
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 598854004; Wed, 24 Nov 2021 15:48:35 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 24 Nov 2021 15:48:34 +0800
-Received: from mhfsdcap04 (10.17.3.154) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 24 Nov 2021 15:48:33 +0800
-Message-ID: <ba47b03019a2ee19bee058f6c08dc304c2b7c566.camel@mediatek.com>
-Subject: Re: [PATCH 4/6] dt-bindings: phy: mediatek: tphy: support software
- efuse load
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Yz Wu <yz.wu@mediatek.com>
-Date:   Wed, 24 Nov 2021 15:48:33 +0800
-In-Reply-To: <8aa7adbf-7367-1b3a-4d63-f9fe83e72117@linaro.org>
-References: <20211107075646.4366-1-chunfeng.yun@mediatek.com>
-         <20211107075646.4366-4-chunfeng.yun@mediatek.com>
-         <71f83770-b12f-2452-d24b-ae1be9b5b075@linaro.org>
-         <CAGXv+5GzP1SXi2ihhifK_Ui8Rt04UgeFyjivzHc532yvPFo3OA@mail.gmail.com>
-         <8aa7adbf-7367-1b3a-4d63-f9fe83e72117@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Wed, 24 Nov 2021 02:52:32 -0500
+Received: from mail-wr1-f49.google.com ([209.85.221.49]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MG9c2-1mqrNN209U-00GcUM; Wed, 24 Nov 2021 08:49:21 +0100
+Received: by mail-wr1-f49.google.com with SMTP id a9so2504952wrr.8;
+        Tue, 23 Nov 2021 23:49:21 -0800 (PST)
+X-Gm-Message-State: AOAM5327hTFj5lTUe6MOem9ame4CtlmaevHISgKvI1AgBcoipbkdJXjU
+        BckXkDdgsUXuDk8txma8qXk3YDuHLhTLtM3p5dw=
+X-Google-Smtp-Source: ABdhPJzndU3fqgHz+IlEBvZgja/JvZ0plmrmCtl+3g/SKy8I1LjmdgvW/1XQsq1r0fA5A/VYS5mqhRYmoMfd7HLtZJA=
+X-Received: by 2002:adf:d1c2:: with SMTP id b2mr16371602wrd.369.1637740161045;
+ Tue, 23 Nov 2021 23:49:21 -0800 (PST)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
+ <41206fc7-f8ce-98aa-3718-ba3e1431e320@landley.net>
+In-Reply-To: <41206fc7-f8ce-98aa-3718-ba3e1431e320@landley.net>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 24 Nov 2021 08:49:05 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3pQW59NVF=5P+ZiBjNJmnWh+iTZUHvqHBrXkHA6pMd4g@mail.gmail.com>
+Message-ID: <CAK8P3a3pQW59NVF=5P+ZiBjNJmnWh+iTZUHvqHBrXkHA6pMd4g@mail.gmail.com>
+Subject: Re: spinlock.c:306:9: error: implicit declaration of function '__raw_write_lock_nested'
+To:     Rob Landley <rob@landley.net>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Galbraith <umgwanakikbuti@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, lkft-triage@lists.linaro.org,
+        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:+hO82f4AyW48k9dnIB1FQwbpRc+xQ6uUOJIuPyeFIYm8ZJy+BjS
+ SP/OTcDFI3GqfnuVQWQR24SsyT3D9D2ysC5K4DHlG6qh4Nwfxsq4qa/HlSE/MPGGvvD4ix1
+ oByDn3p3QqcBaSv6O7MuO5AaZzgCGIXpBtxCo6L6zGl8HBDbGYEydVUu6pn1XPGHD/RLv7n
+ BsONcwGNqZAmOsp0/df5Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:txDkkWbd/oQ=:77p4GEoF5Ppm4d5b9pNKbP
+ HX3QdVkIdqywJaMg9o58Gjzk1LCYLLdC+CwrBtH4qRHrP3qGPkh3ooovaONZhA/pliepWk80P
+ ifrmJ5Ij7bQ7FNYKq/Y1ShZetXTMgjiPOBsDedFBic1Q3VEn52Kl4Wys3bGZtAe7G8VJLATLM
+ PgVoL0e67AEzk75cRNuieta+GcKSmKGXoavBzCn2GQ1DQ7ZDief4ymhcffU0xtzLG+KOjSxLe
+ 1P6QnZwjzDWzs5iz+aWgL7Yctz1W00LsoXFJqS17eJK7p72QUsexBgtpDLEvXbvR1JOZNRBwN
+ o8svbHKmUQ9bH/+Xf1QHgx7AZt/hFcKxyXc+BuO2yVuDXyqwU8qAasYJFzts9j2g6DFm5svYW
+ hCuyWti44ZW6Np7pGQ5mXj26UsVKDv59m421JHDBqqPWnpyRsR4va1HK+MeZ2Cnit+Bi2sSS7
+ NEd81ZPy9wUVInc6LpZvVzbeAmgZz4opa7cRO1entjDg45r4Unf5JaVSkgZtEC30sHWB69Y34
+ nioakcyPIeXVTcbFiRX3rC5i1rTVv+k60KXtgbud5NjXTw7bufy+AV0KEyad+CCjMO1TZls7a
+ G0OYorV3A08p63xYI8NyZBVj9aq8Q3SeIxPugqdTMzK4YzyeTiuokxv+gG4pqLTHH0WSCOVy8
+ vv7aIcqhg3P+9CCVlFVTvJRe/VAykCMCmET8u3SMyigW1AoB6iRZ6BE0bP9mOc+Kbf0xrpSeK
+ 318nIXpOzaKsbsthcqNAJnprd0qoh4OT4pkN7nRRddPa2JZmDI14L8gyhoLOVLMVZE1ysF7HB
+ nFgYnQNcgjwu3pOxmbS0QRu6xfa3rhV6UJvQT7+zMQMRxpwz7E=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTExLTIyIGF0IDA5OjIxICswMDAwLCBTcmluaXZhcyBLYW5kYWdhdGxhIHdy
-b3RlOg0KPiANCj4gT24gMjIvMTEvMjAyMSAwNDowNSwgQ2hlbi1ZdSBUc2FpIHdyb3RlOg0KPiA+
-IE9uIFNhdCwgTm92IDIwLCAyMDIxIGF0IDE6MTkgQU0gU3Jpbml2YXMgS2FuZGFnYXRsYQ0KPiA+
-IDxzcmluaXZhcy5rYW5kYWdhdGxhQGxpbmFyby5vcmc+IHdyb3RlOg0KPiA+ID4gT24gMDcvMTEv
-MjAyMSAwNzo1NiwgQ2h1bmZlbmcgWXVuIHdyb3RlOg0KPiA+ID4gPiBBZGQgb3B0aW9uYWwgcHJv
-cGVydHkgbnZtZW0tY2VsbHMgYW5kIG52bWVtLWNlbGwtbmFtZXMgdG8NCj4gPiA+ID4gc3VwcG9y
-dA0KPiA+ID4gPiBzb2Z0d2FyZSBlZnVzZSBsb2FkLCB0aGlzIGhlbHBzIHRvIGZpeCB0aGUgZWZ1
-c2UgYml0IHNoaWZ0DQo+ID4gPiA+IGlzc3VlDQo+ID4gPiA+IG9uIG10ODE5NSBldGMuDQo+ID4g
-PiA+IA0KPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBDaHVuZmVuZyBZdW4gPGNodW5mZW5nLnl1bkBt
-ZWRpYXRlay5jb20+DQo+ID4gPiANCj4gPiA+IEFwcGxpZWQgdGhhbmtzLA0KPiA+IA0KPiA+IFRo
-aXMgaXMgYSBQSFkgRFQgYmluZGluZyBjaGFuZ2UuIFNob3VsZG4ndCBpdCBnbyBpbiB3aXRoIHBh
-dGNoIDUsDQo+ID4gdGhlDQo+ID4gcGh5IGRyaXZlciBwYXRjaCwgdGhyb3VnaCB0aGUgUEhZIHRy
-ZWUgaW5zdGVhZD8NCj4gDQo+IFRoYXQncyB0cnVlLCB0aGlzIGlzIGRyb3BwZWQgZnJvbSBudm1l
-bSB0cmVlIG5vdyENCg0KVGhhbmtzDQoNCj4gDQo+IC0tc3JpbmkNCj4gPiANCj4gPiBDaGVuWXUN
-Cj4gPiANCj4gPiA+IC0tc3JpbmkNCj4gPiA+IA0KPiA+ID4gPiAtLS0NCj4gPiA+ID4gICAgLi4u
-L2RldmljZXRyZWUvYmluZGluZ3MvcGh5L21lZGlhdGVrLHRwaHkueWFtbCB8IDE4DQo+ID4gPiA+
-ICsrKysrKysrKysrKysrKysrKw0KPiA+ID4gPiAgICAxIGZpbGUgY2hhbmdlZCwgMTggaW5zZXJ0
-aW9ucygrKQ0KPiA+ID4gPiANCj4gPiA+ID4gZGlmZiAtLWdpdA0KPiA+ID4gPiBhL0RvY3VtZW50
-YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9waHkvbWVkaWF0ZWssdHBoeS55YW1sDQo+ID4gPiA+
-IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BoeS9tZWRpYXRlayx0cGh5Lnlh
-bWwNCj4gPiA+ID4gaW5kZXggOWU2YzBmNDNmMWM2Li4wNWVlMjc0YjRiNzEgMTAwNjQ0DQo+ID4g
-PiA+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9waHkvbWVkaWF0ZWss
-dHBoeS55YW1sDQo+ID4gPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
-cy9waHkvbWVkaWF0ZWssdHBoeS55YW1sDQo+ID4gPiA+IEBAIC0xNjAsNiArMTYwLDI0IEBAIHBh
-dHRlcm5Qcm9wZXJ0aWVzOg0KPiA+ID4gPiAgICAgICAgICAgICAgICAgICAgLSBQSFlfVFlQRV9Q
-Q0lFDQo+ID4gPiA+ICAgICAgICAgICAgICAgICAgICAtIFBIWV9UWVBFX1NBVEENCj4gPiA+ID4g
-DQo+ID4gPiA+ICsgICAgICBudm1lbS1jZWxsczoNCj4gPiA+ID4gKyAgICAgICAgaXRlbXM6DQo+
-ID4gPiA+ICsgICAgICAgICAgLSBkZXNjcmlwdGlvbjogaW50ZXJuYWwgUiBlZnVzZSBmb3IgVTIg
-UEhZIG9yDQo+ID4gPiA+IFUzL1BDSWUgUEhZDQo+ID4gPiA+ICsgICAgICAgICAgLSBkZXNjcmlw
-dGlvbjogcnhfaW1wX3NlbCBlZnVzZSBmb3IgVTMvUENJZSBQSFkNCj4gPiA+ID4gKyAgICAgICAg
-ICAtIGRlc2NyaXB0aW9uOiB0eF9pbXBfc2VsIGVmdXNlIGZvciBVMy9QQ0llIFBIWQ0KPiA+ID4g
-PiArICAgICAgICBkZXNjcmlwdGlvbjogfA0KPiA+ID4gPiArICAgICAgICAgIFBoYW5kbGVzIHRv
-IG52bWVtIGNlbGwgdGhhdCBjb250YWlucyB0aGUgZWZ1c2UgZGF0YTsNCj4gPiA+ID4gKyAgICAg
-ICAgICBBdmFpbGFibGUgb25seSBmb3IgVTIgUEhZIG9yIFUzL1BDSWUgUEhZIG9mIHZlcnNpb24N
-Cj4gPiA+ID4gMi8zLCB0aGVzZQ0KPiA+ID4gPiArICAgICAgICAgIHRocmVlIGl0ZW1zIHNob3Vs
-ZCBiZSBwcm92aWRlZCBhdCB0aGUgc2FtZSB0aW1lIGZvcg0KPiA+ID4gPiBVMy9QQ0llIFBIWSwN
-Cj4gPiA+ID4gKyAgICAgICAgICB3aGVuIHVzZSBzb2Z0d2FyZSB0byBsb2FkIGVmdXNlOw0KPiA+
-ID4gPiArICAgICAgICAgIElmIHVuc3BlY2lmaWVkLCB3aWxsIHVzZSBoYXJkd2FyZSBhdXRvLWxv
-YWQgZWZ1c2UuDQo+ID4gPiA+ICsNCj4gPiA+ID4gKyAgICAgIG52bWVtLWNlbGwtbmFtZXM6DQo+
-ID4gPiA+ICsgICAgICAgIGl0ZW1zOg0KPiA+ID4gPiArICAgICAgICAgIC0gY29uc3Q6IGludHIN
-Cj4gPiA+ID4gKyAgICAgICAgICAtIGNvbnN0OiByeF9pbXANCj4gPiA+ID4gKyAgICAgICAgICAt
-IGNvbnN0OiB0eF9pbXANCj4gPiA+ID4gKw0KPiA+ID4gPiAgICAgICAgICAjIFRoZSBmb2xsb3dp
-bmcgb3B0aW9uYWwgdmVuZG9yIHByb3BlcnRpZXMgYXJlIG9ubHkNCj4gPiA+ID4gZm9yIGRlYnVn
-IG9yIEhRQSB0ZXN0DQo+ID4gPiA+ICAgICAgICAgIG1lZGlhdGVrLGV5ZS1zcmM6DQo+ID4gPiA+
-ICAgICAgICAgICAgZGVzY3JpcHRpb246DQo+ID4gPiA+IA0KPiA+ID4gDQo+ID4gPiBfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiA+ID4gTGludXgtbWVk
-aWF0ZWsgbWFpbGluZyBsaXN0DQo+ID4gPiBMaW51eC1tZWRpYXRla0BsaXN0cy5pbmZyYWRlYWQu
-b3JnDQo+ID4gPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LW1lZGlhdGVrDQo=
+On Wed, Nov 24, 2021 at 8:31 AM Rob Landley <rob@landley.net> wrote:
+> On 11/23/21 5:38 AM, Naresh Kamboju wrote:
+>
+> diff --git a/arch/sh/kernel/syscalls/syscall.tbl
+> b/arch/sh/kernel/syscalls/syscall.tbl
+> index 208f131659c5..65c3a94bff48 100644
+> --- a/arch/sh/kernel/syscalls/syscall.tbl
+> +++ b/arch/sh/kernel/syscalls/syscall.tbl
+> @@ -437,7 +437,7 @@
+>  432    common  fsmount                         sys_fsmount
+>  433    common  fspick                          sys_fspick
+>  434    common  pidfd_open                      sys_pidfd_open
+> -# 435 reserved for clone3
+> +435    common  clone3                          sys_clone3
+>  436    common  close_range                     sys_close_range
+>  437    common  openat2                         sys_openat2
+>  438    common  pidfd_getfd                     sys_pidfd_getfd
 
+Did you test clone3? This needs a custom wrapper on most architectures
+to have sensible calling conventions. If sh doesn't need it, that should
+be explained in the changelog text.
+
+> @@ -451,3 +451,4 @@
+>  446    common  landlock_restrict_self          sys_landlock_restrict_self
+>  # 447 reserved for memfd_secret
+>  448    common  process_mrelease                sys_process_mrelease
+> +449    common  futex_waitv                     sys_futex_waitv
+
+I don't know what's going on with this one, I don't actually see
+a reason why it isn't already wired up on all architectures. If we add
+this, it should probably be done for all architectures at once as a
+bugfix, but it's possible that this is intentionally only used on
+x86 and arm.
+
+André, can you comment on this?
+
+      Arnd
