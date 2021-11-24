@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB59F45BDB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:38:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A6345B9DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:03:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344303AbhKXMkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:40:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37806 "EHLO mail.kernel.org"
+        id S241937AbhKXMFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:05:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245413AbhKXMgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:36:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E435610FF;
-        Wed, 24 Nov 2021 12:21:45 +0000 (UTC)
+        id S235056AbhKXMEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:04:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0678A6101D;
+        Wed, 24 Nov 2021 12:01:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756506;
-        bh=wxotQDW19YNcb69h8iniSFCrA/WaQ+/r2v+KXBKhbTo=;
+        s=korg; t=1637755295;
+        bh=UB43MWsnVoJwanemmwAvkG+DDaJyVuj66qqOR24jbhE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1zgu9ODvdSxPoJazX+cR5CjB4ArgvULetdGHUZXXSVMehF/Oq87rCHX3wesgUGJLX
-         gYEiBtS5Pwi7emn1ymWF2NFWoDPKuNcScL2/94lXXaaLxY/ajCotFoGv2hzrbpfqqW
-         UAJxTq+WcUlm0eVcy3GGpcjFjWN4pcRmiIufhu4k=
+        b=FPf18D+QeIyZpbUaQViHASFOb6wup2XGYXXaPxnVyNXgG3HCfdZzXPXF3tKjjhRLV
+         FrALyTKi1bH3h31iISjiF2VzL4xWXeTz/g7HQBoQgSrr3L4eDMUgzpLgIN3jdooDnk
+         5YIB2869c2lFbIgbIjqIdOSTTpXDsJ3207wM5wm8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Schnelle <svens@stackframe.org>,
-        Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 103/251] parisc: fix warning in flush_tlb_all
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 042/162] Bluetooth: sco: Fix lock_sock() blockage by memcpy_from_msg()
 Date:   Wed, 24 Nov 2021 12:55:45 +0100
-Message-Id: <20211124115713.830979045@linuxfoundation.org>
+Message-Id: <20211124115659.705715200@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,66 +40,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Schnelle <svens@stackframe.org>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 1030d681319b43869e0d5b568b9d0226652d1a6f ]
+[ Upstream commit 99c23da0eed4fd20cae8243f2b51e10e66aa0951 ]
 
-I've got the following splat after enabling preemption:
+The sco_send_frame() also takes lock_sock() during memcpy_from_msg()
+call that may be endlessly blocked by a task with userfaultd
+technique, and this will result in a hung task watchdog trigger.
 
-[    3.724721] BUG: using __this_cpu_add() in preemptible [00000000] code: swapper/0/1
-[    3.734630] caller is __this_cpu_preempt_check+0x38/0x50
-[    3.740635] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc4-64bit+ #324
-[    3.744605] Hardware name: 9000/785/C8000
-[    3.744605] Backtrace:
-[    3.744605]  [<00000000401d9d58>] show_stack+0x74/0xb0
-[    3.744605]  [<0000000040c27bd4>] dump_stack_lvl+0x10c/0x188
-[    3.744605]  [<0000000040c27c84>] dump_stack+0x34/0x48
-[    3.744605]  [<0000000040c33438>] check_preemption_disabled+0x178/0x1b0
-[    3.744605]  [<0000000040c334f8>] __this_cpu_preempt_check+0x38/0x50
-[    3.744605]  [<00000000401d632c>] flush_tlb_all+0x58/0x2e0
-[    3.744605]  [<00000000401075c0>] 0x401075c0
-[    3.744605]  [<000000004010b8fc>] 0x4010b8fc
-[    3.744605]  [<00000000401080fc>] 0x401080fc
-[    3.744605]  [<00000000401d5224>] do_one_initcall+0x128/0x378
-[    3.744605]  [<0000000040102de8>] 0x40102de8
-[    3.744605]  [<0000000040c33864>] kernel_init+0x60/0x3a8
-[    3.744605]  [<00000000401d1020>] ret_from_kernel_thread+0x20/0x28
-[    3.744605]
+Just like the similar fix for hci_sock_sendmsg() in commit
+92c685dc5de0 ("Bluetooth: reorganize functions..."), this patch moves
+the  memcpy_from_msg() out of lock_sock() for addressing the hang.
 
-Fix this by moving the __inc_irq_stat() into the locked section.
+This should be the last piece for fixing CVE-2021-3640 after a few
+already queued fixes.
 
-Signed-off-by: Sven Schnelle <svens@stackframe.org>
-Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/parisc/mm/init.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/bluetooth/sco.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-index 8be075f81ce66..c8af5296cfd24 100644
---- a/arch/parisc/mm/init.c
-+++ b/arch/parisc/mm/init.c
-@@ -895,9 +895,9 @@ void flush_tlb_all(void)
- {
- 	int do_recycle;
+diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
+index 701d230fb9cf6..b9d0d1d6a4be1 100644
+--- a/net/bluetooth/sco.c
++++ b/net/bluetooth/sco.c
+@@ -269,7 +269,8 @@ done:
+ 	return err;
+ }
  
--	__inc_irq_stat(irq_tlb_count);
- 	do_recycle = 0;
- 	spin_lock(&sid_lock);
-+	__inc_irq_stat(irq_tlb_count);
- 	if (dirty_space_ids > RECYCLE_THRESHOLD) {
- 	    BUG_ON(recycle_inuse);  /* FIXME: Use a semaphore/wait queue here */
- 	    get_dirty_sids(&recycle_ndirty,recycle_dirty_array);
-@@ -916,8 +916,8 @@ void flush_tlb_all(void)
- #else
- void flush_tlb_all(void)
+-static int sco_send_frame(struct sock *sk, struct msghdr *msg, int len)
++static int sco_send_frame(struct sock *sk, void *buf, int len,
++			  unsigned int msg_flags)
  {
--	__inc_irq_stat(irq_tlb_count);
- 	spin_lock(&sid_lock);
-+	__inc_irq_stat(irq_tlb_count);
- 	flush_tlb_all_local(NULL);
- 	recycle_sids();
- 	spin_unlock(&sid_lock);
+ 	struct sco_conn *conn = sco_pi(sk)->conn;
+ 	struct sk_buff *skb;
+@@ -281,15 +282,11 @@ static int sco_send_frame(struct sock *sk, struct msghdr *msg, int len)
+ 
+ 	BT_DBG("sk %p len %d", sk, len);
+ 
+-	skb = bt_skb_send_alloc(sk, len, msg->msg_flags & MSG_DONTWAIT, &err);
++	skb = bt_skb_send_alloc(sk, len, msg_flags & MSG_DONTWAIT, &err);
+ 	if (!skb)
+ 		return err;
+ 
+-	if (memcpy_from_msg(skb_put(skb, len), msg, len)) {
+-		kfree_skb(skb);
+-		return -EFAULT;
+-	}
+-
++	memcpy(skb_put(skb, len), buf, len);
+ 	hci_send_sco(conn->hcon, skb);
+ 
+ 	return len;
+@@ -700,6 +697,7 @@ static int sco_sock_sendmsg(struct socket *sock, struct msghdr *msg,
+ 			    size_t len)
+ {
+ 	struct sock *sk = sock->sk;
++	void *buf;
+ 	int err;
+ 
+ 	BT_DBG("sock %p, sk %p", sock, sk);
+@@ -711,14 +709,24 @@ static int sco_sock_sendmsg(struct socket *sock, struct msghdr *msg,
+ 	if (msg->msg_flags & MSG_OOB)
+ 		return -EOPNOTSUPP;
+ 
++	buf = kmalloc(len, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	if (memcpy_from_msg(buf, msg, len)) {
++		kfree(buf);
++		return -EFAULT;
++	}
++
+ 	lock_sock(sk);
+ 
+ 	if (sk->sk_state == BT_CONNECTED)
+-		err = sco_send_frame(sk, msg, len);
++		err = sco_send_frame(sk, buf, len, msg->msg_flags);
+ 	else
+ 		err = -ENOTCONN;
+ 
+ 	release_sock(sk);
++	kfree(buf);
+ 	return err;
+ }
+ 
 -- 
 2.33.0
 
