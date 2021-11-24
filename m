@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F65045BB42
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:16:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1702D45BE43
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:43:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243265AbhKXMSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:18:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34592 "EHLO mail.kernel.org"
+        id S244389AbhKXMqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:46:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242560AbhKXMMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:12:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DE2C61074;
-        Wed, 24 Nov 2021 12:06:51 +0000 (UTC)
+        id S1344596AbhKXMnG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:43:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 511ED6124C;
+        Wed, 24 Nov 2021 12:25:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755611;
-        bh=uhUFfBpuoDu4WC0xjH4CkbA2dKcnwk3j6VeoLLPXras=;
+        s=korg; t=1637756737;
+        bh=6OkenuuhQoigbJ3X08KFv5PQHPsIYcQIk38/j3POqL4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MrFaV3EyRsro4v3X6LTqmg5SJgLWtsIqn/BhTIr5BRKIjO1hLzS5ob2HbgYWDrYhS
-         kOaCWV9jP5Ahp+w6mcAEpBvDcLADuYDGJp0c/6i20JI/SjHaDOA2ONtjCjQnZBZrmN
-         1Z03lEnQNdNkMOhe6e1M6GdR0beHHVHSXP7Csvtw=
+        b=T0bXiFwHpxrlXFXjjFnu7jcOpyd2db2S5dLQ1J2JEqfNI05aQuWv65JYi1lgBjzYJ
+         9QXPD0+WTR04UxhewYobauABnllWWXwO14IMSoy6avNtaB9t0hge4zZjjPFgul/piO
+         hwoEIV2toZQzdR4UM25fgo8BIC/PyzXd9eaLLQs4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anatolij Gustschin <agust@denx.de>,
-        Rob Herring <robh@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 126/162] powerpc/5200: dts: fix memory node unit name
-Date:   Wed, 24 Nov 2021 12:57:09 +0100
-Message-Id: <20211124115702.375098829@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 188/251] USB: chipidea: fix interrupt deadlock
+Date:   Wed, 24 Nov 2021 12:57:10 +0100
+Message-Id: <20211124115716.817835921@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,191 +39,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anatolij Gustschin <agust@denx.de>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit aed2886a5e9ffc8269a4220bff1e9e030d3d2eb1 ]
+commit 9aaa81c3366e8393a62374e3a1c67c69edc07b8a upstream.
 
-Fixes build warnings:
-Warning (unit_address_vs_reg): /memory: node has a reg or ranges property, but no unit name
+Chipidea core was calling the interrupt handler from non-IRQ context
+with interrupts enabled, something which can lead to a deadlock if
+there's an actual interrupt trying to take a lock that's already held
+(e.g. the controller lock in udc_irq()).
 
-Signed-off-by: Anatolij Gustschin <agust@denx.de>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20211013220532.24759-4-agust@denx.de
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Add a wrapper that can be used to fake interrupts instead of calling the
+handler directly.
+
+Fixes: 3ecb3e09b042 ("usb: chipidea: Use extcon framework for VBUS and ID detect")
+Fixes: 876d4e1e8298 ("usb: chipidea: core: add wakeup support for extcon")
+Cc: Peter Chen <peter.chen@kernel.org>
+Cc: stable@vger.kernel.org      # 4.4
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211021083447.20078-1-johan@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/powerpc/boot/dts/charon.dts    | 2 +-
- arch/powerpc/boot/dts/digsy_mtc.dts | 2 +-
- arch/powerpc/boot/dts/lite5200.dts  | 2 +-
- arch/powerpc/boot/dts/lite5200b.dts | 2 +-
- arch/powerpc/boot/dts/media5200.dts | 2 +-
- arch/powerpc/boot/dts/mpc5200b.dtsi | 2 +-
- arch/powerpc/boot/dts/o2d.dts       | 2 +-
- arch/powerpc/boot/dts/o2d.dtsi      | 2 +-
- arch/powerpc/boot/dts/o2dnt2.dts    | 2 +-
- arch/powerpc/boot/dts/o3dnt.dts     | 2 +-
- arch/powerpc/boot/dts/pcm032.dts    | 2 +-
- arch/powerpc/boot/dts/tqm5200.dts   | 2 +-
- 12 files changed, 12 insertions(+), 12 deletions(-)
+ drivers/usb/chipidea/core.c |   19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/arch/powerpc/boot/dts/charon.dts b/arch/powerpc/boot/dts/charon.dts
-index 0e00e508eaa6a..1c8fe20752e6a 100644
---- a/arch/powerpc/boot/dts/charon.dts
-+++ b/arch/powerpc/boot/dts/charon.dts
-@@ -39,7 +39,7 @@
- 		};
- 	};
+--- a/drivers/usb/chipidea/core.c
++++ b/drivers/usb/chipidea/core.c
+@@ -535,7 +535,7 @@ int hw_device_reset(struct ci_hdrc *ci)
+ 	return 0;
+ }
  
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x08000000>;	// 128MB
- 	};
-diff --git a/arch/powerpc/boot/dts/digsy_mtc.dts b/arch/powerpc/boot/dts/digsy_mtc.dts
-index 955bff629df3c..bf511255f3ae8 100644
---- a/arch/powerpc/boot/dts/digsy_mtc.dts
-+++ b/arch/powerpc/boot/dts/digsy_mtc.dts
-@@ -20,7 +20,7 @@
- 	model = "intercontrol,digsy-mtc";
- 	compatible = "intercontrol,digsy-mtc";
+-static irqreturn_t ci_irq(int irq, void *data)
++static irqreturn_t ci_irq_handler(int irq, void *data)
+ {
+ 	struct ci_hdrc *ci = data;
+ 	irqreturn_t ret = IRQ_NONE;
+@@ -588,6 +588,15 @@ static irqreturn_t ci_irq(int irq, void
+ 	return ret;
+ }
  
--	memory {
-+	memory@0 {
- 		reg = <0x00000000 0x02000000>;	// 32MB
- 	};
++static void ci_irq(struct ci_hdrc *ci)
++{
++	unsigned long flags;
++
++	local_irq_save(flags);
++	ci_irq_handler(ci->irq, ci);
++	local_irq_restore(flags);
++}
++
+ static int ci_cable_notifier(struct notifier_block *nb, unsigned long event,
+ 			     void *ptr)
+ {
+@@ -597,7 +606,7 @@ static int ci_cable_notifier(struct noti
+ 	cbl->connected = event;
+ 	cbl->changed = true;
  
-diff --git a/arch/powerpc/boot/dts/lite5200.dts b/arch/powerpc/boot/dts/lite5200.dts
-index 179a1785d6454..18d137a3393f0 100644
---- a/arch/powerpc/boot/dts/lite5200.dts
-+++ b/arch/powerpc/boot/dts/lite5200.dts
-@@ -36,7 +36,7 @@
- 		};
- 	};
+-	ci_irq(ci->irq, ci);
++	ci_irq(ci);
+ 	return NOTIFY_DONE;
+ }
  
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x04000000>;	// 64MB
- 	};
-diff --git a/arch/powerpc/boot/dts/lite5200b.dts b/arch/powerpc/boot/dts/lite5200b.dts
-index 5abb46c5cc951..29419cf81e044 100644
---- a/arch/powerpc/boot/dts/lite5200b.dts
-+++ b/arch/powerpc/boot/dts/lite5200b.dts
-@@ -35,7 +35,7 @@
- 		led4 { gpios = <&gpio_simple 2 1>; };
- 	};
+@@ -1051,7 +1060,7 @@ static int ci_hdrc_probe(struct platform
+ 		}
+ 	}
  
--	memory {
-+	memory@0 {
- 		reg = <0x00000000 0x10000000>;	// 256MB
- 	};
+-	ret = devm_request_irq(dev, ci->irq, ci_irq, IRQF_SHARED,
++	ret = devm_request_irq(dev, ci->irq, ci_irq_handler, IRQF_SHARED,
+ 			ci->platdata->name, ci);
+ 	if (ret)
+ 		goto stop;
+@@ -1175,11 +1184,11 @@ static void ci_extcon_wakeup_int(struct
  
-diff --git a/arch/powerpc/boot/dts/media5200.dts b/arch/powerpc/boot/dts/media5200.dts
-index b5413cb85f134..3d57463bc49da 100644
---- a/arch/powerpc/boot/dts/media5200.dts
-+++ b/arch/powerpc/boot/dts/media5200.dts
-@@ -36,7 +36,7 @@
- 		};
- 	};
+ 	if (!IS_ERR(cable_id->edev) && ci->is_otg &&
+ 		(otgsc & OTGSC_IDIE) && (otgsc & OTGSC_IDIS))
+-		ci_irq(ci->irq, ci);
++		ci_irq(ci);
  
--	memory {
-+	memory@0 {
- 		reg = <0x00000000 0x08000000>;	// 128MB RAM
- 	};
+ 	if (!IS_ERR(cable_vbus->edev) && ci->is_otg &&
+ 		(otgsc & OTGSC_BSVIE) && (otgsc & OTGSC_BSVIS))
+-		ci_irq(ci->irq, ci);
++		ci_irq(ci);
+ }
  
-diff --git a/arch/powerpc/boot/dts/mpc5200b.dtsi b/arch/powerpc/boot/dts/mpc5200b.dtsi
-index 969b2200b2f97..ecfba675b5611 100644
---- a/arch/powerpc/boot/dts/mpc5200b.dtsi
-+++ b/arch/powerpc/boot/dts/mpc5200b.dtsi
-@@ -37,7 +37,7 @@
- 		};
- 	};
- 
--	memory: memory {
-+	memory: memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x04000000>;	// 64MB
- 	};
-diff --git a/arch/powerpc/boot/dts/o2d.dts b/arch/powerpc/boot/dts/o2d.dts
-index 9f6dd4d889b32..5a676e8141caf 100644
---- a/arch/powerpc/boot/dts/o2d.dts
-+++ b/arch/powerpc/boot/dts/o2d.dts
-@@ -16,7 +16,7 @@
- 	model = "ifm,o2d";
- 	compatible = "ifm,o2d";
- 
--	memory {
-+	memory@0 {
- 		reg = <0x00000000 0x08000000>;  // 128MB
- 	};
- 
-diff --git a/arch/powerpc/boot/dts/o2d.dtsi b/arch/powerpc/boot/dts/o2d.dtsi
-index cf073e693f24d..1b4df5f64b580 100644
---- a/arch/powerpc/boot/dts/o2d.dtsi
-+++ b/arch/powerpc/boot/dts/o2d.dtsi
-@@ -23,7 +23,7 @@
- 	model = "ifm,o2d";
- 	compatible = "ifm,o2d";
- 
--	memory {
-+	memory@0 {
- 		reg = <0x00000000 0x04000000>;	// 64MB
- 	};
- 
-diff --git a/arch/powerpc/boot/dts/o2dnt2.dts b/arch/powerpc/boot/dts/o2dnt2.dts
-index a0f5b97a4f06e..5184c461a205f 100644
---- a/arch/powerpc/boot/dts/o2dnt2.dts
-+++ b/arch/powerpc/boot/dts/o2dnt2.dts
-@@ -16,7 +16,7 @@
- 	model = "ifm,o2dnt2";
- 	compatible = "ifm,o2d";
- 
--	memory {
-+	memory@0 {
- 		reg = <0x00000000 0x08000000>;  // 128MB
- 	};
- 
-diff --git a/arch/powerpc/boot/dts/o3dnt.dts b/arch/powerpc/boot/dts/o3dnt.dts
-index acce49326491b..045b901719245 100644
---- a/arch/powerpc/boot/dts/o3dnt.dts
-+++ b/arch/powerpc/boot/dts/o3dnt.dts
-@@ -16,7 +16,7 @@
- 	model = "ifm,o3dnt";
- 	compatible = "ifm,o2d";
- 
--	memory {
-+	memory@0 {
- 		reg = <0x00000000 0x04000000>;  // 64MB
- 	};
- 
-diff --git a/arch/powerpc/boot/dts/pcm032.dts b/arch/powerpc/boot/dts/pcm032.dts
-index 96b139bf50e9c..ac3f53c1a1f5b 100644
---- a/arch/powerpc/boot/dts/pcm032.dts
-+++ b/arch/powerpc/boot/dts/pcm032.dts
-@@ -26,7 +26,7 @@
- 	model = "phytec,pcm032";
- 	compatible = "phytec,pcm032";
- 
--	memory {
-+	memory@0 {
- 		reg = <0x00000000 0x08000000>;	// 128MB
- 	};
- 
-diff --git a/arch/powerpc/boot/dts/tqm5200.dts b/arch/powerpc/boot/dts/tqm5200.dts
-index 1db07f6cf133c..68b9e8240fb5b 100644
---- a/arch/powerpc/boot/dts/tqm5200.dts
-+++ b/arch/powerpc/boot/dts/tqm5200.dts
-@@ -36,7 +36,7 @@
- 		};
- 	};
- 
--	memory {
-+	memory@0 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x04000000>;	// 64MB
- 	};
--- 
-2.33.0
-
+ static int ci_controller_resume(struct device *dev)
 
 
