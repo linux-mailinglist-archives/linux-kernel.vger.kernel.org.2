@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DEA945C198
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB64445C38F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:38:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347675AbhKXNTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:19:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37046 "EHLO mail.kernel.org"
+        id S1349246AbhKXNkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:40:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348017AbhKXNQA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:16:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EED0161ACE;
-        Wed, 24 Nov 2021 12:44:41 +0000 (UTC)
+        id S1350333AbhKXNhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:37:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C39C4630EC;
+        Wed, 24 Nov 2021 12:55:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757882;
-        bh=V2rTfWL39qx0LwoNC8UePB3chmsoRKIEpXgsCKWxEHU=;
+        s=korg; t=1637758540;
+        bh=Fedp7YBcSsxKrK4E4w6jwe2FXBoTjJGWEOvxZPK89G4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fFllX2vWLFIJzdmp6kLeS1+JbqgY1Dw0aXRJJIw81z+42ZOy/gql0E6vFl9YKEIFl
-         Trz5+HJSG8eexWPizFl93deH4XGYZDLhYbcmEoK3DWpB6YUqP4uvltrhIDT+vJOMS3
-         J6iSUvCTZJjxhpNYPURNPspO3PpG+Hco8ch9HFfo=
+        b=jSmF7TwpeJakGPlRWWz4dLMspXg7DKHBrtoHJikS5nXzCl01rUIScu0RsU2/qW2NM
+         1a65l/wWeqhGSag74tWW4INkYhwpvRnfMwIJ8hW2U0P81DxXBRFuNASj7CfL+k5Lv8
+         2rRQ72VEpz8Q8KMz2gmqg/sHiRp5P6ZGmCUY6LyE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wei Liu <wei.liu@kernel.org>
-Subject: [PATCH 4.19 308/323] x86/hyperv: Fix NULL deref in set_hv_tscchange_cb() if Hyper-V setup fails
+        stable@vger.kernel.org,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>,
+        Eryk Rybak <eryk.roch.rybak@intel.com>,
+        Tony Brelinski <tony.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 102/154] i40e: Fix changing previously set num_queue_pairs for PFs
 Date:   Wed, 24 Nov 2021 12:58:18 +0100
-Message-Id: <20211124115729.311645680@linuxfoundation.org>
+Message-Id: <20211124115705.594288371@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +44,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Eryk Rybak <eryk.roch.rybak@intel.com>
 
-commit daf972118c517b91f74ff1731417feb4270625a4 upstream.
+[ Upstream commit d2a69fefd75683004ffe87166de5635b3267ee07 ]
 
-Check for a valid hv_vp_index array prior to derefencing hv_vp_index when
-setting Hyper-V's TSC change callback.  If Hyper-V setup failed in
-hyperv_init(), the kernel will still report that it's running under
-Hyper-V, but will have silently disabled nearly all functionality.
+Currently, the i40e_vsi_setup_queue_map is basing the count of queues in
+TCs on a VSI's alloc_queue_pairs member which is not changed throughout
+any user's action (for example via ethtool's set_channels callback).
 
-  BUG: kernel NULL pointer dereference, address: 0000000000000010
-  #PF: supervisor read access in kernel mode
-  #PF: error_code(0x0000) - not-present page
-  PGD 0 P4D 0
-  Oops: 0000 [#1] SMP
-  CPU: 4 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc2+ #75
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-  RIP: 0010:set_hv_tscchange_cb+0x15/0xa0
-  Code: <8b> 04 82 8b 15 12 17 85 01 48 c1 e0 20 48 0d ee 00 01 00 f6 c6 08
-  ...
-  Call Trace:
-   kvm_arch_init+0x17c/0x280
-   kvm_init+0x31/0x330
-   vmx_init+0xba/0x13a
-   do_one_initcall+0x41/0x1c0
-   kernel_init_freeable+0x1f2/0x23b
-   kernel_init+0x16/0x120
-   ret_from_fork+0x22/0x30
+This implies that vsi->tc_config.tc_info[n].qcount value that is given
+to the kernel via netdev_set_tc_queue() that notifies about the count of
+queues per particular traffic class is constant even if user has changed
+the total count of queues.
 
-Fixes: 93286261de1b ("x86/hyperv: Reenlightenment notifications support")
-Cc: stable@vger.kernel.org
-Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Link: https://lore.kernel.org/r/20211104182239.1302956-2-seanjc@google.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This in turn caused the kernel warning after setting the queue count to
+the lower value than the initial one:
+
+$ ethtool -l ens801f0
+Channel parameters for ens801f0:
+Pre-set maximums:
+RX:             0
+TX:             0
+Other:          1
+Combined:       64
+Current hardware settings:
+RX:             0
+TX:             0
+Other:          1
+Combined:       64
+
+$ ethtool -L ens801f0 combined 40
+
+[dmesg]
+Number of in use tx queues changed invalidating tc mappings. Priority
+traffic classification disabled!
+
+Reason was that vsi->alloc_queue_pairs stayed at 64 value which was used
+to set the qcount on TC0 (by default only TC0 exists so all of the
+existing queues are assigned to TC0). we update the offset/qcount via
+netdev_set_tc_queue() back to the old value but then the
+netif_set_real_num_tx_queues() is using the vsi->num_queue_pairs as a
+value which got set to 40.
+
+Fix it by using vsi->req_queue_pairs as a queue count that will be
+distributed across TCs. Do it only for non-zero values, which implies
+that user actually requested the new count of queues.
+
+For VSIs other than main, stay with the vsi->alloc_queue_pairs as we
+only allow manipulating the queue count on main VSI.
+
+Fixes: bc6d33c8d93f ("i40e: Fix the number of queues available to be mapped for use")
+Co-developed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Co-developed-by: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
+Signed-off-by: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
+Signed-off-by: Eryk Rybak <eryk.roch.rybak@intel.com>
+Tested-by: Tony Brelinski <tony.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/hyperv/hv_init.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 35 ++++++++++++++-------
+ 1 file changed, 23 insertions(+), 12 deletions(-)
 
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -200,6 +200,9 @@ void set_hv_tscchange_cb(void (*cb)(void
- 		return;
- 	}
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index 72405a0aabde7..48856dea512c8 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -1789,6 +1789,7 @@ static void i40e_vsi_setup_queue_map(struct i40e_vsi *vsi,
+ 				     bool is_add)
+ {
+ 	struct i40e_pf *pf = vsi->back;
++	u16 num_tc_qps = 0;
+ 	u16 sections = 0;
+ 	u8 netdev_tc = 0;
+ 	u16 numtc = 1;
+@@ -1796,13 +1797,29 @@ static void i40e_vsi_setup_queue_map(struct i40e_vsi *vsi,
+ 	u8 offset;
+ 	u16 qmap;
+ 	int i;
+-	u16 num_tc_qps = 0;
  
-+	if (!hv_vp_index)
-+		return;
+ 	sections = I40E_AQ_VSI_PROP_QUEUE_MAP_VALID;
+ 	offset = 0;
+ 
++	if (vsi->type == I40E_VSI_MAIN) {
++		/* This code helps add more queue to the VSI if we have
++		 * more cores than RSS can support, the higher cores will
++		 * be served by ATR or other filters. Furthermore, the
++		 * non-zero req_queue_pairs says that user requested a new
++		 * queue count via ethtool's set_channels, so use this
++		 * value for queues distribution across traffic classes
++		 */
++		if (vsi->req_queue_pairs > 0)
++			vsi->num_queue_pairs = vsi->req_queue_pairs;
++		else if (pf->flags & I40E_FLAG_MSIX_ENABLED)
++			vsi->num_queue_pairs = pf->num_lan_msix;
++	}
 +
- 	hv_reenlightenment_cb = cb;
- 
- 	/* Make sure callback is registered before we write to MSRs */
+ 	/* Number of queues per enabled TC */
+-	num_tc_qps = vsi->alloc_queue_pairs;
++	if (vsi->type == I40E_VSI_MAIN)
++		num_tc_qps = vsi->num_queue_pairs;
++	else
++		num_tc_qps = vsi->alloc_queue_pairs;
+ 	if (enabled_tc && (vsi->back->flags & I40E_FLAG_DCB_ENABLED)) {
+ 		/* Find numtc from enabled TC bitmap */
+ 		for (i = 0, numtc = 0; i < I40E_MAX_TRAFFIC_CLASS; i++) {
+@@ -1880,16 +1897,10 @@ static void i40e_vsi_setup_queue_map(struct i40e_vsi *vsi,
+ 		}
+ 		ctxt->info.tc_mapping[i] = cpu_to_le16(qmap);
+ 	}
+-
+-	/* Set actual Tx/Rx queue pairs */
+-	vsi->num_queue_pairs = offset;
+-	if ((vsi->type == I40E_VSI_MAIN) && (numtc == 1)) {
+-		if (vsi->req_queue_pairs > 0)
+-			vsi->num_queue_pairs = vsi->req_queue_pairs;
+-		else if (pf->flags & I40E_FLAG_MSIX_ENABLED)
+-			vsi->num_queue_pairs = pf->num_lan_msix;
+-	}
+-
++	/* Do not change previously set num_queue_pairs for PFs */
++	if ((vsi->type == I40E_VSI_MAIN && numtc != 1) ||
++	    vsi->type != I40E_VSI_MAIN)
++		vsi->num_queue_pairs = offset;
+ 	/* Scheduler section valid can only be set for ADD VSI */
+ 	if (is_add) {
+ 		sections |= I40E_AQ_VSI_PROP_SCHED_VALID;
+-- 
+2.33.0
+
 
 
