@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB8945C46C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:46:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFF845C027
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:03:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349582AbhKXNtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:49:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37472 "EHLO mail.kernel.org"
+        id S1346243AbhKXNFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:05:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343711AbhKXNor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:44:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10C706330E;
-        Wed, 24 Nov 2021 12:59:58 +0000 (UTC)
+        id S245660AbhKXNCD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:02:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16F13611ED;
+        Wed, 24 Nov 2021 12:35:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758799;
-        bh=H1gsNci/UOVbT5g2XWATohYVD9ANo/pEuVcBnvx+Q4g=;
+        s=korg; t=1637757320;
+        bh=7celCJTnOjKtJ2Bex1M878SLjTi051XhwTILju8t1qI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cUC21TbbSf15lhHMFe7qfaZB7lZy6uvC1ppebclVMBuLNauR6cu6V9ecG1JELHRib
-         1BCBJk9BnVIijJ83kHUrT3oL/TS+RyU4E9pEgf0omOcjkh+efajmZYUdIR7ez1L3E7
-         GkQ5pCD8taynDEpBbz3SGXSLiX08kOQdzsCWvttc=
+        b=nk7xIxSU4r+58UJYHld6zn955mDgE0KlBR5zt1kouLnU48fFxH0+TQzY4a83F9Cru
+         VPyg7Az52KwuCTmgHe8QJ87et0YNRsXrDATqS4rggtb0/ClHD+Ps6YEhQnRRc3SpiY
+         NCt+ZIIAIrkvhgsSlezRvURHvx4/iR2qYA4CtEt8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kuldeep Singh <kuldeep.singh@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 033/279] arm64: dts: ls1012a: Add serial alias for ls1012a-rdb
+Subject: [PATCH 4.19 130/323] drm/amdgpu: fix warning for overflow check
 Date:   Wed, 24 Nov 2021 12:55:20 +0100
-Message-Id: <20211124115719.885684567@linuxfoundation.org>
+Message-Id: <20211124115723.328535915@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuldeep Singh <kuldeep.singh@nxp.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 7f31ae6e01da140e34d6513815253e811019f016 ]
+[ Upstream commit 335aea75b0d95518951cad7c4c676e6f1c02c150 ]
 
-U-boot atempts to read serial alias value for ls1012a-rdb but couldn't
-do so as it is not initialised and thus, FDT_ERR_NOTFOUND error is
-reported while booting linux.
+The overflow check in amdgpu_bo_list_create() causes a warning with
+clang-14 on 64-bit architectures, since the limit can never be
+exceeded.
 
-Loading fdt from FIT Image at a0000000 ...
-   Description:  ls1012ardb-dtb
-     Type:         Flat Device Tree
-     Data Start:   0xab111474
-     Data Size:    11285 Bytes = 11 KiB
-     Architecture: AArch64
-     Load Address: 0x90000000
-   Loading fdt from 0xab111474 to 0x90000000
-   Booting using the fdt blob at 0x90000000
-   Uncompressing Kernel Image
-   Loading Device Tree to 000000008fffa000, end 000000008ffffc14 ... OK
-WARNING: fdt_fixup_stdout: could not read serial0 alias: FDT_ERR_NOTFOUND
-NOTICE:  RNG: INSTANTIATED
+drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c:74:18: error: result of comparison of constant 256204778801521549 with expression of type 'unsigned int' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+        if (num_entries > (SIZE_MAX - sizeof(struct amdgpu_bo_list))
+            ~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting kernel ...
+The check remains useful for 32-bit architectures, so just avoid the
+warning by using size_t as the type for the count.
 
-Fix the above error by specifying serial value to duart.
-
-Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Fixes: 920990cb080a ("drm/amdgpu: allocate the bo_list array after the list")
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
-index 79f155dedb2d0..e662677a6e28f 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-rdb.dts
-@@ -15,6 +15,7 @@
- 	compatible = "fsl,ls1012a-rdb", "fsl,ls1012a";
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
+index ce7f18c5ccb26..fda8d68a87fd6 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c
+@@ -57,7 +57,7 @@ static void amdgpu_bo_list_free(struct kref *ref)
  
- 	aliases {
-+		serial0 = &duart0;
- 		mmc0 = &esdhc0;
- 		mmc1 = &esdhc1;
- 	};
+ int amdgpu_bo_list_create(struct amdgpu_device *adev, struct drm_file *filp,
+ 			  struct drm_amdgpu_bo_list_entry *info,
+-			  unsigned num_entries, struct amdgpu_bo_list **result)
++			  size_t num_entries, struct amdgpu_bo_list **result)
+ {
+ 	unsigned last_entry = 0, first_userptr = num_entries;
+ 	struct amdgpu_bo_list_entry *array;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
+index 61b089768e1ce..64c8195426ac8 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h
+@@ -61,7 +61,7 @@ int amdgpu_bo_create_list_entry_array(struct drm_amdgpu_bo_list_in *in,
+ int amdgpu_bo_list_create(struct amdgpu_device *adev,
+ 				 struct drm_file *filp,
+ 				 struct drm_amdgpu_bo_list_entry *info,
+-				 unsigned num_entries,
++				 size_t num_entries,
+ 				 struct amdgpu_bo_list **list);
+ 
+ static inline struct amdgpu_bo_list_entry *
 -- 
 2.33.0
 
