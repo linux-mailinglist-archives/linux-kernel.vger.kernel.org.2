@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D8945BC28
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:23:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A46C45BC5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:28:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244057AbhKXM0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:26:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36450 "EHLO mail.kernel.org"
+        id S242940AbhKXM2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:28:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243495AbhKXMWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:22:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89961610F7;
-        Wed, 24 Nov 2021 12:13:41 +0000 (UTC)
+        id S244120AbhKXMWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:22:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA1E6611AD;
+        Wed, 24 Nov 2021 12:13:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756022;
-        bh=xSEMB4xLMopOI2I+/OpL0exzmJsz+RaWAn39gnWlwvQ=;
+        s=korg; t=1637756024;
+        bh=OikdgyYJ2IXfsnpsoUdSgNReQWnXuIpVHowJ6wfCcbc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2AMVkfFVOeZ8qBO+bQFmJvfH72FksLYR5S5Fvw1NMm2xMKOpOGhuTNAR1qdogOImI
-         s/yZ/8XGFXGKLSLoFXmUVzulIcs3TBz7ZHSkjUUaa2ANPQ9EhU8WMNCZAoqBM58OE6
-         /JJM5NDQCFeAQfLAlg/0IguoxfD32aNE5F7LCla4=
+        b=mNLzZGES5m2/4aLGbZQELarUS87dicY++0YPSz/wkkdzNx7Xjeqf064AI/YEgeyYK
+         2IG5o5KUde8xCvBIoakDGXEuX3LlAHf1cvLcpJwpWq21AyFzhv+D2RJNL/a/MK8Ckl
+         Aajd0u+oR4xh4w/tUVdk1ltybwwo+MimwtypbSaI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Quinn Tran <qutran@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 142/207] scsi: qla2xxx: Turn off target reset during issue_lip
-Date:   Wed, 24 Nov 2021 12:56:53 +0100
-Message-Id: <20211124115708.617446374@linuxfoundation.org>
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 143/207] i2c: xlr: Fix a resource leak in the error handling path of xlr_i2c_probe()
+Date:   Wed, 24 Nov 2021 12:56:54 +0100
+Message-Id: <20211124115708.647362993@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
 References: <20211124115703.941380739@linuxfoundation.org>
@@ -43,129 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quinn Tran <qutran@marvell.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 0b7a9fd934a68ebfc1019811b7bdc1742072ad7b ]
+[ Upstream commit 7f98960c046ee1136e7096aee168eda03aef8a5d ]
 
-When user uses issue_lip to do link bounce, driver sends additional target
-reset to remote device before resetting the link. The target reset would
-affect other paths with active I/Os. This patch will remove the unnecessary
-target reset.
+A successful 'clk_prepare()' call should be balanced by a corresponding
+'clk_unprepare()' call in the error handling path of the probe, as already
+done in the remove function.
 
-Link: https://lore.kernel.org/r/20211026115412.27691-4-njavali@marvell.com
-Fixes: 5854771e314e ("[SCSI] qla2xxx: Add ISPFX00 specific bus reset routine")
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Quinn Tran <qutran@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+More specifically, 'clk_prepare_enable()' is used, but 'clk_disable()' is
+also already called. So just the unprepare step has still to be done.
+
+Update the error handling path accordingly.
+
+Fixes: 75d31c2372e4 ("i2c: xlr: add support for Sigma Designs controller variant")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_gbl.h |  2 --
- drivers/scsi/qla2xxx/qla_mr.c  | 23 -----------------------
- drivers/scsi/qla2xxx/qla_os.c  | 27 ++-------------------------
- 3 files changed, 2 insertions(+), 50 deletions(-)
+ drivers/i2c/busses/i2c-xlr.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_gbl.h b/drivers/scsi/qla2xxx/qla_gbl.h
-index 6ca00813c71f0..4a1a16e6a8204 100644
---- a/drivers/scsi/qla2xxx/qla_gbl.h
-+++ b/drivers/scsi/qla2xxx/qla_gbl.h
-@@ -115,7 +115,6 @@ extern int ql2xasynctmfenable;
- extern int ql2xgffidenable;
- extern int ql2xenabledif;
- extern int ql2xenablehba_err_chk;
--extern int ql2xtargetreset;
- extern int ql2xdontresethba;
- extern uint64_t ql2xmaxlun;
- extern int ql2xmdcapmask;
-@@ -655,7 +654,6 @@ extern void qlafx00_abort_iocb(srb_t *, struct abort_iocb_entry_fx00 *);
- extern void qlafx00_fxdisc_iocb(srb_t *, struct fxdisc_entry_fx00 *);
- extern void qlafx00_timer_routine(scsi_qla_host_t *);
- extern int qlafx00_rescan_isp(scsi_qla_host_t *);
--extern int qlafx00_loop_reset(scsi_qla_host_t *vha);
+diff --git a/drivers/i2c/busses/i2c-xlr.c b/drivers/i2c/busses/i2c-xlr.c
+index ad17d88d85736..63f47e07345c0 100644
+--- a/drivers/i2c/busses/i2c-xlr.c
++++ b/drivers/i2c/busses/i2c-xlr.c
+@@ -434,11 +434,15 @@ static int xlr_i2c_probe(struct platform_device *pdev)
+ 	i2c_set_adapdata(&priv->adap, priv);
+ 	ret = i2c_add_numbered_adapter(&priv->adap);
+ 	if (ret < 0)
+-		return ret;
++		goto err_unprepare_clk;
  
- /* qla82xx related functions */
- 
-diff --git a/drivers/scsi/qla2xxx/qla_mr.c b/drivers/scsi/qla2xxx/qla_mr.c
-index 15dff7099955b..b72cc4b1287d9 100644
---- a/drivers/scsi/qla2xxx/qla_mr.c
-+++ b/drivers/scsi/qla2xxx/qla_mr.c
-@@ -738,29 +738,6 @@ qlafx00_lun_reset(fc_port_t *fcport, uint64_t l, int tag)
- 	return qla2x00_async_tm_cmd(fcport, TCF_LUN_RESET, l, tag);
+ 	platform_set_drvdata(pdev, priv);
+ 	dev_info(&priv->adap.dev, "Added I2C Bus.\n");
+ 	return 0;
++
++err_unprepare_clk:
++	clk_unprepare(clk);
++	return ret;
  }
  
--int
--qlafx00_loop_reset(scsi_qla_host_t *vha)
--{
--	int ret;
--	struct fc_port *fcport;
--	struct qla_hw_data *ha = vha->hw;
--
--	if (ql2xtargetreset) {
--		list_for_each_entry(fcport, &vha->vp_fcports, list) {
--			if (fcport->port_type != FCT_TARGET)
--				continue;
--
--			ret = ha->isp_ops->target_reset(fcport, 0, 0);
--			if (ret != QLA_SUCCESS) {
--				ql_dbg(ql_dbg_taskm, vha, 0x803d,
--				    "Bus Reset failed: Reset=%d "
--				    "d_id=%x.\n", ret, fcport->d_id.b24);
--			}
--		}
--	}
--	return QLA_SUCCESS;
--}
--
- int
- qlafx00_iospace_config(struct qla_hw_data *ha)
- {
-diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
-index 65bbca715f57d..274b61ddee04a 100644
---- a/drivers/scsi/qla2xxx/qla_os.c
-+++ b/drivers/scsi/qla2xxx/qla_os.c
-@@ -180,12 +180,6 @@ MODULE_PARM_DESC(ql2xdbwr,
- 		" 0 -- Regular doorbell.\n"
- 		" 1 -- CAMRAM doorbell (faster).\n");
- 
--int ql2xtargetreset = 1;
--module_param(ql2xtargetreset, int, S_IRUGO);
--MODULE_PARM_DESC(ql2xtargetreset,
--		 "Enable target reset."
--		 "Default is 1 - use hw defaults.");
--
- int ql2xgffidenable;
- module_param(ql2xgffidenable, int, S_IRUGO);
- MODULE_PARM_DESC(ql2xgffidenable,
-@@ -1401,27 +1395,10 @@ int
- qla2x00_loop_reset(scsi_qla_host_t *vha)
- {
- 	int ret;
--	struct fc_port *fcport;
- 	struct qla_hw_data *ha = vha->hw;
- 
--	if (IS_QLAFX00(ha)) {
--		return qlafx00_loop_reset(vha);
--	}
--
--	if (ql2xtargetreset == 1 && ha->flags.enable_target_reset) {
--		list_for_each_entry(fcport, &vha->vp_fcports, list) {
--			if (fcport->port_type != FCT_TARGET)
--				continue;
--
--			ret = ha->isp_ops->target_reset(fcport, 0, 0);
--			if (ret != QLA_SUCCESS) {
--				ql_dbg(ql_dbg_taskm, vha, 0x802c,
--				    "Bus Reset failed: Reset=%d "
--				    "d_id=%x.\n", ret, fcport->d_id.b24);
--			}
--		}
--	}
--
-+	if (IS_QLAFX00(ha))
-+		return QLA_SUCCESS;
- 
- 	if (ha->flags.enable_lip_full_login && !IS_CNA_CAPABLE(ha)) {
- 		atomic_set(&vha->loop_state, LOOP_DOWN);
+ static int xlr_i2c_remove(struct platform_device *pdev)
 -- 
 2.33.0
 
