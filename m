@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6FCD45C438
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:44:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2859B45C1A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:17:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351213AbhKXNq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:46:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34336 "EHLO mail.kernel.org"
+        id S1343755AbhKXNU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:20:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353306AbhKXNlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:41:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9294663258;
-        Wed, 24 Nov 2021 12:57:56 +0000 (UTC)
+        id S244682AbhKXNRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:17:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E3B561439;
+        Wed, 24 Nov 2021 12:44:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758677;
-        bh=JxNSFW/hA7GMC/1lZygmnjbe9EThL7OX/GemEEh7+4Y=;
+        s=korg; t=1637757897;
+        bh=ftMJjk/rcubRpf0OAIbomDO4tHJC8nhMo8dvK4+T+ZA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gC+sDxnB6covrsEWd5VVIG8Yazu5936B44mO7vIrBXeY3+mYyOUOceBgeDw1YnXbJ
-         xbHtJgDDaNu+WvVoiLHwqS4GssQpa+wDWoePGIID8eXKqWqSX5FM8qtFP2kZrAO5sR
-         FDPJBpDZ9WbbR3OpADVGViGmDu5ftpBhhDhg9qxg=
+        b=JtiguAgmjrVq8tdGys8RYZPkKWYUujDf7WlxGMPYAA3/626Muf1gp8P4/Gs5rU1Ek
+         FlDg/JMqFwlA3h7eUmhrokmFT9AUDG/XH24NC+ZU/2PenkKPvIyCS7/IopaairHMZd
+         qvicEqkT+xw6Ln3Gn6staKlHGpkv1T6K+LJgGAaw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
-        Mateusz Palczewski <mateusz.palczewski@intel.com>,
-        Dave Switzer <david.switzer@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 106/154] i40e: Fix display error code in dmesg
+        stable@vger.kernel.org, Nguyen Dinh Phi <phind.uet@gmail.com>,
+        syzbot+bbf402b783eeb6d908db@syzkaller.appspotmail.com,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.19 312/323] cfg80211: call cfg80211_stop_ap when switch from P2P_GO type
 Date:   Wed, 24 Nov 2021 12:58:22 +0100
-Message-Id: <20211124115705.717958907@linuxfoundation.org>
+Message-Id: <20211124115729.457628793@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,42 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
+From: Nguyen Dinh Phi <phind.uet@gmail.com>
 
-[ Upstream commit 5aff430d4e33a0b48a6b3d5beb06f79da23f9916 ]
+commit 563fbefed46ae4c1f70cffb8eb54c02df480b2c2 upstream.
 
-Fix misleading display error in dmesg if tc filter return fail.
-Only i40e status error code should be converted to string, not linux
-error code. Otherwise, we return false information about the error.
+If the userspace tools switch from NL80211_IFTYPE_P2P_GO to
+NL80211_IFTYPE_ADHOC via send_msg(NL80211_CMD_SET_INTERFACE), it
+does not call the cleanup cfg80211_stop_ap(), this leads to the
+initialization of in-use data. For example, this path re-init the
+sdata->assigned_chanctx_list while it is still an element of
+assigned_vifs list, and makes that linked list corrupt.
 
-Fixes: 2f4b411a3d67 ("i40e: Enable cloud filters via tc-flower")
-Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
-Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
-Tested-by: Dave Switzer <david.switzer@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+Reported-by: syzbot+bbf402b783eeb6d908db@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/r/20211027173722.777287-1-phind.uet@gmail.com
+Cc: stable@vger.kernel.org
+Fixes: ac800140c20e ("cfg80211: .stop_ap when interface is going down")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_main.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ net/wireless/util.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 8cb80798efb2b..583eae71cda4b 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -8171,9 +8171,8 @@ static int i40e_configure_clsflower(struct i40e_vsi *vsi,
- 		err = i40e_add_del_cloud_filter(vsi, filter, true);
+--- a/net/wireless/util.c
++++ b/net/wireless/util.c
+@@ -950,6 +950,7 @@ int cfg80211_change_iface(struct cfg8021
  
- 	if (err) {
--		dev_err(&pf->pdev->dev,
--			"Failed to add cloud filter, err %s\n",
--			i40e_stat_str(&pf->hw, err));
-+		dev_err(&pf->pdev->dev, "Failed to add cloud filter, err %d\n",
-+			err);
- 		goto err;
- 	}
- 
--- 
-2.33.0
-
+ 		switch (otype) {
+ 		case NL80211_IFTYPE_AP:
++		case NL80211_IFTYPE_P2P_GO:
+ 			cfg80211_stop_ap(rdev, dev, true);
+ 			break;
+ 		case NL80211_IFTYPE_ADHOC:
 
 
