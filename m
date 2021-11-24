@@ -2,108 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D46645C907
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:42:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 173B545C90F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:43:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241962AbhKXPqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:46:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24946 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241554AbhKXPqB (ORCPT
+        id S1345865AbhKXPqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:46:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344608AbhKXPqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:46:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637768571;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=jgOTjRwb6ni7IM1JcHLBoeJmR0JqL9+uUHgS3quel1M=;
-        b=WMs78sQ75U22UV6CeqArCcpiQfCfjPbQsDA/iSoYfOLBWavdKSrLbSVJjDleBst7wxb9o0
-        7k9tv0yFDoqgZemtWXm+K2ls2KcQBrhh7K5ANHgYRz13EqTlGjM0KC4UjdXIH6xPmpl1py
-        rGQDIt+6BjHF19S7Ac+j/DQ89BVm+dY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-472-zovgTKY7MTqzE-VxJ02ZMA-1; Wed, 24 Nov 2021 10:42:50 -0500
-X-MC-Unique: zovgTKY7MTqzE-VxJ02ZMA-1
-Received: by mail-wm1-f70.google.com with SMTP id c8-20020a7bc848000000b0033bf856f0easo3218805wml.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:42:50 -0800 (PST)
+        Wed, 24 Nov 2021 10:46:33 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F297C06173E
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:43:23 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id 207so6302782ljf.10
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:43:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ex6OYz5OcfnL7+IqwC8qcwWv2MWWHoNUmpLVkb145g0=;
+        b=fQPOXf5npXO38RY4YdQwoy3+h1mMRcKn9fkTOvRG3EzKhWmYSZenngCNYBundlyv+8
+         zRvjmqGy74pTJejq6wW0QdTP37pZ1qd8aCHKPSkDBFNAfo7ift66We7srJHpQvP3e/XI
+         TBe6iIt/VooOnTGM4zuCvCzZbmBv6Akt4Vo8D5GaEswwBZ4IX81N22ko2eY1XgGKl6Cv
+         qswhEyrh936gq1FxTor8owTOlkCrlq/yRrIpGcZR2ndqtSpsXbonBHoby3H0w5NTxcYc
+         rrGz43z8w1ajjX4544K/cHJsqJ1BZNIH7MWi9WB7R8ZRBxrthWQYKgYydE3jopeu7qyI
+         VBKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=jgOTjRwb6ni7IM1JcHLBoeJmR0JqL9+uUHgS3quel1M=;
-        b=h9+jdrqG1iZREp+7P/BjfbSdWOtdpIR+fIgm/tSmkuQ06BLPpEt/0sswTMBkC6/tf4
-         udYPOksob5AYj9ypF5dNlK0HBJmPbrJOjF1Y0IhOai1bjezHFOBEz4U7gWkhVQelHBf0
-         94PntlxE5T4e3TY68wa8Q6mGartnAedOBqAJK+rATRbWAmztQEnHziu9dLOXPUGotSCE
-         a+Eohf3ae9Zlh5XH5xPHmIFm4tvMo0pLUJacT6i1QCexbZQgaAZ3VI4kqmvbAusqGkQT
-         T9t3Sld5vIJINSJmVlzmWE8lZW1Wo7LaHnI5UMT5M0waGD6J2NgeOXlIvlI9Giq+KR7P
-         Hvrw==
-X-Gm-Message-State: AOAM533C3Hl3idvhU9UCHw9GYRRCoHcXs40D6lkNW2B9SORVsf46/aPv
-        GdRRudInIZQSkDHvlX7GtUlSeg+0kCAqdyWaNeOjnZbmmFtDqw7PJewq1MwqreelkpdJue3gRtz
-        +ZHPcKWsAt/tYNAym+n6+1Dk7
-X-Received: by 2002:a1c:90:: with SMTP id 138mr16412325wma.27.1637768569079;
-        Wed, 24 Nov 2021 07:42:49 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyaJsUMvB4tI7+Kx0faNllE9qaU5DSvohaRij86VVk3x4sNDrfRd0hrRE8a6KTBflY47mPM7w==
-X-Received: by 2002:a1c:90:: with SMTP id 138mr16412273wma.27.1637768568827;
-        Wed, 24 Nov 2021 07:42:48 -0800 (PST)
-Received: from vian.redhat.com ([2a0c:5a80:3c10:3400:3c70:6643:6e71:7eae])
-        by smtp.gmail.com with ESMTPSA id w17sm150677wrp.79.2021.11.24.07.42.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 07:42:48 -0800 (PST)
-From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
-To:     peterz@infradead.org
-Cc:     mingo@redhat.com, juri.lelli@redhat.com, frederic@kernel.org,
-        linux-kernel@vger.kernel.org, mtosatti@redhat.com, mgorman@suse.de,
-        bsegall@google.com, rostedt@goodmis.org, dietmar.eggemann@arm.com,
-        bristot@redhat.com, vincent.guittot@linaro.org,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Subject: [PATCH] sched/core: Fix setup_preempt_mode() return values
-Date:   Wed, 24 Nov 2021 16:42:46 +0100
-Message-Id: <20211124154246.116178-1-nsaenzju@redhat.com>
-X-Mailer: git-send-email 2.33.1
+        bh=ex6OYz5OcfnL7+IqwC8qcwWv2MWWHoNUmpLVkb145g0=;
+        b=nJBz6shCznGVsA1bDMJz1/v00irsDVLcvn/+T+Gr+fFCuTpJ1DHU0xxAg8YG57q4K4
+         ah8A2F4nQD3W+E7oYGkzW7WkIztvjJ2Y1UzxxR8KJN+X6ycYsT865blu9LHWRoQY6Bz/
+         cdTRvYVhQckXS4GPOtJBsfUsC4kQ2NgZ7mueCmjoK8FvjSwBT/8hze40WXhtDh1W4F7p
+         ufLxikFM2ZY4HA4DElbzqLZ4aQp0Mfr0q/7X3CgFWJD6Dyf9UJ5V8N6uoWKwqUs39od1
+         tCKBPMfp+XkX/dCVurISqxRCOsDQuxizHPTzWa/pFtBlxNS487QqNo8k67tPQM2kvMQr
+         m6zw==
+X-Gm-Message-State: AOAM532J1C7SkxPZmnw0oKb1Io7MazdnVMtZo1h6fvI6vX7gcseHLMp0
+        SMD/PqeLzNLQsCqbRtwf4o+PSg==
+X-Google-Smtp-Source: ABdhPJyRine8HQbXkjyMO+tpGm9oz/av529/TrB6QMx+HOSro1hU75Q1YTPf1Syl6TXwe2UIRX+VvQ==
+X-Received: by 2002:a05:651c:504:: with SMTP id o4mr17394342ljp.242.1637768600043;
+        Wed, 24 Nov 2021 07:43:20 -0800 (PST)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id g3sm19936ljj.37.2021.11.24.07.43.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Nov 2021 07:43:19 -0800 (PST)
+Subject: Re: [PATCH v3 05/13] drm/msm/disp/dpu1: Don't use DSC with mode_3d
+To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+References: <20211116062256.2417186-1-vkoul@kernel.org>
+ <20211116062256.2417186-6-vkoul@kernel.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <15006114-cef8-89e5-eb50-4c36fd11a293@linaro.org>
+Date:   Wed, 24 Nov 2021 18:43:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211116062256.2417186-6-vkoul@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__setup() expects its setup_func() implementations to return 1 on
-success and 0 otherwise. So let's honor that.
+On 16/11/2021 09:22, Vinod Koul wrote:
+> We cannot enable mode_3d when we are using the DSC. So pass
+> configuration to detect DSC is enabled and not enable mode_3d
+> when we are using DSC
+> 
+> We add a helper dpu_encoder_helper_get_dsc() to detect dsc
+> enabled and pass this to .setup_intf_cfg()
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h     | 11 +++++++++++
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c |  2 ++
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c           |  3 ++-
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h           |  2 ++
+>   4 files changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> index e7270eb6b84b..efb85d595598 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> @@ -332,6 +332,17 @@ static inline enum dpu_3d_blend_mode dpu_encoder_helper_get_3d_blend_mode(
+>   	return BLEND_3D_NONE;
+>   }
+>   
+> +static inline bool dpu_encoder_helper_get_dsc(struct dpu_encoder_phys *phys_enc)
+> +{
+> +	struct drm_encoder *drm_enc = phys_enc->parent;
+> +	struct msm_drm_private *priv = drm_enc->dev->dev_private;
+> +
+> +	if (priv->dsc)
+> +		return priv->dsc->dsc_mask;
+> +
+> +	return 0;
+> +}
+> +
+>   /**
+>    * dpu_encoder_helper_split_config - split display configuration helper function
+>    *	This helper function may be used by physical encoders to configure
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> index 34a6940d12c5..f3f00f4d0193 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> @@ -70,6 +70,8 @@ static void _dpu_encoder_phys_cmd_update_intf_cfg(
+>   	intf_cfg.intf_mode_sel = DPU_CTL_MODE_SEL_CMD;
+>   	intf_cfg.stream_sel = cmd_enc->stream_sel;
+>   	intf_cfg.mode_3d = dpu_encoder_helper_get_3d_blend_mode(phys_enc);
+> +	intf_cfg.dsc = dpu_encoder_helper_get_dsc(phys_enc);
+> +
 
-This gets rid of the following kernel log:
-"Unknown kernel command line parameters "preempt=full", will be
-passed to user space."
+You are going to hate me for the comments on this patch. But this chunk 
+should also go into dpu_encoder_phys_vid.c, shouldn't it?
 
-Fixes: 826bfeb37bb4 ("preempt/dynamic: Support dynamic preempt with preempt= boot option")
-Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+>   	ctl->ops.setup_intf_cfg(ctl, &intf_cfg);
+>   }
+>   
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> index 64740ddb983e..36831457a91b 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> @@ -519,7 +519,8 @@ static void dpu_hw_ctl_intf_cfg(struct dpu_hw_ctl *ctx,
+>   
+>   	intf_cfg |= (cfg->intf & 0xF) << 4;
+>   
+> -	if (cfg->mode_3d) {
+> +	/* In DSC we can't set merge, so check for dsc too */
+> +	if (cfg->mode_3d && !cfg->dsc) {
+>   		intf_cfg |= BIT(19);
+>   		intf_cfg |= (cfg->mode_3d - 0x1) << 20;
+>   	}
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+> index 806c171e5df2..9847c9c46d6f 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+> @@ -40,6 +40,7 @@ struct dpu_hw_stage_cfg {
+>    * @merge_3d:              3d merge block used
+>    * @intf_mode_sel:         Interface mode, cmd / vid
+>    * @stream_sel:            Stream selection for multi-stream interfaces
+> + * @dsc:                   DSC BIT masks
+>    */
+>   struct dpu_hw_intf_cfg {
+>   	enum dpu_intf intf;
+> @@ -47,6 +48,7 @@ struct dpu_hw_intf_cfg {
+>   	enum dpu_merge_3d merge_3d;
+>   	enum dpu_ctl_mode_sel intf_mode_sel;
+>   	int stream_sel;
+> +	unsigned int dsc;
+>   };
+>   
+>   /**
+> 
 
----
-An alternative fix would be using early_param() instead of __setup(),
-which actually takes 0 as success. But I figure __setup() was chosen for
-a reason.
 
- kernel/sched/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index cd61e4109eecc..0d6eab5eeb4c9 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -6657,11 +6657,11 @@ static int __init setup_preempt_mode(char *str)
- 	int mode = sched_dynamic_mode(str);
- 	if (mode < 0) {
- 		pr_warn("Dynamic Preempt: unsupported mode: %s\n", str);
--		return 1;
-+		return 0;
- 	}
- 
- 	sched_dynamic_update(mode);
--	return 0;
-+	return 1;
- }
- __setup("preempt=", setup_preempt_mode);
- 
 -- 
-2.33.1
-
+With best wishes
+Dmitry
