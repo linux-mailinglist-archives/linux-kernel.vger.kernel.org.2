@@ -2,157 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 842AF45B414
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 06:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB63D45B417
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 07:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233500AbhKXGBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 01:01:17 -0500
-Received: from mail-lj1-f179.google.com ([209.85.208.179]:38899 "EHLO
-        mail-lj1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233411AbhKXGBQ (ORCPT
+        id S233871AbhKXGDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 01:03:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233741AbhKXGDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 01:01:16 -0500
-Received: by mail-lj1-f179.google.com with SMTP id l9so3035823ljq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 21:58:05 -0800 (PST)
+        Wed, 24 Nov 2021 01:03:46 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 018B9C061574;
+        Tue, 23 Nov 2021 22:00:37 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id m15so1157020pgu.11;
+        Tue, 23 Nov 2021 22:00:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=OuG6Dcru5xJdxaep/9HwArVKmO5jy/e5OafxYbkdspc=;
+        b=c7fDY59tF11DmqhKPhYtptf6fwu3mX3P3bUqUuhRmlvDjvUFRwWV51VvS9c5jBzchu
+         xipWUblGN9DUkucd+k1wJgenwnpN8Rf3h7PmOLlz3c+RjjO8xSVGqK5T67ZTYOJu+rf8
+         Efgcn3pg8wdfId/TiNxqvAOIpK6gR5OsHs3zPPbhPGkasi6k/DrslGHNyWDZm3gcbzIl
+         mjbELS3xev+oTq3n4UrKnkApePYAWypEohFApG5/zh+R0PnQJtiX9s/nA6wK9DxN/N+A
+         4T9OSRBLj2sIqyzhLAsa5FDjnOdVTUHWJmnGkXovsk84KUUn/Zscwe4iwRzusAQA8hj/
+         gKoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=tyvxej18x/DNYvEsoV2zknfM5bP1ygL5b1M+7EMvI+M=;
-        b=opnmcfzRnVpPaeMqPhSZ/PhoVfgbxBx/G/fIQcbi+KCmoMGSNQ9c40e36Mk9z4C0f0
-         Up3F30R943T321JQReHi2eeHb2lvcy0ccPpSMJlA+cdWViDJYc64Rf/K7ilRcB1/3cJH
-         zCdhDmbmOstRtb9PM3yGUs8wiDwAGcMf5NkvAOsjopZ+OyAR/LNEsrnf8gZRrjBmDHrU
-         W/vrO9cEvhMuaOWp8agn/IDzy6evDjFse1RJVJloP/nXvWfzqptRL+E0jaGcjueimlPn
-         IQhDEQJpLOZtM8okYTSCbIHtG9MA9SP9RqjijxpUg9iy3xB9mC+WxkNzkNCv9lDSUSJr
-         CQWQ==
-X-Gm-Message-State: AOAM531lycsDKQVj5xg3a3lwZPJDvUKzE6JOMCMrTQviBZcj7xe2qu8m
-        j+Q/HUIlEYRwUegqgtoV9Jo=
-X-Google-Smtp-Source: ABdhPJyJN8yFuQRNBRMtXeFK+n2Rk4+Kn0PTuOFenekvPs7s7wwhUbZU9iyvpC9PU7DaCHr7NuT+jA==
-X-Received: by 2002:a2e:7310:: with SMTP id o16mr12524464ljc.394.1637733477787;
-        Tue, 23 Nov 2021 21:57:57 -0800 (PST)
-Received: from fedora (dc73szyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16ee:fa00::4])
-        by smtp.gmail.com with ESMTPSA id v23sm131530lji.79.2021.11.23.21.57.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 21:57:56 -0800 (PST)
-Date:   Wed, 24 Nov 2021 07:57:49 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-power@fi.rohmeurope.com, linux-kernel@vger.kernel.org
-Subject: [PATCH] regulator: rohm-generic: remove unused dummies
-Message-ID: <YZ3UXXrk/Efe7Scj@fedora>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="SqVkFfLSlFLJRQyO"
-Content-Disposition: inline
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=OuG6Dcru5xJdxaep/9HwArVKmO5jy/e5OafxYbkdspc=;
+        b=Kn6AIuPD/kFguqR+hzOUyOzyXuIQ1S6EQD4cKgpVTCWxcbrf3grWdyD59DVQnPsXif
+         g0LbB4NhtQgcMG5M6jdluoBekpUr7EKASQAGLQjwJKO5yfBV9egIMtNywEeGZza6q4s3
+         RLSJX1pq3Sbnqkv4FhX3h0UIuGuizw2zLDlY/UCP2Juxzzg54/C1vJfK683mYV0yqbE2
+         D36iOxTkCb4l6EZrSTizoBx0bVZLnPmiFc4sPQ2ABdRaOZx71Ba8pJvsMkpzE0mDQit1
+         wLkpxtDlWkHWJ93RYemPi93c6/LyWT5M3jKE+NbPRc/dQynCLK2F0JcD3beOvRnGa98q
+         iCrg==
+X-Gm-Message-State: AOAM533pM+QVIG7fsnBVJHGPRpjG2kSCsmwRfZrMQLmcdOpgKvxsJKMC
+        1zMI33k4hCubW8Ywe4UrJbGAYT1QSuw=
+X-Google-Smtp-Source: ABdhPJw8EG+NFrl07hkhFpagDnM4ahw3ypYp4PllZRtykYNMAs5uNRfwZLE4YuA5aTMjyv+yBNHzLQ==
+X-Received: by 2002:aa7:811a:0:b0:44c:b9ef:f618 with SMTP id b26-20020aa7811a000000b0044cb9eff618mr3411148pfi.9.1637733636327;
+        Tue, 23 Nov 2021 22:00:36 -0800 (PST)
+Received: from localhost.localdomain ([203.205.141.111])
+        by smtp.googlemail.com with ESMTPSA id i76sm10288474pgd.69.2021.11.23.22.00.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 23 Nov 2021 22:00:35 -0800 (PST)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Aili Yao <yaoaili@kingsoft.com>
+Subject: [PATCH] KVM: LAPIC: To keep the vCPUs in non-root mode for timer-pi
+Date:   Tue, 23 Nov 2021 21:59:45 -0800
+Message-Id: <1637733585-47113-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Wanpeng Li <wanpengli@tencent.com>
 
---SqVkFfLSlFLJRQyO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+As commit 0c5f81dad46 (KVM: LAPIC: Inject timer interrupt via posted interrupt) 
+mentioned that the host admin should well tune the guest setup, so that vCPUs 
+are placed on isolated pCPUs, and with several pCPUs surplus for *busy* housekeeping.
+It is better to disable mwait/hlt/pause vmexits to keep the vCPUs in non-root 
+mode. However, we may isolate pCPUs for other purpose like DPDK or we can make 
+some guests isolated and others not, Let's add the checking kvm_mwait_in_guest() 
+to kvm_can_post_timer_interrupt() since we can't benefit from timer posted-interrupt 
+w/o keeping the vCPUs in non-root mode.
 
-Function rohm_regulator_set_voltage_sel_restricted() and
-rohm_regulator_set_dvs_levels() had inlined dummy implementations for
-cases when the real implementation was not configured in.
-
-All of the drivers who issue the call to these functions do SELECT the
-real implementation from the Kconfig. There should be no cases where the
-real implementation was not selected by the drivers using these
-functions - such a situation is likely to be an error which deserves to be
-noticed at compile-time.
-
-These dummies could in theory be used for compile-testing the drivers
-only (without the generic rohm regulator pieces). However, for such
-compile testing we should manually drop the selection from KConfig - and
-I guess that if it does not work out-of-the-box, then it is not going to
-happen. Especially when there should be no reason to omit
-compile-testing the generic rohm_regulator part.
-
-Crash test dummies.
-
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-
+Reported-by: Aili Yao <yaoaili@kingsoft.com>
+Cc: Aili Yao <yaoaili@kingsoft.com>
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
 ---
+ arch/x86/kvm/lapic.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-This patch is a result of me breaking the build with the dummy-function
-which I forgot to inline. When fixing it I noticed these dummies should
-actually not be there. As a result Mark asked me to send a follow-up
-patch removing the one I added - and I decided to do double the work and
-remove two of them :) Anyways, I'd suggest this to go via Mark's tree
-even if the header resides in a file which may be regarded as MFD
-territory.
+diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+index 759952dd1222..8257566d44c7 100644
+--- a/arch/x86/kvm/lapic.c
++++ b/arch/x86/kvm/lapic.c
+@@ -113,14 +113,13 @@ static inline u32 kvm_x2apic_id(struct kvm_lapic *apic)
+ 
+ static bool kvm_can_post_timer_interrupt(struct kvm_vcpu *vcpu)
+ {
+-	return pi_inject_timer && kvm_vcpu_apicv_active(vcpu);
++	return pi_inject_timer && kvm_mwait_in_guest(vcpu->kvm) && kvm_vcpu_apicv_active(vcpu);
+ }
+ 
+ bool kvm_can_use_hv_timer(struct kvm_vcpu *vcpu)
+ {
+ 	return kvm_x86_ops.set_hv_timer
+-	       && !(kvm_mwait_in_guest(vcpu->kvm) ||
+-		    kvm_can_post_timer_interrupt(vcpu));
++	       && !kvm_mwait_in_guest(vcpu->kvm);
+ }
+ EXPORT_SYMBOL_GPL(kvm_can_use_hv_timer);
+ 
+-- 
+2.25.1
 
-Reference to previous discussion:
-https://lore.kernel.org/lkml/YZz4FkRoiVIbfgEf@sirena.org.uk/
----
- include/linux/mfd/rohm-generic.h | 14 --------------
- 1 file changed, 14 deletions(-)
-
-diff --git a/include/linux/mfd/rohm-generic.h b/include/linux/mfd/rohm-gene=
-ric.h
-index 080d60adcd5f..5ed97a1d0908 100644
---- a/include/linux/mfd/rohm-generic.h
-+++ b/include/linux/mfd/rohm-generic.h
-@@ -82,20 +82,6 @@ int rohm_regulator_set_dvs_levels(const struct rohm_dvs_=
-config *dvs,
-=20
- int rohm_regulator_set_voltage_sel_restricted(struct regulator_dev *rdev,
- 					      unsigned int sel);
--#else
--static inline int rohm_regulator_set_dvs_levels(const struct rohm_dvs_conf=
-ig *dvs,
--						struct device_node *np,
--						const struct regulator_desc *desc,
--						struct regmap *regmap)
--{
--	return 0;
--}
--
--static inline int rohm_regulator_set_voltage_sel_restricted(struct regulat=
-or_dev *rdev,
--						     unsigned int sel)
--{
--	return 0;
--}
- #endif
-=20
- #endif
---=20
-2.31.1
-
-
---=20
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =3D]=20
-
---SqVkFfLSlFLJRQyO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmGd1FEACgkQeFA3/03a
-ocURvwgAyms6+BeYd1iwxh0IMq+GHounQTylV6m6UviIRTTuJszMnYOjUnZmssvJ
-6SBIYAj2e8Si0+Jhi4gA+KumEwxFNAYfTS4axmxik4aESfI5vaSMCAupmPq7dIdw
-qGzy5EWt2ChmelpI01zQ7Ne93nMP399ck/eyWVgStQ7nHNggxZZvAUjQpf76Yf/0
-xhMVFGMUbuQs2ywE2391lSOfmQ3mAcAaU4yApxrsJUcF5kr0PGSBVhf8Ygy0L2a3
-15+U8O6FrF9p0HRBodTSgAxEpaoggsAyB3J8clqu4fXpOEfwfSe1L5mWAMyGVoFv
-zgN5v+jrjPRFSqyU1c6SBGRNWVF28w==
-=9kUp
------END PGP SIGNATURE-----
-
---SqVkFfLSlFLJRQyO--
