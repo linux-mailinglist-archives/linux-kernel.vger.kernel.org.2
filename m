@@ -2,107 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D92245CBEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:16:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B5D45CBF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233439AbhKXSTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 13:19:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350398AbhKXSSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 13:18:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFEAA60F55;
-        Wed, 24 Nov 2021 18:15:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637777737;
-        bh=Qf1psx4hFnkfyS/I8jNT4xJkTgotUILZVrpZCQUH9Sg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gAKEZdL/RPkxGfvpjNwGhSu/lM9HAUWUT0qF3o2BKqanhjeDlciqPauYFZfNAFjFq
-         cnbi74J0jwHGO8eR3NH2tLDGOnYtnxv8jxCa0/sFCYDaZjkL6zgv1g30qKTNHI4SID
-         1JnevlYQEj7Nj3miqWw0D7+Vf9AotQGijdYAh8SU=
-Date:   Wed, 24 Nov 2021 19:15:35 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     Jari Ruusu <jariruusu@users.sourceforge.net>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Alistair Delva <adelva@google.com>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Jens Axboe <axboe@kernel.dk>, Paul Moore <paul@paul-moore.com>,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH 5.10 130/154] block: Check ADMIN before NICE for
- IOPRIO_CLASS_RT
-Message-ID: <YZ6BR09OXP8x7lRs@kroah.com>
-References: <20211124115702.361983534@linuxfoundation.org>
- <20211124115706.507376250@linuxfoundation.org>
- <619E4ABA.DC78AA58@users.sourceforge.net>
- <YZ5ayhuOMZwkd9j6@kroah.com>
- <20211124173310.GA12039@mail.hallyn.com>
+        id S1350409AbhKXSVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 13:21:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53885 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242520AbhKXSVa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 13:21:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637777899;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aImuXRsg8yxI6g3AKa1ZMJeiF400ljnzLc9mnInKQqk=;
+        b=UneTVI16XDCBvzZbylUqtwzDYMe4t09w3sNSsx7pjidRmxYXgpyS0xiDSH5Poo+knos9qR
+        hnItwPBSLBn+sd72aLPta2HIbTdJoRAUbbebOqEenhgde8LofX8evO9BweH/1IiO6Id04u
+        iXOxT4mr/3nbYEfCEDlQM8Ht9lDA9gc=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-506-7D3gM_edP6SGhWgScnEjew-1; Wed, 24 Nov 2021 13:18:18 -0500
+X-MC-Unique: 7D3gM_edP6SGhWgScnEjew-1
+Received: by mail-ot1-f72.google.com with SMTP id a9-20020a056830008900b0056561b8c755so2043849oto.22
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:18:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aImuXRsg8yxI6g3AKa1ZMJeiF400ljnzLc9mnInKQqk=;
+        b=gxUGkkwP0lYhx9Mw6vIonbSlcYwpWQJ6QRWe2hux94D+yFlaoW91rFf7Mh4WKRaB22
+         WUa5Q/F5SH7t9UraKNg2mwkSoP2arWSMQgHVtgznsF0cUxtcMGKHieQ0R/WWvweV/6fZ
+         nWUr/iv1ZNVCarIVZurPMjmPqraM56zm2kZ5sR3GNvk20I0JGs2SGOWGaS3IrUS/DKWz
+         8MLF4KbUtdwLDnJVK4V+DsVuTP5TqIDC5ywISwc5WR1dNL5LxJuEja96aaunUB0Znffl
+         W1dVD8ilTiQsfbG4kuN9ALu1Pl9SJuX3roXflIhGTx2j7EBxphI0aFhGzoTnh69Pc129
+         HtoA==
+X-Gm-Message-State: AOAM531NYSVJiSAHHF9a8wCyrxIhzNDzp584Hr869s77HRgXgwMw0XFk
+        h3I3DF/jGnbtGqEjT5PMiyeWVD5HGfizs2va4vnyioMgllOD/c9nSKXeeSWUyxViY3/xo2q4nzR
+        rE9q36zcmGga9g0fOm+++4ae/
+X-Received: by 2002:a05:6808:230d:: with SMTP id bn13mr8587363oib.102.1637777897692;
+        Wed, 24 Nov 2021 10:18:17 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzv7e8nF+f1PWTCzu4bP/3XrRnuLWwR+3nOYDyykdCd/W64HSkTJm6pIPem5/EDCm6JYQ3Mlg==
+X-Received: by 2002:a05:6808:230d:: with SMTP id bn13mr8587323oib.102.1637777897463;
+        Wed, 24 Nov 2021 10:18:17 -0800 (PST)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id bh12sm133130oib.25.2021.11.24.10.18.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 10:18:16 -0800 (PST)
+Date:   Wed, 24 Nov 2021 10:18:14 -0800
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>, x86@kernel.org,
+        joao@overdrivepizza.com, hjl.tools@gmail.com,
+        andrew.cooper3@citrix.com, linux-kernel@vger.kernel.org,
+        ndesaulniers@google.com, keescook@chromium.org,
+        samitolvanen@google.com
+Subject: Re: [RFC][PATCH 1/6] x86: Annotate _THIS_IP_
+Message-ID: <20211124181814.2ahj7ppt6kewcjmb@treble>
+References: <20211122170301.764232470@infradead.org>
+ <20211122170805.025419814@infradead.org>
+ <20211123135348.GE37253@lakrids.cambridge.arm.com>
+ <YZz3VUh2czlD1aWQ@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211124173310.GA12039@mail.hallyn.com>
+In-Reply-To: <YZz3VUh2czlD1aWQ@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 11:33:11AM -0600, Serge E. Hallyn wrote:
-> On Wed, Nov 24, 2021 at 04:31:22PM +0100, Greg Kroah-Hartman wrote:
-> > On Wed, Nov 24, 2021 at 04:22:50PM +0200, Jari Ruusu wrote:
-> > > Greg Kroah-Hartman wrote:
-> > > > From: Alistair Delva <adelva@google.com>
-> > > > 
-> > > > commit 94c4b4fd25e6c3763941bdec3ad54f2204afa992 upstream.
-> > >  [SNIP]
-> > > > --- a/block/ioprio.c
-> > > > +++ b/block/ioprio.c
-> > > > @@ -69,7 +69,14 @@ int ioprio_check_cap(int ioprio)
-> > > > 
-> > > >         switch (class) {
-> > > >                 case IOPRIO_CLASS_RT:
-> > > > -                       if (!capable(CAP_SYS_NICE) && !capable(CAP_SYS_ADMIN))
-> > > > +                       /*
-> > > > +                        * Originally this only checked for CAP_SYS_ADMIN,
-> > > > +                        * which was implicitly allowed for pid 0 by security
-> > > > +                        * modules such as SELinux. Make sure we check
-> > > > +                        * CAP_SYS_ADMIN first to avoid a denial/avc for
-> > > > +                        * possibly missing CAP_SYS_NICE permission.
-> > > > +                        */
-> > > > +                       if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_NICE))
-> > > >                                 return -EPERM;
-> > > >                         fallthrough;
-> > > >                         /* rt has prio field too */
-> > > 
-> > > What exactly is above patch trying to fix?
-> > > It does not change control flow at all, and added comment is misleading.
+On Tue, Nov 23, 2021 at 03:14:45PM +0100, Peter Zijlstra wrote:
+> On Tue, Nov 23, 2021 at 01:53:49PM +0000, Mark Rutland wrote:
+> > On Mon, Nov 22, 2021 at 06:03:02PM +0100, Peter Zijlstra wrote:
+> > > In order to find _THIS_IP_ code references in objtool, annotate them.
 > > 
-> > See the thread on the mailing list for what it does and why it is
-> > needed.
+> > Just to check my understanding, IIUC this is because in later patches
+> > you'll look at text relocations to spot missing ENDBRs, and when doing
+> > so you need to filter out _THIS_IP_ instances, since those don't need an
+> > ENDBR. Is that right?
 > > 
-> > It does change the result when selinux is enabled.
-> > 
-> > thanks,
-> > 
-> > greg k-h
+> > Just checking I haven't missed some other concern that might apply to
+> > arm64's BTI (Branch Target Identifier), which are analagous to ENDBR.
 > 
-> The case where we create a newer more fine grained capability which is a
-> sub-cap of a broader capability like CAP_SYS_ADMIN is analogous.  See
-> check_syslog_permissions() for instance.
-> 
-> So I think a helper like
-> 
-> int capable_either_or(int cap1, int cap2) {
-> 	if (has_capability_noaudit(current, cap1))
-> 		return 0;
-> 	return capable(cap2);
-> }
-> 
-> might be worthwhile.
+> Correct; since _THIS_IP_ is never used for control flow (afaik, let's
+> hope to $deity etc..) we can ignore any relocation resulting from it
+> (lots!).
 
-Sure, feel free to work on that and submit it, but for now, this change
-is needed.
+This would all be good context to add to the commit message.
 
-thanks,
+-- 
+Josh
 
-greg k-h
