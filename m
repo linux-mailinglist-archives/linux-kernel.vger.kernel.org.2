@@ -2,84 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA6C45CA03
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:28:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BC045CA06
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:29:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348816AbhKXQbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:31:40 -0500
-Received: from foss.arm.com ([217.140.110.172]:40822 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242386AbhKXQbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:31:36 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BB84F1FB;
-        Wed, 24 Nov 2021 08:28:26 -0800 (PST)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9FF523F66F;
-        Wed, 24 Nov 2021 08:28:25 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Vincent Donnefort <vincent.donnefort@arm.com>,
-        peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org
-Cc:     linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
-        dietmar.eggemann@arm.com,
-        Vincent Donnefort <vincent.donnefort@arm.com>
-Subject: Re: [PATCH] sched/fair: Fix detection of per-CPU kthreads waking a task
-In-Reply-To: <20211124154239.3191366-1-vincent.donnefort@arm.com>
-References: <20211124154239.3191366-1-vincent.donnefort@arm.com>
-Date:   Wed, 24 Nov 2021 16:28:20 +0000
-Message-ID: <87ilwhcycb.mognet@arm.com>
+        id S1348838AbhKXQcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:32:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348820AbhKXQcE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 11:32:04 -0500
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6FB1C06173E
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 08:28:54 -0800 (PST)
+Received: by mail-ua1-x935.google.com with SMTP id p37so6270719uae.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 08:28:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=posk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0yN6Nmt9ug88Fg5aU4VU/Ivh+jZZugsPIfs+d6Xfs88=;
+        b=EayTDztFxh4IJrHx8ZTsUNpB2t76+XRcpJ+eZ79qHHu2VYAaYmINaxyFWi5TAuKmfr
+         zWLA2FQa0AU2MjDGeXZ1tkNMPsFTUsLe0tDKl1LjBNoZNa98l4niwDPyQ+DubuUbiqmZ
+         k7Hzf9Wm5zCuIiWyUzBw1rHl3FbizNHt0p42jq+XHl4To2a+mg/rixpCf4dllHJ0Ybr5
+         C3D4sx8sMCV67YOoMw1v4xMjT5RShJmZTO4QjyJlmK0DZsk+poGGA+2GppsqIYGrDpQX
+         lQhBMAwXNEYiWKM59R/0GfmGRBekvYUyRZZWmkgbSPOUrD6p0dI+MHrt0pn0edI77fU7
+         BQlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0yN6Nmt9ug88Fg5aU4VU/Ivh+jZZugsPIfs+d6Xfs88=;
+        b=EoQSPg1A++6mc6pUo3nOFMQo+WDpqoid672v+9MjKsMD1UbgkeaVH+0U66t8i3yM8+
+         9UlgLUIzrnX1CuzMW9n5im7bw2h9wZhuzg3V3QZNDJgraMs+giS/2xzZ96vvp0fiTOkj
+         LGv9tD+hW4SGRvR+hxEkvrGnXnXQPnBuiSV3fhC4tM7WTtXJ0ckZeAOJ/ZlnXV/TQfLS
+         22F4EWtmDGz79ygqijNgIxZLj6wwSXfyJADP8yXyWuzAYpCHewvB8HgHItRmjKNkDC2/
+         bgph5/sV/8E4c+CKJNH+dxiRbEfsUa6QVhVn/eayb6e/1saVN0ChuIvmcjdSEtaVliAQ
+         P/Sg==
+X-Gm-Message-State: AOAM533MjNERzxCguGBJyyJi6vZ0vS2+EhPNi/SYitb4gtKK2of0Q3SM
+        Mj0dQg0jj1W0TbzeUS03QLFJdrqxjjmgBAIIVzOaKg==
+X-Google-Smtp-Source: ABdhPJxZZQgEDWCNTylmZHsM0ICOHv3PAjc+H6pgfOuNvz+aCpOvcr1mwhE1Q3TeVLPXP0qYqOvxn7gLBVAICpNHPN8=
+X-Received: by 2002:a9f:2431:: with SMTP id 46mr12240607uaq.114.1637771333863;
+ Wed, 24 Nov 2021 08:28:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20211122211327.5931-1-posk@google.com> <YZ5G7gO5Gc1zu/Cm@hirez.programming.kicks-ass.net>
+In-Reply-To: <YZ5G7gO5Gc1zu/Cm@hirez.programming.kicks-ass.net>
+From:   Peter Oskolkov <posk@posk.io>
+Date:   Wed, 24 Nov 2021 08:28:43 -0800
+Message-ID: <CAFTs51Vp=hfiDkSHVysHLh9QOqpUXUksF-SW86GOd5ih-=7JPQ@mail.gmail.com>
+Subject: Re: [PATCH v0.9.1 0/6] sched,mm,x86/uaccess: implement User Managed
+ Concurrency Groups
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org, Paul Turner <pjt@google.com>,
+        Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/11/21 15:42, Vincent Donnefort wrote:
-> select_idle_sibling() will return prev_cpu for the case where the task is
-> woken up by a per-CPU kthread. However, the idle task has been recently
-> modified and is now identified by is_per_cpu_kthread(), breaking the
-> behaviour described above. Using !is_idle_task() ensures we do not
-> spuriously trigger that select_idle_sibling() exit path.
+On Wed, Nov 24, 2021 at 6:06 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> Fixes: 00b89fe0197f ("sched: Make the idle task quack like a per-CPU kthread")
-
-This patch-set is the gift that keeps on giving... I owe a lot of folks a
-lot of beer :(
-
-> Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+> On Mon, Nov 22, 2021 at 01:13:21PM -0800, Peter Oskolkov wrote:
+> > User Managed Concurrency Groups (UMCG) is an M:N threading
+> > subsystem/toolkit that lets user space application developers implement
+> > in-process user space schedulers.
+> >
+> > This v0.9.1 patchset is the same as v0.9, where u32/u64 in
+> > uapi/linux/umcg.h are replaced with __u32/__u64, as test robot/lkp
+> > does not recognize u32/u64 for some reason.
+> >
+> > v0.9 is v0.8 rebased on top of the current tip/sched/core,
+> > with a fix in umcg_update_state of an issue reported by Tao Zhou.
+> >
+> > Key changes from patchset v0.7:
+> > https://lore.kernel.org/all/20211012232522.714898-1-posk@google.com/:
+> >
+> > - added libumcg tools/lib/umcg;
+> > - worker "wakeup" is reworked so that it is now purely a userspace op,
+> >   instead of waking the thread in order for it to block on return
+> >   to the userspace immediately;
+> > - a couple of minor fixes and refactorings.
+> >
+> > These big things remain to be addressed (in no particular order):
+> > - support tracing/debugging
+> > - make context switches faster (see umcg_do_context_switch in umcg.c)
+> > - support other architectures
+> > - cleanup and post selftests in tools/testing/selftests/umcg/
+> > - allow cross-mm wakeups (securely)
 >
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 945d987246c5..8bf95b0e368d 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6399,6 +6399,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->        * pattern is IO completions.
->        */
->       if (is_per_cpu_kthread(current) &&
-> +	    !is_idle_task(current) &&
->           prev == smp_processor_id() &&
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^
-                        (1)
+> *groan*... so these patches do *NOT* support the very thing this all
+> started with, namely block + wakeup notifications. I'm really not sure
+> how that happened, as that was the sole purpose of the exercise.
 
->           this_rq()->nr_running <= 1) {
+I'm not sure why you say this - in-process block/wakeup is very much
+supported - please see the third patch. Cross-process (cross-mm)
+wakeups are not supported at the moment, as the security story has to
+be fleshed out.
 
-So if we get to here, it means we failed
+>
+> Aside of that, the whole uaccess stuff is horrific :-( I'll reply to
+> that email separately, but the alternative is also included in the
+> random hackery below.
 
-        if ((available_idle_cpu(target) || sched_idle_cpu(target)) &&
-            asym_fits_capacity(task_util, target))
-                return target;
+Thanks - I'll try to make uaccess more to your liking, unless you say
+the whole thing is a no-go.
 
-AFAICT (1) implies "prev == target" (target can be either prev or the
-waking CPU), so per the above this implies prev isn't idle. If current is
-the idle task, we can still have stuff enqueued (which matches nr_running
-<= 1) and be on our way to schedule_idle(), or have rq->ttwu_pending (per
-idle_cpu()) - IOW matching against the idle task here can lead to undesired
-coscheduling.
+>
+> I'm still trying to make sense of it all, but I'm really not seeing how
+> any of this satisfies the initial goals, also it is once again 100% new
+> code :/
 
-If the above isn't bonkers:
+I believe the initial goals of in-process block/wakeup detection,
+on-cpu context switching, etc. are all achieved here. Re: new code:
+the code in the third patch evolved into what it is today based on
+feedback/discussions in this list.
 
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-
->               return prev;
-> --
-> 2.25.1
+[...]
