@@ -2,39 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E5C45BD00
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:31:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE03245BD2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244710AbhKXMeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:34:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49470 "EHLO mail.kernel.org"
+        id S244972AbhKXMgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:36:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343888AbhKXMaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343889AbhKXMaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 07:30:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95E7161284;
-        Wed, 24 Nov 2021 12:18:12 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EAA061268;
+        Wed, 24 Nov 2021 12:18:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756293;
-        bh=J2USBgA3nvsI5S8KZizLVyZ3l0AWSw6m91TvFiqrA/w=;
+        s=korg; t=1637756296;
+        bh=e287hHZf7k0KNPzeOefhChulrBHrk6o8HOtI/zHAQek=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ylqUnNbERYDQCIfTItJ8XFX3rwAMvdmEMTwmEXmpSFBIf5UUWbAILaWqQBBGcs003
-         b4pP2CoBpsl382VVQsPZ/BE9975NGmvuEgYebc+Ucl7BC66p0p9Xbr17hMh09JEjLh
-         ifhuXrm5tZiN534TdEl4LdHNFRk5qBlrotfIUpOo=
+        b=gVthgbWooRvchrYaP8CA3NYpbFyO/3E2tucK+hG6yheb22L61rLqZfmhfimpPe0r6
+         5bYres6r3/oMGeR16sahnikwtKolYX4AKwFgL+OhuVA8Pz8bVVIyT6zCq9m89ZXx0J
+         72SCUM5mbja+Tr3prhL3ShbqeIZcsa8zJlTqeQck=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Junxiao Bi <junxiao.bi@oracle.com>,
-        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
-        Jun Piao <piaojun@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 007/251] ocfs2: fix data corruption on truncate
-Date:   Wed, 24 Nov 2021 12:54:09 +0100
-Message-Id: <20211124115710.467437485@linuxfoundation.org>
+        stable@vger.kernel.org, Christian Loehle <cloehle@hyperstone.com>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.14 008/251] mmc: dw_mmc: Dont wait for DRTO on Write RSP error
+Date:   Wed, 24 Nov 2021 12:54:10 +0100
+Message-Id: <20211124115710.497353404@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
 References: <20211124115710.214900256@linuxfoundation.org>
@@ -46,91 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Christian Löhle <CLoehle@hyperstone.com>
 
-commit 839b63860eb3835da165642923120d305925561d upstream.
+commit 43592c8736e84025d7a45e61a46c3fa40536a364 upstream.
 
-Patch series "ocfs2: Truncate data corruption fix".
+Only wait for DRTO on reads, otherwise the driver hangs.
 
-As further testing has shown, commit 5314454ea3f ("ocfs2: fix data
-corruption after conversion from inline format") didn't fix all the data
-corruption issues the customer started observing after 6dbf7bb55598
-("fs: Don't invalidate page buffers in block_write_full_page()") This
-time I have tracked them down to two bugs in ocfs2 truncation code.
+The driver prevents sending CMD12 on response errors like CRCs. According
+to the comment this is because some cards have problems with this during
+the UHS tuning sequence. Unfortunately this workaround currently also
+applies for any command with data. On reads this will set the drto timer,
+which then triggers after a while. On writes this will not set any timer
+and the tasklet will not be scheduled again.
 
-One bug (truncating page cache before clearing tail cluster and setting
-i_size) could cause data corruption even before 6dbf7bb55598, but before
-that commit it needed a race with page fault, after 6dbf7bb55598 it
-started to be pretty deterministic.
+I cannot test for the UHS workarounds need, but even if so, it should at
+most apply to reads. I have observed many hangs when CMD25 response
+contained a CRC error. This patch fixes this without touching the actual
+UHS tuning workaround.
 
-Another bug (zeroing pages beyond old i_size) used to be harmless
-inefficiency before commit 6dbf7bb55598.  But after commit 6dbf7bb55598
-in combination with the first bug it resulted in deterministic data
-corruption.
-
-Although fixing only the first problem is needed to stop data
-corruption, I've fixed both issues to make the code more robust.
-
-This patch (of 2):
-
-ocfs2_truncate_file() did unmap invalidate page cache pages before
-zeroing partial tail cluster and setting i_size.  Thus some pages could
-be left (and likely have left if the cluster zeroing happened) in the
-page cache beyond i_size after truncate finished letting user possibly
-see stale data once the file was extended again.  Also the tail cluster
-zeroing was not guaranteed to finish before truncate finished causing
-possible stale data exposure.  The problem started to be particularly
-easy to hit after commit 6dbf7bb55598 "fs: Don't invalidate page buffers
-in block_write_full_page()" stopped invalidation of pages beyond i_size
-from page writeback path.
-
-Fix these problems by unmapping and invalidating pages in the page cache
-after the i_size is reduced and tail cluster is zeroed out.
-
-Link: https://lkml.kernel.org/r/20211025150008.29002-1-jack@suse.cz
-Link: https://lkml.kernel.org/r/20211025151332.11301-1-jack@suse.cz
-Fixes: ccd979bdbce9 ("[PATCH] OCFS2: The Second Oracle Cluster Filesystem")
-Signed-off-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc: Mark Fasheh <mark@fasheh.com>
-Cc: Joel Becker <jlbec@evilplan.org>
-Cc: Junxiao Bi <junxiao.bi@oracle.com>
-Cc: Changwei Ge <gechangwei@live.cn>
-Cc: Gang He <ghe@suse.com>
-Cc: Jun Piao <piaojun@huawei.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
+Reviewed-by: Jaehoon Chung <jh80.chung@samsung.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/af8f8b8674ba4fcc9a781019e4aeb72c@hyperstone.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ocfs2/file.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/mmc/host/dw_mmc.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/fs/ocfs2/file.c
-+++ b/fs/ocfs2/file.c
-@@ -490,10 +490,11 @@ int ocfs2_truncate_file(struct inode *in
- 	 * greater than page size, so we have to truncate them
- 	 * anyway.
- 	 */
--	unmap_mapping_range(inode->i_mapping, new_i_size + PAGE_SIZE - 1, 0, 1);
--	truncate_inode_pages(inode->i_mapping, new_i_size);
- 
- 	if (OCFS2_I(inode)->ip_dyn_features & OCFS2_INLINE_DATA_FL) {
-+		unmap_mapping_range(inode->i_mapping,
-+				    new_i_size + PAGE_SIZE - 1, 0, 1);
-+		truncate_inode_pages(inode->i_mapping, new_i_size);
- 		status = ocfs2_truncate_inline(inode, di_bh, new_i_size,
- 					       i_size_read(inode), 1);
- 		if (status)
-@@ -512,6 +513,9 @@ int ocfs2_truncate_file(struct inode *in
- 		goto bail_unlock_sem;
- 	}
- 
-+	unmap_mapping_range(inode->i_mapping, new_i_size + PAGE_SIZE - 1, 0, 1);
-+	truncate_inode_pages(inode->i_mapping, new_i_size);
-+
- 	status = ocfs2_commit_truncate(osb, inode, di_bh);
- 	if (status < 0) {
- 		mlog_errno(status);
+--- a/drivers/mmc/host/dw_mmc.c
++++ b/drivers/mmc/host/dw_mmc.c
+@@ -2047,7 +2047,8 @@ static void dw_mci_tasklet_func(unsigned
+ 				 * delayed. Allowing the transfer to take place
+ 				 * avoids races and keeps things simple.
+ 				 */
+-				if (err != -ETIMEDOUT) {
++				if (err != -ETIMEDOUT &&
++				    host->dir_status == DW_MCI_RECV_STATUS) {
+ 					state = STATE_SENDING_DATA;
+ 					continue;
+ 				}
 
 
