@@ -2,110 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF82D45CA59
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 830F245CA5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:48:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349181AbhKXQvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:51:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241782AbhKXQvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:51:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBCFD60FDA;
-        Wed, 24 Nov 2021 16:47:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637772476;
-        bh=xZZelNzGy3fEF+TRUP3mu2a2dvknfo0hSlfUMkdbXnE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QB2Os1i5AAZ9Xb5Ny2MOKmxAU9QaCl4g4U/BMONy2Go/4aNLCZCzKJp4JxdPfjil5
-         qHxNPAYki4sRFQnethGWNHA8GHDZbL88c3bDuLfvcdTBjwqsGNST4xcjN2W+EGY1y0
-         TvtMabQArNlwiSl0HxWQWfW+MKM5rssREZWlgFg6NjwjKGpKe6g39mGxEVGA3oaNxX
-         HdmkqI2DxHPlkYycjzpNmN6H99QT9uBQ/u82VVGRg2GOI7x+KvH19VBj7dIKiSmSJA
-         ADAU0J4jKCyMB/cBewSPJ3BzTq+hVhklOzMuTKcMRu99LF5Z4XVXjwqpsz5TxBueIE
-         8jyssOdTheYGg==
-Received: by mail-wm1-f48.google.com with SMTP id y196so3016654wmc.3;
-        Wed, 24 Nov 2021 08:47:55 -0800 (PST)
-X-Gm-Message-State: AOAM531K28KbFrMeUnQZk/r41mjzkGYVAHNfeHOoOjd8aKJH/vtnMiY9
-        rKJFj5805AMmrQQp7ia6liNjw/Bzm4EwydV9adE=
-X-Google-Smtp-Source: ABdhPJwbFP7vLbm8pNQQOpEuYc09R2zZihV7ND7aqtuJCkGnJDFI12J2lrIBTl3QZQQRaScbWu3GRnefAkQ3ygpVdCU=
-X-Received: by 2002:a1c:770e:: with SMTP id t14mr16061185wmi.173.1637772474274;
- Wed, 24 Nov 2021 08:47:54 -0800 (PST)
-MIME-Version: 1.0
-References: <20211122222203.4103644-1-arnd@kernel.org> <20211122222203.4103644-2-arnd@kernel.org>
- <1dbe0c9f-e209-49e1-f05c-765d9f9b91eb@gmail.com>
-In-Reply-To: <1dbe0c9f-e209-49e1-f05c-765d9f9b91eb@gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 24 Nov 2021 17:47:38 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0ojMBib+6UGGxO1GyQ4a22RM3yn79Uv=ixQ2KFUCfGrw@mail.gmail.com>
-Message-ID: <CAK8P3a0ojMBib+6UGGxO1GyQ4a22RM3yn79Uv=ixQ2KFUCfGrw@mail.gmail.com>
-Subject: Re: [PATCH v2 01/11] ASoC: tegra20-spdif: stop setting slave_id
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andy Gross <agross@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
+        id S1349201AbhKXQvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:51:35 -0500
+Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.121]:26100 "EHLO
+        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238391AbhKXQve (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 11:51:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637772497;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=icc13YC5mHwE0XQvAD6VEy3MsLwt9uSPlxq+Nx/D1H4=;
+    b=YUnGh4OjkMKYt7K5BhVP0dlBbNqMmnci+MORTJkKXQ6y7MlxZrjR9JjuoNqdipnaK9
+    nqemSaP1pvW/Cbw77TFiM5LPFoHXE7mjs2/b9LwrH565ebcmWMWr2qMaGNVKvE1w711S
+    cL0LYlqGbUhunijvOfMhhcxgDtGnHHThxXQvMzVvT98VN5f+NZHBB7AUtRvzOwOWp4oB
+    ewEBmbOCTaJ9iwRyirRd5Ep0V7+ry1cEVl8jZJ3sohImjJw/q5zY+RXR3SG2ErxXD1cR
+    Fj9jVhE6K0ntaf4UqxEVEloyda/mdLwW6rk1XJmmlScC+kDdWtsj2u+sfZiOtVts4pl/
+    8InQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3jsN+"
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.34.10 DYNA|AUTH)
+    with ESMTPSA id e05ed8xAOGmG3vt
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Wed, 24 Nov 2021 17:48:16 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH v8 0/8] MIPS: JZ4780 and CI20 HDMI
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <B6B358E8-4395-442F-A353-396D8DC54C66@goldelico.com>
+Date:   Wed, 24 Nov 2021 17:48:16 +0100
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Scott Branden <sbranden@broadcom.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        dmaengine@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <A0913ACC-5803-4FF7-AF96-CE8CB3F9F323@goldelico.com>
+References: <cover.1637691240.git.hns@goldelico.com>
+ <J4K13R.CGVJ0IY95LC51@crapouillou.net>
+ <B6B358E8-4395-442F-A353-396D8DC54C66@goldelico.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 5:32 PM Dmitry Osipenko <digetx@gmail.com> wrote:
-> 23.11.2021 01:21, Arnd Bergmann =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->
-> The commit message is correct, however you could remove even more code
-> here. But there is no need to make a v3 just because this patch because
-> I already prepared patchset that revives this S/PDIF driver and enables
-> HDMI audio on Tegra20. I'll take care of cleaning up the whole code of
-> this driver.
+Hi Paul,
 
-Ok, perfect, thanks for taking a closer look as well.
+> Am 23.11.2021 um 21:44 schrieb H. Nikolaus Schaller =
+<hns@goldelico.com>:
+>=20
+> Hi Paul,
+>=20
+>> Am 23.11.2021 um 21:12 schrieb Paul Cercueil <paul@crapouillou.net>:
+>>=20
+>> Hi Nikolaus,
+>>=20
+>> I think if you can fix the last few things I commented on, and I get =
+an ACK from Rob for the Device Tree related patches, then it will be =
+ready to merge.
+>=20
+> Fine! Especially for finding the NULL regulator risk.
+>=20
+> Will do in the next days.
+> For the unwedge pinmux I have to check if we need it at all.
 
->
-> -       dmareq =3D platform_get_resource(pdev, IORESOURCE_DMA, 0);
-> -       if (!dmareq) {
-> -               dev_err(&pdev->dev, "No DMA resource\n");
-> -               return -ENODEV;
-> -       }
-> -
+No. It is only needed by the driver to take care of for a special =
+potential hardware hickup.
+The current code does nothing and I have removed it and everything still =
+works as
+before.
 
-Right, I think I considered doing this at some point as well, not sure
-why I left it in for the version I posted. Passing the IORESOURCE_DMA
-values is clearly wrong by itself and needs to be removed, though
-it's not obvious what the correct way of requesting the DMA channel
-is for this driver either, without a DT binding or users.
+There remains only one question for a v9: can we store the (single) =
+regulator reference
+in a static variable or should we define a struct and allocate memory in =
+patch 4/8?
 
-        Arnd
+BR and thanks,
+Nikolaus
+
