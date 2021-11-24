@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F197645C20A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:22:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0629445C5C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:59:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348016AbhKXNY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:24:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48368 "EHLO mail.kernel.org"
+        id S1353270AbhKXOAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:00:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348828AbhKXNWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:22:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C2A861B28;
-        Wed, 24 Nov 2021 12:47:53 +0000 (UTC)
+        id S1349305AbhKXN5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:57:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD697633BB;
+        Wed, 24 Nov 2021 13:07:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758074;
-        bh=tqpN3gXnWopqGetBBiFAQHr6fgZWEqZOJpnpFBjko/Q=;
+        s=korg; t=1637759270;
+        bh=1ReDytQa2MRvTxsZ/9xvcEfOpHSfzl45f3ot5+dOTfQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kIfgmhfyoXtCuXwDizyxx2/2nQmmc3gRddPZlLQKmUXKlbHL+gzFgSOVlIM2KiFx2
-         9ShAb5bhPiNWADdctwmLdOTdYiQNKnKUxmNe9/YQppyx7w68WNg5MuwRLm9vlx0IaZ
-         wbq9E3Ap3eVuVLwM5ikemAj2nXwOoFwh7WdFPp7g=
+        b=xZofe/GXqaRVgaaVWqVExb0rQ2+uRY++u2ra34/ALlhybcO4ATDAqbwMwbmqQH0Xk
+         F8v1VSpPQtsFGhuCenoJXCWV7P8VfiAp10OAcQQTACY+JGjrdiSZi4W4fLi0wKva8X
+         3vfKuJGInLDwdLg93FcCneWhk1aRUIlN+56rB59w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rich Felker <dalias@libc.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 035/100] sh: define __BIG_ENDIAN for math-emu
+        stable@vger.kernel.org,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 184/279] perf/x86/intel/uncore: Fix IIO event constraints for Snowridge
 Date:   Wed, 24 Nov 2021 12:57:51 +0100
-Message-Id: <20211124115656.008523232@linuxfoundation.org>
+Message-Id: <20211124115725.090343756@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Alexander Antonov <alexander.antonov@linux.intel.com>
 
-[ Upstream commit b929926f01f2d14635345d22eafcf60feed1085e ]
+[ Upstream commit bdc0feee05174418dec1fa68de2af19e1750b99f ]
 
-Fix this by defining both ENDIAN macros in
-<asm/sfp-machine.h> so that they can be utilized in
-<math-emu/soft-fp.h> according to the latter's comment:
-/* Allow sfp-machine to have its own byte order definitions. */
+According to the latest uncore document, DATA_REQ_OF_CPU (0x83),
+DATA_REQ_BY_CPU (0xc0) and COMP_BUF_OCCUPANCY (0xd5) events have
+constraints. Add uncore IIO constraints for Snowridge.
 
-(This is what is done in arch/nds32/include/asm/sfp-machine.h.)
-
-This placates these build warnings:
-
-In file included from ../arch/sh/math-emu/math.c:23:
-.../include/math-emu/single.h:50:21: warning: "__BIG_ENDIAN" is not defined, evaluates to 0 [-Wundef]
-   50 | #if __BYTE_ORDER == __BIG_ENDIAN
-In file included from ../arch/sh/math-emu/math.c:24:
-.../include/math-emu/double.h:59:21: warning: "__BIG_ENDIAN" is not defined, evaluates to 0 [-Wundef]
-   59 | #if __BYTE_ORDER == __BIG_ENDIAN
-
-Fixes: 4b565680d163 ("sh: math-emu support")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Signed-off-by: Rich Felker <dalias@libc.org>
+Fixes: 210cc5f9db7a ("perf/x86/intel/uncore: Add uncore support for Snow Ridge server")
+Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+Link: https://lore.kernel.org/r/20211115090334.3789-4-alexander.antonov@linux.intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/sh/include/asm/sfp-machine.h | 8 ++++++++
+ arch/x86/events/intel/uncore_snbep.c | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/sh/include/asm/sfp-machine.h b/arch/sh/include/asm/sfp-machine.h
-index cbc7cf8c97ce6..2d2423478b71d 100644
---- a/arch/sh/include/asm/sfp-machine.h
-+++ b/arch/sh/include/asm/sfp-machine.h
-@@ -13,6 +13,14 @@
- #ifndef _SFP_MACHINE_H
- #define _SFP_MACHINE_H
+diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+index 9aba4ef77b13b..3660f698fb2aa 100644
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -4529,6 +4529,13 @@ static void snr_iio_cleanup_mapping(struct intel_uncore_type *type)
+ 	pmu_iio_cleanup_mapping(type, &snr_iio_mapping_group);
+ }
  
-+#ifdef __BIG_ENDIAN__
-+#define __BYTE_ORDER __BIG_ENDIAN
-+#define __LITTLE_ENDIAN 0
-+#else
-+#define __BYTE_ORDER __LITTLE_ENDIAN
-+#define __BIG_ENDIAN 0
-+#endif
++static struct event_constraint snr_uncore_iio_constraints[] = {
++	UNCORE_EVENT_CONSTRAINT(0x83, 0x3),
++	UNCORE_EVENT_CONSTRAINT(0xc0, 0xc),
++	UNCORE_EVENT_CONSTRAINT(0xd5, 0xc),
++	EVENT_CONSTRAINT_END
++};
 +
- #define _FP_W_TYPE_SIZE		32
- #define _FP_W_TYPE		unsigned long
- #define _FP_WS_TYPE		signed long
+ static struct intel_uncore_type snr_uncore_iio = {
+ 	.name			= "iio",
+ 	.num_counters		= 4,
+@@ -4540,6 +4547,7 @@ static struct intel_uncore_type snr_uncore_iio = {
+ 	.event_mask_ext		= SNR_IIO_PMON_RAW_EVENT_MASK_EXT,
+ 	.box_ctl		= SNR_IIO_MSR_PMON_BOX_CTL,
+ 	.msr_offset		= SNR_IIO_MSR_OFFSET,
++	.constraints		= snr_uncore_iio_constraints,
+ 	.ops			= &ivbep_uncore_msr_ops,
+ 	.format_group		= &snr_uncore_iio_format_group,
+ 	.attr_update		= snr_iio_attr_update,
 -- 
 2.33.0
 
