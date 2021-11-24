@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B17F45BFC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:58:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76FBC45BFB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:58:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347460AbhKXNB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:01:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33426 "EHLO mail.kernel.org"
+        id S1346220AbhKXNBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:01:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347183AbhKXM6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:58:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E37B610CE;
-        Wed, 24 Nov 2021 12:33:41 +0000 (UTC)
+        id S1347444AbhKXM6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:58:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95F9C6023E;
+        Wed, 24 Nov 2021 12:33:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757222;
-        bh=vX3XEse8BNh+6SkQZ8/Qtrl79RAZXOZ0Sx1Lyy6b0Wc=;
+        s=korg; t=1637757228;
+        bh=fGFQjNNUdNrz52vfi3x9I5L+GYEXW1Vh5yiXJ8d4EGE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cKhvxC4w3dLwqrbJibbjwrgoUQ4r2jFlNYU02ot4xzpYQXoweMNjtkeOq0RW3RK31
-         z51JchtyZ0A8b4iBRZ5U7bQZ3AL0pxKPjksKeqI+CMgO08OgcRgsw4Klu6gQ62nw3H
-         rNZEbELOyJ+2RXafVFBpnupWMJs1fgc07S5Dy3S0=
+        b=BbEIoaIZhq5Kom58HZcPiX6eaP1BFHlQzUdniw6FvoEt1D1KR1Mezpl+RAbSYq6Pv
+         K0yDB0hjI9MxB5VesvlSrEq9f1yxqOnd9qW8zfe6dhFJQ0hKt+jNloFIiSowkmw/C0
+         sP1rEVS6n1p0+I8KkCAXTLjJ3WwiDr9Y8VQbc3KY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
-        Tuo Li <islituo@gmail.com>,
+        stable@vger.kernel.org, Nadezda Lutovinova <lutovinova@ispras.ru>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 098/323] media: s5p-mfc: fix possible null-pointer dereference in s5p_mfc_probe()
-Date:   Wed, 24 Nov 2021 12:54:48 +0100
-Message-Id: <20211124115722.278522671@linuxfoundation.org>
+Subject: [PATCH 4.19 099/323] media: s5p-mfc: Add checking to s5p_mfc_probe().
+Date:   Wed, 24 Nov 2021 12:54:49 +0100
+Message-Id: <20211124115722.309923477@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
 References: <20211124115718.822024889@linuxfoundation.org>
@@ -42,46 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tuo Li <islituo@gmail.com>
+From: Nadezda Lutovinova <lutovinova@ispras.ru>
 
-[ Upstream commit 8515965e5e33f4feb56134348c95953f3eadfb26 ]
+[ Upstream commit cdfaf4752e6915a4b455ad4400133e540e4dc965 ]
 
-The variable pdev is assigned to dev->plat_dev, and dev->plat_dev is
-checked in:
-  if (!dev->plat_dev)
+If of_device_get_match_data() return NULL,
+then null pointer dereference occurs in  s5p_mfc_init_pm().
+The patch adds checking if dev->variant is NULL.
 
-This indicates both dev->plat_dev and pdev can be NULL. If so, the
-function dev_err() is called to print error information.
-  dev_err(&pdev->dev, "No platform data specified\n");
+Found by Linux Driver Verification project (linuxtesting.org).
 
-However, &pdev->dev is an illegal address, and it is dereferenced in
-dev_err().
-
-To fix this possible null-pointer dereference, replace dev_err() with
-mfc_err().
-
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Tuo Li <islituo@gmail.com>
+Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/s5p-mfc/s5p_mfc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/platform/s5p-mfc/s5p_mfc.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/drivers/media/platform/s5p-mfc/s5p_mfc.c b/drivers/media/platform/s5p-mfc/s5p_mfc.c
-index 4b8516c35bc20..80bb58d31c3f6 100644
+index 80bb58d31c3f6..0fc101bc58d67 100644
 --- a/drivers/media/platform/s5p-mfc/s5p_mfc.c
 +++ b/drivers/media/platform/s5p-mfc/s5p_mfc.c
-@@ -1276,7 +1276,7 @@ static int s5p_mfc_probe(struct platform_device *pdev)
- 	spin_lock_init(&dev->condlock);
- 	dev->plat_dev = pdev;
- 	if (!dev->plat_dev) {
--		dev_err(&pdev->dev, "No platform data specified\n");
-+		mfc_err("No platform data specified\n");
- 		return -ENODEV;
+@@ -1281,6 +1281,10 @@ static int s5p_mfc_probe(struct platform_device *pdev)
  	}
  
+ 	dev->variant = of_device_get_match_data(&pdev->dev);
++	if (!dev->variant) {
++		dev_err(&pdev->dev, "Failed to get device MFC hardware variant information\n");
++		return -ENOENT;
++	}
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	dev->regs_base = devm_ioremap_resource(&pdev->dev, res);
 -- 
 2.33.0
 
