@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C201E45C3A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FBF445C268
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:26:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347088AbhKXNlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:41:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33750 "EHLO mail.kernel.org"
+        id S243070AbhKXN2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:28:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353028AbhKXNiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:38:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 792626187C;
-        Wed, 24 Nov 2021 12:56:30 +0000 (UTC)
+        id S1348323AbhKXNZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:25:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E92861355;
+        Wed, 24 Nov 2021 12:49:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758591;
-        bh=e0SVtE+2MX6jcZxVk7NyCJkC5bCkuH4AQ8KL127YBFg=;
+        s=korg; t=1637758166;
+        bh=iG/Z/41zi9ZCW+fFISS86Uf5hqwtp1T/mNi6/hSnXHI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eYLkha1Ar6lmKEnQCO8+1kslKlQCU261mJckzuoR9C+KnzvyCCASMxJmrL+oCMbGl
-         l1qMPlr9/Sd0Hdt4DD80PmZo8vpJuTIvUyGzf9oTBzqYkEoppe/s2ohuTv+2rXoKpK
-         2iuOvjauo9+xuyob0iKf4CgadfHLiZkapMYHWrOM=
+        b=UYNmSP7OwY+nxhIRoh/kUM01YP7HwO1FbpT254gbHQ3cLP1GgnFlPGpHzDqvF/MwB
+         YxXMvSpvTEQdMIKnWnsZkUtRgsALTpvZJNRvfMqxa3E5RwWFGWlM/oTLL2T/depDTF
+         mLgI2nETY5rIAiBnK7m1gqSE5CvvaOcNIrWWjnb8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 120/154] tun: fix bonding active backup with arp monitoring
-Date:   Wed, 24 Nov 2021 12:58:36 +0100
-Message-Id: <20211124115706.168988041@linuxfoundation.org>
+        stable@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wei Liu <wei.liu@kernel.org>
+Subject: [PATCH 5.4 081/100] x86/hyperv: Fix NULL deref in set_hv_tscchange_cb() if Hyper-V setup fails
+Date:   Wed, 24 Nov 2021 12:58:37 +0100
+Message-Id: <20211124115657.474965803@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+From: Sean Christopherson <seanjc@google.com>
 
-commit a31d27fbed5d518734cb60956303eb15089a7634 upstream.
+commit daf972118c517b91f74ff1731417feb4270625a4 upstream.
 
-As stated in the bonding doc, trans_start must be set manually for drivers
-using NETIF_F_LLTX:
- Drivers that use NETIF_F_LLTX flag must also update
- netdev_queue->trans_start. If they do not, then the ARP monitor will
- immediately fail any slaves using that driver, and those slaves will stay
- down.
+Check for a valid hv_vp_index array prior to derefencing hv_vp_index when
+setting Hyper-V's TSC change callback.  If Hyper-V setup failed in
+hyperv_init(), the kernel will still report that it's running under
+Hyper-V, but will have silently disabled nearly all functionality.
 
-Link: https://www.kernel.org/doc/html/v5.15/networking/bonding.html#arp-monitor-operation
-Signed-off-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+  BUG: kernel NULL pointer dereference, address: 0000000000000010
+  #PF: supervisor read access in kernel mode
+  #PF: error_code(0x0000) - not-present page
+  PGD 0 P4D 0
+  Oops: 0000 [#1] SMP
+  CPU: 4 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc2+ #75
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+  RIP: 0010:set_hv_tscchange_cb+0x15/0xa0
+  Code: <8b> 04 82 8b 15 12 17 85 01 48 c1 e0 20 48 0d ee 00 01 00 f6 c6 08
+  ...
+  Call Trace:
+   kvm_arch_init+0x17c/0x280
+   kvm_init+0x31/0x330
+   vmx_init+0xba/0x13a
+   do_one_initcall+0x41/0x1c0
+   kernel_init_freeable+0x1f2/0x23b
+   kernel_init+0x16/0x120
+   ret_from_fork+0x22/0x30
+
+Fixes: 93286261de1b ("x86/hyperv: Reenlightenment notifications support")
+Cc: stable@vger.kernel.org
+Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Link: https://lore.kernel.org/r/20211104182239.1302956-2-seanjc@google.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/tun.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ arch/x86/hyperv/hv_init.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -1021,6 +1021,7 @@ static netdev_tx_t tun_net_xmit(struct s
- {
- 	struct tun_struct *tun = netdev_priv(dev);
- 	int txq = skb->queue_mapping;
-+	struct netdev_queue *queue;
- 	struct tun_file *tfile;
- 	int len = skb->len;
+--- a/arch/x86/hyperv/hv_init.c
++++ b/arch/x86/hyperv/hv_init.c
+@@ -163,6 +163,9 @@ void set_hv_tscchange_cb(void (*cb)(void
+ 		return;
+ 	}
  
-@@ -1065,6 +1066,10 @@ static netdev_tx_t tun_net_xmit(struct s
- 	if (ptr_ring_produce(&tfile->tx_ring, skb))
- 		goto drop;
- 
-+	/* NETIF_F_LLTX requires to do our own update of trans_start */
-+	queue = netdev_get_tx_queue(dev, txq);
-+	queue->trans_start = jiffies;
++	if (!hv_vp_index)
++		return;
 +
- 	/* Notify and wake up reader process */
- 	if (tfile->flags & TUN_FASYNC)
- 		kill_fasync(&tfile->fasync, SIGIO, POLL_IN);
+ 	hv_reenlightenment_cb = cb;
+ 
+ 	/* Make sure callback is registered before we write to MSRs */
 
 
