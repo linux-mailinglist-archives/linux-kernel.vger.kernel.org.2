@@ -2,36 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9701645BE28
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88FA345BA78
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245155AbhKXMpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:45:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50376 "EHLO mail.kernel.org"
+        id S242505AbhKXMLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:11:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344211AbhKXMm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:42:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC941613B1;
-        Wed, 24 Nov 2021 12:24:58 +0000 (UTC)
+        id S232442AbhKXMIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:08:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B4C461053;
+        Wed, 24 Nov 2021 12:04:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756699;
-        bh=V3u3PeCxqmBgHxc999B9c7fj5YtPC3oj91a4DW/Ak4E=;
+        s=korg; t=1637755483;
+        bh=E75xeQtI4oHGuXT23o4iJrM5A/1CZ+eA7kXnn4MJp4g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kB+4JNBJ7rBoXX7Vm3eOXgRTmvgc+8jYejxHqqsOBfGGlrj+0KIwCErutictAZBc+
-         /kEhRyycq9IJqonRHad05zRbLZ4oblv4X93Xf3sAgJq7SnTbcvwsw3+UZwgP529zN7
-         ExBAHe4ldtJZiSkrs4HICrcj1YyvC7R/M8rRapyY=
+        b=FuHWKO15Bl02rhSBMFAiL9DGw/nlXhNeOgGbcQWpi1S+hi5Opy3T015RaV6ptDSlZ
+         DiNlEIMnLBFDqpUFQmB4+d6Xwj5OeF/2/jr9ZfGvEwVGT2pTZifBEn3hkNA4EaCQ8u
+         6JaSnPk+Ef3LZ1QUAld7AEgb9NNq9j/ImQb75J38=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 172/251] netfilter: nfnetlink_queue: fix OOB when mac header was cleared
+        stable@vger.kernel.org,
+        Antonio Terceiro <antonio.terceiro@linaro.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Sebastian Andrzej Siewior <sebastian@breakpoint.cc>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Klaus Kudielka <klaus.kudielka@gmail.com>,
+        Matthias Klose <doko@debian.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH 4.4 111/162] ARM: 9156/1: drop cc-option fallbacks for architecture selection
 Date:   Wed, 24 Nov 2021 12:56:54 +0100
-Message-Id: <20211124115716.242791278@linuxfoundation.org>
+Message-Id: <20211124115701.917710645@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +46,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 5648b5e1169ff1d6d6a46c35c0b5fbebd2a5cbb2 ]
+commit 418ace9992a7647c446ed3186df40cf165b67298 upstream.
 
-On 64bit platforms the MAC header is set to 0xffff on allocation and
-also when a helper like skb_unset_mac_header() is called.
+Naresh and Antonio ran into a build failure with latest Debian
+armhf compilers, with lots of output like
 
-dev_parse_header may call skb_mac_header() which assumes valid mac offset:
+ tmp/ccY3nOAs.s:2215: Error: selected processor does not support `cpsid i' in ARM mode
 
- BUG: KASAN: use-after-free in eth_header_parse+0x75/0x90
- Read of size 6 at addr ffff8881075a5c05 by task nf-queue/1364
- Call Trace:
-  memcpy+0x20/0x60
-  eth_header_parse+0x75/0x90
-  __nfqnl_enqueue_packet+0x1a61/0x3380
-  __nf_queue+0x597/0x1300
-  nf_queue+0xf/0x40
-  nf_hook_slow+0xed/0x190
-  nf_hook+0x184/0x440
-  ip_output+0x1c0/0x2a0
-  nf_reinject+0x26f/0x700
-  nfqnl_recv_verdict+0xa16/0x18b0
-  nfnetlink_rcv_msg+0x506/0xe70
+As it turns out, $(cc-option) fails early here when the FPU is not
+selected before CPU architecture is selected, as the compiler
+option check runs before enabling -msoft-float, which causes
+a problem when testing a target architecture level without an FPU:
 
-The existing code only works if the skb has a mac header.
+cc1: error: '-mfloat-abi=hard': selected architecture lacks an FPU
 
-Fixes: 2c38de4c1f8da7 ("netfilter: fix looped (broad|multi)cast's MAC handling")
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Passing e.g. -march=armv6k+fp in place of -march=armv6k would avoid this
+issue, but the fallback logic is already broken because all supported
+compilers (gcc-5 and higher) are much more recent than these options,
+and building with -march=armv5t as a fallback no longer works.
+
+The best way forward that I see is to just remove all the checks, which
+also has the nice side-effect of slightly improving the startup time for
+'make'.
+
+The -mtune=marvell-f option was apparently never supported by any mainline
+compiler, and the custom Codesourcery gcc build that did support is
+now too old to build kernels, so just use -mtune=xscale unconditionally
+for those.
+
+This should be safe to apply on all stable kernels, and will be required
+in order to keep building them with gcc-11 and higher.
+
+Link: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=996419
+
+Reported-by: Antonio Terceiro <antonio.terceiro@linaro.org>
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Reported-by: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+Tested-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Tested-by: Klaus Kudielka <klaus.kudielka@gmail.com>
+Cc: Matthias Klose <doko@debian.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netfilter/nfnetlink_queue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/Makefile |   22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
-index 02bbc2f9f1f1e..13e67eb75d841 100644
---- a/net/netfilter/nfnetlink_queue.c
-+++ b/net/netfilter/nfnetlink_queue.c
-@@ -543,7 +543,7 @@ nfqnl_build_packet_message(struct net *net, struct nfqnl_instance *queue,
- 		goto nla_put_failure;
+--- a/arch/arm/Makefile
++++ b/arch/arm/Makefile
+@@ -66,15 +66,15 @@ KBUILD_CFLAGS	+= $(call cc-option,-fno-i
+ # Note that GCC does not numerically define an architecture version
+ # macro, but instead defines a whole series of macros which makes
+ # testing for a specific architecture or later rather impossible.
+-arch-$(CONFIG_CPU_32v7M)	=-D__LINUX_ARM_ARCH__=7 -march=armv7-m -Wa,-march=armv7-m
+-arch-$(CONFIG_CPU_32v7)		=-D__LINUX_ARM_ARCH__=7 $(call cc-option,-march=armv7-a,-march=armv5t -Wa$(comma)-march=armv7-a)
+-arch-$(CONFIG_CPU_32v6)		=-D__LINUX_ARM_ARCH__=6 $(call cc-option,-march=armv6,-march=armv5t -Wa$(comma)-march=armv6)
++arch-$(CONFIG_CPU_32v7M)	=-D__LINUX_ARM_ARCH__=7 -march=armv7-m
++arch-$(CONFIG_CPU_32v7)		=-D__LINUX_ARM_ARCH__=7 -march=armv7-a
++arch-$(CONFIG_CPU_32v6)		=-D__LINUX_ARM_ARCH__=6 -march=armv6
+ # Only override the compiler option if ARMv6. The ARMv6K extensions are
+ # always available in ARMv7
+ ifeq ($(CONFIG_CPU_32v6),y)
+-arch-$(CONFIG_CPU_32v6K)	=-D__LINUX_ARM_ARCH__=6 $(call cc-option,-march=armv6k,-march=armv5t -Wa$(comma)-march=armv6k)
++arch-$(CONFIG_CPU_32v6K)	=-D__LINUX_ARM_ARCH__=6 -march=armv6k
+ endif
+-arch-$(CONFIG_CPU_32v5)		=-D__LINUX_ARM_ARCH__=5 $(call cc-option,-march=armv5te,-march=armv4t)
++arch-$(CONFIG_CPU_32v5)		=-D__LINUX_ARM_ARCH__=5 -march=armv5te
+ arch-$(CONFIG_CPU_32v4T)	=-D__LINUX_ARM_ARCH__=4 -march=armv4t
+ arch-$(CONFIG_CPU_32v4)		=-D__LINUX_ARM_ARCH__=4 -march=armv4
+ arch-$(CONFIG_CPU_32v3)		=-D__LINUX_ARM_ARCH__=3 -march=armv3
+@@ -88,7 +88,7 @@ tune-$(CONFIG_CPU_ARM720T)	=-mtune=arm7t
+ tune-$(CONFIG_CPU_ARM740T)	=-mtune=arm7tdmi
+ tune-$(CONFIG_CPU_ARM9TDMI)	=-mtune=arm9tdmi
+ tune-$(CONFIG_CPU_ARM940T)	=-mtune=arm9tdmi
+-tune-$(CONFIG_CPU_ARM946E)	=$(call cc-option,-mtune=arm9e,-mtune=arm9tdmi)
++tune-$(CONFIG_CPU_ARM946E)	=-mtune=arm9e
+ tune-$(CONFIG_CPU_ARM920T)	=-mtune=arm9tdmi
+ tune-$(CONFIG_CPU_ARM922T)	=-mtune=arm9tdmi
+ tune-$(CONFIG_CPU_ARM925T)	=-mtune=arm9tdmi
+@@ -96,11 +96,11 @@ tune-$(CONFIG_CPU_ARM926T)	=-mtune=arm9t
+ tune-$(CONFIG_CPU_FA526)	=-mtune=arm9tdmi
+ tune-$(CONFIG_CPU_SA110)	=-mtune=strongarm110
+ tune-$(CONFIG_CPU_SA1100)	=-mtune=strongarm1100
+-tune-$(CONFIG_CPU_XSCALE)	=$(call cc-option,-mtune=xscale,-mtune=strongarm110) -Wa,-mcpu=xscale
+-tune-$(CONFIG_CPU_XSC3)		=$(call cc-option,-mtune=xscale,-mtune=strongarm110) -Wa,-mcpu=xscale
+-tune-$(CONFIG_CPU_FEROCEON)	=$(call cc-option,-mtune=marvell-f,-mtune=xscale)
+-tune-$(CONFIG_CPU_V6)		=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
+-tune-$(CONFIG_CPU_V6K)		=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
++tune-$(CONFIG_CPU_XSCALE)	=-mtune=xscale
++tune-$(CONFIG_CPU_XSC3)		=-mtune=xscale
++tune-$(CONFIG_CPU_FEROCEON)	=-mtune=xscale
++tune-$(CONFIG_CPU_V6)		=-mtune=arm1136j-s
++tune-$(CONFIG_CPU_V6K)		=-mtune=arm1136j-s
  
- 	if (indev && entskb->dev &&
--	    entskb->mac_header != entskb->network_header) {
-+	    skb_mac_header_was_set(entskb)) {
- 		struct nfqnl_msg_packet_hw phw;
- 		int len;
- 
--- 
-2.33.0
-
+ # Evaluate tune cc-option calls now
+ tune-y := $(tune-y)
 
 
