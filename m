@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 227E645C25E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A6F45C64D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:03:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349370AbhKXN1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:27:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48878 "EHLO mail.kernel.org"
+        id S1352083AbhKXOGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:06:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350364AbhKXNZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:25:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 620CA61B62;
-        Wed, 24 Nov 2021 12:49:41 +0000 (UTC)
+        id S1353755AbhKXOCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:02:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4054163312;
+        Wed, 24 Nov 2021 13:10:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758182;
-        bh=Zty3CVMBZk4RNp1kekEFFjSMGMoZUMY08NMObyzMbuk=;
+        s=korg; t=1637759417;
+        bh=m5BwtAhOnaDAYw1zTd29HVLcSehLDcVN2KyVWfanMlE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u9gv5ip4DWLP9Gmsw4otZFDD5znS0d8YdIGWpK99inJLspdLBXFwcUML3AhHeBJ/R
-         bchbPLZhIAcOZgxVwsPTEWryy6o+MGm/9Un7cFbK54OgGycjZLZ5+HTLWmTm7qJwMA
-         aqeusZw7aGM5O1yZmsTaOEzxMGE1+9qPx2dfS8fk=
+        b=szQhkc9tADEi3BQBbNgqvErLr9iYtmUZWlT4hT2DEVQcgvW7rXRYRKd8W8KEov/fA
+         TxavYdXLEf1wP3WLEMcVVzyZv0To3Es7XkdHk+6p/L8+TIeTYwtJG7PnOL7FINKz/P
+         lymOQqfz+hCfjX0pm9/d5cNvNKA1qcM4jj45+3AM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nguyen Dinh Phi <phind.uet@gmail.com>,
-        syzbot+bbf402b783eeb6d908db@syzkaller.appspotmail.com,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.4 086/100] cfg80211: call cfg80211_stop_ap when switch from P2P_GO type
+        stable@vger.kernel.org, Sven Schnelle <svens@stackframe.org>,
+        Helge Deller <deller@gmx.de>
+Subject: [PATCH 5.15 235/279] parisc/sticon: fix reverse colors
 Date:   Wed, 24 Nov 2021 12:58:42 +0100
-Message-Id: <20211124115657.633936265@linuxfoundation.org>
+Message-Id: <20211124115726.865859255@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nguyen Dinh Phi <phind.uet@gmail.com>
+From: Sven Schnelle <svens@stackframe.org>
 
-commit 563fbefed46ae4c1f70cffb8eb54c02df480b2c2 upstream.
+commit bec05f33ebc1006899c6d3e59a00c58881fe7626 upstream.
 
-If the userspace tools switch from NL80211_IFTYPE_P2P_GO to
-NL80211_IFTYPE_ADHOC via send_msg(NL80211_CMD_SET_INTERFACE), it
-does not call the cleanup cfg80211_stop_ap(), this leads to the
-initialization of in-use data. For example, this path re-init the
-sdata->assigned_chanctx_list while it is still an element of
-assigned_vifs list, and makes that linked list corrupt.
+sticon_build_attr() checked the reverse argument and flipped
+background and foreground color, but returned the non-reverse
+value afterwards. Fix this and also add two local variables
+for foreground and background color to make the code easier
+to read.
 
-Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
-Reported-by: syzbot+bbf402b783eeb6d908db@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/20211027173722.777287-1-phind.uet@gmail.com
-Cc: stable@vger.kernel.org
-Fixes: ac800140c20e ("cfg80211: .stop_ap when interface is going down")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Sven Schnelle <svens@stackframe.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/wireless/util.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/video/console/sticon.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
---- a/net/wireless/util.c
-+++ b/net/wireless/util.c
-@@ -991,6 +991,7 @@ int cfg80211_change_iface(struct cfg8021
+--- a/drivers/video/console/sticon.c
++++ b/drivers/video/console/sticon.c
+@@ -332,13 +332,13 @@ static u8 sticon_build_attr(struct vc_da
+ 			    bool blink, bool underline, bool reverse,
+ 			    bool italic)
+ {
+-    u8 attr = ((color & 0x70) >> 1) | ((color & 7));
++	u8 fg = color & 7;
++	u8 bg = (color & 0x70) >> 4;
  
- 		switch (otype) {
- 		case NL80211_IFTYPE_AP:
-+		case NL80211_IFTYPE_P2P_GO:
- 			cfg80211_stop_ap(rdev, dev, true);
- 			break;
- 		case NL80211_IFTYPE_ADHOC:
+-    if (reverse) {
+-	color = ((color >> 3) & 0x7) | ((color & 0x7) << 3);
+-    }
+-
+-    return attr;
++	if (reverse)
++		return (fg << 3) | bg;
++	else
++		return (bg << 3) | fg;
+ }
+ 
+ static void sticon_invert_region(struct vc_data *conp, u16 *p, int count)
 
 
