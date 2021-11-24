@@ -2,117 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9FF45B980
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 12:49:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E50A45B981
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 12:50:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241807AbhKXLxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 06:53:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241781AbhKXLxA (ORCPT
+        id S241753AbhKXLxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 06:53:24 -0500
+Received: from outbound-smtp29.blacknight.com ([81.17.249.32]:41139 "EHLO
+        outbound-smtp29.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241850AbhKXLxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 06:53:00 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882AEC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 03:49:50 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id r25so9094317edq.7
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 03:49:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y+MzWwWx0dm+TlJ+NfteVDSJkTM33adCuaQ734O/0Ww=;
-        b=UHprbtG4MERwSddjhYSkRljo/IdkXJ/uSi5jzRf0KubT60an2k/EDxRHtR0CFdErqt
-         2Qd6OqYD5p0c99eLWoYgwhZvllhkWWnsS3gm4EQLsseY7lhVH9QFWMzhNMkeJcatfhYq
-         8KDmJ3+xxE2FTtU43v2pCmToCIxDZDVA93sTijuUk9ZryZxRgkbjY/Zg5qSymvS7EP6J
-         oltlXgEQ+YZk9FrOQBlyY5Mk1IX2w/KmgOB0xoAHMpsuoNUbSHMMokjh9dSadcpdYsc/
-         hRTMqoy3LpuxJLqQ19NkS3ET+LsSYFYYCsShNQ6mCx3r3H9YASBu3H6ASGFVVbc9k3OQ
-         exVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y+MzWwWx0dm+TlJ+NfteVDSJkTM33adCuaQ734O/0Ww=;
-        b=THiBG9LcnfsQa+iWcrc5if+bJJu/8oyR2yQP1+obWUzjMWkA5OzarAgn4+9So8d9mO
-         DDn6JoG/6S+5ac35eQQ3fOZGbYy8uiJa6oNAJMXr0jGHwTw2fb1smRmmNQxa/i5nO2hy
-         RZd9aSDTsMjSOCNXCyNl8udq2D7eRxQPLP5Vw/aN727YHwIf1ZPTdrtD62MT4VhH2ieV
-         4RPnn6f6fuSHW3RyOqwKtA79D0rekx43mEPr2B84dozRHHn1XV1XuVe2nKLEolfAebcG
-         FF93HCIIIlHe3MZvaYxMNl5aw9Umq7s9nsbqefs2YcewNyWwJZIIiTbVvvJjJ2shIrpk
-         tdfQ==
-X-Gm-Message-State: AOAM530WWyYc/6nJdvEo+ZuohpZfsv1ief4LIhoadAgukjPnH0jMmGgh
-        +83lUw10yYuNdOUP2XkzkD1lmcGJGwp8ElXj+92/C0KJ/CkQGQ==
-X-Google-Smtp-Source: ABdhPJz50+ayqkC9PwUfQPDs/F1c9P5unYO9TynVWF7Kek+kEY46C8Vd7syKWRFSF65D77gqApFm+4+9l0MskbPch9Q=
-X-Received: by 2002:a17:906:9754:: with SMTP id o20mr13288549ejy.277.1637754589119;
- Wed, 24 Nov 2021 03:49:49 -0800 (PST)
+        Wed, 24 Nov 2021 06:53:19 -0500
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp29.blacknight.com (Postfix) with ESMTPS id 3B899BED80
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 11:50:09 +0000 (GMT)
+Received: (qmail 1218 invoked from network); 24 Nov 2021 11:50:09 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 24 Nov 2021 11:50:09 -0000
+Date:   Wed, 24 Nov 2021 11:50:07 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Alexey Avramov <hakavlad@inbox.lv>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, mhocko@suse.com,
+        vbabka@suse.cz, neilb@suse.de, akpm@linux-foundation.org,
+        corbet@lwn.net, riel@surriel.com, hannes@cmpxchg.org,
+        david@fromorbit.com, willy@infradead.org, hdanton@sina.com,
+        penguin-kernel@i-love.sakura.ne.jp, oleksandr@natalenko.name,
+        kernel@xanmod.org, michael@michaellarabel.com, aros@gmx.com,
+        hakavlad@gmail.com
+Subject: Re: mm: 5.16 regression: reclaim_throttle leads to stall in near-OOM
+ conditions
+Message-ID: <20211124115007.GG3366@techsingularity.net>
+References: <20211124011954.7cab9bb4@mail.inbox.lv>
+ <20211124103550.GE3366@techsingularity.net>
+ <20211124195449.33f31e7f@mail.inbox.lv>
 MIME-Version: 1.0
-References: <20211124091546.5072-1-21cnbao@gmail.com> <YZ4eWHarf7QDONLB@hirez.programming.kicks-ass.net>
-In-Reply-To: <YZ4eWHarf7QDONLB@hirez.programming.kicks-ass.net>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Thu, 25 Nov 2021 00:49:37 +1300
-Message-ID: <CAGsJ_4xpqvhBW0G5UfCjRD8BfR4m4EUv4B_cxoOtYTO5+iRsCQ@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/fair: Remove the cost of a redundant
- cpumask_next_wrap in select_idle_cpu
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Barry Song <song.bao.hua@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20211124195449.33f31e7f@mail.inbox.lv>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 12:13 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Wed, Nov 24, 2021 at 05:15:46PM +0800, Barry Song wrote:
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 6e476f6..8cd23f1 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -6278,6 +6278,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
-> >               time = cpu_clock(this);
-> >       }
-> >
-> > +     --nr;
-> >       for_each_cpu_wrap(cpu, cpus, target + 1) {
-> >               if (has_idle_core) {
-> >                       i = select_idle_core(p, cpu, cpus, &idle_cpu);
-> > @@ -6285,11 +6286,11 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
-> >                               return i;
-> >
-> >               } else {
-> > -                     if (!--nr)
-> > -                             return -1;
-> >                       idle_cpu = __select_idle_cpu(cpu, p);
-> >                       if ((unsigned int)idle_cpu < nr_cpumask_bits)
-> >                               break;
-> > +                     if (!--nr)
-> > +                             return -1;
-> >               }
-> >       }
->
-> This way nr can never be 1 for a single iteration -- it current isn't,
-> but that's besides the point.
+On Wed, Nov 24, 2021 at 07:54:49PM +0900, Alexey Avramov wrote:
+> > it does eventually get killed OOM
+> 
+> However, a full minute freeze can be a great evil in many situations - 
+> during such a freeze, the system is completely unresponsive. 
+> 
+> So my next question is: How reasonable is the value MAX_RECLAIM_RETRIES?
+> Is it also get "out of thin air"?
+> 
 
-Yep. nr=1 seems to be a corner case.
-if nr=1, the original code will return -1 directly without scanning
-any cpu. but the new code will scan
-one  time because I haven't checked if(!--nr)  and return before
-for_each_cpu_wrap(). so this changes
-the behaviour for this corner case.
+The value is out of thin air but adjusting it may reintroduce issues
+with kswapd running at 100% CPU.
 
-but if i change "--nr" to "nr--", this new code will scan nr  times
-rather than nr-1, this changes the behaviour
-for all cases besides nr!=1. The original code was looping nr times
-but scanning nr-1 times only.
+> And would it make sense to have buttons to adjust the timeouts?
 
-so you prefer here the codes should scan nr times and change the
-scanning amount from nr-1
-to nr?
+I don't think we should introduce a tunable for something like this,
+it'll be impossible to use properly but can you test this?
 
-Thanks
-Barry
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 07db03883062..aa72c0f39dcc 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1058,6 +1058,14 @@ void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason)
+ 		break;
+ 	case VMSCAN_THROTTLE_NOPROGRESS:
+ 		timeout = HZ/2;
++
++		/*
++		 * If kswapd is disabled, use the minimum timeout as the
++		 * system may be at or near OOM.
++		 */
++		if (pgdat->kswapd_failures >= MAX_RECLAIM_RETRIES)
++			timeout = 1;
++
+ 		break;
+ 	case VMSCAN_THROTTLE_ISOLATED:
+ 		timeout = HZ/50;
+@@ -3395,7 +3403,7 @@ static void consider_reclaim_throttle(pg_data_t *pgdat, struct scan_control *sc)
+ 		return;
+ 
+ 	/* Throttle if making no progress at high prioities. */
+-	if (sc->priority < DEF_PRIORITY - 2)
++	if (sc->priority < DEF_PRIORITY - 2 && !sc->nr_reclaimed)
+ 		reclaim_throttle(pgdat, VMSCAN_THROTTLE_NOPROGRESS);
+ }
+ 
+@@ -3415,6 +3423,7 @@ static void shrink_zones(struct zonelist *zonelist, struct scan_control *sc)
+ 	unsigned long nr_soft_scanned;
+ 	gfp_t orig_mask;
+ 	pg_data_t *last_pgdat = NULL;
++	pg_data_t *first_pgdat = NULL;
+ 
+ 	/*
+ 	 * If the number of buffer_heads in the machine exceeds the maximum
+@@ -3478,14 +3487,18 @@ static void shrink_zones(struct zonelist *zonelist, struct scan_control *sc)
+ 			/* need some check for avoid more shrink_zone() */
+ 		}
+ 
++		if (!first_pgdat)
++			first_pgdat = zone->zone_pgdat;
++
+ 		/* See comment about same check for global reclaim above */
+ 		if (zone->zone_pgdat == last_pgdat)
+ 			continue;
+ 		last_pgdat = zone->zone_pgdat;
+ 		shrink_node(zone->zone_pgdat, sc);
+-		consider_reclaim_throttle(zone->zone_pgdat, sc);
+ 	}
+ 
++	consider_reclaim_throttle(first_pgdat, sc);
++
+ 	/*
+ 	 * Restore to original mask to avoid the impact on the caller if we
+ 	 * promoted it to __GFP_HIGHMEM.
