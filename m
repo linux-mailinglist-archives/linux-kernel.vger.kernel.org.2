@@ -2,76 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E628945C7FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:50:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D87345C7E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347912AbhKXOxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:53:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357830AbhKXOxM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:53:12 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 971C4C07E5F7
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 06:42:28 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id e3so11550751edu.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 06:42:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dBMiRtL7ooW6xH3nu7TfIIajyoHPfIIF3xHL53JOmPI=;
-        b=QdoqLWuCtGPnsdc6cmdbmtVgi+F96Q9dHwzqiYNbVyeSCko1MBUAuM3PZvYkvFp8fG
-         eM1dB8Df7YX51+7IC/hYoTRdcZYw1BczQJdjhsfc4P1HmuLwHjQMnfG5KKng6pXbzUS2
-         GPHcZHe5FSSAAC/v4YcIKJNqfswKzjFERuixKYROylQHdEH+SV9X5esv1bKy6mXTwLh6
-         pWA3giIFGLtr4EIBuH25MzB5SbsTQ3Uw1lnIY3iw+Sfz5906nkQqZi26XeXHlySQ270s
-         JslWWOH0PQfoArMSJEIfFedyAMRJnZmQDxyy4u3c6Za/h3p4sOmBxJHXTOLtGJ3wazUz
-         r1JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dBMiRtL7ooW6xH3nu7TfIIajyoHPfIIF3xHL53JOmPI=;
-        b=bsu8+fpK42384NMD9xSvYUJ19MYboDVaKNwPTdMKCO1UrTKZ3lasnnfHYYY5PsXRgq
-         ncB0HPlHNNv67g2fnkLlLCMqW/htm6apmr3Bb1aCqTKPpiuqXOctI0YX5MGQklAsFS+W
-         pOyUU1AOGnnTL8QMRwrEKcDWs0ojrHblkG+0sC61gjh4ZBcDiPLEvU32IoismH554leH
-         nEL+TvrUA98TAxjemNAQavb86HjWqMxKISyqVM0N2KeVbcQupaF8yTDSpa7n1CWcfG+1
-         kCtPuCztawKaCjPFKqgn5vbLHjReM+ClFZ3VMzRNJJzEWr3Vy2eJnDdoGGyE7eH8LgWp
-         aH7g==
-X-Gm-Message-State: AOAM532pq4ZQHwhAh3Qh3nbA9EFSXsru+j9ZbTlY9ZKKqlL+Cf8p7Jnp
-        DjwWMpeYGFiLYRao3p6/0RULjzTiGJqKgCmuK/uOwA==
-X-Google-Smtp-Source: ABdhPJw+51+u0lBSwzZ48gKrf+ZsizrDYLAUS0gZg5orDfwg4fZJ5s+dPRyMJOhlCmNfWhNl1Ey8AZlcYq2mMN76kh4=
-X-Received: by 2002:a17:907:9847:: with SMTP id jj7mr20460657ejc.508.1637764947181;
- Wed, 24 Nov 2021 06:42:27 -0800 (PST)
+        id S1348948AbhKXOr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:47:27 -0500
+Received: from pegase2.c-s.fr ([93.17.235.10]:40143 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350320AbhKXOrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:47:04 -0500
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HzkKJ6YKvz9sSs;
+        Wed, 24 Nov 2021 15:43:48 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id VGJ0UZeZW-Lk; Wed, 24 Nov 2021 15:43:48 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HzkKJ5rtJz9sSd;
+        Wed, 24 Nov 2021 15:43:48 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B5C728B774;
+        Wed, 24 Nov 2021 15:43:48 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id EDSwOKENqCfz; Wed, 24 Nov 2021 15:43:48 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.108])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A09318B763;
+        Wed, 24 Nov 2021 15:43:48 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1AOEhdgQ343791
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Wed, 24 Nov 2021 15:43:39 +0100
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1AOEhc8I343790;
+        Wed, 24 Nov 2021 15:43:38 +0100
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH] recordmcount: Support empty section from recent binutils
+Date:   Wed, 24 Nov 2021 15:43:30 +0100
+Message-Id: <cd0f6bdfdf1ee096fb2c07e7b38940921b8e9118.1637764848.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-References: <20211124122850.7095-1-brgl@bgdev.pl> <YZ5NvolYXei2qsBU@smile.fi.intel.com>
-In-Reply-To: <YZ5NvolYXei2qsBU@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 24 Nov 2021 15:42:16 +0100
-Message-ID: <CAMRc=McvXozXCWLU6W3W1DmaxRKOREyT_gbp2d3oWw54zPxFNA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] gpiolib: improve coding style for local variables
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Johan Hovold <johan@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1637765008; l=1214; s=20211009; h=from:subject:message-id; bh=LFKGdto9BxD3XwnA+xbvk1tj0uMg8K2nc3ka3MH1LxA=; b=kKPr2EvB+f933bX3j4SlmszKBVeJZcMu11wNEYVvHil18VpHl9EmoVmGM1qz6Lxcr1A0CN2smfUS ZePFQtQ0BOBdcQFnrmc6jtJKqnsLlrwvl/J+sZGw1WEolzcBETXU
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 3:35 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Wed, Nov 24, 2021 at 01:28:49PM +0100, Bartosz Golaszewski wrote:
-> > Drop unneeded whitespaces and put the variables of the same type
-> > together for consistency with the rest of the code.
->
-> I thought I gave my tag, nevermind, here we are
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->
+Looks like recent binutils (2.36 and over ?) may empty some section,
+leading to failure like:
 
-I removed it because the patch changed. Thanks!
+	Cannot find symbol for section 11: .text.unlikely.
+	kernel/kexec_file.o: failed
+	make[1]: *** [scripts/Makefile.build:287: kernel/kexec_file.o] Error 1
 
-Bart
+In order to avoid that, ensure that the section has a content before
+returning it's name in has_rel_mcount().
+
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+Link: https://github.com/linuxppc/issues/issues/388
+Link: https://lore.kernel.org/all/20210215162209.5e2a475b@gandalf.local.home/
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ scripts/recordmcount.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
+index 1e9baa5c4fc6..cc6600b729ae 100644
+--- a/scripts/recordmcount.h
++++ b/scripts/recordmcount.h
+@@ -575,6 +575,8 @@ static char const *has_rel_mcount(Elf_Shdr const *const relhdr,
+ 				  char const *const shstrtab,
+ 				  char const *const fname)
+ {
++	if (!shdr0->sh_size)
++		return NULL;
+ 	if (w(relhdr->sh_type) != SHT_REL && w(relhdr->sh_type) != SHT_RELA)
+ 		return NULL;
+ 	return __has_rel_mcount(relhdr, shdr0, shstrtab, fname);
+-- 
+2.33.1
+
