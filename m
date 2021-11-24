@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5C245C02B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:03:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 745BE45C49F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:47:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345530AbhKXNFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:05:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39084 "EHLO mail.kernel.org"
+        id S1354354AbhKXNuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:50:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346712AbhKXNCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:02:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DC2B61055;
-        Wed, 24 Nov 2021 12:35:57 +0000 (UTC)
+        id S1349422AbhKXNpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:45:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE9F461181;
+        Wed, 24 Nov 2021 13:00:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757358;
-        bh=hBkzl/fBvpz534zxeQZnVJSm+nBHd2M1rJj7xY6iww8=;
+        s=korg; t=1637758839;
+        bh=Rja146KzOm0/s8CDy5JgYf7S3NFAd/+ima/ub2lNy4o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0T9bBcJecC67j6YuKUaYyQsqwPDQGd/k4e77qMvKBj9X7z/Q7tPv3h2cDR7PHCAtH
-         nfbp8Q265kBUKNcdWgyRa6zRA411ouKtMXI19fSJDR+PV0P8QhAUnz/iBaBx9OeaIk
-         LNHspqtnS/fXPLzMR1qmWnG26YLdkoB+wGVom9NM=
+        b=Yb8nHdVCP8yaPkyB+rCo5JsNOhYcYMDWgXPfl7gWWt6iFbg/iv+WMw/3VJ3WQq+ac
+         l61HUsnnz63YaLkI0Wu5mgmEvVp5nFQjWW5bJ0nOjfNTOFk9wb+FODwJzFi/WfCQUa
+         Lmzg3j4y2l+e8L2AA3Fe8INkoGf+VhfF5T8q2hLk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Marco Chiappero <marco.chiappero@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Huajun Li <huajun.li@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 141/323] crypto: qat - disregard spurious PFVF interrupts
-Date:   Wed, 24 Nov 2021 12:55:31 +0100
-Message-Id: <20211124115723.686558621@linuxfoundation.org>
+Subject: [PATCH 5.15 045/279] ALSA: intel-dsp-config: add quirk for APL/GLK/TGL devices based on ES8336 codec
+Date:   Wed, 24 Nov 2021 12:55:32 +0100
+Message-Id: <20211124115720.280236859@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,73 +42,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 18fcba469ba5359c1de7e3fb16f7b9e8cd1b8e02 ]
+[ Upstream commit 9d36ceab94151f07cf3fcb067213ac87937adf12 ]
 
-Upon receiving a PFVF message, check if the interrupt bit is set in the
-message. If it is not, that means that the interrupt was probably
-triggered by a collision. In this case, disregard the message and
-re-enable the interrupts.
+These devices are based on an I2C/I2S device, we need to force the use
+of the SOF driver otherwise the legacy HDaudio driver will be loaded -
+only HDMI will be supported.
 
-Fixes: ed8ccaef52fa ("crypto: qat - Add support for SRIOV")
-Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Reviewed-by: Marco Chiappero <marco.chiappero@intel.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Co-developed-by: Huajun Li <huajun.li@intel.com>
+Signed-off-by: Huajun Li <huajun.li@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20211004213512.220836-3-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/qat/qat_common/adf_pf2vf_msg.c | 6 ++++++
- drivers/crypto/qat/qat_common/adf_vf_isr.c    | 6 ++++++
- 2 files changed, 12 insertions(+)
+ sound/hda/intel-dsp-config.c | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
-index 72fd2bbbe704e..180016e157771 100644
---- a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
-+++ b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
-@@ -250,6 +250,11 @@ void adf_vf2pf_req_hndl(struct adf_accel_vf_info *vf_info)
+diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+index c9d0ba353463b..b9ac9e9e45a48 100644
+--- a/sound/hda/intel-dsp-config.c
++++ b/sound/hda/intel-dsp-config.c
+@@ -31,6 +31,7 @@ struct config_entry {
+ 	u16 device;
+ 	u8 acpi_hid[ACPI_ID_LEN];
+ 	const struct dmi_system_id *dmi_table;
++	u8 codec_hid[ACPI_ID_LEN];
+ };
  
- 	/* Read message from the VF */
- 	msg = ADF_CSR_RD(pmisc_addr, hw_data->get_pf2vf_offset(vf_nr));
-+	if (!(msg & ADF_VF2PF_INT)) {
-+		dev_info(&GET_DEV(accel_dev),
-+			 "Spurious VF2PF interrupt, msg %X. Ignored\n", msg);
-+		goto out;
-+	}
+ /*
+@@ -56,7 +57,7 @@ static const struct config_entry config_table[] = {
+ /*
+  * Apollolake (Broxton-P)
+  * the legacy HDAudio driver is used except on Up Squared (SOF) and
+- * Chromebooks (SST)
++ * Chromebooks (SST), as well as devices based on the ES8336 codec
+  */
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_APOLLOLAKE)
+ 	{
+@@ -73,6 +74,11 @@ static const struct config_entry config_table[] = {
+ 			{}
+ 		}
+ 	},
++	{
++		.flags = FLAG_SOF,
++		.device = 0x5a98,
++		.codec_hid = "ESSX8336",
++	},
+ #endif
+ #if IS_ENABLED(CONFIG_SND_SOC_INTEL_APL)
+ 	{
+@@ -137,7 +143,7 @@ static const struct config_entry config_table[] = {
  
- 	/* To ACK, clear the VF2PFINT bit */
- 	msg &= ~ADF_VF2PF_INT;
-@@ -333,6 +338,7 @@ void adf_vf2pf_req_hndl(struct adf_accel_vf_info *vf_info)
- 	if (resp && adf_iov_putmsg(accel_dev, resp, vf_nr))
- 		dev_err(&GET_DEV(accel_dev), "Failed to send response to VF\n");
+ /*
+  * Geminilake uses legacy HDAudio driver except for Google
+- * Chromebooks
++ * Chromebooks and devices based on the ES8336 codec
+  */
+ /* Geminilake */
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_GEMINILAKE)
+@@ -154,6 +160,11 @@ static const struct config_entry config_table[] = {
+ 			{}
+ 		}
+ 	},
++	{
++		.flags = FLAG_SOF,
++		.device = 0x3198,
++		.codec_hid = "ESSX8336",
++	},
+ #endif
  
-+out:
- 	/* re-enable interrupt on PF from this VF */
- 	adf_enable_vf2pf_interrupts(accel_dev, (1 << vf_nr));
- 	return;
-diff --git a/drivers/crypto/qat/qat_common/adf_vf_isr.c b/drivers/crypto/qat/qat_common/adf_vf_isr.c
-index ef90902c8200d..86274e3c6781d 100644
---- a/drivers/crypto/qat/qat_common/adf_vf_isr.c
-+++ b/drivers/crypto/qat/qat_common/adf_vf_isr.c
-@@ -123,6 +123,11 @@ static void adf_pf2vf_bh_handler(void *data)
+ /*
+@@ -311,6 +322,11 @@ static const struct config_entry config_table[] = {
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+ 		.device = 0x43c8,
+ 	},
++	{
++		.flags = FLAG_SOF,
++		.device = 0xa0c8,
++		.codec_hid = "ESSX8336",
++	},
+ #endif
  
- 	/* Read the message from PF */
- 	msg = ADF_CSR_RD(pmisc_bar_addr, hw_data->get_pf2vf_offset(0));
-+	if (!(msg & ADF_PF2VF_INT)) {
-+		dev_info(&GET_DEV(accel_dev),
-+			 "Spurious PF2VF interrupt, msg %X. Ignored\n", msg);
-+		goto out;
-+	}
- 
- 	if (!(msg & ADF_PF2VF_MSGORIGIN_SYSTEM))
- 		/* Ignore legacy non-system (non-kernel) PF2VF messages */
-@@ -171,6 +176,7 @@ static void adf_pf2vf_bh_handler(void *data)
- 	msg &= ~ADF_PF2VF_INT;
- 	ADF_CSR_WR(pmisc_bar_addr, hw_data->get_pf2vf_offset(0), msg);
- 
-+out:
- 	/* Re-enable PF2VF interrupts */
- 	adf_enable_pf2vf_interrupts(accel_dev);
- 	return;
+ /* Elkhart Lake */
+@@ -354,6 +370,8 @@ static const struct config_entry *snd_intel_dsp_find_config
+ 			continue;
+ 		if (table->dmi_table && !dmi_check_system(table->dmi_table))
+ 			continue;
++		if (table->codec_hid[0] && !acpi_dev_present(table->codec_hid, NULL, -1))
++			continue;
+ 		return table;
+ 	}
+ 	return NULL;
 -- 
 2.33.0
 
