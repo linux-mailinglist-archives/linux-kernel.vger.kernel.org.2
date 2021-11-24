@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBC845C1A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:17:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCACC45C3C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243110AbhKXNUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:20:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39540 "EHLO mail.kernel.org"
+        id S1350621AbhKXNmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:42:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344736AbhKXNRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:17:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 376AB610A6;
-        Wed, 24 Nov 2021 12:45:05 +0000 (UTC)
+        id S1350500AbhKXNkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:40:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6C7161881;
+        Wed, 24 Nov 2021 12:57:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757905;
-        bh=WBZfWu7icUiBxlLTkBU2RGuBvoIkQ4BzouqO56IDQMg=;
+        s=korg; t=1637758642;
+        bh=h7oNJwJI9SFyfWSf6gY+J+ZUwBZzXZZJnqW3zBPQv4E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l8FHT+MYhLrMlV2dWqbCpzzlaeAafhtu8lbrcikVP11+/APaYkOBeHl1sWX5Vro44
-         4bnBhK1YfSsmGNnfy9Mr1uxItAZsSEglB14gFt+pzidsRBqH3LD5oBoFkRTTzTTt4/
-         eKdcfZygr/fyJd8HVaqo3/9909i4Thdl8+f7PX9A=
+        b=EcYsRq17W+/BqpizcAdod4hox6IQjftB9Wz9qpd4vn9Uorp678HYzNXCRXsEwodsm
+         IC/Q1bi9qSXdMlLQrsqpGND/9pLOK0ehwsRsGPa8kdUvwCdX8IQkyjPNnFRjDyRmQm
+         OfLUFUJXqzW/hBheneLT2NxzjumOgMr/I1N4S6ug=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Greg Thelen <gthelen@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 4.19 315/323] perf/core: Avoid put_page() when GUP fails
+        stable@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 109/154] net: nfc: nci: Change the NCI close sequence
 Date:   Wed, 24 Nov 2021 12:58:25 +0100
-Message-Id: <20211124115729.558665070@linuxfoundation.org>
+Message-Id: <20211124115705.814506942@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,62 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Thelen <gthelen@google.com>
+From: Bongsu Jeon <bongsu.jeon@samsung.com>
 
-commit 4716023a8f6a0f4a28047f14dd7ebdc319606b84 upstream.
+[ Upstream commit f011539e723c737b74876ac47345e40270a3c384 ]
 
-PEBS PERF_SAMPLE_PHYS_ADDR events use perf_virt_to_phys() to convert PMU
-sampled virtual addresses to physical using get_user_page_fast_only()
-and page_to_phys().
+If there is a NCI command in work queue after closing the NCI device at
+nci_unregister_device, The NCI command timer starts at flush_workqueue
+function and then NCI command timeout handler would be called 5 second
+after flushing the NCI command work queue and destroying the queue.
+At that time, the timeout handler would try to use NCI command work queue
+that is destroyed already. it will causes the problem. To avoid this
+abnormal situation, change the sequence to prevent the NCI command timeout
+handler from being called after destroying the NCI command work queue.
 
-Some get_user_page_fast_only() error cases return false, indicating no
-page reference, but still initialize the output page pointer with an
-unreferenced page. In these error cases perf_virt_to_phys() calls
-put_page(). This causes page reference count underflow, which can lead
-to unintentional page sharing.
-
-Fix perf_virt_to_phys() to only put_page() if get_user_page_fast_only()
-returns a referenced page.
-
-Fixes: fc7ce9c74c3ad ("perf/core, x86: Add PERF_SAMPLE_PHYS_ADDR")
-Signed-off-by: Greg Thelen <gthelen@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20211111021814.757086-1-gthelen@google.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/events/core.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ net/nfc/nci/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -6424,7 +6424,6 @@ void perf_output_sample(struct perf_outp
- static u64 perf_virt_to_phys(u64 virt)
- {
- 	u64 phys_addr = 0;
--	struct page *p = NULL;
+diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
+index 5e55cb6c087a2..4d3ab0f44c9f4 100644
+--- a/net/nfc/nci/core.c
++++ b/net/nfc/nci/core.c
+@@ -568,11 +568,11 @@ static int nci_close_device(struct nci_dev *ndev)
  
- 	if (!virt)
- 		return 0;
-@@ -6443,14 +6442,15 @@ static u64 perf_virt_to_phys(u64 virt)
- 		 * If failed, leave phys_addr as 0.
- 		 */
- 		if (current->mm != NULL) {
-+			struct page *p;
-+
- 			pagefault_disable();
--			if (__get_user_pages_fast(virt, 1, 0, &p) == 1)
-+			if (__get_user_pages_fast(virt, 1, 0, &p) == 1) {
- 				phys_addr = page_to_phys(p) + virt % PAGE_SIZE;
-+				put_page(p);
-+			}
- 			pagefault_enable();
- 		}
+ 	clear_bit(NCI_INIT, &ndev->flags);
+ 
+-	del_timer_sync(&ndev->cmd_timer);
 -
--		if (p)
--			put_page(p);
- 	}
+ 	/* Flush cmd wq */
+ 	flush_workqueue(ndev->cmd_wq);
  
- 	return phys_addr;
++	del_timer_sync(&ndev->cmd_timer);
++
+ 	/* Clear flags */
+ 	ndev->flags = 0;
+ 
+-- 
+2.33.0
+
 
 
