@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C123E45BA21
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C8645BDDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236285AbhKXMHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:07:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32770 "EHLO mail.kernel.org"
+        id S1343872AbhKXMlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:41:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242324AbhKXMGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:06:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F0116104F;
-        Wed, 24 Nov 2021 12:02:59 +0000 (UTC)
+        id S1344630AbhKXMic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:38:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7621D613A3;
+        Wed, 24 Nov 2021 12:23:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755379;
-        bh=LsuxPDeXUyByuWMhD7sgqm1tgPPV6MF7sl+runDj05A=;
+        s=korg; t=1637756586;
+        bh=KPNdnvY897FfD9BLo2A3Z2x6qFr3e2b3FuKDsqCNAFQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KPUS3ip0bpgWbQ5cj+7C0oWUxp4m3Zl6UDCnnc6tuo/BtSzgz17i5tlKD+XRXXN0O
-         RIKUMFcf9uiyiicF31ZrHwQTIYetb1d1dl4n1a+eogmoqBGNkZ1dIfNzCgszMv9iBR
-         1VE9EcAQV6Lo1dYAOx8tfbVEcSPSrt4S+G+ab+Ds=
+        b=YwQ2kw6sQxtlfn6G6wu9atJ3/36OdkXhuKN1yEU6UsUDNApROTl63+y3p3KU7BQC4
+         dDoG5hNE0YWxdZmiCOzFh8KQVG9QQJU78we1i/RHRwX7avWXa7NVzIbnuw8WnT9lv5
+         xigt7iqh3tcPBRRMDxSuRkJhY1rfWoaH13B6kHts=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Eckelmann <sven@narfation.org>,
-        Simon Wunderlich <sw@simonwunderlich.de>,
-        =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>,
-        =?UTF-8?q?Linus=20L=C3=BCssing?= <ll@simonwunderlich.de>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Sudheesh Mavila <sudheesh.mavila@amd.com>,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 074/162] ath9k: Fix potential interrupt storm on queue reset
+Subject: [PATCH 4.14 135/251] net: amd-xgbe: Toggle PLL settings during rate change
 Date:   Wed, 24 Nov 2021 12:56:17 +0100
-Message-Id: <20211124115700.711618397@linuxfoundation.org>
+Message-Id: <20211124115714.946535760@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,94 +42,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Lüssing <ll@simonwunderlich.de>
+From: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
 
-[ Upstream commit 4925642d541278575ad1948c5924d71ffd57ef14 ]
+[ Upstream commit daf182d360e509a494db18666799f4e85d83dda0 ]
 
-In tests with two Lima boards from 8devices (QCA4531 based) on OpenWrt
-19.07 we could force a silent restart of a device with no serial
-output when we were sending a high amount of UDP traffic (iperf3 at 80
-MBit/s in both directions from external hosts, saturating the wifi and
-causing a load of about 4.5 to 6) and were then triggering an
-ath9k_queue_reset().
+For each rate change command submission, the FW has to do a phy
+power off sequence internally. For this to happen correctly, the
+PLL re-initialization control setting has to be turned off before
+sending mailbox commands and re-enabled once the command submission
+is complete.
 
-Further debugging showed that the restart was caused by the ath79
-watchdog. With disabled watchdog we could observe that the device was
-constantly going into ath_isr() interrupt handler and was returning
-early after the ATH_OP_HW_RESET flag test, without clearing any
-interrupts. Even though ath9k_queue_reset() calls
-ath9k_hw_kill_interrupts().
+Without the PLL control setting, the link up takes longer time in a
+fixed phy configuration.
 
-With JTAG we could observe the following race condition:
-
-1) ath9k_queue_reset()
-   ...
-   -> ath9k_hw_kill_interrupts()
-   -> set_bit(ATH_OP_HW_RESET, &common->op_flags);
-   ...
-   <- returns
-
-      2) ath9k_tasklet()
-         ...
-         -> ath9k_hw_resume_interrupts()
-         ...
-         <- returns
-
-                 3) loops around:
-                    ...
-                    handle_int()
-                    -> ath_isr()
-                       ...
-                       -> if (test_bit(ATH_OP_HW_RESET,
-                                       &common->op_flags))
-                            return IRQ_HANDLED;
-
-                    x) ath_reset_internal():
-                       => never reached <=
-
-And in ath_isr() we would typically see the following interrupts /
-interrupt causes:
-
-* status: 0x00111030 or 0x00110030
-* async_cause: 2 (AR_INTR_MAC_IPQ)
-* sync_cause: 0
-
-So the ath9k_tasklet() reenables the ath9k interrupts
-through ath9k_hw_resume_interrupts() which ath9k_queue_reset() had just
-disabled. And ath_isr() then keeps firing because it returns IRQ_HANDLED
-without actually clearing the interrupt.
-
-To fix this IRQ storm also clear/disable the interrupts again when we
-are in reset state.
-
-Cc: Sven Eckelmann <sven@narfation.org>
-Cc: Simon Wunderlich <sw@simonwunderlich.de>
-Cc: Linus Lüssing <linus.luessing@c0d3.blue>
-Fixes: 872b5d814f99 ("ath9k: do not access hardware on IRQs during reset")
-Signed-off-by: Linus Lüssing <ll@simonwunderlich.de>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210914192515.9273-3-linus.luessing@c0d3.blue
+Fixes: 47f164deab22 ("amd-xgbe: Add PCI device support")
+Co-developed-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
+Signed-off-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
+Signed-off-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath9k/main.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/amd/xgbe/xgbe-common.h |  8 ++++++++
+ drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c | 20 +++++++++++++++++++-
+ 2 files changed, 27 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/main.c b/drivers/net/wireless/ath/ath9k/main.c
-index 298c7957dd160..52906c080e0aa 100644
---- a/drivers/net/wireless/ath/ath9k/main.c
-+++ b/drivers/net/wireless/ath/ath9k/main.c
-@@ -528,8 +528,10 @@ irqreturn_t ath_isr(int irq, void *dev)
- 	ath9k_debug_sync_cause(sc, sync_cause);
- 	status &= ah->imask;	/* discard unasked-for bits */
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-common.h b/drivers/net/ethernet/amd/xgbe/xgbe-common.h
+index b2cd3bdba9f89..533b8519ec352 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-common.h
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-common.h
+@@ -1331,6 +1331,10 @@
+ #define MDIO_VEND2_PMA_CDR_CONTROL	0x8056
+ #endif
  
--	if (test_bit(ATH_OP_HW_RESET, &common->op_flags))
-+	if (test_bit(ATH_OP_HW_RESET, &common->op_flags)) {
-+		ath9k_hw_kill_interrupts(sc->sc_ah);
- 		return IRQ_HANDLED;
-+	}
++#ifndef MDIO_VEND2_PMA_MISC_CTRL0
++#define MDIO_VEND2_PMA_MISC_CTRL0	0x8090
++#endif
++
+ #ifndef MDIO_CTRL1_SPEED1G
+ #define MDIO_CTRL1_SPEED1G		(MDIO_CTRL1_SPEED10G & ~BMCR_SPEED100)
+ #endif
+@@ -1389,6 +1393,10 @@
+ #define XGBE_PMA_RX_RST_0_RESET_ON	0x10
+ #define XGBE_PMA_RX_RST_0_RESET_OFF	0x00
  
- 	/*
- 	 * If there are no status bits set, then this interrupt was not
++#define XGBE_PMA_PLL_CTRL_MASK		BIT(15)
++#define XGBE_PMA_PLL_CTRL_ENABLE	BIT(15)
++#define XGBE_PMA_PLL_CTRL_DISABLE	0x0000
++
+ /* Bit setting and getting macros
+  *  The get macro will extract the current bit field value from within
+  *  the variable
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c b/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
+index bb6f0dcea6eab..4a4370a470fd1 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
+@@ -1803,12 +1803,26 @@ static void xgbe_phy_rx_reset(struct xgbe_prv_data *pdata)
+ 	}
+ }
+ 
++static void xgbe_phy_pll_ctrl(struct xgbe_prv_data *pdata, bool enable)
++{
++	XMDIO_WRITE_BITS(pdata, MDIO_MMD_PMAPMD, MDIO_VEND2_PMA_MISC_CTRL0,
++			 XGBE_PMA_PLL_CTRL_MASK,
++			 enable ? XGBE_PMA_PLL_CTRL_ENABLE
++				: XGBE_PMA_PLL_CTRL_DISABLE);
++
++	/* Wait for command to complete */
++	usleep_range(100, 200);
++}
++
+ static void xgbe_phy_perform_ratechange(struct xgbe_prv_data *pdata,
+ 					unsigned int cmd, unsigned int sub_cmd)
+ {
+ 	unsigned int s0 = 0;
+ 	unsigned int wait;
+ 
++	/* Disable PLL re-initialization during FW command processing */
++	xgbe_phy_pll_ctrl(pdata, false);
++
+ 	/* Log if a previous command did not complete */
+ 	if (XP_IOREAD_BITS(pdata, XP_DRIVER_INT_RO, STATUS)) {
+ 		netif_dbg(pdata, link, pdata->netdev,
+@@ -1829,7 +1843,7 @@ static void xgbe_phy_perform_ratechange(struct xgbe_prv_data *pdata,
+ 	wait = XGBE_RATECHANGE_COUNT;
+ 	while (wait--) {
+ 		if (!XP_IOREAD_BITS(pdata, XP_DRIVER_INT_RO, STATUS))
+-			return;
++			goto reenable_pll;
+ 
+ 		usleep_range(1000, 2000);
+ 	}
+@@ -1839,6 +1853,10 @@ static void xgbe_phy_perform_ratechange(struct xgbe_prv_data *pdata,
+ 
+ 	/* Reset on error */
+ 	xgbe_phy_rx_reset(pdata);
++
++reenable_pll:
++	/* Enable PLL re-initialization */
++	xgbe_phy_pll_ctrl(pdata, true);
+ }
+ 
+ static void xgbe_phy_rrc(struct xgbe_prv_data *pdata)
 -- 
 2.33.0
 
