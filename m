@@ -2,140 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CAFB45D159
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:45:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 583DB45D15C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:46:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236462AbhKXXs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 18:48:28 -0500
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:57709 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235851AbhKXXs1 (ORCPT
+        id S236795AbhKXXtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 18:49:16 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:48070 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235851AbhKXXtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 18:48:27 -0500
-Received: from dread.disaster.area (pa49-195-103-97.pa.nsw.optusnet.com.au [49.195.103.97])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 17DD610A06BD;
-        Thu, 25 Nov 2021 10:45:12 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1mq1wt-00Cr8N-OQ; Thu, 25 Nov 2021 10:45:11 +1100
-Date:   Thu, 25 Nov 2021 10:45:11 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH v2 2/4] mm/vmalloc: add support for __GFP_NOFAIL
-Message-ID: <20211124234511.GN418105@dread.disaster.area>
-References: <20211122153233.9924-1-mhocko@kernel.org>
- <20211122153233.9924-3-mhocko@kernel.org>
- <YZ06nna7RirAI+vJ@pc638.lan>
- <20211123170238.f0f780ddb800f1316397f97c@linux-foundation.org>
- <163772381628.1891.9102201563412921921@noble.neil.brown.name>
+        Wed, 24 Nov 2021 18:49:05 -0500
+Date:   Wed, 24 Nov 2021 23:45:52 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637797553;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Cj/yHF+aEiHT7ltO6bub750gmEGy0Oqz0iH7mf0KKrM=;
+        b=jaApxFdu9Sch9kohAlaXXRUAqBu7Swrs56sXjUXa3d1v9f0BEu5rGcDhjPOuPwyhb5QxsF
+        p7kGXC1rDHCxgIs6FCw+m1+nycHpx0CxcKhglGtLb/6r5EGGWg1bNAeq4bJcH8dJnYvHbY
+        xVBb20l4WMubZJgO1j3NZfys4kPONuAMUd0LIi/HRSECXADdSWOokjEqgd29W6p1qJxElT
+        4QuLQeefKy73MOCY1kP70aGYu1XQbEpoZ7wyozgl7JVuT83dck/Pjzhqyg7zbkXDYv75Q8
+        9nSto1lJoeyeol7M5TnBaAg07v8yTk6gUME03FJ28YTPb5DigsXhZ5k23aNSzg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637797553;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Cj/yHF+aEiHT7ltO6bub750gmEGy0Oqz0iH7mf0KKrM=;
+        b=MoJf+WFR+VwIb2WOkzgE/lkp0jx4LAzMmcPnk6E/IgvKRjqsGfJw6ufx6eJ6m0UydxLl4x
+        RWwnP8h5C3DuJHBQ==
+From:   "tip-bot2 for Andi Kleen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cpu] x86/cpu: Don't write CSTAR MSR on Intel CPUs
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211119035803.4012145-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <20211119035803.4012145-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <163772381628.1891.9102201563412921921@noble.neil.brown.name>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=619ece8a
-        a=fP9RlOTWD4uZJjPSFnn6Ew==:117 a=fP9RlOTWD4uZJjPSFnn6Ew==:17
-        a=kj9zAlcOel0A:10 a=vIxV3rELxO4A:10 a=7-415B0cAAAA:8
-        a=laKZI6_TNyetWoYyCsAA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Message-ID: <163779755239.11128.2009262993984624532.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 02:16:56PM +1100, NeilBrown wrote:
-> On Wed, 24 Nov 2021, Andrew Morton wrote:
-> > 
-> > I added GFP_NOFAIL back in the mesozoic era because quite a lot of
-> > sites were doing open-coded try-forever loops.  I thought "hey, they
-> > shouldn't be doing that in the first place, but let's at least
-> > centralize the concept to reduce code size, code duplication and so
-> > it's something we can now grep for".  But longer term, all GFP_NOFAIL
-> > sites should be reworked to no longer need to do the retry-forever
-> > thing.  In retrospect, this bright idea of mine seems to have added
-> > license for more sites to use retry-forever.  Sigh.
-> 
-> One of the costs of not having GFP_NOFAIL (or similar) is lots of
-> untested failure-path code.
-> 
-> When does an allocation that is allowed to retry and reclaim ever fail
-> anyway? I think the answer is "only when it has been killed by the oom
-> killer".  That of course cannot happen to kernel threads, so maybe
-> kernel threads should never need GFP_NOFAIL??
-> 
-> I'm not sure the above is 100%, but I do think that is the sort of
-> semantic that we want.  We want to know what kmalloc failure *means*.
-> We also need well defined and documented strategies to handle it.
-> mempools are one such strategy, but not always suitable.
+The following commit has been merged into the x86/cpu branch of tip:
 
-mempools are not suitable for anything that uses demand paging to
-hold an unbounded data set in memory before it can free anything.
-This is basically the definition of memory demand in an XFS
-transaction, and most transaction based filesystems have similar
-behaviour.
+Commit-ID:     9c7e2634f647630db4e0719391dd80cd81132a66
+Gitweb:        https://git.kernel.org/tip/9c7e2634f647630db4e0719391dd80cd81132a66
+Author:        Andi Kleen <ak@linux.intel.com>
+AuthorDate:    Thu, 18 Nov 2021 19:58:03 -08:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Thu, 25 Nov 2021 00:40:34 +01:00
 
-> preallocating can also be useful but can be clumsy to implement.  Maybe
-> we should support a process preallocating a bunch of pages which can
-> only be used by the process - and are auto-freed when the process
-> returns to user-space.  That might allow the "error paths" to be simple
-> and early, and subsequent allocations that were GFP_USEPREALLOC would be
-> safe.
+x86/cpu: Don't write CSTAR MSR on Intel CPUs
 
-We talked about this years ago at LSFMM (2013 or 2014, IIRC). The
-problem is "how much do you preallocate when the worst case
-requirement to guarantee forwards progress is at least tens of
-megabytes". Considering that there might be thousands of these
-contexts running concurrent at any given time and we might be
-running through several million preallocation contexts a second,
-suddenly preallocation is a great big CPU and memory pit.
+Intel CPUs do not support SYSCALL in 32-bit mode, but the kernel
+initializes MSR_CSTAR unconditionally. That MSR write is normally
+ignored by the CPU, but in a TDX guest it raises a #VE trap.
 
-Hence preallocation simply doesn't work when the scope to guarantee
-forwards progress is in the order of megabytes (even tens of
-megabytes) per "no fail" context scope.  In situations like this we
-need -memory reservations-, not preallocation.
+Exclude Intel CPUs from the MSR_CSTAR initialization.
 
-Have the mm guarantee that there is a certain amount of memory
-available (even if it requires reclaim to make available) before we
-start the operation that cannot tolerate memory allocation failure,
-track the memory usage as it goes, warn if it overruns, and release
-the unused part of the reservation when context completes.
+[ tglx: Fixed the subject line and removed the redundant comment. ]
 
-[ This is what we already do in XFS for guaranteeing forwards
-progress for writing modifications into the strictly bound journal
-space. We reserve space up front and use tracking tickets to account
-for space used across each transaction context. This avoids
-overcommit and all the deadlock and corruption problems that come
-from running out of physical log space to write all the changes
-we've made into the log. We could simply add memory reservations and
-tracking structures to the transaction context and we've pretty much
-got everything we need on the XFS side covered... ]
+Signed-off-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Link: https://lore.kernel.org/r/20211119035803.4012145-1-sathyanarayanan.kuppuswamy@linux.intel.com
 
-> i.e. we need a plan for how to rework all those no-fail call-sites.
+---
+ arch/x86/kernel/cpu/common.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-Even if we do make them all the filesystems handle ENOMEM errors
-gracefully and pass that back up to userspace, how are applications
-going to react to random ENOMEM errors when doing data writes or
-file creation or any other operation that accesses filesystems?
-
-Given the way applications handle transient errors (i.e. they
-don't!) propagating ENOMEM back up to userspace will result in
-applications randomly failing under memory pressure.  That's a much
-worse situation than having to manage the _extremely rare_ issues
-that occur because of __GFP_NOFAIL usage in the kernel.
-
-Let's keep that in mind here - __GFP_NOFAIL usage is not causing
-system failures in the real world, whilst propagating ENOMEM back
-out to userspace is potentially very harmful to users....
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 0083464..0663642 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1787,6 +1787,17 @@ EXPORT_PER_CPU_SYMBOL(__preempt_count);
+ 
+ DEFINE_PER_CPU(unsigned long, cpu_current_top_of_stack) = TOP_OF_INIT_STACK;
+ 
++static void wrmsrl_cstar(unsigned long val)
++{
++	/*
++	 * Intel CPUs do not support 32-bit SYSCALL. Writing to MSR_CSTAR
++	 * is so far ignored by the CPU, but raises a #VE trap in a TDX
++	 * guest. Avoid the pointless write on all Intel CPUs.
++	 */
++	if (boot_cpu_data.x86_vendor != X86_VENDOR_INTEL)
++		wrmsrl(MSR_CSTAR, val);
++}
++
+ /* May not be marked __init: used by software suspend */
+ void syscall_init(void)
+ {
+@@ -1794,7 +1805,7 @@ void syscall_init(void)
+ 	wrmsrl(MSR_LSTAR, (unsigned long)entry_SYSCALL_64);
+ 
+ #ifdef CONFIG_IA32_EMULATION
+-	wrmsrl(MSR_CSTAR, (unsigned long)entry_SYSCALL_compat);
++	wrmsrl_cstar((unsigned long)entry_SYSCALL_compat);
+ 	/*
+ 	 * This only works on Intel CPUs.
+ 	 * On AMD CPUs these MSRs are 32-bit, CPU truncates MSR_IA32_SYSENTER_EIP.
+@@ -1806,7 +1817,7 @@ void syscall_init(void)
+ 		    (unsigned long)(cpu_entry_stack(smp_processor_id()) + 1));
+ 	wrmsrl_safe(MSR_IA32_SYSENTER_EIP, (u64)entry_SYSENTER_compat);
+ #else
+-	wrmsrl(MSR_CSTAR, (unsigned long)ignore_sysret);
++	wrmsrl_cstar((unsigned long)ignore_sysret);
+ 	wrmsrl_safe(MSR_IA32_SYSENTER_CS, (u64)GDT_ENTRY_INVALID_SEG);
+ 	wrmsrl_safe(MSR_IA32_SYSENTER_ESP, 0ULL);
+ 	wrmsrl_safe(MSR_IA32_SYSENTER_EIP, 0ULL);
