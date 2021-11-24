@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB83245BA41
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8AC45BE36
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:42:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242177AbhKXMJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:09:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33246 "EHLO mail.kernel.org"
+        id S1344646AbhKXMpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:45:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242233AbhKXMGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:06:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0001E60F5D;
-        Wed, 24 Nov 2021 12:03:26 +0000 (UTC)
+        id S1344392AbhKXMme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:42:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C3F2613AB;
+        Wed, 24 Nov 2021 12:25:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755407;
-        bh=HsEloWLUjPuL9/6uGs2l/ld0R+4N7e1poR7DefDRvrs=;
+        s=korg; t=1637756712;
+        bh=gu8Pjs6gsZ2rVa0pv1cUJn8Oh885K5YfGMixP2+fNA0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YeFMHadrqDJPQAhETgoR7t2d9l3g8WFpeH2ojHskh8MQ9Qx7PQCQiOYE6BrwEAYOi
-         dIEFFyBhPRa9Q7SDOU4aIxg5sZLoSR/uDQkTAE0IevfQUr8DppqzWuZ6JhuMrw4kCd
-         iKXtVZlqUmf65elRcorUBVhZED2Om1HsOUnhUHm8=
+        b=TpgLshIdfl7RFldiIbHBZLXWFV51j3GHkNcMkocjw7uCrnfuBF2WP+ktA/V7u3tSW
+         2TyAeC8kXgKl1DCyt4687HY1ZvMhraUlrdwBu33bxp7FI2RxBgxPguPQ+2NUYfQm6f
+         qWfHISqzcDGcsQMo6IZncHbE1WK3XCpXNuWKBsk8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 083/162] mwifiex: Send DELBA requests according to spec
-Date:   Wed, 24 Nov 2021 12:56:26 +0100
-Message-Id: <20211124115701.009615752@linuxfoundation.org>
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 145/251] ALSA: hda: Reduce udelay() at SKL+ position reporting
+Date:   Wed, 24 Nov 2021 12:56:27 +0100
+Message-Id: <20211124115715.306750511@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +40,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonas Dreßler <verdre@v0yd.nl>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit cc8a8bc37466f79b24d972555237f3d591150602 ]
+[ Upstream commit 46243b85b0ec5d2cee7545e5ce18c015ce91957e ]
 
-While looking at on-air packets using Wireshark, I noticed we're never
-setting the initiator bit when sending DELBA requests to the AP: While
-we set the bit on our del_ba_param_set bitmask, we forget to actually
-copy that bitmask over to the command struct, which means we never
-actually set the initiator bit.
+The position reporting on Intel Skylake and later chips via
+azx_get_pos_skl() contains a udelay(20) call for the capture streams.
+A call for this alone doesn't sound too harmful.  However, as the
+pointer PCM ops is one of the hottest path in the PCM operations --
+especially for the timer-scheduled operations like PulseAudio -- such
+a delay hogs CPU usage significantly in the total performance.
 
-Fix that and copy the bitmask over to the host_cmd_ds_11n_delba command
-struct.
+The code there was taken from the original code in ASoC SST Skylake
+driver blindly.  The udelay() is a workaround for the case where the
+reported position is behind the period boundary at the timing
+triggered from interrupts; applications often expect that the full
+data is available for the whole period when returned (and also that's
+the definition of the ALSA PCM period).
 
-Fixes: 5e6e3a92b9a4 ("wireless: mwifiex: initial commit for Marvell mwifiex driver")
-Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
-Acked-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20211016153244.24353-5-verdre@v0yd.nl
+OTOH, HD-audio (legacy) driver has already some workarounds for the
+delayed position reporting due to its relatively large FIFO, such as
+the BDL position adjustment and the delayed period-elapsed call in the
+work.  That said, the udelay() is almost superfluous for HD-audio
+driver unlike SST, and we can drop the udelay().
+
+Though, the current code doesn't guarantee the full period readiness
+as mentioned in the above, but rather it checks the wallclock and
+detects the unexpected jump.  That's one missing piece, and the drop
+of udelay() needs a bit more sanity checks for the delayed handling.
+
+This patch implements those: the drop of udelay() call in
+azx_get_pos_skl() and the more proper check of hwptr in
+azx_position_ok().  The latter change is applied only for the case
+where the stream is running in the normal mode without
+no_period_wakeup flag.  When no_period_wakeup is set, it essentially
+ignores the period handling and rather concentrates only on the
+current position; which implies that we don't need to care about the
+period boundary at all.
+
+Fixes: f87e7f25893d ("ALSA: hda - Improved position reporting on SKL+")
+Reported-by: Jens Axboe <axboe@kernel.dk>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210929072934.6809-2-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mwifiex/11n.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/pci/hda/hda_intel.c | 28 +++++++++++++++++++++++-----
+ 1 file changed, 23 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/mwifiex/11n.c b/drivers/net/wireless/mwifiex/11n.c
-index c174e79e6df2b..b70eac7d2dd79 100644
---- a/drivers/net/wireless/mwifiex/11n.c
-+++ b/drivers/net/wireless/mwifiex/11n.c
-@@ -630,14 +630,15 @@ int mwifiex_send_delba(struct mwifiex_private *priv, int tid, u8 *peer_mac,
- 	uint16_t del_ba_param_set;
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index e399c5718ee60..de090a3d2b384 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -742,13 +742,17 @@ static int azx_intel_link_power(struct azx *chip, bool enable)
+  * the update-IRQ timing.  The IRQ is issued before actually the
+  * data is processed.  So, we need to process it afterwords in a
+  * workqueue.
++ *
++ * Returns 1 if OK to proceed, 0 for delay handling, -1 for skipping update
+  */
+ static int azx_position_ok(struct azx *chip, struct azx_dev *azx_dev)
+ {
+ 	struct snd_pcm_substream *substream = azx_dev->core.substream;
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	int stream = substream->stream;
+ 	u32 wallclk;
+ 	unsigned int pos;
++	snd_pcm_uframes_t hwptr, target;
  
- 	memset(&delba, 0, sizeof(delba));
--	delba.del_ba_param_set = cpu_to_le16(tid << DELBA_TID_POS);
- 
--	del_ba_param_set = le16_to_cpu(delba.del_ba_param_set);
-+	del_ba_param_set = tid << DELBA_TID_POS;
+ 	wallclk = azx_readl(chip, WALLCLK) - azx_dev->core.start_wallclk;
+ 	if (wallclk < (azx_dev->core.period_wallclk * 2) / 3)
+@@ -785,6 +789,24 @@ static int azx_position_ok(struct azx *chip, struct azx_dev *azx_dev)
+ 		/* NG - it's below the first next period boundary */
+ 		return chip->bdl_pos_adj ? 0 : -1;
+ 	azx_dev->core.start_wallclk += wallclk;
 +
- 	if (initiator)
- 		del_ba_param_set |= IEEE80211_DELBA_PARAM_INITIATOR_MASK;
- 	else
- 		del_ba_param_set &= ~IEEE80211_DELBA_PARAM_INITIATOR_MASK;
++	if (azx_dev->core.no_period_wakeup)
++		return 1; /* OK, no need to check period boundary */
++
++	if (runtime->hw_ptr_base != runtime->hw_ptr_interrupt)
++		return 1; /* OK, already in hwptr updating process */
++
++	/* check whether the period gets really elapsed */
++	pos = bytes_to_frames(runtime, pos);
++	hwptr = runtime->hw_ptr_base + pos;
++	if (hwptr < runtime->status->hw_ptr)
++		hwptr += runtime->buffer_size;
++	target = runtime->hw_ptr_interrupt + runtime->period_size;
++	if (hwptr < target) {
++		/* too early wakeup, process it later */
++		return chip->bdl_pos_adj ? 0 : -1;
++	}
++
+ 	return 1; /* OK, it's fine */
+ }
  
-+	delba.del_ba_param_set = cpu_to_le16(del_ba_param_set);
- 	memcpy(&delba.peer_mac_addr, peer_mac, ETH_ALEN);
+@@ -982,11 +1004,7 @@ static unsigned int azx_get_pos_skl(struct azx *chip, struct azx_dev *azx_dev)
+ 	if (azx_dev->core.substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		return azx_skl_get_dpib_pos(chip, azx_dev);
  
- 	/* We don't wait for the response of this command */
+-	/* For capture, we need to read posbuf, but it requires a delay
+-	 * for the possible boundary overlap; the read of DPIB fetches the
+-	 * actual posbuf
+-	 */
+-	udelay(20);
++	/* read of DPIB fetches the actual posbuf */
+ 	azx_skl_get_dpib_pos(chip, azx_dev);
+ 	return azx_get_pos_posbuf(chip, azx_dev);
+ }
 -- 
 2.33.0
 
