@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7892A45BD5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15DEC45BFE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:59:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244366AbhKXMhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:37:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46752 "EHLO mail.kernel.org"
+        id S1346731AbhKXNCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:02:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243680AbhKXMbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:31:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4546610D2;
-        Wed, 24 Nov 2021 12:19:26 +0000 (UTC)
+        id S1344031AbhKXNAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:00:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A763619E4;
+        Wed, 24 Nov 2021 12:34:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756367;
-        bh=9s+rSDvOy7U06gwzWgfNajdvN6FhbtNsak6QIH8Ju9I=;
+        s=korg; t=1637757289;
+        bh=EiK1Q/68IY129PrOUGnJGHjqgdC2UACaw6JmorVVP+8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B4987lsw2iU55D0z4N1cvaiDa33hQ7V8WD83TJZjjV1uZeVQ15YWRyiozCYQSitsz
-         q15ZCvLs+v5WUDbFaEIKroqJvkVKj87cBo9yeiLfKSK8JvZBnUZmPwcWfU0yuW8pwb
-         zZWqBgfQh6Tw+ini50izZGguA3D8rnjpMrGbadeo=
+        b=i1S6hUXDGzes8ZdkcNv+8Mt0W/g5poN0zs2h/iifZWZq7MLbz51JDXaJ3BLMMl8A4
+         HPY2R91n0kahCMUDgEFsBKt72Aix9B+6uUFyojWu1gzzgR1KlX8YbyFb5ei23u0UiT
+         eN8ndFO5m/ieUgeHyztcseyB2yrO8TwhSl996Rrc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.14 034/251] regulator: dt-bindings: samsung,s5m8767: correct s5m8767,pmic-buck-default-dvs-idx property
+        stable@vger.kernel.org, Aleksander Jan Bajkowski <olek2@wp.pl>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 086/323] MIPS: lantiq: dma: add small delay after reset
 Date:   Wed, 24 Nov 2021 12:54:36 +0100
-Message-Id: <20211124115711.425059932@linuxfoundation.org>
+Message-Id: <20211124115721.859707303@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Aleksander Jan Bajkowski <olek2@wp.pl>
 
-commit a7fda04bc9b6ad9da8e19c9e6e3b1dab773d068a upstream.
+[ Upstream commit c12aa581f6d5e80c3c3675ab26a52c2b3b62f76e ]
 
-The driver was always parsing "s5m8767,pmic-buck-default-dvs-idx", not
-"s5m8767,pmic-buck234-default-dvs-idx".
+Reading the DMA registers immediately after the reset causes
+Data Bus Error. Adding a small delay fixes this issue.
 
-Cc: <stable@vger.kernel.org>
-Fixes: 26aec009f6b6 ("regulator: add device tree support for s5m8767")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Acked-by: Rob Herring <robh@kernel.org>
-Message-Id: <20211008113723.134648-3-krzysztof.kozlowski@canonical.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/lantiq/xway/dma.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
-+++ b/Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
-@@ -39,7 +39,7 @@ Optional properties of the main device n
+diff --git a/arch/mips/lantiq/xway/dma.c b/arch/mips/lantiq/xway/dma.c
+index 664f2f7f55c1c..45a622b72cd13 100644
+--- a/arch/mips/lantiq/xway/dma.c
++++ b/arch/mips/lantiq/xway/dma.c
+@@ -22,6 +22,7 @@
+ #include <linux/export.h>
+ #include <linux/spinlock.h>
+ #include <linux/clk.h>
++#include <linux/delay.h>
+ #include <linux/err.h>
  
- Additional properties required if either of the optional properties are used:
+ #include <lantiq_soc.h>
+@@ -233,6 +234,8 @@ ltq_dma_init(struct platform_device *pdev)
+ 	clk_enable(clk);
+ 	ltq_dma_w32_mask(0, DMA_RESET, LTQ_DMA_CTRL);
  
-- - s5m8767,pmic-buck234-default-dvs-idx: Default voltage setting selected from
-+ - s5m8767,pmic-buck-default-dvs-idx: Default voltage setting selected from
-    the possible 8 options selectable by the dvs gpios. The value of this
-    property should be between 0 and 7. If not specified or if out of range, the
-    default value of this property is set to 0.
++	usleep_range(1, 10);
++
+ 	/* disable all interrupts */
+ 	ltq_dma_w32(0, LTQ_DMA_IRNEN);
+ 
+-- 
+2.33.0
+
 
 
