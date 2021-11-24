@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A25E645BFFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B04B45B99D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:01:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245754AbhKXNEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:04:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39968 "EHLO mail.kernel.org"
+        id S241917AbhKXMDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:03:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344211AbhKXNBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:01:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C1CF619E5;
-        Wed, 24 Nov 2021 12:35:11 +0000 (UTC)
+        id S241888AbhKXMDX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:03:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 342F5600EF;
+        Wed, 24 Nov 2021 12:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757312;
-        bh=qZWSO5bigsvV/ZSSccr784tM8nU8t48E328AmeL17G0=;
+        s=korg; t=1637755213;
+        bh=xmzpDdi+dFBtEOdPA4IUgOZjjZmMIXcbMjn4sF9pUTg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FwE3J1bkDCNrpKH8YPUaOVB6JsSZosJ/sAIxbNYBbHOMo7nPEOSIVmu2M7nmVvnxR
-         2ICauCZT2EDpXPt6UBQfuwwMK8LYFV9oAPKyTujLzPplNXQV+ZmYvFCyUZSGX8Ox4j
-         mXJQEtU2F2mlKUyJ7qwmRgFfHvcjzGT71f28Tsm8=
+        b=uO9m/jhHp7UI0QL6RpQfK6Sxlyr9+sdkVkZA9jBiOl8Eg5G6zphczNxY3/llnQ/rd
+         5KFHhzAlHxYntjDdeQ+HLb1doFrAFGOqFvInmfku3Z/5/IVFiNECcd6SfccJ5fGdJn
+         bkAB6XzgLuH+Ti5VC00ORMPXkyaiuJ2toNQM0ieU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 127/323] Bluetooth: fix init and cleanup of sco_conn.timeout_work
+        stable@vger.kernel.org, Austin Kim <austin.kim@lge.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.4 014/162] ALSA: synth: missing check for possible NULL after the call to kstrdup
 Date:   Wed, 24 Nov 2021 12:55:17 +0100
-Message-Id: <20211124115723.228796729@linuxfoundation.org>
+Message-Id: <20211124115658.788216302@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+From: Austin Kim <austin.kim@lge.com>
 
-[ Upstream commit 49d8a5606428ca0962d09050a5af81461ff90fbb ]
+commit d159037abbe3412285c271bdfb9cdf19e62678ff upstream.
 
-Before freeing struct sco_conn, all delayed timeout work should be
-cancelled. Otherwise, sco_sock_timeout could potentially use the
-sco_conn after it has been freed.
+If kcalloc() return NULL due to memory starvation, it is possible for
+kstrdup() to return NULL in similar case. So add null check after the call
+to kstrdup() is made.
 
-Additionally, sco_conn.timeout_work should be initialized when the
-connection is allocated, not when the channel is added. This is
-because an sco_conn can create channels with multiple sockets over its
-lifetime, which happens if sockets are released but the connection
-isn't deleted.
+[ minor coding-style fix by tiwai ]
 
-Fixes: ba316be1b6a0 ("Bluetooth: schedule SCO timeouts with delayed_work")
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Austin Kim <austin.kim@lge.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20211109003742.GA5423@raspberrypi
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/bluetooth/sco.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ sound/synth/emux/emux.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
-index d052b454dc4e1..1e0a1c0a56b57 100644
---- a/net/bluetooth/sco.c
-+++ b/net/bluetooth/sco.c
-@@ -133,6 +133,7 @@ static struct sco_conn *sco_conn_add(struct hci_conn *hcon)
- 		return NULL;
+--- a/sound/synth/emux/emux.c
++++ b/sound/synth/emux/emux.c
+@@ -101,7 +101,7 @@ int snd_emux_register(struct snd_emux *e
+ 	emu->name = kstrdup(name, GFP_KERNEL);
+ 	emu->voices = kcalloc(emu->max_voices, sizeof(struct snd_emux_voice),
+ 			      GFP_KERNEL);
+-	if (emu->voices == NULL)
++	if (emu->name == NULL || emu->voices == NULL)
+ 		return -ENOMEM;
  
- 	spin_lock_init(&conn->lock);
-+	INIT_DELAYED_WORK(&conn->timeout_work, sco_sock_timeout);
- 
- 	hcon->sco_data = conn;
- 	conn->hcon = hcon;
-@@ -196,11 +197,11 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
- 		sco_chan_del(sk, err);
- 		bh_unlock_sock(sk);
- 		sock_put(sk);
--
--		/* Ensure no more work items will run before freeing conn. */
--		cancel_delayed_work_sync(&conn->timeout_work);
- 	}
- 
-+	/* Ensure no more work items will run before freeing conn. */
-+	cancel_delayed_work_sync(&conn->timeout_work);
-+
- 	hcon->sco_data = NULL;
- 	kfree(conn);
- }
-@@ -213,8 +214,6 @@ static void __sco_chan_add(struct sco_conn *conn, struct sock *sk,
- 	sco_pi(sk)->conn = conn;
- 	conn->sk = sk;
- 
--	INIT_DELAYED_WORK(&conn->timeout_work, sco_sock_timeout);
--
- 	if (parent)
- 		bt_accept_enqueue(parent, sk, true);
- }
--- 
-2.33.0
-
+ 	/* create soundfont list */
 
 
