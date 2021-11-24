@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FA045BA3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:06:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFAC445BD6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242184AbhKXMJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:09:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59452 "EHLO mail.kernel.org"
+        id S245299AbhKXMiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:38:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242114AbhKXMFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:05:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C962560F5D;
-        Wed, 24 Nov 2021 12:02:00 +0000 (UTC)
+        id S245303AbhKXMcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:32:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D10F261372;
+        Wed, 24 Nov 2021 12:20:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755321;
-        bh=Wo+FCY3TIJIGEF64MFe3E1s8UeFvOiwyquy9DDbRSs8=;
+        s=korg; t=1637756421;
+        bh=6XFShESb3tEItH9n1KKX1n5lw0IPgTsGv3LTtpiuBB0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nUnLI8qFbTZ91wjkiCWKn6QWa8n315RMgJdaX24V3HtgSZT0jXIG45+jbv2s5oRwC
-         xpMSHx1XOQIEO80FkxoOu88KF4XHGyWVHaa5UFvHmBk5uV8SrWlr0cJHvA5yZJn5Z/
-         lRli6aSEwBna4BjASfRyJF1hu9PW75CdPVpem3fs=
+        b=rVjm5mLhqBQ465aqjPpQ3cmoGNPpaEmIk+PR46/rrox0prhVI4/X+mGvD142L5nBA
+         Kn7oSOPlpVv2wdg6TchTp55NvJ7SbRiXJhPcN6+d4kTGapzGC/fAueqA9Ap+/LEWkN
+         eSYgzNBOgSgiP5cKaWvTQExkRAMJURFn/HUUj684=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joe Jin <joe.jin@oracle.com>,
-        Dongli Zhang <dongli.zhang@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Tuo Li <islituo@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 020/162] xen/netfront: stop tx queues during live migration
+Subject: [PATCH 4.14 081/251] media: s5p-mfc: fix possible null-pointer dereference in s5p_mfc_probe()
 Date:   Wed, 24 Nov 2021 12:55:23 +0100
-Message-Id: <20211124115658.986486139@linuxfoundation.org>
+Message-Id: <20211124115713.072449058@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,65 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongli Zhang <dongli.zhang@oracle.com>
+From: Tuo Li <islituo@gmail.com>
 
-[ Upstream commit 042b2046d0f05cf8124c26ff65dbb6148a4404fb ]
+[ Upstream commit 8515965e5e33f4feb56134348c95953f3eadfb26 ]
 
-The tx queues are not stopped during the live migration. As a result, the
-ndo_start_xmit() may access netfront_info->queues which is freed by
-talk_to_netback()->xennet_destroy_queues().
+The variable pdev is assigned to dev->plat_dev, and dev->plat_dev is
+checked in:
+  if (!dev->plat_dev)
 
-This patch is to netif_device_detach() at the beginning of xen-netfront
-resuming, and netif_device_attach() at the end of resuming.
+This indicates both dev->plat_dev and pdev can be NULL. If so, the
+function dev_err() is called to print error information.
+  dev_err(&pdev->dev, "No platform data specified\n");
 
-     CPU A                                CPU B
+However, &pdev->dev is an illegal address, and it is dereferenced in
+dev_err().
 
- talk_to_netback()
- -> if (info->queues)
-        xennet_destroy_queues(info);
-    to free netfront_info->queues
+To fix this possible null-pointer dereference, replace dev_err() with
+mfc_err().
 
-                                        xennet_start_xmit()
-                                        to access netfront_info->queues
-
-  -> err = xennet_create_queues(info, &num_queues);
-
-The idea is borrowed from virtio-net.
-
-Cc: Joe Jin <joe.jin@oracle.com>
-Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/xen-netfront.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/media/platform/s5p-mfc/s5p_mfc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/xen-netfront.c b/drivers/net/xen-netfront.c
-index 7d4c0c46a889d..6d4bf37c660f7 100644
---- a/drivers/net/xen-netfront.c
-+++ b/drivers/net/xen-netfront.c
-@@ -1454,6 +1454,10 @@ static int netfront_resume(struct xenbus_device *dev)
+diff --git a/drivers/media/platform/s5p-mfc/s5p_mfc.c b/drivers/media/platform/s5p-mfc/s5p_mfc.c
+index 9942932ecbf9c..63d46fae9b289 100644
+--- a/drivers/media/platform/s5p-mfc/s5p_mfc.c
++++ b/drivers/media/platform/s5p-mfc/s5p_mfc.c
+@@ -1280,7 +1280,7 @@ static int s5p_mfc_probe(struct platform_device *pdev)
+ 	spin_lock_init(&dev->condlock);
+ 	dev->plat_dev = pdev;
+ 	if (!dev->plat_dev) {
+-		dev_err(&pdev->dev, "No platform data specified\n");
++		mfc_err("No platform data specified\n");
+ 		return -ENODEV;
+ 	}
  
- 	dev_dbg(&dev->dev, "%s\n", dev->nodename);
- 
-+	netif_tx_lock_bh(info->netdev);
-+	netif_device_detach(info->netdev);
-+	netif_tx_unlock_bh(info->netdev);
-+
- 	xennet_disconnect_backend(info);
- 	return 0;
- }
-@@ -2014,6 +2018,10 @@ static int xennet_connect(struct net_device *dev)
- 	 * domain a kick because we've probably just requeued some
- 	 * packets.
- 	 */
-+	netif_tx_lock_bh(np->netdev);
-+	netif_device_attach(np->netdev);
-+	netif_tx_unlock_bh(np->netdev);
-+
- 	netif_carrier_on(np->netdev);
- 	for (j = 0; j < num_queues; ++j) {
- 		queue = &np->queues[j];
 -- 
 2.33.0
 
