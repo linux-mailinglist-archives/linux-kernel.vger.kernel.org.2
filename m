@@ -2,108 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57A7445C8C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:34:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6257945C8CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:34:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241371AbhKXPhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:37:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241292AbhKXPhU (ORCPT
+        id S231247AbhKXPhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:37:53 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:35022 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241381AbhKXPhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:37:20 -0500
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C09EEC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:34:10 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id i13so2045920qvm.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:34:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jewS1/U+Uwx2MsMSvVTsbDbxDhtWEO2xK/fTTXK8uck=;
-        b=WzvFRKZ061/KNaexoESH+Gbb4RgMMBXdqHhbtVDCJUWaGKS0bnX4c6P4VO4hkjahGS
-         /3zHBhDb+rJ4bQfUU/5o0p7g5Oq4oHvasOY5UeFTNeegJ14CkGmQ0rO3rB12VPpaJpFR
-         gChu8p5mtj04YG1x5v/Js2Wxkzh4Wbj7B3fohbz2UoOYCEyU/TDOBZLuXavFMULGkfTJ
-         GjZzuFZNy3a1tQgtuifVOgbMoqA9TPXpZeM+Et1sowb/lyMJrVJ9CxBCNCSSNl79GP0A
-         zTttDgOQkS2aqHt73ydZLqX6ZPRNdxo6YgMiQtSBwlqc06vXom0vpQ6CnRifIvQ6aw7l
-         EeRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jewS1/U+Uwx2MsMSvVTsbDbxDhtWEO2xK/fTTXK8uck=;
-        b=3XUSblG9hn9M/qF3G1ofN7IvEMCVQ1zOYyzQIg+JSgMjb07I+bxYnwdwZvGRWkGKZ0
-         FF72bc2g/vfAFMCtsjl6QUpzqiCvqK+8m58Nc/21iz38Ur06eWA4gJXHgEioUbNKnQbT
-         ViwuyQlav2USICeyn8spA5CrvtDFu3CXr7FE8ppLa8Yvvd6Pg0kYbVMReMFadTeBz1P7
-         ACRLjgle8O7KfcSp4JArPu/xHGCgzhmNlhO4GdKsDVpJfRNLPK5XngX+ee157dVgwxDP
-         S2SRo06ePlZytEfMZ5PakdEOPLgHQwfKX68QuQZ5R1cZCeDcG0vq+IsYe2rxBm9zHO6m
-         4PJA==
-X-Gm-Message-State: AOAM530ukt02wp6weu50ByuVDYrMR/AgfW9U3O/79VBDj1C5Kv+nPUSc
-        fuVks72N2XhwejYnd9SICxLLyw==
-X-Google-Smtp-Source: ABdhPJxZDhSiT7D5AMdmLtkaSczYkt5IgUp2uFeWHEYmNkWlb9JcYltzAKN/FqypiDM3IlbZxasu5A==
-X-Received: by 2002:ad4:5dea:: with SMTP id jn10mr8349179qvb.17.1637768049952;
-        Wed, 24 Nov 2021 07:34:09 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id l22sm42040qtj.68.2021.11.24.07.34.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 07:34:06 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mpuHd-0013L9-Or; Wed, 24 Nov 2021 11:34:05 -0400
-Date:   Wed, 24 Nov 2021 11:34:05 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-        Andrew Dona-Couch <andrew@donacou.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Drew DeVault <sir@cmpwn.com>,
-        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        io_uring Mailing List <io-uring@vger.kernel.org>,
-        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
-Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
-Message-ID: <20211124153405.GJ5112@ziepe.ca>
-References: <20211123170056.GC5112@ziepe.ca>
- <dd92a69a-6d09-93a1-4f50-5020f5cc59d0@suse.cz>
- <20211123235953.GF5112@ziepe.ca>
- <2adca04f-92e1-5f99-6094-5fac66a22a77@redhat.com>
- <20211124132353.GG5112@ziepe.ca>
- <cca0229e-e53e-bceb-e215-327b6401f256@redhat.com>
- <20211124132842.GH5112@ziepe.ca>
- <eab5aeba-e064-9f3e-fbc3-f73cd299de83@redhat.com>
- <20211124134812.GI5112@ziepe.ca>
- <2cdbebb9-4c57-7839-71ab-166cae168c74@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2cdbebb9-4c57-7839-71ab-166cae168c74@redhat.com>
+        Wed, 24 Nov 2021 10:37:36 -0500
+Received: from smtpclient.apple (p5b3d2e91.dip0.t-ipconnect.de [91.61.46.145])
+        by mail.holtmann.org (Postfix) with ESMTPSA id BAB76CED24;
+        Wed, 24 Nov 2021 16:34:25 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
+Subject: Re: [PATCH v3] Bluetooth: btusb: Add the new support IDs for WCN6855
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <c3f2783ddb0ac0bbcaae70b57c6afdfd@codeaurora.org>
+Date:   Wed, 24 Nov 2021 16:34:25 +0100
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <7268E5CB-5429-49CA-9832-A8E1C121920A@holtmann.org>
+References: <c3f2783ddb0ac0bbcaae70b57c6afdfd@codeaurora.org>
+To:     tjiang@codeaurora.org
+X-Mailer: Apple Mail (2.3693.20.0.1.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 03:14:00PM +0100, David Hildenbrand wrote:
+Hi Tim,
 
-> I'm not aware of any where you can fragment 50% of all pageblocks in the
-> system as an unprivileged user essentially consuming almost no memory
-> and essentially staying inside well-defined memlock limits. But sure if
-> there are "many" people will be able to come up with at least one
-> comparable thing. I'll be happy to learn.
+> Add the more IDs of HP to usb_device_id table for WCN6855.
+> 
+> -Device(0489:e0cc) from /sys/kernel/debug/usb/devices
+> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
+> D:  Ver= 1.10 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+> P:  Vendor=0489 ProdID=e0cc Rev= 0.01
+> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
+> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+> I:  If#= 1 Alt= 7 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  65 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  65 Ivl=1ms
+> 
+> -Device(0489:e0d6) from /sys/kernel/debug/usb/devices
+> T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
+> D:  Ver= 1.10 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
+> P:  Vendor=0489 ProdID=e0d6 Rev= 0.01
+> C:* #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
+> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+> E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
+> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+> I:  If#= 1 Alt= 7 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  65 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  65 Ivl=1ms
+> 
+> Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
+> ---
+> drivers/bluetooth/btusb.c | 8 +++++++-
+> 1 file changed, 7 insertions(+), 1 deletion(-)
 
-If the concern is that THP's can be DOS'd then any avenue that renders
-the system out of THPs is a DOS attack vector. Including all the
-normal workloads that people run and already complain that THPs get
-exhausted.
+patch has been applied to bluetooth-next tree.
 
-A hostile userspace can only quicken this process.
+Regards
 
-> My position that FOLL_LONGTERM for unprivileged users is a strong no-go
-> stands as it is.
+Marcel
 
-As this basically excludes long standing pre-existing things like
-RDMA, XDP, io_uring, and more I don't think this can be the general
-answer for mm, sorry.
-
-Sure, lets stop now since I don't think we can agree.
-
-Jason
