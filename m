@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51AB45BE7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7CF45BE80
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:46:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244415AbhKXMrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:47:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48798 "EHLO mail.kernel.org"
+        id S1345412AbhKXMrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:47:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245129AbhKXMof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S245130AbhKXMof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 07:44:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7653A61139;
-        Wed, 24 Nov 2021 12:26:21 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5C9161264;
+        Wed, 24 Nov 2021 12:26:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756782;
-        bh=04myLnVuw5E9uoLK0x56JMej242g2owyW1MHElDCN68=;
+        s=korg; t=1637756784;
+        bh=/FX/HvPV1wbd/mWSfwnt+7LoURga2Z4SLtXXZalJUT8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cw7i0CJvfyO653WMflmcjpBaKkUQSUmSGrExEkzscbSHzVcJQA4XDRvkrAL55kiSH
-         UkXEKfcRKCfdP8Js0OZpVqRyIV0nWUq2r5vVTi6S92zdldV1rTFCDszzeIKr8GdITz
-         Lulh+Z/s/1wFNUx61SDGyhPqzddvZuOSjKDyquXQ=
+        b=zbC2G+Ec6mQ501nwYmDcnPJs+bTOoy/BISmFTyCBctGtZudLBy6/Lq2vgqdvdoWtO
+         Q1PMTOupbwHZcW9NtsFC1P2yeH4pBDQOGbD7IJTuGeAqgdwAQ5e4tZacQbZg4aTJHe
+         IKqSY25b2QxtvC4CNAkwdZDsKvkdGRs5A6bz5GQM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Justin Tee <justin.tee@broadcom.com>,
-        James Smart <jsmart2021@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 203/251] scsi: lpfc: Fix list_add() corruption in lpfc_drain_txq()
-Date:   Wed, 24 Nov 2021 12:57:25 +0100
-Message-Id: <20211124115717.316992163@linuxfoundation.org>
+Subject: [PATCH 4.14 204/251] usb: musb: tusb6010: check return value after calling platform_get_resource()
+Date:   Wed, 24 Nov 2021 12:57:26 +0100
+Message-Id: <20211124115717.353182091@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
 References: <20211124115710.214900256@linuxfoundation.org>
@@ -41,46 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <jsmart2021@gmail.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 99154581b05c8fb22607afb7c3d66c1bace6aa5d ]
+[ Upstream commit 14651496a3de6807a17c310f63c894ea0c5d858e ]
 
-When parsing the txq list in lpfc_drain_txq(), the driver attempts to pass
-the requests to the adapter. If such an attempt fails, a local "fail_msg"
-string is set and a log message output.  The job is then added to a
-completions list for cancellation.
+It will cause null-ptr-deref if platform_get_resource() returns NULL,
+we need check the return value.
 
-Processing of any further jobs from the txq list continues, but since
-"fail_msg" remains set, jobs are added to the completions list regardless
-of whether a wqe was passed to the adapter.  If successfully added to
-txcmplq, jobs are added to both lists resulting in list corruption.
-
-Fix by clearing the fail_msg string after adding a job to the completions
-list. This stops the subsequent jobs from being added to the completions
-list unless they had an appropriate failure.
-
-Link: https://lore.kernel.org/r/20210910233159.115896-2-jsmart2021@gmail.com
-Co-developed-by: Justin Tee <justin.tee@broadcom.com>
-Signed-off-by: Justin Tee <justin.tee@broadcom.com>
-Signed-off-by: James Smart <jsmart2021@gmail.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20210915034925.2399823-1-yangyingliang@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_sli.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/musb/tusb6010.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
-index 20deb6715c36e..6f9ba3272721a 100644
---- a/drivers/scsi/lpfc/lpfc_sli.c
-+++ b/drivers/scsi/lpfc/lpfc_sli.c
-@@ -18777,6 +18777,7 @@ lpfc_drain_txq(struct lpfc_hba *phba)
- 					fail_msg,
- 					piocbq->iotag, piocbq->sli4_xritag);
- 			list_add_tail(&piocbq->list, &completions);
-+			fail_msg = NULL;
- 		}
- 		spin_unlock_irqrestore(&pring->ring_lock, iflags);
- 	}
+diff --git a/drivers/usb/musb/tusb6010.c b/drivers/usb/musb/tusb6010.c
+index 7d7cb1c5ec808..9a7b5b2d7ccc7 100644
+--- a/drivers/usb/musb/tusb6010.c
++++ b/drivers/usb/musb/tusb6010.c
+@@ -1108,6 +1108,11 @@ static int tusb_musb_init(struct musb *musb)
+ 
+ 	/* dma address for async dma */
+ 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!mem) {
++		pr_debug("no async dma resource?\n");
++		ret = -ENODEV;
++		goto done;
++	}
+ 	musb->async = mem->start;
+ 
+ 	/* dma address for sync dma */
 -- 
 2.33.0
 
