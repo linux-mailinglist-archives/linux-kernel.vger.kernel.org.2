@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B708045BB2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:14:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 613B745BFB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:58:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242047AbhKXMRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:17:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49278 "EHLO mail.kernel.org"
+        id S1347629AbhKXNBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:01:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243449AbhKXMOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:14:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1177E60551;
-        Wed, 24 Nov 2021 12:08:55 +0000 (UTC)
+        id S1347467AbhKXM6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:58:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B2A661101;
+        Wed, 24 Nov 2021 12:33:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755736;
-        bh=GsAwi3GCXuXZeIQeHmUzy8gd6QgalAMnvX0VdUzCZUI=;
+        s=korg; t=1637757236;
+        bh=HHNgnnC0YH+UQ2SkIlv++jtsxO7zKOpuQ4wWcjuxFCY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oxDWj81fJMvRGQPkHowxh6dBtH9quCTep384sDJDLuhB5Of8NPP10SsgSTzstwp0J
-         SZUi1l/WVUPk2lZm4jeLOnvXKOs+FKo/FboZqGvnxAkCy0+eBsywQIc9GhjrcU37kL
-         V5wJdrJZD+/rQi4SwnaEm5Xp3Pqv69RpqyKrriTo=
+        b=U7VYZW4zxN0qSOVsjybTY/PCEExeFYb0O1YdCc+rWBSBdXsbIN+GpICbYo+Ijfbr7
+         GTVWb9YuydAx46uuaVbn2Ovcsg9sDwKnIy2D5W50ZsTQk/OYS/Y1j3rumzSpDnMLiX
+         dO8huHzIylE3IfCg8eKZvgMK0Ognk/WppPaaJyqI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Pierre Ossman <pierre@ossman.eu>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Nadezda Lutovinova <lutovinova@ispras.ru>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 021/207] mmc: winbond: dont build on M68K
+Subject: [PATCH 4.19 102/323] media: rcar-csi2: Add checking to rcsi2_start_receiver()
 Date:   Wed, 24 Nov 2021 12:54:52 +0100
-Message-Id: <20211124115704.653931011@linuxfoundation.org>
+Message-Id: <20211124115722.409157428@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Nadezda Lutovinova <lutovinova@ispras.ru>
 
-[ Upstream commit 162079f2dccd02cb4b6654defd32ca387dd6d4d4 ]
+[ Upstream commit fc41665498332ad394b7db37f23e9394096ddc71 ]
 
-The Winbond MMC driver fails to build on ARCH=m68k so prevent
-that build config. Silences these build errors:
+If rcsi2_code_to_fmt() return NULL, then null pointer dereference occurs
+in the next cycle. That should not be possible now but adding checking
+protects from future bugs.
+The patch adds checking if format is NULL.
 
-../drivers/mmc/host/wbsd.c: In function 'wbsd_request_end':
-../drivers/mmc/host/wbsd.c:212:28: error: implicit declaration of function 'claim_dma_lock' [-Werror=implicit-function-declaration]
-  212 |                 dmaflags = claim_dma_lock();
-../drivers/mmc/host/wbsd.c:215:17: error: implicit declaration of function 'release_dma_lock'; did you mean 'release_task'? [-Werror=implicit-function-declaration]
-  215 |                 release_dma_lock(dmaflags);
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Pierre Ossman <pierre@ossman.eu>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20211017175949.23838-1-rdunlap@infradead.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
+Reviewed-by: Jacopo Mondi <jacopo@jmondi.org>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/platform/rcar-vin/rcar-csi2.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index 5274f503a39ad..5c0bc817019f7 100644
---- a/drivers/mmc/host/Kconfig
-+++ b/drivers/mmc/host/Kconfig
-@@ -367,7 +367,7 @@ config MMC_OMAP_HS
+diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
+index dc5ae8025832a..23f55514b002a 100644
+--- a/drivers/media/platform/rcar-vin/rcar-csi2.c
++++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
+@@ -474,6 +474,8 @@ static int rcsi2_start(struct rcar_csi2 *priv)
  
- config MMC_WBSD
- 	tristate "Winbond W83L51xD SD/MMC Card Interface support"
--	depends on ISA_DMA_API
-+	depends on ISA_DMA_API && !M68K
- 	help
- 	  This selects the Winbond(R) W83L51xD Secure digital and
-           Multimedia card Interface.
+ 	/* Code is validated in set_fmt. */
+ 	format = rcsi2_code_to_fmt(priv->mf.code);
++	if (!format)
++		return -EINVAL;
+ 
+ 	/*
+ 	 * Enable all Virtual Channels.
 -- 
 2.33.0
 
