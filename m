@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B62B45C354
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:34:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F33045C231
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:23:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350035AbhKXNhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:37:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43334 "EHLO mail.kernel.org"
+        id S1349071AbhKXN0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:26:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352301AbhKXNfh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:35:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F76061C11;
-        Wed, 24 Nov 2021 12:54:46 +0000 (UTC)
+        id S1349534AbhKXNWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:22:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8775C61351;
+        Wed, 24 Nov 2021 12:47:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758487;
-        bh=BKKNssPgceiAwUeUN0eDDKXoM9SXXQBk6b/fkVXOKZc=;
+        s=korg; t=1637758059;
+        bh=lRPTUS005ve+oBZofRJLmAVkhHWw52d0yc4ha8/kfyk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AIymtHusu9esApgT+LhkJRfujjqCmugpmxADePPwKinGiFaIu4dT/hxdMriou1LaB
-         ET1hiSWsEImp1lcepwMcIHQfutpfTS1GqYa3986SIU5aqo2a1CWd6UXw4U3uFFshB/
-         pDwwZjjfhzJ0gLGyFt8dyczNtzYYqvwZSGWJZdnU=
+        b=hXTTQUQoUm4VJwCCzbEFD7C6OPSfZKkoOzNG9UeWKQz5Xf0U4x7bV8q+LrXxZrryU
+         qD+MN8gk4GWDHM0m18ZjddWxEGZz1430J6Ov6yBcGlFBdW70LSbLh8leCctWJHhQr+
+         7bjdOAYdaBKKnHdYYmi0XgUPacaJfDy6Atl1JQ9E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
-        Tony Brelinski <tony.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 087/154] iavf: Fix for setting queues to 0
+Subject: [PATCH 5.4 047/100] net: bnx2x: fix variable dereferenced before check
 Date:   Wed, 24 Nov 2021 12:58:03 +0100
-Message-Id: <20211124115705.125791928@linuxfoundation.org>
+Message-Id: <20211124115656.401108049@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 9a6e9e483a9684a34573fd9f9e30ecfb047cb8cb ]
+[ Upstream commit f8885ac89ce310570e5391fe0bf0ec9c7c9b4fdc ]
 
-Now setting combine to 0 will be rejected with the
-appropriate error code.
-This has been implemented by adding a condition that checks
-the value of combine equal to zero.
-Without this patch, when the user requested it, no error was
-returned and combine was set to the default value for VF.
+Smatch says:
+	bnx2x_init_ops.h:640 bnx2x_ilt_client_mem_op()
+	warn: variable dereferenced before check 'ilt' (see line 638)
 
-Fixes: 5520deb15326 ("iavf: Enable support for up to 16 queues")
-Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
-Tested-by: Tony Brelinski <tony.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Move ilt_cli variable initialization _after_ ilt validation, because
+it's unsafe to deref the pointer before validation check.
+
+Fixes: 523224a3b3cd ("bnx2x, cnic, bnx2i: use new FW/HSI")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/iavf/iavf_ethtool.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
-index 5508ccbf9f57b..ea85b06857fa2 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
-@@ -903,7 +903,7 @@ static int iavf_set_channels(struct net_device *netdev,
- 	/* All of these should have already been checked by ethtool before this
- 	 * even gets to us, but just to be sure.
- 	 */
--	if (num_req > adapter->vsi_res->num_queue_pairs)
-+	if (num_req == 0 || num_req > adapter->vsi_res->num_queue_pairs)
- 		return -EINVAL;
+diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h
+index 1835d2e451c01..fc7fce642666c 100644
+--- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h
++++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h
+@@ -635,11 +635,13 @@ static int bnx2x_ilt_client_mem_op(struct bnx2x *bp, int cli_num,
+ {
+ 	int i, rc;
+ 	struct bnx2x_ilt *ilt = BP_ILT(bp);
+-	struct ilt_client_info *ilt_cli = &ilt->clients[cli_num];
++	struct ilt_client_info *ilt_cli;
  
- 	if (num_req == adapter->num_active_queues)
+ 	if (!ilt || !ilt->lines)
+ 		return -1;
+ 
++	ilt_cli = &ilt->clients[cli_num];
++
+ 	if (ilt_cli->flags & (ILT_CLIENT_SKIP_INIT | ILT_CLIENT_SKIP_MEM))
+ 		return 0;
+ 
 -- 
 2.33.0
 
