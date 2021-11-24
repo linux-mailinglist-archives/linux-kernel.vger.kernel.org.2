@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E0245C15F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:14:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6CF945C30B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:32:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344911AbhKXNR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:17:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53912 "EHLO mail.kernel.org"
+        id S1352107AbhKXNfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:35:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348757AbhKXNOA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:14:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10D9B6126A;
-        Wed, 24 Nov 2021 12:43:40 +0000 (UTC)
+        id S1351586AbhKXNci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:32:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E484F61BD2;
+        Wed, 24 Nov 2021 12:53:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757821;
-        bh=2iodbM1BE0NpXrnkO5lNNPKsyTOunAEJAc2f7GmqjsA=;
+        s=korg; t=1637758388;
+        bh=tqpN3gXnWopqGetBBiFAQHr6fgZWEqZOJpnpFBjko/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LQ+/Qx/9RLcAwFVv7EJP8DcHtkaiEUgj1J/6aMs3f5pDDX+H6diH6B3cO/NDORvUS
-         rP32C8id7Qj8KOreHr2O7w7w4nkA3vM1LSx9RQhmZGJGh0gipvnR93ZuCfOgv0I891
-         rd1YZ8uiIgCpb/0PtHj4B4cLBmdzbEXfz//XK/Ls=
+        b=gAX+vVuLYeao2NDILuLfly05FCCmW2+u8iDW8Rl5xOMLnndopdgdiFdsiPLdo0sND
+         NB9FXS9XJsSsiR49oySNJpL8+AXjLoQdDsaWel1I1RgIrReqyrXDFIlNDyWfkztGRG
+         ZPuTu0F03Jicx635WKMp3o2BusNTGBu2MmRg3BCM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michal Simek <michal.simek@xilinx.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 260/323] arm64: zynqmp: Fix serial compatible string
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rich Felker <dalias@libc.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 054/154] sh: define __BIG_ENDIAN for math-emu
 Date:   Wed, 24 Nov 2021 12:57:30 +0100
-Message-Id: <20211124115727.670626892@linuxfoundation.org>
+Message-Id: <20211124115704.076582782@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Simek <michal.simek@xilinx.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 812fa2f0e9d33564bd0131a69750e0d165f4c82a ]
+[ Upstream commit b929926f01f2d14635345d22eafcf60feed1085e ]
 
-Based on commit 65a2c14d4f00 ("dt-bindings: serial: convert Cadence UART
-bindings to YAML") compatible string should look like differently that's
-why fix it to be aligned with dt binding.
+Fix this by defining both ENDIAN macros in
+<asm/sfp-machine.h> so that they can be utilized in
+<math-emu/soft-fp.h> according to the latter's comment:
+/* Allow sfp-machine to have its own byte order definitions. */
 
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Link: https://lore.kernel.org/r/89b36e0a6187cc6b05b27a035efdf79173bd4486.1628240307.git.michal.simek@xilinx.com
+(This is what is done in arch/nds32/include/asm/sfp-machine.h.)
+
+This placates these build warnings:
+
+In file included from ../arch/sh/math-emu/math.c:23:
+.../include/math-emu/single.h:50:21: warning: "__BIG_ENDIAN" is not defined, evaluates to 0 [-Wundef]
+   50 | #if __BYTE_ORDER == __BIG_ENDIAN
+In file included from ../arch/sh/math-emu/math.c:24:
+.../include/math-emu/double.h:59:21: warning: "__BIG_ENDIAN" is not defined, evaluates to 0 [-Wundef]
+   59 | #if __BYTE_ORDER == __BIG_ENDIAN
+
+Fixes: 4b565680d163 ("sh: math-emu support")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Signed-off-by: Rich Felker <dalias@libc.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/sh/include/asm/sfp-machine.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-index 8a885ae647b7e..6478bca018197 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-@@ -574,7 +574,7 @@
- 		};
+diff --git a/arch/sh/include/asm/sfp-machine.h b/arch/sh/include/asm/sfp-machine.h
+index cbc7cf8c97ce6..2d2423478b71d 100644
+--- a/arch/sh/include/asm/sfp-machine.h
++++ b/arch/sh/include/asm/sfp-machine.h
+@@ -13,6 +13,14 @@
+ #ifndef _SFP_MACHINE_H
+ #define _SFP_MACHINE_H
  
- 		uart0: serial@ff000000 {
--			compatible = "cdns,uart-r1p12", "xlnx,xuartps";
-+			compatible = "xlnx,zynqmp-uart", "cdns,uart-r1p12";
- 			status = "disabled";
- 			interrupt-parent = <&gic>;
- 			interrupts = <0 21 4>;
-@@ -583,7 +583,7 @@
- 		};
- 
- 		uart1: serial@ff010000 {
--			compatible = "cdns,uart-r1p12", "xlnx,xuartps";
-+			compatible = "xlnx,zynqmp-uart", "cdns,uart-r1p12";
- 			status = "disabled";
- 			interrupt-parent = <&gic>;
- 			interrupts = <0 22 4>;
++#ifdef __BIG_ENDIAN__
++#define __BYTE_ORDER __BIG_ENDIAN
++#define __LITTLE_ENDIAN 0
++#else
++#define __BYTE_ORDER __LITTLE_ENDIAN
++#define __BIG_ENDIAN 0
++#endif
++
+ #define _FP_W_TYPE_SIZE		32
+ #define _FP_W_TYPE		unsigned long
+ #define _FP_WS_TYPE		signed long
 -- 
 2.33.0
 
