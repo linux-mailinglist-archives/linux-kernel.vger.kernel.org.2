@@ -2,208 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C03445B63F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:09:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A055945B642
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:10:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241120AbhKXIMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 03:12:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241104AbhKXIME (ORCPT
+        id S241160AbhKXINm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 03:13:42 -0500
+Received: from so254-9.mailgun.net ([198.61.254.9]:21242 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241125AbhKXINk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 03:12:04 -0500
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 716F7C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 00:08:54 -0800 (PST)
-Received: by mail-qv1-xf34.google.com with SMTP id v2so1195586qve.11
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 00:08:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CatI3/UOs7Nbmin1JBPpQh0cr4tyNKobEZGQHQA+RwU=;
-        b=Pa3qVeweJM2sSAdUAbzkzH7n63yKR3hW4LgVP5Hnc2hrSKghxBUv6VrkJTyZ5rnnMR
-         YBRhoqQeMT4kfTyXzVHUYd4r9nYM3flAt8mwDZmHUijVPZP712xiueG4Y6jp/qU+bif0
-         PD9s/4MtvSB5TfxqJ4YTOouWINTD+gpF2YiOQi8N153rh9fE54ZLY26cXDyfV0N1rzds
-         qXGIuZMvptEmM8/jtYDQl9JnWQgmzwTfxVjvlVVGdbPM/K0S3b9ktK0KBpy/QH/V/h/W
-         q52PLSHA+/2qSEmcI6avBOW6SBNdnQmMkA/FjhoABLS8Yrq0K/305GJMuiR4JyapcpwA
-         YYeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CatI3/UOs7Nbmin1JBPpQh0cr4tyNKobEZGQHQA+RwU=;
-        b=meCBna+tWiQ7AGx7FMTh62e6h1JEj6meuEXcVg/1gtz9ey/9boE12+7CEML5eCToZs
-         ziRMEs8eyFPDwep/ilsZfYMwYhitu3cNOzRJ7kojpihu1UfffeAkRqksJcuySD/1H1GM
-         Eq5MHkpJsEMbabdxheoU0aoVxyKnpuiAUtiAoAHueKOvazGUJHEeK4nccP0w0HNzM1HU
-         xWrdhnWcU6OdAX35CXVgmXIPX6qJGPQ4IexcxNNijgOZCVX1lXU5E5a0oOpzdAX6Qv1m
-         VlBz9i/MX+lNpbIw7Zk4ATPGTjIdhQajL8RXQu3N/L1lxV/m8r2ssHrhTZQAHoPUj/X8
-         jN1Q==
-X-Gm-Message-State: AOAM531EFPOzDJkb58lSvc+sP7CqAXGhw6rtIPC084fc1sCfVZ+eKl0v
-        tEKGZ+MHRCLh7nz0ovEfvYWzRvNrWBV5BOchjFE=
-X-Google-Smtp-Source: ABdhPJw3ITeVcApQYJjWiPng2yoZje3wvPGkve+3pDdyxUpyY0olX1OfG5FlNwKIb1SxAfgUO6MVuS7R5xoonr00xws=
-X-Received: by 2002:ad4:4e49:: with SMTP id eb9mr4966977qvb.22.1637741333652;
- Wed, 24 Nov 2021 00:08:53 -0800 (PST)
+        Wed, 24 Nov 2021 03:13:40 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1637741431; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=K3XJmR6+6ajzPSTs+S9goHuelc1zjh22dz9T/8cOZmA=; b=p3x8iwE8MU+az0XYhrIY/2Rk5iBg+cQCLPKdot6AEsMW6Eghd4fcrAVgCkR1OnbnDALbVaEU
+ gkYEYWmpevoyIULIiY+14dp1MYqGWEUb1X7fK3sPH0dPXBPsIQh9o9CNo/NaSmDGfXej5FSk
+ 2IN9IVKSMa9OfW9hNFFqrBdRAXQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 619df3764fca5da46d8908a7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Nov 2021 08:10:30
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B9026C4360D; Wed, 24 Nov 2021 08:10:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F253AC4338F;
+        Wed, 24 Nov 2021 08:10:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org F253AC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Luca Coelho <luciano.coelho@intel.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iwlwifi: mvm: protect regulatory_set_wiphy_regd_sync() with wiphy lock
+References: <nycvar.YFH.7.76.2111232204150.16505@cbobk.fhfr.pm>
+Date:   Wed, 24 Nov 2021 10:10:25 +0200
+In-Reply-To: <nycvar.YFH.7.76.2111232204150.16505@cbobk.fhfr.pm> (Jiri
+        Kosina's message of "Tue, 23 Nov 2021 22:06:19 +0100 (CET)")
+Message-ID: <871r366kjy.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <1637658760-5813-1-git-send-email-huangzhaoyang@gmail.com> <CAMj1kXGLRr8bnhLPseW=gSj6kA1TKqAC0Bs0Loj8gkpgaMB8MA@mail.gmail.com>
-In-Reply-To: <CAMj1kXGLRr8bnhLPseW=gSj6kA1TKqAC0Bs0Loj8gkpgaMB8MA@mail.gmail.com>
-From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date:   Wed, 24 Nov 2021 16:08:32 +0800
-Message-ID: <CAGWkznGsus77QT4r5X3qDzP3wHsY+=j8m-7DYfm_s_nd5bWQbQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm: introduce alloc hook to apply PTE_CONT
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 5:58 PM Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Tue, 23 Nov 2021 at 10:13, Huangzhaoyang <huangzhaoyang@gmail.com> wrote:
-> >
-> > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> >
-> > Since there is no PTE_CONT when rodata_full in ARM64, introducing a
-> > hook function to apply PTE_CONT on the proper page blocks.
-> >
->
-> Given the discussion around your previous patch, I would expect a
-> meticulous explanation here why it is guaranteed to be safe to
-> manipulate the PTE_CONT attribute like this, and how the proposed
-> logic is correct for all supported page sizes.
->
-> Without using an intermediate invalid mapping for the entire range,
-> this is never going to work reliably (this is the break-before-make
-> requirement). And given that marking the entire block invalid will
-> create intermediate states that are not permitted (a valid PTE_CONT
-> mapping and an invalid ~PTE_CONT mapping covering the same VA), the
-> only way to apply changes like these is to temporarily switch all CPUs
-> to a different translation via TTBR1. And this is not going to happen.
-As there is no safe way to modify PTE_CONT on a live mapping, please
-forget all previous patches except current one.
->
-> Also, you never replied to my question regarding the use case and the
-> performance gain.
-In our android based system, the multimedia related cases suffers from
-small pte granularity mostly which use high order page blocks quite a
-lot. The performance gap even be visible.
->
-> In summary, NAK to this patch or any of the previous ones regarding
-> PTE_CONT. If you do insist on pursuing this further, please provide an
-> elaborate and rock solid explanation why your approach is 100% valid
-> and correct (for all page sizes). And make sure you include an
-> explanation how your changes comply with the architectural
-> break-before-make requirements around PTE_CONT attributes.
-IMHO, It is safe to modify the page block's pte undering
-*arch_alloc/free_pages* as there is no one else aware of it.
-Furthermore, I do think tlbflush and barriers are needed for
-synchronization. With regards to page sizes issue, I think replacing
-the hard code const value to CONT_PTE_XXX could wrap the difference
-and make it correct.
+Jiri Kosina <jikos@kernel.org> writes:
 
-- if ((order >= 4) && (addr & ~CONT_PTE_MASK) == 0) {
--     order -= 4;
-+ if ((order >= CONT_PTE_SHIFT) && (addr & ~CONT_PTE_MASK) == 0) {
-+    order -= CONT_PTE_SHIFT;
-    do {
-        cont_pte_low_bound = addr & CONT_PTE_MASK;
-    __change_memory_common(cont_pte_low_bound,
-    (~CONT_PTE_MASK + 1), __pgprot(PTE_CONT), __pgprot(0));
-    addr = (u64)page_address(page);
--     page += 4;
-+
-    page += CONT_PTES;
-    order--;
-}while (order >= 0);
+> From: Jiri Kosina <jkosina@suse.cz>
 >
+> Since the switch away from rtnl to wiphy lock, 
+> regulatory_set_wiphy_regd_sync() has to be called with wiphy lock held; 
+> this is currently not the case on the module load codepath.
 >
+> Fix that by properly acquiring it in iwl_mvm_start_get_nvm() to maintain 
+> also lock ordering against mvm->mutex and RTNL.
 >
-> > ---
-> >  arch/arm64/include/asm/page.h |  5 +++++
-> >  arch/arm64/mm/pageattr.c      | 45 +++++++++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 50 insertions(+)
-> >
-> > diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
-> > index f98c91b..53cdd09 100644
-> > --- a/arch/arm64/include/asm/page.h
-> > +++ b/arch/arm64/include/asm/page.h
-> > @@ -46,6 +46,11 @@ struct page *alloc_zeroed_user_highpage_movable(struct vm_area_struct *vma,
-> >
-> >  #include <asm/memory.h>
-> >
-> > +#define HAVE_ARCH_ALLOC_PAGE
-> > +#define HAVE_ARCH_FREE_PAGE
-> > +
-> > +extern void arch_alloc_page(struct page *page, int order);
-> > +extern void arch_free_page(struct page *page, int order);
-> >  #endif /* !__ASSEMBLY__ */
-> >
-> >  #define VM_DATA_DEFAULT_FLAGS  (VM_DATA_FLAGS_TSK_EXEC | VM_MTE_ALLOWED)
-> > diff --git a/arch/arm64/mm/pageattr.c b/arch/arm64/mm/pageattr.c
-> > index a3bacd7..815a06d 100644
-> > --- a/arch/arm64/mm/pageattr.c
-> > +++ b/arch/arm64/mm/pageattr.c
-> > @@ -239,3 +239,48 @@ bool kernel_page_present(struct page *page)
-> >         ptep = pte_offset_kernel(pmdp, addr);
-> >         return pte_valid(READ_ONCE(*ptep));
-> >  }
-> > +
-> > +void arch_alloc_page(struct page *page, int order)
-> > +{
-> > +       unsigned long addr;
-> > +       unsigned long cont_pte_low_bound;
-> > +
-> > +       if (!rodata_full)
-> > +               return;
-> > +
-> > +       addr = (u64)page_address(page);
-> > +       if ((order >= 4) && (addr & ~CONT_PTE_MASK) == 0) {
-> > +               order -= 4;
-> > +               do {
-> > +                       cont_pte_low_bound = addr & CONT_PTE_MASK;
-> > +                       __change_memory_common(cont_pte_low_bound,
-> > +                                       (~CONT_PTE_MASK + 1), __pgprot(PTE_CONT), __pgprot(0));
-> > +                       addr = (u64)page_address(page);
-> > +                       page += 4;
-> > +                       order--;
-> > +               }while (order >= 0);
-> > +       }
-> > +}
-> > +
-> > +void arch_free_page(struct page *page, int order)
-> > +{
-> > +       unsigned long addr;
-> > +       unsigned long cont_pte_low_bound;
-> > +
-> > +       if (!rodata_full)
-> > +               return;
-> > +
-> > +       addr = (u64)page_address(page);
-> > +       if ((order >= 4) && (addr & ~CONT_PTE_MASK) == 0) {
-> > +               order -= 4;
-> > +               do {
-> > +                       cont_pte_low_bound = addr & CONT_PTE_MASK;
-> > +                       __change_memory_common(cont_pte_low_bound,
-> > +                                       (~CONT_PTE_MASK + 1), __pgprot(0), __pgprot(PTE_CONT));
-> > +                       addr = (u64)page_address(page);
-> > +                       page += 4;
-> > +                       order--;
-> > +               }while (order >= 0);
-> > +       }
-> > +}
-> > +
-> > --
-> > 1.9.1
-> >
+> This fixes the splat below.
+>
+>  =============================
+>  WARNING: suspicious RCU usage
+>  5.16.0-rc2 #1 Not tainted
+>  -----------------------------
+>  drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c:264 suspicious rcu_dereference_protected() usage!
+>
+>  other info that might help us debug this:
+>
+>  rcu_scheduler_active = 2, debug_locks = 1
+>  3 locks held by modprobe/578:
+>   #0: ffffffffc0b6f0e8 (iwlwifi_opmode_table_mtx){+.+.}-{3:3}, at: iwl_opmode_register+0x2e/0xe0 [iwlwifi]
+>   #1: ffffffff9a856b08 (rtnl_mutex){+.+.}-{3:3}, at: iwl_op_mode_mvm_start+0xa0b/0xcb0 [iwlmvm]
+>   #2: ffff8e5242f53380 (&mvm->mutex){+.+.}-{3:3}, at: iwl_op_mode_mvm_start+0xa16/0xcb0 [iwlmvm]
+>
+>  stack backtrace:
+>  CPU: 1 PID: 578 Comm: modprobe Not tainted 5.16.0-rc2 #1
+>  Hardware name: LENOVO 20K5S22R00/20K5S22R00, BIOS R0IET38W (1.16 ) 05/31/2017
+>  Call Trace:
+>   <TASK>
+>   dump_stack_lvl+0x58/0x71
+>   iwl_mvm_init_fw_regd+0x13d/0x180 [iwlmvm]
+>   iwl_mvm_init_mcc+0x66/0x1d0 [iwlmvm]
+>   iwl_op_mode_mvm_start+0xc6d/0xcb0 [iwlmvm]
+>   _iwl_op_mode_start.isra.4+0x42/0x80 [iwlwifi]
+>   iwl_opmode_register+0x71/0xe0 [iwlwifi]
+>   ? 0xffffffffc1062000
+>   iwl_mvm_init+0x34/0x1000 [iwlmvm]
+>   do_one_initcall+0x5b/0x300
+>   do_init_module+0x5b/0x21c
+>   load_module+0x1b2f/0x2320
+>   ? __do_sys_finit_module+0xaa/0x110
+>   __do_sys_finit_module+0xaa/0x110
+>   do_syscall_64+0x3a/0xb0
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+>  RIP: 0033:0x7f7cdd7c8ded
+>  Code: 5b 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d fb ef 0e 00 f7 d8 64 89 01 48
+>  RSP: 002b:00007fffb90bf458 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+>  RAX: ffffffffffffffda RBX: 0000559c501caf00 RCX: 00007f7cdd7c8ded
+>  RDX: 0000000000000000 RSI: 0000559c4eb366ee RDI: 0000000000000002
+>  RBP: 0000000000040000 R08: 0000000000000000 R09: 0000559c501ca9f8
+>  R10: 0000000000000002 R11: 0000000000000246 R12: 0000559c4eb366ee
+>  R13: 0000559c501cadb0 R14: 0000000000000000 R15: 0000559c501cbad0
+>   </TASK>
+>  ------------[ cut here ]------------
+>  WARNING: CPU: 1 PID: 578 at net/wireless/reg.c:3107 reg_process_self_managed_hint+0x183/0x1d0 [cfg80211]
+>  Modules linked in:
+>  CPU: 1 PID: 578 Comm: modprobe Not tainted 5.16.0-rc2 #1
+>  Hardware name: LENOVO 20K5S22R00/20K5S22R00, BIOS R0IET38W (1.16 ) 05/31/2017
+>  RIP: 0010:reg_process_self_managed_hint+0x183/0x1d0 [cfg80211]
+>  Code: 83 c4 60 5b 41 5a 41 5c 41 5d 41 5e 41 5f 5d 49 8d 62 f8 c3 48 8d 7b 68 be ff ff ff ff e8 75 4a 13 d9 85 c0 0f 85 e6 fe ff ff <0f> 0b e9 df fe ff ff 0f 0b 80 3d bc 2c 0b 00 00 0f 85 c2 fe ff ff
+>  RSP: 0018:ffff9994809cfaf0 EFLAGS: 00010246
+>  RAX: 0000000000000000 RBX: ffff8e5242f505c0 RCX: 0000000000000000
+>  RDX: 0000000000000000 RSI: ffff8e5242f50628 RDI: ffff8e524a2b5cd0
+>  RBP: ffff9994809cfb80 R08: 0000000000000001 R09: ffffffff9b2e2f50
+>  R10: ffff9994809cfb98 R11: ffffffffffffffff R12: 0000000000000000
+>  R13: ffff8e5242f532e8 R14: ffff8e5248914010 R15: ffff8e5242f532e0
+>  FS:  00007f7cdd6af740(0000) GS:ffff8e5367480000(0000) knlGS:0000000000000000
+>  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>  CR2: 00007f19430687ac CR3: 00000001088fa003 CR4: 00000000003706e0
+>  Call Trace:
+>   <TASK>
+>   ? lock_is_held_type+0xb4/0x120
+>   ? regulatory_set_wiphy_regd_sync+0x2f/0x80 [cfg80211]
+>   regulatory_set_wiphy_regd_sync+0x2f/0x80 [cfg80211]
+>   iwl_mvm_init_mcc+0xcd/0x1d0 [iwlmvm]
+>   iwl_op_mode_mvm_start+0xc6d/0xcb0 [iwlmvm]
+>   _iwl_op_mode_start.isra.4+0x42/0x80 [iwlwifi]
+>   iwl_opmode_register+0x71/0xe0 [iwlwifi]
+>   ? 0xffffffffc1062000
+>   iwl_mvm_init+0x34/0x1000 [iwlmvm]
+>   do_one_initcall+0x5b/0x300
+>   do_init_module+0x5b/0x21c
+>   load_module+0x1b2f/0x2320
+>   ? __do_sys_finit_module+0xaa/0x110
+>   __do_sys_finit_module+0xaa/0x110
+>   do_syscall_64+0x3a/0xb0
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+>  RIP: 0033:0x7f7cdd7c8ded
+>  Code: 5b 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d fb ef 0e 00 f7 d8 64 89 01 48
+>  RSP: 002b:00007fffb90bf458 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+>  RAX: ffffffffffffffda RBX: 0000559c501caf00 RCX: 00007f7cdd7c8ded
+>  RDX: 0000000000000000 RSI: 0000559c4eb366ee RDI: 0000000000000002
+>  RBP: 0000000000040000 R08: 0000000000000000 R09: 0000559c501ca9f8
+>  R10: 0000000000000002 R11: 0000000000000246 R12: 0000559c4eb366ee
+>  R13: 0000559c501cadb0 R14: 0000000000000000 R15: 0000559c501cbad0
+>
+> Fixes: a05829a7222e9d1 ("cfg80211: avoid holding the RTNL when calling the driver")
+> Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+
+I think this should go to wireless-drivers so I assigned this to me.
+Luca, ack?
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
