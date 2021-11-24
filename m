@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59CC345C62B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A814A45C3C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349486AbhKXOFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:05:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48860 "EHLO mail.kernel.org"
+        id S1350711AbhKXNmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:42:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351789AbhKXOCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:02:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29AD5613DA;
-        Wed, 24 Nov 2021 13:10:33 +0000 (UTC)
+        id S1350468AbhKXNkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:40:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDC196137B;
+        Wed, 24 Nov 2021 12:57:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759434;
-        bh=3Y1lWdcPaSVNYKEbev72Cpt/iYyFYzUMmH55npyFlNo=;
+        s=korg; t=1637758633;
+        bh=Jlfirz+BwWLf5ecEDiZggdtR6MEbXDnXvmVQ5Yh6Mgg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qxq5lHHv2bXRM4LEPYQFg/3mMYZdvT24kCWBs2Eqjr60mP9A6mVJPsz+aSql8d8O7
-         p5IUQnK9gYnO8Bhp7xjDdkd/p6AeJg/0r6Jd4MG/LHm2lPIXhgbrJzbEFTfBy6LkzK
-         roVKXc49ks6MLbLH+94EMhLjvWqfyfZKH+YyBW6E=
+        b=pbaT4WcxSG566K+yMv2rE80hOOdma290h+XCwzbv6iNq4/SqSwB9uS++SfzI/Aott
+         M1LYHUO4JauP8zY52tKrPg5c3W8W7R0pG78v3NrHTDa2vtPxtxMf15p4lk4QEh3OIO
+         C8o/6asxkR8ZO02h50lHs4A0NQ5Bt8cIQJXMEPiw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Brost <matthew.brost@intel.com>,
-        Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>,
-        John Harrison <John.C.Harrison@Intel.com>
-Subject: [PATCH 5.15 241/279] drm/i915/guc: Fix outstanding G2H accounting
-Date:   Wed, 24 Nov 2021 12:58:48 +0100
-Message-Id: <20211124115727.056806087@linuxfoundation.org>
+        stable@vger.kernel.org, Meng Li <Meng.Li@windriver.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 133/154] net: stmmac: socfpga: add runtime suspend/resume callback for stratix10 platform
+Date:   Wed, 24 Nov 2021 12:58:49 +0100
+Message-Id: <20211124115706.605336723@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,201 +39,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Brost <matthew.brost@intel.com>
+From: Meng Li <meng.li@windriver.com>
 
-commit 669b949c1a44d0cb2bcd18ff6ab4fd0c21e7cf6f upstream.
+commit 9119570039481d56350af1c636f040fb300b8cf3 upstream.
 
-A small race that could result in incorrect accounting of the number
-of outstanding G2H. Basically prior to this patch we did not increment
-the number of outstanding G2H if we encoutered a GT reset while sending
-a H2G. This was incorrect as the context state had already been updated
-to anticipate a G2H response thus the counter should be incremented.
+According to upstream commit 5ec55823438e("net: stmmac:
+add clocks management for gmac driver"), it improve clocks
+management for stmmac driver. So, it is necessary to implement
+the runtime callback in dwmac-socfpga driver because it doesn't
+use the common stmmac_pltfr_pm_ops instance. Otherwise, clocks
+are not disabled when system enters suspend status.
 
-As part of this change we remove a legacy (now unused) path that was the
-last caller requiring a G2H response that was not guaranteed to loop.
-This allows us to simplify the accounting as we don't need to handle the
-case where the send fails due to the channel being busy.
-
-Also always use helper when decrementing this value.
-
-v2 (Daniele): update GEM_BUG_ON check, pull in dead code removal from
-later patch, remove loop param from context_deregister.
-
-Fixes: f4eb1f3fe946 ("drm/i915/guc: Ensure G2H response has space in buffer")
-Signed-off-by: Matthew Brost <matthew.brost@intel.com>
-Signed-off-by: Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>
-Cc: <stable@vger.kernel.org>
-Reviewed-by: John Harrison <John.C.Harrison@Intel.com>
-Signed-off-by: John Harrison <John.C.Harrison@Intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210909164744.31249-3-matthew.brost@intel.com
+Fixes: 5ec55823438e ("net: stmmac: add clocks management for gmac driver")
+Cc: stable@vger.kernel.org
+Signed-off-by: Meng Li <Meng.Li@windriver.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c |   79 ++++++++++------------
- 1 file changed, 37 insertions(+), 42 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c |   24 ++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
---- a/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
-+++ b/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
-@@ -352,20 +352,29 @@ static inline void set_lrc_desc_register
- 	xa_unlock_irqrestore(&guc->context_lookup, flags);
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
+@@ -485,8 +485,28 @@ static int socfpga_dwmac_resume(struct d
  }
+ #endif /* CONFIG_PM_SLEEP */
  
-+static void decr_outstanding_submission_g2h(struct intel_guc *guc)
+-static SIMPLE_DEV_PM_OPS(socfpga_dwmac_pm_ops, stmmac_suspend,
+-					       socfpga_dwmac_resume);
++static int __maybe_unused socfpga_dwmac_runtime_suspend(struct device *dev)
 +{
-+	if (atomic_dec_and_test(&guc->outstanding_submission_g2h))
-+		wake_up_all(&guc->ct.wq);
++	struct net_device *ndev = dev_get_drvdata(dev);
++	struct stmmac_priv *priv = netdev_priv(ndev);
++
++	stmmac_bus_clks_config(priv, false);
++
++	return 0;
 +}
 +
- static int guc_submission_send_busy_loop(struct intel_guc *guc,
- 					 const u32 *action,
- 					 u32 len,
- 					 u32 g2h_len_dw,
- 					 bool loop)
- {
--	int err;
--
--	err = intel_guc_send_busy_loop(guc, action, len, g2h_len_dw, loop);
-+	/*
-+	 * We always loop when a send requires a reply (i.e. g2h_len_dw > 0),
-+	 * so we don't handle the case where we don't get a reply because we
-+	 * aborted the send due to the channel being busy.
-+	 */
-+	GEM_BUG_ON(g2h_len_dw && !loop);
- 
--	if (!err && g2h_len_dw)
-+	if (g2h_len_dw)
- 		atomic_inc(&guc->outstanding_submission_g2h);
- 
--	return err;
-+	return intel_guc_send_busy_loop(guc, action, len, g2h_len_dw, loop);
- }
- 
- int intel_guc_wait_for_pending_msg(struct intel_guc *guc,
-@@ -616,7 +625,7 @@ static void scrub_guc_desc_for_outstandi
- 		init_sched_state(ce);
- 
- 		if (pending_enable || destroyed || deregister) {
--			atomic_dec(&guc->outstanding_submission_g2h);
-+			decr_outstanding_submission_g2h(guc);
- 			if (deregister)
- 				guc_signal_context_fence(ce);
- 			if (destroyed) {
-@@ -635,7 +644,7 @@ static void scrub_guc_desc_for_outstandi
- 				intel_engine_signal_breadcrumbs(ce->engine);
- 			}
- 			intel_context_sched_disable_unpin(ce);
--			atomic_dec(&guc->outstanding_submission_g2h);
-+			decr_outstanding_submission_g2h(guc);
- 			spin_lock_irqsave(&ce->guc_state.lock, flags);
- 			guc_blocked_fence_complete(ce);
- 			spin_unlock_irqrestore(&ce->guc_state.lock, flags);
-@@ -1233,8 +1242,7 @@ static int register_context(struct intel
- }
- 
- static int __guc_action_deregister_context(struct intel_guc *guc,
--					   u32 guc_id,
--					   bool loop)
-+					   u32 guc_id)
- {
- 	u32 action[] = {
- 		INTEL_GUC_ACTION_DEREGISTER_CONTEXT,
-@@ -1243,16 +1251,16 @@ static int __guc_action_deregister_conte
- 
- 	return guc_submission_send_busy_loop(guc, action, ARRAY_SIZE(action),
- 					     G2H_LEN_DW_DEREGISTER_CONTEXT,
--					     loop);
-+					     true);
- }
- 
--static int deregister_context(struct intel_context *ce, u32 guc_id, bool loop)
-+static int deregister_context(struct intel_context *ce, u32 guc_id)
- {
- 	struct intel_guc *guc = ce_to_guc(ce);
- 
- 	trace_intel_context_deregister(ce);
- 
--	return __guc_action_deregister_context(guc, guc_id, loop);
-+	return __guc_action_deregister_context(guc, guc_id);
- }
- 
- static intel_engine_mask_t adjust_engine_mask(u8 class, intel_engine_mask_t mask)
-@@ -1340,26 +1348,23 @@ static int guc_lrc_desc_pin(struct intel
- 	 * registering this context.
- 	 */
- 	if (context_registered) {
-+		bool disabled;
-+		unsigned long flags;
++static int __maybe_unused socfpga_dwmac_runtime_resume(struct device *dev)
++{
++	struct net_device *ndev = dev_get_drvdata(dev);
++	struct stmmac_priv *priv = netdev_priv(ndev);
 +
- 		trace_intel_context_steal_guc_id(ce);
--		if (!loop) {
-+		GEM_BUG_ON(!loop);
++	return stmmac_bus_clks_config(priv, true);
++}
 +
-+		/* Seal race with Reset */
-+		spin_lock_irqsave(&ce->guc_state.lock, flags);
-+		disabled = submission_disabled(guc);
-+		if (likely(!disabled)) {
- 			set_context_wait_for_deregister_to_register(ce);
- 			intel_context_get(ce);
--		} else {
--			bool disabled;
--			unsigned long flags;
--
--			/* Seal race with Reset */
--			spin_lock_irqsave(&ce->guc_state.lock, flags);
--			disabled = submission_disabled(guc);
--			if (likely(!disabled)) {
--				set_context_wait_for_deregister_to_register(ce);
--				intel_context_get(ce);
--			}
--			spin_unlock_irqrestore(&ce->guc_state.lock, flags);
--			if (unlikely(disabled)) {
--				reset_lrc_desc(guc, desc_idx);
--				return 0;	/* Will get registered later */
--			}
-+		}
-+		spin_unlock_irqrestore(&ce->guc_state.lock, flags);
-+		if (unlikely(disabled)) {
-+			reset_lrc_desc(guc, desc_idx);
-+			return 0;	/* Will get registered later */
- 		}
++static const struct dev_pm_ops socfpga_dwmac_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(stmmac_suspend, socfpga_dwmac_resume)
++	SET_RUNTIME_PM_OPS(socfpga_dwmac_runtime_suspend, socfpga_dwmac_runtime_resume, NULL)
++};
  
- 		/*
-@@ -1367,13 +1372,9 @@ static int guc_lrc_desc_pin(struct intel
- 		 * context whose guc_id was stolen.
- 		 */
- 		with_intel_runtime_pm(runtime_pm, wakeref)
--			ret = deregister_context(ce, ce->guc_id, loop);
--		if (unlikely(ret == -EBUSY)) {
--			clr_context_wait_for_deregister_to_register(ce);
--			intel_context_put(ce);
--		} else if (unlikely(ret == -ENODEV)) {
-+			ret = deregister_context(ce, ce->guc_id);
-+		if (unlikely(ret == -ENODEV))
- 			ret = 0;	/* Will get registered later */
--		}
- 	} else {
- 		with_intel_runtime_pm(runtime_pm, wakeref)
- 			ret = register_context(ce, loop);
-@@ -1730,7 +1731,7 @@ static inline void guc_lrc_desc_unpin(st
- 	GEM_BUG_ON(context_enabled(ce));
- 
- 	clr_context_registered(ce);
--	deregister_context(ce, ce->guc_id, true);
-+	deregister_context(ce, ce->guc_id);
- }
- 
- static void __guc_context_destroy(struct intel_context *ce)
-@@ -2583,12 +2584,6 @@ g2h_context_lookup(struct intel_guc *guc
- 	return ce;
- }
- 
--static void decr_outstanding_submission_g2h(struct intel_guc *guc)
--{
--	if (atomic_dec_and_test(&guc->outstanding_submission_g2h))
--		wake_up_all(&guc->ct.wq);
--}
--
- int intel_guc_deregister_done_process_msg(struct intel_guc *guc,
- 					  const u32 *msg,
- 					  u32 len)
+ static const struct socfpga_dwmac_ops socfpga_gen5_ops = {
+ 	.set_phy_mode = socfpga_gen5_set_phy_mode,
 
 
