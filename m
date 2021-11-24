@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796BC45BBD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:22:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D78B745BE24
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:41:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244893AbhKXMYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:24:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36014 "EHLO mail.kernel.org"
+        id S1344079AbhKXMpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:45:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242776AbhKXMUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:20:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EEEA76112F;
-        Wed, 24 Nov 2021 12:12:16 +0000 (UTC)
+        id S1344560AbhKXMm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:42:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5B9F613C8;
+        Wed, 24 Nov 2021 12:25:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755937;
-        bh=KamPzkE/xfJ+gfLl1puVcZOrLnIOvCVIa9+X2bpw5u8=;
+        s=korg; t=1637756702;
+        bh=e3YZXMVYYh0NwjgRd1njr3jrmQXsrNJR2USYtI+H+zg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O4ZNcloH27LgfTbpnOeEcPgEW0l/tuKMjnZVbSacx5exUBQZZG1cB9D8oAwSWZPIe
-         atYY32L4tR8pgisItgSOewFEZm0lnQOfa2wTl4QiGrrGS4vQfaHmE4gLFeZSVlzDm6
-         B/jlHpzYSKr0gKZqsTT/SC+ABWc/Kz/OT6g3fMTg=
+        b=FeZ2ifiFWp5DUrGPOy32oCQXIFSq+Fhhj53DypLZM5ky2BtxjrkWv/qSifvsJxtC3
+         AHQKYJK1zwodNxLV8AeLAJ8yY200FmDeHalUxbyNXkdgOHyf7IrFX8OSRPx697KWhe
+         TXp2US9vRr9VxlVlnIi9Pym68uHS9GJ02+fay9IQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Peter Rosin <peda@axentia.se>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 112/207] libertas_tf: Fix possible memory leak in probe and disconnect
+Subject: [PATCH 4.14 141/251] ARM: dts: at91: tse850: the emac<->phy interface is rmii
 Date:   Wed, 24 Nov 2021 12:56:23 +0100
-Message-Id: <20211124115707.699917752@linuxfoundation.org>
+Message-Id: <20211124115715.157261264@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,70 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Peter Rosin <peda@axentia.se>
 
-[ Upstream commit d549107305b4634c81223a853701c06bcf657bc3 ]
+[ Upstream commit dcdbc335a91a26e022a803e1a6b837266989c032 ]
 
-I got memory leak as follows when doing fault injection test:
+This went unnoticed until commit 7897b071ac3b ("net: macb: convert
+to phylink") which tickled the problem. The sama5d3 emac has never
+been capable of rgmii, and it all just happened to work before that
+commit.
 
-unreferenced object 0xffff88810a2ddc00 (size 512):
-  comm "kworker/6:1", pid 176, jiffies 4295009893 (age 757.220s)
-  hex dump (first 32 bytes):
-    00 50 05 18 81 88 ff ff 00 00 00 00 00 00 00 00  .P..............
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8167939c>] slab_post_alloc_hook+0x9c/0x490
-    [<ffffffff8167f627>] kmem_cache_alloc_trace+0x1f7/0x470
-    [<ffffffffa02a1530>] if_usb_probe+0x60/0x37c [libertas_tf_usb]
-    [<ffffffffa022668a>] usb_probe_interface+0x1aa/0x3c0 [usbcore]
-    [<ffffffff82b59630>] really_probe+0x190/0x480
-    [<ffffffff82b59a19>] __driver_probe_device+0xf9/0x180
-    [<ffffffff82b59af3>] driver_probe_device+0x53/0x130
-    [<ffffffff82b5a075>] __device_attach_driver+0x105/0x130
-    [<ffffffff82b55949>] bus_for_each_drv+0x129/0x190
-    [<ffffffff82b593c9>] __device_attach+0x1c9/0x270
-    [<ffffffff82b5a250>] device_initial_probe+0x20/0x30
-    [<ffffffff82b579c2>] bus_probe_device+0x142/0x160
-    [<ffffffff82b52e49>] device_add+0x829/0x1300
-    [<ffffffffa02229b1>] usb_set_configuration+0xb01/0xcc0 [usbcore]
-    [<ffffffffa0235c4e>] usb_generic_driver_probe+0x6e/0x90 [usbcore]
-    [<ffffffffa022641f>] usb_probe_device+0x6f/0x130 [usbcore]
-
-cardp is missing being freed in the error handling path of the probe
-and the path of the disconnect, which will cause memory leak.
-
-This patch adds the missing kfree().
-
-Fixes: c305a19a0d0a ("libertas_tf: usb specific functions")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20211020120345.2016045-2-wanghai38@huawei.com
+Fixes: 21dd0ece34c2 ("ARM: dts: at91: add devicetree for the Axentia TSE-850")
+Signed-off-by: Peter Rosin <peda@axentia.se>
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Link: https://lore.kernel.org/r/ea781f5e-422f-6cbf-3cf4-d5a7bac9392d@axentia.se
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/marvell/libertas_tf/if_usb.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm/boot/dts/at91-tse850-3.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/marvell/libertas_tf/if_usb.c b/drivers/net/wireless/marvell/libertas_tf/if_usb.c
-index 4b539209999b4..aaba324dbc39b 100644
---- a/drivers/net/wireless/marvell/libertas_tf/if_usb.c
-+++ b/drivers/net/wireless/marvell/libertas_tf/if_usb.c
-@@ -234,6 +234,7 @@ static int if_usb_probe(struct usb_interface *intf,
+diff --git a/arch/arm/boot/dts/at91-tse850-3.dts b/arch/arm/boot/dts/at91-tse850-3.dts
+index 4ef80a703eda3..d31a4e633fb4a 100644
+--- a/arch/arm/boot/dts/at91-tse850-3.dts
++++ b/arch/arm/boot/dts/at91-tse850-3.dts
+@@ -267,7 +267,7 @@
+ &macb1 {
+ 	status = "okay";
  
- dealloc:
- 	if_usb_free(cardp);
-+	kfree(cardp);
- error:
- lbtf_deb_leave(LBTF_DEB_MAIN);
- 	return -ENOMEM;
-@@ -258,6 +259,7 @@ static void if_usb_disconnect(struct usb_interface *intf)
+-	phy-mode = "rgmii";
++	phy-mode = "rmii";
  
- 	/* Unlink and free urb */
- 	if_usb_free(cardp);
-+	kfree(cardp);
- 
- 	usb_set_intfdata(intf, NULL);
- 	usb_put_dev(interface_to_usbdev(intf));
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
 -- 
 2.33.0
 
