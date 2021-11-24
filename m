@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A237745BC58
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:28:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5E045BC4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:28:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244984AbhKXM17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:27:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36508 "EHLO mail.kernel.org"
+        id S243306AbhKXM10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:27:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244137AbhKXMXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:23:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E539861052;
-        Wed, 24 Nov 2021 12:13:48 +0000 (UTC)
+        id S244519AbhKXMXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:23:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E342061181;
+        Wed, 24 Nov 2021 12:14:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756029;
-        bh=j1dDLAA5xFeV7uJcTZ1ri3BVmBrvnT3ACGQlQoLLuW4=;
+        s=korg; t=1637756057;
+        bh=bbweiu+Mk016m4AA5YrcuEzD0ltQ3PCRjXSzh/nCr7o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tu56Eb/u/U3BPwTP27kKXjIOi15X6ojWldNZLARp9Yq2uKT4ljs4i1upm0TmTG3mj
-         TqxRw9CYl4yUHvhPW+JC557ZL1pTTSGdr1xEC404lK5dff40OXN92WyDCEvQSFwufQ
-         w+pO4VQeUwKt4vl96BPD7H/RVIwHjWlJ6z2dO19k=
+        b=FQKxg3bmgZ+O7kdV1Mhz3uSzqPVlxY48I0KIAO3sio7Ym45r8nW7T5BLvkWq9Saa/
+         MMAPQ9IKflaoeix8T5EFa3NrZeZb8/weei9v4G1UCKKoJvAhzS43SRIUfJ+UOnB/9j
+         IaDLvia7pTiNgo0G9I6gW0gu7GUJEyw6twi62ozs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 127/207] scsi: csiostor: Uninitialized data in csio_ln_vnp_read_cbfn()
-Date:   Wed, 24 Nov 2021 12:56:38 +0100
-Message-Id: <20211124115708.161206042@linuxfoundation.org>
+Subject: [PATCH 4.9 128/207] RDMA/mlx4: Return missed an error if device doesnt support steering
+Date:   Wed, 24 Nov 2021 12:56:39 +0100
+Message-Id: <20211124115708.190719714@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
 References: <20211124115703.941380739@linuxfoundation.org>
@@ -40,38 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit f4875d509a0a78ad294a1a538d534b5ba94e685a ]
+[ Upstream commit f4e56ec4452f48b8292dcf0e1c4bdac83506fb8b ]
 
-This variable is just a temporary variable, used to do an endian
-conversion.  The problem is that the last byte is not initialized.  After
-the conversion is completely done, the last byte is discarded so it doesn't
-cause a problem.  But static checkers and the KMSan runtime checker can
-detect the uninitialized read and will complain about it.
+The error flow fixed in this patch is not possible because all kernel
+users of create QP interface check that device supports steering before
+set IB_QP_CREATE_NETIF_QP flag.
 
-Link: https://lore.kernel.org/r/20211006073242.GA8404@kili
-Fixes: 5036f0a0ecd3 ("[SCSI] csiostor: Fix sparse warnings.")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: c1c98501121e ("IB/mlx4: Add support for steerable IB UD QPs")
+Link: https://lore.kernel.org/r/91c61f6e60eb0240f8bbc321fda7a1d2986dd03c.1634023677.git.leonro@nvidia.com
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/csiostor/csio_lnode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/mlx4/qp.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/csiostor/csio_lnode.c b/drivers/scsi/csiostor/csio_lnode.c
-index 957767d383610..d1df694d9ed00 100644
---- a/drivers/scsi/csiostor/csio_lnode.c
-+++ b/drivers/scsi/csiostor/csio_lnode.c
-@@ -611,7 +611,7 @@ csio_ln_vnp_read_cbfn(struct csio_hw *hw, struct csio_mb *mbp)
- 	struct fc_els_csp *csp;
- 	struct fc_els_cssp *clsp;
- 	enum fw_retval retval;
--	__be32 nport_id;
-+	__be32 nport_id = 0;
+diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
+index 7284a9176844e..718d817265795 100644
+--- a/drivers/infiniband/hw/mlx4/qp.c
++++ b/drivers/infiniband/hw/mlx4/qp.c
+@@ -773,8 +773,10 @@ static int create_qp_common(struct mlx4_ib_dev *dev, struct ib_pd *pd,
+ 			if (dev->steering_support ==
+ 			    MLX4_STEERING_MODE_DEVICE_MANAGED)
+ 				qp->flags |= MLX4_IB_QP_NETIF;
+-			else
++			else {
++				err = -EINVAL;
+ 				goto err;
++			}
+ 		}
  
- 	retval = FW_CMD_RETVAL_G(ntohl(rsp->alloc_to_len16));
- 	if (retval != FW_SUCCESS) {
+ 		memcpy(&backup_cap, &init_attr->cap, sizeof(backup_cap));
 -- 
 2.33.0
 
