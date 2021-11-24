@@ -2,43 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F9245C38A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:37:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 668DB45C238
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:23:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350480AbhKXNkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:40:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50282 "EHLO mail.kernel.org"
+        id S1344098AbhKXN0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:26:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350313AbhKXNhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:37:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98167630EA;
-        Wed, 24 Nov 2021 12:55:36 +0000 (UTC)
+        id S1349759AbhKXNXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:23:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCC0861B48;
+        Wed, 24 Nov 2021 12:48:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758537;
-        bh=oKv2XgHLz4gQqyNcnh6TA28OcMcgI70+BDQE9PhikaI=;
+        s=korg; t=1637758101;
+        bh=hM4gFqajZA5jzbpE4Ay+jgBfbRW8trW1zyk21FRcIdU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wIRdAPdDq1iid00+CUuhJphgGtbH2eCz4Zyl7LkBc8Dhr8g90NVxhtW3ZKQez5NyU
-         IaSCVrheCgtMymQ7DWU4YoUjuC2Lk5fQ3E9deEwLoSSItpevDstr4RBRUucdz+r57V
-         7CEZYJr8gS2/jeGmXhaax5N0hI8kM/NciPkorMP4=
+        b=qMN3j8mlgVMUQSwVFy95KJf001IMFIT92Rm/jaBn45aZLazSoR7DkzKHvlkZTG/+x
+         V+0F/GmfmsiRpZcoQtWywJglxhBXw0ug2TPPzrMwhz1WiSUW8uJd8ZvG/4/beq73a/
+         TdMan5VrcxRrZJDO1/2mpF5nFT5QGHspCKe7U7Xk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
-        Michal Maloszewski <michal.maloszewski@intel.com>,
-        Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>,
-        Witold Fijalkowski <witoldx.fijalkowski@intel.com>,
-        Jaroslaw Gawin <jaroslawx.gawin@intel.com>,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Tony Brelinski <tony.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Jonathan Davies <jonathan.davies@nutanix.com>,
+        Willem de Bruijn <willemb@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 101/154] i40e: Fix NULL ptr dereference on VSI filter sync
+Subject: [PATCH 5.4 061/100] net: virtio_net_hdr_to_skb: count transport header in UFO
 Date:   Wed, 24 Nov 2021 12:58:17 +0100
-Message-Id: <20211124115705.556659524@linuxfoundation.org>
+Message-Id: <20211124115656.846055125@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,66 +42,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Maloszewski <michal.maloszewski@intel.com>
+From: Jonathan Davies <jonathan.davies@nutanix.com>
 
-[ Upstream commit 37d9e304acd903a445df8208b8a13d707902dea6 ]
+[ Upstream commit cf9acc90c80ecbee00334aa85d92f4e74014bcff ]
 
-Remove the reason of null pointer dereference in sync VSI filters.
-Added new I40E_VSI_RELEASING flag to signalize deleting and releasing
-of VSI resources to sync this thread with sync filters subtask.
-Without this patch it is possible to start update the VSI filter list
-after VSI is removed, that's causing a kernel oops.
+virtio_net_hdr_to_skb does not set the skb's gso_size and gso_type
+correctly for UFO packets received via virtio-net that are a little over
+the GSO size. This can lead to problems elsewhere in the networking
+stack, e.g. ovs_vport_send dropping over-sized packets if gso_size is
+not set.
 
-Fixes: 41c445ff0f48 ("i40e: main driver core")
-Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
-Signed-off-by: Michal Maloszewski <michal.maloszewski@intel.com>
-Reviewed-by: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
-Reviewed-by: Witold Fijalkowski <witoldx.fijalkowski@intel.com>
-Reviewed-by: Jaroslaw Gawin <jaroslawx.gawin@intel.com>
-Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Tested-by: Tony Brelinski <tony.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+This is due to the comparison
+
+  if (skb->len - p_off > gso_size)
+
+not properly accounting for the transport layer header.
+
+p_off includes the size of the transport layer header (thlen), so
+skb->len - p_off is the size of the TCP/UDP payload.
+
+gso_size is read from the virtio-net header. For UFO, fragmentation
+happens at the IP level so does not need to include the UDP header.
+
+Hence the calculation could be comparing a TCP/UDP payload length with
+an IP payload length, causing legitimate virtio-net packets to have
+lack gso_type/gso_size information.
+
+Example: a UDP packet with payload size 1473 has IP payload size 1481.
+If the guest used UFO, it is not fragmented and the virtio-net header's
+flags indicate that it is a GSO frame (VIRTIO_NET_HDR_GSO_UDP), with
+gso_size = 1480 for an MTU of 1500.  skb->len will be 1515 and p_off
+will be 42, so skb->len - p_off = 1473.  Hence the comparison fails, and
+shinfo->gso_size and gso_type are not set as they should be.
+
+Instead, add the UDP header length before comparing to gso_size when
+using UFO. In this way, it is the size of the IP payload that is
+compared to gso_size.
+
+Fixes: 6dd912f82680 ("net: check untrusted gso_size at kernel entry")
+Signed-off-by: Jonathan Davies <jonathan.davies@nutanix.com>
+Reviewed-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e.h      | 1 +
- drivers/net/ethernet/intel/i40e/i40e_main.c | 5 +++--
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ include/linux/virtio_net.h | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e.h b/drivers/net/ethernet/intel/i40e/i40e.h
-index fe1258778cbc4..1f31f503fa92b 100644
---- a/drivers/net/ethernet/intel/i40e/i40e.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e.h
-@@ -159,6 +159,7 @@ enum i40e_vsi_state_t {
- 	__I40E_VSI_OVERFLOW_PROMISC,
- 	__I40E_VSI_REINIT_REQUESTED,
- 	__I40E_VSI_DOWN_REQUESTED,
-+	__I40E_VSI_RELEASING,
- 	/* This must be last as it determines the size of the BITMAP */
- 	__I40E_VSI_STATE_SIZE__,
- };
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 52c2d6fdeb7a0..72405a0aabde7 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -2622,7 +2622,8 @@ static void i40e_sync_filters_subtask(struct i40e_pf *pf)
+diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
+index b465f8f3e554f..04e87f4b9417c 100644
+--- a/include/linux/virtio_net.h
++++ b/include/linux/virtio_net.h
+@@ -120,10 +120,15 @@ retry:
  
- 	for (v = 0; v < pf->num_alloc_vsi; v++) {
- 		if (pf->vsi[v] &&
--		    (pf->vsi[v]->flags & I40E_VSI_FLAG_FILTER_CHANGED)) {
-+		    (pf->vsi[v]->flags & I40E_VSI_FLAG_FILTER_CHANGED) &&
-+		    !test_bit(__I40E_VSI_RELEASING, pf->vsi[v]->state)) {
- 			int ret = i40e_sync_vsi_filters(pf->vsi[v]);
+ 	if (hdr->gso_type != VIRTIO_NET_HDR_GSO_NONE) {
+ 		u16 gso_size = __virtio16_to_cpu(little_endian, hdr->gso_size);
++		unsigned int nh_off = p_off;
+ 		struct skb_shared_info *shinfo = skb_shinfo(skb);
  
- 			if (ret) {
-@@ -13308,7 +13309,7 @@ int i40e_vsi_release(struct i40e_vsi *vsi)
- 		dev_info(&pf->pdev->dev, "Can't remove PF VSI\n");
- 		return -ENODEV;
- 	}
--
-+	set_bit(__I40E_VSI_RELEASING, vsi->state);
- 	uplink_seid = vsi->uplink_seid;
- 	if (vsi->type != I40E_VSI_SRIOV) {
- 		if (vsi->netdev_registered) {
++		/* UFO may not include transport header in gso_size. */
++		if (gso_type & SKB_GSO_UDP)
++			nh_off -= thlen;
++
+ 		/* Too small packets are not really GSO ones. */
+-		if (skb->len - p_off > gso_size) {
++		if (skb->len - nh_off > gso_size) {
+ 			shinfo->gso_size = gso_size;
+ 			shinfo->gso_type = gso_type;
+ 
 -- 
 2.33.0
 
