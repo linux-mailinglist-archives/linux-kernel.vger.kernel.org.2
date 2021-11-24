@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939C145BB58
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:16:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA1645B997
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:00:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243966AbhKXMTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:19:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47100 "EHLO mail.kernel.org"
+        id S241886AbhKXMDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:03:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243572AbhKXMOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:14:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6B7E610D2;
-        Wed, 24 Nov 2021 12:09:13 +0000 (UTC)
+        id S241877AbhKXMDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:03:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D1AC600EF;
+        Wed, 24 Nov 2021 12:00:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755754;
-        bh=/kCIwFyoEiyl9hIRSwx3rTxQS0roK+ikSpTf9ftr4+0=;
+        s=korg; t=1637755207;
+        bh=eMdFGeA6beNnLhX4dWjIaybXEdJWId6+fXHCILQan14=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WXh/i0v+m4JBCxc2way3cKhxiaG6bB3synqmmzPNlKdmU/EJIV2ig79fqqVnPPdJD
-         Ttq9vX0neLbpj/A4epiKXi4zNYYIvX53Nil63tku4GeWyfe8tjla+3ZEq8hhzJ/GpQ
-         rNqsadxbmliIBuDG3oy4QZwSCU+kSmWWnGGrB3nU=
+        b=j/NskLumLg1SZ6NdiJcIeqwfpHbmiBjzB2RJPJFe4v5SgA2xAW34mNHRhnSKsebZZ
+         zGxUCiDNU1W8XHVr25bG6mWr9n4dWAWsR2EnINLDQp+WEuzR/BzKULZ7gh1Gu8C/mp
+         +Uo8VJc2f7j+AZFeq2eXtWR/MedCIYKGcbiiEVqc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH 4.9 044/207] power: supply: max17042_battery: Prevent int underflow in set_soc_threshold
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.4 012/162] ALSA: 6fire: fix control and bulk message timeouts
 Date:   Wed, 24 Nov 2021 12:55:15 +0100
-Message-Id: <20211124115705.362729174@linuxfoundation.org>
+Message-Id: <20211124115658.723842339@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +39,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+From: Johan Hovold <johan@kernel.org>
 
-commit e660dbb68c6b3f7b9eb8b9775846a44f9798b719 upstream.
+commit 9b371c6cc37f954360989eec41c2ddc5a6b83917 upstream.
 
-max17042_set_soc_threshold gets called with offset set to 1, which means
-that minimum threshold value would underflow once SOC got down to 0,
-causing invalid alerts from the gauge.
+USB control and bulk message timeouts are specified in milliseconds and
+should specifically not vary with CONFIG_HZ.
 
-Fixes: e5f3872d2044 ("max17042: Add support for signalling change in SOC")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Fixes: c6d43ba816d1 ("ALSA: usb/6fire - Driver for TerraTec DMX 6Fire USB")
+Cc: stable@vger.kernel.org      # 2.6.39
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211025121142.6531-2-johan@kernel.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/power/supply/max17042_battery.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/usb/6fire/comm.c     |    2 +-
+ sound/usb/6fire/firmware.c |    6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/power/supply/max17042_battery.c
-+++ b/drivers/power/supply/max17042_battery.c
-@@ -752,7 +752,8 @@ static void max17042_set_soc_threshold(s
- 	regmap_read(map, MAX17042_RepSOC, &soc);
- 	soc >>= 8;
- 	soc_tr = (soc + off) << 8;
--	soc_tr |= (soc - off);
-+	if (off < soc)
-+		soc_tr |= soc - off;
- 	regmap_write(map, MAX17042_SALRT_Th, soc_tr);
- }
+--- a/sound/usb/6fire/comm.c
++++ b/sound/usb/6fire/comm.c
+@@ -99,7 +99,7 @@ static int usb6fire_comm_send_buffer(u8
+ 	int actual_len;
  
+ 	ret = usb_interrupt_msg(dev, usb_sndintpipe(dev, COMM_EP),
+-			buffer, buffer[1] + 2, &actual_len, HZ);
++			buffer, buffer[1] + 2, &actual_len, 1000);
+ 	if (ret < 0)
+ 		return ret;
+ 	else if (actual_len != buffer[1] + 2)
+--- a/sound/usb/6fire/firmware.c
++++ b/sound/usb/6fire/firmware.c
+@@ -166,7 +166,7 @@ static int usb6fire_fw_ezusb_write(struc
+ 
+ 	ret = usb_control_msg(device, usb_sndctrlpipe(device, 0), type,
+ 			USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+-			value, 0, data, len, HZ);
++			value, 0, data, len, 1000);
+ 	if (ret < 0)
+ 		return ret;
+ 	else if (ret != len)
+@@ -179,7 +179,7 @@ static int usb6fire_fw_ezusb_read(struct
+ {
+ 	int ret = usb_control_msg(device, usb_rcvctrlpipe(device, 0), type,
+ 			USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE, value,
+-			0, data, len, HZ);
++			0, data, len, 1000);
+ 	if (ret < 0)
+ 		return ret;
+ 	else if (ret != len)
+@@ -194,7 +194,7 @@ static int usb6fire_fw_fpga_write(struct
+ 	int ret;
+ 
+ 	ret = usb_bulk_msg(device, usb_sndbulkpipe(device, FPGA_EP), data, len,
+-			&actual_len, HZ);
++			&actual_len, 1000);
+ 	if (ret < 0)
+ 		return ret;
+ 	else if (actual_len != len)
 
 
