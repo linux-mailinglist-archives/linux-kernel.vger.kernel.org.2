@@ -2,255 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D99F45B847
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 11:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0283F45B853
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 11:25:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241260AbhKXKYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 05:24:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49836 "EHLO
+        id S236615AbhKXK2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 05:28:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbhKXKYN (ORCPT
+        with ESMTP id S229774AbhKXK22 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 05:24:13 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53644C061714;
-        Wed, 24 Nov 2021 02:21:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=pCdjSOsXdGlJ8+cnfMdWcEIa7d9zwXe6ePu8SPJAXxE=; b=tpIyUYXQ878LgsAQPafzOhlRlO
-        A4BNgBGfLV6gzbhDXUzCjj7NUPYH/Kh/agDOWSCe1/JeayXJin91Yd5i5X2Y5icdQf42iB5jynOUs
-        jdi1x9HfEOeEPsLMVU0BuGoyTVZAm7E+fU4jM2T3k5fpKW5Ucrbwj6KE3HH/ONNsDodmnIvTNkVaO
-        sTL6GbupSmM8L9XL7deMYKa+FVs32wEhXILU62F7jG6nKWnSrGTcRDN2eLSOFbh2L3MLdNkTaFeXc
-        +chdy1lEXQY13EZKLsFFfV3KNL7BeKtJvypEL9isGWtjnZ4/vCtctBNbM/md33ux2BhauzNcWAj2W
-        JDSJpISg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55832)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mppOb-0000Sc-12; Wed, 24 Nov 2021 10:20:57 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mppOZ-00017G-AK; Wed, 24 Nov 2021 10:20:55 +0000
-Date:   Wed, 24 Nov 2021 10:20:55 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        UNGLinuxDriver@microchip.com, p.zabel@pengutronix.de,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 3/6] net: lan966x: add port module support
-Message-ID: <YZ4SB/wX6UT3zrEV@shell.armlinux.org.uk>
-References: <20211124083915.2223065-1-horatiu.vultur@microchip.com>
- <20211124083915.2223065-4-horatiu.vultur@microchip.com>
+        Wed, 24 Nov 2021 05:28:28 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44EBCC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 02:25:19 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id g28so1727982pgg.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 02:25:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RWDbxw0O+Eb2MTODPtyb5giEnnTJJaqwqAJtlwbLKPM=;
+        b=TUOz5MfgG5JMzyZ6iwNq72F59avCAePjCoi5R5mYzgjxOabfcPIkv/bF2Tc1L1gGE/
+         dXLcUIr5YGb2GMc38BMHvZFi8xLHBdoicirIxGj8Q8Fi3qy8Ty+rivQNOn6eNWpXjUeg
+         Ka4IJxZZZyXSDcU342PW0GfzGYlVWPhL4ViLLwvmfTs4rPnjeKv+IqD9ac0NpcZGOnzp
+         ldUTjhKiI7o+vzFrUwyanPTB1KN+3PggPEJWt895E6pucNJ5Hn5rNAvruC2i82QWgyO+
+         v8fC1QGAyrRZX90+bJFZvUM3DgXMVM4cK9QmtNEc3ZY8zwK9ykP+OvQY7Uy7H2tu06jh
+         Jefg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RWDbxw0O+Eb2MTODPtyb5giEnnTJJaqwqAJtlwbLKPM=;
+        b=d5LvvKmLFEUyp+mMe1Qa84Z5xqFb8u4mFYbD+heO3/gqU3sJH5wdt5P+MEh79aHoLD
+         w6k6ZSKrBKxB0BGkZgwNKUNJZaMM0PTS49jwMQUJ3Be2C3zBH0l5zpyU+hwpHFixebDu
+         niPW5HQF1Ng6Akai4ZTHesrnES1MOFg3+xfsUw2RTv5Qf9waxzbFCTDq/SAfDuQd92nG
+         s86VvptaIwo3zXyL5dy4d3I4BXj4aJd5+7N482nhYrcUy01zTZAYkP8Xaso6iYLkRCr1
+         LSI/XiQDX4H/z61bNrniueMx/HjEJsvDeU/lZGXiBad9KRfY0KTccv8mcQeTfTb8z7St
+         Moug==
+X-Gm-Message-State: AOAM533MdRbvQWpuIrDJydebJzLN3WeVV4rkWvLsW+g9wcF/uMARCU6S
+        QfiMh8bgdfYP4hR3KbIRwdnGVg==
+X-Google-Smtp-Source: ABdhPJy4yGk5G/wT8MjPGEmXFxJwr4sD+MfMiZ+bTpsvRjJhdnwJCzHW6W0Mc4xMDUEALiJGPp8oIg==
+X-Received: by 2002:a63:90c1:: with SMTP id a184mr7144545pge.222.1637749518381;
+        Wed, 24 Nov 2021 02:25:18 -0800 (PST)
+Received: from google.com ([2401:fa00:1:10:104b:13b9:d53:e2aa])
+        by smtp.gmail.com with ESMTPSA id f4sm15333725pfg.34.2021.11.24.02.25.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 02:25:18 -0800 (PST)
+Date:   Wed, 24 Nov 2021 18:25:13 +0800
+From:   Tzung-Bi Shih <tzungbi@google.com>
+To:     "allen-kh.cheng" <allen-kh.cheng@mediatek.com>
+Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>, cujomalainey@google.com,
+        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Mark Brown <broonie@kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        linux-arm-kernel@lists.infradead.org,
+        sound-open-firmware@alsa-project.org
+Subject: Re: [PATCH v3 2/3] mailbox: mediatek: add support for adsp mailbox
+ controller
+Message-ID: <YZ4TCYmvegnC/kR0@google.com>
+References: <20211124084514.28002-1-allen-kh.cheng@mediatek.com>
+ <20211124084514.28002-3-allen-kh.cheng@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211124083915.2223065-4-horatiu.vultur@microchip.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20211124084514.28002-3-allen-kh.cheng@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, Nov 24, 2021 at 09:39:12AM +0100, Horatiu Vultur wrote:
-> +static int lan966x_port_open(struct net_device *dev)
-> +{
-> +	struct lan966x_port *port = netdev_priv(dev);
-> +	struct lan966x *lan966x = port->lan966x;
-> +	int err;
-> +
-> +	if (port->serdes) {
-> +		err = phy_set_mode_ext(port->serdes, PHY_MODE_ETHERNET,
-> +				       port->config.phy_mode);
-> +		if (err) {
-> +			netdev_err(dev, "Could not set mode of SerDes\n");
-> +			return err;
-> +		}
-> +	}
-
-This could be done in the mac_prepare() method.
-
-> +static void lan966x_cleanup_ports(struct lan966x *lan966x)
-> +{
-> +	struct lan966x_port *port;
-> +	int portno;
-> +
-> +	for (portno = 0; portno < lan966x->num_phys_ports; portno++) {
-> +		port = lan966x->ports[portno];
-> +		if (!port)
-> +			continue;
-> +
-> +		if (port->phylink) {
-> +			rtnl_lock();
-> +			lan966x_port_stop(port->dev);
-> +			rtnl_unlock();
-> +			phylink_destroy(port->phylink);
-> +			port->phylink = NULL;
-> +		}
-> +
-> +		if (port->fwnode)
-> +			fwnode_handle_put(port->fwnode);
-> +
-> +		if (port->dev)
-> +			unregister_netdev(port->dev);
-
-This doesn't look like the correct sequence to me. Shouldn't the net
-device be unregistered first, which will take the port down by doing
-so and make it unavailable to userspace to further manipulate. Then
-we should start tearing other stuff down such as destroying phylink
-and disabling interrupts (in the caller of this.)
-
-Don't you need to free the netdev as well at some point?
-
->  static int lan966x_probe_port(struct lan966x *lan966x, u32 p,
-> -			      phy_interface_t phy_mode)
-> +			      phy_interface_t phy_mode,
-> +			      struct fwnode_handle *portnp)
->  {
-...
-> +	port->phylink_config.dev = &port->dev->dev;
-> +	port->phylink_config.type = PHYLINK_NETDEV;
-> +	port->phylink_config.pcs_poll = true;
-> +	port->phylink_pcs.poll = true;
-
-You don't need to set both of these - please omit
-port->phylink_config.pcs_poll.
-
-> diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-> index 7a1ff9d19fbf..ce2798db0449 100644
-> --- a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-> +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-...
-> @@ -44,15 +58,48 @@ struct lan966x {
->  	void __iomem *regs[NUM_TARGETS];
+On Wed, Nov 24, 2021 at 04:45:13PM +0800, allen-kh.cheng wrote:
+> diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
+> index c9fc06c7e685..fc99d9fc80af 100644
+> --- a/drivers/mailbox/Kconfig
+> +++ b/drivers/mailbox/Kconfig
+> @@ -236,6 +236,13 @@ config MTK_CMDQ_MBOX
+>  	  critical time limitation, such as updating display configuration
+>  	  during the vblank.
 >  
->  	int shared_queue_sz;
-> +
-> +	/* interrupts */
-> +	int xtr_irq;
-> +};
-> +
-> +struct lan966x_port_config {
-> +	phy_interface_t portmode;
-> +	phy_interface_t phy_mode;
+> +config MTK_ADSP_IPC_MBOX
+> +	tristate "MediaTek ADSP Mailbox Controller"
+> +	depends on ARCH_MEDIATEK || COMPILE_TEST
+> +	help
+> +	  Say yes here to add support for MediaTek ADSP IPC mailbox controller
+> +	  driver. It is used to send short messages between processors with dsp.
 
-What is the difference between "portmode" and "phy_mode"? Does it matter
-if port->config.phy_mode get zeroed when lan966x_port_pcs_set() is
-called from lan966x_pcs_config()? It looks to me like the first call
-will clear phy_mode, setting it to PHY_INTERFACE_MODE_NA from that point
-on.
+Although the file didn't maintain alphabetical order, to be neat, moving MTK_ADSP_IPC_MBOX before MTK_CMDQ_MBOX makes more sense.
 
-> diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_port.c b/drivers/net/ethernet/microchip/lan966x/lan966x_port.c
-> new file mode 100644
-> index 000000000000..ca1b0c8d1bf5
-> --- /dev/null
-> +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_port.c
-> @@ -0,0 +1,422 @@
-...
-> +void lan966x_port_status_get(struct lan966x_port *port,
-> +			     struct phylink_link_state *state)
+> diff --git a/drivers/mailbox/Makefile b/drivers/mailbox/Makefile
+> index c2089f04887e..479a9ae56d5e 100644
+> --- a/drivers/mailbox/Makefile
+> +++ b/drivers/mailbox/Makefile
+> @@ -51,6 +51,8 @@ obj-$(CONFIG_STM32_IPCC) 	+= stm32-ipcc.o
+>  
+>  obj-$(CONFIG_MTK_CMDQ_MBOX)	+= mtk-cmdq-mailbox.o
+>  
+> +obj-$(CONFIG_MTK_ADSP_IPC_MBOX)	+= mtk-adsp-mailbox.o
+> +
+
+Ditto.  Move CONFIG_MTK_ADSP_IPC_MBOX before CONFIG_MTK_CMDQ_MBOX without blank line separation.
+
+> diff --git a/drivers/mailbox/mtk-adsp-mailbox.c b/drivers/mailbox/mtk-adsp-mailbox.c
+[...]
+> +static irqreturn_t mtk_adsp_ipc_irq_handler(int irq, void *data)
 > +{
-> +	struct lan966x *lan966x = port->lan966x;
-> +	u16 lp_adv, ld_adv;
-> +	bool link_down;
-> +	u16 bmsr = 0;
-> +	u32 val;
-> +
-> +	val = lan_rd(lan966x, DEV_PCS1G_STICKY(port->chip_port));
-> +	link_down = DEV_PCS1G_STICKY_LINK_DOWN_STICKY_GET(val);
-> +	if (link_down)
-> +		lan_wr(val, lan966x, DEV_PCS1G_STICKY(port->chip_port));
-> +
-> +	/* Get both current Link and Sync status */
-> +	val = lan_rd(lan966x, DEV_PCS1G_LINK_STATUS(port->chip_port));
-> +	state->link = DEV_PCS1G_LINK_STATUS_LINK_STATUS_GET(val) &&
-> +		      DEV_PCS1G_LINK_STATUS_SYNC_STATUS_GET(val);
-> +	state->link &= !link_down;
-> +
-> +	if (port->config.portmode == PHY_INTERFACE_MODE_1000BASEX)
-> +		state->speed = SPEED_1000;
-> +	else if (port->config.portmode == PHY_INTERFACE_MODE_2500BASEX)
-> +		state->speed = SPEED_2500;
+> +	struct mbox_chan *ch = (struct mbox_chan *)data;
 
-Why not use state->interface? state->interface will be the currently
-configured interface mode (which should be the same as your
-port->config.portmode.)
+The cast should be able to remove.
 
-> +
-> +	state->duplex = DUPLEX_FULL;
-
-Also, what is the purpose of initialising state->speed and state->duplex
-here? phylink_mii_c22_pcs_decode_state() will do that for you when
-decoding the advertisements.
-
-If it's to deal with autoneg disabled, then it ought to be conditional on
-autoneg being disabled and the link being up.
-
-> +
-> +	/* Get PCS ANEG status register */
-> +	val = lan_rd(lan966x, DEV_PCS1G_ANEG_STATUS(port->chip_port));
-> +
-> +	/* Aneg complete provides more information  */
-> +	if (DEV_PCS1G_ANEG_STATUS_ANEG_COMPLETE_GET(val)) {
-> +		lp_adv = DEV_PCS1G_ANEG_STATUS_LP_ADV_GET(val);
-> +		state->an_complete = true;
-> +
-> +		bmsr |= state->link ? BMSR_LSTATUS : 0;
-> +		bmsr |= state->an_complete;
-
-Shouldn't this be setting BMSR_ANEGCOMPLETE?
-
-> +
-> +		if (port->config.portmode == PHY_INTERFACE_MODE_SGMII) {
-> +			phylink_mii_c22_pcs_decode_state(state, bmsr, lp_adv);
-> +		} else {
-> +			val = lan_rd(lan966x, DEV_PCS1G_ANEG_CFG(port->chip_port));
-> +			ld_adv = DEV_PCS1G_ANEG_CFG_ADV_ABILITY_GET(val);
-> +			phylink_mii_c22_pcs_decode_state(state, bmsr, ld_adv);
-> +		}
-
-This looks like it can be improved:
-
-	if (DEV_PCS1G_ANEG_STATUS_ANEG_COMPLETE_GET(val)) {
-		state->an_complete = true;
-
-		bmsr |= state->link ? BMSR_LSTATUS : 0;
-		bmsr |= BMSR_ANEGCOMPLETE;
-
-		if (state->interface == PHY_INTERFACE_MODE_SGMII) {
-			lp_adv = DEV_PCS1G_ANEG_STATUS_LP_ADV_GET(val);
-		} else {
-			val = lan_rd(lan966x, DEV_PCS1G_ANEG_CFG(port->chip_port));
-			lp_adv = DEV_PCS1G_ANEG_CFG_ADV_ABILITY_GET(val);
-		}
-
-		phylink_mii_c22_pcs_decode_state(state, bmsr, lp_adv);
-	}
-
-I'm not sure that the non-SGMII code is actually correct though. Which
-advertisement are you extracting by reading the DEV_PCS1G_ANEG_CFG
-register and extracting DEV_PCS1G_ANEG_CFG_ADV_ABILITY_GET ? From the
-code in lan966x_port_pcs_set(), it suggests this is our advertisement,
-but it's supposed to always be the link partner's advertisement being
-passed to phylink_mii_c22_pcs_decode_state().
-
-> +int lan966x_port_pcs_set(struct lan966x_port *port,
-> +			 struct lan966x_port_config *config)
+> +static irqreturn_t mtk_adsp_ipc_handler(int irq, void *data)
 > +{
-...
-> +	port->config = *config;
+> +	struct mbox_chan *ch = (struct mbox_chan *)data;
 
-As mentioned elsewhere, "config" won't have phy_mode set, so this clears
-port->config.phymode to PHY_INTERFACE_MODE_NA, which I think will cause
-e.g. lan966x_port_link_up() not to behave as intended.
+The cast should be able to remove.
 
-Thanks.
+> +static int mtk_adsp_mbox_startup(struct mbox_chan *chan)
+> +{
+> +	struct adsp_mbox_ch_info *ch_info = chan->con_priv;
+> +	void __iomem *reg = ch_info->va_reg;
+> +
+> +	/* Clear DSP mbox command */
+> +	writel(0xFFFFFFFF, reg + MTK_ADSP_MBOX_IN_CMD_CLR);
+> +	writel(0xFFFFFFFF, reg + MTK_ADSP_MBOX_OUT_CMD_CLR);
+> +
+> +	return 0;
+> +}
+> +
+> +static void mtk_adsp_mbox_shutdown(struct mbox_chan *chan)
+> +{
+> +	chan->con_priv = NULL;
+> +}
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Shall mtk_adsp_mbox_shutdown() also clear DSP mbox?  I.e.:
+writel(0xFFFFFFFF, reg + MTK_ADSP_MBOX_IN_CMD_CLR);
+writel(0xFFFFFFFF, reg + MTK_ADSP_MBOX_OUT_CMD_CLR);
+
+> +static int mtk_adsp_mbox_send_data(struct mbox_chan *chan, void *data)
+> +{
+> +	struct adsp_mbox_ch_info *ch_info = chan->con_priv;
+> +	void __iomem *reg = ch_info->va_reg;
+> +
+> +	spin_lock(&ch_info->lock);
+> +	writel(ch_info->ipc_op_val, reg + MTK_ADSP_MBOX_IN_CMD);
+> +	spin_unlock(&ch_info->lock);
+
+Why does it need the lock?
+
+Is the write to MTK_ADSP_MBOX_IN_CMD a synchronous operation?
+- If yes, I failed to understand why does it need the lock.  Every calls to mtk_adsp_mbox_send_data() should wait for the data transfer completion.
+- If no, I also failed to understand why.  mtk_adsp_mbox_send_data() has no way to be aware of the transfer completion.  Would expect a loop for checking the completion for the case.
+
+> +static bool mtk_adsp_mbox_last_tx_done(struct mbox_chan *chan)
+> +{
+> +	struct adsp_mbox_ch_info *ch_info = chan->con_priv;
+> +	void __iomem *reg = ch_info->va_reg;
+> +	u32 op = readl(reg + MTK_ADSP_MBOX_IN_CMD);
+> +
+> +	return (op == 0) ? true : false;
+
+To be concise, return readl(...) == 0;
+
+> +static int mtk_adsp_mbox_probe(struct platform_device *pdev)
+> +{
+[...]
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!res) {
+> +		dev_err(dev, "no adsp mbox register resource\n");
+> +		return -ENXIO;
+> +	}
+> +
+> +	size = resource_size(res);
+> +	priv->va_mboxreg = devm_ioremap(dev, (phys_addr_t)res->start, size);
+> +	if (IS_ERR(priv->va_mboxreg))
+> +		return PTR_ERR(priv->va_mboxreg);
+
+Use devm_platform_ioremap_resource(), it should be equivalent.
+
+> +	/* set adsp mbox channel info */
+> +	ch_info = devm_kzalloc(mbox->dev, sizeof(*ch_info), GFP_KERNEL);
+
+To be neat, use dev instead of mbox->dev.
+
+> +	ret = devm_mbox_controller_register(dev, &priv->mbox);
+> +	if (ret < 0)
+> +		dev_err(dev, "error: failed to register mailbox:%d\n", ret);
+> +
+> +	return ret;
+
+To be concise, return devm_mbox_controller_register(...);
