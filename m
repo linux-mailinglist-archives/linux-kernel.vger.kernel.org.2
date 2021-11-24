@@ -2,94 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D98345B683
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:25:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F396545B687
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:28:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240851AbhKXI24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 03:28:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235612AbhKXI2t (ORCPT
+        id S233020AbhKXIb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 03:31:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45870 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229658AbhKXIbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 03:28:49 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A01B7C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 00:25:39 -0800 (PST)
-Received: from [IPv6:2a01:e0a:120:3210:4f87:f4f0:a34a:671f] (unknown [IPv6:2a01:e0a:120:3210:4f87:f4f0:a34a:671f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 9972E1F4546D;
-        Wed, 24 Nov 2021 08:25:37 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637742337; bh=vRI49dQQwsck28Fum3XIvDQAfd/iwxihc8UsPhq3ZWc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=XG2omBbppW8i4p4VZZh1zKY+NKk5++WhfkWyQiJIuKIlXVAOQPC+cjbVPK5t7bsQb
-         xCRax8AIOAlAbTRBRWrqvW60/yjDajFXff7pxQy3o1FHmrrzwPM2vMRvBYHFEFoNYh
-         MYbMb5tWSyVjhCopdaVHw3kCoTD3MNRT69MiA/dDeUSDZEG4eij3LrzYeJdae/Bx3K
-         docplAecOWcrrQl34BYSo0XivLSkF8zQENSIOgoy8RWp3U50+ZC85K58tYYXUOsam1
-         06nT7sN39xkGlt97eFiXI3wUXXDGCMkTmstZdcmZoTofxr3iLfn+L3yfgdXr9zccyk
-         wbdG6MQdHuEhA==
-Subject: Re: [PATCH] iommu/rockchip: Fix PAGE_DESC_HI_MASKs for RK3568
-To:     Alex Bee <knaerzche@gmail.com>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211124021325.858139-1-knaerzche@gmail.com>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <ce137254-eee4-3241-a977-84cccb44b7cd@collabora.com>
-Date:   Wed, 24 Nov 2021 09:25:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 24 Nov 2021 03:31:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637742523;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qC1+19qo/TZ579J4U0L2xMIl87l4fuCd0xU7MNzT7yM=;
+        b=dOOYH98GvPluL+rsqWmXKdVEJatIC0kTw6yN3eIiqN61UYm3Ubgbr1qxFb55eLF7oqmAAY
+        qOSjnd65JHyrWxLACUSi5xWBGCU+5iDJufSeGNONZbm+pE7rYIaXDWMh5SzhPeeSxxdms/
+        3YhaTEEtIy2E2rVgjascpYuIiRKTADs=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-598-koxjANjYMo6Gh3RxhW4hgQ-1; Wed, 24 Nov 2021 03:28:42 -0500
+X-MC-Unique: koxjANjYMo6Gh3RxhW4hgQ-1
+Received: by mail-lf1-f72.google.com with SMTP id f15-20020a056512228f00b004037c0ab223so1037236lfu.16
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 00:28:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qC1+19qo/TZ579J4U0L2xMIl87l4fuCd0xU7MNzT7yM=;
+        b=NC3dyADq+EVa9gu1tqeR3v0//L4ElqahT5DUtLSa/74T5WiuSmY2phZEuksdXTny7e
+         8MHLnqASjpxW4cz+EqXila44hd+J5Kpg7r6Hs32mSVoqwrYmXSb9gvQ+d5pqzJ2nwZXc
+         bBmeT/+WzvEXMavDs4pzNs+dMeuPpZSJHnT7bY+infdns9F2CkdgxcXeprpEe+4jEI5L
+         I7U/6LaZi9torB9xk8xF3OOCP98QtM+n9BqjFqPZG4rI/qJKxOPZ5sISaSKEFy+Hy8si
+         32ZCXY0A9oP20r9YOg5ZvRMId2leKL9xsmLtQaOJfqNssRQRMhiuUY0gq539cW9Tn0VO
+         v3uw==
+X-Gm-Message-State: AOAM5307D9yR30jjIAlIgLpwXZMLGNdH1n2sFSp9dEvxjZZkgbAFgqcO
+        fYrZoR8c4teBYTvXMBxJQGJLD91ML9iLJwJbhJ49eqMIWUNDmqKPo8wv8C4aoQAnojcObobrzgy
+        ikWMZtLAtfhqCKRh89p4UNkarpqrjayBBHLCBvAQv
+X-Received: by 2002:a2e:b88d:: with SMTP id r13mr12969172ljp.362.1637742520795;
+        Wed, 24 Nov 2021 00:28:40 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzkdOU/DH3oB9Vpmgk/WfW6E0kJ9djIqPGqTwD6VBjjg/ChJEenZLAgHbyhmMUt+De1WFKbSTDnStglGugwDWQ=
+X-Received: by 2002:a2e:b88d:: with SMTP id r13mr12969125ljp.362.1637742520498;
+ Wed, 24 Nov 2021 00:28:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211124021325.858139-1-knaerzche@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20211122064922.51b3678e.pasic@linux.ibm.com> <CACGkMEu+9FvMsghyi55Ee5BxetP-YK9wh2oaT8OgLiY5+tV0QQ@mail.gmail.com>
+ <20211122212352.4a76232d.pasic@linux.ibm.com> <CACGkMEtmhwDEAvMuMhQEUB-b+=n713pVvjyct8QAqMUk1H-A-g@mail.gmail.com>
+ <20211123055906-mutt-send-email-mst@kernel.org> <87zgpupcga.fsf@mpe.ellerman.id.au>
+ <CACGkMEteDZJVM8j5pir7_Hcn6Oq=tKbcg4DUiEQBGm5Kg9w30w@mail.gmail.com>
+ <CACGkMEs086P=qfMieMQ3wPhcarsdO++iRTwVHtN-4cgKLm8opA@mail.gmail.com>
+ <20211124022101-mutt-send-email-mst@kernel.org> <CACGkMEsn8xbdEgrCwCWpGz7u=NoX-yADotCaeB2oNbZy_u9iOQ@mail.gmail.com>
+ <20211124032027-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20211124032027-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Wed, 24 Nov 2021 16:28:29 +0800
+Message-ID: <CACGkMEs7bNcp9pghoBJv2y2FFgnFwt2KWPv4asBmrEVu_Hds+A@mail.gmail.com>
+Subject: Re: [PATCH V5 1/4] virtio_ring: validate used buffer length
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "kaplan, david" <david.kaplan@amd.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>, mcgrof@kernel.org,
+        David Hildenbrand <david@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 24, 2021 at 4:24 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Wed, Nov 24, 2021 at 03:59:12PM +0800, Jason Wang wrote:
+> > On Wed, Nov 24, 2021 at 3:22 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > >
+> > > On Wed, Nov 24, 2021 at 10:33:28AM +0800, Jason Wang wrote:
+> > > > On Wed, Nov 24, 2021 at 10:26 AM Jason Wang <jasowang@redhat.com> wrote:
+> > > > >
+> > > > > On Wed, Nov 24, 2021 at 9:30 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
+> > > > > >
+> > > > > > "Michael S. Tsirkin" <mst@redhat.com> writes:
+> > > > > > > On Tue, Nov 23, 2021 at 10:25:20AM +0800, Jason Wang wrote:
+> > > > > > >> On Tue, Nov 23, 2021 at 4:24 AM Halil Pasic <pasic@linux.ibm.com> wrote:
+> > > > > > >> >
+> > > > > > >> > On Mon, 22 Nov 2021 14:25:26 +0800
+> > > > > > >> > Jason Wang <jasowang@redhat.com> wrote:
+> > > > > > >> >
+> > > > > > >> > > I think the fixes are:
+> > > > > > >> > >
+> > > > > > >> > > 1) fixing the vhost vsock
+> > > > > > >> > > 2) use suppress_used_validation=true to let vsock driver to validate
+> > > > > > >> > > the in buffer length
+> > > > > > >> > > 3) probably a new feature so the driver can only enable the validation
+> > > > > > >> > > when the feature is enabled.
+> > > > > > >> >
+> > > > > > >> > I'm not sure, I would consider a F_DEV_Y_FIXED_BUG_X a perfectly good
+> > > > > > >> > feature. Frankly the set of such bugs is device implementation
+> > > > > > >> > specific and it makes little sense to specify a feature bit
+> > > > > > >> > that says the device implementation claims to adhere to some
+> > > > > > >> > aspect of the specification. Also what would be the semantic
+> > > > > > >> > of not negotiating F_DEV_Y_FIXED_BUG_X?
+> > > > > > >>
+> > > > > > >> Yes, I agree. Rethink of the feature bit, it seems unnecessary,
+> > > > > > >> especially considering the driver should not care about the used
+> > > > > > >> length for tx.
+> > > > > > >>
+> > > > > > >> >
+> > > > > > >> > On the other hand I see no other way to keep the validation
+> > > > > > >> > permanently enabled for fixed implementations, and get around the problem
+> > > > > > >> > with broken implementations. So we could have something like
+> > > > > > >> > VHOST_USED_LEN_STRICT.
+> > > > > > >>
+> > > > > > >> It's more about a choice of the driver's knowledge. For vsock TX it
+> > > > > > >> should be fine. If we introduce a parameter and disable it by default,
+> > > > > > >> it won't be very useful.
+> > > > > > >>
+> > > > > > >> >
+> > > > > > >> > Maybe, we can also think of 'warn and don't alter behavior' instead of
+> > > > > > >> > 'warn' and alter behavior. Or maybe even not having such checks on in
+> > > > > > >> > production, but only when testing.
+> > > > > > >>
+> > > > > > >> I think there's an agreement that virtio drivers need more hardening,
+> > > > > > >> that's why a lot of patches were merged. Especially considering the
+> > > > > > >> new requirements came from confidential computing, smart NIC and
+> > > > > > >> VDUSE. For virtio drivers, enabling the validation may help to
+> > > > > > >>
+> > > > > > >> 1) protect the driver from the buggy and malicious device
+> > > > > > >> 2) uncover the bugs of the devices (as vsock did, and probably rpmsg)
+> > > > > > >> 3) force the have a smart driver that can do the validation itself
+> > > > > > >> then we can finally remove the validation in the core
+> > > > > > >>
+> > > > > > >> So I'd like to keep it enabled.
+> > > > > > >>
+> > > > > > >> Thanks
+> > > > > > >
+> > > > > > > Let's see how far we can get. But yes, maybe we were too aggressive in
+> > > > > > > breaking things by default, a warning might be a better choice for a
+> > > > > > > couple of cycles.
+> > > > >
+> > > > > Ok, considering we saw the issues with balloons I think I can post a
+> > > > > patch to use warn instead. I wonder if we need to taint the kernel in
+> > > > > this case.
+> > > >
+> > > > Rethink this, consider we still have some time, I tend to convert the
+> > > > drivers to validate the length by themselves. Does this make sense?
+> > > >
+> > > > Thanks
+> > >
+> > > That's separate but let's stop crashing guests for people ASAP.
+> >
+> > Ok, will post a patch soon.
+> >
+> > Thanks
+>
+> So let's err on the side of caution now, I will just revert for this
+> release.
+>
+> For the next one I think a good plan is:
+> - no checks by default
+> - module param to check and warn
+> - keep adding validation in the drivers as appropriate
 
-Le 24/11/2021 à 03:13, Alex Bee a écrit :
-> With the submission of iommu driver for RK3568 a subtle bug was
-> introduced: PAGE_DESC_HI_MASK1 and PAGE_DESC_HI_MASK2 have to be
-> the other way arround - that leads to random errors, especially when
-> addresses beyond 32 bit are used.
->
-> Fix it.
->
-> Fixes: c55356c534aa ("iommu: rockchip: Add support for iommu v2")
-> Signed-off-by: Alex Bee <knaerzche@gmail.com>
+Fine, I will do that.
 
-Thanks for the fix.
+Thanks
 
-Reviewed-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>
+> > >
+> > >
+> > > > >
+> > > > > >
+> > > > > > This series appears to break the virtio_balloon driver as well.
+> > > > > >
+> > > > > > The symptom is soft lockup warnings, eg:
+> > > > > >
+> > > > > >   INFO: task kworker/1:1:109 blocked for more than 614 seconds.
+> > > > > >         Not tainted 5.16.0-rc2-gcc-10.3.0 #21
+> > > > > >   "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> > > > > >   task:kworker/1:1     state:D stack:12496 pid:  109 ppid:     2 flags:0x00000800
+> > > > > >   Workqueue: events_freezable update_balloon_size_func
+> > > > > >   Call Trace:
+> > > > > >   [c000000003cef7c0] [c000000003cef820] 0xc000000003cef820 (unreliable)
+> > > > > >   [c000000003cef9b0] [c00000000001e238] __switch_to+0x1e8/0x2f0
+> > > > > >   [c000000003cefa10] [c000000000f0a00c] __schedule+0x2cc/0xb50
+> > > > > >   [c000000003cefae0] [c000000000f0a8fc] schedule+0x6c/0x140
+> > > > > >   [c000000003cefb10] [c00000000095b6c4] tell_host+0xe4/0x130
+> > > > > >   [c000000003cefba0] [c00000000095d234] update_balloon_size_func+0x394/0x3f0
+> > > > > >   [c000000003cefc70] [c000000000178064] process_one_work+0x2c4/0x5b0
+> > > > > >   [c000000003cefd10] [c0000000001783f8] worker_thread+0xa8/0x640
+> > > > > >   [c000000003cefda0] [c000000000185444] kthread+0x1b4/0x1c0
+> > > > > >   [c000000003cefe10] [c00000000000cee4] ret_from_kernel_thread+0x5c/0x64
+> > > > > >
+> > > > > > Similar backtrace reported here by Luis:
+> > > > > >
+> > > > > >   https://lore.kernel.org/lkml/YY2duTi0wAyAKUTJ@bombadil.infradead.org/
+> > > > > >
+> > > > > > Bisect points to:
+> > > > > >
+> > > > > >   # first bad commit: [939779f5152d161b34f612af29e7dc1ac4472fcf] virtio_ring: validate used buffer length
+> > > > > >
+> > > > > > Adding suppress used validation to the virtio balloon driver "fixes" it, eg.
+> > > > > >
+> > > > > > diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+> > > > > > index c22ff0117b46..a14b82ceebb2 100644
+> > > > > > --- a/drivers/virtio/virtio_balloon.c
+> > > > > > +++ b/drivers/virtio/virtio_balloon.c
+> > > > > > @@ -1150,6 +1150,7 @@ static unsigned int features[] = {
+> > > > > >  };
+> > > > > >
+> > > > > >  static struct virtio_driver virtio_balloon_driver = {
+> > > > > > +       .suppress_used_validation = true,
+> > > > > >         .feature_table = features,
+> > > > > >         .feature_table_size = ARRAY_SIZE(features),
+> > > > > >         .driver.name =  KBUILD_MODNAME,
+> > > > >
+> > > > > Looks good, we need a formal patch for this.
+> > > > >
+> > > > > And we need fix Qemu as well which advertise non zero used length for
+> > > > > inflate/deflate queue:
+> > > > >
+> > > > > static void virtio_balloon_handle_output(VirtIODevice *vdev, VirtQueue *vq)
+> > > > > ...
+> > > > >         virtqueue_push(vq, elem, offset);
+> > > > >
+> > > > > Thanks
+> > > > >
+> > > > > >
+> > > > > >
+> > > > > > cheers
+> > > > > >
+> > >
+>
 
-> ---
->
-> I've found this bug, when testing the recent VOP2 submission, which is
-> the first perpherial which uses iommu for RK356x. I could use it on my
-> quartz64 8GB board only, when limiting the available memory to less 4GB.
->
-> This patch fixes it.
->
->   drivers/iommu/rockchip-iommu.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/iommu/rockchip-iommu.c b/drivers/iommu/rockchip-iommu.c
-> index 5cb260820eda..7f23ad61c094 100644
-> --- a/drivers/iommu/rockchip-iommu.c
-> +++ b/drivers/iommu/rockchip-iommu.c
-> @@ -200,8 +200,8 @@ static inline phys_addr_t rk_dte_pt_address(u32 dte)
->   #define DTE_HI_MASK2	GENMASK(7, 4)
->   #define DTE_HI_SHIFT1	24 /* shift bit 8 to bit 32 */
->   #define DTE_HI_SHIFT2	32 /* shift bit 4 to bit 36 */
-> -#define PAGE_DESC_HI_MASK1	GENMASK_ULL(39, 36)
-> -#define PAGE_DESC_HI_MASK2	GENMASK_ULL(35, 32)
-> +#define PAGE_DESC_HI_MASK1	GENMASK_ULL(35, 32)
-> +#define PAGE_DESC_HI_MASK2	GENMASK_ULL(39, 36)
->   
->   static inline phys_addr_t rk_dte_pt_address_v2(u32 dte)
->   {
