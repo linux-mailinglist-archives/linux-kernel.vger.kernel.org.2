@@ -2,163 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 597AB45CEBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:07:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B8045CEC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:10:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242975AbhKXVKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 16:10:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
+        id S245617AbhKXVNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 16:13:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234102AbhKXVKf (ORCPT
+        with ESMTP id S234102AbhKXVNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 16:10:35 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250DDC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 13:07:25 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id j3so6811104wrp.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 13:07:25 -0800 (PST)
+        Wed, 24 Nov 2021 16:13:40 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD42C061574;
+        Wed, 24 Nov 2021 13:10:30 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id g28so4993631qkk.9;
+        Wed, 24 Nov 2021 13:10:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d0JcHrS7rw6PdBZ7/HfgOLWu1/etSoOgbibJUUNb29U=;
-        b=IvaqaftGqGnaQmJOuJxs+JXXu84+4qZwObmBV1wM5y7nSK2aIDqKGuTYxsjPaheCih
-         ISODKxDugG3uazJWeJLCEMHB+RRpRUxI1T2W3uB41tKolO0Sp4NVA4PpCkjLIqUVMqw4
-         QY5cOFWQQSZsv5tN4Ean7QsGu4KS7nu9xAU2OPj1oghbwEpu8Za3cEM6ItVEeulu0Z40
-         NfMt2uVWM0vxu5VxwXgEmzcc8HD2fdvOZTuPv08j9t7rf1K70Y35IxUZ87ECx1OH5UhK
-         QX77dcsjSnSse++WXfoycLTnUj6yl6XUifHFrC6gTSXiBPKnkYGvKH3gbs7B2KUTCjaT
-         w74A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oR6E8zBnmhODWHPMx3F2wZsU6hHhkxMyJuWrApA9rcA=;
+        b=TR65K2Jbed3UL4cZUuWIa/tmMFINe8fQk3kZxHls81njxdeu3UmsG2lyxZbVwBPLnK
+         8X0kFRUeEoli2jBrPyENddOo3CT074peHlEdX3z1wZuBIH0PqtTXI1tW2erp22DuO2g8
+         fI/ouPTXcuMpa6vYxTYOw77M7hhbS1acGb8LajGYW74C3EgUItEu2u4whaHD9g8PAPw+
+         nfubvPY8l3NFjzXFzv+INzTLGhB1eso9Y+z+3TjNVbCdJG3R3quS6pfYtvSSztrgvlPI
+         DHiPfqYno0dM0rDFakpjOJs1yaPTozqZ01+x8eR0Zzfk1lHP1v15pH9hMVfa1jPxxGmz
+         b07A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d0JcHrS7rw6PdBZ7/HfgOLWu1/etSoOgbibJUUNb29U=;
-        b=k4rf5RBfqIi0ibRlxmqEg3Cxt7ewVLBbL46uTffOIgRBn2C49gyr1aGgXzBnmaz0So
-         U+GwRzVw8jx0b7RU8vrtyZca8TXBJ+v2bkhuWovWDWmjHXE04QMpfmVQpxI1rpQoeHx2
-         ELzV0yYjKVVYFAfXkTpo63cnlLVg4TiIZa7AP26QQjMr7H2ogX8oWCsF+iEiciAjpqCp
-         uKYVicNwXTf2o32Wh9ZD78JApvVfFE/b1FIoU45DIEOcnjFMrBEcyD+JnDtWtGRv5adl
-         5huDVMzDgBlbDw0CCG59yFYnLI1Sq/rYW1L16733ySPEjmjNg+KxyQZ/7NYDNnFnMUar
-         Xznw==
-X-Gm-Message-State: AOAM533EnMbFrDQXEI2dpC6gGXl1t3YX/QdIDeheF5ZHuLxc3jV09r/Y
-        P/XfkHAE01cbtLCF08q3CPZ6HyT2W8Q=
-X-Google-Smtp-Source: ABdhPJz+Ekiy9CMWyUTEC6BHBxlgNLP061y7vlYho7gG71cQT7b6wRZULUlzffYP12V3cXPPwJHlSg==
-X-Received: by 2002:a5d:45c4:: with SMTP id b4mr34041wrs.222.1637788043676;
-        Wed, 24 Nov 2021 13:07:23 -0800 (PST)
-Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
-        by smtp.gmail.com with ESMTPSA id p8sm906195wrx.25.2021.11.24.13.07.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 13:07:23 -0800 (PST)
-From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>
-Cc:     linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: rockchip: i2s_tdm: Dup static DAI template
-Date:   Wed, 24 Nov 2021 22:06:55 +0100
-Message-Id: <20211124210655.288108-1-frattaroli.nicolas@gmail.com>
-X-Mailer: git-send-email 2.34.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oR6E8zBnmhODWHPMx3F2wZsU6hHhkxMyJuWrApA9rcA=;
+        b=ztmf4JGARLucOIYGOuv67PQsoVhEoRjjt+y3rIt3EvY/WUNj/7Rlwr+fXlhjPA7fbn
+         nwsiGN8poeAPJq1cpW/HO6cIgXJa9+bVHG1mqYrrkxCG077W01hsQIU3m4lKXBdxa93G
+         O/fb2BT0Q8AzEQWBONn5Q5wc+oXCpUUsEg/vfKusLwLOyKmZb2qm0kgybJO5W2MdPdmH
+         IrkazbU2QK8TUeq6ekLqYv3ZuY/UmhD3vvff9SIRMdv6JaMJGSG/CerbEDrjkL0nENCQ
+         OHeFfDVExShzxCKPODSIhbAOIdgsQ5VpB/OcLIo7/LQqN0h9oVPZGZIzJJPuJLdnOxxr
+         ys6g==
+X-Gm-Message-State: AOAM530+9KPRw3a3lV7L2hMceQpwvSOOBPTL48sn26osi9xKAPrilqtW
+        PVedLTkQST2+Ar9OwB6bjb9IISGHIe+j2Db4ZLgkcwDLXmw=
+X-Google-Smtp-Source: ABdhPJx1jPH36iYXTWv3S72DnH8RBim2yhpfroWQVyB+0K2VeAa4oiI4/wPKel0FdJe2oAc69gOIF+eqJYdDmeq7KKw=
+X-Received: by 2002:a25:300a:: with SMTP id w10mr22212ybw.506.1637788229254;
+ Wed, 24 Nov 2021 13:10:29 -0800 (PST)
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date:   Wed, 24 Nov 2021 21:09:53 +0000
+Message-ID: <CADVatmPxvqhQ-iUo3_wY+9D72O0qdBDh02Ewx1Yjz4f2=7uz7g@mail.gmail.com>
+Subject: Re: [PATCH 5.4 000/100] 5.4.162-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously, the DAI template was used directly, which lead to
-fun bugs such as "why is my channels_max changing?" when one
-instantiated more than one i2s_tdm IP block in a device tree.
+Hi Greg,
 
-This change makes it so that we instead duplicate the template
-struct, and then use that.
+On Wed, Nov 24, 2021 at 2:10 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.162 release.
+> There are 100 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
+> Anything received after that time might be too late.
 
-Fixes: 081068fd6414 ("ASoC: rockchip: add support for i2s-tdm controller")
-Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
----
- sound/soc/rockchip/rockchip_i2s_tdm.c | 42 +++++++++++++++------------
- 1 file changed, 24 insertions(+), 18 deletions(-)
+Just a quick note, my arm64 builds are failing with the error:
+arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi:412.21-414.5: ERROR
+(duplicate_label): /soc/codec: Duplicate label 'lpass_codec' on
+/soc/codec and /soc@0/codec
 
-diff --git a/sound/soc/rockchip/rockchip_i2s_tdm.c b/sound/soc/rockchip/rockchip_i2s_tdm.c
-index 17b9b287853a..e9ddbbf4563e 100644
---- a/sound/soc/rockchip/rockchip_i2s_tdm.c
-+++ b/sound/soc/rockchip/rockchip_i2s_tdm.c
-@@ -1312,22 +1312,17 @@ static const struct of_device_id rockchip_i2s_tdm_match[] = {
- 
- static struct snd_soc_dai_driver i2s_tdm_dai = {
- 	.probe = rockchip_i2s_tdm_dai_probe,
--	.playback = {
--		.stream_name  = "Playback",
--	},
--	.capture = {
--		.stream_name  = "Capture",
--	},
- 	.ops = &rockchip_i2s_tdm_dai_ops,
- };
- 
--static void rockchip_i2s_tdm_init_dai(struct rk_i2s_tdm_dev *i2s_tdm)
-+static int rockchip_i2s_tdm_init_dai(struct rk_i2s_tdm_dev *i2s_tdm)
- {
-+	struct snd_soc_dai_driver *dai;
- 	struct property *dma_names;
- 	const char *dma_name;
- 	u64 formats = (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
--		       SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE |
--		       SNDRV_PCM_FMTBIT_S32_LE);
-+	SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE |
-+	SNDRV_PCM_FMTBIT_S32_LE);
- 	struct device_node *node = i2s_tdm->dev->of_node;
- 
- 	of_property_for_each_string(node, "dma-names", dma_names, dma_name) {
-@@ -1337,19 +1332,28 @@ static void rockchip_i2s_tdm_init_dai(struct rk_i2s_tdm_dev *i2s_tdm)
- 			i2s_tdm->has_capture = true;
- 	}
- 
-+	dai = devm_kmemdup(i2s_tdm->dev, &i2s_tdm_dai,
-+			   sizeof(*dai), GFP_KERNEL);
-+	if (!dai)
-+		return -ENOMEM;
-+
- 	if (i2s_tdm->has_playback) {
--		i2s_tdm_dai.playback.channels_min = 2;
--		i2s_tdm_dai.playback.channels_max = 8;
--		i2s_tdm_dai.playback.rates = SNDRV_PCM_RATE_8000_192000;
--		i2s_tdm_dai.playback.formats = formats;
-+		dai->playback.stream_name  = "Playback";
-+		dai->playback.channels_min = 2;
-+		dai->playback.channels_max = 8;
-+		dai->playback.rates = SNDRV_PCM_RATE_8000_192000;
-+		dai->playback.formats = formats;
- 	}
- 
- 	if (i2s_tdm->has_capture) {
--		i2s_tdm_dai.capture.channels_min = 2;
--		i2s_tdm_dai.capture.channels_max = 8;
--		i2s_tdm_dai.capture.rates = SNDRV_PCM_RATE_8000_192000;
--		i2s_tdm_dai.capture.formats = formats;
-+		dai->capture.stream_name  = "Capture";
-+		dai->capture.channels_min = 2;
-+		dai->capture.channels_max = 8;
-+		dai->capture.rates = SNDRV_PCM_RATE_8000_192000;
-+		dai->capture.formats = formats;
- 	}
-+
-+	return 0;
- }
- 
- static int rockchip_i2s_tdm_path_check(struct rk_i2s_tdm_dev *i2s_tdm,
-@@ -1541,7 +1545,9 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
- 	spin_lock_init(&i2s_tdm->lock);
- 	i2s_tdm->soc_data = (struct rk_i2s_soc_data *)of_id->data;
- 
--	rockchip_i2s_tdm_init_dai(i2s_tdm);
-+	ret = rockchip_i2s_tdm_init_dai(i2s_tdm);
-+	if (ret)
-+		return ret;
- 
- 	i2s_tdm->frame_width = 64;
- 
+I have not yet tested, but I think it will be for:
+f4850fe1a15d (\"arm64: dts: qcom: msm8916: Add unit name for /soc node\")
+
+
 -- 
-2.34.0
-
+Regards
+Sudip
