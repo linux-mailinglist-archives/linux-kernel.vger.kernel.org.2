@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6380145C6AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:07:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D55445C3EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349855AbhKXOKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:10:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53632 "EHLO mail.kernel.org"
+        id S1351073AbhKXNol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:44:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346674AbhKXOGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:06:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B2986125F;
-        Wed, 24 Nov 2021 13:12:39 +0000 (UTC)
+        id S1344551AbhKXNmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:42:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B4E96328B;
+        Wed, 24 Nov 2021 12:58:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759560;
-        bh=aS74qLvOSDeCEN3oKU+EhEsJtlz4Of8y6BZtILjRghs=;
+        s=korg; t=1637758694;
+        bh=sXOgTOAj1t81oWB7sL+Gbffblj/VmaIpUcgMltDWyd0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YDnRqGL8vo5aw+OpW7ie3kiHMaddLFMHGqHBxEAB8R9NtXl0MMc1SZO03QCiIwg33
-         dnAz8vaAMnTFdmU+8J3hKwZY3Y8GgEQwomF078nwHE+6XG6QRybExgHY83vj6EWzop
-         btXbr+xGGjMkQswoXYAczvFwhmWKJPkn/jGjBk0A=
+        b=iiZSQaQBl4a4NEDBCq6LY8CeQ4XYUeEBMlrVDXD7NLryBYeA3uHTbuNX1StdLHi+m
+         fj40MwjPDzMutRZYAhG9pBc4Qh53PLLeJXdKc9VRDXMkJUHkRlOEvs2Pd/AduqAA7m
+         a5n7BGFtYgZNozxRUyQ0WbS/+Zwwz52V8Q6/NbDs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Thomas Backlund <tmb@iki.fi>
-Subject: [PATCH 5.15 263/279] signal/x86: In emulate_vsyscall force a signal instead of calling do_exit
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Borislav Petkov <bp@suse.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH 5.10 154/154] x86/Kconfig: Fix an unused variable error in dell-smm-hwmon
 Date:   Wed, 24 Nov 2021 12:59:10 +0100
-Message-Id: <20211124115727.794406414@linuxfoundation.org>
+Message-Id: <20211124115707.456833096@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric W. Biederman <ebiederm@xmission.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-commit 695dd0d634df8903e5ead8aa08d326f63b23368a upstream.
+commit ef775a0e36c6a81c5b07cb228c02f967133fe768 upstream.
 
-Directly calling do_exit with a signal number has the problem that
-all of the side effects of the signal don't happen, such as
-killing all of the threads of a process instead of just the
-calling thread.
+When CONFIG_PROC_FS is not set, there is a build warning (turned
+into an error):
 
-So replace do_exit(SIGSYS) with force_fatal_sig(SIGSYS) which
-causes the signal handling to take it's normal path and work
-as expected.
+  ../drivers/hwmon/dell-smm-hwmon.c: In function 'i8k_init_procfs':
+  ../drivers/hwmon/dell-smm-hwmon.c:624:24: error: unused variable 'data' [-Werror=unused-variable]
+    struct dell_smm_data *data = dev_get_drvdata(dev);
 
-Cc: Andy Lutomirski <luto@kernel.org>
-Link: https://lkml.kernel.org/r/20211020174406.17889-17-ebiederm@xmission.com
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
-Cc: Thomas Backlund <tmb@iki.fi>
+Make I8K depend on PROC_FS and HWMON (instead of selecting HWMON -- it
+is strongly preferred to not select entire subsystems).
+
+Build tested in all possible combinations of SENSORS_DELL_SMM, I8K, and
+PROC_FS.
+
+Fixes: 039ae58503f3 ("hwmon: Allow to compile dell-smm-hwmon driver without /proc/i8k")
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Guenter Roeck <linux@roeck-us.net>
+Acked-by: Pali Rohár <pali@kernel.org>
+Link: https://lkml.kernel.org/r/20210910071921.16777-1-rdunlap@infradead.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/entry/vsyscall/vsyscall_64.c |    3 ++-
+ arch/x86/Kconfig |    3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/arch/x86/entry/vsyscall/vsyscall_64.c
-+++ b/arch/x86/entry/vsyscall/vsyscall_64.c
-@@ -226,7 +226,8 @@ bool emulate_vsyscall(unsigned long erro
- 	if ((!tmp && regs->orig_ax != syscall_nr) || regs->ip != address) {
- 		warn_bad_vsyscall(KERN_DEBUG, regs,
- 				  "seccomp tried to change syscall nr or ip");
--		do_exit(SIGSYS);
-+		force_fatal_sig(SIGSYS);
-+		return true;
- 	}
- 	regs->orig_ax = -1;
- 	if (tmp)
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1266,7 +1266,8 @@ config TOSHIBA
+ 
+ config I8K
+ 	tristate "Dell i8k legacy laptop support"
+-	select HWMON
++	depends on HWMON
++	depends on PROC_FS
+ 	select SENSORS_DELL_SMM
+ 	help
+ 	  This option enables legacy /proc/i8k userspace interface in hwmon
 
 
