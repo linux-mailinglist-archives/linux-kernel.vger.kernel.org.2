@@ -2,150 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2898B45CE15
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1481345CE17
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:34:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235996AbhKXUhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 15:37:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22246 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236924AbhKXUhU (ORCPT
+        id S235881AbhKXUhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 15:37:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234742AbhKXUhx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 15:37:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637786050;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W1GBUzq35uTQHFzR0knVv5M/afBLbzIpMZ4Ph5hufc8=;
-        b=iavt5SoIWKLsa7RWBr7oASzrwM4cT0YZSRolOCepNU55k33YrH0pyUtapCA6hfXhnXg1Bq
-        T0dFz1qijDJCxixDvYr1nUncFP9mGrRxLRmVw2m/XfK1iREqjc4xmgHFtDq5d/zgcDLmW0
-        6kBM8pzAyaP5/BynQynHSNAnydVlK2Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-244-UMKcnx31NZSZcfg2qh1jWQ-1; Wed, 24 Nov 2021 15:34:07 -0500
-X-MC-Unique: UMKcnx31NZSZcfg2qh1jWQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EABAC83DCA2;
-        Wed, 24 Nov 2021 20:34:05 +0000 (UTC)
-Received: from t480s.redhat.com (unknown [10.39.194.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5711919C46;
-        Wed, 24 Nov 2021 20:33:56 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Dave Young <dyoung@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Philipp Rudo <prudo@redhat.com>
-Subject: [PATCH for 4.4-stable] proc/vmcore: fix clearing user buffer by properly using clear_user()
-Date:   Wed, 24 Nov 2021 21:33:55 +0100
-Message-Id: <20211124203355.25980-1-david@redhat.com>
-In-Reply-To: <163758401512149@kroah.com>
-References: <163758401512149@kroah.com>
+        Wed, 24 Nov 2021 15:37:53 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14519C061574;
+        Wed, 24 Nov 2021 12:34:43 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso6140438ots.6;
+        Wed, 24 Nov 2021 12:34:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mS4HySlQjvLA0Eh6hx8Q415CZ5EeqmdP8px2xegynzo=;
+        b=NvrVwpChSyHwXcEZoh/HXt0PZ1G5f+LsIj6H3rtcObZd0ZuIYo0Axwp2yMTpDsz1OJ
+         3hJ8Mbj1Ml5B/QTMBQDIGOidkbUsju94Kp4MzxAhqU0ktu7qX5dMIX1IDeXGUTDASRcK
+         uCJoRXMFnarkOSnPOTcJPqC1A+rOjmH+GtiCftglv5zDAC8c7knQceTtRCr6YyijE34p
+         taDhAf9nFuFka4X7Ga5GTYZmLQ/STZEzl6iMUZuBqT7tYNna5B8dX6S0SzNwGhyG/cnK
+         F34PMzTMIUXLEtO28M0TNTgJ1/EynxwvYE/wtqRcS8IT+sMj1W323WU4riZKkRa9FUXN
+         o8hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=mS4HySlQjvLA0Eh6hx8Q415CZ5EeqmdP8px2xegynzo=;
+        b=hPv6YLyUpY3Kjienz5zTPgula8ihGTckAV3Coi2DVJ/bWIwt+72DvYCQGYggfE/+gI
+         +ujRVkeM3HGY0tQqIdySNsktZspHDEbXIp6VABmet2eRKezjGbYI3WcisK/w/u78MA1p
+         nf0HmL+gwoygMuipEL84C8O71IYKDadazXaG0G/N2EzsKmuUP1H5/64hmFbRQRyu+aKw
+         Kmkn0j2NtKsntjTt3LvY4W65oZV+fgUFyid8Svaoq5cJEZ2G4OFXu33HFl03/J4U7cCb
+         AcC4u4WZ5Xvc8sFHXpLsAKALnso4ZdZes8JchNapm0hsOUI6BuIp6YqfB70WoiIJd8Tc
+         2ngQ==
+X-Gm-Message-State: AOAM532NGPdks1jStUz1gJzilD5qswD/ykPzkuSdgajy3dCS8VauZs9y
+        EOapGB/bewnXcWKlmOP/YrQA5zBmfZ0=
+X-Google-Smtp-Source: ABdhPJz5g50fspbB4X37CHDS7oUqBCm/dtswbS8q8rj9urzy3j8upXQ5Q6duILt85BbdT/OQeuhmqw==
+X-Received: by 2002:a05:6830:1514:: with SMTP id k20mr15640704otp.147.1637786082493;
+        Wed, 24 Nov 2021 12:34:42 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j20sm142559ota.76.2021.11.24.12.34.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 12:34:41 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 24 Nov 2021 12:34:40 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     clemens@ladisch.de, jdelvare@suse.com, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] hwmon: (k10temp) Support up to 12 CCDs on AMD Family
+ of processors
+Message-ID: <20211124203440.GA346758@roeck-us.net>
+References: <163776976762.904164.5618896687524494215.stgit@bmoger-ubuntu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <163776976762.904164.5618896687524494215.stgit@bmoger-ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit c1e63117711977cc4295b2ce73de29dd17066c82 upstream.
+On Wed, Nov 24, 2021 at 10:03:13AM -0600, Babu Moger wrote:
+> The current driver can read the temperatures from upto 8 CCDs
+> (Core-Complex Die).
+> 
+> The newer AMD Family 19h Models 10h-1Fh and A0h-AFh can support up to
+> 12 CCDs. Update the driver to read up to 12 CCDs.
+> 
+> Signed-off-by: Babu Moger <babu.moger@amd.com>
 
-To clear a user buffer we cannot simply use memset, we have to use
-clear_user().  With a virtio-mem device that registers a vmcore_cb and
-has some logically unplugged memory inside an added Linux memory block,
-I can easily trigger a BUG by copying the vmcore via "cp":
+Applied to hwmon-next.
 
-  systemd[1]: Starting Kdump Vmcore Save Service...
-  kdump[420]: Kdump is using the default log level(3).
-  kdump[453]: saving to /sysroot/var/crash/127.0.0.1-2021-11-11-14:59:22/
-  kdump[458]: saving vmcore-dmesg.txt to /sysroot/var/crash/127.0.0.1-2021-11-11-14:59:22/
-  kdump[465]: saving vmcore-dmesg.txt complete
-  kdump[467]: saving vmcore
-  BUG: unable to handle page fault for address: 00007f2374e01000
-  #PF: supervisor write access in kernel mode
-  #PF: error_code(0x0003) - permissions violation
-  PGD 7a523067 P4D 7a523067 PUD 7a528067 PMD 7a525067 PTE 800000007048f867
-  Oops: 0003 [#1] PREEMPT SMP NOPTI
-  CPU: 0 PID: 468 Comm: cp Not tainted 5.15.0+ #6
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-27-g64f37cc530f1-prebuilt.qemu.org 04/01/2014
-  RIP: 0010:read_from_oldmem.part.0.cold+0x1d/0x86
-  Code: ff ff ff e8 05 ff fe ff e9 b9 e9 7f ff 48 89 de 48 c7 c7 38 3b 60 82 e8 f1 fe fe ff 83 fd 08 72 3c 49 8d 7d 08 4c 89 e9 89 e8 <49> c7 45 00 00 00 00 00 49 c7 44 05 f8 00 00 00 00 48 83 e7 f81
-  RSP: 0018:ffffc9000073be08 EFLAGS: 00010212
-  RAX: 0000000000001000 RBX: 00000000002fd000 RCX: 00007f2374e01000
-  RDX: 0000000000000001 RSI: 00000000ffffdfff RDI: 00007f2374e01008
-  RBP: 0000000000001000 R08: 0000000000000000 R09: ffffc9000073bc50
-  R10: ffffc9000073bc48 R11: ffffffff829461a8 R12: 000000000000f000
-  R13: 00007f2374e01000 R14: 0000000000000000 R15: ffff88807bd421e8
-  FS:  00007f2374e12140(0000) GS:ffff88807f000000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00007f2374e01000 CR3: 000000007a4aa000 CR4: 0000000000350eb0
-  Call Trace:
-   read_vmcore+0x236/0x2c0
-   proc_reg_read+0x55/0xa0
-   vfs_read+0x95/0x190
-   ksys_read+0x4f/0xc0
-   do_syscall_64+0x3b/0x90
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Some x86-64 CPUs have a CPU feature called "Supervisor Mode Access
-Prevention (SMAP)", which is used to detect wrong access from the kernel
-to user buffers like this: SMAP triggers a permissions violation on
-wrong access.  In the x86-64 variant of clear_user(), SMAP is properly
-handled via clac()+stac().
-
-To fix, properly use clear_user() when we're dealing with a user buffer.
-
-Link: https://lkml.kernel.org/r/20211112092750.6921-1-david@redhat.com
-Fixes: 997c136f518c ("fs/proc/vmcore.c: add hook to read_from_oldmem() to check for non-ram pages")
-Signed-off-by: David Hildenbrand <david@redhat.com>
-Acked-by: Baoquan He <bhe@redhat.com>
-Cc: Dave Young <dyoung@redhat.com>
-Cc: Baoquan He <bhe@redhat.com>
-Cc: Vivek Goyal <vgoyal@redhat.com>
-Cc: Philipp Rudo <prudo@redhat.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- fs/proc/vmcore.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
-
-diff --git a/fs/proc/vmcore.c b/fs/proc/vmcore.c
-index 08143139b65a..785d05e3358c 100644
---- a/fs/proc/vmcore.c
-+++ b/fs/proc/vmcore.c
-@@ -105,14 +105,19 @@ static ssize_t read_from_oldmem(char *buf, size_t count,
- 			nr_bytes = count;
- 
- 		/* If pfn is not ram, return zeros for sparse dump files */
--		if (pfn_is_ram(pfn) == 0)
--			memset(buf, 0, nr_bytes);
--		else {
-+		if (pfn_is_ram(pfn) == 0) {
-+			tmp = 0;
-+			if (!userbuf)
-+				memset(buf, 0, nr_bytes);
-+			else if (clear_user(buf, nr_bytes))
-+				tmp = -EFAULT;
-+		} else {
- 			tmp = copy_oldmem_page(pfn, buf, nr_bytes,
- 						offset, userbuf);
--			if (tmp < 0)
--				return tmp;
- 		}
-+		if (tmp < 0)
-+			return tmp;
-+
- 		*ppos += nr_bytes;
- 		count -= nr_bytes;
- 		buf += nr_bytes;
--- 
-2.31.1
-
+Thanks,
+Guenter
