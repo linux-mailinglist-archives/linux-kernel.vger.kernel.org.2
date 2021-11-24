@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DABE45BDA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D3845BFF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:01:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343896AbhKXMju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:39:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51664 "EHLO mail.kernel.org"
+        id S1346928AbhKXNDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:03:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344113AbhKXMfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:35:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03864610CA;
-        Wed, 24 Nov 2021 12:21:30 +0000 (UTC)
+        id S1347604AbhKXNAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:00:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC95D610FF;
+        Wed, 24 Nov 2021 12:35:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756491;
-        bh=4c1jDU/O/lX9TOU73BdaYW/wm2lhstfkDK+mfuLaIUY=;
+        s=korg; t=1637757306;
+        bh=BxmmrVIRePr4MucsBozMFpB1XoznpnJ8Nc9ewJH28Nc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l0v2+4Z6H/4ZMG1QwhgpzxMnVYDsTiEKA/AWkbmxoR1mdReATPukORR3rbIm+ZX4C
-         bP8QQWGt3iGPWjs+4ByWOC96jqkW4EmjsI7xP0KghPciwKBRm3virddTGccTB3PzFa
-         KNluDAHnKz7nKewFfWi39Eyx1W87HqxiO5fPox7Q=
+        b=S1aq71yD45zxP+5kQv1HglcvVrso3BIRxSK59lerf8SwRtQVBpuQ7ojLpRyYZq6s4
+         9+BPyIYIJdzNNm2NUcJErGxbl5jLbzw/urRnw/gndpL3mw3fA363GMwWM7FFoo3Und
+         GXBm6IQm3ODBBaG+l0lgaxn1/4Kj5gDTUtX3AD7k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aleksander Jan Bajkowski <olek2@wp.pl>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 072/251] MIPS: lantiq: dma: reset correct number of channel
-Date:   Wed, 24 Nov 2021 12:55:14 +0100
-Message-Id: <20211124115712.757027746@linuxfoundation.org>
+        stable@vger.kernel.org, Sven Schnelle <svens@stackframe.org>,
+        Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 125/323] parisc/unwind: fix unwinder when CONFIG_64BIT is enabled
+Date:   Wed, 24 Nov 2021 12:55:15 +0100
+Message-Id: <20211124115723.160897716@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,77 +39,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aleksander Jan Bajkowski <olek2@wp.pl>
+From: Sven Schnelle <svens@stackframe.org>
 
-[ Upstream commit 5ca9ce2ba4d5884cd94d1a856c675ab1242cd242 ]
+[ Upstream commit 8e0ba125c2bf1030af3267058019ba86da96863f ]
 
-Different SoCs have a different number of channels, e.g .:
-* amazon-se has 10 channels,
-* danube+ar9 have 20 channels,
-* vr9 has 28 channels,
-* ar10 has 24 channels.
+With 64 bit kernels unwind_special() is not working because
+it compares the pc to the address of the function descriptor.
+Add a helper function that compares pc with the dereferenced
+address. This fixes all of the backtraces on my c8000. Without
+this changes, a lot of backtraces are missing in kdb or the
+show-all-tasks command from /proc/sysrq-trigger.
 
-We can read the ID register and, depending on the reported
-number of channels, reset the appropriate number of channels.
-
-Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sven Schnelle <svens@stackframe.org>
+Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/lantiq/xway/dma.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ arch/parisc/kernel/unwind.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/arch/mips/lantiq/xway/dma.c b/arch/mips/lantiq/xway/dma.c
-index ce7e033b4bb18..0de61165ef6e4 100644
---- a/arch/mips/lantiq/xway/dma.c
-+++ b/arch/mips/lantiq/xway/dma.c
-@@ -41,6 +41,7 @@
- #define LTQ_DMA_PCTRL		0x44
- #define LTQ_DMA_IRNEN		0xf4
+diff --git a/arch/parisc/kernel/unwind.c b/arch/parisc/kernel/unwind.c
+index 2d14f17838d23..fa52c939e8a3b 100644
+--- a/arch/parisc/kernel/unwind.c
++++ b/arch/parisc/kernel/unwind.c
+@@ -21,6 +21,8 @@
+ #include <asm/ptrace.h>
  
-+#define DMA_ID_CHNR		GENMASK(26, 20)	/* channel number */
- #define DMA_DESCPT		BIT(3)		/* descriptor complete irq */
- #define DMA_TX			BIT(8)		/* TX channel direction */
- #define DMA_CHAN_ON		BIT(0)		/* channel on / off bit */
-@@ -51,7 +52,6 @@
- #define DMA_POLL		BIT(31)		/* turn on channel polling */
- #define DMA_CLK_DIV4		BIT(6)		/* polling clock divider */
- #define DMA_2W_BURST		BIT(1)		/* 2 word burst length */
--#define DMA_MAX_CHANNEL		20		/* the soc has 20 channels */
- #define DMA_ETOP_ENDIANNESS	(0xf << 8) /* endianness swap etop channels */
- #define DMA_WEIGHT	(BIT(17) | BIT(16))	/* default channel wheight */
+ #include <asm/unwind.h>
++#include <asm/switch_to.h>
++#include <asm/sections.h>
  
-@@ -219,7 +219,7 @@ ltq_dma_init(struct platform_device *pdev)
- {
- 	struct clk *clk;
- 	struct resource *res;
--	unsigned id;
-+	unsigned int id, nchannels;
- 	int i;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-@@ -241,17 +241,18 @@ ltq_dma_init(struct platform_device *pdev)
- 	ltq_dma_w32(0, LTQ_DMA_IRNEN);
- 
- 	/* reset/configure each channel */
--	for (i = 0; i < DMA_MAX_CHANNEL; i++) {
-+	id = ltq_dma_r32(LTQ_DMA_ID);
-+	nchannels = ((id & DMA_ID_CHNR) >> 20);
-+	for (i = 0; i < nchannels; i++) {
- 		ltq_dma_w32(i, LTQ_DMA_CS);
- 		ltq_dma_w32(DMA_CHAN_RST, LTQ_DMA_CCTRL);
- 		ltq_dma_w32(DMA_POLL | DMA_CLK_DIV4, LTQ_DMA_CPOLL);
- 		ltq_dma_w32_mask(DMA_CHAN_ON, 0, LTQ_DMA_CCTRL);
- 	}
- 
--	id = ltq_dma_r32(LTQ_DMA_ID);
- 	dev_info(&pdev->dev,
- 		"Init done - hw rev: %X, ports: %d, channels: %d\n",
--		id & 0x1f, (id >> 16) & 0xf, id >> 20);
-+		id & 0x1f, (id >> 16) & 0xf, nchannels);
- 
+ /* #define DEBUG 1 */
+ #ifdef DEBUG
+@@ -203,6 +205,11 @@ int __init unwind_init(void)
  	return 0;
  }
+ 
++static bool pc_is_kernel_fn(unsigned long pc, void *fn)
++{
++	return (unsigned long)dereference_kernel_function_descriptor(fn) == pc;
++}
++
+ static int unwind_special(struct unwind_frame_info *info, unsigned long pc, int frame_size)
+ {
+ 	/*
+@@ -221,7 +228,7 @@ static int unwind_special(struct unwind_frame_info *info, unsigned long pc, int
+ 	extern void * const _call_on_stack;
+ #endif /* CONFIG_IRQSTACKS */
+ 
+-	if (pc == (unsigned long) &handle_interruption) {
++	if (pc_is_kernel_fn(pc, handle_interruption)) {
+ 		struct pt_regs *regs = (struct pt_regs *)(info->sp - frame_size - PT_SZ_ALGN);
+ 		dbg("Unwinding through handle_interruption()\n");
+ 		info->prev_sp = regs->gr[30];
+@@ -229,13 +236,13 @@ static int unwind_special(struct unwind_frame_info *info, unsigned long pc, int
+ 		return 1;
+ 	}
+ 
+-	if (pc == (unsigned long) &ret_from_kernel_thread ||
+-	    pc == (unsigned long) &syscall_exit) {
++	if (pc_is_kernel_fn(pc, ret_from_kernel_thread) ||
++	    pc_is_kernel_fn(pc, syscall_exit)) {
+ 		info->prev_sp = info->prev_ip = 0;
+ 		return 1;
+ 	}
+ 
+-	if (pc == (unsigned long) &intr_return) {
++	if (pc_is_kernel_fn(pc, intr_return)) {
+ 		struct pt_regs *regs;
+ 
+ 		dbg("Found intr_return()\n");
+@@ -246,20 +253,20 @@ static int unwind_special(struct unwind_frame_info *info, unsigned long pc, int
+ 		return 1;
+ 	}
+ 
+-	if (pc == (unsigned long) &_switch_to_ret) {
++	if (pc_is_kernel_fn(pc, _switch_to) ||
++	    pc_is_kernel_fn(pc, _switch_to_ret)) {
+ 		info->prev_sp = info->sp - CALLEE_SAVE_FRAME_SIZE;
+ 		info->prev_ip = *(unsigned long *)(info->prev_sp - RP_OFFSET);
+ 		return 1;
+ 	}
+ 
+ #ifdef CONFIG_IRQSTACKS
+-	if (pc == (unsigned long) &_call_on_stack) {
++	if (pc_is_kernel_fn(pc, _call_on_stack)) {
+ 		info->prev_sp = *(unsigned long *)(info->sp - FRAME_SIZE - REG_SZ);
+ 		info->prev_ip = *(unsigned long *)(info->sp - FRAME_SIZE - RP_OFFSET);
+ 		return 1;
+ 	}
+ #endif
+-
+ 	return 0;
+ }
+ 
 -- 
 2.33.0
 
