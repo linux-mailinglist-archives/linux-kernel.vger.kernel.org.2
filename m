@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29A245C0B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:07:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F2E45C565
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:54:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347633AbhKXNKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:10:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45428 "EHLO mail.kernel.org"
+        id S1348611AbhKXN5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:57:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347429AbhKXNHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:07:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68C1D61504;
-        Wed, 24 Nov 2021 12:38:54 +0000 (UTC)
+        id S1354424AbhKXNuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:50:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62EF06335C;
+        Wed, 24 Nov 2021 13:03:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757534;
-        bh=N51A8M4E4KpN+AgISpEgJ0kmxYPyBjNN1up9UZGqqPw=;
+        s=korg; t=1637759016;
+        bh=o04WJ7AXV5Dn+QuaJnA7FXI4N3S3Y0taWdf30+x3jwM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZAVKYR/N7Hpy5ZiUPcWr25LH3QxdKpcxn+hFY6hM6NAR3UMdZ+IHRX3ppIWoMYlUq
-         lGC4xa8I9aOYPPw+2X14etLGfpbijf5cIiPM//s3kWCl+DVJtCklP0Zf9DzDk+lFaT
-         WTPgcsLF1hn3yuj0xRx5KnCGlWEZKy9RViCMpNE8=
+        b=mpHYbceSW6gmhdURPuElhnt/gaK6kC3IeK10Niw2lpVpg46wbvW0DvTlv+ItWqlv6
+         5aV9didT3Kdjg+4zTqgbj7CwaDkLsm+aNiM9iYzNnWTa8RM3AwqJeOh0rpjWZMeTUv
+         RnOyq0EXd/nfmax4oLlqc8NyIy7nZ3W9j1s0L4Dc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 201/323] rpmsg: Fix rpmsg_create_ept return when RPMSG config is not defined
-Date:   Wed, 24 Nov 2021 12:56:31 +0100
-Message-Id: <20211124115725.731880259@linuxfoundation.org>
+Subject: [PATCH 5.15 105/279] bpf: Fix inner map state pruning regression.
+Date:   Wed, 24 Nov 2021 12:56:32 +0100
+Message-Id: <20211124115722.404261058@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+From: Alexei Starovoitov <ast@kernel.org>
 
-[ Upstream commit 537d3af1bee8ad1415fda9b622d1ea6d1ae76dfa ]
+[ Upstream commit 34d11a440c6167133201b7374065b59f259730d7 ]
 
-According to the description of the rpmsg_create_ept in rpmsg_core.c
-the function should return NULL on error.
+Introduction of map_uid made two lookups from outer map to be distinct.
+That distinction is only necessary when inner map has an embedded timer.
+Otherwise it will make the verifier state pruning to be conservative
+which will cause complex programs to hit 1M insn_processed limit.
+Tighten map_uid logic to apply to inner maps with timers only.
 
-Fixes: 2c8a57088045 ("rpmsg: Provide function stubs for API")
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Link: https://lore.kernel.org/r/20210712123912.10672-1-arnaud.pouliquen@foss.st.com
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Fixes: 3e8ce29850f1 ("bpf: Prevent pointer mismatch in bpf_timer_init.")
+Reported-by: Lorenz Bauer <lmb@cloudflare.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: Lorenz Bauer <lmb@cloudflare.com>
+Link: https://lore.kernel.org/bpf/CACAyw99hVEJFoiBH_ZGyy=+oO-jyydoz6v1DeKPKs2HVsUH28w@mail.gmail.com
+Link: https://lore.kernel.org/bpf/20211110172556.20754-1-alexei.starovoitov@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/rpmsg.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/bpf/verifier.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
-index 9fe156d1c018e..a68972b097b72 100644
---- a/include/linux/rpmsg.h
-+++ b/include/linux/rpmsg.h
-@@ -177,7 +177,7 @@ static inline struct rpmsg_endpoint *rpmsg_create_ept(struct rpmsg_device *rpdev
- 	/* This shouldn't be possible */
- 	WARN_ON(1);
- 
--	return ERR_PTR(-ENXIO);
-+	return NULL;
- }
- 
- static inline int rpmsg_send(struct rpmsg_endpoint *ept, void *data, int len)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index ddba80554fef3..cba37d83451eb 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1143,7 +1143,8 @@ static void mark_ptr_not_null_reg(struct bpf_reg_state *reg)
+ 			/* transfer reg's id which is unique for every map_lookup_elem
+ 			 * as UID of the inner map.
+ 			 */
+-			reg->map_uid = reg->id;
++			if (map_value_has_timer(map->inner_map_meta))
++				reg->map_uid = reg->id;
+ 		} else if (map->map_type == BPF_MAP_TYPE_XSKMAP) {
+ 			reg->type = PTR_TO_XDP_SOCK;
+ 		} else if (map->map_type == BPF_MAP_TYPE_SOCKMAP ||
 -- 
 2.33.0
 
