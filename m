@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F77345C145
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D481F45C5B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348118AbhKXNQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:16:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51818 "EHLO mail.kernel.org"
+        id S1350792AbhKXOAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:00:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346158AbhKXNNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:13:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A64961A8F;
-        Wed, 24 Nov 2021 12:42:51 +0000 (UTC)
+        id S1353200AbhKXN44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:56:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E803B6337D;
+        Wed, 24 Nov 2021 13:07:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757772;
-        bh=YH/tOkbFfwAiuYXsO/uxLg9lFnn4JucT6IczIuLKy7k=;
+        s=korg; t=1637759242;
+        bh=dT//0w6GFNNI+kKFbzzw1+b4KhIWblGHWa1x70fP8ao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vf3//82jzR9mNnvLq20QCE1Ju93G0t9pa4RcOVznSKMSIrEyCqjxpwkLZeTqfNX9G
-         AVG6+rg/I00Ous2JgsDM1pxfOKuPJ7/OqKohi5cHpGK1jyEfhELVdrd8QEFJ44nMN6
-         5vQGVZz0CbX/WHmRToR6D/C7nTMNXVn/ZKvFAYPQ=
+        b=Jwp/eEmU+z0+bWhuusdZdO+4bnELVBZgLsA5TBwGh+77H+cOxysAQuPprHIi3/ge1
+         jCky/CgY+Cucp2jtVLAH8g2r9LkW2c5CR2s7k8tUqqDTOTMW3qAUYOHc+r6Jk3b+VE
+         IEvTJuLReqiN2AtQ4uKhTWeKgxqNECv6JpsfxMYU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Guanghui Feng <guanghuifeng@linux.alibaba.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 272/323] tty: tty_buffer: Fix the softlockup issue in flush_to_ldisc
-Date:   Wed, 24 Nov 2021 12:57:42 +0100
-Message-Id: <20211124115728.059032052@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Daniel Axtens <dja@axtens.net>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 176/279] KVM: PPC: Book3S HV: Use GLOBAL_TOC for kvmppc_h_set_dabr/xdabr()
+Date:   Wed, 24 Nov 2021 12:57:43 +0100
+Message-Id: <20211124115724.822884961@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,67 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guanghui Feng <guanghuifeng@linux.alibaba.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-[ Upstream commit 3968ddcf05fb4b9409cd1859feb06a5b0550a1c1 ]
+[ Upstream commit dae581864609d36fb58855fd59880b4941ce9d14 ]
 
-When running ltp testcase(ltp/testcases/kernel/pty/pty04.c) with arm64, there is a soft lockup,
-which look like this one:
+kvmppc_h_set_dabr(), and kvmppc_h_set_xdabr() which jumps into
+it, need to use _GLOBAL_TOC to setup the kernel TOC pointer, because
+kvmppc_h_set_dabr() uses LOAD_REG_ADDR() to load dawr_force_enable.
 
-  Workqueue: events_unbound flush_to_ldisc
-  Call trace:
-   dump_backtrace+0x0/0x1ec
-   show_stack+0x24/0x30
-   dump_stack+0xd0/0x128
-   panic+0x15c/0x374
-   watchdog_timer_fn+0x2b8/0x304
-   __run_hrtimer+0x88/0x2c0
-   __hrtimer_run_queues+0xa4/0x120
-   hrtimer_interrupt+0xfc/0x270
-   arch_timer_handler_phys+0x40/0x50
-   handle_percpu_devid_irq+0x94/0x220
-   __handle_domain_irq+0x88/0xf0
-   gic_handle_irq+0x84/0xfc
-   el1_irq+0xc8/0x180
-   slip_unesc+0x80/0x214 [slip]
-   tty_ldisc_receive_buf+0x64/0x80
-   tty_port_default_receive_buf+0x50/0x90
-   flush_to_ldisc+0xbc/0x110
-   process_one_work+0x1d4/0x4b0
-   worker_thread+0x180/0x430
-   kthread+0x11c/0x120
+When called from hcall_try_real_mode() we have the kernel TOC in r2,
+established near the start of kvmppc_interrupt_hv(), so there is no
+issue.
 
-In the testcase pty04, The first process call the write syscall to send
-data to the pty master. At the same time, the workqueue will do the
-flush_to_ldisc to pop data in a loop until there is no more data left.
-When the sender and workqueue running in different core, the sender sends
-data fastly in full time which will result in workqueue doing work in loop
-for a long time and occuring softlockup in flush_to_ldisc with kernel
-configured without preempt. So I add need_resched check and cond_resched
-in the flush_to_ldisc loop to avoid it.
+But they can also be called from kvmppc_pseries_do_hcall() which is
+module code, so the access ends up happening with the kvm-hv module's
+r2, which will not point at dawr_force_enable and could even cause a
+fault.
 
-Signed-off-by: Guanghui Feng <guanghuifeng@linux.alibaba.com>
-Link: https://lore.kernel.org/r/1633961304-24759-1-git-send-email-guanghuifeng@linux.alibaba.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+With the current code layout and compilers we haven't observed a fault
+in practice, the load hits somewhere in kvm-hv.ko and silently returns
+some bogus value.
+
+Note that we we expect p8/p9 guests to use the DAWR, but SLOF uses
+h_set_dabr() to test if sc1 works correctly, see SLOF's
+lib/libhvcall/brokensc1.c.
+
+Fixes: c1fe190c0672 ("powerpc: Add force enable of DAWR on P9 option")
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Reviewed-by: Daniel Axtens <dja@axtens.net>
+Link: https://lore.kernel.org/r/20210923151031.72408-1-mpe@ellerman.id.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/tty_buffer.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/powerpc/kvm/book3s_hv_rmhandlers.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
-index ee3aa57bc0e7b..6b0cb633679d9 100644
---- a/drivers/tty/tty_buffer.c
-+++ b/drivers/tty/tty_buffer.c
-@@ -529,6 +529,9 @@ static void flush_to_ldisc(struct work_struct *work)
- 		if (!count)
- 			break;
- 		head->read += count;
-+
-+		if (need_resched())
-+			cond_resched();
- 	}
+diff --git a/arch/powerpc/kvm/book3s_hv_rmhandlers.S b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
+index eb776d0c5d8e9..32a4b4d412b92 100644
+--- a/arch/powerpc/kvm/book3s_hv_rmhandlers.S
++++ b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
+@@ -2005,7 +2005,7 @@ hcall_real_table:
+ 	.globl	hcall_real_table_end
+ hcall_real_table_end:
  
- 	mutex_unlock(&buf->lock);
+-_GLOBAL(kvmppc_h_set_xdabr)
++_GLOBAL_TOC(kvmppc_h_set_xdabr)
+ EXPORT_SYMBOL_GPL(kvmppc_h_set_xdabr)
+ 	andi.	r0, r5, DABRX_USER | DABRX_KERNEL
+ 	beq	6f
+@@ -2015,7 +2015,7 @@ EXPORT_SYMBOL_GPL(kvmppc_h_set_xdabr)
+ 6:	li	r3, H_PARAMETER
+ 	blr
+ 
+-_GLOBAL(kvmppc_h_set_dabr)
++_GLOBAL_TOC(kvmppc_h_set_dabr)
+ EXPORT_SYMBOL_GPL(kvmppc_h_set_dabr)
+ 	li	r5, DABRX_USER | DABRX_KERNEL
+ 3:
 -- 
 2.33.0
 
