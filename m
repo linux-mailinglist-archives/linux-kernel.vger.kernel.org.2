@@ -2,102 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC94C45B202
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 03:20:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5216C45B206
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 03:23:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240775AbhKXCXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 21:23:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240769AbhKXCXP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 21:23:15 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F7BC061714
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 18:20:06 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id n8so608870plf.4
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 18:20:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vPzUdANZ6JjrPyy1OAsYCcoJwwnBIkZtVB6H/wjuicc=;
-        b=Jl7apnmW67ouAcAMhWkZ3ZDTYRQHUDtmlvcs4ReNvb6uJreZlU/Jr9YOLWBQmLPN13
-         +4kir69qyldny4EM2J1Jznpzn1b0UYNoRwEFBekpR72SuqNTppiAJuQjyaDcBfNYKsZT
-         tGM0uQpc2mGtEF1vjCBQMJ8XYdtPTpf5WhzbhIXQTN9emJDtSGswTwkH1RmbNWuAYb2A
-         WEBDTrvQqb8xcUXaL+AwcwUSvjoqZhNN45L18d8tIDYVvKSPwqBcRd777Vh44oUTNs6V
-         k5eFY3ijmwwYht8PNS59xt8AQlfuo40snjUHh+iv2v70PKs53PI7MzYO6UNflIsN/t0l
-         Er0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vPzUdANZ6JjrPyy1OAsYCcoJwwnBIkZtVB6H/wjuicc=;
-        b=250SIge8SjXcLzGbdbLoHddKsmIVDa5StFcfmn1bMvto8q6R7c0t+E18qACHRDZFU4
-         kqP7mzThkqak/Fx5SwBMgPI2vS7yEcCxEGZbp8vAZZSGfXsKalDwpqaQ0cnM04JZ6LX8
-         Y4JZpsLUpenq7/6geuSqVL63Hsql3pcGL8ogcWlTTa2Lq2SqkMeAvn0MOkYJxYDZMkGS
-         uBAXR4ODrg4Hf5Z8z5HoegG24zF5f1Zy4xZvDvEDTC4sAkvWrjbcgf1Dd4Q7tLvC6bGy
-         7V16H0ZU/QuGqWHWU2zbym542TDyoqfZScHcY0JMRD20QH3PAZ3lzmlpZxRP0exysjV9
-         7OdQ==
-X-Gm-Message-State: AOAM532+LuuILBbCNoDScNuUO8fzdjtOTmEt2GypRCABDEtwCYRhy0K3
-        aZjJp2nV9NYtMH/JmNYRi5th2CT9pHi/iXG2GHR2XMvgOSJwug==
-X-Google-Smtp-Source: ABdhPJw//6jHYsiw6J2hv2rMhFqeq1yedUp1wZmkuP2ypMFfAhC9OCP6NIDZ9FCqxEV2bc7pbH3Q4ENqHTIecYmBzJc=
-X-Received: by 2002:a17:90b:4a01:: with SMTP id kk1mr10009142pjb.7.1637720405664;
- Tue, 23 Nov 2021 18:20:05 -0800 (PST)
+        id S235038AbhKXC0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 21:26:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57268 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233429AbhKXC0c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 21:26:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 281A260F6B;
+        Wed, 24 Nov 2021 02:23:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637720603;
+        bh=RiV50x4kC9wp3F6Wtst3RhBHx2ov4JfcKnL8EMWlx8w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IdSf/9t6IrqRIa2YklCbJ/KTbSoKpXR/9hKR74o0GZzNDIg3vkDUJNiDowS3VwYsC
+         BvH0MOgHwb0M3wOp89rtMCUZh9j4biNbpDkF9+5XcgSLk/8tPDGtJ5sDhGc/yq6DJ5
+         BYY+WJbdN++oJzMU4QMeNQm/8kM21yghhuse5YDDYYqlyMJ4tFJDMfYfOLtNoyVlKN
+         f+Cv+vJx6USFEdnmIKNP9nbtNFmFjKYSXJmQvRjDwF1SJxuIPrC/dEcXSLflRvD6/G
+         i91/tdvrmv7VJBmGIuz5wQNfHuE4ZssRvzFh7utuLhdOblSMqmQwo5aLMKX+E13a1I
+         Lh17h4UXiO0Nw==
+Received: by mail-ed1-f50.google.com with SMTP id x15so3393900edv.1;
+        Tue, 23 Nov 2021 18:23:23 -0800 (PST)
+X-Gm-Message-State: AOAM533oL37N/o5bae2oJBpq5X2N4D2m/MzYe9f6qTdk1Et3cVUc6vRD
+        QynTiYj3U41cg5igDRHxyuphHB9uppVMlzcXTw==
+X-Google-Smtp-Source: ABdhPJyAD+ppx/K8D/egM+QkKBRr5JZF5rZLyiIfiXIjBkI6QHFgrYehCGSXBl8i7yxWQ7DW341T+fTpUCA23iWiLRY=
+X-Received: by 2002:a05:6402:11d2:: with SMTP id j18mr17855438edw.318.1637720601558;
+ Tue, 23 Nov 2021 18:23:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20211123204644.3458700-1-yosryahmed@google.com> <6ebcffe2-9513-cbea-a206-15ba927416c7@oracle.com>
-In-Reply-To: <6ebcffe2-9513-cbea-a206-15ba927416c7@oracle.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 23 Nov 2021 18:19:29 -0800
-Message-ID: <CAJD7tkYZY1g_b9E4ZP3yqHhT36nF57c4bzKRQM-SLftDCYNQ9A@mail.gmail.com>
-Subject: Re: [PATCH] mm, hugepages: fix size in hugetlb mremap() test
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mina Almasry <almasrymina@google.com>
+References: <20211122111332.72264-1-marcan@marcan.st>
+In-Reply-To: <20211122111332.72264-1-marcan@marcan.st>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 23 Nov 2021 19:23:09 -0700
+X-Gmail-Original-Message-ID: <CAL_Jsq+vFbFN+WQhi3dRicW+kaP1Oi9JPSmnAFL7XAc0eCvgrA@mail.gmail.com>
+Message-ID: <CAL_Jsq+vFbFN+WQhi3dRicW+kaP1Oi9JPSmnAFL7XAc0eCvgrA@mail.gmail.com>
+Subject: Re: [PATCH] PCI: apple: Configure link speeds properly
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 5:08 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+On Mon, Nov 22, 2021 at 4:13 AM Hector Martin <marcan@marcan.st> wrote:
 >
-> On 11/23/21 12:46, Yosry Ahmed wrote:
-> > The hugetlb vma mremap() test mentions in the header comment that it
-> > uses 10MB worth of huge pages, when it actually uses 1GB. This causes
-> > the test to fail on devices with smaller memories.
-> >
-> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > ---
-> >  tools/testing/selftests/vm/hugepage-mremap.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> This sets the maximum link speed from the devicetree, and also requests
+> a link speed change from the controller. Without the request, the link
+> always comes up at Gen1 initially, and the core PCIe code complains
+> about a bandwidth bottleneck.
 >
-> I'll let Mina comment, but I think I know what happened.
+> It turns out ASPM ends up retraining at a higher speed anyway even
+> without this code, but let's not rely on that.
+>
+> Signed-off-by: Hector Martin <marcan@marcan.st>
+> ---
+>  drivers/pci/controller/pcie-apple.c | 53 +++++++++++++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+>
+> diff --git a/drivers/pci/controller/pcie-apple.c b/drivers/pci/controller/pcie-apple.c
+> index 03bfe977c579..073cbac49d8b 100644
+> --- a/drivers/pci/controller/pcie-apple.c
+> +++ b/drivers/pci/controller/pcie-apple.c
+> @@ -30,6 +30,10 @@
+>  #include <linux/of_irq.h>
+>  #include <linux/pci-ecam.h>
+>
+> +#include "../pci.h"
+> +/* Apple PCIe is based on DesignWare IP and shares some registers */
+> +#include "dwc/pcie-designware.h"
 
-Thanks for taking the time to review this and explain what happened.
+I'm starting to regret this not being part of the DWC driver...
 
+> +
+>  #define CORE_RC_PHYIF_CTL              0x00024
+>  #define   CORE_RC_PHYIF_CTL_RUN                BIT(0)
+>  #define CORE_RC_PHYIF_STAT             0x00028
+> @@ -130,9 +134,13 @@
+>   */
+>  #define DOORBELL_ADDR          CONFIG_PCIE_APPLE_MSI_DOORBELL_ADDR
 >
->
-> The original version of the test did indeed use 10MB.  However, the mremap
-> code must 'unshare' and shared pmd mappings before remapping.  Since sharing
-> requires mappings of at least 1GB, the size was changed to make sure unsharing
-> worked.
->
-> In the end, I believe I suggested adding hugepage-mremap to run_vmtests.sh.
-> The script does not try to configure a GB worth of huge pages.  And, I think
-> it is somewhat unreasonable to suggest users gave a spare GB to run the test.
+> +/* The offset of the PCIe capabilities structure in bridge config space */
+> +#define PCIE_CAP_BASE          0x70
 
-Alternatively, we can pass an optional argument to the test that makes it use
-1GB instead of 10MB. This way, if the test is run with run_vmtests.sh the
-default behavior would be to use 10MB, making sure users do not run out of
-memory. Otherwise, an interested user could run the test without run_vmtest.sh
-and provide the extra argument to make the test use 1GB and make sure that
-unsharing works correctly. Thoughts?
+This offset is discoverable, so don't hardcode it.
 
+> +
+>  struct apple_pcie {
+>         struct mutex            lock;
+>         struct device           *dev;
+> +       struct pci_config_window *cfg;
+>         void __iomem            *base;
+>         struct irq_domain       *domain;
+>         unsigned long           *bitmap;
+> @@ -506,6 +514,48 @@ static u32 apple_pcie_rid2sid_write(struct apple_pcie_port *port,
+>         return readl_relaxed(port->base + PORT_RID2SID(idx));
+>  }
 >
-> I'm OK with restoring the original value.
+> +static inline void __iomem *bridge_reg(struct apple_pcie_port *port,
+> +                                                 int where)
+> +{
+> +       struct pci_config_window *cfg = port->pcie->cfg;
+> +
+> +       return cfg->win + PCIE_ECAM_OFFSET(0, PCI_DEVFN(port->idx, 0), where);
+> +}
+> +
+> +static void apple_pcie_unlock_dwc_regs(struct apple_pcie_port *port)
+> +{
+> +       rmw_set(PCIE_DBI_RO_WR_EN, bridge_reg(port, PCIE_MISC_CONTROL_1_OFF));
+> +}
+> +
+> +static void apple_pcie_lock_dwc_regs(struct apple_pcie_port *port)
+> +{
+> +       rmw_clear(PCIE_DBI_RO_WR_EN, bridge_reg(port, PCIE_MISC_CONTROL_1_OFF));
+> +}
+> +
+> +static int apple_pcie_link_configure_max_speed(struct apple_pcie_port *port)
+> +{
+> +       int max_gen;
+> +       u32 ctrl2;
+> +
+> +       max_gen = of_pci_get_max_link_speed(port->np);
+> +       if (max_gen < 0) {
+> +               dev_err(port->pcie->dev, "max link speed not specified\n");
+
+Better to fail than limp along in gen1? Though you don't check the
+return value...
+
+Usually, the DT property is there to limit the speed when there's a
+board limitation.
+
+> +               return max_gen;
+> +       }
+> +
+> +       ctrl2 = readw_relaxed(bridge_reg(port, PCIE_CAP_BASE + PCI_EXP_LNKCTL2));
+> +       ctrl2 &= ~PCI_EXP_LNKCTL2_TLS;
+> +       ctrl2 |= FIELD_PREP(PCI_EXP_LNKCTL2_TLS, max_gen);
+> +       writew_relaxed(ctrl2, bridge_reg(port, PCIE_CAP_BASE + PCI_EXP_LNKCTL2));
+> +
+> +       apple_pcie_unlock_dwc_regs(port);
+> +       rmw_set(PORT_LOGIC_SPEED_CHANGE,
+> +               bridge_reg(port, PCIE_LINK_WIDTH_SPEED_CONTROL));
+> +       apple_pcie_lock_dwc_regs(port);
+> +
+> +       return 0;
+> +}
+> +
+>  static int apple_pcie_setup_port(struct apple_pcie *pcie,
+>                                  struct device_node *np)
+>  {
+> @@ -577,6 +627,8 @@ static int apple_pcie_setup_port(struct apple_pcie *pcie,
+>         ret = apple_pcie_port_register_irqs(port);
+>         WARN_ON(ret);
 >
-> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
+> +       apple_pcie_link_configure_max_speed(port);
+> +
+>         writel_relaxed(PORT_LTSSMCTL_START, port->base + PORT_LTSSMCTL);
+>
+>         if (!wait_for_completion_timeout(&pcie->event, HZ / 10))
+> @@ -762,6 +814,7 @@ static int apple_pcie_init(struct pci_config_window *cfg)
+>                 return -ENOMEM;
+>
+>         pcie->dev = dev;
+> +       pcie->cfg = cfg;
+>
+>         mutex_init(&pcie->lock);
+>
 > --
-> Mike Kravetz
+> 2.33.0
+>
