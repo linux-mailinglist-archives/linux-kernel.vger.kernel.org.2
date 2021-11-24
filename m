@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F19045C036
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:03:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABEE545C465
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:46:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346011AbhKXNFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:05:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41112 "EHLO mail.kernel.org"
+        id S1348572AbhKXNr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:47:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347997AbhKXNDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:03:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4E7B61A50;
-        Wed, 24 Nov 2021 12:36:40 +0000 (UTC)
+        id S1347943AbhKXNo3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:44:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82A15632DD;
+        Wed, 24 Nov 2021 12:59:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757401;
-        bh=VQ/XpjLMN06VarBHID7J8EAudkaPGA6lrPwedjZHmg8=;
+        s=korg; t=1637758777;
+        bh=anNM17j2qQ320cTbZ6Fs1UMAGeraF7RaUY0LOIlNUx4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IGJxZS2+ZZNp5T1RdX/Xz1dg0NbxNp+aZyHz3wb8TyD4DtG58UEOFSgC5/vZ5GMml
-         Ri13eDbdheGpJhO/+1BXDaKVrihfVr1sYPqqSTdYuolRXJGCUW5eX3StjmwVcQ47he
-         AJ/Mf+NZSD77pwkcxER24gNZfpMh4nVxl+8DcVwg=
+        b=A72teeAEtJo8+t9TqmvUMZdPy9h2n9ZZdShsY09kcEl6UGpC6RRoDivszKeyl5KZB
+         knhehg3phAMa2KGz01+j4AnMdwPtzt91Z7g5vsy0pSVuhNfIsuhCetbjE1p+0Yqvdq
+         zC0yoN4wulXLmpNuOKuWgM2XISeP5VZ6W7aOzH10=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Kelley <mikelley@microsoft.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 122/323] x86/hyperv: Protect set_hv_tscchange_cb() against getting preempted
-Date:   Wed, 24 Nov 2021 12:55:12 +0100
-Message-Id: <20211124115723.057997314@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+        Christian Lamparter <chunkeey@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 026/279] ARM: BCM53016: Specify switch ports for Meraki MR32
+Date:   Wed, 24 Nov 2021 12:55:13 +0100
+Message-Id: <20211124115719.649959394@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +42,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vitaly Kuznetsov <vkuznets@redhat.com>
+From: Christian Lamparter <chunkeey@gmail.com>
 
-[ Upstream commit 285f68afa8b20f752b0b7194d54980b5e0e27b75 ]
+[ Upstream commit 6abc4ca5a28070945e0d68cb4160b309bfbf4b8b ]
 
-The following issue is observed with CONFIG_DEBUG_PREEMPT when KVM loads:
+the switch identifies itself as a BCM53012 (rev 5)...
+This patch has been tested & verified on OpenWrt's
+snapshot with Linux 5.10 (didn't test any older kernels).
+The MR32 is able to "talk to the network" as before with
+OpenWrt's SWITCHDEV b53 driver.
 
- KVM: vmx: using Hyper-V Enlightened VMCS
- BUG: using smp_processor_id() in preemptible [00000000] code: systemd-udevd/488
- caller is set_hv_tscchange_cb+0x16/0x80
- CPU: 1 PID: 488 Comm: systemd-udevd Not tainted 5.15.0-rc5+ #396
- Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.0 12/17/2019
- Call Trace:
-  dump_stack_lvl+0x6a/0x9a
-  check_preemption_disabled+0xde/0xe0
-  ? kvm_gen_update_masterclock+0xd0/0xd0 [kvm]
-  set_hv_tscchange_cb+0x16/0x80
-  kvm_arch_init+0x23f/0x290 [kvm]
-  kvm_init+0x30/0x310 [kvm]
-  vmx_init+0xaf/0x134 [kvm_intel]
-  ...
+| b53-srab-switch 18007000.ethernet-switch: found switch: BCM53012, rev 5
+| libphy: dsa slave smi: probed
+| b53-srab-switch 18007000.ethernet-switch poe (uninitialized):
+|	PHY [dsa-0.0:00] driver [Generic PHY] (irq=POLL)
+| b53-srab-switch 18007000.ethernet-switch: Using legacy PHYLIB callbacks.
+|	Please migrate to PHYLINK!
+| DSA: tree 0 setup
 
-set_hv_tscchange_cb() can get preempted in between acquiring
-smp_processor_id() and writing to HV_X64_MSR_REENLIGHTENMENT_CONTROL. This
-is not an issue by itself: HV_X64_MSR_REENLIGHTENMENT_CONTROL is a
-partition-wide MSR and it doesn't matter which particular CPU will be
-used to receive reenlightenment notifications. The only real problem can
-(in theory) be observed if the CPU whose id was acquired with
-smp_processor_id() goes offline before we manage to write to the MSR,
-the logic in hv_cpu_die() won't be able to reassign it correctly.
-
-Reported-by: Michael Kelley <mikelley@microsoft.com>
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Link: https://lore.kernel.org/r/20211012155005.1613352-1-vkuznets@redhat.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Reported-by: Rafał Miłecki <zajec5@gmail.com>
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/hyperv/hv_init.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/bcm53016-meraki-mr32.dts | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index 1663ad84778ba..bd4b6951b1483 100644
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -192,7 +192,6 @@ void set_hv_tscchange_cb(void (*cb)(void))
- 	struct hv_reenlightenment_control re_ctrl = {
- 		.vector = HYPERV_REENLIGHTENMENT_VECTOR,
- 		.enabled = 1,
--		.target_vp = hv_vp_index[smp_processor_id()]
+diff --git a/arch/arm/boot/dts/bcm53016-meraki-mr32.dts b/arch/arm/boot/dts/bcm53016-meraki-mr32.dts
+index 612d61852bfb9..577a4dc604d93 100644
+--- a/arch/arm/boot/dts/bcm53016-meraki-mr32.dts
++++ b/arch/arm/boot/dts/bcm53016-meraki-mr32.dts
+@@ -195,3 +195,25 @@
+ 		};
  	};
- 	struct hv_tsc_emulation_control emu_ctrl = {.enabled = 1};
- 
-@@ -206,8 +205,12 @@ void set_hv_tscchange_cb(void (*cb)(void))
- 	/* Make sure callback is registered before we write to MSRs */
- 	wmb();
- 
-+	re_ctrl.target_vp = hv_vp_index[get_cpu()];
+ };
 +
- 	wrmsrl(HV_X64_MSR_REENLIGHTENMENT_CONTROL, *((u64 *)&re_ctrl));
- 	wrmsrl(HV_X64_MSR_TSC_EMULATION_CONTROL, *((u64 *)&emu_ctrl));
++&srab {
++	status = "okay";
 +
-+	put_cpu();
- }
- EXPORT_SYMBOL_GPL(set_hv_tscchange_cb);
- 
++	ports {
++		port@0 {
++			reg = <0>;
++			label = "poe";
++		};
++
++		port@5 {
++			reg = <5>;
++			label = "cpu";
++			ethernet = <&gmac0>;
++
++			fixed-link {
++				speed = <1000>;
++				duplex-full;
++			};
++		};
++	};
++};
 -- 
 2.33.0
 
