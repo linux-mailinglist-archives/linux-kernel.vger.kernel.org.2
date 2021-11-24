@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF1645C11C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8C345C2C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:29:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346839AbhKXNO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:14:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50778 "EHLO mail.kernel.org"
+        id S1351538AbhKXNcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:32:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347689AbhKXNML (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:12:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2414E61A7A;
-        Wed, 24 Nov 2021 12:42:24 +0000 (UTC)
+        id S1351036AbhKXN3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:29:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1A7561BA9;
+        Wed, 24 Nov 2021 12:51:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757744;
-        bh=KUSEjjeRRCEtiMNCz674Wa9/yzHql4lH76/cT+oYqcU=;
+        s=korg; t=1637758298;
+        bh=TIJ+vD1aPoa35CzXFWMlwjwUNUfZNddnOajKeY74Lao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0aYTnutB4nAx8nWqZF/o5HeRtCfck2N1a7SIEEnq11GaTtBXiZ+H2oOrmCeftbbHz
-         n8Ms23MFOH8L86UulIf1PjHeR6mnyqZAX/UDcWNbe+kV7tiuZ2J6t9pZ6N7x7zh9Ru
-         81ZJYKvs+JAo8bB1qawVBE620z3uJHnrGYrOvquU=
+        b=zYu5MtIPtVbE5lDxcft+/TgwRtCsb8fbKJ6HTT7XtAbwE29DYftFuOx5tLbR875sy
+         lbg5WmEQIWm5B2q3fc8NQ3w1umobnvJVV4CTUzLAXy1VrLUii4KPiGlSITcUZ4nMPJ
+         +t/HZeW9nGPnBRLKY0uat1C0DboBb8fpyp7H9BKE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>,
+        stable@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 229/323] arm64: pgtable: make __pte_to_phys/__phys_to_pte_val inline functions
+Subject: [PATCH 5.10 023/154] ASoC: SOF: Intel: hda-dai: fix potential locking issue
 Date:   Wed, 24 Nov 2021 12:56:59 +0100
-Message-Id: <20211124115726.648662804@linuxfoundation.org>
+Message-Id: <20211124115703.117927919@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,65 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit c7c386fbc20262c1d911c615c65db6a58667d92c ]
+[ Upstream commit a20f3b10de61add5e14b6ce4df982f4df2a4cbbc ]
 
-gcc warns about undefined behavior the vmalloc code when building
-with CONFIG_ARM64_PA_BITS_52, when the 'idx++' in the argument to
-__phys_to_pte_val() is evaluated twice:
+The initial hdac_stream code was adapted a third time with the same
+locking issues. Move the spin_lock outside the loops and make sure the
+fields are protected on read/write.
 
-mm/vmalloc.c: In function 'vmap_pfn_apply':
-mm/vmalloc.c:2800:58: error: operation on 'data->idx' may be undefined [-Werror=sequence-point]
- 2800 |         *pte = pte_mkspecial(pfn_pte(data->pfns[data->idx++], data->prot));
-      |                                                 ~~~~~~~~~^~
-arch/arm64/include/asm/pgtable-types.h:25:37: note: in definition of macro '__pte'
-   25 | #define __pte(x)        ((pte_t) { (x) } )
-      |                                     ^
-arch/arm64/include/asm/pgtable.h:80:15: note: in expansion of macro '__phys_to_pte_val'
-   80 |         __pte(__phys_to_pte_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
-      |               ^~~~~~~~~~~~~~~~~
-mm/vmalloc.c:2800:30: note: in expansion of macro 'pfn_pte'
- 2800 |         *pte = pte_mkspecial(pfn_pte(data->pfns[data->idx++], data->prot));
-      |                              ^~~~~~~
-
-I have no idea why this never showed up earlier, but the safest
-workaround appears to be changing those macros into inline functions
-so the arguments get evaluated only once.
-
-Cc: Matthew Wilcox <willy@infradead.org>
-Fixes: 75387b92635e ("arm64: handle 52-bit physical addresses in page table entries")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20211105075414.2553155-1-arnd@kernel.org
-Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Acked-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210924192417.169243-5-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/pgtable.h | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ sound/soc/sof/intel/hda-dai.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index f43519b710610..71a73ca1e2b05 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -64,9 +64,15 @@ extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
-  * page table entry, taking care of 52-bit addresses.
-  */
- #ifdef CONFIG_ARM64_PA_BITS_52
--#define __pte_to_phys(pte)	\
--	((pte_val(pte) & PTE_ADDR_LOW) | ((pte_val(pte) & PTE_ADDR_HIGH) << 36))
--#define __phys_to_pte_val(phys)	(((phys) | ((phys) >> 36)) & PTE_ADDR_MASK)
-+static inline phys_addr_t __pte_to_phys(pte_t pte)
-+{
-+	return (pte_val(pte) & PTE_ADDR_LOW) |
-+		((pte_val(pte) & PTE_ADDR_HIGH) << 36);
-+}
-+static inline pteval_t __phys_to_pte_val(phys_addr_t phys)
-+{
-+	return (phys | (phys >> 36)) & PTE_ADDR_MASK;
-+}
- #else
- #define __pte_to_phys(pte)	(pte_val(pte) & PTE_ADDR_MASK)
- #define __phys_to_pte_val(phys)	(phys)
+diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
+index c6cb8c212eca5..ef316311e959a 100644
+--- a/sound/soc/sof/intel/hda-dai.c
++++ b/sound/soc/sof/intel/hda-dai.c
+@@ -68,6 +68,7 @@ static struct hdac_ext_stream *
+ 		return NULL;
+ 	}
+ 
++	spin_lock_irq(&bus->reg_lock);
+ 	list_for_each_entry(stream, &bus->stream_list, list) {
+ 		struct hdac_ext_stream *hstream =
+ 			stream_to_hdac_ext_stream(stream);
+@@ -107,12 +108,12 @@ static struct hdac_ext_stream *
+ 		 * is updated in snd_hdac_ext_stream_decouple().
+ 		 */
+ 		if (!res->decoupled)
+-			snd_hdac_ext_stream_decouple(bus, res, true);
+-		spin_lock_irq(&bus->reg_lock);
++			snd_hdac_ext_stream_decouple_locked(bus, res, true);
++
+ 		res->link_locked = 1;
+ 		res->link_substream = substream;
+-		spin_unlock_irq(&bus->reg_lock);
+ 	}
++	spin_unlock_irq(&bus->reg_lock);
+ 
+ 	return res;
+ }
 -- 
 2.33.0
 
