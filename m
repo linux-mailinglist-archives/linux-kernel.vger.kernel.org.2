@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF82245CA14
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1F745CA16
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:31:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348936AbhKXQer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:34:47 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:36353 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348913AbhKXQer (ORCPT
+        id S1348962AbhKXQe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:34:59 -0500
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:36533 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348932AbhKXQe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:34:47 -0500
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 24 Nov 2021 08:31:37 -0800
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 24 Nov 2021 08:31:36 -0800
-X-QCInternal: smtphost
-Received: from ekangupt-linux.qualcomm.com ([10.204.67.11])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 24 Nov 2021 22:01:27 +0530
-Received: by ekangupt-linux.qualcomm.com (Postfix, from userid 2319895)
-        id 7C5DF44F4; Wed, 24 Nov 2021 22:01:26 +0530 (IST)
-From:   Jeya R <jeyr@codeaurora.org>
-To:     linux-arm-msm@vger.kernel.org, srinivas.kandagatla@linaro.org
-Cc:     Jeya R <jeyr@codeaurora.org>, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
-Subject: [RESEND PATCH v3] misc: fastrpc: fix improper packet size calculation
-Date:   Wed, 24 Nov 2021 22:01:21 +0530
-Message-Id: <1637771481-4299-1-git-send-email-jeyr@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Wed, 24 Nov 2021 11:34:59 -0500
+Received: by mail-ot1-f53.google.com with SMTP id w6-20020a9d77c6000000b0055e804fa524so5130102otl.3;
+        Wed, 24 Nov 2021 08:31:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ClXsnWSXwelpafLarIuF6EqOtJknws1eom5YROE5yGw=;
+        b=LIoL5DzD+psM4DFD69uWxrLQZ5izULLPmDqxcZV0nCv0bD8o1iLNPO437B9MS+OUnq
+         FxxcH7CPok2baoMTeUCsMlzfEh6ly7h669ebS/Z7Vwj5PX4oo+mRJJmxjrUKq7dVMwG5
+         6zBhsiYKa+03eexoBWF1chCmQJX0lP9jw4NG8j1Yfp1TUnefxPScOOliYx1JEwrU5V72
+         6KSLFC/LIczha807eXIH7vjZij5ywYPo2Aj47FAHORyJtq5+lmmiZkg+vu+ab5Et+Cy2
+         C89VYFYhP+lPe+2Ph+kItfaLo4XGBgOfn0JZmh9a/EvhuT6+PPVIAfUB3b99QoK+x3JC
+         Ur5A==
+X-Gm-Message-State: AOAM532OgRAKpoeSzcvWMV+8Q/+hy2N1sZ4KS6rLWLpiJZ99scbrlS6T
+        47bFk43aKY86cOQWAs/BLJPpMyCfr0krqcLz1is=
+X-Google-Smtp-Source: ABdhPJzL6+eLQFBJS+bp7zsgoa/9Q0gwD/MaJbda+fKUekCsnEhaops5rZTIYt9/O/65HM537Wa8QQGwXQymT3EPQOk=
+X-Received: by 2002:a9d:4c10:: with SMTP id l16mr4144459otf.198.1637771508941;
+ Wed, 24 Nov 2021 08:31:48 -0800 (PST)
+MIME-Version: 1.0
+References: <20211113060618.220832-1-wangborong@cdjrlc.com>
+In-Reply-To: <20211113060618.220832-1-wangborong@cdjrlc.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 24 Nov 2021 17:31:38 +0100
+Message-ID: <CAJZ5v0itn3ndomA1deOMZiV5pKTOptq02iG08vXpuEw5tgK6gw@mail.gmail.com>
+Subject: Re: [PATCH] cpuidle: menu: Fix typo in a comment
+To:     wangborong@cdjrlc.com
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The buffer list is sorted and this is not being considered while
-calculating packet size. This would lead to improper copy length
-calculation for non-dmaheap buffers which would eventually cause
-sending improper buffers to DSP.
+On Sat, Nov 13, 2021 at 7:07 AM Jason Wang <wangborong@cdjrlc.com> wrote:
+>
+> The double word `these' in a comment is repeated, thus
+> one of them should be removed.
+>
+> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+> ---
+>  drivers/cpuidle/governors/menu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/cpuidle/governors/menu.c b/drivers/cpuidle/governors/menu.c
+> index 2e5670446991..c4922684f305 100644
+> --- a/drivers/cpuidle/governors/menu.c
+> +++ b/drivers/cpuidle/governors/menu.c
+> @@ -34,7 +34,7 @@
+>   * 1) Energy break even point
+>   * 2) Performance impact
+>   * 3) Latency tolerance (from pmqos infrastructure)
+> - * These these three factors are treated independently.
+> + * These three factors are treated independently.
+>   *
+>   * Energy break even point
+>   * -----------------------
+> --
 
-Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context Invoke method")
-Signed-off-by: Jeya R <jeyr@codeaurora.org>
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
-Changes in v3:
-- relocate patch change list
-
-Changes in v2:
-- updated commit message to proper format
-- added fixes tag to commit message
-- removed unnecessary variable initialization
-- removed length check during payload calculation
-
- drivers/misc/fastrpc.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index beda610..69d45c4 100644
---- a/drivers/misc/fastrpc.c
-+++ b/drivers/misc/fastrpc.c
-@@ -719,16 +719,18 @@ static int fastrpc_get_meta_size(struct fastrpc_invoke_ctx *ctx)
- static u64 fastrpc_get_payload_size(struct fastrpc_invoke_ctx *ctx, int metalen)
- {
- 	u64 size = 0;
--	int i;
-+	int oix;
- 
- 	size = ALIGN(metalen, FASTRPC_ALIGN);
--	for (i = 0; i < ctx->nscalars; i++) {
-+	for (oix = 0; oix < ctx->nbufs; oix++) {
-+		int i = ctx->olaps[oix].raix;
-+
- 		if (ctx->args[i].fd == 0 || ctx->args[i].fd == -1) {
- 
--			if (ctx->olaps[i].offset == 0)
-+			if (ctx->olaps[oix].offset == 0)
- 				size = ALIGN(size, FASTRPC_ALIGN);
- 
--			size += (ctx->olaps[i].mend - ctx->olaps[i].mstart);
-+			size += (ctx->olaps[oix].mend - ctx->olaps[oix].mstart);
- 		}
- 	}
- 
--- 
-2.7.4
-
+Applied as 5.17 material, thanks!
