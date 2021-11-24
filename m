@@ -2,183 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0FD45D16C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:55:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7906E45D16F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:56:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237363AbhKXX64 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Nov 2021 18:58:56 -0500
-Received: from mail-qk1-f176.google.com ([209.85.222.176]:47101 "EHLO
-        mail-qk1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236146AbhKXX6z (ORCPT
+        id S237529AbhKXX7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 18:59:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:38695 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236146AbhKXX7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 18:58:55 -0500
-Received: by mail-qk1-f176.google.com with SMTP id a11so6234157qkh.13;
-        Wed, 24 Nov 2021 15:55:44 -0800 (PST)
+        Wed, 24 Nov 2021 18:59:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637798167;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7Aq2BDIOL1rOwQ9dBnbb+hwIKJaZN1tdzzbInSFnljw=;
+        b=PsFShBzOCpfS6ocmYn6trsCj0ZBzYo9zgT8+QHqiPjeBdQhCaNaxauJW9fs5dN7rxUrJgD
+        nbeeNsgVlo/bmXw0x8sbH4KmGL7RHmwKbwzg+Pcv8q2A9lhtELVwiu0kKgzBJJxgyYjyLC
+        6XF912QN9MnIxo9MwPRz/av2EAaNjuw=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-307-s9h1mI5GPmy1eA-jWKaf4Q-1; Wed, 24 Nov 2021 18:56:06 -0500
+X-MC-Unique: s9h1mI5GPmy1eA-jWKaf4Q-1
+Received: by mail-ed1-f71.google.com with SMTP id k7-20020aa7c387000000b003e7ed87fb31so3843822edq.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 15:56:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GN3PIwpL+ERryD6L7UO03x3iOUbpm53NcLZtTh43TYo=;
-        b=BUpo+JmbTy2HA+I/UYbRbnrXaB6hEc6QwTapjASmFp0e6xPFqyqPAFOtMqelfezvdX
-         rC0mWKVRlgmSJd7TUG8TgmSX5hW9TM0D41xGloa8CIrRIAkspktU1BdmVOZSB3WP70Q9
-         tIqqjjMODEbhl5TVZA/98rJ8I70iCo18SmBukc1EIgd4ymDd1Dwf/s3C1FAKn440yV+K
-         YN68fVkDgrnhDX5007Io9UMCBv9Vb26HIcZ11vH0Q6pVYztfQLqZNl1VayFzA4E4pLK7
-         +S2cp1Q37kOzOHGUbqA8iPgEzG/4XnMNu4D3/hs5V6wsfDNHaiqg3+IN6JAZak1DaJsK
-         yEbA==
-X-Gm-Message-State: AOAM530cdBz5wWA226sZdKmiDZsbCm1qHTbEvME+IXgcYeWYAKpvb4d3
-        +pijurXt2l8TZkb3DNsTbSvkn8j31EH1B88bUC/IluYTVPU=
-X-Google-Smtp-Source: ABdhPJzcIGpIB9SJjGWBHDNUsIoxo4sDxPgxKlEvJaTIxZRIUV/Klnk+NGISbDOBvWup4NClDAcRVy7RrGGl+wn3jQU=
-X-Received: by 2002:a25:ae62:: with SMTP id g34mr1445748ybe.388.1637798144105;
- Wed, 24 Nov 2021 15:55:44 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7Aq2BDIOL1rOwQ9dBnbb+hwIKJaZN1tdzzbInSFnljw=;
+        b=y8cb2ZpAuTPvt6t1KIppDIMIcD4cDNzl0nN1/RedI6ZtjcNjCBUHSXST+qEdP2ekFf
+         cK91cS9444tuwV+nVcGHrzuYaoubnK/l8JMxUsjafz9X3gnB56FYohHn4SM67Hee5N7k
+         vwzT+uy37gm2dFt/b76kQDAuYDJDYg2RBpTi508eYUl6R4HEjgQmB2ogCtZX+75SSUM5
+         tdQUMCUyA0e15faB6wDH5Jznxd/KTcIQZEkpc6g3TZtYY60qa+SlbVsAM/PK740ToVM2
+         uQwYuJTDzUttLLysoYwfg7TN35IhIFxo+o+xnIzqWdN7Q8LaZtM8xqU9gQLDgBzsESaU
+         E7eQ==
+X-Gm-Message-State: AOAM533xRZheei5Y8uVJXz6DxRL5B3t8SMGae7DEYC5t/DfwhShzTF0J
+        d6pC+d9s7AV3cI87LCJ3TAPQxvUOw58MID2jJo4oe4CplsBihI1l+cL0iluvxejZZCcNfiIM2we
+        USGbXLfctkKewBdqJVzBkXlDX
+X-Received: by 2002:a17:907:86a1:: with SMTP id qa33mr25976960ejc.142.1637798164843;
+        Wed, 24 Nov 2021 15:56:04 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy/BeF/KE9jXz/y70P34AnKAccg8V9yjGfdr5JI7QmEdI6beBgERTWQTzGGy07CdiEexVs2GQ==
+X-Received: by 2002:a17:907:86a1:: with SMTP id qa33mr25976932ejc.142.1637798164681;
+        Wed, 24 Nov 2021 15:56:04 -0800 (PST)
+Received: from redhat.com ([2a0e:1c80:14::66])
+        by smtp.gmail.com with ESMTPSA id q17sm863125edd.10.2021.11.24.15.56.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 15:56:03 -0800 (PST)
+Date:   Wed, 24 Nov 2021 18:55:56 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc:     wsa@kernel.org, jie.deng@intel.com, viresh.kumar@linaro.org,
+        conghui.chen@intel.com, virtualization@lists.linux-foundation.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@axis.com
+Subject: Re: [PATCH v2 0/2] virtio-i2c: Fix buffer handling
+Message-ID: <20211124185546-mutt-send-email-mst@kernel.org>
+References: <20211111160412.11980-1-vincent.whitchurch@axis.com>
 MIME-Version: 1.0
-References: <20211123115333.624335-1-mailhol.vincent@wanadoo.fr>
- <20211123115333.624335-3-mailhol.vincent@wanadoo.fr> <e2d90af1cf41bb9893225289822f93f036d415bb.camel@esd.eu>
-In-Reply-To: <e2d90af1cf41bb9893225289822f93f036d415bb.camel@esd.eu>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Thu, 25 Nov 2021 08:55:33 +0900
-Message-ID: <CAMZ6RqKKe=hooYH7xSGyJC2n+MGG8vSOZtZVfbT7-QQ_Ax=Hww@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] can: do not increase rx_bytes statistics for RTR frames
-To:     =?UTF-8?Q?Stefan_M=C3=A4tje?= <Stefan.Maetje@esd.eu>
-Cc:     "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        "mkl@pengutronix.de" <mkl@pengutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "appana.durga.rao@xilinx.com" <appana.durga.rao@xilinx.com>,
-        "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
-        "mripard@kernel.org" <mripard@kernel.org>,
-        "wens@csie.org" <wens@csie.org>,
-        "jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>,
-        "yashi@spacecubics.com" <yashi@spacecubics.com>,
-        "rcsekar@samsung.com" <rcsekar@samsung.com>,
-        "naga.sureshkumar.relli@xilinx.com" 
-        <naga.sureshkumar.relli@xilinx.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-sunxi@lists.linux.dev" <linux-sunxi@lists.linux.dev>,
-        "s.grosjean@peak-system.com" <s.grosjean@peak-system.com>,
-        "ludovic.desroches@microchip.com" <ludovic.desroches@microchip.com>,
-        "extja@kvaser.com" <extja@kvaser.com>,
-        "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211111160412.11980-1-vincent.whitchurch@axis.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stefan,
+On Thu, Nov 11, 2021 at 05:04:10PM +0100, Vincent Whitchurch wrote:
+> This fixes a couple of bugs in the buffer handling in virtio-i2c which can
+> result in incorrect data on the I2C bus or memory corruption in the guest.
+> 
+> I tested this on UML (virtio-uml needs a bug fix too, I will sent that out
+> later) with the device implementation in rust-vmm/vhost-device.
+> 
+> Changes in v2:
+> - Added Acked-by and Fixes tags
 
-On Thu. 25 Nov 2021 at 02:59, Stefan Mätje <Stefan.Maetje@esd.eu> wrote:
-> Hi Vincent,
->
-> I would like to suggest a slightly different patch for the esd_usb2.c (as
-> added below).
->
-> Best regards,
->     Stefan Mätje
->
-> Am Dienstag, den 23.11.2021, 20:53 +0900 schrieb Vincent Mailhol:
-> > The actual payload length of the CAN Remote Transmission Request (RTR)
-> > frames is always 0, i.e. nothing is transmitted on the wire. However,
-> > those RTR frames still uses the DLC to indicate the length of the
-> > requested frame.
-> >
-> > As such, net_device_stats:rx_bytes should not be increased for the RTR
-> > frames.
-> >
-> > This patch fixes all the CAN drivers.
-> >
-> > CC: Jimmy Assarsson <extja@kvaser.com>
-> > CC: Marc Kleine-Budde <mkl@pengutronix.de>
-> > CC: Nicolas Ferre <nicolas.ferre@microchip.com>
-> > CC: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> > CC: Ludovic Desroches <ludovic.desroches@microchip.com>
-> > CC: Chandrasekar Ramakrishnan <rcsekar@samsung.com>
-> > CC: Maxime Ripard <mripard@kernel.org>
-> > CC: Chen-Yu Tsai <wens@csie.org>
-> > CC: Jernej Skrabec <jernej.skrabec@gmail.com>
-> > CC: Yasushi SHOJI <yashi@spacecubics.com>
-> > CC: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-> > CC: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-> > CC: Michal Simek <michal.simek@xilinx.com>
-> > CC: Stephane Grosjean <s.grosjean@peak-system.com>
-> > Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> > ---
-> >  drivers/net/can/at91_can.c                        | 3 ++-
-> >  drivers/net/can/c_can/c_can_main.c                | 3 ++-
-> >  drivers/net/can/cc770/cc770.c                     | 3 ++-
-> >  drivers/net/can/dev/rx-offload.c                  | 3 ++-
-> >  drivers/net/can/grcan.c                           | 3 ++-
-> >  drivers/net/can/ifi_canfd/ifi_canfd.c             | 3 ++-
-> >  drivers/net/can/janz-ican3.c                      | 3 ++-
-> >  drivers/net/can/kvaser_pciefd.c                   | 3 ++-
-> >  drivers/net/can/m_can/m_can.c                     | 3 ++-
-> >  drivers/net/can/mscan/mscan.c                     | 3 ++-
-> >  drivers/net/can/pch_can.c                         | 3 ++-
-> >  drivers/net/can/peak_canfd/peak_canfd.c           | 3 ++-
-> >  drivers/net/can/rcar/rcar_can.c                   | 3 ++-
-> >  drivers/net/can/rcar/rcar_canfd.c                 | 3 ++-
-> >  drivers/net/can/sja1000/sja1000.c                 | 3 ++-
-> >  drivers/net/can/slcan.c                           | 3 ++-
-> >  drivers/net/can/spi/hi311x.c                      | 3 ++-
-> >  drivers/net/can/spi/mcp251x.c                     | 3 ++-
-> >  drivers/net/can/sun4i_can.c                       | 3 ++-
-> >  drivers/net/can/usb/ems_usb.c                     | 3 ++-
-> >  drivers/net/can/usb/esd_usb2.c                    | 3 ++-
-> >  drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 6 ++++--
-> >  drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 3 ++-
-> >  drivers/net/can/usb/mcba_usb.c                    | 3 ++-
-> >  drivers/net/can/usb/peak_usb/pcan_usb.c           | 3 ++-
-> >  drivers/net/can/usb/peak_usb/pcan_usb_fd.c        | 8 ++++----
-> >  drivers/net/can/usb/peak_usb/pcan_usb_pro.c       | 9 +++++----
-> >  drivers/net/can/usb/ucan.c                        | 3 ++-
-> >  drivers/net/can/usb/usb_8dev.c                    | 8 ++++----
-> >  drivers/net/can/xilinx_can.c                      | 8 +++++---
-> >  30 files changed, 72 insertions(+), 42 deletions(-)
-> >
-...
-> >
-> > diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd_usb2.c
-> > index 5f6915a27b3d..ac65ddfe814d 100644
-> > --- a/drivers/net/can/usb/esd_usb2.c
-> > +++ b/drivers/net/can/usb/esd_usb2.c
-> > @@ -335,7 +335,8 @@ static void esd_usb2_rx_can_msg(struct esd_usb2_net_priv *priv,
-> >               }
-> >
-> >               stats->rx_packets++;
-> > -             stats->rx_bytes += cf->len;
-> > +             if (!(cf->can_id & CAN_RTR_FLAG))
-> > +                     stats->rx_bytes += cf->len;
-> >               netif_rx(skb);
-> >       }
-> >
->
-> The version below would save us adding another if() statement to check for RTR or
-> normal frame that is already tested in the if() statement directly before.
->
-> diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd_usb2.c
-> index c6068a251fbe..2f91a18fe592 100644
-> --- a/drivers/net/can/usb/esd_usb2.c
-> +++ b/drivers/net/can/usb/esd_usb2.c
-> @@ -332,14 +332,14 @@ static void esd_usb2_rx_can_msg(struct esd_usb2_net_priv *priv,
->                 if (msg->msg.rx.dlc & ESD_RTR) {
->                         cf->can_id |= CAN_RTR_FLAG;
->                 } else {
->                         for (i = 0; i < cf->len; i++)
->                                 cf->data[i] = msg->msg.rx.data[i];
-> +                       stats->rx_bytes += cf->len;
->                 }
-> -
->                 stats->rx_packets++;
-> -               stats->rx_bytes += cf->len;
-> +
->                 netif_rx(skb);
->         }
->
->         return;
->  }
 
-Work for me! I will add this in the v2 (under preparation).
+What are the plans for this patchset?
 
-Yours sincerely,
-Vincent Mailhol
+> Vincent Whitchurch (2):
+>   i2c: virtio: disable timeout handling
+>   i2c: virtio: fix completion handling
+> 
+>  drivers/i2c/busses/i2c-virtio.c | 46 ++++++++++++++-------------------
+>  1 file changed, 19 insertions(+), 27 deletions(-)
+> 
+> -- 
+> 2.28.0
+
