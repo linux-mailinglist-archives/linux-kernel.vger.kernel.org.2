@@ -2,89 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671C745D00F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:25:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7220745D012
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:27:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344390AbhKXW21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 17:28:27 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:41518 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344009AbhKXW20 (ORCPT
+        id S1344625AbhKXWaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 17:30:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344457AbhKXWaK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:28:26 -0500
+        Wed, 24 Nov 2021 17:30:10 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2A9C061574;
+        Wed, 24 Nov 2021 14:27:00 -0800 (PST)
 Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id B7FAB90E;
-        Wed, 24 Nov 2021 23:25:14 +0100 (CET)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8FB4290E;
+        Wed, 24 Nov 2021 23:26:58 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1637792715;
-        bh=Ys1JyMWswwJKFefYGZWxSZ3HmhY+U086vJxl2DFCfDs=;
+        s=mail; t=1637792818;
+        bh=MhpUrhVW+9QPh2Furlp0JZjdfxALMVDTKEaY5FshAys=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UQfG4gjBPfhwl8YMeFEBAcLa6IYytZ+xaf3VpbHUU7Ta37j0vx8VIBxrNwZ/JyL2U
-         vIBS2TKb+jfV2JY3nuCqgAVRaqI5+z1q5YoOPTW1Osr0k6jmKXoG/f5LP+nirapm7h
-         4VUjk6JTW3AjDD98VRh1hbXcmluIkhayNHAwmNGk=
-Date:   Thu, 25 Nov 2021 00:24:52 +0200
+        b=hUmZ+pWDZ5FtHXjmNnznCKybWeFSFPzvHPps2vGdP/FlVszrGZp8I8HxtB24JuZ4r
+         i5vsJkyBfJcKZpod6HdLyBkSZD4b/vPUhSlK0bcyuQfATxLTyzuzi2/67o/Vg55y0A
+         OPK3nwBV2eVFR1pMiIOzVedq4h7Ie0n89XA8vYik=
+Date:   Thu, 25 Nov 2021 00:26:35 +0200
 From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc:     linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 2/2] arm64: dts: renesas: salvator-common: Merge hdmi0_con
-Message-ID: <YZ67tAytE4B7PBTZ@pendragon.ideasonboard.com>
-References: <20211124152815.3926961-1-kieran.bingham+renesas@ideasonboard.com>
- <20211124152815.3926961-3-kieran.bingham+renesas@ideasonboard.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Vaibhav Hiremath <hvaibhav@ti.com>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        Dominic Curran <dcurran@ti.com>,
+        David Cohen <dacohen@gmail.com>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] media: omap3isp: fix out-of-range warning
+Message-ID: <YZ68G09viJA/vkby@pendragon.ideasonboard.com>
+References: <20211124192430.74541-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211124152815.3926961-3-kieran.bingham+renesas@ideasonboard.com>
+In-Reply-To: <20211124192430.74541-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kieran,
+Hi Arnd,
 
 Thank you for the patch.
 
-On Wed, Nov 24, 2021 at 03:28:15PM +0000, Kieran Bingham wrote:
-> The remote endpoint for the hdmi connector is specfied through a
-> reference to the hdmi0_con endpoint, which is in the same file.
+On Wed, Nov 24, 2021 at 08:24:15PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Simplify by specifying the remote-endpoint directly in the hdmi0_con
-> endpoint.
+> clang points out that the 8-bit height/width values never exceed
+> the range of that type when building with 'make W=1 LLVM=1':
 > 
-> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> drivers/media/platform/omap3isp/isph3a_af.c:173:6: error: result of comparison of constant 256 with expression of type '__u8' (aka 'unsigned char') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+>         if (IS_OUT_OF_BOUNDS(paxel_cfg->height, OMAP3ISP_AF_PAXEL_HEIGHT_MIN,
+>             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/media/platform/omap3isp/isph3a_af.c:24:33: note: expanded from macro 'IS_OUT_OF_BOUNDS'
+>         (((value) < (min)) || ((value) > (max)))
+>                                ~~~~~~~ ^ ~~~~~
+> drivers/media/platform/omap3isp/isph3a_af.c:179:6: error: result of comparison of constant 256 with expression of type '__u8' (aka 'unsigned char') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+>         if (IS_OUT_OF_BOUNDS(paxel_cfg->width, OMAP3ISP_AF_PAXEL_WIDTH_MIN,
+>             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/media/platform/omap3isp/isph3a_af.c:24:33: note: expanded from macro 'IS_OUT_OF_BOUNDS'
+>         (((value) < (min)) || ((value) > (max)))
+>                                ~~~~~~~ ^ ~~~~~
+> 
+> Add a cast to 32-bit to avoid the warning. Checking just the lower bounds
+> would be sufficient as well, but it seems more consistent to use
+> the IS_OUT_OF_BOUNDS() check for all members.
 
-This one I hadn't found earlier today, but it's equally valid.
+Mauro has submitted a fix that handles the cast in the
+IS_OUT_OF_BOUNDS() macro, see
+https://lore.kernel.org/all/b70f819b11e024649f113be1158f34b24914a1ed.1637573097.git.mchehab+huawei@kernel.org/.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
+> Fixes: 68e342b3068c ("[media] omap3isp: Statistics")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  arch/arm64/boot/dts/renesas/salvator-common.dtsi | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+>  drivers/media/platform/omap3isp/isph3a_af.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/renesas/salvator-common.dtsi b/arch/arm64/boot/dts/renesas/salvator-common.dtsi
-> index bf37777dca31..6092dc4531ad 100644
-> --- a/arch/arm64/boot/dts/renesas/salvator-common.dtsi
-> +++ b/arch/arm64/boot/dts/renesas/salvator-common.dtsi
-> @@ -97,6 +97,7 @@ hdmi0-out {
+> diff --git a/drivers/media/platform/omap3isp/isph3a_af.c b/drivers/media/platform/omap3isp/isph3a_af.c
+> index a65cfdfa9637..c544d9c812b0 100644
+> --- a/drivers/media/platform/omap3isp/isph3a_af.c
+> +++ b/drivers/media/platform/omap3isp/isph3a_af.c
+> @@ -170,13 +170,13 @@ static int h3a_af_validate_params(struct ispstat *af, void *new_conf)
+>  			     OMAP3ISP_AF_PAXEL_VERTICAL_COUNT_MAX))
+>  		return -EINVAL;
 >  
->  		port {
->  			hdmi0_con: endpoint {
-> +				remote-endpoint = <&rcar_dw_hdmi0_out>;
->  			};
->  		};
->  	};
-> @@ -424,10 +425,6 @@ dw_hdmi0_snd_in: endpoint {
->  	};
->  };
+> -	if (IS_OUT_OF_BOUNDS(paxel_cfg->height, OMAP3ISP_AF_PAXEL_HEIGHT_MIN,
+> +	if (IS_OUT_OF_BOUNDS((u32)paxel_cfg->height, OMAP3ISP_AF_PAXEL_HEIGHT_MIN,
+>  			     OMAP3ISP_AF_PAXEL_HEIGHT_MAX) ||
+>  	    paxel_cfg->height % 2)
+>  		return -EINVAL;
 >  
-> -&hdmi0_con {
-> -	remote-endpoint = <&rcar_dw_hdmi0_out>;
-> -};
-> -
->  #ifdef SOC_HAS_HDMI1
->  &hdmi1 {
->  	status = "okay";
+>  	/* Check width */
+> -	if (IS_OUT_OF_BOUNDS(paxel_cfg->width, OMAP3ISP_AF_PAXEL_WIDTH_MIN,
+> +	if (IS_OUT_OF_BOUNDS((u32)paxel_cfg->width, OMAP3ISP_AF_PAXEL_WIDTH_MIN,
+>  			     OMAP3ISP_AF_PAXEL_WIDTH_MAX) ||
+>  	    paxel_cfg->width % 2)
+>  		return -EINVAL;
 
 -- 
 Regards,
