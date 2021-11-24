@@ -2,165 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4AAD45D023
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C65245D025
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:40:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345409AbhKXWmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 17:42:33 -0500
-Received: from relay10.mail.gandi.net ([217.70.178.230]:59427 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242545AbhKXWmc (ORCPT
+        id S1345657AbhKXWnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 17:43:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345880AbhKXWnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:42:32 -0500
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id CAC05240006;
-        Wed, 24 Nov 2021 22:39:20 +0000 (UTC)
-Date:   Wed, 24 Nov 2021 23:39:20 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Mateusz =?utf-8?Q?Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
-Cc:     linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Alessandro Zummo <a.zummo@towertech.it>
-Subject: Re: [PATCH RESEND v3 3/7] rtc-mc146818-lib: extract
- mc146818_do_avoiding_UIP
-Message-ID: <YZ6/GC3xouzEZmEh@piout.net>
-References: <20211119204221.66918-1-mat.jonczyk@o2.pl>
- <20211119204221.66918-4-mat.jonczyk@o2.pl>
+        Wed, 24 Nov 2021 17:43:14 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8915AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 14:40:04 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637793601;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=9iMOTHSqzICObi0azMH+EBP1xAS5vBxdMtZ45eIzj4o=;
+        b=ftyByuGWCGKn2Tix85hg8CIMG/LxI7ryl8ZbDr/6dDhzmtVfAcQhV7DrvVqSEYHa0arKk/
+        bYrzduXz0FUoxvJH5uZAN3yTToFyNyCgSYx18lSpScm9Sy2HH3ERjR2gjptYWPBa+OCKhH
+        xSrTh4etiTfdquWlNkHzGDk+jKGiBbk4wEk8o9Xy+nTj10rpBdgEUaXyAC/stxHzM46UKH
+        oSbrXac8KkYTge4C04aIsBvrKCbmXltMMGKcYTBTT0e95HnhOTBldN+dfiEAcDVsQw7T5T
+        8GIf+xP3PHrDDucc2AI0Sd4Alz0UGva94rz3ZHPDWKtEAUSXNcS4UyAsn2Zx2w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637793602;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=9iMOTHSqzICObi0azMH+EBP1xAS5vBxdMtZ45eIzj4o=;
+        b=sqO0tnRF+i2X5LoYKH+yeDCbw5gj9hMpmH9A87+OA1kzc863NvN0tTuFjuyfLNDCCHqOBH
+        k1V19IsxlSU0arDg==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        alsa-devel@alsa-project.org
+Subject: ALSA: hda: Make proper use of timecounter
+Date:   Wed, 24 Nov 2021 23:40:01 +0100
+Message-ID: <871r35kwji.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211119204221.66918-4-mat.jonczyk@o2.pl>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/11/2021 21:42:17+0100, Mateusz Jończyk wrote:
-> Function mc146818_get_time() contains an elaborate mechanism of reading
-> the RTC time while no RTC update is in progress. It turns out that
-> reading the RTC alarm clock also requires avoiding the RTC update (see
-> following patches). Therefore, the mechanism in mc146818_get_time()
-> should be reused - so extract it into a separate function.
-> 
-> The logic in mc146818_do_avoiding_UIP() is same as in
-> mc146818_get_time() except that after every
-> 
->         if (CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP) {
-> 
-> there is now "mdelay(1)".
-> 
-> To avoid producing an unreadable diff, mc146818_get_time() will be
-> refactored to use mc146818_do_avoiding_UIP() in the next patch.
-> 
-> Signed-off-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
-> Cc: Alessandro Zummo <a.zummo@towertech.it>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> 
-> ---
->  drivers/rtc/rtc-mc146818-lib.c | 69 ++++++++++++++++++++++++++++++++++
->  include/linux/mc146818rtc.h    |  3 ++
->  2 files changed, 72 insertions(+)
-> 
-> diff --git a/drivers/rtc/rtc-mc146818-lib.c b/drivers/rtc/rtc-mc146818-lib.c
-> index b50612ce1a6d..946ad43a512c 100644
-> --- a/drivers/rtc/rtc-mc146818-lib.c
-> +++ b/drivers/rtc/rtc-mc146818-lib.c
-> @@ -8,6 +8,75 @@
->  #include <linux/acpi.h>
->  #endif
->  
-> +/*
-> + * Execute a function while the UIP (Update-in-progress) bit of the RTC is
-> + * unset.
-> + *
-> + * Warning: callback may be executed more then once.
-> + */
-> +bool mc146818_do_avoiding_UIP(mc146818_callback_t callback, void *param)
+HDA uses a timecounter to read a hardware clock running at 24 MHz. The
+conversion factor is set with a mult value of 125 and a shift value of 0,
+which is not converting the hardware clock to nanoseconds, it is converting
+to 1/3 nanoseconds because the conversion factor from 24Mhz to nanoseconds
+is 125/3. The usage sites divide the "nanoseconds" value returned by
+timecounter_read() by 3 to get a real nanoseconds value.
 
-mc146818_avoid_UIP would be a simpler name. Also, I'm pretty sure we can
-avoid the mc146818_callback_t typedef
+There is a lengthy comment in azx_timecounter_init() explaining this
+choice. That comment makes blatantly wrong assumptions about how
+timecounters work and what can overflow.
 
-> +{
-> +	int i;
-> +	unsigned long flags;
-> +	unsigned char seconds;
-> +
-> +	for (i = 0; i < 10; i++) {
-> +		spin_lock_irqsave(&rtc_lock, flags);
-> +
-> +		/*
-> +		 * Check whether there is an update in progress during which the
-> +		 * readout is unspecified. The maximum update time is ~2ms. Poll
-> +		 * every msec for completion.
-> +		 *
-> +		 * Store the second value before checking UIP so a long lasting
-> +		 * NMI which happens to hit after the UIP check cannot make
-> +		 * an update cycle invisible.
-> +		 */
-> +		seconds = CMOS_READ(RTC_SECONDS);
-> +
-> +		if (CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP) {
-> +			spin_unlock_irqrestore(&rtc_lock, flags);
-> +			mdelay(1);
-> +			continue;
-> +		}
-> +
-> +		/* Revalidate the above readout */
-> +		if (seconds != CMOS_READ(RTC_SECONDS)) {
-> +			spin_unlock_irqrestore(&rtc_lock, flags);
-> +			continue;
-> +		}
-> +
-> +		if (callback)
-> +			callback(seconds, param);
-> +
-> +		/*
-> +		 * Check for the UIP bit again. If it is set now then
-> +		 * the above values may contain garbage.
-> +		 */
-> +		if (CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP) {
-> +			spin_unlock_irqrestore(&rtc_lock, flags);
-> +			mdelay(1);
-> +			continue;
-> +		}
-> +
-> +		/*
-> +		 * A NMI might have interrupted the above sequence so check
-> +		 * whether the seconds value has changed which indicates that
-> +		 * the NMI took longer than the UIP bit was set. Unlikely, but
-> +		 * possible and there is also virt...
-> +		 */
-> +		if (seconds != CMOS_READ(RTC_SECONDS)) {
-> +			spin_unlock_irqrestore(&rtc_lock, flags);
-> +			continue;
-> +		}
-> +		spin_unlock_irqrestore(&rtc_lock, flags);
-> +
-> +		return true;
-> +	}
-> +	return false;
-> +}
-> +EXPORT_SYMBOL_GPL(mc146818_do_avoiding_UIP);
-> +
->  /*
->   * If the UIP (Update-in-progress) bit of the RTC is set for more then
->   * 10ms, the RTC is apparently broken or not present.
-> diff --git a/include/linux/mc146818rtc.h b/include/linux/mc146818rtc.h
-> index 69c80c4325bf..c0cea97461a0 100644
-> --- a/include/linux/mc146818rtc.h
-> +++ b/include/linux/mc146818rtc.h
-> @@ -127,4 +127,7 @@ bool mc146818_does_rtc_work(void);
->  unsigned int mc146818_get_time(struct rtc_time *time);
->  int mc146818_set_time(struct rtc_time *time);
->  
-> +typedef void (*mc146818_callback_t)(unsigned char seconds, void *param);
-> +bool mc146818_do_avoiding_UIP(mc146818_callback_t callback, void *param);
-> +
->  #endif /* _MC146818RTC_H */
-> -- 
-> 2.25.1
-> 
+The comment says:
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+     * Applying the 1/3 factor as part of the multiplication
+     * requires at least 20 bits for a decent precision, however
+     * overflows occur after about 4 hours or less, not a option.
+
+timecounters operate on time deltas between two readouts of a clock and use
+the mult/shift pair to calculate a precise nanoseconds value:
+
+    delta_nsec = (delta_clock * mult) >> shift;
+
+The fractional part is also taken into account and preserved to prevent
+accumulated rounding errors. For details see cyclecounter_cyc2ns().
+
+The mult/shift pair has to be chosen so that the multiplication of the
+maximum expected delta value does not result in a 64bit overflow. As the
+counter wraps around on 32bit, the maximum observable delta between two
+reads is (1 << 32) - 1 which is about 178.9 seconds.
+
+That in turn means the maximum multiplication factor which fits into an u32
+will not cause a 64bit overflow ever because it's guaranteed that:
+
+     ((1 << 32) - 1) ^ 2 < (1 << 64)
+
+The resulting correct multiplication factor is 2796202667 and the shift
+value is 26, i.e. 26 bit precision. The overflow of the multiplication
+would happen exactly at a clock readout delta of 6597069765 which is way
+after the wrap around of the hardware clock at around 274.8 seconds which
+is off from the claimed 4 hours by more than an order of magnitude.
+
+If the counter ever wraps around the last read value then the calculation
+is off by the number of wrap arounds times 178.9 seconds because the
+overflow cannot be observed.
+
+Use clocks_calc_mult_shift(), which calculates the most accurate mult/shift
+pair based on the given clock frequency, and remove the bogus comment along
+with the divisions at the readout sites.
+
+Fixes: 5d890f591d15 ("ALSA: hda: support for wallclock timestamps")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ sound/hda/hdac_stream.c           |   14 ++++----------
+ sound/pci/hda/hda_controller.c    |    1 -
+ sound/soc/intel/skylake/skl-pcm.c |    1 -
+ 3 files changed, 4 insertions(+), 12 deletions(-)
+
+--- a/sound/hda/hdac_stream.c
++++ b/sound/hda/hdac_stream.c
+@@ -534,17 +534,11 @@ static void azx_timecounter_init(struct
+ 	cc->mask = CLOCKSOURCE_MASK(32);
+ 
+ 	/*
+-	 * Converting from 24 MHz to ns means applying a 125/3 factor.
+-	 * To avoid any saturation issues in intermediate operations,
+-	 * the 125 factor is applied first. The division is applied
+-	 * last after reading the timecounter value.
+-	 * Applying the 1/3 factor as part of the multiplication
+-	 * requires at least 20 bits for a decent precision, however
+-	 * overflows occur after about 4 hours or less, not a option.
++	 * Calculate the optimal mult/shift values. The counter wraps
++	 * around after ~178.9 seconds.
+ 	 */
+-
+-	cc->mult = 125; /* saturation after 195 years */
+-	cc->shift = 0;
++	clocks_calc_mult_shift(&cc->mult, &cc->shift, 24000000,
++			       NSEC_PER_SEC, 178);
+ 
+ 	nsec = 0; /* audio time is elapsed time since trigger */
+ 	timecounter_init(tc, cc, nsec);
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -504,7 +504,6 @@ static int azx_get_time_info(struct snd_
+ 		snd_pcm_gettime(substream->runtime, system_ts);
+ 
+ 		nsec = timecounter_read(&azx_dev->core.tc);
+-		nsec = div_u64(nsec, 3); /* can be optimized */
+ 		if (audio_tstamp_config->report_delay)
+ 			nsec = azx_adjust_codec_delay(substream, nsec);
+ 
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1251,7 +1251,6 @@ static int skl_platform_soc_get_time_inf
+ 		snd_pcm_gettime(substream->runtime, system_ts);
+ 
+ 		nsec = timecounter_read(&hstr->tc);
+-		nsec = div_u64(nsec, 3); /* can be optimized */
+ 		if (audio_tstamp_config->report_delay)
+ 			nsec = skl_adjust_codec_delay(substream, nsec);
+ 
