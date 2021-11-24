@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB11A45C227
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:22:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 215F545C5B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:57:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347129AbhKXNZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:25:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39750 "EHLO mail.kernel.org"
+        id S1353657AbhKXOAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:00:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348682AbhKXNUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:20:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3F2E6128B;
-        Wed, 24 Nov 2021 12:47:02 +0000 (UTC)
+        id S1348208AbhKXN46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:56:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 977EA63392;
+        Wed, 24 Nov 2021 13:07:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758023;
-        bh=BK13YRtjt4xo0x18ZkuwYfFykbkco/riE+U0evPBdqM=;
+        s=korg; t=1637759258;
+        bh=uNtTpnsTSiVV8aks5pnimutDQRMMDEBTXfJl/2sESUg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2ro1BLtYb/XALGv9CbLSXvvhV1yUIApSclH8k0dTcdRpy7n3vMebVgq1xtMM+o/OX
-         HVwrOTzTEyJCgTIVz+qdkCJXaOOidhdwmC8oLP2IECkd3+Vb2cw07SMQ8CGHLDmNF0
-         S+G09G5dAJVoCULvrlb9JDMqEodLno5xU5nWuYT8=
+        b=fm2elAoZkMU2lELkPgXaqb6/0qLIUrFoXKfsMVFhGkLapvxNhpggcE674XSjNW/PE
+         BWNC8TGvGzNj/D+0SiXz48xirmJALtiW3jNEk0ZTo4zBgqIbfZJY/H2RWmPZbRsxvp
+         5Ee93FuoKYH5ZkL1ZrWmJtKfHNDsHY6MFFGIEXj8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Lu Wei <luwei32@huawei.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Rich Felker <dalias@libc.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 031/100] maple: fix wrong return value of maple_bus_init().
-Date:   Wed, 24 Nov 2021 12:57:47 +0100
-Message-Id: <20211124115655.882871191@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 181/279] pinctrl: qcom: sm8350: Correct UFS and SDC offsets
+Date:   Wed, 24 Nov 2021 12:57:48 +0100
+Message-Id: <20211124115724.996405823@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Wei <luwei32@huawei.com>
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-[ Upstream commit bde82ee391fa6d3ad054313c4aa7b726d32515ce ]
+[ Upstream commit 62209e805b5c68577602a5803a71d8e2e11ee0d3 ]
 
-If KMEM_CACHE or maple_alloc_dev failed, the maple_bus_init() will return 0
-rather than error, because the retval is not changed after KMEM_CACHE or
-maple_alloc_dev failed.
+The downstream TLMM binding covers a group of TLMM-related hardware
+blocks, but the upstream binding only captures the particular block
+related to controlling the TLMM pins from an OS. In the translation of
+the driver from downstream, the offset of 0x100000 was lost for the UFS
+and SDC pingroups.
 
-Fixes: 17be2d2b1c33 ("sh: Add maple bus support for the SEGA Dreamcast.")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Lu Wei <luwei32@huawei.com>
-Acked-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Signed-off-by: Rich Felker <dalias@libc.org>
+Fixes: d5d348a3271f ("pinctrl: qcom: Add SM8350 pinctrl driver")
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
+Reviewed-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Link: https://lore.kernel.org/r/20211104170835.1993686-1-bjorn.andersson@linaro.org
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/sh/maple/maple.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/pinctrl/qcom/pinctrl-sm8350.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/sh/maple/maple.c b/drivers/sh/maple/maple.c
-index e5d7fb81ad665..44a931d41a132 100644
---- a/drivers/sh/maple/maple.c
-+++ b/drivers/sh/maple/maple.c
-@@ -835,8 +835,10 @@ static int __init maple_bus_init(void)
+diff --git a/drivers/pinctrl/qcom/pinctrl-sm8350.c b/drivers/pinctrl/qcom/pinctrl-sm8350.c
+index 4d8f8636c2b39..1c042d39380c6 100644
+--- a/drivers/pinctrl/qcom/pinctrl-sm8350.c
++++ b/drivers/pinctrl/qcom/pinctrl-sm8350.c
+@@ -1597,10 +1597,10 @@ static const struct msm_pingroup sm8350_groups[] = {
+ 	[200] = PINGROUP(200, qdss_gpio, _, _, _, _, _, _, _, _),
+ 	[201] = PINGROUP(201, _, _, _, _, _, _, _, _, _),
+ 	[202] = PINGROUP(202, _, _, _, _, _, _, _, _, _),
+-	[203] = UFS_RESET(ufs_reset, 0x1d8000),
+-	[204] = SDC_PINGROUP(sdc2_clk, 0x1cf000, 14, 6),
+-	[205] = SDC_PINGROUP(sdc2_cmd, 0x1cf000, 11, 3),
+-	[206] = SDC_PINGROUP(sdc2_data, 0x1cf000, 9, 0),
++	[203] = UFS_RESET(ufs_reset, 0xd8000),
++	[204] = SDC_PINGROUP(sdc2_clk, 0xcf000, 14, 6),
++	[205] = SDC_PINGROUP(sdc2_cmd, 0xcf000, 11, 3),
++	[206] = SDC_PINGROUP(sdc2_data, 0xcf000, 9, 0),
+ };
  
- 	maple_queue_cache = KMEM_CACHE(maple_buffer, SLAB_HWCACHE_ALIGN);
- 
--	if (!maple_queue_cache)
-+	if (!maple_queue_cache) {
-+		retval = -ENOMEM;
- 		goto cleanup_bothirqs;
-+	}
- 
- 	INIT_LIST_HEAD(&maple_waitq);
- 	INIT_LIST_HEAD(&maple_sentq);
-@@ -849,6 +851,7 @@ static int __init maple_bus_init(void)
- 		if (!mdev[i]) {
- 			while (i-- > 0)
- 				maple_free_dev(mdev[i]);
-+			retval = -ENOMEM;
- 			goto cleanup_cache;
- 		}
- 		baseunits[i] = mdev[i];
+ static const struct msm_gpio_wakeirq_map sm8350_pdc_map[] = {
 -- 
 2.33.0
 
