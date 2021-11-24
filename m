@@ -2,96 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0CE45C986
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:05:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 179BE45C997
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:11:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242637AbhKXQId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:08:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42670 "EHLO
+        id S243084AbhKXQOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:14:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbhKXQIb (ORCPT
+        with ESMTP id S242904AbhKXQOe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:08:31 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD832C061574;
-        Wed, 24 Nov 2021 08:05:21 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id b1so8438914lfs.13;
-        Wed, 24 Nov 2021 08:05:21 -0800 (PST)
+        Wed, 24 Nov 2021 11:14:34 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C62C061574;
+        Wed, 24 Nov 2021 08:11:24 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id x15so12771810edv.1;
+        Wed, 24 Nov 2021 08:11:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XaZL1gqGefL3we/nKaFes+6q80QBPA1qm8dyiAwLJtk=;
-        b=JvocAoplJmBKFZX3YppjDDIfPCn6erSoH/8cS7ieRxpQvQU9lkBGkVm/twRJKwnLhu
-         I3BawiPYHkOHcDVlzVnkPhrkWTWKwxw+ZCKJIQTMWvN4H09wJnKg/7wBq/6yyB/reMHA
-         8bkNbqQHBWnpBQc7yJBzYiNsqDKjuoRVm5cYDqha+zcWXW5W64aR2B9TSsisc4JX4Jno
-         PUBqy+Docg631q5XAV1+VX1TPXXgnViDug3VSGocGH44cyDbXvBEX/eRpH5oDJIwO1or
-         mVXtQd9ICqWNgl18w6E6hbGq8KSnJ4sGIrdjJLiXOTIomzt9KvYWlIVJc2hzJ0eP+bnP
-         Sw1g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IdT054fgF5Go5Tp2w6Oh+T0wAIQHsnCjYK9mImRrklE=;
+        b=A/8bkpxbZZpO+Pe3nOl8dYlgS2nvzghkIsBTfjQb8Wt6unsftdIWw86X0Z/Dgwmogv
+         k4yO67vVcHeg7uvLbj9cgDenVDHDOKBgdi9yVKFS368fyIx0eDGfCCQVxVgtQhETFcoD
+         SYLPamsbZV6yFSAYKcmzsInnf6fESBGznUQtY5mlpyRkXictIOsDz34+mHn24iH/7Yer
+         SIKnUrYrtsZnqh3zbaqf+EVN1a/U0CbniTtIP1v+iSRDHywKF+lC5IYtFSZ2jhQUnnG2
+         NNlImNcUAzc5WvSBimSmk3sDvuIRQC6b+ditxU1ia7uTtt61pqrE+okO58zSY8yNrC5W
+         D3Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XaZL1gqGefL3we/nKaFes+6q80QBPA1qm8dyiAwLJtk=;
-        b=BUvFmY91WEQ92+nwjQJCZ3RAXzN19kTkGrEqZQd+6syMiCCGYZEKfdXDNdaS+CKxNZ
-         ee19CWbI+NUo+oGkjXu5kE9B+3eRU+HucTkQVeAcGR1tiyK1SAQ8M8V4L6mzVBG/wdnM
-         LqBxA0nB2AF8OwfnDGxTE64udMgR60N0TDA9n7krb4FKyZykLr890Mo/25ZeWr6acVzm
-         39TH2GSirUS9IK/eMCXBXa3i79p9JnqWOYCcJfZWG2yVUjRPRn8bCq0frwOSPemWXfkJ
-         OkhVuPGaT9LoHh22JHUgiJGtC31tOgayfK+REmdqRXWrtcTHF6gQqr8G7k8x0ZMgDQB+
-         3JCA==
-X-Gm-Message-State: AOAM532kyKmue0y4xyhyr7CQ47OeJNwj4z+y/xDff8om9GRBEe33tV1A
-        MFB30NB92Bug3BHCS+wPPao=
-X-Google-Smtp-Source: ABdhPJxrdgHea8Krc6d9ZfZFMLQzyWZ6L75uGZec6KisbMsGo8JOFKZjsX4oRJUwAnPRr3c0zWOsZw==
-X-Received: by 2002:a19:5e59:: with SMTP id z25mr16017187lfi.686.1637769919078;
-        Wed, 24 Nov 2021 08:05:19 -0800 (PST)
-Received: from [192.168.2.145] (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
-        by smtp.googlemail.com with ESMTPSA id e14sm25124lfs.150.2021.11.24.08.05.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 08:05:18 -0800 (PST)
-Subject: Re: [PATCH v2] i2c: tegra: Add ACPI support
-To:     Akhil R <akhilrajeev@nvidia.com>,
-        "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-        "christian.koenig@amd.com" <christian.koenig@amd.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>
-Cc:     Shardar Mohammed <smohammed@nvidia.com>
-References: <1637328734-20576-1-git-send-email-akhilrajeev@nvidia.com>
- <1637651753-5067-1-git-send-email-akhilrajeev@nvidia.com>
- <eebf20ea-6a7f-1120-5ad8-b6dc1f9935e6@gmail.com>
- <BN9PR12MB5273A7628D80076F4EF2CC69C0619@BN9PR12MB5273.namprd12.prod.outlook.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b06a5072-f0f4-c9f9-f9a2-8d76b4432415@gmail.com>
-Date:   Wed, 24 Nov 2021 19:05:17 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IdT054fgF5Go5Tp2w6Oh+T0wAIQHsnCjYK9mImRrklE=;
+        b=j5XNwk18gtZTJs7EKOH2TT/3kTVUxJTeXovN9zAVrNGlv4McGzMBF+VYmshw3cQh5E
+         EN+VRiPpdmCloBQemgI0OwBMoiwg+MiexhQ2+yE5kXY01MTqyxuXMJyuPsTO3Wui2rLN
+         rz96eoJYtCQBl78vyq/etK6QDurCQwjEGBvpXj1UcWcf9bNCOZ2pOw4niI/AICjjiyw5
+         IUxuhGIOUlrvEUgbjyPoGYUtXlScrAT3sCiwl46Vt0yePV4Plsy9d3ThgMvVORlEF4Ov
+         uFqzl4A+/s2LRPP4br1YAcatfIlrXWECOJkpkyxc8lqY0eezt4XWvL1o0r4MUJAHZwOv
+         W2xg==
+X-Gm-Message-State: AOAM530/IUP4kKtMAwkjHMnV4/MPYNdnr0/DgIvEG2i0f8xYakGhe749
+        OELVnE6dOqBlPBNnXgt6WwUbw3VJg6RrHhgjDmw=
+X-Google-Smtp-Source: ABdhPJxRb8Oz7UhK9YLtkRvO3XscN1dwlJW69e+0sHVByixXLWjl+Tp2+gCtzzu/NtpCkFV4l1cA9Hm9lRjAClMLiJo=
+X-Received: by 2002:a17:906:489b:: with SMTP id v27mr21265851ejq.567.1637770282840;
+ Wed, 24 Nov 2021 08:11:22 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <BN9PR12MB5273A7628D80076F4EF2CC69C0619@BN9PR12MB5273.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211122212850.321542-1-pauk.denis@gmail.com> <20211122212850.321542-3-pauk.denis@gmail.com>
+In-Reply-To: <20211122212850.321542-3-pauk.denis@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 24 Nov 2021 18:10:46 +0200
+Message-ID: <CAHp75Vfg7LKX-21+b6f5c34G4Y=ZUqrWRbfDt_quCiJe+By-Ww@mail.gmail.com>
+Subject: Re: [PATCH 2/3] hwmon: (nct6775) Implement custom lock by ACPI mutex.
+To:     Denis Pauk <pauk.denis@gmail.com>
+Cc:     Eugene Shalygin <eugene.shalygin@gmail.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        thomas@weissschuh.net, Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-24.11.2021 10:18, Akhil R пишет:
->> *i2c_dev)
->>>               i2c_dev->is_vi = true;
->>>  }
->> How are you going to differentiate the VI I2C from a non-VI? This doesn't look
->> right.
-> This patch adds the ACPI support to only non-VI I2C. The device_ids in match table
-> are added accordingly. I suppose, of_device_is_compatible always returns false as 
-> there is no device tree. 
-> Agree with the other comments.
+> +       if (ACPI_FAILURE(acpi_acquire_mutex(data->acpi_wmi_mutex, NULL, ASUSWMI_DELAY_MSEC_LOCK)))
 
-Will the VI I2C have a different ACPI ID or how it's going to work?
+
+On Mon, Nov 22, 2021 at 11:29 PM Denis Pauk <pauk.denis@gmail.com> wrote:
+
+No period in the Subject.
+
+> Use ACPI lock when board has separate lock for monitoring IO.
+
+the board
+a separate
+
+...
+
+> +#define ASUSWMI_DELAY_MSEC_LOCK                500     /* Wait 0.5 s max. to get the lock */
+
+Units are the last in the names, hence (also check the comment's
+location and English)
+
+/* Wait for up to 0.5 s to acquire the lock */
+#define ASUSWMI_LOCK_TIMEOUT_MS                500
+
+...
+
+> -       struct mutex update_lock;
+> +       struct mutex update_lock;       /* non ACPI lock */
+> +       acpi_handle acpi_wmi_mutex;     /* ACPI lock */
+
+Couldn't it be an anonymous union?
+
+...
+
+> +static int nct6775_wmi_lock(struct nct6775_data *data)
+> +{
+> +       if (ACPI_FAILURE(acpi_acquire_mutex(data->acpi_wmi_mutex, NULL, ASUSWMI_DELAY_MSEC_LOCK)))
+
+Please, use a temporary variable here and in the similar cases.
+
+  acpi_status status;
+
+  status = acpi_acquire_mutex(data->acpi_wmi_mutex, NULL,
+ASUSWMI_LOCK_TIMEOUT_MS));
+  if (ACPI_FAILURE(status))
+
+> +               return -EIO;
+> +
+> +       return 0;
+> +}
+
+-- 
+With Best Regards,
+Andy Shevchenko
