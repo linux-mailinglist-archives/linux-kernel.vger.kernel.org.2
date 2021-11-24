@@ -2,173 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD5545C8E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:40:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5BC545C8EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:40:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245212AbhKXPnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:43:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36658 "EHLO
+        id S1343670AbhKXPoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:44:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244217AbhKXPnp (ORCPT
+        with ESMTP id S245385AbhKXPn7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:43:45 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D43C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:40:35 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id c32so8364652lfv.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:40:34 -0800 (PST)
+        Wed, 24 Nov 2021 10:43:59 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7634EC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:40:49 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id r25so12320144edq.7
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:40:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MRHSK8zabRFIynpw4+uy7/MG4Xk6F7PWDEFcamsYRYU=;
-        b=TugcSYnHV39SipEpIZX0+YVXT2YzASAzsk9uWYPrM41qixYEvcCzmp12Z8+OLFznPr
-         dkNfO3y312qdyv88H0pBptv570nvbk+cekRIfAz342IShomnUqYoAwfPG+G6FJRWYKcm
-         NA26AiIcR3TOf8Jty7f3CM9fL7ar42Q9fFwww4ZnCOaoVcYFJMdue1AcWegLuNp+5GP8
-         A08ZIsnq7EGPANchlly0T+hDY2ZBgAIflrZR0cb4/BxfBW63PXDIm0g0PZ9xMu/0120w
-         1jbwW8KFcWn1KcPq2kymAJo7cb9PxrwRFTZQoNyymOfebPw7U2qxg8dMjBnWGV+Hi5/9
-         lYKQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WOzZVb7eK7Hti0tz3GVrNqgoxIyM18tOwhZY0CXCgCY=;
+        b=vNC9gnZ7Mgigz91OlFqpssnHXeE4NTqVn2epRiFQQxdiTv1Zyx+SoX5RiHdoHXSFJF
+         yK2IGi2OHfIB0Htmvbhj/N8guIyjZPQ+R8EbE5mspmWnfLmTZ5IOpVHJGByMe1p7Jgvh
+         wbn5I8xTUoQDFLR5iY+GBlb0TLH5XRU7LuGzN33398vHsqrAou6G59H9ERPFLLQ6rMvw
+         /uNBtB403hAaDXxZ4K1/LObfQGiscsa2Z7JwJg74mZK+iC3EVn9xGxU4mGilcbJs1Zx8
+         5zTT4Yd7CtZ/McV2WvasBSty1Js7RWIUGcJqlo8hkGb356A8g4jMpbsm2J6LUwFAyV6T
+         xG6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MRHSK8zabRFIynpw4+uy7/MG4Xk6F7PWDEFcamsYRYU=;
-        b=6OmPinFqb2PJXBkitpkWWQ3ZUfjClOUkt0ADutI3V3eM3g9m9qZ6OrMt+DxXB2201S
-         xt4ZP0Jgq8TY13+5Ekq1JJJqEloVgHej0GVD1kFvYeWJrjyN6ufflQpyQq3PGaKP5oIF
-         FzHbhwjzaIW850ftZUSIPgx2acFhkR1nP0a24Ayuw4uu8QC9FdOfy+d9bnYVkzZzAH1N
-         EcBkntAPp9Nujkcy+FYr5wM31ALvEZvnBRNqB03XTqK5KeV6brmORKZy/yRAAuHTTX56
-         Be/EYoHlhUtdoriCBcgV1GZuHZf7qAA8lnrvUJnn3nmfev0Wf0whjo8IFPZlL0JMnTLD
-         3miA==
-X-Gm-Message-State: AOAM531ZswZ+iHXD/riUpHfiECbmBi+0uE2pCZd8Fuqagv7B5m970nGc
-        co95MZPydOS3T2Zz55xuWimFmQ==
-X-Google-Smtp-Source: ABdhPJxGGspGiIzucoi+Pl9RHLXjwi2ldVTBfma2Pqx2udv5TQOaceAH0vTSByWarlNgAddvvzt/Bw==
-X-Received: by 2002:a05:6512:33c9:: with SMTP id d9mr15286457lfg.615.1637768433301;
-        Wed, 24 Nov 2021 07:40:33 -0800 (PST)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id d10sm15999lfe.106.2021.11.24.07.40.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 07:40:32 -0800 (PST)
-Subject: Re: [PATCH v3 05/13] drm/msm/disp/dpu1: Don't use DSC with mode_3d
-To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-References: <20211116062256.2417186-1-vkoul@kernel.org>
- <20211116062256.2417186-6-vkoul@kernel.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <20269960-a753-72d4-5a1d-430af00cf562@linaro.org>
-Date:   Wed, 24 Nov 2021 18:40:32 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WOzZVb7eK7Hti0tz3GVrNqgoxIyM18tOwhZY0CXCgCY=;
+        b=EhTlhRsJA2JLQfnVs2O8CpBPIISM0mDIx5qA/2R3kIAoNl0GKcBIHAbavStDWN3La9
+         FtVZDxQzfL6CN74Q8hYydZ4W6e3O3Ob3nhxzfEeD5xYWr7J14QQW6sIx9EsuW6alnyPE
+         R2SGxPUlUiwZfEmIU8UIWSF3AnfQFTzN20qyaw26du/7+IbsG9cmNqRyp1akiFqwoRiA
+         4o24f/h8MeOl2yJWNGt1iUpqhJdqRabpm6rKZ0EibfPZu0NvxPfbCejjv1veVmLuJPE+
+         shJkc4Xic4MGhRYevlY/4wLI3F9E2Pw3zjXpFxv29S+NgoprjYr0h+USrsdv7P+NlVSv
+         ggNg==
+X-Gm-Message-State: AOAM532/goAOhyaBFEFBhrkuKoIe7862qoAI9FVYEBJbMZXpVNcfgMBJ
+        /UNncci8wKe5OsWSl40teiXP7OsUhytiEd2L5QRvZw==
+X-Google-Smtp-Source: ABdhPJzsxFeT+ZbR5XBrCvJ2qn5HXrBYo4hZIOym5n1u5AfFDx5Ci4S21KmpQLhCwjNDpT1Mn1SzhzaauI28dmA9x2g=
+X-Received: by 2002:a05:6402:4248:: with SMTP id g8mr26665904edb.182.1637768447927;
+ Wed, 24 Nov 2021 07:40:47 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211116062256.2417186-6-vkoul@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 24 Nov 2021 21:10:35 +0530
+Message-ID: <CA+G9fYt_DK3Ft1J08Wsw=4YfV0iayKqNtkQt_=8vgr+A6CrC6g@mail.gmail.com>
+Subject: Re: [PATCH 5.4 000/100] 5.4.162-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Stephen Boyd <swboyd@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2021 09:22, Vinod Koul wrote:
-> We cannot enable mode_3d when we are using the DSC. So pass
-> configuration to detect DSC is enabled and not enable mode_3d
-> when we are using DSC
-> 
-> We add a helper dpu_encoder_helper_get_dsc() to detect dsc
-> enabled and pass this to .setup_intf_cfg()
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h     | 11 +++++++++++
->   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c |  2 ++
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c           |  3 ++-
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h           |  2 ++
->   4 files changed, 17 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
-> index e7270eb6b84b..efb85d595598 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
-> @@ -332,6 +332,17 @@ static inline enum dpu_3d_blend_mode dpu_encoder_helper_get_3d_blend_mode(
->   	return BLEND_3D_NONE;
->   }
->   
-> +static inline bool dpu_encoder_helper_get_dsc(struct dpu_encoder_phys *phys_enc)
-> +{
-> +	struct drm_encoder *drm_enc = phys_enc->parent;
-> +	struct msm_drm_private *priv = drm_enc->dev->dev_private;
-> +
-> +	if (priv->dsc)
-> +		return priv->dsc->dsc_mask;
+On Wed, 24 Nov 2021 at 18:19, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.162 release.
+> There are 100 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.162-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-dsc_mask doesn't exist at this point, so the patch should be moved later 
-in the series.
-
-> +
-> +	return 0;
-> +}
-> +
->   /**
->    * dpu_encoder_helper_split_config - split display configuration helper function
->    *	This helper function may be used by physical encoders to configure
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-> index 34a6940d12c5..f3f00f4d0193 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-> @@ -70,6 +70,8 @@ static void _dpu_encoder_phys_cmd_update_intf_cfg(
->   	intf_cfg.intf_mode_sel = DPU_CTL_MODE_SEL_CMD;
->   	intf_cfg.stream_sel = cmd_enc->stream_sel;
->   	intf_cfg.mode_3d = dpu_encoder_helper_get_3d_blend_mode(phys_enc);
-> +	intf_cfg.dsc = dpu_encoder_helper_get_dsc(phys_enc);
-> +
->   	ctl->ops.setup_intf_cfg(ctl, &intf_cfg);
->   }
->   
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> index 64740ddb983e..36831457a91b 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> @@ -519,7 +519,8 @@ static void dpu_hw_ctl_intf_cfg(struct dpu_hw_ctl *ctx,
->   
->   	intf_cfg |= (cfg->intf & 0xF) << 4;
->   
-> -	if (cfg->mode_3d) {
-> +	/* In DSC we can't set merge, so check for dsc too */
-> +	if (cfg->mode_3d && !cfg->dsc) {
->   		intf_cfg |= BIT(19);
->   		intf_cfg |= (cfg->mode_3d - 0x1) << 20;
->   	}
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
-> index 806c171e5df2..9847c9c46d6f 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
-> @@ -40,6 +40,7 @@ struct dpu_hw_stage_cfg {
->    * @merge_3d:              3d merge block used
->    * @intf_mode_sel:         Interface mode, cmd / vid
->    * @stream_sel:            Stream selection for multi-stream interfaces
-> + * @dsc:                   DSC BIT masks
->    */
->   struct dpu_hw_intf_cfg {
->   	enum dpu_intf intf;
-> @@ -47,6 +48,7 @@ struct dpu_hw_intf_cfg {
->   	enum dpu_merge_3d merge_3d;
->   	enum dpu_ctl_mode_sel intf_mode_sel;
->   	int stream_sel;
-> +	unsigned int dsc;
->   };
->   
->   /**
-> 
+Regression found on arm64 gcc-11 builds
+Following build warnings / errors reported on stable-rc 5.4.
 
 
--- 
-With best wishes
-Dmitry
+builds/linux/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi:412.21-414.5:
+ERROR (duplicate_label): /soc/codec: Duplicate label 'lpass_codec' on
+/soc/codec and /soc@0/codec
+ERROR: Input tree has errors, aborting (use -f to force output)
+make[3]: *** [scripts/Makefile.lib:285:
+arch/arm64/boot/dts/qcom/apq8016-sbc.dtb] Error 2
+
+
+The bisect tool pointed to,
+
+b979ffa8bbd6e4c33df7f3e7ac3d63f2234c023c is the first bad commit
+commit b979ffa8bbd6e4c33df7f3e7ac3d63f2234c023c
+Author: Stephan Gerhold <stephan@gerhold.net>
+Date:   Tue Sep 21 17:21:18 2021 +0200
+
+    arm64: dts: qcom: msm8916: Add unit name for /soc node
+
+
+
+As it was reported here,
+https://lore.kernel.org/stable/CA+G9fYv5fnntoa1vzXp52=TSxCK=U8fV8J-AbE+WmKH1w4ebwg@mail.gmail.com/
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+--
+Linaro LKFT
+https://lkft.linaro.org
