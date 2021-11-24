@@ -2,135 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC30145D028
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:40:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2EDC45D02A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345880AbhKXWny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 17:43:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230098AbhKXWnx (ORCPT
+        id S1346439AbhKXWom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 17:44:42 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:54415 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230098AbhKXWok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:43:53 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB19C06173E
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 14:40:42 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id l3-20020a170902f68300b00142892d0a86so1360859plg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 14:40:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=rbJ9JO3IuNN6r3UIfB5u88Bz2IUK6aXonS1RTuRnAxM=;
-        b=DPNV8qDJ1EE0FeYK7irTV3MIdUWT3kaFlvTvXfmqq0eLDPdBfeQDaMsNvrM+4+LC+n
-         Gi5qCDDkEnKqDpB4+YpoNMHSBbMKEEPeXOVNHMwbmcypCPowNj61m2aCibmhLqalqOcL
-         tNtHS2yrvfprijNWNZh5q/vUkI2+GXK3TN06Y4vbij8FOq4xKgsWs1DPIrpLADeoA+cC
-         +gcGweO1m57DVK/LOR4o+qGpBjKlfpT733uPdXjyHeIiU507vuFtYS6A6MCnr3llUqCO
-         lJN9mg7D6tKoxR1+b3X4aBHH77B2uEHDnXqpqYfZ02rSElCKAzBWUTlkpbgBaFzuZNR3
-         WRwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=rbJ9JO3IuNN6r3UIfB5u88Bz2IUK6aXonS1RTuRnAxM=;
-        b=YbDL2uwDn+zz3eLg/QJsSMVAc6Qqy5FXgfaNtYo/0tMGJhS2gxMiy4AWO7Jx/Z4EjY
-         AUOavqzZeDl3JY8H6+Y1TY9yVcytc9V9NbvkTBoAPnu6OOS9b4QompE4wcUl7Yt6ZNYo
-         Mdh3nQhoq5uDmtsCOsKpMIcqlVl5uY2Iu68HSum6zI1BbDaV0WBYqR+UeZ5hk3F+gDww
-         WxBL9BloSHA5cKVmzEDnSRpm3wRFQ/zGfuZR2UTEunEvpkqnQlcYfphWcqqAEKHGT/oR
-         3u51guwOqdQM6oaxgXc/8NZJaJjjGSWbBEzOa8n1Zb44WiFdeyVgJA9DaiLGoaW43z1y
-         c8RQ==
-X-Gm-Message-State: AOAM530uRB4+/eCoa031EXnM8f7Ug2AFDO8c6PjCDppD3Ml/hJdEoiJ8
-        //KicKzx3dRxlMebRluLLuIiWkJcMao=
-X-Google-Smtp-Source: ABdhPJwQjuN1Ii/V1y0uJ0mrubcan8tzthwSuRjHOasm3tRxdaoO5Qn+J0Jc8/G843jmWlq5GR1C8dpoyZM=
-X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:a4ad:5772:64a6:6abd])
- (user=badhri job=sendgmr) by 2002:a17:90a:1913:: with SMTP id
- 19mr767222pjg.174.1637793642259; Wed, 24 Nov 2021 14:40:42 -0800 (PST)
-Date:   Wed, 24 Nov 2021 14:40:36 -0800
-Message-Id: <20211124224036.734679-1-badhri@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH v1] usb: typec: tcpm: Wait in SNK_DEBOUNCED until disconnect
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kyle Tso <kyletso@google.com>, stable@vger.kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 24 Nov 2021 17:44:40 -0500
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 0D1711C0003;
+        Wed, 24 Nov 2021 22:41:28 +0000 (UTC)
+Date:   Wed, 24 Nov 2021 23:41:28 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Mateusz =?utf-8?Q?Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
+Cc:     linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Alessandro Zummo <a.zummo@towertech.it>
+Subject: Re: [PATCH RESEND v3 4/7] rtc-mc146818-lib: refactor
+ mc146818_get_time
+Message-ID: <YZ6/mDlT92Zv4L2B@piout.net>
+References: <20211119204221.66918-1-mat.jonczyk@o2.pl>
+ <20211119204221.66918-5-mat.jonczyk@o2.pl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211119204221.66918-5-mat.jonczyk@o2.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stub from the spec:
-"4.5.2.2.4.2 Exiting from AttachWait.SNK State
-A Sink shall transition to Unattached.SNK when the state of both
-the CC1 and CC2 pins is SNK.Open for at least tPDDebounce.
-A DRP shall transition to Unattached.SRC when the state of both
-the CC1 and CC2 pins is SNK.Open for at least tPDDebounce."
+On 19/11/2021 21:42:18+0100, Mateusz Jończyk wrote:
+> Refactor mc146818_get_time() to make use of mc146818_do_avoiding_UIP().
+> 
+> Signed-off-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
+> Cc: Alessandro Zummo <a.zummo@towertech.it>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> 
+> ---
+> 
+>  drivers/rtc/rtc-mc146818-lib.c | 111 +++++++++++++--------------------
+>  1 file changed, 43 insertions(+), 68 deletions(-)
+> 
+> I'm sorry that the diff is quite difficult to read, but I was unable to
+> fix this easily.
+> 
+> diff --git a/drivers/rtc/rtc-mc146818-lib.c b/drivers/rtc/rtc-mc146818-lib.c
+> index 946ad43a512c..f3178244db37 100644
+> --- a/drivers/rtc/rtc-mc146818-lib.c
+> +++ b/drivers/rtc/rtc-mc146818-lib.c
+> @@ -102,50 +102,20 @@ bool mc146818_does_rtc_work(void)
+>  }
+>  EXPORT_SYMBOL_GPL(mc146818_does_rtc_work);
+>  
+> -unsigned int mc146818_get_time(struct rtc_time *time)
+> -{
+> +struct mc146818_get_time_callback_param {
+> +	struct rtc_time *time;
+>  	unsigned char ctrl;
+> -	unsigned long flags;
+> -	unsigned int iter_count = 0;
+> -	unsigned char century = 0;
+> -	bool retry;
+> -
+> +#ifdef CONFIG_ACPI
+> +	unsigned char century;
+> +#endif
+>  #ifdef CONFIG_MACH_DECSTATION
+>  	unsigned int real_year;
+>  #endif
+> +};
+>  
+> -again:
+> -	if (iter_count > 10) {
+> -		pr_err_ratelimited("Unable to read current time from RTC\n");
+> -		memset(time, 0xff, sizeof(*time));
+> -		return 0;
+> -	}
+> -	iter_count++;
+> -
+> -	spin_lock_irqsave(&rtc_lock, flags);
+> -
+> -	/*
+> -	 * Check whether there is an update in progress during which the
+> -	 * readout is unspecified. The maximum update time is ~2ms. Poll
+> -	 * every msec for completion.
+> -	 *
+> -	 * Store the second value before checking UIP so a long lasting NMI
+> -	 * which happens to hit after the UIP check cannot make an update
+> -	 * cycle invisible.
+> -	 */
+> -	time->tm_sec = CMOS_READ(RTC_SECONDS);
+> -
+> -	if (CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP) {
+> -		spin_unlock_irqrestore(&rtc_lock, flags);
+> -		mdelay(1);
+> -		goto again;
+> -	}
+> -
+> -	/* Revalidate the above readout */
+> -	if (time->tm_sec != CMOS_READ(RTC_SECONDS)) {
+> -		spin_unlock_irqrestore(&rtc_lock, flags);
+> -		goto again;
+> -	}
+> +static void mc146818_get_time_callback(unsigned char seconds, void *param_in)
+> +{
+> +	struct mc146818_get_time_callback_param *p = param_in;
+>  
+>  	/*
+>  	 * Only the values that we read from the RTC are set. We leave
+> @@ -153,39 +123,40 @@ unsigned int mc146818_get_time(struct rtc_time *time)
+>  	 * RTC has RTC_DAY_OF_WEEK, we ignore it, as it is only updated
+>  	 * by the RTC when initially set to a non-zero value.
+>  	 */
+> -	time->tm_min = CMOS_READ(RTC_MINUTES);
+> -	time->tm_hour = CMOS_READ(RTC_HOURS);
+> -	time->tm_mday = CMOS_READ(RTC_DAY_OF_MONTH);
+> -	time->tm_mon = CMOS_READ(RTC_MONTH);
+> -	time->tm_year = CMOS_READ(RTC_YEAR);
+> +	p->time->tm_sec = seconds;
+> +	p->time->tm_min = CMOS_READ(RTC_MINUTES);
+> +	p->time->tm_hour = CMOS_READ(RTC_HOURS);
+> +	p->time->tm_mday = CMOS_READ(RTC_DAY_OF_MONTH);
+> +	p->time->tm_mon = CMOS_READ(RTC_MONTH);
+> +	p->time->tm_year = CMOS_READ(RTC_YEAR);
+>  #ifdef CONFIG_MACH_DECSTATION
+> -	real_year = CMOS_READ(RTC_DEC_YEAR);
+> +	p->real_year = CMOS_READ(RTC_DEC_YEAR);
+>  #endif
+>  #ifdef CONFIG_ACPI
+>  	if (acpi_gbl_FADT.header.revision >= FADT2_REVISION_ID &&
+> -	    acpi_gbl_FADT.century)
+> -		century = CMOS_READ(acpi_gbl_FADT.century);
+> +	    acpi_gbl_FADT.century) {
+> +		p->century = CMOS_READ(acpi_gbl_FADT.century);
+> +	} else {
+> +		p->century = 0;
+> +	}
+>  #endif
+> -	ctrl = CMOS_READ(RTC_CONTROL);
+> -	/*
+> -	 * Check for the UIP bit again. If it is set now then
+> -	 * the above values may contain garbage.
+> -	 */
+> -	retry = CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP;
+> -	/*
+> -	 * A NMI might have interrupted the above sequence so check whether
+> -	 * the seconds value has changed which indicates that the NMI took
+> -	 * longer than the UIP bit was set. Unlikely, but possible and
+> -	 * there is also virt...
+> -	 */
+> -	retry |= time->tm_sec != CMOS_READ(RTC_SECONDS);
+>  
+> -	spin_unlock_irqrestore(&rtc_lock, flags);
+> +	p->ctrl = CMOS_READ(RTC_CONTROL);
+> +}
+>  
+> -	if (retry)
+> -		goto again;
+> +unsigned int mc146818_get_time(struct rtc_time *time)
+> +{
+> +	struct mc146818_get_time_callback_param p = {
+> +		.time = time
+> +	};
+>  
+> -	if (!(ctrl & RTC_DM_BINARY) || RTC_ALWAYS_BCD)
+> +	if (!mc146818_do_avoiding_UIP(mc146818_get_time_callback, &p)) {
+> +		pr_err_ratelimited("Unable to read current time from RTC\n");
+> +		memset(time, 0xff, sizeof(*time));
+> +		return 0;
+> +	}
+> +
+> +	if (!(p.ctrl & RTC_DM_BINARY) || RTC_ALWAYS_BCD)
+>  	{
+>  		time->tm_sec = bcd2bin(time->tm_sec);
+>  		time->tm_min = bcd2bin(time->tm_min);
+> @@ -193,15 +164,19 @@ unsigned int mc146818_get_time(struct rtc_time *time)
+>  		time->tm_mday = bcd2bin(time->tm_mday);
+>  		time->tm_mon = bcd2bin(time->tm_mon);
+>  		time->tm_year = bcd2bin(time->tm_year);
+> -		century = bcd2bin(century);
+> +#ifdef CONFIG_ACPI
+> +		p.century = bcd2bin(p.century);
+> +#endif
+>  	}
+>  
+>  #ifdef CONFIG_MACH_DECSTATION
+> -	time->tm_year += real_year - 72;
+> +	time->tm_year += p.real_year - 72;
+>  #endif
+>  
+> -	if (century > 20)
+> -		time->tm_year += (century - 19) * 100;
+> +#ifdef CONFIG_ACPI
 
-This change makes TCPM to wait in SNK_DEBOUNCED state until
-CC1 and CC2 pins is SNK.Open for at least tPDDebounce. Previously,
-TCPM resets the port if vbus is not present in PD_T_PS_SOURCE_ON.
-This causes TCPM to loop continuously when connected to a
-faulty power source that does not present vbus. Waiting in
-SNK_DEBOUNCED also ensures that TCPM is adherant to
-"4.5.2.2.4.2 Exiting from AttachWait.SNK State" requirements.
+This is an unrelated change
 
-[ 6169.280751] CC1: 0 -> 0, CC2: 0 -> 5 [state TOGGLING, polarity 0, connected]
-[ 6169.280759] state change TOGGLING -> SNK_ATTACH_WAIT [rev2 NONE_AMS]
-[ 6169.280771] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev2 NONE_AMS]
-[ 6169.282427] CC1: 0 -> 0, CC2: 5 -> 5 [state SNK_ATTACH_WAIT, polarity 0, connected]
-[ 6169.450825] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
-[ 6169.450834] pending state change SNK_DEBOUNCED -> PORT_RESET @ 480 ms [rev2 NONE_AMS]
-[ 6169.930892] state change SNK_DEBOUNCED -> PORT_RESET [delayed 480 ms]
-[ 6169.931296] disable vbus discharge ret:0
-[ 6169.931301] Setting usb_comm capable false
-[ 6169.932783] Setting voltage/current limit 0 mV 0 mA
-[ 6169.932802] polarity 0
-[ 6169.933706] Requesting mux state 0, usb-role 0, orientation 0
-[ 6169.936689] cc:=0
-[ 6169.936812] pending state change PORT_RESET -> PORT_RESET_WAIT_OFF @ 100 ms [rev2 NONE_AMS]
-[ 6169.937157] CC1: 0 -> 0, CC2: 5 -> 0 [state PORT_RESET, polarity 0, disconnected]
-[ 6170.036880] state change PORT_RESET -> PORT_RESET_WAIT_OFF [delayed 100 ms]
-[ 6170.036890] state change PORT_RESET_WAIT_OFF -> SNK_UNATTACHED [rev2 NONE_AMS]
-[ 6170.036896] Start toggling
-[ 6170.041412] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
-[ 6170.042973] CC1: 0 -> 0, CC2: 0 -> 5 [state TOGGLING, polarity 0, connected]
-[ 6170.042976] state change TOGGLING -> SNK_ATTACH_WAIT [rev2 NONE_AMS]
-[ 6170.042981] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev2 NONE_AMS]
-[ 6170.213014] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
-[ 6170.213019] pending state change SNK_DEBOUNCED -> PORT_RESET @ 480 ms [rev2 NONE_AMS]
-[ 6170.693068] state change SNK_DEBOUNCED -> PORT_RESET [delayed 480 ms]
-[ 6170.693304] disable vbus discharge ret:0
-[ 6170.693308] Setting usb_comm capable false
-[ 6170.695193] Setting voltage/current limit 0 mV 0 mA
-[ 6170.695210] polarity 0
-[ 6170.695990] Requesting mux state 0, usb-role 0, orientation 0
-[ 6170.701896] cc:=0
-[ 6170.702181] pending state change PORT_RESET -> PORT_RESET_WAIT_OFF @ 100 ms [rev2 NONE_AMS]
-[ 6170.703343] CC1: 0 -> 0, CC2: 5 -> 0 [state PORT_RESET, polarity 0, disconnected]
+> +	if (p.century > 20)
+> +		time->tm_year += (p.century - 19) * 100;
+> +#endif
+>  
+>  	/*
+>  	 * Account for differences between how the RTC uses the values
+> -- 
+> 2.25.1
+> 
 
-Fixes: f0690a25a140b8 ("staging: typec: USB Type-C Port Manager (tcpm)")
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
----
- drivers/usb/typec/tcpm/tcpm.c | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 7f2f3ff1b391..6010b9901126 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -4110,11 +4110,7 @@ static void run_state_machine(struct tcpm_port *port)
- 				       tcpm_try_src(port) ? SRC_TRY
- 							  : SNK_ATTACHED,
- 				       0);
--		else
--			/* Wait for VBUS, but not forever */
--			tcpm_set_state(port, PORT_RESET, PD_T_PS_SOURCE_ON);
- 		break;
--
- 	case SRC_TRY:
- 		port->try_src_count++;
- 		tcpm_set_cc(port, tcpm_rp_cc(port));
 -- 
-2.34.0.rc2.393.gf8c9666880-goog
-
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
