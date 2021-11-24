@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C15845C4FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:51:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB7E45C092
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:06:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355197AbhKXNyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:54:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40064 "EHLO mail.kernel.org"
+        id S1346616AbhKXNJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:09:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348702AbhKXNt3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:49:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9361463358;
-        Wed, 24 Nov 2021 13:03:16 +0000 (UTC)
+        id S1345681AbhKXNHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:07:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C599A61A35;
+        Wed, 24 Nov 2021 12:38:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758997;
-        bh=h5nVcXgfJll+40QiaNYDBPvrAbL0oD/laiGMIsEOku8=;
+        s=korg; t=1637757523;
+        bh=QkQtZOfpZC+XSqFx76nj/wcWUm5b4Awzd0GIHVERIUc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1N6S/2f0i76D9uxfO5gxM0QjRuz6CTArC2sqI+1PUK10Z5acMghx5bKWfXC92FbfJ
-         NPhMiQgJ0EZLhP/6nMMdl7Ug6/YpQGkPFCZtmODxu3k2NUBCKBIuaaI1OSjQWo9CA0
-         GlNTDxwuTvbvJh99RcJhTzfhAMQPBpUwt7jcKRaM=
+        b=E11UYh14Bdprei+z2TJUQfx+Enx2quMmm5H5DeIgXmuiM/0BdNOM7qbrg5xD0RNUp
+         S4W9A0oDAaKZNvpkMbGVm0FdFnQ0Xe4WgMfAuhIXD90m4jE0oBygXDUmwIPtNTW9FV
+         jSdxLE902DSZvuK9WTiumRbxmNQICdQgqWbozXkY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Laibin Qiu <qiulaibin@huawei.com>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Anssi Hannula <anssi.hannula@bitwise.fi>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 099/279] blkcg: Remove extra blkcg_bio_issue_init
-Date:   Wed, 24 Nov 2021 12:56:26 +0100
-Message-Id: <20211124115722.191478961@linuxfoundation.org>
+Subject: [PATCH 4.19 197/323] serial: xilinx_uartps: Fix race condition causing stuck TX
+Date:   Wed, 24 Nov 2021 12:56:27 +0100
+Message-Id: <20211124115725.587668281@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,145 +39,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laibin Qiu <qiulaibin@huawei.com>
+From: Anssi Hannula <anssi.hannula@bitwise.fi>
 
-[ Upstream commit b781d8db580c058ecd54ed7d5dde7f8270b25f5b ]
+[ Upstream commit 88b20f84f0fe47409342669caf3e58a3fc64c316 ]
 
-KASAN reports a use-after-free report when doing block test:
+xilinx_uartps .start_tx() clears TXEMPTY when enabling TXEMPTY to avoid
+any previous TXEVENT event asserting the UART interrupt. This clear
+operation is done immediately after filling the TX FIFO.
 
-==================================================================
-[10050.967049] BUG: KASAN: use-after-free in
-submit_bio_checks+0x1539/0x1550
+However, if the bytes inserted by cdns_uart_handle_tx() are consumed by
+the UART before the TXEMPTY is cleared, the clear operation eats the new
+TXEMPTY event as well, causing cdns_uart_isr() to never receive the
+TXEMPTY event. If there are bytes still queued in circbuf, TX will get
+stuck as they will never get transferred to FIFO (unless new bytes are
+queued to circbuf in which case .start_tx() is called again).
 
-[10050.977638] Call Trace:
-[10050.978190]  dump_stack+0x9b/0xce
-[10050.979674]  print_address_description.constprop.6+0x3e/0x60
-[10050.983510]  kasan_report.cold.9+0x22/0x3a
-[10050.986089]  submit_bio_checks+0x1539/0x1550
-[10050.989576]  submit_bio_noacct+0x83/0xc80
-[10050.993714]  submit_bio+0xa7/0x330
-[10050.994435]  mpage_readahead+0x380/0x500
-[10050.998009]  read_pages+0x1c1/0xbf0
-[10051.002057]  page_cache_ra_unbounded+0x4c2/0x6f0
-[10051.007413]  do_page_cache_ra+0xda/0x110
-[10051.008207]  force_page_cache_ra+0x23d/0x3d0
-[10051.009087]  page_cache_sync_ra+0xca/0x300
-[10051.009970]  generic_file_buffered_read+0xbea/0x2130
-[10051.012685]  generic_file_read_iter+0x315/0x490
-[10051.014472]  blkdev_read_iter+0x113/0x1b0
-[10051.015300]  aio_read+0x2ad/0x450
-[10051.023786]  io_submit_one+0xc8e/0x1d60
-[10051.029855]  __se_sys_io_submit+0x125/0x350
-[10051.033442]  do_syscall_64+0x2d/0x40
-[10051.034156]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+While the racy missed TXEMPTY occurs fairly often with short data
+sequences (e.g. write 1 byte), in those cases circbuf is usually empty
+so no action on TXEMPTY would have been needed anyway. On the other
+hand, longer data sequences make the race much more unlikely as UART
+takes longer to consume the TX FIFO. Therefore it is rare for this race
+to cause visible issues in general.
 
-[10051.048733] Allocated by task 18598:
-[10051.049482]  kasan_save_stack+0x19/0x40
-[10051.050263]  __kasan_kmalloc.constprop.1+0xc1/0xd0
-[10051.051230]  kmem_cache_alloc+0x146/0x440
-[10051.052060]  mempool_alloc+0x125/0x2f0
-[10051.052818]  bio_alloc_bioset+0x353/0x590
-[10051.053658]  mpage_alloc+0x3b/0x240
-[10051.054382]  do_mpage_readpage+0xddf/0x1ef0
-[10051.055250]  mpage_readahead+0x264/0x500
-[10051.056060]  read_pages+0x1c1/0xbf0
-[10051.056758]  page_cache_ra_unbounded+0x4c2/0x6f0
-[10051.057702]  do_page_cache_ra+0xda/0x110
-[10051.058511]  force_page_cache_ra+0x23d/0x3d0
-[10051.059373]  page_cache_sync_ra+0xca/0x300
-[10051.060198]  generic_file_buffered_read+0xbea/0x2130
-[10051.061195]  generic_file_read_iter+0x315/0x490
-[10051.062189]  blkdev_read_iter+0x113/0x1b0
-[10051.063015]  aio_read+0x2ad/0x450
-[10051.063686]  io_submit_one+0xc8e/0x1d60
-[10051.064467]  __se_sys_io_submit+0x125/0x350
-[10051.065318]  do_syscall_64+0x2d/0x40
-[10051.066082]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Fix the race by clearing the TXEMPTY bit in ISR *before* filling the
+FIFO.
 
-[10051.067455] Freed by task 13307:
-[10051.068136]  kasan_save_stack+0x19/0x40
-[10051.068931]  kasan_set_track+0x1c/0x30
-[10051.069726]  kasan_set_free_info+0x1b/0x30
-[10051.070621]  __kasan_slab_free+0x111/0x160
-[10051.071480]  kmem_cache_free+0x94/0x460
-[10051.072256]  mempool_free+0xd6/0x320
-[10051.072985]  bio_free+0xe0/0x130
-[10051.073630]  bio_put+0xab/0xe0
-[10051.074252]  bio_endio+0x3a6/0x5d0
-[10051.074984]  blk_update_request+0x590/0x1370
-[10051.075870]  scsi_end_request+0x7d/0x400
-[10051.076667]  scsi_io_completion+0x1aa/0xe50
-[10051.077503]  scsi_softirq_done+0x11b/0x240
-[10051.078344]  blk_mq_complete_request+0xd4/0x120
-[10051.079275]  scsi_mq_done+0xf0/0x200
-[10051.080036]  virtscsi_vq_done+0xbc/0x150
-[10051.080850]  vring_interrupt+0x179/0x390
-[10051.081650]  __handle_irq_event_percpu+0xf7/0x490
-[10051.082626]  handle_irq_event_percpu+0x7b/0x160
-[10051.083527]  handle_irq_event+0xcc/0x170
-[10051.084297]  handle_edge_irq+0x215/0xb20
-[10051.085122]  asm_call_irq_on_stack+0xf/0x20
-[10051.085986]  common_interrupt+0xae/0x120
-[10051.086830]  asm_common_interrupt+0x1e/0x40
+The TXEMPTY bit in ISR will only get asserted at the exact moment the
+TX FIFO *becomes* empty, so clearing the bit before filling FIFO does
+not cause an extra immediate assertion even if the FIFO is initially
+empty.
 
-==================================================================
+This is hard to reproduce directly on a normal system, but inserting
+e.g. udelay(200) after cdns_uart_handle_tx(port), setting 4000000 baud,
+and then running "dd if=/dev/zero bs=128 of=/dev/ttyPS0 count=50"
+reliably reproduces the issue on my ZynqMP test system unless this fix
+is applied.
 
-Bio will be checked at beginning of submit_bio_noacct(). If bio needs
-to be throttled, it will start the timer and stop submit bio directly.
-Bio will submit in blk_throtl_dispatch_work_fn() when the timer expires.
-But in the current process, if bio is throttled, it will still set bio
-issue->value by blkcg_bio_issue_init(). This is redundant and may cause
-the above use-after-free.
-
-CPU0                                   CPU1
-submit_bio
-submit_bio_noacct
-  submit_bio_checks
-    blk_throtl_bio()
-      <=mod_timer(&sq->pending_timer
-                                      blk_throtl_dispatch_work_fn
-                                        submit_bio_noacct() <= bio have
-                                        throttle tag, will throw directly
-                                        and bio issue->value will be set
-                                        here
-
-                                      bio_endio()
-                                      bio_put()
-                                      bio_free() <= free this bio
-
-    blkcg_bio_issue_init(bio)
-      <= bio has been freed and
-      will lead to UAF
-  return BLK_QC_T_NONE
-
-Fix this by remove extra blkcg_bio_issue_init.
-
-Fixes: e439bedf6b24 (blkcg: consolidate bio_issue_init() to be a part of core)
-Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
-Link: https://lore.kernel.org/r/20211112093354.3581504-1-qiulaibin@huawei.com
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 85baf542d54e ("tty: xuartps: support 64 byte FIFO size")
+Signed-off-by: Anssi Hannula <anssi.hannula@bitwise.fi>
+Link: https://lore.kernel.org/r/20211026102741.2910441-1-anssi.hannula@bitwise.fi
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-core.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/tty/serial/xilinx_uartps.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 4d8f5fe915887..12aa8c1da6003 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -887,10 +887,8 @@ static noinline_for_stack bool submit_bio_checks(struct bio *bio)
- 	if (unlikely(!current->io_context))
- 		create_task_io_context(current, GFP_ATOMIC, q->node);
+diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
+index 23f9b0cdff086..c22bd40fc6f0b 100644
+--- a/drivers/tty/serial/xilinx_uartps.c
++++ b/drivers/tty/serial/xilinx_uartps.c
+@@ -591,9 +591,10 @@ static void cdns_uart_start_tx(struct uart_port *port)
+ 	if (uart_circ_empty(&port->state->xmit))
+ 		return;
  
--	if (blk_throtl_bio(bio)) {
--		blkcg_bio_issue_init(bio);
-+	if (blk_throtl_bio(bio))
- 		return false;
--	}
++	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_ISR);
++
+ 	cdns_uart_handle_tx(port);
  
- 	blk_cgroup_bio_start(bio);
- 	blkcg_bio_issue_init(bio);
+-	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_ISR);
+ 	/* Enable the TX Empty interrupt */
+ 	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_IER);
+ }
 -- 
 2.33.0
 
