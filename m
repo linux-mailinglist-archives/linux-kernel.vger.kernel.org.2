@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36C845C4FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE1C45C0D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355121AbhKXNxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:53:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41982 "EHLO mail.kernel.org"
+        id S1346844AbhKXNL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:11:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349776AbhKXNtX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:49:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 601226334E;
-        Wed, 24 Nov 2021 13:03:03 +0000 (UTC)
+        id S1348409AbhKXNJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:09:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A60061A59;
+        Wed, 24 Nov 2021 12:40:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758984;
-        bh=zBhW86EEASlQcxMCzjwewFN754UMqiBKCuTk/UUBTKU=;
+        s=korg; t=1637757631;
+        bh=37TK8niFyefkkf+9qm7JoDzCk8UdohixXVl874uae4w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NOsl0FRazWv69NPeRClHwqdEgjXzc3s9gm8E+IXt6AmUqmOmT20JQAtE9vafgnVVF
-         5ePHKSWZE3mR+xkHvXEYxoog8zfjPKAiX9YJBe9n/ApxBSJ1fdkTC7ho7dvKzmec5W
-         XKybsbMo0q1AUwiM+LernpArbTPagCVYR1vVBBHs=
+        b=qlkoOrsgQ8vm+FAWa4gOGw1mMzLDxovwWZPdozUUB6IUBIy5p8MICYz/jZ+WOs4Wo
+         0N1gTHUt2enNEx6cahAqkRiEsJe8Ioht2SAkvfGDzDCMmlc9XomtVOG8vN7qzh5qyY
+         DLjUph8hg7+O51Znf3FkIIVcEG74JC/0GZ7jtQPU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 095/279] MIPS: boot/compressed/: add __bswapdi2() to target for ZSTD decompression
-Date:   Wed, 24 Nov 2021 12:56:22 +0100
-Message-Id: <20211124115722.061558787@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 193/323] RDMA/mlx4: Return missed an error if device doesnt support steering
+Date:   Wed, 24 Nov 2021 12:56:23 +0100
+Message-Id: <20211124115725.454468523@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,60 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit e2f4b3be1d3c73176db734565b160250cc1300dd ]
+[ Upstream commit f4e56ec4452f48b8292dcf0e1c4bdac83506fb8b ]
 
-For MIPS pre-boot, when CONFIG_KERNEL_ZSTD=y, the decompressor
-function uses __bswapdi2(), so this object file should be added to
-the target object file.
+The error flow fixed in this patch is not possible because all kernel
+users of create QP interface check that device supports steering before
+set IB_QP_CREATE_NETIF_QP flag.
 
-Fixes these build errors:
-
-mips-linux-ld: arch/mips/boot/compressed/decompress.o: in function `xxh64':
-decompress.c:(.text+0x8be0): undefined reference to `__bswapdi2'
-mips-linux-ld: decompress.c:(.text+0x8c78): undefined reference to `__bswapdi2'
-mips-linux-ld: decompress.c:(.text+0x8d04): undefined reference to `__bswapdi2'
-mips-linux-ld: arch/mips/boot/compressed/decompress.o:decompress.c:(.text+0xa010): more undefined references to `__bswapdi2' follow
-
-Fixes: 0652035a5794 ("asm-generic: unaligned: remove byteshift helpers")
-Fixes: cddc40f5617e ("mips: always link byteswap helpers into decompressor")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Fixes: c1c98501121e ("IB/mlx4: Add support for steerable IB UD QPs")
+Link: https://lore.kernel.org/r/91c61f6e60eb0240f8bbc321fda7a1d2986dd03c.1634023677.git.leonro@nvidia.com
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/boot/compressed/Makefile | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/infiniband/hw/mlx4/qp.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-index 3548b3b452699..9112bdb86be45 100644
---- a/arch/mips/boot/compressed/Makefile
-+++ b/arch/mips/boot/compressed/Makefile
-@@ -56,6 +56,8 @@ $(obj)/uart-ath79.c: $(srctree)/arch/mips/ath79/early_printk.c
+diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
+index 73bd35d34a257..7209b8a9b0dd2 100644
+--- a/drivers/infiniband/hw/mlx4/qp.c
++++ b/drivers/infiniband/hw/mlx4/qp.c
+@@ -1057,8 +1057,10 @@ static int create_qp_common(struct mlx4_ib_dev *dev, struct ib_pd *pd,
+ 			if (dev->steering_support ==
+ 			    MLX4_STEERING_MODE_DEVICE_MANAGED)
+ 				qp->flags |= MLX4_IB_QP_NETIF;
+-			else
++			else {
++				err = -EINVAL;
+ 				goto err;
++			}
+ 		}
  
- vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o
- 
-+vmlinuzobjs-$(CONFIG_KERNEL_ZSTD) += $(obj)/bswapdi.o
-+
- extra-y += ashldi3.c
- $(obj)/ashldi3.c: $(obj)/%.c: $(srctree)/lib/%.c FORCE
- 	$(call if_changed,shipped)
-@@ -64,6 +66,10 @@ extra-y += bswapsi.c
- $(obj)/bswapsi.c: $(obj)/%.c: $(srctree)/arch/mips/lib/%.c FORCE
- 	$(call if_changed,shipped)
- 
-+extra-y += bswapdi.c
-+$(obj)/bswapdi.c: $(obj)/%.c: $(srctree)/arch/mips/lib/%.c FORCE
-+	$(call if_changed,shipped)
-+
- targets := $(notdir $(vmlinuzobjs-y))
- 
- targets += vmlinux.bin
+ 		err = set_kernel_sq_size(dev, &init_attr->cap, qp_type, qp);
 -- 
 2.33.0
 
