@@ -2,104 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8865D45C8BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:33:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3391645C8C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241092AbhKXPgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:36:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34794 "EHLO
+        id S241195AbhKXPhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:37:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233084AbhKXPgM (ORCPT
+        with ESMTP id S232482AbhKXPhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:36:12 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D380C061714
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:33:02 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id i12so2762075wmq.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:33:01 -0800 (PST)
+        Wed, 24 Nov 2021 10:37:09 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CECEBC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:33:59 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id w1so12278097edc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:33:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=js+dElCSMTX7Q9ab9rdTN6VQUCoOGsYNSHNvRUS+woE=;
-        b=IeDlxxwdVD2nn9LdcWrTH1KckkvgymSSUD0HgXJzeuI3Ta8JBrHIXX3NwN1h92qcRI
-         +GvB2u+N1u0E/ZMYwSXV8+T5XWbuorwN4Wfdjdh29aZdP+Ry30j7VLkZBOVpbxNdOfY0
-         koB6lIlz8Grsrkj5ZgQ++hRQfb2j395Dv2a1o0VJaVA9Qdu2sPDWNzo7UuofYLtlPnmI
-         AFkXGs6bAATZphx0678pJNf4jvFMRkKfq5LQEwaSgZkuxRBFH0sW8gdSJNjYcReE4Dow
-         AyiANDAcNcsP+XMiKlyXIpcRxHN7bl1ky2F8MyGIVyYDsRNyMFB6fujqSNW5+W1H7Bcr
-         PgLw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bqdy2HwxAM57gqyODn8plZfo9eD0lB3qkfbcuNYfcg8=;
+        b=nhcCKtCgns6UCVdGy1m0lnvLkFL64LlxL+wuM971cNyAzyZx5bWFIRxf/xI+2SwLVD
+         5fkY3F37gP4s4ZJEeHEmSp4ONH6zbGLC65oDql7egG/JlYAvbijiSSeZHNMNlYBn+LDA
+         6hnZo6NQnMm4XMuYsxW2lxrI/x0bzBjbcRaIuj29YUkeMUyZKnRulHTyeYklurS4YWZf
+         OVF3j5IWhE1v1KqNmpQ6FRNXsgd6/d/1zaf/fua2Tkhr/XEt2bHJBzHZgrScr7Yvm/gz
+         xwe2s2DooJIy9rX2V1N7NnTLPLaVvyHarB4fVQ0pcW030KrkWqE0VAkb6oCSFMUNzomQ
+         N9uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=js+dElCSMTX7Q9ab9rdTN6VQUCoOGsYNSHNvRUS+woE=;
-        b=XzHYjNC0efQri7dPzlxZ+z8E/6mepHCYh203tH53azxt/FPLeZxIEV7pxVwEEFHMuH
-         D4+v4QQo4Q5ShsfKrGZkpgitIZHIjIWlkAtfGaqebfcnyPgvNlaWgUii/8+WkER6cFqI
-         QspHS9tMeOGBCbhkyOxsZC0fVz7IRBbhFWcJU+et9uwodYx0PhS39YLV3hs6V+1j+WuD
-         JmnQ5xYd6+LAcm2OxUpjadZmZuXLMfJOUTl+mfw/5lFuWqCfIbfGOYQgyqvvPQhdPNN7
-         Y6KkwK43uxnj9/ZahVwxSz9u3KKiT3QaVLTVTwoFHh46YOX8wKWMrOPkJ3uTcYt8gSrM
-         sTLg==
-X-Gm-Message-State: AOAM533OJ3gIbBIFX0VEcWL3cp0u6VTFkcljfG6F6ikRKbwlSwYFAajt
-        duia5CfRlCzMm1fFAuPNZ54Jaw==
-X-Google-Smtp-Source: ABdhPJxCSL294XX2VDzJ7+/6CRPgIiCEJuop+WAiccCtSi+uidF7m5EQdsY9lZCfcw7yL1rhG39D3A==
-X-Received: by 2002:a1c:1f94:: with SMTP id f142mr16695124wmf.192.1637767979747;
-        Wed, 24 Nov 2021 07:32:59 -0800 (PST)
-Received: from google.com ([2.31.167.61])
-        by smtp.gmail.com with ESMTPSA id m9sm75155wmq.1.2021.11.24.07.32.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 07:32:59 -0800 (PST)
-Date:   Wed, 24 Nov 2021 15:32:57 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Subject: Re: [PATCH v3] dt-bindings: mfd: bd9571mwv: Convert to json-schema
-Message-ID: <YZ5bKYZ0SF9xZU9F@google.com>
-References: <76fdd209e6a2dada7ff50b8ad03eb14e7f3547a6.1635338031.git.geert+renesas@glider.be>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bqdy2HwxAM57gqyODn8plZfo9eD0lB3qkfbcuNYfcg8=;
+        b=EYS+cHUvJ/Rk9BwiNKr+tdET+dUWTMmj+hjXcVqdeaHWhML3k+kcaa3OZLQVpL8Q1X
+         iUTrsSptbCXPAQGE+Nm99uYUu2MJPJU0cQ1c521f+dS3WGuxN59p/yP2+ICvxPvTUovC
+         Uuyd2ns9A2gl26Z6esyXQrK3c58lE8KL+mU9mmrF5RtoKXMXWui2spg4UUoaAp+vaaj7
+         c9SoABW2AGkgqi6CIh7sT9C9cEqwgaDR9nw/JnhTIwmGFybISBl/Wv9pgClzuVPFY3C0
+         OIj/rl3LhTQuEjsCDIFKUYa4bdMlElc0/p5u+4l/XsEjK/dYIDM5xo94I7kVZfgvp5bS
+         haPQ==
+X-Gm-Message-State: AOAM532p1oSQMWl/dFfAAxzMrNe1PCaymztwzDrGYOU7pdBJKw3ts+Ul
+        NcVmKV1w4f8s4djvHJ8QHrFokwOL1hBhn2dsvIhFeg==
+X-Google-Smtp-Source: ABdhPJyxVvYyfWLjSfk0lklRT3neqnyZWMKWUnhVTAd7lHQohE9ZcH3gUHx7zsl6YW5isIhQ3In/IjXCD0pmCNO0GsM=
+X-Received: by 2002:a17:906:489b:: with SMTP id v27mr20892553ejq.567.1637768038273;
+ Wed, 24 Nov 2021 07:33:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <76fdd209e6a2dada7ff50b8ad03eb14e7f3547a6.1635338031.git.geert+renesas@glider.be>
+References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 24 Nov 2021 21:03:46 +0530
+Message-ID: <CA+G9fYt4wOWx5fEkMdYmT0JO+G5+6KBgdDDS7oS_2ox8X_JF4g@mail.gmail.com>
+Subject: Re: [PATCH 4.19 000/323] 4.19.218-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net,
+        Nadav Amit <namit@vmware.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Oct 2021, Geert Uytterhoeven wrote:
+On Wed, 24 Nov 2021 at 18:07, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.218 release.
+> There are 323 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.218-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-> Convert the ROHM BD9571MWV/BD9574MWF Power Management Integrated Circuit
-> (PMIC) Device Tree binding documentation to json-schema.
-> 
-> Make the "regulators" subnode optional, as not all users describe the
-> regulators.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Acked-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> ---
-> I have listed Marek as the maintainer, as he wrote the original
-> bindings.  Marek: Please scream if this is inappropriate ;-)
-> 
-> v3:
->   - Add Acked-by,
-> 
-> v2:
->   - Add Reviewed-by.
-> ---
->  .../devicetree/bindings/mfd/bd9571mwv.txt     |  69 ----------
->  .../bindings/mfd/rohm,bd9571mwv.yaml          | 127 ++++++++++++++++++
->  2 files changed, 127 insertions(+), 69 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mfd/bd9571mwv.txt
->  create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd9571mwv.yaml
+Regression found on s390 gcc-11 builds with defconfig
 
-Applied, thanks.
+Here it is reported,
+https://lore.kernel.org/stable/CA+G9fYv+SjDwfvP=Zgf-gr2RngkrzHO_w6OQzH7wqzU-dOW9+g@mail.gmail.com/
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+mm/hugetlb.c: In function '__unmap_hugepage_range':
+mm/hugetlb.c:3455:25: error: implicit declaration of function
+'tlb_flush_pmd_range'; did you mean 'tlb_flush_mmu_free'?
+[-Werror=implicit-function-declaration]
+ 3455 |                         tlb_flush_pmd_range(tlb, address &
+PUD_MASK, PUD_SIZE);
+      |                         ^~~~~~~~~~~~~~~~~~~
+      |                         tlb_flush_mmu_free
+cc1: some warnings being treated as errors
+
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+--
+Linaro LKFT
+https://lkft.linaro.org
