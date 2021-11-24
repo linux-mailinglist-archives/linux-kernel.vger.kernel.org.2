@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F404745C1D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D7545C1CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348684AbhKXNW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:22:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36408 "EHLO mail.kernel.org"
+        id S1348554AbhKXNV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:21:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349390AbhKXNTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:19:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8781661AEE;
-        Wed, 24 Nov 2021 12:46:23 +0000 (UTC)
+        id S1349407AbhKXNTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:19:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F39661AF8;
+        Wed, 24 Nov 2021 12:46:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757983;
-        bh=r5lZmU0BFLKVwlIX/4dzFag2v05yG0YFczMkqPvQNBs=;
+        s=korg; t=1637757986;
+        bh=Z32u477UJH7+XontE/nTr3QbELnlCVMPfLwiXNz1+DI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PN0dRt05KRKWDUJAlTOtXLyTyKRIxR5XjZek6ijUbkBAUtby/G6oGlz5oYZgYGrJq
-         EES9FdY2SWw/6M/3yYkKkDQw0pgCXJeOXJbPZjY5wFsQjTDCbxWlhP2s3LoQo478pK
-         2rhYg1htrwE9LhXFwm6RNTAtDZYyMM3fn46aR3DQ=
+        b=ICxT5nqJJwXjMDVeba0F1CZ3Ox+DQYxcau1IyXFWW4ZAaEc6NyK7JRig8Ry0SbLTT
+         y/J+bYsa9eWliBFs3awNxsuDtHOPEZmzKyjedaIpQ+LljSfQ/RRgY9lj00A4m500Kh
+         l5UYGA3leb6BaBLFp4yVoRNNk6U6aNjRYI8C10uI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Yang Yingliang <yangyingliang@huawei.com>,
+        stable@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 018/100] usb: host: ohci-tmio: check return value after calling platform_get_resource()
-Date:   Wed, 24 Nov 2021 12:57:34 +0100
-Message-Id: <20211124115655.450193217@linuxfoundation.org>
+Subject: [PATCH 5.4 019/100] ARM: dts: ls1021a: move thermal-zones node out of soc/
+Date:   Wed, 24 Nov 2021 12:57:35 +0100
+Message-Id: <20211124115655.481347086@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
 References: <20211124115654.849735859@linuxfoundation.org>
@@ -40,35 +40,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Li Yang <leoyang.li@nxp.com>
 
-[ Upstream commit 9eff2b2e59fda25051ab36cd1cb5014661df657b ]
+[ Upstream commit 1ee1500ef717eefb5d9bdaf97905cb81b4e69aa4 ]
 
-It will cause null-ptr-deref if platform_get_resource() returns NULL,
-we need check the return value.
+This fixes dtbs-check error from simple-bus schema:
+soc: thermal-zones: {'type': 'object'} is not allowed for {'cpu-thermal': ..... }
+        From schema: /home/leo/.local/lib/python3.8/site-packages/dtschema/schemas/simple-bus.yaml
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20211011134920.118477-1-yangyingliang@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Li Yang <leoyang.li@nxp.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/ohci-tmio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/ls1021a.dtsi | 66 +++++++++++++++++-----------------
+ 1 file changed, 33 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/usb/host/ohci-tmio.c b/drivers/usb/host/ohci-tmio.c
-index fed43c6dd85cc..b611c8b09a89f 100644
---- a/drivers/usb/host/ohci-tmio.c
-+++ b/drivers/usb/host/ohci-tmio.c
-@@ -199,7 +199,7 @@ static int ohci_hcd_tmio_drv_probe(struct platform_device *dev)
- 	if (usb_disabled())
- 		return -ENODEV;
+diff --git a/arch/arm/boot/dts/ls1021a.dtsi b/arch/arm/boot/dts/ls1021a.dtsi
+index c62fcca7b4263..aeb8a40b6b601 100644
+--- a/arch/arm/boot/dts/ls1021a.dtsi
++++ b/arch/arm/boot/dts/ls1021a.dtsi
+@@ -311,39 +311,6 @@
+ 			#thermal-sensor-cells = <1>;
+ 		};
  
--	if (!cell)
-+	if (!cell || !regs || !config || !sram)
- 		return -EINVAL;
+-		thermal-zones {
+-			cpu_thermal: cpu-thermal {
+-				polling-delay-passive = <1000>;
+-				polling-delay = <5000>;
+-
+-				thermal-sensors = <&tmu 0>;
+-
+-				trips {
+-					cpu_alert: cpu-alert {
+-						temperature = <85000>;
+-						hysteresis = <2000>;
+-						type = "passive";
+-					};
+-					cpu_crit: cpu-crit {
+-						temperature = <95000>;
+-						hysteresis = <2000>;
+-						type = "critical";
+-					};
+-				};
+-
+-				cooling-maps {
+-					map0 {
+-						trip = <&cpu_alert>;
+-						cooling-device =
+-							<&cpu0 THERMAL_NO_LIMIT
+-							THERMAL_NO_LIMIT>,
+-							<&cpu1 THERMAL_NO_LIMIT
+-							THERMAL_NO_LIMIT>;
+-					};
+-				};
+-			};
+-		};
+-
+ 		dspi0: spi@2100000 {
+ 			compatible = "fsl,ls1021a-v1.0-dspi";
+ 			#address-cells = <1>;
+@@ -984,4 +951,37 @@
+ 		};
  
- 	if (irq < 0)
+ 	};
++
++	thermal-zones {
++		cpu_thermal: cpu-thermal {
++			polling-delay-passive = <1000>;
++			polling-delay = <5000>;
++
++			thermal-sensors = <&tmu 0>;
++
++			trips {
++				cpu_alert: cpu-alert {
++					temperature = <85000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++				cpu_crit: cpu-crit {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "critical";
++				};
++			};
++
++			cooling-maps {
++				map0 {
++					trip = <&cpu_alert>;
++					cooling-device =
++						<&cpu0 THERMAL_NO_LIMIT
++						THERMAL_NO_LIMIT>,
++						<&cpu1 THERMAL_NO_LIMIT
++						THERMAL_NO_LIMIT>;
++				};
++			};
++		};
++	};
+ };
 -- 
 2.33.0
 
