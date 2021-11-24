@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9699645C625
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 724DA45C27A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:26:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351336AbhKXOFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:05:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51016 "EHLO mail.kernel.org"
+        id S1348428AbhKXN32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:29:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353856AbhKXOCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:02:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12BD161A83;
-        Wed, 24 Nov 2021 13:10:27 +0000 (UTC)
+        id S1344450AbhKXN0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:26:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A3EF61B95;
+        Wed, 24 Nov 2021 12:49:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759428;
-        bh=/2Tq6dNpl8t9OkuSU7exCZ9+cBTBzWdwg+I335ELtqQ=;
+        s=korg; t=1637758197;
+        bh=g4PQPZRmVF5jZ4tDy0Lm3pw9dAOdg4kw3/tlYfA2TK4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BnbX2IEV7so6d1aBDIzk8bYoZHDhIv8OGnacQUHzZITnf9fDQSmrnqLdteBWSNc+X
-         m83hMrgKXjwrIK5iDG9e2T9bfQs1LgNeP11IyFZ9jwaU7VjAKmv1skc4GeoiejeyLl
-         qGCimYNMriPiOXOM3FwaeHBQxdZu01X5peL0Kf2E=
+        b=UMfpeeEzAmJhb8hmNqJEwO9WNEm5hqtSnLf6XfzO4k+lS3yQjJc156aQ0ShmAF9v1
+         E2P/josqEAVySufoeavz4yqDqoWfyKiMVWQKH96ry0iRiB3QLToC8x36NsqmH6y7zm
+         1AE+1ncv2sTH3z4Qm9Lb4DQtnTBASLppx4OFhLL0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, XiangBing Foo <XiangBing.Foo@amd.com>,
-        Martin Leung <Martin.Leung@amd.com>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        Alvin Lee <Alvin.Lee2@amd.com>,
-        Daniel Wheeler <Daniel.Wheeler@amd.com>,
+        stable@vger.kernel.org, hongao <hongao@uniontech.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.15 239/279] drm/amd/display: Update swizzle mode enums
+Subject: [PATCH 5.4 090/100] drm/amdgpu: fix set scaling mode Full/Full aspect/Center not works on vga and dvi connectors
 Date:   Wed, 24 Nov 2021 12:58:46 +0100
-Message-Id: <20211124115726.991024576@linuxfoundation.org>
+Message-Id: <20211124115657.759962263@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,58 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alvin Lee <Alvin.Lee2@amd.com>
+From: hongao <hongao@uniontech.com>
 
-commit 58065a1e524de30df9a2d8214661d5d7eed0a2d9 upstream.
+commit bf552083916a7f8800477b5986940d1c9a31b953 upstream.
 
-[Why]
-Swizzle mode enum for DC_SW_VAR_R_X was existing,
-but not mapped correctly.
+amdgpu_connector_vga_get_modes missed function amdgpu_get_native_mode
+which assign amdgpu_encoder->native_mode with *preferred_mode result in
+amdgpu_encoder->native_mode.clock always be 0. That will cause
+amdgpu_connector_set_property returned early on:
+if ((rmx_type != DRM_MODE_SCALE_NONE) &&
+	(amdgpu_encoder->native_mode.clock == 0))
+when we try to set scaling mode Full/Full aspect/Center.
+Add the missing function to amdgpu_connector_vga_get_mode can fix this.
+It also works on dvi connectors because
+amdgpu_connector_dvi_helper_funcs.get_mode use the same method.
 
-[How]
-Update mapping and conversion for DC_SW_VAR_R_X.
-
-Reviewed-by: XiangBing Foo <XiangBing.Foo@amd.com>
-Reviewed-by: Martin Leung <Martin.Leung@amd.com>
-Acked-by: Qingqing Zhuo <qingqing.zhuo@amd.com>
-Signed-off-by: Alvin Lee <Alvin.Lee2@amd.com>
-Cc: stable@vger.kernel.org
-Tested-by: Daniel Wheeler <Daniel.Wheeler@amd.com>
+Signed-off-by: hongao <hongao@uniontech.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c   |    4 +++-
- drivers/gpu/drm/amd/display/dc/dml/display_mode_enums.h |    4 ++--
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-@@ -1854,7 +1854,9 @@ static void swizzle_to_dml_params(
- 	case DC_SW_VAR_D_X:
- 		*sw_mode = dm_sw_var_d_x;
- 		break;
--
-+	case DC_SW_VAR_R_X:
-+		*sw_mode = dm_sw_var_r_x;
-+		break;
- 	default:
- 		ASSERT(0); /* Not supported */
- 		break;
---- a/drivers/gpu/drm/amd/display/dc/dml/display_mode_enums.h
-+++ b/drivers/gpu/drm/amd/display/dc/dml/display_mode_enums.h
-@@ -80,11 +80,11 @@ enum dm_swizzle_mode {
- 	dm_sw_SPARE_13 = 24,
- 	dm_sw_64kb_s_x = 25,
- 	dm_sw_64kb_d_x = 26,
--	dm_sw_SPARE_14 = 27,
-+	dm_sw_64kb_r_x = 27,
- 	dm_sw_SPARE_15 = 28,
- 	dm_sw_var_s_x = 29,
- 	dm_sw_var_d_x = 30,
--	dm_sw_64kb_r_x,
-+	dm_sw_var_r_x = 31,
- 	dm_sw_gfx7_2d_thin_l_vp,
- 	dm_sw_gfx7_2d_thin_gl,
- };
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
+@@ -829,6 +829,7 @@ static int amdgpu_connector_vga_get_mode
+ 
+ 	amdgpu_connector_get_edid(connector);
+ 	ret = amdgpu_connector_ddc_get_modes(connector);
++	amdgpu_get_native_mode(connector);
+ 
+ 	return ret;
+ }
 
 
