@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE6B45B6C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A44E45B6C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:43:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241534AbhKXIqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 03:46:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58869 "EHLO
+        id S241584AbhKXIqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 03:46:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:26688 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241535AbhKXIos (ORCPT
+        by vger.kernel.org with ESMTP id S241543AbhKXIov (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 03:44:48 -0500
+        Wed, 24 Nov 2021 03:44:51 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637743298;
+        s=mimecast20190719; t=1637743302;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TEGty5S/MnI3NiIWNNHzLjNLkbyjP+A5VllGm4cA+aw=;
-        b=KVA1NAJSWoDb+yqztdPun04iZtBbN7CrSHgj55FPIN1AhlA9hR77XrUBKBxtC9BWDkUnBv
-        V5mnitY8+1p2sZlfbgiQjrok15uIf1MF9f0xR8n89RWdXiLgT480hoANa9cTSmOsupYKhm
-        vi/phHs3jaKETgTHZvCgWwdD6XKr5AI=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=VUpNCIf6I4xx/xoebeS2tiWidAHCtrV6dZkFUmxD4cc=;
+        b=FgoVu18gtjma/DGnyax3NdOfNuUcsnEIs3pT65b9wgdTNw5I1QIW8uZesEQtCb8MFUEg3r
+        xR+iWGT7iZEbcwqQuqXq8UsepfcVcSSTolbs5mRVNyGYpBLVJ+KZ40G0ELE2o1pFTJWfQJ
+        foCezp3zf4yzFTe4PwF5KDNmicv7B9E=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-62-cE8wo3LzOx62gLNSeLy7pw-1; Wed, 24 Nov 2021 03:41:34 -0500
-X-MC-Unique: cE8wo3LzOx62gLNSeLy7pw-1
-Received: by mail-wm1-f69.google.com with SMTP id r6-20020a1c4406000000b0033119c22fdbso962672wma.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 00:41:34 -0800 (PST)
+ us-mta-599-oeEXM27uPxWegjnRuT3dgA-1; Wed, 24 Nov 2021 03:41:40 -0500
+X-MC-Unique: oeEXM27uPxWegjnRuT3dgA-1
+Received: by mail-wm1-f72.google.com with SMTP id m18-20020a05600c3b1200b0033283ea5facso1422447wms.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 00:41:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TEGty5S/MnI3NiIWNNHzLjNLkbyjP+A5VllGm4cA+aw=;
-        b=qTxlRdHn0BvqFz5qm+sKUmYku49pBdhgVIZbD1SInfA0cOeTfYvUTBHWA2d3FfVc97
-         CRYtR1GXoErt+sACI2XCk92FhNCurtd8whai0vM16mIWHLGU06aLKQKJ2m70mOe3v7pE
-         HuzBi8q/bmiZmkv+cyX1sy5m4Uo+Xa74atodzCMHg/kz52BZ/ga3091pap5egPy0wAKB
-         Y93r2qU0h+JpXOwBL7QSXO567WOQOdV+3F5bSFgMBKa/nJa2t8V8/NVx8v1yFQXIojlF
-         nrcdjpnE41TMuKnR/YPnywZtgD9MDohHgzEFbyiYAZ+8V571te3VY5z7zkKCJUpi5xTr
-         bqtg==
-X-Gm-Message-State: AOAM533yrj+rpBVTmVhFtVzziJ34JVqAG5C+Zos/ere6ca0BUcqACsij
-        0Ga4IW72a3YWXJ5Xm37oAQ/VTb48H7eHGyytkYdPbSJr0ay7G8ZspJfJqu3bRbjjTqsMS1DWzU/
-        FNv8ziZFy2kMGkFinWjLLNSCP
-X-Received: by 2002:a5d:4ecd:: with SMTP id s13mr17159664wrv.400.1637743293205;
-        Wed, 24 Nov 2021 00:41:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwI7+MCbH/0LRtHQRj1Ak5dKI/T/EbW7gnhXeM+Qj2gSXz4xXENHoxa80KTXP2iFAtxZHClfQ==
-X-Received: by 2002:a5d:4ecd:: with SMTP id s13mr17159619wrv.400.1637743292936;
-        Wed, 24 Nov 2021 00:41:32 -0800 (PST)
+        bh=VUpNCIf6I4xx/xoebeS2tiWidAHCtrV6dZkFUmxD4cc=;
+        b=drKQkssfcbZWVmcGnaJ98z9xD8ofjdAHY+Jd5w/n0Q7z6WmRQOioce7EBWqNCAn5WH
+         KLhDnsAtzLKbUjWJrTNWr5dVqAEF3tjeBtAR1x1L7BiIXMP+tSbQ04a2D+UJKohD2CGY
+         qp8KkzJUZV69OyTRSNqvX64N5ihQqRcu+BEeHoABYGJFyqw7BSSI7nFotrCXYB88N6Hw
+         gJwZub57xdBiuSAYZFSNsCe/ChDVw/+3BEpvEuvpiCO6gWuocFyLLYxj3E1OOGiEzrrL
+         60nJVP0hfw+pZZ45CoKrPIoxF0s0MkfVgzQFbCT2yw0ZJD7nVEFIb21XS3qcU77Eq9mc
+         dHKQ==
+X-Gm-Message-State: AOAM531mbWhn5zQMm5zlsPjBo8QmYUln0BwC2WQ1OaDCR9PxMl6Qehyg
+        ORCfnsNg2d60NE282sqpsvIR9Xoc7c2f2Y7299Y4AWwBFinzpI8TREtvBzFu2o+RN1jCZpQUHwY
+        6DvxAOlNqRddgmV/wFVUxnPcm
+X-Received: by 2002:a5d:548f:: with SMTP id h15mr16213861wrv.99.1637743299420;
+        Wed, 24 Nov 2021 00:41:39 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyz1415SFxfiE43cMAnbGJQqe7kyuGSNL3YexfDBsTFRpB49fmucVAQmngtlVjsFf5uIYlC/A==
+X-Received: by 2002:a5d:548f:: with SMTP id h15mr16213828wrv.99.1637743299253;
+        Wed, 24 Nov 2021 00:41:39 -0800 (PST)
 Received: from krava.redhat.com (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id c6sm5096710wmq.46.2021.11.24.00.41.32
+        by smtp.gmail.com with ESMTPSA id x4sm3649097wmi.3.2021.11.24.00.41.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 00:41:32 -0800 (PST)
+        Wed, 24 Nov 2021 00:41:38 -0800 (PST)
 From:   Jiri Olsa <jolsa@redhat.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
@@ -71,9 +71,9 @@ Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
         Ravi Bangoria <ravi.bangoria@amd.com>
-Subject: [PATCH 2/8] perf/uprobe: Add support to create multiple probes
-Date:   Wed, 24 Nov 2021 09:41:13 +0100
-Message-Id: <20211124084119.260239-3-jolsa@kernel.org>
+Subject: [PATCH 3/8] libbpf: Add libbpf__kallsyms_parse function
+Date:   Wed, 24 Nov 2021 09:41:14 +0100
+Message-Id: <20211124084119.260239-4-jolsa@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211124084119.260239-1-jolsa@kernel.org>
 References: <20211124084119.260239-1-jolsa@kernel.org>
@@ -83,284 +83,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding support to create multiple probes within single perf event.
-This way we can associate single bpf program with multiple uprobes,
-because bpf program gets associated with the perf event.
+Move the kallsyms parsing in internal libbpf__kallsyms_parse
+function, so it can be used from other places.
 
-The perf_event_attr is not extended, current fields for uprobe
-attachment are used for multi attachment.
-
-For current uprobe atachment we use:
-
-   uprobe_path (in config1) + probe_offset (in config2)
-
-to define kprobe by executable path with offset.
-
-For multi probe attach the same fields point to array of values
-with the same semantic. Each probe is defined as set of values
-with the same array index (idx) as:
-
-   uprobe_path[idx] (in config1) + probe_offset[idx] (in config2)
-
-to define uprobe executable path with offset.
-
-The number of probes is passed in probe_cnt value, which shares
-the union with wakeup_events/wakeup_watermark values which are
-not used for uprobes.
-
-Since [1] it's possible to stack multiple probes events under
-one head event. Using the same code to allow that for probes
-defined under perf uprobe interface.
-
-[1] https://lore.kernel.org/lkml/156095682948.28024.14190188071338900568.stgit@devnote2/
+It will be used in following changes.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- kernel/trace/trace_event_perf.c | 108 +++++++++++++++++++++++++++-----
- kernel/trace/trace_probe.h      |   3 +-
- kernel/trace/trace_uprobe.c     |  43 +++++++++++--
- 3 files changed, 133 insertions(+), 21 deletions(-)
+ tools/lib/bpf/libbpf.c          | 62 ++++++++++++++++++++-------------
+ tools/lib/bpf/libbpf_internal.h |  5 +++
+ 2 files changed, 43 insertions(+), 24 deletions(-)
 
-diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
-index 26078e40c299..fb5db6a43d37 100644
---- a/kernel/trace/trace_event_perf.c
-+++ b/kernel/trace/trace_event_perf.c
-@@ -379,34 +379,114 @@ void perf_kprobe_destroy(struct perf_event *p_event)
- #endif /* CONFIG_KPROBE_EVENTS */
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index af405c38aadc..b55c0fbfcc03 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -6950,12 +6950,10 @@ static int bpf_object__sanitize_maps(struct bpf_object *obj)
+ 	return 0;
+ }
  
- #ifdef CONFIG_UPROBE_EVENTS
--int perf_uprobe_init(struct perf_event *p_event,
--		     unsigned long ref_ctr_offset, bool is_retprobe)
-+static struct trace_event_call*
-+uprobe_init(u64 uprobe_path, u64 probe_offset, unsigned long ref_ctr_offset,
-+	    bool is_retprobe, struct trace_event_call *old)
+-static int bpf_object__read_kallsyms_file(struct bpf_object *obj)
++int libbpf__kallsyms_parse(void *arg, kallsyms_cb_t cb)
  {
- 	int ret;
- 	char *path = NULL;
- 	struct trace_event_call *tp_event;
+ 	char sym_type, sym_name[500];
+ 	unsigned long long sym_addr;
+-	const struct btf_type *t;
+-	struct extern_desc *ext;
+ 	int ret, err = 0;
+ 	FILE *f;
  
--	if (!p_event->attr.uprobe_path)
--		return -EINVAL;
-+	if (!uprobe_path)
-+		return ERR_PTR(-EINVAL);
+@@ -6974,35 +6972,51 @@ static int bpf_object__read_kallsyms_file(struct bpf_object *obj)
+ 		if (ret != 3) {
+ 			pr_warn("failed to read kallsyms entry: %d\n", ret);
+ 			err = -EINVAL;
+-			goto out;
++			break;
+ 		}
  
--	path = strndup_user(u64_to_user_ptr(p_event->attr.uprobe_path),
-+	path = strndup_user(u64_to_user_ptr(uprobe_path),
- 			    PATH_MAX);
- 	if (IS_ERR(path)) {
- 		ret = PTR_ERR(path);
--		return (ret == -EINVAL) ? -E2BIG : ret;
-+		return ERR_PTR((ret == -EINVAL) ? -E2BIG : ret);
- 	}
- 	if (path[0] == '\0') {
--		ret = -EINVAL;
--		goto out;
-+		kfree(path);
-+		return ERR_PTR(-EINVAL);
- 	}
- 
--	tp_event = create_local_trace_uprobe(path, p_event->attr.probe_offset,
--					     ref_ctr_offset, is_retprobe);
--	if (IS_ERR(tp_event)) {
--		ret = PTR_ERR(tp_event);
--		goto out;
-+	tp_event = create_local_trace_uprobe(path, probe_offset,
-+				ref_ctr_offset, is_retprobe, old);
-+	kfree(path);
-+	return tp_event;
-+}
-+
-+static struct trace_event_call*
-+uprobe_init_multi(struct perf_event *p_event, unsigned long ref_ctr_offset,
-+		  bool is_retprobe)
-+{
-+	void __user *probe_offset = u64_to_user_ptr(p_event->attr.probe_offset);
-+	void __user *uprobe_path = u64_to_user_ptr(p_event->attr.uprobe_path);
-+	struct trace_event_call *tp_event, *tp_old = NULL;
-+	u32 i, cnt = p_event->attr.probe_cnt;
-+	u64 *paths = NULL, *offs = NULL;
-+	int ret = -EINVAL;
-+	size_t size;
-+
-+	if (!cnt)
-+		return ERR_PTR(-EINVAL);
-+
-+	size = cnt * sizeof(u64);
-+	if (uprobe_path) {
-+		ret = -ENOMEM;
-+		paths = kmalloc(size, GFP_KERNEL);
-+		if (!paths)
-+			goto out;
-+		ret = -EFAULT;
-+		if (copy_from_user(paths, uprobe_path, size))
-+			goto out;
+-		ext = find_extern_by_name(obj, sym_name);
+-		if (!ext || ext->type != EXT_KSYM)
+-			continue;
+-
+-		t = btf__type_by_id(obj->btf, ext->btf_id);
+-		if (!btf_is_var(t))
+-			continue;
+-
+-		if (ext->is_set && ext->ksym.addr != sym_addr) {
+-			pr_warn("extern (ksym) '%s' resolution is ambiguous: 0x%llx or 0x%llx\n",
+-				sym_name, ext->ksym.addr, sym_addr);
+-			err = -EINVAL;
+-			goto out;
+-		}
+-		if (!ext->is_set) {
+-			ext->is_set = true;
+-			ext->ksym.addr = sym_addr;
+-			pr_debug("extern (ksym) %s=0x%llx\n", sym_name, sym_addr);
+-		}
++		err = cb(arg, sym_addr, sym_type, sym_name);
++		if (err)
++			break;
  	}
  
-+	if (probe_offset) {
-+		ret = -ENOMEM;
-+		offs = kmalloc(size, GFP_KERNEL);
-+		if (!offs)
-+			goto out;
-+		ret = -EFAULT;
-+		if (copy_from_user(offs, probe_offset, size))
-+			goto out;
-+	}
-+
-+	for (i = 0; i < cnt; i++) {
-+		tp_event = uprobe_init(paths ? paths[i] : 0, offs ? offs[i] : 0,
-+				       ref_ctr_offset, is_retprobe, tp_old);
-+		if (IS_ERR(tp_event)) {
-+			if (tp_old)
-+				destroy_local_trace_uprobe(tp_old);
-+			ret = PTR_ERR(tp_event);
-+			goto out;
-+		}
-+		if (!tp_old)
-+			tp_old = tp_event;
-+	}
-+	ret = 0;
-+
-+out:
-+	kfree(paths);
-+	kfree(offs);
-+	return ret ? ERR_PTR(ret) : tp_old;
-+}
-+
-+static struct trace_event_call*
-+uprobe_init_single(struct perf_event *p_event, unsigned long ref_ctr_offset,
-+		   bool is_retprobe)
-+{
-+	struct perf_event_attr *attr = &p_event->attr;
-+
-+	return uprobe_init(attr->uprobe_path, attr->probe_offset,
-+			   ref_ctr_offset, is_retprobe, NULL);
-+}
-+
-+int perf_uprobe_init(struct perf_event *p_event,
-+		     unsigned long ref_ctr_offset, bool is_retprobe)
-+{
-+	struct trace_event_call *tp_event;
-+	int ret;
-+
-+	if (p_event->attr.probe_cnt)
-+		tp_event = uprobe_init_multi(p_event, ref_ctr_offset, is_retprobe);
-+	else
-+		tp_event = uprobe_init_single(p_event, ref_ctr_offset, is_retprobe);
-+
-+	if (IS_ERR(tp_event))
-+		return PTR_ERR(tp_event);
-+
- 	/*
- 	 * local trace_uprobe need to hold event_mutex to call
- 	 * uprobe_buffer_enable() and uprobe_buffer_disable().
-@@ -417,8 +497,6 @@ int perf_uprobe_init(struct perf_event *p_event,
- 	if (ret)
- 		destroy_local_trace_uprobe(tp_event);
- 	mutex_unlock(&event_mutex);
 -out:
--	kfree(path);
- 	return ret;
+ 	fclose(f);
+ 	return err;
  }
  
-diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
-index ba8e46c7efe8..6c81926874ff 100644
---- a/kernel/trace/trace_probe.h
-+++ b/kernel/trace/trace_probe.h
-@@ -383,7 +383,8 @@ extern void destroy_local_trace_kprobe(struct trace_event_call *event_call);
- 
- extern struct trace_event_call *
- create_local_trace_uprobe(char *name, unsigned long offs,
--			  unsigned long ref_ctr_offset, bool is_return);
-+			  unsigned long ref_ctr_offset, bool is_return,
-+			  struct trace_event_call *old);
- extern void destroy_local_trace_uprobe(struct trace_event_call *event_call);
- #endif
- extern int traceprobe_define_arg_fields(struct trace_event_call *event_call,
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index f5f0039d31e5..ca76f9ab6811 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -358,15 +358,20 @@ alloc_trace_uprobe(const char *group, const char *event, int nargs, bool is_ret)
- 	return ERR_PTR(ret);
- }
- 
-+static void __free_trace_uprobe(struct trace_uprobe *tu)
++static int kallsyms_cb(void *arg, unsigned long long sym_addr,
++		       char sym_type, const char *sym_name)
 +{
-+	path_put(&tu->path);
-+	kfree(tu->filename);
-+	kfree(tu);
++	struct bpf_object *obj = arg;
++	const struct btf_type *t;
++	struct extern_desc *ext;
++
++	ext = find_extern_by_name(obj, sym_name);
++	if (!ext || ext->type != EXT_KSYM)
++		return 0;
++
++	t = btf__type_by_id(obj->btf, ext->btf_id);
++	if (!btf_is_var(t))
++		return 0;
++
++	if (ext->is_set && ext->ksym.addr != sym_addr) {
++		pr_warn("extern (ksym) '%s' resolution is ambiguous: 0x%llx or 0x%llx\n",
++			sym_name, ext->ksym.addr, sym_addr);
++		return -EINVAL;
++	}
++	if (!ext->is_set) {
++		ext->is_set = true;
++		ext->ksym.addr = sym_addr;
++		pr_debug("extern (ksym) %s=0x%llx\n", sym_name, sym_addr);
++	}
++	return 0;
 +}
 +
- static void free_trace_uprobe(struct trace_uprobe *tu)
++static int bpf_object__read_kallsyms_file(struct bpf_object *obj)
++{
++	return libbpf__kallsyms_parse(obj, kallsyms_cb);
++}
++
+ static int find_ksym_btf_id(struct bpf_object *obj, const char *ksym_name,
+ 			    __u16 kind, struct btf **res_btf,
+ 			    struct module_btf **res_mod_btf)
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+index f7ac349650a1..511cb09f593f 100644
+--- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -406,6 +406,11 @@ __s32 btf__find_by_name_kind_own(const struct btf *btf, const char *type_name,
+ 
+ extern enum libbpf_strict_mode libbpf_mode;
+ 
++typedef int (*kallsyms_cb_t)(void *arg, unsigned long long sym_addr,
++			     char sym_type, const char *sym_name);
++
++int libbpf__kallsyms_parse(void *arg, kallsyms_cb_t cb);
++
+ /* handle direct returned errors */
+ static inline int libbpf_err(int ret)
  {
- 	if (!tu)
- 		return;
- 
--	path_put(&tu->path);
- 	trace_probe_cleanup(&tu->tp);
--	kfree(tu->filename);
--	kfree(tu);
-+	__free_trace_uprobe(tu);
- }
- 
- static struct trace_uprobe *find_probe_event(const char *event, const char *group)
-@@ -1584,7 +1589,8 @@ static int unregister_uprobe_event(struct trace_uprobe *tu)
- #ifdef CONFIG_PERF_EVENTS
- struct trace_event_call *
- create_local_trace_uprobe(char *name, unsigned long offs,
--			  unsigned long ref_ctr_offset, bool is_return)
-+			  unsigned long ref_ctr_offset, bool is_return,
-+			  struct trace_event_call *old)
- {
- 	enum probe_print_type ptype;
- 	struct trace_uprobe *tu;
-@@ -1619,6 +1625,24 @@ create_local_trace_uprobe(char *name, unsigned long offs,
- 	tu->path = path;
- 	tu->ref_ctr_offset = ref_ctr_offset;
- 	tu->filename = kstrdup(name, GFP_KERNEL);
-+
-+	if (old) {
-+		struct trace_uprobe *tu_old;
-+
-+		tu_old = trace_uprobe_primary_from_call(old);
-+		if (!tu_old) {
-+			ret = -EINVAL;
-+			goto error;
-+		}
-+
-+		/* Append to existing event */
-+		ret = trace_probe_append(&tu->tp, &tu_old->tp);
-+		if (ret)
-+			goto error;
-+
-+		return trace_probe_event_call(&tu->tp);
-+	}
-+
- 	init_trace_event_call(tu);
- 
- 	ptype = is_ret_probe(tu) ? PROBE_PRINT_RETURN : PROBE_PRINT_NORMAL;
-@@ -1635,11 +1659,20 @@ create_local_trace_uprobe(char *name, unsigned long offs,
- 
- void destroy_local_trace_uprobe(struct trace_event_call *event_call)
- {
-+	struct trace_probe_event *event;
-+	struct trace_probe *pos, *tmp;
- 	struct trace_uprobe *tu;
- 
- 	tu = trace_uprobe_primary_from_call(event_call);
- 
--	free_trace_uprobe(tu);
-+	event = tu->tp.event;
-+	list_for_each_entry_safe(pos, tmp, &event->probes, list) {
-+		tu = container_of(pos, struct trace_uprobe, tp);
-+		list_del_init(&pos->list);
-+		__free_trace_uprobe(tu);
-+	}
-+
-+	trace_probe_event_free(event);
- }
- #endif /* CONFIG_PERF_EVENTS */
- 
 -- 
 2.33.1
 
