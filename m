@@ -2,112 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A9145C762
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C651045C768
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:32:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355335AbhKXOeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:34:20 -0500
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:33767 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355291AbhKXOeR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:34:17 -0500
-Received: by mail-ot1-f46.google.com with SMTP id 35-20020a9d08a6000000b00579cd5e605eso4628670otf.0;
-        Wed, 24 Nov 2021 06:31:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Eu+An0Wqru+XdtHm5aswYmIMkbkLQ/vDJ7BbpIzejgY=;
-        b=dhf1et9u+aBAe6OJaosUpujhMPG8Uq+zGrKPrv3SATjp+dt7R13kgFn8gGjPyOYqUU
-         f1BI8ZJv627/T6AWFbsea0FWg9UlxLgk9x5nGHBPQjx85jZZlTuKlHHP0r9S5RG48BuL
-         zY796UZsQttqdBDyBk2pHsHxH08INjk7R63uhZt1jilmpIRaPlWeAxV6Fiid3hAP0hko
-         jfEt6QRb4wfYclNW4E+reeYayiSh0YPMtOKKyIiwbIk8rJwcoUuKmh+Hn5efAFigOvJB
-         j0+Ni8UpwyD7obSI2ysHYsIGIZq8d78T3kNSOSSRUUQjzTdmm5GNLUEVdGKeb29CPMRv
-         9pBg==
-X-Gm-Message-State: AOAM533knLgwo9qvFvcporjJwH7rY2iby/p/P4cM0we6KSJs+X7viVIl
-        Ecl+6+8eyCtPrOyrHvRYM3LcWF1iirUUHvPb8xc=
-X-Google-Smtp-Source: ABdhPJwX7bYX4mz2i102YPzMsCTko0M9Zf3tb8+uTM3gOJzmPVzH9nqXlHDbfVzH9wnaKnx/7DdUyn0dmrw9BQCacFA=
-X-Received: by 2002:a05:6830:1e57:: with SMTP id e23mr13455332otj.16.1637764264752;
- Wed, 24 Nov 2021 06:31:04 -0800 (PST)
+        id S1354436AbhKXOfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:35:11 -0500
+Received: from mga12.intel.com ([192.55.52.136]:31437 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355663AbhKXOfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:35:03 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="215314004"
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="215314004"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 06:31:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="457055621"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 24 Nov 2021 06:31:51 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mptJO-0004tb-Pv; Wed, 24 Nov 2021 14:31:50 +0000
+Date:   Wed, 24 Nov 2021 22:31:18 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: ERROR: start_text address is c000000000000500, should be
+ c000000000000100
+Message-ID: <202111242215.KCExqByj-lkp@intel.com>
 MIME-Version: 1.0
-References: <20211115121001.77041-1-heikki.krogerus@linux.intel.com>
- <CAJZ5v0jsWVw4OyVbkdn2374tLAXAShZ_B3CKDmnQOE_QEXXPiQ@mail.gmail.com> <YZ5JDhOnDw+qqzJP@kuha.fi.intel.com>
-In-Reply-To: <YZ5JDhOnDw+qqzJP@kuha.fi.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 24 Nov 2021 15:30:53 +0100
-Message-ID: <CAJZ5v0iVTGbgdU5Ux992fYim8zpV_GstJhYMLStr7YcQNWFPyQ@mail.gmail.com>
-Subject: Re: [PATCH v4 0/3] device property: Remove device_add_properties()
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 3:15 PM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> On Wed, Nov 24, 2021 at 02:59:01PM +0100, Rafael J. Wysocki wrote:
-> > On Mon, Nov 15, 2021 at 1:10 PM Heikki Krogerus
-> > <heikki.krogerus@linux.intel.com> wrote:
-> > >
-> > > Hi,
-> > >
-> > > One more version. Hopefully the commit messages are now OK. No other
-> > > changes since v3:
-> > >
-> > > https://lore.kernel.org/lkml/20211006112643.77684-1-heikki.krogerus@linux.intel.com/
-> > >
-> > >
-> > > v3 cover letter:
-> > >
-> > > In this third version of this series, the second patch is now split in
-> > > two. The device_remove_properties() call is first removed from
-> > > device_del() in its own patch, and the
-> > > device_add/remove_properties() API is removed separately in the last
-> > > patch. I hope the commit messages are clear enough this time.
-> > >
-> > >
-> > > v2 cover letter:
-> > >
-> > > This is the second version where I only modified the commit message of
-> > > the first patch according to comments from Bjorn.
-> > >
-> > >
-> > > Original cover letter:
-> > >
-> > > There is one user left for the API, so converting that to use software
-> > > node API instead, and removing the function.
-> > >
-> > >
-> > > thanks,
-> > >
-> > > Heikki Krogerus (3):
-> > >   PCI: Convert to device_create_managed_software_node()
-> > >   driver core: Don't call device_remove_properties() from device_del()
-> > >   device property: Remove device_add_properties() API
-> > >
-> > >  drivers/base/core.c      |  1 -
-> > >  drivers/base/property.c  | 48 ----------------------------------------
-> > >  drivers/pci/quirks.c     |  2 +-
-> > >  include/linux/property.h |  4 ----
-> > >  4 files changed, 1 insertion(+), 54 deletions(-)
-> >
-> > Has this been picked up already or am I expected to pick it up?
->
-> It hasn't been picked up by anybody, so if you can take these, that
-> would be great.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5d9f4cf36721aba199975a9be7863a3ff5cd4b59
+commit: 47c258d71ebfc832a760a1dc6540cf3c33968023 powerpc/head_check: use stdout for error messages
+date:   3 months ago
+config: powerpc64-randconfig-r033-20211123 (https://download.01.org/0day-ci/archive/20211124/202111242215.KCExqByj-lkp@intel.com/config)
+compiler: powerpc64-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=47c258d71ebfc832a760a1dc6540cf3c33968023
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout 47c258d71ebfc832a760a1dc6540cf3c33968023
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=powerpc SHELL=/bin/bash
 
-OK, applied as 5.17 material now.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Greg, please let me know if you'd rather take these patches yourself
-and I'll drop them in that case.
+All errors (new ones prefixed by >>):
 
-Thanks!
+>> ERROR: start_text address is c000000000000500, should be c000000000000100
+>> ERROR: try to enable LD_HEAD_STUB_CATCH config option
+>> ERROR: see comments in arch/powerpc/tools/head_check.sh
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
