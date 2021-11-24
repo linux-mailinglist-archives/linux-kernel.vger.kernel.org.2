@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2671A45BA1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23EE345BBCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233408AbhKXMHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:07:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33142 "EHLO mail.kernel.org"
+        id S244522AbhKXMXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:23:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241859AbhKXMGB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:06:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DF0260F5D;
-        Wed, 24 Nov 2021 12:02:50 +0000 (UTC)
+        id S243778AbhKXMSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:18:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58E4561075;
+        Wed, 24 Nov 2021 12:11:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755371;
-        bh=c7KWpxIHQbMYFhVSIUaJMdOW3tWHzN28Rb559zei8tU=;
+        s=korg; t=1637755910;
+        bh=gk1r4jkUxjtNftgYn/FDJFOALJdADGptP6KCTKaCOL4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eQJJyZhQPxdA5xrQPyHjsLejpZwOZZK9cjubHyY3nASHOBmnQajPOs9EAAaCL61JI
-         C9B8OiLPyLzAtw7yjfjeZ1pcq7XgU9pdv3yhTJdhcRIz+Ay/f5tbA0wabGnxCfYrsQ
-         NREYkTYKzVXeJ2gBU/xe0aG+x9uY3E+ACEdXdRNI=
+        b=EaTGbB4XgWV9FrHkMlzmDQGDWLJZtNe/0NSa7Z0eoaWijg6liMe1WTXMC7hK/EJnR
+         ilq90wyMtBLKaAthkwnjG+sgQvyV5efsbboi9l1Fg2HhOIjQFlL4ctOUZvmOSmVItX
+         zBhLXtnzfdLNzTrXjw5vJ55u9g2flMAkzSMvxFJw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+2cd8c5db4a85f0a04142@syzkaller.appspotmail.com
-Subject: [PATCH 4.4 071/162] media: dvb-usb: fix ununit-value in az6027_rc_query
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 103/207] net: stream: dont purge sk_error_queue in sk_stream_kill_queues()
 Date:   Wed, 24 Nov 2021 12:56:14 +0100
-Message-Id: <20211124115700.621237824@linuxfoundation.org>
+Message-Id: <20211124115707.410412949@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit afae4ef7d5ad913cab1316137854a36bea6268a5 ]
+[ Upstream commit 24bcbe1cc69fa52dc4f7b5b2456678ed464724d8 ]
 
-Syzbot reported ununit-value bug in az6027_rc_query(). The problem was
-in missing state pointer initialization. Since this function does nothing
-we can simply initialize state to REMOTE_NO_KEY_PRESSED.
+sk_stream_kill_queues() can be called on close when there are
+still outstanding skbs to transmit. Those skbs may try to queue
+notifications to the error queue (e.g. timestamps).
+If sk_stream_kill_queues() purges the queue without taking
+its lock the queue may get corrupted, and skbs leaked.
 
-Reported-and-tested-by: syzbot+2cd8c5db4a85f0a04142@syzkaller.appspotmail.com
+This shows up as a warning about an rmem leak:
 
-Fixes: 76f9a820c867 ("V4L/DVB: AZ6027: Initial import of the driver")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+WARNING: CPU: 24 PID: 0 at net/ipv4/af_inet.c:154 inet_sock_destruct+0x...
+
+The leak is always a multiple of 0x300 bytes (the value is in
+%rax on my builds, so RAX: 0000000000000300). 0x300 is truesize of
+an empty sk_buff. Indeed if we dump the socket state at the time
+of the warning the sk_error_queue is often (but not always)
+corrupted. The ->next pointer points back at the list head,
+but not the ->prev pointer. Indeed we can find the leaked skb
+by scanning the kernel memory for something that looks like
+an skb with ->sk = socket in question, and ->truesize = 0x300.
+The contents of ->cb[] of the skb confirms the suspicion that
+it is indeed a timestamp notification (as generated in
+__skb_complete_tx_timestamp()).
+
+Removing purging of sk_error_queue should be okay, since
+inet_sock_destruct() does it again once all socket refs
+are gone. Eric suggests this may cause sockets that go
+thru disconnect() to maintain notifications from the
+previous incarnations of the socket, but that should be
+okay since the race was there anyway, and disconnect()
+is not exactly dependable.
+
+Thanks to Jonathan Lemon and Omar Sandoval for help at various
+stages of tracing the issue.
+
+Fixes: cb9eff097831 ("net: new user space API for time stamping of incoming and outgoing packets")
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/dvb-usb/az6027.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/core/stream.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/media/usb/dvb-usb/az6027.c b/drivers/media/usb/dvb-usb/az6027.c
-index 92e47d6c3ee3e..c58fb74c3cd73 100644
---- a/drivers/media/usb/dvb-usb/az6027.c
-+++ b/drivers/media/usb/dvb-usb/az6027.c
-@@ -394,6 +394,7 @@ static struct rc_map_table rc_map_az6027_table[] = {
- /* remote control stuff (does not work with my box) */
- static int az6027_rc_query(struct dvb_usb_device *d, u32 *event, int *state)
- {
-+	*state = REMOTE_NO_KEY_PRESSED;
- 	return 0;
- }
+diff --git a/net/core/stream.c b/net/core/stream.c
+index 6e41b20bf9f86..05b63feac7e57 100644
+--- a/net/core/stream.c
++++ b/net/core/stream.c
+@@ -193,9 +193,6 @@ void sk_stream_kill_queues(struct sock *sk)
+ 	/* First the read buffer. */
+ 	__skb_queue_purge(&sk->sk_receive_queue);
+ 
+-	/* Next, the error queue. */
+-	__skb_queue_purge(&sk->sk_error_queue);
+-
+ 	/* Next, the write queue. */
+ 	WARN_ON(!skb_queue_empty(&sk->sk_write_queue));
  
 -- 
 2.33.0
