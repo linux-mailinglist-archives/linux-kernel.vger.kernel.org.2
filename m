@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6EBF45C583
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F5D45C222
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:22:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355664AbhKXN6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:58:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46102 "EHLO mail.kernel.org"
+        id S1346451AbhKXNZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:25:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352995AbhKXNze (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:55:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EA36632C4;
-        Wed, 24 Nov 2021 13:06:33 +0000 (UTC)
+        id S242820AbhKXNVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:21:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38BA161B07;
+        Wed, 24 Nov 2021 12:47:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759194;
-        bh=FEgnfhqPl81GleE3IRFdHhyPMhCuTyNWnScTp9ADNzY=;
+        s=korg; t=1637758033;
+        bh=MbljPlGWIgZ6aE1b8hrYn73E3WqClBJ8p6vdASrke7Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sNAKP8l/J2mwQBUnyQsyGHgd9EYYJtmScypNk4604rc78vLNlGXOy5No+drDCNVZY
-         1xof+5DlvzI99xnAEmmqpHIUhqkYLkNbyl2NY71FpKU3vqMgOX2inARyV8zESs3ORn
-         Lmkwb4b/+ghzcr067Si8mxOGGfuTKntqTyh87B+Q=
+        b=R+wOVpCZmYZZGomIw4NhjYuDnFR6aXHWynRj2sGxLPOqcpyAGyLN9LBfwgJIODcHH
+         Usm9d6bhd/jXFRAcArwegT+o+BcDx+e9t3c0UO4qTrzmpWz43OgbRJdvrRN42bkwV7
+         Mzai/hui4ClQipG68SkhX643dQdpd/tr2NiG94ic=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Selvin Xavier <selvin.xavier@broadcom.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 155/279] scsi: ufs: core: Fix another task management completion race
+Subject: [PATCH 5.4 006/100] RDMA/bnxt_re: Check if the vlan is valid before reporting
 Date:   Wed, 24 Nov 2021 12:57:22 +0100
-Message-Id: <20211124115724.128091686@linuxfoundation.org>
+Message-Id: <20211124115655.055827454@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Selvin Xavier <selvin.xavier@broadcom.com>
 
-[ Upstream commit 5cb37a26355d79ab290220677b1b57d28e99a895 ]
+[ Upstream commit 6bda39149d4b8920fdb8744090653aca3daa792d ]
 
-hba->outstanding_tasks, which is read under host_lock spinlock, tells the
-interrupt handler what task management tags are in use by the driver.  The
-doorbell register bits indicate which tags are in use by the hardware.  A
-doorbell bit that is 0 is because the bit has yet to be set by the driver,
-or because the task is complete. It is only possible to disambiguate the 2
-cases, if reading/writing the doorbell register is synchronized with
-reading/writing hba->outstanding_tasks.
+When VF is configured with default vlan, HW strips the vlan from the
+packet and driver receives it in Rx completion. VLAN needs to be reported
+for UD work completion only if the vlan is configured on the host. Add a
+check for valid vlan in the UD receive path.
 
-For that reason, reading REG_UTP_TASK_REQ_DOOR_BELL must be done under
-spinlock.
-
-Link: https://lore.kernel.org/r/20211108064815.569494-3-adrian.hunter@intel.com
-Fixes: f5ef336fd2e4 ("scsi: ufs: core: Fix task management completion")
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Link: https://lore.kernel.org/r/1631709163-2287-12-git-send-email-selvin.xavier@broadcom.com
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 3d0da8b3fed8a..55f2e4d6f10b7 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -6382,9 +6382,8 @@ static irqreturn_t ufshcd_tmc_handler(struct ufs_hba *hba)
- 	irqreturn_t ret = IRQ_NONE;
- 	int tag;
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index a96f9142fe08e..dd006b177b544 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -3081,8 +3081,11 @@ static void bnxt_re_process_res_ud_wc(struct bnxt_re_qp *qp,
+ 				      struct ib_wc *wc,
+ 				      struct bnxt_qplib_cqe *cqe)
+ {
++	struct bnxt_re_dev *rdev;
++	u16 vlan_id = 0;
+ 	u8 nw_type;
  
--	pending = ufshcd_readl(hba, REG_UTP_TASK_REQ_DOOR_BELL);
--
- 	spin_lock_irqsave(hba->host->host_lock, flags);
-+	pending = ufshcd_readl(hba, REG_UTP_TASK_REQ_DOOR_BELL);
- 	issued = hba->outstanding_tasks & ~pending;
- 	for_each_set_bit(tag, &issued, hba->nutmrs) {
- 		struct request *req = hba->tmf_rqs[tag];
++	rdev = qp->rdev;
+ 	wc->opcode = IB_WC_RECV;
+ 	wc->status = __rc_to_ib_wc_status(cqe->status);
+ 
+@@ -3094,9 +3097,12 @@ static void bnxt_re_process_res_ud_wc(struct bnxt_re_qp *qp,
+ 		memcpy(wc->smac, cqe->smac, ETH_ALEN);
+ 		wc->wc_flags |= IB_WC_WITH_SMAC;
+ 		if (cqe->flags & CQ_RES_UD_FLAGS_META_FORMAT_VLAN) {
+-			wc->vlan_id = (cqe->cfa_meta & 0xFFF);
+-			if (wc->vlan_id < 0x1000)
+-				wc->wc_flags |= IB_WC_WITH_VLAN;
++			vlan_id = (cqe->cfa_meta & 0xFFF);
++		}
++		/* Mark only if vlan_id is non zero */
++		if (vlan_id && bnxt_re_check_if_vlan_valid(rdev, vlan_id)) {
++			wc->vlan_id = vlan_id;
++			wc->wc_flags |= IB_WC_WITH_VLAN;
+ 		}
+ 		nw_type = (cqe->flags & CQ_RES_UD_FLAGS_ROCE_IP_VER_MASK) >>
+ 			   CQ_RES_UD_FLAGS_ROCE_IP_VER_SFT;
 -- 
 2.33.0
 
