@@ -2,126 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C280C45C792
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:36:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95FC145C6D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356834AbhKXOjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:39:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356551AbhKXOjX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:39:23 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF5AC1F38B7;
-        Wed, 24 Nov 2021 05:41:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=u5Bp6Rfma9GvNlchoY1NvLTwJANeJ3HEug26+8isXwE=; b=hhbQZhJwK1Tb9e+q0Q28e25DAv
-        Od9pIYN2Gyiv0dA95pkKXYVes6wIzr6Dyrdz7zE6LWYwQgtKQRddQQj3KlF/6e+rGlvDwZn81SO0L
-        jmyNcKHUwuAAL4hqFxxBoCLbZ78/8YU9GtUBk2390mHdprFJB6Q5NEsOuCM+WqTROXedt17OSU57K
-        Znwqwh32TO/nbgJf5ps0iEH4WpPxtncH2AfxYxaIDPl/mI7K7oszTaCg2ZYrE3yeotZ03DTuOQM8q
-        SbFyM9HClWrBqJvP/vIs76mbieTIOeBHp8+RY1gteGkIKaIRwSzmIllOlYTn9YYs66Or0n5wDgTmB
-        pHDv3JGg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mpsWA-004tSi-D1; Wed, 24 Nov 2021 13:40:58 +0000
-Date:   Wed, 24 Nov 2021 05:40:58 -0800
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     akpm@linux-foundation.org, keescook@chromium.org,
-        yzaikin@google.com, nixiaoming@huawei.com, ebiederm@xmission.com,
-        clemens@ladisch.de, arnd@arndb.de, gregkh@linuxfoundation.org,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, tvrtko.ursulin@linux.intel.com,
-        airlied@linux.ie, benh@kernel.crashing.org, mark@fasheh.com,
-        jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
-        amir73il@gmail.com, phil@philpotter.co.uk, viro@zeniv.linux.org.uk,
-        julia.lawall@inria.fr, ocfs2-devel@oss.oracle.com,
-        linuxppc-dev@lists.ozlabs.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/8] inotify: simplify subdirectory registration with
- register_sysctl()
-Message-ID: <YZ5A6iWLb0h3N3RC@bombadil.infradead.org>
-References: <20211123202422.819032-1-mcgrof@kernel.org>
- <20211123202422.819032-7-mcgrof@kernel.org>
- <20211124094409.GF8583@quack2.suse.cz>
+        id S1348537AbhKXOMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:12:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57146 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1354820AbhKXOI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:08:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C9B061527;
+        Wed, 24 Nov 2021 13:45:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637761504;
+        bh=AFNXTN7dJo9BzvNAJPDG4cdNoOi7e3pBTC7ykAGZ0lo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KevlNQNfF0DBkBWoiUONBA5YfAKTijR3FwuXaT94A0o8mgwDfEVs1Ov7Ric2UZfM/
+         gzBuWCLor0UK3ba1DZAR++lJgJqFmFhGVtiQ9jeu1ELkukDa1vQbBjwmgOi2T7qRhP
+         3mesc/z2uyzS3IiJxvSUiLUo8zgzbkkW8+R1SfuY=
+Date:   Wed, 24 Nov 2021 14:45:01 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        syzbot+e4df4e1389e28972e955@syzkaller.appspotmail.com,
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.14 181/251] net: vlan: fix a UAF in vlan_dev_real_dev()
+Message-ID: <YZ5B3ZeQD1XNV1DY@kroah.com>
+References: <20211124115710.214900256@linuxfoundation.org>
+ <20211124115716.547727004@linuxfoundation.org>
+ <20211124125018.GG4670@nvidia.com>
+ <YZ463j6mlk/UUwar@kroah.com>
+ <20211124132756.GH4670@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211124094409.GF8583@quack2.suse.cz>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <20211124132756.GH4670@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 10:44:09AM +0100, Jan Kara wrote:
-> On Tue 23-11-21 12:24:20, Luis Chamberlain wrote:
-> > From: Xiaoming Ni <nixiaoming@huawei.com>
+On Wed, Nov 24, 2021 at 09:27:56AM -0400, Jason Gunthorpe wrote:
+> On Wed, Nov 24, 2021 at 02:15:10PM +0100, Greg Kroah-Hartman wrote:
+> > On Wed, Nov 24, 2021 at 08:50:18AM -0400, Jason Gunthorpe wrote:
+> > > On Wed, Nov 24, 2021 at 12:57:03PM +0100, Greg Kroah-Hartman wrote:
+> > > > From: Ziyang Xuan <william.xuanziyang@huawei.com>
+> > > > 
+> > > > [ Upstream commit 563bcbae3ba233c275c244bfce2efe12938f5363 ]
+> > > > 
+> > > > The real_dev of a vlan net_device may be freed after
+> > > > unregister_vlan_dev(). Access the real_dev continually by
+> > > > vlan_dev_real_dev() will trigger the UAF problem for the
+> > > > real_dev like following:
+> > > > 
+> > > > ==================================================================
+> > > > BUG: KASAN: use-after-free in vlan_dev_real_dev+0xf9/0x120
+> > > > Call Trace:
+> > > >  kasan_report.cold+0x83/0xdf
+> > > >  vlan_dev_real_dev+0xf9/0x120
+> > > >  is_eth_port_of_netdev_filter.part.0+0xb1/0x2c0
+> > > >  is_eth_port_of_netdev_filter+0x28/0x40
+> > > >  ib_enum_roce_netdev+0x1a3/0x300
+> > > >  ib_enum_all_roce_netdevs+0xc7/0x140
+> > > >  netdevice_event_work_handler+0x9d/0x210
+> > > > ...
+> > > > 
+> > > > Freed by task 9288:
+> > > >  kasan_save_stack+0x1b/0x40
+> > > >  kasan_set_track+0x1c/0x30
+> > > >  kasan_set_free_info+0x20/0x30
+> > > >  __kasan_slab_free+0xfc/0x130
+> > > >  slab_free_freelist_hook+0xdd/0x240
+> > > >  kfree+0xe4/0x690
+> > > >  kvfree+0x42/0x50
+> > > >  device_release+0x9f/0x240
+> > > >  kobject_put+0x1c8/0x530
+> > > >  put_device+0x1b/0x30
+> > > >  free_netdev+0x370/0x540
+> > > >  ppp_destroy_interface+0x313/0x3d0
+> > > > ...
+> > > > 
+> > > > Move the put_device(real_dev) to vlan_dev_free(). Ensure
+> > > > real_dev not be freed before vlan_dev unregistered.
+> > > > 
+> > > > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> > > > Reported-by: syzbot+e4df4e1389e28972e955@syzkaller.appspotmail.com
+> > > > Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+> > > > Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> > > > Signed-off-by: David S. Miller <davem@davemloft.net>
+> > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > >  net/8021q/vlan.c     | 3 ---
+> > > >  net/8021q/vlan_dev.c | 3 +++
+> > > >  2 files changed, 3 insertions(+), 3 deletions(-)
+> > > 
+> > > This patch is known to be broken, it should not be backported
 > > 
-> > There is no need to user boiler plate code to specify a set of base
-> > directories we're going to stuff sysctls under. Simplify this by using
-> > register_sysctl() and specifying the directory path directly.
+> > It is already in a bunch of branches :(
 > > 
-> > Move inotify_user sysctl to inotify_user.c while at it to remove clutter
-> > from kernel/sysctl.c.
-> > 
-> > Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
-> > [mcgrof: update commit log to reflect new path we decided to take]
-> > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> > What is the upstream revert of this commit in Linus's tree?
 > 
-> This looks fishy. You register inotify_table but not fanotify_table and
-> remove both...
+> It isn't in a Linus released kernel yet, Ziyang and Petr are working
+> on fixing it.
 
-Indeed, the following was missing, I'll roll it in:
+Ok, dropping it from the 4.14 and 4.19 queues now, hopefully it gets
+fixed in Linus's tree soon.
 
-diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-index 559bc1e9926d..a35693eb1f36 100644
---- a/fs/notify/fanotify/fanotify_user.c
-+++ b/fs/notify/fanotify/fanotify_user.c
-@@ -59,7 +59,7 @@ static int fanotify_max_queued_events __read_mostly;
- static long ft_zero = 0;
- static long ft_int_max = INT_MAX;
- 
--struct ctl_table fanotify_table[] = {
-+static struct ctl_table fanotify_table[] = {
- 	{
- 		.procname	= "max_user_groups",
- 		.data	= &init_user_ns.ucount_max[UCOUNT_FANOTIFY_GROUPS],
-@@ -88,6 +88,13 @@ struct ctl_table fanotify_table[] = {
- 	},
- 	{ }
- };
-+
-+static void __init fanotify_sysctls_init(void)
-+{
-+	register_sysctl("fs/fanotify", fanotify_table);
-+}
-+#else
-+#define fanotify_sysctls_init() do { } while (0)
- #endif /* CONFIG_SYSCTL */
- 
- /*
-@@ -1685,6 +1692,7 @@ static int __init fanotify_user_setup(void)
- 	init_user_ns.ucount_max[UCOUNT_FANOTIFY_GROUPS] =
- 					FANOTIFY_DEFAULT_MAX_GROUPS;
- 	init_user_ns.ucount_max[UCOUNT_FANOTIFY_MARKS] = max_marks;
-+	fanotify_sysctls_init();
- 
- 	return 0;
- }
-diff --git a/include/linux/fanotify.h b/include/linux/fanotify.h
-index 616af2ea20f3..556cc63c88ee 100644
---- a/include/linux/fanotify.h
-+++ b/include/linux/fanotify.h
-@@ -5,8 +5,6 @@
- #include <linux/sysctl.h>
- #include <uapi/linux/fanotify.h>
- 
--extern struct ctl_table fanotify_table[]; /* for sysctl */
--
- #define FAN_GROUP_FLAG(group, flag) \
- 	((group)->fanotify_data.flags & (flag))
- 
+thanks,
+
+greg k-h
