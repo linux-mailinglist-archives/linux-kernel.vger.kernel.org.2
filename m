@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC74145C014
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:01:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A59B45BBC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345821AbhKXNEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:04:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39122 "EHLO mail.kernel.org"
+        id S244399AbhKXMXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:23:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346837AbhKXNC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:02:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BB716108B;
-        Wed, 24 Nov 2021 12:36:03 +0000 (UTC)
+        id S243530AbhKXMSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:18:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24A1661153;
+        Wed, 24 Nov 2021 12:11:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757364;
-        bh=w6+kxHL3jyEyze+jxjSIeKvCzUghPMO5MDrWnrSNKK4=;
+        s=korg; t=1637755893;
+        bh=KtonEn5HvGcYC394V97oFTNdYEp6zGgCSACTXwtaPNw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eFJsrlP93Hd/oNekdFEhy5vJCwpe++fek1xagwJQY/umRdFKWAJuYobn67gxTPtqp
-         eDGbXcmAMNM57+bJ36NJFySp9naooydYwniBXg2REzu6xWkVAHeHVotrWbNGydtptc
-         poCQgSqCthVRcorZ1+eYY1iZNk1I8uYfmmJaX8ew=
+        b=r3SiNJ1iBYd4Jbi68hmcC99/7LS0+u0Uri2Veyabrnu4eDUyiawvwtP0q3XHwote7
+         fBAhk9TBlcNp5Av46k3KtzGBakEdHyiSe/UJsjoX+Fj0CcgjCwvGMqAau8tBTZeSEK
+         bf1cI05MRFNLoeost0bjLj3zt4ZL8jP3hLjTxLOQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        =?UTF-8?q?Michael=20B=C3=BCsch?= <m@bues.ch>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Michael Wang <yun.wang@linux.alibaba.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 143/323] b43legacy: fix a lower bounds test
-Date:   Wed, 24 Nov 2021 12:55:33 +0100
-Message-Id: <20211124115723.753741120@linuxfoundation.org>
+Subject: [PATCH 4.9 063/207] x86: Increase exception stack sizes
+Date:   Wed, 24 Nov 2021 12:55:34 +0100
+Message-Id: <20211124115705.965579826@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit c1c8380b0320ab757e60ed90efc8b1992a943256 ]
+[ Upstream commit 7fae4c24a2b84a66c7be399727aca11e7a888462 ]
 
-The problem is that "channel" is an unsigned int, when it's less 5 the
-value of "channel - 5" is not a negative number as one would expect but
-is very high positive value instead.
+It turns out that a single page of stack is trivial to overflow with
+all the tracing gunk enabled. Raise the exception stacks to 2 pages,
+which is still half the interrupt stacks, which are at 4 pages.
 
-This means that "start" becomes a very high positive value.  The result
-of that is that we never enter the "for (i = start; i <= end; i++) {"
-loop.  Instead of storing the result from b43legacy_radio_aci_detect()
-it just uses zero.
-
-Fixes: 75388acd0cd8 ("[B43LEGACY]: add mac80211-based driver for legacy BCM43xx devices")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Michael Büsch <m@bues.ch>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20211006073542.GD8404@kili
+Reported-by: Michael Wang <yun.wang@linux.alibaba.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/YUIO9Ye98S5Eb68w@hirez.programming.kicks-ass.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/broadcom/b43legacy/radio.c | 2 +-
+ arch/x86/include/asm/page_64_types.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/broadcom/b43legacy/radio.c b/drivers/net/wireless/broadcom/b43legacy/radio.c
-index eab1c93878468..8f845db23766b 100644
---- a/drivers/net/wireless/broadcom/b43legacy/radio.c
-+++ b/drivers/net/wireless/broadcom/b43legacy/radio.c
-@@ -299,7 +299,7 @@ u8 b43legacy_radio_aci_scan(struct b43legacy_wldev *dev)
- 			    & 0x7FFF);
- 	b43legacy_set_all_gains(dev, 3, 8, 1);
+diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
+index 390fdd39e0e21..5a69eee673536 100644
+--- a/arch/x86/include/asm/page_64_types.h
++++ b/arch/x86/include/asm/page_64_types.h
+@@ -19,7 +19,7 @@
+ #define THREAD_SIZE  (PAGE_SIZE << THREAD_SIZE_ORDER)
+ #define CURRENT_MASK (~(THREAD_SIZE - 1))
  
--	start = (channel - 5 > 0) ? channel - 5 : 1;
-+	start = (channel > 5) ? channel - 5 : 1;
- 	end = (channel + 5 < 14) ? channel + 5 : 13;
+-#define EXCEPTION_STACK_ORDER (0 + KASAN_STACK_ORDER)
++#define EXCEPTION_STACK_ORDER (1 + KASAN_STACK_ORDER)
+ #define EXCEPTION_STKSZ (PAGE_SIZE << EXCEPTION_STACK_ORDER)
  
- 	for (i = start; i <= end; i++) {
+ #define DEBUG_STACK_ORDER (EXCEPTION_STACK_ORDER + 1)
 -- 
 2.33.0
 
