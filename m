@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76AC045BC8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:29:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E9945BDC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:39:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245088AbhKXMbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:31:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36538 "EHLO mail.kernel.org"
+        id S1343829AbhKXMkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:40:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243627AbhKXMUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:20:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E8FB61183;
-        Wed, 24 Nov 2021 12:13:01 +0000 (UTC)
+        id S1343514AbhKXMhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:37:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74A0661055;
+        Wed, 24 Nov 2021 12:22:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755982;
-        bh=SEH46agP6ZMS85HjcoMU4AlhgQX8KdSJvWw7MBgZVyI=;
+        s=korg; t=1637756550;
+        bh=ZfjHDFFusrEm0NXlJFQHZY6OathP7X1LM2lyIRhLSmk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nlLpJdwVquMYq80l44jCgSvUF1jgbjYeFnudr3my20W+wga62w7sVv53pZjZZ3NMI
-         Pgv2GOuboqwgp3QxIuG4hxMsF7rq1vtayJxh9eb19zqo6xqYT4tqeTli27Kw1x1gu2
-         UIq2zTSk6DsaZ5cTbpadrKMfcLfOdP7n8D3S5af0=
+        b=N5a021ilw7h7wq6+7GjBI/XBuIn8yr7Rh4U4bH5/GYeaGkAY++AsIBRnYt9UHzjuE
+         nMpbYuwijjiE/P4/LVnqXAn9DmCQP3C8AIPZnTDKleiVTCQtn3Aa+k5yMR6IzuJ7IO
+         ANRE0dI5Z2QSwFrUq2PXw6kObFASjD/IuKBAwYnc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Marco Chiappero <marco.chiappero@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 094/207] crypto: qat - detect PFVF collision after ACK
-Date:   Wed, 24 Nov 2021 12:56:05 +0100
-Message-Id: <20211124115707.119668808@linuxfoundation.org>
+Subject: [PATCH 4.14 124/251] mmc: mxs-mmc: disable regulator on error and in the remove function
+Date:   Wed, 24 Nov 2021 12:56:06 +0100
+Message-Id: <20211124115714.548411803@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,44 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 9b768e8a3909ac1ab39ed44a3933716da7761a6f ]
+[ Upstream commit ce5f6c2c9b0fcb4094f8e162cfd37fb4294204f7 ]
 
-Detect a PFVF collision between the local and the remote function by
-checking if the message on the PFVF CSR has been overwritten.
-This is done after the remote function confirms that the message has
-been received, by clearing the interrupt bit, or the maximum number of
-attempts (ADF_IOV_MSG_ACK_MAX_RETRY) to check the CSR has been exceeded.
+The 'reg_vmmc' regulator is enabled in the probe. It is never disabled.
+Neither in the error handling path of the probe nor in the remove
+function.
 
-Fixes: ed8ccaef52fa ("crypto: qat - Add support for SRIOV")
-Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Co-developed-by: Marco Chiappero <marco.chiappero@intel.com>
-Signed-off-by: Marco Chiappero <marco.chiappero@intel.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Register a devm_action to disable it when needed.
+
+Fixes: 4dc5a79f1350 ("mmc: mxs-mmc: enable regulator for mmc slot")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/4aadb3c97835f7b80f00819c3d549e6130384e67.1634365151.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/qat/qat_common/adf_pf2vf_msg.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/mmc/host/mxs-mmc.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
-index c64481160b711..72fd2bbbe704e 100644
---- a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
-+++ b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
-@@ -195,6 +195,13 @@ static int __adf_iov_putmsg(struct adf_accel_dev *accel_dev, u32 msg, u8 vf_nr)
- 		val = ADF_CSR_RD(pmisc_bar_addr, pf2vf_offset);
- 	} while ((val & int_bit) && (count++ < ADF_IOV_MSG_ACK_MAX_RETRY));
+diff --git a/drivers/mmc/host/mxs-mmc.c b/drivers/mmc/host/mxs-mmc.c
+index 7125687faf76a..d7601dc5e85dc 100644
+--- a/drivers/mmc/host/mxs-mmc.c
++++ b/drivers/mmc/host/mxs-mmc.c
+@@ -579,6 +579,11 @@ static const struct of_device_id mxs_mmc_dt_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, mxs_mmc_dt_ids);
  
-+	if (val != msg) {
-+		dev_dbg(&GET_DEV(accel_dev),
-+			"Collision - PFVF CSR overwritten by remote function\n");
-+		ret = -EIO;
-+		goto out;
-+	}
++static void mxs_mmc_regulator_disable(void *regulator)
++{
++	regulator_disable(regulator);
++}
 +
- 	if (val & int_bit) {
- 		dev_dbg(&GET_DEV(accel_dev), "ACK not received from remote\n");
- 		val &= ~int_bit;
+ static int mxs_mmc_probe(struct platform_device *pdev)
+ {
+ 	const struct of_device_id *of_id =
+@@ -622,6 +627,11 @@ static int mxs_mmc_probe(struct platform_device *pdev)
+ 				"Failed to enable vmmc regulator: %d\n", ret);
+ 			goto out_mmc_free;
+ 		}
++
++		ret = devm_add_action_or_reset(&pdev->dev, mxs_mmc_regulator_disable,
++					       reg_vmmc);
++		if (ret)
++			goto out_mmc_free;
+ 	}
+ 
+ 	ssp->clk = devm_clk_get(&pdev->dev, NULL);
 -- 
 2.33.0
 
