@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D62E45C0C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:08:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF9A45C51D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347875AbhKXNKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:10:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51818 "EHLO mail.kernel.org"
+        id S1352556AbhKXNzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:55:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348229AbhKXNJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:09:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6C2B610A1;
-        Wed, 24 Nov 2021 12:39:24 +0000 (UTC)
+        id S1354492AbhKXNuy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:50:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 340F76138F;
+        Wed, 24 Nov 2021 13:04:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757565;
-        bh=f87D2RB4NZhf9JACyxt4BE2xBfihr3GK3rOau+/RW+Y=;
+        s=korg; t=1637759046;
+        bh=KYamQo9SxxRUI/rR7B+uhg2UMEcnlWUsFVv4r2iEVp4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QZcFPBBs6laX5qx0yjUT7uT0mx+bvbXmK81sR9qNhsw9K1wvEqtnRUsGm7MLh1AIV
-         D6z528aguCAeARygO61fGnP3VMmeCz6sO5VEiv7RS+5fsetywDkfKOU+FWWuCmUH8X
-         fdkeqpMcJ+hbNdu1qQHwDUsZCExMtBBD+X/bSAlc=
+        b=OaOXAqIbCNmwMBPrQsCsH9+g06MCTdaYruCLuGvoE/ZolkhfAQdHMhzWDVPJ9jQHW
+         gjVCgrpBDacav2jjB/zcgOgdVygVpaGk4OzDJsDH6pWkNj6DMk+x6OxK6I4kVnTMFt
+         SdM+Rr5kk/o/e8Y+vDp/idO3tKYZquP6wCTz6t5o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robin van der Gracht <robin@protonic.nl>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
+        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 211/323] auxdisplay: ht16k33: Fix frame buffer device blanking
+Subject: [PATCH 5.15 114/279] net: ipa: HOLB register sometimes must be written twice
 Date:   Wed, 24 Nov 2021 12:56:41 +0100
-Message-Id: <20211124115726.053338119@linuxfoundation.org>
+Message-Id: <20211124115722.721316115@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,57 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Alex Elder <elder@linaro.org>
 
-[ Upstream commit 840fe258332544aa7321921e1723d37b772af7a9 ]
+[ Upstream commit 6e228d8cbb1cc6ba78022d406340e901e08d26e0 ]
 
-As the ht16k33 frame buffer sub-driver does not register an
-fb_ops.fb_blank() handler, blanking does not work:
+Starting with IPA v4.5, the HOL_BLOCK_EN register must be written
+twice when enabling head-of-line blocking avoidance.
 
-    $ echo 1 > /sys/class/graphics/fb0/blank
-    sh: write error: Invalid argument
-
-Fix this by providing a handler that always returns zero, to make sure
-blank events will be sent to the actual device handling the backlight.
-
-Reported-by: Robin van der Gracht <robin@protonic.nl>
-Suggested-by: Robin van der Gracht <robin@protonic.nl>
-Fixes: 8992da44c6805d53 ("auxdisplay: ht16k33: Driver for LED controller")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+Fixes: 84f9bd12d46db ("soc: qcom: ipa: IPA endpoints")
+Signed-off-by: Alex Elder <elder@linaro.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/auxdisplay/ht16k33.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/net/ipa/ipa_endpoint.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index f6927871fa4e8..03a87dd1f625e 100644
---- a/drivers/auxdisplay/ht16k33.c
-+++ b/drivers/auxdisplay/ht16k33.c
-@@ -219,6 +219,15 @@ static const struct backlight_ops ht16k33_bl_ops = {
- 	.check_fb	= ht16k33_bl_check_fb,
- };
+diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
+index 5528d97110d56..006da4642a0ba 100644
+--- a/drivers/net/ipa/ipa_endpoint.c
++++ b/drivers/net/ipa/ipa_endpoint.c
+@@ -868,6 +868,9 @@ ipa_endpoint_init_hol_block_enable(struct ipa_endpoint *endpoint, bool enable)
+ 	val = enable ? HOL_BLOCK_EN_FMASK : 0;
+ 	offset = IPA_REG_ENDP_INIT_HOL_BLOCK_EN_N_OFFSET(endpoint_id);
+ 	iowrite32(val, endpoint->ipa->reg_virt + offset);
++	/* When enabling, the register must be written twice for IPA v4.5+ */
++	if (enable && endpoint->ipa->version >= IPA_VERSION_4_5)
++		iowrite32(val, endpoint->ipa->reg_virt + offset);
+ }
  
-+/*
-+ * Blank events will be passed to the actual device handling the backlight when
-+ * we return zero here.
-+ */
-+static int ht16k33_blank(int blank, struct fb_info *info)
-+{
-+	return 0;
-+}
-+
- static int ht16k33_mmap(struct fb_info *info, struct vm_area_struct *vma)
- {
- 	struct ht16k33_priv *priv = info->par;
-@@ -231,6 +240,7 @@ static struct fb_ops ht16k33_fb_ops = {
- 	.owner = THIS_MODULE,
- 	.fb_read = fb_sys_read,
- 	.fb_write = fb_sys_write,
-+	.fb_blank = ht16k33_blank,
- 	.fb_fillrect = sys_fillrect,
- 	.fb_copyarea = sys_copyarea,
- 	.fb_imageblit = sys_imageblit,
+ void ipa_endpoint_modem_hol_block_clear_all(struct ipa *ipa)
 -- 
 2.33.0
 
