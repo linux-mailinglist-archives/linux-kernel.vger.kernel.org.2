@@ -2,103 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FFAC45C6D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:09:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B4C45C766
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349521AbhKXOMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:12:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354597AbhKXOI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:08:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39B1B613AD;
-        Wed, 24 Nov 2021 13:15:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759713;
-        bh=drosgPC9YmQkwX7TqquI1QNkbudQ1d9rfHOJEZiUvaY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jDh6HFSxb741/RwnoMfiahC9mi57pXU3CRpia2kjPj5dxUA2Jh798e/RPoEQ0mUxc
-         DtwomeiKsK7LCxrpz9Pxrw0iUQdg1xmQHVwUhy9QhCQZpzDCbjNJurwkQm5OYC9nxK
-         qw4M8AIH4OYi4k4JdlH6U6dhmgvlVOIPcu+EF3j8=
-Date:   Wed, 24 Nov 2021 14:15:10 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        syzbot+e4df4e1389e28972e955@syzkaller.appspotmail.com,
-        Ziyang Xuan <william.xuanziyang@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.14 181/251] net: vlan: fix a UAF in vlan_dev_real_dev()
-Message-ID: <YZ463j6mlk/UUwar@kroah.com>
-References: <20211124115710.214900256@linuxfoundation.org>
- <20211124115716.547727004@linuxfoundation.org>
- <20211124125018.GG4670@nvidia.com>
+        id S1355541AbhKXOep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:34:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355440AbhKXOem (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:34:42 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41C3C09B199;
+        Wed, 24 Nov 2021 05:16:04 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id BCBDA1F459B3
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1637759762; bh=w5NCl88uIb7DXyRTvcGFerOK5HHq7D6Czyq4czemG7I=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=g5ex+td+/1EaqpvGy26pVFRXUqSPBFspuYS9FJ0LfcdO1Kgv4fuz/AbrbGM6ISEBL
+         YC7KKFAbJNuN35fOti/SpTPj0SG/lLP71koRTX3m5XS4IaHUO6+lprXaUK94iDpmCy
+         WzArE+65mEsXtyUX+UDqIGwADkyhTMy1xOzNDh4EeRBubvybpuNTjLuk1xifbGiJIf
+         wl5T9fh5Rr4YEqnk1skSx3JPVMX+QM8Cc2gRBk4XwZc8vVzMEWu3CRFyNCAeIniAAG
+         6IwPzGQpe5d2s3wy4+UCuIdURQF5ao/WhGMW5cSIBqaLolNp26c4MAN4y1ctrPt2PB
+         BjMZ26LbvnlOQ==
+Message-ID: <4dd8a108-013f-8d68-b5d5-138d3cf3bff0@collabora.com>
+Date:   Wed, 24 Nov 2021 10:15:52 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211124125018.GG4670@nvidia.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: spinlock.c:306:9: error: implicit declaration of function
+ '__raw_write_lock_nested'
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@arndb.de>, Rob Landley <rob@landley.net>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Galbraith <umgwanakikbuti@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, lkft-triage@lists.linaro.org
+References: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
+ <41206fc7-f8ce-98aa-3718-ba3e1431e320@landley.net>
+ <CAK8P3a3pQW59NVF=5P+ZiBjNJmnWh+iTZUHvqHBrXkHA6pMd4g@mail.gmail.com>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+In-Reply-To: <CAK8P3a3pQW59NVF=5P+ZiBjNJmnWh+iTZUHvqHBrXkHA6pMd4g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 08:50:18AM -0400, Jason Gunthorpe wrote:
-> On Wed, Nov 24, 2021 at 12:57:03PM +0100, Greg Kroah-Hartman wrote:
-> > From: Ziyang Xuan <william.xuanziyang@huawei.com>
-> > 
-> > [ Upstream commit 563bcbae3ba233c275c244bfce2efe12938f5363 ]
-> > 
-> > The real_dev of a vlan net_device may be freed after
-> > unregister_vlan_dev(). Access the real_dev continually by
-> > vlan_dev_real_dev() will trigger the UAF problem for the
-> > real_dev like following:
-> > 
-> > ==================================================================
-> > BUG: KASAN: use-after-free in vlan_dev_real_dev+0xf9/0x120
-> > Call Trace:
-> >  kasan_report.cold+0x83/0xdf
-> >  vlan_dev_real_dev+0xf9/0x120
-> >  is_eth_port_of_netdev_filter.part.0+0xb1/0x2c0
-> >  is_eth_port_of_netdev_filter+0x28/0x40
-> >  ib_enum_roce_netdev+0x1a3/0x300
-> >  ib_enum_all_roce_netdevs+0xc7/0x140
-> >  netdevice_event_work_handler+0x9d/0x210
-> > ...
-> > 
-> > Freed by task 9288:
-> >  kasan_save_stack+0x1b/0x40
-> >  kasan_set_track+0x1c/0x30
-> >  kasan_set_free_info+0x20/0x30
-> >  __kasan_slab_free+0xfc/0x130
-> >  slab_free_freelist_hook+0xdd/0x240
-> >  kfree+0xe4/0x690
-> >  kvfree+0x42/0x50
-> >  device_release+0x9f/0x240
-> >  kobject_put+0x1c8/0x530
-> >  put_device+0x1b/0x30
-> >  free_netdev+0x370/0x540
-> >  ppp_destroy_interface+0x313/0x3d0
-> > ...
-> > 
-> > Move the put_device(real_dev) to vlan_dev_free(). Ensure
-> > real_dev not be freed before vlan_dev unregistered.
-> > 
-> > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> > Reported-by: syzbot+e4df4e1389e28972e955@syzkaller.appspotmail.com
-> > Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-> > Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> > Signed-off-by: David S. Miller <davem@davemloft.net>
-> > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > ---
-> >  net/8021q/vlan.c     | 3 ---
-> >  net/8021q/vlan_dev.c | 3 +++
-> >  2 files changed, 3 insertions(+), 3 deletions(-)
+Hi Arnd,
+
+Às 04:49 de 24/11/21, Arnd Bergmann escreveu:
+> On Wed, Nov 24, 2021 at 8:31 AM Rob Landley <rob@landley.net> wrote:
+>> On 11/23/21 5:38 AM, Naresh Kamboju wrote:
+>> @@ -451,3 +451,4 @@
+>>  446    common  landlock_restrict_self          sys_landlock_restrict_self
+>>  # 447 reserved for memfd_secret
+>>  448    common  process_mrelease                sys_process_mrelease
+>> +449    common  futex_waitv                     sys_futex_waitv
 > 
-> This patch is known to be broken, it should not be backported
+> I don't know what's going on with this one, I don't actually see
+> a reason why it isn't already wired up on all architectures. If we add
+> this, it should probably be done for all architectures at once as a
+> bugfix, but it's possible that this is intentionally only used on
+> x86 and arm.
+> 
+> André, can you comment on this?
+> 
+>       Arnd
+> 
 
-It is already in a bunch of branches :(
-
-What is the upstream revert of this commit in Linus's tree?
-
-thanks,
-
-greg k-h
+I've added entries for the archs that I've actually tested, but there
+should not be any arch-specific problems in futex_waitv. I'll submit a
+patch to wire it up for the remaining architectures.
