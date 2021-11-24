@@ -2,115 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 255F645CA8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:02:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C215245CAB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:14:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349421AbhKXRFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 12:05:45 -0500
-Received: from mail-m972.mail.163.com ([123.126.97.2]:47956 "EHLO
-        mail-m972.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349416AbhKXRFm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 12:05:42 -0500
-X-Greylist: delayed 913 seconds by postgrey-1.27 at vger.kernel.org; Wed, 24 Nov 2021 12:05:39 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=f7cxo
-        81Jyy/MlDMAZmvQHlwJdJ/bK+AjY9CliasYTAc=; b=Jw0jKPWRfT84gkTZrNC3t
-        W6e9i6tbvxXiLkoiHEQ1QTIqPv4hMZClRVoN0y2GogwVHBwsQy1VijP5Zightnp0
-        zp74VY/g+mw+0xHTldt4G/lc0wimgrPzYO3bgy7b5u6Y5C8Wbeb7eYrTgxkCiGqf
-        0gdrObnvmYXR+/6GgVoJ28=
-Received: from localhost.localdomain (unknown [218.106.182.227])
-        by smtp2 (Coremail) with SMTP id GtxpCgD3RCmEbJ5htkyJKQ--.4644S4;
-        Thu, 25 Nov 2021 00:47:11 +0800 (CST)
-From:   Jianglei Nie <niejianglei2021@163.com>
-To:     daniel.lezcano@kernel.org, rafael@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jianglei Nie <niejianglei@gmail.com>
-Subject: [PATCH] powercap: DTPM: Fix reference leak in cpuhp_dtpm_cpu_offline()
-Date:   Thu, 25 Nov 2021 00:46:57 +0800
-Message-Id: <20211124164657.20519-1-niejianglei2021@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S242229AbhKXRR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 12:17:26 -0500
+Received: from mga09.intel.com ([134.134.136.24]:38504 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231309AbhKXRRW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 12:17:22 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="235144168"
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="235144168"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 08:57:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="475331994"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 24 Nov 2021 08:57:56 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mpval-00054y-MP; Wed, 24 Nov 2021 16:57:55 +0000
+Date:   Thu, 25 Nov 2021 00:57:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [paulmck-rcu:rcu/next] BUILD SUCCESS
+ a3d09240cbfd98525dbd7038a4ec1afb4bc896a2
+Message-ID: <619e6eeb.FwNklGf94+j+vZap%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GtxpCgD3RCmEbJ5htkyJKQ--.4644S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7AFyDXr1xWw48JFy5JF43KFg_yoW8Aw4Dpr
-        s8K3yav348tFWDK397J3WDXFyYvF92ya9YkrW3Gw1rZa43X3WFgw4DKryYqF1rCrn5Cw13
-        try5Xay8Jay5JFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bOv3bUUUUU=
-X-Originating-IP: [218.106.182.227]
-X-CM-SenderInfo: xqlhyxxdqjzvrlsqjii6rwjhhfrp/xtbBORxVjF-PKEzbggABsQ
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jianglei Nie <niejianglei@gmail.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+branch HEAD: a3d09240cbfd98525dbd7038a4ec1afb4bc896a2  rcu-tasks: Avoid raw-spinlocked wakeups from call_rcu_tasks_generic()
 
-In line 153 (#1), cpufreq_cpu_get() increments the kobject reference
-counter of the policy it returned on success. According to the
-document, the policy returned by cpufreq_cpu_get() has to be
-released with the help of cpufreq_cpu_put() to balance its kobject
-reference counter properly. Forgetting the cpufreq_cpu_put()
-operation will result in reference leak.
+elapsed time: 728m
 
-We can fix it by calling cpufreq_cpu_put() before the function
-returns (#2, #3 and #4).
+configs tested: 160
+configs skipped: 3
 
-147 static int cpuhp_dtpm_cpu_offline(unsigned int cpu)
-148 {
-153     policy = cpufreq_cpu_get(cpu);
-        // #1: reference increment
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-155     if (!policy)
-156         return 0;
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211124
+powerpc                       maple_defconfig
+sh                           se7724_defconfig
+powerpc                    mvme5100_defconfig
+powerpc                     pseries_defconfig
+arc                           tb10x_defconfig
+powerpc                         wii_defconfig
+arm                            qcom_defconfig
+m68k                       m5275evb_defconfig
+powerpc                   currituck_defconfig
+ia64                             alldefconfig
+sh                           se7721_defconfig
+arm                        spear3xx_defconfig
+powerpc                    socrates_defconfig
+arc                            hsdk_defconfig
+m68k                           sun3_defconfig
+arc                     nsimosci_hs_defconfig
+mips                   sb1250_swarm_defconfig
+mips                  cavium_octeon_defconfig
+mips                malta_qemu_32r6_defconfig
+arm                          ixp4xx_defconfig
+sh                     magicpanelr2_defconfig
+arm                         lubbock_defconfig
+h8300                    h8300h-sim_defconfig
+sh                     sh7710voipgw_defconfig
+arm                        shmobile_defconfig
+sh                           se7751_defconfig
+arm                       netwinder_defconfig
+arm                           h5000_defconfig
+mips                           ip22_defconfig
+sh                           se7780_defconfig
+arm                  colibri_pxa300_defconfig
+sh                          rsk7264_defconfig
+powerpc64                           defconfig
+sh                            shmin_defconfig
+arm                          lpd270_defconfig
+arm                          collie_defconfig
+powerpc                    sam440ep_defconfig
+ia64                                defconfig
+sh                ecovec24-romimage_defconfig
+arm                            xcep_defconfig
+arm                         lpc32xx_defconfig
+powerpc                  mpc885_ads_defconfig
+riscv                    nommu_k210_defconfig
+arm                          pxa3xx_defconfig
+arm                         orion5x_defconfig
+powerpc                  mpc866_ads_defconfig
+arm                        clps711x_defconfig
+arm                          iop32x_defconfig
+mips                          rb532_defconfig
+sh                             shx3_defconfig
+arm                         socfpga_defconfig
+mips                  maltasmvp_eva_defconfig
+sparc64                             defconfig
+riscv                             allnoconfig
+powerpc                 canyonlands_defconfig
+arm                     eseries_pxa_defconfig
+arm                        realview_defconfig
+arm                        cerfcube_defconfig
+powerpc                        icon_defconfig
+arc                        vdk_hs38_defconfig
+arc                 nsimosci_hs_smp_defconfig
+sh                   secureedge5410_defconfig
+powerpc                        fsp2_defconfig
+alpha                               defconfig
+h8300                       h8s-sim_defconfig
+parisc                           alldefconfig
+powerpc                     sequoia_defconfig
+sparc                       sparc32_defconfig
+sh                           se7343_defconfig
+mips                      maltaaprp_defconfig
+s390                       zfcpdump_defconfig
+mips                         rt305x_defconfig
+powerpc                    adder875_defconfig
+ia64                      gensparse_defconfig
+arm                       spear13xx_defconfig
+arm                  randconfig-c002-20211124
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a011-20211124
+x86_64               randconfig-a014-20211124
+x86_64               randconfig-a012-20211124
+x86_64               randconfig-a016-20211124
+x86_64               randconfig-a013-20211124
+x86_64               randconfig-a015-20211124
+i386                 randconfig-a016-20211124
+i386                 randconfig-a015-20211124
+i386                 randconfig-a012-20211124
+i386                 randconfig-a013-20211124
+i386                 randconfig-a014-20211124
+i386                 randconfig-a011-20211124
+arc                  randconfig-r043-20211124
+s390                 randconfig-r044-20211124
+riscv                randconfig-r042-20211124
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
 
-158     pd = em_cpu_get(cpu);
-159     if (!pd)
-160         return -EINVAL; // #2: missing reference decrement
+clang tested configs:
+s390                 randconfig-c005-20211124
+i386                 randconfig-c001-20211124
+powerpc              randconfig-c003-20211124
+riscv                randconfig-c006-20211124
+arm                  randconfig-c002-20211124
+x86_64               randconfig-c007-20211124
+mips                 randconfig-c004-20211124
+x86_64               randconfig-a001-20211124
+x86_64               randconfig-a006-20211124
+x86_64               randconfig-a003-20211124
+x86_64               randconfig-a004-20211124
+x86_64               randconfig-a005-20211124
+x86_64               randconfig-a002-20211124
+i386                 randconfig-a002-20211124
+i386                 randconfig-a001-20211124
+i386                 randconfig-a005-20211124
+i386                 randconfig-a006-20211124
+i386                 randconfig-a004-20211124
+i386                 randconfig-a003-20211124
+hexagon              randconfig-r045-20211124
+hexagon              randconfig-r041-20211124
 
-166     if (cpumask_weight(policy->cpus) != 1)
-167         return 0; // #3: missing reference decrement
-
-174     return 0; // #4: missing reference decrement
-175 }
-
-Signed-off-by: Jianglei Nie <niejianglei@gmail.com>
 ---
- drivers/powercap/dtpm_cpu.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
-index 51c366938acd..182a07ee14b6 100644
---- a/drivers/powercap/dtpm_cpu.c
-+++ b/drivers/powercap/dtpm_cpu.c
-@@ -156,21 +156,26 @@ static int cpuhp_dtpm_cpu_offline(unsigned int cpu)
- 		return 0;
- 
- 	pd = em_cpu_get(cpu);
--	if (!pd)
-+	if (!pd) {
-+		cpufreq_cpu_put(policy);
- 		return -EINVAL;
-+	}
- 
- 	dtpm = per_cpu(dtpm_per_cpu, cpu);
- 
- 	power_sub(dtpm, pd);
- 
--	if (cpumask_weight(policy->cpus) != 1)
-+	if (cpumask_weight(policy->cpus) != 1) {
-+		cpufreq_cpu_put(policy);
- 		return 0;
-+	}
- 
- 	for_each_cpu(cpu, policy->related_cpus)
- 		per_cpu(dtpm_per_cpu, cpu) = NULL;
- 
- 	dtpm_unregister(dtpm);
- 
-+	cpufreq_cpu_put(policy);
- 	return 0;
- }
- 
--- 
-2.25.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
