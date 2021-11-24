@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789BA45BA8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E462545BC1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242445AbhKXML6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:11:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33756 "EHLO mail.kernel.org"
+        id S244282AbhKXM0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:26:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239429AbhKXMIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:08:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C112C610CC;
-        Wed, 24 Nov 2021 12:05:03 +0000 (UTC)
+        id S244250AbhKXMXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:23:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51D866104F;
+        Wed, 24 Nov 2021 12:14:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755504;
-        bh=yskHZabqsvAjti3StZjV+B4KzqCQCGY0fwXULf/2qd4=;
+        s=korg; t=1637756044;
+        bh=v5tLGlWErVUtjubjX3ljc6q1rLvSxwHd5Di/iz5XzOI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dIGMfm4OkI/QsIvz5hbyhEn/+VYzTR9UqDK1hS7i4kLW1VMnN4wsQ429tolocOzVR
-         wUI0Ct0NuKKd+AoK5xMSm0lHfY5pZspq1LLKxsWnKwcB9alszKF0h/jEr49FKLk8A/
-         a1aesOyL5inxxbR9fIMJIKDxdV1tEveOLWFNacjY=
+        b=W3Wm0SUwUXfYEPb54SggBj61jvtE+ZPxgOKDhhEZE06OTkhSOHggQ8WVL4VI6Yl46
+         wPiqfHxaHVVMm/ESs1WqLF44oThf6j18oKMdajjbRBPyYBeE3rwk4ClXjKIvPUS0p/
+         /vOSBrJsWvdsS+o+NmS7onhjVJU1I8xBYIITx7PY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
+        stable@vger.kernel.org, Chengfeng Ye <cyeaa@connect.ust.hk>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 118/162] usb: musb: tusb6010: check return value after calling platform_get_resource()
+Subject: [PATCH 4.9 150/207] nfc: pn533: Fix double free when pn533_fill_fragment_skbs() fails
 Date:   Wed, 24 Nov 2021 12:57:01 +0100
-Message-Id: <20211124115702.128914087@linuxfoundation.org>
+Message-Id: <20211124115708.867323443@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,37 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Chengfeng Ye <cyeaa@connect.ust.hk>
 
-[ Upstream commit 14651496a3de6807a17c310f63c894ea0c5d858e ]
+[ Upstream commit 9fec40f850658e00a14a7dd9e06f7fbc7e59cc4a ]
 
-It will cause null-ptr-deref if platform_get_resource() returns NULL,
-we need check the return value.
+skb is already freed by dev_kfree_skb in pn533_fill_fragment_skbs,
+but follow error handler branch when pn533_fill_fragment_skbs()
+fails, skb is freed again, results in double free issue. Fix this
+by not free skb in error path of pn533_fill_fragment_skbs.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20210915034925.2399823-1-yangyingliang@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 963a82e07d4e ("NFC: pn533: Split large Tx frames in chunks")
+Fixes: 93ad42020c2d ("NFC: pn533: Target mode Tx fragmentation support")
+Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/musb/tusb6010.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/nfc/pn533/pn533.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/musb/tusb6010.c b/drivers/usb/musb/tusb6010.c
-index 85a57385958fd..f4297e5495958 100644
---- a/drivers/usb/musb/tusb6010.c
-+++ b/drivers/usb/musb/tusb6010.c
-@@ -1120,6 +1120,11 @@ static int tusb_musb_init(struct musb *musb)
+diff --git a/drivers/nfc/pn533/pn533.c b/drivers/nfc/pn533/pn533.c
+index 6c495664d2cb7..806309ee41657 100644
+--- a/drivers/nfc/pn533/pn533.c
++++ b/drivers/nfc/pn533/pn533.c
+@@ -2075,7 +2075,7 @@ static int pn533_fill_fragment_skbs(struct pn533 *dev, struct sk_buff *skb)
+ 		frag = pn533_alloc_skb(dev, frag_size);
+ 		if (!frag) {
+ 			skb_queue_purge(&dev->fragment_skb);
+-			break;
++			return -ENOMEM;
+ 		}
  
- 	/* dma address for async dma */
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!mem) {
-+		pr_debug("no async dma resource?\n");
-+		ret = -ENODEV;
-+		goto done;
-+	}
- 	musb->async = mem->start;
+ 		if (!dev->tgt_mode) {
+@@ -2145,7 +2145,7 @@ static int pn533_transceive(struct nfc_dev *nfc_dev,
+ 		/* jumbo frame ? */
+ 		if (skb->len > PN533_CMD_DATAEXCH_DATA_MAXLEN) {
+ 			rc = pn533_fill_fragment_skbs(dev, skb);
+-			if (rc <= 0)
++			if (rc < 0)
+ 				goto error;
  
- 	/* dma address for sync dma */
+ 			skb = skb_dequeue(&dev->fragment_skb);
+@@ -2217,7 +2217,7 @@ static int pn533_tm_send(struct nfc_dev *nfc_dev, struct sk_buff *skb)
+ 	/* let's split in multiple chunks if size's too big */
+ 	if (skb->len > PN533_CMD_DATAEXCH_DATA_MAXLEN) {
+ 		rc = pn533_fill_fragment_skbs(dev, skb);
+-		if (rc <= 0)
++		if (rc < 0)
+ 			goto error;
+ 
+ 		/* get the first skb */
 -- 
 2.33.0
 
