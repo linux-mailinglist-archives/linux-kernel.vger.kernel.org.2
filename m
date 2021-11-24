@@ -2,104 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBFAF45B289
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 04:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 577E845B28B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 04:17:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240810AbhKXDUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 22:20:16 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:44772 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240802AbhKXDUO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 22:20:14 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3E32F2195A;
-        Wed, 24 Nov 2021 03:17:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1637723824; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vDPWm0p/mlhakN1e7xXVNW/moviPVK82GwF6kdGOEy0=;
-        b=cZhmrdPKXdn+H/oudJqT/Oq1j2f75Hf43o5wUhZQpWL7W33LNbBHnGZbHFBb+ylJ35Ph4O
-        mmln8qZQF1JySsR/L6TDKHGmwbOzU5szZ2iBYO/A+szLLJw7pVH8sEPMrAMklTRcjUJdFz
-        WKQ0lxuSx/XGHpVIMVW4dwX1XtZzLRI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1637723824;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vDPWm0p/mlhakN1e7xXVNW/moviPVK82GwF6kdGOEy0=;
-        b=YALzMeWScEmPJ5lOZdpgGHSa67p/G3HP9wdC2hxeW/q5VhiCJtnvkRSCDqv4PEBo6O+4qh
-        lKCnrt1wMtZXy1DQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DC5D913EB8;
-        Wed, 24 Nov 2021 03:17:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id z1hAJayunWGNRQAAMHmgww
-        (envelope-from <neilb@suse.de>); Wed, 24 Nov 2021 03:17:00 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S240808AbhKXDUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 22:20:39 -0500
+Received: from mga09.intel.com ([134.134.136.24]:56227 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240802AbhKXDUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 22:20:38 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="235012512"
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="235012512"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 19:17:29 -0800
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="674714109"
+Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.255.28.39]) ([10.255.28.39])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 19:17:25 -0800
+Subject: Re: [kbuild-all] Re: [PATCH] crypto: fix flexible_array.cocci
+ warnings
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Julia Lawall <julia.lawall@inria.fr>
+Cc:     Megha Dey <megha.dey@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Tomasz Kantecki <tomasz.kantecki@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-crypto@vger.kernel.org
+References: <alpine.DEB.2.22.394.2111121154320.2916@hadrien>
+ <20211120040625.GA25678@gondor.apana.org.au>
+From:   "Chen, Rong A" <rong.a.chen@intel.com>
+Message-ID: <4514c646-cae1-cd50-8a1c-1a550593c7a8@intel.com>
+Date:   Wed, 24 Nov 2021 11:17:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Andrew Morton" <akpm@linux-foundation.org>
-Cc:     "Uladzislau Rezki" <urezki@gmail.com>,
-        "Michal Hocko" <mhocko@kernel.org>,
-        "Dave Chinner" <david@fromorbit.com>,
-        "Christoph Hellwig" <hch@lst.de>, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, "LKML" <linux-kernel@vger.kernel.org>,
-        "Ilya Dryomov" <idryomov@gmail.com>,
-        "Jeff Layton" <jlayton@kernel.org>,
-        "Michal Hocko" <mhocko@suse.com>
-Subject: Re: [PATCH v2 2/4] mm/vmalloc: add support for __GFP_NOFAIL
-In-reply-to: <20211123170238.f0f780ddb800f1316397f97c@linux-foundation.org>
-References: <20211122153233.9924-1-mhocko@kernel.org>,
- <20211122153233.9924-3-mhocko@kernel.org>, <YZ06nna7RirAI+vJ@pc638.lan>,
- <20211123170238.f0f780ddb800f1316397f97c@linux-foundation.org>
-Date:   Wed, 24 Nov 2021 14:16:56 +1100
-Message-id: <163772381628.1891.9102201563412921921@noble.neil.brown.name>
+In-Reply-To: <20211120040625.GA25678@gondor.apana.org.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021, Andrew Morton wrote:
+Hi Herbert,
+
+On 11/20/2021 12:06 PM, Herbert Xu wrote:
+> On Fri, Nov 12, 2021 at 11:56:22AM +0100, Julia Lawall wrote:
+>> From: kernel test robot <lkp@intel.com>
+>>
+>>   Zero-length and one-element arrays are deprecated, see
+>>   Documentation/process/deprecated.rst
+>>   Flexible-array members should be used instead.
+>>
+>> Generated by: scripts/coccinelle/misc/flexible_array.cocci
+>>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Signed-off-by: kernel test robot <lkp@intel.com>
+>> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+>> ---
+>>
+>> tree:   https://github.com/meghadey/crypto crypto-avx512
+>> head:   9c8c2ca77f6e2575a130bddb9767d068e1162d71
+>> commit: 377aede9f10ee28be954473668bc6d33c6c9db75 [5/6] crypto: aesni - AVX512 version of AESNI-GCM using VPCLMULQDQ
+
+Sorry for the noise, this patch tries to fix the above commit, it seems
+the commit is still in the private tree, we have fixed it to avoid 
+sending to maintainers.
+
+Best Regards,
+Rong Chen
+
+>> :::::: branch date: 7 weeks ago
+>> :::::: commit date: 7 weeks ago
+>>
+>>   aesni-intel_glue.c |    2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> --- a/arch/x86/crypto/aesni-intel_glue.c
+>> +++ b/arch/x86/crypto/aesni-intel_glue.c
+>> @@ -87,7 +87,7 @@ struct gcm_context_data {
+>>   	u64 partial_block_len;
+>>   	u64 unused;
+>>   	/* Allocate space for hash_keys later */
+>> -	u8 hash_keys[0];
+>> +	u8 hash_keys[];
 > 
-> I added GFP_NOFAIL back in the mesozoic era because quite a lot of
-> sites were doing open-coded try-forever loops.  I thought "hey, they
-> shouldn't be doing that in the first place, but let's at least
-> centralize the concept to reduce code size, code duplication and so
-> it's something we can now grep for".  But longer term, all GFP_NOFAIL
-> sites should be reworked to no longer need to do the retry-forever
-> thing.  In retrospect, this bright idea of mine seems to have added
-> license for more sites to use retry-forever.  Sigh.
-
-One of the costs of not having GFP_NOFAIL (or similar) is lots of
-untested failure-path code.
-
-When does an allocation that is allowed to retry and reclaim ever fail
-anyway? I think the answer is "only when it has been killed by the oom
-killer".  That of course cannot happen to kernel threads, so maybe
-kernel threads should never need GFP_NOFAIL??
-
-I'm not sure the above is 100%, but I do think that is the sort of
-semantic that we want.  We want to know what kmalloc failure *means*.
-We also need well defined and documented strategies to handle it.
-mempools are one such strategy, but not always suitable.
-preallocating can also be useful but can be clumsy to implement.  Maybe
-we should support a process preallocating a bunch of pages which can
-only be used by the process - and are auto-freed when the process
-returns to user-space.  That might allow the "error paths" to be simple
-and early, and subsequent allocations that were GFP_USEPREALLOC would be
-safe.
-
-i.e. we need a plan for how to rework all those no-fail call-sites.
-
-NeilBrown
+> Which tree did this come from? Not only is this not zero in my
+> tree, but it seems to have never been zero in the git history.
+> 
+> Thanks,
+> 
