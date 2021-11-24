@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7827E45C0F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3173045C56E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:54:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345012AbhKXNMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:12:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47542 "EHLO mail.kernel.org"
+        id S243297AbhKXN5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:57:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343799AbhKXNJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:09:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E83BC613C8;
-        Wed, 24 Nov 2021 12:40:54 +0000 (UTC)
+        id S1352386AbhKXNw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:52:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10CE863263;
+        Wed, 24 Nov 2021 13:05:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757655;
-        bh=euXDII/cwLGLXjWwAeInRLsbxYuEkoTyojdlZ0XI8U0=;
+        s=korg; t=1637759116;
+        bh=zqn4Z8+HfktRXbl2d2NCtK0QQvYZ/p49is4MxK/F/JQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2B0d+0HeHeLdrWkoNacnOsXXcrhDdNW6tm2cZe3dCPd9GgkGBsACHlFI+89FtRCX2
-         3veN4z01IC1ZhQrtxvS/4MkuMphJTib5LcHlSJs9ol2YiYaP8cImSdzJ49lhCKRq1P
-         wS9GKiWcyyIzpZvDrhgYBF8FY78s3gyUJVIUcOK8=
+        b=OLoRytgYp3HJZBYSOZ1tBUnCyIpw8E6cuQj9EQPKwJU6bZK9u0uJUusxWwrbfJzhS
+         gDd4C8yV+Fo4U3MmpRf8ZR68EZeCtpYdbGmgxRdi6IYjAScTZqNJApUi6U58pSQ6YP
+         b8LrBBYdMyGB8bkJjUZU3foOfkmImZ1rFX9Em8eA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Antonio Terceiro <antonio.terceiro@linaro.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Sebastian Andrzej Siewior <sebastian@breakpoint.cc>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Klaus Kudielka <klaus.kudielka@gmail.com>,
-        Matthias Klose <doko@debian.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH 4.19 234/323] ARM: 9156/1: drop cc-option fallbacks for architecture selection
-Date:   Wed, 24 Nov 2021 12:57:04 +0100
-Message-Id: <20211124115726.827009648@linuxfoundation.org>
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 138/279] platform/x86: hp_accel: Fix an error handling path in lis3lv02d_probe()
+Date:   Wed, 24 Nov 2021 12:57:05 +0100
+Message-Id: <20211124115723.557743380@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,103 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 418ace9992a7647c446ed3186df40cf165b67298 upstream.
+[ Upstream commit c961a7d2aa23ae19e0099fbcdf1040fb760eea83 ]
 
-Naresh and Antonio ran into a build failure with latest Debian
-armhf compilers, with lots of output like
+If 'led_classdev_register()' fails, some additional resources should be
+released.
 
- tmp/ccY3nOAs.s:2215: Error: selected processor does not support `cpsid i' in ARM mode
+Add the missing 'i8042_remove_filter()' and 'lis3lv02d_remove_fs()' calls
+that are already in the remove function but are missing here.
 
-As it turns out, $(cc-option) fails early here when the FPU is not
-selected before CPU architecture is selected, as the compiler
-option check runs before enabling -msoft-float, which causes
-a problem when testing a target architecture level without an FPU:
-
-cc1: error: '-mfloat-abi=hard': selected architecture lacks an FPU
-
-Passing e.g. -march=armv6k+fp in place of -march=armv6k would avoid this
-issue, but the fallback logic is already broken because all supported
-compilers (gcc-5 and higher) are much more recent than these options,
-and building with -march=armv5t as a fallback no longer works.
-
-The best way forward that I see is to just remove all the checks, which
-also has the nice side-effect of slightly improving the startup time for
-'make'.
-
-The -mtune=marvell-f option was apparently never supported by any mainline
-compiler, and the custom Codesourcery gcc build that did support is
-now too old to build kernels, so just use -mtune=xscale unconditionally
-for those.
-
-This should be safe to apply on all stable kernels, and will be required
-in order to keep building them with gcc-11 and higher.
-
-Link: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=996419
-
-Reported-by: Antonio Terceiro <antonio.terceiro@linaro.org>
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Reported-by: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-Tested-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Tested-by: Klaus Kudielka <klaus.kudielka@gmail.com>
-Cc: Matthias Klose <doko@debian.org>
-Cc: stable@vger.kernel.org
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: a4c724d0723b ("platform: hp_accel: add a i8042 filter to remove HPQ6000 data from kb bus stream")
+Fixes: 9e0c79782143 ("lis3lv02d: merge with leds hp disk")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/5a4f218f8f16d2e3a7906b7ca3654ffa946895f8.1636314074.git.christophe.jaillet@wanadoo.fr
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/Makefile |   22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ drivers/platform/x86/hp_accel.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -63,15 +63,15 @@ KBUILD_CFLAGS	+= $(call cc-option,-fno-i
- # Note that GCC does not numerically define an architecture version
- # macro, but instead defines a whole series of macros which makes
- # testing for a specific architecture or later rather impossible.
--arch-$(CONFIG_CPU_32v7M)	=-D__LINUX_ARM_ARCH__=7 -march=armv7-m -Wa,-march=armv7-m
--arch-$(CONFIG_CPU_32v7)		=-D__LINUX_ARM_ARCH__=7 $(call cc-option,-march=armv7-a,-march=armv5t -Wa$(comma)-march=armv7-a)
--arch-$(CONFIG_CPU_32v6)		=-D__LINUX_ARM_ARCH__=6 $(call cc-option,-march=armv6,-march=armv5t -Wa$(comma)-march=armv6)
-+arch-$(CONFIG_CPU_32v7M)	=-D__LINUX_ARM_ARCH__=7 -march=armv7-m
-+arch-$(CONFIG_CPU_32v7)		=-D__LINUX_ARM_ARCH__=7 -march=armv7-a
-+arch-$(CONFIG_CPU_32v6)		=-D__LINUX_ARM_ARCH__=6 -march=armv6
- # Only override the compiler option if ARMv6. The ARMv6K extensions are
- # always available in ARMv7
- ifeq ($(CONFIG_CPU_32v6),y)
--arch-$(CONFIG_CPU_32v6K)	=-D__LINUX_ARM_ARCH__=6 $(call cc-option,-march=armv6k,-march=armv5t -Wa$(comma)-march=armv6k)
-+arch-$(CONFIG_CPU_32v6K)	=-D__LINUX_ARM_ARCH__=6 -march=armv6k
- endif
--arch-$(CONFIG_CPU_32v5)		=-D__LINUX_ARM_ARCH__=5 $(call cc-option,-march=armv5te,-march=armv4t)
-+arch-$(CONFIG_CPU_32v5)		=-D__LINUX_ARM_ARCH__=5 -march=armv5te
- arch-$(CONFIG_CPU_32v4T)	=-D__LINUX_ARM_ARCH__=4 -march=armv4t
- arch-$(CONFIG_CPU_32v4)		=-D__LINUX_ARM_ARCH__=4 -march=armv4
- arch-$(CONFIG_CPU_32v3)		=-D__LINUX_ARM_ARCH__=3 -march=armv3
-@@ -85,7 +85,7 @@ tune-$(CONFIG_CPU_ARM720T)	=-mtune=arm7t
- tune-$(CONFIG_CPU_ARM740T)	=-mtune=arm7tdmi
- tune-$(CONFIG_CPU_ARM9TDMI)	=-mtune=arm9tdmi
- tune-$(CONFIG_CPU_ARM940T)	=-mtune=arm9tdmi
--tune-$(CONFIG_CPU_ARM946E)	=$(call cc-option,-mtune=arm9e,-mtune=arm9tdmi)
-+tune-$(CONFIG_CPU_ARM946E)	=-mtune=arm9e
- tune-$(CONFIG_CPU_ARM920T)	=-mtune=arm9tdmi
- tune-$(CONFIG_CPU_ARM922T)	=-mtune=arm9tdmi
- tune-$(CONFIG_CPU_ARM925T)	=-mtune=arm9tdmi
-@@ -93,11 +93,11 @@ tune-$(CONFIG_CPU_ARM926T)	=-mtune=arm9t
- tune-$(CONFIG_CPU_FA526)	=-mtune=arm9tdmi
- tune-$(CONFIG_CPU_SA110)	=-mtune=strongarm110
- tune-$(CONFIG_CPU_SA1100)	=-mtune=strongarm1100
--tune-$(CONFIG_CPU_XSCALE)	=$(call cc-option,-mtune=xscale,-mtune=strongarm110) -Wa,-mcpu=xscale
--tune-$(CONFIG_CPU_XSC3)		=$(call cc-option,-mtune=xscale,-mtune=strongarm110) -Wa,-mcpu=xscale
--tune-$(CONFIG_CPU_FEROCEON)	=$(call cc-option,-mtune=marvell-f,-mtune=xscale)
--tune-$(CONFIG_CPU_V6)		=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
--tune-$(CONFIG_CPU_V6K)		=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
-+tune-$(CONFIG_CPU_XSCALE)	=-mtune=xscale
-+tune-$(CONFIG_CPU_XSC3)		=-mtune=xscale
-+tune-$(CONFIG_CPU_FEROCEON)	=-mtune=xscale
-+tune-$(CONFIG_CPU_V6)		=-mtune=arm1136j-s
-+tune-$(CONFIG_CPU_V6K)		=-mtune=arm1136j-s
+diff --git a/drivers/platform/x86/hp_accel.c b/drivers/platform/x86/hp_accel.c
+index cc53f725c0419..ef24f53753c6e 100644
+--- a/drivers/platform/x86/hp_accel.c
++++ b/drivers/platform/x86/hp_accel.c
+@@ -331,9 +331,11 @@ static int lis3lv02d_probe(struct platform_device *device)
+ 	INIT_WORK(&hpled_led.work, delayed_set_status_worker);
+ 	ret = led_classdev_register(NULL, &hpled_led.led_classdev);
+ 	if (ret) {
++		i8042_remove_filter(hp_accel_i8042_filter);
+ 		lis3lv02d_joystick_disable(&lis3_dev);
+ 		lis3lv02d_poweroff(&lis3_dev);
+ 		flush_work(&hpled_led.work);
++		lis3lv02d_remove_fs(&lis3_dev);
+ 		return ret;
+ 	}
  
- # Evaluate tune cc-option calls now
- tune-y := $(tune-y)
+-- 
+2.33.0
+
 
 
