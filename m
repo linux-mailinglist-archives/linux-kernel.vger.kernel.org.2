@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2859B45C1A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:17:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDEB445C638
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:03:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343755AbhKXNU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:20:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35228 "EHLO mail.kernel.org"
+        id S1348699AbhKXOGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:06:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244682AbhKXNRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:17:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E3B561439;
-        Wed, 24 Nov 2021 12:44:56 +0000 (UTC)
+        id S1353604AbhKXOAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:00:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36E70632E6;
+        Wed, 24 Nov 2021 13:09:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757897;
-        bh=ftMJjk/rcubRpf0OAIbomDO4tHJC8nhMo8dvK4+T+ZA=;
+        s=korg; t=1637759360;
+        bh=9+fEL5bRC2vbzDxSFxZxriKpVHTD61kOjmtxRdEj3xc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JtiguAgmjrVq8tdGys8RYZPkKWYUujDf7WlxGMPYAA3/626Muf1gp8P4/Gs5rU1Ek
-         FlDg/JMqFwlA3h7eUmhrokmFT9AUDG/XH24NC+ZU/2PenkKPvIyCS7/IopaairHMZd
-         qvicEqkT+xw6Ln3Gn6staKlHGpkv1T6K+LJgGAaw=
+        b=lwjyrAyk0nnnmQzmKfGYNp7Ur0cQUBq6/hHeyqsCkTZGWHBdemRUCpMe/FDVAPXgk
+         cuvP9wtO17E1ei8H0uPmkWZwkkqaaa5QRL1Z0gnT6l/qYRuD7VdtW3bO+9EsFWgvOc
+         lvCnAUPX6bc1Z5rcZjHoSFIOnmppXclT6Nxh2r2k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nguyen Dinh Phi <phind.uet@gmail.com>,
-        syzbot+bbf402b783eeb6d908db@syzkaller.appspotmail.com,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 4.19 312/323] cfg80211: call cfg80211_stop_ap when switch from P2P_GO type
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Arun Easi <aeasi@marvell.com>,
+        "Ewan D. Milne" <emilne@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.15 215/279] scsi: qla2xxx: Fix mailbox direction flags in qla2xxx_get_adapter_id()
 Date:   Wed, 24 Nov 2021 12:58:22 +0100
-Message-Id: <20211124115729.457628793@linuxfoundation.org>
+Message-Id: <20211124115726.176576466@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nguyen Dinh Phi <phind.uet@gmail.com>
+From: Ewan D. Milne <emilne@redhat.com>
 
-commit 563fbefed46ae4c1f70cffb8eb54c02df480b2c2 upstream.
+commit 392006871bb26166bcfafa56faf49431c2cfaaa8 upstream.
 
-If the userspace tools switch from NL80211_IFTYPE_P2P_GO to
-NL80211_IFTYPE_ADHOC via send_msg(NL80211_CMD_SET_INTERFACE), it
-does not call the cleanup cfg80211_stop_ap(), this leads to the
-initialization of in-use data. For example, this path re-init the
-sdata->assigned_chanctx_list while it is still an element of
-assigned_vifs list, and makes that linked list corrupt.
+The SCM changes set the flags in mcp->out_mb instead of mcp->in_mb so the
+data was not actually being read into the mcp->mb[] array from the adapter.
 
-Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
-Reported-by: syzbot+bbf402b783eeb6d908db@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/20211027173722.777287-1-phind.uet@gmail.com
+Link: https://lore.kernel.org/r/20211108183012.13895-1-emilne@redhat.com
+Fixes: 9f2475fe7406 ("scsi: qla2xxx: SAN congestion management implementation")
 Cc: stable@vger.kernel.org
-Fixes: ac800140c20e ("cfg80211: .stop_ap when interface is going down")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Reviewed-by: Arun Easi <aeasi@marvell.com>
+Signed-off-by: Ewan D. Milne <emilne@redhat.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/wireless/util.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/scsi/qla2xxx/qla_mbx.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
---- a/net/wireless/util.c
-+++ b/net/wireless/util.c
-@@ -950,6 +950,7 @@ int cfg80211_change_iface(struct cfg8021
+--- a/drivers/scsi/qla2xxx/qla_mbx.c
++++ b/drivers/scsi/qla2xxx/qla_mbx.c
+@@ -1695,10 +1695,8 @@ qla2x00_get_adapter_id(scsi_qla_host_t *
+ 		mcp->in_mb |= MBX_13|MBX_12|MBX_11|MBX_10;
+ 	if (IS_FWI2_CAPABLE(vha->hw))
+ 		mcp->in_mb |= MBX_19|MBX_18|MBX_17|MBX_16;
+-	if (IS_QLA27XX(vha->hw) || IS_QLA28XX(vha->hw)) {
+-		mcp->in_mb |= MBX_15;
+-		mcp->out_mb |= MBX_7|MBX_21|MBX_22|MBX_23;
+-	}
++	if (IS_QLA27XX(vha->hw) || IS_QLA28XX(vha->hw))
++		mcp->in_mb |= MBX_15|MBX_21|MBX_22|MBX_23;
  
- 		switch (otype) {
- 		case NL80211_IFTYPE_AP:
-+		case NL80211_IFTYPE_P2P_GO:
- 			cfg80211_stop_ap(rdev, dev, true);
- 			break;
- 		case NL80211_IFTYPE_ADHOC:
+ 	mcp->tov = MBX_TOV_SECONDS;
+ 	mcp->flags = 0;
 
 
