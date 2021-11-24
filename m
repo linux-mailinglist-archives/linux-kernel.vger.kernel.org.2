@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEDD545C4C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:48:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F11545C04E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:03:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344035AbhKXNvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:51:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39074 "EHLO mail.kernel.org"
+        id S1347044AbhKXNGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:06:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351311AbhKXNrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:47:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8271261A08;
-        Wed, 24 Nov 2021 13:01:48 +0000 (UTC)
+        id S1346068AbhKXNE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:04:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89C96610A2;
+        Wed, 24 Nov 2021 12:37:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758909;
-        bh=DYyIzSGTQ8W6spGmBqd+117i5tD1eiwjX3gTuBDc7F4=;
+        s=korg; t=1637757435;
+        bh=EgdypAKV5xyi1lXaZEGRPDwo7lGnRQwWqp+NVcjRl60=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TSYslFeAdCiqCJiU856O60dUPAttxpN1LeIneNZVnGzFGdR3c44JVWVEc4h3m3QI3
-         9FP0bjUdx2Cgd5dkUSOS2SPMAviltqPkMJcMyLh4fz7VaHtqwwwHj4Nc3lKJrLjGIa
-         2bbs1inQ7AG3s1/qb0j8EJmQNLgnKGBABrVU1Zu4=
+        b=pvu6D7L/jgsX+zUlHuZGxaRtqUrUS/95ml5zWODL8htT7kBHivgS/5iWbIuIYUl5t
+         6bkFKZ0OTT76efM4XC9TAetx+ErQ23Ampdc3MLKIcL2Ro9n4Aptyxyl8E5FDQhoU7L
+         eG/Ux6bqHz1yfaOoyH2aableZb7z5uIj/v7+P7MY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicolas Chauvet <kwizart@gmail.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 070/279] memory: tegra20-emc: Add runtime dependency on devfreq governor module
-Date:   Wed, 24 Nov 2021 12:55:57 +0100
-Message-Id: <20211124115721.121320398@linuxfoundation.org>
+Subject: [PATCH 4.19 168/323] libertas_tf: Fix possible memory leak in probe and disconnect
+Date:   Wed, 24 Nov 2021 12:55:58 +0100
+Message-Id: <20211124115724.619148421@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +41,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit 14b43c20c283de36131da0cb44f3170b9ffa7630 ]
+[ Upstream commit d549107305b4634c81223a853701c06bcf657bc3 ]
 
-Tegra20 EMC driver uses simple devfreq governor. Add simple devfreq
-governor to the list of the Tegra20 EMC driver module softdeps to allow
-userspace initramfs tools like dracut to automatically pull the devfreq
-module into ramfs image together with the EMC module.
+I got memory leak as follows when doing fault injection test:
 
-Reported-by: Nicolas Chauvet <kwizart@gmail.com>
-Suggested-by: Nicolas Chauvet <kwizart@gmail.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Link: https://lore.kernel.org/r/20211019231524.888-1-digetx@gmail.com
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+unreferenced object 0xffff88810a2ddc00 (size 512):
+  comm "kworker/6:1", pid 176, jiffies 4295009893 (age 757.220s)
+  hex dump (first 32 bytes):
+    00 50 05 18 81 88 ff ff 00 00 00 00 00 00 00 00  .P..............
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff8167939c>] slab_post_alloc_hook+0x9c/0x490
+    [<ffffffff8167f627>] kmem_cache_alloc_trace+0x1f7/0x470
+    [<ffffffffa02a1530>] if_usb_probe+0x60/0x37c [libertas_tf_usb]
+    [<ffffffffa022668a>] usb_probe_interface+0x1aa/0x3c0 [usbcore]
+    [<ffffffff82b59630>] really_probe+0x190/0x480
+    [<ffffffff82b59a19>] __driver_probe_device+0xf9/0x180
+    [<ffffffff82b59af3>] driver_probe_device+0x53/0x130
+    [<ffffffff82b5a075>] __device_attach_driver+0x105/0x130
+    [<ffffffff82b55949>] bus_for_each_drv+0x129/0x190
+    [<ffffffff82b593c9>] __device_attach+0x1c9/0x270
+    [<ffffffff82b5a250>] device_initial_probe+0x20/0x30
+    [<ffffffff82b579c2>] bus_probe_device+0x142/0x160
+    [<ffffffff82b52e49>] device_add+0x829/0x1300
+    [<ffffffffa02229b1>] usb_set_configuration+0xb01/0xcc0 [usbcore]
+    [<ffffffffa0235c4e>] usb_generic_driver_probe+0x6e/0x90 [usbcore]
+    [<ffffffffa022641f>] usb_probe_device+0x6f/0x130 [usbcore]
+
+cardp is missing being freed in the error handling path of the probe
+and the path of the disconnect, which will cause memory leak.
+
+This patch adds the missing kfree().
+
+Fixes: c305a19a0d0a ("libertas_tf: usb specific functions")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20211020120345.2016045-2-wanghai38@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/memory/tegra/tegra20-emc.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/marvell/libertas_tf/if_usb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/memory/tegra/tegra20-emc.c b/drivers/memory/tegra/tegra20-emc.c
-index c3462dbc8c22b..6fc90f2160e93 100644
---- a/drivers/memory/tegra/tegra20-emc.c
-+++ b/drivers/memory/tegra/tegra20-emc.c
-@@ -1117,4 +1117,5 @@ module_platform_driver(tegra_emc_driver);
+diff --git a/drivers/net/wireless/marvell/libertas_tf/if_usb.c b/drivers/net/wireless/marvell/libertas_tf/if_usb.c
+index 6ede6168bd85a..60941c319b421 100644
+--- a/drivers/net/wireless/marvell/libertas_tf/if_usb.c
++++ b/drivers/net/wireless/marvell/libertas_tf/if_usb.c
+@@ -234,6 +234,7 @@ static int if_usb_probe(struct usb_interface *intf,
  
- MODULE_AUTHOR("Dmitry Osipenko <digetx@gmail.com>");
- MODULE_DESCRIPTION("NVIDIA Tegra20 EMC driver");
-+MODULE_SOFTDEP("pre: governor_simpleondemand");
- MODULE_LICENSE("GPL v2");
+ dealloc:
+ 	if_usb_free(cardp);
++	kfree(cardp);
+ error:
+ lbtf_deb_leave(LBTF_DEB_MAIN);
+ 	return -ENOMEM;
+@@ -258,6 +259,7 @@ static void if_usb_disconnect(struct usb_interface *intf)
+ 
+ 	/* Unlink and free urb */
+ 	if_usb_free(cardp);
++	kfree(cardp);
+ 
+ 	usb_set_intfdata(intf, NULL);
+ 	usb_put_dev(interface_to_usbdev(intf));
 -- 
 2.33.0
 
