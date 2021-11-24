@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E3E45CBD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D36B145CBD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:06:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243814AbhKXSKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 13:10:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351267AbhKXSI4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 13:08:56 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62676C061399
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:04:42 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id g14so14208696edb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:04:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o4pcYLzRiFXgODRmqJpRApo0JQqGz6PeqKc5/Q3/c2Y=;
-        b=NmEPfl2wDAhDoFRA7Rl3HPVjtun+4o2+Ufli0ATYaUg3efHOQDitlgMJqmgkznje/U
-         1Ta2cgQtZesQxOMsoNSHMhw6isOA09i+536PIzDrtONWqDATLj55KdAGQFUamXnvSxI9
-         zLT2q2xcLkdpeVYnfNoOP6NDMvcf3lpyEqs94=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o4pcYLzRiFXgODRmqJpRApo0JQqGz6PeqKc5/Q3/c2Y=;
-        b=SslFvA1acqcpm7wZ7ptqQ3cMil+MpJA1wd9wk5A9f6x/3EytU1Lb/u0FoUQ9yiKvEX
-         YLvdr/Z0nQkPCgHKkziKtyfIzUYZtVc7gRn1A2cNWQuvod9t/0Mw5OPlqpRkQqLZautG
-         Pt2N+sO0jovzBi1GcZ+DofO9harSD8tKhJtfNU2+NjNzmzR2bZU97aycGUhBOGctFhWv
-         G260zXqDUw+8wfRSzgLRiXqcqyf3A6ow4SNZluOMG/ByJuxzdZc8ubyI+Dl/+jxY/Z26
-         sZrfuYbxRzhfHWiacF80AFjKdP1OuQFj5VbHj6Dk3vEX6XDEG6JZQBM8UIkipe2RnwsL
-         Yp5Q==
-X-Gm-Message-State: AOAM531+Tdx51L/OxLi1TZO1i5l+tSITetQR/j17pqEmki1mlvHfqKQi
-        JGzh3mzlt0e0KZ8t9UU55s6OsBOEKdevk7pj9n7bBp8R0KI=
-X-Google-Smtp-Source: ABdhPJzpcafQIlNcLwu3OzPBZJUzh8rDyCni+prznPFIY3EHy28pXMGu4oXxA14zxwjFPMfFFBe0hn7gIEkQupjhBng=
-X-Received: by 2002:a17:906:4e42:: with SMTP id g2mr22798958ejw.230.1637777078574;
- Wed, 24 Nov 2021 10:04:38 -0800 (PST)
+        id S1350795AbhKXSJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 13:09:52 -0500
+Received: from foss.arm.com ([217.140.110.172]:41722 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350841AbhKXSHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 13:07:43 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 42DB71FB;
+        Wed, 24 Nov 2021 10:04:33 -0800 (PST)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3EE213F66F;
+        Wed, 24 Nov 2021 10:04:32 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Vincent Donnefort <vincent.donnefort@arm.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org,
+        linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
+        dietmar.eggemann@arm.com
+Subject: Re: [PATCH] sched/fair: Fix per-CPU kthread and wakee stacking for asym CPU capacity
+In-Reply-To: <20211124175304.GA3221810@ubiquitous>
+References: <20211124141435.3125147-1-vincent.donnefort@arm.com> <87fsrlcwcb.mognet@arm.com> <20211124175304.GA3221810@ubiquitous>
+Date:   Wed, 24 Nov 2021 18:04:30 +0000
+Message-ID: <87czmpctw1.mognet@arm.com>
 MIME-Version: 1.0
-References: <20211115165428.722074685@linuxfoundation.org> <20211115165430.669780058@linuxfoundation.org>
- <CAFxkdAqahwaN0u6u34d4CrMW7rYL=6TpWk1CcOn+uGQdEgkuTQ@mail.gmail.com>
- <CAOssrKd4gHrKNNttZZey9orZ=F+msx4Axa6Mi_XgZw-9M39h-Q@mail.gmail.com>
- <CAFxkdAqU0peBNm_SB3En99bU+o=a+05t-Bwyds0AUFb+2W=CFw@mail.gmail.com> <CAOssrKez1mnF4rWRvWgk4LJ2iDfX8xkpMKvgprFt+-ARs83=nA@mail.gmail.com>
-In-Reply-To: <CAOssrKez1mnF4rWRvWgk4LJ2iDfX8xkpMKvgprFt+-ARs83=nA@mail.gmail.com>
-From:   Justin Forbes <jmforbes@linuxtx.org>
-Date:   Wed, 24 Nov 2021 12:04:26 -0600
-Message-ID: <CAFxkdApnvRNRU6vZ6qxtuCW78RoLuOMqaxSv+BXj9dX5DXxQyw@mail.gmail.com>
-Subject: Re: [PATCH 5.15 056/917] fuse: fix page stealing
-To:     Miklos Szeredi <mszeredi@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>,
-        Frank Dinoff <fdinoff@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 3:23 AM Miklos Szeredi <mszeredi@redhat.com> wrote:
+On 24/11/21 17:58, Vincent Donnefort wrote:
+> On Wed, Nov 24, 2021 at 05:11:32PM +0000, Valentin Schneider wrote:
+>> On 24/11/21 14:14, Vincent Donnefort wrote:
+>> > A shortcut has been introduced in select_idle_sibling() to return prev_cpu
+>> > if the wakee is woken up by a per-CPU kthread. This is an issue for
+>> > asymmetric CPU capacity systems where the wakee might not fit prev_cpu
+>> > anymore. Evaluate asym_fits_capacity() for prev_cpu before using that
+>> > shortcut.
+>> >
+>> > Fixes: 52262ee567ad ("sched/fair: Allow a per-CPU kthread waking a task to stack on the same CPU, to fix XFS performance regression")
+>>
+>> Shouldn't that rather be
+>>
+>>   b4c9c9f15649 ("sched/fair: Prefer prev cpu in asymmetric wakeup path")
 >
-> On Wed, Nov 24, 2021 at 1:40 AM Justin Forbes <jmforbes@linuxtx.org> wrote:
-> > Thanks, did a scratch build for that and dropped it in the bug. Only
-> > one user has reported back, but the report was that it did not fix the
-> > issue.  I have also gotten confirmation now that the issue is occuring
-> > with 5.16-rc2.
+> Yes definitely, my bad!
 >
-> Okay.
+>>
+>> ? This is an ulterior commit to the one you point to, and before then
+>> asymmetric CPU systems wouldn't use any of the sis() heuristics.
+>>
+>> I reportedly reviewed said commit back then, and don't recall anything
+>> specific about that conditional... The cover-letter for v2 states:
+>>
+>>   https://lore.kernel.org/lkml/20201028174412.680-1-vincent.guittot@linaro.org/
+>>   """
+>>   don't check capacity for the per-cpu kthread UC because the assumption is
+>>   that the wakee queued work for the per-cpu kthread that is now complete and
+>>   the task was already on this cpu.
+>>   """
+>>
+>> So the assumption here is that current is gonna sleep right after waking up
+>> p, so current's utilization doesn't matter, and p was already on prev, so
+>> it should fit there...
 >
-> Morning light brings clarity to the mind.  Here's a patch that should
-> definitely fix this bug, as well as the very unlikely race of the page
-> being truncated from the page cache before pipe_buf_release() is
-> called.
+> I don't think the assumption that "p was already on prev should fit" is
+> correct if we take into account uclamp min. That value can change from one
+> activation to the other and make that task artificially too big for prev_cpu...
 >
-> Please test.
 
-Thanks, did a scratch build. and multiple users have reported back
-saying that this patch does in fact fix the issue.
+Humph, good point, hadn't thought of that.
 
-Justin
+>>
+>> I'm thinking things should actually be OK with your other patch that
+>> excludes 'current == swapper' from this condition.
+>
+> ...But indeed if we add [1] to the equation, this patch here would only
+> protect against that specific corner case.
+>
+> (And probably also against the fact that this same task could have a value
+> that doesn't fit this CPU anymore but didn't trigger misfit during its previous
+> activation?)
+
+That would imply crossing the misfit threshold right at the dequeue signal
+update, but that can happen.
