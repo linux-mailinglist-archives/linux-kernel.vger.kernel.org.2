@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2383845C560
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A25C245C53E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:53:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349077AbhKXN5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:57:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42264 "EHLO mail.kernel.org"
+        id S1353021AbhKXNzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:55:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349787AbhKXNvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1349867AbhKXNvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 08:51:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9796A63213;
-        Wed, 24 Nov 2021 13:04:25 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7DF66324A;
+        Wed, 24 Nov 2021 13:04:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759066;
-        bh=g1PX9AtFkQdg83c94E5SjxeY6CKTnJmmzNl+9+mzTT0=;
+        s=korg; t=1637759069;
+        bh=pV6dePzezFO+/5uCP49X6LL4w+oAiDqHRixBqu2rjh8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YMd/tZaBf2Q98gls3EdqGteEeH1dedsHQ9Tc1kxbQGKtN+F4E7nqyJ93Ft/QSmzRj
-         4ZLnGlKw3oMZ4i/XQ9ge/giXLlS17cEB50uSXz+UXlsoZrx3ckMvDDxNIS0zZoKgc8
-         VtM5RCud8NNIB2E2gZCmnOCBxt5cIcotXXexoaIc=
+        b=fkOWWAq5J3zenKEHiLw6leSMMBVAjAHHAm6+t1/fUbAh26oBMmpevX03U7WlKb9sc
+         A59oiCDdxt5BeyEIl/ehVYatbJuj67GFH5k4CcplD7ixelOTf2WAmgM6C12YGQVnSR
+         48ugD/HcPkyGZeecJrE08S9XI3lLI0fQkudFzmeg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Machek <pavel@denx.de>,
-        Chao Yu <chao@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org, Artur Rojek <contact@artur-rojek.eu>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 089/279] f2fs: fix incorrect return value in f2fs_sanity_check_ckpt()
-Date:   Wed, 24 Nov 2021 12:56:16 +0100
-Message-Id: <20211124115721.860637666@linuxfoundation.org>
+Subject: [PATCH 5.15 090/279] clk: ingenic: Fix bugs with divided dividers
+Date:   Wed, 24 Nov 2021 12:56:17 +0100
+Message-Id: <20211124115721.892006033@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
 References: <20211124115718.776172708@linuxfoundation.org>
@@ -40,44 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <chao@kernel.org>
+From: Paul Cercueil <paul@crapouillou.net>
 
-[ Upstream commit ca98d72141dd81f42893a9a43d7ededab3355fba ]
+[ Upstream commit ed84ef1cd7eddf933d4ffce2caa8161d6f947245 ]
 
-As Pavel Machek reported in [1]
+Two fixes in one:
 
-This code looks quite confused: part of function returns 1 on
-corruption, part returns -errno. The problem is not stable-specific.
+- In the "impose hardware constraints" block, the "logical" divider
+  value (aka. not translated to the hardware) was clamped to fit in the
+  register area, but this totally ignored the fact that the divider
+  value can itself have a fixed divider.
 
-[1] https://lkml.org/lkml/2021/9/19/207
+- The code that made sure that the divider value returned by the
+  function was a multiple of its own fixed divider could result in a
+  wrong value being calculated, because it was rounded down instead of
+  rounded up.
 
-Let's fix to make 'insane cp_payload case' to return 1 rater than
-EFSCORRUPTED, so that return value can be kept consistent for all
-error cases, it can avoid confusion of code logic.
-
-Fixes: 65ddf6564843 ("f2fs: fix to do sanity check for sb/cp fields correctly")
-Reported-by: Pavel Machek <pavel@denx.de>
-Reviewed-by: Pavel Machek <pavel@denx.de>
-Signed-off-by: Chao Yu <chao@kernel.org>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Fixes: 4afe2d1a6ed5 ("clk: ingenic: Allow divider value to be divided")
+Co-developed-by: Artur Rojek <contact@artur-rojek.eu>
+Signed-off-by: Artur Rojek <contact@artur-rojek.eu>
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Link: https://lore.kernel.org/r/20211001172033.122329-1-paul@crapouillou.net
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/ingenic/cgu.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 4d24146b4f471..8795a5a8d4e89 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -3487,7 +3487,7 @@ skip_cross:
- 		NR_CURSEG_PERSIST_TYPE + nat_bits_blocks >= blocks_per_seg)) {
- 		f2fs_warn(sbi, "Insane cp_payload: %u, nat_bits_blocks: %u)",
- 			  cp_payload, nat_bits_blocks);
--		return -EFSCORRUPTED;
-+		return 1;
+diff --git a/drivers/clk/ingenic/cgu.c b/drivers/clk/ingenic/cgu.c
+index 266c7595d3302..af31633a8862e 100644
+--- a/drivers/clk/ingenic/cgu.c
++++ b/drivers/clk/ingenic/cgu.c
+@@ -453,15 +453,15 @@ ingenic_clk_calc_div(struct clk_hw *hw,
  	}
  
- 	if (unlikely(f2fs_cp_error(sbi))) {
+ 	/* Impose hardware constraints */
+-	div = min_t(unsigned, div, 1 << clk_info->div.bits);
+-	div = max_t(unsigned, div, 1);
++	div = clamp_t(unsigned int, div, clk_info->div.div,
++		      clk_info->div.div << clk_info->div.bits);
+ 
+ 	/*
+ 	 * If the divider value itself must be divided before being written to
+ 	 * the divider register, we must ensure we don't have any bits set that
+ 	 * would be lost as a result of doing so.
+ 	 */
+-	div /= clk_info->div.div;
++	div = DIV_ROUND_UP(div, clk_info->div.div);
+ 	div *= clk_info->div.div;
+ 
+ 	return div;
 -- 
 2.33.0
 
