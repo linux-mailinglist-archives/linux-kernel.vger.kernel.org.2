@@ -2,39 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3BF445BE96
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A8A45BEA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:47:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244341AbhKXMtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:49:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51002 "EHLO mail.kernel.org"
+        id S1344093AbhKXMtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:49:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344357AbhKXMqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344359AbhKXMqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 07:46:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F20E60551;
-        Wed, 24 Nov 2021 12:27:18 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DACE160FD9;
+        Wed, 24 Nov 2021 12:27:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756839;
-        bh=lOINc8zJAMoX3k8oG/uZ9gevZh0lJ56ObrmXG8BE5yU=;
+        s=korg; t=1637756842;
+        bh=Fwwh9XxrbsLb/FEtG9+FvjvwXLfoKon1ZUaO86fyNoU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HuYYNzFiU86xgBfUXzHXgdMuPVoc2U537empZA2TX8WxkqSKaoO3k4wSOybE5ctuz
-         DlcRtOkSO0WObhKcK0RtVYIgf84IqO+KH+ytvEfXY/TtNorHiS7HGMjj+ZegFFAvx1
-         Vhm0zzJsLPM1WjfUGilZUxPMTNQZHRrDIokA6Dxs=
+        b=lS/4B2nTybvL6/b98+ZGSxs8ESqqu8RHzLd5mjmCtIDGK7opJVnErfh5JX+s3C6nI
+         UKhcIF89JmoBwisxqzqYoI2aUcNzbeVDZvdNceMvG86/O11+iNgmboOhYwPKgvGKLf
+         2AC0K3tTQAWLmzsiN4ymJI0URjHCYo8mEJ5HPeHM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        linux-mips@vger.kernel.org, John Crispin <john@phrozen.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 225/251] mips: lantiq: add support for clk_get_parent()
-Date:   Wed, 24 Nov 2021 12:57:47 +0100
-Message-Id: <20211124115718.115065439@linuxfoundation.org>
+Subject: [PATCH 4.14 226/251] platform/x86: hp_accel: Fix an error handling path in lis3lv02d_probe()
+Date:   Wed, 24 Nov 2021 12:57:48 +0100
+Message-Id: <20211124115718.147527188@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
 References: <20211124115710.214900256@linuxfoundation.org>
@@ -46,51 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit fc1aabb088860d6cf9dd03612b7a6f0de91ccac2 ]
+[ Upstream commit c961a7d2aa23ae19e0099fbcdf1040fb760eea83 ]
 
-Provide a simple implementation of clk_get_parent() in the
-lantiq subarch so that callers of it will build without errors.
+If 'led_classdev_register()' fails, some additional resources should be
+released.
 
-Fixes this build error:
-ERROR: modpost: "clk_get_parent" [drivers/iio/adc/ingenic-adc.ko] undefined!
+Add the missing 'i8042_remove_filter()' and 'lis3lv02d_remove_fs()' calls
+that are already in the remove function but are missing here.
 
-Fixes: 171bb2f19ed6 ("MIPS: Lantiq: Add initial support for Lantiq SoCs")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Suggested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Cc: linux-mips@vger.kernel.org
-Cc: John Crispin <john@phrozen.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Jonathan Cameron <jic23@kernel.org>
-Cc: linux-iio@vger.kernel.org
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Acked-by: John Crispin <john@phrozen.org>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Fixes: a4c724d0723b ("platform: hp_accel: add a i8042 filter to remove HPQ6000 data from kb bus stream")
+Fixes: 9e0c79782143 ("lis3lv02d: merge with leds hp disk")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/5a4f218f8f16d2e3a7906b7ca3654ffa946895f8.1636314074.git.christophe.jaillet@wanadoo.fr
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/lantiq/clk.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/platform/x86/hp_accel.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/mips/lantiq/clk.c b/arch/mips/lantiq/clk.c
-index a263d1b751ffe..a8e309dcd38d7 100644
---- a/arch/mips/lantiq/clk.c
-+++ b/arch/mips/lantiq/clk.c
-@@ -160,6 +160,12 @@ void clk_deactivate(struct clk *clk)
- }
- EXPORT_SYMBOL(clk_deactivate);
+diff --git a/drivers/platform/x86/hp_accel.c b/drivers/platform/x86/hp_accel.c
+index 9c3c83ef445bf..075332c6890d0 100644
+--- a/drivers/platform/x86/hp_accel.c
++++ b/drivers/platform/x86/hp_accel.c
+@@ -383,9 +383,11 @@ static int lis3lv02d_add(struct acpi_device *device)
+ 	INIT_WORK(&hpled_led.work, delayed_set_status_worker);
+ 	ret = led_classdev_register(NULL, &hpled_led.led_classdev);
+ 	if (ret) {
++		i8042_remove_filter(hp_accel_i8042_filter);
+ 		lis3lv02d_joystick_disable(&lis3_dev);
+ 		lis3lv02d_poweroff(&lis3_dev);
+ 		flush_work(&hpled_led.work);
++		lis3lv02d_remove_fs(&lis3_dev);
+ 		return ret;
+ 	}
  
-+struct clk *clk_get_parent(struct clk *clk)
-+{
-+	return NULL;
-+}
-+EXPORT_SYMBOL(clk_get_parent);
-+
- static inline u32 get_counter_resolution(void)
- {
- 	u32 res;
 -- 
 2.33.0
 
