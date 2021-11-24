@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C215245CAB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:14:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3677545CAB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:14:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242229AbhKXRR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 12:17:26 -0500
+        id S236187AbhKXRRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 12:17:23 -0500
 Received: from mga09.intel.com ([134.134.136.24]:38504 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231309AbhKXRRW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229882AbhKXRRW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 12:17:22 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="235144168"
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="235144167"
 X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
-   d="scan'208";a="235144168"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 08:57:58 -0800
+   d="scan'208";a="235144167"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 08:57:57 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
-   d="scan'208";a="475331994"
+   d="scan'208";a="497743647"
 Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 24 Nov 2021 08:57:56 -0800
+  by orsmga007.jf.intel.com with ESMTP; 24 Nov 2021 08:57:56 -0800
 Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mpval-00054y-MP; Wed, 24 Nov 2021 16:57:55 +0000
-Date:   Thu, 25 Nov 2021 00:57:15 +0800
+        id 1mpval-00054w-Ly; Wed, 24 Nov 2021 16:57:55 +0000
+Date:   Thu, 25 Nov 2021 00:57:23 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:rcu/next] BUILD SUCCESS
- a3d09240cbfd98525dbd7038a4ec1afb4bc896a2
-Message-ID: <619e6eeb.FwNklGf94+j+vZap%lkp@intel.com>
+Subject: [paulmck-rcu:dev.2021.11.18a] BUILD SUCCESS
+ 075ba74eadb696eaae3a6f3eec96439e2948ac4e
+Message-ID: <619e6ef3.CFsG5nC9ORI6W/sO%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,12 +39,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: a3d09240cbfd98525dbd7038a4ec1afb4bc896a2  rcu-tasks: Avoid raw-spinlocked wakeups from call_rcu_tasks_generic()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.11.18a
+branch HEAD: 075ba74eadb696eaae3a6f3eec96439e2948ac4e  fixup! rcu-tasks: Add rcupdate.rcu_task_enqueue_lim to set initial queueing
 
-elapsed time: 728m
+elapsed time: 729m
 
-configs tested: 160
+configs tested: 165
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -74,6 +74,12 @@ arc                            hsdk_defconfig
 m68k                           sun3_defconfig
 arc                     nsimosci_hs_defconfig
 mips                   sb1250_swarm_defconfig
+sh                          polaris_defconfig
+arm                         bcm2835_defconfig
+arm                       aspeed_g5_defconfig
+arm64                            alldefconfig
+arm                        cerfcube_defconfig
+powerpc                  iss476-smp_defconfig
 mips                  cavium_octeon_defconfig
 mips                malta_qemu_32r6_defconfig
 arm                          ixp4xx_defconfig
@@ -114,7 +120,6 @@ riscv                             allnoconfig
 powerpc                 canyonlands_defconfig
 arm                     eseries_pxa_defconfig
 arm                        realview_defconfig
-arm                        cerfcube_defconfig
 powerpc                        icon_defconfig
 arc                        vdk_hs38_defconfig
 arc                 nsimosci_hs_smp_defconfig
