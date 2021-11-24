@@ -2,37 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0CC45C1DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7604445C337
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:33:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348835AbhKXNWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:22:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43816 "EHLO mail.kernel.org"
+        id S1352487AbhKXNgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:36:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347886AbhKXNUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:20:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A16461B03;
-        Wed, 24 Nov 2021 12:46:44 +0000 (UTC)
+        id S1351817AbhKXNdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:33:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18AC461B21;
+        Wed, 24 Nov 2021 12:53:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758005;
-        bh=Ih8lef4ya+QPtcqo86096rCXdlZrEfhQi94MHmziKR0=;
+        s=korg; t=1637758431;
+        bh=pyfvXeey07e81ohSpF5WnV3MRD0hzYq67MxsUEfP1Pk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=crJ49DjujXVa4L6ZNu1uhkaLpMdcF6QBje2moNLzOH8zymeSwJCq65N51CaWjL/ns
-         D3jgUm5c+ljFNRRcI80srhzSyUM+1oHFAuAiuXELq+68IbE74v75qR11RqYBHufgBf
-         yJ0H8hkHYjy2XhGW0m3ET1eCYRNOBNp2W6oY0+Qo=
+        b=we5QUcqakOgJCBSOTwIL1rdvYHbkdKVDzd6nLsx55dcytV4ba3J8YztHw1rUxcKSU
+         w3cOJduKAEfSNrAg+rt3kc/TSv3kqsEWb12WIeiGtQrQ4uCHPv7OPmxks60CN+fJaH
+         Q5s3WIyNuE5ivxspY/j3sBOYEeQfR6VpftwOwKMs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mike Christie <michael.christie@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Sohaib Mohamed <sohaib.amhmd@gmail.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 025/100] scsi: target: Fix alua_tg_pt_gps_count tracking
-Date:   Wed, 24 Nov 2021 12:57:41 +0100
-Message-Id: <20211124115655.672698329@linuxfoundation.org>
+Subject: [PATCH 5.10 066/154] perf bench futex: Fix memory leak of perf_cpu_map__new()
+Date:   Wed, 24 Nov 2021 12:57:42 +0100
+Message-Id: <20211124115704.448125985@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +49,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Christie <michael.christie@oracle.com>
+From: Sohaib Mohamed <sohaib.amhmd@gmail.com>
 
-[ Upstream commit 1283c0d1a32bb924324481586b5d6e8e76f676ba ]
+[ Upstream commit 88e48238d53682281c9de2a0b65d24d3b64542a0 ]
 
-We can't free the tg_pt_gp in core_alua_set_tg_pt_gp_id() because it's
-still accessed via configfs. Its release must go through the normal
-configfs/refcount process.
+ASan reports memory leaks while running:
 
-The max alua_tg_pt_gps_count check should probably have been done in
-core_alua_allocate_tg_pt_gp(), but with the current code userspace could
-have created 0x0000ffff + 1 groups, but only set the id for 0x0000ffff.
-Then it could have deleted a group with an ID set, and then set the ID for
-that extra group and it would work ok.
+  $ sudo ./perf bench futex all
 
-It's unlikely, but just in case this patch continues to allow that type of
-behavior, and just fixes the kfree() while in use bug.
+The leaks are caused by perf_cpu_map__new not being freed.
+This patch adds the missing perf_cpu_map__put since it calls
+cpu_map_delete implicitly.
 
-Link: https://lore.kernel.org/r/20210930020422.92578-4-michael.christie@oracle.com
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 9c3516d1b850ea93 ("libperf: Add perf_cpu_map__new()/perf_cpu_map__read() functions")
+Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: André Almeida <andrealmeid@collabora.com>
+Cc: Darren Hart <dvhart@infradead.org>
+Cc: Davidlohr Bueso <dave@stgolabs.net>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Sohaib Mohamed <sohaib.amhmd@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Link: http://lore.kernel.org/lkml/20211112201134.77892-1-sohaib.amhmd@gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/target/target_core_alua.c | 1 -
- 1 file changed, 1 deletion(-)
+ tools/perf/bench/futex-lock-pi.c       | 1 +
+ tools/perf/bench/futex-requeue.c       | 1 +
+ tools/perf/bench/futex-wake-parallel.c | 1 +
+ tools/perf/bench/futex-wake.c          | 1 +
+ 4 files changed, 4 insertions(+)
 
-diff --git a/drivers/target/target_core_alua.c b/drivers/target/target_core_alua.c
-index 385e4cf9cfa63..0fc3135d3e4f6 100644
---- a/drivers/target/target_core_alua.c
-+++ b/drivers/target/target_core_alua.c
-@@ -1702,7 +1702,6 @@ int core_alua_set_tg_pt_gp_id(
- 		pr_err("Maximum ALUA alua_tg_pt_gps_count:"
- 			" 0x0000ffff reached\n");
- 		spin_unlock(&dev->t10_alua.tg_pt_gps_lock);
--		kmem_cache_free(t10_alua_tg_pt_gp_cache, tg_pt_gp);
- 		return -ENOSPC;
- 	}
- again:
+diff --git a/tools/perf/bench/futex-lock-pi.c b/tools/perf/bench/futex-lock-pi.c
+index bb25d8beb3b85..159bc89e6a79a 100644
+--- a/tools/perf/bench/futex-lock-pi.c
++++ b/tools/perf/bench/futex-lock-pi.c
+@@ -226,6 +226,7 @@ int bench_futex_lock_pi(int argc, const char **argv)
+ 	print_summary();
+ 
+ 	free(worker);
++	perf_cpu_map__put(cpu);
+ 	return ret;
+ err:
+ 	usage_with_options(bench_futex_lock_pi_usage, options);
+diff --git a/tools/perf/bench/futex-requeue.c b/tools/perf/bench/futex-requeue.c
+index 7a15c2e610228..105b36cdc42d3 100644
+--- a/tools/perf/bench/futex-requeue.c
++++ b/tools/perf/bench/futex-requeue.c
+@@ -216,6 +216,7 @@ int bench_futex_requeue(int argc, const char **argv)
+ 	print_summary();
+ 
+ 	free(worker);
++	perf_cpu_map__put(cpu);
+ 	return ret;
+ err:
+ 	usage_with_options(bench_futex_requeue_usage, options);
+diff --git a/tools/perf/bench/futex-wake-parallel.c b/tools/perf/bench/futex-wake-parallel.c
+index cd2b81a845acb..a129c94eb3fe1 100644
+--- a/tools/perf/bench/futex-wake-parallel.c
++++ b/tools/perf/bench/futex-wake-parallel.c
+@@ -320,6 +320,7 @@ int bench_futex_wake_parallel(int argc, const char **argv)
+ 	print_summary();
+ 
+ 	free(blocked_worker);
++	perf_cpu_map__put(cpu);
+ 	return ret;
+ }
+ #endif /* HAVE_PTHREAD_BARRIER */
+diff --git a/tools/perf/bench/futex-wake.c b/tools/perf/bench/futex-wake.c
+index 2dfcef3e371e4..507ff533612c6 100644
+--- a/tools/perf/bench/futex-wake.c
++++ b/tools/perf/bench/futex-wake.c
+@@ -210,5 +210,6 @@ int bench_futex_wake(int argc, const char **argv)
+ 	print_summary();
+ 
+ 	free(worker);
++	perf_cpu_map__put(cpu);
+ 	return ret;
+ }
 -- 
 2.33.0
 
