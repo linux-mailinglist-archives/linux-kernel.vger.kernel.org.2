@@ -2,42 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E3C45C500
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:51:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A76C245C505
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:51:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347240AbhKXNyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:54:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42264 "EHLO mail.kernel.org"
+        id S1349848AbhKXNyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:54:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243638AbhKXNto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1351518AbhKXNto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 08:49:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD37F61A78;
-        Wed, 24 Nov 2021 13:03:24 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31C346335D;
+        Wed, 24 Nov 2021 13:03:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759005;
-        bh=bL5oRu47bEegD6Ik5oTg1A6IbzHYsq+TmQ6Pv7/ZrNw=;
+        s=korg; t=1637759008;
+        bh=aSYAzBW5fdjnqyksCFyGby/xmO2T5e+NGTVcWzNzHbU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vn0rJCa537hvkHel0qP89lvbee1/7zALU9e/L5ppQcIX+kBDDIL4UdyeMYsCWYFTq
-         2wCWxNxftCIpMuQshrIFsFC6w50VFJj9zLY4LvLIfKNC+Xmoi6M85iODBVXwOU+xn0
-         HdsyjrSJbot54KRUCNr1oiAa9+UQlEp+nssz6O6I=
+        b=L9S0wTUjH3F6Tc2tjTDuK12G2YdbYNiZI8fNFYjaIfPUQshzblvNxYmJKtJUD1auO
+         PXk59nFtjFefGZv8YPQtOP0RM7r7Jfd1TpCxFSGNqMTwlCRwzoonrk1gCr7cGMRoj/
+         WWSQJs4sD/AE8Q4rnFE0bnm4a3uYvo3iWUGbteGQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sohaib Mohamed <sohaib.amhmd@gmail.com>,
+        stable@vger.kernel.org, James Clark <james.clark@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
         Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 102/279] perf bench futex: Fix memory leak of perf_cpu_map__new()
-Date:   Wed, 24 Nov 2021 12:56:29 +0100
-Message-Id: <20211124115722.301404836@linuxfoundation.org>
+Subject: [PATCH 5.15 103/279] perf tests: Remove bash construct from record+zstd_comp_decomp.sh
+Date:   Wed, 24 Nov 2021 12:56:30 +0100
+Message-Id: <20211124115722.340731519@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
 References: <20211124115718.776172708@linuxfoundation.org>
@@ -49,87 +52,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sohaib Mohamed <sohaib.amhmd@gmail.com>
+From: James Clark <james.clark@arm.com>
 
-[ Upstream commit 88e48238d53682281c9de2a0b65d24d3b64542a0 ]
+[ Upstream commit a9cdc1c5e3700a5200e5ca1f90b6958b6483845b ]
 
-ASan reports memory leaks while running:
+Commit 463538a383a2 ("perf tests: Fix test 68 zstd compression for
+s390") inadvertently removed the -g flag from all platforms rather than
+just s390, because the [[ ]] construct fails in sh. Changing to single
+brackets restores testing of call graphs and removes the following error
+from the output:
 
-  $ sudo ./perf bench futex all
+  $ ./perf test -v 85
+  85: Zstd perf.data compression/decompression                        :
+  --- start ---
+  test child forked, pid 50643
+  Collecting compressed record file:
+  ./tests/shell/record+zstd_comp_decomp.sh: 15: [[: not found
 
-The leaks are caused by perf_cpu_map__new not being freed.
-This patch adds the missing perf_cpu_map__put since it calls
-cpu_map_delete implicitly.
-
-Fixes: 9c3516d1b850ea93 ("libperf: Add perf_cpu_map__new()/perf_cpu_map__read() functions")
-Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
+Fixes: 463538a383a2 ("perf tests: Fix test 68 zstd compression for s390")
+Signed-off-by: James Clark <james.clark@arm.com>
 Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: André Almeida <andrealmeid@collabora.com>
-Cc: Darren Hart <dvhart@infradead.org>
-Cc: Davidlohr Bueso <dave@stgolabs.net>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
 Cc: Ian Rogers <irogers@google.com>
 Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
 Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Sohaib Mohamed <sohaib.amhmd@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Link: http://lore.kernel.org/lkml/20211112201134.77892-1-sohaib.amhmd@gmail.com
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Sumanth Korikkar <sumanthk@linux.ibm.com>
+Cc: Thomas Richter <tmricht@linux.ibm.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Link: https://lore.kernel.org/r/20211028134828.65774-3-james.clark@arm.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/bench/futex-lock-pi.c       | 1 +
- tools/perf/bench/futex-requeue.c       | 1 +
- tools/perf/bench/futex-wake-parallel.c | 1 +
- tools/perf/bench/futex-wake.c          | 1 +
- 4 files changed, 4 insertions(+)
+ tools/perf/tests/shell/record+zstd_comp_decomp.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/bench/futex-lock-pi.c b/tools/perf/bench/futex-lock-pi.c
-index 5d1fe9c35807a..137890f78e17a 100644
---- a/tools/perf/bench/futex-lock-pi.c
-+++ b/tools/perf/bench/futex-lock-pi.c
-@@ -233,6 +233,7 @@ int bench_futex_lock_pi(int argc, const char **argv)
- 	print_summary();
+diff --git a/tools/perf/tests/shell/record+zstd_comp_decomp.sh b/tools/perf/tests/shell/record+zstd_comp_decomp.sh
+index 8a168cf8bacca..49bd875d51227 100755
+--- a/tools/perf/tests/shell/record+zstd_comp_decomp.sh
++++ b/tools/perf/tests/shell/record+zstd_comp_decomp.sh
+@@ -12,7 +12,7 @@ skip_if_no_z_record() {
  
- 	free(worker);
-+	perf_cpu_map__put(cpu);
- 	return ret;
- err:
- 	usage_with_options(bench_futex_lock_pi_usage, options);
-diff --git a/tools/perf/bench/futex-requeue.c b/tools/perf/bench/futex-requeue.c
-index 97fe31fd3a236..f7a5ffebb9408 100644
---- a/tools/perf/bench/futex-requeue.c
-+++ b/tools/perf/bench/futex-requeue.c
-@@ -294,6 +294,7 @@ int bench_futex_requeue(int argc, const char **argv)
- 	print_summary();
- 
- 	free(worker);
-+	perf_cpu_map__put(cpu);
- 	return ret;
- err:
- 	usage_with_options(bench_futex_requeue_usage, options);
-diff --git a/tools/perf/bench/futex-wake-parallel.c b/tools/perf/bench/futex-wake-parallel.c
-index e970e6b9ad535..0983f40b4b408 100644
---- a/tools/perf/bench/futex-wake-parallel.c
-+++ b/tools/perf/bench/futex-wake-parallel.c
-@@ -329,6 +329,7 @@ int bench_futex_wake_parallel(int argc, const char **argv)
- 	print_summary();
- 
- 	free(blocked_worker);
-+	perf_cpu_map__put(cpu);
- 	return ret;
- }
- #endif /* HAVE_PTHREAD_BARRIER */
-diff --git a/tools/perf/bench/futex-wake.c b/tools/perf/bench/futex-wake.c
-index 77f058a477903..2226a475e782b 100644
---- a/tools/perf/bench/futex-wake.c
-+++ b/tools/perf/bench/futex-wake.c
-@@ -222,5 +222,6 @@ int bench_futex_wake(int argc, const char **argv)
- 	print_summary();
- 
- 	free(worker);
-+	perf_cpu_map__put(cpu);
- 	return ret;
+ collect_z_record() {
+ 	echo "Collecting compressed record file:"
+-	[[ "$(uname -m)" != s390x ]] && gflag='-g'
++	[ "$(uname -m)" != s390x ] && gflag='-g'
+ 	$perf_tool record -o $trace_file $gflag -z -F 5000 -- \
+ 		dd count=500 if=/dev/urandom of=/dev/null
  }
 -- 
 2.33.0
