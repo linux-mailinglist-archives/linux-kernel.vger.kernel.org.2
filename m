@@ -2,160 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F72345CB02
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:27:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D21445CB03
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:28:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243080AbhKXRaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 12:30:24 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:58594 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbhKXRaV (ORCPT
+        id S243047AbhKXRbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 12:31:16 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4165 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242931AbhKXRbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 12:30:21 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 9B67C218D6;
-        Wed, 24 Nov 2021 17:27:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637774830; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KPvlbKR4kZT2jRAX1s7R2qtncoIoU2QMFLhEg5TGPuQ=;
-        b=XI21Un0ENn/nes6vC2Zp/n1uFn/pvDR0YD1PGlrzMr9tQ+1T7/eS70MnTJaDdJH5jeuFPT
-        JmWPXSCrRNHo2Tos6vsHxga7hEQfBRtQ3LTyjZCiLa6QBdHdMHuUX5VrAOQrySfOi4t8Ml
-        pnCdAXAhpZi+MQGTKxluwJGPTNRCGAE=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 4E613A3B84;
-        Wed, 24 Nov 2021 17:27:10 +0000 (UTC)
-Date:   Wed, 24 Nov 2021 18:27:09 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Mina Almasry <almasrymina@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>, Shuah Khan <shuah@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Roman Gushchin <guro@fb.com>, Theodore Ts'o <tytso@mit.edu>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v4 0/4] Deterministic charging of shared memory
-Message-ID: <YZ517SgokdzY/+8r@dhcp22.suse.cz>
-References: <20211120045011.3074840-1-almasrymina@google.com>
- <YZvppKvUPTIytM/c@cmpxchg.org>
+        Wed, 24 Nov 2021 12:31:14 -0500
+Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HznyD53Cgz67sTc;
+        Thu, 25 Nov 2021 01:27:32 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 24 Nov 2021 18:28:03 +0100
+Received: from [10.202.227.179] (10.202.227.179) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 24 Nov 2021 17:28:02 +0000
+Subject: Re: [PATCH v2 1/4] perf expr: Add debug logging for literals
+To:     Ian Rogers <irogers@google.com>, Andi Kleen <ak@linux.intel.com>,
+        "Jiri Olsa" <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Konstantin Khlebnikov <koct9i@gmail.com>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <eranian@google.com>
+References: <20211124001231.3277836-1-irogers@google.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <5a516c85-695c-60da-a3cc-ab1c1b08c87f@huawei.com>
+Date:   Wed, 24 Nov 2021 17:28:01 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZvppKvUPTIytM/c@cmpxchg.org>
+In-Reply-To: <20211124001231.3277836-1-irogers@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.179]
+X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 22-11-21 14:04:04, Johannes Weiner wrote:
-[...]
-> I'm not a fan of this. It uses filesystem mounts to create shareable
-> resource domains outside of the cgroup hierarchy, which has all the
-> downsides you listed, and more:
-> 
-> 1. You need a filesystem interface in the first place, and a new
->    ad-hoc channel and permission model to coordinate with the cgroup
->    tree, which isn't great. All filesystems you want to share data on
->    need to be converted.
-> 
-> 2. It doesn't extend to non-filesystem sources of shared data, such as
->    memfds, ipc shm etc.
-> 
-> 3. It requires unintuitive configuration for what should be basic
->    shared accounting semantics. Per default you still get the old
->    'first touch' semantics, but to get sharing you need to reconfigure
->    the filesystems?
-> 
-> 4. If a task needs to work with a hierarchy of data sharing domains -
->    system-wide, group of jobs, job - it must interact with a hierarchy
->    of filesystem mounts. This is a pain to setup and may require task
->    awareness. Moving data around, working with different mount points.
->    Also, no shared and private data accounting within the same file.
-> 
-> 5. It reintroduces cgroup1 semantics of tasks and resouces, which are
->    entangled, sitting in disjunct domains. OOM killing is one quirk of
->    that, but there are others you haven't touched on. Who is charged
->    for the CPU cycles of reclaim in the out-of-band domain?  Who is
->    charged for the paging IO? How is resource pressure accounted and
->    attributed? Soon you need cpu= and io= as well.
-> 
-> My take on this is that it might work for your rather specific
-> usecase, but it doesn't strike me as a general-purpose feature
-> suitable for upstream.
 
-I just want to reiterate that this resonates with my concerns expressed
-earlier and thanks for expressing them in a much better structured and
-comprehensive way, Johannes.
+>   	}
+> -	if (!strcmp("#num_packages", literal))
+> -		return topology->package_cpus_lists;
+> -	if (!strcmp("#num_dies", literal))
+> -		return topology->die_cpus_lists;
+> -	if (!strcmp("#num_cores", literal))
+> -		return topology->core_cpus_lists;
+> +	if (!strcmp("#num_packages", literal)) {
+> +		result = topology->package_cpus_lists;
+> +		goto out;
+> +	}
+> +	if (!strcmp("#num_dies", literal)) {
+> +		result = topology->die_cpus_lists;
+> +		goto out;
+> +	}
+> +	if (!strcmp("#num_cores", literal)) {
+> +		result = topology->core_cpus_lists;
 
-[btw. a non-technical comment. For features like this it is better to
- not rush into newer versions posting until there is at least some
- agreement for the feature. Otherwise we have fragments of the
- discussion spread over several email threads]
+if we find that we now get the same print many times, how about:
+		pr_debug2_once("literal: num_cores = %f\n", result);
 
-> If we want sharing semantics for memory, I think we need a more
-> generic implementation with a cleaner interface.
-> 
-> Here is one idea:
-> 
-> Have you considered reparenting pages that are accessed by multiple
-> cgroups to the first common ancestor of those groups?
-> 
-> Essentially, whenever there is a memory access (minor fault, buffered
-> IO) to a page that doesn't belong to the accessing task's cgroup, you
-> find the common ancestor between that task and the owning cgroup, and
-> move the page there.
-> 
-> With a tree like this:
-> 
-> 	root - job group - job
->                         `- job
->             `- job group - job
->                         `- job
-> 
-> all pages accessed inside that tree will propagate to the highest
-> level at which they are shared - which is the same level where you'd
-> also set shared policies, like a job group memory limit or io weight.
-> 
-> E.g. libc pages would (likely) bubble to the root, persistent tmpfs
-> pages would bubble to the respective job group, private data would
-> stay within each job.
-> 
-> No further user configuration necessary. Although you still *can* use
-> mount namespacing etc. to prohibit undesired sharing between cgroups.
-> 
-> The actual user-visible accounting change would be quite small, and
-> arguably much more intuitive. Remember that accounting is recursive,
-> meaning that a job page today also shows up in the counters of job
-> group and root. This would not change. The only thing that IS weird
-> today is that when two jobs share a page, it will arbitrarily show up
-> in one job's counter but not in the other's. That would change: it
-> would no longer show up as either, since it's not private to either;
-> it would just be a job group (and up) page.
-> 
-> This would be a generic implementation of resource sharing semantics:
-> independent of data source and filesystems, contained inside the
-> cgroup interface, and reusing the existing hierarchies of accounting
-> and control domains to also represent levels of common property.
-> 
-> Thoughts?
+... not sure if it scales though
 
-This is an interesting concept. I am not sure how expensive and
-intrusive (code wise) this would get but that is more of an
-implementation detail.
+Thanks,
+John
 
-Another option would be to provide a syscall to claim a shared resource.
-This would require a cooperation of the application but it would
-establish a clear responsibility model.
 
--- 
-Michal Hocko
-SUSE Labs
+> +		goto out;
+> +	}
+>   
+>   	pr_err("Unrecognized literal '%s'", literal);
+> -	return NAN;
+> +out:
+> +	pr_debug2("literal: %s = %f\n", literal, result);
+> +	return result;
+>   }
+
