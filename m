@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5AEC45C16A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:16:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B5D45C317
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345461AbhKXNRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:17:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56612 "EHLO mail.kernel.org"
+        id S1352276AbhKXNfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:35:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347349AbhKXNPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:15:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B36C61AAD;
-        Wed, 24 Nov 2021 12:44:07 +0000 (UTC)
+        id S1349477AbhKXNc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:32:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79E3E615E2;
+        Wed, 24 Nov 2021 12:53:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757848;
-        bh=aJhIcq5GpkXnt+6eFeSlj0EGsC3g80aE/6o+d4Y2BiE=;
+        s=korg; t=1637758403;
+        bh=wz2BgDrdXATOuIut9HiksyjNZr92zAn+60QAjRjiz9s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s0CUU8zGAOUfJUjuGGiuO2EKy8mtT2mVFu+E0LAHNwe34nBIXIsuN64Z+x/3J+VU5
-         expn3lQfCrUKYPtTvpQmQ/5olcs+GsS+YEGJ7hAQpIt7eQrA8aL5J8pzYWBItvOjOL
-         kf9ZJFrlrMRUdjFMurSi3gitbPpTvwbm6XFtjPlE=
+        b=ZJg3kcYTWrviPbeQY87EagybgU2iiCKjY9EidLIFQeTlu4DdPrNk484v66RNOpqeh
+         1d8s3CYG0NKobCVRSEwV8BXNJdkC0hpAywAgMsrfvDBVuapcIGbg30v7goH+4g2qJU
+         jMYmM8cLIhVfJxM4OAfOwfK8Il/KM+04WbdAhUkA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Sven Peter <sven@svenpeter.dev>,
+        stable@vger.kernel.org, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 264/323] usb: typec: tipd: Remove WARN_ON in tps6598x_block_read
+Subject: [PATCH 5.10 058/154] clk/ast2600: Fix soc revision for AHB
 Date:   Wed, 24 Nov 2021 12:57:34 +0100
-Message-Id: <20211124115727.798893288@linuxfoundation.org>
+Message-Id: <20211124115704.203802090@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +41,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Peter <sven@svenpeter.dev>
+From: Joel Stanley <joel@jms.id.au>
 
-[ Upstream commit b7a0a63f3fed57d413bb857de164ea9c3984bc4e ]
+[ Upstream commit f45c5b1c27293f834682e89003f88b3512329ab4 ]
 
-Calling tps6598x_block_read with a higher than allowed len can be
-handled by just returning an error. There's no need to crash systems
-with panic-on-warn enabled.
+Move the soc revision parsing to the initial probe, saving the driver
+from parsing the register multiple times.
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Sven Peter <sven@svenpeter.dev>
-Link: https://lore.kernel.org/r/20210914140235.65955-3-sven@svenpeter.dev
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Use this variable to select the correct divisor table for the AHB clock.
+Before this fix the A2 would have used the A0 table.
+
+Fixes: 2d491066ccd4 ("clk: ast2600: Fix AHB clock divider for A1")
+Signed-off-by: Joel Stanley <joel@jms.id.au>
+Link: https://lore.kernel.org/r/20210922235449.213631-1-joel@jms.id.au
+Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/typec/tps6598x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/clk-ast2600.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/usb/typec/tps6598x.c b/drivers/usb/typec/tps6598x.c
-index 987b8fcfb2aae..a4dd23a8f1954 100644
---- a/drivers/usb/typec/tps6598x.c
-+++ b/drivers/usb/typec/tps6598x.c
-@@ -93,7 +93,7 @@ tps6598x_block_read(struct tps6598x *tps, u8 reg, void *val, size_t len)
- 	u8 data[TPS_MAX_LEN + 1];
- 	int ret;
+diff --git a/drivers/clk/clk-ast2600.c b/drivers/clk/clk-ast2600.c
+index bc3be5f3eae15..24dab2312bc6f 100644
+--- a/drivers/clk/clk-ast2600.c
++++ b/drivers/clk/clk-ast2600.c
+@@ -51,6 +51,8 @@ static DEFINE_SPINLOCK(aspeed_g6_clk_lock);
+ static struct clk_hw_onecell_data *aspeed_g6_clk_data;
  
--	if (WARN_ON(len + 1 > sizeof(data)))
-+	if (len + 1 > sizeof(data))
- 		return -EINVAL;
+ static void __iomem *scu_g6_base;
++/* AST2600 revision: A0, A1, A2, etc */
++static u8 soc_rev;
  
- 	if (!tps->i2c_protocol)
+ /*
+  * Clocks marked with CLK_IS_CRITICAL:
+@@ -191,9 +193,8 @@ static struct clk_hw *ast2600_calc_pll(const char *name, u32 val)
+ static struct clk_hw *ast2600_calc_apll(const char *name, u32 val)
+ {
+ 	unsigned int mult, div;
+-	u32 chip_id = readl(scu_g6_base + ASPEED_G6_SILICON_REV);
+ 
+-	if (((chip_id & CHIP_REVISION_ID) >> 16) >= 2) {
++	if (soc_rev >= 2) {
+ 		if (val & BIT(24)) {
+ 			/* Pass through mode */
+ 			mult = div = 1;
+@@ -707,7 +708,7 @@ static const u32 ast2600_a1_axi_ahb200_tbl[] = {
+ static void __init aspeed_g6_cc(struct regmap *map)
+ {
+ 	struct clk_hw *hw;
+-	u32 val, div, divbits, chip_id, axi_div, ahb_div;
++	u32 val, div, divbits, axi_div, ahb_div;
+ 
+ 	clk_hw_register_fixed_rate(NULL, "clkin", NULL, 0, 25000000);
+ 
+@@ -738,8 +739,7 @@ static void __init aspeed_g6_cc(struct regmap *map)
+ 		axi_div = 2;
+ 
+ 	divbits = (val >> 11) & 0x3;
+-	regmap_read(map, ASPEED_G6_SILICON_REV, &chip_id);
+-	if (chip_id & BIT(16)) {
++	if (soc_rev >= 1) {
+ 		if (!divbits) {
+ 			ahb_div = ast2600_a1_axi_ahb200_tbl[(val >> 8) & 0x3];
+ 			if (val & BIT(16))
+@@ -784,6 +784,8 @@ static void __init aspeed_g6_cc_init(struct device_node *np)
+ 	if (!scu_g6_base)
+ 		return;
+ 
++	soc_rev = (readl(scu_g6_base + ASPEED_G6_SILICON_REV) & CHIP_REVISION_ID) >> 16;
++
+ 	aspeed_g6_clk_data = kzalloc(struct_size(aspeed_g6_clk_data, hws,
+ 				      ASPEED_G6_NUM_CLKS), GFP_KERNEL);
+ 	if (!aspeed_g6_clk_data)
 -- 
 2.33.0
 
