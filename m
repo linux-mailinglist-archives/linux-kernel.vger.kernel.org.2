@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01EF945BD24
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C337145BF8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:56:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244070AbhKXMfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:35:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42172 "EHLO mail.kernel.org"
+        id S1345404AbhKXM7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:59:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245605AbhKXM2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:28:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7367261153;
-        Wed, 24 Nov 2021 12:17:15 +0000 (UTC)
+        id S1345343AbhKXM4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:56:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81D45617E1;
+        Wed, 24 Nov 2021 12:32:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756236;
-        bh=xmzpDdi+dFBtEOdPA4IUgOZjjZmMIXcbMjn4sF9pUTg=;
+        s=korg; t=1637757130;
+        bh=O0OVvUKUBujb9CmCW1jf9wl2xIOF0u7EJCmdeGZ678k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FJPW/kW/Zil9zPcSy/aE94vfBQlSrnWJDshRuI3DFSwAqXrSTo/dcISsnFk8hRTJH
-         uSSip7DJ3/X/T2zUYMUuRGg46lb1NsF2X8NKerjYuWj/dUn/4vRek4arSI+v8DhQDa
-         fDhU60vasLPxqm59bMa7qNe+6FUzKMWCmCzXfjss=
+        b=zrcfDH0OIQ3vVm90nxF9OPxi3r5PO+zwwCGnhCQF34oiofI3p5uo/W5qHU2pTFdey
+         z7HULZuyUSTUFWr0US1IG4/WXGjZWZuOuluSkolT2MInEIx8Y/MZBtN8X4IngHIvm9
+         YygklPcKEBwMhPK137KgFPLlqoZcvqo1mle2uI+U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Austin Kim <austin.kim@lge.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 015/251] ALSA: synth: missing check for possible NULL after the call to kstrdup
-Date:   Wed, 24 Nov 2021 12:54:17 +0100
-Message-Id: <20211124115710.736184403@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH 4.19 068/323] serial: core: Fix initializing and restoring termios speed
+Date:   Wed, 24 Nov 2021 12:54:18 +0100
+Message-Id: <20211124115721.155015627@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +39,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Austin Kim <austin.kim@lge.com>
+From: Pali Rohár <pali@kernel.org>
 
-commit d159037abbe3412285c271bdfb9cdf19e62678ff upstream.
+commit 027b57170bf8bb6999a28e4a5f3d78bf1db0f90c upstream.
 
-If kcalloc() return NULL due to memory starvation, it is possible for
-kstrdup() to return NULL in similar case. So add null check after the call
-to kstrdup() is made.
+Since commit edc6afc54968 ("tty: switch to ktermios and new framework")
+termios speed is no longer stored only in c_cflag member but also in new
+additional c_ispeed and c_ospeed members. If BOTHER flag is set in c_cflag
+then termios speed is stored only in these new members.
 
-[ minor coding-style fix by tiwai ]
+Therefore to correctly restore termios speed it is required to store also
+ispeed and ospeed members, not only cflag member.
 
-Signed-off-by: Austin Kim <austin.kim@lge.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20211109003742.GA5423@raspberrypi
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+In case only cflag member with BOTHER flag is restored then functions
+tty_termios_baud_rate() and tty_termios_input_baud_rate() returns baudrate
+stored in c_ospeed / c_ispeed member, which is zero as it was not restored
+too. If reported baudrate is invalid (e.g. zero) then serial core functions
+report fallback baudrate value 9600. So it means that in this case original
+baudrate is lost and kernel changes it to value 9600.
+
+Simple reproducer of this issue is to boot kernel with following command
+line argument: "console=ttyXXX,86400" (where ttyXXX is the device name).
+For speed 86400 there is no Bnnn constant and therefore kernel has to
+represent this speed via BOTHER c_cflag. Which means that speed is stored
+only in c_ospeed and c_ispeed members, not in c_cflag anymore.
+
+If bootloader correctly configures serial device to speed 86400 then kernel
+prints boot log to early console at speed speed 86400 without any issue.
+But after kernel starts initializing real console device ttyXXX then speed
+is changed to fallback value 9600 because information about speed was lost.
+
+This patch fixes above issue by storing and restoring also ispeed and
+ospeed members, which are required for BOTHER flag.
+
+Fixes: edc6afc54968 ("[PATCH] tty: switch to ktermios and new framework")
+Cc: stable@vger.kernel.org
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Link: https://lore.kernel.org/r/20211002130900.9518-1-pali@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/synth/emux/emux.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/serial_core.c |   16 ++++++++++++++--
+ include/linux/console.h          |    2 ++
+ 2 files changed, 16 insertions(+), 2 deletions(-)
 
---- a/sound/synth/emux/emux.c
-+++ b/sound/synth/emux/emux.c
-@@ -101,7 +101,7 @@ int snd_emux_register(struct snd_emux *e
- 	emu->name = kstrdup(name, GFP_KERNEL);
- 	emu->voices = kcalloc(emu->max_voices, sizeof(struct snd_emux_voice),
- 			      GFP_KERNEL);
--	if (emu->voices == NULL)
-+	if (emu->name == NULL || emu->voices == NULL)
- 		return -ENOMEM;
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -219,7 +219,11 @@ static int uart_port_startup(struct tty_
+ 	if (retval == 0) {
+ 		if (uart_console(uport) && uport->cons->cflag) {
+ 			tty->termios.c_cflag = uport->cons->cflag;
++			tty->termios.c_ispeed = uport->cons->ispeed;
++			tty->termios.c_ospeed = uport->cons->ospeed;
+ 			uport->cons->cflag = 0;
++			uport->cons->ispeed = 0;
++			uport->cons->ospeed = 0;
+ 		}
+ 		/*
+ 		 * Initialise the hardware port settings.
+@@ -287,8 +291,11 @@ static void uart_shutdown(struct tty_str
+ 		/*
+ 		 * Turn off DTR and RTS early.
+ 		 */
+-		if (uport && uart_console(uport) && tty)
++		if (uport && uart_console(uport) && tty) {
+ 			uport->cons->cflag = tty->termios.c_cflag;
++			uport->cons->ispeed = tty->termios.c_ispeed;
++			uport->cons->ospeed = tty->termios.c_ospeed;
++		}
  
- 	/* create soundfont list */
+ 		if (!tty || C_HUPCL(tty))
+ 			uart_port_dtr_rts(uport, 0);
+@@ -2062,8 +2069,11 @@ uart_set_options(struct uart_port *port,
+ 	 * Allow the setting of the UART parameters with a NULL console
+ 	 * too:
+ 	 */
+-	if (co)
++	if (co) {
+ 		co->cflag = termios.c_cflag;
++		co->ispeed = termios.c_ispeed;
++		co->ospeed = termios.c_ospeed;
++	}
+ 
+ 	return 0;
+ }
+@@ -2197,6 +2207,8 @@ int uart_resume_port(struct uart_driver
+ 		 */
+ 		memset(&termios, 0, sizeof(struct ktermios));
+ 		termios.c_cflag = uport->cons->cflag;
++		termios.c_ispeed = uport->cons->ispeed;
++		termios.c_ospeed = uport->cons->ospeed;
+ 
+ 		/*
+ 		 * If that's unset, use the tty termios setting.
+--- a/include/linux/console.h
++++ b/include/linux/console.h
+@@ -153,6 +153,8 @@ struct console {
+ 	short	flags;
+ 	short	index;
+ 	int	cflag;
++	uint	ispeed;
++	uint	ospeed;
+ 	void	*data;
+ 	struct	 console *next;
+ };
 
 
