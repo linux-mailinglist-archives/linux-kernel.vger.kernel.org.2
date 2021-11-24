@@ -2,337 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E630645C822
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:57:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCBA745C819
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:56:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349774AbhKXPAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:00:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236264AbhKXPAu (ORCPT
+        id S1345067AbhKXO7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:59:22 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:25134 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244614AbhKXO7V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:00:50 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742F5C061714
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 06:57:40 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id m192so3107643qke.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 06:57:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=LU9BEnULj3JGjgT+LMe5HzdnuJsg4eZNYUMoalr+NiQ=;
-        b=aRDviT3wLR3bO1bGkiAK8+cBs71ouZCKV9RXLFc3z3hheI3oGMfzrkzO3oZkD0Q8u+
-         x5wK8nYqKbMC0QeDgtihIRnfGIxD/3TEEHCPm/WUHBABCxU/4NCRm20SuyAAL9qnbmax
-         83+xae7zGiUuv34KnjzMGGU34FWzved74YBmUiw2ZyTe7CwoKalO10BnnvlQi9+u360W
-         OvhOsgp+YmaXyCpsIALXD++nMhaBz5kCRzxZqvPdkUaqI8aDy/VdnKR+7QegkL+8taVI
-         u5/mzjiAy8xrxjTi5zJOJpZ31/MAc+2yC0E8RPDnQUOUcLJX9RRn0vQbFjuNqLRwdMrk
-         3J/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=LU9BEnULj3JGjgT+LMe5HzdnuJsg4eZNYUMoalr+NiQ=;
-        b=lmxLU3GM0SuGtx2jZmPzZsw+2hrJD7AbvMesNfML8BiXahuhJUmBBuGvGRYWD0qJYi
-         +9rJkYCTzMsFDIyC1348e9Y4f3E8EqWQdzH3i/EsevWf/5HVp4NFamaqFdw3mPNpiQKO
-         GC/rGUcdVzRhxpFoVg/Z+OILmWeVoUuYsEWI3zm7eCPKj1UzUtSpVnboLSRTWA+JcSQm
-         tiUAokLF/ZV+wcPt2YnMqRu+6VVrF2GNHEAqGGvxf4IOAA+UI/g2AodJZJe8GOysoMek
-         f4u/3SHSyjYsadTWbTEFOMh89uMx0pGF7/RJ3F1/uBOMIJHyeC6RjRz7kuieNjvKUgNg
-         4QnA==
-X-Gm-Message-State: AOAM5310w87+F1PIH7Nr6DGVWjeMgUadhQCas+EUG+VjS/FxmNkSzgr4
-        LvchAMXpxK9z3XFqwpMTbgqLhQ==
-X-Google-Smtp-Source: ABdhPJxBkKscTnspcy2eLh5Z9xgt5hPk+H9d84fbimsVeCf5siq/8P/fdeGFwDMww4ZUzt3DJm1q8A==
-X-Received: by 2002:a37:4050:: with SMTP id n77mr6579024qka.267.1637765859635;
-        Wed, 24 Nov 2021 06:57:39 -0800 (PST)
-Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id h5sm8446705qkn.62.2021.11.24.06.57.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 06:57:39 -0800 (PST)
-Message-ID: <9b7fd6802c89c5d3bb6a42b44f13a90f6c3caf22.camel@ndufresne.ca>
-Subject: Re: [EXT] Re: [PATCH v12 00/13] amphion video decoder/encoder driver
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Ming Qian <ming.qian@nxp.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
-Cc:     "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Wed, 24 Nov 2021 09:57:37 -0500
-In-Reply-To: <AM6PR04MB6341BF1FB2A839961DBADF4EE7619@AM6PR04MB6341.eurprd04.prod.outlook.com>
-References: <cover.1636445575.git.ming.qian@nxp.com>
-         <9947131322e034bb6336802e5afb4b6132ca5071.camel@ndufresne.ca>
-         <AM6PR04MB6341BF1FB2A839961DBADF4EE7619@AM6PR04MB6341.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
+        Wed, 24 Nov 2021 09:59:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1637765771; x=1669301771;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yfqRuYPZmZUcNRxXA/NezxjfFaXgFEveKTueFKQUZuM=;
+  b=LWVUADR9xYyKB1jYYAcyV3NBAbS/GyEWr32lPjUohE6z8g605EYIAUwG
+   kXGQSrvO/qK08Z1MFWNC29IKP0WW7WKzWg+3OC9glZt/ZkBMgObwb8piu
+   oNJ3z2xt6jgsVUBeM/Y8RdO0GCD7yCZf4VnKO4Ch4g7XDzzCXooWfoGxK
+   0KdUh00COUAyE+3JDILMUpwLNo4gqnCGOItUa80mv9T/wfwxBr3qwNdjj
+   VCucay0/UAbYF5AHv0qroWin2sqXyG7vAARPVs9Iw+Ri+MFeZFLcn5xaZ
+   o10qG9Q3jY7EoP/yh0lZkdmOFGUQjIFOz2Euva1cap20FF7CW5pYMK88w
+   Q==;
+IronPort-SDR: luM2raqHKSksZ2fzMhDCxBPqUkS/7bK/sP6h9se59cQ2YS/bD36ATW29vCHLj2i/sE1fEaz6Tn
+ Us04WweuhnIvAIyE//5KYzLGe1/uRBVeThLjnrM7YzHgYHlvNuklLFxnrOOOwsByHplNPfCGqB
+ GPxz86gB9xfMv961RRK19fWyxxoi4aYHVitymQ90yN1E89iZKpN1CkqUIc/rGymEAJbht9HQay
+ qqi/yhFRKm/xjFtVC7gKGQWYIh00CsRGfotv8VBVpLr2jZmf1nu+AJAFW3VbGLjEGYRUItX8Ml
+ SJi6lCCGBsew2uC2pLXxp7lj
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="153095423"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 24 Nov 2021 07:56:09 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Wed, 24 Nov 2021 07:56:08 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Wed, 24 Nov 2021 07:56:07 -0700
+Date:   Wed, 24 Nov 2021 15:58:00 +0100
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <robh+dt@kernel.org>,
+        <UNGLinuxDriver@microchip.com>, <p.zabel@pengutronix.de>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v3 3/6] net: lan966x: add port module support
+Message-ID: <20211124145800.my4niep3sifqpg55@soft-dev3-1.localhost>
+References: <20211124083915.2223065-1-horatiu.vultur@microchip.com>
+ <20211124083915.2223065-4-horatiu.vultur@microchip.com>
+ <YZ4SB/wX6UT3zrEV@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <YZ4SB/wX6UT3zrEV@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mercredi 24 novembre 2021 à 09:00 +0000, Ming Qian a écrit :
-> > -----Original Message-----
-> > From: Nicolas Dufresne [mailto:nicolas@ndufresne.ca]
-> > Sent: Wednesday, November 24, 2021 3:23 AM
-> > To: Ming Qian <ming.qian@nxp.com>; mchehab@kernel.org;
-> > shawnguo@kernel.org; robh+dt@kernel.org; s.hauer@pengutronix.de
-> > Cc: hverkuil-cisco@xs4all.nl; kernel@pengutronix.de; festevam@gmail.com;
-> > dl-linux-imx <linux-imx@nxp.com>; Aisheng Dong <aisheng.dong@nxp.com>;
-> > linux-media@vger.kernel.org; linux-kernel@vger.kernel.org;
-> > devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org
-> > Subject: [EXT] Re: [PATCH v12 00/13] amphion video decoder/encoder driver
-> > 
-> > Caution: EXT Email
-> > 
-> > Hi Ming,
-> > 
-> > For the patchset:
-> > 
-> > Tested-By: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-> > 
-> > I've validated encoding manually with GStreamer:
-> > 
-> >   gst-launch-1.0 videotestsrc num-buffers=100 ! v4l2h264enc !
-> > video/x-h264,profile=main,level=\(string\)2 ! h264parse ! qtmux ! filesink
-> > location=test.mov
-> > 
-> > I've also verify the that the number of frames was exactly 100, this is
-> > common
-> > issue with V4L2 encoders. Then I have validated VP8, H.264 and H.265
-> > decoders
-> > using fluster [0] with this PR [1] applied. You can find full summary at the
-> > end
-> > of this email. Markdown report didn't get generated, I will have to check
-> > with
-> > upstream fluster if there is a regression.
-> > 
-> > $> ./fluster.py run -s -so amphion-imx8qxp-conformance.md -d
-> > GStreamer-VP8-V4L2-Gst1.0 GStreamer-H.264-V4L2-Gst1.0
-> > GStreamer-H.265-V4L2-Gst1.0
-> > 
-> > VP8:   Ran 59/61 tests successfully               in 131.788 secs
-> > H.264: Ran 75/135 tests successfully               in 501.206 secs
-> > H.265: Ran 126/147 tests successfully               in 1131.933 secs
-> > 
-> > Note that in mainline, only 1 core get fired and is kept at its lowest
-> > possible
-> > frequency, so perhaps it may cause some of the timeout seen. The driver is
-> > overall functional, and I would like to thank you for this extra work. Also,
-> > note that this very first time I run Fluster over the stateful CODEC
-> > wrappers. I
-> > will need to run this on more platforms to locate the GStreamer specific
-> > fail.
-> > 
-> > VP8 note, conformance vector vp80-03-segmentation-1425 cause a hang but it
-> > then
-> > recover:
-> > 
-> > [ 8264.851841] amphion-vpu-core 2d040000.vpu_core: [0] sync session
-> > timeout
-> > [ 8264.858634] amphion-vpu-core 2d040000.vpu_core: [0] send cmd(0x2) fail
-> > [ 8264.867992] amphion-vpu-core 2d040000.vpu_core: [0] start fail
-> > [ 8264.905173] amphion-vpu-core 2d040000.vpu_core: reset hang core
-> > 
+The 11/24/2021 10:20, Russell King (Oracle) wrote:
 > 
-> HI Nicolas
-> 
->     There is a bug in firmware that if send a command to firmware too close
-> after stop cmd,
-> The firmware may enter wfi wrong, and led to hang issue you met in vp80-03-
-> segmentation-1425.
-> I'll add a workaround in driver that add a delay after send stop cmd to
-> firmware in next version.
-> 
->     Because the amphion's vpu doesn't support to output i420, so the test will
-> convert nv12_8l128 to i420 by videoconvert, it leds to most of timeout
-> failure.
-> 
->     The FM1_BT_B.h264 can't be decoded by amphion's vpu, the vpu is keeping
-> parse sequence header, and it led to timeout failure.
-> 
->     I run the test and change the timeout to 300, then most of timeout
-> failures are gone. Besides that, my result is almost as same as yours.
+> Hi,
 
-Oh my bad, I forgot about the short timeout, with a single core on top of all
-this, that makes sense.
+Hi Russel,
 
 > 
->     The failures of assertion error means that the vpu's output is different
-> from the pattern, I think it should be the vpu's limitation.
+> On Wed, Nov 24, 2021 at 09:39:12AM +0100, Horatiu Vultur wrote:
+> > +static int lan966x_port_open(struct net_device *dev)
+> > +{
+> > +     struct lan966x_port *port = netdev_priv(dev);
+> > +     struct lan966x *lan966x = port->lan966x;
+> > +     int err;
+> > +
+> > +     if (port->serdes) {
+> > +             err = phy_set_mode_ext(port->serdes, PHY_MODE_ETHERNET,
+> > +                                    port->config.phy_mode);
+> > +             if (err) {
+> > +                     netdev_err(dev, "Could not set mode of SerDes\n");
+> > +                     return err;
+> > +             }
+> > +     }
+> 
+> This could be done in the mac_prepare() method.
 
-Most likely, best way to know is to keep the results (--keep) and visually look
-at the result. My expectation with this is that we get decent results and that
-none of the issue render the VPU or the system unusable. Each company is then
-responsible for their CODEC conformance, specially with stateful, there is very
-little that userspace will be responsible with. Though if you do find issue that
-is clearly caused by GStreaner, let me know, I'll be more then happy to fix.
-Most VPU providers will also buy proprietary conformance suite (like Allegro),
-which covers much more then basic conformance.
+Yes, I will move this in mac_prepare()
 
 > 
-> > 
-> > See comments about your GStreamer MR below...
-> > 
-> > [0]
-> > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.
-> > com%2Ffluendo%2Ffluster&amp;data=04%7C01%7Cming.qian%40nxp.com%7
-> > C45d33490bfe546aa8e1408d9aeb6a822%7C686ea1d3bc2b4c6fa92cd99c5c3
-> > 01635%7C0%7C0%7C637732921809373007%7CUnknown%7CTWFpbGZsb3d
-> > 8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3
-> > D%7C3000&amp;sdata=bBqADaZ9ZN00SbCPalQE5fN740hB2bMUxHDL4QEki
-> > mg%3D&amp;reserved=0
-> > [1]
-> > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.
-> > com%2Ffluendo%2Ffluster%2Fpull%2F98&amp;data=04%7C01%7Cming.qian
-> > %40nxp.com%7C45d33490bfe546aa8e1408d9aeb6a822%7C686ea1d3bc2b4c
-> > 6fa92cd99c5c301635%7C0%7C0%7C637732921809382989%7CUnknown%7C
-> > TWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLC
-> > JXVCI6Mn0%3D%7C3000&amp;sdata=90dUC%2FNzK%2BcFNSMwY7bgQ0iD8
-> > ctBwU%2FMhyrLoBBEf4g%3D&amp;reserved=0
-> > 
-> > 
-> > [...]
-> > > encoder is tested with gstreamer
-> > > decoder is tested with gstreamer, but the following patches are required:
-> > 
-> > GStreamer is now a single repo (and using main branch instead of master), I
-> > have
-> > migrated your 3 MRs into 2 MRs.
+> > +static void lan966x_cleanup_ports(struct lan966x *lan966x)
+> > +{
+> > +     struct lan966x_port *port;
+> > +     int portno;
+> > +
+> > +     for (portno = 0; portno < lan966x->num_phys_ports; portno++) {
+> > +             port = lan966x->ports[portno];
+> > +             if (!port)
+> > +                     continue;
+> > +
+> > +             if (port->phylink) {
+> > +                     rtnl_lock();
+> > +                     lan966x_port_stop(port->dev);
+> > +                     rtnl_unlock();
+> > +                     phylink_destroy(port->phylink);
+> > +                     port->phylink = NULL;
+> > +             }
+> > +
+> > +             if (port->fwnode)
+> > +                     fwnode_handle_put(port->fwnode);
+> > +
+> > +             if (port->dev)
+> > +                     unregister_netdev(port->dev);
 > 
-> Thank you very much.
-> > 
-> > > 
-> > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgitlab.fr
-> > eedesktop.org%2Fgstreamer%2Fgst-plugins-base%2F-%2Fmerge_requests%2F
-> > 1252&amp;data=04%7C01%7Cming.qian%40nxp.com%7C45d33490bfe546aa
-> > 8e1408d9aeb6a822%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7
-> > C637732921809382989%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAw
-> > MDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sda
-> > ta=G4PnqxRsnPjQtV%2FUcp4dkoz9fAGxkOv%2FzKR47RaHtu0%3D&amp;reser
-> > ved=0
-> > > 
-> > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgitlab.fr
-> > eedesktop.org%2Fgstreamer%2Fgst-plugins-good%2F-%2Fmerge_requests%2F
-> > 1098&amp;data=04%7C01%7Cming.qian%40nxp.com%7C45d33490bfe546aa
-> > 8e1408d9aeb6a822%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7
-> > C637732921809382989%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAw
-> > MDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sda
-> > ta=h6nEISAaiG54NPz9Xw0MiSNDx2QxWsNWyG7FLSAaLgI%3D&amp;reserved
-> > =0
-> > 
-> > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgitlab.fr
-> > eedesktop.org%2Fgstreamer%2Fgstreamer%2F-%2Fmerge_requests%2F1379&
-> > amp;data=04%7C01%7Cming.qian%40nxp.com%7C45d33490bfe546aa8e140
-> > 8d9aeb6a822%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C6377
-> > 32921809382989%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiL
-> > CJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=PFe
-> > Db4v%2BmiksgvJ08KgncRjZEt7GdMO7gV8hV0DD0uY%3D&amp;reserved=0
-> > 
-> > > 
-> > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgitlab.fr
-> > eedesktop.org%2Fgstreamer%2Fgst-plugins-good%2F-%2Fmerge_requests%2F
-> > 1099&amp;data=04%7C01%7Cming.qian%40nxp.com%7C45d33490bfe546aa
-> > 8e1408d9aeb6a822%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7
-> > C637732921809382989%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAw
-> > MDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sda
-> > ta=e6hSDpiP2scLN5C0f8Fb%2FoMbt8k4zC45qWPrQpG%2Fe5A%3D&amp;rese
-> > rved=0
-> > 
-> > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgitlab.fr
-> > eedesktop.org%2Fgstreamer%2Fgstreamer%2F-%2Fmerge_requests%2F1381&
-> > amp;data=04%7C01%7Cming.qian%40nxp.com%7C45d33490bfe546aa8e140
-> > 8d9aeb6a822%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C6377
-> > 32921809382989%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiL
-> > CJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=xkX
-> > WjCsgVaLb0wZgfaXDMiBchtbJBNnwtZNhKe42k5o%3D&amp;reserved=0
-> > 
-> > 
-> > regards,
-> > Nicolas
-> > 
-> > [JVT-AVC_V1] (GStreamer-H.264-V4L2-Gst1.0) FM1_BT_B                 ...
-> > Timeout
-> The vpu can't decode this stream.
-> 
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > AMP_D_Hisilicon_3               ... Timeout
-> Performance issue of videoconvert
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > AMP_E_Hisilicon_3               ... Timeout
-> Performance issue of videoconvert
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > AMP_F_Hisilicon_3               ... Timeout
-> Performance issue of videoconvert
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > BUMPING_A_ericsson_1            ... Fail
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > CONFWIN_A_Sony_1                ... Fail
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > DELTAQP_A_BRCM_4                ... Timeout
-> Performance issue of videoconvert
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > MVDL1ZERO_A_docomo_4            ... Timeout
-> Performance issue of videoconvert
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > NoOutPrior_A_Qualcomm_1         ... Fail
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > NoOutPrior_B_Qualcomm_1         ... Fail
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > NUT_A_ericsson_5                ... Fail
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > PICSIZE_A_Bossen_1              ... Error
-> The size is 1056x8440, vpu doesn't support it
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > PICSIZE_B_Bossen_1              ... Error
-> The size is 8440x1056, vpu doesn't support it
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > PICSIZE_C_Bossen_1              ... Fail
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > PICSIZE_D_Bossen_1              ... Fail
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > RAP_B_Bossen_2                  ... Fail
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > SAODBLK_A_MainConcept_4         ... Timeout
-> Performance issue of videoconvert
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > SAODBLK_B_MainConcept_4         ... Timeout
-> Performance issue of videoconvert
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > TILES_A_Cisco_2                 ... Timeout
-> Performance issue of videoconvert
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > TILES_B_Cisco_1                 ... Timeout
-> Performance issue of videoconvert, but assert fail
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > TSUNEQBD_A_MAIN10_Technicolor_2 ... Fail
-> > [JCT-VC-HEVC_V1] (GStreamer-H.265-V4L2-Gst1.0)
-> > VPSSPSPPS_A_MainConcept_1       ... Error
-> Gstream report error:
-> ERROR Error from element
-> /GstPlayBin:playbin/GstURIDecodeBin:uridecodebin0/GstDecodeBin:decodebin0/v4l2
-> h265dec:v4l2h265dec0: Could not read from resource.
-> Could not read from resource.
-> ../sys/v4l2/gstv4l2bufferpool.c(1155): gst_v4l2_buffer_pool_poll ():
-> /GstPlayBin:playbin/GstURIDecodeBin:uridecodebin0/GstDecodeBin:decodebin0/v4l2
-> h265dec:v4l2h265dec0:
-> poll error 1: Success (0) for /mnt/fluster/resources/JCT-VC-
-> HEVC_V1/VPSSPSPPS_A_MainConcept_1/VPSSPSPPS_A_MainConcept_1.bin
->  
-> > [VP8-TEST-VECTORS] (GStreamer-VP8-V4L2-Gst1.0)
-> > vp80-03-segmentation-1425 ... Timeout
-> Firmware bug, after apply driver workaround, assert fail
-> > [VP8-TEST-VECTORS] (GStreamer-VP8-V4L2-Gst1.0)
-> > vp80-03-segmentation-1436 ... Fail
-> > 
-> > 
-> 
+> This doesn't look like the correct sequence to me. Shouldn't the net
+> device be unregistered first, which will take the port down by doing
+> so and make it unavailable to userspace to further manipulate. Then
+> we should start tearing other stuff down such as destroying phylink
+> and disabling interrupts (in the caller of this.)
 
+I can change the order as you suggested.
+Regarding the interrupts, shouldn't they be first disable and then do
+all the teardown?
+
+> 
+> Don't you need to free the netdev as well at some point?
+
+It is not needed because they are allocated using devm_alloc_etherdev_mqs
+
+> 
+> >  static int lan966x_probe_port(struct lan966x *lan966x, u32 p,
+> > -                           phy_interface_t phy_mode)
+> > +                           phy_interface_t phy_mode,
+> > +                           struct fwnode_handle *portnp)
+> >  {
+> ...
+> > +     port->phylink_config.dev = &port->dev->dev;
+> > +     port->phylink_config.type = PHYLINK_NETDEV;
+> > +     port->phylink_config.pcs_poll = true;
+> > +     port->phylink_pcs.poll = true;
+> 
+> You don't need to set both of these - please omit
+> port->phylink_config.pcs_poll.
+
+I will remove it.
+
+> 
+> > diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
+> > index 7a1ff9d19fbf..ce2798db0449 100644
+> > --- a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
+> > +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
+> ...
+> > @@ -44,15 +58,48 @@ struct lan966x {
+> >       void __iomem *regs[NUM_TARGETS];
+> >
+> >       int shared_queue_sz;
+> > +
+> > +     /* interrupts */
+> > +     int xtr_irq;
+> > +};
+> > +
+> > +struct lan966x_port_config {
+> > +     phy_interface_t portmode;
+> > +     phy_interface_t phy_mode;
+> 
+> What is the difference between "portmode" and "phy_mode"? Does it matter
+> if port->config.phy_mode get zeroed when lan966x_port_pcs_set() is
+> called from lan966x_pcs_config()? It looks to me like the first call
+> will clear phy_mode, setting it to PHY_INTERFACE_MODE_NA from that point
+> on.
+
+The purpose was to use portmode to configure the MAC and the phy_mode
+to configure the serdes. There are small issues regarding this which
+will be fix in the next series also I will add some comments just to
+make it clear.
+
+Actually, port->config.phy_mode will not get zeroed. Because right after
+the memset it follows: 'config = port->config'.
+
+> 
+> > diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_port.c b/drivers/net/ethernet/microchip/lan966x/lan966x_port.c
+> > new file mode 100644
+> > index 000000000000..ca1b0c8d1bf5
+> > --- /dev/null
+> > +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_port.c
+> > @@ -0,0 +1,422 @@
+> ...
+> > +void lan966x_port_status_get(struct lan966x_port *port,
+> > +                          struct phylink_link_state *state)
+> > +{
+> > +     struct lan966x *lan966x = port->lan966x;
+> > +     u16 lp_adv, ld_adv;
+> > +     bool link_down;
+> > +     u16 bmsr = 0;
+> > +     u32 val;
+> > +
+> > +     val = lan_rd(lan966x, DEV_PCS1G_STICKY(port->chip_port));
+> > +     link_down = DEV_PCS1G_STICKY_LINK_DOWN_STICKY_GET(val);
+> > +     if (link_down)
+> > +             lan_wr(val, lan966x, DEV_PCS1G_STICKY(port->chip_port));
+> > +
+> > +     /* Get both current Link and Sync status */
+> > +     val = lan_rd(lan966x, DEV_PCS1G_LINK_STATUS(port->chip_port));
+> > +     state->link = DEV_PCS1G_LINK_STATUS_LINK_STATUS_GET(val) &&
+> > +                   DEV_PCS1G_LINK_STATUS_SYNC_STATUS_GET(val);
+> > +     state->link &= !link_down;
+> > +
+> > +     if (port->config.portmode == PHY_INTERFACE_MODE_1000BASEX)
+> > +             state->speed = SPEED_1000;
+> > +     else if (port->config.portmode == PHY_INTERFACE_MODE_2500BASEX)
+> > +             state->speed = SPEED_2500;
+> 
+> Why not use state->interface? state->interface will be the currently
+> configured interface mode (which should be the same as your
+> port->config.portmode.)
+
+I will use state->interface.
+
+> 
+> > +
+> > +     state->duplex = DUPLEX_FULL;
+> 
+> Also, what is the purpose of initialising state->speed and state->duplex
+> here? phylink_mii_c22_pcs_decode_state() will do that for you when
+> decoding the advertisements.
+> 
+> If it's to deal with autoneg disabled, then it ought to be conditional on
+> autoneg being disabled and the link being up.
+
+It was the case for autoneg disabled.
+
+> 
+> > +
+> > +     /* Get PCS ANEG status register */
+> > +     val = lan_rd(lan966x, DEV_PCS1G_ANEG_STATUS(port->chip_port));
+> > +
+> > +     /* Aneg complete provides more information  */
+> > +     if (DEV_PCS1G_ANEG_STATUS_ANEG_COMPLETE_GET(val)) {
+> > +             lp_adv = DEV_PCS1G_ANEG_STATUS_LP_ADV_GET(val);
+> > +             state->an_complete = true;
+> > +
+> > +             bmsr |= state->link ? BMSR_LSTATUS : 0;
+> > +             bmsr |= state->an_complete;
+> 
+> Shouldn't this be setting BMSR_ANEGCOMPLETE?
+
+That was a silly mistake from my side.
+
+> 
+> > +
+> > +             if (port->config.portmode == PHY_INTERFACE_MODE_SGMII) {
+> > +                     phylink_mii_c22_pcs_decode_state(state, bmsr, lp_adv);
+> > +             } else {
+> > +                     val = lan_rd(lan966x, DEV_PCS1G_ANEG_CFG(port->chip_port));
+> > +                     ld_adv = DEV_PCS1G_ANEG_CFG_ADV_ABILITY_GET(val);
+> > +                     phylink_mii_c22_pcs_decode_state(state, bmsr, ld_adv);
+> > +             }
+> 
+> This looks like it can be improved:
+> 
+>         if (DEV_PCS1G_ANEG_STATUS_ANEG_COMPLETE_GET(val)) {
+>                 state->an_complete = true;
+> 
+>                 bmsr |= state->link ? BMSR_LSTATUS : 0;
+>                 bmsr |= BMSR_ANEGCOMPLETE;
+> 
+>                 if (state->interface == PHY_INTERFACE_MODE_SGMII) {
+>                         lp_adv = DEV_PCS1G_ANEG_STATUS_LP_ADV_GET(val);
+>                 } else {
+>                         val = lan_rd(lan966x, DEV_PCS1G_ANEG_CFG(port->chip_port));
+>                         lp_adv = DEV_PCS1G_ANEG_CFG_ADV_ABILITY_GET(val);
+>                 }
+> 
+>                 phylink_mii_c22_pcs_decode_state(state, bmsr, lp_adv);
+>         }
+> 
+> I'm not sure that the non-SGMII code is actually correct though. Which
+> advertisement are you extracting by reading the DEV_PCS1G_ANEG_CFG
+> register and extracting DEV_PCS1G_ANEG_CFG_ADV_ABILITY_GET ? From the
+> code in lan966x_port_pcs_set(), it suggests this is our advertisement,
+> but it's supposed to always be the link partner's advertisement being
+> passed to phylink_mii_c22_pcs_decode_state().
+
+Actually, like you mentioned it needs to be link partner's advertisement
+so that code can be simplified more:
+
+         if (DEV_PCS1G_ANEG_STATUS_ANEG_COMPLETE_GET(val)) {
+                 state->an_complete = true;
+ 
+                 bmsr |= state->link ? BMSR_LSTATUS : 0;
+                 bmsr |= BMSR_ANEGCOMPLETE;
+ 
+                 lp_adv = DEV_PCS1G_ANEG_STATUS_LP_ADV_GET(val);
+                 phylink_mii_c22_pcs_decode_state(state, bmsr, lp_adv);
+         }
+
+Because inside phylink_mii_c22_pcs_decode_state, more precisely in
+phylink_decode_c37_work, state->advertising will have the local
+advertising.
+
+> 
+> > +int lan966x_port_pcs_set(struct lan966x_port *port,
+> > +                      struct lan966x_port_config *config)
+> > +{
+> ...
+> > +     port->config = *config;
+> 
+> As mentioned elsewhere, "config" won't have phy_mode set, so this clears
+> port->config.phymode to PHY_INTERFACE_MODE_NA, which I think will cause
+> e.g. lan966x_port_link_up() not to behave as intended.
+
+Actually, the "config" will still have the phy_mode because config will
+get teh value of port->config and after that some fields are changed.
+
+> 
+> Thanks.
+> 
+> --
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+
+-- 
+/Horatiu
