@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6CF945C30B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:32:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3103F45C1F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:21:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352107AbhKXNfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:35:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60596 "EHLO mail.kernel.org"
+        id S1347502AbhKXNY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:24:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351586AbhKXNci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:32:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E484F61BD2;
-        Wed, 24 Nov 2021 12:53:07 +0000 (UTC)
+        id S1349275AbhKXNS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:18:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CA9761268;
+        Wed, 24 Nov 2021 12:46:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758388;
-        bh=tqpN3gXnWopqGetBBiFAQHr6fgZWEqZOJpnpFBjko/Q=;
+        s=korg; t=1637757971;
+        bh=uRNWClVskT9WVh4BxglVj0+Aj3iFwlXKVsIuFTg1pPI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gAX+vVuLYeao2NDILuLfly05FCCmW2+u8iDW8Rl5xOMLnndopdgdiFdsiPLdo0sND
-         NB9FXS9XJsSsiR49oySNJpL8+AXjLoQdDsaWel1I1RgIrReqyrXDFIlNDyWfkztGRG
-         ZPuTu0F03Jicx635WKMp3o2BusNTGBu2MmRg3BCM=
+        b=mrnlpuV8B6E/oWUM1FOIaGatHXyRf1ORhrPockqSudCgUgiGZ39fPzbdt2Mqeogm5
+         OMUllm0+bKZkfO3lD+NdsoTKuJio+LCj5MGK3KVXLzzBa0txvovob44gr4AbePjaeY
+         YZBY5Obau+x1CMrQCqB6NJIgj/8BcbfZSs2VR9Ek=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rich Felker <dalias@libc.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 054/154] sh: define __BIG_ENDIAN for math-emu
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 014/100] ASoC: nau8824: Add DMI quirk mechanism for active-high jack-detect
 Date:   Wed, 24 Nov 2021 12:57:30 +0100
-Message-Id: <20211124115704.076582782@linuxfoundation.org>
+Message-Id: <20211124115655.314319508@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +40,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit b929926f01f2d14635345d22eafcf60feed1085e ]
+[ Upstream commit 92d3360108f1839ca40451bad20ff67dd24a1964 ]
 
-Fix this by defining both ENDIAN macros in
-<asm/sfp-machine.h> so that they can be utilized in
-<math-emu/soft-fp.h> according to the latter's comment:
-/* Allow sfp-machine to have its own byte order definitions. */
+Add a quirk mechanism to allow specifying that active-high jack-detection
+should be used on platforms where this info is not available in devicetree.
 
-(This is what is done in arch/nds32/include/asm/sfp-machine.h.)
+And add an entry for the Cyberbook T116 tablet to the DMI table, so that
+jack-detection will work properly on this tablet.
 
-This placates these build warnings:
-
-In file included from ../arch/sh/math-emu/math.c:23:
-.../include/math-emu/single.h:50:21: warning: "__BIG_ENDIAN" is not defined, evaluates to 0 [-Wundef]
-   50 | #if __BYTE_ORDER == __BIG_ENDIAN
-In file included from ../arch/sh/math-emu/math.c:24:
-.../include/math-emu/double.h:59:21: warning: "__BIG_ENDIAN" is not defined, evaluates to 0 [-Wundef]
-   59 | #if __BYTE_ORDER == __BIG_ENDIAN
-
-Fixes: 4b565680d163 ("sh: math-emu support")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Signed-off-by: Rich Felker <dalias@libc.org>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20211002211459.110124-2-hdegoede@redhat.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/sh/include/asm/sfp-machine.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/codecs/nau8824.c | 40 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-diff --git a/arch/sh/include/asm/sfp-machine.h b/arch/sh/include/asm/sfp-machine.h
-index cbc7cf8c97ce6..2d2423478b71d 100644
---- a/arch/sh/include/asm/sfp-machine.h
-+++ b/arch/sh/include/asm/sfp-machine.h
-@@ -13,6 +13,14 @@
- #ifndef _SFP_MACHINE_H
- #define _SFP_MACHINE_H
+diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
+index 15bd8335f6678..c8ccfa2fff848 100644
+--- a/sound/soc/codecs/nau8824.c
++++ b/sound/soc/codecs/nau8824.c
+@@ -8,6 +8,7 @@
  
-+#ifdef __BIG_ENDIAN__
-+#define __BYTE_ORDER __BIG_ENDIAN
-+#define __LITTLE_ENDIAN 0
-+#else
-+#define __BYTE_ORDER __LITTLE_ENDIAN
-+#define __BIG_ENDIAN 0
-+#endif
+ #include <linux/module.h>
+ #include <linux/delay.h>
++#include <linux/dmi.h>
+ #include <linux/init.h>
+ #include <linux/i2c.h>
+ #include <linux/regmap.h>
+@@ -27,6 +28,12 @@
+ 
+ #include "nau8824.h"
+ 
++#define NAU8824_JD_ACTIVE_HIGH			BIT(0)
 +
- #define _FP_W_TYPE_SIZE		32
- #define _FP_W_TYPE		unsigned long
- #define _FP_WS_TYPE		signed long
++static int nau8824_quirk;
++static int quirk_override = -1;
++module_param_named(quirk, quirk_override, uint, 0444);
++MODULE_PARM_DESC(quirk, "Board-specific quirk override");
+ 
+ static int nau8824_config_sysclk(struct nau8824 *nau8824,
+ 	int clk_id, unsigned int freq);
+@@ -1875,6 +1882,34 @@ static int nau8824_read_device_properties(struct device *dev,
+ 	return 0;
+ }
+ 
++/* Please keep this list alphabetically sorted */
++static const struct dmi_system_id nau8824_quirk_table[] = {
++	{
++		/* Cyberbook T116 rugged tablet */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Default string"),
++			DMI_EXACT_MATCH(DMI_BOARD_NAME, "Cherry Trail CR"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "20170531"),
++		},
++		.driver_data = (void *)(NAU8824_JD_ACTIVE_HIGH),
++	},
++	{}
++};
++
++static void nau8824_check_quirks(void)
++{
++	const struct dmi_system_id *dmi_id;
++
++	if (quirk_override != -1) {
++		nau8824_quirk = quirk_override;
++		return;
++	}
++
++	dmi_id = dmi_first_match(nau8824_quirk_table);
++	if (dmi_id)
++		nau8824_quirk = (unsigned long)dmi_id->driver_data;
++}
++
+ static int nau8824_i2c_probe(struct i2c_client *i2c,
+ 	const struct i2c_device_id *id)
+ {
+@@ -1899,6 +1934,11 @@ static int nau8824_i2c_probe(struct i2c_client *i2c,
+ 	nau8824->irq = i2c->irq;
+ 	sema_init(&nau8824->jd_sem, 1);
+ 
++	nau8824_check_quirks();
++
++	if (nau8824_quirk & NAU8824_JD_ACTIVE_HIGH)
++		nau8824->jkdet_polarity = 0;
++
+ 	nau8824_print_device_properties(nau8824);
+ 
+ 	ret = regmap_read(nau8824->regmap, NAU8824_REG_I2C_DEVICE_ID, &value);
 -- 
 2.33.0
 
