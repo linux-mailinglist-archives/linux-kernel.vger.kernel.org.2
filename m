@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235A945BC01
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:23:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B2B45BA53
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:06:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243375AbhKXMZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:25:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36014 "EHLO mail.kernel.org"
+        id S236499AbhKXMJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:09:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243974AbhKXMWS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:22:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3843F611AF;
-        Wed, 24 Nov 2021 12:13:18 +0000 (UTC)
+        id S242301AbhKXMGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:06:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D910D61074;
+        Wed, 24 Nov 2021 12:03:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755998;
-        bh=72UuwgaLHc38VjoRSNJYIFyieuZgDnZqTle9lfNoTZA=;
+        s=korg; t=1637755426;
+        bh=hXW8FtxbzZ1SI7n0WtdWelRy0BL6GlcbWUAnMOdKOtQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rB0oZUkD8QtT3Qt29fkffRhpbPvcojnh23uuxS4j8VpYEwRPmj2YfGPD6cUuT3V6+
-         fl+xbFodoQ+NTE3Hn1VmEBIbkE27BsLRpfAuG5diBgW7EBuASgycVC9t96vI0GJ22n
-         /qAXM+mBIBc0RBBxEjOEixRZC5lHetL3ghvKp7Ro=
+        b=TbVPg5i08DuMRw9xs0T93uWfw3C2rMer+RkXvQ7u7g3RGbuQUWRACzBsZZIA6Bbfs
+         +A1XxTgxzEYi5TVQe+4Z62tjfgtZSgfwAfQv1lHL8lyszVr788Anv4LE5uLvwt37Qy
+         egxobt2eVvjPvH84YCcO3Wy32lXu26jyb0gGNZRo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Houlong Wei <houlong.wei@mediatek.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Tuo Li <islituo@gmail.com>, Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 090/207] media: mtk-vpu: Fix a resource leak in the error handling path of mtk_vpu_probe()
+Subject: [PATCH 4.4 058/162] ath: dfs_pattern_detector: Fix possible null-pointer dereference in channel_detector_create()
 Date:   Wed, 24 Nov 2021 12:56:01 +0100
-Message-Id: <20211124115706.986661717@linuxfoundation.org>
+Message-Id: <20211124115700.216673375@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,49 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Tuo Li <islituo@gmail.com>
 
-[ Upstream commit 2143ad413c05c7be24c3a92760e367b7f6aaac92 ]
+[ Upstream commit 4b6012a7830b813799a7faf40daa02a837e0fd5b ]
 
-A successful 'clk_prepare()' call should be balanced by a corresponding
-'clk_unprepare()' call in the error handling path of the probe, as already
-done in the remove function.
+kzalloc() is used to allocate memory for cd->detectors, and if it fails,
+channel_detector_exit() behind the label fail will be called:
+  channel_detector_exit(dpd, cd);
 
-Update the error handling path accordingly.
+In channel_detector_exit(), cd->detectors is dereferenced through:
+  struct pri_detector *de = cd->detectors[i];
 
-Fixes: 3003a180ef6b ("[media] VPU: mediatek: support Mediatek VPU")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Houlong Wei <houlong.wei@mediatek.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To fix this possible null-pointer dereference, check cd->detectors before
+the for loop to dereference cd->detectors.
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210805153854.154066-1-islituo@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/mtk-vpu/mtk_vpu.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/dfs_pattern_detector.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-index c9bf58c978780..9c332ce8cdfec 100644
---- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
-+++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-@@ -801,7 +801,8 @@ static int mtk_vpu_probe(struct platform_device *pdev)
- 	vpu->wdt.wq = create_singlethread_workqueue("vpu_wdt");
- 	if (!vpu->wdt.wq) {
- 		dev_err(dev, "initialize wdt workqueue failed\n");
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto clk_unprepare;
+diff --git a/drivers/net/wireless/ath/dfs_pattern_detector.c b/drivers/net/wireless/ath/dfs_pattern_detector.c
+index 0835828ffed77..2f4b79102a27a 100644
+--- a/drivers/net/wireless/ath/dfs_pattern_detector.c
++++ b/drivers/net/wireless/ath/dfs_pattern_detector.c
+@@ -182,10 +182,12 @@ static void channel_detector_exit(struct dfs_pattern_detector *dpd,
+ 	if (cd == NULL)
+ 		return;
+ 	list_del(&cd->head);
+-	for (i = 0; i < dpd->num_radar_types; i++) {
+-		struct pri_detector *de = cd->detectors[i];
+-		if (de != NULL)
+-			de->exit(de);
++	if (cd->detectors) {
++		for (i = 0; i < dpd->num_radar_types; i++) {
++			struct pri_detector *de = cd->detectors[i];
++			if (de != NULL)
++				de->exit(de);
++		}
  	}
- 	INIT_WORK(&vpu->wdt.ws, vpu_wdt_reset_func);
- 	mutex_init(&vpu->vpu_mutex);
-@@ -900,6 +901,8 @@ disable_vpu_clk:
- 	vpu_clock_disable(vpu);
- workqueue_destroy:
- 	destroy_workqueue(vpu->wdt.wq);
-+clk_unprepare:
-+	clk_unprepare(vpu->clk);
- 
- 	return ret;
- }
+ 	kfree(cd->detectors);
+ 	kfree(cd);
 -- 
 2.33.0
 
