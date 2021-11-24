@@ -2,99 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E78345C9B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:16:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 822BA45C9C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348394AbhKXQTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:19:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36918 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241890AbhKXQTq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:19:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DED7260C4A;
-        Wed, 24 Nov 2021 16:16:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637770596;
-        bh=E3s6JXxJb3KXTWDUS6t6MnzjGsPdRHVubeMoMxNeYDg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JqNMA1/X7M9ZF1sizJbQ/CDVaYUfgAKPaUIrLm8B6PB4Ww6M1KIyfwBy2W0Smogwv
-         VwaswPBADdKIFxc18t8ZPBju6DwVAPwJUi64oABrAdwgpieBBlQZlYltbUxhLa5Q9s
-         7x0NuX+moc0w69S4XYg2oC0IoEuC9qpKsTqezmzg=
-Date:   Wed, 24 Nov 2021 17:16:34 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Stephen Boyd <swboyd@chromium.org>
-Subject: Re: [PATCH 5.4 000/100] 5.4.162-rc1 review
-Message-ID: <YZ5lYvfHy+yM/BS9@kroah.com>
-References: <20211124115654.849735859@linuxfoundation.org>
- <CA+G9fYt_DK3Ft1J08Wsw=4YfV0iayKqNtkQt_=8vgr+A6CrC6g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYt_DK3Ft1J08Wsw=4YfV0iayKqNtkQt_=8vgr+A6CrC6g@mail.gmail.com>
+        id S232537AbhKXQWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:22:34 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.168]:12686 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229782AbhKXQWc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 11:22:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637770750;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=eM7VdsFTT2Al6uH7jEIMJgSHl1hTYDbctjEV/JmG41Q=;
+    b=hzN9YKNysXORTCdGyeNzgfFJwPpYa5I9MBv1Bf1LpTFJIIGZZttBS7AgJOnkpwOsYs
+    aJsjA7XJapd6OOhGqsI8O2NNZJGIGHmQaawEXm+y0hYaoyQVz5HvCD5qpSuytfwT/Qt4
+    It3C4yZUFIm2vmJosBzV8MOvt/0T++dejtbFEdp+77PxzeSf1vbrxby1BbvbFzRE3XZ9
+    NaRgVYsdThcCQIxapW1jgxOPrT4vYSr3oFsDnKYNS7Vx+ENmVcImr4L7GQvspu9h9fHR
+    Fk6gf3IwAGf5P5bQD1yVbhiIwPvG0wGJ/TSaWzW1saS1KyZbF6fP0rM+/zdrsuz3/qfG
+    kf2g==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3jsN+"
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.34.10 DYNA|AUTH)
+    with ESMTPSA id e05ed8xAOGJ93kU
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Wed, 24 Nov 2021 17:19:09 +0100 (CET)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH v8 6/8] MIPS: DTS: CI20: Add DT nodes for HDMI setup
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <O0K13R.TIL3JBQ5L8TO1@crapouillou.net>
+Date:   Wed, 24 Nov 2021 17:19:09 +0100
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <04F0ED7C-3D18-4CCF-8F10-E0A36B0E4F4B@goldelico.com>
+References: <cover.1637691240.git.hns@goldelico.com>
+ <d62023e0872e9b393db736f4a0ecf04b3fc1c91b.1637691240.git.hns@goldelico.com>
+ <O0K13R.TIL3JBQ5L8TO1@crapouillou.net>
+To:     Paul Cercueil <paul@crapouillou.net>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 09:10:35PM +0530, Naresh Kamboju wrote:
-> On Wed, 24 Nov 2021 at 18:19, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.4.162 release.
-> > There are 100 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.162-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> Regression found on arm64 gcc-11 builds
-> Following build warnings / errors reported on stable-rc 5.4.
-> 
-> 
-> builds/linux/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi:412.21-414.5:
-> ERROR (duplicate_label): /soc/codec: Duplicate label 'lpass_codec' on
-> /soc/codec and /soc@0/codec
-> ERROR: Input tree has errors, aborting (use -f to force output)
-> make[3]: *** [scripts/Makefile.lib:285:
-> arch/arm64/boot/dts/qcom/apq8016-sbc.dtb] Error 2
-> 
-> 
-> The bisect tool pointed to,
-> 
-> b979ffa8bbd6e4c33df7f3e7ac3d63f2234c023c is the first bad commit
-> commit b979ffa8bbd6e4c33df7f3e7ac3d63f2234c023c
-> Author: Stephan Gerhold <stephan@gerhold.net>
-> Date:   Tue Sep 21 17:21:18 2021 +0200
-> 
->     arm64: dts: qcom: msm8916: Add unit name for /soc node
-> 
-> 
-> 
-> As it was reported here,
-> https://lore.kernel.org/stable/CA+G9fYv5fnntoa1vzXp52=TSxCK=U8fV8J-AbE+WmKH1w4ebwg@mail.gmail.com/
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Now dropped, thanks.
 
-greg k-h
+> Am 23.11.2021 um 21:10 schrieb Paul Cercueil <paul@crapouillou.net>:
+>=20
+> Hi Nikolaus,
+>=20
+> Le mar., nov. 23 2021 at 19:13:59 +0100, H. Nikolaus Schaller =
+<hns@goldelico.com> a =C3=A9crit :
+>> From: Paul Boddie <paul@boddie.org.uk>
+>> We need to hook up
+>> * HDMI connector
+>> * HDMI power regulator
+>> * JZ4780_CLK_HDMI @ 27 MHz
+>> * DDC pinmux
+>> * HDMI and LCDC endpoint connections
+>> Signed-off-by: Paul Boddie <paul@boddie.org.uk>
+>> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+>> ---
+>> arch/mips/boot/dts/ingenic/ci20.dts | 83 =
++++++++++++++++++++++++++++--
+>> 1 file changed, 80 insertions(+), 3 deletions(-)
+>> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts =
+b/arch/mips/boot/dts/ingenic/ci20.dts
+>> index b249a4f0f6b62..15cf03670693f 100644
+>> --- a/arch/mips/boot/dts/ingenic/ci20.dts
+>> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
+>> @@ -78,6 +78,18 @@ eth0_power: fixedregulator@0 {
+>> 		enable-active-high;
+>> 	};
+>> +	hdmi_out: connector {
+>> +		compatible =3D "hdmi-connector";
+>> +		label =3D "HDMI OUT";
+>> +		type =3D "a";
+>> +
+>> +		port {
+>> +			hdmi_con: endpoint {
+>> +				remote-endpoint =3D <&dw_hdmi_out>;
+>> +			};
+>> +		};
+>> +	};
+>> +
+>> 	ir: ir {
+>> 		compatible =3D "gpio-ir-receiver";
+>> 		gpios =3D <&gpe 3 GPIO_ACTIVE_LOW>;
+>> @@ -102,6 +114,17 @@ otg_power: fixedregulator@2 {
+>> 		gpio =3D <&gpf 14 GPIO_ACTIVE_LOW>;
+>> 		enable-active-high;
+>> 	};
+>> +
+>> +	hdmi_power: fixedregulator@3 {
+>> +		compatible =3D "regulator-fixed";
+>> +
+>> +		regulator-name =3D "hdmi_power";
+>> +		regulator-min-microvolt =3D <5000000>;
+>> +		regulator-max-microvolt =3D <5000000>;
+>> +
+>> +		gpio =3D <&gpa 25 0>;
+>> +		enable-active-high;
+>> +	};
+>> };
+>> &ext {
+>> @@ -114,11 +137,13 @@ &cgu {
+>> 	 * precision.
+>> 	 */
+>> 	assigned-clocks =3D <&cgu JZ4780_CLK_OTGPHY>, <&cgu =
+JZ4780_CLK_RTC>,
+>> -			  <&cgu JZ4780_CLK_SSIPLL>, <&cgu =
+JZ4780_CLK_SSI>;
+>> +			  <&cgu JZ4780_CLK_SSIPLL>, <&cgu =
+JZ4780_CLK_SSI>,
+>> +			  <&cgu JZ4780_CLK_HDMI>;
+>> 	assigned-clock-parents =3D <0>, <&cgu JZ4780_CLK_RTCLK>,
+>> 				 <&cgu JZ4780_CLK_MPLL>,
+>> -				 <&cgu JZ4780_CLK_SSIPLL>;
+>> -	assigned-clock-rates =3D <48000000>, <0>, <54000000>;
+>> +				 <&cgu JZ4780_CLK_SSIPLL>,
+>> +				 <0>;
+>=20
+> Nit - you can remove the last <0>, it will be the default.
+
+Well, it might make life easier for the next addition but I've removed =
+it.
+
+>=20
+>> +	assigned-clock-rates =3D <48000000>, <0>, <54000000>, <0>, =
+<27000000>;
+>> };
+>> &tcu {
+>> @@ -509,6 +534,19 @@ pins_i2c4: i2c4 {
+>> 		bias-disable;
+>> 	};
+>> +	pins_hdmi_ddc: hdmi_ddc {
+>> +		function =3D "hdmi-ddc";
+>> +		groups =3D "hdmi-ddc";
+>> +		bias-disable;
+>> +	};
+>> +
+>> +	/* switch to PF25 as gpio driving DDC_SDA low */
+>> +	pins_hdmi_ddc_unwedge: hdmi_ddc {
+>> +		function =3D "hdmi-ddc";
+>> +		groups =3D "hdmi-ddc";
+>> +		bias-disable;
+>> +	};
+>=20
+> Your pins_hdmi_ddc and pins_hdmi_ddc_unwedge are the exact same? You =
+could just use the former and pass it to both pinctrl-0 and pinctrl-1.
+
+This was forgotten to remove. We do not make use of the unwedge feature =
+because I could not find out how to use pinctrl to switch this to gpio25 =
+and drive it low.
+And I always had a revert for this in my test tree and we haven't seen a =
+stuck DDC so far. Therefore I remove it (and leave it as maybe-to-to in =
+my tree).
+
+>=20
+> Cheers,
+> -Paul
+>=20
+>> +
+>> 	pins_nemc: nemc {
+>> 		function =3D "nemc";
+>> 		groups =3D "nemc-data", "nemc-cle-ale", "nemc-rd-we", =
+"nemc-frd-fwe";
+>> @@ -539,3 +577,42 @@ pins_mmc1: mmc1 {
+>> 		bias-disable;
+>> 	};
+>> };
+>> +
+>> +&hdmi {
+>> +	status =3D "okay";
+>> +
+>> +	pinctrl-names =3D "default", "unwedge";
+>> +	pinctrl-0 =3D <&pins_hdmi_ddc>;
+>> +	pinctrl-1 =3D <&pins_hdmi_ddc_unwedge>;
+>> +
+>> +	hdmi-5v-supply =3D <&hdmi_power>;
+>> +
+>> +	ports {
+>> +		#address-cells =3D <1>;
+>> +		#size-cells =3D <0>;
+>> +
+>> +		port@0 {
+>> +			reg =3D <0>;
+>> +			dw_hdmi_in: endpoint {
+>> +				remote-endpoint =3D <&lcd_out>;
+>> +			};
+>> +		};
+>> +
+>> +		port@1 {
+>> +			reg =3D <1>;
+>> +			dw_hdmi_out: endpoint {
+>> +				remote-endpoint =3D <&hdmi_con>;
+>> +			};
+>> +		};
+>> +	};
+>> +};
+>> +
+>> +&lcdc0 {
+>> +	status =3D "okay";
+>> +
+>> +	port {
+>> +		lcd_out: endpoint {
+>> +			remote-endpoint =3D <&dw_hdmi_in>;
+>> +		};
+>> +	};
+>> +};
+>> --
+>> 2.33.0
+
