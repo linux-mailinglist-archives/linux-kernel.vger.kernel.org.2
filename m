@@ -2,179 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156BB45CE0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:33:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2898B45CE15
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:34:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234622AbhKXUgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 15:36:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbhKXUgp (ORCPT
+        id S235996AbhKXUhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 15:37:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22246 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236924AbhKXUhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 15:36:45 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171B0C06173E
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:33:35 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id k2so8000683lji.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:33:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sT2ApcG9AQxoESBvPgec5gNhDuTFLopwHxgm37++phI=;
-        b=Ns7MLbs7+WyewOZwg3Ezzj/vma7SFuQpk5ELc+KUUW9s833R20wu6hc66uS2qFXss9
-         cpKsq1iQ2Lh/k9RE1a2txSD0XJkyfrMaPTF5+nEfhlWiGT9Gw/D4VSGeVtcFZJmAMj1o
-         KGCz/ur86ZNNQmA9RYaKIf9zWnzhto2//I6DuPixZwRCXzG7rEQzGu12Vvi3E+497AHt
-         /3HoFln0orR+fgP/F1FFvgNBNzvjfRIh1JEV80/XhNrJPUbcaxZ8CGobuVf3XVpO26d3
-         DIzlTLtsLQHqFYyyyCvWbKoRAWIR1NdCEImjMUmdPUlLX/pLFybCgyR/CjWKM+1xhyC0
-         QLkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sT2ApcG9AQxoESBvPgec5gNhDuTFLopwHxgm37++phI=;
-        b=KlLgdehU7h9g/NJeHuGoiTHwOwCJDshtJnPnHKTboZ9Zsy/GMx653VSZe0IbyE3EVY
-         Sq/scm4pW/1+vZ6eHTNb5fPHoBNqua9svv3IA0XXI1h7vm97Dm4jg2Ek+7n8dlshteej
-         94ivk+F9K/AVT5iS6cofTbUuZT3ayB7lJ1TzuUaDKZVLg8ksTlOe+lT9LTNCtErNCFsc
-         k5IOI882DMm4wHdDEEvugr+XspmMH6hQLuI24CakDxLv6DcVCQssf9ZcKHX+h+Nrp0U4
-         8EHC4EMsJ6QImR4cICwkUyKFMkKjGCBEH3eNsNURzcRr028yteskOlc5FGyCHbCU0xeR
-         SyPA==
-X-Gm-Message-State: AOAM5329cjyD3GcHEi+6DOWnTJKcgjMfJJwg1tILe7RR/ej06KleW/nY
-        Ui9JGvMlbG6CdnUgXiXtetxCPA==
-X-Google-Smtp-Source: ABdhPJyaWfST1iBUwxTtckh2LYTYg0pVPA9P0rQgbTKLoz+Ahm/X1Xfm3OLS3NZKBq7e7hTgtpjB0A==
-X-Received: by 2002:a2e:9bd4:: with SMTP id w20mr19388784ljj.69.1637786013365;
-        Wed, 24 Nov 2021 12:33:33 -0800 (PST)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id c21sm80949lfv.29.2021.11.24.12.33.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 12:33:32 -0800 (PST)
-Subject: Re: [PATCH v3 11/13] drm/msm/dsi: add mode valid callback for dsi_mgr
-To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-References: <20211116062256.2417186-1-vkoul@kernel.org>
- <20211116062256.2417186-12-vkoul@kernel.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <08b4ee1f-6232-7d5d-9b84-2aa9a1396e48@linaro.org>
-Date:   Wed, 24 Nov 2021 23:33:32 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 24 Nov 2021 15:37:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637786050;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W1GBUzq35uTQHFzR0knVv5M/afBLbzIpMZ4Ph5hufc8=;
+        b=iavt5SoIWKLsa7RWBr7oASzrwM4cT0YZSRolOCepNU55k33YrH0pyUtapCA6hfXhnXg1Bq
+        T0dFz1qijDJCxixDvYr1nUncFP9mGrRxLRmVw2m/XfK1iREqjc4xmgHFtDq5d/zgcDLmW0
+        6kBM8pzAyaP5/BynQynHSNAnydVlK2Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-244-UMKcnx31NZSZcfg2qh1jWQ-1; Wed, 24 Nov 2021 15:34:07 -0500
+X-MC-Unique: UMKcnx31NZSZcfg2qh1jWQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EABAC83DCA2;
+        Wed, 24 Nov 2021 20:34:05 +0000 (UTC)
+Received: from t480s.redhat.com (unknown [10.39.194.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5711919C46;
+        Wed, 24 Nov 2021 20:33:56 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Dave Young <dyoung@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Philipp Rudo <prudo@redhat.com>
+Subject: [PATCH for 4.4-stable] proc/vmcore: fix clearing user buffer by properly using clear_user()
+Date:   Wed, 24 Nov 2021 21:33:55 +0100
+Message-Id: <20211124203355.25980-1-david@redhat.com>
+In-Reply-To: <163758401512149@kroah.com>
+References: <163758401512149@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20211116062256.2417186-12-vkoul@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2021 09:22, Vinod Koul wrote:
-> Add a mode valid callback for dsi_mgr for checking mode being valid in
-> case of DSC. For DSC the height and width needs to be multiple of slice,
-> so we check that here
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+commit c1e63117711977cc4295b2ce73de29dd17066c82 upstream.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To clear a user buffer we cannot simply use memset, we have to use
+clear_user().  With a virtio-mem device that registers a vmcore_cb and
+has some logically unplugged memory inside an added Linux memory block,
+I can easily trigger a BUG by copying the vmcore via "cp":
 
-> ---
->   drivers/gpu/drm/msm/dsi/dsi.h         |  2 ++
->   drivers/gpu/drm/msm/dsi/dsi_host.c    | 26 ++++++++++++++++++++++++++
->   drivers/gpu/drm/msm/dsi/dsi_manager.c | 12 ++++++++++++
->   3 files changed, 40 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi.h b/drivers/gpu/drm/msm/dsi/dsi.h
-> index 569c8ff062ba..e7affab2fc1e 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi.h
-> +++ b/drivers/gpu/drm/msm/dsi/dsi.h
-> @@ -115,6 +115,8 @@ int msm_dsi_host_power_on(struct mipi_dsi_host *host,
->   int msm_dsi_host_power_off(struct mipi_dsi_host *host);
->   int msm_dsi_host_set_display_mode(struct mipi_dsi_host *host,
->   				  const struct drm_display_mode *mode);
-> +enum drm_mode_status msm_dsi_host_check_dsc(struct mipi_dsi_host *host,
-> +					    const struct drm_display_mode *mode);
->   struct drm_panel *msm_dsi_host_get_panel(struct mipi_dsi_host *host);
->   unsigned long msm_dsi_host_get_mode_flags(struct mipi_dsi_host *host);
->   struct drm_bridge *msm_dsi_host_get_bridge(struct mipi_dsi_host *host);
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> index 30c1e299aa52..31d385d8d834 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
-> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> @@ -2588,6 +2588,32 @@ int msm_dsi_host_set_display_mode(struct mipi_dsi_host *host,
->   	return 0;
->   }
->   
-> +enum drm_mode_status msm_dsi_host_check_dsc(struct mipi_dsi_host *host,
-> +					    const struct drm_display_mode *mode)
-> +{
-> +	struct msm_dsi_host *msm_host = to_msm_dsi_host(host);
-> +	struct msm_display_dsc_config *dsc = msm_host->dsc;
-> +	int pic_width = mode->hdisplay;
-> +	int pic_height = mode->vdisplay;
-> +
-> +	if (!msm_host->dsc)
-> +		return MODE_OK;
-> +
-> +	if (pic_width % dsc->drm->slice_width) {
-> +		pr_err("DSI: pic_width %d has to be multiple of slice %d\n",
-> +		       pic_width, dsc->drm->slice_width);
-> +		return MODE_H_ILLEGAL;
-> +	}
-> +
-> +	if (pic_height % dsc->drm->slice_height) {
-> +		pr_err("DSI: pic_height %d has to be multiple of slice %d\n",
-> +		       pic_height, dsc->drm->slice_height);
-> +		return MODE_V_ILLEGAL;
-> +	}
-> +
-> +	return MODE_OK;
-> +}
-> +
->   struct drm_panel *msm_dsi_host_get_panel(struct mipi_dsi_host *host)
->   {
->   	return of_drm_find_panel(to_msm_dsi_host(host)->device_node);
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi_manager.c b/drivers/gpu/drm/msm/dsi/dsi_manager.c
-> index 20c4d650fd80..0ad8a53aaa0e 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi_manager.c
-> +++ b/drivers/gpu/drm/msm/dsi/dsi_manager.c
-> @@ -579,6 +579,17 @@ static void dsi_mgr_bridge_mode_set(struct drm_bridge *bridge,
->   		msm_dsi_host_set_display_mode(other_dsi->host, adjusted_mode);
->   }
->   
-> +static enum drm_mode_status dsi_mgr_bridge_mode_valid(struct drm_bridge *bridge,
-> +						      const struct drm_display_info *info,
-> +						      const struct drm_display_mode *mode)
-> +{
-> +	int id = dsi_mgr_bridge_get_id(bridge);
-> +	struct msm_dsi *msm_dsi = dsi_mgr_get_dsi(id);
-> +	struct mipi_dsi_host *host = msm_dsi->host;
-> +
-> +	return msm_dsi_host_check_dsc(host, mode);
-> +}
-> +
->   static const struct drm_connector_funcs dsi_mgr_connector_funcs = {
->   	.detect = dsi_mgr_connector_detect,
->   	.fill_modes = drm_helper_probe_single_connector_modes,
-> @@ -600,6 +611,7 @@ static const struct drm_bridge_funcs dsi_mgr_bridge_funcs = {
->   	.disable = dsi_mgr_bridge_disable,
->   	.post_disable = dsi_mgr_bridge_post_disable,
->   	.mode_set = dsi_mgr_bridge_mode_set,
-> +	.mode_valid = dsi_mgr_bridge_mode_valid,
->   };
->   
->   /* initialize connector when we're connected to a drm_panel */
-> 
+  systemd[1]: Starting Kdump Vmcore Save Service...
+  kdump[420]: Kdump is using the default log level(3).
+  kdump[453]: saving to /sysroot/var/crash/127.0.0.1-2021-11-11-14:59:22/
+  kdump[458]: saving vmcore-dmesg.txt to /sysroot/var/crash/127.0.0.1-2021-11-11-14:59:22/
+  kdump[465]: saving vmcore-dmesg.txt complete
+  kdump[467]: saving vmcore
+  BUG: unable to handle page fault for address: 00007f2374e01000
+  #PF: supervisor write access in kernel mode
+  #PF: error_code(0x0003) - permissions violation
+  PGD 7a523067 P4D 7a523067 PUD 7a528067 PMD 7a525067 PTE 800000007048f867
+  Oops: 0003 [#1] PREEMPT SMP NOPTI
+  CPU: 0 PID: 468 Comm: cp Not tainted 5.15.0+ #6
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-27-g64f37cc530f1-prebuilt.qemu.org 04/01/2014
+  RIP: 0010:read_from_oldmem.part.0.cold+0x1d/0x86
+  Code: ff ff ff e8 05 ff fe ff e9 b9 e9 7f ff 48 89 de 48 c7 c7 38 3b 60 82 e8 f1 fe fe ff 83 fd 08 72 3c 49 8d 7d 08 4c 89 e9 89 e8 <49> c7 45 00 00 00 00 00 49 c7 44 05 f8 00 00 00 00 48 83 e7 f81
+  RSP: 0018:ffffc9000073be08 EFLAGS: 00010212
+  RAX: 0000000000001000 RBX: 00000000002fd000 RCX: 00007f2374e01000
+  RDX: 0000000000000001 RSI: 00000000ffffdfff RDI: 00007f2374e01008
+  RBP: 0000000000001000 R08: 0000000000000000 R09: ffffc9000073bc50
+  R10: ffffc9000073bc48 R11: ffffffff829461a8 R12: 000000000000f000
+  R13: 00007f2374e01000 R14: 0000000000000000 R15: ffff88807bd421e8
+  FS:  00007f2374e12140(0000) GS:ffff88807f000000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 00007f2374e01000 CR3: 000000007a4aa000 CR4: 0000000000350eb0
+  Call Trace:
+   read_vmcore+0x236/0x2c0
+   proc_reg_read+0x55/0xa0
+   vfs_read+0x95/0x190
+   ksys_read+0x4f/0xc0
+   do_syscall_64+0x3b/0x90
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
 
+Some x86-64 CPUs have a CPU feature called "Supervisor Mode Access
+Prevention (SMAP)", which is used to detect wrong access from the kernel
+to user buffers like this: SMAP triggers a permissions violation on
+wrong access.  In the x86-64 variant of clear_user(), SMAP is properly
+handled via clac()+stac().
 
+To fix, properly use clear_user() when we're dealing with a user buffer.
+
+Link: https://lkml.kernel.org/r/20211112092750.6921-1-david@redhat.com
+Fixes: 997c136f518c ("fs/proc/vmcore.c: add hook to read_from_oldmem() to check for non-ram pages")
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Acked-by: Baoquan He <bhe@redhat.com>
+Cc: Dave Young <dyoung@redhat.com>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Vivek Goyal <vgoyal@redhat.com>
+Cc: Philipp Rudo <prudo@redhat.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+ fs/proc/vmcore.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/fs/proc/vmcore.c b/fs/proc/vmcore.c
+index 08143139b65a..785d05e3358c 100644
+--- a/fs/proc/vmcore.c
++++ b/fs/proc/vmcore.c
+@@ -105,14 +105,19 @@ static ssize_t read_from_oldmem(char *buf, size_t count,
+ 			nr_bytes = count;
+ 
+ 		/* If pfn is not ram, return zeros for sparse dump files */
+-		if (pfn_is_ram(pfn) == 0)
+-			memset(buf, 0, nr_bytes);
+-		else {
++		if (pfn_is_ram(pfn) == 0) {
++			tmp = 0;
++			if (!userbuf)
++				memset(buf, 0, nr_bytes);
++			else if (clear_user(buf, nr_bytes))
++				tmp = -EFAULT;
++		} else {
+ 			tmp = copy_oldmem_page(pfn, buf, nr_bytes,
+ 						offset, userbuf);
+-			if (tmp < 0)
+-				return tmp;
+ 		}
++		if (tmp < 0)
++			return tmp;
++
+ 		*ppos += nr_bytes;
+ 		count -= nr_bytes;
+ 		buf += nr_bytes;
 -- 
-With best wishes
-Dmitry
+2.31.1
+
