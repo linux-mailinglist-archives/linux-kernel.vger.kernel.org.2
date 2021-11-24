@@ -2,68 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7987E45CEBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:03:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A15F845CEBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:03:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244985AbhKXVGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 16:06:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58316 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234102AbhKXVGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 16:06:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9564160FDA;
-        Wed, 24 Nov 2021 21:03:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637787816;
-        bh=UEkE1eFZxaD/UOhfXY/SI0jhBkgdLknjQn8B1SzEKXA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ssq6LIZn7pm9z3N8QoaewGNfg848JWT57zql3uCA/UDdMZcIKWGaj6T+JzHViEerm
-         7WfONkFrX7pkiAh1aXssbwcPcg0tea7AE3RAHAkWSyJjrywCqucPafHxG7sRsWUrkG
-         EVWrMGiFy6w/LSQa/8vFyO7VUWnXzghf0JL8aJMhfy3yqIiUvbAX6I4SpV5rTim8al
-         ssglqIiF9YgqOzHLqJZqzINYMXol/6Ytl0oWuBU1cxxtn4piVg5XKFxBseq/mZVwvE
-         /ahkvfIEGhEI3Uzc8Ill4yGv+V+g5AVQ0OMvc49X9wKEmup4pn0NkLvGks4ZT0ZrRS
-         TVX1dt1sZJDqg==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     minyard@acm.org, andrew.manley@sealingtech.com
-Cc:     openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH] ipmi: fix oob access due to uninit smi_msg type
-Date:   Wed, 24 Nov 2021 13:03:23 -0800
-Message-Id: <20211124210323.1950976-1-kuba@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S245668AbhKXVG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 16:06:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234102AbhKXVG6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 16:06:58 -0500
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 482C2C06173E
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 13:03:48 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id k1so3788965ilo.7
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 13:03:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bRgEs5yEfhkrlGin3uE1wdrU8+VcrbvQSps4QjnAk0c=;
+        b=dwie7mL2uy3cCFRAOewziMhsZTb0pZXsZEEvK34fBghiOgsq0ZmgtunpUR3Droo614
+         QnZIjMPqWSwf6Tbk6K9QfG8W+PePkZUf9Q8Eb16XBVIRxMmcAVLD9J8ub0vTHzjWFZxJ
+         UKKG5NylWtPOD897dmCZHcvZMIbvQE1dDUyYMSW10Z6n6upcrtSv4KmI8fZ0My/Lh7Vf
+         iT10o+P53kPpMMj2soFmSc1sPIs78UkB7RcGNzwMxmuq2GCGtysNimwYCrx0Vv/4+lHy
+         wwGB8MRZS2wKraVRa5sh4tDv/NMxD9LMxhPi7fuc3OlrZ/GPmHOzb4L+HPtvNCn1y3WL
+         4Jew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bRgEs5yEfhkrlGin3uE1wdrU8+VcrbvQSps4QjnAk0c=;
+        b=iqSXj1kCWPN/MMNfVPCWCIpAXxcCuxlIlE+Oc2+65rL14wEHDASU6uVHo09mMHs79D
+         p4cCgJVXp2yVhYTkw8PzsSdbEC/67NXPmLN6jpTrWyoqbV6CzQmAToCEp3qlgjagiZvc
+         JTJ40OwSqZo7jtF0rVO2d8AKzF/nMnVBLGdsVZ/WK1dYdTQM+gHPkmyfrGvcVPNVCSuI
+         wTAAVe5sR6byjZLjLkWyEi4TgW3PnXk1J1iOcahTUWDun0zJT2vWHp7Ad0HVeBNDMNg8
+         E81RmMBrXBBOsWscl4J1D3nO4mFRnPffL/B+l46EIDUK53lvHyl4adJ6h3J1f75Br6eO
+         JO5A==
+X-Gm-Message-State: AOAM531iJJUbXZ7t/YxJnxHglA/Cq0ZeJHsetV1Gj833LobYA+orZF0p
+        /XxWs3Rrt1mlzmihvLOmCDaFt0zNx/fUFhluQEAUIw==
+X-Google-Smtp-Source: ABdhPJzDrYVvZMlQMF1f8Ii4oZBZ0b9X/HKX/rkq2WetLfBWG93Ny+25ZkGcpfW2TfjCBmr4K7leRbVVDdDK0JYc56o=
+X-Received: by 2002:a05:6e02:1bc3:: with SMTP id x3mr15195842ilv.39.1637787827560;
+ Wed, 24 Nov 2021 13:03:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211123204644.3458700-1-yosryahmed@google.com>
+ <6ebcffe2-9513-cbea-a206-15ba927416c7@oracle.com> <CAJD7tkYZY1g_b9E4ZP3yqHhT36nF57c4bzKRQM-SLftDCYNQ9A@mail.gmail.com>
+ <a87c5768-9bd3-a2f5-7eb5-d2813b958514@oracle.com>
+In-Reply-To: <a87c5768-9bd3-a2f5-7eb5-d2813b958514@oracle.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Wed, 24 Nov 2021 13:03:36 -0800
+Message-ID: <CAHS8izNi0uY5LY2_jF6m0hzJHz87dK2AZ+Y=ggAkMNpW7kaonQ@mail.gmail.com>
+Subject: Re: [PATCH] mm, hugepages: fix size in hugetlb mremap() test
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We're hitting OOB accesses in handle_ipmb_direct_rcv_rsp() (memcpy of
-size -1) after user space generates a message. Looks like the message
-is incorrectly assumed to be of the new IPMB type, because type is never
-set and message is allocated with kmalloc() not kzalloc().
+On Tue, Nov 23, 2021 at 7:42 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> On 11/23/21 18:19, Yosry Ahmed wrote:
+> > On Tue, Nov 23, 2021 at 5:08 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+> >>
+> >> On 11/23/21 12:46, Yosry Ahmed wrote:
+> >>> The hugetlb vma mremap() test mentions in the header comment that it
+> >>> uses 10MB worth of huge pages, when it actually uses 1GB. This causes
+> >>> the test to fail on devices with smaller memories.
+> >>>
+> >>> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> >>> ---
+> >>>  tools/testing/selftests/vm/hugepage-mremap.c | 2 +-
+> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> I'll let Mina comment, but I think I know what happened.
+> >
+> > Thanks for taking the time to review this and explain what happened.
+> >
+> >>
+> >>
+> >> The original version of the test did indeed use 10MB.  However, the mremap
+> >> code must 'unshare' and shared pmd mappings before remapping.  Since sharing
+> >> requires mappings of at least 1GB, the size was changed to make sure unsharing
+> >> worked.
+> >>
+> >> In the end, I believe I suggested adding hugepage-mremap to run_vmtests.sh.
+> >> The script does not try to configure a GB worth of huge pages.  And, I think
+> >> it is somewhat unreasonable to suggest users gave a spare GB to run the test.
+> >
+> > Alternatively, we can pass an optional argument to the test that makes it use
+> > 1GB instead of 10MB. This way, if the test is run with run_vmtests.sh the
+> > default behavior would be to use 10MB, making sure users do not run out of
+> > memory. Otherwise, an interested user could run the test without run_vmtest.sh
+> > and provide the extra argument to make the test use 1GB and make sure that
+> > unsharing works correctly. Thoughts?
+> >
+>
+> Passing a 'mapping size' argument as you suggest would be best.  That way
+> run_vmtest.sh can pass in a size such as 10MB, but the test could be used
+> independently with arbitrary size mappings.
+>
+> If you have the time to do this, go for it!
 
-Fixes: 059747c245f0 ("ipmi: Add support for IPMB direct messages")
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
-Would it be possible to get something like this to Linus ASAP?
-It's flipping over all my test boxes.
----
- drivers/char/ipmi/ipmi_msghandler.c | 1 +
- 1 file changed, 1 insertion(+)
+Yes, Mike's recollection of events makes sense to me. I think that was
+the mistake that happened (sorry!)
 
-diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-index deed355422f4..f0b18c25cbb1 100644
---- a/drivers/char/ipmi/ipmi_msghandler.c
-+++ b/drivers/char/ipmi/ipmi_msghandler.c
-@@ -5031,6 +5031,7 @@ struct ipmi_smi_msg *ipmi_alloc_smi_msg(void)
- 	if (rv) {
- 		rv->done = free_smi_msg;
- 		rv->user_data = NULL;
-+		rv->type = IPMI_SMI_MSG_TYPE_NORMAL;
- 		atomic_inc(&smi_msg_inuse_count);
- 	}
- 	return rv;
--- 
-2.31.1
+Making it configurable makes sense to me. I'm out for the rest of the
+week but I'll try to review sooner if possible.
 
+Thanks for looking into this Yosry!
