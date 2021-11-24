@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0287645C39A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:38:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5C045C5E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350895AbhKXNk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:40:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32976 "EHLO mail.kernel.org"
+        id S1351206AbhKXOBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:01:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352804AbhKXNiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:38:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 591EE6321E;
-        Wed, 24 Nov 2021 12:56:02 +0000 (UTC)
+        id S1355577AbhKXN6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:58:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86CE9633CB;
+        Wed, 24 Nov 2021 13:07:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758562;
-        bh=xlBGGWGa58vMdw+39Z0hWWgou9/QocQKoD52Ly1naoY=;
+        s=korg; t=1637759280;
+        bh=ZNxgr+t4CJ+VIcNHmQOu3ERHalQ/1g+wguAsQXFa2ew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lTpuowA3taOIUmGx+pXBTkf76QFjMJauSTUomSMHcNAVmEfrH7rJ6ecNnOq0E64dc
-         fmN00IH4bCI9P+7SAxzteCY/u81Xo9HgsjYmBJcN/Z7ZpGtb4K4gZf6pCS+vIHa8E4
-         EnaW7FuJ4wylIdiEHlGe6zTpkp9bCpGi3QLVj/8g=
+        b=oCOMmBvGtvsqmbmZfnnW0LR+nOp9X42L5/bVz7ZyV2SRDU84i9BKiZMdcZXOMVSg1
+         k2K34mDq99Uqo7UmWTVDbZtWLypFw1GHbuvNjMUob0KlTUDygNKCvvdRInbNM8cyKu
+         FkmAjnXeEwoiwLRXjT0qci5i3g/oWWx/wrID5Q9A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 077/154] net: reduce indentation level in sk_clone_lock()
-Date:   Wed, 24 Nov 2021 12:57:53 +0100
-Message-Id: <20211124115704.820626901@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH 5.15 187/279] dmaengine: remove debugfs #ifdef
+Date:   Wed, 24 Nov 2021 12:57:54 +0100
+Message-Id: <20211124115725.184505368@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,244 +40,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit bbc20b70424aeb3c84f833860f6340adda5141fc ]
+commit b3b180e735409ca0c76642014304b59482e0e653 upstream.
 
-Rework initial test to jump over init code
-if memory allocation has failed.
+The ptdma driver has added debugfs support, but this fails to build
+when debugfs is disabled:
 
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Link: https://lore.kernel.org/r/20210127152731.748663-1-eric.dumazet@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+drivers/dma/ptdma/ptdma-debugfs.c: In function 'ptdma_debugfs_setup':
+drivers/dma/ptdma/ptdma-debugfs.c:93:54: error: 'struct dma_device' has no member named 'dbg_dev_root'
+   93 |         debugfs_create_file("info", 0400, pt->dma_dev.dbg_dev_root, pt,
+      |                                                      ^
+drivers/dma/ptdma/ptdma-debugfs.c:96:55: error: 'struct dma_device' has no member named 'dbg_dev_root'
+   96 |         debugfs_create_file("stats", 0400, pt->dma_dev.dbg_dev_root, pt,
+      |                                                       ^
+drivers/dma/ptdma/ptdma-debugfs.c:102:52: error: 'struct dma_device' has no member named 'dbg_dev_root'
+  102 |                 debugfs_create_dir("q", pt->dma_dev.dbg_dev_root);
+      |                                                    ^
+
+Remove the #ifdef in the header, as this only saves a few bytes,
+but would require ugly #ifdefs in each driver using it.
+Simplify the other user while we're at it.
+
+Fixes: e2fb2e2a33fa ("dmaengine: ptdma: Add debugfs entries for PTDMA")
+Fixes: 26cf132de6f7 ("dmaengine: Create debug directories for DMA devices")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Link: https://lore.kernel.org/r/20210920122017.205975-1-arnd@kernel.org
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/core/sock.c | 189 ++++++++++++++++++++++++------------------------
- 1 file changed, 93 insertions(+), 96 deletions(-)
+ drivers/dma/xilinx/xilinx_dpdma.c |   15 +--------------
+ include/linux/dmaengine.h         |    2 --
+ 2 files changed, 1 insertion(+), 16 deletions(-)
 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index f9c835167391d..3da4cd632ba8e 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -1883,123 +1883,120 @@ static void sk_init_common(struct sock *sk)
- struct sock *sk_clone_lock(const struct sock *sk, const gfp_t priority)
+--- a/drivers/dma/xilinx/xilinx_dpdma.c
++++ b/drivers/dma/xilinx/xilinx_dpdma.c
+@@ -271,9 +271,6 @@ struct xilinx_dpdma_device {
+ /* -----------------------------------------------------------------------------
+  * DebugFS
+  */
+-
+-#ifdef CONFIG_DEBUG_FS
+-
+ #define XILINX_DPDMA_DEBUGFS_READ_MAX_SIZE	32
+ #define XILINX_DPDMA_DEBUGFS_UINT16_MAX_STR	"65535"
+ 
+@@ -299,7 +296,7 @@ struct xilinx_dpdma_debugfs_request {
+ 
+ static void xilinx_dpdma_debugfs_desc_done_irq(struct xilinx_dpdma_chan *chan)
  {
- 	struct proto *prot = READ_ONCE(sk->sk_prot);
--	struct sock *newsk;
-+	struct sk_filter *filter;
- 	bool is_charged = true;
-+	struct sock *newsk;
- 
- 	newsk = sk_prot_alloc(prot, priority, sk->sk_family);
--	if (newsk != NULL) {
--		struct sk_filter *filter;
-+	if (!newsk)
-+		goto out;
- 
--		sock_copy(newsk, sk);
-+	sock_copy(newsk, sk);
- 
--		newsk->sk_prot_creator = prot;
-+	newsk->sk_prot_creator = prot;
- 
--		/* SANITY */
--		if (likely(newsk->sk_net_refcnt))
--			get_net(sock_net(newsk));
--		sk_node_init(&newsk->sk_node);
--		sock_lock_init(newsk);
--		bh_lock_sock(newsk);
--		newsk->sk_backlog.head	= newsk->sk_backlog.tail = NULL;
--		newsk->sk_backlog.len = 0;
-+	/* SANITY */
-+	if (likely(newsk->sk_net_refcnt))
-+		get_net(sock_net(newsk));
-+	sk_node_init(&newsk->sk_node);
-+	sock_lock_init(newsk);
-+	bh_lock_sock(newsk);
-+	newsk->sk_backlog.head	= newsk->sk_backlog.tail = NULL;
-+	newsk->sk_backlog.len = 0;
- 
--		atomic_set(&newsk->sk_rmem_alloc, 0);
--		/*
--		 * sk_wmem_alloc set to one (see sk_free() and sock_wfree())
--		 */
--		refcount_set(&newsk->sk_wmem_alloc, 1);
--		atomic_set(&newsk->sk_omem_alloc, 0);
--		sk_init_common(newsk);
-+	atomic_set(&newsk->sk_rmem_alloc, 0);
- 
--		newsk->sk_dst_cache	= NULL;
--		newsk->sk_dst_pending_confirm = 0;
--		newsk->sk_wmem_queued	= 0;
--		newsk->sk_forward_alloc = 0;
--		atomic_set(&newsk->sk_drops, 0);
--		newsk->sk_send_head	= NULL;
--		newsk->sk_userlocks	= sk->sk_userlocks & ~SOCK_BINDPORT_LOCK;
--		atomic_set(&newsk->sk_zckey, 0);
-+	/* sk_wmem_alloc set to one (see sk_free() and sock_wfree()) */
-+	refcount_set(&newsk->sk_wmem_alloc, 1);
- 
--		sock_reset_flag(newsk, SOCK_DONE);
-+	atomic_set(&newsk->sk_omem_alloc, 0);
-+	sk_init_common(newsk);
- 
--		/* sk->sk_memcg will be populated at accept() time */
--		newsk->sk_memcg = NULL;
-+	newsk->sk_dst_cache	= NULL;
-+	newsk->sk_dst_pending_confirm = 0;
-+	newsk->sk_wmem_queued	= 0;
-+	newsk->sk_forward_alloc = 0;
-+	atomic_set(&newsk->sk_drops, 0);
-+	newsk->sk_send_head	= NULL;
-+	newsk->sk_userlocks	= sk->sk_userlocks & ~SOCK_BINDPORT_LOCK;
-+	atomic_set(&newsk->sk_zckey, 0);
- 
--		cgroup_sk_clone(&newsk->sk_cgrp_data);
-+	sock_reset_flag(newsk, SOCK_DONE);
- 
--		rcu_read_lock();
--		filter = rcu_dereference(sk->sk_filter);
--		if (filter != NULL)
--			/* though it's an empty new sock, the charging may fail
--			 * if sysctl_optmem_max was changed between creation of
--			 * original socket and cloning
--			 */
--			is_charged = sk_filter_charge(newsk, filter);
--		RCU_INIT_POINTER(newsk->sk_filter, filter);
--		rcu_read_unlock();
-+	/* sk->sk_memcg will be populated at accept() time */
-+	newsk->sk_memcg = NULL;
- 
--		if (unlikely(!is_charged || xfrm_sk_clone_policy(newsk, sk))) {
--			/* We need to make sure that we don't uncharge the new
--			 * socket if we couldn't charge it in the first place
--			 * as otherwise we uncharge the parent's filter.
--			 */
--			if (!is_charged)
--				RCU_INIT_POINTER(newsk->sk_filter, NULL);
--			sk_free_unlock_clone(newsk);
--			newsk = NULL;
--			goto out;
--		}
--		RCU_INIT_POINTER(newsk->sk_reuseport_cb, NULL);
-+	cgroup_sk_clone(&newsk->sk_cgrp_data);
- 
--		if (bpf_sk_storage_clone(sk, newsk)) {
--			sk_free_unlock_clone(newsk);
--			newsk = NULL;
--			goto out;
--		}
-+	rcu_read_lock();
-+	filter = rcu_dereference(sk->sk_filter);
-+	if (filter != NULL)
-+		/* though it's an empty new sock, the charging may fail
-+		 * if sysctl_optmem_max was changed between creation of
-+		 * original socket and cloning
-+		 */
-+		is_charged = sk_filter_charge(newsk, filter);
-+	RCU_INIT_POINTER(newsk->sk_filter, filter);
-+	rcu_read_unlock();
- 
--		/* Clear sk_user_data if parent had the pointer tagged
--		 * as not suitable for copying when cloning.
-+	if (unlikely(!is_charged || xfrm_sk_clone_policy(newsk, sk))) {
-+		/* We need to make sure that we don't uncharge the new
-+		 * socket if we couldn't charge it in the first place
-+		 * as otherwise we uncharge the parent's filter.
- 		 */
--		if (sk_user_data_is_nocopy(newsk))
--			newsk->sk_user_data = NULL;
-+		if (!is_charged)
-+			RCU_INIT_POINTER(newsk->sk_filter, NULL);
-+		sk_free_unlock_clone(newsk);
-+		newsk = NULL;
-+		goto out;
-+	}
-+	RCU_INIT_POINTER(newsk->sk_reuseport_cb, NULL);
- 
--		newsk->sk_err	   = 0;
--		newsk->sk_err_soft = 0;
--		newsk->sk_priority = 0;
--		newsk->sk_incoming_cpu = raw_smp_processor_id();
--		if (likely(newsk->sk_net_refcnt))
--			sock_inuse_add(sock_net(newsk), 1);
-+	if (bpf_sk_storage_clone(sk, newsk)) {
-+		sk_free_unlock_clone(newsk);
-+		newsk = NULL;
-+		goto out;
-+	}
- 
--		/*
--		 * Before updating sk_refcnt, we must commit prior changes to memory
--		 * (Documentation/RCU/rculist_nulls.rst for details)
--		 */
--		smp_wmb();
--		refcount_set(&newsk->sk_refcnt, 2);
-+	/* Clear sk_user_data if parent had the pointer tagged
-+	 * as not suitable for copying when cloning.
-+	 */
-+	if (sk_user_data_is_nocopy(newsk))
-+		newsk->sk_user_data = NULL;
- 
--		/*
--		 * Increment the counter in the same struct proto as the master
--		 * sock (sk_refcnt_debug_inc uses newsk->sk_prot->socks, that
--		 * is the same as sk->sk_prot->socks, as this field was copied
--		 * with memcpy).
--		 *
--		 * This _changes_ the previous behaviour, where
--		 * tcp_create_openreq_child always was incrementing the
--		 * equivalent to tcp_prot->socks (inet_sock_nr), so this have
--		 * to be taken into account in all callers. -acme
--		 */
--		sk_refcnt_debug_inc(newsk);
--		sk_set_socket(newsk, NULL);
--		sk_tx_queue_clear(newsk);
--		RCU_INIT_POINTER(newsk->sk_wq, NULL);
-+	newsk->sk_err	   = 0;
-+	newsk->sk_err_soft = 0;
-+	newsk->sk_priority = 0;
-+	newsk->sk_incoming_cpu = raw_smp_processor_id();
-+	if (likely(newsk->sk_net_refcnt))
-+		sock_inuse_add(sock_net(newsk), 1);
- 
--		if (newsk->sk_prot->sockets_allocated)
--			sk_sockets_allocated_inc(newsk);
-+	/* Before updating sk_refcnt, we must commit prior changes to memory
-+	 * (Documentation/RCU/rculist_nulls.rst for details)
-+	 */
-+	smp_wmb();
-+	refcount_set(&newsk->sk_refcnt, 2);
- 
--		if (sock_needs_netstamp(sk) &&
--		    newsk->sk_flags & SK_FLAGS_TIMESTAMP)
--			net_enable_timestamp();
--	}
-+	/* Increment the counter in the same struct proto as the master
-+	 * sock (sk_refcnt_debug_inc uses newsk->sk_prot->socks, that
-+	 * is the same as sk->sk_prot->socks, as this field was copied
-+	 * with memcpy).
-+	 *
-+	 * This _changes_ the previous behaviour, where
-+	 * tcp_create_openreq_child always was incrementing the
-+	 * equivalent to tcp_prot->socks (inet_sock_nr), so this have
-+	 * to be taken into account in all callers. -acme
-+	 */
-+	sk_refcnt_debug_inc(newsk);
-+	sk_set_socket(newsk, NULL);
-+	sk_tx_queue_clear(newsk);
-+	RCU_INIT_POINTER(newsk->sk_wq, NULL);
-+
-+	if (newsk->sk_prot->sockets_allocated)
-+		sk_sockets_allocated_inc(newsk);
-+
-+	if (sock_needs_netstamp(sk) && newsk->sk_flags & SK_FLAGS_TIMESTAMP)
-+		net_enable_timestamp();
- out:
- 	return newsk;
+-	if (chan->id == dpdma_debugfs.chan_id)
++	if (IS_ENABLED(CONFIG_DEBUG_FS) && chan->id == dpdma_debugfs.chan_id)
+ 		dpdma_debugfs.xilinx_dpdma_irq_done_count++;
  }
--- 
-2.33.0
-
+ 
+@@ -462,16 +459,6 @@ static void xilinx_dpdma_debugfs_init(st
+ 		dev_err(xdev->dev, "Failed to create debugfs testcase file\n");
+ }
+ 
+-#else
+-static void xilinx_dpdma_debugfs_init(struct xilinx_dpdma_device *xdev)
+-{
+-}
+-
+-static void xilinx_dpdma_debugfs_desc_done_irq(struct xilinx_dpdma_chan *chan)
+-{
+-}
+-#endif /* CONFIG_DEBUG_FS */
+-
+ /* -----------------------------------------------------------------------------
+  * I/O Accessors
+  */
+--- a/include/linux/dmaengine.h
++++ b/include/linux/dmaengine.h
+@@ -944,10 +944,8 @@ struct dma_device {
+ 	void (*device_issue_pending)(struct dma_chan *chan);
+ 	void (*device_release)(struct dma_device *dev);
+ 	/* debugfs support */
+-#ifdef CONFIG_DEBUG_FS
+ 	void (*dbg_summary_show)(struct seq_file *s, struct dma_device *dev);
+ 	struct dentry *dbg_dev_root;
+-#endif
+ };
+ 
+ static inline int dmaengine_slave_config(struct dma_chan *chan,
 
 
