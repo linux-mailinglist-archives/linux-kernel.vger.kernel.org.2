@@ -2,126 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 022EA45CD5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 20:36:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D655345CD60
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 20:36:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351446AbhKXTjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 14:39:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34630 "EHLO
+        id S243532AbhKXTjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 14:39:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243525AbhKXTjC (ORCPT
+        with ESMTP id S243525AbhKXTjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 14:39:02 -0500
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC930C061574;
-        Wed, 24 Nov 2021 11:35:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Q0t2vlvXal39O8KUBbebiSGPvmsmjja+oK/ATdwZIWs=; b=eYVULo7WCY/ampnVyzdqu4sNfE
-        3+lmQOXnfng4jSiy0XvGS8o9kzDzoxc/87aKd5D1h2a5zHuhd+8ADwqu0FTIkT9Cm/u7l7Sa2cS5k
-        8AtXiB4TiMfbbYKP1fF84CTpzMqVI4k1fSMkaIIgXksXZ0cvuP25Oc/nWz7OZMUUawRQ=;
-Received: from p200300ccff0d65001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0d:6500:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1mpy3J-0007MB-IZ; Wed, 24 Nov 2021 20:35:33 +0100
-Date:   Wed, 24 Nov 2021 20:35:32 +0100
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Alistair Francis <alistair23@gmail.com>,
-        Alistair Francis <alistair@alistair23.me>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>, lgirdwood@gmail.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        rui.zhang@intel.com, devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-hwmon@vger.kernel.org, amitk@kernel.org,
-        linux-pm@vger.kernel.org, dl-linux-imx <linux-imx@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH v15 3/8] mfd: simple-mfd-i2c: Enable support for the
- silergy,sy7636a
-Message-ID: <20211124203532.30577a50@aktux>
-In-Reply-To: <00d68181-ad3b-17d2-0150-00029d399f0f@roeck-us.net>
-References: <20211110122948.188683-1-alistair@alistair23.me>
-        <20211110122948.188683-4-alistair@alistair23.me>
-        <20211116000634.767dcdc0@aktux>
-        <CAKmqyKPFOqWD7t6tC1Act97CVcY+yazrhwMLLr3j_wOyH50GTA@mail.gmail.com>
-        <00d68181-ad3b-17d2-0150-00029d399f0f@roeck-us.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Score: -1.0 (-)
+        Wed, 24 Nov 2021 14:39:17 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A906C06173E
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 11:36:08 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id l7-20020a622507000000b00494608c84a4so2069979pfl.6
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 11:36:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=l9t6ClhMMo4edSjmJdir8QUj58OMyUYJRTb0MJXDOKU=;
+        b=i0/Ngz3cNacHmR60ZQrdeEnU5wK465ot7VF/quxdpABPcQ5rReQE4P1dvpSxwpUQ3m
+         WJ7qE/WsmjAnexVyI5rsHFc8xD8POs/0ISZbs4ZJkhR+CYum1Q3AFocYRIxWrBtGPYyd
+         kpGigPgr0Gy6viXOgyakF3EJmTn3zFz9OVVwTg9lIs9gTEHhaESQjUH4FFP+hPxZ3q3D
+         aPs6s2Nsd5VhVbRR2vRo55J4x+AdhEx7XRnb2UkZLKv2t2yG6O4cp3R60tecsUAshY60
+         boOQrsQpXPVxDlp5sBkCJxX+Cl7biSAKJg+KC20HTZUp3GnjLr+bKkhdo0e7k5hun9DX
+         hd2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=l9t6ClhMMo4edSjmJdir8QUj58OMyUYJRTb0MJXDOKU=;
+        b=S1kj/21xKJxSRkq9w2mekmEAG3y9M9o+McAY7fQnSzROzGnxvmLG7QavqWSekheO+f
+         FAg9r2ScNelCT74asjZQLthyl4TOGYmwN7877+lW3e6z7D3tokcdrChm8amqLG90xceR
+         UaiiCS/OfAXurELuPVMr/BnBlMVcSlpNhZhYUYeO4VvZ05fv9xlhU1NdltHQJUmju6dU
+         A2cO8qwDM1LjjLQnBlqM39K3BLD2NKVLGKVSF233TZAA44ZJavEZFZeHPCL5GJkjwKUH
+         iMKAMxS8O8lfgGXYCxI4PWHVEbRpj7X8m9JJXmyPjiZLbfFYRZoNmq43YUDzxXeodmUI
+         1ZeQ==
+X-Gm-Message-State: AOAM5330cvjXKHqGjnoVlbN5ZPYpcHQF+pf1ziVgCZO4UjngEAf1TO/o
+        K2NYjMVNx7imvqs/84BbxqsOr+fUBM0=
+X-Google-Smtp-Source: ABdhPJzIBX9oxqVPB6dAYbBGP63Ursk9otTuOWoAVdTYt8LpHs+DLkFQWjiFWGnpyjXSRzphENtqYSJ9moM=
+X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:200:ecf7:86c0:3b4d:493])
+ (user=surenb job=sendgmr) by 2002:a63:914c:: with SMTP id l73mr12197689pge.184.1637782567590;
+ Wed, 24 Nov 2021 11:36:07 -0800 (PST)
+Date:   Wed, 24 Nov 2021 11:36:04 -0800
+Message-Id: <20211124193604.2758863-1-surenb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+Subject: [PATCH 1/1] sysctl: change watermark_scale_factor max limit to 30%
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     akpm@linux-foundation.org
+Cc:     mhocko@suse.com, hannes@cmpxchg.org, mcgrof@kernel.org,
+        keescook@chromium.org, yzaikin@google.com,
+        dave.hansen@linux.intel.com, vbabka@suse.cz,
+        mgorman@techsingularity.net, corbet@lwn.net, yi.zhang@huawei.com,
+        xi.fengfei@h3c.com, rppt@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        kernel-team@android.com, surenb@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+For embedded systems with low total memory, having to run applications
+with relatively large memory requirements, 10% max limitation for
+watermark_scale_factor poses an issue of triggering direct reclaim
+every time such application is started. This results in slow application
+startup times and bad end-user experience.
+By increasing watermark_scale_factor max limit we allow vendors more
+flexibility to choose the right level of kswapd aggressiveness for
+their device and workload requirements.
 
-On Tue, 23 Nov 2021 07:39:05 -0800
-Guenter Roeck <linux@roeck-us.net> wrote:
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+---
+ Documentation/admin-guide/sysctl/vm.rst | 2 +-
+ kernel/sysctl.c                         | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-> On 11/23/21 4:14 AM, Alistair Francis wrote:
-> > On Tue, Nov 16, 2021 at 9:10 AM Andreas Kemnade <andreas@kemnade.info> =
-wrote: =20
-> >>
-> >> Hi,
-> >>
-> >> this all creates a lot of question marks...
-> >> One of my main question is whether sy7636a =3D sy7636 (at least the
-> >> driver in the kobo vendor kernels does not have the "A" at the end,
-> >> whic does not necessarily mean a difference).
-> >>
-> >> https://www.silergy.com/products/panel_pmic
-> >> lists only a SY7636ARMC, so chances are good that the letters were just
-> >> stripped away by the driver developers. Printing on chip package is
-> >> cryptic so it is not that helpful. It is just "BWNBDA" =20
-> >=20
-> > I don't have a definite answer for you. But I think it's sy7636a
-> >=20
-> > The page you linked to above lists SY7636ARMC as well as SY7627RMC,
-> > SY7570RMC. That makes me think that the RMC is a generic suffix and
-> > this actual IC is the SY7636A.
-> >  =20
->=20
-> Almost all chips have an ordering suffix, indicating things like
-> temperature range or packaging. The datasheet says:
->=20
-yes, they have. The only question is where it starts. So did you find a
-public datasheet which you can chere
+diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
+index 5e795202111f..f4804ce37c58 100644
+--- a/Documentation/admin-guide/sysctl/vm.rst
++++ b/Documentation/admin-guide/sysctl/vm.rst
+@@ -948,7 +948,7 @@ how much memory needs to be free before kswapd goes back to sleep.
+ 
+ The unit is in fractions of 10,000. The default value of 10 means the
+ distances between watermarks are 0.1% of the available memory in the
+-node/system. The maximum value is 1000, or 10% of memory.
++node/system. The maximum value is 3000, or 30% of memory.
+ 
+ A high rate of threads entering direct reclaim (allocstall) or kswapd
+ going to sleep prematurely (kswapd_low_wmark_hit_quickly) can indicate
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 083be6af29d7..2ab4edb6e450 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -122,6 +122,7 @@ static unsigned long long_max = LONG_MAX;
+ static int one_hundred = 100;
+ static int two_hundred = 200;
+ static int one_thousand = 1000;
++static int three_thousand = 3000;
+ #ifdef CONFIG_PRINTK
+ static int ten_thousand = 10000;
+ #endif
+@@ -2959,7 +2960,7 @@ static struct ctl_table vm_table[] = {
+ 		.mode		= 0644,
+ 		.proc_handler	= watermark_scale_factor_sysctl_handler,
+ 		.extra1		= SYSCTL_ONE,
+-		.extra2		= &one_thousand,
++		.extra2		= &three_thousand,
+ 	},
+ 	{
+ 		.procname	= "percpu_pagelist_high_fraction",
+-- 
+2.34.0.rc2.393.gf8c9666880-goog
 
-> Ordering Information
-> SY7636 =E2=96=A1(=E2=96=A1=E2=96=A1)=E2=96=A1
->              | Temperature Code (C)
->           | Package Code (RM)
->         | Optional Spec Code (A)
->=20
-> The datasheet otherwise refers to the chip as SY7636A.
->=20
-so there is no indication of something like this where the A really
-makes a difference:
-
-commit 28e64a68a2ef1c48f30e8b6803725199929069fc
-Author: Daniel Jeong <gshark.jeong@gmail.com>
-Date:   Tue Nov 12 15:08:58 2013 -0800
-
-    backlight: lm3630: apply chip revision
-   =20
-    The LM3630 chip was revised by TI and chip name was also changed to
-    LM3630A.  And register map, default values and initial sequences are
-    changed.  The files, lm3630_bl.{c,h} are replaced by lm3630a_bl.{c,h} Y=
-ou
-    can find more information about LM3630A(datasheet, evm etc) at
-    http://www.ti.com/product/lm3630a
-
-That is good to know. Thanks for your investigation.=20
-
-Regards,
-Andreas
