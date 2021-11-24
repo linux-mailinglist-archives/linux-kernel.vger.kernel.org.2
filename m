@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACCFF45C1B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:18:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B39245C601
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:02:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348689AbhKXNUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:20:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36410 "EHLO mail.kernel.org"
+        id S1347896AbhKXOEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:04:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348849AbhKXNRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:17:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43B1261AE2;
-        Wed, 24 Nov 2021 12:45:20 +0000 (UTC)
+        id S1350840AbhKXOBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:01:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BAA2E63304;
+        Wed, 24 Nov 2021 13:09:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757920;
-        bh=SChXYOXFDadWXM1Eqexk7TQnESs5DthwIXoZDiPRerg=;
+        s=korg; t=1637759388;
+        bh=xWbX/D7Xdm9Cmsn5D42Yhi40wsq+/fubblBwRJU5uEo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vU4ZuRkGK7fu4y9BbLyEfE6lpR6na7cfd7cLnGooZyyPwDwhiB7fYLsYH4dL3tRyV
-         dOZXLJXRLE+3bCKhY55dHvzQQn0O+3l0i4RZdubJolmt+5C0j4CTVdtINP58+TMUYV
-         7XXNgKEWS5PJThsLXuEKMgJzHWGcxZ+7onbuYz6I=
+        b=qQUOKBdLpLS8dzSx9mhpQyt1iBDxAD/u+vi2xMj8UcgJJQw9cmvoaEEzZzIOgqa3z
+         MbIMiIbSO0UiLiw7YDI4wx3iZSupc3JRndmoZq3rAZYkx7pcKwHALLNUKBTaO+tPcE
+         g59Y7PeUvB8kaPU6/M3I0HXue3aDqx6pMuyc/IxQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH 4.19 320/323] RDMA/netlink: Add __maybe_unused to static inline in C file
+        stable@vger.kernel.org, Ilya Trukhanov <lahvuun@gmail.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH 5.15 223/279] fbdev: Prevent probing generic drivers if a FB is already registered
 Date:   Wed, 24 Nov 2021 12:58:30 +0100
-Message-Id: <20211124115729.719654512@linuxfoundation.org>
+Message-Id: <20211124115726.443419677@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +40,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Javier Martinez Canillas <javierm@redhat.com>
 
-commit 83dde7498fefeb920b1def317421262317d178e5 upstream.
+commit fb561bf9abde49f7e00fdbf9ed2ccf2d86cac8ee upstream.
 
-Like other commits in the tree add __maybe_unused to a static inline in a
-C file because some clang compilers will complain about unused code:
+The efifb and simplefb drivers just render to a pre-allocated frame buffer
+and rely on the display hardware being initialized before the kernel boots.
 
->> drivers/infiniband/core/nldev.c:2543:1: warning: unused function '__chk_RDMA_NL_NLDEV'
-   MODULE_ALIAS_RDMA_NETLINK(RDMA_NL_NLDEV, 5);
-   ^
+But if another driver already probed correctly and registered a fbdev, the
+generic drivers shouldn't be probed since an actual driver for the display
+hardware is already present.
 
-Fixes: e3bf14bdc17a ("rdma: Autoload netlink client modules")
-Link: https://lore.kernel.org/r/4a8101919b765e01d7fde6f27fd572c958deeb4a.1636267207.git.leonro@nvidia.com
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+This is more likely to occur after commit d391c5827107 ("drivers/firmware:
+move x86 Generic System Framebuffers support") since the "efi-framebuffer"
+and "simple-framebuffer" platform devices are registered at a later time.
+
+Link: https://lore.kernel.org/r/20211110200253.rfudkt3edbd3nsyj@lahvuun/
+Fixes: d391c5827107 ("drivers/firmware: move x86 Generic System Framebuffers support")
+Reported-by: Ilya Trukhanov <lahvuun@gmail.com>
+Cc: <stable@vger.kernel.org> # 5.15.x
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Tested-by: Ilya Trukhanov <lahvuun@gmail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20211111115757.1351045-1-javierm@redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/rdma/rdma_netlink.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/video/fbdev/efifb.c    |   11 +++++++++++
+ drivers/video/fbdev/simplefb.c |   11 +++++++++++
+ 2 files changed, 22 insertions(+)
 
---- a/include/rdma/rdma_netlink.h
-+++ b/include/rdma/rdma_netlink.h
-@@ -24,7 +24,7 @@ enum rdma_nl_flags {
-  * constant as well and the compiler checks they are the same.
-  */
- #define MODULE_ALIAS_RDMA_NETLINK(_index, _val)                                \
--	static inline void __chk_##_index(void)                                \
-+	static inline void __maybe_unused __chk_##_index(void)                 \
- 	{                                                                      \
- 		BUILD_BUG_ON(_index != _val);                                  \
- 	}                                                                      \
+--- a/drivers/video/fbdev/efifb.c
++++ b/drivers/video/fbdev/efifb.c
+@@ -351,6 +351,17 @@ static int efifb_probe(struct platform_d
+ 	char *option = NULL;
+ 	efi_memory_desc_t md;
+ 
++	/*
++	 * Generic drivers must not be registered if a framebuffer exists.
++	 * If a native driver was probed, the display hardware was already
++	 * taken and attempting to use the system framebuffer is dangerous.
++	 */
++	if (num_registered_fb > 0) {
++		dev_err(&dev->dev,
++			"efifb: a framebuffer is already registered\n");
++		return -EINVAL;
++	}
++
+ 	if (screen_info.orig_video_isVGA != VIDEO_TYPE_EFI || pci_dev_disabled)
+ 		return -ENODEV;
+ 
+--- a/drivers/video/fbdev/simplefb.c
++++ b/drivers/video/fbdev/simplefb.c
+@@ -407,6 +407,17 @@ static int simplefb_probe(struct platfor
+ 	struct simplefb_par *par;
+ 	struct resource *mem;
+ 
++	/*
++	 * Generic drivers must not be registered if a framebuffer exists.
++	 * If a native driver was probed, the display hardware was already
++	 * taken and attempting to use the system framebuffer is dangerous.
++	 */
++	if (num_registered_fb > 0) {
++		dev_err(&pdev->dev,
++			"simplefb: a framebuffer is already registered\n");
++		return -EINVAL;
++	}
++
+ 	if (fb_get_options("simplefb", NULL))
+ 		return -ENODEV;
+ 
 
 
