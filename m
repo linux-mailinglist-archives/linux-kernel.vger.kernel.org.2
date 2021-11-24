@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091E045BD7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A7745BBC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344896AbhKXMi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:38:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53336 "EHLO mail.kernel.org"
+        id S244425AbhKXMXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:23:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344355AbhKXMdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:33:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0A39611CA;
-        Wed, 24 Nov 2021 12:20:44 +0000 (UTC)
+        id S243517AbhKXMSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:18:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66039610A8;
+        Wed, 24 Nov 2021 12:11:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756445;
-        bh=T8kPapjxySRQi2XEtlStghEYlsOPqjHtXX/wn4lH+R0=;
+        s=korg; t=1637755888;
+        bh=vt/kUNrq1/PKDVlv0B4kdHte0XI2Dw16MpAuLTNk32c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sxoHh8KELD6Pet2dyefpIkoC21mwD2pjd0KbVpwlWMyIwaU9FUfEHFp1fS8R5Aaf5
-         SXcFW/s4cXPhGoG5a+3h9UweP8Cqr5WJ0ITki+9QTPR6d4oBswjdhfoNG7w7sMCoQT
-         veW+mqUCYDaxfOsnGPSICkvzqtelxYSIrlNzMmb8=
+        b=rMuDB+Y9S6uWVSl0pSqOeQf6Yf+r3VDoZvhk1K2entQSCK+Uyi8n+FSeAWBEgMcKt
+         NrR29b5IzuzFxOiB/S2uCielEMg2RbC+m++cwqD2ga+GmUkM1yuLOu/PrzUPNsVu3T
+         t9Z3po6+5YJZrCudBpRh4cZBYP2PpE2xUOapUGX8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 089/251] ACPI: battery: Accept charges over the design capacity as full
-Date:   Wed, 24 Nov 2021 12:55:31 +0100
-Message-Id: <20211124115713.342917452@linuxfoundation.org>
+Subject: [PATCH 4.9 061/207] locking/lockdep: Avoid RCU-induced noinstr fail
+Date:   Wed, 24 Nov 2021 12:55:32 +0100
+Message-Id: <20211124115705.897382355@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,39 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: André Almeida <andrealmeid@collabora.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit 2835f327bd1240508db2c89fe94a056faa53c49a ]
+[ Upstream commit ce0b9c805dd66d5e49fd53ec5415ae398f4c56e6 ]
 
-Some buggy firmware and/or brand new batteries can support a charge that's
-slightly over the reported design capacity. In such cases, the kernel will
-report to userspace that the charging state of the battery is "Unknown",
-when in reality the battery charge is "Full", at least from the design
-capacity point of view. Make the fallback condition accepts capacities
-over the designed capacity so userspace knows that is full.
+vmlinux.o: warning: objtool: look_up_lock_class()+0xc7: call to rcu_read_lock_any_held() leaves .noinstr.text section
 
-Signed-off-by: André Almeida <andrealmeid@collabora.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20210624095148.311980536@infradead.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/battery.c | 2 +-
+ kernel/locking/lockdep.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/acpi/battery.c b/drivers/acpi/battery.c
-index 13e7b56e33aeb..30996effc491b 100644
---- a/drivers/acpi/battery.c
-+++ b/drivers/acpi/battery.c
-@@ -193,7 +193,7 @@ static int acpi_battery_is_charged(struct acpi_battery *battery)
- 		return 1;
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 9f56e3fac795a..05dd765e2cbca 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -695,7 +695,7 @@ look_up_lock_class(struct lockdep_map *lock, unsigned int subclass)
+ 	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
+ 		return NULL;
  
- 	/* fallback to using design values for broken batteries */
--	if (battery->design_capacity == battery->capacity_now)
-+	if (battery->design_capacity <= battery->capacity_now)
- 		return 1;
- 
- 	/* we don't do any sort of metric based on percentages */
+-	hlist_for_each_entry_rcu(class, hash_head, hash_entry) {
++	hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
+ 		if (class->key == key) {
+ 			/*
+ 			 * Huh! same key, different name? Did someone trample
 -- 
 2.33.0
 
