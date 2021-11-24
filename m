@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9806E45BBAC
+	by mail.lfdr.de (Postfix) with ESMTP id E2FDC45BBAD
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242884AbhKXMVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:21:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47098 "EHLO mail.kernel.org"
+        id S242907AbhKXMV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:21:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242923AbhKXMRP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:17:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A71BD611C2;
-        Wed, 24 Nov 2021 12:11:04 +0000 (UTC)
+        id S242667AbhKXMR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:17:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 544626112E;
+        Wed, 24 Nov 2021 12:11:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755865;
-        bh=i0jV/KhtSx0BQq0o+enM7ZIbvtFGSUk3n/q7u2joUbI=;
+        s=korg; t=1637755867;
+        bh=QLo7X4veSQzcnt+X4EWgkfW/JZAOSB5JIo9fCs7GtxQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L51y2gBm6MDVPYsucKoSX7pCtNyxoIMWUEcOLsIa93C2NoSoCftFbrJCW+kTtsqGW
-         EloufqM9JdZnkZLoGDHR3hqXrMgmt9WmYMcNdXvsu2jdAzNI0yT0C43ITjvrveQibu
-         OMuFoWw+7bcrIpgaYTVoG0hRl2pWs/CY9tskwhCg=
+        b=YBVv6ziBz/kBfUSWRxeO2Doj9ZchkjpWcj328l+25mRHOpjzd04zjun+2LSSaFCWH
+         spIcWvwlihSuP6PZ5rfHL639PEqHo2wmF1nLpox5WJqYbL70kzBgVzLVsGqSWQXM8z
+         xF7JMdvuWWdPyTdR6jNPOkTIlGQ9YOok+aTLq+bE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 085/207] spi: bcm-qspi: Fix missing clk_disable_unprepare() on error in bcm_qspi_probe()
-Date:   Wed, 24 Nov 2021 12:55:56 +0100
-Message-Id: <20211124115706.647822421@linuxfoundation.org>
+        stable@vger.kernel.org, Sven Schnelle <svens@stackframe.org>,
+        Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 086/207] parisc: fix warning in flush_tlb_all
+Date:   Wed, 24 Nov 2021 12:55:57 +0100
+Message-Id: <20211124115706.677580481@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
 References: <20211124115703.941380739@linuxfoundation.org>
@@ -41,52 +39,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Sven Schnelle <svens@stackframe.org>
 
-[ Upstream commit ca9b8f56ec089d3a436050afefd17b7237301f47 ]
+[ Upstream commit 1030d681319b43869e0d5b568b9d0226652d1a6f ]
 
-Fix the missing clk_disable_unprepare() before return
-from bcm_qspi_probe() in the error handling case.
+I've got the following splat after enabling preemption:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20211018073413.2029081-1-yangyingliang@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+[    3.724721] BUG: using __this_cpu_add() in preemptible [00000000] code: swapper/0/1
+[    3.734630] caller is __this_cpu_preempt_check+0x38/0x50
+[    3.740635] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc4-64bit+ #324
+[    3.744605] Hardware name: 9000/785/C8000
+[    3.744605] Backtrace:
+[    3.744605]  [<00000000401d9d58>] show_stack+0x74/0xb0
+[    3.744605]  [<0000000040c27bd4>] dump_stack_lvl+0x10c/0x188
+[    3.744605]  [<0000000040c27c84>] dump_stack+0x34/0x48
+[    3.744605]  [<0000000040c33438>] check_preemption_disabled+0x178/0x1b0
+[    3.744605]  [<0000000040c334f8>] __this_cpu_preempt_check+0x38/0x50
+[    3.744605]  [<00000000401d632c>] flush_tlb_all+0x58/0x2e0
+[    3.744605]  [<00000000401075c0>] 0x401075c0
+[    3.744605]  [<000000004010b8fc>] 0x4010b8fc
+[    3.744605]  [<00000000401080fc>] 0x401080fc
+[    3.744605]  [<00000000401d5224>] do_one_initcall+0x128/0x378
+[    3.744605]  [<0000000040102de8>] 0x40102de8
+[    3.744605]  [<0000000040c33864>] kernel_init+0x60/0x3a8
+[    3.744605]  [<00000000401d1020>] ret_from_kernel_thread+0x20/0x28
+[    3.744605]
+
+Fix this by moving the __inc_irq_stat() into the locked section.
+
+Signed-off-by: Sven Schnelle <svens@stackframe.org>
+Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-bcm-qspi.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/parisc/mm/init.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
-index 5453910d8abc3..d521adf6ac245 100644
---- a/drivers/spi/spi-bcm-qspi.c
-+++ b/drivers/spi/spi-bcm-qspi.c
-@@ -1266,7 +1266,7 @@ int bcm_qspi_probe(struct platform_device *pdev,
- 					       &qspi->dev_ids[val]);
- 			if (ret < 0) {
- 				dev_err(&pdev->dev, "IRQ %s not found\n", name);
--				goto qspi_probe_err;
-+				goto qspi_unprepare_err;
- 			}
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index dbbe3932f833c..7bdc449615e85 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -940,9 +940,9 @@ void flush_tlb_all(void)
+ {
+ 	int do_recycle;
  
- 			qspi->dev_ids[val].dev = qspi;
-@@ -1281,7 +1281,7 @@ int bcm_qspi_probe(struct platform_device *pdev,
- 	if (!num_ints) {
- 		dev_err(&pdev->dev, "no IRQs registered, cannot init driver\n");
- 		ret = -EINVAL;
--		goto qspi_probe_err;
-+		goto qspi_unprepare_err;
- 	}
- 
- 	/*
-@@ -1332,6 +1332,7 @@ int bcm_qspi_probe(struct platform_device *pdev,
- 
- qspi_reg_err:
- 	bcm_qspi_hw_uninit(qspi);
-+qspi_unprepare_err:
- 	clk_disable_unprepare(qspi->clk);
- qspi_probe_err:
- 	kfree(qspi->dev_ids);
+-	__inc_irq_stat(irq_tlb_count);
+ 	do_recycle = 0;
+ 	spin_lock(&sid_lock);
++	__inc_irq_stat(irq_tlb_count);
+ 	if (dirty_space_ids > RECYCLE_THRESHOLD) {
+ 	    BUG_ON(recycle_inuse);  /* FIXME: Use a semaphore/wait queue here */
+ 	    get_dirty_sids(&recycle_ndirty,recycle_dirty_array);
+@@ -961,8 +961,8 @@ void flush_tlb_all(void)
+ #else
+ void flush_tlb_all(void)
+ {
+-	__inc_irq_stat(irq_tlb_count);
+ 	spin_lock(&sid_lock);
++	__inc_irq_stat(irq_tlb_count);
+ 	flush_tlb_all_local(NULL);
+ 	recycle_sids();
+ 	spin_unlock(&sid_lock);
 -- 
 2.33.0
 
