@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE78145BCF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8ADE45BF80
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245075AbhKXMeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:34:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42362 "EHLO mail.kernel.org"
+        id S244158AbhKXM7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:59:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343540AbhKXM3R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:29:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C1D66128B;
-        Wed, 24 Nov 2021 12:17:32 +0000 (UTC)
+        id S1345924AbhKXM4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:56:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BDE961163;
+        Wed, 24 Nov 2021 12:32:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756252;
-        bh=Oy3xvQNTd6mpdQ0Tztw+G8FAmNyt3qnTliCpxN9/zX0=;
+        s=korg; t=1637757141;
+        bh=zWzscr7JPPwi4bs7BgyFKTjHMMQiIVscGwkFCkA2+wg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GCQ7fXWyXqdnx8ki+lnov2Kk8NJIQGa8Jlczcib98t1uxWWIjgyRV3kpEuA6EL+LZ
-         iJMFRRdz70z6GkOQ6mCFOVTmpFit9ES+8vih73Bd6EYHZ2biz8nHwnppcXc1gHsg8F
-         RiM5rM6YQiswpX2HFmL79jsVrhEwdkulTY/qzJY8=
+        b=ab+f8m0edemW9SSJ9LgEhhmTZrHeuDCfH/u098V/X87V0Qek85W0TmX1/SaRrnvW3
+         eggVu4sjr1noDfypIXng+cDSGmkGajsh8OzVAXw4mP9X/FzEJTYeS2n+gGcZIsZq4t
+         lDYyw1AkMLO/a0NB2KvwR4Z7qegWEoUF8Do7e8ms=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 020/251] cavium: Return negative value when pci_alloc_irq_vectors() fails
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: [PATCH 4.19 072/323] PCI: aardvark: Do not clear status bits of masked interrupts
 Date:   Wed, 24 Nov 2021 12:54:22 +0100
-Message-Id: <20211124115710.939629536@linuxfoundation.org>
+Message-Id: <20211124115721.289459484@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit b2cddb44bddc1a9c5949a978bb454bba863264db ]
+commit a7ca6d7fa3c02c032db5440ff392d96c04684c21 upstream.
 
-During the process of driver probing, the probe function should return < 0
-for failure, otherwise, the kernel will treat value > 0 as success.
+The PCIE_ISR1_REG says which interrupts are currently set / active,
+including those which are masked.
 
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The driver currently reads this register and looks if some unmasked
+interrupts are active, and if not, it clears status bits of _all_
+interrupts, including the masked ones.
+
+This is incorrect, since, for example, some drivers may poll these bits.
+
+Remove this clearing, and also remove this early return statement
+completely, since it does not change functionality in any way.
+
+Link: https://lore.kernel.org/r/20211005180952.6812-7-kabel@kernel.org
+Fixes: 8c39d710363c ("PCI: aardvark: Add Aardvark PCI host controller driver")
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Marek Behún <kabel@kernel.org>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Marek Behún <kabel@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/cavium/thunder/nic_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/controller/pci-aardvark.c |    6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/net/ethernet/cavium/thunder/nic_main.c b/drivers/net/ethernet/cavium/thunder/nic_main.c
-index 819f38a3225db..7f8ea16ad0d0a 100644
---- a/drivers/net/ethernet/cavium/thunder/nic_main.c
-+++ b/drivers/net/ethernet/cavium/thunder/nic_main.c
-@@ -1128,7 +1128,7 @@ static int nic_register_interrupts(struct nicpf *nic)
- 		dev_err(&nic->pdev->dev,
- 			"Request for #%d msix vectors failed, returned %d\n",
- 			   nic->num_vec, ret);
--		return 1;
-+		return ret;
- 	}
+--- a/drivers/pci/controller/pci-aardvark.c
++++ b/drivers/pci/controller/pci-aardvark.c
+@@ -828,12 +828,6 @@ static void advk_pcie_handle_int(struct
+ 	isr1_mask = advk_readl(pcie, PCIE_ISR1_MASK_REG);
+ 	isr1_status = isr1_val & ((~isr1_mask) & PCIE_ISR1_ALL_MASK);
  
- 	/* Register mailbox interrupt handler */
--- 
-2.33.0
-
+-	if (!isr0_status && !isr1_status) {
+-		advk_writel(pcie, isr0_val, PCIE_ISR0_REG);
+-		advk_writel(pcie, isr1_val, PCIE_ISR1_REG);
+-		return;
+-	}
+-
+ 	/* Process MSI interrupts */
+ 	if (isr0_status & PCIE_ISR0_MSI_INT_PENDING)
+ 		advk_pcie_handle_msi(pcie);
 
 
