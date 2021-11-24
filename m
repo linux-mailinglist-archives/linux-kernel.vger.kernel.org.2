@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F2E45C565
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:54:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3485245C0B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:07:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348611AbhKXN5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:57:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42970 "EHLO mail.kernel.org"
+        id S1347786AbhKXNKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:10:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354424AbhKXNuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:50:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62EF06335C;
-        Wed, 24 Nov 2021 13:03:35 +0000 (UTC)
+        id S1347428AbhKXNHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:07:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A91960F12;
+        Wed, 24 Nov 2021 12:38:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759016;
-        bh=o04WJ7AXV5Dn+QuaJnA7FXI4N3S3Y0taWdf30+x3jwM=;
+        s=korg; t=1637757537;
+        bh=ljPT7A1YN/mMAkgWgGEM2AOMbks2PZMKUWAiKnuxAW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mpHYbceSW6gmhdURPuElhnt/gaK6kC3IeK10Niw2lpVpg46wbvW0DvTlv+ItWqlv6
-         5aV9didT3Kdjg+4zTqgbj7CwaDkLsm+aNiM9iYzNnWTa8RM3AwqJeOh0rpjWZMeTUv
-         RnOyq0EXd/nfmax4oLlqc8NyIy7nZ3W9j1s0L4Dc=
+        b=dUuIF8fDTu5fGoEhoqj4ExtcSl1rVVU5/N+v3LSrFJ6xeRG/q92DbE8O9pwsoG7Rg
+         isxHw8sq22AK8u/zX2idBWaF9KcxS9bOkoHtBa61HQGt0CnGCefImjTkCxTo8aVJc7
+         o3ECumFlzF9kI97s5JRp4REaDWjrVcTIv15mv/5U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        stable@vger.kernel.org,
+        Baptiste Lepers <baptiste.lepers@gmail.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 105/279] bpf: Fix inner map state pruning regression.
+Subject: [PATCH 4.19 202/323] pnfs/flexfiles: Fix misplaced barrier in nfs4_ff_layout_prepare_ds
 Date:   Wed, 24 Nov 2021 12:56:32 +0100
-Message-Id: <20211124115722.404261058@linuxfoundation.org>
+Message-Id: <20211124115725.762384193@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +41,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+From: Baptiste Lepers <baptiste.lepers@gmail.com>
 
-[ Upstream commit 34d11a440c6167133201b7374065b59f259730d7 ]
+[ Upstream commit a2915fa06227b056a8f9b0d79b61dca08ad5cfc6 ]
 
-Introduction of map_uid made two lookups from outer map to be distinct.
-That distinction is only necessary when inner map has an embedded timer.
-Otherwise it will make the verifier state pruning to be conservative
-which will cause complex programs to hit 1M insn_processed limit.
-Tighten map_uid logic to apply to inner maps with timers only.
+_nfs4_pnfs_v3/v4_ds_connect do
+   some work
+   smp_wmb
+   ds->ds_clp = clp;
 
-Fixes: 3e8ce29850f1 ("bpf: Prevent pointer mismatch in bpf_timer_init.")
-Reported-by: Lorenz Bauer <lmb@cloudflare.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Lorenz Bauer <lmb@cloudflare.com>
-Link: https://lore.kernel.org/bpf/CACAyw99hVEJFoiBH_ZGyy=+oO-jyydoz6v1DeKPKs2HVsUH28w@mail.gmail.com
-Link: https://lore.kernel.org/bpf/20211110172556.20754-1-alexei.starovoitov@gmail.com
+And nfs4_ff_layout_prepare_ds currently does
+   smp_rmb
+   if(ds->ds_clp)
+      ...
+
+This patch places the smp_rmb after the if. This ensures that following
+reads only happen once nfs4_ff_layout_prepare_ds has checked that data
+has been properly initialized.
+
+Fixes: d67ae825a59d6 ("pnfs/flexfiles: Add the FlexFile Layout Driver")
+Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/nfs/flexfilelayout/flexfilelayoutdev.c | 4 ++--
+ fs/nfs/pnfs_nfs.c                         | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index ddba80554fef3..cba37d83451eb 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1143,7 +1143,8 @@ static void mark_ptr_not_null_reg(struct bpf_reg_state *reg)
- 			/* transfer reg's id which is unique for every map_lookup_elem
- 			 * as UID of the inner map.
- 			 */
--			reg->map_uid = reg->id;
-+			if (map_value_has_timer(map->inner_map_meta))
-+				reg->map_uid = reg->id;
- 		} else if (map->map_type == BPF_MAP_TYPE_XSKMAP) {
- 			reg->type = PTR_TO_XDP_SOCK;
- 		} else if (map->map_type == BPF_MAP_TYPE_SOCKMAP ||
+diff --git a/fs/nfs/flexfilelayout/flexfilelayoutdev.c b/fs/nfs/flexfilelayout/flexfilelayoutdev.c
+index 8da239b6cc16f..f1f0519f1ecef 100644
+--- a/fs/nfs/flexfilelayout/flexfilelayoutdev.c
++++ b/fs/nfs/flexfilelayout/flexfilelayoutdev.c
+@@ -429,10 +429,10 @@ nfs4_ff_layout_prepare_ds(struct pnfs_layout_segment *lseg, u32 ds_idx,
+ 		goto out_fail;
+ 
+ 	ds = mirror->mirror_ds->ds;
++	if (READ_ONCE(ds->ds_clp))
++		goto out;
+ 	/* matching smp_wmb() in _nfs4_pnfs_v3/4_ds_connect */
+ 	smp_rmb();
+-	if (ds->ds_clp)
+-		goto out;
+ 
+ 	/* FIXME: For now we assume the server sent only one version of NFS
+ 	 * to use for the DS.
+diff --git a/fs/nfs/pnfs_nfs.c b/fs/nfs/pnfs_nfs.c
+index 3f0c2436254ac..bd6190d794c49 100644
+--- a/fs/nfs/pnfs_nfs.c
++++ b/fs/nfs/pnfs_nfs.c
+@@ -635,7 +635,7 @@ static int _nfs4_pnfs_v3_ds_connect(struct nfs_server *mds_srv,
+ 	}
+ 
+ 	smp_wmb();
+-	ds->ds_clp = clp;
++	WRITE_ONCE(ds->ds_clp, clp);
+ 	dprintk("%s [new] addr: %s\n", __func__, ds->ds_remotestr);
+ out:
+ 	return status;
+@@ -708,7 +708,7 @@ static int _nfs4_pnfs_v4_ds_connect(struct nfs_server *mds_srv,
+ 	}
+ 
+ 	smp_wmb();
+-	ds->ds_clp = clp;
++	WRITE_ONCE(ds->ds_clp, clp);
+ 	dprintk("%s [new] addr: %s\n", __func__, ds->ds_remotestr);
+ out:
+ 	return status;
 -- 
 2.33.0
 
