@@ -2,94 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141B745D09A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:55:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A5A45D09D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:55:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352515AbhKXW6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 17:58:08 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:47684 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352309AbhKXW55 (ORCPT
+        id S1344970AbhKXW6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 17:58:42 -0500
+Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:42553 "EHLO
+        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242823AbhKXW6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:57:57 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637794485;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=33e828wB9dEjeifz4XOcX4tXiHJV404Ri36l36adBdc=;
-        b=QL25vkWz5mQq9ypR1mfmeECHaoZFXVS51EIdeocF5QL5UpPcPy/vofDZ9im05kSuQzGiBJ
-        hmVnAE32Zwr1VkRpV1E2d3zSHp/NaafeFx27NyPu3NeXBUKveOHM8EaU3XHWHEOM9acx4v
-        TWEwjphxl+Xa8N5TxXy+pF+QZh0oBWvQ9a133TJwQqhgl5uKgyToljpih/0s43EbY/3lIm
-        cqA8t+/NdjU5XMTORklBghjPF/S6+ETzyUnMQxqFwpOfWrExhkE8lszWssWX+C4T/s5tlu
-        pI/lWC3ZBTxtDAQGnymKdUUdgrmG7v8S4EW/yoFY7yrdWzSp9BUsjrBqKIRw+Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637794485;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=33e828wB9dEjeifz4XOcX4tXiHJV404Ri36l36adBdc=;
-        b=mA9Ro9+xZCYf8cq+L5iHAjp5rtiwfJn3ClnLyxZNu70rRhIHMx8CyC3LbEXLTKodK5/j7L
-        0IJbIbc/zuN/RbDA==
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>, x86@kernel.org,
-        xen-devel@lists.xenproject.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] cpu/hotplug: Allow the CPU in CPU_UP_PREPARE state to
- be brought up again.
-In-Reply-To: <20211122154714.xaoxok3fpk5bgznz@linutronix.de>
-References: <20211122154714.xaoxok3fpk5bgznz@linutronix.de>
-Date:   Wed, 24 Nov 2021 23:54:44 +0100
-Message-ID: <87y25djhaj.ffs@tglx>
+        Wed, 24 Nov 2021 17:58:41 -0500
+Received: from dread.disaster.area (pa49-195-103-97.pa.nsw.optusnet.com.au [49.195.103.97])
+        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id 9C8C8A6B49;
+        Thu, 25 Nov 2021 09:55:28 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mq1Ak-00CqMK-G6; Thu, 25 Nov 2021 09:55:26 +1100
+Date:   Thu, 25 Nov 2021 09:55:26 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Neil Brown <neilb@suse.de>, Christoph Hellwig <hch@lst.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH v2 0/4] extend vmalloc support for constrained allocations
+Message-ID: <20211124225526.GM418105@dread.disaster.area>
+References: <20211122153233.9924-1-mhocko@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211122153233.9924-1-mhocko@kernel.org>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=619ec2e1
+        a=fP9RlOTWD4uZJjPSFnn6Ew==:117 a=fP9RlOTWD4uZJjPSFnn6Ew==:17
+        a=kj9zAlcOel0A:10 a=vIxV3rELxO4A:10 a=VwQbUJbxAAAA:8 a=7-415B0cAAAA:8
+        a=DsItmR9x4NrZRhuf3zYA:9 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22 2021 at 16:47, Sebastian Andrzej Siewior wrote:
-> From: "Longpeng(Mike)" <longpeng2@huawei.com>
->
-> A CPU will not show up in virtualized environment which includes an
-> Enclave. The VM splits its resources into a primary VM and a Enclave
-> VM. While the Enclave is active, the hypervisor will ignore all requests
-> to bring up a CPU and this CPU will remain in CPU_UP_PREPARE state.
-> The kernel will wait up to ten seconds for CPU to show up
-> (do_boot_cpu()) and then rollback the hotplug state back to
-> CPUHP_OFFLINE leaving the CPU state in CPU_UP_PREPARE. The CPU state is
-> set back to CPUHP_TEARDOWN_CPU during the CPU_POST_DEAD stage.
->
-> After the Enclave VM terminates, the primary VM can bring up the CPU
-> again.
->
-> Allow to bring up the CPU if it is in the CPU_UP_PREPARE state.
->
-> [bigeasy: Rewrite commit description.]
->
-> Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Link: https://lore.kernel.org/r/20210901051143.2752-1-longpeng2@huawei.com
-> ---
->
-> For XEN: this changes the behaviour as it allows to invoke
-> cpu_initialize_context() again should it have have earlier. I *think*
-> this is okay and would to bring up the CPU again should the memory
-> allocation in cpu_initialize_context() fail.
+On Mon, Nov 22, 2021 at 04:32:29PM +0100, Michal Hocko wrote:
+> Hi,
+> The previous version has been posted here [1] 
+> 
+> I hope I have addressed all the feedback. There were some suggestions
+> for further improvements but I would rather make this smaller as I
+> cannot really invest more time and I believe further changes can be done
+> on top.
+> 
+> This version is a rebase on top of the current Linus tree. Except for
+> the review feedback and conflicting changes in the area there is only
+> one change to filter out __GFP_NOFAIL from the bulk allocator. This is
+> not necessary strictly speaking AFAICS but I found it less confusing
+> because vmalloc has its fallback strategy and the bulk allocator is
+> meant only for the fast path.
+> 
+> Original cover:
+> Based on a recent discussion with Dave and Neil [2] I have tried to
+> implement NOFS, NOIO, NOFAIL support for the vmalloc to make
+> life of kvmalloc users easier.
+> 
+> A requirement for NOFAIL support for kvmalloc was new to me but this
+> seems to be really needed by the xfs code.
+> 
+> NOFS/NOIO was a known and a long term problem which was hoped to be
+> handled by the scope API. Those scope should have been used at the
+> reclaim recursion boundaries both to document them and also to remove
+> the necessity of NOFS/NOIO constrains for all allocations within that
+> scope. Instead workarounds were developed to wrap a single allocation
+> instead (like ceph_kvmalloc).
+> 
+> First patch implements NOFS/NOIO support for vmalloc. The second one
+> adds NOFAIL support and the third one bundles all together into kvmalloc
+> and drops ceph_kvmalloc which can use kvmalloc directly now.
+> 
+> I hope I haven't missed anything in the vmalloc allocator.
 
-Any comment from XEN folks?
+Correct __GFP_NOLOCKDEP support is also needed. See:
 
-Thanks,
+https://lore.kernel.org/linux-mm/20211119225435.GZ449541@dread.disaster.area/
 
-        tglx
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
