@@ -2,96 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41EF245B08E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 01:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62CBF45B092
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 01:10:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240577AbhKXALn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 19:11:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbhKXALm (ORCPT
+        id S240585AbhKXANS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 19:13:18 -0500
+Received: from gandalf.ozlabs.org ([150.107.74.76]:48431 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230403AbhKXANK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 19:11:42 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD91C061574;
-        Tue, 23 Nov 2021 16:08:33 -0800 (PST)
+        Tue, 23 Nov 2021 19:13:10 -0500
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HzLvJ1tJgz4xcK;
-        Wed, 24 Nov 2021 11:08:28 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1637712511;
-        bh=b+NrS7PSaK12qZPeCb8kmME984XWQTgUeWmP6maiS1U=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=n2vjb7SM5nHA0GSsrLq9HxPEACt5ncS6LaVn5+urRDVD2kHVMG7T1iGcCTTt+//3b
-         D6Q1R2KsmGqmyjgyngpQ+bzqC6eR8SYTGM3YnYchp1ZBKt0hQUSbyrKOzGjUmb6+cz
-         Pu2OnyuxREQ7omDKIB8ExvyipPAl21W63E7cxSgLNnYxD2xZiZG69FX8LjQN8cMI3s
-         eY1HRsKOhRYddptzHjctNEx92inw14ObI8OjNQKiZqozjQKZrD5l6UQTjf35+OsedJ
-         QZoFlcTMOzNuPtXZDnk5ZvK+p1YiK7EdQNwq3TWu9NFExVAjuzkRCqrmUE3gtMTAUO
-         i9Bnllv5IiW3A==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     LEROY Christophe <christophe.leroy@csgroup.eu>,
-        kernel test robot <lkp@intel.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Subject: Re: [PATCH] powerpc/signal32: Use struct_group() to zero spe regs
-In-Reply-To: <202111221247.B385EA2A8@keescook>
-References: <20211118203604.1288379-1-keescook@chromium.org>
- <1e312cbd-cd52-ddce-f839-db765173c526@csgroup.eu>
- <87ilwkrbhz.fsf@mpe.ellerman.id.au> <202111221247.B385EA2A8@keescook>
-Date:   Wed, 24 Nov 2021 11:08:25 +1100
-Message-ID: <8735nmquti.fsf@mpe.ellerman.id.au>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HzLx30whkz4xcK;
+        Wed, 24 Nov 2021 11:09:58 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1637712600;
+        bh=X4bEEqqhqXPwwuJUvJkcN72qA1+JmSUCFA8Yvn1FfIk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=jeF79H9Sl0KsBUD/7E5fG2dU335wZnD/dFu/SQ2hj7ZTm+PiGRPrsIERjqTbOMVe1
+         RqVbBJb09oYBhS9YHhsBRg1izzuuClJFzXkfZdL17t5jmKdn/YwLceLHIk9JkKx6hQ
+         kdVp6KychvZnF8ala37qJ8fJgE351AFseksF1HziyO0TvfpNtJXEhiMy81Tom1taFu
+         dOOAKEmX0+FLl4PjGJgUhWh4+5wx1N7FsvVXnsqZBfL8tGXKZ+LSAX4zvtPLA09a8Z
+         ijW8/onAQidGXGBfESJf0HicB46RZDFet6XYdykW3NzFL2TU2oVbZS/6siLaTWrs/V
+         Kb3r8PHRgu50Q==
+Date:   Wed, 24 Nov 2021 11:09:57 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     =?UTF-8?B?Sm9zw6k=?= Roberto de Souza <jose.souza@intel.com>,
+        Juha-Pekka =?UTF-8?B?SGVpa2tpbMOk?= 
+        <juha-pekka.heikkila@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>
+Subject: linux-next: manual merge of the drm-intel-gt tree with the
+ drm-intel tree
+Message-ID: <20211124110957.18dea3f2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/wUXCq9DPBuql/7JaF56gUnb";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
-> On Mon, Nov 22, 2021 at 04:43:36PM +1100, Michael Ellerman wrote:
->> LEROY Christophe <christophe.leroy@csgroup.eu> writes:
->> > Le 18/11/2021 =C3=A0 21:36, Kees Cook a =C3=A9crit=C2=A0:
->> >> In preparation for FORTIFY_SOURCE performing compile-time and run-time
->> >> field bounds checking for memset(), avoid intentionally writing across
->> >> neighboring fields.
->> >>=20
->> >> Add a struct_group() for the spe registers so that memset() can corre=
-ctly reason
->> >> about the size:
->> >>=20
->> >>     In function 'fortify_memset_chk',
->> >>         inlined from 'restore_user_regs.part.0' at arch/powerpc/kerne=
-l/signal_32.c:539:3:
->> >>     >> include/linux/fortify-string.h:195:4: error: call to '__write_=
-overflow_field' declared with attribute warning: detected write beyond size=
- of field (1st parameter); maybe use struct_group()? [-Werror=3Dattribute-w=
-arning]
->> >>       195 |    __write_overflow_field();
->> >>           |    ^~~~~~~~~~~~~~~~~~~~~~~~
->> >>=20
->> >> Reported-by: kernel test robot <lkp@intel.com>
->> >> Signed-off-by: Kees Cook <keescook@chromium.org>
->> >
->> > Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>=20
->> Acked-by: Michael Ellerman <mpe@ellerman.id.au>
->
-> Thanks! Should I take this via my tree, or do you want to take it via
-> ppc?
+--Sig_/wUXCq9DPBuql/7JaF56gUnb
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I don't mind. If it's easier for you to take it as part of an existing
-series then do that, otherwise I can pick it up.
+Hi all,
 
-cheers
+Today's linux-next merge of the drm-intel-gt tree got a conflict in:
+
+  drivers/gpu/drm/i915/i915_pci.c
+
+between commit:
+
+  3c542cfa8266 ("drm/i915/dg2: Tile 4 plane format support")
+
+from the drm-intel tree and commit:
+
+  a5b7ef27da60 ("drm/i915: Add struct to hold IP version")
+
+from the drm-intel-gt tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/gpu/drm/i915/i915_pci.c
+index 69b8029da6b6,5e6795853dc3..000000000000
+--- a/drivers/gpu/drm/i915/i915_pci.c
++++ b/drivers/gpu/drm/i915/i915_pci.c
+@@@ -1042,9 -1030,8 +1042,9 @@@ static const struct intel_device_info d
+  	XE_HPM_FEATURES,
+  	XE_LPD_FEATURES,
+  	DGFX_FEATURES,
+- 	.graphics_rel =3D 55,
+- 	.media_rel =3D 55,
++ 	.graphics.rel =3D 55,
++ 	.media.rel =3D 55,
+ +	.has_4tile =3D 1,
+  	PLATFORM(INTEL_DG2),
+  	.platform_engine_mask =3D
+  		BIT(RCS0) | BIT(BCS0) |
+
+--Sig_/wUXCq9DPBuql/7JaF56gUnb
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGdgtUACgkQAVBC80lX
+0GxU0Qf+PUWUrX4jQtgN0mLg/SXLooNQP3GQ2tzj8QUvnQQDNWPvuMMFy77hfimC
+z5a9/9cdIrADDTyjs2sbqSCCRmPpQ5L68Thm/ayivtwzNZlq9sAk7wa7Q2ZJwTM1
+Qfs5nxlWqHFUjS75oJM5scR5BihwB/AnC8zramdSdwJlG9shEHrbH7AqWYjachRl
+YWOkttrQo0uK/RC3L2ipSDdkrM/19/HGa6yYa2zt6hXCX5aOhGd0ZpBfbDwMlrnz
+N6mxrxCBESqBr5t2I/0Hlt8XYok/zNaYWlOg6PX9UuDtKTL8iH1zJtHVzfgN9zze
+0zjN1FpZl044j/bCg4CBWOar2M0uOw==
+=64P/
+-----END PGP SIGNATURE-----
+
+--Sig_/wUXCq9DPBuql/7JaF56gUnb--
