@@ -2,115 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F3C45C81A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:56:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4A245C81B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347453AbhKXO7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:59:42 -0500
-Received: from outbound-smtp57.blacknight.com ([46.22.136.241]:55281 "EHLO
-        outbound-smtp57.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347885AbhKXO7f (ORCPT
+        id S1349425AbhKXPAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:00:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343527AbhKXPAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:59:35 -0500
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp57.blacknight.com (Postfix) with ESMTPS id EA194FB06F
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 14:56:23 +0000 (GMT)
-Received: (qmail 25417 invoked from network); 24 Nov 2021 14:56:23 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 24 Nov 2021 14:56:23 -0000
-Date:   Wed, 24 Nov 2021 14:56:22 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     lkml <linux-kernel@vger.kernel.org>
-Subject: Re: mm: LTP/memcg testcase regression induced by
- 8cd7c588decf..66ce520bb7c2 series
-Message-ID: <20211124145621.GJ3366@techsingularity.net>
-References: <99e779783d6c7fce96448a3402061b9dc1b3b602.camel@gmx.de>
- <20211123091304.GC3366@techsingularity.net>
- <21c3489c7ce8342d392c08547a3222a9c289e9fc.camel@gmx.de>
+        Wed, 24 Nov 2021 10:00:03 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5320CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 06:56:54 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id h16-20020a9d7990000000b0055c7ae44dd2so4623789otm.10
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 06:56:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LRNdgmKoGHd8G0IdZK2kJhuKe2APSp+LVa8VH3GbUIo=;
+        b=ROINuAUVxy/ZbYmgWfHqBUzAuDwOQ6cqNQOfBVhy96Gry9ayUW0v2eAWocnQnqzx3v
+         xgc65hVhfOFf2QyYOHtvwTkNw/gi7ENcARWpSUc8tTr1PgbR0vhK1mbBo7dmloWOedtW
+         UEV/xNy8uprFwFS6gA4oIwhtzB0uMlUnBPPMIpu/w6ORmy8QrYL/n7wt6j3A80GfGrOw
+         aGeIbUirqzK0slqUpZBhp9oUS8RL/fGa4ebYV8beZ3Si9FYiK4+2z4GZsVqQMSMw8AI2
+         BcRuVz9lYpndNk5s+3smn0XoM4+Txn+jtQiDusTUa3GVwiYUH1hPVXmtuXdlQ0MJQneg
+         SFBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LRNdgmKoGHd8G0IdZK2kJhuKe2APSp+LVa8VH3GbUIo=;
+        b=B6oiG5nYqUBP1B0gT7ISyFbUuQm/8RIgwb2GoaIYckIGL/nT2pitkfQuUFYM41ysGt
+         tRWHk4dGyKIJlMsUDNPHfpbycTTOH2WWk6PZZksJZhQs2G1XP4+gsJaaNuF4Sc0nFhSr
+         N0aijvVvectkSx5tck3wmP6uwTks2e8qGfhQrASj2q2s2eVhlYJ7H3MF4RjhtJrT/orw
+         vMJ9smEzYMTcPRuhrycK4JH0LDW91irASJd+Zw6cCeKVzH7LYqvXz+Jvy50o5sCtdi6P
+         ed/YN6YT+BhEmhM25Gf7BAnt1ZkgrPI6IK9ZO+iC5zQKJj6fRsuhVisxLYxesmRTEnJg
+         Ayeg==
+X-Gm-Message-State: AOAM532rjJtY51KSlbWI5mXiDTfD2/Xxjmg1lp3dvpKzOt/i+vmwYRH6
+        wZWV98l7KNycjPRqPlQvA9KQnLBQiXpqnG6vlWY=
+X-Google-Smtp-Source: ABdhPJyqccrZCGcFmld4szOfDhBK9/E4Pq6QPLBGa5/rNNSCpHY0z5698ckRmlDMZ9GPhwZ2MvYxx3uekzO2OiCtwvA=
+X-Received: by 2002:a9d:2486:: with SMTP id z6mr14024908ota.210.1637765813712;
+ Wed, 24 Nov 2021 06:56:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <21c3489c7ce8342d392c08547a3222a9c289e9fc.camel@gmx.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211123232551.210016-1-makvihas@gmail.com> <20211124131414.GJ6514@kadam>
+In-Reply-To: <20211124131414.GJ6514@kadam>
+From:   Vihas Mak <makvihas@gmail.com>
+Date:   Wed, 24 Nov 2021 20:26:41 +0530
+Message-ID: <CAH1kMwRcEwc64XjPAXbJUPFsLTei2pmzP3r_6ZVWQ+NFkaa57g@mail.gmail.com>
+Subject: Re: [PATCH] staging: r8188eu: use max() and min() macros
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Larry.Finger@lwfinger.net, Phillip Potter <phil@philpotter.co.uk>,
+        Greg KH <gregkh@linuxfoundation.org>, straube.linux@gmail.com,
+        nathan@kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 12:18:01PM +0100, Mike Galbraith wrote:
-> On Tue, 2021-11-23 at 09:13 +0000, Mel Gorman wrote:
-> >
-> > I'll see can I reproduce this...
-> 
-> You likely already know this, but just in case, just plunk the below
-> into $LTPROOT/runtest/foo, and $LTPROOT/runltp -f foo.
-> 
-> #DESCRIPTION:Resource Management testing
-> memcg_regression        memcg_regression_test.sh
-> 
+>> Please run scripts/checkpatch.pl on your patches.
 
-Thanks. Can you try the following patch please?
+>> CHECK: Alignment should match open parenthesis
+>> #41: FILE: drivers/staging/r8188eu/core/rtw_wlan_util.c:723:
 
-The test will still take longer to reach OOM and complete as it's stalling
-but not as severely.
+Ahh sorry, my bad. Will resend v2 after fixing that.
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 07db03883062..d9166e94eb95 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1057,7 +1057,17 @@ void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason)
- 
- 		break;
- 	case VMSCAN_THROTTLE_NOPROGRESS:
--		timeout = HZ/2;
-+		timeout = 1;
-+
-+		/*
-+		 * If kswapd is disabled, reschedule if necessary but do not
-+		 * throttle as the system is likely near OOM.
-+		 */
-+		if (pgdat->kswapd_failures >= MAX_RECLAIM_RETRIES) {
-+			cond_resched();
-+			return;
-+		}
-+
- 		break;
- 	case VMSCAN_THROTTLE_ISOLATED:
- 		timeout = HZ/50;
-@@ -3395,7 +3405,7 @@ static void consider_reclaim_throttle(pg_data_t *pgdat, struct scan_control *sc)
- 		return;
- 
- 	/* Throttle if making no progress at high prioities. */
--	if (sc->priority < DEF_PRIORITY - 2)
-+	if (sc->priority < DEF_PRIORITY - 2 && !sc->nr_reclaimed)
- 		reclaim_throttle(pgdat, VMSCAN_THROTTLE_NOPROGRESS);
- }
- 
-@@ -3415,6 +3425,7 @@ static void shrink_zones(struct zonelist *zonelist, struct scan_control *sc)
- 	unsigned long nr_soft_scanned;
- 	gfp_t orig_mask;
- 	pg_data_t *last_pgdat = NULL;
-+	pg_data_t *first_pgdat = NULL;
- 
- 	/*
- 	 * If the number of buffer_heads in the machine exceeds the maximum
-@@ -3478,14 +3489,18 @@ static void shrink_zones(struct zonelist *zonelist, struct scan_control *sc)
- 			/* need some check for avoid more shrink_zone() */
- 		}
- 
-+		if (!first_pgdat)
-+			first_pgdat = zone->zone_pgdat;
-+
- 		/* See comment about same check for global reclaim above */
- 		if (zone->zone_pgdat == last_pgdat)
- 			continue;
- 		last_pgdat = zone->zone_pgdat;
- 		shrink_node(zone->zone_pgdat, sc);
--		consider_reclaim_throttle(zone->zone_pgdat, sc);
- 	}
- 
-+	consider_reclaim_throttle(first_pgdat, sc);
-+
- 	/*
- 	 * Restore to original mask to avoid the impact on the caller if we
- 	 * promoted it to __GFP_HIGHMEM.
+On Wed, Nov 24, 2021 at 6:44 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> On Wed, Nov 24, 2021 at 04:55:51AM +0530, Vihas Mak wrote:
+>
+> > +
+> > +                     min_MPDU_spacing = max(pmlmeinfo->HT_caps.u.HT_cap_element.AMPDU_para & 0x1c,
+> > +                                                     pIE->data[i] & 0x1c);
+>
+> Please run scripts/checkpatch.pl on your patches.
+>
+> CHECK: Alignment should match open parenthesis
+> #41: FILE: drivers/staging/r8188eu/core/rtw_wlan_util.c:723:
+> +                       min_MPDU_spacing = max(pmlmeinfo->HT_caps.u.HT_cap_element.AMPDU_para & 0x1c,
+> +                                                       pIE->data[i] & 0x1c);
+>
+> regards,
+> dan carpenter
+>
+
+
+-- 
+Thanks,
+Vihas
