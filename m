@@ -2,136 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE7D45B431
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 07:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 587F545B435
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 07:10:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233361AbhKXGMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 01:12:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50268 "EHLO
+        id S234256AbhKXGNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 01:13:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229825AbhKXGMU (ORCPT
+        with ESMTP id S229825AbhKXGNm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 01:12:20 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69483C061574;
-        Tue, 23 Nov 2021 22:09:11 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id iq11so1617378pjb.3;
-        Tue, 23 Nov 2021 22:09:11 -0800 (PST)
+        Wed, 24 Nov 2021 01:13:42 -0500
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62993C061574;
+        Tue, 23 Nov 2021 22:10:33 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id k1so1425352ilo.7;
+        Tue, 23 Nov 2021 22:10:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ez3QVmY1XZw+pekgl/gvhcD1cD5LMLp7Mm2ELoCCbMI=;
-        b=h5CEV2+WsUwc8/HreAiVGYTBNHdZJ+zz53f3CxfyoOsAYuJAJxaDQxOPKYKZJbwvzb
-         AQvQcBL0hIC5eRbDa7CFXFUGxk0f1KqSDZUlyw8KSJbZPumqyhRei38HNwoqFvs2mc4O
-         sPn7UXTN+43PaDxJMQzhprWbRXhBU20um7i9F7hBhg7YuAEWsn6pmDGpBkfWQ0nIO9CK
-         qvRQKX6JFS6AtZVPmYVqCkLLIEE+J4G92Jqal7cFeZ9QMhdSfRSHT82frjwUZEHtj2mr
-         PpCA6r06L4jGbIfTFjSBHW9TphpigyXPdpRtAUaJnQ2s1CrJb82MkzWPzFZB9o8xGHWi
-         7p+g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=mpaq/sbQwlhNhkvf2MHPSr/3GWUoeeBjSlnS29gm85I=;
+        b=Slo8QFI/AvSbg8d04rSBmxsiWDfhI3z2cIMHBAWUg/ogyROniT1vPZDQU+590QiTW9
+         qJHfhJ66pHUndB/QI4FN/S7beF6bjQew3tK+9NM2nn/KLL6sNcRhBYsv4sH9/TO/QhJX
+         7FNe4aX603+PiXvbeGk9mie9XtLzHLd5srFO4cg8LgTukk04zqc7VyvvUzqc4VghcTjA
+         Ca1bQcVUZ99KHDq6Gc02VF+9dqI1f00GmsN+msGIFMx+vHj6euu9014fFHbCEnY29tXQ
+         U+Ts5byeREBz3vKH+bCaLvs1+l4hdtYxJUY7sJODWOFUwITGGgeOujG3wum9NUpbOBHO
+         DwMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ez3QVmY1XZw+pekgl/gvhcD1cD5LMLp7Mm2ELoCCbMI=;
-        b=GOMsyQW1sAWZnmf6VjOQVOIarXJRCWKDZdB/mR29Tf5A0rwlL64j2Jo6u1TqK2lVhK
-         3MfATAAzykDbP8ke7mQ13T+aBYHcGZuGng3QmPehih0dOHWofS2zwpx5J2fs+H4dOJ6U
-         e9u6UnE6NRprMhcjnuPPe51WauqlG7OsJtrcTSt6baL9RnogNYhHJxMKxY5t10x1AtqQ
-         lIZAyYNv+9an+MR9JdbH/TOv7iZUqzriZ5FZ2pOkSm3IV4E+ZhxEyCmvfdJymiPnSv9+
-         srzJyGkn8GSBwJlL6i6gZQMEAll0RuCVP+wKhpENQAIiT+W4FCSMqfgL+C4SEUmflhQD
-         th8w==
-X-Gm-Message-State: AOAM5317iarUPkGWr7etodJD/yLh4T0Azqto9y1R2MbxsxpzaILgKH80
-        628IU/wlsMlHMbhKkA8pdZQQRcpIz4YweUKX
-X-Google-Smtp-Source: ABdhPJyw/JF5kY8+OyLhjkD8kLe/zEuGlhEXXZQoIR5tyL0Qvk6c9jXAgMZe8x1TknF7rby6pGy7Zg==
-X-Received: by 2002:a17:902:c407:b0:142:28fe:668e with SMTP id k7-20020a170902c40700b0014228fe668emr14946555plk.31.1637734151024;
-        Tue, 23 Nov 2021 22:09:11 -0800 (PST)
-Received: from shinobu ([138.199.21.12])
-        by smtp.gmail.com with ESMTPSA id y130sm14122385pfg.202.2021.11.23.22.09.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 22:09:10 -0800 (PST)
-Date:   Wed, 24 Nov 2021 15:09:05 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-iio@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v1] counter: interrupt-cnt: add counter_push_event()
-Message-ID: <YZ3XAeYyfGblfaOi@shinobu>
-References: <20211123134540.416695-1-o.rempel@pengutronix.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=mpaq/sbQwlhNhkvf2MHPSr/3GWUoeeBjSlnS29gm85I=;
+        b=g2sLST/rlLi10u+LlT89p2/TTkJ0L/k+rsVQjYwsdyjeXni7x7oVJcNXb30jiNPaLl
+         DWNZdI9Mbh9I5jIYN/dUv2zS866F42xIgSTOFcAchlyenHeDcCfM7WMb4UMyoIdPv7EW
+         XlsFGrwfA1UnmnF5gtcEVUIMl8qJiABxlwOulQ+LWH3+oajnwuO2uPPUCeJ4CDSjeWAZ
+         a7hX84Whzmij0k0wynwqXDJ735ANKBpNO9esha/FntNNOsG4BP9GCQXJOYNFYBse/zUj
+         KiW5A84PhP3O20rRGB8WJy+F7mymC317mQWmZdz5lsEknxOHrn5exm5BPvtdFoacynPg
+         6mcg==
+X-Gm-Message-State: AOAM531NW/DKQQrXtCIs79bAxh0KARkqYcMufpdG+bTG5Nfr4ZFPFZFp
+        6Nzu7BFc4r9+jwRi8Kj5UQZn2087jFcoucSxifXn4pEeHuvo8f2M+So=
+X-Google-Smtp-Source: ABdhPJz47YZiSwEk1vmyTxhrUOX2ZRfJSvcphYE/Bk5RSBxbhD0idqhm7X5BkAc7Xs9BrsIhdQarc14/6iDjjyuqklg=
+X-Received: by 2002:a05:6e02:1e02:: with SMTP id g2mr10649428ila.290.1637734232771;
+ Tue, 23 Nov 2021 22:10:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="palXCgofjUSCif4g"
-Content-Disposition: inline
-In-Reply-To: <20211123134540.416695-1-o.rempel@pengutronix.de>
+References: <20211021055408.4006408-1-alistair.francis@opensource.wdc.com> <1e24268a-fd6a-10cd-cb1d-c479bb2f930f@collabora.com>
+In-Reply-To: <1e24268a-fd6a-10cd-cb1d-c479bb2f930f@collabora.com>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Wed, 24 Nov 2021 16:10:06 +1000
+Message-ID: <CAKmqyKP644V16Q-XKWKLudAVueQxYyZvwGrbe9XP9573p_cDoA@mail.gmail.com>
+Subject: Re: [PATCH v2] uapi: futex: Add a futex syscall
+To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
+Cc:     Alistair Francis <alistair.francis@opensource.wdc.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Ingo Molnar <mingo@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 26, 2021 at 2:34 AM Andr=C3=A9 Almeida <andrealmeid@collabora.c=
+om> wrote:
+>
+> Hi Alistair,
+>
+> =C3=80s 02:54 de 21/10/21, Alistair Francis escreveu:
+> > From: Alistair Francis <alistair.francis@wdc.com>
+> >
+> > This commit adds two futex syscall wrappers that are exposed to
+> > userspace.
+> >
+> > Neither the kernel or glibc currently expose a futex wrapper, so
+> > userspace is left performing raw syscalls. This has mostly been becuase
+>
+>                                                                   because
+>
+> > the overloading of one of the arguments makes it impossible to provide =
+a
+> > single type safe function.
+> >
+> > Until recently the single syscall has worked fine. With the introductio=
+n
+> > of a 64-bit time_t futex call on 32-bit architectures, this has become
+> > more complex. The logic of handling the two possible futex syscalls is
+> > complex and often implemented incorrectly.
+> >
+> > This patch adds two futux syscall functions that correctly handle the
+> > time_t complexity for userspace.
+> >
+> > This idea is based on previous discussions: https://lkml.org/lkml/2021/=
+9/21/143
+>
+> I would use lore
+> https://lore.kernel.org/lkml/CAK8P3a3x_EyCiPDpMK54y=3DRtm-Wb08ym2TNiuAZgX=
+hYrThcWTw@mail.gmail.com/
+>
+> >
+> > Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+>
+> Thanks for working on that :)
+>
+> > ---
+> >  include/uapi/linux/futex_syscall.h | 81 ++++++++++++++++++++++++++++++
+> >  1 file changed, 81 insertions(+)
+> >  create mode 100644 include/uapi/linux/futex_syscall.h
+> >
+> > diff --git a/include/uapi/linux/futex_syscall.h b/include/uapi/linux/fu=
+tex_syscall.h
+> > new file mode 100644
+> > index 0000000000000..f84a0c68baf78
+> > --- /dev/null
+> > +++ b/include/uapi/linux/futex_syscall.h
+> > @@ -0,0 +1,81 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> > +#ifndef _UAPI_LINUX_FUTEX_SYSCALL_H
+> > +#define _UAPI_LINUX_FUTEX_SYSCALL_H
+> > +
+> > +#include <asm/unistd.h>
+> > +#include <errno.h>
+> > +#include <linux/types.h>
+> > +#include <linux/time_types.h>
+> > +#include <sys/syscall.h>
+> > +
+> > +/**
+> > + * futex_syscall_timeout() - __NR_futex/__NR_futex_time64 syscall wrap=
+per
+> > + * @uaddr:  address of first futex
+> > + * @op:   futex op code
+> > + * @val:  typically expected value of uaddr, but varies by op
+> > + * @timeout:  an absolute struct timespec
+> > + * @uaddr2: address of second futex for some ops
+> > + * @val3: varies by op
+> > + */
+> > +static inline int
+> > +__kernel_futex_syscall_timeout(volatile u_int32_t *uaddr, int op, u_in=
+t32_t val,
+> > +                   struct timespec *timeout, volatile u_int32_t *uaddr=
+2, int val3)
+>
+> I tried to write an example[0] that uses this header, but I can't
+> compile given that u_int32_t isn't defined. Maybe change to uint32_t and
+> include <stdint.h>?
+>
+> Also, I got some invalid use of undefined type 'struct timespec', and
+> #include <time.h> solved.
+>
+> [0] https://paste.debian.net/1216834/
+>
+> > +{
+> > +#if defined(__NR_futex_time64)
+> > +     if (sizeof(*timeout) !=3D sizeof(struct __kernel_old_timespec)) {
+> > +             int ret =3D  syscall(__NR_futex_time64, uaddr, op, val, t=
+imeout, uaddr2, val3);
+> > +
+> > +             if (ret =3D=3D 0 || errno !=3D ENOSYS)
+> > +                     return ret;
+> > +     }
+> > +#endif
+> > +
+> > +#if defined(__NR_futex)
+> > +     if (sizeof(*timeout) =3D=3D sizeof(struct __kernel_old_timespec))
+> > +             return syscall(__NR_futex, uaddr, op, val, timeout, uaddr=
+2, val3);
+> > +
+> > +     if (timeout && timeout->tv_sec =3D=3D (long)timeout->tv_sec) {
+> > +             struct __kernel_old_timespec ts32;
+> > +
+> > +             ts32.tv_sec =3D (__kernel_long_t) timeout->tv_sec;> +    =
+         ts32.tv_nsec =3D (__kernel_long_t) timeout->tv_nsec;
+> > +
+> > +             return syscall(__NR_futex, uaddr, op, val, &ts32, uaddr2,=
+ val3);
+> > +     } else if (!timeout) {
+> > +             return syscall(__NR_futex, uaddr, op, val, NULL, uaddr2, =
+val3);
+> > +     }
+> > +#endif
+>
+> If I read this part right, you will always use ts32 for __NR_futex. I
+> know that it can be misleading, but __NR_futex uses ts64 in 64-bit
+> archs, so they shouldn't be converted to ts32 in those cases.
+>
+> Just to make it clear, there's no __NR_futex_time64 at 64-bit archs.
+>
+> > +
+> > +     errno =3D ENOSYS;
+> > +     return -1;
+> > +}
+> > +
+> > +/**
+> > + * futex_syscall_nr_requeue() - __NR_futex/__NR_futex_time64 syscall w=
+rapper
+> > + * @uaddr:  address of first futex
+> > + * @op:   futex op code
+> > + * @val:  typically expected value of uaddr, but varies by op
+> > + * @nr_requeue:  an op specific meaning
+> > + * @uaddr2: address of second futex for some ops
+> > + * @val3: varies by op
+> > + */
+> > +static inline int
+> > +__kernel_futex_syscall_nr_requeue(volatile u_int32_t *uaddr, int op, u=
+_int32_t val,
+> > +                      u_int32_t nr_requeue, volatile u_int32_t *uaddr2=
+, int val3)
+>
+> I would always assume that op is FUTEX_CMP_REQUEUE, given that
+> FUTEX_REQUEUE is racy. From `man futex`:
 
---palXCgofjUSCif4g
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+There are other ops that this could be though. From just the kernel
+futex self tests it could be FUTEX_WAKE_OP, FUTEX_WAIT_REQUEUE_PI or
+FUTEX_CMP_REQUEUE_PI
 
-On Tue, Nov 23, 2021 at 02:45:40PM +0100, Oleksij Rempel wrote:
-> Add counter_push_event() to notify user space about new pulses
->=20
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  drivers/counter/interrupt-cnt.c | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/drivers/counter/interrupt-cnt.c b/drivers/counter/interrupt-=
-cnt.c
-> index 8514a87fcbee..b237137b552b 100644
-> --- a/drivers/counter/interrupt-cnt.c
-> +++ b/drivers/counter/interrupt-cnt.c
-> @@ -31,6 +31,8 @@ static irqreturn_t interrupt_cnt_isr(int irq, void *dev=
-_id)
-> =20
->  	atomic_inc(&priv->count);
-> =20
-> +	counter_push_event(&priv->counter, COUNTER_EVENT_OVERFLOW, 0);
-> +
->  	return IRQ_HANDLED;
->  }
-> =20
-> --=20
-> 2.30.2
+Alistair
 
-Hi Oleksij,
-
-It looks like this is pushing a COUNTER_EVENT_OVERFLOW event every time
-an interrupt is handled, which I suspect is not what you want to happen.
-The COUNTER_EVENT_OVERFLOW event indicates a count value overflow event,
-so you'll need to check for a count value overflow before pushing the
-event.
-
-It would be good idea to implement a ceiling extension as well (you can
-use the COUNTER_COMP_CEILING() macro) so that users can configure the
-particular point where the value overflows.
-
-William Breathitt Gray
-
---palXCgofjUSCif4g
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmGd1vMACgkQhvpINdm7
-VJKxmA//bXW8jn5mO+h9K3q21/57hhXT+8CzEcMMflP5qvx/IFqyufr36Ja/P3+Q
-gcrhQzriZp28cyNmMNrX6OBE5wnN8pD2pG5+GoOvzfyHDM7qAYPU1F52ISGMIJSv
-g1GXywDfe3vZriBMpr+ON5s0Lgp5MpMmII84kx9pVDU/Dp2nceuKAQ3GFcR5VHbW
-llvoQapQ44b0FZOPc9yehavUztn/ZJLObyhF5QQiU/kp2ol/smf218nbZj7b0ZJB
-/X3p+2rcp9njV3i9TWNR6E15eNrIEeueg29NYN1w8TtgCIhSsHIGkdp798uxFHu8
-ddfJA/tfZoHV+aAjC1V32ibCA+BVmXFHhZuCM2pWkC//FtQwVMsKkY2CHULAKM5P
-8sLCAWlRMHMkTPtOA1wNOOJwG7B62Ggz28gzQr05qJOyBdbS5kZ0w9lELmZJ3C1h
-A07LojlKSeMRHmI51aryw+NxVWnutdsIMwiSJr20pbNH75IadU7/sM+bKbEZzzv2
-DxUWl8M7U/P8rzEdxBbVOf7Ep226+iylaYm6uB5XioTK15BMqfPtD3AYQDcfQNjA
-0++53y+ZFOdce7V3qDgHnvD0d0/E+Fk2CPOT1ayhRTSB1hVfsFDUCtToSpt6Lv+1
-74nUXuHewLYQkCTl0Fmll7zwuhrqVLBI5cdKcK4ZJiCvp89yr6Q=
-=2/qt
------END PGP SIGNATURE-----
-
---palXCgofjUSCif4g--
+>
+> The  FUTEX_CMP_REQUEUE operation was added as a replacement for the
+> earlier FUTEX_REQUEUE.  The difference is that the check of the value at
+> uaddr can be used to ensure that requeueing happens only under certain
+> conditions, which allows race conditions to be avoided in certain use cas=
+es.
+>
+> And then we can drop `int op` from the args and give defined
+> descriptions for the args.
+>
