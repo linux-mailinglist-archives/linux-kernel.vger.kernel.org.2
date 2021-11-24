@@ -2,76 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1F745CA16
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:31:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8371445CA19
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:32:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348962AbhKXQe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:34:59 -0500
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:36533 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348932AbhKXQe7 (ORCPT
+        id S240785AbhKXQfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:35:11 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:54254 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348973AbhKXQfI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:34:59 -0500
-Received: by mail-ot1-f53.google.com with SMTP id w6-20020a9d77c6000000b0055e804fa524so5130102otl.3;
-        Wed, 24 Nov 2021 08:31:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ClXsnWSXwelpafLarIuF6EqOtJknws1eom5YROE5yGw=;
-        b=LIoL5DzD+psM4DFD69uWxrLQZ5izULLPmDqxcZV0nCv0bD8o1iLNPO437B9MS+OUnq
-         FxxcH7CPok2baoMTeUCsMlzfEh6ly7h669ebS/Z7Vwj5PX4oo+mRJJmxjrUKq7dVMwG5
-         6zBhsiYKa+03eexoBWF1chCmQJX0lP9jw4NG8j1Yfp1TUnefxPScOOliYx1JEwrU5V72
-         6KSLFC/LIczha807eXIH7vjZij5ywYPo2Aj47FAHORyJtq5+lmmiZkg+vu+ab5Et+Cy2
-         C89VYFYhP+lPe+2Ph+kItfaLo4XGBgOfn0JZmh9a/EvhuT6+PPVIAfUB3b99QoK+x3JC
-         Ur5A==
-X-Gm-Message-State: AOAM532OgRAKpoeSzcvWMV+8Q/+hy2N1sZ4KS6rLWLpiJZ99scbrlS6T
-        47bFk43aKY86cOQWAs/BLJPpMyCfr0krqcLz1is=
-X-Google-Smtp-Source: ABdhPJzL6+eLQFBJS+bp7zsgoa/9Q0gwD/MaJbda+fKUekCsnEhaops5rZTIYt9/O/65HM537Wa8QQGwXQymT3EPQOk=
-X-Received: by 2002:a9d:4c10:: with SMTP id l16mr4144459otf.198.1637771508941;
- Wed, 24 Nov 2021 08:31:48 -0800 (PST)
+        Wed, 24 Nov 2021 11:35:08 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3367B21954;
+        Wed, 24 Nov 2021 16:31:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637771518; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4Zlxw+Rp7HNPM08yf9RQ2otAy6kMKKm82h1DuizBhVs=;
+        b=kvlaZyAZtdO4xGJaVhlIbgldeZDe8dWDxYpweto04dNhK1HokcngfkMFYHnNhQ1FIoqcKY
+        czfjxXpIhR8yBj9ho9sTua3vCySoFNJoVI4oj93jjj75cASczmfdA3axwSPaU9Hnz5d/Ed
+        nRrVTk/DxaqY6WuhTRi4RMh5BmMNbTY=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 007D4A3B8A;
+        Wed, 24 Nov 2021 16:31:57 +0000 (UTC)
+Date:   Wed, 24 Nov 2021 17:31:57 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Hao Lee <haolee.swjtu@gmail.com>
+Cc:     linux-mm@kvack.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        shakeelb@google.com, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: reduce spinlock contention in release_pages()
+Message-ID: <YZ5o/VmU59evp65J@dhcp22.suse.cz>
+References: <20211124151915.GA6163@haolee.io>
 MIME-Version: 1.0
-References: <20211113060618.220832-1-wangborong@cdjrlc.com>
-In-Reply-To: <20211113060618.220832-1-wangborong@cdjrlc.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 24 Nov 2021 17:31:38 +0100
-Message-ID: <CAJZ5v0itn3ndomA1deOMZiV5pKTOptq02iG08vXpuEw5tgK6gw@mail.gmail.com>
-Subject: Re: [PATCH] cpuidle: menu: Fix typo in a comment
-To:     wangborong@cdjrlc.com
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124151915.GA6163@haolee.io>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 13, 2021 at 7:07 AM Jason Wang <wangborong@cdjrlc.com> wrote:
->
-> The double word `these' in a comment is repeated, thus
-> one of them should be removed.
->
-> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
-> ---
->  drivers/cpuidle/governors/menu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/cpuidle/governors/menu.c b/drivers/cpuidle/governors/menu.c
-> index 2e5670446991..c4922684f305 100644
-> --- a/drivers/cpuidle/governors/menu.c
-> +++ b/drivers/cpuidle/governors/menu.c
-> @@ -34,7 +34,7 @@
->   * 1) Energy break even point
->   * 2) Performance impact
->   * 3) Latency tolerance (from pmqos infrastructure)
-> - * These these three factors are treated independently.
-> + * These three factors are treated independently.
->   *
->   * Energy break even point
->   * -----------------------
-> --
+On Wed 24-11-21 15:19:15, Hao Lee wrote:
+> When several tasks are terminated simultaneously, lots of pages will be
+> released, which can cause severe spinlock contention. Other tasks which
+> are running on the same core will be seriously affected. We can yield
+> cpu to fix this problem.
 
-Applied as 5.17 material, thanks!
+How does this actually address the problem? You are effectivelly losing
+fairness completely. We do batch currently so no single task should be
+able to monopolize the cpu for too long. Why this is not sufficient?
+
+> diff --git a/mm/swap.c b/mm/swap.c
+> index e8c9dc6d0377..91850d51a5a5 100644
+> --- a/mm/swap.c
+> +++ b/mm/swap.c
+> @@ -960,8 +960,14 @@ void release_pages(struct page **pages, int nr)
+>  		if (PageLRU(page)) {
+>  			struct lruvec *prev_lruvec = lruvec;
+>  
+> -			lruvec = folio_lruvec_relock_irqsave(folio, lruvec,
+> +retry:
+> +			lruvec = folio_lruvec_tryrelock_irqsave(folio, lruvec,
+>  									&flags);
+> +			if (!lruvec) {
+> +				cond_resched();
+> +				goto retry;
+> +			}
+> +
+>  			if (prev_lruvec != lruvec)
+>  				lock_batch = 0;
+>  
+> -- 
+> 2.31.1
+
+-- 
+Michal Hocko
+SUSE Labs
