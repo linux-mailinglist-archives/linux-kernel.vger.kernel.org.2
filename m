@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3778545BB8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:18:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9307B45BD85
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243484AbhKXMUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:20:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47684 "EHLO mail.kernel.org"
+        id S245106AbhKXMjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:39:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242718AbhKXMP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:15:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 779DF61053;
-        Wed, 24 Nov 2021 12:10:13 +0000 (UTC)
+        id S1343722AbhKXMeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:34:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EEA8611AD;
+        Wed, 24 Nov 2021 12:21:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755814;
-        bh=Xvip36oCyCXhVCDD2f1axnCfsa43jG9xmFBr55XnKVc=;
+        s=korg; t=1637756469;
+        bh=KjBcQ+WI1oP0C2UNHD/b64r3d+eqgFExUu/QF5FfxGU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CwDSw+ftdegZ2L+XeLnKanBP23dkEHMFJR5xf/Il9+UrfE9wFOhFteYjgxhWnL5aT
-         sCkNxb04h/tzm8QltKvTkd8HOUSeVqaXJK5CfTE5+X8/1DRSogaQBYkx6xH6RsVzaU
-         JroATx5PhEeAM166tpn8IgqoElEfe4E5+SG0tVFE=
+        b=xLgC78z7J8OZtLEzdM3lPLNuybNFBN0uQt3dOqYLQD5Qmnb4COWx7hzJErawSFMpo
+         mrfOFHSNmLTyB40xSrabt39VjqN0nxw1l93uyFp5xzMvFnkP25F8s9xw3/TLOMgFa+
+         i0K9pakBBjkpYeuvhKAyD/8xIwHvWGNcdQ16Xe+8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+4d3749e9612c2cfab956@syzkaller.appspotmail.com,
-        Rajat Asthana <rajatasthana4@gmail.com>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 068/207] media: mceusb: return without resubmitting URB in case of -EPROTO error.
+Subject: [PATCH 4.14 097/251] iwlwifi: mvm: disable RX-diversity in powersave
 Date:   Wed, 24 Nov 2021 12:55:39 +0100
-Message-Id: <20211124115706.125654219@linuxfoundation.org>
+Message-Id: <20211124115713.623548155@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajat Asthana <rajatasthana4@gmail.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 476db72e521983ecb847e4013b263072bb1110fc ]
+[ Upstream commit e5322b9ab5f63536c41301150b7ce64605ce52cc ]
 
-Syzkaller reported a warning called "rcu detected stall in dummy_timer".
+Just like we have default SMPS mode as dynamic in powersave,
+we should not enable RX-diversity in powersave, to reduce
+power consumption when connected to a non-MIMO AP.
 
-The error seems to be an error in mceusb_dev_recv(). In the case of
--EPROTO error, the routine immediately resubmits the URB. Instead it
-should return without resubmitting URB.
-
-Reported-by: syzbot+4d3749e9612c2cfab956@syzkaller.appspotmail.com
-Signed-off-by: Rajat Asthana <rajatasthana4@gmail.com>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20211017113927.fc896bc5cdaa.I1d11da71b8a5cbe921a37058d5f578f1b14a2023@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/rc/mceusb.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/intel/iwlwifi/mvm/utils.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/media/rc/mceusb.c b/drivers/media/rc/mceusb.c
-index d9f88a4a96bd1..b78d70685b1c3 100644
---- a/drivers/media/rc/mceusb.c
-+++ b/drivers/media/rc/mceusb.c
-@@ -1090,6 +1090,7 @@ static void mceusb_dev_recv(struct urb *urb)
- 	case -ECONNRESET:
- 	case -ENOENT:
- 	case -EILSEQ:
-+	case -EPROTO:
- 	case -ESHUTDOWN:
- 		usb_unlink_urb(urb);
- 		return;
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/utils.c b/drivers/net/wireless/intel/iwlwifi/mvm/utils.c
+index d2cada0ab4264..3303fc85d76f5 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/utils.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/utils.c
+@@ -1029,6 +1029,9 @@ bool iwl_mvm_rx_diversity_allowed(struct iwl_mvm *mvm)
+ 
+ 	lockdep_assert_held(&mvm->mutex);
+ 
++	if (iwlmvm_mod_params.power_scheme != IWL_POWER_SCHEME_CAM)
++		return false;
++
+ 	if (num_of_ant(iwl_mvm_get_valid_rx_ant(mvm)) == 1)
+ 		return false;
+ 
 -- 
 2.33.0
 
