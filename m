@@ -2,106 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A94645B0F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 02:02:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7D945B107
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 02:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbhKXBFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 20:05:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35774 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230026AbhKXBFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 20:05:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34C5F60FC1;
-        Wed, 24 Nov 2021 01:02:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1637715761;
-        bh=Me3tqnGGECSs5MhNWzdUoWhGdYXDGmCnffeBIGGiRKw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RZdV0TuEM7ewScTwvMQSNHCN58BRBV/QDwWyHPk33/JJfp6q/GAG3S6IJv5YyCA3i
-         rbfJuyZlhvyj/iBXbfSRMJX1ZEa65/IsTir//czSMJQRp5p/Aq1VK/yhXMD53SF5vF
-         IWzobwZHBwz9W2eQomdYoQhNX7cxmrUf3W35R6rk=
-Date:   Tue, 23 Nov 2021 17:02:38 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
-        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH v2 2/4] mm/vmalloc: add support for __GFP_NOFAIL
-Message-Id: <20211123170238.f0f780ddb800f1316397f97c@linux-foundation.org>
-In-Reply-To: <YZ06nna7RirAI+vJ@pc638.lan>
-References: <20211122153233.9924-1-mhocko@kernel.org>
-        <20211122153233.9924-3-mhocko@kernel.org>
-        <YZ06nna7RirAI+vJ@pc638.lan>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232873AbhKXBOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 20:14:44 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:27287 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232547AbhKXBOk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 20:14:40 -0500
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HzNHz2Hh4zbhmT;
+        Wed, 24 Nov 2021 09:11:27 +0800 (CST)
+Received: from kwepemm600016.china.huawei.com (7.193.23.20) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 24 Nov 2021 09:11:28 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ kwepemm600016.china.huawei.com (7.193.23.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 24 Nov 2021 09:11:28 +0800
+From:   Guangbin Huang <huangguangbin2@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <wangjie125@huawei.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lipeng321@huawei.com>, <huangguangbin2@huawei.com>,
+        <chenhao288@hisilicon.com>
+Subject: [PATCH net-next 0/4] net: hns3: updates for -next
+Date:   Wed, 24 Nov 2021 09:06:50 +0800
+Message-ID: <20211124010654.6753-1-huangguangbin2@huawei.com>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600016.china.huawei.com (7.193.23.20)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021 20:01:50 +0100 Uladzislau Rezki <urezki@gmail.com> wrote:
+This series includes some updates for the HNS3 ethernet driver.
 
-> On Mon, Nov 22, 2021 at 04:32:31PM +0100, Michal Hocko wrote:
-> > From: Michal Hocko <mhocko@suse.com>
-> > 
-> > Dave Chinner has mentioned that some of the xfs code would benefit from
-> > kvmalloc support for __GFP_NOFAIL because they have allocations that
-> > cannot fail and they do not fit into a single page.
+Jie Wang (1):
+  net: hns3: debugfs add drop packet statistics of multicast and
+    broadcast for igu
 
-Perhaps we should tell xfs "no, do it internally".  Because this is a
-rather nasty-looking thing - do we want to encourage other callsites to
-start using it?
+Yufeng Mo (3):
+  net: hns3: add log for workqueue scheduled late
+  net: hns3: format the output of the MAC address
+  net: hns3: add dql info when tx timeout
 
-> > The large part of the vmalloc implementation already complies with the
-> > given gfp flags so there is no work for those to be done. The area
-> > and page table allocations are an exception to that. Implement a retry
-> > loop for those.
-> > 
-> > Add a short sleep before retrying. 1 jiffy is a completely random
-> > timeout. Ideally the retry would wait for an explicit event - e.g.
-> > a change to the vmalloc space change if the failure was caused by
-> > the space fragmentation or depletion. But there are multiple different
-> > reasons to retry and this could become much more complex. Keep the retry
-> > simple for now and just sleep to prevent from hogging CPUs.
-> > 
+ .../net/ethernet/hisilicon/hns3/hclge_mbx.h   |  3 +
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h   | 14 ++++
+ .../net/ethernet/hisilicon/hns3/hns3_enet.c   | 36 ++++++---
+ .../hisilicon/hns3/hns3pf/hclge_debugfs.h     |  8 +-
+ .../hisilicon/hns3/hns3pf/hclge_main.c        | 77 +++++++++++++------
+ .../hisilicon/hns3/hns3pf/hclge_main.h        |  2 +
+ .../hisilicon/hns3/hns3pf/hclge_mbx.c         |  8 ++
+ .../hisilicon/hns3/hns3vf/hclgevf_main.c      |  7 +-
+ 8 files changed, 118 insertions(+), 37 deletions(-)
 
-Yes, the horse has already bolted.  But we didn't want that horse anyway ;)
+-- 
+2.33.0
 
-I added GFP_NOFAIL back in the mesozoic era because quite a lot of
-sites were doing open-coded try-forever loops.  I thought "hey, they
-shouldn't be doing that in the first place, but let's at least
-centralize the concept to reduce code size, code duplication and so
-it's something we can now grep for".  But longer term, all GFP_NOFAIL
-sites should be reworked to no longer need to do the retry-forever
-thing.  In retrospect, this bright idea of mine seems to have added
-license for more sites to use retry-forever.  Sigh.
-
-> > +		if (nofail) {
-> > +			schedule_timeout_uninterruptible(1);
-> > +			goto again;
-> > +		}
-
-The idea behind congestion_wait() is to prevent us from having to
-hard-wire delays like this.  congestion_wait(1) would sleep for up to
-one millisecond, but will return earlier if reclaim events happened
-which make it likely that the caller can now proceed with the
-allocation event, successfully.
-
-However it turns out that congestion_wait() was quietly broken at the
-block level some time ago.  We could perhaps resurrect the concept at
-another level - say by releasing congestion_wait() callers if an amount
-of memory newly becomes allocatable.  This obviously asks for inclusion
-of zone/node/etc info from the congestion_wait() caller.  But that's
-just an optimization - if the newly-available memory isn't useful to
-the congestion_wait() caller, they just fail the allocation attempts
-and wait again.
-
-> well that is sad...
-> I have raised two concerns in our previous discussion about this change,
-
-Can you please reiterate those concerns here?
