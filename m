@@ -2,239 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C622B45C9FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:26:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A697045C9FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:27:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242070AbhKXQ3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:29:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47724 "EHLO
+        id S242226AbhKXQah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:30:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239921AbhKXQ3s (ORCPT
+        with ESMTP id S231560AbhKXQae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:29:48 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E745C06173E
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 08:26:38 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id 133so2997659wme.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 08:26:38 -0800 (PST)
+        Wed, 24 Nov 2021 11:30:34 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30871C061714
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 08:27:24 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id l9so6654012ljq.5
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 08:27:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
+        h=subject:from:to:cc:references:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RJMSjgjB8SBuw3xGd9DksSxoXrvTi8wJo/B0a8tS7qQ=;
-        b=G6gwTG6Bsn+1T6N/vp3ZSKszg9ljzrkDmE7VZCmk+OCnwxcvDTmVfJchkUzoIMY6zM
-         z+xRcOxqOkJb5x4Jymn76aHKVOptKWpcZq7ZEiNOCGrNQhx4CwGZtZidRnK8fB48sE3K
-         xxT5Ov5YdWm1bu3Y+7d7ivk2iiCja0AMF9rzpcBg05GbVgUtiSM4vYwds7ozySvEK01S
-         p70c0WhuCbU7O74WWxTjhXKv/NXNCkq3Ctx15Vd7fJiDXapDo4ko9yWPsixmqFpM+W98
-         owIbITToYVAo99Lr0tUdl/u7to3+8RF6t1OdYzcswt7Ltp7V+chZjHynzBSMxP2nSkPP
-         pH5Q==
+        bh=EZa37FHey3/1Rg/hOIu6aLGUem+HE7jKO3BHC2Y3N0k=;
+        b=u1PnXNrdCxmjQI0QdbMCH8oYrdeehQqa65VUjKvrEua9/G/uyE9/sXJmNaSz4wK8M1
+         T+NLgY+QrSBrmNp8cGtW4LnFnJnsuR2X1mX6tPN2st8fwy84gLfJzR9E8tMD1ONotuxn
+         EXLUF8eQq/citxLdlT0FwY0rfYhl8XCpOAFb0iYpxtMZDMErqCYeMbDKFBwCirQseFKv
+         IRfuepadQZx0tg2TGXmkL/TYKkDOcj9HgEZHGeN/8M5Vq6pbRYSCagoZDgTHwwIGNgeC
+         2SnswQmIAC3pwhu1fFWEgIvDgd6R0aaOFyeVhiGKG23x9jXBM3/wZmzxAGtu5FyFDHzs
+         fdLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=RJMSjgjB8SBuw3xGd9DksSxoXrvTi8wJo/B0a8tS7qQ=;
-        b=2eNclBaNI4BK6pyE+93huMNyNyGgDjAepXH1LhG77zxK5IljNIgRnlwfrOVoPlcRwT
-         YsvO12Ax+RFRGv5U2ax7kBV21OQcUfe7ZUqsNYkiLqVXJpJ2gsOREeaEW66XDaTwx1Af
-         qI3Zdlql89jtOG5jjWoFw+vV1domUYYGkCHTS68+7UmmnnZnHWvAIhlXGc+X/7qBItbu
-         vZ7Yb26hi9KIwmLHG6oz2CkILSsxwhvAeBKc9udyewdgfvRdX/CwDkJwr9VjCdtCKi2j
-         LSlPQY72lHpiWBtGu9jkcnBqE7ZtJH79Bv81oCk6yicPypVXqQpc+PialHBe56wmtMZC
-         kX3g==
-X-Gm-Message-State: AOAM533k7cLu6SFARxOUFYrFjxfWW+MJAP3+Ovzbo/7k1iXmjigWAlNl
-        yPkdkzMipk/RJQikpU7ZLuQQew==
-X-Google-Smtp-Source: ABdhPJxqHDTxPmLpPgFDHSzAnT3Ut7UHfpNDugWGWbqgZqCUBEx36A5DbfaNSLBaw8OM2NlHg+bttg==
-X-Received: by 2002:a7b:cc95:: with SMTP id p21mr16997630wma.45.1637771196291;
-        Wed, 24 Nov 2021 08:26:36 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:4839:bd64:93f4:614f? ([2a01:e34:ed2f:f020:4839:bd64:93f4:614f])
-        by smtp.googlemail.com with ESMTPSA id y6sm5010635wma.37.2021.11.24.08.26.35
+        bh=EZa37FHey3/1Rg/hOIu6aLGUem+HE7jKO3BHC2Y3N0k=;
+        b=aI0LEB/boMaCmTvpU5XmY/g5xPGutUUenTnH8kBLd85/0qGEqlmysLQUe4n5gon7ro
+         R4IOrRYXjiVyoGg00aXVM4RQlrjFsrNu11WgxT4Fqikt4trjeztapzybWfzb1bOnCi6H
+         JpbnJcs7qSWJQi9JVBN1771qZlKJGsovIiAjJkkhiGeuWU8fPLM3dnRJiuSHgBN/N54q
+         BlXRjWH31I1pOW61UJM0qosbYtNcmEOO/OsCYHcO/p6b6qvZpJNvGJ3tCt9z+tBd8G9U
+         SnaWkPs/Cmg5m7SfdZ2IqW7rtlenwlt0vkjDZ7xxiYcQK1wR/5uvFTZuTqPo336VgJ6/
+         cJzg==
+X-Gm-Message-State: AOAM533XVuIMGGDXo8AYf/YGQkPPnr8wb6v8rmC9InW5T3E48oY+3+Dn
+        a1PYYnZvF02F9v3+YV/xj9a1yw==
+X-Google-Smtp-Source: ABdhPJx3xNwJns6eQkBJ5GNnDR3LB7KaFdgEHS9nwhOP3QaznjG/GLhJd3lUkK6ZcbA3KLrhQddumw==
+X-Received: by 2002:a2e:b802:: with SMTP id u2mr16718877ljo.261.1637771242210;
+        Wed, 24 Nov 2021 08:27:22 -0800 (PST)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id o15sm25836lfk.175.2021.11.24.08.27.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 08:26:35 -0800 (PST)
-Subject: Re: [PATCH 1/5] dt-bindings: Powerzone new bindings
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     robh@kernel.org, arnd@linaro.org, heiko@sntech.de,
-        rjw@rjwysocki.net, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        lukasz.luba@arm.com, Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20211124125506.2971069-1-daniel.lezcano@linaro.org>
- <CAPDyKFpJHzAxGk=Y52VXcuVbAunwfMo2ErnwXMqnxzHPs6O30g@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <65873f24-46da-07f4-9661-e3f1001a4fa2@linaro.org>
-Date:   Wed, 24 Nov 2021 17:26:34 +0100
+        Wed, 24 Nov 2021 08:27:21 -0800 (PST)
+Subject: Re: [PATCH v3 12/13] drm/msm/dsi: Add support for DSC configuration
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+References: <20211116062256.2417186-1-vkoul@kernel.org>
+ <20211116062256.2417186-13-vkoul@kernel.org>
+ <fc9885b3-1fdc-3036-4c82-4de37649420d@linaro.org>
+Message-ID: <f6a35461-9ab1-ed36-2937-0ff93008fd62@linaro.org>
+Date:   Wed, 24 Nov 2021 19:27:21 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFpJHzAxGk=Y52VXcuVbAunwfMo2ErnwXMqnxzHPs6O30g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <fc9885b3-1fdc-3036-4c82-4de37649420d@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Ulf,
-
-thanks for the review
-
-On 24/11/2021 15:54, Ulf Hansson wrote:
-
-[ ... ]
-
->> +  This description is done via a hierarchy and the DT reflects it. It
->> +  does not represent the physical location or a topology, eg. on a
->> +  big.Little system, the little CPUs may not be represented as they do
->> +  not contribute significantly to the heat, however the GPU can be
->> +  tied with the big CPUs as they usually have a connection for
->> +  multimedia or game workloads.
+On 24/11/2021 19:21, Dmitry Baryshkov wrote:
+> On 16/11/2021 09:22, Vinod Koul wrote:
+>> When DSC is enabled, we need to configure DSI registers accordingly and
+>> configure the respective stream compression registers.
+>>
+>> Add support to calculate the register setting based on DSC params and
+>> timing information and configure these registers.
+>>
+>> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+>> ---
+>>   drivers/gpu/drm/msm/dsi/dsi.xml.h  |  10 +++
+>>   drivers/gpu/drm/msm/dsi/dsi_host.c | 113 ++++++++++++++++++++++++++++-
+>>   2 files changed, 122 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/dsi/dsi.xml.h 
+>> b/drivers/gpu/drm/msm/dsi/dsi.xml.h
+>> index 49b551ad1bff..c1c85df58c4b 100644
+>> --- a/drivers/gpu/drm/msm/dsi/dsi.xml.h
+>> +++ b/drivers/gpu/drm/msm/dsi/dsi.xml.h
+>> @@ -706,4 +706,14 @@ static inline uint32_t DSI_VERSION_MAJOR(uint32_t 
+>> val)
+>>   #define REG_DSI_CPHY_MODE_CTRL                    0x000002d4
+>> +#define REG_DSI_VIDEO_COMPRESSION_MODE_CTRL            0x0000029c
 >> +
->> +properties:
->> +  $nodename:
->> +    const: powerzones
+>> +#define REG_DSI_VIDEO_COMPRESSION_MODE_CTRL2            0x000002a0
 >> +
-> 
-> Do we really need a top-node like this? Can't that be left as a
-> platform/soc specific thing instead? Along the lines of how the last
-> example below looks like? Maybe we can have both options? I guess Rob
-> will tell us.
-
-Do you mean a compatible string?
-
-> Moreover, maybe we should put some constraints on the names of
-> subnodes (provider nodes) with a "patternProperties". Something along
-> the lines of below.
-> 
-> patternProperties:
->   "^(powerzone)([@-].*)?$":
->     type: object
->     description:
->       Each node represents a powerzone.
-
-Sure
-
->> +  "#powerzone-cells":
->> +    description:
->> +      Number of cells in powerzone specifier. Typically 0 for nodes
->> +      representing but it can be any number in the future to describe
->> +      parameters of the powerzone.
+>> +#define REG_DSI_COMMAND_COMPRESSION_MODE_CTRL            0x000002a4
 >> +
->> +  powerzone:
-> 
-> Maybe "powerzones" instead of "powerzone". Unless we believe that we
-> never need to allow multiple parent-zones for a child-zone.
-
-May be that could be needed in the future. No objection to rename it to
-'powerzones'.
-
->> +    description:
->> +      A phandle to a parent powerzone. If no powerzone attribute is set, the
->> +      described powerzone is the topmost in the hierarchy.
+>> +#define REG_DSI_COMMAND_COMPRESSION_MODE_CTRL2            0x000002a8
 >> +
-> 
-> We should probably state that the "#powerzone-cells"  are required. Like below:
-> 
-> required:
->   - "#powerzone-cells"
-
-Ok
-
-> Moreover, we probably need to allow additional properties? At least it
-> looks so from the last example below. Then:
-> 
-> additionalProperties: true
-
-I was unsure about adding it. With the actual description what would be
-the benefit ?
-
->> +examples:
->> +  - |
->> +    powerzones {
+>> +#define REG_DSI_COMMAND_COMPRESSION_MODE_CTRL3            0x000002ac
 >> +
->> +      SOC_PZ: soc {
->> +      };
+>>   #endif /* DSI_XML */
+>> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c 
+>> b/drivers/gpu/drm/msm/dsi/dsi_host.c
+>> index 31d385d8d834..2c14c36f0b3d 100644
+>> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
+>> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
+>> @@ -908,6 +908,20 @@ static void dsi_ctrl_config(struct msm_dsi_host 
+>> *msm_host, bool enable,
+>>           dsi_write(msm_host, REG_DSI_CPHY_MODE_CTRL, BIT(0));
+>>   }
+>> +static int dsi_dsc_update_pic_dim(struct msm_display_dsc_config *dsc,
+>> +                  int pic_width, int pic_height)
+>> +{
+>> +    if (!dsc || !pic_width || !pic_height) {
+>> +        pr_err("DSI: invalid input: pic_width: %d pic_height: %d\n", 
+>> pic_width, pic_height);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    dsc->drm->pic_width = pic_width;
+>> +    dsc->drm->pic_height = pic_height;
+>> +
+>> +    return 0;
+>> +}
+>> +
+>>   static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool 
+>> is_bonded_dsi)
+>>   {
+>>       struct drm_display_mode *mode = msm_host->mode;
+>> @@ -940,7 +954,68 @@ static void dsi_timing_setup(struct msm_dsi_host 
+>> *msm_host, bool is_bonded_dsi)
+>>           hdisplay /= 2;
+>>       }
+>> +    if (msm_host->dsc) {
+>> +        struct msm_display_dsc_config *dsc = msm_host->dsc;
+>> +
+>> +        /* update dsc params with timing params */
+>> +        dsi_dsc_update_pic_dim(dsc, mode->hdisplay, mode->vdisplay);
+>> +        DBG("Mode Width- %d x Height %d\n", dsc->drm->pic_width, 
+>> dsc->drm->pic_height);
+>> +
+>> +        /* we do the calculations for dsc parameters here so that
+>> +         * panel can use these parameters
+>> +         */
+>> +        dsi_populate_dsc_params(dsc);
+>> +
+>> +        /* Divide the display by 3 but keep back/font porch and
+>> +         * pulse width same
+>> +         */
+>> +        h_total -= hdisplay;
+>> +        hdisplay /= 3;
+>> +        h_total += hdisplay;
+>> +        ha_end = ha_start + hdisplay;
+>> +    }
+>> +
+>>       if (msm_host->mode_flags & MIPI_DSI_MODE_VIDEO) {
+>> +        if (msm_host->dsc) {
+>> +            struct msm_display_dsc_config *dsc = msm_host->dsc;
+>> +            u32 reg, intf_width, slice_per_intf;
+>> +            u32 total_bytes_per_intf;
+>> +
+>> +            /* first calculate dsc parameters and then program
+>> +             * compress mode registers
+>> +             */
+>> +            intf_width = hdisplay;
+>> +            slice_per_intf = DIV_ROUND_UP(intf_width, 
+>> dsc->drm->slice_width);
+>> +
+>> +            dsc->drm->slice_count = 1;
+>> +            dsc->bytes_in_slice = DIV_ROUND_UP(dsc->drm->slice_width 
+>> * 8, 8);
+>> +            total_bytes_per_intf = dsc->bytes_in_slice * slice_per_intf;
+>> +
+>> +            dsc->eol_byte_num = total_bytes_per_intf % 3;
+>> +            dsc->pclk_per_line =  DIV_ROUND_UP(total_bytes_per_intf, 3);
+>> +            dsc->bytes_per_pkt = dsc->bytes_in_slice * 
+>> dsc->drm->slice_count;
+>> +            dsc->pkt_per_line = slice_per_intf / dsc->drm->slice_count;
+>> +
+>> +            reg = dsc->bytes_per_pkt << 16;
+>> +            reg |= (0x0b << 8);    /* dtype of compressed image */
+>> +
+>> +            /* pkt_per_line:
+>> +             * 0 == 1 pkt
+>> +             * 1 == 2 pkt
+>> +             * 2 == 4 pkt
+>> +             * 3 pkt is not supported
+>> +             * above translates to ffs() - 1
+>> +             */
+>> +            reg |= (ffs(dsc->pkt_per_line) - 1) << 6;
+>> +
+>> +            dsc->eol_byte_num = total_bytes_per_intf % 3;
+>> +            reg |= dsc->eol_byte_num << 4;
+>> +            reg |= 1;
+>> +
+>> +            dsi_write(msm_host,
+>> +                  REG_DSI_VIDEO_COMPRESSION_MODE_CTRL, reg);
+>> +        }
+>> +
+>>           dsi_write(msm_host, REG_DSI_ACTIVE_H,
+>>               DSI_ACTIVE_H_START(ha_start) |
+>>               DSI_ACTIVE_H_END(ha_end));
+>> @@ -959,8 +1034,40 @@ static void dsi_timing_setup(struct msm_dsi_host 
+>> *msm_host, bool is_bonded_dsi)
+>>               DSI_ACTIVE_VSYNC_VPOS_START(vs_start) |
+>>               DSI_ACTIVE_VSYNC_VPOS_END(vs_end));
+>>       } else {        /* command mode */
+>> +        if (msm_host->dsc) {
+>> +            struct msm_display_dsc_config *dsc = msm_host->dsc;
+>> +            u32 reg, reg_ctrl, reg_ctrl2;
+>> +            u32 slice_per_intf, bytes_in_slice, total_bytes_per_intf;
+>> +
+>> +            reg_ctrl = dsi_read(msm_host, 
+>> REG_DSI_COMMAND_COMPRESSION_MODE_CTRL);
+>> +            reg_ctrl2 = dsi_read(msm_host, 
+>> REG_DSI_COMMAND_COMPRESSION_MODE_CTRL2);
+>> +
+>> +            slice_per_intf = DIV_ROUND_UP(hdisplay, 
+>> dsc->drm->slice_width);
+>> +            bytes_in_slice = DIV_ROUND_UP(dsc->drm->slice_width *
+>> +                              dsc->drm->bits_per_pixel, 8);
+>> +            dsc->drm->slice_chunk_size = bytes_in_slice;
+>> +            total_bytes_per_intf = dsc->bytes_in_slice * slice_per_intf;
+>> +            dsc->pkt_per_line = slice_per_intf / dsc->drm->slice_count;
+>> +
+>> +            reg = 0x39 << 8;
+>> +            reg |= ffs(dsc->pkt_per_line) << 6;
+>> +
+>> +            dsc->eol_byte_num = total_bytes_per_intf % 3;
+>> +            reg |= dsc->eol_byte_num << 4;
+>> +            reg |= 1;
+>> +
+>> +            reg_ctrl |= reg;
+>> +            reg_ctrl2 |= bytes_in_slice;
+>> +
+>> +            dsi_write(msm_host, 
+>> REG_DSI_COMMAND_COMPRESSION_MODE_CTRL, reg);
+>> +            dsi_write(msm_host, 
+>> REG_DSI_COMMAND_COMPRESSION_MODE_CTRL2, reg_ctrl2);
+>> +        }
+>> +
+>>           /* image data and 1 byte write_memory_start cmd */
+>> -        wc = hdisplay * dsi_get_bpp(msm_host->format) / 8 + 1;
+>> +        if (!msm_host->dsc)
+>> +            wc = hdisplay * dsi_get_bpp(msm_host->format) / 8 + 1;
+>> +        else
+>> +            wc = mode->hdisplay / 2 + 1;
+>>           dsi_write(msm_host, REG_DSI_CMD_MDP_STREAM0_CTRL,
+>>               DSI_CMD_MDP_STREAM0_CTRL_WORD_COUNT(wc) |
+>> @@ -2051,9 +2158,13 @@ int msm_dsi_host_modeset_init(struct 
+>> mipi_dsi_host *host,
+>>   {
+>>       struct msm_dsi_host *msm_host = to_msm_dsi_host(host);
+>>       const struct msm_dsi_cfg_handler *cfg_hnd = msm_host->cfg_hnd;
+>> +    struct msm_drm_private *priv;
+>>       int ret;
+>>       msm_host->dev = dev;
+>> +    priv = dev->dev_private;
+>> +    priv->dsc = msm_host->dsc;
 > 
-> This looks odd to me.
+> I have been thinking about this piece. I highly dislike the priv->dsc 
+> field for multiple reasons.
 > 
-> Why do we need an empty node? If this is the topmost power-zone, 
-
-Yes it is
-
-> it
-> should still have the #powerzone-cells specifier, I think.
-
-Ok, makes sense
-
->> +
->> +      PKG_PZ: pkg {
+> Please correct me if I'm wrong, we use it for several reasons:
+> - to check if DSC is requested at all
+> - to store the dsc_mask
 > 
-> As I stated above, I would prefer some kind of common pattern of the
-> subnode names. Maybe "pkg-powerzone"?
-
-Ok, may be 'powerzone-pkg' to be consistent with the power-domains pattern?
-
->> +        #powerzone-cells = <0>;
->> +        powerzone = <&SOC_PZ>;
->> +      };
->> +
->> +      BIG_PZ: big {
->> +        #powerzone-cells = <0>;
->> +        powerzone = <&PKG_PZ>;
->> +      };
->> +
->> +      GPU_PZ: gpu {
->> +        #powerzone-cells = <0>;
->> +        powerzone = <&PKG_PZ>;
->> +      };
->> +
->> +      MULTIMEDIA_PZ: multimedia {
->> +        #powerzone-cells = <0>;
->> +        powerzone = <&SOC_PZ>;
->> +      };
->> +    };
->> +
->> +  - |
->> +    A57_0: big@0 {
->> +      compatible = "arm,cortex-a57";
->> +      reg = <0x0 0x0>;
->> +      device_type = "cpu";
->> +      #powerzone-cells = <0>;
->> +      powerzone = <&BIG_PZ>;
+> The DSC mask should be calculated basing on dpu_encoder_virt->hw_dsc[] 
+> values, so it can be removed from msm_display_dsc_config.
 > 
-> Just to make sure I understand correctly. The big@0 node is a
-> powerzone provider too? Or did you mean to specify it as a consumer?
+> To check whether DSC is enabled, I'd suggest the following:
+> 
+> - Add use_dsc flag to struct msm_display_info.
+>    This way it would be generic to all possible encoders which can use DSC.
+> 
+> - Add struct msm_dsi_has_dsc_panel() function.
+>    It checks whether msm_host has ->dsc data. Feel free to change the 
+> name of the function to better suit your style.
+> 
+> - Call msm_dsi_has_dsc_panel() from _dpu_kms_initialize_dsi().
+>    If DSC is requested, set info->use_dsc.
+> 
+> - In dpu_encoder_setup store use_dsc in struct dpu_encoder_virt() and 
+> use it later instead of checking priv->dsc.
 
-I'm not sure 'provider' or 'consumer' make sense in this context.
+I forgot about the patch 2, which actually uses priv->dsc data. The 
+overall idea would be the same, get data pointer from msm_dsi and pass 
+it through the msm_display_info.
 
-big@0 is a powerzone we can act on and its parent is the BIG_PZ powerzone.
+> 
+> WDYT?
+> 
+> 
+>> +
+>>       ret = cfg_hnd->ops->tx_buf_alloc(msm_host, SZ_4K);
+>>       if (ret) {
+>>           pr_err("%s: alloc tx gem obj failed, %d\n", __func__, ret);
+>>
+> 
+> 
 
-However this description is correct but confusing.
-
-Given big@0 and big@1 belong to the big 'cluster' and when we act on the
-performance state of big@0, big@1 is also changed, the correct
-description would be:
-
-    A57_0: big@0 {
-      compatible = "arm,cortex-a57";
-      reg = <0x0 0x0>;
-      device_type = "cpu";
-      #powerzone-cells = <0>;
-      powerzone = <&PKG_PZ>;
-    };
-
-    A57_1: big@1 {
-      compatible = "arm,cortex-a57";
-      reg = <0x0 0x0>;
-      device_type = "cpu";
-      #powerzone-cells = <0>;
-      powerzone = <&PKG_PZ>;
-    };
-
-If in the future, there will be a performance domain per core, then the
-former description above would make sense.
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+With best wishes
+Dmitry
