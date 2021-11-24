@@ -2,124 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BAC45C721
+	by mail.lfdr.de (Postfix) with ESMTP id BABEE45C722
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:18:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355798AbhKXOVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:21:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45074 "EHLO
+        id S1355817AbhKXOVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:21:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357876AbhKXOUn (ORCPT
+        with ESMTP id S1350704AbhKXOVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:20:43 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E22EDC111928
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 04:44:44 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id e136so6939191ybc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 04:44:44 -0800 (PST)
+        Wed, 24 Nov 2021 09:21:04 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08EEC11223C
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 04:46:59 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id y13so9749644edd.13
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 04:46:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=6YcgzZLwDUNcL02PHE9Uaenl/CwhsN1SwBv9B1Ruuzc=;
-        b=eo3Rc02HwuWVktpOIxv+10QH9q901HbfiAdG925qhXSyAdU5Tpdm6+D2e55a67DWhJ
-         zAXb/sN2oDHTRAncZ5KFNY+yw5oOT4J0yZMVDgUl+HN6HjR+Zb7olKXgmRfMsGLQyrBg
-         u5XAg51I5akwR8REPC6Ux9GjZHA+l3+yULmXTWwJJ3TJzKGTh1bk92wu3iPadLuEwckb
-         Alh9sQuApLdhl2b4zJ/sxeU8KP+Tmv3EloyPoB7WplvZ3pp7lvqvSWhPULsF35JWMtIi
-         9p5epIEEXrS7JX+LAHKjDqIqYJ6/zagARF5ePSp3dVvVUir+cYQzZ/IWa+qi0wgBjQJb
-         A0BQ==
+         :cc;
+        bh=QNxbdxvY1XGwJO5BhsvGP2g9FnaYCe6z/c5imeKTCQc=;
+        b=JAO/GeWYxrwEZ+KX7CN1FibY0RaYaYDktQMXfAGDm6HVGGFB8u3qG7/sKMMalnK5V/
+         y+nL/khR63DpUwXJpS1dhQQV6ddEDo9nbmUBxbrwsGjbof5O4fOcSJgRfc9f2gdDx8Ye
+         5GZhrudR0PunvfEXr9OgrZEdnJ9KRMq154DpIDlQ8CY6cXdv7DSbAegAX8vkhR/mh505
+         JzdqlAUdf1b1BgOwmLbU2B1PziiNESeZ2vUty/cbK/DiWTjLvMQtq5bypBCcLiOkBr9a
+         aHYFAxW7X6PzMqlmsJCe4aVB6M9Zl274zvr6M/C4Ht0BgSTT4Cu4prTQzU/bXfYwIZl9
+         3o7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6YcgzZLwDUNcL02PHE9Uaenl/CwhsN1SwBv9B1Ruuzc=;
-        b=dQMrY4NfVk5fEYubUqlfH1zN/zqdrMjHS/SvcPmWDY+kfK5v3e9CTkbLRSoLcNb9HO
-         sniu5MGm/cHAZIu5LYVbAckkvlBVMkdUFhJQmUkcWI2DtZxGjScSjFny8o9Lf/q0PXPh
-         2p6O5kSm+xRvTs6buX1QL3t6fxzNxFkeJrhOSnOfNdkPiyxPTyVkhR/VvitpI0esmyPJ
-         t9sLzY+BYKulDZTxPK3OG5XJQBDbCc6HsfTe2/406o8xLTz1lnA6/DpXpEVuGrcRyBXo
-         Vj0EwW3+aABfq/UoDpm6FQnmq8/a9Q2XhmJDSeyqmQAvHrOFGMLTXOjkcsBFX5jmXUnT
-         Hnfg==
-X-Gm-Message-State: AOAM532TjZUIGYOBT1wB6LFv67m07fmJqSuv1uFqiCXK8l6C8KgFvm/9
-        2mh9t/UF0ssbGCbvexyl3W6jCBaFoAfH1xvTqgI=
-X-Google-Smtp-Source: ABdhPJysYTZnsf7KZmH2S6chrFbipTzxZtp2LIae4nRuHTZSh4Lg/2XMgNatlNQNMjW97PSDu9QTKTA1qcAgFyAK6VY=
-X-Received: by 2002:a25:45:: with SMTP id 66mr18207748yba.464.1637757883804;
- Wed, 24 Nov 2021 04:44:43 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=QNxbdxvY1XGwJO5BhsvGP2g9FnaYCe6z/c5imeKTCQc=;
+        b=03cRkx4f4Tf1N9n9sRuYHnxcW2sZUjX2cE/2HCcj94kj0bOFFgZEmE9wU7WpBVgrFE
+         T7CTsV9QiQEQdhm7Qee4pavU0dXzkmstM7LW03llrGwtgfD7D0FUbe1Osw5KCgu2hRo+
+         J2PcqK3y2H1smPf18ISxQz0SjZOhJVjT5c77WlzldMsSQ1RcwGRIgMcyfNhpSP83U5K9
+         qX23CX4J0VSbxqDMoe+0ok+N981BlOx4QgdHTvkjbox4gPCn+OPbho5JC+tjB3GMs+v9
+         X4g24vlAv/OlJ8HkAbvz3ngMArIbE+hDzRjXqcf3mJAOhxcEbc0bTig5pRlGlDJwaCAV
+         VAlA==
+X-Gm-Message-State: AOAM532d6LefK46KgF8YKervmjPjnmN8RpRReNzgpARUDbiasj7VeOtF
+        Xe7zVVV9fQZBkXWU7T8ocYZlHeI+mDORQ4Ma1QmVEw==
+X-Google-Smtp-Source: ABdhPJyA+W15t1CjEV/znDfMRF9pbH794hXE1Mz4w5XFk6DeON2vEQHijf1ymInLVeDutAJkzB74uutR0+T/MJu13wM=
+X-Received: by 2002:a05:6402:1e93:: with SMTP id f19mr24830673edf.60.1637758018580;
+ Wed, 24 Nov 2021 04:46:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20211124021325.858139-1-knaerzche@gmail.com> <2895944.ZOkXcVNkQQ@diego>
-In-Reply-To: <2895944.ZOkXcVNkQQ@diego>
-From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Wed, 24 Nov 2021 07:44:32 -0500
-Message-ID: <CAMdYzYo=6H3NaBDZ2rQnDUr89rnA0rvxWGfEbRP6sQGt7+vB3w@mail.gmail.com>
-Subject: Re: [PATCH] iommu/rockchip: Fix PAGE_DESC_HI_MASKs for RK3568
-To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Alex Bee <knaerzche@gmail.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        iommu <iommu@lists.linux-foundation.org>,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210518155013.45622-1-andriy.shevchenko@linux.intel.com>
+ <20210518232451.GA7362@sol> <YKTCDNcyUlrgE0Y4@smile.fi.intel.com>
+ <20210519080434.GA22854@sol> <YKTMninSSY3MK6Hf@smile.fi.intel.com>
+ <CAMpxmJVJBx2J87bS0CUYPyJkHKt=nvFw65y_+iG-5JbVekuaqw@mail.gmail.com>
+ <CAHp75VdZ3aws3G=4_r82LMfuMNmNdLoBpqRsfF_ogZ7c=vyTsQ@mail.gmail.com>
+ <CAMpxmJVy12at1+37iPiqTXe6mvodUpjDKCkFQO02Cu=u5_sp_A@mail.gmail.com> <YZ0928wfsYIBJYcQ@smile.fi.intel.com>
+In-Reply-To: <YZ0928wfsYIBJYcQ@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 24 Nov 2021 13:46:47 +0100
+Message-ID: <CAMRc=McPGR4xejGWxCUkEsNiOmwkf1kctXB-K73xU9q3r7+CFA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] gpiolib: Never return internal error codes to user space
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Suresh Balakrishnan <suresh.balakrishnan@intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 5:36 AM Heiko St=C3=BCbner <heiko@sntech.de> wrote:
+On Tue, Nov 23, 2021 at 8:16 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
 >
-> Am Mittwoch, 24. November 2021, 03:13:25 CET schrieb Alex Bee:
-> > With the submission of iommu driver for RK3568 a subtle bug was
-> > introduced: PAGE_DESC_HI_MASK1 and PAGE_DESC_HI_MASK2 have to be
-> > the other way arround - that leads to random errors, especially when
-> > addresses beyond 32 bit are used.
+> On Thu, May 20, 2021 at 04:39:50PM +0200, Bartosz Golaszewski wrote:
+> > On Thu, May 20, 2021 at 3:15 PM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > >
+> > > On Thu, May 20, 2021 at 4:08 PM Bartosz Golaszewski
+> > > <bgolaszewski@baylibre.com> wrote:
+> > > > On Wed, May 19, 2021 at 10:30 AM Andy Shevchenko
+> > > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > > On Wed, May 19, 2021 at 04:04:34PM +0800, Kent Gibson wrote:
+> > > > > > On Wed, May 19, 2021 at 10:45:16AM +0300, Andy Shevchenko wrote:
+> > > > > > > On Wed, May 19, 2021 at 07:24:51AM +0800, Kent Gibson wrote:
+> > > > > > > > On Tue, May 18, 2021 at 06:50:12PM +0300, Andy Shevchenko wrote:
+> > >
+> > > ...
+> > >
+> > > > > > > > > Fixes: d7c51b47ac11 ("gpio: userspace ABI for reading/writing GPIO lines")
+> > > > > > > > > Fixes: 61f922db7221 ("gpio: userspace ABI for reading GPIO line events")
+> > > > > > > > > Fixes: 3c0d9c635ae2 ("gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL and GPIO_V2_LINE_GET_VALUES_IOCTL")
+> > >
+> > > ...
+> > >
+> > > > > > > > You immediately revert this patch in patch 2.
+> > > > > > > > My understanding is that is not allowed within a patch set.
+> > > > > > >
+> > > > > > > > Why split the patches instead of going direct to the new helper?
+> > > > > > >
+> > > > > > > It's for backporting to make it easier. (I deliberately left the context above)
+> > > > > > >
+> > > > > > > I can fold them if maintainers think it's okay to do.
+> > > > > > >
+> > > > > >
+> > > > > > Not sure what the constraints are on backporting, but wouldn't it be
+> > > > > > simpler and cleaner to backport the new helper?
+> > > > >
+> > > > > Logically (and ideally) it would be three different patches:
+> > > > >  1) introduce helper
+> > > > >  2) use helper
+> > > > >  3) fix places where it's needed to be done
+> > > > >
+> > > > > But the above scheme doesn't fit backporting idea (we don't backport new
+> > > > > features and APIs without really necessity). So, the options left are:
+> > > > >
+> > > > > Option a: One patch (feels a bit like above)
+> > > > > Option b: Two patches like in this series (yes, you are correct about
+> > > > >           disadvantages)
+> > > > >
+> > > > > > But, as you say, it is the maintainers' call.
+> > >
+> > > > Third option is to backport this patch but apply the helper
+> > > > immediately to master.
+> > >
+> > > If I got you correctly, you want to have two patches, one for
+> > > backporting and one for current, correct? But how can we backport
+> > > something which has never been upstreamed?
+> > >
 > >
-> > Fix it.
-> >
-> > Fixes: c55356c534aa ("iommu: rockchip: Add support for iommu v2")
-> > Signed-off-by: Alex Bee <knaerzche@gmail.com>
-> > ---
-> >
-> > I've found this bug, when testing the recent VOP2 submission, which is
-> > the first perpherial which uses iommu for RK356x. I could use it on my
-> > quartz64 8GB board only, when limiting the available memory to less 4GB=
-.
-> >
-> > This patch fixes it.
-> >
-> >  drivers/iommu/rockchip-iommu.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/iommu/rockchip-iommu.c b/drivers/iommu/rockchip-io=
-mmu.c
-> > index 5cb260820eda..7f23ad61c094 100644
-> > --- a/drivers/iommu/rockchip-iommu.c
-> > +++ b/drivers/iommu/rockchip-iommu.c
-> > @@ -200,8 +200,8 @@ static inline phys_addr_t rk_dte_pt_address(u32 dte=
-)
-> >  #define DTE_HI_MASK2 GENMASK(7, 4)
-> >  #define DTE_HI_SHIFT1        24 /* shift bit 8 to bit 32 */
-> >  #define DTE_HI_SHIFT2        32 /* shift bit 4 to bit 36 */
-> > -#define PAGE_DESC_HI_MASK1   GENMASK_ULL(39, 36)
-> > -#define PAGE_DESC_HI_MASK2   GENMASK_ULL(35, 32)
-> > +#define PAGE_DESC_HI_MASK1   GENMASK_ULL(35, 32)
-> > +#define PAGE_DESC_HI_MASK2   GENMASK_ULL(39, 36)
+> > Well we would not technically backport anything - there would be one
+> > patch for mainline and a separate fix for stable.
 >
-> With this change the PAGE_DESC_HI_MASK* now match the other
-> constants above them in what bits they access, so
->
-> Reviewed-by: Heiko Stuebner <heiko@sntech.de>
->
->
+> So, what should I do here?
 
-Tested on the quartz64-a board with the experimental vop2 driver,
-confirmed it fixed the issue.
+Send a separate patch for stable branches that fixes the issue and
+fold this patch into the next one in the series for master.
 
-Tested-by: Peter Geis <pgwipeout@gmail.com>
-
->
->
->
-> _______________________________________________
-> Linux-rockchip mailing list
-> Linux-rockchip@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-rockchip
+Bart
