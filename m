@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 830F845C1D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:19:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC7345C1CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344304AbhKXNWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:22:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42144 "EHLO mail.kernel.org"
+        id S1345670AbhKXNVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:21:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349391AbhKXNTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1349388AbhKXNTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 08:19:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D62E61AE1;
-        Wed, 24 Nov 2021 12:46:17 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8388C61AF7;
+        Wed, 24 Nov 2021 12:46:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757978;
-        bh=koakP1kq5ghA8PaKPOtqW/BoN7OP8N9bVeyGs9jDBWM=;
+        s=korg; t=1637757981;
+        bh=yRU2nC94K7wNrUtgKiFvZusWJJCgd3iynH7iUVZAMW8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KPDcQJemkDGRjNDeGn1I1MRzbNUVbCx0bj1JiwhlT6LpoZSH5H145NwjQXQhU6XCT
-         yvd9bKZmTWTWz63SEs9iWOwCb1Gg+/n6PEY/0Vkk2rhzsoXac0QvU2zWU2K9sR8T88
-         GHYwt0Oe3UXmVfDG9+roNoAbestDR4QMd6MdOcm4=
+        b=IoBlAAKxinG1f7q5bS+qg0z0zplK7RUHXBtv//Af2hcq+9irJ6371aZuUjtHILbjj
+         /Z3lQ/+c/UjzKMeQ2B071yvBC/x8m6nvVfZVGc2hMQ/DAcBI13Rrmhj2i1/EoV3xh0
+         bWx/Xexd/ruScxMmlUirsW8/s1W7PKWzHBGhM7N0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
+        stable@vger.kernel.org, Roger Quadros <rogerq@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 016/100] firmware_loader: fix pre-allocated buf built-in firmware use
-Date:   Wed, 24 Nov 2021 12:57:32 +0100
-Message-Id: <20211124115655.386389099@linuxfoundation.org>
+Subject: [PATCH 5.4 017/100] ARM: dts: omap: fix gpmc,mux-add-data type
+Date:   Wed, 24 Nov 2021 12:57:33 +0100
+Message-Id: <20211124115655.418167683@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
 References: <20211124115654.849735859@linuxfoundation.org>
@@ -39,81 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luis Chamberlain <mcgrof@kernel.org>
+From: Roger Quadros <rogerq@kernel.org>
 
-[ Upstream commit f7a07f7b96033df7709042ff38e998720a3f7119 ]
+[ Upstream commit 51b9e22ffd3c4c56cbb7caae9750f70e55ffa603 ]
 
-The firmware_loader can be used with a pre-allocated buffer
-through the use of the API calls:
+gpmc,mux-add-data is not boolean.
 
-  o request_firmware_into_buf()
-  o request_partial_firmware_into_buf()
+Fixes the below errors flagged by dtbs_check.
 
-If the firmware was built-in and present, our current check
-for if the built-in firmware fits into the pre-allocated buffer
-does not return any errors, and we proceed to tell the caller
-that everything worked fine. It's a lie and no firmware would
-end up being copied into the pre-allocated buffer. So if the
-caller trust the result it may end up writing a bunch of 0's
-to a device!
+"ethernet@4,0:gpmc,mux-add-data: True is not of type 'array'"
 
-Fix this by making the function that checks for the pre-allocated
-buffer return non-void. Since the typical use case is when no
-pre-allocated buffer is provided make this return successfully
-for that case. If the built-in firmware does *not* fit into the
-pre-allocated buffer size return a failure as we should have
-been doing before.
-
-I'm not aware of users of the built-in firmware using the API
-calls with a pre-allocated buffer, as such I doubt this fixes
-any real life issue. But you never know... perhaps some oddball
-private tree might use it.
-
-In so far as upstream is concerned this just fixes our code for
-correctness.
-
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-Link: https://lore.kernel.org/r/20210917182226.3532898-2-mcgrof@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Roger Quadros <rogerq@kernel.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/firmware_loader/main.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi         | 2 +-
+ arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/base/firmware_loader/main.c b/drivers/base/firmware_loader/main.c
-index 249349f64bfe9..4f6b76bd957ef 100644
---- a/drivers/base/firmware_loader/main.c
-+++ b/drivers/base/firmware_loader/main.c
-@@ -98,12 +98,15 @@ static struct firmware_cache fw_cache;
- extern struct builtin_fw __start_builtin_fw[];
- extern struct builtin_fw __end_builtin_fw[];
+diff --git a/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi b/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
+index 7f6aefd134514..e7534fe9c53cf 100644
+--- a/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
++++ b/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
+@@ -29,7 +29,7 @@
+ 		compatible = "smsc,lan9221","smsc,lan9115";
+ 		bank-width = <2>;
  
--static void fw_copy_to_prealloc_buf(struct firmware *fw,
-+static bool fw_copy_to_prealloc_buf(struct firmware *fw,
- 				    void *buf, size_t size)
- {
--	if (!buf || size < fw->size)
--		return;
-+	if (!buf)
-+		return true;
-+	if (size < fw->size)
-+		return false;
- 	memcpy(buf, fw->data, fw->size);
-+	return true;
- }
+-		gpmc,mux-add-data;
++		gpmc,mux-add-data = <0>;
+ 		gpmc,cs-on-ns = <0>;
+ 		gpmc,cs-rd-off-ns = <42>;
+ 		gpmc,cs-wr-off-ns = <36>;
+diff --git a/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi b/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi
+index e5da3bc6f1050..218a10c0d8159 100644
+--- a/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi
++++ b/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi
+@@ -22,7 +22,7 @@
+ 		compatible = "smsc,lan9221","smsc,lan9115";
+ 		bank-width = <2>;
  
- static bool fw_get_builtin_firmware(struct firmware *fw, const char *name,
-@@ -115,9 +118,7 @@ static bool fw_get_builtin_firmware(struct firmware *fw, const char *name,
- 		if (strcmp(name, b_fw->name) == 0) {
- 			fw->size = b_fw->size;
- 			fw->data = b_fw->data;
--			fw_copy_to_prealloc_buf(fw, buf, size);
--
--			return true;
-+			return fw_copy_to_prealloc_buf(fw, buf, size);
- 		}
- 	}
- 
+-		gpmc,mux-add-data;
++		gpmc,mux-add-data = <0>;
+ 		gpmc,cs-on-ns = <0>;
+ 		gpmc,cs-rd-off-ns = <42>;
+ 		gpmc,cs-wr-off-ns = <36>;
 -- 
 2.33.0
 
