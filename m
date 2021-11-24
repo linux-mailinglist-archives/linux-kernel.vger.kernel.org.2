@@ -2,115 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 179BE45C997
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D75B45C994
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:11:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243084AbhKXQOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:14:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242904AbhKXQOe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:14:34 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C62C061574;
-        Wed, 24 Nov 2021 08:11:24 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id x15so12771810edv.1;
-        Wed, 24 Nov 2021 08:11:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IdT054fgF5Go5Tp2w6Oh+T0wAIQHsnCjYK9mImRrklE=;
-        b=A/8bkpxbZZpO+Pe3nOl8dYlgS2nvzghkIsBTfjQb8Wt6unsftdIWw86X0Z/Dgwmogv
-         k4yO67vVcHeg7uvLbj9cgDenVDHDOKBgdi9yVKFS368fyIx0eDGfCCQVxVgtQhETFcoD
-         SYLPamsbZV6yFSAYKcmzsInnf6fESBGznUQtY5mlpyRkXictIOsDz34+mHn24iH/7Yer
-         SIKnUrYrtsZnqh3zbaqf+EVN1a/U0CbniTtIP1v+iSRDHywKF+lC5IYtFSZ2jhQUnnG2
-         NNlImNcUAzc5WvSBimSmk3sDvuIRQC6b+ditxU1ia7uTtt61pqrE+okO58zSY8yNrC5W
-         D3Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IdT054fgF5Go5Tp2w6Oh+T0wAIQHsnCjYK9mImRrklE=;
-        b=j5XNwk18gtZTJs7EKOH2TT/3kTVUxJTeXovN9zAVrNGlv4McGzMBF+VYmshw3cQh5E
-         EN+VRiPpdmCloBQemgI0OwBMoiwg+MiexhQ2+yE5kXY01MTqyxuXMJyuPsTO3Wui2rLN
-         rz96eoJYtCQBl78vyq/etK6QDurCQwjEGBvpXj1UcWcf9bNCOZ2pOw4niI/AICjjiyw5
-         IUxuhGIOUlrvEUgbjyPoGYUtXlScrAT3sCiwl46Vt0yePV4Plsy9d3ThgMvVORlEF4Ov
-         uFqzl4A+/s2LRPP4br1YAcatfIlrXWECOJkpkyxc8lqY0eezt4XWvL1o0r4MUJAHZwOv
-         W2xg==
-X-Gm-Message-State: AOAM530/IUP4kKtMAwkjHMnV4/MPYNdnr0/DgIvEG2i0f8xYakGhe749
-        OELVnE6dOqBlPBNnXgt6WwUbw3VJg6RrHhgjDmw=
-X-Google-Smtp-Source: ABdhPJxRb8Oz7UhK9YLtkRvO3XscN1dwlJW69e+0sHVByixXLWjl+Tp2+gCtzzu/NtpCkFV4l1cA9Hm9lRjAClMLiJo=
-X-Received: by 2002:a17:906:489b:: with SMTP id v27mr21265851ejq.567.1637770282840;
- Wed, 24 Nov 2021 08:11:22 -0800 (PST)
+        id S242913AbhKXQOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:14:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241850AbhKXQOR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 11:14:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDA1560555;
+        Wed, 24 Nov 2021 16:11:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637770267;
+        bh=mhLmVMbk0BJKOicWvUur/RgHJCebPGhLLSszX4OIlQc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rhlAhvby6NnTyGolJY8Vp+tuyzh93IQ1mn6oKfegqQhRDCv7FArcyMyzJz6lgXcxl
+         LKfJJqDQF2+ZEkHJxXxOwecLzfTfhZStMkQucNudsGXa0quW+O07n3BLypC2x100JJ
+         eHjpIQwuM2uOw7hxtJgW9JbPugMemc7dcih6lyNc=
+Date:   Wed, 24 Nov 2021 17:11:04 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thierry Reding <treding@nvidia.com>
+Subject: Re: [PATCH 5.10 000/154] 5.10.82-rc1 review
+Message-ID: <YZ5kGOT+ifbPgL+B@kroah.com>
+References: <20211124115702.361983534@linuxfoundation.org>
+ <CA+G9fYsmeKPRicvsjwT3gfQurf-k=15vm+kNCCKfOOoyAQE1oQ@mail.gmail.com>
+ <14fbe436-7bd0-5310-6e06-1c3b006b7916@gmail.com>
 MIME-Version: 1.0
-References: <20211122212850.321542-1-pauk.denis@gmail.com> <20211122212850.321542-3-pauk.denis@gmail.com>
-In-Reply-To: <20211122212850.321542-3-pauk.denis@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 24 Nov 2021 18:10:46 +0200
-Message-ID: <CAHp75Vfg7LKX-21+b6f5c34G4Y=ZUqrWRbfDt_quCiJe+By-Ww@mail.gmail.com>
-Subject: Re: [PATCH 2/3] hwmon: (nct6775) Implement custom lock by ACPI mutex.
-To:     Denis Pauk <pauk.denis@gmail.com>
-Cc:     Eugene Shalygin <eugene.shalygin@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        thomas@weissschuh.net, Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <14fbe436-7bd0-5310-6e06-1c3b006b7916@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +       if (ACPI_FAILURE(acpi_acquire_mutex(data->acpi_wmi_mutex, NULL, ASUSWMI_DELAY_MSEC_LOCK)))
+On Wed, Nov 24, 2021 at 06:27:43PM +0300, Dmitry Osipenko wrote:
+> 24.11.2021 18:16, Naresh Kamboju пишет:
+> > On Wed, 24 Nov 2021 at 18:21, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> >>
+> >> This is the start of the stable review cycle for the 5.10.82 release.
+> >> There are 154 patches in this series, all will be posted as a response
+> >> to this one.  If anyone has any issues with these being applied, please
+> >> let me know.
+> >>
+> >> Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
+> >> Anything received after that time might be too late.
+> >>
+> >> The whole patch series can be found in one patch at:
+> >>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.82-rc1.gz
+> >> or in the git tree and branch at:
+> >>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> >> and the diffstat can be found below.
+> >>
+> >> thanks,
+> >>
+> >> greg k-h
+> > 
+> > Regression found on arm gcc-11 builds
+> > As I have already reported,
+> > https://lore.kernel.org/stable/CA+G9fYskrxZvmrjhO32Q9r7mb1AtKdLBm4OvDNvt5v4PTgm4pA@mail.gmail.com/
+> > 
+> > drivers/cpuidle/cpuidle-tegra.c: In function 'tegra_cpuidle_probe':
+> > drivers/cpuidle/cpuidle-tegra.c:349:38: error:
+> > 'TEGRA_SUSPEND_NOT_READY' undeclared (first use in this function); did
+> > you mean 'TEGRA_SUSPEND_NONE'?
+> >   349 |  if (tegra_pmc_get_suspend_mode() == TEGRA_SUSPEND_NOT_READY)
+> >       |                                      ^~~~~~~~~~~~~~~~~~~~~~~
+> >       |                                      TEGRA_SUSPEND_NONE
+> > 
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > 
+> > Due to the following patch,
+> > 
+> > cpuidle: tegra: Check whether PMC is ready
+> > [ Upstream commit bdb1ffdad3b73e4d0538098fc02e2ea87a6b27cd ]
+> 
+> Hi Greg and all,
+> 
+> Greg, could you please drop this patch from the stable trees? It
+> shouldn't be backported since the actual offending patch which causes
+> the "fixed" problem is still pending to be merged. I assumed that all
+> patches would be merged much earlier when was typing the commit message,
+> but only a part of patches were merged yet. Sorry for noticing this so late.
 
+Now dropped from both 5.15 and 5.10 queues, thanks.
 
-On Mon, Nov 22, 2021 at 11:29 PM Denis Pauk <pauk.denis@gmail.com> wrote:
-
-No period in the Subject.
-
-> Use ACPI lock when board has separate lock for monitoring IO.
-
-the board
-a separate
-
-...
-
-> +#define ASUSWMI_DELAY_MSEC_LOCK                500     /* Wait 0.5 s max. to get the lock */
-
-Units are the last in the names, hence (also check the comment's
-location and English)
-
-/* Wait for up to 0.5 s to acquire the lock */
-#define ASUSWMI_LOCK_TIMEOUT_MS                500
-
-...
-
-> -       struct mutex update_lock;
-> +       struct mutex update_lock;       /* non ACPI lock */
-> +       acpi_handle acpi_wmi_mutex;     /* ACPI lock */
-
-Couldn't it be an anonymous union?
-
-...
-
-> +static int nct6775_wmi_lock(struct nct6775_data *data)
-> +{
-> +       if (ACPI_FAILURE(acpi_acquire_mutex(data->acpi_wmi_mutex, NULL, ASUSWMI_DELAY_MSEC_LOCK)))
-
-Please, use a temporary variable here and in the similar cases.
-
-  acpi_status status;
-
-  status = acpi_acquire_mutex(data->acpi_wmi_mutex, NULL,
-ASUSWMI_LOCK_TIMEOUT_MS));
-  if (ACPI_FAILURE(status))
-
-> +               return -EIO;
-> +
-> +       return 0;
-> +}
-
--- 
-With Best Regards,
-Andy Shevchenko
+greg k-h
