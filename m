@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C10D445C156
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:13:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B1145C38D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345499AbhKXNQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:16:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52020 "EHLO mail.kernel.org"
+        id S1350787AbhKXNkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:40:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348670AbhKXNNn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:13:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C96461A8C;
-        Wed, 24 Nov 2021 12:43:19 +0000 (UTC)
+        id S1352277AbhKXNhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:37:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E10C63214;
+        Wed, 24 Nov 2021 12:55:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757799;
-        bh=BK13YRtjt4xo0x18ZkuwYfFykbkco/riE+U0evPBdqM=;
+        s=korg; t=1637758552;
+        bh=lRPTUS005ve+oBZofRJLmAVkhHWw52d0yc4ha8/kfyk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mdLcdSq1s9kCXy5vLpFehaNExNxBqbRU63S4hCinkrMip1NCKZOpD4F4BFpYghIdt
-         GEeSThLwQsofXb+vGVY0Z2SXbCHbC3qm5mbinXBrA+EnUsBnmYpBuA7I3cqAzkHjCW
-         q0oRRH8VvGwwKEpGTVqZ7nFcRrbGNvbXwNdf3fv0=
+        b=HfgBM0aUHIWhFJWNNlQkbJrcJeXfd0HppYkLge653HSNUIiq3rKI9m5rSGrZQbhhk
+         ro5/FXlKmKHX3Q9wdeN8ESWkDZEffMlhKoyuKIrIq/Yf2WfhXwyE+GCx2yxmIaJSmP
+         B4oUkKxdyf1UnmRDdiFgC8CkJvCJYK6eIDTKKI10=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Lu Wei <luwei32@huawei.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Rich Felker <dalias@libc.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 280/323] maple: fix wrong return value of maple_bus_init().
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 074/154] net: bnx2x: fix variable dereferenced before check
 Date:   Wed, 24 Nov 2021 12:57:50 +0100
-Message-Id: <20211124115728.348518599@linuxfoundation.org>
+Message-Id: <20211124115704.725488506@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Wei <luwei32@huawei.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit bde82ee391fa6d3ad054313c4aa7b726d32515ce ]
+[ Upstream commit f8885ac89ce310570e5391fe0bf0ec9c7c9b4fdc ]
 
-If KMEM_CACHE or maple_alloc_dev failed, the maple_bus_init() will return 0
-rather than error, because the retval is not changed after KMEM_CACHE or
-maple_alloc_dev failed.
+Smatch says:
+	bnx2x_init_ops.h:640 bnx2x_ilt_client_mem_op()
+	warn: variable dereferenced before check 'ilt' (see line 638)
 
-Fixes: 17be2d2b1c33 ("sh: Add maple bus support for the SEGA Dreamcast.")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Lu Wei <luwei32@huawei.com>
-Acked-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Signed-off-by: Rich Felker <dalias@libc.org>
+Move ilt_cli variable initialization _after_ ilt validation, because
+it's unsafe to deref the pointer before validation check.
+
+Fixes: 523224a3b3cd ("bnx2x, cnic, bnx2i: use new FW/HSI")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/sh/maple/maple.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/sh/maple/maple.c b/drivers/sh/maple/maple.c
-index e5d7fb81ad665..44a931d41a132 100644
---- a/drivers/sh/maple/maple.c
-+++ b/drivers/sh/maple/maple.c
-@@ -835,8 +835,10 @@ static int __init maple_bus_init(void)
+diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h
+index 1835d2e451c01..fc7fce642666c 100644
+--- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h
++++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h
+@@ -635,11 +635,13 @@ static int bnx2x_ilt_client_mem_op(struct bnx2x *bp, int cli_num,
+ {
+ 	int i, rc;
+ 	struct bnx2x_ilt *ilt = BP_ILT(bp);
+-	struct ilt_client_info *ilt_cli = &ilt->clients[cli_num];
++	struct ilt_client_info *ilt_cli;
  
- 	maple_queue_cache = KMEM_CACHE(maple_buffer, SLAB_HWCACHE_ALIGN);
+ 	if (!ilt || !ilt->lines)
+ 		return -1;
  
--	if (!maple_queue_cache)
-+	if (!maple_queue_cache) {
-+		retval = -ENOMEM;
- 		goto cleanup_bothirqs;
-+	}
++	ilt_cli = &ilt->clients[cli_num];
++
+ 	if (ilt_cli->flags & (ILT_CLIENT_SKIP_INIT | ILT_CLIENT_SKIP_MEM))
+ 		return 0;
  
- 	INIT_LIST_HEAD(&maple_waitq);
- 	INIT_LIST_HEAD(&maple_sentq);
-@@ -849,6 +851,7 @@ static int __init maple_bus_init(void)
- 		if (!mdev[i]) {
- 			while (i-- > 0)
- 				maple_free_dev(mdev[i]);
-+			retval = -ENOMEM;
- 			goto cleanup_cache;
- 		}
- 		baseunits[i] = mdev[i];
 -- 
 2.33.0
 
