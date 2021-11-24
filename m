@@ -2,104 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7068445CD2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 20:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBBC345CD36
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 20:30:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350902AbhKXT3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 14:29:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60510 "EHLO
+        id S1351022AbhKXTd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 14:33:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245713AbhKXT27 (ORCPT
+        with ESMTP id S1351000AbhKXTdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 14:28:59 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425D6C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 11:25:49 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id v1so15169773edx.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 11:25:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=873SPxeNA6JXInk6khcBXN9ezsJz8m714DvHOFVFS2M=;
-        b=kabwsTT/rFSwL3dAYZjimjtvmywcoxqcKgug4Wup2CrsB4RMRxzdONr/GYQr8PVpRy
-         7qErPsOrJXkyktDwdog9v70J9sm2S/Bq6zcIUyHwnaZeJGv8bEhJFCXKBy8rWmAfzTpD
-         +XPye37nTw8mFmfWDsz7MwYweHTUhcPkGuVZofDUJ6xK7IwYHfbGFPuPgAU8jkyxZFtg
-         dn2oCNuY8gQ+1ATtvRUCDhbaQmAPEvvHonsJbt8KVaMwqXn9aq9QKQDGY0k9ExkDIt8k
-         +rx9OnfPeG070urnYn4M8Z6PDgCLfkIZuzN5ZcXOoNBdt4VIqbvoD5IalwYrAUBI7fcz
-         6ZAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=873SPxeNA6JXInk6khcBXN9ezsJz8m714DvHOFVFS2M=;
-        b=YDGov2X3LUVEHBCYR1vBPsff3samgu+4rRwvrQZ7dJSB9naVCOG5I0EGw/5o0f3aWd
-         qIvNJPS/OWyxcKjYUo/XPyF4AXOu4squ2F7t1abeF8Ac1xNJjnFOot/ykGimXWTSpVSK
-         ghl5Bgn2FWmg7Gv3FbGT2OLLXZanmR1Kp/KlQcwVN9XpP5+HP2WnmlzhDD3qlH+gGaGM
-         1NE4b/XpZpR1YeM/aR3T0L9qYet3xnTmOMkiJZ0aS8kRFYpv0DarEJxu+kgfZ1SXf+cV
-         rRvl7LIIZABd7YiHwFugdcAdhVrIoCchDpz7EGVkrhfcfeOU+IZyfIvMEL2bhmyUfAdr
-         jTkg==
-X-Gm-Message-State: AOAM533+7fuIYu2Tv9nBUGo68KwX5FC3nb9Zd3IGTaI5GSOo30JccFOy
-        wHtU1XxFiLPj0EyL09MaP3rcznOZTWzarxcH2g5kGYkx1UQ=
-X-Google-Smtp-Source: ABdhPJythNnDIo19l+ICorPmwMLGk6J5jYSiEig7KISjE0UnvrBGxvNRd7grnujykNRUIlratFWfp/Yk4puWS0BTeBg=
-X-Received: by 2002:a50:fb09:: with SMTP id d9mr29102779edq.283.1637781947799;
- Wed, 24 Nov 2021 11:25:47 -0800 (PST)
+        Wed, 24 Nov 2021 14:33:14 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88983C061574;
+        Wed, 24 Nov 2021 11:30:04 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637782202;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LYogUZz5SCgK/KWX9KT7zTNAuMHBvkv1vFcTH7JmwzE=;
+        b=iFHR8vN0YSSvuY+/FEqOWS04ELNvnlIINtGmzBvpgvoW0RJXJNsuHQmBfMj2iA4ZMko4H2
+        60BmO1srcUsxSyxf3b8VwniTwrU4MW5HYIXnO89hYIS7P1Dv+dfsCPnYU7rnP5wpbTitY0
+        d+Uog0bcMrja6eQpc+n+YlkcbsQy9imG2hGFjxPQyYFnX6EtIaVaRi/GO9kEUtQ+z/u24q
+        yeZsZgvknnYSXbkPASptJlMOrvr5vdukN69zMmHhXuYOWPC8Bsq0PCSq9rs+XpnYsjoU08
+        2MExB79kFbRR0fbL2JT4UdNRaQEHAcI3vik+kIMHnW4vn3C+t3gOgV0PnSzSIA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637782202;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LYogUZz5SCgK/KWX9KT7zTNAuMHBvkv1vFcTH7JmwzE=;
+        b=ZIXqIBgjBL4jcz44alU7iuZQZux6E74834ms00khTW9kWpyR41Bmv11e6hQ6i28s8f1em7
+        dHuN95+5/LDPrhBg==
+To:     Nitesh Lal <nilal@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        davem@davemloft.net, ajit.khaparde@broadcom.com,
+        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
+        huangguangbin2@huawei.com, huangdaode@huawei.com,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Alex Belits <abelits@marvell.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, rostedt@goodmis.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ingo Molnar <mingo@kernel.org>, jbrandeb@kernel.org,
+        akpm@linuxfoundation.org, sfr@canb.auug.org.au,
+        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
+        chris.friesen@windriver.com, Marc Zyngier <maz@kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com,
+        Stefan Assmann <sassmann@redhat.com>,
+        Tomas Henzl <thenzl@redhat.com>, james.smart@broadcom.com,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        Ken Cox <jkc@redhat.com>, faisal.latif@intel.com,
+        shiraz.saleem@intel.com, tariqt@nvidia.com,
+        Alaa Hleihel <ahleihel@redhat.com>,
+        Kamal Heib <kheib@redhat.com>, borisp@nvidia.com,
+        saeedm@nvidia.com,
+        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        Al Stone <ahs3@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
+        bjorn.andersson@linaro.org, chunkuang.hu@kernel.org,
+        yongqiang.niu@mediatek.com, baolin.wang7@gmail.com,
+        Petr Oros <poros@redhat.com>, Ming Lei <minlei@redhat.com>,
+        Ewan Milne <emilne@redhat.com>, jejb@linux.ibm.com,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        kabel@kernel.org, Viresh Kumar <viresh.kumar@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>, kashyap.desai@broadcom.com,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        shivasharan.srikanteshwara@broadcom.com,
+        sathya.prakash@broadcom.com,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        suganath-prabu.subramani@broadcom.com, ley.foon.tan@intel.com,
+        jbrunet@baylibre.com, johannes@sipsolutions.net,
+        snelson@pensando.io, lewis.hanly@microchip.com, benve@cisco.com,
+        _govind@gmx.com, jassisinghbrar@gmail.com
+Subject: Re: [PATCH v6 00/14] genirq: Cleanup the abuse of
+ irq_set_affinity_hint()
+In-Reply-To: <CAFki+L=9Hw-2EONFEX6b7k6iRX_yLx1zcS+NmWsDSuBWg8w-Qw@mail.gmail.com>
+References: <20210903152430.244937-1-nitesh@redhat.com>
+ <CAFki+L=9Hw-2EONFEX6b7k6iRX_yLx1zcS+NmWsDSuBWg8w-Qw@mail.gmail.com>
+Date:   Wed, 24 Nov 2021 20:30:01 +0100
+Message-ID: <87bl29l5c6.ffs@tglx>
 MIME-Version: 1.0
-References: <c31d36bd097c6e9e69fc0f409c43b78e53e64fc2.1637766801.git.baolin.wang@linux.alibaba.com>
-In-Reply-To: <c31d36bd097c6e9e69fc0f409c43b78e53e64fc2.1637766801.git.baolin.wang@linux.alibaba.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 24 Nov 2021 11:25:36 -0800
-Message-ID: <CAHbLzkr5sTz7w=SXjAwDBu77Fog2LuiXV7STY4nZ4j2o+LpAxw@mail.gmail.com>
-Subject: Re: [PATCH] mm: migrate: Add more comments for selecting target node randomly
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Zi Yan <ziy@nvidia.com>, zhongjiang-ali@linux.alibaba.com,
-        Xunlei Pang <xlpang@linux.alibaba.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 7:17 AM Baolin Wang
-<baolin.wang@linux.alibaba.com> wrote:
->
-> As Yang Shi suggested [1], it will be helpful to explain why we should
-> select target node randomly now if there are multiple target nodes.
->
-> [1] https://lore.kernel.org/all/CAHbLzkqSqCL+g7dfzeOw8fPyeEC0BBv13Ny1UVGHDkadnQdR=g@mail.gmail.com/
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> ---
->  mm/migrate.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index 8d39720de4eb..d9af89248196 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -1209,6 +1209,14 @@ int next_demotion_node(int node)
->                 /*
->                  * If there are multiple target nodes, just select one
->                  * target node randomly.
-> +                *
-> +                * In addition, we can also use round-robin to select
-> +                * target node, but we should introduce another variable
-> +                * for node_demotion[] to record last selected target node,
-> +                * that may cause cache ping-pong due to the changing of
-> +                * last target node. Or introducing per-cpu data to avoid
-> +                * caching issue, which seems more complicated. So selecting
-> +                * target node randomly seems better until now.
+Nitesh,
 
-Thank you.
+On Mon, Sep 13 2021 at 10:34, Nitesh Lal wrote:
+> On Fri, Sep 3, 2021 at 11:25 AM Nitesh Narayan Lal <nitesh@redhat.com> wrote:
+>>
+>> The drivers currently rely on irq_set_affinity_hint() to either set the
+>> affinity_hint that is consumed by the userspace and/or to enforce a custom
+>> affinity.
+>>
+>> irq_set_affinity_hint() as the name suggests is originally introduced to
+>> only set the affinity_hint to help the userspace in guiding the interrupts
+>> and not the affinity itself. However, since the commit
+>>
+>>         e2e64a932556 "genirq: Set initial affinity in irq_set_affinity_hint()"
 
-Reviewed-by: Yang Shi <shy828301@gmail.com>
+sorry for ignoring this. It fell through the cracks.
 
->                  */
->                 index = get_random_int() % target_nr;
->                 break;
-> --
-> 2.27.0
+>> Thomas Gleixner (1):
+>>   genirq: Provide new interfaces for affinity hints
+
+Did I actually write this?
+
+> Any suggestions on what should be the next steps here? Unfortunately, I haven't
+> been able to get any reviews on the following two patches:
+>   be2net: Use irq_update_affinity_hint
+>   hinic: Use irq_set_affinity_and_hint
 >
+> One option would be to proceed with the remaining patches and I can try
+> posting these two again when I post patches for the remaining drivers?
+
+The more general question is whether I should queue all the others or
+whether some subsystem would prefer to pull in a tagged commit on top of
+rc1. I'm happy to carry them all of course.
+
+Thanks,
+
+        tglx
+
+
