@@ -2,82 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F1A45CC52
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:41:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F016F45CC56
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:42:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244342AbhKXSop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 13:44:45 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:4294 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233126AbhKXSog (ORCPT
+        id S1350841AbhKXSph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 13:45:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233126AbhKXSph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 13:44:36 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AOCdIQr027676;
-        Wed, 24 Nov 2021 12:41:11 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=pU5oPDwNb51xbR+dqzWio0+9rLLGRpYPqGSN7CQkcY8=;
- b=aZbe45j202Nc0xlZuaTj/Qf7pHvwphYzyay91bSdBc/NH0lBIjEunMnFbNuXlo0ySJJx
- URM7YVi6Gec4V3wKh8GYBQjVRNNtnpM1J0vFfa1w5J/byxf0wvluUiQvYyJX6vW4GjwI
- sqS4D4Q/XAIZs30YkBSIXutQ51MLd6RMfe3zEs7eFuhrnwGpTwAd1lk/9g6JEQvnVVBM
- p8U+u/28mSM0S0CbXzBY7bd9OqgrsU2wxnIBsvNJwZ0/jy6aRSapg/u9Vv3rz4b7bXUA
- +hgZFv1Lvtv3+e8UxJqVN9kw7gvlUTSJzDijjZP++l0f2+JZjxj/I0iPujJ//4BcQ9bs ag== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3chb8wgx9n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 24 Nov 2021 12:41:11 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Wed, 24 Nov
- 2021 18:41:10 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via Frontend
- Transport; Wed, 24 Nov 2021 18:41:10 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 3FADB2A1;
-        Wed, 24 Nov 2021 18:41:10 +0000 (UTC)
-Date:   Wed, 24 Nov 2021 18:41:10 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     David Heidelberg <david@ixit.cz>
-CC:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        - <patches@opensource.cirrus.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        <~okias/devicetree@lists.sr.ht>, Rob Herring <robh@kernel.org>,
-        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: wlf,wm8962: add missing interrupt
- property
-Message-ID: <20211124184110.GH18506@ediswmail.ad.cirrus.com>
-References: <20211124155101.59694-1-david@ixit.cz>
+        Wed, 24 Nov 2021 13:45:37 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5517DC06173E
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:42:27 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id p18so2571870plf.13
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:42:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Pwawpo+EkZcExcPupTRBfhHZjZb8wx99L5UgcOvQmyI=;
+        b=hDEg/2nTH95H0650g/Do8ANLNdzsQ9P5yAFwCSDyQ9YCjuvtsVKt3uNhvZ42ai5B9b
+         yDtRhJ1kQC/yMevOU05TSAk0eD8HkNeA5/Kuzp1SzxCSbyNwfa2+7vIxEZZIkcZOCbaZ
+         bI7sOEPTqj+v22ztLE5mFP6OJMLvZBkXhSqCyekaQrvS3sloGevpS/6kKqjSgxFZzcyb
+         9kMAAHQu1VUacZbfui3Xm+6612MgAbXPx63kls7BS31eW0ewrs6tZSdnw4Rz2DFtswjH
+         Mz7ndkgy8EkOuRmf1UnReRZVWaVfo/wjUix0IFsH7na9U9Rjw4aOOg2pnjZcgFgN2Vif
+         FpiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Pwawpo+EkZcExcPupTRBfhHZjZb8wx99L5UgcOvQmyI=;
+        b=1fHrMoW2+qhh5zlfRDNELNasCPpI82JuPgl/uYVsORJNoQTOnKfM+wYAFPL4ffzuHo
+         VJ6TgRPMvGzWgJvAQpuHQHqu4et0TjtqMHHe635eEsVEMp8IFI4Ey1TwV0E/wMUw3oOH
+         CJoepwx15q/3rhSoDifzmZlh8a3JNGu5IN/xKU6Y5RW7+Y3HbDOMmvN08EJyDdg/NFYm
+         qulPlxhE5Wr2OdXI+OFTjyUyGmROOFDN3igXDoiAa8OjJ/S7//+vnRjpb2wuMU7cQlIC
+         CS7Hcpkq+9MDe2PLAP9rkzQulwX/AMpj5IJWe6xC5kySpOmwy+hgWA6LI8lkYf+CoGNT
+         8bmw==
+X-Gm-Message-State: AOAM533XvV4LHhSbqtkTnTU/gLOgpzi72DRGM+qpmgZY2q3r8GdYWSvA
+        2I3V8ikbHGrS5QUT1szC33gPwg==
+X-Google-Smtp-Source: ABdhPJw4qQRHMemr78TrNM8jzAWD2iXcYZVw/RKJ1cb794L0c0BhidicVrJTDPPZPpvzWwtGliAQKg==
+X-Received: by 2002:a17:90b:4c4d:: with SMTP id np13mr11842377pjb.233.1637779346639;
+        Wed, 24 Nov 2021 10:42:26 -0800 (PST)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id m15sm411819pfk.186.2021.11.24.10.42.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 10:42:25 -0800 (PST)
+Date:   Wed, 24 Nov 2021 18:42:22 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Hou Wenlong <houwenlong93@linux.alibaba.com>
+Subject: Re: [PATCH 27/28] KVM: x86/mmu: Do remote TLB flush before dropping
+ RCU in TDP MMU resched
+Message-ID: <YZ6HjoPKftW3QLqr@google.com>
+References: <20211120045046.3940942-1-seanjc@google.com>
+ <20211120045046.3940942-28-seanjc@google.com>
+ <CANgfPd-MNnx0GVZCHcDYUyx5kqAQSr=s_QGr8zDyw8Wnz0devQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211124155101.59694-1-david@ixit.cz>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: 8YLOc8iRxNGIJk4yPsfVx68GzCwvaUCs
-X-Proofpoint-ORIG-GUID: 8YLOc8iRxNGIJk4yPsfVx68GzCwvaUCs
-X-Proofpoint-Spam-Reason: safe
+In-Reply-To: <CANgfPd-MNnx0GVZCHcDYUyx5kqAQSr=s_QGr8zDyw8Wnz0devQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 04:51:01PM +0100, David Heidelberg wrote:
-> Both, hardware and drivers does support interrupts.
+On Tue, Nov 23, 2021, Ben Gardon wrote:
+> On Fri, Nov 19, 2021 at 8:51 PM Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > When yielding in the TDP MMU iterator, service any pending TLB flush
+> > before  dropping RCU protections in anticipation of using the callers RCU
+> > "lock" as a proxy for vCPUs in the guest.
+> >
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
 > 
-> Fix warnings as:
-> arch/arm/boot/dts/tegra30-microsoft-surface-rt-efi.dt.yaml: audio-codec@1a: 'interrupt-parent', 'interrupts' do not match any of the regexes: 'pinctrl-[0-9]+'
-> 	From schema: /home/runner/work/linux/linux/Documentation/devicetree/bindings/sound/wlf,wm8962.yaml
+> Reviewed-by: Ben Gardon <bgardon@google.com>
 > 
-> Fixes: cd51b942f344 ("ASoC: dt-bindings: wlf,wm8962: Convert to json-schema")
+> > ---
+> >  arch/x86/kvm/mmu/tdp_mmu.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> > index 79a52717916c..55c16680b927 100644
+> > --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> > +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> > @@ -732,11 +732,11 @@ static inline bool tdp_mmu_iter_cond_resched(struct kvm *kvm,
+> >                 return false;
+> >
+> >         if (need_resched() || rwlock_needbreak(&kvm->mmu_lock)) {
+> > -               rcu_read_unlock();
+> > -
+> >                 if (flush)
+> >                         kvm_flush_remote_tlbs(kvm);
+> >
+> > +               rcu_read_unlock();
+> > +
 > 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
+> Just to check my understanding:
+> Theoretically PT memory could be freed as soon as we release the RCU
+> lock, if this is the only thread in a read critical section.In order
+> to ensure that we can use RCU as a proxy for TLB flushes we need to
+> flush the TLBs while still holding the RCU read lock. Without this
+> change (and with the next one) we could wind up in a situation where
+> we drop the RCU read lock, then the RCU callback runs and frees the
+> memory, and then the guest does a lookup through the paging structure
+> caches and we get a use-after-free bug. By flushing in an RCU critical
+> section, we ensure that the TLBs will have been flushed by the time
+> the RCU callback runs to free the memory. Clever!
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-
-Thanks,
-Charles
+Yep, exactly.
