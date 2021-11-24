@@ -2,130 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDA7245C7C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:42:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D25845C700
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:14:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354554AbhKXOp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:45:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354369AbhKXOpM (ORCPT
+        id S1344777AbhKXORr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:17:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:25560 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350392AbhKXORO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:45:12 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F202C077ED9;
-        Wed, 24 Nov 2021 06:13:42 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id r26so5594579oiw.5;
-        Wed, 24 Nov 2021 06:13:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2z3U8O5vRhUaOMotVWyAU//EZivdVu6f+A08KEjRpo4=;
-        b=S/mtB8ZzlO1LCCHiWJpLvCm/JFi/27wAj2r9zoyrKMfNmwOzZ0VQ/ZW3j3Tkn0lsru
-         DMGqnqlmX8FC0Gv6fORIcJaHw1hlKtJPEGdUxxgkX2/zxKAkpsLoWdb3A+HTJPtYuXRe
-         o7+tskvW/AsXI4x/qu+weV5ambeXUCucWSW21oGi6t8yf1pGCc0ICofH6P9KhsftZQJ/
-         Vi3WqyrxQ/rybWJtHFHX17xFQpNdexfHYjZ4XnGQWRufrtHACmrx14lLV1g3hJqI4hBh
-         4nzeYyO+MsfwPuy7jIBJH5FFlwCZBblkjv6pqTVnTORA2SWTLHFjtuqxhKAJGLBu6c1z
-         ZnpQ==
+        Wed, 24 Nov 2021 09:17:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637763244;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A0hMqTI5hxUUo1KE4RdPFoMNQwfcw+L7bEYYOFYe8Bc=;
+        b=ASFBpjnj4OyPmw/BE7OCNvIL4Yxeq7QeoRVyiHYzZPBr+9azTNOF4J42M6sOPnuWSH/TnZ
+        uG77PTUhpUs9hbD0GA381/HqH/2Mx2C8jwOnAoUFoKrBkYjf0AFWwayXHUls8FFLJJZD7w
+        WHH7V2LGx4He9vNG4dMx318MBPSn+XI=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-555-CGE-ZbDUPRG3Ol6lYQiUJA-1; Wed, 24 Nov 2021 09:14:03 -0500
+X-MC-Unique: CGE-ZbDUPRG3Ol6lYQiUJA-1
+Received: by mail-wm1-f71.google.com with SMTP id n41-20020a05600c502900b003335ab97f41so1540403wmr.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 06:14:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2z3U8O5vRhUaOMotVWyAU//EZivdVu6f+A08KEjRpo4=;
-        b=1WXDal+O8C9k2ITogM0QiWsvgaMmGX7zqT1m7fdLRAidjYZAhfuPfseYP4JUsox3mp
-         9nE7qNaClZqRCaCqN1VjN+mGPW/I1EVWPfUR0iaoxPUQGxJ16o82Rk4kk1qTmZvcaenp
-         w9Js6Ff2k1+XHD9XSrxz0pmtF+MtWydtxyg71ZClaaWJ+htmjyE4oU23DIQyIDxcUt0a
-         wm0TM7VHZEQZUVjef6IQ/6Z7IZcQLyqfK81JsBpG2g2yKPp0MZ2nWTFZX1wDUzbWYp5s
-         eQ6TBSs2lX6JzYXYVKnAM+fi5Vhw1G6QkW5URMnW2JWen0pOoWh4PkBvS+6aBuMdqNip
-         aw0w==
-X-Gm-Message-State: AOAM531e5bcPFLS08Wmi/7kfRtKAVzKrvE9nXCClZc9UUtouwFGofogV
-        MnCnd/K6AWXSY/+vBWipWdj7GN5lF5I=
-X-Google-Smtp-Source: ABdhPJwWmJ1UsYvSFbPmqoWtv0K6M6cBzdUTsg3b0HoziIzmqxIcutlqKRAkQNPHwQPAkyAcpoNpRg==
-X-Received: by 2002:a05:6808:11c1:: with SMTP id p1mr6701641oiv.113.1637763221228;
-        Wed, 24 Nov 2021 06:13:41 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w24sm2533915ots.10.2021.11.24.06.13.39
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:organization:subject
+         :in-reply-to:content-transfer-encoding;
+        bh=A0hMqTI5hxUUo1KE4RdPFoMNQwfcw+L7bEYYOFYe8Bc=;
+        b=3V7V4snsqaY8BklpQNHdrKxdcHPKxZtsKzjb8W2X7duvjKL3T5n/5ky7/JnRcLvbnI
+         DRuM0Rn3N7LYkY7wkcE9X742d7v5f3SJBHGG7Zg4gubYZCVTrHTMRJ4H56/IsTTeT1ci
+         HhOYrddLnCeBoiOJ1hv6xk1jmPrgfyJibQekBzXnVcDklaKD32FV0udUD2NbRNe4Z/If
+         cEqK81pjpzoSUL+LqIZhLiprn8JlzXwUdpFzcmjBEBOdoTa4Yd/h5lUSijF2TKWkAiob
+         1Qqo+vQ1OWw8lmZ6qeAgKWLH2wm0pzVvAgH1N6Chm+Sin/W38R2hndc8p7YReZ0iCmJs
+         ch2Q==
+X-Gm-Message-State: AOAM533lR0h/c+4niSoyidJCRd70zt4xSPnVv5zU4qoyp1z9R+or+UZd
+        tj6cETu0HqxHW9qARFgXtcLe5pq5fhgbL5AKleGufIIjRxHOTlJYiZRtDhLGZzblL+LjidS4YvN
+        lICvIofZsTtnC2NMLAIwAT6HG
+X-Received: by 2002:a05:6000:1688:: with SMTP id y8mr19601107wrd.420.1637763242087;
+        Wed, 24 Nov 2021 06:14:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxdkou+qBB9GG+jRq/G6D/I52HGfNekynPXgY61AlkHyvU+ti72rYSCp74uc0+h1LMfZ20aog==
+X-Received: by 2002:a05:6000:1688:: with SMTP id y8mr19601060wrd.420.1637763241798;
+        Wed, 24 Nov 2021 06:14:01 -0800 (PST)
+Received: from [192.168.3.132] (p5b0c6380.dip0.t-ipconnect.de. [91.12.99.128])
+        by smtp.gmail.com with ESMTPSA id w4sm15340334wrs.88.2021.11.24.06.14.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 06:13:40 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 1/1] hwmon: Fix warnings in asus_wmi_sensors.rst
- documetation.
-To:     Denis Pauk <pauk.denis@gmail.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-        Ed Brindley <kernel@maidavale.org>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211124162243.7db9ad02@canb.auug.org.au>
- <20211124064328.16048-1-pauk.denis@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <8eb3d385-1e11-b3e3-d691-a7429e685cfc@roeck-us.net>
-Date:   Wed, 24 Nov 2021 06:13:39 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 24 Nov 2021 06:14:01 -0800 (PST)
+Message-ID: <2cdbebb9-4c57-7839-71ab-166cae168c74@redhat.com>
+Date:   Wed, 24 Nov 2021 15:14:00 +0100
 MIME-Version: 1.0
-In-Reply-To: <20211124064328.16048-1-pauk.denis@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
 Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        Andrew Dona-Couch <andrew@donacou.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Drew DeVault <sir@cmpwn.com>,
+        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+References: <20211123140709.GB5112@ziepe.ca>
+ <e4d7d211-5d62-df89-8f94-e49385286f1f@redhat.com>
+ <20211123170056.GC5112@ziepe.ca>
+ <dd92a69a-6d09-93a1-4f50-5020f5cc59d0@suse.cz>
+ <20211123235953.GF5112@ziepe.ca>
+ <2adca04f-92e1-5f99-6094-5fac66a22a77@redhat.com>
+ <20211124132353.GG5112@ziepe.ca>
+ <cca0229e-e53e-bceb-e215-327b6401f256@redhat.com>
+ <20211124132842.GH5112@ziepe.ca>
+ <eab5aeba-e064-9f3e-fbc3-f73cd299de83@redhat.com>
+ <20211124134812.GI5112@ziepe.ca>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+In-Reply-To: <20211124134812.GI5112@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23/21 10:43 PM, Denis Pauk wrote:
-> Fixes: 9d07e54a25b8 ("hwmon: (asus_wmi_sensors) Support X370 Asus WMI.")
+On 24.11.21 14:48, Jason Gunthorpe wrote:
+> On Wed, Nov 24, 2021 at 02:29:38PM +0100, David Hildenbrand wrote:
+>> On 24.11.21 14:28, Jason Gunthorpe wrote:
+>>> On Wed, Nov 24, 2021 at 02:25:09PM +0100, David Hildenbrand wrote:
+>>>> On 24.11.21 14:23, Jason Gunthorpe wrote:
+>>>>> On Wed, Nov 24, 2021 at 09:57:32AM +0100, David Hildenbrand wrote:
+>>>>>
+>>>>>> Unfortunately it will only be a band aid AFAIU. I can rewrite my
+>>>>>> reproducer fairly easily to pin the whole 2M range first, pin a second
+>>>>>> time only a single page, and then unpin the 2M range, resulting in the
+>>>>>> very same way to block THP. (I can block some THP less because I always
+>>>>>> need the possibility to memlock 2M first, though).
+>>>>>
+>>>>> Oh!
+>>>>>
+>>>>> The issue is GUP always pins an entire compound, no matter how little
+>>>>> the user requests.
+>>>>
+>>>> That's a different issue. I make sure to split the compound page before
+>>>> pinning anything :)
+>>>
+>>> ?? Where is that done in GUP?
+>>
+>> It's done in my reproducer manually.
 > 
-> Signed-off-by: Denis Pauk <pauk.denis@gmail.com>
+> Aren't there many ways for hostile unpriv userspace to cause memory
+> fragmentation? You are picking on pinning here, but any approach that
+> forces the kernel to make a kalloc on a THP subpage would do just as
+> well.
 
-Squashed into offending commit.
+I'm not aware of any where you can fragment 50% of all pageblocks in the
+system as an unprivileged user essentially consuming almost no memory
+and essentially staying inside well-defined memlock limits. But sure if
+there are "many" people will be able to come up with at least one
+comparable thing. I'll be happy to learn.
 
-However, for the future,
-1) Please always provide a full description of the problem
-2) Never send a patch as reply to a previous patch, or as reply
-    to a bug report, unless you want it to get lost.
+> 
+> Arguably if we want to point to an issue here it is in MADV_FREE/etc
+> that is the direct culprit in allowing userspace to break up THPs and
+> then trigger fragmentation.
+> 
+> If the objective is to prevent DOS of THP then MADV_FREE should
+> conserve the THP and migrate the subpages to non-THP
+> memory.
+> 
+> FOLL_LONGTERM is not the issue here.
 
-Where is that "send patch as reply" thing coming from ?
-It seems to proliferate for some reason. Is someone promoting that ?
+Thanks Jason for the discussion but this is where I'll opt out for now
+because we seem to strongly disagree and as I said:
 
+"I'm going to leave judgment how bad this is or isn't to the educated
+reader, and I'll stop spending time on this as I have more important
+things to work on."
+
+But I'm going to leave one last comment to eventually give you a
+different perspective: after MADV_DONTNEED the compound page sits on the
+deferred split queue and will get split either way soon. People are
+right now discussion upstream to even split synchronously, which would
+move MADV_FREE out of the picture completely.
+
+My position that FOLL_LONGTERM for unprivileged users is a strong no-go
+stands as it is. Not MADV_FREE speeding up the compound page split in my
+reproducer. Not MADV_DONTNEED allowing us to zap parts of a THP (I could
+even have just used munmap or even mmap(MAP_FIXED)).
+
+-- 
 Thanks,
-Guenter
 
-> ---
->   Documentation/hwmon/asus_wmi_sensors.rst | 8 +++++---
->   1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/hwmon/asus_wmi_sensors.rst b/Documentation/hwmon/asus_wmi_sensors.rst
-> index 408fd3b4a0de..8f2096cf5183 100644
-> --- a/Documentation/hwmon/asus_wmi_sensors.rst
-> +++ b/Documentation/hwmon/asus_wmi_sensors.rst
-> @@ -29,7 +29,9 @@ ASUS mainboards publish hardware monitoring information via WMI interface.
->   
->   ASUS WMI interface provides a methods to get list of sensors and values of
->   such, which is utilized by this driver to publish those sensor readings to the
-> -HWMON system. The driver is aware of and reads the following sensors:
-> +HWMON system.
-> +
-> +The driver is aware of and reads the following sensors:
->    * CPU Core Voltage,
->    * CPU SOC Voltage,
->    * DRAM Voltage,
-> @@ -64,7 +66,7 @@ HWMON system. The driver is aware of and reads the following sensors:
->    * CPU VRM Output Current.
->   
->   Known Issues:
-> -* The WMI implementation in some of Asus' BIOSes is buggy. This can result in
-> + * The WMI implementation in some of Asus' BIOSes is buggy. This can result in
->      fans stopping, fans getting stuck at max speed, or temperature readouts
->      getting stuck. This is not an issue with the driver, but the BIOS. The Prime
->      X470 Pro seems particularly bad for this. The more frequently the WMI
-> @@ -73,4 +75,4 @@ Known Issues:
->      sensors frequently, don't leave you computer unattended. Upgrading to new
->      BIOS version with method version greater than or equal to two should
->      rectify the issue.
-> -* A few boards report 12v voltages to be ~10v.
-> + * A few boards report 12v voltages to be ~10v.
-> 
-> base-commit: 9d07e54a25b84099983f56e33e00f2914f06b53f
-> 
+David / dhildenb
 
