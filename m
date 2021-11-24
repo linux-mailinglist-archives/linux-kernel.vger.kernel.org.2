@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB3C45C246
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B58E545C34C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:34:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347242AbhKXN0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:26:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48366 "EHLO mail.kernel.org"
+        id S1352575AbhKXNhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:37:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345758AbhKXNYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:24:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC30A61053;
-        Wed, 24 Nov 2021 12:48:54 +0000 (UTC)
+        id S1350112AbhKXNfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:35:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 737E8615E3;
+        Wed, 24 Nov 2021 12:54:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758135;
-        bh=YA/CLjEkbCWWmmU/9cl0ivVdj0XfBJByGPN5wzTqz1s=;
+        s=korg; t=1637758467;
+        bh=fZ68254fYsGwuNOGEA0mD1duIjx67R5tJBFbLTLm0xA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xl93e+DTvMDHi/dyhRcrKx0Jcgwo5dmok4o80zbUhHWvo+O/I2DT20flPBTJRLBxi
-         AAMiLwIc6XS+jYkBraMOcgrHWVT6iLUtp7tOg+yXXmodUZ2XGzFmaNChShuRuRTKBX
-         Qqh1JLU/3ntSbJuh1SEJifDpEpRIIPmzMhYczRYs=
+        b=GsbjZwATSxcAXct/1SJ03sAH8nNURxDV3IRyp7P8iEDCEBKJLPCEUpCzjz+8a0r/3
+         TLBDnHcVKz/dwGZAacPNmggRHgptLT6RJovLXY0AsF6vVr5/yQSY4+BZw2iLlwZzy/
+         CKeWTKerc4CA3A91ljPm1gEEZy+pKx4EbbRfcQ08=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jing-Ting Wu <jing-ting.wu@mediatek.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
+        stable@vger.kernel.org,
+        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
+        Mateusz Palczewski <mateusz.palczewski@intel.com>,
+        Konrad Jankowski <konrad0.jankowski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 040/100] sched/core: Mitigate race cpus_share_cache()/update_top_cache_domain()
+Subject: [PATCH 5.10 080/154] iavf: Fix return of set the new channel count
 Date:   Wed, 24 Nov 2021 12:57:56 +0100
-Message-Id: <20211124115656.180678460@linuxfoundation.org>
+Message-Id: <20211124115704.911296463@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,58 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Donnefort <vincent.donnefort@arm.com>
+From: Mateusz Palczewski <mateusz.palczewski@intel.com>
 
-[ Upstream commit 42dc938a590c96eeb429e1830123fef2366d9c80 ]
+[ Upstream commit 4e5e6b5d9d1334d3490326b6922a2daaf56a867f ]
 
-Nothing protects the access to the per_cpu variable sd_llc_id. When testing
-the same CPU (i.e. this_cpu == that_cpu), a race condition exists with
-update_top_cache_domain(). One scenario being:
+Fixed return correct code from set the new channel count.
+Implemented by check if reset is done in appropriate time.
+This solution give a extra time to pf for reset vf in case
+when user want set new channel count for all vfs.
+Without this patch it is possible to return misleading output
+code to user and vf reset not to be correctly performed by pf.
 
-              CPU1                            CPU2
-  ==================================================================
-
-  per_cpu(sd_llc_id, CPUX) => 0
-                                    partition_sched_domains_locked()
-      				      detach_destroy_domains()
-  cpus_share_cache(CPUX, CPUX)          update_top_cache_domain(CPUX)
-    per_cpu(sd_llc_id, CPUX) => 0
-                                          per_cpu(sd_llc_id, CPUX) = CPUX
-    per_cpu(sd_llc_id, CPUX) => CPUX
-    return false
-
-ttwu_queue_cond() wouldn't catch smp_processor_id() == cpu and the result
-is a warning triggered from ttwu_queue_wakelist().
-
-Avoid a such race in cpus_share_cache() by always returning true when
-this_cpu == that_cpu.
-
-Fixes: 518cd6234178 ("sched: Only queue remote wakeups when crossing cache boundaries")
-Reported-by: Jing-Ting Wu <jing-ting.wu@mediatek.com>
-Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lore.kernel.org/r/20211104175120.857087-1-vincent.donnefort@arm.com
+Fixes: 5520deb15326 ("iavf: Enable support for up to 16 queues")
+Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
+Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
+Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/core.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/ethernet/intel/iavf/iavf_ethtool.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 5dc43d37e6a2b..f8ca0738d729e 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2482,6 +2482,9 @@ out:
- 
- bool cpus_share_cache(int this_cpu, int that_cpu)
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
+index c93567f4d0f79..17ec36c4e6c19 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
+@@ -892,6 +892,7 @@ static int iavf_set_channels(struct net_device *netdev,
  {
-+	if (this_cpu == that_cpu)
-+		return true;
+ 	struct iavf_adapter *adapter = netdev_priv(netdev);
+ 	u32 num_req = ch->combined_count;
++	int i;
+ 
+ 	if ((adapter->vf_res->vf_cap_flags & VIRTCHNL_VF_OFFLOAD_ADQ) &&
+ 	    adapter->num_tc) {
+@@ -914,6 +915,20 @@ static int iavf_set_channels(struct net_device *netdev,
+ 	adapter->num_req_queues = num_req;
+ 	adapter->flags |= IAVF_FLAG_REINIT_ITR_NEEDED;
+ 	iavf_schedule_reset(adapter);
 +
- 	return per_cpu(sd_llc_id, this_cpu) == per_cpu(sd_llc_id, that_cpu);
++	/* wait for the reset is done */
++	for (i = 0; i < IAVF_RESET_WAIT_COMPLETE_COUNT; i++) {
++		msleep(IAVF_RESET_WAIT_MS);
++		if (adapter->flags & IAVF_FLAG_RESET_PENDING)
++			continue;
++		break;
++	}
++	if (i == IAVF_RESET_WAIT_COMPLETE_COUNT) {
++		adapter->flags &= ~IAVF_FLAG_REINIT_ITR_NEEDED;
++		adapter->num_active_queues = num_req;
++		return -EOPNOTSUPP;
++	}
++
+ 	return 0;
  }
- #endif /* CONFIG_SMP */
+ 
 -- 
 2.33.0
 
