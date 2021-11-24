@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDCA245C1E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:21:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F32E45C58E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:56:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349778AbhKXNXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:23:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39546 "EHLO mail.kernel.org"
+        id S1348909AbhKXN7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:59:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347721AbhKXNUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:20:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C003A61B05;
-        Wed, 24 Nov 2021 12:46:52 +0000 (UTC)
+        id S1348094AbhKXN44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:56:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB8EA633A7;
+        Wed, 24 Nov 2021 13:07:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758013;
-        bh=KFya8t7XucbD4ytnXfZ1+zfqS0YsfWJVp8FuMTEXMeU=;
+        s=korg; t=1637759245;
+        bh=7MfvccHvStwXIO+y/zcEgLya9zDyqyQcbIxwLo+2MPg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yb487zoyxNwypkQRGWY2qdzBjgUTqzLd59+HeNQygTH8i/HHjZm2bZCZyfgZfQXNy
-         j7mu+mjDqfP0FDTMhpYzEcQ0Ze8Y1y7FaADODLjBRxw7TQ0HXpo1QNH/MB2Zq2wNas
-         UcJ3UbzDj4/ZFvSSw/F1QjRoPu7RCrPIEo+R1KT4=
+        b=yQBgM/Q3ZC2Ao4mnuoOk2DTBS6DvX8AIzKdfgY0H/Q6pWPQtMfDIXRYzGO8Ittxt3
+         ml71oTWKlLhb2fGv3E+20qc2DevjsGqSAhJd194ZUJPBO3SZiWhvmOCpMeSHV9Cngx
+         Xm1rl1iEAylfyqbBZzA7WPewClcY4vy0F9Mn5+x4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chengfeng Ye <cyeaa@connect.ust.hk>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 028/100] ALSA: gus: fix null pointer dereference on pointer block
+        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 177/279] powerpc: clean vdso32 and vdso64 directories
 Date:   Wed, 24 Nov 2021 12:57:44 +0100
-Message-Id: <20211124115655.768524980@linuxfoundation.org>
+Message-Id: <20211124115724.861547819@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengfeng Ye <cyeaa@connect.ust.hk>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-[ Upstream commit a0d21bb3279476c777434c40d969ea88ca64f9aa ]
+[ Upstream commit 964c33cd0be621b291b5d253d8731eb2680082cb ]
 
-The pointer block return from snd_gf1_dma_next_block could be
-null, so there is a potential null pointer dereference issue.
-Fix this by adding a null check before dereference.
+Since commit bce74491c300 ("powerpc/vdso: fix unnecessary rebuilds of
+vgettimeofday.o"), "make ARCH=powerpc clean" does not clean up the
+arch/powerpc/kernel/{vdso32,vdso64} directories.
 
-Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
-Link: https://lore.kernel.org/r/20211024104611.9919-1-cyeaa@connect.ust.hk
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Use the subdir- trick to let "make clean" descend into them.
+
+Fixes: bce74491c300 ("powerpc/vdso: fix unnecessary rebuilds of vgettimeofday.o")
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20211109185015.615517-1-masahiroy@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/isa/gus/gus_dma.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/powerpc/kernel/Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/isa/gus/gus_dma.c b/sound/isa/gus/gus_dma.c
-index a1c770d826dda..6d664dd8dde0b 100644
---- a/sound/isa/gus/gus_dma.c
-+++ b/sound/isa/gus/gus_dma.c
-@@ -126,6 +126,8 @@ static void snd_gf1_dma_interrupt(struct snd_gus_card * gus)
- 	}
- 	block = snd_gf1_dma_next_block(gus);
- 	spin_unlock(&gus->dma_lock);
-+	if (!block)
-+		return;
- 	snd_gf1_dma_program(gus, block->addr, block->buf_addr, block->count, (unsigned short) block->cmd);
- 	kfree(block);
- #if 0
+diff --git a/arch/powerpc/kernel/Makefile b/arch/powerpc/kernel/Makefile
+index 7be36c1e1db6d..86e40db2dec56 100644
+--- a/arch/powerpc/kernel/Makefile
++++ b/arch/powerpc/kernel/Makefile
+@@ -196,3 +196,6 @@ clean-files := vmlinux.lds
+ # Force dependency (incbin is bad)
+ $(obj)/vdso32_wrapper.o : $(obj)/vdso32/vdso32.so.dbg
+ $(obj)/vdso64_wrapper.o : $(obj)/vdso64/vdso64.so.dbg
++
++# for cleaning
++subdir- += vdso32 vdso64
 -- 
 2.33.0
 
