@@ -2,48 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C0245C20C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:22:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C149B45C1C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348231AbhKXNZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:25:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48376 "EHLO mail.kernel.org"
+        id S1348416AbhKXNVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:21:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349391AbhKXNWz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:22:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9EF561B20;
-        Wed, 24 Nov 2021 12:48:01 +0000 (UTC)
+        id S1346474AbhKXNSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:18:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7919F61AEC;
+        Wed, 24 Nov 2021 12:45:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758082;
-        bh=cbAkr7roA/XUOtkCmC8I3swOMtrHElogX+dp0d5mgIg=;
+        s=korg; t=1637757951;
+        bh=HecDkF34Wdtb0CxINO5Ah9QMCghEass5ttd/R0X9H/o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pTFY04LHhMRLpv87PWlwvZUvYAYhxsOdEU2JVz4g/Gbb/ev/HF9TQLgN0QPMagHOJ
-         KD5t+hdh/xNRvqiQnlaIE2TEio6/Pn5k9pSU+KX15pMasujRE18Xc5ory7n1Fv15Ps
-         oV95M/XwYV9rHTmOzS4rVNAZEyimHTv6GRxvVaQg=
+        b=OtvwLYh4biKf82bQ+/8GEmAAkwPMBTrnRvjKKCUW0IyOW0/ZjKSBzj6qUXY+TU8Hd
+         sAHWDy4VkYPVf5hC4hc9bDARSBmB+dvS21KVhZOwQf0wCyv3a99sXn1iu51DHqR+gc
+         nAXJR22/h1U5NQnErSNKBF3ThURdk/EOsLkpBtzQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Artur Rojek <contact@artur-rojek.eu>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-mips@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@vger.kernel.org, Sohaib Mohamed <sohaib.amhmd@gmail.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Hitoshi Mitake <h.mitake@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Paul Russel <rusty@rustcorp.com.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Pierre Gondois <pierre.gondois@arm.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 055/100] mips: bcm63xx: add support for clk_get_parent()
+Subject: [PATCH 4.19 301/323] perf bench: Fix two memory leaks detected with ASan
 Date:   Wed, 24 Nov 2021 12:58:11 +0100
-Message-Id: <20211124115656.656555057@linuxfoundation.org>
+Message-Id: <20211124115729.082611705@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,63 +49,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Sohaib Mohamed <sohaib.amhmd@gmail.com>
 
-[ Upstream commit e8f67482e5a4bc8d0b65d606d08cb60ee123b468 ]
+[ Upstream commit 92723ea0f11d92496687db8c9725248e9d1e5e1d ]
 
-BCM63XX selects HAVE_LEGACY_CLK but does not provide/support
-clk_get_parent(), so add a simple implementation of that
-function so that callers of it will build without errors.
+ASan reports memory leaks while running:
 
-Fixes these build errors:
+  $ perf bench sched all
 
-mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
-ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
-mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
-ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
-
-Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs." )
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Suggested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Cc: Artur Rojek <contact@artur-rojek.eu>
-Cc: Paul Cercueil <paul@crapouillou.net>
-Cc: linux-mips@vger.kernel.org
-Cc: Jonathan Cameron <jic23@kernel.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: linux-iio@vger.kernel.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: bcm-kernel-feedback-list@broadcom.com
-Cc: Jonas Gorski <jonas.gorski@gmail.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Fixes: e27454cc6352c422 ("perf bench: Add sched-messaging.c: Benchmark for scheduler and IPC mechanisms based on hackbench")
+Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
+Acked-by: Ian Rogers <irogers@google.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Hitoshi Mitake <h.mitake@gmail.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Paul Russel <rusty@rustcorp.com.au>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Pierre Gondois <pierre.gondois@arm.com>
+Link: http://lore.kernel.org/lkml/20211110022012.16620-1-sohaib.amhmd@gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/bcm63xx/clk.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ tools/perf/bench/sched-messaging.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/mips/bcm63xx/clk.c b/arch/mips/bcm63xx/clk.c
-index 164115944a7fd..aba6e2d6a736c 100644
---- a/arch/mips/bcm63xx/clk.c
-+++ b/arch/mips/bcm63xx/clk.c
-@@ -381,6 +381,12 @@ void clk_disable(struct clk *clk)
- 
- EXPORT_SYMBOL(clk_disable);
- 
-+struct clk *clk_get_parent(struct clk *clk)
-+{
-+	return NULL;
-+}
-+EXPORT_SYMBOL(clk_get_parent);
+diff --git a/tools/perf/bench/sched-messaging.c b/tools/perf/bench/sched-messaging.c
+index f9d7641ae8338..b4e13db991e9e 100644
+--- a/tools/perf/bench/sched-messaging.c
++++ b/tools/perf/bench/sched-messaging.c
+@@ -226,6 +226,8 @@ static unsigned int group(pthread_t *pth,
+ 		snd_ctx->out_fds[i] = fds[1];
+ 		if (!thread_mode)
+ 			close(fds[0]);
 +
- unsigned long clk_get_rate(struct clk *clk)
- {
- 	if (!clk)
++		free(ctx);
+ 	}
+ 
+ 	/* Now we have all the fds, fork the senders */
+@@ -242,6 +244,8 @@ static unsigned int group(pthread_t *pth,
+ 		for (i = 0; i < num_fds; i++)
+ 			close(snd_ctx->out_fds[i]);
+ 
++	free(snd_ctx);
++
+ 	/* Return number of children to reap */
+ 	return num_fds * 2;
+ }
 -- 
 2.33.0
 
