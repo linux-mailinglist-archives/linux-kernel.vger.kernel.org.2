@@ -2,117 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE70C45B645
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:11:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5ACC45B64D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241193AbhKXIOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 03:14:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49160 "EHLO
+        id S241246AbhKXIOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 03:14:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241076AbhKXIOR (ORCPT
+        with ESMTP id S238955AbhKXIOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 03:14:17 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB872C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 00:11:07 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id bj13so3769322oib.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 00:11:07 -0800 (PST)
+        Wed, 24 Nov 2021 03:14:48 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60332C061574;
+        Wed, 24 Nov 2021 00:11:39 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id m9so2194729iop.0;
+        Wed, 24 Nov 2021 00:11:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zvKw+4uCRX/4uwCQX2Rv7jAK+B/Qoqzzykc5QUAQLGE=;
-        b=jWE9M7hapRsKCj34BMPPK6ZIej0PWjaFxVdGp7OG3UrhmKqmNjCgRp/++nFG/Np438
-         M4iMr/zjizeukPEsd3grqKJFMpzmOjPlaXAQStZ6k6XjTnemx//A9x3qLfiTRUo/cX2M
-         8UB60oUW7+0p5iDXn17zH4WP9MzbqwaJ7IsZYJI0PhMOFGfJlWgk3MJZsPSwyqF9ON8e
-         zLwLvDG3ClwOjIxP0k2CtK5TMfBX7GZAntdjrltd2ONMVHt9erLxkpuDoZkDHs6RFOWc
-         wCGuA+xBwlj/9f7fxVJpeSoBMlH3WJvXvhaOU3pPS4OTvpXnR2g4hz1ZVVFId1qaYBZm
-         MS9Q==
+         :cc:content-transfer-encoding;
+        bh=2X5/LFLLoXcHwnJiEqimMyAM3gnORo1QfzmyY4+BjE4=;
+        b=npeCSbzYQg6nrUVVZQQ8tgSeTCGq09gYMzHWIG0nLkIXzBo5vgZx6H3/iEUg/F86HW
+         TXWRlrdMfyukSte1IudpCHD3Qs+RqObFVGnEo0PSRcJCdOVDMnfNEn5CrQQ2j9ldGs4m
+         2ycv4mNR6Um+nxdxUFga3qN7G/84kL/MHYOxzf6i4Yhws4gqzOHqlcHg9ZI0jqSLV2kR
+         n57OBWBuVQvVMDbIfM10hp5DLBApDFXngA4DKKZzPQVCnpTXRdfbI+VuZbgw73V5nRdU
+         8Q5S9kQJrihbPG0W1hddydAFBWPjhv2vAOX+YMO0/FYkifW4Rf1yxUAcqowzIHFeoQO8
+         HMtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zvKw+4uCRX/4uwCQX2Rv7jAK+B/Qoqzzykc5QUAQLGE=;
-        b=IHk2I9uSBG9EEkvI2w6IfBBrQMMymbQeiGctEGebMYpjP0EA8uOYSqdYfXoYUUiN7Z
-         nIPzShOf4nKJVjWw7EQE6fumskN9GYuI6bKoqZszRDlk/EMo4QCAkMeeU1TRv8svhvni
-         ibYIm3+Ux8sSE//rVDpKdNacXveV3NtY6J9ZquqyTAtgAvYxaR454cTOKV1kymDNbSbm
-         ESHQFFWWz4Tkhj3mD1xsECtgI162O2DYqTZ3Y8uzwa82beVmOFnb/Dv+eu9TZSC4xQz0
-         pVlhW+DpQn/4AFM1Vp8q5DrplcdGYXMrjeZhi1uEqdSR1i5e5qeWRm0ETy6IYLmJ0jFL
-         6G2A==
-X-Gm-Message-State: AOAM531ZVd2NXOdrHZw/BZYlWuCveaHEpAUy3BiAkqgPOTWsMohdnOqT
-        +Qa0OmcGQMwqTd82Da8xD+XCj4ihjbKcksfeNSWbgg==
-X-Google-Smtp-Source: ABdhPJy16LKy2oR5ZI3qlmMzlo3Re+794b3SdRxsHeQqH1FxX1XuMRfE0WkEp8k2FcXUXzOltRgMsXY+7CvdPqCbvRI=
-X-Received: by 2002:a05:6808:118c:: with SMTP id j12mr3781817oil.65.1637741467089;
- Wed, 24 Nov 2021 00:11:07 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2X5/LFLLoXcHwnJiEqimMyAM3gnORo1QfzmyY4+BjE4=;
+        b=isHaDxOKb9A9RXFXyBHgGXo48HYkzdVyHhb3RDTGM7o5xHk9I5nKesLS3a/RBCaIkZ
+         LND015zHAc2GUlNSCYXRQE8ADWOysgWpoHubKs9M5RfenZsRgQFH1anilze1R+JZ2v0E
+         Y08NZHxlDvq8N1WIecFU+dsUk+O3c2UOnCgBrVnreq7jx/VjM7V/kiSorLP7/4T4mTH+
+         QhBJZslUq/KDIqGI1+qmsvubG856DQvwgfgojEtSLtqjMer461TQkmjoeS3/EyM8mdrU
+         1sYki9zPA3iwaKkifVzxc3MWXGoo2wlfNirfeOGquWTV4I8oGnma5HsxMCGSAyF3baTe
+         BH0Q==
+X-Gm-Message-State: AOAM531izeO/YzssB12zEwKphyIOD/lmIPLm0vdeqECybLDHliUxTp/d
+        XmJKzjG+hyHBU1cabJ0r3VHLOqlA8kjYHYO5YOU=
+X-Google-Smtp-Source: ABdhPJzW+77DXfhD6ZDT96Rg0Qdwq2dVRlgLowhSu0150wCdHrY0rjX6LZy9nWoS6+vd6IY7LS+U9jMgylZH7nxoqfs=
+X-Received: by 2002:a05:6638:32a2:: with SMTP id f34mr12973174jav.63.1637741498831;
+ Wed, 24 Nov 2021 00:11:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20211123074344.1877731-1-ying.huang@intel.com>
- <CANpmjNPGkQ2VWmHjt==yWVr5webCHuRQtXau95jvPjR4Z3gxDw@mail.gmail.com> <8735nm9vkw.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <8735nm9vkw.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 24 Nov 2021 09:10:52 +0100
-Message-ID: <CANpmjNP7-FdwLRg9HS=Sd_7nA483Qc3XLJt-h-NgV3jtwBRW7A@mail.gmail.com>
-Subject: Re: [PATCH] mm/rmap: fix potential batched TLB flush race
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+aa5bebed695edaccf0df@syzkaller.appspotmail.com,
-        Nadav Amit <namit@vmware.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>
+References: <20211110122948.188683-1-alistair@alistair23.me>
+ <20211110122948.188683-4-alistair@alistair23.me> <20211116000634.767dcdc0@aktux>
+ <CAKmqyKPFOqWD7t6tC1Act97CVcY+yazrhwMLLr3j_wOyH50GTA@mail.gmail.com> <00d68181-ad3b-17d2-0150-00029d399f0f@roeck-us.net>
+In-Reply-To: <00d68181-ad3b-17d2-0150-00029d399f0f@roeck-us.net>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Wed, 24 Nov 2021 18:11:00 +1000
+Message-ID: <CAKmqyKNNGA4pOxayG5UZowC7cQj7cFyVJBbWLvFqEizEO7izyg@mail.gmail.com>
+Subject: Re: [PATCH v15 3/8] mfd: simple-mfd-i2c: Enable support for the silergy,sy7636a
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Andreas Kemnade <andreas@kemnade.info>,
+        Alistair Francis <alistair@alistair23.me>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>, lgirdwood@gmail.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        rui.zhang@intel.com, devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-hwmon@vger.kernel.org, amitk@kernel.org,
+        linux-pm@vger.kernel.org, dl-linux-imx <linux-imx@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 at 02:44, Huang, Ying <ying.huang@intel.com> wrote:
+On Wed, Nov 24, 2021 at 1:39 AM Guenter Roeck <linux@roeck-us.net> wrote:
 >
-> Marco Elver <elver@google.com> writes:
->
-> > On Tue, 23 Nov 2021 at 08:44, Huang Ying <ying.huang@intel.com> wrote:
-[...]
-> >> --- a/mm/rmap.c
-> >> +++ b/mm/rmap.c
-> >> @@ -633,7 +633,7 @@ static void set_tlb_ubc_flush_pending(struct mm_struct *mm, bool writable)
-> >>          * before the PTE is cleared.
-> >>          */
-> >>         barrier();
-> >> -       mm->tlb_flush_batched = true;
-> >> +       atomic_inc(&mm->tlb_flush_batched);
+> On 11/23/21 4:14 AM, Alistair Francis wrote:
+> > On Tue, Nov 16, 2021 at 9:10 AM Andreas Kemnade <andreas@kemnade.info> =
+wrote:
+> >>
+> >> Hi,
+> >>
+> >> this all creates a lot of question marks...
+> >> One of my main question is whether sy7636a =3D sy7636 (at least the
+> >> driver in the kobo vendor kernels does not have the "A" at the end,
+> >> whic does not necessarily mean a difference).
+> >>
+> >> https://www.silergy.com/products/panel_pmic
+> >> lists only a SY7636ARMC, so chances are good that the letters were jus=
+t
+> >> stripped away by the driver developers. Printing on chip package is
+> >> cryptic so it is not that helpful. It is just "BWNBDA"
 > >
-> > The use of barrier() and atomic needs some clarification.
+> > I don't have a definite answer for you. But I think it's sy7636a
+> >
+> > The page you linked to above lists SY7636ARMC as well as SY7627RMC,
+> > SY7570RMC. That makes me think that the RMC is a generic suffix and
+> > this actual IC is the SY7636A.
+> >
 >
-> There are some comments above barrier() to describe why it is needed.
-> For atomic, because the type of mm->tlb_flush_batched is atomic_t, do we
-> need extra clarification?
-
-Apologies, maybe I wasn't clear enough: the existing comment tells me
-the clearing of PTE should never happen after tlb_flush_batched is
-set, but only the compiler is considered. However, I become suspicious
-when I see barrier() paired with an atomic. barrier() is purely a
-compiler-barrier and does not prevent the CPU from reordering things.
-atomic_inc() does not return anything and is therefore unordered per
-Documentation/atomic_t.txt.
-
-> > Is there a
-> > requirement that the CPU also doesn't reorder anything after this
-> > atomic_inc() (which is unordered)? I.e. should this be
-> > atomic_inc_return_release() and remove barrier()?
+> Almost all chips have an ordering suffix, indicating things like
+> temperature range or packaging. The datasheet says:
 >
-> We don't have an atomic_xx_acquire() to pair with this.  So I guess we
-> don't need atomic_inc_return_release()?
+> Ordering Information
+> SY7636 =E2=96=A1(=E2=96=A1=E2=96=A1)=E2=96=A1
+>              | Temperature Code (C)
+>           | Package Code (RM)
+>         | Optional Spec Code (A)
+>
+> The datasheet otherwise refers to the chip as SY7636A.
 
-You have 2 things stronger than unordered: atomic_read() which result
-is used in a conditional branch, thus creating a control-dependency
-ordering later dependent writes; and the atomic_cmpxchg() is fully
-ordered.
+To me this seems like SY7636A is the correct name then.
 
-But before all that, I'd still want to understand what ordering
-requirements you have. The current comments say only the compiler
-needs taming, but does that mean we're fine with the CPU wildly
-reordering things?
+Alistair
 
-Thanks,
--- Marco
+>
+> Guenter
