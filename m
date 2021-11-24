@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1037D45BEBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3AC45BAE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345196AbhKXMuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:50:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54258 "EHLO mail.kernel.org"
+        id S243172AbhKXMPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:15:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344358AbhKXMqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:46:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CD2860232;
-        Wed, 24 Nov 2021 12:27:12 +0000 (UTC)
+        id S242902AbhKXMNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:13:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FE3561107;
+        Wed, 24 Nov 2021 12:07:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756833;
-        bh=4Be/3x6HhN6MuCvXFQ+1O9rUNz0szmijicPv97g/qxg=;
+        s=korg; t=1637755644;
+        bh=wLir8ilpmVMiKeD4WBoYyuXsdFAUGAWLWeq7+tYRG8w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dMsd8XPBcsCbAMxk9Wa+QZGCSxYebSB8G5oK2SbSOAIkm5yr+1DtciPflTV03t8ZQ
-         XoXZ32N8hUqPLSyt6DDxLObdkWzmXmoakpuFEi0Bv1HUf9j1PSAtfTLs9rGi/x9Osj
-         VCH+X+MLrD312+n4C39pS058a+LMg8KsvP5ZABM0=
+        b=LXyWQOURZNxX+8/SXoOT2rMPNeGGPRmgr+Mb7I8YyrgDwDk19FhOdeKckT1XEJFKX
+         rpffGRNs2nDidL41UF8aptyidSmQfEAtQogcmRqWeXc1V7k4SQ5HN9KV7k4nhHBWBM
+         W4GeZjwFHwL+YjqMGli22oi7BGBBsvPx813tT86U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.i.king@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 223/251] MIPS: generic/yamon-dt: fix uninitialized variable error
+        stable@vger.kernel.org, Nadav Amit <namit@vmware.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.4 162/162] hugetlbfs: flush TLBs correctly after huge_pmd_unshare
 Date:   Wed, 24 Nov 2021 12:57:45 +0100
-Message-Id: <20211124115718.034781025@linuxfoundation.org>
+Message-Id: <20211124115703.516847842@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +43,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.i.king@googlemail.com>
+From: Nadav Amit <namit@vmware.com>
 
-[ Upstream commit 255e51da15baed47531beefd02f222e4dc01f1c1 ]
+commit a4a118f2eead1d6c49e00765de89878288d4b890 upstream.
 
-In the case where fw_getenv returns an error when fetching values
-for ememsizea and memsize then variable phys_memsize is not assigned
-a variable and will be uninitialized on a zero check of phys_memsize.
-Fix this by initializing phys_memsize to zero.
+When __unmap_hugepage_range() calls to huge_pmd_unshare() succeed, a TLB
+flush is missing.  This TLB flush must be performed before releasing the
+i_mmap_rwsem, in order to prevent an unshared PMDs page from being
+released and reused before the TLB flush took place.
 
-Cleans up cppcheck error:
-arch/mips/generic/yamon-dt.c:100:7: error: Uninitialized variable: phys_memsize [uninitvar]
+Arguably, a comprehensive solution would use mmu_gather interface to
+batch the TLB flushes and the PMDs page release, however it is not an
+easy solution: (1) try_to_unmap_one() and try_to_migrate_one() also call
+huge_pmd_unshare() and they cannot use the mmu_gather interface; and (2)
+deferring the release of the page reference for the PMDs page until
+after i_mmap_rwsem is dropeed can confuse huge_pmd_unshare() into
+thinking PMDs are shared when they are not.
 
-Fixes: f41d2430bbd6 ("MIPS: generic/yamon-dt: Support > 256MB of RAM")
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix __unmap_hugepage_range() by adding the missing TLB flush, and
+forcing a flush when unshare is successful.
+
+Fixes: 24669e58477e ("hugetlb: use mmu_gather instead of a temporary linked list for accumulating pages)" # 3.6
+Signed-off-by: Nadav Amit <namit@vmware.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Aneesh Kumar K.V <aneesh.kumar@linux.vnet.ibm.com>
+Cc: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/mips/generic/yamon-dt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/asm-generic/tlb.h |    7 +++++++
+ mm/hugetlb.c              |    5 ++++-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/generic/yamon-dt.c b/arch/mips/generic/yamon-dt.c
-index b408dac722ac7..e5fcaafea3a42 100644
---- a/arch/mips/generic/yamon-dt.c
-+++ b/arch/mips/generic/yamon-dt.c
-@@ -81,7 +81,7 @@ static unsigned int __init gen_fdt_mem_array(
- __init int yamon_dt_append_memory(void *fdt,
- 				  const struct yamon_mem_region *regions)
- {
--	unsigned long phys_memsize, memsize;
-+	unsigned long phys_memsize = 0, memsize;
- 	__be32 mem_array[2 * MAX_MEM_ARRAY_ENTRIES];
- 	unsigned int mem_entries;
- 	int i, err, mem_off;
--- 
-2.33.0
-
+--- a/include/asm-generic/tlb.h
++++ b/include/asm-generic/tlb.h
+@@ -165,6 +165,13 @@ static inline void __tlb_reset_range(str
+ #define tlb_end_vma	__tlb_end_vma
+ #endif
+ 
++static inline void tlb_flush_pmd_range(struct mmu_gather *tlb,
++				unsigned long address, unsigned long size)
++{
++	tlb->start = min(tlb->start, address);
++	tlb->end = max(tlb->end, address + size);
++}
++
+ #ifndef __tlb_remove_tlb_entry
+ #define __tlb_remove_tlb_entry(tlb, ptep, address) do { } while (0)
+ #endif
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -3290,8 +3290,11 @@ again:
+ 			continue;
+ 
+ 		ptl = huge_pte_lock(h, mm, ptep);
+-		if (huge_pmd_unshare(mm, &address, ptep))
++		if (huge_pmd_unshare(mm, &address, ptep)) {
++			tlb_flush_pmd_range(tlb, address & PUD_MASK, PUD_SIZE);
++			force_flush = 1;
+ 			goto unlock;
++		}
+ 
+ 		pte = huge_ptep_get(ptep);
+ 		if (huge_pte_none(pte))
 
 
