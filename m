@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCD545C4F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C0345C06D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:06:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354813AbhKXNxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:53:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37524 "EHLO mail.kernel.org"
+        id S245120AbhKXNHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:07:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354110AbhKXNst (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:48:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 554C461A3F;
-        Wed, 24 Nov 2021 13:02:30 +0000 (UTC)
+        id S1347436AbhKXNFq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:05:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D8C661A6F;
+        Wed, 24 Nov 2021 12:37:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758950;
-        bh=54Y67hx8fOEldQOq8dgmTZU6+2TPKOeblwrzgkGJPDI=;
+        s=korg; t=1637757472;
+        bh=y1ZxORNCrSNr8XyUdfGNHp+N831CPO33juciaNuhogA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cdHF2wkTTQKesDpw5gnyNU2xrvCWNjvxkKpeFcZ9AGhkHCfFjmoPA75i1Ee3BNRdv
-         kZMT/26Ei3JdAwoZLBT86lUkSdqYe/xju1mU1Q84/cysrBVGgEgo/sAsLGxSuOPVhS
-         mhv0TLQquvhevjETRCbjlauzwRImxOdIXjCM4yrg=
+        b=D4NqAYWMacLG6NEe4arburW/cbnoNtIiffys8ALnhNbYFGJbVw1IrtLkamVNy/BU8
+         b8jdcAuSHevUei1sImI2NAdvcKv6ASsllW59GidpyQ+RRwf4N9ufCCdBMjMzin80zF
+         DyjLNU9AB30VoLvXdHYKgjtOLugSbwS9u7kRcGg8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org, Selvin Xavier <selvin.xavier@broadcom.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 082/279] f2fs: fix up f2fs_lookup tracepoints
+Subject: [PATCH 4.19 179/323] RDMA/bnxt_re: Fix query SRQ failure
 Date:   Wed, 24 Nov 2021 12:56:09 +0100
-Message-Id: <20211124115721.553116512@linuxfoundation.org>
+Message-Id: <20211124115724.992235526@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,75 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
+From: Selvin Xavier <selvin.xavier@broadcom.com>
 
-[ Upstream commit 70a9ac36ffd807ac506ed0b849f3e8ce3c6623f2 ]
+[ Upstream commit 598d16fa1bf93431ad35bbab3ed1affe4fb7b562 ]
 
-Fix up a misuse that the filename pointer isn't always valid in
-the ring buffer, and we should copy the content instead.
+Fill the missing parameters for the FW command while querying SRQ.
 
-Fixes: 0c5e36db17f5 ("f2fs: trace f2fs_lookup")
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Fixes: 37cb11acf1f7 ("RDMA/bnxt_re: Add SRQ support for Broadcom adapters")
+Link: https://lore.kernel.org/r/1631709163-2287-8-git-send-email-selvin.xavier@broadcom.com
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/trace/events/f2fs.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
-index 4e881d91c8744..4cb055af1ec0b 100644
---- a/include/trace/events/f2fs.h
-+++ b/include/trace/events/f2fs.h
-@@ -807,20 +807,20 @@ TRACE_EVENT(f2fs_lookup_start,
- 	TP_STRUCT__entry(
- 		__field(dev_t,	dev)
- 		__field(ino_t,	ino)
--		__field(const char *,	name)
-+		__string(name,	dentry->d_name.name)
- 		__field(unsigned int, flags)
- 	),
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+index 60f2fb7e7dbfe..d52ae7259e62d 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
+@@ -637,12 +637,13 @@ int bnxt_qplib_query_srq(struct bnxt_qplib_res *res,
+ 	int rc = 0;
  
- 	TP_fast_assign(
- 		__entry->dev	= dir->i_sb->s_dev;
- 		__entry->ino	= dir->i_ino;
--		__entry->name	= dentry->d_name.name;
-+		__assign_str(name, dentry->d_name.name);
- 		__entry->flags	= flags;
- 	),
+ 	RCFW_CMD_PREP(req, QUERY_SRQ, cmd_flags);
+-	req.srq_cid = cpu_to_le32(srq->id);
  
- 	TP_printk("dev = (%d,%d), pino = %lu, name:%s, flags:%u",
- 		show_dev_ino(__entry),
--		__entry->name,
-+		__get_str(name),
- 		__entry->flags)
- );
- 
-@@ -834,7 +834,7 @@ TRACE_EVENT(f2fs_lookup_end,
- 	TP_STRUCT__entry(
- 		__field(dev_t,	dev)
- 		__field(ino_t,	ino)
--		__field(const char *,	name)
-+		__string(name,	dentry->d_name.name)
- 		__field(nid_t,	cino)
- 		__field(int,	err)
- 	),
-@@ -842,14 +842,14 @@ TRACE_EVENT(f2fs_lookup_end,
- 	TP_fast_assign(
- 		__entry->dev	= dir->i_sb->s_dev;
- 		__entry->ino	= dir->i_ino;
--		__entry->name	= dentry->d_name.name;
-+		__assign_str(name, dentry->d_name.name);
- 		__entry->cino	= ino;
- 		__entry->err	= err;
- 	),
- 
- 	TP_printk("dev = (%d,%d), pino = %lu, name:%s, ino:%u, err:%d",
- 		show_dev_ino(__entry),
--		__entry->name,
-+		__get_str(name),
- 		__entry->cino,
- 		__entry->err)
- );
+ 	/* Configure the request */
+ 	sbuf = bnxt_qplib_rcfw_alloc_sbuf(rcfw, sizeof(*sb));
+ 	if (!sbuf)
+ 		return -ENOMEM;
++	req.resp_size = sizeof(*sb) / BNXT_QPLIB_CMDQE_UNITS;
++	req.srq_cid = cpu_to_le32(srq->id);
+ 	sb = sbuf->sb;
+ 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req, (void *)&resp,
+ 					  (void *)sbuf, 0);
 -- 
 2.33.0
 
