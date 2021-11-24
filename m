@@ -2,223 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE0545C927
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8D845C929
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:50:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242191AbhKXPwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:52:05 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:57400 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232688AbhKXPwD (ORCPT
+        id S242371AbhKXPxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:53:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241874AbhKXPxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:52:03 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 4E2C21FD2F;
-        Wed, 24 Nov 2021 15:48:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637768932; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=1cpS9WLkafUTWfWpKQaff/p3/s6mJTk8B5Fq1cl8zNI=;
-        b=oaGTGXXFGdznXQyZ4LhIyDftIkyJ03l2Slt8fm+1a92KrIC2dFoIL5Q8RwD8UAELAT94Pz
-        hY8Oo/A0EFxnC3edMllAqblRxwU1DR6UV03CywIGS44VRWjhRa0hxJ75Jse5Tg++n/BppO
-        B2M7Ikcv7LlWnXS8aOsErXXxqQmO8O4=
-Received: from alley.suse.cz (unknown [10.100.224.162])
-        by relay2.suse.de (Postfix) with ESMTP id C5756A3B81;
-        Wed, 24 Nov 2021 15:48:51 +0000 (UTC)
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
-        Petr Mladek <pmladek@suse.com>
-Subject: [RFC] printk: More consistent loglevel for continuous lines
-Date:   Wed, 24 Nov 2021 16:48:38 +0100
-Message-Id: <20211124154838.5415-1-pmladek@suse.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 24 Nov 2021 10:53:04 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B50C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:49:54 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id r9-20020a7bc089000000b00332f4abf43fso4392704wmh.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:49:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=LOAzwgeaBxO6I85fZqEHMuxRjJsXSDSbNgLC7hgDJMk=;
+        b=ZK6mVZtnF5dUw4/mZ3AMlAFR9wyeS1c8K7j6sUVHTxWYLfqKN5jnKxAqJDZxH2MB2U
+         EZd57ZJJlklOTxfRByuMq56CF5EGXsDKuc2Hu6THpbb02DCcubc1fhg3K5KHkeLH2Y9j
+         4hx3eiT1thLm+Sm2WczikAksElDVep7uiOSaPBqdDwKPt2/yjanQDJG4okkivrOlMNfh
+         4U32H3gQv3gayw3kF7GOhAccCIYZI4V0EkXO67ruDika1vJu5nPU2OsOgcz5icu775AA
+         pPW9Qv/rP9X78C3m3a4UuIBpXGcj8ZEjxY59F7LAkud2e9/ZfAYiYMcsAfmux3j798tX
+         BDPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=LOAzwgeaBxO6I85fZqEHMuxRjJsXSDSbNgLC7hgDJMk=;
+        b=qRioJuPtsH5esF+a/Ipg1H//RBMGn3hx94gM+AVVHMQiGX/rDfVquRtH84EpGyO46A
+         1YiMvjqc7fxIlqfTJINDmOcCMyEU4sNwLOV6EwgE0PJvXxZqkISwUBzHGB0P9Hmz35Bc
+         3DGQ5AoMS9zyb2oI2tjk2WRI/A/fNvOzT70+z6djj/zKMh6DtA40Lp/5xrVQ5piBT0bL
+         Db2ohcLghU8ZZWMEPOog4bfa2BJWo2ONPU0AcVNpijhSU0g7W9TfFR3oB/jFOENSvNlp
+         EnNAxggOI337DWIeDhRClZA1UIU9WJS5/uJUpPSX9IuB3SQm7hnfyvCbkA5zVRnUsiwa
+         qdwA==
+X-Gm-Message-State: AOAM532cU4wzfUZ0raLaKxcSqexE+0L5N0iC7twGGDAznpJjNQojhTqL
+        zoEWkfWTwGLHZdaP5o9b0Q+XfA==
+X-Google-Smtp-Source: ABdhPJxsoYpx10GoqhLm7/pLA9ESZB+94k0wYbt9DHYNyHnuNHjLa3HDoYgcq+VWCthjT7TcTGMdow==
+X-Received: by 2002:a1c:80c5:: with SMTP id b188mr16791379wmd.57.1637768992772;
+        Wed, 24 Nov 2021 07:49:52 -0800 (PST)
+Received: from google.com ([2.31.167.61])
+        by smtp.gmail.com with ESMTPSA id d2sm77738wmb.31.2021.11.24.07.49.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 07:49:52 -0800 (PST)
+Date:   Wed, 24 Nov 2021 15:49:40 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     michael@walle.cc, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mfd: simple-mfd-i2c: Select MFD_CORE to fix build error
+Message-ID: <YZ5fFG5CKv2vyWJI@google.com>
+References: <20211102100420.112215-1-robert.marko@sartura.hr>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211102100420.112215-1-robert.marko@sartura.hr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pr_cont() tries to append the message to the previous one. It works
-when the last message in the logbuffer was added by the same process
-and IRQ context. Otherwise, it is stored as a new message with
-the default message loglevel.
+On Tue, 02 Nov 2021, Robert Marko wrote:
 
-CONFIG_MESSAGE_LOGLEVEL_DEFAULT is "4" by default. It means that
-the non-appendable pieces are printed with KERN_WARNING.
+> MFD_SIMPLE_MFD_I2C should select the MFD_CORE to a prevent build error:
+> 
+> aarch64-linux-ld: drivers/mfd/simple-mfd-i2c.o: in function `simple_mfd_i2c_probe':
+> drivers/mfd/simple-mfd-i2c.c:55: undefined reference to `devm_mfd_add_devices'
+> 
+> Fixes: 3abee4579484 ("mfd: Add simple regmap based I2C driver")
+> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> ---
+>  drivers/mfd/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
-Many people monitor only more serial messages, including warnings.
-They are confused when they see partial messages that do not make
-any sense without the context. They even do not have any chance
-to see the context when it is filtered by console_loglevel.
+In case you missed it, this patch was merged in v5.16-rc1.
 
-The commit 4bcc595ccd80decb424509 ("printk: reinstate KERN_CONT for
-printing continuation lines") added possibility to define a particular
-loglevel together with KERN_CONT, for example:
-
-   pr_cont(KERN_INFO "more bla bla");
-
-It has been added in v4.9-rc1, 5 years ago. But it seems that nobody
-has used it since then. It is possible that people do not know about
-it or nobody cared enough.
-
-Anyway, it looks a bit non-practical to update all existing pr_cont()
-callers:
-
-	$> git grep "pr_cont" | wc -l
-	2054
-
-There seems to be much easier solution. We could remember the last
-used loglevel per-context and use it for the continuous lines.
-
-Note that it does not help when another message is printed between
-the pieces in the same context, for example, a nested warning.
-In this case, the explicit log level would work better. But the saved
-loglevel should be good enough in most cases because pr_cont() is often
-used in a relatively simple self-contained code. Also the same
-caller is easy to detect when CONFIG_PRINTK_CALLER is enabled.
-
-Is it worth it?
-
-On one hand, printk() is the best effort approach. Messages are lost
-when the logbuffer is overwritten before they are read by userspace
-log daemons and shown on consoles. The continuous lines are even less
-reliable. Only the last messages can be appended. Any temporary buffering
-might cause losing the messages when the system crashes.
-
-On the other hand, we have already accepted a lot of complexity by
-introducing the record based logbuffer format. It was because
-people wanted to have as consistent messages as possible.
-
-pr_cont() is heavily used and removes ugly twists in the callers' code.
-Some code complexity is acceptable on the printk() side.
-
-The proposed solution is self-contained and quite trivial. It looks
-worth trying.
-
-Signed-off-by: Petr Mladek <pmladek@suse.com>
----
- include/linux/sched.h  |  4 +++
- kernel/printk/printk.c | 74 ++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 76 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 78c351e35fec..4a23f3341d29 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1140,6 +1140,10 @@ struct task_struct {
- 	int				softirq_disable_cnt;
- #endif
- 
-+#ifdef CONFIG_PRINTK
-+	u8				printk_loglevel;
-+#endif
-+
- #ifdef CONFIG_LOCKDEP
- # define MAX_LOCK_DEPTH			48UL
- 	u64				curr_chain_key;
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 57b132b658e1..b644dee8f897 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2021,6 +2021,62 @@ static inline u32 printk_caller_id(void)
- 		0x80000000 + raw_smp_processor_id();
- }
- 
-+/* Support to use the loglevel of the last message for continuous lines. */
-+#ifdef CONFIG_HAVE_NMI
-+#define PRINTK_IRQ_CTX_NUM	3
-+#else
-+#define PRINTK_IRQ_CTX_NUM	2
-+#endif
-+
-+static DEFINE_PER_CPU(u8, printk_loglevel_irq_ctx[PRINTK_IRQ_CTX_NUM]);
-+static u8 printk_loglevel_irq_ctx_early[PRINTK_IRQ_CTX_NUM];
-+
-+/* Return pointer where the loglevel is stored for the current context. */
-+static u8 *printk_loglevel_ctx_var(void)
-+{
-+	unsigned char irq_ctx_level = interrupt_context_level();
-+
-+	/* normal process context */
-+	if (irq_ctx_level == 0)
-+		return &current->printk_loglevel;
-+
-+	/* IRQ context */
-+	if (WARN_ON_ONCE(irq_ctx_level > PRINTK_IRQ_CTX_NUM))
-+		return NULL;
-+
-+	if (printk_percpu_data_ready())
-+		return this_cpu_ptr(&printk_loglevel_irq_ctx[irq_ctx_level - 1]);
-+	else
-+		return &printk_loglevel_irq_ctx_early[irq_ctx_level - 1];
-+}
-+
-+static void printk_write_loglevel_ctx(int loglevel)
-+{
-+	u8 *loglevel_var = printk_loglevel_ctx_var();
-+
-+	if (!loglevel_var)
-+		return;
-+
-+	/*
-+	 * Remember only the really used loglevels that can be stored
-+	 * within 3 bytes in struct printk_info.
-+	 */
-+	if (WARN_ON_ONCE(loglevel != LOG_LEVEL(loglevel)))
-+		return;
-+
-+	*loglevel_var = loglevel;
-+}
-+
-+static u8 printk_read_loglevel_ctx(void)
-+{
-+	u8 *loglevel_var = printk_loglevel_ctx_var();
-+
-+	if (!loglevel_var)
-+		return LOGLEVEL_DEFAULT;
-+
-+	return *loglevel_var;
-+}
-+
- /**
-  * printk_parse_prefix - Parse level and control flags.
-  *
-@@ -2066,6 +2122,21 @@ u16 printk_parse_prefix(const char *text, int *level,
- 	return prefix_len;
- }
- 
-+static int printk_sanitize_loglevel(int loglevel, enum printk_info_flags flags)
-+{
-+	/* For continuous lines, fallback to the previously used loglevel. */
-+	if (flags & LOG_CONT && loglevel == LOGLEVEL_DEFAULT)
-+		loglevel = printk_read_loglevel_ctx();
-+
-+	if (loglevel == LOGLEVEL_DEFAULT)
-+		loglevel = default_message_loglevel;
-+
-+	/* Remember the really used loglevel for this context. */
-+	printk_write_loglevel_ctx(loglevel);
-+
-+	return loglevel;
-+}
-+
- __printf(5, 0)
- static u16 printk_sprint(char *text, u16 size, int facility,
- 			 enum printk_info_flags *flags, const char *fmt,
-@@ -2142,8 +2213,7 @@ int vprintk_store(int facility, int level,
- 	if (facility == 0)
- 		printk_parse_prefix(&prefix_buf[0], &level, &flags);
- 
--	if (level == LOGLEVEL_DEFAULT)
--		level = default_message_loglevel;
-+	level = printk_sanitize_loglevel(level, flags);
- 
- 	if (dev_info)
- 		flags |= LOG_NEWLINE;
 -- 
-2.26.2
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
