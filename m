@@ -2,287 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D17F045B40C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 06:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 842AF45B414
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 06:58:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233346AbhKXFzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 00:55:41 -0500
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:33376
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233183AbhKXFzk (ORCPT
+        id S233500AbhKXGBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 01:01:17 -0500
+Received: from mail-lj1-f179.google.com ([209.85.208.179]:38899 "EHLO
+        mail-lj1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233411AbhKXGBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 00:55:40 -0500
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 1B3A13F32D
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 05:52:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1637733149;
-        bh=V/j9435sf+Q6QqIYUyi0ktOVWvCT49bfuL52dC8eJNQ=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=mNA71YDlPdMDewD3l9zhJplvW/lU6JG5K33Ie2aSCJOnbyp387hcJTA8AsAsyPonC
-         YcGnFIAVyUsAVEqJ1pRjiRHMNmsniWnOjEF3/dFmlyeU4C62WWnaFbVzYXVDmAFlly
-         PoRK5eQZVr0rqqJB3IaV6DOJjMiOuCYava/gVdJutkJtWB31a+5c0PZBHFr1DKJM+Y
-         dHYDA+z17+agCWgjwKXKjGce2RMkDsoH1ECDqur1EeWHIkKJ6YbN2Sr7H8Zf+uKaUy
-         HibNTSiOESlWIbKQZzPeKPftNUpMbc/o0F0d3EHRZZJzEU+SpbgRLO5G/+6WalPIEV
-         FgybKkKwwkvEw==
-Received: by mail-pj1-f69.google.com with SMTP id t7-20020a17090a5d8700b001a7604b85f5so980418pji.8
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 21:52:29 -0800 (PST)
+        Wed, 24 Nov 2021 01:01:16 -0500
+Received: by mail-lj1-f179.google.com with SMTP id l9so3035823ljq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 21:58:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V/j9435sf+Q6QqIYUyi0ktOVWvCT49bfuL52dC8eJNQ=;
-        b=tQar1LhljP60cl/5nOJS9Xk3wkd99g0W8rVdGgn0z7ySGCHmn5B/L2cVQCASovdovn
-         /6Wmnob1J2PVTNaHUYdfKHlTR8oEC5bl+CRxPcnFUaZctEdNJTtFhAKA8nkuMe4JYHIK
-         ajvAk+XTDttPjZWkkrEGNnqR41RpPJTBwLulLy6URkg4H9xqtPNm5fLngC3Gic7kF+BY
-         bNYfwP8mSgCWVPmxMe9+IpyQuix1R5/OSmUCVcGEkxMTDPfN6iR+EgvL5dzhedEvHcTW
-         MXokZ8NNeQ4mbreQShkjyKSS2EBPelsUorxRy8yUexiZwzd1yXFrMFTtDgCBQWFYWf5V
-         AStg==
-X-Gm-Message-State: AOAM532i9ChArxuoPJ+CaJjRUoEsIfxNttIMJeezf851BaUG4ISgDmXU
-        QHxsmLdF+oRkXZp9oNv1Zjm8PumlLBo7XrHmCWPrhX3c/pFUQLrSTZCkpK+46Ifw8hekxBERooA
-        OQYSM8IleSThJPyDtJ7m5jHbEinl3hUCOGJ/9LS9+uY02HKjNYKul4my55Q==
-X-Received: by 2002:a17:90a:fe0a:: with SMTP id ck10mr5187433pjb.216.1637733147744;
-        Tue, 23 Nov 2021 21:52:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxtcQIbaN5dL44ZbqC9L1a1WlemOP/LRBnvajM2RC/ohJohHICyHnWXVJGR7cdc4bVPeYgPZaVQp8pkmusSUQE=
-X-Received: by 2002:a17:90a:fe0a:: with SMTP id ck10mr5187399pjb.216.1637733147439;
- Tue, 23 Nov 2021 21:52:27 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=tyvxej18x/DNYvEsoV2zknfM5bP1ygL5b1M+7EMvI+M=;
+        b=opnmcfzRnVpPaeMqPhSZ/PhoVfgbxBx/G/fIQcbi+KCmoMGSNQ9c40e36Mk9z4C0f0
+         Up3F30R943T321JQReHi2eeHb2lvcy0ccPpSMJlA+cdWViDJYc64Rf/K7ilRcB1/3cJH
+         zCdhDmbmOstRtb9PM3yGUs8wiDwAGcMf5NkvAOsjopZ+OyAR/LNEsrnf8gZRrjBmDHrU
+         W/vrO9cEvhMuaOWp8agn/IDzy6evDjFse1RJVJloP/nXvWfzqptRL+E0jaGcjueimlPn
+         IQhDEQJpLOZtM8okYTSCbIHtG9MA9SP9RqjijxpUg9iy3xB9mC+WxkNzkNCv9lDSUSJr
+         CQWQ==
+X-Gm-Message-State: AOAM531lycsDKQVj5xg3a3lwZPJDvUKzE6JOMCMrTQviBZcj7xe2qu8m
+        j+Q/HUIlEYRwUegqgtoV9Jo=
+X-Google-Smtp-Source: ABdhPJyJN8yFuQRNBRMtXeFK+n2Rk4+Kn0PTuOFenekvPs7s7wwhUbZU9iyvpC9PU7DaCHr7NuT+jA==
+X-Received: by 2002:a2e:7310:: with SMTP id o16mr12524464ljc.394.1637733477787;
+        Tue, 23 Nov 2021 21:57:57 -0800 (PST)
+Received: from fedora (dc73szyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16ee:fa00::4])
+        by smtp.gmail.com with ESMTPSA id v23sm131530lji.79.2021.11.23.21.57.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 21:57:56 -0800 (PST)
+Date:   Wed, 24 Nov 2021 07:57:49 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-power@fi.rohmeurope.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] regulator: rohm-generic: remove unused dummies
+Message-ID: <YZ3UXXrk/Efe7Scj@fedora>
 MIME-Version: 1.0
-References: <d4084296-9d36-64ec-8a79-77d82ac6d31c@canonical.com>
- <20210914104301.48270518.alex.williamson@redhat.com> <9e8d0e9e-1d94-35e8-be1f-cf66916c24b2@canonical.com>
- <20210915103235.097202d2.alex.williamson@redhat.com> <2fadf33d-8487-94c2-4460-2a20fdb2ea12@canonical.com>
- <20211005171326.3f25a43a.alex.williamson@redhat.com> <CAKAwkKtJQ1mE3=iaDA1B_Dkn1+ZbN0jTSWrQon0=SAszRv5xFw@mail.gmail.com>
- <20211012140516.6838248b.alex.williamson@redhat.com> <CAKAwkKsF3Kn1HLAg55cBVmPmo2y0QAf7g6Zc7q6ZsQZBXGW9bg@mail.gmail.com>
- <CAKAwkKsoKELnR=--06sRZL3S6_rQVi5J_Kcv6iRQ6w2tY71WCQ@mail.gmail.com> <20211104160541.4aedc593.alex.williamson@redhat.com>
-In-Reply-To: <20211104160541.4aedc593.alex.williamson@redhat.com>
-From:   Matthew Ruffell <matthew.ruffell@canonical.com>
-Date:   Wed, 24 Nov 2021 18:52:16 +1300
-Message-ID: <CAKAwkKs=p3bHQL5VXuh_Xhu3A+mg0mSEuFJ_fy4Zh6E6YG4aag@mail.gmail.com>
-Subject: Re: [PROBLEM] Frequently get "irq 31: nobody cared" when passing
- through 2x GPUs that share same pci switch via vfio
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     linux-pci@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        kvm@vger.kernel.org, nathan.langford@xcelesunifiedtechnologies.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="SqVkFfLSlFLJRQyO"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
 
-I have forward ported your patch to 5.16-rc2 to account for the vfio module
-refactor that happened recently. Attached below.
+--SqVkFfLSlFLJRQyO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Have you had an opportunity to research if it is possible to conditionalise
-clearing DisINTx by looking at the interrupt status and seeing if there is a
-pending interrupt but no handler set?
+Function rohm_regulator_set_voltage_sel_restricted() and
+rohm_regulator_set_dvs_levels() had inlined dummy implementations for
+cases when the real implementation was not configured in.
 
-We are testing a 5.16-rc2 kernel with the patch applied on Nathan's server
-currently, and we are also trying out the pci=clearmsi command line parameter
-that was discussed on linux-pci a few years ago in [1][2][3][4] along with
-setting snd-hda-intel.enable_msi=1 to see if it helps the crashkernel not get
-stuck copying IR tables.
+All of the drivers who issue the call to these functions do SELECT the
+real implementation from the Kconfig. There should be no cases where the
+real implementation was not selected by the drivers using these
+functions - such a situation is likely to be an error which deserves to be
+noticed at compile-time.
 
-[1] https://marc.info/?l=linux-pci&m=153988799707413
-[2] https://lore.kernel.org/linux-pci/20181018183721.27467-1-gpiccoli@canonical.com/
-[3] https://lore.kernel.org/linux-pci/20181018183721.27467-2-gpiccoli@canonical.com/
-[4] https://lore.kernel.org/linux-pci/20181018183721.27467-3-gpiccoli@canonical.com/
+These dummies could in theory be used for compile-testing the drivers
+only (without the generic rohm regulator pieces). However, for such
+compile testing we should manually drop the selection from KConfig - and
+I guess that if it does not work out-of-the-box, then it is not going to
+happen. Especially when there should be no reason to omit
+compile-testing the generic rohm_regulator part.
 
-I will let you know how we get on.
+Crash test dummies.
 
-Thanks,
-Matthew
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 
-diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-index f948e6cd2993..cbca207ddc45 100644
---- a/drivers/vfio/pci/vfio_pci_core.c
-+++ b/drivers/vfio/pci/vfio_pci_core.c
-@@ -276,6 +276,7 @@ int vfio_pci_core_enable(struct vfio_pci_core_device *vdev)
-             vdev->pci_2_3 = pci_intx_mask_supported(pdev);
-     }
+---
 
-+    vfio_intx_stub_init(vdev);
-     pci_read_config_word(pdev, PCI_COMMAND, &cmd);
-     if (vdev->pci_2_3 && (cmd & PCI_COMMAND_INTX_DISABLE)) {
-         cmd &= ~PCI_COMMAND_INTX_DISABLE;
-@@ -365,6 +366,14 @@ void vfio_pci_core_disable(struct
-vfio_pci_core_device *vdev)
-         kfree(dummy_res);
-     }
+This patch is a result of me breaking the build with the dummy-function
+which I forgot to inline. When fixing it I noticed these dummies should
+actually not be there. As a result Mark asked me to send a follow-up
+patch removing the one I added - and I decided to do double the work and
+remove two of them :) Anyways, I'd suggest this to go via Mark's tree
+even if the header resides in a file which may be regarded as MFD
+territory.
 
-+    /*
-+     * Set known command register state, disabling MSI/X (via busmaster)
-+     * and INTx directly.  At this point we can teardown the INTx stub
-+     * handler initialized from the SET_IRQS teardown above.
-+     */
-+    pci_write_config_word(pdev, PCI_COMMAND, PCI_COMMAND_INTX_DISABLE);
-+    vfio_intx_stub_exit(vdev);
-+
-     vdev->needs_reset = true;
+Reference to previous discussion:
+https://lore.kernel.org/lkml/YZz4FkRoiVIbfgEf@sirena.org.uk/
+---
+ include/linux/mfd/rohm-generic.h | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-     /*
-@@ -382,12 +391,6 @@ void vfio_pci_core_disable(struct
-vfio_pci_core_device *vdev)
-         pci_save_state(pdev);
-     }
-
--    /*
--     * Disable INTx and MSI, presumably to avoid spurious interrupts
--     * during reset.  Stolen from pci_reset_function()
--     */
--    pci_write_config_word(pdev, PCI_COMMAND, PCI_COMMAND_INTX_DISABLE);
+diff --git a/include/linux/mfd/rohm-generic.h b/include/linux/mfd/rohm-gene=
+ric.h
+index 080d60adcd5f..5ed97a1d0908 100644
+--- a/include/linux/mfd/rohm-generic.h
++++ b/include/linux/mfd/rohm-generic.h
+@@ -82,20 +82,6 @@ int rohm_regulator_set_dvs_levels(const struct rohm_dvs_=
+config *dvs,
+=20
+ int rohm_regulator_set_voltage_sel_restricted(struct regulator_dev *rdev,
+ 					      unsigned int sel);
+-#else
+-static inline int rohm_regulator_set_dvs_levels(const struct rohm_dvs_conf=
+ig *dvs,
+-						struct device_node *np,
+-						const struct regulator_desc *desc,
+-						struct regmap *regmap)
+-{
+-	return 0;
+-}
 -
-     /*
-      * Try to get the locks ourselves to prevent a deadlock. The
-      * success of this is dependent on being able to lock the device,
-diff --git a/drivers/vfio/pci/vfio_pci_intrs.c
-b/drivers/vfio/pci/vfio_pci_intrs.c
-index 6069a11fb51a..98cf528aa175 100644
---- a/drivers/vfio/pci/vfio_pci_intrs.c
-+++ b/drivers/vfio/pci/vfio_pci_intrs.c
-@@ -139,6 +139,44 @@ static irqreturn_t vfio_intx_handler(int irq, void *dev_id)
-     return ret;
- }
+-static inline int rohm_regulator_set_voltage_sel_restricted(struct regulat=
+or_dev *rdev,
+-						     unsigned int sel)
+-{
+-	return 0;
+-}
+ #endif
+=20
+ #endif
+--=20
+2.31.1
 
-+static irqreturn_t vfio_intx_stub(int irq, void *dev_id)
-+{
-+    struct vfio_pci_core_device *vdev = dev_id;
-+
-+    if (pci_check_and_mask_intx(vdev->pdev))
-+        return IRQ_HANDLED;
-+
-+    return IRQ_NONE;
-+}
-+
-+void vfio_intx_stub_init(struct vfio_pci_core_device *vdev)
-+{
-+    char *name;
-+
-+    if (vdev->nointx || !vdev->pci_2_3 || !vdev->pdev->irq)
-+        return;
-+
-+    name = kasprintf(GFP_KERNEL, "vfio-intx-stub(%s)",
-+             pci_name(vdev->pdev));
-+    if (!name)
-+        return;
-+
-+    if (request_irq(vdev->pdev->irq, vfio_intx_stub,
-+            IRQF_SHARED, name, vdev))
-+        kfree(name);
-+
-+    vdev->intx_stub = true;
-+}
-+
-+void vfio_intx_stub_exit(struct vfio_pci_core_device *vdev)
-+{
-+    if (!vdev->intx_stub)
-+        return;
-+
-+    kfree(free_irq(vdev->pdev->irq, vdev));
-+    vdev->intx_stub = false;
-+}
-+
- static int vfio_intx_enable(struct vfio_pci_core_device *vdev)
- {
-     if (!is_irq_none(vdev))
-@@ -153,6 +191,8 @@ static int vfio_intx_enable(struct
-vfio_pci_core_device *vdev)
 
-     vdev->num_ctx = 1;
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
 
-+    vfio_intx_stub_exit(vdev);
-+
-     /*
-      * If the virtual interrupt is masked, restore it.  Devices
-      * supporting DisINTx can be masked at the hardware level
-@@ -231,6 +271,7 @@ static void vfio_intx_disable(struct
-vfio_pci_core_device *vdev)
-     vdev->irq_type = VFIO_PCI_NUM_IRQS;
-     vdev->num_ctx = 0;
-     kfree(vdev->ctx);
-+    vfio_intx_stub_init(vdev);
- }
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
 
- /*
-@@ -258,6 +299,8 @@ static int vfio_msi_enable(struct
-vfio_pci_core_device *vdev, int nvec, bool msi
-     if (!vdev->ctx)
-         return -ENOMEM;
+--SqVkFfLSlFLJRQyO
+Content-Type: application/pgp-signature; name="signature.asc"
 
-+    vfio_intx_stub_exit(vdev);
-+
-     /* return the number of supported vectors if we can't get all: */
-     cmd = vfio_pci_memory_lock_and_enable(vdev);
-     ret = pci_alloc_irq_vectors(pdev, 1, nvec, flag);
-@@ -266,6 +309,7 @@ static int vfio_msi_enable(struct
-vfio_pci_core_device *vdev, int nvec, bool msi
-             pci_free_irq_vectors(pdev);
-         vfio_pci_memory_unlock_and_restore(vdev, cmd);
-         kfree(vdev->ctx);
-+        vfio_intx_stub_init(vdev);
-         return ret;
-     }
-     vfio_pci_memory_unlock_and_restore(vdev, cmd);
-@@ -388,6 +432,7 @@ static int vfio_msi_set_block(struct
-vfio_pci_core_device *vdev, unsigned start,
- static void vfio_msi_disable(struct vfio_pci_core_device *vdev, bool msix)
- {
-     struct pci_dev *pdev = vdev->pdev;
-+    pci_dev_flags_t dev_flags = pdev->dev_flags;
-     int i;
-     u16 cmd;
+-----BEGIN PGP SIGNATURE-----
 
-@@ -399,19 +444,22 @@ static void vfio_msi_disable(struct
-vfio_pci_core_device *vdev, bool msix)
-     vfio_msi_set_block(vdev, 0, vdev->num_ctx, NULL, msix);
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmGd1FEACgkQeFA3/03a
+ocURvwgAyms6+BeYd1iwxh0IMq+GHounQTylV6m6UviIRTTuJszMnYOjUnZmssvJ
+6SBIYAj2e8Si0+Jhi4gA+KumEwxFNAYfTS4axmxik4aESfI5vaSMCAupmPq7dIdw
+qGzy5EWt2ChmelpI01zQ7Ne93nMP399ck/eyWVgStQ7nHNggxZZvAUjQpf76Yf/0
+xhMVFGMUbuQs2ywE2391lSOfmQ3mAcAaU4yApxrsJUcF5kr0PGSBVhf8Ygy0L2a3
+15+U8O6FrF9p0HRBodTSgAxEpaoggsAyB3J8clqu4fXpOEfwfSe1L5mWAMyGVoFv
+zgN5v+jrjPRFSqyU1c6SBGRNWVF28w==
+=9kUp
+-----END PGP SIGNATURE-----
 
-     cmd = vfio_pci_memory_lock_and_enable(vdev);
--    pci_free_irq_vectors(pdev);
--    vfio_pci_memory_unlock_and_restore(vdev, cmd);
-
-     /*
--     * Both disable paths above use pci_intx_for_msi() to clear DisINTx
--     * via their shutdown paths.  Restore for NoINTx devices.
-+     * XXX pci_intx_for_msi() will clear DisINTx, which can trigger an
-+     * INTx storm even before we return from pci_free_irq_vectors(), even
-+     * as we'll restore the previous command register immediately after.
-+     * Hack around it by masking in a dev_flag to prevent such behavior.
-      */
--    if (vdev->nointx)
--        pci_intx(pdev, 0);
-+    pdev->dev_flags |= PCI_DEV_FLAGS_MSI_INTX_DISABLE_BUG;
-+    pci_free_irq_vectors(pdev);
-+    pdev->dev_flags = dev_flags;
-
-+    vfio_pci_memory_unlock_and_restore(vdev, cmd);
-     vdev->irq_type = VFIO_PCI_NUM_IRQS;
-     vdev->num_ctx = 0;
-     kfree(vdev->ctx);
-+    vfio_intx_stub_init(vdev);
- }
-
- /*
-diff --git a/include/linux/vfio_pci_core.h b/include/linux/vfio_pci_core.h
-index ef9a44b6cf5d..58e1029eb083 100644
---- a/include/linux/vfio_pci_core.h
-+++ b/include/linux/vfio_pci_core.h
-@@ -124,6 +124,7 @@ struct vfio_pci_core_device {
-     bool            needs_reset;
-     bool            nointx;
-     bool            needs_pm_restore;
-+    bool            intx_stub;
-     struct pci_saved_state    *pci_saved_state;
-     struct pci_saved_state    *pm_save;
-     int            ioeventfds_nr;
-@@ -145,6 +146,9 @@ struct vfio_pci_core_device {
- #define is_irq_none(vdev) (!(is_intx(vdev) || is_msi(vdev) || is_msix(vdev)))
- #define irq_is(vdev, type) (vdev->irq_type == type)
-
-+extern void vfio_intx_stub_init(struct vfio_pci_core_device *vdev);
-+extern void vfio_intx_stub_exit(struct vfio_pci_core_device *vdev);
-+
- extern void vfio_pci_intx_mask(struct vfio_pci_core_device *vdev);
- extern void vfio_pci_intx_unmask(struct vfio_pci_core_device *vdev);
+--SqVkFfLSlFLJRQyO--
