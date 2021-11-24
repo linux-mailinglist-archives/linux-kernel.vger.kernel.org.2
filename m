@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1419045BDFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:41:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28AE945BC31
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:23:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344214AbhKXMmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:42:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38946 "EHLO mail.kernel.org"
+        id S244428AbhKXM0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:26:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344327AbhKXMk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:40:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E234A60C51;
-        Wed, 24 Nov 2021 12:23:53 +0000 (UTC)
+        id S244910AbhKXMYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:24:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD8C460295;
+        Wed, 24 Nov 2021 12:14:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756634;
-        bh=j1dDLAA5xFeV7uJcTZ1ri3BVmBrvnT3ACGQlQoLLuW4=;
+        s=korg; t=1637756091;
+        bh=I3H8yzAtI8SujZBXtSUndW4JbdVuHlp/D7yI0ExIHTc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uivYkpq5JUFjEu0Pu/Rc3KulGApjDRndfKOKGEGbcT+iOEGRMtVG4/T5psWqUJqyO
-         FAJuZ90Wxj0DTGWA9tN0fWoBYMWMNaIJbqM/pwjxPr7s5sxDMdczX9oTH0WG/Ri16K
-         u8SHkukcrgqrRgN5tgXLEZdpOoqvjmwhvOxugfro=
+        b=027oBbAVNQ1SoEM1R5rT7MtG2cIUBCkXO4uSWLKscYI1Q8RptBSRAlmkcbOnpPYfk
+         2cB/qBAlu1NlAEI77kBC6O3p3qwHsCjH2XM8AdlcZ4NhhuVRMa6CFqRM5+Ji/bGX6D
+         XtODTiNrblUnmiJGhoy+QJm0uww1cD3pbWASV7+g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 153/251] scsi: csiostor: Uninitialized data in csio_ln_vnp_read_cbfn()
-Date:   Wed, 24 Nov 2021 12:56:35 +0100
-Message-Id: <20211124115715.593123187@linuxfoundation.org>
+Subject: [PATCH 4.9 125/207] usb: gadget: hid: fix error code in do_config()
+Date:   Wed, 24 Nov 2021 12:56:36 +0100
+Message-Id: <20211124115708.100454110@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +42,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit f4875d509a0a78ad294a1a538d534b5ba94e685a ]
+[ Upstream commit 68e7c510fdf4f6167404609da52e1979165649f6 ]
 
-This variable is just a temporary variable, used to do an endian
-conversion.  The problem is that the last byte is not initialized.  After
-the conversion is completely done, the last byte is discarded so it doesn't
-cause a problem.  But static checkers and the KMSan runtime checker can
-detect the uninitialized read and will complain about it.
+Return an error code if usb_get_function() fails.  Don't return success.
 
-Link: https://lore.kernel.org/r/20211006073242.GA8404@kili
-Fixes: 5036f0a0ecd3 ("[SCSI] csiostor: Fix sparse warnings.")
+Fixes: 4bc8a33f2407 ("usb: gadget: hid: convert to new interface of f_hid")
+Acked-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Link: https://lore.kernel.org/r/20211011123739.GC15188@kili
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/csiostor/csio_lnode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/gadget/legacy/hid.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/csiostor/csio_lnode.c b/drivers/scsi/csiostor/csio_lnode.c
-index 957767d383610..d1df694d9ed00 100644
---- a/drivers/scsi/csiostor/csio_lnode.c
-+++ b/drivers/scsi/csiostor/csio_lnode.c
-@@ -611,7 +611,7 @@ csio_ln_vnp_read_cbfn(struct csio_hw *hw, struct csio_mb *mbp)
- 	struct fc_els_csp *csp;
- 	struct fc_els_cssp *clsp;
- 	enum fw_retval retval;
--	__be32 nport_id;
-+	__be32 nport_id = 0;
+diff --git a/drivers/usb/gadget/legacy/hid.c b/drivers/usb/gadget/legacy/hid.c
+index cccbb948821b2..a55d3761d777c 100644
+--- a/drivers/usb/gadget/legacy/hid.c
++++ b/drivers/usb/gadget/legacy/hid.c
+@@ -103,8 +103,10 @@ static int do_config(struct usb_configuration *c)
  
- 	retval = FW_CMD_RETVAL_G(ntohl(rsp->alloc_to_len16));
- 	if (retval != FW_SUCCESS) {
+ 	list_for_each_entry(e, &hidg_func_list, node) {
+ 		e->f = usb_get_function(e->fi);
+-		if (IS_ERR(e->f))
++		if (IS_ERR(e->f)) {
++			status = PTR_ERR(e->f);
+ 			goto put;
++		}
+ 		status = usb_add_function(c, e->f);
+ 		if (status < 0) {
+ 			usb_put_function(e->f);
 -- 
 2.33.0
 
