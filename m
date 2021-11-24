@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC1445BB19
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04BB645BFDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:59:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234079AbhKXMQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:16:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48530 "EHLO mail.kernel.org"
+        id S1346222AbhKXNCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:02:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243390AbhKXMOA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:14:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DB15611C1;
-        Wed, 24 Nov 2021 12:08:29 +0000 (UTC)
+        id S1346754AbhKXNAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:00:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A68661175;
+        Wed, 24 Nov 2021 12:34:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755710;
-        bh=9s+rSDvOy7U06gwzWgfNajdvN6FhbtNsak6QIH8Ju9I=;
+        s=korg; t=1637757270;
+        bh=ufrqD5GM6BCWE6ozeSLbaaPWgc65jOD7AnWNkV4ajrQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LfyCOHMsSuXnsRUoXCCgEfvm4CwFfdy3XEmtIaWR5Baoo0OKOVDh4USOUr/isojC/
-         d7aLVt31zF3lCVLWc7/MpXnbhf1p2ryIvVqI0pD0DjvuXmbuwatiUBXTEet0gBGBpd
-         sJ8y9lciho8j7POy5qb+/3ASfqhIQOpaJuLy40PQ=
+        b=cMtOLrc2JOj6/Durfdp9WeD2JHjE9CP3yKepjlcHx4N68W2CqDdPSw89a9nT0ABNA
+         X5xfqYGJiCjVTRY/BwtfyNgcnhhWTGtc/BiMs5N5Ah4GLNr1TiQTyjLYw6dQHVsckI
+         LTXnOW9wpZWBmlQlwzG6OI5AkNXsqu7tX3oib3z0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.9 030/207] regulator: dt-bindings: samsung,s5m8767: correct s5m8767,pmic-buck-default-dvs-idx property
-Date:   Wed, 24 Nov 2021 12:55:01 +0100
-Message-Id: <20211124115704.924879843@linuxfoundation.org>
+        stable@vger.kernel.org, Mengen Sun <mengensun@tencent.com>,
+        Menglong Dong <imagedong@tencent.com>,
+        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 112/323] workqueue: make sysfs of unbound kworker cpumask more clever
+Date:   Wed, 24 Nov 2021 12:55:02 +0100
+Message-Id: <20211124115722.737647454@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +40,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+From: Menglong Dong <imagedong@tencent.com>
 
-commit a7fda04bc9b6ad9da8e19c9e6e3b1dab773d068a upstream.
+[ Upstream commit d25302e46592c97d29f70ccb1be558df31a9a360 ]
 
-The driver was always parsing "s5m8767,pmic-buck-default-dvs-idx", not
-"s5m8767,pmic-buck234-default-dvs-idx".
+Some unfriendly component, such as dpdk, write the same mask to
+unbound kworker cpumask again and again. Every time it write to
+this interface some work is queue to cpu, even though the mask
+is same with the original mask.
 
-Cc: <stable@vger.kernel.org>
-Fixes: 26aec009f6b6 ("regulator: add device tree support for s5m8767")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Acked-by: Rob Herring <robh@kernel.org>
-Message-Id: <20211008113723.134648-3-krzysztof.kozlowski@canonical.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+So, fix it by return success and do nothing if the cpumask is
+equal with the old one.
+
+Signed-off-by: Mengen Sun <mengensun@tencent.com>
+Signed-off-by: Menglong Dong <imagedong@tencent.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/workqueue.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
---- a/Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
-+++ b/Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
-@@ -39,7 +39,7 @@ Optional properties of the main device n
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 1573d1bf63007..b1bb6cb5802ec 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -5125,9 +5125,6 @@ int workqueue_set_unbound_cpumask(cpumask_var_t cpumask)
+ 	int ret = -EINVAL;
+ 	cpumask_var_t saved_cpumask;
  
- Additional properties required if either of the optional properties are used:
+-	if (!zalloc_cpumask_var(&saved_cpumask, GFP_KERNEL))
+-		return -ENOMEM;
+-
+ 	/*
+ 	 * Not excluding isolated cpus on purpose.
+ 	 * If the user wishes to include them, we allow that.
+@@ -5135,6 +5132,15 @@ int workqueue_set_unbound_cpumask(cpumask_var_t cpumask)
+ 	cpumask_and(cpumask, cpumask, cpu_possible_mask);
+ 	if (!cpumask_empty(cpumask)) {
+ 		apply_wqattrs_lock();
++		if (cpumask_equal(cpumask, wq_unbound_cpumask)) {
++			ret = 0;
++			goto out_unlock;
++		}
++
++		if (!zalloc_cpumask_var(&saved_cpumask, GFP_KERNEL)) {
++			ret = -ENOMEM;
++			goto out_unlock;
++		}
  
-- - s5m8767,pmic-buck234-default-dvs-idx: Default voltage setting selected from
-+ - s5m8767,pmic-buck-default-dvs-idx: Default voltage setting selected from
-    the possible 8 options selectable by the dvs gpios. The value of this
-    property should be between 0 and 7. If not specified or if out of range, the
-    default value of this property is set to 0.
+ 		/* save the old wq_unbound_cpumask. */
+ 		cpumask_copy(saved_cpumask, wq_unbound_cpumask);
+@@ -5147,10 +5153,11 @@ int workqueue_set_unbound_cpumask(cpumask_var_t cpumask)
+ 		if (ret < 0)
+ 			cpumask_copy(wq_unbound_cpumask, saved_cpumask);
+ 
++		free_cpumask_var(saved_cpumask);
++out_unlock:
+ 		apply_wqattrs_unlock();
+ 	}
+ 
+-	free_cpumask_var(saved_cpumask);
+ 	return ret;
+ }
+ 
+-- 
+2.33.0
+
 
 
