@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 861A445C0A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:07:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1CA45C087
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347101AbhKXNJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:09:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49338 "EHLO mail.kernel.org"
+        id S1345561AbhKXNJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:09:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347055AbhKXNGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:06:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B9FF613BD;
-        Wed, 24 Nov 2021 12:38:21 +0000 (UTC)
+        id S1347124AbhKXNHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:07:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A504261A0D;
+        Wed, 24 Nov 2021 12:38:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757502;
-        bh=ptO+mTu63sIievXAc9tYAb3BdD1yIC+/E1E6w+Bbr4s=;
+        s=korg; t=1637757505;
+        bh=Y9afLT4371TGlFudsxLM9JlBme7rSHZEM9sLFe9lq00=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rRPZMGffJ1W5Rj553Iarvs33VXk4jD87OhAHz6GjbadL0PEvNeKCJscoI05Qn+Ive
-         kQWPajEpHyWRUlk56FJBKI57I9gF2YvwzroMukTX0jiD/dwHAbxu/HYm+0HRei7KgC
-         zyAAtB3JjQhhnjxuVqzuIndE/BECyXcM4qrqc7nk=
+        b=D/74w4ZzngnTaaP1FLy+NcfI5UiPxIHtgmTXlCMfkpHnh9gJJi7WzuBioL8BfprqO
+         U6+xymAyuthJBfs9Vj7guQ6/htBBLALdpKRZuKgsyPFMpWYmcYVkykdl55CCFNrwnE
+         ORopxBxscgg3Mkj8dxjxf7Fy1Qo/2bKbdad1Xhp4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 157/323] phy: micrel: ksz8041nl: do not use power down mode
-Date:   Wed, 24 Nov 2021 12:55:47 +0100
-Message-Id: <20211124115724.229361641@linuxfoundation.org>
+        stable@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 158/323] nvme-rdma: fix error code in nvme_rdma_setup_ctrl
+Date:   Wed, 24 Nov 2021 12:55:48 +0100
+Message-Id: <20211124115724.261886828@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
 References: <20211124115718.822024889@linuxfoundation.org>
@@ -42,55 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Agner <stefan@agner.ch>
+From: Max Gurtovoy <mgurtovoy@nvidia.com>
 
-[ Upstream commit 2641b62d2fab52648e34cdc6994b2eacde2d27c1 ]
+[ Upstream commit 09748122009aed7bfaa7acc33c10c083a4758322 ]
 
-Some Micrel KSZ8041NL PHY chips exhibit continuous RX errors after using
-the power down mode bit (0.11). If the PHY is taken out of power down
-mode in a certain temperature range, the PHY enters a weird state which
-leads to continuously reporting RX errors. In that state, the MAC is not
-able to receive or send any Ethernet frames and the activity LED is
-constantly blinking. Since Linux is using the suspend callback when the
-interface is taken down, ending up in that state can easily happen
-during a normal startup.
+In case that icdoff is not zero or mandatory keyed sgls are not
+supported by the NVMe/RDMA target, we'll go to error flow but we'll
+return 0 to the caller. Fix it by returning an appropriate error code.
 
-Micrel confirmed the issue in errata DS80000700A [*], caused by abnormal
-clock recovery when using power down mode. Even the latest revision (A4,
-Revision ID 0x1513) seems to suffer that problem, and according to the
-errata is not going to be fixed.
-
-Remove the suspend/resume callback to avoid using the power down mode
-completely.
-
-[*] https://ww1.microchip.com/downloads/en/DeviceDoc/80000700A.pdf
-
-Fixes: 1a5465f5d6a2 ("phy/micrel: Add suspend/resume support to Micrel PHYs")
-Signed-off-by: Stefan Agner <stefan@agner.ch>
-Acked-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: c66e2998c8ca ("nvme-rdma: centralize controller setup sequence")
+Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/micrel.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/nvme/host/rdma.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-index 55caaaf969da5..0135903300595 100644
---- a/drivers/net/phy/micrel.c
-+++ b/drivers/net/phy/micrel.c
-@@ -880,8 +880,9 @@ static struct phy_driver ksphy_driver[] = {
- 	.get_sset_count = kszphy_get_sset_count,
- 	.get_strings	= kszphy_get_strings,
- 	.get_stats	= kszphy_get_stats,
--	.suspend	= genphy_suspend,
--	.resume		= genphy_resume,
-+	/* No suspend/resume callbacks because of errata DS80000700A,
-+	 * receiver error following software power down.
-+	 */
- }, {
- 	.phy_id		= PHY_ID_KSZ8041RNLI,
- 	.phy_id_mask	= MICREL_PHY_ID_MASK,
+diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+index ffd6a7204509a..1f41cf80f827c 100644
+--- a/drivers/nvme/host/rdma.c
++++ b/drivers/nvme/host/rdma.c
+@@ -967,11 +967,13 @@ static int nvme_rdma_setup_ctrl(struct nvme_rdma_ctrl *ctrl, bool new)
+ 		return ret;
+ 
+ 	if (ctrl->ctrl.icdoff) {
++		ret = -EOPNOTSUPP;
+ 		dev_err(ctrl->ctrl.device, "icdoff is not supported!\n");
+ 		goto destroy_admin;
+ 	}
+ 
+ 	if (!(ctrl->ctrl.sgls & (1 << 2))) {
++		ret = -EOPNOTSUPP;
+ 		dev_err(ctrl->ctrl.device,
+ 			"Mandatory keyed sgls are not supported!\n");
+ 		goto destroy_admin;
 -- 
 2.33.0
 
