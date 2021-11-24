@@ -2,104 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 644D345B0C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 01:35:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE70345B0CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 01:38:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhKXAi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 19:38:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbhKXAiz (ORCPT
+        id S231156AbhKXAlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 19:41:40 -0500
+Received: from gandalf.ozlabs.org ([150.107.74.76]:38841 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230266AbhKXAli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 19:38:55 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05530C061746
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 16:35:46 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id 7so1589787oip.12
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 16:35:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kNh0jt8tv4maN2YkF0cmeBfMTgSPYwcWwHTrIEj8PD4=;
-        b=RaJX8F1zRhXuDy80KZTcn+dQG5gDuyJcbR9Truhvisst9naZx2GPRqhKCfPSGA7bH9
-         S4ey/ByihGFenVcwBSdlZOoytstPoEDO3jcbQaHZtCFB659a4vMl6TDNasJnhob3sdPe
-         aZLjIOt8VGWOTaeoFiRoZCXBOiig0A60Z8z8jBpa8IniwasBhYcZKKI+c+m6Xp9SY+FU
-         AoTN/BHReBRXjpUdt562mH0OPwsBNAXATEEKi6HNKKQ77EmeolMy74FoUMlsP1NdVzLP
-         Y/Rxmk8nc15M3CDmwAJZ+vzWptXyXguBqsfmoilurxOTOpLua1Tw66SEDf0e4T27hoq7
-         sygw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kNh0jt8tv4maN2YkF0cmeBfMTgSPYwcWwHTrIEj8PD4=;
-        b=nSJvo2Qh9HNTjdLaKxnviAZvLcA9g1KVzSMfb6Fpz6woBdQbZTo6TzBFMG9gHwAqka
-         ZbBewd7rer4ksOxoxoXlnyRSb4B93fMLOsnPHobQZKh91aPgXVdWk6MK44ZtbLM0x08u
-         lGr3DHZbeEoAZEf0l9euyPeKdVgLoGrtVosqpRKQRxSI5nkzbVaVoVGnvrubHVV5ng7K
-         uEcRQStcDBuuKlttflsHm+jyY58ITV7g47yOd2tJPpQdo6MFFe3BXi7KKA2uugn/u42E
-         BqbpZi0o6gNIH4TwYKMBi0wpChGjGrKZ/WDw4w6+fBhmzyL3ZAFjzJyMzbYcJDxNIJzg
-         Mz6A==
-X-Gm-Message-State: AOAM530csMNGTjIcmHx7Qd7V83O0uK1gBS8FeQcxO7sPXPW1sA8HUyG2
-        POvvDu7ZO5ILjFLi9wQzXGbd6s9WA9AbS0kGkIs5og==
-X-Google-Smtp-Source: ABdhPJyNEmGOeKXUl3TxFGzLSZSdD+IztDjr0BhBBI2kJMnGgmHs2eAnjCm1/YARFHCchP1O0uJLUFFPcXuqbc1B5T8=
-X-Received: by 2002:a05:6808:60e:: with SMTP id y14mr1453521oih.162.1637714146248;
- Tue, 23 Nov 2021 16:35:46 -0800 (PST)
+        Tue, 23 Nov 2021 19:41:38 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HzMYt5SLJz4xcK;
+        Wed, 24 Nov 2021 11:38:26 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1637714308;
+        bh=B7rrDtDcspEyxt8KXHSEFf7i51lb5phCWSVYpKaBdFU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=cPioaWmnno9XmzbohZNvr/ecyfNgyqahn4J9zZ2qsV3KySwI6E7Dh8qaZhghoVcgg
+         AU1S6kYjCK+FwZbRf0kJWWqvqQS1UDjEATM6T1oQfw689u7wAnvvNHeLy2V47UW2mL
+         WDa9cpHWXspEmr/ExFJ/aAKqF0fGU78/Ye7PTrEP2D8dTSZsKdbc0L79VEvGPfjVxf
+         KQaC+h3dhjlA+WwqsIEHAPlVL+FVVUXoyO8qbNLbiLmEDTP3j6EYO6WUfcJw1DlIba
+         +VCw9saIYRvzrD5+cd/JjOBYmvKLNpaLAzf1lwWVDW4J0E5ldFcUJKTh5m1SP+hY7K
+         PB6pnNgVHtmkQ==
+Date:   Wed, 24 Nov 2021 11:38:25 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the tomoyo tree with the block tree
+Message-ID: <20211124113825.2d9de813@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20211123164902.35370-1-wsa+renesas@sang-engineering.com> <20211123164902.35370-2-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20211123164902.35370-2-wsa+renesas@sang-engineering.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 24 Nov 2021 01:35:34 +0100
-Message-ID: <CACRpkdYJqP7WJuhS9G65abCZHK1_LX9hkXU6o+k10t2LXw100w@mail.gmail.com>
-Subject: Re: [PATCH v5 1/1] gpio: add sloppy logic analyzer using polling
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-gpio@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Bartosz Golaszewski <brgl@bgdev.pl>, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/eDryevQj.qE_nL1MPiCA+YR";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram!
+--Sig_/eDryevQj.qE_nL1MPiCA+YR
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I like this patch.
+Hi all,
 
-On Tue, Nov 23, 2021 at 5:49 PM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
+Today's linux-next merge of the tomoyo tree got a conflict in:
 
-> +Introduction
-> +============
-> +
-> +This document briefly describes how to run the GPIO based in-kernel sloppy
-> +logic analyzer running on an isolated CPU.
-> +
-> +Note that this is a last resort analyzer which can be affected by latencies,
-> +non-deterministic code paths and non-maskable interrupts. It is called 'sloppy'
-> +for a reason. However, for e.g. remote development, it may be useful to get a
-> +first view and aid further debugging.
+  drivers/block/loop.c
 
-Maybe a small paragraph first saying what this is, the usecase (feel
-free to steal,
-rewrite etc):
+between commit:
 
-The sloppy logic analyzer will utilize a few GPIO lines in input mode on a
-system to rapidly sample these digital lines, which will, if the
-Nyquist criteria
-is met, result in a time series log with approximate waveforms as they appeared
-on these lines.
+  3793b8e18186 ("block: rename GENHD_FL_NO_PART_SCAN to GENHD_FL_NO_PART")
 
-One way to use it is to analyze external traffic connected to these GPIO
-lines with wires (i.e. digital probes), acting as a common logic analyzer.
+from the block tree and commits:
 
-Another thing it can do is to snoop on on-chip peripherals if the I/O cells of
-these peripherals can be used in GPIO input mode at the same time as they
-are being used as inputs or outputs for the peripheral, for example it would be
-possible to scale down the speed of a certain MMC controller and snoop
-the traffic between the MMC controller and the SD card by the sloppy
-logic analyzer. In the pin control subsystem such pin controllers are
-called "non-strict": a certain pin can be used with a certain peripheral and
-as a GPIO input line at the same time.
+  dfb2cc3b7f7e ("loop: don't hold lo_mutex during __loop_clr_fd()")
+  51d5ae114da8 ("loop: replace loop_validate_mutex with loop_validate_spinl=
+ock")
 
-Yours,
-Linus Walleij
+from the tomoyo tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/block/loop.c
+index 0954ea8cf9e3,6ebfa156fd9b..000000000000
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@@ -1061,9 -1041,9 +1041,9 @@@ static int loop_configure(struct loop_d
+  		lo->lo_flags |=3D LO_FLAGS_PARTSCAN;
+  	partscan =3D lo->lo_flags & LO_FLAGS_PARTSCAN;
+  	if (partscan)
+ -		lo->lo_disk->flags &=3D ~GENHD_FL_NO_PART_SCAN;
+ +		lo->lo_disk->flags &=3D ~GENHD_FL_NO_PART;
+ =20
+- 	loop_global_unlock(lo, is_loop);
++ 	loop_update_state(lo, Lo_bound);
+  	if (partscan)
+  		loop_reread_partitions(lo);
+  	if (!(mode & FMODE_EXCL))
+@@@ -1181,19 -1142,14 +1142,14 @@@ static void __loop_clr_fd(struct loop_d
+ =20
+  	/*
+  	 * lo->lo_state is set to Lo_unbound here after above partscan has
+- 	 * finished.
+- 	 *
+- 	 * There cannot be anybody else entering __loop_clr_fd() as
+- 	 * lo->lo_backing_file is already cleared and Lo_rundown state
+- 	 * protects us from all the other places trying to change the 'lo'
+- 	 * device.
++ 	 * finished. There cannot be anybody else entering __loop_clr_fd() as
++ 	 * Lo_rundown state protects us from all the other places trying to
++ 	 * change the 'lo' device.
+  	 */
+- 	mutex_lock(&lo->lo_mutex);
+  	lo->lo_flags =3D 0;
+  	if (!part_shift)
+ -		lo->lo_disk->flags |=3D GENHD_FL_NO_PART_SCAN;
+ +		lo->lo_disk->flags |=3D GENHD_FL_NO_PART;
+- 	lo->lo_state =3D Lo_unbound;
+- 	mutex_unlock(&lo->lo_mutex);
++ 	loop_update_state(lo, Lo_unbound);
+ =20
+  	/*
+  	 * Need not hold lo_mutex to fput backing file. Calling fput holding
+@@@ -2032,9 -1985,11 +1985,10 @@@ static int loop_add(int i
+  	 * userspace tools. Parameters like this in general should be avoided.
+  	 */
+  	if (!part_shift)
+ -		disk->flags |=3D GENHD_FL_NO_PART_SCAN;
+ -	disk->flags |=3D GENHD_FL_EXT_DEVT;
+ +		disk->flags |=3D GENHD_FL_NO_PART;
+  	atomic_set(&lo->lo_refcnt, 0);
+  	mutex_init(&lo->lo_mutex);
++ 	loop_update_state(lo, Lo_unbound);
+  	lo->lo_number		=3D i;
+  	spin_lock_init(&lo->lo_lock);
+  	spin_lock_init(&lo->lo_work_lock);
+
+--Sig_/eDryevQj.qE_nL1MPiCA+YR
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGdiYEACgkQAVBC80lX
+0GyUgwgAkDLtikz3JVTUbIhxs65Meb0DeToQZhvUpikLogi9uYZj17Eq75lhOxId
+8bFqWrVAlOX/R0VBa5/jGcI2es7Kr410nRG4WdeB2iDDhO+0FrxnGF9I/9QqIKiu
+itB0zBy/VdXaQTPDXe5mHHJPlGxlI4rhb6KlTIeCCA/4agFS7K/ILw/l1nXJXnJ7
+Awh4XdyMLvik7Lf6xW9dNa0sYCRg2waWrQ9TqaXZ8QUvK/xUN1sPcoe7ySeGJANd
+S8namb2cJu8fhm25Q+8QYbAU6TbpBXw81MJGVc12Db5re8/ETtyUhRCS+qADyize
+Eob9VYm2eApOFhk8uBSEDzoDSNVI4w==
+=PvwN
+-----END PGP SIGNATURE-----
+
+--Sig_/eDryevQj.qE_nL1MPiCA+YR--
