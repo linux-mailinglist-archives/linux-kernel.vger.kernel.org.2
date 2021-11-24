@@ -2,33 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB24445BEDF
+	by mail.lfdr.de (Postfix) with ESMTP id 820D345BEDE
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:49:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245154AbhKXMv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:51:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56444 "EHLO mail.kernel.org"
+        id S242336AbhKXMvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:51:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346039AbhKXMsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:48:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26C456127C;
-        Wed, 24 Nov 2021 12:28:24 +0000 (UTC)
+        id S1346057AbhKXMsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:48:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AB966128E;
+        Wed, 24 Nov 2021 12:28:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756904;
-        bh=0IqvRS0IJRKnNqDAY5t3blXGq9LRZKZOmBpJ5DNEVc4=;
+        s=korg; t=1637756907;
+        bh=ohuo0QU48rv3K/ooxaBjdZAhGuDZ37MKhXsozrU9CF4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LGl5VxShc4dUEwtlXoHlyM/NaDm6hQJeRZrALh4WUzBuJnyG6If/okobRopVIpH0n
-         t+OzaRq2FO0ZePqasSEZHZhnQfo4/wk8tVBd0pQ+jFK0vgF3iQ6Xvl5tP9I86mh/Yg
-         xaoiGcKXYQcR7r4JRRLh70LFKu1ueWCvFdyBjm8E=
+        b=EFCk8WSKWuLhB1toTYr+zn3n/asNGAWF7SPIBsZdEh4MX9P74zbK3bxsAXoJRaeCa
+         1lGeFSeejMTLy44tT8wbiObE9daOOAkyMS2WxMpGkcDAadA9dGqOyJoJcyOu0+WR7j
+         7oo2xYd6rHyVt4viNuTfec0Sivqvn+m5f32S39jw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Paul Mundt <lethal@linux-sh.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Miguel Ojeda <ojeda@kernel.org>, Rich Felker <dalias@libc.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 214/251] powerpc/dcr: Use cmplwi instead of 3-argument cmpli
-Date:   Wed, 24 Nov 2021 12:57:36 +0100
-Message-Id: <20211124115717.700544196@linuxfoundation.org>
+Subject: [PATCH 4.14 215/251] sh: check return code of request_irq
+Date:   Wed, 24 Nov 2021 12:57:37 +0100
+Message-Id: <20211124115717.733248462@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
 References: <20211124115710.214900256@linuxfoundation.org>
@@ -40,61 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Nick Desaulniers <ndesaulniers@google.com>
 
-[ Upstream commit fef071be57dc43679a32d5b0e6ee176d6f12e9f2 ]
+[ Upstream commit 0e38225c92c7964482a8bb6b3e37fde4319e965c ]
 
-In dcr-low.S we use cmpli with three arguments, instead of four
-arguments as defined in the ISA:
+request_irq is marked __must_check, but the call in shx3_prepare_cpus
+has a void return type, so it can't propagate failure to the caller.
+Follow cues from hexagon and just print an error.
 
-	cmpli	cr0,r3,1024
-
-This appears to be a PPC440-ism, looking at the "PPC440x5 CPU Core
-User’s Manual" it shows cmpli having no L field, but implied to be 0 due
-to the core being 32-bit. It mentions that the ISA defines four
-arguments and recommends using cmplwi.
-
-It also corresponds to the old POWER instruction set, which had no L
-field there, a reserved bit instead.
-
-dcr-low.S is only built 32-bit, because it is only built when
-DCR_NATIVE=y, which is only selected by 40x and 44x. Looking at the
-generated code (with gcc/gas) we see cmplwi as expected.
-
-Although gas is happy with the 3-argument version when building for
-32-bit, the LLVM assembler is not and errors out with:
-
-  arch/powerpc/sysdev/dcr-low.S:27:10: error: invalid operand for instruction
-   cmpli 0,%r3,1024; ...
-           ^
-
-Switch to the cmplwi extended opcode, which avoids any confusion when
-reading the ISA, fixes the issue with the LLVM assembler, and also means
-the code could be built 64-bit in future (though that's very unlikely).
-
-Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-BugLink: https://github.com/ClangBuiltLinux/linux/issues/1419
-Link: https://lore.kernel.org/r/20211014024424.528848-1-mpe@ellerman.id.au
+Fixes: c7936b9abcf5 ("sh: smp: Hook in to the generic IPI handler for SH-X3 SMP.")
+Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: Paul Mundt <lethal@linux-sh.org>
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+Signed-off-by: Rich Felker <dalias@libc.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/sysdev/dcr-low.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/sh/kernel/cpu/sh4a/smp-shx3.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/sysdev/dcr-low.S b/arch/powerpc/sysdev/dcr-low.S
-index e687bb2003ff0..5589fbe48bbdc 100644
---- a/arch/powerpc/sysdev/dcr-low.S
-+++ b/arch/powerpc/sysdev/dcr-low.S
-@@ -15,7 +15,7 @@
- #include <asm/export.h>
+diff --git a/arch/sh/kernel/cpu/sh4a/smp-shx3.c b/arch/sh/kernel/cpu/sh4a/smp-shx3.c
+index 0d3637c494bfe..c1f66c35e0c12 100644
+--- a/arch/sh/kernel/cpu/sh4a/smp-shx3.c
++++ b/arch/sh/kernel/cpu/sh4a/smp-shx3.c
+@@ -76,8 +76,9 @@ static void shx3_prepare_cpus(unsigned int max_cpus)
+ 	BUILD_BUG_ON(SMP_MSG_NR >= 8);
  
- #define DCR_ACCESS_PROLOG(table) \
--	cmpli	cr0,r3,1024;	 \
-+	cmplwi	cr0,r3,1024;	 \
- 	rlwinm  r3,r3,4,18,27;   \
- 	lis     r5,table@h;      \
- 	ori     r5,r5,table@l;   \
+ 	for (i = 0; i < SMP_MSG_NR; i++)
+-		request_irq(104 + i, ipi_interrupt_handler,
+-			    IRQF_PERCPU, "IPI", (void *)(long)i);
++		if (request_irq(104 + i, ipi_interrupt_handler,
++			    IRQF_PERCPU, "IPI", (void *)(long)i))
++			pr_err("Failed to request irq %d\n", i);
+ 
+ 	for (i = 0; i < max_cpus; i++)
+ 		set_cpu_present(i, true);
 -- 
 2.33.0
 
