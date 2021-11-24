@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9EE45BA28
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:05:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2401645BA2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:05:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242325AbhKXMIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:08:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33366 "EHLO mail.kernel.org"
+        id S242439AbhKXMIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:08:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233185AbhKXMGP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:06:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1AA260F90;
-        Wed, 24 Nov 2021 12:03:04 +0000 (UTC)
+        id S241048AbhKXMGS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:06:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28F0B61050;
+        Wed, 24 Nov 2021 12:03:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755385;
-        bh=i88b99ISnE/a0T9L4fAmUIOV6BjoOz67zNfpN0l1dTI=;
+        s=korg; t=1637755388;
+        bh=mMAxgwm8tJgR6S6mgYeF1h7XYG2gqEXAi+5jCppwvzc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HZoLY5YDn05c7AUviXacNZQjSi4isUYcYyeKZLzKw3cESUj39l2i8/twZt2I22ASj
-         1w9fW+wl/KX+G2mLgC5VX/02n0v2BYCuNEijX4Gw+Oxksa0v295J1Bts81PP+1au9K
-         wzzKumx/USup+Dsf3q7hLUEfm0foyB94rWOv6t44=
+        b=D+EPOdntOq8uzzH39RotTmIwRzoniP/qv77E13162vgXQvmAoTQ4KC868J1RwfVdp
+         QIJK758aC+X/FcoqSZw5CHYNjCIPR9+DLBVnfxBIoXhSrIOxZe2pd7GFZqRKka/+4H
+         fJAS0ozBVBRKaG3f+zaFuPwY40YRxQDw3757j96Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         =?UTF-8?q?Michael=20B=C3=BCsch?= <m@bues.ch>,
         Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 076/162] b43legacy: fix a lower bounds test
-Date:   Wed, 24 Nov 2021 12:56:19 +0100
-Message-Id: <20211124115700.774894499@linuxfoundation.org>
+Subject: [PATCH 4.4 077/162] b43: fix a lower bounds test
+Date:   Wed, 24 Nov 2021 12:56:20 +0100
+Message-Id: <20211124115700.804953767@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
 References: <20211124115658.328640564@linuxfoundation.org>
@@ -43,7 +43,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit c1c8380b0320ab757e60ed90efc8b1992a943256 ]
+[ Upstream commit 9b793db5fca44d01f72d3564a168171acf7c4076 ]
 
 The problem is that "channel" is an unsigned int, when it's less 5 the
 value of "channel - 5" is not a negative number as one would expect but
@@ -54,23 +54,23 @@ of that is that we never enter the "for (i = start; i <= end; i++) {"
 loop.  Instead of storing the result from b43legacy_radio_aci_detect()
 it just uses zero.
 
-Fixes: 75388acd0cd8 ("[B43LEGACY]: add mac80211-based driver for legacy BCM43xx devices")
+Fixes: ef1a628d83fc ("b43: Implement dynamic PHY API")
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Acked-by: Michael Büsch <m@bues.ch>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20211006073542.GD8404@kili
+Link: https://lore.kernel.org/r/20211006073621.GE8404@kili
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/b43legacy/radio.c | 2 +-
+ drivers/net/wireless/b43/phy_g.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/b43legacy/radio.c b/drivers/net/wireless/b43legacy/radio.c
-index 9501420340a91..5b1e8890305c1 100644
---- a/drivers/net/wireless/b43legacy/radio.c
-+++ b/drivers/net/wireless/b43legacy/radio.c
-@@ -299,7 +299,7 @@ u8 b43legacy_radio_aci_scan(struct b43legacy_wldev *dev)
- 			    & 0x7FFF);
- 	b43legacy_set_all_gains(dev, 3, 8, 1);
+diff --git a/drivers/net/wireless/b43/phy_g.c b/drivers/net/wireless/b43/phy_g.c
+index 462310e6e88fb..a706605cef9a8 100644
+--- a/drivers/net/wireless/b43/phy_g.c
++++ b/drivers/net/wireless/b43/phy_g.c
+@@ -2295,7 +2295,7 @@ static u8 b43_gphy_aci_scan(struct b43_wldev *dev)
+ 	b43_phy_mask(dev, B43_PHY_G_CRS, 0x7FFF);
+ 	b43_set_all_gains(dev, 3, 8, 1);
  
 -	start = (channel - 5 > 0) ? channel - 5 : 1;
 +	start = (channel > 5) ? channel - 5 : 1;
