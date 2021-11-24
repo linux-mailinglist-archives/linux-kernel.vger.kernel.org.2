@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7AD045C10A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:11:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6009945C223
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245392AbhKXNOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:14:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51780 "EHLO mail.kernel.org"
+        id S1350372AbhKXNZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:25:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344550AbhKXNKg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:10:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83DAD61A70;
-        Wed, 24 Nov 2021 12:41:45 +0000 (UTC)
+        id S1347641AbhKXNVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:21:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 536D06121F;
+        Wed, 24 Nov 2021 12:47:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757706;
-        bh=eeV3uARxDyiX3+WOElroX7XkqSIzF1rVEQaTdSnA0/Q=;
+        s=korg; t=1637758028;
+        bh=+rDN7N/jbkDnn0hQ8X5WZx5qfX//9WsZuSxaPhm+Hro=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v2Ex0gf3ID6369+jReyHJyIQyZ/+/VWY6+q4TcOmfdcJhek3lPOPxblwkbE2hQmmN
-         Se0CwMlwQ3PGKvy89q3bd+wXbkHqmq0zgl2SPSpxaA/P3XJE0R0bclUVZqRQ5UV5P2
-         FoYmTmUrUs7PMYCYg0Vvi5D/C+QQqIeCLdSB1xPM=
+        b=fq835Ac9lVhqTUV+5urII6fEewYQmqaTmcZ1kPZhIn0nlWoQkAzwJPjoDB6XUtfXi
+         vmOC3ZSs002Hao0b7zEzbNC0C6pXIJC2D+oE/B6XVwP4y7UvCMLPthXD/gqllPg/GH
+         3EnWuJN9Za/+Mf9+4HjCZR/WWUE8pcPgTUkMuDyk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jane Malalane <jane.malalane@citrix.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 4.19 250/323] x86/cpu: Fix migration safety with X86_BUG_NULL_SEL
+        stable@vger.kernel.org, Justin Tee <justin.tee@broadcom.com>,
+        James Smart <jsmart2021@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 004/100] scsi: lpfc: Fix list_add() corruption in lpfc_drain_txq()
 Date:   Wed, 24 Nov 2021 12:57:20 +0100
-Message-Id: <20211124115727.342046908@linuxfoundation.org>
+Message-Id: <20211124115654.993664223@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,136 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jane Malalane <jane.malalane@citrix.com>
+From: James Smart <jsmart2021@gmail.com>
 
-commit 415de44076640483648d6c0f6d645a9ee61328ad upstream.
+[ Upstream commit 99154581b05c8fb22607afb7c3d66c1bace6aa5d ]
 
-Currently, Linux probes for X86_BUG_NULL_SEL unconditionally which
-makes it unsafe to migrate in a virtualised environment as the
-properties across the migration pool might differ.
+When parsing the txq list in lpfc_drain_txq(), the driver attempts to pass
+the requests to the adapter. If such an attempt fails, a local "fail_msg"
+string is set and a log message output.  The job is then added to a
+completions list for cancellation.
 
-To be specific, the case which goes wrong is:
+Processing of any further jobs from the txq list continues, but since
+"fail_msg" remains set, jobs are added to the completions list regardless
+of whether a wqe was passed to the adapter.  If successfully added to
+txcmplq, jobs are added to both lists resulting in list corruption.
 
-1. Zen1 (or earlier) and Zen2 (or later) in a migration pool
-2. Linux boots on Zen2, probes and finds the absence of X86_BUG_NULL_SEL
-3. Linux is then migrated to Zen1
+Fix by clearing the fail_msg string after adding a job to the completions
+list. This stops the subsequent jobs from being added to the completions
+list unless they had an appropriate failure.
 
-Linux is now running on a X86_BUG_NULL_SEL-impacted CPU while believing
-that the bug is fixed.
-
-The only way to address the problem is to fully trust the "no longer
-affected" CPUID bit when virtualised, because in the above case it would
-be clear deliberately to indicate the fact "you might migrate to
-somewhere which has this behaviour".
-
-Zen3 adds the NullSelectorClearsBase CPUID bit to indicate that loading
-a NULL segment selector zeroes the base and limit fields, as well as
-just attributes. Zen2 also has this behaviour but doesn't have the NSCB
-bit.
-
- [ bp: Minor touchups. ]
-
-Signed-off-by: Jane Malalane <jane.malalane@citrix.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-CC: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20211021104744.24126-1-jane.malalane@citrix.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/20210910233159.115896-2-jsmart2021@gmail.com
+Co-developed-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/cpu/amd.c    |    2 +
- arch/x86/kernel/cpu/common.c |   44 ++++++++++++++++++++++++++++++++++++-------
- arch/x86/kernel/cpu/cpu.h    |    1 
- 3 files changed, 40 insertions(+), 7 deletions(-)
+ drivers/scsi/lpfc/lpfc_sli.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -993,6 +993,8 @@ static void init_amd(struct cpuinfo_x86
- 	if (cpu_has(c, X86_FEATURE_IRPERF) &&
- 	    !cpu_has_amd_erratum(c, amd_erratum_1054))
- 		msr_set_bit(MSR_K7_HWCR, MSR_K7_HWCR_IRPERF_EN_BIT);
-+
-+	check_null_seg_clears_base(c);
- }
- 
- #ifdef CONFIG_X86_32
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1254,9 +1254,8 @@ void __init early_cpu_init(void)
- 	early_identify_cpu(&boot_cpu_data);
- }
- 
--static void detect_null_seg_behavior(struct cpuinfo_x86 *c)
-+static bool detect_null_seg_behavior(void)
- {
--#ifdef CONFIG_X86_64
- 	/*
- 	 * Empirically, writing zero to a segment selector on AMD does
- 	 * not clear the base, whereas writing zero to a segment
-@@ -1277,10 +1276,43 @@ static void detect_null_seg_behavior(str
- 	wrmsrl(MSR_FS_BASE, 1);
- 	loadsegment(fs, 0);
- 	rdmsrl(MSR_FS_BASE, tmp);
--	if (tmp != 0)
--		set_cpu_bug(c, X86_BUG_NULL_SEG);
- 	wrmsrl(MSR_FS_BASE, old_base);
--#endif
-+	return tmp == 0;
-+}
-+
-+void check_null_seg_clears_base(struct cpuinfo_x86 *c)
-+{
-+	/* BUG_NULL_SEG is only relevant with 64bit userspace */
-+	if (!IS_ENABLED(CONFIG_X86_64))
-+		return;
-+
-+	/* Zen3 CPUs advertise Null Selector Clears Base in CPUID. */
-+	if (c->extended_cpuid_level >= 0x80000021 &&
-+	    cpuid_eax(0x80000021) & BIT(6))
-+		return;
-+
-+	/*
-+	 * CPUID bit above wasn't set. If this kernel is still running
-+	 * as a HV guest, then the HV has decided not to advertize
-+	 * that CPUID bit for whatever reason.	For example, one
-+	 * member of the migration pool might be vulnerable.  Which
-+	 * means, the bug is present: set the BUG flag and return.
-+	 */
-+	if (cpu_has(c, X86_FEATURE_HYPERVISOR)) {
-+		set_cpu_bug(c, X86_BUG_NULL_SEG);
-+		return;
-+	}
-+
-+	/*
-+	 * Zen2 CPUs also have this behaviour, but no CPUID bit.
-+	 * 0x18 is the respective family for Hygon.
-+	 */
-+	if ((c->x86 == 0x17 || c->x86 == 0x18) &&
-+	    detect_null_seg_behavior())
-+		return;
-+
-+	/* All the remaining ones are affected */
-+	set_cpu_bug(c, X86_BUG_NULL_SEG);
- }
- 
- static void generic_identify(struct cpuinfo_x86 *c)
-@@ -1316,8 +1348,6 @@ static void generic_identify(struct cpui
- 
- 	get_model_name(c); /* Default name */
- 
--	detect_null_seg_behavior(c);
--
- 	/*
- 	 * ESPFIX is a strange bug.  All real CPUs have it.  Paravirt
- 	 * systems that run Linux at CPL > 0 may or may not have the
---- a/arch/x86/kernel/cpu/cpu.h
-+++ b/arch/x86/kernel/cpu/cpu.h
-@@ -76,6 +76,7 @@ extern int detect_extended_topology_earl
- extern int detect_extended_topology(struct cpuinfo_x86 *c);
- extern int detect_ht_early(struct cpuinfo_x86 *c);
- extern void detect_ht(struct cpuinfo_x86 *c);
-+extern void check_null_seg_clears_base(struct cpuinfo_x86 *c);
- 
- unsigned int aperfmperf_get_khz(int cpu);
- 
+diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
+index 4a7ceaa34341c..51bab0979527b 100644
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -19692,6 +19692,7 @@ lpfc_drain_txq(struct lpfc_hba *phba)
+ 					fail_msg,
+ 					piocbq->iotag, piocbq->sli4_xritag);
+ 			list_add_tail(&piocbq->list, &completions);
++			fail_msg = NULL;
+ 		}
+ 		spin_unlock_irqrestore(&pring->ring_lock, iflags);
+ 	}
+-- 
+2.33.0
+
 
 
