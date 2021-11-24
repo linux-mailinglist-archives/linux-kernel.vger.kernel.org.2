@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8117545BDFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:41:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E22E845BA9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345344AbhKXMmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:42:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38572 "EHLO mail.kernel.org"
+        id S236431AbhKXMM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:12:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344310AbhKXMkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:40:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5E2461246;
-        Wed, 24 Nov 2021 12:23:50 +0000 (UTC)
+        id S233477AbhKXMJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:09:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42FB4610A5;
+        Wed, 24 Nov 2021 12:05:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756631;
-        bh=uTUEgtGmdnuDM44r+Dbj6sUNCh0HtYOfDpYvHUjqdho=;
+        s=korg; t=1637755514;
+        bh=crpv9u2e6q3KcKn9wQkOXzOTzU5z+Zxi9Sl7oPGV/9s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VKzGQv3Z6fCE0uXbHElAViok/aCdy6WBjCvmtAdwsjO35/YnCUHTyO2wMBiwlIghk
-         vfC/j4Vofrg+d2BQRlpZM3hWQ1xDQ0N+l4siK4GdQjtkmmQ7VXh2ZutW+TDNfsqQB8
-         uwbnxtLwXRgFCzJjNAbenAS8Sv7ptGDwit6fk67E=
+        b=G6PRzXotEBScAkWx/ac2Glr6MdnhEgtf29MEmSlppmi+pu/627e4gV9A85Ze6ATSY
+         Q5vP2eLNU2HNQgPz8yRmRqcFW/IkMV/Nuk7RyblDcGX25bR2AtOc2JnWSnRg5/mZdw
+         Dc39FokAvxQjUV1r6XW8tuLVUAWBHWGrktuoCPic=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Beomho Seo <beomho.seo@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Jakob Hauser <jahau@rocketmail.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: =?UTF-8?q?=5BPATCH=204=2E14=20152/251=5D=20=3D=3FUTF-8=3Fq=3Fpower=3A=3D20supply=3A=3D20rt5033=3D5Fbattery=3A=3D20Change=3D20voltage=3F=3D=20=3D=3FUTF-8=3Fq=3F=3D20values=3D20to=3D20=3DC2=3DB5V=3F=3D?=
+Subject: [PATCH 4.4 091/162] memory: fsl_ifc: fix leak of irq and nand_irq in fsl_ifc_ctrl_probe
 Date:   Wed, 24 Nov 2021 12:56:34 +0100
-Message-Id: <20211124115715.555731767@linuxfoundation.org>
+Message-Id: <20211124115701.264666913@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +40,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jakob Hauser <jahau@rocketmail.com>
+From: Dongliang Mu <mudongliangabcd@gmail.com>
 
-[ Upstream commit bf895295e9a73411889816f1a0c1f4f1a2d9c678 ]
+[ Upstream commit 4ed2f3545c2e5acfbccd7f85fea5b1a82e9862d7 ]
 
-Currently the rt5033_battery driver provides voltage values in mV. It
-should be µV as stated in Documentation/power/power_supply_class.rst.
+The error handling code of fsl_ifc_ctrl_probe is problematic. When
+fsl_ifc_ctrl_init fails or request_irq of fsl_ifc_ctrl_dev->irq fails,
+it forgets to free the irq and nand_irq. Meanwhile, if request_irq of
+fsl_ifc_ctrl_dev->nand_irq fails, it will still free nand_irq even if
+the request_irq is not successful.
 
-Fixes: b847dd96e659 ("power: rt5033_battery: Add RT5033 Fuel gauge device driver")
-Cc: Beomho Seo <beomho.seo@samsung.com>
-Cc: Chanwoo Choi <cw00.choi@samsung.com>
-Signed-off-by: Jakob Hauser <jahau@rocketmail.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Fix this by refactoring the error handling code.
+
+Fixes: d2ae2e20fbdd ("driver/memory:Move Freescale IFC driver to a common driver")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Link: https://lore.kernel.org/r/20210925151434.8170-1-mudongliangabcd@gmail.com
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/rt5033_battery.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/memory/fsl_ifc.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/power/supply/rt5033_battery.c b/drivers/power/supply/rt5033_battery.c
-index 9310b85f3405e..7eec7014086d8 100644
---- a/drivers/power/supply/rt5033_battery.c
-+++ b/drivers/power/supply/rt5033_battery.c
-@@ -63,7 +63,7 @@ static int rt5033_battery_get_watt_prop(struct i2c_client *client,
- 	regmap_read(battery->regmap, regh, &msb);
- 	regmap_read(battery->regmap, regl, &lsb);
+diff --git a/drivers/memory/fsl_ifc.c b/drivers/memory/fsl_ifc.c
+index 26b37ba4feda6..258d95b9c0adc 100644
+--- a/drivers/memory/fsl_ifc.c
++++ b/drivers/memory/fsl_ifc.c
+@@ -275,7 +275,7 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
  
--	ret = ((msb << 4) + (lsb >> 4)) * 1250 / 1000;
-+	ret = ((msb << 4) + (lsb >> 4)) * 1250;
+ 	ret = fsl_ifc_ctrl_init(fsl_ifc_ctrl_dev);
+ 	if (ret < 0)
+-		goto err;
++		goto err_unmap_nandirq;
  
+ 	init_waitqueue_head(&fsl_ifc_ctrl_dev->nand_wait);
+ 
+@@ -284,7 +284,7 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
+ 	if (ret != 0) {
+ 		dev_err(&dev->dev, "failed to install irq (%d)\n",
+ 			fsl_ifc_ctrl_dev->irq);
+-		goto err_irq;
++		goto err_unmap_nandirq;
+ 	}
+ 
+ 	if (fsl_ifc_ctrl_dev->nand_irq) {
+@@ -293,17 +293,16 @@ static int fsl_ifc_ctrl_probe(struct platform_device *dev)
+ 		if (ret != 0) {
+ 			dev_err(&dev->dev, "failed to install irq (%d)\n",
+ 				fsl_ifc_ctrl_dev->nand_irq);
+-			goto err_nandirq;
++			goto err_free_irq;
+ 		}
+ 	}
+ 
+ 	return 0;
+ 
+-err_nandirq:
+-	free_irq(fsl_ifc_ctrl_dev->nand_irq, fsl_ifc_ctrl_dev);
+-	irq_dispose_mapping(fsl_ifc_ctrl_dev->nand_irq);
+-err_irq:
++err_free_irq:
+ 	free_irq(fsl_ifc_ctrl_dev->irq, fsl_ifc_ctrl_dev);
++err_unmap_nandirq:
++	irq_dispose_mapping(fsl_ifc_ctrl_dev->nand_irq);
+ 	irq_dispose_mapping(fsl_ifc_ctrl_dev->irq);
+ err:
  	return ret;
- }
 -- 
 2.33.0
 
