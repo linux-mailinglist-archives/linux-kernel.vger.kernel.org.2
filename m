@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C80845C1F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D5345C5DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:59:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347028AbhKXNYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:24:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39544 "EHLO mail.kernel.org"
+        id S1348030AbhKXOBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:01:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349265AbhKXNS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:18:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9416161AED;
-        Wed, 24 Nov 2021 12:46:08 +0000 (UTC)
+        id S1355621AbhKXN6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:58:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03D37633B2;
+        Wed, 24 Nov 2021 13:08:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757969;
-        bh=7xoY8n8uQOFMeGwlpGixZjniBDpaU8T0lcYuoX6KMzA=;
+        s=korg; t=1637759300;
+        bh=6dIbdzmzdMEt0tr5Q3/4n4O1qlmxBX4aA4vaSz78uKw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qO1oMOVQAG9wW01ZsNRKUx2tJlDiI7misLtRfkTcFiOqsQts0zHMA9thPbn7g3/e7
-         WaAnjDKtn6shWFTRbra3O4je51bv8e1rjQLsZIuLdpFVnTXka/pWOokuB6CFr9Cvep
-         qyVvgIF58D3TmlcMP+yJrNn8Na23K+e5f6O0XMv8=
+        b=LWbR1I6xDnbA2ceRgIO57RdhPgdhkGlCKZ5XqePwD07n2SrkkQM7jQv0QbpvWdUJF
+         0d7hWwmrzTA6NQHqJiVsgndjYSnFjJXKTmJAxoyWU1FKyDcXh3Fgap/Q+i8imBt4Cd
+         UkCnBLz7b85BInyQVXIXN6OqQW6x723TwtOQxIpQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Abel Vesa <abel.vesa@nxp.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 013/100] clk: imx: imx6ul: Move csi_sel mux to correct base register
-Date:   Wed, 24 Nov 2021 12:57:29 +0100
-Message-Id: <20211124115655.283163718@linuxfoundation.org>
+        Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>,
+        Eryk Rybak <eryk.roch.rybak@intel.com>,
+        Tony Brelinski <tony.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 163/279] i40e: Fix ping is lost after configuring ADq on VF
+Date:   Wed, 24 Nov 2021 12:57:30 +0100
+Message-Id: <20211124115724.397186509@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +43,182 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Riedmueller <s.riedmueller@phytec.de>
+From: Eryk Rybak <eryk.roch.rybak@intel.com>
 
-[ Upstream commit 2f9d61869640f732599ec36b984c2b5c46067519 ]
+[ Upstream commit 9e0a603cb7dce2a19d98116d42de84b6db26d716 ]
 
-The csi_sel mux register is located in the CCM register base and not the
-CCM_ANALOG register base. So move it to the correct position in code.
+Properly reconfigure VF VSIs after VF request ADQ.
+Created new function to update queue mapping and queue pairs per TC
+with AQ update VSI. This sets proper RSS size on NIC.
+VFs num_queue_pairs should not be changed during setup of queue maps.
+Previously, VF main VSI in ADQ had configured too many queues and had
+wrong RSS size, which lead to packets not being consumed and drops in
+connectivity.
 
-Otherwise changing the parent of the csi clock can lead to a complete
-system failure due to the CCM_ANALOG_PLL_SYS_TOG register being falsely
-modified.
-
-Also remove the SET_RATE_PARENT flag since one possible supply for the
-csi_sel mux is the system PLL which we don't want to modify.
-
-Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
-Reviewed-by: Abel Vesa <abel.vesa@nxp.com>
-Link: https://lore.kernel.org/r/20210927072857.3940880-1-s.riedmueller@phytec.de
-Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+Fixes: bc6d33c8d93f ("i40e: Fix the number of queues available to be mapped for use")
+Co-developed-by: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
+Signed-off-by: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
+Signed-off-by: Eryk Rybak <eryk.roch.rybak@intel.com>
+Tested-by: Tony Brelinski <tony.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/imx/clk-imx6ul.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/i40e/i40e.h        |  1 +
+ drivers/net/ethernet/intel/i40e/i40e_main.c   | 64 ++++++++++++++++++-
+ .../ethernet/intel/i40e/i40e_virtchnl_pf.c    | 17 +++--
+ 3 files changed, 74 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/clk/imx/clk-imx6ul.c b/drivers/clk/imx/clk-imx6ul.c
-index bc931988fe7b2..f3ac5a524f4ed 100644
---- a/drivers/clk/imx/clk-imx6ul.c
-+++ b/drivers/clk/imx/clk-imx6ul.c
-@@ -161,7 +161,6 @@ static void __init imx6ul_clocks_init(struct device_node *ccm_node)
- 	hws[IMX6UL_PLL5_BYPASS] = imx_clk_hw_mux_flags("pll5_bypass", base + 0xa0, 16, 1, pll5_bypass_sels, ARRAY_SIZE(pll5_bypass_sels), CLK_SET_RATE_PARENT);
- 	hws[IMX6UL_PLL6_BYPASS] = imx_clk_hw_mux_flags("pll6_bypass", base + 0xe0, 16, 1, pll6_bypass_sels, ARRAY_SIZE(pll6_bypass_sels), CLK_SET_RATE_PARENT);
- 	hws[IMX6UL_PLL7_BYPASS] = imx_clk_hw_mux_flags("pll7_bypass", base + 0x20, 16, 1, pll7_bypass_sels, ARRAY_SIZE(pll7_bypass_sels), CLK_SET_RATE_PARENT);
--	hws[IMX6UL_CLK_CSI_SEL] = imx_clk_hw_mux_flags("csi_sel", base + 0x3c, 9, 2, csi_sels, ARRAY_SIZE(csi_sels), CLK_SET_RATE_PARENT);
+diff --git a/drivers/net/ethernet/intel/i40e/i40e.h b/drivers/net/ethernet/intel/i40e/i40e.h
+index d7db443abeafa..b10bc59c5700f 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e.h
++++ b/drivers/net/ethernet/intel/i40e/i40e.h
+@@ -1248,6 +1248,7 @@ void i40e_ptp_restore_hw_time(struct i40e_pf *pf);
+ void i40e_ptp_init(struct i40e_pf *pf);
+ void i40e_ptp_stop(struct i40e_pf *pf);
+ int i40e_ptp_alloc_pins(struct i40e_pf *pf);
++int i40e_update_adq_vsi_queues(struct i40e_vsi *vsi, int vsi_offset);
+ int i40e_is_vsi_uplink_mode_veb(struct i40e_vsi *vsi);
+ i40e_status i40e_get_partition_bw_setting(struct i40e_pf *pf);
+ i40e_status i40e_set_partition_bw_setting(struct i40e_pf *pf);
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index dc78ffac10371..42e26ee5b6d5f 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -1801,6 +1801,8 @@ static void i40e_vsi_setup_queue_map(struct i40e_vsi *vsi,
  
- 	/* Do not bypass PLLs initially */
- 	clk_set_parent(hws[IMX6UL_PLL1_BYPASS]->clk, hws[IMX6UL_CLK_PLL1]->clk);
-@@ -270,6 +269,7 @@ static void __init imx6ul_clocks_init(struct device_node *ccm_node)
- 	hws[IMX6UL_CLK_ECSPI_SEL]	  = imx_clk_hw_mux("ecspi_sel",	base + 0x38, 18, 1, ecspi_sels, ARRAY_SIZE(ecspi_sels));
- 	hws[IMX6UL_CLK_LCDIF_PRE_SEL]	  = imx_clk_hw_mux_flags("lcdif_pre_sel", base + 0x38, 15, 3, lcdif_pre_sels, ARRAY_SIZE(lcdif_pre_sels), CLK_SET_RATE_PARENT);
- 	hws[IMX6UL_CLK_LCDIF_SEL]	  = imx_clk_hw_mux("lcdif_sel",	base + 0x38, 9, 3, lcdif_sels, ARRAY_SIZE(lcdif_sels));
-+	hws[IMX6UL_CLK_CSI_SEL]		  = imx_clk_hw_mux("csi_sel", base + 0x3c, 9, 2, csi_sels, ARRAY_SIZE(csi_sels));
+ 	sections = I40E_AQ_VSI_PROP_QUEUE_MAP_VALID;
+ 	offset = 0;
++	/* zero out queue mapping, it will get updated on the end of the function */
++	memset(ctxt->info.queue_mapping, 0, sizeof(ctxt->info.queue_mapping));
  
- 	hws[IMX6UL_CLK_LDB_DI0_DIV_SEL]  = imx_clk_hw_mux("ldb_di0", base + 0x20, 10, 1, ldb_di0_div_sels, ARRAY_SIZE(ldb_di0_div_sels));
- 	hws[IMX6UL_CLK_LDB_DI1_DIV_SEL]  = imx_clk_hw_mux("ldb_di1", base + 0x20, 11, 1, ldb_di1_div_sels, ARRAY_SIZE(ldb_di1_div_sels));
+ 	if (vsi->type == I40E_VSI_MAIN) {
+ 		/* This code helps add more queue to the VSI if we have
+@@ -1817,10 +1819,12 @@ static void i40e_vsi_setup_queue_map(struct i40e_vsi *vsi,
+ 	}
+ 
+ 	/* Number of queues per enabled TC */
+-	if (vsi->type == I40E_VSI_MAIN)
++	if (vsi->type == I40E_VSI_MAIN ||
++	    (vsi->type == I40E_VSI_SRIOV && vsi->num_queue_pairs != 0))
+ 		num_tc_qps = vsi->num_queue_pairs;
+ 	else
+ 		num_tc_qps = vsi->alloc_queue_pairs;
++
+ 	if (enabled_tc && (vsi->back->flags & I40E_FLAG_DCB_ENABLED)) {
+ 		/* Find numtc from enabled TC bitmap */
+ 		for (i = 0, numtc = 0; i < I40E_MAX_TRAFFIC_CLASS; i++) {
+@@ -1898,10 +1902,12 @@ static void i40e_vsi_setup_queue_map(struct i40e_vsi *vsi,
+ 		}
+ 		ctxt->info.tc_mapping[i] = cpu_to_le16(qmap);
+ 	}
+-	/* Do not change previously set num_queue_pairs for PFs */
++	/* Do not change previously set num_queue_pairs for PFs and VFs*/
+ 	if ((vsi->type == I40E_VSI_MAIN && numtc != 1) ||
+-	    vsi->type != I40E_VSI_MAIN)
++	    (vsi->type == I40E_VSI_SRIOV && vsi->num_queue_pairs == 0) ||
++	    (vsi->type != I40E_VSI_MAIN && vsi->type != I40E_VSI_SRIOV))
+ 		vsi->num_queue_pairs = offset;
++
+ 	/* Scheduler section valid can only be set for ADD VSI */
+ 	if (is_add) {
+ 		sections |= I40E_AQ_VSI_PROP_SCHED_VALID;
+@@ -5438,6 +5444,58 @@ static void i40e_vsi_update_queue_map(struct i40e_vsi *vsi,
+ 	       sizeof(vsi->info.tc_mapping));
+ }
+ 
++/**
++ * i40e_update_adq_vsi_queues - update queue mapping for ADq VSI
++ * @vsi: the VSI being reconfigured
++ * @vsi_offset: offset from main VF VSI
++ */
++int i40e_update_adq_vsi_queues(struct i40e_vsi *vsi, int vsi_offset)
++{
++	struct i40e_vsi_context ctxt = {};
++	struct i40e_pf *pf;
++	struct i40e_hw *hw;
++	int ret;
++
++	if (!vsi)
++		return I40E_ERR_PARAM;
++	pf = vsi->back;
++	hw = &pf->hw;
++
++	ctxt.seid = vsi->seid;
++	ctxt.pf_num = hw->pf_id;
++	ctxt.vf_num = vsi->vf_id + hw->func_caps.vf_base_id + vsi_offset;
++	ctxt.uplink_seid = vsi->uplink_seid;
++	ctxt.connection_type = I40E_AQ_VSI_CONN_TYPE_NORMAL;
++	ctxt.flags = I40E_AQ_VSI_TYPE_VF;
++	ctxt.info = vsi->info;
++
++	i40e_vsi_setup_queue_map(vsi, &ctxt, vsi->tc_config.enabled_tc,
++				 false);
++	if (vsi->reconfig_rss) {
++		vsi->rss_size = min_t(int, pf->alloc_rss_size,
++				      vsi->num_queue_pairs);
++		ret = i40e_vsi_config_rss(vsi);
++		if (ret) {
++			dev_info(&pf->pdev->dev, "Failed to reconfig rss for num_queues\n");
++			return ret;
++		}
++		vsi->reconfig_rss = false;
++	}
++
++	ret = i40e_aq_update_vsi_params(hw, &ctxt, NULL);
++	if (ret) {
++		dev_info(&pf->pdev->dev, "Update vsi config failed, err %s aq_err %s\n",
++			 i40e_stat_str(hw, ret),
++			 i40e_aq_str(hw, hw->aq.asq_last_status));
++		return ret;
++	}
++	/* update the local VSI info with updated queue map */
++	i40e_vsi_update_queue_map(vsi, &ctxt);
++	vsi->info.valid_sections = 0;
++
++	return ret;
++}
++
+ /**
+  * i40e_vsi_config_tc - Configure VSI Tx Scheduler for given TC map
+  * @vsi: VSI to be configured
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+index 815661632e7a7..2102db11972a7 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+@@ -2220,11 +2220,12 @@ static int i40e_vc_config_queues_msg(struct i40e_vf *vf, u8 *msg)
+ 	struct virtchnl_vsi_queue_config_info *qci =
+ 	    (struct virtchnl_vsi_queue_config_info *)msg;
+ 	struct virtchnl_queue_pair_info *qpi;
+-	struct i40e_pf *pf = vf->pf;
+ 	u16 vsi_id, vsi_queue_id = 0;
+-	u16 num_qps_all = 0;
++	struct i40e_pf *pf = vf->pf;
+ 	i40e_status aq_ret = 0;
+ 	int i, j = 0, idx = 0;
++	struct i40e_vsi *vsi;
++	u16 num_qps_all = 0;
+ 
+ 	if (!test_bit(I40E_VF_STATE_ACTIVE, &vf->vf_states)) {
+ 		aq_ret = I40E_ERR_PARAM;
+@@ -2313,9 +2314,15 @@ static int i40e_vc_config_queues_msg(struct i40e_vf *vf, u8 *msg)
+ 		pf->vsi[vf->lan_vsi_idx]->num_queue_pairs =
+ 			qci->num_queue_pairs;
+ 	} else {
+-		for (i = 0; i < vf->num_tc; i++)
+-			pf->vsi[vf->ch[i].vsi_idx]->num_queue_pairs =
+-			       vf->ch[i].num_qps;
++		for (i = 0; i < vf->num_tc; i++) {
++			vsi = pf->vsi[vf->ch[i].vsi_idx];
++			vsi->num_queue_pairs = vf->ch[i].num_qps;
++
++			if (i40e_update_adq_vsi_queues(vsi, i)) {
++				aq_ret = I40E_ERR_CONFIG;
++				goto error_param;
++			}
++		}
+ 	}
+ 
+ error_param:
 -- 
 2.33.0
 
