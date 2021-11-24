@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88FA345BA78
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:08:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA72745BA97
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242505AbhKXMLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:11:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34164 "EHLO mail.kernel.org"
+        id S241321AbhKXMMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:12:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232442AbhKXMIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:08:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B4C461053;
-        Wed, 24 Nov 2021 12:04:42 +0000 (UTC)
+        id S240749AbhKXMIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:08:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5627661106;
+        Wed, 24 Nov 2021 12:04:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755483;
-        bh=E75xeQtI4oHGuXT23o4iJrM5A/1CZ+eA7kXnn4MJp4g=;
+        s=korg; t=1637755485;
+        bh=hG+kOrq7ZtlF/QFwBMiJU5REfemqnYd31UxELI5snfE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FuHWKO15Bl02rhSBMFAiL9DGw/nlXhNeOgGbcQWpi1S+hi5Opy3T015RaV6ptDSlZ
-         DiNlEIMnLBFDqpUFQmB4+d6Xwj5OeF/2/jr9ZfGvEwVGT2pTZifBEn3hkNA4EaCQ8u
-         6JaSnPk+Ef3LZ1QUAld7AEgb9NNq9j/ImQb75J38=
+        b=1v4FEB17qBmW0twigfILnZ7WxX0N2k8yCwtqovmBSYAWF+bCBM0HnceZ5EQ8qKGf6
+         Mmgt4LpsS9QnjI6b6nQTocgvOZ+ncT/Qu3Tunang54V9VOEQTeL00HRX58TFCUQjVk
+         veF23xPL0TS0Zv+aIHSnHl8GmBmDk5b/SibB9kXw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Antonio Terceiro <antonio.terceiro@linaro.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Sebastian Andrzej Siewior <sebastian@breakpoint.cc>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Klaus Kudielka <klaus.kudielka@gmail.com>,
-        Matthias Klose <doko@debian.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH 4.4 111/162] ARM: 9156/1: drop cc-option fallbacks for architecture selection
-Date:   Wed, 24 Nov 2021 12:56:54 +0100
-Message-Id: <20211124115701.917710645@linuxfoundation.org>
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.4 112/162] mm, oom: pagefault_out_of_memory: dont force global OOM for dying tasks
+Date:   Wed, 24 Nov 2021 12:56:55 +0100
+Message-Id: <20211124115701.948179390@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
 References: <20211124115658.328640564@linuxfoundation.org>
@@ -46,103 +49,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-commit 418ace9992a7647c446ed3186df40cf165b67298 upstream.
+commit 0b28179a6138a5edd9d82ad2687c05b3773c387b upstream.
 
-Naresh and Antonio ran into a build failure with latest Debian
-armhf compilers, with lots of output like
+Patch series "memcg: prohibit unconditional exceeding the limit of dying tasks", v3.
 
- tmp/ccY3nOAs.s:2215: Error: selected processor does not support `cpsid i' in ARM mode
+Memory cgroup charging allows killed or exiting tasks to exceed the hard
+limit.  It can be misused and allowed to trigger global OOM from inside
+a memcg-limited container.  On the other hand if memcg fails allocation,
+called from inside #PF handler it triggers global OOM from inside
+pagefault_out_of_memory().
 
-As it turns out, $(cc-option) fails early here when the FPU is not
-selected before CPU architecture is selected, as the compiler
-option check runs before enabling -msoft-float, which causes
-a problem when testing a target architecture level without an FPU:
+To prevent these problems this patchset:
+ (a) removes execution of out_of_memory() from
+     pagefault_out_of_memory(), becasue nobody can explain why it is
+     necessary.
+ (b) allow memcg to fail allocation of dying/killed tasks.
 
-cc1: error: '-mfloat-abi=hard': selected architecture lacks an FPU
+This patch (of 3):
 
-Passing e.g. -march=armv6k+fp in place of -march=armv6k would avoid this
-issue, but the fallback logic is already broken because all supported
-compilers (gcc-5 and higher) are much more recent than these options,
-and building with -march=armv5t as a fallback no longer works.
+Any allocation failure during the #PF path will return with VM_FAULT_OOM
+which in turn results in pagefault_out_of_memory which in turn executes
+out_out_memory() and can kill a random task.
 
-The best way forward that I see is to just remove all the checks, which
-also has the nice side-effect of slightly improving the startup time for
-'make'.
+An allocation might fail when the current task is the oom victim and
+there are no memory reserves left.  The OOM killer is already handled at
+the page allocator level for the global OOM and at the charging level
+for the memcg one.  Both have much more information about the scope of
+allocation/charge request.  This means that either the OOM killer has
+been invoked properly and didn't lead to the allocation success or it
+has been skipped because it couldn't have been invoked.  In both cases
+triggering it from here is pointless and even harmful.
 
-The -mtune=marvell-f option was apparently never supported by any mainline
-compiler, and the custom Codesourcery gcc build that did support is
-now too old to build kernels, so just use -mtune=xscale unconditionally
-for those.
+It makes much more sense to let the killed task die rather than to wake
+up an eternally hungry oom-killer and send him to choose a fatter victim
+for breakfast.
 
-This should be safe to apply on all stable kernels, and will be required
-in order to keep building them with gcc-11 and higher.
-
-Link: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=996419
-
-Reported-by: Antonio Terceiro <antonio.terceiro@linaro.org>
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Reported-by: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-Tested-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Tested-by: Klaus Kudielka <klaus.kudielka@gmail.com>
-Cc: Matthias Klose <doko@debian.org>
-Cc: stable@vger.kernel.org
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Link: https://lkml.kernel.org/r/0828a149-786e-7c06-b70a-52d086818ea3@virtuozzo.com
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Suggested-by: Michal Hocko <mhocko@suse.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: Uladzislau Rezki <urezki@gmail.com>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/Makefile |   22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ mm/oom_kill.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -66,15 +66,15 @@ KBUILD_CFLAGS	+= $(call cc-option,-fno-i
- # Note that GCC does not numerically define an architecture version
- # macro, but instead defines a whole series of macros which makes
- # testing for a specific architecture or later rather impossible.
--arch-$(CONFIG_CPU_32v7M)	=-D__LINUX_ARM_ARCH__=7 -march=armv7-m -Wa,-march=armv7-m
--arch-$(CONFIG_CPU_32v7)		=-D__LINUX_ARM_ARCH__=7 $(call cc-option,-march=armv7-a,-march=armv5t -Wa$(comma)-march=armv7-a)
--arch-$(CONFIG_CPU_32v6)		=-D__LINUX_ARM_ARCH__=6 $(call cc-option,-march=armv6,-march=armv5t -Wa$(comma)-march=armv6)
-+arch-$(CONFIG_CPU_32v7M)	=-D__LINUX_ARM_ARCH__=7 -march=armv7-m
-+arch-$(CONFIG_CPU_32v7)		=-D__LINUX_ARM_ARCH__=7 -march=armv7-a
-+arch-$(CONFIG_CPU_32v6)		=-D__LINUX_ARM_ARCH__=6 -march=armv6
- # Only override the compiler option if ARMv6. The ARMv6K extensions are
- # always available in ARMv7
- ifeq ($(CONFIG_CPU_32v6),y)
--arch-$(CONFIG_CPU_32v6K)	=-D__LINUX_ARM_ARCH__=6 $(call cc-option,-march=armv6k,-march=armv5t -Wa$(comma)-march=armv6k)
-+arch-$(CONFIG_CPU_32v6K)	=-D__LINUX_ARM_ARCH__=6 -march=armv6k
- endif
--arch-$(CONFIG_CPU_32v5)		=-D__LINUX_ARM_ARCH__=5 $(call cc-option,-march=armv5te,-march=armv4t)
-+arch-$(CONFIG_CPU_32v5)		=-D__LINUX_ARM_ARCH__=5 -march=armv5te
- arch-$(CONFIG_CPU_32v4T)	=-D__LINUX_ARM_ARCH__=4 -march=armv4t
- arch-$(CONFIG_CPU_32v4)		=-D__LINUX_ARM_ARCH__=4 -march=armv4
- arch-$(CONFIG_CPU_32v3)		=-D__LINUX_ARM_ARCH__=3 -march=armv3
-@@ -88,7 +88,7 @@ tune-$(CONFIG_CPU_ARM720T)	=-mtune=arm7t
- tune-$(CONFIG_CPU_ARM740T)	=-mtune=arm7tdmi
- tune-$(CONFIG_CPU_ARM9TDMI)	=-mtune=arm9tdmi
- tune-$(CONFIG_CPU_ARM940T)	=-mtune=arm9tdmi
--tune-$(CONFIG_CPU_ARM946E)	=$(call cc-option,-mtune=arm9e,-mtune=arm9tdmi)
-+tune-$(CONFIG_CPU_ARM946E)	=-mtune=arm9e
- tune-$(CONFIG_CPU_ARM920T)	=-mtune=arm9tdmi
- tune-$(CONFIG_CPU_ARM922T)	=-mtune=arm9tdmi
- tune-$(CONFIG_CPU_ARM925T)	=-mtune=arm9tdmi
-@@ -96,11 +96,11 @@ tune-$(CONFIG_CPU_ARM926T)	=-mtune=arm9t
- tune-$(CONFIG_CPU_FA526)	=-mtune=arm9tdmi
- tune-$(CONFIG_CPU_SA110)	=-mtune=strongarm110
- tune-$(CONFIG_CPU_SA1100)	=-mtune=strongarm1100
--tune-$(CONFIG_CPU_XSCALE)	=$(call cc-option,-mtune=xscale,-mtune=strongarm110) -Wa,-mcpu=xscale
--tune-$(CONFIG_CPU_XSC3)		=$(call cc-option,-mtune=xscale,-mtune=strongarm110) -Wa,-mcpu=xscale
--tune-$(CONFIG_CPU_FEROCEON)	=$(call cc-option,-mtune=marvell-f,-mtune=xscale)
--tune-$(CONFIG_CPU_V6)		=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
--tune-$(CONFIG_CPU_V6K)		=$(call cc-option,-mtune=arm1136j-s,-mtune=strongarm)
-+tune-$(CONFIG_CPU_XSCALE)	=-mtune=xscale
-+tune-$(CONFIG_CPU_XSC3)		=-mtune=xscale
-+tune-$(CONFIG_CPU_FEROCEON)	=-mtune=xscale
-+tune-$(CONFIG_CPU_V6)		=-mtune=arm1136j-s
-+tune-$(CONFIG_CPU_V6K)		=-mtune=arm1136j-s
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -761,6 +761,9 @@ void pagefault_out_of_memory(void)
+ 	if (mem_cgroup_oom_synchronize(true))
+ 		return;
  
- # Evaluate tune cc-option calls now
- tune-y := $(tune-y)
++	if (fatal_signal_pending(current))
++		return;
++
+ 	if (!mutex_trylock(&oom_lock))
+ 		return;
+ 
 
 
