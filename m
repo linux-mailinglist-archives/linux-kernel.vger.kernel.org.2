@@ -2,97 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9736945C8DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7877B45C8E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:39:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241758AbhKXPme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:42:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:57293 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231860AbhKXPmd (ORCPT
+        id S242776AbhKXPmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:42:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241928AbhKXPmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:42:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637768363;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2ZAQ9bYIpFW8w5nnJ2NX1dTFB2zcv9+w2ukWOWPCF5I=;
-        b=VAlpX7IqzWtTm059kr65xTpzweeSwR5fXX1VFPaNKcDRLd38z2MkFrOzLEu7GVP1Y3YHnv
-        PFTiDgUEpytoQRWWRA8gvhjcxbU1vnokkMB++Ng+NQHCFUgdvhqH8j3jESYfa0UFOjBAaM
-        Ma1WRzojfx9ZHuXfQh3Rj0jTwqUbMyM=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-27-QavuoJphMASPIYNozs_1BQ-1; Wed, 24 Nov 2021 10:39:21 -0500
-X-MC-Unique: QavuoJphMASPIYNozs_1BQ-1
-Received: by mail-ed1-f69.google.com with SMTP id r16-20020a056402019000b003e6cbb77ed2so2717278edv.10
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:39:21 -0800 (PST)
+        Wed, 24 Nov 2021 10:42:51 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1680BC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:39:41 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id f18so8330808lfv.6
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:39:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Crdb0M+qbVtb4o2i/dD0q1NmdK6CpzCFBaORwXwWGDg=;
+        b=XjfFfyRQ8Rcv5JiMa2X3OWVW45aMoXHYpKvxSKBDiU+c+CddAdgLSx3KfYLiyaV5Qf
+         YF1GdQKTeslaBtCAh7qyeaV7UBJgH8IVIZLh4YLNakYFaiNY1aMwiqNH8yDXjI4g0+81
+         6yqSZUu/jKUWhnh2CPeR8XugeV4bHkzXefZ9wNoA7Gj1LOQNl2j5n0t/o5v0rELFeutF
+         MG5D3vVK/RkKk3mpoo/t6ubNCXqyLpSbzSFQpCvIAqY8O2yPzNG8KL61Li/VKnMXSK+g
+         60hy5S3WbTGMO+WoWeIaVfmAJQs7nAlIGV9RozR8u6t8vEjB/7PY+4iukGMIt6nH6M67
+         l8Eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2ZAQ9bYIpFW8w5nnJ2NX1dTFB2zcv9+w2ukWOWPCF5I=;
-        b=EVHSwgA2wLENKYqmocXWHp9elHX2wrMN9JgxyAxPaIck91VyKpSThnfxUnm3nRYCXh
-         TGQYmTvlz6oIGmGJtRLwY6C6o4hblznOwyoGbA2qAObz2Wm+WPE647Y1Hy/ED0yfpkZk
-         OHQbu/jry7rACF04FiTDGdJO5vEB9Ik09PwywF6ASnRGj8M//iLo5broY8oR4xeMsOJn
-         TAZQBfN412Q10Y5mTE5kzR4ewbMY2txgN9qNG6bJ9D9aiqVWaeQgUbwoW+Od3hzJAk+K
-         dWxLfIPWTeHL1Cj9zvbV7QjsDSn/gItc6d8ddQdV95PkELp0iMIw9rbgOrY78NbpXAlK
-         ELsQ==
-X-Gm-Message-State: AOAM532iyVaidN0d8KTqOLBpm+Bcjydx0eOpozmJVGdSfMEuX8Omzj0r
-        FZ7BAwWtc/UZtrhk3vVQsZehvnbYzzwta23jhwcvqcezHc6GpjcAWyQh7jxYvlwvCojuMMRiBGh
-        VUbK1JCtFm5RUTR9f39Wi2Y4g
-X-Received: by 2002:a17:906:4bcf:: with SMTP id x15mr21211717ejv.273.1637768360443;
-        Wed, 24 Nov 2021 07:39:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzIoRH2WtnFT3cwBPr87hT88WyQOrA/0ZJYyfvukNGh+Cf3LGP/KgoKVcbcNm0UQ/svUQrL/A==
-X-Received: by 2002:a17:906:4bcf:: with SMTP id x15mr21211655ejv.273.1637768360136;
-        Wed, 24 Nov 2021 07:39:20 -0800 (PST)
-Received: from steredhat (host-87-10-72-39.retail.telecomitalia.it. [87.10.72.39])
-        by smtp.gmail.com with ESMTPSA id u16sm103149ejy.16.2021.11.24.07.39.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 07:39:19 -0800 (PST)
-Date:   Wed, 24 Nov 2021 16:39:16 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Zhu Lingshan <lingshan.zhu@intel.com>
-Cc:     Jason Wang <jasowang@redhat.com>, Michael Tsirkin <mst@redhat.com>,
-        Cindy Lu <lulu@redhat.com>,
-        Linux Virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-Subject: Re: [PATCH V4 0/3] vDPA/ifcvf: enables Intel C5000X-PL virtio-blk
-Message-ID: <CAGxU2F622pzZkh8WC7J+jGYu-_ozSDx1Tvvvtw-z52xwC3S38A@mail.gmail.com>
-References: <20210419063326.3748-1-lingshan.zhu@intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Crdb0M+qbVtb4o2i/dD0q1NmdK6CpzCFBaORwXwWGDg=;
+        b=2Z+5Z3RtE8vUonQIBQCbvZKWHJE9ezWaKPiCJtj+cWEln7FohBlNauq1AZWF4m3xKB
+         o1nGvFuuYXfAiLEmTL6Zov42t+J3cab7q9Z0+6BMgVdDWJDC8eG5KAMujOuIJhW2JacB
+         j0Z+mLYb7HVyHAsMF7fjparLe5lq0Vp2eTrgYC1Jq9Ow3N8FfFd7BWO7K4EA2i/AsZEK
+         xbGbJd/QXNT5LR9bwe1GYnb24h0Tvtey0iqOlrXrTuDOTO8KlETirpkV4Ztdj31Mt5eK
+         /knSdKd7Qxh/PM4s82WJjv7fA+qvfn8akoVSEPNBCGdbtXBQZtPWtNmCPSkqvkOIbKGn
+         DpfA==
+X-Gm-Message-State: AOAM533Qt6IKtA2qr1/wY5gnqs69Vm5vtQ+U/NlYRt0jYkrL1q3Be7WQ
+        213m70eYjxJQTgK/q2XKLhkiGg==
+X-Google-Smtp-Source: ABdhPJwzeiSanGN1u/Kw+0PTXpmUJyb2P0UO0Fn4wRmERNLYqOSCiBbYXqizF5j/xvh+wg0b0pM6DA==
+X-Received: by 2002:a05:6512:1115:: with SMTP id l21mr15100835lfg.201.1637768379346;
+        Wed, 24 Nov 2021 07:39:39 -0800 (PST)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id a7sm14357lfk.216.2021.11.24.07.39.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Nov 2021 07:39:38 -0800 (PST)
+Subject: Re: [PATCH v3 05/13] drm/msm/disp/dpu1: Don't use DSC with mode_3d
+To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+References: <20211116062256.2417186-1-vkoul@kernel.org>
+ <20211116062256.2417186-6-vkoul@kernel.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <4ebbe41b-cf6b-23e9-3972-9f87e190b9cb@linaro.org>
+Date:   Wed, 24 Nov 2021 18:39:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419063326.3748-1-lingshan.zhu@intel.com>
+In-Reply-To: <20211116062256.2417186-6-vkoul@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhu,
+On 16/11/2021 09:22, Vinod Koul wrote:
+> We cannot enable mode_3d when we are using the DSC. So pass
+> configuration to detect DSC is enabled and not enable mode_3d
+> when we are using DSC
+> 
+> We add a helper dpu_encoder_helper_get_dsc() to detect dsc
+> enabled and pass this to .setup_intf_cfg()
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h     | 11 +++++++++++
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c |  2 ++
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c           |  3 ++-
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h           |  2 ++
+>   4 files changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> index e7270eb6b84b..efb85d595598 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> @@ -332,6 +332,17 @@ static inline enum dpu_3d_blend_mode dpu_encoder_helper_get_3d_blend_mode(
+>   	return BLEND_3D_NONE;
+>   }
+>   
+> +static inline bool dpu_encoder_helper_get_dsc(struct dpu_encoder_phys *phys_enc)
+> +{
+> +	struct drm_encoder *drm_enc = phys_enc->parent;
+> +	struct msm_drm_private *priv = drm_enc->dev->dev_private;
+> +
+> +	if (priv->dsc)
+> +		return priv->dsc->dsc_mask;
+> +
+> +	return 0;
+> +}
+> +
+>   /**
+>    * dpu_encoder_helper_split_config - split display configuration helper function
+>    *	This helper function may be used by physical encoders to configure
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> index 34a6940d12c5..f3f00f4d0193 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> @@ -70,6 +70,8 @@ static void _dpu_encoder_phys_cmd_update_intf_cfg(
+>   	intf_cfg.intf_mode_sel = DPU_CTL_MODE_SEL_CMD;
+>   	intf_cfg.stream_sel = cmd_enc->stream_sel;
+>   	intf_cfg.mode_3d = dpu_encoder_helper_get_3d_blend_mode(phys_enc);
+> +	intf_cfg.dsc = dpu_encoder_helper_get_dsc(phys_enc);
+> +
 
-On Mon, Apr 19, 2021 at 8:39 AM Zhu Lingshan <lingshan.zhu@intel.com> wrote:
->
-> This series enabled Intel FGPA SmartNIC C5000X-PL virtio-blk for vDPA.
+I'd prefer if we disable mode_3d here, rather than ignoring it in the 
+dpu_hw_ctl_intf_cfg()
 
-Looking at the IFCVF upstream vDPA driver (with this series applied), it 
-seems that there is still some cleaning to be done to support virtio-blk 
-devices:
+>   	ctl->ops.setup_intf_cfg(ctl, &intf_cfg);
+>   }
+>   
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> index 64740ddb983e..36831457a91b 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> @@ -519,7 +519,8 @@ static void dpu_hw_ctl_intf_cfg(struct dpu_hw_ctl *ctx,
+>   
+>   	intf_cfg |= (cfg->intf & 0xF) << 4;
+>   
+> -	if (cfg->mode_3d) {
+> +	/* In DSC we can't set merge, so check for dsc too */
+> +	if (cfg->mode_3d && !cfg->dsc) {
 
-- ifcvf_vdpa_get_config() and ifcvf_vdpa_set_config() use
-  `sizeof(struct virtio_net_config)` to check the inputs.
-  This seems wrong for a virtio-blk device. Maybe we can set the config
-  size for each device in ifcvf_vdpa_dev_add() and use that field to
-  check the inputs. We can reuse the same field also in
-  ifcvf_vdpa_get_config_size().
+I think here'd better have WARN_ON(cfg->mode_3d && cfg->dsc) or similar 
+dev_warn().
 
-- Just for make the code more readable we should rename `net_cfg` field
-  to `device_cfg`in `struct ifcvf_hw`.
+>   		intf_cfg |= BIT(19);
+>   		intf_cfg |= (cfg->mode_3d - 0x1) << 20;
+>   	}
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+> index 806c171e5df2..9847c9c46d6f 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+> @@ -40,6 +40,7 @@ struct dpu_hw_stage_cfg {
+>    * @merge_3d:              3d merge block used
+>    * @intf_mode_sel:         Interface mode, cmd / vid
+>    * @stream_sel:            Stream selection for multi-stream interfaces
+> + * @dsc:                   DSC BIT masks
+>    */
+>   struct dpu_hw_intf_cfg {
+>   	enum dpu_intf intf;
+> @@ -47,6 +48,7 @@ struct dpu_hw_intf_cfg {
+>   	enum dpu_merge_3d merge_3d;
+>   	enum dpu_ctl_mode_sel intf_mode_sel;
+>   	int stream_sel;
+> +	unsigned int dsc;
+>   };
+>   
+>   /**
+> 
 
-What do you think?
 
-Thanks,
-Stefano
-
+-- 
+With best wishes
+Dmitry
