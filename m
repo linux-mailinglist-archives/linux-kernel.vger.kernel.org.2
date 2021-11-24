@@ -2,129 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C02545CE69
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21FF745CE6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:50:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240342AbhKXUwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 15:52:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51442 "EHLO
+        id S242999AbhKXUx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 15:53:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238478AbhKXUwm (ORCPT
+        with ESMTP id S240489AbhKXUx7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 15:52:42 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A908C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:49:32 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id g14so15977797edb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:49:32 -0800 (PST)
+        Wed, 24 Nov 2021 15:53:59 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A44C061574;
+        Wed, 24 Nov 2021 12:50:48 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id t5so16257837edd.0;
+        Wed, 24 Nov 2021 12:50:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nMuc0XaSrOhuRiJX2AcDqo8qanP5IH8SnIJqnzSdiTM=;
-        b=KhxM+OrYS66sRu8wbwFLi38a/BLmLfv+rK/Q6tCUn9uxuXb3hel1XpB6GNxSy7dBFZ
-         qjjPjL6RB1aQ9njwxuYf9+zRVEnKR4PAKQMs23ec9/QErpVKIPBg3AMoy/12v4OwbCwn
-         Hg4tpL8AuhuaRyPVigWqmM3d9tCM1Y1dr6iuzkQytFQRqCmpuwprhlX35leZEIH5B9tI
-         GTiQQ1s4F58hOc2N2+1bcFzmIVIaVFpB2zz2AtVh5fyWi3/2YtVsw7VAqLTo2dSTabtE
-         /5oVJ7m1KuD3lcrSlIAqJCkNrUm625m9/W1d5uF+zJRiPfb6oVkRf57+MBYAGyN09+NT
-         /xiQ==
+        bh=tpsx3MMLlTBUydbXgUazzGgW2XNsr3KXIZIpZG5k49A=;
+        b=G8Bz3qQ+YB6mQX6ayLZFC73394al/8xOPMOCkkW6avVNd3+hbxJaV9RVDlbI9jLfGu
+         0hJ+wBWJhnT6V8NAEwOcX8BFShQHsBkVCxqZaVFIZmxyRh3gNFttaj0w2zvIA4VXt0+2
+         2AOkceMmA96+Nwx5+4wyu+tLC2LLmvw2JENFvpM5YVWwfZUc2VL13LPe2mpxRlN6M/nq
+         JceIJimvE45nZ/cEbSVvT8jKTLt1Rmf/MJR0u7JtXvlkVs3/y2c6J95JpZb9B1smwh/J
+         NH7vfmWWqlMUw7bST8I0yQzQdkdqwRzs3RLaRiwjdW8e54URY35lkO2UYDMyDvKKCNvU
+         0zfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nMuc0XaSrOhuRiJX2AcDqo8qanP5IH8SnIJqnzSdiTM=;
-        b=bn7eXMraqK3TOWXxvGrdybwy5f0SuoG0NdfVstJNeOKDWo7GW0SI0iJTaCrufiAXCf
-         63QhkPhfu2XeK4ssFA/jjfWc+rNzggM5eQgPQizqZLjk5tOTLsMzZUzESs10AhfMfIqH
-         dqZxj+8CP5m9kayNyp7R9+0KhHBU3jq7qdNu1kMoJ0Xi9FabhGyD5m8EccB6mz+B/qmn
-         IVJ976jo2fb75tNlylm/AIFHYaaxB0pKFQkPSW1Wvlp2MR9seNKEl3HMfu5jTYHqmrI1
-         BrQ8v0Sl33SG8Mv9OXLq34JCRYkbdmTDaDkZYNnqvSvMJkrksXKRrPqWGPEr9+6eAoCU
-         mMLg==
-X-Gm-Message-State: AOAM533ZgemjcDtBFthtVQLTPcbMdjWwsP+k0xZCTC3IVscWPlNpgxK3
-        dnrcDH6lkv3OX/4YNt7Qh7uLDQdguybNYByLKvw=
-X-Google-Smtp-Source: ABdhPJzwSHdfzprCkyMOVZn4Qqnxxs9DUP/GFlzag5aWnsuOdQkT8ripr0NIzxM7Z5H9zcSJ75wV3zDA+7UwD/4ge5I=
-X-Received: by 2002:a17:906:9754:: with SMTP id o20mr18296968ejy.277.1637786971186;
- Wed, 24 Nov 2021 12:49:31 -0800 (PST)
+        bh=tpsx3MMLlTBUydbXgUazzGgW2XNsr3KXIZIpZG5k49A=;
+        b=rZ9rI5Ek5MFasdE1oBd5izVz0TfgcZJzgVJxkoYlxHb+RQZv4cSCkeqwDIbu1jab0V
+         L4KerZSoc8826PGykfN5IRVSy16TlAM7IbeGQ5O3bvCRduBMHGnL7xgX5eXSQdZHJE4y
+         yrAVe3xts8hhD97fNxwdeqk8id+2oAfLSbmLe1xOhZaTPoA+8KXdXYQfdeBmtA7jsh3V
+         u+4EOYGYYSJ4FPi12f3C8dIW2gTSStJYCi95YT8NZ9SIagvBfODQ1w9UV6ef/7+98m09
+         NpklN4fcRt3MZ06eojzRHdo/DnluZomY/MaEVT+IryCnxEuA/6/7BJ9suA7vvRaxpuHj
+         chxQ==
+X-Gm-Message-State: AOAM532Emz//u+Bd/OIH6kRK043cJ3J55AvNEDLdIqR8gM6n8BEubtsZ
+        cYMy544ZXG/UoLByI8Lju8jBXMNtItma+fnkOCxsBc6cywxk7A==
+X-Google-Smtp-Source: ABdhPJz3C3SCSsHACUDoYfKlRZ5A9P5v/4kiUjZrmr38Hwvl8IVPpBnfdYlh8WES9YYBz6HfvsFUR8prKuz6pwmEoSM=
+X-Received: by 2002:a17:907:868f:: with SMTP id qa15mr24488031ejc.187.1637787047509;
+ Wed, 24 Nov 2021 12:50:47 -0800 (PST)
 MIME-Version: 1.0
-References: <20211124091546.5072-1-21cnbao@gmail.com> <YZ4eWHarf7QDONLB@hirez.programming.kicks-ass.net>
- <CAGsJ_4xpqvhBW0G5UfCjRD8BfR4m4EUv4B_cxoOtYTO5+iRsCQ@mail.gmail.com>
- <CAGsJ_4yHToqZZ9R59jd0391mE0tAzxDFSvhSV24gx9c5JNvO4w@mail.gmail.com>
- <CAGsJ_4zpN98_J2aRHyqz4XvSzP+0ngVu2k=ufn9JQNMwe7zZjw@mail.gmail.com> <YZ5UDuCII/KHUb9h@hirez.programming.kicks-ass.net>
-In-Reply-To: <YZ5UDuCII/KHUb9h@hirez.programming.kicks-ass.net>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Thu, 25 Nov 2021 09:49:19 +1300
-Message-ID: <CAGsJ_4xP7=LZnX1hSMi=2T_9xUmNCtbpyiFi+Uxs0_cxYX3E-A@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/fair: Remove the cost of a redundant
- cpumask_next_wrap in select_idle_cpu
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Barry Song <song.bao.hua@hisilicon.com>
+References: <44e0213a681f3c8ee4c6ab2ef9d61ce3ac00e368.1637727935.git.fthain@linux-m68k.org>
+ <CAMuHMdXTxTABOoVgC6fVR44dxUZZEbZV=ewSk9vKFY=U5u+fcw@mail.gmail.com>
+In-Reply-To: <CAMuHMdXTxTABOoVgC6fVR44dxUZZEbZV=ewSk9vKFY=U5u+fcw@mail.gmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Date:   Thu, 25 Nov 2021 09:50:35 +1300
+Message-ID: <CAOmrzkJhXvN0gOU8fc5jNu3Q9LnT4dgCGdrznYbCbGXxq0dJpQ@mail.gmail.com>
+Subject: Re: [PATCH] pata_falcon: Add missing __iomem annotations
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Finn Thain <fthain@linux-m68k.org>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 4:02 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Thu, Nov 25, 2021 at 01:02:00AM +1300, Barry Song wrote:
-> > On Thu, Nov 25, 2021 at 12:57 AM Barry Song <21cnbao@gmail.com> wrote:
->
-> > > Let me make it clearer. if nr=5, the original code will  loop 5 times,
-> > > but in the 5th loop, it returns directly, so  __select_idle_cpu is
-> > > only done 4 times.
-> > >
-> > > if nr=1, the original code will  loop 1 time, but in the 1st loop,
-> > > it returns directly, so  __select_idle_cpu is  done 0 times.
-> >
-> > this is also why in the first version of patch, i did this:
-> >                 span_avg = sd->span_weight * avg_idle;
-> >                 if (span_avg > 4*avg_cost)
-> > -                       nr = div_u64(span_avg, avg_cost);
-> > +                       nr = div_u64(span_avg, avg_cost) - 1;
+Hi Geert,
+
+On Wed, Nov 24, 2021 at 8:51 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > --- a/drivers/ata/pata_falcon.c
+> > +++ b/drivers/ata/pata_falcon.c
+> > @@ -55,14 +55,14 @@ static unsigned int pata_falcon_data_xfer(struct ata_queued_cmd *qc,
+> >         /* Transfer multiple of 2 bytes */
+> >         if (rw == READ) {
+> >                 if (swap)
+> > -                       raw_insw_swapw((u16 *)data_addr, (u16 *)buf, words);
+> > +                       raw_insw_swapw((u16 __iomem *)data_addr, (u16 *)buf, words);
 > >                 else
-> > -                       nr = 4;
-> > +                       nr = 3;
-> >
-> > because we are actually scanning 3 times or div_u64(span_avg, avg_cost) - 1
-> > times but not 4 times or div_u64(span_avg, avg_cost) times.
+> > -                       raw_insw((u16 *)data_addr, (u16 *)buf, words);
+> > +                       raw_insw((u16 __iomem *)data_addr, (u16 *)buf, words);
+> >         } else {
+> >                 if (swap)
+> > -                       raw_outsw_swapw((u16 *)data_addr, (u16 *)buf, words);
+> > +                       raw_outsw_swapw((u16 __iomem *)data_addr, (u16 *)buf, words);
+> >                 else
+> > -                       raw_outsw((u16 *)data_addr, (u16 *)buf, words);
+> > +                       raw_outsw((u16 __iomem *)data_addr, (u16 *)buf, words);
 >
-> It still is confusing, because > 4*span -> nr = avg/span, very much
-> implies we want to bottom out at 4.
+> Can't you just drop the casts? data_addr is an __iomem void *.
+
+It's not u16 though, and the raw_ IO functions require that. But we
+could cast data_addr as __iomem u16 * (compile tested).
+
+Cheers,
+
+    Michael
+
 >
-> > this is not confusing at all. the only thing which is confusing is the original
-> > code.
+> Gr{oetje,eeting}s,
 >
-> But yes, it seems a whole lot of confusion stacked together. Let make it
-> sane and say that we do 'nr' iterations, because clearly that was the
-> intent :-)
-
-yes. It seems this is much more sensible to do iterations in the
-number of nr rather than
-nr-1.  we can achieve this goal by two ways:
-
-(1)
-        nr--;
-
-        for_each_cpu_wrap(cpu, cpus, target + 1) {
-                _select_idle_cpu()....
-                if (!nr--)
-                                return;
-        }
-
-(2)
-        for_each_cpu_wrap(cpu, cpus, target + 1) {
-                _select_idle_cpu()....
-                if (!--nr)
-                                return;
-        }
-
-it seems the second way is still better as we don't need the "nr--" before
-for_each_cpu_wrap() ?
-
-Thanks
-Barry
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
