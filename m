@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09BEA45C25F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1046245C1AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344456AbhKXN15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:27:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47334 "EHLO mail.kernel.org"
+        id S1348496AbhKXNUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:20:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348133AbhKXNZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:25:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C07861B72;
-        Wed, 24 Nov 2021 12:49:47 +0000 (UTC)
+        id S1344732AbhKXNR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:17:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23E3860E0B;
+        Wed, 24 Nov 2021 12:45:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758188;
-        bh=75YgilEkr+rv3FHrN2C6182LFwNoCZZ9Q6EU3l/v8hQ=;
+        s=korg; t=1637757908;
+        bh=Rgt6dLrbhBqEiUqSn0unOJyIPDGPYQLbGyE7h3/Jv4E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=URo3LJvHR3hv7/zCwkVZHcpJ01S8qKpiULkW978Op7SQqvDk33s1XgsZkrciyuqiY
-         Sm8klE59MudGF9o4c61je1fIAxaSOsLqOK814KSZhbH+v2smhqlZ7fyENMWLvcz1H2
-         ymrZ6LbirItXyMMNS56TSDun8nzHS1k4gk0jRTsA=
+        b=fpFvf025IUPrZ+fP8zBr4D7fhHPXGorvtlMsCKP7/50jdStD1nVT4Clxd4QPKy98U
+         4/zKPXq1M4WmGkGAQSA6t/hwLjo2lKwFfEMjpEdV2P6On8yzoYYTAbe8BW/mdUl/AW
+         aIue8l5Rbajq+gFqo4TwBFxbtJFmMZy2xf9ZtdMU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lin Ma <linma@zju.edu.cn>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 070/100] NFC: reorder the logic in nfc_{un,}register_device
+        =?UTF-8?q?Linus=20L=FCssing?= <linus.luessing@c0d3.blue>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        Sven Eckelmann <sven@narfation.org>
+Subject: [PATCH 4.19 316/323] batman-adv: mcast: fix duplicate mcast packets in BLA backbone from LAN
 Date:   Wed, 24 Nov 2021 12:58:26 +0100
-Message-Id: <20211124115657.129453487@linuxfoundation.org>
+Message-Id: <20211124115729.590390034@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,129 +40,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lin Ma <linma@zju.edu.cn>
+From: Linus Lüssing <linus.luessing@c0d3.blue>
 
-[ Upstream commit 3e3b5dfcd16a3e254aab61bd1e8c417dd4503102 ]
+commit 3236d215ad38a3f5372e65cd1e0a52cf93d3c6a2 upstream.
 
-There is a potential UAF between the unregistration routine and the NFC
-netlink operations.
+Scenario:
+* Multicast frame send from a BLA backbone (multiple nodes with
+  their bat0 bridged together, with BLA enabled)
 
-The race that cause that UAF can be shown as below:
+Issue:
+* BLA backbone nodes receive the frame multiple times on bat0
 
- (FREE)                      |  (USE)
-nfcmrvl_nci_unregister_dev   |  nfc_genl_dev_up
-  nci_close_device           |
-  nci_unregister_device      |    nfc_get_device
-    nfc_unregister_device    |    nfc_dev_up
-      rfkill_destory         |
-      device_del             |      rfkill_blocked
-  ...                        |    ...
+For multicast frames received via batman-adv broadcast packets the
+originator of the broadcast packet is checked before decapsulating and
+forwarding the frame to bat0 (batadv_bla_is_backbone_gw()->
+batadv_recv_bcast_packet()). If it came from a node which shares the
+same BLA backbone with us then it is not forwarded to bat0 to avoid a
+loop.
 
-The root cause for this race is concluded below:
-1. The rfkill_blocked (USE) in nfc_dev_up is supposed to be placed after
-the device_is_registered check.
-2. Since the netlink operations are possible just after the device_add
-in nfc_register_device, the nfc_dev_up() can happen anywhere during the
-rfkill creation process, which leads to data race.
+When sending a multicast frame in a non-4-address batman-adv unicast
+packet we are currently missing this check - and cannot do so because
+the batman-adv unicast packet has no originator address field.
 
-This patch reorder these actions to permit
-1. Once device_del is finished, the nfc_dev_up cannot dereference the
-rfkill object.
-2. The rfkill_register need to be placed after the device_add of nfc_dev
-because the parent device need to be created first. So this patch keeps
-the order but inject device_lock to prevent the data race.
+However, we can simply fix this on the sender side by only sending the
+multicast frame via unicasts to interested nodes which do not share the
+same BLA backbone with us. This also nicely avoids some unnecessary
+transmissions on mesh side.
 
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
-Fixes: be055b2f89b5 ("NFC: RFKILL support")
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20211116152652.19217-1-linma@zju.edu.cn
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Note that no infinite loop was observed, probably because of dropping
+via batadv_interface_tx()->batadv_bla_tx(). However the duplicates still
+utterly confuse switches/bridges, ICMPv6 duplicate address detection and
+neighbor discovery and therefore leads to long delays before being able
+to establish TCP connections, for instance. And it also leads to the Linux
+bridge printing messages like:
+"br-lan: received packet on eth1 with own address as source address ..."
+
+Fixes: 1d8ab8d3c176 ("batman-adv: Modified forwarding behaviour for multicast packets")
+Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
+Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+[ bp: 4.19 backport: drop usage in non-existing batadv_mcast_forw*, correct
+  fixes line ]
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/nfc/core.c | 32 ++++++++++++++++++--------------
- 1 file changed, 18 insertions(+), 14 deletions(-)
+ net/batman-adv/multicast.c      |   31 +++++++++++++++++++++++++++++++
+ net/batman-adv/multicast.h      |   15 +++++++++++++++
+ net/batman-adv/soft-interface.c |    5 ++---
+ 3 files changed, 48 insertions(+), 3 deletions(-)
 
-diff --git a/net/nfc/core.c b/net/nfc/core.c
-index c5f9c3ee82f8e..e752692d36802 100644
---- a/net/nfc/core.c
-+++ b/net/nfc/core.c
-@@ -94,13 +94,13 @@ int nfc_dev_up(struct nfc_dev *dev)
+--- a/net/batman-adv/multicast.c
++++ b/net/batman-adv/multicast.c
+@@ -62,10 +62,12 @@
+ #include <uapi/linux/batadv_packet.h>
+ #include <uapi/linux/batman_adv.h>
  
- 	device_lock(&dev->dev);
- 
--	if (dev->rfkill && rfkill_blocked(dev->rfkill)) {
--		rc = -ERFKILL;
-+	if (!device_is_registered(&dev->dev)) {
-+		rc = -ENODEV;
- 		goto error;
- 	}
- 
--	if (!device_is_registered(&dev->dev)) {
--		rc = -ENODEV;
-+	if (dev->rfkill && rfkill_blocked(dev->rfkill)) {
-+		rc = -ERFKILL;
- 		goto error;
- 	}
- 
-@@ -1118,11 +1118,7 @@ int nfc_register_device(struct nfc_dev *dev)
- 	if (rc)
- 		pr_err("Could not register llcp device\n");
- 
--	rc = nfc_genl_device_added(dev);
--	if (rc)
--		pr_debug("The userspace won't be notified that the device %s was added\n",
--			 dev_name(&dev->dev));
--
-+	device_lock(&dev->dev);
- 	dev->rfkill = rfkill_alloc(dev_name(&dev->dev), &dev->dev,
- 				   RFKILL_TYPE_NFC, &nfc_rfkill_ops, dev);
- 	if (dev->rfkill) {
-@@ -1131,6 +1127,12 @@ int nfc_register_device(struct nfc_dev *dev)
- 			dev->rfkill = NULL;
- 		}
- 	}
-+	device_unlock(&dev->dev);
-+
-+	rc = nfc_genl_device_added(dev);
-+	if (rc)
-+		pr_debug("The userspace won't be notified that the device %s was added\n",
-+			 dev_name(&dev->dev));
- 
- 	return 0;
++#include "bridge_loop_avoidance.h"
+ #include "hard-interface.h"
+ #include "hash.h"
+ #include "log.h"
+ #include "netlink.h"
++#include "send.h"
+ #include "soft-interface.h"
+ #include "translation-table.h"
+ #include "tvlv.h"
+@@ -1025,6 +1027,35 @@ batadv_mcast_forw_mode(struct batadv_pri
  }
-@@ -1147,10 +1149,17 @@ void nfc_unregister_device(struct nfc_dev *dev)
  
- 	pr_debug("dev_name=%s\n", dev_name(&dev->dev));
- 
-+	rc = nfc_genl_device_removed(dev);
-+	if (rc)
-+		pr_debug("The userspace won't be notified that the device %s "
-+			 "was removed\n", dev_name(&dev->dev));
+ /**
++ * batadv_mcast_forw_send_orig() - send a multicast packet to an originator
++ * @bat_priv: the bat priv with all the soft interface information
++ * @skb: the multicast packet to send
++ * @vid: the vlan identifier
++ * @orig_node: the originator to send the packet to
++ *
++ * Return: NET_XMIT_DROP in case of error or NET_XMIT_SUCCESS otherwise.
++ */
++int batadv_mcast_forw_send_orig(struct batadv_priv *bat_priv,
++				struct sk_buff *skb,
++				unsigned short vid,
++				struct batadv_orig_node *orig_node)
++{
++	/* Avoid sending multicast-in-unicast packets to other BLA
++	 * gateways - they already got the frame from the LAN side
++	 * we share with them.
++	 * TODO: Refactor to take BLA into account earlier, to avoid
++	 * reducing the mcast_fanout count.
++	 */
++	if (batadv_bla_is_backbone_gw_orig(bat_priv, orig_node->orig, vid)) {
++		dev_kfree_skb(skb);
++		return NET_XMIT_SUCCESS;
++	}
 +
-+	device_lock(&dev->dev);
- 	if (dev->rfkill) {
- 		rfkill_unregister(dev->rfkill);
- 		rfkill_destroy(dev->rfkill);
- 	}
-+	device_unlock(&dev->dev);
++	return batadv_send_skb_unicast(bat_priv, skb, BATADV_UNICAST, 0,
++				       orig_node, vid);
++}
++
++/**
+  * batadv_mcast_want_unsnoop_update() - update unsnoop counter and list
+  * @bat_priv: the bat priv with all the soft interface information
+  * @orig: the orig_node which multicast state might have changed of
+--- a/net/batman-adv/multicast.h
++++ b/net/batman-adv/multicast.h
+@@ -51,6 +51,11 @@ enum batadv_forw_mode
+ batadv_mcast_forw_mode(struct batadv_priv *bat_priv, struct sk_buff *skb,
+ 		       struct batadv_orig_node **mcast_single_orig);
  
- 	if (dev->ops->check_presence) {
- 		device_lock(&dev->dev);
-@@ -1160,11 +1169,6 @@ void nfc_unregister_device(struct nfc_dev *dev)
- 		cancel_work_sync(&dev->check_pres_work);
- 	}
++int batadv_mcast_forw_send_orig(struct batadv_priv *bat_priv,
++				struct sk_buff *skb,
++				unsigned short vid,
++				struct batadv_orig_node *orig_node);
++
+ void batadv_mcast_init(struct batadv_priv *bat_priv);
  
--	rc = nfc_genl_device_removed(dev);
--	if (rc)
--		pr_debug("The userspace won't be notified that the device %s "
--			 "was removed\n", dev_name(&dev->dev));
--
- 	nfc_llcp_unregister_device(dev);
+ int batadv_mcast_flags_seq_print_text(struct seq_file *seq, void *offset);
+@@ -79,6 +84,16 @@ static inline int batadv_mcast_init(stru
+ }
  
- 	mutex_lock(&nfc_devlist_mutex);
--- 
-2.33.0
-
+ static inline int
++batadv_mcast_forw_send_orig(struct batadv_priv *bat_priv,
++			    struct sk_buff *skb,
++			    unsigned short vid,
++			    struct batadv_orig_node *orig_node)
++{
++	kfree_skb(skb);
++	return NET_XMIT_DROP;
++}
++
++static inline int
+ batadv_mcast_mesh_info_put(struct sk_buff *msg, struct batadv_priv *bat_priv)
+ {
+ 	return 0;
+--- a/net/batman-adv/soft-interface.c
++++ b/net/batman-adv/soft-interface.c
+@@ -367,9 +367,8 @@ send:
+ 				goto dropped;
+ 			ret = batadv_send_skb_via_gw(bat_priv, skb, vid);
+ 		} else if (mcast_single_orig) {
+-			ret = batadv_send_skb_unicast(bat_priv, skb,
+-						      BATADV_UNICAST, 0,
+-						      mcast_single_orig, vid);
++			ret = batadv_mcast_forw_send_orig(bat_priv, skb, vid,
++							  mcast_single_orig);
+ 		} else {
+ 			if (batadv_dat_snoop_outgoing_arp_request(bat_priv,
+ 								  skb))
 
 
