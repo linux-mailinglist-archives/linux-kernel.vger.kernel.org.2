@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B4B45CBBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:03:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03BF145CBC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:04:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350287AbhKXSGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 13:06:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56140 "EHLO mail.kernel.org"
+        id S1350442AbhKXSGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 13:06:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350232AbhKXSGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1350237AbhKXSGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 13:06:37 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 487906101A;
+        by mail.kernel.org (Postfix) with ESMTPSA id 7497961039;
         Wed, 24 Nov 2021 18:03:27 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mpwcA-0027r1-Do;
+        id 1mpwcA-0027rZ-JX;
         Wed, 24 Nov 2021 13:03:26 -0500
-Message-ID: <20211124180326.265403840@goodmis.org>
+Message-ID: <20211124180326.453043583@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 24 Nov 2021 13:03:04 -0500
+Date:   Wed, 24 Nov 2021 13:03:05 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org,
         linux-rt-users <linux-rt-users@vger.kernel.org>
@@ -32,8 +32,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         John Kacur <jkacur@redhat.com>, Daniel Wagner <wagi@monom.org>,
         Tom Zanussi <zanussi@kernel.org>,
         "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        stable-rt@vger.kernel.org, Mike Galbraith <efault@gmx.de>
-Subject: [PATCH RT 01/13] mm, zsmalloc: Convert zsmalloc_handle.lock to spinlock_t
+        stable-rt@vger.kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH RT 02/13] sched: Fix get_push_task() vs migrate_disable()
 References: <20211124180303.574562279@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,79 +47,44 @@ If anyone has any objections, please let me know.
 
 ------------------
 
-From: Mike Galbraith <efault@gmx.de>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-local_lock_t becoming a synonym of spinlock_t had consequences for the RT
-mods to zsmalloc, which were taking a mutex while holding a local_lock,
-inspiring a lockdep "BUG: Invalid wait context" gripe.
+push_rt_task() attempts to move the currently running task away if the
+next runnable task has migration disabled and therefore is pinned on the
+current CPU.
 
-Converting zsmalloc_handle.lock to a spinlock_t restored lockdep silence.
+The current task is retrieved via get_push_task() which only checks for
+nr_cpus_allowed == 1, but does not check whether the task has migration
+disabled and therefore cannot be moved either. The consequence is a
+pointless invocation of the migration thread which correctly observes
+that the task cannot be moved.
+
+Return NULL if the task has migration disabled and cannot be moved to
+another CPU.
 
 Cc: stable-rt@vger.kernel.org
-Signed-off-by: Mike Galbraith <efault@gmx.de>
+Fixes: a7c81556ec4d3 ("sched: Fix migrate_disable() vs rt/dl balancing")
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210826133738.yiotqbtdaxzjsnfj@linutronix.de
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- mm/zsmalloc.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ kernel/sched/sched.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-index 277d426c881f..3595c1644135 100644
---- a/mm/zsmalloc.c
-+++ b/mm/zsmalloc.c
-@@ -82,7 +82,7 @@
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 826ea17e144d..c2c9c386456d 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1949,6 +1949,9 @@ static inline struct task_struct *get_push_task(struct rq *rq)
+ 	if (p->nr_cpus_allowed == 1)
+ 		return NULL;
  
- struct zsmalloc_handle {
- 	unsigned long addr;
--	struct mutex lock;
-+	spinlock_t lock;
- };
- 
- #define ZS_HANDLE_ALLOC_SIZE (sizeof(struct zsmalloc_handle))
-@@ -370,7 +370,7 @@ static unsigned long cache_alloc_handle(struct zs_pool *pool, gfp_t gfp)
- 	if (p) {
- 		struct zsmalloc_handle *zh = p;
- 
--		mutex_init(&zh->lock);
-+		spin_lock_init(&zh->lock);
- 	}
- #endif
- 	return (unsigned long)p;
-@@ -930,7 +930,7 @@ static inline int testpin_tag(unsigned long handle)
- #ifdef CONFIG_PREEMPT_RT
- 	struct zsmalloc_handle *zh = zs_get_pure_handle(handle);
- 
--	return mutex_is_locked(&zh->lock);
-+	return spin_is_locked(&zh->lock);
- #else
- 	return bit_spin_is_locked(HANDLE_PIN_BIT, (unsigned long *)handle);
- #endif
-@@ -941,7 +941,7 @@ static inline int trypin_tag(unsigned long handle)
- #ifdef CONFIG_PREEMPT_RT
- 	struct zsmalloc_handle *zh = zs_get_pure_handle(handle);
- 
--	return mutex_trylock(&zh->lock);
-+	return spin_trylock(&zh->lock);
- #else
- 	return bit_spin_trylock(HANDLE_PIN_BIT, (unsigned long *)handle);
- #endif
-@@ -952,7 +952,7 @@ static void pin_tag(unsigned long handle) __acquires(bitlock)
- #ifdef CONFIG_PREEMPT_RT
- 	struct zsmalloc_handle *zh = zs_get_pure_handle(handle);
- 
--	return mutex_lock(&zh->lock);
-+	return spin_lock(&zh->lock);
- #else
- 	bit_spin_lock(HANDLE_PIN_BIT, (unsigned long *)handle);
- #endif
-@@ -963,7 +963,7 @@ static void unpin_tag(unsigned long handle) __releases(bitlock)
- #ifdef CONFIG_PREEMPT_RT
- 	struct zsmalloc_handle *zh = zs_get_pure_handle(handle);
- 
--	return mutex_unlock(&zh->lock);
-+	return spin_unlock(&zh->lock);
- #else
- 	bit_spin_unlock(HANDLE_PIN_BIT, (unsigned long *)handle);
- #endif
++	if (p->migration_disabled)
++		return NULL;
++
+ 	rq->push_busy = true;
+ 	return get_task_struct(p);
+ }
 -- 
 2.33.0
