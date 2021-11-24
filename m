@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE21A45C578
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B0645C0CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:08:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354731AbhKXN6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:58:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45400 "EHLO mail.kernel.org"
+        id S1346502AbhKXNLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:11:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348322AbhKXNyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:54:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0B3063275;
-        Wed, 24 Nov 2021 13:05:51 +0000 (UTC)
+        id S1348355AbhKXNJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:09:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C29FA61216;
+        Wed, 24 Nov 2021 12:40:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759152;
-        bh=22Q/6LZHz12Qhq7HJAPM689ULLCMozEXI2V/OvoHeCA=;
+        s=korg; t=1637757616;
+        bh=42Y5+rXmA77QcjkgrSDGAwSlv9NS8sOO5evVFIAFJgU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j6LwIhgrtjfjD8KbIl/jJwNiEjI9in/LCIiufQctIyusz3t8+xDEqYMAmsfJqYBGt
-         r7x+xZg6/Fh64c3SZUnfbIQmx0k5b6QQ0Flll3pD0pWjiK4CL4OBlxBT7KopMkDRnX
-         OZ18PDqCuct/FBZHWPISrThx0bMz7NMPV8I1t1ZE=
+        b=CXl2k5InhxsCFBwWU+qBBaqXtlTfkKuMSbgD2h07KVMN2ZN/m/FdHcsepfPTo/xGq
+         ZgNxbRPqCYGPWBIl7XzUjmjy/4loiCWjhowN8o2C9YYZEVmh9ymJ8T0UXYskh1gkb4
+         wyAOvfJSlOCkGn60JeRIqpHQg2ohrjLG/u1nwUXg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
-        "J. Bruce Fields" <bfields@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 122/279] NFSD: Fix exposure in nfsd4_decode_bitmap()
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 219/323] i2c: xlr: Fix a resource leak in the error handling path of xlr_i2c_probe()
 Date:   Wed, 24 Nov 2021 12:56:49 +0100
-Message-Id: <20211124115723.022629849@linuxfoundation.org>
+Message-Id: <20211124115726.325958403@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit c0019b7db1d7ac62c711cda6b357a659d46428fe ]
+[ Upstream commit 7f98960c046ee1136e7096aee168eda03aef8a5d ]
 
-rtm@csail.mit.edu reports:
-> nfsd4_decode_bitmap4() will write beyond bmval[bmlen-1] if the RPC
-> directs it to do so. This can cause nfsd4_decode_state_protect4_a()
-> to write client-supplied data beyond the end of
-> nfsd4_exchange_id.spo_must_allow[] when called by
-> nfsd4_decode_exchange_id().
+A successful 'clk_prepare()' call should be balanced by a corresponding
+'clk_unprepare()' call in the error handling path of the probe, as already
+done in the remove function.
 
-Rewrite the loops so nfsd4_decode_bitmap() cannot iterate beyond
-@bmlen.
+More specifically, 'clk_prepare_enable()' is used, but 'clk_disable()' is
+also already called. So just the unprepare step has still to be done.
 
-Reported by: rtm@csail.mit.edu
-Fixes: d1c263a031e8 ("NFSD: Replace READ* macros in nfsd4_decode_fattr()")
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Update the error handling path accordingly.
+
+Fixes: 75d31c2372e4 ("i2c: xlr: add support for Sigma Designs controller variant")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfsd/nfs4xdr.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/i2c/busses/i2c-xlr.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/fs/nfsd/nfs4xdr.c b/fs/nfsd/nfs4xdr.c
-index cf030ebe28275..266d5152c3216 100644
---- a/fs/nfsd/nfs4xdr.c
-+++ b/fs/nfsd/nfs4xdr.c
-@@ -288,11 +288,8 @@ nfsd4_decode_bitmap4(struct nfsd4_compoundargs *argp, u32 *bmval, u32 bmlen)
- 	p = xdr_inline_decode(argp->xdr, count << 2);
- 	if (!p)
- 		return nfserr_bad_xdr;
--	i = 0;
--	while (i < count)
--		bmval[i++] = be32_to_cpup(p++);
--	while (i < bmlen)
--		bmval[i++] = 0;
-+	for (i = 0; i < bmlen; i++)
-+		bmval[i] = (i < count) ? be32_to_cpup(p++) : 0;
+diff --git a/drivers/i2c/busses/i2c-xlr.c b/drivers/i2c/busses/i2c-xlr.c
+index 34cd4b3085402..dda6cb848405b 100644
+--- a/drivers/i2c/busses/i2c-xlr.c
++++ b/drivers/i2c/busses/i2c-xlr.c
+@@ -433,11 +433,15 @@ static int xlr_i2c_probe(struct platform_device *pdev)
+ 	i2c_set_adapdata(&priv->adap, priv);
+ 	ret = i2c_add_numbered_adapter(&priv->adap);
+ 	if (ret < 0)
+-		return ret;
++		goto err_unprepare_clk;
  
- 	return nfs_ok;
+ 	platform_set_drvdata(pdev, priv);
+ 	dev_info(&priv->adap.dev, "Added I2C Bus.\n");
+ 	return 0;
++
++err_unprepare_clk:
++	clk_unprepare(clk);
++	return ret;
  }
+ 
+ static int xlr_i2c_remove(struct platform_device *pdev)
 -- 
 2.33.0
 
