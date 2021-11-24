@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2AA45BD3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0A545BAA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243129AbhKXMgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:36:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44540 "EHLO mail.kernel.org"
+        id S242694AbhKXMNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:13:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245421AbhKXMZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:25:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BACB361245;
-        Wed, 24 Nov 2021 12:16:10 +0000 (UTC)
+        id S242541AbhKXMJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:09:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7EA7610D0;
+        Wed, 24 Nov 2021 12:05:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756171;
-        bh=MIv2PVE0hYJ/DibRIv6CQED5BS/nlyXUll2BwE/PMrk=;
+        s=korg; t=1637755542;
+        bh=kjdnGRvmsSjJJnluReB65sohW+SaJ3abmAOW9Yr5YqE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=brdXy9bSmnAtRp2N/880ngg8QVYKWmcSCS973VhFirnNIg7MN3bj+QfrAoGql59Fh
-         TwOOz/dcGY1z64pIKHyKef79LXk0uD/e8d0BQt4ukfzv4XnZmzRnedpvBYexH+F+/v
-         GNMiO22bFKxc8WB1AYTAyVaeAcmgfVHTn8eEuGkE=
+        b=u3Li84SnFW8oMHD5r8kJ7McDWTpEu0LbUEonfIajH4t4MsUCS8TshIwhSTsBsyTCe
+         u7g2GbnwbnZ7H4JXJ4KBzaZOjol3QiStGOLsMm9J867BeR8IJxKbTW0GiHtTGyW57O
+         NtQktXUqQeaTfmFC0g1O2zEvqfNMxdOlAzFUeWuQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roger Quadros <rogerq@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
+        stable@vger.kernel.org, Jing-Ting Wu <jing-ting.wu@mediatek.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 166/207] ARM: dts: omap: fix gpmc,mux-add-data type
+Subject: [PATCH 4.4 134/162] sched/core: Mitigate race cpus_share_cache()/update_top_cache_domain()
 Date:   Wed, 24 Nov 2021 12:57:17 +0100
-Message-Id: <20211124115709.370273038@linuxfoundation.org>
+Message-Id: <20211124115702.620555095@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roger Quadros <rogerq@kernel.org>
+From: Vincent Donnefort <vincent.donnefort@arm.com>
 
-[ Upstream commit 51b9e22ffd3c4c56cbb7caae9750f70e55ffa603 ]
+[ Upstream commit 42dc938a590c96eeb429e1830123fef2366d9c80 ]
 
-gpmc,mux-add-data is not boolean.
+Nothing protects the access to the per_cpu variable sd_llc_id. When testing
+the same CPU (i.e. this_cpu == that_cpu), a race condition exists with
+update_top_cache_domain(). One scenario being:
 
-Fixes the below errors flagged by dtbs_check.
+              CPU1                            CPU2
+  ==================================================================
 
-"ethernet@4,0:gpmc,mux-add-data: True is not of type 'array'"
+  per_cpu(sd_llc_id, CPUX) => 0
+                                    partition_sched_domains_locked()
+      				      detach_destroy_domains()
+  cpus_share_cache(CPUX, CPUX)          update_top_cache_domain(CPUX)
+    per_cpu(sd_llc_id, CPUX) => 0
+                                          per_cpu(sd_llc_id, CPUX) = CPUX
+    per_cpu(sd_llc_id, CPUX) => CPUX
+    return false
 
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+ttwu_queue_cond() wouldn't catch smp_processor_id() == cpu and the result
+is a warning triggered from ttwu_queue_wakelist().
+
+Avoid a such race in cpus_share_cache() by always returning true when
+this_cpu == that_cpu.
+
+Fixes: 518cd6234178 ("sched: Only queue remote wakeups when crossing cache boundaries")
+Reported-by: Jing-Ting Wu <jing-ting.wu@mediatek.com>
+Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Link: https://lore.kernel.org/r/20211104175120.857087-1-vincent.donnefort@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi         | 2 +-
- arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ kernel/sched/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi b/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
-index 73e272fadc202..58d288fddd9c2 100644
---- a/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
-+++ b/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
-@@ -28,7 +28,7 @@
- 		compatible = "smsc,lan9221","smsc,lan9115";
- 		bank-width = <2>;
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 4a0a754f24c87..69c6c740da11b 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1885,6 +1885,9 @@ out:
  
--		gpmc,mux-add-data;
-+		gpmc,mux-add-data = <0>;
- 		gpmc,cs-on-ns = <0>;
- 		gpmc,cs-rd-off-ns = <42>;
- 		gpmc,cs-wr-off-ns = <36>;
-diff --git a/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi b/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi
-index 82e98ee3023ad..3dbeb7a6c569c 100644
---- a/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi
-+++ b/arch/arm/boot/dts/omap3-overo-tobiduo-common.dtsi
-@@ -25,7 +25,7 @@
- 		compatible = "smsc,lan9221","smsc,lan9115";
- 		bank-width = <2>;
- 
--		gpmc,mux-add-data;
-+		gpmc,mux-add-data = <0>;
- 		gpmc,cs-on-ns = <0>;
- 		gpmc,cs-rd-off-ns = <42>;
- 		gpmc,cs-wr-off-ns = <36>;
+ bool cpus_share_cache(int this_cpu, int that_cpu)
+ {
++	if (this_cpu == that_cpu)
++		return true;
++
+ 	return per_cpu(sd_llc_id, this_cpu) == per_cpu(sd_llc_id, that_cpu);
+ }
+ #endif /* CONFIG_SMP */
 -- 
 2.33.0
 
