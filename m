@@ -2,98 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C96445C72A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 256ED45C72E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:22:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347728AbhKXOZi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Nov 2021 09:25:38 -0500
-Received: from mout.kundenserver.de ([212.227.126.187]:55061 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346564AbhKXOYl (ORCPT
+        id S1351782AbhKXO0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:26:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:48860 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1353737AbhKXOZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:24:41 -0500
-Received: from mail-wm1-f45.google.com ([209.85.128.45]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MEFnR-1mxu1d0rYL-00AIDS; Wed, 24 Nov 2021 15:21:28 +0100
-Received: by mail-wm1-f45.google.com with SMTP id 137so2555739wma.1;
-        Wed, 24 Nov 2021 06:21:28 -0800 (PST)
-X-Gm-Message-State: AOAM532HPUYI+Y9LXerhEb8ly3RReBUGfZOBiA36bhTX8hrqZ+oI25ui
-        gi1cn5UmAgupZvLshRoLR2IawF1JmtxKeMPKyUY=
-X-Google-Smtp-Source: ABdhPJwfARw5AU5sor77+MXjzxSnoyBb9wgq+wSCMXvtLeO5ULwcoEFbNRkWfs0ykSeaGotWVkfw4rYUdsGIIWXBoOI=
-X-Received: by 2002:a7b:c007:: with SMTP id c7mr15627412wmb.82.1637763687770;
- Wed, 24 Nov 2021 06:21:27 -0800 (PST)
+        Wed, 24 Nov 2021 09:25:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637763723;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TLRi7BlITjjM/i+4EHGp/lwGEMw5CmrBYwLEApBpecM=;
+        b=T+ykU8t46fV+xrf3SMGoh/DAA861ozWF2WywBgWnFKJUMbAXaDVzHWhSnBQxXaYMb2A90W
+        kQk5kjI5fJ/xf0vwnjqOs8T/xUz5s6Ml/vYTQNKmBMpF8ZVeYI55Rk9vL3y+/RW5NTbnQG
+        kqP9+55gqZbsiXFhYfnLEThPyKsZthI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-509-fs400FZ6MvKXrNnBYcUuyw-1; Wed, 24 Nov 2021 09:21:59 -0500
+X-MC-Unique: fs400FZ6MvKXrNnBYcUuyw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 31BB61800D41;
+        Wed, 24 Nov 2021 14:21:58 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A602119C46;
+        Wed, 24 Nov 2021 14:21:56 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20211121041608.133740-1-eiichi.tsukata@nutanix.com>
+References: <20211121041608.133740-1-eiichi.tsukata@nutanix.com>
+To:     Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+Cc:     dhowells@redhat.com, marc.dionne@auristor.com, davem@davemloft.net,
+        kuba@kernel.org, linux-afs@lists.infradead.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net 1/2] rxrpc: Fix rxrpc_peer leak in rxrpc_look_up_bundle()
 MIME-Version: 1.0
-References: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
- <41206fc7-f8ce-98aa-3718-ba3e1431e320@landley.net> <CAK8P3a3pQW59NVF=5P+ZiBjNJmnWh+iTZUHvqHBrXkHA6pMd4g@mail.gmail.com>
- <4dd8a108-013f-8d68-b5d5-138d3cf3bff0@collabora.com>
-In-Reply-To: <4dd8a108-013f-8d68-b5d5-138d3cf3bff0@collabora.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 24 Nov 2021 15:21:11 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2FHrrcDZfynjG7BdJVd2wxrWMOMO7dO4wjb1h8_jkRtQ@mail.gmail.com>
-Message-ID: <CAK8P3a2FHrrcDZfynjG7BdJVd2wxrWMOMO7dO4wjb1h8_jkRtQ@mail.gmail.com>
-Subject: Re: spinlock.c:306:9: error: implicit declaration of function '__raw_write_lock_nested'
-To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Rob Landley <rob@landley.net>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Galbraith <umgwanakikbuti@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:apu1n+cG21Acftl9W7C1wczoo01v5na1HtOsEQ90Zmb+wTNObbI
- hg4nnJIE5hz2d0ZG0OidJA6YhazP8RHnG8jh4T0n3UspE0I4B/aEr2N6DYI+ndWj8WVPtT4
- c8T9XZP5P2zW3C7G9La0YbHCc3N85R3q5aJ4fxjuzdsOEr7ZgNiQ4an3l2uWLqc4TnvuQhp
- 1unTwdPIFARPGXMUkS7gw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:HqizVAJPfQs=:NoRaSDD/hfk+YfS4PLaYFg
- 9DEhZw3y4UbAtwXHjil1KtcsV8krGQfztDDIOGuPyLZ1W4qAJCs9LcTa0GOFydAuPTyUNwKZy
- PDHLBW9gqlgey0iaNCMCNavBMlf3qNQsZaS4HL4dheBqrL9jDeYyuWRQEjILf2syfCBFEyVtj
- TG9BWugBYcztCRcTqeqOWR9s9SBWXEHHIKYzRDukHyJeU9Krp8Iv8HKLl4Wf7XT0eMJTL4lQC
- KD6xDNA9P5Xq6vfz17I9SsgLtOAjOGeBVNDGuSAtR3ltw1+i+MPw2YLfvkI3i9QWMrbdJLR7i
- V6veXy1QqH0n4Lo95/Vub2cwsN01cXpC7Vd+8Vqi9BI9IeyIJu+3a2+vlHxFx2vKHY9yE/DXD
- Uh0pAo8YoNO6zAxg6c+SKlCJR6rRhkjJtfbGpfKlgXSfZSUBKIVS6o59q6V9Oi2zlt/wB3us1
- ekgZ7ppm03EHkKMiihs9whikHDLzD5K6KYqJcIgiqQYyL9MJM0z+n75791CFoJsx9DMuJJSoL
- wB91cWi5ma9xzt2uSTZxu8RalXLKDjeCQoVxP2eutv6fBzwY28yyAxIJQTa4vqwpghJHLzxog
- 3DzLibSF+YFq0rXvRbI0cGz6ZT7YF6w8yWvZ6RyYbAkTdCD4ys5GF7ezHH/W7MrMlvcjyGzT8
- Ike8Q/N0glOwTcolksHWMGlPBooXbVEDMEtB5a4z/dniO+1z0cKI03DuDea05F+YKArA=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1819849.1637763715.1@warthog.procyon.org.uk>
+Date:   Wed, 24 Nov 2021 14:21:55 +0000
+Message-ID: <1819850.1637763715@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 2:15 PM André Almeida <andrealmeid@collabora.com> wrote:
-> Às 04:49 de 24/11/21, Arnd Bergmann escreveu:
-> > On Wed, Nov 24, 2021 at 8:31 AM Rob Landley <rob@landley.net> wrote:
-> >> On 11/23/21 5:38 AM, Naresh Kamboju wrote:
-> >> @@ -451,3 +451,4 @@
-> >>  446    common  landlock_restrict_self          sys_landlock_restrict_self
-> >>  # 447 reserved for memfd_secret
-> >>  448    common  process_mrelease                sys_process_mrelease
-> >> +449    common  futex_waitv                     sys_futex_waitv
-> >
-> > I don't know what's going on with this one, I don't actually see
-> > a reason why it isn't already wired up on all architectures. If we add
-> > this, it should probably be done for all architectures at once as a
-> > bugfix, but it's possible that this is intentionally only used on
-> > x86 and arm.
-> >
-> > André, can you comment on this?
-> >
-> I've added entries for the archs that I've actually tested, but there
-> should not be any arch-specific problems in futex_waitv. I'll submit a
-> patch to wire it up for the remaining architectures.
+Looks good, though I think a better way to do both of these cases is to
+abstract out the freeing sequence into its own function.
 
-Ok, thank you.
+David
 
-       Arnd
