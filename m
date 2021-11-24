@@ -2,37 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D42445C5AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:57:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4E145C319
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349284AbhKXN7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:59:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46988 "EHLO mail.kernel.org"
+        id S1352292AbhKXNfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:35:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353069AbhKXN4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:56:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 329A363370;
-        Wed, 24 Nov 2021 13:06:52 +0000 (UTC)
+        id S1349407AbhKXNdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:33:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 217FA61BE1;
+        Wed, 24 Nov 2021 12:53:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759212;
-        bh=xEFqqXiRcaFt4gLdA1oq4qnjLxzPR09VjFrD+w7FhaQ=;
+        s=korg; t=1637758409;
+        bh=3QpMc6es3Ml9aFT6cKA/RtDBBLQlRs5E4SgwNKiZvzA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hYZbv3E92JZiP6BAUs67/j4jIWLxxR+devZZc444W1vFxoKhdQiI7JAwdi4MaAfos
-         EVBGk1oXYIUQC9fLpPkf8oCF0MxIyKkNVwHbjqDfcQi/UHy63qKNT9L9NSSlvK3G9e
-         8ZWdzUjXigE2IO/9QkYMxhbnQ7Os74cb/D3u4gsI=
+        b=ZUEJ3Ng3UK94/1HUFqURB4CbhH7LWJMbl5a2eVfswtf/WT0pNrRVYSn8WqgtjGVhm
+         CnrDgqfae3undxh0+c+Os/VZi/4X1Q6A5PPyolMK/PyONVgt8oYvIC1oPbFiDsYCU0
+         3O5d/3viU/sp8okoUDLDaEu8IKLDekTQPaXXGgno=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lin Ma <linma@zju.edu.cn>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        Paul Burton <paulburton@kernel.org>,
+        Maxime Bizon <mbizon@freebox.fr>,
+        Ralf Baechle <ralf@linux-mips.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 169/279] NFC: reorder the logic in nfc_{un,}register_device
+Subject: [PATCH 5.10 060/154] mips: BCM63XX: ensure that CPU_SUPPORTS_32BIT_KERNEL is set
 Date:   Wed, 24 Nov 2021 12:57:36 +0100
-Message-Id: <20211124115724.582691224@linuxfoundation.org>
+Message-Id: <20211124115704.266995152@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,127 +46,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lin Ma <linma@zju.edu.cn>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 3e3b5dfcd16a3e254aab61bd1e8c417dd4503102 ]
+[ Upstream commit 5eeaafc8d69373c095e461bdb39e5c9b62228ac5 ]
 
-There is a potential UAF between the unregistration routine and the NFC
-netlink operations.
+Several header files need info on CONFIG_32BIT or CONFIG_64BIT,
+but kconfig symbol BCM63XX does not provide that info. This leads
+to many build errors, e.g.:
 
-The race that cause that UAF can be shown as below:
+   arch/mips/include/asm/page.h:196:13: error: use of undeclared identifier 'CAC_BASE'
+           return x - PAGE_OFFSET + PHYS_OFFSET;
+   arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
+   #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
+   arch/mips/include/asm/io.h:134:28: error: use of undeclared identifier 'CAC_BASE'
+           return (void *)(address + PAGE_OFFSET - PHYS_OFFSET);
+   arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
+   #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
 
- (FREE)                      |  (USE)
-nfcmrvl_nci_unregister_dev   |  nfc_genl_dev_up
-  nci_close_device           |
-  nci_unregister_device      |    nfc_get_device
-    nfc_unregister_device    |    nfc_dev_up
-      rfkill_destory         |
-      device_del             |      rfkill_blocked
-  ...                        |    ...
+arch/mips/include/asm/uaccess.h:82:10: error: use of undeclared identifier '__UA_LIMIT'
+           return (__UA_LIMIT & (addr | (addr + size) | __ua_size(size))) == 0;
 
-The root cause for this race is concluded below:
-1. The rfkill_blocked (USE) in nfc_dev_up is supposed to be placed after
-the device_is_registered check.
-2. Since the netlink operations are possible just after the device_add
-in nfc_register_device, the nfc_dev_up() can happen anywhere during the
-rfkill creation process, which leads to data race.
+Selecting the SYS_HAS_CPU_BMIPS* symbols causes SYS_HAS_CPU_BMIPS to be
+set, which then selects CPU_SUPPORT_32BIT_KERNEL, which causes
+CONFIG_32BIT to be set. (a bit more indirect than v1 [RFC].)
 
-This patch reorder these actions to permit
-1. Once device_del is finished, the nfc_dev_up cannot dereference the
-rfkill object.
-2. The rfkill_register need to be placed after the device_add of nfc_dev
-because the parent device need to be created first. So this patch keeps
-the order but inject device_lock to prevent the data race.
-
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
-Fixes: be055b2f89b5 ("NFC: RFKILL support")
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20211116152652.19217-1-linma@zju.edu.cn
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs.")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: bcm-kernel-feedback-list@broadcom.com
+Cc: linux-mips@vger.kernel.org
+Cc: Paul Burton <paulburton@kernel.org>
+Cc: Maxime Bizon <mbizon@freebox.fr>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Suggested-by: Florian Fainelli <f.fainelli@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/nfc/core.c | 32 ++++++++++++++++++--------------
- 1 file changed, 18 insertions(+), 14 deletions(-)
+ arch/mips/Kconfig | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/nfc/core.c b/net/nfc/core.c
-index 3c645c1d99c9b..dc7a2404efdf9 100644
---- a/net/nfc/core.c
-+++ b/net/nfc/core.c
-@@ -94,13 +94,13 @@ int nfc_dev_up(struct nfc_dev *dev)
- 
- 	device_lock(&dev->dev);
- 
--	if (dev->rfkill && rfkill_blocked(dev->rfkill)) {
--		rc = -ERFKILL;
-+	if (!device_is_registered(&dev->dev)) {
-+		rc = -ENODEV;
- 		goto error;
- 	}
- 
--	if (!device_is_registered(&dev->dev)) {
--		rc = -ENODEV;
-+	if (dev->rfkill && rfkill_blocked(dev->rfkill)) {
-+		rc = -ERFKILL;
- 		goto error;
- 	}
- 
-@@ -1125,11 +1125,7 @@ int nfc_register_device(struct nfc_dev *dev)
- 	if (rc)
- 		pr_err("Could not register llcp device\n");
- 
--	rc = nfc_genl_device_added(dev);
--	if (rc)
--		pr_debug("The userspace won't be notified that the device %s was added\n",
--			 dev_name(&dev->dev));
--
-+	device_lock(&dev->dev);
- 	dev->rfkill = rfkill_alloc(dev_name(&dev->dev), &dev->dev,
- 				   RFKILL_TYPE_NFC, &nfc_rfkill_ops, dev);
- 	if (dev->rfkill) {
-@@ -1138,6 +1134,12 @@ int nfc_register_device(struct nfc_dev *dev)
- 			dev->rfkill = NULL;
- 		}
- 	}
-+	device_unlock(&dev->dev);
-+
-+	rc = nfc_genl_device_added(dev);
-+	if (rc)
-+		pr_debug("The userspace won't be notified that the device %s was added\n",
-+			 dev_name(&dev->dev));
- 
- 	return 0;
- }
-@@ -1154,10 +1156,17 @@ void nfc_unregister_device(struct nfc_dev *dev)
- 
- 	pr_debug("dev_name=%s\n", dev_name(&dev->dev));
- 
-+	rc = nfc_genl_device_removed(dev);
-+	if (rc)
-+		pr_debug("The userspace won't be notified that the device %s "
-+			 "was removed\n", dev_name(&dev->dev));
-+
-+	device_lock(&dev->dev);
- 	if (dev->rfkill) {
- 		rfkill_unregister(dev->rfkill);
- 		rfkill_destroy(dev->rfkill);
- 	}
-+	device_unlock(&dev->dev);
- 
- 	if (dev->ops->check_presence) {
- 		device_lock(&dev->dev);
-@@ -1167,11 +1176,6 @@ void nfc_unregister_device(struct nfc_dev *dev)
- 		cancel_work_sync(&dev->check_pres_work);
- 	}
- 
--	rc = nfc_genl_device_removed(dev);
--	if (rc)
--		pr_debug("The userspace won't be notified that the device %s "
--			 "was removed\n", dev_name(&dev->dev));
--
- 	nfc_llcp_unregister_device(dev);
- 
- 	mutex_lock(&nfc_devlist_mutex);
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 5c6e9ed9b2a75..94a748e95231b 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -320,6 +320,9 @@ config BCM63XX
+ 	select SYS_SUPPORTS_32BIT_KERNEL
+ 	select SYS_SUPPORTS_BIG_ENDIAN
+ 	select SYS_HAS_EARLY_PRINTK
++	select SYS_HAS_CPU_BMIPS32_3300
++	select SYS_HAS_CPU_BMIPS4350
++	select SYS_HAS_CPU_BMIPS4380
+ 	select SWAP_IO_SPACE
+ 	select GPIOLIB
+ 	select MIPS_L1_CACHE_SHIFT_4
 -- 
 2.33.0
 
