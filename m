@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6822445C5A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:57:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0CC45C1DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:21:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350660AbhKXN7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:59:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47006 "EHLO mail.kernel.org"
+        id S1348835AbhKXNWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:22:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353092AbhKXN4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:56:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1766613A9;
-        Wed, 24 Nov 2021 13:07:15 +0000 (UTC)
+        id S1347886AbhKXNUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:20:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A16461B03;
+        Wed, 24 Nov 2021 12:46:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759236;
-        bh=TYFj3IS26qbpWm+zm7eFIX1n8g6AIX5Z/b1s18PlP/g=;
+        s=korg; t=1637758005;
+        bh=Ih8lef4ya+QPtcqo86096rCXdlZrEfhQi94MHmziKR0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kzbbL+V29SfZVopCtgLy+qO6Xpo9AcrkhPTOCjy+KGAzjHmxWUe3yQyZWjOTvVDcX
-         NWNrh+OA1om9adzYHwyBn9CENKD6otA22dc9QsGc7ogCXGhHGbtKC8j0BTUU64BLlB
-         SZUKXHvIH8STIU3Y8RmMXbvI7fEVGPe2ghxWam6Y=
+        b=crJ49DjujXVa4L6ZNu1uhkaLpMdcF6QBje2moNLzOH8zymeSwJCq65N51CaWjL/ns
+         D3jgUm5c+ljFNRRcI80srhzSyUM+1oHFAuAiuXELq+68IbE74v75qR11RqYBHufgBf
+         yJ0H8hkHYjy2XhGW0m3ET1eCYRNOBNp2W6oY0+Qo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Olsa <jolsa@redhat.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org,
+        Mike Christie <michael.christie@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 174/279] tools build: Fix removal of feature-sync-compare-and-swap feature detection
+Subject: [PATCH 5.4 025/100] scsi: target: Fix alua_tg_pt_gps_count tracking
 Date:   Wed, 24 Nov 2021 12:57:41 +0100
-Message-Id: <20211124115724.760023636@linuxfoundation.org>
+Message-Id: <20211124115655.672698329@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,56 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
+From: Mike Christie <michael.christie@oracle.com>
 
-[ Upstream commit e8c04ea0fef5731dbcaabac86d65254c227aedf4 ]
+[ Upstream commit 1283c0d1a32bb924324481586b5d6e8e76f676ba ]
 
-The patch removing the feature-sync-compare-and-swap feature detection
-didn't remove the call to main_test_sync_compare_and_swap(), making the
-'test-all' case fail an all the feature tests to be performed
-individually:
+We can't free the tg_pt_gp in core_alua_set_tg_pt_gp_id() because it's
+still accessed via configfs. Its release must go through the normal
+configfs/refcount process.
 
-  $ cat /tmp/build/perf/feature/test-all.make.output
-  In file included from test-all.c:18:
-  test-libpython-version.c:5:10: error: #error
-      5 |         #error
-        |          ^~~~~
-  test-all.c: In function ‘main’:
-  test-all.c:203:9: error: implicit declaration of function ‘main_test_sync_compare_and_swap’ [-Werror=implicit-function-declaration]
-    203 |         main_test_sync_compare_and_swap(argc, argv);
-        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  cc1: all warnings being treated as errors
-  $
+The max alua_tg_pt_gps_count check should probably have been done in
+core_alua_allocate_tg_pt_gp(), but with the current code userspace could
+have created 0x0000ffff + 1 groups, but only set the id for 0x0000ffff.
+Then it could have deleted a group with an ID set, and then set the ID for
+that extra group and it would work ok.
 
-Fix it, now to figure out what is that test-libpython-version.c
-problem...
+It's unlikely, but just in case this patch continues to allow that type of
+behavior, and just fixes the kfree() while in use bug.
 
-Fixes: 60fa754b2a5a4e0c ("tools: Remove feature-sync-compare-and-swap feature detection")
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Link: https://lore.kernel.org/lkml/YZU9Fe0sgkHSXeC2@kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Link: https://lore.kernel.org/r/20210930020422.92578-4-michael.christie@oracle.com
+Signed-off-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/build/feature/test-all.c | 1 -
+ drivers/target/target_core_alua.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/tools/build/feature/test-all.c b/tools/build/feature/test-all.c
-index 9204395272912..0b243ce842be3 100644
---- a/tools/build/feature/test-all.c
-+++ b/tools/build/feature/test-all.c
-@@ -200,7 +200,6 @@ int main(int argc, char *argv[])
- 	main_test_timerfd();
- 	main_test_stackprotector_all();
- 	main_test_libdw_dwarf_unwind();
--	main_test_sync_compare_and_swap(argc, argv);
- 	main_test_zlib();
- 	main_test_pthread_attr_setaffinity_np();
- 	main_test_pthread_barrier();
+diff --git a/drivers/target/target_core_alua.c b/drivers/target/target_core_alua.c
+index 385e4cf9cfa63..0fc3135d3e4f6 100644
+--- a/drivers/target/target_core_alua.c
++++ b/drivers/target/target_core_alua.c
+@@ -1702,7 +1702,6 @@ int core_alua_set_tg_pt_gp_id(
+ 		pr_err("Maximum ALUA alua_tg_pt_gps_count:"
+ 			" 0x0000ffff reached\n");
+ 		spin_unlock(&dev->t10_alua.tg_pt_gps_lock);
+-		kmem_cache_free(t10_alua_tg_pt_gp_cache, tg_pt_gp);
+ 		return -ENOSPC;
+ 	}
+ again:
 -- 
 2.33.0
 
