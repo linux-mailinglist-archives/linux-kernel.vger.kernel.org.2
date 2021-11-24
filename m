@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8705145BE3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3979945BC4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:28:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243409AbhKXMpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:45:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48798 "EHLO mail.kernel.org"
+        id S244769AbhKXM1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:27:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344270AbhKXMnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:43:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A85F6121D;
-        Wed, 24 Nov 2021 12:25:32 +0000 (UTC)
+        id S244708AbhKXMYI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:24:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 39D2A611CE;
+        Wed, 24 Nov 2021 12:14:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756732;
-        bh=DLFjeQoQeEoxkSxT6aelxlTa6P0E+xy3uZ0hAp3TnqA=;
+        s=korg; t=1637756067;
+        bh=5X/Tgypm2iBfoNbVAT64NUB8dqsyDdqqTH/u6mP2Zqc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VsJ5WWbhO2asFTD1g2eNVz+JHhiIChMMbbn+udCeavG1m1c0oBZkPuRiEIYoOaJil
-         RBJcmCjKBoTH6K/tHwj3k8fNGhOJezTzawiam5l9NWKxurp5DufagWs1ZPAH7/5M/3
-         oSolq33LiGE9xZqhj9D3NIfe1jvafbSuEhuyVflA=
+        b=PWTJ7QOl7M36lXwSGhcIEwcyZfYXOXMMMWxjKzzq8SFGFZg63QynW+ZHSkkMyzQI/
+         4O143a63Df3xzz1T+kZunoc+o5HT2L2Ap8upCnFVbme9VOtStJWs9cZ3ZleChu8Yc7
+         mnS7aI/5vyRztobLbJ8LLvbLtpSaa5UkrnmfgDZI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chengfeng Ye <cyeaa@connect.ust.hk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 186/251] nfc: pn533: Fix double free when pn533_fill_fragment_skbs() fails
-Date:   Wed, 24 Nov 2021 12:57:08 +0100
-Message-Id: <20211124115716.731340797@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 4.9 158/207] PCI: Add PCI_EXP_DEVCTL_PAYLOAD_* macros
+Date:   Wed, 24 Nov 2021 12:57:09 +0100
+Message-Id: <20211124115709.123709672@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,59 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengfeng Ye <cyeaa@connect.ust.hk>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit 9fec40f850658e00a14a7dd9e06f7fbc7e59cc4a ]
+commit 460275f124fb072dca218a6b43b6370eebbab20d upstream.
 
-skb is already freed by dev_kfree_skb in pn533_fill_fragment_skbs,
-but follow error handler branch when pn533_fill_fragment_skbs()
-fails, skb is freed again, results in double free issue. Fix this
-by not free skb in error path of pn533_fill_fragment_skbs.
+Define a macro PCI_EXP_DEVCTL_PAYLOAD_* for every possible Max Payload
+Size in linux/pci_regs.h, in the same style as PCI_EXP_DEVCTL_READRQ_*.
 
-Fixes: 963a82e07d4e ("NFC: pn533: Split large Tx frames in chunks")
-Fixes: 93ad42020c2d ("NFC: pn533: Target mode Tx fragmentation support")
-Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lore.kernel.org/r/20211005180952.6812-2-kabel@kernel.org
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Marek Behún <kabel@kernel.org>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Marek Behún <kabel@kernel.org>
+Reviewed-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nfc/pn533/pn533.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/uapi/linux/pci_regs.h |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/nfc/pn533/pn533.c b/drivers/nfc/pn533/pn533.c
-index e3026e20f1696..52a1a2cae6c74 100644
---- a/drivers/nfc/pn533/pn533.c
-+++ b/drivers/nfc/pn533/pn533.c
-@@ -2084,7 +2084,7 @@ static int pn533_fill_fragment_skbs(struct pn533 *dev, struct sk_buff *skb)
- 		frag = pn533_alloc_skb(dev, frag_size);
- 		if (!frag) {
- 			skb_queue_purge(&dev->fragment_skb);
--			break;
-+			return -ENOMEM;
- 		}
- 
- 		if (!dev->tgt_mode) {
-@@ -2154,7 +2154,7 @@ static int pn533_transceive(struct nfc_dev *nfc_dev,
- 		/* jumbo frame ? */
- 		if (skb->len > PN533_CMD_DATAEXCH_DATA_MAXLEN) {
- 			rc = pn533_fill_fragment_skbs(dev, skb);
--			if (rc <= 0)
-+			if (rc < 0)
- 				goto error;
- 
- 			skb = skb_dequeue(&dev->fragment_skb);
-@@ -2226,7 +2226,7 @@ static int pn533_tm_send(struct nfc_dev *nfc_dev, struct sk_buff *skb)
- 	/* let's split in multiple chunks if size's too big */
- 	if (skb->len > PN533_CMD_DATAEXCH_DATA_MAXLEN) {
- 		rc = pn533_fill_fragment_skbs(dev, skb);
--		if (rc <= 0)
-+		if (rc < 0)
- 			goto error;
- 
- 		/* get the first skb */
--- 
-2.33.0
-
+--- a/include/uapi/linux/pci_regs.h
++++ b/include/uapi/linux/pci_regs.h
+@@ -488,6 +488,12 @@
+ #define  PCI_EXP_DEVCTL_URRE	0x0008	/* Unsupported Request Reporting En. */
+ #define  PCI_EXP_DEVCTL_RELAX_EN 0x0010 /* Enable relaxed ordering */
+ #define  PCI_EXP_DEVCTL_PAYLOAD	0x00e0	/* Max_Payload_Size */
++#define  PCI_EXP_DEVCTL_PAYLOAD_128B 0x0000 /* 128 Bytes */
++#define  PCI_EXP_DEVCTL_PAYLOAD_256B 0x0020 /* 256 Bytes */
++#define  PCI_EXP_DEVCTL_PAYLOAD_512B 0x0040 /* 512 Bytes */
++#define  PCI_EXP_DEVCTL_PAYLOAD_1024B 0x0060 /* 1024 Bytes */
++#define  PCI_EXP_DEVCTL_PAYLOAD_2048B 0x0080 /* 2048 Bytes */
++#define  PCI_EXP_DEVCTL_PAYLOAD_4096B 0x00a0 /* 4096 Bytes */
+ #define  PCI_EXP_DEVCTL_EXT_TAG	0x0100	/* Extended Tag Field Enable */
+ #define  PCI_EXP_DEVCTL_PHANTOM	0x0200	/* Phantom Functions Enable */
+ #define  PCI_EXP_DEVCTL_AUX_PME	0x0400	/* Auxiliary Power PM Enable */
 
 
