@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F24D445C39B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:38:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1593E45C157
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350519AbhKXNlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:41:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51370 "EHLO mail.kernel.org"
+        id S1348180AbhKXNQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:16:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352803AbhKXNiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:38:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F17963212;
-        Wed, 24 Nov 2021 12:55:59 +0000 (UTC)
+        id S1348676AbhKXNNq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:13:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED11261AA6;
+        Wed, 24 Nov 2021 12:43:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758559;
-        bh=pANrnW5xFnxW0Az6wOwYKPWZY3yIAnuoulTmTxJN+Uc=;
+        s=korg; t=1637757805;
+        bh=E3DFdjxnYwIRd6pWwC2vdVQ7BW6SGIlrFdxNjDJwNVc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a+mD/R8JwBJXi8GsRP8wi61vUA7f0fAVgWiWZkNPPs80nNTEbdECjwTL6SEoI8jNR
-         fP6tNQ4nbpeQf7pgEM4o7jncH/1q5M/xXmUImHLdNV5FC4pA28d2mApDeUwWVCPP8t
-         YSt/5Oc1beGUHxt2M9Dy19cKPYActa7gOF1wfbEQ=
+        b=I2e4zB+yo3eO5rOTlaeH3gnhd6gBiDvgFudUCvH1wvdM3aVxYnTi6jeIzAK7bL3F4
+         oNOh3dJD9oxeLZak/EXiMyuuBSn1HjA/jwAje7LDtAWUjHYyw7yTmSZWNX5enU8yCv
+         M4Jt9/x5Ggym+ZOmKeftlxzEiM/ZOAY5k9nRrCkM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ying Xue <ying.xue@windriver.com>,
-        Jon Maloy <jmaloy@redhat.com>, Xin Long <lucien.xin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 076/154] tipc: only accept encrypted MSG_CRYPTO msgs
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Matt Fleming <matt@console-pimps.org>,
+        Matt Fleming <matt@codeblueprint.co.uk>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rich Felker <dalias@libc.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 282/323] sh: fix kconfig unmet dependency warning for FRAME_POINTER
 Date:   Wed, 24 Nov 2021 12:57:52 +0100
-Message-Id: <20211124115704.787294959@linuxfoundation.org>
+Message-Id: <20211124115728.412985371@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 271351d255b09e39c7f6437738cba595f9b235be ]
+[ Upstream commit fda1bc533094a7db68b11e7503d2c6c73993d12a ]
 
-The MSG_CRYPTO msgs are always encrypted and sent to other nodes
-for keys' deployment. But when receiving in peers, if those nodes
-do not validate it and make sure it's encrypted, one could craft
-a malicious MSG_CRYPTO msg to deploy its key with no need to know
-other nodes' keys.
+FRAME_POINTER depends on DEBUG_KERNEL so DWARF_UNWINDER should
+depend on DEBUG_KERNEL before selecting FRAME_POINTER.
 
-This patch is to do that by checking TIPC_SKB_CB(skb)->decrypted
-and discard it if this packet never got decrypted.
+WARNING: unmet direct dependencies detected for FRAME_POINTER
+  Depends on [n]: DEBUG_KERNEL [=n] && (M68K || UML || SUPERH [=y]) || ARCH_WANT_FRAME_POINTERS [=n]
+  Selected by [y]:
+  - DWARF_UNWINDER [=y]
 
-Note that this is also a supplementary fix to CVE-2021-43267 that
-can be triggered by an unencrypted malicious MSG_CRYPTO msg.
-
-Fixes: 1ef6f7c9390f ("tipc: add automatic session key exchange")
-Acked-by: Ying Xue <ying.xue@windriver.com>
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: bd353861c735 ("sh: dwarf unwinder support.")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Matt Fleming <matt@console-pimps.org>
+Cc: Matt Fleming <matt@codeblueprint.co.uk>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Signed-off-by: Rich Felker <dalias@libc.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tipc/link.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ arch/sh/Kconfig.debug | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/tipc/link.c b/net/tipc/link.c
-index c92e6984933cb..29591955d08a5 100644
---- a/net/tipc/link.c
-+++ b/net/tipc/link.c
-@@ -1258,8 +1258,11 @@ static bool tipc_data_input(struct tipc_link *l, struct sk_buff *skb,
- 		return false;
- #ifdef CONFIG_TIPC_CRYPTO
- 	case MSG_CRYPTO:
--		tipc_crypto_msg_rcv(l->net, skb);
--		return true;
-+		if (TIPC_SKB_CB(skb)->decrypted) {
-+			tipc_crypto_msg_rcv(l->net, skb);
-+			return true;
-+		}
-+		fallthrough;
- #endif
- 	default:
- 		pr_warn("Dropping received illegal msg type\n");
+diff --git a/arch/sh/Kconfig.debug b/arch/sh/Kconfig.debug
+index 010b6c33bbba2..71acd3d9b9e83 100644
+--- a/arch/sh/Kconfig.debug
++++ b/arch/sh/Kconfig.debug
+@@ -58,6 +58,7 @@ config DUMP_CODE
+ 
+ config DWARF_UNWINDER
+ 	bool "Enable the DWARF unwinder for stacktraces"
++	depends on DEBUG_KERNEL
+ 	select FRAME_POINTER
+ 	depends on SUPERH32
+ 	default n
 -- 
 2.33.0
 
