@@ -2,115 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15F845CEBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:03:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 597AB45CEBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:07:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245668AbhKXVG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 16:06:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54848 "EHLO
+        id S242975AbhKXVKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 16:10:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234102AbhKXVG6 (ORCPT
+        with ESMTP id S234102AbhKXVKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 16:06:58 -0500
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 482C2C06173E
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 13:03:48 -0800 (PST)
-Received: by mail-il1-x135.google.com with SMTP id k1so3788965ilo.7
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 13:03:48 -0800 (PST)
+        Wed, 24 Nov 2021 16:10:35 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250DDC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 13:07:25 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id j3so6811104wrp.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 13:07:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bRgEs5yEfhkrlGin3uE1wdrU8+VcrbvQSps4QjnAk0c=;
-        b=dwie7mL2uy3cCFRAOewziMhsZTb0pZXsZEEvK34fBghiOgsq0ZmgtunpUR3Droo614
-         QnZIjMPqWSwf6Tbk6K9QfG8W+PePkZUf9Q8Eb16XBVIRxMmcAVLD9J8ub0vTHzjWFZxJ
-         UKKG5NylWtPOD897dmCZHcvZMIbvQE1dDUyYMSW10Z6n6upcrtSv4KmI8fZ0My/Lh7Vf
-         iT10o+P53kPpMMj2soFmSc1sPIs78UkB7RcGNzwMxmuq2GCGtysNimwYCrx0Vv/4+lHy
-         wwGB8MRZS2wKraVRa5sh4tDv/NMxD9LMxhPi7fuc3OlrZ/GPmHOzb4L+HPtvNCn1y3WL
-         4Jew==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d0JcHrS7rw6PdBZ7/HfgOLWu1/etSoOgbibJUUNb29U=;
+        b=IvaqaftGqGnaQmJOuJxs+JXXu84+4qZwObmBV1wM5y7nSK2aIDqKGuTYxsjPaheCih
+         ISODKxDugG3uazJWeJLCEMHB+RRpRUxI1T2W3uB41tKolO0Sp4NVA4PpCkjLIqUVMqw4
+         QY5cOFWQQSZsv5tN4Ean7QsGu4KS7nu9xAU2OPj1oghbwEpu8Za3cEM6ItVEeulu0Z40
+         NfMt2uVWM0vxu5VxwXgEmzcc8HD2fdvOZTuPv08j9t7rf1K70Y35IxUZ87ECx1OH5UhK
+         QX77dcsjSnSse++WXfoycLTnUj6yl6XUifHFrC6gTSXiBPKnkYGvKH3gbs7B2KUTCjaT
+         w74A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bRgEs5yEfhkrlGin3uE1wdrU8+VcrbvQSps4QjnAk0c=;
-        b=iqSXj1kCWPN/MMNfVPCWCIpAXxcCuxlIlE+Oc2+65rL14wEHDASU6uVHo09mMHs79D
-         p4cCgJVXp2yVhYTkw8PzsSdbEC/67NXPmLN6jpTrWyoqbV6CzQmAToCEp3qlgjagiZvc
-         JTJ40OwSqZo7jtF0rVO2d8AKzF/nMnVBLGdsVZ/WK1dYdTQM+gHPkmyfrGvcVPNVCSuI
-         wTAAVe5sR6byjZLjLkWyEi4TgW3PnXk1J1iOcahTUWDun0zJT2vWHp7Ad0HVeBNDMNg8
-         E81RmMBrXBBOsWscl4J1D3nO4mFRnPffL/B+l46EIDUK53lvHyl4adJ6h3J1f75Br6eO
-         JO5A==
-X-Gm-Message-State: AOAM531iJJUbXZ7t/YxJnxHglA/Cq0ZeJHsetV1Gj833LobYA+orZF0p
-        /XxWs3Rrt1mlzmihvLOmCDaFt0zNx/fUFhluQEAUIw==
-X-Google-Smtp-Source: ABdhPJzDrYVvZMlQMF1f8Ii4oZBZ0b9X/HKX/rkq2WetLfBWG93Ny+25ZkGcpfW2TfjCBmr4K7leRbVVDdDK0JYc56o=
-X-Received: by 2002:a05:6e02:1bc3:: with SMTP id x3mr15195842ilv.39.1637787827560;
- Wed, 24 Nov 2021 13:03:47 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d0JcHrS7rw6PdBZ7/HfgOLWu1/etSoOgbibJUUNb29U=;
+        b=k4rf5RBfqIi0ibRlxmqEg3Cxt7ewVLBbL46uTffOIgRBn2C49gyr1aGgXzBnmaz0So
+         U+GwRzVw8jx0b7RU8vrtyZca8TXBJ+v2bkhuWovWDWmjHXE04QMpfmVQpxI1rpQoeHx2
+         ELzV0yYjKVVYFAfXkTpo63cnlLVg4TiIZa7AP26QQjMr7H2ogX8oWCsF+iEiciAjpqCp
+         uKYVicNwXTf2o32Wh9ZD78JApvVfFE/b1FIoU45DIEOcnjFMrBEcyD+JnDtWtGRv5adl
+         5huDVMzDgBlbDw0CCG59yFYnLI1Sq/rYW1L16733ySPEjmjNg+KxyQZ/7NYDNnFnMUar
+         Xznw==
+X-Gm-Message-State: AOAM533EnMbFrDQXEI2dpC6gGXl1t3YX/QdIDeheF5ZHuLxc3jV09r/Y
+        P/XfkHAE01cbtLCF08q3CPZ6HyT2W8Q=
+X-Google-Smtp-Source: ABdhPJz+Ekiy9CMWyUTEC6BHBxlgNLP061y7vlYho7gG71cQT7b6wRZULUlzffYP12V3cXPPwJHlSg==
+X-Received: by 2002:a5d:45c4:: with SMTP id b4mr34041wrs.222.1637788043676;
+        Wed, 24 Nov 2021 13:07:23 -0800 (PST)
+Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
+        by smtp.gmail.com with ESMTPSA id p8sm906195wrx.25.2021.11.24.13.07.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 13:07:23 -0800 (PST)
+From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>
+Cc:     linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: rockchip: i2s_tdm: Dup static DAI template
+Date:   Wed, 24 Nov 2021 22:06:55 +0100
+Message-Id: <20211124210655.288108-1-frattaroli.nicolas@gmail.com>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
-References: <20211123204644.3458700-1-yosryahmed@google.com>
- <6ebcffe2-9513-cbea-a206-15ba927416c7@oracle.com> <CAJD7tkYZY1g_b9E4ZP3yqHhT36nF57c4bzKRQM-SLftDCYNQ9A@mail.gmail.com>
- <a87c5768-9bd3-a2f5-7eb5-d2813b958514@oracle.com>
-In-Reply-To: <a87c5768-9bd3-a2f5-7eb5-d2813b958514@oracle.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Wed, 24 Nov 2021 13:03:36 -0800
-Message-ID: <CAHS8izNi0uY5LY2_jF6m0hzJHz87dK2AZ+Y=ggAkMNpW7kaonQ@mail.gmail.com>
-Subject: Re: [PATCH] mm, hugepages: fix size in hugetlb mremap() test
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 7:42 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 11/23/21 18:19, Yosry Ahmed wrote:
-> > On Tue, Nov 23, 2021 at 5:08 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> >>
-> >> On 11/23/21 12:46, Yosry Ahmed wrote:
-> >>> The hugetlb vma mremap() test mentions in the header comment that it
-> >>> uses 10MB worth of huge pages, when it actually uses 1GB. This causes
-> >>> the test to fail on devices with smaller memories.
-> >>>
-> >>> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> >>> ---
-> >>>  tools/testing/selftests/vm/hugepage-mremap.c | 2 +-
-> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> I'll let Mina comment, but I think I know what happened.
-> >
-> > Thanks for taking the time to review this and explain what happened.
-> >
-> >>
-> >>
-> >> The original version of the test did indeed use 10MB.  However, the mremap
-> >> code must 'unshare' and shared pmd mappings before remapping.  Since sharing
-> >> requires mappings of at least 1GB, the size was changed to make sure unsharing
-> >> worked.
-> >>
-> >> In the end, I believe I suggested adding hugepage-mremap to run_vmtests.sh.
-> >> The script does not try to configure a GB worth of huge pages.  And, I think
-> >> it is somewhat unreasonable to suggest users gave a spare GB to run the test.
-> >
-> > Alternatively, we can pass an optional argument to the test that makes it use
-> > 1GB instead of 10MB. This way, if the test is run with run_vmtests.sh the
-> > default behavior would be to use 10MB, making sure users do not run out of
-> > memory. Otherwise, an interested user could run the test without run_vmtest.sh
-> > and provide the extra argument to make the test use 1GB and make sure that
-> > unsharing works correctly. Thoughts?
-> >
->
-> Passing a 'mapping size' argument as you suggest would be best.  That way
-> run_vmtest.sh can pass in a size such as 10MB, but the test could be used
-> independently with arbitrary size mappings.
->
-> If you have the time to do this, go for it!
+Previously, the DAI template was used directly, which lead to
+fun bugs such as "why is my channels_max changing?" when one
+instantiated more than one i2s_tdm IP block in a device tree.
 
-Yes, Mike's recollection of events makes sense to me. I think that was
-the mistake that happened (sorry!)
+This change makes it so that we instead duplicate the template
+struct, and then use that.
 
-Making it configurable makes sense to me. I'm out for the rest of the
-week but I'll try to review sooner if possible.
+Fixes: 081068fd6414 ("ASoC: rockchip: add support for i2s-tdm controller")
+Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+---
+ sound/soc/rockchip/rockchip_i2s_tdm.c | 42 +++++++++++++++------------
+ 1 file changed, 24 insertions(+), 18 deletions(-)
 
-Thanks for looking into this Yosry!
+diff --git a/sound/soc/rockchip/rockchip_i2s_tdm.c b/sound/soc/rockchip/rockchip_i2s_tdm.c
+index 17b9b287853a..e9ddbbf4563e 100644
+--- a/sound/soc/rockchip/rockchip_i2s_tdm.c
++++ b/sound/soc/rockchip/rockchip_i2s_tdm.c
+@@ -1312,22 +1312,17 @@ static const struct of_device_id rockchip_i2s_tdm_match[] = {
+ 
+ static struct snd_soc_dai_driver i2s_tdm_dai = {
+ 	.probe = rockchip_i2s_tdm_dai_probe,
+-	.playback = {
+-		.stream_name  = "Playback",
+-	},
+-	.capture = {
+-		.stream_name  = "Capture",
+-	},
+ 	.ops = &rockchip_i2s_tdm_dai_ops,
+ };
+ 
+-static void rockchip_i2s_tdm_init_dai(struct rk_i2s_tdm_dev *i2s_tdm)
++static int rockchip_i2s_tdm_init_dai(struct rk_i2s_tdm_dev *i2s_tdm)
+ {
++	struct snd_soc_dai_driver *dai;
+ 	struct property *dma_names;
+ 	const char *dma_name;
+ 	u64 formats = (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
+-		       SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE |
+-		       SNDRV_PCM_FMTBIT_S32_LE);
++	SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE |
++	SNDRV_PCM_FMTBIT_S32_LE);
+ 	struct device_node *node = i2s_tdm->dev->of_node;
+ 
+ 	of_property_for_each_string(node, "dma-names", dma_names, dma_name) {
+@@ -1337,19 +1332,28 @@ static void rockchip_i2s_tdm_init_dai(struct rk_i2s_tdm_dev *i2s_tdm)
+ 			i2s_tdm->has_capture = true;
+ 	}
+ 
++	dai = devm_kmemdup(i2s_tdm->dev, &i2s_tdm_dai,
++			   sizeof(*dai), GFP_KERNEL);
++	if (!dai)
++		return -ENOMEM;
++
+ 	if (i2s_tdm->has_playback) {
+-		i2s_tdm_dai.playback.channels_min = 2;
+-		i2s_tdm_dai.playback.channels_max = 8;
+-		i2s_tdm_dai.playback.rates = SNDRV_PCM_RATE_8000_192000;
+-		i2s_tdm_dai.playback.formats = formats;
++		dai->playback.stream_name  = "Playback";
++		dai->playback.channels_min = 2;
++		dai->playback.channels_max = 8;
++		dai->playback.rates = SNDRV_PCM_RATE_8000_192000;
++		dai->playback.formats = formats;
+ 	}
+ 
+ 	if (i2s_tdm->has_capture) {
+-		i2s_tdm_dai.capture.channels_min = 2;
+-		i2s_tdm_dai.capture.channels_max = 8;
+-		i2s_tdm_dai.capture.rates = SNDRV_PCM_RATE_8000_192000;
+-		i2s_tdm_dai.capture.formats = formats;
++		dai->capture.stream_name  = "Capture";
++		dai->capture.channels_min = 2;
++		dai->capture.channels_max = 8;
++		dai->capture.rates = SNDRV_PCM_RATE_8000_192000;
++		dai->capture.formats = formats;
+ 	}
++
++	return 0;
+ }
+ 
+ static int rockchip_i2s_tdm_path_check(struct rk_i2s_tdm_dev *i2s_tdm,
+@@ -1541,7 +1545,9 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
+ 	spin_lock_init(&i2s_tdm->lock);
+ 	i2s_tdm->soc_data = (struct rk_i2s_soc_data *)of_id->data;
+ 
+-	rockchip_i2s_tdm_init_dai(i2s_tdm);
++	ret = rockchip_i2s_tdm_init_dai(i2s_tdm);
++	if (ret)
++		return ret;
+ 
+ 	i2s_tdm->frame_width = 64;
+ 
+-- 
+2.34.0
+
