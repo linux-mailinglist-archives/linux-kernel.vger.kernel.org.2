@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5F145C43B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:44:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6380145C6AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350207AbhKXNqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:46:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34754 "EHLO mail.kernel.org"
+        id S1349855AbhKXOKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:10:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353399AbhKXNmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:42:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8626663298;
-        Wed, 24 Nov 2021 12:58:11 +0000 (UTC)
+        id S1346674AbhKXOGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:06:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B2986125F;
+        Wed, 24 Nov 2021 13:12:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758692;
-        bh=A449UYmvweHwi21q4c14vGl5Mx7+slm/Bf/+Js/yIY0=;
+        s=korg; t=1637759560;
+        bh=aS74qLvOSDeCEN3oKU+EhEsJtlz4Of8y6BZtILjRghs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bXWJOqPb1wlcpArC2D9GNMqWMu63hGpIm4TrNtbYzwic1reMyFqhOTTwcjF3kADv6
-         7iMtCC5HzNKP6w0XcKq7MXt0Ch5fzh7Np5yM/eaJ5R6acP6TJxEtePpy8d5lCOLiz6
-         AbXQLdJaZqzCda+qIFMkbEyWnsgrR2mO4vROnjlI=
+        b=YDnRqGL8vo5aw+OpW7ie3kiHMaddLFMHGqHBxEAB8R9NtXl0MMc1SZO03QCiIwg33
+         dnAz8vaAMnTFdmU+8J3hKwZY3Y8GgEQwomF078nwHE+6XG6QRybExgHY83vj6EWzop
+         btXbr+xGGjMkQswoXYAczvFwhmWKJPkn/jGjBk0A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.10 153/154] btrfs: update device path inode time instead of bd_inode
-Date:   Wed, 24 Nov 2021 12:59:09 +0100
-Message-Id: <20211124115707.427921719@linuxfoundation.org>
+        stable@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Thomas Backlund <tmb@iki.fi>
+Subject: [PATCH 5.15 263/279] signal/x86: In emulate_vsyscall force a signal instead of calling do_exit
+Date:   Wed, 24 Nov 2021 12:59:10 +0100
+Message-Id: <20211124115727.794406414@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,84 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Eric W. Biederman <ebiederm@xmission.com>
 
-commit 54fde91f52f515e0b1514f0f0fa146e87a672227 upstream.
+commit 695dd0d634df8903e5ead8aa08d326f63b23368a upstream.
 
-Christoph pointed out that I'm updating bdev->bd_inode for the device
-time when we remove block devices from a btrfs file system, however this
-isn't actually exposed to anything.  The inode we want to update is the
-one that's associated with the path to the device, usually on devtmpfs,
-so that blkid notices the difference.
+Directly calling do_exit with a signal number has the problem that
+all of the side effects of the signal don't happen, such as
+killing all of the threads of a process instead of just the
+calling thread.
 
-We still don't want to do the blkdev_open, so use kern_path() to get the
-path to the given device and do the update time on that inode.
+So replace do_exit(SIGSYS) with force_fatal_sig(SIGSYS) which
+causes the signal handling to take it's normal path and work
+as expected.
 
-Fixes: 8f96a5bfa150 ("btrfs: update the bdev time directly when closing")
-Reported-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Link: https://lkml.kernel.org/r/20211020174406.17889-17-ebiederm@xmission.com
+Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+Cc: Thomas Backlund <tmb@iki.fi>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/volumes.c |   21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+ arch/x86/entry/vsyscall/vsyscall_64.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -14,6 +14,7 @@
- #include <linux/semaphore.h>
- #include <linux/uuid.h>
- #include <linux/list_sort.h>
-+#include <linux/namei.h>
- #include "misc.h"
- #include "ctree.h"
- #include "extent_map.h"
-@@ -1871,18 +1872,22 @@ out:
- /*
-  * Function to update ctime/mtime for a given device path.
-  * Mainly used for ctime/mtime based probe like libblkid.
-+ *
-+ * We don't care about errors here, this is just to be kind to userspace.
-  */
--static void update_dev_time(struct block_device *bdev)
-+static void update_dev_time(const char *device_path)
- {
--	struct inode *inode = bdev->bd_inode;
-+	struct path path;
- 	struct timespec64 now;
-+	int ret;
- 
--	/* Shouldn't happen but just in case. */
--	if (!inode)
-+	ret = kern_path(device_path, LOOKUP_FOLLOW, &path);
-+	if (ret)
- 		return;
- 
--	now = current_time(inode);
--	generic_update_time(inode, &now, S_MTIME | S_CTIME);
-+	now = current_time(d_inode(path.dentry));
-+	inode_update_time(d_inode(path.dentry), &now, S_MTIME | S_CTIME);
-+	path_put(&path);
- }
- 
- static int btrfs_rm_dev_item(struct btrfs_device *device)
-@@ -2057,7 +2062,7 @@ void btrfs_scratch_superblocks(struct bt
- 	btrfs_kobject_uevent(bdev, KOBJ_CHANGE);
- 
- 	/* Update ctime/mtime for device path for libblkid */
--	update_dev_time(bdev);
-+	update_dev_time(device_path);
- }
- 
- int btrfs_rm_device(struct btrfs_fs_info *fs_info, const char *device_path,
-@@ -2700,7 +2705,7 @@ int btrfs_init_new_device(struct btrfs_f
- 	btrfs_forget_devices(device_path);
- 
- 	/* Update ctime/mtime for blkid or udev */
--	update_dev_time(bdev);
-+	update_dev_time(device_path);
- 
- 	return ret;
- 
+--- a/arch/x86/entry/vsyscall/vsyscall_64.c
++++ b/arch/x86/entry/vsyscall/vsyscall_64.c
+@@ -226,7 +226,8 @@ bool emulate_vsyscall(unsigned long erro
+ 	if ((!tmp && regs->orig_ax != syscall_nr) || regs->ip != address) {
+ 		warn_bad_vsyscall(KERN_DEBUG, regs,
+ 				  "seccomp tried to change syscall nr or ip");
+-		do_exit(SIGSYS);
++		force_fatal_sig(SIGSYS);
++		return true;
+ 	}
+ 	regs->orig_ax = -1;
+ 	if (tmp)
 
 
