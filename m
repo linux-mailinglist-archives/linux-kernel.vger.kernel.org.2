@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A1845BB3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 739D745BE41
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:42:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243051AbhKXMRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:17:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41248 "EHLO mail.kernel.org"
+        id S1343608AbhKXMpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:45:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242562AbhKXMMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:12:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E755E6109E;
-        Wed, 24 Nov 2021 12:06:53 +0000 (UTC)
+        id S1344579AbhKXMnG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:43:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA8A2613D5;
+        Wed, 24 Nov 2021 12:25:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755614;
-        bh=nj1FTzjwkeR7B4FSSl63i4tJKlVTSuNv7GNf3Bc4GDw=;
+        s=korg; t=1637756740;
+        bh=l2rqRYqbJxvKx+Xt1wp0A5WyzTXuYc54kSpde7tb8Kk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m63oGnqThuC708iAlkSlHJvQ6GY8jylxd/DbWa++yPjJYpNSIbnH7euPqyX9t3+D1
-         7IhAfH7Zdbt5fe7yEKmxs03Lf9RpjS1zsvVhF9IOlEF7Im4+fQOn4ELqxUZtWsXX2W
-         gfXFwu2qCymnagETl21t637wLEHAzyn6QeXOuXig=
+        b=DTLDmIWp/NufwSDe3HOp1DiQnMv3khsg7osAnkJtbBpAmDE1o38PXZgzsU8t+RBMa
+         zOHzpjtFzs+FSZIczDBM7hHJ+qwUDZurPNXCaFWLZTvGq0Yf1z9ytOZ0s/qCB6LjpW
+         Q+nCJBpj87e0kv3I6QmQHi/G6KhJ+TpXPALDo+oQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chengfeng Ye <cyeaa@connect.ust.hk>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 127/162] ALSA: gus: fix null pointer dereference on pointer block
-Date:   Wed, 24 Nov 2021 12:57:10 +0100
-Message-Id: <20211124115702.406022490@linuxfoundation.org>
+        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+Subject: [PATCH 4.14 189/251] ARM: 9155/1: fix early early_iounmap()
+Date:   Wed, 24 Nov 2021 12:57:11 +0100
+Message-Id: <20211124115716.850488768@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,37 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengfeng Ye <cyeaa@connect.ust.hk>
+From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 
-[ Upstream commit a0d21bb3279476c777434c40d969ea88ca64f9aa ]
+commit 0d08e7bf0d0d1a29aff7b16ef516f7415eb1aa05 upstream.
 
-The pointer block return from snd_gf1_dma_next_block could be
-null, so there is a potential null pointer dereference issue.
-Fix this by adding a null check before dereference.
+Currently __set_fixmap() bails out with a warning when called in early boot
+from early_iounmap(). Fix it, and while at it, make the comment a bit easier
+to understand.
 
-Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
-Link: https://lore.kernel.org/r/20211024104611.9919-1-cyeaa@connect.ust.hk
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org>
+Fixes: b089c31c519c ("ARM: 8667/3: Fix memory attribute inconsistencies when using fixmap")
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/isa/gus/gus_dma.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm/mm/mmu.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/isa/gus/gus_dma.c b/sound/isa/gus/gus_dma.c
-index 36c27c8323601..2e27cd3427c87 100644
---- a/sound/isa/gus/gus_dma.c
-+++ b/sound/isa/gus/gus_dma.c
-@@ -141,6 +141,8 @@ static void snd_gf1_dma_interrupt(struct snd_gus_card * gus)
- 	}
- 	block = snd_gf1_dma_next_block(gus);
- 	spin_unlock(&gus->dma_lock);
-+	if (!block)
-+		return;
- 	snd_gf1_dma_program(gus, block->addr, block->buf_addr, block->count, (unsigned short) block->cmd);
- 	kfree(block);
- #if 0
--- 
-2.33.0
-
+--- a/arch/arm/mm/mmu.c
++++ b/arch/arm/mm/mmu.c
+@@ -416,9 +416,9 @@ void __set_fixmap(enum fixed_addresses i
+ 		     FIXADDR_END);
+ 	BUG_ON(idx >= __end_of_fixed_addresses);
+ 
+-	/* we only support device mappings until pgprot_kernel has been set */
++	/* We support only device mappings before pgprot_kernel is set. */
+ 	if (WARN_ON(pgprot_val(prot) != pgprot_val(FIXMAP_PAGE_IO) &&
+-		    pgprot_val(pgprot_kernel) == 0))
++		    pgprot_val(prot) && pgprot_val(pgprot_kernel) == 0))
+ 		return;
+ 
+ 	if (pgprot_val(prot))
 
 
