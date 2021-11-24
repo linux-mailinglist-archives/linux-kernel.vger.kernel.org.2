@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9755845C636
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1B045C19B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:17:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349645AbhKXOGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:06:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51916 "EHLO mail.kernel.org"
+        id S1347780AbhKXNT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:19:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350889AbhKXOBm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:01:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C36963318;
-        Wed, 24 Nov 2021 13:09:53 +0000 (UTC)
+        id S1347148AbhKXNPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:15:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1F0E61A8E;
+        Wed, 24 Nov 2021 12:43:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759393;
-        bh=+kIRP0ciDGWT8KktIpPnuWSis7vTWuARWZP3k1uFuns=;
+        s=korg; t=1637757833;
+        bh=/Or6VV6h/c/sT9ZMedJR4vcm/4fKsoKnR17pm6XPkaU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J0otTjw/icdFOk2b7fp1H8VNU6tiZmave6Oipsti6ol7Knh6gWxpxu0TprGbIpKr/
-         PkiNq4IBfmBY9VGiaOlrS1c6tTVqpWQud6Gcyj7HQhGHwcXRmGqgowcReH/7ZtIbB7
-         +aFSkk/XybwMVWNa9i21ji9ee5biYeNdFvDDc534=
+        b=dlYisiF4OET2XK5nBtOul8sRa3UzY8+aKc/gLcNkGi1d5r72cSQftfXTpZVFJgXY+
+         icd3ADaxqOl63nSghP38KZ7/Rtf99PqPm9DJfv79siM2+OGUDJF7C+mLVLQM3U+lk9
+         30qkZ9mGj1dewjcBrSQXxw0LXFY/xGzQ3YY9vT9o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Tadeusz Struk <tadeusz.struk@linaro.org>,
-        Ying Xue <ying.xue@windriver.com>,
-        Jon Maloy <jmaloy@redhat.com>, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.15 193/279] tipc: check for null after calling kmemdup
+        stable@vger.kernel.org, Colin Ian King <colin.i.king@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 290/323] MIPS: generic/yamon-dt: fix uninitialized variable error
 Date:   Wed, 24 Nov 2021 12:58:00 +0100
-Message-Id: <20211124115725.395361479@linuxfoundation.org>
+Message-Id: <20211124115728.693202643@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tadeusz Struk <tadeusz.struk@linaro.org>
+From: Colin Ian King <colin.i.king@googlemail.com>
 
-commit 3e6db079751afd527bf3db32314ae938dc571916 upstream.
+[ Upstream commit 255e51da15baed47531beefd02f222e4dc01f1c1 ]
 
-kmemdup can return a null pointer so need to check for it, otherwise
-the null key will be dereferenced later in tipc_crypto_key_xmit as
-can be seen in the trace [1].
+In the case where fw_getenv returns an error when fetching values
+for ememsizea and memsize then variable phys_memsize is not assigned
+a variable and will be uninitialized on a zero check of phys_memsize.
+Fix this by initializing phys_memsize to zero.
 
-Cc: tipc-discussion@lists.sourceforge.net
-Cc: stable@vger.kernel.org # 5.15, 5.14, 5.10
+Cleans up cppcheck error:
+arch/mips/generic/yamon-dt.c:100:7: error: Uninitialized variable: phys_memsize [uninitvar]
 
-[1] https://syzkaller.appspot.com/bug?id=bca180abb29567b189efdbdb34cbf7ba851c2a58
-
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
-Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
-Acked-by: Ying Xue <ying.xue@windriver.com>
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Link: https://lore.kernel.org/r/20211115160143.5099-1-tadeusz.struk@linaro.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: f41d2430bbd6 ("MIPS: generic/yamon-dt: Support > 256MB of RAM")
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tipc/crypto.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ arch/mips/generic/yamon-dt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/tipc/crypto.c
-+++ b/net/tipc/crypto.c
-@@ -597,6 +597,10 @@ static int tipc_aead_init(struct tipc_ae
- 	tmp->cloned = NULL;
- 	tmp->authsize = TIPC_AES_GCM_TAG_SIZE;
- 	tmp->key = kmemdup(ukey, tipc_aead_key_size(ukey), GFP_KERNEL);
-+	if (!tmp->key) {
-+		tipc_aead_free(&tmp->rcu);
-+		return -ENOMEM;
-+	}
- 	memcpy(&tmp->salt, ukey->key + keylen, TIPC_AES_GCM_SALT_SIZE);
- 	atomic_set(&tmp->users, 0);
- 	atomic64_set(&tmp->seqno, 0);
+diff --git a/arch/mips/generic/yamon-dt.c b/arch/mips/generic/yamon-dt.c
+index 7ba4ad5cc1d66..7b7ba0f76c60e 100644
+--- a/arch/mips/generic/yamon-dt.c
++++ b/arch/mips/generic/yamon-dt.c
+@@ -79,7 +79,7 @@ static unsigned int __init gen_fdt_mem_array(
+ __init int yamon_dt_append_memory(void *fdt,
+ 				  const struct yamon_mem_region *regions)
+ {
+-	unsigned long phys_memsize, memsize;
++	unsigned long phys_memsize = 0, memsize;
+ 	__be32 mem_array[2 * MAX_MEM_ARRAY_ENTRIES];
+ 	unsigned int mem_entries;
+ 	int i, err, mem_off;
+-- 
+2.33.0
+
 
 
