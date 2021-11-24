@@ -2,94 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A50FD45C948
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:56:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBA145C94F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:57:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347300AbhKXP7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:59:36 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:56834 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhKXP7f (ORCPT
+        id S1347361AbhKXQA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:00:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229829AbhKXQA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:59:35 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 57F7C1F45BC8
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637769382; bh=zz/xw7PsWQON9rmJZojHTBxXbF24yxYHqhaUVP88TKs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=E/pte9+S/xU8DdTZ/vKpNhA3ylTQYBGSinvyN6mt+xZdQFKKHEb6Mmt84KbEzM5mZ
-         OSPyhJ6sCmssRkBBHimK6onWi+F/fiAA5Ypad79m+N+kkn6BrMI3wqjRnjC5w47i2Q
-         aPNdfcTSLCdquNNhzIMYwK9OlGuMqJafLR38PMnBjrRL+zm9bD++8vMrP9KIyqazlB
-         tbunQevunpoo7PovcVIzyk1G/rHktU5H9JEaZdZEpb0Db+mq5nCjz2SQfKauqW6Gl0
-         yoYNuJa5aw5Hl9JNwgtzD1fRyYNxpu0YlbF5Voaz4iL2LRbsvhzZ/6BwDUd1b2lpYs
-         25pmRI9iK1Hpw==
-Message-ID: <91a64059-f301-4812-56ea-38755ccae5d7@collabora.com>
-Date:   Wed, 24 Nov 2021 12:56:09 -0300
+        Wed, 24 Nov 2021 11:00:26 -0500
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA9DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:57:16 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id j9so2070090qvm.10
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:57:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CdYuE5QrzefFebInJI5P2GSiXpBChfo3witrC7Aylm0=;
+        b=QkgHoKqmttx5bs5HGXCc/nhxHhXWnZm164rRR9UjzErZl7fFK+l2AOo3mnk3Vw2d0j
+         BEIApYijTv8xAfl9c0orPE8u0lNVDf89U49Zj1hC2ITYGYDYpKM/47d2Z5KnU7ZiYuxv
+         qpZFu16WmaTjEnrqzU8Lj/NZdvDyFijgS5jQUPziD/8gTTxs4gqmZcC1p4oe3szMCXxB
+         aSrfYuVSOTmZGOQvFRgpuTfB7aQ6hPdzQHHT9ONypNKr6uFWO54dRKXOhOdmko+OR7WY
+         OT7kh0kCxkHENvkIEK5MNXLgsZQR0OhhKvvijgMvgQ2DzBGGWgS7gXRGjjt0aOuoFcML
+         4iog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CdYuE5QrzefFebInJI5P2GSiXpBChfo3witrC7Aylm0=;
+        b=6eedFfKb2+YfD//bnC8s98MSfq6onUEem0v1PavNkw0M8FIzc3ckvSWY36j0EjYyCu
+         fHKGsbTKkKVF+ZcjB45niGZSIINI8+SZCAHYhGabkd/geXNRqMOXRiszP1SBOg7QTw8k
+         4amPXALOeeuNaLyWBMpE3rRtEzR+xj2763E5CWjDM+mAZe7upHEJqi4bZ9Z153aD/weK
+         sZA/7d9JaE8fRja94ui41mUM8IUo5x3tL7SY7lHbt0dcVawjt0pHfBOr2Oslo0YA+a0s
+         EHuWf7Xg160CAcz8sXBxHrv8zqDuBCsO8oP/pHAUiIyAiV912QxhFimZ/kPLkPPJUlAl
+         /9ZQ==
+X-Gm-Message-State: AOAM533mmMyqSkQm98sSOMFqe1acZITlronIIGCMLWl+BwqMVtImNXBt
+        KholVBZG+Jx0TfkOawYQycGokVPTqcdkO1KFAUwAxQ==
+X-Google-Smtp-Source: ABdhPJzpHrcqPyGNonYh3XomO+R25xpkIROfGgGQcbfXK1J5XppVZWGg/B8uKyraD16CqXyUy4KFVQW3Yhk7evbo5HY=
+X-Received: by 2002:ad4:5bc4:: with SMTP id t4mr8674092qvt.3.1637769435711;
+ Wed, 24 Nov 2021 07:57:15 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH 1/1] futex: Wireup futex_waitv syscall
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        David Miller <davem@davemloft.net>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>, linux-ia64@vger.kernel.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, Waiman Long <longman@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rob Landley <rob@landley.net>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mike Galbraith <umgwanakikbuti@gmail.com>,
-        Will Deacon <will@kernel.org>
-References: <CAK8P3a3pQW59NVF=5P+ZiBjNJmnWh+iTZUHvqHBrXkHA6pMd4g@mail.gmail.com>
- <20211124132112.11641-1-andrealmeid@collabora.com>
- <CAK8P3a2BXefTw68yoZ9U0F=ASC3=EZDc5PDQCJ16MmXtynd59g@mail.gmail.com>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-In-Reply-To: <CAK8P3a2BXefTw68yoZ9U0F=ASC3=EZDc5PDQCJ16MmXtynd59g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20211116062256.2417186-1-vkoul@kernel.org> <20211116062256.2417186-6-vkoul@kernel.org>
+ <20269960-a753-72d4-5a1d-430af00cf562@linaro.org>
+In-Reply-To: <20269960-a753-72d4-5a1d-430af00cf562@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 24 Nov 2021 18:57:04 +0300
+Message-ID: <CAA8EJppA+cxySCFtqyihMjE0MPgioNcK8BtBS+HqUD9E141HBQ@mail.gmail.com>
+Subject: Re: [PATCH v3 05/13] drm/msm/disp/dpu1: Don't use DSC with mode_3d
+To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Às 11:29 de 24/11/21, Arnd Bergmann escreveu:
-> On Wed, Nov 24, 2021 at 2:21 PM André Almeida <andrealmeid@collabora.com> wrote:
->>
->> Wireup futex_waitv syscall for all remaining archs.
->>
->> Signed-off-by: André Almeida <andrealmeid@collabora.com>
-> 
-> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-> 
-> I double-checked that futex_waitv() doesn't need any architecture specific
-> hacks, and that the list above is complete.
+On Wed, 24 Nov 2021 at 18:40, Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> On 16/11/2021 09:22, Vinod Koul wrote:
+> > We cannot enable mode_3d when we are using the DSC. So pass
+> > configuration to detect DSC is enabled and not enable mode_3d
+> > when we are using DSC
+> >
+> > We add a helper dpu_encoder_helper_get_dsc() to detect dsc
+> > enabled and pass this to .setup_intf_cfg()
+> >
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > ---
+> >   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h     | 11 +++++++++++
+> >   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c |  2 ++
+> >   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c           |  3 ++-
+> >   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h           |  2 ++
+> >   4 files changed, 17 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> > index e7270eb6b84b..efb85d595598 100644
+> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> > @@ -332,6 +332,17 @@ static inline enum dpu_3d_blend_mode dpu_encoder_helper_get_3d_blend_mode(
+> >       return BLEND_3D_NONE;
+> >   }
+> >
+> > +static inline bool dpu_encoder_helper_get_dsc(struct dpu_encoder_phys *phys_enc)
 
-Thanks!
+Here you are returning the mask, so it should not be bool.
 
-> 
-> Should I take this through the asm-generic tree, or would you send it
-> through the
-> tip tree?
-> 
-I think that adding it to asm-generic tree make sense to me.
+> > +{
+> > +     struct drm_encoder *drm_enc = phys_enc->parent;
+> > +     struct msm_drm_private *priv = drm_enc->dev->dev_private;
+> > +
+> > +     if (priv->dsc)
+> > +             return priv->dsc->dsc_mask;
+>
+> dsc_mask doesn't exist at this point, so the patch should be moved later
+> in the series.
+
+Please ignore this comment, dsc mask already exists.
+
+>
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >   /**
+> >    * dpu_encoder_helper_split_config - split display configuration helper function
+> >    *  This helper function may be used by physical encoders to configure
+> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> > index 34a6940d12c5..f3f00f4d0193 100644
+> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> > @@ -70,6 +70,8 @@ static void _dpu_encoder_phys_cmd_update_intf_cfg(
+> >       intf_cfg.intf_mode_sel = DPU_CTL_MODE_SEL_CMD;
+> >       intf_cfg.stream_sel = cmd_enc->stream_sel;
+> >       intf_cfg.mode_3d = dpu_encoder_helper_get_3d_blend_mode(phys_enc);
+> > +     intf_cfg.dsc = dpu_encoder_helper_get_dsc(phys_enc);
+> > +
+> >       ctl->ops.setup_intf_cfg(ctl, &intf_cfg);
+> >   }
+> >
+> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> > index 64740ddb983e..36831457a91b 100644
+> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> > @@ -519,7 +519,8 @@ static void dpu_hw_ctl_intf_cfg(struct dpu_hw_ctl *ctx,
+> >
+> >       intf_cfg |= (cfg->intf & 0xF) << 4;
+> >
+> > -     if (cfg->mode_3d) {
+> > +     /* In DSC we can't set merge, so check for dsc too */
+> > +     if (cfg->mode_3d && !cfg->dsc) {
+> >               intf_cfg |= BIT(19);
+> >               intf_cfg |= (cfg->mode_3d - 0x1) << 20;
+> >       }
+> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+> > index 806c171e5df2..9847c9c46d6f 100644
+> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+> > @@ -40,6 +40,7 @@ struct dpu_hw_stage_cfg {
+> >    * @merge_3d:              3d merge block used
+> >    * @intf_mode_sel:         Interface mode, cmd / vid
+> >    * @stream_sel:            Stream selection for multi-stream interfaces
+> > + * @dsc:                   DSC BIT masks
+> >    */
+> >   struct dpu_hw_intf_cfg {
+> >       enum dpu_intf intf;
+> > @@ -47,6 +48,7 @@ struct dpu_hw_intf_cfg {
+> >       enum dpu_merge_3d merge_3d;
+> >       enum dpu_ctl_mode_sel intf_mode_sel;
+> >       int stream_sel;
+> > +     unsigned int dsc;
+> >   };
+> >
+
+
+-- 
+With best wishes
+Dmitry
