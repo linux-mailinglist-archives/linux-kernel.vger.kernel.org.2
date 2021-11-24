@@ -2,90 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1517D45CBB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:00:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0C545CBB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243936AbhKXSDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 13:03:22 -0500
-Received: from pegase2.c-s.fr ([93.17.235.10]:50969 "EHLO pegase2.c-s.fr"
+        id S1350175AbhKXSDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 13:03:40 -0500
+Received: from foss.arm.com ([217.140.110.172]:41660 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241542AbhKXSDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 13:03:19 -0500
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Hzpgr06S0z9sSd;
-        Wed, 24 Nov 2021 19:00:08 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ejOeD01wWWP3; Wed, 24 Nov 2021 19:00:07 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Hzpgq6T6Wz9sSW;
-        Wed, 24 Nov 2021 19:00:07 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C983B8B778;
-        Wed, 24 Nov 2021 19:00:07 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id ClHnKbCP8Ky3; Wed, 24 Nov 2021 19:00:07 +0100 (CET)
-Received: from [192.168.203.221] (unknown [192.168.203.221])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 267C48B763;
-        Wed, 24 Nov 2021 19:00:07 +0100 (CET)
-Message-ID: <dc0ceed5-1db5-294f-9f17-1990fb2dd5e4@csgroup.eu>
-Date:   Wed, 24 Nov 2021 19:00:06 +0100
+        id S241542AbhKXSDj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 13:03:39 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 46B781FB;
+        Wed, 24 Nov 2021 10:00:29 -0800 (PST)
+Received: from [10.57.56.56] (unknown [10.57.56.56])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9CDBA3F66F;
+        Wed, 24 Nov 2021 10:00:27 -0800 (PST)
+Message-ID: <e95f682b-a9b4-d946-c6fc-e59aba624466@arm.com>
+Date:   Wed, 24 Nov 2021 18:00:23 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH 0/8] Convert powerpc to default topdown mmap layout
-Content-Language: fr-FR
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Nicholas Piggin <npiggin@gmail.com>, alex@ghiti.fr,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH 9/9] iommu: Move flush queue data into iommu_dma_cookie
+Content-Language: en-GB
+To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
+        will@kernel.org
+Cc:     iommu@lists.linux-foundation.org, suravee.suthikulpanit@amd.com,
+        baolu.lu@linux.intel.com, willy@infradead.org,
         linux-kernel@vger.kernel.org
-References: <cover.1637570556.git.christophe.leroy@csgroup.eu>
- <1637759994.e3mppl4ly7.astroid@bobo.none>
- <e1fea487-8014-658d-84cd-ea1d7c89ee08@csgroup.eu>
-In-Reply-To: <e1fea487-8014-658d-84cd-ea1d7c89ee08@csgroup.eu>
+References: <cover.1637671820.git.robin.murphy@arm.com>
+ <49bfd9636fd21c4b40e07558db6bfbbf82a449ac.1637674723.git.robin.murphy@arm.com>
+ <9dece0b8-2832-f467-91f3-f63ef0f70d16@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <9dece0b8-2832-f467-91f3-f63ef0f70d16@huawei.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-11-24 17:25, John Garry wrote:
+> On 23/11/2021 14:10, Robin Murphy wrote:
+>> ruct iommu_dma_msi_page {
+>>       struct list_head    list;
+>> @@ -41,7 +43,19 @@ struct iommu_dma_cookie {
+>>       enum iommu_dma_cookie_type    type;
+>>       union {
+>>           /* Full allocator for IOMMU_DMA_IOVA_COOKIE */
+>> -        struct iova_domain    iovad;
+>> +        struct {
+>> +            struct iova_domain    iovad;
+>> +
+>> +            struct iova_fq __percpu *fq;    /* Flush queue */
+>> +            /* Number of TLB flushes that have been started */
+>> +            atomic64_t        fq_flush_start_cnt;
+>> +            /* Number of TLB flushes that have been finished */
+>> +            atomic64_t        fq_flush_finish_cnt;
+>> +            /* Timer to regularily empty the flush queues */
+>> +            struct timer_list    fq_timer;
+>> +            /* 1 when timer is active, 0 when not */
+>> +            atomic_t        fq_timer_on;
+> 
+> I thought that putting all the FQ stuff in its own structure would be 
+> neater, but that's just personal preference.
 
+But look, it is! ;)
 
-Le 24/11/2021 à 14:40, Christophe Leroy a écrit :
-> 
-> 
-> Le 24/11/2021 à 14:21, Nicholas Piggin a écrit :
->> Excerpts from Christophe Leroy's message of November 22, 2021 6:48 pm:
->>> This series converts powerpc to default topdown mmap layout.
->>>
->>> powerpc provides its own arch_get_unmapped_area() only when
->>> slices are needed, which is only for book3s/64. First part of
->>> the series moves slices into book3s/64 specific directories
->>> and cleans up other subarchitectures.
->>>
->>> Then a small modification is done to core mm to allow
->>> powerpc to still provide its own arch_randomize_brk()
->>>
->>> Last part converts to default topdown mmap layout.
->>
->> A nice series but will clash badly with the CONFIG_HASH_MMU
->> series of course. One will have to be rebased if they are
->> both to be merged.
->>
-> 
-> No worry, it should be an issue.
-> 
-> If you already forsee that series being merged soon, I can rebase my 
-> series on top of it just now.
-> 
+The iova_domain is still a fundamental part of the flush queue built 
+around it; the rest of the machinery can't stand in isolation. It's just 
+an anonymous structure because I don't feel like needlessly cluttering 
+up the code with "cookie->fq.fq" silliness.
 
-In patchwork, v3 is flagged as superseded and I can't find a v4. Do you 
-have it somewhere ?
-
-Christophe
+Cheers,
+Robin.
