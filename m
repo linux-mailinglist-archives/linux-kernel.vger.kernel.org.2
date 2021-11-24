@@ -2,152 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B157745B881
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 11:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D69DE45B865
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 11:32:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241258AbhKXKnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 05:43:35 -0500
-Received: from [113.204.237.245] ([113.204.237.245]:34488 "EHLO
-        test.cqplus1.com" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233492AbhKXKne (ORCPT
+        id S241507AbhKXKfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 05:35:34 -0500
+Received: from outbound-smtp46.blacknight.com ([46.22.136.58]:57895 "EHLO
+        outbound-smtp46.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241151AbhKXKfd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 05:43:34 -0500
-X-Greylist: delayed 440 seconds by postgrey-1.27 at vger.kernel.org; Wed, 24 Nov 2021 05:43:33 EST
-X-MailGates: (compute_score:DELIVER,40,3)
-Received: from 172.27.96.203
-        by cqmailgates with MailGates ESMTP Server V5.0(1217:0:AUTH_RELAY)
-        (envelope-from <xt.hu@cqplus1.com>); Wed, 24 Nov 2021 18:31:56 +0800 (CST)
-Received: from CQEXMAIL01.cqplus1.com (172.27.96.203) by
- CQEXMAIL01.cqplus1.com (172.27.96.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Wed, 24 Nov 2021 18:31:56 +0800
-Received: from CQEXMAIL01.cqplus1.com ([::1]) by CQEXMAIL01.cqplus1.com
- ([::1]) with mapi id 15.01.2375.017; Wed, 24 Nov 2021 18:31:55 +0800
-From:   =?utf-8?B?eHQuaHVb6IOh5YWI6Z+sXQ==?= <xt.hu@cqplus1.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-CC:     =?utf-8?B?V2VsbHMgTHUg5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>,
-        =?utf-8?B?cWluamlhblvopoPlgaVd?= <qinjian@cqplus1.com>
-Subject: RE: [PATCH 1/2] watchdog: Add watchdog driver for Sunplus SP7021
-Thread-Topic: [PATCH 1/2] watchdog: Add watchdog driver for Sunplus SP7021
-Thread-Index: AQHX17Svth3nM1SKBEqNlYgSTKjRuav/cmsAgBKJveA=
-Date:   Wed, 24 Nov 2021 10:31:55 +0000
-Message-ID: <5ed3659b2cbd4227b8c2563b24bbd3be@cqplus1.com>
-References: <20211112105952.216280-1-xt.hu@cqplus1.com>
- <20211112105952.216280-2-xt.hu@cqplus1.com>
- <1f2c5cf0-808d-92d5-487e-a3134f5d130a@roeck-us.net>
-In-Reply-To: <1f2c5cf0-808d-92d5-487e-a3134f5d130a@roeck-us.net>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.28.110.16]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 24 Nov 2021 05:35:33 -0500
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp46.blacknight.com (Postfix) with ESMTPS id 044B9FB39E
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:32:23 +0000 (GMT)
+Received: (qmail 23747 invoked from network); 24 Nov 2021 10:32:22 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 24 Nov 2021 10:32:22 -0000
+Date:   Wed, 24 Nov 2021 10:32:21 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        NeilBrown <neilb@suse.de>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Rik van Riel <riel@surriel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/8] mm/vmscan: Throttle reclaim when no progress is
+ being made
+Message-ID: <20211124103221.GD3366@techsingularity.net>
+References: <20211022144651.19914-1-mgorman@techsingularity.net>
+ <20211022144651.19914-4-mgorman@techsingularity.net>
+ <20211124011912.GA265983@magnolia>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20211124011912.GA265983@magnolia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEd1ZW50ZXIgUm9lY2sgOg0KDQpUaGFua3MgZm9yIHlvdXIgcmV2aWV3LiBTb3JyeSBJIHdh
-cyBzbyBmb2N1c2VkIG9uIGZpeGluZyBjb2RlIGFuZCANCkkgZm9yZ290IHRvIHJlc3BvbmQgdG8g
-dGhlIGVtYWlsLiBJIG1vZGlmeSB0aGUgY29kZSBhcyB5b3UgY29tbWVudA0KYW5kIGFuc3dlciB0
-aGUgcXVlc3Rpb24uDQoNClRoYW5rcw0KQmVzdCBSZWdhcmRzLA0KWGlhbnRhbyBIdQ0KDQo+IC0t
-LS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEd1ZW50ZXIgUm9lY2sgW21haWx0bzpn
-cm9lY2s3QGdtYWlsLmNvbV0gT24gQmVoYWxmIE9mIEd1ZW50ZXIgUm9lY2sNCj4gU2VudDogRnJp
-ZGF5LCBOb3ZlbWJlciAxMiwgMjAyMSAxMDo0NiBQTQ0KPiBUbzogeHQuaHVb6IOh5YWI6Z+sXSA8
-eHQuaHVAY3FwbHVzMS5jb20+OyB3aW1AbGludXgtd2F0Y2hkb2cub3JnOyBwLnphYmVsQHBlbmd1
-dHJvbml4LmRlOw0KPiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC13YXRjaGRv
-Z0B2Z2VyLmtlcm5lbC5vcmc7IHJvYmgrZHRAa2VybmVsLm9yZzsNCj4gZGV2aWNldHJlZUB2Z2Vy
-Lmtlcm5lbC5vcmcNCj4gQ2M6IFdlbGxzIEx1IOWRguiKs+mosCA8d2VsbHMubHVAc3VucGx1cy5j
-b20+OyBxaW5qaWFuW+img+WBpV0gPHFpbmppYW5AY3FwbHVzMS5jb20+DQo+IFN1YmplY3Q6IFJl
-OiBbUEFUQ0ggMS8yXSB3YXRjaGRvZzogQWRkIHdhdGNoZG9nIGRyaXZlciBmb3IgU3VucGx1cyBT
-UDcwMjENCj4gDQo+IE9uIDExLzEyLzIxIDI6NTkgQU0sIFhpYW50YW8gSHUgd3JvdGU6DQo+ID4g
-U3VucGx1cyBTUDcwMjEgcmVxdWlyZXMgd2F0Y2hkb2cgdGltZXIgc3VwcG9ydC4NCj4gPiBBZGQg
-d2F0Y2hkb2cgZHJpdmVyIHRvIGVuYWJsZSB0aGlzLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTog
-WGlhbnRhbyBIdSA8eHQuaHVAY3FwbHVzMS5jb20+DQouLi4NCj4gPiArc3RydWN0IHNwX3dkdF9w
-cml2IHsNCj4gPiArCXN0cnVjdCB3YXRjaGRvZ19kZXZpY2Ugd2RldjsNCj4gPiArCXZvaWQgX19p
-b21lbSAqYmFzZTsNCj4gPiArCXZvaWQgX19pb21lbSAqbWlzY2VsbGFuZW91czsNCj4gDQo+IFBs
-ZWFzZSBmaW5kIGEgYmV0dGVyIG5hbWUgZm9yIHRoaXMgdmFyaWFibGUuIEFsc28sIHVubGVzcyBJ
-IGFtDQo+IG1pc3Npbmcgc29tZXRoaW5nLCBpdCBpcyBvbmx5IHVzZWQgaW4gdGhlIGluaXQgZnVu
-Y3Rpb24uIFRoYXQgbWVhbnMNCj4gaXQgY2FuIGJlIHBhc3NlZCB0byB0aGF0IGZ1bmN0aW9uIGFz
-IHBhcmFtZXRlciBhbmQgZG9lc24ndCBuZWVkDQo+IHRvIGJlIHN0b3JlZCBpbiBzcF93ZHRfcHJp
-di4NCj4gDQoNCkkgd2lsbCByZW1vdmUgdGhlIG1pc2NlbGxhbmVvdXMgZnJvbSBzcF93ZHRfcHJp
-diBhbmQgcGFzcw0KdG8gdGhhdCBmdW5jdGlvbiBhcyBwYXJhbWV0ZXIuDQoNCj4gPiArCXN0cnVj
-dCBjbGsgKmNsazsNCj4gPiArCXN0cnVjdCByZXNldF9jb250cm9sICpyc3RjOw0KPiA+ICt9Ow0K
-Li4uDQo+ID4gK3N0YXRpYyBpbnQgc3Bfd2R0X3NldF90aW1lb3V0KHN0cnVjdCB3YXRjaGRvZ19k
-ZXZpY2UgKndkZXYsDQo+ID4gKwkJCQkgICB1bnNpZ25lZCBpbnQgdGltZW91dCkNCj4gPiArew0K
-PiA+ICsJd2Rldi0+dGltZW91dCA9IHRpbWVvdXQ7DQo+ID4gKw0KPiANCj4gSSB3b3VsZCBhc3N1
-bWUgdGhpcyBhbHNvIG5lZWRzIHRvIHNldCB0aGUgbmV3IHRpbWVvdXQgaW4gSFcgaWYNCj4gdGhl
-IHdhdGNoZG9nIGlzIHJ1bm5pbmcsIG9yIHRoZSB3YXRjaGRvZyBjb3VsZCB0aW1lIG91dCBiZWZv
-cmUNCj4gdXNlcnNwYWNlIHNlbmRzIGFub3RoZXIgcGluZy4NCj4gDQoNCkkgd2lsbCBjYWxsIHRo
-ZSBwaW5nKCkgYWZ0ZXIgYXNzaWduaW5nIHRpbWVvdXQuDQoNCj4gPiArCXJldHVybiAwOw0KPiA+
-ICt9DQo+ID4gKw0KLi4uDQo+ID4gKw0KPiA+ICtzdGF0aWMgaW50IHNwX3dkdF9zdGFydChzdHJ1
-Y3Qgd2F0Y2hkb2dfZGV2aWNlICp3ZGV2KQ0KPiA+ICt7DQo+ID4gKwlpbnQgcmV0Ow0KPiA+ICsN
-Cj4gPiArCXJldCA9IHNwX3dkdF9zZXRfdGltZW91dCh3ZGV2LCB3ZGV2LT50aW1lb3V0KTsNCj4g
-DQo+IFRoYXQgZnVuY3Rpb24gbmV2ZXIgcmV0dXJucyBhbiBlcnJvciwgc28gY2hlY2tpbmcgZm9y
-IGl0IGlzDQo+IHBvaW50bGVzcyBoZXJlLg0KPiANCg0KSSB3aWxsIHJlbW92ZSB0aGUgdmFyaWFi
-bGUgcmV0Lg0KDQo+ID4gKwlpZiAocmV0IDwgMCkNCj4gPiArCQlyZXR1cm4gcmV0Ow0KPiA+ICsN
-Ci4uLg0KPiA+ICsvKg0KPiA+ICsgKiAxLldlIG5lZWQgdG8gcmVzZXQgd2F0Y2hkb2cgZmxhZyhj
-bGVhciB3YXRjaGRvZyBpbnRlcnJ1cHQpIGhlcmUNCj4gPiArICogYmVjYXVzZSB3YXRjaGRvZyB0
-aW1lciBkcml2ZXIgZG9lcyBub3QgaGF2ZSBhbiBpbnRlcnJ1cHQgaGFuZGxlciwNCj4gPiArICog
-YW5kIGJlZm9yZSBlbmFsYmUgU1RDIGFuZCBSQlVTIHdhdGNoZG9nIHRpbWVvdXQuIE90aGVyd2lz
-ZSwNCj4gDQo+IGVuYWJsZQ0KPiANCg0KSSB3aWxsIGZpeCBpdC4NCg0KPiA+ICsgKiB0aGUgaW50
-ciBpcyBhbHdheXMgaW4gdGhlIHRyaWdnZXJlZCBzdGF0ZS4NCj4gPiArICogMi5lbmFibGUgU1RD
-IGFuZCBSQlVTIHdhdGNoZG9nIHRpbWVvdXQgdHJpZ2dlci4NCj4gPiArICogMy53YXRjaGRvZyBj
-b251dGVyIGlzIHJ1bm5pbmcsIG5lZWQgdG8gYmUgc3RvcHBlZC4NCj4gDQo+IGNvdW50ZXINCj4g
-DQoNCkkgd2lsbCBmaXggaXQuDQoNCj4gPiArICovDQouLi4NCj4gPiArDQo+ID4gKwl3ZHRfcmVz
-ID0gcGxhdGZvcm1fZ2V0X3Jlc291cmNlKHBkZXYsIElPUkVTT1VSQ0VfTUVNLCAxKTsNCj4gPiAr
-CXByaXYtPm1pc2NlbGxhbmVvdXMgPQ0KPiA+ICsJICAgIGRldm1faW9yZW1hcChkZXYsIHdkdF9y
-ZXMtPnN0YXJ0LCByZXNvdXJjZV9zaXplKHdkdF9yZXMpKTsNCj4gDQo+IFdoeSBub3QgdXNlIGRl
-dm1faW9yZW1hcF9yZXNvdXJjZSgpID8gT3IsIGZvciB0aGF0IG1hdHRlciwNCj4gZGV2bV9wbGF0
-Zm9ybV9pb3JlbWFwX3Jlc291cmNlKCkgbGlrZSBhYm92ZSA/DQo+IA0KDQpUaGUgZnVuY3Rpb24g
-b2YgdGhpcyByZWdpc3RlciBpcyBtaXNjZWxsYW5lb3VzLiBUaGUgcmVnaXN0ZXIgDQphY2Nlc3Nl
-ZCBoZXJlIHNoYXJlZCBieSBtdWx0aXBsZSBkcml2ZXJzLiBVc2UgdGhlIGZ1bmN0aW9uIA0Kb2Yg
-ZGV2bV9wbGF0Zm9ybV9pb3JlbWFwX3Jlc291cmNlKCkgd2hpY2ggaW50ZXJuYWxseQ0KY2FsbCBy
-ZXF1ZXN0X21lbV9yZWdpb24oKSBjYXVzZXMgYW4gZXJyb3IuIFNvIEkgaGFuZGxlIGl0IA0KaW4g
-dGhpcyB3YXkuIEFueSBiZXR0ZXIgd2F5cz8NCg0KPiA+ICsJaWYgKElTX0VSUihwcml2LT5taXNj
-ZWxsYW5lb3VzKSkNCj4gPiArCQlyZXR1cm4gUFRSX0VSUihwcml2LT5taXNjZWxsYW5lb3VzKTsN
-Cj4gPiArDQo+ID4gKwlwcml2LT53ZGV2LmluZm8gPSAmc3Bfd2R0X2luZm87DQo+ID4gKwlwcml2
-LT53ZGV2Lm9wcyA9ICZzcF93ZHRfb3BzOw0KPiA+ICsJcHJpdi0+d2Rldi50aW1lb3V0ID0gU1Bf
-V0RUX01BWF9USU1FT1VUOw0KPiA+ICsJcHJpdi0+d2Rldi5tYXhfdGltZW91dCA9IFNQX1dEVF9N
-QVhfVElNRU9VVDsNCj4gPiArCXByaXYtPndkZXYubWluX3RpbWVvdXQgPSBTUF9XRFRfTUlOX1RJ
-TUVPVVQ7DQo+IA0KPiBUSGlzIHNob3VsZCByZWFsbHkgdXNlIG1heF9od19oZWFydGJlYXRfbXMg
-dG8gbGV0IHRoZSBjb3JlDQo+IHBpbmcgdGhlIHdhdGNoZG9nIGlmIGxhcmdlciB0aW1lb3V0cyBh
-cmUgZGVzaXJlZC4NCj4gDQoNCkkgd2lsbCBhZGQgdGhlIG1heF9od19oZWFydGJlYXRfbXMgYW5k
-IG1vZGlmeSB0aGUgDQpwaW5nICgpLg0KDQo+ID4gKwlwcml2LT53ZGV2LnBhcmVudCA9IGRldjsN
-Cj4gPiArDQo+ID4gKwl3YXRjaGRvZ19zZXRfZHJ2ZGF0YSgmcHJpdi0+d2RldiwgcHJpdik7DQo+
-ID4gKwlzcF93ZHRfaHdfaW5pdCgmcHJpdi0+d2Rldik7DQo+ID4gKw0KPiA+ICsJd2F0Y2hkb2df
-aW5pdF90aW1lb3V0KCZwcml2LT53ZGV2LCB0aW1lb3V0LCBkZXYpOw0KPiA+ICsJd2F0Y2hkb2df
-c2V0X25vd2F5b3V0KCZwcml2LT53ZGV2LCBub3dheW91dCk7DQo+ID4gKwl3YXRjaGRvZ19zdG9w
-X29uX3JlYm9vdCgmcHJpdi0+d2Rldik7DQo+ID4gKw0KPiA+ICsJZXJyID0gZGV2bV93YXRjaGRv
-Z19yZWdpc3Rlcl9kZXZpY2UoZGV2LCAmcHJpdi0+d2Rldik7DQo+IA0KPiBTaW5jZSB5b3UgY2Fs
-bCB3YXRjaGRvZ191bnJlZ2lzdGVyX2RldmljZSgpIGJlbG93IHlvdSBjYW4gbm90IHVzZQ0KPiB0
-aGUgZGV2bV8gZnVuY3Rpb24gaGVyZS4NCj4gDQoNCkkgd2lsbCBkcm9wIHRoZSBmdW5jdGlvbiBy
-ZW1vdmUoKSBhbmQgbm90IGNhbGwgd2F0Y2hkb2dfdW5yZWdpc3Rlcl9kZXZpY2UoKSAuDQpVc2Ug
-dGhlIGRldm1fYWRkX2FjdGlvbl9vcl9yZXNldCgpIGFkZCByZXNldF9jb250cm9sX2Fzc2VydCgp
-IGFuZA0KY2xrX2Rpc2FibGVfdW5wcmVwYXJlKCkuDQoNCj4gPiArCWlmICh1bmxpa2VseShlcnIp
-KQ0KPiANCj4gVGhpcyBpcyBub3QgdGltZSBjcml0aWNhbC4gRHJvcCB0aGUgdW5saWtlbHkuDQo+
-IA0KDQpJIHdpbGwgZml4IGl0Lg0KDQo+ID4gKwkJcmV0dXJuIGVycjsNCj4gPiArDQo+ID4gKwlk
-ZXZfaW5mbyhkZXYsICJXYXRjaGRvZyBlbmFibGVkICh0aW1lb3V0PSVkIHNlYyVzLilcbiIsDQo+
-ID4gKwkJIHByaXYtPndkZXYudGltZW91dCwgbm93YXlvdXQgPyAiLCBub3dheW91dCIgOiAiIik7
-DQo+ID4gKw0KPiA+ICsJcmV0dXJuIDA7DQo+ID4gK30NCj4gPiArDQo+ID4gK3N0YXRpYyBpbnQg
-c3Bfd2R0X3JlbW92ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiA+ICt7DQo+ID4g
-KwlzdHJ1Y3Qgc3Bfd2R0X3ByaXYgKnByaXYgPSBwbGF0Zm9ybV9nZXRfZHJ2ZGF0YShwZGV2KTsN
-Cj4gPiArDQo+ID4gKwl3YXRjaGRvZ191bnJlZ2lzdGVyX2RldmljZSgmcHJpdi0+d2Rldik7DQo+
-ID4gKw0KPiA+ICsJcmVzZXRfY29udHJvbF9hc3NlcnQocHJpdi0+cnN0Yyk7DQo+ID4gKwljbGtf
-ZGlzYWJsZV91bnByZXBhcmUocHJpdi0+Y2xrKTsNCj4gPiArDQo+ID4gKwlyZXR1cm4gMDsNCj4g
-PiArfQ0KPiA+ICsNCi4uLg0KPiA+ICsNCj4gPiArc3RhdGljIGludCBfX21heWJlX3VudXNlZCBz
-cF93ZHRfcmVzdW1lKHN0cnVjdCBkZXZpY2UgKmRldikNCj4gPiArew0KPiA+ICsJc3RydWN0IHNw
-X3dkdF9wcml2ICpwcml2ID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ID4gKw0KPiA+ICsJaWYg
-KHdhdGNoZG9nX2FjdGl2ZSgmcHJpdi0+d2RldikpDQo+ID4gKwkJc3Bfd2R0X3N0YXJ0KCZwcml2
-LT53ZGV2KTsNCj4gPiArDQo+IFNob3VsZG4ndCB0aGUgb3JkZXIgYmUgdGhlIG9wcG9zaXRlIG9m
-IHRoZSBvcmRlciBpbiB0aGUgc3VzcGVuZCBmdW5jdGlvbiA/DQo+DQogDQpJIHdpbGwgZml4IGl0
-Lg0KDQo+ID4gKwlyZXNldF9jb250cm9sX2RlYXNzZXJ0KHByaXYtPnJzdGMpOw0KPiA+ICsJY2xr
-X3ByZXBhcmVfZW5hYmxlKHByaXYtPmNsayk7DQo+ID4gKw0KPiA+ICsJcmV0dXJuIDA7DQo+ID4g
-K30NCj4gPg0KLi4uDQo+ID4NCg0K
+On Tue, Nov 23, 2021 at 05:19:12PM -0800, Darrick J. Wong wrote:
+> On Fri, Oct 22, 2021 at 03:46:46PM +0100, Mel Gorman wrote:
+> > Memcg reclaim throttles on congestion if no reclaim progress is made.
+> > This makes little sense, it might be due to writeback or a host of
+> > other factors.
+> > 
+> > For !memcg reclaim, it's messy. Direct reclaim primarily is throttled
+> > in the page allocator if it is failing to make progress. Kswapd
+> > throttles if too many pages are under writeback and marked for
+> > immediate reclaim.
+> > 
+> > This patch explicitly throttles if reclaim is failing to make progress.
+> 
+> Hi Mel,
+> 
+> Ever since Christoph broke swapfiles, I've been carrying around a little
+> fstest in my dev tree[1] that tries to exercise paging things in and out
+> of a swapfile.  Sadly I've been trapped in about three dozen customer
+> escalations for over a month, which means I haven't been able to do much
+> upstream in weeks.  Like submit this test upstream. :(
+> 
+> Now that I've finally gotten around to trying out a 5.16-rc2 build, I
+> notice that the runtime of this test has gone from ~5s to 2 hours.
+> Among other things that it does, the test sets up a cgroup with a memory
+> controller limiting the memory usage to 25MB, then runs a program that
+> tries to dirty 50MB of memory.  There's 2GB of memory in the VM, so
+> we're not running reclaim globally, but the cgroup gets throttled very
+> severely.
+> 
+
+Ok, so this test cannot make progress until some of the cgroup pages get
+cleaned. What is the expectation for the test? Should it OOM or do you
+expect it to have spin-like behaviour until some writeback completes?
+I'm guessing you'd prefer it to spin and right now it's sleeping far
+too much.
+
+> AFAICT the system is mostly idle, but it's difficult to tell because ps
+> and top also get stuck waiting for this cgroup for whatever reason. 
+
+But this is surprising because I expect that ps and top are not running
+within the cgroup. Was /proc/PID/stack readable? 
+
+> My
+> uninformed spculation is that usemem_and_swapoff takes a page fault
+> while dirtying the 50MB memory buffer, prepares to pull a page in from
+> swap, tries to evict another page to stay under the memcg limit, but
+> that decides that it's making no progress and calls
+> reclaim_throttle(..., VMSCAN_THROTTLE_NOPROGRESS).
+> 
+> The sleep is uninterruptible, so I can't even kill -9 fstests to shut it
+> down.  Eventually we either finish the test or (for the mlock part) the
+> OOM killer actually kills the process, but this takes a very long time.
+> 
+
+The sleep can be interruptible.
+
+> Any thoughts?  For now I can just hack around this by skipping
+> reclaim_throttle if cgroup_reclaim() == true, but that's probably not
+> the correct fix. :)
+> 
+
+No, it wouldn't be but a possibility is throttling for only 1 jiffy if
+reclaiming within a memcg and the zone is balanced overall.
+
+The interruptible part should just be the patch below. I need to poke at
+the cgroup limit part a bit
+
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index fb9584641ac7..07db03883062 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1068,7 +1068,7 @@ void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason)
+ 		break;
+ 	}
+ 
+-	prepare_to_wait(wqh, &wait, TASK_UNINTERRUPTIBLE);
++	prepare_to_wait(wqh, &wait, TASK_INTERRUPTIBLE);
+ 	ret = schedule_timeout(timeout);
+ 	finish_wait(wqh, &wait);
+ 
