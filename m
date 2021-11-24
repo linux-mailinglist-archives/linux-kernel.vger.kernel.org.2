@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFBBC45C655
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:04:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E3A45C3BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354260AbhKXOHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:07:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48818 "EHLO mail.kernel.org"
+        id S1348133AbhKXNmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:42:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353828AbhKXOCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:02:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4541E61A7D;
-        Wed, 24 Nov 2021 13:10:22 +0000 (UTC)
+        id S1348956AbhKXNkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:40:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05C5A61374;
+        Wed, 24 Nov 2021 12:56:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759422;
-        bh=4Ddr2Pg8ko9IRGiSEa7LXYq3vtOzD2i+EY9k/d1xxbw=;
+        s=korg; t=1637758617;
+        bh=1RRmU7+KSppPEQbuN+YKI487k6dcNnN9qfN0iQ9X0B0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OZV+GCvrN/OjMss0Ok9Fnz3PPyTUyCpxS2/91q1DXaZ+VfJsEwbfLz0S8NlreYFFN
-         ynlz8zzjj6sCY3cbWHGgDB1IIkeH5kRiAjr6ec/VfTiO/rffJSpEheCNCzzjbP/zHM
-         Qqlhp5b8l1Vd3FCaDwysdCR01HHAZCISqT/D+HNA=
+        b=MgOEtPycr6eTDNYSRdn/mlQDOkQjVBAd09N7B8ibXSvbyJcJawfavdMNXcZgKxDO2
+         h+5T8RfzVUFedGUoWgrFzhuj9ezoJJuftsJfkY8HBflgWWRvK4raUej1hWLBy68vAg
+         x6Vaof3/E5pzdgZqg8qX4Vufh+ThMLWEDQKwcKGI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sid Hayn <sidhayn@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH 5.15 237/279] mac80211: fix radiotap header generation
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Arun Easi <aeasi@marvell.com>,
+        "Ewan D. Milne" <emilne@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.10 128/154] scsi: qla2xxx: Fix mailbox direction flags in qla2xxx_get_adapter_id()
 Date:   Wed, 24 Nov 2021 12:58:44 +0100
-Message-Id: <20211124115726.928675328@linuxfoundation.org>
+Message-Id: <20211124115706.440311040@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Ewan D. Milne <emilne@redhat.com>
 
-commit c033a38a81bc539d6c0db8c5387e0b14d819a0cf upstream.
+commit 392006871bb26166bcfafa56faf49431c2cfaaa8 upstream.
 
-In commit 8c89f7b3d3f2 ("mac80211: Use flex-array for radiotap header
-bitmap") we accidentally pointed the position to the wrong place, so
-we overwrite a present bitmap, and thus cause all kinds of trouble.
+The SCM changes set the flags in mcp->out_mb instead of mcp->in_mb so the
+data was not actually being read into the mcp->mb[] array from the adapter.
 
-To see the issue, note that the previous code read:
-
-  pos = (void *)(it_present + 1);
-
-The requirement now is that we need to calculate pos via it_optional,
-to not trigger the compiler hardening checks, as:
-
-  pos = (void *)&rthdr->it_optional[...];
-
-Rewriting the original expression, we get (obviously, since that just
-adds "+ x - x" terms):
-
-  pos = (void *)(it_present + 1 + rthdr->it_optional - rthdr->it_optional)
-
-and moving the "+ rthdr->it_optional" outside to be used as an array:
-
-  pos = (void *)&rthdr->it_optional[it_present + 1 - rthdr->it_optional];
-
-The original is off by one, fix it.
-
+Link: https://lore.kernel.org/r/20211108183012.13895-1-emilne@redhat.com
+Fixes: 9f2475fe7406 ("scsi: qla2xxx: SAN congestion management implementation")
 Cc: stable@vger.kernel.org
-Fixes: 8c89f7b3d3f2 ("mac80211: Use flex-array for radiotap header bitmap")
-Reported-by: Sid Hayn <sidhayn@gmail.com>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Tested-by: Sid Hayn <sidhayn@gmail.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20211109100203.c61007433ed6.I1dade57aba7de9c4f48d68249adbae62636fd98c@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Reviewed-by: Arun Easi <aeasi@marvell.com>
+Signed-off-by: Ewan D. Milne <emilne@redhat.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/rx.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/qla2xxx/qla_mbx.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -364,7 +364,7 @@ ieee80211_add_rx_radiotap_header(struct
- 	 * the compiler to think we have walked past the end of the
- 	 * struct member.
- 	 */
--	pos = (void *)&rthdr->it_optional[it_present - rthdr->it_optional];
-+	pos = (void *)&rthdr->it_optional[it_present + 1 - rthdr->it_optional];
+--- a/drivers/scsi/qla2xxx/qla_mbx.c
++++ b/drivers/scsi/qla2xxx/qla_mbx.c
+@@ -1650,10 +1650,8 @@ qla2x00_get_adapter_id(scsi_qla_host_t *
+ 		mcp->in_mb |= MBX_13|MBX_12|MBX_11|MBX_10;
+ 	if (IS_FWI2_CAPABLE(vha->hw))
+ 		mcp->in_mb |= MBX_19|MBX_18|MBX_17|MBX_16;
+-	if (IS_QLA27XX(vha->hw) || IS_QLA28XX(vha->hw)) {
+-		mcp->in_mb |= MBX_15;
+-		mcp->out_mb |= MBX_7|MBX_21|MBX_22|MBX_23;
+-	}
++	if (IS_QLA27XX(vha->hw) || IS_QLA28XX(vha->hw))
++		mcp->in_mb |= MBX_15|MBX_21|MBX_22|MBX_23;
  
- 	/* the order of the following fields is important */
- 
+ 	mcp->tov = MBX_TOV_SECONDS;
+ 	mcp->flags = 0;
 
 
