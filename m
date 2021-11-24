@@ -2,97 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E1945CE24
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:36:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F01B545CE2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237081AbhKXUj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 15:39:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236977AbhKXUj0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 15:39:26 -0500
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A85C6C061746
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:36:16 -0800 (PST)
-Received: by mail-ua1-x92b.google.com with SMTP id y5so7739442ual.7
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:36:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=engleder-embedded-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MvNanobD5DxepLtivgHlAd5wW0erbfsHGIOz72YXYcA=;
-        b=KS3nJxbhoDCwQVE/EiDNGcVymGjQs/SrbLSSanLJwmgTUGJjzDMIZMt23dgTxrRNSN
-         Tu6ejidm3QxymJOvrNpkCjj6uDXPFuSE0+SgttXz2BAXs7uow0gwTv0qplgX7+afSwop
-         RZ6XpL1BF+C2GEC6MEuN7VthPlOWzET+hHCW3vb5S5ECMnSL9cFuyFCtku0uO0ZS8xk9
-         5fzdf5KPgzp241rHzjBNTGiw5hfnp1EXh0yFmT2v7wO+ejbtVYD6QCSHRLwsvVPuEsDz
-         0QJTENRZqTZZIf7ELExiNhqD9EZtfAg8+H1wKarBGd/ZR83BzIUV3uYG1vqCE1MwuiUe
-         fT8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MvNanobD5DxepLtivgHlAd5wW0erbfsHGIOz72YXYcA=;
-        b=bnpc3dHvfZycIO3BPnEfxHa6wUojx6UVkwFNnfRoj1rY3q+L4pr1Hlwr8VUAuWCV4h
-         K/MWQiDyngvN7DSpL0TUM60wICCIFDuG5+/Mw0C+hl2T1bfssbP3mdrzRdg/GhzxPYpG
-         khHa+Lug9LtYiT3+9PxT/6U9NT9f2p/0FxTrh7K04v2JvuwdsAGQlCKcQGpwqhQLegzO
-         DdXg4P/xBlzeIYeLTLkePjE5xZUQMqpbAw0jdxgJLjjtWadgMwoaQL+kZvdgoGkogNj5
-         JLrdUua97pGlI0+tqXVqO9Pl6Z0TPAjIE5y2Sa10ZEJtEKl6oPps7EfU9apRSGhX1Yi7
-         twLA==
-X-Gm-Message-State: AOAM533k0+gts+rZzM+KgDFR+GHusqfKH+AvFbfrg5DZzfyJrOVTGt+U
-        3NmIYJN7WqJtk8Lr8W6wUf0PJMNJ9KF1iJN0ULLDVg==
-X-Google-Smtp-Source: ABdhPJyO0jdQb+jxLJl6Td1yYcwv5x9neNqqOUQtosV/94r11Q1KOg2ESOaNXWd4wQwX9ehq1b/uK8amqg3T5DtZeEE=
-X-Received: by 2002:a67:ef4b:: with SMTP id k11mr1516250vsr.74.1637786175823;
- Wed, 24 Nov 2021 12:36:15 -0800 (PST)
+        id S237481AbhKXUk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 15:40:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50408 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231846AbhKXUkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 15:40:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD72460E05;
+        Wed, 24 Nov 2021 20:37:12 +0000 (UTC)
+Date:   Wed, 24 Nov 2021 20:37:09 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
+ with sub-page faults
+Message-ID: <YZ6idVy3zqQC4atv@arm.com>
+References: <20211124192024.2408218-1-catalin.marinas@arm.com>
+ <20211124192024.2408218-4-catalin.marinas@arm.com>
+ <YZ6arlsi2L3LVbFO@casper.infradead.org>
 MIME-Version: 1.0
-References: <20211124164349.GA15018@af7a0ea8a35f>
-In-Reply-To: <20211124164349.GA15018@af7a0ea8a35f>
-From:   Gerhard Engleder <gerhard@engleder-embedded.com>
-Date:   Wed, 24 Nov 2021 21:36:05 +0100
-Message-ID: <CANr-f5wsqOMZaw1fHWWEQcYS2LUYqZ+zuwtaL0Jq1YaVzB5vHQ@mail.gmail.com>
-Subject: Re: [PATCH] tsnep: fix platform_no_drv_owner.cocci warnings
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZ6arlsi2L3LVbFO@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> From: kernel test robot <lkp@intel.com>
->
-> drivers/net/ethernet/engleder/tsnep_main.c:1263:3-8: No need to set .owner here. The core will do it.
->
->  Remove .owner field if calls are used which set it automatically
->
-> Generated by: scripts/coccinelle/api/platform_no_drv_owner.cocci
->
-> CC: Gerhard Engleder <gerhard@engleder-embedded.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: kernel test robot <lkp@intel.com>
-> ---
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-> head:   4b74e088fef6ce8cc513f935ce236c38bdf5f67b
-> commit: 403f69bbdbadb2e601f725be2d00b4ccc7b61c9d [2745/3376] tsnep: Add TSN endpoint Ethernet MAC driver
-> :::::: branch date: 11 hours ago
-> :::::: commit date: 2 days ago
->
->  tsnep_main.c |    1 -
->  1 file changed, 1 deletion(-)
->
-> --- a/drivers/net/ethernet/engleder/tsnep_main.c
-> +++ b/drivers/net/ethernet/engleder/tsnep_main.c
-> @@ -1260,7 +1260,6 @@ MODULE_DEVICE_TABLE(of, tsnep_of_match);
->  static struct platform_driver tsnep_driver = {
->         .driver = {
->                 .name = TSNEP,
-> -               .owner = THIS_MODULE,
->                 .of_match_table = of_match_ptr(tsnep_of_match),
->         },
->         .probe = tsnep_probe,
+On Wed, Nov 24, 2021 at 08:03:58PM +0000, Matthew Wilcox wrote:
+> On Wed, Nov 24, 2021 at 07:20:24PM +0000, Catalin Marinas wrote:
+> > +++ b/fs/btrfs/ioctl.c
+> > @@ -2223,7 +2223,8 @@ static noinline int search_ioctl(struct inode *inode,
+> >  
+> >  	while (1) {
+> >  		ret = -EFAULT;
+> > -		if (fault_in_writeable(ubuf + sk_offset, *buf_size - sk_offset))
+> > +		if (fault_in_exact_writeable(ubuf + sk_offset,
+> > +					     *buf_size - sk_offset))
+> >  			break;
+> >  
+> >  		ret = btrfs_search_forward(root, &key, path, sk->min_transid);
+> 
+> Couldn't we avoid all of this nastiness by doing ...
 
-Reviewed-by: Gerhard Engleder <gerhard@engleder-embedded.com>
+I had a similar attempt initially but I concluded that it doesn't work:
+
+https://lore.kernel.org/r/YS40qqmXL7CMFLGq@arm.com
+
+> @@ -2121,10 +2121,9 @@ static noinline int copy_to_sk(struct btrfs_path *path,
+>                  * problem. Otherwise we'll fault and then copy the buffer in
+>                  * properly this next time through
+>                  */
+> -               if (copy_to_user_nofault(ubuf + *sk_offset, &sh, sizeof(sh))) {
+> -                       ret = 0;
+> +               ret = __copy_to_user_nofault(ubuf + *sk_offset, &sh, sizeof(sh));
+> +               if (ret)
+
+There is no requirement for the arch implementation to be exact and copy
+the maximum number of bytes possible. It can fail early while there are
+still some bytes left that would not fault. The only requirement is that
+if it is restarted from where it faulted, it makes some progress (on
+arm64 there is one extra byte).
+
+>                         goto out;
+> -               }
+>  
+>                 *sk_offset += sizeof(sh);
+> @@ -2196,6 +2195,7 @@ static noinline int search_ioctl(struct inode *inode,
+>         int ret;
+>         int num_found = 0;
+>         unsigned long sk_offset = 0;
+> +       unsigned long next_offset = 0;
+>  
+>         if (*buf_size < sizeof(struct btrfs_ioctl_search_header)) {
+>                 *buf_size = sizeof(struct btrfs_ioctl_search_header);
+> @@ -2223,7 +2223,8 @@ static noinline int search_ioctl(struct inode *inode,
+>  
+>         while (1) {
+>                 ret = -EFAULT;
+> -               if (fault_in_writeable(ubuf + sk_offset, *buf_size - sk_offset))
+> +               if (fault_in_writeable(ubuf + sk_offset + next_offset,
+> +                                       *buf_size - sk_offset - next_offset))
+>                         break;
+>  
+>                 ret = btrfs_search_forward(root, &key, path, sk->min_transid);
+> @@ -2235,11 +2236,12 @@ static noinline int search_ioctl(struct inode *inode,
+>                 ret = copy_to_sk(path, &key, sk, buf_size, ubuf,
+>                                  &sk_offset, &num_found);
+>                 btrfs_release_path(path);
+> -               if (ret)
+> +               if (ret > 0)
+> +                       next_offset = ret;
+
+So after this point, ubuf+sk_offset+next_offset is writeable by
+fault_in_writable(). If copy_to_user() was attempted on
+ubuf+sk_offset+next_offset, all would be fine, but copy_to_sk() restarts
+the copy from ubuf+sk_offset, so it returns exacting the same ret as in
+the previous iteration.
+
+-- 
+Catalin
