@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D0B45BDD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A562645BA4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:06:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345238AbhKXMlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:41:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39822 "EHLO mail.kernel.org"
+        id S236565AbhKXMJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:09:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344451AbhKXMgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:36:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A10861181;
-        Wed, 24 Nov 2021 12:22:03 +0000 (UTC)
+        id S242255AbhKXMGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:06:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0953A60FE7;
+        Wed, 24 Nov 2021 12:03:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756524;
-        bh=vwkOgq+0OXS/YOm41ex3m8AfE3lwdia0+xxqP7wO4S0=;
+        s=korg; t=1637755421;
+        bh=8uwzn0O37V6evak+sbd9LpuZ/CSKh5+jaonV+hgTVOI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AqA2QQyBJseoZtNNmhKA+vY0u+LiLWTDcyxaXirsy3lxTsRkG10k7OtEsZm5tQWPt
-         dz+GKzmCPeUcAKXYh36IWWOh4kTC99QyczFXTDRlLRZcxrKAYX3YyRyu9YiKYvmQ/M
-         fxzG0WfX2cw0nkRxmD6lxjlo2Wku08pMjFtGAhE4=
+        b=dZrsiZTTPqqTh2TUUM5J5HnTfChlQEsYryYz6wUI6eEgBe1puX3JYX61Q8PkaRTKG
+         Yrd++GYmWBH2uOr+ndD6hUxql7Th0blYgG3yMr+vJ/IhEX7w7oTiRclmJg9c6GTVaF
+         1AFUFFtyLwuuQIBcwgdYn1WSNsclJUsUOFvqLgFM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        =?UTF-8?q?Michael=20B=C3=BCsch?= <m@bues.ch>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org,
+        syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 117/251] b43: fix a lower bounds test
+Subject: [PATCH 4.4 056/162] media: usb: dvd-usb: fix uninit-value bug in dibusb_read_eeprom_byte()
 Date:   Wed, 24 Nov 2021 12:55:59 +0100
-Message-Id: <20211124115714.300229650@linuxfoundation.org>
+Message-Id: <20211124115700.154225706@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 
-[ Upstream commit 9b793db5fca44d01f72d3564a168171acf7c4076 ]
+[ Upstream commit 899a61a3305d49e8a712e9ab20d0db94bde5929f ]
 
-The problem is that "channel" is an unsigned int, when it's less 5 the
-value of "channel - 5" is not a negative number as one would expect but
-is very high positive value instead.
+In dibusb_read_eeprom_byte(), if dibusb_i2c_msg() fails, val gets
+assigned an value that's not properly initialized.
+Using kzalloc() in place of kmalloc() for the buffer fixes this issue,
+as the val can now be set to 0 in the event dibusb_i2c_msg() fails.
 
-This means that "start" becomes a very high positive value.  The result
-of that is that we never enter the "for (i = start; i <= end; i++) {"
-loop.  Instead of storing the result from b43legacy_radio_aci_detect()
-it just uses zero.
-
-Fixes: ef1a628d83fc ("b43: Implement dynamic PHY API")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Michael Büsch <m@bues.ch>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20211006073621.GE8404@kili
+Reported-by: syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com
+Tested-by: syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/broadcom/b43/phy_g.c | 2 +-
+ drivers/media/usb/dvb-usb/dibusb-common.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/broadcom/b43/phy_g.c b/drivers/net/wireless/broadcom/b43/phy_g.c
-index 822dcaa8ace63..35ff139b1496e 100644
---- a/drivers/net/wireless/broadcom/b43/phy_g.c
-+++ b/drivers/net/wireless/broadcom/b43/phy_g.c
-@@ -2310,7 +2310,7 @@ static u8 b43_gphy_aci_scan(struct b43_wldev *dev)
- 	b43_phy_mask(dev, B43_PHY_G_CRS, 0x7FFF);
- 	b43_set_all_gains(dev, 3, 8, 1);
+diff --git a/drivers/media/usb/dvb-usb/dibusb-common.c b/drivers/media/usb/dvb-usb/dibusb-common.c
+index 7b15aea2723d6..5a1dc0d465d26 100644
+--- a/drivers/media/usb/dvb-usb/dibusb-common.c
++++ b/drivers/media/usb/dvb-usb/dibusb-common.c
+@@ -182,7 +182,7 @@ int dibusb_read_eeprom_byte(struct dvb_usb_device *d, u8 offs, u8 *val)
+ 	u8 *buf;
+ 	int rc;
  
--	start = (channel - 5 > 0) ? channel - 5 : 1;
-+	start = (channel > 5) ? channel - 5 : 1;
- 	end = (channel + 5 < 14) ? channel + 5 : 13;
+-	buf = kmalloc(2, GFP_KERNEL);
++	buf = kzalloc(2, GFP_KERNEL);
+ 	if (!buf)
+ 		return -ENOMEM;
  
- 	for (i = start; i <= end; i++) {
 -- 
 2.33.0
 
