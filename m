@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B58E545C34C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C7545C654
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:04:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352575AbhKXNhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:37:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48520 "EHLO mail.kernel.org"
+        id S1354250AbhKXOG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:06:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350112AbhKXNfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:35:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 737E8615E3;
-        Wed, 24 Nov 2021 12:54:26 +0000 (UTC)
+        id S1353745AbhKXOCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:02:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA94063317;
+        Wed, 24 Nov 2021 13:10:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758467;
-        bh=fZ68254fYsGwuNOGEA0mD1duIjx67R5tJBFbLTLm0xA=;
+        s=korg; t=1637759411;
+        bh=0s7/qoo3hpqoGGgSlonTCdXJFWmv7YJODyyyzMqCkw0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GsbjZwATSxcAXct/1SJ03sAH8nNURxDV3IRyp7P8iEDCEBKJLPCEUpCzjz+8a0r/3
-         TLBDnHcVKz/dwGZAacPNmggRHgptLT6RJovLXY0AsF6vVr5/yQSY4+BZw2iLlwZzy/
-         CKeWTKerc4CA3A91ljPm1gEEZy+pKx4EbbRfcQ08=
+        b=M4JalsC+I2OPFdl5V6ceJGVlSSorZJAq6044ZTOtPTZvSrcHw6uOolrBNUI3An2mr
+         k61Mk5rIKDKr+flqxmyvUGKEJPUiTBN+GAx5YDhgPbO5U7BKRjKweXNUqD5lWK7t48
+         PE/ihhwj8Xpf5/S3MyyYgNM02l/MRtRxQ9j+HJpA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
-        Mateusz Palczewski <mateusz.palczewski@intel.com>,
-        Konrad Jankowski <konrad0.jankowski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 080/154] iavf: Fix return of set the new channel count
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@lst.de>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH 5.15 189/279] Revert "mark pstore-blk as broken"
 Date:   Wed, 24 Nov 2021 12:57:56 +0100
-Message-Id: <20211124115704.911296463@linuxfoundation.org>
+Message-Id: <20211124115725.257448881@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,62 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Palczewski <mateusz.palczewski@intel.com>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 4e5e6b5d9d1334d3490326b6922a2daaf56a867f ]
+commit d1faacbf67b1944f0e0c618dc581d929263f6fe9 upstream.
 
-Fixed return correct code from set the new channel count.
-Implemented by check if reset is done in appropriate time.
-This solution give a extra time to pf for reset vf in case
-when user want set new channel count for all vfs.
-Without this patch it is possible to return misleading output
-code to user and vf reset not to be correctly performed by pf.
+This reverts commit d07f3b081ee632268786601f55e1334d1f68b997.
 
-Fixes: 5520deb15326 ("iavf: Enable support for up to 16 queues")
-Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
-Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
-Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+pstore-blk was fixed to avoid the unwanted APIs in commit 7bb9557b48fc
+("pstore/blk: Use the normal block device I/O path"), which landed in
+the same release as the commit adding BROKEN.
+
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: stable@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20211116181559.3975566-1-keescook@chromium.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/iavf/iavf_ethtool.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ fs/pstore/Kconfig |    1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
-index c93567f4d0f79..17ec36c4e6c19 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
-@@ -892,6 +892,7 @@ static int iavf_set_channels(struct net_device *netdev,
- {
- 	struct iavf_adapter *adapter = netdev_priv(netdev);
- 	u32 num_req = ch->combined_count;
-+	int i;
- 
- 	if ((adapter->vf_res->vf_cap_flags & VIRTCHNL_VF_OFFLOAD_ADQ) &&
- 	    adapter->num_tc) {
-@@ -914,6 +915,20 @@ static int iavf_set_channels(struct net_device *netdev,
- 	adapter->num_req_queues = num_req;
- 	adapter->flags |= IAVF_FLAG_REINIT_ITR_NEEDED;
- 	iavf_schedule_reset(adapter);
-+
-+	/* wait for the reset is done */
-+	for (i = 0; i < IAVF_RESET_WAIT_COMPLETE_COUNT; i++) {
-+		msleep(IAVF_RESET_WAIT_MS);
-+		if (adapter->flags & IAVF_FLAG_RESET_PENDING)
-+			continue;
-+		break;
-+	}
-+	if (i == IAVF_RESET_WAIT_COMPLETE_COUNT) {
-+		adapter->flags &= ~IAVF_FLAG_REINIT_ITR_NEEDED;
-+		adapter->num_active_queues = num_req;
-+		return -EOPNOTSUPP;
-+	}
-+
- 	return 0;
- }
- 
--- 
-2.33.0
-
+--- a/fs/pstore/Kconfig
++++ b/fs/pstore/Kconfig
+@@ -173,7 +173,6 @@ config PSTORE_BLK
+ 	tristate "Log panic/oops to a block device"
+ 	depends on PSTORE
+ 	depends on BLOCK
+-	depends on BROKEN
+ 	select PSTORE_ZONE
+ 	default n
+ 	help
 
 
