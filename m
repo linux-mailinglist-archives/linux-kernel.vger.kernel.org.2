@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E134045C6BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D7445C359
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:34:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354792AbhKXOLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:11:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55398 "EHLO mail.kernel.org"
+        id S1350423AbhKXNhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:37:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355103AbhKXOIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:08:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A78DE61283;
-        Wed, 24 Nov 2021 12:47:28 +0000 (UTC)
+        id S1352290AbhKXNfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:35:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BBEA61BF9;
+        Wed, 24 Nov 2021 12:54:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758049;
-        bh=qga7bKfNy0GUN1l9l6rNWveOX+HjHy/FBsRGpx5ufgc=;
+        s=korg; t=1637758475;
+        bh=9h+TmRhPNCPkgTzcRQzS7Cd6S6WirOCp6akOLVnoT2w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OMAQ10ihMudTkkeKVEw71ouXUW2WEpjf5c948z5hE0wc+tR9ubd/2bs7nVE/1hOJK
-         OinxgBzg5SkYfG9G7Wp390A/XitcpaiuRO7JNtFBP+sMvGQ3Y5MBTBl8kc9+MPiJbU
-         XbuZcFeLaJHAYD0NoooB7XW8wJPpyqxuwfE0TtPw=
+        b=HvjOH+lr1uQirLOFRDglQ58rJySm2BCDBlo6xF4bG9Pyw3nIrx6h0LpsK3Y37nd9/
+         n5x0jUE8i46+4Mx5d3vZXred+Ij/UMhO/qco49vFO62faMOGB7/U2u7JPTlUCCSp6V
+         dyOv6z1kqceXSX5LslDG+92qYVriT8KvVoJeG21A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH 5.4 043/100] RDMA/netlink: Add __maybe_unused to static inline in C file
+        stable@vger.kernel.org, Piotr Marczak <piotr.marczak@intel.com>,
+        Tony Brelinski <tony.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 083/154] iavf: Fix failure to exit out from last all-multicast mode
 Date:   Wed, 24 Nov 2021 12:57:59 +0100
-Message-Id: <20211124115656.273919531@linuxfoundation.org>
+Message-Id: <20211124115705.002531949@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Piotr Marczak <piotr.marczak@intel.com>
 
-commit 83dde7498fefeb920b1def317421262317d178e5 upstream.
+[ Upstream commit 8905072a192fffe9389255489db250c73ecab008 ]
 
-Like other commits in the tree add __maybe_unused to a static inline in a
-C file because some clang compilers will complain about unused code:
+The driver could only quit allmulti when allmulti and promisc modes are
+turn on at the same time. If promisc had been off there was no way to turn
+off allmulti mode.
+The patch corrects this behavior. Switching allmulti does not depends on
+promisc state mode anymore
 
->> drivers/infiniband/core/nldev.c:2543:1: warning: unused function '__chk_RDMA_NL_NLDEV'
-   MODULE_ALIAS_RDMA_NETLINK(RDMA_NL_NLDEV, 5);
-   ^
-
-Fixes: e3bf14bdc17a ("rdma: Autoload netlink client modules")
-Link: https://lore.kernel.org/r/4a8101919b765e01d7fde6f27fd572c958deeb4a.1636267207.git.leonro@nvidia.com
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: f42a5c74da99 ("i40e: Add allmulti support for the VF")
+Signed-off-by: Piotr Marczak <piotr.marczak@intel.com>
+Tested-by: Tony Brelinski <tony.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/rdma/rdma_netlink.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/iavf/iavf_main.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/include/rdma/rdma_netlink.h
-+++ b/include/rdma/rdma_netlink.h
-@@ -30,7 +30,7 @@ enum rdma_nl_flags {
-  * constant as well and the compiler checks they are the same.
-  */
- #define MODULE_ALIAS_RDMA_NETLINK(_index, _val)                                \
--	static inline void __chk_##_index(void)                                \
-+	static inline void __maybe_unused __chk_##_index(void)                 \
- 	{                                                                      \
- 		BUILD_BUG_ON(_index != _val);                                  \
- 	}                                                                      \
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
+index 3e4bf3559d13b..b0fe5aafd1b26 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_main.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
+@@ -1616,8 +1616,7 @@ static int iavf_process_aq_command(struct iavf_adapter *adapter)
+ 		iavf_set_promiscuous(adapter, FLAG_VF_MULTICAST_PROMISC);
+ 		return 0;
+ 	}
+-
+-	if ((adapter->aq_required & IAVF_FLAG_AQ_RELEASE_PROMISC) &&
++	if ((adapter->aq_required & IAVF_FLAG_AQ_RELEASE_PROMISC) ||
+ 	    (adapter->aq_required & IAVF_FLAG_AQ_RELEASE_ALLMULTI)) {
+ 		iavf_set_promiscuous(adapter, 0);
+ 		return 0;
+-- 
+2.33.0
+
 
 
