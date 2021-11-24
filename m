@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B9545BCBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:29:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 077B945BCC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:29:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244491AbhKXMcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:32:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42292 "EHLO mail.kernel.org"
+        id S244679AbhKXMc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:32:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245254AbhKXMZC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:25:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FA92610A1;
-        Wed, 24 Nov 2021 12:15:44 +0000 (UTC)
+        id S245297AbhKXMZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:25:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73D8561106;
+        Wed, 24 Nov 2021 12:15:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756145;
-        bh=0G2XniffQhCNYLj6ZHVwiH4fWdd69vWoyDrsMa7vgxs=;
+        s=korg; t=1637756148;
+        bh=UYAf1plEyO/8i+neD+RnQXHb6oAsx4KIi1AD34TpjvU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xJxp9kIrvlVRqufxZz7VDfd/3tmdY0vqwY/HGsyxEBySpUdhA8edk3Bo8SouNK/BH
-         xtr+vzi4xdBUEh70nrBCj4pwTb0KeULtWwc4lLAdKyLGhRBD9s2+B8evI5NZsF5eFL
-         7hU406Akd+pKY2bYowEyLxxQdZkXQa3WZ3yiM8gc=
+        b=cth8IE4tyBefW7GW/4UyMXdoJ+g9KoFqTw7bMPHAnFwjH1UvpbZQBNRrHf3rrDJc0
+         2UnKHbm5pT7weAPx2YzRmK3xNmujue0hyEPcPDVfyLCWSyH+6VzAMVfi59262drdiy
+         dFDCLjZRDf/qNT8PXWsPc1wuFbZA+MgboCT1Tar0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,9 +28,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 188/207] perf/x86/intel/uncore: Fix filter_tid mask for CHA events on Skylake Server
-Date:   Wed, 24 Nov 2021 12:57:39 +0100
-Message-Id: <20211124115710.048469484@linuxfoundation.org>
+Subject: [PATCH 4.9 189/207] perf/x86/intel/uncore: Fix IIO event constraints for Skylake Server
+Date:   Wed, 24 Nov 2021 12:57:40 +0100
+Message-Id: <20211124115710.078293394@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
 References: <20211124115703.941380739@linuxfoundation.org>
@@ -44,36 +44,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexander Antonov <alexander.antonov@linux.intel.com>
 
-[ Upstream commit e324234e0aa881b7841c7c713306403e12b069ff ]
+[ Upstream commit 3866ae319c846a612109c008f43cba80b8c15e86 ]
 
-According Uncore Reference Manual: any of the CHA events may be filtered
-by Thread/Core-ID by using tid modifier in CHA Filter 0 Register.
-Update skx_cha_hw_config() to follow Uncore Guide.
+According to the latest uncore document, COMP_BUF_OCCUPANCY (0xd5) event
+can be collected on 2-3 counters. Update uncore IIO event constraints for
+Skylake Server.
 
 Fixes: cd34cd97b7b4 ("perf/x86/intel/uncore: Add Skylake server uncore support")
 Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
-Link: https://lore.kernel.org/r/20211115090334.3789-2-alexander.antonov@linux.intel.com
+Link: https://lore.kernel.org/r/20211115090334.3789-3-alexander.antonov@linux.intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/events/intel/uncore_snbep.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/x86/events/intel/uncore_snbep.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index 686dd4339370f..cfd7b85f97889 100644
+index cfd7b85f97889..e94d547e9d248 100644
 --- a/arch/x86/events/intel/uncore_snbep.c
 +++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -3363,6 +3363,9 @@ static int skx_cha_hw_config(struct intel_uncore_box *box, struct perf_event *ev
- 	struct hw_perf_event_extra *reg1 = &event->hw.extra_reg;
- 	struct extra_reg *er;
- 	int idx = 0;
-+	/* Any of the CHA events may be filtered by Thread/Core-ID.*/
-+	if (event->hw.config & SNBEP_CBO_PMON_CTL_TID_EN)
-+		idx = SKX_CHA_MSR_PMON_BOX_FILTER_TID;
+@@ -3433,6 +3433,7 @@ static struct event_constraint skx_uncore_iio_constraints[] = {
+ 	UNCORE_EVENT_CONSTRAINT(0xc0, 0xc),
+ 	UNCORE_EVENT_CONSTRAINT(0xc5, 0xc),
+ 	UNCORE_EVENT_CONSTRAINT(0xd4, 0xc),
++	UNCORE_EVENT_CONSTRAINT(0xd5, 0xc),
+ 	EVENT_CONSTRAINT_END
+ };
  
- 	for (er = skx_uncore_cha_extra_regs; er->msr; er++) {
- 		if (er->event != (event->hw.config & er->config_mask))
 -- 
 2.33.0
 
