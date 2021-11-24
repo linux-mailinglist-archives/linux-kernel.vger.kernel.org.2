@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C850745C283
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:27:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FA845C3D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346157AbhKXN3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:29:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55258 "EHLO mail.kernel.org"
+        id S1350929AbhKXNnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:43:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347535AbhKXN04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:26:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9C0161B7B;
-        Wed, 24 Nov 2021 12:50:15 +0000 (UTC)
+        id S1352262AbhKXNkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:40:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77E9263249;
+        Wed, 24 Nov 2021 12:57:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758216;
-        bh=yJ7VnkyhK3R6QJKSYHXhRcX1eu4mVicswVlKz0iA1gk=;
+        s=korg; t=1637758649;
+        bh=BDJFTQwpvH0m3wDHmGPC96Aph1DdABchxbX9TxAQV6c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V/G/gFKn7eUIrpYMwWNIERT/SdgcjpHSJw42WsQRdm3p8fyMKm0tPsd4/ErTsQWnz
-         aXBT7Ru6zrTa/UuQw/SMuL6MDANROugDBZa1UR+pq0HdYisA7VCDZwcjOB/+lumTn5
-         LheDcdx+TNuFOiNz6iE0Xty1oMcexkunWJebUjlY=
+        b=LDjuv9n9D6rb9jB2RoeEE2rpm3zjN3EGSMHzkj3GUivd4xhH3OR1dDxaHTejlXrtA
+         /maV0rFun4xSsSNf87exrSCnjZafJsj4soQ8DHSmDTAPVdh4EiY0cAygYKPwjc5kig
+         sp4k7vVwjzV2ErkX/o0og41Yv1rL0RyFVObQpUws=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu-Hsuan Hsu <yuhsuan@chromium.org>,
-        Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 096/100] ASoC: DAPM: Cover regression by kctl change notification fix
-Date:   Wed, 24 Nov 2021 12:58:52 +0100
-Message-Id: <20211124115657.958194751@linuxfoundation.org>
+        stable@vger.kernel.org, XiangBing Foo <XiangBing.Foo@amd.com>,
+        Martin Leung <Martin.Leung@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Alvin Lee <Alvin.Lee2@amd.com>,
+        Daniel Wheeler <Daniel.Wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.10 137/154] drm/amd/display: Update swizzle mode enums
+Date:   Wed, 24 Nov 2021 12:58:53 +0100
+Message-Id: <20211124115706.734000387@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,82 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Alvin Lee <Alvin.Lee2@amd.com>
 
-commit 827b0913a9d9d07a0c3e559dbb20ca4d6d285a54 upstream.
+commit 58065a1e524de30df9a2d8214661d5d7eed0a2d9 upstream.
 
-The recent fix for DAPM to correct the kctl change notification by the
-commit 5af82c81b2c4 ("ASoC: DAPM: Fix missing kctl change
-notifications") caused other regressions since it changed the behavior
-of snd_soc_dapm_set_pin() that is called from several API functions.
-Formerly it returned always 0 for success, but now it returns 0 or 1.
+[Why]
+Swizzle mode enum for DC_SW_VAR_R_X was existing,
+but not mapped correctly.
 
-This patch addresses it, restoring the old behavior of
-snd_soc_dapm_set_pin() while keeping the fix in
-snd_soc_dapm_put_pin_switch().
+[How]
+Update mapping and conversion for DC_SW_VAR_R_X.
 
-Fixes: 5af82c81b2c4 ("ASoC: DAPM: Fix missing kctl change notifications")
-Reported-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20211105090925.20575-1-tiwai@suse.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: XiangBing Foo <XiangBing.Foo@amd.com>
+Reviewed-by: Martin Leung <Martin.Leung@amd.com>
+Acked-by: Qingqing Zhuo <qingqing.zhuo@amd.com>
+Signed-off-by: Alvin Lee <Alvin.Lee2@amd.com>
+Cc: stable@vger.kernel.org
+Tested-by: Daniel Wheeler <Daniel.Wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/soc-dapm.c |   29 +++++++++++++++++++++++------
- 1 file changed, 23 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c   |    4 +++-
+ drivers/gpu/drm/amd/display/dc/dml/display_mode_enums.h |    4 ++--
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2542,8 +2542,13 @@ static struct snd_soc_dapm_widget *dapm_
- 	return NULL;
- }
- 
--static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
--				const char *pin, int status)
-+/*
-+ * set the DAPM pin status:
-+ * returns 1 when the value has been updated, 0 when unchanged, or a negative
-+ * error code; called from kcontrol put callback
-+ */
-+static int __snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
-+				  const char *pin, int status)
- {
- 	struct snd_soc_dapm_widget *w = dapm_find_widget(dapm, pin, true);
- 	int ret = 0;
-@@ -2569,6 +2574,18 @@ static int snd_soc_dapm_set_pin(struct s
- 	return ret;
- }
- 
-+/*
-+ * similar as __snd_soc_dapm_set_pin(), but returns 0 when successful;
-+ * called from several API functions below
-+ */
-+static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
-+				const char *pin, int status)
-+{
-+	int ret = __snd_soc_dapm_set_pin(dapm, pin, status);
-+
-+	return ret < 0 ? ret : 0;
-+}
-+
- /**
-  * snd_soc_dapm_sync_unlocked - scan and power dapm paths
-  * @dapm: DAPM context
-@@ -3584,10 +3601,10 @@ int snd_soc_dapm_put_pin_switch(struct s
- 	const char *pin = (const char *)kcontrol->private_value;
- 	int ret;
- 
--	if (ucontrol->value.integer.value[0])
--		ret = snd_soc_dapm_enable_pin(&card->dapm, pin);
--	else
--		ret = snd_soc_dapm_disable_pin(&card->dapm, pin);
-+	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
-+	ret = __snd_soc_dapm_set_pin(&card->dapm, pin,
-+				     !!ucontrol->value.integer.value[0]);
-+	mutex_unlock(&card->dapm_mutex);
- 
- 	snd_soc_dapm_sync(&card->dapm);
- 	return ret;
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
+@@ -1852,7 +1852,9 @@ static void swizzle_to_dml_params(
+ 	case DC_SW_VAR_D_X:
+ 		*sw_mode = dm_sw_var_d_x;
+ 		break;
+-
++	case DC_SW_VAR_R_X:
++		*sw_mode = dm_sw_var_r_x;
++		break;
+ 	default:
+ 		ASSERT(0); /* Not supported */
+ 		break;
+--- a/drivers/gpu/drm/amd/display/dc/dml/display_mode_enums.h
++++ b/drivers/gpu/drm/amd/display/dc/dml/display_mode_enums.h
+@@ -80,11 +80,11 @@ enum dm_swizzle_mode {
+ 	dm_sw_SPARE_13 = 24,
+ 	dm_sw_64kb_s_x = 25,
+ 	dm_sw_64kb_d_x = 26,
+-	dm_sw_SPARE_14 = 27,
++	dm_sw_64kb_r_x = 27,
+ 	dm_sw_SPARE_15 = 28,
+ 	dm_sw_var_s_x = 29,
+ 	dm_sw_var_d_x = 30,
+-	dm_sw_64kb_r_x,
++	dm_sw_var_r_x = 31,
+ 	dm_sw_gfx7_2d_thin_l_vp,
+ 	dm_sw_gfx7_2d_thin_gl,
+ };
 
 
