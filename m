@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6144845C5F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:00:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8C445C38E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351467AbhKXODJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:03:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47006 "EHLO mail.kernel.org"
+        id S1350851AbhKXNk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:40:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353623AbhKXOAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:00:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1375C632DF;
-        Wed, 24 Nov 2021 13:09:13 +0000 (UTC)
+        id S1350316AbhKXNhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:37:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6962617E4;
+        Wed, 24 Nov 2021 12:55:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759354;
-        bh=4XE6KWei2eAG36JH0UcyF2SjwoKshUapFqcxs2AaOWM=;
+        s=korg; t=1637758546;
+        bh=XAOwsrDqY+NaFcu7HWhx920pdcuNspL5g6BEq/cOASs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=exWTDgwK0IqIj64Jtao63jMwvQQ7vhgFqFzjyqrfPjNFFGAVyVmiTY2+EL0JVCi8R
-         Pev+zdA/gb4FMAiWfDfiYXMDYowSr7dBOk5UPeCvCuXKsZ1n1TcLZfIOZVMRU5rz8J
-         CLt5jHhwHOBUnsjRB3KWPTxZrTPej+uEy1G2QXiI=
+        b=ZRwjJFm85f+nh8rJwn6SeAfAjCBUxOdGBxL5wX+bd1HPi5wyU1a8eaYKHhJ8VQiWv
+         bya1cXJsx+ssIpJjDUwuDLBjpvpokZL8rJqaMB+Qz/FdFIm2LxXiWqLYkAwCx9KZ3H
+         0cbpYezmlVd8hO0sDSaufcv9cLpdnEECWML3q9yQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Matthew Perkowski <mgperkow@gmail.com>, stable@kernel.org
-Subject: [PATCH 5.15 213/279] ata: libata: improve ata_read_log_page() error message
+        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
+        Karen Sornek <karen.sornek@intel.com>,
+        Tony Brelinski <tony.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 104/154] i40e: Fix warning message and call stack during rmmod i40e driver
 Date:   Wed, 24 Nov 2021 12:58:20 +0100
-Message-Id: <20211124115726.103396986@linuxfoundation.org>
+Message-Id: <20211124115705.654879255@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +43,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Damien Le Moal <damien.lemoal@opensource.wdc.com>
+From: Karen Sornek <karen.sornek@intel.com>
 
-commit 23ef63d5e14f916c5bba39128ebef395859d7c0f upstream.
+[ Upstream commit 3a3b311e3881172fc8e019b6508f04bc40c92d9d ]
 
-If ata_read_log_page() fails to read a log page, the ata_dev_err() error
-message only print the page number, omitting the log number. In case of
-error, facilitate debugging by also printing the log number.
+Restore part of reset functionality used when reset is called
+from the VF to reset itself. Without this fix warning message
+is displayed when VF is being removed via sysfs.
 
-Cc: stable@kernel.org # 5.15
-Signed-off-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Tested-by: Matthew Perkowski <mgperkow@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix the crash of the VF during reset by ensuring
+that the PF receives the reset message successfully.
+Refactor code to use one function instead of two.
+
+Fixes: 5c3c48ac6bf5 ("i40e: implement virtual device interface")
+Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
+Signed-off-by: Karen Sornek <karen.sornek@intel.com>
+Tested-by: Tony Brelinski <tony.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/libata-core.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ .../ethernet/intel/i40e/i40e_virtchnl_pf.c    | 53 ++++++++-----------
+ 1 file changed, 21 insertions(+), 32 deletions(-)
 
---- a/drivers/ata/libata-core.c
-+++ b/drivers/ata/libata-core.c
-@@ -2031,8 +2031,9 @@ retry:
- 			dev->horkage |= ATA_HORKAGE_NO_DMA_LOG;
- 			goto retry;
- 		}
--		ata_dev_err(dev, "Read log page 0x%02x failed, Emask 0x%x\n",
--			    (unsigned int)page, err_mask);
-+		ata_dev_err(dev,
-+			    "Read log 0x%02x page 0x%02x failed, Emask 0x%x\n",
-+			    (unsigned int)log, (unsigned int)page, err_mask);
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+index 7cf572d8bd140..41c0a103119c1 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+@@ -130,17 +130,18 @@ void i40e_vc_notify_vf_reset(struct i40e_vf *vf)
+ /***********************misc routines*****************************/
+ 
+ /**
+- * i40e_vc_disable_vf
++ * i40e_vc_reset_vf
+  * @vf: pointer to the VF info
+- *
+- * Disable the VF through a SW reset.
++ * @notify_vf: notify vf about reset or not
++ * Reset VF handler.
+  **/
+-static inline void i40e_vc_disable_vf(struct i40e_vf *vf)
++static void i40e_vc_reset_vf(struct i40e_vf *vf, bool notify_vf)
+ {
+ 	struct i40e_pf *pf = vf->pf;
+ 	int i;
+ 
+-	i40e_vc_notify_vf_reset(vf);
++	if (notify_vf)
++		i40e_vc_notify_vf_reset(vf);
+ 
+ 	/* We want to ensure that an actual reset occurs initiated after this
+ 	 * function was called. However, we do not want to wait forever, so
+@@ -158,9 +159,14 @@ static inline void i40e_vc_disable_vf(struct i40e_vf *vf)
+ 		usleep_range(10000, 20000);
  	}
  
- 	return err_mask;
+-	dev_warn(&vf->pf->pdev->dev,
+-		 "Failed to initiate reset for VF %d after 200 milliseconds\n",
+-		 vf->vf_id);
++	if (notify_vf)
++		dev_warn(&vf->pf->pdev->dev,
++			 "Failed to initiate reset for VF %d after 200 milliseconds\n",
++			 vf->vf_id);
++	else
++		dev_dbg(&vf->pf->pdev->dev,
++			"Failed to initiate reset for VF %d after 200 milliseconds\n",
++			vf->vf_id);
+ }
+ 
+ /**
+@@ -2054,20 +2060,6 @@ err:
+ 	return ret;
+ }
+ 
+-/**
+- * i40e_vc_reset_vf_msg
+- * @vf: pointer to the VF info
+- *
+- * called from the VF to reset itself,
+- * unlike other virtchnl messages, PF driver
+- * doesn't send the response back to the VF
+- **/
+-static void i40e_vc_reset_vf_msg(struct i40e_vf *vf)
+-{
+-	if (test_bit(I40E_VF_STATE_ACTIVE, &vf->vf_states))
+-		i40e_reset_vf(vf, false);
+-}
+-
+ /**
+  * i40e_vc_config_promiscuous_mode_msg
+  * @vf: pointer to the VF info
+@@ -2563,8 +2555,7 @@ static int i40e_vc_request_queues_msg(struct i40e_vf *vf, u8 *msg)
+ 	} else {
+ 		/* successful request */
+ 		vf->num_req_queues = req_pairs;
+-		i40e_vc_notify_vf_reset(vf);
+-		i40e_reset_vf(vf, false);
++		i40e_vc_reset_vf(vf, true);
+ 		return 0;
+ 	}
+ 
+@@ -3777,8 +3768,7 @@ static int i40e_vc_add_qch_msg(struct i40e_vf *vf, u8 *msg)
+ 	vf->num_req_queues = 0;
+ 
+ 	/* reset the VF in order to allocate resources */
+-	i40e_vc_notify_vf_reset(vf);
+-	i40e_reset_vf(vf, false);
++	i40e_vc_reset_vf(vf, true);
+ 
+ 	return I40E_SUCCESS;
+ 
+@@ -3818,8 +3808,7 @@ static int i40e_vc_del_qch_msg(struct i40e_vf *vf, u8 *msg)
+ 	}
+ 
+ 	/* reset the VF in order to allocate resources */
+-	i40e_vc_notify_vf_reset(vf);
+-	i40e_reset_vf(vf, false);
++	i40e_vc_reset_vf(vf, true);
+ 
+ 	return I40E_SUCCESS;
+ 
+@@ -3881,7 +3870,7 @@ int i40e_vc_process_vf_msg(struct i40e_pf *pf, s16 vf_id, u32 v_opcode,
+ 		i40e_vc_notify_vf_link_state(vf);
+ 		break;
+ 	case VIRTCHNL_OP_RESET_VF:
+-		i40e_vc_reset_vf_msg(vf);
++		i40e_vc_reset_vf(vf, false);
+ 		ret = 0;
+ 		break;
+ 	case VIRTCHNL_OP_CONFIG_PROMISCUOUS_MODE:
+@@ -4135,7 +4124,7 @@ int i40e_ndo_set_vf_mac(struct net_device *netdev, int vf_id, u8 *mac)
+ 	/* Force the VF interface down so it has to bring up with new MAC
+ 	 * address
+ 	 */
+-	i40e_vc_disable_vf(vf);
++	i40e_vc_reset_vf(vf, true);
+ 	dev_info(&pf->pdev->dev, "Bring down and up the VF interface to make this change effective.\n");
+ 
+ error_param:
+@@ -4199,7 +4188,7 @@ int i40e_ndo_set_vf_port_vlan(struct net_device *netdev, int vf_id,
+ 		/* duplicate request, so just return success */
+ 		goto error_pvid;
+ 
+-	i40e_vc_disable_vf(vf);
++	i40e_vc_reset_vf(vf, true);
+ 	/* During reset the VF got a new VSI, so refresh a pointer. */
+ 	vsi = pf->vsi[vf->lan_vsi_idx];
+ 	/* Locked once because multiple functions below iterate list */
+@@ -4582,7 +4571,7 @@ int i40e_ndo_set_vf_trust(struct net_device *netdev, int vf_id, bool setting)
+ 		goto out;
+ 
+ 	vf->trusted = setting;
+-	i40e_vc_disable_vf(vf);
++	i40e_vc_reset_vf(vf, true);
+ 	dev_info(&pf->pdev->dev, "VF %u is now %strusted\n",
+ 		 vf_id, setting ? "" : "un");
+ 
+-- 
+2.33.0
+
 
 
