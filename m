@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7495A45B9C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D50A45B9CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:02:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242082AbhKXMEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:04:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59594 "EHLO mail.kernel.org"
+        id S242130AbhKXMFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:05:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242080AbhKXMEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:04:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC25961056;
-        Wed, 24 Nov 2021 12:01:12 +0000 (UTC)
+        id S242115AbhKXME2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:04:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B586960F90;
+        Wed, 24 Nov 2021 12:01:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755273;
-        bh=IivnivW29gzAWz4COM1gCW6U3//IylW9OiVKrCyS7O4=;
+        s=korg; t=1637755279;
+        bh=mXU7ZrC1ecl8y32Anmwsuk5zSSIlVQ4SKMc+EF0gskE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OVE8CsHf3lgUIcsZhM16ByfAN5MApBspuwNiEUdLLcG1FdgRFHxbRAqN074rHSig7
-         WFa51oIxKxItGZM0Obe1yK7CXYcXfRCAjuRsR/4QZafOqA1Pw82pmSxYVsy4y3qzcS
-         E69eLIw2vhlEM6H+zEVkvtYce71NhGtMixbs2F0Y=
+        b=aAe/wEYDerjh7K33a5tqO5qfXIVApk8iqH4kBzn3qrvkDCruUkiZfVDG0YDhAjVrr
+         gI7J/1Xyz5nNMggCYW0wSKoDFhMFtZCjn3uQEF3h7WxGzPnDj49XLvrE6V8BkVLZhW
+         MiNzqZSxN8J4NzLtXonhh2EJKwHhu3/KBxoPEVds=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+9988f17cf72a1045a189@syzkaller.appspotmail.com,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.4 035/162] ALSA: mixer: oss: Fix racy access to slots
-Date:   Wed, 24 Nov 2021 12:55:38 +0100
-Message-Id: <20211124115659.477935881@linuxfoundation.org>
+        syzbot+ace149a75a9a0a399ac7@syzkaller.appspotmail.com,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.4 036/162] ALSA: mixer: fix deadlock in snd_mixer_oss_set_volume
+Date:   Wed, 24 Nov 2021 12:55:39 +0100
+Message-Id: <20211124115659.516154323@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
 References: <20211124115658.328640564@linuxfoundation.org>
@@ -40,176 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit 411cef6adfb38a5bb6bd9af3941b28198e7fb680 upstream.
+commit 3ab7992018455ac63c33e9b3eaa7264e293e40f4 upstream.
 
-The OSS mixer can reassign the mapping slots dynamically via proc
-file.  Although the addition and deletion of those slots are protected
-by mixer->reg_mutex, the access to slots aren't, hence this may cause
-UAF when the slots in use are deleted concurrently.
+In commit 411cef6adfb3 ("ALSA: mixer: oss: Fix racy access to slots")
+added mutex protection in snd_mixer_oss_set_volume(). Second
+mutex_lock() in same function looks like typo, fix it.
 
-This patch applies the mixer->reg_mutex in all appropriate code paths
-(i.e. the ioctl functions) that may access slots.
-
-Reported-by: syzbot+9988f17cf72a1045a189@syzkaller.appspotmail.com
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+Reported-by: syzbot+ace149a75a9a0a399ac7@syzkaller.appspotmail.com
+Fixes: 411cef6adfb3 ("ALSA: mixer: oss: Fix racy access to slots")
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/00000000000036adc005ceca9175@google.com
-Link: https://lore.kernel.org/r/20211020164846.922-1-tiwai@suse.de
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Link: https://lore.kernel.org/r/20211024140315.16704-1-paskripkin@gmail.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/core/oss/mixer_oss.c |   43 +++++++++++++++++++++++++++++++++----------
- 1 file changed, 33 insertions(+), 10 deletions(-)
+ sound/core/oss/mixer_oss.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/sound/core/oss/mixer_oss.c
 +++ b/sound/core/oss/mixer_oss.c
-@@ -144,11 +144,13 @@ static int snd_mixer_oss_devmask(struct
- 
- 	if (mixer == NULL)
- 		return -EIO;
-+	mutex_lock(&mixer->reg_mutex);
- 	for (chn = 0; chn < 31; chn++) {
- 		pslot = &mixer->slots[chn];
- 		if (pslot->put_volume || pslot->put_recsrc)
- 			result |= 1 << chn;
- 	}
-+	mutex_unlock(&mixer->reg_mutex);
- 	return result;
- }
- 
-@@ -160,11 +162,13 @@ static int snd_mixer_oss_stereodevs(stru
- 
- 	if (mixer == NULL)
- 		return -EIO;
-+	mutex_lock(&mixer->reg_mutex);
- 	for (chn = 0; chn < 31; chn++) {
- 		pslot = &mixer->slots[chn];
- 		if (pslot->put_volume && pslot->stereo)
- 			result |= 1 << chn;
- 	}
-+	mutex_unlock(&mixer->reg_mutex);
- 	return result;
- }
- 
-@@ -175,6 +179,7 @@ static int snd_mixer_oss_recmask(struct
- 
- 	if (mixer == NULL)
- 		return -EIO;
-+	mutex_lock(&mixer->reg_mutex);
- 	if (mixer->put_recsrc && mixer->get_recsrc) {	/* exclusive */
- 		result = mixer->mask_recsrc;
- 	} else {
-@@ -186,6 +191,7 @@ static int snd_mixer_oss_recmask(struct
- 				result |= 1 << chn;
- 		}
- 	}
-+	mutex_unlock(&mixer->reg_mutex);
- 	return result;
- }
- 
-@@ -196,11 +202,12 @@ static int snd_mixer_oss_get_recsrc(stru
- 
- 	if (mixer == NULL)
- 		return -EIO;
-+	mutex_lock(&mixer->reg_mutex);
- 	if (mixer->put_recsrc && mixer->get_recsrc) {	/* exclusive */
--		int err;
- 		unsigned int index;
--		if ((err = mixer->get_recsrc(fmixer, &index)) < 0)
--			return err;
-+		result = mixer->get_recsrc(fmixer, &index);
-+		if (result < 0)
-+			goto unlock;
- 		result = 1 << index;
- 	} else {
- 		struct snd_mixer_oss_slot *pslot;
-@@ -215,7 +222,10 @@ static int snd_mixer_oss_get_recsrc(stru
- 			}
- 		}
- 	}
--	return mixer->oss_recsrc = result;
-+	mixer->oss_recsrc = result;
-+ unlock:
-+	mutex_unlock(&mixer->reg_mutex);
-+	return result;
- }
- 
- static int snd_mixer_oss_set_recsrc(struct snd_mixer_oss_file *fmixer, int recsrc)
-@@ -228,6 +238,7 @@ static int snd_mixer_oss_set_recsrc(stru
- 
- 	if (mixer == NULL)
- 		return -EIO;
-+	mutex_lock(&mixer->reg_mutex);
- 	if (mixer->get_recsrc && mixer->put_recsrc) {	/* exclusive input */
- 		if (recsrc & ~mixer->oss_recsrc)
- 			recsrc &= ~mixer->oss_recsrc;
-@@ -253,6 +264,7 @@ static int snd_mixer_oss_set_recsrc(stru
- 			}
- 		}
- 	}
-+	mutex_unlock(&mixer->reg_mutex);
- 	return result;
- }
- 
-@@ -264,6 +276,7 @@ static int snd_mixer_oss_get_volume(stru
- 
- 	if (mixer == NULL || slot > 30)
- 		return -EIO;
-+	mutex_lock(&mixer->reg_mutex);
- 	pslot = &mixer->slots[slot];
- 	left = pslot->volume[0];
- 	right = pslot->volume[1];
-@@ -271,15 +284,21 @@ static int snd_mixer_oss_get_volume(stru
- 		result = pslot->get_volume(fmixer, pslot, &left, &right);
- 	if (!pslot->stereo)
- 		right = left;
--	if (snd_BUG_ON(left < 0 || left > 100))
--		return -EIO;
--	if (snd_BUG_ON(right < 0 || right > 100))
--		return -EIO;
-+	if (snd_BUG_ON(left < 0 || left > 100)) {
-+		result = -EIO;
-+		goto unlock;
-+	}
-+	if (snd_BUG_ON(right < 0 || right > 100)) {
-+		result = -EIO;
-+		goto unlock;
-+	}
- 	if (result >= 0) {
- 		pslot->volume[0] = left;
- 		pslot->volume[1] = right;
- 	 	result = (left & 0xff) | ((right & 0xff) << 8);
- 	}
-+ unlock:
-+	mutex_unlock(&mixer->reg_mutex);
- 	return result;
- }
- 
-@@ -292,6 +311,7 @@ static int snd_mixer_oss_set_volume(stru
- 
- 	if (mixer == NULL || slot > 30)
- 		return -EIO;
-+	mutex_lock(&mixer->reg_mutex);
- 	pslot = &mixer->slots[slot];
- 	if (left > 100)
- 		left = 100;
-@@ -302,10 +322,13 @@ static int snd_mixer_oss_set_volume(stru
- 	if (pslot->put_volume)
- 		result = pslot->put_volume(fmixer, pslot, left, right);
- 	if (result < 0)
--		return result;
-+		goto unlock;
- 	pslot->volume[0] = left;
+@@ -327,7 +327,7 @@ static int snd_mixer_oss_set_volume(stru
  	pslot->volume[1] = right;
-- 	return (left & 0xff) | ((right & 0xff) << 8);
-+	result = (left & 0xff) | ((right & 0xff) << 8);
-+ unlock:
-+	mutex_lock(&mixer->reg_mutex);
-+	return result;
+ 	result = (left & 0xff) | ((right & 0xff) << 8);
+  unlock:
+-	mutex_lock(&mixer->reg_mutex);
++	mutex_unlock(&mixer->reg_mutex);
+ 	return result;
  }
  
- static int snd_mixer_oss_ioctl1(struct snd_mixer_oss_file *fmixer, unsigned int cmd, unsigned long arg)
 
 
