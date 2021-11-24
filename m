@@ -2,116 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E22D45B0D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 01:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C53B145B0D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 01:45:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231410AbhKXAni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 19:43:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34506 "EHLO
+        id S231750AbhKXAsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 19:48:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231303AbhKXAnh (ORCPT
+        with ESMTP id S230490AbhKXAss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 19:43:37 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D030C061714
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 16:40:28 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id v1so2517111edx.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 16:40:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ed+8AqhHF9LjEr/ddfnjb/lBhu42SN2dE9F+PFAVeQg=;
-        b=Wjy9BYZ5+F1SRnk/hYqJ3NtmC+mUEmtMz4qmtTJQ+Ye6g4k5viv8imLHHlueIpW36O
-         XhrHCg6JEMBQGwQQEFVZk3mYiJ8cZX8hAstxngm1XAbRnUha9uOMrMiod2zJ9Ly9IVLG
-         //hBllSGIduKzKU+Hb+GdwLTqbl9CFkjl5hEE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ed+8AqhHF9LjEr/ddfnjb/lBhu42SN2dE9F+PFAVeQg=;
-        b=8HwzdGj944YcpxmpzuHHy8iZ5ved/5iemB4rcvLMQE6RtkA744haX8HErU7VLEOltx
-         PcLDf5MrjLKv6h0QNfCi790TQPQHxVriLxEPmOhZXDXaKFv0wSI3+x1IxetLcMhZHPeW
-         /fn5nK3qmcH0QjrZpi14STaFiSpbGnjOk3SPfzlowuUJi0EL5AbUcaX6OrDWQ7ZkBeoJ
-         Ql4fGVf4DkIFqXt3+cWQKTzoBvj7W1XueJCimTqkEG1vqUe7bBZWhCD835F7v1lfFs5o
-         QEhd12IZYDQZE5QVbwr5YGoqn0X7SxdCrqmiIGMt3CNf1nP2va7HvKXro4jeagBApB1f
-         6Sug==
-X-Gm-Message-State: AOAM532zL8u2yJAFAvDZQ3OXAw2fWc/5I1awT7h+Od5v5QEBZLu3IO63
-        qtnl1vPgWrNqTGrNEk5PrSPSQ3xdhDbqpmSCBgd86g==
-X-Google-Smtp-Source: ABdhPJzHFWzgRzJHLlh6KVWQt8e26YwrEE7uC1O57pOjDKUKDxspr4TM+rmdsIxLCyMh+Tjh0FG2Ks3d6gpvlTC9gqU=
-X-Received: by 2002:a05:6402:11c8:: with SMTP id j8mr17158976edw.33.1637714427186;
- Tue, 23 Nov 2021 16:40:27 -0800 (PST)
+        Tue, 23 Nov 2021 19:48:48 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55712C061574;
+        Tue, 23 Nov 2021 16:45:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
+        bh=xB27hI0vcoK0X7IUXCx/Mp5AQPjXWuTvs7bAHhqYjwA=; b=XTfJCm0fQIqtp31k/uUvMW2enX
+        jA95MI5dUEwQC9pe//yZqS3E1T1g7cUDEFO9Yv0oY8NoVn/3HwHoQsdTguxQkrWVF8AhtgW9pC3tA
+        IGNVE1C+jfYBu5wHvXIZAzSxkdXrHO4JjF+tgX29Yfs7I9/vrlqXdIyozlKFP/i74SjTGIIJW7LQA
+        KrglDy6gWneibZzAAu0onNDNEq6xsHDL4IhXwE7YUlb9VWNTg2lWcjyTqOqV42IB9vr2MkZHbE5FV
+        d4FaUkwXrQEy8UgUGee4IscwFRQ53ZKTfuh+IGuFy0WQwCTJs2Vn78fNPQnp9qiIkwYg7c16ChR3t
+        oRqoycFQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mpgPr-003ksM-9T; Wed, 24 Nov 2021 00:45:39 +0000
+Subject: Re: [RFC v3 03/12] hte: Add tegra194 HTE kernel provider
+To:     Dipen Patel <dipenp@nvidia.com>, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        warthog618@gmail.com, devicetree@vger.kernel.org,
+        linux-doc@vger.kernel.org, robh+dt@kernel.org
+References: <20211123193039.25154-1-dipenp@nvidia.com>
+ <20211123193039.25154-4-dipenp@nvidia.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <a47ccdf7-0d35-feea-0015-526f65bfffac@infradead.org>
+Date:   Tue, 23 Nov 2021 16:45:37 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211115165428.722074685@linuxfoundation.org> <20211115165430.669780058@linuxfoundation.org>
- <CAFxkdAqahwaN0u6u34d4CrMW7rYL=6TpWk1CcOn+uGQdEgkuTQ@mail.gmail.com> <CAOssrKd4gHrKNNttZZey9orZ=F+msx4Axa6Mi_XgZw-9M39h-Q@mail.gmail.com>
-In-Reply-To: <CAOssrKd4gHrKNNttZZey9orZ=F+msx4Axa6Mi_XgZw-9M39h-Q@mail.gmail.com>
-From:   Justin Forbes <jmforbes@linuxtx.org>
-Date:   Tue, 23 Nov 2021 18:40:16 -0600
-Message-ID: <CAFxkdAqU0peBNm_SB3En99bU+o=a+05t-Bwyds0AUFb+2W=CFw@mail.gmail.com>
-Subject: Re: [PATCH 5.15 056/917] fuse: fix page stealing
-To:     Miklos Szeredi <mszeredi@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>,
-        Frank Dinoff <fdinoff@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211123193039.25154-4-dipenp@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 1:22 PM Miklos Szeredi <mszeredi@redhat.com> wrote:
->
-> On Tue, Nov 23, 2021 at 7:29 PM Justin Forbes <jmforbes@linuxtx.org> wrote:
-> >
-> > On Mon, Nov 15, 2021 at 7:04 PM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > From: Miklos Szeredi <mszeredi@redhat.com>
-> > >
-> > > commit 712a951025c0667ff00b25afc360f74e639dfabe upstream.
-> > >
-> > > It is possible to trigger a crash by splicing anon pipe bufs to the fuse
-> > > device.
-> > >
-> > > The reason for this is that anon_pipe_buf_release() will reuse buf->page if
-> > > the refcount is 1, but that page might have already been stolen and its
-> > > flags modified (e.g. PG_lru added).
-> > >
-> > > This happens in the unlikely case of fuse_dev_splice_write() getting around
-> > > to calling pipe_buf_release() after a page has been stolen, added to the
-> > > page cache and removed from the page cache.
-> > >
-> > > Fix by calling pipe_buf_release() right after the page was inserted into
-> > > the page cache.  In this case the page has an elevated refcount so any
-> > > release function will know that the page isn't reusable.
-> > >
-> > > Reported-by: Frank Dinoff <fdinoff@google.com>
-> > > Link: https://lore.kernel.org/r/CAAmZXrsGg2xsP1CK+cbuEMumtrqdvD-NKnWzhNcvn71RV3c1yw@mail.gmail.com/
-> > > Fixes: dd3bb14f44a6 ("fuse: support splice() writing to fuse device")
-> > > Cc: <stable@vger.kernel.org> # v2.6.35
-> > > Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >
-> > It appears this patch causes a rather serious regression in flatpacks
-> > using portals to access files.  Reverting this patch restores expected
-> > behavior. I have asked users in the Fedora bug to test with 5.16-rc2
-> > to see if we are just missing a dependent patch in stable, or if this
-> > is broken there as well, but no response yet.:
-> >
-> > https://bugzilla.redhat.com/show_bug.cgi?id=2025285
-> > https://github.com/flatpak/flatpak/issues/4595
->
-> Hi,
->
-> Thanks for the report.  Can someone with the reproducer try the attached patch?
->
-> I think the race there is unlikely but possible.
->
+Hi--
 
-Thanks, did a scratch build for that and dropped it in the bug. Only
-one user has reported back, but the report was that it did not fix the
-issue.  I have also gotten confirmation now that the issue is occuring
-with 5.16-rc2.
+On 11/23/21 11:30 AM, Dipen Patel wrote:
+> Tegra194 device has multiple HTE instances also known as GTE
+> (Generic hardware Timestamping Engine) which can timestamp subset of
+> SoC lines/signals. This provider driver focuses on IRQ and GPIO lines
+> and exposes timestamping ability on those lines to the consumers
+> through HTE subsystem.
+> 
+> Also, with this patch, added:
+> - documentation about this provider and its capabilities at
+> Documentation/hte.
+> - Compilation support in Makefile and Kconfig
+> 
+> Signed-off-by: Dipen Patel <dipenp@nvidia.com>
+> ---
+> Changes in v3:
+> - Addressed grammatical/spelling errors.
+> 
+>   Documentation/hte/index.rst        |  22 ++
+>   Documentation/hte/tegra194-hte.rst |  57 +++
+>   Documentation/index.rst            |   1 +
+>   drivers/hte/Kconfig                |  12 +
+>   drivers/hte/Makefile               |   1 +
+>   drivers/hte/hte-tegra194.c         | 545 +++++++++++++++++++++++++++++
+>   6 files changed, 638 insertions(+)
+>   create mode 100644 Documentation/hte/index.rst
+>   create mode 100644 Documentation/hte/tegra194-hte.rst
+>   create mode 100644 drivers/hte/hte-tegra194.c
+> 
 
-Thanks,
-Justin
+> diff --git a/Documentation/hte/tegra194-hte.rst b/Documentation/hte/tegra194-hte.rst
+> new file mode 100644
+> index 000000000000..3bebcbac5847
+> --- /dev/null
+> +++ b/Documentation/hte/tegra194-hte.rst
+> @@ -0,0 +1,57 @@
+> +HTE Kernel provider driver
+> +==========================
+> +
+> +Description
+> +-----------
+> +The Nvidia tegra194 HTE provider driver implements two GTE
+> +(Generic Timestamping Engine) instances: 1) GPIO GTE and 2) LIC
+> +(Legacy Interrupt Controller) IRQ GTE. Both GTEs instances get the
+
+                                           Both GTE instances
+
+> +timestamp from the system counter TSC which has 31.25MHz clock rate, and the
+> +driver converts clock tick rate to nanoseconds before storing it as timestamp
+> +value.
+> +
+> +GPIO GTE
+> +--------
+> +
+> +This GTE instance timestamps GPIO in real time. For that to happen GPIO
+> +needs to be configured as input and IRQ needs to be enabled. The only always on
+
+                         Is "only" supposed to be here? ----------- ^^^^^^
+
+> +(AON) GPIO controller instance supports timestamping GPIOs in real time and it
+> +has 39 GPIO lines. The GPIO GTE and AON GPIO controller are tightly coupled as
+> +it requires very specific bits to be set in GPIO config register before GPIO
+> +GTE can be used. The GPIO GTE functionality is accessed from the GPIOLIB
+> +framework for the in-kernel and userspace consumers. In the latter case,
+> +requests go through GPIOLIB CDEV framework. The below APIs are added in GPIOLIB
+> +framework to access HTE subsystem and GPIO GTE.
+> +
+> +.. kernel-doc:: drivers/gpio/gpiolib.c
+> +   :functions: gpiod_req_hw_timestamp_ns gpiod_rel_hw_timestamp_ns
+> +
+> +There is hte-tegra194-gpio-test.c, located in ``drivers/hte/`` directory, test
+> +driver which demonstrates above APIs for the Jetson AGX platform.
+> +
+> +For userspace consumers, GPIO_V2_LINE_FLAG_EVENT_CLOCK_HARDWARE flag must be
+> +specified during IOCTL calls. Refer to ``tools/gpio/gpio-event-mon.c``, which
+> +returns the timestamp in nanoseconds.
+> +
+> +LIC (Legacy Interrupt Controller) IRQ GTE
+> +-----------------------------------------
+> +
+> +This GTE instance timestamps LIC IRQ lines in real time. There are 352 IRQ
+> +lines which this instance can add timestamps to in real time. The hte
+> +devicetree binding described at ``Documentation/devicetree/bindings/hte/``
+> +provides an example of how a consumer can request an IRQ line. Since it is a
+> +one-to-one mapping, consumers can simply specify the IRQ number that they are
+> +interested in. There is no userspace consumer support for this GTE instance in
+> +the hte framework. The sample test code hte-tegra194-irq-test.c, located in
+> +the ``drivers/hte/`` directory, demonstrates how to use an IRQ GTE instance.
+> +The below is sample device tree snippet code for the test driver::
+> +
+> + tegra_hte_irq_test {
+> +        compatible = "nvidia,tegra194-hte-irq-test";
+> +        htes = <&tegra_hte_lic 0x19>;
+> +        hte-names = "hte-lic";
+> + };
+> +
+> +The provider source code of both IRQ and GPIO GTE instances is located at
+> +``drivers/hte/hte-tegra194.c``.
+> +
+> diff --git a/Documentation/index.rst b/Documentation/index.rst
+> index 1b13c2445e87..b41118577fe6 100644
+> --- a/Documentation/index.rst
+> +++ b/Documentation/index.rst
+> @@ -138,6 +138,7 @@ needed).
+>      misc-devices/index
+>      scheduler/index
+>      mhi/index
+> +   hte/index
+
+Looks like a text alignment problem there.
+
+>   
+>   Architecture-agnostic documentation
+>   -----------------------------------
+
+
+-- 
+~Randy
