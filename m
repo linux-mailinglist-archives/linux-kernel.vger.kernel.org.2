@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB6945BD9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C914F45B98F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:00:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343511AbhKXMjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:39:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35692 "EHLO mail.kernel.org"
+        id S241863AbhKXMDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:03:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344107AbhKXMfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:35:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2E3160FE7;
-        Wed, 24 Nov 2021 12:21:27 +0000 (UTC)
+        id S241859AbhKXMDK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:03:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0F5E600EF;
+        Wed, 24 Nov 2021 12:00:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756488;
-        bh=wAcq/QbrQa58HbAyjghxl82mV4OBsMbJuIOPp79spaw=;
+        s=korg; t=1637755201;
+        bh=eLngJBpzQSIOzbGKE1HM+YWxlS/Q0K1g0EaMU5UuOUY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d7Gf09rqUX5oLc1OuZsfy8ucUHiNhkRZa+k10RGrqaJl/0mpCQVlEsf+bmAzeQlka
-         hDXkgJTuzuNQAYYMI+3h+t8j0b5LXp6DrYtV3Zu6Yc9EUf5kNPnyM9FF2bYEcC/N+q
-         AcQVCxKb/3W/OFodgS/nK4DFBh8LqRtVWVIgKWn0=
+        b=pVGXIHcom2bW42YlYzEwpFHWe4B2IrjmvJtptbAjRJD1QmcC7t3XYy75KeM10BIcc
+         hcSR37e1tBCHH85ORbapiGMhD+MOGy/gAEScYdjxAmNhRdTJcxPVb2dqE63vLFwkd/
+         8155B5ZzL+JbpYu9DTVYOF18shX0D2nAKctMu0R0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aleksander Jan Bajkowski <olek2@wp.pl>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 071/251] MIPS: lantiq: dma: add small delay after reset
+        stable@vger.kernel.org, Bryan Pass <bryan.pass@gmail.com>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 4.4 010/162] media: ite-cir: IR receiver stop working after receive overflow
 Date:   Wed, 24 Nov 2021 12:55:13 +0100
-Message-Id: <20211124115712.716656180@linuxfoundation.org>
+Message-Id: <20211124115658.661448581@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aleksander Jan Bajkowski <olek2@wp.pl>
+From: Sean Young <sean@mess.org>
 
-[ Upstream commit c12aa581f6d5e80c3c3675ab26a52c2b3b62f76e ]
+commit fdc881783099c6343921ff017450831c8766d12a upstream.
 
-Reading the DMA registers immediately after the reset causes
-Data Bus Error. Adding a small delay fixes this issue.
+On an Intel NUC6iSYK, no IR is reported after a receive overflow.
 
-Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+When a receiver overflow occurs, this condition is only cleared by
+reading the fifo. Make sure we read anything in the fifo.
+
+Fixes: 28c7afb07ccf ("media: ite-cir: check for receive overflow")
+Suggested-by: Bryan Pass <bryan.pass@gmail.com>
+Tested-by: Bryan Pass <bryan.pass@gmail.com>
+Cc: stable@vger.kernel.org>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/lantiq/xway/dma.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/media/rc/ite-cir.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/lantiq/xway/dma.c b/arch/mips/lantiq/xway/dma.c
-index 805b3a6ab2d60..ce7e033b4bb18 100644
---- a/arch/mips/lantiq/xway/dma.c
-+++ b/arch/mips/lantiq/xway/dma.c
-@@ -22,6 +22,7 @@
- #include <linux/export.h>
- #include <linux/spinlock.h>
- #include <linux/clk.h>
-+#include <linux/delay.h>
- #include <linux/err.h>
+--- a/drivers/media/rc/ite-cir.c
++++ b/drivers/media/rc/ite-cir.c
+@@ -299,7 +299,7 @@ static irqreturn_t ite_cir_isr(int irq,
+ 	}
  
- #include <lantiq_soc.h>
-@@ -234,6 +235,8 @@ ltq_dma_init(struct platform_device *pdev)
- 	clk_enable(clk);
- 	ltq_dma_w32_mask(0, DMA_RESET, LTQ_DMA_CTRL);
- 
-+	usleep_range(1, 10);
-+
- 	/* disable all interrupts */
- 	ltq_dma_w32(0, LTQ_DMA_IRNEN);
- 
--- 
-2.33.0
-
+ 	/* check for the receive interrupt */
+-	if (iflags & ITE_IRQ_RX_FIFO) {
++	if (iflags & (ITE_IRQ_RX_FIFO | ITE_IRQ_RX_FIFO_OVERRUN)) {
+ 		/* read the FIFO bytes */
+ 		rx_bytes =
+ 			dev->params.get_rx_bytes(dev, rx_buf,
 
 
