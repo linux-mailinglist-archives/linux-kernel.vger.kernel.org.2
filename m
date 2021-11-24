@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2AAA45C5D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:59:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8535B45C302
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:32:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347428AbhKXOBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:01:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47000 "EHLO mail.kernel.org"
+        id S1350077AbhKXNez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:34:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355586AbhKXN6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:58:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3ABB613A7;
-        Wed, 24 Nov 2021 13:08:11 +0000 (UTC)
+        id S1351569AbhKXNc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:32:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0615F615A4;
+        Wed, 24 Nov 2021 12:52:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759292;
-        bh=mV4/4Igol31KI5gbeAxpCtkzj/tHx3TSwHLwbNgcPcM=;
+        s=korg; t=1637758379;
+        bh=CI7V8kf8FBuev+kJ24QH3lqRNZCPtEbUIUWBJCuILDE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QQPoB7/7Cqniw8H85CbuoR9xZraGFEMRiTpdonCEjxkGSQz+k0ayDgEuQmP+aHvLG
-         bQ0EbBjR97Jr8GJdAQffScVCJpn/n2HfbQBaDj0zEzTFEcFbUqjFwe01WbUKVb0aj8
-         44qfKHDNqSWz5ZRBdV/7i1B0vZbaIhDX6FjeIhug=
+        b=YAq/R+MmKV0pei8/TVyfr4UNh0TsXsJZAPxhQXlG7OfYvycSKTp4gg9+PWJMw1JMw
+         B4cwqm+5nHDOrfZkRA+JvvuFPR1y7qtrKm4+vfwj1jToDlNowxBH8aQv3uuPJuIzEx
+         2xie950AJXq7B+hnezJn/gw6v7u9+8KQxFwN0tKU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Eryk Rybak <eryk.roch.rybak@intel.com>,
-        Konrad Jankowski <konrad0.jankowski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Chao Yu <chao@kernel.org>,
+        tanghuan <tanghuan@vivo.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Fengnan Chang <changfengnan@vivo.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 160/279] i40e: Fix correct max_pkt_size on VF RX queue
+Subject: [PATCH 5.10 051/154] f2fs: fix to use WHINT_MODE
 Date:   Wed, 24 Nov 2021 12:57:27 +0100
-Message-Id: <20211124115724.295165530@linuxfoundation.org>
+Message-Id: <20211124115703.982619688@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,116 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eryk Rybak <eryk.roch.rybak@intel.com>
+From: Keoseong Park <keosung.park@samsung.com>
 
-[ Upstream commit 6afbd7b3c53cb7417189f476e99d431daccb85b0 ]
+[ Upstream commit 011e0868e0cf1237675b22e36fffa958fb08f46e ]
 
-Setting VLAN port increasing RX queue max_pkt_size
-by 4 bytes to take VLAN tag into account.
-Trigger the VF reset when setting port VLAN for
-VF to renegotiate its capabilities and reinitialize.
+Since active_logs can be set to 2 or 4 or NR_CURSEG_PERSIST_TYPE(6),
+it cannot be set to NR_CURSEG_TYPE(8).
+That is, whint_mode is always off.
 
-Fixes: ba4e003d29c1 ("i40e: don't hold spinlock while resetting VF")
-Signed-off-by: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
-Signed-off-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Signed-off-by: Eryk Rybak <eryk.roch.rybak@intel.com>
-Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Therefore, the condition is changed from NR_CURSEG_TYPE to NR_CURSEG_PERSIST_TYPE.
+
+Cc: Chao Yu <chao@kernel.org>
+Fixes: d0b9e42ab615 (f2fs: introduce inmem curseg)
+Reported-by: tanghuan <tanghuan@vivo.com>
+Signed-off-by: Keoseong Park <keosung.park@samsung.com>
+Signed-off-by: Fengnan Chang <changfengnan@vivo.com>
+Reviewed-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../ethernet/intel/i40e/i40e_virtchnl_pf.c    | 53 ++++---------------
- 1 file changed, 9 insertions(+), 44 deletions(-)
+ fs/f2fs/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-index 472f56b360b8c..815661632e7a7 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-@@ -674,14 +674,13 @@ static int i40e_config_vsi_rx_queue(struct i40e_vf *vf, u16 vsi_id,
- 				    u16 vsi_queue_id,
- 				    struct virtchnl_rxq_info *info)
- {
-+	u16 pf_queue_id = i40e_vc_get_pf_queue_id(vf, vsi_id, vsi_queue_id);
- 	struct i40e_pf *pf = vf->pf;
-+	struct i40e_vsi *vsi = pf->vsi[vf->lan_vsi_idx];
- 	struct i40e_hw *hw = &pf->hw;
- 	struct i40e_hmc_obj_rxq rx_ctx;
--	u16 pf_queue_id;
- 	int ret = 0;
- 
--	pf_queue_id = i40e_vc_get_pf_queue_id(vf, vsi_id, vsi_queue_id);
--
- 	/* clear the context structure first */
- 	memset(&rx_ctx, 0, sizeof(struct i40e_hmc_obj_rxq));
- 
-@@ -719,6 +718,10 @@ static int i40e_config_vsi_rx_queue(struct i40e_vf *vf, u16 vsi_id,
- 	}
- 	rx_ctx.rxmax = info->max_pkt_size;
- 
-+	/* if port VLAN is configured increase the max packet size */
-+	if (vsi->info.pvid)
-+		rx_ctx.rxmax += VLAN_HLEN;
-+
- 	/* enable 32bytes desc always */
- 	rx_ctx.dsize = 1;
- 
-@@ -4169,34 +4172,6 @@ error_param:
- 	return ret;
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index de543168b3708..70b513e66af77 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -1020,7 +1020,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ 	/* Not pass down write hints if the number of active logs is lesser
+ 	 * than NR_CURSEG_PERSIST_TYPE.
+ 	 */
+-	if (F2FS_OPTION(sbi).active_logs != NR_CURSEG_TYPE)
++	if (F2FS_OPTION(sbi).active_logs != NR_CURSEG_PERSIST_TYPE)
+ 		F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
+ 	return 0;
  }
- 
--/**
-- * i40e_vsi_has_vlans - True if VSI has configured VLANs
-- * @vsi: pointer to the vsi
-- *
-- * Check if a VSI has configured any VLANs. False if we have a port VLAN or if
-- * we have no configured VLANs. Do not call while holding the
-- * mac_filter_hash_lock.
-- */
--static bool i40e_vsi_has_vlans(struct i40e_vsi *vsi)
--{
--	bool have_vlans;
--
--	/* If we have a port VLAN, then the VSI cannot have any VLANs
--	 * configured, as all MAC/VLAN filters will be assigned to the PVID.
--	 */
--	if (vsi->info.pvid)
--		return false;
--
--	/* Since we don't have a PVID, we know that if the device is in VLAN
--	 * mode it must be because of a VLAN filter configured on this VSI.
--	 */
--	spin_lock_bh(&vsi->mac_filter_hash_lock);
--	have_vlans = i40e_is_vsi_in_vlan(vsi);
--	spin_unlock_bh(&vsi->mac_filter_hash_lock);
--
--	return have_vlans;
--}
--
- /**
-  * i40e_ndo_set_vf_port_vlan
-  * @netdev: network interface device structure
-@@ -4253,19 +4228,9 @@ int i40e_ndo_set_vf_port_vlan(struct net_device *netdev, int vf_id,
- 		/* duplicate request, so just return success */
- 		goto error_pvid;
- 
--	if (i40e_vsi_has_vlans(vsi)) {
--		dev_err(&pf->pdev->dev,
--			"VF %d has already configured VLAN filters and the administrator is requesting a port VLAN override.\nPlease unload and reload the VF driver for this change to take effect.\n",
--			vf_id);
--		/* Administrator Error - knock the VF offline until he does
--		 * the right thing by reconfiguring his network correctly
--		 * and then reloading the VF driver.
--		 */
--		i40e_vc_disable_vf(vf);
--		/* During reset the VF got a new VSI, so refresh the pointer. */
--		vsi = pf->vsi[vf->lan_vsi_idx];
--	}
--
-+	i40e_vc_disable_vf(vf);
-+	/* During reset the VF got a new VSI, so refresh a pointer. */
-+	vsi = pf->vsi[vf->lan_vsi_idx];
- 	/* Locked once because multiple functions below iterate list */
- 	spin_lock_bh(&vsi->mac_filter_hash_lock);
- 
 -- 
 2.33.0
 
