@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0977E45BBCC
+	by mail.lfdr.de (Postfix) with ESMTP id 7625145BBCD
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244590AbhKXMXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:23:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36538 "EHLO mail.kernel.org"
+        id S244611AbhKXMYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:24:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243836AbhKXMSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:18:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4679A61156;
-        Wed, 24 Nov 2021 12:12:00 +0000 (UTC)
+        id S243912AbhKXMS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:18:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1819610D0;
+        Wed, 24 Nov 2021 12:12:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755920;
-        bh=N7S8ac7Rcg4fZBD6Dknklfv+P+OwiyD4Q7/zqVfK5yg=;
+        s=korg; t=1637755923;
+        bh=LSksjAl3MMuFcy6pGdLskRXObc1nBbEscx2oPHJsVCk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oYVCLs5/F9OLr5uOKZLPdEhbS9nS5cXrgaR4k0CPHjpm49KzLMlY5R+i6bHopD2ir
-         0iMiqXWU+ysvyGkxhu3RLsPAgMN14zysuQNdy0CeHQfFHGif5oo1NOcMDKMRBgzhSz
-         AWIVtDY/aFn3wSIwrn57NX/iBvbSKC1Wq2ixJUOw=
+        b=yzjIN/DaJvXkPcNCTWt7UcNrvTL9PDF7kOGCCpQdrZMgUU05CtHwA4iMINEyxO1tN
+         kkuUPRuomUTjgPIyPPtZ2VDN9azzq90FWKLk4zNZJ2/s9+vKGhO7b3eVNRu7w4M/YO
+         b21j9Z+EooG+gM8jE98iq1LF+Wl7Q1fp0eUYBAFM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        syzbot <syzbot+93dba5b91f0fed312cbd@syzkaller.appspotmail.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Casey Schaufler <casey@schaufler-ca.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 107/207] phy: micrel: ksz8041nl: do not use power down mode
-Date:   Wed, 24 Nov 2021 12:56:18 +0100
-Message-Id: <20211124115707.540442304@linuxfoundation.org>
+Subject: [PATCH 4.9 108/207] smackfs: use netlbl_cfg_cipsov4_del() for deleting cipso_v4_doi
+Date:   Wed, 24 Nov 2021 12:56:19 +0100
+Message-Id: <20211124115707.570333643@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
 References: <20211124115703.941380739@linuxfoundation.org>
@@ -42,55 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Agner <stefan@agner.ch>
+From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
 
-[ Upstream commit 2641b62d2fab52648e34cdc6994b2eacde2d27c1 ]
+[ Upstream commit 0934ad42bb2c5df90a1b9de690f93de735b622fe ]
 
-Some Micrel KSZ8041NL PHY chips exhibit continuous RX errors after using
-the power down mode bit (0.11). If the PHY is taken out of power down
-mode in a certain temperature range, the PHY enters a weird state which
-leads to continuously reporting RX errors. In that state, the MAC is not
-able to receive or send any Ethernet frames and the activity LED is
-constantly blinking. Since Linux is using the suspend callback when the
-interface is taken down, ending up in that state can easily happen
-during a normal startup.
+syzbot is reporting UAF at cipso_v4_doi_search() [1], for smk_cipso_doi()
+is calling kfree() without removing from the cipso_v4_doi_list list after
+netlbl_cfg_cipsov4_map_add() returned an error. We need to use
+netlbl_cfg_cipsov4_del() in order to remove from the list and wait for
+RCU grace period before kfree().
 
-Micrel confirmed the issue in errata DS80000700A [*], caused by abnormal
-clock recovery when using power down mode. Even the latest revision (A4,
-Revision ID 0x1513) seems to suffer that problem, and according to the
-errata is not going to be fixed.
-
-Remove the suspend/resume callback to avoid using the power down mode
-completely.
-
-[*] https://ww1.microchip.com/downloads/en/DeviceDoc/80000700A.pdf
-
-Fixes: 1a5465f5d6a2 ("phy/micrel: Add suspend/resume support to Micrel PHYs")
-Signed-off-by: Stefan Agner <stefan@agner.ch>
-Acked-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://syzkaller.appspot.com/bug?extid=93dba5b91f0fed312cbd [1]
+Reported-by: syzbot <syzbot+93dba5b91f0fed312cbd@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Fixes: 6c2e8ac0953fccdd ("netlabel: Update kernel configuration API")
+Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/micrel.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ security/smack/smackfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-index 1704d9e2ca8d1..c21328e1e3cca 100644
---- a/drivers/net/phy/micrel.c
-+++ b/drivers/net/phy/micrel.c
-@@ -876,8 +876,9 @@ static struct phy_driver ksphy_driver[] = {
- 	.get_sset_count = kszphy_get_sset_count,
- 	.get_strings	= kszphy_get_strings,
- 	.get_stats	= kszphy_get_stats,
--	.suspend	= genphy_suspend,
--	.resume		= genphy_resume,
-+	/* No suspend/resume callbacks because of errata DS80000700A,
-+	 * receiver error following software power down.
-+	 */
- }, {
- 	.phy_id		= PHY_ID_KSZ8041RNLI,
- 	.phy_id_mask	= MICREL_PHY_ID_MASK,
+diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
+index cf1f92a04359a..ed5b89fbbd96f 100644
+--- a/security/smack/smackfs.c
++++ b/security/smack/smackfs.c
+@@ -735,7 +735,7 @@ static void smk_cipso_doi(void)
+ 	if (rc != 0) {
+ 		printk(KERN_WARNING "%s:%d map add rc = %d\n",
+ 		       __func__, __LINE__, rc);
+-		kfree(doip);
++		netlbl_cfg_cipsov4_del(doip->doi, &nai);
+ 		return;
+ 	}
+ }
 -- 
 2.33.0
 
