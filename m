@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6188045BDFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:41:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB6F45BA9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245140AbhKXMmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:42:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39106 "EHLO mail.kernel.org"
+        id S234219AbhKXMMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:12:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344339AbhKXMk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:40:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41B8B610FE;
-        Wed, 24 Nov 2021 12:24:00 +0000 (UTC)
+        id S242425AbhKXMJU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:09:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 382F7610A6;
+        Wed, 24 Nov 2021 12:05:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756640;
-        bh=st1h0LJDntjW+CzZEsMuYKwmxyuPtiXPmJnrdbRSYmo=;
+        s=korg; t=1637755522;
+        bh=jgQJY2R1s3ohJ2vet9MfTgnrBHAmdmwR9qpDZU9WFuc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0aIyYQOrntKEHDNQFNayNQAsFMQSuuUPArMJ2BRXgTSF53PT4+5LLMhIdDyFg+hOs
-         lhhHXLI2Lu0K2Tb4sY9Hnxc0H5fw5jhzZ8jSzFBVohvjYwAba3i1JXUgDCnQoN2II9
-         YTi+rT438M/v+kvH71p5JOP7Pm/KDFDEMCAAzlhY=
+        b=UEZaA35a7dk23wbOJfE6FMxJhhtVE17WfvKYawgk86/yQ16EkQSWHONZ9nYLm/8PL
+         8thg8vripURLIGSmwla5mY+F5RVXQYs0M2LKpxeWLLjOg8Zj3jvdk7I6iYA6F8f+6K
+         WyVS65+RD5TRoSeS8zX87XlLSZL5JqNvq7eIGLiQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 155/251] ASoC: cs42l42: Correct some register default values
+Subject: [PATCH 4.4 094/162] usb: gadget: hid: fix error code in do_config()
 Date:   Wed, 24 Nov 2021 12:56:37 +0100
-Message-Id: <20211124115715.660219597@linuxfoundation.org>
+Message-Id: <20211124115701.370429052@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit d591d4b32aa9552af14a0c7c586a2d3fe9ecc6e0 ]
+[ Upstream commit 68e7c510fdf4f6167404609da52e1979165649f6 ]
 
-Some registers had wrong default values in cs42l42_reg_defaults[].
+Return an error code if usb_get_function() fails.  Don't return success.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
-Link: https://lore.kernel.org/r/20211015133619.4698-4-rf@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 4bc8a33f2407 ("usb: gadget: hid: convert to new interface of f_hid")
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/20211011123739.GC15188@kili
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l42.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/legacy/hid.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index e6eeecc5446ef..a341c5b08434b 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -95,7 +95,7 @@ static const struct reg_default cs42l42_reg_defaults[] = {
- 	{ CS42L42_ASP_RX_INT_MASK,		0x1F },
- 	{ CS42L42_ASP_TX_INT_MASK,		0x0F },
- 	{ CS42L42_CODEC_INT_MASK,		0x03 },
--	{ CS42L42_SRCPL_INT_MASK,		0xFF },
-+	{ CS42L42_SRCPL_INT_MASK,		0x7F },
- 	{ CS42L42_VPMON_INT_MASK,		0x01 },
- 	{ CS42L42_PLL_LOCK_INT_MASK,		0x01 },
- 	{ CS42L42_TSRS_PLUG_INT_MASK,		0x0F },
-@@ -132,7 +132,7 @@ static const struct reg_default cs42l42_reg_defaults[] = {
- 	{ CS42L42_MIXER_CHA_VOL,		0x3F },
- 	{ CS42L42_MIXER_ADC_VOL,		0x3F },
- 	{ CS42L42_MIXER_CHB_VOL,		0x3F },
--	{ CS42L42_EQ_COEF_IN0,			0x22 },
-+	{ CS42L42_EQ_COEF_IN0,			0x00 },
- 	{ CS42L42_EQ_COEF_IN1,			0x00 },
- 	{ CS42L42_EQ_COEF_IN2,			0x00 },
- 	{ CS42L42_EQ_COEF_IN3,			0x00 },
+diff --git a/drivers/usb/gadget/legacy/hid.c b/drivers/usb/gadget/legacy/hid.c
+index 97329ba5d3820..5cb3359cf126e 100644
+--- a/drivers/usb/gadget/legacy/hid.c
++++ b/drivers/usb/gadget/legacy/hid.c
+@@ -103,8 +103,10 @@ static int do_config(struct usb_configuration *c)
+ 
+ 	list_for_each_entry(e, &hidg_func_list, node) {
+ 		e->f = usb_get_function(e->fi);
+-		if (IS_ERR(e->f))
++		if (IS_ERR(e->f)) {
++			status = PTR_ERR(e->f);
+ 			goto put;
++		}
+ 		status = usb_add_function(c, e->f);
+ 		if (status < 0) {
+ 			usb_put_function(e->f);
 -- 
 2.33.0
 
