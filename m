@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FA845C3D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F53F45C65D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:04:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350929AbhKXNnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:43:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33752 "EHLO mail.kernel.org"
+        id S1354360AbhKXOH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:07:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352262AbhKXNkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:40:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77E9263249;
-        Wed, 24 Nov 2021 12:57:28 +0000 (UTC)
+        id S1356037AbhKXOD3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:03:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D11716140B;
+        Wed, 24 Nov 2021 13:10:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758649;
-        bh=BDJFTQwpvH0m3wDHmGPC96Aph1DdABchxbX9TxAQV6c=;
+        s=korg; t=1637759451;
+        bh=lwpk/FEiEM1kg8oWUH0Sgom34Xh3QaBeM8xtKvrzo+A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LDjuv9n9D6rb9jB2RoeEE2rpm3zjN3EGSMHzkj3GUivd4xhH3OR1dDxaHTejlXrtA
-         /maV0rFun4xSsSNf87exrSCnjZafJsj4soQ8DHSmDTAPVdh4EiY0cAygYKPwjc5kig
-         sp4k7vVwjzV2ErkX/o0og41Yv1rL0RyFVObQpUws=
+        b=mKnZkb92PFuTR/iD7rB4jDSVxiTg5nsQUCZccF1Z1WaCiuWYWnpCDDdOICISMZbY7
+         aFeuFWpCwtgSl7iNoQ/YzmpXveEu2D3XOMNCPBDZViQWKXYS1B1/XZl8PI+rKKqE/J
+         68SW39Vzgw7jK7bEZ9XdmqOZYXUxaADhBT0Qg4Z0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, XiangBing Foo <XiangBing.Foo@amd.com>,
-        Martin Leung <Martin.Leung@amd.com>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        Alvin Lee <Alvin.Lee2@amd.com>,
-        Daniel Wheeler <Daniel.Wheeler@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.10 137/154] drm/amd/display: Update swizzle mode enums
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH 5.15 246/279] drm/udl: fix control-message timeout
 Date:   Wed, 24 Nov 2021 12:58:53 +0100
-Message-Id: <20211124115706.734000387@linuxfoundation.org>
+Message-Id: <20211124115727.224831322@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,58 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alvin Lee <Alvin.Lee2@amd.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 58065a1e524de30df9a2d8214661d5d7eed0a2d9 upstream.
+commit 5591c8f79db1729d9c5ac7f5b4d3a5c26e262d93 upstream.
 
-[Why]
-Swizzle mode enum for DC_SW_VAR_R_X was existing,
-but not mapped correctly.
+USB control-message timeouts are specified in milliseconds and should
+specifically not vary with CONFIG_HZ.
 
-[How]
-Update mapping and conversion for DC_SW_VAR_R_X.
-
-Reviewed-by: XiangBing Foo <XiangBing.Foo@amd.com>
-Reviewed-by: Martin Leung <Martin.Leung@amd.com>
-Acked-by: Qingqing Zhuo <qingqing.zhuo@amd.com>
-Signed-off-by: Alvin Lee <Alvin.Lee2@amd.com>
-Cc: stable@vger.kernel.org
-Tested-by: Daniel Wheeler <Daniel.Wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: 5320918b9a87 ("drm/udl: initial UDL driver (v4)")
+Cc: stable@vger.kernel.org      # 3.4
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20211025115353.5089-1-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c   |    4 +++-
- drivers/gpu/drm/amd/display/dc/dml/display_mode_enums.h |    4 ++--
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/udl/udl_connector.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-@@ -1852,7 +1852,9 @@ static void swizzle_to_dml_params(
- 	case DC_SW_VAR_D_X:
- 		*sw_mode = dm_sw_var_d_x;
- 		break;
--
-+	case DC_SW_VAR_R_X:
-+		*sw_mode = dm_sw_var_r_x;
-+		break;
- 	default:
- 		ASSERT(0); /* Not supported */
- 		break;
---- a/drivers/gpu/drm/amd/display/dc/dml/display_mode_enums.h
-+++ b/drivers/gpu/drm/amd/display/dc/dml/display_mode_enums.h
-@@ -80,11 +80,11 @@ enum dm_swizzle_mode {
- 	dm_sw_SPARE_13 = 24,
- 	dm_sw_64kb_s_x = 25,
- 	dm_sw_64kb_d_x = 26,
--	dm_sw_SPARE_14 = 27,
-+	dm_sw_64kb_r_x = 27,
- 	dm_sw_SPARE_15 = 28,
- 	dm_sw_var_s_x = 29,
- 	dm_sw_var_d_x = 30,
--	dm_sw_64kb_r_x,
-+	dm_sw_var_r_x = 31,
- 	dm_sw_gfx7_2d_thin_l_vp,
- 	dm_sw_gfx7_2d_thin_gl,
- };
+--- a/drivers/gpu/drm/udl/udl_connector.c
++++ b/drivers/gpu/drm/udl/udl_connector.c
+@@ -30,7 +30,7 @@ static int udl_get_edid_block(void *data
+ 		int bval = (i + block * EDID_LENGTH) << 8;
+ 		ret = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+ 				      0x02, (0x80 | (0x02 << 5)), bval,
+-				      0xA1, read_buff, 2, HZ);
++				      0xA1, read_buff, 2, 1000);
+ 		if (ret < 1) {
+ 			DRM_ERROR("Read EDID byte %d failed err %x\n", i, ret);
+ 			kfree(read_buff);
 
 
