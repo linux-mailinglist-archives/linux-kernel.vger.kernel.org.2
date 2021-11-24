@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78CDD45B310
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 05:20:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F8D45B312
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 05:20:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240914AbhKXEXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 23:23:46 -0500
-Received: from mga17.intel.com ([192.55.52.151]:42047 "EHLO mga17.intel.com"
+        id S240943AbhKXEXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 23:23:50 -0500
+Received: from mga18.intel.com ([134.134.136.126]:45766 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236160AbhKXEXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238004AbhKXEXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 23 Nov 2021 23:23:43 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="215908876"
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="222075447"
 X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="215908876"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 20:20:31 -0800
+   d="scan'208";a="222075447"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 20:20:31 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="497532862"
+   d="scan'208";a="607057783"
 Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 23 Nov 2021 20:20:30 -0800
+  by orsmga004.jf.intel.com with ESMTP; 23 Nov 2021 20:20:30 -0800
 Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mpjll-0004IQ-Ay; Wed, 24 Nov 2021 04:20:29 +0000
-Date:   Wed, 24 Nov 2021 12:19:27 +0800
+        id 1mpjll-0004IT-BN; Wed, 24 Nov 2021 04:20:29 +0000
+Date:   Wed, 24 Nov 2021 12:19:30 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: [mcgrof-next:20211123-sysctl-cleanups 20/41]
- include/linux/sysctl.h:228:30: error: 'register_sysctl_mount_point' defined
- but not used
-Message-ID: <202111241256.mDFmnx1e-lkp@intel.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: drivers/media/cec/platform/tegra/tegra_cec.c:455:34: warning: unused
+ variable 'tegra_cec_of_match'
+Message-ID: <202111241201.cGFgCj9J-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -40,49 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git 20211123-sysctl-cleanups
-head:   c18add41d859b4feec081eab6cfd624a5642973d
-commit: 06d33569add5d71725a727d8da80ce480b06fdec [20/41] sysctl: add helper to register a sysctl mount point
-config: nds32-randconfig-r006-20211123 (https://download.01.org/0day-ci/archive/20211124/202111241256.mDFmnx1e-lkp@intel.com/config.gz)
-compiler: nds32le-linux-gcc (GCC) 11.2.0
+Hi Mauro,
+
+First bad commit (maybe != root cause):
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5d9f4cf36721aba199975a9be7863a3ff5cd4b59
+commit: df823a8208c434eee6e4e9aa016c956d0968e2e2 media: cec: rename CEC platform drivers config options
+date:   1 year, 7 months ago
+config: arm-randconfig-c002-20211123 (https://download.01.org/0day-ci/archive/20211124/202111241201.cGFgCj9J-lkp@intel.com/config.gz)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 49e3838145dff1ec91c2e67a2cb562775c8d2a08)
 reproduce (this is a W=1 build):
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?id=06d33569add5d71725a727d8da80ce480b06fdec
-        git remote add mcgrof-next https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git
-        git fetch --no-tags mcgrof-next 20211123-sysctl-cleanups
-        git checkout 06d33569add5d71725a727d8da80ce480b06fdec
+        # install arm cross compiling tool for clang build
+        # apt-get install binutils-arm-linux-gnueabi
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=df823a8208c434eee6e4e9aa016c956d0968e2e2
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout df823a8208c434eee6e4e9aa016c956d0968e2e2
         # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=nds32 
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross 
 
 If you fix the issue, kindly add following tag as appropriate
 Reported-by: kernel test robot <lkp@intel.com>
 
-All errors (new ones prefixed by >>):
+All warnings (new ones prefixed by >>):
 
-   In file included from include/linux/umh.h:9,
-                    from include/linux/kmod.h:9,
-                    from include/linux/module.h:17,
-                    from lib/test_bitops.c:9:
-   include/linux/sysctl.h: In function 'register_sysctl_mount_point':
-   include/linux/sysctl.h:231:1: error: expected ';' before '}' token
-     231 | }
-         | ^
-   At top level:
->> include/linux/sysctl.h:228:30: error: 'register_sysctl_mount_point' defined but not used [-Werror=unused-function]
-     228 | static struct sysctl_header *register_sysctl_mount_point(const char *path)
-         |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: all warnings being treated as errors
+>> drivers/media/cec/platform/tegra/tegra_cec.c:455:34: warning: unused variable 'tegra_cec_of_match' [-Wunused-const-variable]
+   static const struct of_device_id tegra_cec_of_match[] = {
+                                    ^
+   1 warning generated.
 
 
-vim +/register_sysctl_mount_point +228 include/linux/sysctl.h
+vim +/tegra_cec_of_match +455 drivers/media/cec/platform/tegra/tegra_cec.c
 
-   227	
- > 228	static struct sysctl_header *register_sysctl_mount_point(const char *path)
-   229	{
-   230		return NULL
- > 231	}
-   232	
+9d2d60687c9a062 drivers/media/platform/tegra-cec/tegra_cec.c Hans Verkuil 2017-07-15  454  
+9d2d60687c9a062 drivers/media/platform/tegra-cec/tegra_cec.c Hans Verkuil 2017-07-15 @455  static const struct of_device_id tegra_cec_of_match[] = {
+9d2d60687c9a062 drivers/media/platform/tegra-cec/tegra_cec.c Hans Verkuil 2017-07-15  456  	{ .compatible = "nvidia,tegra114-cec", },
+9d2d60687c9a062 drivers/media/platform/tegra-cec/tegra_cec.c Hans Verkuil 2017-07-15  457  	{ .compatible = "nvidia,tegra124-cec", },
+9d2d60687c9a062 drivers/media/platform/tegra-cec/tegra_cec.c Hans Verkuil 2017-07-15  458  	{ .compatible = "nvidia,tegra210-cec", },
+9d2d60687c9a062 drivers/media/platform/tegra-cec/tegra_cec.c Hans Verkuil 2017-07-15  459  	{},
+9d2d60687c9a062 drivers/media/platform/tegra-cec/tegra_cec.c Hans Verkuil 2017-07-15  460  };
+9d2d60687c9a062 drivers/media/platform/tegra-cec/tegra_cec.c Hans Verkuil 2017-07-15  461  
+
+:::::: The code at line 455 was first introduced by commit
+:::::: 9d2d60687c9a0621e0da40338be4cbd7e3783be2 media: tegra-cec: add Tegra HDMI CEC driver
+
+:::::: TO: Hans Verkuil <hans.verkuil@cisco.com>
+:::::: CC: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
