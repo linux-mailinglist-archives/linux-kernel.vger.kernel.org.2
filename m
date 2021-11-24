@@ -2,37 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F47145C358
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:34:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC2845C19D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:17:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348677AbhKXNhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:37:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50294 "EHLO mail.kernel.org"
+        id S1346471AbhKXNT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:19:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352293AbhKXNfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:35:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 247F561B46;
-        Wed, 24 Nov 2021 12:54:37 +0000 (UTC)
+        id S1347005AbhKXNPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:15:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 224F961AA7;
+        Wed, 24 Nov 2021 12:43:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758478;
-        bh=dxMeMWzvD+r0AC7RHCy7M+JSL7yW8kzN/l+dsq7v6Rk=;
+        s=korg; t=1637757836;
+        bh=cbAkr7roA/XUOtkCmC8I3swOMtrHElogX+dp0d5mgIg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I2ej0GnL3ySgszBP5Rz4SesgYDi+rBhu9HKDM7WdEjQts1C4XzNo8qVpclHf9GJQZ
-         rSNUPvxCd7yS0ubhnS1b9Jo6TIy4WkR06PSeKDHW2E3eB6MOk47op9jiBDQgtwfbpG
-         3U6LWktBU0n5OwFch2JBaVw2y0zVNwQdccAyW6xw=
+        b=KRd6OXe0suvXn5DMIb4hO9dX9vLg5egxmCBoGIxu7O5SUukbMjQRF1E1n8WTKGE6Q
+         nMD6j/6E0bpkh9FQnzS5ZXb6IUV9zGRodr+MZPMDu5+JKyFHq6T3fofZ6YuiDrT8UG
+         Qwj6Rh8Ocv/a768nck0h/b99L46TKSj/47TMHQAU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jacob Keller <jacob.e.keller@intel.com>,
-        Tony Brelinski <tony.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Artur Rojek <contact@artur-rojek.eu>,
+        Paul Cercueil <paul@crapouillou.net>,
+        linux-mips@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 084/154] iavf: prevent accidental free of filter structure
-Date:   Wed, 24 Nov 2021 12:58:00 +0100
-Message-Id: <20211124115705.032668327@linuxfoundation.org>
+Subject: [PATCH 4.19 291/323] mips: bcm63xx: add support for clk_get_parent()
+Date:   Wed, 24 Nov 2021 12:58:01 +0100
+Message-Id: <20211124115728.731315256@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +52,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jacob Keller <jacob.e.keller@intel.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 4f0400803818f2642f066d3eacaf013f23554cc7 ]
+[ Upstream commit e8f67482e5a4bc8d0b65d606d08cb60ee123b468 ]
 
-In iavf_config_clsflower, the filter structure could be accidentally
-released at the end, if iavf_parse_cls_flower or iavf_handle_tclass ever
-return a non-zero but positive value.
+BCM63XX selects HAVE_LEGACY_CLK but does not provide/support
+clk_get_parent(), so add a simple implementation of that
+function so that callers of it will build without errors.
 
-In this case, the function continues through to the end, and will call
-kfree() on the filter structure even though it has been added to the
-linked list.
+Fixes these build errors:
 
-This can actually happen because iavf_parse_cls_flower will return
-a positive IAVF_ERR_CONFIG value instead of the traditional negative
-error codes.
+mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
+ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
+mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
+ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
 
-Fix this by ensuring that the kfree() check and error checks are
-similar. Use the more idiomatic "if (err)" to catch all non-zero error
-codes.
-
-Fixes: 0075fa0fadd0 ("i40evf: Add support to apply cloud filters")
-Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
-Tested-by: Tony Brelinski <tony.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs." )
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Suggested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Cc: Artur Rojek <contact@artur-rojek.eu>
+Cc: Paul Cercueil <paul@crapouillou.net>
+Cc: linux-mips@vger.kernel.org
+Cc: Jonathan Cameron <jic23@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: linux-iio@vger.kernel.org
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: bcm-kernel-feedback-list@broadcom.com
+Cc: Jonas Gorski <jonas.gorski@gmail.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/iavf/iavf_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/mips/bcm63xx/clk.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
-index b0fe5aafd1b26..90a9379b4e467 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_main.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
-@@ -3027,11 +3027,11 @@ static int iavf_configure_clsflower(struct iavf_adapter *adapter,
- 	/* start out with flow type and eth type IPv4 to begin with */
- 	filter->f.flow_type = VIRTCHNL_TCP_V4_FLOW;
- 	err = iavf_parse_cls_flower(adapter, cls_flower, filter);
--	if (err < 0)
-+	if (err)
- 		goto err;
+diff --git a/arch/mips/bcm63xx/clk.c b/arch/mips/bcm63xx/clk.c
+index 164115944a7fd..aba6e2d6a736c 100644
+--- a/arch/mips/bcm63xx/clk.c
++++ b/arch/mips/bcm63xx/clk.c
+@@ -381,6 +381,12 @@ void clk_disable(struct clk *clk)
  
- 	err = iavf_handle_tclass(adapter, tc, filter);
--	if (err < 0)
-+	if (err)
- 		goto err;
+ EXPORT_SYMBOL(clk_disable);
  
- 	/* add filter to the list */
++struct clk *clk_get_parent(struct clk *clk)
++{
++	return NULL;
++}
++EXPORT_SYMBOL(clk_get_parent);
++
+ unsigned long clk_get_rate(struct clk *clk)
+ {
+ 	if (!clk)
 -- 
 2.33.0
 
