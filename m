@@ -2,117 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D44EB45D064
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:49:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1ADC45D075
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352121AbhKXWxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 17:53:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244982AbhKXWw7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:52:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A48661074;
-        Wed, 24 Nov 2021 22:49:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637794189;
-        bh=lkmT5oUlkagVlqjx9WivqLmmqv3j4oR0Fkd27SiI9C8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jb4E+Qe5UZqAUcdCXVzrgNg6QELBAq/wZCszFsb7f7PD5iPp4idomPWsS0TK5HXzI
-         xjt5FrWxfRGhd80jw2nAH90/s6GRBebFKW3XbS7DxZkjhSNPn3WX8OnEb1IeteanOW
-         x8F9njdXS+z1vjYD0jvWqxVHk1TebD2ojpZb1jA8m0eMPz4sJ6CFaOGJXo6adqnf2e
-         nYeD2PigtsY/eprAhUrsqaE7MBusY1UlTTUiJfYJc0W0sJeErTTmOduCX7blzWoeRV
-         8aIb3oNxgZ0nsemC+D0BY8DDoAE02ZNfxOo516EOI92n0Hd8nsH9MUeQKCc/SyN7mo
-         EfEvIxkP9smkA==
-From:   =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Cc:     pali@kernel.org, stable@vger.kernel.org,
-        Wen Yang <wen.yang99@zte.com.cn>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-Subject: [PATCH 4.14 02/24] PCI: aardvark: Fix a leaked reference by adding missing of_node_put()
-Date:   Wed, 24 Nov 2021 23:49:11 +0100
-Message-Id: <20211124224933.24275-3-kabel@kernel.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211124224933.24275-1-kabel@kernel.org>
-References: <20211124224933.24275-1-kabel@kernel.org>
+        id S1352305AbhKXWx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 17:53:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352240AbhKXWxY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 17:53:24 -0500
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86972C061574;
+        Wed, 24 Nov 2021 14:50:14 -0800 (PST)
+Received: by mail-oi1-x22d.google.com with SMTP id 7so8345793oip.12;
+        Wed, 24 Nov 2021 14:50:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8z5DnL294+kOFa8KKsJ6CHxEPrBW46Q9Z5g6TD/+y1E=;
+        b=Vi69ecp+OK1BFt/lyxSqyIwScNgLAfQuPrPT7nmHe0LTrjdyheWg3nzWqKBBcd4Bcy
+         YxLVgtTip8k8eDG+6tMqX2c95yBwRkjsyN9uM2U0N3iYrQJWeLqhpwBe8OHMRCFySnvP
+         NH8O3UL+9qVZYDh5R1nwKiJVyYJOR6mFozm3iZAX+QJq6fveY2irosDM2k5EKhdrrwrI
+         69zt1e/Io0cp0epGWDbSgVA+QyuVT7MG/gZ1hrGT334LRnIZBqhtw6rt4VFjHY0vkfz8
+         DOCbvrRbM9BRldo+2+EsWD3M2rNVUG+bqpuhP3NVqgfgM6ah3Ar4a3/6WmUaxCgDZ6Z0
+         krEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8z5DnL294+kOFa8KKsJ6CHxEPrBW46Q9Z5g6TD/+y1E=;
+        b=ohBXAjgRZh5dWasMv7OCTcDa0/RXR0s7hNSFVcIof3+q5ZAKumwbY3y7GF1xCHeV5/
+         SmSprW3/o4RIAjisjNLqVbCVNQewblz3QjPPzbmDa+dLW0lsg5AHutAijb9rZ6kCr5jS
+         3k7y3vMc4I+2pD1VBVydfLnhTZOko+ikJ6aXL8D5xNMfVIOXFZ8Ohk2HfCNK1K1of3nE
+         u/V11HSUZ3XCsg5AoFXcOw06f1j24KCeWx75oKA9t7TJs315WwKuWd+RFSpttAQxlTu2
+         eF2kR8sCdrjzuU5UqOY1AwPUYNtF3H+BdlJ+p4/Y74Z2frjckvPVJo4V/uPJ/+BaqK7B
+         Ax3Q==
+X-Gm-Message-State: AOAM530qLLYDIPXcFLTVNpxkbQCpxuABDVqU/6tj4dp2AM5/fxvwJsEX
+        IGTkulKPzm3Jj/oEuL10lDsMmwLk9xA=
+X-Google-Smtp-Source: ABdhPJxRwZN4Qhz2hoXYzxSAhk2VBlsljaT00vzZfbQ7LC64tys+B/5+Co3g98aiE/xHJG1uIfN2uA==
+X-Received: by 2002:a05:6808:f08:: with SMTP id m8mr10039518oiw.5.1637794213695;
+        Wed, 24 Nov 2021 14:50:13 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g4sm217942oof.40.2021.11.24.14.50.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Nov 2021 14:50:12 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v1] usb: typec: tcpm: Wait in SNK_DEBOUNCED until
+ disconnect
+To:     Badhri Jagan Sridharan <badhri@google.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kyle Tso <kyletso@google.com>, stable@vger.kernel.org
+References: <20211124224036.734679-1-badhri@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <e9b8ec9f-6790-3b83-2298-4032e169cea2@roeck-us.net>
+Date:   Wed, 24 Nov 2021 14:50:10 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211124224036.734679-1-badhri@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wen Yang <wen.yang99@zte.com.cn>
+On 11/24/21 2:40 PM, Badhri Jagan Sridharan wrote:
+> Stub from the spec:
+> "4.5.2.2.4.2 Exiting from AttachWait.SNK State
+> A Sink shall transition to Unattached.SNK when the state of both
+> the CC1 and CC2 pins is SNK.Open for at least tPDDebounce.
+> A DRP shall transition to Unattached.SRC when the state of both
+> the CC1 and CC2 pins is SNK.Open for at least tPDDebounce."
+> 
+> This change makes TCPM to wait in SNK_DEBOUNCED state until
+> CC1 and CC2 pins is SNK.Open for at least tPDDebounce. Previously,
+> TCPM resets the port if vbus is not present in PD_T_PS_SOURCE_ON.
+> This causes TCPM to loop continuously when connected to a
+> faulty power source that does not present vbus. Waiting in
+> SNK_DEBOUNCED also ensures that TCPM is adherant to
+> "4.5.2.2.4.2 Exiting from AttachWait.SNK State" requirements.
+> 
+> [ 6169.280751] CC1: 0 -> 0, CC2: 0 -> 5 [state TOGGLING, polarity 0, connected]
+> [ 6169.280759] state change TOGGLING -> SNK_ATTACH_WAIT [rev2 NONE_AMS]
+> [ 6169.280771] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev2 NONE_AMS]
+> [ 6169.282427] CC1: 0 -> 0, CC2: 5 -> 5 [state SNK_ATTACH_WAIT, polarity 0, connected]
+> [ 6169.450825] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
+> [ 6169.450834] pending state change SNK_DEBOUNCED -> PORT_RESET @ 480 ms [rev2 NONE_AMS]
+> [ 6169.930892] state change SNK_DEBOUNCED -> PORT_RESET [delayed 480 ms]
+> [ 6169.931296] disable vbus discharge ret:0
+> [ 6169.931301] Setting usb_comm capable false
+> [ 6169.932783] Setting voltage/current limit 0 mV 0 mA
+> [ 6169.932802] polarity 0
+> [ 6169.933706] Requesting mux state 0, usb-role 0, orientation 0
+> [ 6169.936689] cc:=0
+> [ 6169.936812] pending state change PORT_RESET -> PORT_RESET_WAIT_OFF @ 100 ms [rev2 NONE_AMS]
+> [ 6169.937157] CC1: 0 -> 0, CC2: 5 -> 0 [state PORT_RESET, polarity 0, disconnected]
+> [ 6170.036880] state change PORT_RESET -> PORT_RESET_WAIT_OFF [delayed 100 ms]
+> [ 6170.036890] state change PORT_RESET_WAIT_OFF -> SNK_UNATTACHED [rev2 NONE_AMS]
+> [ 6170.036896] Start toggling
+> [ 6170.041412] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
+> [ 6170.042973] CC1: 0 -> 0, CC2: 0 -> 5 [state TOGGLING, polarity 0, connected]
+> [ 6170.042976] state change TOGGLING -> SNK_ATTACH_WAIT [rev2 NONE_AMS]
+> [ 6170.042981] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev2 NONE_AMS]
+> [ 6170.213014] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
+> [ 6170.213019] pending state change SNK_DEBOUNCED -> PORT_RESET @ 480 ms [rev2 NONE_AMS]
+> [ 6170.693068] state change SNK_DEBOUNCED -> PORT_RESET [delayed 480 ms]
+> [ 6170.693304] disable vbus discharge ret:0
+> [ 6170.693308] Setting usb_comm capable false
+> [ 6170.695193] Setting voltage/current limit 0 mV 0 mA
+> [ 6170.695210] polarity 0
+> [ 6170.695990] Requesting mux state 0, usb-role 0, orientation 0
+> [ 6170.701896] cc:=0
+> [ 6170.702181] pending state change PORT_RESET -> PORT_RESET_WAIT_OFF @ 100 ms [rev2 NONE_AMS]
+> [ 6170.703343] CC1: 0 -> 0, CC2: 5 -> 0 [state PORT_RESET, polarity 0, disconnected]
+> 
+> Fixes: f0690a25a140b8 ("staging: typec: USB Type-C Port Manager (tcpm)")
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 
-commit 3842f5166bf1ef286fe7a39f262b5c9581308366 upstream.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-The call to of_get_next_child() returns a node pointer with refcount
-incremented thus it must be explicitly decremented after the last
-usage.
-
-irq_domain_add_linear() also calls of_node_get() to increase refcount,
-so irq_domain will not be affected when it is released.
-
-Detected by coccinelle with the following warnings:
-  ./drivers/pci/controller/pci-aardvark.c:826:1-7: ERROR: missing of_node_put; acquired a node pointer with refcount incremented on line 798, but without a corresponding object release within this function.
-
-Signed-off-by: Wen Yang <wen.yang99@zte.com.cn>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-pci@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Marek Behún <kabel@kernel.org>
----
- drivers/pci/host/pci-aardvark.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/pci/host/pci-aardvark.c b/drivers/pci/host/pci-aardvark.c
-index fd605796b011..79cd11b1c89a 100644
---- a/drivers/pci/host/pci-aardvark.c
-+++ b/drivers/pci/host/pci-aardvark.c
-@@ -789,6 +789,7 @@ static int advk_pcie_init_irq_domain(struct advk_pcie *pcie)
- 	struct device_node *node = dev->of_node;
- 	struct device_node *pcie_intc_node;
- 	struct irq_chip *irq_chip;
-+	int ret = 0;
- 
- 	raw_spin_lock_init(&pcie->irq_lock);
- 
-@@ -803,8 +804,8 @@ static int advk_pcie_init_irq_domain(struct advk_pcie *pcie)
- 	irq_chip->name = devm_kasprintf(dev, GFP_KERNEL, "%s-irq",
- 					dev_name(dev));
- 	if (!irq_chip->name) {
--		of_node_put(pcie_intc_node);
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto out_put_node;
- 	}
- 
- 	irq_chip->irq_mask = advk_pcie_irq_mask;
-@@ -816,11 +817,13 @@ static int advk_pcie_init_irq_domain(struct advk_pcie *pcie)
- 				      &advk_pcie_irq_domain_ops, pcie);
- 	if (!pcie->irq_domain) {
- 		dev_err(dev, "Failed to get a INTx IRQ domain\n");
--		of_node_put(pcie_intc_node);
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto out_put_node;
- 	}
- 
--	return 0;
-+out_put_node:
-+	of_node_put(pcie_intc_node);
-+	return ret;
- }
- 
- static void advk_pcie_remove_irq_domain(struct advk_pcie *pcie)
--- 
-2.32.0
+> ---
+>   drivers/usb/typec/tcpm/tcpm.c | 4 ----
+>   1 file changed, 4 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 7f2f3ff1b391..6010b9901126 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -4110,11 +4110,7 @@ static void run_state_machine(struct tcpm_port *port)
+>   				       tcpm_try_src(port) ? SRC_TRY
+>   							  : SNK_ATTACHED,
+>   				       0);
+> -		else
+> -			/* Wait for VBUS, but not forever */
+> -			tcpm_set_state(port, PORT_RESET, PD_T_PS_SOURCE_ON);
+>   		break;
+> -
+>   	case SRC_TRY:
+>   		port->try_src_count++;
+>   		tcpm_set_cc(port, tcpm_rp_cc(port));
+> 
 
