@@ -2,118 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE03945C542
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:53:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC5345C543
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352605AbhKXNzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:55:44 -0500
-Received: from foss.arm.com ([217.140.110.172]:38708 "EHLO foss.arm.com"
+        id S243666AbhKXNzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:55:50 -0500
+Received: from pegase2.c-s.fr ([93.17.235.10]:50177 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352156AbhKXNwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:52:16 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 627C6ED1;
-        Wed, 24 Nov 2021 05:49:06 -0800 (PST)
-Received: from [10.57.56.56] (unknown [10.57.56.56])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 46E3F3F73B;
-        Wed, 24 Nov 2021 05:49:04 -0800 (PST)
-Message-ID: <bf994aa8-df18-22d0-e718-2c8b406a5cc8@arm.com>
-Date:   Wed, 24 Nov 2021 13:49:02 +0000
+        id S1352179AbhKXNwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:52:25 -0500
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Hzj6H3Yd2z9sSc;
+        Wed, 24 Nov 2021 14:49:11 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id LeLWf_gu2Rtj; Wed, 24 Nov 2021 14:49:11 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Hzj6F3xTPz9sSt;
+        Wed, 24 Nov 2021 14:49:09 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 714138B774;
+        Wed, 24 Nov 2021 14:49:09 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 2zx_RAzlbcMG; Wed, 24 Nov 2021 14:49:09 +0100 (CET)
+Received: from [172.25.230.108] (unknown [172.25.230.108])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1D85B8B763;
+        Wed, 24 Nov 2021 14:49:09 +0100 (CET)
+Message-ID: <da5038fd-611a-a0b3-10b7-35dac6817e6a@csgroup.eu>
+Date:   Wed, 24 Nov 2021 14:49:09 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH 2/5] arm64: dts: rockchip: Add powerzones definition for
- rock960
-Content-Language: en-GB
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     robh@kernel.org, arnd@linaro.org, heiko@sntech.de,
-        ulf.hansson@linaro.org, rjw@rjwysocki.net,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, lukasz.luba@arm.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Johan Jonker <jbx6244@gmail.com>,
-        "moderated list:ARM/Rockchip SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC support" 
-        <linux-rockchip@lists.infradead.org>
-References: <20211124125506.2971069-1-daniel.lezcano@linaro.org>
- <20211124125506.2971069-2-daniel.lezcano@linaro.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20211124125506.2971069-2-daniel.lezcano@linaro.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH 1/8] powerpc/mm: Make slice specific to book3s/64
+Content-Language: fr-FR
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     kernel test robot <lkp@intel.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, alex@ghiti.fr
+Cc:     linux-mm@kvack.org, kbuild-all@lists.01.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <14e2c0b0d4fff49c1cb30166f54ce8e445e17b16.1637570556.git.christophe.leroy@csgroup.eu>
+ <202111222218.RhruLp7S-lkp@intel.com>
+ <adefca8d-5fd4-b9ad-dfb8-0cf334440935@csgroup.eu>
+In-Reply-To: <adefca8d-5fd4-b9ad-dfb8-0cf334440935@csgroup.eu>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-24 12:55, Daniel Lezcano wrote:
-> Add the powerzones description. This first step introduces the big,
-> the little and the gpu as a powerzone place.
 
-These look more like SoC-level properties than board-level ones - should 
-they be in rk3399.dtsi?
 
-Robin.
-
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->   .../boot/dts/rockchip/rk3399-rock960.dts      | 45 +++++++++++++++++++
->   1 file changed, 45 insertions(+)
+Le 24/11/2021 à 13:10, Christophe Leroy a écrit :
 > 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
-> index 1a23e8f3cdf6..83540bdb64cd 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
-> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
-> @@ -61,6 +61,51 @@ bt_active_led: led-6 {
->   		};
->   	};
->   
-> +	powerzones {
-> +
-> +		PKG_PZ: pkg {
-> +			#powerzone-cells = <0>;
-> +                        powerzone = <&SOC_PZ>;
-> +		};
-> +
-> +		SOC_PZ: soc {
-> +		};
-> +	};
-> +};
-> +
-> +&cpu_b0 {
-> +	#powerzone-cells = <0>;
-> +	powerzone = <&PKG_PZ>;
-> +};
-> +
-> +&cpu_b1 {
-> +	#powerzone-cells = <0>;
-> +	powerzone = <&PKG_PZ>;
-> +};
-> +
-> +&cpu_l0 {
-> +	#powerzone-cells = <0>;
-> +	powerzone = <&PKG_PZ>;
-> +};
-> +
-> +&cpu_l1 {
-> +	#powerzone-cells = <0>;
-> +	powerzone = <&PKG_PZ>;
-> +};
-> +
-> +&cpu_l2 {
-> +	#powerzone-cells = <0>;
-> +	powerzone = <&PKG_PZ>;
-> +};
-> +
-> +&cpu_l3 {
-> +	#powerzone-cells = <0>;
-> +	powerzone = <&PKG_PZ>;
-> +};
-> +
-> +&gpu {
-> +	#powerzone-cells = <0>;
-> +	powerzone = <&PKG_PZ>;
->   };
->   
->   &cpu_alert0 {
 > 
+> Le 22/11/2021 à 15:48, kernel test robot a écrit :
+>> Hi Christophe,
+>>
+>> I love your patch! Perhaps something to improve:
+>>
+>> [auto build test WARNING on powerpc/next]
+>> [also build test WARNING on hnaz-mm/master linus/master v5.16-rc2 
+>> next-20211118]
+>> [If your patch is applied to the wrong git tree, kindly drop us a note.
+>> And when submitting patch, we suggest to use '--base' as documented in
+>> https://git-scm.com/docs/git-format-patch]
+>>
+>> url:    
+>> https://github.com/0day-ci/linux/commits/Christophe-Leroy/Convert-powerpc-to-default-topdown-mmap-layout/20211122-165115 
+>>
+>> base:   
+>> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next
+>> config: powerpc64-randconfig-s031-20211122 (attached as .config)
+>> compiler: powerpc64-linux-gcc (GCC) 11.2.0
+>> reproduce:
+>>          wget 
+>> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross 
+>> -O ~/bin/make.cross
+>>          chmod +x ~/bin/make.cross
+>>          # apt-get install sparse
+>>          # sparse version: v0.6.4-dirty
+>>          # 
+>> https://github.com/0day-ci/linux/commit/1d0b7cc86d08f25f595b52d8c39ba9ca1d29a30a 
+>>
+>>          git remote add linux-review https://github.com/0day-ci/linux
+>>          git fetch --no-tags linux-review 
+>> Christophe-Leroy/Convert-powerpc-to-default-topdown-mmap-layout/20211122-165115 
+>>
+>>          git checkout 1d0b7cc86d08f25f595b52d8c39ba9ca1d29a30a
+>>          # save the attached .config to linux build tree
+>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 
+>> make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=powerpc64
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All warnings (new ones prefixed by >>):
+>>
+>>     arch/powerpc/mm/book3s64/slice.c: In function 
+>> 'slice_get_unmapped_area':
+>>>> arch/powerpc/mm/book3s64/slice.c:639:1: warning: the frame size of 
+>>>> 1040 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+>>       639 | }
+>>           | ^
+> 
+> 
+> The problem was already existing when slice.c was in arch/powerpc/mm/
+> 
+> This patch doesn't introduce the problem.
+> 
+
+In fact the problem is really added by yourself mister 'kernel test robot'.
+
+CONFIG_FRAME_WARN is supposed to be 2048 on 64 bit architectures.
+
+It the robot starts to reduce that value, it is on its own ....
+
+
+config FRAME_WARN
+	int "Warn for stack frames larger than"
+	range 0 8192
+	default 2048 if GCC_PLUGIN_LATENT_ENTROPY
+	default 1536 if (!64BIT && (PARISC || XTENSA))
+	default 1024 if (!64BIT && !PARISC)
+	default 2048 if 64BIT
+	help
+	  Tell gcc to warn at build time for stack frames larger than this.
+	  Setting this too low will cause a lot of warnings.
+	  Setting it to 0 disables the warning.
+
