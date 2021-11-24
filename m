@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0DE45C35E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 518AA45C161
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347798AbhKXNh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:37:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50282 "EHLO mail.kernel.org"
+        id S1344283AbhKXNRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:17:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352288AbhKXNff (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:35:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FE2261B4B;
-        Wed, 24 Nov 2021 12:54:32 +0000 (UTC)
+        id S1348818AbhKXNOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:14:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CF6A6140A;
+        Wed, 24 Nov 2021 12:43:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758473;
-        bh=6ty9rLCnhH8o5+9gMPu8apQxSiefw+PP4Rok9Gl3zTs=;
+        s=korg; t=1637757830;
+        bh=rLlmvqqcAKELIt7hHTs4zXup6whd9AjYZpOFttcUKS8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tJZmlk+2Ku/b7pdDRWSH/tzcP/HjsdQ1I7Gt6dG+ifVZNHvSnDx4H+B7WyuyA69mn
-         o9GZ1NnZc0yGEoY32W42T2tU5zGJyAOL1o4y1+5Xlza2afBaoXq3L/8W0fg50r4tdK
-         CshXgn6gqtLgdjS0oSZhHLDvlF8esPmzbTlsKDfw=
+        b=CK0ZeiOynZ4v6K5A4MI+PLXdyJNoT1+eLwplAxTjYKDDvlxF85vjt1k+MNtYJx6kH
+         DrB/0W8qdt1W3u9O/UUpb31Ta6iB0Z4pwP5+bkQL/b9LOixRI4tr8GhZu9cfTGVue+
+         NTscWi/673bYsG0igvpJwwL9Y9eWsj2Xn3gaOcVE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nicholas Nunley <nicholas.d.nunley@intel.com>,
+        stable@vger.kernel.org, Surabhi Boob <surabhi.boob@intel.com>,
         Tony Brelinski <tony.brelinski@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 082/154] iavf: free q_vectors before queues in iavf_disable_vf
-Date:   Wed, 24 Nov 2021 12:57:58 +0100
-Message-Id: <20211124115704.971201801@linuxfoundation.org>
+Subject: [PATCH 4.19 289/323] iavf: Fix for the false positive ASQ/ARQ errors while issuing VF reset
+Date:   Wed, 24 Nov 2021 12:57:59 +0100
+Message-Id: <20211124115728.662207262@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Nunley <nicholas.d.nunley@intel.com>
+From: Surabhi Boob <surabhi.boob@intel.com>
 
-[ Upstream commit 89f22f129696ab53cfbc608e0a2184d0fea46ac1 ]
+[ Upstream commit 321421b57a12e933f92b228e0e6d0b2c6541f41d ]
 
-iavf_free_queues() clears adapter->num_active_queues, which
-iavf_free_q_vectors() relies on, so swap the order of these two function
-calls in iavf_disable_vf(). This resolves a panic encountered when the
-interface is disabled and then later brought up again after PF
-communication is restored.
+While issuing VF Reset from the guest OS, the VF driver prints
+logs about critical / Overflow error detection. This is not an
+actual error since the VF_MBX_ARQLEN register is set to all FF's
+for a short period of time and the VF would catch the bits set if
+it was reading the register during that spike of time.
+This patch introduces an additional check to ignore this condition
+since the VF is in reset.
 
-Fixes: 65c7006f234c ("i40evf: assign num_active_queues inside i40evf_alloc_queues")
-Signed-off-by: Nicholas Nunley <nicholas.d.nunley@intel.com>
+Fixes: 19b73d8efaa4 ("i40evf: Add additional check for reset")
+Signed-off-by: Surabhi Boob <surabhi.boob@intel.com>
 Tested-by: Tony Brelinski <tony.brelinski@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/iavf/iavf_main.c | 2 +-
+ drivers/net/ethernet/intel/i40evf/i40evf_main.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
-index ef0103a216d1e..3e4bf3559d13b 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_main.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
-@@ -2047,8 +2047,8 @@ static void iavf_disable_vf(struct iavf_adapter *adapter)
+diff --git a/drivers/net/ethernet/intel/i40evf/i40evf_main.c b/drivers/net/ethernet/intel/i40evf/i40evf_main.c
+index 1fd8cc5ac306c..5a6e579e9e653 100644
+--- a/drivers/net/ethernet/intel/i40evf/i40evf_main.c
++++ b/drivers/net/ethernet/intel/i40evf/i40evf_main.c
+@@ -2058,7 +2058,7 @@ static void i40evf_adminq_task(struct work_struct *work)
  
- 	iavf_free_misc_irq(adapter);
- 	iavf_reset_interrupt_capability(adapter);
--	iavf_free_queues(adapter);
- 	iavf_free_q_vectors(adapter);
-+	iavf_free_queues(adapter);
- 	memset(adapter->vf_res, 0, IAVF_VIRTCHNL_VF_RESOURCE_SIZE);
- 	iavf_shutdown_adminq(&adapter->hw);
- 	adapter->netdev->flags &= ~IFF_UP;
+ 	/* check for error indications */
+ 	val = rd32(hw, hw->aq.arq.len);
+-	if (val == 0xdeadbeef) /* indicates device in reset */
++	if (val == 0xdeadbeef || val == 0xffffffff) /* device in reset */
+ 		goto freedom;
+ 	oldval = val;
+ 	if (val & I40E_VF_ARQLEN1_ARQVFE_MASK) {
 -- 
 2.33.0
 
