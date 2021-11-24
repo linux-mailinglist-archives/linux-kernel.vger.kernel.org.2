@@ -2,78 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE5B45B8AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 11:53:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7102245B8B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 11:55:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241624AbhKXK4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 05:56:25 -0500
-Received: from outbound-smtp34.blacknight.com ([46.22.139.253]:53913 "EHLO
-        outbound-smtp34.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233895AbhKXK4Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 05:56:24 -0500
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp34.blacknight.com (Postfix) with ESMTPS id 5515E20B4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:53:14 +0000 (GMT)
-Received: (qmail 23874 invoked from network); 24 Nov 2021 10:53:14 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 24 Nov 2021 10:53:14 -0000
-Date:   Wed, 24 Nov 2021 10:53:11 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        NeilBrown <neilb@suse.de>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Rik van Riel <riel@surriel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/8] mm/vmscan: Throttle reclaim when no progress is
- being made
-Message-ID: <20211124105311.GF3366@techsingularity.net>
-References: <20211022144651.19914-1-mgorman@techsingularity.net>
- <20211022144651.19914-4-mgorman@techsingularity.net>
- <20211124011912.GA265983@magnolia>
- <20211124103221.GD3366@techsingularity.net>
- <cbf91d44-8c8f-15b4-a093-58c04d668156@suse.cz>
+        id S241639AbhKXK6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 05:58:32 -0500
+Received: from shark1.inbox.lv ([194.152.32.81]:55130 "EHLO shark1.inbox.lv"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233895AbhKXK6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 05:58:31 -0500
+Received: from shark1.inbox.lv (localhost [127.0.0.1])
+        by shark1-out.inbox.lv (Postfix) with ESMTP id DB0D9111814A;
+        Wed, 24 Nov 2021 12:55:19 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.lv; s=30062014;
+        t=1637751319; bh=Ii1Ydxju31WL8qCm5cQWmdVpFT2pD3ONL0XsQqWqs80=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References;
+        b=bva11nH58ebVa6TSvQbhUwp6ZfGxFU1zteYf82RnctQ1wv8eOrZxTSrQrU/Yv8gtf
+         nXb1meixEJVC4GaaLkATaC+bYV8x/XhWM6UM6IxRU0CMJcRFaTHvaNYGin93DB1VVg
+         XwyvjG9yZ97gHvGd5RzqGWLck1xZ6TA2a4zmz8JI=
+Received: from localhost (localhost [127.0.0.1])
+        by shark1-in.inbox.lv (Postfix) with ESMTP id D2BF4111810E;
+        Wed, 24 Nov 2021 12:55:19 +0200 (EET)
+Received: from shark1.inbox.lv ([127.0.0.1])
+        by localhost (shark1.inbox.lv [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id Lg2GQz0JWiX7; Wed, 24 Nov 2021 12:55:19 +0200 (EET)
+Received: from mail.inbox.lv (pop1 [127.0.0.1])
+        by shark1-in.inbox.lv (Postfix) with ESMTP id 88767111810D;
+        Wed, 24 Nov 2021 12:55:19 +0200 (EET)
+Received: from mail.inbox.lv (unknown [79.105.116.237])
+        (Authenticated sender: hakavlad@inbox.lv)
+        by mail.inbox.lv (Postfix) with ESMTPA id 82EFC3E6014F;
+        Wed, 24 Nov 2021 12:55:14 +0200 (EET)
+Date:   Wed, 24 Nov 2021 19:54:49 +0900
+From:   Alexey Avramov <hakavlad@inbox.lv>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, mhocko@suse.com,
+        vbabka@suse.cz, neilb@suse.de, akpm@linux-foundation.org,
+        corbet@lwn.net, riel@surriel.com, hannes@cmpxchg.org,
+        david@fromorbit.com, willy@infradead.org, hdanton@sina.com,
+        penguin-kernel@i-love.sakura.ne.jp, oleksandr@natalenko.name,
+        kernel@xanmod.org, michael@michaellarabel.com, aros@gmx.com,
+        hakavlad@gmail.com
+Subject: Re: mm: 5.16 regression: reclaim_throttle leads to stall in
+ near-OOM conditions
+Message-ID: <20211124195449.33f31e7f@mail.inbox.lv>
+In-Reply-To: <20211124103550.GE3366@techsingularity.net>
+References: <20211124011954.7cab9bb4@mail.inbox.lv>
+        <20211124103550.GE3366@techsingularity.net>
+X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <cbf91d44-8c8f-15b4-a093-58c04d668156@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: OK
+X-ESPOL: G4mERXADmHlDpsG/LZpu5OT4taW+ND8/31T3z7QsmgxU9uyBr7wBfW6TGofmHgq/cWbD
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 11:43:05AM +0100, Vlastimil Babka wrote:
-> >> Any thoughts?  For now I can just hack around this by skipping
-> >> reclaim_throttle if cgroup_reclaim() == true, but that's probably not
-> >> the correct fix. :)
-> >> 
-> > 
-> > No, it wouldn't be but a possibility is throttling for only 1 jiffy if
-> > reclaiming within a memcg and the zone is balanced overall.
-> > 
-> > The interruptible part should just be the patch below. I need to poke at
-> > the cgroup limit part a bit
-> 
-> As the throttle timeout is short anyway, will the TASK_UNINTERRUPTIBLE vs
-> TASK_INTERRUPTIBLE make a difference for the (ability to kill? AFAIU
-> typically this inability to kill is because of a loop that doesn't check for
-> fatal_signal_pending().
-> 
+> it does eventually get killed OOM
 
-Yep, and the fatal_signal_pending() is lacking within reclaim in general
-but I'm undecided on how much that should change in the context of reclaim
-throttling but at minimum, I don't want the signal delivery to be masked
-or delayed.
+However, a full minute freeze can be a great evil in many situations - 
+during such a freeze, the system is completely unresponsive. 
 
--- 
-Mel Gorman
-SUSE Labs
+So my next question is: How reasonable is the value MAX_RECLAIM_RETRIES?
+Is it also get "out of thin air"?
+
+And would it make sense to have buttons to adjust the timeouts?
