@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86BFD45C5EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:00:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6362445C390
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353762AbhKXOCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:02:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46988 "EHLO mail.kernel.org"
+        id S1349379AbhKXNkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:40:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353569AbhKXOAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:00:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B23E61401;
-        Wed, 24 Nov 2021 13:09:03 +0000 (UTC)
+        id S1352262AbhKXNhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:37:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C15761D7C;
+        Wed, 24 Nov 2021 12:55:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759344;
-        bh=fE8VBTYqLSLGZI2S8ceYbE28FF0tKba9r2x+nxz04bI=;
+        s=korg; t=1637758533;
+        bh=h2FQ6c81wvOsp7iDw64ZL7YMBzZnOHCOfq69dHuhyps=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wZTE6Hw8ynw4M7d9U3c+BLb0nK3Vbyd8VlsjZK5jBlvt0x1TiEi8haxSO9ASGmoNZ
-         ky/pO9aEhi35XEI1yJsooVWGnDHzUAV6tdoJdmpSe74Gnc1wo4tn4lZ6/2nAMESZgN
-         0xfNb0YB9OPteWcCEXUpjTANem/7JtQsJo4H5uVk=
+        b=Mt3xh9qkSbBQ624OzmmtXKb4520PWz8vPTEVs3fbViTJmaC4K8HDXarhTNdFjWD6f
+         NQrzotxBGuwXNMIgXd6ya8b7PLprpYL8SPdy2jXYp6I6uxavb7Cf+fMq0kV2gFn8J+
+         UJqZK6jKz6C/CUXrfNGdrydF7qtyELtuFHU5s/7o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
-        Greg Kurz <groug@kaod.org>, Marc Zyngier <maz@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.15 209/279] powerpc/xive: Change IRQ domain to a tree domain
+        Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>,
+        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+        Eryk Rybak <eryk.roch.rybak@intel.com>,
+        Konrad Jankowski <konrad0.jankowski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 100/154] i40e: Fix correct max_pkt_size on VF RX queue
 Date:   Wed, 24 Nov 2021 12:58:16 +0100
-Message-Id: <20211124115725.957383003@linuxfoundation.org>
+Message-Id: <20211124115705.527264811@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +44,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cédric Le Goater <clg@kaod.org>
+From: Eryk Rybak <eryk.roch.rybak@intel.com>
 
-commit 8e80a73fa9a7747e3e8255cb149c543aabf65a24 upstream.
+[ Upstream commit 6afbd7b3c53cb7417189f476e99d431daccb85b0 ]
 
-Commit 4f86a06e2d6e ("irqdomain: Make normal and nomap irqdomains
-exclusive") introduced an IRQ_DOMAIN_FLAG_NO_MAP flag to isolate the
-'nomap' domains still in use under the powerpc arch. With this new
-flag, the revmap_tree of the IRQ domain is not used anymore. This
-change broke the support of shared LSIs [1] in the XIVE driver because
-it was relying on a lookup in the revmap_tree to query previously
-mapped interrupts. Linux now creates two distinct IRQ mappings on the
-same HW IRQ which can lead to unexpected behavior in the drivers.
+Setting VLAN port increasing RX queue max_pkt_size
+by 4 bytes to take VLAN tag into account.
+Trigger the VF reset when setting port VLAN for
+VF to renegotiate its capabilities and reinitialize.
 
-The XIVE IRQ domain is not a direct mapping domain and its HW IRQ
-interrupt number space is rather large : 1M/socket on POWER9 and
-POWER10, change the XIVE driver to use a 'tree' domain type instead.
-
-[1] For instance, a linux KVM guest with virtio-rng and virtio-balloon
-    devices.
-
-Fixes: 4f86a06e2d6e ("irqdomain: Make normal and nomap irqdomains exclusive")
-Cc: stable@vger.kernel.org # v5.14+
-Signed-off-by: Cédric Le Goater <clg@kaod.org>
-Tested-by: Greg Kurz <groug@kaod.org>
-Acked-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20211116134022.420412-1-clg@kaod.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: ba4e003d29c1 ("i40e: don't hold spinlock while resetting VF")
+Signed-off-by: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
+Signed-off-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+Signed-off-by: Eryk Rybak <eryk.roch.rybak@intel.com>
+Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/sysdev/xive/Kconfig  |    1 -
- arch/powerpc/sysdev/xive/common.c |    3 +--
- 2 files changed, 1 insertion(+), 3 deletions(-)
+ .../ethernet/intel/i40e/i40e_virtchnl_pf.c    | 53 ++++---------------
+ 1 file changed, 9 insertions(+), 44 deletions(-)
 
---- a/arch/powerpc/sysdev/xive/Kconfig
-+++ b/arch/powerpc/sysdev/xive/Kconfig
-@@ -3,7 +3,6 @@ config PPC_XIVE
- 	bool
- 	select PPC_SMP_MUXED_IPI
- 	select HARDIRQS_SW_RESEND
--	select IRQ_DOMAIN_NOMAP
- 
- config PPC_XIVE_NATIVE
- 	bool
---- a/arch/powerpc/sysdev/xive/common.c
-+++ b/arch/powerpc/sysdev/xive/common.c
-@@ -1443,8 +1443,7 @@ static const struct irq_domain_ops xive_
- 
- static void __init xive_init_host(struct device_node *np)
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+index a02167cce81e1..dacd1453b7311 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+@@ -621,14 +621,13 @@ static int i40e_config_vsi_rx_queue(struct i40e_vf *vf, u16 vsi_id,
+ 				    u16 vsi_queue_id,
+ 				    struct virtchnl_rxq_info *info)
  {
--	xive_irq_domain = irq_domain_add_nomap(np, XIVE_MAX_IRQ,
--					       &xive_irq_domain_ops, NULL);
-+	xive_irq_domain = irq_domain_add_tree(np, &xive_irq_domain_ops, NULL);
- 	if (WARN_ON(xive_irq_domain == NULL))
- 		return;
- 	irq_set_default_host(xive_irq_domain);
++	u16 pf_queue_id = i40e_vc_get_pf_queue_id(vf, vsi_id, vsi_queue_id);
+ 	struct i40e_pf *pf = vf->pf;
++	struct i40e_vsi *vsi = pf->vsi[vf->lan_vsi_idx];
+ 	struct i40e_hw *hw = &pf->hw;
+ 	struct i40e_hmc_obj_rxq rx_ctx;
+-	u16 pf_queue_id;
+ 	int ret = 0;
+ 
+-	pf_queue_id = i40e_vc_get_pf_queue_id(vf, vsi_id, vsi_queue_id);
+-
+ 	/* clear the context structure first */
+ 	memset(&rx_ctx, 0, sizeof(struct i40e_hmc_obj_rxq));
+ 
+@@ -666,6 +665,10 @@ static int i40e_config_vsi_rx_queue(struct i40e_vf *vf, u16 vsi_id,
+ 	}
+ 	rx_ctx.rxmax = info->max_pkt_size;
+ 
++	/* if port VLAN is configured increase the max packet size */
++	if (vsi->info.pvid)
++		rx_ctx.rxmax += VLAN_HLEN;
++
+ 	/* enable 32bytes desc always */
+ 	rx_ctx.dsize = 1;
+ 
+@@ -4133,34 +4136,6 @@ error_param:
+ 	return ret;
+ }
+ 
+-/**
+- * i40e_vsi_has_vlans - True if VSI has configured VLANs
+- * @vsi: pointer to the vsi
+- *
+- * Check if a VSI has configured any VLANs. False if we have a port VLAN or if
+- * we have no configured VLANs. Do not call while holding the
+- * mac_filter_hash_lock.
+- */
+-static bool i40e_vsi_has_vlans(struct i40e_vsi *vsi)
+-{
+-	bool have_vlans;
+-
+-	/* If we have a port VLAN, then the VSI cannot have any VLANs
+-	 * configured, as all MAC/VLAN filters will be assigned to the PVID.
+-	 */
+-	if (vsi->info.pvid)
+-		return false;
+-
+-	/* Since we don't have a PVID, we know that if the device is in VLAN
+-	 * mode it must be because of a VLAN filter configured on this VSI.
+-	 */
+-	spin_lock_bh(&vsi->mac_filter_hash_lock);
+-	have_vlans = i40e_is_vsi_in_vlan(vsi);
+-	spin_unlock_bh(&vsi->mac_filter_hash_lock);
+-
+-	return have_vlans;
+-}
+-
+ /**
+  * i40e_ndo_set_vf_port_vlan
+  * @netdev: network interface device structure
+@@ -4217,19 +4192,9 @@ int i40e_ndo_set_vf_port_vlan(struct net_device *netdev, int vf_id,
+ 		/* duplicate request, so just return success */
+ 		goto error_pvid;
+ 
+-	if (i40e_vsi_has_vlans(vsi)) {
+-		dev_err(&pf->pdev->dev,
+-			"VF %d has already configured VLAN filters and the administrator is requesting a port VLAN override.\nPlease unload and reload the VF driver for this change to take effect.\n",
+-			vf_id);
+-		/* Administrator Error - knock the VF offline until he does
+-		 * the right thing by reconfiguring his network correctly
+-		 * and then reloading the VF driver.
+-		 */
+-		i40e_vc_disable_vf(vf);
+-		/* During reset the VF got a new VSI, so refresh the pointer. */
+-		vsi = pf->vsi[vf->lan_vsi_idx];
+-	}
+-
++	i40e_vc_disable_vf(vf);
++	/* During reset the VF got a new VSI, so refresh a pointer. */
++	vsi = pf->vsi[vf->lan_vsi_idx];
+ 	/* Locked once because multiple functions below iterate list */
+ 	spin_lock_bh(&vsi->mac_filter_hash_lock);
+ 
+-- 
+2.33.0
+
 
 
