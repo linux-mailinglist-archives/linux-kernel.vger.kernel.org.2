@@ -2,37 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D30845BEE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:49:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E0645BCB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:29:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245351AbhKXMve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:51:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56144 "EHLO mail.kernel.org"
+        id S244080AbhKXMb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:31:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345490AbhKXMsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:48:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 725516128B;
-        Wed, 24 Nov 2021 12:27:59 +0000 (UTC)
+        id S245204AbhKXMYp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:24:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F39A361212;
+        Wed, 24 Nov 2021 12:15:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756879;
-        bh=ElCrmiJTw5yKKm3G5+KzRMwdrEHFh1GvNb2pP3Box4Q=;
+        s=korg; t=1637756132;
+        bh=RhoA94I73Mc3zr+GgW0KUPpLbuIVtcYNDaZLZBT097k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gvs5DXWuLJu1sbtTmaAvD8mVM5GnLepB9sxweo3wxMX1DQpqDljOe/rGhTePo1z1Y
-         f9WyQX1uayIv/qbvdtmOSiAzV54dWcVhFtcakq++SJRLIMdXzrug3GhqydJTwLWC+u
-         zQamXKR7FZOqpgJ0nLlurfYyk13SwgX1K/6crAzI=
+        b=EV3R13Tyu70V6PnO2jGxRN6L/wl0FFJcy5cnxHaGeELBBLDhMnnElmBhPvmShwItx
+         Fe/5x1oVNms8foRSkNbh1kilTcXGicbXJ6v5HsouKdbTiW7sbeChTs02OMPg/bKBEl
+         ld/0eyVrzpFJDLnsUX9Xuue9woQyfrNxMclNda+Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mike Christie <michael.christie@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Artur Rojek <contact@artur-rojek.eu>,
+        Paul Cercueil <paul@crapouillou.net>,
+        linux-mips@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 211/251] scsi: target: Fix alua_tg_pt_gps_count tracking
-Date:   Wed, 24 Nov 2021 12:57:33 +0100
-Message-Id: <20211124115717.594436390@linuxfoundation.org>
+Subject: [PATCH 4.9 183/207] mips: bcm63xx: add support for clk_get_parent()
+Date:   Wed, 24 Nov 2021 12:57:34 +0100
+Message-Id: <20211124115709.895922051@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +52,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Christie <michael.christie@oracle.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 1283c0d1a32bb924324481586b5d6e8e76f676ba ]
+[ Upstream commit e8f67482e5a4bc8d0b65d606d08cb60ee123b468 ]
 
-We can't free the tg_pt_gp in core_alua_set_tg_pt_gp_id() because it's
-still accessed via configfs. Its release must go through the normal
-configfs/refcount process.
+BCM63XX selects HAVE_LEGACY_CLK but does not provide/support
+clk_get_parent(), so add a simple implementation of that
+function so that callers of it will build without errors.
 
-The max alua_tg_pt_gps_count check should probably have been done in
-core_alua_allocate_tg_pt_gp(), but with the current code userspace could
-have created 0x0000ffff + 1 groups, but only set the id for 0x0000ffff.
-Then it could have deleted a group with an ID set, and then set the ID for
-that extra group and it would work ok.
+Fixes these build errors:
 
-It's unlikely, but just in case this patch continues to allow that type of
-behavior, and just fixes the kfree() while in use bug.
+mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
+ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
+mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
+ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
 
-Link: https://lore.kernel.org/r/20210930020422.92578-4-michael.christie@oracle.com
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs." )
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Suggested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Cc: Artur Rojek <contact@artur-rojek.eu>
+Cc: Paul Cercueil <paul@crapouillou.net>
+Cc: linux-mips@vger.kernel.org
+Cc: Jonathan Cameron <jic23@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: linux-iio@vger.kernel.org
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: bcm-kernel-feedback-list@broadcom.com
+Cc: Jonas Gorski <jonas.gorski@gmail.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/target/target_core_alua.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/mips/bcm63xx/clk.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/target/target_core_alua.c b/drivers/target/target_core_alua.c
-index 928127642574b..18e67230fc6a3 100644
---- a/drivers/target/target_core_alua.c
-+++ b/drivers/target/target_core_alua.c
-@@ -1711,7 +1711,6 @@ int core_alua_set_tg_pt_gp_id(
- 		pr_err("Maximum ALUA alua_tg_pt_gps_count:"
- 			" 0x0000ffff reached\n");
- 		spin_unlock(&dev->t10_alua.tg_pt_gps_lock);
--		kmem_cache_free(t10_alua_tg_pt_gp_cache, tg_pt_gp);
- 		return -ENOSPC;
- 	}
- again:
+diff --git a/arch/mips/bcm63xx/clk.c b/arch/mips/bcm63xx/clk.c
+index b49fc9cb9cad2..4f375050ab8e9 100644
+--- a/arch/mips/bcm63xx/clk.c
++++ b/arch/mips/bcm63xx/clk.c
+@@ -336,6 +336,12 @@ void clk_disable(struct clk *clk)
+ 
+ EXPORT_SYMBOL(clk_disable);
+ 
++struct clk *clk_get_parent(struct clk *clk)
++{
++	return NULL;
++}
++EXPORT_SYMBOL(clk_get_parent);
++
+ unsigned long clk_get_rate(struct clk *clk)
+ {
+ 	return clk->rate;
 -- 
 2.33.0
 
