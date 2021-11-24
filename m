@@ -2,127 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8FD45CB63
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7826545CB75
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:53:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242420AbhKXRy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 12:54:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237134AbhKXRyZ (ORCPT
+        id S1349972AbhKXR4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 12:56:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45879 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349945AbhKXR4U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 12:54:25 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23621C06173E
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 09:51:16 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id c4so3402807pfj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 09:51:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oTDchkafpOp/46IgeNxQuNHz+bM7M0+5Ox+wOnWqwfQ=;
-        b=Qb2R4+I+DtEcOkXq0TYH/CagTNAxs9vdwiKlDdzULoiuVos13Xj0bBoEZSIPlJijzR
-         C478wnOgwX2OIroiZLUXmkCPPl7ne/tYZ6BhKk2rJK6CwWNPOkQPdhuayJPTVdRrDcgL
-         lYvMSdRGlCmlv6Yx0LePe8p8yv07r0peWf6/ErtsteaCes01s8SNwZ2q+UfiZQEciJ5R
-         14+qbgLpmXR5b1sK15zTGPdKVkRwKQ9vgA4LZtRxlhr6dxnNSySqCpZULAsRTj6j4ZuC
-         AymmMd7hKuQHEFmtp6YoDZPpoqm3daj0NDEv0m+0NdMYu4USrjQ47MKRLlI/ImkVjBPx
-         BcWg==
+        Wed, 24 Nov 2021 12:56:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637776389;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mASyT0OMl03qWDFFy00mhqeWIkZHCHpjVkFxkJ6erhk=;
+        b=gqtDLTFmO0qgymnX+dm+kwESu4jensgURt4UVaSaw6rNLuzM/MGEnbMaWizNFWTrMMXJ/Y
+        Hud6oaQwHEqv3Q2iol9JDYalR4ly5CoFzjH/EBlOEi5pklRNeLV1+/qJI68EudEOEtBR85
+        g/u1NQdFXLXYrVsUklT4G6pcjzYWE5o=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-284-AL0fKwUwMiKBi3ddom-Rxw-1; Wed, 24 Nov 2021 12:53:08 -0500
+X-MC-Unique: AL0fKwUwMiKBi3ddom-Rxw-1
+Received: by mail-oi1-f198.google.com with SMTP id y21-20020aca4b15000000b002a819a3cd6dso1978810oia.15
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 09:53:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=oTDchkafpOp/46IgeNxQuNHz+bM7M0+5Ox+wOnWqwfQ=;
-        b=5MfzrhPf8E/dYS4sCaog9YotEiDZRBEzPr09VO95tPOPKzi//8RnAidCcuBM8ksdMM
-         Wb08LvR34yoPHpMdcPfMtplXJiTqc5IBe/ZhnYlTElOq77tIaFHPczY+rdX9nes2a4Un
-         6nGXhDT2mhjAHsA+kFFd1aXeRkb365YZKi1LogHhmyTfmSCGmF0mpHqpc/O7zwrMDFlJ
-         HUCrmM90B+vbmu66qgoJnaTxgSKOhVHAG/35g7nHREq6RE9leFOoPTENPSkdTc6kgPR+
-         aLDcBYzWeHehk+8D79GqSOn5Ohe58YjHTAJz9LCj6v9Qe/GAQIITRp7IMs4wnxaT7IST
-         LFeA==
-X-Gm-Message-State: AOAM531gI/ZeWTfSMhCr9xzBB2yTTFAmA0WpVxEZTm/fubJFnj85r0ml
-        fN9Kx1w2wgtwQcSTGXCQE5wgbA==
-X-Google-Smtp-Source: ABdhPJwuLqZldVSYdI75Ai+PcBDkHa+xkpmfqt3+9vDSJ2R9/PWi5Orovy471RaYzID644RlCM4n+A==
-X-Received: by 2002:aa7:9404:0:b0:494:6e78:67cd with SMTP id x4-20020aa79404000000b004946e7867cdmr7671622pfo.84.1637776275657;
-        Wed, 24 Nov 2021 09:51:15 -0800 (PST)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id d2sm330981pfu.203.2021.11.24.09.51.13
+        bh=mASyT0OMl03qWDFFy00mhqeWIkZHCHpjVkFxkJ6erhk=;
+        b=FN4akHzGVc239C+cXjkK+5IoQ6jISvIKqBA4PS2SOzNDui1Eu7eM5skVVZd9g3ZJof
+         od+ywKAILGEZhe30yOeSMQ6NAh1KsR7OUcTyURg1g/QPFRkgpLRIScRZHuazo6DqqwlK
+         3XRD01UQeti+5nI7Jm40fCS7Qjr3wl1ELbt5peReanRjKReNMt+bm/SmXyByyh0bvwVs
+         mfktl/jJKGqZUDiOBJcZOMXiTVfRKRs4drRO7WQ17dPyeW1aBoTtuxxDUEyOdyooXkho
+         IaUMENhxUlGOYGfhW2H2hMyWX1kC1LSeUBARPE0qULMgSWiF/UBgoi02j4J7YN5BHozP
+         7HZw==
+X-Gm-Message-State: AOAM533XGLI7dnv/YHVKKMu0Cnx1OuDGUmqjAZ8F418Syjp2PvAzXeBw
+        Cv8mtYdOMNDGK/bf+m6yxeJAA2fIeIOWlgqVz9QG891hoEdoI6yj0fUIjJNqo4h2i4dLPIBUuHf
+        CIa2q35UugCH67SITkygmc7uZ
+X-Received: by 2002:a54:4f1d:: with SMTP id e29mr8178810oiy.179.1637776387520;
+        Wed, 24 Nov 2021 09:53:07 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwRWB6L5DthV9JqtypnlgpgoikvWzzaSh5YU1GEzYTaFfOEcTtDdkodALrrMwzR5kHOWImEJg==
+X-Received: by 2002:a54:4f1d:: with SMTP id e29mr8178778oiy.179.1637776387316;
+        Wed, 24 Nov 2021 09:53:07 -0800 (PST)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id bj8sm123395oib.51.2021.11.24.09.53.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 09:51:14 -0800 (PST)
-Date:   Wed, 24 Nov 2021 10:51:11 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Yicong Yang <yangyicong@hisilicon.com>
-Cc:     gregkh@linuxfoundation.org, helgaas@kernel.org,
-        alexander.shishkin@linux.intel.com, lorenzo.pieralisi@arm.com,
-        will@kernel.org, mark.rutland@arm.com, suzuki.poulose@arm.com,
-        mike.leach@linaro.org, leo.yan@linaro.org,
-        jonathan.cameron@huawei.com, daniel.thompson@linaro.org,
-        joro@8bytes.org, john.garry@huawei.com,
-        shameerali.kolothum.thodi@huawei.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        linux-pci@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        iommu@lists.linux-foundation.org, prime.zeng@huawei.com,
-        liuqi115@huawei.com, zhangshaokun@hisilicon.com,
-        linuxarm@huawei.com, song.bao.hua@hisilicon.com
-Subject: Re: [PATCH v2 1/6] iommu: Export iommu_{get,put}_resv_regions()
-Message-ID: <20211124175111.GA35341@p14s>
-References: <20211116090625.53702-1-yangyicong@hisilicon.com>
- <20211116090625.53702-2-yangyicong@hisilicon.com>
+        Wed, 24 Nov 2021 09:53:06 -0800 (PST)
+Date:   Wed, 24 Nov 2021 09:53:03 -0800
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Marco Elver <elver@google.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>, kasan-dev@googlegroups.com,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, x86@kernel.org
+Subject: Re: [PATCH v2 23/23] objtool, kcsan: Remove memory barrier
+ instrumentation from noinstr
+Message-ID: <20211124175303.nwuk2zlnwkr7fj5f@treble>
+References: <20211118081027.3175699-1-elver@google.com>
+ <20211118081027.3175699-24-elver@google.com>
+ <20211119203135.clplwzh3hyo5xddg@treble>
+ <YZzQoz0e/oiutuq5@elver.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211116090625.53702-2-yangyicong@hisilicon.com>
+In-Reply-To: <YZzQoz0e/oiutuq5@elver.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 05:06:20PM +0800, Yicong Yang wrote:
-> Export iommu_{get,put}_resv_regions() to the modules so that the driver
-> can retrieve and use the reserved regions of the device.
+On Tue, Nov 23, 2021 at 12:29:39PM +0100, Marco Elver wrote:
+> On Fri, Nov 19, 2021 at 12:31PM -0800, Josh Poimboeuf wrote:
+> > On Thu, Nov 18, 2021 at 09:10:27AM +0100, Marco Elver wrote:
+> [...]
+> > > +	if (insn->sec->noinstr && sym->removable_instr) {
+> [...]
+> > I'd love to have a clearer name than 'removable_instr', though I'm
+> > having trouble coming up with something.
+> [...]
 > 
-> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
-> ---
->  drivers/iommu/iommu.c | 2 ++
->  include/linux/iommu.h | 4 ++--
->  2 files changed, 4 insertions(+), 2 deletions(-)
+> I now have the below as v3 of this patch. The naming isn't entirely
+> obvious, but coming up with a short name for this is tricky, but
+> hopefully the comments make it clear. We can of course still pick
+> another name.
 > 
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index dd7863e453a5..e96711eee965 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -2792,6 +2792,7 @@ void iommu_get_resv_regions(struct device *dev, struct list_head *list)
->  	if (ops && ops->get_resv_regions)
->  		ops->get_resv_regions(dev, list);
->  }
-> +EXPORT_SYMBOL_GPL(iommu_get_resv_regions);
->  
->  void iommu_put_resv_regions(struct device *dev, struct list_head *list)
->  {
-> @@ -2800,6 +2801,7 @@ void iommu_put_resv_regions(struct device *dev, struct list_head *list)
->  	if (ops && ops->put_resv_regions)
->  		ops->put_resv_regions(dev, list);
->  }
-> +EXPORT_SYMBOL_GPL(iommu_put_resv_regions);
->  
->  /**
->   * generic_iommu_put_resv_regions - Reserved region driver helper
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index d2f3435e7d17..1b7b0f370e28 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -450,8 +450,8 @@ extern phys_addr_t iommu_iova_to_phys(struct iommu_domain *domain, dma_addr_t io
->  extern void iommu_set_fault_handler(struct iommu_domain *domain,
->  			iommu_fault_handler_t handler, void *token);
->  
-> -extern void iommu_get_resv_regions(struct device *dev, struct list_head *list);
-> -extern void iommu_put_resv_regions(struct device *dev, struct list_head *list);
-> +void iommu_get_resv_regions(struct device *dev, struct list_head *list);
-> +void iommu_put_resv_regions(struct device *dev, struct list_head *list);
+> Does that look reasonable?
+> 
+> Note, I'd like this series to sit in -next for a while (probably from
+> some time next week after sending v3 if there are no further
+> complaints). By default everything will be picked up by the -rcu tree,
+> and we're targeting Linux 5.18.
+> 
+> If you feel there might be objtool conflicts coming, this patch could be
+> taken through another tree as there are no hard dependencies, as long as
+> this patch reaches mainline before or with the rest.
+> 
+> Thanks,
+> -- Marco
 
-Acked-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Looks good to me.  I don't know of any upcoming conflicts, feel free to
+carry it with your series for now.
 
->  extern void generic_iommu_put_resv_regions(struct device *dev,
->  					   struct list_head *list);
->  extern void iommu_set_default_passthrough(bool cmd_line);
-> -- 
-> 2.33.0
-> 
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+
+-- 
+Josh
+
