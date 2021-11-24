@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C8645BDDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3B845BA25
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:05:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343872AbhKXMlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:41:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39824 "EHLO mail.kernel.org"
+        id S235832AbhKXMIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:08:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344630AbhKXMic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:38:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7621D613A3;
-        Wed, 24 Nov 2021 12:23:05 +0000 (UTC)
+        id S242161AbhKXMGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:06:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4B0660FE7;
+        Wed, 24 Nov 2021 12:03:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756586;
-        bh=KPNdnvY897FfD9BLo2A3Z2x6qFr3e2b3FuKDsqCNAFQ=;
+        s=korg; t=1637755382;
+        bh=66LniA/3g3fXEDy7dezjmcIoAX97+IEozozSMMeJVyo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YwQ2kw6sQxtlfn6G6wu9atJ3/36OdkXhuKN1yEU6UsUDNApROTl63+y3p3KU7BQC4
-         dDoG5hNE0YWxdZmiCOzFh8KQVG9QQJU78we1i/RHRwX7avWXa7NVzIbnuw8WnT9lv5
-         xigt7iqh3tcPBRRMDxSuRkJhY1rfWoaH13B6kHts=
+        b=PHSCkSnjmorI5xfA5l6+iGPNu99Umxnz3grxg4jBvT1qGE0hcUwqC+gV1VR3+ZKUG
+         R5yA2vvLsnJsozoPAnkmdy0ER1R+dC9LxLsk+B2kq4qB6PPDKcwnC5OZGyIziQMfB5
+         1SrQP1K7nCxsGTkZUrtWspNksShhbfDPY0wnkciA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sudheesh Mavila <sudheesh.mavila@amd.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Marco Chiappero <marco.chiappero@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 135/251] net: amd-xgbe: Toggle PLL settings during rate change
-Date:   Wed, 24 Nov 2021 12:56:17 +0100
-Message-Id: <20211124115714.946535760@linuxfoundation.org>
+Subject: [PATCH 4.4 075/162] crypto: qat - detect PFVF collision after ACK
+Date:   Wed, 24 Nov 2021 12:56:18 +0100
+Message-Id: <20211124115700.744685132@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,108 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 
-[ Upstream commit daf182d360e509a494db18666799f4e85d83dda0 ]
+[ Upstream commit 9b768e8a3909ac1ab39ed44a3933716da7761a6f ]
 
-For each rate change command submission, the FW has to do a phy
-power off sequence internally. For this to happen correctly, the
-PLL re-initialization control setting has to be turned off before
-sending mailbox commands and re-enabled once the command submission
-is complete.
+Detect a PFVF collision between the local and the remote function by
+checking if the message on the PFVF CSR has been overwritten.
+This is done after the remote function confirms that the message has
+been received, by clearing the interrupt bit, or the maximum number of
+attempts (ADF_IOV_MSG_ACK_MAX_RETRY) to check the CSR has been exceeded.
 
-Without the PLL control setting, the link up takes longer time in a
-fixed phy configuration.
-
-Fixes: 47f164deab22 ("amd-xgbe: Add PCI device support")
-Co-developed-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
-Signed-off-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
-Signed-off-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: ed8ccaef52fa ("crypto: qat - Add support for SRIOV")
+Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Co-developed-by: Marco Chiappero <marco.chiappero@intel.com>
+Signed-off-by: Marco Chiappero <marco.chiappero@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/amd/xgbe/xgbe-common.h |  8 ++++++++
- drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c | 20 +++++++++++++++++++-
- 2 files changed, 27 insertions(+), 1 deletion(-)
+ drivers/crypto/qat/qat_common/adf_pf2vf_msg.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-common.h b/drivers/net/ethernet/amd/xgbe/xgbe-common.h
-index b2cd3bdba9f89..533b8519ec352 100644
---- a/drivers/net/ethernet/amd/xgbe/xgbe-common.h
-+++ b/drivers/net/ethernet/amd/xgbe/xgbe-common.h
-@@ -1331,6 +1331,10 @@
- #define MDIO_VEND2_PMA_CDR_CONTROL	0x8056
- #endif
+diff --git a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
+index 711706819b05d..7e45c21a61657 100644
+--- a/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
++++ b/drivers/crypto/qat/qat_common/adf_pf2vf_msg.c
+@@ -218,6 +218,13 @@ static int __adf_iov_putmsg(struct adf_accel_dev *accel_dev, u32 msg, u8 vf_nr)
+ 		val = ADF_CSR_RD(pmisc_bar_addr, pf2vf_offset);
+ 	} while ((val & int_bit) && (count++ < ADF_IOV_MSG_ACK_MAX_RETRY));
  
-+#ifndef MDIO_VEND2_PMA_MISC_CTRL0
-+#define MDIO_VEND2_PMA_MISC_CTRL0	0x8090
-+#endif
++	if (val != msg) {
++		dev_dbg(&GET_DEV(accel_dev),
++			"Collision - PFVF CSR overwritten by remote function\n");
++		ret = -EIO;
++		goto out;
++	}
 +
- #ifndef MDIO_CTRL1_SPEED1G
- #define MDIO_CTRL1_SPEED1G		(MDIO_CTRL1_SPEED10G & ~BMCR_SPEED100)
- #endif
-@@ -1389,6 +1393,10 @@
- #define XGBE_PMA_RX_RST_0_RESET_ON	0x10
- #define XGBE_PMA_RX_RST_0_RESET_OFF	0x00
- 
-+#define XGBE_PMA_PLL_CTRL_MASK		BIT(15)
-+#define XGBE_PMA_PLL_CTRL_ENABLE	BIT(15)
-+#define XGBE_PMA_PLL_CTRL_DISABLE	0x0000
-+
- /* Bit setting and getting macros
-  *  The get macro will extract the current bit field value from within
-  *  the variable
-diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c b/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
-index bb6f0dcea6eab..4a4370a470fd1 100644
---- a/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
-+++ b/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
-@@ -1803,12 +1803,26 @@ static void xgbe_phy_rx_reset(struct xgbe_prv_data *pdata)
- 	}
- }
- 
-+static void xgbe_phy_pll_ctrl(struct xgbe_prv_data *pdata, bool enable)
-+{
-+	XMDIO_WRITE_BITS(pdata, MDIO_MMD_PMAPMD, MDIO_VEND2_PMA_MISC_CTRL0,
-+			 XGBE_PMA_PLL_CTRL_MASK,
-+			 enable ? XGBE_PMA_PLL_CTRL_ENABLE
-+				: XGBE_PMA_PLL_CTRL_DISABLE);
-+
-+	/* Wait for command to complete */
-+	usleep_range(100, 200);
-+}
-+
- static void xgbe_phy_perform_ratechange(struct xgbe_prv_data *pdata,
- 					unsigned int cmd, unsigned int sub_cmd)
- {
- 	unsigned int s0 = 0;
- 	unsigned int wait;
- 
-+	/* Disable PLL re-initialization during FW command processing */
-+	xgbe_phy_pll_ctrl(pdata, false);
-+
- 	/* Log if a previous command did not complete */
- 	if (XP_IOREAD_BITS(pdata, XP_DRIVER_INT_RO, STATUS)) {
- 		netif_dbg(pdata, link, pdata->netdev,
-@@ -1829,7 +1843,7 @@ static void xgbe_phy_perform_ratechange(struct xgbe_prv_data *pdata,
- 	wait = XGBE_RATECHANGE_COUNT;
- 	while (wait--) {
- 		if (!XP_IOREAD_BITS(pdata, XP_DRIVER_INT_RO, STATUS))
--			return;
-+			goto reenable_pll;
- 
- 		usleep_range(1000, 2000);
- 	}
-@@ -1839,6 +1853,10 @@ static void xgbe_phy_perform_ratechange(struct xgbe_prv_data *pdata,
- 
- 	/* Reset on error */
- 	xgbe_phy_rx_reset(pdata);
-+
-+reenable_pll:
-+	/* Enable PLL re-initialization */
-+	xgbe_phy_pll_ctrl(pdata, true);
- }
- 
- static void xgbe_phy_rrc(struct xgbe_prv_data *pdata)
+ 	if (val & int_bit) {
+ 		dev_dbg(&GET_DEV(accel_dev), "ACK not received from remote\n");
+ 		val &= ~int_bit;
 -- 
 2.33.0
 
