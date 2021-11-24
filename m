@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397CC45BA67
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF4F45BBFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241233AbhKXMKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:10:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33246 "EHLO mail.kernel.org"
+        id S243114AbhKXMZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:25:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242384AbhKXMHZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:07:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 260D361075;
-        Wed, 24 Nov 2021 12:04:15 +0000 (UTC)
+        id S243997AbhKXMWT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:22:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F2D4611C9;
+        Wed, 24 Nov 2021 12:13:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755455;
-        bh=SIGqIObj6Izhd7JpPtGhNQ5aCiNx3L7VJLUbad9fhPU=;
+        s=korg; t=1637756006;
+        bh=nYCtE5+NQ35onNhDfGKFucckRAFjzNzXecm8ge5NkXY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YrTbnSFot1qNBODHPsq6V1apbBFVnqvJeio79Ieff+GtD41C2aElIQCfYzKMxUm1w
-         IQiaW4KBuS4UsAIdrlj9JY5SeBmlnYOMUwfvSFsUsnzGDruLUTM0VBtxkDdOUhUBmQ
-         yRB7RZEgKFdbewmzUrAxBqE4os2FA3rEZVrQDPhM=
+        b=Hsrb+UrW/nDYWbaJgs/uJkjR4lWydLOO+guuLiYc6nmzPwlcWP3yKhgIVije8Orsi
+         UMg1Crfqs0B4fRfn6QzzWOpOtV48aE2veKOhEn3+3s2hw3yV8SMC2kY30YHvkSjlgz
+         lJl9/6JM/+7H0l+6IcO4hJtDCGaNlx62JnVMDyj8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 103/162] xen-pciback: Fix return in pm_ctrl_init()
-Date:   Wed, 24 Nov 2021 12:56:46 +0100
-Message-Id: <20211124115701.659151073@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 136/207] dmaengine: at_xdmac: fix AT_XDMAC_CC_PERID() macro
+Date:   Wed, 24 Nov 2021 12:56:47 +0100
+Message-Id: <20211124115708.433606971@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-[ Upstream commit 4745ea2628bb43a7ec34b71763b5a56407b33990 ]
+[ Upstream commit 320c88a3104dc955f928a1eecebd551ff89530c0 ]
 
-Return NULL instead of passing to ERR_PTR while err is zero,
-this fix smatch warnings:
-drivers/xen/xen-pciback/conf_space_capability.c:163
- pm_ctrl_init() warn: passing zero to 'ERR_PTR'
+AT_XDMAC_CC_PERID() should be used to setup bits 24..30 of XDMAC_CC
+register. Using it without parenthesis around 0x7f & (i) will lead to
+setting all the time zero for bits 24..30 of XDMAC_CC as the << operator
+has higher precedence over bitwise &. Thus, add paranthesis around
+0x7f & (i).
 
-Fixes: a92336a1176b ("xen/pciback: Drop two backends, squash and cleanup some code.")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Link: https://lore.kernel.org/r/20211008074417.8260-1-yuehaibing@huawei.com
-Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Fixes: 15a03850ab8f ("dmaengine: at_xdmac: fix macro typo")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Link: https://lore.kernel.org/r/20211007111230.2331837-3-claudiu.beznea@microchip.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/xen/xen-pciback/conf_space_capability.c | 2 +-
+ drivers/dma/at_xdmac.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/xen/xen-pciback/conf_space_capability.c b/drivers/xen/xen-pciback/conf_space_capability.c
-index b1a1d7de0894e..daa2e89a50fa3 100644
---- a/drivers/xen/xen-pciback/conf_space_capability.c
-+++ b/drivers/xen/xen-pciback/conf_space_capability.c
-@@ -159,7 +159,7 @@ static void *pm_ctrl_init(struct pci_dev *dev, int offset)
- 	}
- 
- out:
--	return ERR_PTR(err);
-+	return err ? ERR_PTR(err) : NULL;
- }
- 
- static const struct config_field caplist_pm[] = {
+diff --git a/drivers/dma/at_xdmac.c b/drivers/dma/at_xdmac.c
+index 12d9048293245..a505be9ef96da 100644
+--- a/drivers/dma/at_xdmac.c
++++ b/drivers/dma/at_xdmac.c
+@@ -156,7 +156,7 @@
+ #define		AT_XDMAC_CC_WRIP	(0x1 << 23)	/* Write in Progress (read only) */
+ #define			AT_XDMAC_CC_WRIP_DONE		(0x0 << 23)
+ #define			AT_XDMAC_CC_WRIP_IN_PROGRESS	(0x1 << 23)
+-#define		AT_XDMAC_CC_PERID(i)	(0x7f & (i) << 24)	/* Channel Peripheral Identifier */
++#define		AT_XDMAC_CC_PERID(i)	((0x7f & (i)) << 24)	/* Channel Peripheral Identifier */
+ #define AT_XDMAC_CDS_MSP	0x2C	/* Channel Data Stride Memory Set Pattern */
+ #define AT_XDMAC_CSUS		0x30	/* Channel Source Microblock Stride */
+ #define AT_XDMAC_CDUS		0x34	/* Channel Destination Microblock Stride */
 -- 
 2.33.0
 
