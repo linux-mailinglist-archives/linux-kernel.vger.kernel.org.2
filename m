@@ -2,42 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD27045C4FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:51:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B9945C0D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:08:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355106AbhKXNxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:53:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39964 "EHLO mail.kernel.org"
+        id S1346669AbhKXNL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:11:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346738AbhKXNtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:49:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B8266334F;
-        Wed, 24 Nov 2021 13:03:00 +0000 (UTC)
+        id S1348378AbhKXNJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:09:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 206126124F;
+        Wed, 24 Nov 2021 12:40:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758980;
-        bh=em29nh9Xionb2tUY06b1SteJKapp4G0m6rwhOeQIGVs=;
+        s=korg; t=1637757628;
+        bh=0Yvkc9CjRcWzbtFqkI5TOzKmnag491/csDOKwWvB6zg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cl+9TyZjSytsklOwVeaQtwTyg2WXnU9tf/c9qqnm3TE7rO3KNHt0u70/N4iW2Gufy
-         C0ZD+5rRNuOyFGo29sPgw77S+woFcx7mU2Gb/dAWpnSKNF1bl7l9j6AXQh+H9qHBKB
-         7yFMRgpKNJTcyaLUNbyBkGO9SgKImJ+hG9I++bok=
+        b=tYtFq7wV1FwMOBdg5hwODmCPLelu4QFoczvcXMw3f3TIwVX9njhnRyQ9QFqhLas28
+         m8FolfS4xK2bmPjjoozERo5nSd5ei0/dzukTnyXJlJPwr1JKXoehcEeIV4BHWWpNNg
+         S9owq/jPo2c+H7pEk/+0Y0YMygDEws9YQAbI5U6g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Paul Burton <paulburton@kernel.org>,
-        Maxime Bizon <mbizon@freebox.fr>,
-        Ralf Baechle <ralf@linux-mips.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 094/279] mips: BCM63XX: ensure that CPU_SUPPORTS_32BIT_KERNEL is set
-Date:   Wed, 24 Nov 2021 12:56:21 +0100
-Message-Id: <20211124115722.031217551@linuxfoundation.org>
+Subject: [PATCH 4.19 192/323] scsi: csiostor: Uninitialized data in csio_ln_vnp_read_cbfn()
+Date:   Wed, 24 Nov 2021 12:56:22 +0100
+Message-Id: <20211124115725.423489633@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,62 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 5eeaafc8d69373c095e461bdb39e5c9b62228ac5 ]
+[ Upstream commit f4875d509a0a78ad294a1a538d534b5ba94e685a ]
 
-Several header files need info on CONFIG_32BIT or CONFIG_64BIT,
-but kconfig symbol BCM63XX does not provide that info. This leads
-to many build errors, e.g.:
+This variable is just a temporary variable, used to do an endian
+conversion.  The problem is that the last byte is not initialized.  After
+the conversion is completely done, the last byte is discarded so it doesn't
+cause a problem.  But static checkers and the KMSan runtime checker can
+detect the uninitialized read and will complain about it.
 
-   arch/mips/include/asm/page.h:196:13: error: use of undeclared identifier 'CAC_BASE'
-           return x - PAGE_OFFSET + PHYS_OFFSET;
-   arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
-   #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
-   arch/mips/include/asm/io.h:134:28: error: use of undeclared identifier 'CAC_BASE'
-           return (void *)(address + PAGE_OFFSET - PHYS_OFFSET);
-   arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
-   #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
-
-arch/mips/include/asm/uaccess.h:82:10: error: use of undeclared identifier '__UA_LIMIT'
-           return (__UA_LIMIT & (addr | (addr + size) | __ua_size(size))) == 0;
-
-Selecting the SYS_HAS_CPU_BMIPS* symbols causes SYS_HAS_CPU_BMIPS to be
-set, which then selects CPU_SUPPORT_32BIT_KERNEL, which causes
-CONFIG_32BIT to be set. (a bit more indirect than v1 [RFC].)
-
-Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Cc: bcm-kernel-feedback-list@broadcom.com
-Cc: linux-mips@vger.kernel.org
-Cc: Paul Burton <paulburton@kernel.org>
-Cc: Maxime Bizon <mbizon@freebox.fr>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Suggested-by: Florian Fainelli <f.fainelli@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Link: https://lore.kernel.org/r/20211006073242.GA8404@kili
+Fixes: 5036f0a0ecd3 ("[SCSI] csiostor: Fix sparse warnings.")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/Kconfig | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/scsi/csiostor/csio_lnode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index cbbb302a460eb..a917d408d27d8 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -332,6 +332,9 @@ config BCM63XX
- 	select SYS_SUPPORTS_32BIT_KERNEL
- 	select SYS_SUPPORTS_BIG_ENDIAN
- 	select SYS_HAS_EARLY_PRINTK
-+	select SYS_HAS_CPU_BMIPS32_3300
-+	select SYS_HAS_CPU_BMIPS4350
-+	select SYS_HAS_CPU_BMIPS4380
- 	select SWAP_IO_SPACE
- 	select GPIOLIB
- 	select MIPS_L1_CACHE_SHIFT_4
+diff --git a/drivers/scsi/csiostor/csio_lnode.c b/drivers/scsi/csiostor/csio_lnode.c
+index a8e29e3d35726..98944fb3f0b85 100644
+--- a/drivers/scsi/csiostor/csio_lnode.c
++++ b/drivers/scsi/csiostor/csio_lnode.c
+@@ -619,7 +619,7 @@ csio_ln_vnp_read_cbfn(struct csio_hw *hw, struct csio_mb *mbp)
+ 	struct fc_els_csp *csp;
+ 	struct fc_els_cssp *clsp;
+ 	enum fw_retval retval;
+-	__be32 nport_id;
++	__be32 nport_id = 0;
+ 
+ 	retval = FW_CMD_RETVAL_G(ntohl(rsp->alloc_to_len16));
+ 	if (retval != FW_SUCCESS) {
 -- 
 2.33.0
 
