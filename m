@@ -2,177 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136CD45BBBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:19:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E1B45BBCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243432AbhKXMWt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Nov 2021 07:22:49 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:32852 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243495AbhKXMQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:16:28 -0500
-Received: from ip5f5b2004.dynamic.kabel-deutschland.de ([95.91.32.4] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mpr9D-0005HW-3K; Wed, 24 Nov 2021 13:13:11 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Atish Patra <atishp@atishpatra.org>,
-        linux-riscv@lists.infradead.org
-Cc:     Anup Patel <anup@brainfault.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>, atishp@rivosinc.com,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Philipp Tomsich <philipp.tomsich@vrull.eu>,
-        Guo Ren <guoren@kernel.org>
-Subject: Re: [RFC PATCH 0/3] riscv: Add riscv.fwsz kernel parameter to save memory
-Date:   Wed, 24 Nov 2021 13:13:10 +0100
-Message-ID: <7549655.ZlQDL8uBSY@diego>
-In-Reply-To: <CAJF2gTQAypx=5+a84zZpj7ofs-aPpPMNZyaB+HEgD8Dfyt6TiA@mail.gmail.com>
-References: <20211123015717.542631-1-guoren@kernel.org> <CAOnJCU+-WCHA9vgrbcMFsLMaimwJNEXOpqMLS_0Gq_JRM5QNWQ@mail.gmail.com> <CAJF2gTQAypx=5+a84zZpj7ofs-aPpPMNZyaB+HEgD8Dfyt6TiA@mail.gmail.com>
+        id S244678AbhKXMYH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Nov 2021 07:24:07 -0500
+Received: from relay10.mail.gandi.net ([217.70.178.230]:56861 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243995AbhKXMTF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:19:05 -0500
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 148ED240002;
+        Wed, 24 Nov 2021 12:15:52 +0000 (UTC)
+Date:   Wed, 24 Nov 2021 13:15:52 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Roger Quadros <rogerq@kernel.org>
+Cc:     richard@nod.at, vigneshr@ti.com, kishon@ti.com, nm@ti.com,
+        tony@atomide.com, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] mtd: nand: omap2: Add support for NAND Controller
+ on AM64 SoC
+Message-ID: <20211124131552.6b9bc506@xps13>
+In-Reply-To: <20211123103609.14063-5-rogerq@kernel.org>
+References: <20211123103609.14063-1-rogerq@kernel.org>
+        <20211123103609.14063-5-rogerq@kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, 24. November 2021, 07:49:26 CET schrieb Guo Ren:
-> On Wed, Nov 24, 2021 at 4:01 AM Atish Patra <atishp@atishpatra.org> wrote:
-> >
-> > On Tue, Nov 23, 2021 at 11:33 AM Heiko Stübner <heiko@sntech.de> wrote:
-> > >
-> > > Hi Guo,
-> > >
-> > > Am Dienstag, 23. November 2021, 02:57:14 CET schrieb guoren@kernel.org:
-> > > > From: Guo Ren <guoren@linux.alibaba.com>
-> > > >
-> > > > The firmware of riscv (such as opensbi) occupy 2MB(64bit) /
-> > > > 4MB(32bit) in Linux. It's very wasteful to small memory footprint
-> > > > soc chip such as Allwinner D1s/F133. The kernel parameter gives a
-> > > > chance to users to set the proper size of the firmware and get
-> > > > more than 1.5MB of memory.
-> > >
-> > > is this kernel parameter approach a result of the T-Head Ice-SoC
-> > > currently loading its openSBI from inside the main u-boot via extfs-load,
-> > > directly before the kernel itself [0] ?
-> >
-> > Looking at the defconfig[1], it may be U-Boot SPL not U-Boot proper. I
-> > may be looking at the wrong config though.
-> > If U-Boot SPL is actually used, you don't even need to manually load
-> > OpenSBI "fw_jump" binary.
-> >
-> > As Heiko pointed, you should just follow how U-Boot SPL works on
-> > hifive unmatched (creating the FIT image)
-> > The standard U-Boot SPL uses with fw_dynamic which provides all the
-> > flexibility you want.
-> I've no right to force users' flavor of boot flow.
-> 
-> 1) SPL -> opensbi M-mode -> u-boot S-mode -> Linux
-> 2) SPL -> u-boot M-mode -> opensbi M-mode -> Linux
->
-> All are okay for me. I think the most straightforward reason for
-> people choosing 2) is that they want to try the newest OpenSBI & Linux
-> and 2) is more convenient for replacing.
+Hi Roger,
 
-Though that second option is merely a hack during development.
+rogerq@kernel.org wrote on Tue, 23 Nov 2021 12:36:09 +0200:
 
-Having u-boot run in M-mode creates an attack surface that is a lot
-bigger (with it running usb, ethernet and whatnot) compared to shedding
-privileges before that.
+> AM64 SoC has an issue which prevents proper 8-bit and 16-bit
+> reads from GPMC. We are limited to do 32-bit reads only.
 
-I'd consider openSBI as part of the device firmware, so that shouldn't be
-a component you replace daily. Also U-Boot for example already provides
-established ways to sign and verify the parts loaded by SPL, by signing
-the created FIT image this would also include the openSBI image.
+First, thanks for this series!
 
-So in case (1) you can add more security by simply adding the necessary
-key references during u-boot build, where on the other hand if you _want_
-security in case (2) you're back to hand-rolling any verification
-[with less review and thus more prone to have issues]
-
-Having the _ability_ to verify the loaded firmware components can be a
-requirement in projects, so I think the default should always case (1),
-to not encourage insecure implementations any more than necessary ;-) .
-
-
-Heiko
-
-
-> >
-> > [1] https://github.com/T-head-Semi/u-boot/blob/main/configs/ice_evb_c910_defconfig
-> > >
-> > > Because that approach in general looks not ideal.
-> > >
-> > > Normally you want the main u-boot already running with less privileges
-> > > so firmware like openSBI should've been already loaded before that.
-> > > Even more true when you're employing methods to protect memory regions
-> > > from less privileged access.
-> > >
-> > > A lot of socs set u-boot as opensbi payload, but for the example the D1
-> > > mainline approach uses the Allwinner TOC1 image format to load both
-> > > opensbi and the main uboot into memory from its 1st stage loader.
-> > >
-> > >
-> > > Of course the best way would be to just mimic what a number of
-> > > arm64 and also riscv socs do and use already existing u-boot utilities.
-> > >
-> > > U-Boot can create a FIT image containing both main u-boot, dtb and
-> > > firmware images that all get loaded from SPL and placed at the correct
-> > > addresses before having the SPL jump into opensbi and from there
-> > > into u-boot [1] .
-> > >
-> > > And as Anup was writing, reserved-memory should then be the way
-> > > to go to tell the kernel what regions to omit.
-> > >
-> > > And mainline u-boot has already the means to even take the reserved-memory
-> > > from the devicetree used by opensbi and copy it to a new devicetree,
-> > > if the second one is different.
-> > >
-> > >
-> > > Heiko
-> > >
-> > >
-> > > [0] https://github.com/T-head-Semi/u-boot/blob/main/include/configs/ice-c910.h#L46
-> > > [1] see spl_invoke_opensbi() in common/spl/spl_opensbi.c
-> > > [2] see riscv_board_reserved_mem_fixup() in arch/riscv/lib/fdt_fixup.c
-> > >
-> > > >
-> > > > Guo Ren (3):
-> > > >   riscv: Remove 2MB offset in the mm layout
-> > > >   riscv: Add early_param to decrease firmware region
-> > > >   riscv: Add riscv.fwsz kernel parameter
-> > > >
-> > > >  .../admin-guide/kernel-parameters.txt         |  3 +++
-> > > >  arch/riscv/include/asm/page.h                 |  8 +++++++
-> > > >  arch/riscv/kernel/head.S                      | 10 +++-----
-> > > >  arch/riscv/kernel/vmlinux.lds.S               |  5 ++--
-> > > >  arch/riscv/mm/init.c                          | 23 ++++++++++++++++---
-> > > >  5 files changed, 36 insertions(+), 13 deletions(-)
-> > > >
-> > > >
-> > >
-> > >
-> > >
-> > >
-> > >
-> > > _______________________________________________
-> > > linux-riscv mailing list
-> > > linux-riscv@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> >
-> >
-> >
-> > --
-> > Regards,
-> > Atish
-> 
-> 
-> 
+> Force 32-bit only reads on affected platforms.
 > 
 
+Please change the commit title prefix to: "mtd: rawnand: omap2:" in
+patch 2, 3, 4.
+ 
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> ---
+>  drivers/mtd/nand/raw/omap2.c | 35 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 35 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
+> index f1fc146e09b9..d952de771b35 100644
+> --- a/drivers/mtd/nand/raw/omap2.c
+> +++ b/drivers/mtd/nand/raw/omap2.c
+> @@ -28,6 +28,7 @@
+>  
+>  #include <linux/omap-gpmc.h>
+>  #include <linux/platform_data/mtd-nand-omap2.h>
+> +#include <linux/sys_soc.h>
+>  
+>  #define	DRIVER_NAME	"omap2-nand"
+>  #define	OMAP_NAND_TIMEOUT_MS	5000
+> @@ -181,6 +182,7 @@ struct omap_nand_info {
+>  	void (*data_out)(struct nand_chip *chip,
+>  			 const void *buf, unsigned int len,
+>  			 bool force_8bit);
+> +	bool force_32bit;
 
+I believe we should have a driver capability instead of something in
+the info structure. You can save the value here as well in the probe if
+you want, but I would like this limitation to be tied to the
+compatible.
 
+>  };
+>  
+>  static inline struct omap_nand_info *mtd_to_omap(struct mtd_info *mtd)
+> @@ -2070,6 +2072,25 @@ static void omap_nand_data_in(struct nand_chip *chip, void *buf,
+>  	struct omap_nand_info *info = mtd_to_omap(nand_to_mtd(chip));
+>  	u32 alignment = ((uintptr_t)buf | len) & 3;
+>  
+> +	if (info->force_32bit) {
 
+I am a little bit bothered by this limitation. The force8_bit flag does
+not require the driver to read only 8-bits of the fifo register, it
+actually requires to use only the first 8-bits of the NAND bus (which
+can also be 16-bit wide). The older implementation just limited the
+number of bits reads to be 8 with ioread8, which seems to be a fine
+solution but would require more accesses than using ioread16 (or
+ioread32) when reading more than 1 byte on platforms with only 8-bit
+busses.
+
+My point here is that:
+1- the limited controllers cannot be used with a 16-bit bus
+2- non-limited controllers can use ioread16 if the bus width is 8-bits
+
+I guess it's fine not to change the logic to avoid breaking boards so
+we can just ignore [2] but I belive we should check chip->options &
+NAND_BUSWIDTH_16 in ->attach_chip() and refuse probing if this flag is
+set.
+
+> +		u32 val;
+> +		int left;
+> +		u8 *ptr;
+> +
+> +		ioread32_rep(info->fifo, buf, len >> 2);
+> +		left = len & 0x3;
+> +		if (left) {
+> +			val = ioread32(info->fifo);
+> +			ptr = (u8 *)(buf + (len - left));
+> +			while (left--) {
+> +				*ptr++ = val & 0xff;
+> +				val >>= 8;
+> +			}
+> +		}
+> +
+> +		return;
+> +	}
+> +
+>  	if (force_8bit || (alignment & 1))
+>  		ioread8_rep(info->fifo, buf, len);
+>  	else if (alignment & 3)
+> @@ -2169,8 +2190,15 @@ static const struct nand_controller_ops omap_nand_controller_ops = {
+>  static struct nand_controller omap_gpmc_controller;
+>  static bool omap_gpmc_controller_initialized;
+>  
+> +static const struct of_device_id omap_nand_ids[];
+> +
+
+I believe this change should be dropped.
+
+>  static int omap_nand_probe(struct platform_device *pdev)
+>  {
+> +	const struct soc_device_attribute k3_soc_devices[] = {
+> +		{ .family = "AM64X", .revision = "SR1.0" },
+> +		{ /* sentinel */ }
+> +	};
+> +
+>  	struct omap_nand_info		*info;
+>  	struct mtd_info			*mtd;
+>  	struct nand_chip		*nand_chip;
+> @@ -2186,6 +2214,12 @@ static int omap_nand_probe(struct platform_device *pdev)
+>  
+>  	info->pdev = pdev;
+>  
+> +	/* Some SoC's have 32-bit at least, read limitation */
+> +	if (soc_device_match(k3_soc_devices)) {
+> +		dev_info(&pdev->dev, "force 32-bit\n");
+> +		info->force_32bit = true;
+> +	}
+> +
+
+As suggested above, just adding a capability structure tied to the
+compatible string and retrieved with of_device_get_match_data() should
+be enough and replace this manual tree research.
+
+>  	err = omap_get_dt_info(dev, info);
+>  	if (err)
+>  		return err;
+> @@ -2286,6 +2320,7 @@ static int omap_nand_remove(struct platform_device *pdev)
+>  
+>  static const struct of_device_id omap_nand_ids[] = {
+>  	{ .compatible = "ti,omap2-nand", },
+> +	{ .compatible = "ti,am64-nand", },
+>  	{},
+>  };
+>  MODULE_DEVICE_TABLE(of, omap_nand_ids);
+
+The conversion to exec_op looks fine otherwise :)
+
+Thanks,
+MiquÃ¨l
