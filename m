@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A62945BD4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:34:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 206B145BB7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:17:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344233AbhKXMhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:37:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49308 "EHLO mail.kernel.org"
+        id S243168AbhKXMUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:20:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344167AbhKXMag (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:30:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A82861359;
-        Wed, 24 Nov 2021 12:19:00 +0000 (UTC)
+        id S242803AbhKXMOq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:14:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61C76611AD;
+        Wed, 24 Nov 2021 12:09:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756340;
-        bh=7+ik/QM0SSY9izOtJeZyh2oN/k0ZiB3xnzNA9pTuZIY=;
+        s=korg; t=1637755785;
+        bh=rK3fFZPvREaBoYXx5wA6/WWkxhSfS8acJ0KsaQzde5s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0lR0ZEDg/wGKV9dKLwfGeYQskcYeuW32TmoinUNEH+YBg599PlTITswnAhHxY0wPJ
-         cySeBatQr3wsHaCa9PnZTcqstfgoGh4WowypKY5M50uAIDjSpnFaZeC7ZHXsWLinwI
-         u+CdtOXlSW9uVCndQWOJMyU6GoNh0PAVUBYjo27Q=
+        b=YQ0SBjYu0V7hS74zEmNi33xXe8eM/r3UUQUzfyBFc8bPvclAtrQKgVx+VQMpkvQ01
+         0md/auPO5ly4y7WqU+r/FnF74WyFlHJCJIpS1HOS49AzWEfGZ9ronZZn08VdCRQMKI
+         JYfPwXH3UpdLpyrVtTJqjvPMw4wSUGoe9Saupu2w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Wolfgang Wiedmeyer <wolfgit@wiedmeyer.de>,
-        Henrik Grimler <henrik@grimler.se>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH 4.14 052/251] power: supply: max17042_battery: use VFSOC for capacity when no rsns
-Date:   Wed, 24 Nov 2021 12:54:54 +0100
-Message-Id: <20211124115712.058714514@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Perrot <thomas.perrot@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 024/207] spi: spl022: fix Microwire full duplex mode
+Date:   Wed, 24 Nov 2021 12:54:55 +0100
+Message-Id: <20211124115704.745224138@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,45 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Henrik Grimler <henrik@grimler.se>
+From: Thomas Perrot <thomas.perrot@bootlin.com>
 
-commit 223a3b82834f036a62aa831f67cbf1f1d644c6e2 upstream.
+[ Upstream commit d81d0e41ed5fe7229a2c9a29d13bad288c7cf2d2 ]
 
-On Galaxy S3 (i9300/i9305), which has the max17047 fuel gauge and no
-current sense resistor (rsns), the RepSOC register does not provide an
-accurate state of charge value. The reported value is wrong, and does
-not change over time. VFSOC however, which uses the voltage fuel gauge
-to determine the state of charge, always shows an accurate value.
+There are missing braces in the function that verify controller parameters,
+then an error is always returned when the parameter to select Microwire
+frames operation is used on devices allowing it.
 
-For devices without current sense, VFSOC is already used for the
-soc-alert (0x0003 is written to MiscCFG register), so with this change
-the source of the alert and the PROP_CAPACITY value match.
-
-Fixes: 359ab9f5b154 ("power_supply: Add MAX17042 Fuel Gauge Driver")
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Suggested-by: Wolfgang Wiedmeyer <wolfgit@wiedmeyer.de>
-Signed-off-by: Henrik Grimler <henrik@grimler.se>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Thomas Perrot <thomas.perrot@bootlin.com>
+Link: https://lore.kernel.org/r/20211022142104.1386379-1-thomas.perrot@bootlin.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/max17042_battery.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/spi/spi-pl022.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/power/supply/max17042_battery.c
-+++ b/drivers/power/supply/max17042_battery.c
-@@ -303,7 +303,10 @@ static int max17042_get_property(struct
- 		val->intval = data * 625 / 8;
- 		break;
- 	case POWER_SUPPLY_PROP_CAPACITY:
--		ret = regmap_read(map, MAX17042_RepSOC, &data);
-+		if (chip->pdata->enable_current_sense)
-+			ret = regmap_read(map, MAX17042_RepSOC, &data);
-+		else
-+			ret = regmap_read(map, MAX17042_VFSOC, &data);
- 		if (ret < 0)
- 			return ret;
- 
+diff --git a/drivers/spi/spi-pl022.c b/drivers/spi/spi-pl022.c
+index f7f7ba17b40e9..27cf77dfc6038 100644
+--- a/drivers/spi/spi-pl022.c
++++ b/drivers/spi/spi-pl022.c
+@@ -1703,12 +1703,13 @@ static int verify_controller_parameters(struct pl022 *pl022,
+ 				return -EINVAL;
+ 			}
+ 		} else {
+-			if (chip_info->duplex != SSP_MICROWIRE_CHANNEL_FULL_DUPLEX)
++			if (chip_info->duplex != SSP_MICROWIRE_CHANNEL_FULL_DUPLEX) {
+ 				dev_err(&pl022->adev->dev,
+ 					"Microwire half duplex mode requested,"
+ 					" but this is only available in the"
+ 					" ST version of PL022\n");
+-			return -EINVAL;
++				return -EINVAL;
++			}
+ 		}
+ 	}
+ 	return 0;
+-- 
+2.33.0
+
 
 
