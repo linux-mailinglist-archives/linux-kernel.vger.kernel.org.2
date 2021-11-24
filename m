@@ -2,36 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8116245C26D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB5345C18B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344671AbhKXN3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:29:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45544 "EHLO mail.kernel.org"
+        id S244040AbhKXNTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:19:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349727AbhKXNXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:23:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DC5661B1F;
-        Wed, 24 Nov 2021 12:48:17 +0000 (UTC)
+        id S1348004AbhKXNQA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:16:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0C0B61ABE;
+        Wed, 24 Nov 2021 12:44:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758098;
-        bh=7Tzg64xsHjSzcU7yk1JCab0emvl6zjICulLx5JwfLXE=;
+        s=korg; t=1637757879;
+        bh=50l1+Z0pUB5053HhXjWFJONKY2gYv9tdCJEF7agVdiQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t99+HvxukahpgP7NjobYlgy/Ax4ij4AcwDRn/Jg9u2oYUvo8qlT+GaEcfTuBKrpdn
-         1dXtOwL3pu5+mPLByJHmIxsG/Z316z0xG1GklMfN0N+skpzhoxy7iF/sU3GsEH8Yme
-         wAO9oC2RWzBxpbXWQJVmDX1N40PPc2GhZe66c5nk=
+        b=SUqG9aStHjg/p6NOrHZRcdJd5ZhJmXW2C4ZiEZfdhJ7dCighazR4Cn2W5ThJ9kyf3
+         3KFU3bIDR9cDl9LIk9i2Kdir+/kXxrf9FKufm+INZIAETI/Ct5mbkvoWEFogPMD1hW
+         VWrwh99o+x6CpKA72nN5VwSn+sq3nJTsVz4P09vY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 060/100] net: dpaa2-eth: fix use-after-free in dpaa2_eth_remove
-Date:   Wed, 24 Nov 2021 12:58:16 +0100
-Message-Id: <20211124115656.814188180@linuxfoundation.org>
+        stable@vger.kernel.org, Rustam Kovhaev <rkovhaev@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Glauber Costa <glommer@parallels.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 307/323] mm: kmemleak: slob: respect SLAB_NOLEAKTRACE flag
+Date:   Wed, 24 Nov 2021 12:58:17 +0100
+Message-Id: <20211124115729.279893626@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +48,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Rustam Kovhaev <rkovhaev@gmail.com>
 
-[ Upstream commit 9b5a333272a48c2f8b30add7a874e46e8b26129c ]
+commit 34dbc3aaf5d9e89ba6cc5e24add9458c21ab1950 upstream.
 
-Access to netdev after free_netdev() will cause use-after-free bug.
-Move debug log before free_netdev() call to avoid it.
+When kmemleak is enabled for SLOB, system does not boot and does not
+print anything to the console.  At the very early stage in the boot
+process we hit infinite recursion from kmemleak_init() and eventually
+kernel crashes.
 
-Fixes: 7472dd9f6499 ("staging: fsl-dpaa2/eth: Move print message")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+kmemleak_init() specifies SLAB_NOLEAKTRACE for KMEM_CACHE(), but
+kmem_cache_create_usercopy() removes it because CACHE_CREATE_MASK is not
+valid for SLOB.
+
+Let's fix CACHE_CREATE_MASK and make kmemleak work with SLOB
+
+Link: https://lkml.kernel.org/r/20211115020850.3154366-1-rkovhaev@gmail.com
+Fixes: d8843922fba4 ("slab: Ignore internal flags in cache creation")
+Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Pekka Enberg <penberg@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Glauber Costa <glommer@parallels.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ mm/slab.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-index 7af7cc7c8669a..34540e604f748 100644
---- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-+++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-@@ -3616,10 +3616,10 @@ static int dpaa2_eth_remove(struct fsl_mc_device *ls_dev)
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -148,7 +148,7 @@ static inline slab_flags_t kmem_cache_fl
+ #define SLAB_CACHE_FLAGS (SLAB_NOLEAKTRACE | SLAB_RECLAIM_ACCOUNT | \
+ 			  SLAB_TEMPORARY | SLAB_ACCOUNT)
+ #else
+-#define SLAB_CACHE_FLAGS (0)
++#define SLAB_CACHE_FLAGS (SLAB_NOLEAKTRACE)
+ #endif
  
- 	fsl_mc_portal_free(priv->mc_io);
- 
--	free_netdev(net_dev);
--
- 	dev_dbg(net_dev->dev.parent, "Removed interface %s\n", net_dev->name);
- 
-+	free_netdev(net_dev);
-+
- 	return 0;
- }
- 
--- 
-2.33.0
-
+ /* Common flags available with current configuration */
 
 
