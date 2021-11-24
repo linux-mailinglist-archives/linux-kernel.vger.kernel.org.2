@@ -2,101 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC9945BB51
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 136CD45BBBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244004AbhKXMTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:19:05 -0500
-Received: from pegase2.c-s.fr ([93.17.235.10]:37099 "EHLO pegase2.c-s.fr"
+        id S243432AbhKXMWt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Nov 2021 07:22:49 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:32852 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243541AbhKXMOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:14:09 -0500
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Hzfwg3fm0z9sSd;
-        Wed, 24 Nov 2021 13:10:43 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id skYvyNC4AsS3; Wed, 24 Nov 2021 13:10:43 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Hzfwg2rhQz9sSD;
-        Wed, 24 Nov 2021 13:10:43 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4E47D8B774;
-        Wed, 24 Nov 2021 13:10:43 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id PXwnrj1tRRR9; Wed, 24 Nov 2021 13:10:43 +0100 (CET)
-Received: from [172.25.230.108] (unknown [172.25.230.108])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0B74E8B763;
-        Wed, 24 Nov 2021 13:10:43 +0100 (CET)
-Message-ID: <19fc7b1a-9727-2bc2-52f6-4f47a41e39ce@csgroup.eu>
-Date:   Wed, 24 Nov 2021 13:10:42 +0100
+        id S243495AbhKXMQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:16:28 -0500
+Received: from ip5f5b2004.dynamic.kabel-deutschland.de ([95.91.32.4] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mpr9D-0005HW-3K; Wed, 24 Nov 2021 13:13:11 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Atish Patra <atishp@atishpatra.org>,
+        linux-riscv@lists.infradead.org
+Cc:     Anup Patel <anup@brainfault.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>, atishp@rivosinc.com,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Philipp Tomsich <philipp.tomsich@vrull.eu>,
+        Guo Ren <guoren@kernel.org>
+Subject: Re: [RFC PATCH 0/3] riscv: Add riscv.fwsz kernel parameter to save memory
+Date:   Wed, 24 Nov 2021 13:13:10 +0100
+Message-ID: <7549655.ZlQDL8uBSY@diego>
+In-Reply-To: <CAJF2gTQAypx=5+a84zZpj7ofs-aPpPMNZyaB+HEgD8Dfyt6TiA@mail.gmail.com>
+References: <20211123015717.542631-1-guoren@kernel.org> <CAOnJCU+-WCHA9vgrbcMFsLMaimwJNEXOpqMLS_0Gq_JRM5QNWQ@mail.gmail.com> <CAJF2gTQAypx=5+a84zZpj7ofs-aPpPMNZyaB+HEgD8Dfyt6TiA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH 1/8] powerpc/mm: Make slice specific to book3s/64
-Content-Language: fr-FR
-To:     kernel test robot <lkp@intel.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, alex@ghiti.fr
-Cc:     kbuild-all@lists.01.org, linux-mm@kvack.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <14e2c0b0d4fff49c1cb30166f54ce8e445e17b16.1637570556.git.christophe.leroy@csgroup.eu>
- <202111230528.7rsJ69Pb-lkp@intel.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-In-Reply-To: <202111230528.7rsJ69Pb-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am Mittwoch, 24. November 2021, 07:49:26 CET schrieb Guo Ren:
+> On Wed, Nov 24, 2021 at 4:01 AM Atish Patra <atishp@atishpatra.org> wrote:
+> >
+> > On Tue, Nov 23, 2021 at 11:33 AM Heiko St�bner <heiko@sntech.de> wrote:
+> > >
+> > > Hi Guo,
+> > >
+> > > Am Dienstag, 23. November 2021, 02:57:14 CET schrieb guoren@kernel.org:
+> > > > From: Guo Ren <guoren@linux.alibaba.com>
+> > > >
+> > > > The firmware of riscv (such as opensbi) occupy 2MB(64bit) /
+> > > > 4MB(32bit) in Linux. It's very wasteful to small memory footprint
+> > > > soc chip such as Allwinner D1s/F133. The kernel parameter gives a
+> > > > chance to users to set the proper size of the firmware and get
+> > > > more than 1.5MB of memory.
+> > >
+> > > is this kernel parameter approach a result of the T-Head Ice-SoC
+> > > currently loading its openSBI from inside the main u-boot via extfs-load,
+> > > directly before the kernel itself [0] ?
+> >
+> > Looking at the defconfig[1], it may be U-Boot SPL not U-Boot proper. I
+> > may be looking at the wrong config though.
+> > If U-Boot SPL is actually used, you don't even need to manually load
+> > OpenSBI "fw_jump" binary.
+> >
+> > As Heiko pointed, you should just follow how U-Boot SPL works on
+> > hifive unmatched (creating the FIT image)
+> > The standard U-Boot SPL uses with fw_dynamic which provides all the
+> > flexibility you want.
+> I've no right to force users' flavor of boot flow.
+> 
+> 1) SPL -> opensbi M-mode -> u-boot S-mode -> Linux
+> 2) SPL -> u-boot M-mode -> opensbi M-mode -> Linux
+>
+> All are okay for me. I think the most straightforward reason for
+> people choosing 2) is that they want to try the newest OpenSBI & Linux
+> and 2) is more convenient for replacing.
+
+Though that second option is merely a hack during development.
+
+Having u-boot run in M-mode creates an attack surface that is a lot
+bigger (with it running usb, ethernet and whatnot) compared to shedding
+privileges before that.
+
+I'd consider openSBI as part of the device firmware, so that shouldn't be
+a component you replace daily. Also U-Boot for example already provides
+established ways to sign and verify the parts loaded by SPL, by signing
+the created FIT image this would also include the openSBI image.
+
+So in case (1) you can add more security by simply adding the necessary
+key references during u-boot build, where on the other hand if you _want_
+security in case (2) you're back to hand-rolling any verification
+[with less review and thus more prone to have issues]
+
+Having the _ability_ to verify the loaded firmware components can be a
+requirement in projects, so I think the default should always case (1),
+to not encourage insecure implementations any more than necessary ;-) .
 
 
-Le 22/11/2021 à 22:10, kernel test robot a écrit :
-> Hi Christophe,
+Heiko
+
+
+> >
+> > [1] https://github.com/T-head-Semi/u-boot/blob/main/configs/ice_evb_c910_defconfig
+> > >
+> > > Because that approach in general looks not ideal.
+> > >
+> > > Normally you want the main u-boot already running with less privileges
+> > > so firmware like openSBI should've been already loaded before that.
+> > > Even more true when you're employing methods to protect memory regions
+> > > from less privileged access.
+> > >
+> > > A lot of socs set u-boot as opensbi payload, but for the example the D1
+> > > mainline approach uses the Allwinner TOC1 image format to load both
+> > > opensbi and the main uboot into memory from its 1st stage loader.
+> > >
+> > >
+> > > Of course the best way would be to just mimic what a number of
+> > > arm64 and also riscv socs do and use already existing u-boot utilities.
+> > >
+> > > U-Boot can create a FIT image containing both main u-boot, dtb and
+> > > firmware images that all get loaded from SPL and placed at the correct
+> > > addresses before having the SPL jump into opensbi and from there
+> > > into u-boot [1] .
+> > >
+> > > And as Anup was writing, reserved-memory should then be the way
+> > > to go to tell the kernel what regions to omit.
+> > >
+> > > And mainline u-boot has already the means to even take the reserved-memory
+> > > from the devicetree used by opensbi and copy it to a new devicetree,
+> > > if the second one is different.
+> > >
+> > >
+> > > Heiko
+> > >
+> > >
+> > > [0] https://github.com/T-head-Semi/u-boot/blob/main/include/configs/ice-c910.h#L46
+> > > [1] see spl_invoke_opensbi() in common/spl/spl_opensbi.c
+> > > [2] see riscv_board_reserved_mem_fixup() in arch/riscv/lib/fdt_fixup.c
+> > >
+> > > >
+> > > > Guo Ren (3):
+> > > >   riscv: Remove 2MB offset in the mm layout
+> > > >   riscv: Add early_param to decrease firmware region
+> > > >   riscv: Add riscv.fwsz kernel parameter
+> > > >
+> > > >  .../admin-guide/kernel-parameters.txt         |  3 +++
+> > > >  arch/riscv/include/asm/page.h                 |  8 +++++++
+> > > >  arch/riscv/kernel/head.S                      | 10 +++-----
+> > > >  arch/riscv/kernel/vmlinux.lds.S               |  5 ++--
+> > > >  arch/riscv/mm/init.c                          | 23 ++++++++++++++++---
+> > > >  5 files changed, 36 insertions(+), 13 deletions(-)
+> > > >
+> > > >
+> > >
+> > >
+> > >
+> > >
+> > >
+> > > _______________________________________________
+> > > linux-riscv mailing list
+> > > linux-riscv@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> >
+> >
+> >
+> > --
+> > Regards,
+> > Atish
 > 
-> I love your patch! Yet something to improve:
 > 
-> [auto build test ERROR on powerpc/next]
-> [also build test ERROR on hnaz-mm/master linus/master v5.16-rc2 next-20211118]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Christophe-Leroy/Convert-powerpc-to-default-topdown-mmap-layout/20211122-165115
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next
-> config: powerpc64-randconfig-r021-20211122 (attached as .config)
-> compiler: powerpc64-linux-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # https://github.com/0day-ci/linux/commit/1d0b7cc86d08f25f595b52d8c39ba9ca1d29a30a
->          git remote add linux-review https://github.com/0day-ci/linux
->          git fetch --no-tags linux-review Christophe-Leroy/Convert-powerpc-to-default-topdown-mmap-layout/20211122-165115
->          git checkout 1d0b7cc86d08f25f595b52d8c39ba9ca1d29a30a
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=powerpc
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->     arch/powerpc/mm/book3s64/slice.c: In function 'slice_get_unmapped_area':
->>> arch/powerpc/mm/book3s64/slice.c:639:1: error: the frame size of 1056 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
->       639 | }
->           | ^
->     cc1: all warnings being treated as errors
 > 
 > 
 
-The problem was already existing when slice.c was in arch/powerpc/mm/
 
-This patch doesn't introduce the problem.
 
-Christophe
 
