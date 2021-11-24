@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C41445CBC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:04:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FBE45CBBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:03:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350634AbhKXSHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 13:07:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56194 "EHLO mail.kernel.org"
+        id S1350318AbhKXSGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 13:06:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350245AbhKXSGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1350250AbhKXSGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 13:06:37 -0500
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4CD261041;
+        by mail.kernel.org (Postfix) with ESMTPSA id D481561050;
         Wed, 24 Nov 2021 18:03:27 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.95)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mpwcA-0027s7-PV;
+        id 1mpwcA-0027sf-VX;
         Wed, 24 Nov 2021 13:03:26 -0500
-Message-ID: <20211124180326.627400767@goodmis.org>
+Message-ID: <20211124180326.814388531@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 24 Nov 2021 13:03:06 -0500
+Date:   Wed, 24 Nov 2021 13:03:07 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org,
         linux-rt-users <linux-rt-users@vger.kernel.org>
@@ -33,7 +33,7 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Tom Zanussi <zanussi@kernel.org>,
         "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
         stable-rt@vger.kernel.org
-Subject: [PATCH RT 03/13] sched: Switch wait_task_inactive to HRTIMER_MODE_REL_HARD
+Subject: [PATCH RT 04/13] preempt: Move preempt_enable_no_resched() to the RT block
 References: <20211124180303.574562279@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,43 +48,40 @@ If anyone has any objections, please let me know.
 
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-With PREEMPT_RT enabled all hrtimers callbacks will be invoked in
-softirq mode unless they are explicitly marked as HRTIMER_MODE_HARD.
-During boot kthread_bind() is used for the creation of per-CPU threads
-and then hangs in wait_task_inactive() if the ksoftirqd is not
-yet up and running.
-The hang disappeared since commit
-   26c7295be0c5e ("kthread: Do not preempt current task if it is going to call schedule()")
+preempt_enable_no_resched() should point to preempt_enable() on
+PREEMPT_RT so nobody is playing any preempt tricks and enables
+preemption without checking for the need-resched flag.
 
-but enabling function trace on boot reliably leads to the freeze on boot
-behaviour again.
-The timer in wait_task_inactive() can not be directly used by an user
-interface to abuse it and create a mass wake of several tasks at the
-same time which would to long sections with disabled interrupts.
-Therefore it is safe to make the timer HRTIMER_MODE_REL_HARD.
+This was misplaced in v3.14.0-rt1 und remained unnoticed until now.
 
-Switch the timer to HRTIMER_MODE_REL_HARD.
+Point preempt_enable_no_resched() and preempt_enable() on RT.
 
 Cc: stable-rt@vger.kernel.org
-Link: https://lkml.kernel.org/r/20210826170408.vm7rlj7odslshwch@linutronix.de
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/sched/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/preempt.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index f638d9420553..54fa3bb1b7c4 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2734,7 +2734,7 @@ unsigned long wait_task_inactive(struct task_struct *p, long match_state)
- 			ktime_t to = NSEC_PER_SEC / HZ;
+diff --git a/include/linux/preempt.h b/include/linux/preempt.h
+index af39859f02ee..7b5b2ed55531 100644
+--- a/include/linux/preempt.h
++++ b/include/linux/preempt.h
+@@ -208,12 +208,12 @@ do { \
+ 	preempt_count_dec(); \
+ } while (0)
  
- 			set_current_state(TASK_UNINTERRUPTIBLE);
--			schedule_hrtimeout(&to, HRTIMER_MODE_REL);
-+			schedule_hrtimeout(&to, HRTIMER_MODE_REL_HARD);
- 			continue;
- 		}
+-#ifdef CONFIG_PREEMPT_RT
++#ifndef CONFIG_PREEMPT_RT
+ # define preempt_enable_no_resched() sched_preempt_enable_no_resched()
+-# define preempt_check_resched_rt() preempt_check_resched()
++# define preempt_check_resched_rt() barrier();
+ #else
+ # define preempt_enable_no_resched() preempt_enable()
+-# define preempt_check_resched_rt() barrier();
++# define preempt_check_resched_rt() preempt_check_resched()
+ #endif
  
+ #define preemptible()	(preempt_count() == 0 && !irqs_disabled())
 -- 
 2.33.0
