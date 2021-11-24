@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF5445C4F0
+	by mail.lfdr.de (Postfix) with ESMTP id 7BCD545C4F1
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:51:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351888AbhKXNxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:53:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37520 "EHLO mail.kernel.org"
+        id S1354813AbhKXNxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:53:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354108AbhKXNst (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1354110AbhKXNst (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 08:48:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B21C61A05;
-        Wed, 24 Nov 2021 13:02:27 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 554C461A3F;
+        Wed, 24 Nov 2021 13:02:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758947;
-        bh=1t5uqktNV+FZOdP64X8rt0WEnFFJx9rqjrblpx3us5A=;
+        s=korg; t=1637758950;
+        bh=54Y67hx8fOEldQOq8dgmTZU6+2TPKOeblwrzgkGJPDI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HCj2V4xPmbBr+875Lkwjgbwdto8GvlYEdpiXdXvXe6rDeeLWA1dIy9914bbncfu0R
-         56IDDdXKrHGJXKl8SOvmKnXXBQeoOswn8fxjnhASgyr5hrkPTAYp2AKp8BjGTRbjQ5
-         U7OpxOlsKKDJrzEM13+cCfLqG4ms3aBivb7o34l8=
+        b=cdHF2wkTTQKesDpw5gnyNU2xrvCWNjvxkKpeFcZ9AGhkHCfFjmoPA75i1Ee3BNRdv
+         kZMT/26Ei3JdAwoZLBT86lUkSdqYe/xju1mU1Q84/cysrBVGgEgo/sAsLGxSuOPVhS
+         mhv0TLQquvhevjETRCbjlauzwRImxOdIXjCM4yrg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Lu Wei <luwei32@huawei.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Rich Felker <dalias@libc.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 081/279] maple: fix wrong return value of maple_bus_init().
-Date:   Wed, 24 Nov 2021 12:56:08 +0100
-Message-Id: <20211124115721.518399441@linuxfoundation.org>
+        stable@vger.kernel.org, Gao Xiang <hsiangkao@linux.alibaba.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 082/279] f2fs: fix up f2fs_lookup tracepoints
+Date:   Wed, 24 Nov 2021 12:56:09 +0100
+Message-Id: <20211124115721.553116512@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
 References: <20211124115718.776172708@linuxfoundation.org>
@@ -41,48 +40,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Wei <luwei32@huawei.com>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-[ Upstream commit bde82ee391fa6d3ad054313c4aa7b726d32515ce ]
+[ Upstream commit 70a9ac36ffd807ac506ed0b849f3e8ce3c6623f2 ]
 
-If KMEM_CACHE or maple_alloc_dev failed, the maple_bus_init() will return 0
-rather than error, because the retval is not changed after KMEM_CACHE or
-maple_alloc_dev failed.
+Fix up a misuse that the filename pointer isn't always valid in
+the ring buffer, and we should copy the content instead.
 
-Fixes: 17be2d2b1c33 ("sh: Add maple bus support for the SEGA Dreamcast.")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Lu Wei <luwei32@huawei.com>
-Acked-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Signed-off-by: Rich Felker <dalias@libc.org>
+Fixes: 0c5e36db17f5 ("f2fs: trace f2fs_lookup")
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/sh/maple/maple.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ include/trace/events/f2fs.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/sh/maple/maple.c b/drivers/sh/maple/maple.c
-index bd0fbcdbdefe9..e24e220e56eea 100644
---- a/drivers/sh/maple/maple.c
-+++ b/drivers/sh/maple/maple.c
-@@ -834,8 +834,10 @@ static int __init maple_bus_init(void)
+diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
+index 4e881d91c8744..4cb055af1ec0b 100644
+--- a/include/trace/events/f2fs.h
++++ b/include/trace/events/f2fs.h
+@@ -807,20 +807,20 @@ TRACE_EVENT(f2fs_lookup_start,
+ 	TP_STRUCT__entry(
+ 		__field(dev_t,	dev)
+ 		__field(ino_t,	ino)
+-		__field(const char *,	name)
++		__string(name,	dentry->d_name.name)
+ 		__field(unsigned int, flags)
+ 	),
  
- 	maple_queue_cache = KMEM_CACHE(maple_buffer, SLAB_HWCACHE_ALIGN);
+ 	TP_fast_assign(
+ 		__entry->dev	= dir->i_sb->s_dev;
+ 		__entry->ino	= dir->i_ino;
+-		__entry->name	= dentry->d_name.name;
++		__assign_str(name, dentry->d_name.name);
+ 		__entry->flags	= flags;
+ 	),
  
--	if (!maple_queue_cache)
-+	if (!maple_queue_cache) {
-+		retval = -ENOMEM;
- 		goto cleanup_bothirqs;
-+	}
+ 	TP_printk("dev = (%d,%d), pino = %lu, name:%s, flags:%u",
+ 		show_dev_ino(__entry),
+-		__entry->name,
++		__get_str(name),
+ 		__entry->flags)
+ );
  
- 	INIT_LIST_HEAD(&maple_waitq);
- 	INIT_LIST_HEAD(&maple_sentq);
-@@ -848,6 +850,7 @@ static int __init maple_bus_init(void)
- 		if (!mdev[i]) {
- 			while (i-- > 0)
- 				maple_free_dev(mdev[i]);
-+			retval = -ENOMEM;
- 			goto cleanup_cache;
- 		}
- 		baseunits[i] = mdev[i];
+@@ -834,7 +834,7 @@ TRACE_EVENT(f2fs_lookup_end,
+ 	TP_STRUCT__entry(
+ 		__field(dev_t,	dev)
+ 		__field(ino_t,	ino)
+-		__field(const char *,	name)
++		__string(name,	dentry->d_name.name)
+ 		__field(nid_t,	cino)
+ 		__field(int,	err)
+ 	),
+@@ -842,14 +842,14 @@ TRACE_EVENT(f2fs_lookup_end,
+ 	TP_fast_assign(
+ 		__entry->dev	= dir->i_sb->s_dev;
+ 		__entry->ino	= dir->i_ino;
+-		__entry->name	= dentry->d_name.name;
++		__assign_str(name, dentry->d_name.name);
+ 		__entry->cino	= ino;
+ 		__entry->err	= err;
+ 	),
+ 
+ 	TP_printk("dev = (%d,%d), pino = %lu, name:%s, ino:%u, err:%d",
+ 		show_dev_ino(__entry),
+-		__entry->name,
++		__get_str(name),
+ 		__entry->cino,
+ 		__entry->err)
+ );
 -- 
 2.33.0
 
