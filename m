@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95E545BB2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EEA445B9AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:01:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242547AbhKXMR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:17:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42356 "EHLO mail.kernel.org"
+        id S242040AbhKXMEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:04:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243479AbhKXMOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:14:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B28960F5D;
-        Wed, 24 Nov 2021 12:08:58 +0000 (UTC)
+        id S241943AbhKXMDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:03:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2395760F90;
+        Wed, 24 Nov 2021 12:00:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755739;
-        bh=Dsm1t0mnljfYKf9Cu6WB81E5k24CJk5dXeCwVVIai6U=;
+        s=korg; t=1637755237;
+        bh=pkrlq542wFccX7G4zTBlpd0ejO6+oRUgtvkDqr/C3LQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jw84XvO+0L8WAPBFP1I7ZSYYgWXsEPFOyAnEwyPMMPV+et5p/IeRFAPWkVaMARLIA
-         RUBvUncka/cwAPROJXo7AEJKCKoAJ+vAHvV2KspiVlf46UXtLJQOo4tbGbj2+Up9Lt
-         4SZCi9uJZzjZDVRXVNiMVrA1rQ/Tp6UlzPuB02rM=
+        b=piIiFumiE5d77Z7B0eMyNtRsq7Rqy02f0dgd9YliHHZqb7RIQT9tjrkRsKZMi8pSe
+         atkfmu8Ypp5vIJS/o/8nhJS4V8h8tisZgYuB9UDK7/eVL450ZbzKNjOikVFJa+wofB
+         mZ4Kv9MppcUHO8wvTJk9kKWmW78YDl5Pzkpc9gU4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 4.9 039/207] mwifiex: Read a PCI register after writing the TX ring write pointer
-Date:   Wed, 24 Nov 2021 12:55:10 +0100
-Message-Id: <20211124115705.204911412@linuxfoundation.org>
+        stable@vger.kernel.org, Christian Loehle <cloehle@hyperstone.com>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.4 008/162] mmc: dw_mmc: Dont wait for DRTO on Write RSP error
+Date:   Wed, 24 Nov 2021 12:55:11 +0100
+Message-Id: <20211124115658.600124393@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonas Dreßler <verdre@v0yd.nl>
+From: Christian Löhle <CLoehle@hyperstone.com>
 
-commit e5f4eb8223aa740237cd463246a7debcddf4eda1 upstream.
+commit 43592c8736e84025d7a45e61a46c3fa40536a364 upstream.
 
-On the 88W8897 PCIe+USB card the firmware randomly crashes after setting
-the TX ring write pointer. The issue is present in the latest firmware
-version 15.68.19.p21 of the PCIe+USB card.
+Only wait for DRTO on reads, otherwise the driver hangs.
 
-Those firmware crashes can be worked around by reading any PCI register
-of the card after setting that register, so read the PCI_VENDOR_ID
-register here. The reason this works is probably because we keep the bus
-from entering an ASPM state for a bit longer, because that's what causes
-the cards firmware to crash.
+The driver prevents sending CMD12 on response errors like CRCs. According
+to the comment this is because some cards have problems with this during
+the UHS tuning sequence. Unfortunately this workaround currently also
+applies for any command with data. On reads this will set the drto timer,
+which then triggers after a while. On writes this will not set any timer
+and the tasklet will not be scheduled again.
 
-This fixes a bug where during RX/TX traffic and with ASPM L1 substates
-enabled (the specific substates where the issue happens appear to be
-platform dependent), the firmware crashes and eventually a command
-timeout appears in the logs.
+I cannot test for the UHS workarounds need, but even if so, it should at
+most apply to reads. I have observed many hangs when CMD25 response
+contained a CRC error. This patch fixes this without touching the actual
+UHS tuning workaround.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=109681
+Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
+Reviewed-by: Jaehoon Chung <jh80.chung@samsung.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20211011133224.15561-2-verdre@v0yd.nl
+Link: https://lore.kernel.org/r/af8f8b8674ba4fcc9a781019e4aeb72c@hyperstone.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/marvell/mwifiex/pcie.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/mmc/host/dw_mmc.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/net/wireless/marvell/mwifiex/pcie.c
-+++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
-@@ -1265,6 +1265,14 @@ mwifiex_pcie_send_data(struct mwifiex_ad
- 			ret = -1;
- 			goto done_unmap;
- 		}
-+
-+		/* The firmware (latest version 15.68.19.p21) of the 88W8897 PCIe+USB card
-+		 * seems to crash randomly after setting the TX ring write pointer when
-+		 * ASPM powersaving is enabled. A workaround seems to be keeping the bus
-+		 * busy by reading a random register afterwards.
-+		 */
-+		mwifiex_read_reg(adapter, PCI_VENDOR_ID, &rx_val);
-+
- 		if ((mwifiex_pcie_txbd_not_full(card)) &&
- 		    tx_param->next_pkt_len) {
- 			/* have more packets and TxBD still can hold more */
+--- a/drivers/mmc/host/dw_mmc.c
++++ b/drivers/mmc/host/dw_mmc.c
+@@ -1763,7 +1763,8 @@ static void dw_mci_tasklet_func(unsigned
+ 				 * delayed. Allowing the transfer to take place
+ 				 * avoids races and keeps things simple.
+ 				 */
+-				if (err != -ETIMEDOUT) {
++				if (err != -ETIMEDOUT &&
++				    host->dir_status == DW_MCI_RECV_STATUS) {
+ 					state = STATE_SENDING_DATA;
+ 					continue;
+ 				}
 
 
