@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF12545C563
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D272945C545
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348377AbhKXN5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:57:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42272 "EHLO mail.kernel.org"
+        id S1350306AbhKXNzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:55:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350148AbhKXNvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:51:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD42763250;
-        Wed, 24 Nov 2021 13:04:31 +0000 (UTC)
+        id S1351962AbhKXNwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:52:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E708B63253;
+        Wed, 24 Nov 2021 13:04:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759072;
-        bh=wz2BgDrdXATOuIut9HiksyjNZr92zAn+60QAjRjiz9s=;
+        s=korg; t=1637759075;
+        bh=uFf7nlGiy+8P8YwlGzHSY4jxhpTlWoBFly97a3TP54U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gOoYolzIqJykH5YOxOVUi2xSZtZpoijQ2D2Bt4/eygyhLjXjw2vsogjgo3uafZz58
-         UU+oHqkHAFT4W967YwE7L3gDDHaEKojUyyMEU5yuiUUChVBmcXx1UjGoGtPw/hMq3I
-         vGg5nnfKUq8F7HlGTPSz5IKWOoM5rTfxOzaWcjHc=
+        b=kST/BW/a3lybALAJ3Uj5M7QBSJ+EbyTLdhvvR7sZd085Wa/PJ7MW0YX5P3578aQW+
+         GaaKLXP5WBQpafj7cwmbHBYZAtzpjiDADiaYoTTy/V1VA2hQ6A1RdCik/02AClZK9N
+         azk/disIA9OHBVRUjAS2cvYYalkVNNH20JXDOT7c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
+        stable@vger.kernel.org,
+        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
         Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 091/279] clk/ast2600: Fix soc revision for AHB
-Date:   Wed, 24 Nov 2021 12:56:18 +0100
-Message-Id: <20211124115721.928811786@linuxfoundation.org>
+Subject: [PATCH 5.15 092/279] clk: qcom: gcc-msm8996: Drop (again) gcc_aggre1_pnoc_ahb_clk
+Date:   Wed, 24 Nov 2021 12:56:19 +0100
+Message-Id: <20211124115721.961089276@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
 References: <20211124115718.776172708@linuxfoundation.org>
@@ -41,78 +44,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joel Stanley <joel@jms.id.au>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-[ Upstream commit f45c5b1c27293f834682e89003f88b3512329ab4 ]
+[ Upstream commit 05cf3ec00d460b50088d421fb878a0f83f57e262 ]
 
-Move the soc revision parsing to the initial probe, saving the driver
-from parsing the register multiple times.
+The gcc_aggre1_pnoc_ahb_clk is crucial for the proper MSM8996/APQ8096
+functioning. If it gets disabled, several subsytems will stop working
+(including eMMC/SDCC and USB). There are no in-kernel users of this
+clock, so it is much simpler to remove from the kernel.
 
-Use this variable to select the correct divisor table for the AHB clock.
-Before this fix the A2 would have used the A0 table.
+The clock was first removed in the commit 9e60de1cf270 ("clk: qcom:
+Remove gcc_aggre1_pnoc_ahb_clk from msm8996") by Stephen Boyd, but got
+added back in the commit b567752144e3 ("clk: qcom: Add some missing gcc
+clks for msm8996") by Rajendra Nayak.
 
-Fixes: 2d491066ccd4 ("clk: ast2600: Fix AHB clock divider for A1")
-Signed-off-by: Joel Stanley <joel@jms.id.au>
-Link: https://lore.kernel.org/r/20210922235449.213631-1-joel@jms.id.au
-Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+Let's remove it again in hope that nobody adds it back.
+
+Reported-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Cc: Rajendra Nayak <rnayak@codeaurora.org>
+Cc: Konrad Dybcio <konrad.dybcio@somainline.org>
+Fixes: b567752144e3 ("clk: qcom: Add some missing gcc clks for msm8996")
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Link: https://lore.kernel.org/r/20211104011155.2209654-1-dmitry.baryshkov@linaro.org
 Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/clk-ast2600.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ drivers/clk/qcom/gcc-msm8996.c | 15 ---------------
+ 1 file changed, 15 deletions(-)
 
-diff --git a/drivers/clk/clk-ast2600.c b/drivers/clk/clk-ast2600.c
-index bc3be5f3eae15..24dab2312bc6f 100644
---- a/drivers/clk/clk-ast2600.c
-+++ b/drivers/clk/clk-ast2600.c
-@@ -51,6 +51,8 @@ static DEFINE_SPINLOCK(aspeed_g6_clk_lock);
- static struct clk_hw_onecell_data *aspeed_g6_clk_data;
+diff --git a/drivers/clk/qcom/gcc-msm8996.c b/drivers/clk/qcom/gcc-msm8996.c
+index 3c3a7ff045621..9b1674b28d45d 100644
+--- a/drivers/clk/qcom/gcc-msm8996.c
++++ b/drivers/clk/qcom/gcc-msm8996.c
+@@ -2937,20 +2937,6 @@ static struct clk_branch gcc_smmu_aggre0_ahb_clk = {
+ 	},
+ };
  
- static void __iomem *scu_g6_base;
-+/* AST2600 revision: A0, A1, A2, etc */
-+static u8 soc_rev;
- 
- /*
-  * Clocks marked with CLK_IS_CRITICAL:
-@@ -191,9 +193,8 @@ static struct clk_hw *ast2600_calc_pll(const char *name, u32 val)
- static struct clk_hw *ast2600_calc_apll(const char *name, u32 val)
- {
- 	unsigned int mult, div;
--	u32 chip_id = readl(scu_g6_base + ASPEED_G6_SILICON_REV);
- 
--	if (((chip_id & CHIP_REVISION_ID) >> 16) >= 2) {
-+	if (soc_rev >= 2) {
- 		if (val & BIT(24)) {
- 			/* Pass through mode */
- 			mult = div = 1;
-@@ -707,7 +708,7 @@ static const u32 ast2600_a1_axi_ahb200_tbl[] = {
- static void __init aspeed_g6_cc(struct regmap *map)
- {
- 	struct clk_hw *hw;
--	u32 val, div, divbits, chip_id, axi_div, ahb_div;
-+	u32 val, div, divbits, axi_div, ahb_div;
- 
- 	clk_hw_register_fixed_rate(NULL, "clkin", NULL, 0, 25000000);
- 
-@@ -738,8 +739,7 @@ static void __init aspeed_g6_cc(struct regmap *map)
- 		axi_div = 2;
- 
- 	divbits = (val >> 11) & 0x3;
--	regmap_read(map, ASPEED_G6_SILICON_REV, &chip_id);
--	if (chip_id & BIT(16)) {
-+	if (soc_rev >= 1) {
- 		if (!divbits) {
- 			ahb_div = ast2600_a1_axi_ahb200_tbl[(val >> 8) & 0x3];
- 			if (val & BIT(16))
-@@ -784,6 +784,8 @@ static void __init aspeed_g6_cc_init(struct device_node *np)
- 	if (!scu_g6_base)
- 		return;
- 
-+	soc_rev = (readl(scu_g6_base + ASPEED_G6_SILICON_REV) & CHIP_REVISION_ID) >> 16;
-+
- 	aspeed_g6_clk_data = kzalloc(struct_size(aspeed_g6_clk_data, hws,
- 				      ASPEED_G6_NUM_CLKS), GFP_KERNEL);
- 	if (!aspeed_g6_clk_data)
+-static struct clk_branch gcc_aggre1_pnoc_ahb_clk = {
+-	.halt_reg = 0x82014,
+-	.clkr = {
+-		.enable_reg = 0x82014,
+-		.enable_mask = BIT(0),
+-		.hw.init = &(struct clk_init_data){
+-			.name = "gcc_aggre1_pnoc_ahb_clk",
+-			.parent_names = (const char *[]){ "periph_noc_clk_src" },
+-			.num_parents = 1,
+-			.ops = &clk_branch2_ops,
+-		},
+-	},
+-};
+-
+ static struct clk_branch gcc_aggre2_ufs_axi_clk = {
+ 	.halt_reg = 0x83014,
+ 	.clkr = {
+@@ -3474,7 +3460,6 @@ static struct clk_regmap *gcc_msm8996_clocks[] = {
+ 	[GCC_AGGRE0_CNOC_AHB_CLK] = &gcc_aggre0_cnoc_ahb_clk.clkr,
+ 	[GCC_SMMU_AGGRE0_AXI_CLK] = &gcc_smmu_aggre0_axi_clk.clkr,
+ 	[GCC_SMMU_AGGRE0_AHB_CLK] = &gcc_smmu_aggre0_ahb_clk.clkr,
+-	[GCC_AGGRE1_PNOC_AHB_CLK] = &gcc_aggre1_pnoc_ahb_clk.clkr,
+ 	[GCC_AGGRE2_UFS_AXI_CLK] = &gcc_aggre2_ufs_axi_clk.clkr,
+ 	[GCC_AGGRE2_USB3_AXI_CLK] = &gcc_aggre2_usb3_axi_clk.clkr,
+ 	[GCC_QSPI_AHB_CLK] = &gcc_qspi_ahb_clk.clkr,
 -- 
 2.33.0
 
