@@ -2,180 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E13645B97F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 12:49:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9FF45B980
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 12:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241839AbhKXLwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 06:52:46 -0500
-Received: from so254-9.mailgun.net ([198.61.254.9]:62755 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241753AbhKXLwY (ORCPT
+        id S241807AbhKXLxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 06:53:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241781AbhKXLxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 06:52:24 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1637754554; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: From: References: Cc: To: Subject: MIME-Version: Date:
- Message-ID: Sender; bh=b8/GdfKBYbdH1Nrmk6OOayCmRv1WUrLw5qRyD8w0my4=; b=UTUgpTYyQiCf2Sy2BzGrd/2Al9vaUvOOZ3c6mq3YgzBI9blQimROPW/h/EM7x1eLnYOpjTTi
- J2fcL7jiyBUwQs5zYWetkqvlSwUKb1/GuRrwsnyAlytpqeSDD38wDcYJLt6qA85SFzuA+27j
- sBLSCgMKznfPVamsXCReZiWh1KI=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 619e26ba6bacc185a5a1108a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Nov 2021 11:49:14
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AE341C4360D; Wed, 24 Nov 2021 11:49:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.100] (unknown [49.207.214.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7B8EAC4338F;
-        Wed, 24 Nov 2021 11:49:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 7B8EAC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Message-ID: <ddbef224-b824-648b-ff33-f61e7bf8c345@codeaurora.org>
-Date:   Wed, 24 Nov 2021 17:19:05 +0530
+        Wed, 24 Nov 2021 06:53:00 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882AEC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 03:49:50 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id r25so9094317edq.7
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 03:49:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y+MzWwWx0dm+TlJ+NfteVDSJkTM33adCuaQ734O/0Ww=;
+        b=UHprbtG4MERwSddjhYSkRljo/IdkXJ/uSi5jzRf0KubT60an2k/EDxRHtR0CFdErqt
+         2Qd6OqYD5p0c99eLWoYgwhZvllhkWWnsS3gm4EQLsseY7lhVH9QFWMzhNMkeJcatfhYq
+         8KDmJ3+xxE2FTtU43v2pCmToCIxDZDVA93sTijuUk9ZryZxRgkbjY/Zg5qSymvS7EP6J
+         oltlXgEQ+YZk9FrOQBlyY5Mk1IX2w/KmgOB0xoAHMpsuoNUbSHMMokjh9dSadcpdYsc/
+         hRTMqoy3LpuxJLqQ19NkS3ET+LsSYFYYCsShNQ6mCx3r3H9YASBu3H6ASGFVVbc9k3OQ
+         exVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y+MzWwWx0dm+TlJ+NfteVDSJkTM33adCuaQ734O/0Ww=;
+        b=THiBG9LcnfsQa+iWcrc5if+bJJu/8oyR2yQP1+obWUzjMWkA5OzarAgn4+9So8d9mO
+         DDn6JoG/6S+5ac35eQQ3fOZGbYy8uiJa6oNAJMXr0jGHwTw2fb1smRmmNQxa/i5nO2hy
+         RZd9aSDTsMjSOCNXCyNl8udq2D7eRxQPLP5Vw/aN727YHwIf1ZPTdrtD62MT4VhH2ieV
+         4RPnn6f6fuSHW3RyOqwKtA79D0rekx43mEPr2B84dozRHHn1XV1XuVe2nKLEolfAebcG
+         FF93HCIIIlHe3MZvaYxMNl5aw9Umq7s9nsbqefs2YcewNyWwJZIIiTbVvvJjJ2shIrpk
+         tdfQ==
+X-Gm-Message-State: AOAM530WWyYc/6nJdvEo+ZuohpZfsv1ief4LIhoadAgukjPnH0jMmGgh
+        +83lUw10yYuNdOUP2XkzkD1lmcGJGwp8ElXj+92/C0KJ/CkQGQ==
+X-Google-Smtp-Source: ABdhPJz50+ayqkC9PwUfQPDs/F1c9P5unYO9TynVWF7Kek+kEY46C8Vd7syKWRFSF65D77gqApFm+4+9l0MskbPch9Q=
+X-Received: by 2002:a17:906:9754:: with SMTP id o20mr13288549ejy.277.1637754589119;
+ Wed, 24 Nov 2021 03:49:49 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH 4/4] arm64: dts: qcom: sc7280-crd: Add Touchscreen and
- touchpad support
-Content-Language: en-US
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sboyd@codeaurora.org,
-        dianders@chromium.org, kgodara@codeaurora.org
-References: <1637650813-16654-1-git-send-email-rnayak@codeaurora.org>
- <1637650813-16654-5-git-send-email-rnayak@codeaurora.org>
- <YZ0rwiHuh0OeP0VD@google.com>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-In-Reply-To: <YZ0rwiHuh0OeP0VD@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211124091546.5072-1-21cnbao@gmail.com> <YZ4eWHarf7QDONLB@hirez.programming.kicks-ass.net>
+In-Reply-To: <YZ4eWHarf7QDONLB@hirez.programming.kicks-ass.net>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Thu, 25 Nov 2021 00:49:37 +1300
+Message-ID: <CAGsJ_4xpqvhBW0G5UfCjRD8BfR4m4EUv4B_cxoOtYTO5+iRsCQ@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/fair: Remove the cost of a redundant
+ cpumask_next_wrap in select_idle_cpu
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 25, 2021 at 12:13 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, Nov 24, 2021 at 05:15:46PM +0800, Barry Song wrote:
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 6e476f6..8cd23f1 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -6278,6 +6278,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
+> >               time = cpu_clock(this);
+> >       }
+> >
+> > +     --nr;
+> >       for_each_cpu_wrap(cpu, cpus, target + 1) {
+> >               if (has_idle_core) {
+> >                       i = select_idle_core(p, cpu, cpus, &idle_cpu);
+> > @@ -6285,11 +6286,11 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
+> >                               return i;
+> >
+> >               } else {
+> > -                     if (!--nr)
+> > -                             return -1;
+> >                       idle_cpu = __select_idle_cpu(cpu, p);
+> >                       if ((unsigned int)idle_cpu < nr_cpumask_bits)
+> >                               break;
+> > +                     if (!--nr)
+> > +                             return -1;
+> >               }
+> >       }
+>
+> This way nr can never be 1 for a single iteration -- it current isn't,
+> but that's besides the point.
 
+Yep. nr=1 seems to be a corner case.
+if nr=1, the original code will return -1 directly without scanning
+any cpu. but the new code will scan
+one  time because I haven't checked if(!--nr)  and return before
+for_each_cpu_wrap(). so this changes
+the behaviour for this corner case.
 
-On 11/23/2021 11:28 PM, Matthias Kaehlcke wrote:
-> On Tue, Nov 23, 2021 at 12:30:13PM +0530, Rajendra Nayak wrote:
->> From: Kshitiz Godara <kgodara@codeaurora.org>
->>
->> Add Touchscreen and touchpad hid-over-i2c node
-> 
-> to which board(s)?
+but if i change "--nr" to "nr--", this new code will scan nr  times
+rather than nr-1, this changes the behaviour
+for all cases besides nr!=1. The original code was looping nr times
+but scanning nr-1 times only.
 
-will update
+so you prefer here the codes should scan nr times and change the
+scanning amount from nr-1
+to nr?
 
-> 
->> Signed-off-by: Kshitiz Godara <kgodara@codeaurora.org>
->> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
->> ---
->>   arch/arm64/boot/dts/qcom/sc7280-crd.dts | 63 +++++++++++++++++++++++++++++++++
->>   1 file changed, 63 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280-crd.dts b/arch/arm64/boot/dts/qcom/sc7280-crd.dts
->> index 8c2aee6..bef3037 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280-crd.dts
->> +++ b/arch/arm64/boot/dts/qcom/sc7280-crd.dts
->> @@ -23,6 +23,47 @@
->>   	};
->>   };
->>   
->> +ap_tp_i2c: &i2c0 {
->> +	status = "okay";
->> +	clock-frequency = <400000>;
->> +
->> +	trackpad: trackpad@15 {
->> +		compatible = "hid-over-i2c";
->> +		reg = <0x15>;
->> +		pinctrl-names = "default";
->> +		pinctrl-0 = <&tp_int_odl>;
->> +
->> +		interrupt-parent = <&tlmm>;
->> +		interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
->> +
->> +		post-power-on-delay-ms = <20>;
->> +		hid-descr-addr = <0x0001>;
->> +		vdd-supply = <&vreg_l18b_1p8>;
->> +
->> +		wakeup-source;
->> +	};
->> +};
->> +
->> +ap_ts_pen_1v8: &i2c13 {
->> +	status = "okay";
->> +	clock-frequency = <400000>;
->> +
->> +	ap_ts: touchscreen@5c {
->> +		compatible = "hid-over-i2c";
->> +		reg = <0x5C>;
->> +		pinctrl-names = "default";
->> +		pinctrl-0 = <&ts_int_l>, <&ts_reset_l>;
->> +
->> +		interrupt-parent = <&tlmm>;
->> +		interrupts = <55 IRQ_TYPE_LEVEL_LOW>;
->> +
->> +		post-power-on-delay-ms = <500>;
->> +		hid-descr-addr = <0x0000>;
->> +
->> +		vdd-supply = <&vreg_l19b_1p8>;
->> +	};
->> +};
->> +
->>   &nvme_pwren {
->>   	pins = "gpio51";
->>   };
->> @@ -30,3 +71,25 @@
->>   &nvme_3v3_regulator {
->>   	gpio = <&tlmm 51 GPIO_ACTIVE_HIGH>;
->>   };
->> +
->> +&tlmm {
->> +	tp_int_odl: tp-int-odl {
->> +		pins = "gpio7";
->> +		function = "gpio";
->> +		input-enable;
-> 
-> Not sure about this one, is the explicit 'input-enable' actually needed here?
-
-Maybe not, will test it once after I remove it
-
-> 
->> +		bias-disable;
->> +	};
->> +
->> +	ts_int_l: ts-int-l {
->> +		pins = "gpio55";
->> +		function = "gpio";
->> +		bias-pull-up;
->> +	};
->> +
->> +	ts_reset_l: ts-reset-l {
->> +		pins = "gpio54";
->> +		function = "gpio";
->> +		bias-disable;
->> +		drive-strength = <2>;
-> 
-> As per my comment on "[3/4] arm64: dts: qcom: sc7280: Define EC and H1 nodes" it
-> seems setting the drive strength to 2 isn't necessary, since that's the default.
-
-right I'll remove it, thanks
-
-> 
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Thanks
+Barry
