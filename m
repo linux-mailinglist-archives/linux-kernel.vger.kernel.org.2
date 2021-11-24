@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F168D45C5DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:59:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 868C045C24B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350662AbhKXOBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:01:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45564 "EHLO mail.kernel.org"
+        id S1348846AbhKXN07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:26:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355721AbhKXN6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:58:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E6DC633E5;
-        Wed, 24 Nov 2021 13:08:26 +0000 (UTC)
+        id S1348109AbhKXNYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:24:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE22261057;
+        Wed, 24 Nov 2021 12:48:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759307;
-        bh=wPPOdLjqMWK95/PtIkbeEP2lxKIHa8CXAALtrWh4oNc=;
+        s=korg; t=1637758138;
+        bh=fw81+EASjhldrQmGseGFtvQNMPXgJN9D375yhTonjsM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZqW8+Dha5hBaW74hTTDLwHCj5dejY5OJEgwCAv+HuR0IBlnBj+D/TgPPBO4oOgwFe
-         5xDA881nXSKDtXpVvoPhqSO9xFgAq5ak5pP1XAOIHS3mNfkw0eYo3eKh/O7XfFyS8y
-         ObOvyXqt6Z7iXZ7U1wtjawD520KjzcoXqUR1Uzgc=
+        b=Xnt63cqdVF+3V81Nu2KsVPm5hse77y56r1DTvmvdVu5JyqguQn6h1+PntoKe83MGY
+         HCLBwGYjQKzyJGOCy+Sh5XXUJ4Pf8u0nFf244EGKuaTAZIIQLvfzZbJMefuf7uOR/a
+         UrwK1fepXr2B7saFqnBTg2T8yFH9oyaCr5KS81As=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.15 190/279] pstore/blk: Use "%lu" to format unsigned long
+        stable@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 041/100] tracing: Save normal string variables
 Date:   Wed, 24 Nov 2021 12:57:57 +0100
-Message-Id: <20211124115725.289261984@linuxfoundation.org>
+Message-Id: <20211124115656.213988852@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +40,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Tom Zanussi <zanussi@kernel.org>
 
-commit 61eb495c83bf6ebde490992bf888ca15b9babc39 upstream.
+[ Upstream commit 63a1e5de3006f4ad713e4d72bcb404d0301e853d ]
 
-On 32-bit:
+String variables created as field variables and save variables are
+already handled properly by having their values copied when set.  The
+same isn't done for normal variables, but needs to be - simply saving
+a pointer to a string contained in an old event isn't sufficient,
+since that event's data may quickly become overwritten and therefore a
+string pointer to it could yield garbage.
 
-    fs/pstore/blk.c: In function ‘__best_effort_init’:
-    include/linux/kern_levels.h:5:18: warning: format ‘%zu’ expects argument of type ‘size_t’, but argument 3 has type ‘long unsigned int’ [-Wformat=]
-	5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
-	  |                  ^~~~~~
-    include/linux/kern_levels.h:14:19: note: in expansion of macro ‘KERN_SOH’
-       14 | #define KERN_INFO KERN_SOH "6" /* informational */
-	  |                   ^~~~~~~~
-    include/linux/printk.h:373:9: note: in expansion of macro ‘KERN_INFO’
-      373 |  printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
-	  |         ^~~~~~~~~
-    fs/pstore/blk.c:314:3: note: in expansion of macro ‘pr_info’
-      314 |   pr_info("attached %s (%zu) (no dedicated panic_write!)\n",
-	  |   ^~~~~~~
+This change uses the same mechanism as field variables and simply
+appends the new strings to the existing per-element field_var_str[]
+array allocated for that purpose.
 
-Cc: stable@vger.kernel.org
-Fixes: 7bb9557b48fcabaa ("pstore/blk: Use the normal block device I/O path")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20210629103700.1935012-1-geert@linux-m68k.org
-Cc: Jens Axboe <axboe@kernel.dk>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lkml.kernel.org/r/1c1a03798b02e67307412a0c719d1bfb69b13007.1601848695.git.zanussi@kernel.org
+
+Fixes: 02205a6752f2 (tracing: Add support for 'field variables')
+Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/pstore/blk.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/trace_events_hist.c | 34 ++++++++++++++++++++++++++++++--
+ 1 file changed, 32 insertions(+), 2 deletions(-)
 
---- a/fs/pstore/blk.c
-+++ b/fs/pstore/blk.c
-@@ -311,7 +311,7 @@ static int __init __best_effort_init(voi
- 	if (ret)
- 		kfree(best_effort_dev);
- 	else
--		pr_info("attached %s (%zu) (no dedicated panic_write!)\n",
-+		pr_info("attached %s (%lu) (no dedicated panic_write!)\n",
- 			blkdev, best_effort_dev->zone.total_size);
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index f63766366e238..9a73c187d241e 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -149,6 +149,8 @@ struct hist_field {
+ 	 */
+ 	unsigned int			var_ref_idx;
+ 	bool                            read_once;
++
++	unsigned int			var_str_idx;
+ };
  
- 	return ret;
+ static u64 hist_field_none(struct hist_field *field,
+@@ -351,6 +353,7 @@ struct hist_trigger_data {
+ 	unsigned int			n_keys;
+ 	unsigned int			n_fields;
+ 	unsigned int			n_vars;
++	unsigned int			n_var_str;
+ 	unsigned int			key_size;
+ 	struct tracing_map_sort_key	sort_keys[TRACING_MAP_SORT_KEYS_MAX];
+ 	unsigned int			n_sort_keys;
+@@ -2305,7 +2308,12 @@ static int hist_trigger_elt_data_alloc(struct tracing_map_elt *elt)
+ 		}
+ 	}
+ 
+-	n_str = hist_data->n_field_var_str + hist_data->n_save_var_str;
++	n_str = hist_data->n_field_var_str + hist_data->n_save_var_str +
++		hist_data->n_var_str;
++	if (n_str > SYNTH_FIELDS_MAX) {
++		hist_elt_data_free(elt_data);
++		return -EINVAL;
++	}
+ 
+ 	size = STR_VAR_LEN_MAX;
+ 
+@@ -4599,6 +4607,7 @@ static int create_var_field(struct hist_trigger_data *hist_data,
+ {
+ 	struct trace_array *tr = hist_data->event_file->tr;
+ 	unsigned long flags = 0;
++	int ret;
+ 
+ 	if (WARN_ON(val_idx >= TRACING_MAP_VALS_MAX + TRACING_MAP_VARS_MAX))
+ 		return -EINVAL;
+@@ -4613,7 +4622,12 @@ static int create_var_field(struct hist_trigger_data *hist_data,
+ 	if (WARN_ON(hist_data->n_vars > TRACING_MAP_VARS_MAX))
+ 		return -EINVAL;
+ 
+-	return __create_val_field(hist_data, val_idx, file, var_name, expr_str, flags);
++	ret = __create_val_field(hist_data, val_idx, file, var_name, expr_str, flags);
++
++	if (hist_data->fields[val_idx]->flags & HIST_FIELD_FL_STRING)
++		hist_data->fields[val_idx]->var_str_idx = hist_data->n_var_str++;
++
++	return ret;
+ }
+ 
+ static int create_val_fields(struct hist_trigger_data *hist_data,
+@@ -5333,6 +5347,22 @@ static void hist_trigger_elt_update(struct hist_trigger_data *hist_data,
+ 		hist_val = hist_field->fn(hist_field, elt, rbe, rec);
+ 		if (hist_field->flags & HIST_FIELD_FL_VAR) {
+ 			var_idx = hist_field->var.idx;
++
++			if (hist_field->flags & HIST_FIELD_FL_STRING) {
++				unsigned int str_start, var_str_idx, idx;
++				char *str, *val_str;
++
++				str_start = hist_data->n_field_var_str +
++					hist_data->n_save_var_str;
++				var_str_idx = hist_field->var_str_idx;
++				idx = str_start + var_str_idx;
++
++				str = elt_data->field_var_str[idx];
++				val_str = (char *)(uintptr_t)hist_val;
++				strscpy(str, val_str, STR_VAR_LEN_MAX);
++
++				hist_val = (u64)(uintptr_t)str;
++			}
+ 			tracing_map_set_var(elt, var_idx, hist_val);
+ 			continue;
+ 		}
+-- 
+2.33.0
+
 
 
