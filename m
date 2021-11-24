@@ -2,67 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE55C45CFF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:18:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1545745D002
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:24:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343571AbhKXWV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 17:21:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243516AbhKXWVz (ORCPT
+        id S1343875AbhKXW1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 17:27:17 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:41490 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235257AbhKXW1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:21:55 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A007EC061574;
-        Wed, 24 Nov 2021 14:18:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=sEQB/jjB9aOv3YFUMqLZKs+O/a2g4X/PQogVeTcsvsE=; b=polHpjfVG8fg9i75kJGRg4xa8D
-        CijPbahqUUi6seetXzDtp8n06kzPDiMnhB3GaUMGLd7kErl1PoTA+lccFZQ2hzTVbKAIlyZfkImN6
-        95N4BlDXd2eMO/ra2dHy64j0Xn4RfSE67RfjHaROS7NfWxRxVYq4weKVDq2Hg4iV3HI1Ro8gXeGm8
-        WmlWYt/lK0jexevqrdMUfaqQ62P83MhmMR+FtpTbA0ZIOW5okWYttXWLm3kdMAYw8Hx+3a51yfie6
-        EAAicmCO0dfe7x2X34V/ETeS0yPHwR16+fg5U81qaC1Lj6vl4c4zoz4JBLfqe+6A+uG+F8coIQ4J+
-        UC1vzoGw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mq0b3-000KIU-PD; Wed, 24 Nov 2021 22:18:34 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2B7C4986843; Wed, 24 Nov 2021 23:18:33 +0100 (CET)
-Date:   Wed, 24 Nov 2021 23:18:33 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Peter Oskolkov <posk@posk.io>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@google.com>,
-        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
-        Thierry Delisle <tdelisle@uwaterloo.ca>
-Subject: Re: [PATCH v0.9.1 3/6] sched/umcg: implement UMCG syscalls
-Message-ID: <20211124221833.GJ721624@worktop.programming.kicks-ass.net>
-References: <20211122211327.5931-1-posk@google.com>
- <20211122211327.5931-4-posk@google.com>
+        Wed, 24 Nov 2021 17:27:16 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 22BA490E;
+        Wed, 24 Nov 2021 23:24:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1637792645;
+        bh=vGq/mWDN73zRjz5iYjQyDsaWynM5Pl579Af8Jj8N4T8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Vg9ONYU4JmUHPYeU9lmXZacaxmFX4qiaVAbN9Mvusd+vxP3gT9unwY/3lIoWdbkQm
+         MPVrmXqXGHukDcLbXzQmt6sa/XRmgzUyKnoZQIyitzn1D27991YndR2mErMcbHEH7J
+         ARakHk/D28WJsYwBwQpm7gVGJCdEjr/DiSv0tb+c=
+Date:   Thu, 25 Nov 2021 00:23:42 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Cc:     linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 1/2] arm64: dts: renesas: ulcb: Merge hdmi0_con
+Message-ID: <YZ67btQ8IxlIBdsh@pendragon.ideasonboard.com>
+References: <20211124152815.3926961-1-kieran.bingham+renesas@ideasonboard.com>
+ <20211124152815.3926961-2-kieran.bingham+renesas@ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211122211327.5931-4-posk@google.com>
+In-Reply-To: <20211124152815.3926961-2-kieran.bingham+renesas@ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 01:13:24PM -0800, Peter Oskolkov wrote:
-> +die:
-> +	pr_warn("%s: killing task %d\n", __func__, current->pid);
-> +	force_sig(SIGKILL);
+Hi Kieran,
 
-That pr_warn() might need to be pr_warn_ratelimited() in order to no be
-a system log DoS.
+Thank you for the patch.
 
-Because, AFAICT, you can craft userspace to trigger this arbitrarily
-often, just spawn a worker and make it misbehave.
+On Wed, Nov 24, 2021 at 03:28:14PM +0000, Kieran Bingham wrote:
+> The remote endpoint for the hdmi connector is specfied through a
+> reference to the hdmi0_con endpoint, which is in the same file.
+> 
+> Simplify by specifying the remote-endpoint directly in the hdmi0_con
+> endpoint.
+> 
+> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 
+I saw this earlier today and made a note to fix it. You were faster :-)
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+>  arch/arm64/boot/dts/renesas/ulcb.dtsi | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/renesas/ulcb.dtsi b/arch/arm64/boot/dts/renesas/ulcb.dtsi
+> index 7edffe7f8cfa..a7e93df4ced8 100644
+> --- a/arch/arm64/boot/dts/renesas/ulcb.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/ulcb.dtsi
+> @@ -48,6 +48,7 @@ hdmi0-out {
+>  
+>  		port {
+>  			hdmi0_con: endpoint {
+> +				remote-endpoint = <&rcar_dw_hdmi0_out>;
+>  			};
+>  		};
+>  	};
+> @@ -199,10 +200,6 @@ dw_hdmi0_snd_in: endpoint {
+>  	};
+>  };
+>  
+> -&hdmi0_con {
+> -	remote-endpoint = <&rcar_dw_hdmi0_out>;
+> -};
+> -
+>  &i2c2 {
+>  	pinctrl-0 = <&i2c2_pins>;
+>  	pinctrl-names = "default";
+
+-- 
+Regards,
+
+Laurent Pinchart
