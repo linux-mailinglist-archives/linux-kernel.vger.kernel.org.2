@@ -2,132 +2,365 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDCE245CC75
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:50:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC46645CC7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244172AbhKXSxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 13:53:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244789AbhKXSxO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 13:53:14 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1198C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:50:04 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id i12so3525756pfd.6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:50:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rtxqvmfYyjV5kqAkoLEk1bhpShL7DWU8Cpqaq7bMIag=;
-        b=dIvro56HBbwAQqpGseOSqXPF0mIszsOSaEg9JoPUYaWa147Z6ejhgAB8hwhNtxUYbm
-         58L8uHWX1zI+Cake7GJ+ZgrLgD4P0yeiyLjQjK3jDWOVu8PsOE9th5vDKdLngLK2wH+e
-         tNmAIHnPPpeSL4l7TjzPoQBSpbxwSWMU4Cl/RvYC0K/a2JDMuliRYCeF8/pV/pSCn4Gm
-         X9VLjZMqSdLdJntIbKEeF3eIaZQTingTD8X+AUi4/0USWVFN448dGN1SCwBGnrjXuKAy
-         3Ssm8SQubzFV6dJLuqE6jkUGXXNVYYhyJBndQq10UqxfsgxwAqdGyQ1JqC9AI07p2+JX
-         rKcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rtxqvmfYyjV5kqAkoLEk1bhpShL7DWU8Cpqaq7bMIag=;
-        b=5ySIdKjAtqH7pwGVcnMrfPUS62ZtIzaNYHNmYHCfhjvTnl33lo+x6CRQaxALHTLb1M
-         xXfy1MAMcE/5nxquGBTxD/u8BQELz3sYJ+l0S0VdcQYOZwf1WM7ck0MKhY2+35ruPDH/
-         2ve8SEjnSJQRgDCeYl4FeOOCPi6XOvJb3+X8YhSQ6dEURzdrQxMRFylnj/ml/nSGAlza
-         n//B+IdtDddfCOSPBAPaEcgooGabpNYGlZpj+5+f1KYgax/2m+9YQnetPHQ7R8MmBKm4
-         3GSNDrMzOEYjobSsaa8rIZ05868n96K0kGht6sBI9TarcyupDPXe9lly1q/6704dMFx8
-         meWw==
-X-Gm-Message-State: AOAM5326qrj5qsSiNGnXz/el1xfDkmeEmdnEy8dapg1IAOzM9VsgKzz+
-        ae61PWIIhjCvsSev3Nwopx7+Wg==
-X-Google-Smtp-Source: ABdhPJyP43zhAcXYQ4mG3ffOeGB2G9GGgULeHqkqp6RRIKGoFpSRv0ppJgaFtd/RNCmj6qvtrEiCVw==
-X-Received: by 2002:a63:680a:: with SMTP id d10mr11840328pgc.116.1637779803945;
-        Wed, 24 Nov 2021 10:50:03 -0800 (PST)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id e14sm513450pfv.18.2021.11.24.10.50.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 10:50:03 -0800 (PST)
-Date:   Wed, 24 Nov 2021 18:50:00 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] KVM: selftests: Make sure kvm_create_max_vcpus test
- won't hit RLIMIT_NOFILE
-Message-ID: <YZ6JWGCaDihh4KoG@google.com>
-References: <20211123135953.667434-1-vkuznets@redhat.com>
+        id S236519AbhKXSys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 13:54:48 -0500
+Received: from foss.arm.com ([217.140.110.172]:42120 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229704AbhKXSyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 13:54:46 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E6FB31FB;
+        Wed, 24 Nov 2021 10:51:35 -0800 (PST)
+Received: from lakrids (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6BF913F66F;
+        Wed, 24 Nov 2021 10:51:31 -0800 (PST)
+Date:   Wed, 24 Nov 2021 18:51:23 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Tyler Baicar <baicar@os.amperecomputing.com>
+Cc:     patches@amperecomputing.com, abdulhamid@os.amperecomputing.com,
+        darren@os.amperecomputing.com, catalin.marinas@arm.com,
+        will@kernel.org, maz@kernel.org, james.morse@arm.com,
+        alexandru.elisei@arm.com, suzuki.poulose@arm.com,
+        lorenzo.pieralisi@arm.com, guohanjun@huawei.com,
+        sudeep.holla@arm.com, rafael@kernel.org, lenb@kernel.org,
+        tony.luck@intel.com, bp@alien8.de, anshuman.khandual@arm.com,
+        vincenzo.frascino@arm.com, tabba@google.com, marcan@marcan.st,
+        keescook@chromium.org, jthierry@redhat.com, masahiroy@kernel.org,
+        samitolvanen@google.com, john.garry@huawei.com,
+        daniel.lezcano@linaro.org, gor@linux.ibm.com,
+        zhangshaokun@hisilicon.com, tmricht@linux.ibm.com,
+        dchinner@redhat.com, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, linux-acpi@vger.kernel.org,
+        linux-edac@vger.kernel.org, ishii.shuuichir@fujitsu.com,
+        Vineeth.Pillai@microsoft.com
+Subject: Re: [PATCH 1/2] ACPI/AEST: Initial AEST driver
+Message-ID: <YZ6Jq39Z9dIUqcfO@lakrids>
+References: <20211124170708.3874-1-baicar@os.amperecomputing.com>
+ <20211124170708.3874-2-baicar@os.amperecomputing.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211123135953.667434-1-vkuznets@redhat.com>
+In-Reply-To: <20211124170708.3874-2-baicar@os.amperecomputing.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021, Vitaly Kuznetsov wrote:
-> With the elevated 'KVM_CAP_MAX_VCPUS' value kvm_create_max_vcpus test
-> may hit RLIMIT_NOFILE limits:
-> 
->  # ./kvm_create_max_vcpus
->  KVM_CAP_MAX_VCPU_ID: 4096
->  KVM_CAP_MAX_VCPUS: 1024
->  Testing creating 1024 vCPUs, with IDs 0...1023.
->  /dev/kvm not available (errno: 24), skipping test
-> 
-> Adjust RLIMIT_NOFILE limits to make sure KVM_CAP_MAX_VCPUS fds can be
-> opened. Note, raising hard limit ('rlim_max') requires CAP_SYS_RESOURCE
-> capability which is generally not needed to run kvm selftests (but without
-> raising the limit the test is doomed to fail anyway).
-> 
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
-> Changes since v1:
-> - Drop 'NOFD' define replacing it with 'int nr_fds_wanted' [Sean]
-> - Drop 'errno' printout as TEST_ASSERT() already does that.
-> ---
->  .../selftests/kvm/kvm_create_max_vcpus.c      | 22 +++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/kvm/kvm_create_max_vcpus.c b/tools/testing/selftests/kvm/kvm_create_max_vcpus.c
-> index f968dfd4ee88..ca957fe3f903 100644
-> --- a/tools/testing/selftests/kvm/kvm_create_max_vcpus.c
-> +++ b/tools/testing/selftests/kvm/kvm_create_max_vcpus.c
-> @@ -12,6 +12,7 @@
->  #include <stdio.h>
->  #include <stdlib.h>
->  #include <string.h>
-> +#include <sys/resource.h>
->  
->  #include "test_util.h"
->  
-> @@ -40,10 +41,31 @@ int main(int argc, char *argv[])
->  {
->  	int kvm_max_vcpu_id = kvm_check_cap(KVM_CAP_MAX_VCPU_ID);
->  	int kvm_max_vcpus = kvm_check_cap(KVM_CAP_MAX_VCPUS);
-> +	/*
-> +	 * Number of file descriptors reqired, KVM_CAP_MAX_VCPUS for vCPU fds +
-> +	 * an arbitrary number for everything else.
-> +	 */
-> +	int nr_fds_wanted = kvm_max_vcpus + 100;
-> +	struct rlimit rl;
->  
->  	pr_info("KVM_CAP_MAX_VCPU_ID: %d\n", kvm_max_vcpu_id);
->  	pr_info("KVM_CAP_MAX_VCPUS: %d\n", kvm_max_vcpus);
->  
-> +	/*
-> +	 * Check that we're allowed to open nr_fds_wanted file descriptors and
-> +	 * try raising the limits if needed.
-> +	 */
-> +	TEST_ASSERT(!getrlimit(RLIMIT_NOFILE, &rl), "getrlimit() failed!");
-> +
-> +	if (rl.rlim_cur < nr_fds_wanted) {
-> +		rl.rlim_cur = nr_fds_wanted;
-> +
-> +		if (rl.rlim_max <  nr_fds_wanted)
-> +			rl.rlim_max = nr_fds_wanted;
+Hi,
 
-Nit, this could use max().
+I haven't looked at this in great detail, but I spotted a few issues
+from an initial scan.
 
-Reviewed-and-tested-by: Sean Christopherson <seanjc@google.com> 
+On Wed, Nov 24, 2021 at 12:07:07PM -0500, Tyler Baicar wrote:
+> Add support for parsing the ARM Error Source Table and basic handling of
+> errors reported through both memory mapped and system register interfaces.
+> 
+> Assume system register interfaces are only registered with private
+> peripheral interrupts (PPIs); otherwise there is no guarantee the
+> core handling the error is the core which took the error and has the
+> syndrome info in its system registers.
+
+Can we actually assume that? What does the specification mandate?
+
+> Add logging for all detected errors and trigger a kernel panic if there is
+> any uncorrected error present.
+
+Has this been tested on any hardware or software platform?
+
+[...]
+
+> +#define ERRDEVARCH_REV_SHIFT	0x16
+
+IIUC This should be 16, not 0x16 (i.e. 22).
+
+> +#define ERRDEVARCH_REV_MASK	0xf
+> +
+> +#define RAS_REV_v1_1		0x1
+> +
+> +struct ras_ext_regs {
+> +	u64 err_fr;
+> +	u64 err_ctlr;
+> +	u64 err_status;
+> +	u64 err_addr;
+> +	u64 err_misc0;
+> +	u64 err_misc1;
+> +	u64 err_misc2;
+> +	u64 err_misc3;
+> +};
+
+These last four might be better an an array.
+
+[...]
+
+> +static bool ras_extn_v1p1(void)
+> +{
+> +	unsigned long fld, reg = read_sanitised_ftr_reg(SYS_ID_AA64PFR0_EL1);
+> +
+> +	fld = cpuid_feature_extract_unsigned_field(reg, ID_AA64PFR0_RAS_SHIFT);
+> +
+> +	return fld >= ID_AA64PFR0_RAS_V1P1;
+> +}
+
+I suspect it'd be better to pass this value around directly as
+`version`, rather than dropping this into a `misc23_present` temporary
+variable, as that would be a little clearer, and future-proof if/when
+more registers get added.
+
+[...]
+
+> +void arch_arm_ras_report_error(u64 implemented, bool clear_misc)
+> +{
+> +	struct ras_ext_regs regs = {0};
+> +	unsigned int i, cpu_num;
+> +	bool misc23_present;
+> +	bool fatal = false;
+> +	u64 num_records;
+> +
+> +	if (!this_cpu_has_cap(ARM64_HAS_RAS_EXTN))
+> +		return;
+> +
+> +	cpu_num = get_cpu();
+
+Why get_cpu() here? Do you just need smp_processor_id()?
+
+The commit message explained that this would be PE-local (e.g. in a PPI
+handler), and we've already checked this_cpu_has_cap() which assumes
+we're not preemptible.
+
+So I don't see why we should use get_cpu() here -- any time it would
+have a difference implies something has already gone wrong.
+
+> +	num_records = read_sysreg_s(SYS_ERRIDR_EL1) & ERRIDR_NUM_MASK;
+> +
+> +	for (i = 0; i < num_records; i++) {
+> +		if (!(implemented & BIT(i)))
+> +			continue;
+> +
+> +		write_sysreg_s(i, SYS_ERRSELR_EL1);
+> +		isb();
+> +		regs.err_status = read_sysreg_s(SYS_ERXSTATUS_EL1);
+> +
+> +		if (!(regs.err_status & ERR_STATUS_V))
+> +			continue;
+> +
+> +		pr_err("error from processor 0x%x\n", cpu_num);
+
+Why in hex? We normally print 'cpu%d' or 'CPU%d', since this is a
+logical ID anyway.
+
+> +
+> +		if (regs.err_status & ERR_STATUS_AV)
+> +			regs.err_addr = read_sysreg_s(SYS_ERXADDR_EL1);
+> +
+> +		misc23_present = ras_extn_v1p1();
+
+As above, I reckon it's better to have this as 'version' or
+'ras_version', and have the checks below be:
+
+	if (version >= ID_AA64PFR0_RAS_V1P1) {
+		// poke SYS_ERXMISC2_EL1
+		// poke SYS_ERXMISC3_EL1
+	}
+
+> +
+> +		if (regs.err_status & ERR_STATUS_MV) {
+> +			regs.err_misc0 = read_sysreg_s(SYS_ERXMISC0_EL1);
+> +			regs.err_misc1 = read_sysreg_s(SYS_ERXMISC1_EL1);
+> +
+> +			if (misc23_present) {
+> +				regs.err_misc2 = read_sysreg_s(SYS_ERXMISC2_EL1);
+> +				regs.err_misc3 = read_sysreg_s(SYS_ERXMISC3_EL1);
+> +			}
+> +		}
+> +
+> +		arch_arm_ras_print_error(&regs, i, misc23_present);
+> +
+> +		/*
+> +		 * In the future, we will treat UER conditions as potentially
+> +		 * recoverable.
+> +		 */
+> +		if (regs.err_status & ERR_STATUS_UE)
+> +			fatal = true;
+> +
+> +		regs.err_status = arch_arm_ras_get_status_clear_value(regs.err_status);
+> +		write_sysreg_s(regs.err_status, SYS_ERXSTATUS_EL1);
+> +
+> +		if (clear_misc) {
+> +			write_sysreg_s(0x0, SYS_ERXMISC0_EL1);
+> +			write_sysreg_s(0x0, SYS_ERXMISC1_EL1);
+> +
+> +			if (misc23_present) {
+> +				write_sysreg_s(0x0, SYS_ERXMISC2_EL1);
+> +				write_sysreg_s(0x0, SYS_ERXMISC3_EL1);
+> +			}
+> +		}
+
+Any reason not to clear when we read, above? e.g.
+
+#define READ_CLEAR_MISC(nr, clear)					\
+({									\
+	unsigned long __val = read_sysreg_s(SYS_ERXMISC##nr##_EL1);	\
+	if (clear);							\
+		write_sysreg_s(0, SYS_ERXMISC##nr##_EL1);		\
+	__val;								\
+})
+
+if (regs.err_status & ERR_STATUS_MV) {
+	regs.err_misc0 = READ_CLEAR_MISC(0, clear_misc);
+	regs.err_misc1 = READ_CLEAR_MISC(1, clear_misc);
+
+	if (version >= ID_AA64PFR0_RAS_V1P1) {
+		regs.err_misc2 = READ_CLEAR_MISC(2, clear_misc);
+		regs.err_misc3 = READ_CLEAR_MISC(3, clear_misc);
+	}
+
+}
+
+... why does the clearing need to be conditional?
+
+> +
+> +		isb();
+> +	}
+> +
+> +	if (fatal)
+> +		panic("ARM RAS: uncorrectable error encountered");
+> +
+> +	put_cpu();
+> +}
+> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> index e3ec1a44f94d..dc15e9896db4 100644
+> --- a/arch/arm64/kvm/sys_regs.c
+> +++ b/arch/arm64/kvm/sys_regs.c
+> @@ -1573,6 +1573,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+>  	{ SYS_DESC(SYS_ERXADDR_EL1), trap_raz_wi },
+>  	{ SYS_DESC(SYS_ERXMISC0_EL1), trap_raz_wi },
+>  	{ SYS_DESC(SYS_ERXMISC1_EL1), trap_raz_wi },
+> +	{ SYS_DESC(SYS_ERXMISC2_EL1), trap_raz_wi },
+> +	{ SYS_DESC(SYS_ERXMISC3_EL1), trap_raz_wi },
+
+This should be a preparatory patch; this is preumably a latent bug in
+KVM.
+
+[...]
+
+> +static struct aest_node_data __percpu **ppi_data;
+> +static int ppi_irqs[AEST_MAX_PPI];
+> +static u8 num_ppi;
+> +static u8 ppi_idx;
+
+As above, do we have any guarantee these are actually PPIs?
+
+> +static bool aest_mmio_ras_misc23_present(u64 base_addr)
+> +{
+> +	u32 val;
+> +
+> +	val = readl((void *) (base_addr + ERRDEVARCH_OFFSET));
+> +	val <<= ERRDEVARCH_REV_SHIFT;
+> +	val &= ERRDEVARCH_REV_MASK;
+> +
+> +	return val >= RAS_REV_v1_1;
+> +}
+
+Is the shift the wrong way around?
+
+Above we have:
+
+	#define ERRDEVARCH_REV_SHIFT 0x16
+	#define ERRDEVARCH_REV_MASK  0xf
+
+	#define RAS_REV_v1_1         0x1
+
+.. so this is:
+
+	val <<= 0x16;
+	val &= 0xf;		// val[0x15:0] == 0, so this is 0
+
+	return val >= 0x1;	// false
+
+It'd be nicer to use FIELD_GET() here.
+
+As above, I also think it would be better to retrun the value of the
+field, and check that explciitly, for future proofing.
+
+[...]
+
+> +static void aest_proc(struct aest_node_data *data)
+> +{
+> +	struct ras_ext_regs *regs_p, regs = {0};
+> +	bool misc23_present;
+> +	bool fatal = false;
+> +	u64 errgsr = 0;
+> +	int i;
+> +
+> +	/*
+> +	 * Currently SR based handling is done through the architected
+> +	 * discovery exposed through SRs. That may change in the future
+> +	 * if there is supplemental information in the AEST that is
+> +	 * needed.
+> +	 */
+> +	if (data->interface.type == ACPI_AEST_NODE_SYSTEM_REGISTER) {
+> +		arch_arm_ras_report_error(data->interface.implemented,
+> +					  data->interface.flags & AEST_INTERFACE_CLEAR_MISC);
+> +		return;
+> +	}
+> +
+> +	regs_p = data->interface.regs;
+> +	errgsr = readq((void *) (((u64) regs_p) + ERRGSR_OFFSET));
+> +
+> +	for (i = data->interface.start; i < data->interface.end; i++) {
+> +		if (!(data->interface.implemented & BIT(i)))
+> +			continue;
+> +
+> +		if (!(data->interface.status_reporting & BIT(i)) && !(errgsr & BIT(i)))
+> +			continue;
+> +
+> +		regs.err_status = readq(&regs_p[i].err_status);
+> +		if (!(regs.err_status & ERR_STATUS_V))
+> +			continue;
+> +
+> +		if (regs.err_status & ERR_STATUS_AV)
+> +			regs.err_addr = readq(&regs_p[i].err_addr);
+> +
+> +		regs.err_fr = readq(&regs_p[i].err_fr);
+> +		regs.err_ctlr = readq(&regs_p[i].err_ctlr);
+> +
+> +		if (regs.err_status & ERR_STATUS_MV) {
+> +			misc23_present = aest_mmio_ras_misc23_present((u64) regs_p);
+> +			regs.err_misc0 = readq(&regs_p[i].err_misc0);
+> +			regs.err_misc1 = readq(&regs_p[i].err_misc1);
+> +
+> +			if (misc23_present) {
+> +				regs.err_misc2 = readq(&regs_p[i].err_misc2);
+> +				regs.err_misc3 = readq(&regs_p[i].err_misc3);
+> +			}
+> +		}
+> +
+> +		aest_print(data, regs, i, misc23_present);
+> +
+> +		if (regs.err_status & ERR_STATUS_UE)
+> +			fatal = true;
+> +
+> +		regs.err_status = arch_arm_ras_get_status_clear_value(regs.err_status);
+> +		writeq(regs.err_status, &regs_p[i].err_status);
+> +
+> +		if (data->interface.flags & AEST_INTERFACE_CLEAR_MISC) {
+> +			writeq(0x0, &regs_p[i].err_misc0);
+> +			writeq(0x0, &regs_p[i].err_misc1);
+> +
+> +			if (misc23_present) {
+> +				writeq(0x0, &regs_p[i].err_misc2);
+> +				writeq(0x0, &regs_p[i].err_misc3);
+> +			}
+> +		}
+> +	}
+> +
+> +	if (fatal)
+> +		panic("AEST: uncorrectable error encountered");
+
+Why don't we call panic() as soon as we realise an error is fatal?
+
+Thanks,
+Mark.
