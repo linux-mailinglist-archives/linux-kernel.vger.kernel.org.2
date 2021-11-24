@@ -2,77 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337E045B6FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:56:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78AA745B700
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235213AbhKXJAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 04:00:03 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:28102 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234024AbhKXJAC (ORCPT
+        id S237847AbhKXJAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 04:00:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:40521 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235837AbhKXJAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 04:00:02 -0500
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HzZZ35QP3z1DJST;
-        Wed, 24 Nov 2021 16:54:19 +0800 (CST)
-Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.20; Wed, 24 Nov 2021 16:56:51 +0800
-Received: from localhost.localdomain (10.67.165.103) by
- dggema772-chm.china.huawei.com (10.1.198.214) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.20; Wed, 24 Nov 2021 16:56:51 +0800
-From:   Yicong Yang <yangyicong@hisilicon.com>
-To:     <mingo@redhat.com>, <peterz@infradead.org>,
-        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
-        <mgorman@suse.de>, <linux-kernel@vger.kernel.org>
-CC:     <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
-        <bsegall@google.com>, <bristot@redhat.com>,
-        <song.bao.hua@hisilicon.com>, <prime.zeng@huawei.com>,
-        <yangyicong@hisilicon.com>, <linuxarm@huawei.com>,
-        <21cnbao@gmail.com>
-Subject: [PATCH] sched/fair: Clear target from cpus to scan in select_idle_cpu
-Date:   Wed, 24 Nov 2021 16:54:01 +0800
-Message-ID: <20211124085401.14411-1-yangyicong@hisilicon.com>
-X-Mailer: git-send-email 2.31.0
+        Wed, 24 Nov 2021 04:00:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637744256;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TVGzFQPQlGn5U1mE3m4XSY5JB0lBn/n06rnEA04Gx5Y=;
+        b=gp3NpgcF9BX569zdb3LR4wq6oIr8J6zj1IbfgRYKumbiprx0rFbld7PpvQ+Dq2/SxE1gm4
+        bixEsHX8cRD1B5g7QWpxxYdiEvmdI9nAoLqTm5mZjEp99zMvZI0cLbiiSZSIzOtza4a8v/
+        Tnse7MSPsVl5y1V4iJH0oAP2j2c1mlY=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-187-qUYqgeQHO1OaZRWT655kKQ-1; Wed, 24 Nov 2021 03:57:34 -0500
+X-MC-Unique: qUYqgeQHO1OaZRWT655kKQ-1
+Received: by mail-wm1-f69.google.com with SMTP id r6-20020a1c4406000000b0033119c22fdbso981349wma.4
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 00:57:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=TVGzFQPQlGn5U1mE3m4XSY5JB0lBn/n06rnEA04Gx5Y=;
+        b=u0Nn2kS7mNH1v/MPhLpE2KLPkzA2eek9KBuzUe1jXrZ/2d93uA1vCc93raVm/4iNRv
+         BtN8DYtyjzNV6C7uRiprew3SdEmBiXS2+802frEDgXi4xKlWeeFtYJC6rEJX+zyw5Qyx
+         8ddlTqXWPiWDyA6mOkOfLqu/kw8icH7Ux+8Sv9K3OQP5X0ajQaYn4TLsViJR11ixgAto
+         E87S4yOiXhPmcPhZWHEW528pI+hXkSHPpAs6cx9XQUi9Mbs5hmSWhlPEc6MgH5/vo3Xi
+         Pzvz41er70ppzl+DwBwzfkvBMf6fSSJbJyybOmSd3wOo1G8LMx1aSYsBXVnaBE80LJmU
+         O0Kg==
+X-Gm-Message-State: AOAM531iFeG4qqLF3HUQ15Uv0io9uRN8NjMJV0x2S8vPB6wJ+R52yD08
+        j6bX1iezOM1/7Tmj5l0bIylIzxgEgAA2EDA0zoPRhdKNLx9MXSocNKu+p0lp+lL5aTyrleC2K6z
+        bDzwe+g+3mlhi7/jDok5Vxv/n
+X-Received: by 2002:adf:ea0a:: with SMTP id q10mr16624867wrm.1.1637744253638;
+        Wed, 24 Nov 2021 00:57:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzyi+zQkpv4TT2GNLv4kRZkNnRXzh1SkmiJ1oViYiQs5PhmxYxCZmXd1XJr0v4EH3FZy65rjw==
+X-Received: by 2002:adf:ea0a:: with SMTP id q10mr16624845wrm.1.1637744253433;
+        Wed, 24 Nov 2021 00:57:33 -0800 (PST)
+Received: from [192.168.3.132] (p5b0c6380.dip0.t-ipconnect.de. [91.12.99.128])
+        by smtp.gmail.com with ESMTPSA id u15sm4422950wmq.13.2021.11.24.00.57.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Nov 2021 00:57:32 -0800 (PST)
+Message-ID: <2adca04f-92e1-5f99-6094-5fac66a22a77@redhat.com>
+Date:   Wed, 24 Nov 2021 09:57:32 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.103]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema772-chm.china.huawei.com (10.1.198.214)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Vlastimil Babka <vbabka@suse.cz>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Andrew Dona-Couch <andrew@donacou.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Drew DeVault <sir@cmpwn.com>,
+        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+References: <8f219a64-a39f-45f0-a7ad-708a33888a3b@www.fastmail.com>
+ <333cb52b-5b02-648e-af7a-090e23261801@redhat.com>
+ <ca96bb88-295c-ccad-ed2f-abc585cb4904@kernel.dk>
+ <5f998bb7-7b5d-9253-2337-b1d9ea59c796@redhat.com>
+ <20211123132523.GA5112@ziepe.ca>
+ <10ccf01b-f13a-d626-beba-cbee70770cf1@redhat.com>
+ <20211123140709.GB5112@ziepe.ca>
+ <e4d7d211-5d62-df89-8f94-e49385286f1f@redhat.com>
+ <20211123170056.GC5112@ziepe.ca>
+ <dd92a69a-6d09-93a1-4f50-5020f5cc59d0@suse.cz>
+ <20211123235953.GF5112@ziepe.ca>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20211123235953.GF5112@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 56498cfb045d noticed that "When select_idle_cpu starts scanning for
-an idle CPU, it starts with a target CPU that has already been checked
-by select_idle_sibling. This patch starts with the next CPU instead."
-It only changed the scanning start cpu to target + 1 but still leave
-the target in the scanning cpumask. The target still have a chance to be
-checked in the last turn. Fix this by clear the target from the cpus
-to scan.
+On 24.11.21 00:59, Jason Gunthorpe wrote:
+> On Tue, Nov 23, 2021 at 11:04:04PM +0100, Vlastimil Babka wrote:
+>> On 11/23/21 18:00, Jason Gunthorpe wrote:
+>>>
+>>>> believe what you say and I trust your experience :) So could as well be
+>>>> that on such a "special" (or not so special) systems there should be a
+>>>> way to restrict it to privileged users only.
+>>>
+>>> At this point RDMA is about as "special" as people running large
+>>> ZONE_MOVABLE systems, and the two are going to start colliding
+>>> heavily. The RDMA VFIO migration driver should be merged soon which
+>>> makes VMs using this stuff finally practical.
+>>
+>> How does that work, I see the word migration, so does it cause pages to
+> 
+> Sorry I mean what is often called "VM live migration". Typically that
+> cannot be done if a PCI device is assigned to the VM as suspending and
+> the migrating a PCI device to another server is complicated. With
+> forthcoming hardware mlx5 can do this and thus the entire RDMA stack
+> becomes practically usable and performant within a VM.
+> 
+>> be migrated out of ZONE_MOVABLE before they are pinned?
+> 
+> GUP already does this automatically for FOLL_LONGTERM.
+> 
+>> Similarly for io-uring we could be migrating pages to be pinned so that
+>> the end up consolidated close together, and prevent pathologic
+>> situations like in David's reproducer. 
+> 
+> It is an interesting idea to have GUP do some kind of THP preserving
+> migration.
 
-Fixes: 56498cfb045d ("sched/fair: Avoid a second scan of target in select_idle_cpu")
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
----
- kernel/sched/fair.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6e476f6d9435..e1031e0da231 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6249,6 +6249,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
- 		return -1;
- 
- 	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-+	cpumask_clear_cpu(target, cpus);
- 
- 	if (sched_feat(SIS_PROP) && !has_idle_core) {
- 		u64 avg_cost, avg_idle, span_avg;
+Unfortunately it will only be a band aid AFAIU. I can rewrite my
+reproducer fairly easily to pin the whole 2M range first, pin a second
+time only a single page, and then unpin the 2M range, resulting in the
+very same way to block THP. (I can block some THP less because I always
+need the possibility to memlock 2M first, though).
+
 -- 
-2.33.0
+Thanks,
+
+David / dhildenb
 
