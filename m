@@ -2,172 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A55045D151
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE07045D153
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:40:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234817AbhKXXlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 18:41:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33338 "EHLO
+        id S235960AbhKXXoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 18:44:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233602AbhKXXlP (ORCPT
+        with ESMTP id S235495AbhKXXoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 18:41:15 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B49EC06173E
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 15:38:05 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id x43-20020a056830246b00b00570d09d34ebso6771189otr.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 15:38:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=B8djMvr5C1RUpidUre9QOVwQnxy1dQwhg3YPD/0MqFM=;
-        b=3QF7kW2JIT/4nSNZtRDjMKbGYaNpcX3T1kpPpMDTuC+q9LgPlx9s3kdhJgwLjn2/Uz
-         G9AELgSDXu+BxkAcBwUUTMyNM9Onapnsuk/EdWxjlYYXYBoXzTx9k93R4cCn9K3Kw0Aw
-         8VSK9qvs2eIuNU+W1H3i9R002vmSdMji0dXDkD3WmuYUH/YyxVUPx0bcFxJ/t32Wvvqo
-         5+q1gByCF6H2aahvfU59lNSzhQddCuWz0OhGgjoMThhtlr05C4wGt55Ix5HcXD1LoL3k
-         QyQjvUx9LVlA3AiJxaICQVzPirxZYzsr8NqSY7MljJVX84+lY3b+xcSQogNsF7rmsCjs
-         FJ6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=B8djMvr5C1RUpidUre9QOVwQnxy1dQwhg3YPD/0MqFM=;
-        b=PsPHMOY/t3J9PGB+wYyBF84cxiod9KHZ4F9Rq2oPyOUtSkb3JvwT7HBMJ6CEvZNdr4
-         KLgs8ZvTGdQ0SZlQrPP+GmXX8dd+UROqB4cYrHM+J4XQf4t4erNSHCVHcTiN6wy89DmT
-         EX41youiEnqFbcMusNvv7yn6WZn+KQgZFx+UsumX0MCvEIUdeMsxkm77T81MmEFhQ+23
-         qq/NKRRp40cgtLwqRrTjnUre8mlRbKffzX9g86J5/Y9wF4URV5lGA+nuLsWyGBv/aGxG
-         cSU+SeSY29GDBds1mbhS7iba0ojufQh2al/r5bIcnSWi1UKX5wfVowepVALrMxhdYxWC
-         TWng==
-X-Gm-Message-State: AOAM5323xUqnkb0a7Z/81IV5zvyYyD0SXwU32aiuO/CGXHKCCIA6uT5R
-        IW82vtPzFnnVrOOoOGuEeic38g==
-X-Google-Smtp-Source: ABdhPJy9ywL4FWZwv0YFYMa2Trkll/m+Oz7OoPrI9cYJiel4kv5HfOir4I2teqkK3Fw/4dNiPPgdOQ==
-X-Received: by 2002:a9d:4f0b:: with SMTP id d11mr17210189otl.227.1637797084457;
-        Wed, 24 Nov 2021 15:38:04 -0800 (PST)
-Received: from ?IPv6:2607:fb90:c2d2:892e:8ae:f6ff:fe37:f28b? ([2607:fb90:c2d2:892e:8ae:f6ff:fe37:f28b])
-        by smtp.gmail.com with ESMTPSA id j20sm218283ota.76.2021.11.24.15.38.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 15:38:04 -0800 (PST)
-Subject: Re: spinlock.c:306:9: error: implicit declaration of function
- '__raw_write_lock_nested'
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Galbraith <umgwanakikbuti@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, lkft-triage@lists.linaro.org,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-References: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
- <41206fc7-f8ce-98aa-3718-ba3e1431e320@landley.net>
- <CAK8P3a3pQW59NVF=5P+ZiBjNJmnWh+iTZUHvqHBrXkHA6pMd4g@mail.gmail.com>
-From:   Rob Landley <rob@landley.net>
-Message-ID: <7d5a5249-40ee-9a42-c6a0-a5defa3703c1@landley.net>
-Date:   Wed, 24 Nov 2021 17:38:17 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 24 Nov 2021 18:44:04 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDAFFC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 15:40:53 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637797250;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wc9Sdqvb+i4yREP1f/XB7cgF5TEqu0V+h0LlejHvhDs=;
+        b=Dn1PT+QTutKoQAh4WDgzfZAGtAw110Xrbb71urrj59VWkR8yzlsQLZ3qHdrr2cCrjuzikp
+        cW3eM/CffDojskw4s5RxycnpZKZgI+MUDFHXl5nEmg9huhTjPhit8uEfI+iLuoZPJFsB01
+        VJvnLEOz+YyAIoeJg0CPDxDxLBb9TCmfuz8GZQKQsY6nxv9JQ44NOkJQ7lPTV/btg1gqQU
+        87GKYgxBePcyerUF3RZhd25pVLIdDALPYizDLx3bVT3P0CGI0UkW3SyRVNDTyDhEALnSOn
+        jSrOEoaI33YUe8LH73m4J280Y4CEbIvrfBhqPJxIhXmiMfWIDXEFAB1ooyJjTQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637797250;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wc9Sdqvb+i4yREP1f/XB7cgF5TEqu0V+h0LlejHvhDs=;
+        b=T2W78KwtnPZjZ7nGnjZ/ntG8V05CnFPifacyI+Prs2GflyPzii/L6M7O9U6ScBoxBTKNhr
+        Q5CTvzraVCb4leAw==
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
+Cc:     "H . Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] x86/tdx: Don't write CSTAR MSR on Intel
+In-Reply-To: <20211119035803.4012145-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <878rxl41p3.ffs@tglx>
+ <20211119035803.4012145-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Date:   Thu, 25 Nov 2021 00:40:49 +0100
+Message-ID: <87sfvljf5q.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3pQW59NVF=5P+ZiBjNJmnWh+iTZUHvqHBrXkHA6pMd4g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/21 1:49 AM, Arnd Bergmann wrote:
-> On Wed, Nov 24, 2021 at 8:31 AM Rob Landley <rob@landley.net> wrote:
->> On 11/23/21 5:38 AM, Naresh Kamboju wrote:
->>
->> diff --git a/arch/sh/kernel/syscalls/syscall.tbl
->> b/arch/sh/kernel/syscalls/syscall.tbl
->> index 208f131659c5..65c3a94bff48 100644
->> --- a/arch/sh/kernel/syscalls/syscall.tbl
->> +++ b/arch/sh/kernel/syscalls/syscall.tbl
->> @@ -437,7 +437,7 @@
->>  432    common  fsmount                         sys_fsmount
->>  433    common  fspick                          sys_fspick
->>  434    common  pidfd_open                      sys_pidfd_open
->> -# 435 reserved for clone3
->> +435    common  clone3                          sys_clone3
->>  436    common  close_range                     sys_close_range
->>  437    common  openat2                         sys_openat2
->>  438    common  pidfd_getfd                     sys_pidfd_getfd
-> 
-> Did you test clone3?
+Kuppuswamy,
 
-Haven't got anything that's using it (musl-libc doesn't know about it yet) but
-it looked straightforward? (Unlike the #ifdef stack around the previous clone...)
+On Thu, Nov 18 2021 at 19:58, Kuppuswamy Sathyanarayanan wrote:
 
-I can try building tools/testing/selftests/clone3 if you like, but for some
-reason the clone3 tests want -lcap which isn't in my cross compiler. (Because to
-test a clone system call, you need to manipulate capability bits. Of course.)
-Right, comment out the LDLIBS line in the makefile and the first 3 built, let's
-try those... Hmmm, it's saying the syscall isn't supported, because it's using
-syscall.h out of the cross compiler headers (not THIS kernel's #includes) which
-of course doesn't have it, and then clone3_selftests.h falls back to:
+almost. The subject line is bogus:
 
-#ifndef __NR_clone3
-#define __NR_clone3 -1
-#endif
+        x86/tdx: Don't write CSTAR MSR on Intel
 
-Right, stick a 435 in there and... it's still skipping it. Why is it still
-skipping it... because the RUNTIME syscall is returning ENOSYS. Ok, I have to go
-stick printk() calls into the kernel. (Do I have to #define those
-#YES_I_WANT_THIS_SYSCALL_WHY_WOULDNT_I macros? Hmmm...)
+This has nothing to do with TDX in the first place as the actual check
+is for CPU vendor == Intel. It's absolutely no requirement to remove
+this for TDX. TDX could just handle the #VE and ignore the write.
 
-But yeah, you're right: the naive patch doesn't look like it actually works.
-Just shuts up the #warnings.
+It's an obvious optimization without TDX because the write is pointless
+independent of TDX. There is no value to slap TDX on everything just
+because.
 
-> This needs a custom wrapper on most architectures
-> to have sensible calling conventions.
+Also 'write on Intel' should be 'write on Intel CPUs' to make sense.
+  
+> +/* Don't write CSTAR MSR on Intel platforms */
 
-Define "sensible" in this context? It's a new 2 argument syscall? (Do you mean a
-libc wrapper?)
+How is this comment useful? The proper explanation is below.
 
-> If sh doesn't need it, that should
-> be explained in the changelog text.
+> +static void wrmsrl_cstar(unsigned long val)
+> +{
+> +	/*
+> +	 * Intel CPUs do not support 32-bit SYSCALL. Writing to MSR_CSTAR
+> +	 * is normally ignored by the CPU, but raises a #VE trap in a TDX
+> +	 * guest.
+> +	 */
+> +	if (boot_cpu_data.x86_vendor != X86_VENDOR_INTEL)
+> +		wrmsrl(MSR_CSTAR, val);
+> +}
 
-I'm happy to try to fix stuff up, but I don't understand the objection. Does it
-do something other than what the old clone did, except without the need to pass
-more arguments than we necessarily have registers defined for? (Calls the same
-clone plumbing, which should call back into arch/sh/kernel/process_32.c already...?)
+I fixed it up for you because of Thanksgiving.
 
-The most recent clone3 arch addition was commit 59a4e0d5511b which also just
-pulled in the generic version. (Via #define NO_REALLY_I_WANT_THIS_SYSCALL rather
-than editing the tbl file? Looks like I've got some reading to do...)
+Thanks,
 
->> @@ -451,3 +451,4 @@
->>  446    common  landlock_restrict_self          sys_landlock_restrict_self
->>  # 447 reserved for memfd_secret
->>  448    common  process_mrelease                sys_process_mrelease
->> +449    common  futex_waitv                     sys_futex_waitv
-> 
-> I don't know what's going on with this one, I don't actually see
-> a reason why it isn't already wired up on all architectures.
-
-Me neither, I'm just trying to stay ahead of warnings due to the encroaching
--Werror culture going on within the kernel clique.
-
-> If we add
-> this, it should probably be done for all architectures at once as a
-> bugfix, but it's possible that this is intentionally only used on
-> x86 and arm.
-> 
-> André, can you comment on this?
-
-I see elsethread the second syscall got handled and is going in through another
-tree, I'll leave off on that part...
-
-Rob
+        tglx
