@@ -2,101 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 194E645B1BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 03:06:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3012245B1C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 03:07:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237756AbhKXCJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 21:09:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229976AbhKXCJj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 21:09:39 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3BDC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 18:06:30 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id 14so1210259ioe.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 18:06:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6JqwUkT5b5T7yfFvPXHrMYJB5jvxB6kIH/FjieZ2ioU=;
-        b=LgT+EnxlUsqCl6vjE8BXM9rnL1rlkUNBl2HyIbvhxBRq0bKcD6xqahoNl/iHaN9bL6
-         rD5C5RCdKTe8hciJ7PCGmxlxQwnKAIp+n0JgFudGEfuteaAQsW97VM9dn/jt5KN586k8
-         MeyitQZ8grHhwktvV8RDcWQ72o63XlVOgbyOSxQgmTRqTBuN3aeUpZN5xMH/tEkuR4RF
-         UYXwb05NYjCIbQeiT/aFUtzIcORyTYf4OJvzTMs1WNYCHZBqDEW5P03w22NC3CneeEzJ
-         AMaqcGYU7tLHuvDOqlW4e16Uh5mNPB9XGYWrf53KaFmwfttoYTfq0iqiqyhJX6J1DinM
-         xDwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6JqwUkT5b5T7yfFvPXHrMYJB5jvxB6kIH/FjieZ2ioU=;
-        b=mHmCN1hbnjLeLlhDGbOuzVJi1sfEpYQDAGdIRbWXse3Bj22kx+DI1fEnrxAHuBCWV1
-         O8HL1i5Tnt1j4WKMVVmwi6DjJiKq0YsqUC2Jxn31SAuLYVc6K15c1mXXnoMi8InbYpDr
-         rHdWHsj28aNFNC7leQ7GYhLrCyPnm1xUh7EkBafFCveuuq8ZwKpiaMK+ersViRqQJMaN
-         RD3MjwVN3wEuevj8O2B4/7rrDxS4zYIxcfuT6B84wc0jESNyo3lFhftpQb9FjejwB6Z1
-         YS2zDPdwXqKfU+uKSALnXppL4SQh5X6by3bcX31AyZ2CMMFYthD02yrroBX9/Rk1s/uC
-         VfRw==
-X-Gm-Message-State: AOAM5320U+5SFuwtEEzTWbXFdlNtbmq0CLJDBI9rTBLt5XlICH2j932q
-        HvxxKkPqh2Hi5eZrEbIfGeiADw==
-X-Google-Smtp-Source: ABdhPJx4MZlam5+iHKslwY0j62QrIcewX49zDPgL9KlKi2J8fMMwxut5JvNPkr3TxJDyb6Yo6LPO+A==
-X-Received: by 2002:a05:6638:2054:: with SMTP id t20mr12215861jaj.42.1637719589837;
-        Tue, 23 Nov 2021 18:06:29 -0800 (PST)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id k13sm10235749ilo.40.2021.11.23.18.06.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Nov 2021 18:06:29 -0800 (PST)
-Subject: Re: linux-next: manual merge of the tomoyo tree with the block tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20211124113825.2d9de813@canb.auug.org.au>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <cbeb57ae-5a87-9959-689f-d9d73baf6ee4@kernel.dk>
-Date:   Tue, 23 Nov 2021 19:06:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S239023AbhKXCKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 21:10:35 -0500
+Received: from mga06.intel.com ([134.134.136.31]:32966 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230070AbhKXCKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 21:10:34 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="295987882"
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="295987882"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 18:07:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="591421605"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 23 Nov 2021 18:07:23 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mphgw-0004AU-TR; Wed, 24 Nov 2021 02:07:22 +0000
+Date:   Wed, 24 Nov 2021 10:06:46 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-kernel@vger.kernel.org
+Subject: [djwong-xfs:xfs-5.16-fixes 49/52] fs/xfs/xfs_ioctl32.c:500:3: error:
+ use of undeclared identifier 'error'
+Message-ID: <202111240923.hs6s4zlt-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20211124113825.2d9de813@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23/21 5:38 PM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the tomoyo tree got a conflict in:
-> 
->   drivers/block/loop.c
-> 
-> between commit:
-> 
->   3793b8e18186 ("block: rename GENHD_FL_NO_PART_SCAN to GENHD_FL_NO_PART")
-> 
-> from the block tree and commits:
-> 
->   dfb2cc3b7f7e ("loop: don't hold lo_mutex during __loop_clr_fd()")
->   51d5ae114da8 ("loop: replace loop_validate_mutex with loop_validate_spinlock")
-> 
-> from the tomoyo tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git xfs-5.16-fixes
+head:   572afb64675281e83a9152f762854fd9998b5deb
+commit: 7997e4cb7c5ba7f8f389a17146a3c1c31c3da918 [49/52] xfs: fix build warning in xfs_file_compat_ioctl
+config: x86_64-randconfig-r024-20211123 (https://download.01.org/0day-ci/archive/20211124/202111240923.hs6s4zlt-lkp@intel.com/config.gz)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 67a1c45def8a75061203461ab0060c75c864df1c)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git/commit/?id=7997e4cb7c5ba7f8f389a17146a3c1c31c3da918
+        git remote add djwong-xfs https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git
+        git fetch --no-tags djwong-xfs xfs-5.16-fixes
+        git checkout 7997e4cb7c5ba7f8f389a17146a3c1c31c3da918
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash fs/xfs/
 
-Why does the tomoyo tree have loop commits is the question?
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
--- 
-Jens Axboe
+All errors (new ones prefixed by >>):
 
+>> fs/xfs/xfs_ioctl32.c:500:3: error: use of undeclared identifier 'error'
+                   error = mnt_want_write_file(filp);
+                   ^
+   fs/xfs/xfs_ioctl32.c:501:7: error: use of undeclared identifier 'error'
+                   if (error)
+                       ^
+   fs/xfs/xfs_ioctl32.c:502:11: error: use of undeclared identifier 'error'
+                           return error;
+                                  ^
+   fs/xfs/xfs_ioctl32.c:503:3: error: use of undeclared identifier 'error'
+                   error = xfs_ioc_swapext(&sxp);
+                   ^
+   fs/xfs/xfs_ioctl32.c:505:10: error: use of undeclared identifier 'error'
+                   return error;
+                          ^
+   5 errors generated.
+
+
+vim +/error +500 fs/xfs/xfs_ioctl32.c
+
+28750975ace79c fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  432  
+4d4be482a4d78c fs/xfs/linux-2.6/xfs_ioctl32.c Christoph Hellwig   2008-12-09  433  long
+4d4be482a4d78c fs/xfs/linux-2.6/xfs_ioctl32.c Christoph Hellwig   2008-12-09  434  xfs_file_compat_ioctl(
+d5547f9feea459 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  435  	struct file		*filp,
+e0edd5962bd83d fs/xfs/linux-2.6/xfs_ioctl32.c Nathan Scott        2006-03-29  436  	unsigned		cmd,
+4d4be482a4d78c fs/xfs/linux-2.6/xfs_ioctl32.c Christoph Hellwig   2008-12-09  437  	unsigned long		p)
+^1da177e4c3f41 fs/xfs/linux-2.6/xfs_ioctl32.c Linus Torvalds      2005-04-16  438  {
+496ad9aa8ef448 fs/xfs/xfs_ioctl32.c           Al Viro             2013-01-23  439  	struct inode		*inode = file_inode(filp);
+4d4be482a4d78c fs/xfs/linux-2.6/xfs_ioctl32.c Christoph Hellwig   2008-12-09  440  	struct xfs_inode	*ip = XFS_I(inode);
+4529e6d7a6ab72 fs/xfs/xfs_ioctl32.c           Christoph Hellwig   2019-08-15  441  	void			__user *arg = compat_ptr(p);
+^1da177e4c3f41 fs/xfs/linux-2.6/xfs_ioctl32.c Linus Torvalds      2005-04-16  442  
+cca28fb83d9e60 fs/xfs/linux-2.6/xfs_ioctl32.c Christoph Hellwig   2010-06-24  443  	trace_xfs_file_compat_ioctl(ip);
+4d4be482a4d78c fs/xfs/linux-2.6/xfs_ioctl32.c Christoph Hellwig   2008-12-09  444  
+^1da177e4c3f41 fs/xfs/linux-2.6/xfs_ioctl32.c Linus Torvalds      2005-04-16  445  	switch (cmd) {
+a9d25bde1e9b24 fs/xfs/xfs_ioctl32.c           Nick Bowler         2018-12-17  446  #if defined(BROKEN_X86_ALIGNMENT)
+526c420c44b45b fs/xfs/linux-2.6/xfs_ioctl32.c Eric Sandeen        2005-09-05  447  	case XFS_IOC_ALLOCSP_32:
+526c420c44b45b fs/xfs/linux-2.6/xfs_ioctl32.c Eric Sandeen        2005-09-05  448  	case XFS_IOC_FREESP_32:
+526c420c44b45b fs/xfs/linux-2.6/xfs_ioctl32.c Eric Sandeen        2005-09-05  449  	case XFS_IOC_ALLOCSP64_32:
+837a6e7f5cdb5e fs/xfs/xfs_ioctl32.c           Christoph Hellwig   2019-10-24  450  	case XFS_IOC_FREESP64_32: {
+d5547f9feea459 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  451  		struct xfs_flock64	bf;
+d5547f9feea459 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  452  
+d5547f9feea459 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  453  		if (xfs_compat_flock64_copyin(&bf, arg))
+b474c7ae4395ba fs/xfs/xfs_ioctl32.c           Eric Sandeen        2014-06-22  454  			return -EFAULT;
+526c420c44b45b fs/xfs/linux-2.6/xfs_ioctl32.c Eric Sandeen        2005-09-05  455  		cmd = _NATIVE_IOC(cmd, struct xfs_flock64);
+837a6e7f5cdb5e fs/xfs/xfs_ioctl32.c           Christoph Hellwig   2019-10-24  456  		return xfs_ioc_space(filp, &bf);
+d5547f9feea459 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  457  	}
+547e00c3c68126 fs/xfs/linux-2.6/xfs_ioctl32.c Michal Marek        2007-07-11  458  	case XFS_IOC_FSGEOMETRY_V1_32:
+f69e8091c4a2ae fs/xfs/xfs_ioctl32.c           Christoph Hellwig   2021-02-03  459  		return xfs_compat_ioc_fsgeometry_v1(ip->i_mount, arg);
+471d59103167c8 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  460  	case XFS_IOC_FSGROWFSDATA_32: {
+471d59103167c8 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  461  		struct xfs_growfs_data	in;
+7997e4cb7c5ba7 fs/xfs/xfs_ioctl32.c           Darrick J. Wong     2021-11-18  462  		int		error;
+471d59103167c8 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  463  
+471d59103167c8 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  464  		if (xfs_compat_growfs_data_copyin(&in, arg))
+b474c7ae4395ba fs/xfs/xfs_ioctl32.c           Eric Sandeen        2014-06-22  465  			return -EFAULT;
+d9457dc0562499 fs/xfs/xfs_ioctl32.c           Jan Kara            2012-06-12  466  		error = mnt_want_write_file(filp);
+d9457dc0562499 fs/xfs/xfs_ioctl32.c           Jan Kara            2012-06-12  467  		if (error)
+d9457dc0562499 fs/xfs/xfs_ioctl32.c           Jan Kara            2012-06-12  468  			return error;
+f69e8091c4a2ae fs/xfs/xfs_ioctl32.c           Christoph Hellwig   2021-02-03  469  		error = xfs_growfs_data(ip->i_mount, &in);
+d9457dc0562499 fs/xfs/xfs_ioctl32.c           Jan Kara            2012-06-12  470  		mnt_drop_write_file(filp);
+2451337dd04390 fs/xfs/xfs_ioctl32.c           Dave Chinner        2014-06-25  471  		return error;
+471d59103167c8 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  472  	}
+471d59103167c8 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  473  	case XFS_IOC_FSGROWFSRT_32: {
+471d59103167c8 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  474  		struct xfs_growfs_rt	in;
+7997e4cb7c5ba7 fs/xfs/xfs_ioctl32.c           Darrick J. Wong     2021-11-18  475  		int		error;
+471d59103167c8 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  476  
+471d59103167c8 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  477  		if (xfs_compat_growfs_rt_copyin(&in, arg))
+b474c7ae4395ba fs/xfs/xfs_ioctl32.c           Eric Sandeen        2014-06-22  478  			return -EFAULT;
+d9457dc0562499 fs/xfs/xfs_ioctl32.c           Jan Kara            2012-06-12  479  		error = mnt_want_write_file(filp);
+d9457dc0562499 fs/xfs/xfs_ioctl32.c           Jan Kara            2012-06-12  480  		if (error)
+d9457dc0562499 fs/xfs/xfs_ioctl32.c           Jan Kara            2012-06-12  481  			return error;
+f69e8091c4a2ae fs/xfs/xfs_ioctl32.c           Christoph Hellwig   2021-02-03  482  		error = xfs_growfs_rt(ip->i_mount, &in);
+d9457dc0562499 fs/xfs/xfs_ioctl32.c           Jan Kara            2012-06-12  483  		mnt_drop_write_file(filp);
+2451337dd04390 fs/xfs/xfs_ioctl32.c           Dave Chinner        2014-06-25  484  		return error;
+471d59103167c8 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  485  	}
+^1da177e4c3f41 fs/xfs/linux-2.6/xfs_ioctl32.c Linus Torvalds      2005-04-16  486  #endif
+e5d412f17846b0 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  487  	/* long changes size, but xfs only copiese out 32 bits */
+e5d412f17846b0 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  488  	case XFS_IOC_GETVERSION_32:
+e5d412f17846b0 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  489  		cmd = _NATIVE_IOC(cmd, long);
+4d4be482a4d78c fs/xfs/linux-2.6/xfs_ioctl32.c Christoph Hellwig   2008-12-09  490  		return xfs_file_ioctl(filp, cmd, p);
+3725867dccfb83 fs/xfs/linux-2.6/xfs_ioctl32.c Christoph Hellwig   2009-09-01  491  	case XFS_IOC_SWAPEXT_32: {
+e5d412f17846b0 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  492  		struct xfs_swapext	  sxp;
+e5d412f17846b0 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  493  		struct compat_xfs_swapext __user *sxu = arg;
+e5d412f17846b0 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  494  
+e5d412f17846b0 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  495  		/* Bulk copy in up to the sx_stat field, then copy bstat */
+e5d412f17846b0 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  496  		if (copy_from_user(&sxp, sxu,
+e5d412f17846b0 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  497  				   offsetof(struct xfs_swapext, sx_stat)) ||
+e5d412f17846b0 fs/xfs/linux-2.6/xfs_ioctl32.c sandeen@sandeen.net 2008-11-25  498  		    xfs_ioctl32_bstat_copyin(&sxp.sx_stat, &sxu->sx_stat))
+b474c7ae4395ba fs/xfs/xfs_ioctl32.c           Eric Sandeen        2014-06-22  499  			return -EFAULT;
+d9457dc0562499 fs/xfs/xfs_ioctl32.c           Jan Kara            2012-06-12 @500  		error = mnt_want_write_file(filp);
+
+:::::: The code at line 500 was first introduced by commit
+:::::: d9457dc056249913a7abe8b71dc09e427e590e35 xfs: Convert to new freezing code
+
+:::::: TO: Jan Kara <jack@suse.cz>
+:::::: CC: Al Viro <viro@zeniv.linux.org.uk>
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
