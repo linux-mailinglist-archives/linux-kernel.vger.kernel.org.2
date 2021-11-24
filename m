@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA1645B997
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:00:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20DCB45BD9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241886AbhKXMDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:03:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58166 "EHLO mail.kernel.org"
+        id S1343740AbhKXMjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:39:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241877AbhKXMDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:03:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D1AC600EF;
-        Wed, 24 Nov 2021 12:00:07 +0000 (UTC)
+        id S1344120AbhKXMfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:35:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F1F861175;
+        Wed, 24 Nov 2021 12:21:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755207;
-        bh=eMdFGeA6beNnLhX4dWjIaybXEdJWId6+fXHCILQan14=;
+        s=korg; t=1637756494;
+        bh=MONHKaE1Shr4/p9mTgmL0HzssTSE32eQycoFwXU3yW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j/NskLumLg1SZ6NdiJcIeqwfpHbmiBjzB2RJPJFe4v5SgA2xAW34mNHRhnSKsebZZ
-         zGxUCiDNU1W8XHVr25bG6mWr9n4dWAWsR2EnINLDQp+WEuzR/BzKULZ7gh1Gu8C/mp
-         +Uo8VJc2f7j+AZFeq2eXtWR/MedCIYKGcbiiEVqc=
+        b=pOVnJmDOuNjbwQlJcou4MMVzjMf65VTL9ckPMA/0qgEbvkzoKx3jiqgoF2f1J5WBt
+         jZCND2tkGl4En5EMyE3ty+6anDMZu9eipeQzsJm/TOgjmqg6eSy/GwWcp4sBkRAQQ9
+         6fr/bSeaUjtinxRLHE2M6RoZNSUpWYccaVHYjIE4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.4 012/162] ALSA: 6fire: fix control and bulk message timeouts
+        stable@vger.kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 073/251] locking/lockdep: Avoid RCU-induced noinstr fail
 Date:   Wed, 24 Nov 2021 12:55:15 +0100
-Message-Id: <20211124115658.723842339@linuxfoundation.org>
+Message-Id: <20211124115712.788823441@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,63 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Peter Zijlstra <peterz@infradead.org>
 
-commit 9b371c6cc37f954360989eec41c2ddc5a6b83917 upstream.
+[ Upstream commit ce0b9c805dd66d5e49fd53ec5415ae398f4c56e6 ]
 
-USB control and bulk message timeouts are specified in milliseconds and
-should specifically not vary with CONFIG_HZ.
+vmlinux.o: warning: objtool: look_up_lock_class()+0xc7: call to rcu_read_lock_any_held() leaves .noinstr.text section
 
-Fixes: c6d43ba816d1 ("ALSA: usb/6fire - Driver for TerraTec DMX 6Fire USB")
-Cc: stable@vger.kernel.org      # 2.6.39
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20211025121142.6531-2-johan@kernel.org
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20210624095148.311980536@infradead.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/6fire/comm.c     |    2 +-
- sound/usb/6fire/firmware.c |    6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ kernel/locking/lockdep.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/usb/6fire/comm.c
-+++ b/sound/usb/6fire/comm.c
-@@ -99,7 +99,7 @@ static int usb6fire_comm_send_buffer(u8
- 	int actual_len;
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 03e3ab61a2edd..ac0725b1ada75 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -713,7 +713,7 @@ look_up_lock_class(struct lockdep_map *lock, unsigned int subclass)
+ 	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
+ 		return NULL;
  
- 	ret = usb_interrupt_msg(dev, usb_sndintpipe(dev, COMM_EP),
--			buffer, buffer[1] + 2, &actual_len, HZ);
-+			buffer, buffer[1] + 2, &actual_len, 1000);
- 	if (ret < 0)
- 		return ret;
- 	else if (actual_len != buffer[1] + 2)
---- a/sound/usb/6fire/firmware.c
-+++ b/sound/usb/6fire/firmware.c
-@@ -166,7 +166,7 @@ static int usb6fire_fw_ezusb_write(struc
- 
- 	ret = usb_control_msg(device, usb_sndctrlpipe(device, 0), type,
- 			USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
--			value, 0, data, len, HZ);
-+			value, 0, data, len, 1000);
- 	if (ret < 0)
- 		return ret;
- 	else if (ret != len)
-@@ -179,7 +179,7 @@ static int usb6fire_fw_ezusb_read(struct
- {
- 	int ret = usb_control_msg(device, usb_rcvctrlpipe(device, 0), type,
- 			USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE, value,
--			0, data, len, HZ);
-+			0, data, len, 1000);
- 	if (ret < 0)
- 		return ret;
- 	else if (ret != len)
-@@ -194,7 +194,7 @@ static int usb6fire_fw_fpga_write(struct
- 	int ret;
- 
- 	ret = usb_bulk_msg(device, usb_sndbulkpipe(device, FPGA_EP), data, len,
--			&actual_len, HZ);
-+			&actual_len, 1000);
- 	if (ret < 0)
- 		return ret;
- 	else if (actual_len != len)
+-	hlist_for_each_entry_rcu(class, hash_head, hash_entry) {
++	hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
+ 		if (class->key == key) {
+ 			/*
+ 			 * Huh! same key, different name? Did someone trample
+-- 
+2.33.0
+
 
 
