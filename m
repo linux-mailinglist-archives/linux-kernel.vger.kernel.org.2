@@ -2,104 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F8945B8CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 12:04:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C5845B8C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 12:03:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241820AbhKXLHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 06:07:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241705AbhKXLGj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 06:06:39 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0F9C06174A;
-        Wed, 24 Nov 2021 03:03:29 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id t26so6111408lfk.9;
-        Wed, 24 Nov 2021 03:03:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cdnfb6JAC8IqMAPyGf54ho4rdbZxXTjfSiWGorerRPI=;
-        b=aV6/kr8THARNLo9CQffteQh8JXkHfpeQEBbDjlBEebivKiWSLjHZ2DNlb54/dvHlf8
-         JCJIOSGWVXtzZtqWXQFWqTLigrx+GGDJ+97ycMBzoyOJT7akL5qoT2u/oS93R1kvE6L3
-         41d0IgiXtupSnRypX7HRbZVc0364DFXvdk//jNmeAp+bN/d7poNecZFHxrXEW0FqiMzG
-         I9AnXst8/hGfF+Ne0ZZJzXZh2mmaXPwyeJjEJCnfJQcXjvGzadsPuoH9EEMHKi5WRIsY
-         wiSaITxdXBFTP/WFJ2Fy4DbvqjRsb9Xx1g5avh5wqzoAf63X1l6MU7AHgvMUt1+vXyLq
-         4DwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cdnfb6JAC8IqMAPyGf54ho4rdbZxXTjfSiWGorerRPI=;
-        b=YV2HwzyWaUh2TmCNcVA6OVaWPkptATda1Smx/j5hBvAK0UKoT2iJc50ved+0z+uqRy
-         Acj4vUe0w0le3aGhCfWKu8QLp7p8UeePE/dKSDCNEP3WwIgEms27H7fQfrPV+AH/XB9w
-         KRB+t1uOiWlipXg1Yi0Z5WfbOkTa7SzXlrunE+dRm95cX2ufsXFV2C44OzRSlUzJrn9w
-         M64bRAKZMZem26URUyNoURPi0MKEm8zTAeiDSltcQQOCwLgI68B67YKPPUFlMGY1jVeH
-         bbd5CIJHJxXgpTJaYj4m5ILCLD3oscPHjSfr4XF1jLpxNthShpFpK3I1y2y9AUpdRD7I
-         plCQ==
-X-Gm-Message-State: AOAM530BncYilyWdb1vTKtVtppUS0gdz0wrRIC39+iAZt4MiGBj9Nc/m
-        N15mwb+0pxtatbRb6ijFI/0Jswo1vcKVZVk5
-X-Google-Smtp-Source: ABdhPJyj9sK8Pw7Gg54VnENOl++u6v6xBuxa+G407WjBk+UAvR0Xte93hDoqjkoINY+vbGQ1t8UA1Q==
-X-Received: by 2002:a05:6512:3da2:: with SMTP id k34mr13279306lfv.605.1637751806826;
-        Wed, 24 Nov 2021 03:03:26 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id u22sm1579907lff.118.2021.11.24.03.03.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 03:03:26 -0800 (PST)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 8/9] module: Switch to kvfree_rcu() API
-Date:   Wed, 24 Nov 2021 12:03:07 +0100
-Message-Id: <20211124110308.2053-9-urezki@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211124110308.2053-1-urezki@gmail.com>
-References: <20211124110308.2053-1-urezki@gmail.com>
+        id S241666AbhKXLGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 06:06:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236994AbhKXLGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 06:06:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D38F60F58;
+        Wed, 24 Nov 2021 11:03:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637751791;
+        bh=pNtpfI9OTL0x8QraprdRcpGtrA43z45AvqlIzIQ9RpA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wj0YdZ5ReKQu4zH3Okmc1Yukr74LZ6YZE+sjNAynSobEbl4Plt1WGqZAREauo/o/N
+         WqXCLY09kaXiWR36S0ko0+j6Mvh7KhPhvPvJlU9pNzOtcYJfZjU43iQ2vnrJL9PNfv
+         x7h0hEWXaup6tB10Ih1wd1AdwrpOUwg9uKs3kpWo=
+Date:   Wed, 24 Nov 2021 12:03:08 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Thorsten Leemhuis <regressions@leemhuis.info>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: Linux regressions report for mainline [2021-11-24]
+Message-ID: <YZ4b7N4OTjypAtc7@kroah.com>
+References: <163774583541.221636.5062449110647587402@leemhuis.info>
+ <ed60649f-db15-db1d-f7b5-a0878f639d64@leemhuis.info>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed60649f-db15-db1d-f7b5-a0878f639d64@leemhuis.info>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of invoking a synchronize_rcu() to free a pointer
-after a grace period we can directly make use of new API
-that does the same but in more efficient way.
+On Wed, Nov 24, 2021 at 11:01:52AM +0100, Thorsten Leemhuis wrote:
+> Lo! This was the first report sent by regzbot, my Linux kernel
+> regression tracking bot, so I guess it might be a good idea to highlight
+> a few of it's aspects:
+> 
+> On 24.11.21 10:25, Regzbot (on behalf of Thorsten Leemhuis) wrote:
+> > From: Regzbot (for Thorsten Leemhuis) <regressions@leemhuis.info>
+> > 
+> > Hi, this is regzbot, the Linux kernel regression tracking bot.
+> > 
+> > Currently I'm aware of 15 regressions in linux-mainline. Find the
+> > current status below and the latest on the web:
+> > 
+> > https://linux-regtracking.leemhuis.info/regzbot/mainline/
+> > 
+> > Bye bye, hope to see you soon for the next report.
+> >    Regzbot (on behalf of Thorsten Leemhuis)
+> 
+> >From now on I plan to make regzbot send such reports on Monday mornings,
+> e.g. usually a few hours after Linus released a new RC.
+> 
+> Let me know what you think about the format.
+> 
+> A few random thoughts and explanations about the current format:
+> 
+> - next weeks report will highlight regressions that get added to regzbot
+> over the next few days
+> 
+> - I chose to categorize the regressions by identification status and by
+> version line. Those where the culprit is identified come first, as they
+> are the ones which most of the time can be solved by reverting the culprit
+> 
+> - the entries in each section are ordered by time of last activity,
+> which makes it easy to spot those where nothing happened recently, as
+> they are near the end of a section.
+> 
+> - the webui (https://linux-regtracking.leemhuis.info/regzbot/mainline/ )
+> links to the latest five activities regzbot noticed (an activity most of
+> the time will be a mail send in reply to the report or a related thread
+> that regzbot monitors). I for now chose to not do that in the report, as
+> it would make it much longer and might be something that spam filters
+> consider suspicious.
+> 
+> That's it from my side. Let me know what you think.
 
-CC: Luis Chamberlain <mcgrof@kernel.org>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/module.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+I like it, but as a maintainer, I find this hard to know what to do with
+it.
 
-diff --git a/kernel/module.c b/kernel/module.c
-index 84a9141a5e15..f404f0c9f385 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -4150,8 +4150,7 @@ static int load_module(struct load_info *info, const char __user *uargs,
-  ddebug_cleanup:
- 	ftrace_release_mod(mod);
- 	dynamic_debug_remove(mod, info->debug);
--	synchronize_rcu();
--	kfree(mod->args);
-+	kvfree_rcu(mod->args);
-  free_arch_cleanup:
- 	cfi_cleanup(mod);
- 	module_arch_cleanup(mod);
--- 
-2.30.2
+As a maintainer, I want to be reminded of what regressions have been
+reported for my subsystem, so I know what to do and who to go poke about
+them.
 
+I could dig through the list and try to see if these are relevant to me,
+but it's not always obvious.
+
+How about something like "one email per issue" as a response from the
+first report, that would cc: the needed maintainers (or people from
+MAINTAINERS, you should be able to get that automatically from
+get_maintainer.pl) and the subsystem mailing list (again from
+get_maintainers.pl), so that I am constantly reminded that "you need to
+get this fixed!".
+
+Pester me, it's my job as a maintainer to get regressions resolved.  If
+I see a long list with no names on it, It's easier for me to just ignore
+:)
+
+Anyway, I know that's more work for you, don't do it if you don't want
+to, but as you have individual items in your database already, maybe it
+is easy to do, I don't know.  Thanks again for doing this work, it's
+great to see happen.
+
+thanks,
+
+greg k-h
