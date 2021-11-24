@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E8C45BE38
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:42:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D64B845BA7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:08:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344709AbhKXMpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:45:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44902 "EHLO mail.kernel.org"
+        id S236633AbhKXMLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:11:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344234AbhKXMmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:42:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DA1A61401;
-        Wed, 24 Nov 2021 12:25:21 +0000 (UTC)
+        id S242466AbhKXMIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:08:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38B326108D;
+        Wed, 24 Nov 2021 12:04:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756721;
-        bh=jT/8A8Y1sg1F60qNUNPOGGswM2LgQvQGCL4U+19B91s=;
+        s=korg; t=1637755490;
+        bh=VfAnDFPrThSiozoB6PVltjzOrirtCzeL6GLWNPHDRxY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PD+1G6M7D7AHZBzgGFdJ/PRmSYsgMNZvc5OENZAqrpTgYE3rWXr0cS63AzrMc/UyU
-         xA9w85MKRK/Niq2KqqLcfclN47UuW4wkCGjlgABZHy+jVPyzQOFLrTquOCdlamJ2+5
-         Mh0Fu05kYSr/Crq8i4B0oYEFBJaVjkhvaIqzNd3Q=
+        b=b/CE4tW4D4Vf1TPO7k6OOUwWuuEankfojgSKO1NyvYUSxq/9owXLrMWFgGHVO5fOa
+         z0EM2RqbG+Klr9kup4P36gUojRbmfHd8PA20keTpRM7PW88WsttKB+Q+IAk5B7pbRN
+         GGaJ3pGl3x+EMzN+OyRZOOI/awMA5HzjcyrTTT/Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 174/251] m68k: set a default value for MEMORY_RESERVE
-Date:   Wed, 24 Nov 2021 12:56:56 +0100
-Message-Id: <20211124115716.317461738@linuxfoundation.org>
+        stable@vger.kernel.org, Sven Schnelle <svens@stackframe.org>,
+        Helge Deller <deller@gmx.de>
+Subject: [PATCH 4.4 114/162] parisc/entry: fix trace test in syscall exit path
+Date:   Wed, 24 Nov 2021 12:56:57 +0100
+Message-Id: <20211124115702.008509176@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Sven Schnelle <svens@stackframe.org>
 
-[ Upstream commit 1aaa557b2db95c9506ed0981bc34505c32d6b62b ]
+commit 3ec18fc7831e7d79e2d536dd1f3bc0d3ba425e8a upstream.
 
-'make randconfig' can produce a .config file with
-"CONFIG_MEMORY_RESERVE=" (no value) since it has no default.
-When a subsequent 'make all' is done, kconfig restarts the config
-and prompts for a value for MEMORY_RESERVE. This breaks
-scripting/automation where there is no interactive user input.
+commit 8779e05ba8aa ("parisc: Fix ptrace check on syscall return")
+fixed testing of TI_FLAGS. This uncovered a bug in the test mask.
+syscall_restore_rfi is only used when the kernel needs to exit to
+usespace with single or block stepping and the recovery counter
+enabled. The test however used _TIF_SYSCALL_TRACE_MASK, which
+includes a lot of bits that shouldn't be tested here.
 
-Add a default value for MEMORY_RESERVE. (Any integer value will
-work here for kconfig.)
+Fix this by using TIF_SINGLESTEP and TIF_BLOCKSTEP directly.
 
-Fixes a kconfig warning:
+I encountered this bug by enabling syscall tracepoints. Both in qemu and
+on real hardware. As soon as i enabled the tracepoint (sys_exit_read,
+but i guess it doesn't really matter which one), i got random page
+faults in userspace almost immediately.
 
-.config:214:warning: symbol value '' invalid for MEMORY_RESERVE
-* Restart config...
-Memory reservation (MiB) (MEMORY_RESERVE) [] (NEW)
+Signed-off-by: Sven Schnelle <svens@stackframe.org>
+Signed-off-by: Helge Deller <deller@gmx.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2") # from beginning of git history
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Ungerer <gerg@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/m68k/Kconfig.machine | 1 +
- 1 file changed, 1 insertion(+)
+ arch/parisc/kernel/entry.S |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/m68k/Kconfig.machine b/arch/m68k/Kconfig.machine
-index 5cd57b4d36156..4a1697fa9a37d 100644
---- a/arch/m68k/Kconfig.machine
-+++ b/arch/m68k/Kconfig.machine
-@@ -185,6 +185,7 @@ config INIT_LCD
- config MEMORY_RESERVE
- 	int "Memory reservation (MiB)"
- 	depends on (UCSIMM || UCDIMM)
-+	default 0
- 	help
- 	  Reserve certain memory regions on 68x328 based boards.
+--- a/arch/parisc/kernel/entry.S
++++ b/arch/parisc/kernel/entry.S
+@@ -1850,7 +1850,7 @@ syscall_restore:
  
--- 
-2.33.0
-
+ 	/* Are we being ptraced? */
+ 	LDREG	TI_FLAGS-THREAD_SZ_ALGN-FRAME_SIZE(%r30),%r19
+-	ldi	_TIF_SYSCALL_TRACE_MASK,%r2
++	ldi	_TIF_SINGLESTEP|_TIF_BLOCKSTEP,%r2
+ 	and,COND(=)	%r19,%r2,%r0
+ 	b,n	syscall_restore_rfi
+ 
 
 
