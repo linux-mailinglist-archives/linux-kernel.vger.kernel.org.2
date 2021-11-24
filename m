@@ -2,92 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B8045CEC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:10:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D92145CEC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:12:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245617AbhKXVNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 16:13:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234102AbhKXVNk (ORCPT
+        id S243332AbhKXVPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 16:15:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30286 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235268AbhKXVPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 16:13:40 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD42C061574;
-        Wed, 24 Nov 2021 13:10:30 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id g28so4993631qkk.9;
-        Wed, 24 Nov 2021 13:10:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oR6E8zBnmhODWHPMx3F2wZsU6hHhkxMyJuWrApA9rcA=;
-        b=TR65K2Jbed3UL4cZUuWIa/tmMFINe8fQk3kZxHls81njxdeu3UmsG2lyxZbVwBPLnK
-         8X0kFRUeEoli2jBrPyENddOo3CT074peHlEdX3z1wZuBIH0PqtTXI1tW2erp22DuO2g8
-         fI/ouPTXcuMpa6vYxTYOw77M7hhbS1acGb8LajGYW74C3EgUItEu2u4whaHD9g8PAPw+
-         nfubvPY8l3NFjzXFzv+INzTLGhB1eso9Y+z+3TjNVbCdJG3R3quS6pfYtvSSztrgvlPI
-         DHiPfqYno0dM0rDFakpjOJs1yaPTozqZ01+x8eR0Zzfk1lHP1v15pH9hMVfa1jPxxGmz
-         b07A==
+        Wed, 24 Nov 2021 16:15:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637788354;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RorRY0n5C9glkMtFV4SYCaRBzAHcsHcap7m+J3g1iLk=;
+        b=ePwMCi1DZDZppmBAEH5yzbBGgNfv89jMoW8HEr8zKGjILhEIJvmy8cNmDGUJmL36+5aNJ0
+        O1mYtx9WScdEiaHRYMn4qmBjXX6ThkJYFgkRUdQIoHDkW4qyBof2mIjrMrZ5vcsg2MxL0S
+        beohRrUI4X0f/9UUcknur5sezmCPy/U=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-288-OnMsIalhPxK_Y7Ofp6gpiQ-1; Wed, 24 Nov 2021 16:12:33 -0500
+X-MC-Unique: OnMsIalhPxK_Y7Ofp6gpiQ-1
+Received: by mail-ed1-f71.google.com with SMTP id p4-20020aa7d304000000b003e7ef120a37so3476242edq.16
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 13:12:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oR6E8zBnmhODWHPMx3F2wZsU6hHhkxMyJuWrApA9rcA=;
-        b=ztmf4JGARLucOIYGOuv67PQsoVhEoRjjt+y3rIt3EvY/WUNj/7Rlwr+fXlhjPA7fbn
-         nwsiGN8poeAPJq1cpW/HO6cIgXJa9+bVHG1mqYrrkxCG077W01hsQIU3m4lKXBdxa93G
-         O/fb2BT0Q8AzEQWBONn5Q5wc+oXCpUUsEg/vfKusLwLOyKmZb2qm0kgybJO5W2MdPdmH
-         IrkazbU2QK8TUeq6ekLqYv3ZuY/UmhD3vvff9SIRMdv6JaMJGSG/CerbEDrjkL0nENCQ
-         OHeFfDVExShzxCKPODSIhbAOIdgsQ5VpB/OcLIo7/LQqN0h9oVPZGZIzJJPuJLdnOxxr
-         ys6g==
-X-Gm-Message-State: AOAM530+9KPRw3a3lV7L2hMceQpwvSOOBPTL48sn26osi9xKAPrilqtW
-        PVedLTkQST2+Ar9OwB6bjb9IISGHIe+j2Db4ZLgkcwDLXmw=
-X-Google-Smtp-Source: ABdhPJx1jPH36iYXTWv3S72DnH8RBim2yhpfroWQVyB+0K2VeAa4oiI4/wPKel0FdJe2oAc69gOIF+eqJYdDmeq7KKw=
-X-Received: by 2002:a25:300a:: with SMTP id w10mr22212ybw.506.1637788229254;
- Wed, 24 Nov 2021 13:10:29 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RorRY0n5C9glkMtFV4SYCaRBzAHcsHcap7m+J3g1iLk=;
+        b=PjFeE0koyetvwUhOPy1Xk6LQ2wIS6Yv8OnVo1YB4yDsgMG87xoaCa6NRcjmBUmubW9
+         ONgF67bTUZU1OoSckF/2ikHeUrFo/tor8KrpSWPsyLyUQCSms0dmCw8ZegFcXfnjuIoK
+         Mal7Ged5aLGYiS/crgPOEJX4rstELsfTQZp5sSOBZcCNHv9jJ74/2p25k68qbqIzayFx
+         TLCaGgrAXozUfshh/BgZg3fCPsUp5GENyvshLkEgwTRXzWqG4Ua0+aoUrchc+TduTN9y
+         q0eT7G/S2T9gx7N/VyEjKSEOLQO3Dg1Xwn3ToEThUvRuUwcwiKEhfIXUNhh8p5w5nPdy
+         Y6lg==
+X-Gm-Message-State: AOAM532YXd4yIvncYmr1ZXU6XGz8UbUMT6C3+mi1+HhHeuEYL+q9NTSF
+        DpUostG+a0pE+EUm02lnrbL0aTmMdOEp5YIvw48HvC7ybCcrCqPY5f/NOB2VvSFUxZGDr7i7ju9
+        DAtwNP6s2xpU6QFhocq1t98c5
+X-Received: by 2002:a05:6402:169a:: with SMTP id a26mr31105974edv.292.1637788352277;
+        Wed, 24 Nov 2021 13:12:32 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwqLmOWsCPmneNLjCwAsRX93gntMVvVuAlK+kAEx/6faUF7BKjEYByFENyGpUnzu7kS+ByTsg==
+X-Received: by 2002:a05:6402:169a:: with SMTP id a26mr31105915edv.292.1637788352006;
+        Wed, 24 Nov 2021 13:12:32 -0800 (PST)
+Received: from redhat.com ([2.55.144.93])
+        by smtp.gmail.com with ESMTPSA id em21sm456589ejc.103.2021.11.24.13.12.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 13:12:30 -0800 (PST)
+Date:   Wed, 24 Nov 2021 16:12:26 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Jason Wang <jasowang@redhat.com>
+Subject: Re: [PATCH v2] rpmsg: virtio: don't let virtio core to validate used
+ length
+Message-ID: <20211124161055-mutt-send-email-mst@kernel.org>
+References: <20211124162045.25983-1-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-References: <20211124115654.849735859@linuxfoundation.org>
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Wed, 24 Nov 2021 21:09:53 +0000
-Message-ID: <CADVatmPxvqhQ-iUo3_wY+9D72O0qdBDh02Ewx1Yjz4f2=7uz7g@mail.gmail.com>
-Subject: Re: [PATCH 5.4 000/100] 5.4.162-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124162045.25983-1-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Wed, Nov 24, 2021 at 05:20:45PM +0100, Arnaud Pouliquen wrote:
+> Using OpenAMP library on remote side, when the rpmsg framework tries to
+> reuse the buffer the following error message is displayed in
+> the virtqueue_get_buf_ctx_split function:
+> "virtio_rpmsg_bus virtio0: output:used len 28 is larger than in buflen 0"
+> 
+> As described in virtio specification:
+> "many drivers ignored the len value, as a result, many devices set len
+> incorrectly. Thus, when using the legacy interface, it is generally
+> a good idea to ignore the len value in used ring entries if possible."
+> 
+> To stay in compliance with the legacy libraries, this patch prevents the
+> virtio core from validating used length.
+> 
+> Fixes: 939779f5152d ("virtio_ring: validate used buffer length")
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: Michael S. Tsirkin <mst@redhat.com>
+> ---
 
-On Wed, Nov 24, 2021 at 2:10 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.162 release.
-> There are 100 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
-> Anything received after that time might be too late.
+Arnaud, thanks a lot for the analysis.
 
-Just a quick note, my arm64 builds are failing with the error:
-arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi:412.21-414.5: ERROR
-(duplicate_label): /soc/codec: Duplicate label 'lpass_codec' on
-/soc/codec and /soc@0/codec
-
-I have not yet tested, but I think it will be for:
-f4850fe1a15d (\"arm64: dts: qcom: msm8916: Add unit name for /soc node\")
+Jason, I think this is another good point. We really should not
+validate input for legacy devices at all.
 
 
--- 
-Regards
-Sudip
+> Update vs v1[1]: update commit message to clarify the context.
+> 
+> base-commit: fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf
+> 
+> [1]https://lore.kernel.org/lkml/20211122160812.25125-1-arnaud.pouliquen@foss.st.com/T/
+> ---
+>  drivers/rpmsg/virtio_rpmsg_bus.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+> index 9c112aa65040..5f73f19c2c38 100644
+> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
+> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+> @@ -1054,6 +1054,7 @@ static struct virtio_driver virtio_ipc_driver = {
+>  	.feature_table_size = ARRAY_SIZE(features),
+>  	.driver.name	= KBUILD_MODNAME,
+>  	.driver.owner	= THIS_MODULE,
+> +	.suppress_used_validation = true,
+>  	.id_table	= id_table,
+>  	.probe		= rpmsg_probe,
+>  	.remove		= rpmsg_remove,
+> -- 
+> 2.17.1
+
