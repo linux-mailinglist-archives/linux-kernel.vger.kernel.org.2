@@ -2,123 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846C545CA89
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:02:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 255F645CA8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:02:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349412AbhKXRFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 12:05:22 -0500
-Received: from mail-m972.mail.163.com ([123.126.97.2]:47782 "EHLO
+        id S1349421AbhKXRFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 12:05:45 -0500
+Received: from mail-m972.mail.163.com ([123.126.97.2]:47956 "EHLO
         mail-m972.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242707AbhKXRFT (ORCPT
+        with ESMTP id S1349416AbhKXRFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 12:05:19 -0500
-X-Greylist: delayed 924 seconds by postgrey-1.27 at vger.kernel.org; Wed, 24 Nov 2021 12:05:17 EST
+        Wed, 24 Nov 2021 12:05:42 -0500
+X-Greylist: delayed 913 seconds by postgrey-1.27 at vger.kernel.org; Wed, 24 Nov 2021 12:05:39 EST
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=8ERBp
-        /cCG6WzioJCfEWJSK1orI4R+L3An4qXLiZdnB0=; b=OXoqhebDEZzeJ7/tZsJ8J
-        SmHIkZsNHWXXKsahcfmp5T5PaR4vFOn43TKWCwZtcdsvse2Y3iS9n2yfkEkCP2Ci
-        UjVtEpPgC5S6Qv0Tiq1HAYq9yLfeKz9fnQYKqFL7FONJ8brCFR5+TGnmQhNDGfVy
-        crGX80h2iLKCQeg3+CzZFY=
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=f7cxo
+        81Jyy/MlDMAZmvQHlwJdJ/bK+AjY9CliasYTAc=; b=Jw0jKPWRfT84gkTZrNC3t
+        W6e9i6tbvxXiLkoiHEQ1QTIqPv4hMZClRVoN0y2GogwVHBwsQy1VijP5Zightnp0
+        zp74VY/g+mw+0xHTldt4G/lc0wimgrPzYO3bgy7b5u6Y5C8Wbeb7eYrTgxkCiGqf
+        0gdrObnvmYXR+/6GgVoJ28=
 Received: from localhost.localdomain (unknown [218.106.182.227])
-        by smtp2 (Coremail) with SMTP id GtxpCgBHHNXNa55h7hmJKQ--.39097S4;
-        Thu, 25 Nov 2021 00:44:01 +0800 (CST)
+        by smtp2 (Coremail) with SMTP id GtxpCgD3RCmEbJ5htkyJKQ--.4644S4;
+        Thu, 25 Nov 2021 00:47:11 +0800 (CST)
 From:   Jianglei Nie <niejianglei2021@163.com>
-To:     jejb@linux.ibm.com, jarkko@kernel.org, zohar@linux.ibm.com,
-        dhowells@redhat.com, jmorris@namei.org, serge@hallyn.com
-Cc:     linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jianglei Nie <niejianglei@gmail.com>
-Subject: [PATCH] security:trusted_tpm2: Fix memory leak in tpm2_key_encode()
-Date:   Thu, 25 Nov 2021 00:43:54 +0800
-Message-Id: <20211124164354.20448-1-niejianglei2021@163.com>
+To:     daniel.lezcano@kernel.org, rafael@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jianglei Nie <niejianglei@gmail.com>
+Subject: [PATCH] powercap: DTPM: Fix reference leak in cpuhp_dtpm_cpu_offline()
+Date:   Thu, 25 Nov 2021 00:46:57 +0800
+Message-Id: <20211124164657.20519-1-niejianglei2021@163.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GtxpCgBHHNXNa55h7hmJKQ--.39097S4
-X-Coremail-Antispam: 1Uf129KBjvJXoWxJw18Ww1kWF15Gry3XrWrZrb_yoW5XryUpF
-        ZxKF17ZrWagry7Ary7Ja1Svr1fCay5Gr47GwsrW39rGasxJFsxtFy7ArWYgrnrAFWfKw15
-        ZF4qvFWUWrWDtrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bY2-5UUUUU=
+X-CM-TRANSID: GtxpCgD3RCmEbJ5htkyJKQ--.4644S4
+X-Coremail-Antispam: 1Uf129KBjvJXoW7AFyDXr1xWw48JFy5JF43KFg_yoW8Aw4Dpr
+        s8K3yav348tFWDK397J3WDXFyYvF92ya9YkrW3Gw1rZa43X3WFgw4DKryYqF1rCrn5Cw13
+        try5Xay8Jay5JFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bOv3bUUUUU=
 X-Originating-IP: [218.106.182.227]
-X-CM-SenderInfo: xqlhyxxdqjzvrlsqjii6rwjhhfrp/1tbi6xFVjFXlyRVF+AAAsy
+X-CM-SenderInfo: xqlhyxxdqjzvrlsqjii6rwjhhfrp/xtbBORxVjF-PKEzbggABsQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jianglei Nie <niejianglei@gmail.com>
 
-Line 36 (#1) allocates a memory chunk for scratch by kmalloc(), but
-it is never freed through the function, which will lead to a memory
-leak.
+In line 153 (#1), cpufreq_cpu_get() increments the kobject reference
+counter of the policy it returned on success. According to the
+document, the policy returned by cpufreq_cpu_get() has to be
+released with the help of cpufreq_cpu_put() to balance its kobject
+reference counter properly. Forgetting the cpufreq_cpu_put()
+operation will result in reference leak.
 
-We should kfree() scratch before the function returns (#2, #3 and #4).
+We can fix it by calling cpufreq_cpu_put() before the function
+returns (#2, #3 and #4).
 
-31 static int tpm2_key_encode(struct trusted_key_payload *payload,
-32			   struct trusted_key_options *options,
-33			   u8 *src, u32 len)
-34 {
-36	u8 *scratch = kmalloc(SCRATCH_SIZE, GFP_KERNEL);
-        // #1: kmalloc space
-37	u8 *work = scratch, *work1;
-50	if (!scratch)
-51		return -ENOMEM;
+147 static int cpuhp_dtpm_cpu_offline(unsigned int cpu)
+148 {
+153     policy = cpufreq_cpu_get(cpu);
+        // #1: reference increment
 
-56	if (options->blobauth_len == 0) {
-60		if (WARN(IS_ERR(w), "BUG: Boolean failed to encode"))
-61			return PTR_ERR(w); // #2: missing kfree
-63	}
+155     if (!policy)
+156         return 0;
 
-71	if (WARN(work - scratch + pub_len + priv_len + 14 > SCRATCH_SIZE,
-72		 "BUG: scratch buffer is too small"))
-73		return -EINVAL; // #3: missing kfree
+158     pd = em_cpu_get(cpu);
+159     if (!pd)
+160         return -EINVAL; // #2: missing reference decrement
 
-  	// #4: missing kfree: scratch is never used afterwards.
-82	if (WARN(IS_ERR(work1), "BUG: ASN.1 encoder failed"))
-83		return PTR_ERR(work1);
+166     if (cpumask_weight(policy->cpus) != 1)
+167         return 0; // #3: missing reference decrement
 
-85	return work1 - payload->blob;
-86 }
+174     return 0; // #4: missing reference decrement
+175 }
 
 Signed-off-by: Jianglei Nie <niejianglei@gmail.com>
 ---
- security/keys/trusted-keys/trusted_tpm2.c | 9 +++++++--
+ drivers/powercap/dtpm_cpu.c | 9 +++++++--
  1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/security/keys/trusted-keys/trusted_tpm2.c b/security/keys/trusted-keys/trusted_tpm2.c
-index 0165da386289..99bb8b2409ac 100644
---- a/security/keys/trusted-keys/trusted_tpm2.c
-+++ b/security/keys/trusted-keys/trusted_tpm2.c
-@@ -57,8 +57,10 @@ static int tpm2_key_encode(struct trusted_key_payload *payload,
- 		unsigned char bool[3], *w = bool;
- 		/* tag 0 is emptyAuth */
- 		w = asn1_encode_boolean(w, w + sizeof(bool), true);
--		if (WARN(IS_ERR(w), "BUG: Boolean failed to encode"))
-+		if (WARN(IS_ERR(w), "BUG: Boolean failed to encode")) {
-+			kfree(scratch);
- 			return PTR_ERR(w);
-+		}
- 		work = asn1_encode_tag(work, end_work, 0, bool, w - bool);
- 	}
+diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
+index 51c366938acd..182a07ee14b6 100644
+--- a/drivers/powercap/dtpm_cpu.c
++++ b/drivers/powercap/dtpm_cpu.c
+@@ -156,21 +156,26 @@ static int cpuhp_dtpm_cpu_offline(unsigned int cpu)
+ 		return 0;
  
-@@ -69,8 +71,10 @@ static int tpm2_key_encode(struct trusted_key_payload *payload,
- 	 * trigger, so if it does there's something nefarious going on
- 	 */
- 	if (WARN(work - scratch + pub_len + priv_len + 14 > SCRATCH_SIZE,
--		 "BUG: scratch buffer is too small"))
-+		 "BUG: scratch buffer is too small")){
-+		kfree(scratch);
+ 	pd = em_cpu_get(cpu);
+-	if (!pd)
++	if (!pd) {
++		cpufreq_cpu_put(policy);
  		return -EINVAL;
 +	}
  
- 	work = asn1_encode_integer(work, end_work, options->keyhandle);
- 	work = asn1_encode_octet_string(work, end_work, pub, pub_len);
-@@ -79,6 +83,7 @@ static int tpm2_key_encode(struct trusted_key_payload *payload,
- 	work1 = payload->blob;
- 	work1 = asn1_encode_sequence(work1, work1 + sizeof(payload->blob),
- 				     scratch, work - scratch);
-+	kfree(scratch);
- 	if (WARN(IS_ERR(work1), "BUG: ASN.1 encoder failed"))
- 		return PTR_ERR(work1);
+ 	dtpm = per_cpu(dtpm_per_cpu, cpu);
+ 
+ 	power_sub(dtpm, pd);
+ 
+-	if (cpumask_weight(policy->cpus) != 1)
++	if (cpumask_weight(policy->cpus) != 1) {
++		cpufreq_cpu_put(policy);
+ 		return 0;
++	}
+ 
+ 	for_each_cpu(cpu, policy->related_cpus)
+ 		per_cpu(dtpm_per_cpu, cpu) = NULL;
+ 
+ 	dtpm_unregister(dtpm);
+ 
++	cpufreq_cpu_put(policy);
+ 	return 0;
+ }
  
 -- 
 2.25.1
