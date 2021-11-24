@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E43DA45BFCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:59:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFC745BD4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:34:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243855AbhKXNBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:01:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39966 "EHLO mail.kernel.org"
+        id S243689AbhKXMhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:37:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345453AbhKXM7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:59:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACC7B61208;
-        Wed, 24 Nov 2021 12:34:05 +0000 (UTC)
+        id S1344194AbhKXMai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:30:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 307436135E;
+        Wed, 24 Nov 2021 12:19:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757246;
-        bh=KuEt6Wh+1AqSYAQRID2uSQ5GHTRSTWlcBo3tDLovNJQ=;
+        s=korg; t=1637756343;
+        bh=ppjQpJ3BT+IxHTPIg1arb5LdUzdb7vcG/rv012g1/8c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xtnnMNkzyor7xfvNrVEpCpsxSuCu1wdjgYihjtUVMguge2SPlrDBYHciQfYnXeCeI
-         gqUDWwxqX9xfoHZqx9vfOd3amlTt9vgAZ2vxCeb9FspotwODxhvHCXoqsJyHB3+ovT
-         oUQFQZCkJNKl6WF9wnWqNA0SrHToq68UCl0vwcm4=
+        b=u9Scknt1dU5Jg0k3xe2sgb97+SDHTjN+mAKUKqTnri2SlBJxFWEwo4Vb9KxVo2g0M
+         WjWA3U8kgU6ZWFkb3bepdJKJh4+uZG/czTRXyAbVcNH0SSF8CVCiXiJS/f+S9fh3ZG
+         lwOL/g49A4RSu1id7FNezBbjg/J+5k2M5Ujccte4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 105/323] tracefs: Have tracefs directories not set OTH permission bits by default
+        stable@vger.kernel.org, Xiaoming Ni <nixiaoming@huawei.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.14 053/251] powerpc/85xx: Fix oops when mpc85xx_smp_guts_ids node cannot be found
 Date:   Wed, 24 Nov 2021 12:54:55 +0100
-Message-Id: <20211124115722.509559360@linuxfoundation.org>
+Message-Id: <20211124115712.092461072@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Xiaoming Ni <nixiaoming@huawei.com>
 
-[ Upstream commit 49d67e445742bbcb03106b735b2ab39f6e5c56bc ]
+commit 3c2172c1c47b4079c29f0e6637d764a99355ebcd upstream.
 
-The tracefs file system is by default mounted such that only root user can
-access it. But there are legitimate reasons to create a group and allow
-those added to the group to have access to tracing. By changing the
-permissions of the tracefs mount point to allow access, it will allow
-group access to the tracefs directory.
+When the field described in mpc85xx_smp_guts_ids[] is not configured in
+dtb, the mpc85xx_setup_pmc() does not assign a value to the "guts"
+variable. As a result, the oops is triggered when
+mpc85xx_freeze_time_base() is executed.
 
-There should not be any real reason to allow all access to the tracefs
-directory as it contains sensitive information. Have the default
-permission of directories being created not have any OTH (other) bits set,
-such that an admin that wants to give permission to a group has to first
-disable all OTH bits in the file system.
-
-Link: https://lkml.kernel.org/r/20210818153038.664127804@goodmis.org
-
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 56f1ba280719 ("powerpc/mpc85xx: refactor the PM operations")
+Cc: stable@vger.kernel.org # v4.6+
+Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210929033646.39630-2-nixiaoming@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/tracefs/inode.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/powerpc/platforms/85xx/mpc85xx_pm_ops.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
-index 7098c49f36934..990f794b1dd0a 100644
---- a/fs/tracefs/inode.c
-+++ b/fs/tracefs/inode.c
-@@ -427,7 +427,8 @@ static struct dentry *__create_dir(const char *name, struct dentry *parent,
- 	if (unlikely(!inode))
- 		return failed_creating(dentry);
+--- a/arch/powerpc/platforms/85xx/mpc85xx_pm_ops.c
++++ b/arch/powerpc/platforms/85xx/mpc85xx_pm_ops.c
+@@ -98,9 +98,8 @@ int __init mpc85xx_setup_pmc(void)
+ 			pr_err("Could not map guts node address\n");
+ 			return -ENOMEM;
+ 		}
++		qoriq_pm_ops = &mpc85xx_pm_ops;
+ 	}
  
--	inode->i_mode = S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO;
-+	/* Do not set bits for OTH */
-+	inode->i_mode = S_IFDIR | S_IRWXU | S_IRUSR| S_IRGRP | S_IXUSR | S_IXGRP;
- 	inode->i_op = ops;
- 	inode->i_fop = &simple_dir_operations;
- 
--- 
-2.33.0
-
+-	qoriq_pm_ops = &mpc85xx_pm_ops;
+-
+ 	return 0;
+ }
 
 
