@@ -2,108 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B25345CBB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB40745CBBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:02:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350187AbhKXSE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 13:04:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241542AbhKXSE1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 13:04:27 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 708DCC061574;
-        Wed, 24 Nov 2021 10:01:17 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id o20so14006268eds.10;
-        Wed, 24 Nov 2021 10:01:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FgvkuWffJgeKcOJSjzRnBTmZU44ZLWgvH/oAgfUpzLw=;
-        b=qBUNVYjBN3se9gCpBMIxTja97ivHMWOHBrldWl9xs+HerYFhCWuk1xIGM/PeMMM7be
-         WIuXtnMWVZQq4SPAMjHsgfxHdKbwP342UDX0Hl3nM6IYyN5IZMfgu2AFYYzwIKE0HujD
-         LLUesToo4JOgKjwWkBoAyYLukmZLotOpGKZEKcLYp4ZgDFwseE2yf4gLcysU2iMdA7ip
-         aiqrhG10qzD9yHRVAbsnYpdK2JUwjRyVBNgz/gMn4GW+gIqisGZyyjvf/rXyIxfALjzc
-         bkSY7IdWlb4s+/p7Oj5ll0XTfh+sMbA9/ejl4Qnd5sHdbTE3ykXcj0mEsS27RknRdyFk
-         KeLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FgvkuWffJgeKcOJSjzRnBTmZU44ZLWgvH/oAgfUpzLw=;
-        b=atq3kGWm69dqhEV0CHMv4Jk7NYKhp0GPuAgjwJQ7NA9C5VRHUZLIbBUY/zgiqxgjyc
-         4TkVrkNAMoX/qFjlUs5BZTLlrnZhSAHuaefb9/XCwrt58ysp3/Gb916h7zXe442CMCJS
-         3ryxhkCkw0I766C82ZOeDbTLMu89V74q9UoQnC2LB7Qv4OepynXMMxH6v9ZbHRDLp/Z2
-         XRKouMlaO30ThQyYDgaJRIdFORPPDIyRrPM4Zl/1A5+NrnfEWWEAYul1NuU6t8k4tzOH
-         C4LC6G28igCLcxs5XR9e4N1ncR1DUUhweMancvCYE9M3x5Wp7p0J0mTja9er/LDInatL
-         E94Q==
-X-Gm-Message-State: AOAM531E4zwJkbpr83npWJrX6yc7OB5I5MJIiLDWvI4o75t/xm8S76se
-        z28XrprsP6NiKV8JsrY+gIXNLethGCKSem31qBC0AA62DwtyIw==
-X-Google-Smtp-Source: ABdhPJxLQZJ2EiGGfF/xxNojY/VMnqAS1LZSiaNfLCBq9AToXimWYVKWVuKP9E57DbMYIYtJXQPrUE6I0Z+bgJ0kW3A=
-X-Received: by 2002:a05:6402:3551:: with SMTP id f17mr27901870edd.129.1637776875909;
- Wed, 24 Nov 2021 10:01:15 -0800 (PST)
-MIME-Version: 1.0
-References: <20211124110308.2053-1-urezki@gmail.com> <20211124110308.2053-6-urezki@gmail.com>
- <20211124095803.2702bc89@gandalf.local.home>
-In-Reply-To: <20211124095803.2702bc89@gandalf.local.home>
-From:   Uladzislau Rezki <urezki@gmail.com>
-Date:   Wed, 24 Nov 2021 19:01:04 +0100
-Message-ID: <CA+KHdyWg=4i5xu7oRDqi5cFJ6_PjwghrVR3L0mN-PwQ7YwCmZg@mail.gmail.com>
-Subject: Re: [PATCH 5/9] x86/mm: Switch to kvfree_rcu() API
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
+        id S1350195AbhKXSFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 13:05:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232430AbhKXSFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 13:05:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D51960FE7;
+        Wed, 24 Nov 2021 18:02:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637776926;
+        bh=ghJS3jGGu5kWGLtrRX24KcEJQU5zXpWk4Ozmk3/+lI4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Hh6dJHCgf43J99xBMAJumYKbP8Runga4il/ukvb/iTFg1CHRx6S2JegpL/ujVQ6EE
+         ISWcSW/Xl4uainmZk3I7c4TQeGBtZxlYLpBe/zOMO9Kiak/MXvLn8WRcll6SL2KkEb
+         f2aFVw8dHuv9KrpH2FOUJXI1BR+nMIOhzYrQCFpRAey+hhIw05qpl29ObUMbI8jJla
+         f3IqVCzV/sdWNmLwGP6W1h2Kj0YNjX5GyY+D0mdrTmTz6TRR0wdWMF9UEFDYrRedJp
+         lpSHLjqYSOWZdXstEMbJwhkhYLqmbZk7rGmGiy/7YbmMo9mJZUKSRixPKgPUb07AUG
+         R9G4b6peZn9zg==
+Date:   Wed, 24 Nov 2021 10:02:05 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        NeilBrown <neilb@suse.de>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Matthew Wilcox <willy@infradead.org>,
         Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Content-Type: text/plain; charset="UTF-8"
+        Dave Chinner <david@fromorbit.com>,
+        Rik van Riel <riel@surriel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/8] mm/vmscan: Throttle reclaim when no progress is
+ being made
+Message-ID: <20211124180205.GA266049@magnolia>
+References: <20211022144651.19914-1-mgorman@techsingularity.net>
+ <20211022144651.19914-4-mgorman@techsingularity.net>
+ <20211124011912.GA265983@magnolia>
+ <20211124014914.GB265983@magnolia>
+ <20211124143559.GI3366@techsingularity.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124143559.GI3366@techsingularity.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> This is the first I've seen kvfree_rcu() (that I actually noticed/remember,
-> I'm sure I probably was Cc'd on some patches). And I find the comment
-> around it very confusing:
->
-> Specifically:
->
->
->  *     kvfree_rcu(ptr);
->  *
->  * where @ptr is a pointer to kvfree().
->
-> The above suggests that you should pass a pointer to the actual function
-> kvfree to kvfree_rcu(), which is not what I believe is to be done.
->
->   i.e.  kvfree_rcu(kvfree) ???
->
-> Perhaps rewrite that to say:
->
->  * where @ptr is the pointer to be freed by kvfree().
->
-> ?
-Indeed. I will fix that by sending a patch to change a description to
-be less confusing :)
+On Wed, Nov 24, 2021 at 02:35:59PM +0000, Mel Gorman wrote:
+> On Tue, Nov 23, 2021 at 05:49:14PM -0800, Darrick J. Wong wrote:
+> > > Ever since Christoph broke swapfiles, I've been carrying around a little
+> > > fstest in my dev tree[1] that tries to exercise paging things in and out
+> > > of a swapfile.  Sadly I've been trapped in about three dozen customer
+> > > escalations for over a month, which means I haven't been able to do much
+> > > upstream in weeks.  Like submit this test upstream. :(
+> > > 
+> > > Now that I've finally gotten around to trying out a 5.16-rc2 build, I
+> > > notice that the runtime of this test has gone from ~5s to 2 hours.
+> > > Among other things that it does, the test sets up a cgroup with a memory
+> > > controller limiting the memory usage to 25MB, then runs a program that
+> > > tries to dirty 50MB of memory.  There's 2GB of memory in the VM, so
+> > > we're not running reclaim globally, but the cgroup gets throttled very
+> > > severely.
+> > > 
+> > > AFAICT the system is mostly idle, but it's difficult to tell because ps
+> > > and top also get stuck waiting for this cgroup for whatever reason.  My
+> > > uninformed spculation is that usemem_and_swapoff takes a page fault
+> > > while dirtying the 50MB memory buffer, prepares to pull a page in from
+> > > swap, tries to evict another page to stay under the memcg limit, but
+> > > that decides that it's making no progress and calls
+> > > reclaim_throttle(..., VMSCAN_THROTTLE_NOPROGRESS).
+> > > 
+> > > The sleep is uninterruptible, so I can't even kill -9 fstests to shut it
+> > > down.  Eventually we either finish the test or (for the mlock part) the
+> > > OOM killer actually kills the process, but this takes a very long time.
+> > > 
+> > > Any thoughts?  For now I can just hack around this by skipping
+> > > reclaim_throttle if cgroup_reclaim() == true, but that's probably not
+> > > the correct fix. :)
+> > 
+> > Update: after adding timing information to usemem_and_swapoff, it looks
+> > like dirtying the 50MB buffer takes ~22s (up from 0.06s on 5.15).  The
+> > mlock call stalls for ~280s until the OOM killer kills it (up from
+> > nearly instantaneous on 5.15), and the swapon/swapoff variant takes
+> > 20 minutes to hours depending on the run.
+> > 
+> 
+> Can you try the patch below please? I think I'm running the test
+> correctly and it finishes for me in 16 seconds with this applied
 
->
-> Other than that, the patch looks fine to me.
->
-> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
->
-I will place your "Acked-by" to 9/9 one.
+20 seconds here, but this /does/ fix the problem.  Thank you!
 
-Thanks!
+Tested-by: Darrick J. Wong <djwong@kernel.org>
 
--- 
-Uladzislau Rezki
+--D
+
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 07db03883062..d9166e94eb95 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1057,7 +1057,17 @@ void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason)
+>  
+>  		break;
+>  	case VMSCAN_THROTTLE_NOPROGRESS:
+> -		timeout = HZ/2;
+> +		timeout = 1;
+> +
+> +		/*
+> +		 * If kswapd is disabled, reschedule if necessary but do not
+> +		 * throttle as the system is likely near OOM.
+> +		 */
+> +		if (pgdat->kswapd_failures >= MAX_RECLAIM_RETRIES) {
+> +			cond_resched();
+> +			return;
+> +		}
+> +
+>  		break;
+>  	case VMSCAN_THROTTLE_ISOLATED:
+>  		timeout = HZ/50;
+> @@ -3395,7 +3405,7 @@ static void consider_reclaim_throttle(pg_data_t *pgdat, struct scan_control *sc)
+>  		return;
+>  
+>  	/* Throttle if making no progress at high prioities. */
+> -	if (sc->priority < DEF_PRIORITY - 2)
+> +	if (sc->priority < DEF_PRIORITY - 2 && !sc->nr_reclaimed)
+>  		reclaim_throttle(pgdat, VMSCAN_THROTTLE_NOPROGRESS);
+>  }
+>  
+> @@ -3415,6 +3425,7 @@ static void shrink_zones(struct zonelist *zonelist, struct scan_control *sc)
+>  	unsigned long nr_soft_scanned;
+>  	gfp_t orig_mask;
+>  	pg_data_t *last_pgdat = NULL;
+> +	pg_data_t *first_pgdat = NULL;
+>  
+>  	/*
+>  	 * If the number of buffer_heads in the machine exceeds the maximum
+> @@ -3478,14 +3489,18 @@ static void shrink_zones(struct zonelist *zonelist, struct scan_control *sc)
+>  			/* need some check for avoid more shrink_zone() */
+>  		}
+>  
+> +		if (!first_pgdat)
+> +			first_pgdat = zone->zone_pgdat;
+> +
+>  		/* See comment about same check for global reclaim above */
+>  		if (zone->zone_pgdat == last_pgdat)
+>  			continue;
+>  		last_pgdat = zone->zone_pgdat;
+>  		shrink_node(zone->zone_pgdat, sc);
+> -		consider_reclaim_throttle(zone->zone_pgdat, sc);
+>  	}
+>  
+> +	consider_reclaim_throttle(first_pgdat, sc);
+> +
+>  	/*
+>  	 * Restore to original mask to avoid the impact on the caller if we
+>  	 * promoted it to __GFP_HIGHMEM.
