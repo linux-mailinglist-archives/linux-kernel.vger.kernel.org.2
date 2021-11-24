@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F24445BD81
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F2245C012
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:01:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345003AbhKXMjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:39:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49308 "EHLO mail.kernel.org"
+        id S1345475AbhKXNEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:04:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343595AbhKXMe1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:34:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39DDE6137B;
-        Wed, 24 Nov 2021 12:20:52 +0000 (UTC)
+        id S1346839AbhKXNC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:02:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5BE061A3B;
+        Wed, 24 Nov 2021 12:36:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756452;
-        bh=iMiSQysa73jwBc9OUzTzJvJcmqImLeoHVcWuSrD8heg=;
+        s=korg; t=1637757367;
+        bh=O5QelJJgUvwNzcgGNARjw7poLP5JMGp9vol6bHK9KAs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G1cJAWAkddH7biIkH6UtdsVyIjB6LhqnoAKOiezFQ4e4y/WuMNFgBr/o2bGOYL4iD
-         ImnX2mg2Esp55dFPOGNk0Se9113PP5PHKfmoJht22m1aVDEHCrtAeuaI6Y+ELeCX+l
-         NtVVkxGUBuh7kreQz0JJvqE6MqvCGnzCewpX0jX0=
+        b=PX5lj8Ox5fpFDYtHRoRjz+uAb2Cgd9M+BnBVge9LVA+1Hxru/1KdCMqycwagj3HtV
+         mc84971N98hHCorSOkIf93sjpFSRl5bI2SCwvs9i86M4Ubi9a+Z+XIoL3Nl2nep+VL
+         mpUs7GTryWsPVgeB9qESBSYa1pFlPfnzqswklrQU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lasse Collin <lasse.collin@tukaani.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        =?UTF-8?q?Michael=20B=C3=BCsch?= <m@bues.ch>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 092/251] lib/xz: Avoid overlapping memcpy() with invalid input with in-place decompression
+Subject: [PATCH 4.19 144/323] b43: fix a lower bounds test
 Date:   Wed, 24 Nov 2021 12:55:34 +0100
-Message-Id: <20211124115713.445805045@linuxfoundation.org>
+Message-Id: <20211124115723.786022071@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,88 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lasse Collin <lasse.collin@tukaani.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 83d3c4f22a36d005b55f44628f46cc0d319a75e8 ]
+[ Upstream commit 9b793db5fca44d01f72d3564a168171acf7c4076 ]
 
-With valid files, the safety margin described in lib/decompress_unxz.c
-ensures that these buffers cannot overlap. But if the uncompressed size
-of the input is larger than the caller thought, which is possible when
-the input file is invalid/corrupt, the buffers can overlap. Obviously
-the result will then be garbage (and usually the decoder will return
-an error too) but no other harm will happen when such an over-run occurs.
+The problem is that "channel" is an unsigned int, when it's less 5 the
+value of "channel - 5" is not a negative number as one would expect but
+is very high positive value instead.
 
-This change only affects uncompressed LZMA2 chunks and so this
-should have no effect on performance.
+This means that "start" becomes a very high positive value.  The result
+of that is that we never enter the "for (i = start; i <= end; i++) {"
+loop.  Instead of storing the result from b43legacy_radio_aci_detect()
+it just uses zero.
 
-Link: https://lore.kernel.org/r/20211010213145.17462-2-xiang@kernel.org
-Signed-off-by: Lasse Collin <lasse.collin@tukaani.org>
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+Fixes: ef1a628d83fc ("b43: Implement dynamic PHY API")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Michael Büsch <m@bues.ch>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20211006073621.GE8404@kili
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/decompress_unxz.c |  2 +-
- lib/xz/xz_dec_lzma2.c | 21 +++++++++++++++++++--
- 2 files changed, 20 insertions(+), 3 deletions(-)
+ drivers/net/wireless/broadcom/b43/phy_g.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/lib/decompress_unxz.c b/lib/decompress_unxz.c
-index 25d59a95bd668..abea25310ac73 100644
---- a/lib/decompress_unxz.c
-+++ b/lib/decompress_unxz.c
-@@ -167,7 +167,7 @@
-  * memeq and memzero are not used much and any remotely sane implementation
-  * is fast enough. memcpy/memmove speed matters in multi-call mode, but
-  * the kernel image is decompressed in single-call mode, in which only
-- * memcpy speed can matter and only if there is a lot of uncompressible data
-+ * memmove speed can matter and only if there is a lot of uncompressible data
-  * (LZMA2 stores uncompressible chunks in uncompressed form). Thus, the
-  * functions below should just be kept small; it's probably not worth
-  * optimizing for speed.
-diff --git a/lib/xz/xz_dec_lzma2.c b/lib/xz/xz_dec_lzma2.c
-index 08c3c80499983..2c5197d6b944d 100644
---- a/lib/xz/xz_dec_lzma2.c
-+++ b/lib/xz/xz_dec_lzma2.c
-@@ -387,7 +387,14 @@ static void dict_uncompressed(struct dictionary *dict, struct xz_buf *b,
+diff --git a/drivers/net/wireless/broadcom/b43/phy_g.c b/drivers/net/wireless/broadcom/b43/phy_g.c
+index f59c021664626..40e10d0b7cd73 100644
+--- a/drivers/net/wireless/broadcom/b43/phy_g.c
++++ b/drivers/net/wireless/broadcom/b43/phy_g.c
+@@ -2310,7 +2310,7 @@ static u8 b43_gphy_aci_scan(struct b43_wldev *dev)
+ 	b43_phy_mask(dev, B43_PHY_G_CRS, 0x7FFF);
+ 	b43_set_all_gains(dev, 3, 8, 1);
  
- 		*left -= copy_size;
+-	start = (channel - 5 > 0) ? channel - 5 : 1;
++	start = (channel > 5) ? channel - 5 : 1;
+ 	end = (channel + 5 < 14) ? channel + 5 : 13;
  
--		memcpy(dict->buf + dict->pos, b->in + b->in_pos, copy_size);
-+		/*
-+		 * If doing in-place decompression in single-call mode and the
-+		 * uncompressed size of the file is larger than the caller
-+		 * thought (i.e. it is invalid input!), the buffers below may
-+		 * overlap and cause undefined behavior with memcpy().
-+		 * With valid inputs memcpy() would be fine here.
-+		 */
-+		memmove(dict->buf + dict->pos, b->in + b->in_pos, copy_size);
- 		dict->pos += copy_size;
- 
- 		if (dict->full < dict->pos)
-@@ -397,7 +404,11 @@ static void dict_uncompressed(struct dictionary *dict, struct xz_buf *b,
- 			if (dict->pos == dict->end)
- 				dict->pos = 0;
- 
--			memcpy(b->out + b->out_pos, b->in + b->in_pos,
-+			/*
-+			 * Like above but for multi-call mode: use memmove()
-+			 * to avoid undefined behavior with invalid input.
-+			 */
-+			memmove(b->out + b->out_pos, b->in + b->in_pos,
- 					copy_size);
- 		}
- 
-@@ -421,6 +432,12 @@ static uint32_t dict_flush(struct dictionary *dict, struct xz_buf *b)
- 		if (dict->pos == dict->end)
- 			dict->pos = 0;
- 
-+		/*
-+		 * These buffers cannot overlap even if doing in-place
-+		 * decompression because in multi-call mode dict->buf
-+		 * has been allocated by us in this file; it's not
-+		 * provided by the caller like in single-call mode.
-+		 */
- 		memcpy(b->out + b->out_pos, dict->buf + dict->start,
- 				copy_size);
- 	}
+ 	for (i = start; i <= end; i++) {
 -- 
 2.33.0
 
