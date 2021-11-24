@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 169BA45BB75
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:17:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B7345C00B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:01:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242815AbhKXMTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:19:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41248 "EHLO mail.kernel.org"
+        id S1345119AbhKXNE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:04:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242461AbhKXMOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:14:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4067E610CE;
-        Wed, 24 Nov 2021 12:09:40 +0000 (UTC)
+        id S1346114AbhKXNCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:02:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9F716117A;
+        Wed, 24 Nov 2021 12:35:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755780;
-        bh=Zfl6Mzx7Wck22GmN37gVFkiXUWqLneZp62EFCFkZ8Jo=;
+        s=korg; t=1637757333;
+        bh=2vXNAOMZNI0ZRvHjroL+2tM1qJvlSSylceOHL8Q+7CA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E2Xr7OmNG1VRW5PDniOkEuH+2OrO1HckfYt4G+KF7Ly3/iynGMNiNit35Db5cxH71
-         XzL0PxGEQPDlI9n2Q1FD/aTgtmrU/cfKylsl4UwhDhCKtxk6tWaBnoOgZozQTEAMHk
-         1Hbk5al7YhYBcoACrD6DhMtrJcT2JPacwnGkCqxM=
+        b=1CwynYw2Rva0YUIaI/3nZf17VJ4svmfHz5n9c+kwnqZ0sTO+QdZBnMrueW2CTVeCz
+         O9F06z7ryHdYSWeEcnSk72G6dmGR4zEbEvsGWIp9m5dNZU0q28WjgD/R4mXQ+FLSEZ
+         L7sS9nv2PxW1djYUYA+RdY8wtjDU8yg4ag9/SatY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pekka Korpinen <pekka.korpinen@iki.fi>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.9 053/207] iio: dac: ad5446: Fix ad5622_write() return value
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Kees Cook <keescook@chromium.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 134/323] media: si470x: Avoid card name truncation
 Date:   Wed, 24 Nov 2021 12:55:24 +0100
-Message-Id: <20211124115705.640977206@linuxfoundation.org>
+Message-Id: <20211124115723.451422346@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pekka Korpinen <pekka.korpinen@iki.fi>
+From: Kees Cook <keescook@chromium.org>
 
-commit 558df982d4ead9cac628153d0d7b60feae05ddc8 upstream.
+[ Upstream commit 2908249f3878a591f7918368fdf0b7b0a6c3158c ]
 
-On success i2c_master_send() returns the number of bytes written. The
-call from iio_write_channel_info(), however, expects the return value to
-be zero on success.
+The "card" string only holds 31 characters (and the terminating NUL).
+In order to avoid truncation, use a shorter card description instead of
+the current result, "Silicon Labs Si470x FM Radio Re".
 
-This bug causes incorrect consumption of the sysfs buffer in
-iio_write_channel_info(). When writing more than two characters to
-out_voltage0_raw, the ad5446 write handler is called multiple times
-causing unexpected behavior.
-
-Fixes: 3ec36a2cf0d5 ("iio:ad5446: Add support for I2C based DACs")
-Signed-off-by: Pekka Korpinen <pekka.korpinen@iki.fi>
-Link: https://lore.kernel.org/r/20210929185755.2384-1-pekka.korpinen@iki.fi
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Fixes: 78656acdcf48 ("V4L/DVB (7038): USB radio driver for Silicon Labs Si470x FM Radio Receivers")
+Fixes: cc35bbddfe10 ("V4L/DVB (12416): radio-si470x: add i2c driver for si470x")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/dac/ad5446.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/media/radio/si470x/radio-si470x-i2c.c | 2 +-
+ drivers/media/radio/si470x/radio-si470x-usb.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/iio/dac/ad5446.c
-+++ b/drivers/iio/dac/ad5446.c
-@@ -510,8 +510,15 @@ static int ad5622_write(struct ad5446_st
- {
- 	struct i2c_client *client = to_i2c_client(st->dev);
- 	__be16 data = cpu_to_be16(val);
-+	int ret;
+diff --git a/drivers/media/radio/si470x/radio-si470x-i2c.c b/drivers/media/radio/si470x/radio-si470x-i2c.c
+index aa12fd2663895..cc68bdac0c367 100644
+--- a/drivers/media/radio/si470x/radio-si470x-i2c.c
++++ b/drivers/media/radio/si470x/radio-si470x-i2c.c
+@@ -20,7 +20,7 @@
  
--	return i2c_master_send(client, (char *)&data, sizeof(data));
-+	ret = i2c_master_send(client, (char *)&data, sizeof(data));
-+	if (ret < 0)
-+		return ret;
-+	if (ret != sizeof(data))
-+		return -EIO;
-+
-+	return 0;
- }
+ /* driver definitions */
+ #define DRIVER_AUTHOR "Joonyoung Shim <jy0922.shim@samsung.com>";
+-#define DRIVER_CARD "Silicon Labs Si470x FM Radio Receiver"
++#define DRIVER_CARD "Silicon Labs Si470x FM Radio"
+ #define DRIVER_DESC "I2C radio driver for Si470x FM Radio Receivers"
+ #define DRIVER_VERSION "1.0.2"
  
- /**
+diff --git a/drivers/media/radio/si470x/radio-si470x-usb.c b/drivers/media/radio/si470x/radio-si470x-usb.c
+index 19e381dd58089..ba43a727c0b95 100644
+--- a/drivers/media/radio/si470x/radio-si470x-usb.c
++++ b/drivers/media/radio/si470x/radio-si470x-usb.c
+@@ -25,7 +25,7 @@
+ 
+ /* driver definitions */
+ #define DRIVER_AUTHOR "Tobias Lorenz <tobias.lorenz@gmx.net>"
+-#define DRIVER_CARD "Silicon Labs Si470x FM Radio Receiver"
++#define DRIVER_CARD "Silicon Labs Si470x FM Radio"
+ #define DRIVER_DESC "USB radio driver for Si470x FM Radio Receivers"
+ #define DRIVER_VERSION "1.0.10"
+ 
+-- 
+2.33.0
+
 
 
