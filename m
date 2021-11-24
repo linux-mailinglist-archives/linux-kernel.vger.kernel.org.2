@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE7045BE1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08FA445BA6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:07:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240793AbhKXMol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:44:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41628 "EHLO mail.kernel.org"
+        id S242152AbhKXMKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:10:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345181AbhKXMlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:41:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EC2C6101D;
-        Wed, 24 Nov 2021 12:24:33 +0000 (UTC)
+        id S233433AbhKXMH3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:07:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8A6261059;
+        Wed, 24 Nov 2021 12:04:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756674;
-        bh=P5QL9tMAmbayDCavPSBlnLBqfYjcRV+zx7a+AZNd+2A=;
+        s=korg; t=1637755458;
+        bh=WM30CWVn00+2EN5Gf4DhUo/6dMjuhdxc7S5hpeBccRg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rOL+rEI0ZEgCyHNX/zS024NbRzqqxSx7Qwa+DcgFSt/VaHEVn0pKgFVQbe8V2We9i
-         qtpl7fBEEaZsCvdqu54ernNKop/PZ1v+zw/2tf88UuL6IYTbajiIFA2DiFQLLj4nrh
-         GeAB6YgGEbnzBBH0KFPosZaqz2Epw8igDfrLw0TM=
+        b=ZBVGZVxKnOp2rCoRHpsmgXu6V8Vb2IYrgFOfUcu9TKdxC03zFCb6iVFdk6tD6VAqG
+         2KlsQ0nkoXq7mUvaNlWeqk0F3Spq8QLJkN4D2pXN6Hftmz/BpOE3zovGOiCxT0smeA
+         JzjK7VQtOoKIN0tRvjAJ0uXp5O2iCkDV/FzboFv8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Maxim Kiselev <bigunclemax@gmail.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 165/251] NFS: Fix deadlocks in nfs_scan_commit_list()
+Subject: [PATCH 4.4 104/162] net: davinci_emac: Fix interrupt pacing disable
 Date:   Wed, 24 Nov 2021 12:56:47 +0100
-Message-Id: <20211124115716.004509526@linuxfoundation.org>
+Message-Id: <20211124115701.695690269@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Maxim Kiselev <bigunclemax@gmail.com>
 
-[ Upstream commit 64a93dbf25d3a1368bb58ddf0f61d0a92d7479e3 ]
+[ Upstream commit d52bcb47bdf971a59a2467975d2405fcfcb2fa19 ]
 
-Partially revert commit 2ce209c42c01 ("NFS: Wait for requests that are
-locked on the commit list"), since it can lead to deadlocks between
-commit requests and nfs_join_page_group().
-For now we should assume that any locked requests on the commit list are
-either about to be removed and committed by another task, or the writes
-they describe are about to be retransmitted. In either case, we should
-not need to worry.
+This patch allows to use 0 for `coal->rx_coalesce_usecs` param to
+disable rx irq coalescing.
 
-Fixes: 2ce209c42c01 ("NFS: Wait for requests that are locked on the commit list")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Previously we could enable rx irq coalescing via ethtool
+(For ex: `ethtool -C eth0 rx-usecs 2000`) but we couldn't disable
+it because this part rejects 0 value:
+
+       if (!coal->rx_coalesce_usecs)
+               return -EINVAL;
+
+Fixes: 84da2658a619 ("TI DaVinci EMAC : Implement interrupt pacing functionality.")
+Signed-off-by: Maxim Kiselev <bigunclemax@gmail.com>
+Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Link: https://lore.kernel.org/r/20211101152343.4193233-1-bigunclemax@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/write.c | 17 ++---------------
- 1 file changed, 2 insertions(+), 15 deletions(-)
+ drivers/net/ethernet/ti/davinci_emac.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/fs/nfs/write.c b/fs/nfs/write.c
-index 767e46c09074b..010733c8bdcd3 100644
---- a/fs/nfs/write.c
-+++ b/fs/nfs/write.c
-@@ -1037,25 +1037,11 @@ nfs_scan_commit_list(struct list_head *src, struct list_head *dst,
- 	struct nfs_page *req, *tmp;
- 	int ret = 0;
+diff --git a/drivers/net/ethernet/ti/davinci_emac.c b/drivers/net/ethernet/ti/davinci_emac.c
+index e11f436b0726e..ac61d017a4b51 100644
+--- a/drivers/net/ethernet/ti/davinci_emac.c
++++ b/drivers/net/ethernet/ti/davinci_emac.c
+@@ -555,8 +555,20 @@ static int emac_set_coalesce(struct net_device *ndev,
+ 	u32 int_ctrl, num_interrupts = 0;
+ 	u32 prescale = 0, addnl_dvdr = 1, coal_intvl = 0;
  
--restart:
- 	list_for_each_entry_safe(req, tmp, src, wb_list) {
- 		kref_get(&req->wb_kref);
- 		if (!nfs_lock_request(req)) {
--			int status;
--
--			/* Prevent deadlock with nfs_lock_and_join_requests */
--			if (!list_empty(dst)) {
--				nfs_release_request(req);
--				continue;
--			}
--			/* Ensure we make progress to prevent livelock */
--			mutex_unlock(&NFS_I(cinfo->inode)->commit_mutex);
--			status = nfs_wait_on_request(req);
- 			nfs_release_request(req);
--			mutex_lock(&NFS_I(cinfo->inode)->commit_mutex);
--			if (status < 0)
--				break;
--			goto restart;
-+			continue;
- 		}
- 		nfs_request_remove_commit_list(req, cinfo);
- 		clear_bit(PG_COMMIT_TO_DS, &req->wb_flags);
-@@ -1904,6 +1890,7 @@ static int __nfs_commit_inode(struct inode *inode, int how,
- 	int may_wait = how & FLUSH_SYNC;
- 	int ret, nscan;
+-	if (!coal->rx_coalesce_usecs)
+-		return -EINVAL;
++	if (!coal->rx_coalesce_usecs) {
++		priv->coal_intvl = 0;
++
++		switch (priv->version) {
++		case EMAC_VERSION_2:
++			emac_ctrl_write(EMAC_DM646X_CMINTCTRL, 0);
++			break;
++		default:
++			emac_ctrl_write(EMAC_CTRL_EWINTTCNT, 0);
++			break;
++		}
++
++		return 0;
++	}
  
-+	how &= ~FLUSH_SYNC;
- 	nfs_init_cinfo_from_inode(&cinfo, inode);
- 	nfs_commit_begin(cinfo.mds);
- 	for (;;) {
+ 	coal_intvl = coal->rx_coalesce_usecs;
+ 
 -- 
 2.33.0
 
