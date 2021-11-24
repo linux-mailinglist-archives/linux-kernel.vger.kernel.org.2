@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C464545C18F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:16:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E6045C234
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:23:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346656AbhKXNT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:19:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60766 "EHLO mail.kernel.org"
+        id S1350452AbhKXN0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:26:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347901AbhKXNQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:16:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C4F761411;
-        Wed, 24 Nov 2021 12:44:48 +0000 (UTC)
+        id S1350023AbhKXNXf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:23:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B33160FDA;
+        Wed, 24 Nov 2021 12:48:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757888;
-        bh=jWsCta6kK+DLAHPbBw9dqqO9O9iUoX/YFJwdV1TM2vg=;
+        s=korg; t=1637758113;
+        bh=Zr2+X8aTQ5zWqZz+fOWuc5jP/PjjS4u4wMByLVDvqB8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pI9I23Hv/wMVq3pnS6YI2c6By/QSrkuDYKgdNtLoLo+QjC9Oq5PwQYN0bKUH6ZGUz
-         5/S2+GOPl/et8NvFs8dkYTQceVUc/I2LLWZSaFq5AatKxouNKOZtp1JJslG0SHjWZv
-         h5huaWhD2N4xdRPi2j8q/KQEInABnSVFdAu2ktGI=
+        b=gkHLeNeAnCG5EH9ApLtPoSj1agKdsYMIaCCCZ0FP8FQJ+UIZ5ga0693hZLJvENQ0R
+         6g7Z7I5yhisrevVji1a3PrP0z5M2rfCRfPrHF1W/qPeZ6so8cu7EmFC94RswPttsfm
+         Y3YY65wuEYABa9STQDygT+GWu3SxtP/NzOkXKdgY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Murphy <lists@colorremedies.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Chris Murphy <chris@colorremedies.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 4.19 310/323] btrfs: fix memory ordering between normal and ordered work functions
+        stable@vger.kernel.org,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>,
+        Eryk Rybak <eryk.roch.rybak@intel.com>,
+        Tony Brelinski <tony.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 064/100] i40e: Fix changing previously set num_queue_pairs for PFs
 Date:   Wed, 24 Nov 2021 12:58:20 +0100
-Message-Id: <20211124115729.381261038@linuxfoundation.org>
+Message-Id: <20211124115656.947405821@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,86 +44,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikolay Borisov <nborisov@suse.com>
+From: Eryk Rybak <eryk.roch.rybak@intel.com>
 
-commit 45da9c1767ac31857df572f0a909fbe88fd5a7e9 upstream.
+[ Upstream commit d2a69fefd75683004ffe87166de5635b3267ee07 ]
 
-Ordered work functions aren't guaranteed to be handled by the same thread
-which executed the normal work functions. The only way execution between
-normal/ordered functions is synchronized is via the WORK_DONE_BIT,
-unfortunately the used bitops don't guarantee any ordering whatsoever.
+Currently, the i40e_vsi_setup_queue_map is basing the count of queues in
+TCs on a VSI's alloc_queue_pairs member which is not changed throughout
+any user's action (for example via ethtool's set_channels callback).
 
-This manifested as seemingly inexplicable crashes on ARM64, where
-async_chunk::inode is seen as non-null in async_cow_submit which causes
-submit_compressed_extents to be called and crash occurs because
-async_chunk::inode suddenly became NULL. The call trace was similar to:
+This implies that vsi->tc_config.tc_info[n].qcount value that is given
+to the kernel via netdev_set_tc_queue() that notifies about the count of
+queues per particular traffic class is constant even if user has changed
+the total count of queues.
 
-    pc : submit_compressed_extents+0x38/0x3d0
-    lr : async_cow_submit+0x50/0xd0
-    sp : ffff800015d4bc20
+This in turn caused the kernel warning after setting the queue count to
+the lower value than the initial one:
 
-    <registers omitted for brevity>
+$ ethtool -l ens801f0
+Channel parameters for ens801f0:
+Pre-set maximums:
+RX:             0
+TX:             0
+Other:          1
+Combined:       64
+Current hardware settings:
+RX:             0
+TX:             0
+Other:          1
+Combined:       64
 
-    Call trace:
-     submit_compressed_extents+0x38/0x3d0
-     async_cow_submit+0x50/0xd0
-     run_ordered_work+0xc8/0x280
-     btrfs_work_helper+0x98/0x250
-     process_one_work+0x1f0/0x4ac
-     worker_thread+0x188/0x504
-     kthread+0x110/0x114
-     ret_from_fork+0x10/0x18
+$ ethtool -L ens801f0 combined 40
 
-Fix this by adding respective barrier calls which ensure that all
-accesses preceding setting of WORK_DONE_BIT are strictly ordered before
-setting the flag. At the same time add a read barrier after reading of
-WORK_DONE_BIT in run_ordered_work which ensures all subsequent loads
-would be strictly ordered after reading the bit. This in turn ensures
-are all accesses before WORK_DONE_BIT are going to be strictly ordered
-before any access that can occur in ordered_func.
+[dmesg]
+Number of in use tx queues changed invalidating tc mappings. Priority
+traffic classification disabled!
 
-Reported-by: Chris Murphy <lists@colorremedies.com>
-Fixes: 08a9ff326418 ("btrfs: Added btrfs_workqueue_struct implemented ordered execution based on kernel workqueue")
-CC: stable@vger.kernel.org # 4.4+
-Link: https://bugzilla.redhat.com/show_bug.cgi?id=2011928
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Tested-by: Chris Murphy <chris@colorremedies.com>
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reason was that vsi->alloc_queue_pairs stayed at 64 value which was used
+to set the qcount on TC0 (by default only TC0 exists so all of the
+existing queues are assigned to TC0). we update the offset/qcount via
+netdev_set_tc_queue() back to the old value but then the
+netif_set_real_num_tx_queues() is using the vsi->num_queue_pairs as a
+value which got set to 40.
+
+Fix it by using vsi->req_queue_pairs as a queue count that will be
+distributed across TCs. Do it only for non-zero values, which implies
+that user actually requested the new count of queues.
+
+For VSIs other than main, stay with the vsi->alloc_queue_pairs as we
+only allow manipulating the queue count on main VSI.
+
+Fixes: bc6d33c8d93f ("i40e: Fix the number of queues available to be mapped for use")
+Co-developed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Co-developed-by: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
+Signed-off-by: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
+Signed-off-by: Eryk Rybak <eryk.roch.rybak@intel.com>
+Tested-by: Tony Brelinski <tony.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/async-thread.c |   14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 35 ++++++++++++++-------
+ 1 file changed, 23 insertions(+), 12 deletions(-)
 
---- a/fs/btrfs/async-thread.c
-+++ b/fs/btrfs/async-thread.c
-@@ -270,6 +270,13 @@ static void run_ordered_work(struct __bt
- 				  ordered_list);
- 		if (!test_bit(WORK_DONE_BIT, &work->flags))
- 			break;
-+		/*
-+		 * Orders all subsequent loads after reading WORK_DONE_BIT,
-+		 * paired with the smp_mb__before_atomic in btrfs_work_helper
-+		 * this guarantees that the ordered function will see all
-+		 * updates from ordinary work function.
-+		 */
-+		smp_rmb();
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index dcad4a3191cb8..34c453c2b22da 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -1776,6 +1776,7 @@ static void i40e_vsi_setup_queue_map(struct i40e_vsi *vsi,
+ 				     bool is_add)
+ {
+ 	struct i40e_pf *pf = vsi->back;
++	u16 num_tc_qps = 0;
+ 	u16 sections = 0;
+ 	u8 netdev_tc = 0;
+ 	u16 numtc = 1;
+@@ -1783,13 +1784,29 @@ static void i40e_vsi_setup_queue_map(struct i40e_vsi *vsi,
+ 	u8 offset;
+ 	u16 qmap;
+ 	int i;
+-	u16 num_tc_qps = 0;
  
- 		/*
- 		 * we are going to call the ordered done function, but
-@@ -355,6 +362,13 @@ static void normal_work_helper(struct bt
- 	thresh_exec_hook(wq);
- 	work->func(work);
- 	if (need_order) {
-+		/*
-+		 * Ensures all memory accesses done in the work function are
-+		 * ordered before setting the WORK_DONE_BIT. Ensuring the thread
-+		 * which is going to executed the ordered work sees them.
-+		 * Pairs with the smp_rmb in run_ordered_work.
+ 	sections = I40E_AQ_VSI_PROP_QUEUE_MAP_VALID;
+ 	offset = 0;
+ 
++	if (vsi->type == I40E_VSI_MAIN) {
++		/* This code helps add more queue to the VSI if we have
++		 * more cores than RSS can support, the higher cores will
++		 * be served by ATR or other filters. Furthermore, the
++		 * non-zero req_queue_pairs says that user requested a new
++		 * queue count via ethtool's set_channels, so use this
++		 * value for queues distribution across traffic classes
 +		 */
-+		smp_mb__before_atomic();
- 		set_bit(WORK_DONE_BIT, &work->flags);
- 		run_ordered_work(wq, work);
++		if (vsi->req_queue_pairs > 0)
++			vsi->num_queue_pairs = vsi->req_queue_pairs;
++		else if (pf->flags & I40E_FLAG_MSIX_ENABLED)
++			vsi->num_queue_pairs = pf->num_lan_msix;
++	}
++
+ 	/* Number of queues per enabled TC */
+-	num_tc_qps = vsi->alloc_queue_pairs;
++	if (vsi->type == I40E_VSI_MAIN)
++		num_tc_qps = vsi->num_queue_pairs;
++	else
++		num_tc_qps = vsi->alloc_queue_pairs;
+ 	if (enabled_tc && (vsi->back->flags & I40E_FLAG_DCB_ENABLED)) {
+ 		/* Find numtc from enabled TC bitmap */
+ 		for (i = 0, numtc = 0; i < I40E_MAX_TRAFFIC_CLASS; i++) {
+@@ -1867,16 +1884,10 @@ static void i40e_vsi_setup_queue_map(struct i40e_vsi *vsi,
+ 		}
+ 		ctxt->info.tc_mapping[i] = cpu_to_le16(qmap);
  	}
+-
+-	/* Set actual Tx/Rx queue pairs */
+-	vsi->num_queue_pairs = offset;
+-	if ((vsi->type == I40E_VSI_MAIN) && (numtc == 1)) {
+-		if (vsi->req_queue_pairs > 0)
+-			vsi->num_queue_pairs = vsi->req_queue_pairs;
+-		else if (pf->flags & I40E_FLAG_MSIX_ENABLED)
+-			vsi->num_queue_pairs = pf->num_lan_msix;
+-	}
+-
++	/* Do not change previously set num_queue_pairs for PFs */
++	if ((vsi->type == I40E_VSI_MAIN && numtc != 1) ||
++	    vsi->type != I40E_VSI_MAIN)
++		vsi->num_queue_pairs = offset;
+ 	/* Scheduler section valid can only be set for ADD VSI */
+ 	if (is_add) {
+ 		sections |= I40E_AQ_VSI_PROP_SCHED_VALID;
+-- 
+2.33.0
+
 
 
