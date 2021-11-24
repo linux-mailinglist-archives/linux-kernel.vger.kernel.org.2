@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB09E45BC1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:23:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4503D45BE89
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244211AbhKXM0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:26:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41738 "EHLO mail.kernel.org"
+        id S1344238AbhKXMr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:47:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244504AbhKXMXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:23:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B564610A0;
-        Wed, 24 Nov 2021 12:14:09 +0000 (UTC)
+        id S1344789AbhKXMpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:45:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 699336142A;
+        Wed, 24 Nov 2021 12:26:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756049;
-        bh=VBmhEAGjHcz+ZDTTKPv9VefqqBfp+aeGDtv6M60YmDI=;
+        s=korg; t=1637756806;
+        bh=zVC7uIJA1A2M9ngdkg+5hMkX9mJwdNK37ujEA8LwYMI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aKXl2zsPkd1K6OmzOLzB3H2bR22s3RQLEUH9de4cFGjU49iMm3O/4ohkK5E+KwgqQ
-         lyPXNnPEv4CW+CxTzHz6nQOwWzyk9LP0jswxLaAzbW/2ReJgKpaE6vgYh8ejUU4OEY
-         xDCMuBMKprziVbn4Jep1GsrsbsvRack9JTQe38Cw=
+        b=Zpy81sPlmgzLsMBmI9mgJaUvuovMZm4pLSpswI1+wrDaWqni56S5xcpmEZQUWPqR9
+         +Q+MFMKLm4VvCEXLdIDZQHTxKzXRSR+9f9nObyXWj1O8VNYo/EmVpZdwPidxxNgQw8
+         cyJAPnLeHDYPrSWntSHsnh+lQIk0Rq+hxjUNQx38=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 152/207] USB: chipidea: fix interrupt deadlock
+        stable@vger.kernel.org,
+        syzbot+e4df4e1389e28972e955@syzkaller.appspotmail.com,
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 181/251] net: vlan: fix a UAF in vlan_dev_real_dev()
 Date:   Wed, 24 Nov 2021 12:57:03 +0100
-Message-Id: <20211124115708.932678518@linuxfoundation.org>
+Message-Id: <20211124115716.547727004@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,97 +43,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-commit 9aaa81c3366e8393a62374e3a1c67c69edc07b8a upstream.
+[ Upstream commit 563bcbae3ba233c275c244bfce2efe12938f5363 ]
 
-Chipidea core was calling the interrupt handler from non-IRQ context
-with interrupts enabled, something which can lead to a deadlock if
-there's an actual interrupt trying to take a lock that's already held
-(e.g. the controller lock in udc_irq()).
+The real_dev of a vlan net_device may be freed after
+unregister_vlan_dev(). Access the real_dev continually by
+vlan_dev_real_dev() will trigger the UAF problem for the
+real_dev like following:
 
-Add a wrapper that can be used to fake interrupts instead of calling the
-handler directly.
+==================================================================
+BUG: KASAN: use-after-free in vlan_dev_real_dev+0xf9/0x120
+Call Trace:
+ kasan_report.cold+0x83/0xdf
+ vlan_dev_real_dev+0xf9/0x120
+ is_eth_port_of_netdev_filter.part.0+0xb1/0x2c0
+ is_eth_port_of_netdev_filter+0x28/0x40
+ ib_enum_roce_netdev+0x1a3/0x300
+ ib_enum_all_roce_netdevs+0xc7/0x140
+ netdevice_event_work_handler+0x9d/0x210
+...
 
-Fixes: 3ecb3e09b042 ("usb: chipidea: Use extcon framework for VBUS and ID detect")
-Fixes: 876d4e1e8298 ("usb: chipidea: core: add wakeup support for extcon")
-Cc: Peter Chen <peter.chen@kernel.org>
-Cc: stable@vger.kernel.org      # 4.4
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20211021083447.20078-1-johan@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Freed by task 9288:
+ kasan_save_stack+0x1b/0x40
+ kasan_set_track+0x1c/0x30
+ kasan_set_free_info+0x20/0x30
+ __kasan_slab_free+0xfc/0x130
+ slab_free_freelist_hook+0xdd/0x240
+ kfree+0xe4/0x690
+ kvfree+0x42/0x50
+ device_release+0x9f/0x240
+ kobject_put+0x1c8/0x530
+ put_device+0x1b/0x30
+ free_netdev+0x370/0x540
+ ppp_destroy_interface+0x313/0x3d0
+...
 
+Move the put_device(real_dev) to vlan_dev_free(). Ensure
+real_dev not be freed before vlan_dev unregistered.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: syzbot+e4df4e1389e28972e955@syzkaller.appspotmail.com
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/chipidea/core.c |   21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+ net/8021q/vlan.c     | 3 ---
+ net/8021q/vlan_dev.c | 3 +++
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/chipidea/core.c
-+++ b/drivers/usb/chipidea/core.c
-@@ -516,7 +516,7 @@ int hw_device_reset(struct ci_hdrc *ci)
- 	return 0;
- }
- 
--static irqreturn_t ci_irq(int irq, void *data)
-+static irqreturn_t ci_irq_handler(int irq, void *data)
- {
- 	struct ci_hdrc *ci = data;
- 	irqreturn_t ret = IRQ_NONE;
-@@ -569,6 +569,15 @@ static irqreturn_t ci_irq(int irq, void
- 	return ret;
- }
- 
-+static void ci_irq(struct ci_hdrc *ci)
-+{
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+	ci_irq_handler(ci->irq, ci);
-+	local_irq_restore(flags);
-+}
-+
- static int ci_vbus_notifier(struct notifier_block *nb, unsigned long event,
- 			    void *ptr)
- {
-@@ -582,7 +591,7 @@ static int ci_vbus_notifier(struct notif
- 
- 	vbus->changed = true;
- 
--	ci_irq(ci->irq, ci);
-+	ci_irq(ci);
- 	return NOTIFY_DONE;
- }
- 
-@@ -599,7 +608,7 @@ static int ci_id_notifier(struct notifie
- 
- 	id->changed = true;
- 
--	ci_irq(ci->irq, ci);
-+	ci_irq(ci);
- 	return NOTIFY_DONE;
- }
- 
-@@ -1011,7 +1020,7 @@ static int ci_hdrc_probe(struct platform
+diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
+index 0efdf83f78e7a..a8cee80e07a70 100644
+--- a/net/8021q/vlan.c
++++ b/net/8021q/vlan.c
+@@ -112,9 +112,6 @@ void unregister_vlan_dev(struct net_device *dev, struct list_head *head)
  	}
  
- 	platform_set_drvdata(pdev, ci);
--	ret = devm_request_irq(dev, ci->irq, ci_irq, IRQF_SHARED,
-+	ret = devm_request_irq(dev, ci->irq, ci_irq_handler, IRQF_SHARED,
- 			ci->platdata->name, ci);
- 	if (ret)
- 		goto stop;
-@@ -1126,11 +1135,11 @@ static void ci_extcon_wakeup_int(struct
- 
- 	if (!IS_ERR(cable_id->edev) && ci->is_otg &&
- 		(otgsc & OTGSC_IDIE) && (otgsc & OTGSC_IDIS))
--		ci_irq(ci->irq, ci);
-+		ci_irq(ci);
- 
- 	if (!IS_ERR(cable_vbus->edev) && ci->is_otg &&
- 		(otgsc & OTGSC_BSVIE) && (otgsc & OTGSC_BSVIS))
--		ci_irq(ci->irq, ci);
-+		ci_irq(ci);
+ 	vlan_vid_del(real_dev, vlan->vlan_proto, vlan_id);
+-
+-	/* Get rid of the vlan's reference to real_dev */
+-	dev_put(real_dev);
  }
  
- static int ci_controller_resume(struct device *dev)
+ int vlan_check_real_dev(struct net_device *real_dev,
+diff --git a/net/8021q/vlan_dev.c b/net/8021q/vlan_dev.c
+index ed3717dc2d201..d28c22e59996c 100644
+--- a/net/8021q/vlan_dev.c
++++ b/net/8021q/vlan_dev.c
+@@ -814,6 +814,9 @@ static void vlan_dev_free(struct net_device *dev)
+ 
+ 	free_percpu(vlan->vlan_pcpu_stats);
+ 	vlan->vlan_pcpu_stats = NULL;
++
++	/* Get rid of the vlan's reference to real_dev */
++	dev_put(vlan->real_dev);
+ }
+ 
+ void vlan_setup(struct net_device *dev)
+-- 
+2.33.0
+
 
 
