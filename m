@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BAE45BCAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2064745BCB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:29:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242720AbhKXMbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:31:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42146 "EHLO mail.kernel.org"
+        id S243923AbhKXMbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:31:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245170AbhKXMYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:24:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DD466120D;
-        Wed, 24 Nov 2021 12:15:26 +0000 (UTC)
+        id S245200AbhKXMYp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:24:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 452EA6120F;
+        Wed, 24 Nov 2021 12:15:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756126;
-        bh=lRPTUS005ve+oBZofRJLmAVkhHWw52d0yc4ha8/kfyk=;
+        s=korg; t=1637756129;
+        bh=uD7QM3zZ1ifDv+fKhirBA3ejrGhIoMshuO/jRiOTJ/0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wEGG4WR59kwNShwbxY3TX/TMTXKQHsnvkrrRgwSkCOjSmSVyaduLAQg0zr9b6UhWU
-         KHKBxieos3IQrgVpCpDnSA9S4ek4mOE8oj2xPQLfxqybvfum3vqma2yzaPjaeSTZx5
-         WnhwaHNuCdrdkjD2inEKa8a5xD4qvwBlUlLq2xIM=
+        b=mNj3AuZIEKT3AJKgG3E6Gc5PLvoHMYtanSmo2HqX1bhT701KjoHJlJyz1+A7VZ4pX
+         SOD9VNcY2hPXetp7eZtvXLCiAtDooFYwHp+03NWtb6eqL6Ynzqpg3eO9o91jsnbAO+
+         VkrrB4WzL4O1hdoSXu3Uyxic2E+Dk7IWgS+2fh4k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Surabhi Boob <surabhi.boob@intel.com>,
+        Tony Brelinski <tony.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 181/207] net: bnx2x: fix variable dereferenced before check
-Date:   Wed, 24 Nov 2021 12:57:32 +0100
-Message-Id: <20211124115709.834270267@linuxfoundation.org>
+Subject: [PATCH 4.9 182/207] iavf: Fix for the false positive ASQ/ARQ errors while issuing VF reset
+Date:   Wed, 24 Nov 2021 12:57:33 +0100
+Message-Id: <20211124115709.864978440@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
 References: <20211124115703.941380739@linuxfoundation.org>
@@ -40,44 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Surabhi Boob <surabhi.boob@intel.com>
 
-[ Upstream commit f8885ac89ce310570e5391fe0bf0ec9c7c9b4fdc ]
+[ Upstream commit 321421b57a12e933f92b228e0e6d0b2c6541f41d ]
 
-Smatch says:
-	bnx2x_init_ops.h:640 bnx2x_ilt_client_mem_op()
-	warn: variable dereferenced before check 'ilt' (see line 638)
+While issuing VF Reset from the guest OS, the VF driver prints
+logs about critical / Overflow error detection. This is not an
+actual error since the VF_MBX_ARQLEN register is set to all FF's
+for a short period of time and the VF would catch the bits set if
+it was reading the register during that spike of time.
+This patch introduces an additional check to ignore this condition
+since the VF is in reset.
 
-Move ilt_cli variable initialization _after_ ilt validation, because
-it's unsafe to deref the pointer before validation check.
-
-Fixes: 523224a3b3cd ("bnx2x, cnic, bnx2i: use new FW/HSI")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 19b73d8efaa4 ("i40evf: Add additional check for reset")
+Signed-off-by: Surabhi Boob <surabhi.boob@intel.com>
+Tested-by: Tony Brelinski <tony.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/i40evf/i40evf_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h
-index 1835d2e451c01..fc7fce642666c 100644
---- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h
-+++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h
-@@ -635,11 +635,13 @@ static int bnx2x_ilt_client_mem_op(struct bnx2x *bp, int cli_num,
- {
- 	int i, rc;
- 	struct bnx2x_ilt *ilt = BP_ILT(bp);
--	struct ilt_client_info *ilt_cli = &ilt->clients[cli_num];
-+	struct ilt_client_info *ilt_cli;
+diff --git a/drivers/net/ethernet/intel/i40evf/i40evf_main.c b/drivers/net/ethernet/intel/i40evf/i40evf_main.c
+index 537776a3e5de1..9ba36425a3ddd 100644
+--- a/drivers/net/ethernet/intel/i40evf/i40evf_main.c
++++ b/drivers/net/ethernet/intel/i40evf/i40evf_main.c
+@@ -1889,7 +1889,7 @@ static void i40evf_adminq_task(struct work_struct *work)
  
- 	if (!ilt || !ilt->lines)
- 		return -1;
- 
-+	ilt_cli = &ilt->clients[cli_num];
-+
- 	if (ilt_cli->flags & (ILT_CLIENT_SKIP_INIT | ILT_CLIENT_SKIP_MEM))
- 		return 0;
- 
+ 	/* check for error indications */
+ 	val = rd32(hw, hw->aq.arq.len);
+-	if (val == 0xdeadbeef) /* indicates device in reset */
++	if (val == 0xdeadbeef || val == 0xffffffff) /* device in reset */
+ 		goto freedom;
+ 	oldval = val;
+ 	if (val & I40E_VF_ARQLEN1_ARQVFE_MASK) {
 -- 
 2.33.0
 
