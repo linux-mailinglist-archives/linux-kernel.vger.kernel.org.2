@@ -2,91 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B310645CD3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 20:30:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A7B45CD3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 20:30:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351172AbhKXTdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 14:33:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350997AbhKXTdZ (ORCPT
+        id S1351176AbhKXTdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 14:33:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36711 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350997AbhKXTdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 14:33:25 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F462C061574;
-        Wed, 24 Nov 2021 11:30:15 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id 71so3052691pgb.4;
-        Wed, 24 Nov 2021 11:30:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=Hj/CYlS4wIZEek50wtFCXdzKhGX9mckuZ/RzHkla244=;
-        b=A5woH15LwhnGbDK6LeMHBLQ9NDUIVZjIJHDbnawZZb4cSCEAVkaT36G+44ng/LJawY
-         SHzHPPoOrbYdziMv6yQXi+qAhH8AanaQBQyXupvPt7tagLTIMDXA9TPRHnGz1gnxOZ3v
-         HFarvQyfAltLFWOABUyrm2XmRcfCRJpAtO0ZK18JAxHxetBlJ9kKnWbEOESzxjj+W3iZ
-         jlKslzwECJ6LXu4AanfNR6rRkZszdqYLkdLE7oJ7xck+mzBTI6OnkUN2dOAsfI+EmyzZ
-         iCUabpUxFIbTjdQ4XOjaczIBqt7MuH+Es8JzLCGtVCLIicCuTohupJdYqt3nyBkujqZs
-         XVBg==
+        Wed, 24 Nov 2021 14:33:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637782243;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FYTjFsBMpevNXGnlva+JSC1+iPmKa2vQ8bvWhRzsInc=;
+        b=VzT1Tz80SYDtqfY3bka/ZLJEJHsioYU19Sb/g5LsCxQA0PKS4t+La6kkpr9l2WtOghXOB4
+        xX/cwsBCsX2QErIkKhRoDeojFfwgsJKpRv6FXePs6QW6V+J6I2rcVk4MKBw1PMj5hHynGE
+        Q1qWQgjqpegCX6KPeHo1WfkriqtZtmc=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-384-JWLynr87OcOyZu1WTQtNEg-1; Wed, 24 Nov 2021 14:30:41 -0500
+X-MC-Unique: JWLynr87OcOyZu1WTQtNEg-1
+Received: by mail-ot1-f71.google.com with SMTP id v13-20020a9d69cd000000b00563c36fd48cso2201721oto.4
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 11:30:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=Hj/CYlS4wIZEek50wtFCXdzKhGX9mckuZ/RzHkla244=;
-        b=1h2gWhjFAq99kGtSGzfgTASAHt6/tysaANLrpqvtqPSuQGroAXkumML2L+KYxMHaYT
-         /L10R0F6Rf8xszZsisDltzyvQzdNHil799kFDRIlPTvTEIxga7yQ3FEiqjNJegeFhk3D
-         Q7kheXH5kgBvpwf4TF7QBJ/IYZ7sjA5TgDosbpnh0Zq7rtNAtk6o51hrr91OBWRdbQ7f
-         A7QSW2uJgcPw/IuFjKcsTlUdpKo+409GrNASjriXf9t9V7m2ag6pDf4AHkuuWxN/n5g0
-         4nei+1Czp9ZOK3OCb12klqJH6YHLfVQ1SIjnE8tZm7EMq5Tev9Fhkg8KJ9vT2afF9vzf
-         1iKA==
-X-Gm-Message-State: AOAM5319LAAt+KSVSOv/zU34u6+0uUy/Hz28DAcN+MtLIOo1tZfQEQtC
-        6AH33ttJW+fiFx7sq/clZu3DrCK86Sij4gftOI8=
-X-Google-Smtp-Source: ABdhPJy5YE8zS5cc5S386xfxQXBMTXEY+DrlICyj/w8rsTrT7Bkbh8Z0g9mp5DmWbkCxo0iRLUpTCA==
-X-Received: by 2002:aa7:9561:0:b0:49f:c8cd:ce6d with SMTP id x1-20020aa79561000000b0049fc8cdce6dmr8444004pfq.67.1637782214770;
-        Wed, 24 Nov 2021 11:30:14 -0800 (PST)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [71.19.144.195])
-        by smtp.gmail.com with ESMTPSA id a18sm452426pfn.185.2021.11.24.11.30.09
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FYTjFsBMpevNXGnlva+JSC1+iPmKa2vQ8bvWhRzsInc=;
+        b=WcVkcwqxNrfvh9pIfmksbxOEnUGrg4z2koZLAi5wuTpEFdDQoup/uHbQtCJ5MSiRMU
+         thfKWIbh3LKKQeFLJTOC7xNB6yk7RPDPh6RbXOwSUnnX23N+Igy3ovaEPhcucbowSsz2
+         S7O7nlvUa9M+Ke2YZeUVFuM98GBZFZ9bEzjR3Y+YGE3CzZrGw84s+cItIT1a98F37X75
+         WoI2Oagj68u+htZztvT2wn2APQmSNRIiNXOVq7CG3LxrlQprqH+WAyDeXnzwzLvtURe6
+         tKCJFqM4BluVdMJ5l0jS+tE2htl9Ob/m2eMBQ7kBaRyH39oAbRzRNx80gmBeQ2i1sGRv
+         OPbw==
+X-Gm-Message-State: AOAM532ZZWfH8nyr2yVHGQryOk7JyZnxNQmGDotisfZMZKCLJhXRyi04
+        ij2djyDw1pbCAuvpwYdCfy+mjfb3qB1RIaYrRZmCFyKXg65zcOKvjdwzNgNLKqO3mxjA8AILRdz
+        MdrNhfsvduIEAYbQF+P8Rz8jf
+X-Received: by 2002:a9d:7d83:: with SMTP id j3mr15577903otn.236.1637782241188;
+        Wed, 24 Nov 2021 11:30:41 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzXeeqX9nuFtya7riSQElOkc7/KAiOq09ZvC3Mls+9bytrR1E5OrNcJVmbpmxKqyrFbiI60Vw==
+X-Received: by 2002:a9d:7d83:: with SMTP id j3mr15577881otn.236.1637782240961;
+        Wed, 24 Nov 2021 11:30:40 -0800 (PST)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id t11sm123292otj.24.2021.11.24.11.30.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 11:30:13 -0800 (PST)
-Message-ID: <619e92c5.1c69fb81.2d0bf.1bc1@mx.google.com>
-Date:   Wed, 24 Nov 2021 11:30:13 -0800 (PST)
-X-Google-Original-Date: Wed, 24 Nov 2021 19:30:07 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-Subject: RE: [PATCH 5.15 000/279] 5.15.5-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        Wed, 24 Nov 2021 11:30:40 -0800 (PST)
+Date:   Wed, 24 Nov 2021 11:30:37 -0800
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, joao@overdrivepizza.com, hjl.tools@gmail.com,
+        andrew.cooper3@citrix.com, linux-kernel@vger.kernel.org,
+        ndesaulniers@google.com, keescook@chromium.org,
+        samitolvanen@google.com
+Subject: Re: [RFC][PATCH 6/6] objtool: Add IBT validation / fixups
+Message-ID: <20211124193037.nu7q4pa3sianzqtc@treble>
+References: <20211122170301.764232470@infradead.org>
+ <20211122170805.338489412@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211122170805.338489412@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 12:54:47 +0100, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.15.5 release.
-> There are 279 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.5-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Mon, Nov 22, 2021 at 06:03:07PM +0100, Peter Zijlstra wrote:
+> +static int validate_ibt_reloc(struct objtool_file *file, struct reloc *reloc, char **name)
+> +{
+> +	struct instruction *dest;
+> +	struct section *sec;
+> +	unsigned long off;
+> +
+> +	sec = reloc->sym->sec;
+> +	off = reloc->sym->offset + reloc->addend;
+> +
+> +	dest = find_insn(file, sec, off);
+> +	if (!dest)
+> +		return 0;
+> +
+> +	if (name && dest->func)
+> +		*name = dest->func->name;
 
-5.15.5-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+I think these checks can be further narrowed down by only looking for
+X86_64_64 relocs.
+
+> +	list_for_each_entry(insn, &file->endbr_list, call_node) {
+> +		if (ibt_seal) {
+> +			elf_write_insn(file->elf, insn->sec,
+> +				       insn->offset, insn->len,
+> +				       arch_nop_insn(insn->len));
+> +		}
+
+Like the retpoline rewriting, I'd much rather have objtool create
+annotations which the kernel can then read and patch itself.
+
+e.g. have '.ibt.direct_call_sites' and '.ibt.unused_endbr_insns'
+sections.
+
+-- 
+Josh
 
