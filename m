@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86E245B9F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8870945BB95
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:18:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbhKXMGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:06:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60698 "EHLO mail.kernel.org"
+        id S243806AbhKXMVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:21:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242075AbhKXMFS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:05:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9428560FDA;
-        Wed, 24 Nov 2021 12:02:08 +0000 (UTC)
+        id S243229AbhKXMPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:15:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26331610A0;
+        Wed, 24 Nov 2021 12:10:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755329;
-        bh=OvZ9OPZnsXe6Z3eJ9/ts3KWOptopX93zvoA1W6R0HnU=;
+        s=korg; t=1637755801;
+        bh=vWEvm1Ld07YN7rGH8D6rVEXcxMo+A7GBzRDSKZ1Ogxw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hwmv/0kcLCobr7Va1NYj2x1Ti4GYrkvbisnbjW5mGaUPQ54N1Z0gS6mq3fXIGr84P
-         L6f/Gu6YB3Vs3ZpGOO81RW5J3jx/QHp3KRdeefa1NZT9y35UYbGeCG/jTXGQCe1du9
-         gRT1gEBfWoh5K1AZtMk3gZFLe3Io5TmT2cFeoesU=
+        b=EpA/cmdC9sDPLS8NvRLbPAZ8NummxMmNqjKK7hTDJAbZUMZiRFdiidBNh8uMTdkFI
+         CGzYAhP76hTOsL5+eCujEABkctmZObtiu21eza4xtHYs4Ih7+WHo6lScks967LYaPu
+         nVNgp+1R4PZPlyv+WECkKyZ+sqj9RwfyTPqd/dkE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 4.4 023/162] btrfs: fix lost error handling when replaying directory deletes
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.9 055/207] USB: iowarrior: fix control-message timeouts
 Date:   Wed, 24 Nov 2021 12:55:26 +0100
-Message-Id: <20211124115659.081105349@linuxfoundation.org>
+Message-Id: <20211124115705.711740928@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +38,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 10adb1152d957a4d570ad630f93a88bb961616c1 upstream.
+commit 79a4479a17b83310deb0b1a2a274fe5be12d2318 upstream.
 
-At replay_dir_deletes(), if find_dir_range() returns an error we break out
-of the main while loop and then assign a value of 0 (success) to the 'ret'
-variable, resulting in completely ignoring that an error happened. Fix
-that by jumping to the 'out' label when find_dir_range() returns an error
-(negative value).
+USB control-message timeouts are specified in milliseconds and should
+specifically not vary with CONFIG_HZ.
 
-CC: stable@vger.kernel.org # 4.4+
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Use the common control-message timeout define for the five-second
+timeout and drop the driver-specific one.
+
+Fixes: 946b960d13c1 ("USB: add driver for iowarrior devices.")
+Cc: stable@vger.kernel.org      # 2.6.21
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211025115159.4954-3-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/tree-log.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/usb/misc/iowarrior.c |    8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -2207,7 +2207,9 @@ again:
- 		else {
- 			ret = find_dir_range(log, path, dirid, key_type,
- 					     &range_start, &range_end);
--			if (ret != 0)
-+			if (ret < 0)
-+				goto out;
-+			else if (ret > 0)
- 				break;
- 		}
+--- a/drivers/usb/misc/iowarrior.c
++++ b/drivers/usb/misc/iowarrior.c
+@@ -96,10 +96,6 @@ struct iowarrior {
+ /*    globals   */
+ /*--------------*/
  
+-/*
+- *  USB spec identifies 5 second timeouts.
+- */
+-#define GET_TIMEOUT 5
+ #define USB_REQ_GET_REPORT  0x01
+ //#if 0
+ static int usb_get_report(struct usb_device *dev,
+@@ -111,7 +107,7 @@ static int usb_get_report(struct usb_dev
+ 			       USB_DIR_IN | USB_TYPE_CLASS |
+ 			       USB_RECIP_INTERFACE, (type << 8) + id,
+ 			       inter->desc.bInterfaceNumber, buf, size,
+-			       GET_TIMEOUT*HZ);
++			       USB_CTRL_GET_TIMEOUT);
+ }
+ //#endif
+ 
+@@ -126,7 +122,7 @@ static int usb_set_report(struct usb_int
+ 			       USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+ 			       (type << 8) + id,
+ 			       intf->cur_altsetting->desc.bInterfaceNumber, buf,
+-			       size, HZ);
++			       size, 1000);
+ }
+ 
+ /*---------------------*/
 
 
