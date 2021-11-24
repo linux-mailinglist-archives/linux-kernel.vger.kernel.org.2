@@ -2,81 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B72F45B13B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 02:45:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C51A145B143
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 02:45:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235778AbhKXBsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 20:48:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234973AbhKXBsj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 20:48:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F01B6608FB;
-        Wed, 24 Nov 2021 01:45:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637718330;
-        bh=kiaJRLePvhBgr5TnXI0Vb5WflATcvJsR2VopECRaz+Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=H4nPHI/Xsmt8UdMFr2vKGoKxP+PJPQ1uaEOkEAr4liBk8OJPrchvj9cfqoUo4v6N4
-         yqAVcGYv3w4MtFKJYEInTb9G5m8Km6293hn+f1UUooIOYE0J2xW4DnZgQtKtu0+Wf2
-         LpZLa6moC9t/qrJI3mAOvp29wb1ogBA+3vVKCVWeme7oIvfq7vkUuA4dlKR3vsyM0A
-         UULujK6QCOArwFCUOjw9kSwiYRA/OiP8S5KKRbSpG7tkhEugqfkg1KJRgL3nxkBpL1
-         pFMgtpHXWukHfMKlfJqJKD9frl8Q9jUCMJADbw45GpT01oIvsPsS7w/tNLe2wrm2Yt
-         mH5s1uWSj967w==
-Date:   Wed, 24 Nov 2021 10:45:26 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH] tracing/uprobe: Fix uprobe_perf_open probes iteration
-Message-Id: <20211124104526.a9da7deb3fe64c76f0bd9a86@kernel.org>
-In-Reply-To: <20211123142801.182530-1-jolsa@kernel.org>
-References: <20211123142801.182530-1-jolsa@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S236648AbhKXBs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 20:48:58 -0500
+Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:53075 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236317AbhKXBs6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 20:48:58 -0500
+Received: from tomoyo.flets-east.jp ([114.149.34.46])
+        by smtp.orange.fr with ESMTPA
+        id phLum5yhx1UGBphM0mqShK; Wed, 24 Nov 2021 02:45:48 +0100
+X-ME-Helo: tomoyo.flets-east.jp
+X-ME-Auth: MDU0YmViZGZmMDIzYiBlMiM2NTczNTRjNWZkZTMwOGRiOGQ4ODf3NWI1ZTMyMzdiODlhOQ==
+X-ME-Date: Wed, 24 Nov 2021 02:45:48 +0100
+X-ME-IP: 114.149.34.46
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Jimmy Assarsson <extja@kvaser.com>,
+        Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH v2] can: bittiming: replace CAN units with the generic ones from linux/units.h
+Date:   Wed, 24 Nov 2021 10:45:36 +0900
+Message-Id: <20211124014536.782550-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021 15:28:01 +0100
-Jiri Olsa <jolsa@redhat.com> wrote:
+In [1], we introduced a set of units in linux/can/bittiming.h. Since
+then, generic SI prefixes were added to linux/units.h in [2]. Those
+new prefixes can perfectly replace CAN specific ones.
 
-> Add missing 'tu' variable initialization in the probes loop,
-> otherwise the head 'tu' is used instead of added probes.
+This patch replaces all occurrences of the CAN units with their
+corresponding prefix (from linux/units) and the unit (as a comment)
+according to below table.
 
-Thanks for fixing this bug!
+ CAN units	SI metric prefix (from linux/units) + unit (as a comment)
+ ------------------------------------------------------------------------
+ CAN_KBPS	KILO /* BPS */
+ CAN_MBPS	MEGA /* BPS */
+ CAM_MHZ	MEGA /* Hz */
 
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+The definition are then removed from linux/can/bittiming.h
 
-> 
-> Fixes: 99c9a923e97a ("tracing/uprobe: Fix double perf_event linking on multiprobe uprobe")
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  kernel/trace/trace_uprobe.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-> index 0a5c0db3137e..f5f0039d31e5 100644
-> --- a/kernel/trace/trace_uprobe.c
-> +++ b/kernel/trace/trace_uprobe.c
-> @@ -1313,6 +1313,7 @@ static int uprobe_perf_open(struct trace_event_call *call,
->  		return 0;
->  
->  	list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
-> +		tu = container_of(pos, struct trace_uprobe, tp);
->  		err = uprobe_apply(tu->inode, tu->offset, &tu->consumer, true);
->  		if (err) {
->  			uprobe_perf_close(call, event);
-> -- 
-> 2.32.0
-> 
+[1] commit 1d7750760b70 ("can: bittiming: add CAN_KBPS, CAN_MBPS and
+CAN_MHZ macros")
 
+[2] commit 26471d4a6cf8 ("units: Add SI metric prefix definitions")
 
+Suggested-by: Jimmy Assarsson <extja@kvaser.com>
+Suggested-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+---
+* Changelog *
+
+v1 -> v2
+
+  * v1 only used the prefix and the information about the unit
+    disappeared. v2 restores the unit information by using a comment.
+---
+ drivers/net/can/dev/bittiming.c           | 5 +++--
+ drivers/net/can/usb/etas_es58x/es581_4.c  | 5 +++--
+ drivers/net/can/usb/etas_es58x/es58x_fd.c | 5 +++--
+ include/linux/can/bittiming.h             | 7 -------
+ 4 files changed, 9 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/net/can/dev/bittiming.c b/drivers/net/can/dev/bittiming.c
+index 0509625c3082..d5fca3bfaf9a 100644
+--- a/drivers/net/can/dev/bittiming.c
++++ b/drivers/net/can/dev/bittiming.c
+@@ -4,6 +4,7 @@
+  * Copyright (C) 2008-2009 Wolfgang Grandegger <wg@grandegger.com>
+  */
+ 
++#include <linux/units.h>
+ #include <linux/can/dev.h>
+ 
+ #ifdef CONFIG_CAN_CALC_BITTIMING
+@@ -81,9 +82,9 @@ int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
+ 	if (bt->sample_point) {
+ 		sample_point_nominal = bt->sample_point;
+ 	} else {
+-		if (bt->bitrate > 800 * CAN_KBPS)
++		if (bt->bitrate > 800 * KILO /* BPS */)
+ 			sample_point_nominal = 750;
+-		else if (bt->bitrate > 500 * CAN_KBPS)
++		else if (bt->bitrate > 500 * KILO /* BPS */)
+ 			sample_point_nominal = 800;
+ 		else
+ 			sample_point_nominal = 875;
+diff --git a/drivers/net/can/usb/etas_es58x/es581_4.c b/drivers/net/can/usb/etas_es58x/es581_4.c
+index 14e360c9f2c9..1bcdcece5ec7 100644
+--- a/drivers/net/can/usb/etas_es58x/es581_4.c
++++ b/drivers/net/can/usb/etas_es58x/es581_4.c
+@@ -10,6 +10,7 @@
+  */
+ 
+ #include <linux/kernel.h>
++#include <linux/units.h>
+ #include <asm/unaligned.h>
+ 
+ #include "es58x_core.h"
+@@ -469,8 +470,8 @@ const struct es58x_parameters es581_4_param = {
+ 	.bittiming_const = &es581_4_bittiming_const,
+ 	.data_bittiming_const = NULL,
+ 	.tdc_const = NULL,
+-	.bitrate_max = 1 * CAN_MBPS,
+-	.clock = {.freq = 50 * CAN_MHZ},
++	.bitrate_max = 1 * MEGA /* BPS */,
++	.clock = {.freq = 50 * MEGA /* Hz */},
+ 	.ctrlmode_supported = CAN_CTRLMODE_CC_LEN8_DLC,
+ 	.tx_start_of_frame = 0xAFAF,
+ 	.rx_start_of_frame = 0xFAFA,
+diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.c b/drivers/net/can/usb/etas_es58x/es58x_fd.c
+index 4f0cae29f4d8..ec87126e1a7d 100644
+--- a/drivers/net/can/usb/etas_es58x/es58x_fd.c
++++ b/drivers/net/can/usb/etas_es58x/es58x_fd.c
+@@ -12,6 +12,7 @@
+  */
+ 
+ #include <linux/kernel.h>
++#include <linux/units.h>
+ #include <asm/unaligned.h>
+ 
+ #include "es58x_core.h"
+@@ -522,8 +523,8 @@ const struct es58x_parameters es58x_fd_param = {
+ 	 * Mbps work in an optimal environment but are not recommended
+ 	 * for production environment.
+ 	 */
+-	.bitrate_max = 8 * CAN_MBPS,
+-	.clock = {.freq = 80 * CAN_MHZ},
++	.bitrate_max = 8 * MEGA /* BPS */,
++	.clock = {.freq = 80 * MEGA /* Hz */},
+ 	.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK | CAN_CTRLMODE_LISTENONLY |
+ 	    CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_FD | CAN_CTRLMODE_FD_NON_ISO |
+ 	    CAN_CTRLMODE_CC_LEN8_DLC | CAN_CTRLMODE_TDC_AUTO,
+diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
+index 20b50baf3a02..a81652d1c6f3 100644
+--- a/include/linux/can/bittiming.h
++++ b/include/linux/can/bittiming.h
+@@ -12,13 +12,6 @@
+ #define CAN_SYNC_SEG 1
+ 
+ 
+-/* Kilobits and Megabits per second */
+-#define CAN_KBPS 1000UL
+-#define CAN_MBPS 1000000UL
+-
+-/* Megahertz */
+-#define CAN_MHZ 1000000UL
+-
+ #define CAN_CTRLMODE_TDC_MASK					\
+ 	(CAN_CTRLMODE_TDC_AUTO | CAN_CTRLMODE_TDC_MANUAL)
+ 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.32.0
+
