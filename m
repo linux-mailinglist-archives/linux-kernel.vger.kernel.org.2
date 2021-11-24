@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6362445C390
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:38:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8116245C26D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:26:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349379AbhKXNkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:40:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60382 "EHLO mail.kernel.org"
+        id S1344671AbhKXN3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:29:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352262AbhKXNhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:37:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C15761D7C;
-        Wed, 24 Nov 2021 12:55:33 +0000 (UTC)
+        id S1349727AbhKXNXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:23:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DC5661B1F;
+        Wed, 24 Nov 2021 12:48:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758533;
-        bh=h2FQ6c81wvOsp7iDw64ZL7YMBzZnOHCOfq69dHuhyps=;
+        s=korg; t=1637758098;
+        bh=7Tzg64xsHjSzcU7yk1JCab0emvl6zjICulLx5JwfLXE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mt3xh9qkSbBQ624OzmmtXKb4520PWz8vPTEVs3fbViTJmaC4K8HDXarhTNdFjWD6f
-         NQrzotxBGuwXNMIgXd6ya8b7PLprpYL8SPdy2jXYp6I6uxavb7Cf+fMq0kV2gFn8J+
-         UJqZK6jKz6C/CUXrfNGdrydF7qtyELtuFHU5s/7o=
+        b=t99+HvxukahpgP7NjobYlgy/Ax4ij4AcwDRn/Jg9u2oYUvo8qlT+GaEcfTuBKrpdn
+         1dXtOwL3pu5+mPLByJHmIxsG/Z316z0xG1GklMfN0N+skpzhoxy7iF/sU3GsEH8Yme
+         wAO9oC2RWzBxpbXWQJVmDX1N40PPc2GhZe66c5nk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Eryk Rybak <eryk.roch.rybak@intel.com>,
-        Konrad Jankowski <konrad0.jankowski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 100/154] i40e: Fix correct max_pkt_size on VF RX queue
+Subject: [PATCH 5.4 060/100] net: dpaa2-eth: fix use-after-free in dpaa2_eth_remove
 Date:   Wed, 24 Nov 2021 12:58:16 +0100
-Message-Id: <20211124115705.527264811@linuxfoundation.org>
+Message-Id: <20211124115656.814188180@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,115 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eryk Rybak <eryk.roch.rybak@intel.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 6afbd7b3c53cb7417189f476e99d431daccb85b0 ]
+[ Upstream commit 9b5a333272a48c2f8b30add7a874e46e8b26129c ]
 
-Setting VLAN port increasing RX queue max_pkt_size
-by 4 bytes to take VLAN tag into account.
-Trigger the VF reset when setting port VLAN for
-VF to renegotiate its capabilities and reinitialize.
+Access to netdev after free_netdev() will cause use-after-free bug.
+Move debug log before free_netdev() call to avoid it.
 
-Fixes: ba4e003d29c1 ("i40e: don't hold spinlock while resetting VF")
-Signed-off-by: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
-Signed-off-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Signed-off-by: Eryk Rybak <eryk.roch.rybak@intel.com>
-Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: 7472dd9f6499 ("staging: fsl-dpaa2/eth: Move print message")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../ethernet/intel/i40e/i40e_virtchnl_pf.c    | 53 ++++---------------
- 1 file changed, 9 insertions(+), 44 deletions(-)
+ drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-index a02167cce81e1..dacd1453b7311 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-@@ -621,14 +621,13 @@ static int i40e_config_vsi_rx_queue(struct i40e_vf *vf, u16 vsi_id,
- 				    u16 vsi_queue_id,
- 				    struct virtchnl_rxq_info *info)
- {
-+	u16 pf_queue_id = i40e_vc_get_pf_queue_id(vf, vsi_id, vsi_queue_id);
- 	struct i40e_pf *pf = vf->pf;
-+	struct i40e_vsi *vsi = pf->vsi[vf->lan_vsi_idx];
- 	struct i40e_hw *hw = &pf->hw;
- 	struct i40e_hmc_obj_rxq rx_ctx;
--	u16 pf_queue_id;
- 	int ret = 0;
+diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+index 7af7cc7c8669a..34540e604f748 100644
+--- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
++++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+@@ -3616,10 +3616,10 @@ static int dpaa2_eth_remove(struct fsl_mc_device *ls_dev)
  
--	pf_queue_id = i40e_vc_get_pf_queue_id(vf, vsi_id, vsi_queue_id);
+ 	fsl_mc_portal_free(priv->mc_io);
+ 
+-	free_netdev(net_dev);
 -
- 	/* clear the context structure first */
- 	memset(&rx_ctx, 0, sizeof(struct i40e_hmc_obj_rxq));
+ 	dev_dbg(net_dev->dev.parent, "Removed interface %s\n", net_dev->name);
  
-@@ -666,6 +665,10 @@ static int i40e_config_vsi_rx_queue(struct i40e_vf *vf, u16 vsi_id,
- 	}
- 	rx_ctx.rxmax = info->max_pkt_size;
- 
-+	/* if port VLAN is configured increase the max packet size */
-+	if (vsi->info.pvid)
-+		rx_ctx.rxmax += VLAN_HLEN;
++	free_netdev(net_dev);
 +
- 	/* enable 32bytes desc always */
- 	rx_ctx.dsize = 1;
- 
-@@ -4133,34 +4136,6 @@ error_param:
- 	return ret;
+ 	return 0;
  }
- 
--/**
-- * i40e_vsi_has_vlans - True if VSI has configured VLANs
-- * @vsi: pointer to the vsi
-- *
-- * Check if a VSI has configured any VLANs. False if we have a port VLAN or if
-- * we have no configured VLANs. Do not call while holding the
-- * mac_filter_hash_lock.
-- */
--static bool i40e_vsi_has_vlans(struct i40e_vsi *vsi)
--{
--	bool have_vlans;
--
--	/* If we have a port VLAN, then the VSI cannot have any VLANs
--	 * configured, as all MAC/VLAN filters will be assigned to the PVID.
--	 */
--	if (vsi->info.pvid)
--		return false;
--
--	/* Since we don't have a PVID, we know that if the device is in VLAN
--	 * mode it must be because of a VLAN filter configured on this VSI.
--	 */
--	spin_lock_bh(&vsi->mac_filter_hash_lock);
--	have_vlans = i40e_is_vsi_in_vlan(vsi);
--	spin_unlock_bh(&vsi->mac_filter_hash_lock);
--
--	return have_vlans;
--}
--
- /**
-  * i40e_ndo_set_vf_port_vlan
-  * @netdev: network interface device structure
-@@ -4217,19 +4192,9 @@ int i40e_ndo_set_vf_port_vlan(struct net_device *netdev, int vf_id,
- 		/* duplicate request, so just return success */
- 		goto error_pvid;
- 
--	if (i40e_vsi_has_vlans(vsi)) {
--		dev_err(&pf->pdev->dev,
--			"VF %d has already configured VLAN filters and the administrator is requesting a port VLAN override.\nPlease unload and reload the VF driver for this change to take effect.\n",
--			vf_id);
--		/* Administrator Error - knock the VF offline until he does
--		 * the right thing by reconfiguring his network correctly
--		 * and then reloading the VF driver.
--		 */
--		i40e_vc_disable_vf(vf);
--		/* During reset the VF got a new VSI, so refresh the pointer. */
--		vsi = pf->vsi[vf->lan_vsi_idx];
--	}
--
-+	i40e_vc_disable_vf(vf);
-+	/* During reset the VF got a new VSI, so refresh a pointer. */
-+	vsi = pf->vsi[vf->lan_vsi_idx];
- 	/* Locked once because multiple functions below iterate list */
- 	spin_lock_bh(&vsi->mac_filter_hash_lock);
  
 -- 
 2.33.0
