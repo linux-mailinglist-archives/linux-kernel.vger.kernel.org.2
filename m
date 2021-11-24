@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E3845C0E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:09:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 972BD45C573
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245460AbhKXNM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:12:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51816 "EHLO mail.kernel.org"
+        id S1349145AbhKXN5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:57:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344995AbhKXNJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:09:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3E19613A7;
-        Wed, 24 Nov 2021 12:40:51 +0000 (UTC)
+        id S1352030AbhKXNwy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:52:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93F1E63273;
+        Wed, 24 Nov 2021 13:05:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757653;
-        bh=l2rqRYqbJxvKx+Xt1wp0A5WyzTXuYc54kSpde7tb8Kk=;
+        s=korg; t=1637759113;
+        bh=29GL2qkkrAhf/3tt4guf60qRp+JD6OnSf+PZGy3yaPc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dkCLWx24NA1ppbC49XD7rTOm3HXAcyn/aD6/Jlwu1VwRRer8OQ3+PXM9l5LRjMQ7d
-         C4qVuxWbBuWCZmlY6T1kdFaHZLPoOrU3e56/8L2KBnjZQQA2124fKNtSLE59EHZZDJ
-         07nE1JDsv7TJpyzq2uGqKglPmapBmtEVZx4CYtnk=
+        b=0eQWaa09PKuYWynV81J+sHi1Tgg/g/LCV/gCHUX/eKozRhYLLg0/TWj0WdtHh7vPZ
+         i9i7ZrpeN7ANuULWqeFyMIBKzzB7Lz3aOPmYYfnHCVlV7vF3fs/f84c3rTBeOw5hFu
+         trW5PEyENUwHgjAp/ZOsMJvn/ZIKcStYs3gNjgj4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-Subject: [PATCH 4.19 233/323] ARM: 9155/1: fix early early_iounmap()
-Date:   Wed, 24 Nov 2021 12:57:03 +0100
-Message-Id: <20211124115726.788908755@linuxfoundation.org>
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 137/279] gpio: rockchip: needs GENERIC_IRQ_CHIP to fix build errors
+Date:   Wed, 24 Nov 2021 12:57:04 +0100
+Message-Id: <20211124115723.522271135@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-commit 0d08e7bf0d0d1a29aff7b16ef516f7415eb1aa05 upstream.
+[ Upstream commit d6912b1251b47e6b04ea8c8881dfb35a6e7a3e29 ]
 
-Currently __set_fixmap() bails out with a warning when called in early boot
-from early_iounmap(). Fix it, and while at it, make the comment a bit easier
-to understand.
+gpio-rockchip uses interfaces that are provided by the Kconfig
+symbol GENERIC_IRQ_CHIP, so the driver should select that symbol
+in order to prevent build errors.
 
-Cc: <stable@vger.kernel.org>
-Fixes: b089c31c519c ("ARM: 8667/3: Fix memory attribute inconsistencies when using fixmap")
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes these build errors (and more):
+
+aarch64-linux-ld: drivers/gpio/gpio-rockchip.o: in function `rockchip_irq_disable':
+gpio-rockchip.c:(.text+0x454): undefined reference to `irq_gc_mask_set_bit'
+aarch64-linux-ld: drivers/gpio/gpio-rockchip.o: in function `rockchip_irq_enable':
+gpio-rockchip.c:(.text+0x478): undefined reference to `irq_gc_mask_clr_bit'
+aarch64-linux-ld: drivers/gpio/gpio-rockchip.o: in function `rockchip_interrupts_register':
+gpio-rockchip.c:(.text+0x518): undefined reference to `irq_generic_chip_ops'
+aarch64-linux-ld: gpio-rockchip.c:(.text+0x594): undefined reference to `__irq_alloc_domain_generic_chips'
+aarch64-linux-ld: gpio-rockchip.c:(.text+0x5cc): undefined reference to `irq_get_domain_generic_chip'
+aarch64-linux-ld: gpio-rockchip.c:(.text+0x5e0): undefined reference to `irq_gc_ack_set_bit'
+aarch64-linux-ld: gpio-rockchip.c:(.text+0x604): undefined reference to `irq_gc_set_wake'
+
+Fixes: 936ee2675eee ("gpio/rockchip: add driver for rockchip gpio")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mm/mmu.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpio/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/arm/mm/mmu.c
-+++ b/arch/arm/mm/mmu.c
-@@ -416,9 +416,9 @@ void __set_fixmap(enum fixed_addresses i
- 		     FIXADDR_END);
- 	BUG_ON(idx >= __end_of_fixed_addresses);
- 
--	/* we only support device mappings until pgprot_kernel has been set */
-+	/* We support only device mappings before pgprot_kernel is set. */
- 	if (WARN_ON(pgprot_val(prot) != pgprot_val(FIXMAP_PAGE_IO) &&
--		    pgprot_val(pgprot_kernel) == 0))
-+		    pgprot_val(prot) && pgprot_val(pgprot_kernel) == 0))
- 		return;
- 
- 	if (pgprot_val(prot))
+diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+index fae5141251e5d..947474f6abb45 100644
+--- a/drivers/gpio/Kconfig
++++ b/drivers/gpio/Kconfig
+@@ -523,6 +523,7 @@ config GPIO_REG
+ config GPIO_ROCKCHIP
+ 	tristate "Rockchip GPIO support"
+ 	depends on ARCH_ROCKCHIP || COMPILE_TEST
++	select GENERIC_IRQ_CHIP
+ 	select GPIOLIB_IRQCHIP
+ 	default ARCH_ROCKCHIP
+ 	help
+-- 
+2.33.0
+
 
 
