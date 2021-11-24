@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A00445BE54
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B22445BA77
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345101AbhKXMqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:46:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50308 "EHLO mail.kernel.org"
+        id S241557AbhKXML3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:11:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344165AbhKXMm0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:42:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 291B9613CF;
-        Wed, 24 Nov 2021 12:24:54 +0000 (UTC)
+        id S236365AbhKXMIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:08:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA09960FE7;
+        Wed, 24 Nov 2021 12:04:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756696;
-        bh=qPL6FfAAsUEbXBvPFCrQQH5IlJxjT/gDUPYGWVHzyiQ=;
+        s=korg; t=1637755480;
+        bh=8cr3ZoFMncs/Dg1Rf9OzB0VOmW96d/RgGv4mrjh/nsI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vESbE2TxcqYip0qm/bKADnxiWcjMTso4s4ZbqDzDPXPYT//vojvxDd3dEOGUlXbGd
-         pR0sOL9Bco874q02thOl2mihe2FKiYJ591nNLeBWytyopDoY/KPbSz6jJ++n+UhtXq
-         /aL485MDjwY8xwoHyAMJZHBKfu3v4Hcm6YTbpLhk=
+        b=tYtlLIQLn6uLTWF5FYvF7ORpjURKrcDJEB6d3wHzSA2gqiEyZxrCkSd+F/BU2LNQG
+         MieS2Sg9OzNcoXvNlw0uaZJ/c/QWDEZ+x2GsGhrPk+ZebIYbygWiyH7yYHgeXxg3Y7
+         vSFS/Pgb4RJXPhOvWYR35MrODPVfeOB8Mtfko19Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robin van der Gracht <robin@protonic.nl>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 171/251] auxdisplay: ht16k33: Fix frame buffer device blanking
+        stable@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.4 110/162] USB: chipidea: fix interrupt deadlock
 Date:   Wed, 24 Nov 2021 12:56:53 +0100
-Message-Id: <20211124115716.205380699@linuxfoundation.org>
+Message-Id: <20211124115701.884789980@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +39,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit 840fe258332544aa7321921e1723d37b772af7a9 ]
+commit 9aaa81c3366e8393a62374e3a1c67c69edc07b8a upstream.
 
-As the ht16k33 frame buffer sub-driver does not register an
-fb_ops.fb_blank() handler, blanking does not work:
+Chipidea core was calling the interrupt handler from non-IRQ context
+with interrupts enabled, something which can lead to a deadlock if
+there's an actual interrupt trying to take a lock that's already held
+(e.g. the controller lock in udc_irq()).
 
-    $ echo 1 > /sys/class/graphics/fb0/blank
-    sh: write error: Invalid argument
+Add a wrapper that can be used to fake interrupts instead of calling the
+handler directly.
 
-Fix this by providing a handler that always returns zero, to make sure
-blank events will be sent to the actual device handling the backlight.
+Fixes: 3ecb3e09b042 ("usb: chipidea: Use extcon framework for VBUS and ID detect")
+Fixes: 876d4e1e8298 ("usb: chipidea: core: add wakeup support for extcon")
+Cc: Peter Chen <peter.chen@kernel.org>
+Cc: stable@vger.kernel.org      # 4.4
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211021083447.20078-1-johan@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Reported-by: Robin van der Gracht <robin@protonic.nl>
-Suggested-by: Robin van der Gracht <robin@protonic.nl>
-Fixes: 8992da44c6805d53 ("auxdisplay: ht16k33: Driver for LED controller")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/auxdisplay/ht16k33.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/usb/chipidea/core.c |   21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index e3c8f355f9a62..f35b7ff29efd2 100644
---- a/drivers/auxdisplay/ht16k33.c
-+++ b/drivers/auxdisplay/ht16k33.c
-@@ -227,6 +227,15 @@ static const struct backlight_ops ht16k33_bl_ops = {
- 	.check_fb	= ht16k33_bl_check_fb,
- };
+--- a/drivers/usb/chipidea/core.c
++++ b/drivers/usb/chipidea/core.c
+@@ -518,7 +518,7 @@ int hw_device_reset(struct ci_hdrc *ci)
+ 	return 0;
+ }
  
-+/*
-+ * Blank events will be passed to the actual device handling the backlight when
-+ * we return zero here.
-+ */
-+static int ht16k33_blank(int blank, struct fb_info *info)
+-static irqreturn_t ci_irq(int irq, void *data)
++static irqreturn_t ci_irq_handler(int irq, void *data)
+ {
+ 	struct ci_hdrc *ci = data;
+ 	irqreturn_t ret = IRQ_NONE;
+@@ -571,6 +571,15 @@ static irqreturn_t ci_irq(int irq, void
+ 	return ret;
+ }
+ 
++static void ci_irq(struct ci_hdrc *ci)
 +{
-+	return 0;
++	unsigned long flags;
++
++	local_irq_save(flags);
++	ci_irq_handler(ci->irq, ci);
++	local_irq_restore(flags);
 +}
 +
- static int ht16k33_mmap(struct fb_info *info, struct vm_area_struct *vma)
+ static int ci_vbus_notifier(struct notifier_block *nb, unsigned long event,
+ 			    void *ptr)
  {
- 	struct ht16k33_priv *priv = info->par;
-@@ -239,6 +248,7 @@ static struct fb_ops ht16k33_fb_ops = {
- 	.owner = THIS_MODULE,
- 	.fb_read = fb_sys_read,
- 	.fb_write = fb_sys_write,
-+	.fb_blank = ht16k33_blank,
- 	.fb_fillrect = sys_fillrect,
- 	.fb_copyarea = sys_copyarea,
- 	.fb_imageblit = sys_imageblit,
--- 
-2.33.0
-
+@@ -584,7 +593,7 @@ static int ci_vbus_notifier(struct notif
+ 
+ 	vbus->changed = true;
+ 
+-	ci_irq(ci->irq, ci);
++	ci_irq(ci);
+ 	return NOTIFY_DONE;
+ }
+ 
+@@ -601,7 +610,7 @@ static int ci_id_notifier(struct notifie
+ 
+ 	id->changed = true;
+ 
+-	ci_irq(ci->irq, ci);
++	ci_irq(ci);
+ 	return NOTIFY_DONE;
+ }
+ 
+@@ -1023,7 +1032,7 @@ static int ci_hdrc_probe(struct platform
+ 	}
+ 
+ 	platform_set_drvdata(pdev, ci);
+-	ret = devm_request_irq(dev, ci->irq, ci_irq, IRQF_SHARED,
++	ret = devm_request_irq(dev, ci->irq, ci_irq_handler, IRQF_SHARED,
+ 			ci->platdata->name, ci);
+ 	if (ret)
+ 		goto stop;
+@@ -1138,11 +1147,11 @@ static void ci_extcon_wakeup_int(struct
+ 
+ 	if (!IS_ERR(cable_id->edev) && ci->is_otg &&
+ 		(otgsc & OTGSC_IDIE) && (otgsc & OTGSC_IDIS))
+-		ci_irq(ci->irq, ci);
++		ci_irq(ci);
+ 
+ 	if (!IS_ERR(cable_vbus->edev) && ci->is_otg &&
+ 		(otgsc & OTGSC_BSVIE) && (otgsc & OTGSC_BSVIS))
+-		ci_irq(ci->irq, ci);
++		ci_irq(ci);
+ }
+ 
+ static int ci_controller_resume(struct device *dev)
 
 
