@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EFF45C4A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:47:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9528445C4F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:51:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354209AbhKXNup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:50:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39074 "EHLO mail.kernel.org"
+        id S1354984AbhKXNxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:53:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348530AbhKXNpl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:45:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E252611EF;
-        Wed, 24 Nov 2021 13:00:47 +0000 (UTC)
+        id S1354234AbhKXNtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:49:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29E116335F;
+        Wed, 24 Nov 2021 13:02:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758848;
-        bh=W+AmS8/JMVZC3xZfY0CjrOobJuawsCHHZdpidwTZVCI=;
+        s=korg; t=1637758974;
+        bh=3rmI0HOjS667eg5AE/qvuawOwCyc1f9XfLR7kyTPiEk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tRrdjX89WpwzczkC0KqphONT287nj24y2zpjVw2l+kokcM+ugn8DHD9Loobp50yI+
-         71oIpwR50icY2MEMTworSUanTBu2oLjNsvvXVVMx6VHdofnjiL4gcW6tHLPJdFAYqv
-         Ts3XNgC5NEvGTmxVUarVDuBcuwsrhlno22fWmJ2g=
+        b=pGqTgUZvnPicHVLyegLuEF7YeLyFBgqR2Rs1RFfleho8w0wxS83DSpesihES+7yDF
+         kiFmVqxxp6nXjI0HtWkmUXEcRtL4N8C7RFOLSRi7ZsAcyFExfhGQFC1McAD5sHUKEu
+         3P2KEv0dB7yFstjuuOEeRo9ok/8+CPfTbJXcn4+E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
+        stable@vger.kernel.org, Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 048/279] firmware_loader: fix pre-allocated buf built-in firmware use
-Date:   Wed, 24 Nov 2021 12:55:35 +0100
-Message-Id: <20211124115720.388915305@linuxfoundation.org>
+Subject: [PATCH 5.15 049/279] cpuidle: tegra: Check whether PMC is ready
+Date:   Wed, 24 Nov 2021 12:55:36 +0100
+Message-Id: <20211124115720.426435953@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
 References: <20211124115718.776172708@linuxfoundation.org>
@@ -39,81 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luis Chamberlain <mcgrof@kernel.org>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-[ Upstream commit f7a07f7b96033df7709042ff38e998720a3f7119 ]
+[ Upstream commit bdb1ffdad3b73e4d0538098fc02e2ea87a6b27cd ]
 
-The firmware_loader can be used with a pre-allocated buffer
-through the use of the API calls:
+Check whether PMC is ready before proceeding with the cpuidle registration.
+This fixes racing with the PMC driver probe order, which results in a
+disabled deepest CC6 idling state if cpuidle driver is probed before the
+PMC.
 
-  o request_firmware_into_buf()
-  o request_partial_firmware_into_buf()
-
-If the firmware was built-in and present, our current check
-for if the built-in firmware fits into the pre-allocated buffer
-does not return any errors, and we proceed to tell the caller
-that everything worked fine. It's a lie and no firmware would
-end up being copied into the pre-allocated buffer. So if the
-caller trust the result it may end up writing a bunch of 0's
-to a device!
-
-Fix this by making the function that checks for the pre-allocated
-buffer return non-void. Since the typical use case is when no
-pre-allocated buffer is provided make this return successfully
-for that case. If the built-in firmware does *not* fit into the
-pre-allocated buffer size return a failure as we should have
-been doing before.
-
-I'm not aware of users of the built-in firmware using the API
-calls with a pre-allocated buffer, as such I doubt this fixes
-any real life issue. But you never know... perhaps some oddball
-private tree might use it.
-
-In so far as upstream is concerned this just fixes our code for
-correctness.
-
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-Link: https://lore.kernel.org/r/20210917182226.3532898-2-mcgrof@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/firmware_loader/main.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/cpuidle/cpuidle-tegra.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/base/firmware_loader/main.c b/drivers/base/firmware_loader/main.c
-index bdbedc6660a87..ef904b8b112e6 100644
---- a/drivers/base/firmware_loader/main.c
-+++ b/drivers/base/firmware_loader/main.c
-@@ -100,12 +100,15 @@ static struct firmware_cache fw_cache;
- extern struct builtin_fw __start_builtin_fw[];
- extern struct builtin_fw __end_builtin_fw[];
+diff --git a/drivers/cpuidle/cpuidle-tegra.c b/drivers/cpuidle/cpuidle-tegra.c
+index 508bd9f237929..9845629aeb6d4 100644
+--- a/drivers/cpuidle/cpuidle-tegra.c
++++ b/drivers/cpuidle/cpuidle-tegra.c
+@@ -337,6 +337,9 @@ static void tegra_cpuidle_setup_tegra114_c7_state(void)
  
--static void fw_copy_to_prealloc_buf(struct firmware *fw,
-+static bool fw_copy_to_prealloc_buf(struct firmware *fw,
- 				    void *buf, size_t size)
+ static int tegra_cpuidle_probe(struct platform_device *pdev)
  {
--	if (!buf || size < fw->size)
--		return;
-+	if (!buf)
-+		return true;
-+	if (size < fw->size)
-+		return false;
- 	memcpy(buf, fw->data, fw->size);
-+	return true;
- }
- 
- static bool fw_get_builtin_firmware(struct firmware *fw, const char *name,
-@@ -117,9 +120,7 @@ static bool fw_get_builtin_firmware(struct firmware *fw, const char *name,
- 		if (strcmp(name, b_fw->name) == 0) {
- 			fw->size = b_fw->size;
- 			fw->data = b_fw->data;
--			fw_copy_to_prealloc_buf(fw, buf, size);
--
--			return true;
-+			return fw_copy_to_prealloc_buf(fw, buf, size);
- 		}
- 	}
- 
++	if (tegra_pmc_get_suspend_mode() == TEGRA_SUSPEND_NOT_READY)
++		return -EPROBE_DEFER;
++
+ 	/* LP2 could be disabled in device-tree */
+ 	if (tegra_pmc_get_suspend_mode() < TEGRA_SUSPEND_LP2)
+ 		tegra_cpuidle_disable_state(TEGRA_CC6);
 -- 
 2.33.0
 
