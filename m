@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C66F345BAA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D139A45BDFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:41:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241955AbhKXMMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:12:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33882 "EHLO mail.kernel.org"
+        id S245332AbhKXMm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:42:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242372AbhKXMJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:09:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B02A260174;
-        Wed, 24 Nov 2021 12:05:19 +0000 (UTC)
+        id S1344341AbhKXMk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:40:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0162D610A1;
+        Wed, 24 Nov 2021 12:23:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755520;
-        bh=v9pHMCjbcP4umAIkxK7QTpPF0wPM82LaS5Z/E0cUp8E=;
+        s=korg; t=1637756637;
+        bh=ViuG81GM7+tIlro50u32aN0A0xMWqqVY8TuJRKnrn8g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lvED/3owTV/E2P8LecDKU7CIuqssvtISiCN6DLY4OuxybdA79oCtYLatgBCI+N4Yt
-         j3Ej4ZL3wggHCKEGcXvQNftf/DpCy7HgNPd3aJA+Ajtwn0tKfHw4E/H0xABJ6YCUdO
-         a01bXfgz1OdF9leuI3RTIJqEmd/JezX9VF/N3Nug=
+        b=1MODWbkxnBtstQo11z6z7y+7m/mZZBGV4Z+jflRWAI+mtSBbW0RCTTj3IAKIY11on
+         rE6OQ14hw/q0PtG1GZekJaIvOAiUbE7eb8iUHKcfTHBbV3GTmXbhiw7OgiVulwz0Xq
+         s40cmtMNkH162YOnMjjALHOWA66ZmjPI0JvYx7KE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 093/162] serial: 8250_dw: Drop wrong use of ACPI_PTR()
+Subject: [PATCH 4.14 154/251] RDMA/mlx4: Return missed an error if device doesnt support steering
 Date:   Wed, 24 Nov 2021 12:56:36 +0100
-Message-Id: <20211124115701.336025649@linuxfoundation.org>
+Message-Id: <20211124115715.629718272@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit ebabb77a2a115b6c5e68f7364b598310b5f61fb2 ]
+[ Upstream commit f4e56ec4452f48b8292dcf0e1c4bdac83506fb8b ]
 
-ACPI_PTR() is more harmful than helpful. For example, in this case
-if CONFIG_ACPI=n, the ID table left unused which is not what we want.
+The error flow fixed in this patch is not possible because all kernel
+users of create QP interface check that device supports steering before
+set IB_QP_CREATE_NETIF_QP flag.
 
-Instead of adding ifdeffery here and there, drop ACPI_PTR().
-
-Fixes: 6a7320c4669f ("serial: 8250_dw: Add ACPI 5.0 support")
-Reported-by: Daniel Palmer <daniel@0x0f.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20211005134516.23218-1-andriy.shevchenko@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: c1c98501121e ("IB/mlx4: Add support for steerable IB UD QPs")
+Link: https://lore.kernel.org/r/91c61f6e60eb0240f8bbc321fda7a1d2986dd03c.1634023677.git.leonro@nvidia.com
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/8250/8250_dw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/mlx4/qp.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
-index 039837db65fcc..f3ed1eeaed4e1 100644
---- a/drivers/tty/serial/8250/8250_dw.c
-+++ b/drivers/tty/serial/8250/8250_dw.c
-@@ -607,7 +607,7 @@ static struct platform_driver dw8250_platform_driver = {
- 		.name		= "dw-apb-uart",
- 		.pm		= &dw8250_pm_ops,
- 		.of_match_table	= dw8250_of_match,
--		.acpi_match_table = ACPI_PTR(dw8250_acpi_match),
-+		.acpi_match_table = dw8250_acpi_match,
- 	},
- 	.probe			= dw8250_probe,
- 	.remove			= dw8250_remove,
+diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
+index df1ecd29057f8..8862eb9a6fe43 100644
+--- a/drivers/infiniband/hw/mlx4/qp.c
++++ b/drivers/infiniband/hw/mlx4/qp.c
+@@ -1144,8 +1144,10 @@ static int create_qp_common(struct mlx4_ib_dev *dev, struct ib_pd *pd,
+ 			if (dev->steering_support ==
+ 			    MLX4_STEERING_MODE_DEVICE_MANAGED)
+ 				qp->flags |= MLX4_IB_QP_NETIF;
+-			else
++			else {
++				err = -EINVAL;
+ 				goto err;
++			}
+ 		}
+ 
+ 		memcpy(&backup_cap, &init_attr->cap, sizeof(backup_cap));
 -- 
 2.33.0
 
