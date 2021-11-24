@@ -2,48 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E0645BCB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 306C545BED1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:49:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244080AbhKXMb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:31:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42172 "EHLO mail.kernel.org"
+        id S243586AbhKXMvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:51:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245204AbhKXMYp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:24:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F39A361212;
-        Wed, 24 Nov 2021 12:15:31 +0000 (UTC)
+        id S1346035AbhKXMsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:48:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02EAA61356;
+        Wed, 24 Nov 2021 12:28:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756132;
-        bh=RhoA94I73Mc3zr+GgW0KUPpLbuIVtcYNDaZLZBT097k=;
+        s=korg; t=1637756898;
+        bh=hxOkny9yZgUaQJFRSxBWUdZWFLl7onSNJHgQge5vJL4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EV3R13Tyu70V6PnO2jGxRN6L/wl0FFJcy5cnxHaGeELBBLDhMnnElmBhPvmShwItx
-         Fe/5x1oVNms8foRSkNbh1kilTcXGicbXJ6v5HsouKdbTiW7sbeChTs02OMPg/bKBEl
-         ld/0eyVrzpFJDLnsUX9Xuue9woQyfrNxMclNda+Y=
+        b=vaNf6phYuKrgOdZxP/rjckbukY1Rm4df+r/nFfUYp9JI0w9g7fpTPvAmZ+dG0HF38
+         ybUc7ND5GtS2wWyfQLlGeR6IXJI8xJQwi2KyYi6roq6ixIMEtK4NIFdvB07b5brjle
+         s8iNQVHXSb59mPRNoXhUOJtDltJINrgmy0NFy0uY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Artur Rojek <contact@artur-rojek.eu>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-mips@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@vger.kernel.org, Anatolij Gustschin <agust@denx.de>,
+        Rob Herring <robh@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 183/207] mips: bcm63xx: add support for clk_get_parent()
+Subject: [PATCH 4.14 212/251] powerpc/5200: dts: fix memory node unit name
 Date:   Wed, 24 Nov 2021 12:57:34 +0100
-Message-Id: <20211124115709.895922051@linuxfoundation.org>
+Message-Id: <20211124115717.626557322@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,63 +41,189 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Anatolij Gustschin <agust@denx.de>
 
-[ Upstream commit e8f67482e5a4bc8d0b65d606d08cb60ee123b468 ]
+[ Upstream commit aed2886a5e9ffc8269a4220bff1e9e030d3d2eb1 ]
 
-BCM63XX selects HAVE_LEGACY_CLK but does not provide/support
-clk_get_parent(), so add a simple implementation of that
-function so that callers of it will build without errors.
+Fixes build warnings:
+Warning (unit_address_vs_reg): /memory: node has a reg or ranges property, but no unit name
 
-Fixes these build errors:
-
-mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
-ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
-mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
-ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
-
-Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs." )
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Suggested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Cc: Artur Rojek <contact@artur-rojek.eu>
-Cc: Paul Cercueil <paul@crapouillou.net>
-Cc: linux-mips@vger.kernel.org
-Cc: Jonathan Cameron <jic23@kernel.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: linux-iio@vger.kernel.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: bcm-kernel-feedback-list@broadcom.com
-Cc: Jonas Gorski <jonas.gorski@gmail.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Anatolij Gustschin <agust@denx.de>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20211013220532.24759-4-agust@denx.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/bcm63xx/clk.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/powerpc/boot/dts/charon.dts    | 2 +-
+ arch/powerpc/boot/dts/digsy_mtc.dts | 2 +-
+ arch/powerpc/boot/dts/lite5200.dts  | 2 +-
+ arch/powerpc/boot/dts/lite5200b.dts | 2 +-
+ arch/powerpc/boot/dts/media5200.dts | 2 +-
+ arch/powerpc/boot/dts/mpc5200b.dtsi | 2 +-
+ arch/powerpc/boot/dts/o2d.dts       | 2 +-
+ arch/powerpc/boot/dts/o2d.dtsi      | 2 +-
+ arch/powerpc/boot/dts/o2dnt2.dts    | 2 +-
+ arch/powerpc/boot/dts/o3dnt.dts     | 2 +-
+ arch/powerpc/boot/dts/pcm032.dts    | 2 +-
+ arch/powerpc/boot/dts/tqm5200.dts   | 2 +-
+ 12 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/arch/mips/bcm63xx/clk.c b/arch/mips/bcm63xx/clk.c
-index b49fc9cb9cad2..4f375050ab8e9 100644
---- a/arch/mips/bcm63xx/clk.c
-+++ b/arch/mips/bcm63xx/clk.c
-@@ -336,6 +336,12 @@ void clk_disable(struct clk *clk)
+diff --git a/arch/powerpc/boot/dts/charon.dts b/arch/powerpc/boot/dts/charon.dts
+index 0e00e508eaa6a..1c8fe20752e6a 100644
+--- a/arch/powerpc/boot/dts/charon.dts
++++ b/arch/powerpc/boot/dts/charon.dts
+@@ -39,7 +39,7 @@
+ 		};
+ 	};
  
- EXPORT_SYMBOL(clk_disable);
+-	memory {
++	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x00000000 0x08000000>;	// 128MB
+ 	};
+diff --git a/arch/powerpc/boot/dts/digsy_mtc.dts b/arch/powerpc/boot/dts/digsy_mtc.dts
+index c280e75c86bfd..d4a0a367ed66b 100644
+--- a/arch/powerpc/boot/dts/digsy_mtc.dts
++++ b/arch/powerpc/boot/dts/digsy_mtc.dts
+@@ -20,7 +20,7 @@
+ 	model = "intercontrol,digsy-mtc";
+ 	compatible = "intercontrol,digsy-mtc";
  
-+struct clk *clk_get_parent(struct clk *clk)
-+{
-+	return NULL;
-+}
-+EXPORT_SYMBOL(clk_get_parent);
-+
- unsigned long clk_get_rate(struct clk *clk)
- {
- 	return clk->rate;
+-	memory {
++	memory@0 {
+ 		reg = <0x00000000 0x02000000>;	// 32MB
+ 	};
+ 
+diff --git a/arch/powerpc/boot/dts/lite5200.dts b/arch/powerpc/boot/dts/lite5200.dts
+index 179a1785d6454..18d137a3393f0 100644
+--- a/arch/powerpc/boot/dts/lite5200.dts
++++ b/arch/powerpc/boot/dts/lite5200.dts
+@@ -36,7 +36,7 @@
+ 		};
+ 	};
+ 
+-	memory {
++	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x00000000 0x04000000>;	// 64MB
+ 	};
+diff --git a/arch/powerpc/boot/dts/lite5200b.dts b/arch/powerpc/boot/dts/lite5200b.dts
+index 5abb46c5cc951..29419cf81e044 100644
+--- a/arch/powerpc/boot/dts/lite5200b.dts
++++ b/arch/powerpc/boot/dts/lite5200b.dts
+@@ -35,7 +35,7 @@
+ 		led4 { gpios = <&gpio_simple 2 1>; };
+ 	};
+ 
+-	memory {
++	memory@0 {
+ 		reg = <0x00000000 0x10000000>;	// 256MB
+ 	};
+ 
+diff --git a/arch/powerpc/boot/dts/media5200.dts b/arch/powerpc/boot/dts/media5200.dts
+index b5413cb85f134..3d57463bc49da 100644
+--- a/arch/powerpc/boot/dts/media5200.dts
++++ b/arch/powerpc/boot/dts/media5200.dts
+@@ -36,7 +36,7 @@
+ 		};
+ 	};
+ 
+-	memory {
++	memory@0 {
+ 		reg = <0x00000000 0x08000000>;	// 128MB RAM
+ 	};
+ 
+diff --git a/arch/powerpc/boot/dts/mpc5200b.dtsi b/arch/powerpc/boot/dts/mpc5200b.dtsi
+index 969b2200b2f97..ecfba675b5611 100644
+--- a/arch/powerpc/boot/dts/mpc5200b.dtsi
++++ b/arch/powerpc/boot/dts/mpc5200b.dtsi
+@@ -37,7 +37,7 @@
+ 		};
+ 	};
+ 
+-	memory: memory {
++	memory: memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x00000000 0x04000000>;	// 64MB
+ 	};
+diff --git a/arch/powerpc/boot/dts/o2d.dts b/arch/powerpc/boot/dts/o2d.dts
+index 9f6dd4d889b32..5a676e8141caf 100644
+--- a/arch/powerpc/boot/dts/o2d.dts
++++ b/arch/powerpc/boot/dts/o2d.dts
+@@ -16,7 +16,7 @@
+ 	model = "ifm,o2d";
+ 	compatible = "ifm,o2d";
+ 
+-	memory {
++	memory@0 {
+ 		reg = <0x00000000 0x08000000>;  // 128MB
+ 	};
+ 
+diff --git a/arch/powerpc/boot/dts/o2d.dtsi b/arch/powerpc/boot/dts/o2d.dtsi
+index cf073e693f24d..1b4df5f64b580 100644
+--- a/arch/powerpc/boot/dts/o2d.dtsi
++++ b/arch/powerpc/boot/dts/o2d.dtsi
+@@ -23,7 +23,7 @@
+ 	model = "ifm,o2d";
+ 	compatible = "ifm,o2d";
+ 
+-	memory {
++	memory@0 {
+ 		reg = <0x00000000 0x04000000>;	// 64MB
+ 	};
+ 
+diff --git a/arch/powerpc/boot/dts/o2dnt2.dts b/arch/powerpc/boot/dts/o2dnt2.dts
+index a0f5b97a4f06e..5184c461a205f 100644
+--- a/arch/powerpc/boot/dts/o2dnt2.dts
++++ b/arch/powerpc/boot/dts/o2dnt2.dts
+@@ -16,7 +16,7 @@
+ 	model = "ifm,o2dnt2";
+ 	compatible = "ifm,o2d";
+ 
+-	memory {
++	memory@0 {
+ 		reg = <0x00000000 0x08000000>;  // 128MB
+ 	};
+ 
+diff --git a/arch/powerpc/boot/dts/o3dnt.dts b/arch/powerpc/boot/dts/o3dnt.dts
+index acce49326491b..045b901719245 100644
+--- a/arch/powerpc/boot/dts/o3dnt.dts
++++ b/arch/powerpc/boot/dts/o3dnt.dts
+@@ -16,7 +16,7 @@
+ 	model = "ifm,o3dnt";
+ 	compatible = "ifm,o2d";
+ 
+-	memory {
++	memory@0 {
+ 		reg = <0x00000000 0x04000000>;  // 64MB
+ 	};
+ 
+diff --git a/arch/powerpc/boot/dts/pcm032.dts b/arch/powerpc/boot/dts/pcm032.dts
+index 576249bf2fb91..637e14286dde5 100644
+--- a/arch/powerpc/boot/dts/pcm032.dts
++++ b/arch/powerpc/boot/dts/pcm032.dts
+@@ -26,7 +26,7 @@
+ 	model = "phytec,pcm032";
+ 	compatible = "phytec,pcm032";
+ 
+-	memory {
++	memory@0 {
+ 		reg = <0x00000000 0x08000000>;	// 128MB
+ 	};
+ 
+diff --git a/arch/powerpc/boot/dts/tqm5200.dts b/arch/powerpc/boot/dts/tqm5200.dts
+index 1db07f6cf133c..68b9e8240fb5b 100644
+--- a/arch/powerpc/boot/dts/tqm5200.dts
++++ b/arch/powerpc/boot/dts/tqm5200.dts
+@@ -36,7 +36,7 @@
+ 		};
+ 	};
+ 
+-	memory {
++	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x00000000 0x04000000>;	// 64MB
+ 	};
 -- 
 2.33.0
 
