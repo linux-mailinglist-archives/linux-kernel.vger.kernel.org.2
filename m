@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D8045C11A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:12:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7925745C2BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344593AbhKXNOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:14:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52018 "EHLO mail.kernel.org"
+        id S1346946AbhKXNcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:32:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347167AbhKXNML (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:12:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F308B61A85;
-        Wed, 24 Nov 2021 12:42:17 +0000 (UTC)
+        id S1351034AbhKXN3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:29:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF06761BA6;
+        Wed, 24 Nov 2021 12:51:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757738;
-        bh=Hw4ioX8VStx2ymBPiv3NQlNyTTnqyXkxgYUBC6NSLPw=;
+        s=korg; t=1637758295;
+        bh=aTjvIykUk5TfpE6/YuOUKRXdaX4dsBSl3NKee7ot4fk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hJ4UdB4cYgMXPOxNV7kdzMes9n8NkBvWquJ7a1Ho8DfbJIeC79iys/iI22TJhDdIV
-         HyKX96vnOFKlGpQ/xMRJ+I+o1Qa0lZ8Pvm024UHtpPqeK3zH9Zw2yViKp5gFTN51bS
-         B8nsoHzjs4TnJxZ2kb5Wx+eNlolmOwJqh27RFP4M=
+        b=aKigvfdFriiCbZDRqvsEB9ZnMn+1QAchQExIwZunqh2nfPMcBjoYVEJ1Gqm1jyGFR
+         slt1+nFEkLYrAufufmzfJmsnkUDCoy3ZyemW25yj1oIJ6OLIcwilqpmS92vPqjmOzL
+         ZhS6ACWOaaN5mql8DPUlkRkhyQR7gMxcfNLDxYnU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 227/323] llc: fix out-of-bound array index in llc_sk_dev_hash()
-Date:   Wed, 24 Nov 2021 12:56:57 +0100
-Message-Id: <20211124115726.584860718@linuxfoundation.org>
+Subject: [PATCH 5.10 022/154] arm64: dts: freescale: fix arm,sp805 compatible string
+Date:   Wed, 24 Nov 2021 12:56:58 +0100
+Message-Id: <20211124115703.084530416@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +40,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Michael Walle <michael@walle.cc>
 
-[ Upstream commit 8ac9dfd58b138f7e82098a4e0a0d46858b12215b ]
+[ Upstream commit 99a7cacc66cae92db40139b57689be2af75fc6b8 ]
 
-Both ifindex and LLC_SK_DEV_HASH_ENTRIES are signed.
+According to Documentation/devicetree/bindings/watchdog/arm,sp805.yaml
+the compatible is:
+  compatible = "arm,sp805", "arm,primecell";
 
-This means that (ifindex % LLC_SK_DEV_HASH_ENTRIES) is negative
-if @ifindex is negative.
+The current compatible string doesn't exist at all. Fix it.
 
-We could simply make LLC_SK_DEV_HASH_ENTRIES unsigned.
-
-In this patch I chose to use hash_32() to get more entropy
-from @ifindex, like llc_sk_laddr_hashfn().
-
-UBSAN: array-index-out-of-bounds in ./include/net/llc.h:75:26
-index -43 is out of range for type 'hlist_head [64]'
-CPU: 1 PID: 20999 Comm: syz-executor.3 Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:151
- __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:291
- llc_sk_dev_hash include/net/llc.h:75 [inline]
- llc_sap_add_socket+0x49c/0x520 net/llc/llc_conn.c:697
- llc_ui_bind+0x680/0xd70 net/llc/af_llc.c:404
- __sys_bind+0x1e9/0x250 net/socket.c:1693
- __do_sys_bind net/socket.c:1704 [inline]
- __se_sys_bind net/socket.c:1702 [inline]
- __x64_sys_bind+0x6f/0xb0 net/socket.c:1702
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fa503407ae9
-
-Fixes: 6d2e3ea28446 ("llc: use a device based hash table to speed up multicast delivery")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/llc.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 16 ++++++++--------
+ arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 16 ++++++++--------
+ 2 files changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/include/net/llc.h b/include/net/llc.h
-index df282d9b40170..9c10b121b49b0 100644
---- a/include/net/llc.h
-+++ b/include/net/llc.h
-@@ -72,7 +72,9 @@ struct llc_sap {
- static inline
- struct hlist_head *llc_sk_dev_hash(struct llc_sap *sap, int ifindex)
- {
--	return &sap->sk_dev_hash[ifindex % LLC_SK_DEV_HASH_ENTRIES];
-+	u32 bucket = hash_32(ifindex, LLC_SK_DEV_HASH_BITS);
-+
-+	return &sap->sk_dev_hash[bucket];
- }
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+index 692d8f4a206da..334af263d7b5d 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+@@ -673,56 +673,56 @@
+ 		};
  
- static inline
+ 		cluster1_core0_watchdog: wdt@c000000 {
+-			compatible = "arm,sp805-wdt", "arm,primecell";
++			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xc000000 0x0 0x1000>;
+ 			clocks = <&clockgen 4 15>, <&clockgen 4 15>;
+ 			clock-names = "wdog_clk", "apb_pclk";
+ 		};
+ 
+ 		cluster1_core1_watchdog: wdt@c010000 {
+-			compatible = "arm,sp805-wdt", "arm,primecell";
++			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xc010000 0x0 0x1000>;
+ 			clocks = <&clockgen 4 15>, <&clockgen 4 15>;
+ 			clock-names = "wdog_clk", "apb_pclk";
+ 		};
+ 
+ 		cluster1_core2_watchdog: wdt@c020000 {
+-			compatible = "arm,sp805-wdt", "arm,primecell";
++			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xc020000 0x0 0x1000>;
+ 			clocks = <&clockgen 4 15>, <&clockgen 4 15>;
+ 			clock-names = "wdog_clk", "apb_pclk";
+ 		};
+ 
+ 		cluster1_core3_watchdog: wdt@c030000 {
+-			compatible = "arm,sp805-wdt", "arm,primecell";
++			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xc030000 0x0 0x1000>;
+ 			clocks = <&clockgen 4 15>, <&clockgen 4 15>;
+ 			clock-names = "wdog_clk", "apb_pclk";
+ 		};
+ 
+ 		cluster2_core0_watchdog: wdt@c100000 {
+-			compatible = "arm,sp805-wdt", "arm,primecell";
++			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xc100000 0x0 0x1000>;
+ 			clocks = <&clockgen 4 15>, <&clockgen 4 15>;
+ 			clock-names = "wdog_clk", "apb_pclk";
+ 		};
+ 
+ 		cluster2_core1_watchdog: wdt@c110000 {
+-			compatible = "arm,sp805-wdt", "arm,primecell";
++			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xc110000 0x0 0x1000>;
+ 			clocks = <&clockgen 4 15>, <&clockgen 4 15>;
+ 			clock-names = "wdog_clk", "apb_pclk";
+ 		};
+ 
+ 		cluster2_core2_watchdog: wdt@c120000 {
+-			compatible = "arm,sp805-wdt", "arm,primecell";
++			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xc120000 0x0 0x1000>;
+ 			clocks = <&clockgen 4 15>, <&clockgen 4 15>;
+ 			clock-names = "wdog_clk", "apb_pclk";
+ 		};
+ 
+ 		cluster2_core3_watchdog: wdt@c130000 {
+-			compatible = "arm,sp805-wdt", "arm,primecell";
++			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xc130000 0x0 0x1000>;
+ 			clocks = <&clockgen 4 15>, <&clockgen 4 15>;
+ 			clock-names = "wdog_clk", "apb_pclk";
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+index 4d34d82b898a4..eb6641a3566e1 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+@@ -351,56 +351,56 @@
+ 		};
+ 
+ 		cluster1_core0_watchdog: wdt@c000000 {
+-			compatible = "arm,sp805-wdt", "arm,primecell";
++			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xc000000 0x0 0x1000>;
+ 			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
+ 			clock-names = "wdog_clk", "apb_pclk";
+ 		};
+ 
+ 		cluster1_core1_watchdog: wdt@c010000 {
+-			compatible = "arm,sp805-wdt", "arm,primecell";
++			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xc010000 0x0 0x1000>;
+ 			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
+ 			clock-names = "wdog_clk", "apb_pclk";
+ 		};
+ 
+ 		cluster2_core0_watchdog: wdt@c100000 {
+-			compatible = "arm,sp805-wdt", "arm,primecell";
++			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xc100000 0x0 0x1000>;
+ 			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
+ 			clock-names = "wdog_clk", "apb_pclk";
+ 		};
+ 
+ 		cluster2_core1_watchdog: wdt@c110000 {
+-			compatible = "arm,sp805-wdt", "arm,primecell";
++			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xc110000 0x0 0x1000>;
+ 			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
+ 			clock-names = "wdog_clk", "apb_pclk";
+ 		};
+ 
+ 		cluster3_core0_watchdog: wdt@c200000 {
+-			compatible = "arm,sp805-wdt", "arm,primecell";
++			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xc200000 0x0 0x1000>;
+ 			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
+ 			clock-names = "wdog_clk", "apb_pclk";
+ 		};
+ 
+ 		cluster3_core1_watchdog: wdt@c210000 {
+-			compatible = "arm,sp805-wdt", "arm,primecell";
++			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xc210000 0x0 0x1000>;
+ 			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
+ 			clock-names = "wdog_clk", "apb_pclk";
+ 		};
+ 
+ 		cluster4_core0_watchdog: wdt@c300000 {
+-			compatible = "arm,sp805-wdt", "arm,primecell";
++			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xc300000 0x0 0x1000>;
+ 			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
+ 			clock-names = "wdog_clk", "apb_pclk";
+ 		};
+ 
+ 		cluster4_core1_watchdog: wdt@c310000 {
+-			compatible = "arm,sp805-wdt", "arm,primecell";
++			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xc310000 0x0 0x1000>;
+ 			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
+ 			clock-names = "wdog_clk", "apb_pclk";
 -- 
 2.33.0
 
