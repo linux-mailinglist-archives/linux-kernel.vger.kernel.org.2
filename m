@@ -2,32 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44FE545C657
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9699645C625
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:02:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351968AbhKXOHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:07:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48820 "EHLO mail.kernel.org"
+        id S1351336AbhKXOFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:05:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353854AbhKXOCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1353856AbhKXOCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 09:02:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17B22613D5;
-        Wed, 24 Nov 2021 13:10:24 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12BD161A83;
+        Wed, 24 Nov 2021 13:10:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759425;
-        bh=GEtDmeKQnJJLO4FbMcsiFwX34oq/kU66muHkCl0pqsk=;
+        s=korg; t=1637759428;
+        bh=/2Tq6dNpl8t9OkuSU7exCZ9+cBTBzWdwg+I335ELtqQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TNrpaebed22Rj+sb/KqYqtmbkKTxFuapZ8YgrOg79XMzxIddW18S94zdxp5Vr2OEs
-         3XemTp0v6TMrw/2NmA4hQn+/CgvEFfl+jbkGHFp+6U/woX9pejf7ahfb9yunt83f2A
-         KUm8oYBuBSFqN92sPKfV3pP2wCdxVlU9373JUbN8=
+        b=BnbX2IEV7so6d1aBDIzk8bYoZHDhIv8OGnacQUHzZITnf9fDQSmrnqLdteBWSNc+X
+         m83hMrgKXjwrIK5iDG9e2T9bfQs1LgNeP11IyFZ9jwaU7VjAKmv1skc4GeoiejeyLl
+         qGCimYNMriPiOXOM3FwaeHBQxdZu01X5peL0Kf2E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.15 238/279] mac80211: drop check for DONT_REORDER in __ieee80211_select_queue
-Date:   Wed, 24 Nov 2021 12:58:45 +0100
-Message-Id: <20211124115726.961480964@linuxfoundation.org>
+        stable@vger.kernel.org, XiangBing Foo <XiangBing.Foo@amd.com>,
+        Martin Leung <Martin.Leung@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Alvin Lee <Alvin.Lee2@amd.com>,
+        Daniel Wheeler <Daniel.Wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.15 239/279] drm/amd/display: Update swizzle mode enums
+Date:   Wed, 24 Nov 2021 12:58:46 +0100
+Message-Id: <20211124115726.991024576@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
 References: <20211124115718.776172708@linuxfoundation.org>
@@ -39,46 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: Alvin Lee <Alvin.Lee2@amd.com>
 
-commit f6ab25d41b18f3d26883cb9c20875e1a85c4f05b upstream.
+commit 58065a1e524de30df9a2d8214661d5d7eed0a2d9 upstream.
 
-When __ieee80211_select_queue is called, skb->cb has not been cleared yet,
-which means that info->control.flags can contain garbage.
-In some cases this leads to IEEE80211_TX_CTRL_DONT_REORDER being set, causing
-packets marked for other queues to randomly end up in BE instead.
+[Why]
+Swizzle mode enum for DC_SW_VAR_R_X was existing,
+but not mapped correctly.
 
-This flag only needs to be checked in ieee80211_select_queue_80211, since
-the radiotap parser is the only piece of code that sets it
+[How]
+Update mapping and conversion for DC_SW_VAR_R_X.
 
-Fixes: 66d06c84730c ("mac80211: adhere to Tx control flag that prevents frame reordering")
+Reviewed-by: XiangBing Foo <XiangBing.Foo@amd.com>
+Reviewed-by: Martin Leung <Martin.Leung@amd.com>
+Acked-by: Qingqing Zhuo <qingqing.zhuo@amd.com>
+Signed-off-by: Alvin Lee <Alvin.Lee2@amd.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Link: https://lore.kernel.org/r/20211110212201.35452-1-nbd@nbd.name
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Tested-by: Daniel Wheeler <Daniel.Wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/wme.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c   |    4 +++-
+ drivers/gpu/drm/amd/display/dc/dml/display_mode_enums.h |    4 ++--
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
---- a/net/mac80211/wme.c
-+++ b/net/mac80211/wme.c
-@@ -143,7 +143,6 @@ u16 ieee80211_select_queue_80211(struct
- u16 __ieee80211_select_queue(struct ieee80211_sub_if_data *sdata,
- 			     struct sta_info *sta, struct sk_buff *skb)
- {
--	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
- 	struct mac80211_qos_map *qos_map;
- 	bool qos;
- 
-@@ -156,7 +155,7 @@ u16 __ieee80211_select_queue(struct ieee
- 	else
- 		qos = false;
- 
--	if (!qos || (info->control.flags & IEEE80211_TX_CTRL_DONT_REORDER)) {
-+	if (!qos) {
- 		skb->priority = 0; /* required for correct WPA/11i MIC */
- 		return IEEE80211_AC_BE;
- 	}
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
+@@ -1854,7 +1854,9 @@ static void swizzle_to_dml_params(
+ 	case DC_SW_VAR_D_X:
+ 		*sw_mode = dm_sw_var_d_x;
+ 		break;
+-
++	case DC_SW_VAR_R_X:
++		*sw_mode = dm_sw_var_r_x;
++		break;
+ 	default:
+ 		ASSERT(0); /* Not supported */
+ 		break;
+--- a/drivers/gpu/drm/amd/display/dc/dml/display_mode_enums.h
++++ b/drivers/gpu/drm/amd/display/dc/dml/display_mode_enums.h
+@@ -80,11 +80,11 @@ enum dm_swizzle_mode {
+ 	dm_sw_SPARE_13 = 24,
+ 	dm_sw_64kb_s_x = 25,
+ 	dm_sw_64kb_d_x = 26,
+-	dm_sw_SPARE_14 = 27,
++	dm_sw_64kb_r_x = 27,
+ 	dm_sw_SPARE_15 = 28,
+ 	dm_sw_var_s_x = 29,
+ 	dm_sw_var_d_x = 30,
+-	dm_sw_64kb_r_x,
++	dm_sw_var_r_x = 31,
+ 	dm_sw_gfx7_2d_thin_l_vp,
+ 	dm_sw_gfx7_2d_thin_gl,
+ };
 
 
