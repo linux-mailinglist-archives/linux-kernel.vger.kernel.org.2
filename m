@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E60D45B9D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:02:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D3D45BBBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:19:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235717AbhKXMF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:05:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59914 "EHLO mail.kernel.org"
+        id S244097AbhKXMWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:22:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242141AbhKXMEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:04:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C53B060FDC;
-        Wed, 24 Nov 2021 12:01:29 +0000 (UTC)
+        id S243442AbhKXMQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:16:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CFCE61055;
+        Wed, 24 Nov 2021 12:10:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755290;
-        bh=3bLmcBH1/hrLdW5lIhf4FwCa4jdXgsaVGTjr8V1oMmM=;
+        s=korg; t=1637755825;
+        bh=+bdIiUoHP9Fp5Dc1Y5Ulu+tOrTY4LE/i5crI1aSVLkA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oSbUgG/ckoafc6VwtoOvj1OnDBwI5hRgxEQ72N6MjwKKqkUVPN4qXnxQCQFXuJ2PQ
-         VIJ9F/7mi6HFz95YIuAaMHZKHSOLsqa35yan+TNL5b8jwNngHNoyLRUfYkBcc8uXb1
-         8LYGUvY7nqIKbgIghKI3s8TTEFp/OfXZq2HqE6N0=
+        b=Q5Zq8RoMYTSbYlAhhf7l9WGuwKR/2KLBtiZ2Mcjq/om66pG6ihhIqeJGHlccYa2fJ
+         1cpyVr3+qVEkbOpcfpq/yGSscivDm4No+ovxwbljB8q08wOw7tPYbndKUFkmib88Fh
+         45BNX78/ZTx3FBrUH4EZxT/6NqksDmopPEtmCURE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hai <wanghai38@huawei.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 040/162] USB: serial: keyspan: fix memleak on probe errors
+        stable@vger.kernel.org,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 072/207] tracefs: Have tracefs directories not set OTH permission bits by default
 Date:   Wed, 24 Nov 2021 12:55:43 +0100
-Message-Id: <20211124115659.643131303@linuxfoundation.org>
+Message-Id: <20211124115706.248019376@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,98 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit 910c996335c37552ee30fcb837375b808bb4f33b upstream.
+[ Upstream commit 49d67e445742bbcb03106b735b2ab39f6e5c56bc ]
 
-I got memory leak as follows when doing fault injection test:
+The tracefs file system is by default mounted such that only root user can
+access it. But there are legitimate reasons to create a group and allow
+those added to the group to have access to tracing. By changing the
+permissions of the tracefs mount point to allow access, it will allow
+group access to the tracefs directory.
 
-unreferenced object 0xffff888258228440 (size 64):
-  comm "kworker/7:2", pid 2005, jiffies 4294989509 (age 824.540s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8167939c>] slab_post_alloc_hook+0x9c/0x490
-    [<ffffffff8167f627>] kmem_cache_alloc_trace+0x1f7/0x470
-    [<ffffffffa02ac0e4>] keyspan_port_probe+0xa4/0x5d0 [keyspan]
-    [<ffffffffa0294c07>] usb_serial_device_probe+0x97/0x1d0 [usbserial]
-    [<ffffffff82b50ca7>] really_probe+0x167/0x460
-    [<ffffffff82b51099>] __driver_probe_device+0xf9/0x180
-    [<ffffffff82b51173>] driver_probe_device+0x53/0x130
-    [<ffffffff82b516f5>] __device_attach_driver+0x105/0x130
-    [<ffffffff82b4cfe9>] bus_for_each_drv+0x129/0x190
-    [<ffffffff82b50a69>] __device_attach+0x1c9/0x270
-    [<ffffffff82b518d0>] device_initial_probe+0x20/0x30
-    [<ffffffff82b4f062>] bus_probe_device+0x142/0x160
-    [<ffffffff82b4a4e9>] device_add+0x829/0x1300
-    [<ffffffffa0295fda>] usb_serial_probe.cold+0xc9b/0x14ac [usbserial]
-    [<ffffffffa02266aa>] usb_probe_interface+0x1aa/0x3c0 [usbcore]
-    [<ffffffff82b50ca7>] really_probe+0x167/0x460
+There should not be any real reason to allow all access to the tracefs
+directory as it contains sensitive information. Have the default
+permission of directories being created not have any OTH (other) bits set,
+such that an admin that wants to give permission to a group has to first
+disable all OTH bits in the file system.
 
-If keyspan_port_probe() fails to allocate memory for an out_buffer[i] or
-in_buffer[i], the previously allocated memory for out_buffer or
-in_buffer needs to be freed on the error handling path, otherwise a
-memory leak will result.
+Link: https://lkml.kernel.org/r/20210818153038.664127804@goodmis.org
 
-Fixes: bad41a5bf177 ("USB: keyspan: fix port DMA-buffer allocations")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Link: https://lore.kernel.org/r/20211015085543.1203011-1-wanghai38@huawei.com
-Cc: stable@vger.kernel.org      # 3.12
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/keyspan.c |   15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ fs/tracefs/inode.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/serial/keyspan.c
-+++ b/drivers/usb/serial/keyspan.c
-@@ -2417,22 +2417,22 @@ static int keyspan_port_probe(struct usb
- 	for (i = 0; i < ARRAY_SIZE(p_priv->in_buffer); ++i) {
- 		p_priv->in_buffer[i] = kzalloc(IN_BUFLEN, GFP_KERNEL);
- 		if (!p_priv->in_buffer[i])
--			goto err_in_buffer;
-+			goto err_free_in_buffer;
- 	}
+diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
+index 21d36d2847356..985cccfcedad9 100644
+--- a/fs/tracefs/inode.c
++++ b/fs/tracefs/inode.c
+@@ -429,7 +429,8 @@ static struct dentry *__create_dir(const char *name, struct dentry *parent,
+ 	if (unlikely(!inode))
+ 		return failed_creating(dentry);
  
- 	for (i = 0; i < ARRAY_SIZE(p_priv->out_buffer); ++i) {
- 		p_priv->out_buffer[i] = kzalloc(OUT_BUFLEN, GFP_KERNEL);
- 		if (!p_priv->out_buffer[i])
--			goto err_out_buffer;
-+			goto err_free_out_buffer;
- 	}
+-	inode->i_mode = S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO;
++	/* Do not set bits for OTH */
++	inode->i_mode = S_IFDIR | S_IRWXU | S_IRUSR| S_IRGRP | S_IXUSR | S_IXGRP;
+ 	inode->i_op = ops;
+ 	inode->i_fop = &simple_dir_operations;
  
- 	p_priv->inack_buffer = kzalloc(INACK_BUFLEN, GFP_KERNEL);
- 	if (!p_priv->inack_buffer)
--		goto err_inack_buffer;
-+		goto err_free_out_buffer;
- 
- 	p_priv->outcont_buffer = kzalloc(OUTCONT_BUFLEN, GFP_KERNEL);
- 	if (!p_priv->outcont_buffer)
--		goto err_outcont_buffer;
-+		goto err_free_inack_buffer;
- 
- 	p_priv->device_details = d_details;
- 
-@@ -2478,15 +2478,14 @@ static int keyspan_port_probe(struct usb
- 
- 	return 0;
- 
--err_outcont_buffer:
-+err_free_inack_buffer:
- 	kfree(p_priv->inack_buffer);
--err_inack_buffer:
-+err_free_out_buffer:
- 	for (i = 0; i < ARRAY_SIZE(p_priv->out_buffer); ++i)
- 		kfree(p_priv->out_buffer[i]);
--err_out_buffer:
-+err_free_in_buffer:
- 	for (i = 0; i < ARRAY_SIZE(p_priv->in_buffer); ++i)
- 		kfree(p_priv->in_buffer[i]);
--err_in_buffer:
- 	kfree(p_priv);
- 
- 	return -ENOMEM;
+-- 
+2.33.0
+
 
 
