@@ -2,99 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5BC145CBB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:59:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1517D45CBB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:00:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350170AbhKXSCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 13:02:54 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:50598 "EHLO vps0.lunn.ch"
+        id S243936AbhKXSDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 13:03:22 -0500
+Received: from pegase2.c-s.fr ([93.17.235.10]:50969 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243916AbhKXSCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 13:02:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=OVAQSV4rBJJ+HrJ8mrdZ5C3bcdsdqt2byVv40HAFtaQ=; b=OD++YWK3UCqM7JEyIB8cVtAg/D
-        Q7i1tvUcEWHI7zdP/tfngIL9NHFQ/YvqfyQnS1ygNuyZc/Sb+XedTLn4uHDUspg8exiEWLrrDXLCO
-        rUNzxWzEQ4NQIuHKSIlG/eJXnGmCJsBmNkXUGKhAN/sFKIMUqlNN3GwlGvMqhuy5QK4I=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mpwYQ-00EX3A-Bi; Wed, 24 Nov 2021 18:59:34 +0100
-Date:   Wed, 24 Nov 2021 18:59:34 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        UNGLinuxDriver@microchip.com, p.zabel@pengutronix.de,
-        linux@armlinux.org.uk, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 3/6] net: lan966x: add port module support
-Message-ID: <YZ59hpDWjNjvx5kP@lunn.ch>
-References: <20211123135517.4037557-1-horatiu.vultur@microchip.com>
- <20211123135517.4037557-4-horatiu.vultur@microchip.com>
+        id S241542AbhKXSDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 13:03:19 -0500
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Hzpgr06S0z9sSd;
+        Wed, 24 Nov 2021 19:00:08 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ejOeD01wWWP3; Wed, 24 Nov 2021 19:00:07 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Hzpgq6T6Wz9sSW;
+        Wed, 24 Nov 2021 19:00:07 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C983B8B778;
+        Wed, 24 Nov 2021 19:00:07 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id ClHnKbCP8Ky3; Wed, 24 Nov 2021 19:00:07 +0100 (CET)
+Received: from [192.168.203.221] (unknown [192.168.203.221])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 267C48B763;
+        Wed, 24 Nov 2021 19:00:07 +0100 (CET)
+Message-ID: <dc0ceed5-1db5-294f-9f17-1990fb2dd5e4@csgroup.eu>
+Date:   Wed, 24 Nov 2021 19:00:06 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211123135517.4037557-4-horatiu.vultur@microchip.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH 0/8] Convert powerpc to default topdown mmap layout
+Content-Language: fr-FR
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Nicholas Piggin <npiggin@gmail.com>, alex@ghiti.fr,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1637570556.git.christophe.leroy@csgroup.eu>
+ <1637759994.e3mppl4ly7.astroid@bobo.none>
+ <e1fea487-8014-658d-84cd-ea1d7c89ee08@csgroup.eu>
+In-Reply-To: <e1fea487-8014-658d-84cd-ea1d7c89ee08@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static void lan966x_ifh_inject(u32 *ifh, size_t val, size_t pos, size_t length)
-> +{
-> +	int i;
-> +
-> +	for (i = pos; i < pos + length; ++i) {
-> +		if (val & BIT(i - pos))
-> +			ifh[IFH_LEN - i / 32 - 1] |= BIT(i % 32);
-> +		else
-> +			ifh[IFH_LEN - i / 32 - 1] &= ~(BIT(i % 32));
-> +	}
-> +}
-> +
-> +static void lan966x_gen_ifh(u32 *ifh, struct lan966x_frame_info *info,
-> +			    struct lan966x *lan966x)
-> +{
-> +	lan966x_ifh_inject(ifh, 1, IFH_POS_BYPASS, 1);
-> +	lan966x_ifh_inject(ifh, info->port, IFH_POS_DSTS, IFH_WID_DSTS);
-> +	lan966x_ifh_inject(ifh, info->qos_class, IFH_POS_QOS_CLASS,
-> +			   IFH_WID_QOS_CLASS);
-> +	lan966x_ifh_inject(ifh, info->ipv, IFH_POS_IPV, IFH_WID_IPV);
-> +}
-> +
 
-> +	/* Write IFH header */
-> +	for (i = 0; i < IFH_LEN; ++i) {
-> +		/* Wait until the fifo is ready */
-> +		while (!(QS_INJ_STATUS_FIFO_RDY_GET(lan_rd(lan966x, QS_INJ_STATUS)) &
-> +			 BIT(grp)))
-> +			;
-> +
-> +		lan_wr((__force u32)cpu_to_be32(ifh[i]), lan966x,
-> +		       QS_INJ_WR(grp));
 
-There is a lot of magic going on here constructing the IFH. Is it
-possible to define the structure using bit fields and __be32. You
-should then be able to skip this cpu_to_be32 and the ugly cast. And
-the actual structure should be a lot clearer.
+Le 24/11/2021 à 14:40, Christophe Leroy a écrit :
+> 
+> 
+> Le 24/11/2021 à 14:21, Nicholas Piggin a écrit :
+>> Excerpts from Christophe Leroy's message of November 22, 2021 6:48 pm:
+>>> This series converts powerpc to default topdown mmap layout.
+>>>
+>>> powerpc provides its own arch_get_unmapped_area() only when
+>>> slices are needed, which is only for book3s/64. First part of
+>>> the series moves slices into book3s/64 specific directories
+>>> and cleans up other subarchitectures.
+>>>
+>>> Then a small modification is done to core mm to allow
+>>> powerpc to still provide its own arch_randomize_brk()
+>>>
+>>> Last part converts to default topdown mmap layout.
+>>
+>> A nice series but will clash badly with the CONFIG_HASH_MMU
+>> series of course. One will have to be rebased if they are
+>> both to be merged.
+>>
+> 
+> No worry, it should be an issue.
+> 
+> If you already forsee that series being merged soon, I can rebase my 
+> series on top of it just now.
+> 
 
-> +static int lan966x_rx_frame_word(struct lan966x *lan966x, u8 grp, bool ifh,
-> +				 u32 *rval)
-> +{
-> +	u32 bytes_valid;
-> +	u32 val;
-> +
-> +	val = lan_rd(lan966x, QS_XTR_RD(grp));
-> +	if (val == XTR_NOT_READY) {
-> +		if (ifh)
-> +			return -EIO;
-> +
-> +		do {
-> +			val = lan_rd(lan966x, QS_XTR_RD(grp));
-> +		} while (val == XTR_NOT_READY);
+In patchwork, v3 is flagged as superseded and I can't find a v4. Do you 
+have it somewhere ?
 
-I would add some sort of timeout here, just in case the hardware
-breaks. You have quite a few such loops, it would be better to make
-use of the helpers in linux/iopoll.h.
-
+Christophe
