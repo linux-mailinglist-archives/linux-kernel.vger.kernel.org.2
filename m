@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ECAE45C30C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:32:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0D245C315
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:32:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350133AbhKXNfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:35:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60690 "EHLO mail.kernel.org"
+        id S1350215AbhKXNfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:35:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351590AbhKXNci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:32:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4FD461185;
-        Wed, 24 Nov 2021 12:53:10 +0000 (UTC)
+        id S1347594AbhKXNck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:32:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0F8F611BF;
+        Wed, 24 Nov 2021 12:53:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758391;
-        bh=kmjelBk8Szbt6dCrtMKPhWCJXyYOFUwXRl/5PclR8yw=;
+        s=korg; t=1637758397;
+        bh=lzr89GUAN18tttA0+3O/es6DyB/GD0yiifspf+G/B5o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Go5EDuf6THWbsvJB1Ud6vdUsAX/rzAsNq7vzrjTri01OunqJ/DZ92eAeCXdpZYmSU
-         GVsVFUxAuWeK1KHU01KbTVWOhISodeSlp+4qM7kzW3M+R0dLwfpKQjjF680AB67jpw
-         lkg1iY6effMg6f1D+yCTXiuEtiLMpZCSjao7ikf0=
+        b=FUb/JKUbT1XlNUAYD5mC8T6CkVwqdx8XqD5NAH9wQnNAAD1W16hO1/L0QCRcmxhP0
+         WYGtobOeBpwbtrDYI/fc9itnBkhRESY9DGPQfJXPUVsickKgyRvn+MrP1jBkR3NrUS
+         /nSFygyiCugEW0Nm9sYotM58nEt++kNPttKIwgIA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sungjong Seo <sj1557.seo@samsung.com>,
-        Hyeong-Jun Kim <hj514.kim@samsung.com>,
+        stable@vger.kernel.org, Pavel Machek <pavel@denx.de>,
         Chao Yu <chao@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 055/154] f2fs: compress: disallow disabling compress on non-empty compressed file
-Date:   Wed, 24 Nov 2021 12:57:31 +0100
-Message-Id: <20211124115704.108460246@linuxfoundation.org>
+Subject: [PATCH 5.10 056/154] f2fs: fix incorrect return value in f2fs_sanity_check_ckpt()
+Date:   Wed, 24 Nov 2021 12:57:32 +0100
+Message-Id: <20211124115704.139917114@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
 References: <20211124115702.361983534@linuxfoundation.org>
@@ -41,40 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hyeong-Jun Kim <hj514.kim@samsung.com>
+From: Chao Yu <chao@kernel.org>
 
-[ Upstream commit 02d58cd253d7536c412993573fc6b3b4454960eb ]
+[ Upstream commit ca98d72141dd81f42893a9a43d7ededab3355fba ]
 
-Compresse file and normal file has differ in i_addr addressing,
-specifically addrs per inode/block. So, we will face data loss, if we
-disable the compression flag on non-empty files. Therefore we should
-disallow not only enabling but disabling the compression flag on
-non-empty files.
+As Pavel Machek reported in [1]
 
-Fixes: 4c8ff7095bef ("f2fs: support data compression")
-Signed-off-by: Sungjong Seo <sj1557.seo@samsung.com>
-Signed-off-by: Hyeong-Jun Kim <hj514.kim@samsung.com>
-Reviewed-by: Chao Yu <chao@kernel.org>
+This code looks quite confused: part of function returns 1 on
+corruption, part returns -errno. The problem is not stable-specific.
+
+[1] https://lkml.org/lkml/2021/9/19/207
+
+Let's fix to make 'insane cp_payload case' to return 1 rater than
+EFSCORRUPTED, so that return value can be kept consistent for all
+error cases, it can avoid confusion of code logic.
+
+Fixes: 65ddf6564843 ("f2fs: fix to do sanity check for sb/cp fields correctly")
+Reported-by: Pavel Machek <pavel@denx.de>
+Reviewed-by: Pavel Machek <pavel@denx.de>
+Signed-off-by: Chao Yu <chao@kernel.org>
 Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/f2fs.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/f2fs/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 2d7799bd30b10..bc488a7d01903 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3908,8 +3908,7 @@ static inline bool f2fs_disable_compressed_file(struct inode *inode)
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 70b513e66af77..b7287b722e9e1 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -3081,7 +3081,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+ 		NR_CURSEG_PERSIST_TYPE + nat_bits_blocks >= blocks_per_seg)) {
+ 		f2fs_warn(sbi, "Insane cp_payload: %u, nat_bits_blocks: %u)",
+ 			  cp_payload, nat_bits_blocks);
+-		return -EFSCORRUPTED;
++		return 1;
+ 	}
  
- 	if (!f2fs_compressed_file(inode))
- 		return true;
--	if (S_ISREG(inode->i_mode) &&
--		(get_dirty_pages(inode) || atomic_read(&fi->i_compr_blocks)))
-+	if (S_ISREG(inode->i_mode) && F2FS_HAS_BLOCKS(inode))
- 		return false;
- 
- 	fi->i_flags &= ~F2FS_COMPR_FL;
+ 	if (unlikely(f2fs_cp_error(sbi))) {
 -- 
 2.33.0
 
