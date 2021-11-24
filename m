@@ -2,233 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F54145B6D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:43:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F8745B6D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241621AbhKXIqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 03:46:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55265 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241556AbhKXIpW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 03:45:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637743333;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PVPX1C8DkAsQL3LcqECKnIevVpxJ6A8wbBxNyLDX/uc=;
-        b=iSfJrEe4vp2c54+oEA0SMoHVQdO3Njpl92JCwOgkvg2+FwbDdPZJnOXz5Px2X8I/10tF3I
-        kMbwXGsoK7945HWH8iia43SBH+tDbd/Qab7z3RGXXmi8JVeIiSDqcctrLnik9VFtwbiE8m
-        CFB8NMPucnl2gxHynpLUf0kr+vpXPEQ=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-310-L9XSIez2M0uGZ_fa08rjdQ-1; Wed, 24 Nov 2021 03:42:12 -0500
-X-MC-Unique: L9XSIez2M0uGZ_fa08rjdQ-1
-Received: by mail-wm1-f69.google.com with SMTP id n16-20020a05600c3b9000b003331973fdbbso1053655wms.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 00:42:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PVPX1C8DkAsQL3LcqECKnIevVpxJ6A8wbBxNyLDX/uc=;
-        b=D7EkB2qt1vdLLUFMVK0gnDxKV7G7j+GxY2c2Eu9WnV7IyxmrIVrA6HolFdGhq8HJAg
-         9g/DkZFOe+vlcqGLv7gQ4u10WxNgA8x+FTKe7/Fk/03JS97f+eKRunzoi8KmYovTZs+8
-         WHfDMAS/WtsaTfYLU7GLjfZnygiT4Luuu2bTnovvJQQl4wm5Hc8z0kzk9xK07MLoLyB6
-         Wr/omTVJeYH3mNjCGSC5Ey0QbHdryo1plwOwqgHWTgRX+Vfy7O74l6ajqTCvghaOPdGv
-         My9sjW5pap4DMlM3PgqIJJT3cNCzztSdgVYp38S72gQ1D1Z8d7ztfYczQvN2knBewF0k
-         raSA==
-X-Gm-Message-State: AOAM530et1oVintHID8C2DT65474/Db4OyJYRdnoL9XF6HGcnCO0yDkn
-        Yo+2uqYMnguXZtfrZcfszrCf+Cw6CeBMKvtoIUHBQ55+AWgkCrBsG8/XjE17coRkEF0J+1bO4Vm
-        Cdf+HPzb27mhR+NlQ4IsiZ3OL
-X-Received: by 2002:a5d:508d:: with SMTP id a13mr16396292wrt.41.1637743330684;
-        Wed, 24 Nov 2021 00:42:10 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz6/WR79tvkz0a/wesKRWwrirlPIfewyeSdc0r7FwkTqiU7DqPNa47T69UwS0Hg8oKZU/6+Ag==
-X-Received: by 2002:a5d:508d:: with SMTP id a13mr16396251wrt.41.1637743330451;
-        Wed, 24 Nov 2021 00:42:10 -0800 (PST)
-Received: from krava.redhat.com (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id h27sm4322402wmc.43.2021.11.24.00.42.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 00:42:10 -0800 (PST)
-From:   Jiri Olsa <jolsa@redhat.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>
-Subject: [PATCH 8/8] selftest/bpf: Add uprobe multi attach test
-Date:   Wed, 24 Nov 2021 09:41:19 +0100
-Message-Id: <20211124084119.260239-9-jolsa@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211124084119.260239-1-jolsa@kernel.org>
-References: <20211124084119.260239-1-jolsa@kernel.org>
+        id S241017AbhKXIrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 03:47:37 -0500
+Received: from mga02.intel.com ([134.134.136.20]:15266 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229905AbhKXIq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 03:46:56 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="222457320"
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="222457320"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 00:43:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="475044776"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 24 Nov 2021 00:43:41 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mpnsR-0004Xu-4X; Wed, 24 Nov 2021 08:43:39 +0000
+Date:   Wed, 24 Nov 2021 16:43:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     =?iso-8859-1?Q?Jos=E9_Exp=F3sito?= <jose.exposito89@gmail.com>,
+        jikos@kernel.org
+Cc:     kbuild-all@lists.01.org, benjamin.tissoires@redhat.com,
+        peter.hutterer@who-t.net, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?iso-8859-1?Q?Jos=E9_Exp=F3sito?= <jose.exposito89@gmail.com>
+Subject: Re: [PATCH 1/1] HID: multitouch: only map BTN_LEFT on buttonpads
+Message-ID: <202111241646.G968t85X-lkp@intel.com>
+References: <20211123191238.12472-2-jose.exposito89@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211123191238.12472-2-jose.exposito89@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding uprobe multi attach test that uses new interface
-to attach multiple probes within single perf event.
+Hi "José,
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Thank you for the patch! Yet something to improve:
+
+[auto build test ERROR on hid/for-next]
+[also build test ERROR on v5.16-rc2 next-20211124]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/0day-ci/linux/commits/Jos-Exp-sito/Do-not-map-BTN_RIGHT-MIDDLE-on-buttonpads/20211124-031407
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-next
+config: x86_64-rhel-8.3 (https://download.01.org/0day-ci/archive/20211124/202111241646.G968t85X-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/0day-ci/linux/commit/67a7bd322df749f6ef9a142479668db93b93beca
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Jos-Exp-sito/Do-not-map-BTN_RIGHT-MIDDLE-on-buttonpads/20211124-031407
+        git checkout 67a7bd322df749f6ef9a142479668db93b93beca
+        # save the config file to linux build tree
+        mkdir build_dir
+        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash drivers/hid/
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   drivers/hid/hid-multitouch.c: In function 'mt_touch_input_configured':
+>> drivers/hid/hid-multitouch.c:1291:26: error: 'dev' undeclared (first use in this function); did you mean 'hdev'?
+    1291 |   __clear_bit(BTN_RIGHT, dev->keybit);
+         |                          ^~~
+         |                          hdev
+   drivers/hid/hid-multitouch.c:1291:26: note: each undeclared identifier is reported only once for each function it appears in
+
+
+vim +1291 drivers/hid/hid-multitouch.c
+
+  1261	
+  1262	static int mt_touch_input_configured(struct hid_device *hdev,
+  1263					     struct hid_input *hi,
+  1264					     struct mt_application *app)
+  1265	{
+  1266		struct mt_device *td = hid_get_drvdata(hdev);
+  1267		struct mt_class *cls = &td->mtclass;
+  1268		struct input_dev *input = hi->input;
+  1269		int ret;
+  1270	
+  1271		if (!td->maxcontacts)
+  1272			td->maxcontacts = MT_DEFAULT_MAXCONTACT;
+  1273	
+  1274		mt_post_parse(td, app);
+  1275		if (td->serial_maybe)
+  1276			mt_post_parse_default_settings(td, app);
+  1277	
+  1278		if (cls->is_indirect)
+  1279			app->mt_flags |= INPUT_MT_POINTER;
+  1280	
+  1281		if (app->quirks & MT_QUIRK_NOT_SEEN_MEANS_UP)
+  1282			app->mt_flags |= INPUT_MT_DROP_UNUSED;
+  1283	
+  1284		/* check for clickpads */
+  1285		if ((app->mt_flags & INPUT_MT_POINTER) &&
+  1286		    (app->buttons_count == 1))
+  1287			td->is_buttonpad = true;
+  1288	
+  1289		if (td->is_buttonpad) {
+  1290			__set_bit(INPUT_PROP_BUTTONPAD, input->propbit);
+> 1291			__clear_bit(BTN_RIGHT, dev->keybit);
+  1292			__clear_bit(BTN_MIDDLE, dev->keybit);
+  1293		}
+  1294	
+  1295		app->pending_palm_slots = devm_kcalloc(&hi->input->dev,
+  1296						       BITS_TO_LONGS(td->maxcontacts),
+  1297						       sizeof(long),
+  1298						       GFP_KERNEL);
+  1299		if (!app->pending_palm_slots)
+  1300			return -ENOMEM;
+  1301	
+  1302		ret = input_mt_init_slots(input, td->maxcontacts, app->mt_flags);
+  1303		if (ret)
+  1304			return ret;
+  1305	
+  1306		app->mt_flags = 0;
+  1307		return 0;
+  1308	}
+  1309	
+
 ---
- .../bpf/prog_tests/multi_uprobe_test.c        | 97 +++++++++++++++++++
- .../selftests/bpf/progs/multi_uprobe.c        | 26 +++++
- 2 files changed, 123 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/multi_uprobe_test.c
- create mode 100644 tools/testing/selftests/bpf/progs/multi_uprobe.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/multi_uprobe_test.c b/tools/testing/selftests/bpf/prog_tests/multi_uprobe_test.c
-new file mode 100644
-index 000000000000..0f939893ef45
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/multi_uprobe_test.c
-@@ -0,0 +1,97 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include "multi_uprobe.skel.h"
-+
-+/* this is how USDT semaphore is actually defined, except volatile modifier */
-+extern volatile unsigned short uprobe_ref_ctr;
-+
-+/* attach points */
-+static void method0(void) { return ; }
-+static void method1(void) { return ; }
-+static void method2(void) { return ; }
-+static void method3(void) { return ; }
-+static void method4(void) { return ; }
-+static void method5(void) { return ; }
-+static void method6(void) { return ; }
-+static void method7(void) { return ; }
-+
-+void test_multi_uprobe_test(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, uprobe_opts);
-+	struct bpf_link *uretprobe_link = NULL;
-+	struct bpf_link *uprobe_link = NULL;
-+	ssize_t base_addr, ref_ctr_offset;
-+	struct multi_uprobe *skel;
-+	const char *paths[8];
-+	int duration = 0;
-+	__u64 offs[8];
-+
-+	skel = multi_uprobe__open_and_load();
-+	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
-+		return;
-+
-+	base_addr = get_base_addr();
-+	if (CHECK(base_addr < 0, "get_base_addr",
-+		  "failed to find base addr: %zd", base_addr))
-+		return;
-+
-+	ref_ctr_offset = get_rel_offset((uintptr_t)&uprobe_ref_ctr);
-+	if (!ASSERT_GE(ref_ctr_offset, 0, "ref_ctr_offset"))
-+		return;
-+
-+#define INIT(__i)								\
-+	do {									\
-+		paths[__i] = (const char *) "/proc/self/exe";			\
-+		offs[__i]  = get_uprobe_offset(&method ## __i, base_addr);	\
-+	} while (0)
-+
-+	INIT(0);
-+	INIT(1);
-+	INIT(2);
-+	INIT(3);
-+	INIT(4);
-+	INIT(5);
-+	INIT(6);
-+	INIT(7);
-+
-+#undef INIT
-+
-+	uprobe_opts.multi.paths = paths;
-+	uprobe_opts.multi.offs = offs;
-+
-+	uprobe_opts.multi.cnt = 8;
-+
-+	uprobe_opts.retprobe = false;
-+	uprobe_opts.ref_ctr_offset = ref_ctr_offset;
-+	uprobe_link = bpf_program__attach_uprobe_opts(skel->progs.handle_uprobe,
-+						      0 /* self pid */,
-+						      NULL, 0,
-+						      &uprobe_opts);
-+	if (!ASSERT_OK_PTR(uprobe_link, "attach_uprobe"))
-+		goto cleanup;
-+
-+	uprobe_opts.retprobe = true;
-+	uretprobe_link = bpf_program__attach_uprobe_opts(skel->progs.handle_uretprobe,
-+							 -1 /* any pid */,
-+							 NULL, 0,
-+							 &uprobe_opts);
-+	if (!ASSERT_OK_PTR(uretprobe_link, "attach_uretprobe"))
-+		goto cleanup;
-+
-+	method0();
-+	method1();
-+	method2();
-+	method3();
-+	method4();
-+	method5();
-+	method6();
-+	method7();
-+
-+	ASSERT_EQ(skel->bss->test_uprobe_result, 8, "test_uprobe_result");
-+	ASSERT_EQ(skel->bss->test_uretprobe_result, 8, "test_uretprobe_result");
-+
-+cleanup:
-+	bpf_link__destroy(uretprobe_link);
-+	bpf_link__destroy(uprobe_link);
-+	multi_uprobe__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/multi_uprobe.c b/tools/testing/selftests/bpf/progs/multi_uprobe.c
-new file mode 100644
-index 000000000000..831f7b98baef
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/multi_uprobe.c
-@@ -0,0 +1,26 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/ptrace.h>
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+__u64 test_uprobe_result = 0;
-+
-+SEC("uprobe/trigger_func")
-+int handle_uprobe(struct pt_regs *ctx)
-+{
-+	test_uprobe_result++;
-+	return 0;
-+}
-+
-+__u64 test_uretprobe_result = 0;
-+
-+SEC("uretprobe/trigger_func")
-+int handle_uretprobe(struct pt_regs *ctx)
-+{
-+	test_uretprobe_result++;
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.33.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
