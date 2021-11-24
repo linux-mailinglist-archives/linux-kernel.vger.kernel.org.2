@@ -2,223 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E165045B609
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 08:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A66DB45B618
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240915AbhKXICm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 03:02:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:51508 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232944AbhKXICi (ORCPT
+        id S240945AbhKXIE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 03:04:26 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56722 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232944AbhKXIEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 03:02:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637740769;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zbTufz8OFP7qKoRtu/NjowzzXK6S9MoWsY0AWUWHcJM=;
-        b=OWHbcw+qHzw0mQzFyQFFulGAhMtoOnN1X49DG2BwKw0XOnESjLbK6Ru+U8OI4eX7DxL5al
-        calhl65NJOZMtCx0eeJ9oVGfrdd6vadin+QVBx/yK7IY15KSm7dSP3KyE/EJKW7MMPMxxv
-        jncUERzh2siD5dLtOpWoAxKANUgOJ0o=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-367-1zbiB7k1MgGgav08tXTU1g-1; Wed, 24 Nov 2021 02:59:25 -0500
-X-MC-Unique: 1zbiB7k1MgGgav08tXTU1g-1
-Received: by mail-lf1-f72.google.com with SMTP id s18-20020ac25c52000000b004016bab6a12so996066lfp.21
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 23:59:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zbTufz8OFP7qKoRtu/NjowzzXK6S9MoWsY0AWUWHcJM=;
-        b=texykBE7Shog5SD1ciqp8cAgAtIcJLaOrbtRb87zFTZK1Kz/rTFSFc3aN+plG5q8/J
-         JBPV56ch3n2uA0qz2w9RzvBCgxC7Xp6z1kckWu0J2gVewNYQwwxI+cI9HwRj9TMvAIsb
-         1iakQ2IxiG0tmvYeezZU+pmmnLynl9Xw0q+d1z2PFk4YvzQ7qaAevE2OWBCPlOEVHc8z
-         EuFRrWGWk8LorOjX0UXl8UuzKI8mEIsfwf6j4aEk2HKmHqcZNyEhrlqw4BwIv4c4OHiq
-         bvwvVhl7jp4nu3VGTJ9RjqILBnv8EoqsAuh8nnVmOafg66ow0fEJpGN2gKtEn6iJnwV3
-         WFyA==
-X-Gm-Message-State: AOAM5314Ps9MbqFVw1cm89mUCCFfqx7BIr3uZjS8XwcvaZ0GI8SjpuK0
-        dblfufK18qD7cuW7gocyCA7z7TkdsfNRss4uuaz2fKu0d8H+CFgF2HxIxjk/Tqvo1ERHIxumUcH
-        yIZtXEY3mCrLg+LkSeIJEkEuhLHBexPRuCOG/S6Qs
-X-Received: by 2002:a2e:a5c8:: with SMTP id n8mr13066149ljp.307.1637740764097;
-        Tue, 23 Nov 2021 23:59:24 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzxCYPQbhK06q1h26nGEUCn/uUI2+8f3XezlXAIGXlRb/G9RCVVmQgxujGCsPJG3BDoNVR/bded9uvTVwaoO+8=
-X-Received: by 2002:a2e:a5c8:: with SMTP id n8mr13066106ljp.307.1637740763785;
- Tue, 23 Nov 2021 23:59:23 -0800 (PST)
-MIME-Version: 1.0
-References: <CACGkMEtja2TPC=ujgMrpaPmdsy+zHowbBTvPj8k7nm_+zB8vig@mail.gmail.com>
- <20211122063518.37929c01.pasic@linux.ibm.com> <20211122064922.51b3678e.pasic@linux.ibm.com>
- <CACGkMEu+9FvMsghyi55Ee5BxetP-YK9wh2oaT8OgLiY5+tV0QQ@mail.gmail.com>
- <20211122212352.4a76232d.pasic@linux.ibm.com> <CACGkMEtmhwDEAvMuMhQEUB-b+=n713pVvjyct8QAqMUk1H-A-g@mail.gmail.com>
- <20211123055906-mutt-send-email-mst@kernel.org> <87zgpupcga.fsf@mpe.ellerman.id.au>
- <CACGkMEteDZJVM8j5pir7_Hcn6Oq=tKbcg4DUiEQBGm5Kg9w30w@mail.gmail.com>
- <CACGkMEs086P=qfMieMQ3wPhcarsdO++iRTwVHtN-4cgKLm8opA@mail.gmail.com> <20211124022101-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20211124022101-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Wed, 24 Nov 2021 15:59:12 +0800
-Message-ID: <CACGkMEsn8xbdEgrCwCWpGz7u=NoX-yADotCaeB2oNbZy_u9iOQ@mail.gmail.com>
-Subject: Re: [PATCH V5 1/4] virtio_ring: validate used buffer length
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "kaplan, david" <david.kaplan@amd.com>,
+        Wed, 24 Nov 2021 03:04:25 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AO7HLnc026789;
+        Wed, 24 Nov 2021 08:01:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=pa9nXzRMlG8thI4bC+/EFpLYmgwn0p2lmoO1w9AlEaI=;
+ b=ePozwjrAdngzPMwCDWBgvds+aBDdCiNjgkho8lNfG/XAznKrEvd77xXWJSddOEQ4k2Pp
+ ISXfgje8YarvfkVZ+bnOScaRG0LV82WvQvz79yq/eBIyTA9Bd0BFYXy6dBsHELEYduyM
+ yDp0h2fY3Dxv9FtTY1vKpAIVp7IiEdMYibEsoWQIUMN7WDDsFklB1WOE6OQf5sRDlOSq
+ VHdJhhCP94FBZguzOc+jlecI6GsE0hV4hBcUGakEaLcv6hhvXNsAYx/p+poGxXc7K9ww
+ 1O+64LYWiM7q3Ve+DYlSpJIPTwqdN0zMkOf04QZ/M6NU2wu0zsmq7zmIznY7d/K2JYN4 TQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3chgvfrrtm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Nov 2021 08:01:00 +0000
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AO7sRBK006948;
+        Wed, 24 Nov 2021 08:01:00 GMT
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3chgvfrrsq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Nov 2021 08:00:59 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AO7lCvB009983;
+        Wed, 24 Nov 2021 08:00:57 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3cernaxqpj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Nov 2021 08:00:56 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AO80rL532440676
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Nov 2021 08:00:53 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6B42211CC50;
+        Wed, 24 Nov 2021 08:00:53 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9A49611CC38;
+        Wed, 24 Nov 2021 08:00:48 +0000 (GMT)
+Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com (unknown [9.43.71.39])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 24 Nov 2021 08:00:48 +0000 (GMT)
+Subject: Re: [PATCH 2/2] perf tools: Improve IBS error handling
+To:     Kim Phillips <kim.phillips@amd.com>, Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
         Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>, mcgrof@kernel.org,
-        David Hildenbrand <david@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Robert Richter <robert.richter@amd.com>,
+        Stephane Eranian <eranian@google.com>
+References: <20211004214114.188477-1-kim.phillips@amd.com>
+ <20211004214114.188477-2-kim.phillips@amd.com> <YV8uQVnMnnMd1Led@krava>
+ <8a8583dc-5a5d-f107-8ef0-6be96e2f9095@amd.com>
+ <fdcfec83-01c6-5e25-5b99-dac05287fdae@linux.ibm.com>
+ <74e17a71-98ff-e0b1-61d4-d37992b1ae15@amd.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <f095bebf-77d5-94c7-5787-13a6f38867cc@linux.ibm.com>
+Date:   Wed, 24 Nov 2021 13:30:47 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <74e17a71-98ff-e0b1-61d4-d37992b1ae15@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: AAPNts8oBqWVWo2QzUej6oYjQN5-Ky9I
+X-Proofpoint-ORIG-GUID: AZ4xGN0K4_p-lptSxfBOBUsjBvt7dfAE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-24_02,2021-11-23_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 phishscore=0 spamscore=0 impostorscore=0 adultscore=0
+ clxscore=1015 suspectscore=0 bulkscore=0 priorityscore=1501
+ mlxlogscore=999 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111240042
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 3:22 PM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> On Wed, Nov 24, 2021 at 10:33:28AM +0800, Jason Wang wrote:
-> > On Wed, Nov 24, 2021 at 10:26 AM Jason Wang <jasowang@redhat.com> wrote:
-> > >
-> > > On Wed, Nov 24, 2021 at 9:30 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
-> > > >
-> > > > "Michael S. Tsirkin" <mst@redhat.com> writes:
-> > > > > On Tue, Nov 23, 2021 at 10:25:20AM +0800, Jason Wang wrote:
-> > > > >> On Tue, Nov 23, 2021 at 4:24 AM Halil Pasic <pasic@linux.ibm.com> wrote:
-> > > > >> >
-> > > > >> > On Mon, 22 Nov 2021 14:25:26 +0800
-> > > > >> > Jason Wang <jasowang@redhat.com> wrote:
-> > > > >> >
-> > > > >> > > I think the fixes are:
-> > > > >> > >
-> > > > >> > > 1) fixing the vhost vsock
-> > > > >> > > 2) use suppress_used_validation=true to let vsock driver to validate
-> > > > >> > > the in buffer length
-> > > > >> > > 3) probably a new feature so the driver can only enable the validation
-> > > > >> > > when the feature is enabled.
-> > > > >> >
-> > > > >> > I'm not sure, I would consider a F_DEV_Y_FIXED_BUG_X a perfectly good
-> > > > >> > feature. Frankly the set of such bugs is device implementation
-> > > > >> > specific and it makes little sense to specify a feature bit
-> > > > >> > that says the device implementation claims to adhere to some
-> > > > >> > aspect of the specification. Also what would be the semantic
-> > > > >> > of not negotiating F_DEV_Y_FIXED_BUG_X?
-> > > > >>
-> > > > >> Yes, I agree. Rethink of the feature bit, it seems unnecessary,
-> > > > >> especially considering the driver should not care about the used
-> > > > >> length for tx.
-> > > > >>
-> > > > >> >
-> > > > >> > On the other hand I see no other way to keep the validation
-> > > > >> > permanently enabled for fixed implementations, and get around the problem
-> > > > >> > with broken implementations. So we could have something like
-> > > > >> > VHOST_USED_LEN_STRICT.
-> > > > >>
-> > > > >> It's more about a choice of the driver's knowledge. For vsock TX it
-> > > > >> should be fine. If we introduce a parameter and disable it by default,
-> > > > >> it won't be very useful.
-> > > > >>
-> > > > >> >
-> > > > >> > Maybe, we can also think of 'warn and don't alter behavior' instead of
-> > > > >> > 'warn' and alter behavior. Or maybe even not having such checks on in
-> > > > >> > production, but only when testing.
-> > > > >>
-> > > > >> I think there's an agreement that virtio drivers need more hardening,
-> > > > >> that's why a lot of patches were merged. Especially considering the
-> > > > >> new requirements came from confidential computing, smart NIC and
-> > > > >> VDUSE. For virtio drivers, enabling the validation may help to
-> > > > >>
-> > > > >> 1) protect the driver from the buggy and malicious device
-> > > > >> 2) uncover the bugs of the devices (as vsock did, and probably rpmsg)
-> > > > >> 3) force the have a smart driver that can do the validation itself
-> > > > >> then we can finally remove the validation in the core
-> > > > >>
-> > > > >> So I'd like to keep it enabled.
-> > > > >>
-> > > > >> Thanks
-> > > > >
-> > > > > Let's see how far we can get. But yes, maybe we were too aggressive in
-> > > > > breaking things by default, a warning might be a better choice for a
-> > > > > couple of cycles.
-> > >
-> > > Ok, considering we saw the issues with balloons I think I can post a
-> > > patch to use warn instead. I wonder if we need to taint the kernel in
-> > > this case.
-> >
-> > Rethink this, consider we still have some time, I tend to convert the
-> > drivers to validate the length by themselves. Does this make sense?
-> >
-> > Thanks
->
-> That's separate but let's stop crashing guests for people ASAP.
 
-Ok, will post a patch soon.
 
-Thanks
+On 11/23/21 8:55 PM, Kim Phillips wrote:
+> On 11/23/21 2:40 AM, kajoljain wrote:
+>> On 10/8/21 12:47 AM, Kim Phillips wrote:
+>>> On 10/7/21 12:28 PM, Jiri Olsa wrote:
+>>>> On Mon, Oct 04, 2021 at 04:41:14PM -0500, Kim Phillips wrote:
+>>>>> ---
+>>>>>    tools/perf/util/evsel.c | 24 ++++++++++++++++++++++++
+>>>>>    1 file changed, 24 insertions(+)
+>>>>>
+>>>>> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+>>>>> index b915840690d4..f8a9cbd99314 100644
+>>>>> --- a/tools/perf/util/evsel.c
+>>>>> +++ b/tools/perf/util/evsel.c
+>>>>> @@ -2743,9 +2743,22 @@ static bool find_process(const char *name)
+>>>>>        return ret ? false : true;
+>>>>>    }
+>>>>>    +static bool is_amd(const char *arch, const char *cpuid)
+>>>>> +{
+>>>>> +    return arch && !strcmp("x86", arch) && cpuid && strstarts(cpuid,
+>>>>> "AuthenticAMD");
+>>>>> +}
+>>>>> +
+>>>>> +static bool is_amd_ibs(struct evsel *evsel)
+>>>>> +{
+>>>>> +    return evsel->core.attr.precise_ip || !strncmp(evsel->pmu_name,
+>>>>> "ibs", 3);
+>>>>> +}
+>>>>> +
+>>>>>    int evsel__open_strerror(struct evsel *evsel, struct target
+>>>>> *target,
+>>>>>                 int err, char *msg, size_t size)
+>>>>>    {
+>>>>> +    struct perf_env *env = evsel__env(evsel);
+>>>>> +    const char *arch = perf_env__arch(env);
+>>>>> +    const char *cpuid = perf_env__cpuid(env);
+>>>>>        char sbuf[STRERR_BUFSIZE];
+>>>>>        int printed = 0, enforced = 0;
+>>>>>    @@ -2841,6 +2854,17 @@ int evsel__open_strerror(struct evsel
+>>>>> *evsel, struct target *target,
+>>>>>                return scnprintf(msg, size, "wrong clockid (%d).",
+>>>>> clockid);
+>>>>>            if (perf_missing_features.aux_output)
+>>>>>                return scnprintf(msg, size, "The 'aux_output' feature
+>>>>> is not supported, update the kernel.");
+>>>>> +        if (is_amd(arch, cpuid)) {
+>>>>> +            if (is_amd_ibs(evsel)) {
+>>>>
+>>>> would single 'is_amd_ibs' call be better? checking on both amd and ibs
+>>>
+>>> Good suggestion. If you look at the later patch in the
+>>> BRS series, I have rewritten it to add the new
+>>> AMD PMU like so:
+>>>
+>>>   if (is_amd()) {
+>>>       if (is_amd_ibs()) {
+>>>           if (evsel->this)
+>>>               return
+>>>           if (evsel->that)
+>>>               return
+>>>       }
+>>> +    if (is_amd_brs()) {
+>>> +        if (evsel->this)
+>>> +            return
+>>> +        if (evsel->that)
+>>> +            return
+>>> +    }
+>>>   }
+>>
+>> Hi Kim,
+>>       From my point of view, it won't be a good idea of adding so many
+>> checks in common function definition itself.
+>> Can you just create a check to see if its amd machine and then add a
+>> function call which will handle all four conditions together?
+>>
+>> which is basically for:
+>>
+>> +        if (is_amd(arch, cpuid)) {
+>> +            if (is_amd_ibs(evsel)) {
+>> +                if (evsel->core.attr.exclude_kernel)
+>> +                    return scnprintf(msg, size,
+>> +    "AMD IBS can't exclude kernel events.  Try running at a higher
+>> privilege level.");
+>> +                if (!evsel->core.system_wide)
+>> +                    return scnprintf(msg, size,
+>> +    "AMD IBS may only be available in system-wide/per-cpu mode.  Try
+>> using
+>> -a, or -C and workload affinity");
+>> +            }
+>>
+>> and this:
+>>
+>> +            if (is_amd_brs(evsel)) {
+>> +                if (evsel->core.attr.freq)
+>> +                    return scnprintf(msg, size,
+>> +    "AMD Branch Sampling does not support frequency mode sampling, must
+>> pass a fixed sampling period via -c option or
+>> cpu/branch-brs,period=xxxx/.");
+>> +                /* another reason is that the period is too small */
+>> +                return scnprintf(msg, size,
+>> +    "AMD Branch Sampling does not support sampling period smaller than
+>> what is reported in /sys/devices/cpu/caps/branches.");
+>> +            }
+> 
+> IIRC, I tried something like that but carrying the
+> 
+> 
+> struct target *target, int err, char *msg, size_t size
+> 
+> parameters made things worse.
+> 
+>> So, incase we are in amd machine,  common function evsel__open_strerror
+>> will call function may be something like amd_evesel_open_strerror_check
+>> which will look for both ibs and brs conditions and return corresponding
+>> error statement.
+> 
+> The vast majority of decisions made by evsel__open_strerror are
+> going to be common across most arch/uarches.  AMD has only these
+> two pesky exceptions to the rule and therefore IMO it's ok
+> to have them inline with the common function, since the decisions
+> are so deeply intertwined.  A new amd_evsel_open_strerror_check
+> sounds like it'd duplicate too much of the common function code
+> in order to handle the common error cases.
 
->
->
-> > >
-> > > >
-> > > > This series appears to break the virtio_balloon driver as well.
-> > > >
-> > > > The symptom is soft lockup warnings, eg:
-> > > >
-> > > >   INFO: task kworker/1:1:109 blocked for more than 614 seconds.
-> > > >         Not tainted 5.16.0-rc2-gcc-10.3.0 #21
-> > > >   "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > > >   task:kworker/1:1     state:D stack:12496 pid:  109 ppid:     2 flags:0x00000800
-> > > >   Workqueue: events_freezable update_balloon_size_func
-> > > >   Call Trace:
-> > > >   [c000000003cef7c0] [c000000003cef820] 0xc000000003cef820 (unreliable)
-> > > >   [c000000003cef9b0] [c00000000001e238] __switch_to+0x1e8/0x2f0
-> > > >   [c000000003cefa10] [c000000000f0a00c] __schedule+0x2cc/0xb50
-> > > >   [c000000003cefae0] [c000000000f0a8fc] schedule+0x6c/0x140
-> > > >   [c000000003cefb10] [c00000000095b6c4] tell_host+0xe4/0x130
-> > > >   [c000000003cefba0] [c00000000095d234] update_balloon_size_func+0x394/0x3f0
-> > > >   [c000000003cefc70] [c000000000178064] process_one_work+0x2c4/0x5b0
-> > > >   [c000000003cefd10] [c0000000001783f8] worker_thread+0xa8/0x640
-> > > >   [c000000003cefda0] [c000000000185444] kthread+0x1b4/0x1c0
-> > > >   [c000000003cefe10] [c00000000000cee4] ret_from_kernel_thread+0x5c/0x64
-> > > >
-> > > > Similar backtrace reported here by Luis:
-> > > >
-> > > >   https://lore.kernel.org/lkml/YY2duTi0wAyAKUTJ@bombadil.infradead.org/
-> > > >
-> > > > Bisect points to:
-> > > >
-> > > >   # first bad commit: [939779f5152d161b34f612af29e7dc1ac4472fcf] virtio_ring: validate used buffer length
-> > > >
-> > > > Adding suppress used validation to the virtio balloon driver "fixes" it, eg.
-> > > >
-> > > > diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-> > > > index c22ff0117b46..a14b82ceebb2 100644
-> > > > --- a/drivers/virtio/virtio_balloon.c
-> > > > +++ b/drivers/virtio/virtio_balloon.c
-> > > > @@ -1150,6 +1150,7 @@ static unsigned int features[] = {
-> > > >  };
-> > > >
-> > > >  static struct virtio_driver virtio_balloon_driver = {
-> > > > +       .suppress_used_validation = true,
-> > > >         .feature_table = features,
-> > > >         .feature_table_size = ARRAY_SIZE(features),
-> > > >         .driver.name =  KBUILD_MODNAME,
-> > >
-> > > Looks good, we need a formal patch for this.
-> > >
-> > > And we need fix Qemu as well which advertise non zero used length for
-> > > inflate/deflate queue:
-> > >
-> > > static void virtio_balloon_handle_output(VirtIODevice *vdev, VirtQueue *vq)
-> > > ...
-> > >         virtqueue_push(vq, elem, offset);
-> > >
-> > > Thanks
-> > >
-> > > >
-> > > >
-> > > > cheers
-> > > >
->
+Hi Kim,
+   Sorry for the confusion, what I meant by adding new function is just
+to handle these corner error cases and not duplicating whole
+evsel__open_strerror code.
 
+Maybe something like below code, Its just prototype of code to show you
+the flow, you can refine it and check for any build or indentation
+issues using checkpatch.pl script.
+
+So basically, in common function we can just have 2 calls, first to
+check if we are in amd system and second to return corresponding error
+message, rather then adding whole chunk of if's which are specific to amd.
+
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index ac0127be0459..adefb162ae08 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -2852,9 +2852,40 @@ static bool find_process(const char *name)
+        return ret ? false : true;
+ }
+
++static bool is_amd(const char *arch, const char *cpuid)
++{
++       return arch && !strcmp("x86", arch) && cpuid && strstarts(cpuid,
+"AuthenticAMD");
++}
++
++static int error_amd_ibs_brs(struct evsel *evsel, char *msg, size_t size)
++{
++       if (evsel->core.attr.precise_ip || !strncmp(evsel->pmu_name,
+"ibs", 3)) {
++               if (evsel->core.attr.exclude_kernel)
++                       return scnprintf(msg, size,
++       "AMD IBS can't exclude kernel events.  Try running at a higher
+privilege level.");
++               if (!evsel->core.system_wide)
++                       return scnprintf(msg, size,
++       "AMD IBS may only be available in system-wide/per-cpu mode.  Try
+using -a, or -C and workload affinity");
++       }
++
++       if (((evsel->core.attr.config & 0xff) == 0xc4) &&
+(evsel->core.attr.sample_type & PERF_SAMPLE_BRANCH_STACK)) {
++               if (evsel->core.attr.freq) {
++                       return scnprintf(msg, size,
++       "AMD Branch Sampling does not support frequency mode sampling,
+must pass a fixed sampling
++          period via -c option or cpu/branch-brs,period=xxxx/.");
++                /* another reason is that the period is too small */
++               return scnprintf(msg, size,
++       "AMD Branch Sampling does not support sampling period smaller
+than what is reported in /sys/devices/cpu/caps/branches.");
++               }
++       }
++}
++
+ int evsel__open_strerror(struct evsel *evsel, struct target *target,
+                         int err, char *msg, size_t size)
+ {
++       struct perf_env *env = evsel__env(evsel);
++       const char *arch = perf_env__arch(env);
++       const char *cpuid = perf_env__cpuid(env);
+        char sbuf[STRERR_BUFSIZE];
+        int printed = 0, enforced = 0;
+
+@@ -2950,6 +2981,8 @@ int evsel__open_strerror(struct evsel *evsel,
+struct target *target,
+                        return scnprintf(msg, size, "wrong clockid
+(%d).", clockid);
+                if (perf_missing_features.aux_output)
+                        return scnprintf(msg, size, "The 'aux_output'
+feature is not supported, update the kernel.");
++               if (is_amd(arch, cpuid))
++                       return error_amd_ibs_brs(evsel, msg, size);
+                break;
+        case ENODATA:
+                return scnprintf(msg, size, "Cannot collect data source
+with the load latency event alone. "
+
+Thanks,
+Kajol Jain
+
+> 
+> Kim
