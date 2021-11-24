@@ -2,82 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07AFB45C8E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:40:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD5545C8E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:40:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245020AbhKXPnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:43:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36578 "EHLO
+        id S245212AbhKXPnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:43:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243677AbhKXPna (ORCPT
+        with ESMTP id S244217AbhKXPnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:43:30 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D296C061574;
-        Wed, 24 Nov 2021 07:40:20 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id n66so6092837oia.9;
-        Wed, 24 Nov 2021 07:40:20 -0800 (PST)
+        Wed, 24 Nov 2021 10:43:45 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D43C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:40:35 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id c32so8364652lfv.4
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:40:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lrXM5Ku32vVurxgMfpqQlfiGWI22GAVou6uwZfe+JbA=;
-        b=aj796oMT+64jNfB+zSkMj/KLoGhIRCI0INPC+u+1t/dDSdOpTBgiHV8XCTa+JtWYls
-         owrrDI7ouLZrGkAShTLiC8znCG9Q352i62L9hoBhpfAxmnQacCJDcVjLYAwA2rP4iA15
-         4HacMnktA7R036LVc4mEgD/az5G9Xh0A3RtLgbFvpFPeV/HxgrglixYXprtceiYWOYNj
-         x6q1bODDPanb2FI32E6sBeFQxorpx2IyM2M2LRI/JtHV3j0hZXb+oNNk0VKk95Dp+2rs
-         3DLoMWsu8ghPaQarMcpDM5LcpucLzf9nUB5tC9dp4eoowsnFWhRebcd1jSFkT3vV3FT1
-         wiOQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MRHSK8zabRFIynpw4+uy7/MG4Xk6F7PWDEFcamsYRYU=;
+        b=TugcSYnHV39SipEpIZX0+YVXT2YzASAzsk9uWYPrM41qixYEvcCzmp12Z8+OLFznPr
+         dkNfO3y312qdyv88H0pBptv570nvbk+cekRIfAz342IShomnUqYoAwfPG+G6FJRWYKcm
+         NA26AiIcR3TOf8Jty7f3CM9fL7ar42Q9fFwww4ZnCOaoVcYFJMdue1AcWegLuNp+5GP8
+         A08ZIsnq7EGPANchlly0T+hDY2ZBgAIflrZR0cb4/BxfBW63PXDIm0g0PZ9xMu/0120w
+         1jbwW8KFcWn1KcPq2kymAJo7cb9PxrwRFTZQoNyymOfebPw7U2qxg8dMjBnWGV+Hi5/9
+         lYKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=lrXM5Ku32vVurxgMfpqQlfiGWI22GAVou6uwZfe+JbA=;
-        b=vbF/Kn07+XEx1KcxBwz5Fr8n7qwzos+vGQqnKfW5YtaMUb2E/yd2X4+INe5O4i1TEW
-         VnVLendCE55XAkalXUKt4RKXdarXvY1Y0ZfwLAVRZ+1MZm7j+Eak2i0g7+lyKtT4WmSX
-         y9ej4xH6a0QPcK0d6hLpvXhpOZVpd1FaUYXs6BpT77easXIZZ6kzM7va+5SYIi/+e6YW
-         96srPh+a6djToNjl9dajF1lotSyNptzfqz9eglh1TjJKKO68Ksy5xCjWUg8eG9Ky4Iqm
-         /MWHLSLm697TDQnaW5UUkzYSDEnOVZ9igFtRLFiZs/lJHl57bsPKDNAx6+UESSJg4TMT
-         PTAw==
-X-Gm-Message-State: AOAM530OXrPjETkcG30gw86dwrrhjYO6IcdMeyALSH+knsRjpb7D8q1z
-        VZ7Gz8+uEh720EVO08/t9XA=
-X-Google-Smtp-Source: ABdhPJxpVwhQdN2ywVu3PVTUK3D08m3TRrU6FBxYcFI28GfyhMaQSnssesYAi3V/euY5HYRiAG4jOw==
-X-Received: by 2002:a05:6808:1408:: with SMTP id w8mr7077745oiv.54.1637768420011;
-        Wed, 24 Nov 2021 07:40:20 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w5sm15325otk.70.2021.11.24.07.40.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 07:40:19 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 24 Nov 2021 07:40:17 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 000/100] 5.4.162-rc1 review
-Message-ID: <20211124154017.GA1854532@roeck-us.net>
-References: <20211124115654.849735859@linuxfoundation.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MRHSK8zabRFIynpw4+uy7/MG4Xk6F7PWDEFcamsYRYU=;
+        b=6OmPinFqb2PJXBkitpkWWQ3ZUfjClOUkt0ADutI3V3eM3g9m9qZ6OrMt+DxXB2201S
+         xt4ZP0Jgq8TY13+5Ekq1JJJqEloVgHej0GVD1kFvYeWJrjyN6ufflQpyQq3PGaKP5oIF
+         FzHbhwjzaIW850ftZUSIPgx2acFhkR1nP0a24Ayuw4uu8QC9FdOfy+d9bnYVkzZzAH1N
+         EcBkntAPp9Nujkcy+FYr5wM31ALvEZvnBRNqB03XTqK5KeV6brmORKZy/yRAAuHTTX56
+         Be/EYoHlhUtdoriCBcgV1GZuHZf7qAA8lnrvUJnn3nmfev0Wf0whjo8IFPZlL0JMnTLD
+         3miA==
+X-Gm-Message-State: AOAM531ZswZ+iHXD/riUpHfiECbmBi+0uE2pCZd8Fuqagv7B5m970nGc
+        co95MZPydOS3T2Zz55xuWimFmQ==
+X-Google-Smtp-Source: ABdhPJxGGspGiIzucoi+Pl9RHLXjwi2ldVTBfma2Pqx2udv5TQOaceAH0vTSByWarlNgAddvvzt/Bw==
+X-Received: by 2002:a05:6512:33c9:: with SMTP id d9mr15286457lfg.615.1637768433301;
+        Wed, 24 Nov 2021 07:40:33 -0800 (PST)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id d10sm15999lfe.106.2021.11.24.07.40.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Nov 2021 07:40:32 -0800 (PST)
+Subject: Re: [PATCH v3 05/13] drm/msm/disp/dpu1: Don't use DSC with mode_3d
+To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+References: <20211116062256.2417186-1-vkoul@kernel.org>
+ <20211116062256.2417186-6-vkoul@kernel.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <20269960-a753-72d4-5a1d-430af00cf562@linaro.org>
+Date:   Wed, 24 Nov 2021 18:40:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211116062256.2417186-6-vkoul@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 12:57:16PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.162 release.
-> There are 100 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 16/11/2021 09:22, Vinod Koul wrote:
+> We cannot enable mode_3d when we are using the DSC. So pass
+> configuration to detect DSC is enabled and not enable mode_3d
+> when we are using DSC
 > 
-> Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
-> Anything received after that time might be too late.
+> We add a helper dpu_encoder_helper_get_dsc() to detect dsc
+> enabled and pass this to .setup_intf_cfg()
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h     | 11 +++++++++++
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c |  2 ++
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c           |  3 ++-
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h           |  2 ++
+>   4 files changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> index e7270eb6b84b..efb85d595598 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> @@ -332,6 +332,17 @@ static inline enum dpu_3d_blend_mode dpu_encoder_helper_get_3d_blend_mode(
+>   	return BLEND_3D_NONE;
+>   }
+>   
+> +static inline bool dpu_encoder_helper_get_dsc(struct dpu_encoder_phys *phys_enc)
+> +{
+> +	struct drm_encoder *drm_enc = phys_enc->parent;
+> +	struct msm_drm_private *priv = drm_enc->dev->dev_private;
+> +
+> +	if (priv->dsc)
+> +		return priv->dsc->dsc_mask;
+
+dsc_mask doesn't exist at this point, so the patch should be moved later 
+in the series.
+
+> +
+> +	return 0;
+> +}
+> +
+>   /**
+>    * dpu_encoder_helper_split_config - split display configuration helper function
+>    *	This helper function may be used by physical encoders to configure
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> index 34a6940d12c5..f3f00f4d0193 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
+> @@ -70,6 +70,8 @@ static void _dpu_encoder_phys_cmd_update_intf_cfg(
+>   	intf_cfg.intf_mode_sel = DPU_CTL_MODE_SEL_CMD;
+>   	intf_cfg.stream_sel = cmd_enc->stream_sel;
+>   	intf_cfg.mode_3d = dpu_encoder_helper_get_3d_blend_mode(phys_enc);
+> +	intf_cfg.dsc = dpu_encoder_helper_get_dsc(phys_enc);
+> +
+>   	ctl->ops.setup_intf_cfg(ctl, &intf_cfg);
+>   }
+>   
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> index 64740ddb983e..36831457a91b 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> @@ -519,7 +519,8 @@ static void dpu_hw_ctl_intf_cfg(struct dpu_hw_ctl *ctx,
+>   
+>   	intf_cfg |= (cfg->intf & 0xF) << 4;
+>   
+> -	if (cfg->mode_3d) {
+> +	/* In DSC we can't set merge, so check for dsc too */
+> +	if (cfg->mode_3d && !cfg->dsc) {
+>   		intf_cfg |= BIT(19);
+>   		intf_cfg |= (cfg->mode_3d - 0x1) << 20;
+>   	}
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+> index 806c171e5df2..9847c9c46d6f 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
+> @@ -40,6 +40,7 @@ struct dpu_hw_stage_cfg {
+>    * @merge_3d:              3d merge block used
+>    * @intf_mode_sel:         Interface mode, cmd / vid
+>    * @stream_sel:            Stream selection for multi-stream interfaces
+> + * @dsc:                   DSC BIT masks
+>    */
+>   struct dpu_hw_intf_cfg {
+>   	enum dpu_intf intf;
+> @@ -47,6 +48,7 @@ struct dpu_hw_intf_cfg {
+>   	enum dpu_merge_3d merge_3d;
+>   	enum dpu_ctl_mode_sel intf_mode_sel;
+>   	int stream_sel;
+> +	unsigned int dsc;
+>   };
+>   
+>   /**
 > 
 
-arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi:412.21-414.5: ERROR (duplicate_label): /soc/codec: Duplicate label 'lpass_codec' on /soc/codec and /soc@0/codec
-ERROR: Input tree has errors, aborting (use -f to force output)
 
-Guenter
+-- 
+With best wishes
+Dmitry
