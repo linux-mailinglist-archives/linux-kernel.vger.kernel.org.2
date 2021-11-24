@@ -2,84 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DDD545C905
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:42:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD73145C908
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345262AbhKXPpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:45:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345617AbhKXPpk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:45:40 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC66C061756;
-        Wed, 24 Nov 2021 07:42:27 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id w6-20020a9d77c6000000b0055e804fa524so4890237otl.3;
-        Wed, 24 Nov 2021 07:42:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1sqyelsDqXo4Ss2ml85GtMu6YABUPsG4e01T6KG/eLg=;
-        b=UMxPX1wAUlBdry4AzZWw/n6HW9FA65T3nemyKdHficLti1wzZQZ2pYdjB25Rq9eD7w
-         0FZe1M5+joElCQAYrR03E56/m4DYsfFYzqNK55Qw7JJVU3I7E8VoBEfqjFS/CQ30SCl9
-         i42u4ZVhSoMnYAO4xb1KmhqhKdqJg3N9tMoR/gv9pUPUSWissyTHxtmwQYuC0KcsLpbP
-         TzGjQ3vT0pdfs7fMOD2lb36z7qmzj4XZwiS6zcrdnrQA6Ztzsz2OOTMU6PaLYmVEqOFe
-         9/y7bKNJsSZEqiEGyWSoplTbYi5XNdjx2Aa+xxnsfjEhZHERrAIneSKMUNOORP0pyDtS
-         UG5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=1sqyelsDqXo4Ss2ml85GtMu6YABUPsG4e01T6KG/eLg=;
-        b=4sIy0UEQxPCfBtBAJ/Jkgmt9HRoqCHHJWfF7rlSQRq6dcBld8ky5xvPhIoEbaneKOt
-         ilLav9hiZXCxSRdTDk7VjWFrXU1O9Rq6NqF/mo2Pf62iwcxPBaMIDX0oWbtVPW9JCqLG
-         HonwJyePm8LoF/PDXPXK61DpwH6ujTyajHf0WWmVbo5Dt1jTgRc5jiDiix66VmshYE4b
-         OoSEfdYBL0YI57kitMVv39rAkBXmz4SjQgldtOgrpWz4aGuVDd68+xfuUiQ8S7y0Gn4h
-         NjWnOu8VchmxwBapKEd2HOG+/Hl5Gb9YCB67iPNP6qwgyT10ReT/ZXCCWPoZp6WO7ive
-         5GRQ==
-X-Gm-Message-State: AOAM533owhhmukZhdMQAAaxX/sF3DK/m/vbz/5Fhe2IgZqLaBSspWP6h
-        Ci5HPecGoOrNqQfPVhhFaOfQLEaMPJM=
-X-Google-Smtp-Source: ABdhPJx1wRj0bDlOUHfhfqZpOYlcbDIcCwSK5dYIlC12mixUN+3kscg1J+irawcAhQMDGH8KwKC7OA==
-X-Received: by 2002:a9d:62d9:: with SMTP id z25mr13617764otk.330.1637768546870;
-        Wed, 24 Nov 2021 07:42:26 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f20sm41185oiw.48.2021.11.24.07.42.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 07:42:26 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 24 Nov 2021 07:42:25 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.4 000/162] 4.4.293-rc1 review
-Message-ID: <20211124154225.GB1854532@roeck-us.net>
-References: <20211124115658.328640564@linuxfoundation.org>
+        id S242031AbhKXPqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:46:06 -0500
+Received: from mga05.intel.com ([192.55.52.43]:52062 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241554AbhKXPqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 10:46:05 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="321534344"
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="321534344"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 07:42:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="607221283"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 24 Nov 2021 07:42:53 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mpuQ9-0004zP-3g; Wed, 24 Nov 2021 15:42:53 +0000
+Date:   Wed, 24 Nov 2021 23:42:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: fs/proc/vmcore.c:161:34: sparse: sparse: incorrect type in argument
+ 1 (different address spaces)
+Message-ID: <202111242331.x19Qywph-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 12:55:03PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.4.293 release.
-> There are 162 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
-> Anything received after that time might be too late.
-> 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5d9f4cf36721aba199975a9be7863a3ff5cd4b59
+commit: c1e63117711977cc4295b2ce73de29dd17066c82 proc/vmcore: fix clearing user buffer by properly using clear_user()
+date:   4 days ago
+config: ia64-allyesconfig (https://download.01.org/0day-ci/archive/20211124/202111242331.x19Qywph-lkp@intel.com/config)
+compiler: ia64-linux-gcc (GCC) 11.2.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c1e63117711977cc4295b2ce73de29dd17066c82
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout c1e63117711977cc4295b2ce73de29dd17066c82
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=ia64 
 
-sh:dreamcast_defconfig:
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-mm/hugetlb.c: In function '__unmap_hugepage_range':
-mm/hugetlb.c:3294:25: error: implicit declaration of function 'tlb_flush_pmd_range'
 
-Guenter
+sparse warnings: (new ones prefixed by >>)
+>> fs/proc/vmcore.c:161:34: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __user *p @@     got char *buf @@
+   fs/proc/vmcore.c:161:34: sparse:     expected void const [noderef] __user *p
+   fs/proc/vmcore.c:161:34: sparse:     got char *buf
+>> fs/proc/vmcore.c:161:34: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __user * @@     got char *buf @@
+   fs/proc/vmcore.c:161:34: sparse:     expected void [noderef] __user *
+   fs/proc/vmcore.c:161:34: sparse:     got char *buf
+
+vim +161 fs/proc/vmcore.c
+
+   133	
+   134	/* Reads a page from the oldmem device from given offset. */
+   135	ssize_t read_from_oldmem(char *buf, size_t count,
+   136				 u64 *ppos, int userbuf,
+   137				 bool encrypted)
+   138	{
+   139		unsigned long pfn, offset;
+   140		size_t nr_bytes;
+   141		ssize_t read = 0, tmp;
+   142	
+   143		if (!count)
+   144			return 0;
+   145	
+   146		offset = (unsigned long)(*ppos % PAGE_SIZE);
+   147		pfn = (unsigned long)(*ppos / PAGE_SIZE);
+   148	
+   149		down_read(&vmcore_cb_rwsem);
+   150		do {
+   151			if (count > (PAGE_SIZE - offset))
+   152				nr_bytes = PAGE_SIZE - offset;
+   153			else
+   154				nr_bytes = count;
+   155	
+   156			/* If pfn is not ram, return zeros for sparse dump files */
+   157			if (!pfn_is_ram(pfn)) {
+   158				tmp = 0;
+   159				if (!userbuf)
+   160					memset(buf, 0, nr_bytes);
+ > 161				else if (clear_user(buf, nr_bytes))
+   162					tmp = -EFAULT;
+   163			} else {
+   164				if (encrypted)
+   165					tmp = copy_oldmem_page_encrypted(pfn, buf,
+   166									 nr_bytes,
+   167									 offset,
+   168									 userbuf);
+   169				else
+   170					tmp = copy_oldmem_page(pfn, buf, nr_bytes,
+   171							       offset, userbuf);
+   172			}
+   173			if (tmp < 0) {
+   174				up_read(&vmcore_cb_rwsem);
+   175				return tmp;
+   176			}
+   177	
+   178			*ppos += nr_bytes;
+   179			count -= nr_bytes;
+   180			buf += nr_bytes;
+   181			read += nr_bytes;
+   182			++pfn;
+   183			offset = 0;
+   184		} while (count);
+   185	
+   186		up_read(&vmcore_cb_rwsem);
+   187		return read;
+   188	}
+   189	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
