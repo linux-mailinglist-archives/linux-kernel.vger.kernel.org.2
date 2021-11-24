@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C94C45BE5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:43:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33EF045BCCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:29:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345149AbhKXMqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:46:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50282 "EHLO mail.kernel.org"
+        id S244130AbhKXMca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:32:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345620AbhKXMn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:43:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C332D61407;
-        Wed, 24 Nov 2021 12:25:47 +0000 (UTC)
+        id S244035AbhKXMZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:25:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CB6161107;
+        Wed, 24 Nov 2021 12:15:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756748;
-        bh=zJzrMPNKLG59spI4CEQFBfM90LhD9BeR/UUez+YvwO8=;
+        s=korg; t=1637756152;
+        bh=u/I56GRwtTcKSHg3nKUPUeSkPN08FMTItD1vbc3pHDA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GSkVA2wjNd81+IGbrAOzG3feebGnpnzxmv65c+clTmD0VN6cxZq2lvr+W5yJwNOEp
-         kt8G8ER7zcqsYjL9QvuyCIZhzlfI2av0OSjip+CHtrZEQIaAmbbLRCOXfwtTJ1ifrv
-         PU6dQVPnC0rnt9aBhpCjkqR7vUS2zrKK+TuP35WA=
+        b=yP2/eW1/vg3/BV2fUpBXG5aROPpkTIToxp8ht+dFerw2GslhetMfWui/+Q0v3VngU
+         o6xAvUwKcrZ1ibqhx3RT1EDind6XX+4Of3MeY4TImmqkH2qs5JUaHU2RUzxCrvzHUo
+         n8hXpU0Yf4Cw/zyCxTf393Hw/7KYo17+yO93P57Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH 4.14 192/251] powerpc/bpf: Validate branch ranges
-Date:   Wed, 24 Nov 2021 12:57:14 +0100
-Message-Id: <20211124115716.951273837@linuxfoundation.org>
+        stable@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 164/207] arm64: dts: qcom: msm8916: Add unit name for /soc node
+Date:   Wed, 24 Nov 2021 12:57:15 +0100
+Message-Id: <20211124115709.311166164@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,112 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+From: Stephan Gerhold <stephan@gerhold.net>
 
-upstream commit 3832ba4e283d7052b783dab8311df7e3590fed93
+[ Upstream commit 7a62bfebc8c94bdb6eb8f54f49889dc6b5b79601 ]
 
-Add checks to ensure that we never emit branch instructions with
-truncated branch offsets.
+This fixes the following warning when building with W=1:
+Warning (unit_address_vs_reg): /soc: node has a reg or ranges property,
+but no unit name
 
-Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-Tested-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Acked-by: Song Liu <songliubraving@fb.com>
-Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/71d33a6b7603ec1013c9734dd8bdd4ff5e929142.1633464148.git.naveen.n.rao@linux.vnet.ibm.com
-[include header, drop ppc32 changes]
-Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/20210921152120.6710-1-stephan@gerhold.net
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/net/bpf_jit.h        |   26 ++++++++++++++++++++------
- arch/powerpc/net/bpf_jit_comp64.c |   10 +++++++---
- 2 files changed, 27 insertions(+), 9 deletions(-)
+ arch/arm64/boot/dts/qcom/msm8916.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/powerpc/net/bpf_jit.h
-+++ b/arch/powerpc/net/bpf_jit.h
-@@ -15,6 +15,7 @@
- #ifndef __ASSEMBLY__
+diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+index c2557cf43b3dc..eb806e73d598b 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+@@ -243,7 +243,7 @@
+ 		};
+ 	};
  
- #include <asm/types.h>
-+#include <asm/code-patching.h>
- 
- #ifdef PPC64_ELF_ABI_v1
- #define FUNCTION_DESCR_SIZE	24
-@@ -176,13 +177,26 @@
- #define PPC_NEG(d, a)		EMIT(PPC_INST_NEG | ___PPC_RT(d) | ___PPC_RA(a))
- 
- /* Long jump; (unconditional 'branch') */
--#define PPC_JMP(dest)		EMIT(PPC_INST_BRANCH |			      \
--				     (((dest) - (ctx->idx * 4)) & 0x03fffffc))
-+#define PPC_JMP(dest)							      \
-+	do {								      \
-+		long offset = (long)(dest) - (ctx->idx * 4);		      \
-+		if (!is_offset_in_branch_range(offset)) {		      \
-+			pr_err_ratelimited("Branch offset 0x%lx (@%u) out of range\n", offset, ctx->idx);			\
-+			return -ERANGE;					      \
-+		}							      \
-+		EMIT(PPC_INST_BRANCH | (offset & 0x03fffffc));		      \
-+	} while (0)
- /* "cond" here covers BO:BI fields. */
--#define PPC_BCC_SHORT(cond, dest)	EMIT(PPC_INST_BRANCH_COND |	      \
--					     (((cond) & 0x3ff) << 16) |	      \
--					     (((dest) - (ctx->idx * 4)) &     \
--					      0xfffc))
-+#define PPC_BCC_SHORT(cond, dest)					      \
-+	do {								      \
-+		long offset = (long)(dest) - (ctx->idx * 4);		      \
-+		if (!is_offset_in_cond_branch_range(offset)) {		      \
-+			pr_err_ratelimited("Conditional branch offset 0x%lx (@%u) out of range\n", offset, ctx->idx);		\
-+			return -ERANGE;					      \
-+		}							      \
-+		EMIT(PPC_INST_BRANCH_COND | (((cond) & 0x3ff) << 16) | (offset & 0xfffc));					\
-+	} while (0)
-+
- /* Sign-extended 32-bit immediate load */
- #define PPC_LI32(d, i)		do {					      \
- 		if ((int)(uintptr_t)(i) >= -32768 &&			      \
---- a/arch/powerpc/net/bpf_jit_comp64.c
-+++ b/arch/powerpc/net/bpf_jit_comp64.c
-@@ -235,7 +235,7 @@ static void bpf_jit_emit_func_call(u32 *
- 	PPC_BLRL();
- }
- 
--static void bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 out)
-+static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 out)
- {
- 	/*
- 	 * By now, the eBPF program has already setup parameters in r3, r4 and r5
-@@ -296,7 +296,9 @@ static void bpf_jit_emit_tail_call(u32 *
- 	bpf_jit_emit_common_epilogue(image, ctx);
- 
- 	PPC_BCTR();
-+
- 	/* out: */
-+	return 0;
- }
- 
- /* Assemble the body code between the prologue & epilogue */
-@@ -306,7 +308,7 @@ static int bpf_jit_build_body(struct bpf
- {
- 	const struct bpf_insn *insn = fp->insnsi;
- 	int flen = fp->len;
--	int i;
-+	int i, ret;
- 
- 	/* Start of epilogue code - will only be valid 2nd pass onwards */
- 	u32 exit_addr = addrs[flen];
-@@ -956,7 +958,9 @@ common_load:
- 		 */
- 		case BPF_JMP | BPF_TAIL_CALL:
- 			ctx->seen |= SEEN_TAILCALL;
--			bpf_jit_emit_tail_call(image, ctx, addrs[i + 1]);
-+			ret = bpf_jit_emit_tail_call(image, ctx, addrs[i + 1]);
-+			if (ret < 0)
-+				return ret;
- 			break;
- 
- 		default:
+-	soc: soc {
++	soc: soc@0 {
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+ 		ranges = <0 0 0 0xffffffff>;
+-- 
+2.33.0
+
 
 
