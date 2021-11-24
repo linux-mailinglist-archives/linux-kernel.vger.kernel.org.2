@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765D745BD7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 438A945B9BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344913AbhKXMjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:39:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49174 "EHLO mail.kernel.org"
+        id S241983AbhKXMEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:04:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245019AbhKXMeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:34:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 083AF61378;
-        Wed, 24 Nov 2021 12:20:46 +0000 (UTC)
+        id S240238AbhKXMEG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:04:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E95C660FDA;
+        Wed, 24 Nov 2021 12:00:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756447;
-        bh=LWheMsac2MLhKOBfcd9MAnPJyZJjzi9UNrW/13Um3tc=;
+        s=korg; t=1637755256;
+        bh=K35H2xcaZ5mFhnVe1Esz6Bitqc3Qw/yAuiN8Ew8C88c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JHcRaFSzUfCQBfR347C5Xs9FGJsrbblJZjfJDbQdRch9FUklQl49qm2rzQSSbEUMK
-         9QwKAjEGZtt0mAgzpgr77GB70s+UkwdD1e/znwZ++r0bg6CgGbquvWiGpd1hjnFcoL
-         9bFA6Ouo3Os/5uxrXinodZC7wfb5YhV1Yf3s30xA=
+        b=zPJMG6Qy/dQqTPdyU/MSXjGBzlmuMa8w1Ij5yO0z+UFxZYLwM6AEMuiFv+ePHnAC9
+         LsiA8KK5SHwPsoUKv6lE874/0RvnJS6ZJFBQEcREMWl3XqoeFCP/czl5noqXHLu4mF
+         qPvqGwnCxuxaW2fNGuiUpmcRz6qol4oY8FbZMJ1M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 090/251] leaking_addresses: Always print a trailing newline
+        stable@vger.kernel.org, Ingmar Klein <ingmar_klein@web.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH 4.4 029/162] PCI: Mark Atheros QCA6174 to avoid bus reset
 Date:   Wed, 24 Nov 2021 12:55:32 +0100
-Message-Id: <20211124115713.375429420@linuxfoundation.org>
+Message-Id: <20211124115659.279768703@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Ingmar Klein <ingmar_klein@web.de>
 
-[ Upstream commit cf2a85efdade117e2169d6e26641016cbbf03ef0 ]
+commit e3f4bd3462f6f796594ecc0dda7144ed2d1e5a26 upstream.
 
-For files that lack trailing newlines and match a leaking address (e.g.
-wchan[1]), the leaking_addresses.pl report would run together with the
-next line, making things look corrupted.
+When passing the Atheros QCA6174 through to a virtual machine, the VM hangs
+at the point where the ath10k driver loads.
 
-Unconditionally remove the newline on input, and write it back out on
-output.
+Add a quirk to avoid bus resets on this device, which avoids the hang.
 
-[1] https://lore.kernel.org/all/20210103142726.GC30643@xsang-OptiPlex-9020/
-
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20211008111626.151570317@infradead.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+[bhelgaas: commit log]
+Link: https://lore.kernel.org/r/08982e05-b6e8-5a8d-24ab-da1488ee50a8@web.de
+Signed-off-by: Ingmar Klein <ingmar_klein@web.de>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Pali Rohár <pali@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- scripts/leaking_addresses.pl | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/pci/quirks.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/scripts/leaking_addresses.pl b/scripts/leaking_addresses.pl
-index 2977371b29563..de5196c08943a 100755
---- a/scripts/leaking_addresses.pl
-+++ b/scripts/leaking_addresses.pl
-@@ -262,8 +262,9 @@ sub parse_file
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3169,6 +3169,7 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_A
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003c, quirk_no_bus_reset);
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0033, quirk_no_bus_reset);
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0034, quirk_no_bus_reset);
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003e, quirk_no_bus_reset);
  
- 	open my $fh, "<", $file or return;
- 	while ( <$fh> ) {
-+		chomp;
- 		if (may_leak_address($_)) {
--			print $file . ': ' . $_;
-+			printf("$file: $_\n");
- 		}
- 	}
- 	close $fh;
--- 
-2.33.0
-
+ /*
+  * Some TI KeyStone C667X devices do not support bus/hot reset.  The PCIESS
 
 
