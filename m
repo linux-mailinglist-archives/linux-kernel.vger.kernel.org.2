@@ -2,94 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A425E45CF8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:04:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E3245CFDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:11:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343549AbhKXWHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 17:07:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343647AbhKXWHu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:07:50 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 212F7C061746
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 14:04:40 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id de30so5532583qkb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 14:04:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Wnb56ZlXImyESxNGtft70OqOtQf36rXcNYeS2LPN9Hw=;
-        b=TI8Ja/xF0rPlSq0XbH+Z7yi5SswZbFWopo2KUC+FP/Iq/PcR2rlzmFLMIj4QV03dcF
-         YFUYfCfagoudNqaumEWziKMiWQsVBe/nYWESt1ElhUaQH0p2TYtI+XXrWnFxDi4JPhkn
-         J9IE4NuQF6CPpF6Ci1vk5p5mPw939HjAOacCQtJhelXJspwRORvL+V7PPRUjf2Risto8
-         4BHcTy/AhBEV/9E1wBryWAoNy5lDrTYyo38hC4OwWqxQtqKZJNOijMyqb/KzruZRt+sQ
-         PkQ+AiAtFXLi1/WQoI2Fzf6KIe4dEM3YVJ6C79I+lq6D360kEnRvX067qmAV0N2pUquu
-         c7KQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Wnb56ZlXImyESxNGtft70OqOtQf36rXcNYeS2LPN9Hw=;
-        b=KoRhuPIHTCj0E1wC4bvk5ylXYieLnu/vM3qoxYjrBbiDjPQpHeLSV7DEAgbEiuMWbC
-         jUXQ80BLmFnx+1igrHmYdz/Vi00xHzVrClUVbLmgzkb9i+rMTP3o+heepDTXToRacneg
-         /mErVu7wr9ErmBBZldkxSAnyXp/Xfk+zqa8ZQ4HkRCfNB+/+F2UFW1uw+ED53S5K+EXM
-         gjdC4bN1aREQkiG0eETpOKuZWihXhtv4eegEeh5BDZbSWCCwqBCTJKXiyX/+uGFxxajt
-         QOLK9RT46xbTGrO/VKt209lsplNcsQrMtdwk3EA4QlsbGTJvmSqtxjn9qAmwKDF0DYfO
-         dDPA==
-X-Gm-Message-State: AOAM532tyPAMQnkS0BMYeZaHJR16VqkJ4ENGjAhDwxlQmlA9vHe2pz5p
-        uUbONeZeyfZffTdj6e3B/dYrtoT9l6Zze2wonsqcGA==
-X-Google-Smtp-Source: ABdhPJyEaZfSCy9c2XfuDBLl28EATOu0ZCMDM9ldvjLGNLlmcFX5/ceoutE7bj1w59tq2T4LxJMGglhzfOaD2fWRpig=
-X-Received: by 2002:a25:2f58:: with SMTP id v85mr407870ybv.487.1637791478911;
- Wed, 24 Nov 2021 14:04:38 -0800 (PST)
+        id S243652AbhKXWPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 17:15:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234403AbhKXWPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 17:15:01 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8CAB60E08;
+        Wed, 24 Nov 2021 22:11:49 +0000 (UTC)
+Date:   Wed, 24 Nov 2021 17:11:48 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Tao Zhou <tao.zhou@linux.dev>, Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V7 00/14] RTLA: An interface for osnoise/timerlat
+ tracers
+Message-ID: <20211124171148.1530418d@gandalf.local.home>
+In-Reply-To: <cover.1635535309.git.bristot@kernel.org>
+References: <cover.1635535309.git.bristot@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20211124193604.2758863-1-surenb@google.com> <YZ6wg9A5p5WUy7+k@cmpxchg.org>
-In-Reply-To: <YZ6wg9A5p5WUy7+k@cmpxchg.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 24 Nov 2021 14:04:28 -0800
-Message-ID: <CAJuCfpGP3ZdeqfYZJ6SUCdnputU-sEOsNYx5Pd9ckL1-zuWC2w@mail.gmail.com>
-Subject: Re: [PATCH 1/1] sysctl: change watermark_scale_factor max limit to 30%
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     akpm@linux-foundation.org, mhocko@suse.com, mcgrof@kernel.org,
-        keescook@chromium.org, yzaikin@google.com,
-        dave.hansen@linux.intel.com, vbabka@suse.cz,
-        mgorman@techsingularity.net, corbet@lwn.net, yi.zhang@huawei.com,
-        xi.fengfei@h3c.com, rppt@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 1:37 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> On Wed, Nov 24, 2021 at 11:36:04AM -0800, Suren Baghdasaryan wrote:
-> > For embedded systems with low total memory, having to run applications
-> > with relatively large memory requirements, 10% max limitation for
-> > watermark_scale_factor poses an issue of triggering direct reclaim
-> > every time such application is started. This results in slow application
-> > startup times and bad end-user experience.
-> > By increasing watermark_scale_factor max limit we allow vendors more
-> > flexibility to choose the right level of kswapd aggressiveness for
-> > their device and workload requirements.
-> >
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+On Fri, 29 Oct 2021 21:26:03 +0200
+Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+
+> The rtla(1) is a meta-tool that includes a set of commands that
+> aims to analyze the real-time properties of Linux. But instead of
+> testing Linux as a black box, rtla leverages kernel tracing
+> capabilities to provide precise information about the properties
+> and root causes of unexpected results.
+> 
+> To start, it presents an interface to the osnoise and timerlat tracers.
+> In the future, it will also serve as home to the rtsl [1] and other
+> latency/noise tracers.
+> 
+> If you just want to run it, you can download the tarball here:
+>   - https://bristot.me/files/rtla/tarball/rtla-0.3.tar.bz2
+> 
+> To compile rtla on fedora you need:
+>   $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git
+>   $ cd libtraceevent/
+>   $ make
+>   $ sudo make install
+>   $ cd ..
+>   $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git
+>   $ cd libtracefs/
+>   $ make
+>   $ sudo make install
+>   $ cd ..
+>   $ sudo dnf install python3-docutils procps-devel
+>   $ cd $rtla_src
+>   $ make
+>   $ sudo make install
+
+Add a README to the above, so that people will know what dependencies there
+are.
 
 Thanks!
 
->
-> No objection from me as this limit was always totally arbitrary. But I
-> have to say I'm a bit surprised: The current maximum setting will wake
-> kswapd when free memory drops below 10% and have it reclaim until
-> 20%. This seems like quite a lot? Are there applications that really
-> want kswapd to wake at 30% and target 60% of memory free?
+-- Steve
 
-The example I was given by a vendor was Camera application requiring
-0.25G on 1GB device. Camera apps are notoriously memory hungry on
-Android and on low-memory devices it can require more than 20% of
-total memory to run.
+
+> 
+> The tracing option (-t) depends some kernel patches that are
+> available at [2].
+> 
+> This tool was be discussed at the RT-MC during LPC2021 [3]
+> 
+> [1] rtsl: https://github.com/bristot/rtsl/
+> [2] https://lore.kernel.org/lkml/cover.1635533292.git.bristot@kernel.org/
+> [3] https://youtu.be/cZUzc0U1jJ4
+> 
+> Changes from v6:
+>   - Revisited osnoise option config functions
+>   - Properly handles offline CPUs
+>   - Some cleanups
+>   - Fixed an histogram allocation problem (Tao Zhou)
+>   - Revisited open()/read()/write() (Tao Zhou)
+> Changes from v5:
+>   - Fix retval check in save_trace_to_file() (Tao Zhou)
+>   - Fix goto logic in save_trace_to_file() (Tao Zhou)
+>   - Removed unused save_trace_pipe_to_file() function
+>   - Correctly handle an error on osnoise_set_* functions during
+>     "apply config" for all tools (Tao Zhou)
+> Changes from v3:
+>   - Add cross-compile support (Ahmed S. Darwish)
+>   - Move documentation to Documentation/tools/rtla (Jonathan Corbet)
+>   - Use .rst format for documentation (Jonathan Corbet)
+>   - Use include option from .rst to group common parts of the documentation
+>   - Makefile (main and doc) cleanups
+> Changes from v2:
+>   - Fix the miss conception of the "size" for kernel histograms (Steven/Tom)
+>   - Change the --skip-zeros to --with-zeros option as the former is better
+>     for humans (and the latter for computers to plot charts).
+>   - A lot of checkpatch fixes for the user-space part.
+> Changes from v1:
+>   - Fixes -t options on osnoise tracers (-t means --trace for all tools now)
+>   - Fixes --bucket-size references (not --bucket_size)
+> 
+> Daniel Bristot de Oliveira (14):
+>   rtla: Real-Time Linux Analysis tool
+>   rtla: Helper functions for rtla
+>   rtla: Add osnoise tool
+>   rtla/osnoise: Add osnoise top mode
+>   rtla/osnoise: Add the hist mode
+>   rtla: Add timerlat tool and timelart top mode
+>   rtla/timerlat: Add timerlat hist mode
+>   rtla: Add Documentation
+>   rtla: Add rtla osnoise man page
+>   rtla: Add rtla osnoise top documentation
+>   rtla: Add rtla osnoise hist documentation
+>   rtla: Add rtla timerlat documentation
+>   rtla: Add rtla timerlat top documentation
+>   rtla: Add rtla timerlat hist documentation
+> 
+>  Documentation/tools/rtla/Makefile             |   41 +
+>  Documentation/tools/rtla/common_appendix.rst  |   12 +
+>  .../tools/rtla/common_hist_options.rst        |   23 +
+>  Documentation/tools/rtla/common_options.rst   |   24 +
+>  .../tools/rtla/common_osnoise_description.rst |    8 +
+>  .../tools/rtla/common_osnoise_options.rst     |   17 +
+>  .../rtla/common_timerlat_description.rst      |   10 +
+>  .../tools/rtla/common_timerlat_options.rst    |   16 +
+>  .../tools/rtla/common_top_options.rst         |    3 +
+>  .../tools/rtla/rtla-osnoise-hist.rst          |   66 ++
+>  Documentation/tools/rtla/rtla-osnoise-top.rst |   61 +
+>  Documentation/tools/rtla/rtla-osnoise.rst     |   59 +
+>  .../tools/rtla/rtla-timerlat-hist.rst         |  106 ++
+>  .../tools/rtla/rtla-timerlat-top.rst          |  145 +++
+>  Documentation/tools/rtla/rtla-timerlat.rst    |   57 +
+>  Documentation/tools/rtla/rtla.rst             |   48 +
+>  tools/tracing/rtla/Makefile                   |  102 ++
+>  tools/tracing/rtla/src/osnoise.c              | 1017 +++++++++++++++++
+>  tools/tracing/rtla/src/osnoise.h              |   96 ++
+>  tools/tracing/rtla/src/osnoise_hist.c         |  799 +++++++++++++
+>  tools/tracing/rtla/src/osnoise_top.c          |  577 ++++++++++
+>  tools/tracing/rtla/src/rtla.c                 |   87 ++
+>  tools/tracing/rtla/src/timerlat.c             |   72 ++
+>  tools/tracing/rtla/src/timerlat.h             |    4 +
+>  tools/tracing/rtla/src/timerlat_hist.c        |  820 +++++++++++++
+>  tools/tracing/rtla/src/timerlat_top.c         |  615 ++++++++++
+>  tools/tracing/rtla/src/trace.c                |  192 ++++
+>  tools/tracing/rtla/src/trace.h                |   27 +
+>  tools/tracing/rtla/src/utils.c                |  433 +++++++
+>  tools/tracing/rtla/src/utils.h                |   56 +
+>  30 files changed, 5593 insertions(+)
+>  create mode 100644 Documentation/tools/rtla/Makefile
+>  create mode 100644 Documentation/tools/rtla/common_appendix.rst
+>  create mode 100644 Documentation/tools/rtla/common_hist_options.rst
+>  create mode 100644 Documentation/tools/rtla/common_options.rst
+>  create mode 100644 Documentation/tools/rtla/common_osnoise_description.rst
+>  create mode 100644 Documentation/tools/rtla/common_osnoise_options.rst
+>  create mode 100644 Documentation/tools/rtla/common_timerlat_description.rst
+>  create mode 100644 Documentation/tools/rtla/common_timerlat_options.rst
+>  create mode 100644 Documentation/tools/rtla/common_top_options.rst
+>  create mode 100644 Documentation/tools/rtla/rtla-osnoise-hist.rst
+>  create mode 100644 Documentation/tools/rtla/rtla-osnoise-top.rst
+>  create mode 100644 Documentation/tools/rtla/rtla-osnoise.rst
+>  create mode 100644 Documentation/tools/rtla/rtla-timerlat-hist.rst
+>  create mode 100644 Documentation/tools/rtla/rtla-timerlat-top.rst
+>  create mode 100644 Documentation/tools/rtla/rtla-timerlat.rst
+>  create mode 100644 Documentation/tools/rtla/rtla.rst
+>  create mode 100644 tools/tracing/rtla/Makefile
+>  create mode 100644 tools/tracing/rtla/src/osnoise.c
+>  create mode 100644 tools/tracing/rtla/src/osnoise.h
+>  create mode 100644 tools/tracing/rtla/src/osnoise_hist.c
+>  create mode 100644 tools/tracing/rtla/src/osnoise_top.c
+>  create mode 100644 tools/tracing/rtla/src/rtla.c
+>  create mode 100644 tools/tracing/rtla/src/timerlat.c
+>  create mode 100644 tools/tracing/rtla/src/timerlat.h
+>  create mode 100644 tools/tracing/rtla/src/timerlat_hist.c
+>  create mode 100644 tools/tracing/rtla/src/timerlat_top.c
+>  create mode 100644 tools/tracing/rtla/src/trace.c
+>  create mode 100644 tools/tracing/rtla/src/trace.h
+>  create mode 100644 tools/tracing/rtla/src/utils.c
+>  create mode 100644 tools/tracing/rtla/src/utils.h
+> 
+
