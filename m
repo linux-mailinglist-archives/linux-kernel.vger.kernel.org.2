@@ -2,158 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F3F45CF4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F6D45CF52
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344778AbhKXVmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 16:42:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49180 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352145AbhKXVlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 16:41:11 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 830AC60F5B;
-        Wed, 24 Nov 2021 21:38:00 +0000 (UTC)
-Date:   Wed, 24 Nov 2021 16:37:59 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Tao Zhou <tao.zhou@linux.dev>, Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V7 02/14] rtla: Helper functions for rtla
-Message-ID: <20211124163759.6d118d96@gandalf.local.home>
-In-Reply-To: <1eb27af1d8356d17d1f8a69a362da46ae8594ab0.1635535309.git.bristot@kernel.org>
-References: <cover.1635535309.git.bristot@kernel.org>
-        <1eb27af1d8356d17d1f8a69a362da46ae8594ab0.1635535309.git.bristot@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S242102AbhKXVnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 16:43:42 -0500
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:51474 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234293AbhKXVnk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 16:43:40 -0500
+Received: from pop-os.home ([86.243.171.122])
+        by smtp.orange.fr with ESMTPA
+        id q00BmS3woBazoq00CmFPjq; Wed, 24 Nov 2021 22:40:29 +0100
+X-ME-Helo: pop-os.home
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Wed, 24 Nov 2021 22:40:29 +0100
+X-ME-IP: 86.243.171.122
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     bharat@chelsio.com, dledford@redhat.com, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 1/3] RDMA/cxgb4: Use bitmap_zalloc() when applicable
+Date:   Wed, 24 Nov 2021 22:40:24 +0100
+Message-Id: <e396c4aa16cd8945d43877570a8f6d926cea555a.1637789139.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <cover.1637789139.git.christophe.jaillet@wanadoo.fr>
+References: <cover.1637789139.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 21:26:05 +0200
-Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+Use 'bitmap_zalloc()' to simplify code, improve the semantic and avoid some
+open-coded arithmetic in allocator arguments.
 
-> +/*
-> + * enable_tracer_by_name - enable a tracer on the given instance
-> + */
-> +int enable_tracer_by_name(struct tracefs_instance *inst, const char *tracer)
-> +{
-> +	enum tracefs_tracers t;
-> +	int retval;
-> +
-> +	t = TRACEFS_TRACER_CUSTOM;
-> +
-> +	debug_msg("enabling %s tracer\n", tracer);
-> +
-> +	retval = tracefs_tracer_set(inst, t, tracer);
+Using the 'zalloc' version of the allocator also saves a now useless
+'bitmap_zero()' call.
 
-Interesting. We had discussions about having the custom option (which I
-fought for, for this very reason).
+Also change the corresponding 'kfree()' into 'bitmap_free()' to keep
+consistency.
 
-> +	if (retval < 0) {
-> +		if (errno == ENODEV)
-> +			err_msg("tracer %s not found!\n", tracer);
-> +
-> +		err_msg("failed to enable the tracer %s\n", tracer);
-> +		return -1;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * disable_tracer - set nop tracer to the insta
-> + */
-> +void disable_tracer(struct tracefs_instance *inst)
-> +{
-> +	enum tracefs_tracers t = TRACEFS_TRACER_NOP;
-> +	int retval;
-> +
-> +	retval = tracefs_tracer_set(inst, t);
-> +	if (retval < 0)
-> +		err_msg("oops, error disabling tracer\n");
-> +}
-> +
-> +/*
-> + * create_instance - create a trace instance with *instance_name
-> + */
-> +struct tracefs_instance *create_instance(char *instance_name)
-> +{
-> +	return tracefs_instance_create(instance_name);
-> +}
-> +
-> +/*
-> + * destroy_instance - remove a trace instance and free the data
-> + */
-> +void destroy_instance(struct tracefs_instance *inst)
-> +{
-> +	tracefs_instance_destroy(inst);
-> +	tracefs_instance_free(inst);
-> +}
-> +
-> +/*
-> + * save_trace_to_file - save the trace output of the instance to the file
-> + */
-> +int save_trace_to_file(struct tracefs_instance *inst, const char *filename)
-> +{
-> +	const char *file = "trace";
-> +	mode_t mode = 0644;
-> +	char *buffer[4096];
+While at it, remove an extra space in a statement just a few lines above.
 
-Did you really mean to have buffer be 4096 strings?
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/infiniband/hw/cxgb4/id_table.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-Or did you mean:
+diff --git a/drivers/infiniband/hw/cxgb4/id_table.c b/drivers/infiniband/hw/cxgb4/id_table.c
+index 724d23297b35..9d08a48c4926 100644
+--- a/drivers/infiniband/hw/cxgb4/id_table.c
++++ b/drivers/infiniband/hw/cxgb4/id_table.c
+@@ -90,14 +90,12 @@ int c4iw_id_table_alloc(struct c4iw_id_table *alloc, u32 start, u32 num,
+ 		alloc->last = prandom_u32() % RANDOM_SKIP;
+ 	else
+ 		alloc->last = 0;
+-	alloc->max  = num;
++	alloc->max = num;
+ 	spin_lock_init(&alloc->lock);
+-	alloc->table = kmalloc_array(BITS_TO_LONGS(num), sizeof(long),
+-				     GFP_KERNEL);
++	alloc->table = bitmap_zalloc(num, GFP_KERNEL);
+ 	if (!alloc->table)
+ 		return -ENOMEM;
+ 
+-	bitmap_zero(alloc->table, num);
+ 	if (!(alloc->flags & C4IW_ID_TABLE_F_EMPTY))
+ 		for (i = 0; i < reserved; ++i)
+ 			set_bit(i, alloc->table);
+@@ -107,5 +105,5 @@ int c4iw_id_table_alloc(struct c4iw_id_table *alloc, u32 start, u32 num,
+ 
+ void c4iw_id_table_free(struct c4iw_id_table *alloc)
+ {
+-	kfree(alloc->table);
++	bitmap_free(alloc->table);
+ }
+-- 
+2.30.2
 
-	char buffer[4096];
-
-(i.e. a single string of 4096 size)?
-
--- Steve
-
-> +	int out_fd, in_fd;
-> +	int retval = -1;
-> +
-> +	in_fd = tracefs_instance_file_open(inst, file, O_RDONLY);
-> +	if (in_fd < 0) {
-> +		err_msg("Failed to open trace file\n");
-> +		return -1;
-> +	}
-> +
-> +	out_fd = creat(filename, mode);
-> +	if (out_fd < 0) {
-> +		err_msg("Failed to create output file %s\n", filename);
-> +		goto out_close_in;
-> +	}
-> +
-> +	do {
-> +		retval = read(in_fd, buffer, sizeof(buffer));
-> +		if (retval <= 0)
-> +			goto out_close;
-> +
-> +		retval = write(out_fd, buffer, retval);
-> +		if (retval < 0)
-> +			goto out_close;
-> +	} while (retval > 0);
-> +
-> +	retval = 0;
-> +out_close:
-> +	close(out_fd);
-> +out_close_in:
-> +	close(in_fd);
-> +	return retval;
-> +}
-> +
-> +/*
