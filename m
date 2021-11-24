@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B16A45C639
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:03:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A0E45C386
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:37:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354146AbhKXOGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:06:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47000 "EHLO mail.kernel.org"
+        id S1348958AbhKXNkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:40:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353618AbhKXOAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:00:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21D0E61244;
-        Wed, 24 Nov 2021 13:09:16 +0000 (UTC)
+        id S1350317AbhKXNhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:37:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1BC361378;
+        Wed, 24 Nov 2021 12:55:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759357;
-        bh=CKrfun4YaJMnTvB3qUf9eaC7pdw17lPkUjX475xzcfs=;
+        s=korg; t=1637758549;
+        bh=WEVZUvHmBJsxKPIbF2aCUI0W2bYQ5ImxzUSlJSrtJZg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oaCRrYTWlGX7czFAAORzz2uxYfyVYbPPEoMuxYByXVqp7pQ97ZEH05YUU3pSp6VPh
-         NoUWgM8n0JY93TkEdz6eMRYg8WH2p48kMpG4pP9ypKhReOnVEytCn/aFZWPymqVPwD
-         oW5Cg148SjA9BD9ueyRu332Rm9rIxUi559W4EW4U=
+        b=SFXsy47ED52a8CDatPO3KxrPVRTYfx52YLS0OdAPZy5QdwWARmmd6oYYBuArofhn0
+         ENVpv0z032jUAqZn04mVyYTmCkqiKJKUTftAhp4YwIQ4sWEWoh6ZlTYPWATRBJje5P
+         c6YpDwDgAEKWmSEnZi2Xy53pUbKpQzaZSJYmKCRk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikolay <knv418@gmail.com>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Matthew Perkowski <mgperkow@gmail.com>, stable@kernel.org
-Subject: [PATCH 5.15 214/279] ata: libata: add missing ata_identify_page_supported() calls
+        stable@vger.kernel.org,
+        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
+        Jedrzej Jagielski <jedrzej.jagielski@intel.com>,
+        Tony Brelinski <tony.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 105/154] i40e: Fix creation of first queue by omitting it if is not power of two
 Date:   Wed, 24 Nov 2021 12:58:21 +0100
-Message-Id: <20211124115726.136794577@linuxfoundation.org>
+Message-Id: <20211124115705.686027004@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +43,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Damien Le Moal <damien.lemoal@opensource.wdc.com>
+From: Jedrzej Jagielski <jedrzej.jagielski@intel.com>
 
-commit 06f6c4c6c3e8354dceddd77bd58f9a7a84c67246 upstream.
+[ Upstream commit 2e6d218c1ec6fb9cd70693b78134cbc35ae0b5a9 ]
 
-ata_dev_config_ncq_prio() and ata_dev_config_devslp() both access pages
-of the IDENTIFY DEVICE data log. Before calling ata_read_log_page(),
-make sure to check for the existence of the IDENTIFY DEVICE data log and
-of the log page accessed using ata_identify_page_supported(). This
-avoids useless error messages from ata_read_log_page() and failures with
-some LLDD scsi drivers using libsas.
+Reject TCs creation with proper message if the first queue
+assignment is not equal to the power of two.
+The first queue number was checked too late in the second queue
+iteration, if second queue was configured at all. Now if first queue value
+is not a power of two, then trying to create qdisc will be rejected.
 
-Reported-by: Nikolay <knv418@gmail.com>
-Cc: stable@kernel.org # 5.15
-Signed-off-by: Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Tested-by: Matthew Perkowski <mgperkow@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 8f88b3034db3 ("i40e: Add infrastructure for queue channel support")
+Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
+Signed-off-by: Jedrzej Jagielski <jedrzej.jagielski@intel.com>
+Tested-by: Tony Brelinski <tony.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/libata-core.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 59 +++++++--------------
+ 1 file changed, 19 insertions(+), 40 deletions(-)
 
---- a/drivers/ata/libata-core.c
-+++ b/drivers/ata/libata-core.c
-@@ -2167,6 +2167,9 @@ static void ata_dev_config_ncq_prio(stru
- 	struct ata_port *ap = dev->link->ap;
- 	unsigned int err_mask;
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index 7f224dbe9c0ae..8cb80798efb2b 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -5753,24 +5753,6 @@ static void i40e_remove_queue_channels(struct i40e_vsi *vsi)
+ 	INIT_LIST_HEAD(&vsi->ch_list);
+ }
  
-+	if (!ata_identify_page_supported(dev, ATA_LOG_SATA_SETTINGS))
-+		return;
-+
- 	err_mask = ata_read_log_page(dev,
- 				     ATA_LOG_IDENTIFY_DEVICE,
- 				     ATA_LOG_SATA_SETTINGS,
-@@ -2443,7 +2446,8 @@ static void ata_dev_config_devslp(struct
- 	 * Check device sleep capability. Get DevSlp timing variables
- 	 * from SATA Settings page of Identify Device Data Log.
+-/**
+- * i40e_is_any_channel - channel exist or not
+- * @vsi: ptr to VSI to which channels are associated with
+- *
+- * Returns true or false if channel(s) exist for associated VSI or not
+- **/
+-static bool i40e_is_any_channel(struct i40e_vsi *vsi)
+-{
+-	struct i40e_channel *ch, *ch_tmp;
+-
+-	list_for_each_entry_safe(ch, ch_tmp, &vsi->ch_list, list) {
+-		if (ch->initialized)
+-			return true;
+-	}
+-
+-	return false;
+-}
+-
+ /**
+  * i40e_get_max_queues_for_channel
+  * @vsi: ptr to VSI to which channels are associated with
+@@ -6276,26 +6258,15 @@ int i40e_create_queue_channel(struct i40e_vsi *vsi,
+ 	/* By default we are in VEPA mode, if this is the first VF/VMDq
+ 	 * VSI to be added switch to VEB mode.
  	 */
--	if (!ata_id_has_devslp(dev->id))
-+	if (!ata_id_has_devslp(dev->id) ||
-+	    !ata_identify_page_supported(dev, ATA_LOG_SATA_SETTINGS))
- 		return;
+-	if ((!(pf->flags & I40E_FLAG_VEB_MODE_ENABLED)) ||
+-	    (!i40e_is_any_channel(vsi))) {
+-		if (!is_power_of_2(vsi->tc_config.tc_info[0].qcount)) {
+-			dev_dbg(&pf->pdev->dev,
+-				"Failed to create channel. Override queues (%u) not power of 2\n",
+-				vsi->tc_config.tc_info[0].qcount);
+-			return -EINVAL;
+-		}
  
- 	err_mask = ata_read_log_page(dev,
+-		if (!(pf->flags & I40E_FLAG_VEB_MODE_ENABLED)) {
+-			pf->flags |= I40E_FLAG_VEB_MODE_ENABLED;
++	if (!(pf->flags & I40E_FLAG_VEB_MODE_ENABLED)) {
++		pf->flags |= I40E_FLAG_VEB_MODE_ENABLED;
+ 
+-			if (vsi->type == I40E_VSI_MAIN) {
+-				if (pf->flags & I40E_FLAG_TC_MQPRIO)
+-					i40e_do_reset(pf, I40E_PF_RESET_FLAG,
+-						      true);
+-				else
+-					i40e_do_reset_safe(pf,
+-							   I40E_PF_RESET_FLAG);
+-			}
++		if (vsi->type == I40E_VSI_MAIN) {
++			if (pf->flags & I40E_FLAG_TC_MQPRIO)
++				i40e_do_reset(pf, I40E_PF_RESET_FLAG, true);
++			else
++				i40e_do_reset_safe(pf, I40E_PF_RESET_FLAG);
+ 		}
+ 		/* now onwards for main VSI, number of queues will be value
+ 		 * of TC0's queue count
+@@ -7622,12 +7593,20 @@ config_tc:
+ 			    vsi->seid);
+ 		need_reset = true;
+ 		goto exit;
+-	} else {
+-		dev_info(&vsi->back->pdev->dev,
+-			 "Setup channel (id:%u) utilizing num_queues %d\n",
+-			 vsi->seid, vsi->tc_config.tc_info[0].qcount);
++	} else if (enabled_tc &&
++		   (!is_power_of_2(vsi->tc_config.tc_info[0].qcount))) {
++		netdev_info(netdev,
++			    "Failed to create channel. Override queues (%u) not power of 2\n",
++			    vsi->tc_config.tc_info[0].qcount);
++		ret = -EINVAL;
++		need_reset = true;
++		goto exit;
+ 	}
+ 
++	dev_info(&vsi->back->pdev->dev,
++		 "Setup channel (id:%u) utilizing num_queues %d\n",
++		 vsi->seid, vsi->tc_config.tc_info[0].qcount);
++
+ 	if (pf->flags & I40E_FLAG_TC_MQPRIO) {
+ 		if (vsi->mqprio_qopt.max_rate[0]) {
+ 			u64 max_tx_rate = vsi->mqprio_qopt.max_rate[0];
+-- 
+2.33.0
+
 
 
