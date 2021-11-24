@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C878A45C197
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8335F45C60F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:02:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346920AbhKXNTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:19:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57982 "EHLO mail.kernel.org"
+        id S1351597AbhKXOFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:05:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348149AbhKXNQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:16:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 003AE61AD0;
-        Wed, 24 Nov 2021 12:44:44 +0000 (UTC)
+        id S1353620AbhKXOAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:00:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52A0C61B74;
+        Wed, 24 Nov 2021 13:09:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757885;
-        bh=ou0ilUAH19YdqbhEDwDQNcP+1w8//sHePdV6SuJT2ZM=;
+        s=korg; t=1637759351;
+        bh=4Jz5er3Kn/YEzGSi9BMkk41sRxMHvzDZjIwrMeUwC64=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fp2nGzOnMTlapweEziyMVTy+g8UftQ9D5gMQVQ10U1XNUw0S66S/LzFAPs9V8oMDP
-         Z8Dx/LTkDc7lLVzLLHDLrDh+iZAVgwgVzG+9MRYdqqGXpaWr7KAYTEdt5uIMLyy0Hj
-         C3Ie5ohoVfCQVWJQAMWZGU2fIZ8p6vIoX+xGM4ww=
+        b=dp8RLzc6v1gXnb3e6zSJ+viNBWG6Fte8fCn7osVi6P0Y/eoVgC9z031lS/XcGi2jG
+         s5/7paMk7afBx9F7oP2kulqQh8fL8JAckR5nM6ROCVmHZPGb99/8/OY18bwZS5xU+3
+         sh7NlP1zZJ3in+XJMLFG+hNiR5wx0d4tsu7FXcmg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Wilson <nate@chickenbrittle.com>,
-        Jan Kara <jack@suse.cz>
-Subject: [PATCH 4.19 309/323] udf: Fix crash after seekdir
+        stable@vger.kernel.org, Helge Deller <deller@gmx.de>
+Subject: [PATCH 5.15 212/279] Revert "parisc: Reduce sigreturn trampoline to 3 instructions"
 Date:   Wed, 24 Nov 2021 12:58:19 +0100
-Message-Id: <20211124115729.343271574@linuxfoundation.org>
+Message-Id: <20211124115726.066887681@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,157 +38,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Helge Deller <deller@gmx.de>
 
-commit a48fc69fe6588b48d878d69de223b91a386a7cb4 upstream.
+commit 79df39d535c7a3770856fe9f5aba8c0ad1eebdb6 upstream.
 
-udf_readdir() didn't validate the directory position it should start
-reading from. Thus when user uses lseek(2) on directory file descriptor
-it can trick udf_readdir() into reading from a position in the middle of
-directory entry which then upsets directory parsing code resulting in
-errors or even possible kernel crashes. Similarly when the directory is
-modified between two readdir calls, the directory position need not be
-valid anymore.
+This reverts commit e4f2006f1287e7ea17660490569cff323772dac4.
 
-Add code to validate current offset in the directory. This is actually
-rather expensive for UDF as we need to read from the beginning of the
-directory and parse all directory entries. This is because in UDF a
-directory is just a stream of data containing directory entries and
-since file names are fully under user's control we cannot depend on
-detecting magic numbers and checksums in the header of directory entry
-as a malicious attacker could fake them. We skip this step if we detect
-that nothing changed since the last readdir call.
+This patch shows problems with signal handling. Revert it for now.
 
-Reported-by: Nathan Wilson <nate@chickenbrittle.com>
-CC: stable@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: <stable@vger.kernel.org> # v5.15
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/udf/dir.c   |   32 ++++++++++++++++++++++++++++++--
- fs/udf/namei.c |    3 +++
- fs/udf/super.c |    2 ++
- 3 files changed, 35 insertions(+), 2 deletions(-)
+ arch/parisc/include/asm/rt_sigframe.h |    2 +-
+ arch/parisc/kernel/signal.c           |   13 +++++++------
+ arch/parisc/kernel/signal32.h         |    2 +-
+ 3 files changed, 9 insertions(+), 8 deletions(-)
 
---- a/fs/udf/dir.c
-+++ b/fs/udf/dir.c
-@@ -31,6 +31,7 @@
- #include <linux/mm.h>
- #include <linux/slab.h>
- #include <linux/bio.h>
-+#include <linux/iversion.h>
+--- a/arch/parisc/include/asm/rt_sigframe.h
++++ b/arch/parisc/include/asm/rt_sigframe.h
+@@ -2,7 +2,7 @@
+ #ifndef _ASM_PARISC_RT_SIGFRAME_H
+ #define _ASM_PARISC_RT_SIGFRAME_H
  
- #include "udf_i.h"
- #include "udf_sb.h"
-@@ -44,7 +45,7 @@ static int udf_readdir(struct file *file
- 	struct fileIdentDesc *fi = NULL;
- 	struct fileIdentDesc cfi;
- 	udf_pblk_t block, iblock;
--	loff_t nf_pos;
-+	loff_t nf_pos, emit_pos = 0;
- 	int flen;
- 	unsigned char *fname = NULL, *copy_name = NULL;
- 	unsigned char *nameptr;
-@@ -58,6 +59,7 @@ static int udf_readdir(struct file *file
- 	int i, num, ret = 0;
- 	struct extent_position epos = { NULL, 0, {0, 0} };
- 	struct super_block *sb = dir->i_sb;
-+	bool pos_valid = false;
+-#define SIGRETURN_TRAMP 3
++#define SIGRETURN_TRAMP 4
+ #define SIGRESTARTBLOCK_TRAMP 5 
+ #define TRAMP_SIZE (SIGRETURN_TRAMP + SIGRESTARTBLOCK_TRAMP)
  
- 	if (ctx->pos == 0) {
- 		if (!dir_emit_dot(file, ctx))
-@@ -68,6 +70,21 @@ static int udf_readdir(struct file *file
- 	if (nf_pos >= size)
- 		goto out;
+--- a/arch/parisc/kernel/signal.c
++++ b/arch/parisc/kernel/signal.c
+@@ -288,21 +288,22 @@ setup_rt_frame(struct ksignal *ksig, sig
+ 	   already in userspace. The first words of tramp are used to
+ 	   save the previous sigrestartblock trampoline that might be
+ 	   on the stack. We start the sigreturn trampoline at 
+-	   SIGRESTARTBLOCK_TRAMP. */
++	   SIGRESTARTBLOCK_TRAMP+X. */
+ 	err |= __put_user(in_syscall ? INSN_LDI_R25_1 : INSN_LDI_R25_0,
+ 			&frame->tramp[SIGRESTARTBLOCK_TRAMP+0]);
+-	err |= __put_user(INSN_BLE_SR2_R0, 
++	err |= __put_user(INSN_LDI_R20,
+ 			&frame->tramp[SIGRESTARTBLOCK_TRAMP+1]);
+-	err |= __put_user(INSN_LDI_R20,
++	err |= __put_user(INSN_BLE_SR2_R0,
+ 			&frame->tramp[SIGRESTARTBLOCK_TRAMP+2]);
++	err |= __put_user(INSN_NOP, &frame->tramp[SIGRESTARTBLOCK_TRAMP+3]);
  
-+	/*
-+	 * Something changed since last readdir (either lseek was called or dir
-+	 * changed)?  We need to verify the position correctly points at the
-+	 * beginning of some dir entry so that the directory parsing code does
-+	 * not get confused. Since UDF does not have any reliable way of
-+	 * identifying beginning of dir entry (names are under user control),
-+	 * we need to scan the directory from the beginning.
-+	 */
-+	if (!inode_eq_iversion(dir, file->f_version)) {
-+		emit_pos = nf_pos;
-+		nf_pos = 0;
-+	} else {
-+		pos_valid = true;
-+	}
-+
- 	fname = kmalloc(UDF_NAME_LEN, GFP_NOFS);
- 	if (!fname) {
- 		ret = -ENOMEM;
-@@ -123,13 +140,21 @@ static int udf_readdir(struct file *file
+-	start = (unsigned long) &frame->tramp[SIGRESTARTBLOCK_TRAMP+0];
+-	end = (unsigned long) &frame->tramp[SIGRESTARTBLOCK_TRAMP+3];
++	start = (unsigned long) &frame->tramp[0];
++	end = (unsigned long) &frame->tramp[TRAMP_SIZE];
+ 	flush_user_dcache_range_asm(start, end);
+ 	flush_user_icache_range_asm(start, end);
  
- 	while (nf_pos < size) {
- 		struct kernel_lb_addr tloc;
-+		loff_t cur_pos = nf_pos;
+ 	/* TRAMP Words 0-4, Length 5 = SIGRESTARTBLOCK_TRAMP
+-	 * TRAMP Words 5-7, Length 3 = SIGRETURN_TRAMP
++	 * TRAMP Words 5-9, Length 4 = SIGRETURN_TRAMP
+ 	 * So the SIGRETURN_TRAMP is at the end of SIGRESTARTBLOCK_TRAMP
+ 	 */
+ 	rp = (unsigned long) &frame->tramp[SIGRESTARTBLOCK_TRAMP];
+--- a/arch/parisc/kernel/signal32.h
++++ b/arch/parisc/kernel/signal32.h
+@@ -36,7 +36,7 @@ struct compat_regfile {
+         compat_int_t rf_sar;
+ };
  
--		ctx->pos = (nf_pos >> 2) + 1;
-+		/* Update file position only if we got past the current one */
-+		if (nf_pos >= emit_pos) {
-+			ctx->pos = (nf_pos >> 2) + 1;
-+			pos_valid = true;
-+		}
- 
- 		fi = udf_fileident_read(dir, &nf_pos, &fibh, &cfi, &epos, &eloc,
- 					&elen, &offset);
- 		if (!fi)
- 			goto out;
-+		/* Still not at offset where user asked us to read from? */
-+		if (cur_pos < emit_pos)
-+			continue;
- 
- 		liu = le16_to_cpu(cfi.lengthOfImpUse);
- 		lfi = cfi.lengthFileIdent;
-@@ -187,8 +212,11 @@ static int udf_readdir(struct file *file
- 	} /* end while */
- 
- 	ctx->pos = (nf_pos >> 2) + 1;
-+	pos_valid = true;
- 
- out:
-+	if (pos_valid)
-+		file->f_version = inode_query_iversion(dir);
- 	if (fibh.sbh != fibh.ebh)
- 		brelse(fibh.ebh);
- 	brelse(fibh.sbh);
---- a/fs/udf/namei.c
-+++ b/fs/udf/namei.c
-@@ -30,6 +30,7 @@
- #include <linux/sched.h>
- #include <linux/crc-itu-t.h>
- #include <linux/exportfs.h>
-+#include <linux/iversion.h>
- 
- static inline int udf_match(int len1, const unsigned char *name1, int len2,
- 			    const unsigned char *name2)
-@@ -135,6 +136,8 @@ int udf_write_fi(struct inode *inode, st
- 			mark_buffer_dirty_inode(fibh->ebh, inode);
- 		mark_buffer_dirty_inode(fibh->sbh, inode);
- 	}
-+	inode_inc_iversion(inode);
-+
- 	return 0;
- }
- 
---- a/fs/udf/super.c
-+++ b/fs/udf/super.c
-@@ -57,6 +57,7 @@
- #include <linux/crc-itu-t.h>
- #include <linux/log2.h>
- #include <asm/byteorder.h>
-+#include <linux/iversion.h>
- 
- #include "udf_sb.h"
- #include "udf_i.h"
-@@ -151,6 +152,7 @@ static struct inode *udf_alloc_inode(str
- 	init_rwsem(&ei->i_data_sem);
- 	ei->cached_extent.lstart = -1;
- 	spin_lock_init(&ei->i_extent_cache_lock);
-+	inode_set_iversion(&ei->vfs_inode, 1);
- 
- 	return &ei->vfs_inode;
- }
+-#define COMPAT_SIGRETURN_TRAMP 3
++#define COMPAT_SIGRETURN_TRAMP 4
+ #define COMPAT_SIGRESTARTBLOCK_TRAMP 5
+ #define COMPAT_TRAMP_SIZE (COMPAT_SIGRETURN_TRAMP + \
+ 				COMPAT_SIGRESTARTBLOCK_TRAMP)
 
 
