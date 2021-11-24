@@ -2,35 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7CF45BE80
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:46:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCBA045BC61
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:28:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345412AbhKXMrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:47:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48796 "EHLO mail.kernel.org"
+        id S1343510AbhKXM3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:29:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245130AbhKXMof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:44:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5C9161264;
-        Wed, 24 Nov 2021 12:26:23 +0000 (UTC)
+        id S245040AbhKXMYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:24:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94C1361206;
+        Wed, 24 Nov 2021 12:15:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756784;
-        bh=/FX/HvPV1wbd/mWSfwnt+7LoURga2Z4SLtXXZalJUT8=;
+        s=korg; t=1637756106;
+        bh=ohuo0QU48rv3K/ooxaBjdZAhGuDZ37MKhXsozrU9CF4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zbC2G+Ec6mQ501nwYmDcnPJs+bTOoy/BISmFTyCBctGtZudLBy6/Lq2vgqdvdoWtO
-         Q1PMTOupbwHZcW9NtsFC1P2yeH4pBDQOGbD7IJTuGeAqgdwAQ5e4tZacQbZg4aTJHe
-         IKqSY25b2QxtvC4CNAkwdZDsKvkdGRs5A6bz5GQM=
+        b=qR3m85uJd+u4fmlCkHEEBaFWYJW5wObEaBeyZtlJojVYZwFzDGlYOgtOvQk5l/4q7
+         QDJS6b5W4mOEQ0aFSSAlY5b3Njq758S9DuolDDRV5H2VGFIf7fudP+8Uu2MNpfwDHh
+         MhH70QSavUWzyOlLw+YRA2b8mg0kyw4JBv/qQ5T8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
+        stable@vger.kernel.org,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Paul Mundt <lethal@linux-sh.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Miguel Ojeda <ojeda@kernel.org>, Rich Felker <dalias@libc.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 204/251] usb: musb: tusb6010: check return value after calling platform_get_resource()
+Subject: [PATCH 4.9 175/207] sh: check return code of request_irq
 Date:   Wed, 24 Nov 2021 12:57:26 +0100
-Message-Id: <20211124115717.353182091@linuxfoundation.org>
+Message-Id: <20211124115709.648378592@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,37 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
 
-[ Upstream commit 14651496a3de6807a17c310f63c894ea0c5d858e ]
+[ Upstream commit 0e38225c92c7964482a8bb6b3e37fde4319e965c ]
 
-It will cause null-ptr-deref if platform_get_resource() returns NULL,
-we need check the return value.
+request_irq is marked __must_check, but the call in shx3_prepare_cpus
+has a void return type, so it can't propagate failure to the caller.
+Follow cues from hexagon and just print an error.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20210915034925.2399823-1-yangyingliang@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: c7936b9abcf5 ("sh: smp: Hook in to the generic IPI handler for SH-X3 SMP.")
+Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: Paul Mundt <lethal@linux-sh.org>
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+Signed-off-by: Rich Felker <dalias@libc.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/musb/tusb6010.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/sh/kernel/cpu/sh4a/smp-shx3.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/musb/tusb6010.c b/drivers/usb/musb/tusb6010.c
-index 7d7cb1c5ec808..9a7b5b2d7ccc7 100644
---- a/drivers/usb/musb/tusb6010.c
-+++ b/drivers/usb/musb/tusb6010.c
-@@ -1108,6 +1108,11 @@ static int tusb_musb_init(struct musb *musb)
+diff --git a/arch/sh/kernel/cpu/sh4a/smp-shx3.c b/arch/sh/kernel/cpu/sh4a/smp-shx3.c
+index 0d3637c494bfe..c1f66c35e0c12 100644
+--- a/arch/sh/kernel/cpu/sh4a/smp-shx3.c
++++ b/arch/sh/kernel/cpu/sh4a/smp-shx3.c
+@@ -76,8 +76,9 @@ static void shx3_prepare_cpus(unsigned int max_cpus)
+ 	BUILD_BUG_ON(SMP_MSG_NR >= 8);
  
- 	/* dma address for async dma */
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!mem) {
-+		pr_debug("no async dma resource?\n");
-+		ret = -ENODEV;
-+		goto done;
-+	}
- 	musb->async = mem->start;
+ 	for (i = 0; i < SMP_MSG_NR; i++)
+-		request_irq(104 + i, ipi_interrupt_handler,
+-			    IRQF_PERCPU, "IPI", (void *)(long)i);
++		if (request_irq(104 + i, ipi_interrupt_handler,
++			    IRQF_PERCPU, "IPI", (void *)(long)i))
++			pr_err("Failed to request irq %d\n", i);
  
- 	/* dma address for sync dma */
+ 	for (i = 0; i < max_cpus; i++)
+ 		set_cpu_present(i, true);
 -- 
 2.33.0
 
