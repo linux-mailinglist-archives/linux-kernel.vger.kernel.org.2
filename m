@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9177E45C5B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D002A45C24C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348430AbhKXOAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:00:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44730 "EHLO mail.kernel.org"
+        id S1348884AbhKXN1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:27:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353221AbhKXN5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:57:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A974663376;
-        Wed, 24 Nov 2021 13:07:40 +0000 (UTC)
+        id S1348970AbhKXNYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:24:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A723610E9;
+        Wed, 24 Nov 2021 12:49:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759261;
-        bh=1BR1KiWgKdQru8Ox3rkSKOenlRu3vXL5XHclqlCFkqg=;
+        s=korg; t=1637758145;
+        bh=E3DFdjxnYwIRd6pWwC2vdVQ7BW6SGIlrFdxNjDJwNVc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GWON/CHjcg/Q3R/jLKLmpoBeh79u9j5yEBImp6CZda71eU756u4v5NaFIadvA5w2F
-         G2UWV4eUhAuzMJWvakT4sLasiFEj/GqV/8WBPbPi0LfO9W58wOHKJWG+NhYzNNu9gd
-         HbNSmdexKkOclp20Gd9MNgvIqClHY5bfipuXoP1k=
+        b=FalqUpFyEI5bsjBSLgH+YwusDW+u5WrdjxvhF9q3QiTg5czFGERlNbj+0Nr+xpaPC
+         s6llh9al4eVvP5roc1UD8PhnwUd/53UDVnDVqfg86otKCdrBC73RY7bXWT27QRSOzR
+         gdcWNCtgCSof/5jo1HaBHWPR/2uAMys6LtAgRO+Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 182/279] perf/x86/intel/uncore: Fix filter_tid mask for CHA events on Skylake Server
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Matt Fleming <matt@console-pimps.org>,
+        Matt Fleming <matt@codeblueprint.co.uk>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rich Felker <dalias@libc.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 033/100] sh: fix kconfig unmet dependency warning for FRAME_POINTER
 Date:   Wed, 24 Nov 2021 12:57:49 +0100
-Message-Id: <20211124115725.027599941@linuxfoundation.org>
+Message-Id: <20211124115655.945939875@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Antonov <alexander.antonov@linux.intel.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit e324234e0aa881b7841c7c713306403e12b069ff ]
+[ Upstream commit fda1bc533094a7db68b11e7503d2c6c73993d12a ]
 
-According Uncore Reference Manual: any of the CHA events may be filtered
-by Thread/Core-ID by using tid modifier in CHA Filter 0 Register.
-Update skx_cha_hw_config() to follow Uncore Guide.
+FRAME_POINTER depends on DEBUG_KERNEL so DWARF_UNWINDER should
+depend on DEBUG_KERNEL before selecting FRAME_POINTER.
 
-Fixes: cd34cd97b7b4 ("perf/x86/intel/uncore: Add Skylake server uncore support")
-Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
-Link: https://lore.kernel.org/r/20211115090334.3789-2-alexander.antonov@linux.intel.com
+WARNING: unmet direct dependencies detected for FRAME_POINTER
+  Depends on [n]: DEBUG_KERNEL [=n] && (M68K || UML || SUPERH [=y]) || ARCH_WANT_FRAME_POINTERS [=n]
+  Selected by [y]:
+  - DWARF_UNWINDER [=y]
+
+Fixes: bd353861c735 ("sh: dwarf unwinder support.")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Matt Fleming <matt@console-pimps.org>
+Cc: Matt Fleming <matt@codeblueprint.co.uk>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Signed-off-by: Rich Felker <dalias@libc.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/events/intel/uncore_snbep.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/sh/Kconfig.debug | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index eb2c6cea9d0d5..e5ee6bb62ef50 100644
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -3608,6 +3608,9 @@ static int skx_cha_hw_config(struct intel_uncore_box *box, struct perf_event *ev
- 	struct hw_perf_event_extra *reg1 = &event->hw.extra_reg;
- 	struct extra_reg *er;
- 	int idx = 0;
-+	/* Any of the CHA events may be filtered by Thread/Core-ID.*/
-+	if (event->hw.config & SNBEP_CBO_PMON_CTL_TID_EN)
-+		idx = SKX_CHA_MSR_PMON_BOX_FILTER_TID;
+diff --git a/arch/sh/Kconfig.debug b/arch/sh/Kconfig.debug
+index 010b6c33bbba2..71acd3d9b9e83 100644
+--- a/arch/sh/Kconfig.debug
++++ b/arch/sh/Kconfig.debug
+@@ -58,6 +58,7 @@ config DUMP_CODE
  
- 	for (er = skx_uncore_cha_extra_regs; er->msr; er++) {
- 		if (er->event != (event->hw.config & er->config_mask))
+ config DWARF_UNWINDER
+ 	bool "Enable the DWARF unwinder for stacktraces"
++	depends on DEBUG_KERNEL
+ 	select FRAME_POINTER
+ 	depends on SUPERH32
+ 	default n
 -- 
 2.33.0
 
