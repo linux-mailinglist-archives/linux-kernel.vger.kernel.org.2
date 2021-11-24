@@ -2,37 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A59B45BE3C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:42:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3058445BC1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:23:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344795AbhKXMpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:45:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48802 "EHLO mail.kernel.org"
+        id S244356AbhKXM0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:26:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344269AbhKXMnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:43:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F7BD61220;
-        Wed, 24 Nov 2021 12:25:28 +0000 (UTC)
+        id S244542AbhKXMXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:23:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BF4E60FE7;
+        Wed, 24 Nov 2021 12:14:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756730;
-        bh=Hw4ioX8VStx2ymBPiv3NQlNyTTnqyXkxgYUBC6NSLPw=;
+        s=korg; t=1637756062;
+        bh=yODLhEdXW/hxuMxhwUWe/t5YzrfJquNFLeQ2MRlZOr0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u84NXNxEerxOgVaczRZOD/zsn4+A9Stpp+ArjJ3kkiTRlqpFTD+NBMlwHz1tYS/tB
-         pUcXCwGy2h4DNn+jsUiBaCyrEtQYB1tUNrf/qEXknpSCibYWpbRn5hwwtE0GZ5I+RT
-         cfIIVyW4tzHTGYvTGo+JaFeMaQrW4Bl2JURUyAdM=
+        b=OMkDHDqI6kIz95czYu7HcW7d50gDEAsorkpz/BYXZrMqOEcVzjsHGt2YHvKtS253V
+         /3RHLrMxMh06nIqFyAsAOjSTf9IMkaVJIafTa4NtOIHzrZ5S/KtLj8bK7t4FUmYi0z
+         BoUCHztRqnidnKFWphgs14Kfp3BY/0nc7ej/uMsw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 185/251] llc: fix out-of-bound array index in llc_sk_dev_hash()
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 156/207] mm, oom: pagefault_out_of_memory: dont force global OOM for dying tasks
 Date:   Wed, 24 Nov 2021 12:57:07 +0100
-Message-Id: <20211124115716.700592954@linuxfoundation.org>
+Message-Id: <20211124115709.060806757@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,68 +49,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-[ Upstream commit 8ac9dfd58b138f7e82098a4e0a0d46858b12215b ]
+commit 0b28179a6138a5edd9d82ad2687c05b3773c387b upstream.
 
-Both ifindex and LLC_SK_DEV_HASH_ENTRIES are signed.
+Patch series "memcg: prohibit unconditional exceeding the limit of dying tasks", v3.
 
-This means that (ifindex % LLC_SK_DEV_HASH_ENTRIES) is negative
-if @ifindex is negative.
+Memory cgroup charging allows killed or exiting tasks to exceed the hard
+limit.  It can be misused and allowed to trigger global OOM from inside
+a memcg-limited container.  On the other hand if memcg fails allocation,
+called from inside #PF handler it triggers global OOM from inside
+pagefault_out_of_memory().
 
-We could simply make LLC_SK_DEV_HASH_ENTRIES unsigned.
+To prevent these problems this patchset:
+ (a) removes execution of out_of_memory() from
+     pagefault_out_of_memory(), becasue nobody can explain why it is
+     necessary.
+ (b) allow memcg to fail allocation of dying/killed tasks.
 
-In this patch I chose to use hash_32() to get more entropy
-from @ifindex, like llc_sk_laddr_hashfn().
+This patch (of 3):
 
-UBSAN: array-index-out-of-bounds in ./include/net/llc.h:75:26
-index -43 is out of range for type 'hlist_head [64]'
-CPU: 1 PID: 20999 Comm: syz-executor.3 Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:151
- __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:291
- llc_sk_dev_hash include/net/llc.h:75 [inline]
- llc_sap_add_socket+0x49c/0x520 net/llc/llc_conn.c:697
- llc_ui_bind+0x680/0xd70 net/llc/af_llc.c:404
- __sys_bind+0x1e9/0x250 net/socket.c:1693
- __do_sys_bind net/socket.c:1704 [inline]
- __se_sys_bind net/socket.c:1702 [inline]
- __x64_sys_bind+0x6f/0xb0 net/socket.c:1702
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fa503407ae9
+Any allocation failure during the #PF path will return with VM_FAULT_OOM
+which in turn results in pagefault_out_of_memory which in turn executes
+out_out_memory() and can kill a random task.
 
-Fixes: 6d2e3ea28446 ("llc: use a device based hash table to speed up multicast delivery")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+An allocation might fail when the current task is the oom victim and
+there are no memory reserves left.  The OOM killer is already handled at
+the page allocator level for the global OOM and at the charging level
+for the memcg one.  Both have much more information about the scope of
+allocation/charge request.  This means that either the OOM killer has
+been invoked properly and didn't lead to the allocation success or it
+has been skipped because it couldn't have been invoked.  In both cases
+triggering it from here is pointless and even harmful.
+
+It makes much more sense to let the killed task die rather than to wake
+up an eternally hungry oom-killer and send him to choose a fatter victim
+for breakfast.
+
+Link: https://lkml.kernel.org/r/0828a149-786e-7c06-b70a-52d086818ea3@virtuozzo.com
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Suggested-by: Michal Hocko <mhocko@suse.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: Uladzislau Rezki <urezki@gmail.com>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/llc.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ mm/oom_kill.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/net/llc.h b/include/net/llc.h
-index df282d9b40170..9c10b121b49b0 100644
---- a/include/net/llc.h
-+++ b/include/net/llc.h
-@@ -72,7 +72,9 @@ struct llc_sap {
- static inline
- struct hlist_head *llc_sk_dev_hash(struct llc_sap *sap, int ifindex)
- {
--	return &sap->sk_dev_hash[ifindex % LLC_SK_DEV_HASH_ENTRIES];
-+	u32 bucket = hash_32(ifindex, LLC_SK_DEV_HASH_BITS);
-+
-+	return &sap->sk_dev_hash[bucket];
- }
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -1095,6 +1095,9 @@ void pagefault_out_of_memory(void)
+ 	if (mem_cgroup_oom_synchronize(true))
+ 		return;
  
- static inline
--- 
-2.33.0
-
++	if (fatal_signal_pending(current))
++		return;
++
+ 	if (!mutex_trylock(&oom_lock))
+ 		return;
+ 	out_of_memory(&oc);
 
 
