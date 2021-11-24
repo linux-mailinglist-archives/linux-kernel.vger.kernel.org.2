@@ -2,142 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B27D45CEE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B6C745CEE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:29:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244885AbhKXVba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 16:31:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232874AbhKXVb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 16:31:27 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CFCE61039;
-        Wed, 24 Nov 2021 21:28:16 +0000 (UTC)
-Date:   Wed, 24 Nov 2021 16:28:14 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Tao Zhou <tao.zhou@linux.dev>, Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V7 01/14] rtla: Real-Time Linux Analysis tool
-Message-ID: <20211124162814.352ad8fd@gandalf.local.home>
-In-Reply-To: <7c776914f3316cf6b5c21ec01b1e4eae497bb510.1635535309.git.bristot@kernel.org>
-References: <cover.1635535309.git.bristot@kernel.org>
-        <7c776914f3316cf6b5c21ec01b1e4eae497bb510.1635535309.git.bristot@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1343625AbhKXVcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 16:32:18 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:36243 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232874AbhKXVcR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 16:32:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637789325;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=xop8XlZAoTl1OV6De+uWk96yVRTl49IvEavBZ+QQ5D8=;
+    b=Uwz7zEyjAeqLxi9rLNp+UFq4MsyxKzi7QkPnpc2pGHFiO8JhKtRdo8wp2o13YFoKBq
+    37cJ53heBEu6lWTok97mTx4G+cBK+wHHGw3hS+PPlLrVO3bhsdz/optzLemsZ/xE83PL
+    RzKZpdRE8vk+pLu38IQmJnMSq91MI0SPjo7nYUF1R/j8IFzFYyP888YYfszhH1l3RvRk
+    hlxOx+fKSDd0SNhm9hVh0oz7OaniTAEvrGV2nHXPcnenkd9F+S9U6eRy1Ug93Y0c/J4z
+    1bPDa4+oO/3jLqTDVIsIy+pFwodt/Q7ob47mCdqYN1NC+Ew9J4+EoZ7TdIoqRy5F5+t6
+    6Euw==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3jsN+"
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.34.10 DYNA|AUTH)
+    with ESMTPSA id e05ed8xAOLSi5Al
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Wed, 24 Nov 2021 22:28:44 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH v8 4/8] drm/ingenic: Add dw-hdmi driver for jz4780
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <DIA33R.QE29K7RKLI2C1@crapouillou.net>
+Date:   Wed, 24 Nov 2021 22:28:43 +0100
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <D5272A7B-8943-4AB9-8705-1EC4E9891C1D@goldelico.com>
+References: <cover.1637691240.git.hns@goldelico.com>
+ <64c6ab288d4d7159f633c860f1b23b3395491ae1.1637691240.git.hns@goldelico.com>
+ <GTJ13R.RSQAWZX83DUZ2@crapouillou.net>
+ <016973B0-B7F0-4E63-BF4F-2643611A6351@goldelico.com>
+ <DIA33R.QE29K7RKLI2C1@crapouillou.net>
+To:     Paul Cercueil <paul@crapouillou.net>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Oct 2021 21:26:04 +0200
-Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+Hi Paul,
 
-> The rtla is a meta-tool that includes a set of commands that aims
-> to analyze the real-time properties of Linux. But instead of testing
-> Linux as a black box, rtla leverages kernel tracing capabilities to
-> provide precise information about the properties and root causes of
-> unexpected results.
-> 
-> rtla --help works and provide information about the available options.
-> 
-> This is just the "main" and the Makefile, no function yet.
-> 
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Tom Zanussi <zanussi@kernel.org>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Clark Williams <williams@redhat.com>
-> Cc: John Kacur <jkacur@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-> Cc: linux-rt-users@vger.kernel.org
-> Cc: linux-trace-devel@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
-> ---
->  tools/tracing/rtla/Makefile   | 76 +++++++++++++++++++++++++++++++++++
->  tools/tracing/rtla/src/rtla.c | 72 +++++++++++++++++++++++++++++++++
->  2 files changed, 148 insertions(+)
->  create mode 100644 tools/tracing/rtla/Makefile
->  create mode 100644 tools/tracing/rtla/src/rtla.c
-> 
-> diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
-> new file mode 100644
-> index 000000000000..33f154f86519
-> --- /dev/null
-> +++ b/tools/tracing/rtla/Makefile
-> @@ -0,0 +1,76 @@
-> +NAME	:=	rtla
-> +VERSION	:=	0.3
-> +
-> +# From libtracefs:
-> +# Makefiles suck: This macro sets a default value of $(2) for the
-> +# variable named by $(1), unless the variable has been set by
-> +# environment or command line. This is necessary for CC and AR
-> +# because make sets default values, so the simpler ?= approach
-> +# won't work as expected.
-> +define allow-override
-> +  $(if $(or $(findstring environment,$(origin $(1))),\
-> +            $(findstring command line,$(origin $(1)))),,\
-> +    $(eval $(1) = $(2)))
-> +endef
-> +
-> +# Allow setting CC and AR, or setting CROSS_COMPILE as a prefix.
-> +$(call allow-override,CC,$(CROSS_COMPILE)gcc)
-> +$(call allow-override,AR,$(CROSS_COMPILE)ar)
-> +$(call allow-override,STRIP,$(CROSS_COMPILE)strip)
-> +$(call allow-override,PKG_CONFIG,pkg-config)
-> +$(call allow-override,LD_SO_CONF_PATH,/etc/ld.so.conf.d/)
-> +$(call allow-override,LDCONFIG,ldconfig)
-> +
-> +INSTALL	=	install
-> +FOPTS	:=	-flto=auto -ffat-lto-objects -fexceptions -fstack-protector-strong \
-> +		-fasynchronous-unwind-tables -fstack-clash-protection
-> +WOPTS	:= 	-Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -Wno-maybe-uninitialized
-> +
-> +TRACEFS_HEADERS	:= $$($(PKG_CONFIG) --cflags libtracefs)
-> +
-> +CFLAGS	:=	-O -g -DVERSION=\"$(VERSION)\" $(FOPTS) $(MOPTS) $(WOPTS) $(TRACEFS_HEADERS)
-> +LDFLAGS	:=	-ggdb
-> +LIBS	:=	-ltracefs -ltraceevent -lprocps
 
-For the -ltracefs and -ltracevent, you could use:
+>>> You probably should disable the regulator (if not NULL) here.
+>> Indeed. Would it be ok to make struct regulator *regulator static
+>> or do we need dynamically allocated memory?
+>=20
+> static non-const is almost always a bad idea, so avoid it.
 
-   $$($PKG_CONFIG) --libs libtracefs)
+Well some years ago it was a perfectly simple solution that still =
+works...
+But I asked because I had a lot of doubt.
 
-which would be more robust.
+>=20
+> You can either:
+>=20
+> - create a "ingenic_dw_hdmi" struct that will contain a pointer to =
+dw_hdmi and a pointer to the regulator. Instanciate it in the probe with =
+devm_kzalloc() and set the pointers, then set it as the driver data =
+(platform_set_drvdata). In the remove function you can then obtain the =
+pointer to your ingenic_dw_hdmi struct with platform_get_drvdata(), and =
+you can remove the dw_hdmi and unregister the regulator.
+>=20
+> - register cleanup functions, using devm_add_action_or_reset(dev, f, =
+priv). When it's time to cleanup, the kernel core will call f(priv) =
+automatically. So you can add a small wrapper around dw_hdmi_remove() =
+and another one around regulator_disable(), and those will be called =
+automatically if your probe function fails, or when the driver is =
+removed. Then you can completely remove the ".remove" callback. There =
+are a few examples of these in the ingenic-drm-drv.c if you want to take =
+a look.
 
--- Steve
+The second one turned out to be cleaner to handle special cases like if =
+there is no regulator. We just register the disabler only if there is a =
+regulator and enable succeeds.
 
-> +
-> +SRC	:=	$(wildcard src/*.c)
-> +HDR	:=	$(wildcard src/*.h)
-> +OBJ	:=	$(SRC:.c=.o)
-> +DIRS	:=	src
-> +FILES	:=	Makefile
-> +CEXT	:=	bz2
-> +TARBALL	:=	$(NAME)-$(VERSION).tar.$(CEXT)
-> +TAROPTS	:=	-cvjf $(TARBALL)
-> +BINDIR	:=	/usr/bin
-> +DATADIR	:=	/usr/share
-> +DOCDIR	:=	$(DATADIR)/doc
-> +MANDIR	:=	$(DATADIR)/man
-> +LICDIR	:=	$(DATADIR)/licenses
-> +
+So v9 is coming now.
+
+BR and thanks,
+Nikolaus
+
