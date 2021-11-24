@@ -2,123 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E5B45C704
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:14:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDFF45C70F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348432AbhKXOSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:18:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44722 "EHLO
+        id S1351276AbhKXOVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:21:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352943AbhKXORW (ORCPT
+        with ESMTP id S1353236AbhKXOSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:17:22 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 358D0C0818F2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 04:28:57 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id p18so2151719wmq.5
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 04:28:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DcZ1Q8d+O6FgM0ahJ1NKmjZFVwY2xw4s/RvlwwiK+mU=;
-        b=WOKeoFFzUWyCB51Qa2QJzo4p0Sv9PqYAsGJHScNWi0Nxq4TkivGBjOMsmIQgYB/l3P
-         rB4/KYGerJym8yts+yBeedP3jrVFUZLq8OQZLErIvNzv7MK1wT7l35NbDKJ5VmFA9Dus
-         9H8JlOuZ+ZuUTWSev2rzR576dLdVH29+YiWKHTd8sSyawZ9p/i8GxRJ9sIIAdYpnO58S
-         yKpT2i+cBPy1bC9Zg78RgvmKXjZvkYtiItvAhlvZIp8Fta8qs91Xwgbh4DPIpyK3Df4E
-         QENJwb+fp+kPKHGoW6R3OYrgOjIGHkGW9INfjPhGlP7bYiFpbXDKLdNYhVUoKu1z1YfA
-         mCJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DcZ1Q8d+O6FgM0ahJ1NKmjZFVwY2xw4s/RvlwwiK+mU=;
-        b=3qywX3GaDDc2luHduDAD10UN6xTkNVwd44YdFxPUDwFosMkKvWX9SOBP23sTJwWkbJ
-         xb+jdDI5QIFigUR4orSYMeSeHIdRtmXNHf4Q2SCzj6746CCUReGz/TpYHUan2s8InXuS
-         AV1xuXImhCEMGZSK62mzACEGr0HSYKBAuwS9QgNPselB4JH5HRKDeusWYfWyQ/7P/tNs
-         uPdkpyiUVfcVaHYxGoUftIPMr2T6i74nJFJu8PWum3cQNmA/bxZ3Axrc0IjYW9f4c6gm
-         3063q9WAW9lnQAheqQTEfQ8hoQJBCDVEzozpxvD+4tD7ZRtRyrqgndhCQXizf/BatX6P
-         nlrg==
-X-Gm-Message-State: AOAM530Zgh0hzmwgUCD+KHmM3ZdnlfDtTpVvPu58FtwLjSClngI0eHmE
-        E6hwBbyzqXUuQP39NxkwsDXBCA==
-X-Google-Smtp-Source: ABdhPJzT/jKV/kTbp1ET/jbz8/YdJAG86C5Bkz7yhjB8UEXLmD/yNJcyuAzmYfO/v9dZHELp43N/GA==
-X-Received: by 2002:a05:600c:22d9:: with SMTP id 25mr14255425wmg.71.1637756935782;
-        Wed, 24 Nov 2021 04:28:55 -0800 (PST)
-Received: from debian-brgl.home ([2a01:cb1d:334:ac00:7d50:ff5:f5c1:e225])
-        by smtp.gmail.com with ESMTPSA id p62sm4417694wmp.10.2021.11.24.04.28.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 04:28:55 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Johan Hovold <johan@kernel.org>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [PATCH v3 2/2] gpiolib: check the 'ngpios' property in core gpiolib code
-Date:   Wed, 24 Nov 2021 13:28:50 +0100
-Message-Id: <20211124122850.7095-2-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20211124122850.7095-1-brgl@bgdev.pl>
-References: <20211124122850.7095-1-brgl@bgdev.pl>
+        Wed, 24 Nov 2021 09:18:44 -0500
+Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C25CC098770;
+        Wed, 24 Nov 2021 04:29:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=metanate.com; s=stronger; h=In-Reply-To:Content-Type:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description; bh=9+IhnhZkeGeP3d3+paaerLIadQ5w4iduEImB/rgB1WA=; b=3a7MW
+        mWmTgpFBgZT86bDzr5fnZd/OMYxslaVS+9JWm3M/wHb3PUyH2IM59c+QY7S5vtgUn5ij1k16gNk19
+        vbTNmxU8OeTpbUr2zaKyfoH+LNFs1LJldMLziMejnvGPmiP4zPa3YlxkEZ49W4SNuyjn7Cp7xJ/FU
+        pJCFi9umswPkuHxMQHWOYTO8/RznXlzuJST3Y7rCCxJoI77t1foOVL7CqtplAxKZ48wUj1lWMGbwx
+        lHYFbM7O7XZKD77NRV/TSODrmOdOz77FZAsQREgQmiWtgoEHpHIzJgeDy3Bs3DcZnguQYWvWocfDr
+        gME50F0neKQFoCt+WnjSRb4GUCZQQ==;
+Received: from [81.174.171.191] (helo=donbot)
+        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <john@metanate.com>)
+        id 1mprPO-0003p9-3u; Wed, 24 Nov 2021 12:29:54 +0000
+Date:   Wed, 24 Nov 2021 12:29:52 +0000
+From:   John Keeping <john@metanate.com>
+To:     Jaehoon Chung <jh80.chung@samsung.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] mmc: dw_mmc: use standard "mmc" alias stem
+Message-ID: <YZ4wQOcHEDHdCGlY@donbot>
+References: <20211116190244.1417591-1-john@metanate.com>
+ <20211116190244.1417591-3-john@metanate.com>
+ <CGME20211123193506epcas1p49d0d0a2d66c6e560ee26077da9c0202b@epcas1p4.samsung.com>
+ <CAPDyKFp1zMBUfK7LteW0yEfTpqtU+P+EybLsJBFx_r54HwFdMg@mail.gmail.com>
+ <315972c2-2253-ad10-b712-2d2c96b3da26@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <315972c2-2253-ad10-b712-2d2c96b3da26@samsung.com>
+X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Several drivers read the 'ngpios' device property on their own, but
-since it's defined as a standard GPIO property in the device tree bindings
-anyway, it's a good candidate for generalization. If the driver didn't
-set its gc->ngpio, try to read the 'ngpios' property from the GPIO
-device's firmware node before bailing out.
+On Wed, Nov 24, 2021 at 06:54:12PM +0900, Jaehoon Chung wrote:
+> On 11/24/21 4:34 AM, Ulf Hansson wrote:
+> > On Tue, 16 Nov 2021 at 20:02, John Keeping <john@metanate.com> wrote:
+> >>
+> >> The standard stem for MMC aliases is "mmc" and this is used by the MMC
+> >> core to set the slot index.
+> > 
+> > This isn't the correct description of the mmc aliases. The below text
+> > is copied from the DT doc:
+> > 
+> > "It is possible to assign a fixed index mmcN to an MMC host controller
+> > (and the corresponding mmcblkN devices) by defining an alias in the
+> > /aliases device tree node."
+> > 
+> >>
+> >> Use this in preference to the non-standard "mshc" stem when setting the
+> >> controller ID to avoid needing two aliases for each MMC device in order
+> >> to cover both the core and dw_mmc-specific functionality.
+> >>
+> >> The old "mshc" lookup is kept for backwards compatibility.
+> > 
+> > The mshc alias is really weird!
+> > 
+> > It looks like some leftover from when the dw_mmc controller supported
+> > multiple slots. This support was dropped a long time ago, simply
+> > because it never really worked - and it was not worth trying to. Only
+> > one slot per controller is supported.
+> 
+> As Ulf mentioned, dw_mmc controller can be supported multiple slot.
+> But I didn't see its case to use multiple slot. And I had been done to drop a long time ago.
+> 
+> mshc was used because of Mobile Storage Host Controller.
+> 
+> > 
+> > Rather than re-using the mmc alias in the same weird way as the mshc
+> > alias, I suggest we try to remove parsing of the mshc aliases
+> > completely. By looking at the corresponding code and in combination
+> > with the DTS files, it certainly looks doable to me. Do you want to
+> > have a look at it?
+> 
+> If possible to remove mshc, it's best.
+> I will check that removing mshc parsing in dw_mmc.c.
 
-Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
-Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
----
-v1 -> v2:
-- use device_property_read_u32() instead of fwnode_property_read_u32()
-- reverse the error check logic
+Unfortunately it doesn't look like it's easy to remove as there is some
+behaviour depending on this via dw_mci_drv_data::caps, as well as
+different timing setup in dw_mmc-k3.c which uses
+dw_mci_of_alias_get_id() to identify SD and SDIO hosts.
 
-v2 -> v3:
-- don't shadow errors other than -ENODATA in device_property_read_u32()
+Looking across the dw_mmc-*.c files that use dw_mci_drv_data::caps to
+set capabilities per host controller:
 
- drivers/gpio/gpiolib.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+- dw_mmc-exynos.c sets additional capabilities for mshc0, although both
+  MMC_CAP_1_8V_DDR and MMC_CAP_8_BIT_DATA should be set via DT (in fact
+  in some cases it looks like device trees are setting bus-width = <4>
+  so MMC_CAP_8_BIT_DATA seems wrong!); I can't see any device trees
+  setting mmc-ddr-1_8v for these devices at the moment though, so
+  removing that is a change in behaviour
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index ede8b8a7aa18..f79fd2551cf7 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -599,6 +599,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- 	int base = gc->base;
- 	unsigned int i;
- 	int ret = 0;
-+	u32 ngpios;
- 
- 	/*
- 	 * First: allocate and populate the internal stat container, and
-@@ -647,9 +648,17 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- 	}
- 
- 	if (gc->ngpio == 0) {
--		chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
--		ret = -EINVAL;
--		goto err_free_descs;
-+		ret = device_property_read_u32(&gdev->dev, "ngpios", &ngpios);
-+		if (ret) {
-+			if (ret == -ENODATA) {
-+				chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
-+				ret = -EINVAL;
-+			}
-+
-+			goto err_free_descs;
-+		}
-+
-+		gc->ngpio = ngpios;
- 	}
- 
- 	if (gc->ngpio > FASTPATH_NGPIO)
--- 
-2.25.1
+- dw_mmc-k3.c sets different capabilities for mshc2 and, as mentioned
+  above, uses the alias index to select timing parameters and change
+  voltage switching behaviour
 
+- dw_mmc-hi3798cv200.c and dw_mmc-rockchip.c set the same caps for all
+  slots, so can easily remove the dependency on the alias
+
+
+I'm mostly interested in Rockchip myself, which is one of the easy ones,
+so I'm not that familiar with Exynos or K3 - I'd guess the Exynos
+version can remove its dependency on the mshc alias pretty easily, but
+the use in dw_mmc-k3.c looks much more difficult given that I can't see
+any other way to derive the necessary info from the current device
+trees.
+
+
+Regards,
+John
