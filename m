@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF2445BE90
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB21745BA7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:08:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345509AbhKXMsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:48:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50508 "EHLO mail.kernel.org"
+        id S238060AbhKXMLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:11:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345032AbhKXMqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:46:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E94061439;
-        Wed, 24 Nov 2021 12:26:51 +0000 (UTC)
+        id S242447AbhKXMIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:08:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C84BC6108E;
+        Wed, 24 Nov 2021 12:04:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756812;
-        bh=iBn4D7zMtEq2IYTq2rxFZPleNsv6M8Ce5LQRTYgung4=;
+        s=korg; t=1637755488;
+        bh=5X/Tgypm2iBfoNbVAT64NUB8dqsyDdqqTH/u6mP2Zqc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xg3AkhtOvUxlA9IyNmpTgi1CbKUMxm1iXc0GPqfxM046ou+ef/nwFubWm70z6c5c3
-         PLDmF4rbj8vKgbvAPE96NTwUTcLKdgNo2csujLg/HLk36cNTpyxnLX4d4sx7PS849z
-         sy7oYhUgcJAmABEy728VsI8q1V6u9jnoN6tWigNU=
+        b=Hy6gjoK4GCbHHj9wOpa8VXbNK+tiW4vfu2HgH1otrxmlzaU18MspAK65OJfXHEkAC
+         OTGG8wEVfaSJEWHfbPb7zfzNiB3UZVBg++wMLsmw6aVRMYoW0MYa66BZbxnn3SFMcM
+         jqupsKy+NVaVC2eZZFzaX90JiocKy8BLoy3mYA5U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 173/251] dmaengine: dmaengine_desc_callback_valid(): Check for `callback_result`
-Date:   Wed, 24 Nov 2021 12:56:55 +0100
-Message-Id: <20211124115716.282645448@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 4.4 113/162] PCI: Add PCI_EXP_DEVCTL_PAYLOAD_* macros
+Date:   Wed, 24 Nov 2021 12:56:56 +0100
+Message-Id: <20211124115701.977572653@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,63 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars-Peter Clausen <lars@metafoo.de>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit e7e1e880b114ca640a2f280b0d5d38aed98f98c6 ]
+commit 460275f124fb072dca218a6b43b6370eebbab20d upstream.
 
-Before the `callback_result` callback was introduced drivers coded their
-invocation to the callback in a similar way to:
+Define a macro PCI_EXP_DEVCTL_PAYLOAD_* for every possible Max Payload
+Size in linux/pci_regs.h, in the same style as PCI_EXP_DEVCTL_READRQ_*.
 
-	if (cb->callback) {
-		spin_unlock(&dma->lock);
-		cb->callback(cb->callback_param);
-		spin_lock(&dma->lock);
-	}
-
-With the introduction of `callback_result` two helpers where introduced to
-transparently handle both types of callbacks. And drivers where updated to
-look like this:
-
-	if (dmaengine_desc_callback_valid(cb)) {
-		spin_unlock(&dma->lock);
-		dmaengine_desc_callback_invoke(cb, ...);
-		spin_lock(&dma->lock);
-	}
-
-dmaengine_desc_callback_invoke() correctly handles both `callback_result`
-and `callback`. But we forgot to update the dmaengine_desc_callback_valid()
-function to check for `callback_result`. As a result DMA descriptors that
-use the `callback_result` rather than `callback` don't have their callback
-invoked by drivers that follow the pattern above.
-
-Fix this by checking for both `callback` and `callback_result` in
-dmaengine_desc_callback_valid().
-
-Fixes: f067025bc676 ("dmaengine: add support to provide error result from a DMA transation")
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Acked-by: Dave Jiang <dave.jiang@intel.com>
-Link: https://lore.kernel.org/r/20211023134101.28042-1-lars@metafoo.de
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lore.kernel.org/r/20211005180952.6812-2-kabel@kernel.org
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Marek Behún <kabel@kernel.org>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Marek Behún <kabel@kernel.org>
+Reviewed-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/dma/dmaengine.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/uapi/linux/pci_regs.h |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/dma/dmaengine.h b/drivers/dma/dmaengine.h
-index 501c0b063f852..302f13efd35d9 100644
---- a/drivers/dma/dmaengine.h
-+++ b/drivers/dma/dmaengine.h
-@@ -168,7 +168,7 @@ dmaengine_desc_get_callback_invoke(struct dma_async_tx_descriptor *tx,
- static inline bool
- dmaengine_desc_callback_valid(struct dmaengine_desc_callback *cb)
- {
--	return (cb->callback) ? true : false;
-+	return cb->callback || cb->callback_result;
- }
- 
- #endif
--- 
-2.33.0
-
+--- a/include/uapi/linux/pci_regs.h
++++ b/include/uapi/linux/pci_regs.h
+@@ -488,6 +488,12 @@
+ #define  PCI_EXP_DEVCTL_URRE	0x0008	/* Unsupported Request Reporting En. */
+ #define  PCI_EXP_DEVCTL_RELAX_EN 0x0010 /* Enable relaxed ordering */
+ #define  PCI_EXP_DEVCTL_PAYLOAD	0x00e0	/* Max_Payload_Size */
++#define  PCI_EXP_DEVCTL_PAYLOAD_128B 0x0000 /* 128 Bytes */
++#define  PCI_EXP_DEVCTL_PAYLOAD_256B 0x0020 /* 256 Bytes */
++#define  PCI_EXP_DEVCTL_PAYLOAD_512B 0x0040 /* 512 Bytes */
++#define  PCI_EXP_DEVCTL_PAYLOAD_1024B 0x0060 /* 1024 Bytes */
++#define  PCI_EXP_DEVCTL_PAYLOAD_2048B 0x0080 /* 2048 Bytes */
++#define  PCI_EXP_DEVCTL_PAYLOAD_4096B 0x00a0 /* 4096 Bytes */
+ #define  PCI_EXP_DEVCTL_EXT_TAG	0x0100	/* Extended Tag Field Enable */
+ #define  PCI_EXP_DEVCTL_PHANTOM	0x0200	/* Phantom Functions Enable */
+ #define  PCI_EXP_DEVCTL_AUX_PME	0x0400	/* Auxiliary Power PM Enable */
 
 
