@@ -2,95 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A0545C8D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:36:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0753D45C8D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:38:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241642AbhKXPjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:39:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231860AbhKXPjT (ORCPT
+        id S241724AbhKXPlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:41:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:25405 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231860AbhKXPlY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:39:19 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA46C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:36:10 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id j140-20020a1c2392000000b003399ae48f58so5782298wmj.5
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:36:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=9axgss5JK/d4JEsqVSzEUVHdFM9P3LASCpmPJrqXw+4=;
-        b=WypPoA5Iumpwhit1UWOxjKhEmdev0XG8irGEOPKfdXs2/OsOrhFUOf5qNjvJ7nTJRE
-         WhvhXkY0q52nuWxuCEEWeY0Dt6QCG3xgIQ6nDUKDwrBwBs3ZRAlTXMyvqTmf28td0uoT
-         ERRcaAcPQxkzwCZ/MFvXF/cEQ729giTQWe5cZ6Q6O7RYhPiOJ74NEuSlgyf3hdsUPOqp
-         mBY41YCfwEqenzPvqrCmL11BH/qUB57dqhp6nZSlna9FhvB7qIRNIRHaxvI3nHu9uQOe
-         M/lCYXCzm9bHOOD7q5lfaA9HZnGTpypX4i8yjQuvbTOiB4B8BT/ChvgH2PdBleHG1vaU
-         /woA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=9axgss5JK/d4JEsqVSzEUVHdFM9P3LASCpmPJrqXw+4=;
-        b=ID/HHal0qQlJ3fcPDdVVv+2IfjF1m3zLo7cBL54/YXTaxrF9ngDt43WnB8aHK+iQob
-         yG/rp5NF+jLG4fxLdesiuYx/XD/Vh76emiRzZW64h3Rcviq5bmOBG7ltG9vyoYocdsqm
-         /7D0IzotlQhbFCgmfeQA2Djdg44A3UEaPkl+bJoPoGEALvKVTlSTvju++R0v6W4leGUx
-         zzTuqF9CcMVpB59N4+dYiL50qr/xrMWm6SRFHEVUYF09HJO8kqWNbm/DPdqY4zomo59s
-         vnJgd1cJ6uI5+loY+STD5+0FLoAwfaiuU2QRLekXLOLOGTTJAv+osQPBWh6VtD0vFTID
-         WHAg==
-X-Gm-Message-State: AOAM53238W9LDAPZ28Y9+1kok9NioCsZPwY7HmIMVCEm1xslNfw2g1Qg
-        a9/RC2crlNc2ejM87G+CHWKjvQ==
-X-Google-Smtp-Source: ABdhPJzrjAX/IQMZmWBDLKyMvMXU2IgliP1qCaR4MVKaWRuyssUDeJYnPYeNGh7Mo5dnQM8sMsvP9g==
-X-Received: by 2002:a05:600c:2f17:: with SMTP id r23mr16397453wmn.93.1637768168666;
-        Wed, 24 Nov 2021 07:36:08 -0800 (PST)
-Received: from google.com ([2.31.167.61])
-        by smtp.gmail.com with ESMTPSA id h2sm160253wrz.23.2021.11.24.07.36.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 07:36:08 -0800 (PST)
-Date:   Wed, 24 Nov 2021 15:36:06 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc:     nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        ludovic.desroches@microchip.com, romain.izard.pro@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: Re: [PATCH v2 2/2] mfd: atmel-flexcom: use resume_noirq
-Message-ID: <YZ5b5lBdJqHBuzBH@google.com>
-References: <20211028135138.3481166-1-claudiu.beznea@microchip.com>
- <20211028135138.3481166-3-claudiu.beznea@microchip.com>
+        Wed, 24 Nov 2021 10:41:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637768293;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=46y3rdu6iUG1CYH2wKUqw8yXte9uDTkV/SHmghHQmB8=;
+        b=Z45lL/dDNO/7RpHhxLTPdaAz8rOfkgkLqwmOWsgolepbHSt1TYBUF7rlL+Hy1ACDZz3pGJ
+        4ojzCl652UoKo7XkDxwlEOFXTWEFA5mMRY0bp+rAlfXEPiUu2Yyvn/oN4cf33rjmUfZt2o
+        baOcSs6H/UPYCdaYtd0BAhkySoaAr6E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-409-CEOnUjgdP3ulP_N-adU-Ig-1; Wed, 24 Nov 2021 10:38:12 -0500
+X-MC-Unique: CEOnUjgdP3ulP_N-adU-Ig-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 909C91800D41;
+        Wed, 24 Nov 2021 15:38:10 +0000 (UTC)
+Received: from localhost (unknown [10.39.195.62])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EB99A79457;
+        Wed, 24 Nov 2021 15:37:57 +0000 (UTC)
+Date:   Wed, 24 Nov 2021 15:37:56 +0000
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     cgel.zte@gmail.com
+Cc:     mst@redhat.com, jasowang@redhat.com, pbonzini@redhat.com,
+        axboe@kernel.dk, virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ye Guojin <ye.guojin@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH] virtio-blk: modify the value type of num in
+ virtio_queue_rq()
+Message-ID: <YZ5cVCy+bdvdcgxc@stefanha-x1.localdomain>
+References: <20211117063955.160777-1-ye.guojin@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="4qNBzmFiqXAJam7g"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211028135138.3481166-3-claudiu.beznea@microchip.com>
+In-Reply-To: <20211117063955.160777-1-ye.guojin@zte.com.cn>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Oct 2021, Claudiu Beznea wrote:
 
-> Flexcom IP embeds 3 other IPs: usart, i2c, spi and selects the operation
-> mode (usart, i2c, spi) via mode register (FLEX_MR). On i2c bus there might
-> be connected critical devices (like PMIC) which on suspend/resume should
-> be suspended/resumed at the end/beginning. i2c uses
-> .suspend_noirq/.resume_noirq for this kind of purposes. Align flexcom
-> to use .resume_noirq as it should be resumed before the embedded IPs.
-> Otherwise the embedded devices might behave badly.
-> 
-> Fixes: 7fdec11015c3 ("atmel_flexcom: Support resuming after a chip reset")
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> Tested-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-> Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+--4qNBzmFiqXAJam7g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Nov 17, 2021 at 06:39:55AM +0000, cgel.zte@gmail.com wrote:
+> From: Ye Guojin <ye.guojin@zte.com.cn>
+>=20
+> This was found by coccicheck:
+> ./drivers/block/virtio_blk.c, 334, 14-17, WARNING Unsigned expression
+> compared with zero  num < 0
+>=20
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
 > ---
->  drivers/mfd/atmel-flexcom.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+>  drivers/block/virtio_blk.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied, thanks.
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+--4qNBzmFiqXAJam7g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmGeXFQACgkQnKSrs4Gr
+c8gkVwf/VP0Wcpg/NeC/3ubkg6ohgMgZ1GkS53l+f6cG9/aKWHuGmGvyXrjBXaiU
+jFwsVz+f322Ip7s0lFbTlvDhknlv/5jG6Sd6uSAXRYiDS7bU55AazAWtMVe0yaRo
+qcoRyogRn20jCrb5t1C/ukBMf4giPeHPY+U4rZCZmlZ3n9JOtPe0KPMA2f0tBMp4
+4lj/4O7hlmx3Un9bkskeJ9zfIwLA7K06cQ2u2Cjfiz136Y3gXSMSKBHX/z4+pjAB
+bJYlFe0QLQDLhPOB0vocSpeexr/lZjsIDlKH2jo1IE1Y29AXmTKTH2M2BDOMjrRS
+mc12UmSpgULbXSygbOVXqEYFnYarog==
+=pXYE
+-----END PGP SIGNATURE-----
+
+--4qNBzmFiqXAJam7g--
+
