@@ -2,239 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFD445B7A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 10:43:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D82B45B7A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 10:43:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237723AbhKXJql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 04:46:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237027AbhKXJqh (ORCPT
+        id S237176AbhKXJqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 04:46:09 -0500
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:60439 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237027AbhKXJqG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 04:46:37 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EC34C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 01:43:28 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id h63so1611182pgc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 01:43:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9j74+svXlAhYzIbtiOUuOMeegqkYiFJlWDyGAbHKBPI=;
-        b=2oZLMiNp+HiAvA+dAovJcOVGymnGUk7R0O2Iz/T/nluwu0aHXSWroQtxIo18l11UWb
-         pcXa4UlmdZBtN0PS2DREcGPNHEyN/uLeXkXyRkDAXHaZ/31UnsrpwguAZwbEuUpyb9hO
-         zJPyZ0E8hEHRtdSGOiJP2AaOcxdMZn+CB06Xie6QaoqBL73RkpRUpEg5pw3DJ7q9fnVk
-         6gy1/OTCoVrhdO98gUNHgN95uWbcSXNKtAY7KpGOYOIYB+kajLDbEIJ4IUxVQ0QB+n7J
-         2Z7lu6IGZr+rG+nxU483tA1wPAjMFI2K7ADdsYQO4nouH03RUTOm5Ko3FAh2ud+i0ZOi
-         3/Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9j74+svXlAhYzIbtiOUuOMeegqkYiFJlWDyGAbHKBPI=;
-        b=0PjZwkt4Ea6J1XzCvcRu6TirzCOnFhu6i2/HyX7bPi/L02iKDXjMdD40VNAu1kS3xV
-         bob5dtmOsUOYPjR0EfgB+Gv5YcOuJCiCGMXT+7Q0XJtsw+lq8hXsKnr8EOLHTgHQmxAr
-         18CAjGNSCUEsAKkVbd4J/BAS/RcA5Qm57AKnGM1BhiY+NWI7WFA5bYyiW10nQzJ0N8JC
-         Q5MkQwMkmyS8KBHKfQNW9qVh0sQL0h8p5+2lxzNJL6Gijo1DSN1M1c7tnLvgmhc/uIpr
-         unMcFugTXFAiFoGnrEaJ3hiuDnJlOoVaLUN1WSUE54G8wEMpJ45I5amBFPpspe/++Ris
-         uikA==
-X-Gm-Message-State: AOAM530wJH5ovPt50hel6vGjprsbmLKqLogUxb8Bqc/2uhlYgBCXmP5n
-        5pXECCIPD9NAw6FtD+/XEfTseQ==
-X-Google-Smtp-Source: ABdhPJw/5BatWlVVq8CJs2SBSQkHdwVorJfVnIElodhICjb3mJCYV1CdWP1MLuha9y61FQVz0D470Q==
-X-Received: by 2002:a65:654f:: with SMTP id a15mr9301517pgw.195.1637747007854;
-        Wed, 24 Nov 2021 01:43:27 -0800 (PST)
-Received: from C02FT5A6MD6R.bytedance.net ([61.120.150.76])
-        by smtp.gmail.com with ESMTPSA id p188sm15402195pfg.102.2021.11.24.01.43.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 24 Nov 2021 01:43:25 -0800 (PST)
-From:   Gang Li <ligang.bdlg@bytedance.com>
-To:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     stable@vger.kernel.org, songmuchun@bytedance.com,
-        Gang Li <ligang.bdlg@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] shmem: fix a race between shmem_unused_huge_shrink and shmem_evict_inode
-Date:   Wed, 24 Nov 2021 17:43:16 +0800
-Message-Id: <20211124094317.69719-1-ligang.bdlg@bytedance.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 24 Nov 2021 04:46:06 -0500
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 1AO9Igj2077922;
+        Wed, 24 Nov 2021 17:18:42 +0800 (GMT-8)
+        (envelope-from billy_tsai@aspeedtech.com)
+Received: from BillyTsai-pc.aspeed.com (192.168.2.149) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 24 Nov
+ 2021 17:42:50 +0800
+From:   Billy Tsai <billy_tsai@aspeedtech.com>
+To:     <eajames@linux.ibm.com>, <tglx@linutronix.de>, <maz@kernel.org>,
+        <joel@jms.id.au>, <andrew@aj.id.au>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <BMC-SW@aspeedtech.com>
+Subject: [PATCH] irqchip: Replace update_bits with write_bits.
+Date:   Wed, 24 Nov 2021 17:43:48 +0800
+Message-ID: <20211124094348.11621-1-billy_tsai@aspeedtech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.2.149]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 1AO9Igj2077922
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes a data race in commit 779750d20b93 ("shmem: split huge pages
-beyond i_size under memory pressure").
+The interrupt status bits are cleared by writing 1, we should force a
+write to clear the interrupt without checking if the value has changed.
 
-Here are call traces:
-
-Call Trace 1:
-	shmem_unused_huge_shrink+0x3ae/0x410
-	? __list_lru_walk_one.isra.5+0x33/0x160
-	super_cache_scan+0x17c/0x190
-	shrink_slab.part.55+0x1ef/0x3f0
-	shrink_node+0x10e/0x330
-	kswapd+0x380/0x740
-	kthread+0xfc/0x130
-	? mem_cgroup_shrink_node+0x170/0x170
-	? kthread_create_on_node+0x70/0x70
-	ret_from_fork+0x1f/0x30
-
-Call Trace 2:
-	shmem_evict_inode+0xd8/0x190
-	evict+0xbe/0x1c0
-	do_unlinkat+0x137/0x330
-	do_syscall_64+0x76/0x120
-	entry_SYSCALL_64_after_hwframe+0x3d/0xa2
-
-The simultaneous deletion of adjacent elements in the local list (@list)
-by shmem_unused_huge_shrink and shmem_evict_inode will break the list.
-
-Image there are 3 items in the local list (@list).
-In the first traversal, A is not deleted from @list.
-
-  1)    A->B->C
-        ^
-        |
-        pos (leave)
-
-In the second traversal, B is deleted from @list. Concurrently, A is
-deleted from @list through shmem_evict_inode() since last reference counter of
-inode is dropped by other thread. Then the @list is corrupted.
-
-  2)    A->B->C
-        ^  ^
-        |  |
-     evict pos (drop)
-
-Fix:
-
-We should make sure the item is either on the global list or deleted from
-any local list before iput().
-
-Fixed by moving inodes that are on @list and will not be deleted back to
-global list before iput.
-
-Fixes: 779750d20b93 ("shmem: split huge pages beyond i_size under memory pressure")
-Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
-
+Fixes: 04f605906ff0 ("irqchip: Add Aspeed SCU interrupt controller")
+Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
 ---
+ drivers/irqchip/irq-aspeed-scu-ic.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Changes in v3:
-- Add more comment.
-- Use list_move(&info->shrinklist, &sbinfo->shrinklist) instead of 
-  list_move(pos, &sbinfo->shrinklist) for consistency.
-
-Changes in v2: https://lore.kernel.org/all/20211124030840.88455-1-ligang.bdlg@bytedance.com/
-- Move spinlock to the front of iput instead of changing lock type
-  since iput will call evict which may cause deadlock by requesting
-  shrinklist_lock.
-- Add call trace in commit message.
-
-v1: https://lore.kernel.org/lkml/20211122064126.76734-1-ligang.bdlg@bytedance.com/
-
----
- mm/shmem.c | 35 ++++++++++++++++++++---------------
- 1 file changed, 20 insertions(+), 15 deletions(-)
-
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 9023103ee7d8..ab2df692bd58 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -569,7 +569,6 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
- 		/* inode is about to be evicted */
- 		if (!inode) {
- 			list_del_init(&info->shrinklist);
--			removed++;
- 			goto next;
- 		}
+diff --git a/drivers/irqchip/irq-aspeed-scu-ic.c b/drivers/irqchip/irq-aspeed-scu-ic.c
+index f3c6855a4cef..18b77c3e6db4 100644
+--- a/drivers/irqchip/irq-aspeed-scu-ic.c
++++ b/drivers/irqchip/irq-aspeed-scu-ic.c
+@@ -76,8 +76,8 @@ static void aspeed_scu_ic_irq_handler(struct irq_desc *desc)
+ 		generic_handle_domain_irq(scu_ic->irq_domain,
+ 					  bit - scu_ic->irq_shift);
  
-@@ -577,15 +576,16 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
- 		if (round_up(inode->i_size, PAGE_SIZE) ==
- 				round_up(inode->i_size, HPAGE_PMD_SIZE)) {
- 			list_move(&info->shrinklist, &to_remove);
--			removed++;
- 			goto next;
- 		}
- 
- 		list_move(&info->shrinklist, &list);
- next:
-+		removed++;
- 		if (!--batch)
- 			break;
- 	}
-+	sbinfo->shrinklist_len -= removed;
- 	spin_unlock(&sbinfo->shrinklist_lock);
- 
- 	list_for_each_safe(pos, next, &to_remove) {
-@@ -602,7 +602,7 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
- 		inode = &info->vfs_inode;
- 
- 		if (nr_to_split && split >= nr_to_split)
--			goto leave;
-+			goto move_back;
- 
- 		page = find_get_page(inode->i_mapping,
- 				(inode->i_size & HPAGE_PMD_MASK) >> PAGE_SHIFT);
-@@ -616,38 +616,43 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
- 		}
- 
- 		/*
--		 * Leave the inode on the list if we failed to lock
--		 * the page at this time.
-+		 * Move the inode on the list back to shrinklist if we failed
-+		 * to lock the page at this time.
- 		 *
- 		 * Waiting for the lock may lead to deadlock in the
- 		 * reclaim path.
- 		 */
- 		if (!trylock_page(page)) {
- 			put_page(page);
--			goto leave;
-+			goto move_back;
- 		}
- 
- 		ret = split_huge_page(page);
- 		unlock_page(page);
- 		put_page(page);
- 
--		/* If split failed leave the inode on the list */
-+		/* If split failed move the inode on the list back to shrinklist */
- 		if (ret)
--			goto leave;
-+			goto move_back;
- 
- 		split++;
- drop:
- 		list_del_init(&info->shrinklist);
--		removed++;
--leave:
-+		goto put;
-+move_back:
-+		/* inodes that are on @list and will not be deleted must be moved back to
-+		 * global list before iput for two reasons:
-+		 * 1. iput in lock: iput call shmem_evict_inode, then cause deadlock.
-+		 * 2. iput before lock: shmem_evict_inode may grab the inode on @list,
-+		 *    which will cause race.
-+		 */
-+		spin_lock(&sbinfo->shrinklist_lock);
-+		list_move(&info->shrinklist, &sbinfo->shrinklist);
-+		sbinfo->shrinklist_len++;
-+		spin_unlock(&sbinfo->shrinklist_lock);
-+put:
- 		iput(inode);
+-		regmap_update_bits(scu_ic->scu, scu_ic->reg, mask,
+-				   BIT(bit + ASPEED_SCU_IC_STATUS_SHIFT));
++		regmap_write_bits(scu_ic->scu, scu_ic->reg, mask,
++				  BIT(bit + ASPEED_SCU_IC_STATUS_SHIFT));
  	}
  
--	spin_lock(&sbinfo->shrinklist_lock);
--	list_splice_tail(&list, &sbinfo->shrinklist);
--	sbinfo->shrinklist_len -= removed;
--	spin_unlock(&sbinfo->shrinklist_lock);
--
- 	return split;
- }
- 
+ 	chained_irq_exit(chip, desc);
 -- 
-2.20.1
+2.25.1
 
