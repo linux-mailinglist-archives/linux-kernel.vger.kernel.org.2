@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFCC445BB87
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:18:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AFA745B9BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:02:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242653AbhKXMUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:20:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39084 "EHLO mail.kernel.org"
+        id S232745AbhKXMEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:04:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243713AbhKXMPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:15:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D6336109D;
-        Wed, 24 Nov 2021 12:10:03 +0000 (UTC)
+        id S233670AbhKXMEO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:04:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2211C60FE7;
+        Wed, 24 Nov 2021 12:01:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755804;
-        bh=vztLzOr4nWOxS4kqpPZSFPvpeLB5f0Thi1CD+HofyI8=;
+        s=korg; t=1637755264;
+        bh=xEHQfIaOUSvRwynkvC1KzLVjH4f6yWTUSGB+6OYv9Sw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J8+rcEyc7iZuCoVoGNk/aDQfGxHSYQD0dryjj57nU0jWuYHtg0kA8jfJ8KHZfdDDa
-         RmXkU/hdG4LJkUcvtGi22QrNV3w1EqaFilI8ArGeb2kJ56yNMvPv6azXNCekgNlLd/
-         qArkdj5w7aTFOlbEhwiE1ivfel7rQf+zdM+/kU7g=
+        b=UvC1jwiIWAF27x3deW3uB4llPVcGYRoSuMQ7nztQwnV3uUbsRYDxpqvvvpoOALNAS
+         KqokiYgu+6Pu5AGPuN/aYo1EBqqvYtyW2XwPUX5lU8ng4eZffMgMSslJw9Dkt3thVF
+         DKO8kiVWuIKAhOtRLgqZnA3f4uruN86PODTIIZKQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dirk Bender <d.bender@phytec.de>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 064/207] media: mt9p031: Fix corrupted frame after restarting stream
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: [PATCH 4.4 032/162] signal: Remove the bogus sigkill_pending in ptrace_stop
 Date:   Wed, 24 Nov 2021 12:55:35 +0100
-Message-Id: <20211124115705.996858744@linuxfoundation.org>
+Message-Id: <20211124115659.374236244@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,89 +39,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dirk Bender <d.bender@phytec.de>
+From: Eric W. Biederman <ebiederm@xmission.com>
 
-[ Upstream commit 0961ba6dd211a4a52d1dd4c2d59be60ac2dc08c7 ]
+commit 7d613f9f72ec8f90ddefcae038fdae5adb8404b3 upstream.
 
-To prevent corrupted frames after starting and stopping the sensor its
-datasheet specifies a specific pause sequence to follow:
+The existence of sigkill_pending is a little silly as it is
+functionally a duplicate of fatal_signal_pending that is used in
+exactly one place.
 
-Stopping:
-	Set Pause_Restart Bit -> Set Restart Bit -> Set Chip_Enable Off
+Checking for pending fatal signals and returning early in ptrace_stop
+is actively harmful.  It casues the ptrace_stop called by
+ptrace_signal to return early before setting current->exit_code.
+Later when ptrace_signal reads the signal number from
+current->exit_code is undefined, making it unpredictable what will
+happen.
 
-Restarting:
-	Set Chip_Enable On -> Clear Pause_Restart Bit
+Instead rely on the fact that schedule will not sleep if there is a
+pending signal that can awaken a task.
 
-The Restart Bit is cleared automatically and must not be cleared
-manually as this would cause undefined behavior.
+Removing the explict sigkill_pending test fixes fixes ptrace_signal
+when ptrace_stop does not stop because current->exit_code is always
+set to to signr.
 
-Signed-off-by: Dirk Bender <d.bender@phytec.de>
-Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: 3d749b9e676b ("ptrace: simplify ptrace_stop()->sigkill_pending() path")
+Fixes: 1a669c2f16d4 ("Add arch_ptrace_stop")
+Link: https://lkml.kernel.org/r/87pmsyx29t.fsf@disp2133
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/i2c/mt9p031.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
+ kernel/signal.c |   17 ++---------------
+ 1 file changed, 2 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
-index 237737fec09c1..e6159faff45af 100644
---- a/drivers/media/i2c/mt9p031.c
-+++ b/drivers/media/i2c/mt9p031.c
-@@ -81,7 +81,9 @@
- #define		MT9P031_PIXEL_CLOCK_INVERT		(1 << 15)
- #define		MT9P031_PIXEL_CLOCK_SHIFT(n)		((n) << 8)
- #define		MT9P031_PIXEL_CLOCK_DIVIDE(n)		((n) << 0)
--#define MT9P031_FRAME_RESTART				0x0b
-+#define MT9P031_RESTART					0x0b
-+#define		MT9P031_FRAME_PAUSE_RESTART		(1 << 1)
-+#define		MT9P031_FRAME_RESTART			(1 << 0)
- #define MT9P031_SHUTTER_DELAY				0x0c
- #define MT9P031_RST					0x0d
- #define		MT9P031_RST_ENABLE			1
-@@ -448,9 +450,23 @@ static int mt9p031_set_params(struct mt9p031 *mt9p031)
- static int mt9p031_s_stream(struct v4l2_subdev *subdev, int enable)
- {
- 	struct mt9p031 *mt9p031 = to_mt9p031(subdev);
-+	struct i2c_client *client = v4l2_get_subdevdata(subdev);
-+	int val;
- 	int ret;
- 
- 	if (!enable) {
-+		/* enable pause restart */
-+		val = MT9P031_FRAME_PAUSE_RESTART;
-+		ret = mt9p031_write(client, MT9P031_RESTART, val);
-+		if (ret < 0)
-+			return ret;
-+
-+		/* enable restart + keep pause restart set */
-+		val |= MT9P031_FRAME_RESTART;
-+		ret = mt9p031_write(client, MT9P031_RESTART, val);
-+		if (ret < 0)
-+			return ret;
-+
- 		/* Stop sensor readout */
- 		ret = mt9p031_set_output_control(mt9p031,
- 						 MT9P031_OUTPUT_CONTROL_CEN, 0);
-@@ -470,6 +486,16 @@ static int mt9p031_s_stream(struct v4l2_subdev *subdev, int enable)
- 	if (ret < 0)
- 		return ret;
- 
-+	/*
-+	 * - clear pause restart
-+	 * - don't clear restart as clearing restart manually can cause
-+	 *   undefined behavior
-+	 */
-+	val = MT9P031_FRAME_RESTART;
-+	ret = mt9p031_write(client, MT9P031_RESTART, val);
-+	if (ret < 0)
-+		return ret;
-+
- 	return mt9p031_pll_enable(mt9p031);
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -1824,16 +1824,6 @@ static inline int may_ptrace_stop(void)
  }
  
--- 
-2.33.0
-
+ /*
+- * Return non-zero if there is a SIGKILL that should be waking us up.
+- * Called with the siglock held.
+- */
+-static int sigkill_pending(struct task_struct *tsk)
+-{
+-	return	sigismember(&tsk->pending.signal, SIGKILL) ||
+-		sigismember(&tsk->signal->shared_pending.signal, SIGKILL);
+-}
+-
+-/*
+  * This must be called with current->sighand->siglock held.
+  *
+  * This should be the path for all ptrace stops.
+@@ -1858,15 +1848,10 @@ static void ptrace_stop(int exit_code, i
+ 		 * calling arch_ptrace_stop, so we must release it now.
+ 		 * To preserve proper semantics, we must do this before
+ 		 * any signal bookkeeping like checking group_stop_count.
+-		 * Meanwhile, a SIGKILL could come in before we retake the
+-		 * siglock.  That must prevent us from sleeping in TASK_TRACED.
+-		 * So after regaining the lock, we must check for SIGKILL.
+ 		 */
+ 		spin_unlock_irq(&current->sighand->siglock);
+ 		arch_ptrace_stop(exit_code, info);
+ 		spin_lock_irq(&current->sighand->siglock);
+-		if (sigkill_pending(current))
+-			return;
+ 	}
+ 
+ 	/*
+@@ -1875,6 +1860,8 @@ static void ptrace_stop(int exit_code, i
+ 	 * Also, transition to TRACED and updates to ->jobctl should be
+ 	 * atomic with respect to siglock and should be done after the arch
+ 	 * hook as siglock is released and regrabbed across it.
++	 * schedule() will not sleep if there is a pending signal that
++	 * can awaken the task.
+ 	 */
+ 	set_current_state(TASK_TRACED);
+ 
 
 
