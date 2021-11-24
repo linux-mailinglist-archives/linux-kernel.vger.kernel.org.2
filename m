@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B08645BD61
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:34:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E32B245BFA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:57:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244089AbhKXMhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:37:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49306 "EHLO mail.kernel.org"
+        id S1347591AbhKXNAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:00:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243089AbhKXMcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:32:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F3F661185;
-        Wed, 24 Nov 2021 12:19:55 +0000 (UTC)
+        id S1345812AbhKXM6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:58:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78FB461882;
+        Wed, 24 Nov 2021 12:33:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756395;
-        bh=zo6ates65FuopZK+2whayNP+CORPcvZzYGcw1Cjm8+M=;
+        s=korg; t=1637757201;
+        bh=Wy5HkO2eApPgKDGugJQYojLYGdTIExFtQTBU0+yK7qE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pF8qIeqsktgvbuR4851S7od1Vmo8IcCYq7H50CkkCxzxnMbiXNOpxsBUN1WBdBMnk
-         oBlzl4XrZvHyNgkUR7Kt/vXIeh+8MTYuyQXmkW4JfrPImGtygQSDdNcGkgfBB36pqQ
-         Capvn6+iC1mGMh+zvX35HZszPBGHLpMDTT2OFaHA=
+        b=fHkSvZltFpnTBdKbCdhDJuqMfEtF5rlr3BK4cMZVUUF7A3U9q/xBdJMajGoySLZoJ
+         XM7mUWa3TvnsOnXljXjX+WQ9FwrKZkNiAHRi46aCYk5HFWnPBOyKELXeQ786/JoV/5
+         SWhLxwoqCaQHf1q/oFWG2rTA6stkE8YZ6YQaEvms=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Erik Stromdahl <erik.stromdahl@gmail.com>,
-        Johan Hovold <johan@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 4.14 039/251] ath10k: fix control-message timeout
+        stable@vger.kernel.org, Michael Wang <yun.wang@linux.alibaba.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 091/323] x86: Increase exception stack sizes
 Date:   Wed, 24 Nov 2021 12:54:41 +0100
-Message-Id: <20211124115711.604659547@linuxfoundation.org>
+Message-Id: <20211124115722.030562976@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Peter Zijlstra <peterz@infradead.org>
 
-commit 5286132324230168d3fab6ffc16bfd7de85bdfb4 upstream.
+[ Upstream commit 7fae4c24a2b84a66c7be399727aca11e7a888462 ]
 
-USB control-message timeouts are specified in milliseconds and should
-specifically not vary with CONFIG_HZ.
+It turns out that a single page of stack is trivial to overflow with
+all the tracing gunk enabled. Raise the exception stacks to 2 pages,
+which is still half the interrupt stacks, which are at 4 pages.
 
-Fixes: 4db66499df91 ("ath10k: add initial USB support")
-Cc: stable@vger.kernel.org      # 4.14
-Cc: Erik Stromdahl <erik.stromdahl@gmail.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20211025120522.6045-2-johan@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Michael Wang <yun.wang@linux.alibaba.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/YUIO9Ye98S5Eb68w@hirez.programming.kicks-ass.net
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/usb.c |    2 +-
+ arch/x86/include/asm/page_64_types.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/wireless/ath/ath10k/usb.c
-+++ b/drivers/net/wireless/ath/ath10k/usb.c
-@@ -536,7 +536,7 @@ static int ath10k_usb_submit_ctrl_in(str
- 			      req,
- 			      USB_DIR_IN | USB_TYPE_VENDOR |
- 			      USB_RECIP_DEVICE, value, index, buf,
--			      size, 2 * HZ);
-+			      size, 2000);
+diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
+index 0b6352aabbd3d..b16fb3e185134 100644
+--- a/arch/x86/include/asm/page_64_types.h
++++ b/arch/x86/include/asm/page_64_types.h
+@@ -20,7 +20,7 @@
+ #define THREAD_SIZE  (PAGE_SIZE << THREAD_SIZE_ORDER)
+ #define CURRENT_MASK (~(THREAD_SIZE - 1))
  
- 	if (ret < 0) {
- 		ath10k_warn(ar, "Failed to read usb control message: %d\n",
+-#define EXCEPTION_STACK_ORDER (0 + KASAN_STACK_ORDER)
++#define EXCEPTION_STACK_ORDER (1 + KASAN_STACK_ORDER)
+ #define EXCEPTION_STKSZ (PAGE_SIZE << EXCEPTION_STACK_ORDER)
+ 
+ #define DEBUG_STACK_ORDER (EXCEPTION_STACK_ORDER + 1)
+-- 
+2.33.0
+
 
 
