@@ -2,75 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D8645CA7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:00:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9035E45CA49
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349331AbhKXRDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 12:03:11 -0500
-Received: from mga14.intel.com ([192.55.52.115]:36120 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349324AbhKXRDJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 12:03:09 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="235563396"
-X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
-   d="scan'208";a="235563396"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 08:44:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
-   d="scan'208";a="509517917"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 24 Nov 2021 08:44:55 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mpvOB-000540-6o; Wed, 24 Nov 2021 16:44:55 +0000
-Date:   Thu, 25 Nov 2021 00:43:49 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Gerhard Engleder <gerhard@engleder-embedded.com>
-Cc:     kbuild-all@lists.01.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] tsnep: fix platform_no_drv_owner.cocci warnings
-Message-ID: <20211124164349.GA15018@af7a0ea8a35f>
+        id S241774AbhKXQrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:47:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:26993 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237997AbhKXQrO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 11:47:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637772243;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QsMXLEsfUpg3nTh4LVta/33dXBWrEFr08t86tyNbxD8=;
+        b=A76AX7zxVEKnJpDetWPWG8JEy5XR2PQvlnqqogVIejfZLJSVDPcJIKXODQ1ZGhorKyQrKq
+        uloOCQfy70d6x3fmwl39qf1E0TRBhdU1cdtsbYgWXzW0WL0k94MquHG85tWIJif+WVgKca
+        yjEISlBIJ5AGySBqhJSCN5kl9+VP3EA=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-313-Tr-iH80HPB6EdEG0jAjrzA-1; Wed, 24 Nov 2021 11:44:02 -0500
+X-MC-Unique: Tr-iH80HPB6EdEG0jAjrzA-1
+Received: by mail-wm1-f72.google.com with SMTP id j25-20020a05600c1c1900b00332372c252dso1770137wms.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 08:44:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:cc:references:from:organization:subject
+         :in-reply-to:content-transfer-encoding;
+        bh=QsMXLEsfUpg3nTh4LVta/33dXBWrEFr08t86tyNbxD8=;
+        b=LHN7sl5ZzuNMOArpt/4aKcFwFuoXCD6HoGcpViYGbc62Pid/lULD4/VlW/UP3qJgH6
+         MgiaFXKWNBGZBfthpiSXZselEW0Bfh0eiHmFI3P74tN4f+rx3QwBwub9+r7oPzxGsp7U
+         81vL7TtHwsHe9mEiJVpY1G6Cauk31c4nfVGATYLhJm0PD6sktsI2QNTR9ptWBb0in4/7
+         8kmyR+lRdPaw12Hew3fqleMNFbZ2PQ1zXjk12I4xRZdfruxicwWIneMHp3NxyGx9Hgne
+         GdH2fvp582nXKzSBSCDvaN6WCrDFvq6QggvjZ20cUwuRmL5sA+TVT1dPFgJN0ic3WFUR
+         F5GQ==
+X-Gm-Message-State: AOAM533zzxRmzwqQMnuvcNu64nzgWAiWIBtb9C4EfJyb6fOcVRNmx0Nl
+        qnzb9uJBXLjDHXloCXk2ay+5mVqVxxc12+w36b712/h5byvPO9sU6NkBfIw/O0pRpaKZdZyg2X8
+        O9gxejc3lD/upPG6Jo+VMLSVG
+X-Received: by 2002:a7b:cd02:: with SMTP id f2mr16953547wmj.115.1637772241077;
+        Wed, 24 Nov 2021 08:44:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy/aTWG+EhXz/LEDFYbuIzrNXajT2pjFwM6ekqvEq0ltZvjf/SVX2f84TgWFEY087L2XnaMJQ==
+X-Received: by 2002:a7b:cd02:: with SMTP id f2mr16953496wmj.115.1637772240810;
+        Wed, 24 Nov 2021 08:44:00 -0800 (PST)
+Received: from [192.168.3.132] (p5b0c6380.dip0.t-ipconnect.de. [91.12.99.128])
+        by smtp.gmail.com with ESMTPSA id f15sm307434wmg.30.2021.11.24.08.43.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Nov 2021 08:43:59 -0800 (PST)
+Message-ID: <63294e63-cf82-1f59-5ea8-e996662e6393@redhat.com>
+Date:   Wed, 24 Nov 2021 17:43:58 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        Andrew Dona-Couch <andrew@donacou.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Drew DeVault <sir@cmpwn.com>,
+        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+References: <20211123170056.GC5112@ziepe.ca>
+ <dd92a69a-6d09-93a1-4f50-5020f5cc59d0@suse.cz>
+ <20211123235953.GF5112@ziepe.ca>
+ <2adca04f-92e1-5f99-6094-5fac66a22a77@redhat.com>
+ <20211124132353.GG5112@ziepe.ca>
+ <cca0229e-e53e-bceb-e215-327b6401f256@redhat.com>
+ <20211124132842.GH5112@ziepe.ca>
+ <eab5aeba-e064-9f3e-fbc3-f73cd299de83@redhat.com>
+ <20211124134812.GI5112@ziepe.ca>
+ <2cdbebb9-4c57-7839-71ab-166cae168c74@redhat.com>
+ <20211124153405.GJ5112@ziepe.ca>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+In-Reply-To: <20211124153405.GJ5112@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+On 24.11.21 16:34, Jason Gunthorpe wrote:
+> On Wed, Nov 24, 2021 at 03:14:00PM +0100, David Hildenbrand wrote:
+> 
+>> I'm not aware of any where you can fragment 50% of all pageblocks in the
+>> system as an unprivileged user essentially consuming almost no memory
+>> and essentially staying inside well-defined memlock limits. But sure if
+>> there are "many" people will be able to come up with at least one
+>> comparable thing. I'll be happy to learn.
+> 
+> If the concern is that THP's can be DOS'd then any avenue that renders
+> the system out of THPs is a DOS attack vector. Including all the
+> normal workloads that people run and already complain that THPs get
+> exhausted.
+> 
+> A hostile userspace can only quicken this process.
 
-drivers/net/ethernet/engleder/tsnep_main.c:1263:3-8: No need to set .owner here. The core will do it.
+We can not only fragment THP but also easily smaller compound pages,
+with less impact though (well, as long as people want more than 0.1% per
+user ...).
 
- Remove .owner field if calls are used which set it automatically
+We want to make more excessive use of THP; the whole folio work is about
+using THP. Some people are even working on increasing the MAX_ORDER and
+introduce gigantic THP.
 
-Generated by: scripts/coccinelle/api/platform_no_drv_owner.cocci
+And here we are having mechanisms available to unprivileged users to
+just sabotage the very thing at its core extremely easily. Personally, I
+think this is very bad, but that's just my humble opinion.
 
-CC: Gerhard Engleder <gerhard@engleder-embedded.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
+> 
+>> My position that FOLL_LONGTERM for unprivileged users is a strong no-go
+>> stands as it is.
+> 
+> As this basically excludes long standing pre-existing things like
+> RDMA, XDP, io_uring, and more I don't think this can be the general
+> answer for mm, sorry.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-head:   4b74e088fef6ce8cc513f935ce236c38bdf5f67b
-commit: 403f69bbdbadb2e601f725be2d00b4ccc7b61c9d [2745/3376] tsnep: Add TSN endpoint Ethernet MAC driver
-:::::: branch date: 11 hours ago
-:::::: commit date: 2 days ago
+Let's think about options to restrict FOLL_LONGTERM usage:
 
- tsnep_main.c |    1 -
- 1 file changed, 1 deletion(-)
+One option would be to add toggle(s) (e.g., kernel cmdline options) to
+make relevant mechanisms (or even FOLL_LONGTERM itself) privileged. The
+admin can opt in if unprivileged users should have that capability. A
+distro might overwrite the default and set it to "on". I'm not
+completely happy about that.
 
---- a/drivers/net/ethernet/engleder/tsnep_main.c
-+++ b/drivers/net/ethernet/engleder/tsnep_main.c
-@@ -1260,7 +1260,6 @@ MODULE_DEVICE_TABLE(of, tsnep_of_match);
- static struct platform_driver tsnep_driver = {
- 	.driver = {
- 		.name = TSNEP,
--		.owner = THIS_MODULE,
- 		.of_match_table = of_match_ptr(tsnep_of_match),
- 	},
- 	.probe = tsnep_probe,
+Another option would be not accounting FOLL_LONGTERM as RLIMIT_MEMLOCK,
+but instead as something that explicitly matches the differing
+semantics. We could have a limit for privileged and one for unprivileged
+users. The default in the kernel could be 0 but an admin/system can
+overwrite it to opt in and a distro might apply different rules. Yes,
+we're back to the original question about limits, but now with the
+thought that FOLL_LONGTERM really is different than mlock and
+potentially more dangerous.
+
+At the same time, eventually work on proper alternatives with mmu
+notifiers (and possibly without the any such limits) where possible and
+required. (I assume it's hardly possible for RDMA because of the way the
+hardware works)
+
+Just some ideas, open for alternatives. I know that for the cases where
+we want it to "just work" for unprivileged users but cannot even have
+alternative implementations, this is bad.
+
+> 
+> Sure, lets stop now since I don't think we can agree.
+
+Don't get me wrong, I really should be working on other stuff, so I have
+limited brain capacity and time :) OTOH I'm willing to help at least
+discuss alternatives.
+
+
+Let's think about realistic alternatives to keep FOLL_LONGTERM for any
+user working (that would tackle the extreme fragmentation issue at
+least, ignoring e.g., other fragmentation we can trigger with
+FOLL_LONGTERM or ZONE_MOVABLE/MIGRATE_CMA):
+
+The nasty thing really is splitting a compound page and then pinning
+some pages, even if it's pinning the complete compound range. Ideally,
+we'd defer any action to the time we actually FOLL_LONGTERM pin a page.
+
+
+a) I think we cannot migrate pages when splitting the PMD (e.g., unmap,
+MADV_DONTNEED, swap?, page compaction?). User space can just pin the
+compound page to block migration.
+
+b) We might migrate pages when splitting the compound page. In
+split_huge_page_to_list() we know that we have nobody pinning the page.
+I did not check if it's possible. There might be cases where it's not
+immediately clear if it's possible (e.g., inside shrink_page_list())
+
+It would mean that we would migrate pages essentially any time we split
+a compound page because there could be someone FOLL_LONGTERM pinning the
+page later. Usually we'd expect page compaction to fix this up on actual
+demand. I'd call this sub-optimal.
+
+c) We migrate any time someone FOLL_LONGTERM pins a page and the page is
+not pinned yet -- because it might have been a split compound page. I
+think we can agree that that's not an option :)
+
+d) We remember if a page was part of a compound page and was not freed
+yet. If we FOLL_LONGTERM such a page, we migrate it. Unfortunately,
+we're short on pageflags for anon pages I think.
+
+Hm, alternatives?
+
+-- 
+Thanks,
+
+David / dhildenb
+
