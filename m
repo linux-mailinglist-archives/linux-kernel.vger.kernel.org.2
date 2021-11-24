@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B40745C1B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A68A545C36D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:36:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347879AbhKXNVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:21:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37046 "EHLO mail.kernel.org"
+        id S1347381AbhKXNiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:38:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347528AbhKXNSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:18:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54B6A60232;
-        Wed, 24 Nov 2021 12:45:36 +0000 (UTC)
+        id S1345396AbhKXNgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:36:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C502617E1;
+        Wed, 24 Nov 2021 12:54:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757936;
-        bh=9Y2qTSDCtBp3Pm8h+Ki2AtPmZsmxtwYDDqLvqFZ9fxQ=;
+        s=korg; t=1637758500;
+        bh=t6EpUKSDxpBunjZbMHXcFMQfN9THHgB5DkBUhoIiJTw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h7xpYT5t+nf2wlCuWNlqXGru2i4t2Guh42A9ZPnul2gmPODzBkKKZzcRiwUMDKG0e
-         x8q0hSEC4NVgEL1e+6G0acyjkGWlAxo3SAFFEiJZTZJiMUxP/nlkyapgU17EuV3kHL
-         BUnKr0dxNj7dJBW+G61Vw8F8ad9TgkC9dHYTxNyc=
+        b=SWzDqAn69pM3a5OkS1bv/VZXYbq9G1rMUrWe++ww7hmyg7jMsOQhcqcY3Od3EZyLt
+         UlaIRB2ZWa8fgHzoBEZbZxArYnWN7L0iDfD4UhlwiklD+9RUPSZ7MWtTuUjq/uBLeG
+         4762ZhaQ41K/ijKwMxMI+Rz1gqhRXSDW5q6C8VRk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
-        Michal Maloszewski <michal.maloszewski@intel.com>,
-        Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>,
-        Witold Fijalkowski <witoldx.fijalkowski@intel.com>,
-        Jaroslaw Gawin <jaroslawx.gawin@intel.com>,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Tony Brelinski <tony.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        linux-mips@vger.kernel.org, John Crispin <john@phrozen.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 296/323] i40e: Fix NULL ptr dereference on VSI filter sync
+Subject: [PATCH 5.10 090/154] mips: lantiq: add support for clk_get_parent()
 Date:   Wed, 24 Nov 2021 12:58:06 +0100
-Message-Id: <20211124115728.898582248@linuxfoundation.org>
+Message-Id: <20211124115705.222310962@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,66 +46,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Maloszewski <michal.maloszewski@intel.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 37d9e304acd903a445df8208b8a13d707902dea6 ]
+[ Upstream commit fc1aabb088860d6cf9dd03612b7a6f0de91ccac2 ]
 
-Remove the reason of null pointer dereference in sync VSI filters.
-Added new I40E_VSI_RELEASING flag to signalize deleting and releasing
-of VSI resources to sync this thread with sync filters subtask.
-Without this patch it is possible to start update the VSI filter list
-after VSI is removed, that's causing a kernel oops.
+Provide a simple implementation of clk_get_parent() in the
+lantiq subarch so that callers of it will build without errors.
 
-Fixes: 41c445ff0f48 ("i40e: main driver core")
-Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
-Signed-off-by: Michal Maloszewski <michal.maloszewski@intel.com>
-Reviewed-by: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
-Reviewed-by: Witold Fijalkowski <witoldx.fijalkowski@intel.com>
-Reviewed-by: Jaroslaw Gawin <jaroslawx.gawin@intel.com>
-Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Tested-by: Tony Brelinski <tony.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes this build error:
+ERROR: modpost: "clk_get_parent" [drivers/iio/adc/ingenic-adc.ko] undefined!
+
+Fixes: 171bb2f19ed6 ("MIPS: Lantiq: Add initial support for Lantiq SoCs")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Suggested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Cc: linux-mips@vger.kernel.org
+Cc: John Crispin <john@phrozen.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Jonathan Cameron <jic23@kernel.org>
+Cc: linux-iio@vger.kernel.org
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Acked-by: John Crispin <john@phrozen.org>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e.h      | 1 +
- drivers/net/ethernet/intel/i40e/i40e_main.c | 5 +++--
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ arch/mips/lantiq/clk.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e.h b/drivers/net/ethernet/intel/i40e/i40e.h
-index 3c921dfc20564..519b595944235 100644
---- a/drivers/net/ethernet/intel/i40e/i40e.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e.h
-@@ -166,6 +166,7 @@ enum i40e_vsi_state_t {
- 	__I40E_VSI_OVERFLOW_PROMISC,
- 	__I40E_VSI_REINIT_REQUESTED,
- 	__I40E_VSI_DOWN_REQUESTED,
-+	__I40E_VSI_RELEASING,
- 	/* This must be last as it determines the size of the BITMAP */
- 	__I40E_VSI_STATE_SIZE__,
- };
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 062b942517822..d948ca6368422 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -2584,7 +2584,8 @@ static void i40e_sync_filters_subtask(struct i40e_pf *pf)
+diff --git a/arch/mips/lantiq/clk.c b/arch/mips/lantiq/clk.c
+index dd819e31fcbbf..4916cccf378fd 100644
+--- a/arch/mips/lantiq/clk.c
++++ b/arch/mips/lantiq/clk.c
+@@ -158,6 +158,12 @@ void clk_deactivate(struct clk *clk)
+ }
+ EXPORT_SYMBOL(clk_deactivate);
  
- 	for (v = 0; v < pf->num_alloc_vsi; v++) {
- 		if (pf->vsi[v] &&
--		    (pf->vsi[v]->flags & I40E_VSI_FLAG_FILTER_CHANGED)) {
-+		    (pf->vsi[v]->flags & I40E_VSI_FLAG_FILTER_CHANGED) &&
-+		    !test_bit(__I40E_VSI_RELEASING, pf->vsi[v]->state)) {
- 			int ret = i40e_sync_vsi_filters(pf->vsi[v]);
- 
- 			if (ret) {
-@@ -12444,7 +12445,7 @@ int i40e_vsi_release(struct i40e_vsi *vsi)
- 		dev_info(&pf->pdev->dev, "Can't remove PF VSI\n");
- 		return -ENODEV;
- 	}
--
-+	set_bit(__I40E_VSI_RELEASING, vsi->state);
- 	uplink_seid = vsi->uplink_seid;
- 	if (vsi->type != I40E_VSI_SRIOV) {
- 		if (vsi->netdev_registered) {
++struct clk *clk_get_parent(struct clk *clk)
++{
++	return NULL;
++}
++EXPORT_SYMBOL(clk_get_parent);
++
+ static inline u32 get_counter_resolution(void)
+ {
+ 	u32 res;
 -- 
 2.33.0
 
