@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E41A45C2AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE39845C115
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349566AbhKXNbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:31:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56068 "EHLO mail.kernel.org"
+        id S244120AbhKXNOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:14:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350894AbhKXN2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:28:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 357AD611B0;
-        Wed, 24 Nov 2021 12:51:22 +0000 (UTC)
+        id S1347887AbhKXNMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:12:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C81F861A89;
+        Wed, 24 Nov 2021 12:42:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758283;
-        bh=Z4G+ZhGmP7OM7oOG9aCWHtemOEHn3LNDlcSvS0gfkBw=;
+        s=korg; t=1637757735;
+        bh=DDlsLqg8+tfUhd2h9Ae05lprsiz6+HYoDCa7z0KovnA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CnRtlb2dBQmy6MoaoipvWtHVlr2d2CbsnFLg7YRDl+sAmPDNwloK+lL3S1tUb5/cJ
-         S6mxVmsmNnHblxRvsAyjTC7VWLJt7jmmEcSVSVPrm3RdveCa6QsTFOILwA6aMZ+4WY
-         OYRrtshWJAZi1SfqZA4XF2nM90DhMKVaDpKQ6wEw=
+        b=NRayowcOdzptb1LbeaLp+Pt1Q36X/zsJQjehRpSRaT/8A3Fno/BFY5/P4yIBOtcHl
+         KLa6ugYTywrSnT93H4vYxctidouF7pjkVCi2/xC0jmDoFAsUkgg0pvSRmiLJ+xBp92
+         v3vGMhyZ5F1OhbHU4vaAG4YKRpASLlIQC2/lPA+4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 019/154] arm64: dts: qcom: msm8998: Fix CPU/L2 idle state latency and residency
-Date:   Wed, 24 Nov 2021 12:56:55 +0100
-Message-Id: <20211124115702.994423081@linuxfoundation.org>
+Subject: [PATCH 4.19 226/323] zram: off by one in read_block_state()
+Date:   Wed, 24 Nov 2021 12:56:56 +0100
+Message-Id: <20211124115726.554164015@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,92 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 3f1dcaff642e75c1d2ad03f783fa8a3b1f56dd50 ]
+[ Upstream commit a88e03cf3d190cf46bc4063a9b7efe87590de5f4 ]
 
-The entry/exit latency and minimum residency in state for the idle
-states of MSM8998 were ..bad: first of all, for all of them the
-timings were written for CPU sleep but the min-residency-us param
-was miscalculated (supposedly, while porting this from downstream);
-Then, the power collapse states are setting PC on both the CPU
-cluster *and* the L2 cache, which have different timings: in the
-specific case of L2 the times are higher so these ones should be
-taken into account instead of the CPU ones.
+snprintf() returns the number of bytes it would have printed if there
+were space.  But it does not count the NUL terminator.  So that means
+that if "count == copied" then this has already overflowed by one
+character.
 
-This parameter misconfiguration was not giving particular issues
-because on MSM8998 there was no CPU scaling at all, so cluster/L2
-power collapse was rarely (if ever) hit.
-When CPU scaling is enabled, though, the wrong timings will produce
-SoC unstability shown to the user as random, apparently error-less,
-sudden reboots and/or lockups.
+This bug likely isn't super harmful in real life.
 
-This set of parameters are stabilizing the SoC when CPU scaling is
-ON and when power collapse is frequently hit.
-
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20210901183123.1087392-3-angelogioacchino.delregno@somainline.org
+Link: https://lkml.kernel.org/r/20210916130404.GA25094@kili
+Fixes: c0265342bff4 ("zram: introduce zram memory tracking")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/msm8998.dtsi | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ drivers/block/zram/zram_drv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8998.dtsi b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-index c45870600909f..9e04ac3f596d0 100644
---- a/arch/arm64/boot/dts/qcom/msm8998.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-@@ -300,38 +300,42 @@
- 			LITTLE_CPU_SLEEP_0: cpu-sleep-0-0 {
- 				compatible = "arm,idle-state";
- 				idle-state-name = "little-retention";
-+				/* CPU Retention (C2D), L2 Active */
- 				arm,psci-suspend-param = <0x00000002>;
- 				entry-latency-us = <81>;
- 				exit-latency-us = <86>;
--				min-residency-us = <200>;
-+				min-residency-us = <504>;
- 			};
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index 104206a795015..5e05bfcecd7b7 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -699,7 +699,7 @@ static ssize_t read_block_state(struct file *file, char __user *buf,
+ 			zram_test_flag(zram, index, ZRAM_WB) ? 'w' : '.',
+ 			zram_test_flag(zram, index, ZRAM_HUGE) ? 'h' : '.');
  
- 			LITTLE_CPU_SLEEP_1: cpu-sleep-0-1 {
- 				compatible = "arm,idle-state";
- 				idle-state-name = "little-power-collapse";
-+				/* CPU + L2 Power Collapse (C3, D4) */
- 				arm,psci-suspend-param = <0x40000003>;
--				entry-latency-us = <273>;
--				exit-latency-us = <612>;
--				min-residency-us = <1000>;
-+				entry-latency-us = <814>;
-+				exit-latency-us = <4562>;
-+				min-residency-us = <9183>;
- 				local-timer-stop;
- 			};
- 
- 			BIG_CPU_SLEEP_0: cpu-sleep-1-0 {
- 				compatible = "arm,idle-state";
- 				idle-state-name = "big-retention";
-+				/* CPU Retention (C2D), L2 Active */
- 				arm,psci-suspend-param = <0x00000002>;
- 				entry-latency-us = <79>;
- 				exit-latency-us = <82>;
--				min-residency-us = <200>;
-+				min-residency-us = <1302>;
- 			};
- 
- 			BIG_CPU_SLEEP_1: cpu-sleep-1-1 {
- 				compatible = "arm,idle-state";
- 				idle-state-name = "big-power-collapse";
-+				/* CPU + L2 Power Collapse (C3, D4) */
- 				arm,psci-suspend-param = <0x40000003>;
--				entry-latency-us = <336>;
--				exit-latency-us = <525>;
--				min-residency-us = <1000>;
-+				entry-latency-us = <724>;
-+				exit-latency-us = <2027>;
-+				min-residency-us = <9419>;
- 				local-timer-stop;
- 			};
- 		};
+-		if (count < copied) {
++		if (count <= copied) {
+ 			zram_slot_unlock(zram, index);
+ 			break;
+ 		}
 -- 
 2.33.0
 
