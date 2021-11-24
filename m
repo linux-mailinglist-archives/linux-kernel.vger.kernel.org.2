@@ -2,87 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B6445CC23
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:33:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3875145CC27
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:35:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350588AbhKXSgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 13:36:37 -0500
-Received: from foss.arm.com ([217.140.110.172]:41936 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242504AbhKXSge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 13:36:34 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8DDB1FB;
-        Wed, 24 Nov 2021 10:33:21 -0800 (PST)
-Received: from [10.57.56.56] (unknown [10.57.56.56])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 79AE13F66F;
-        Wed, 24 Nov 2021 10:33:20 -0800 (PST)
-Message-ID: <4bce6339-095f-a7cb-fb7c-436b8ece9588@arm.com>
-Date:   Wed, 24 Nov 2021 18:33:15 +0000
+        id S244440AbhKXSiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 13:38:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242504AbhKXSiL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 13:38:11 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4DEC061574;
+        Wed, 24 Nov 2021 10:35:01 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id a23-20020a9d4717000000b0056c15d6d0caso5638528otf.12;
+        Wed, 24 Nov 2021 10:35:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oH9617U/I6DUrRnDR7qed36ELwMrT7li0leYhJzrg/Q=;
+        b=OMApE8FVHQTEHQAlJlWDdzx0Hkuhoy8ec9F6qIx8r+SrqRiCwLxpfi9lj+aIUZvmvh
+         Kpqn0fYhcAwYDHoCaVqpUe0lw5GtPbJGNwqH+1jt82etMsOVUDhZO12orREQGQWRbIph
+         ctoZ/DcnSuSoUdlxm5Zp5K/gmzyjOph3nJDcryFI/stliQRn6/8RA90XJ0mXwv/WgAoC
+         X0OHQFxkL2TGLvPTo2ou+hyEpOxV4OGcx8nT0i9i0JrAX+Ck42w7VzYYhIbmLd5+tYGq
+         gR127Jp7DVtKhE+t1kW4/fJCU5V/MK6DlC44PWkVOHNGM4MvgO3Qlrgcac+5NrK5BxRx
+         fTIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oH9617U/I6DUrRnDR7qed36ELwMrT7li0leYhJzrg/Q=;
+        b=1tr1qZgJVecgNtULcVHI6EEazlVjKJEGQACQf/6v7+57HtrYuOgJ8hon/LdI8Xx/OE
+         LZpwiYSEIOOQ2b1Gy8po3n3PbvNPcumX+u/A/wx11HQSYywRyXSfBVbmUeEt28b8aaMe
+         zQ/mE6RBdwYu0ong1pJKTyK/h/xJyVZCP9qCKfEFiZEe0vYFvFy3gQdT5WVloL+igaZL
+         AG+uDMGfcKXI+h7ifgS0RHLbtX9fpfVQbBXYgmVWQ7cegK/oEF/EomOSWhk0LP9gGTC+
+         ps9L+NXROlI6qgrVsfLuDM1E2lvHsjqYCv3NzLaOOd86QiHptzvsB+udwItW6/S8m/DD
+         EvfQ==
+X-Gm-Message-State: AOAM531twmssBxyPD7sZun9pnsG8if4v6f5OJeg8EZksUEhGgNyUoy5p
+        sfUr6WgBkFyXv0XEDPoIO54zfdFdlr6DzaINoBY=
+X-Google-Smtp-Source: ABdhPJxWqBKi3hO9YjvGnIaDU9k+d5+vybcoHZCPY7s6hCAFNZPj4lQgQtQ/b3shnR02c+nj7oV9jkFcKq/YeXCZgXU=
+X-Received: by 2002:a9d:63d2:: with SMTP id e18mr15490894otl.28.1637778901019;
+ Wed, 24 Nov 2021 10:35:01 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH 0/9] iommu: Refactor flush queues into iommu-dma
-Content-Language: en-GB
-To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
-        will@kernel.org
-Cc:     iommu@lists.linux-foundation.org, suravee.suthikulpanit@amd.com,
-        baolu.lu@linux.intel.com, willy@infradead.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1637671820.git.robin.murphy@arm.com>
- <7f7daf42-8aff-b9ed-0f48-d4158896012e@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <7f7daf42-8aff-b9ed-0f48-d4158896012e@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20211124115702.361983534@linuxfoundation.org> <20211124115706.507376250@linuxfoundation.org>
+ <619E4ABA.DC78AA58@users.sourceforge.net> <YZ5ayhuOMZwkd9j6@kroah.com>
+ <20211124173310.GA12039@mail.hallyn.com> <YZ6BR09OXP8x7lRs@kroah.com>
+In-Reply-To: <YZ6BR09OXP8x7lRs@kroah.com>
+From:   =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+Date:   Wed, 24 Nov 2021 19:34:50 +0100
+Message-ID: <CAJ2a_DejJibTyiiA-+A1WbhcyYD17-h+9FuXL5=sCHEs9Qv+BA@mail.gmail.com>
+Subject: Re: [PATCH 5.10 130/154] block: Check ADMIN before NICE for IOPRIO_CLASS_RT
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
+        Jari Ruusu <jariruusu@users.sourceforge.net>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Alistair Delva <adelva@google.com>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Jens Axboe <axboe@kernel.dk>, Paul Moore <paul@paul-moore.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        linux-security-module@vger.kernel.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-24 17:21, John Garry wrote:
-> On 23/11/2021 14:10, Robin Murphy wrote:
->> As promised, this series cleans up the flush queue code and streamlines
->> it directly into iommu-dma. Since we no longer have per-driver DMA ops
->> implementations, a lot of the abstraction is now no longer necessary, so
->> there's a nice degree of simplification in the process. Un-abstracting
->> the queued page freeing mechanism is also the perfect opportunity to
->> revise which struct page fields we use so we can be better-behaved
->> from the MM point of view, thanks to Matthew.
->>
->> These changes should also make it viable to start using the gather
->> freelist in io-pgtable-arm, and eliminate some more synchronous
->> invalidations from the normal flow there, but that is proving to need a
->> bit more careful thought than I have time for in this cycle, so I've
->> parked that again for now and will revisit it in the new year.
->>
->> For convenience, branch at:
->>    https://gitlab.arm.com/linux-arm/linux-rm/-/tree/iommu/iova
->>
->> I've build-tested for x86_64, and boot-tested arm64 to the point of
->> confirming that put_pages_list() gets passed a valid empty list when
->> flushing, while everything else still works.
-> My interest is in patches 2, 3, 7, 8, 9, and they look ok. I did a bit 
-> of testing for strict and non-strict mode on my arm64 system and no 
-> problems.
-> 
-> Apart from this, I noticed that one possible optimization could be to 
-> avoid so many reads of fq_flush_finish_cnt, as we seem to have a pattern 
-> of fq_flush_iotlb()->atomic64_inc(fq_flush_finish_cnt) followed by a 
-> read of fq_flush_finish_cnt in fq_ring_free(), so we could use 
-> atomic64_inc_return(fq_flush_finish_cnt) and reuse the value. I think 
-> that any racing in fq_flush_finish_cnt accesses are latent, but maybe 
-> there is a flaw in this. However I tried something along these lines and 
-> got a 2.4% throughput gain for my storage scenario.
+On Wed, 24 Nov 2021 at 19:16, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Nov 24, 2021 at 11:33:11AM -0600, Serge E. Hallyn wrote:
+> > On Wed, Nov 24, 2021 at 04:31:22PM +0100, Greg Kroah-Hartman wrote:
+> > > On Wed, Nov 24, 2021 at 04:22:50PM +0200, Jari Ruusu wrote:
+> > > > Greg Kroah-Hartman wrote:
+> > > > > From: Alistair Delva <adelva@google.com>
+> > > > >
+> > > > > commit 94c4b4fd25e6c3763941bdec3ad54f2204afa992 upstream.
+> > > >  [SNIP]
+> > > > > --- a/block/ioprio.c
+> > > > > +++ b/block/ioprio.c
+> > > > > @@ -69,7 +69,14 @@ int ioprio_check_cap(int ioprio)
+> > > > >
+> > > > >         switch (class) {
+> > > > >                 case IOPRIO_CLASS_RT:
+> > > > > -                       if (!capable(CAP_SYS_NICE) && !capable(CAP_SYS_ADMIN))
+> > > > > +                       /*
+> > > > > +                        * Originally this only checked for CAP_SYS_ADMIN,
+> > > > > +                        * which was implicitly allowed for pid 0 by security
+> > > > > +                        * modules such as SELinux. Make sure we check
+> > > > > +                        * CAP_SYS_ADMIN first to avoid a denial/avc for
+> > > > > +                        * possibly missing CAP_SYS_NICE permission.
+> > > > > +                        */
+> > > > > +                       if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_NICE))
+> > > > >                                 return -EPERM;
+> > > > >                         fallthrough;
+> > > > >                         /* rt has prio field too */
+> > > >
+> > > > What exactly is above patch trying to fix?
+> > > > It does not change control flow at all, and added comment is misleading.
+> > >
+> > > See the thread on the mailing list for what it does and why it is
+> > > needed.
+> > >
+> > > It does change the result when selinux is enabled.
+> > >
+> > > thanks,
+> > >
+> > > greg k-h
+> >
+> > The case where we create a newer more fine grained capability which is a
+> > sub-cap of a broader capability like CAP_SYS_ADMIN is analogous.  See
+> > check_syslog_permissions() for instance.
+> >
+> > So I think a helper like
+> >
+> > int capable_either_or(int cap1, int cap2) {
+> >       if (has_capability_noaudit(current, cap1))
+> >               return 0;
+> >       return capable(cap2);
+> > }
+> >
+> > might be worthwhile.
+>
 
-Yes, that sounds reasonable - off-hand I can't see that there's any more 
-potential for harmful races either. All that jumps out is the case where 
-the flush count gets bumped via queue_iova() while another CPU is 
-already running fq_flush_timeout(), where freeing newer IOVAs added 
-since the timeout is then more likely to be left to the local CPU, or 
-postponed until the next flush cycle entirely, rather than being piled 
-on to the guy already processing the for_each_possible_cpu() loop. And I 
-can't help thinking that could only be a *good* thing, given how the FQ 
-timeout seems to be a smoking gun in your "performance never recovers 
-after falling off the cliff" scenario :)
+I proposed an early prototype at
+https://patchwork.kernel.org/project/selinux/patch/20211116112437.43412-1-cgzones@googlemail.com/
 
-Robin.
+> Sure, feel free to work on that and submit it, but for now, this change
+> is needed.
+>
+
+I would argue this change is not necessary since the actual syscall
+still succeeds as this is only an informative avc denial message about
+a failed capability check. But this ship has sailed...
+
+> thanks,
+>
+> greg k-h
