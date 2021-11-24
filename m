@@ -2,254 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A4AE45C6E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:12:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C96445C72A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:22:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346608AbhKXOPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:15:19 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:27292 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355371AbhKXOMi (ORCPT
+        id S1347728AbhKXOZi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Nov 2021 09:25:38 -0500
+Received: from mout.kundenserver.de ([212.227.126.187]:55061 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346564AbhKXOYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:12:38 -0500
-Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HzjYb1m3vzbj4c;
-        Wed, 24 Nov 2021 22:09:23 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 24 Nov 2021 22:09:25 +0800
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 24 Nov 2021 22:09:24 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-s390@vger.kernel.org>,
-        <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Alexander Potapenko <glider@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Yongqiang Liu <liuyongqiang13@huawei.com>
-Subject: [PATCH v3] mm: Defer kmemleak object creation of module_alloc()
-Date:   Wed, 24 Nov 2021 22:20:34 +0800
-Message-ID: <20211124142034.192078-1-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 24 Nov 2021 09:24:41 -0500
+Received: from mail-wm1-f45.google.com ([209.85.128.45]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MEFnR-1mxu1d0rYL-00AIDS; Wed, 24 Nov 2021 15:21:28 +0100
+Received: by mail-wm1-f45.google.com with SMTP id 137so2555739wma.1;
+        Wed, 24 Nov 2021 06:21:28 -0800 (PST)
+X-Gm-Message-State: AOAM532HPUYI+Y9LXerhEb8ly3RReBUGfZOBiA36bhTX8hrqZ+oI25ui
+        gi1cn5UmAgupZvLshRoLR2IawF1JmtxKeMPKyUY=
+X-Google-Smtp-Source: ABdhPJwfARw5AU5sor77+MXjzxSnoyBb9wgq+wSCMXvtLeO5ULwcoEFbNRkWfs0ykSeaGotWVkfw4rYUdsGIIWXBoOI=
+X-Received: by 2002:a7b:c007:: with SMTP id c7mr15627412wmb.82.1637763687770;
+ Wed, 24 Nov 2021 06:21:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+References: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
+ <41206fc7-f8ce-98aa-3718-ba3e1431e320@landley.net> <CAK8P3a3pQW59NVF=5P+ZiBjNJmnWh+iTZUHvqHBrXkHA6pMd4g@mail.gmail.com>
+ <4dd8a108-013f-8d68-b5d5-138d3cf3bff0@collabora.com>
+In-Reply-To: <4dd8a108-013f-8d68-b5d5-138d3cf3bff0@collabora.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 24 Nov 2021 15:21:11 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2FHrrcDZfynjG7BdJVd2wxrWMOMO7dO4wjb1h8_jkRtQ@mail.gmail.com>
+Message-ID: <CAK8P3a2FHrrcDZfynjG7BdJVd2wxrWMOMO7dO4wjb1h8_jkRtQ@mail.gmail.com>
+Subject: Re: spinlock.c:306:9: error: implicit declaration of function '__raw_write_lock_nested'
+To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Rob Landley <rob@landley.net>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Galbraith <umgwanakikbuti@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:apu1n+cG21Acftl9W7C1wczoo01v5na1HtOsEQ90Zmb+wTNObbI
+ hg4nnJIE5hz2d0ZG0OidJA6YhazP8RHnG8jh4T0n3UspE0I4B/aEr2N6DYI+ndWj8WVPtT4
+ c8T9XZP5P2zW3C7G9La0YbHCc3N85R3q5aJ4fxjuzdsOEr7ZgNiQ4an3l2uWLqc4TnvuQhp
+ 1unTwdPIFARPGXMUkS7gw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:HqizVAJPfQs=:NoRaSDD/hfk+YfS4PLaYFg
+ 9DEhZw3y4UbAtwXHjil1KtcsV8krGQfztDDIOGuPyLZ1W4qAJCs9LcTa0GOFydAuPTyUNwKZy
+ PDHLBW9gqlgey0iaNCMCNavBMlf3qNQsZaS4HL4dheBqrL9jDeYyuWRQEjILf2syfCBFEyVtj
+ TG9BWugBYcztCRcTqeqOWR9s9SBWXEHHIKYzRDukHyJeU9Krp8Iv8HKLl4Wf7XT0eMJTL4lQC
+ KD6xDNA9P5Xq6vfz17I9SsgLtOAjOGeBVNDGuSAtR3ltw1+i+MPw2YLfvkI3i9QWMrbdJLR7i
+ V6veXy1QqH0n4Lo95/Vub2cwsN01cXpC7Vd+8Vqi9BI9IeyIJu+3a2+vlHxFx2vKHY9yE/DXD
+ Uh0pAo8YoNO6zAxg6c+SKlCJR6rRhkjJtfbGpfKlgXSfZSUBKIVS6o59q6V9Oi2zlt/wB3us1
+ ekgZ7ppm03EHkKMiihs9whikHDLzD5K6KYqJcIgiqQYyL9MJM0z+n75791CFoJsx9DMuJJSoL
+ wB91cWi5ma9xzt2uSTZxu8RalXLKDjeCQoVxP2eutv6fBzwY28yyAxIJQTa4vqwpghJHLzxog
+ 3DzLibSF+YFq0rXvRbI0cGz6ZT7YF6w8yWvZ6RyYbAkTdCD4ys5GF7ezHH/W7MrMlvcjyGzT8
+ Ike8Q/N0glOwTcolksHWMGlPBooXbVEDMEtB5a4z/dniO+1z0cKI03DuDea05F+YKArA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yongqiang reports a kmemleak panic when module insmod/rmmod
-with KASAN enabled(without KASAN_VMALLOC) on x86[1].
+On Wed, Nov 24, 2021 at 2:15 PM André Almeida <andrealmeid@collabora.com> wrote:
+> Às 04:49 de 24/11/21, Arnd Bergmann escreveu:
+> > On Wed, Nov 24, 2021 at 8:31 AM Rob Landley <rob@landley.net> wrote:
+> >> On 11/23/21 5:38 AM, Naresh Kamboju wrote:
+> >> @@ -451,3 +451,4 @@
+> >>  446    common  landlock_restrict_self          sys_landlock_restrict_self
+> >>  # 447 reserved for memfd_secret
+> >>  448    common  process_mrelease                sys_process_mrelease
+> >> +449    common  futex_waitv                     sys_futex_waitv
+> >
+> > I don't know what's going on with this one, I don't actually see
+> > a reason why it isn't already wired up on all architectures. If we add
+> > this, it should probably be done for all architectures at once as a
+> > bugfix, but it's possible that this is intentionally only used on
+> > x86 and arm.
+> >
+> > André, can you comment on this?
+> >
+> I've added entries for the archs that I've actually tested, but there
+> should not be any arch-specific problems in futex_waitv. I'll submit a
+> patch to wire it up for the remaining architectures.
 
-When the module area allocates memory, it's kmemleak_object
-is created successfully, but the KASAN shadow memory of module
-allocation is not ready, so when kmemleak scan the module's
-pointer, it will panic due to no shadow memory with KASAN check.
+Ok, thank you.
 
-module_alloc
-  __vmalloc_node_range
-    kmemleak_vmalloc
-				kmemleak_scan
-				  update_checksum
-  kasan_module_alloc
-    kmemleak_ignore
-
-Note, there is no problem if KASAN_VMALLOC enabled, the modules
-area entire shadow memory is preallocated. Thus, the bug only
-exits on ARCH which supports dynamic allocation of module area
-per module load, for now, only x86/arm64/s390 are involved.
-
-Add a VM_DEFER_KMEMLEAK flags, defer vmalloc'ed object register
-of kmemleak in module_alloc() to fix this issue.
-
-[1] https://lore.kernel.org/all/6d41e2b9-4692-5ec4-b1cd-cbe29ae89739@huawei.com/
-Reported-by: Yongqiang Liu <liuyongqiang13@huawei.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
-v3:
-- update changelog to add more explanation
-- use DEFER instead of DELAY sugguested by Catalin.
-v2:
-- fix type error on changelog and kasan_module_alloc()
-
- arch/arm64/kernel/module.c | 4 ++--
- arch/s390/kernel/module.c  | 5 +++--
- arch/x86/kernel/module.c   | 7 ++++---
- include/linux/kasan.h      | 4 ++--
- include/linux/vmalloc.h    | 7 +++++++
- mm/kasan/shadow.c          | 9 +++++++--
- mm/vmalloc.c               | 3 ++-
- 7 files changed, 27 insertions(+), 12 deletions(-)
-
-diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
-index b5ec010c481f..309a27553c87 100644
---- a/arch/arm64/kernel/module.c
-+++ b/arch/arm64/kernel/module.c
-@@ -36,7 +36,7 @@ void *module_alloc(unsigned long size)
- 		module_alloc_end = MODULES_END;
- 
- 	p = __vmalloc_node_range(size, MODULE_ALIGN, module_alloc_base,
--				module_alloc_end, gfp_mask, PAGE_KERNEL, 0,
-+				module_alloc_end, gfp_mask, PAGE_KERNEL, VM_DEFER_KMEMLEAK,
- 				NUMA_NO_NODE, __builtin_return_address(0));
- 
- 	if (!p && IS_ENABLED(CONFIG_ARM64_MODULE_PLTS) &&
-@@ -58,7 +58,7 @@ void *module_alloc(unsigned long size)
- 				PAGE_KERNEL, 0, NUMA_NO_NODE,
- 				__builtin_return_address(0));
- 
--	if (p && (kasan_module_alloc(p, size) < 0)) {
-+	if (p && (kasan_module_alloc(p, size, gfp_mask) < 0)) {
- 		vfree(p);
- 		return NULL;
- 	}
-diff --git a/arch/s390/kernel/module.c b/arch/s390/kernel/module.c
-index b01ba460b7ca..d52d85367bf7 100644
---- a/arch/s390/kernel/module.c
-+++ b/arch/s390/kernel/module.c
-@@ -37,14 +37,15 @@
- 
- void *module_alloc(unsigned long size)
- {
-+	gfp_t gfp_mask = GFP_KERNEL;
- 	void *p;
- 
- 	if (PAGE_ALIGN(size) > MODULES_LEN)
- 		return NULL;
- 	p = __vmalloc_node_range(size, MODULE_ALIGN, MODULES_VADDR, MODULES_END,
--				 GFP_KERNEL, PAGE_KERNEL_EXEC, 0, NUMA_NO_NODE,
-+				 gfp_mask, PAGE_KERNEL_EXEC, VM_DEFER_KMEMLEAK, NUMA_NO_NODE,
- 				 __builtin_return_address(0));
--	if (p && (kasan_module_alloc(p, size) < 0)) {
-+	if (p && (kasan_module_alloc(p, size, gfp_mask) < 0)) {
- 		vfree(p);
- 		return NULL;
- 	}
-diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
-index 169fb6f4cd2e..95fa745e310a 100644
---- a/arch/x86/kernel/module.c
-+++ b/arch/x86/kernel/module.c
-@@ -67,6 +67,7 @@ static unsigned long int get_module_load_offset(void)
- 
- void *module_alloc(unsigned long size)
- {
-+	gfp_t gfp_mask = GFP_KERNEL;
- 	void *p;
- 
- 	if (PAGE_ALIGN(size) > MODULES_LEN)
-@@ -74,10 +75,10 @@ void *module_alloc(unsigned long size)
- 
- 	p = __vmalloc_node_range(size, MODULE_ALIGN,
- 				    MODULES_VADDR + get_module_load_offset(),
--				    MODULES_END, GFP_KERNEL,
--				    PAGE_KERNEL, 0, NUMA_NO_NODE,
-+				    MODULES_END, gfp_mask,
-+				    PAGE_KERNEL, VM_DEFER_KMEMLEAK, NUMA_NO_NODE,
- 				    __builtin_return_address(0));
--	if (p && (kasan_module_alloc(p, size) < 0)) {
-+	if (p && (kasan_module_alloc(p, size, gfp_mask) < 0)) {
- 		vfree(p);
- 		return NULL;
- 	}
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index d8783b682669..89c99e5e67de 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -474,12 +474,12 @@ static inline void kasan_populate_early_vm_area_shadow(void *start,
-  * allocations with real shadow memory. With KASAN vmalloc, the special
-  * case is unnecessary, as the work is handled in the generic case.
-  */
--int kasan_module_alloc(void *addr, size_t size);
-+int kasan_module_alloc(void *addr, size_t size, gfp_t gfp_mask);
- void kasan_free_shadow(const struct vm_struct *vm);
- 
- #else /* (CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS) && !CONFIG_KASAN_VMALLOC */
- 
--static inline int kasan_module_alloc(void *addr, size_t size) { return 0; }
-+static inline int kasan_module_alloc(void *addr, size_t size, gfp_t gfp_mask) { return 0; }
- static inline void kasan_free_shadow(const struct vm_struct *vm) {}
- 
- #endif /* (CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS) && !CONFIG_KASAN_VMALLOC */
-diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-index 6e022cc712e6..506fc6e6a126 100644
---- a/include/linux/vmalloc.h
-+++ b/include/linux/vmalloc.h
-@@ -28,6 +28,13 @@ struct notifier_block;		/* in notifier.h */
- #define VM_MAP_PUT_PAGES	0x00000200	/* put pages and free array in vfree */
- #define VM_NO_HUGE_VMAP		0x00000400	/* force PAGE_SIZE pte mapping */
- 
-+#if defined(CONFIG_KASAN) && (defined(CONFIG_KASAN_GENERIC) || \
-+	defined(CONFIG_KASAN_SW_TAGS)) && !defined(CONFIG_KASAN_VMALLOC)
-+#define VM_DEFER_KMEMLEAK	0x00000800	/* defer kmemleak object creation */
-+#else
-+#define VM_DEFER_KMEMLEAK	0
-+#endif
-+
- /*
-  * VM_KASAN is used slightly differently depending on CONFIG_KASAN_VMALLOC.
-  *
-diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-index 4a4929b29a23..2ade2f484562 100644
---- a/mm/kasan/shadow.c
-+++ b/mm/kasan/shadow.c
-@@ -498,7 +498,7 @@ void kasan_release_vmalloc(unsigned long start, unsigned long end,
- 
- #else /* CONFIG_KASAN_VMALLOC */
- 
--int kasan_module_alloc(void *addr, size_t size)
-+int kasan_module_alloc(void *addr, size_t size, gfp_t gfp_mask)
- {
- 	void *ret;
- 	size_t scaled_size;
-@@ -520,9 +520,14 @@ int kasan_module_alloc(void *addr, size_t size)
- 			__builtin_return_address(0));
- 
- 	if (ret) {
-+		struct vm_struct *vm = find_vm_area(addr);
- 		__memset(ret, KASAN_SHADOW_INIT, shadow_size);
--		find_vm_area(addr)->flags |= VM_KASAN;
-+		vm->flags |= VM_KASAN;
- 		kmemleak_ignore(ret);
-+
-+		if (vm->flags & VM_DELAY_KMEMLEAK)
-+			kmemleak_vmalloc(vm, size, gfp_mask);
-+
- 		return 0;
- 	}
- 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index d2a00ad4e1dd..bf3c2fe8f528 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -3074,7 +3074,8 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
- 	clear_vm_uninitialized_flag(area);
- 
- 	size = PAGE_ALIGN(size);
--	kmemleak_vmalloc(area, size, gfp_mask);
-+	if (!(vm_flags & VM_DEFER_KMEMLEAK))
-+		kmemleak_vmalloc(area, size, gfp_mask);
- 
- 	return addr;
- 
--- 
-2.26.2
-
+       Arnd
