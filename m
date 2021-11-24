@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A154645BBB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:19:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7EF45BDE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:39:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243225AbhKXMWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:22:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42356 "EHLO mail.kernel.org"
+        id S1344121AbhKXMly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:41:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242714AbhKXMRC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:17:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21A0A60C51;
-        Wed, 24 Nov 2021 12:10:44 +0000 (UTC)
+        id S1344771AbhKXMil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:38:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 777ED61155;
+        Wed, 24 Nov 2021 12:23:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755845;
-        bh=E6xC2TBxTIvXTshqm9Z5PDEHQ7VUiWZQdGWelHONzpE=;
+        s=korg; t=1637756599;
+        bh=netcS75ldyVIanYOvYaWF3dtbGO6JHNF3fnCAkw79xc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yO0RV8R58+/zttCkd/ss9uLFC15KkBJiyeK5TGJlzPAyOUx/mNLsLZUZ7PTg5r8/9
-         thj8/OyWTItrJxiIIXdxiyAA6LsfLAqaHgGBf/IyYP7g7h0HFN15WA8psfwhBNwfUS
-         w+rmj7IW+cS2jrLxmqLSYOt6BbfqdeL5mpMGJIRA=
+        b=DqhgnXdNGJoLniIq8uDW90n4edylbLjo0updPMuTh1ab026jYQrRYsIvT0kk0Cs4q
+         bixHEMrupFBg2MmUe9MJ6wZqgznszg8T8G2gtm4H5lWD20L+OmTnbJVFe7SntO9jye
+         gVlyIjiYN367BxAESq+3vRWOgFFhZqHgiKa52CN8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Houlong Wei <houlong.wei@mediatek.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 079/207] mwl8k: Fix use-after-free in mwl8k_fw_state_machine()
+Subject: [PATCH 4.14 108/251] media: mtk-vpu: Fix a resource leak in the error handling path of mtk_vpu_probe()
 Date:   Wed, 24 Nov 2021 12:55:50 +0100
-Message-Id: <20211124115706.462837949@linuxfoundation.org>
+Message-Id: <20211124115713.993486668@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,59 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheyu Ma <zheyuma97@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 257051a235c17e33782b6e24a4b17f2d7915aaec ]
+[ Upstream commit 2143ad413c05c7be24c3a92760e367b7f6aaac92 ]
 
-When the driver fails to request the firmware, it calls its error
-handler. In the error handler, the driver detaches device from driver
-first before releasing the firmware, which can cause a use-after-free bug.
+A successful 'clk_prepare()' call should be balanced by a corresponding
+'clk_unprepare()' call in the error handling path of the probe, as already
+done in the remove function.
 
-Fix this by releasing firmware first.
+Update the error handling path accordingly.
 
-The following log reveals it:
-
-[    9.007301 ] BUG: KASAN: use-after-free in mwl8k_fw_state_machine+0x320/0xba0
-[    9.010143 ] Workqueue: events request_firmware_work_func
-[    9.010830 ] Call Trace:
-[    9.010830 ]  dump_stack_lvl+0xa8/0xd1
-[    9.010830 ]  print_address_description+0x87/0x3b0
-[    9.010830 ]  kasan_report+0x172/0x1c0
-[    9.010830 ]  ? mutex_unlock+0xd/0x10
-[    9.010830 ]  ? mwl8k_fw_state_machine+0x320/0xba0
-[    9.010830 ]  ? mwl8k_fw_state_machine+0x320/0xba0
-[    9.010830 ]  __asan_report_load8_noabort+0x14/0x20
-[    9.010830 ]  mwl8k_fw_state_machine+0x320/0xba0
-[    9.010830 ]  ? mwl8k_load_firmware+0x5f0/0x5f0
-[    9.010830 ]  request_firmware_work_func+0x172/0x250
-[    9.010830 ]  ? read_lock_is_recursive+0x20/0x20
-[    9.010830 ]  ? process_one_work+0x7a1/0x1100
-[    9.010830 ]  ? request_firmware_nowait+0x460/0x460
-[    9.010830 ]  ? __this_cpu_preempt_check+0x13/0x20
-[    9.010830 ]  process_one_work+0x9bb/0x1100
-
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1634356979-6211-1-git-send-email-zheyuma97@gmail.com
+Fixes: 3003a180ef6b ("[media] VPU: mediatek: support Mediatek VPU")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Houlong Wei <houlong.wei@mediatek.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/marvell/mwl8k.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/platform/mtk-vpu/mtk_vpu.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/marvell/mwl8k.c b/drivers/net/wireless/marvell/mwl8k.c
-index 66cd38d4f199b..c6f008796ff16 100644
---- a/drivers/net/wireless/marvell/mwl8k.c
-+++ b/drivers/net/wireless/marvell/mwl8k.c
-@@ -5783,8 +5783,8 @@ static void mwl8k_fw_state_machine(const struct firmware *fw, void *context)
- fail:
- 	priv->fw_state = FW_STATE_ERROR;
- 	complete(&priv->firmware_loading_complete);
--	device_release_driver(&priv->pdev->dev);
- 	mwl8k_release_firmware(priv);
-+	device_release_driver(&priv->pdev->dev);
- }
+diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
+index 853d598937f69..019a5e7e1a402 100644
+--- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
++++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
+@@ -817,7 +817,8 @@ static int mtk_vpu_probe(struct platform_device *pdev)
+ 	vpu->wdt.wq = create_singlethread_workqueue("vpu_wdt");
+ 	if (!vpu->wdt.wq) {
+ 		dev_err(dev, "initialize wdt workqueue failed\n");
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto clk_unprepare;
+ 	}
+ 	INIT_WORK(&vpu->wdt.ws, vpu_wdt_reset_func);
+ 	mutex_init(&vpu->vpu_mutex);
+@@ -916,6 +917,8 @@ disable_vpu_clk:
+ 	vpu_clock_disable(vpu);
+ workqueue_destroy:
+ 	destroy_workqueue(vpu->wdt.wq);
++clk_unprepare:
++	clk_unprepare(vpu->clk);
  
- #define MAX_RESTART_ATTEMPTS 1
+ 	return ret;
+ }
 -- 
 2.33.0
 
