@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB1B45C0FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34BD145C5BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:59:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348472AbhKXNNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:13:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52064 "EHLO mail.kernel.org"
+        id S1353793AbhKXOAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:00:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347598AbhKXNKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:10:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0EEF6121D;
-        Wed, 24 Nov 2021 12:41:27 +0000 (UTC)
+        id S1348282AbhKXNyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:54:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 330FA63276;
+        Wed, 24 Nov 2021 13:05:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757688;
-        bh=fCqoMLll5hUI6sPzR7Jco/XfASlsujsfWai++crthlI=;
+        s=korg; t=1637759146;
+        bh=mlYzLpR9vg+L9uMbUtboG0BkMswn5ra8hHYTdlk2q0U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Woy1z8GXgkAVeCa4o/J4AvSg/vb/lyRdrbwvttUHHmeiGWZe/ujQ5FyKsKqTI2bj/
-         AOdapdTFNV0hrnQpdRsfXIzwudBmAvkd8WozCXwFYH+JQ1u+8TpNYoK8kPW3SEJhJG
-         Dl28eAb4Q9uGZXdATi0y34h18lifo0MG/vW43Ayg=
+        b=bK/asQgL5Jrx7fekLXwhnSKCvt58KJ8TSz+BadEc7n9/95Mm0NVBCkRPD/XytfxXH
+         Et5lG9TcfoNJDCwmB3wUZq6OkG/Hhi6wDMEumin9EtxemnQVOvtHZ26eCLkZjQs0Yj
+         J0777RyaYHwEKyNUKr88RSrNLb9nSHcBq/He37g4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.19 244/323] backlight: gpio-backlight: Correct initial power state handling
+        stable@vger.kernel.org, Neta Ostrovsky <netao@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 147/279] net/mlx5: Update error handler for UCTX and UMEM
 Date:   Wed, 24 Nov 2021 12:57:14 +0100
-Message-Id: <20211124115727.147089219@linuxfoundation.org>
+Message-Id: <20211124115723.851786111@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,89 +41,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+From: Neta Ostrovsky <netao@nvidia.com>
 
-commit ec665b756e6f79c60078b00dbdabea3aa8a4b787 upstream.
+[ Upstream commit ba50cd9451f6c49cf0841c0a4a146ff6a2822699 ]
 
-The default-on property - or the def_value via legacy pdata) should be
-handled as:
-if it is 1, the backlight must be enabled (kept enabled)
-if it is 0, the backlight must be disabled (kept disabled)
+In the fast unload flow, the device state is set to internal error,
+which indicates that the driver started the destroy process.
+In this case, when a destroy command is being executed, it should return
+MLX5_CMD_STAT_OK.
+Fix MLX5_CMD_OP_DESTROY_UCTX and MLX5_CMD_OP_DESTROY_UMEM to return OK
+instead of EIO.
 
-This only works for the case when default-on is set. If it is not set then
-the brightness of the backlight is set to 0. Now if the backlight is
-enabled by external driver (graphics) the backlight will stay disabled since
-the brightness is configured as 0. The backlight will not turn on.
+This fixes a call trace in the umem release process -
+[ 2633.536695] Call Trace:
+[ 2633.537518]  ib_uverbs_remove_one+0xc3/0x140 [ib_uverbs]
+[ 2633.538596]  remove_client_context+0x8b/0xd0 [ib_core]
+[ 2633.539641]  disable_device+0x8c/0x130 [ib_core]
+[ 2633.540615]  __ib_unregister_device+0x35/0xa0 [ib_core]
+[ 2633.541640]  ib_unregister_device+0x21/0x30 [ib_core]
+[ 2633.542663]  __mlx5_ib_remove+0x38/0x90 [mlx5_ib]
+[ 2633.543640]  auxiliary_bus_remove+0x1e/0x30 [auxiliary]
+[ 2633.544661]  device_release_driver_internal+0x103/0x1f0
+[ 2633.545679]  bus_remove_device+0xf7/0x170
+[ 2633.546640]  device_del+0x181/0x410
+[ 2633.547606]  mlx5_rescan_drivers_locked.part.10+0x63/0x160 [mlx5_core]
+[ 2633.548777]  mlx5_unregister_device+0x27/0x40 [mlx5_core]
+[ 2633.549841]  mlx5_uninit_one+0x21/0xc0 [mlx5_core]
+[ 2633.550864]  remove_one+0x69/0xe0 [mlx5_core]
+[ 2633.551819]  pci_device_remove+0x3b/0xc0
+[ 2633.552731]  device_release_driver_internal+0x103/0x1f0
+[ 2633.553746]  unbind_store+0xf6/0x130
+[ 2633.554657]  kernfs_fop_write+0x116/0x190
+[ 2633.555567]  vfs_write+0xa5/0x1a0
+[ 2633.556407]  ksys_write+0x4f/0xb0
+[ 2633.557233]  do_syscall_64+0x5b/0x1a0
+[ 2633.558071]  entry_SYSCALL_64_after_hwframe+0x65/0xca
+[ 2633.559018] RIP: 0033:0x7f9977132648
+[ 2633.559821] Code: 89 02 48 c7 c0 ff ff ff ff eb b3 0f 1f 80 00 00 00 00 f3 0f 1e fa 48 8d 05 55 6f 2d 00 8b 00 85 c0 75 17 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 58 c3 0f 1f 80 00 00 00 00 41 54 49 89 d4 55
+[ 2633.562332] RSP: 002b:00007fffb1a83888 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+[ 2633.563472] RAX: ffffffffffffffda RBX: 000000000000000c RCX: 00007f9977132648
+[ 2633.564541] RDX: 000000000000000c RSI: 000055b90546e230 RDI: 0000000000000001
+[ 2633.565596] RBP: 000055b90546e230 R08: 00007f9977406860 R09: 00007f9977a54740
+[ 2633.566653] R10: 0000000000000000 R11: 0000000000000246 R12: 00007f99774056e0
+[ 2633.567692] R13: 000000000000000c R14: 00007f9977400880 R15: 000000000000000c
+[ 2633.568725] ---[ end trace 10b4fe52945e544d ]---
 
-In order to minimize screen flickering during device boot:
-
-The initial brightness should be set to 1.
-
-If booted in non DT mode or no phandle link to the backlight node:
-follow the def_value/default-on to select UNBLANK or POWERDOWN
-
-If in DT boot we have phandle link then leave the GPIO in a state which the
-bootloader left it and let the user of the backlight to configure it
-further.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 6a6fabbfa3e8 ("net/mlx5: Update pci error handler entries and command translation")
+Signed-off-by: Neta Ostrovsky <netao@nvidia.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/backlight/gpio_backlight.c |   24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/video/backlight/gpio_backlight.c
-+++ b/drivers/video/backlight/gpio_backlight.c
-@@ -62,13 +62,11 @@ static int gpio_backlight_probe_dt(struc
- {
- 	struct device *dev = &pdev->dev;
- 	struct device_node *np = dev->of_node;
--	enum gpiod_flags flags;
- 	int ret;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+index db5dfff585c99..c698e4b5381d7 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+@@ -334,6 +334,8 @@ static int mlx5_internal_err_ret_value(struct mlx5_core_dev *dev, u16 op,
+ 	case MLX5_CMD_OP_PAGE_FAULT_RESUME:
+ 	case MLX5_CMD_OP_QUERY_ESW_FUNCTIONS:
+ 	case MLX5_CMD_OP_DEALLOC_SF:
++	case MLX5_CMD_OP_DESTROY_UCTX:
++	case MLX5_CMD_OP_DESTROY_UMEM:
+ 		return MLX5_CMD_STAT_OK;
  
- 	gbl->def_value = of_property_read_bool(np, "default-on");
--	flags = gbl->def_value ? GPIOD_OUT_HIGH : GPIOD_OUT_LOW;
- 
--	gbl->gpiod = devm_gpiod_get(dev, NULL, flags);
-+	gbl->gpiod = devm_gpiod_get(dev, NULL, GPIOD_ASIS);
- 	if (IS_ERR(gbl->gpiod)) {
- 		ret = PTR_ERR(gbl->gpiod);
- 
-@@ -82,6 +80,22 @@ static int gpio_backlight_probe_dt(struc
- 	return 0;
- }
- 
-+static int gpio_backlight_initial_power_state(struct gpio_backlight *gbl)
-+{
-+	struct device_node *node = gbl->dev->of_node;
-+
-+	/* Not booted with device tree or no phandle link to the node */
-+	if (!node || !node->phandle)
-+		return gbl->def_value ? FB_BLANK_UNBLANK : FB_BLANK_POWERDOWN;
-+
-+	/* if the enable GPIO is disabled, do not enable the backlight */
-+	if (gpiod_get_value_cansleep(gbl->gpiod) == 0)
-+		return FB_BLANK_POWERDOWN;
-+
-+	return FB_BLANK_UNBLANK;
-+}
-+
-+
- static int gpio_backlight_probe(struct platform_device *pdev)
- {
- 	struct gpio_backlight_platform_data *pdata =
-@@ -142,7 +156,9 @@ static int gpio_backlight_probe(struct p
- 		return PTR_ERR(bl);
- 	}
- 
--	bl->props.brightness = gbl->def_value;
-+	bl->props.power = gpio_backlight_initial_power_state(gbl);
-+	bl->props.brightness = 1;
-+
- 	backlight_update_status(bl);
- 
- 	platform_set_drvdata(pdev, bl);
+ 	case MLX5_CMD_OP_QUERY_HCA_CAP:
+@@ -459,9 +461,7 @@ static int mlx5_internal_err_ret_value(struct mlx5_core_dev *dev, u16 op,
+ 	case MLX5_CMD_OP_MODIFY_GENERAL_OBJECT:
+ 	case MLX5_CMD_OP_QUERY_GENERAL_OBJECT:
+ 	case MLX5_CMD_OP_CREATE_UCTX:
+-	case MLX5_CMD_OP_DESTROY_UCTX:
+ 	case MLX5_CMD_OP_CREATE_UMEM:
+-	case MLX5_CMD_OP_DESTROY_UMEM:
+ 	case MLX5_CMD_OP_ALLOC_MEMIC:
+ 	case MLX5_CMD_OP_MODIFY_XRQ:
+ 	case MLX5_CMD_OP_RELEASE_XRQ_ERROR:
+-- 
+2.33.0
+
 
 
