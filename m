@@ -2,119 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ADA645C852
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:10:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 764DB45C831
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:03:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbhKXPNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:13:16 -0500
-Received: from mail.pr-group.ru ([178.18.215.3]:54244 "EHLO mail.pr-group.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231372AbhKXPNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:13:13 -0500
-X-Greylist: delayed 1814 seconds by postgrey-1.27 at vger.kernel.org; Wed, 24 Nov 2021 10:13:13 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-        d=metrotek.ru; s=mail;
-        h=from:subject:date:message-id:to:cc:mime-version:content-transfer-encoding;
-        bh=To9e4hBk+9KWTAv+yOOa9YU2qidFr8D9clDVYMRnqn8=;
-        b=twqwQWfNlK8kMwmrtAIFufCQIhp2x37D35hlm2tP4b8+8EQdvP5yMlbFK7JBGyv/lgrOKL6qNfhqa
-         s31gH6q9hw3I6AYEpBU05BSTfkAWlHzFNv8KKxCgD2St2C3ZSxt2FHkgbscxm9nQmvQb6QuKbkQjin
-         CA4IvdQZkohzK/BVwM7eSbnQaKuLXa5BWVu5SdV3pQdkLeGEOygMBAZclZikVN3ZNDS2id618Mr4/K
-         UlLeO7ccIMbV02QI7lBpMrZtyBhJbXva7Kk1HT46sUNHBgIeBXzCNrEVvxkf4LM6HVB70pT4rPdjYP
-         Jx3pUn3tsPVxNtlDZilQXNOyxisK04Q==
-X-Spam-Status: No, hits=0.0 required=3.4
-        tests=BAYES_00: -1.665, CUSTOM_RULE_FROM: ALLOW, TOTAL_SCORE: -1.665,autolearn=ham
-X-Spam-Level: 
-X-Footer: bWV0cm90ZWsucnU=
-Received: from localhost.localdomain ([178.66.213.198])
-        (authenticated user i.bornyakov@metrotek.ru)
-        by mail.pr-group.ru with ESMTPSA
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256 bits));
-        Wed, 24 Nov 2021 17:39:38 +0300
-From:   Ivan Bornyakov <i.bornyakov@metrotek.ru>
-Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        system@metrotek.ru, Ivan Bornyakov <i.bornyakov@metrotek.ru>
-Subject: [PATCH] bus: imx-weim: optionally enable continuous burst clock
-Date:   Wed, 24 Nov 2021 17:25:30 +0300
-Message-Id: <20211124142530.366-1-i.bornyakov@metrotek.ru>
-X-Mailer: git-send-email 2.32.0
+        id S232606AbhKXPGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:06:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229752AbhKXPGO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 10:06:14 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE7BC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:03:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=03LLWyAO4lnrCLJafThU9/xIfFpuVX7jwQvEdzaWdVU=; b=ApdOlzhUZ55WAGuQNSaEuNBD+8
+        0aKYH7iiasR8q4WJySwYyajGkB0l/Dr2fmet0zgBRy5kiN3TIWskHVVmegGrC2JqLsPrmWglzmVFw
+        XczeGie/xkJnNpgFIZwyTcguQnH3ike4HKyhInTmkkp+HO1LIl8gFmlNW+xs1kzet+jMVncPLe/RY
+        ZHHUIKvFYZJt9DVO3KVSBULnGmNcr5pTAf1P8/dJIx57x3u9FCvvh+Y123J3utrNgqCBEkXSpaPP+
+        fk2w8dy6CJ+c4l1CRi6nZ3Bk3V35pTXjYc9vYgvpn7UFXlIUkt9QEWxoemaGTtVqUR0j0rtpEdTlh
+        7FgEcVhA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mptnD-002F4G-Cf; Wed, 24 Nov 2021 15:02:40 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C374B30008D;
+        Wed, 24 Nov 2021 16:02:38 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8606F203C25B1; Wed, 24 Nov 2021 16:02:38 +0100 (CET)
+Date:   Wed, 24 Nov 2021 16:02:38 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Subject: Re: [PATCH v2] sched/fair: Remove the cost of a redundant
+ cpumask_next_wrap in select_idle_cpu
+Message-ID: <YZ5UDuCII/KHUb9h@hirez.programming.kicks-ass.net>
+References: <20211124091546.5072-1-21cnbao@gmail.com>
+ <YZ4eWHarf7QDONLB@hirez.programming.kicks-ass.net>
+ <CAGsJ_4xpqvhBW0G5UfCjRD8BfR4m4EUv4B_cxoOtYTO5+iRsCQ@mail.gmail.com>
+ <CAGsJ_4yHToqZZ9R59jd0391mE0tAzxDFSvhSV24gx9c5JNvO4w@mail.gmail.com>
+ <CAGsJ_4zpN98_J2aRHyqz4XvSzP+0ngVu2k=ufn9JQNMwe7zZjw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGsJ_4zpN98_J2aRHyqz4XvSzP+0ngVu2k=ufn9JQNMwe7zZjw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To enable continuous burst clock, add "fsl,continuous-burst-clk" along
-with "fsl,burst-clk-enable" property to the weim bus's devicetree node.
+On Thu, Nov 25, 2021 at 01:02:00AM +1300, Barry Song wrote:
+> On Thu, Nov 25, 2021 at 12:57 AM Barry Song <21cnbao@gmail.com> wrote:
 
-Example:
-weim: weim@21b8000 {
-	compatible = "fsl,imx6ul-weim", "fsl,imx6q-weim";
-	reg = <0x021b8000 0x4000>;
-	clocks = <&clks 143>;
-	#address-cells = <2>;
-	#size-cells = <1>;
-	ranges = <0 0 0x50000000 0x08000000>;
-	fsl,weim-cs-gpr = <&gpr>;
-	fsl,burst-clk-enable;
-	fsl,continuous-burst-clk;
+> > Let me make it clearer. if nr=5, the original code will  loop 5 times,
+> > but in the 5th loop, it returns directly, so  __select_idle_cpu is
+> > only done 4 times.
+> >
+> > if nr=1, the original code will  loop 1 time, but in the 1st loop,
+> > it returns directly, so  __select_idle_cpu is  done 0 times.
+> 
+> this is also why in the first version of patch, i did this:
+>                 span_avg = sd->span_weight * avg_idle;
+>                 if (span_avg > 4*avg_cost)
+> -                       nr = div_u64(span_avg, avg_cost);
+> +                       nr = div_u64(span_avg, avg_cost) - 1;
+>                 else
+> -                       nr = 4;
+> +                       nr = 3;
+> 
+> because we are actually scanning 3 times or div_u64(span_avg, avg_cost) - 1
+> times but not 4 times or div_u64(span_avg, avg_cost) times.
 
-	client-device@0 {
-		...
-	};
-};
+It still is confusing, because > 4*span -> nr = avg/span, very much
+implies we want to bottom out at 4.
 
-Signed-off-by: Ivan Bornyakov <i.bornyakov@metrotek.ru>
----
- drivers/bus/imx-weim.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+> this is not confusing at all. the only thing which is confusing is the original
+> code.
 
-diff --git a/drivers/bus/imx-weim.c b/drivers/bus/imx-weim.c
-index 28bb65a5613f..bccb275b65ba 100644
---- a/drivers/bus/imx-weim.c
-+++ b/drivers/bus/imx-weim.c
-@@ -21,6 +21,7 @@ struct imx_weim_devtype {
- 	unsigned int	cs_stride;
- 	unsigned int	wcr_offset;
- 	unsigned int	wcr_bcm;
-+	unsigned int	wcr_cont_bclk;
- };
- 
- static const struct imx_weim_devtype imx1_weim_devtype = {
-@@ -41,6 +42,7 @@ static const struct imx_weim_devtype imx50_weim_devtype = {
- 	.cs_stride	= 0x18,
- 	.wcr_offset	= 0x90,
- 	.wcr_bcm	= BIT(0),
-+	.wcr_cont_bclk	= BIT(3),
- };
- 
- static const struct imx_weim_devtype imx51_weim_devtype = {
-@@ -206,8 +208,20 @@ static int weim_parse_dt(struct platform_device *pdev, void __iomem *base)
- 	if (of_property_read_bool(pdev->dev.of_node, "fsl,burst-clk-enable")) {
- 		if (devtype->wcr_bcm) {
- 			reg = readl(base + devtype->wcr_offset);
--			writel(reg | devtype->wcr_bcm,
--				base + devtype->wcr_offset);
-+			reg |= devtype->wcr_bcm;
-+
-+			if (of_property_read_bool(pdev->dev.of_node,
-+						"fsl,continuous-burst-clk")) {
-+				if (devtype->wcr_cont_bclk) {
-+					reg |= devtype->wcr_cont_bclk;
-+				} else {
-+					dev_err(&pdev->dev,
-+						"continuous burst clk not supported.\n");
-+					return -EINVAL;
-+				}
-+			}
-+
-+			writel(reg, base + devtype->wcr_offset);
- 		} else {
- 			dev_err(&pdev->dev, "burst clk mode not supported.\n");
- 			return -EINVAL;
--- 
-2.32.0
-
-
+But yes, it seems a whole lot of confusion stacked together. Let make it
+sane and say that we do 'nr' iterations, because clearly that was the
+intent :-)
