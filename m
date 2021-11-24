@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 873C145C176
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5C045C383
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:36:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348999AbhKXNSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:18:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60242 "EHLO mail.kernel.org"
+        id S1346857AbhKXNjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:39:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245212AbhKXNPq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:15:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E29061AA9;
-        Wed, 24 Nov 2021 12:44:26 +0000 (UTC)
+        id S1350274AbhKXNhC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:37:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9BAC611CA;
+        Wed, 24 Nov 2021 12:55:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757867;
-        bh=f+mQ8AZkxJE9hkV0MNFftgJxMT92L7eQuEp4rhjyzJU=;
+        s=korg; t=1637758521;
+        bh=VFZ0ZSwg88/xtO94kB0t11ZJIPz5wUYYZ7HN47iPIUU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0vUFr0pK60ZQf+HVXpRh8YXJaWxu2RPIV5ORTNHSrCaC/8ywDF5B2RUQryNsBwzOD
-         81aTK0pUsRk49qUrWjuK27wZfxGQE3HkGKMBQLGw/ssYdgvruNlEwfLTqEwYnZi8kM
-         FgPsySv0jlUCOHSCp2Mq8UpapgjMuUuXf+hEkeAQ=
+        b=OpQybEWOCqhv5Kjaf97U2Iz1mF1DdUz28Zz9CBQEUJ/mfB60e9Pt0aF1ArlqMIu0y
+         m5dSuKrfcnuFzbgAHhxrKvwpDLQ4suDm1hIqbI34oLEzqR+QsMKE4Ispmewr/die/3
+         6bEFygDB+vX+xelm5RJxqk+Qv2d7lIEJLDujDCTE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
+        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 303/323] perf/x86/intel/uncore: Fix IIO event constraints for Skylake Server
+Subject: [PATCH 5.10 097/154] net: sched: act_mirred: drop dst for the direction from egress to ingress
 Date:   Wed, 24 Nov 2021 12:58:13 +0100
-Message-Id: <20211124115729.142412773@linuxfoundation.org>
+Message-Id: <20211124115705.435427829@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +42,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Antonov <alexander.antonov@linux.intel.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit 3866ae319c846a612109c008f43cba80b8c15e86 ]
+[ Upstream commit f799ada6bf2397c351220088b9b0980125c77280 ]
 
-According to the latest uncore document, COMP_BUF_OCCUPANCY (0xd5) event
-can be collected on 2-3 counters. Update uncore IIO event constraints for
-Skylake Server.
+Without dropping dst, the packets sent from local mirred/redirected
+to ingress will may still use the old dst. ip_rcv() will drop it as
+the old dst is for output and its .input is dst_discard.
 
-Fixes: cd34cd97b7b4 ("perf/x86/intel/uncore: Add Skylake server uncore support")
-Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
-Link: https://lore.kernel.org/r/20211115090334.3789-3-alexander.antonov@linux.intel.com
+This patch is to fix by also dropping dst for those packets that are
+mirred or redirected from egress to ingress in act_mirred.
+
+Note that we don't drop it for the direction change from ingress to
+egress, as on which there might be a user case attaching a metadata
+dst by act_tunnel_key that would be used later.
+
+Fixes: b57dc7c13ea9 ("net/sched: Introduce action ct")
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Acked-by: Cong Wang <cong.wang@bytedance.com>
+Reviewed-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/events/intel/uncore_snbep.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/sched/act_mirred.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index f6f5641c6299a..2bf1170f7afdb 100644
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -3486,6 +3486,7 @@ static struct event_constraint skx_uncore_iio_constraints[] = {
- 	UNCORE_EVENT_CONSTRAINT(0xc0, 0xc),
- 	UNCORE_EVENT_CONSTRAINT(0xc5, 0xc),
- 	UNCORE_EVENT_CONSTRAINT(0xd4, 0xc),
-+	UNCORE_EVENT_CONSTRAINT(0xd5, 0xc),
- 	EVENT_CONSTRAINT_END
- };
+diff --git a/net/sched/act_mirred.c b/net/sched/act_mirred.c
+index 0b0eb18919c09..24d561d8d9c97 100644
+--- a/net/sched/act_mirred.c
++++ b/net/sched/act_mirred.c
+@@ -19,6 +19,7 @@
+ #include <linux/if_arp.h>
+ #include <net/net_namespace.h>
+ #include <net/netlink.h>
++#include <net/dst.h>
+ #include <net/pkt_sched.h>
+ #include <net/pkt_cls.h>
+ #include <linux/tc_act/tc_mirred.h>
+@@ -218,6 +219,7 @@ static int tcf_mirred_act(struct sk_buff *skb, const struct tc_action *a,
+ 	bool want_ingress;
+ 	bool is_redirect;
+ 	bool expects_nh;
++	bool at_ingress;
+ 	int m_eaction;
+ 	int mac_len;
+ 	bool at_nh;
+@@ -253,7 +255,8 @@ static int tcf_mirred_act(struct sk_buff *skb, const struct tc_action *a,
+ 	 * ingress - that covers the TC S/W datapath.
+ 	 */
+ 	is_redirect = tcf_mirred_is_act_redirect(m_eaction);
+-	use_reinsert = skb_at_tc_ingress(skb) && is_redirect &&
++	at_ingress = skb_at_tc_ingress(skb);
++	use_reinsert = at_ingress && is_redirect &&
+ 		       tcf_mirred_can_reinsert(retval);
+ 	if (!use_reinsert) {
+ 		skb2 = skb_clone(skb, GFP_ATOMIC);
+@@ -261,10 +264,12 @@ static int tcf_mirred_act(struct sk_buff *skb, const struct tc_action *a,
+ 			goto out;
+ 	}
  
++	want_ingress = tcf_mirred_act_wants_ingress(m_eaction);
++
+ 	/* All mirred/redirected skbs should clear previous ct info */
+ 	nf_reset_ct(skb2);
+-
+-	want_ingress = tcf_mirred_act_wants_ingress(m_eaction);
++	if (want_ingress && !at_ingress) /* drop dst for egress -> ingress */
++		skb_dst_drop(skb2);
+ 
+ 	expects_nh = want_ingress || !m_mac_header_xmit;
+ 	at_nh = skb->data == skb_network_header(skb);
 -- 
 2.33.0
 
