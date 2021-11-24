@@ -2,112 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F7A45B11B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 02:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F72545B122
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 02:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233412AbhKXBYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 20:24:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhKXBYT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 20:24:19 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01187C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 17:21:11 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id n15-20020a17090a160f00b001a75089daa3so3614567pja.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 17:21:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=YWhfXghFABBf6LlzYG/IR3Fhic7MRtqIGQdOLTKrXVE=;
-        b=iPL6f1ta8Zk4Rgns3gYDGX2HCPBucC+HsKJ9sBfiB6xRYXuBeNg7O17b0abuLiQ3K/
-         By8hpZZIBi20BIf2uHf50yii/tgdmeoJQLVydkJH9igBZ5UAT3dbXb83WwuVMwddK0VU
-         M+yAvp8SWVHyVseHHU6rL9nFuGL9qa/iecpI5sJCA3kVz8cebhmkyCmvAHsvij98D642
-         H4Isl3WAxl4GEZamLp55c4EhpwK7WM3HwSvSy7XTKF6kdT8xAYyKmvoNtSiMbIp0gg8/
-         EpIbxekSGivUdkBLuAkVLn8lWAdfz6nibrTfRcZC8tx2uutjd9eQDHS8zhndI/OV1z3A
-         8+LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=YWhfXghFABBf6LlzYG/IR3Fhic7MRtqIGQdOLTKrXVE=;
-        b=ZG8rMnkPSMWBkKIyQ6ouNKUACt8Lid8iJYeY1Vf6V3Grj52U2o0eznn5ZE0XKOSa2K
-         6al1glmpS7OAZ/MfZ//y36reVDwcZ1x52wlLezhI3rpZv9sZ4l/AS5iCRPgXkuvR0E2L
-         mZr7gO08fNg5iREeu7J8R+wcuTRPhRT/xEmYlmlhl0OLkYvRszl2nDdVjb4EiYHr+u1f
-         u470crPtGFoQ/4DgS4Zxl21jgwBm8ZLtSp9ckdcY0xH4ERW3pNalE+kpre2mEnFVcKGE
-         UobIXYuDnd+0FREJSoAkkQtfKIcdFlkrEpaX+dt21q69oMS0IR4xRcwy4WtheVXa4/P6
-         x4RA==
-X-Gm-Message-State: AOAM533e4Mx3Q5e/9uEQQSlJ4FQxV9+8ekaFsexN8h+xh+UsZVDeWf1A
-        O0F08XkBwaxvquH1e2FX8GE=
-X-Google-Smtp-Source: ABdhPJy/J/RK9A40Yb7QBrfJ9alSUNT/XI6lqXUx5Jkgigh4rEfY2mk36NRctgnOp08zkW1MXKt3IA==
-X-Received: by 2002:a17:90b:388f:: with SMTP id mu15mr9487208pjb.30.1637716870561;
-        Tue, 23 Nov 2021 17:21:10 -0800 (PST)
-Received: from localhost.localdomain ([43.128.78.144])
-        by smtp.gmail.com with ESMTPSA id oj11sm2596074pjb.46.2021.11.23.17.21.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 17:21:10 -0800 (PST)
-Date:   Wed, 24 Nov 2021 09:21:03 +0800
-From:   Aili Yao <yaoaili126@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, linux-kernel@vger.kernel.org,
-        yaoaili@kingsoft.com
-Subject: Re: [PATCH] sched/isolation: delete redundant
- housekeeping_overridden check
-Message-ID: <20211124092103.64e93376@gmail.com>
-In-Reply-To: <20211123123852.11a84a9e@gandalf.local.home>
-References: <20211123154535.48be4399@gmail.com>
-        <20211123123852.11a84a9e@gandalf.local.home>
-Organization: ksyun
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S233608AbhKXBaU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Nov 2021 20:30:20 -0500
+Received: from mga07.intel.com ([134.134.136.100]:39020 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229586AbhKXBaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 20:30:19 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="298584680"
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="298584680"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 17:27:10 -0800
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="509638387"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.101])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 17:27:07 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzbot <syzbot+aa5bebed695edaccf0df@syzkaller.appspotmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Andy Lutomirski" <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Marco Elver <elver@google.com>
+Subject: Re: [PATCH] mm/rmap: fix potential batched TLB flush race
+References: <20211123074344.1877731-1-ying.huang@intel.com>
+        <797F0409-0BF8-46E8-9165-9B6826365F2C@vmware.com>
+Date:   Wed, 24 Nov 2021 09:27:05 +0800
+In-Reply-To: <797F0409-0BF8-46E8-9165-9B6826365F2C@vmware.com> (Nadav Amit's
+        message of "Tue, 23 Nov 2021 15:28:36 +0000")
+Message-ID: <877dcy9wd2.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021 12:38:52 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Nadav Amit <namit@vmware.com> writes:
 
-> On Tue, 23 Nov 2021 15:45:35 +0800
-> Aili Yao <yaoaili126@gmail.com> wrote:
-> 
-> > From: Aili Yao <yaoaili@kingsoft.com>
-> > 
-> > housekeeping_test_cpu is only called by housekeeping_cpu(),
-> > and in housekeeping_cpu(), there is already one same check;
-> > 
-> > So delete the redundant check.
-> > 
-> > Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
-> > ---
-> >  kernel/sched/isolation.c | 5 ++---
-> >  1 file changed, 2 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-> > index 7f06eaf..5c4d533 100644
-> > --- a/kernel/sched/isolation.c
-> > +++ b/kernel/sched/isolation.c
-> > @@ -56,9 +56,8 @@ void housekeeping_affine(struct task_struct *t, enum
-> > hk_flags flags) 
-> >  bool housekeeping_test_cpu(int cpu, enum hk_flags flags)
-> >  {
-> > -	if (static_branch_unlikely(&housekeeping_overridden))
-> > -		if (housekeeping_flags & flags)
-> > -			return cpumask_test_cpu(cpu,
-> > housekeeping_mask);  
-> 
-> Not only is your email client broken, you don't seem to understand what
-> static_branch_unlikely() is.
+>> On Nov 22, 2021, at 11:43 PM, Huang Ying <ying.huang@intel.com> wrote:
+>> 
+>> In theory, the following race is possible for batched TLB flushing.
+>> 
+>> CPU0                               CPU1
+>> ----                               ----
+>> shrink_page_list()
+>>                                   unmap
+>>                                     zap_pte_range()
+>>                                       flush_tlb_batched_pending()
+>>                                         flush_tlb_mm()
+>>  try_to_unmap()
+>>    set_tlb_ubc_flush_pending()
+>>      mm->tlb_flush_batched = true
+>>                                         mm->tlb_flush_batched = false
+>> 
+>> After the TLB is flushed on CPU1 via flush_tlb_mm() and before
+>> mm->tlb_flush_batched is set to false, some PTE is unmapped on CPU0
+>> and the TLB flushing is pended.  Then the pended TLB flushing will be
+>> lost.  Although both set_tlb_ubc_flush_pending() and
+>> flush_tlb_batched_pending() are called with PTL locked, different PTL
+>> instances may be used.
+>> 
+>> Because the race window is really small, and the lost TLB flushing
+>> will cause problem only if a TLB entry is inserted before the
+>> unmapping in the race window, the race is only theoretical.  But the
+>> fix is simple and cheap too.
+>> 
+>> Syzbot has reported this too as follows,
+>> 
+>> ==================================================================
+>> BUG: KCSAN: data-race in flush_tlb_batched_pending / try_to_unmap_one
+>> 
+>> write to 0xffff8881072cfbbc of 1 bytes by task 17406 on cpu 1:
+>> flush_tlb_batched_pending+0x5f/0x80 mm/rmap.c:691
+>> madvise_free_pte_range+0xee/0x7d0 mm/madvise.c:594
+>> walk_pmd_range mm/pagewalk.c:128 [inline]
+>> walk_pud_range mm/pagewalk.c:205 [inline]
+>> walk_p4d_range mm/pagewalk.c:240 [inline]
+>> walk_pgd_range mm/pagewalk.c:277 [inline]
+>> __walk_page_range+0x981/0x1160 mm/pagewalk.c:379
+>> walk_page_range+0x131/0x300 mm/pagewalk.c:475
+>> madvise_free_single_vma mm/madvise.c:734 [inline]
+>> madvise_dontneed_free mm/madvise.c:822 [inline]
+>> madvise_vma mm/madvise.c:996 [inline]
+>> do_madvise+0xe4a/0x1140 mm/madvise.c:1202
+>> __do_sys_madvise mm/madvise.c:1228 [inline]
+>> __se_sys_madvise mm/madvise.c:1226 [inline]
+>> __x64_sys_madvise+0x5d/0x70 mm/madvise.c:1226
+>> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>> do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+>> entry_SYSCALL_64_after_hwframe+0x44/0xae
+>> 
+>> write to 0xffff8881072cfbbc of 1 bytes by task 71 on cpu 0:
+>> set_tlb_ubc_flush_pending mm/rmap.c:636 [inline]
+>> try_to_unmap_one+0x60e/0x1220 mm/rmap.c:1515
+>> rmap_walk_anon+0x2fb/0x470 mm/rmap.c:2301
+>> try_to_unmap+0xec/0x110
+>> shrink_page_list+0xe91/0x2620 mm/vmscan.c:1719
+>> shrink_inactive_list+0x3fb/0x730 mm/vmscan.c:2394
+>> shrink_list mm/vmscan.c:2621 [inline]
+>> shrink_lruvec+0x3c9/0x710 mm/vmscan.c:2940
+>> shrink_node_memcgs+0x23e/0x410 mm/vmscan.c:3129
+>> shrink_node+0x8f6/0x1190 mm/vmscan.c:3252
+>> kswapd_shrink_node mm/vmscan.c:4022 [inline]
+>> balance_pgdat+0x702/0xd30 mm/vmscan.c:4213
+>> kswapd+0x200/0x340 mm/vmscan.c:4473
+>> kthread+0x2c7/0x2e0 kernel/kthread.c:327
+>> ret_from_fork+0x1f/0x30
+>> 
+>> value changed: 0x01 -> 0x00
+>> 
+>> Reported by Kernel Concurrency Sanitizer on:
+>> CPU: 0 PID: 71 Comm: kswapd0 Not tainted 5.16.0-rc1-syzkaller #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>> ==================================================================
+>> 
+>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+>> Reported-by: syzbot+aa5bebed695edaccf0df@syzkaller.appspotmail.com
+>> Cc: Nadav Amit <namit@vmware.com>
+>> Cc: Mel Gorman <mgorman@techsingularity.net>
+>> Cc: Andrea Arcangeli <aarcange@redhat.com>
+>> Cc: Andy Lutomirski <luto@kernel.org>
+>> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Yu Zhao <yuzhao@google.com>
+>> Cc: Marco Elver <elver@google.com>
+>> ---
+>> include/linux/mm_types.h |  2 +-
+>> mm/rmap.c                | 15 ++++++++-------
+>> 2 files changed, 9 insertions(+), 8 deletions(-)
+>> 
+>> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+>> index c3a6e6209600..789778067db9 100644
+>> --- a/include/linux/mm_types.h
+>> +++ b/include/linux/mm_types.h
+>> @@ -632,7 +632,7 @@ struct mm_struct {
+>> 		atomic_t tlb_flush_pending;
+>> #ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
+>> 		/* See flush_tlb_batched_pending() */
+>> -		bool tlb_flush_batched;
+>> +		atomic_t tlb_flush_batched;
+>> #endif
+>> 		struct uprobes_state uprobes_state;
+>> #ifdef CONFIG_PREEMPT_RT
+>> diff --git a/mm/rmap.c b/mm/rmap.c
+>> index 163ac4e6bcee..60902c3cfb4a 100644
+>> --- a/mm/rmap.c
+>> +++ b/mm/rmap.c
+>> @@ -633,7 +633,7 @@ static void set_tlb_ubc_flush_pending(struct mm_struct *mm, bool writable)
+>> 	 * before the PTE is cleared.
+>> 	 */
+>> 	barrier();
+>> -	mm->tlb_flush_batched = true;
+>> +	atomic_inc(&mm->tlb_flush_batched);
+>> 
+>> 	/*
+>> 	 * If the PTE was dirty then it's best to assume it's writable. The
+>> @@ -680,15 +680,16 @@ static bool should_defer_flush(struct mm_struct *mm, enum ttu_flags flags)
+>>  */
+>> void flush_tlb_batched_pending(struct mm_struct *mm)
+>> {
+>> -	if (data_race(mm->tlb_flush_batched)) {
+>> -		flush_tlb_mm(mm);
+>> +	int batched = atomic_read(&mm->tlb_flush_batched);
+>> 
+>> +	if (batched) {
+>> +		flush_tlb_mm(mm);
+>> 		/*
+>> -		 * Do not allow the compiler to re-order the clearing of
+>> -		 * tlb_flush_batched before the tlb is flushed.
+>> +		 * If the new TLB flushing is pended during flushing,
+>> +		 * leave mm->tlb_flush_batched as is, to avoid to lose
+>> +		 * flushing.
+>> 		 */
+>> -		barrier();
+>> -		mm->tlb_flush_batched = false;
+>> +		atomic_cmpxchg(&mm->tlb_flush_batched, batched, 0);
+>
+> This does not seem to prevent a race completely.
+>
+>   CPU0		CPU1		CPU2
+>
+>   set_tlb_ubc_flush_pending()
+>   [ tlb_flush_batched = 1 ]
+>
+> 				flush_tlb_batched_pending()
+> 				[ batched = 1 ]
+> 				 flush_tlb_mm()
+> 				 ...
+>   flush_tlb_batched_pending()
+>   [ tlb_flush_batched = 0 ]
+> 				
+>
+> 		ptep_get_and_clear()
+> 		set_tlb_ubc_flush_pending()
+> 		[ tlb_flush_batched = 1 ]
+> 					
+> 					
+> 				 ...
+> 				 atomic_cmpxchg()
+> 				 [ succeeds ]
+>
+> At the end of this flow tlb_flush_batched is 0 although
+> the TLB flush of CPU1’s newly added PTE was not done.
+>
+> If you go with your approach you need to have two atomic
+> counters, one of the flushed “generation” and one of the
+> pending “generation”.
 
-Yes, My mail client is not properly configured, sorry for that, I will make it work.
+Thanks for review.  You are right, the race cannot be eliminated with
+this patch completely.  Maybe we can pack two counter into atomic_t to
+implement the generation as above.
 
-And Yes again, I have limited knowledge about static key, But still don't understand why we
-need two same check(jump or nop instruction?) here, could you be kindly to explain this?
+> Anyhow, I am just mentioning that I think a more fundamental
+> solution is appropriate to take into account other flushes
+> that might render flush_tlb_batched_pending() flush
+> unnecessary.
 
-A lot Thanks!
-Aili Yao
+Best Regards,
+Huang, Ying
