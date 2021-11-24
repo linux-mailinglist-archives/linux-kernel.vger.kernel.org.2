@@ -2,106 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21FF745CE6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:50:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B083545CE6F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242999AbhKXUx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 15:53:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51722 "EHLO
+        id S244024AbhKXUyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 15:54:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240489AbhKXUx7 (ORCPT
+        with ESMTP id S243407AbhKXUyL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 15:53:59 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A44C061574;
-        Wed, 24 Nov 2021 12:50:48 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id t5so16257837edd.0;
-        Wed, 24 Nov 2021 12:50:48 -0800 (PST)
+        Wed, 24 Nov 2021 15:54:11 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E6BFC061574;
+        Wed, 24 Nov 2021 12:51:01 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id t83so4804281qke.8;
+        Wed, 24 Nov 2021 12:51:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tpsx3MMLlTBUydbXgUazzGgW2XNsr3KXIZIpZG5k49A=;
-        b=G8Bz3qQ+YB6mQX6ayLZFC73394al/8xOPMOCkkW6avVNd3+hbxJaV9RVDlbI9jLfGu
-         0hJ+wBWJhnT6V8NAEwOcX8BFShQHsBkVCxqZaVFIZmxyRh3gNFttaj0w2zvIA4VXt0+2
-         2AOkceMmA96+Nwx5+4wyu+tLC2LLmvw2JENFvpM5YVWwfZUc2VL13LPe2mpxRlN6M/nq
-         JceIJimvE45nZ/cEbSVvT8jKTLt1Rmf/MJR0u7JtXvlkVs3/y2c6J95JpZb9B1smwh/J
-         NH7vfmWWqlMUw7bST8I0yQzQdkdqwRzs3RLaRiwjdW8e54URY35lkO2UYDMyDvKKCNvU
-         0zfg==
+         :cc:content-transfer-encoding;
+        bh=iau6DKRydcsNK1GN6sDDCSnahnogg9ZqD2JSacu9WZ4=;
+        b=nPlKl7EQVZKmz+/NgJntktxWSIcIQlj8SXVWiVCQtqHzP6KB8Q3bbJAFFdKgqCAYGs
+         s0kikxhBgqbhtA1r4R1KxlbOH7wxIn0ghGwLgvk+gP3nicU4rpmI5BpEBUNf8/DJk1G+
+         yEV6pVwbu9CJCq9vgh1Q8yFCV3/bj3sUjzZn7SPqWr95/egMfMghKWm/yy21MPxbYK05
+         LZEcdLoZU0hJfw0cLD1v+Np4XQlbapdM4ZGByB3lSupPx01GFwOUGfXfm/pT6KZktKpF
+         ++k8qDtBoYBWhYh4w/KupafMBr31J4Nb4RFRFhI40lozAdITEdx7hB3f2m58AU910+jG
+         fN0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tpsx3MMLlTBUydbXgUazzGgW2XNsr3KXIZIpZG5k49A=;
-        b=rZ9rI5Ek5MFasdE1oBd5izVz0TfgcZJzgVJxkoYlxHb+RQZv4cSCkeqwDIbu1jab0V
-         L4KerZSoc8826PGykfN5IRVSy16TlAM7IbeGQ5O3bvCRduBMHGnL7xgX5eXSQdZHJE4y
-         yrAVe3xts8hhD97fNxwdeqk8id+2oAfLSbmLe1xOhZaTPoA+8KXdXYQfdeBmtA7jsh3V
-         u+4EOYGYYSJ4FPi12f3C8dIW2gTSStJYCi95YT8NZ9SIagvBfODQ1w9UV6ef/7+98m09
-         NpklN4fcRt3MZ06eojzRHdo/DnluZomY/MaEVT+IryCnxEuA/6/7BJ9suA7vvRaxpuHj
-         chxQ==
-X-Gm-Message-State: AOAM532Emz//u+Bd/OIH6kRK043cJ3J55AvNEDLdIqR8gM6n8BEubtsZ
-        cYMy544ZXG/UoLByI8Lju8jBXMNtItma+fnkOCxsBc6cywxk7A==
-X-Google-Smtp-Source: ABdhPJz3C3SCSsHACUDoYfKlRZ5A9P5v/4kiUjZrmr38Hwvl8IVPpBnfdYlh8WES9YYBz6HfvsFUR8prKuz6pwmEoSM=
-X-Received: by 2002:a17:907:868f:: with SMTP id qa15mr24488031ejc.187.1637787047509;
- Wed, 24 Nov 2021 12:50:47 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iau6DKRydcsNK1GN6sDDCSnahnogg9ZqD2JSacu9WZ4=;
+        b=nAyTmt1pIWiq4ukSXjYxmo31ilbhurjQGgT9vPIf5922yq+DA48mb3VEEOvi9Cuh8Z
+         lGY7cYfidnFM9H/8fXsnekWPp2Wf0aribugyQwa1XEydMWYXTxeJzwnF9Y7y2BVJAI5L
+         2eDNUVx+s9HzDEp2AcQ17owVdO5szL1sP9qhCJ6E8jBizndRJY5Nzaja6QxJf7pPt9kN
+         1g8NaJqlL2HpfRvu2BmBGe3xMgbyKuO8nPmBzsnIKgTZ53t4Bz6u/wyPUjiPg6EsnTy/
+         zcqaEnhYg5E5OuEE2u2M2beBkWAiEvowH2yIu50hA/SFdfefP99BMUQ3YzqLWMqejrBe
+         E6Xw==
+X-Gm-Message-State: AOAM530vJ6xqb6wm0XD/Bd4bqcJfWdGbnFDTYU4tK8du9RFyi9loRZdV
+        wrcDvGC+60Ij8MdhPFHHacUqo3+mZjXo0cmQP/6661qK4V0=
+X-Google-Smtp-Source: ABdhPJxKYOfLQLPnsedikbDHOVU4wS+qfwCaPPo84K641EUnQq9HT1XO3bJZ3ph2d83tFh73xMJ8ujkD7agzP5AxQC8=
+X-Received: by 2002:a25:cc4c:: with SMTP id l73mr20011466ybf.114.1637787060318;
+ Wed, 24 Nov 2021 12:51:00 -0800 (PST)
 MIME-Version: 1.0
-References: <44e0213a681f3c8ee4c6ab2ef9d61ce3ac00e368.1637727935.git.fthain@linux-m68k.org>
- <CAMuHMdXTxTABOoVgC6fVR44dxUZZEbZV=ewSk9vKFY=U5u+fcw@mail.gmail.com>
-In-Reply-To: <CAMuHMdXTxTABOoVgC6fVR44dxUZZEbZV=ewSk9vKFY=U5u+fcw@mail.gmail.com>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Date:   Thu, 25 Nov 2021 09:50:35 +1300
-Message-ID: <CAOmrzkJhXvN0gOU8fc5jNu3Q9LnT4dgCGdrznYbCbGXxq0dJpQ@mail.gmail.com>
-Subject: Re: [PATCH] pata_falcon: Add missing __iomem annotations
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Finn Thain <fthain@linux-m68k.org>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1637744426-22044-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1637744426-22044-1-git-send-email-yangtiezhu@loongson.cn>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 24 Nov 2021 12:50:49 -0800
+Message-ID: <CAEf4BzYGHczJ6xejqGnf8LrbCdF1P9dnD6uC5tmJTm+KDRbGGA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf, mips: Fix build errors about __NR_bpf undeclared
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
-
-On Wed, Nov 24, 2021 at 8:51 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > --- a/drivers/ata/pata_falcon.c
-> > +++ b/drivers/ata/pata_falcon.c
-> > @@ -55,14 +55,14 @@ static unsigned int pata_falcon_data_xfer(struct ata_queued_cmd *qc,
-> >         /* Transfer multiple of 2 bytes */
-> >         if (rw == READ) {
-> >                 if (swap)
-> > -                       raw_insw_swapw((u16 *)data_addr, (u16 *)buf, words);
-> > +                       raw_insw_swapw((u16 __iomem *)data_addr, (u16 *)buf, words);
-> >                 else
-> > -                       raw_insw((u16 *)data_addr, (u16 *)buf, words);
-> > +                       raw_insw((u16 __iomem *)data_addr, (u16 *)buf, words);
-> >         } else {
-> >                 if (swap)
-> > -                       raw_outsw_swapw((u16 *)data_addr, (u16 *)buf, words);
-> > +                       raw_outsw_swapw((u16 __iomem *)data_addr, (u16 *)buf, words);
-> >                 else
-> > -                       raw_outsw((u16 *)data_addr, (u16 *)buf, words);
-> > +                       raw_outsw((u16 __iomem *)data_addr, (u16 *)buf, words);
+On Wed, Nov 24, 2021 at 1:00 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
 >
-> Can't you just drop the casts? data_addr is an __iomem void *.
-
-It's not u16 though, and the raw_ IO functions require that. But we
-could cast data_addr as __iomem u16 * (compile tested).
-
-Cheers,
-
-    Michael
-
+> Add the __NR_bpf definitions to fix the following build errors for mips.
 >
-> Gr{oetje,eeting}s,
+>  $ cd tools/bpf/bpftool
+>  $ make
+>  [...]
+>  bpf.c:54:4: error: #error __NR_bpf not defined. libbpf does not support =
+your arch.
+>   #  error __NR_bpf not defined. libbpf does not support your arch.
+>      ^~~~~
+>  bpf.c: In function =E2=80=98sys_bpf=E2=80=99:
+>  bpf.c:66:17: error: =E2=80=98__NR_bpf=E2=80=99 undeclared (first use in =
+this function); did you mean =E2=80=98__NR_brk=E2=80=99?
+>    return syscall(__NR_bpf, cmd, attr, size);
+>                   ^~~~~~~~
+>                   __NR_brk
+>  [...]
+>  In file included from gen_loader.c:15:0:
+>  skel_internal.h: In function =E2=80=98skel_sys_bpf=E2=80=99:
+>  skel_internal.h:53:17: error: =E2=80=98__NR_bpf=E2=80=99 undeclared (fir=
+st use in this function); did you mean =E2=80=98__NR_brk=E2=80=99?
+>    return syscall(__NR_bpf, cmd, attr, size);
+>                   ^~~~~~~~
+>                   __NR_brk
 >
->                         Geert
+> We can see the following generated definitions:
 >
+>  $ grep -r "#define __NR_bpf" arch/mips
+>  arch/mips/include/generated/uapi/asm/unistd_o32.h:#define __NR_bpf (__NR=
+_Linux + 355)
+>  arch/mips/include/generated/uapi/asm/unistd_n64.h:#define __NR_bpf (__NR=
+_Linux + 315)
+>  arch/mips/include/generated/uapi/asm/unistd_n32.h:#define __NR_bpf (__NR=
+_Linux + 319)
+>
+> So use the GCC pre-defined macro _ABIO32, _ABIN32 and _ABI64 [1] to defin=
+e
+> the corresponding __NR_bpf.
+>
+> This patch is similar with commit bad1926dd2f6 ("bpf, s390: fix build for
+> libbpf and selftest suite").
+>
+> [1] https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dblob;f=3Dgcc/config/mips/mip=
+s.h#l549
+>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  tools/build/feature/test-bpf.c |  6 ++++++
+>  tools/lib/bpf/bpf.c            |  6 ++++++
+>  tools/lib/bpf/skel_internal.h  | 10 ++++++++++
+>  3 files changed, 22 insertions(+)
+>
+> diff --git a/tools/build/feature/test-bpf.c b/tools/build/feature/test-bp=
+f.c
+> index 82070ea..ebc7a2a 100644
+> --- a/tools/build/feature/test-bpf.c
+> +++ b/tools/build/feature/test-bpf.c
+> @@ -14,6 +14,12 @@
+>  #  define __NR_bpf 349
+>  # elif defined(__s390__)
+>  #  define __NR_bpf 351
+> +# elif defined(__mips__) && defined(_ABIO32)
+> +#  define __NR_bpf (__NR_Linux + 355)
+> +# elif defined(__mips__) && defined(_ABIN32)
+> +#  define __NR_bpf (__NR_Linux + 319)
+> +# elif defined(__mips__) && defined(_ABI64)
+> +#  define __NR_bpf (__NR_Linux + 315)
+
+Is it possible to use a final number without __NR_Linux? All the other
+cases have final numbers, no relative numbers
+
+>  # else
+>  #  error __NR_bpf not defined. libbpf does not support your arch.
+>  # endif
+> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> index 94560ba..60422404 100644
+> --- a/tools/lib/bpf/bpf.c
+> +++ b/tools/lib/bpf/bpf.c
+> @@ -50,6 +50,12 @@
+>  #  define __NR_bpf 351
+>  # elif defined(__arc__)
+>  #  define __NR_bpf 280
+> +# elif defined(__mips__) && defined(_ABIO32)
+> +#  define __NR_bpf (__NR_Linux + 355)
+> +# elif defined(__mips__) && defined(_ABIN32)
+> +#  define __NR_bpf (__NR_Linux + 319)
+> +# elif defined(__mips__) && defined(_ABI64)
+> +#  define __NR_bpf (__NR_Linux + 315)
+>  # else
+>  #  error __NR_bpf not defined. libbpf does not support your arch.
+>  # endif
+> diff --git a/tools/lib/bpf/skel_internal.h b/tools/lib/bpf/skel_internal.=
+h
+> index 9cf6670..6ff4939 100644
+> --- a/tools/lib/bpf/skel_internal.h
+> +++ b/tools/lib/bpf/skel_internal.h
+> @@ -7,6 +7,16 @@
+>  #include <sys/syscall.h>
+>  #include <sys/mman.h>
+>
+> +#ifndef __NR_bpf
+> +# if defined(__mips__) && defined(_ABIO32)
+> +#  define __NR_bpf (__NR_Linux + 355)
+> +# elif defined(__mips__) && defined(_ABIN32)
+> +#  define __NR_bpf (__NR_Linux + 319)
+> +# elif defined(__mips__) && defined(_ABI64)
+> +#  define __NR_bpf (__NR_Linux + 315)
+> +# endif
+> +#endif
+> +
+>  /* This file is a base header for auto-generated *.lskel.h files.
+>   * Its contents will change and may become part of auto-generation in th=
+e future.
+>   *
 > --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 2.1.0
 >
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
