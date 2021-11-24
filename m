@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 346C045C3BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7331145C609
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:02:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346649AbhKXNmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:42:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60382 "EHLO mail.kernel.org"
+        id S1350021AbhKXOE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:04:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350259AbhKXNji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:39:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19FCF63235;
-        Wed, 24 Nov 2021 12:56:47 +0000 (UTC)
+        id S1351022AbhKXOAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:00:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D19A632EE;
+        Wed, 24 Nov 2021 13:09:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758608;
-        bh=Yvl5GFFadhemRkaDtNao3krpIz35fleTxKCKG39Z1vQ=;
+        s=korg; t=1637759367;
+        bh=w9ZQlESNE5VpDrcj1WzFu+MC0cLSfXkK/gHetCSybwQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HRflh/NTFC+JEx6acmq7gnazNrICHCINS4apgfe0AjG0f4/LajAb6cmplBSPP7zSS
-         WC1NkQJHjPfDrbRKi9N9BkfJFmR2ajaIKBgDakTlaMaKshMf9oRK0L4xJK23K6zgx3
-         3+eQh0ORPMXaSzaxNUcLPxWH4Qk56oM5V3FUCXvg=
+        b=YH8ydYxSl+s9l0JhMQ/cHdAaAzXtnnmkGtssUE9Ul1qILakAv1Rc+3b6RgLNRcfY+
+         VnXVLXJzIAuI3UG8HgFDXb8wSf87zhw5Zu9xLD4vPKPYAR9nouh/efGRxXaFg9C0Jo
+         RzPWXzQYx7uRQ7zIQ6iI5nWAGarSSwvxP249VNn4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lin Ma <linma@zju.edu.cn>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 108/154] NFC: reorder the logic in nfc_{un,}register_device
+        stable@vger.kernel.org,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 5.15 217/279] s390/setup: avoid reserving memory above identity mapping
 Date:   Wed, 24 Nov 2021 12:58:24 +0100
-Message-Id: <20211124115705.780732462@linuxfoundation.org>
+Message-Id: <20211124115726.246383184@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,129 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lin Ma <linma@zju.edu.cn>
+From: Vasily Gorbik <gor@linux.ibm.com>
 
-[ Upstream commit 3e3b5dfcd16a3e254aab61bd1e8c417dd4503102 ]
+commit 420f48f636b98fd685f44a3acc4c0a7c0840910d upstream.
 
-There is a potential UAF between the unregistration routine and the NFC
-netlink operations.
+Such reserved memory region, if not cleaned up later causes problems when
+memblock_free_all() is called to release free pages to the buddy allocator
+and those reserved regions are carried over to reserve_bootmem_region()
+which marks the pages as PageReserved.
 
-The race that cause that UAF can be shown as below:
+Instead use memblock_set_current_limit() to make sure memblock allocations
+do not go over identity mapping (which could happen when "mem=" option
+is used or during kdump).
 
- (FREE)                      |  (USE)
-nfcmrvl_nci_unregister_dev   |  nfc_genl_dev_up
-  nci_close_device           |
-  nci_unregister_device      |    nfc_get_device
-    nfc_unregister_device    |    nfc_dev_up
-      rfkill_destory         |
-      device_del             |      rfkill_blocked
-  ...                        |    ...
-
-The root cause for this race is concluded below:
-1. The rfkill_blocked (USE) in nfc_dev_up is supposed to be placed after
-the device_is_registered check.
-2. Since the netlink operations are possible just after the device_add
-in nfc_register_device, the nfc_dev_up() can happen anywhere during the
-rfkill creation process, which leads to data race.
-
-This patch reorder these actions to permit
-1. Once device_del is finished, the nfc_dev_up cannot dereference the
-rfkill object.
-2. The rfkill_register need to be placed after the device_add of nfc_dev
-because the parent device need to be created first. So this patch keeps
-the order but inject device_lock to prevent the data race.
-
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
-Fixes: be055b2f89b5 ("NFC: RFKILL support")
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20211116152652.19217-1-linma@zju.edu.cn
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: 73045a08cf55 ("s390: unify identity mapping limits handling")
+Reported-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/nfc/core.c | 32 ++++++++++++++++++--------------
- 1 file changed, 18 insertions(+), 14 deletions(-)
+ arch/s390/kernel/setup.c |   10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
 
-diff --git a/net/nfc/core.c b/net/nfc/core.c
-index eb377f87bcae8..6800470dd6df7 100644
---- a/net/nfc/core.c
-+++ b/net/nfc/core.c
-@@ -94,13 +94,13 @@ int nfc_dev_up(struct nfc_dev *dev)
+--- a/arch/s390/kernel/setup.c
++++ b/arch/s390/kernel/setup.c
+@@ -634,14 +634,6 @@ static struct notifier_block kdump_mem_n
+ #endif
  
- 	device_lock(&dev->dev);
- 
--	if (dev->rfkill && rfkill_blocked(dev->rfkill)) {
--		rc = -ERFKILL;
-+	if (!device_is_registered(&dev->dev)) {
-+		rc = -ENODEV;
- 		goto error;
- 	}
- 
--	if (!device_is_registered(&dev->dev)) {
--		rc = -ENODEV;
-+	if (dev->rfkill && rfkill_blocked(dev->rfkill)) {
-+		rc = -ERFKILL;
- 		goto error;
- 	}
- 
-@@ -1117,11 +1117,7 @@ int nfc_register_device(struct nfc_dev *dev)
- 	if (rc)
- 		pr_err("Could not register llcp device\n");
- 
--	rc = nfc_genl_device_added(dev);
--	if (rc)
--		pr_debug("The userspace won't be notified that the device %s was added\n",
--			 dev_name(&dev->dev));
+ /*
+- * Make sure that the area above identity mapping is protected
+- */
+-static void __init reserve_above_ident_map(void)
+-{
+-	memblock_reserve(ident_map_size, ULONG_MAX);
+-}
 -
-+	device_lock(&dev->dev);
- 	dev->rfkill = rfkill_alloc(dev_name(&dev->dev), &dev->dev,
- 				   RFKILL_TYPE_NFC, &nfc_rfkill_ops, dev);
- 	if (dev->rfkill) {
-@@ -1130,6 +1126,12 @@ int nfc_register_device(struct nfc_dev *dev)
- 			dev->rfkill = NULL;
- 		}
- 	}
-+	device_unlock(&dev->dev);
-+
-+	rc = nfc_genl_device_added(dev);
-+	if (rc)
-+		pr_debug("The userspace won't be notified that the device %s was added\n",
-+			 dev_name(&dev->dev));
+-/*
+  * Reserve memory for kdump kernel to be loaded with kexec
+  */
+ static void __init reserve_crashkernel(void)
+@@ -1005,11 +997,11 @@ void __init setup_arch(char **cmdline_p)
+ 	setup_control_program_code();
  
- 	return 0;
- }
-@@ -1146,10 +1148,17 @@ void nfc_unregister_device(struct nfc_dev *dev)
+ 	/* Do some memory reservations *before* memory is added to memblock */
+-	reserve_above_ident_map();
+ 	reserve_kernel();
+ 	reserve_initrd();
+ 	reserve_certificate_list();
+ 	reserve_mem_detect_info();
++	memblock_set_current_limit(ident_map_size);
+ 	memblock_allow_resize();
  
- 	pr_debug("dev_name=%s\n", dev_name(&dev->dev));
- 
-+	rc = nfc_genl_device_removed(dev);
-+	if (rc)
-+		pr_debug("The userspace won't be notified that the device %s "
-+			 "was removed\n", dev_name(&dev->dev));
-+
-+	device_lock(&dev->dev);
- 	if (dev->rfkill) {
- 		rfkill_unregister(dev->rfkill);
- 		rfkill_destroy(dev->rfkill);
- 	}
-+	device_unlock(&dev->dev);
- 
- 	if (dev->ops->check_presence) {
- 		device_lock(&dev->dev);
-@@ -1159,11 +1168,6 @@ void nfc_unregister_device(struct nfc_dev *dev)
- 		cancel_work_sync(&dev->check_pres_work);
- 	}
- 
--	rc = nfc_genl_device_removed(dev);
--	if (rc)
--		pr_debug("The userspace won't be notified that the device %s "
--			 "was removed\n", dev_name(&dev->dev));
--
- 	nfc_llcp_unregister_device(dev);
- 
- 	mutex_lock(&nfc_devlist_mutex);
--- 
-2.33.0
-
+ 	/* Get information about *all* installed memory */
 
 
