@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EBC745BACD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AFFF45BADA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242937AbhKXMOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:14:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34272 "EHLO mail.kernel.org"
+        id S243459AbhKXMO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:14:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242409AbhKXMLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:11:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1335B60FE7;
-        Wed, 24 Nov 2021 12:06:37 +0000 (UTC)
+        id S242522AbhKXMLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:11:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A56EC61053;
+        Wed, 24 Nov 2021 12:06:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755598;
-        bh=YsbPN//30n+SmPEQQPxnlsZIPjb11JX55NhKlNCGRkQ=;
+        s=korg; t=1637755601;
+        bh=nJMQcb4i7Xq3qYoWrq8JbAdlxQWO7vjE5guzu8RnY/g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ivpCmBD7/ymDdtURGjME+PYBhJH6Po0nqHThM1e9g36xtk87OmV3zTyY8JZOnzxjj
-         ar3EMh90I6WuXZr+BQZNAR9WWd+pCP0jsWDyE2iM6lugJDIdKX3nb+fErv8zz3jN/I
-         to6f2x19lDVu1QCtyybw6Jyaij02zaQbVyYkJDak=
+        b=a9KN0u+CL6RSkMGg6A+Tg1PYEUC8MPh2O7DH30t8xeBWuRHM1EXd5yKdbd25SqCzR
+         Gg385fBPo0QjrAH1d3dZs/Ww+TDkQRUbXYEj+2hQNGZStKFTDwgKPVRUtAfHanberN
+         JCdh/259PINjxXv9v/bHrENDBbbF4pnKLWGRFARo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         =?UTF-8?q?Linus=20L=FCssing?= <linus.luessing@c0d3.blue>,
         Simon Wunderlich <sw@simonwunderlich.de>,
         Sven Eckelmann <sven@narfation.org>
-Subject: [PATCH 4.4 152/162] batman-adv: mcast: fix duplicate mcast packets in BLA backbone from LAN
-Date:   Wed, 24 Nov 2021 12:57:35 +0100
-Message-Id: <20211124115703.196805615@linuxfoundation.org>
+Subject: [PATCH 4.4 153/162] batman-adv: mcast: fix duplicate mcast packets in BLA backbone from mesh
+Date:   Wed, 24 Nov 2021 12:57:36 +0100
+Message-Id: <20211124115703.231890862@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
 References: <20211124115658.328640564@linuxfoundation.org>
@@ -42,144 +42,158 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Linus Lüssing <linus.luessing@c0d3.blue>
 
-commit 3236d215ad38a3f5372e65cd1e0a52cf93d3c6a2 upstream.
+commit 74c09b7275126da1b642b90c9cdc3ae8b729ad4b upstream
 
 Scenario:
-* Multicast frame send from a BLA backbone (multiple nodes with
-  their bat0 bridged together, with BLA enabled)
+* Multicast frame send from mesh to a BLA backbone (multiple nodes
+  with their bat0 bridged together, with BLA enabled)
 
 Issue:
-* BLA backbone nodes receive the frame multiple times on bat0
+* BLA backbone nodes receive the frame multiple times on bat0,
+  once from mesh->bat0 and once from each backbone_gw from LAN
 
-For multicast frames received via batman-adv broadcast packets the
-originator of the broadcast packet is checked before decapsulating and
-forwarding the frame to bat0 (batadv_bla_is_backbone_gw()->
-batadv_recv_bcast_packet()). If it came from a node which shares the
-same BLA backbone with us then it is not forwarded to bat0 to avoid a
-loop.
+For unicast, a node will send only to the best backbone gateway
+according to the TQ. However for multicast we currently cannot determine
+if multiple destination nodes share the same backbone if they don't share
+the same backbone with us. So we need to keep sending the unicasts to
+all backbone gateways and let the backbone gateways decide which one
+will forward the frame. We can use the CLAIM mechanism to make this
+decision.
 
-When sending a multicast frame in a non-4-address batman-adv unicast
-packet we are currently missing this check - and cannot do so because
-the batman-adv unicast packet has no originator address field.
+One catch: The batman-adv gateway feature for DHCP packets potentially
+sends multicast packets in the same batman-adv unicast header as the
+multicast optimizations code. And we are not allowed to drop those even
+if we did not claim the source address of the sender, as for such
+packets there is only this one multicast-in-unicast packet.
 
-However, we can simply fix this on the sender side by only sending the
-multicast frame via unicasts to interested nodes which do not share the
-same BLA backbone with us. This also nicely avoids some unnecessary
-transmissions on mesh side.
+How can we distinguish the two cases?
 
-Note that no infinite loop was observed, probably because of dropping
-via batadv_interface_tx()->batadv_bla_tx(). However the duplicates still
-utterly confuse switches/bridges, ICMPv6 duplicate address detection and
-neighbor discovery and therefore leads to long delays before being able
-to establish TCP connections, for instance. And it also leads to the Linux
-bridge printing messages like:
-"br-lan: received packet on eth1 with own address as source address ..."
+The gateway feature uses a batman-adv unicast 4 address header. While
+the multicast-to-unicasts feature uses a simple, 3 address batman-adv
+unicast header. So let's use this to distinguish.
 
-Fixes: 1d8ab8d3c176 ("batman-adv: Modified forwarding behaviour for multicast packets")
+Fixes: 2d3f6ccc4ea5 ("batman-adv: check incoming packet type for bla")
 Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
-Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
-[ bp: 4.4 backport: drop usage in non-existing batadv_mcast_forw_*,
-  correct fixes line ]
+Acked-by: Simon Wunderlich <sw@simonwunderlich.de>
+[ bp: 4.4 backported: adjust context, correct fixes line ]
 Signed-off-by: Sven Eckelmann <sven@narfation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/batman-adv/multicast.c      |   31 +++++++++++++++++++++++++++++++
- net/batman-adv/multicast.h      |   15 +++++++++++++++
- net/batman-adv/soft-interface.c |    5 ++---
- 3 files changed, 48 insertions(+), 3 deletions(-)
+ net/batman-adv/bridge_loop_avoidance.c |   34 ++++++++++++++++++++++++---------
+ net/batman-adv/bridge_loop_avoidance.h |    4 +--
+ net/batman-adv/soft-interface.c        |    6 ++---
+ 3 files changed, 30 insertions(+), 14 deletions(-)
 
---- a/net/batman-adv/multicast.c
-+++ b/net/batman-adv/multicast.c
-@@ -44,7 +44,9 @@
- #include <net/addrconf.h>
- #include <net/ipv6.h>
- 
-+#include "bridge_loop_avoidance.h"
- #include "packet.h"
-+#include "send.h"
- #include "translation-table.h"
- 
- /**
-@@ -806,6 +808,35 @@ void batadv_mcast_free(struct batadv_pri
- }
- 
- /**
-+ * batadv_mcast_forw_send_orig() - send a multicast packet to an originator
-+ * @bat_priv: the bat priv with all the soft interface information
-+ * @skb: the multicast packet to send
-+ * @vid: the vlan identifier
-+ * @orig_node: the originator to send the packet to
-+ *
-+ * Return: NET_XMIT_DROP in case of error or NET_XMIT_SUCCESS otherwise.
-+ */
-+int batadv_mcast_forw_send_orig(struct batadv_priv *bat_priv,
-+				struct sk_buff *skb,
-+				unsigned short vid,
-+				struct batadv_orig_node *orig_node)
-+{
-+	/* Avoid sending multicast-in-unicast packets to other BLA
-+	 * gateways - they already got the frame from the LAN side
-+	 * we share with them.
-+	 * TODO: Refactor to take BLA into account earlier, to avoid
-+	 * reducing the mcast_fanout count.
-+	 */
-+	if (batadv_bla_is_backbone_gw_orig(bat_priv, orig_node->orig, vid)) {
-+		dev_kfree_skb(skb);
-+		return NET_XMIT_SUCCESS;
-+	}
-+
-+	return batadv_send_skb_unicast(bat_priv, skb, BATADV_UNICAST, 0,
-+				       orig_node, vid);
-+}
-+
-+/**
-  * batadv_mcast_purge_orig - reset originator global mcast state modifications
-  * @orig: the originator which is going to get purged
+--- a/net/batman-adv/bridge_loop_avoidance.c
++++ b/net/batman-adv/bridge_loop_avoidance.c
+@@ -1542,7 +1542,7 @@ void batadv_bla_free(struct batadv_priv
+  * @bat_priv: the bat priv with all the soft interface information
+  * @skb: the frame to be checked
+  * @vid: the VLAN ID of the frame
+- * @is_bcast: the packet came in a broadcast packet type.
++ * @packet_type: the batman packet type this frame came in
+  *
+  * bla_rx avoidance checks if:
+  *  * we have to race for a claim
+@@ -1553,7 +1553,7 @@ void batadv_bla_free(struct batadv_priv
+  * process the skb.
   */
---- a/net/batman-adv/multicast.h
-+++ b/net/batman-adv/multicast.h
-@@ -44,6 +44,11 @@ enum batadv_forw_mode
- batadv_mcast_forw_mode(struct batadv_priv *bat_priv, struct sk_buff *skb,
- 		       struct batadv_orig_node **mcast_single_orig);
- 
-+int batadv_mcast_forw_send_orig(struct batadv_priv *bat_priv,
-+				struct sk_buff *skb,
-+				unsigned short vid,
-+				struct batadv_orig_node *orig_node);
-+
- void batadv_mcast_init(struct batadv_priv *bat_priv);
- 
- void batadv_mcast_free(struct batadv_priv *bat_priv);
-@@ -68,6 +73,16 @@ static inline int batadv_mcast_init(stru
- 	return 0;
- }
- 
-+static inline int
-+batadv_mcast_forw_send_orig(struct batadv_priv *bat_priv,
-+			    struct sk_buff *skb,
-+			    unsigned short vid,
-+			    struct batadv_orig_node *orig_node)
-+{
-+	kfree_skb(skb);
-+	return NET_XMIT_DROP;
-+}
-+
- static inline void batadv_mcast_free(struct batadv_priv *bat_priv)
+ int batadv_bla_rx(struct batadv_priv *bat_priv, struct sk_buff *skb,
+-		  unsigned short vid, bool is_bcast)
++		  unsigned short vid, int packet_type)
  {
+ 	struct batadv_bla_backbone_gw *backbone_gw;
+ 	struct ethhdr *ethhdr;
+@@ -1572,9 +1572,24 @@ int batadv_bla_rx(struct batadv_priv *ba
+ 		goto allow;
+ 
+ 	if (unlikely(atomic_read(&bat_priv->bla.num_requests)))
+-		/* don't allow broadcasts while requests are in flight */
+-		if (is_multicast_ether_addr(ethhdr->h_dest) && is_bcast)
+-			goto handled;
++		/* don't allow multicast packets while requests are in flight */
++		if (is_multicast_ether_addr(ethhdr->h_dest))
++			/* Both broadcast flooding or multicast-via-unicasts
++			 * delivery might send to multiple backbone gateways
++			 * sharing the same LAN and therefore need to coordinate
++			 * which backbone gateway forwards into the LAN,
++			 * by claiming the payload source address.
++			 *
++			 * Broadcast flooding and multicast-via-unicasts
++			 * delivery use the following two batman packet types.
++			 * Note: explicitly exclude BATADV_UNICAST_4ADDR,
++			 * as the DHCP gateway feature will send explicitly
++			 * to only one BLA gateway, so the claiming process
++			 * should be avoided there.
++			 */
++			if (packet_type == BATADV_BCAST ||
++			    packet_type == BATADV_UNICAST)
++				goto handled;
+ 
+ 	ether_addr_copy(search_claim.addr, ethhdr->h_source);
+ 	search_claim.vid = vid;
+@@ -1602,13 +1617,14 @@ int batadv_bla_rx(struct batadv_priv *ba
+ 		goto allow;
+ 	}
+ 
+-	/* if it is a broadcast ... */
+-	if (is_multicast_ether_addr(ethhdr->h_dest) && is_bcast) {
++	/* if it is a multicast ... */
++	if (is_multicast_ether_addr(ethhdr->h_dest) &&
++	    (packet_type == BATADV_BCAST || packet_type == BATADV_UNICAST)) {
+ 		/* ... drop it. the responsible gateway is in charge.
+ 		 *
+-		 * We need to check is_bcast because with the gateway
++		 * We need to check packet type because with the gateway
+ 		 * feature, broadcasts (like DHCP requests) may be sent
+-		 * using a unicast packet type.
++		 * using a unicast 4 address packet type. See comment above.
+ 		 */
+ 		goto handled;
+ 	} else {
+--- a/net/batman-adv/bridge_loop_avoidance.h
++++ b/net/batman-adv/bridge_loop_avoidance.h
+@@ -27,7 +27,7 @@ struct sk_buff;
+ 
+ #ifdef CONFIG_BATMAN_ADV_BLA
+ int batadv_bla_rx(struct batadv_priv *bat_priv, struct sk_buff *skb,
+-		  unsigned short vid, bool is_bcast);
++		  unsigned short vid, int packet_type);
+ int batadv_bla_tx(struct batadv_priv *bat_priv, struct sk_buff *skb,
+ 		  unsigned short vid);
+ int batadv_bla_is_backbone_gw(struct sk_buff *skb,
+@@ -50,7 +50,7 @@ void batadv_bla_free(struct batadv_priv
+ 
+ static inline int batadv_bla_rx(struct batadv_priv *bat_priv,
+ 				struct sk_buff *skb, unsigned short vid,
+-				bool is_bcast)
++				int packet_type)
+ {
+ 	return 0;
  }
 --- a/net/batman-adv/soft-interface.c
 +++ b/net/batman-adv/soft-interface.c
-@@ -353,9 +353,8 @@ send:
- 				goto dropped;
- 			ret = batadv_send_skb_via_gw(bat_priv, skb, vid);
- 		} else if (mcast_single_orig) {
--			ret = batadv_send_skb_unicast(bat_priv, skb,
--						      BATADV_UNICAST, 0,
--						      mcast_single_orig, vid);
-+			ret = batadv_mcast_forw_send_orig(bat_priv, skb, vid,
-+							  mcast_single_orig);
- 		} else {
- 			if (batadv_dat_snoop_outgoing_arp_request(bat_priv,
- 								  skb))
+@@ -393,10 +393,10 @@ void batadv_interface_rx(struct net_devi
+ 	struct vlan_ethhdr *vhdr;
+ 	struct ethhdr *ethhdr;
+ 	unsigned short vid;
+-	bool is_bcast;
++	int packet_type;
+ 
+ 	batadv_bcast_packet = (struct batadv_bcast_packet *)skb->data;
+-	is_bcast = (batadv_bcast_packet->packet_type == BATADV_BCAST);
++	packet_type = batadv_bcast_packet->packet_type;
+ 
+ 	/* check if enough space is available for pulling, and pull */
+ 	if (!pskb_may_pull(skb, hdr_size))
+@@ -444,7 +444,7 @@ void batadv_interface_rx(struct net_devi
+ 	/* Let the bridge loop avoidance check the packet. If will
+ 	 * not handle it, we can safely push it up.
+ 	 */
+-	if (batadv_bla_rx(bat_priv, skb, vid, is_bcast))
++	if (batadv_bla_rx(bat_priv, skb, vid, packet_type))
+ 		goto out;
+ 
+ 	if (orig_node)
 
 
