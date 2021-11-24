@@ -2,48 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5FF45C54E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4BE45C0E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:09:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352912AbhKXN4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:56:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41982 "EHLO mail.kernel.org"
+        id S1348023AbhKXNMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:12:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354738AbhKXNwy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:52:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 017B66326C;
-        Wed, 24 Nov 2021 13:05:06 +0000 (UTC)
+        id S1346442AbhKXNJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:09:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C62DC613CF;
+        Wed, 24 Nov 2021 12:40:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759106;
-        bh=O4w7xfx7vGgbYdk0XerZNmUo+f6Xn5QlAquf3zUwW7s=;
+        s=korg; t=1637757649;
+        bh=fHM3LPgbIUhuM62LAmVgpEdG4KDm0aho28ccMpZIaYE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K0m2IQ5kLLXXTqmLUC6tC2sBZZF8bcb7AIYgqhjGhpXp1zQPGqxEFQUYjMJhQcgXw
-         Qn2ZyMZOBv0gFDOffuYb17UiZlpzDcpMm4SQ0W8jhFGEJrVfrEvQJx0PdQi0YHxjHK
-         8WFK31Vt9Afry5oIagQwSxJlhABS+FZ3E+FiriTw=
+        b=sO6wvc2nDNJln9dNzMffjt4MxeC/LPVX+dbKVMs/5C6+2eUpfF8hnl3z2kcCro3LE
+         8nS3Tlt+NZ4wH/if9S823ftQ6/Yn+27An01+gbHZdh8wpWUYIivqRp02ebT1Hx9+2A
+         1mmTw21dvm4KvGlzCawW1hx5jE3eE13sLQE3sr8w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Artur Rojek <contact@artur-rojek.eu>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-mips@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 135/279] mips: bcm63xx: add support for clk_get_parent()
+        stable@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 232/323] USB: chipidea: fix interrupt deadlock
 Date:   Wed, 24 Nov 2021 12:57:02 +0100
-Message-Id: <20211124115723.458019992@linuxfoundation.org>
+Message-Id: <20211124115726.748666989@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,65 +39,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit e8f67482e5a4bc8d0b65d606d08cb60ee123b468 ]
+commit 9aaa81c3366e8393a62374e3a1c67c69edc07b8a upstream.
 
-BCM63XX selects HAVE_LEGACY_CLK but does not provide/support
-clk_get_parent(), so add a simple implementation of that
-function so that callers of it will build without errors.
+Chipidea core was calling the interrupt handler from non-IRQ context
+with interrupts enabled, something which can lead to a deadlock if
+there's an actual interrupt trying to take a lock that's already held
+(e.g. the controller lock in udc_irq()).
 
-Fixes these build errors:
+Add a wrapper that can be used to fake interrupts instead of calling the
+handler directly.
 
-mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
-ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
-mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
-ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
+Fixes: 3ecb3e09b042 ("usb: chipidea: Use extcon framework for VBUS and ID detect")
+Fixes: 876d4e1e8298 ("usb: chipidea: core: add wakeup support for extcon")
+Cc: Peter Chen <peter.chen@kernel.org>
+Cc: stable@vger.kernel.org      # 4.4
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211021083447.20078-1-johan@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs." )
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Suggested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Cc: Artur Rojek <contact@artur-rojek.eu>
-Cc: Paul Cercueil <paul@crapouillou.net>
-Cc: linux-mips@vger.kernel.org
-Cc: Jonathan Cameron <jic23@kernel.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: linux-iio@vger.kernel.org
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: bcm-kernel-feedback-list@broadcom.com
-Cc: Jonas Gorski <jonas.gorski@gmail.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/bcm63xx/clk.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/usb/chipidea/core.c |   19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/arch/mips/bcm63xx/clk.c b/arch/mips/bcm63xx/clk.c
-index 5a3e325275d0d..1c91064cb448b 100644
---- a/arch/mips/bcm63xx/clk.c
-+++ b/arch/mips/bcm63xx/clk.c
-@@ -381,6 +381,12 @@ void clk_disable(struct clk *clk)
+--- a/drivers/usb/chipidea/core.c
++++ b/drivers/usb/chipidea/core.c
+@@ -532,7 +532,7 @@ int hw_device_reset(struct ci_hdrc *ci)
+ 	return 0;
+ }
  
- EXPORT_SYMBOL(clk_disable);
- 
-+struct clk *clk_get_parent(struct clk *clk)
-+{
-+	return NULL;
-+}
-+EXPORT_SYMBOL(clk_get_parent);
-+
- unsigned long clk_get_rate(struct clk *clk)
+-static irqreturn_t ci_irq(int irq, void *data)
++static irqreturn_t ci_irq_handler(int irq, void *data)
  {
- 	if (!clk)
--- 
-2.33.0
-
+ 	struct ci_hdrc *ci = data;
+ 	irqreturn_t ret = IRQ_NONE;
+@@ -585,6 +585,15 @@ static irqreturn_t ci_irq(int irq, void
+ 	return ret;
+ }
+ 
++static void ci_irq(struct ci_hdrc *ci)
++{
++	unsigned long flags;
++
++	local_irq_save(flags);
++	ci_irq_handler(ci->irq, ci);
++	local_irq_restore(flags);
++}
++
+ static int ci_cable_notifier(struct notifier_block *nb, unsigned long event,
+ 			     void *ptr)
+ {
+@@ -594,7 +603,7 @@ static int ci_cable_notifier(struct noti
+ 	cbl->connected = event;
+ 	cbl->changed = true;
+ 
+-	ci_irq(ci->irq, ci);
++	ci_irq(ci);
+ 	return NOTIFY_DONE;
+ }
+ 
+@@ -1048,7 +1057,7 @@ static int ci_hdrc_probe(struct platform
+ 		}
+ 	}
+ 
+-	ret = devm_request_irq(dev, ci->irq, ci_irq, IRQF_SHARED,
++	ret = devm_request_irq(dev, ci->irq, ci_irq_handler, IRQF_SHARED,
+ 			ci->platdata->name, ci);
+ 	if (ret)
+ 		goto stop;
+@@ -1170,11 +1179,11 @@ static void ci_extcon_wakeup_int(struct
+ 
+ 	if (!IS_ERR(cable_id->edev) && ci->is_otg &&
+ 		(otgsc & OTGSC_IDIE) && (otgsc & OTGSC_IDIS))
+-		ci_irq(ci->irq, ci);
++		ci_irq(ci);
+ 
+ 	if (!IS_ERR(cable_vbus->edev) && ci->is_otg &&
+ 		(otgsc & OTGSC_BSVIE) && (otgsc & OTGSC_BSVIS))
+-		ci_irq(ci->irq, ci);
++		ci_irq(ci);
+ }
+ 
+ static int ci_controller_resume(struct device *dev)
 
 
