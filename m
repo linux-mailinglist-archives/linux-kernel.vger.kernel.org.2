@@ -2,236 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E3445CE31
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A6E45CE33
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:39:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238093AbhKXUl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 15:41:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237976AbhKXUl1 (ORCPT
+        id S238197AbhKXUm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 15:42:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:34871 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237496AbhKXUmz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 15:41:27 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F719C06173E
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:38:17 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id e9-20020a170902ed8900b00143a3f40299so1201626plj.20
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:38:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=a+16mI7Pr87M2uOheqr5HzoEjiEncFmgWtieSeNymP8=;
-        b=sLDh5e5zttR8HiXsPHhiMwbNUC45LgfgftB58cRynPMe8F9jC7xkanWNwgZpsdwyuY
-         025SWhqQ13ZKMQ10nrI9rSvNR2lvDVczGrhEkJy9wlAVVGUlMJNDuFnd9HVQ4jzvAh08
-         DTDCtTyAM3ul32YgaWyBFGkKduejfCaei0aJrQ3I2oKAMxoS2DW9wLf7vygtWwQ9WwuZ
-         U4qh4m34a6BlqwMDtOiE7QkOc4sdaO/PbWAmTwwRo07hzB7DGg+a0VfDAunUjsvBdsCo
-         B2hszkfGkqooH8Ks6GHvfGR1aAV7bzlDsoGjWATLx7xMiwrhwZQqpX7I4gXyATjiuQx/
-         4jmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=a+16mI7Pr87M2uOheqr5HzoEjiEncFmgWtieSeNymP8=;
-        b=mSUMT4qvixQWI8OII0kHIDJihZAbubm7/u06ag4s64uCmwc3Ha/9XFamqdXXog/ncQ
-         HMD+MI8Ve2v1N14DmjO3qvjutuexNbAFrVQSo3jM0VtL5v0ErdjCOn+aU0YGamY0g9zt
-         RY02en9g+J668JzZ03gaZCiCbsxrzkL4HV13s21WHAKSnPFnveh2DKkyxKqvReh5VzIS
-         fQXJcsz964av7CY745aPv2yCQiSHZ/jF19ztsFulHX40bsXXSMZEG3cysLXmPfKaWx4a
-         1jFqjvEsJYG6sV2hedYXFHnwHdSw56UTyQx464G7BZ77rEmcDlqkWddS8W4qXTqBJQ2/
-         HsgQ==
-X-Gm-Message-State: AOAM531ui/auMXgZUVBuTE0LfFGjb7AcSV/RKqG3bn82A4yqpe5jbR+u
-        TRA6Msw4hp5d3/FKQxeidmZl4aEeRHWC4X+L
-X-Google-Smtp-Source: ABdhPJxZxQIA2Ed7XXVSLYKke1BQRf6WyTVUPo6Gld0zAXvdmHx9LLhr2kyZFNKi/r9bXh1s692Av4+KkL04OpN4
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a05:6a00:2387:b0:49f:af00:d5d0 with
- SMTP id f7-20020a056a00238700b0049faf00d5d0mr8931769pfc.1.1637786296616; Wed,
- 24 Nov 2021 12:38:16 -0800 (PST)
-Date:   Wed, 24 Nov 2021 20:38:05 +0000
-In-Reply-To: <20211123204644.3458700-1-yosryahmed@google.com>
-Message-Id: <20211124203805.3700355-1-yosryahmed@google.com>
-Mime-Version: 1.0
-References: <20211123204644.3458700-1-yosryahmed@google.com>
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH] mm, hugepages: make memory size variable in hugepage-mremap selftest
-From:   Yosry Ahmed <yosryahmed@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Mina Almasry <almasrymina@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 24 Nov 2021 15:42:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637786384;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dC1QYD3NyFjEmuqvZfKv1zs/1/64EChxP+RokAn3IHE=;
+        b=cpdQGwGCcX9XTdZWR+m8dLmpbitEGwA3oeTQsXLly7IsrMGrYnV40F7dVt7X8sOvlcqjKa
+        LCcamr2otB63l8wQJjHwj7CRfiXnPyvqbCFv7lN9vb2yJpd6qU09wXhfeZNB8jHU1m9gYh
+        xwUXAIn3MlXyuRGqp86c78gusv025dU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-343-nT4qftA5MT-dbcwyPLL8KQ-1; Wed, 24 Nov 2021 15:39:41 -0500
+X-MC-Unique: nT4qftA5MT-dbcwyPLL8KQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 54ED8192FDA0;
+        Wed, 24 Nov 2021 20:39:40 +0000 (UTC)
+Received: from t480s.redhat.com (unknown [10.39.194.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 50A4A10114AE;
+        Wed, 24 Nov 2021 20:39:23 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Dave Young <dyoung@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Philipp Rudo <prudo@redhat.com>
+Subject: [PATCH for 4.9-stable] proc/vmcore: fix clearing user buffer by properly using clear_user()
+Date:   Wed, 24 Nov 2021 21:39:22 +0100
+Message-Id: <20211124203922.26422-1-david@redhat.com>
+In-Reply-To: <163758401712010@kroah.com>
+References: <163758401712010@kroah.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hugetlb vma mremap() test currently maps 1GB of memory to trigger
-pmd sharing and make sure that 'unshare' path in mremap code works.
-The test originally only mapped 10MB of memory (as specified by the
-header comment) but was later modified to 1GB to tackle this case.
+commit c1e63117711977cc4295b2ce73de29dd17066c82 upstream.
 
-However, not all machines will have 1GB of memory to spare for this
-test. Adding a mapping size arg will allow run_vmtest.sh to pass an
-adequate mapping size, while allowing users to run the test
-independently with arbitrary size mappings.
+To clear a user buffer we cannot simply use memset, we have to use
+clear_user().  With a virtio-mem device that registers a vmcore_cb and
+has some logically unplugged memory inside an added Linux memory block,
+I can easily trigger a BUG by copying the vmcore via "cp":
 
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+  systemd[1]: Starting Kdump Vmcore Save Service...
+  kdump[420]: Kdump is using the default log level(3).
+  kdump[453]: saving to /sysroot/var/crash/127.0.0.1-2021-11-11-14:59:22/
+  kdump[458]: saving vmcore-dmesg.txt to /sysroot/var/crash/127.0.0.1-2021-11-11-14:59:22/
+  kdump[465]: saving vmcore-dmesg.txt complete
+  kdump[467]: saving vmcore
+  BUG: unable to handle page fault for address: 00007f2374e01000
+  #PF: supervisor write access in kernel mode
+  #PF: error_code(0x0003) - permissions violation
+  PGD 7a523067 P4D 7a523067 PUD 7a528067 PMD 7a525067 PTE 800000007048f867
+  Oops: 0003 [#1] PREEMPT SMP NOPTI
+  CPU: 0 PID: 468 Comm: cp Not tainted 5.15.0+ #6
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-27-g64f37cc530f1-prebuilt.qemu.org 04/01/2014
+  RIP: 0010:read_from_oldmem.part.0.cold+0x1d/0x86
+  Code: ff ff ff e8 05 ff fe ff e9 b9 e9 7f ff 48 89 de 48 c7 c7 38 3b 60 82 e8 f1 fe fe ff 83 fd 08 72 3c 49 8d 7d 08 4c 89 e9 89 e8 <49> c7 45 00 00 00 00 00 49 c7 44 05 f8 00 00 00 00 48 83 e7 f81
+  RSP: 0018:ffffc9000073be08 EFLAGS: 00010212
+  RAX: 0000000000001000 RBX: 00000000002fd000 RCX: 00007f2374e01000
+  RDX: 0000000000000001 RSI: 00000000ffffdfff RDI: 00007f2374e01008
+  RBP: 0000000000001000 R08: 0000000000000000 R09: ffffc9000073bc50
+  R10: ffffc9000073bc48 R11: ffffffff829461a8 R12: 000000000000f000
+  R13: 00007f2374e01000 R14: 0000000000000000 R15: ffff88807bd421e8
+  FS:  00007f2374e12140(0000) GS:ffff88807f000000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 00007f2374e01000 CR3: 000000007a4aa000 CR4: 0000000000350eb0
+  Call Trace:
+   read_vmcore+0x236/0x2c0
+   proc_reg_read+0x55/0xa0
+   vfs_read+0x95/0x190
+   ksys_read+0x4f/0xc0
+   do_syscall_64+0x3b/0x90
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Some x86-64 CPUs have a CPU feature called "Supervisor Mode Access
+Prevention (SMAP)", which is used to detect wrong access from the kernel
+to user buffers like this: SMAP triggers a permissions violation on
+wrong access.  In the x86-64 variant of clear_user(), SMAP is properly
+handled via clac()+stac().
+
+To fix, properly use clear_user() when we're dealing with a user buffer.
+
+Link: https://lkml.kernel.org/r/20211112092750.6921-1-david@redhat.com
+Fixes: 997c136f518c ("fs/proc/vmcore.c: add hook to read_from_oldmem() to check for non-ram pages")
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Acked-by: Baoquan He <bhe@redhat.com>
+Cc: Dave Young <dyoung@redhat.com>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Vivek Goyal <vgoyal@redhat.com>
+Cc: Philipp Rudo <prudo@redhat.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
+ fs/proc/vmcore.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-This is a replacement for
-mm-hugepages-fix-size-in-hugetlb-mremap-test.patch in -mm tree.
-
-The original patch set the amount of memory used by the test to 10MB
-instead of 1GB to avoid running out of memory. However, the test must
-map 1GB or more to trigger pmd sharing. Hence, a variable mapping size
-is the best solution here to allow for both options.
-
----
- tools/testing/selftests/vm/hugepage-mremap.c | 46 +++++++++++++-------
- tools/testing/selftests/vm/run_vmtests.sh    |  2 +-
- 2 files changed, 31 insertions(+), 17 deletions(-)
-
-diff --git a/tools/testing/selftests/vm/hugepage-mremap.c b/tools/testing/selftests/vm/hugepage-mremap.c
-index 257df94697a5..2a7c33631a29 100644
---- a/tools/testing/selftests/vm/hugepage-mremap.c
-+++ b/tools/testing/selftests/vm/hugepage-mremap.c
-@@ -4,7 +4,11 @@
-  *
-  * Example of remapping huge page memory in a user application using the
-  * mremap system call.  Code assumes a hugetlbfs filesystem is mounted
-- * at './huge'.  The code will use 10MB worth of huge pages.
-+ * at './huge'.  The amount of memory used by this test is decided by a command
-+ * line argument in MBs. If missing, the default amount is 10MB.
-+ *
-+ * To make sure the test triggers pmd sharing and goes through the 'unshare'
-+ * path in the mremap code use 1GB (1024) or more.
-  */
+diff --git a/fs/proc/vmcore.c b/fs/proc/vmcore.c
+index 8e8012769f3e..e8b40835770c 100644
+--- a/fs/proc/vmcore.c
++++ b/fs/proc/vmcore.c
+@@ -105,14 +105,19 @@ static ssize_t read_from_oldmem(char *buf, size_t count,
+ 			nr_bytes = count;
  
- #define _GNU_SOURCE
-@@ -18,8 +22,10 @@
- #include <linux/userfaultfd.h>
- #include <sys/ioctl.h>
- 
--#define LENGTH (1UL * 1024 * 1024 * 1024)
-+#define DEFAULT_LENGTH_MB 10UL
-+#define MB_TO_BYTES(x) (x * 1024 * 1024)
- 
-+#define FILE_NAME "huge/hugepagefile"
- #define PROTECTION (PROT_READ | PROT_WRITE | PROT_EXEC)
- #define FLAGS (MAP_SHARED | MAP_ANONYMOUS)
- 
-@@ -28,20 +34,20 @@ static void check_bytes(char *addr)
- 	printf("First hex is %x\n", *((unsigned int *)addr));
- }
- 
--static void write_bytes(char *addr)
-+static void write_bytes(char *addr, size_t len)
- {
- 	unsigned long i;
- 
--	for (i = 0; i < LENGTH; i++)
-+	for (i = 0; i < len; i++)
- 		*(addr + i) = (char)i;
- }
- 
--static int read_bytes(char *addr)
-+static int read_bytes(char *addr, size_t len)
- {
- 	unsigned long i;
- 
- 	check_bytes(addr);
--	for (i = 0; i < LENGTH; i++)
-+	for (i = 0; i < len; i++)
- 		if (*(addr + i) != (char)i) {
- 			printf("Mismatch at %lu\n", i);
- 			return 1;
-@@ -99,11 +105,19 @@ static void register_region_with_uffd(char *addr, size_t len)
- 	}
- }
- 
--int main(void)
-+int main(int argc, char *argv[])
- {
-+	/* Read memory length as the first arg if valid, otherwise fallback to
-+	 * the default length. Any additional args are ignored.
-+	 */
-+	size_t length = argc > 1 ? (size_t)atoi(argv[1]) : 0UL;
+ 		/* If pfn is not ram, return zeros for sparse dump files */
+-		if (pfn_is_ram(pfn) == 0)
+-			memset(buf, 0, nr_bytes);
+-		else {
++		if (pfn_is_ram(pfn) == 0) {
++			tmp = 0;
++			if (!userbuf)
++				memset(buf, 0, nr_bytes);
++			else if (clear_user(buf, nr_bytes))
++				tmp = -EFAULT;
++		} else {
+ 			tmp = copy_oldmem_page(pfn, buf, nr_bytes,
+ 						offset, userbuf);
+-			if (tmp < 0)
+-				return tmp;
+ 		}
++		if (tmp < 0)
++			return tmp;
 +
-+	length = length > 0 ? length : DEFAULT_LENGTH_MB;
-+	length = MB_TO_BYTES(length);
-+
- 	int ret = 0;
- 
--	int fd = open("/huge/test", O_CREAT | O_RDWR, 0755);
-+	int fd = open(FILE_NAME, O_CREAT | O_RDWR, 0755);
- 
- 	if (fd < 0) {
- 		perror("Open failed");
-@@ -112,7 +126,7 @@ int main(void)
- 
- 	/* mmap to a PUD aligned address to hopefully trigger pmd sharing. */
- 	unsigned long suggested_addr = 0x7eaa40000000;
--	void *haddr = mmap((void *)suggested_addr, LENGTH, PROTECTION,
-+	void *haddr = mmap((void *)suggested_addr, length, PROTECTION,
- 			   MAP_HUGETLB | MAP_SHARED | MAP_POPULATE, fd, 0);
- 	printf("Map haddr: Returned address is %p\n", haddr);
- 	if (haddr == MAP_FAILED) {
-@@ -122,7 +136,7 @@ int main(void)
- 
- 	/* mmap again to a dummy address to hopefully trigger pmd sharing. */
- 	suggested_addr = 0x7daa40000000;
--	void *daddr = mmap((void *)suggested_addr, LENGTH, PROTECTION,
-+	void *daddr = mmap((void *)suggested_addr, length, PROTECTION,
- 			   MAP_HUGETLB | MAP_SHARED | MAP_POPULATE, fd, 0);
- 	printf("Map daddr: Returned address is %p\n", daddr);
- 	if (daddr == MAP_FAILED) {
-@@ -132,16 +146,16 @@ int main(void)
- 
- 	suggested_addr = 0x7faa40000000;
- 	void *vaddr =
--		mmap((void *)suggested_addr, LENGTH, PROTECTION, FLAGS, -1, 0);
-+		mmap((void *)suggested_addr, length, PROTECTION, FLAGS, -1, 0);
- 	printf("Map vaddr: Returned address is %p\n", vaddr);
- 	if (vaddr == MAP_FAILED) {
- 		perror("mmap2");
- 		exit(1);
- 	}
- 
--	register_region_with_uffd(haddr, LENGTH);
-+	register_region_with_uffd(haddr, length);
- 
--	void *addr = mremap(haddr, LENGTH, LENGTH,
-+	void *addr = mremap(haddr, length, length,
- 			    MREMAP_MAYMOVE | MREMAP_FIXED, vaddr);
- 	if (addr == MAP_FAILED) {
- 		perror("mremap");
-@@ -150,10 +164,10 @@ int main(void)
- 
- 	printf("Mremap: Returned address is %p\n", addr);
- 	check_bytes(addr);
--	write_bytes(addr);
--	ret = read_bytes(addr);
-+	write_bytes(addr, length);
-+	ret = read_bytes(addr, length);
- 
--	munmap(addr, LENGTH);
-+	munmap(addr, length);
- 
- 	return ret;
- }
-diff --git a/tools/testing/selftests/vm/run_vmtests.sh b/tools/testing/selftests/vm/run_vmtests.sh
-index a24d30af3094..75d401741394 100755
---- a/tools/testing/selftests/vm/run_vmtests.sh
-+++ b/tools/testing/selftests/vm/run_vmtests.sh
-@@ -111,7 +111,7 @@ fi
- echo "-----------------------"
- echo "running hugepage-mremap"
- echo "-----------------------"
--./hugepage-mremap
-+./hugepage-mremap 256
- if [ $? -ne 0 ]; then
- 	echo "[FAIL]"
- 	exitcode=1
+ 		*ppos += nr_bytes;
+ 		count -= nr_bytes;
+ 		buf += nr_bytes;
 -- 
-2.34.0.rc2.393.gf8c9666880-goog
+2.31.1
 
