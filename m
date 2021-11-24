@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01B545CE2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:37:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AB945CE2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:37:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237481AbhKXUk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 15:40:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231846AbhKXUkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 15:40:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD72460E05;
-        Wed, 24 Nov 2021 20:37:12 +0000 (UTC)
-Date:   Wed, 24 Nov 2021 20:37:09 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
- with sub-page faults
-Message-ID: <YZ6idVy3zqQC4atv@arm.com>
-References: <20211124192024.2408218-1-catalin.marinas@arm.com>
- <20211124192024.2408218-4-catalin.marinas@arm.com>
- <YZ6arlsi2L3LVbFO@casper.infradead.org>
+        id S237676AbhKXUk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 15:40:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231846AbhKXUky (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 15:40:54 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43755C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:37:44 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id e11so7910678ljo.13
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:37:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NiWa89xq2Q9IF+ljEdo4/Z/asgRFC2P5rcNU6pbebKs=;
+        b=dn2NWxi0lUYot/N0eTDsmPLuuonR6nIKnTH8qT9MOSFlqysj+TS5FqWODd36P9xB81
+         C5sqvp5cwoBGiwtfg02AfI3aL/C6tMWaiBkcCVNRtYLptq6PLdC4IBHhyyHNwxpQDN7c
+         yiAZ/dBbxuyXwzG9WjgN+gxoR92GjZUAldIXVtQRbsTgJH8+7pyf1lHzLhaV8DxnxHBC
+         cUXt3orBS++uEkXIzWz3eq+Gy7Ut6kPcOpGdq5M13kR5wJCdToWwLO3RkYcgPxxU/smf
+         Ykx/jXgdkYmFCDRMZ4oP1LTQnPurN3RmFXuwi5mg84Ho/1XGc9GggM2Q4kuCWTu11oO0
+         6TLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NiWa89xq2Q9IF+ljEdo4/Z/asgRFC2P5rcNU6pbebKs=;
+        b=lYyyUA2r7sPUS+05O7gnq3ovrAR2CFs8R9ANR3k44PD1Z5XJ2TgGq35V9Foifr9HL0
+         EuigVvUCtNxFTLi5KsmMZnPZUBnTmGMvuuEkA1nsnwkYxTZDOmcFrFNfS/VmLjt+XKv5
+         5PQ+RQGol5cRCSni+4GhSolhbXeyHNGsxmkgKPMJRlvucG8vnOlGRlYwH/ZMb3YuSupa
+         OATfBapZrBZutRt147ObUgVl1hqpiSlvZAPkisyQdWVWV+fBInYZSEGqkwiGfJMBqhZK
+         8y4EwJikQukVAtwFI5wEn9FntAIXF8yVdEZoIJFXtrn8u+ckHIO4SyRrDYnqcoTsQm6X
+         pqzQ==
+X-Gm-Message-State: AOAM530zMak7KIaavbfWGIeVB6zJ61tOVVnlLNeQnB6tIDqVJ87GBnZO
+        xalAEyLPU2ZfhFiV8AvW8v5/vQoVZFqlY7wOzXG/LQ==
+X-Google-Smtp-Source: ABdhPJyL75Mlj8xal8gIYuPHynOG80rShCrg0nTZF+lWp+P7xYgFGmnc53IBlOitVrzGGupuCheHT4r1L5ghKeafJZ4=
+X-Received: by 2002:a2e:b751:: with SMTP id k17mr18583891ljo.467.1637786262375;
+ Wed, 24 Nov 2021 12:37:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZ6arlsi2L3LVbFO@casper.infradead.org>
+References: <20211123191737.1296541-1-tkjos@google.com> <20211123191737.1296541-4-tkjos@google.com>
+ <20211124124313.GH6514@kadam>
+In-Reply-To: <20211124124313.GH6514@kadam>
+From:   Todd Kjos <tkjos@google.com>
+Date:   Wed, 24 Nov 2021 12:37:30 -0800
+Message-ID: <CAHRSSExk8iO5S+OP+GDGpysoMep8=bKW5tjEBJzOm+yAMeUqsQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] binder: defer copies of pre-patched txn data
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     gregkh@linuxfoundation.org, christian@brauner.io, arve@android.com,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        maco@google.com, joel@joelfernandes.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 08:03:58PM +0000, Matthew Wilcox wrote:
-> On Wed, Nov 24, 2021 at 07:20:24PM +0000, Catalin Marinas wrote:
-> > +++ b/fs/btrfs/ioctl.c
-> > @@ -2223,7 +2223,8 @@ static noinline int search_ioctl(struct inode *inode,
-> >  
-> >  	while (1) {
-> >  		ret = -EFAULT;
-> > -		if (fault_in_writeable(ubuf + sk_offset, *buf_size - sk_offset))
-> > +		if (fault_in_exact_writeable(ubuf + sk_offset,
-> > +					     *buf_size - sk_offset))
-> >  			break;
-> >  
-> >  		ret = btrfs_search_forward(root, &key, path, sk->min_transid);
-> 
-> Couldn't we avoid all of this nastiness by doing ...
+On Wed, Nov 24, 2021 at 4:44 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> On Tue, Nov 23, 2021 at 11:17:37AM -0800, Todd Kjos wrote:
+> > +static int binder_do_deferred_txn_copies(struct binder_alloc *alloc,
+> > +                                      struct binder_buffer *buffer,
+> > +                                      struct list_head *sgc_head,
+> > +                                      struct list_head *pf_head)
+> > +{
+> > +     int ret = 0;
+> > +     struct list_head *entry, *tmp;
+> > +     struct binder_ptr_fixup *pf =
+> > +             list_first_entry_or_null(pf_head, struct binder_ptr_fixup,
+> > +                                      node);
+> > +
+> > +     list_for_each_safe(entry, tmp, sgc_head) {
+>         ^^^^^^^^^^^^^^^^^^^
+> All the list_for_each() loops can be changed to list_for_each_entry().
+>
+>
+>         list_for_each_entry_safe(sgc, tmp, sgc_head, node) {
 
-I had a similar attempt initially but I concluded that it doesn't work:
+Will change. Thanks for the suggestion.
 
-https://lore.kernel.org/r/YS40qqmXL7CMFLGq@arm.com
-
-> @@ -2121,10 +2121,9 @@ static noinline int copy_to_sk(struct btrfs_path *path,
->                  * problem. Otherwise we'll fault and then copy the buffer in
->                  * properly this next time through
->                  */
-> -               if (copy_to_user_nofault(ubuf + *sk_offset, &sh, sizeof(sh))) {
-> -                       ret = 0;
-> +               ret = __copy_to_user_nofault(ubuf + *sk_offset, &sh, sizeof(sh));
-> +               if (ret)
-
-There is no requirement for the arch implementation to be exact and copy
-the maximum number of bytes possible. It can fail early while there are
-still some bytes left that would not fault. The only requirement is that
-if it is restarted from where it faulted, it makes some progress (on
-arm64 there is one extra byte).
-
->                         goto out;
-> -               }
->  
->                 *sk_offset += sizeof(sh);
-> @@ -2196,6 +2195,7 @@ static noinline int search_ioctl(struct inode *inode,
->         int ret;
->         int num_found = 0;
->         unsigned long sk_offset = 0;
-> +       unsigned long next_offset = 0;
->  
->         if (*buf_size < sizeof(struct btrfs_ioctl_search_header)) {
->                 *buf_size = sizeof(struct btrfs_ioctl_search_header);
-> @@ -2223,7 +2223,8 @@ static noinline int search_ioctl(struct inode *inode,
->  
->         while (1) {
->                 ret = -EFAULT;
-> -               if (fault_in_writeable(ubuf + sk_offset, *buf_size - sk_offset))
-> +               if (fault_in_writeable(ubuf + sk_offset + next_offset,
-> +                                       *buf_size - sk_offset - next_offset))
->                         break;
->  
->                 ret = btrfs_search_forward(root, &key, path, sk->min_transid);
-> @@ -2235,11 +2236,12 @@ static noinline int search_ioctl(struct inode *inode,
->                 ret = copy_to_sk(path, &key, sk, buf_size, ubuf,
->                                  &sk_offset, &num_found);
->                 btrfs_release_path(path);
-> -               if (ret)
-> +               if (ret > 0)
-> +                       next_offset = ret;
-
-So after this point, ubuf+sk_offset+next_offset is writeable by
-fault_in_writable(). If copy_to_user() was attempted on
-ubuf+sk_offset+next_offset, all would be fine, but copy_to_sk() restarts
-the copy from ubuf+sk_offset, so it returns exacting the same ret as in
-the previous iteration.
-
--- 
-Catalin
+>
+> regards,
+> dan carpenter
+>
+>
+>
+> > +             size_t bytes_copied = 0;
+> > +             struct binder_sg_copy *sgc =
+> > +                     container_of(entry, struct binder_sg_copy, node);
+> > +
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
