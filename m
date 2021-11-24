@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD6045C247
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD3145C646
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:03:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346788AbhKXN0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:26:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48370 "EHLO mail.kernel.org"
+        id S1348493AbhKXOGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:06:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347988AbhKXNYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:24:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 596E6611BD;
-        Wed, 24 Nov 2021 12:49:00 +0000 (UTC)
+        id S1353580AbhKXOAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:00:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0B2061A03;
+        Wed, 24 Nov 2021 13:09:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758141;
-        bh=4Fiu+YW1XRJiV1xlKgTso4vrplijmOQNvbuyGmSzT88=;
+        s=korg; t=1637759341;
+        bh=UtI8oZQYedgNqDAT0GxmJgSH1NypOYlmWQnUMbG6Ieg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vR4erGgc1P5hsLDUF06xLOn2xOKvshYoBgNX6vhgtEJHWPQBdoU56h/GwhixpV5rR
-         WqFf2LvsN9YmEALdbjNeFU+ur07GvhoDxO5Kok6gHcLeGDYjyOGSjJYzEX1lkzmT/G
-         oZwgq+inYZE2dJh4dxSrfajaVm/JELeJRQradrqE=
+        b=EcZJyIZag0Mw3gl2ykCfBCZhRrizHRd7uIWtf2pDbAMvVhqSAgCvw6/woJcP1Omye
+         lhUMMGa0Vv54GfrGPM9TNMsRlaIDc7KxcPMguslZazuFzVGgrbxliZS0Fs0C07Jogw
+         5LTgWzkMorEzITb7pgrBVfnsEmcP4NSDMtJUT4sY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 042/100] tracing/histogram: Do not copy the fixed-size char array field over the field size
+        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.15 191/279] hexagon: export raw I/O routines for modules
 Date:   Wed, 24 Nov 2021 12:57:58 +0100
-Message-Id: <20211124115656.243136787@linuxfoundation.org>
+Message-Id: <20211124115725.319914226@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,68 +42,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: Nathan Chancellor <nathan@kernel.org>
 
-[ Upstream commit 63f84ae6b82bb4dff672f76f30c6fd7b9d3766bc ]
+commit ffb92ce826fd801acb0f4e15b75e4ddf0d189bde upstream.
 
-Do not copy the fixed-size char array field of the events over
-the field size. The histogram treats char array as a string and
-there are 2 types of char array in the event, fixed-size and
-dynamic string. The dynamic string (__data_loc) field must be
-null terminated, but the fixed-size char array field may not
-be null terminated (not a string, but just a data).
-In that case, histogram can copy the data after the field.
-This uses the original field size for fixed-size char array
-field to restrict the histogram not to access over the original
-field size.
+Patch series "Fixes for ARCH=hexagon allmodconfig", v2.
 
-Link: https://lkml.kernel.org/r/163673292822.195747.3696966210526410250.stgit@devnote2
+This series fixes some issues noticed with ARCH=hexagon allmodconfig.
 
-Fixes: 02205a6752f2 (tracing: Add support for 'field variables')
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This patch (of 3):
+
+When building ARCH=hexagon allmodconfig, the following errors occur:
+
+  ERROR: modpost: "__raw_readsl" [drivers/i3c/master/svc-i3c-master.ko] undefined!
+  ERROR: modpost: "__raw_writesl" [drivers/i3c/master/dw-i3c-master.ko] undefined!
+  ERROR: modpost: "__raw_readsl" [drivers/i3c/master/dw-i3c-master.ko] undefined!
+  ERROR: modpost: "__raw_writesl" [drivers/i3c/master/i3c-master-cdns.ko] undefined!
+  ERROR: modpost: "__raw_readsl" [drivers/i3c/master/i3c-master-cdns.ko] undefined!
+
+Export these symbols so that modules can use them without any errors.
+
+Link: https://lkml.kernel.org/r/20211115174250.1994179-1-nathan@kernel.org
+Link: https://lkml.kernel.org/r/20211115174250.1994179-2-nathan@kernel.org
+Fixes: 013bf24c3829 ("Hexagon: Provide basic implementation and/or stubs for I/O routines.")
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Acked-by: Brian Cain <bcain@codeaurora.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/trace/trace_events_hist.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ arch/hexagon/lib/io.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 9a73c187d241e..8b33a3c872750 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -2590,9 +2590,10 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
- 		if (!hist_field->type)
- 			goto free;
+--- a/arch/hexagon/lib/io.c
++++ b/arch/hexagon/lib/io.c
+@@ -27,6 +27,7 @@ void __raw_readsw(const void __iomem *ad
+ 		*dst++ = *src;
  
--		if (field->filter_type == FILTER_STATIC_STRING)
-+		if (field->filter_type == FILTER_STATIC_STRING) {
- 			hist_field->fn = hist_field_string;
--		else if (field->filter_type == FILTER_DYN_STRING)
-+			hist_field->size = field->size;
-+		} else if (field->filter_type == FILTER_DYN_STRING)
- 			hist_field->fn = hist_field_dynstring;
- 		else
- 			hist_field->fn = hist_field_pstring;
-@@ -3530,7 +3531,7 @@ static inline void __update_field_vars(struct tracing_map_elt *elt,
- 			char *str = elt_data->field_var_str[j++];
- 			char *val_str = (char *)(uintptr_t)var_val;
+ }
++EXPORT_SYMBOL(__raw_readsw);
  
--			strscpy(str, val_str, STR_VAR_LEN_MAX);
-+			strscpy(str, val_str, val->size);
- 			var_val = (u64)(uintptr_t)str;
- 		}
- 		tracing_map_set_var(elt, var_idx, var_val);
-@@ -5359,7 +5360,7 @@ static void hist_trigger_elt_update(struct hist_trigger_data *hist_data,
+ /*
+  * __raw_writesw - read words a short at a time
+@@ -47,6 +48,7 @@ void __raw_writesw(void __iomem *addr, c
  
- 				str = elt_data->field_var_str[idx];
- 				val_str = (char *)(uintptr_t)hist_val;
--				strscpy(str, val_str, STR_VAR_LEN_MAX);
-+				strscpy(str, val_str, hist_field->size);
  
- 				hist_val = (u64)(uintptr_t)str;
- 			}
--- 
-2.33.0
-
+ }
++EXPORT_SYMBOL(__raw_writesw);
+ 
+ /*  Pretty sure len is pre-adjusted for the length of the access already */
+ void __raw_readsl(const void __iomem *addr, void *data, int len)
+@@ -62,6 +64,7 @@ void __raw_readsl(const void __iomem *ad
+ 
+ 
+ }
++EXPORT_SYMBOL(__raw_readsl);
+ 
+ void __raw_writesl(void __iomem *addr, const void *data, int len)
+ {
+@@ -76,3 +79,4 @@ void __raw_writesl(void __iomem *addr, c
+ 
+ 
+ }
++EXPORT_SYMBOL(__raw_writesl);
 
 
