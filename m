@@ -2,116 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC4C45CDE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:20:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8496D45CDE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:21:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237247AbhKXUX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 15:23:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234451AbhKXUX4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 15:23:56 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63804C061574;
-        Wed, 24 Nov 2021 12:20:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=Dxu8rmSj5L6/mmz45KruXo7nmpwWJ/sOE5r4T8rfCAo=; b=vKiwxHVhDBbH9WgvIEHzDg4gBn
-        tIZBoymYM8gOJJlXuvkgfthzXQe5erlk8fd70Ib9ZUqOT/d7fTgBliixRA1VyiE4ZFF9Z9eWgxZyj
-        mWInKt2kfiVRMDWQf7QJAPA/lsm3YTK8dM7BaFfigw0oG5iGUzWGr2TXQ4aKqHDwlWaXnO5Mj/gZJ
-        okE8RFgfmUC5r1jpsgIupV286bqsXoBI+D9gGJg/5npk9VAeWc6AfvDgBJY4sLxCIBmLTh8Z900GC
-        u3nEaLBDxvV58lnWE0xQ1+ImPVCbZEHI+HVaV0XT57bE49FDUqjgGl6CFIZYrZc5UpM+I9dGhYx5Y
-        3YhbpOjQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mpyl2-003F4b-J2; Wed, 24 Nov 2021 20:20:44 +0000
-Date:   Wed, 24 Nov 2021 20:20:44 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        id S237356AbhKXUYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 15:24:09 -0500
+Received: from ixit.cz ([94.230.151.217]:38654 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237467AbhKXUYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 15:24:06 -0500
+Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id B5B0220064;
+        Wed, 24 Nov 2021 21:20:53 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1637785254;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=JOY3hYg/Zi65wbuf+lW3mLve82V3ibAcjofnA7CL8QQ=;
+        b=L3GNPhK6AqeXR4Bpkrf10oJtJMujxolATVkMbzZsnAnA5GKZXIQ31SqbzxQsKUjoH/aXsz
+        AZ/VAz//hVKTIniFu/BqrEsQSnhjuthVvx1LMM3I3oK62qXXxcHvaCfdqTu1Fd2jHyZ7PG
+        BbMc4uX4C0Ahw/GZFBtQ4DRzgymyFCs=
+From:   David Heidelberg <david@ixit.cz>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     ~okias/devicetree@lists.sr.ht, David Heidelberg <david@ixit.cz>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Folio fixes for 5.16
-Message-ID: <YZ6enA9aRgJLL55w@casper.infradead.org>
+Subject: [PATCH] dt-bindings: net: ethernet-controller: add 2.5G and 10G speeds
+Date:   Wed, 24 Nov 2021 21:20:46 +0100
+Message-Id: <20211124202046.81136-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Both are already used by HW and drivers inside Linux.
 
-In the course of preparing the folio changes for iomap for next merge
-window, we discovered some problems that would be nice to address now:
+Fix warnings as:
+arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var2.dt.yaml: ethernet@0,2: fixed-link:speed:0:0: 2500 is not one of [10, 100, 1000]
+        From schema: Documentation/devicetree/bindings/net/ethernet-controller.yaml
 
- - Renaming multi-page folios to large folios.
-   mapping_multi_page_folio_support() is just a little too long, so
-   we settled on mapping_large_folio_support().  That meant renaming,
-   eg folio_test_multi() to folio_test_large().
- - I hadn't included folio wrappers for zero_user_segments(), etc.
-   Also, multi-page^W^W large folio support is now independent of
-   CONFIG_TRANSPARENT_HUGEPAGE, so machines with HIGHMEM always need to
-   fall back to the out-of-line zero_user_segments().
- - The build bots finally got round to telling me that I missed a
-   couple of architectures when adding flush_dcache_folio().  Christoph
-   suggested that we just add linux/cacheflush.h and not rely on
-   asm-generic/cacheflush.h.
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+ .../devicetree/bindings/net/ethernet-controller.yaml          | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-These changes have been in linux-next for the last week with no new
-squawks.
-
-The following changes since commit 8ab774587903771821b59471cc723bba6d893942:
-
-  Merge tag 'trace-v5.16-5' of git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace (2021-11-14 19:07:19 -0800)
-
-are available in the Git repository at:
-
-  git://git.infradead.org/users/willy/pagecache.git tags/folio-5.16b
-
-for you to fetch changes up to c035713998700e8843c7d087f55bce3c54c0e3ec:
-
-  mm: Add functions to zero portions of a folio (2021-11-18 15:05:56 -0500)
-
-----------------------------------------------------------------
-Fixes for 5.16 folios:
-
- - Fix compilation warnings on csky and sparc
- - Rename multipage folios to large folios
- - Rename AS_THP_SUPPORT and FS_THP_SUPPORT
- - Add functions to zero portions of a folio
-
-----------------------------------------------------------------
-Matthew Wilcox (Oracle) (6):
-      Add linux/cacheflush.h
-      mm: Rename folio_test_multi to folio_test_large
-      mm: Remove folio_test_single
-      fs: Remove FS_THP_SUPPORT
-      fs: Rename AS_THP_SUPPORT and mapping_thp_support
-      mm: Add functions to zero portions of a folio
-
- arch/arc/include/asm/cacheflush.h     |  1 -
- arch/arm/include/asm/cacheflush.h     |  1 -
- arch/m68k/include/asm/cacheflush_mm.h |  1 -
- arch/mips/include/asm/cacheflush.h    |  2 --
- arch/nds32/include/asm/cacheflush.h   |  1 -
- arch/nios2/include/asm/cacheflush.h   |  1 -
- arch/parisc/include/asm/cacheflush.h  |  1 -
- arch/sh/include/asm/cacheflush.h      |  1 -
- arch/xtensa/include/asm/cacheflush.h  |  3 ---
- fs/inode.c                            |  2 --
- include/asm-generic/cacheflush.h      |  6 -----
- include/linux/cacheflush.h            | 18 ++++++++++++++
- include/linux/fs.h                    |  1 -
- include/linux/highmem.h               | 47 +++++++++++++++++++++++++++++++----
- include/linux/page-flags.h            | 14 +++++------
- include/linux/pagemap.h               | 26 +++++++++++++++----
- mm/highmem.c                          |  2 --
- mm/memcontrol.c                       |  2 +-
- mm/shmem.c                            |  3 ++-
- mm/util.c                             |  2 +-
- 20 files changed, 92 insertions(+), 43 deletions(-)
- create mode 100644 include/linux/cacheflush.h
-
+diff --git a/Documentation/devicetree/bindings/net/ethernet-controller.yaml b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
+index b0933a8c295a..95b5a3d77421 100644
+--- a/Documentation/devicetree/bindings/net/ethernet-controller.yaml
++++ b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
+@@ -178,7 +178,7 @@ properties:
+                   Duplex configuration. 0 for half duplex or 1 for
+                   full duplex
+ 
+-              - enum: [10, 100, 1000]
++              - enum: [10, 100, 1000, 2500, 10000]
+                 description:
+                   Link speed in Mbits/sec.
+ 
+@@ -200,7 +200,7 @@ properties:
+               description:
+                 Link speed.
+               $ref: /schemas/types.yaml#/definitions/uint32
+-              enum: [10, 100, 1000]
++              enum: [10, 100, 1000, 2500, 10000]
+ 
+             full-duplex:
+               $ref: /schemas/types.yaml#/definitions/flag
+-- 
+2.33.0
 
