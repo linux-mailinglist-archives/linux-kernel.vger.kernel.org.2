@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CCE745C00C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7A145BD7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244726AbhKXNE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:04:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41106 "EHLO mail.kernel.org"
+        id S1344847AbhKXMit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:38:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346794AbhKXNCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:02:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30B236120A;
-        Wed, 24 Nov 2021 12:35:38 +0000 (UTC)
+        id S245693AbhKXMdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:33:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2D4D61373;
+        Wed, 24 Nov 2021 12:20:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757339;
-        bh=w9lWDKiLb4ruWCjGXxfuyOTwxn6cK4A60fr6gj76WxY=;
+        s=korg; t=1637756426;
+        bh=aS48cdu/g7cxpO4hT84SWpmFYddKWPbxux5idUI8kbA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RRwGInxtO8IZVwWUgI8wqn8Tf9iw2vGISuyuaqzl71ZGJcpnpi+uNrCUQwhe68pJq
-         NPaW6+xBB0L4I+Npbo2TtFFVa4kCaCzADM0t+3WIhd49kkJZa5+MfYuAaIeJt672Y5
-         NjavKW2hjfUAl5Gv4ZbQBgofgOETmlgxBr9gI7Rg=
+        b=PIBtcJqy7+lQtys6FiIqcOzBKPq+wujHfmugCJr1Q8MB812bC3gjL8ieYMPY2XytL
+         XQwrJksu6ez8UAN64JuarGh/m9Gep6OyxlOFcuNMWw4bhJCtwFgTYvmyWYcsNz5sBH
+         mT0RKH+nyf7BEucR539MePcbcWlbvhxlXoGReQEY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        stable@vger.kernel.org,
+        syzbot+4d3749e9612c2cfab956@syzkaller.appspotmail.com,
+        Rajat Asthana <rajatasthana4@gmail.com>,
+        Sean Young <sean@mess.org>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 135/323] media: cx23885: Fix snd_card_free call on null card pointer
+Subject: [PATCH 4.14 083/251] media: mceusb: return without resubmitting URB in case of -EPROTO error.
 Date:   Wed, 24 Nov 2021 12:55:25 +0100
-Message-Id: <20211124115723.482366187@linuxfoundation.org>
+Message-Id: <20211124115713.146069617@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Rajat Asthana <rajatasthana4@gmail.com>
 
-[ Upstream commit 7266dda2f1dfe151b12ef0c14eb4d4e622fb211c ]
+[ Upstream commit 476db72e521983ecb847e4013b263072bb1110fc ]
 
-Currently a call to snd_card_new that fails will set card with a NULL
-pointer, this causes a null pointer dereference on the error cleanup
-path when card it passed to snd_card_free. Fix this by adding a new
-error exit path that does not call snd_card_free and exiting via this
-new path.
+Syzkaller reported a warning called "rcu detected stall in dummy_timer".
 
-Addresses-Coverity: ("Explicit null dereference")
+The error seems to be an error in mceusb_dev_recv(). In the case of
+-EPROTO error, the routine immediately resubmits the URB. Instead it
+should return without resubmitting URB.
 
-Fixes: 9e44d63246a9 ("[media] cx23885: Add ALSA support")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Reported-by: syzbot+4d3749e9612c2cfab956@syzkaller.appspotmail.com
+Signed-off-by: Rajat Asthana <rajatasthana4@gmail.com>
+Signed-off-by: Sean Young <sean@mess.org>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/cx23885/cx23885-alsa.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/media/rc/mceusb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/pci/cx23885/cx23885-alsa.c b/drivers/media/pci/cx23885/cx23885-alsa.c
-index db1e8ff35474a..150106eb36052 100644
---- a/drivers/media/pci/cx23885/cx23885-alsa.c
-+++ b/drivers/media/pci/cx23885/cx23885-alsa.c
-@@ -559,7 +559,7 @@ struct cx23885_audio_dev *cx23885_audio_register(struct cx23885_dev *dev)
- 			   SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
- 			THIS_MODULE, sizeof(struct cx23885_audio_dev), &card);
- 	if (err < 0)
--		goto error;
-+		goto error_msg;
- 
- 	chip = (struct cx23885_audio_dev *) card->private_data;
- 	chip->dev = dev;
-@@ -585,6 +585,7 @@ struct cx23885_audio_dev *cx23885_audio_register(struct cx23885_dev *dev)
- 
- error:
- 	snd_card_free(card);
-+error_msg:
- 	pr_err("%s(): Failed to register analog audio adapter\n",
- 	       __func__);
- 
+diff --git a/drivers/media/rc/mceusb.c b/drivers/media/rc/mceusb.c
+index bbbbfd697f9c4..035b2455b26aa 100644
+--- a/drivers/media/rc/mceusb.c
++++ b/drivers/media/rc/mceusb.c
+@@ -1080,6 +1080,7 @@ static void mceusb_dev_recv(struct urb *urb)
+ 	case -ECONNRESET:
+ 	case -ENOENT:
+ 	case -EILSEQ:
++	case -EPROTO:
+ 	case -ESHUTDOWN:
+ 		usb_unlink_urb(urb);
+ 		return;
 -- 
 2.33.0
 
