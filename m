@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE9445C1CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF9345C593
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:56:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349603AbhKXNWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:22:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36592 "EHLO mail.kernel.org"
+        id S1349022AbhKXN7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:59:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349412AbhKXNTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:19:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDE8A61AFA;
-        Wed, 24 Nov 2021 12:46:28 +0000 (UTC)
+        id S1349915AbhKXNyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:54:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8979F60F12;
+        Wed, 24 Nov 2021 13:06:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757989;
-        bh=CUSDUWwRVHFjbZttDqLPGZfzAjvFgpYBR1ad5DVNlz8=;
+        s=korg; t=1637759165;
+        bh=i9jL/UQCorjxk0+bCbsFSPQj3NzNXYCfn83hm/DG85w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CJQBS8digrpvB91YxrzTIbePhSJJS7HmQoD8g53uSxn+ExNtoXgan0mh75lfjtvXJ
-         uHutcumGw5ihrkwoGEs9VHWxnsPrUoVeydedgBD9e9ax/s/TcQNYBtxYLlUfnDKkNH
-         2N8e6c3tnbn34Q6D+q8DMFCLpl4C7adynRViB2fM=
+        b=PnbOAJcjBgF+7DdCpzATBdE0t3KOOmsYWB+aBayHLbhrOhXioTnNzw8WMjdVEOzZ0
+         ctMYdN5/JW6TDRJ4Vxl44l4Pv8Xqmo3jqSUe5MM3TtQdZCpkyOMAK6QrIw/U7FmujL
+         K1PdknyR0N8/CD+1VfvECjFguBJ07sXqLNhiJl5s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michal Simek <michal.simek@xilinx.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        stable@vger.kernel.org, Bean Huo <beanhuo@micron.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 002/100] arm64: zynqmp: Fix serial compatible string
-Date:   Wed, 24 Nov 2021 12:57:18 +0100
-Message-Id: <20211124115654.931421433@linuxfoundation.org>
+Subject: [PATCH 5.15 152/279] scsi: ufs: core: Improve SCSI abort handling
+Date:   Wed, 24 Nov 2021 12:57:19 +0100
+Message-Id: <20211124115724.015567873@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Simek <michal.simek@xilinx.com>
+From: Bart Van Assche <bvanassche@acm.org>
 
-[ Upstream commit 812fa2f0e9d33564bd0131a69750e0d165f4c82a ]
+[ Upstream commit 3ff1f6b6ba6f97f50862aa50e79959cc8ddc2566 ]
 
-Based on commit 65a2c14d4f00 ("dt-bindings: serial: convert Cadence UART
-bindings to YAML") compatible string should look like differently that's
-why fix it to be aligned with dt binding.
+The following has been observed on a test setup:
 
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Link: https://lore.kernel.org/r/89b36e0a6187cc6b05b27a035efdf79173bd4486.1628240307.git.michal.simek@xilinx.com
+WARNING: CPU: 4 PID: 250 at drivers/scsi/ufs/ufshcd.c:2737 ufshcd_queuecommand+0x468/0x65c
+Call trace:
+ ufshcd_queuecommand+0x468/0x65c
+ scsi_send_eh_cmnd+0x224/0x6a0
+ scsi_eh_test_devices+0x248/0x418
+ scsi_eh_ready_devs+0xc34/0xe58
+ scsi_error_handler+0x204/0x80c
+ kthread+0x150/0x1b4
+ ret_from_fork+0x10/0x30
+
+That warning is triggered by the following statement:
+
+	WARN_ON(lrbp->cmd);
+
+Fix this warning by clearing lrbp->cmd from the abort handler.
+
+Link: https://lore.kernel.org/r/20211104181059.4129537-1-bvanassche@acm.org
+Fixes: 7a3e97b0dc4b ("[SCSI] ufshcd: UFS Host controller driver")
+Reviewed-by: Bean Huo <beanhuo@micron.com>
+Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/xilinx/zynqmp.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/ufs/ufshcd.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-index a2645262f8623..b92549fb32400 100644
---- a/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-+++ b/arch/arm64/boot/dts/xilinx/zynqmp.dtsi
-@@ -582,7 +582,7 @@
- 		};
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 20705cec83c55..325a15186e950 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -7040,6 +7040,7 @@ static int ufshcd_abort(struct scsi_cmnd *cmd)
+ 		goto release;
+ 	}
  
- 		uart0: serial@ff000000 {
--			compatible = "cdns,uart-r1p12", "xlnx,xuartps";
-+			compatible = "xlnx,zynqmp-uart", "cdns,uart-r1p12";
- 			status = "disabled";
- 			interrupt-parent = <&gic>;
- 			interrupts = <0 21 4>;
-@@ -591,7 +591,7 @@
- 		};
++	lrbp->cmd = NULL;
+ 	err = SUCCESS;
  
- 		uart1: serial@ff010000 {
--			compatible = "cdns,uart-r1p12", "xlnx,xuartps";
-+			compatible = "xlnx,zynqmp-uart", "cdns,uart-r1p12";
- 			status = "disabled";
- 			interrupt-parent = <&gic>;
- 			interrupts = <0 22 4>;
+ release:
 -- 
 2.33.0
 
