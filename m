@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB25F45CC9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B5C45CC9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:59:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245276AbhKXTB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 14:01:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54314 "EHLO
+        id S1350453AbhKXTCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 14:02:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234723AbhKXTBv (ORCPT
+        with ESMTP id S234910AbhKXTBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 14:01:51 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0CA4C06173E
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:58:40 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id t11so3718941qtw.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:58:40 -0800 (PST)
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B6F1C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:58:42 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id 8so3703601qtx.5
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:58:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=yUZbEu2qOKxvPmHdKRnDIuQkLz23ylqeDgJP0M9V70o=;
-        b=pLK1xNgnsJYjz20Mkovwatdhpjpt5t1XWMrXt20pJLRzpJy7LnNJDGWysp2DedxKcu
-         3sOM/IcQ4crXowfvldT4n3h7aEii8bZF0Oy9/I7KDJAypIr/BekYYmhE2qpu5iH+SiZ8
-         v/LrzB50tpr4eAUzfqouqIX65jdol5+yojoyvsKLWujcHUuBXxxFAvlwRA97HVVij0YD
-         Ihr0K0OupIZuLlRSXPif621Awlgy15vBCR85nnbcTiwuZl4pgCYENe7v84+XteYYZPiV
-         su/+MWV6HBSje+ljGqYAt/FetnQO0f/R2m1CyNKQ5E2/+Zr6c3OWfLlMHXe4BKFILmsc
-         8apA==
+        bh=/YmsUoDW9eMA7OqlC1Sev9mWdQTdgWApJJN3mxqyS7s=;
+        b=aACX/0Ls+nHwU3OjIx7swS7Uq6pRXAbW457gf9xFUpvu9q340k1gWUys8bJmIySnk6
+         Afp/UVuoYz0eCK9b7JhDCG3k0YYQQJhW2fb8iA0nCgvP2o+TF1vj500LZDopHotsote1
+         5XrWcqjlgPHJ9mlnRZ0tov7Hxn7htnc/dTv/IP3Asmh/E6A44hASe0s8l/wJi6IVPa1w
+         0lbywEBPv98TQA/2XkchKCd3NwtevY3W2a9nDfwRnyXQkmgvvDarzxpgNUmsGhRp29R5
+         cgfU3BerKo+LiUrwLcDtqZrsoZ6AUXkgOqi4poxBnsTMAQNK5HmLU2vpwH5v5PXuCpWV
+         FaVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=yUZbEu2qOKxvPmHdKRnDIuQkLz23ylqeDgJP0M9V70o=;
-        b=m9AtFYhpLUIcSO/06yUKmNvkvZY3nfuHqRVdmt0bNGoAeJNyddRJk1+PWqBTxFJE4j
-         /g9/5jF+FCAKqTCnd8bIr5hPlFY21Uvobpxq/D1OfCL2b7BaWgySGM7MtY3ihddapYHp
-         b2qZ8PYoaIeaAfDjynKVONbSMCMX/kDiv0NkrXNhenU708tVwWmBMHCd8z1A7eI/Pr9n
-         bjnvcnm0yrdQ4aUBha7qu03D9ne/LYuyPQWgBHh8xfhzHhD36cQXwR6sParbIq/unfZW
-         t/9xLQ046bD0GFbGJQZSe6xA4aXOnLPmyGHVFV4w+/0J24iNByYte1O+F1zxDiBTkxCP
-         pkKA==
-X-Gm-Message-State: AOAM5319VXNwTNwFyX0hXndZZLbTtI/bsYZM4vHkExYdejbMV4IjMHVu
-        5jcSDdMRX7HAT4X67mq47ME=
-X-Google-Smtp-Source: ABdhPJzMHRf5a1lHvYDJmL/TV72LJ3PpuKPlCs9u4awPUnAWvbUNFGYCKohzdrBP2dJDRE3efAv1rg==
-X-Received: by 2002:ac8:59ce:: with SMTP id f14mr10129047qtf.30.1637780319935;
-        Wed, 24 Nov 2021 10:58:39 -0800 (PST)
+        bh=/YmsUoDW9eMA7OqlC1Sev9mWdQTdgWApJJN3mxqyS7s=;
+        b=Xjx3tceabqRwrCC12L1QscUg+oU7HEyf8nIXi9vPF4VayGCqLfpEBEOiwHKL9HG0Mn
+         vjzTQSXeviWKGboIX0NldG7eIqizMLjElaT90jjchFI2AdK+SJBawB53m7JI7kXZfZKo
+         Xdr4B5SnK1ai2v0fL3OvokzRm1+FagS7igQ8gPtHp10SPfq3meNUk6/ZUwnA0bmyzZ3X
+         YX6KZj57dfv3CSiz5cspBzmp6I6jDcHGYJmvb/JAmfMTV1SDZGa7TYHjFK3GejgMxdFx
+         LmUKgHH3713xyO09Pz3GbKeCIhzo/zY0X4WLm3+az45E/4DX5lg1LBpptm4SYOX4THs8
+         RBRw==
+X-Gm-Message-State: AOAM532tgQ+a20OWTAGRRDMYmLvGPmR3ZhK6Pjt3wKrCYeOJbk4f2qjS
+        foUSNs/7xReNQISvoiKr+lo=
+X-Google-Smtp-Source: ABdhPJz9YQrN+sAh/Q7X19JbLZJVr7MvV4sU7b/DT2reZGw5fFTq9k22ixjnmBV/nKNZh38RtMVjNQ==
+X-Received: by 2002:a05:622a:1103:: with SMTP id e3mr9922754qty.378.1637780321136;
+        Wed, 24 Nov 2021 10:58:41 -0800 (PST)
 Received: from hasanalmaruf-mbp.thefacebook.com ([2620:10d:c091:480::1:a1b0])
-        by smtp.gmail.com with ESMTPSA id r16sm315775qkp.42.2021.11.24.10.58.38
+        by smtp.gmail.com with ESMTPSA id r16sm315775qkp.42.2021.11.24.10.58.40
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 24 Nov 2021 10:58:39 -0800 (PST)
+        Wed, 24 Nov 2021 10:58:40 -0800 (PST)
 From:   Hasan Al Maruf <hasan3050@gmail.com>
 X-Google-Original-From: Hasan Al Maruf <hasanalmaruf@fb.com>
 To:     dave.hansen@linux.intel.com, ying.huang@intel.com,
         yang.shi@linux.alibaba.com, mgorman@techsingularity.net,
         riel@surriel.com, hannes@cmpxchg.org
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/5] Decouple reclaim and allocation for toptier nodes
-Date:   Wed, 24 Nov 2021 13:58:28 -0500
-Message-Id: <b45b9bf7cd3e21bca61d82dcd1eb692cd32c122c.1637778851.git.hasanalmaruf@fb.com>
+Subject: [PATCH 4/5] Reclaim to satisfy WMARK_DEMOTE on toptier nodes
+Date:   Wed, 24 Nov 2021 13:58:29 -0500
+Message-Id: <cd42adda728e211be3f1d8719221dd02088b76bf.1637778851.git.hasanalmaruf@fb.com>
 X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 In-Reply-To: <cover.1637778851.git.hasanalmaruf@fb.com>
 References: <cover.1637778851.git.hasanalmaruf@fb.com>
@@ -66,388 +66,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With a tight memory constraint, we need to proactively keep some
-free memory in toptier node, such that 1) new allocation which is
-mainly for request processing can be directly put in the toptier
-node and 2) toptier node is able to accept hot pages promoted from
-non-toptier node. To achieve that, we decouple the reclamation and
-allocation mechanism, i.e. reclamation gets triggered at a different
-watermark -- WMARK_DEMOTE, while allocation checks for the traditional
-WMARK_HIGH. In this way, toptier nodes can maintain some free space to
-accept both new allocation and promotion from non-toptier nodes.
+When kswapd is wakenup on a toptier node in a tiered-memory NUMA
+balancing mode, it reclaims pages until the toptier node is balanced
+and the number of free pages on toptier node satisfies WMARK_DEMOTE.
 
-On each toptier memory node, kswapd daemon is woken up to demote memory
-when free memory on the node falls below the following fraction
-
-    demote_scale_factor/10000
-
-The default value of demote_scale_factor is 200 , (i.e. 2%) so kswapd will
-be woken up when available free memory on a node falls below 2%. The
-demote_scale_factor can be adjusted higher if we need kswapd to keep more
-free memory around by updating the sysctl variable
-
-    /proc/sys/vm/demote_scale_factor
+When THP (Transparent Huge Page) is enabled, sometimes demotion/promotion
+between the memory nodes may pause for several hundreds of seconds as
+the pages in the toptier node may sometimes become so hot, that kswapd
+fails to reclaim any page.  Finally, the kswapd failure count
+(pgdat->kswapd_failures) reaches its max value and kswapd will not be
+waken up until a successful direct reclaiming. For general use case,
+this isn't a big problem as the memory users will do direct reclaim
+finally and trigger successful direct reclaiming or OOM to fix the
+issue. But in memory tiering system, the demotion and promotion will
+avoid to create too much memory pressure on the fast memory node, so
+direct reclaiming will not be triggered to resolve the issue. To
+resolve this, when promotion enabled, kswapd will be waken up every
+10 seconds to try to free some pages to recover kswapd failures.
 
 Signed-off-by: Hasan Al Maruf <hasanalmaruf@fb.com>
 ---
- Documentation/admin-guide/sysctl/vm.rst | 12 +++++++++
- include/linux/mempolicy.h               |  5 ++++
- include/linux/mm.h                      |  4 +++
- include/linux/mmzone.h                  |  5 ++++
- kernel/sched/fair.c                     |  3 +++
- kernel/sysctl.c                         | 12 ++++++++-
- mm/mempolicy.c                          | 23 +++++++++++++++++
- mm/page_alloc.c                         | 34 ++++++++++++++++++++++++-
- mm/vmscan.c                             | 26 +++++++++++++++++++
- mm/vmstat.c                             |  7 ++++-
- 10 files changed, 128 insertions(+), 3 deletions(-)
+ mm/vmscan.c | 42 ++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 36 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
-index 586cd4b86428..027b1f31fec1 100644
---- a/Documentation/admin-guide/sysctl/vm.rst
-+++ b/Documentation/admin-guide/sysctl/vm.rst
-@@ -74,6 +74,7 @@ Currently, these files are in /proc/sys/vm:
- - vfs_cache_pressure
- - watermark_boost_factor
- - watermark_scale_factor
-+- demote_scale_factor
- - zone_reclaim_mode
- 
- 
-@@ -961,6 +962,17 @@ that the number of free pages kswapd maintains for latency reasons is
- too small for the allocation bursts occurring in the system. This knob
- can then be used to tune kswapd aggressiveness accordingly.
- 
-+demote_scale_factor
-+===================
-+
-+This factor controls when kswapd wakes up to demote pages from toptier
-+nodes. It defines the amount of memory left in a toptier node/system
-+before kswapd is woken up and how much memory needs to be free from those
-+nodes before kswapd goes back to sleep.
-+
-+The unit is in fractions of 10,000. The default value of 200 means if there
-+are less than 2% of free toptier memory in a node/system, we will start  to
-+demote pages from that node.
- 
- zone_reclaim_mode
- =================
-diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
-index ab57b6a82e0a..0a76ac103b17 100644
---- a/include/linux/mempolicy.h
-+++ b/include/linux/mempolicy.h
-@@ -145,6 +145,7 @@ extern void numa_default_policy(void);
- extern void numa_policy_init(void);
- extern void mpol_rebind_task(struct task_struct *tsk, const nodemask_t *new);
- extern void mpol_rebind_mm(struct mm_struct *mm, nodemask_t *new);
-+extern void check_toptier_balanced(void);
- 
- extern int huge_node(struct vm_area_struct *vma,
- 				unsigned long addr, gfp_t gfp_flags,
-@@ -299,6 +300,10 @@ static inline nodemask_t *policy_nodemask_current(gfp_t gfp)
- 	return NULL;
- }
- 
-+static inline void check_toptier_balanced(void)
-+{
-+}
-+
- #define numa_demotion_enabled	false
- #define numa_promotion_tiered_enabled	false
- #endif /* CONFIG_NUMA */
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 9a226787464e..4748e57b7c68 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3153,6 +3153,10 @@ static inline bool debug_guardpage_enabled(void) { return false; }
- static inline bool page_is_guard(struct page *page) { return false; }
- #endif /* CONFIG_DEBUG_PAGEALLOC */
- 
-+#ifdef CONFIG_MIGRATION
-+extern int demote_scale_factor;
-+#endif
-+
- #if MAX_NUMNODES > 1
- void __init setup_nr_node_ids(void);
- #else
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 47946cec7584..070284feac03 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -329,12 +329,14 @@ enum zone_watermarks {
- 	WMARK_MIN,
- 	WMARK_LOW,
- 	WMARK_HIGH,
-+	WMARK_DEMOTE,
- 	NR_WMARK
- };
- 
- #define min_wmark_pages(z) (z->_watermark[WMARK_MIN] + z->watermark_boost)
- #define low_wmark_pages(z) (z->_watermark[WMARK_LOW] + z->watermark_boost)
- #define high_wmark_pages(z) (z->_watermark[WMARK_HIGH] + z->watermark_boost)
-+#define demote_wmark_pages(z) (z->_watermark[WMARK_DEMOTE] + z->watermark_boost)
- #define wmark_pages(z, i) (z->_watermark[i] + z->watermark_boost)
- 
- struct per_cpu_pages {
-@@ -884,6 +886,7 @@ bool zone_watermark_ok(struct zone *z, unsigned int order,
- 		unsigned int alloc_flags);
- bool zone_watermark_ok_safe(struct zone *z, unsigned int order,
- 		unsigned long mark, int highest_zoneidx);
-+bool pgdat_toptier_balanced(pg_data_t *pgdat, int order, int zone_idx);
- /*
-  * Memory initialization context, use to differentiate memory added by
-  * the platform statically or via memory hotplug interface.
-@@ -1011,6 +1014,8 @@ int min_free_kbytes_sysctl_handler(struct ctl_table *, int, void *, size_t *,
- 		loff_t *);
- int watermark_scale_factor_sysctl_handler(struct ctl_table *, int, void *,
- 		size_t *, loff_t *);
-+int demote_scale_factor_sysctl_handler(struct ctl_table *, int, void __user *,
-+		size_t *, loff_t *);
- extern int sysctl_lowmem_reserve_ratio[MAX_NR_ZONES];
- int lowmem_reserve_ratio_sysctl_handler(struct ctl_table *, int, void *,
- 		size_t *, loff_t *);
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 45e39832a2b1..6cada31f7265 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -21,6 +21,8 @@
-  *  Copyright (C) 2007 Red Hat, Inc., Peter Zijlstra
-  */
- #include "sched.h"
-+#include <trace/events/sched.h>
-+#include <linux/mempolicy.h>
- 
- /*
-  * Targeted preemption latency for CPU-bound tasks:
-@@ -10802,6 +10804,7 @@ void trigger_load_balance(struct rq *rq)
- 		raise_softirq(SCHED_SOFTIRQ);
- 
- 	nohz_balancer_kick(rq);
-+	check_toptier_balanced();
- }
- 
- static void rq_online_fair(struct rq *rq)
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 751b52062eb4..7d2995045a94 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -112,6 +112,7 @@ static int sixty = 60;
- #endif
- 
- static int __maybe_unused neg_one = -1;
-+static int __maybe_unused one = 1;
- static int __maybe_unused two = 2;
- static int __maybe_unused three = 3;
- static int __maybe_unused four = 4;
-@@ -121,8 +122,8 @@ static unsigned long long_max = LONG_MAX;
- static int one_hundred = 100;
- static int two_hundred = 200;
- static int one_thousand = 1000;
--#ifdef CONFIG_PRINTK
- static int ten_thousand = 10000;
-+#ifdef CONFIG_PRINTK
- #endif
- #ifdef CONFIG_PERF_EVENTS
- static int six_hundred_forty_kb = 640 * 1024;
-@@ -3000,6 +3001,15 @@ static struct ctl_table vm_table[] = {
- 		.extra1		= SYSCTL_ONE,
- 		.extra2		= &one_thousand,
- 	},
-+	{
-+		.procname       = "demote_scale_factor",
-+		.data           = &demote_scale_factor,
-+		.maxlen         = sizeof(demote_scale_factor),
-+		.mode           = 0644,
-+		.proc_handler   = demote_scale_factor_sysctl_handler,
-+		.extra1         = &one,
-+		.extra2         = &ten_thousand,
-+	},
- 	{
- 		.procname	= "percpu_pagelist_fraction",
- 		.data		= &percpu_pagelist_fraction,
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 580e76ae58e6..ba9b1322bd48 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -1042,6 +1042,29 @@ static long do_get_mempolicy(int *policy, nodemask_t *nmask,
- 	return err;
- }
- 
-+void check_toptier_balanced(void)
-+{
-+	int nid;
-+	int balanced;
-+
-+	if (!numa_promotion_tiered_enabled)
-+		return;
-+
-+	for_each_node_state(nid, N_MEMORY) {
-+		pg_data_t *pgdat = NODE_DATA(nid);
-+
-+		if (!node_is_toptier(nid))
-+			continue;
-+
-+		balanced = pgdat_toptier_balanced(pgdat, 0, ZONE_MOVABLE);
-+		if (!balanced) {
-+			pgdat->kswapd_order = 0;
-+			pgdat->kswapd_highest_zoneidx = ZONE_NORMAL;
-+			wakeup_kswapd(pgdat->node_zones + ZONE_NORMAL, 0, 1, ZONE_NORMAL);
-+		}
-+	}
-+}
-+
- #ifdef CONFIG_MIGRATION
- /*
-  * page migration, thp tail pages can be passed.
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 5f1dd104cf8e..8638e24e1b2f 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -3599,7 +3599,8 @@ struct page *rmqueue(struct zone *preferred_zone,
- 	if (test_bit(ZONE_BOOSTED_WATERMARK, &zone->flags)) {
- 		clear_bit(ZONE_BOOSTED_WATERMARK, &zone->flags);
- 		wakeup_kswapd(zone, 0, 0, zone_idx(zone));
--	}
-+	} else if (!pgdat_toptier_balanced(zone->zone_pgdat, order, zone_idx(zone)))
-+		wakeup_kswapd(zone, 0, 0, zone_idx(zone));
- 
- 	VM_BUG_ON_PAGE(page && bad_range(zone, page), page);
- 	return page;
-@@ -8047,6 +8048,22 @@ static void __setup_per_zone_wmarks(void)
- 		zone->_watermark[WMARK_LOW]  = min_wmark_pages(zone) + tmp;
- 		zone->_watermark[WMARK_HIGH] = min_wmark_pages(zone) + tmp * 2;
- 
-+		if (numa_promotion_tiered_enabled) {
-+			tmp = mult_frac(zone_managed_pages(zone), demote_scale_factor, 10000);
-+
-+			/*
-+			 * Clamp demote watermark between twice high watermark
-+			 * and max managed pages.
-+			 */
-+			if (tmp < 2 * zone->_watermark[WMARK_HIGH])
-+				tmp = 2 * zone->_watermark[WMARK_HIGH];
-+			if (tmp > zone_managed_pages(zone))
-+				tmp = zone_managed_pages(zone);
-+			zone->_watermark[WMARK_DEMOTE] = tmp;
-+
-+			zone->watermark_boost = 0;
-+		}
-+
- 		spin_unlock_irqrestore(&zone->lock, flags);
- 	}
- 
-@@ -8163,6 +8180,21 @@ int watermark_scale_factor_sysctl_handler(struct ctl_table *table, int write,
- 	return 0;
- }
- 
-+int demote_scale_factor_sysctl_handler(struct ctl_table *table, int write,
-+	void __user *buffer, size_t *length, loff_t *ppos)
-+{
-+	int rc;
-+
-+	rc = proc_dointvec_minmax(table, write, buffer, length, ppos);
-+	if (rc)
-+		return rc;
-+
-+	if (write)
-+		setup_per_zone_wmarks();
-+
-+	return 0;
-+}
-+
- #ifdef CONFIG_NUMA
- static void setup_min_unmapped_ratio(void)
- {
 diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 47c868d2ecfd..c39b217effa9 100644
+index c39b217effa9..1e87221f2b58 100644
 --- a/mm/vmscan.c
 +++ b/mm/vmscan.c
-@@ -41,6 +41,7 @@
- #include <linux/kthread.h>
- #include <linux/freezer.h>
- #include <linux/memcontrol.h>
-+#include <linux/mempolicy.h>
- #include <linux/migrate.h>
- #include <linux/delayacct.h>
- #include <linux/sysctl.h>
-@@ -190,6 +191,7 @@ static void set_task_reclaim_state(struct task_struct *task,
+@@ -2386,8 +2386,14 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+ 	unsigned long ap, fp;
+ 	enum lru_list lru;
  
- static LIST_HEAD(shrinker_list);
- static DECLARE_RWSEM(shrinker_rwsem);
-+int demote_scale_factor = 200;
+-	/* If we have no swap space, do not bother scanning anon pages. */
+-	if (!sc->may_swap || !can_reclaim_anon_pages(memcg, pgdat->node_id, sc)) {
++	/*
++	 * If we have no swap space, do not bother scanning anon pages.
++	 * However, anon pages on toptier node can be demoted via reclaim
++	 * when numa promotion is enabled. Disable the check to prevent
++	 * demotion for no swap space when numa promotion is enabled.
++	 */
++	if (!numa_promotion_tiered_enabled &&
++		(!sc->may_swap || !can_reclaim_anon_pages(memcg, pgdat->node_id, sc))) {
+ 		scan_balance = SCAN_FILE;
+ 		goto out;
+ 	}
+@@ -2916,7 +2922,10 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+ 			if (!managed_zone(zone))
+ 				continue;
  
- #ifdef CONFIG_MEMCG
- /*
-@@ -3598,6 +3600,30 @@ static bool pgdat_balanced(pg_data_t *pgdat, int order, int highest_zoneidx)
- 	return false;
- }
+-			total_high_wmark += high_wmark_pages(zone);
++			if (numa_promotion_tiered_enabled && node_is_toptier(pgdat->node_id))
++				total_high_wmark += demote_wmark_pages(zone);
++			else
++				total_high_wmark += high_wmark_pages(zone);
+ 		}
  
-+bool pgdat_toptier_balanced(pg_data_t *pgdat, int order, int zone_idx)
-+{
-+	unsigned long mark;
-+	struct zone *zone;
-+
-+	if (!node_is_toptier(pgdat->node_id) ||
-+		!numa_promotion_tiered_enabled ||
-+		order > 0 || zone_idx < ZONE_NORMAL) {
-+		return true;
-+	}
-+
-+	zone = pgdat->node_zones + ZONE_NORMAL;
-+
-+	if (!managed_zone(zone))
-+		return true;
-+
-+	mark = min(demote_wmark_pages(zone), zone_managed_pages(zone));
-+
-+	if (zone_page_state(zone, NR_FREE_PAGES) < mark)
-+		return false;
-+
-+	return true;
-+}
-+
- /* Clear pgdat state for congested, dirty or under writeback. */
- static void clear_pgdat_congested(pg_data_t *pgdat)
- {
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index cda2505bb21f..4309f79a6132 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -28,6 +28,7 @@
- #include <linux/mm_inline.h>
- #include <linux/page_ext.h>
- #include <linux/page_owner.h>
-+#include <linux/migrate.h>
+ 		/*
+@@ -3574,6 +3583,9 @@ static bool pgdat_balanced(pg_data_t *pgdat, int order, int highest_zoneidx)
+ 	unsigned long mark = -1;
+ 	struct zone *zone;
  
- #include "internal.h"
++	if (numa_promotion_tiered_enabled && node_is_toptier(pgdat->node_id) &&
++			highest_zoneidx >= ZONE_NORMAL)
++		return pgdat_toptier_balanced(pgdat, 0, highest_zoneidx);
+ 	/*
+ 	 * Check watermarks bottom-up as lower zones are more likely to
+ 	 * meet watermarks.
+@@ -3692,7 +3704,10 @@ static bool kswapd_shrink_node(pg_data_t *pgdat,
+ 		if (!managed_zone(zone))
+ 			continue;
  
-@@ -1649,7 +1650,9 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
- 							struct zone *zone)
- {
- 	int i;
--	seq_printf(m, "Node %d, zone %8s", pgdat->node_id, zone->name);
-+	seq_printf(m, "Node %d, zone %8s, toptier %d next_demotion_node %d",
-+			pgdat->node_id, zone->name, node_is_toptier(pgdat->node_id),
-+			next_demotion_node(pgdat->node_id));
- 	if (is_zone_first_populated(pgdat, zone)) {
- 		seq_printf(m, "\n  per-node stats");
- 		for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
-@@ -1666,6 +1669,7 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
- 		   "\n        min      %lu"
- 		   "\n        low      %lu"
- 		   "\n        high     %lu"
-+		   "\n        demote   %lu"
- 		   "\n        spanned  %lu"
- 		   "\n        present  %lu"
- 		   "\n        managed  %lu"
-@@ -1674,6 +1678,7 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
- 		   min_wmark_pages(zone),
- 		   low_wmark_pages(zone),
- 		   high_wmark_pages(zone),
-+		   node_is_toptier(pgdat->node_id) ? demote_wmark_pages(zone) : 0,
- 		   zone->spanned_pages,
- 		   zone->present_pages,
- 		   zone_managed_pages(zone),
+-		sc->nr_to_reclaim += max(high_wmark_pages(zone), SWAP_CLUSTER_MAX);
++		if (numa_promotion_tiered_enabled && node_is_toptier(pgdat->node_id))
++			sc->nr_to_reclaim += max(demote_wmark_pages(zone), SWAP_CLUSTER_MAX);
++		else
++			sc->nr_to_reclaim += max(high_wmark_pages(zone), SWAP_CLUSTER_MAX);
+ 	}
+ 
+ 	/*
+@@ -4021,8 +4036,23 @@ static void kswapd_try_to_sleep(pg_data_t *pgdat, int alloc_order, int reclaim_o
+ 		 */
+ 		set_pgdat_percpu_threshold(pgdat, calculate_normal_threshold);
+ 
+-		if (!kthread_should_stop())
+-			schedule();
++		if (!kthread_should_stop()) {
++			/*
++			 * In numa promotion modes, try harder to recover from
++			 * kswapd failures, because direct reclaiming may be
++			 * not triggered.
++			 */
++			if (numa_promotion_tiered_enabled &&
++						node_is_toptier(pgdat->node_id) &&
++					pgdat->kswapd_failures >= MAX_RECLAIM_RETRIES) {
++				remaining = schedule_timeout(10 * HZ);
++				if (!remaining) {
++					pgdat->kswapd_highest_zoneidx = ZONE_MOVABLE;
++					pgdat->kswapd_order = 0;
++				}
++			} else
++				schedule();
++		}
+ 
+ 		set_pgdat_percpu_threshold(pgdat, calculate_pressure_threshold);
+ 	} else {
 -- 
 2.30.2
 
