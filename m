@@ -2,222 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5477145B3BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 06:11:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E810F45B3C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 06:12:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbhKXFOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 00:14:52 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:53734 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhKXFOv (ORCPT
+        id S230119AbhKXFQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 00:16:03 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:28171 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229817AbhKXFQB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 00:14:51 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 640F41FD37;
-        Wed, 24 Nov 2021 05:11:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637730701; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4bewt07Nn8devyRr1m4C78ZgxUFTlBUyZDqP1VULo3s=;
-        b=RY8s+KIIzuLwSFlUORNHPsA/U6zRSyBTrYRRuFIavzy4nq/FyvYoOjtNEhmJ6N80xRS8R5
-        BXAmHlrKnBVWSBDw68jHcVir91CrvWGSs83Pi3nWo557s+EVPbvYadr6gbJ8JP9UC5mGjb
-        Jh6nVEF/G1lBXVsUSwnshrDqW+PP6OA=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2C9CE13EC2;
-        Wed, 24 Nov 2021 05:11:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id hwtCCY3JnWF4ZQAAMHmgww
-        (envelope-from <jgross@suse.com>); Wed, 24 Nov 2021 05:11:41 +0000
-Subject: Re: [PATCH v4] xen: detect uninitialized xenbus in xenbus_init
-To:     Stefano Stabellini <sstabellini@kernel.org>
-Cc:     boris.ostrovsky@oracle.com, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org, jbeulich@suse.com,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>,
-        stable@vger.kernel.org
-References: <20211123210748.1910236-1-sstabellini@kernel.org>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <b7e7ea7f-f08a-61b4-8980-757470d50b55@suse.com>
-Date:   Wed, 24 Nov 2021 06:11:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 24 Nov 2021 00:16:01 -0500
+Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HzTcN0v8kz8vYr;
+        Wed, 24 Nov 2021 13:11:00 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 24 Nov 2021 13:12:50 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.20; Wed, 24 Nov 2021 13:12:50 +0800
+Message-ID: <9f25b098-0253-4721-3b91-b7d3a79776c6@huawei.com>
+Date:   Wed, 24 Nov 2021 13:12:49 +0800
 MIME-Version: 1.0
-In-Reply-To: <20211123210748.1910236-1-sstabellini@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="aJA5RZ5toJwqVz2G9rOvSw0xcuhrcHCY1"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2] mm: Delay kmemleak object creation of module_alloc()
+Content-Language: en-US
+To:     Catalin Marinas <catalin.marinas@arm.com>
+CC:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-s390@vger.kernel.org>,
+        <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
+        Will Deacon <will@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Alexander Potapenko <glider@google.com>,
+        Yongqiang Liu <liuyongqiang13@huawei.com>
+References: <20211123143220.134361-1-wangkefeng.wang@huawei.com>
+ <YZ1Eo2m3VKZTfthA@arm.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <YZ1Eo2m3VKZTfthA@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggeme701-chm.china.huawei.com (10.1.199.97) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---aJA5RZ5toJwqVz2G9rOvSw0xcuhrcHCY1
-Content-Type: multipart/mixed; boundary="Ns8snLW1kN0xBnRuYJOXOP7mLlTcLo22F";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Stefano Stabellini <sstabellini@kernel.org>
-Cc: boris.ostrovsky@oracle.com, xen-devel@lists.xenproject.org,
- linux-kernel@vger.kernel.org, jbeulich@suse.com,
- Stefano Stabellini <stefano.stabellini@xilinx.com>, stable@vger.kernel.org
-Message-ID: <b7e7ea7f-f08a-61b4-8980-757470d50b55@suse.com>
-Subject: Re: [PATCH v4] xen: detect uninitialized xenbus in xenbus_init
-References: <20211123210748.1910236-1-sstabellini@kernel.org>
-In-Reply-To: <20211123210748.1910236-1-sstabellini@kernel.org>
 
---Ns8snLW1kN0xBnRuYJOXOP7mLlTcLo22F
-Content-Type: multipart/mixed;
- boundary="------------061B0C4405AEAC3907F4670A"
-Content-Language: en-US
+On 2021/11/24 3:44, Catalin Marinas wrote:
+> On Tue, Nov 23, 2021 at 10:32:20PM +0800, Kefeng Wang wrote:
+>> Yongqiang reports a kmemleak panic when module insmod/rmmod with KASAN
+>> enabled on x86[1].
+>>
+>> When the module allocates memory, it's kmemleak_object is created successfully,
+>> but the KASAN shadow memory of module allocation is not ready, so when kmemleak
+>> scan the module's pointer, it will panic due to no shadow memory with KASAN.
+>>
+>> module_alloc
+>>    __vmalloc_node_range
+>>      kmemleak_vmalloc
+>> 				kmemleak_scan
+>> 				  update_checksum
+>>    kasan_module_alloc
+>>      kmemleak_ignore
+> Can you share the .config and the stack trace you get on arm64?
 
-This is a multi-part message in MIME format.
---------------061B0C4405AEAC3907F4670A
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+My gcc could not support CC_HAS_KASAN_SW_TAGS, so no repoduced on ARM64
 
-On 23.11.21 22:07, Stefano Stabellini wrote:
-> From: Stefano Stabellini <stefano.stabellini@xilinx.com>
->=20
-> If the xenstore page hasn't been allocated properly, reading the value
-> of the related hvm_param (HVM_PARAM_STORE_PFN) won't actually return
-> error. Instead, it will succeed and return zero. Instead of attempting
-> to xen_remap a bad guest physical address, detect this condition and
-> return early.
->=20
-> Note that although a guest physical address of zero for
-> HVM_PARAM_STORE_PFN is theoretically possible, it is not a good choice
-> and zero has never been validly used in that capacity.
->=20
-> Also recognize all bits set as an invalid value.
->=20
-> For 32-bit Linux, any pfn above ULONG_MAX would get truncated. Pfns
-> above ULONG_MAX should never be passed by the Xen tools to HVM guests
-> anyway, so check for this condition and return early.
->=20
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Stefano Stabellini <stefano.stabellini@xilinx.com>
+>
+> I have a suspicion there is no problem if KASAN_VMALLOC is enabled.
 
-Reviewed-by: Juergen Gross <jgross@suse.com>
+Yes,  if KASAN_VMALLOC enabled, the memory of vmalloc shadow has been 
+populated in arch's kasan_init(),
 
+there is no issue. but x86/arm64/s390 support dynamic allocation of 
+module area per module load by
 
-Juergen
+kasan_module_alloc(), and this leads the above concurrent issue.
 
---------------061B0C4405AEAC3907F4670A
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+>> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+>> index 4a4929b29a23..2ade2f484562 100644
+>> --- a/mm/kasan/shadow.c
+>> +++ b/mm/kasan/shadow.c
+>> @@ -498,7 +498,7 @@ void kasan_release_vmalloc(unsigned long start, unsigned long end,
+>>   
+>>   #else /* CONFIG_KASAN_VMALLOC */
+>>   
+>> -int kasan_module_alloc(void *addr, size_t size)
+>> +int kasan_module_alloc(void *addr, size_t size, gfp_t gfp_mask)
+>>   {
+>>   	void *ret;
+>>   	size_t scaled_size;
+>> @@ -520,9 +520,14 @@ int kasan_module_alloc(void *addr, size_t size)
+>>   			__builtin_return_address(0));
+>>   
+>>   	if (ret) {
+>> +		struct vm_struct *vm = find_vm_area(addr);
+>>   		__memset(ret, KASAN_SHADOW_INIT, shadow_size);
+>> -		find_vm_area(addr)->flags |= VM_KASAN;
+>> +		vm->flags |= VM_KASAN;
+>>   		kmemleak_ignore(ret);
+>> +
+>> +		if (vm->flags & VM_DELAY_KMEMLEAK)
+>> +			kmemleak_vmalloc(vm, size, gfp_mask);
+>> +
+>>   		return 0;
+>>   	}
+> This function only exists if CONFIG_KASAN_VMALLOC=n.
+yes.
+>
+>> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+>> index d2a00ad4e1dd..23c595b15839 100644
+>> --- a/mm/vmalloc.c
+>> +++ b/mm/vmalloc.c
+>> @@ -3074,7 +3074,8 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
+>>   	clear_vm_uninitialized_flag(area);
+>>   
+>>   	size = PAGE_ALIGN(size);
+>> -	kmemleak_vmalloc(area, size, gfp_mask);
+>> +	if (!(vm_flags & VM_DELAY_KMEMLEAK))
+>> +		kmemleak_vmalloc(area, size, gfp_mask);
+> So with KASAN_VMALLOC enabled, we'll miss the kmemleak allocation.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+See the definination, if KASAN_VMALLOC enabled, VM_DELAY_KMEMLEAK  is 0, 
+so kmemleak allocation
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+still works.
 
---------------061B0C4405AEAC3907F4670A--
+  
++#if defined(CONFIG_KASAN) && (defined(CONFIG_KASAN_GENERIC) || \
++	defined(CONFIG_KASAN_SW_TAGS)) && !defined(CONFIG_KASAN_VMALLOC)
++#define VM_DELAY_KMEMLEAK	0x00000800	/* delay kmemleak object create */
++#else
++#define VM_DELAY_KMEMLEAK	0
++#endif
++
 
---Ns8snLW1kN0xBnRuYJOXOP7mLlTcLo22F--
+>
+> You could add an IS_ENABLED(CONFIG_KASAN_VMALLOC) check but I'm not
+> particularly fond of the delay approach (also think DEFER is probably a
+> better name).
+Will use DEFER instead.
+>
+> A quick fix would be to make KMEMLEAK depend on !KASAN || KASAN_VMALLOC.
+> We'll miss KASAN_SW_TAGS with kmemleak but I think vmalloc support could
+> be enabled for this as well.
+>
+> What does KASAN do with other vmalloc() allocations when !KASAN_VMALLOC?
+> Can we not have a similar approach. I don't fully understand why the
+> module vmalloc() is a special case.
 
---aJA5RZ5toJwqVz2G9rOvSw0xcuhrcHCY1
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+Only the shadow of module area is dynamic allocation , this exists on 
+ARM64 too.
 
------BEGIN PGP SIGNATURE-----
+if no KASAN_VMALLOC, no shadow area for vmalloc,  other vmalloc 
+allocation is
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmGdyYwFAwAAAAAACgkQsN6d1ii/Ey9t
-9Af7BryVncllwJue+nkoKn5NECVjU0Z44G781fGbdEHgIB7/eYJMt6NDHSb8XWunirVHpM/LV/+G
-gkH10AtqDxFl8SCTiMNbMLMkhawOQ7StJyWestPcY8f5OD0wsdBHlfz6RwzeGMQIcpDtIcmhBxKu
-bJ8CkZTqs5ufX54QRt5ft9CpDpwEyoZ5fvcsYkGE7XMkjpT80Dk5UN7OzWJ8XGA8nGsU6/NQHuOw
-NA6A5GGHbx6A6dbOs0hHMA/b6FcO4PGL3CoxP5OYrfGvDJIDRrlxxBSd9J2R1V2JtaiP1CtFG+Mm
-Md2QNnTzS6tbvVgwFhI0Iy04Ak6btVckua45ur/Y3w==
-=sr4U
------END PGP SIGNATURE-----
+no problem. Correct me if I'm wrong.
 
---aJA5RZ5toJwqVz2G9rOvSw0xcuhrcHCY1--
+Thanks.
+
+>
