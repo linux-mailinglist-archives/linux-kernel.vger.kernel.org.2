@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B0845BF64
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:54:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 385CC45BCFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:31:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346993AbhKXM5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:57:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33426 "EHLO mail.kernel.org"
+        id S1343657AbhKXMef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:34:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346850AbhKXMyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:54:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4803E61875;
-        Wed, 24 Nov 2021 12:31:27 +0000 (UTC)
+        id S1343788AbhKXMaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:30:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59F44610E9;
+        Wed, 24 Nov 2021 12:18:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757088;
-        bh=D70KnzKVdrdDB76JciFzBM/fRPXnNnIMaydokXlU/iE=;
+        s=korg; t=1637756284;
+        bh=1JmBukKjrnXRzprbhVQ9UrTE9mZVLG13AXjwuDHE1h4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vy9n0BFm3mAWOlIDeM3XcLleP2HtHQWsK4zMCjaetzs/UePZtN1iMFpyYBqCukLek
-         dzleAcgCjuYvdAnyqqvD3mZb6lPP1kkaiplyeRgWxWGCOql7so1fJ2wDaHpcdxX2YX
-         noZ03dJoyW7b9l7mWtIjg6lXjX/Lsoroc9oAcIwM=
+        b=t+0iiS6HBu6jFIhQhco0DIfRk7CX5AWrE7hmBwZ3E3/uy7Vol3m00JNK51NTQkHNL
+         2Wqkmx0dDgqKuyzv4eBeoZ0nG1ys+MuY7w4L7EutdjxyYrdafHgFECUxkokLzNbrIk
+         Ks14vor9//L/JIsxNneHhEdgy0fBZOzyR8Oti27w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 4.19 055/323] mwifiex: Read a PCI register after writing the TX ring write pointer
-Date:   Wed, 24 Nov 2021 12:54:05 +0100
-Message-Id: <20211124115720.727555169@linuxfoundation.org>
+        stable@vger.kernel.org, Phoenix Huang <phoenix@emc.com.tw>,
+        Yufei Du <yufeidu@cs.unc.edu>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.14 004/251] Input: elantench - fix misreporting trackpoint coordinates
+Date:   Wed, 24 Nov 2021 12:54:06 +0100
+Message-Id: <20211124115710.374484181@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonas Dreßler <verdre@v0yd.nl>
+From: Phoenix Huang <phoenix@emc.com.tw>
 
-commit e5f4eb8223aa740237cd463246a7debcddf4eda1 upstream.
+commit be896bd3b72b44126c55768f14c22a8729b0992e upstream.
 
-On the 88W8897 PCIe+USB card the firmware randomly crashes after setting
-the TX ring write pointer. The issue is present in the latest firmware
-version 15.68.19.p21 of the PCIe+USB card.
+Some firmwares occasionally report bogus data from trackpoint, with X or Y
+displacement being too large (outside of [-127, 127] range). Let's drop such
+packets so that we do not generate jumps.
 
-Those firmware crashes can be worked around by reading any PCI register
-of the card after setting that register, so read the PCI_VENDOR_ID
-register here. The reason this works is probably because we keep the bus
-from entering an ASPM state for a bit longer, because that's what causes
-the cards firmware to crash.
-
-This fixes a bug where during RX/TX traffic and with ASPM L1 substates
-enabled (the specific substates where the issue happens appear to be
-platform dependent), the firmware crashes and eventually a command
-timeout appears in the logs.
-
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=109681
+Signed-off-by: Phoenix Huang <phoenix@emc.com.tw>
+Tested-by: Yufei Du <yufeidu@cs.unc.edu>
+Link: https://lore.kernel.org/r/20210729010940.5752-1-phoenix@emc.com.tw
 Cc: stable@vger.kernel.org
-Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20211011133224.15561-2-verdre@v0yd.nl
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/marvell/mwifiex/pcie.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/input/mouse/elantech.c |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
---- a/drivers/net/wireless/marvell/mwifiex/pcie.c
-+++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
-@@ -1330,6 +1330,14 @@ mwifiex_pcie_send_data(struct mwifiex_ad
- 			ret = -1;
- 			goto done_unmap;
- 		}
+--- a/drivers/input/mouse/elantech.c
++++ b/drivers/input/mouse/elantech.c
+@@ -431,6 +431,19 @@ static void elantech_report_trackpoint(s
+ 	case 0x16008020U:
+ 	case 0x26800010U:
+ 	case 0x36808000U:
 +
-+		/* The firmware (latest version 15.68.19.p21) of the 88W8897 PCIe+USB card
-+		 * seems to crash randomly after setting the TX ring write pointer when
-+		 * ASPM powersaving is enabled. A workaround seems to be keeping the bus
-+		 * busy by reading a random register afterwards.
++		/*
++		 * This firmware misreport coordinates for trackpoint
++		 * occasionally. Discard packets outside of [-127, 127] range
++		 * to prevent cursor jumps.
 +		 */
-+		mwifiex_read_reg(adapter, PCI_VENDOR_ID, &rx_val);
++		if (packet[4] == 0x80 || packet[5] == 0x80 ||
++		    packet[1] >> 7 == packet[4] >> 7 ||
++		    packet[2] >> 7 == packet[5] >> 7) {
++			elantech_debug("discarding packet [%6ph]\n", packet);
++			break;
 +
- 		if ((mwifiex_pcie_txbd_not_full(card)) &&
- 		    tx_param->next_pkt_len) {
- 			/* have more packets and TxBD still can hold more */
++		}
+ 		x = packet[4] - (int)((packet[1]^0x80) << 1);
+ 		y = (int)((packet[2]^0x80) << 1) - packet[5];
+ 
 
 
