@@ -2,144 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27DA45CD51
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 20:35:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A3545CD55
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 20:35:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351487AbhKXTih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 14:38:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351446AbhKXTh7 (ORCPT
+        id S1351381AbhKXTiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 14:38:52 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:36820 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244374AbhKXTit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 14:37:59 -0500
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E81AC06173E
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 11:34:46 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id a2so3787197qtx.11
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 11:34:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ri2KPYGBCnao6/BnQ4+pDpAprHVTjBGafjmpwI8B0C0=;
-        b=hnmLGFTx46ZwC9Zz019yxIeySG8isS4N1Hb+xt0uxyXiedpxlfbVvU0t2Uv7qsM6jg
-         grVsJAh7q/zfD4UrSCD+SqQzKKFomfAVn/m3z4w4o4Uka//1RoTZGdm4ZreZp8Rhul5Y
-         zdGo7zMlD8xdOjBNuLrfxIJfmaRk6YSixiyP6NXeWqJFCG8d76SSpSUzgBxLehXb3iVY
-         WPDsGd7zEbiDFE4Mn5Y0ewPNiWTMJ6/7J53NAC7kRtavdaudJm0TBA4jma8AHZ9rUYEK
-         mHqp5g+uu2Il55/+/N/tlhXfnD66q08Pw+m53g6KOh9VhN6YpvdLFWRj7rS79zTMb2Nq
-         Fz6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ri2KPYGBCnao6/BnQ4+pDpAprHVTjBGafjmpwI8B0C0=;
-        b=M23S/rg6ULIXzok/GHImPzHsW3c6k0p82HNVfILR03dgsp4+FJHPUzuhv/tz4iWS5A
-         pCLr19TOkSCrsoDBg855jTxRDRCu+u+Ak1Ix/2TCcTMWjmyfYQ84NQuHLCsYKapzdESU
-         k3JKMzpiCrHA2gtsyTMNTDwuwnV3/2jovpeodnqha6Rp/jE8ZfYlCrZDzx9CW55AqSta
-         13F8KmEEAhKaSgrCQQJ77K76OdnOueHx91ufcgZxvcp4b8eynRlyIP913wwCXEnps4u3
-         hqiEb4fJYiVZ8iMdZ2Bugb6A/qvIbFAcq3NueHjvEz2Rg8G5/91C1i4LPPed1ldT9GxC
-         dFHg==
-X-Gm-Message-State: AOAM5316cSiAjk+ZQiiO4+9a9vyBhtDoB8ZyJlFTFrkeH1rYJgZQ6juX
-        BFGIgfJ+rxP3hkVERRHORdiFOw2c4lM=
-X-Google-Smtp-Source: ABdhPJxMF5WxEKEYu6BCd0iKW9S2ETZGQn1bUMt/CFz2UQF5u6ghl4h+M6BEXGOjGcQxn2MVEW8TLA==
-X-Received: by 2002:ac8:5f89:: with SMTP id j9mr10309426qta.391.1637782485311;
-        Wed, 24 Nov 2021 11:34:45 -0800 (PST)
-Received: from godwin.fios-router.home (pool-108-18-207-184.washdc.fios.verizon.net. [108.18.207.184])
-        by smtp.gmail.com with ESMTPSA id v2sm352059qkp.72.2021.11.24.11.34.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 11:34:44 -0800 (PST)
-From:   Sean Anderson <seanga2@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhenliang Wei <weizhenliang@huawei.com>,
-        Changhee Han <ch0.han@lge.com>,
-        Sean Anderson <seanga2@gmail.com>
-Subject: [PATCH 2/2] tools/vm/page_owner_sort.c: Add
-Date:   Wed, 24 Nov 2021 14:34:40 -0500
-Message-Id: <20211124193440.1805610-2-seanga2@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211124193440.1805610-1-seanga2@gmail.com>
-References: <20211124193440.1805610-1-seanga2@gmail.com>
+        Wed, 24 Nov 2021 14:38:49 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1236921941;
+        Wed, 24 Nov 2021 19:35:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637782538; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9aE3EhkO73udWwtqxOb92KxXE9U0rU8t4YmlonhA+V8=;
+        b=miE5FQ0EmpLG7PCHR31uA10N/ZFm2mNsSBywv0kaSPjh7QYid6lV4IojRLs+VlKK81Kcz3
+        HP/QQoDZuLCY0jea6eF66Twomiem2IgB0bWUCwsD6qaOAyDg31WYutGa3kYCBgatlx0+RL
+        v96Rbmyn4X0VdcSQqUWxHquX7swquLU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637782538;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9aE3EhkO73udWwtqxOb92KxXE9U0rU8t4YmlonhA+V8=;
+        b=v/TlsoC9ZbCs9hGeb1ub5z4ev4ke8hB4iEfUxgP8y1NmHSRRbJHHAWZuaaFi2hxNXnDEfW
+        a6gKhCuWtiHulsDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4C44513F3D;
+        Wed, 24 Nov 2021 19:35:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id IELGEAmUnmELdwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Wed, 24 Nov 2021 19:35:37 +0000
+Message-ID: <cabdf9d2-0ecf-5ec7-368e-83fea66ef39f@suse.cz>
+Date:   Wed, 24 Nov 2021 20:34:40 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
+ Hypervisor Support
+Content-Language: en-US
+To:     Dave Hansen <dave.hansen@intel.com>, Joerg Roedel <jroedel@suse.de>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>,
+        Peter Gonda <pgonda@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
+ <daf5066b-e89b-d377-ed8a-9338f1a04c0d@amd.com>
+ <d673f082-9023-dafb-e42e-eab32a3ddd0c@intel.com>
+ <f15597a0-e7e0-0a57-39fd-20715abddc7f@amd.com>
+ <5f3b3aab-9ec2-c489-eefd-9136874762ee@intel.com>
+ <d83e6668-bec4-8d1f-7f8a-085829146846@amd.com>
+ <38282b0c-7eb5-6a91-df19-2f4cfa8549ce@intel.com> <YZ5iWJuxjSCmZL5l@suse.de>
+ <bd31abd4-c8a2-bdda-ea74-1c24b29beda7@intel.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <bd31abd4-c8a2-bdda-ea74-1c24b29beda7@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the ability to sort by stacktraces. This is helpful when
-comparing multiple dumps of page_owner taken at different times, since
-blocks will not be reordered if they were allocated/free'd.
+On 11/24/21 18:48, Dave Hansen wrote:
+> On 11/24/21 8:03 AM, Joerg Roedel wrote:
+>> On Mon, Nov 22, 2021 at 02:51:35PM -0800, Dave Hansen wrote:
+>>> My preference would be that we never have SEV-SNP code in the kernel
+>>> that can panic() the host from guest userspace.  If that means waiting
+>>> until there's common guest unmapping infrastructure around, then I think
+>>> we should wait.
+>> Can you elaborate how to crash host kernel from guest user-space? If I
+>> understood correctly it was about crashing host kernel from _host_
+>> user-space.
+> 
+> Sorry, I misspoke there.
+> 
+> My concern is about crashing the host kernel.  It appears that *host*
+> userspace can do that quite easily by inducing the host kernel to access
+> some guest private memory via a kernel mapping.
 
-Signed-off-by: Sean Anderson <seanga2@gmail.com>
----
+I thought some of the scenarios discussed here also went along "guest
+(doesn't matter if userspace or kernel) shares a page with host, invokes
+some host kernel operation and in parallel makes the page private again".
 
- tools/vm/page_owner_sort.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
-
-diff --git a/tools/vm/page_owner_sort.c b/tools/vm/page_owner_sort.c
-index 9ad3772a294d..b91d3381300c 100644
---- a/tools/vm/page_owner_sort.c
-+++ b/tools/vm/page_owner_sort.c
-@@ -29,7 +29,6 @@ struct block_list {
- 	int page_num;
- };
- 
--static int sort_by_memory;
- static regex_t order_pattern;
- static struct block_list *list;
- static int list_size;
-@@ -134,13 +133,16 @@ static void add_list(char *buf, int len)
- 
- static void usage(void)
- {
--	printf("Usage: ./page_owner_sort [-m] <input> <output>\n"
--		"-m	Sort by total memory. If this option is unset, sort by times\n"
-+	printf("Usage: ./page_owner_sort [OPTIONS] <input> <output>\n"
-+		"-m	Sort by total memory.\n"
-+		"-s	Sort by the stack trace.\n"
-+		"-t	Sort by times (default).\n"
- 	);
- }
- 
- int main(int argc, char **argv)
- {
-+	int (*cmp)(const void *, const void *) = compare_num;
- 	FILE *fin, *fout;
- 	char *buf;
- 	int ret, i, count;
-@@ -149,10 +151,16 @@ int main(int argc, char **argv)
- 	int err;
- 	int opt;
- 
--	while ((opt = getopt(argc, argv, "m")) != -1)
-+	while ((opt = getopt(argc, argv, "mst")) != -1)
- 		switch (opt) {
- 		case 'm':
--			sort_by_memory = 1;
-+			cmp = compare_page_num;
-+			break;
-+		case 's':
-+			cmp = compare_stacktrace;
-+			break;
-+		case 't':
-+			cmp = compare_num;
- 			break;
- 		default:
- 			usage();
-@@ -221,10 +229,7 @@ int main(int argc, char **argv)
- 		}
- 	}
- 
--	if (sort_by_memory)
--		qsort(list2, count, sizeof(list[0]), compare_page_num);
--	else
--		qsort(list2, count, sizeof(list[0]), compare_num);
-+	qsort(list2, count, sizeof(list[0]), cmp);
- 
- 	for (i = 0; i < count; i++)
- 		fprintf(fout, "%d times, %d pages:\n%s\n",
--- 
-2.33.0
+>> I think the RMP-fault path in the page-fault handler needs to take the
+>> uaccess exception tables into account before actually causing a panic.
+>> This should solve most of the problems discussed here.
+> 
+> That covers things like copy_from_user().  It does not account for
+> things where kernel mappings are used, like where a
+> get_user_pages()/kmap() is in play.
+> 
 
