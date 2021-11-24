@@ -2,139 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D3CE45B601
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 08:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E07C945B605
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 08:56:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240734AbhKXH6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 02:58:13 -0500
-Received: from mail-ua1-f50.google.com ([209.85.222.50]:45687 "EHLO
-        mail-ua1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240787AbhKXH6K (ORCPT
+        id S240897AbhKXH7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 02:59:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240774AbhKXH7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 02:58:10 -0500
-Received: by mail-ua1-f50.google.com with SMTP id ay21so3211352uab.12;
-        Tue, 23 Nov 2021 23:55:00 -0800 (PST)
+        Wed, 24 Nov 2021 02:59:35 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371B7C061714
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 23:56:26 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id l16so2527488wrp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 23:56:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VcjV0C2JAXQBDDMbeL+36DJY0eId/oRoFF8TPI/gCJ4=;
+        b=vONA1Ak/5UD9tljIcxnytqMG5YKidkdZz2f3W5ZzKHTbuIByttaBV+eIc7p2lRydf/
+         YJKoQqzF3ajYpF9yBD9eYQuneWienGrxoPW5+P6MN4yabn/h7mnTtgWquaITDNRI8R4H
+         u0SqAqSeoqsrcAYYMu9BVVtq1JOTsb2a51bDv14M5s0238rw9P1n1ERe+Fvg4fPuVjfp
+         Lecc3fyeqhMSPg8slhwX2Jn0yiXWqzuddt6/vxM3YWTlOiY211eCzQgK0xCn/Zuu51yl
+         H3Zs3+BDIjy4emAs9OdZgbvx2RUwNmltWywZpMQrYILSRI+k4NR3+GbJ6VKvdZWcRObP
+         UHWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0LH7GHwypdqECJDJt33mxQUYL2fd1nbGQFpgPpXM1f4=;
-        b=P9ORsKoJ6H0imFki3EVwOyqwCMERvJ5VnD0C1gYJZ/X19ZS4FU92RcC4B2yMa2iNXf
-         vZ78s4HCfYIXfuEnw6LFN9HyiKRXSfcSm0b2vLoEVjjhxOim7xuJEEJOVfvrAmuykqvv
-         ipUxVyOhxli/1Y94s9yCT8PQ5UCOriQV6lMcYjV8YFVBI8Y0Agd8o2xbXksPct2ChdH8
-         +B3I8mrVukWsWdJXNVPww7FB49oaLrfaoi9PG3FHTaYjRUQrw+ni/eonn7ccc8m4MDZ5
-         opXk7fyyaOhreIPAHqyYI8wamW8lrdvD0O/DD975EefVnam0bC2a+7kG66LNccI/GuVl
-         Oy2A==
-X-Gm-Message-State: AOAM531X2dMNvSe3QMK+s72VBaDQ2nBogxH9PsbNeff8lVe5fd9mQOEO
-        Cljreff14atEWUeVmFRfjEuDBepPXIU4Uw==
-X-Google-Smtp-Source: ABdhPJzp6ng2HbJ2pGqyhHv31tPcFARkED9Q2uWFL6sWsE2lB+DG+Ao5sofG1K4hejA088BOSgzWmg==
-X-Received: by 2002:a67:c304:: with SMTP id r4mr20611969vsj.2.1637740500386;
-        Tue, 23 Nov 2021 23:55:00 -0800 (PST)
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com. [209.85.222.45])
-        by smtp.gmail.com with ESMTPSA id i24sm7592785vkk.5.2021.11.23.23.54.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Nov 2021 23:54:59 -0800 (PST)
-Received: by mail-ua1-f45.google.com with SMTP id p2so3205132uad.11;
-        Tue, 23 Nov 2021 23:54:59 -0800 (PST)
-X-Received: by 2002:a9f:3e01:: with SMTP id o1mr7144916uai.89.1637740499142;
- Tue, 23 Nov 2021 23:54:59 -0800 (PST)
+        bh=VcjV0C2JAXQBDDMbeL+36DJY0eId/oRoFF8TPI/gCJ4=;
+        b=20A1M55UeytPhffjCQqFxKIvVGLAIaetl1D7AsOzvkh5GQ0Iav0wrNyZNSdrzWOo+M
+         n0XQg38Xfa5xEBeRuT/zp3x6rVpDzuKXkGHP3XqCeDhD4DM+OjJaaq9mppFJ8htC574S
+         KwEMIOdbGK7antJQ9kbY6/dg4WGWnWctxesEqC8OI83lv4G32efDceTdNa8KE1uVEBTd
+         kmIk+OZPfBkonzsUb/PfkdTnftj2hF1L95wnCZvQmK9+Gp+xpphh19qqIoWgsopOq0SG
+         Sya1id7Xfbo5sc7DeZkZJgCAmAvlJ93i391U2K7txvKE56dznPQzfOrKnLBKdlk7MSGQ
+         aqug==
+X-Gm-Message-State: AOAM533+SAVeZegh7o0HWf1O3xXv738xn5+twQXpgd2LBgDJGEE0x6YX
+        cMMDDsqchquNy9cU3HP+GgSXCkWA5t3zLY8RDQpg3OO68V6QEClz
+X-Google-Smtp-Source: ABdhPJwClJrX6knE8UTXut3s66kbbEuDAMqdQwXZqQSH7GKDBVNtaOB2rrww6+y9qLtab1P5o7Gg1d/oHpIJdpt7us4=
+X-Received: by 2002:a05:6000:168e:: with SMTP id y14mr15173772wrd.331.1637740584557;
+ Tue, 23 Nov 2021 23:56:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20211122103032.517923-1-maz@kernel.org> <CAMuHMdX2ZRvDYA3idmw3nBcP6CO=2od6ZU-UeJo9vYsuB=fQNQ@mail.gmail.com>
- <8735no70tt.wl-maz@kernel.org> <CAMuHMdVS67BLP2XEdD6ZvVBVE2x11gKnQa1TqG659HXPM5scqQ@mail.gmail.com>
- <CAMuHMdWJhnXabKGpW7k944dzQHtwQtxw-yb2bRBsoaMw6N6nuA@mail.gmail.com>
- <87tug3clvc.wl-maz@kernel.org> <CAMuHMdWGb2xik+94RVwtq8E6+9eN=HfQLX3a4sTjKQXR96Udkw@mail.gmail.com>
- <87r1b7ck40.wl-maz@kernel.org>
-In-Reply-To: <87r1b7ck40.wl-maz@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 24 Nov 2021 08:54:48 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWd9mJe8hGNdH5VR-qJOxgfT4YtFfOmQA=uV4QPsvpqtA@mail.gmail.com>
-Message-ID: <CAMuHMdWd9mJe8hGNdH5VR-qJOxgfT4YtFfOmQA=uV4QPsvpqtA@mail.gmail.com>
-Subject: Re: [PATCH] of/irq: Add a quirk for controllers with their own
- definition of interrupt-map
-To:     Marc Zyngier <maz@kernel.org>,
-        Chris Brandt <chris.brandt@renesas.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Rob Herring <robh@kernel.org>, John Crispin <john@phrozen.org>,
-        Biwen Li <biwen.li@nxp.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20211124060521.614015-1-guoren@kernel.org> <CAAhSdy1CZbdAPEYxFOhrn=wUcmc9Yea0ziMUmHjaudKdH2Yw1w@mail.gmail.com>
+ <CAJF2gTRAXAmo4cVSfArf=eMU9CxXZr3kjaKcQ1u8764cnL+N_Q@mail.gmail.com>
+In-Reply-To: <CAJF2gTRAXAmo4cVSfArf=eMU9CxXZr3kjaKcQ1u8764cnL+N_Q@mail.gmail.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Wed, 24 Nov 2021 13:26:13 +0530
+Message-ID: <CAAhSdy2_Vk5nPMUOni5JctV8Jd9NYh-WK=yZPXTN_yzaNdy-4g@mail.gmail.com>
+Subject: Re: [PATCH] riscv: Fixup one-page wasting
+To:     Guo Ren <guoren@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
+        Alexandre Ghiti <alex@ghiti.fr>,
+        Atish Patra <Atish.Patra@wdc.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
-
-On Tue, Nov 23, 2021 at 10:11 AM Marc Zyngier <maz@kernel.org> wrote:
-> On Tue, 23 Nov 2021 08:44:19 +0000,
-> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Tue, Nov 23, 2021 at 9:33 AM Marc Zyngier <maz@kernel.org> wrote:
-> > > On Tue, 23 Nov 2021 07:57:48 +0000,
-> > > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > Summarized:
-> > > >   - Before the bad commit, and after your fix, irqc-rza1 is invoked,
-> > > >     and the number of interrupts seen is correct, but input events
-> > > >     are doubled.
-> > > >   - After the bad commit, irqc-rza1 is not invoked, and there is an
-> > > >     interrupt storm, but input events are OK.
-> > >
-> > > OK, that's reassuring, even if the "twice the events" stuff isn't what
-> > > you'd expect. We at least know this is a separate issue, and that this
-> > > patch on top of -rc1 brings you back to the 5.15 behaviour.
-> > >
-> > > I'd expect it to be the case for the other platforms as well.
+On Wed, Nov 24, 2021 at 12:52 PM Guo Ren <guoren@kernel.org> wrote:
+>
+> On Wed, Nov 24, 2021 at 2:55 PM Anup Patel <anup@brainfault.org> wrote:
 > >
-> > OK.
+> > On Wed, Nov 24, 2021 at 11:35 AM <guoren@kernel.org> wrote:
+> > >
+> > > From: Guo Ren <guoren@linux.alibaba.com>
+> > >
+> > > For small memory systems(Allwinner D1s/F133), one page size memory
+> > > cannot be ignored.
+> > >
+> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > > Cc: Alexandre Ghiti <alex@ghiti.fr>
+> > > Cc: Anup Patel <anup@brainfault.org>
+> > > Cc: Atish Patra <Atish.Patra@wdc.com>
 > >
-> > BTW, what would have been the correct way to do this for irqc-rza1?
-> > I think we're about to make the same mistake with RZ/G2L IRQC
-> > support[1]?
+> > This PATCH breaks the CPU hotplug functionality.
+> >
+> > When a CPU/HART is turned off and turned on at runtime, the
+> > low-level relocate() will be called to enable MMU on the CPU
+> > being brought-up which in-turn uses trampoline_pg_dir.
+> Yeah, I forgot that.
 >
-> Indeed, and I was about to look into it.
+> How about removing trampoline_pg_dir totally and using
+> early_pg_dir/swapper_pg_dir for relocate directly?
+
+The trampoline_pg_dir is to handle the case when RAM is
+large enough such that RAM physical address range overlaps
+kernel virtual address range (i.e. VA >= PAGE_OFFSET). This
+is overlap of virtual address range and physical address range
+can be problematic for low-level code which is trying to enable
+MMU (such as the relocate() function).
+
+Here's a old kernel thread which tries to summarize this:
+https://lore.kernel.org/lkml/CAAhSdy3URWHVY_GPNb2yRBuctRELRtTTWPM2OpwUVSRFAyXyiA@mail.gmail.com/
+
+Regards,
+Anup
+
 >
-> There are multiple ways to skin this cat, including renaming
-> 'interrupt-map' to 'my-own-private-interrupt-map'. Or use something
-> akin the new 'msi-range' (which we could call interrupt-range), and
-> replace:
-
-"interrupt-ranges" (with trailing "S"), cfr. "msi-ranges"?
-
->   interrupt-map = <0 0 &gic GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
->                   <1 0 &gic GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
->                   <2 0 &gic GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
->                   <3 0 &gic GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
->                   <4 0 &gic GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
->                   <5 0 &gic GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>,
->                   <6 0 &gic GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>,
->                   <7 0 &gic GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
+> >
+> > Regards,
+> > Anup
+> >
+> > > ---
+> > >  arch/riscv/mm/init.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> > > index 24b2b8044602..097bb3bc4020 100644
+> > > --- a/arch/riscv/mm/init.c
+> > > +++ b/arch/riscv/mm/init.c
+> > > @@ -241,9 +241,9 @@ unsigned long riscv_pfn_base __ro_after_init;
+> > >  EXPORT_SYMBOL(riscv_pfn_base);
+> > >
+> > >  pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+> > > -pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+> > >  static pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
+> > >
+> > > +pgd_t trampoline_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
+> > >  pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
+> > >  static pmd_t __maybe_unused early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+> > >
+> > > --
+> > > 2.25.1
+> > >
 >
-> with:
 >
->   interrupt-range = <&gic GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH 0 8>;
 >
-> which reads as "base interrupt spec", "start pin", "count".  This
-> gives you almost the same level of information, and doesn't interfere
-> with the rest of the DT properties. Parsing it is also much simpler.
-
-And in the non-consecutive case, you need multiple ranges, right?
-
-> But that's up to you, really.
-
-Chris: do you think we can still do this for RZ/A, or do we have too
-many users in the wild using the upstream code?
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> --
+> Best Regards
+>  Guo Ren
+>
+> ML: https://lore.kernel.org/linux-csky/
