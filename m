@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7815745C004
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:01:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A531545BD6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344160AbhKXNEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:04:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38604 "EHLO mail.kernel.org"
+        id S245116AbhKXMiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:38:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346573AbhKXNCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:02:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6C1E611EF;
-        Wed, 24 Nov 2021 12:35:29 +0000 (UTC)
+        id S245334AbhKXMc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:32:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E13D6136A;
+        Wed, 24 Nov 2021 12:20:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757330;
-        bh=lnzBVUyKSSvDvO9SrOk/TcJOJiWQDNMMljmjLlLaQCY=;
+        s=korg; t=1637756423;
+        bh=dCwoXnhB7rCQYl8wLUkS+EPFS16+T+dDRIuuteO4X8c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yho6/2iB/qJsDGb8JrTNxiDwIaWVaKNFBnOEMfa5QnSk0h/zhsormYBOZ2vp4QKPi
-         rHSKhXFlnChEu+CPzG1fW3EoopL73HSoPnnZwwxniu84WYXOh1vrfVQpy8Y1tbDqRQ
-         sR0vbIWAW27a+C/hMrVMypitZQb4g2FgNQg53PKQ=
+        b=SPLU9CSuFfXw1Uh64HGnsITz1UCyvutIFIGDZ+cYCOBBDiV5xlxZLcHQS4kR/NNE0
+         Sh7BTVC8JkFQY9WxgZnigJZsvBYsOuY1rlIpNVseNzN3BvUux2LCFg1CshcDon99GK
+         Toly7JFr62W3B46Gr7zX0g/uGZ0XWR2qjJc0SQ6c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Houlong Wei <houlong.wei@mediatek.com>,
+        stable@vger.kernel.org, Nadezda Lutovinova <lutovinova@ispras.ru>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 133/323] media: mtk-vpu: Fix a resource leak in the error handling path of mtk_vpu_probe()
-Date:   Wed, 24 Nov 2021 12:55:23 +0100
-Message-Id: <20211124115723.421163689@linuxfoundation.org>
+Subject: [PATCH 4.14 082/251] media: s5p-mfc: Add checking to s5p_mfc_probe().
+Date:   Wed, 24 Nov 2021 12:55:24 +0100
+Message-Id: <20211124115713.105827709@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,49 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Nadezda Lutovinova <lutovinova@ispras.ru>
 
-[ Upstream commit 2143ad413c05c7be24c3a92760e367b7f6aaac92 ]
+[ Upstream commit cdfaf4752e6915a4b455ad4400133e540e4dc965 ]
 
-A successful 'clk_prepare()' call should be balanced by a corresponding
-'clk_unprepare()' call in the error handling path of the probe, as already
-done in the remove function.
+If of_device_get_match_data() return NULL,
+then null pointer dereference occurs in  s5p_mfc_init_pm().
+The patch adds checking if dev->variant is NULL.
 
-Update the error handling path accordingly.
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Fixes: 3003a180ef6b ("[media] VPU: mediatek: support Mediatek VPU")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Houlong Wei <houlong.wei@mediatek.com>
+Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/mtk-vpu/mtk_vpu.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/media/platform/s5p-mfc/s5p_mfc.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/media/platform/mtk-vpu/mtk_vpu.c b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-index f8d35e3ac1dcc..9b57fb2857285 100644
---- a/drivers/media/platform/mtk-vpu/mtk_vpu.c
-+++ b/drivers/media/platform/mtk-vpu/mtk_vpu.c
-@@ -818,7 +818,8 @@ static int mtk_vpu_probe(struct platform_device *pdev)
- 	vpu->wdt.wq = create_singlethread_workqueue("vpu_wdt");
- 	if (!vpu->wdt.wq) {
- 		dev_err(dev, "initialize wdt workqueue failed\n");
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto clk_unprepare;
+diff --git a/drivers/media/platform/s5p-mfc/s5p_mfc.c b/drivers/media/platform/s5p-mfc/s5p_mfc.c
+index 63d46fae9b289..75be40608bae8 100644
+--- a/drivers/media/platform/s5p-mfc/s5p_mfc.c
++++ b/drivers/media/platform/s5p-mfc/s5p_mfc.c
+@@ -1285,6 +1285,10 @@ static int s5p_mfc_probe(struct platform_device *pdev)
  	}
- 	INIT_WORK(&vpu->wdt.ws, vpu_wdt_reset_func);
- 	mutex_init(&vpu->vpu_mutex);
-@@ -917,6 +918,8 @@ disable_vpu_clk:
- 	vpu_clock_disable(vpu);
- workqueue_destroy:
- 	destroy_workqueue(vpu->wdt.wq);
-+clk_unprepare:
-+	clk_unprepare(vpu->clk);
  
- 	return ret;
- }
+ 	dev->variant = of_device_get_match_data(&pdev->dev);
++	if (!dev->variant) {
++		dev_err(&pdev->dev, "Failed to get device MFC hardware variant information\n");
++		return -ENOENT;
++	}
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	dev->regs_base = devm_ioremap_resource(&pdev->dev, res);
 -- 
 2.33.0
 
