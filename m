@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E226645BFF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A86645BDAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245204AbhKXND6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:03:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39966 "EHLO mail.kernel.org"
+        id S245435AbhKXMj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:39:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347660AbhKXNBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:01:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C4AF619EA;
-        Wed, 24 Nov 2021 12:35:08 +0000 (UTC)
+        id S244455AbhKXMf2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:35:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F33DA610FB;
+        Wed, 24 Nov 2021 12:21:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757308;
-        bh=2Fz1alJR0sRa2U93z50qxHzPvVUeyZ90gC0q24iS+fI=;
+        s=korg; t=1637756497;
+        bh=TslBu8qF10g5S/5SN3YoqK+yp13DOd4gZDb9BGhTW18=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SdkX5tPj+GpDZyn3NTh9jCIODMrR/s9iTxUKJSfk97NBFAuNC2kONhfB+QAYL0v0t
-         RquAoju1eAt55pNPUhdC95eLfH0Osv2pdbW28mCb79cO6Hkddru4DMnKq3VUiROIcC
-         UVzsudsOeh4aJWHI9+oGlvX21CKGZhQD5ojgMSlk=
+        b=Ssi9cebyQjGQi6p3EoP+6UnPCEGaGgHd5C7Ou7rIH2J7PRVqYpgehvk4bdHscoDux
+         yyAiE5DRyjerjKHQKGkgh16jnCUhtpRN20ElvS74Oy4QXAEmWEU5BZ0wBcG88epihL
+         VR7rCQk5JlGRbVdSzIR21PRR9HA22OXBnCSXzudo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Schnelle <svens@stackframe.org>,
-        Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 126/323] parisc/kgdb: add kgdb_roundup() to make kgdb work with idle polling
+        stable@vger.kernel.org,
+        syzbot+3f91de0b813cc3d19a80@syzkaller.appspotmail.com,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 074/251] smackfs: Fix use-after-free in netlbl_catmap_walk()
 Date:   Wed, 24 Nov 2021 12:55:16 +0100
-Message-Id: <20211124115723.190249898@linuxfoundation.org>
+Message-Id: <20211124115712.826831674@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,76 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Schnelle <svens@stackframe.org>
+From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
 
-[ Upstream commit 66e29fcda1824f0427966fbee2bd2c85bf362c82 ]
+[ Upstream commit 0817534ff9ea809fac1322c5c8c574be8483ea57 ]
 
-With idle polling, IPIs are not sent when a CPU idle, but queued
-and run later from do_idle(). The default kgdb_call_nmi_hook()
-implementation gets the pointer to struct pt_regs from get_irq_reqs(),
-which doesn't work in that case because it was not called from the
-IPI interrupt handler. Fix it by defining our own kgdb_roundup()
-function which sents an IPI_ENTER_KGDB. When that IPI is received
-on the target CPU kgdb_nmicallback() is called.
+Syzkaller reported use-after-free bug as described in [1]. The bug is
+triggered when smk_set_cipso() tries to free stale category bitmaps
+while there are concurrent reader(s) using the same bitmaps.
 
-Signed-off-by: Sven Schnelle <svens@stackframe.org>
-Signed-off-by: Helge Deller <deller@gmx.de>
+Wait for RCU grace period to finish before freeing the category bitmaps
+in smk_set_cipso(). This makes sure that there are no more readers using
+the stale bitmaps and freeing them should be safe.
+
+[1] https://lore.kernel.org/netdev/000000000000a814c505ca657a4e@google.com/
+
+Reported-by: syzbot+3f91de0b813cc3d19a80@syzkaller.appspotmail.com
+Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/parisc/kernel/smp.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ security/smack/smackfs.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
-index 5e26dbede5fc2..ae4fc8769c38b 100644
---- a/arch/parisc/kernel/smp.c
-+++ b/arch/parisc/kernel/smp.c
-@@ -32,6 +32,7 @@
- #include <linux/bitops.h>
- #include <linux/ftrace.h>
- #include <linux/cpu.h>
-+#include <linux/kgdb.h>
+diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
+index 009e83ee2d002..25705a72d31bc 100644
+--- a/security/smack/smackfs.c
++++ b/security/smack/smackfs.c
+@@ -859,6 +859,7 @@ static int smk_open_cipso(struct inode *inode, struct file *file)
+ static ssize_t smk_set_cipso(struct file *file, const char __user *buf,
+ 				size_t count, loff_t *ppos, int format)
+ {
++	struct netlbl_lsm_catmap *old_cat;
+ 	struct smack_known *skp;
+ 	struct netlbl_lsm_secattr ncats;
+ 	char mapcatset[SMK_CIPSOLEN];
+@@ -948,9 +949,11 @@ static ssize_t smk_set_cipso(struct file *file, const char __user *buf,
  
- #include <linux/atomic.h>
- #include <asm/current.h>
-@@ -74,7 +75,10 @@ enum ipi_message_type {
- 	IPI_CALL_FUNC,
- 	IPI_CPU_START,
- 	IPI_CPU_STOP,
--	IPI_CPU_TEST
-+	IPI_CPU_TEST,
-+#ifdef CONFIG_KGDB
-+	IPI_ENTER_KGDB,
-+#endif
- };
- 
- 
-@@ -170,7 +174,12 @@ ipi_interrupt(int irq, void *dev_id)
- 			case IPI_CPU_TEST:
- 				smp_debug(100, KERN_DEBUG "CPU%d is alive!\n", this_cpu);
- 				break;
--
-+#ifdef CONFIG_KGDB
-+			case IPI_ENTER_KGDB:
-+				smp_debug(100, KERN_DEBUG "CPU%d ENTER_KGDB\n", this_cpu);
-+				kgdb_nmicallback(raw_smp_processor_id(), get_irq_regs());
-+				break;
-+#endif
- 			default:
- 				printk(KERN_CRIT "Unknown IPI num on CPU%d: %lu\n",
- 					this_cpu, which);
-@@ -226,6 +235,12 @@ send_IPI_allbutself(enum ipi_message_type op)
+ 	rc = smk_netlbl_mls(maplevel, mapcatset, &ncats, SMK_CIPSOLEN);
+ 	if (rc >= 0) {
+-		netlbl_catmap_free(skp->smk_netlabel.attr.mls.cat);
++		old_cat = skp->smk_netlabel.attr.mls.cat;
+ 		skp->smk_netlabel.attr.mls.cat = ncats.attr.mls.cat;
+ 		skp->smk_netlabel.attr.mls.lvl = ncats.attr.mls.lvl;
++		synchronize_rcu();
++		netlbl_catmap_free(old_cat);
+ 		rc = count;
  	}
- }
  
-+#ifdef CONFIG_KGDB
-+void kgdb_roundup_cpus(void)
-+{
-+	send_IPI_allbutself(IPI_ENTER_KGDB);
-+}
-+#endif
- 
- inline void 
- smp_send_stop(void)	{ send_IPI_allbutself(IPI_CPU_STOP); }
 -- 
 2.33.0
 
