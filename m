@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 403E145BB97
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 944EF45BB84
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243788AbhKXMVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:21:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42356 "EHLO mail.kernel.org"
+        id S243457AbhKXMUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:20:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242481AbhKXMPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:15:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBBCB61078;
-        Wed, 24 Nov 2021 12:09:53 +0000 (UTC)
+        id S241460AbhKXMPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:15:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60EFF611AE;
+        Wed, 24 Nov 2021 12:09:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755794;
-        bh=XTHDUaTKtMLlO7Eusgtf9VOm6kCphF8Etxd85EpNUCk=;
+        s=korg; t=1637755796;
+        bh=wKf7Pz+0LZqRhIO3/hWgsFlqJ9rItfBLVB0y+M/r+pY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N2JvTvdyaOoma+y3kryliqjB5bRIv08/shJi+wtxOxceSIAY7EmPBYWW/nYYlGhzu
-         fcHNU4r+KOYJoWyJwByJW2LMCJ9Zn7hJoSAJgf3D/HCBTTcHMDEX/uxjSAj/4b0PVt
-         nSODQ981ibD5wn2j1/5k3ZR/OhEoLsXR2980onec=
+        b=Og5ln/gLtHI+v/UhFQ2/ERT0q7vYzxOT72Us2u3aQ77NH0bjI4vmaEwTA+8HsDca6
+         BQdL8WMFVwxnARo7B/xzIUbqWpayHqG0/mdEaezT8MfFgjejG2lEWMbHtTpptHBCDe
+         qerTKUVXB7rRIHZodFsI8MSamj2c+lnHpX541RyI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 4.9 027/207] btrfs: fix lost error handling when replaying directory deletes
-Date:   Wed, 24 Nov 2021 12:54:58 +0100
-Message-Id: <20211124115704.834025774@linuxfoundation.org>
+        stable@vger.kernel.org, Zev Weiss <zev@bewilderbeest.net>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.9 028/207] hwmon: (pmbus/lm25066) Add offset coefficients
+Date:   Wed, 24 Nov 2021 12:54:59 +0100
+Message-Id: <20211124115704.865524460@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
 References: <20211124115703.941380739@linuxfoundation.org>
@@ -40,37 +39,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Zev Weiss <zev@bewilderbeest.net>
 
-commit 10adb1152d957a4d570ad630f93a88bb961616c1 upstream.
+commit ae59dc455a78fb73034dd1fbb337d7e59c27cbd8 upstream.
 
-At replay_dir_deletes(), if find_dir_range() returns an error we break out
-of the main while loop and then assign a value of 0 (success) to the 'ret'
-variable, resulting in completely ignoring that an error happened. Fix
-that by jumping to the 'out' label when find_dir_range() returns an error
-(negative value).
+With the exception of the lm5066i, all the devices handled by this
+driver had been missing their offset ('b') coefficients for direct
+format readings.
 
-CC: stable@vger.kernel.org # 4.4+
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Cc: stable@vger.kernel.org
+Fixes: 58615a94f6a1 ("hwmon: (pmbus/lm25066) Add support for LM25056")
+Fixes: e53e6497fc9f ("hwmon: (pmbus/lm25066) Refactor device specific coefficients")
+Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+Link: https://lore.kernel.org/r/20210928092242.30036-2-zev@bewilderbeest.net
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/tree-log.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/hwmon/pmbus/lm25066.c |   23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -2225,7 +2225,9 @@ again:
- 		else {
- 			ret = find_dir_range(log, path, dirid, key_type,
- 					     &range_start, &range_end);
--			if (ret != 0)
-+			if (ret < 0)
-+				goto out;
-+			else if (ret > 0)
- 				break;
- 		}
- 
+--- a/drivers/hwmon/pmbus/lm25066.c
++++ b/drivers/hwmon/pmbus/lm25066.c
+@@ -69,22 +69,27 @@ static struct __coeff lm25066_coeff[5][P
+ 	[lm25056] = {
+ 		[PSC_VOLTAGE_IN] = {
+ 			.m = 16296,
++			.b = 1343,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN] = {
+ 			.m = 13797,
++			.b = -1833,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN_L] = {
+ 			.m = 6726,
++			.b = -537,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER] = {
+ 			.m = 5501,
++			.b = -2908,
+ 			.R = -3,
+ 		},
+ 		[PSC_POWER_L] = {
+ 			.m = 26882,
++			.b = -5646,
+ 			.R = -4,
+ 		},
+ 		[PSC_TEMPERATURE] = {
+@@ -96,26 +101,32 @@ static struct __coeff lm25066_coeff[5][P
+ 	[lm25066] = {
+ 		[PSC_VOLTAGE_IN] = {
+ 			.m = 22070,
++			.b = -1800,
+ 			.R = -2,
+ 		},
+ 		[PSC_VOLTAGE_OUT] = {
+ 			.m = 22070,
++			.b = -1800,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN] = {
+ 			.m = 13661,
++			.b = -5200,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN_L] = {
+ 			.m = 6852,
++			.b = -3100,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER] = {
+ 			.m = 736,
++			.b = -3300,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER_L] = {
+ 			.m = 369,
++			.b = -1900,
+ 			.R = -2,
+ 		},
+ 		[PSC_TEMPERATURE] = {
+@@ -155,26 +166,32 @@ static struct __coeff lm25066_coeff[5][P
+ 	[lm5064] = {
+ 		[PSC_VOLTAGE_IN] = {
+ 			.m = 4611,
++			.b = -642,
+ 			.R = -2,
+ 		},
+ 		[PSC_VOLTAGE_OUT] = {
+ 			.m = 4621,
++			.b = 423,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN] = {
+ 			.m = 10742,
++			.b = 1552,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN_L] = {
+ 			.m = 5456,
++			.b = 2118,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER] = {
+ 			.m = 1204,
++			.b = 8524,
+ 			.R = -3,
+ 		},
+ 		[PSC_POWER_L] = {
+ 			.m = 612,
++			.b = 11202,
+ 			.R = -3,
+ 		},
+ 		[PSC_TEMPERATURE] = {
+@@ -184,26 +201,32 @@ static struct __coeff lm25066_coeff[5][P
+ 	[lm5066] = {
+ 		[PSC_VOLTAGE_IN] = {
+ 			.m = 4587,
++			.b = -1200,
+ 			.R = -2,
+ 		},
+ 		[PSC_VOLTAGE_OUT] = {
+ 			.m = 4587,
++			.b = -2400,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN] = {
+ 			.m = 10753,
++			.b = -1200,
+ 			.R = -2,
+ 		},
+ 		[PSC_CURRENT_IN_L] = {
+ 			.m = 5405,
++			.b = -600,
+ 			.R = -2,
+ 		},
+ 		[PSC_POWER] = {
+ 			.m = 1204,
++			.b = -6000,
+ 			.R = -3,
+ 		},
+ 		[PSC_POWER_L] = {
+ 			.m = 605,
++			.b = -8000,
+ 			.R = -3,
+ 		},
+ 		[PSC_TEMPERATURE] = {
 
 
