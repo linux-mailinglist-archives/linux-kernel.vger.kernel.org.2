@@ -2,69 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC2945CED7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE31745CED9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245568AbhKXVWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 16:22:24 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:50704 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244096AbhKXVWX (ORCPT
+        id S1343601AbhKXVWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 16:22:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232874AbhKXVWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 16:22:23 -0500
-Received: by mail-io1-f72.google.com with SMTP id e14-20020a6bf10e000000b005e23f0f5e08so2959176iog.17
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 13:19:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=3GJ+4CdsX0PFWBhcNXJNFnBA66wTNN3En4M+MxGkMU4=;
-        b=mxrZf3IKkB0SD8EvoW29hcxkBoDcBBqE67+DDGAVUR4fDo7A82lW7G9IkbrILZLTPG
-         RETrrkngjm4iSSvpKiMDzJQxCuBn2ACnclmygAEQhIOmAeslJzw2ob9juH0EwHnZZ0So
-         ypsWnSCHyox7CjUqZrUJEGRPY7f04ndMBaqR828uhbtiUSxzgzAtNYP9u+QgRqsYylij
-         KJ0LwNHqaAPvccvJrxbP7kXMWQ/GT+hTdOzVoNhpbNP7QM58AQjFfq1D5KlXKJla/Acz
-         AuG4JwDMsQTDBZ9pPTc1bugzofo41TYA3wA5aT781dE3bOHsQRggqPPuQoBw5Msv18cp
-         qRug==
-X-Gm-Message-State: AOAM532Gt1oj/t/yEnbBSlWQ41QWLiKkNqBjSSkIUxDCmAQNhGojs4Ls
-        vkPnKVkqQWeuiI+Dji1p8tpZTPLF0dIBiJDWCCGMyQqdg6z3
-X-Google-Smtp-Source: ABdhPJy+ViwXspfH+AzqZ3xdwhPy+j1L1gC3xMS3BkR/OpqAasuB0yWA/c9gLmE0ybj2FRKxAc40XFE9iaiA0nV4zoLLujW0xBBu
+        Wed, 24 Nov 2021 16:22:52 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3197BC061574;
+        Wed, 24 Nov 2021 13:19:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=zK/24Qkt+CUXxwWRIIvMb1Yuxk0SqsiVKxof3LAwFho=; b=FeDgrchxjCm0DOEFAH2BbOpgTw
+        szmGevFWjVGMbpCgxid/aEmkreMVkqLgBu0Pzaqf6Kxg3JAKlRv5VGgFhtvXRz9pEDyfT0VH5dnVs
+        V4RkmYJlIkaXuTcuhB7t3Z0TakccZfNV6JWWMqOofe35Lk9fPH138vuyMgZB43vqfIOFUAAm8HM+/
+        8tywOU/SQEXrvmRc60nPvaSqZjquWKqLV+ZP4DOc8P50F25GD9Dr4wikzLxmP5f/Ltr1mmu3FTLrN
+        SL5t2RvjCw1EaKGpd+1LOGqQyra45XXq7koQrBsfncTz/EnYktFdg6B18RQ3QxgDDHh647yDExmK+
+        neBk2SBQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mpzft-000JqU-7K; Wed, 24 Nov 2021 21:19:29 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 178D5986843; Wed, 24 Nov 2021 22:19:28 +0100 (CET)
+Date:   Wed, 24 Nov 2021 22:19:27 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Peter Oskolkov <posk@posk.io>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>
+Subject: Re: [PATCH v0.9.1 3/6] sched/umcg: implement UMCG syscalls
+Message-ID: <20211124211927.GG721624@worktop.programming.kicks-ass.net>
+References: <20211122211327.5931-1-posk@google.com>
+ <20211122211327.5931-4-posk@google.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:156a:: with SMTP id k10mr14850843ilu.200.1637788753148;
- Wed, 24 Nov 2021 13:19:13 -0800 (PST)
-Date:   Wed, 24 Nov 2021 13:19:13 -0800
-In-Reply-To: <000000000000e2852705ac9cfd73@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d9412505d18f6899@google.com>
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in lock_sock_nested
-From:   syzbot <syzbot+9a0875bc1b2ca466b484@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jiri@nvidia.com, johan.hedberg@gmail.com,
-        kuba@kernel.org, leonro@nvidia.com,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, wanjiabing@vivo.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211122211327.5931-4-posk@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Mon, Nov 22, 2021 at 01:13:24PM -0800, Peter Oskolkov wrote:
 
-commit c5e0321e43deed0512b34d8d8d40a16c0e22b541
-Author: Leon Romanovsky <leonro@nvidia.com>
-Date:   Tue Oct 26 19:40:42 2021 +0000
+> +	 * Timestamp: a 46-bit CLOCK_MONOTONIC timestamp, at 16ns resolution.
 
-    Revert "devlink: Remove not-executed trap policer notifications"
+> +static int umcg_update_state(u64 __user *state_ts, u64 *expected, u64 desired,
+> +				bool may_fault)
+> +{
+> +	u64 curr_ts = (*expected) >> (64 - UMCG_STATE_TIMESTAMP_BITS);
+> +	u64 next_ts = ktime_get_ns() >> UMCG_STATE_TIMESTAMP_GRANULARITY;
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10f87adeb00000
-start commit:   a409ed156a90 Merge tag 'gpio-v5.11-1' of git://git.kernel...
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=20efebc728efc8ff
-dashboard link: https://syzkaller.appspot.com/bug?extid=9a0875bc1b2ca466b484
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10a4445b500000
+I'm still very hesitant to use ktime (fear the HPET); but I suppose it
+makes sense to use a time base that's accessible to userspace. Was
+MONOTONIC_RAW considered?
 
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: Revert "devlink: Remove not-executed trap policer notifications"
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
