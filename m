@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC4845BDDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0977E45BBCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244629AbhKXMli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:41:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39882 "EHLO mail.kernel.org"
+        id S244590AbhKXMXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:23:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344659AbhKXMid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:38:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7DFA613A8;
-        Wed, 24 Nov 2021 12:23:08 +0000 (UTC)
+        id S243836AbhKXMSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:18:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4679A61156;
+        Wed, 24 Nov 2021 12:12:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756589;
-        bh=Jt0QQUne7RV6TmHkLL9C2pb/W/qD6bz86e/2GOS3O2Y=;
+        s=korg; t=1637755920;
+        bh=N7S8ac7Rcg4fZBD6Dknklfv+P+OwiyD4Q7/zqVfK5yg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bIp98xzbUskaw6Y3v5BJIY9UOoT46tgWoKKlH21FzdU7f69C6N7aCn5wf3L8wkTvp
-         i4C7zIJeY9vmpzo/cFMBqyxJm/4nmwukV6renEdg4hssm9Rq3nKS+q2nxuizskYpbp
-         HnBidTwXi8tg4loHzj2huc3tBLZzCFGjpbSFDbmo=
+        b=oYVCLs5/F9OLr5uOKZLPdEhbS9nS5cXrgaR4k0CPHjpm49KzLMlY5R+i6bHopD2ir
+         0iMiqXWU+ysvyGkxhu3RLsPAgMN14zysuQNdy0CeHQfFHGif5oo1NOcMDKMRBgzhSz
+         AWIVtDY/aFn3wSIwrn57NX/iBvbSKC1Wq2ixJUOw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        stable@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 136/251] net: phylink: avoid mvneta warning when setting pause parameters
+Subject: [PATCH 4.9 107/207] phy: micrel: ksz8041nl: do not use power down mode
 Date:   Wed, 24 Nov 2021 12:56:18 +0100
-Message-Id: <20211124115714.982506400@linuxfoundation.org>
+Message-Id: <20211124115707.540442304@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+From: Stefan Agner <stefan@agner.ch>
 
-[ Upstream commit fd8d9731bcdfb22d28e45bce789bcb211c868c78 ]
+[ Upstream commit 2641b62d2fab52648e34cdc6994b2eacde2d27c1 ]
 
-mvneta does not support asymetric pause modes, and it flags this by the
-lack of AsymPause in the supported field. When setting pause modes, we
-check that pause->rx_pause == pause->tx_pause, but only when pause
-autoneg is enabled. When pause autoneg is disabled, we still allow
-pause->rx_pause != pause->tx_pause, which is incorrect when the MAC
-does not support asymetric pause, and causes mvneta to issue a warning.
+Some Micrel KSZ8041NL PHY chips exhibit continuous RX errors after using
+the power down mode bit (0.11). If the PHY is taken out of power down
+mode in a certain temperature range, the PHY enters a weird state which
+leads to continuously reporting RX errors. In that state, the MAC is not
+able to receive or send any Ethernet frames and the activity LED is
+constantly blinking. Since Linux is using the suspend callback when the
+interface is taken down, ending up in that state can easily happen
+during a normal startup.
 
-Fix this by removing the test for pause->autoneg, so we always check
-that pause->rx_pause == pause->tx_pause for network devices that do not
-support AsymPause.
+Micrel confirmed the issue in errata DS80000700A [*], caused by abnormal
+clock recovery when using power down mode. Even the latest revision (A4,
+Revision ID 0x1513) seems to suffer that problem, and according to the
+errata is not going to be fixed.
 
-Fixes: 9525ae83959b ("phylink: add phylink infrastructure")
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Remove the suspend/resume callback to avoid using the power down mode
+completely.
+
+[*] https://ww1.microchip.com/downloads/en/DeviceDoc/80000700A.pdf
+
+Fixes: 1a5465f5d6a2 ("phy/micrel: Add suspend/resume support to Micrel PHYs")
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+Acked-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/phylink.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/phy/micrel.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
-index 17acecfda5420..89d8efe8753e5 100644
---- a/drivers/net/phy/phylink.c
-+++ b/drivers/net/phy/phylink.c
-@@ -1022,7 +1022,7 @@ int phylink_ethtool_set_pauseparam(struct phylink *pl,
- 		return -EOPNOTSUPP;
- 
- 	if (!phylink_test(pl->supported, Asym_Pause) &&
--	    !pause->autoneg && pause->rx_pause != pause->tx_pause)
-+	    pause->rx_pause != pause->tx_pause)
- 		return -EINVAL;
- 
- 	config->pause &= ~(MLO_PAUSE_AN | MLO_PAUSE_TXRX_MASK);
+diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+index 1704d9e2ca8d1..c21328e1e3cca 100644
+--- a/drivers/net/phy/micrel.c
++++ b/drivers/net/phy/micrel.c
+@@ -876,8 +876,9 @@ static struct phy_driver ksphy_driver[] = {
+ 	.get_sset_count = kszphy_get_sset_count,
+ 	.get_strings	= kszphy_get_strings,
+ 	.get_stats	= kszphy_get_stats,
+-	.suspend	= genphy_suspend,
+-	.resume		= genphy_resume,
++	/* No suspend/resume callbacks because of errata DS80000700A,
++	 * receiver error following software power down.
++	 */
+ }, {
+ 	.phy_id		= PHY_ID_KSZ8041RNLI,
+ 	.phy_id_mask	= MICREL_PHY_ID_MASK,
 -- 
 2.33.0
 
