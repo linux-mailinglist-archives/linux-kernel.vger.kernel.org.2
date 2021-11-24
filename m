@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD75045C00D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D8A45BD71
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344714AbhKXNEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:04:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41104 "EHLO mail.kernel.org"
+        id S1344559AbhKXMi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:38:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245592AbhKXNCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:02:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B55160295;
-        Wed, 24 Nov 2021 12:35:35 +0000 (UTC)
+        id S245623AbhKXMbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:31:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CA7061178;
+        Wed, 24 Nov 2021 12:19:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757336;
-        bh=8oDn/mKKwZW39jfc27elu3K7XvGSEnv0UEF+EV8qVY0=;
+        s=korg; t=1637756380;
+        bh=Zfl6Mzx7Wck22GmN37gVFkiXUWqLneZp62EFCFkZ8Jo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RciA82v5WeAARf6dOoxqqkKYIrzK1m+3asuiEULfsERKpxwCu70SFxTy7kbGZda5j
-         yJQ/i4dueP6gSY7R7n6OOCKx4vGLsTQyseGxKm56h3vU0y1eOjWOZd3J77HZtbWRbu
-         4apFo5jA7kJwSo3eU7tUCRlNS9RrIZ13PtABvIWc=
+        b=2TUu3Y75Zm56VdvFLvsyWfzljxt7wgqv2sSg9xptXKog7WhvnAQNL5zngNadszz2j
+         4BUj2CI5xjdWxVeCg7u/gporfQ+B+FiHy3Mk4b/qvh8wkkwrotLRb3yhcIwYkCG3YV
+         el5sA6x+/huOKPbgYYaWCCJFgHGdY5YR3CjMf2Z8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+89731ccb6fec15ce1c22@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 117/323] smackfs: use __GFP_NOFAIL for smk_cipso_doi()
+        stable@vger.kernel.org, Pekka Korpinen <pekka.korpinen@iki.fi>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.14 065/251] iio: dac: ad5446: Fix ad5622_write() return value
 Date:   Wed, 24 Nov 2021 12:55:07 +0100
-Message-Id: <20211124115722.900861919@linuxfoundation.org>
+Message-Id: <20211124115712.504170220@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: Pekka Korpinen <pekka.korpinen@iki.fi>
 
-[ Upstream commit f91488ee15bd3cac467e2d6a361fc2d34d1052ae ]
+commit 558df982d4ead9cac628153d0d7b60feae05ddc8 upstream.
 
-syzbot is reporting kernel panic at smk_cipso_doi() due to memory
-allocation fault injection [1]. The reason for need to use panic() was
-not explained. But since no fix was proposed for 18 months, for now
-let's use __GFP_NOFAIL for utilizing syzbot resource on other bugs.
+On success i2c_master_send() returns the number of bytes written. The
+call from iio_write_channel_info(), however, expects the return value to
+be zero on success.
 
-Link: https://syzkaller.appspot.com/bug?extid=89731ccb6fec15ce1c22 [1]
-Reported-by: syzbot <syzbot+89731ccb6fec15ce1c22@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This bug causes incorrect consumption of the sysfs buffer in
+iio_write_channel_info(). When writing more than two characters to
+out_voltage0_raw, the ad5446 write handler is called multiple times
+causing unexpected behavior.
+
+Fixes: 3ec36a2cf0d5 ("iio:ad5446: Add support for I2C based DACs")
+Signed-off-by: Pekka Korpinen <pekka.korpinen@iki.fi>
+Link: https://lore.kernel.org/r/20210929185755.2384-1-pekka.korpinen@iki.fi
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- security/smack/smackfs.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/iio/dac/ad5446.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
-index 25705a72d31bc..9fdf404a318f9 100644
---- a/security/smack/smackfs.c
-+++ b/security/smack/smackfs.c
-@@ -721,9 +721,7 @@ static void smk_cipso_doi(void)
- 		printk(KERN_WARNING "%s:%d remove rc = %d\n",
- 		       __func__, __LINE__, rc);
+--- a/drivers/iio/dac/ad5446.c
++++ b/drivers/iio/dac/ad5446.c
+@@ -510,8 +510,15 @@ static int ad5622_write(struct ad5446_st
+ {
+ 	struct i2c_client *client = to_i2c_client(st->dev);
+ 	__be16 data = cpu_to_be16(val);
++	int ret;
  
--	doip = kmalloc(sizeof(struct cipso_v4_doi), GFP_KERNEL);
--	if (doip == NULL)
--		panic("smack:  Failed to initialize cipso DOI.\n");
-+	doip = kmalloc(sizeof(struct cipso_v4_doi), GFP_KERNEL | __GFP_NOFAIL);
- 	doip->map.std = NULL;
- 	doip->doi = smk_cipso_doi_value;
- 	doip->type = CIPSO_V4_MAP_PASS;
--- 
-2.33.0
-
+-	return i2c_master_send(client, (char *)&data, sizeof(data));
++	ret = i2c_master_send(client, (char *)&data, sizeof(data));
++	if (ret < 0)
++		return ret;
++	if (ret != sizeof(data))
++		return -EIO;
++
++	return 0;
+ }
+ 
+ /**
 
 
