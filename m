@@ -2,186 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F367345D174
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0419345D176
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:59:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237883AbhKYACH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 19:02:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:25144 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237577AbhKYACE (ORCPT
+        id S245000AbhKYACW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 19:02:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237577AbhKYACV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 19:02:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637798333;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sm4004y9B1V+tnHfPgzjYss0IWvCFu8ljdIxWHi+//4=;
-        b=BQ2S4p0jNnQXY/+rhlnHihedsSFcGHt9x/U/Y/davXY8TcvKaet2/ta+8QikDK8cHE/DVd
-        dLOXTj3GTNHlUD0ghN8ss37qvUKOHCIOvPLJHUVU8fFfltY52WpL9PO54WlkSOPvUr+XK/
-        0FoODR8TjspiXx95y2INHZgR2Ep3iT8=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-269-J-HagjqqN-6J2rD2b_wJgA-1; Wed, 24 Nov 2021 18:58:52 -0500
-X-MC-Unique: J-HagjqqN-6J2rD2b_wJgA-1
-Received: by mail-ed1-f72.google.com with SMTP id v9-20020a50d849000000b003dcb31eabaaso3804945edj.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 15:58:52 -0800 (PST)
+        Wed, 24 Nov 2021 19:02:21 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2AFC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 15:59:11 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id v32-20020a05622a18a000b002b04d0d410dso3941526qtc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 15:59:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=gkTIFHzn7lWgA+OKJcWBkA+tgUB9Kv7MlnOSivNnZuA=;
+        b=XZom6cLEXCTPPg13cihmjgx6jWLpE3yE6iuM/1xq7DRR8mxgE5ul9FDawNKWZp34V6
+         6QX4exQioKgzqwnbZ0RQ1BN1+kX+fygi+9BTQPyFQMYvOqLH6qg/352p4Tq+6VCOf2j7
+         Bz+S9nuwfpMre1gMME6RfyuQFS5rqfyB44luHdfqiVVMYMhcYi/WjdkyzQApNr4TJB/S
+         /k1JCx3aKgUVTuJYSQhFnqJX05+yUyHrYy0m2M4C1sealksJQCec7ivd6C0eBxWfnCKT
+         CjVMHKLvn5KEaLJ9p5fZXwIgCtGAzUGGoFDBXnXor72VgMagnD2HupmJhaGIvJIpESQP
+         358Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=sm4004y9B1V+tnHfPgzjYss0IWvCFu8ljdIxWHi+//4=;
-        b=MY0iCsrDQmNda1wcKpByo62yWBb8GEiHLDGZXJdmDkzO51xbNKb6073N8/+vLWysqe
-         mGPJO7noMctaMg6W603C4qPxXmDaHgFAfatWgY+G6gWkar2KjAlb/VEz1nowUkqje2Xx
-         J88Ii+Nlrwvnc+ZIQcPoOHVXWwptL7zKua24Xe2Tx7lqVKiSieR/mS0HpoeGv3iZM81f
-         6pLw2ynmnH69nHDl6DfzhOcrsLzyPrXqgf9X08SJE7xPEh/ulFRt2zunzDszQ/ApV3ye
-         lTh2nIghTi9nZye2ikqeItvsugcabvTTX9TS6OKSjvZUxvRykcdcuSWtGSGMAbLBu2fc
-         HTSQ==
-X-Gm-Message-State: AOAM533fUsnmF9VPE54LqPHtCVJVTtoKumJPOdydPU8QLzlUurRP/3ne
-        Ez5GbJTvmvjkX/t2vt3DKVJ6q7abV2l8+jLn6g0AgPKFwt5p7YiG2UEFLIdtpI8j7+aIYpHRMU1
-        MvMvDRbc5EnmPgiBeb5RUqIwn
-X-Received: by 2002:a17:906:8c3:: with SMTP id o3mr26240453eje.10.1637798330717;
-        Wed, 24 Nov 2021 15:58:50 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJysCDZ92JnLx5p8B8EgDT3JbOAJxcL7cO996KXojwt2y2dxDKYm/THtO3luW2U+EJQ7p/PYcw==
-X-Received: by 2002:a17:906:8c3:: with SMTP id o3mr26240417eje.10.1637798330482;
-        Wed, 24 Nov 2021 15:58:50 -0800 (PST)
-Received: from redhat.com ([2a0e:1c80:14::66])
-        by smtp.gmail.com with ESMTPSA id hc16sm593664ejc.12.2021.11.24.15.58.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 15:58:49 -0800 (PST)
-Date:   Wed, 24 Nov 2021 18:58:43 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Jason Wang <jasowang@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        kernel-janitors@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        Wu Zongyong <wuzongyong@linux.alibaba.com>
-Subject: Re: [PATCH 1/2] eni_vdpa: Fix an error handling path in
- 'eni_vdpa_probe()'
-Message-ID: <20211124185834-mutt-send-email-mst@kernel.org>
-References: <f6b2d087ca3840604b4e711a208d35b5d6285cb4.1636301587.git.christophe.jaillet@wanadoo.fr>
- <CACGkMEvN0cgFQhJmLF3xDXHt_EyZ-TnfBM8CnpNwA9sKcwpzBg@mail.gmail.com>
- <393fb7b7-653b-eae6-16bd-5ffc7d600619@wanadoo.fr>
- <CACGkMEt3yA+fkFJxKfrXyui-rYVSk78=1AqrT0TYQqzcqTJVyg@mail.gmail.com>
- <069ed3fb-ef99-ff36-136d-a0221ba85a96@wanadoo.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <069ed3fb-ef99-ff36-136d-a0221ba85a96@wanadoo.fr>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=gkTIFHzn7lWgA+OKJcWBkA+tgUB9Kv7MlnOSivNnZuA=;
+        b=shHdJJ61Jwdsa8vkYqxnbzuSHQePwqm7/eOMzMV+0pWMwurnSim4DUSVyYdmWahj8i
+         UHjZtEPvIqs8FftuZ+ztMnCAElkjtvjq6kQyxqSAdh+a0RYSlmjOd5qeKl9eqmDqX9nP
+         yj6aLAHnKAoKpin8EkqR1PcY2zEnWJl4pjIfWkHpjXvet8dJCTH9Qhf2Ipx6zjFeoUq1
+         2/KQisK98tg6F3o1KAFYuEteHYWlgea9VbWG4OsdhA7wUBYOv+PflKePGQis5at93bIg
+         IZ8lqYTeKiqgJRQbgEbM2jvzRSQbrgEfUZF1mxPild3sw/1OZ8CiGv6sh0cgmMn+9g7o
+         zLHw==
+X-Gm-Message-State: AOAM532C6ii7mWI7dhPC1yBUQaIxtAp39/ddexKa3EJh6+MI80DkRvdw
+        3mFKOa13XYRnpOwoYBFZC7xAAV+FUyc=
+X-Google-Smtp-Source: ABdhPJyCFoO8iT7UKnJAGhIvllYLx1WxReppQlKxurAYcQqseTCbk016W9Tt2SXNW0ZaJC2hr6A+WzzKMS8=
+X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:200:e6ae:ce8f:3b61:8f18])
+ (user=surenb job=sendgmr) by 2002:ac8:4e51:: with SMTP id e17mr12207103qtw.129.1637798349867;
+ Wed, 24 Nov 2021 15:59:09 -0800 (PST)
+Date:   Wed, 24 Nov 2021 15:59:05 -0800
+Message-Id: <20211124235906.14437-1-surenb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+Subject: [PATCH v2 1/2] mm: protect free_pgtables with mmap_lock write lock in exit_mmap
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     akpm@linux-foundation.org
+Cc:     mhocko@kernel.org, mhocko@suse.com, rientjes@google.com,
+        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
+        riel@surriel.com, minchan@kernel.org, kirill@shutemov.name,
+        aarcange@redhat.com, christian@brauner.io, hch@infradead.org,
+        oleg@redhat.com, david@redhat.com, jannh@google.com,
+        shakeelb@google.com, luto@kernel.org, christian.brauner@ubuntu.com,
+        fweimer@redhat.com, jengelh@inai.de, timmurray@google.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, surenb@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 10:21:44PM +0100, Christophe JAILLET wrote:
-> Le 09/11/2021 à 03:54, Jason Wang a écrit :
-> > On Tue, Nov 9, 2021 at 3:32 AM Christophe JAILLET
-> > <christophe.jaillet@wanadoo.fr> wrote:
-> > > 
-> > > Le 08/11/2021 à 06:55, Jason Wang a écrit :
-> > > > On Mon, Nov 8, 2021 at 12:15 AM Christophe JAILLET
-> > > > <christophe.jaillet@wanadoo.fr> wrote:
-> > > > > 
-> > > > > In the error handling path, a successful 'vp_legacy_probe()' should be
-> > > > > balanced by a corresponding 'vp_legacy_remove()' call, as already done in
-> > > > > the remove function.
-> > > > > 
-> > > > > Add the missing call and update gotos accordingly.
-> > > > > 
-> > > > > Fixes: e85087beedca ("eni_vdpa: add vDPA driver for Alibaba ENI")
-> > > > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > > > > ---
-> > > > >    drivers/vdpa/alibaba/eni_vdpa.c | 6 ++++--
-> > > > >    1 file changed, 4 insertions(+), 2 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/vdpa/alibaba/eni_vdpa.c b/drivers/vdpa/alibaba/eni_vdpa.c
-> > > > > index 3f788794571a..12b3db6b4517 100644
-> > > > > --- a/drivers/vdpa/alibaba/eni_vdpa.c
-> > > > > +++ b/drivers/vdpa/alibaba/eni_vdpa.c
-> > > > > @@ -501,7 +501,7 @@ static int eni_vdpa_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> > > > >           if (!eni_vdpa->vring) {
-> > > > >                   ret = -ENOMEM;
-> > > > >                   ENI_ERR(pdev, "failed to allocate virtqueues\n");
-> > > > > -               goto err;
-> > > > > +               goto err_remove_vp_legacy;
-> > > > >           }
-> > > > > 
-> > > > >           for (i = 0; i < eni_vdpa->queues; i++) {
-> > > > > @@ -513,11 +513,13 @@ static int eni_vdpa_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> > > > >           ret = vdpa_register_device(&eni_vdpa->vdpa, eni_vdpa->queues);
-> > > > >           if (ret) {
-> > > > >                   ENI_ERR(pdev, "failed to register to vdpa bus\n");
-> > > > > -               goto err;
-> > > > > +               goto err_remove_vp_legacy;
-> > > > >           }
-> > > > > 
-> > > > >           return 0;
-> > > > > 
-> > > > > +err_remove_vp_legacy:
-> > > > > +       vp_legacy_remove(&eni_vdpa->ldev);
-> > > > 
-> > > > Won't vp_legacy_remove() be triggered by the put_devic() below?
-> > > 
-> > > Hi, I'm sorry but i don't see how.
-> > > 
-> > > My understanding is that:
-> > >     - on "put_device(&eni_vdpa->vdpa.dev);", the corresponding release
-> > > function will be called.
-> > > 
-> > >     - This release function is the one recorded in the
-> > > '__vdpa_alloc_device()' function.
-> > > 
-> > >     - So it should be 'vdpa_release_dev()'.
-> > > 
-> > >     - This function, AFAIU, has no knowledge of 'vp_legacy_remove()' or
-> > > anything that could call it.
-> > > 
-> > > 
-> > > Unless I misread something or miss something obvious, I don't see how
-> > > 'vp_legacy_remove() would be called.
-> > > 
-> > > 
-> > > Could you elaborate?
-> > 
-> > I think the device should release the driver (see
-> > device_release_driver()) during during its deleting.
-> 
-> Hi, I still don't follow the logic and I don't understand how
-> 'vp_legacy_remove()' will finely be called, but it is not that important.
-> 
-> If it's fine for you, it's fine for me :)
-> 
-> CJ
+oom-reaper and process_mrelease system call should protect against
+races with exit_mmap which can destroy page tables while they
+walk the VMA tree. oom-reaper protects from that race by setting
+MMF_OOM_VICTIM and by relying on exit_mmap to set MMF_OOM_SKIP
+before taking and releasing mmap_write_lock. process_mrelease has
+to elevate mm->mm_users to prevent such race. Both oom-reaper and
+process_mrelease hold mmap_read_lock when walking the VMA tree.
+The locking rules and mechanisms could be simpler if exit_mmap takes
+mmap_write_lock while executing destructive operations such as
+free_pgtables.
+Change exit_mmap to hold the mmap_write_lock when calling
+free_pgtables. Operations like unmap_vmas() and unlock_range() are not
+destructive and could run under mmap_read_lock but for simplicity we
+take one mmap_write_lock during almost the entire operation. Note
+also that because oom-reaper checks VM_LOCKED flag, unlock_range()
+should not be allowed to race with it.
+In most cases this lock should be uncontended. Previously, Kirill
+reported ~4% regression caused by a similar change [1]. We reran the
+same test and although the individual results are quite noisy, the
+percentiles show lower regression with 1.6% being the worst case [2].
+The change allows oom-reaper and process_mrelease to execute safely
+under mmap_read_lock without worries that exit_mmap might destroy page
+tables from under them.
 
-So pls post just patch 2?
+[1] https://lore.kernel.org/all/20170725141723.ivukwhddk2voyhuc@node.shutemov.name/
+[2] https://lore.kernel.org/all/CAJuCfpGC9-c9P40x7oy=jy5SphMcd0o0G_6U1-+JAziGKG6dGA@mail.gmail.com/
 
-> > 
-> > Thanks
-> > 
-> > > 
-> > > CJ
-> > > 
-> > > > 
-> > > > Thanks
-> > > > 
-> > > > >    err:
-> > > > >           put_device(&eni_vdpa->vdpa.dev);
-> > > > >           return ret;
-> > > > > --
-> > > > > 2.30.2
-> > > > > 
-> > > > 
-> > > > 
-> > > 
-> > 
-> > _______________________________________________
-> > Virtualization mailing list
-> > Virtualization@lists.linux-foundation.org
-> > https://lists.linuxfoundation.org/mailman/listinfo/virtualization
-> > 
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+---
+changes in v2
+- Moved mmap_write_unlock to cover remove_vma loop as well, per Matthew Wilcox
+
+ mm/mmap.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/mm/mmap.c b/mm/mmap.c
+index bfb0ea164a90..f4e09d390a07 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -3142,25 +3142,27 @@ void exit_mmap(struct mm_struct *mm)
+ 		 * to mmu_notifier_release(mm) ensures mmu notifier callbacks in
+ 		 * __oom_reap_task_mm() will not block.
+ 		 *
+-		 * This needs to be done before calling munlock_vma_pages_all(),
++		 * This needs to be done before calling unlock_range(),
+ 		 * which clears VM_LOCKED, otherwise the oom reaper cannot
+ 		 * reliably test it.
+ 		 */
+ 		(void)__oom_reap_task_mm(mm);
+ 
+ 		set_bit(MMF_OOM_SKIP, &mm->flags);
+-		mmap_write_lock(mm);
+-		mmap_write_unlock(mm);
+ 	}
+ 
++	mmap_write_lock(mm);
+ 	if (mm->locked_vm)
+ 		unlock_range(mm->mmap, ULONG_MAX);
+ 
+ 	arch_exit_mmap(mm);
+ 
+ 	vma = mm->mmap;
+-	if (!vma)	/* Can happen if dup_mmap() received an OOM */
++	if (!vma) {
++		/* Can happen if dup_mmap() received an OOM */
++		mmap_write_unlock(mm);
+ 		return;
++	}
+ 
+ 	lru_add_drain();
+ 	flush_cache_mm(mm);
+@@ -3171,16 +3173,14 @@ void exit_mmap(struct mm_struct *mm)
+ 	free_pgtables(&tlb, vma, FIRST_USER_ADDRESS, USER_PGTABLES_CEILING);
+ 	tlb_finish_mmu(&tlb);
+ 
+-	/*
+-	 * Walk the list again, actually closing and freeing it,
+-	 * with preemption enabled, without holding any MM locks.
+-	 */
++	/* Walk the list again, actually closing and freeing it. */
+ 	while (vma) {
+ 		if (vma->vm_flags & VM_ACCOUNT)
+ 			nr_accounted += vma_pages(vma);
+ 		vma = remove_vma(vma);
+ 		cond_resched();
+ 	}
++	mmap_write_unlock(mm);
+ 	vm_unacct_memory(nr_accounted);
+ }
+ 
+-- 
+2.34.0.rc2.393.gf8c9666880-goog
 
