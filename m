@@ -2,110 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB43345B286
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 04:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBFAF45B289
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 04:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240798AbhKXDUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 22:20:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230517AbhKXDUD (ORCPT
+        id S240810AbhKXDUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 22:20:16 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:44772 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240802AbhKXDUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 22:20:03 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71E1C061574;
-        Tue, 23 Nov 2021 19:16:54 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id m25so1289914qtq.13;
-        Tue, 23 Nov 2021 19:16:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cTp9yZLPAioGvr+AUfhjJxCDu9lVAek1x4B5RUtmqPw=;
-        b=idantvmKEY5mzlBZUu5hJipAc4fwB3Qjt+8W4rDrxORm6ix8cGAHDyOCnRvkTen6FD
-         C36Y9N/XjU1ZHW5S9KzIS/u77uw/FxOnC3JDCNgCADePTvkrv7v9ywTtZh7EIl9dXzpk
-         R2Ry265R5byS71+65pJ9b0XbT30eHZW52jcY+OrJBfFmxyzoPrIbtlElY/vbfHYyQ8ep
-         Iey87eFLOIzs9TMDkXk8NjgdHBmivB4zWevpO8o5GTa5w+bC6D4fcyIqK8m6UENWteOC
-         nSpV0M6XCEyS36HGEjF5N2tij+rHqTyuS208oxOJWpuA/AXHq9omCoILaJS7wAtKvtYr
-         pTXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cTp9yZLPAioGvr+AUfhjJxCDu9lVAek1x4B5RUtmqPw=;
-        b=7GWRydwCJV6TQaIFID41oDgo4Q427fa9OLBmHQjF8twL9smJj/W/hjE3UWfC8uHUdP
-         4q7FY0rvPfwoytZ9AkCj3z7E14VRk0EgX1Sw1/yW7PiETJWm5mFdR8meoX5ux4XBguaK
-         G8B75rrhL9lTAttm27dih+PVgVy7MGWpOGCZc3zTwg7p1lBgJbFDXzoRKH91KVxGjaBq
-         AF+HR8X79qAc1Q8HkdpgzL2NLUSZIskwneF7hiUFiIVl3464sf1ZXYkyPKKBgz04V/pR
-         jlwTqil9lFVDZHOdB+uC0vsip1weBD177MleUH59ppXQni/9cpp2HHBQeqXLJJ0/bvU4
-         PSnw==
-X-Gm-Message-State: AOAM530xUxpW+DIFzm4UuWMP9wzfy2Z5mLoagU7vUwXMod+/seAIgg6G
-        U+NITag+ruFf9sogf9dzmv4=
-X-Google-Smtp-Source: ABdhPJxI27GYfxwVe5N2/QtmsxifdzSx3qi4BT9bBjRKClUfabcC6peDTBh825e5skl+CK7EW76DFw==
-X-Received: by 2002:a05:622a:144f:: with SMTP id v15mr2993881qtx.340.1637723814121;
-        Tue, 23 Nov 2021 19:16:54 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id bj30sm7510823qkb.58.2021.11.23.19.16.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 19:16:53 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: chi.minghao@zte.com.cn
-To:     akpm@linux-foundation.org
-Cc:     shuah@kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chiminghao <chi.minghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] selftests:vm: use swap() to make code cleaner
-Date:   Wed, 24 Nov 2021 03:16:32 +0000
-Message-Id: <20211124031632.35317-1-chi.minghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 23 Nov 2021 22:20:14 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3E32F2195A;
+        Wed, 24 Nov 2021 03:17:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1637723824; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vDPWm0p/mlhakN1e7xXVNW/moviPVK82GwF6kdGOEy0=;
+        b=cZhmrdPKXdn+H/oudJqT/Oq1j2f75Hf43o5wUhZQpWL7W33LNbBHnGZbHFBb+ylJ35Ph4O
+        mmln8qZQF1JySsR/L6TDKHGmwbOzU5szZ2iBYO/A+szLLJw7pVH8sEPMrAMklTRcjUJdFz
+        WKQ0lxuSx/XGHpVIMVW4dwX1XtZzLRI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1637723824;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vDPWm0p/mlhakN1e7xXVNW/moviPVK82GwF6kdGOEy0=;
+        b=YALzMeWScEmPJ5lOZdpgGHSa67p/G3HP9wdC2hxeW/q5VhiCJtnvkRSCDqv4PEBo6O+4qh
+        lKCnrt1wMtZXy1DQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DC5D913EB8;
+        Wed, 24 Nov 2021 03:17:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id z1hAJayunWGNRQAAMHmgww
+        (envelope-from <neilb@suse.de>); Wed, 24 Nov 2021 03:17:00 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Andrew Morton" <akpm@linux-foundation.org>
+Cc:     "Uladzislau Rezki" <urezki@gmail.com>,
+        "Michal Hocko" <mhocko@kernel.org>,
+        "Dave Chinner" <david@fromorbit.com>,
+        "Christoph Hellwig" <hch@lst.de>, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, "LKML" <linux-kernel@vger.kernel.org>,
+        "Ilya Dryomov" <idryomov@gmail.com>,
+        "Jeff Layton" <jlayton@kernel.org>,
+        "Michal Hocko" <mhocko@suse.com>
+Subject: Re: [PATCH v2 2/4] mm/vmalloc: add support for __GFP_NOFAIL
+In-reply-to: <20211123170238.f0f780ddb800f1316397f97c@linux-foundation.org>
+References: <20211122153233.9924-1-mhocko@kernel.org>,
+ <20211122153233.9924-3-mhocko@kernel.org>, <YZ06nna7RirAI+vJ@pc638.lan>,
+ <20211123170238.f0f780ddb800f1316397f97c@linux-foundation.org>
+Date:   Wed, 24 Nov 2021 14:16:56 +1100
+Message-id: <163772381628.1891.9102201563412921921@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: chiminghao <chi.minghao@zte.com.cn>
+On Wed, 24 Nov 2021, Andrew Morton wrote:
+> 
+> I added GFP_NOFAIL back in the mesozoic era because quite a lot of
+> sites were doing open-coded try-forever loops.  I thought "hey, they
+> shouldn't be doing that in the first place, but let's at least
+> centralize the concept to reduce code size, code duplication and so
+> it's something we can now grep for".  But longer term, all GFP_NOFAIL
+> sites should be reworked to no longer need to do the retry-forever
+> thing.  In retrospect, this bright idea of mine seems to have added
+> license for more sites to use retry-forever.  Sigh.
 
-Fix the following coccicheck REVIEW:
-./tools/testing/selftests/vm/userfaultfd.c:1531:21-22:use swap() to make
-code cleaner
+One of the costs of not having GFP_NOFAIL (or similar) is lots of
+untested failure-path code.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: chiminghao <chi.minghao@zte.com.cn>
----
- tools/testing/selftests/vm/userfaultfd.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+When does an allocation that is allowed to retry and reclaim ever fail
+anyway? I think the answer is "only when it has been killed by the oom
+killer".  That of course cannot happen to kernel threads, so maybe
+kernel threads should never need GFP_NOFAIL??
 
-diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
-index 8a09057d2f22..dedbe9c9287e 100644
---- a/tools/testing/selftests/vm/userfaultfd.c
-+++ b/tools/testing/selftests/vm/userfaultfd.c
-@@ -1413,7 +1413,6 @@ static void userfaultfd_pagemap_test(unsigned int test_pgsize)
- static int userfaultfd_stress(void)
- {
- 	void *area;
--	char *tmp_area;
- 	unsigned long nr;
- 	struct uffdio_register uffdio_register;
- 	struct uffd_stats uffd_stats[nr_cpus];
-@@ -1524,13 +1523,9 @@ static int userfaultfd_stress(void)
- 					    count_verify[nr], nr);
- 
- 		/* prepare next bounce */
--		tmp_area = area_src;
--		area_src = area_dst;
--		area_dst = tmp_area;
-+		swap(area_src, area_dst);
- 
--		tmp_area = area_src_alias;
--		area_src_alias = area_dst_alias;
--		area_dst_alias = tmp_area;
-+		swap(area_src_alias, area_dst_alias);
- 
- 		uffd_stats_report(uffd_stats, nr_cpus);
- 	}
--- 
-2.25.1
+I'm not sure the above is 100%, but I do think that is the sort of
+semantic that we want.  We want to know what kmalloc failure *means*.
+We also need well defined and documented strategies to handle it.
+mempools are one such strategy, but not always suitable.
+preallocating can also be useful but can be clumsy to implement.  Maybe
+we should support a process preallocating a bunch of pages which can
+only be used by the process - and are auto-freed when the process
+returns to user-space.  That might allow the "error paths" to be simple
+and early, and subsequent allocations that were GFP_USEPREALLOC would be
+safe.
 
+i.e. we need a plan for how to rework all those no-fail call-sites.
 
+NeilBrown
