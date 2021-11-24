@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D144E45B4B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 07:55:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C88C45B4BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 07:57:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239615AbhKXG6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 01:58:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhKXG6h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 01:58:37 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7EA7C061714
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 22:55:27 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id o19-20020a1c7513000000b0033a93202467so1177210wmc.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 22:55:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tMC8pp4mVpNvhRL3jm1hX0mNoR6GBx6c8qg48EuKy2w=;
-        b=nI0EaHE/M+xl/HsklYIGJKHl+ovr78hwBFi5nMaij8dYWmuAsns2/PROeqWJ3FJ8qf
-         aD7wNLNDhLoxy6UsbYz2FAusX29C2JrTgc0ewkjPLAdLQ6bTCpUuN9yvU1QVCLoEx/vE
-         x9h8cFPjnvKJkmrzTDrilrNUzVgzqQlULh7tlyEnHMRrHzKilpBfuytFei4rRxOcBGmc
-         a3NSzzaOe647/6qkGS6f6wFVijbAqrKDxt8SmICwNCsLp3bujQFccjS2D8UiaQM8Ooxt
-         u4DOTXYziau7u0+e5tFDL+Z82QjeKNbIhzuelK61J7ehqeV5g64GB85hzqrgxuYvm2N7
-         rDpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tMC8pp4mVpNvhRL3jm1hX0mNoR6GBx6c8qg48EuKy2w=;
-        b=Of38m/f8IHhd6aRprubNZGI2PrB2qWATalhF2cFNomg4NpykH/kJpHMp+pWsqdV7Jo
-         r6qh7UcepODMv2uXcm5iANxb5LadhcITxEDYGSFQeGa1u7gWzj7YvQYvu1OJheDIqcMz
-         klQIRrMRRLnJOFtrAgbYiXCd0TYYumJkwD0mGwrM6vOp/jxbJHsVU9sxHyTrLFReicHb
-         MlOvXoivhuh+X9wpsIfQSUs5NyPQvlAk+Z8TOTHlA7OaeIu3hNZg7dstF1NansNPZzF0
-         6EzMTdk3dRXl+rZHA8lYYgcnty2XaacGxvJRlhkZnF1UWkf96IwbpBMsfHsQfti5qkZQ
-         CjJg==
-X-Gm-Message-State: AOAM532Uj3E/ruFp1VzHk4Ck/zrD9nYbZJhVzSzaznpFdioPBGiyl0z0
-        KrYzs1BhDPxfrIN1JoC37AHfFMwZrzDck5KZe5gs8A==
-X-Google-Smtp-Source: ABdhPJyzY2RHxrAEL5Q8QxrTjXOPnheMWIXDQcEdBHU0XPG5cgjRLiKr064wWKsNaG5Rf+AS4V+fxKmWCH54gG5PTmo=
-X-Received: by 2002:a05:600c:2149:: with SMTP id v9mr12303753wml.59.1637736926050;
- Tue, 23 Nov 2021 22:55:26 -0800 (PST)
+        id S239666AbhKXHBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 02:01:04 -0500
+Received: from mx24.baidu.com ([111.206.215.185]:55620 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229549AbhKXHBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 02:01:03 -0500
+Received: from BC-Mail-Ex17.internal.baidu.com (unknown [172.31.51.11])
+        by Forcepoint Email with ESMTPS id A792F2A0726A6D0228D;
+        Wed, 24 Nov 2021 14:57:49 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex17.internal.baidu.com (172.31.51.11) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.20; Wed, 24 Nov 2021 14:57:49 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.20; Wed, 24 Nov 2021 14:57:48 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-staging@lists.linux.dev>
+Subject: [PATCH 0/3] staging: zynpu: Add driver support for ARM(China) ZHOUYI AI accelerator
+Date:   Wed, 24 Nov 2021 14:57:37 +0800
+Message-ID: <20211124065743.421-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20211124060521.614015-1-guoren@kernel.org>
-In-Reply-To: <20211124060521.614015-1-guoren@kernel.org>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Wed, 24 Nov 2021 12:25:14 +0530
-Message-ID: <CAAhSdy1CZbdAPEYxFOhrn=wUcmc9Yea0ziMUmHjaudKdH2Yw1w@mail.gmail.com>
-Subject: Re: [PATCH] riscv: Fixup one-page wasting
-To:     Guo Ren <guoren@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
-        Alexandre Ghiti <alex@ghiti.fr>,
-        Atish Patra <Atish.Patra@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex24.internal.baidu.com (172.31.51.18) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 11:35 AM <guoren@kernel.org> wrote:
->
-> From: Guo Ren <guoren@linux.alibaba.com>
->
-> For small memory systems(Allwinner D1s/F133), one page size memory
-> cannot be ignored.
->
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Cc: Alexandre Ghiti <alex@ghiti.fr>
-> Cc: Anup Patel <anup@brainfault.org>
-> Cc: Atish Patra <Atish.Patra@wdc.com>
+ZHOUYI NPU is an AI accelerator chip which is integrated into ARM SOC,
+such as Allwinner R329 SOC.
+Add driver support for this AI accelerator here.
 
-This PATCH breaks the CPU hotplug functionality.
+Cai Huoqing (3):
+  staging: zynpu: Add driver support for ARM(China) ZHOUYI AI
+    accelerator
+  dt-bindings: staging: Add the binding documentation for ZHOUYI AI
+    accelerator
+  MAINTAINERS: Add the driver info of the ZHOUYI AI accelerator
 
-When a CPU/HART is turned off and turned on at runtime, the
-low-level relocate() will be called to enable MMU on the CPU
-being brought-up which in-turn uses trampoline_pg_dir.
+ .../bindings/staging/arm,zynpu.yaml           |  61 ++
+ MAINTAINERS                                   |   6 +
+ drivers/staging/Kconfig                       |   2 +
+ drivers/staging/Makefile                      |   1 +
+ drivers/staging/zynpu/Kconfig                 |  34 +
+ drivers/staging/zynpu/Makefile                |   7 +
+ drivers/staging/zynpu/z1.c                    | 233 +++++
+ drivers/staging/zynpu/z2.c                    | 297 +++++++
+ drivers/staging/zynpu/zhouyi.h                |  70 ++
+ drivers/staging/zynpu/zhouyi_base.c           |  71 ++
+ drivers/staging/zynpu/zynpu.h                 | 252 ++++++
+ drivers/staging/zynpu/zynpu_core.c            | 254 ++++++
+ drivers/staging/zynpu/zynpu_drv.c             | 349 ++++++++
+ drivers/staging/zynpu/zynpu_fops.c            | 245 ++++++
+ drivers/staging/zynpu/zynpu_io.c              | 133 +++
+ drivers/staging/zynpu/zynpu_io.h              | 119 +++
+ drivers/staging/zynpu/zynpu_irq.c             | 123 +++
+ drivers/staging/zynpu/zynpu_irq.h             |  85 ++
+ drivers/staging/zynpu/zynpu_job_manager.c     | 467 ++++++++++
+ drivers/staging/zynpu/zynpu_job_manager.h     | 200 +++++
+ drivers/staging/zynpu/zynpu_mm.c              | 704 +++++++++++++++
+ drivers/staging/zynpu/zynpu_mm.h              | 142 +++
+ drivers/staging/zynpu/zynpu_session.c         | 817 ++++++++++++++++++
+ drivers/staging/zynpu/zynpu_session.h         | 283 ++++++
+ drivers/staging/zynpu/zynpu_sysfs.c           | 205 +++++
+ 25 files changed, 5160 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/staging/arm,zynpu.yaml
+ create mode 100644 drivers/staging/zynpu/Kconfig
+ create mode 100644 drivers/staging/zynpu/Makefile
+ create mode 100644 drivers/staging/zynpu/z1.c
+ create mode 100644 drivers/staging/zynpu/z2.c
+ create mode 100644 drivers/staging/zynpu/zhouyi.h
+ create mode 100644 drivers/staging/zynpu/zhouyi_base.c
+ create mode 100644 drivers/staging/zynpu/zynpu.h
+ create mode 100644 drivers/staging/zynpu/zynpu_core.c
+ create mode 100644 drivers/staging/zynpu/zynpu_drv.c
+ create mode 100644 drivers/staging/zynpu/zynpu_fops.c
+ create mode 100644 drivers/staging/zynpu/zynpu_io.c
+ create mode 100644 drivers/staging/zynpu/zynpu_io.h
+ create mode 100644 drivers/staging/zynpu/zynpu_irq.c
+ create mode 100644 drivers/staging/zynpu/zynpu_irq.h
+ create mode 100644 drivers/staging/zynpu/zynpu_job_manager.c
+ create mode 100644 drivers/staging/zynpu/zynpu_job_manager.h
+ create mode 100644 drivers/staging/zynpu/zynpu_mm.c
+ create mode 100644 drivers/staging/zynpu/zynpu_mm.h
+ create mode 100644 drivers/staging/zynpu/zynpu_session.c
+ create mode 100644 drivers/staging/zynpu/zynpu_session.h
+ create mode 100644 drivers/staging/zynpu/zynpu_sysfs.c
 
-Regards,
-Anup
+-- 
+2.25.1
 
-> ---
->  arch/riscv/mm/init.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 24b2b8044602..097bb3bc4020 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -241,9 +241,9 @@ unsigned long riscv_pfn_base __ro_after_init;
->  EXPORT_SYMBOL(riscv_pfn_base);
->
->  pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
-> -pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
->  static pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
->
-> +pgd_t trampoline_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
->  pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
->  static pmd_t __maybe_unused early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
->
-> --
-> 2.25.1
->
