@@ -2,155 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289E945C9F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:25:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6C745C9F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:26:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348728AbhKXQ2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:28:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:31947 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241963AbhKXQ2b (ORCPT
+        id S1348810AbhKXQ3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:29:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348768AbhKXQ3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:28:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637771120;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=b05r8bg61U2tfmYfrS/b95cSni3VCYdBhNiv79D86/Y=;
-        b=dFSqO8Qi679PJY3U67vgc3kvK6arBlqSKIpeHWdR3f82r9rJCxYlmVm6Ji+2qVizTjobzA
-        E4XImH2g2MEeU+lN9C20Ndjqs/HzZhf4acsFHOshZuAJyfzOqJHD8CuTkoba1qKFJledz3
-        YI/+9Cahcq66gnhrJEeqSyqDo4biwjU=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-323-mkGXK5soPDaV6ReEbIIMjQ-1; Wed, 24 Nov 2021 11:25:19 -0500
-X-MC-Unique: mkGXK5soPDaV6ReEbIIMjQ-1
-Received: by mail-ed1-f71.google.com with SMTP id t9-20020aa7d709000000b003e83403a5cbso2823343edq.19
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 08:25:19 -0800 (PST)
+        Wed, 24 Nov 2021 11:29:06 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EAA2C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 08:25:56 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id v19so2266138plo.7
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 08:25:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9OyRUzuEYtn/vzjzpQS8eO2SIEHgIphij8U+B1IATbE=;
+        b=xVJOa6XOrvU9ChgFooGFTw9vSXEFU/mEMOfyFVvIUqhLfQQHxHVLCbjqHX7L0Yuxrt
+         lIphxbAP+kDzFOAw5lKoownNYaBrsm521cYJRpjTNVdTVZlgszk+6ZjaypfGdSbfB7HA
+         q6ASROGjeBXxrA9owaFCLOld51rrDigkkXFpSDaxs8Y12fjofI6SaHm2PcAmAs7n9+JA
+         KFDg7/fOo7Mj7rl/lVpuJllaaZlxJHO6QyPKv4qrh+UQpqVg3onVNWLOMcDlP8YhBcHN
+         8hTede6nYsVSq5MBryZAcLQk1RAupBKscodZdzcsYS1JKpgLx7l/2CN2zYi/BkA5BpSu
+         1tiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=b05r8bg61U2tfmYfrS/b95cSni3VCYdBhNiv79D86/Y=;
-        b=qhnU9QWmwRZxZzkHFpmSm4GUQWK2127usABPXpswifgTGq9RFbIRy6O/mOOalbNHQ8
-         bm5IHx3n8AsSThbpe9ayZ0gNyf5Z6gzdy4zZWpVkxzeK20sca9iwZRZLrypsRuKWOYoP
-         qY4Qa7NchmtfjMCrba8u9kcFlyOCcGMCmXGufdn86C6Rgne5VS98FTDexsMU7EtueQg2
-         EOwLDG6DRPTNrbaoUmDL91GAecz2o9JzBkoZ4hFGBp2xTeGdquxhnI3NkrBpq/qSAMqH
-         VEMzdVrGOmawHWTehC+QhTTyIYSKOzFlwiDI3ilTXCHuLLJmv4iXmS9yn9sziEZ4ihpn
-         w+mA==
-X-Gm-Message-State: AOAM533eONzCholYTnbWXgShhhswx7NLntpfwLLGHwS7wUz+2IXA/bpU
-        FD7FHw7/w7eoBwknjHxAnMfcB71UhIEeiKIztlCzMZBOnyKLsyVHdh/FH8SD4dhHTU0dcKleLn0
-        EJOTrGiwLch48dh9gQk1k/yKi
-X-Received: by 2002:a17:907:c02:: with SMTP id ga2mr21267823ejc.217.1637771118364;
-        Wed, 24 Nov 2021 08:25:18 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwLK9wcKJCYunKoTMTbcApoDX+YWEAbrWYdDpFE64/RXe9wSr/7j7frqiDhBIkDIsI/DeLZpA==
-X-Received: by 2002:a17:907:c02:: with SMTP id ga2mr21267785ejc.217.1637771118148;
-        Wed, 24 Nov 2021 08:25:18 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id qf8sm176974ejc.8.2021.11.24.08.25.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 08:25:17 -0800 (PST)
-Message-ID: <ed1e0e2f-25a0-91a9-9f0b-a41b391ee869@redhat.com>
-Date:   Wed, 24 Nov 2021 17:25:17 +0100
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9OyRUzuEYtn/vzjzpQS8eO2SIEHgIphij8U+B1IATbE=;
+        b=8DtHWfC0JhpsaQpTTV6qfm1dNW5CMZpKB9dg8whFFI47YvmNGl+2xAB7MQRRtof3VU
+         1oXcJKzxr+V8sFhQ+PaRNc4zRrUekyA+S/phTrrIsNoB8SVuG/vs0lrZJL8/cd9omr2C
+         t/8G2IvkK9wTn3NeW/VjUhkezIt0lATyN7CJcYhvrrXUzlbvy6HxfiAClIc8PknSnJOf
+         HiYhyakSHGRqnuBEBQxIVVF2XUSch27tOjiPSaT7FawS6RJ+z4W/C1OhRIbhjeyjFzaJ
+         /n2SKITG7jN4JNBTeCSQttzYQdxurBqANRtdqgUz5AyOausEoHeHABmYxhehthsxtPj9
+         lALA==
+X-Gm-Message-State: AOAM531HYeS56rFPFi6w+Sp2o0dFpjHdeMp1ZjrjSAziq9XtZw2CAfcH
+        unKMOIOtrrEsPh83Bz9QYU7hWA==
+X-Google-Smtp-Source: ABdhPJxZ8NBLAsPa04siJOVxz6Kc87H+SICSyoWbHEDX0Y4AdTWFd3gxfcEzoGTa0RnVbHDLUjnKbQ==
+X-Received: by 2002:a17:90b:1b4d:: with SMTP id nv13mr17796820pjb.234.1637771156089;
+        Wed, 24 Nov 2021 08:25:56 -0800 (PST)
+Received: from hermes.local (204-195-33-123.wavecable.com. [204.195.33.123])
+        by smtp.gmail.com with ESMTPSA id c21sm205774pfl.138.2021.11.24.08.25.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 08:25:55 -0800 (PST)
+Date:   Wed, 24 Nov 2021 08:25:52 -0800
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Vijayendra Suman <vijayendra.suman@oracle.com>,
+        Ramanan Govindarajan <ramanan.govindarajan@oracle.com>,
+        George Kennedy <george.kennedy@oracle.com>,
+        syzkaller <syzkaller@googlegroups.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [External] : Re: [PATCH] net: sched: sch_netem: Fix a divide
+ error in netem_enqueue during randomized corruption.
+Message-ID: <20211124082552.34009ff6@hermes.local>
+In-Reply-To: <DM6PR10MB27772AE5B4F2BE7A45E1FA0EC2619@DM6PR10MB2777.namprd10.prod.outlook.com>
+References: <20211119084241.14984-1-harshit.m.mogalapalli@oracle.com>
+        <629fe4fc-8fbf-4dec-8192-32e1126fa185@gmail.com>
+        <20211119090110.75d8351b@hermes.local>
+        <DM6PR10MB27772AE5B4F2BE7A45E1FA0EC2619@DM6PR10MB2777.namprd10.prod.outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] mfd: Kconfig: change INTEL_SOC_PMIC_CHTDC_TI to bool
-Content-Language: en-US
-To:     Lee Jones <lee.jones@linaro.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        linux-kernel@vger.kernel.org
-References: <f12ed3dea697e6fdcfcaf9b6cc862ffa7aac005b.1635490923.git.mchehab+huawei@kernel.org>
- <YZ5c0LO5Ocaq+B7c@google.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <YZ5c0LO5Ocaq+B7c@google.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, 24 Nov 2021 10:15:12 +0000
+Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com> wrote:
 
-On 11/24/21 16:40, Lee Jones wrote:
-> On Fri, 29 Oct 2021, Mauro Carvalho Chehab wrote:
+> Hi Stephen and Eric,
 > 
->> The INTEL_SOC_PMIC_CHTDC_TI should be initialized early, before
->> loading the fbcon driver, as otherwise the i915 driver will
->> fail to configure pwm:
->>
->> [   13.674287] fb0: switching to inteldrmfb from EFI VGA
->> [   13.682380] Console: switching to colour dummy device 80x25
->> [   13.682468] i915 0000:00:02.0: vgaarb: deactivate vga console
->> [   13.682686] [drm] Supports vblank timestamp caching Rev 2 (21.10.2013).
->> [   13.685773] i915 0000:00:02.0: vgaarb: changed VGA decodes: olddecodes=io+mem,decodes=io+mem:owns=io+mem
->> [   13.686219] i915 0000:00:02.0: [drm] *ERROR* Failed to configure the pwm chip
->> [   13.699572] [drm] Initialized i915 1.6.0 20200313 for 0000:00:02.0 on minor 0
->> [   13.739044] fbcon: i915drmfb (fb0) is primary device
->> [   14.037792] intel_soc_pmic_exec_mipi_pmic_seq_element: No PMIC registered
->> ...
->> [   24.621403] intel_pmic_install_opregion_handler: Ask to register OpRegion for bus ID=PMI2, HID=INT33F5
->> [   24.630540] intel_pmic_install_opregion_handler: OpRegion registered
->>
->> (some extra debug printk's were added to the above)
->>
->> As suggested by Hans, this patch also addresses an issue with
->> the dependencies, as, for this driver to be a bool, it also
->> need the I2C core and the I2C_DESIGNWARE driver to be builtin.
->>
->> Suggested-by: Hans de Goede <hdegoede@redhat.com>
->> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->> ---
->>  drivers/mfd/Kconfig | 6 +++++-
->>  1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
->> index ca0edab91aeb..f9092c79c4e8 100644
->> --- a/drivers/mfd/Kconfig
->> +++ b/drivers/mfd/Kconfig
->> @@ -632,7 +632,7 @@ config INTEL_SOC_PMIC_CHTWC
->>  config INTEL_SOC_PMIC_CHTDC_TI
->>  	tristate "Support for Intel Cherry Trail Dollar Cove TI PMIC"
->>  	depends on GPIOLIB
->> -	depends on I2C
->> +	depends on I2C = y && I2C_DESIGNWARE_PLATFORM=y
+> Thanks for the comments.
 > 
-> The lack of formatting consistency here is eating me up inside!
+> Syzkaller reproducer fuzzes in a way that socket buffer length is zero.
+> So skb_linearize would not help in this case as skb->data_len=0 and skb->len=0
+> due to which skb_headlen=0 before corruption.
 > 
->>  	depends on ACPI
->>  	depends on X86
->>  	select MFD_CORE
->> @@ -642,6 +642,10 @@ config INTEL_SOC_PMIC_CHTDC_TI
->>  	  Select this option for supporting Dollar Cove (TI version) PMIC
->>  	  device that is found on some Intel Cherry Trail systems.
->>  
->> +	  This option is a bool as it provides an ACPI OpRegion which must be
->> +	  available before any devices using it are probed. This option also
->> +	  needs the designware-i2c driver to be builtin for the same reason.
+> I edited my patch which just adds a check on skb_headlen before performing corruption and I
+> am sending a v2 of the patch.
 > 
-> Is there no way around this?
+> Thanks,
+> Harshit
+> ________________________________
+> From: Stephen Hemminger <stephen@networkplumber.org>
+> Sent: Friday, November 19, 2021 10:31 PM
+> To: Eric Dumazet <eric.dumazet@gmail.com>
+> Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>; Vijayendra Suman <vijayendra.suman@oracle.com>; Ramanan Govindarajan <ramanan.govindarajan@oracle.com>; George Kennedy <george.kennedy@oracle.com>; syzkaller <syzkaller@googlegroups.com>; Jamal Hadi Salim <jhs@mojatatu.com>; Cong Wang <xiyou.wangcong@gmail.com>; Jiri Pirko <jiri@resnulli.us>; David S. Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; netdev@vger.kernel.org <netdev@vger.kernel.org>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>
+> Subject: [External] : Re: [PATCH] net: sched: sch_netem: Fix a divide error in netem_enqueue during randomized corruption.
+> 
+> On Fri, 19 Nov 2021 07:49:59 -0800
+> Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> 
+> > On 11/19/21 12:42 AM, Harshit Mogalapalli wrote:  
+> > > In netem_enqueue function the value of skb_headlen(skb) can be zero
+> > > which leads to a division error during randomized corruption of the packet.
+> > > This fix  adds a check to skb_headlen(skb) to prevent the division error.
+> > >
+> > > Crash report:
+> > > [  343.170349] netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family
+> > > 0 port 6081 - 0
+> > > [  343.216110] netem: version 1.3
+> > > [  343.235841] divide error: 0000 [#1] PREEMPT SMP KASAN NOPTI
+> > > [  343.236680] CPU: 3 PID: 4288 Comm: reproducer Not tainted 5.16.0-rc1+
+> > > [  343.237569] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> > > BIOS 1.11.0-2.el7 04/01/2014
+> > > [  343.238707] RIP: 0010:netem_enqueue+0x1590/0x33c0 [sch_netem]
+> > > [  343.239499] Code: 89 85 58 ff ff ff e8 5f 5d e9 d3 48 8b b5 48 ff ff
+> > > ff 8b 8d 50 ff ff ff 8b 85 58 ff ff ff 48 8b bd 70 ff ff ff 31 d2 2b 4f
+> > > 74 <f7> f1 48 b8 00 00 00 00 00 fc ff df 49 01 d5 4c 89 e9 48 c1 e9 03
+> > > [  343.241883] RSP: 0018:ffff88800bcd7368 EFLAGS: 00010246
+> > > [  343.242589] RAX: 00000000ba7c0a9c RBX: 0000000000000001 RCX:
+> > > 0000000000000000
+> > > [  343.243542] RDX: 0000000000000000 RSI: ffff88800f8edb10 RDI:
+> > > ffff88800f8eda40
+> > > [  343.244474] RBP: ffff88800bcd7458 R08: 0000000000000000 R09:
+> > > ffffffff94fb8445
+> > > [  343.245403] R10: ffffffff94fb8336 R11: ffffffff94fb8445 R12:
+> > > 0000000000000000
+> > > [  343.246355] R13: ffff88800a5a7000 R14: ffff88800a5b5800 R15:
+> > > 0000000000000020
+> > > [  343.247291] FS:  00007fdde2bd7700(0000) GS:ffff888109780000(0000)
+> > > knlGS:0000000000000000
+> > > [  343.248350] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > [  343.249120] CR2: 00000000200000c0 CR3: 000000000ef4c000 CR4:
+> > > 00000000000006e0
+> > > [  343.250076] Call Trace:
+> > > [  343.250423]  <TASK>
+> > > [  343.250713]  ? memcpy+0x4d/0x60
+> > > [  343.251162]  ? netem_init+0xa0/0xa0 [sch_netem]
+> > > [  343.251795]  ? __sanitizer_cov_trace_pc+0x21/0x60
+> > > [  343.252443]  netem_enqueue+0xe28/0x33c0 [sch_netem]
+> > > [  343.253102]  ? stack_trace_save+0x87/0xb0
+> > > [  343.253655]  ? filter_irq_stacks+0xb0/0xb0
+> > > [  343.254220]  ? netem_init+0xa0/0xa0 [sch_netem]
+> > > [  343.254837]  ? __kasan_check_write+0x14/0x20
+> > > [  343.255418]  ? _raw_spin_lock+0x88/0xd6
+> > > [  343.255953]  dev_qdisc_enqueue+0x50/0x180
+> > > [  343.256508]  __dev_queue_xmit+0x1a7e/0x3090
+> > > [  343.257083]  ? netdev_core_pick_tx+0x300/0x300
+> > > [  343.257690]  ? check_kcov_mode+0x10/0x40
+> > > [  343.258219]  ? _raw_spin_unlock_irqrestore+0x29/0x40
+> > > [  343.258899]  ? __kasan_init_slab_obj+0x24/0x30
+> > > [  343.259529]  ? setup_object.isra.71+0x23/0x90
+> > > [  343.260121]  ? new_slab+0x26e/0x4b0
+> > > [  343.260609]  ? kasan_poison+0x3a/0x50
+> > > [  343.261118]  ? kasan_unpoison+0x28/0x50
+> > > [  343.261637]  ? __kasan_slab_alloc+0x71/0x90
+> > > [  343.262214]  ? memcpy+0x4d/0x60
+> > > [  343.262674]  ? write_comp_data+0x2f/0x90
+> > > [  343.263209]  ? __kasan_check_write+0x14/0x20
+> > > [  343.263802]  ? __skb_clone+0x5d6/0x840
+> > > [  343.264329]  ? __sanitizer_cov_trace_pc+0x21/0x60
+> > > [  343.264958]  dev_queue_xmit+0x1c/0x20
+> > > [  343.265470]  netlink_deliver_tap+0x652/0x9c0
+> > > [  343.266067]  netlink_unicast+0x5a0/0x7f0
+> > > [  343.266608]  ? netlink_attachskb+0x860/0x860
+> > > [  343.267183]  ? __sanitizer_cov_trace_pc+0x21/0x60
+> > > [  343.267820]  ? write_comp_data+0x2f/0x90
+> > > [  343.268367]  netlink_sendmsg+0x922/0xe80
+> > > [  343.268899]  ? netlink_unicast+0x7f0/0x7f0
+> > > [  343.269472]  ? __sanitizer_cov_trace_pc+0x21/0x60
+> > > [  343.270099]  ? write_comp_data+0x2f/0x90
+> > > [  343.270644]  ? netlink_unicast+0x7f0/0x7f0
+> > > [  343.271210]  sock_sendmsg+0x155/0x190
+> > > [  343.271721]  ____sys_sendmsg+0x75f/0x8f0
+> > > [  343.272262]  ? kernel_sendmsg+0x60/0x60
+> > > [  343.272788]  ? write_comp_data+0x2f/0x90
+> > > [  343.273332]  ? write_comp_data+0x2f/0x90
+> > > [  343.273869]  ___sys_sendmsg+0x10f/0x190
+> > > [  343.274405]  ? sendmsg_copy_msghdr+0x80/0x80
+> > > [  343.274984]  ? slab_post_alloc_hook+0x70/0x230
+> > > [  343.275597]  ? futex_wait_setup+0x240/0x240
+> > > [  343.276175]  ? security_file_alloc+0x3e/0x170
+> > > [  343.276779]  ? write_comp_data+0x2f/0x90
+> > > [  343.277313]  ? __sanitizer_cov_trace_pc+0x21/0x60
+> > > [  343.277969]  ? write_comp_data+0x2f/0x90
+> > > [  343.278515]  ? __fget_files+0x1ad/0x260
+> > > [  343.279048]  ? __sanitizer_cov_trace_pc+0x21/0x60
+> > > [  343.279685]  ? write_comp_data+0x2f/0x90
+> > > [  343.280234]  ? __sanitizer_cov_trace_pc+0x21/0x60
+> > > [  343.280874]  ? sockfd_lookup_light+0xd1/0x190
+> > > [  343.281481]  __sys_sendmsg+0x118/0x200
+> > > [  343.281998]  ? __sys_sendmsg_sock+0x40/0x40
+> > > [  343.282578]  ? alloc_fd+0x229/0x5e0
+> > > [  343.283070]  ? write_comp_data+0x2f/0x90
+> > > [  343.283610]  ? write_comp_data+0x2f/0x90
+> > > [  343.284135]  ? __sanitizer_cov_trace_pc+0x21/0x60
+> > > [  343.284776]  ? ktime_get_coarse_real_ts64+0xb8/0xf0
+> > > [  343.285450]  __x64_sys_sendmsg+0x7d/0xc0
+> > > [  343.285981]  ? syscall_enter_from_user_mode+0x4d/0x70
+> > > [  343.286664]  do_syscall_64+0x3a/0x80
+> > > [  343.287158]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > > [  343.287850] RIP: 0033:0x7fdde24cf289
+> > > [  343.288344] Code: 01 00 48 81 c4 80 00 00 00 e9 f1 fe ff ff 0f 1f 00
+> > > 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f
+> > > 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d b7 db 2c 00 f7 d8 64 89 01 48
+> > > [  343.290729] RSP: 002b:00007fdde2bd6d98 EFLAGS: 00000246 ORIG_RAX:
+> > > 000000000000002e
+> > > [  343.291730] RAX: ffffffffffffffda RBX: 0000000000000000 RCX:
+> > > 00007fdde24cf289
+> > > [  343.292673] RDX: 0000000000000000 RSI: 00000000200000c0 RDI:
+> > > 0000000000000004
+> > > [  343.293618] RBP: 00007fdde2bd6e20 R08: 0000000100000001 R09:
+> > > 0000000000000000
+> > > [  343.294557] R10: 0000000100000001 R11: 0000000000000246 R12:
+> > > 0000000000000000
+> > > [  343.295493] R13: 0000000000021000 R14: 0000000000000000 R15:
+> > > 00007fdde2bd7700
+> > > [  343.296432]  </TASK>
+> > > [  343.296735] Modules linked in: sch_netem ip6_vti ip_vti ip_gre ipip
+> > > sit ip_tunnel geneve macsec macvtap tap ipvlan macvlan 8021q garp mrp
+> > > hsr wireguard libchacha20poly1305 chacha_x86_64 poly1305_x86_64
+> > > ip6_udp_tunnel udp_tunnel libblake2s blake2s_x86_64 libblake2s_generic
+> > > curve25519_x86_64 libcurve25519_generic libchacha xfrm_interface
+> > > xfrm6_tunnel tunnel4 veth netdevsim psample batman_adv nlmon dummy team
+> > > bonding tls vcan ip6_gre ip6_tunnel tunnel6 gre tun ip6t_rpfilter
+> > > ipt_REJECT nf_reject_ipv4 ip6t_REJECT nf_reject_ipv6 xt_conntrack ip_set
+> > > ebtable_nat ebtable_broute ip6table_nat ip6table_mangle
+> > > ip6table_security ip6table_raw iptable_nat nf_nat nf_conntrack
+> > > nf_defrag_ipv6 nf_defrag_ipv4 iptable_mangle iptable_security
+> > > iptable_raw ebtable_filter ebtables rfkill ip6table_filter ip6_tables
+> > > iptable_filter ppdev bochs drm_vram_helper drm_ttm_helper ttm
+> > > drm_kms_helper cec parport_pc drm joydev floppy parport sg syscopyarea
+> > > sysfillrect sysimgblt i2c_piix4 qemu_fw_cfg fb_sys_fops pcspkr
+> > > [  343.297459]  ip_tables xfs virtio_net net_failover failover sd_mod
+> > > sr_mod cdrom t10_pi ata_generic pata_acpi ata_piix libata virtio_pci
+> > > virtio_pci_legacy_dev serio_raw virtio_pci_modern_dev dm_mirror
+> > > dm_region_hash dm_log dm_mod
+> > > [  343.311074] Dumping ftrace buffer:
+> > > [  343.311532]    (ftrace buffer empty)
+> > > [  343.312040] ---[ end trace a2e3db5a6ae05099 ]---
+> > > [  343.312691] RIP: 0010:netem_enqueue+0x1590/0x33c0 [sch_netem]
+> > > [  343.313481] Code: 89 85 58 ff ff ff e8 5f 5d e9 d3 48 8b b5 48 ff ff
+> > > ff 8b 8d 50 ff ff ff 8b 85 58 ff ff ff 48 8b bd 70 ff ff ff 31 d2 2b 4f
+> > > 74 <f7> f1 48 b8 00 00 00 00 00 fc ff df 49 01 d5 4c 89 e9 48 c1 e9 03
+> > > [  343.315893] RSP: 0018:ffff88800bcd7368 EFLAGS: 00010246
+> > > [  343.316622] RAX: 00000000ba7c0a9c RBX: 0000000000000001 RCX:
+> > > 0000000000000000
+> > > [  343.317585] RDX: 0000000000000000 RSI: ffff88800f8edb10 RDI:
+> > > ffff88800f8eda40
+> > > [  343.318549] RBP: ffff88800bcd7458 R08: 0000000000000000 R09:
+> > > ffffffff94fb8445
+> > > [  343.319503] R10: ffffffff94fb8336 R11: ffffffff94fb8445 R12:
+> > > 0000000000000000
+> > > [  343.320455] R13: ffff88800a5a7000 R14: ffff88800a5b5800 R15:
+> > > 0000000000000020
+> > > [  343.321414] FS:  00007fdde2bd7700(0000) GS:ffff888109780000(0000)
+> > > knlGS:0000000000000000
+> > > [  343.322489] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > [  343.323283] CR2: 00000000200000c0 CR3: 000000000ef4c000 CR4:
+> > > 00000000000006e0
+> > > [  343.324264] Kernel panic - not syncing: Fatal exception in interrupt
+> > > [  343.333717] Dumping ftrace buffer:
+> > > [  343.334175]    (ftrace buffer empty)
+> > > [  343.334653] Kernel Offset: 0x13600000 from 0xffffffff81000000
+> > > (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+> > > [  343.336027] Rebooting in 86400 seconds..
+> > >
+> > > Reported-by: syzkaller <syzkaller@googlegroups.com>
+> > > Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+> > > ---
+> > >  net/sched/sch_netem.c | 10 ++++++++--
+> > >  1 file changed, 8 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/net/sched/sch_netem.c b/net/sched/sch_netem.c
+> > > index ecbb10db1111..e1e1a00fedda 100644
+> > > --- a/net/sched/sch_netem.c
+> > > +++ b/net/sched/sch_netem.c
+> > > @@ -513,8 +513,14 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch,
+> > >                      goto finish_segs;
+> > >              }
+> > >
+> > > -           skb->data[prandom_u32() % skb_headlen(skb)] ^=
+> > > -                   1<<(prandom_u32() % 8);
+> > > +           if (unlikely(!skb_headlen(skb))) {
+> > > +                   qdisc_drop(skb, sch, to_free);
+> > > +                   skb = NULL;
+> > > +                   goto finish_segs;
+> > > +           } else {
+> > > +                   skb->data[prandom_u32() % skb_headlen(skb)] ^=
+> > > +                           1<<(prandom_u32() % 8);
+> > > +           }
+> > >      }
+> > >
+> > >      if (unlikely(sch->q.qlen >= sch->limit)) {
+> > >  
+> >
+> >
+> > If we accept the fact that a packet can reach qdisc with nothing in skb->head,
+> > then we have other serious issues.
+> >
+> > Why dropping the packet ?
+> >
+> > I would rather pull headers here.
+> >  
+> 
+> Agree with Eric, would be to just linearize befor the corruption step.
+> There is also the issue of checksum offload here.
 
-No unfortunately not, the ACPI device-scan is done really early,
-and in ACPI everything is a function, including e.g. _HID,
-so I've seen _HID method-s reading e.g. GPIOs. So while the
-initial ACPI scan is figuring out what sort of devices it
-is dealing with, we already need working GPIOs (for example).
-
-Various early ACPI code (AML / the DSDT) tends to access the
-PMICs OpRegion and various problems happen when it is not
-available. For the same reason the other BYT/CHT related
-INTEL_SOC_PMIC_FOO options are already bools.
-
-I guess that the DSDTs for other Intel SoCs then the BYT/CHT
-SoCs might be a bit cleaner. BYT/CHT was Intel's first serious
-attempt at standard x86 tablet SoC and this shows in various
-places.
-
-Regards,
-
-Hans
-
+Why not just fix network scheduler to drop and warn on zero length skb being queued?
