@@ -2,105 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA31F45CFCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:07:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6781445CF88
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352231AbhKXWK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 17:10:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346229AbhKXWKC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:10:02 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E2DC0613F4;
-        Wed, 24 Nov 2021 14:06:48 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id f18so10965777lfv.6;
-        Wed, 24 Nov 2021 14:06:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hEN8lxqzB5PkjPszcdUxNpJc6epYJF7n5YUfahDhZts=;
-        b=RLjzrUjM8S5jsmnXNKx086PozjojEBgI97mJK6oNkLYNvq5zuxlJFBR2ySrncrjDNl
-         4fxT/3GbaHGiMRVauMHpM4xrS7BHKf335Xrt6kY3wHT9kXIsGvQC/dRY10guNJZDSYIe
-         Sx9KJEqojbSiq7Aj2iwRmWtyZV6F4eVf8Cm6grpDZxrA6qVSDkhC8sWYz9hSKYVHX+Xd
-         lknPSpO3sBMUZ+hGRcHV2ACFC43qjFCQGgx5Ov68+pHr8LRe6wkpriZ8zKdZZjmOk4nh
-         5Zo37iV313OGLMG6DhkuZ6Yw1YPkSKKs05Tqr2seqt6jFoPf0QXLZnfFAfuitDlvsrhE
-         B9mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hEN8lxqzB5PkjPszcdUxNpJc6epYJF7n5YUfahDhZts=;
-        b=lE7/lG4sGASU4bEW2IrOh1ZHaaGubPk3ckwZDp0gYDGkE/BYzoGp/nscBi3adE+mIe
-         PavFYIWvFehTK22Y2LsjBpE0Gd1lOJcaL087KG4P1yJU7DNQgpehGljrXz+WRw5Ildu4
-         LiDxTtjHj3nNhHC16iLpKqRvudgZPXL5PNsG9Smh3o4itEBH//G94FuePQPyv9bd3JcC
-         Zh9qnMANll+9FMdjXZCbcjItZmj/zvCgAUjqzvK+7+I65Shb+Lrb4GK0fcS0A5k6p4Ow
-         7qbCT4Bs5UeIOrRfBepKK88EpjE5LZjuH1Pu/Pol6Fbq5Eu1ixsR3zfCR9tJzg+WbWT0
-         I23Q==
-X-Gm-Message-State: AOAM533UC/SdktaeAQV0mqf1ExZc3E4gNsLAEtLOynfo4C3yw3ixg06O
-        9uBhVSoeziNnudPqpDSp3DThQ8ai17U=
-X-Google-Smtp-Source: ABdhPJyIUhRHjHnojCL+ENORXllGnFFyQb8ITUY4N//P9DJOrpX//870vLxvAdYWiBUcVX7wb14qhQ==
-X-Received: by 2002:ac2:4e89:: with SMTP id o9mr18872451lfr.384.1637791606935;
-        Wed, 24 Nov 2021 14:06:46 -0800 (PST)
-Received: from localhost.localdomain (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
-        by smtp.gmail.com with ESMTPSA id w17sm93266ljh.15.2021.11.24.14.06.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 14:06:46 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Agneli <poczt@protonmail.ch>, Rob Herring <robh+dt@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v1 20/20] ARM: tegra: paz00: Enable S/PDIF and HDMI audio
-Date:   Thu, 25 Nov 2021 01:00:57 +0300
-Message-Id: <20211124220057.15763-21-digetx@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211124220057.15763-1-digetx@gmail.com>
-References: <20211124220057.15763-1-digetx@gmail.com>
+        id S245173AbhKXWFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 17:05:15 -0500
+Received: from mga06.intel.com ([134.134.136.31]:16476 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231322AbhKXWFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 17:05:14 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="296192444"
+X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
+   d="scan'208";a="296192444"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 14:02:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
+   d="scan'208";a="497839054"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 24 Nov 2021 14:02:02 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mq0L4-0005Mt-8x; Wed, 24 Nov 2021 22:02:02 +0000
+Date:   Thu, 25 Nov 2021 06:01:05 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: [mcgrof-next:20211124-sysctl-cleanups 20/41]
+ include/linux/sysctl.h:228:30: error: unused function
+ 'register_sysctl_mount_point'
+Message-ID: <202111250521.fMsBjd43-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable S/PDIF controller to enable HDMI audio support on Toshiba AC100.
-Use nvidia,fixed-parent-rate property that prevents audio rate conflict
-between S/PDIF and I2S.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git 20211124-sysctl-cleanups
+head:   be58d35fd7e6bfac6e48e3188ab9f4d0b5ac4af7
+commit: 81e9e1fdc7a64b2745a2c11769eb3864121eedc0 [20/41] sysctl: add helper to register a sysctl mount point
+config: hexagon-randconfig-r005-20211124 (https://download.01.org/0day-ci/archive/20211125/202111250521.fMsBjd43-lkp@intel.com/config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 67a1c45def8a75061203461ab0060c75c864df1c)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?id=81e9e1fdc7a64b2745a2c11769eb3864121eedc0
+        git remote add mcgrof-next https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git
+        git fetch --no-tags mcgrof-next 20211124-sysctl-cleanups
+        git checkout 81e9e1fdc7a64b2745a2c11769eb3864121eedc0
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=hexagon 
 
-Tested-by: Agneli <poczt@protonmail.ch>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   In file included from lib/test_bitops.c:9:
+   In file included from include/linux/module.h:17:
+   In file included from include/linux/kmod.h:9:
+   In file included from include/linux/umh.h:9:
+>> include/linux/sysctl.h:228:30: error: unused function 'register_sysctl_mount_point' [-Werror,-Wunused-function]
+   static struct sysctl_header *register_sysctl_mount_point(const char *path)
+                                ^
+   1 error generated.
+
+
+vim +/register_sysctl_mount_point +228 include/linux/sysctl.h
+
+   227	
+ > 228	static struct sysctl_header *register_sysctl_mount_point(const char *path)
+   229	{
+   230		return NULL;
+   231	}
+   232	
+
 ---
- arch/arm/boot/dts/tegra20-paz00.dts | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/arch/arm/boot/dts/tegra20-paz00.dts b/arch/arm/boot/dts/tegra20-paz00.dts
-index 5b2260f61f05..921a811632a1 100644
---- a/arch/arm/boot/dts/tegra20-paz00.dts
-+++ b/arch/arm/boot/dts/tegra20-paz00.dts
-@@ -264,8 +264,16 @@ conf_ld17_0 {
- 		};
- 	};
- 
-+	spdif@70002400 {
-+		status = "okay";
-+
-+		nvidia,fixed-parent-rate;
-+	};
-+
- 	i2s@70002800 {
- 		status = "okay";
-+
-+		nvidia,fixed-parent-rate;
- 	};
- 
- 	serial@70006000 {
--- 
-2.33.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
