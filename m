@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 205F945C6C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:08:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 476EC45C1A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:17:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354860AbhKXOLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:11:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53632 "EHLO mail.kernel.org"
+        id S1348061AbhKXNUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:20:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355167AbhKXOId (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:08:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C32E161BA0;
-        Wed, 24 Nov 2021 12:50:32 +0000 (UTC)
+        id S1345683AbhKXNRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:17:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B1F861AE0;
+        Wed, 24 Nov 2021 12:45:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758233;
-        bh=0/rRkYWY6000CvzZW00HHkT68rPkUGbZ2kmutIZq7WM=;
+        s=korg; t=1637757914;
+        bh=6SPqLZZkeRib2ZXVx8rKUFTSnAPT5l01zq1gDgH69MU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xSrH8TmNFeiu6NC90SFdA0MT6bVk11Jg0Kq7LFJ7RIxIS7xqNQf4tIOqUphNluOrD
-         B4XmyupodpFzkl1mxLdqmg+qy7bD9cVGthSdG0F2HzNG5ci122avYIMCQB73LU7tJN
-         si/l3y6IBnHlw6rPQytLANVZSoZDdTl3iD5tkXgE=
+        b=l09dkyDzJ68RcU+tHzI56A+/EHZz/OeFyGwvJGiXW7cwPoU0S4xMJBpZqA3ilus4G
+         MXFSzI9yn1k5D0J/VrXkhXSeabz+uXSYdem+Vixg+0e7TqXNsC1XfuMvIonZQrhDZ+
+         QBkZLm2i2lqnTqyIa444dfyYYbXccqQNMw8IdCHY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Daniel Axtens <dja@axtens.net>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 072/100] KVM: PPC: Book3S HV: Use GLOBAL_TOC for kvmppc_h_set_dabr/xdabr()
+        Sven Eckelmann <sven@narfation.org>,
+        Simon Wunderlich <sw@simonwunderlich.de>
+Subject: [PATCH 4.19 318/323] batman-adv: Reserve needed_*room for fragments
 Date:   Wed, 24 Nov 2021 12:58:28 +0100
-Message-Id: <20211124115657.190528128@linuxfoundation.org>
+Message-Id: <20211124115729.654328758@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,64 +39,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Sven Eckelmann <sven@narfation.org>
 
-[ Upstream commit dae581864609d36fb58855fd59880b4941ce9d14 ]
+commit c5cbfc87558168ef4c3c27ce36eba6b83391db19 upstream.
 
-kvmppc_h_set_dabr(), and kvmppc_h_set_xdabr() which jumps into
-it, need to use _GLOBAL_TOC to setup the kernel TOC pointer, because
-kvmppc_h_set_dabr() uses LOAD_REG_ADDR() to load dawr_force_enable.
+The batadv net_device is trying to propagate the needed_headroom and
+needed_tailroom from the lower devices. This is needed to avoid cost
+intensive reallocations using pskb_expand_head during the transmission.
 
-When called from hcall_try_real_mode() we have the kernel TOC in r2,
-established near the start of kvmppc_interrupt_hv(), so there is no
-issue.
+But the fragmentation code split the skb's without adding extra room at the
+end/beginning of the various fragments. This reduced the performance of
+transmissions over complex scenarios (batadv on vxlan on wireguard) because
+the lower devices had to perform the reallocations at least once.
 
-But they can also be called from kvmppc_pseries_do_hcall() which is
-module code, so the access ends up happening with the kvm-hv module's
-r2, which will not point at dawr_force_enable and could even cause a
-fault.
-
-With the current code layout and compilers we haven't observed a fault
-in practice, the load hits somewhere in kvm-hv.ko and silently returns
-some bogus value.
-
-Note that we we expect p8/p9 guests to use the DAWR, but SLOF uses
-h_set_dabr() to test if sc1 works correctly, see SLOF's
-lib/libhvcall/brokensc1.c.
-
-Fixes: c1fe190c0672 ("powerpc: Add force enable of DAWR on P9 option")
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Reviewed-by: Daniel Axtens <dja@axtens.net>
-Link: https://lore.kernel.org/r/20210923151031.72408-1-mpe@ellerman.id.au
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: ee75ed88879a ("batman-adv: Fragment and send skbs larger than mtu")
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+[ bp: 4.19 backported: adjust context. ]
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kvm/book3s_hv_rmhandlers.S | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/batman-adv/fragmentation.c |   15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/arch/powerpc/kvm/book3s_hv_rmhandlers.S b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-index f9c7326672b95..c9c6619564ffa 100644
---- a/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-+++ b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
-@@ -2535,7 +2535,7 @@ hcall_real_table:
- 	.globl	hcall_real_table_end
- hcall_real_table_end:
+--- a/net/batman-adv/fragmentation.c
++++ b/net/batman-adv/fragmentation.c
+@@ -403,6 +403,7 @@ out:
  
--_GLOBAL(kvmppc_h_set_xdabr)
-+_GLOBAL_TOC(kvmppc_h_set_xdabr)
- EXPORT_SYMBOL_GPL(kvmppc_h_set_xdabr)
- 	andi.	r0, r5, DABRX_USER | DABRX_KERNEL
- 	beq	6f
-@@ -2545,7 +2545,7 @@ EXPORT_SYMBOL_GPL(kvmppc_h_set_xdabr)
- 6:	li	r3, H_PARAMETER
- 	blr
+ /**
+  * batadv_frag_create() - create a fragment from skb
++ * @net_dev: outgoing device for fragment
+  * @skb: skb to create fragment from
+  * @frag_head: header to use in new fragment
+  * @fragment_size: size of new fragment
+@@ -413,22 +414,25 @@ out:
+  *
+  * Return: the new fragment, NULL on error.
+  */
+-static struct sk_buff *batadv_frag_create(struct sk_buff *skb,
++static struct sk_buff *batadv_frag_create(struct net_device *net_dev,
++					  struct sk_buff *skb,
+ 					  struct batadv_frag_packet *frag_head,
+ 					  unsigned int fragment_size)
+ {
++	unsigned int ll_reserved = LL_RESERVED_SPACE(net_dev);
++	unsigned int tailroom = net_dev->needed_tailroom;
+ 	struct sk_buff *skb_fragment;
+ 	unsigned int header_size = sizeof(*frag_head);
+ 	unsigned int mtu = fragment_size + header_size;
  
--_GLOBAL(kvmppc_h_set_dabr)
-+_GLOBAL_TOC(kvmppc_h_set_dabr)
- EXPORT_SYMBOL_GPL(kvmppc_h_set_dabr)
- 	li	r5, DABRX_USER | DABRX_KERNEL
- 3:
--- 
-2.33.0
-
+-	skb_fragment = netdev_alloc_skb(NULL, mtu + ETH_HLEN);
++	skb_fragment = dev_alloc_skb(ll_reserved + mtu + tailroom);
+ 	if (!skb_fragment)
+ 		goto err;
+ 
+ 	skb_fragment->priority = skb->priority;
+ 
+ 	/* Eat the last mtu-bytes of the skb */
+-	skb_reserve(skb_fragment, header_size + ETH_HLEN);
++	skb_reserve(skb_fragment, ll_reserved + header_size);
+ 	skb_split(skb, skb_fragment, skb->len - fragment_size);
+ 
+ 	/* Add the header */
+@@ -451,11 +455,12 @@ int batadv_frag_send_packet(struct sk_bu
+ 			    struct batadv_orig_node *orig_node,
+ 			    struct batadv_neigh_node *neigh_node)
+ {
++	struct net_device *net_dev = neigh_node->if_incoming->net_dev;
+ 	struct batadv_priv *bat_priv;
+ 	struct batadv_hard_iface *primary_if = NULL;
+ 	struct batadv_frag_packet frag_header;
+ 	struct sk_buff *skb_fragment;
+-	unsigned int mtu = neigh_node->if_incoming->net_dev->mtu;
++	unsigned int mtu = net_dev->mtu;
+ 	unsigned int header_size = sizeof(frag_header);
+ 	unsigned int max_fragment_size, num_fragments;
+ 	int ret;
+@@ -515,7 +520,7 @@ int batadv_frag_send_packet(struct sk_bu
+ 			goto put_primary_if;
+ 		}
+ 
+-		skb_fragment = batadv_frag_create(skb, &frag_header,
++		skb_fragment = batadv_frag_create(net_dev, skb, &frag_header,
+ 						  max_fragment_size);
+ 		if (!skb_fragment) {
+ 			ret = -ENOMEM;
 
 
