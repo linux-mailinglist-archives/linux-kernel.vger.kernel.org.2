@@ -2,234 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD8945CE11
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 156BB45CE0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:33:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235028AbhKXUgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 15:36:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47584 "EHLO
+        id S234622AbhKXUgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 15:36:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233694AbhKXUgp (ORCPT
+        with ESMTP id S229844AbhKXUgp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 15:36:45 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058BBC061574
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171B0C06173E
         for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:33:35 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id l22so10426202lfg.7
+Received: by mail-lj1-x22f.google.com with SMTP id k2so8000683lji.4
         for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:33:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MhL0kxFEHaqyOrBFQv6DgBdmfil+zC1/DunqGCWJ7dE=;
-        b=SY2lZmurMNRui/CzWSIpvpB/CdU7GDeMvTgPGi+6Ke7C2Pe0BbvB0yiPdPmztPGk2r
-         pgniHv+F2qw2vyIhbiSlLsazOIZo4vJhhO0fIXoz/fMSwoTMv5duRtcwcMGSleJg17Kj
-         vCGObHN6NYXviM1PB7L/31ADMHmVaIH/3hkiTio6fmFW20p929rjmLf2cE9FLSppRVuS
-         1nBYTHKuPemtuY4mb8WYV/GHQNcSzv2QY2aMxyOYGtVeNtD+X4aFmJnhUzYaLSzZ8Kom
-         RVWHZGEVF58LOWiQACvqsMjQqrqfml7KzgyyB2xRervcod6K/hGRlJ+c8Sq/r0qIAo81
-         ozsg==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sT2ApcG9AQxoESBvPgec5gNhDuTFLopwHxgm37++phI=;
+        b=Ns7MLbs7+WyewOZwg3Ezzj/vma7SFuQpk5ELc+KUUW9s833R20wu6hc66uS2qFXss9
+         cpKsq1iQ2Lh/k9RE1a2txSD0XJkyfrMaPTF5+nEfhlWiGT9Gw/D4VSGeVtcFZJmAMj1o
+         KGCz/ur86ZNNQmA9RYaKIf9zWnzhto2//I6DuPixZwRCXzG7rEQzGu12Vvi3E+497AHt
+         /3HoFln0orR+fgP/F1FFvgNBNzvjfRIh1JEV80/XhNrJPUbcaxZ8CGobuVf3XVpO26d3
+         DIzlTLtsLQHqFYyyyCvWbKoRAWIR1NdCEImjMUmdPUlLX/pLFybCgyR/CjWKM+1xhyC0
+         QLkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MhL0kxFEHaqyOrBFQv6DgBdmfil+zC1/DunqGCWJ7dE=;
-        b=C4SBk8DhjI/6aMX1t3E57eKznaZZ+J4lMcEJIDH8FKNHwm5P6UifFkD11y31ni79ln
-         V0MGsoybnY4zwG7HlPa4ZPy25LtH3P+GkGnEpm7aRm3/hKegSUY/5eWL2e7w6Kx1JtKw
-         F08zLrDjzxM5Q7BwB2KkvtkCNRnB1miDwcbr73MaqZ4FLowEEPCybon41J8G8wjBxVwH
-         XvLotVogzuWL855LHiUp/FWNBbcbuXLkTgvqKhcRBz4zpiCEUYMJVyka2KMm6UPhmMZW
-         D74+SzBqrKPf67zyxG/jTurtQMQ7Qc8rCaEHjPt467H9bIm88cj2wF/N+nLBP2gdeSrf
-         n/ng==
-X-Gm-Message-State: AOAM533QJIMe52cZvCIvZxGMuz3BM7VcXqHzsCXzeG0ac33Jw4EkbX4s
-        GngREGZVMBzUVHz1u7tqOXnXVadTRNXPZrk1mxevRQ==
-X-Google-Smtp-Source: ABdhPJxdZ/m0KOr70Ixo3v80AyzJnc5BRnL3sqeuVTWa/4erFFMJvR3o1EjXxENGxfiVgRrJKdlFzWEtLAaEF/rsvsQ=
-X-Received: by 2002:a05:6512:22c7:: with SMTP id g7mr18223275lfu.668.1637786013075;
- Wed, 24 Nov 2021 12:33:33 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sT2ApcG9AQxoESBvPgec5gNhDuTFLopwHxgm37++phI=;
+        b=KlLgdehU7h9g/NJeHuGoiTHwOwCJDshtJnPnHKTboZ9Zsy/GMx653VSZe0IbyE3EVY
+         Sq/scm4pW/1+vZ6eHTNb5fPHoBNqua9svv3IA0XXI1h7vm97Dm4jg2Ek+7n8dlshteej
+         94ivk+F9K/AVT5iS6cofTbUuZT3ayB7lJ1TzuUaDKZVLg8ksTlOe+lT9LTNCtErNCFsc
+         k5IOI882DMm4wHdDEEvugr+XspmMH6hQLuI24CakDxLv6DcVCQssf9ZcKHX+h+Nrp0U4
+         8EHC4EMsJ6QImR4cICwkUyKFMkKjGCBEH3eNsNURzcRr028yteskOlc5FGyCHbCU0xeR
+         SyPA==
+X-Gm-Message-State: AOAM5329cjyD3GcHEi+6DOWnTJKcgjMfJJwg1tILe7RR/ej06KleW/nY
+        Ui9JGvMlbG6CdnUgXiXtetxCPA==
+X-Google-Smtp-Source: ABdhPJyaWfST1iBUwxTtckh2LYTYg0pVPA9P0rQgbTKLoz+Ahm/X1Xfm3OLS3NZKBq7e7hTgtpjB0A==
+X-Received: by 2002:a2e:9bd4:: with SMTP id w20mr19388784ljj.69.1637786013365;
+        Wed, 24 Nov 2021 12:33:33 -0800 (PST)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id c21sm80949lfv.29.2021.11.24.12.33.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Nov 2021 12:33:32 -0800 (PST)
+Subject: Re: [PATCH v3 11/13] drm/msm/dsi: add mode valid callback for dsi_mgr
+To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+References: <20211116062256.2417186-1-vkoul@kernel.org>
+ <20211116062256.2417186-12-vkoul@kernel.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <08b4ee1f-6232-7d5d-9b84-2aa9a1396e48@linaro.org>
+Date:   Wed, 24 Nov 2021 23:33:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211123191737.1296541-1-tkjos@google.com> <20211123191737.1296541-3-tkjos@google.com>
- <20211124123719.GG6514@kadam>
-In-Reply-To: <20211124123719.GG6514@kadam>
-From:   Todd Kjos <tkjos@google.com>
-Date:   Wed, 24 Nov 2021 12:33:20 -0800
-Message-ID: <CAHRSSEzj10quNV6mK9QQezPRMyO49xNA14O4wCsx+eY_UkjQWQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] binder: read pre-translated fds from sender buffer
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     gregkh@linuxfoundation.org, christian@brauner.io, arve@android.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        maco@google.com, joel@joelfernandes.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211116062256.2417186-12-vkoul@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 4:37 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> On Tue, Nov 23, 2021 at 11:17:36AM -0800, Todd Kjos wrote:
-> > Since we are no longer going to copy the pre-fixup
-> > data from the target buffer, we need to read
-> > pre-translated FD array information from the source
-> > buffer.
-> >
->
-> The commit message is really misleading.  From the commit message it
-> sounds like the commit is changing runtime but it's not.  What I want is
-> a commit message like this:
->
->   This patch is to prepare for an up coming patch where we read
->   pre-translated fds from the sender buffer and translate them before
->   copying them to the target.  It does not change run time.
->
->   The patch adds two new parameters to binder_translate_fd_array() to
->   hold the sender buffer and sender buffer parent.  These parameters let
->   us call copy_from_user() directly instead of using
->   binder_alloc_copy_from_buffer() which is a cleanup.  Also the patch
->   adds some new alignment checks.  Previously the alignment checks would
->   have been done in a different place, but this lets us print more
->   useful error messages.
+On 16/11/2021 09:22, Vinod Koul wrote:
+> Add a mode valid callback for dsi_mgr for checking mode being valid in
+> case of DSC. For DSC the height and width needs to be multiple of slice,
+> so we check that here
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 
-Got it. Will fix in update.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
->
->
-> > Signed-off-by: Todd Kjos <tkjos@google.com>
-> > ---
-> >  drivers/android/binder.c | 40 +++++++++++++++++++++++++++++++++-------
-> >  1 file changed, 33 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> > index 571d3c203557..2300fa8e09d5 100644
-> > --- a/drivers/android/binder.c
-> > +++ b/drivers/android/binder.c
-> > @@ -2234,15 +2234,17 @@ static int binder_translate_fd(u32 fd, binder_size_t fd_offset,
-> >  }
-> >
-> >  static int binder_translate_fd_array(struct binder_fd_array_object *fda,
-> > +                                  const void __user *u,
->
-> I wish we could use sender/target terminology everywhere.  Please change
-> every place that has "u" or "user" to either "sender" or "target" as
-> appropriate.
+> ---
+>   drivers/gpu/drm/msm/dsi/dsi.h         |  2 ++
+>   drivers/gpu/drm/msm/dsi/dsi_host.c    | 26 ++++++++++++++++++++++++++
+>   drivers/gpu/drm/msm/dsi/dsi_manager.c | 12 ++++++++++++
+>   3 files changed, 40 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi.h b/drivers/gpu/drm/msm/dsi/dsi.h
+> index 569c8ff062ba..e7affab2fc1e 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi.h
+> +++ b/drivers/gpu/drm/msm/dsi/dsi.h
+> @@ -115,6 +115,8 @@ int msm_dsi_host_power_on(struct mipi_dsi_host *host,
+>   int msm_dsi_host_power_off(struct mipi_dsi_host *host);
+>   int msm_dsi_host_set_display_mode(struct mipi_dsi_host *host,
+>   				  const struct drm_display_mode *mode);
+> +enum drm_mode_status msm_dsi_host_check_dsc(struct mipi_dsi_host *host,
+> +					    const struct drm_display_mode *mode);
+>   struct drm_panel *msm_dsi_host_get_panel(struct mipi_dsi_host *host);
+>   unsigned long msm_dsi_host_get_mode_flags(struct mipi_dsi_host *host);
+>   struct drm_bridge *msm_dsi_host_get_bridge(struct mipi_dsi_host *host);
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> index 30c1e299aa52..31d385d8d834 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
+> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> @@ -2588,6 +2588,32 @@ int msm_dsi_host_set_display_mode(struct mipi_dsi_host *host,
+>   	return 0;
+>   }
+>   
+> +enum drm_mode_status msm_dsi_host_check_dsc(struct mipi_dsi_host *host,
+> +					    const struct drm_display_mode *mode)
+> +{
+> +	struct msm_dsi_host *msm_host = to_msm_dsi_host(host);
+> +	struct msm_display_dsc_config *dsc = msm_host->dsc;
+> +	int pic_width = mode->hdisplay;
+> +	int pic_height = mode->vdisplay;
+> +
+> +	if (!msm_host->dsc)
+> +		return MODE_OK;
+> +
+> +	if (pic_width % dsc->drm->slice_width) {
+> +		pr_err("DSI: pic_width %d has to be multiple of slice %d\n",
+> +		       pic_width, dsc->drm->slice_width);
+> +		return MODE_H_ILLEGAL;
+> +	}
+> +
+> +	if (pic_height % dsc->drm->slice_height) {
+> +		pr_err("DSI: pic_height %d has to be multiple of slice %d\n",
+> +		       pic_height, dsc->drm->slice_height);
+> +		return MODE_V_ILLEGAL;
+> +	}
+> +
+> +	return MODE_OK;
+> +}
+> +
+>   struct drm_panel *msm_dsi_host_get_panel(struct mipi_dsi_host *host)
+>   {
+>   	return of_drm_find_panel(to_msm_dsi_host(host)->device_node);
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi_manager.c b/drivers/gpu/drm/msm/dsi/dsi_manager.c
+> index 20c4d650fd80..0ad8a53aaa0e 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi_manager.c
+> +++ b/drivers/gpu/drm/msm/dsi/dsi_manager.c
+> @@ -579,6 +579,17 @@ static void dsi_mgr_bridge_mode_set(struct drm_bridge *bridge,
+>   		msm_dsi_host_set_display_mode(other_dsi->host, adjusted_mode);
+>   }
+>   
+> +static enum drm_mode_status dsi_mgr_bridge_mode_valid(struct drm_bridge *bridge,
+> +						      const struct drm_display_info *info,
+> +						      const struct drm_display_mode *mode)
+> +{
+> +	int id = dsi_mgr_bridge_get_id(bridge);
+> +	struct msm_dsi *msm_dsi = dsi_mgr_get_dsi(id);
+> +	struct mipi_dsi_host *host = msm_dsi->host;
+> +
+> +	return msm_dsi_host_check_dsc(host, mode);
+> +}
+> +
+>   static const struct drm_connector_funcs dsi_mgr_connector_funcs = {
+>   	.detect = dsi_mgr_connector_detect,
+>   	.fill_modes = drm_helper_probe_single_connector_modes,
+> @@ -600,6 +611,7 @@ static const struct drm_bridge_funcs dsi_mgr_bridge_funcs = {
+>   	.disable = dsi_mgr_bridge_disable,
+>   	.post_disable = dsi_mgr_bridge_post_disable,
+>   	.mode_set = dsi_mgr_bridge_mode_set,
+> +	.mode_valid = dsi_mgr_bridge_mode_valid,
+>   };
+>   
+>   /* initialize connector when we're connected to a drm_panel */
+> 
 
-Ok (all "u/user" cases are sender).
 
->
-> >                                    struct binder_buffer_object *parent,
-> > +                                  struct binder_buffer_object *uparent,
->                                                                   ^
->
-> >                                    struct binder_transaction *t,
-> >                                    struct binder_thread *thread,
-> >                                    struct binder_transaction *in_reply_to)
-> >  {
-> >       binder_size_t fdi, fd_buf_size;
-> >       binder_size_t fda_offset;
-> > +     const void __user *ufda_base;
->                            ^
->
-> >       struct binder_proc *proc = thread->proc;
-> > -     struct binder_proc *target_proc = t->to_proc;
-> >
-> >       fd_buf_size = sizeof(u32) * fda->num_fds;
-> >       if (fda->num_fds >= SIZE_MAX / sizeof(u32)) {
-> > @@ -2266,7 +2268,10 @@ static int binder_translate_fd_array(struct binder_fd_array_object *fda,
-> >        */>    fda_offset = (parent->buffer - (uintptr_t)t->buffer->user_data) +
-> >               fda->parent_offset;
-> > -     if (!IS_ALIGNED((unsigned long)fda_offset, sizeof(u32))) {
-> > +     ufda_base = (void __user *)uparent->buffer + fda->parent_offset;
-> > +
-> > +     if (!IS_ALIGNED((unsigned long)fda_offset, sizeof(u32)) ||
-> > +         !IS_ALIGNED((unsigned long)ufda_base, sizeof(u32))) {
-> >               binder_user_error("%d:%d parent offset not aligned correctly.\n",
-> >                                 proc->pid, thread->pid);
-> >               return -EINVAL;
-> > @@ -2275,10 +2280,9 @@ static int binder_translate_fd_array(struct binder_fd_array_object *fda,
-> >               u32 fd;
-> >               int ret;
-> >               binder_size_t offset = fda_offset + fdi * sizeof(fd);
-> > +             binder_size_t uoffset = fdi * sizeof(fd);
-> >
-> > -             ret = binder_alloc_copy_from_buffer(&target_proc->alloc,
-> > -                                                 &fd, t->buffer,
-> > -                                                 offset, sizeof(fd));
-> > +             ret = copy_from_user(&fd, ufda_base + uoffset, sizeof(fd));
-> >               if (!ret)
-> >                       ret = binder_translate_fd(fd, offset, t, thread,
-> >                                                 in_reply_to);
->
-> This is something from the original code but if the copy_from_user()
-> fails, then we just skip that "fd" without informing the user.
-
-Here is the whole code fragment(the diff doesn't include the "if
-(ret<0) return ret"):
-
-  ret = copy_from_user(&fd, ufda_base + uoffset, sizeof(fd));
-  if (!ret)
-    ret = binder_translate_fd(fd, offset, t, thread, in_reply_to);
-  if (ret < 0)
-    return ret;
-
-I agree -- if copy_from_user() for some reason doesn't copy the whole
-buffer, it might return a positive integer. Then it would skip
-binder_translate_fd(), but not return. That should probably be
-something like:
-
-  if (ret)
-    return ret > 0 ? -EINVAL : ret;
-
-Will fix in next version.
-
-> It feels wrong.  Does that not lead to a bug in the target app?
->
-
-If copy_from_user() returned a positive integer, we would translate
-some random fd. Most likely it would be invalid, but it might not be.
-Definitely would be a bug.
-
->
-> > @@ -2951,6 +2955,8 @@ static void binder_transaction(struct binder_proc *proc,
-> >               case BINDER_TYPE_FDA: {
-> >                       struct binder_object ptr_object;
-> >                       binder_size_t parent_offset;
-> > +                     struct binder_object user_object;
-> > +                     size_t user_parent_size;
-> >                       struct binder_fd_array_object *fda =
-> >                               to_binder_fd_array_object(hdr);
-> >                       size_t num_valid = (buffer_offset - off_start_offset) /
-> > @@ -2982,8 +2988,28 @@ static void binder_transaction(struct binder_proc *proc,
-> >                               return_error_line = __LINE__;
-> >                               goto err_bad_parent;
-> >                       }
-> > -                     ret = binder_translate_fd_array(fda, parent, t, thread,
-> > -                                                     in_reply_to);
-> > +
-> > +                     /*
-> > +                      * We need to read the user version of the parent
-> > +                      * object to get the original user offset
-> > +                      */
-> > +                     user_parent_size =
-> > +                             binder_get_object(proc, user_buffer, t->buffer,
-> > +                                               parent_offset, &user_object);
-> > +                     if (user_parent_size != sizeof(user_object.bbo)) {
-> > +                             binder_user_error("%d:%d invalid ptr object size: %lld vs %lld\n",
->
-> Apparently %lld breaks the build on my .config.  The correct format for
-> size_t is %zd.
->
-> > +                                               proc->pid, thread->pid,
-> > +                                               user_parent_size,
-> > +                                               sizeof(user_object.bbo));
-> > +                             return_error = BR_FAILED_REPLY;
-> > +                             return_error_param = -EINVAL;
-> > +                             return_error_line = __LINE__;
-> > +                             goto err_bad_parent;
-> > +                     }
-> > +                     ret = binder_translate_fd_array(fda, user_buffer,
-> > +                                                     parent,
-> > +                                                     &user_object.bbo, t,
-> > +                                                     thread, in_reply_to);
->
-> regards,
-> dan carpenter
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
+-- 
+With best wishes
+Dmitry
