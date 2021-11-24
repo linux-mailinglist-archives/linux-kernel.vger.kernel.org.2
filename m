@@ -2,47 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F1045D13F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:30:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E20245D144
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235176AbhKXXdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 18:33:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33474 "EHLO mail.kernel.org"
+        id S1352689AbhKXXeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 18:34:05 -0500
+Received: from mail.hallyn.com ([178.63.66.53]:50730 "EHLO mail.hallyn.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234177AbhKXXdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 18:33:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3004A60F55;
-        Wed, 24 Nov 2021 23:30:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637796643;
-        bh=DxCqlQ+PoiA3QcJG5He3IJe+Kxv7xSxe+Xw210sQzLI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PhodRkdh7DMAbGdeIweJgBiONkJCN7Qe6O39enhhUkX5HJZ4QQjmBZq0iyyejDWvA
-         9HwuL7VAlhjWyRcgN9D3m4OE5keHOBASONtRpaDzVT5eOoEU3W/111ClA18j4vLzLl
-         IkTtXKqcnkjLX3E191RxVxgsyCgsPIzIdVg6groO1ohyB/x/Wv55OfRKvT3hXaR96A
-         penOf/4rmItfC3Doe06vOWX+ClBEn7w8qx/BaEKqZadRYjVsI50jJlPcUFhs2rgD2M
-         iHuh7pJNaNnzsGB4GdHGUQ2x9EQXhn+7vdEvjwgfQxZtDQ37OfWvYrrlL2zny9ZNV3
-         w1HyvEsYb6T9A==
-Date:   Wed, 24 Nov 2021 15:30:42 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Dylan Hung <dylan_hung@aspeedtech.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-aspeed@lists.ozlabs.org>,
-        <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
-        <andrew@aj.id.au>, <joel@jms.id.au>, <davem@davemloft.net>,
-        <linux@armlinux.org.uk>, <hkallweit1@gmail.com>, <andrew@lunn.ch>,
-        <BMC-SW@aspeedtech.com>
-Subject: Re: [PATCH] net:phy: Fix "Link is Down" issue
-Message-ID: <20211124153042.54d164dd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211124061057.12555-1-dylan_hung@aspeedtech.com>
-References: <20211124061057.12555-1-dylan_hung@aspeedtech.com>
+        id S1345993AbhKXXeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 18:34:04 -0500
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id C370D1363; Wed, 24 Nov 2021 17:30:49 -0600 (CST)
+Date:   Wed, 24 Nov 2021 17:30:49 -0600
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     Christian =?iso-8859-1?Q?G=F6ttsche?= <cgzones@googlemail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Jari Ruusu <jariruusu@users.sourceforge.net>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Alistair Delva <adelva@google.com>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Jens Axboe <axboe@kernel.dk>, Paul Moore <paul@paul-moore.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        linux-security-module@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH 5.10 130/154] block: Check ADMIN before NICE for
+ IOPRIO_CLASS_RT
+Message-ID: <20211124233049.GA14711@mail.hallyn.com>
+References: <20211124115702.361983534@linuxfoundation.org>
+ <20211124115706.507376250@linuxfoundation.org>
+ <619E4ABA.DC78AA58@users.sourceforge.net>
+ <YZ5ayhuOMZwkd9j6@kroah.com>
+ <20211124173310.GA12039@mail.hallyn.com>
+ <YZ6BR09OXP8x7lRs@kroah.com>
+ <CAJ2a_DejJibTyiiA-+A1WbhcyYD17-h+9FuXL5=sCHEs9Qv+BA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJ2a_DejJibTyiiA-+A1WbhcyYD17-h+9FuXL5=sCHEs9Qv+BA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 14:10:57 +0800 Dylan Hung wrote:
-> Subject: [PATCH] net:phy: Fix "Link is Down" issue
+On Wed, Nov 24, 2021 at 07:34:50PM +0100, Christian Göttsche wrote:
+> On Wed, 24 Nov 2021 at 19:16, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Wed, Nov 24, 2021 at 11:33:11AM -0600, Serge E. Hallyn wrote:
+> > > On Wed, Nov 24, 2021 at 04:31:22PM +0100, Greg Kroah-Hartman wrote:
+> > > > On Wed, Nov 24, 2021 at 04:22:50PM +0200, Jari Ruusu wrote:
+> > > > > Greg Kroah-Hartman wrote:
+> > > > > > From: Alistair Delva <adelva@google.com>
+> > > > > >
+> > > > > > commit 94c4b4fd25e6c3763941bdec3ad54f2204afa992 upstream.
+> > > > >  [SNIP]
+> > > > > > --- a/block/ioprio.c
+> > > > > > +++ b/block/ioprio.c
+> > > > > > @@ -69,7 +69,14 @@ int ioprio_check_cap(int ioprio)
+> > > > > >
+> > > > > >         switch (class) {
+> > > > > >                 case IOPRIO_CLASS_RT:
+> > > > > > -                       if (!capable(CAP_SYS_NICE) && !capable(CAP_SYS_ADMIN))
+> > > > > > +                       /*
+> > > > > > +                        * Originally this only checked for CAP_SYS_ADMIN,
+> > > > > > +                        * which was implicitly allowed for pid 0 by security
+> > > > > > +                        * modules such as SELinux. Make sure we check
+> > > > > > +                        * CAP_SYS_ADMIN first to avoid a denial/avc for
+> > > > > > +                        * possibly missing CAP_SYS_NICE permission.
+> > > > > > +                        */
+> > > > > > +                       if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_NICE))
+> > > > > >                                 return -EPERM;
+> > > > > >                         fallthrough;
+> > > > > >                         /* rt has prio field too */
+> > > > >
+> > > > > What exactly is above patch trying to fix?
+> > > > > It does not change control flow at all, and added comment is misleading.
+> > > >
+> > > > See the thread on the mailing list for what it does and why it is
+> > > > needed.
+> > > >
+> > > > It does change the result when selinux is enabled.
+> > > >
+> > > > thanks,
+> > > >
+> > > > greg k-h
+> > >
+> > > The case where we create a newer more fine grained capability which is a
+> > > sub-cap of a broader capability like CAP_SYS_ADMIN is analogous.  See
+> > > check_syslog_permissions() for instance.
+> > >
+> > > So I think a helper like
+> > >
+> > > int capable_either_or(int cap1, int cap2) {
+> > >       if (has_capability_noaudit(current, cap1))
+> > >               return 0;
+> > >       return capable(cap2);
+> > > }
+> > >
+> > > might be worthwhile.
+> >
+> 
+> I proposed an early prototype at
+> https://patchwork.kernel.org/project/selinux/patch/20211116112437.43412-1-cgzones@googlemail.com/
 
-Since there will be v2, please also add a space between net: and phy:.
+I never saw this.  Would you mind resending as a standalone patch?
+
+(I do have comments, but this thread seems the wrong place)
