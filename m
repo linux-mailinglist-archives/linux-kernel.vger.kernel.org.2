@@ -2,90 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9505A45CA00
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:28:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA6C45CA03
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:28:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242310AbhKXQbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:31:33 -0500
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:33501 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231560AbhKXQbc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:31:32 -0500
-Received: by mail-oi1-f173.google.com with SMTP id q25so6518525oiw.0;
-        Wed, 24 Nov 2021 08:28:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wBEAh6TF3eaWQopmxjQ0UJdDXHvFAPQQfgLZKQTVie4=;
-        b=2ok5m8E5dHB66Dzj6edItHDkSUUHh/TS02QJWU4r9eAsTXambOEEOa+8r+aHu3ETlW
-         ZX3AblJm6jtuDAcO3LBatAzoe/uHpHQoA4hC9umpsWXV0Qcl2lS7yxXPoBs+kkcVx6uD
-         fUx+OwOcEAthQyEV9ulTW3CgVhVt8p30HeDPaZwpswuhraaIrwT4hCT1cbZq4S3o32UL
-         pfklL+tgJbd3znn3crvciq6NkbmZaRwzxYPZj0ucjBF5ZHG/+L0zOzCWOwqfO3qd/8gI
-         WalgR8iYqRJPi5auwKM4LF3xmlcMLw0Ixoqfg9OZb7+uveX+ajggB+78gcjxPUSDHiac
-         nSWg==
-X-Gm-Message-State: AOAM530FxoihdB1qNosCLfUuG7s5pbb4CcrutDLl1XlNLJbGuFJvLtGy
-        QsP8R9NbimsjYOIdGugDnQn8Uvaj+IwYcMP/ZsE=
-X-Google-Smtp-Source: ABdhPJw3lBx/1RQvn+Plm4HnYLdVYnQB1LXy/ZTQmx43D4+q1Bt4K9MBRHRXR5On1zrilsMNpnozdt4rza8o4dDdvq8=
-X-Received: by 2002:a05:6808:e90:: with SMTP id k16mr7374685oil.166.1637771302689;
- Wed, 24 Nov 2021 08:28:22 -0800 (PST)
+        id S1348816AbhKXQbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:31:40 -0500
+Received: from foss.arm.com ([217.140.110.172]:40822 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242386AbhKXQbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 11:31:36 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BB84F1FB;
+        Wed, 24 Nov 2021 08:28:26 -0800 (PST)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9FF523F66F;
+        Wed, 24 Nov 2021 08:28:25 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Vincent Donnefort <vincent.donnefort@arm.com>,
+        peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org
+Cc:     linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
+        dietmar.eggemann@arm.com,
+        Vincent Donnefort <vincent.donnefort@arm.com>
+Subject: Re: [PATCH] sched/fair: Fix detection of per-CPU kthreads waking a task
+In-Reply-To: <20211124154239.3191366-1-vincent.donnefort@arm.com>
+References: <20211124154239.3191366-1-vincent.donnefort@arm.com>
+Date:   Wed, 24 Nov 2021 16:28:20 +0000
+Message-ID: <87ilwhcycb.mognet@arm.com>
 MIME-Version: 1.0
-References: <20211112090946.9026-1-ran.jianping@zte.com.cn>
-In-Reply-To: <20211112090946.9026-1-ran.jianping@zte.com.cn>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 24 Nov 2021 17:28:11 +0100
-Message-ID: <CAJZ5v0i1mrj6gzsKxFoEhJLq-9_E+JupwcC2q7jyqVp8EFOVTg@mail.gmail.com>
-Subject: Re: [PATCH] tools/thermal: remove unneeded variable
-To:     cgel.zte@gmail.com
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        "Zhang, Rui" <rui.zhang@intel.com>, ran.jianping@zte.com.cn,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Zeal Robot <zealci@zte.com.cn>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 10:09 AM <cgel.zte@gmail.com> wrote:
+On 24/11/21 15:42, Vincent Donnefort wrote:
+> select_idle_sibling() will return prev_cpu for the case where the task is
+> woken up by a per-CPU kthread. However, the idle task has been recently
+> modified and is now identified by is_per_cpu_kthread(), breaking the
+> behaviour described above. Using !is_idle_task() ensures we do not
+> spuriously trigger that select_idle_sibling() exit path.
 >
-> From: ran jianping <ran.jianping@zte.com.cn>
->
-> Fix the following coccicheck review:
-> /tools/thermal/tmon/pid.c:57:5-8: Unneeded variable
->
-> Remove unneeded variable used to store return value.
->
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: ran jianping <ran.jianping@zte.com.cn>
-> ---
->  tools/thermal/tmon/pid.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/tools/thermal/tmon/pid.c b/tools/thermal/tmon/pid.c
-> index c54edb4f630c..296f69c00c57 100644
-> --- a/tools/thermal/tmon/pid.c
-> +++ b/tools/thermal/tmon/pid.c
-> @@ -54,7 +54,6 @@ static double xk_1, xk_2; /* input temperature x[k-#] */
->   */
->  int init_thermal_controller(void)
->  {
-> -       int ret = 0;
->
->         /* init pid params */
->         p_param.ts = ticktime;
-> @@ -65,7 +64,7 @@ int init_thermal_controller(void)
->
->         p_param.t_target = target_temp_user;
->
-> -       return ret;
-> +       return 0;
->  }
->
->  void controller_reset(void)
-> --
+> Fixes: 00b89fe0197f ("sched: Make the idle task quack like a per-CPU kthread")
 
-Applied as 5.17 material, thanks!
+This patch-set is the gift that keeps on giving... I owe a lot of folks a
+lot of beer :(
+
+> Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 945d987246c5..8bf95b0e368d 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6399,6 +6399,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>        * pattern is IO completions.
+>        */
+>       if (is_per_cpu_kthread(current) &&
+> +	    !is_idle_task(current) &&
+>           prev == smp_processor_id() &&
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        (1)
+
+>           this_rq()->nr_running <= 1) {
+
+So if we get to here, it means we failed
+
+        if ((available_idle_cpu(target) || sched_idle_cpu(target)) &&
+            asym_fits_capacity(task_util, target))
+                return target;
+
+AFAICT (1) implies "prev == target" (target can be either prev or the
+waking CPU), so per the above this implies prev isn't idle. If current is
+the idle task, we can still have stuff enqueued (which matches nr_running
+<= 1) and be on our way to schedule_idle(), or have rq->ttwu_pending (per
+idle_cpu()) - IOW matching against the idle task here can lead to undesired
+coscheduling.
+
+If the above isn't bonkers:
+
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+
+>               return prev;
+> --
+> 2.25.1
