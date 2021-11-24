@@ -2,99 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8829645B26F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 04:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6119145B270
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 04:08:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbhKXDJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 22:09:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38670 "EHLO
+        id S233007AbhKXDL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 22:11:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbhKXDJa (ORCPT
+        with ESMTP id S229646AbhKXDL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 22:09:30 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11DCBC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 19:06:21 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id m192so1364703qke.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 19:06:21 -0800 (PST)
+        Tue, 23 Nov 2021 22:11:58 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D52AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 19:08:49 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id gt5so1272364pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 19:08:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=QCenGapdn8pT6BA4FKRLRxExah4bAbpes3InHq8HGvg=;
-        b=UawLjgDp7UuXebp108LzicGASAjyfMpWQdBSpYTCyay8pEQuUdaTl92noI/5GKMkPl
-         uzjxtoE2Hxvmmhjce1XE9VK5adj0kjToackYRsvIPi1e0uGWKMHAVRKt4tfH4o7IqEi0
-         TC9iq4szjHrO4XPZhsCamPu40+A7rP/2dC01+lSPyQqBRGR+TvqdUXcJSnIJxGgSTVNf
-         pgQcspc3raIjtUJIXzq6fqlz70ImZFHiv28ZdjV5EN6qcb9L/01H7BMxz64TerS+cWiB
-         Fnfl+KNyv54cf11oNRs7WXnFu6MrMHV1Z4DZuKaEZo8mMLYoyMFrzUaSgzwjTFPXzfdk
-         HrQA==
+        bh=cJIlVSm4kdXw1HcnWU7JtUf5lJt2ddDWCqPeuyOQhaw=;
+        b=qvJzKt2TUtYGyWHjg0+J5Wv3m1ho7STmmiJ/F3Us1JmDwnJRLYEoEa1bfkQ4aDt9CM
+         ouwk+ff9d5JA0c6BzAGvHSc8vLVvBdfaJNpIgzxRRbqDNuSF2RxAPd2fFGhXFEDYG7v9
+         e0cr77xIbVl9a+QlpUXpRQGqYeZfygGVFwML3PolS3ClmCKcVZ8x2MLcyHtfKCa3ACML
+         nAYlRPujxUaWn1NA4RHcintVGfIWSvuiU8H7eWzhIkwEf0lzmMNl23cfiF/Y3kuYQHcw
+         1yOMxWXWONmx7DnzO9mYLgye+Unx4DPFUl3nhSaXeQQfI2VVbwFlbylX8eyoP2OPy3Si
+         qx3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=QCenGapdn8pT6BA4FKRLRxExah4bAbpes3InHq8HGvg=;
-        b=4neDFdVB1WjQ3NzcbgtS63cqqmgbnNi+e9wJ5fcE1wwKc8L5YK0Va5Gm5WYyhR8COo
-         abtW+csMyxV3/QM/maAWVAcTcecNfz4LKr4Gnd5VgWeD09EFhhuN7GPcpmM6hyR8xIWV
-         rbMmKDuZotxFGemIhgKMDg5JtIOCYUmkIzE8aNEFjwCkaEmfIdRoI2juTQ/FZ4ZQiJB+
-         Fee2KP8es3BZAtC6VIb8vsMZgNEzOPcgCfGANULh/8ZUK80nGppYhTQL89uY3tntpEva
-         rnNkKbGTJoufALvBUfAoO9ZVp4tiYENT8Myjyhs0uVmpZLrtHhtxQsl57UnvG5+B7frS
-         qkRg==
-X-Gm-Message-State: AOAM530gdOkb1WJw2luo0mv4+LuE1syQzk+t8L2HDs9n9sGGU+20hK2G
-        6c4s90FX5adLIljnZqCvFymV3Mrz0Tw=
-X-Google-Smtp-Source: ABdhPJwZTAzMHM0RV0zs9uZ1TEV8MK2HEv7somuIawMXs6UxXRsg4W9y1/otfg50ZrxFMeP2k1Gyeg==
-X-Received: by 2002:a05:620a:223:: with SMTP id u3mr2434295qkm.158.1637723180323;
-        Tue, 23 Nov 2021 19:06:20 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id d15sm7234780qtd.70.2021.11.23.19.06.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 19:06:20 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: yao.jing2@zte.com.cn
-To:     jani.nikula@linux.intel.com
-Cc:     joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        tvrtko.ursulin@linux.intel.com, airlied@linux.ie, daniel@ffwll.ch,
-        matthew.auld@intel.com, thomas.hellstrom@linux.intel.com,
-        jason@jlekstrand.net, chris@chris-wilson.co.uk,
-        maarten.lankhorst@linux.intel.com, yao.jing2@zte.com.cn,
-        gregkh@linuxfoundation.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] drm/i915/dmabuf: remove duplicate include in  i915_gem_dmabuf.c
-Date:   Wed, 24 Nov 2021 03:06:07 +0000
-Message-Id: <20211124030607.34914-1-yao.jing2@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        bh=cJIlVSm4kdXw1HcnWU7JtUf5lJt2ddDWCqPeuyOQhaw=;
+        b=oI49q1Hk10/lzsRuk8EPT8PhFW47e0ZTvG1iM6bG6zTP0vzA6zM96uK+PKizlyJ45Q
+         Vmev6fM8m/x1/7fmSTJA0jSRiYbUzB+hJULz9jFyonuETmm3swE+8b7esYQ4ma9AIiWP
+         clbcGDaxfQTv8dHg0xwSeChRl7bYHzm1FQODM9BBOD/sM8tnb0LdK37hNm7GmEDdQ6zE
+         mlBwDG7wuz3ZJuaOo7a3it+S6Kvp60NDbiYTeS1JKVuzWwR92TIYEl95yUG2jiNTSt4P
+         iYC4dMVFsW6aFR+N97xnBmSAfT9sa8TG7Ic52ivlwSSAOv6I7d53kCsIEZkBYULSCRXn
+         M9PQ==
+X-Gm-Message-State: AOAM5301ONWkjxYk6fvqS4+sn1mqToRJd8oxRwhJ69Mz+R2oX+XzweyH
+        ho3lSpxB7QysG4SucwMPVxR6RA==
+X-Google-Smtp-Source: ABdhPJy81qLTOM3ntxtLMHuVVgiBCvlpxLrZugq94Ydh6ENuVs2ezlI6PjI9AzK6nJhRrz9PBsXv7g==
+X-Received: by 2002:a17:903:2306:b0:142:123a:24ec with SMTP id d6-20020a170903230600b00142123a24ecmr13865567plh.21.1637723329457;
+        Tue, 23 Nov 2021 19:08:49 -0800 (PST)
+Received: from C02FT5A6MD6R.bytedance.net ([61.120.150.76])
+        by smtp.gmail.com with ESMTPSA id i67sm14113113pfg.189.2021.11.23.19.08.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 23 Nov 2021 19:08:48 -0800 (PST)
+From:   Gang Li <ligang.bdlg@bytedance.com>
+To:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     songmuchun@bytedance.com, Gang Li <ligang.bdlg@bytedance.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] shmem: move spinlock to the front of iput
+Date:   Wed, 24 Nov 2021 11:08:39 +0800
+Message-Id: <20211124030840.88455-1-ligang.bdlg@bytedance.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yao Jing <yao.jing2@zte.com.cn>
+This patch fixes a data race in commit 779750d20b93 ("shmem: split huge pages
+beyond i_size under memory pressure").
 
-'asm/smp.h' included in 'drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c' is
-duplicated. It is clearly included on the 12 line.
+Call Trace 1:
+ shmem_unused_huge_shrink+0x3ae/0x410
+ ? __list_lru_walk_one.isra.5+0x33/0x160
+ super_cache_scan+0x17c/0x190
+ shrink_slab.part.55+0x1ef/0x3f0
+ shrink_node+0x10e/0x330
+ kswapd+0x380/0x740
+ kthread+0xfc/0x130
+ ? mem_cgroup_shrink_node+0x170/0x170
+ ? kthread_create_on_node+0x70/0x70
+ ret_from_fork+0x1f/0x30
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Yao Jing <yao.jing2@zte.com.cn>
+Call Trace 2:
+ shmem_evict_inode+0xd8/0x190
+ evict+0xbe/0x1c0
+ do_unlinkat+0x137/0x330
+ do_syscall_64+0x76/0x120
+ entry_SYSCALL_64_after_hwframe+0x3d/0xa2
+
+iput out of sbinfo->shrinklist_lock will let shmem_evict_inode grab
+and delete the inode, which will berak the consistency between
+shrinklist_len and shrinklist. The simultaneous deletion of adjacent
+elements in the local list "list" by shmem_unused_huge_shrink and
+shmem_evict_inode will also break the list.
+
+Fix it by moving shrinklist_lock to the front of iput.
+
+Fixes: 779750d20b93 ("shmem: split huge pages beyond i_size under memory pressure")
+Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
 ---
- drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-index f291cf4c3886..5712b6b5f285 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_dmabuf.c
-@@ -17,9 +17,7 @@
+Changes in v2:
+- Move spinlock to the front of iput instead of changing lock type
+  since iput will call evict which may cause deadlock by requesting
+  shrinklist_lock.
+- Add call trace in commit message.
+
+v1: https://lore.kernel.org/lkml/20211122064126.76734-1-ligang.bdlg@bytedance.com/
+
+---
+ mm/shmem.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 9023103ee7d8..2f70a16fc588 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -569,7 +569,6 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+ 		/* inode is about to be evicted */
+ 		if (!inode) {
+ 			list_del_init(&info->shrinklist);
+-			removed++;
+ 			goto next;
+ 		}
  
- MODULE_IMPORT_NS(DMA_BUF);
+@@ -577,15 +576,16 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+ 		if (round_up(inode->i_size, PAGE_SIZE) ==
+ 				round_up(inode->i_size, HPAGE_PMD_SIZE)) {
+ 			list_move(&info->shrinklist, &to_remove);
+-			removed++;
+ 			goto next;
+ 		}
  
--#if defined(CONFIG_X86)
--#include <asm/smp.h>
--#else
-+#if !defined(CONFIG_X86)
- #define wbinvd_on_all_cpus() \
- 	pr_warn(DRIVER_NAME ": Missing cache flush in %s\n", __func__)
- #endif
+ 		list_move(&info->shrinklist, &list);
+ next:
++		removed++;
+ 		if (!--batch)
+ 			break;
+ 	}
++	sbinfo->shrinklist_len -= removed;
+ 	spin_unlock(&sbinfo->shrinklist_lock);
+ 
+ 	list_for_each_safe(pos, next, &to_remove) {
+@@ -602,7 +602,7 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+ 		inode = &info->vfs_inode;
+ 
+ 		if (nr_to_split && split >= nr_to_split)
+-			goto leave;
++			goto move_back;
+ 
+ 		page = find_get_page(inode->i_mapping,
+ 				(inode->i_size & HPAGE_PMD_MASK) >> PAGE_SHIFT);
+@@ -616,38 +616,38 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+ 		}
+ 
+ 		/*
+-		 * Leave the inode on the list if we failed to lock
+-		 * the page at this time.
++		 * Move the inode on the list back to shrinklist if we failed
++		 * to lock the page at this time.
+ 		 *
+ 		 * Waiting for the lock may lead to deadlock in the
+ 		 * reclaim path.
+ 		 */
+ 		if (!trylock_page(page)) {
+ 			put_page(page);
+-			goto leave;
++			goto move_back;
+ 		}
+ 
+ 		ret = split_huge_page(page);
+ 		unlock_page(page);
+ 		put_page(page);
+ 
+-		/* If split failed leave the inode on the list */
++		/* If split failed move the inode on the list back to shrinklist */
+ 		if (ret)
+-			goto leave;
++			goto move_back;
+ 
+ 		split++;
+ drop:
+ 		list_del_init(&info->shrinklist);
+-		removed++;
+-leave:
++		goto put;
++move_back:
++		spin_lock(&sbinfo->shrinklist_lock);
++		list_move(pos, &sbinfo->shrinklist);
++		sbinfo->shrinklist_len++;
++		spin_unlock(&sbinfo->shrinklist_lock);
++put:
+ 		iput(inode);
+ 	}
+ 
+-	spin_lock(&sbinfo->shrinklist_lock);
+-	list_splice_tail(&list, &sbinfo->shrinklist);
+-	sbinfo->shrinklist_len -= removed;
+-	spin_unlock(&sbinfo->shrinklist_lock);
+-
+ 	return split;
+ }
+ 
 -- 
-2.25.1
+2.20.1
 
