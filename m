@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 972FB45C10E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:11:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D06645C348
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346289AbhKXNOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:14:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51572 "EHLO mail.kernel.org"
+        id S1347667AbhKXNg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:36:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348281AbhKXNKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:10:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C5376124C;
-        Wed, 24 Nov 2021 12:41:42 +0000 (UTC)
+        id S1348607AbhKXNeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:34:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9B5F61B4C;
+        Wed, 24 Nov 2021 12:54:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757703;
-        bh=ZhS+HnRqtyq2O0uva+2zYvxVji6GvXP1b7aJpOhv/hw=;
+        s=korg; t=1637758455;
+        bh=m49XzIzx/Jk3TbBc9EgjateyyuJWPMBrWon/YnhATGE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CRCA3wflKfJ4qJEaTK6nvgU0DzCuLXV1TPOek1K9uyq4fpIh5xj+tglF+TC2ONW0x
-         9CdRAJyn3BYpvfhrV/hzmcmn8ncL/1wNhzk+8tfN9D9poR7LrDRQOX/g/lKsgbpJ2F
-         G9UiuGew6rSYVmBZrRLnHaQH516JrKXcCw5i2VKA=
+        b=MWzUDQ3gefKvmLw2GW9rrhgPJy6Iw/8rhEMVkBj5b4ErSJaPy7/3fVYed1JWMGot+
+         Wvyof/BjM9ySJG6zWpkfz6K9Oi7SEo7d99eNpYfKOmreUxSsgqsaF+G2q/1qr1LTY9
+         1h0VyThMWPotyY1BHn7iWYUKG+PSzgivHm/MqZiM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        syzbot+bea44a5189836d956894@syzkaller.appspotmail.com
-Subject: [PATCH 4.19 249/323] fuse: truncate pagecache on atomic_o_trunc
-Date:   Wed, 24 Nov 2021 12:57:19 +0100
-Message-Id: <20211124115727.311628203@linuxfoundation.org>
+        stable@vger.kernel.org, David Heidelberg <david@ixit.cz>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 044/154] ARM: dts: qcom: fix memory and mdio nodes naming for RB3011
+Date:   Wed, 24 Nov 2021 12:57:20 +0100
+Message-Id: <20211124115703.770174206@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,59 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miklos Szeredi <mszeredi@redhat.com>
+From: David Heidelberg <david@ixit.cz>
 
-commit 76224355db7570cbe6b6f75c8929a1558828dd55 upstream.
+[ Upstream commit 14a1f6c9d8017ffbf388e82e1a1f023196d98612 ]
 
-fuse_finish_open() will be called with FUSE_NOWRITE in case of atomic
-O_TRUNC.  This can deadlock with fuse_wait_on_page_writeback() in
-fuse_launder_page() triggered by invalidate_inode_pages2().
+Fixes warnings regarding to memory and mdio nodes and
+apply new naming following dt-schema.
 
-Fix by replacing invalidate_inode_pages2() in fuse_finish_open() with a
-truncate_pagecache() call.  This makes sense regardless of FOPEN_KEEP_CACHE
-or fc->writeback cache, so do it unconditionally.
-
-Reported-by: Xie Yongji <xieyongji@bytedance.com>
-Reported-and-tested-by: syzbot+bea44a5189836d956894@syzkaller.appspotmail.com
-Fixes: e4648309b85a ("fuse: truncate pending writes on O_TRUNC")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: David Heidelberg <david@ixit.cz>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/20211020214741.261509-1-david@ixit.cz
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/fuse/file.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/qcom-ipq8064-rb3011.dts | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/fs/fuse/file.c
-+++ b/fs/fuse/file.c
-@@ -178,12 +178,11 @@ void fuse_finish_open(struct inode *inod
+diff --git a/arch/arm/boot/dts/qcom-ipq8064-rb3011.dts b/arch/arm/boot/dts/qcom-ipq8064-rb3011.dts
+index 282b89ce3d451..33545cf40f3ab 100644
+--- a/arch/arm/boot/dts/qcom-ipq8064-rb3011.dts
++++ b/arch/arm/boot/dts/qcom-ipq8064-rb3011.dts
+@@ -19,12 +19,12 @@
+ 		stdout-path = "serial0:115200n8";
+ 	};
  
- 	if (ff->open_flags & FOPEN_DIRECT_IO)
- 		file->f_op = &fuse_direct_io_file_operations;
--	if (!(ff->open_flags & FOPEN_KEEP_CACHE))
--		invalidate_inode_pages2(inode->i_mapping);
- 	if (ff->open_flags & FOPEN_STREAM)
- 		stream_open(inode, file);
- 	else if (ff->open_flags & FOPEN_NONSEEKABLE)
- 		nonseekable_open(inode, file);
-+
- 	if (fc->atomic_o_trunc && (file->f_flags & O_TRUNC)) {
- 		struct fuse_inode *fi = get_fuse_inode(inode);
+-	memory@0 {
++	memory@42000000 {
+ 		reg = <0x42000000 0x3e000000>;
+ 		device_type = "memory";
+ 	};
  
-@@ -191,10 +190,14 @@ void fuse_finish_open(struct inode *inod
- 		fi->attr_version = ++fc->attr_version;
- 		i_size_write(inode, 0);
- 		spin_unlock(&fc->lock);
-+		truncate_pagecache(inode, 0);
- 		fuse_invalidate_attr(inode);
- 		if (fc->writeback_cache)
- 			file_update_time(file);
-+	} else if (!(ff->open_flags & FOPEN_KEEP_CACHE)) {
-+		invalidate_inode_pages2(inode->i_mapping);
- 	}
-+
- 	if ((file->f_mode & FMODE_WRITE) && fc->writeback_cache)
- 		fuse_link_write_file(file);
- }
+-	mdio0: mdio@0 {
++	mdio0: mdio-0 {
+ 		status = "okay";
+ 		compatible = "virtual,mdio-gpio";
+ 		gpios = <&qcom_pinmux 1 GPIO_ACTIVE_HIGH>,
+@@ -91,7 +91,7 @@
+ 		};
+ 	};
+ 
+-	mdio1: mdio@1 {
++	mdio1: mdio-1 {
+ 		status = "okay";
+ 		compatible = "virtual,mdio-gpio";
+ 		gpios = <&qcom_pinmux 11 GPIO_ACTIVE_HIGH>,
+-- 
+2.33.0
+
 
 
