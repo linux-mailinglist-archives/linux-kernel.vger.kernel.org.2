@@ -2,128 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D9345C97B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:03:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C072D45C981
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:04:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242205AbhKXQG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:06:57 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:52948 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241205AbhKXQGv (ORCPT
+        id S242527AbhKXQHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:07:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229849AbhKXQHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:06:51 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0DED12193C;
-        Wed, 24 Nov 2021 16:03:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1637769819; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+K9X0gnKgAVGvjlnxJQwG5HJjl9FzPuLLZJhp/rDicQ=;
-        b=TjZVpHr9twy3p2Y6wNd56k9PHBwLZ/ZwTJcdY5ck7SQC6QEFdmOB4fP7mqMyJh4Ghd/s9x
-        oXYxD2FTZuUY5Mf8Gba2dcolshwOfCtr0a3a94gACWGcxWy+Ws87hC9rnGdoOtHGhpYX2p
-        qs7i1nsaNkE2+nxUpjCfNXjcS9QXdwc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1637769819;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+K9X0gnKgAVGvjlnxJQwG5HJjl9FzPuLLZJhp/rDicQ=;
-        b=/EU59iTj2EaHMP94a0Q2XP7zqwHQjqdwjcOzxkGdeGbZaNwurBRsabWvcMiJH1fbVskYZx
-        63iV1KbmQrrX4iDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E5DC513F2A;
-        Wed, 24 Nov 2021 16:03:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id uNpjNllinmHoGAAAMHmgww
-        (envelope-from <jroedel@suse.de>); Wed, 24 Nov 2021 16:03:37 +0000
-Date:   Wed, 24 Nov 2021 17:03:36 +0100
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>,
-        Peter Gonda <pgonda@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
- Hypervisor Support
-Message-ID: <YZ5iWJuxjSCmZL5l@suse.de>
-References: <20210820155918.7518-1-brijesh.singh@amd.com>
- <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
- <daf5066b-e89b-d377-ed8a-9338f1a04c0d@amd.com>
- <d673f082-9023-dafb-e42e-eab32a3ddd0c@intel.com>
- <f15597a0-e7e0-0a57-39fd-20715abddc7f@amd.com>
- <5f3b3aab-9ec2-c489-eefd-9136874762ee@intel.com>
- <d83e6668-bec4-8d1f-7f8a-085829146846@amd.com>
- <38282b0c-7eb5-6a91-df19-2f4cfa8549ce@intel.com>
+        Wed, 24 Nov 2021 11:07:50 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2ABBC061574;
+        Wed, 24 Nov 2021 08:04:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=5ZjtfcVB4wsq2lV3EPnmXCKirI/GyR928eeJPaIdR7Q=; b=xHAUtbKXS2c2yCggLXgbB/5qq8
+        UIXgJJG9Vf4PSj3Ptpd/MOM6RIEflWW/kF7ZOXgUii9aVJwpjMlLs4Z3DKJyQXWUs3jb8IaUDCKnR
+        KiI/FxzxDQAJF7Hfaiudp1Vb1uZ9It1GGwHm/97OeVD/hXZyLEkMLkHyaoZjKAKevCblQXvuR6ueo
+        aU3uwOjh+ytgSp5o8JKwekLXXXPVgv2kuPHJ1S8KiPm/7dbli39MLwJKxmDq5Z2sNzp60QWrjzloJ
+        PwNen3X607QB94fQMC52djGHljVq7zkDARbrvxWv0y/M0Fgyqn0rFBD9BAkX5PRQ4bIUZmAZ/MFjr
+        07XQEOpA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55858)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mpul8-0000qd-FW; Wed, 24 Nov 2021 16:04:34 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mpul7-0001Jj-1K; Wed, 24 Nov 2021 16:04:33 +0000
+Date:   Wed, 24 Nov 2021 16:04:33 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        UNGLinuxDriver@microchip.com, p.zabel@pengutronix.de,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3 3/6] net: lan966x: add port module support
+Message-ID: <YZ5ikamCVeyGFw3x@shell.armlinux.org.uk>
+References: <20211124083915.2223065-1-horatiu.vultur@microchip.com>
+ <20211124083915.2223065-4-horatiu.vultur@microchip.com>
+ <YZ4SB/wX6UT3zrEV@shell.armlinux.org.uk>
+ <20211124145800.my4niep3sifqpg55@soft-dev3-1.localhost>
+ <YZ5UXdiNNf011skU@shell.armlinux.org.uk>
+ <20211124154323.44liimrwzthsh547@soft-dev3-1.localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <38282b0c-7eb5-6a91-df19-2f4cfa8549ce@intel.com>
+In-Reply-To: <20211124154323.44liimrwzthsh547@soft-dev3-1.localhost>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 02:51:35PM -0800, Dave Hansen wrote:
-> My preference would be that we never have SEV-SNP code in the kernel
-> that can panic() the host from guest userspace.  If that means waiting
-> until there's common guest unmapping infrastructure around, then I think
-> we should wait.
+On Wed, Nov 24, 2021 at 04:43:23PM +0100, Horatiu Vultur wrote:
+> > > Actually, port->config.phy_mode will not get zeroed. Because right after
+> > > the memset it follows: 'config = port->config'.
+> > 
+> > Ah, missed that, thanks. However, why should portmode and phy_mode be
+> > different?
+> 
+> Because the serdes knows only few modes(QSGMII, SGMII, GMII) and this
+> information will come from DT. So I would like to have one variable that
+> will configure the serdes ('phy_mode') and one will configure the MAC
+> ('portmode').
 
-Can you elaborate how to crash host kernel from guest user-space? If I
-understood correctly it was about crashing host kernel from _host_
-user-space.
+I don't follow why you need this to be different.
 
-I think the RMP-fault path in the page-fault handler needs to take the
-uaccess exception tables into account before actually causing a panic.
-This should solve most of the problems discussed here.
+Isn't the point of interfaces such as phy_set_mode_ext() such that we
+can achieve independence of the details of what is behind that
+interface - so, as it takes a PHY interface mode, if we're operating
+in 1000BASE-X, we pass that to phy_set_mode_ext(). It is then the
+responsibility of the Serdes PHY driver to decide that means "sgmii"
+mode for the Serdes?
 
-Maybe we also need the previously suggested copy_from/to_guest()
-interfaces.
+For example, the Marvell CP110 comphy driver does this:
 
-Regards,
+        if (submode == PHY_INTERFACE_MODE_1000BASEX)
+                submode = PHY_INTERFACE_MODE_SGMII;
+
+because the serdes phy settings for PHY_INTERFACE_MODE_1000BASEX are
+no different from PHY_INTERFACE_MODE_SGMII - and that detail is hidden
+from the network driver.
+
+The next question this brings up is... you're setting all the different
+interface modes in phylink_config.supported_interfaces, which basically
+means you're giving permission for phylink to switch between any of
+those modes. So, what if the serdes is in QSGMII mode but phylink
+requests SGMII mode. Doesn't your driver architecture mean that if
+you're in QSGMII mode you can't use SGMII or GMII mode?
+
+Is there some kind of restriction that you need to split this, or is
+this purely down to the way this driver has been written?
+
+I don't see any other driver in the kernel making this kind of split.
 
 -- 
-Jörg Rödel
-jroedel@suse.de
-
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5
-90409 Nürnberg
-Germany
- 
-(HRB 36809, AG Nürnberg)
-Geschäftsführer: Ivo Totev
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
