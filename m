@@ -2,176 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE1945CA50
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:45:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF82D45CA59
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:47:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349154AbhKXQtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:49:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47840 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241782AbhKXQtA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:49:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637772349;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f+K/KjRISkHJ/MQg0AcZ5rDgTt6cOMR3R7fi9euQAsE=;
-        b=bk4t48bpXNbEIRfAst1NmWUw1vV4R1dX+BUmKH9FMC7L9aNGE51mfcZCEdnOHIHXChvQeh
-        ss2Hy1dfcPxh0+bnc8Iw68V4/3VfKB/vqOP7IdwZ3CC1jpeFcvW5Jrk6+jERuBvvQOF9ZH
-        eeg4zngYn5P3vFEM4NHc2RUG4Ktjxyg=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-106-SlQhqTQvMraxUGrA40QsJA-1; Wed, 24 Nov 2021 11:45:48 -0500
-X-MC-Unique: SlQhqTQvMraxUGrA40QsJA-1
-Received: by mail-wm1-f69.google.com with SMTP id 205-20020a1c00d6000000b003335d1384f1so3303492wma.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 08:45:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=f+K/KjRISkHJ/MQg0AcZ5rDgTt6cOMR3R7fi9euQAsE=;
-        b=YlJ1nYEFpB2285Co7rWXOQ6IEbOT0VeWRq6bVp+qGZePHkgWoVDhOuiFARa/A3Vi/Q
-         tZ7QYw0qN2BarWcQSUX6cTKVVYcUJA3UaN85eP/WkUpTsq7zQokho7eBCqev5ewFkeAC
-         9kowj9OMT9KUgnI9mx95LDEsv4AukB9fw9YjulADBkF0YqfWeC4JLC7cMihQYmDUg4sK
-         criAtBWvtJS+g/SLkS8bIS3n4NihyQRU0IQgdxbNALTk8AeVDflByRapTSRhHGiod3qT
-         5ynA+0kO1uc+k+Nuc6fHF6D3AFRJQFMovgxa5/ACh2dRmasmaIyzQ8teqEFcR5QcBmbC
-         TagA==
-X-Gm-Message-State: AOAM533wtapakDSceXjjGYwD8c2JRqtrG0M/7joCNrXV+6gyqkO3dSmD
-        LzYUX74sHGYaRPOW3af4Tn8eNT7xdax796wfjsal2SA78n1y2HU24NJiV7jI3LU7r5QBCOL24xA
-        DBjak83bzOsyntScoMW3KJYDa
-X-Received: by 2002:a1c:23cb:: with SMTP id j194mr17320168wmj.13.1637772347105;
-        Wed, 24 Nov 2021 08:45:47 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwaIbs9H/CUbL57MmVNbDGiXWtNy0iS+C0D9EsV+y0cgyAMq3U+0C0DXnHG+qHj3Xgj+rkSBA==
-X-Received: by 2002:a1c:23cb:: with SMTP id j194mr17320125wmj.13.1637772346843;
-        Wed, 24 Nov 2021 08:45:46 -0800 (PST)
-Received: from [192.168.3.132] (p5b0c6380.dip0.t-ipconnect.de. [91.12.99.128])
-        by smtp.gmail.com with ESMTPSA id h27sm5900948wmc.43.2021.11.24.08.45.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 08:45:46 -0800 (PST)
-Message-ID: <5166da50-e2af-139b-9f7f-a1bcabe10775@redhat.com>
-Date:   Wed, 24 Nov 2021 17:45:45 +0100
+        id S1349181AbhKXQvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:51:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241782AbhKXQvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 11:51:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBCFD60FDA;
+        Wed, 24 Nov 2021 16:47:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637772476;
+        bh=xZZelNzGy3fEF+TRUP3mu2a2dvknfo0hSlfUMkdbXnE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QB2Os1i5AAZ9Xb5Ny2MOKmxAU9QaCl4g4U/BMONy2Go/4aNLCZCzKJp4JxdPfjil5
+         qHxNPAYki4sRFQnethGWNHA8GHDZbL88c3bDuLfvcdTBjwqsGNST4xcjN2W+EGY1y0
+         TvtMabQArNlwiSl0HxWQWfW+MKM5rssREZWlgFg6NjwjKGpKe6g39mGxEVGA3oaNxX
+         HdmkqI2DxHPlkYycjzpNmN6H99QT9uBQ/u82VVGRg2GOI7x+KvH19VBj7dIKiSmSJA
+         ADAU0J4jKCyMB/cBewSPJ3BzTq+hVhklOzMuTKcMRu99LF5Z4XVXjwqpsz5TxBueIE
+         8jyssOdTheYGg==
+Received: by mail-wm1-f48.google.com with SMTP id y196so3016654wmc.3;
+        Wed, 24 Nov 2021 08:47:55 -0800 (PST)
+X-Gm-Message-State: AOAM531K28KbFrMeUnQZk/r41mjzkGYVAHNfeHOoOjd8aKJH/vtnMiY9
+        rKJFj5805AMmrQQp7ia6liNjw/Bzm4EwydV9adE=
+X-Google-Smtp-Source: ABdhPJwbFP7vLbm8pNQQOpEuYc09R2zZihV7ND7aqtuJCkGnJDFI12J2lrIBTl3QZQQRaScbWu3GRnefAkQ3ygpVdCU=
+X-Received: by 2002:a1c:770e:: with SMTP id t14mr16061185wmi.173.1637772474274;
+ Wed, 24 Nov 2021 08:47:54 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: fs/proc/vmcore.c:161:34: sparse: sparse: incorrect type in
- argument 1 (different address spaces)
-Content-Language: en-US
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-References: <202111242331.x19Qywph-lkp@intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <202111242331.x19Qywph-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20211122222203.4103644-1-arnd@kernel.org> <20211122222203.4103644-2-arnd@kernel.org>
+ <1dbe0c9f-e209-49e1-f05c-765d9f9b91eb@gmail.com>
+In-Reply-To: <1dbe0c9f-e209-49e1-f05c-765d9f9b91eb@gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 24 Nov 2021 17:47:38 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0ojMBib+6UGGxO1GyQ4a22RM3yn79Uv=ixQ2KFUCfGrw@mail.gmail.com>
+Message-ID: <CAK8P3a0ojMBib+6UGGxO1GyQ4a22RM3yn79Uv=ixQ2KFUCfGrw@mail.gmail.com>
+Subject: Re: [PATCH v2 01/11] ASoC: tegra20-spdif: stop setting slave_id
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andy Gross <agross@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Scott Branden <sbranden@broadcom.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        dmaengine@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-staging@lists.linux.dev,
+        "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.11.21 16:42, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   5d9f4cf36721aba199975a9be7863a3ff5cd4b59
-> commit: c1e63117711977cc4295b2ce73de29dd17066c82 proc/vmcore: fix clearing user buffer by properly using clear_user()
-> date:   4 days ago
-> config: ia64-allyesconfig (https://download.01.org/0day-ci/archive/20211124/202111242331.x19Qywph-lkp@intel.com/config)
-> compiler: ia64-linux-gcc (GCC) 11.2.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # apt-get install sparse
->         # sparse version: v0.6.4-dirty
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c1e63117711977cc4295b2ce73de29dd17066c82
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout c1e63117711977cc4295b2ce73de29dd17066c82
->         # save the config file to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=ia64 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> 
-> sparse warnings: (new ones prefixed by >>)
->>> fs/proc/vmcore.c:161:34: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __user *p @@     got char *buf @@
->    fs/proc/vmcore.c:161:34: sparse:     expected void const [noderef] __user *p
->    fs/proc/vmcore.c:161:34: sparse:     got char *buf
->>> fs/proc/vmcore.c:161:34: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __user * @@     got char *buf @@
->    fs/proc/vmcore.c:161:34: sparse:     expected void [noderef] __user *
->    fs/proc/vmcore.c:161:34: sparse:     got char *buf
-> 
-> vim +161 fs/proc/vmcore.c
-> 
->    133	
->    134	/* Reads a page from the oldmem device from given offset. */
->    135	ssize_t read_from_oldmem(char *buf, size_t count,
->    136				 u64 *ppos, int userbuf,
->    137				 bool encrypted)
->    138	{
->    139		unsigned long pfn, offset;
->    140		size_t nr_bytes;
->    141		ssize_t read = 0, tmp;
->    142	
->    143		if (!count)
->    144			return 0;
->    145	
->    146		offset = (unsigned long)(*ppos % PAGE_SIZE);
->    147		pfn = (unsigned long)(*ppos / PAGE_SIZE);
->    148	
->    149		down_read(&vmcore_cb_rwsem);
->    150		do {
->    151			if (count > (PAGE_SIZE - offset))
->    152				nr_bytes = PAGE_SIZE - offset;
->    153			else
->    154				nr_bytes = count;
->    155	
->    156			/* If pfn is not ram, return zeros for sparse dump files */
->    157			if (!pfn_is_ram(pfn)) {
->    158				tmp = 0;
->    159				if (!userbuf)
->    160					memset(buf, 0, nr_bytes);
->  > 161				else if (clear_user(buf, nr_bytes))
->    162					tmp = -EFAULT;
->    163			} else {
->    164				if (encrypted)
->    165					tmp = copy_oldmem_page_encrypted(pfn, buf,
->    166									 nr_bytes,
->    167									 offset,
->    168									 userbuf);
->    169				else
->    170					tmp = copy_oldmem_page(pfn, buf, nr_bytes,
->    171							       offset, userbuf);
->    172			}
->    173			if (tmp < 0) {
->    174				up_read(&vmcore_cb_rwsem);
->    175				return tmp;
->    176			}
->    177	
->    178			*ppos += nr_bytes;
->    179			count -= nr_bytes;
->    180			buf += nr_bytes;
->    181			read += nr_bytes;
->    182			++pfn;
->    183			offset = 0;
->    184		} while (count);
->    185	
->    186		up_read(&vmcore_cb_rwsem);
->    187		return read;
->    188	}
->    189	
+On Wed, Nov 24, 2021 at 5:32 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+> 23.11.2021 01:21, Arnd Bergmann =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>
+> The commit message is correct, however you could remove even more code
+> here. But there is no need to make a v3 just because this patch because
+> I already prepared patchset that revives this S/PDIF driver and enables
+> HDMI audio on Tegra20. I'll take care of cleaning up the whole code of
+> this driver.
 
-Sparse is wrong as it doesn't see the bigger picture. "int userbuf"
-tells us what we're actually dealing with ...
+Ok, perfect, thanks for taking a closer look as well.
 
+>
+> -       dmareq =3D platform_get_resource(pdev, IORESOURCE_DMA, 0);
+> -       if (!dmareq) {
+> -               dev_err(&pdev->dev, "No DMA resource\n");
+> -               return -ENODEV;
+> -       }
+> -
 
--- 
-Thanks,
+Right, I think I considered doing this at some point as well, not sure
+why I left it in for the version I posted. Passing the IORESOURCE_DMA
+values is clearly wrong by itself and needs to be removed, though
+it's not obvious what the correct way of requesting the DMA channel
+is for this driver either, without a DT binding or users.
 
-David / dhildenb
-
+        Arnd
