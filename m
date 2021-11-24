@@ -2,124 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904FC45C857
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC77E45C85B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:14:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231892AbhKXPPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:15:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58250 "EHLO
+        id S232671AbhKXPRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:17:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbhKXPPu (ORCPT
+        with ESMTP id S232332AbhKXPRm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:15:50 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9AAC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:12:40 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id l25so11745392eda.11
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:12:40 -0800 (PST)
+        Wed, 24 Nov 2021 10:17:42 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9A4C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:14:32 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id f18so8124649lfv.6
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:14:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IqYslmpv1yqDJjThQv0ySRbKLZIoZm80xilrzxmA8Qk=;
-        b=HFjdJK+/43spe75v55jcPDtzWSczxrPWRC6UvZGRrnu3M/GxoHznFUd7MkxOer/Fa4
-         JQ0bmkugdYXxb2cn4f8mmwYTIea0y4QtFgl5nUQkzHXNwyQiW1DgoQhkrLzmJfBAUxIw
-         FL5bBZEks/JPFoYaY+sH088hHxpaybAiG3VTq241kOY/vD259DTKOc6Wp0anz+S/QnPQ
-         +OEI45Rr1fY2exr54K/uu0uYljhig026aT0WLIbervqmJ0iV3R2JX+D36+N8YVtel20b
-         GGByHh32ZR5Pvf4B4h/2HzFwcll+hICmaXn5SgIuYcRMXT6XbMpuJ/ojcRnEd7KaGtb3
-         dwww==
+        bh=Yh9xoOuRaAJaKPW0jaTHe+4M3+KDpw2IcSI6hj23fJM=;
+        b=GBof6E+0Gw3K8zrHDaQGHMJnQz8w+W2GZLPn7BHTMiwc6ITlkuTF1OEV9OQsc40mKx
+         RtRz7bKBuVzmm2RSm31gHNx7+9acY2KRGBqu55rCXmRMhmL9fvLQN6WqvW5S7o2fAhXx
+         G9GJlV5PacmgEKwuX6IK+fQvrt1GzXMuSQC2AtXIpmeXyS5PKmXj0qInc8lxlkCCKh6M
+         +hl5cnByZa9xiE7B1ShyrQ2+vGSWqpCJRwDpUCyBdeyAEA9hBUKJ2UkklJavptMuXdwj
+         WwG6Dh5YFhSvyIYKhacFnMfEThrDobO55JQX6iOR9OH8tiR8uuMp95efEyUMuZJOq16m
+         hiZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IqYslmpv1yqDJjThQv0ySRbKLZIoZm80xilrzxmA8Qk=;
-        b=Xck29myTjPAEEmkfNVWtZ1PkVbrxEc2tEtsgyFYf+aGvHyOSWuwm5zgcusuq25VpQk
-         /lgkJT7swshKQrQJ2XrVh81dT+aakD2ynTXu4BtewSjI1UWlaprVIBbHI7fQVjswyYqv
-         ZB6RxNvoIrFEXTAauAo69r2BcuQier9bHQMu/OS4KCC7MrqCTwpcDIknJv9das7jatIe
-         WmBvsoAqsQmEqLbY6EgZyreKQ9FjJqM5NBE+bWqz8J885qHRrVKtEq+oMRdqlJvCjFem
-         d4L3yuD6+JZLt7SuDBNxQF8bnQK8gPkhKELr022sJYw5LGRFb/gjfyoThakIrwDTHUWP
-         Lzkg==
-X-Gm-Message-State: AOAM530REI46otXOs8e+wt7nL/WT6ljddscT10Pn41kPDqs1Q3AuPkKr
-        j17bjWqtKvOT47ekjuyRK4/nZKdrpZUcaMzuy4E42tHetR7XYQ==
-X-Google-Smtp-Source: ABdhPJxb1xoWgYjl2rdv6j9Ih7tYRWC6b4QucPhtsCrazuTm2MK7fsoEggiuSOUAT9cvc9l6jWEnDY8SK4f+BWPUwvk=
-X-Received: by 2002:a17:906:489b:: with SMTP id v27mr20680621ejq.567.1637766759116;
- Wed, 24 Nov 2021 07:12:39 -0800 (PST)
+        bh=Yh9xoOuRaAJaKPW0jaTHe+4M3+KDpw2IcSI6hj23fJM=;
+        b=VVKvXSXkbgE51LH/8TGBIgnrLgOWRBlsv51qSh9pupklNvuJCXIysG5quQ1hX9BaDf
+         7nKAzutbXDjt0AMmilgogOMuHy11VZyQLH82ybmSzaEIuklEhz2RQsFlLBJYxb59IA5F
+         ChvGJU9mhPKptjefdumSy5qpPRL7Wk0ly/J7XTBzRbw111RAl/v8c13OXpMLFXV9WhNz
+         CmJdhPQzL15YndrHC5rE74npMwbl9Uk3oSxWLUqb/C4k394r5Yx3IO03tTVW6/hYyh4P
+         Wlm5sCtTi8j20wtOu7QocC/GWeARMHPF3++jTqPBw2AXJ33L9s59UPT7tzKmKfifGGVy
+         tnuA==
+X-Gm-Message-State: AOAM531NJoE5PcshkHCIDidE4gbDFrv9bteTVl+Af4rRWhCHEpiRdA42
+        u3mdUXGKAltAyr7BMKsynUJLR6gnVZCX4X8Bq4BmIA==
+X-Google-Smtp-Source: ABdhPJzNHVBwEhKAjZxgHBhiKcUY54rgPx2CslP5nbiVgbQJZVuekP1z2micFZS+P43WqeGDYm4YxRjmnOs3kwzhyo4=
+X-Received: by 2002:a05:6512:10c4:: with SMTP id k4mr15601143lfg.373.1637766870290;
+ Wed, 24 Nov 2021 07:14:30 -0800 (PST)
 MIME-Version: 1.0
-References: <20211124115703.941380739@linuxfoundation.org>
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 24 Nov 2021 20:42:27 +0530
-Message-ID: <CA+G9fYuZqV51ZGQd-ySaDqSQ_YDJHYav4KW4B0zEq1Rh2_KCDA@mail.gmail.com>
-Subject: Re: [PATCH 4.9 000/207] 4.9.291-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net,
-        Nadav Amit <namit@vmware.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
+References: <20211116190244.1417591-1-john@metanate.com> <20211116190244.1417591-3-john@metanate.com>
+ <CGME20211123193506epcas1p49d0d0a2d66c6e560ee26077da9c0202b@epcas1p4.samsung.com>
+ <CAPDyKFp1zMBUfK7LteW0yEfTpqtU+P+EybLsJBFx_r54HwFdMg@mail.gmail.com>
+ <315972c2-2253-ad10-b712-2d2c96b3da26@samsung.com> <YZ4wQOcHEDHdCGlY@donbot>
+In-Reply-To: <YZ4wQOcHEDHdCGlY@donbot>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 24 Nov 2021 16:13:54 +0100
+Message-ID: <CAPDyKFoweEnqRWRBUsBgmApKoY30QuNp1C7f9gW5uCJbBk6A4w@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mmc: dw_mmc: use standard "mmc" alias stem
+To:     John Keeping <john@metanate.com>
+Cc:     Jaehoon Chung <jh80.chung@samsung.com>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 at 17:44, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Wed, 24 Nov 2021 at 13:29, John Keeping <john@metanate.com> wrote:
 >
-> This is the start of the stable review cycle for the 4.9.291 release.
-> There are 207 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Wed, Nov 24, 2021 at 06:54:12PM +0900, Jaehoon Chung wrote:
+> > On 11/24/21 4:34 AM, Ulf Hansson wrote:
+> > > On Tue, 16 Nov 2021 at 20:02, John Keeping <john@metanate.com> wrote:
+> > >>
+> > >> The standard stem for MMC aliases is "mmc" and this is used by the MMC
+> > >> core to set the slot index.
+> > >
+> > > This isn't the correct description of the mmc aliases. The below text
+> > > is copied from the DT doc:
+> > >
+> > > "It is possible to assign a fixed index mmcN to an MMC host controller
+> > > (and the corresponding mmcblkN devices) by defining an alias in the
+> > > /aliases device tree node."
+> > >
+> > >>
+> > >> Use this in preference to the non-standard "mshc" stem when setting the
+> > >> controller ID to avoid needing two aliases for each MMC device in order
+> > >> to cover both the core and dw_mmc-specific functionality.
+> > >>
+> > >> The old "mshc" lookup is kept for backwards compatibility.
+> > >
+> > > The mshc alias is really weird!
+> > >
+> > > It looks like some leftover from when the dw_mmc controller supported
+> > > multiple slots. This support was dropped a long time ago, simply
+> > > because it never really worked - and it was not worth trying to. Only
+> > > one slot per controller is supported.
+> >
+> > As Ulf mentioned, dw_mmc controller can be supported multiple slot.
+> > But I didn't see its case to use multiple slot. And I had been done to drop a long time ago.
+> >
+> > mshc was used because of Mobile Storage Host Controller.
+> >
+> > >
+> > > Rather than re-using the mmc alias in the same weird way as the mshc
+> > > alias, I suggest we try to remove parsing of the mshc aliases
+> > > completely. By looking at the corresponding code and in combination
+> > > with the DTS files, it certainly looks doable to me. Do you want to
+> > > have a look at it?
+> >
+> > If possible to remove mshc, it's best.
+> > I will check that removing mshc parsing in dw_mmc.c.
 >
-> Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
-> Anything received after that time might be too late.
+> Unfortunately it doesn't look like it's easy to remove as there is some
+> behaviour depending on this via dw_mci_drv_data::caps, as well as
+> different timing setup in dw_mmc-k3.c which uses
+> dw_mci_of_alias_get_id() to identify SD and SDIO hosts.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.291-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
+> Looking across the dw_mmc-*.c files that use dw_mci_drv_data::caps to
+> set capabilities per host controller:
 >
-> thanks,
+> - dw_mmc-exynos.c sets additional capabilities for mshc0, although both
+>   MMC_CAP_1_8V_DDR and MMC_CAP_8_BIT_DATA should be set via DT (in fact
+>   in some cases it looks like device trees are setting bus-width = <4>
+>   so MMC_CAP_8_BIT_DATA seems wrong!); I can't see any device trees
+>   setting mmc-ddr-1_8v for these devices at the moment though, so
+>   removing that is a change in behaviour
+
+Of course we need to be careful to not break anything. But having some
+clever fallback methods could work.
+
+For example, for an SD/SDIO card slot it shouldn't matter if
+MMC_CAP_8_BIT_DATA gets set. But I didn't look that closely if that
+could be an option.
+
 >
-> greg k-h
+> - dw_mmc-k3.c sets different capabilities for mshc2 and, as mentioned
+>   above, uses the alias index to select timing parameters and change
+>   voltage switching behaviour
 
-Regression found on arm gcc-11 builds with tinyconfig and allnoconfig.
-As a reported in this email,
+Yeah, the timing thingy looks harder to get rid of for the k3 variant.
 
-https://lore.kernel.org/stable/CA+G9fYvU4yoOx7BEBxJXRVZx4pO5fYPRELmkNz+iBu7kdN_9Ew@mail.gmail.com/
+Although, if we could limit the alias parsing to the k3 variant, that
+would still be a nice cleanup and improvement.
 
+As a next step we could look at introducing some new DT properties for
+k3, to specify the timing thingy - and then make the mshc alias
+deprecated.
 
-build error :
---------------
-make --silent --keep-going --jobs=8
-O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=arm
-CROSS_COMPILE=arm-linux-gnueabihf- 'CC=sccache
-arm-linux-gnueabihf-gcc' 'HOSTCC=sccache gcc'
-In file included from arch/arm/include/asm/tlb.h:28,
-                 from arch/arm/mm/init.c:34:
-include/asm-generic/tlb.h: In function 'tlb_flush_pmd_range':
-include/asm-generic/tlb.h:208:54: error: 'PMD_SIZE' undeclared (first
-use in this function); did you mean 'PUD_SIZE'?
-  208 |         if (tlb->page_size != 0 && tlb->page_size != PMD_SIZE)
-      |                                                      ^~~~~~~~
-      |                                                      PUD_SIZE
-include/asm-generic/tlb.h:208:54: note: each undeclared identifier is
-reported only once for each function it appears in
-make[2]: *** [scripts/Makefile.build:307: arch/arm/mm/init.o] Error 1
-make[2]: Target '__build' not remade because of errors.
-make[1]: *** [Makefile:1036: arch/arm/mm] Error 2
+>
+> - dw_mmc-hi3798cv200.c and dw_mmc-rockchip.c set the same caps for all
+>   slots, so can easily remove the dependency on the alias
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Great.
 
-Patch pointing to,
+>
+>
+> I'm mostly interested in Rockchip myself, which is one of the easy ones,
+> so I'm not that familiar with Exynos or K3 - I'd guess the Exynos
+> version can remove its dependency on the mshc alias pretty easily, but
+> the use in dw_mmc-k3.c looks much more difficult given that I can't see
+> any other way to derive the necessary info from the current device
+> trees.
 
-hugetlbfs: flush TLBs correctly after huge_pmd_unshare
-commit a4a118f2eead1d6c49e00765de89878288d4b890 upstream.
+Right. I will try to get some time to help clean this up.
 
---
-Linaro LKFT
-https://lkft.linaro.org
+>
+>
+> Regards,
+> John
+
+Kind regards
+Uffe
