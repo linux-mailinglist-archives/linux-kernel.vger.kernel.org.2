@@ -2,108 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F142A45B6D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:45:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 292FD45B6D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233585AbhKXIsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 03:48:08 -0500
-Received: from mga07.intel.com ([134.134.136.100]:57877 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232817AbhKXIsC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 03:48:02 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="298640206"
-X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
-   d="scan'208";a="298640206"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 00:41:24 -0800
-X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
-   d="scan'208";a="509792101"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.101])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 00:41:20 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+aa5bebed695edaccf0df@syzkaller.appspotmail.com,
-        Nadav Amit <namit@vmware.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>
-Subject: Re: [PATCH] mm/rmap: fix potential batched TLB flush race
-References: <20211123074344.1877731-1-ying.huang@intel.com>
-        <CANpmjNPGkQ2VWmHjt==yWVr5webCHuRQtXau95jvPjR4Z3gxDw@mail.gmail.com>
-        <8735nm9vkw.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <CANpmjNP7-FdwLRg9HS=Sd_7nA483Qc3XLJt-h-NgV3jtwBRW7A@mail.gmail.com>
-Date:   Wed, 24 Nov 2021 16:41:18 +0800
-In-Reply-To: <CANpmjNP7-FdwLRg9HS=Sd_7nA483Qc3XLJt-h-NgV3jtwBRW7A@mail.gmail.com>
-        (Marco Elver's message of "Wed, 24 Nov 2021 09:10:52 +0100")
-Message-ID: <87v90i6j4h.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S241633AbhKXIqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 03:46:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39001 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241551AbhKXIpQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 03:45:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637743327;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XE2SVTrDU43kAFgXUbiTJeyLZudA8SDW3kmGcRKb0Vw=;
+        b=PAj6FqcVSK+qWYru73oNDmpVge3CMaWZMfRbKD72WnWacez/c3KO+vq+bz/+P4jN4FYn+L
+        Web7x1K9BmO3HfDY37cj+940ypO4iaWRcyPlaneL8K0CJaEFcUnCMxWSuyWuZcD730yH5d
+        SzaFNr4HTO441nwmovrvL/1q7s4fjQ4=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-182-r01DrgVQMU26MyCuUKd0uQ-1; Wed, 24 Nov 2021 03:42:05 -0500
+X-MC-Unique: r01DrgVQMU26MyCuUKd0uQ-1
+Received: by mail-wm1-f69.google.com with SMTP id r6-20020a1c4406000000b0033119c22fdbso963287wma.4
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 00:42:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=XE2SVTrDU43kAFgXUbiTJeyLZudA8SDW3kmGcRKb0Vw=;
+        b=RjDcRQbCmTe7cjlp8flKkp+QxG9HknSjyiO8hU1FRtlHThk51VyO/N9XaEGBUcHg6E
+         VUwDXXpLQsSWkTcrZIk4CNITPprl1OmZ4yYnH7c4P91mfRGXwTXO4RgStG+0M1m3Vr7G
+         EApHZWoRvXW3mcAXXv2b3rzpeb9VueCMFWCs/281Ku4d40JZ6TZ5PESlhzd2eYS1lTu3
+         gO4AJlvA7JuRLjeF8D/tyDrp01TNPdggfmRckCevbGUsDqqKHt4fEvxFoefk/RyIJkQX
+         OzvJClzJV/uSgsiPOmVccPUU2LxLwejsgYZbSQtpHQlEOpRoCqkqhYyPIQAhPEe9mYUn
+         aM4g==
+X-Gm-Message-State: AOAM532AVsiI0ySKla5RXhOPyVQj1qMsU78gayR3E5N3yELV6q5KZofB
+        RbgaGYVoCL8dkcEiUHcKcjIYCXPqndoMqPbyk2XKnnvKlF7jTLAsKdjWHoxy0K8PDJ15wV/W9Gn
+        e4RPQm7SFUHCR/JX/xJVPoxAP
+X-Received: by 2002:a7b:cf18:: with SMTP id l24mr13013272wmg.145.1637743324588;
+        Wed, 24 Nov 2021 00:42:04 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwI2m6uwjDLqQTtYRIdkFde1rsCNcXtW90vlfMyykQKNBK2ibWnzj4IPWNvsza0uD6UQJjz1w==
+X-Received: by 2002:a7b:cf18:: with SMTP id l24mr13013193wmg.145.1637743324248;
+        Wed, 24 Nov 2021 00:42:04 -0800 (PST)
+Received: from krava.redhat.com (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id 10sm19080756wrb.75.2021.11.24.00.42.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 00:42:04 -0800 (PST)
+From:   Jiri Olsa <jolsa@redhat.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>
+Subject: [PATCH 7/8] selftest/bpf: Add kprobe multi attach test
+Date:   Wed, 24 Nov 2021 09:41:18 +0100
+Message-Id: <20211124084119.260239-8-jolsa@kernel.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211124084119.260239-1-jolsa@kernel.org>
+References: <20211124084119.260239-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marco Elver <elver@google.com> writes:
+Adding kprobe multi attach test that uses new interface
+to attach multiple probes within single perf event.
 
-> On Wed, 24 Nov 2021 at 02:44, Huang, Ying <ying.huang@intel.com> wrote:
->>
->> Marco Elver <elver@google.com> writes:
->>
->> > On Tue, 23 Nov 2021 at 08:44, Huang Ying <ying.huang@intel.com> wrote:
-> [...]
->> >> --- a/mm/rmap.c
->> >> +++ b/mm/rmap.c
->> >> @@ -633,7 +633,7 @@ static void set_tlb_ubc_flush_pending(struct mm_struct *mm, bool writable)
->> >>          * before the PTE is cleared.
->> >>          */
->> >>         barrier();
->> >> -       mm->tlb_flush_batched = true;
->> >> +       atomic_inc(&mm->tlb_flush_batched);
->> >
->> > The use of barrier() and atomic needs some clarification.
->>
->> There are some comments above barrier() to describe why it is needed.
->> For atomic, because the type of mm->tlb_flush_batched is atomic_t, do we
->> need extra clarification?
->
-> Apologies, maybe I wasn't clear enough: the existing comment tells me
-> the clearing of PTE should never happen after tlb_flush_batched is
-> set, but only the compiler is considered. However, I become suspicious
-> when I see barrier() paired with an atomic. barrier() is purely a
-> compiler-barrier and does not prevent the CPU from reordering things.
-> atomic_inc() does not return anything and is therefore unordered per
-> Documentation/atomic_t.txt.
->
->> > Is there a
->> > requirement that the CPU also doesn't reorder anything after this
->> > atomic_inc() (which is unordered)? I.e. should this be
->> > atomic_inc_return_release() and remove barrier()?
->>
->> We don't have an atomic_xx_acquire() to pair with this.  So I guess we
->> don't need atomic_inc_return_release()?
->
-> You have 2 things stronger than unordered: atomic_read() which result
-> is used in a conditional branch, thus creating a control-dependency
-> ordering later dependent writes; and the atomic_cmpxchg() is fully
-> ordered.
->
-> But before all that, I'd still want to understand what ordering
-> requirements you have. The current comments say only the compiler
-> needs taming, but does that mean we're fine with the CPU wildly
-> reordering things?
+The test is attaching to bpf_fentry_test* functions and
+single trampoline program to use bpf_prog_test_run to
+trigger bpf_fentry_test* functions.
 
-Per my understanding, atomic_cmpxchg() is fully ordered, so we have
-strong ordering in flush_tlb_batched_pending().  And we use xchg() in
-ptep_get_and_clear() (at least for x86) which is called before
-set_tlb_ubc_flush_pending().  So we have strong ordering there too.
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ .../bpf/prog_tests/multi_kprobe_test.c        | 83 +++++++++++++++++++
+ .../selftests/bpf/progs/multi_kprobe.c        | 58 +++++++++++++
+ 2 files changed, 141 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/multi_kprobe_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/multi_kprobe.c
 
-So at least for x86, barrier() in set_tlb_ubc_flush_pending() appears
-unnecessary.  Is it needed by other architectures?
-
-Best Regards,
-Huang, Ying
+diff --git a/tools/testing/selftests/bpf/prog_tests/multi_kprobe_test.c b/tools/testing/selftests/bpf/prog_tests/multi_kprobe_test.c
+new file mode 100644
+index 000000000000..4aae472f9c16
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/multi_kprobe_test.c
+@@ -0,0 +1,83 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <test_progs.h>
++#include "multi_kprobe.skel.h"
++#include "trace_helpers.h"
++
++static void test_funcs_api(void)
++{
++	struct multi_kprobe *skel = NULL;
++	__u32 duration = 0, retval;
++	int err, prog_fd;
++
++	skel = multi_kprobe__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "fentry_multi_skel_load"))
++		goto cleanup;
++
++	err = multi_kprobe__attach(skel);
++	if (!ASSERT_OK(err, "fentry_attach"))
++		goto cleanup;
++
++	prog_fd = bpf_program__fd(skel->progs.test1);
++	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
++				NULL, NULL, &retval, &duration);
++	ASSERT_OK(err, "test_run");
++	ASSERT_EQ(retval, 0, "test_run");
++
++	ASSERT_EQ(skel->bss->test2_result, 8, "test2_result");
++	ASSERT_EQ(skel->bss->test3_result, 8, "test3_result");
++
++cleanup:
++	multi_kprobe__destroy(skel);
++}
++
++static void test_addrs_api(void)
++{
++	struct bpf_link *link1 = NULL, *link2 = NULL;
++	DECLARE_LIBBPF_OPTS(bpf_kprobe_opts, opts);
++	struct multi_kprobe *skel = NULL;
++	__u32 duration = 0, retval;
++	int err, prog_fd;
++	__u64 addrs[8];
++
++	skel = multi_kprobe__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "fentry_multi_skel_load"))
++		goto cleanup;
++
++	kallsyms_find("bpf_fentry_test1", &addrs[0]);
++	kallsyms_find("bpf_fentry_test2", &addrs[1]);
++	kallsyms_find("bpf_fentry_test3", &addrs[2]);
++	kallsyms_find("bpf_fentry_test4", &addrs[3]);
++	kallsyms_find("bpf_fentry_test5", &addrs[4]);
++	kallsyms_find("bpf_fentry_test6", &addrs[5]);
++	kallsyms_find("bpf_fentry_test7", &addrs[6]);
++	kallsyms_find("bpf_fentry_test8", &addrs[7]);
++
++	opts.multi.cnt = 8;
++	opts.multi.addrs = (__u64 *) &addrs;
++	link1 = bpf_program__attach_kprobe_opts(skel->progs.test2, NULL, &opts);
++	if (!ASSERT_OK_PTR(link1, "link1"))
++		goto cleanup;
++
++	link2 = bpf_program__attach_kprobe_opts(skel->progs.test3, NULL, &opts);
++	if (!ASSERT_OK_PTR(link1, "link1"))
++		goto cleanup;
++
++	prog_fd = bpf_program__fd(skel->progs.test1);
++	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
++				NULL, NULL, &retval, &duration);
++	ASSERT_OK(err, "test_run");
++	ASSERT_EQ(retval, 0, "test_run");
++
++	ASSERT_EQ(skel->bss->test2_result, 8, "test2_result");
++	ASSERT_EQ(skel->bss->test3_result, 8, "test3_result");
++
++cleanup:
++	bpf_link__destroy(link1);
++	bpf_link__destroy(link2);
++	multi_kprobe__destroy(skel);
++}
++void test_multi_kprobe_test(void)
++{
++	test_funcs_api();
++	test_addrs_api();
++}
+diff --git a/tools/testing/selftests/bpf/progs/multi_kprobe.c b/tools/testing/selftests/bpf/progs/multi_kprobe.c
+new file mode 100644
+index 000000000000..67fe4c2486fc
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/multi_kprobe.c
+@@ -0,0 +1,58 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") = "GPL";
++
++extern const void bpf_fentry_test1 __ksym;
++extern const void bpf_fentry_test2 __ksym;
++extern const void bpf_fentry_test3 __ksym;
++extern const void bpf_fentry_test4 __ksym;
++extern const void bpf_fentry_test5 __ksym;
++extern const void bpf_fentry_test6 __ksym;
++extern const void bpf_fentry_test7 __ksym;
++extern const void bpf_fentry_test8 __ksym;
++
++/* No tests, just to trigger bpf_fentry_test* through tracing test_run */
++SEC("fentry/bpf_modify_return_test")
++int BPF_PROG(test1)
++{
++	return 0;
++}
++
++__u64 test2_result = 0;
++
++SEC("kprobe.multi/bpf_fentry_test*")
++int test2(struct pt_regs *ctx)
++{
++	__u64 addr = bpf_get_func_ip(ctx);
++
++	test2_result += (const void *) addr == &bpf_fentry_test1 ||
++			(const void *) addr == &bpf_fentry_test2 ||
++			(const void *) addr == &bpf_fentry_test3 ||
++			(const void *) addr == &bpf_fentry_test4 ||
++			(const void *) addr == &bpf_fentry_test5 ||
++			(const void *) addr == &bpf_fentry_test6 ||
++			(const void *) addr == &bpf_fentry_test7 ||
++			(const void *) addr == &bpf_fentry_test8;
++	return 0;
++}
++
++__u64 test3_result = 0;
++
++SEC("kretprobe.multi/bpf_fentry_test*")
++int test3(struct pt_regs *ctx)
++{
++	__u64 addr = bpf_get_func_ip(ctx);
++
++	test3_result += (const void *) addr == &bpf_fentry_test1 ||
++			(const void *) addr == &bpf_fentry_test2 ||
++			(const void *) addr == &bpf_fentry_test3 ||
++			(const void *) addr == &bpf_fentry_test4 ||
++			(const void *) addr == &bpf_fentry_test5 ||
++			(const void *) addr == &bpf_fentry_test6 ||
++			(const void *) addr == &bpf_fentry_test7 ||
++			(const void *) addr == &bpf_fentry_test8;
++	return 0;
++}
+-- 
+2.33.1
 
