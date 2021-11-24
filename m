@@ -2,99 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56AB945CE2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:37:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D317845CE2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237676AbhKXUk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 15:40:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48578 "EHLO
+        id S231846AbhKXUlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 15:41:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231846AbhKXUky (ORCPT
+        with ESMTP id S237679AbhKXUlI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 15:40:54 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43755C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:37:44 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id e11so7910678ljo.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:37:44 -0800 (PST)
+        Wed, 24 Nov 2021 15:41:08 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76AC5C061574;
+        Wed, 24 Nov 2021 12:37:58 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id b40so10407521lfv.10;
+        Wed, 24 Nov 2021 12:37:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NiWa89xq2Q9IF+ljEdo4/Z/asgRFC2P5rcNU6pbebKs=;
-        b=dn2NWxi0lUYot/N0eTDsmPLuuonR6nIKnTH8qT9MOSFlqysj+TS5FqWODd36P9xB81
-         C5sqvp5cwoBGiwtfg02AfI3aL/C6tMWaiBkcCVNRtYLptq6PLdC4IBHhyyHNwxpQDN7c
-         yiAZ/dBbxuyXwzG9WjgN+gxoR92GjZUAldIXVtQRbsTgJH8+7pyf1lHzLhaV8DxnxHBC
-         cUXt3orBS++uEkXIzWz3eq+Gy7Ut6kPcOpGdq5M13kR5wJCdToWwLO3RkYcgPxxU/smf
-         Ykx/jXgdkYmFCDRMZ4oP1LTQnPurN3RmFXuwi5mg84Ho/1XGc9GggM2Q4kuCWTu11oO0
-         6TLQ==
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EwupdbY0PB4JvA93A03z8JMfsTzehEG1TRHp4ST91mU=;
+        b=aHPtsF5pdrfDnRfEapR+kwM43+oueoevP6OkEWkjP0RfxBESUAk5JcJEfGeBEeJeLh
+         ekTkoQ3OEuegX4bpBrCqc/uMEex8fr4yAZP9GKT3VoNM096P+lY2c/dekOKFc+z9lbzF
+         Wz8pE7D7R+rHKIg72fmRngd31tNjfrRSBAmmI4DjbS6jz7wSvbTiOhxuO78xn6E4LKqA
+         9wxH47xDueCiPzGZ5wqc2aymPUCPXQkppgmOuC7r0IrS/pnxa0Pi0HorTKBGjkL9ains
+         XIBPx5u0fId6dQncch1PWIxOunIjTO8UX7z+7DXhGBLxqqWogBjG097fvmN3Q4DNtWPp
+         h2bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NiWa89xq2Q9IF+ljEdo4/Z/asgRFC2P5rcNU6pbebKs=;
-        b=lYyyUA2r7sPUS+05O7gnq3ovrAR2CFs8R9ANR3k44PD1Z5XJ2TgGq35V9Foifr9HL0
-         EuigVvUCtNxFTLi5KsmMZnPZUBnTmGMvuuEkA1nsnwkYxTZDOmcFrFNfS/VmLjt+XKv5
-         5PQ+RQGol5cRCSni+4GhSolhbXeyHNGsxmkgKPMJRlvucG8vnOlGRlYwH/ZMb3YuSupa
-         OATfBapZrBZutRt147ObUgVl1hqpiSlvZAPkisyQdWVWV+fBInYZSEGqkwiGfJMBqhZK
-         8y4EwJikQukVAtwFI5wEn9FntAIXF8yVdEZoIJFXtrn8u+ckHIO4SyRrDYnqcoTsQm6X
-         pqzQ==
-X-Gm-Message-State: AOAM530zMak7KIaavbfWGIeVB6zJ61tOVVnlLNeQnB6tIDqVJ87GBnZO
-        xalAEyLPU2ZfhFiV8AvW8v5/vQoVZFqlY7wOzXG/LQ==
-X-Google-Smtp-Source: ABdhPJyL75Mlj8xal8gIYuPHynOG80rShCrg0nTZF+lWp+P7xYgFGmnc53IBlOitVrzGGupuCheHT4r1L5ghKeafJZ4=
-X-Received: by 2002:a2e:b751:: with SMTP id k17mr18583891ljo.467.1637786262375;
- Wed, 24 Nov 2021 12:37:42 -0800 (PST)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EwupdbY0PB4JvA93A03z8JMfsTzehEG1TRHp4ST91mU=;
+        b=z7L0+ODVc4rf8tsclzcQOUYVcQlgYJCMpxgTDMmYOzhLZi/NSmXaqSufvOTd/3IBn1
+         PRrYdNFIRCt8d1GSH6VobQF8fZ9Lq6+c77bx3Zgx1EdDe/VupdRqyoIUWsZb13fgHcTc
+         dFsKhHBuNekhWbyhQSFAsBQhXBKh+MYLiifsJDH5q6GeGkrT+qNN8Y5ilSnnHhw7XHQ4
+         tnje7risGZn7YWpmadD/YcE1Rykx3VoLra///8dOJbIQBu3kF0L//9Lch+lPirhPWa/W
+         yjil7bEIrOwG8hOhiFEU4wpTUfafLDXWBI+yRXhmgDEgZ32g7PRyR4xTb+1OeUDT5rUa
+         NpJA==
+X-Gm-Message-State: AOAM5324z6tQnXEfLO+/P1QWb9Iw/OrN34RzI1BUBNTFnULXkfn68351
+        TS1Bd5TeIBlo+T9aIx+Pd7o=
+X-Google-Smtp-Source: ABdhPJxpSQOKWZdYJXswWChcSrw3zy7D35ooyxk4IDHZQ43EVaoDf0Nyi/C8b32BuGRDs8NxFIxblQ==
+X-Received: by 2002:a19:c3d6:: with SMTP id t205mr18211274lff.441.1637786276789;
+        Wed, 24 Nov 2021 12:37:56 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id t20sm76010lji.44.2021.11.24.12.37.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 12:37:56 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Wed, 24 Nov 2021 21:37:54 +0100
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
+        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH v2 2/4] mm/vmalloc: add support for __GFP_NOFAIL
+Message-ID: <YZ6iojllRBAAk8LW@pc638.lan>
+References: <20211122153233.9924-1-mhocko@kernel.org>
+ <20211122153233.9924-3-mhocko@kernel.org>
+ <YZ06nna7RirAI+vJ@pc638.lan>
+ <20211123170238.f0f780ddb800f1316397f97c@linux-foundation.org>
+ <YZ37IJq3+DrVhAcD@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <20211123191737.1296541-1-tkjos@google.com> <20211123191737.1296541-4-tkjos@google.com>
- <20211124124313.GH6514@kadam>
-In-Reply-To: <20211124124313.GH6514@kadam>
-From:   Todd Kjos <tkjos@google.com>
-Date:   Wed, 24 Nov 2021 12:37:30 -0800
-Message-ID: <CAHRSSExk8iO5S+OP+GDGpysoMep8=bKW5tjEBJzOm+yAMeUqsQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] binder: defer copies of pre-patched txn data
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     gregkh@linuxfoundation.org, christian@brauner.io, arve@android.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        maco@google.com, joel@joelfernandes.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZ37IJq3+DrVhAcD@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 4:44 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+On Wed, Nov 24, 2021 at 09:43:12AM +0100, Michal Hocko wrote:
+> On Tue 23-11-21 17:02:38, Andrew Morton wrote:
+> > On Tue, 23 Nov 2021 20:01:50 +0100 Uladzislau Rezki <urezki@gmail.com> wrote:
+> > 
+> > > On Mon, Nov 22, 2021 at 04:32:31PM +0100, Michal Hocko wrote:
+> > > > From: Michal Hocko <mhocko@suse.com>
+> > > > 
+> > > > Dave Chinner has mentioned that some of the xfs code would benefit from
+> > > > kvmalloc support for __GFP_NOFAIL because they have allocations that
+> > > > cannot fail and they do not fit into a single page.
+> > 
+> > Perhaps we should tell xfs "no, do it internally".  Because this is a
+> > rather nasty-looking thing - do we want to encourage other callsites to
+> > start using it?
+> 
+> This is what xfs is likely going to do if we do not provide the
+> functionality. I just do not see why that would be a better outcome
+> though. My longterm experience tells me that whenever we ignore
+> requirements by other subsystems then those requirements materialize in
+> some form in the end. In many cases done either suboptimaly or outright
+> wrong. This might be not the case for xfs as the quality of
+> implementation is high there but this is not the case in general.
+> 
+> Even if people start using vmalloc(GFP_NOFAIL) out of lazyness or for
+> any other stupid reason then what? Is that something we should worry
+> about? Retrying within the allocator doesn't make the things worse. In
+> fact it is just easier to find such abusers by grep which would be more
+> elaborate with custom retry loops.
+>  
+> [...]
+> > > > +		if (nofail) {
+> > > > +			schedule_timeout_uninterruptible(1);
+> > > > +			goto again;
+> > > > +		}
+> > 
+> > The idea behind congestion_wait() is to prevent us from having to
+> > hard-wire delays like this.  congestion_wait(1) would sleep for up to
+> > one millisecond, but will return earlier if reclaim events happened
+> > which make it likely that the caller can now proceed with the
+> > allocation event, successfully.
+> > 
+> > However it turns out that congestion_wait() was quietly broken at the
+> > block level some time ago.  We could perhaps resurrect the concept at
+> > another level - say by releasing congestion_wait() callers if an amount
+> > of memory newly becomes allocatable.  This obviously asks for inclusion
+> > of zone/node/etc info from the congestion_wait() caller.  But that's
+> > just an optimization - if the newly-available memory isn't useful to
+> > the congestion_wait() caller, they just fail the allocation attempts
+> > and wait again.
+> 
+> vmalloc has two potential failure modes. Depleted memory and vmalloc
+> space. So there are two different events to wait for. I do agree that
+> schedule_timeout_uninterruptible is both ugly and very simple but do we
+> really need a much more sophisticated solution at this stage?
 >
-> On Tue, Nov 23, 2021 at 11:17:37AM -0800, Todd Kjos wrote:
-> > +static int binder_do_deferred_txn_copies(struct binder_alloc *alloc,
-> > +                                      struct binder_buffer *buffer,
-> > +                                      struct list_head *sgc_head,
-> > +                                      struct list_head *pf_head)
-> > +{
-> > +     int ret = 0;
-> > +     struct list_head *entry, *tmp;
-> > +     struct binder_ptr_fixup *pf =
-> > +             list_first_entry_or_null(pf_head, struct binder_ptr_fixup,
-> > +                                      node);
-> > +
-> > +     list_for_each_safe(entry, tmp, sgc_head) {
->         ^^^^^^^^^^^^^^^^^^^
-> All the list_for_each() loops can be changed to list_for_each_entry().
->
->
->         list_for_each_entry_safe(sgc, tmp, sgc_head, node) {
+I would say there is at least one more. It is about when users set their
+own range(start:end) where to allocate. In that scenario we might never
+return to a user, because there might not be any free vmap space on
+specified range.
 
-Will change. Thanks for the suggestion.
+To address this, we can allow __GFP_NOFAIL only for entire vmalloc
+address space, i.e. within VMALLOC_START:VMALLOC_END. By doing so
+we will guarantee that we will not run out of vmap space, at least
+for 64 bit systems, for smaller 32 bit ones we can not guarantee it
+but it is populated back when the "lazily free logic" is kicked.
 
->
-> regards,
-> dan carpenter
->
->
->
-> > +             size_t bytes_copied = 0;
-> > +             struct binder_sg_copy *sgc =
-> > +                     container_of(entry, struct binder_sg_copy, node);
-> > +
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
+--
+Vlad Rezki
