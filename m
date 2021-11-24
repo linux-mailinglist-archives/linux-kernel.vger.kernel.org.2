@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D52B45B52B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 08:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD82645B52F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 08:17:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240695AbhKXHUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 02:20:04 -0500
-Received: from mail-lj1-f179.google.com ([209.85.208.179]:42648 "EHLO
-        mail-lj1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231555AbhKXHUD (ORCPT
+        id S240703AbhKXHUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 02:20:34 -0500
+Received: from mail-lf1-f52.google.com ([209.85.167.52]:33445 "EHLO
+        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231555AbhKXHUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 02:20:03 -0500
-Received: by mail-lj1-f179.google.com with SMTP id z8so3374510ljz.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 23:16:53 -0800 (PST)
+        Wed, 24 Nov 2021 02:20:31 -0500
+Received: by mail-lf1-f52.google.com with SMTP id bu18so4826174lfb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 23:17:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=UGG6QPMMDpK2R0jr9YHuvYphEa9UmDAwDV7bpKHnSqs=;
-        b=gTn+dsN0htzJ6M2ESLsPL85SjzYfXkApiKgZCJSgGxe1+LIn95xn0xs0weBkzKwJi9
-         fgK+jjP9ViBPhDFp6Qa2m8Yo6MbYkMn053adNxOymqRwO6ggKz6b7nGFCZmLI9xaQXsr
-         g3ZTTfutvycYEWGk1S5L85d8lkj8Y670QCJ8qZ624tqIL4evDgCgP5QIsceMRksIk/+q
-         4EjTDUjNL+pZjjYD2t5raFWmXyr4GgW7BqZ4NwvjoXCXAEOFaOqnAOvaVo/gqoa/NV3Z
-         pzzNarKvpvodht0PvLxPvSiiYsrNkpMFiXaKPJ43eOY76qgzECgXqPqvxc2XJudZMYa+
-         iGDg==
-X-Gm-Message-State: AOAM530+lNMhPNwkv7+Md+1XqCLLSh4Ei/y4eVc8McTE9kwjxMsAcU/O
-        3TWQIuUTmlgeTEFQe9UZImQ=
-X-Google-Smtp-Source: ABdhPJwk4QO50e9im6YO8c49CbF5+BACL2Ms0P1ZWrpu+LiAD5i24fKIp5Jt8kyJXgvorsb1eMIk+w==
-X-Received: by 2002:a2e:9617:: with SMTP id v23mr12621798ljh.363.1637738212990;
-        Tue, 23 Nov 2021 23:16:52 -0800 (PST)
+        bh=145nBthxB0WKQxptofOIfjC/viUogIb0Ow4wshzW5kc=;
+        b=Sy27LkxnMvRP6dzQYpFMk9VAJrI71CFa/GUxvZIoPxhpevREuAyuWfhjryMfwPSQQ1
+         qYXWIwu9hJix4IxclGo0U+dSuGattiXEs7Xa3+zDTC8ruoIDJRUQoOB/gyJYDUCGedwG
+         6L4XKl3nrSL7M4/PC41NFcnfOs2FztQlTYdxGuHUFHyLz+xAsyhKLwriIJ2Ek/K7EFf4
+         7YbE5v8lA5ZMYi0dMF79/yBtqBkeAe2TAVWp1xc/pPeatr5QvbAFVH13UWfscbDAVUEg
+         8/5e8vMwzaeuFxPHjQhzcsLW/4YYVyIM8ihVIwOsQa2T508Ivy3weck3VIfgPUZv65My
+         hmBA==
+X-Gm-Message-State: AOAM531l0HIPnrUIUn5UwRFyf7YrDn2R09NTLnQgGlG/2ZL6ZppfBIiE
+        sV8FtB/2IFkxiR/ww1yDXN9YICmYNrU=
+X-Google-Smtp-Source: ABdhPJxzcUKrfNXRopOWd8pADZCFBgJW717p1Y10u8WHH62bAXe01qkaE9bmX4wd/16oZLSrz4dw9g==
+X-Received: by 2002:a05:6512:2033:: with SMTP id s19mr12295080lfs.290.1637738240787;
+        Tue, 23 Nov 2021 23:17:20 -0800 (PST)
 Received: from fedora (dc73szyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16ee:fa00::4])
-        by smtp.gmail.com with ESMTPSA id bt3sm1523587lfb.132.2021.11.23.23.16.52
+        by smtp.gmail.com with ESMTPSA id f17sm957469lfl.117.2021.11.23.23.17.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 23:16:52 -0800 (PST)
-Date:   Wed, 24 Nov 2021 09:16:45 +0200
+        Tue, 23 Nov 2021 23:17:20 -0800 (PST)
+Date:   Wed, 24 Nov 2021 09:17:13 +0200
 From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
         Matti Vaittinen <mazziesaccount@gmail.com>
@@ -43,12 +43,13 @@ Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
         Mark Brown <broonie@kernel.org>,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/3] regulators: Add regulator_err2notif() helper
-Message-ID: <eb1755ac0569ff07ffa466cf8912c6fd50e7c7c6.1637736436.git.matti.vaittinen@fi.rohmeurope.com>
+Subject: [PATCH v2 2/3] regulators: irq_helper: Provide helper for trivial
+ IRQ notifications
+Message-ID: <603b7ed1938013a00371c1e7ccc63dfb16982b87.1637736436.git.matti.vaittinen@fi.rohmeurope.com>
 References: <cover.1637736436.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="VeZSEWKKs89CeiVe"
+        protocol="application/pgp-signature"; boundary="Ttpqo1ZQhfs8TNea"
 Content-Disposition: inline
 In-Reply-To: <cover.1637736436.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
@@ -56,69 +57,98 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---VeZSEWKKs89CeiVe
+--Ttpqo1ZQhfs8TNea
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Help drivers avoid storing both supported notification and supported error
-flags by supporting conversion from regulator error to notification.
-This may help saving some bytes.
-
-Add helper for finding the regulator notification corresponding to a
-regulator error.
+Provide a generic map_event helper for regulators which have a notification
+IRQ with single, well defined purpose. Eg, IRQ always indicates exactly one
+event for exactly one regulator device. For such IRQs the mapping is
+trivial.
 
 Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
- include/linux/regulator/driver.h | 34 ++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
 
-diff --git a/include/linux/regulator/driver.h b/include/linux/regulator/dri=
-ver.h
-index 1cb8071fee34..f0827d34cb65 100644
---- a/include/linux/regulator/driver.h
-+++ b/include/linux/regulator/driver.h
-@@ -646,6 +646,40 @@ struct regulator_dev {
- 	spinlock_t err_lock;
- };
-=20
-+/*
-+ * Convert error flags to corresponding notifications.
+---
+v2:
+ - use hweight not single_bit_set
+---
+ drivers/regulator/irq_helpers.c  | 41 +++++++++++++++++++++++++++++++-
+ include/linux/regulator/driver.h |  2 ++
+ 2 files changed, 42 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/regulator/irq_helpers.c b/drivers/regulator/irq_helper=
+s.c
+index 522764435575..fe7ae0f3f46a 100644
+--- a/drivers/regulator/irq_helpers.c
++++ b/drivers/regulator/irq_helpers.c
+@@ -320,7 +320,9 @@ static void init_rdev_errors(struct regulator_irq *h)
+  *			IRQF_ONESHOT when requesting the (threaded) irq.
+  * @common_errs:	Errors which can be flagged by this IRQ for all rdevs.
+  *			When IRQ is re-enabled these errors will be cleared
+- *			from all associated regulators
++ *			from all associated regulators. Use this instead of the
++ *			per_rdev_errs if you use
++ *			regulator_irq_map_event_simple() for event mapping.
+  * @per_rdev_errs:	Optional error flag array describing errors specific
+  *			for only some of the regulators. These errors will be
+  *			or'ed with common errors. If this is given the array
+@@ -395,3 +397,40 @@ void regulator_irq_helper_cancel(void **handle)
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(regulator_irq_helper_cancel);
++
++/**
++ * regulator_irq_map_event_simple - regulator IRQ notification for trivial=
+ IRQs
 + *
-+ * Can be used by drivers which use the notification helpers to
-+ * find out correct notification flags based on the error flags. Drivers
-+ * can avoid storing both supported notification and error flags which
-+ * may save few bytes.
++ * @irq:	Number of IRQ that occurred
++ * @rid:	Information about the event IRQ indicates
++ * @dev_mask:	mask indicating the regulator originating the IRQ
++ *
++ * Regulators whose IRQ has single, well defined purpose (always indicate
++ * exactly one event, and are relevant to exactly one regulator device) can
++ * use this function as their map_event callbac for their regulator IRQ
++ * notification helperk. Exactly one rdev and exactly one error (in
++ * "common_errs"-field) can be given at IRQ helper registration for
++ * regulator_irq_map_event_simple() to be viable.
 + */
-+static inline int regulator_err2notif(int err)
++int regulator_irq_map_event_simple(int irq, struct regulator_irq_data *rid,
++			    unsigned long *dev_mask)
 +{
-+	switch (err) {
-+	case REGULATOR_ERROR_UNDER_VOLTAGE:
-+		return REGULATOR_EVENT_UNDER_VOLTAGE;
-+	case REGULATOR_ERROR_OVER_CURRENT:
-+		return REGULATOR_EVENT_OVER_CURRENT;
-+	case REGULATOR_ERROR_REGULATION_OUT:
-+		return REGULATOR_EVENT_REGULATION_OUT;
-+	case REGULATOR_ERROR_FAIL:
-+		return REGULATOR_EVENT_FAIL;
-+	case REGULATOR_ERROR_OVER_TEMP:
-+		return REGULATOR_EVENT_OVER_TEMP;
-+	case REGULATOR_ERROR_UNDER_VOLTAGE_WARN:
-+		return REGULATOR_EVENT_UNDER_VOLTAGE_WARN;
-+	case REGULATOR_ERROR_OVER_CURRENT_WARN:
-+		return REGULATOR_EVENT_OVER_CURRENT_WARN;
-+	case REGULATOR_ERROR_OVER_VOLTAGE_WARN:
-+		return REGULATOR_EVENT_OVER_VOLTAGE_WARN;
-+	case REGULATOR_ERROR_OVER_TEMP_WARN:
-+		return REGULATOR_EVENT_OVER_TEMP_WARN;
-+	}
++	int err =3D rid->states[0].possible_errs;
++
++	*dev_mask =3D 1;
++	/*
++	 * This helper should only be used in a situation where the IRQ
++	 * can indicate only one type of problem for one specific rdev.
++	 * Something fishy is going on if we are having multiple rdevs or ERROR
++	 * flags here.
++	 */
++	if (WARN_ON(rid->num_states !=3D 1 || hweight32(err) !=3D 1))
++		return 0;
++
++	rid->states[0].errors =3D err;
++	rid->states[0].notifs =3D regulator_err2notif(err);
++
 +	return 0;
 +}
++EXPORT_SYMBOL_GPL(regulator_irq_map_event_simple);
 +
-+
- struct regulator_dev *
- regulator_register(const struct regulator_desc *regulator_desc,
- 		   const struct regulator_config *config);
+diff --git a/include/linux/regulator/driver.h b/include/linux/regulator/dri=
+ver.h
+index f0827d34cb65..15cd94bb6769 100644
+--- a/include/linux/regulator/driver.h
++++ b/include/linux/regulator/driver.h
+@@ -701,6 +701,8 @@ void *regulator_irq_helper(struct device *dev,
+ 			   int irq_flags, int common_errs, int *per_rdev_errs,
+ 			   struct regulator_dev **rdev, int rdev_amount);
+ void regulator_irq_helper_cancel(void **handle);
++int regulator_irq_map_event_simple(int irq, struct regulator_irq_data *rid,
++				   unsigned long *dev_mask);
+=20
+ void *rdev_get_drvdata(struct regulator_dev *rdev);
+ struct device *rdev_get_dev(struct regulator_dev *rdev);
 --=20
 2.31.1
 
@@ -135,19 +165,19 @@ Simon says - in Latin please.
 ~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
 Thanks to Simon Glass for the translation =3D]=20
 
---VeZSEWKKs89CeiVe
+--Ttpqo1ZQhfs8TNea
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmGd5t0ACgkQeFA3/03a
-ocVoNwgAtBjp+pGzqNr9hOl9kk168J8+Ri4VKDrpdmvmC4sbfyYTpdQxfj/LlcG/
-HRj1bax+Uw7R3zt1fcyKdT6j/detM+pGzQneIdeVHs68hpNq3eZ9OE4VnY6cY/Q3
-ExfgMVsj6w1JbIfIksMyXX5AZyeuJWrpSSk324f2gvL78UG53Sfb86jdxIk61Mk4
-9rFppP8Oil2Wqz9lLMSr1HPiHHefZiT66drvwjEsTNOaQpJY7PKw0jbMgVR2Ev3k
-49OR/+KyBElYw28y6QOcsowCIJTGLMMUCo1uwv6zZuHPHQw7TPK3muxiMA59uDNI
-XOIn6TeP1riq19Q6TvWdc6Bluq4zaA==
-=xyUF
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmGd5vkACgkQeFA3/03a
+ocVXsAf9HGSQIqCKiChg/n73avsVe9hhmDIG/ylMy0WO1wiDo69XfHzZ/o5ZMaLL
+4hYglx9l3xNG09KcqIKPauDIDLNrz7nURBvFdHLm2R/zhyV+byuS2IACzZnjvz4p
+V/jAJr8/lrJ0IaFezrop7UnO1JbEtSaFpoE0COK8gJKlgzac5QN122duSTicwNF8
+QpO+cAB0YvN/q/zNNgHoBcbyk79+WO6WCMmVtHcJrJ6ZjLLNzqdN4zzqGGOV/oUv
+eS4eXRp+gIwMI1ERAlIh/GRxoLBUuEOJoZ0snle+tz9y73LefbrkZtCQgED7vaFn
+hnzDIBlLLjyuLGK9R18DSlO796hSwA==
+=WZyb
 -----END PGP SIGNATURE-----
 
---VeZSEWKKs89CeiVe--
+--Ttpqo1ZQhfs8TNea--
