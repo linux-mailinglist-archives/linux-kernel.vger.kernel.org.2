@@ -2,92 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2211D45CE59
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:46:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B8445CE62
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:47:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238909AbhKXUtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 15:49:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235576AbhKXUtl (ORCPT
+        id S239278AbhKXUux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 15:50:53 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2154 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235709AbhKXUur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 15:49:41 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1788C061574;
-        Wed, 24 Nov 2021 12:46:30 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id 207so7985411ljf.10;
-        Wed, 24 Nov 2021 12:46:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sqvC+dGbfcX6cKXaEroZ5TEDlwO+hSkZLjOyRL/i65M=;
-        b=TcA3Rt9RWkYyKJgneybHJZWfkYCfIKSvcMQ4Fj3n2JNzm8PQCgSgkJc6CbX11j7ved
-         Ld/wWhaiYekfnIUycbvocmFX7/QnDYjTjidQF6q94HaFwbHWuJUwK65XmMk5oHOpvuHj
-         nkm0AGHRbBnWZgpHVB7wqqJZbxH2EDzTeNd4ZMcazbZbZo08aclDlxv+YdtPlv7b1ffo
-         MDU2dZOUBFFk8ID9fp7o3nSSNnBfFMzbsL/FXnpSaDpfUmarOpmyB7je/wGin6cYMstD
-         jJbeVPVLsouO+L6CKq66JWLe5JKFUSxYQiaZRLyQpNZsTyGzE9YgF92kYvdFqA9YQt7b
-         g8cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sqvC+dGbfcX6cKXaEroZ5TEDlwO+hSkZLjOyRL/i65M=;
-        b=HPE2J0On/tVKeGZBkMLNX/Cypo59PHkBDggDt209xnSOXTGo7qOlSzzOO6/Q9KfjON
-         p/9+sdApZ865TkPrsrjimC040joqHcQMt64cOnkjrrQeT3ZCZXz8b8+sTPabJ6PtFlb8
-         97Q7y4fRU+/jfyMFvn+HLSiK/uU1bwu4G5kz+vQjGi6zzQY8AzJy/xmKM+BCwv7aczlF
-         QBf3vlkqQgmG+Nyjp+frEcKARAq9pXP+l88Nc50YkFvFuBcyZthlL4BrpgzQjZe2Cr57
-         jghJM5/HlUelHqlKsw8QiE5/JtWknIOlAMTjI4CRvE+IRhc3FUz3t5lafjDXRFy6uacH
-         xl1A==
-X-Gm-Message-State: AOAM531IeoNL3atKmCCapzORBTQJCyiLpT6bMUa1E6uzaHPC7EGb5/sW
-        dzo4RMP9kbNOFXT+bF9swhA=
-X-Google-Smtp-Source: ABdhPJzwTzo1b7j/+DUso3wsuKzfqD0+SzfyXNXfc3mkgDa231ju+a0J3nvbbccKYDe86sApmqEc+g==
-X-Received: by 2002:a2e:b88b:: with SMTP id r11mr19691966ljp.280.1637786789149;
-        Wed, 24 Nov 2021 12:46:29 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id y22sm79998lfg.272.2021.11.24.12.46.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 12:46:28 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 24 Nov 2021 21:46:26 +0100
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
-        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [PATCH v2 2/4] mm/vmalloc: add support for __GFP_NOFAIL
-Message-ID: <YZ6kopRGlHEOgOb5@pc638.lan>
-References: <20211122153233.9924-1-mhocko@kernel.org>
- <20211122153233.9924-3-mhocko@kernel.org>
- <YZ06nna7RirAI+vJ@pc638.lan>
- <YZ1KZKkHSHcSBnBV@dhcp22.suse.cz>
+        Wed, 24 Nov 2021 15:50:47 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AOKOpeg017746;
+        Wed, 24 Nov 2021 20:47:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=A9bqNV1Jy3zIemg25SOA8ivP5X6E17/v2bKeKAuwHlM=;
+ b=E/Aog28GYCWBW/Z+CXRAVgFW5JuMzck15BRE3ABOhqKVH2Z6hKi9b/QM8dCyJbVaW50G
+ sUiIzVDpS6e3h0otQPA8xFTKnHJ1vkiwAI7PKXuZwpQ0je7BLGR4wWj/tTymDbjS3p8r
+ DxeNmKnbvOeVPOeF9kZzZp8up2DsGZdL/eKodFfJ5YpZSyQ4QR1HArAW1A8j+qXAuX1C
+ qxTCNMZIDPS4y5jy4pMMX7zeDi/1/DqB3O63ooG+wEczqjCiIwoJmR8AruoKDCnSvEU1
+ kqmwOeP/Gf/UsqZkj+4o4Fot7J3n01jUiGYoyrS+d+Y5ZGa+Pik8pJxMSvqIb/O81epe oA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3chu00242k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Nov 2021 20:47:32 +0000
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AOKXEbi033083;
+        Wed, 24 Nov 2021 20:47:32 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3chu002423-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Nov 2021 20:47:31 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AOKd1nV032104;
+        Wed, 24 Nov 2021 20:47:29 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 3cernadamt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Nov 2021 20:47:29 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AOKlQX619464544
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Nov 2021 20:47:26 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 29FD552052;
+        Wed, 24 Nov 2021 20:47:26 +0000 (GMT)
+Received: from li-4b5937cc-25c4-11b2-a85c-cea3a66903e4.ibm.com.com (unknown [9.211.59.116])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id CF7075204F;
+        Wed, 24 Nov 2021 20:47:22 +0000 (GMT)
+From:   Nayna Jain <nayna@linux.ibm.com>
+To:     linux-integrity@vger.kernel.org, keyrings@vger.kernel.org
+Cc:     dhowells@redhat.com, zohar@linux.ibm.com, jarkko@kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dimitri John Ledkov <dimitri.ledkov@canonical.com>,
+        Seth Forshee <seth@forshee.me>,
+        Nayna Jain <nayna@linux.ibm.com>
+Subject: [PATCH v5 0/2] integrity: support including firmware ".platform" keys at build time 
+Date:   Wed, 24 Nov 2021 15:47:12 -0500
+Message-Id: <20211124204714.82514-1-nayna@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZ1KZKkHSHcSBnBV@dhcp22.suse.cz>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: bLgZ8gi3qI0QiBF3sOZZsJojyrtQw9a2
+X-Proofpoint-GUID: vfQycDDeUUbr_gXLI41Z43iN6NcxGoEZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-24_06,2021-11-24_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ priorityscore=1501 mlxscore=0 adultscore=0 phishscore=0 suspectscore=0
+ malwarescore=0 bulkscore=0 impostorscore=0 clxscore=1015 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111240103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 09:09:08PM +0100, Michal Hocko wrote:
-> On Tue 23-11-21 20:01:50, Uladzislau Rezki wrote:
-> [...]
-> > I have raised two concerns in our previous discussion about this change,
-> > well that is sad...
-> 
-> I definitely didn't mean to ignore any of the feedback. IIRC we were in
-> a disagreement in the failure mode for retry loop - i.e. free all the
-> allocated pages in case page table pages cannot be allocated. I still
-> maintain my position and until there is a wider consensus on that I will
-> keep my current implementation. The other concern was about failures
-> warning but that shouldn't be a problem when basing on the current Linus
-> tree. Am I missing something?
->
-Sorry i was answering vice-versa from latest toward first messages :)
+Some firmware support secure boot by embedding static keys to verify the
+Linux kernel during boot. However, these firmware do not expose an
+interface for the kernel to load firmware keys onto the ".platform"
+keyring, preventing the kernel from verifying the kexec kernel image
+signature.
 
---
-Vlad Rezki
+This patchset exports load_certificate_list() and defines a new function
+load_builtin_platform_cert() to load compiled in certificates onto the
+".platform" keyring.
+
+Changelog:
+
+v5:
+* Renamed load_builtin_platform_cert() to load_platform_certificate_list()
+and config INTEGRITY_PLATFORM_BUILTIN_KEYS to INTEGRITY_PLATFORM_KEYS, as
+suggested by Mimi Zohar.
+
+v4:
+* Split into two patches as per Mimi Zohar and Dimitri John Ledkov
+recommendation.
+
+v3:
+* Included Jarkko's feedback
+ ** updated patch description to include approach.
+ ** removed extern for function declaration in the .h file.
+* Included load_certificate_list() within #ifdef CONFIG_KEYS condition.
+
+v2:
+* Fixed the error reported by kernel test robot
+* Updated patch description based on Jarkko's feedback.
+
+Nayna Jain (2):
+  certs: export load_certificate_list() to be used outside certs/
+  integrity: support including firmware ".platform" keys at build time
+
+ certs/Makefile                                |  5 ++--
+ certs/blacklist.c                             |  1 -
+ certs/common.c                                |  2 +-
+ certs/common.h                                |  9 -------
+ certs/system_keyring.c                        |  1 -
+ include/keys/system_keyring.h                 |  6 +++++
+ security/integrity/Kconfig                    | 10 +++++++
+ security/integrity/Makefile                   | 17 +++++++++++-
+ security/integrity/digsig.c                   |  2 +-
+ security/integrity/integrity.h                |  6 +++++
+ .../integrity/platform_certs/platform_cert.S  | 23 ++++++++++++++++
+ .../platform_certs/platform_keyring.c         | 26 +++++++++++++++++++
+ 12 files changed, 92 insertions(+), 16 deletions(-)
+ delete mode 100644 certs/common.h
+ create mode 100644 security/integrity/platform_certs/platform_cert.S
+
+-- 
+2.27.0
