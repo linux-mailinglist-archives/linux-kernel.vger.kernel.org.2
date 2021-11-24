@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B28C45C0EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF6245C552
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:53:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241239AbhKXNMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:12:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47544 "EHLO mail.kernel.org"
+        id S1349479AbhKXN4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:56:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343901AbhKXNJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:09:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6C47613B1;
-        Wed, 24 Nov 2021 12:41:00 +0000 (UTC)
+        id S1354766AbhKXNxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:53:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D915F61391;
+        Wed, 24 Nov 2021 13:05:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757661;
-        bh=LWmrlAyRHjL2tMGB7OPivzvCmM5nO4jCdBzxwSyOBDM=;
+        s=korg; t=1637759122;
+        bh=rs1tjDI+lPEIwDDqeP9b+T11WSNtJgnx6qfYP84wn90=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ql5hw2YEHwxg4FKqpHOJ7gYBk5SZGPWbn1nYt1vkJ6YKgIck2MHox8E76wlgX47MS
-         bvjy8x0QNAadSFyUFiJT4wpeWWyq6hYYuLvmzUB+x70dwJt8Q4Fq3qJex2/Z2NcRot
-         82kPlKg6d6iadiov0+vBMFWgN2peALOcoWQT2eaU=
+        b=XxyMX0Orcy31awKkFF72u+CeV4sbHiDMeIESCMeizMogLWZlQ+Pjm+CICsMPF92wE
+         a9zFcjUY80chLK50yjhcULmiFfLdoVJ/UixM/CF0lPIpaJhP8oqxW2E0DNkuCYvBsQ
+         WtfCDqfCEk/zE84xTjntoF78qHTnYvzR98HiY1kE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+06472778c97ed94af66d@syzkaller.appspotmail.com,
-        Dominique Martinet <asmadeus@codewreck.org>
-Subject: [PATCH 4.19 236/323] 9p/net: fix missing error check in p9_check_errors
+        Alex Williamson <alex.williamson@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Mark Pearson <markpearson@lenovo.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 139/279] platform/x86: think-lmi: Abort probe on analyze failure
 Date:   Wed, 24 Nov 2021 12:57:06 +0100
-Message-Id: <20211124115726.888841089@linuxfoundation.org>
+Message-Id: <20211124115723.589026988@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,29 +43,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dominique Martinet <asmadeus@codewreck.org>
+From: Alex Williamson <alex.williamson@redhat.com>
 
-commit 27eb4c3144f7a5ebef3c9a261d80cb3e1fa784dc upstream.
+[ Upstream commit 812fcc609502096e98cc3918a4b807722dba8fd9 ]
 
-Link: https://lkml.kernel.org/r/99338965-d36c-886e-cd0e-1d8fff2b4746@gmail.com
-Reported-by: syzbot+06472778c97ed94af66d@syzkaller.appspotmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+A Lenovo ThinkStation S20 (4157CTO BIOS 60KT41AUS) fails to boot on
+recent kernels including the think-lmi driver, due to the fact that
+errors returned by the tlmi_analyze() function are ignored by
+tlmi_probe(), where  tlmi_sysfs_init() is called unconditionally.
+This results in making use of an array of already freed, non-null
+pointers and other uninitialized globals, causing all sorts of nasty
+kobject and memory faults.
+
+Make use of the analyze function return value, free a couple leaked
+allocations, and remove the settings_count field, which is incremented
+but never consumed.
+
+Fixes: a40cd7ef22fb ("platform/x86: think-lmi: Add WMI interface support on Lenovo platforms")
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Reviewed-by: Mark Gross <markgross@kernel.org>
+Reviewed-by: Mark Pearson <markpearson@lenovo.com>
+Link: https://lore.kernel.org/r/163639463588.1330483.15850167112490200219.stgit@omen
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/9p/client.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/platform/x86/think-lmi.c | 13 ++++++++++---
+ drivers/platform/x86/think-lmi.h |  1 -
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
---- a/net/9p/client.c
-+++ b/net/9p/client.c
-@@ -553,6 +553,8 @@ static int p9_check_errors(struct p9_cli
- 		kfree(ename);
- 	} else {
- 		err = p9pdu_readf(&req->rc, c->proto_version, "d", &ecode);
-+		if (err)
-+			goto out_err;
- 		err = -ecode;
+diff --git a/drivers/platform/x86/think-lmi.c b/drivers/platform/x86/think-lmi.c
+index 9472aae72df29..c4d9c45350f7c 100644
+--- a/drivers/platform/x86/think-lmi.c
++++ b/drivers/platform/x86/think-lmi.c
+@@ -888,8 +888,10 @@ static int tlmi_analyze(void)
+ 			break;
+ 		if (!item)
+ 			break;
+-		if (!*item)
++		if (!*item) {
++			kfree(item);
+ 			continue;
++		}
  
- 		p9_debug(P9_DEBUG_9P, "<<< RLERROR (%d)\n", -ecode);
+ 		/* It is not allowed to have '/' for file name. Convert it into '\'. */
+ 		strreplace(item, '/', '\\');
+@@ -902,6 +904,7 @@ static int tlmi_analyze(void)
+ 		setting = kzalloc(sizeof(*setting), GFP_KERNEL);
+ 		if (!setting) {
+ 			ret = -ENOMEM;
++			kfree(item);
+ 			goto fail_clear_attr;
+ 		}
+ 		setting->index = i;
+@@ -916,7 +919,6 @@ static int tlmi_analyze(void)
+ 		}
+ 		kobject_init(&setting->kobj, &tlmi_attr_setting_ktype);
+ 		tlmi_priv.setting[i] = setting;
+-		tlmi_priv.settings_count++;
+ 		kfree(item);
+ 	}
+ 
+@@ -983,7 +985,12 @@ static void tlmi_remove(struct wmi_device *wdev)
+ 
+ static int tlmi_probe(struct wmi_device *wdev, const void *context)
+ {
+-	tlmi_analyze();
++	int ret;
++
++	ret = tlmi_analyze();
++	if (ret)
++		return ret;
++
+ 	return tlmi_sysfs_init();
+ }
+ 
+diff --git a/drivers/platform/x86/think-lmi.h b/drivers/platform/x86/think-lmi.h
+index f8e26823075fd..2ce5086a5af27 100644
+--- a/drivers/platform/x86/think-lmi.h
++++ b/drivers/platform/x86/think-lmi.h
+@@ -55,7 +55,6 @@ struct tlmi_attr_setting {
+ struct think_lmi {
+ 	struct wmi_device *wmi_device;
+ 
+-	int settings_count;
+ 	bool can_set_bios_settings;
+ 	bool can_get_bios_selections;
+ 	bool can_set_bios_password;
+-- 
+2.33.0
+
 
 
