@@ -2,99 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E131945B8AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 11:50:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE5B45B8AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 11:53:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241614AbhKXKxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 05:53:34 -0500
-Received: from phobos.denx.de ([85.214.62.61]:34292 "EHLO phobos.denx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233895AbhKXKxb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 05:53:31 -0500
-Received: from mail.denx.de (unknown [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: festevam@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id D1C5682FBE;
-        Wed, 24 Nov 2021 11:50:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1637751021;
-        bh=LHXoLB8Ri91FEj0eco2+/2CAghLtH6ykmiIIfvpPOQ4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=n9RY19DN8WllXrSc2lWgBekRdW8w/BLpJwmyvKdJO+Zpee096bKsKZGKgRJoG65uV
-         JvKIxKkzkmrhIsbki2JvOCSPMlLy+hVgAXN9oY8F4Um4MdxFA/VDu0PbYIleXS3jIn
-         BZ6gi/b5wX4spQNizrc6rwjBJ9xRKLdBFbRj+AIJJVOPWS/LFsSKydVmF5amyadULy
-         7eWUkkh/umGvg7xuvI2GxbGBJr4gt4Xyr18f7YAa5adAJoMnzHR61hEiE1vrzjKYkR
-         oBMeLP3OycD8wDl1heqzUbr5ZKUB+Dz6OYIzHOdPnhQID6hUoaKdox7oKIDMnPDv3w
-         /wMH5AuEUi9UA==
+        id S241624AbhKXK4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 05:56:25 -0500
+Received: from outbound-smtp34.blacknight.com ([46.22.139.253]:53913 "EHLO
+        outbound-smtp34.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233895AbhKXK4Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 05:56:24 -0500
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp34.blacknight.com (Postfix) with ESMTPS id 5515E20B4
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:53:14 +0000 (GMT)
+Received: (qmail 23874 invoked from network); 24 Nov 2021 10:53:14 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 24 Nov 2021 10:53:14 -0000
+Date:   Wed, 24 Nov 2021 10:53:11 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        NeilBrown <neilb@suse.de>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/8] mm/vmscan: Throttle reclaim when no progress is
+ being made
+Message-ID: <20211124105311.GF3366@techsingularity.net>
+References: <20211022144651.19914-1-mgorman@techsingularity.net>
+ <20211022144651.19914-4-mgorman@techsingularity.net>
+ <20211124011912.GA265983@magnolia>
+ <20211124103221.GD3366@techsingularity.net>
+ <cbf91d44-8c8f-15b4-a093-58c04d668156@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 24 Nov 2021 07:50:20 -0300
-From:   Fabio Estevam <festevam@denx.de>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Alagu Sankar <alagusankar@silex-india.com>,
-        Erik Stromdahl <erik.stromdahl@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 187/575] ath10k: high latency fixes for beacon buffer
-In-Reply-To: <20211116115912.GA24443@amd>
-References: <20211115165343.579890274@linuxfoundation.org>
- <20211115165350.173331894@linuxfoundation.org> <20211116115912.GA24443@amd>
-Message-ID: <f9a6598c2d6cf80ad40efddba06dddc5@denx.de>
-X-Sender: festevam@denx.de
-User-Agent: Roundcube Webmail/1.3.6
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <cbf91d44-8c8f-15b4-a093-58c04d668156@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
-
-On 16/11/2021 08:59, Pavel Machek wrote:
-
-> There's GFP_KERNEL vs. GFP_ATOMIC confusion here:
+On Wed, Nov 24, 2021 at 11:43:05AM +0100, Vlastimil Babka wrote:
+> >> Any thoughts?  For now I can just hack around this by skipping
+> >> reclaim_throttle if cgroup_reclaim() == true, but that's probably not
+> >> the correct fix. :)
+> >> 
+> > 
+> > No, it wouldn't be but a possibility is throttling for only 1 jiffy if
+> > reclaiming within a memcg and the zone is balanced overall.
+> > 
+> > The interruptible part should just be the patch below. I need to poke at
+> > the cgroup limit part a bit
 > 
->> @@ -5466,10 +5470,17 @@ static int ath10k_add_interface(struct 
->> ieee80211_hw *hw,
->>  	if (vif->type == NL80211_IFTYPE_ADHOC ||
->>  	    vif->type == NL80211_IFTYPE_MESH_POINT ||
->>  	    vif->type == NL80211_IFTYPE_AP) {
->> -		arvif->beacon_buf = dma_alloc_coherent(ar->dev,
->> -						       IEEE80211_MAX_FRAME_LEN,
->> -						       &arvif->beacon_paddr,
->> -						       GFP_ATOMIC);
->> +		if (ar->bus_param.dev_type == ATH10K_DEV_TYPE_HL) {
->> +			arvif->beacon_buf = kmalloc(IEEE80211_MAX_FRAME_LEN,
->> +						    GFP_KERNEL);
->> +			arvif->beacon_paddr = (dma_addr_t)arvif->beacon_buf;
->> +		} else {
->> +			arvif->beacon_buf =
->> +				dma_alloc_coherent(ar->dev,
->> +						   IEEE80211_MAX_FRAME_LEN,
->> +						   &arvif->beacon_paddr,
->> +						   GFP_ATOMIC);
->> +		}
->>  		if (!arvif->beacon_buf) {
->>  			ret = -ENOMEM;
->>  			ath10k_warn(ar, "failed to allocate beacon
->>  	buffer: %d\n",
+> As the throttle timeout is short anyway, will the TASK_UNINTERRUPTIBLE vs
+> TASK_INTERRUPTIBLE make a difference for the (ability to kill? AFAIU
+> typically this inability to kill is because of a loop that doesn't check for
+> fatal_signal_pending().
 > 
-> I'd expect both allocations to use same GFP_ flags.
 
-Good catch.
+Yep, and the fatal_signal_pending() is lacking within reclaim in general
+but I'm undecided on how much that should change in the context of reclaim
+throttling but at minimum, I don't want the signal delivery to be masked
+or delayed.
 
-Let me prepare a patch, test it and submit it soon.
-
-Thanks,
-
-Fabio Estevam
 -- 
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-60 Fax: (+49)-8142-66989-80 Email: 
-festevam@denx.de
+Mel Gorman
+SUSE Labs
