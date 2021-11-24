@@ -2,86 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9579645B8F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 12:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6EB45B8F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 12:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240807AbhKXLRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 06:17:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234726AbhKXLRF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 06:17:05 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF0DC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 03:13:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=s2E5adjpzqmax/IU8j88qhpbYauvLkBEfTf0Oh2+RTs=; b=Yb9hajgzOxCixoBNJgh5Lk5WDa
-        sXJU1GSLTbRwd1IC9ABf3YNczObzqcbJ9RonyA8WTowRsx61rtn+d0wHuO7BoovaqHvtJFQDYO3Hq
-        2Fj+wsXPoRhdYbCZJzNvWALG9j7AHP+Yi+xQ3NGQoMOMapeS5GcgPa/gRnX8DItrmyoTjpr/YH3t5
-        IVCr41oEkVxsYE3XDFVGX8S5Z9lzuNDs1AfwLrTezQVAh0cqZcLhw4zTDWRwJEem0VtJwy9pF9Gx3
-        j9lernAn/w5A5f9skSJn02y55HEYlf+bHjMihAOUsTGBlIohgTd77EajA6bVhh43Pi1ALflQs5yBA
-        fPVlj3Dg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mpqDS-000FcJ-U0; Wed, 24 Nov 2021 11:13:31 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DF034300230;
-        Wed, 24 Nov 2021 12:13:28 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id AD7912DAA8BF2; Wed, 24 Nov 2021 12:13:28 +0100 (CET)
-Date:   Wed, 24 Nov 2021 12:13:28 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        Barry Song <song.bao.hua@hisilicon.com>
-Subject: Re: [PATCH v2] sched/fair: Remove the cost of a redundant
- cpumask_next_wrap in select_idle_cpu
-Message-ID: <YZ4eWHarf7QDONLB@hirez.programming.kicks-ass.net>
-References: <20211124091546.5072-1-21cnbao@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211124091546.5072-1-21cnbao@gmail.com>
+        id S233476AbhKXLRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 06:17:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59244 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234726AbhKXLRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 06:17:40 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4802D60E08;
+        Wed, 24 Nov 2021 11:14:31 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mpqEO-007UV8-Tg; Wed, 24 Nov 2021 11:14:29 +0000
+Date:   Wed, 24 Nov 2021 11:14:28 +0000
+Message-ID: <87ee75dcvf.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Chris Brandt <chris.brandt@renesas.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Rob Herring <robh@kernel.org>, John Crispin <john@phrozen.org>,
+        Biwen Li <biwen.li@nxp.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH] of/irq: Add a quirk for controllers with their own definition of interrupt-map
+In-Reply-To: <CAMuHMdWd9mJe8hGNdH5VR-qJOxgfT4YtFfOmQA=uV4QPsvpqtA@mail.gmail.com>
+References: <20211122103032.517923-1-maz@kernel.org>
+        <CAMuHMdX2ZRvDYA3idmw3nBcP6CO=2od6ZU-UeJo9vYsuB=fQNQ@mail.gmail.com>
+        <8735no70tt.wl-maz@kernel.org>
+        <CAMuHMdVS67BLP2XEdD6ZvVBVE2x11gKnQa1TqG659HXPM5scqQ@mail.gmail.com>
+        <CAMuHMdWJhnXabKGpW7k944dzQHtwQtxw-yb2bRBsoaMw6N6nuA@mail.gmail.com>
+        <87tug3clvc.wl-maz@kernel.org>
+        <CAMuHMdWGb2xik+94RVwtq8E6+9eN=HfQLX3a4sTjKQXR96Udkw@mail.gmail.com>
+        <87r1b7ck40.wl-maz@kernel.org>
+        <CAMuHMdWd9mJe8hGNdH5VR-qJOxgfT4YtFfOmQA=uV4QPsvpqtA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: geert@linux-m68k.org, chris.brandt@renesas.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, kernel-team@android.com, robh@kernel.org, john@phrozen.org, biwen.li@nxp.com, linux-renesas-soc@vger.kernel.org, prabhakar.mahadev-lad.rj@bp.renesas.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 05:15:46PM +0800, Barry Song wrote:
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 6e476f6..8cd23f1 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6278,6 +6278,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
->  		time = cpu_clock(this);
->  	}
->  
-> +	--nr;
->  	for_each_cpu_wrap(cpu, cpus, target + 1) {
->  		if (has_idle_core) {
->  			i = select_idle_core(p, cpu, cpus, &idle_cpu);
-> @@ -6285,11 +6286,11 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
->  				return i;
->  
->  		} else {
-> -			if (!--nr)
-> -				return -1;
->  			idle_cpu = __select_idle_cpu(cpu, p);
->  			if ((unsigned int)idle_cpu < nr_cpumask_bits)
->  				break;
-> +			if (!--nr)
-> +				return -1;
->  		}
->  	}
+On Wed, 24 Nov 2021 07:54:48 +0000,
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> 
+> Hi Marc,
+> 
+> On Tue, Nov 23, 2021 at 10:11 AM Marc Zyngier <maz@kernel.org> wrote:
+> > On Tue, 23 Nov 2021 08:44:19 +0000,
+> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > On Tue, Nov 23, 2021 at 9:33 AM Marc Zyngier <maz@kernel.org> wrote:
+> > > > On Tue, 23 Nov 2021 07:57:48 +0000,
+> > > > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > > Summarized:
+> > > > >   - Before the bad commit, and after your fix, irqc-rza1 is invoked,
+> > > > >     and the number of interrupts seen is correct, but input events
+> > > > >     are doubled.
+> > > > >   - After the bad commit, irqc-rza1 is not invoked, and there is an
+> > > > >     interrupt storm, but input events are OK.
+> > > >
+> > > > OK, that's reassuring, even if the "twice the events" stuff isn't what
+> > > > you'd expect. We at least know this is a separate issue, and that this
+> > > > patch on top of -rc1 brings you back to the 5.15 behaviour.
+> > > >
+> > > > I'd expect it to be the case for the other platforms as well.
+> > >
+> > > OK.
+> > >
+> > > BTW, what would have been the correct way to do this for irqc-rza1?
+> > > I think we're about to make the same mistake with RZ/G2L IRQC
+> > > support[1]?
+> >
+> > Indeed, and I was about to look into it.
+> >
+> > There are multiple ways to skin this cat, including renaming
+> > 'interrupt-map' to 'my-own-private-interrupt-map'. Or use something
+> > akin the new 'msi-range' (which we could call interrupt-range), and
+> > replace:
+> 
+> "interrupt-ranges" (with trailing "S"), cfr. "msi-ranges"?
 
-This way nr can never be 1 for a single iteration -- it current isn't,
-but that's besides the point.
+Yes, absolutely. I keep thinking of it in the singular form, but it
+absolutely needs to be plural.
+
+> >   interrupt-map = <0 0 &gic GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
+> >                   <1 0 &gic GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
+> >                   <2 0 &gic GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
+> >                   <3 0 &gic GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
+> >                   <4 0 &gic GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
+> >                   <5 0 &gic GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>,
+> >                   <6 0 &gic GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>,
+> >                   <7 0 &gic GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
+> >
+> > with:
+> >
+> >   interrupt-range = <&gic GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH 0 8>;
+> >
+> > which reads as "base interrupt spec", "start pin", "count".  This
+> > gives you almost the same level of information, and doesn't interfere
+> > with the rest of the DT properties. Parsing it is also much simpler.
+> 
+> And in the non-consecutive case, you need multiple ranges, right?
+
+That's the idea. The nice part about this is that you can grab each
+range with of_parse_phandle_with_args() + two read_u32_index. The bad
+part is that you have to know what part of the intspec needs to be
+hacked to provide the range, but you already have this built-in in any
+hierarchical interrupt controller driver.
+
+> > But that's up to you, really.
+> 
+> Chris: do you think we can still do this for RZ/A, or do we have too
+> many users in the wild using the upstream code?
+
+Honestly, I don't think it is worth it. There are a number of other
+irqchips in the same boat, and nobody will ever update them (the fsl
+stuff, for example). I'd rather you focus on the new stuff to make it
+right.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
