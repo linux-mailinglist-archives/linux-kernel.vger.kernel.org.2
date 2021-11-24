@@ -2,242 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 951BC45B42F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 07:09:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE7D45B431
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 07:09:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232079AbhKXGMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 01:12:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50252 "EHLO
+        id S233361AbhKXGMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 01:12:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229825AbhKXGMQ (ORCPT
+        with ESMTP id S229825AbhKXGMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 01:12:16 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292DBC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 22:09:07 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id e136so4165625ybc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 22:09:07 -0800 (PST)
+        Wed, 24 Nov 2021 01:12:20 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69483C061574;
+        Tue, 23 Nov 2021 22:09:11 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id iq11so1617378pjb.3;
+        Tue, 23 Nov 2021 22:09:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/xZ6Wg5PvZru5LD5B8dWO+XcKqQibFBlU/C/w3xxwkE=;
-        b=eosEpYlgyct2YZGmwA0crcSObY7/DLFxo89aB34kgcvW3rG4DEPKRKPecudxI/MZ7o
-         tjjW9UxHVgtgMFfv7BCXXby+l4i/PNp9NMPGRSr3ilVVeCQL5YmGuLAYtlC9eetivVTD
-         xKC7btQwI+kOVmpbjf4D+QNMSV/Zf1q+D7Cp55C1QyjrGzBv0brP1KA+6d7McWsna53n
-         2Xv6A9n9FM5zv4HMuJcawwAs6wEYpTPU34woplOX0IlqDoopTRSRgYM2vSaUF52wW77O
-         LXyjONE3Z3TzXofSaYI++9fiPmvkflv+DIjDxb/1qqQ9oaD9fJGVaaGov+rt8hPD/yWr
-         B4oA==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ez3QVmY1XZw+pekgl/gvhcD1cD5LMLp7Mm2ELoCCbMI=;
+        b=h5CEV2+WsUwc8/HreAiVGYTBNHdZJ+zz53f3CxfyoOsAYuJAJxaDQxOPKYKZJbwvzb
+         AQvQcBL0hIC5eRbDa7CFXFUGxk0f1KqSDZUlyw8KSJbZPumqyhRei38HNwoqFvs2mc4O
+         sPn7UXTN+43PaDxJMQzhprWbRXhBU20um7i9F7hBhg7YuAEWsn6pmDGpBkfWQ0nIO9CK
+         qvRQKX6JFS6AtZVPmYVqCkLLIEE+J4G92Jqal7cFeZ9QMhdSfRSHT82frjwUZEHtj2mr
+         PpCA6r06L4jGbIfTFjSBHW9TphpigyXPdpRtAUaJnQ2s1CrJb82MkzWPzFZB9o8xGHWi
+         7p+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/xZ6Wg5PvZru5LD5B8dWO+XcKqQibFBlU/C/w3xxwkE=;
-        b=O0k11PYAfQ39+gxILJFVnx3xU+P8bwLXQRFWhFjfwalyPa8SbmVsEBS26BX9nYcjMs
-         LpH+YhUU8GlhujZw+ExJT4lNOLMsVUODAHlqOtZW2W4Vy6xzT4SzKaMMeb1KVwvCeTEV
-         RyipkeLEaYy4tlBPwU6KU8iA+hnR1DGufnyuRu2kro3CrPqdUmsaun9cIN/v4ABwLSo0
-         rFt8gkTtbMm4npBTrhPH8+WxqwCJ5Vwg5pvdWR7f1Tcu2oFF+mvItmQcgfo1WJKsVxJE
-         aE57KIe2DsWFqjR8hQ5kwQjaT1iCsJ0Q/GmYTd+dE2heINSIQ7++j80ZdUBAvA+gffMz
-         DpcA==
-X-Gm-Message-State: AOAM531voRwAG7BQhT371BCE/WPv5iu1RVc66MkSe/TehceiGHlfLdUi
-        Ozm8/lF8SMZOaLhzoFsi93RhhdXs87PK+22J1xn0gg==
-X-Google-Smtp-Source: ABdhPJw0k56qfLhVsuVRU1Ch2ITsZyiJv3M9GRlTIHkYdoPvAp1Lt0eau7/+WqVE+67avpMiQCmnerAhDAYfj0lK2c4=
-X-Received: by 2002:a05:6902:1144:: with SMTP id p4mr14900478ybu.404.1637734146305;
- Tue, 23 Nov 2021 22:09:06 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ez3QVmY1XZw+pekgl/gvhcD1cD5LMLp7Mm2ELoCCbMI=;
+        b=GOMsyQW1sAWZnmf6VjOQVOIarXJRCWKDZdB/mR29Tf5A0rwlL64j2Jo6u1TqK2lVhK
+         3MfATAAzykDbP8ke7mQ13T+aBYHcGZuGng3QmPehih0dOHWofS2zwpx5J2fs+H4dOJ6U
+         e9u6UnE6NRprMhcjnuPPe51WauqlG7OsJtrcTSt6baL9RnogNYhHJxMKxY5t10x1AtqQ
+         lIZAyYNv+9an+MR9JdbH/TOv7iZUqzriZ5FZ2pOkSm3IV4E+ZhxEyCmvfdJymiPnSv9+
+         srzJyGkn8GSBwJlL6i6gZQMEAll0RuCVP+wKhpENQAIiT+W4FCSMqfgL+C4SEUmflhQD
+         th8w==
+X-Gm-Message-State: AOAM5317iarUPkGWr7etodJD/yLh4T0Azqto9y1R2MbxsxpzaILgKH80
+        628IU/wlsMlHMbhKkA8pdZQQRcpIz4YweUKX
+X-Google-Smtp-Source: ABdhPJyw/JF5kY8+OyLhjkD8kLe/zEuGlhEXXZQoIR5tyL0Qvk6c9jXAgMZe8x1TknF7rby6pGy7Zg==
+X-Received: by 2002:a17:902:c407:b0:142:28fe:668e with SMTP id k7-20020a170902c40700b0014228fe668emr14946555plk.31.1637734151024;
+        Tue, 23 Nov 2021 22:09:11 -0800 (PST)
+Received: from shinobu ([138.199.21.12])
+        by smtp.gmail.com with ESMTPSA id y130sm14122385pfg.202.2021.11.23.22.09.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 22:09:10 -0800 (PST)
+Date:   Wed, 24 Nov 2021 15:09:05 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-iio@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH v1] counter: interrupt-cnt: add counter_push_event()
+Message-ID: <YZ3XAeYyfGblfaOi@shinobu>
+References: <20211123134540.416695-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-References: <20211124030840.88455-1-ligang.bdlg@bytedance.com>
-In-Reply-To: <20211124030840.88455-1-ligang.bdlg@bytedance.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 24 Nov 2021 14:08:27 +0800
-Message-ID: <CAMZfGtWpWo4KGx02=RuZ3DiFW8b1-SuU90UR3+ccP90+qAeKhA@mail.gmail.com>
-Subject: Re: [PATCH v2] shmem: move spinlock to the front of iput
-To:     Gang Li <ligang.bdlg@bytedance.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="palXCgofjUSCif4g"
+Content-Disposition: inline
+In-Reply-To: <20211123134540.416695-1-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 11:08 AM Gang Li <ligang.bdlg@bytedance.com> wrote:
->
-> This patch fixes a data race in commit 779750d20b93 ("shmem: split huge pages
-> beyond i_size under memory pressure").
->
-> Call Trace 1:
->  shmem_unused_huge_shrink+0x3ae/0x410
->  ? __list_lru_walk_one.isra.5+0x33/0x160
->  super_cache_scan+0x17c/0x190
->  shrink_slab.part.55+0x1ef/0x3f0
->  shrink_node+0x10e/0x330
->  kswapd+0x380/0x740
->  kthread+0xfc/0x130
->  ? mem_cgroup_shrink_node+0x170/0x170
->  ? kthread_create_on_node+0x70/0x70
->  ret_from_fork+0x1f/0x30
->
-> Call Trace 2:
->  shmem_evict_inode+0xd8/0x190
->  evict+0xbe/0x1c0
->  do_unlinkat+0x137/0x330
->  do_syscall_64+0x76/0x120
->  entry_SYSCALL_64_after_hwframe+0x3d/0xa2
->
-> iput out of sbinfo->shrinklist_lock will let shmem_evict_inode grab
-> and delete the inode, which will berak the consistency between
-> shrinklist_len and shrinklist. The simultaneous deletion of adjacent
-> elements in the local list "list" by shmem_unused_huge_shrink and
-> shmem_evict_inode will also break the list.
->
-> Fix it by moving shrinklist_lock to the front of iput.
->
-> Fixes: 779750d20b93 ("shmem: split huge pages beyond i_size under memory pressure")
-> Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
 
-I suggest changing the subject to "shmem: fix a race between
-shmem_unused_huge_shrink and shmem_evict_inode". And please Cc
-stable@vger.kernel.org as well.
+--palXCgofjUSCif4g
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I do not know if others see what happens here, here is a simple explanation.
-
-Image there are 3 items in the local list (@list).
-
-In the first traversal, A is not deleted from @list.
-
-  1) A->B->C
-     ^
-     |
-    pos (leave)
-
-In the second traversal, B is deleted from @list. Concurrently, A is
-deleted from
-@list through shmem_evict_inode() since last reference counter of
-inode is dropped
-by other thread. Then the @list is corrupted.
-
-  2) A->B->C
-        ^
-        |
-       pos (drop)
-
-We should make sure the item is either on the global list or deleted from
-any local list before iput().
-
+On Tue, Nov 23, 2021 at 02:45:40PM +0100, Oleksij Rempel wrote:
+> Add counter_push_event() to notify user space about new pulses
+>=20
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 > ---
->
-> Changes in v2:
-> - Move spinlock to the front of iput instead of changing lock type
->   since iput will call evict which may cause deadlock by requesting
->   shrinklist_lock.
-> - Add call trace in commit message.
->
-> v1: https://lore.kernel.org/lkml/20211122064126.76734-1-ligang.bdlg@bytedance.com/
->
-> ---
->  mm/shmem.c | 30 +++++++++++++++---------------
->  1 file changed, 15 insertions(+), 15 deletions(-)
->
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 9023103ee7d8..2f70a16fc588 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -569,7 +569,6 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
->                 /* inode is about to be evicted */
->                 if (!inode) {
->                         list_del_init(&info->shrinklist);
-> -                       removed++;
->                         goto next;
->                 }
->
-> @@ -577,15 +576,16 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
->                 if (round_up(inode->i_size, PAGE_SIZE) ==
->                                 round_up(inode->i_size, HPAGE_PMD_SIZE)) {
->                         list_move(&info->shrinklist, &to_remove);
-> -                       removed++;
->                         goto next;
->                 }
->
->                 list_move(&info->shrinklist, &list);
->  next:
-> +               removed++;
->                 if (!--batch)
->                         break;
->         }
-> +       sbinfo->shrinklist_len -= removed;
->         spin_unlock(&sbinfo->shrinklist_lock);
->
->         list_for_each_safe(pos, next, &to_remove) {
-> @@ -602,7 +602,7 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
->                 inode = &info->vfs_inode;
->
->                 if (nr_to_split && split >= nr_to_split)
-> -                       goto leave;
-> +                       goto move_back;
->
->                 page = find_get_page(inode->i_mapping,
->                                 (inode->i_size & HPAGE_PMD_MASK) >> PAGE_SHIFT);
-> @@ -616,38 +616,38 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
->                 }
->
->                 /*
-> -                * Leave the inode on the list if we failed to lock
-> -                * the page at this time.
-> +                * Move the inode on the list back to shrinklist if we failed
-> +                * to lock the page at this time.
->                  *
->                  * Waiting for the lock may lead to deadlock in the
->                  * reclaim path.
->                  */
->                 if (!trylock_page(page)) {
->                         put_page(page);
-> -                       goto leave;
-> +                       goto move_back;
->                 }
->
->                 ret = split_huge_page(page);
->                 unlock_page(page);
->                 put_page(page);
->
-> -               /* If split failed leave the inode on the list */
-> +               /* If split failed move the inode on the list back to shrinklist */
->                 if (ret)
-> -                       goto leave;
-> +                       goto move_back;
->
->                 split++;
->  drop:
->                 list_del_init(&info->shrinklist);
-> -               removed++;
-> -leave:
-> +               goto put;
-> +move_back:
-
-I think we should add a comment here to notice why it's
-necessary to add @pos to the global list before iput().
-
-> +               spin_lock(&sbinfo->shrinklist_lock);
-> +               list_move(pos, &sbinfo->shrinklist);
-
-I suggest using `list_move(&info->shrinklist, &sbinfo->shrinklist)`
-here, it's more consistent with previous list_del_init().
-
-> +               sbinfo->shrinklist_len++;
-> +               spin_unlock(&sbinfo->shrinklist_lock);
-> +put:
->                 iput(inode);
->         }
->
-> -       spin_lock(&sbinfo->shrinklist_lock);
-> -       list_splice_tail(&list, &sbinfo->shrinklist);
-> -       sbinfo->shrinklist_len -= removed;
-> -       spin_unlock(&sbinfo->shrinklist_lock);
-> -
->         return split;
+>  drivers/counter/interrupt-cnt.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/drivers/counter/interrupt-cnt.c b/drivers/counter/interrupt-=
+cnt.c
+> index 8514a87fcbee..b237137b552b 100644
+> --- a/drivers/counter/interrupt-cnt.c
+> +++ b/drivers/counter/interrupt-cnt.c
+> @@ -31,6 +31,8 @@ static irqreturn_t interrupt_cnt_isr(int irq, void *dev=
+_id)
+> =20
+>  	atomic_inc(&priv->count);
+> =20
+> +	counter_push_event(&priv->counter, COUNTER_EVENT_OVERFLOW, 0);
+> +
+>  	return IRQ_HANDLED;
 >  }
->
-> --
-> 2.20.1
->
+> =20
+> --=20
+> 2.30.2
+
+Hi Oleksij,
+
+It looks like this is pushing a COUNTER_EVENT_OVERFLOW event every time
+an interrupt is handled, which I suspect is not what you want to happen.
+The COUNTER_EVENT_OVERFLOW event indicates a count value overflow event,
+so you'll need to check for a count value overflow before pushing the
+event.
+
+It would be good idea to implement a ceiling extension as well (you can
+use the COUNTER_COMP_CEILING() macro) so that users can configure the
+particular point where the value overflows.
+
+William Breathitt Gray
+
+--palXCgofjUSCif4g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmGd1vMACgkQhvpINdm7
+VJKxmA//bXW8jn5mO+h9K3q21/57hhXT+8CzEcMMflP5qvx/IFqyufr36Ja/P3+Q
+gcrhQzriZp28cyNmMNrX6OBE5wnN8pD2pG5+GoOvzfyHDM7qAYPU1F52ISGMIJSv
+g1GXywDfe3vZriBMpr+ON5s0Lgp5MpMmII84kx9pVDU/Dp2nceuKAQ3GFcR5VHbW
+llvoQapQ44b0FZOPc9yehavUztn/ZJLObyhF5QQiU/kp2ol/smf218nbZj7b0ZJB
+/X3p+2rcp9njV3i9TWNR6E15eNrIEeueg29NYN1w8TtgCIhSsHIGkdp798uxFHu8
+ddfJA/tfZoHV+aAjC1V32ibCA+BVmXFHhZuCM2pWkC//FtQwVMsKkY2CHULAKM5P
+8sLCAWlRMHMkTPtOA1wNOOJwG7B62Ggz28gzQr05qJOyBdbS5kZ0w9lELmZJ3C1h
+A07LojlKSeMRHmI51aryw+NxVWnutdsIMwiSJr20pbNH75IadU7/sM+bKbEZzzv2
+DxUWl8M7U/P8rzEdxBbVOf7Ep226+iylaYm6uB5XioTK15BMqfPtD3AYQDcfQNjA
+0++53y+ZFOdce7V3qDgHnvD0d0/E+Fk2CPOT1ayhRTSB1hVfsFDUCtToSpt6Lv+1
+74nUXuHewLYQkCTl0Fmll7zwuhrqVLBI5cdKcK4ZJiCvp89yr6Q=
+=2/qt
+-----END PGP SIGNATURE-----
+
+--palXCgofjUSCif4g--
