@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 215F545C5B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CFE445C153
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353657AbhKXOAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:00:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44668 "EHLO mail.kernel.org"
+        id S1347200AbhKXNQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:16:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348208AbhKXN46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:56:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 977EA63392;
-        Wed, 24 Nov 2021 13:07:37 +0000 (UTC)
+        id S1348562AbhKXNN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:13:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C59B561221;
+        Wed, 24 Nov 2021 12:43:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759258;
-        bh=uNtTpnsTSiVV8aks5pnimutDQRMMDEBTXfJl/2sESUg=;
+        s=korg; t=1637757793;
+        bh=0IqvRS0IJRKnNqDAY5t3blXGq9LRZKZOmBpJ5DNEVc4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fm2elAoZkMU2lELkPgXaqb6/0qLIUrFoXKfsMVFhGkLapvxNhpggcE674XSjNW/PE
-         BWNC8TGvGzNj/D+0SiXz48xirmJALtiW3jNEk0ZTo4zBgqIbfZJY/H2RWmPZbRsxvp
-         5Ee93FuoKYH5ZkL1ZrWmJtKfHNDsHY6MFFGIEXj8=
+        b=IR5np7auC0deEKC3dKKVvnGUDGtgW8I94nzRnkAx1Og5fQlH9E7EeS6hY9ON9RmvR
+         PJ8NXOls0H4rslbCLNdwPYbp4oSMN5MS5Qn+QqUQXsz5b7c0zbah+2CPoadY+mW8vz
+         Gq9+zI9kdYEpE3ldiRQskefhVnZ35HLrFOVYKgDc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 181/279] pinctrl: qcom: sm8350: Correct UFS and SDC offsets
+Subject: [PATCH 4.19 278/323] powerpc/dcr: Use cmplwi instead of 3-argument cmpli
 Date:   Wed, 24 Nov 2021 12:57:48 +0100
-Message-Id: <20211124115724.996405823@linuxfoundation.org>
+Message-Id: <20211124115728.286317451@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-[ Upstream commit 62209e805b5c68577602a5803a71d8e2e11ee0d3 ]
+[ Upstream commit fef071be57dc43679a32d5b0e6ee176d6f12e9f2 ]
 
-The downstream TLMM binding covers a group of TLMM-related hardware
-blocks, but the upstream binding only captures the particular block
-related to controlling the TLMM pins from an OS. In the translation of
-the driver from downstream, the offset of 0x100000 was lost for the UFS
-and SDC pingroups.
+In dcr-low.S we use cmpli with three arguments, instead of four
+arguments as defined in the ISA:
 
-Fixes: d5d348a3271f ("pinctrl: qcom: Add SM8350 pinctrl driver")
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
-Reviewed-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-Link: https://lore.kernel.org/r/20211104170835.1993686-1-bjorn.andersson@linaro.org
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+	cmpli	cr0,r3,1024
+
+This appears to be a PPC440-ism, looking at the "PPC440x5 CPU Core
+User’s Manual" it shows cmpli having no L field, but implied to be 0 due
+to the core being 32-bit. It mentions that the ISA defines four
+arguments and recommends using cmplwi.
+
+It also corresponds to the old POWER instruction set, which had no L
+field there, a reserved bit instead.
+
+dcr-low.S is only built 32-bit, because it is only built when
+DCR_NATIVE=y, which is only selected by 40x and 44x. Looking at the
+generated code (with gcc/gas) we see cmplwi as expected.
+
+Although gas is happy with the 3-argument version when building for
+32-bit, the LLVM assembler is not and errors out with:
+
+  arch/powerpc/sysdev/dcr-low.S:27:10: error: invalid operand for instruction
+   cmpli 0,%r3,1024; ...
+           ^
+
+Switch to the cmplwi extended opcode, which avoids any confusion when
+reading the ISA, fixes the issue with the LLVM assembler, and also means
+the code could be built 64-bit in future (though that's very unlikely).
+
+Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+BugLink: https://github.com/ClangBuiltLinux/linux/issues/1419
+Link: https://lore.kernel.org/r/20211014024424.528848-1-mpe@ellerman.id.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/qcom/pinctrl-sm8350.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/powerpc/sysdev/dcr-low.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/qcom/pinctrl-sm8350.c b/drivers/pinctrl/qcom/pinctrl-sm8350.c
-index 4d8f8636c2b39..1c042d39380c6 100644
---- a/drivers/pinctrl/qcom/pinctrl-sm8350.c
-+++ b/drivers/pinctrl/qcom/pinctrl-sm8350.c
-@@ -1597,10 +1597,10 @@ static const struct msm_pingroup sm8350_groups[] = {
- 	[200] = PINGROUP(200, qdss_gpio, _, _, _, _, _, _, _, _),
- 	[201] = PINGROUP(201, _, _, _, _, _, _, _, _, _),
- 	[202] = PINGROUP(202, _, _, _, _, _, _, _, _, _),
--	[203] = UFS_RESET(ufs_reset, 0x1d8000),
--	[204] = SDC_PINGROUP(sdc2_clk, 0x1cf000, 14, 6),
--	[205] = SDC_PINGROUP(sdc2_cmd, 0x1cf000, 11, 3),
--	[206] = SDC_PINGROUP(sdc2_data, 0x1cf000, 9, 0),
-+	[203] = UFS_RESET(ufs_reset, 0xd8000),
-+	[204] = SDC_PINGROUP(sdc2_clk, 0xcf000, 14, 6),
-+	[205] = SDC_PINGROUP(sdc2_cmd, 0xcf000, 11, 3),
-+	[206] = SDC_PINGROUP(sdc2_data, 0xcf000, 9, 0),
- };
+diff --git a/arch/powerpc/sysdev/dcr-low.S b/arch/powerpc/sysdev/dcr-low.S
+index e687bb2003ff0..5589fbe48bbdc 100644
+--- a/arch/powerpc/sysdev/dcr-low.S
++++ b/arch/powerpc/sysdev/dcr-low.S
+@@ -15,7 +15,7 @@
+ #include <asm/export.h>
  
- static const struct msm_gpio_wakeirq_map sm8350_pdc_map[] = {
+ #define DCR_ACCESS_PROLOG(table) \
+-	cmpli	cr0,r3,1024;	 \
++	cmplwi	cr0,r3,1024;	 \
+ 	rlwinm  r3,r3,4,18,27;   \
+ 	lis     r5,table@h;      \
+ 	ori     r5,r5,table@l;   \
 -- 
 2.33.0
 
