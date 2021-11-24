@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8012B45C5BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:59:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D2B45C316
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:32:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355893AbhKXOA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:00:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42970 "EHLO mail.kernel.org"
+        id S1352233AbhKXNf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:35:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349658AbhKXNyk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:54:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 579B863270;
-        Wed, 24 Nov 2021 13:05:43 +0000 (UTC)
+        id S1348725AbhKXNck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:32:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9E0A61184;
+        Wed, 24 Nov 2021 12:53:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759144;
-        bh=Jzkxhr+SoOQtgojGFAfbJk4iwMTLcqy+wPMmkhkvSPQ=;
+        s=korg; t=1637758394;
+        bh=amQlN9VOS3rj6dp6QmvtVWTVDS/i7SzH+MiLwgquSo8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eDMAy8VMI5FeOX6dmFSt1nGE4AHEGGNjBE+MB1AArv62WaDiAl2eO0L1g2DgKsiET
-         nOHIXdo0xN4u28vJATw9QzvpAkILeh06yjIYtElbKEsBgLQRNjP1Z6lgyGhVd3LEbO
-         M4so5KgKci4icaewcgidu95TVzQ+4HRlkPQvcu18=
+        b=kKlKlDpJCsf9FPojIOSSZJRogOxwuC9ToNXcrgvCnK0CLPiVPkxeEAInJ2l0omUqO
+         t7FEQSxrPUFuFZhi0pHnOKj5nspBSG1hd1HpszBm80fN3qzPiOBAM6JjLdtFe+pFFQ
+         yMw/txm/q7QyrXQfKWP5/PB+cT/yFm3RG+xRFa38=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Valentine Fatiev <valentinef@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org, Douglas Gilbert <dgilbert@interlog.com>,
+        Ye Bin <yebin10@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 146/279] net/mlx5e: nullify cq->dbg pointer in mlx5_debug_cq_remove()
-Date:   Wed, 24 Nov 2021 12:57:13 +0100
-Message-Id: <20211124115723.818446550@linuxfoundation.org>
+Subject: [PATCH 5.10 038/154] scsi: scsi_debug: Fix out-of-bound read in resp_readcap16()
+Date:   Wed, 24 Nov 2021 12:57:14 +0100
+Message-Id: <20211124115703.587065898@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,100 +41,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Valentine Fatiev <valentinef@nvidia.com>
+From: Ye Bin <yebin10@huawei.com>
 
-[ Upstream commit 76ded29d3fcda4928da8849ffc446ea46871c1c2 ]
+[ Upstream commit 4e3ace0051e7e504b55d239daab8789dd89b863c ]
 
-Prior to this patch in case mlx5_core_destroy_cq() failed it proceeds
-to rest of destroy operations. mlx5_core_destroy_cq() could be called again
-by user and cause additional call of mlx5_debug_cq_remove().
-cq->dbg was not nullify in previous call and cause the crash.
+The following warning was observed running syzkaller:
 
-Fix it by nullify cq->dbg pointer after removal.
+[ 3813.830724] sg_write: data in/out 65466/242 bytes for SCSI command 0x9e-- guessing data in;
+[ 3813.830724]    program syz-executor not setting count and/or reply_len properly
+[ 3813.836956] ==================================================================
+[ 3813.839465] BUG: KASAN: stack-out-of-bounds in sg_copy_buffer+0x157/0x1e0
+[ 3813.841773] Read of size 4096 at addr ffff8883cf80f540 by task syz-executor/1549
+[ 3813.846612] Call Trace:
+[ 3813.846995]  dump_stack+0x108/0x15f
+[ 3813.847524]  print_address_description+0xa5/0x372
+[ 3813.848243]  kasan_report.cold+0x236/0x2a8
+[ 3813.849439]  check_memory_region+0x240/0x270
+[ 3813.850094]  memcpy+0x30/0x80
+[ 3813.850553]  sg_copy_buffer+0x157/0x1e0
+[ 3813.853032]  sg_copy_from_buffer+0x13/0x20
+[ 3813.853660]  fill_from_dev_buffer+0x135/0x370
+[ 3813.854329]  resp_readcap16+0x1ac/0x280
+[ 3813.856917]  schedule_resp+0x41f/0x1630
+[ 3813.858203]  scsi_debug_queuecommand+0xb32/0x17e0
+[ 3813.862699]  scsi_dispatch_cmd+0x330/0x950
+[ 3813.863329]  scsi_request_fn+0xd8e/0x1710
+[ 3813.863946]  __blk_run_queue+0x10b/0x230
+[ 3813.864544]  blk_execute_rq_nowait+0x1d8/0x400
+[ 3813.865220]  sg_common_write.isra.0+0xe61/0x2420
+[ 3813.871637]  sg_write+0x6c8/0xef0
+[ 3813.878853]  __vfs_write+0xe4/0x800
+[ 3813.883487]  vfs_write+0x17b/0x530
+[ 3813.884008]  ksys_write+0x103/0x270
+[ 3813.886268]  __x64_sys_write+0x77/0xc0
+[ 3813.886841]  do_syscall_64+0x106/0x360
+[ 3813.887415]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Also proceed to destroy operations only if FW return 0
-for MLX5_CMD_OP_DESTROY_CQ command.
+This issue can be reproduced with the following syzkaller log:
 
-general protection fault, probably for non-canonical address 0x2000300004058: 0000 [#1] SMP PTI
-CPU: 5 PID: 1228 Comm: python Not tainted 5.15.0-rc5_for_upstream_min_debug_2021_10_14_11_06 #1
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-RIP: 0010:lockref_get+0x1/0x60
-Code: 5d e9 53 ff ff ff 48 8d 7f 70 e8 0a 2e 48 00 c7 85 d0 00 00 00 02
-00 00 00 c6 45 70 00 fb 5d c3 c3 cc cc cc cc cc cc cc cc 53 <48> 8b 17
-48 89 fb 85 d2 75 3d 48 89 d0 bf 64 00 00 00 48 89 c1 48
-RSP: 0018:ffff888137dd7a38 EFLAGS: 00010206
-RAX: 0000000000000000 RBX: ffff888107d5f458 RCX: 00000000fffffffe
-RDX: 000000000002c2b0 RSI: ffffffff8155e2e0 RDI: 0002000300004058
-RBP: ffff888137dd7a88 R08: 0002000300004058 R09: ffff8881144a9f88
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff8881141d4000
-R13: ffff888137dd7c68 R14: ffff888137dd7d58 R15: ffff888137dd7cc0
-FS:  00007f4644f2a4c0(0000) GS:ffff8887a2d40000(0000)
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055b4500f4380 CR3: 0000000114f7a003 CR4: 0000000000170ea0
-Call Trace:
-  simple_recursive_removal+0x33/0x2e0
-  ? debugfs_remove+0x60/0x60
-  debugfs_remove+0x40/0x60
-  mlx5_debug_cq_remove+0x32/0x70 [mlx5_core]
-  mlx5_core_destroy_cq+0x41/0x1d0 [mlx5_core]
-  devx_obj_cleanup+0x151/0x330 [mlx5_ib]
-  ? __pollwait+0xd0/0xd0
-  ? xas_load+0x5/0x70
-  ? xa_load+0x62/0xa0
-  destroy_hw_idr_uobject+0x20/0x80 [ib_uverbs]
-  uverbs_destroy_uobject+0x3b/0x360 [ib_uverbs]
-  uobj_destroy+0x54/0xa0 [ib_uverbs]
-  ib_uverbs_cmd_verbs+0xaf2/0x1160 [ib_uverbs]
-  ? uverbs_finalize_object+0xd0/0xd0 [ib_uverbs]
-  ib_uverbs_ioctl+0xc4/0x1b0 [ib_uverbs]
-  __x64_sys_ioctl+0x3e4/0x8e0
+r0 = openat(0xffffffffffffff9c, &(0x7f0000000040)='./file0\x00', 0x26e1, 0x0)
+r1 = syz_open_procfs(0xffffffffffffffff, &(0x7f0000000000)='fd/3\x00')
+open_by_handle_at(r1, &(0x7f00000003c0)=ANY=[@ANYRESHEX], 0x602000)
+r2 = syz_open_dev$sg(&(0x7f0000000000), 0x0, 0x40782)
+write$binfmt_aout(r2, &(0x7f0000000340)=ANY=[@ANYBLOB="00000000deff000000000000000000000000000000000000000000000000000047f007af9e107a41ec395f1bded7be24277a1501ff6196a83366f4e6362bc0ff2b247f68a972989b094b2da4fb3607fcf611a22dd04310d28c75039d"], 0x126)
 
-Fixes: 94b960b9deff ("net/mlx5e: Fix memory leak in mlx5_core_destroy_cq() error path")
-Signed-off-by: Valentine Fatiev <valentinef@nvidia.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+In resp_readcap16() we get "int alloc_len" value -1104926854, and then pass
+the huge arr_len to fill_from_dev_buffer(), but arr is only 32 bytes. This
+leads to OOB in sg_copy_buffer().
+
+To solve this issue, define alloc_len as u32.
+
+Link: https://lore.kernel.org/r/20211013033913.2551004-2-yebin10@huawei.com
+Acked-by: Douglas Gilbert <dgilbert@interlog.com>
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/cq.c      | 5 +++--
- drivers/net/ethernet/mellanox/mlx5/core/debugfs.c | 4 +++-
- 2 files changed, 6 insertions(+), 3 deletions(-)
+ drivers/scsi/scsi_debug.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cq.c b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
-index 02e77ffe5c3e4..5371ad0a12eb5 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/cq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
-@@ -164,13 +164,14 @@ int mlx5_core_destroy_cq(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq)
- 	MLX5_SET(destroy_cq_in, in, cqn, cq->cqn);
- 	MLX5_SET(destroy_cq_in, in, uid, cq->uid);
- 	err = mlx5_cmd_exec_in(dev, destroy_cq, in);
-+	if (err)
-+		return err;
+diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
+index b6540b92f5661..63504dc63d878 100644
+--- a/drivers/scsi/scsi_debug.c
++++ b/drivers/scsi/scsi_debug.c
+@@ -1855,7 +1855,7 @@ static int resp_readcap16(struct scsi_cmnd *scp,
+ {
+ 	unsigned char *cmd = scp->cmnd;
+ 	unsigned char arr[SDEBUG_READCAP16_ARR_SZ];
+-	int alloc_len;
++	u32 alloc_len;
  
- 	synchronize_irq(cq->irqn);
--
- 	mlx5_cq_put(cq);
- 	wait_for_completion(&cq->free);
+ 	alloc_len = get_unaligned_be32(cmd + 10);
+ 	/* following just in case virtual_gb changed */
+@@ -1884,7 +1884,7 @@ static int resp_readcap16(struct scsi_cmnd *scp,
+ 	}
  
--	return err;
-+	return 0;
+ 	return fill_from_dev_buffer(scp, arr,
+-			    min_t(int, alloc_len, SDEBUG_READCAP16_ARR_SZ));
++			    min_t(u32, alloc_len, SDEBUG_READCAP16_ARR_SZ));
  }
- EXPORT_SYMBOL(mlx5_core_destroy_cq);
  
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/debugfs.c b/drivers/net/ethernet/mellanox/mlx5/core/debugfs.c
-index 07c8d9811bc81..10d195042ab55 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/debugfs.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/debugfs.c
-@@ -507,6 +507,8 @@ void mlx5_debug_cq_remove(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq)
- 	if (!mlx5_debugfs_root)
- 		return;
- 
--	if (cq->dbg)
-+	if (cq->dbg) {
- 		rem_res_tree(cq->dbg);
-+		cq->dbg = NULL;
-+	}
- }
+ #define SDEBUG_MAX_TGTPGS_ARR_SZ 1412
 -- 
 2.33.0
 
