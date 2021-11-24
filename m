@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ADBE45C437
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:44:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A7945C635
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:03:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351089AbhKXNqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:46:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34330 "EHLO mail.kernel.org"
+        id S1354101AbhKXOGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:06:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350651AbhKXNli (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:41:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7B846023E;
-        Wed, 24 Nov 2021 12:57:37 +0000 (UTC)
+        id S1353761AbhKXOAw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:00:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D95E2632FF;
+        Wed, 24 Nov 2021 13:09:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758658;
-        bh=uOAkqpECwOsIVv1EvZ3V1dlGMa02z7eAgWRPoDcvEk4=;
+        s=korg; t=1637759376;
+        bh=lB1YH8Cq42+K4nVaMcthN0NQY/xt9i492ijKuYsf5/w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xIosWdLdzLLiauYxHmkX11066RnuHiwZgP5eqYjPHttC445Gzfy4rzjRAJYSTlcy4
-         kApqcFitmqzyfxGlQInAzfLbN6ndjVM7sxZbcD9T1OP0DAIfBjkZ9D/7XsfJCMDMjn
-         n7DOkVhCVP+Tu+TNdqmd5OnTRzdKY3J5WF3Ys72g=
+        b=WRG/535b7zq/6di1KOAzYhddDcMGa8Ev6kMlC1Z8nGyr/y1WAMJj23knwH41dWGPv
+         QKAUkQyXM9+gOB06DWuW5UpYNcW8zDkX7SU430T7XUnQNVP/QgIlY/960ffNtDRkuu
+         9Zji+oplYnZixdOgPwdBHNEeTZsuVOcuL1ngjoDw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lin Ma <linma@zju.edu.cn>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 110/154] NFC: add NCI_UNREG flag to eliminate the race
+        stable@vger.kernel.org, Janosch Frank <frankja@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, stable@kernel.org
+Subject: [PATCH 5.15 219/279] s390/vdso: filter out -mstack-guard and -mstack-size
 Date:   Wed, 24 Nov 2021 12:58:26 +0100
-Message-Id: <20211124115705.844427181@linuxfoundation.org>
+Message-Id: <20211124115726.306720039@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,123 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lin Ma <linma@zju.edu.cn>
+From: Sven Schnelle <svens@linux.ibm.com>
 
-[ Upstream commit 48b71a9e66c2eab60564b1b1c85f4928ed04e406 ]
+commit 00b55eaf45549ce26424224d069a091c7e5d8bac upstream.
 
-There are two sites that calls queue_work() after the
-destroy_workqueue() and lead to possible UAF.
+When CONFIG_VMAP_STACK is disabled, the user can enable CONFIG_STACK_CHECK,
+which adds a stack overflow check to each C function in the kernel. This is
+also done for functions in the vdso page. These functions are run in user
+context and user stack sizes are usually different to what the kernel uses.
+This might trigger the stack check although the stack size is valid.
+Therefore filter the -mstack-guard and -mstack-size flags when compiling
+vdso C files.
 
-The first site is nci_send_cmd(), which can happen after the
-nci_close_device as below
-
-nfcmrvl_nci_unregister_dev   |  nfc_genl_dev_up
-  nci_close_device           |
-    flush_workqueue          |
-    del_timer_sync           |
-  nci_unregister_device      |    nfc_get_device
-    destroy_workqueue        |    nfc_dev_up
-    nfc_unregister_device    |      nci_dev_up
-      device_del             |        nci_open_device
-                             |          __nci_request
-                             |            nci_send_cmd
-                             |              queue_work !!!
-
-Another site is nci_cmd_timer, awaked by the nci_cmd_work from the
-nci_send_cmd.
-
-  ...                        |  ...
-  nci_unregister_device      |  queue_work
-    destroy_workqueue        |
-    nfc_unregister_device    |  ...
-      device_del             |  nci_cmd_work
-                             |  mod_timer
-                             |  ...
-                             |  nci_cmd_timer
-                             |    queue_work !!!
-
-For the above two UAF, the root cause is that the nfc_dev_up can race
-between the nci_unregister_device routine. Therefore, this patch
-introduce NCI_UNREG flag to easily eliminate the possible race. In
-addition, the mutex_lock in nci_close_device can act as a barrier.
-
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
-Fixes: 6a2968aaf50c ("NFC: basic NCI protocol implementation")
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Link: https://lore.kernel.org/r/20211116152732.19238-1-linma@zju.edu.cn
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@kernel.org # 5.10+
+Fixes: 4bff8cb54502 ("s390: convert to GENERIC_VDSO")
+Reported-by: Janosch Frank <frankja@linux.ibm.com>
+Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/nfc/nci_core.h |  1 +
- net/nfc/nci/core.c         | 19 +++++++++++++++++--
- 2 files changed, 18 insertions(+), 2 deletions(-)
+ arch/s390/Makefile               |   10 ++++++----
+ arch/s390/kernel/vdso64/Makefile |    5 +++--
+ 2 files changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/include/net/nfc/nci_core.h b/include/net/nfc/nci_core.h
-index 33979017b7824..004e49f748419 100644
---- a/include/net/nfc/nci_core.h
-+++ b/include/net/nfc/nci_core.h
-@@ -30,6 +30,7 @@ enum nci_flag {
- 	NCI_UP,
- 	NCI_DATA_EXCHANGE,
- 	NCI_DATA_EXCHANGE_TO,
-+	NCI_UNREG,
- };
+--- a/arch/s390/Makefile
++++ b/arch/s390/Makefile
+@@ -79,10 +79,12 @@ KBUILD_AFLAGS_DECOMPRESSOR += $(aflags-y
+ KBUILD_CFLAGS_DECOMPRESSOR += $(cflags-y)
  
- /* NCI device states */
-diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
-index 4d3ab0f44c9f4..e38719e2ee582 100644
---- a/net/nfc/nci/core.c
-+++ b/net/nfc/nci/core.c
-@@ -473,6 +473,11 @@ static int nci_open_device(struct nci_dev *ndev)
+ ifneq ($(call cc-option,-mstack-size=8192 -mstack-guard=128),)
+-cflags-$(CONFIG_CHECK_STACK) += -mstack-size=$(STACK_SIZE)
+-ifeq ($(call cc-option,-mstack-size=8192),)
+-cflags-$(CONFIG_CHECK_STACK) += -mstack-guard=$(CONFIG_STACK_GUARD)
+-endif
++  CC_FLAGS_CHECK_STACK := -mstack-size=$(STACK_SIZE)
++  ifeq ($(call cc-option,-mstack-size=8192),)
++    CC_FLAGS_CHECK_STACK += -mstack-guard=$(CONFIG_STACK_GUARD)
++  endif
++  export CC_FLAGS_CHECK_STACK
++  cflags-$(CONFIG_CHECK_STACK) += $(CC_FLAGS_CHECK_STACK)
+ endif
  
- 	mutex_lock(&ndev->req_lock);
+ ifdef CONFIG_EXPOLINE
+--- a/arch/s390/kernel/vdso64/Makefile
++++ b/arch/s390/kernel/vdso64/Makefile
+@@ -8,8 +8,9 @@ ARCH_REL_TYPE_ABS += R_390_GOT|R_390_PLT
+ include $(srctree)/lib/vdso/Makefile
+ obj-vdso64 = vdso_user_wrapper.o note.o
+ obj-cvdso64 = vdso64_generic.o getcpu.o
+-CFLAGS_REMOVE_getcpu.o = -pg $(CC_FLAGS_FTRACE) $(CC_FLAGS_EXPOLINE)
+-CFLAGS_REMOVE_vdso64_generic.o = -pg $(CC_FLAGS_FTRACE) $(CC_FLAGS_EXPOLINE)
++VDSO_CFLAGS_REMOVE := -pg $(CC_FLAGS_FTRACE) $(CC_FLAGS_EXPOLINE) $(CC_FLAGS_CHECK_STACK)
++CFLAGS_REMOVE_getcpu.o = $(VDSO_CFLAGS_REMOVE)
++CFLAGS_REMOVE_vdso64_generic.o = $(VDSO_CFLAGS_REMOVE)
  
-+	if (test_bit(NCI_UNREG, &ndev->flags)) {
-+		rc = -ENODEV;
-+		goto done;
-+	}
-+
- 	if (test_bit(NCI_UP, &ndev->flags)) {
- 		rc = -EALREADY;
- 		goto done;
-@@ -536,6 +541,10 @@ done:
- static int nci_close_device(struct nci_dev *ndev)
- {
- 	nci_req_cancel(ndev, ENODEV);
-+
-+	/* This mutex needs to be held as a barrier for
-+	 * caller nci_unregister_device
-+	 */
- 	mutex_lock(&ndev->req_lock);
+ # Build rules
  
- 	if (!test_and_clear_bit(NCI_UP, &ndev->flags)) {
-@@ -573,8 +582,8 @@ static int nci_close_device(struct nci_dev *ndev)
- 
- 	del_timer_sync(&ndev->cmd_timer);
- 
--	/* Clear flags */
--	ndev->flags = 0;
-+	/* Clear flags except NCI_UNREG */
-+	ndev->flags &= BIT(NCI_UNREG);
- 
- 	mutex_unlock(&ndev->req_lock);
- 
-@@ -1259,6 +1268,12 @@ void nci_unregister_device(struct nci_dev *ndev)
- {
- 	struct nci_conn_info    *conn_info, *n;
- 
-+	/* This set_bit is not protected with specialized barrier,
-+	 * However, it is fine because the mutex_lock(&ndev->req_lock);
-+	 * in nci_close_device() will help to emit one.
-+	 */
-+	set_bit(NCI_UNREG, &ndev->flags);
-+
- 	nci_close_device(ndev);
- 
- 	destroy_workqueue(ndev->cmd_wq);
--- 
-2.33.0
-
 
 
