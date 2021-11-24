@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF7A45C576
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:56:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E1945C11B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:12:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350946AbhKXN6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:58:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42980 "EHLO mail.kernel.org"
+        id S1346372AbhKXNOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:14:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354672AbhKXNwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:52:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F37E261212;
-        Wed, 24 Nov 2021 13:04:53 +0000 (UTC)
+        id S1347392AbhKXNMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:12:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10ACC613DA;
+        Wed, 24 Nov 2021 12:42:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759094;
-        bh=TDwMex5wZFK+gxD0fGodl1GiCvpfRAx0KSzSOeds54U=;
+        s=korg; t=1637757741;
+        bh=taAoNOBUJR1G588E871QPIurP95FBeoDnkyiHfLT1RQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yo0zXxOsdAF/kGFTLNUXjJPgQz1GmdNQZDc8DU+0xQogN4R/Tfuo35T/A4TDDL8c8
-         eMmFGQ9ij1N7rUEiX9c4SE93kVvfhLKniHBRmRBMl6kzr4E/DfWQR7u5L9kWkpTylO
-         XsqzQDIMkr7IX4L6FlWjLWD7DktLJ+EsIpHoQgmc=
+        b=2YISS9VTbJnao8UPdn5SjjQPcP+k2V5ITUUfn949qEI1gDQHZJSDqmxN2/9noA1cc
+         kOANZ0K6DEEsa04TsDfnPnDGB+7kHCidy+fvSNgq6CcevaZS5tJI582NTIcH1PcHS2
+         Relt5hJrW4bRY1zpRj4I+KyOaf4ebTJ95QAMQ9v8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
-        Tony Brelinski <tony.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Chengfeng Ye <cyeaa@connect.ust.hk>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 131/279] iavf: Fix for setting queues to 0
+Subject: [PATCH 4.19 228/323] nfc: pn533: Fix double free when pn533_fill_fragment_skbs() fails
 Date:   Wed, 24 Nov 2021 12:56:58 +0100
-Message-Id: <20211124115723.327766871@linuxfoundation.org>
+Message-Id: <20211124115726.616803960@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
+From: Chengfeng Ye <cyeaa@connect.ust.hk>
 
-[ Upstream commit 9a6e9e483a9684a34573fd9f9e30ecfb047cb8cb ]
+[ Upstream commit 9fec40f850658e00a14a7dd9e06f7fbc7e59cc4a ]
 
-Now setting combine to 0 will be rejected with the
-appropriate error code.
-This has been implemented by adding a condition that checks
-the value of combine equal to zero.
-Without this patch, when the user requested it, no error was
-returned and combine was set to the default value for VF.
+skb is already freed by dev_kfree_skb in pn533_fill_fragment_skbs,
+but follow error handler branch when pn533_fill_fragment_skbs()
+fails, skb is freed again, results in double free issue. Fix this
+by not free skb in error path of pn533_fill_fragment_skbs.
 
-Fixes: 5520deb15326 ("iavf: Enable support for up to 16 queues")
-Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
-Tested-by: Tony Brelinski <tony.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: 963a82e07d4e ("NFC: pn533: Split large Tx frames in chunks")
+Fixes: 93ad42020c2d ("NFC: pn533: Target mode Tx fragmentation support")
+Signed-off-by: Chengfeng Ye <cyeaa@connect.ust.hk>
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/iavf/iavf_ethtool.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nfc/pn533/pn533.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
-index 25ee0606e625f..144a776793597 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
-@@ -1787,7 +1787,7 @@ static int iavf_set_channels(struct net_device *netdev,
- 	/* All of these should have already been checked by ethtool before this
- 	 * even gets to us, but just to be sure.
- 	 */
--	if (num_req > adapter->vsi_res->num_queue_pairs)
-+	if (num_req == 0 || num_req > adapter->vsi_res->num_queue_pairs)
- 		return -EINVAL;
+diff --git a/drivers/nfc/pn533/pn533.c b/drivers/nfc/pn533/pn533.c
+index 01da9331f4cb6..79bf8e1bd39c2 100644
+--- a/drivers/nfc/pn533/pn533.c
++++ b/drivers/nfc/pn533/pn533.c
+@@ -2084,7 +2084,7 @@ static int pn533_fill_fragment_skbs(struct pn533 *dev, struct sk_buff *skb)
+ 		frag = pn533_alloc_skb(dev, frag_size);
+ 		if (!frag) {
+ 			skb_queue_purge(&dev->fragment_skb);
+-			break;
++			return -ENOMEM;
+ 		}
  
- 	if (num_req == adapter->num_active_queues)
+ 		if (!dev->tgt_mode) {
+@@ -2154,7 +2154,7 @@ static int pn533_transceive(struct nfc_dev *nfc_dev,
+ 		/* jumbo frame ? */
+ 		if (skb->len > PN533_CMD_DATAEXCH_DATA_MAXLEN) {
+ 			rc = pn533_fill_fragment_skbs(dev, skb);
+-			if (rc <= 0)
++			if (rc < 0)
+ 				goto error;
+ 
+ 			skb = skb_dequeue(&dev->fragment_skb);
+@@ -2226,7 +2226,7 @@ static int pn533_tm_send(struct nfc_dev *nfc_dev, struct sk_buff *skb)
+ 	/* let's split in multiple chunks if size's too big */
+ 	if (skb->len > PN533_CMD_DATAEXCH_DATA_MAXLEN) {
+ 		rc = pn533_fill_fragment_skbs(dev, skb);
+-		if (rc <= 0)
++		if (rc < 0)
+ 			goto error;
+ 
+ 		/* get the first skb */
 -- 
 2.33.0
 
