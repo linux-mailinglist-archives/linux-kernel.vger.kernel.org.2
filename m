@@ -2,37 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F6945C5EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 875D045C1A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353642AbhKXOCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:02:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50758 "EHLO mail.kernel.org"
+        id S1344706AbhKXNUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:20:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355903AbhKXOAb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:00:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87495613E8;
-        Wed, 24 Nov 2021 13:08:57 +0000 (UTC)
+        id S1348015AbhKXNQA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:16:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98F5A6142A;
+        Wed, 24 Nov 2021 12:44:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759338;
-        bh=w5jAJJkSTSBbRbh88MBCFu0YOlDTVe2QE1prIhZGWw4=;
+        s=korg; t=1637757876;
+        bh=Ku7w7nVqvgvgAZhf8s6vPEG9wKCmIZAmJfxENgU/Xjs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XO29NCRx8ATyfqh8w4eBfX96i0MqtMkTR1BUFNqyVT23MFWE7uYJ5wjfV9bTlGYDB
-         eirh1S4l5r4wshmNzRmGzuPRUUH6SInInG5clWPHDtIJxhXUdzub0hRF06LOcfkT3K
-         isN7ifgp+NO0sr8vwgPnJmuM15rt7B3k3O3yVdho=
+        b=vAkjoaGwUjFlQWtvzdaiJPeV8IqsokBUWq48K1sBg+RuTWyx+2mNH4znkYJsb6WFd
+         LMLcISvU70bFYka4kftjm8aKWW2wB+dx6fDpip0mRCJQUxowO8UA4B892aqZCIvt2n
+         SL9wOSyb3UDkZJi+xdk8O5LLwHaAaKu7fIgVd92Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Stan Johnson <userm57@yahoo.com>
-Subject: [PATCH 5.15 208/279] powerpc/signal32: Fix sigset_t copy
-Date:   Wed, 24 Nov 2021 12:58:15 +0100
-Message-Id: <20211124115725.924491978@linuxfoundation.org>
+        stable@vger.kernel.org, Manfred Spraul <manfred@colorfullife.com>,
+        Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Andrei Vagin <avagin@gmail.com>,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 306/323] ipc: WARN if trying to remove ipc object which is absent
+Date:   Wed, 24 Nov 2021 12:58:16 +0100
+Message-Id: <20211124115729.239929048@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,64 +46,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
 
-commit 5499802b2284331788a440585869590f1bd63f7f upstream.
+commit 126e8bee943e9926238c891e2df5b5573aee76bc upstream.
 
-The conversion from __copy_from_user() to __get_user() by
-commit d3ccc9781560 ("powerpc/signal: Use __get_user() to copy
-sigset_t") introduced a regression in __get_user_sigset() for
-powerpc/32. The bug was subsequently moved into
-unsafe_get_user_sigset().
+Patch series "shm: shm_rmid_forced feature fixes".
 
-The bug is due to the copied 64 bit value being truncated to
-32 bits while being assigned to dst->sig[0]
+Some time ago I met kernel crash after CRIU restore procedure,
+fortunately, it was CRIU restore, so, I had dump files and could do
+restore many times and crash reproduced easily.  After some
+investigation I've constructed the minimal reproducer.  It was found
+that it's use-after-free and it happens only if sysctl
+kernel.shm_rmid_forced = 1.
 
-The regression was reported by users of the Xorg packages distributed in
-Debian/powerpc --
+The key of the problem is that the exit_shm() function not handles shp's
+object destroy when task->sysvshm.shm_clist contains items from
+different IPC namespaces.  In most cases this list will contain only
+items from one IPC namespace.
 
-    "The symptoms are that the fb screen goes blank, with the backlight
-    remaining on and no errors logged in /var/log; wdm (or startx) run
-    with no effect (I tried logging in in the blind, with no effect).
-    And they are hard to kill, requiring 'kill -KILL ...'"
+How can this list contain object from different namespaces? The
+exit_shm() function is designed to clean up this list always when
+process leaves IPC namespace.  But we made a mistake a long time ago and
+did not add a exit_shm() call into the setns() syscall procedures.
 
-Fix the regression by copying each word of the sigset, not only the
-first one.
+The first idea was just to add this call to setns() syscall but it
+obviously changes semantics of setns() syscall and that's
+userspace-visible change.  So, I gave up on this idea.
 
-__get_user_sigset() was tentatively optimised to copy 64 bits at once
-in order to minimise KUAP unlock/lock impact, but the unsafe variant
-doesn't suffer that, so it can just copy words.
+The first real attempt to address the issue was just to omit forced
+destroy if we meet shp object not from current task IPC namespace [1].
+But that was not the best idea because task->sysvshm.shm_clist was
+protected by rwsem which belongs to current task IPC namespace.  It
+means that list corruption may occur.
 
-Fixes: 887f3ceb51cd ("powerpc/signal32: Convert do_setcontext[_tm]() to user access block")
-Cc: stable@vger.kernel.org # v5.13+
-Reported-by: Finn Thain <fthain@linux-m68k.org>
-Reported-and-tested-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/99ef38d61c0eb3f79c68942deb0c35995a93a777.1636966353.git.christophe.leroy@csgroup.eu
+Second approach is just extend exit_shm() to properly handle shp's from
+different IPC namespaces [2].  This is really non-trivial thing, I've
+put a lot of effort into that but not believed that it's possible to
+make it fully safe, clean and clear.
+
+Thanks to the efforts of Manfred Spraul working an elegant solution was
+designed.  Thanks a lot, Manfred!
+
+Eric also suggested the way to address the issue in ("[RFC][PATCH] shm:
+In shm_exit destroy all created and never attached segments") Eric's
+idea was to maintain a list of shm_clists one per IPC namespace, use
+lock-less lists.  But there is some extra memory consumption-related
+concerns.
+
+An alternative solution which was suggested by me was implemented in
+("shm: reset shm_clist on setns but omit forced shm destroy").  The idea
+is pretty simple, we add exit_shm() syscall to setns() but DO NOT
+destroy shm segments even if sysctl kernel.shm_rmid_forced = 1, we just
+clean up the task->sysvshm.shm_clist list.
+
+This chages semantics of setns() syscall a little bit but in comparision
+to the "naive" solution when we just add exit_shm() without any special
+exclusions this looks like a safer option.
+
+[1] https://lkml.org/lkml/2021/7/6/1108
+[2] https://lkml.org/lkml/2021/7/14/736
+
+This patch (of 2):
+
+Let's produce a warning if we trying to remove non-existing IPC object
+from IPC namespace kht/idr structures.
+
+This allows us to catch possible bugs when the ipc_rmid() function was
+called with inconsistent struct ipc_ids*, struct kern_ipc_perm*
+arguments.
+
+Link: https://lkml.kernel.org/r/20211027224348.611025-1-alexander.mikhalitsyn@virtuozzo.com
+Link: https://lkml.kernel.org/r/20211027224348.611025-2-alexander.mikhalitsyn@virtuozzo.com
+Co-developed-by: Manfred Spraul <manfred@colorfullife.com>
+Signed-off-by: Manfred Spraul <manfred@colorfullife.com>
+Signed-off-by: Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Davidlohr Bueso <dave@stgolabs.net>
+Cc: Greg KH <gregkh@linuxfoundation.org>
+Cc: Andrei Vagin <avagin@gmail.com>
+Cc: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Cc: Vasily Averin <vvs@virtuozzo.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kernel/signal.h |   10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ ipc/util.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/arch/powerpc/kernel/signal.h
-+++ b/arch/powerpc/kernel/signal.h
-@@ -25,8 +25,14 @@ static inline int __get_user_sigset(sigs
- 
- 	return __get_user(dst->sig[0], (u64 __user *)&src->sig[0]);
+--- a/ipc/util.c
++++ b/ipc/util.c
+@@ -417,8 +417,8 @@ static int ipcget_public(struct ipc_name
+ static void ipc_kht_remove(struct ipc_ids *ids, struct kern_ipc_perm *ipcp)
+ {
+ 	if (ipcp->key != IPC_PRIVATE)
+-		rhashtable_remove_fast(&ids->key_ht, &ipcp->khtnode,
+-				       ipc_kht_params);
++		WARN_ON_ONCE(rhashtable_remove_fast(&ids->key_ht, &ipcp->khtnode,
++				       ipc_kht_params));
  }
--#define unsafe_get_user_sigset(dst, src, label) \
--	unsafe_get_user((dst)->sig[0], (u64 __user *)&(src)->sig[0], label)
-+#define unsafe_get_user_sigset(dst, src, label) do {			\
-+	sigset_t *__dst = dst;						\
-+	const sigset_t __user *__src = src;				\
-+	int i;								\
-+									\
-+	for (i = 0; i < _NSIG_WORDS; i++)				\
-+		unsafe_get_user(__dst->sig[i], &__src->sig[i], label);	\
-+} while (0)
  
- #ifdef CONFIG_VSX
- extern unsigned long copy_vsx_to_user(void __user *to,
+ /**
+@@ -433,7 +433,7 @@ void ipc_rmid(struct ipc_ids *ids, struc
+ {
+ 	int idx = ipcid_to_idx(ipcp->id);
+ 
+-	idr_remove(&ids->ipcs_idr, idx);
++	WARN_ON_ONCE(idr_remove(&ids->ipcs_idr, idx) != ipcp);
+ 	ipc_kht_remove(ids, ipcp);
+ 	ids->in_use--;
+ 	ipcp->deleted = true;
 
 
