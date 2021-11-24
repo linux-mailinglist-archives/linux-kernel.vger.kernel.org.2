@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A11A045BE87
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:46:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D164545BA8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344519AbhKXMrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:47:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49656 "EHLO mail.kernel.org"
+        id S236248AbhKXML4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:11:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344260AbhKXMpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:45:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B1B76128C;
-        Wed, 24 Nov 2021 12:26:37 +0000 (UTC)
+        id S238943AbhKXMIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:08:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A5E2610A1;
+        Wed, 24 Nov 2021 12:05:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756797;
-        bh=0Wwd3oFwM3mOT/07W3rNCoDgmn1y3W3Lb5drW0M0Cl8=;
+        s=korg; t=1637755501;
+        bh=AF5rWGo5YP66H58UWowbIAxu4mTrCMaInaWsDvMma0A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=orThIbDqHPMC3nTv3pxqzhKqVr4cLfw8dwa96i/YsdMTjFJ8oape3MuWSsYNQB1mW
-         7690gOGaw1ibZ3YDduDQx+tFe9zYKL0tINshxUfzV/vBE9u51Nj5qKq6MjLMxtYiJM
-         MiPYOleTHzIgNUnUcvAYtgShSO8hZi7inluDY5ww=
+        b=FkJ7DS+BcDQjLux5yhdTAiI2x4Y8IYT7SZdF1C7aQGtO40qZV/WTdw4P2e/91Ebei
+         +vRqjeOVcy3tzQEelCE7r9Ue5Z1PZGVZM86QFTBeFMFkjMkg0+pLQLQAzXiCnj8CPA
+         czfJnuXWtI7ZiPakrhZiSbD0oqsZiaDwzC+oQuBQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 178/251] i2c: xlr: Fix a resource leak in the error handling path of xlr_i2c_probe()
+        stable@vger.kernel.org, Justin Tee <justin.tee@broadcom.com>,
+        James Smart <jsmart2021@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 117/162] scsi: lpfc: Fix list_add() corruption in lpfc_drain_txq()
 Date:   Wed, 24 Nov 2021 12:57:00 +0100
-Message-Id: <20211124115716.450246099@linuxfoundation.org>
+Message-Id: <20211124115702.099488764@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: James Smart <jsmart2021@gmail.com>
 
-[ Upstream commit 7f98960c046ee1136e7096aee168eda03aef8a5d ]
+[ Upstream commit 99154581b05c8fb22607afb7c3d66c1bace6aa5d ]
 
-A successful 'clk_prepare()' call should be balanced by a corresponding
-'clk_unprepare()' call in the error handling path of the probe, as already
-done in the remove function.
+When parsing the txq list in lpfc_drain_txq(), the driver attempts to pass
+the requests to the adapter. If such an attempt fails, a local "fail_msg"
+string is set and a log message output.  The job is then added to a
+completions list for cancellation.
 
-More specifically, 'clk_prepare_enable()' is used, but 'clk_disable()' is
-also already called. So just the unprepare step has still to be done.
+Processing of any further jobs from the txq list continues, but since
+"fail_msg" remains set, jobs are added to the completions list regardless
+of whether a wqe was passed to the adapter.  If successfully added to
+txcmplq, jobs are added to both lists resulting in list corruption.
 
-Update the error handling path accordingly.
+Fix by clearing the fail_msg string after adding a job to the completions
+list. This stops the subsequent jobs from being added to the completions
+list unless they had an appropriate failure.
 
-Fixes: 75d31c2372e4 ("i2c: xlr: add support for Sigma Designs controller variant")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Link: https://lore.kernel.org/r/20210910233159.115896-2-jsmart2021@gmail.com
+Co-developed-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-xlr.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/scsi/lpfc/lpfc_sli.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/i2c/busses/i2c-xlr.c b/drivers/i2c/busses/i2c-xlr.c
-index 484bfa15d58ee..dc9e20941efd1 100644
---- a/drivers/i2c/busses/i2c-xlr.c
-+++ b/drivers/i2c/busses/i2c-xlr.c
-@@ -434,11 +434,15 @@ static int xlr_i2c_probe(struct platform_device *pdev)
- 	i2c_set_adapdata(&priv->adap, priv);
- 	ret = i2c_add_numbered_adapter(&priv->adap);
- 	if (ret < 0)
--		return ret;
-+		goto err_unprepare_clk;
- 
- 	platform_set_drvdata(pdev, priv);
- 	dev_info(&priv->adap.dev, "Added I2C Bus.\n");
- 	return 0;
-+
-+err_unprepare_clk:
-+	clk_unprepare(clk);
-+	return ret;
- }
- 
- static int xlr_i2c_remove(struct platform_device *pdev)
+diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
+index 9055a8fce3d4a..2087125922a11 100644
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -17071,6 +17071,7 @@ lpfc_drain_txq(struct lpfc_hba *phba)
+ 					fail_msg,
+ 					piocbq->iotag, piocbq->sli4_xritag);
+ 			list_add_tail(&piocbq->list, &completions);
++			fail_msg = NULL;
+ 		}
+ 		spin_unlock_irqrestore(&pring->ring_lock, iflags);
+ 	}
 -- 
 2.33.0
 
