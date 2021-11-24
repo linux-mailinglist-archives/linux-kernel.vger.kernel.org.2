@@ -2,143 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D317845CE2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:38:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E3445CE31
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:38:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231846AbhKXUlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 15:41:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48638 "EHLO
+        id S238093AbhKXUl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 15:41:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237679AbhKXUlI (ORCPT
+        with ESMTP id S237976AbhKXUl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 15:41:08 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76AC5C061574;
-        Wed, 24 Nov 2021 12:37:58 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id b40so10407521lfv.10;
-        Wed, 24 Nov 2021 12:37:58 -0800 (PST)
+        Wed, 24 Nov 2021 15:41:27 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F719C06173E
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:38:17 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id e9-20020a170902ed8900b00143a3f40299so1201626plj.20
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:38:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EwupdbY0PB4JvA93A03z8JMfsTzehEG1TRHp4ST91mU=;
-        b=aHPtsF5pdrfDnRfEapR+kwM43+oueoevP6OkEWkjP0RfxBESUAk5JcJEfGeBEeJeLh
-         ekTkoQ3OEuegX4bpBrCqc/uMEex8fr4yAZP9GKT3VoNM096P+lY2c/dekOKFc+z9lbzF
-         Wz8pE7D7R+rHKIg72fmRngd31tNjfrRSBAmmI4DjbS6jz7wSvbTiOhxuO78xn6E4LKqA
-         9wxH47xDueCiPzGZ5wqc2aymPUCPXQkppgmOuC7r0IrS/pnxa0Pi0HorTKBGjkL9ains
-         XIBPx5u0fId6dQncch1PWIxOunIjTO8UX7z+7DXhGBLxqqWogBjG097fvmN3Q4DNtWPp
-         h2bg==
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=a+16mI7Pr87M2uOheqr5HzoEjiEncFmgWtieSeNymP8=;
+        b=sLDh5e5zttR8HiXsPHhiMwbNUC45LgfgftB58cRynPMe8F9jC7xkanWNwgZpsdwyuY
+         025SWhqQ13ZKMQ10nrI9rSvNR2lvDVczGrhEkJy9wlAVVGUlMJNDuFnd9HVQ4jzvAh08
+         DTDCtTyAM3ul32YgaWyBFGkKduejfCaei0aJrQ3I2oKAMxoS2DW9wLf7vygtWwQ9WwuZ
+         U4qh4m34a6BlqwMDtOiE7QkOc4sdaO/PbWAmTwwRo07hzB7DGg+a0VfDAunUjsvBdsCo
+         B2hszkfGkqooH8Ks6GHvfGR1aAV7bzlDsoGjWATLx7xMiwrhwZQqpX7I4gXyATjiuQx/
+         4jmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EwupdbY0PB4JvA93A03z8JMfsTzehEG1TRHp4ST91mU=;
-        b=z7L0+ODVc4rf8tsclzcQOUYVcQlgYJCMpxgTDMmYOzhLZi/NSmXaqSufvOTd/3IBn1
-         PRrYdNFIRCt8d1GSH6VobQF8fZ9Lq6+c77bx3Zgx1EdDe/VupdRqyoIUWsZb13fgHcTc
-         dFsKhHBuNekhWbyhQSFAsBQhXBKh+MYLiifsJDH5q6GeGkrT+qNN8Y5ilSnnHhw7XHQ4
-         tnje7risGZn7YWpmadD/YcE1Rykx3VoLra///8dOJbIQBu3kF0L//9Lch+lPirhPWa/W
-         yjil7bEIrOwG8hOhiFEU4wpTUfafLDXWBI+yRXhmgDEgZ32g7PRyR4xTb+1OeUDT5rUa
-         NpJA==
-X-Gm-Message-State: AOAM5324z6tQnXEfLO+/P1QWb9Iw/OrN34RzI1BUBNTFnULXkfn68351
-        TS1Bd5TeIBlo+T9aIx+Pd7o=
-X-Google-Smtp-Source: ABdhPJxpSQOKWZdYJXswWChcSrw3zy7D35ooyxk4IDHZQ43EVaoDf0Nyi/C8b32BuGRDs8NxFIxblQ==
-X-Received: by 2002:a19:c3d6:: with SMTP id t205mr18211274lff.441.1637786276789;
-        Wed, 24 Nov 2021 12:37:56 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id t20sm76010lji.44.2021.11.24.12.37.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 12:37:56 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Wed, 24 Nov 2021 21:37:54 +0100
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
-        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [PATCH v2 2/4] mm/vmalloc: add support for __GFP_NOFAIL
-Message-ID: <YZ6iojllRBAAk8LW@pc638.lan>
-References: <20211122153233.9924-1-mhocko@kernel.org>
- <20211122153233.9924-3-mhocko@kernel.org>
- <YZ06nna7RirAI+vJ@pc638.lan>
- <20211123170238.f0f780ddb800f1316397f97c@linux-foundation.org>
- <YZ37IJq3+DrVhAcD@dhcp22.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZ37IJq3+DrVhAcD@dhcp22.suse.cz>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=a+16mI7Pr87M2uOheqr5HzoEjiEncFmgWtieSeNymP8=;
+        b=mSUMT4qvixQWI8OII0kHIDJihZAbubm7/u06ag4s64uCmwc3Ha/9XFamqdXXog/ncQ
+         HMD+MI8Ve2v1N14DmjO3qvjutuexNbAFrVQSo3jM0VtL5v0ErdjCOn+aU0YGamY0g9zt
+         RY02en9g+J668JzZ03gaZCiCbsxrzkL4HV13s21WHAKSnPFnveh2DKkyxKqvReh5VzIS
+         fQXJcsz964av7CY745aPv2yCQiSHZ/jF19ztsFulHX40bsXXSMZEG3cysLXmPfKaWx4a
+         1jFqjvEsJYG6sV2hedYXFHnwHdSw56UTyQx464G7BZ77rEmcDlqkWddS8W4qXTqBJQ2/
+         HsgQ==
+X-Gm-Message-State: AOAM531ui/auMXgZUVBuTE0LfFGjb7AcSV/RKqG3bn82A4yqpe5jbR+u
+        TRA6Msw4hp5d3/FKQxeidmZl4aEeRHWC4X+L
+X-Google-Smtp-Source: ABdhPJxZxQIA2Ed7XXVSLYKke1BQRf6WyTVUPo6Gld0zAXvdmHx9LLhr2kyZFNKi/r9bXh1s692Av4+KkL04OpN4
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
+ (user=yosryahmed job=sendgmr) by 2002:a05:6a00:2387:b0:49f:af00:d5d0 with
+ SMTP id f7-20020a056a00238700b0049faf00d5d0mr8931769pfc.1.1637786296616; Wed,
+ 24 Nov 2021 12:38:16 -0800 (PST)
+Date:   Wed, 24 Nov 2021 20:38:05 +0000
+In-Reply-To: <20211123204644.3458700-1-yosryahmed@google.com>
+Message-Id: <20211124203805.3700355-1-yosryahmed@google.com>
+Mime-Version: 1.0
+References: <20211123204644.3458700-1-yosryahmed@google.com>
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+Subject: [PATCH] mm, hugepages: make memory size variable in hugepage-mremap selftest
+From:   Yosry Ahmed <yosryahmed@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     Mina Almasry <almasrymina@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 09:43:12AM +0100, Michal Hocko wrote:
-> On Tue 23-11-21 17:02:38, Andrew Morton wrote:
-> > On Tue, 23 Nov 2021 20:01:50 +0100 Uladzislau Rezki <urezki@gmail.com> wrote:
-> > 
-> > > On Mon, Nov 22, 2021 at 04:32:31PM +0100, Michal Hocko wrote:
-> > > > From: Michal Hocko <mhocko@suse.com>
-> > > > 
-> > > > Dave Chinner has mentioned that some of the xfs code would benefit from
-> > > > kvmalloc support for __GFP_NOFAIL because they have allocations that
-> > > > cannot fail and they do not fit into a single page.
-> > 
-> > Perhaps we should tell xfs "no, do it internally".  Because this is a
-> > rather nasty-looking thing - do we want to encourage other callsites to
-> > start using it?
-> 
-> This is what xfs is likely going to do if we do not provide the
-> functionality. I just do not see why that would be a better outcome
-> though. My longterm experience tells me that whenever we ignore
-> requirements by other subsystems then those requirements materialize in
-> some form in the end. In many cases done either suboptimaly or outright
-> wrong. This might be not the case for xfs as the quality of
-> implementation is high there but this is not the case in general.
-> 
-> Even if people start using vmalloc(GFP_NOFAIL) out of lazyness or for
-> any other stupid reason then what? Is that something we should worry
-> about? Retrying within the allocator doesn't make the things worse. In
-> fact it is just easier to find such abusers by grep which would be more
-> elaborate with custom retry loops.
->  
-> [...]
-> > > > +		if (nofail) {
-> > > > +			schedule_timeout_uninterruptible(1);
-> > > > +			goto again;
-> > > > +		}
-> > 
-> > The idea behind congestion_wait() is to prevent us from having to
-> > hard-wire delays like this.  congestion_wait(1) would sleep for up to
-> > one millisecond, but will return earlier if reclaim events happened
-> > which make it likely that the caller can now proceed with the
-> > allocation event, successfully.
-> > 
-> > However it turns out that congestion_wait() was quietly broken at the
-> > block level some time ago.  We could perhaps resurrect the concept at
-> > another level - say by releasing congestion_wait() callers if an amount
-> > of memory newly becomes allocatable.  This obviously asks for inclusion
-> > of zone/node/etc info from the congestion_wait() caller.  But that's
-> > just an optimization - if the newly-available memory isn't useful to
-> > the congestion_wait() caller, they just fail the allocation attempts
-> > and wait again.
-> 
-> vmalloc has two potential failure modes. Depleted memory and vmalloc
-> space. So there are two different events to wait for. I do agree that
-> schedule_timeout_uninterruptible is both ugly and very simple but do we
-> really need a much more sophisticated solution at this stage?
->
-I would say there is at least one more. It is about when users set their
-own range(start:end) where to allocate. In that scenario we might never
-return to a user, because there might not be any free vmap space on
-specified range.
+The hugetlb vma mremap() test currently maps 1GB of memory to trigger
+pmd sharing and make sure that 'unshare' path in mremap code works.
+The test originally only mapped 10MB of memory (as specified by the
+header comment) but was later modified to 1GB to tackle this case.
 
-To address this, we can allow __GFP_NOFAIL only for entire vmalloc
-address space, i.e. within VMALLOC_START:VMALLOC_END. By doing so
-we will guarantee that we will not run out of vmap space, at least
-for 64 bit systems, for smaller 32 bit ones we can not guarantee it
-but it is populated back when the "lazily free logic" is kicked.
+However, not all machines will have 1GB of memory to spare for this
+test. Adding a mapping size arg will allow run_vmtest.sh to pass an
+adequate mapping size, while allowing users to run the test
+independently with arbitrary size mappings.
 
---
-Vlad Rezki
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+---
+
+This is a replacement for
+mm-hugepages-fix-size-in-hugetlb-mremap-test.patch in -mm tree.
+
+The original patch set the amount of memory used by the test to 10MB
+instead of 1GB to avoid running out of memory. However, the test must
+map 1GB or more to trigger pmd sharing. Hence, a variable mapping size
+is the best solution here to allow for both options.
+
+---
+ tools/testing/selftests/vm/hugepage-mremap.c | 46 +++++++++++++-------
+ tools/testing/selftests/vm/run_vmtests.sh    |  2 +-
+ 2 files changed, 31 insertions(+), 17 deletions(-)
+
+diff --git a/tools/testing/selftests/vm/hugepage-mremap.c b/tools/testing/selftests/vm/hugepage-mremap.c
+index 257df94697a5..2a7c33631a29 100644
+--- a/tools/testing/selftests/vm/hugepage-mremap.c
++++ b/tools/testing/selftests/vm/hugepage-mremap.c
+@@ -4,7 +4,11 @@
+  *
+  * Example of remapping huge page memory in a user application using the
+  * mremap system call.  Code assumes a hugetlbfs filesystem is mounted
+- * at './huge'.  The code will use 10MB worth of huge pages.
++ * at './huge'.  The amount of memory used by this test is decided by a command
++ * line argument in MBs. If missing, the default amount is 10MB.
++ *
++ * To make sure the test triggers pmd sharing and goes through the 'unshare'
++ * path in the mremap code use 1GB (1024) or more.
+  */
+ 
+ #define _GNU_SOURCE
+@@ -18,8 +22,10 @@
+ #include <linux/userfaultfd.h>
+ #include <sys/ioctl.h>
+ 
+-#define LENGTH (1UL * 1024 * 1024 * 1024)
++#define DEFAULT_LENGTH_MB 10UL
++#define MB_TO_BYTES(x) (x * 1024 * 1024)
+ 
++#define FILE_NAME "huge/hugepagefile"
+ #define PROTECTION (PROT_READ | PROT_WRITE | PROT_EXEC)
+ #define FLAGS (MAP_SHARED | MAP_ANONYMOUS)
+ 
+@@ -28,20 +34,20 @@ static void check_bytes(char *addr)
+ 	printf("First hex is %x\n", *((unsigned int *)addr));
+ }
+ 
+-static void write_bytes(char *addr)
++static void write_bytes(char *addr, size_t len)
+ {
+ 	unsigned long i;
+ 
+-	for (i = 0; i < LENGTH; i++)
++	for (i = 0; i < len; i++)
+ 		*(addr + i) = (char)i;
+ }
+ 
+-static int read_bytes(char *addr)
++static int read_bytes(char *addr, size_t len)
+ {
+ 	unsigned long i;
+ 
+ 	check_bytes(addr);
+-	for (i = 0; i < LENGTH; i++)
++	for (i = 0; i < len; i++)
+ 		if (*(addr + i) != (char)i) {
+ 			printf("Mismatch at %lu\n", i);
+ 			return 1;
+@@ -99,11 +105,19 @@ static void register_region_with_uffd(char *addr, size_t len)
+ 	}
+ }
+ 
+-int main(void)
++int main(int argc, char *argv[])
+ {
++	/* Read memory length as the first arg if valid, otherwise fallback to
++	 * the default length. Any additional args are ignored.
++	 */
++	size_t length = argc > 1 ? (size_t)atoi(argv[1]) : 0UL;
++
++	length = length > 0 ? length : DEFAULT_LENGTH_MB;
++	length = MB_TO_BYTES(length);
++
+ 	int ret = 0;
+ 
+-	int fd = open("/huge/test", O_CREAT | O_RDWR, 0755);
++	int fd = open(FILE_NAME, O_CREAT | O_RDWR, 0755);
+ 
+ 	if (fd < 0) {
+ 		perror("Open failed");
+@@ -112,7 +126,7 @@ int main(void)
+ 
+ 	/* mmap to a PUD aligned address to hopefully trigger pmd sharing. */
+ 	unsigned long suggested_addr = 0x7eaa40000000;
+-	void *haddr = mmap((void *)suggested_addr, LENGTH, PROTECTION,
++	void *haddr = mmap((void *)suggested_addr, length, PROTECTION,
+ 			   MAP_HUGETLB | MAP_SHARED | MAP_POPULATE, fd, 0);
+ 	printf("Map haddr: Returned address is %p\n", haddr);
+ 	if (haddr == MAP_FAILED) {
+@@ -122,7 +136,7 @@ int main(void)
+ 
+ 	/* mmap again to a dummy address to hopefully trigger pmd sharing. */
+ 	suggested_addr = 0x7daa40000000;
+-	void *daddr = mmap((void *)suggested_addr, LENGTH, PROTECTION,
++	void *daddr = mmap((void *)suggested_addr, length, PROTECTION,
+ 			   MAP_HUGETLB | MAP_SHARED | MAP_POPULATE, fd, 0);
+ 	printf("Map daddr: Returned address is %p\n", daddr);
+ 	if (daddr == MAP_FAILED) {
+@@ -132,16 +146,16 @@ int main(void)
+ 
+ 	suggested_addr = 0x7faa40000000;
+ 	void *vaddr =
+-		mmap((void *)suggested_addr, LENGTH, PROTECTION, FLAGS, -1, 0);
++		mmap((void *)suggested_addr, length, PROTECTION, FLAGS, -1, 0);
+ 	printf("Map vaddr: Returned address is %p\n", vaddr);
+ 	if (vaddr == MAP_FAILED) {
+ 		perror("mmap2");
+ 		exit(1);
+ 	}
+ 
+-	register_region_with_uffd(haddr, LENGTH);
++	register_region_with_uffd(haddr, length);
+ 
+-	void *addr = mremap(haddr, LENGTH, LENGTH,
++	void *addr = mremap(haddr, length, length,
+ 			    MREMAP_MAYMOVE | MREMAP_FIXED, vaddr);
+ 	if (addr == MAP_FAILED) {
+ 		perror("mremap");
+@@ -150,10 +164,10 @@ int main(void)
+ 
+ 	printf("Mremap: Returned address is %p\n", addr);
+ 	check_bytes(addr);
+-	write_bytes(addr);
+-	ret = read_bytes(addr);
++	write_bytes(addr, length);
++	ret = read_bytes(addr, length);
+ 
+-	munmap(addr, LENGTH);
++	munmap(addr, length);
+ 
+ 	return ret;
+ }
+diff --git a/tools/testing/selftests/vm/run_vmtests.sh b/tools/testing/selftests/vm/run_vmtests.sh
+index a24d30af3094..75d401741394 100755
+--- a/tools/testing/selftests/vm/run_vmtests.sh
++++ b/tools/testing/selftests/vm/run_vmtests.sh
+@@ -111,7 +111,7 @@ fi
+ echo "-----------------------"
+ echo "running hugepage-mremap"
+ echo "-----------------------"
+-./hugepage-mremap
++./hugepage-mremap 256
+ if [ $? -ne 0 ]; then
+ 	echo "[FAIL]"
+ 	exitcode=1
+-- 
+2.34.0.rc2.393.gf8c9666880-goog
+
