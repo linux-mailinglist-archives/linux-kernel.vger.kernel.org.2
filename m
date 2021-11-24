@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A34045B9A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:01:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD75045C00D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241925AbhKXMDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:03:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58608 "EHLO mail.kernel.org"
+        id S1344714AbhKXNEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:04:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241968AbhKXMDg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:03:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8058A60F90;
-        Wed, 24 Nov 2021 12:00:26 +0000 (UTC)
+        id S245592AbhKXNCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:02:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B55160295;
+        Wed, 24 Nov 2021 12:35:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755227;
-        bh=kPo5Y3JWeVQOSIja/7gSaYdDZpapx5TLEO0Jwmpe0Uk=;
+        s=korg; t=1637757336;
+        bh=8oDn/mKKwZW39jfc27elu3K7XvGSEnv0UEF+EV8qVY0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LOBFT5D5NLfyAk2iMTQciNKno3d+bVLfnSxTvCFK2CGGDtFU9B/Ae0qOIobU8LUFe
-         dPJdr+1YnDGIzrLn5L2z5mk7onr8Ekh8n73urDZ8SArhwV1aWlrX0FF4qtr4ih+sLO
-         0FQbtTwTw/eKMHc4pQuZztf8YC3VwRFlDM4AHvz8=
+        b=RciA82v5WeAARf6dOoxqqkKYIrzK1m+3asuiEULfsERKpxwCu70SFxTy7kbGZda5j
+         yJQ/i4dueP6gSY7R7n6OOCKx4vGLsTQyseGxKm56h3vU0y1eOjWOZd3J77HZtbWRbu
+         4apFo5jA7kJwSo3eU7tUCRlNS9RrIZ13PtABvIWc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Phoenix Huang <phoenix@emc.com.tw>,
-        Yufei Du <yufeidu@cs.unc.edu>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 4.4 004/162] Input: elantench - fix misreporting trackpoint coordinates
+        stable@vger.kernel.org,
+        syzbot <syzbot+89731ccb6fec15ce1c22@syzkaller.appspotmail.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 117/323] smackfs: use __GFP_NOFAIL for smk_cipso_doi()
 Date:   Wed, 24 Nov 2021 12:55:07 +0100
-Message-Id: <20211124115658.473676079@linuxfoundation.org>
+Message-Id: <20211124115722.900861919@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phoenix Huang <phoenix@emc.com.tw>
+From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
 
-commit be896bd3b72b44126c55768f14c22a8729b0992e upstream.
+[ Upstream commit f91488ee15bd3cac467e2d6a361fc2d34d1052ae ]
 
-Some firmwares occasionally report bogus data from trackpoint, with X or Y
-displacement being too large (outside of [-127, 127] range). Let's drop such
-packets so that we do not generate jumps.
+syzbot is reporting kernel panic at smk_cipso_doi() due to memory
+allocation fault injection [1]. The reason for need to use panic() was
+not explained. But since no fix was proposed for 18 months, for now
+let's use __GFP_NOFAIL for utilizing syzbot resource on other bugs.
 
-Signed-off-by: Phoenix Huang <phoenix@emc.com.tw>
-Tested-by: Yufei Du <yufeidu@cs.unc.edu>
-Link: https://lore.kernel.org/r/20210729010940.5752-1-phoenix@emc.com.tw
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://syzkaller.appspot.com/bug?extid=89731ccb6fec15ce1c22 [1]
+Reported-by: syzbot <syzbot+89731ccb6fec15ce1c22@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/mouse/elantech.c |   13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ security/smack/smackfs.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/drivers/input/mouse/elantech.c
-+++ b/drivers/input/mouse/elantech.c
-@@ -435,6 +435,19 @@ static void elantech_report_trackpoint(s
- 	case 0x16008020U:
- 	case 0x26800010U:
- 	case 0x36808000U:
-+
-+		/*
-+		 * This firmware misreport coordinates for trackpoint
-+		 * occasionally. Discard packets outside of [-127, 127] range
-+		 * to prevent cursor jumps.
-+		 */
-+		if (packet[4] == 0x80 || packet[5] == 0x80 ||
-+		    packet[1] >> 7 == packet[4] >> 7 ||
-+		    packet[2] >> 7 == packet[5] >> 7) {
-+			elantech_debug("discarding packet [%6ph]\n", packet);
-+			break;
-+
-+		}
- 		x = packet[4] - (int)((packet[1]^0x80) << 1);
- 		y = (int)((packet[2]^0x80) << 1) - packet[5];
+diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
+index 25705a72d31bc..9fdf404a318f9 100644
+--- a/security/smack/smackfs.c
++++ b/security/smack/smackfs.c
+@@ -721,9 +721,7 @@ static void smk_cipso_doi(void)
+ 		printk(KERN_WARNING "%s:%d remove rc = %d\n",
+ 		       __func__, __LINE__, rc);
  
+-	doip = kmalloc(sizeof(struct cipso_v4_doi), GFP_KERNEL);
+-	if (doip == NULL)
+-		panic("smack:  Failed to initialize cipso DOI.\n");
++	doip = kmalloc(sizeof(struct cipso_v4_doi), GFP_KERNEL | __GFP_NOFAIL);
+ 	doip->map.std = NULL;
+ 	doip->doi = smk_cipso_doi_value;
+ 	doip->type = CIPSO_V4_MAP_PASS;
+-- 
+2.33.0
+
 
 
