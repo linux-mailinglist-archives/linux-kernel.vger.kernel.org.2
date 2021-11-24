@@ -2,171 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EBA145C94F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:57:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E46045C951
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:58:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347361AbhKXQA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:00:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40694 "EHLO
+        id S1347422AbhKXQBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:01:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbhKXQA0 (ORCPT
+        with ESMTP id S229829AbhKXQBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:00:26 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA9DC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:57:16 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id j9so2070090qvm.10
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:57:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CdYuE5QrzefFebInJI5P2GSiXpBChfo3witrC7Aylm0=;
-        b=QkgHoKqmttx5bs5HGXCc/nhxHhXWnZm164rRR9UjzErZl7fFK+l2AOo3mnk3Vw2d0j
-         BEIApYijTv8xAfl9c0orPE8u0lNVDf89U49Zj1hC2ITYGYDYpKM/47d2Z5KnU7ZiYuxv
-         qpZFu16WmaTjEnrqzU8Lj/NZdvDyFijgS5jQUPziD/8gTTxs4gqmZcC1p4oe3szMCXxB
-         aSrfYuVSOTmZGOQvFRgpuTfB7aQ6hPdzQHHT9ONypNKr6uFWO54dRKXOhOdmko+OR7WY
-         OT7kh0kCxkHENvkIEK5MNXLgsZQR0OhhKvvijgMvgQ2DzBGGWgS7gXRGjjt0aOuoFcML
-         4iog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CdYuE5QrzefFebInJI5P2GSiXpBChfo3witrC7Aylm0=;
-        b=6eedFfKb2+YfD//bnC8s98MSfq6onUEem0v1PavNkw0M8FIzc3ckvSWY36j0EjYyCu
-         fHKGsbTKkKVF+ZcjB45niGZSIINI8+SZCAHYhGabkd/geXNRqMOXRiszP1SBOg7QTw8k
-         4amPXALOeeuNaLyWBMpE3rRtEzR+xj2763E5CWjDM+mAZe7upHEJqi4bZ9Z153aD/weK
-         sZA/7d9JaE8fRja94ui41mUM8IUo5x3tL7SY7lHbt0dcVawjt0pHfBOr2Oslo0YA+a0s
-         EHuWf7Xg160CAcz8sXBxHrv8zqDuBCsO8oP/pHAUiIyAiV912QxhFimZ/kPLkPPJUlAl
-         /9ZQ==
-X-Gm-Message-State: AOAM533mmMyqSkQm98sSOMFqe1acZITlronIIGCMLWl+BwqMVtImNXBt
-        KholVBZG+Jx0TfkOawYQycGokVPTqcdkO1KFAUwAxQ==
-X-Google-Smtp-Source: ABdhPJzpHrcqPyGNonYh3XomO+R25xpkIROfGgGQcbfXK1J5XppVZWGg/B8uKyraD16CqXyUy4KFVQW3Yhk7evbo5HY=
-X-Received: by 2002:ad4:5bc4:: with SMTP id t4mr8674092qvt.3.1637769435711;
- Wed, 24 Nov 2021 07:57:15 -0800 (PST)
+        Wed, 24 Nov 2021 11:01:16 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416E0C061574;
+        Wed, 24 Nov 2021 07:58:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MhRaQX30y19nymtN7XiLLZlWbPS4SbobGvSOfL7Qrks=; b=VWcQqruxbm2TEfSiEDvRf8EWp9
+        i4YG+LkmraO3TfeifQvSRMDp6DVtjo6NuwHNNm7w9mmMhrdT3SoBe/tWe9brqTvQCZ7jZUs6T0ucc
+        vX+aljEB/gNCEfxEjmrvv1+l395R0ThnB3iMrTAWrRMm3oTJnw94MzsSCTYF9QVeUI0p6A/2fLGBO
+        61/8h4OIX0YlAYL8ybhL7MGaTNJuJM7ANRwGzp6TSshTFLDK40NOPz8IxvN54L3X/2lH89qqxL/rZ
+        30wTPCtMr9Af5wOwli4O35Aca/Kgj0bE4wh2bXS9hHoU4/Dprs+kxcoVXS5U3v6/S6uE50Fiff0EE
+        TAzAkjEA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mpuek-002Pnu-QR; Wed, 24 Nov 2021 15:57:58 +0000
+Date:   Wed, 24 Nov 2021 15:57:58 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hao Lee <haolee.swjtu@gmail.com>
+Cc:     linux-mm@kvack.org, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, shakeelb@google.com,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: reduce spinlock contention in release_pages()
+Message-ID: <YZ5hBtWPBpHDWzE4@casper.infradead.org>
+References: <20211124151915.GA6163@haolee.io>
 MIME-Version: 1.0
-References: <20211116062256.2417186-1-vkoul@kernel.org> <20211116062256.2417186-6-vkoul@kernel.org>
- <20269960-a753-72d4-5a1d-430af00cf562@linaro.org>
-In-Reply-To: <20269960-a753-72d4-5a1d-430af00cf562@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 24 Nov 2021 18:57:04 +0300
-Message-ID: <CAA8EJppA+cxySCFtqyihMjE0MPgioNcK8BtBS+HqUD9E141HBQ@mail.gmail.com>
-Subject: Re: [PATCH v3 05/13] drm/msm/disp/dpu1: Don't use DSC with mode_3d
-To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124151915.GA6163@haolee.io>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 at 18:40, Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
->
-> On 16/11/2021 09:22, Vinod Koul wrote:
-> > We cannot enable mode_3d when we are using the DSC. So pass
-> > configuration to detect DSC is enabled and not enable mode_3d
-> > when we are using DSC
-> >
-> > We add a helper dpu_encoder_helper_get_dsc() to detect dsc
-> > enabled and pass this to .setup_intf_cfg()
-> >
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > ---
-> >   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h     | 11 +++++++++++
-> >   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c |  2 ++
-> >   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c           |  3 ++-
-> >   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h           |  2 ++
-> >   4 files changed, 17 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
-> > index e7270eb6b84b..efb85d595598 100644
-> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
-> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
-> > @@ -332,6 +332,17 @@ static inline enum dpu_3d_blend_mode dpu_encoder_helper_get_3d_blend_mode(
-> >       return BLEND_3D_NONE;
-> >   }
-> >
-> > +static inline bool dpu_encoder_helper_get_dsc(struct dpu_encoder_phys *phys_enc)
+On Wed, Nov 24, 2021 at 03:19:15PM +0000, Hao Lee wrote:
+> When several tasks are terminated simultaneously, lots of pages will be
+> released, which can cause severe spinlock contention. Other tasks which
+> are running on the same core will be seriously affected. We can yield
+> cpu to fix this problem.
 
-Here you are returning the mask, so it should not be bool.
+The realtime people will eat you alive for this suggestion.
 
-> > +{
-> > +     struct drm_encoder *drm_enc = phys_enc->parent;
-> > +     struct msm_drm_private *priv = drm_enc->dev->dev_private;
-> > +
-> > +     if (priv->dsc)
-> > +             return priv->dsc->dsc_mask;
->
-> dsc_mask doesn't exist at this point, so the patch should be moved later
-> in the series.
-
-Please ignore this comment, dsc mask already exists.
-
->
-> > +
-> > +     return 0;
-> > +}
-> > +
-> >   /**
-> >    * dpu_encoder_helper_split_config - split display configuration helper function
-> >    *  This helper function may be used by physical encoders to configure
-> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-> > index 34a6940d12c5..f3f00f4d0193 100644
-> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-> > @@ -70,6 +70,8 @@ static void _dpu_encoder_phys_cmd_update_intf_cfg(
-> >       intf_cfg.intf_mode_sel = DPU_CTL_MODE_SEL_CMD;
-> >       intf_cfg.stream_sel = cmd_enc->stream_sel;
-> >       intf_cfg.mode_3d = dpu_encoder_helper_get_3d_blend_mode(phys_enc);
-> > +     intf_cfg.dsc = dpu_encoder_helper_get_dsc(phys_enc);
-> > +
-> >       ctl->ops.setup_intf_cfg(ctl, &intf_cfg);
-> >   }
-> >
-> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> > index 64740ddb983e..36831457a91b 100644
-> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
-> > @@ -519,7 +519,8 @@ static void dpu_hw_ctl_intf_cfg(struct dpu_hw_ctl *ctx,
-> >
-> >       intf_cfg |= (cfg->intf & 0xF) << 4;
-> >
-> > -     if (cfg->mode_3d) {
-> > +     /* In DSC we can't set merge, so check for dsc too */
-> > +     if (cfg->mode_3d && !cfg->dsc) {
-> >               intf_cfg |= BIT(19);
-> >               intf_cfg |= (cfg->mode_3d - 0x1) << 20;
-> >       }
-> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
-> > index 806c171e5df2..9847c9c46d6f 100644
-> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
-> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h
-> > @@ -40,6 +40,7 @@ struct dpu_hw_stage_cfg {
-> >    * @merge_3d:              3d merge block used
-> >    * @intf_mode_sel:         Interface mode, cmd / vid
-> >    * @stream_sel:            Stream selection for multi-stream interfaces
-> > + * @dsc:                   DSC BIT masks
-> >    */
-> >   struct dpu_hw_intf_cfg {
-> >       enum dpu_intf intf;
-> > @@ -47,6 +48,7 @@ struct dpu_hw_intf_cfg {
-> >       enum dpu_merge_3d merge_3d;
-> >       enum dpu_ctl_mode_sel intf_mode_sel;
-> >       int stream_sel;
-> > +     unsigned int dsc;
-> >   };
-> >
-
-
--- 
-With best wishes
-Dmitry
+> +++ b/mm/swap.c
+> @@ -960,8 +960,14 @@ void release_pages(struct page **pages, int nr)
+>  		if (PageLRU(page)) {
+>  			struct lruvec *prev_lruvec = lruvec;
+>  
+> -			lruvec = folio_lruvec_relock_irqsave(folio, lruvec,
+> +retry:
+> +			lruvec = folio_lruvec_tryrelock_irqsave(folio, lruvec,
+>  									&flags);
+> +			if (!lruvec) {
+> +				cond_resched();
+> +				goto retry;
+> +			}
+> +
+>  			if (prev_lruvec != lruvec)
