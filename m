@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C9045CF9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:06:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60AD645CFA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:06:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348519AbhKXWJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 17:09:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40846 "EHLO
+        id S1351737AbhKXWJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 17:09:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344603AbhKXWJo (ORCPT
+        with ESMTP id S1344628AbhKXWJp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:09:44 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2FCC061574;
-        Wed, 24 Nov 2021 14:06:34 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id b16so8345579ljf.12;
-        Wed, 24 Nov 2021 14:06:34 -0800 (PST)
+        Wed, 24 Nov 2021 17:09:45 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D474C061574;
+        Wed, 24 Nov 2021 14:06:35 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id l22so10957451lfg.7;
+        Wed, 24 Nov 2021 14:06:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=piUl9l4MQ9w1o9KgxY94nBJ6EwDi73VAxTX3rtlk9+s=;
-        b=NnGQjYeMF7hAh3MvNIYc14WpNok1tPGHyd1qnl/CGxuC+gbNQCaXAPra1OaALM+Bcj
-         Ba16/vKJx+czY7gUhwlanY6zp1lXw2Z0rH0G8iZNes7WdJkB0wspYS+G/h61RDgKJSR0
-         MGHSYJZfcQKuLEEC17W5xAId3EV/xQkQZBqjGUVtA+NGMq/VLLBMuffjjTlKbnu3dwFw
-         V0kvvVOREK4dIEKpxxid4r23XsFL91vPkgOVTUw4E98V5/KCjrgQnG2gIcTBUskM+Aeb
-         2AL6qhW/16WZmPfp8lLHwhGJ6DWls1++NZr2CDkSIHB8Sg+y0OQUBbmeS33FhJq1UkTZ
-         dSZg==
+        bh=jZtmNInV251GqgFq3K9ZRWdCyBV26EPK8i39JKkeuGY=;
+        b=ARwTAJfTqtelTIPULCHTr4G1ZuHUenvIBkuGFZhD92TpJknc06Pw4cc8Q0R4MkYvx6
+         ZrGOgymmMNeLJVRsE9/cc5Ab3/Isn6TJ/W0hPgcZwOEfa3j2FDIf0rCGr7KuMPBV59Si
+         SJWeTuh6I7v7M09Q623XB87OkuNd+AwC4UztBJOpDnXF5/CBuHKP3gHgvGh5xNJ2QBbX
+         9lOkMvN8rkLKzWw1To+uJiANLdC1wZCXreMAsaQUt4OfMwVpVCDk7gxkrKflx3D4zStc
+         heknKMF8Gd2Lhn0RUV5qxHSS/hp6xVdYYKOqg1/ycE7I2303I3dBEl5MG0m2eWG+ITKX
+         nlug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=piUl9l4MQ9w1o9KgxY94nBJ6EwDi73VAxTX3rtlk9+s=;
-        b=0R+RAZlhUxHGcpYGbF1FE8GP2zRQ+4jFcPv6sPh+Lwxjh902zAvRsbXbcrWWW0iGW8
-         xtQyXbhysOiCRcyWiHHm1hEVjKkDcpNj8kt5p24DzUJMMfcjFUP0c79QuqI3+LGt8sue
-         YNHpAH+r8TeNDSwsd8VBdSvfz/BrYr4BPcJ5NcDjcjZHlhtlPekT9+X46yjE+JjYry3O
-         rGq7JaVAY/IF1sWqZwXxhSYEcRJNqsn58jrXu7QpmUGihhWQihz30b5HKN3+p8Jg7BVy
-         UOJzRwTmDFrC4Z6OrrOVMAwWKgDkmFF5/fCamh4GM7yVA3bkxNJ3711Q+VSB2q55lSg4
-         vBCg==
-X-Gm-Message-State: AOAM533QR8jXOteNeYfpGPSgtIc3ZHBUk3QBt+jM+hy9YEkfdH5v3XFD
-        EZSZbEwOCoL1gNTj1hzQN4c=
-X-Google-Smtp-Source: ABdhPJyC5uiCLhekgH2zxjYZ7iOS2JEJsVe0rvh5Rs4pecyXEimPxIdfdARMrq1pZ88KSK26qXk7Jg==
-X-Received: by 2002:a2e:9017:: with SMTP id h23mr19436751ljg.13.1637791592719;
-        Wed, 24 Nov 2021 14:06:32 -0800 (PST)
+        bh=jZtmNInV251GqgFq3K9ZRWdCyBV26EPK8i39JKkeuGY=;
+        b=orfR21d6gjNEWb1fr42axzfA+a1IT4JwtDqWRaerlE2TWKOMPizrwBM1eLSJErlR0t
+         Pq5iUuumu18ZzCyqZ5si6P6iSLe44ImghQMQ1iVYh5ME6J//zt+7BtGFhy+Z9tuH3yYy
+         fd+LV6fWzrIIe3sAeAy3JGlAS0JwdoZy7sNmIzjCEsagSjTKKwUU6z4gbW4/rfikAwwQ
+         LkGQHC74jQdy9jtyG97Mqghy8S7dZU6MJc5FSZpQzZ6IAqTy80P70Ocm50Qh/Xr9vsaS
+         PdzDn9hqISyrv69WRSoMsQXa4xiokjUMQKvlJPYheY+AqyROBNnULG5Lwz9Kl3nxEnXh
+         OXkA==
+X-Gm-Message-State: AOAM530BSjXYCh65tw2d3urkN6MqGC7ObbnijL7Auh+gXkvgG3Ph59Hx
+        uZD5KJ9kFG2NGNbWt3hhoYk=
+X-Google-Smtp-Source: ABdhPJzhi7UNU46047RRxIFY+qitxZ5+V78jiCA3Ag2Za0QxQcgCp2Ay3wCtMWWTnZuxJO6SBU4FjQ==
+X-Received: by 2002:a19:c308:: with SMTP id t8mr18436846lff.621.1637791593535;
+        Wed, 24 Nov 2021 14:06:33 -0800 (PST)
 Received: from localhost.localdomain (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
-        by smtp.gmail.com with ESMTPSA id w17sm93266ljh.15.2021.11.24.14.06.31
+        by smtp.gmail.com with ESMTPSA id w17sm93266ljh.15.2021.11.24.14.06.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 14:06:32 -0800 (PST)
+        Wed, 24 Nov 2021 14:06:33 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -58,9 +58,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
 Cc:     linux-tegra@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org
-Subject: [PATCH v1 03/20] ASoC: dt-bindings: tegra20-i2s: Document new nvidia,fixed-parent-rate property
-Date:   Thu, 25 Nov 2021 01:00:40 +0300
-Message-Id: <20211124220057.15763-4-digetx@gmail.com>
+Subject: [PATCH v1 04/20] dt-bindings: host1x: Document optional HDMI sound-dai-cells
+Date:   Thu, 25 Nov 2021 01:00:41 +0300
+Message-Id: <20211124220057.15763-5-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211124220057.15763-1-digetx@gmail.com>
 References: <20211124220057.15763-1-digetx@gmail.com>
@@ -70,36 +70,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document new nvidia,fixed-parent-rate property which instructs that this
-board wants parent clock to stay at a fixed rate. It allows to prevent
-conflicts between audio components that share same parent PLL. For
-instance, this property allows to have HDMI audio, speaker and headphones
-in the system playing audio simultaneously, which is a common pattern for
-consumer devices.
+Document new optional sound-dai-cells property of HDMI node. This node will
+be used as endpoint of HDMI sound DAI graph.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- .../devicetree/bindings/sound/nvidia,tegra20-i2s.yaml      | 7 +++++++
- 1 file changed, 7 insertions(+)
+ .../devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt  | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
-index cd87eb4ef995..28f964c759f6 100644
---- a/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
-+++ b/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
-@@ -42,6 +42,13 @@ properties:
-       - const: rx
-       - const: tx
+diff --git a/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt b/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
+index e61999ce54e9..27b746f28f31 100644
+--- a/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
++++ b/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-host1x.txt
+@@ -297,6 +297,7 @@ of the following host1x client modules:
+   - nvidia,edid: supplies a binary EDID blob
+   - nvidia,panel: phandle of a display panel
+   - operating-points-v2: See ../bindings/opp/opp.txt for details.
++  - #sound-dai-cells: Should be 0.
  
-+  nvidia,fixed-parent-rate:
-+    description: |
-+      Specifies whether board prefers parent clock to stay at a fixed rate.
-+      This allows multiple Tegra20 audio components work simultaneously by
-+      limiting number of supportable audio rates.
-+    type: boolean
-+
- required:
-   - compatible
-   - reg
+ - tvo: TV encoder output
+ 
 -- 
 2.33.1
 
