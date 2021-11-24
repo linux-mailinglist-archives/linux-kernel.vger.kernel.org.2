@@ -2,79 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD4545C75B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A9145C762
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:31:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354879AbhKXOd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:33:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355022AbhKXOdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:33:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0854960273;
-        Wed, 24 Nov 2021 14:30:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637764210;
-        bh=hzij1PTVKwykaHlENjrWj0gL3uLeAp7fu3hxPDAcIIo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=nGYYCEk7nQWadWlli4bvqJjk3EeLuM7SwM+Rk0kwSrGN9clc4rJj+u7ZhycUmjoyF
-         +NnQWRdt8sJTkBeFevkqJZ3Lc9elq7UXkthVqu6yQEj9/TvZ3N1qGlZrmz4U63gdoq
-         xoXh0Oym8tDiJuPVyP/qr1B0cHlEK9w/Dq4UCOJlyJtv1Q5cPlOBFsfOWexBoIaKKT
-         5AOgzJWtMns1tIGCeXf6/T+xO8mEwbI3Z7GS9w8FVQdzqh4OCCPpK9FrgrUBrPPQX5
-         njsuVe8MZ46POLWICGXoXntwqBmoHPwwyTdw77F4ZeFUe8rSnW1mA3kHNO79dCkr37
-         KWsvmzQuOU+fw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id F0A2D609D5;
-        Wed, 24 Nov 2021 14:30:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1355335AbhKXOeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:34:20 -0500
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:33767 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355291AbhKXOeR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:34:17 -0500
+Received: by mail-ot1-f46.google.com with SMTP id 35-20020a9d08a6000000b00579cd5e605eso4628670otf.0;
+        Wed, 24 Nov 2021 06:31:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Eu+An0Wqru+XdtHm5aswYmIMkbkLQ/vDJ7BbpIzejgY=;
+        b=dhf1et9u+aBAe6OJaosUpujhMPG8Uq+zGrKPrv3SATjp+dt7R13kgFn8gGjPyOYqUU
+         f1BI8ZJv627/T6AWFbsea0FWg9UlxLgk9x5nGHBPQjx85jZZlTuKlHHP0r9S5RG48BuL
+         zY796UZsQttqdBDyBk2pHsHxH08INjk7R63uhZt1jilmpIRaPlWeAxV6Fiid3hAP0hko
+         jfEt6QRb4wfYclNW4E+reeYayiSh0YPMtOKKyIiwbIk8rJwcoUuKmh+Hn5efAFigOvJB
+         j0+Ni8UpwyD7obSI2ysHYsIGIZq8d78T3kNSOSSRUUQjzTdmm5GNLUEVdGKeb29CPMRv
+         9pBg==
+X-Gm-Message-State: AOAM533knLgwo9qvFvcporjJwH7rY2iby/p/P4cM0we6KSJs+X7viVIl
+        Ecl+6+8eyCtPrOyrHvRYM3LcWF1iirUUHvPb8xc=
+X-Google-Smtp-Source: ABdhPJwX7bYX4mz2i102YPzMsCTko0M9Zf3tb8+uTM3gOJzmPVzH9nqXlHDbfVzH9wnaKnx/7DdUyn0dmrw9BQCacFA=
+X-Received: by 2002:a05:6830:1e57:: with SMTP id e23mr13455332otj.16.1637764264752;
+ Wed, 24 Nov 2021 06:31:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/4] net: hns3: updates for -next
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163776420998.4552.2505811247513302335.git-patchwork-notify@kernel.org>
-Date:   Wed, 24 Nov 2021 14:30:09 +0000
-References: <20211124010654.6753-1-huangguangbin2@huawei.com>
-In-Reply-To: <20211124010654.6753-1-huangguangbin2@huawei.com>
-To:     Guangbin Huang <huangguangbin2@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, wangjie125@huawei.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lipeng321@huawei.com, chenhao288@hisilicon.com
+References: <20211115121001.77041-1-heikki.krogerus@linux.intel.com>
+ <CAJZ5v0jsWVw4OyVbkdn2374tLAXAShZ_B3CKDmnQOE_QEXXPiQ@mail.gmail.com> <YZ5JDhOnDw+qqzJP@kuha.fi.intel.com>
+In-Reply-To: <YZ5JDhOnDw+qqzJP@kuha.fi.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 24 Nov 2021 15:30:53 +0100
+Message-ID: <CAJZ5v0iVTGbgdU5Ux992fYim8zpV_GstJhYMLStr7YcQNWFPyQ@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] device property: Remove device_add_properties()
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Wed, Nov 24, 2021 at 3:15 PM Heikki Krogerus
+<heikki.krogerus@linux.intel.com> wrote:
+>
+> On Wed, Nov 24, 2021 at 02:59:01PM +0100, Rafael J. Wysocki wrote:
+> > On Mon, Nov 15, 2021 at 1:10 PM Heikki Krogerus
+> > <heikki.krogerus@linux.intel.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > > One more version. Hopefully the commit messages are now OK. No other
+> > > changes since v3:
+> > >
+> > > https://lore.kernel.org/lkml/20211006112643.77684-1-heikki.krogerus@linux.intel.com/
+> > >
+> > >
+> > > v3 cover letter:
+> > >
+> > > In this third version of this series, the second patch is now split in
+> > > two. The device_remove_properties() call is first removed from
+> > > device_del() in its own patch, and the
+> > > device_add/remove_properties() API is removed separately in the last
+> > > patch. I hope the commit messages are clear enough this time.
+> > >
+> > >
+> > > v2 cover letter:
+> > >
+> > > This is the second version where I only modified the commit message of
+> > > the first patch according to comments from Bjorn.
+> > >
+> > >
+> > > Original cover letter:
+> > >
+> > > There is one user left for the API, so converting that to use software
+> > > node API instead, and removing the function.
+> > >
+> > >
+> > > thanks,
+> > >
+> > > Heikki Krogerus (3):
+> > >   PCI: Convert to device_create_managed_software_node()
+> > >   driver core: Don't call device_remove_properties() from device_del()
+> > >   device property: Remove device_add_properties() API
+> > >
+> > >  drivers/base/core.c      |  1 -
+> > >  drivers/base/property.c  | 48 ----------------------------------------
+> > >  drivers/pci/quirks.c     |  2 +-
+> > >  include/linux/property.h |  4 ----
+> > >  4 files changed, 1 insertion(+), 54 deletions(-)
+> >
+> > Has this been picked up already or am I expected to pick it up?
+>
+> It hasn't been picked up by anybody, so if you can take these, that
+> would be great.
 
-This series was applied to netdev/net-next.git (master)
-by David S. Miller <davem@davemloft.net>:
+OK, applied as 5.17 material now.
 
-On Wed, 24 Nov 2021 09:06:50 +0800 you wrote:
-> This series includes some updates for the HNS3 ethernet driver.
-> 
-> Jie Wang (1):
->   net: hns3: debugfs add drop packet statistics of multicast and
->     broadcast for igu
-> 
-> Yufeng Mo (3):
->   net: hns3: add log for workqueue scheduled late
->   net: hns3: format the output of the MAC address
->   net: hns3: add dql info when tx timeout
-> 
-> [...]
+Greg, please let me know if you'd rather take these patches yourself
+and I'll drop them in that case.
 
-Here is the summary with links:
-  - [net-next,1/4] net: hns3: add log for workqueue scheduled late
-    https://git.kernel.org/netdev/net-next/c/d9069dab2075
-  - [net-next,2/4] net: hns3: format the output of the MAC address
-    https://git.kernel.org/netdev/net-next/c/4f331fda35f1
-  - [net-next,3/4] net: hns3: debugfs add drop packet statistics of multicast and broadcast for igu
-    https://git.kernel.org/netdev/net-next/c/8488e3c68214
-  - [net-next,4/4] net: hns3: add dql info when tx timeout
-    https://git.kernel.org/netdev/net-next/c/db596298edbf
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks!
