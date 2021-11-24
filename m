@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6C645BD6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 357EC45C008
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:01:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244913AbhKXMiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:38:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49472 "EHLO mail.kernel.org"
+        id S1344774AbhKXNEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:04:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245138AbhKXMcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:32:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA3EF61371;
-        Wed, 24 Nov 2021 12:20:17 +0000 (UTC)
+        id S1345894AbhKXNCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:02:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89DD661179;
+        Wed, 24 Nov 2021 12:35:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756418;
-        bh=Atx7ZiO0oLOeVSGrVDTeC+qmbeDayM/96As/GANmrOk=;
+        s=korg; t=1637757327;
+        bh=tbKFZ9hmkTXpIXUhsnfpIvlXr/0eN8S+OJ2MV5wrPnY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SujcOvGtHnLqWfdTLaC5jPzioOBcp6pXQp3yVqtk6OTNXP34/8Kj/iGw0GfUQmUCX
-         E+56vxXzOVKiv4IUGXQFWCVcqW1Vf4K9kk8aDHU5M9qrRiAFAgy4tBsZhL/2l48NW1
-         ciUb/jNtTFuVFK+Kex18y3ZjkDF6x5xiLRnT3cF4=
+        b=k7N1wnUzfNTwxtKsLUnJNmH4/PMUyI64QKzvkJCoUWQnso4ZDQ2mQJHReNUB91pUK
+         g0tfvBdo1B/bwuI/nneYJwKRlDI6ngGQFOFkw6uhhPBMTvQRo2jpYmK90VbOcbcDol
+         Qer6fG095iGghiGQNlcliUhnYCTA7WSYdES/D51U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Sean Young <sean@mess.org>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 080/251] media: uvcvideo: Set capability in s_param
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+2cd8c5db4a85f0a04142@syzkaller.appspotmail.com
+Subject: [PATCH 4.19 132/323] media: dvb-usb: fix ununit-value in az6027_rc_query
 Date:   Wed, 24 Nov 2021 12:55:22 +0100
-Message-Id: <20211124115713.040134918@linuxfoundation.org>
+Message-Id: <20211124115723.390297168@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ricardo Ribalda <ribalda@chromium.org>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 97a2777a96070afb7da5d587834086c0b586c8cc ]
+[ Upstream commit afae4ef7d5ad913cab1316137854a36bea6268a5 ]
 
-Fixes v4l2-compliance:
+Syzbot reported ununit-value bug in az6027_rc_query(). The problem was
+in missing state pointer initialization. Since this function does nothing
+we can simply initialize state to REMOTE_NO_KEY_PRESSED.
 
-Format ioctls (Input 0):
-                warn: v4l2-test-formats.cpp(1339): S_PARM is supported but doesn't report V4L2_CAP_TIMEPERFRAME
-                fail: v4l2-test-formats.cpp(1241): node->has_frmintervals && !cap->capability
+Reported-and-tested-by: syzbot+2cd8c5db4a85f0a04142@syzkaller.appspotmail.com
 
-Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Fixes: 76f9a820c867 ("V4L/DVB: AZ6027: Initial import of the driver")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Sean Young <sean@mess.org>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/uvc/uvc_v4l2.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/media/usb/dvb-usb/az6027.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-index fae811b9cde96..2b0ca32d71965 100644
---- a/drivers/media/usb/uvc/uvc_v4l2.c
-+++ b/drivers/media/usb/uvc/uvc_v4l2.c
-@@ -446,10 +446,13 @@ static int uvc_v4l2_set_streamparm(struct uvc_streaming *stream,
- 	uvc_simplify_fraction(&timeperframe.numerator,
- 		&timeperframe.denominator, 8, 333);
- 
--	if (parm->type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
-+	if (parm->type == V4L2_BUF_TYPE_VIDEO_CAPTURE) {
- 		parm->parm.capture.timeperframe = timeperframe;
--	else
-+		parm->parm.capture.capability = V4L2_CAP_TIMEPERFRAME;
-+	} else {
- 		parm->parm.output.timeperframe = timeperframe;
-+		parm->parm.output.capability = V4L2_CAP_TIMEPERFRAME;
-+	}
- 
+diff --git a/drivers/media/usb/dvb-usb/az6027.c b/drivers/media/usb/dvb-usb/az6027.c
+index 6321b8e302612..990719727dc37 100644
+--- a/drivers/media/usb/dvb-usb/az6027.c
++++ b/drivers/media/usb/dvb-usb/az6027.c
+@@ -394,6 +394,7 @@ static struct rc_map_table rc_map_az6027_table[] = {
+ /* remote control stuff (does not work with my box) */
+ static int az6027_rc_query(struct dvb_usb_device *d, u32 *event, int *state)
+ {
++	*state = REMOTE_NO_KEY_PRESSED;
  	return 0;
  }
+ 
 -- 
 2.33.0
 
