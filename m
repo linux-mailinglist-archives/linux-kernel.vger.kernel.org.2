@@ -2,179 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A1F45B79A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 10:39:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CFD445B7A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 10:43:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236930AbhKXJma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 04:42:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30657 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229646AbhKXJm1 (ORCPT
+        id S237723AbhKXJql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 04:46:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237027AbhKXJqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 04:42:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637746757;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zCwgu/iN8UvUnRGDuVKX8IG1jfgLBB20Ll53mZjRXog=;
-        b=Z4VAc+5lRZZHA/7zFIcPtT9uTDkOeAWCU5zNKLawSx5FJ0EsJM7IBjWVN1aCmvs7xn1OCZ
-        u3kt2mQ5+at2CAeKHlv6fyZPn/FKTusxpXe7NI0iwoL6amj/IBsQAQTIZQ6p100fpu/8WE
-        0jUOFoBZg8TUPppRdrnCebbqGjVJT/w=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-552-skC2DLrTM7i75CUQ-BowQQ-1; Wed, 24 Nov 2021 04:39:15 -0500
-X-MC-Unique: skC2DLrTM7i75CUQ-BowQQ-1
-Received: by mail-pg1-f197.google.com with SMTP id z10-20020a63e10a000000b003216c70bef7so527509pgh.10
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 01:39:15 -0800 (PST)
+        Wed, 24 Nov 2021 04:46:37 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EC34C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 01:43:28 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id h63so1611182pgc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 01:43:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9j74+svXlAhYzIbtiOUuOMeegqkYiFJlWDyGAbHKBPI=;
+        b=2oZLMiNp+HiAvA+dAovJcOVGymnGUk7R0O2Iz/T/nluwu0aHXSWroQtxIo18l11UWb
+         pcXa4UlmdZBtN0PS2DREcGPNHEyN/uLeXkXyRkDAXHaZ/31UnsrpwguAZwbEuUpyb9hO
+         zJPyZ0E8hEHRtdSGOiJP2AaOcxdMZn+CB06Xie6QaoqBL73RkpRUpEg5pw3DJ7q9fnVk
+         6gy1/OTCoVrhdO98gUNHgN95uWbcSXNKtAY7KpGOYOIYB+kajLDbEIJ4IUxVQ0QB+n7J
+         2Z7lu6IGZr+rG+nxU483tA1wPAjMFI2K7ADdsYQO4nouH03RUTOm5Ko3FAh2ud+i0ZOi
+         3/Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zCwgu/iN8UvUnRGDuVKX8IG1jfgLBB20Ll53mZjRXog=;
-        b=axoLaUZguY7lqhfaUBoeT+NS8kQxOb04TeXSjZaG9IeqNo2XBe+yD5mjYiHhmt0u4A
-         ad2iqtiNE0K4HomdEC+ZuzIUrjQEkGPaQurvZrVs2I+8fGYyXKF5mF5wrmbRtuNWqRbE
-         GrQW2nWVu8RmjrvLSZqY5pIa+sORCMDy0xCRqKUm+9qRH9S8ITemo4gBtwPSj9ByXdAu
-         q6rKzDUYvFyohHHJ1vfzm0RZvjkMvI2FTVO/EAQmoMmgIq8zC7wjdM78FzsK0zNurqMQ
-         G1la1Nmp27b7lCAQFY2nsRqcymppJjNtW/g3W33KCJAA6wziIWy3cExaEz91px7GL0Ov
-         1KVg==
-X-Gm-Message-State: AOAM530Mr0RBasSLvLLI1VQDEz8BblNHaIlIrZ9ktzSAGSCnB/6x1DoU
-        YPRjSOE2qCA+Ry1NuGnHETTlV17BM/SzS6ya/8tnKwUcKksCID2aAeZoNFeBq17/O6NJn5f588I
-        f6XDlk809mbyYbr9VovuSmMwRNG/z+qJHRkk18Sov
-X-Received: by 2002:a17:90b:1648:: with SMTP id il8mr13216911pjb.246.1637746754558;
-        Wed, 24 Nov 2021 01:39:14 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxhgOpc9n7O9Tx8Ko4L88LDtDV7faKx0HMHpbcxk55uIjDBqdstpusSYpNDQs7xPMtMbZ1FoZSqrENpQtmautA=
-X-Received: by 2002:a17:90b:1648:: with SMTP id il8mr13216878pjb.246.1637746754313;
- Wed, 24 Nov 2021 01:39:14 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9j74+svXlAhYzIbtiOUuOMeegqkYiFJlWDyGAbHKBPI=;
+        b=0PjZwkt4Ea6J1XzCvcRu6TirzCOnFhu6i2/HyX7bPi/L02iKDXjMdD40VNAu1kS3xV
+         bob5dtmOsUOYPjR0EfgB+Gv5YcOuJCiCGMXT+7Q0XJtsw+lq8hXsKnr8EOLHTgHQmxAr
+         18CAjGNSCUEsAKkVbd4J/BAS/RcA5Qm57AKnGM1BhiY+NWI7WFA5bYyiW10nQzJ0N8JC
+         Q5MkQwMkmyS8KBHKfQNW9qVh0sQL0h8p5+2lxzNJL6Gijo1DSN1M1c7tnLvgmhc/uIpr
+         unMcFugTXFAiFoGnrEaJ3hiuDnJlOoVaLUN1WSUE54G8wEMpJ45I5amBFPpspe/++Ris
+         uikA==
+X-Gm-Message-State: AOAM530wJH5ovPt50hel6vGjprsbmLKqLogUxb8Bqc/2uhlYgBCXmP5n
+        5pXECCIPD9NAw6FtD+/XEfTseQ==
+X-Google-Smtp-Source: ABdhPJw/5BatWlVVq8CJs2SBSQkHdwVorJfVnIElodhICjb3mJCYV1CdWP1MLuha9y61FQVz0D470Q==
+X-Received: by 2002:a65:654f:: with SMTP id a15mr9301517pgw.195.1637747007854;
+        Wed, 24 Nov 2021 01:43:27 -0800 (PST)
+Received: from C02FT5A6MD6R.bytedance.net ([61.120.150.76])
+        by smtp.gmail.com with ESMTPSA id p188sm15402195pfg.102.2021.11.24.01.43.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 24 Nov 2021 01:43:25 -0800 (PST)
+From:   Gang Li <ligang.bdlg@bytedance.com>
+To:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     stable@vger.kernel.org, songmuchun@bytedance.com,
+        Gang Li <ligang.bdlg@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] shmem: fix a race between shmem_unused_huge_shrink and shmem_evict_inode
+Date:   Wed, 24 Nov 2021 17:43:16 +0800
+Message-Id: <20211124094317.69719-1-ligang.bdlg@bytedance.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20211123191238.12472-1-jose.exposito89@gmail.com>
-In-Reply-To: <20211123191238.12472-1-jose.exposito89@gmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Wed, 24 Nov 2021 10:39:02 +0100
-Message-ID: <CAO-hwJLB8h6fQRF8UjN3rER_6xS2Shi3ffEr92PhkVCijtYRpQ@mail.gmail.com>
-Subject: Re: [PATCH 0/1] Do not map BTN_RIGHT/MIDDLE on buttonpads
-To:     =?UTF-8?B?Sm9zw6kgRXhww7NzaXRv?= <jose.exposito89@gmail.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jos=C3=A9,
+This patch fixes a data race in commit 779750d20b93 ("shmem: split huge pages
+beyond i_size under memory pressure").
 
-On Tue, Nov 23, 2021 at 8:12 PM Jos=C3=A9 Exp=C3=B3sito <jose.exposito89@gm=
-ail.com> wrote:
->
-> Hi all,
->
-> Historically, libinput has relayed on the INPUT_PROP_BUTTONPAD property
-> to detect buttonpads.
->
-> Since buttonpads are expected to have only one button (BTN_LEFT),
-> recently we added a new rule to detect buttonpads: Where a touchpad
-> maps the BTN_RIGHT bit, libinput assumes it is NOT a buttonpad.
->
-> However, this change leaded to several false possitives, so we ended up
-> reverting it. For more context:
-> https://gitlab.freedesktop.org/libinput/libinput/-/issues/704
->
-> And for a full list of affected hardware, HID reports and bug reports
-> please see:
-> https://gitlab.freedesktop.org/libinput/libinput/-/merge_requests/726
->
-> My understanding is that buttonpads should not map BTN_RIGHT and/or
-> BTN_MIDDLE and to avoid it I would like to fix the required drivers.
+Here are call traces:
 
-As long as udev intrinsic is happy with it (and it correctly tags the
-touchpad as ID_INPUT_something), I'm fine with it.
+Call Trace 1:
+	shmem_unused_huge_shrink+0x3ae/0x410
+	? __list_lru_walk_one.isra.5+0x33/0x160
+	super_cache_scan+0x17c/0x190
+	shrink_slab.part.55+0x1ef/0x3f0
+	shrink_node+0x10e/0x330
+	kswapd+0x380/0x740
+	kthread+0xfc/0x130
+	? mem_cgroup_shrink_node+0x170/0x170
+	? kthread_create_on_node+0x70/0x70
+	ret_from_fork+0x1f/0x30
 
-Also, you might want to point at the specification regarding button
-pads: https://docs.microsoft.com/en-us/windows-hardware/design/component-gu=
-idelines/touchpad-windows-precision-touchpad-collection#device-capabilities=
--feature-report
+Call Trace 2:
+	shmem_evict_inode+0xd8/0x190
+	evict+0xbe/0x1c0
+	do_unlinkat+0x137/0x330
+	do_syscall_64+0x76/0x120
+	entry_SYSCALL_64_after_hwframe+0x3d/0xa2
 
-The way I read it: if the device exports the Button type value
-feature, and it is 0 or 1 (click-pad or pressure-pad), there should
-not be discrete buttons.
+The simultaneous deletion of adjacent elements in the local list (@list)
+by shmem_unused_huge_shrink and shmem_evict_inode will break the list.
 
->
-> One option to fix it (this patch) is to clear the bits that might have
-> been added because of the HID descriptor on every driver.
-> However, since this code will be common to all drivers, I would like to
-> ask if you consider it worth it to add a function to handle adding
-> properties.
->
-> A function similar to input_set_capability but for props could be added
-> in input.h/c:
->
->     /**
->      * input_set_property - add a property to the device
->      * @dev: device to add the property to
->      * @property: type of the property (INPUT_PROP_POINTER, INPUT_PROP_DI=
-RECT...)
->      *
->      * In addition to setting up corresponding bit in dev->propbit the fu=
-nction
->      * might add or remove related capabilities.
->      */
->     void input_set_property(struct input_dev *dev, unsigned int property)
->     {
->             switch (property) {
->             case INPUT_PROP_POINTER:
->             case INPUT_PROP_DIRECT:
->             case INPUT_PROP_SEMI_MT:
->             case INPUT_PROP_TOPBUTTONPAD:
->             case INPUT_PROP_POINTING_STICK:
->             case INPUT_PROP_ACCELEROMETER:
->                     break;
->
->             case INPUT_PROP_BUTTONPAD:
->                     input_set_capability(dev, EV_KEY, BTN_LEFT);
->                     __clear_bit(BTN_RIGHT, dev->keybit);
->                     __clear_bit(BTN_MIDDLE, dev->keybit);
->                     break;
->
->             default:
->                     pr_err("%s: unknown property %u\n", __func__, propert=
-y);
->                     dump_stack();
->                     return;
->             }
->
->             __set_bit(property, dev->propbit);
->     }
->     EXPORT_SYMBOL(input_set_property);
->
->
-> Which approach do you think is the best?
+Image there are 3 items in the local list (@list).
+In the first traversal, A is not deleted from @list.
 
-I think it depends if you plan on fixing just hid-multitouch or the others.
-If you have more than one driver, then yes, adding a new symbol in
-hid-input.c makes sense. If not, then you are just exposing a new
-function we won't know if there are users and we won't be able to
-change without care.
+  1)    A->B->C
+        ^
+        |
+        pos (leave)
 
-Cheers,
-Benjamin
+In the second traversal, B is deleted from @list. Concurrently, A is
+deleted from @list through shmem_evict_inode() since last reference counter of
+inode is dropped by other thread. Then the @list is corrupted.
 
->
-> Thank you very much in advance,
-> Jose
->
->
-> Jos=C3=A9 Exp=C3=B3sito (1):
->   HID: multitouch: only map BTN_LEFT on buttonpads
->
->  drivers/hid/hid-multitouch.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> --
-> 2.25.1
->
+  2)    A->B->C
+        ^  ^
+        |  |
+     evict pos (drop)
+
+Fix:
+
+We should make sure the item is either on the global list or deleted from
+any local list before iput().
+
+Fixed by moving inodes that are on @list and will not be deleted back to
+global list before iput.
+
+Fixes: 779750d20b93 ("shmem: split huge pages beyond i_size under memory pressure")
+Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
+
+---
+
+Changes in v3:
+- Add more comment.
+- Use list_move(&info->shrinklist, &sbinfo->shrinklist) instead of 
+  list_move(pos, &sbinfo->shrinklist) for consistency.
+
+Changes in v2: https://lore.kernel.org/all/20211124030840.88455-1-ligang.bdlg@bytedance.com/
+- Move spinlock to the front of iput instead of changing lock type
+  since iput will call evict which may cause deadlock by requesting
+  shrinklist_lock.
+- Add call trace in commit message.
+
+v1: https://lore.kernel.org/lkml/20211122064126.76734-1-ligang.bdlg@bytedance.com/
+
+---
+ mm/shmem.c | 35 ++++++++++++++++++++---------------
+ 1 file changed, 20 insertions(+), 15 deletions(-)
+
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 9023103ee7d8..ab2df692bd58 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -569,7 +569,6 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+ 		/* inode is about to be evicted */
+ 		if (!inode) {
+ 			list_del_init(&info->shrinklist);
+-			removed++;
+ 			goto next;
+ 		}
+ 
+@@ -577,15 +576,16 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+ 		if (round_up(inode->i_size, PAGE_SIZE) ==
+ 				round_up(inode->i_size, HPAGE_PMD_SIZE)) {
+ 			list_move(&info->shrinklist, &to_remove);
+-			removed++;
+ 			goto next;
+ 		}
+ 
+ 		list_move(&info->shrinklist, &list);
+ next:
++		removed++;
+ 		if (!--batch)
+ 			break;
+ 	}
++	sbinfo->shrinklist_len -= removed;
+ 	spin_unlock(&sbinfo->shrinklist_lock);
+ 
+ 	list_for_each_safe(pos, next, &to_remove) {
+@@ -602,7 +602,7 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+ 		inode = &info->vfs_inode;
+ 
+ 		if (nr_to_split && split >= nr_to_split)
+-			goto leave;
++			goto move_back;
+ 
+ 		page = find_get_page(inode->i_mapping,
+ 				(inode->i_size & HPAGE_PMD_MASK) >> PAGE_SHIFT);
+@@ -616,38 +616,43 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+ 		}
+ 
+ 		/*
+-		 * Leave the inode on the list if we failed to lock
+-		 * the page at this time.
++		 * Move the inode on the list back to shrinklist if we failed
++		 * to lock the page at this time.
+ 		 *
+ 		 * Waiting for the lock may lead to deadlock in the
+ 		 * reclaim path.
+ 		 */
+ 		if (!trylock_page(page)) {
+ 			put_page(page);
+-			goto leave;
++			goto move_back;
+ 		}
+ 
+ 		ret = split_huge_page(page);
+ 		unlock_page(page);
+ 		put_page(page);
+ 
+-		/* If split failed leave the inode on the list */
++		/* If split failed move the inode on the list back to shrinklist */
+ 		if (ret)
+-			goto leave;
++			goto move_back;
+ 
+ 		split++;
+ drop:
+ 		list_del_init(&info->shrinklist);
+-		removed++;
+-leave:
++		goto put;
++move_back:
++		/* inodes that are on @list and will not be deleted must be moved back to
++		 * global list before iput for two reasons:
++		 * 1. iput in lock: iput call shmem_evict_inode, then cause deadlock.
++		 * 2. iput before lock: shmem_evict_inode may grab the inode on @list,
++		 *    which will cause race.
++		 */
++		spin_lock(&sbinfo->shrinklist_lock);
++		list_move(&info->shrinklist, &sbinfo->shrinklist);
++		sbinfo->shrinklist_len++;
++		spin_unlock(&sbinfo->shrinklist_lock);
++put:
+ 		iput(inode);
+ 	}
+ 
+-	spin_lock(&sbinfo->shrinklist_lock);
+-	list_splice_tail(&list, &sbinfo->shrinklist);
+-	sbinfo->shrinklist_len -= removed;
+-	spin_unlock(&sbinfo->shrinklist_lock);
+-
+ 	return split;
+ }
+ 
+-- 
+2.20.1
 
