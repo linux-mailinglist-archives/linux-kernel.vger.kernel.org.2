@@ -2,64 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8780545CF83
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:58:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7895745CF92
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:06:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242211AbhKXWBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 17:01:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39090 "EHLO
+        id S1344234AbhKXWJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 17:09:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231315AbhKXWBx (ORCPT
+        with ESMTP id S244968AbhKXWJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:01:53 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4AAEC061574;
-        Wed, 24 Nov 2021 13:58:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=//KBPE5SMQ1jDsaGVvNOxvpTpPtfZdPZBVxETIdKBt8=; b=JN+wvFOSa2W3XyDr9iLxgj4/pS
-        NwuN2DNqNv7gFzkJL2sGkYlyyGRoBUbWOrIBHaXPDm1iGvcLRKqiJ/bZiEfD/fjP7Z2UnYoBeyGas
-        oPspTxjI/X6mKEnEtEG+QLUSXkzSnenabR/+zy6if4GgwnayuZUr5yqzzbc5WgXY1PYORsrH95QU9
-        C3SLvF1geJCwyR2NmF5ksA1ir51KbssWpKzFpRUsjwDyqytal+WsPalPuiBKoL/zZMObjPw2Jp4e2
-        vh++WDRJraJ8dTjmENAyrfMk+nxmcXMDxJEnVKMhaklvLXCZJKox0NZ8rX+ZfnAdHOSzf+ySD9gUE
-        m5YdKJxQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mq0Hh-003Y3o-Tr; Wed, 24 Nov 2021 21:58:34 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3E62C986843; Wed, 24 Nov 2021 22:58:34 +0100 (CET)
-Date:   Wed, 24 Nov 2021 22:58:34 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Peter Oskolkov <posk@posk.io>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@google.com>,
-        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
-        Thierry Delisle <tdelisle@uwaterloo.ca>
-Subject: Re: [PATCH v0.9.1 3/6] sched/umcg: implement UMCG syscalls
-Message-ID: <20211124215834.GI721624@worktop.programming.kicks-ass.net>
-References: <20211122211327.5931-1-posk@google.com>
- <20211122211327.5931-4-posk@google.com>
+        Wed, 24 Nov 2021 17:09:42 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD28C061574;
+        Wed, 24 Nov 2021 14:06:31 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id d11so8359484ljg.8;
+        Wed, 24 Nov 2021 14:06:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2tZCZ8hYBjx1z5k7GS9qihmESy7aILKKvmRrarvGMnI=;
+        b=XryKTXvFV87q72rf3hm3QdHNu7FS+1jkHbklorly1VtO9TQb77XtjiIeeZpGZD/4AJ
+         1BhEc+J9mTr+wc4z4qJydjFKXv7eC8SEVKYu9cOvdvwBuwo+C7VPZArXlMddJ0Io3t41
+         OtAavAUsNMpbWqZUuHEs0CVyXLVCiF2v7jfCrR3dLLIELJ7c1rkZtYMRulElbb6N7Sk+
+         D81mULUm5w5vxxgipObNvWeAQmVhlVaGZpPeHSpmUrrQf7yFLjaV7l3V0VYGalJva5SD
+         g3BSL2oZMkvhK65cmcCKuvPHQexL1sQbY9Ui5amyHrm4md7HNqvulXcXJpIdapBQhxC0
+         fg9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2tZCZ8hYBjx1z5k7GS9qihmESy7aILKKvmRrarvGMnI=;
+        b=Uf/LEKdOAZyU4ZfCr3k+bNiFFypeFVqd4BhbaMKfNv9qgKaF+rGhlUrKD4HEl/Tv7A
+         zyeZ08H2CmCzUCGA38RPBuMjml54BsUM0zFHeEFmjDjRUufsrXj7ZwC9HHuwu2YEzx8F
+         AKF47KCF8HOhWhmnzrOJjyO6jxAay6P4XCBHpAOcZN3kl3+zhFBVI/TArFb7KOJmoRKw
+         4bjsrncq3f68BSWNX4k4POJjIC+1c/j9NCxE1pEmd/MufkUGxUEwhZQJGXFgh72SW3DV
+         o2Ua8A/Sla5i5sBv2k9OKyp8v/JCEkzxYbaIkjHYUdbUukzpWZNrLAL0iJ02HdNINTLX
+         nWVQ==
+X-Gm-Message-State: AOAM532Jj1hkBTXRTJ3gDQyWIFOimmSc89InCX/S8BRHz7r0uHLBdxQE
+        gdI1LLDuEsAE58fF9HDwOH0=
+X-Google-Smtp-Source: ABdhPJxN5Z/cMHtigSK2VlRsjGDJK8VknY+zJ8jUCWKgcxOZAbifzK5En0RtTvmWKAf5DfEP86zX8g==
+X-Received: by 2002:a05:651c:158b:: with SMTP id h11mr19639328ljq.137.1637791590041;
+        Wed, 24 Nov 2021 14:06:30 -0800 (PST)
+Received: from localhost.localdomain (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
+        by smtp.gmail.com with ESMTPSA id w17sm93266ljh.15.2021.11.24.14.06.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 14:06:29 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Agneli <poczt@protonmail.ch>, Rob Herring <robh+dt@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v1 00/20] Support HDMI audio on NVIDIA Tegra20
+Date:   Thu, 25 Nov 2021 01:00:37 +0300
+Message-Id: <20211124220057.15763-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211122211327.5931-4-posk@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 01:13:24PM -0800, Peter Oskolkov wrote:
-> +	if (abs_timeout) {
-> +		hrtimer_init_sleeper_on_stack(&timeout, CLOCK_REALTIME,
-> +				HRTIMER_MODE_ABS);
+This series revives Tegra20 S/PDIF driver which was upstreamed long time
+ago, but never was used. It also turns Tegra DRM HDMI driver into HDMI
+audio CODEC provider. Finally, HDMI audio is enabled in device-trees.
+For now the audio is enable only for Acer A500 tablet and Toshiba AC100
+netbook because they're already supported by upstream, later on ASUS TF101
+tablet will join them.
 
-Using CLOCK_REALTIME timers while the rest of the thing runs off of
-CLOCK_MONOTONIC doesn't seem to make sense to me. Why would you want to
-have timeouts subject to DST shifts and crap like that?
+I based S/PDIF patches on Arnd's Bergmann patch from a separate series [1]
+that removes obsolete slave_id. This eases merging of the patches by
+removing the merge conflict.
+
+[1] https://patchwork.ozlabs.org/project/linux-tegra/list/?submitter=80402
+
+Arnd Bergmann (1):
+  ASoC: tegra20-spdif: stop setting slave_id
+
+Dmitry Osipenko (19):
+  ASoC: dt-bindings: Add binding for Tegra20 S/PDIF
+  ASoC: dt-bindings: tegra20-i2s: Convert to schema
+  ASoC: dt-bindings: tegra20-i2s: Document new nvidia,fixed-parent-rate
+    property
+  dt-bindings: host1x: Document optional HDMI sound-dai-cells
+  ASoC: tegra20: spdif: Support device-tree
+  ASoC: tegra20: spdif: Set FIFO trigger level
+  ASoC: tegra20: spdif: Improve driver's code
+  ASoC: tegra20: spdif: Use more resource-managed helpers
+  ASoC: tegra20: spdif: Reset hardware
+  ASoC: tegra20: spdif: Support system suspend
+  ASoC: tegra20: spdif: Filter out unsupported rates
+  ASoC: tegra20: i2s: Filter out unsupported rates
+  drm/tegra: hdmi: Unwind tegra_hdmi_init() errors
+  drm/tegra: hdmi: Register audio CODEC on Tegra20
+  ARM: tegra_defconfig: Enable S/PDIF driver
+  ARM: tegra: Add S/PDIF node to Tegra20 device-tree
+  ARM: tegra: Add HDMI audio graph to Tegra20 device-tree
+  ARM: tegra: acer-a500: Enable S/PDIF and HDMI audio
+  ARM: tegra: paz00: Enable S/PDIF and HDMI audio
+
+ .../display/tegra/nvidia,tegra20-host1x.txt   |   1 +
+ .../bindings/sound/nvidia,tegra20-i2s.txt     |  30 ---
+ .../bindings/sound/nvidia,tegra20-i2s.yaml    |  78 +++++++
+ .../bindings/sound/nvidia,tegra20-spdif.yaml  |  88 ++++++++
+ .../boot/dts/tegra20-acer-a500-picasso.dts    |   8 +
+ arch/arm/boot/dts/tegra20-paz00.dts           |   8 +
+ arch/arm/boot/dts/tegra20.dtsi                |  40 +++-
+ arch/arm/configs/tegra_defconfig              |   1 +
+ drivers/gpu/drm/tegra/Kconfig                 |   3 +
+ drivers/gpu/drm/tegra/hdmi.c                  | 168 +++++++++++++--
+ sound/soc/tegra/tegra20_i2s.c                 |  49 +++++
+ sound/soc/tegra/tegra20_spdif.c               | 195 +++++++++++++-----
+ sound/soc/tegra/tegra20_spdif.h               |   1 +
+ sound/soc/tegra/tegra_pcm.c                   |   6 +
+ sound/soc/tegra/tegra_pcm.h                   |   1 +
+ 15 files changed, 575 insertions(+), 102 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-spdif.yaml
+
+-- 
+2.33.1
+
