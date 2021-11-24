@@ -2,112 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E2A45CBD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA2D45CBDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:09:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351039AbhKXSKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 13:10:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350347AbhKXSJp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 13:09:45 -0500
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27909C06173E
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:06:35 -0800 (PST)
-Received: by mail-oo1-xc30.google.com with SMTP id r18-20020a4a7252000000b002c5f52d1834so1212807ooe.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:06:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yMUMI0m488pbWUAXr6OzZzxKEpJRpDah7A59AGDrcqc=;
-        b=tZ1DG4V4BbHUZ10IG4qSJ0EpZVSL1YGVa5GTc2TF1sxYM/H8tHDCaMQpRBAYaFMUr2
-         NMlYl6TFNcRQiorldPEFv/x0WAOjGuejKpgzbXm0ToGi+MghfqhYc8t9zucpNGrbJ595
-         FpeVAFCe2llrdVVsxEvYE2vCdiO2gR5j2mhuiEtJ55gnQ4GBfAZGPnhf4K+O3mgSyLK2
-         lm8t1GAXu1ZQJ0L64xCtiEys8Ea2xKFTDPGMjwdDTsNph+YobTgkgcC4ZyiXT5Ef/yVW
-         h6L66C51/Mq5Fyy1ShiaKkCWsL3LWNT6aUr56CgJaqRftPUeoo0lefMSp4TXdp+Gw33M
-         LV9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yMUMI0m488pbWUAXr6OzZzxKEpJRpDah7A59AGDrcqc=;
-        b=KLexEbwrXjbgX9mxY/yHah3leNNV7n4NFPU7yWU4GRcjRsQVxKlx9hH+g/M55l6Be/
-         s5jtxr+MApr2jdMd0f33O+AXmNRAwouyuE7THwPacVqSV0WIastca14cH9MFUiDPC5lm
-         axEggM8y1lxHr50PS897dZMj2kDDRyetKgQKo8JgapkMHDplHYskxd6cTntDqywbei1V
-         4Jmk2VIBTvqiIrP/ZZVoke0Np+41Uney7/QOOnEP8EE8OJ6JvNJEn7F/mTzKMpHQOIqO
-         gPXFC9KKB2OiVrcscOXJra9QmFqwP8/zt5KaSnmvBcNb+/Q4gaHWUT4y/tqUZf1cxl6i
-         Qy2A==
-X-Gm-Message-State: AOAM532r2bxMR/YO7m98+S5IXijGnGzMHczE/TCWv2v+Gm8CLek1TGfV
-        epqnANRgPABovPh5ULYrMJTAvdAhJtJc5zBucJFA1w==
-X-Google-Smtp-Source: ABdhPJxztcRYy5Q8/09XRwcDPshbomSGAC6oC6solbJnyGdhyd/PPvH2KSyesT9D9sIFFDcipEPlYDmdt5c4KsA3QBs=
-X-Received: by 2002:a4a:4f04:: with SMTP id c4mr10227828oob.62.1637777194256;
- Wed, 24 Nov 2021 10:06:34 -0800 (PST)
-MIME-Version: 1.0
-References: <nycvar.YFH.7.76.2111241839590.16505@cbobk.fhfr.pm>
-In-Reply-To: <nycvar.YFH.7.76.2111241839590.16505@cbobk.fhfr.pm>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 24 Nov 2021 19:06:22 +0100
-Message-ID: <CANpmjNOHN7SWu-pKGr9EBb3=in2AWiGmqNb6sYwhebGtRk+1uQ@mail.gmail.com>
-Subject: Re: [PATCH] kasan: distinguish kasan report from generic BUG()
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, jslaby@suse.cz
-Content-Type: text/plain; charset="UTF-8"
+        id S242841AbhKXSMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 13:12:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59842 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229734AbhKXSMc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 13:12:32 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6100C60FE8;
+        Wed, 24 Nov 2021 18:09:22 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mpwhn-007dLK-9U; Wed, 24 Nov 2021 18:09:15 +0000
+Date:   Wed, 24 Nov 2021 18:09:14 +0000
+Message-ID: <87czmpcto5.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Tyler Baicar <baicar@os.amperecomputing.com>
+Cc:     patches@amperecomputing.com, abdulhamid@os.amperecomputing.com,
+        darren@os.amperecomputing.com, catalin.marinas@arm.com,
+        will@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, lorenzo.pieralisi@arm.com,
+        guohanjun@huawei.com, sudeep.holla@arm.com, rafael@kernel.org,
+        lenb@kernel.org, tony.luck@intel.com, bp@alien8.de,
+        mark.rutland@arm.com, anshuman.khandual@arm.com,
+        vincenzo.frascino@arm.com, tabba@google.com, marcan@marcan.st,
+        keescook@chromium.org, jthierry@redhat.com, masahiroy@kernel.org,
+        samitolvanen@google.com, john.garry@huawei.com,
+        daniel.lezcano@linaro.org, gor@linux.ibm.com,
+        zhangshaokun@hisilicon.com, tmricht@linux.ibm.com,
+        dchinner@redhat.com, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, linux-acpi@vger.kernel.org,
+        linux-edac@vger.kernel.org, ishii.shuuichir@fujitsu.com,
+        Vineeth.Pillai@microsoft.com
+Subject: Re: [PATCH 1/2] ACPI/AEST: Initial AEST driver
+In-Reply-To: <20211124170708.3874-2-baicar@os.amperecomputing.com>
+References: <20211124170708.3874-1-baicar@os.amperecomputing.com>
+        <20211124170708.3874-2-baicar@os.amperecomputing.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: baicar@os.amperecomputing.com, patches@amperecomputing.com, abdulhamid@os.amperecomputing.com, darren@os.amperecomputing.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, lorenzo.pieralisi@arm.com, guohanjun@huawei.com, sudeep.holla@arm.com, rafael@kernel.org, lenb@kernel.org, tony.luck@intel.com, bp@alien8.de, mark.rutland@arm.com, anshuman.khandual@arm.com, vincenzo.frascino@arm.com, tabba@google.com, marcan@marcan.st, keescook@chromium.org, jthierry@redhat.com, masahiroy@kernel.org, samitolvanen@google.com, john.garry@huawei.com, daniel.lezcano@linaro.org, gor@linux.ibm.com, zhangshaokun@hisilicon.com, tmricht@linux.ibm.com, dchinner@redhat.com, tglx@linutronix.de, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-acpi@vger.kernel.org, linux-edac@vger.kernel.org, ishii.shuuichir@fujitsu.com, Vineeth.Pillai@microsoft.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 at 18:41, Jiri Kosina <jikos@kernel.org> wrote:
->
-> From: Jiri Kosina <jkosina@suse.cz>
->
-> The typical KASAN report always begins with
->
->         BUG: KASAN: ....
->
-> in kernel log. That 'BUG:' prefix creates a false impression that it's an
-> actual BUG() codepath being executed, and as such things like
-> 'panic_on_oops' etc. would work on it as expected; but that's obviously
-> not the case.
->
-> Switch the order of prefixes to make this distinction clear and avoid
-> confusion.
->
-> Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+On Wed, 24 Nov 2021 17:07:07 +0000,
+Tyler Baicar <baicar@os.amperecomputing.com> wrote:
+> 
+> Add support for parsing the ARM Error Source Table and basic handling of
+> errors reported through both memory mapped and system register interfaces.
+> 
+> Assume system register interfaces are only registered with private
+> peripheral interrupts (PPIs); otherwise there is no guarantee the
+> core handling the error is the core which took the error and has the
+> syndrome info in its system registers.
+> 
+> Add logging for all detected errors and trigger a kernel panic if there is
+> any uncorrected error present.
+> 
+> Signed-off-by: Tyler Baicar <baicar@os.amperecomputing.com>
+> ---
+>  MAINTAINERS                     |   1 +
+>  arch/arm64/include/asm/ras.h    |  52 ++++
+>  arch/arm64/include/asm/sysreg.h |   2 +
+>  arch/arm64/kernel/Makefile      |   1 +
+>  arch/arm64/kernel/ras.c         | 125 +++++++++
+>  arch/arm64/kvm/sys_regs.c       |   2 +
+>  drivers/acpi/arm64/Kconfig      |   3 +
+>  drivers/acpi/arm64/Makefile     |   1 +
+>  drivers/acpi/arm64/aest.c       | 450 ++++++++++++++++++++++++++++++++
+>  include/linux/acpi_aest.h       |  50 ++++
+>  include/linux/cpuhotplug.h      |   1 +
+>  11 files changed, 688 insertions(+)
+>  create mode 100644 arch/arm64/include/asm/ras.h
+>  create mode 100644 arch/arm64/kernel/ras.c
+>  create mode 100644 drivers/acpi/arm64/aest.c
+>  create mode 100644 include/linux/acpi_aest.h
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 5250298d2817..aa0483726606 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -382,6 +382,7 @@ ACPI FOR ARM64 (ACPI/arm64)
+>  M:	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+>  M:	Hanjun Guo <guohanjun@huawei.com>
+>  M:	Sudeep Holla <sudeep.holla@arm.com>
+> +R:	Tyler Baicar <baicar@os.amperecomputing.com>
+>  L:	linux-acpi@vger.kernel.org
+>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  S:	Maintained
 
-I'm afraid writing "KASAN: BUG: " doesn't really tell me this is a
-non-BUG() vs. "BUG: KASAN". Using this ordering ambiguity to try and
-resolve human confusion just adds more confusion.
+Isn't this a bit premature? This isn't even mentioned in the commit
+message, only in passing in the cover letter.
 
-The bigger problem is a whole bunch of testing tools rely on the
-existing order, which has been like this for years -- changing it now
-just adds unnecessary churn. For example syzkaller, which looks for
-"BUG: <tool>: report".
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> index 16b3f1a1d468..6bbed061d835 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -230,6 +230,8 @@
+>  #define SYS_ERXADDR_EL1			sys_reg(3, 0, 5, 4, 3)
+>  #define SYS_ERXMISC0_EL1		sys_reg(3, 0, 5, 5, 0)
+>  #define SYS_ERXMISC1_EL1		sys_reg(3, 0, 5, 5, 1)
+> +#define SYS_ERXMISC2_EL1		sys_reg(3, 0, 5, 5, 2)
+> +#define SYS_ERXMISC3_EL1		sys_reg(3, 0, 5, 5, 3)
+>  #define SYS_TFSR_EL1			sys_reg(3, 0, 5, 6, 0)
+>  #define SYS_TFSRE0_EL1			sys_reg(3, 0, 5, 6, 1)
+>  
+> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> index e3ec1a44f94d..dc15e9896db4 100644
+> --- a/arch/arm64/kvm/sys_regs.c
+> +++ b/arch/arm64/kvm/sys_regs.c
+> @@ -1573,6 +1573,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+>  	{ SYS_DESC(SYS_ERXADDR_EL1), trap_raz_wi },
+>  	{ SYS_DESC(SYS_ERXMISC0_EL1), trap_raz_wi },
+>  	{ SYS_DESC(SYS_ERXMISC1_EL1), trap_raz_wi },
+> +	{ SYS_DESC(SYS_ERXMISC2_EL1), trap_raz_wi },
+> +	{ SYS_DESC(SYS_ERXMISC3_EL1), trap_raz_wi },
+>
 
-Changing the order would have to teach all kinds of testing tools to
-look for different strings. The same format is also used by other
-dynamic analysis tools, such as KCSAN, and KFENCE, for the simple
-reason that it's an established format and testing tools don't need to
-be taught new tricks.
-
-Granted, there is a subtle inconsistency wrt. panic_on_oops, in that
-the debugging tools do use panic_on_warn instead, since their
-reporting behaviour is more like a WARN. But I'd also not want to
-prefix them with "WARNING" either, since all reports are serious bugs
-and shouldn't be ignored. KASAN has more fine-grained control on when
-to panic, see Documentation/dev-tools/kasan.rst.
-
-If the problem is potentially confusing people, I think the better
-solution is to simply document all kernel error reports and their
-panic-behaviour (and flags affecting panic-behaviour) in a central
-place in Documentation/.
+This looks like a fix that would deserve its own patch.
 
 Thanks,
--- Marco
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
