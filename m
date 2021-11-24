@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C43A45B9C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F391845B9C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:02:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242012AbhKXMEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:04:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59452 "EHLO mail.kernel.org"
+        id S235051AbhKXMEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:04:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242053AbhKXMER (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:04:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5E866104F;
-        Wed, 24 Nov 2021 12:01:06 +0000 (UTC)
+        id S242066AbhKXMET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:04:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6388600EF;
+        Wed, 24 Nov 2021 12:01:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755267;
-        bh=p7Q8qe8jMFChd475GH/zk4/dbiXWQzhife6vCowEJzU=;
+        s=korg; t=1637755270;
+        bh=rNvgX8Owg8FTTWASuNrNpXva7ZF5+1OIFagDehMnCJ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g9Mdh78IpWBrPNdWO9TGWBSZOAIzsqVrxtJd7mPCJtXab4dmUHg2jscKiZFn9C/cd
-         wGGWNWunEv9f9X2G5IbZSBBVS9wfc7X4slu3XxL1vHPS2cSq/v1cPq4C4KskKBBQV1
-         0axPlpDUEOdhyVUCe6zjksMcZb2Qo7KPc3OGRzVw=
+        b=RwOqVq/dYD9rBECUSYssF11k7Sn/2eiq8giepzdP4dniQdLeKvSrdxGkrp1f+QF0s
+         jp+8SbOPUvpD69oT0Z87ABuHyzrK1C8cZYD88XPKpyv9Vz4Vpv/9KCGNAKQh9eEi8f
+         FE8gFylP52biaVENuWWs4Er/k4ORNS9IfVREG+jU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
         Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Wolfgang Wiedmeyer <wolfgit@wiedmeyer.de>,
+        Henrik Grimler <henrik@grimler.se>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH 4.4 033/162] power: supply: max17042_battery: Prevent int underflow in set_soc_threshold
-Date:   Wed, 24 Nov 2021 12:55:36 +0100
-Message-Id: <20211124115659.406011898@linuxfoundation.org>
+Subject: [PATCH 4.4 034/162] power: supply: max17042_battery: use VFSOC for capacity when no rsns
+Date:   Wed, 24 Nov 2021 12:55:37 +0100
+Message-Id: <20211124115659.446767171@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
 References: <20211124115658.328640564@linuxfoundation.org>
@@ -41,35 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+From: Henrik Grimler <henrik@grimler.se>
 
-commit e660dbb68c6b3f7b9eb8b9775846a44f9798b719 upstream.
+commit 223a3b82834f036a62aa831f67cbf1f1d644c6e2 upstream.
 
-max17042_set_soc_threshold gets called with offset set to 1, which means
-that minimum threshold value would underflow once SOC got down to 0,
-causing invalid alerts from the gauge.
+On Galaxy S3 (i9300/i9305), which has the max17047 fuel gauge and no
+current sense resistor (rsns), the RepSOC register does not provide an
+accurate state of charge value. The reported value is wrong, and does
+not change over time. VFSOC however, which uses the voltage fuel gauge
+to determine the state of charge, always shows an accurate value.
 
-Fixes: e5f3872d2044 ("max17042: Add support for signalling change in SOC")
+For devices without current sense, VFSOC is already used for the
+soc-alert (0x0003 is written to MiscCFG register), so with this change
+the source of the alert and the PROP_CAPACITY value match.
+
+Fixes: 359ab9f5b154 ("power_supply: Add MAX17042 Fuel Gauge Driver")
 Cc: <stable@vger.kernel.org>
-Signed-off-by: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Suggested-by: Wolfgang Wiedmeyer <wolfgit@wiedmeyer.de>
+Signed-off-by: Henrik Grimler <henrik@grimler.se>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/power/max17042_battery.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/power/max17042_battery.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 --- a/drivers/power/max17042_battery.c
 +++ b/drivers/power/max17042_battery.c
-@@ -752,7 +752,8 @@ static void max17042_set_soc_threshold(s
- 	regmap_read(map, MAX17042_RepSOC, &soc);
- 	soc >>= 8;
- 	soc_tr = (soc + off) << 8;
--	soc_tr |= (soc - off);
-+	if (off < soc)
-+		soc_tr |= soc - off;
- 	regmap_write(map, MAX17042_SALRT_Th, soc_tr);
- }
+@@ -246,7 +246,10 @@ static int max17042_get_property(struct
+ 		val->intval = data * 625 / 8;
+ 		break;
+ 	case POWER_SUPPLY_PROP_CAPACITY:
+-		ret = regmap_read(map, MAX17042_RepSOC, &data);
++		if (chip->pdata->enable_current_sense)
++			ret = regmap_read(map, MAX17042_RepSOC, &data);
++		else
++			ret = regmap_read(map, MAX17042_VFSOC, &data);
+ 		if (ret < 0)
+ 			return ret;
  
 
 
