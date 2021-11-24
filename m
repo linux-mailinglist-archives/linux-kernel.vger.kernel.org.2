@@ -2,120 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5BC545C8EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:40:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F98245C8F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:41:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343670AbhKXPoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:44:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36724 "EHLO
+        id S235877AbhKXPor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:44:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245385AbhKXPn7 (ORCPT
+        with ESMTP id S1344439AbhKXPoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:43:59 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7634EC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:40:49 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id r25so12320144edq.7
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:40:49 -0800 (PST)
+        Wed, 24 Nov 2021 10:44:07 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F043FC061714
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:40:56 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id y26so8257011lfa.11
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:40:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WOzZVb7eK7Hti0tz3GVrNqgoxIyM18tOwhZY0CXCgCY=;
-        b=vNC9gnZ7Mgigz91OlFqpssnHXeE4NTqVn2epRiFQQxdiTv1Zyx+SoX5RiHdoHXSFJF
-         yK2IGi2OHfIB0Htmvbhj/N8guIyjZPQ+R8EbE5mspmWnfLmTZ5IOpVHJGByMe1p7Jgvh
-         wbn5I8xTUoQDFLR5iY+GBlb0TLH5XRU7LuGzN33398vHsqrAou6G59H9ERPFLLQ6rMvw
-         /uNBtB403hAaDXxZ4K1/LObfQGiscsa2Z7JwJg74mZK+iC3EVn9xGxU4mGilcbJs1Zx8
-         5zTT4Yd7CtZ/McV2WvasBSty1Js7RWIUGcJqlo8hkGb356A8g4jMpbsm2J6LUwFAyV6T
-         xG6g==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ct6e7raFIfJnrSO6761xJZnYXxwRFHc4ll3Hg+6j23I=;
+        b=e0yHJ/2cNOU3Q3MfWPzshVL3y7RJLzdbpY4Yj+RpFFz1fDpiXxQluXirFlbwhU3AoL
+         LVDrhitfuMA5B66OAp9IwH/ojRHJBOjennAQ8zrqdPgbMFJ52B8cC9ga1TQmmthvpOVZ
+         MFoJc6/TEvuPGnZq4aZLE2dsHo23kljpgjziZqw5nNvOzDh3DfnZBCZfXpcHtF4Dah8U
+         N8Pv3NRO9Of1qO9LfV5+1mS88mATRCza4D2IoJxCUg+0BPp3Fojfl3KBqyZ0UkKUUr2J
+         Mb9cuagPbjF966Q0rpqWMk+axlEo41sjHRYwXsoOm+fyLiknITXQWjrXyDi3mSVIm+ho
+         uhYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WOzZVb7eK7Hti0tz3GVrNqgoxIyM18tOwhZY0CXCgCY=;
-        b=EhTlhRsJA2JLQfnVs2O8CpBPIISM0mDIx5qA/2R3kIAoNl0GKcBIHAbavStDWN3La9
-         FtVZDxQzfL6CN74Q8hYydZ4W6e3O3Ob3nhxzfEeD5xYWr7J14QQW6sIx9EsuW6alnyPE
-         R2SGxPUlUiwZfEmIU8UIWSF3AnfQFTzN20qyaw26du/7+IbsG9cmNqRyp1akiFqwoRiA
-         4o24f/h8MeOl2yJWNGt1iUpqhJdqRabpm6rKZ0EibfPZu0NvxPfbCejjv1veVmLuJPE+
-         shJkc4Xic4MGhRYevlY/4wLI3F9E2Pw3zjXpFxv29S+NgoprjYr0h+USrsdv7P+NlVSv
-         ggNg==
-X-Gm-Message-State: AOAM532/goAOhyaBFEFBhrkuKoIe7862qoAI9FVYEBJbMZXpVNcfgMBJ
-        /UNncci8wKe5OsWSl40teiXP7OsUhytiEd2L5QRvZw==
-X-Google-Smtp-Source: ABdhPJzsxFeT+ZbR5XBrCvJ2qn5HXrBYo4hZIOym5n1u5AfFDx5Ci4S21KmpQLhCwjNDpT1Mn1SzhzaauI28dmA9x2g=
-X-Received: by 2002:a05:6402:4248:: with SMTP id g8mr26665904edb.182.1637768447927;
- Wed, 24 Nov 2021 07:40:47 -0800 (PST)
-MIME-Version: 1.0
-References: <20211124115654.849735859@linuxfoundation.org>
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 24 Nov 2021 21:10:35 +0530
-Message-ID: <CA+G9fYt_DK3Ft1J08Wsw=4YfV0iayKqNtkQt_=8vgr+A6CrC6g@mail.gmail.com>
-Subject: Re: [PATCH 5.4 000/100] 5.4.162-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ct6e7raFIfJnrSO6761xJZnYXxwRFHc4ll3Hg+6j23I=;
+        b=xFl7ADaudQbMdMHzDDlKtk9Bzf1LuOuAQ1WwAkxrUhGZFULTvQJh5TNvAaC7YIevgL
+         FSVw4olDB8K3Ok73fPr7asTr270rxdL5mnzFO6C5hRKU/8o7epEAG029ARX+5ua/MrVl
+         NjxvrrtLW1zt4S5PQY0rgQVRQL4wQxhW8rU3KR1Fgg4G/zCyjwX3VgTMF4ORYgMAJdmv
+         RgUcy5B9Pp014bgN4jyrGJ/Gj/HfVBiEX+x0/9YW7oYBZsRx74tXyQgqobB5ApCR5ctB
+         fgpZFP955rVkVkwAVu3tQulSuAMqOcFmn7ieCB2yZb+mEuzc+rzjAUJ6wVktDelBPFkk
+         YS5Q==
+X-Gm-Message-State: AOAM5308+ccXeku2QDy6ED4wOp5a431uGrroFeB3/B6I7SQiQNobQBK1
+        vvcAFhaOaOAgJ/w1fce4gOOneg==
+X-Google-Smtp-Source: ABdhPJx9LId8LP06Ry3fcdy7LIKYvSMhClBVAGTV/+cQ3EQDpxhxCuri2bUz4bXgF/Tfgmk8DMtt/Q==
+X-Received: by 2002:ac2:515a:: with SMTP id q26mr15625028lfd.658.1637768455296;
+        Wed, 24 Nov 2021 07:40:55 -0800 (PST)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id p3sm13990lfg.273.2021.11.24.07.40.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Nov 2021 07:40:54 -0800 (PST)
+Subject: Re: [PATCH v3 06/13] drm/msm/disp/dpu1: Add DSC support in hw_ctl
+To:     Vinod Koul <vkoul@kernel.org>, Rob Clark <robdclark@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Stephen Boyd <swboyd@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org
+References: <20211116062256.2417186-1-vkoul@kernel.org>
+ <20211116062256.2417186-7-vkoul@kernel.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <3e96567a-029d-69ca-4e28-47b3c06b1351@linaro.org>
+Date:   Wed, 24 Nov 2021 18:40:54 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <20211116062256.2417186-7-vkoul@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 at 18:19, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.162 release.
-> There are 100 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.162-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 16/11/2021 09:22, Vinod Koul wrote:
+> Later gens of hardware have DSC bits moved to hw_ctl, so configure these
+> bits so that DSC would work there as well
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 
-Regression found on arm64 gcc-11 builds
-Following build warnings / errors reported on stable-rc 5.4.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+> ---
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c | 11 ++++++++++-
+>   1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> index 36831457a91b..66b0c44118d8 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+> @@ -25,6 +25,8 @@
+>   #define   CTL_MERGE_3D_ACTIVE           0x0E4
+>   #define   CTL_INTF_ACTIVE               0x0F4
+>   #define   CTL_MERGE_3D_FLUSH            0x100
+> +#define   CTL_DSC_ACTIVE                0x0E8
+> +#define   CTL_DSC_FLUSH                0x104
+>   #define   CTL_INTF_FLUSH                0x110
+>   #define   CTL_INTF_MASTER               0x134
+>   #define   CTL_FETCH_PIPE_ACTIVE         0x0FC
+> @@ -34,6 +36,7 @@
+>   
+>   #define DPU_REG_RESET_TIMEOUT_US        2000
+>   #define  MERGE_3D_IDX   23
+> +#define  DSC_IDX        22
+>   #define  INTF_IDX       31
+>   #define CTL_INVALID_BIT                 0xffff
+>   
+> @@ -120,7 +123,6 @@ static u32 dpu_hw_ctl_get_pending_flush(struct dpu_hw_ctl *ctx)
+>   
+>   static inline void dpu_hw_ctl_trigger_flush_v1(struct dpu_hw_ctl *ctx)
+>   {
+> -
+>   	if (ctx->pending_flush_mask & BIT(MERGE_3D_IDX))
+>   		DPU_REG_WRITE(&ctx->hw, CTL_MERGE_3D_FLUSH,
+>   				ctx->pending_merge_3d_flush_mask);
+> @@ -498,6 +500,9 @@ static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
+>   	u32 intf_active = 0;
+>   	u32 mode_sel = 0;
+>   
+> +	if (cfg->dsc)
+> +		DPU_REG_WRITE(&ctx->hw, CTL_DSC_FLUSH, cfg->dsc);
+> +
+>   	if (cfg->intf_mode_sel == DPU_CTL_MODE_SEL_CMD)
+>   		mode_sel |= BIT(17);
+>   
+> @@ -509,6 +514,10 @@ static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
+>   	if (cfg->merge_3d)
+>   		DPU_REG_WRITE(c, CTL_MERGE_3D_ACTIVE,
+>   			      BIT(cfg->merge_3d - MERGE_3D_0));
+> +	if (cfg->dsc) {
+> +		DPU_REG_WRITE(&ctx->hw, CTL_FLUSH, cfg->dsc);
+> +		DPU_REG_WRITE(c, CTL_DSC_ACTIVE, cfg->dsc);
+> +	}
+>   }
+>   
+>   static void dpu_hw_ctl_intf_cfg(struct dpu_hw_ctl *ctx,
+> 
 
 
-builds/linux/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi:412.21-414.5:
-ERROR (duplicate_label): /soc/codec: Duplicate label 'lpass_codec' on
-/soc/codec and /soc@0/codec
-ERROR: Input tree has errors, aborting (use -f to force output)
-make[3]: *** [scripts/Makefile.lib:285:
-arch/arm64/boot/dts/qcom/apq8016-sbc.dtb] Error 2
-
-
-The bisect tool pointed to,
-
-b979ffa8bbd6e4c33df7f3e7ac3d63f2234c023c is the first bad commit
-commit b979ffa8bbd6e4c33df7f3e7ac3d63f2234c023c
-Author: Stephan Gerhold <stephan@gerhold.net>
-Date:   Tue Sep 21 17:21:18 2021 +0200
-
-    arm64: dts: qcom: msm8916: Add unit name for /soc node
-
-
-
-As it was reported here,
-https://lore.kernel.org/stable/CA+G9fYv5fnntoa1vzXp52=TSxCK=U8fV8J-AbE+WmKH1w4ebwg@mail.gmail.com/
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+With best wishes
+Dmitry
