@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B82EC45BFC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB8145BD35
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:33:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346521AbhKXNB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:01:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33440 "EHLO mail.kernel.org"
+        id S1344117AbhKXMg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:36:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347179AbhKXM6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:58:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4764E610F7;
-        Wed, 24 Nov 2021 12:33:38 +0000 (UTC)
+        id S1344015AbhKXMaZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:30:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CD686137E;
+        Wed, 24 Nov 2021 12:18:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757218;
-        bh=Z3ct+PXhYfibFj8MIozC60owx8+WE18i9w1P3KpE2z4=;
+        s=korg; t=1637756320;
+        bh=/1LodiYloPKtDfGtqI52nC8mgTHYpGIxchvpwVAyRjE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N1ZAcivKR/2ZHwEyTi+ToJKFp+Ua0F0gBCsA4CJbVaNAaywDp6B3J/CshqbBPQ7zS
-         b3B76RWk3VgbYatnujnQNCDz6pgJGqLo0awKot4r0qbzTb8X6tUTXF8annaB36CnWT
-         nUQJoc/XlacEuj1uDqoLPKou7p3Eu/CgHD3hcyUE=
+        b=I2hkn6eEYv80ggpfSZmzwHSuxtV8rulZSXsYa57q7Dv/DlLE7fLz+m/ZHSpLc/K5G
+         VJ1pPJP0xr+kQf3hDJrTqxpgbhp9ELWRIVIBtDYOze3W+2NmlvMU7S9zUpjrQgX993
+         U29xJ1oGzDjUodhiiVbhyqEw9SV2BCy2CwPb4kr8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 097/323] media: uvcvideo: Return -EIO for control errors
-Date:   Wed, 24 Nov 2021 12:54:47 +0100
-Message-Id: <20211124115722.243777251@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Reimar=20D=C3=B6ffinger?= <Reimar.Doeffinger@gmx.de>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Damien Le Moal <damien.lemoal@wdc.com>
+Subject: [PATCH 4.14 046/251] libata: fix checking of DMA state
+Date:   Wed, 24 Nov 2021 12:54:48 +0100
+Message-Id: <20211124115711.841074845@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,48 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ricardo Ribalda <ribalda@chromium.org>
+From: Reimar Döffinger <Reimar.Doeffinger@gmx.de>
 
-[ Upstream commit ffccdde5f0e17d2f0d788a9d831a027187890eaa ]
+commit f971a85439bd25dc7b4d597cf5e4e8dc7ffc884b upstream.
 
-The device is doing something unexpected with the control. Either because
-the protocol is not properly implemented or there has been a HW error.
+Checking if DMA is enabled should be done via the
+ata_dma_enabled helper function, since the init state
+0xff indicates disabled.
+This meant that ATA_CMD_READ_LOG_DMA_EXT was used and probed
+for before DMA was enabled, which caused hangs for some combinations
+of controllers and devices.
+It might also have caused it to be incorrectly disabled as broken,
+but there have been no reports of that.
 
-Fixes v4l2-compliance:
-
-Control ioctls (Input 0):
-                fail: v4l2-test-controls.cpp(448): s_ctrl returned an error (22)
-        test VIDIOC_G/S_CTRL: FAIL
-                fail: v4l2-test-controls.cpp(698): s_ext_ctrls returned an error (22)
-        test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
-
-Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=195895
+Signed-off-by: Reimar Döffinger <Reimar.Doeffinger@gmx.de>
+Tested-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/uvc/uvc_video.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/ata/libata-core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-index 56b058d60a0dc..9c26e586bb01d 100644
---- a/drivers/media/usb/uvc/uvc_video.c
-+++ b/drivers/media/usb/uvc/uvc_video.c
-@@ -117,6 +117,11 @@ int uvc_query_ctrl(struct uvc_device *dev, u8 query, u8 unit,
- 	case 5: /* Invalid unit */
- 	case 6: /* Invalid control */
- 	case 7: /* Invalid Request */
-+		/*
-+		 * The firmware has not properly implemented
-+		 * the control or there has been a HW error.
-+		 */
-+		return -EIO;
- 	case 8: /* Invalid value within range */
- 		return -EINVAL;
- 	default: /* reserved or unknown */
--- 
-2.33.0
-
+--- a/drivers/ata/libata-core.c
++++ b/drivers/ata/libata-core.c
+@@ -2081,7 +2081,7 @@ unsigned int ata_read_log_page(struct at
+ 
+ retry:
+ 	ata_tf_init(dev, &tf);
+-	if (dev->dma_mode && ata_id_has_read_log_dma_ext(dev->id) &&
++	if (ata_dma_enabled(dev) && ata_id_has_read_log_dma_ext(dev->id) &&
+ 	    !(dev->horkage & ATA_HORKAGE_NO_DMA_LOG)) {
+ 		tf.command = ATA_CMD_READ_LOG_DMA_EXT;
+ 		tf.protocol = ATA_PROT_DMA;
 
 
