@@ -2,148 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4812045B284
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 04:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A81EE45B28F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 04:18:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239954AbhKXDTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 22:19:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230517AbhKXDTY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 22:19:24 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB58AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 19:16:15 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id 47-20020a9d0332000000b005798ac20d72so2000520otv.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 19:16:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/4CZMcKRdnsZKE9DDAd3orcOGMvFe+sUxaU3u6ZAsoA=;
-        b=dkVW+lWko+uzc9PWiVTCDTBv1MV44aohMbxW9CkOFpa5D8BZNWYehRy/ijzHfSz0jk
-         8/MDKqPIr/mPAA1z3TT1r8SGtjfyd+UuwhfE46bXyzPN6xKWqH96cRab8yzdPN8nOh6t
-         9EclSjlmDGX9TMSwROPjPGGGoR2HdzB0lfAyzRIWPNY15eP/QAxVASrMTh65TJNtWj7c
-         LSC25jUP7WLcuOV4aSektZ5aFzf+9CSAdNcWw6N9v08Vk6ejmolTAZd8+thpWVvDybHV
-         7I9WBf7fBRkjStjnrzr0fUtMqUZCGHiLq0zd/UlXRUJ94K0BP1I+tptywrhV5din/SZj
-         +r2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/4CZMcKRdnsZKE9DDAd3orcOGMvFe+sUxaU3u6ZAsoA=;
-        b=Hc7brK7AlLOqJCJLpna4gM+EjGcH+Rkr6IdDWTIlE6/c6TFMYt7AqMW1Fe5NAiQ/Fg
-         n4EgIZyVXwzHk2aGiihYHbi3j+uJUWZRYzPVwXskRZRdGsEGwSHRwFlFDuKseAU7r24n
-         g7n7M99UaT2lrktBP1k9EmTS4tvTWSZgiH+GDpCY0KfvTqzKsyiiGvrhdF8rakpIgwZM
-         rNw+ycOzwKdJPI2AmyxoLQqrpD4SOiSeSL2UACj6UxQU8ef1TiUMtvhRzDgB8XAeNe6r
-         Oaq/Jhir2BKq+H5hSBlSKrLLk9AhRYc6XA5XdqLcMKNhseQ9oEk/oJyqE2Tvu26obrqD
-         4aPQ==
-X-Gm-Message-State: AOAM530F8v2UtDA0aDqmP4Tf1rA9cxg4FDiE4ezKhUUAzWPkCKHtarSk
-        DWylRf0i1IqRY69IT8nv3oGpwg==
-X-Google-Smtp-Source: ABdhPJwkt0YXn3M+6/frHVA/lPBLfgtItikxEzJr9dnN7yIcXRPVmuhtTqigjNkIKhyai4imABkc8Q==
-X-Received: by 2002:a05:6830:1447:: with SMTP id w7mr9433054otp.199.1637723775115;
-        Tue, 23 Nov 2021 19:16:15 -0800 (PST)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id q22sm2579319ots.62.2021.11.23.19.16.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 19:16:14 -0800 (PST)
-Date:   Tue, 23 Nov 2021 19:17:58 -0800
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Dominik Kobinski <dominikkobinski314@gmail.com>
-Cc:     agross@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
-Subject: Re: [PATCH 4/4] regulator: qcom_spmi: Add pm8226 regulators
-Message-ID: <YZ2u5hHmiNOyuGtr@ripper>
-References: <20211123174127.2261-1-dominikkobinski314@gmail.com>
- <20211123181119.2897-1-dominikkobinski314@gmail.com>
+        id S239313AbhKXDVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 22:21:40 -0500
+Received: from mga17.intel.com ([192.55.52.151]:36879 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230274AbhKXDVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 22:21:39 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="215901864"
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="215901864"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 19:18:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="607046314"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 23 Nov 2021 19:18:28 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mpinj-0004EP-FQ; Wed, 24 Nov 2021 03:18:27 +0000
+Date:   Wed, 24 Nov 2021 11:18:18 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>, jic23@kernel.org,
+        robh+dt@kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kbuild-all@lists.01.org,
+        Antoniu Miclaus <antoniu.miclaus@analog.com>
+Subject: Re: [PATCH v2 2/4] iio:filter:admv8818: add support for ADMV8818
+Message-ID: <202111241151.J9kfWWOf-lkp@intel.com>
+References: <20211123133900.133027-2-antoniu.miclaus@analog.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211123181119.2897-1-dominikkobinski314@gmail.com>
+In-Reply-To: <20211123133900.133027-2-antoniu.miclaus@analog.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 23 Nov 10:11 PST 2021, Dominik Kobinski wrote:
+Hi Antoniu,
 
-> The PM8226 PMIC is very often seen on
-> MSM8x26 boards.
+Thank you for the patch! Yet something to improve:
 
-The appropriate width of a commit message is 72 chars, so there's no
-need to break this line.
+[auto build test ERROR on jic23-iio/togreg]
+[also build test ERROR on v5.16-rc2 next-20211123]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-> 
+url:    https://github.com/0day-ci/linux/commits/Antoniu-Miclaus/iio-add-filter-subfolder/20211123-214053
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20211124/202111241151.J9kfWWOf-lkp@intel.com/config.gz)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/0day-ci/linux/commit/5785226a8e5139d7275a8213a19c4e8479eca28b
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Antoniu-Miclaus/iio-add-filter-subfolder/20211123-214053
+        git checkout 5785226a8e5139d7275a8213a19c4e8479eca28b
+        # save the config file to linux build tree
+        mkdir build_dir
+        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Regards,
-Bjorn
+All errors (new ones prefixed by >>):
 
-> Suggested-by: Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
-> Signed-off-by: Dominik Kobinski <dominikkobinski314@gmail.com>
-> ---
->  drivers/regulator/qcom_spmi-regulator.c | 39 +++++++++++++++++++++++++
->  1 file changed, 39 insertions(+)
-> 
-> diff --git a/drivers/regulator/qcom_spmi-regulator.c b/drivers/regulator/qcom_spmi-regulator.c
-> index 41424a3366d0..02bfce981150 100644
-> --- a/drivers/regulator/qcom_spmi-regulator.c
-> +++ b/drivers/regulator/qcom_spmi-regulator.c
-> @@ -1895,6 +1895,44 @@ static const struct spmi_regulator_data pm8941_regulators[] = {
->  	{ }
->  };
->  
-> +static const struct spmi_regulator_data pm8226_regulators[] = {
-> +	{ "s1", 0x1400, "vdd_s1", },
-> +	{ "s2", 0x1700, "vdd_s2", },
-> +	{ "s3", 0x1a00, "vdd_s3", },
-> +	{ "s4", 0x1d00, "vdd_s4", },
-> +	{ "s5", 0x2000, "vdd_s5", },
-> +	{ "l1", 0x4000, "vdd_l1_l2_l4_l5", },
-> +	{ "l2", 0x4100, "vdd_l1_l2_l4_l5", },
-> +	{ "l3", 0x4200, "vdd_l3_l24_l26", },
-> +	{ "l4", 0x4300, "vdd_l1_l2_l4_l5", },
-> +	{ "l5", 0x4400, "vdd_l1_l2_l4_l5", },
-> +	{ "l6", 0x4500, "vdd_l6_l7_l8_l9_l27", },
-> +	{ "l7", 0x4600, "vdd_l6_l7_l8_l9_l27", },
-> +	{ "l8", 0x4700, "vdd_l6_l7_l8_l9_l27", },
-> +	{ "l9", 0x4800, "vdd_l6_l7_l8_l9_l27", },
-> +	{ "l10", 0x4900, "vdd_l10_l11_l13", },
-> +	{ "l11", 0x4a00, "vdd_l10_l11_l13", },
-> +	{ "l12", 0x4b00, "vdd_l12_l14", },
-> +	{ "l13", 0x4c00, "vdd_l10_l11_l13", },
-> +	{ "l14", 0x4d00, "vdd_l12_l14", },
-> +	{ "l15", 0x4e00, "vdd_l15_l16_l17_l18", },
-> +	{ "l16", 0x4f00, "vdd_l15_l16_l17_l18", },
-> +	{ "l17", 0x5000, "vdd_l15_l16_l17_l18", },
-> +	{ "l18", 0x5100, "vdd_l15_l16_l17_l18", },
-> +	{ "l19", 0x5200, "vdd_l19_l20_l21_l22_l23_l28", },
-> +	{ "l20", 0x5300, "vdd_l19_l20_l21_l22_l23_l28", },
-> +	{ "l21", 0x5400, "vdd_l19_l20_l21_l22_l23_l28", },
-> +	{ "l22", 0x5500, "vdd_l19_l20_l21_l22_l23_l28", },
-> +	{ "l23", 0x5600, "vdd_l19_l20_l21_l22_l23_l28", },
-> +	{ "l24", 0x5700, "vdd_l3_l24_l26", },
-> +	{ "l25", 0x5800, "vdd_l25", },
-> +	{ "l26", 0x5900, "vdd_l3_l24_l26", },
-> +	{ "l27", 0x5a00, "vdd_l6_l7_l8_l9_l27", },
-> +	{ "l28", 0x5b00, "vdd_l19_l20_l21_l22_l23_l28", },
-> +	{ "lvs1", 0x8000, "vdd_lvs1", },
-> +	{ }
-> +};
-> +
->  static const struct spmi_regulator_data pm8841_regulators[] = {
->  	{ "s1", 0x1400, "vdd_s1", },
->  	{ "s2", 0x1700, "vdd_s2", NULL, 0x1c08 },
-> @@ -2095,6 +2133,7 @@ static const struct spmi_regulator_data pms405_regulators[] = {
->  static const struct of_device_id qcom_spmi_regulator_match[] = {
->  	{ .compatible = "qcom,pm8004-regulators", .data = &pm8004_regulators },
->  	{ .compatible = "qcom,pm8005-regulators", .data = &pm8005_regulators },
-> +	{ .compatible = "qcom,pm8226-regulators", .data = &pm8226_regulators },
->  	{ .compatible = "qcom,pm8841-regulators", .data = &pm8841_regulators },
->  	{ .compatible = "qcom,pm8916-regulators", .data = &pm8916_regulators },
->  	{ .compatible = "qcom,pm8941-regulators", .data = &pm8941_regulators },
-> -- 
-> 2.34.0
-> 
+>> drivers/iio/filter/admv8818.c:469:74: error: macro "IIO_ENUM_AVAILABLE" passed 3 arguments, but takes just 2
+     469 |  IIO_ENUM_AVAILABLE("filter_mode", IIO_SHARED_BY_ALL, &admv8818_mode_enum),
+         |                                                                          ^
+   In file included from drivers/iio/filter/admv8818.c:14:
+   include/linux/iio/iio.h:111: note: macro "IIO_ENUM_AVAILABLE" defined here
+     111 | #define IIO_ENUM_AVAILABLE(_name, _e) \
+         | 
+>> drivers/iio/filter/admv8818.c:469:2: error: 'IIO_ENUM_AVAILABLE' undeclared here (not in a function)
+     469 |  IIO_ENUM_AVAILABLE("filter_mode", IIO_SHARED_BY_ALL, &admv8818_mode_enum),
+         |  ^~~~~~~~~~~~~~~~~~
+
+
+vim +/IIO_ENUM_AVAILABLE +469 drivers/iio/filter/admv8818.c
+
+   466	
+   467	static const struct iio_chan_spec_ext_info admv8818_ext_info[] = {
+   468		IIO_ENUM("filter_mode", IIO_SHARED_BY_ALL, &admv8818_mode_enum),
+ > 469		IIO_ENUM_AVAILABLE("filter_mode", IIO_SHARED_BY_ALL, &admv8818_mode_enum),
+   470		{ },
+   471	};
+   472	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
