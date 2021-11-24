@@ -2,214 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7473945CCBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 20:09:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D59245CCF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 20:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350914AbhKXTM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 14:12:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:25850 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243103AbhKXTM6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 14:12:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637780988;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=isQsxZ+UIWuySQG9MheyCegH/iYJKHmJZxPqthMror0=;
-        b=AR6BzzdsXgGSk4ebmm6OgWHimsf5/FdFcJ/XevHZS4LzAx5lGinm1tneN0ZxNT6Z/9enNY
-        qdLuFQdMbL1uHwoTYcfXvG/q09PG9J3/1rA/yYLEy8I/Ha3gaJMVbSSBIjzoOLEEfCp8PO
-        i6zLc7/hBYegvLnB59xsC2J4pSTEg8Y=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-235-F7s7pJtsNIKKAwkWTQopvQ-1; Wed, 24 Nov 2021 14:09:45 -0500
-X-MC-Unique: F7s7pJtsNIKKAwkWTQopvQ-1
-Received: by mail-wm1-f70.google.com with SMTP id p12-20020a05600c1d8c00b0033a22e48203so1960006wms.6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 11:09:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:organization:subject
-         :in-reply-to:content-transfer-encoding;
-        bh=isQsxZ+UIWuySQG9MheyCegH/iYJKHmJZxPqthMror0=;
-        b=B4Vlyw4ti782S4o5GVqEuVcThd00Q3rbU3kYRZv8OmId9NvuMYwSzumwF1qiqDhNpz
-         7ArV6PwT0Y9fvdO77D6Vq4WW7BhZ279jW/Xf3260aMVnfpbo04oF1GEYbzEuvS4PsNOs
-         cFUYNHWp9Jm37P0vO2/Fb1hrkaE2bYKDyxYC7UgyRA/iZa1+mMvEYX8q3Kkr8jqRmwrt
-         s8ceN66XwShOPjPw7N5fowduPux8qLMCeIeHsEEmJ+Jd9Op2d3OgGv4+tZ/P+hxLf+XT
-         5It2iUiBpnWfMLy3X2yPXsBwrXkfG+ibmgaKF2or58Fu9iv90tr2IOWTdn4sfts3RB56
-         vmCA==
-X-Gm-Message-State: AOAM532/DkH4H4CAT+1zHmoWxzg/Gmm01psik3ZNeNSSW38URhn88Hd8
-        JNC5/oxaiP75nF3ti/n8YKmzr+Pwja1yajcla5N4rmbAtaHiSdTfcwQV1TgkfXkXhRefrypUm64
-        vpcSOG5CRMe+5b+0k2rLEq+vV
-X-Received: by 2002:a5d:4e0f:: with SMTP id p15mr22328423wrt.48.1637780983924;
-        Wed, 24 Nov 2021 11:09:43 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw4cnG6zQAtfTxbiF3GkI02UpMt0XyyBIq1dEWEXIxz2pHNKNMEO5mJ1P1ByRxTDNJ/bVfvjw==
-X-Received: by 2002:a5d:4e0f:: with SMTP id p15mr22328368wrt.48.1637780983653;
-        Wed, 24 Nov 2021 11:09:43 -0800 (PST)
-Received: from [192.168.3.132] (p5b0c6380.dip0.t-ipconnect.de. [91.12.99.128])
-        by smtp.gmail.com with ESMTPSA id bg12sm805901wmb.5.2021.11.24.11.09.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 11:09:42 -0800 (PST)
-Message-ID: <cc9d3f3e-2fe1-0df0-06b2-c54e020161da@redhat.com>
-Date:   Wed, 24 Nov 2021 20:09:42 +0100
+        id S1351417AbhKXTRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 14:17:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52782 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351097AbhKXTQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 14:16:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F3C061058;
+        Wed, 24 Nov 2021 19:13:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637781211;
+        bh=ShVkegqqlX9t3NgDlpdxjJkZAHHvUFAOs0QktUXWaRU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=JIPgVQG3LDY5LNEy7Z/faVPS18QIVYSpCdrmNV0RLG6Q1njtwPhcvrv7OBO3+7Wi5
+         fg5JlbrEm2Wg6L/E8YSB0hKu20+VA1KuMhtyRVALaxKGjWbRFBjGIFlJhHi9wf9S4R
+         auZDiv2kx5dj6jSh53Zq6PZ21yjcsxzVzdQHUQgSGNjUKctEUU09E9oRip3y4igX1K
+         cwLDePxNW8/es+iXmX5r3az0ypdnogpJP9lh7RceFlHG3Wa+fAJeknC3SdyHHKXZum
+         ZRdsPu+gqIz1mchnAbaI07zLtdwBCVXNdO4Vriy113unQ1nq61PimTpY3SDS44zW2x
+         C9rQwPqdmBvGg==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1mpxhs-004Q50-Eq; Wed, 24 Nov 2021 20:13:24 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Andy Gross <agross@kernel.org>, Antti Palosaari <crope@iki.fi>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Malcolm Priestley <tvboxspy@gmail.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Foss <robert.foss@linaro.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        llvm@lists.linux.dev
+Subject: [PATCH 00/20] Solve the remaining issues with clang and W=1 on media
+Date:   Wed, 24 Nov 2021 20:13:03 +0100
+Message-Id: <cover.1637781097.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-        Andrew Dona-Couch <andrew@donacou.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Drew DeVault <sir@cmpwn.com>,
-        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        io_uring Mailing List <io-uring@vger.kernel.org>,
-        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
-References: <20211123235953.GF5112@ziepe.ca>
- <2adca04f-92e1-5f99-6094-5fac66a22a77@redhat.com>
- <20211124132353.GG5112@ziepe.ca>
- <cca0229e-e53e-bceb-e215-327b6401f256@redhat.com>
- <20211124132842.GH5112@ziepe.ca>
- <eab5aeba-e064-9f3e-fbc3-f73cd299de83@redhat.com>
- <20211124134812.GI5112@ziepe.ca>
- <2cdbebb9-4c57-7839-71ab-166cae168c74@redhat.com>
- <20211124153405.GJ5112@ziepe.ca>
- <63294e63-cf82-1f59-5ea8-e996662e6393@redhat.com>
- <20211124183544.GL5112@ziepe.ca>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
-In-Reply-To: <20211124183544.GL5112@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.11.21 19:35, Jason Gunthorpe wrote:
-> On Wed, Nov 24, 2021 at 05:43:58PM +0100, David Hildenbrand wrote:
->> On 24.11.21 16:34, Jason Gunthorpe wrote:
->>> On Wed, Nov 24, 2021 at 03:14:00PM +0100, David Hildenbrand wrote:
->>>
->>>> I'm not aware of any where you can fragment 50% of all pageblocks in the
->>>> system as an unprivileged user essentially consuming almost no memory
->>>> and essentially staying inside well-defined memlock limits. But sure if
->>>> there are "many" people will be able to come up with at least one
->>>> comparable thing. I'll be happy to learn.
->>>
->>> If the concern is that THP's can be DOS'd then any avenue that renders
->>> the system out of THPs is a DOS attack vector. Including all the
->>> normal workloads that people run and already complain that THPs get
->>> exhausted.
->>>
->>> A hostile userspace can only quicken this process.
->>
->> We can not only fragment THP but also easily smaller compound pages,
->> with less impact though (well, as long as people want more than 0.1% per
->> user ...).
-> 
-> My point is as long as userspace can drive this fragmentation, by any
-> means, we can never have DOS proof higher order pages, so lets not
-> worry so much about one of many ways to create fragmentation.
-> 
+Currently, using clang with W=1 and CONFIG_WERROR causes media to break.
+This is reported by builder.linuxtv.org.
 
-That would be giving up on compound pages (hugetlbfs, THP, ...) on any
-current Linux system that does not use ZONE_MOVABLE -- which is not
-something I am not willing to buy into, just like our customers ;)
+This series solve the remaining issues.
 
-See my other mail, the upstream version of my reproducer essentially
-shows what FOLL_LONGTERM is currently doing wrong with pageblocks. And
-at least to me that's an interesting insight :)
+Mauro Carvalho Chehab (20):
+  media: adv7842: get rid of two unused functions
+  media: saa7134-go7007: get rid of to_state() function
+  media: davinci: get rid of an unused function
+  media: drxd: drop offset var from DownloadMicrocode()
+  media: drxk: drop operation_mode from set_dvbt()
+  media: m88ds3103: drop reg11 calculus from m88ds3103b_select_mclk()
+  media: si21xx: report eventual errors at set_frontend
+  media: solo6x10: add _maybe_unused to currently unused functions
+  media: si470x: fix printk warnings with clang
+  media: radio-si476x: drop a container_of() abstraction macro
+  media: lmedm04: don't ignore errors when setting a filter
+  media: au0828-i2c: drop a duplicated function
+  media: adv7604 add _maybe_unused to currently unused functions
+  media: adv7511: drop unused functions
+  media: imx290: mark read reg function as __maybe_unused
+  media: davinci: vpbe_osd: mark read reg function as __maybe_unused
+  media: qcom: camss: mark read reg function as  __maybe_unused
+  media: mtk-mdp: address a clang warning
+  media: cobalt: drop an unused variable
+  media: mxl5005s: drop some dead code
 
-I agree that the more extreme scenarios I can construct are a secondary
-concern. But my upstream reproducer just highlights what can easily
-happen in reality.
-
->>>> My position that FOLL_LONGTERM for unprivileged users is a strong no-go
->>>> stands as it is.
->>>
->>> As this basically excludes long standing pre-existing things like
->>> RDMA, XDP, io_uring, and more I don't think this can be the general
->>> answer for mm, sorry.
->>
->> Let's think about options to restrict FOLL_LONGTERM usage:
-> 
-> Which gives me the view that we should be talking about how to make
-> high order pages completely DOS proof, not about FOLL_LONGTERM.
-
-Sure, one step at a time ;)
-
-> 
-> To me that is exactly what ZONE_MOVABLE strives to achieve, and I
-> think anyone who cares about QOS around THP must include ZONE_MOVABLE
-> in their solution.
-
-For 100% yes.
-
-> 
-> In all of this I am thinking back to the discussion about the 1GB THP
-> proposal which was resoundly shot down on the grounds that 2MB THP
-> *doesn't work* today due to the existing fragmentation problems.
-
-The point that "2MB THP" doesn't work is just wrong. pageblocks do their
-job very well, but we can end up in corner case situations where more
-and more pageblocks are getting fragmented. And people are constantly
-improving these corner cases (e.g. proactive compaction).
-
-Usually you have to allocate *a lot* of memory and put the system under
-extreme memory pressure, such that unmovable allocations spill into
-movable pageblocks and the other way around.
-
-The thing about my reproducer is that it does that without any memory
-pressure, and that is the BIG difference to everything else we have in
-that regard. You can have an idle 1TiB system running my reproducer and
-it will fragment half of of all pageblocks in the system while mlocking
-~ 1GiB. And that highlights the real issue IMHO.
-
-The 1 GB THP project is still going on BTW.
-
-> 
->> Another option would be not accounting FOLL_LONGTERM as RLIMIT_MEMLOCK,
->> but instead as something that explicitly matches the differing
->> semantics. 
-> 
-> Also a good idea, someone who cares about this should really put
-> pinned pages into the cgroup machinery (with correct accounting!)
-> 
->> At the same time, eventually work on proper alternatives with mmu
->> notifiers (and possibly without the any such limits) where possible
->> and required.
-> 
-> mmu_notifiers is also bad, it just offends a different group of MM
-> concerns :)
-
-Yeah, I know, locking nightmare.
-
-> 
-> Something like io_ring is registering a bulk amount of memory and then
-> doing some potentially long operations against it.
-
-The individual operations it performs are comparable to O_DIRECT I think
--- but no expert.
-
-> 
-> So to use a mmu_notifier scheme you'd have to block the mmu_notifier
-> invalidate_range_start until all the operations touching the memory
-> finish (and suspend new operations at the same time!).
-> 
-> Blocking the notifier like this locks up the migration/etc threads
-> completely, and is destructive to the OOM reclaim.
-> 
-> At least with a pinned page those threads don't even try to touch it
-> instead of getting stuck up.
-
-Yes, if only we'd be pinning for a restricted amount of time ...
+ drivers/media/dvb-frontends/drxd_hard.c       |  8 -------
+ drivers/media/dvb-frontends/drxk_hard.c       |  6 -----
+ drivers/media/dvb-frontends/m88ds3103.c       |  6 +----
+ drivers/media/dvb-frontends/si21xx.c          |  7 +++---
+ drivers/media/i2c/adv7511-v4l2.c              | 22 -------------------
+ drivers/media/i2c/adv7604.c                   | 18 +++++++--------
+ drivers/media/i2c/adv7842.c                   | 10 ---------
+ drivers/media/i2c/imx290.c                    |  2 +-
+ drivers/media/pci/cobalt/cobalt-cpld.c        |  5 +----
+ drivers/media/pci/saa7134/saa7134-go7007.c    |  7 +-----
+ .../media/pci/solo6x10/solo6x10-v4l2-enc.c    | 12 +++++-----
+ drivers/media/platform/davinci/vpbe_osd.c     |  2 +-
+ drivers/media/platform/davinci/vpif_capture.c | 11 ----------
+ drivers/media/platform/mtk-mdp/mtk_mdp_core.c |  2 +-
+ .../media/platform/qcom/camss/camss-vfe-170.c |  2 +-
+ drivers/media/radio/radio-si476x.c            |  6 -----
+ drivers/media/radio/si470x/radio-si470x-i2c.c |  4 ++--
+ drivers/media/radio/si470x/radio-si470x-usb.c |  8 +++----
+ drivers/media/tuners/mxl5005s.c               | 14 +-----------
+ drivers/media/usb/au0828/au0828-i2c.c         |  7 ------
+ drivers/media/usb/dvb-usb-v2/lmedm04.c        |  3 +++
+ 21 files changed, 36 insertions(+), 126 deletions(-)
 
 -- 
-Thanks,
+2.33.1
 
-David / dhildenb
 
