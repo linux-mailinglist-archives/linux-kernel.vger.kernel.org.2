@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3843945BD67
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2673E45B9B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:01:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244659AbhKXMiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:38:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49470 "EHLO mail.kernel.org"
+        id S242001AbhKXMEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:04:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245131AbhKXMcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:32:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 442CA6135F;
-        Wed, 24 Nov 2021 12:20:10 +0000 (UTC)
+        id S232688AbhKXMDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:03:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B38D60FE7;
+        Wed, 24 Nov 2021 12:00:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756410;
-        bh=TnXwMQ/T/jEwFXNGHUxEOqGvj/xXrUg5Fc35nDDRcp4=;
+        s=korg; t=1637755246;
+        bh=ily3yfDBExUlHT82SjT1QX8GRbrGHFJE0lgFbnKxcb0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZCLotGe64ROQjVUXwTq3Jn5hisXrFl8gP6nGlZexUQSdKlUnb5AOsc09gOUt2vYRJ
-         MLodTUKE27cMeCHrvdCuK6Fy6JM4HQgQkcMCJE80/AI08j1YlMEhFXv/FxIXinSNBq
-         plL0bQKGKszLJQK6qjoXRhW9ls+iDtoGu137HzB8=
+        b=iH0K359BNuFLduPHzShhm4xEo5ilm0TbEu7QoWglWGUiHCUxw6mTdcUjbE75yRJaI
+         Gvxc8W7Tdbse0xnhSc4baTMCfbJfkaQikoZZAA1w1Z2ypEBH3J2DM01VTxoS1P5uRF
+         0uYIzdYTX+f7Tict1T8Xi3auAdvs1ddkYGlS8KR0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 077/251] mwifiex: Properly initialize private structure on interface type changes
-Date:   Wed, 24 Nov 2021 12:55:19 +0100
-Message-Id: <20211124115712.934914035@linuxfoundation.org>
+        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 4.4 017/162] x86/irq: Ensure PI wakeup handler is unregistered before module unload
+Date:   Wed, 24 Nov 2021 12:55:20 +0100
+Message-Id: <20211124115658.883041011@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,61 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonas Dreßler <verdre@v0yd.nl>
+From: Sean Christopherson <seanjc@google.com>
 
-[ Upstream commit c606008b70627a2fc485732a53cc22f0f66d0981 ]
+commit 6ff53f6a438f72998f56e82e76694a1df9d1ea2c upstream.
 
-When creating a new virtual interface in mwifiex_add_virtual_intf(), we
-update our internal driver states like bss_type, bss_priority, bss_role
-and bss_mode to reflect the mode the firmware will be set to.
+Add a synchronize_rcu() after clearing the posted interrupt wakeup handler
+to ensure all readers, i.e. in-flight IRQ handlers, see the new handler
+before returning to the caller.  If the caller is an exiting module and
+is unregistering its handler, failure to wait could result in the IRQ
+handler jumping into an unloaded module.
 
-When switching virtual interface mode using
-mwifiex_init_new_priv_params() though, we currently only update bss_mode
-and bss_role. In order for the interface mode switch to actually work,
-we also need to update bss_type to its proper value, so do that.
+The registration path doesn't require synchronization, as it's the
+caller's responsibility to not generate interrupts it cares about until
+after its handler is registered.
 
-This fixes a crash of the firmware (because the driver tries to execute
-commands that are invalid in AP mode) when switching from station mode
-to AP mode.
-
-Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210914195909.36035-9-verdre@v0yd.nl
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: f6b3c72c2366 ("x86/irq: Define a global vector for VT-d Posted-Interrupts")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20211009001107.3936588-2-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/marvell/mwifiex/cfg80211.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ arch/x86/kernel/irq.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/cfg80211.c b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-index 7bdcbe79d963d..a88bddc383894 100644
---- a/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-+++ b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-@@ -898,16 +898,20 @@ mwifiex_init_new_priv_params(struct mwifiex_private *priv,
- 	switch (type) {
- 	case NL80211_IFTYPE_STATION:
- 	case NL80211_IFTYPE_ADHOC:
--		priv->bss_role =  MWIFIEX_BSS_ROLE_STA;
-+		priv->bss_role = MWIFIEX_BSS_ROLE_STA;
-+		priv->bss_type = MWIFIEX_BSS_TYPE_STA;
- 		break;
- 	case NL80211_IFTYPE_P2P_CLIENT:
--		priv->bss_role =  MWIFIEX_BSS_ROLE_STA;
-+		priv->bss_role = MWIFIEX_BSS_ROLE_STA;
-+		priv->bss_type = MWIFIEX_BSS_TYPE_P2P;
- 		break;
- 	case NL80211_IFTYPE_P2P_GO:
--		priv->bss_role =  MWIFIEX_BSS_ROLE_UAP;
-+		priv->bss_role = MWIFIEX_BSS_ROLE_UAP;
-+		priv->bss_type = MWIFIEX_BSS_TYPE_P2P;
- 		break;
- 	case NL80211_IFTYPE_AP:
- 		priv->bss_role = MWIFIEX_BSS_ROLE_UAP;
-+		priv->bss_type = MWIFIEX_BSS_TYPE_UAP;
- 		break;
- 	default:
- 		mwifiex_dbg(adapter, ERROR,
--- 
-2.33.0
-
+--- a/arch/x86/kernel/irq.c
++++ b/arch/x86/kernel/irq.c
+@@ -283,8 +283,10 @@ void kvm_set_posted_intr_wakeup_handler(
+ {
+ 	if (handler)
+ 		kvm_posted_intr_wakeup_handler = handler;
+-	else
++	else {
+ 		kvm_posted_intr_wakeup_handler = dummy_handler;
++		synchronize_rcu();
++	}
+ }
+ EXPORT_SYMBOL_GPL(kvm_set_posted_intr_wakeup_handler);
+ 
 
 
