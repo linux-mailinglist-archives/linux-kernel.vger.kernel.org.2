@@ -2,165 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51A145B143
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 02:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A44F45B150
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 02:49:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236648AbhKXBs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 20:48:58 -0500
-Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:53075 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236317AbhKXBs6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 20:48:58 -0500
-Received: from tomoyo.flets-east.jp ([114.149.34.46])
-        by smtp.orange.fr with ESMTPA
-        id phLum5yhx1UGBphM0mqShK; Wed, 24 Nov 2021 02:45:48 +0100
-X-ME-Helo: tomoyo.flets-east.jp
-X-ME-Auth: MDU0YmViZGZmMDIzYiBlMiM2NTczNTRjNWZkZTMwOGRiOGQ4ODf3NWI1ZTMyMzdiODlhOQ==
-X-ME-Date: Wed, 24 Nov 2021 02:45:48 +0100
-X-ME-IP: 114.149.34.46
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Jimmy Assarsson <extja@kvaser.com>,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v2] can: bittiming: replace CAN units with the generic ones from linux/units.h
-Date:   Wed, 24 Nov 2021 10:45:36 +0900
-Message-Id: <20211124014536.782550-1-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.32.0
+        id S236134AbhKXBw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 20:52:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48372 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231310AbhKXBwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 20:52:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFB6D608FB;
+        Wed, 24 Nov 2021 01:49:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637718554;
+        bh=U8DJg4yZaKIYgJGHE+dHQseuegRN58Y6WDSNO1Y30Do=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cf2llT+ExAVMXWCXyQnlOSFKNeETjUZIgz1krKR4uwgI+HMsvTWogR5oUXJ90hS1h
+         u6SFDuXihdOzsTxVmVzgFf5fZrP+swIgINoZD7Oon8399eZ9VXouJOxDz06bO3nVG4
+         2tgkUmY96QJroNrAm6a+7w5+/L37kNpWjJuZ3eh00YGkIwIvcyx4qqazwGlGAm4MbS
+         VZbRyxfqjQBnHYze7B9UbYgSEo3M0/MGZ6thVRCI3+KMltvZoTnjjcCphmx2UwQFIK
+         bCFP6JYHkuRzn3JA3TrZeWwb+ESxytMQe86392yOAtKaKmWORT6VCh1ylp4vGyEq4C
+         wI0pWiL7LbTwg==
+Date:   Tue, 23 Nov 2021 17:49:14 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        NeilBrown <neilb@suse.de>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Rik van Riel <riel@surriel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/8] mm/vmscan: Throttle reclaim when no progress is
+ being made
+Message-ID: <20211124014914.GB265983@magnolia>
+References: <20211022144651.19914-1-mgorman@techsingularity.net>
+ <20211022144651.19914-4-mgorman@techsingularity.net>
+ <20211124011912.GA265983@magnolia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124011912.GA265983@magnolia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In [1], we introduced a set of units in linux/can/bittiming.h. Since
-then, generic SI prefixes were added to linux/units.h in [2]. Those
-new prefixes can perfectly replace CAN specific ones.
+On Tue, Nov 23, 2021 at 05:19:12PM -0800, Darrick J. Wong wrote:
+> On Fri, Oct 22, 2021 at 03:46:46PM +0100, Mel Gorman wrote:
+> > Memcg reclaim throttles on congestion if no reclaim progress is made.
+> > This makes little sense, it might be due to writeback or a host of
+> > other factors.
+> > 
+> > For !memcg reclaim, it's messy. Direct reclaim primarily is throttled
+> > in the page allocator if it is failing to make progress. Kswapd
+> > throttles if too many pages are under writeback and marked for
+> > immediate reclaim.
+> > 
+> > This patch explicitly throttles if reclaim is failing to make progress.
+> 
+> Hi Mel,
+> 
+> Ever since Christoph broke swapfiles, I've been carrying around a little
+> fstest in my dev tree[1] that tries to exercise paging things in and out
+> of a swapfile.  Sadly I've been trapped in about three dozen customer
+> escalations for over a month, which means I haven't been able to do much
+> upstream in weeks.  Like submit this test upstream. :(
+> 
+> Now that I've finally gotten around to trying out a 5.16-rc2 build, I
+> notice that the runtime of this test has gone from ~5s to 2 hours.
+> Among other things that it does, the test sets up a cgroup with a memory
+> controller limiting the memory usage to 25MB, then runs a program that
+> tries to dirty 50MB of memory.  There's 2GB of memory in the VM, so
+> we're not running reclaim globally, but the cgroup gets throttled very
+> severely.
+> 
+> AFAICT the system is mostly idle, but it's difficult to tell because ps
+> and top also get stuck waiting for this cgroup for whatever reason.  My
+> uninformed spculation is that usemem_and_swapoff takes a page fault
+> while dirtying the 50MB memory buffer, prepares to pull a page in from
+> swap, tries to evict another page to stay under the memcg limit, but
+> that decides that it's making no progress and calls
+> reclaim_throttle(..., VMSCAN_THROTTLE_NOPROGRESS).
+> 
+> The sleep is uninterruptible, so I can't even kill -9 fstests to shut it
+> down.  Eventually we either finish the test or (for the mlock part) the
+> OOM killer actually kills the process, but this takes a very long time.
+> 
+> Any thoughts?  For now I can just hack around this by skipping
+> reclaim_throttle if cgroup_reclaim() == true, but that's probably not
+> the correct fix. :)
 
-This patch replaces all occurrences of the CAN units with their
-corresponding prefix (from linux/units) and the unit (as a comment)
-according to below table.
+Update: after adding timing information to usemem_and_swapoff, it looks
+like dirtying the 50MB buffer takes ~22s (up from 0.06s on 5.15).  The
+mlock call stalls for ~280s until the OOM killer kills it (up from
+nearly instantaneous on 5.15), and the swapon/swapoff variant takes
+20 minutes to hours depending on the run.
 
- CAN units	SI metric prefix (from linux/units) + unit (as a comment)
- ------------------------------------------------------------------------
- CAN_KBPS	KILO /* BPS */
- CAN_MBPS	MEGA /* BPS */
- CAM_MHZ	MEGA /* Hz */
+--D
 
-The definition are then removed from linux/can/bittiming.h
-
-[1] commit 1d7750760b70 ("can: bittiming: add CAN_KBPS, CAN_MBPS and
-CAN_MHZ macros")
-
-[2] commit 26471d4a6cf8 ("units: Add SI metric prefix definitions")
-
-Suggested-by: Jimmy Assarsson <extja@kvaser.com>
-Suggested-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
----
-* Changelog *
-
-v1 -> v2
-
-  * v1 only used the prefix and the information about the unit
-    disappeared. v2 restores the unit information by using a comment.
----
- drivers/net/can/dev/bittiming.c           | 5 +++--
- drivers/net/can/usb/etas_es58x/es581_4.c  | 5 +++--
- drivers/net/can/usb/etas_es58x/es58x_fd.c | 5 +++--
- include/linux/can/bittiming.h             | 7 -------
- 4 files changed, 9 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/net/can/dev/bittiming.c b/drivers/net/can/dev/bittiming.c
-index 0509625c3082..d5fca3bfaf9a 100644
---- a/drivers/net/can/dev/bittiming.c
-+++ b/drivers/net/can/dev/bittiming.c
-@@ -4,6 +4,7 @@
-  * Copyright (C) 2008-2009 Wolfgang Grandegger <wg@grandegger.com>
-  */
- 
-+#include <linux/units.h>
- #include <linux/can/dev.h>
- 
- #ifdef CONFIG_CAN_CALC_BITTIMING
-@@ -81,9 +82,9 @@ int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
- 	if (bt->sample_point) {
- 		sample_point_nominal = bt->sample_point;
- 	} else {
--		if (bt->bitrate > 800 * CAN_KBPS)
-+		if (bt->bitrate > 800 * KILO /* BPS */)
- 			sample_point_nominal = 750;
--		else if (bt->bitrate > 500 * CAN_KBPS)
-+		else if (bt->bitrate > 500 * KILO /* BPS */)
- 			sample_point_nominal = 800;
- 		else
- 			sample_point_nominal = 875;
-diff --git a/drivers/net/can/usb/etas_es58x/es581_4.c b/drivers/net/can/usb/etas_es58x/es581_4.c
-index 14e360c9f2c9..1bcdcece5ec7 100644
---- a/drivers/net/can/usb/etas_es58x/es581_4.c
-+++ b/drivers/net/can/usb/etas_es58x/es581_4.c
-@@ -10,6 +10,7 @@
-  */
- 
- #include <linux/kernel.h>
-+#include <linux/units.h>
- #include <asm/unaligned.h>
- 
- #include "es58x_core.h"
-@@ -469,8 +470,8 @@ const struct es58x_parameters es581_4_param = {
- 	.bittiming_const = &es581_4_bittiming_const,
- 	.data_bittiming_const = NULL,
- 	.tdc_const = NULL,
--	.bitrate_max = 1 * CAN_MBPS,
--	.clock = {.freq = 50 * CAN_MHZ},
-+	.bitrate_max = 1 * MEGA /* BPS */,
-+	.clock = {.freq = 50 * MEGA /* Hz */},
- 	.ctrlmode_supported = CAN_CTRLMODE_CC_LEN8_DLC,
- 	.tx_start_of_frame = 0xAFAF,
- 	.rx_start_of_frame = 0xFAFA,
-diff --git a/drivers/net/can/usb/etas_es58x/es58x_fd.c b/drivers/net/can/usb/etas_es58x/es58x_fd.c
-index 4f0cae29f4d8..ec87126e1a7d 100644
---- a/drivers/net/can/usb/etas_es58x/es58x_fd.c
-+++ b/drivers/net/can/usb/etas_es58x/es58x_fd.c
-@@ -12,6 +12,7 @@
-  */
- 
- #include <linux/kernel.h>
-+#include <linux/units.h>
- #include <asm/unaligned.h>
- 
- #include "es58x_core.h"
-@@ -522,8 +523,8 @@ const struct es58x_parameters es58x_fd_param = {
- 	 * Mbps work in an optimal environment but are not recommended
- 	 * for production environment.
- 	 */
--	.bitrate_max = 8 * CAN_MBPS,
--	.clock = {.freq = 80 * CAN_MHZ},
-+	.bitrate_max = 8 * MEGA /* BPS */,
-+	.clock = {.freq = 80 * MEGA /* Hz */},
- 	.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK | CAN_CTRLMODE_LISTENONLY |
- 	    CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_FD | CAN_CTRLMODE_FD_NON_ISO |
- 	    CAN_CTRLMODE_CC_LEN8_DLC | CAN_CTRLMODE_TDC_AUTO,
-diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
-index 20b50baf3a02..a81652d1c6f3 100644
---- a/include/linux/can/bittiming.h
-+++ b/include/linux/can/bittiming.h
-@@ -12,13 +12,6 @@
- #define CAN_SYNC_SEG 1
- 
- 
--/* Kilobits and Megabits per second */
--#define CAN_KBPS 1000UL
--#define CAN_MBPS 1000000UL
--
--/* Megahertz */
--#define CAN_MHZ 1000000UL
--
- #define CAN_CTRLMODE_TDC_MASK					\
- 	(CAN_CTRLMODE_TDC_AUTO | CAN_CTRLMODE_TDC_MANUAL)
- 
--- 
-2.32.0
-
+> --D
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfstests-dev.git/commit/?h=test-swapfile-io&id=0d0ad843cea366d0ab0a7d8d984e5cd1deba5b43
+> 
+> > 
+> > [vbabka@suse.cz: Remove redundant code]
+> > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> > Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> > ---
+> >  include/linux/mmzone.h        |  1 +
+> >  include/trace/events/vmscan.h |  4 +++-
+> >  mm/memcontrol.c               | 10 +---------
+> >  mm/vmscan.c                   | 28 ++++++++++++++++++++++++++++
+> >  4 files changed, 33 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> > index 9ccd8d95291b..00e305cfb3ec 100644
+> > --- a/include/linux/mmzone.h
+> > +++ b/include/linux/mmzone.h
+> > @@ -276,6 +276,7 @@ enum lru_list {
+> >  enum vmscan_throttle_state {
+> >  	VMSCAN_THROTTLE_WRITEBACK,
+> >  	VMSCAN_THROTTLE_ISOLATED,
+> > +	VMSCAN_THROTTLE_NOPROGRESS,
+> >  	NR_VMSCAN_THROTTLE,
+> >  };
+> >  
+> > diff --git a/include/trace/events/vmscan.h b/include/trace/events/vmscan.h
+> > index d4905bd9e9c4..f25a6149d3ba 100644
+> > --- a/include/trace/events/vmscan.h
+> > +++ b/include/trace/events/vmscan.h
+> > @@ -29,11 +29,13 @@
+> >  
+> >  #define _VMSCAN_THROTTLE_WRITEBACK	(1 << VMSCAN_THROTTLE_WRITEBACK)
+> >  #define _VMSCAN_THROTTLE_ISOLATED	(1 << VMSCAN_THROTTLE_ISOLATED)
+> > +#define _VMSCAN_THROTTLE_NOPROGRESS	(1 << VMSCAN_THROTTLE_NOPROGRESS)
+> >  
+> >  #define show_throttle_flags(flags)						\
+> >  	(flags) ? __print_flags(flags, "|",					\
+> >  		{_VMSCAN_THROTTLE_WRITEBACK,	"VMSCAN_THROTTLE_WRITEBACK"},	\
+> > -		{_VMSCAN_THROTTLE_ISOLATED,	"VMSCAN_THROTTLE_ISOLATED"}	\
+> > +		{_VMSCAN_THROTTLE_ISOLATED,	"VMSCAN_THROTTLE_ISOLATED"},	\
+> > +		{_VMSCAN_THROTTLE_NOPROGRESS,	"VMSCAN_THROTTLE_NOPROGRESS"}	\
+> >  		) : "VMSCAN_THROTTLE_NONE"
+> >  
+> >  
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 6da5020a8656..8b33152c9b85 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -3465,19 +3465,11 @@ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
+> >  
+> >  	/* try to free all pages in this cgroup */
+> >  	while (nr_retries && page_counter_read(&memcg->memory)) {
+> > -		int progress;
+> > -
+> >  		if (signal_pending(current))
+> >  			return -EINTR;
+> >  
+> > -		progress = try_to_free_mem_cgroup_pages(memcg, 1,
+> > -							GFP_KERNEL, true);
+> > -		if (!progress) {
+> > +		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL, true))
+> >  			nr_retries--;
+> > -			/* maybe some writeback is necessary */
+> > -			congestion_wait(BLK_RW_ASYNC, HZ/10);
+> > -		}
+> > -
+> >  	}
+> >  
+> >  	return 0;
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index 1e54e636b927..0450f6867d61 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -3323,6 +3323,33 @@ static inline bool compaction_ready(struct zone *zone, struct scan_control *sc)
+> >  	return zone_watermark_ok_safe(zone, 0, watermark, sc->reclaim_idx);
+> >  }
+> >  
+> > +static void consider_reclaim_throttle(pg_data_t *pgdat, struct scan_control *sc)
+> > +{
+> > +	/* If reclaim is making progress, wake any throttled tasks. */
+> > +	if (sc->nr_reclaimed) {
+> > +		wait_queue_head_t *wqh;
+> > +
+> > +		wqh = &pgdat->reclaim_wait[VMSCAN_THROTTLE_NOPROGRESS];
+> > +		if (waitqueue_active(wqh))
+> > +			wake_up(wqh);
+> > +
+> > +		return;
+> > +	}
+> > +
+> > +	/*
+> > +	 * Do not throttle kswapd on NOPROGRESS as it will throttle on
+> > +	 * VMSCAN_THROTTLE_WRITEBACK if there are too many pages under
+> > +	 * writeback and marked for immediate reclaim at the tail of
+> > +	 * the LRU.
+> > +	 */
+> > +	if (current_is_kswapd())
+> > +		return;
+> > +
+> > +	/* Throttle if making no progress at high prioities. */
+> > +	if (sc->priority < DEF_PRIORITY - 2)
+> > +		reclaim_throttle(pgdat, VMSCAN_THROTTLE_NOPROGRESS, HZ/10);
+> > +}
+> > +
+> >  /*
+> >   * This is the direct reclaim path, for page-allocating processes.  We only
+> >   * try to reclaim pages from zones which will satisfy the caller's allocation
+> > @@ -3407,6 +3434,7 @@ static void shrink_zones(struct zonelist *zonelist, struct scan_control *sc)
+> >  			continue;
+> >  		last_pgdat = zone->zone_pgdat;
+> >  		shrink_node(zone->zone_pgdat, sc);
+> > +		consider_reclaim_throttle(zone->zone_pgdat, sc);
+> >  	}
+> >  
+> >  	/*
+> > -- 
+> > 2.31.1
+> > 
