@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDEB445C638
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:03:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F1345C1AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:17:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348699AbhKXOGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:06:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50840 "EHLO mail.kernel.org"
+        id S1343547AbhKXNUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:20:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353604AbhKXOAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:00:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36E70632E6;
-        Wed, 24 Nov 2021 13:09:20 +0000 (UTC)
+        id S1344740AbhKXNRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:17:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F6AC610A8;
+        Wed, 24 Nov 2021 12:44:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759360;
-        bh=9+fEL5bRC2vbzDxSFxZxriKpVHTD61kOjmtxRdEj3xc=;
+        s=korg; t=1637757899;
+        bh=m+/rs3W8ihtuv3YU8AlErwhTtx1LfaOT3HJXXJRszBA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lwjyrAyk0nnnmQzmKfGYNp7Ur0cQUBq6/hHeyqsCkTZGWHBdemRUCpMe/FDVAPXgk
-         cuvP9wtO17E1ei8H0uPmkWZwkkqaaa5QRL1Z0gnT6l/qYRuD7VdtW3bO+9EsFWgvOc
-         lvCnAUPX6bc1Z5rcZjHoSFIOnmppXclT6Nxh2r2k=
+        b=bxB5aY4ilGU2Zoop9bHEAhs3gdbFtkgiUezA7RM642LNnWyHRhFKcDdrNOjhMeQq1
+         Vy4WtPbeeeByxzY8XzwOsMocoYLAtaL0V+AOZzAQFVjWbks8iQmARnSusskpo297aD
+         Q1vObpa4GPHb/k9NGXSC/Ky+7hfCPXLiSzrFBP5o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Arun Easi <aeasi@marvell.com>,
-        "Ewan D. Milne" <emilne@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.15 215/279] scsi: qla2xxx: Fix mailbox direction flags in qla2xxx_get_adapter_id()
-Date:   Wed, 24 Nov 2021 12:58:22 +0100
-Message-Id: <20211124115726.176576466@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH 4.19 313/323] drm/udl: fix control-message timeout
+Date:   Wed, 24 Nov 2021 12:58:23 +0100
+Message-Id: <20211124115729.493821342@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ewan D. Milne <emilne@redhat.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 392006871bb26166bcfafa56faf49431c2cfaaa8 upstream.
+commit 5591c8f79db1729d9c5ac7f5b4d3a5c26e262d93 upstream.
 
-The SCM changes set the flags in mcp->out_mb instead of mcp->in_mb so the
-data was not actually being read into the mcp->mb[] array from the adapter.
+USB control-message timeouts are specified in milliseconds and should
+specifically not vary with CONFIG_HZ.
 
-Link: https://lore.kernel.org/r/20211108183012.13895-1-emilne@redhat.com
-Fixes: 9f2475fe7406 ("scsi: qla2xxx: SAN congestion management implementation")
-Cc: stable@vger.kernel.org
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Reviewed-by: Arun Easi <aeasi@marvell.com>
-Signed-off-by: Ewan D. Milne <emilne@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 5320918b9a87 ("drm/udl: initial UDL driver (v4)")
+Cc: stable@vger.kernel.org      # 3.4
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20211025115353.5089-1-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/qla2xxx/qla_mbx.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/udl/udl_connector.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/scsi/qla2xxx/qla_mbx.c
-+++ b/drivers/scsi/qla2xxx/qla_mbx.c
-@@ -1695,10 +1695,8 @@ qla2x00_get_adapter_id(scsi_qla_host_t *
- 		mcp->in_mb |= MBX_13|MBX_12|MBX_11|MBX_10;
- 	if (IS_FWI2_CAPABLE(vha->hw))
- 		mcp->in_mb |= MBX_19|MBX_18|MBX_17|MBX_16;
--	if (IS_QLA27XX(vha->hw) || IS_QLA28XX(vha->hw)) {
--		mcp->in_mb |= MBX_15;
--		mcp->out_mb |= MBX_7|MBX_21|MBX_22|MBX_23;
--	}
-+	if (IS_QLA27XX(vha->hw) || IS_QLA28XX(vha->hw))
-+		mcp->in_mb |= MBX_15|MBX_21|MBX_22|MBX_23;
- 
- 	mcp->tov = MBX_TOV_SECONDS;
- 	mcp->flags = 0;
+--- a/drivers/gpu/drm/udl/udl_connector.c
++++ b/drivers/gpu/drm/udl/udl_connector.c
+@@ -32,7 +32,7 @@ static bool udl_get_edid_block(struct ud
+ 		ret = usb_control_msg(udl->udev,
+ 				      usb_rcvctrlpipe(udl->udev, 0),
+ 					  (0x02), (0x80 | (0x02 << 5)), bval,
+-					  0xA1, read_buff, 2, HZ);
++					  0xA1, read_buff, 2, 1000);
+ 		if (ret < 1) {
+ 			DRM_ERROR("Read EDID byte %d failed err %x\n", i, ret);
+ 			kfree(read_buff);
 
 
