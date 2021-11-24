@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650F745C0A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BF045C4CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:48:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347546AbhKXNKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:10:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43482 "EHLO mail.kernel.org"
+        id S244817AbhKXNvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:51:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347052AbhKXNGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:06:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52C8F619F7;
-        Wed, 24 Nov 2021 12:38:18 +0000 (UTC)
+        id S242935AbhKXNq5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:46:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 373F163346;
+        Wed, 24 Nov 2021 13:01:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757498;
-        bh=i+2ggsXQDF3jn6HvesDAIeYN7ZSWpOefQphxeRTLKI4=;
+        s=korg; t=1637758877;
+        bh=mhSzMwWW4rI8F89tcktNvyzwyOgUJFo1iiLUthPJbbQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UC/9U/SfFLW02lb2TQufJFJCbUqHkqmR7gv10aldZTt/4HSACtEgipW18/DyUdKi2
-         TS4aWI7+Gx5sX+6xZmvMyG88YFTqNxeThzpxAmUYbID9H+sjZQch1LeudyoKRTM6w+
-         FiJW37ZQVJNmFcan0CbjseZlwVJ6nanG4EQM1bno=
+        b=CB0mDBNh/NCPX1ZAtEq1IVhBnh5k+zagKehR13EgWiOrtn2NkAFns3VsNKaZfmGPf
+         deCJM/OSvB/uYjlq20/NrcBFGJ4IQOAjrJy6ckYEo8AnXU9N8JTyJlBM0cFJotQTHb
+         aP9p6h+uLNyqIIZeRt1lQhgIB4bf01rF1Ie3Hy9Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, linux-mips@vger.kernel.org,
+        Bart Van Assche <bvanassche@acm.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 156/323] mwifiex: Send DELBA requests according to spec
-Date:   Wed, 24 Nov 2021 12:55:46 +0100
-Message-Id: <20211124115724.197643416@linuxfoundation.org>
+Subject: [PATCH 5.15 060/279] MIPS: sni: Fix the build
+Date:   Wed, 24 Nov 2021 12:55:47 +0100
+Message-Id: <20211124115720.786352485@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonas Dreßler <verdre@v0yd.nl>
+From: Bart Van Assche <bvanassche@acm.org>
 
-[ Upstream commit cc8a8bc37466f79b24d972555237f3d591150602 ]
+[ Upstream commit c91cf42f61dc77b289784ea7b15a8531defa41c0 ]
 
-While looking at on-air packets using Wireshark, I noticed we're never
-setting the initiator bit when sending DELBA requests to the AP: While
-we set the bit on our del_ba_param_set bitmask, we forget to actually
-copy that bitmask over to the command struct, which means we never
-actually set the initiator bit.
+This patch fixes the following gcc 10 build error:
 
-Fix that and copy the bitmask over to the host_cmd_ds_11n_delba command
-struct.
+arch/mips/sni/time.c: In function ‘a20r_set_periodic’:
+arch/mips/sni/time.c:15:26: error: unsigned conversion from ‘int’ to ‘u8’ {aka ‘volatile unsigned char’} changes value from ‘576’ to ‘64’ [-Werror=overflow]
+   15 | #define SNI_COUNTER0_DIV ((SNI_CLOCK_TICK_RATE / SNI_COUNTER2_DIV) / HZ)
+      |                          ^
+arch/mips/sni/time.c:21:45: note: in expansion of macro ‘SNI_COUNTER0_DIV’
+   21 |  *(volatile u8 *)(A20R_PT_CLOCK_BASE + 0) = SNI_COUNTER0_DIV;
+      |                                             ^~~~~~~~~~~~~~~~
 
-Fixes: 5e6e3a92b9a4 ("wireless: mwifiex: initial commit for Marvell mwifiex driver")
-Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
-Acked-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20211016153244.24353-5-verdre@v0yd.nl
+Cc: linux-mips@vger.kernel.org
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/marvell/mwifiex/11n.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/mips/sni/time.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/11n.c b/drivers/net/wireless/marvell/mwifiex/11n.c
-index 5d75c971004b4..5dcc305cc8127 100644
---- a/drivers/net/wireless/marvell/mwifiex/11n.c
-+++ b/drivers/net/wireless/marvell/mwifiex/11n.c
-@@ -664,14 +664,15 @@ int mwifiex_send_delba(struct mwifiex_private *priv, int tid, u8 *peer_mac,
- 	uint16_t del_ba_param_set;
+diff --git a/arch/mips/sni/time.c b/arch/mips/sni/time.c
+index 240bb68ec2478..ff3ba7e778901 100644
+--- a/arch/mips/sni/time.c
++++ b/arch/mips/sni/time.c
+@@ -18,14 +18,14 @@ static int a20r_set_periodic(struct clock_event_device *evt)
+ {
+ 	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 12) = 0x34;
+ 	wmb();
+-	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 0) = SNI_COUNTER0_DIV;
++	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 0) = SNI_COUNTER0_DIV & 0xff;
+ 	wmb();
+ 	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 0) = SNI_COUNTER0_DIV >> 8;
+ 	wmb();
  
- 	memset(&delba, 0, sizeof(delba));
--	delba.del_ba_param_set = cpu_to_le16(tid << DELBA_TID_POS);
- 
--	del_ba_param_set = le16_to_cpu(delba.del_ba_param_set);
-+	del_ba_param_set = tid << DELBA_TID_POS;
-+
- 	if (initiator)
- 		del_ba_param_set |= IEEE80211_DELBA_PARAM_INITIATOR_MASK;
- 	else
- 		del_ba_param_set &= ~IEEE80211_DELBA_PARAM_INITIATOR_MASK;
- 
-+	delba.del_ba_param_set = cpu_to_le16(del_ba_param_set);
- 	memcpy(&delba.peer_mac_addr, peer_mac, ETH_ALEN);
- 
- 	/* We don't wait for the response of this command */
+ 	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 12) = 0xb4;
+ 	wmb();
+-	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 8) = SNI_COUNTER2_DIV;
++	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 8) = SNI_COUNTER2_DIV & 0xff;
+ 	wmb();
+ 	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 8) = SNI_COUNTER2_DIV >> 8;
+ 	wmb();
 -- 
 2.33.0
 
