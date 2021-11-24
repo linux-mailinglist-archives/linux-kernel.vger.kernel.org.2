@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0596645BD7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32EE245B9B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:02:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344831AbhKXMir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:38:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52018 "EHLO mail.kernel.org"
+        id S242077AbhKXMEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:04:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343845AbhKXMd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:33:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6356611AF;
-        Wed, 24 Nov 2021 12:20:38 +0000 (UTC)
+        id S242019AbhKXMD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:03:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C98660F5D;
+        Wed, 24 Nov 2021 12:00:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756439;
-        bh=p6xrtNg969+bJhypE7t3ArhbHV5cPjdrVOAfY+KMUcM=;
+        s=korg; t=1637755249;
+        bh=z3G/4upNQg2ilXMaqgCEe7D6pNBsMFYqQJI5wcQEPjU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QsCkKZeVK7r/BDQjjsZ2UnMu2Ljxcggfw6/cKxFGJppTi9mZQ5pJqpdNBKTv5795Y
-         0bIq0P5VihXt+Lo4Lhe0KsSGY8JoQh9mQjqbtzZYkn8hV8aRpKiB8574CBzeWR+3ah
-         StcUMLhmWF6+kJ4tQDXwR8Vh+uUcLuQnZ02aYMIo=
+        b=K4u7Q+Us+VkNzw8rIMUtzpyv+3pNEGMY9Zra3oXHxD7JSRNFjqMwzaHsTAudPNJ90
+         wF8N+o0nL0rkKCl6zbsPylkPCF5ZXh4Bntcqf3FNfCPSVS2obGbtvFAJQ6NBSnekfv
+         B/sAUukqMaHPJvXYtpZmn792OPNjFsK9p3betpDI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 087/251] tracefs: Have tracefs directories not set OTH permission bits by default
+        stable@vger.kernel.org, Amitkumar Karwar <akarwar@marvell.com>,
+        Johan Hovold <johan@kernel.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 4.4 026/162] mwifiex: fix division by zero in fw download path
 Date:   Wed, 24 Nov 2021 12:55:29 +0100
-Message-Id: <20211124115713.278900707@linuxfoundation.org>
+Message-Id: <20211124115659.173173469@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit 49d67e445742bbcb03106b735b2ab39f6e5c56bc ]
+commit 89f8765a11d8df49296d92c404067f9b5c58ee26 upstream.
 
-The tracefs file system is by default mounted such that only root user can
-access it. But there are legitimate reasons to create a group and allow
-those added to the group to have access to tracing. By changing the
-permissions of the tracefs mount point to allow access, it will allow
-group access to the tracefs directory.
+Add the missing endpoint sanity checks to probe() to avoid division by
+zero in mwifiex_write_data_sync() in case a malicious device has broken
+descriptors (or when doing descriptor fuzz testing).
 
-There should not be any real reason to allow all access to the tracefs
-directory as it contains sensitive information. Have the default
-permission of directories being created not have any OTH (other) bits set,
-such that an admin that wants to give permission to a group has to first
-disable all OTH bits in the file system.
+Only add checks for the firmware-download boot stage, which require both
+command endpoints, for now. The driver looks like it will handle a
+missing endpoint during normal operation without oopsing, albeit not
+very gracefully as it will try to submit URBs to the default pipe and
+fail.
 
-Link: https://lkml.kernel.org/r/20210818153038.664127804@goodmis.org
+Note that USB core will reject URBs submitted for endpoints with zero
+wMaxPacketSize but that drivers doing packet-size calculations still
+need to handle this (cf. commit 2548288b4fb0 ("USB: Fix: Don't skip
+endpoint descriptors with maxpacket=0")).
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 4daffe354366 ("mwifiex: add support for Marvell USB8797 chipset")
+Cc: stable@vger.kernel.org      # 3.5
+Cc: Amitkumar Karwar <akarwar@marvell.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Reviewed-by: Brian Norris <briannorris@chromium.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20211027080819.6675-4-johan@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/tracefs/inode.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/wireless/mwifiex/usb.c |   16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
-index bea8ad876bf9a..0c123c5e70e08 100644
---- a/fs/tracefs/inode.c
-+++ b/fs/tracefs/inode.c
-@@ -427,7 +427,8 @@ static struct dentry *__create_dir(const char *name, struct dentry *parent,
- 	if (unlikely(!inode))
- 		return failed_creating(dentry);
+--- a/drivers/net/wireless/mwifiex/usb.c
++++ b/drivers/net/wireless/mwifiex/usb.c
+@@ -473,6 +473,22 @@ static int mwifiex_usb_probe(struct usb_
+ 		}
+ 	}
  
--	inode->i_mode = S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO;
-+	/* Do not set bits for OTH */
-+	inode->i_mode = S_IFDIR | S_IRWXU | S_IRUSR| S_IRGRP | S_IXUSR | S_IXGRP;
- 	inode->i_op = ops;
- 	inode->i_fop = &simple_dir_operations;
++	switch (card->usb_boot_state) {
++	case USB8XXX_FW_DNLD:
++		/* Reject broken descriptors. */
++		if (!card->rx_cmd_ep || !card->tx_cmd_ep)
++			return -ENODEV;
++		if (card->bulk_out_maxpktsize == 0)
++			return -ENODEV;
++		break;
++	case USB8XXX_FW_READY:
++		/* Assume the driver can handle missing endpoints for now. */
++		break;
++	default:
++		WARN_ON(1);
++		return -ENODEV;
++	}
++
+ 	usb_set_intfdata(intf, card);
  
--- 
-2.33.0
-
+ 	ret = mwifiex_add_card(card, &add_remove_card_sem, &usb_ops,
 
 
