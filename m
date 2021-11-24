@@ -2,86 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2853A45B463
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 07:38:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7103C45B46E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 07:42:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237107AbhKXGld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 01:41:33 -0500
-Received: from mailgw01.mediatek.com ([60.244.123.138]:42794 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230323AbhKXGlc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 01:41:32 -0500
-X-UUID: 92a946024915494c9220abda374a6952-20211124
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=o8yAD43f7Yz8PJZDUhlY+smBs0eLQyqXHTEwNYJfPik=;
-        b=HkkCjWwDSUMjeXQBupvQ+cjRExZxoI4T911DAURMyNtWhlXCi3QVvtDVKNQCJ0cbeEwWmREPmNsJ27k16PBmqiKe76usJ3ahZRpZZLaoajlodgwd+wfQn/muwbAOVeDrE0nIeNkQ72jR/FccoL4N0CPwfH22L65/BecSMX37bHs=;
-X-UUID: 92a946024915494c9220abda374a6952-20211124
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 186994505; Wed, 24 Nov 2021 14:38:18 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Wed, 24 Nov 2021 14:38:18 +0800
-Received: from mhfsdcap04 (10.17.3.154) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 24 Nov 2021 14:38:17 +0800
-Message-ID: <26704c3979b1c8936ab14d9ea7704166aca66887.camel@mediatek.com>
-Subject: Re: [RFC PATCH] soc: mediatek: Add support always on flag
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chun-Jie Chen <chun-jie.chen@mediatek.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Date:   Wed, 24 Nov 2021 14:38:17 +0800
-In-Reply-To: <e6ebf764-b94a-7b77-df17-1cb8e4b14635@collabora.com>
-References: <20211102072058.4107-1-chunfeng.yun@mediatek.com>
-         <e6ebf764-b94a-7b77-df17-1cb8e4b14635@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        id S237471AbhKXGpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 01:45:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230323AbhKXGpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 01:45:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDC5E60FE6;
+        Wed, 24 Nov 2021 06:42:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637736149;
+        bh=EUZz/irRHK/K5cWidrRrSLI5RdyDjoqd/i2pUIYgwxk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=sa61kDt/xcJph+Zgh4EZ1Dcutn9HW3EzhO/vhv5IQOuebf3nYMD49T7ESjLcuyesX
+         r6OabXx7cICY5Q+P5nc1PSgNpm0X+2MfwRYshlrgp789tn8WGp+nuUbCRdcdx2viqZ
+         0fzCuNiGKjlJSSTqPHQMC1KKIwz/s6lZ9/Rl0I5907M3d0fFaBRwvCYZruW+UJkM4/
+         qVvbCMfYkJAVhnUB6tuPl+1WAAXzxSLFky5OFJyD4lQqoEnbrs5TcP5IM/lYqzk9lf
+         xfZXvbWlH60+onwdKH8sawZCx1bNCIfovhdkY8A0jdXywwOi/2CKlz80DV+Tu9o0no
+         7fb7Jg8T8ALyg==
+Received: by mail-ua1-f47.google.com with SMTP id a14so3077591uak.0;
+        Tue, 23 Nov 2021 22:42:28 -0800 (PST)
+X-Gm-Message-State: AOAM531eG81FY0tIlsXWVSezs7HX/lYkrCdFfSwStsHzdd4SUoC3BZLv
+        qHLwx4PM2YL2pJ/q821NW8JIvgih/j24ledaA/8=
+X-Google-Smtp-Source: ABdhPJygpTPIjs1D0SU6N20VeUeK3Lsie8ae7u5P3VPLnPjeBp6n3aFVYUkYgeHtNDY54LHL3QnDVrRSG9ZreujYxGg=
+X-Received: by 2002:ab0:6883:: with SMTP id t3mr6453103uar.66.1637736148026;
+ Tue, 23 Nov 2021 22:42:28 -0800 (PST)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20211123015717.542631-1-guoren@kernel.org> <1913356.JkcO0Xq8vV@diego>
+In-Reply-To: <1913356.JkcO0Xq8vV@diego>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 24 Nov 2021 14:42:17 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSwousS4DHWuqprkkckbRa-J=M_a5vSVJ5CiAjDvqGh9w@mail.gmail.com>
+Message-ID: <CAJF2gTSwousS4DHWuqprkkckbRa-J=M_a5vSVJ5CiAjDvqGh9w@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/3] riscv: Add riscv.fwsz kernel parameter to save memory
+To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
+Cc:     Anup Patel <anup@brainfault.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>, atishp@rivosinc.com,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Philipp Tomsich <philipp.tomsich@vrull.eu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTExLTExIGF0IDE0OjU2ICswMTAwLCBBbmdlbG9HaW9hY2NoaW5vIERlbCBS
-ZWdubyB3cm90ZToNCj4gSWwgMDIvMTEvMjEgMDg6MjAsIENodW5mZW5nIFl1biBoYSBzY3JpdHRv
-Og0KPiA+IFRoZXJlIGlzIGEgdC1waHkgc2hhcmVkIGJ5IFBDSWUgYW5kIFVTQjMgb24gbXQ4MTk1
-LCBpZiB0aGUgdC1waHkgaXMNCj4gPiB1c2VkIGJ5IFBDSWUsIHdoZW4gcG93ZXIgb2ZmIGl0cyBt
-dGNtb3MsIG5lZWQgc29mdHdhcmUgcmVzZXQgaXQNCj4gPiAod29ya2Fyb3VuZCB3YXksIHVzdWFs
-bHkgaGFyZHdhcmUgZG8gaXQsIGJ1dCBoYXMgYW4gaXNzdWUgb24NCj4gPiBtdDgxOTUpLA0KPiA+
-IGJ1dCBpdCBoYXMgc2lkZSBlZmZlY3QgdG8gVVNCMiBwaHkod29ya3Mgd2l0aCBVU0IzIHBoeSB0
-byBzdXBwb3J0DQo+ID4gVVNCMy4yIEdlbjEpLCBzbyBhZGQgc3VwcG9ydCBHRU5QRF9GTEFHX0FM
-V0FZU19PTiBmbGFnLCBhbmQgbWFrZQ0KPiA+IGl0cw0KPiA+IHBvd2VyIGFsd2F5cyBvbjsNCj4g
-PiBBbm90aGVyIHJlYXNvbiBpcyB0aGF0IFVTQjMuMiBHZW4xLzIgbmVlZCBrZWVwIHBvd2VyIGFs
-d2F5cyBvbiB3aGVuDQo+ID4gc3VwcG9ydCBydW50aW1lLXBtIGR1ZSB0byBoYXJkd2FyZSBsaW1p
-dGF0aW9uIHVudGlsIG5vdzsNCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBDaHVuZmVuZyBZdW4g
-PGNodW5mZW5nLnl1bkBtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gICBkcml2ZXJzL3NvYy9t
-ZWRpYXRlay9tdDgxOTUtcG0tZG9tYWlucy5oIHwgMiArLQ0KPiA+ICAgZHJpdmVycy9zb2MvbWVk
-aWF0ZWsvbXRrLXBtLWRvbWFpbnMuYyAgICB8IDIgKysNCj4gPiAgIGRyaXZlcnMvc29jL21lZGlh
-dGVrL210ay1wbS1kb21haW5zLmggICAgfCAxICsNCj4gPiAgIDMgZmlsZXMgY2hhbmdlZCwgNCBp
-bnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+ID4gDQo+IA0KPiBIZWxsbyBDaHVuZmVuZywN
-Cj4gd2hhdCBhcmUgYXJlIHRoZSBzaWRlIGVmZmVjdHMgb24gdGhlIFVTQjIgUEhZPyBDYW4geW91
-IHBsZWFzZSBleHBhbmQ/DQpTb3JyeSBmb3IgbGF0ZXIgcmVwbHksIEkgbWlzc2VkIHRoaXMgbWVz
-c2FnZS4NCg0KdGhlIHNpZGUgZWZmZWN0IG9uIHUyIHBoeSBpcyB0aGF0IGl0IHdpbGwgY2F1c2Ug
-dTIgcGh5IHBvd2VyIG9mZiBhbmQNCmNhdXNlIG90aGVyIGlzc3VlcywgZS5nLiBpZiB0aGVyZSBp
-cyBhIGRldmljZSBwbHVnZ2VkIGluIHUyIHBvcnQsIGl0DQp3aWxsIGRpc2Nvbm5lY3QsIG1vcmUg
-b3ZlciBpdCB3aWxsIG5vdCB3b3JrIHVudGlsIHJlYm9vdCBwbGF0Zm9ybS4NCg0KPiANCj4gQWxz
-bywgd291bGRuJ3QgaXQgYmUgcG9zc2libGUgdG8gYWxzbyByZXNldCB0aGUgVVNCMiBQSFkgd2hl
-bg0KPiByZXNldHRpbmcgdGhlIHQtcGh5DQo+IGluIG9yZGVyIHRvIGdldCBpdCBiYWNrIHVwIGFu
-ZCBydW5uaW5nPw0KTm8sIHRoZSB1c2IgZHJpdmVyIGRvbid0IHJlc2V0IG9yIHJlaW5pdCBwaHkg
-YWZ0ZXIgcHJvYmU7DQoNCj4gDQo+IE1vcmVvdmVyLCBhcyBmb3IgdGhlIFVTQjMuMiBoYXJkd2Fy
-ZSBsaW1pdGF0aW9uLi4uIEkgd291bGQgc2F5IHRoYXQNCj4gdGhpcyBpcyBtb3JlDQo+IGxpa2Ug
-c29tZXRoaW5nIHRoYXQgaGFzIHRvIGJlIGFjY291bnRlZCBmb3IgaW4gdGhlIFVTQiBkcml2ZXIs
-DQo+IGluc3RlYWQgb2YgdGhlIFBNDQo+IGRvbWFpbnMgZHJpdmVyLi4uIHVubGVzcyB0aGVyZSdz
-IHNvbWUgcmVhc29uIHRoYXQgc3RvcHMgeW91IGZyb20NCj4gZG9pbmcgdGhhdD8NClVzYiBkcml2
-ZXIgaXRzZWxmIGNhbid0IGhhbmRsZSB0aGlzIGNhc2UuIGJ1dCBwb3dlciBkb21haW4ncyBkcml2
-ZXIgY2FuDQpoYW5kbGUgaXQgZWFzaWx5Lg0KDQo+IA0KPiBUaGFua3MsDQo+IC0gQW5nZWxvDQo=
+On Wed, Nov 24, 2021 at 3:33 AM Heiko St=C3=BCbner <heiko@sntech.de> wrote:
+>
+> Hi Guo,
+>
+> Am Dienstag, 23. November 2021, 02:57:14 CET schrieb guoren@kernel.org:
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > The firmware of riscv (such as opensbi) occupy 2MB(64bit) /
+> > 4MB(32bit) in Linux. It's very wasteful to small memory footprint
+> > soc chip such as Allwinner D1s/F133. The kernel parameter gives a
+> > chance to users to set the proper size of the firmware and get
+> > more than 1.5MB of memory.
+>
+> is this kernel parameter approach a result of the T-Head Ice-SoC
+> currently loading its openSBI from inside the main u-boot via extfs-load,
+> directly before the kernel itself [0] ?
+The patch is not related to that issue. The patch just helps users who
+put opensbi at 0~2MB paddr to save memory.
 
+>
+> Because that approach in general looks not ideal.
+>
+> Normally you want the main u-boot already running with less privileges
+> so firmware like openSBI should've been already loaded before that.
+> Even more true when you're employing methods to protect memory regions
+> from less privileged access.
+>
+> A lot of socs set u-boot as opensbi payload, but for the example the D1
+> mainline approach uses the Allwinner TOC1 image format to load both
+> opensbi and the main uboot into memory from its 1st stage loader.
+>
+>
+> Of course the best way would be to just mimic what a number of
+> arm64 and also riscv socs do and use already existing u-boot utilities.
+>
+> U-Boot can create a FIT image containing both main u-boot, dtb and
+> firmware images that all get loaded from SPL and placed at the correct
+> addresses before having the SPL jump into opensbi and from there
+> into u-boot [1] .
+>
+> And as Anup was writing, reserved-memory should then be the way
+> to go to tell the kernel what regions to omit.
+>
+> And mainline u-boot has already the means to even take the reserved-memor=
+y
+> from the devicetree used by opensbi and copy it to a new devicetree,
+> if the second one is different.
+>
+>
+> Heiko
+>
+>
+> [0] https://github.com/T-head-Semi/u-boot/blob/main/include/configs/ice-c=
+910.h#L46
+> [1] see spl_invoke_opensbi() in common/spl/spl_opensbi.c
+> [2] see riscv_board_reserved_mem_fixup() in arch/riscv/lib/fdt_fixup.c
+>
+> >
+> > Guo Ren (3):
+> >   riscv: Remove 2MB offset in the mm layout
+> >   riscv: Add early_param to decrease firmware region
+> >   riscv: Add riscv.fwsz kernel parameter
+> >
+> >  .../admin-guide/kernel-parameters.txt         |  3 +++
+> >  arch/riscv/include/asm/page.h                 |  8 +++++++
+> >  arch/riscv/kernel/head.S                      | 10 +++-----
+> >  arch/riscv/kernel/vmlinux.lds.S               |  5 ++--
+> >  arch/riscv/mm/init.c                          | 23 ++++++++++++++++---
+> >  5 files changed, 36 insertions(+), 13 deletions(-)
+> >
+> >
+>
+>
+>
+>
+
+
+--=20
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
