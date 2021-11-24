@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC14C45BD60
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:34:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B1845BB10
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242801AbhKXMhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:37:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49174 "EHLO mail.kernel.org"
+        id S243311AbhKXMP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:15:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244185AbhKXMcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:32:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4351F61183;
-        Wed, 24 Nov 2021 12:19:52 +0000 (UTC)
+        id S243331AbhKXMN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:13:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C95661159;
+        Wed, 24 Nov 2021 12:08:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756392;
-        bh=oZhXbpmweQro5ewwkKxk0Yd8mk+wgVBiyc+oC8/xaYg=;
+        s=korg; t=1637755699;
+        bh=W7clbzk2TqdlQG6wymm8tiM+yeZ12j0sOGD7kyLqbWA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tP8aBhVKQPoQquZVzzI3dHqwaPF/oCPxAlwKOEBgJYctC+rs5V/7XQVoXRol2lNp5
-         gsX1ESpb0BLAr8ReZUnlTFT5d/UC00ueCdKCyTesXJtqIf/zgpBkrGrYEP0gfGAd7d
-         PrXyvodTfg+H+hhaL0v5iQMZpiZ+LyrQNRYODEvw=
+        b=M8POxy0txmOeCD3KAuTR9dpQPIOttwpBFt9lVFOu1+JmgcugD1GG+6yUh+ducwmW8
+         7fPWKUdTZlq4bjvVZvIES6PjKi0JEsXAHgvUqgg/rRD7q7PEVHCmvcaxmwtgjVytIX
+         jDsxzkPBZvweqMrt60b8I4ChTabTDpmRj72AqWZw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 4.14 038/251] ath6kl: fix control-message timeout
+        stable@vger.kernel.org, Helge Deller <deller@gmx.de>,
+        Kyle McMartin <kyle@mcmartin.ca>
+Subject: [PATCH 4.9 009/207] parisc: Fix ptrace check on syscall return
 Date:   Wed, 24 Nov 2021 12:54:40 +0100
-Message-Id: <20211124115711.571014878@linuxfoundation.org>
+Message-Id: <20211124115704.255871251@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Helge Deller <deller@gmx.de>
 
-commit a066d28a7e729f808a3e6eff22e70c003091544e upstream.
+commit 8779e05ba8aaffec1829872ef9774a71f44f6580 upstream.
 
-USB control-message timeouts are specified in milliseconds and should
-specifically not vary with CONFIG_HZ.
+The TIF_XXX flags are stored in the flags field in the thread_info
+struct (TI_FLAGS), not in the flags field of the task_struct structure
+(TASK_FLAGS).
 
-Fixes: 241b128b6b69 ("ath6kl: add back beginnings of USB support")
-Cc: stable@vger.kernel.org      # 3.4
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20211025120522.6045-3-johan@kernel.org
+It seems this bug didn't generate any important side-effects, otherwise it
+wouldn't have went unnoticed for 12 years (since v2.6.32).
+
+Signed-off-by: Helge Deller <deller@gmx.de>
+Fixes: ecd3d4bc06e48 ("parisc: stop using task->ptrace for {single,block}step flags")
+Cc: Kyle McMartin <kyle@mcmartin.ca>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/ath/ath6kl/usb.c |    2 +-
+ arch/parisc/kernel/entry.S |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/wireless/ath/ath6kl/usb.c
-+++ b/drivers/net/wireless/ath/ath6kl/usb.c
-@@ -912,7 +912,7 @@ static int ath6kl_usb_submit_ctrl_in(str
- 				 req,
- 				 USB_DIR_IN | USB_TYPE_VENDOR |
- 				 USB_RECIP_DEVICE, value, index, buf,
--				 size, 2 * HZ);
-+				 size, 2000);
+--- a/arch/parisc/kernel/entry.S
++++ b/arch/parisc/kernel/entry.S
+@@ -1849,7 +1849,7 @@ syscall_restore:
+ 	LDREG	TI_TASK-THREAD_SZ_ALGN-FRAME_SIZE(%r30),%r1
  
- 	if (ret < 0) {
- 		ath6kl_warn("Failed to read usb control message: %d\n", ret);
+ 	/* Are we being ptraced? */
+-	ldw	TASK_FLAGS(%r1),%r19
++	LDREG	TI_FLAGS-THREAD_SZ_ALGN-FRAME_SIZE(%r30),%r19
+ 	ldi	_TIF_SYSCALL_TRACE_MASK,%r2
+ 	and,COND(=)	%r19,%r2,%r0
+ 	b,n	syscall_restore_rfi
 
 
