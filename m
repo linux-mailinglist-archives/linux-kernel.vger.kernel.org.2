@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB7D45C255
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:24:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1DB45C679
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:06:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350564AbhKXN10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:27:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45642 "EHLO mail.kernel.org"
+        id S1355130AbhKXOIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:08:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350261AbhKXNZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:25:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA2F8610A7;
-        Wed, 24 Nov 2021 12:49:28 +0000 (UTC)
+        id S1350650AbhKXOEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:04:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 439676333A;
+        Wed, 24 Nov 2021 13:11:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758169;
-        bh=/shuj1JJUYEOLCvHE5CF2Jks4GmenQynGZ8qEF6Oxjw=;
+        s=korg; t=1637759502;
+        bh=bq63Sw2Z8ROOhThbXGprlxY8HUTF1QBWNtKW608PWT4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JOxNRl4uK8Q3ARc5mKuTvgsjwA1x4lTdP96od/oOuMW0ZKJUXu8/WjsZ7W4eFzVrU
-         8uMOe3SpT6IRbkZ6t3O33znidX8DQcR115vyurI71W3AW1HCIP/jY3Kmes/TOnaxt3
-         KTiQ1IopMw/o2If9LqrbrUwxZ6FwVtf+98awdnig=
+        b=jHoyiqsW2qDYM1Ep5oaaM+gokoKdo2HvWzshlyE3I6vQsgXqS0r1xBHzgESrNEr2n
+         E4Cj2+Be+l1X0afkVMw3O/ZGJx8fFKjtlj+d69qaCmR9rZZtDHvaH4v0cRuxCN4pKH
+         xaWcb8Kr3TrzUXbJ2vk8bnI0DnzxoHOq4ZAZA7CE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Baoquan He <bhe@redhat.com>,
-        Philipp Rudo <prudo@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH 5.4 082/100] s390/kexec: fix memory leak of ipl report buffer
+        stable@vger.kernel.org, Baihua Lu <baihua.lu@microsoft.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wei Liu <wei.liu@kernel.org>
+Subject: [PATCH 5.15 231/279] Drivers: hv: balloon: Use VMBUS_RING_SIZE() wrapper for dm_ring_size
 Date:   Wed, 24 Nov 2021 12:58:38 +0100
-Message-Id: <20211124115657.508530353@linuxfoundation.org>
+Message-Id: <20211124115726.722941546@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,85 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Baoquan He <bhe@redhat.com>
+From: Boqun Feng <boqun.feng@gmail.com>
 
-commit 4aa9340584e37debef06fa99b56d064beb723891 upstream.
+commit 8a7eb2d476c6823cd44d8c25a6230a52417d7ef8 upstream.
 
-unreferenced object 0x38000195000 (size 4096):
-  comm "kexec", pid 8548, jiffies 4294953647 (age 32443.270s)
-  hex dump (first 32 bytes):
-    00 00 00 c8 20 00 00 00 00 00 00 c0 02 80 00 00  .... ...........
-    40 40 40 40 40 40 40 40 00 00 00 00 00 00 00 00  @@@@@@@@........
-  backtrace:
-    [<0000000011a2f199>] __vmalloc_node_range+0xc0/0x140
-    [<0000000081fa2752>] vzalloc+0x5a/0x70
-    [<0000000063a4c92d>] ipl_report_finish+0x2c/0x180
-    [<00000000553304da>] kexec_file_add_ipl_report+0xf4/0x150
-    [<00000000862d033f>] kexec_file_add_components+0x124/0x160
-    [<000000000d2717bb>] arch_kexec_kernel_image_load+0x62/0x90
-    [<000000002e0373b6>] kimage_file_alloc_init+0x1aa/0x2e0
-    [<0000000060f2d14f>] __do_sys_kexec_file_load+0x17c/0x2c0
-    [<000000008c86fe5a>] __s390x_sys_kexec_file_load+0x40/0x50
-    [<000000001fdb9dac>] __do_syscall+0x1bc/0x1f0
-    [<000000003ee4258d>] system_call+0x78/0xa0
+Baihua reported an error when boot an ARM64 guest with PAGE_SIZE=64k and
+BALLOON is enabled:
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
-Reviewed-by: Philipp Rudo <prudo@redhat.com>
-Fixes: 99feaa717e55 ("s390/kexec_file: Create ipl report and pass to next kernel")
-Cc: <stable@vger.kernel.org> # v5.2: 20c76e242e70: s390/kexec: fix return code handling
-Cc: <stable@vger.kernel.org> # v5.2
-Link: https://lore.kernel.org/r/20211116033101.GD21646@MiWiFi-R3L-srv
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+	hv_vmbus: registering driver hv_balloon
+	hv_vmbus: probe failed for device 1eccfd72-4b41-45ef-b73a-4a6e44c12924 (-22)
+
+The cause of this is that the ringbuffer size for hv_balloon is not
+adjusted with VMBUS_RING_SIZE(), which makes the size not large enough
+for ringbuffers on guest with PAGE_SIZE=64k. Therefore use
+VMBUS_RING_SIZE() to calculate the ringbuffer size. Note that the old
+size (20 * 1024) counts a 4k header in the total size, while
+VMBUS_RING_SIZE() expects the parameter as the payload size, so use
+16 * 1024.
+
+Cc: <stable@vger.kernel.org> # 5.15.x
+Reported-by: Baihua Lu <baihua.lu@microsoft.com>
+Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+Tested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Link: https://lore.kernel.org/r/20211101150026.736124-1-boqun.feng@gmail.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/include/asm/kexec.h         |    6 ++++++
- arch/s390/kernel/machine_kexec_file.c |   10 ++++++++++
- 2 files changed, 16 insertions(+)
+ drivers/hv/hv_balloon.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/s390/include/asm/kexec.h
-+++ b/arch/s390/include/asm/kexec.h
-@@ -74,6 +74,12 @@ void *kexec_file_add_components(struct k
- int arch_kexec_do_relocs(int r_type, void *loc, unsigned long val,
- 			 unsigned long addr);
+--- a/drivers/hv/hv_balloon.c
++++ b/drivers/hv/hv_balloon.c
+@@ -480,7 +480,7 @@ module_param(pressure_report_delay, uint
+ MODULE_PARM_DESC(pressure_report_delay, "Delay in secs in reporting pressure");
+ static atomic_t trans_id = ATOMIC_INIT(0);
  
-+#define ARCH_HAS_KIMAGE_ARCH
-+
-+struct kimage_arch {
-+	void *ipl_buf;
-+};
-+
- extern const struct kexec_file_ops s390_kexec_image_ops;
- extern const struct kexec_file_ops s390_kexec_elf_ops;
+-static int dm_ring_size = 20 * 1024;
++static int dm_ring_size = VMBUS_RING_SIZE(16 * 1024);
  
---- a/arch/s390/kernel/machine_kexec_file.c
-+++ b/arch/s390/kernel/machine_kexec_file.c
-@@ -12,6 +12,7 @@
- #include <linux/kexec.h>
- #include <linux/module_signature.h>
- #include <linux/verification.h>
-+#include <linux/vmalloc.h>
- #include <asm/boot_data.h>
- #include <asm/ipl.h>
- #include <asm/setup.h>
-@@ -206,6 +207,7 @@ static int kexec_file_add_ipl_report(str
- 		goto out;
- 	buf.bufsz = data->report->size;
- 	buf.memsz = buf.bufsz;
-+	image->arch.ipl_buf = buf.buffer;
- 
- 	data->memsz += buf.memsz;
- 
-@@ -327,3 +329,11 @@ int arch_kexec_kernel_image_probe(struct
- 
- 	return kexec_image_probe_default(image, buf, buf_len);
- }
-+
-+int arch_kimage_file_post_load_cleanup(struct kimage *image)
-+{
-+	vfree(image->arch.ipl_buf);
-+	image->arch.ipl_buf = NULL;
-+
-+	return kexec_image_post_load_cleanup_default(image);
-+}
+ /*
+  * Driver specific state.
 
 
