@@ -2,110 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2080145C862
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 592DC45C863
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:16:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233430AbhKXPT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233652AbhKXPTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:19:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39828 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233512AbhKXPT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 10:19:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230158AbhKXPT0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:19:26 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B88C061714
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:16:16 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id t5so12218938edd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:16:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SRT+e552GYvNrORbzlTEU61qBtjXbKFQpbMpGUU4ymo=;
-        b=YTDuBANHpXFVqUo1qkgF02nMQFYOO2uY4GfbpdQPyIJG+8nSxYWYwqVi2LDqFU/52s
-         RKs1t4HAq9i8BbYgh8dYSA0l6mxF0KI9FpHXumcK9DQ8uxEdEseXNr6zAO6PQ19RzsE9
-         l8/zLRcAHemonR3fp93U4Cj04kU/w+o84rXxjLbECbYox7KIlKFQbC7SRBMNvQT0pw4h
-         LiQcD6UkVzkMBzBW2Po/PuN/RudODyd/8D+z/fzlMkg9VTWntwvdE+sJevVnuT40c/PZ
-         f1uvA5ueXuMvlpS6wAJXs7lHBmyk8ba3tyIUTtyP34NsKA5ax/hQRwtVZVBDL6eAtXnd
-         FB0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SRT+e552GYvNrORbzlTEU61qBtjXbKFQpbMpGUU4ymo=;
-        b=tnRqVRsFeesqKsu4EHm/fIo51pGNmBpS3oUZ76UgHoqeVv1F5B5ke+wxkybayfVQjr
-         DbQLmfR2DfyMqm8KfaIpRkLogJwqERM5m9ooaM++9+46/CBLjGOfZ9ugZxp4wEGEANnn
-         m6V0WsMBm1DuBzEib1laE3edVQNeaelGLOc7JAw8gKPEx2TL98l6YIx0THizNlNdzTVl
-         m53vaiv00eWxDbuAGj5IynXbeq/fAqqE1DKvjTmmr2sdSf7QpNtxZkNCyBKeG7jbMv77
-         ThNM9Mr6wFgBKqotGt41ADe7Wq++mqRGm6gRpikKWmRHFLPBG01hkBuE9oFpv81ETMzg
-         WDPg==
-X-Gm-Message-State: AOAM531sky+QYv8/0zZwpv6a42xbbUNW7IKv1wW12O+vlwswT6lu/kQy
-        9XPQGLXvmEVhCYa7+/e1Bx5GDLktkcRNKWcOovWSNA==
-X-Google-Smtp-Source: ABdhPJynSITOhrxhbtnxTLdM1rUgW04j724qNIPfv0C85Q1r16XLCAIbvxp/CErtyvSxfVdx6MnY1VnbxCibHichNw0=
-X-Received: by 2002:a17:906:c302:: with SMTP id s2mr21013814ejz.499.1637766973849;
- Wed, 24 Nov 2021 07:16:13 -0800 (PST)
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1BCB660F45;
+        Wed, 24 Nov 2021 15:16:18 +0000 (UTC)
+Date:   Wed, 24 Nov 2021 10:16:16 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Chen Jun <chenjun102@huawei.com>
+Cc:     <linux-kernel@vger.kernel.org>, <mingo@redhat.com>,
+        <rui.xiang@huawei.com>
+Subject: Re: [PATCH] trace: Fix a kmemleak noise
+Message-ID: <20211124101616.618ee8f2@gandalf.local.home>
+In-Reply-To: <20211124140801.87121-1-chenjun102@huawei.com>
+References: <20211124140801.87121-1-chenjun102@huawei.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20211124115702.361983534@linuxfoundation.org>
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 24 Nov 2021 20:46:00 +0530
-Message-ID: <CA+G9fYsmeKPRicvsjwT3gfQurf-k=15vm+kNCCKfOOoyAQE1oQ@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/154] 5.10.82-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <treding@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 at 18:21, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.82 release.
-> There are 154 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.82-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Wed, 24 Nov 2021 14:08:01 +0000
+Chen Jun <chenjun102@huawei.com> wrote:
 
-Regression found on arm gcc-11 builds
-As I have already reported,
-https://lore.kernel.org/stable/CA+G9fYskrxZvmrjhO32Q9r7mb1AtKdLBm4OvDNvt5v4PTgm4pA@mail.gmail.com/
+> The reason is elts->pages[i] is alloced by get_zeroed_page.
+> and kmemleak will not scan the area alloced by get_zeroed_page.
+> The address stored in elts->pages will be regarded as leaked.
 
-drivers/cpuidle/cpuidle-tegra.c: In function 'tegra_cpuidle_probe':
-drivers/cpuidle/cpuidle-tegra.c:349:38: error:
-'TEGRA_SUSPEND_NOT_READY' undeclared (first use in this function); did
-you mean 'TEGRA_SUSPEND_NONE'?
-  349 |  if (tegra_pmc_get_suspend_mode() == TEGRA_SUSPEND_NOT_READY)
-      |                                      ^~~~~~~~~~~~~~~~~~~~~~~
-      |                                      TEGRA_SUSPEND_NONE
+Why doesn't kmemleak scan get_zeroed_page? And if that's the case, how does
+all the other locations in the kernel that call get_zeroed_page handle this?
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Due to the following patch,
-
-cpuidle: tegra: Check whether PMC is ready
-[ Upstream commit bdb1ffdad3b73e4d0538098fc02e2ea87a6b27cd ]
-
-
---
-Linaro LKFT
-https://lkft.linaro.org
+-- Steve
