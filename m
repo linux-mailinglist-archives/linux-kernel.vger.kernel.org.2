@@ -2,89 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0111645CAAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:09:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0058845CAAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:10:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243736AbhKXRMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 12:12:10 -0500
-Received: from so254-9.mailgun.net ([198.61.254.9]:18854 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242709AbhKXRMD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 12:12:03 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1637773733; h=Date: Message-ID: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=yxb1QCPPnimeUoylr8y1OsQSAvXk+mRQpEio9CtKgTA=;
- b=oYlribzSA+XnL0vHBhlx/H2lUz1WcxICm0kpZ9U26p3JYsAR/626swTOocqJB0Ke3sXRSJuC
- mEWX2AfyNqf137MfM81XQXFbdwJGUyuaz5Eu73Hq156kYFR5O1F066WAbkfwKqc738wV9c1S
- uB1hBbszzhZcHHnVHiWnFOdi5ig=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 619e71a54fca5da46d3ff630 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Nov 2021 17:08:53
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5B497C4360D; Wed, 24 Nov 2021 17:08:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9483CC43616;
-        Wed, 24 Nov 2021 17:08:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 9483CC43616
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S243492AbhKXRNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 12:13:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236272AbhKXRNl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 12:13:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5590260F5B;
+        Wed, 24 Nov 2021 17:10:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637773830;
+        bh=/njBpvjHQON74J2FR4Ytl+O1BNa+DFPAn2wArZRfQB4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qlM3m0X/v3bSZrp1LPdjGscz7sQxH6/p6J+5hTbXWuKV7elZ5kybYO7c8ZpX7k99l
+         fa/w8o2j28IkFL1vnBMa/UYh/zmXOSxzM5jQ1AUI9peBfITJHuhrqeU+Me+YVWDnha
+         O7sCh22823yP+/ts+l4rrrd20wp9G4UR3a2lTY6Nl1AXUXSX/GZTdzgl51QylQ0VfZ
+         9YM693BwDCLj9QF7JH3x2O/jJkiDdRUGpENxhi+x3Chvk9vcX80pbIQo3ohGBo1+u9
+         TYMt07l7Irm2MQjwa+uqsXU09YnbQ9Lk459oXruCfUDT0RISUQWufAEB9cUOyNrida
+         33NMGFlOXtRzg==
+Date:   Wed, 24 Nov 2021 17:10:25 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     madvenka@linux.microsoft.com
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
+        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v11 2/5] arm64: Rename unwinder functions
+Message-ID: <YZ5yAanQrL17sYeN@sirena.org.uk>
+References: <8b861784d85a21a9bf08598938c11aff1b1249b9>
+ <20211123193723.12112-1-madvenka@linux.microsoft.com>
+ <20211123193723.12112-3-madvenka@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] ath11k: Use memset_startat() for clearing queue
- descriptors
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20211118202416.1286046-1-keescook@chromium.org>
-References: <20211118202416.1286046-1-keescook@chromium.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-hardening@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <163777372886.11557.5551795598856429949.kvalo@codeaurora.org>
-Date:   Wed, 24 Nov 2021 17:08:53 +0000 (UTC)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="oGibfVigX0tUyvnS"
+Content-Disposition: inline
+In-Reply-To: <20211123193723.12112-3-madvenka@linux.microsoft.com>
+X-Cookie: (null cookie
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> wrote:
 
-> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> field bounds checking for memset(), avoid intentionally writing across
-> neighboring fields.
-> 
-> Use memset_startat() so memset() doesn't get confused about writing
-> beyond the destination member that is intended to be the starting point
-> of zeroing through the end of the struct. Additionally split up a later
-> field-spanning memset() so that memset() can reason about the size.
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+--oGibfVigX0tUyvnS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Patch applied to ath-next branch of ath.git, thanks.
+On Tue, Nov 23, 2021 at 01:37:20PM -0600, madvenka@linux.microsoft.com wrot=
+e:
+> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+>=20
+> Rename unwinder functions for consistency and better naming.
+>=20
+> 	- Rename start_backtrace() to unwind_start().
+> 	- Rename unwind_frame() to unwind_next().
+> 	- Rename walk_stackframe() to unwind().
 
-d5549e9a6b86 ath11k: Use memset_startat() for clearing queue descriptors
+Reviewed-by: Mark Brown <broonie@kernel.org>
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20211118202416.1286046-1-keescook@chromium.org/
+--oGibfVigX0tUyvnS
+Content-Type: application/pgp-signature; name="signature.asc"
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGecgAACgkQJNaLcl1U
+h9CF8wf/eWTybYXBAR2qCs8GfVWNYuIkbhBhpiCmUkCOXJ/DRNfCHH30L5kuT+yO
+8yDfMuB784chIi6YXanfsZ4jS8ER8VgXFq9EcOAMfqrCkbjQIPMo7P++qjQSymlD
+491uNAWVeFP2PqZDyyvPpgY/OXjHUo/YM4bBuoG7G3weqfoWW6Rs1AH9ojJkXrmv
+WTDIImLQCAbM6a/l19Gi2iHVwbCcfEe5MxP5znJCWnHSIFJz3bIe7C4RCTJ6vnKj
+87pNdKmS8gDw25ryoILXDSM0Ec+6COBuU9YJmEA5C/AWtNQN4PL2nkrTJm7CgcYD
+ubGb1heis2TwORnykJHajwrV17/iKg==
+=lPKV
+-----END PGP SIGNATURE-----
+
+--oGibfVigX0tUyvnS--
