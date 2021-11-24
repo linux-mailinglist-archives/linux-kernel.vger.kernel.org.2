@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F9545B27A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 04:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB43345B286
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 04:16:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234789AbhKXDO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 22:14:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39870 "EHLO
+        id S240798AbhKXDUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 22:20:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233913AbhKXDOz (ORCPT
+        with ESMTP id S230517AbhKXDUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 22:14:55 -0500
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E32C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 19:11:46 -0800 (PST)
-Received: by mail-oi1-x22b.google.com with SMTP id o4so2305280oia.10
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 19:11:46 -0800 (PST)
+        Tue, 23 Nov 2021 22:20:03 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71E1C061574;
+        Tue, 23 Nov 2021 19:16:54 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id m25so1289914qtq.13;
+        Tue, 23 Nov 2021 19:16:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fN/Dl6TxJyEsFt6u9NU+sGC5XUURVMgjTKQkCfW2T3U=;
-        b=uH7Wf/5iE4N6KcT0ASOtp1c43wElMx55biNOwUI52oUdDHLao+sKCDGtIRbA29w/9m
-         OKlPXBfisQZtai87FrCo+E0p56YO55MkA1lUvyZWqn3kXehEZicvMHhJatwBDWEJoagH
-         F9oACMqvZH9nppWw939vd42XcQ2s/Fjqts1IdI1Wafa6sL7/omMrBRAimM8tEtADuCMz
-         pV9qC19MeTYDTdJaB1MyCmhSKZjYlIVCEupBw+XT7ec4RRlyrVfGFsNzJzC/ImeAsR5R
-         JjoM6Ul4YHLwF2vDKrdTHuPZccQTau+hutNr+eod+x7xE9m88TGgMTd1shzWiDJh+7tR
-         RqgQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cTp9yZLPAioGvr+AUfhjJxCDu9lVAek1x4B5RUtmqPw=;
+        b=idantvmKEY5mzlBZUu5hJipAc4fwB3Qjt+8W4rDrxORm6ix8cGAHDyOCnRvkTen6FD
+         C36Y9N/XjU1ZHW5S9KzIS/u77uw/FxOnC3JDCNgCADePTvkrv7v9ywTtZh7EIl9dXzpk
+         R2Ry265R5byS71+65pJ9b0XbT30eHZW52jcY+OrJBfFmxyzoPrIbtlElY/vbfHYyQ8ep
+         Iey87eFLOIzs9TMDkXk8NjgdHBmivB4zWevpO8o5GTa5w+bC6D4fcyIqK8m6UENWteOC
+         nSpV0M6XCEyS36HGEjF5N2tij+rHqTyuS208oxOJWpuA/AXHq9omCoILaJS7wAtKvtYr
+         pTXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fN/Dl6TxJyEsFt6u9NU+sGC5XUURVMgjTKQkCfW2T3U=;
-        b=m41Xwvx422yMLWP5oCXQo+frEg4mXcwMgNNfwnoHKPlSWm/rRRTM8HBnJIBrOSEhhN
-         O7IH+LyZ28afp96sxv6T7LGlbG3amimnb1FdRiPlh7nvJeQ6O6uk+knywz4+DtAQ1n/7
-         gTJTdH1xnxxooLfccEyuNFnTpvkVSOdkjTLpre4lJdmHDYpa8xvmHEHnoEVKeiC+MR1o
-         TEDaKV3ocMHdaYG17reIijj4ElXhJzBZx61BfRQWCY+6E20naDx6nYvIp2z2fHjNfRKT
-         bFQTpg+bfoEBhgKGXUgI0/8THymcP8JrU86pqJAvwvNTbu+sHSw/5yuPfhO3h7e63uT9
-         CoqA==
-X-Gm-Message-State: AOAM532P5cPNpkjxYfKfET7lC1EbngAuS0V+RmeFj70pSVGujsAT1lPh
-        geJ/LmvEvM5biHZNUBiGhD5mZg==
-X-Google-Smtp-Source: ABdhPJwIQ//gQ7KWi26qOY7SvR6fhEiF5FLmJ878n5ss82BwHOI30ESrg+s5mW/82/sJ+68HVlTQqg==
-X-Received: by 2002:aca:2b09:: with SMTP id i9mr2411519oik.14.1637723505553;
-        Tue, 23 Nov 2021 19:11:45 -0800 (PST)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id n23sm2789913oig.4.2021.11.23.19.11.44
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cTp9yZLPAioGvr+AUfhjJxCDu9lVAek1x4B5RUtmqPw=;
+        b=7GWRydwCJV6TQaIFID41oDgo4Q427fa9OLBmHQjF8twL9smJj/W/hjE3UWfC8uHUdP
+         4q7FY0rvPfwoytZ9AkCj3z7E14VRk0EgX1Sw1/yW7PiETJWm5mFdR8meoX5ux4XBguaK
+         G8B75rrhL9lTAttm27dih+PVgVy7MGWpOGCZc3zTwg7p1lBgJbFDXzoRKH91KVxGjaBq
+         AF+HR8X79qAc1Q8HkdpgzL2NLUSZIskwneF7hiUFiIVl3464sf1ZXYkyPKKBgz04V/pR
+         jlwTqil9lFVDZHOdB+uC0vsip1weBD177MleUH59ppXQni/9cpp2HHBQeqXLJJ0/bvU4
+         PSnw==
+X-Gm-Message-State: AOAM530xUxpW+DIFzm4UuWMP9wzfy2Z5mLoagU7vUwXMod+/seAIgg6G
+        U+NITag+ruFf9sogf9dzmv4=
+X-Google-Smtp-Source: ABdhPJxI27GYfxwVe5N2/QtmsxifdzSx3qi4BT9bBjRKClUfabcC6peDTBh825e5skl+CK7EW76DFw==
+X-Received: by 2002:a05:622a:144f:: with SMTP id v15mr2993881qtx.340.1637723814121;
+        Tue, 23 Nov 2021 19:16:54 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id bj30sm7510823qkb.58.2021.11.23.19.16.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 19:11:45 -0800 (PST)
-Date:   Tue, 23 Nov 2021 19:13:27 -0800
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Dominik Kobinski <dominikkobinski314@gmail.com>
-Cc:     agross@kernel.org, linus.walleij@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
-Subject: Re: [PATCH 1/4] pinctrl: qcom: spmi-gpio: Add pm8226 compatibility
-Message-ID: <YZ2t19wBLvuUVKfk@ripper>
-References: <20211123174127.2261-1-dominikkobinski314@gmail.com>
+        Tue, 23 Nov 2021 19:16:53 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: chi.minghao@zte.com.cn
+To:     akpm@linux-foundation.org
+Cc:     shuah@kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        chiminghao <chi.minghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] selftests:vm: use swap() to make code cleaner
+Date:   Wed, 24 Nov 2021 03:16:32 +0000
+Message-Id: <20211124031632.35317-1-chi.minghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211123174127.2261-1-dominikkobinski314@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 23 Nov 09:41 PST 2021, Dominik Kobinski wrote:
+From: chiminghao <chi.minghao@zte.com.cn>
 
-> Add support for pm8226 SPMI GPIOs. The PMIC features
-> 8 GPIOs, with no holes inbetween.
-> 
+Fix the following coccicheck REVIEW:
+./tools/testing/selftests/vm/userfaultfd.c:1531:21-22:use swap() to make
+code cleaner
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: chiminghao <chi.minghao@zte.com.cn>
+---
+ tools/testing/selftests/vm/userfaultfd.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-Regards,
-Bjorn
+diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
+index 8a09057d2f22..dedbe9c9287e 100644
+--- a/tools/testing/selftests/vm/userfaultfd.c
++++ b/tools/testing/selftests/vm/userfaultfd.c
+@@ -1413,7 +1413,6 @@ static void userfaultfd_pagemap_test(unsigned int test_pgsize)
+ static int userfaultfd_stress(void)
+ {
+ 	void *area;
+-	char *tmp_area;
+ 	unsigned long nr;
+ 	struct uffdio_register uffdio_register;
+ 	struct uffd_stats uffd_stats[nr_cpus];
+@@ -1524,13 +1523,9 @@ static int userfaultfd_stress(void)
+ 					    count_verify[nr], nr);
+ 
+ 		/* prepare next bounce */
+-		tmp_area = area_src;
+-		area_src = area_dst;
+-		area_dst = tmp_area;
++		swap(area_src, area_dst);
+ 
+-		tmp_area = area_src_alias;
+-		area_src_alias = area_dst_alias;
+-		area_dst_alias = tmp_area;
++		swap(area_src_alias, area_dst_alias);
+ 
+ 		uffd_stats_report(uffd_stats, nr_cpus);
+ 	}
+-- 
+2.25.1
 
-> Suggested-by: Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
-> Signed-off-by: Dominik Kobinski <dominikkobinski314@gmail.com>
-> ---
->  drivers/pinctrl/qcom/pinctrl-spmi-gpio.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-> index 5283d5e9e8bc..0f0102f38cbb 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-> @@ -1159,6 +1159,7 @@ static const struct of_device_id pmic_gpio_of_match[] = {
->  	/* pm8150l has 12 GPIOs with holes on 7 */
->  	{ .compatible = "qcom,pm8150l-gpio", .data = (void *) 12 },
->  	{ .compatible = "qcom,pmc8180c-gpio", .data = (void *) 12 },
-> +	{ .compatible = "qcom,pm8226-gpio", .data = (void *) 8 },
->  	{ .compatible = "qcom,pm8350-gpio", .data = (void *) 10 },
->  	{ .compatible = "qcom,pm8350b-gpio", .data = (void *) 8 },
->  	{ .compatible = "qcom,pm8350c-gpio", .data = (void *) 9 },
-> -- 
-> 2.34.0
-> 
+
