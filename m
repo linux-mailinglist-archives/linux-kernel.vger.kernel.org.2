@@ -2,135 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD73145C908
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D7A45C909
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:43:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242031AbhKXPqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:46:06 -0500
-Received: from mga05.intel.com ([192.55.52.43]:52062 "EHLO mga05.intel.com"
+        id S1345179AbhKXPqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:46:08 -0500
+Received: from foss.arm.com ([217.140.110.172]:40206 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241554AbhKXPqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:46:05 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="321534344"
-X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
-   d="scan'208";a="321534344"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 07:42:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
-   d="scan'208";a="607221283"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 24 Nov 2021 07:42:53 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mpuQ9-0004zP-3g; Wed, 24 Nov 2021 15:42:53 +0000
-Date:   Wed, 24 Nov 2021 23:42:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: fs/proc/vmcore.c:161:34: sparse: sparse: incorrect type in argument
- 1 (different address spaces)
-Message-ID: <202111242331.x19Qywph-lkp@intel.com>
+        id S1344869AbhKXPqH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 10:46:07 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6E87EED1;
+        Wed, 24 Nov 2021 07:42:57 -0800 (PST)
+Received: from localhost.localdomain (unknown [10.57.49.75])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3CC8B3F73B;
+        Wed, 24 Nov 2021 07:42:56 -0800 (PST)
+From:   Vincent Donnefort <vincent.donnefort@arm.com>
+To:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org
+Cc:     linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
+        dietmar.eggemann@arm.com, valentin.schneider@arm.com,
+        Vincent Donnefort <vincent.donnefort@arm.com>
+Subject: [PATCH] sched/fair: Fix detection of per-CPU kthreads waking a task
+Date:   Wed, 24 Nov 2021 15:42:39 +0000
+Message-Id: <20211124154239.3191366-1-vincent.donnefort@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5d9f4cf36721aba199975a9be7863a3ff5cd4b59
-commit: c1e63117711977cc4295b2ce73de29dd17066c82 proc/vmcore: fix clearing user buffer by properly using clear_user()
-date:   4 days ago
-config: ia64-allyesconfig (https://download.01.org/0day-ci/archive/20211124/202111242331.x19Qywph-lkp@intel.com/config)
-compiler: ia64-linux-gcc (GCC) 11.2.0
-reproduce:
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # apt-get install sparse
-        # sparse version: v0.6.4-dirty
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c1e63117711977cc4295b2ce73de29dd17066c82
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout c1e63117711977cc4295b2ce73de29dd17066c82
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=ia64 
+select_idle_sibling() will return prev_cpu for the case where the task is
+woken up by a per-CPU kthread. However, the idle task has been recently
+modified and is now identified by is_per_cpu_kthread(), breaking the
+behaviour described above. Using !is_idle_task() ensures we do not
+spuriously trigger that select_idle_sibling() exit path.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 00b89fe0197f ("sched: Make the idle task quack like a per-CPU kthread")
+Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
 
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 945d987246c5..8bf95b0e368d 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6399,6 +6399,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ 	 * pattern is IO completions.
+ 	 */
+ 	if (is_per_cpu_kthread(current) &&
++	    !is_idle_task(current) &&
+ 	    prev == smp_processor_id() &&
+ 	    this_rq()->nr_running <= 1) {
+ 		return prev;
+-- 
+2.25.1
 
-sparse warnings: (new ones prefixed by >>)
->> fs/proc/vmcore.c:161:34: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __user *p @@     got char *buf @@
-   fs/proc/vmcore.c:161:34: sparse:     expected void const [noderef] __user *p
-   fs/proc/vmcore.c:161:34: sparse:     got char *buf
->> fs/proc/vmcore.c:161:34: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __user * @@     got char *buf @@
-   fs/proc/vmcore.c:161:34: sparse:     expected void [noderef] __user *
-   fs/proc/vmcore.c:161:34: sparse:     got char *buf
-
-vim +161 fs/proc/vmcore.c
-
-   133	
-   134	/* Reads a page from the oldmem device from given offset. */
-   135	ssize_t read_from_oldmem(char *buf, size_t count,
-   136				 u64 *ppos, int userbuf,
-   137				 bool encrypted)
-   138	{
-   139		unsigned long pfn, offset;
-   140		size_t nr_bytes;
-   141		ssize_t read = 0, tmp;
-   142	
-   143		if (!count)
-   144			return 0;
-   145	
-   146		offset = (unsigned long)(*ppos % PAGE_SIZE);
-   147		pfn = (unsigned long)(*ppos / PAGE_SIZE);
-   148	
-   149		down_read(&vmcore_cb_rwsem);
-   150		do {
-   151			if (count > (PAGE_SIZE - offset))
-   152				nr_bytes = PAGE_SIZE - offset;
-   153			else
-   154				nr_bytes = count;
-   155	
-   156			/* If pfn is not ram, return zeros for sparse dump files */
-   157			if (!pfn_is_ram(pfn)) {
-   158				tmp = 0;
-   159				if (!userbuf)
-   160					memset(buf, 0, nr_bytes);
- > 161				else if (clear_user(buf, nr_bytes))
-   162					tmp = -EFAULT;
-   163			} else {
-   164				if (encrypted)
-   165					tmp = copy_oldmem_page_encrypted(pfn, buf,
-   166									 nr_bytes,
-   167									 offset,
-   168									 userbuf);
-   169				else
-   170					tmp = copy_oldmem_page(pfn, buf, nr_bytes,
-   171							       offset, userbuf);
-   172			}
-   173			if (tmp < 0) {
-   174				up_read(&vmcore_cb_rwsem);
-   175				return tmp;
-   176			}
-   177	
-   178			*ppos += nr_bytes;
-   179			count -= nr_bytes;
-   180			buf += nr_bytes;
-   181			read += nr_bytes;
-   182			++pfn;
-   183			offset = 0;
-   184		} while (count);
-   185	
-   186		up_read(&vmcore_cb_rwsem);
-   187		return read;
-   188	}
-   189	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
