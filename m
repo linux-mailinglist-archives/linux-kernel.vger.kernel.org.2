@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073C945BDBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:38:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DAB945BDE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:39:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344642AbhKXMkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:40:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40402 "EHLO mail.kernel.org"
+        id S234774AbhKXMmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:42:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242823AbhKXMg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:36:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6D2B611C4;
-        Wed, 24 Nov 2021 12:22:20 +0000 (UTC)
+        id S1343798AbhKXMiZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:38:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4813F61100;
+        Wed, 24 Nov 2021 12:22:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756541;
-        bh=uAh8D7HSVUN4rFXA/roKaYfVLyeStFPOWFynj1PVR+4=;
+        s=korg; t=1637756574;
+        bh=mYGN1jchXqhP2XlrV8PgHBb3nJFQbw9yzoF3deh2WXc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v9egRydtIuvgr2wEOC4TE/POoInyX+uUDZpKKMYFnQR32aDMX35g1xfOdGyW3I31f
-         ACePttT6Lpr16REAVLQv/8lAsmiI6SbGEMJZvz5WlHe/GiggFtD/KzBEskXEFsU0U3
-         tJ75N/I+kAR0QUZjCwtR7RKOe8L3e2vgfXZklMPY=
+        b=FPLI/hu/vtFUzNoYqz9pZl9fdKgJAJUK2n+eiyb80SsfdgSFE8dTtW/gy29NSbHPP
+         0Sdz3ijrhXfLsOuTlFyviy9RexmVqM309GhRLKjkwDMaqkcVLRpxl9ymaHa57BiVaI
+         zunf+0czE0CVp8CqI/gDvez7nB/0qDGkbXxa2F30=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Helge Deller <deller@gmx.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 104/251] task_stack: Fix end_of_stack() for architectures with upwards-growing stack
-Date:   Wed, 24 Nov 2021 12:55:46 +0100
-Message-Id: <20211124115713.860959194@linuxfoundation.org>
+        stable@vger.kernel.org, Sven Schnelle <svens@stackframe.org>,
+        Helge Deller <deller@gmx.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 105/251] parisc/kgdb: add kgdb_roundup() to make kgdb work with idle polling
+Date:   Wed, 24 Nov 2021 12:55:47 +0100
+Message-Id: <20211124115713.898522913@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
 References: <20211124115710.214900256@linuxfoundation.org>
@@ -39,41 +39,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Helge Deller <deller@gmx.de>
+From: Sven Schnelle <svens@stackframe.org>
 
-[ Upstream commit 9cc2fa4f4a92ccc6760d764e7341be46ee8aaaa1 ]
+[ Upstream commit 66e29fcda1824f0427966fbee2bd2c85bf362c82 ]
 
-The function end_of_stack() returns a pointer to the last entry of a
-stack. For architectures like parisc where the stack grows upwards
-return the pointer to the highest address in the stack.
+With idle polling, IPIs are not sent when a CPU idle, but queued
+and run later from do_idle(). The default kgdb_call_nmi_hook()
+implementation gets the pointer to struct pt_regs from get_irq_reqs(),
+which doesn't work in that case because it was not called from the
+IPI interrupt handler. Fix it by defining our own kgdb_roundup()
+function which sents an IPI_ENTER_KGDB. When that IPI is received
+on the target CPU kgdb_nmicallback() is called.
 
-Without this change I faced a crash on parisc, because the stackleak
-functionality wrote STACKLEAK_POISON to the lowest address and thus
-overwrote the first 4 bytes of the task_struct which included the
-TIF_FLAGS.
-
+Signed-off-by: Sven Schnelle <svens@stackframe.org>
 Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/sched/task_stack.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/parisc/kernel/smp.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/sched/task_stack.h b/include/linux/sched/task_stack.h
-index cb4828aaa34fd..3461beb89b040 100644
---- a/include/linux/sched/task_stack.h
-+++ b/include/linux/sched/task_stack.h
-@@ -25,7 +25,11 @@ static inline void *task_stack_page(const struct task_struct *task)
+diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
+index ab4d5580bb02b..45e3aadcecd2f 100644
+--- a/arch/parisc/kernel/smp.c
++++ b/arch/parisc/kernel/smp.c
+@@ -32,6 +32,7 @@
+ #include <linux/bitops.h>
+ #include <linux/ftrace.h>
+ #include <linux/cpu.h>
++#include <linux/kgdb.h>
  
- static inline unsigned long *end_of_stack(const struct task_struct *task)
- {
-+#ifdef CONFIG_STACK_GROWSUP
-+	return (unsigned long *)((unsigned long)task->stack + THREAD_SIZE) - 1;
-+#else
- 	return task->stack;
+ #include <linux/atomic.h>
+ #include <asm/current.h>
+@@ -74,7 +75,10 @@ enum ipi_message_type {
+ 	IPI_CALL_FUNC,
+ 	IPI_CPU_START,
+ 	IPI_CPU_STOP,
+-	IPI_CPU_TEST
++	IPI_CPU_TEST,
++#ifdef CONFIG_KGDB
++	IPI_ENTER_KGDB,
 +#endif
+ };
+ 
+ 
+@@ -170,7 +174,12 @@ ipi_interrupt(int irq, void *dev_id)
+ 			case IPI_CPU_TEST:
+ 				smp_debug(100, KERN_DEBUG "CPU%d is alive!\n", this_cpu);
+ 				break;
+-
++#ifdef CONFIG_KGDB
++			case IPI_ENTER_KGDB:
++				smp_debug(100, KERN_DEBUG "CPU%d ENTER_KGDB\n", this_cpu);
++				kgdb_nmicallback(raw_smp_processor_id(), get_irq_regs());
++				break;
++#endif
+ 			default:
+ 				printk(KERN_CRIT "Unknown IPI num on CPU%d: %lu\n",
+ 					this_cpu, which);
+@@ -226,6 +235,12 @@ send_IPI_allbutself(enum ipi_message_type op)
+ 	}
  }
  
- #elif !defined(__HAVE_THREAD_FUNCTIONS)
++#ifdef CONFIG_KGDB
++void kgdb_roundup_cpus(void)
++{
++	send_IPI_allbutself(IPI_ENTER_KGDB);
++}
++#endif
+ 
+ inline void 
+ smp_send_stop(void)	{ send_IPI_allbutself(IPI_CPU_STOP); }
 -- 
 2.33.0
 
