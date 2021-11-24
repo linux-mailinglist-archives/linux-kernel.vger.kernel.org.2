@@ -2,92 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AF245C85E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:15:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B501145C896
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:25:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233009AbhKXPSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:18:43 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:57104 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230158AbhKXPSl (ORCPT
+        id S235120AbhKXP3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:29:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229866AbhKXP3D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:18:41 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AO8rHXf003816;
-        Wed, 24 Nov 2021 10:14:58 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3chj9csr87-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Nov 2021 10:14:58 -0500
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 1AOFEvV9004733
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 24 Nov 2021 10:14:57 -0500
-Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
- ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
- Wed, 24 Nov 2021 10:14:56 -0500
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
- ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
- Wed, 24 Nov 2021 10:14:56 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.858.5 via Frontend Transport;
- Wed, 24 Nov 2021 10:14:56 -0500
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 1AOFEqcE000856;
-        Wed, 24 Nov 2021 10:14:53 -0500
-From:   <alexandru.tachici@analog.com>
-To:     <o.rempel@pengutronix.de>
-CC:     <alexandru.tachici@analog.com>, <andrew@lunn.ch>,
-        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
-        <hkallweit1@gmail.com>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux@armlinux.org.uk>,
-        <netdev@vger.kernel.org>
-Subject: Re: [PATCH v3 3/8] net: phy: Add BaseT1 auto-negotiation registers
-Date:   Wed, 24 Nov 2021 17:24:53 +0200
-Message-ID: <20211124152453.21123-1-alexandru.tachici@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211012071438.GB938@pengutronix.de>
-References: <20211012071438.GB938@pengutronix.de>
+        Wed, 24 Nov 2021 10:29:03 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F0EC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:25:54 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id f186so8365471ybg.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 07:25:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HmxFfSOiSfzWWbUMcFSvrEqVuHmnJJvWCAjgr14F02c=;
+        b=ssPhpk67G6nEvM7D4xW8C7cwz/8zadU0FAkgMsMLTZ1QKGlYOZxvPd5BCp6VLUayF+
+         hMvfbFgTxXVct98zlIsSCPbNNT8qlihuw7u5qtV2wlQ03s1cSTbjNc0eeYyL6NCeDxAe
+         3m6rxk4oN6tgjqgGQakjWYaY0jMDk7FZn02y5DwWUoFQGzXSwUf6YtQd3KVu3Lr+fb2x
+         +rhefgexUK9HSsOS+yr+Hfhw9UC5FDJVCtiNYHJPBEsVbAd3a9qWV9T3aFFYUQs1HRHv
+         G4Uuf2eg4H7HcMGShVoV0JggV93Ii7txPN+JTzN4tDJo5hFC3h9thcQ5Acb/Ry9HAjeA
+         6NAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HmxFfSOiSfzWWbUMcFSvrEqVuHmnJJvWCAjgr14F02c=;
+        b=pnUI/Oe5NBdzrq8EC7qD9G+Y59WQFetdyWywAeKu8PHKuXQKErUO5Ayd1IB+2JAfEn
+         2F63VWIHzKXoBkWqPuoIYJ+nC0xqjr+ZUrqrEaNqkMrHv1c7hgbtM1uv6zx8omZfsP0j
+         a7+U4q+iFXBe3kCFbhleW8pB3OLfxeFM/fw+jCcj7MQO8g/Ul7YiGdpsJ0KjSK3N5maJ
+         RI5noRAh4LMjBRwbM4XbAdXehJtZM9DH6azxOwzpHOE6RELJUhmSbVp9VlO0L4jfxmJ5
+         WdUbYlT/VXEQ1C6kG0LArxiuQv0dFyun4MOTTFOuQ01UZYkzruzCCJoy2wrufgPxIOuH
+         q9RQ==
+X-Gm-Message-State: AOAM533ltCRr1joaWh9qQiUE6ueXW9FEq7AcxTiGCF2cdmQFrgz91QSj
+        j/8C2XwSPKVTLzcCVbbbtyA0OcDCIlEejwA6piR/cg==
+X-Google-Smtp-Source: ABdhPJyflYv1FyB+vVcXr/eG1/FUusHEXGFu/rw4qq6OeGStWb7PGHzJ6cTWXseh+m5ClqnqSNqMZamlGQ4YVx6kdRM=
+X-Received: by 2002:a25:d4d5:: with SMTP id m204mr19201030ybf.418.1637767553224;
+ Wed, 24 Nov 2021 07:25:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-ORIG-GUID: F7nQfJ2zPz8HfNaeNym8A094BGhRZ1mf
-X-Proofpoint-GUID: F7nQfJ2zPz8HfNaeNym8A094BGhRZ1mf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-24_04,2021-11-24_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
- spamscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0 phishscore=0
- mlxlogscore=276 adultscore=0 mlxscore=0 impostorscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111240085
+References: <20211116215715.645231-1-surenb@google.com> <YZzqX0PjxNmhJSvm@casper.infradead.org>
+ <CAJuCfpE1zdAL8t2Cnhjar48Xda2GBNTX3BR5X9p_LM2OTiGsJw@mail.gmail.com> <YZ4uE/ySv4y4gdJ4@dhcp22.suse.cz>
+In-Reply-To: <YZ4uE/ySv4y4gdJ4@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 24 Nov 2021 07:25:42 -0800
+Message-ID: <CAJuCfpHOTiKNgsGQJR=_6bx=p_WuhwCEQhFe8K60JCA7muYRYQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm: protect free_pgtables with mmap_lock write lock
+ in exit_mmap
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, akpm@linux-foundation.org,
+        rientjes@google.com, hannes@cmpxchg.org, guro@fb.com,
+        riel@surriel.com, minchan@kernel.org, kirill@shutemov.name,
+        aarcange@redhat.com, christian@brauner.io, hch@infradead.org,
+        oleg@redhat.com, david@redhat.com, jannh@google.com,
+        shakeelb@google.com, luto@kernel.org, christian.brauner@ubuntu.com,
+        fweimer@redhat.com, jengelh@inai.de, timmurray@google.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Hm.. MDIO_AN_T1_ADV_M_MST is T4 of Link codeword Base Page. The spec says:
-> "Transmitted Nonce Field (T[4:0]) is a 5-bit wide field whose lower 4
-> bits contains a random or pseudorandom number. A new value shall be
-> generated for each entry to the Ability Detect state"
+On Wed, Nov 24, 2021 at 4:20 AM Michal Hocko <mhocko@suse.com> wrote:
 >
-> Should we actually do it?
+> On Tue 23-11-21 09:56:41, Suren Baghdasaryan wrote:
+> > On Tue, Nov 23, 2021 at 5:19 AM Matthew Wilcox <willy@infradead.org> wrote:
+> > >
+> > > On Tue, Nov 16, 2021 at 01:57:14PM -0800, Suren Baghdasaryan wrote:
+> > > > @@ -3170,6 +3172,7 @@ void exit_mmap(struct mm_struct *mm)
+> > > >       unmap_vmas(&tlb, vma, 0, -1);
+> > > >       free_pgtables(&tlb, vma, FIRST_USER_ADDRESS, USER_PGTABLES_CEILING);
+> > > >       tlb_finish_mmu(&tlb);
+> > > > +     mmap_write_unlock(mm);
+> > > >
+> > > >       /*
+> > > >        * Walk the list again, actually closing and freeing it,
+> > >
+> > > Is there a reason to unlock here instead of after the remove_vma loop?
+> > > We'll need the mmap sem held during that loop when VMAs are stored in
+> > > the maple tree.
+> >
+> > I didn't realize remove_vma() would need to be protected as well. I
+> > think I can move mmap_write_unlock down to cover the last walk too
+> > with no impact.
+> > Does anyone know if there was any specific reason to perform that last
+> > walk with no locks held (as the comment states)? I can track that
+> > comment back to Linux-2.6.12-rc2 merge with no earlier history, so not
+> > sure if it's critical not to hold any locks at this point. Seems to me
+> > it's ok to hold mmap_write_unlock but maybe I'm missing something?
+>
+> I suspect the primary reason was that neither fput (and callbacks
+> invoked from it) nor vm_close would need to be very careful about
+> interacting with mm locks. fput is async these days so it shouldn't be
+> problematic. vm_ops->close doesn't have any real contract definition AFAIK
+> but taking mmap_sem from those would be really suprising. They should be
+> mostly destructing internal vma state and that shouldn't really require
+> address space protection.
 
-Managed to get some answears from the HW team:
+Thanks for clarification, Michal. I'll post an updated patch with
+remove_vma() loop executed under mmap_write_lock protection.
 
-Bits 7.515.3:0 correspond to the lower 4 bits of the Transmitted Nonce Field. We do not allow users to write these bits as they need to be controlled by the auto-negotiation (AN) sequencers in order to ensure that AN remains robust and reliable. However, the Transmitted Nonce value is readable via register 7.515. So we could call these bits out in the documentation and indicate that they are readonly.
-
-Bottom line is that the driver cannot and should not do anything with the lower 4 Transmitted Nonce bits. The PHY controls them.
-
-Also from 802.3 98.2.1.2.3 Transmitted Nonce Field:
-If the device has received a DME page with good CRC16 and the link partner has a Transmitted Nonce Field
-(T[4:0]) that matches the devices generated T[4:0], the device shall invert its T[0] bit and regenerate a new
-random value for T[3:1] and use that as its new T[4:0] value. Since the DME pages are exchanged in a halfduplex manner, it is possible to swap to a new T[4:0] value prior to transmitting the DME page. One device
-will always see a DME page with good CRC16 before the other device hence this swapping will guarantee
-that nonce_match will never be true.
-
-Seems that there must be hardware to deal with nonce collisions.
-
-Regards,
-Alexandru
+> --
+> Michal Hocko
+> SUSE Labs
