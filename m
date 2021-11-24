@@ -2,51 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7910545C22D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:22:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F47145C358
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348244AbhKXNZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:25:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40792 "EHLO mail.kernel.org"
+        id S1348677AbhKXNhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:37:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348608AbhKXNWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:22:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 172206127C;
-        Wed, 24 Nov 2021 12:47:31 +0000 (UTC)
+        id S1352293AbhKXNfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:35:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 247F561B46;
+        Wed, 24 Nov 2021 12:54:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758051;
-        bh=uGBqF264GJAz22pK1fpv+3J7k+z2ss84cV1ymABWBj4=;
+        s=korg; t=1637758478;
+        bh=dxMeMWzvD+r0AC7RHCy7M+JSL7yW8kzN/l+dsq7v6Rk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TddpfEEx+7tkCBFPiZbgw6MaSqHALOXK2/SGXoPyFuHdWiZVNgD9BN19dHnLpGyFP
-         VIwZzZVI+vctqjgZ8/bEeN8f3WjpI+abYfVgUN2oEj7oI61u5Z19ekc2fwwo5CNA/L
-         LqE5trUagPma/5NmkPVILhGM2s3l2FrZwmSh8BgU=
+        b=I2ej0GnL3ySgszBP5Rz4SesgYDi+rBhu9HKDM7WdEjQts1C4XzNo8qVpclHf9GJQZ
+         rSNUPvxCd7yS0ubhnS1b9Jo6TIy4WkR06PSeKDHW2E3eB6MOk47op9jiBDQgtwfbpG
+         3U6LWktBU0n5OwFch2JBaVw2y0zVNwQdccAyW6xw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org, Jacob Keller <jacob.e.keller@intel.com>,
+        Tony Brelinski <tony.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 044/100] perf bpf: Avoid memory leak from perf_env__insert_btf()
+Subject: [PATCH 5.10 084/154] iavf: prevent accidental free of filter structure
 Date:   Wed, 24 Nov 2021 12:58:00 +0100
-Message-Id: <20211124115656.304847952@linuxfoundation.org>
+Message-Id: <20211124115705.032668327@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -55,111 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+From: Jacob Keller <jacob.e.keller@intel.com>
 
-[ Upstream commit 4924b1f7c46711762fd0e65c135ccfbcfd6ded1f ]
+[ Upstream commit 4f0400803818f2642f066d3eacaf013f23554cc7 ]
 
-perf_env__insert_btf() doesn't insert if a duplicate BTF id is
-encountered and this causes a memory leak. Modify the function to return
-a success/error value and then free the memory if insertion didn't
-happen.
+In iavf_config_clsflower, the filter structure could be accidentally
+released at the end, if iavf_parse_cls_flower or iavf_handle_tclass ever
+return a non-zero but positive value.
 
-v2. Adds a return -1 when the insertion error occurs in
-    perf_env__fetch_btf. This doesn't affect anything as the result is
-    never checked.
+In this case, the function continues through to the end, and will call
+kfree() on the filter structure even though it has been added to the
+linked list.
 
-Fixes: 3792cb2ff43b1b19 ("perf bpf: Save BTF in a rbtree in perf_env")
-Signed-off-by: Ian Rogers <irogers@google.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20211112074525.121633-1-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+This can actually happen because iavf_parse_cls_flower will return
+a positive IAVF_ERR_CONFIG value instead of the traditional negative
+error codes.
+
+Fix this by ensuring that the kfree() check and error checks are
+similar. Use the more idiomatic "if (err)" to catch all non-zero error
+codes.
+
+Fixes: 0075fa0fadd0 ("i40evf: Add support to apply cloud filters")
+Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
+Tested-by: Tony Brelinski <tony.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/bpf-event.c | 6 +++++-
- tools/perf/util/env.c       | 5 ++++-
- tools/perf/util/env.h       | 2 +-
- 3 files changed, 10 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/intel/iavf/iavf_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
-index c766813d56be0..782c0c8a9a836 100644
---- a/tools/perf/util/bpf-event.c
-+++ b/tools/perf/util/bpf-event.c
-@@ -108,7 +108,11 @@ static int perf_env__fetch_btf(struct perf_env *env,
- 	node->data_size = data_size;
- 	memcpy(node->data, data, data_size);
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
+index b0fe5aafd1b26..90a9379b4e467 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_main.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
+@@ -3027,11 +3027,11 @@ static int iavf_configure_clsflower(struct iavf_adapter *adapter,
+ 	/* start out with flow type and eth type IPv4 to begin with */
+ 	filter->f.flow_type = VIRTCHNL_TCP_V4_FLOW;
+ 	err = iavf_parse_cls_flower(adapter, cls_flower, filter);
+-	if (err < 0)
++	if (err)
+ 		goto err;
  
--	perf_env__insert_btf(env, node);
-+	if (!perf_env__insert_btf(env, node)) {
-+		/* Insertion failed because of a duplicate. */
-+		free(node);
-+		return -1;
-+	}
- 	return 0;
- }
+ 	err = iavf_handle_tclass(adapter, tc, filter);
+-	if (err < 0)
++	if (err)
+ 		goto err;
  
-diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
-index 0fafcf264d235..ef64e197bc8df 100644
---- a/tools/perf/util/env.c
-+++ b/tools/perf/util/env.c
-@@ -69,12 +69,13 @@ out:
- 	return node;
- }
- 
--void perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node)
-+bool perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node)
- {
- 	struct rb_node *parent = NULL;
- 	__u32 btf_id = btf_node->id;
- 	struct btf_node *node;
- 	struct rb_node **p;
-+	bool ret = true;
- 
- 	down_write(&env->bpf_progs.lock);
- 	p = &env->bpf_progs.btfs.rb_node;
-@@ -88,6 +89,7 @@ void perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node)
- 			p = &(*p)->rb_right;
- 		} else {
- 			pr_debug("duplicated btf %u\n", btf_id);
-+			ret = false;
- 			goto out;
- 		}
- 	}
-@@ -97,6 +99,7 @@ void perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node)
- 	env->bpf_progs.btfs_cnt++;
- out:
- 	up_write(&env->bpf_progs.lock);
-+	return ret;
- }
- 
- struct btf_node *perf_env__find_btf(struct perf_env *env, __u32 btf_id)
-diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
-index db40906e29373..37028215d4a53 100644
---- a/tools/perf/util/env.h
-+++ b/tools/perf/util/env.h
-@@ -117,6 +117,6 @@ void perf_env__insert_bpf_prog_info(struct perf_env *env,
- 				    struct bpf_prog_info_node *info_node);
- struct bpf_prog_info_node *perf_env__find_bpf_prog_info(struct perf_env *env,
- 							__u32 prog_id);
--void perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node);
-+bool perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node);
- struct btf_node *perf_env__find_btf(struct perf_env *env, __u32 btf_id);
- #endif /* __PERF_ENV_H */
+ 	/* add filter to the list */
 -- 
 2.33.0
 
