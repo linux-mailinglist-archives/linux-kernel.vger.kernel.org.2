@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D5445C4DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:49:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B20345C064
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354421AbhKXNwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:52:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40038 "EHLO mail.kernel.org"
+        id S1347080AbhKXNHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:07:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354041AbhKXNso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:48:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 620FC61A3D;
-        Wed, 24 Nov 2021 13:02:08 +0000 (UTC)
+        id S1347326AbhKXNFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:05:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7DE7613A3;
+        Wed, 24 Nov 2021 12:37:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758929;
-        bh=tyzeq0rDRn8ccEtvspRTVDyAiRCaZrRPAe2QYfyOtho=;
+        s=korg; t=1637757456;
+        bh=3uznKvS2YSwo9UDBzMZsBGoD7cheUAVf2NW0SgOo+o4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wgcjkXXyxfeagHg7IgGy3Jyx1Q9u/HV5Y6msSFUpMXfI93bu0zK8EVoJaCfLlRTvG
-         4siDS7z3/M2W2xw1+Ch68IaxhzSs8NqgmqQyYASGCFk2c+UKFYh3xH+DwOIroHhdDf
-         d5fvwGqCbaPAFrYu9mp5lozzOJblxumoPk82kJrA=
+        b=R66Ul+PMAbjeF5Id7JnZviJKK44+X6625QThaZP7I8E8ZCrpqJJHL5CwY+fLBfFnx
+         41Or2N9Ub/IIddSmp2CjxArf41ptub13m9/4FhA1YFr452EnbS76GvgpPNvUZFRm6t
+         ceReTeE/LrCwgN+b1ovWlNMcrgLGJgbAjP6RHMcY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Andrea Righi <andrea.righi@canonical.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 076/279] clk: at91: sama7g5: remove prescaler part of master clock
-Date:   Wed, 24 Nov 2021 12:56:03 +0100
-Message-Id: <20211124115721.331172148@linuxfoundation.org>
+Subject: [PATCH 4.19 174/323] selftests/bpf: Fix fclose/pclose mismatch in test_progs
+Date:   Wed, 24 Nov 2021 12:56:04 +0100
+Message-Id: <20211124115724.822951670@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,52 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
+From: Andrea Righi <andrea.righi@canonical.com>
 
-[ Upstream commit facb87ad75603813bc3b1314f5a87377f020fcb8 ]
+[ Upstream commit f48ad69097fe79d1de13c4d8fef556d4c11c5e68 ]
 
-On SAMA7G5 the prescaler part of master clock has been implemented as a
-changeable one. Everytime the prescaler is changed the PMC_SR.MCKRDY bit
-must be polled. Value 1 for PMC_SR.MCKRDY means the prescaler update is
-done. Driver polls for this bit until it becomes 1. On SAMA7G5 it has
-been discovered that in some conditions the PMC_SR.MCKRDY is not rising
-but the rate it provides it's stable. The workaround is to add a timeout
-when polling for PMC_SR.MCKRDY. At the moment, for SAMA7G5, the prescaler
-will be removed from Linux clock tree as all the frequencies for CPU could
-be obtained from PLL and also there will be less overhead when changing
-frequency via DVFS.
+Make sure to use pclose() to properly close the pipe opened by popen().
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Link: https://lore.kernel.org/r/20211011112719.3951784-14-claudiu.beznea@microchip.com
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fixes: 81f77fd0deeb ("bpf: add selftest for stackmap with BPF_F_STACK_BUILD_ID")
+Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Link: https://lore.kernel.org/bpf/20211026143409.42666-1-andrea.righi@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/at91/sama7g5.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+ tools/testing/selftests/bpf/test_progs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/at91/sama7g5.c b/drivers/clk/at91/sama7g5.c
-index cf8c079aa086a..019e712f90d6f 100644
---- a/drivers/clk/at91/sama7g5.c
-+++ b/drivers/clk/at91/sama7g5.c
-@@ -982,16 +982,7 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
- 	}
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index bad3505d66e05..0fcd38ffcc24c 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -1112,7 +1112,7 @@ static int extract_build_id(char *build_id, size_t size)
  
- 	parent_names[0] = "cpupll_divpmcck";
--	hw = at91_clk_register_master_pres(regmap, "cpuck", 1, parent_names,
--					   &mck0_layout, &mck0_characteristics,
--					   &pmc_mck0_lock,
--					   CLK_SET_RATE_PARENT, 0);
--	if (IS_ERR(hw))
--		goto err_free;
--
--	sama7g5_pmc->chws[PMC_CPU] = hw;
--
--	hw = at91_clk_register_master_div(regmap, "mck0", "cpuck",
-+	hw = at91_clk_register_master_div(regmap, "mck0", "cpupll_divpmcck",
- 					  &mck0_layout, &mck0_characteristics,
- 					  &pmc_mck0_lock, 0);
- 	if (IS_ERR(hw))
+ 	if (getline(&line, &len, fp) == -1)
+ 		goto err;
+-	fclose(fp);
++	pclose(fp);
+ 
+ 	if (len > size)
+ 		len = size;
+@@ -1121,7 +1121,7 @@ static int extract_build_id(char *build_id, size_t size)
+ 	free(line);
+ 	return 0;
+ err:
+-	fclose(fp);
++	pclose(fp);
+ 	return -1;
+ }
+ 
 -- 
 2.33.0
 
