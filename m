@@ -2,105 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1F445CB58
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C215345CB5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:48:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349747AbhKXRqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 12:46:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243906AbhKXRq3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 12:46:29 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D408C061574;
-        Wed, 24 Nov 2021 09:43:19 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id m27so9236636lfj.12;
-        Wed, 24 Nov 2021 09:43:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=HaFcpK/P/GGsknj1HL812X9ZdJDmKc2b6kicKM3XERg=;
-        b=VIuEhf0iRw2Yk5ATNVLXlqFx3lDuSFDLdKrsl/pWwxrquwVRMzO/fO85W8kVjSxKrR
-         fOaU21uR4K5y9fWA3HZ8+W7J7StqXDqFr+XKipq1KAwaVgTBb27xPEkYyqr1mpR3MY1B
-         5u5z06CURxeptEzBkuk3Rr383Cr64v4DMHG1zNeDr93M2NOWxFEAjIQjvdgff72Anu9r
-         D6XYEy5r/NkyrUvbaM282gRpt2AYz56+0mo3QZ6UHwpHrGOmkUlg9H53pITiXKj3V9U2
-         2sfa5oGTuNJ80ssdH5so4G7wjalQG8haCbnaRqwyv3BvR2sWhkEZdBE4jzvK+NqXaNb1
-         1MCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=HaFcpK/P/GGsknj1HL812X9ZdJDmKc2b6kicKM3XERg=;
-        b=SbxUswZuSxANAepfy5i+hr+s0EFYNNJ/BwZmmRM/yRNKlfsLd4XkS+ddJpuxZ19U5j
-         9IqqppQs4EYw2sHlWdHiHjUaef3fWIVty31GlWpS2f8tfWL5U2k/bdX2ZbjiIP8KNhRm
-         A+l2dSe+Be65gPbvvJmE3Ukh9D5Fdgeqvo+/Ucgqlu6zjlcORLlP6xiPpnwprQcp4y1H
-         Y4527k3ewN4i+2uAca6SjTA/JsMoxlhdFOEpfqWYTdYEtpybw0JWA27YSc0AfIXJp8lE
-         jF1u4M0LR7U/5/nYQjMcRLXN5jZJlqi97FyccuNWSBCJz8TPaJKDjSMzBCe15jZlTMyo
-         1Rlw==
-X-Gm-Message-State: AOAM53344xO4/B05HdohHbQfo8BStBf9PcrNO9CZhjcjNguKsFU/VlVB
-        S+IAeEBKsQ0XxbL3VIcJ88I=
-X-Google-Smtp-Source: ABdhPJz2AdPeAnDvJ7NGF6iYGbDdqLkFASTmqUMDU+WcZZ1wXrsHr7fvkSRXg4XxLG0fZ/R3VjGXcg==
-X-Received: by 2002:a05:6512:a81:: with SMTP id m1mr16200807lfu.306.1637775797333;
-        Wed, 24 Nov 2021 09:43:17 -0800 (PST)
-Received: from [192.168.1.11] ([217.117.245.63])
-        by smtp.gmail.com with ESMTPSA id b12sm44026lfv.91.2021.11.24.09.43.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 09:43:17 -0800 (PST)
-Message-ID: <3233c950-3bec-99c8-4afe-efe6392c929d@gmail.com>
-Date:   Wed, 24 Nov 2021 20:43:15 +0300
+        id S1349844AbhKXRva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 12:51:30 -0500
+Received: from mga09.intel.com ([134.134.136.24]:42572 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237134AbhKXRv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 12:51:29 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="235154479"
+X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
+   d="scan'208";a="235154479"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 09:48:19 -0800
+X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
+   d="scan'208";a="597748440"
+Received: from sreyacha-mobl2.amr.corp.intel.com (HELO [10.212.208.53]) ([10.212.208.53])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 09:48:16 -0800
+Subject: Re: [PATCH Part2 v5 00/45] Add AMD Secure Nested Paging (SEV-SNP)
+ Hypervisor Support
+To:     Joerg Roedel <jroedel@suse.de>
+Cc:     Brijesh Singh <brijesh.singh@amd.com>,
+        Peter Gonda <pgonda@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <CAMkAt6o0ySn1=iLYsH0LCnNARrUbfaS0cvtxB__y_d+Q6DUzfA@mail.gmail.com>
+ <daf5066b-e89b-d377-ed8a-9338f1a04c0d@amd.com>
+ <d673f082-9023-dafb-e42e-eab32a3ddd0c@intel.com>
+ <f15597a0-e7e0-0a57-39fd-20715abddc7f@amd.com>
+ <5f3b3aab-9ec2-c489-eefd-9136874762ee@intel.com>
+ <d83e6668-bec4-8d1f-7f8a-085829146846@amd.com>
+ <38282b0c-7eb5-6a91-df19-2f4cfa8549ce@intel.com> <YZ5iWJuxjSCmZL5l@suse.de>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <bd31abd4-c8a2-bdda-ea74-1c24b29beda7@intel.com>
+Date:   Wed, 24 Nov 2021 09:48:14 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [syzbot] WARNING: ODEBUG bug in batadv_v_ogm_free
+In-Reply-To: <YZ5iWJuxjSCmZL5l@suse.de>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     syzbot <syzbot+0ef06384b5f39a16ebb9@syzkaller.appspotmail.com>,
-        Jason@zx2c4.com, a@unstable.cc, amcohen@nvidia.com,
-        b.a.t.m.a.n@lists.open-mesh.org, davem@davemloft.net,
-        dsahern@kernel.org, edumazet@google.com, fw@strlen.de,
-        idosch@OSS.NVIDIA.COM, justin.iurman@uliege.be, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, mareklindner@neomailbox.ch,
-        netdev@vger.kernel.org, praveen5582@gmail.com, sven@narfation.org,
-        sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com,
-        willemb@google.com, yoshfuji@linux-ipv6.org, zxu@linkedin.com
-References: <0000000000009f52f205d18c60a7@google.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <0000000000009f52f205d18c60a7@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/21 20:42, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 6f68cd634856f8ca93bafd623ba5357e0f648c68
-> Author: Pavel Skripkin <paskripkin@gmail.com>
-> Date:   Sun Oct 24 13:13:56 2021 +0000
-> 
->      net: batman-adv: fix error handling
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=114e3c16b00000
-> start commit:   cf52ad5ff16c Merge tag 'driver-core-5.15-rc6' of git://git..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=9479508d7bb83ad9
-> dashboard link: https://syzkaller.appspot.com/bug?extid=0ef06384b5f39a16ebb9
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17af7344b00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15dc02fb300000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
-> 
-> #syz fix: net: batman-adv: fix error handling
-> 
+On 11/24/21 8:03 AM, Joerg Roedel wrote:
+> On Mon, Nov 22, 2021 at 02:51:35PM -0800, Dave Hansen wrote:
+>> My preference would be that we never have SEV-SNP code in the kernel
+>> that can panic() the host from guest userspace.  If that means waiting
+>> until there's common guest unmapping infrastructure around, then I think
+>> we should wait.
+> Can you elaborate how to crash host kernel from guest user-space? If I
+> understood correctly it was about crashing host kernel from _host_
+> user-space.
 
+Sorry, I misspoke there.
 
-#syz fix: net: batman-adv: fix error handling
+My concern is about crashing the host kernel.  It appears that *host*
+userspace can do that quite easily by inducing the host kernel to access
+some guest private memory via a kernel mapping.
 
-Looks valid
+> I think the RMP-fault path in the page-fault handler needs to take the
+> uaccess exception tables into account before actually causing a panic.
+> This should solve most of the problems discussed here.
 
-
-With regards,
-Pavel Skripkin
+That covers things like copy_from_user().  It does not account for
+things where kernel mappings are used, like where a
+get_user_pages()/kmap() is in play.
