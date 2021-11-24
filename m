@@ -2,221 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F7745D157
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CAFB45D159
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236199AbhKXXs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S236462AbhKXXs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 18:48:28 -0500
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:57709 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235851AbhKXXs1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 18:48:27 -0500
-Received: from mga06.intel.com ([134.134.136.31]:43570 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231135AbhKXXsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 18:48:22 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="296209842"
-X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
-   d="scan'208";a="296209842"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 15:45:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
-   d="scan'208";a="554454489"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 24 Nov 2021 15:45:10 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mq1wr-0005V4-Uf; Wed, 24 Nov 2021 23:45:09 +0000
-Date:   Thu, 25 Nov 2021 07:44:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- c0f2077baa4113f38f008b8e912b9fb3ff8d43df
-Message-ID: <619ece4a.PySzqhcgDrPx5KRt%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+Received: from dread.disaster.area (pa49-195-103-97.pa.nsw.optusnet.com.au [49.195.103.97])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 17DD610A06BD;
+        Thu, 25 Nov 2021 10:45:12 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mq1wt-00Cr8N-OQ; Thu, 25 Nov 2021 10:45:11 +1100
+Date:   Thu, 25 Nov 2021 10:45:11 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH v2 2/4] mm/vmalloc: add support for __GFP_NOFAIL
+Message-ID: <20211124234511.GN418105@dread.disaster.area>
+References: <20211122153233.9924-1-mhocko@kernel.org>
+ <20211122153233.9924-3-mhocko@kernel.org>
+ <YZ06nna7RirAI+vJ@pc638.lan>
+ <20211123170238.f0f780ddb800f1316397f97c@linux-foundation.org>
+ <163772381628.1891.9102201563412921921@noble.neil.brown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <163772381628.1891.9102201563412921921@noble.neil.brown.name>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=619ece8a
+        a=fP9RlOTWD4uZJjPSFnn6Ew==:117 a=fP9RlOTWD4uZJjPSFnn6Ew==:17
+        a=kj9zAlcOel0A:10 a=vIxV3rELxO4A:10 a=7-415B0cAAAA:8
+        a=laKZI6_TNyetWoYyCsAA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git x86/urgent
-branch HEAD: c0f2077baa4113f38f008b8e912b9fb3ff8d43df  x86/boot: Mark prepare_command_line() __init
+On Wed, Nov 24, 2021 at 02:16:56PM +1100, NeilBrown wrote:
+> On Wed, 24 Nov 2021, Andrew Morton wrote:
+> > 
+> > I added GFP_NOFAIL back in the mesozoic era because quite a lot of
+> > sites were doing open-coded try-forever loops.  I thought "hey, they
+> > shouldn't be doing that in the first place, but let's at least
+> > centralize the concept to reduce code size, code duplication and so
+> > it's something we can now grep for".  But longer term, all GFP_NOFAIL
+> > sites should be reworked to no longer need to do the retry-forever
+> > thing.  In retrospect, this bright idea of mine seems to have added
+> > license for more sites to use retry-forever.  Sigh.
+> 
+> One of the costs of not having GFP_NOFAIL (or similar) is lots of
+> untested failure-path code.
+> 
+> When does an allocation that is allowed to retry and reclaim ever fail
+> anyway? I think the answer is "only when it has been killed by the oom
+> killer".  That of course cannot happen to kernel threads, so maybe
+> kernel threads should never need GFP_NOFAIL??
+> 
+> I'm not sure the above is 100%, but I do think that is the sort of
+> semantic that we want.  We want to know what kmalloc failure *means*.
+> We also need well defined and documented strategies to handle it.
+> mempools are one such strategy, but not always suitable.
 
-elapsed time: 728m
+mempools are not suitable for anything that uses demand paging to
+hold an unbounded data set in memory before it can free anything.
+This is basically the definition of memory demand in an XFS
+transaction, and most transaction based filesystems have similar
+behaviour.
 
-configs tested: 161
-configs skipped: 84
+> preallocating can also be useful but can be clumsy to implement.  Maybe
+> we should support a process preallocating a bunch of pages which can
+> only be used by the process - and are auto-freed when the process
+> returns to user-space.  That might allow the "error paths" to be simple
+> and early, and subsequent allocations that were GFP_USEPREALLOC would be
+> safe.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+We talked about this years ago at LSFMM (2013 or 2014, IIRC). The
+problem is "how much do you preallocate when the worst case
+requirement to guarantee forwards progress is at least tens of
+megabytes". Considering that there might be thousands of these
+contexts running concurrent at any given time and we might be
+running through several million preallocation contexts a second,
+suddenly preallocation is a great big CPU and memory pit.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20211124
-m68k                          hp300_defconfig
-mips                      pic32mzda_defconfig
-arm                       cns3420vb_defconfig
-m68k                          sun3x_defconfig
-arm                          simpad_defconfig
-sparc                               defconfig
-arm                            qcom_defconfig
-m68k                       m5275evb_defconfig
-powerpc                   currituck_defconfig
-ia64                             alldefconfig
-sh                           se7721_defconfig
-arm                        spear3xx_defconfig
-s390                       zfcpdump_defconfig
-arm                  colibri_pxa300_defconfig
-mips                         bigsur_defconfig
-sh                             espt_defconfig
-um                                  defconfig
-sh                          lboxre2_defconfig
-powerpc                     tqm8541_defconfig
-powerpc                    socrates_defconfig
-arm                        realview_defconfig
-powerpc                      chrp32_defconfig
-mips                           gcw0_defconfig
-xtensa                         virt_defconfig
-powerpc                 mpc8315_rdb_defconfig
-mips                  cavium_octeon_defconfig
-mips                      bmips_stb_defconfig
-arm                            mmp2_defconfig
-nios2                               defconfig
-arm                        neponset_defconfig
-sh                            hp6xx_defconfig
-sh                        sh7785lcr_defconfig
-powerpc                      mgcoge_defconfig
-powerpc                       ebony_defconfig
-mips                      malta_kvm_defconfig
-mips                        qi_lb60_defconfig
-arm                        magician_defconfig
-arm                        multi_v7_defconfig
-powerpc               mpc834x_itxgp_defconfig
-nios2                            allyesconfig
-sh                          sdk7786_defconfig
-mips                         tb0226_defconfig
-mips                           ip22_defconfig
-sh                          rsk7264_defconfig
-powerpc64                           defconfig
-sh                            shmin_defconfig
-arm                          lpd270_defconfig
-arm                          collie_defconfig
-powerpc                    sam440ep_defconfig
-ia64                                defconfig
-sh                ecovec24-romimage_defconfig
-arm                            xcep_defconfig
-arm                         lpc32xx_defconfig
-x86_64                           allyesconfig
-sh                           se7724_defconfig
-mips                      loongson3_defconfig
-arm                            mps2_defconfig
-arm                      jornada720_defconfig
-arm                           omap1_defconfig
-mips                    maltaup_xpa_defconfig
-sh                        dreamcast_defconfig
-arm                         socfpga_defconfig
-mips                  maltasmvp_eva_defconfig
-sparc64                             defconfig
-powerpc                 canyonlands_defconfig
-arc                        vdk_hs38_defconfig
-arc                 nsimosci_hs_smp_defconfig
-sh                   secureedge5410_defconfig
-powerpc                        fsp2_defconfig
-sh                 kfr2r09-romimage_defconfig
-m68k                            mac_defconfig
-powerpc                     mpc83xx_defconfig
-m68k                        m5307c3_defconfig
-mips                     loongson1b_defconfig
-powerpc                   microwatt_defconfig
-m68k                        stmark2_defconfig
-arm                  randconfig-c002-20211124
-arm                  randconfig-c002-20211125
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a011-20211124
-x86_64               randconfig-a014-20211124
-x86_64               randconfig-a012-20211124
-x86_64               randconfig-a016-20211124
-x86_64               randconfig-a013-20211124
-x86_64               randconfig-a015-20211124
-i386                 randconfig-a016-20211124
-i386                 randconfig-a015-20211124
-i386                 randconfig-a012-20211124
-i386                 randconfig-a013-20211124
-i386                 randconfig-a014-20211124
-i386                 randconfig-a011-20211124
-arc                  randconfig-r043-20211124
-s390                 randconfig-r044-20211124
-riscv                randconfig-r042-20211124
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
+Hence preallocation simply doesn't work when the scope to guarantee
+forwards progress is in the order of megabytes (even tens of
+megabytes) per "no fail" context scope.  In situations like this we
+need -memory reservations-, not preallocation.
 
-clang tested configs:
-s390                 randconfig-c005-20211124
-i386                 randconfig-c001-20211124
-powerpc              randconfig-c003-20211124
-riscv                randconfig-c006-20211124
-arm                  randconfig-c002-20211124
-x86_64               randconfig-c007-20211124
-mips                 randconfig-c004-20211124
-x86_64               randconfig-a001-20211124
-x86_64               randconfig-a006-20211124
-x86_64               randconfig-a003-20211124
-x86_64               randconfig-a004-20211124
-x86_64               randconfig-a005-20211124
-x86_64               randconfig-a002-20211124
-i386                 randconfig-a002-20211124
-i386                 randconfig-a001-20211124
-i386                 randconfig-a005-20211124
-i386                 randconfig-a006-20211124
-i386                 randconfig-a004-20211124
-i386                 randconfig-a003-20211124
-hexagon              randconfig-r045-20211124
-hexagon              randconfig-r041-20211124
+Have the mm guarantee that there is a certain amount of memory
+available (even if it requires reclaim to make available) before we
+start the operation that cannot tolerate memory allocation failure,
+track the memory usage as it goes, warn if it overruns, and release
+the unused part of the reservation when context completes.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+[ This is what we already do in XFS for guaranteeing forwards
+progress for writing modifications into the strictly bound journal
+space. We reserve space up front and use tracking tickets to account
+for space used across each transaction context. This avoids
+overcommit and all the deadlock and corruption problems that come
+from running out of physical log space to write all the changes
+we've made into the log. We could simply add memory reservations and
+tracking structures to the transaction context and we've pretty much
+got everything we need on the XFS side covered... ]
+
+> i.e. we need a plan for how to rework all those no-fail call-sites.
+
+Even if we do make them all the filesystems handle ENOMEM errors
+gracefully and pass that back up to userspace, how are applications
+going to react to random ENOMEM errors when doing data writes or
+file creation or any other operation that accesses filesystems?
+
+Given the way applications handle transient errors (i.e. they
+don't!) propagating ENOMEM back up to userspace will result in
+applications randomly failing under memory pressure.  That's a much
+worse situation than having to manage the _extremely rare_ issues
+that occur because of __GFP_NOFAIL usage in the kernel.
+
+Let's keep that in mind here - __GFP_NOFAIL usage is not causing
+system failures in the real world, whilst propagating ENOMEM back
+out to userspace is potentially very harmful to users....
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
