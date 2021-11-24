@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0CF545C666
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B0945C66A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:04:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349936AbhKXOH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:07:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53614 "EHLO mail.kernel.org"
+        id S1350161AbhKXOIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:08:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356549AbhKXOE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:04:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 687E763339;
-        Wed, 24 Nov 2021 13:11:19 +0000 (UTC)
+        id S1356555AbhKXOE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:04:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB1AC63336;
+        Wed, 24 Nov 2021 13:11:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759480;
-        bh=SFu95jzYMAn0O+nI+6/w3Lfa6B70SH31MwIdr7W4dCI=;
+        s=korg; t=1637759483;
+        bh=irvAJEBxtkxgS1Zcw/EQ0fQuIZDjxWq4z5lhFf4NxOc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z9lPWvKc9alBOop58h98nU72zLFhMilMAYo+Icbq7FbkdGR7pryT5Aguo0aLmhW7v
-         UPvVDIrS5+bhzTnH48ND7QnKzbW97qHZ4EYvJg7LP19+HcuGAdOjgTmuwOxJxeIbs9
-         vgrZLV7AoozlwOAcTocLE32guqcbwNbBtbXiNfS0=
+        b=GNYmq7ixhiUdyGEH0aPrxJvj1TRucaYvtMfcsbdkGgEs4beF+0Fgf4yuggH7DUNpt
+         AZH5rWEprOlr6707/yPFsnc05tJboIHZukACzeO1sQs3B0z94WEpdZxZyB1Xt8cc9Q
+         Bq6I7ZtksWD8qNuuznDfWDSKr/GELjitJLe7y1YY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
-        Borislav Petkov <bp@suse.de>, Lijo Lazar <lijo.lazar@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.15 255/279] drm/amd/pm: avoid duplicate powergate/ungate setting
-Date:   Wed, 24 Nov 2021 12:59:02 +0100
-Message-Id: <20211124115727.540167372@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Thomas Backlund <tmb@iki.fi>
+Subject: [PATCH 5.15 256/279] signal: Implement force_fatal_sig
+Date:   Wed, 24 Nov 2021 12:59:03 +0100
+Message-Id: <20211124115727.571042343@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
 References: <20211124115718.776172708@linuxfoundation.org>
@@ -40,105 +40,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Quan <evan.quan@amd.com>
+From: Eric W. Biederman <ebiederm@xmission.com>
 
-commit 6ee27ee27ba8b2e725886951ba2d2d87f113bece upstream.
+commit 26d5badbccddcc063dc5174a2baffd13a23322aa upstream.
 
-Just bail out if the target IP block is already in the desired
-powergate/ungate state. This can avoid some duplicate settings
-which sometimes may cause unexpected issues.
+Add a simple helper force_fatal_sig that causes a signal to be
+delivered to a process as if the signal handler was set to SIG_DFL.
 
-Link: https://lore.kernel.org/all/YV81vidWQLWvATMM@zn.tnic/
-Bug: https://bugzilla.kernel.org/show_bug.cgi?id=214921
-Bug: https://bugzilla.kernel.org/show_bug.cgi?id=215025
-Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1789
-Fixes: bf756fb833cb ("drm/amdgpu: add missing cleanups for Polaris12 UVD/VCE on suspend")
-Signed-off-by: Evan Quan <evan.quan@amd.com>
-Tested-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Lijo Lazar <lijo.lazar@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+Reimplement force_sigsegv based upon this new helper.  This fixes
+force_sigsegv so that when it forces the default signal handler
+to be used the code now forces the signal to be unblocked as well.
+
+Reusing the tested logic in force_sig_info_to_task that was built for
+force_sig_seccomp this makes the implementation trivial.
+
+This is interesting both because it makes force_sigsegv simpler and
+because there are a couple of buggy places in the kernel that call
+do_exit(SIGILL) or do_exit(SIGSYS) because there is no straight
+forward way today for those places to simply force the exit of a
+process with the chosen signal.  Creating force_fatal_sig allows
+those places to be implemented with normal signal exits.
+
+Link: https://lkml.kernel.org/r/20211020174406.17889-13-ebiederm@xmission.com
+Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+Cc: Thomas Backlund <tmb@iki.fi>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c |    3 +++
- drivers/gpu/drm/amd/include/amd_shared.h   |    3 ++-
- drivers/gpu/drm/amd/pm/amdgpu_dpm.c        |   10 ++++++++++
- drivers/gpu/drm/amd/pm/inc/amdgpu_dpm.h    |    8 ++++++++
- 4 files changed, 23 insertions(+), 1 deletion(-)
+ include/linux/sched/signal.h |    1 +
+ kernel/signal.c              |   26 +++++++++++++++++---------
+ 2 files changed, 18 insertions(+), 9 deletions(-)
 
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -3532,6 +3532,9 @@ int amdgpu_device_init(struct amdgpu_dev
- 		adev->rmmio_size = pci_resource_len(adev->pdev, 2);
- 	}
+--- a/include/linux/sched/signal.h
++++ b/include/linux/sched/signal.h
+@@ -338,6 +338,7 @@ extern int kill_pid(struct pid *pid, int
+ extern __must_check bool do_notify_parent(struct task_struct *, int);
+ extern void __wake_up_parent(struct task_struct *p, struct task_struct *parent);
+ extern void force_sig(int);
++extern void force_fatal_sig(int);
+ extern int send_sig(int, struct task_struct *, int);
+ extern int zap_other_threads(struct task_struct *p);
+ extern struct sigqueue *sigqueue_alloc(void);
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -1650,6 +1650,19 @@ void force_sig(int sig)
+ }
+ EXPORT_SYMBOL(force_sig);
  
-+	for (i = 0; i < AMD_IP_BLOCK_TYPE_NUM; i++)
-+		atomic_set(&adev->pm.pwr_state[i], POWER_STATE_UNKNOWN);
++void force_fatal_sig(int sig)
++{
++	struct kernel_siginfo info;
 +
- 	adev->rmmio = ioremap(adev->rmmio_base, adev->rmmio_size);
- 	if (adev->rmmio == NULL) {
- 		return -ENOMEM;
---- a/drivers/gpu/drm/amd/include/amd_shared.h
-+++ b/drivers/gpu/drm/amd/include/amd_shared.h
-@@ -98,7 +98,8 @@ enum amd_ip_block_type {
- 	AMD_IP_BLOCK_TYPE_ACP,
- 	AMD_IP_BLOCK_TYPE_VCN,
- 	AMD_IP_BLOCK_TYPE_MES,
--	AMD_IP_BLOCK_TYPE_JPEG
-+	AMD_IP_BLOCK_TYPE_JPEG,
-+	AMD_IP_BLOCK_TYPE_NUM,
- };
- 
- enum amd_clockgating_state {
---- a/drivers/gpu/drm/amd/pm/amdgpu_dpm.c
-+++ b/drivers/gpu/drm/amd/pm/amdgpu_dpm.c
-@@ -927,6 +927,13 @@ int amdgpu_dpm_set_powergating_by_smu(st
++	clear_siginfo(&info);
++	info.si_signo = sig;
++	info.si_errno = 0;
++	info.si_code = SI_KERNEL;
++	info.si_pid = 0;
++	info.si_uid = 0;
++	force_sig_info_to_task(&info, current, true);
++}
++
+ /*
+  * When things go south during signal handling, we
+  * will force a SIGSEGV. And if the signal that caused
+@@ -1658,15 +1671,10 @@ EXPORT_SYMBOL(force_sig);
+  */
+ void force_sigsegv(int sig)
  {
- 	int ret = 0;
- 	const struct amd_pm_funcs *pp_funcs = adev->powerplay.pp_funcs;
-+	enum ip_power_state pwr_state = gate ? POWER_STATE_OFF : POWER_STATE_ON;
-+
-+	if (atomic_read(&adev->pm.pwr_state[block_type]) == pwr_state) {
-+		dev_dbg(adev->dev, "IP block%d already in the target %s state!",
-+				block_type, gate ? "gate" : "ungate");
-+		return 0;
-+	}
- 
- 	switch (block_type) {
- 	case AMD_IP_BLOCK_TYPE_UVD:
-@@ -979,6 +986,9 @@ int amdgpu_dpm_set_powergating_by_smu(st
- 		break;
- 	}
- 
-+	if (!ret)
-+		atomic_set(&adev->pm.pwr_state[block_type], pwr_state);
-+
- 	return ret;
+-	struct task_struct *p = current;
+-
+-	if (sig == SIGSEGV) {
+-		unsigned long flags;
+-		spin_lock_irqsave(&p->sighand->siglock, flags);
+-		p->sighand->action[sig - 1].sa.sa_handler = SIG_DFL;
+-		spin_unlock_irqrestore(&p->sighand->siglock, flags);
+-	}
+-	force_sig(SIGSEGV);
++	if (sig == SIGSEGV)
++		force_fatal_sig(SIGSEGV);
++	else
++		force_sig(SIGSEGV);
  }
  
---- a/drivers/gpu/drm/amd/pm/inc/amdgpu_dpm.h
-+++ b/drivers/gpu/drm/amd/pm/inc/amdgpu_dpm.h
-@@ -417,6 +417,12 @@ struct amdgpu_dpm {
- 	enum amd_dpm_forced_level forced_level;
- };
- 
-+enum ip_power_state {
-+	POWER_STATE_UNKNOWN,
-+	POWER_STATE_ON,
-+	POWER_STATE_OFF,
-+};
-+
- struct amdgpu_pm {
- 	struct mutex		mutex;
- 	u32                     current_sclk;
-@@ -452,6 +458,8 @@ struct amdgpu_pm {
- 	struct i2c_adapter smu_i2c;
- 	struct mutex		smu_i2c_mutex;
- 	struct list_head	pm_attr_list;
-+
-+	atomic_t		pwr_state[AMD_IP_BLOCK_TYPE_NUM];
- };
- 
- #define R600_SSTU_DFLT                               0
+ int force_sig_fault_to_task(int sig, int code, void __user *addr
 
 
