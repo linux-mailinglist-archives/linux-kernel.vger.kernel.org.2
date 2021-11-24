@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A9945BE49
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:43:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 796BC45BBD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:22:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244804AbhKXMqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:46:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41826 "EHLO mail.kernel.org"
+        id S244893AbhKXMYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:24:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345211AbhKXMlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:41:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64DDE61216;
-        Wed, 24 Nov 2021 12:24:40 +0000 (UTC)
+        id S242776AbhKXMUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:20:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEEA76112F;
+        Wed, 24 Nov 2021 12:12:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756680;
-        bh=xqVALZlNQfC1BHtDBPx9Qlj03SZPArGR0HpXbatcAuw=;
+        s=korg; t=1637755937;
+        bh=KamPzkE/xfJ+gfLl1puVcZOrLnIOvCVIa9+X2bpw5u8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nNPiRKUTPV0WBeg/R/nL3yE/spIuW04ssySUGqmcW6GE5OeQWicAY/Xie27sl1YFl
-         9oXJif7Hi90g5ATpeXjvXcF2oboQzZ3Woi4IVvSO/3JiwOmzE7H+sOd8jeJMc9T47v
-         sx1KZ1pqXl8/9gce4JlsIJgbkc7bZyZdNYFDnqoc=
+        b=O4ZNcloH27LgfTbpnOeEcPgEW0l/tuKMjnZVbSacx5exUBQZZG1cB9D8oAwSWZPIe
+         atYY32L4tR8pgisItgSOewFEZm0lnQOfa2wTl4QiGrrGS4vQfaHmE4gLFeZSVlzDm6
+         B/jlHpzYSKr0gKZqsTT/SC+ABWc/Kz/OT6g3fMTg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jackie Liu <liuyun01@kylinos.cn>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 140/251] ARM: s3c: irq-s3c24xx: Fix return value check for s3c24xx_init_intc()
-Date:   Wed, 24 Nov 2021 12:56:22 +0100
-Message-Id: <20211124115715.127598283@linuxfoundation.org>
+Subject: [PATCH 4.9 112/207] libertas_tf: Fix possible memory leak in probe and disconnect
+Date:   Wed, 24 Nov 2021 12:56:23 +0100
+Message-Id: <20211124115707.699917752@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,58 +41,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jackie Liu <liuyun01@kylinos.cn>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit 2aa717473ce96c93ae43a5dc8c23cedc8ce7dd9f ]
+[ Upstream commit d549107305b4634c81223a853701c06bcf657bc3 ]
 
-The s3c24xx_init_intc() returns an error pointer upon failure, not NULL.
-let's add an error pointer check in s3c24xx_handle_irq.
+I got memory leak as follows when doing fault injection test:
 
-s3c_intc[0] is not NULL or ERR, we can simplify the code.
+unreferenced object 0xffff88810a2ddc00 (size 512):
+  comm "kworker/6:1", pid 176, jiffies 4295009893 (age 757.220s)
+  hex dump (first 32 bytes):
+    00 50 05 18 81 88 ff ff 00 00 00 00 00 00 00 00  .P..............
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff8167939c>] slab_post_alloc_hook+0x9c/0x490
+    [<ffffffff8167f627>] kmem_cache_alloc_trace+0x1f7/0x470
+    [<ffffffffa02a1530>] if_usb_probe+0x60/0x37c [libertas_tf_usb]
+    [<ffffffffa022668a>] usb_probe_interface+0x1aa/0x3c0 [usbcore]
+    [<ffffffff82b59630>] really_probe+0x190/0x480
+    [<ffffffff82b59a19>] __driver_probe_device+0xf9/0x180
+    [<ffffffff82b59af3>] driver_probe_device+0x53/0x130
+    [<ffffffff82b5a075>] __device_attach_driver+0x105/0x130
+    [<ffffffff82b55949>] bus_for_each_drv+0x129/0x190
+    [<ffffffff82b593c9>] __device_attach+0x1c9/0x270
+    [<ffffffff82b5a250>] device_initial_probe+0x20/0x30
+    [<ffffffff82b579c2>] bus_probe_device+0x142/0x160
+    [<ffffffff82b52e49>] device_add+0x829/0x1300
+    [<ffffffffa02229b1>] usb_set_configuration+0xb01/0xcc0 [usbcore]
+    [<ffffffffa0235c4e>] usb_generic_driver_probe+0x6e/0x90 [usbcore]
+    [<ffffffffa022641f>] usb_probe_device+0x6f/0x130 [usbcore]
 
-Fixes: 1f629b7a3ced ("ARM: S3C24XX: transform irq handling into a declarative form")
-Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
-Link: https://lore.kernel.org/r/20210901123557.1043953-1-liu.yun@linux.dev
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+cardp is missing being freed in the error handling path of the probe
+and the path of the disconnect, which will cause memory leak.
+
+This patch adds the missing kfree().
+
+Fixes: c305a19a0d0a ("libertas_tf: usb specific functions")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20211020120345.2016045-2-wanghai38@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-s3c24xx.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+ drivers/net/wireless/marvell/libertas_tf/if_usb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/irqchip/irq-s3c24xx.c b/drivers/irqchip/irq-s3c24xx.c
-index c25ce5af091ad..e92ab62cc87d9 100644
---- a/drivers/irqchip/irq-s3c24xx.c
-+++ b/drivers/irqchip/irq-s3c24xx.c
-@@ -368,11 +368,25 @@ static inline int s3c24xx_handle_intc(struct s3c_irq_intc *intc,
- asmlinkage void __exception_irq_entry s3c24xx_handle_irq(struct pt_regs *regs)
- {
- 	do {
--		if (likely(s3c_intc[0]))
--			if (s3c24xx_handle_intc(s3c_intc[0], regs, 0))
--				continue;
-+		/*
-+		 * For platform based machines, neither ERR nor NULL can happen here.
-+		 * The s3c24xx_handle_irq() will be set as IRQ handler iff this succeeds:
-+		 *
-+		 *    s3c_intc[0] = s3c24xx_init_intc()
-+		 *
-+		 * If this fails, the next calls to s3c24xx_init_intc() won't be executed.
-+		 *
-+		 * For DT machine, s3c_init_intc_of() could set the IRQ handler without
-+		 * setting s3c_intc[0] only if it was called with num_ctrl=0. There is no
-+		 * such code path, so again the s3c_intc[0] will have a valid pointer if
-+		 * set_handle_irq() is called.
-+		 *
-+		 * Therefore in s3c24xx_handle_irq(), the s3c_intc[0] is always something.
-+		 */
-+		if (s3c24xx_handle_intc(s3c_intc[0], regs, 0))
-+			continue;
+diff --git a/drivers/net/wireless/marvell/libertas_tf/if_usb.c b/drivers/net/wireless/marvell/libertas_tf/if_usb.c
+index 4b539209999b4..aaba324dbc39b 100644
+--- a/drivers/net/wireless/marvell/libertas_tf/if_usb.c
++++ b/drivers/net/wireless/marvell/libertas_tf/if_usb.c
+@@ -234,6 +234,7 @@ static int if_usb_probe(struct usb_interface *intf,
  
--		if (s3c_intc[2])
-+		if (!IS_ERR_OR_NULL(s3c_intc[2]))
- 			if (s3c24xx_handle_intc(s3c_intc[2], regs, 64))
- 				continue;
+ dealloc:
+ 	if_usb_free(cardp);
++	kfree(cardp);
+ error:
+ lbtf_deb_leave(LBTF_DEB_MAIN);
+ 	return -ENOMEM;
+@@ -258,6 +259,7 @@ static void if_usb_disconnect(struct usb_interface *intf)
  
+ 	/* Unlink and free urb */
+ 	if_usb_free(cardp);
++	kfree(cardp);
+ 
+ 	usb_set_intfdata(intf, NULL);
+ 	usb_put_dev(interface_to_usbdev(intf));
 -- 
 2.33.0
 
