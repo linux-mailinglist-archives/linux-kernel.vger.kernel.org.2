@@ -2,82 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A213745C45B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C280C45C792
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:36:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349475AbhKXNrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:47:40 -0500
-Received: from pegase2.c-s.fr ([93.17.235.10]:45737 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353837AbhKXNoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:44:09 -0500
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Hzhwp35fcz9sSd;
-        Wed, 24 Nov 2021 14:40:58 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id xJsxtdgyCAiz; Wed, 24 Nov 2021 14:40:58 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Hzhwp2K8rz9sSc;
-        Wed, 24 Nov 2021 14:40:58 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 38BC98B774;
-        Wed, 24 Nov 2021 14:40:58 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id WedtkgjjuB1f; Wed, 24 Nov 2021 14:40:58 +0100 (CET)
-Received: from [172.25.230.108] (unknown [172.25.230.108])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id F21158B763;
-        Wed, 24 Nov 2021 14:40:57 +0100 (CET)
-Message-ID: <e1fea487-8014-658d-84cd-ea1d7c89ee08@csgroup.eu>
-Date:   Wed, 24 Nov 2021 14:40:57 +0100
+        id S1356834AbhKXOjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:39:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1356551AbhKXOjX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:39:23 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF5AC1F38B7;
+        Wed, 24 Nov 2021 05:41:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=u5Bp6Rfma9GvNlchoY1NvLTwJANeJ3HEug26+8isXwE=; b=hhbQZhJwK1Tb9e+q0Q28e25DAv
+        Od9pIYN2Gyiv0dA95pkKXYVes6wIzr6Dyrdz7zE6LWYwQgtKQRddQQj3KlF/6e+rGlvDwZn81SO0L
+        jmyNcKHUwuAAL4hqFxxBoCLbZ78/8YU9GtUBk2390mHdprFJB6Q5NEsOuCM+WqTROXedt17OSU57K
+        Znwqwh32TO/nbgJf5ps0iEH4WpPxtncH2AfxYxaIDPl/mI7K7oszTaCg2ZYrE3yeotZ03DTuOQM8q
+        SbFyM9HClWrBqJvP/vIs76mbieTIOeBHp8+RY1gteGkIKaIRwSzmIllOlYTn9YYs66Or0n5wDgTmB
+        pHDv3JGg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mpsWA-004tSi-D1; Wed, 24 Nov 2021 13:40:58 +0000
+Date:   Wed, 24 Nov 2021 05:40:58 -0800
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     akpm@linux-foundation.org, keescook@chromium.org,
+        yzaikin@google.com, nixiaoming@huawei.com, ebiederm@xmission.com,
+        clemens@ladisch.de, arnd@arndb.de, gregkh@linuxfoundation.org,
+        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, tvrtko.ursulin@linux.intel.com,
+        airlied@linux.ie, benh@kernel.crashing.org, mark@fasheh.com,
+        jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+        amir73il@gmail.com, phil@philpotter.co.uk, viro@zeniv.linux.org.uk,
+        julia.lawall@inria.fr, ocfs2-devel@oss.oracle.com,
+        linuxppc-dev@lists.ozlabs.org, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/8] inotify: simplify subdirectory registration with
+ register_sysctl()
+Message-ID: <YZ5A6iWLb0h3N3RC@bombadil.infradead.org>
+References: <20211123202422.819032-1-mcgrof@kernel.org>
+ <20211123202422.819032-7-mcgrof@kernel.org>
+ <20211124094409.GF8583@quack2.suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH 0/8] Convert powerpc to default topdown mmap layout
-Content-Language: fr-FR
-To:     Nicholas Piggin <npiggin@gmail.com>, alex@ghiti.fr,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <cover.1637570556.git.christophe.leroy@csgroup.eu>
- <1637759994.e3mppl4ly7.astroid@bobo.none>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-In-Reply-To: <1637759994.e3mppl4ly7.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124094409.GF8583@quack2.suse.cz>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 24/11/2021 à 14:21, Nicholas Piggin a écrit :
-> Excerpts from Christophe Leroy's message of November 22, 2021 6:48 pm:
->> This series converts powerpc to default topdown mmap layout.
->>
->> powerpc provides its own arch_get_unmapped_area() only when
->> slices are needed, which is only for book3s/64. First part of
->> the series moves slices into book3s/64 specific directories
->> and cleans up other subarchitectures.
->>
->> Then a small modification is done to core mm to allow
->> powerpc to still provide its own arch_randomize_brk()
->>
->> Last part converts to default topdown mmap layout.
+On Wed, Nov 24, 2021 at 10:44:09AM +0100, Jan Kara wrote:
+> On Tue 23-11-21 12:24:20, Luis Chamberlain wrote:
+> > From: Xiaoming Ni <nixiaoming@huawei.com>
+> > 
+> > There is no need to user boiler plate code to specify a set of base
+> > directories we're going to stuff sysctls under. Simplify this by using
+> > register_sysctl() and specifying the directory path directly.
+> > 
+> > Move inotify_user sysctl to inotify_user.c while at it to remove clutter
+> > from kernel/sysctl.c.
+> > 
+> > Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> > [mcgrof: update commit log to reflect new path we decided to take]
+> > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 > 
-> A nice series but will clash badly with the CONFIG_HASH_MMU
-> series of course. One will have to be rebased if they are
-> both to be merged.
-> 
+> This looks fishy. You register inotify_table but not fanotify_table and
+> remove both...
 
-No worry, it should be an issue.
+Indeed, the following was missing, I'll roll it in:
 
-If you already forsee that series being merged soon, I can rebase my 
-series on top of it just now.
-
-Christophe
+diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
+index 559bc1e9926d..a35693eb1f36 100644
+--- a/fs/notify/fanotify/fanotify_user.c
++++ b/fs/notify/fanotify/fanotify_user.c
+@@ -59,7 +59,7 @@ static int fanotify_max_queued_events __read_mostly;
+ static long ft_zero = 0;
+ static long ft_int_max = INT_MAX;
+ 
+-struct ctl_table fanotify_table[] = {
++static struct ctl_table fanotify_table[] = {
+ 	{
+ 		.procname	= "max_user_groups",
+ 		.data	= &init_user_ns.ucount_max[UCOUNT_FANOTIFY_GROUPS],
+@@ -88,6 +88,13 @@ struct ctl_table fanotify_table[] = {
+ 	},
+ 	{ }
+ };
++
++static void __init fanotify_sysctls_init(void)
++{
++	register_sysctl("fs/fanotify", fanotify_table);
++}
++#else
++#define fanotify_sysctls_init() do { } while (0)
+ #endif /* CONFIG_SYSCTL */
+ 
+ /*
+@@ -1685,6 +1692,7 @@ static int __init fanotify_user_setup(void)
+ 	init_user_ns.ucount_max[UCOUNT_FANOTIFY_GROUPS] =
+ 					FANOTIFY_DEFAULT_MAX_GROUPS;
+ 	init_user_ns.ucount_max[UCOUNT_FANOTIFY_MARKS] = max_marks;
++	fanotify_sysctls_init();
+ 
+ 	return 0;
+ }
+diff --git a/include/linux/fanotify.h b/include/linux/fanotify.h
+index 616af2ea20f3..556cc63c88ee 100644
+--- a/include/linux/fanotify.h
++++ b/include/linux/fanotify.h
+@@ -5,8 +5,6 @@
+ #include <linux/sysctl.h>
+ #include <uapi/linux/fanotify.h>
+ 
+-extern struct ctl_table fanotify_table[]; /* for sysctl */
+-
+ #define FAN_GROUP_FLAG(group, flag) \
+ 	((group)->fanotify_data.flags & (flag))
+ 
