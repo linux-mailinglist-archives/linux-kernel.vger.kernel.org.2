@@ -2,110 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DC145CF4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:38:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C87A145CF5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:42:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351939AbhKXVmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 16:42:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34338 "EHLO
+        id S244704AbhKXVpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 16:45:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346061AbhKXVku (ORCPT
+        with ESMTP id S234293AbhKXVpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 16:40:50 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 703A5C061574;
-        Wed, 24 Nov 2021 13:37:40 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id n15-20020a17090a160f00b001a75089daa3so6106376pja.1;
-        Wed, 24 Nov 2021 13:37:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8cR2Y+uX8vVDrjMHw+aD7NNLHEizzFUKMzZGd0OO/tQ=;
-        b=DNHqaPjtfvEq9kQLU9i+7ddrNHG+eAa6dSoHcfbT0frOtu2yHKBWuSQAC5kVp2auot
-         o77TJdLzxjmR/8hGfhPiSe02pLBcxYmAVdVWmeD9kqT9JhLQmCk2HfAncbPoBcuCqTQi
-         DhJ6Rr4nwg44U2DD0d4IgAroAQyqluJ9wKzpLjSiw8EhBfOGD628ruN7gsDQFehXVosA
-         GPaicTyZOjXnXcXE+BKnOt5LDN9AyBLnmsWIVFWiJKIB/p2K3Zr2/XPoKyCKGw5pclMh
-         QgNqUs15cYmYnoDTB/WsQF6ukX0qFa8VPFzfmfN+KFkHz5n+I+/AntqNy/i0zgTLp0vT
-         db/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8cR2Y+uX8vVDrjMHw+aD7NNLHEizzFUKMzZGd0OO/tQ=;
-        b=wnxoeAtGcqgVCND74tN1UhAp4IRInYC2lpvtC9+nOjRd0gdvvRZb6asnnrTtHbWr9y
-         NdfPaErVdVhJpdSMjxCgOCAQNmHmLOcBfGMVq2d7q5WjexrFzfiFiMESvrcb/4gNUrif
-         4lT9jZCNXJAt0uM2hxVlDTcXlRaP98ajEkMgbuU/+dsjgOBGf5TaPyGhRVZr1pVZBW+S
-         Mj83oOib0juyMayQPawzVdpEcI/d00ztmpueP16e9t/xBAVdWDaWq2UYhke4UrXgo8h2
-         a8k2/mLhMQJsXkTqgQ252xtgK7/WvvnVIfxXZ63tl12sauDY7JhPVsbUeuKTHBEpBxXt
-         A3ug==
-X-Gm-Message-State: AOAM533HPcX7FtWe7CGivbXQQdsC7oIXDGNEfVmVq/h8MIrv+jy1V1TT
-        O9t3mN9RvogJgnrHOTN3Zk4=
-X-Google-Smtp-Source: ABdhPJy/qt89x2ESb7NNGbAOo5VrcJZp7SdllwWJTZOxJIW11cj43KGhzdzJYYs52ELKCKLAiVT6vg==
-X-Received: by 2002:a17:90b:4b89:: with SMTP id lr9mr230252pjb.49.1637789860041;
-        Wed, 24 Nov 2021 13:37:40 -0800 (PST)
-Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
-        by smtp.gmail.com with ESMTPSA id o7sm536970pjf.33.2021.11.24.13.37.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 13:37:39 -0800 (PST)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Eric Anholt <eric@anholt.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 7/7] drm/msm/gpu: Add a comment in a6xx_gmu_init()
-Date:   Wed, 24 Nov 2021 13:41:35 -0800
-Message-Id: <20211124214151.1427022-11-robdclark@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211124214151.1427022-1-robdclark@gmail.com>
-References: <20211124214151.1427022-1-robdclark@gmail.com>
+        Wed, 24 Nov 2021 16:45:15 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 715CCC061574;
+        Wed, 24 Nov 2021 13:42:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AtyATGG4/Tqtkd6LyCLZuHtGU7V1I4VQuaKYnkFLL2A=; b=mIJKySH7od+fNxhERGhQpBaGly
+        FyK5+VivZ/jRfp26y9Iff67t1ZsvpmrnizxuoOn1J4kX0Y9mkLfvLy3Hc4PPH3g9p64328Hy7OqDN
+        ASjCfl+IvmiRQV51fSkr9bJceFTzxCNYFDafRjSB0EOwV3vojfyg3hkFMF9xvREuqG19M4NR3plct
+        bG9lPglbpes3e9Y/dLV4035pQaf9MM5bUO9jE271bmSmmIvgL6mSEdasD22n9h+OmhCedNEtZlIoP
+        WiY8rEWD2hB1C6LiwNDTTqDa/wiNf4U+dMKL5vYZqllgLjUmGWlovgcOqB3BoeL7Ose90SEuxjMqc
+        Tewcst5Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mq01Y-000JzV-De; Wed, 24 Nov 2021 21:41:52 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id F2D71986843; Wed, 24 Nov 2021 22:41:51 +0100 (CET)
+Date:   Wed, 24 Nov 2021 22:41:51 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Peter Oskolkov <posk@posk.io>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>
+Subject: Re: [PATCH v0.9.1 3/6] sched/umcg: implement UMCG syscalls
+Message-ID: <20211124214151.GH721624@worktop.programming.kicks-ass.net>
+References: <20211122211327.5931-1-posk@google.com>
+ <20211122211327.5931-4-posk@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211122211327.5931-4-posk@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+On Mon, Nov 22, 2021 at 01:13:24PM -0800, Peter Oskolkov wrote:
+> +	while (true) {
 
-If you don't realize is_a650_family() also encompasses a660 family,
-you'd think that the debug buffer is double allocated.  Add a comment
-to make this more clear.
+(you have 2 inf. loops in umcg and you chose a different expression for each)
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 3 +++
- 1 file changed, 3 insertions(+)
+> +		u64 umcg_state;
+> +
+> +		/*
+> +		 * We need to read from userspace _after_ the task is marked
+> +		 * TASK_INTERRUPTIBLE, to properly handle concurrent wakeups;
+> +		 * but faulting is not allowed; so we try a fast no-fault read,
+> +		 * and if it fails, pin the page temporarily.
+> +		 */
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-index e1774ea342b1..3e325e2a2b1b 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-@@ -1531,6 +1531,7 @@ int a6xx_gmu_init(struct a6xx_gpu *a6xx_gpu, struct device_node *node)
- 	if (ret)
- 		goto err_memory;
- 
-+	/* Note that a650 family also includes a660 family: */
- 	if (adreno_is_a650_family(adreno_gpu)) {
- 		ret = a6xx_gmu_memory_alloc(gmu, &gmu->icache,
- 			SZ_16M - SZ_16K, 0x04000, "icache");
-@@ -1547,6 +1548,8 @@ int a6xx_gmu_init(struct a6xx_gpu *a6xx_gpu, struct device_node *node)
- 		if (ret)
- 			goto err_memory;
- 	} else {
-+		BUG_ON(adreno_is_a660_family(adreno_gpu));
-+
- 		/* HFI v1, has sptprac */
- 		gmu->legacy = true;
- 
--- 
-2.33.1
+That comment is misleading! Faulting *is* allowed, but it can scribble
+__state. If faulting would not be allowed, you wouldn't be able to call
+pin_user_pages_fast().
 
+> +retry_once:
+> +		set_current_state(TASK_INTERRUPTIBLE);
+> +
+> +		/* Order set_current_state above with get_user below. */
+> +		smp_mb();
+
+And just in case you hadn't yet seen, that smp_mb() is implied by
+set_current_state().
+
+> +		ret = -EFAULT;
+> +		if (get_user_nofault(umcg_state, &self->state_ts)) {
+> +			set_current_state(TASK_RUNNING);
+> +
+> +			if (pinned_page)
+> +				goto out;
+> +			else if (1 != pin_user_pages_fast((unsigned long)self,
+> +						1, 0, &pinned_page))
+
+That else is pointless, and that '1 != foo' coding style is evil.
+
+> +					goto out;
+> +
+> +			goto retry_once;
+> +		}
+
+And, as you could've seen from the big patch, all that goto isn't
+actually needed here, break / continue seem to be sufficient.
+
+> +
+> +		if (pinned_page) {
+> +			unpin_user_page(pinned_page);
+> +			pinned_page = NULL;
+> +		}
