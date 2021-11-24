@@ -2,105 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3448745B1E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 03:14:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E0245B1F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 03:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240678AbhKXCRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 21:17:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231555AbhKXCRT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 21:17:19 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A8E0C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 18:14:10 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id u18so1265712wrg.5
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 18:14:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xe4o5Gm3OMdjS63wMnh/ZOlXxoaUWg1l/47qZWglxBI=;
-        b=MOSdU1seSeuiSwHUZmk1UhtByoEtzLLRNtdxo0+O4R/7fz4+UeAjOE/Mk9Ow0CSnwq
-         3gb8XKhUiw9t3A2lNpl3q5eiIcczC0zHyXPk+jtyM7uSucofkydcKRAj9qKlU+f450YM
-         LKM1Suhlyj0yFzGEXiMjzWFh6oCfK04M97deJZ7clVgwi9v7EiyH7UZIfMFbssRYuF1L
-         Ih3dfWs8WVzPdYnFBSF/YqpT8bXE85pWjbkFg6Dd1iVfQsXbF0TVt2Ng4cN0fOaW5cjK
-         omgfVDAqexKTRZG8mxcZXQaPMnLyKSNmw3orJQkcewv4zXczLHCd4PHMKp7u59S+PCSH
-         AbAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xe4o5Gm3OMdjS63wMnh/ZOlXxoaUWg1l/47qZWglxBI=;
-        b=6yNqwUVcKdAgcBdJ+2gavlJsRWRWn1H6u1GZ71VaKV/Z+6Ca15V69ZKQWFdQCJbGrt
-         QpuOgd3iNrq7X9ebnSqByMf88hR1cVin2B7h8Qo9eKcJn2FCfu8/wyALcnEsMFukhUVv
-         Q6zgGLFPtxlK4ppM8OvG+D9S5gXsMOQD3Ps58uMv2O06xDqhdvPuHy52JiIdlw12W8+j
-         JKRmjOYvlibyxvRX17OYJZKc0fBLi55ksL9yy7mruvA2pQfW9zrZyAADwiAf0UX+gA/L
-         tUsVmmBGsu2Wr6rKayppxwV/tbeDpdzfWoCLYgvo9TnjIBOugd2I4MaqotjlRZAhqJDR
-         u9rQ==
-X-Gm-Message-State: AOAM533iRGkXQOwxUxerH+uuDemvplZv94ET/ukc07UTHU7TD50//iRW
-        y4/C9GIp7Cx7f0kCay9CWQ==
-X-Google-Smtp-Source: ABdhPJxya3jKNOzfMuNmHXXGJbUVr3esV/uhag0CYzu7qmZmXnsDI9xK9zK5GsJCJLZTYTGmQtQ6lA==
-X-Received: by 2002:adf:e848:: with SMTP id d8mr13671517wrn.3.1637720048717;
-        Tue, 23 Nov 2021 18:14:08 -0800 (PST)
-Received: from alex-ThinkPad-E480.. (ip5b435a69.dynamic.kabel-deutschland.de. [91.67.90.105])
-        by smtp.googlemail.com with ESMTPSA id c6sm3909458wmq.46.2021.11.23.18.14.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 18:14:08 -0800 (PST)
-From:   Alex Bee <knaerzche@gmail.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH] iommu/rockchip: Fix PAGE_DESC_HI_MASKs for RK3568
-Date:   Wed, 24 Nov 2021 03:13:25 +0100
-Message-Id: <20211124021325.858139-1-knaerzche@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S240709AbhKXCUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 21:20:38 -0500
+Received: from mga05.intel.com ([192.55.52.43]:59594 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240702AbhKXCUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 21:20:36 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="321419767"
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="321419767"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 18:17:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="538468408"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 23 Nov 2021 18:17:23 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mphqd-0004B2-15; Wed, 24 Nov 2021 02:17:23 +0000
+Date:   Wed, 24 Nov 2021 10:17:02 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Trevor Wu <trevor.wu@mediatek.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: sound/soc/mediatek/common/mtk-btcvsd.c:1367:30: sparse: sparse:
+ incorrect type in assignment (different address spaces)
+Message-ID: <202111241027.0fQlO8F3-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the submission of iommu driver for RK3568 a subtle bug was
-introduced: PAGE_DESC_HI_MASK1 and PAGE_DESC_HI_MASK2 have to be
-the other way arround - that leads to random errors, especially when
-addresses beyond 32 bit are used.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5d9f4cf36721aba199975a9be7863a3ff5cd4b59
+commit: 6746cc858259985a945a07075a19ec4d24352407 ASoC: mediatek: mt8195: add platform driver
+date:   3 months ago
+config: alpha-randconfig-s032-20211117 (https://download.01.org/0day-ci/archive/20211124/202111241027.0fQlO8F3-lkp@intel.com/config.gz)
+compiler: alpha-linux-gcc (GCC) 11.2.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6746cc858259985a945a07075a19ec4d24352407
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout 6746cc858259985a945a07075a19ec4d24352407
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=alpha 
 
-Fix it.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Fixes: c55356c534aa ("iommu: rockchip: Add support for iommu v2")
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
+
+sparse warnings: (new ones prefixed by >>)
+>> sound/soc/mediatek/common/mtk-btcvsd.c:1367:30: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned int [usertype] *bt_reg_pkt_r @@     got void [noderef] __iomem * @@
+   sound/soc/mediatek/common/mtk-btcvsd.c:1367:30: sparse:     expected unsigned int [usertype] *bt_reg_pkt_r
+   sound/soc/mediatek/common/mtk-btcvsd.c:1367:30: sparse:     got void [noderef] __iomem *
+>> sound/soc/mediatek/common/mtk-btcvsd.c:1369:30: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned int [usertype] *bt_reg_pkt_w @@     got void [noderef] __iomem * @@
+   sound/soc/mediatek/common/mtk-btcvsd.c:1369:30: sparse:     expected unsigned int [usertype] *bt_reg_pkt_w
+   sound/soc/mediatek/common/mtk-btcvsd.c:1369:30: sparse:     got void [noderef] __iomem *
+>> sound/soc/mediatek/common/mtk-btcvsd.c:1371:28: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned int [usertype] *bt_reg_ctl @@     got void [noderef] __iomem * @@
+   sound/soc/mediatek/common/mtk-btcvsd.c:1371:28: sparse:     expected unsigned int [usertype] *bt_reg_ctl
+   sound/soc/mediatek/common/mtk-btcvsd.c:1371:28: sparse:     got void [noderef] __iomem *
+
+vim +1367 sound/soc/mediatek/common/mtk-btcvsd.c
+
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1281  
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1282  static int mtk_btcvsd_snd_probe(struct platform_device *pdev)
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1283  {
+b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1284  	int ret;
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1285  	int irq_id;
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1286  	u32 offset[5] = {0, 0, 0, 0, 0};
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1287  	struct mtk_btcvsd_snd *btcvsd;
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1288  	struct device *dev = &pdev->dev;
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1289  
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1290  	/* init btcvsd private data */
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1291  	btcvsd = devm_kzalloc(dev, sizeof(*btcvsd), GFP_KERNEL);
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1292  	if (!btcvsd)
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1293  		return -ENOMEM;
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1294  	platform_set_drvdata(pdev, btcvsd);
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1295  	btcvsd->dev = dev;
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1296  
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1297  	/* init tx/rx */
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1298  	btcvsd->rx = devm_kzalloc(btcvsd->dev, sizeof(*btcvsd->rx), GFP_KERNEL);
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1299  	if (!btcvsd->rx)
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1300  		return -ENOMEM;
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1301  
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1302  	btcvsd->tx = devm_kzalloc(btcvsd->dev, sizeof(*btcvsd->tx), GFP_KERNEL);
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1303  	if (!btcvsd->tx)
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1304  		return -ENOMEM;
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1305  
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1306  	spin_lock_init(&btcvsd->tx_lock);
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1307  	spin_lock_init(&btcvsd->rx_lock);
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1308  
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1309  	init_waitqueue_head(&btcvsd->tx_wait);
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1310  	init_waitqueue_head(&btcvsd->rx_wait);
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1311  
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1312  	mtk_btcvsd_snd_tx_init(btcvsd);
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1313  	mtk_btcvsd_snd_rx_init(btcvsd);
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1314  
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1315  	/* irq */
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1316  	irq_id = platform_get_irq(pdev, 0);
+cf9441adb1a355 Stephen Boyd       2019-07-30  1317  	if (irq_id <= 0)
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1318  		return irq_id < 0 ? irq_id : -ENXIO;
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1319  
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1320  	ret = devm_request_irq(dev, irq_id, mtk_btcvsd_snd_irq_handler,
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1321  			       IRQF_TRIGGER_LOW, "BTCVSD_ISR_Handle",
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1322  			       (void *)btcvsd);
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1323  	if (ret) {
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1324  		dev_err(dev, "could not request_irq for BTCVSD_ISR_Handle\n");
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1325  		return ret;
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1326  	}
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1327  
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1328  	btcvsd->irq_id = irq_id;
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1329  
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1330  	/* iomap */
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1331  	btcvsd->bt_pkv_base = of_iomap(dev->of_node, 0);
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1332  	if (!btcvsd->bt_pkv_base) {
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1333  		dev_err(dev, "iomap bt_pkv_base fail\n");
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1334  		return -EIO;
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1335  	}
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1336  
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1337  	btcvsd->bt_sram_bank2_base = of_iomap(dev->of_node, 1);
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1338  	if (!btcvsd->bt_sram_bank2_base) {
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1339  		dev_err(dev, "iomap bt_sram_bank2_base fail\n");
+b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1340  		ret = -EIO;
+b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1341  		goto unmap_pkv_err;
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1342  	}
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1343  
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1344  	btcvsd->infra = syscon_regmap_lookup_by_phandle(dev->of_node,
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1345  							"mediatek,infracfg");
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1346  	if (IS_ERR(btcvsd->infra)) {
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1347  		dev_err(dev, "cannot find infra controller: %ld\n",
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1348  			PTR_ERR(btcvsd->infra));
+b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1349  		ret = PTR_ERR(btcvsd->infra);
+b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1350  		goto unmap_bank2_err;
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1351  	}
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1352  
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1353  	/* get offset */
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1354  	ret = of_property_read_u32_array(dev->of_node, "mediatek,offset",
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1355  					 offset,
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1356  					 ARRAY_SIZE(offset));
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1357  	if (ret) {
+766cc4965a3a2a Colin Ian King     2019-02-04  1358  		dev_warn(dev, "%s(), get offset fail, ret %d\n", __func__, ret);
+b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1359  		goto unmap_bank2_err;
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1360  	}
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1361  	btcvsd->infra_misc_offset = offset[0];
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1362  	btcvsd->conn_bt_cvsd_mask = offset[1];
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1363  	btcvsd->cvsd_mcu_read_offset = offset[2];
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1364  	btcvsd->cvsd_mcu_write_offset = offset[3];
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1365  	btcvsd->cvsd_packet_indicator = offset[4];
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1366  
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30 @1367  	btcvsd->bt_reg_pkt_r = btcvsd->bt_pkv_base +
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1368  			       btcvsd->cvsd_mcu_read_offset;
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30 @1369  	btcvsd->bt_reg_pkt_w = btcvsd->bt_pkv_base +
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1370  			       btcvsd->cvsd_mcu_write_offset;
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30 @1371  	btcvsd->bt_reg_ctl = btcvsd->bt_pkv_base +
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1372  			     btcvsd->cvsd_packet_indicator;
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1373  
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1374  	/* init state */
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1375  	mtk_btcvsd_snd_set_state(btcvsd, btcvsd->tx, BT_SCO_STATE_IDLE);
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1376  	mtk_btcvsd_snd_set_state(btcvsd, btcvsd->rx, BT_SCO_STATE_IDLE);
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1377  
+b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1378  	ret = devm_snd_soc_register_component(dev, &mtk_btcvsd_snd_platform,
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1379  					      NULL, 0);
+b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1380  	if (ret)
+b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1381  		goto unmap_bank2_err;
+b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1382  
+b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1383  	return 0;
+b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1384  
+b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1385  unmap_bank2_err:
+b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1386  	iounmap(btcvsd->bt_sram_bank2_base);
+b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1387  unmap_pkv_err:
+b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1388  	iounmap(btcvsd->bt_pkv_base);
+b6052c3c7a78f5 Christophe JAILLET 2021-06-06  1389  	return ret;
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1390  }
+4bd8597dc36c37 KaiChieh Chuang    2019-01-30  1391  
+
+:::::: The code at line 1367 was first introduced by commit
+:::::: 4bd8597dc36c376a2bb1ef2c72984615bdeb68de ASoC: mediatek: add btcvsd driver
+
+:::::: TO: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+:::::: CC: Mark Brown <broonie@kernel.org>
+
 ---
-
-I've found this bug, when testing the recent VOP2 submission, which is
-the first perpherial which uses iommu for RK356x. I could use it on my
-quartz64 8GB board only, when limiting the available memory to less 4GB.
-
-This patch fixes it.
-
- drivers/iommu/rockchip-iommu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/iommu/rockchip-iommu.c b/drivers/iommu/rockchip-iommu.c
-index 5cb260820eda..7f23ad61c094 100644
---- a/drivers/iommu/rockchip-iommu.c
-+++ b/drivers/iommu/rockchip-iommu.c
-@@ -200,8 +200,8 @@ static inline phys_addr_t rk_dte_pt_address(u32 dte)
- #define DTE_HI_MASK2	GENMASK(7, 4)
- #define DTE_HI_SHIFT1	24 /* shift bit 8 to bit 32 */
- #define DTE_HI_SHIFT2	32 /* shift bit 4 to bit 36 */
--#define PAGE_DESC_HI_MASK1	GENMASK_ULL(39, 36)
--#define PAGE_DESC_HI_MASK2	GENMASK_ULL(35, 32)
-+#define PAGE_DESC_HI_MASK1	GENMASK_ULL(35, 32)
-+#define PAGE_DESC_HI_MASK2	GENMASK_ULL(39, 36)
- 
- static inline phys_addr_t rk_dte_pt_address_v2(u32 dte)
- {
--- 
-2.30.2
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
