@@ -2,61 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7CD45C773
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:33:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A61D845C776
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:33:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355929AbhKXOgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:36:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48110 "EHLO
+        id S1356010AbhKXOgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:36:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355877AbhKXOgH (ORCPT
+        with ESMTP id S1355907AbhKXOgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:36:07 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7468C1A3ACD
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 05:23:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0eagjiyWCr9C4dEKHRNrT4y4jf0mBVFU+63E9nRYUe0=; b=THFW9Tv08DBQtBHJscFmYp7Us0
-        SKgkmP9zJz7RBriYOL61HWtIoJJJuW1OO9NcyhorSAqmoo2m22XSEL/J8AMPYGGHujAq3BbXGbpYU
-        4PdA/nobgD8myLFL32K95AytL1KGAgmO6OT4EdsdjWNpQ92TAEBtEoQpJkfFppJVk3LvCAy8b9sEh
-        JS0/9wYoQ6tPdBOl8yMPmEF7KbDHQTooF+5gJzHfuKZVgbN70OmkAcrrl1VODUGdht3BayWDh1A6S
-        l/SV26/Ib/VFiED1mcJUXYVLIFRkOSK8athcf2pDvggrD4W9+3EW5dDe9wlyVc+GPiRnxLr4D3cHx
-        hNNNVI/g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mpsFS-001tWA-PY; Wed, 24 Nov 2021 13:23:42 +0000
-Date:   Wed, 24 Nov 2021 13:23:42 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     cgel.zte@gmail.com
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, chiminghao <chi.minghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH] mm: Use BUG_ON instead of if condition followed by BUG
-Message-ID: <YZ483gwnwTysPt0G@casper.infradead.org>
-References: <20211124030849.34998-1-chi.minghao@zte.com.cn>
+        Wed, 24 Nov 2021 09:36:08 -0500
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4FDC1A3ADC
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 05:23:55 -0800 (PST)
+Received: by mail-qv1-xf2f.google.com with SMTP id kl8so1735916qvb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 05:23:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vR5X7aTiFOOVGN8Rdr9twInRzNQE68Jn7eaS79KF5JI=;
+        b=Ql2jamGTDoo7tRUYmapHPNuQGI2EBH53GGT10ws9BRT9mp46w8Q3WwC3bQcPjeyJUb
+         bDlBo8Chiuh50ahwDix4xn/QkQqNYaECP7iHe7aFuqQ+GnbXtLePsHEQYi8iJLbO8jqG
+         NeYdwLTquLM5mylQwGgCeaeQkp0LBt1Yn1Rqo+zq6gwOGYUG9Po4+HaTCnO+dQNQOo9u
+         /H7S4tZq/gdk39EiB3cmL6+u0dGvJcgyz0lJGS50HCetT00czUmh7PpLQWvPGx6Qxi6k
+         OC/IM/Z8a6CY0jkeVQY6DjARa3DtW+KgCl9Ll6TBgitPiQ0pysSPg1B/wYFjftVk3MfZ
+         N+lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vR5X7aTiFOOVGN8Rdr9twInRzNQE68Jn7eaS79KF5JI=;
+        b=h3zxTSVECcAk9e009EVkN0ehIoQO8xKtl9EWFP+rKnOL9amMUBgQTlt6AKfbfZb3s6
+         uGIfHsOp1agvybLWxe573KooB6jTB34SrhSu61vjcJbZAWaztyZND/iR73uZP4YeWCUO
+         aLwpUPwIGdpkpccVp5a1uiJsuRRYIXed7YRKYsvNAUP3KGTecmVz1mqKpOWXe92GqL3F
+         mK1hHe4xjuUd3PwfYK18QN75B5oSOmbU+x7m/G/cLqgu3NFi/uLVI6D1Eg7L1vW2ORIJ
+         5WHJr5BHQzCeUqsWJxRFSlZSyqBLJn0IOwruoaMginrjwW8EfEDdKXccKTN1JXA0zF6u
+         i07w==
+X-Gm-Message-State: AOAM531E9scdGTanC9PYKSJUMTlm24Waj4W2g7bFunSnzn7qywXB8Otm
+        pDlvx05v4WSgzZbaEOjyRqOHpg==
+X-Google-Smtp-Source: ABdhPJwIkO/hSHdrvxMNPMQTiV33oMboBFQ2VKpVaquqdmUVNR+JyQZWlHq5jUxy9L7WR3iB7jccJg==
+X-Received: by 2002:ad4:576a:: with SMTP id r10mr7232232qvx.5.1637760234949;
+        Wed, 24 Nov 2021 05:23:54 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id u7sm8522541qkp.17.2021.11.24.05.23.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 05:23:54 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mpsFd-0011Ar-RE; Wed, 24 Nov 2021 09:23:53 -0400
+Date:   Wed, 24 Nov 2021 09:23:53 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        Andrew Dona-Couch <andrew@donacou.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Drew DeVault <sir@cmpwn.com>,
+        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+Message-ID: <20211124132353.GG5112@ziepe.ca>
+References: <ca96bb88-295c-ccad-ed2f-abc585cb4904@kernel.dk>
+ <5f998bb7-7b5d-9253-2337-b1d9ea59c796@redhat.com>
+ <20211123132523.GA5112@ziepe.ca>
+ <10ccf01b-f13a-d626-beba-cbee70770cf1@redhat.com>
+ <20211123140709.GB5112@ziepe.ca>
+ <e4d7d211-5d62-df89-8f94-e49385286f1f@redhat.com>
+ <20211123170056.GC5112@ziepe.ca>
+ <dd92a69a-6d09-93a1-4f50-5020f5cc59d0@suse.cz>
+ <20211123235953.GF5112@ziepe.ca>
+ <2adca04f-92e1-5f99-6094-5fac66a22a77@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211124030849.34998-1-chi.minghao@zte.com.cn>
+In-Reply-To: <2adca04f-92e1-5f99-6094-5fac66a22a77@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 03:08:49AM +0000, cgel.zte@gmail.com wrote:
-> From: chiminghao <chi.minghao@zte.com.cn>
-> 
-> Fix the following coccinelle report:
-> ./mm/memory_hotplug.c:2210:2-5:
-> WARNING  Use BUG_ON instead of if condition followed by BUG.
+On Wed, Nov 24, 2021 at 09:57:32AM +0100, David Hildenbrand wrote:
 
-What coccinelle script is reporting this?
+> Unfortunately it will only be a band aid AFAIU. I can rewrite my
+> reproducer fairly easily to pin the whole 2M range first, pin a second
+> time only a single page, and then unpin the 2M range, resulting in the
+> very same way to block THP. (I can block some THP less because I always
+> need the possibility to memlock 2M first, though).
 
-> -	if (try_remove_memory(start, size))
-> -		BUG();
-> +	BUG_ON(try_remove_memory(start, size));
+Oh!
 
-I really, really, really do not like this.  For functions with
-side-effects, this is bad style.  If it's a pure predicate, then
-sure, but this is bad.
+The issue is GUP always pins an entire compound, no matter how little
+the user requests.
+
+However, when all the GUP callers do mlock accounting they have no
+idea how much memory GUP actually pinned and only account mlock on 4K
+chunks.
+
+This is the bug your test is showing - using this accounting error the
+user can significantly blow past their mlock limit by having GUP pin
+2M chunks and then mlock accounting for only 4k chunks.
+
+It is a super obnoxious bug to fix, but still just a bug and not some
+inherent defect in FOLL_LONGTERM.
+
+It also says the MLOCK_LIMIT really needs to always be > 1 THP
+otherwise even a single 4K page may be unpinnable with correct
+accounting.
+
+Jason
