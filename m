@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2949445CF6B
+	by mail.lfdr.de (Postfix) with ESMTP id 717E445CF6C
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244658AbhKXVrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 16:47:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35954 "EHLO
+        id S1343801AbhKXVrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 16:47:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245042AbhKXVrn (ORCPT
+        with ESMTP id S244663AbhKXVro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 16:47:43 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF6DC06173E
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 13:44:32 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id p3-20020a170903248300b00143c00a5411so1297900plw.12
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 13:44:32 -0800 (PST)
+        Wed, 24 Nov 2021 16:47:44 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 256D7C06173E
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 13:44:34 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id o11-20020a635a0b000000b00320daef2ad6so1355568pgb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 13:44:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=DKZg3S3JbC7UFqx9XCubd9jpAZSz45i7flp00buaAHE=;
-        b=kk++MEItvROlWLszZzrY5qGEoiEejSnf1FCstJWlTkjXIOG5nqJdeRHa+vJK+/A62e
-         F4NoxKsphCndXXx2ZW4KntcqDVDZFRM0ldgGecJqL4klapNgWd13eztbrZKran6iSFZA
-         k9pOvYrVq73NZl+6AQM+TO+oinrwyb6lp79BCoOA0lZIL/V0oekiVvAkVgd+xpHCsZ9x
-         L/Y6WBfhKsSARhC0uO1QAEPxcC2QBmLW/CvF5Va+u/argZzQ8XEb00MMeMHJLyJfb7U6
-         srSmZlqpfKT2QJzg6PpaXYarZyPxbGATpgcV6ombE8pj0/9tEu9dz0bhHTjHB1ldun01
-         2wxg==
+        bh=tLduHLCEhFBJGcWmSSIdFrH+R691pR5vCSBmZR8vuZw=;
+        b=CC1gtVLupTA8rueVdjI6wawbrHV3whgvmB7lktq3CbWDlJgYE5Xoh3R3YmR7xG15wY
+         WmsDDWVcGDHm30fDQR6mvoYLfD/2RKXmsflI2saH+GKIu4h2hO8CvcOjxa4u9JZnoUQn
+         9Jm+ZJPP4tbUfBkUDXd4ivqbi/7paSZRbVabJ25gU5qSQyYyMpbD+HkxuxkhZiUl5aJw
+         Gikx1kcdduPjRWpXPSJLYna3Dxpg7+qROiXBxjdB3ASH8l7N0Blc9cLRwz0ss0iTz4xr
+         9w46X7fZ77nUOrQFs4lmnFLFg22YxpR9bu/VfAxD99z7g15Uo2MpNuCi0/fQrQZvknBA
+         jpGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=DKZg3S3JbC7UFqx9XCubd9jpAZSz45i7flp00buaAHE=;
-        b=4tYzVe1/WH8GI5TjNlikPp4YmTDu5J6YiS62viYWoj3B9OEyMoQDFJ3pmjXG9MPRzw
-         GXiDiU8Z7X95RAMvXq/HVES7gj/iQ1CETf1bl+m+xA1b7Awq7uQuwSObhQmHRPTdtMbG
-         cXd2C2tubSpUllLBmQ9A1q11ZT8uYhCvTg0RwtJS8udoPt6rvT3W0n8a0QpXzAmHsRHF
-         54+uCtkVmEb4r2zOvbnZfRM7qHShy9xDxdsP/mrLxxvpxDpaekztBmzGEGYFmOCjgNDQ
-         RDf65a4pXz/zo6dfVExIKbb2pOO1PUVzvdLAxkmMnkz+Sv78YlhOM14XfX8RshfsspDF
-         cKww==
-X-Gm-Message-State: AOAM532wqnGhk1AFLfYOQNJHa+uyZZpbEI1G8vNzUC27P1nSp6ZTWSg0
-        hEWcmN0RSwYia4F9CxIqdR++fnG3jRMN
-X-Google-Smtp-Source: ABdhPJx2paf/6vK9rPra05A3zyHt7H9t3DEFsf1JmydeX70xnxn3B+OjjqN0M4pSOwMpUQyKH7cN/C9/v7a2
+        bh=tLduHLCEhFBJGcWmSSIdFrH+R691pR5vCSBmZR8vuZw=;
+        b=mIZfGkKl/pMBG361y3Lnsxv0HQEcgWsWJSvmiIRoPgqG1o5B2pa9r5K2Foo795vani
+         gTDRO1dRBOnnBrtlJf9P19sTrffwXP0cP6+6+bYssUR/sY5rMHVaT7T/H0YpO1gh8E4y
+         G8B6L+X63Y5i+D577NxZRb4Jy7OX5nXMMbHbKBwQqhBGxGzuaOlYUI7+aCcmWUO1h5IR
+         Ls7n+tRf0SykeySj7zF3Gvzf4qjfaDnB5cDdDCWJ8mHJ6sjS9tDH6Z7WhQ3kNHFHTI51
+         HadZt4DgqBiHFDvYzdnKz8wQYUIyUwlCQJG9TF7g9AmH4anfxNf4BxOf/XRnAtlfNx8G
+         HoRA==
+X-Gm-Message-State: AOAM531tbsiHbnQNBQm+XndaEGsIV46pcXf3wnaK/iIa3VGgjUTcbN3G
+        X8DYbyLNj+GvvDwDIhghhfEdU3OowBRz
+X-Google-Smtp-Source: ABdhPJxAwhAbOfBn4cRf5CvmBdeRB86tn3Jv7VCI4xG5hdBCs5xuCb6jf2Bd1OteJPkMhIlOQgc+e6g558TL
 X-Received: from mizhang-super.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1071])
- (user=mizhang job=sendgmr) by 2002:a17:90a:284f:: with SMTP id
- p15mr325050pjf.1.1637790271817; Wed, 24 Nov 2021 13:44:31 -0800 (PST)
+ (user=mizhang job=sendgmr) by 2002:a05:6a00:15c7:b0:49f:f48b:f96e with SMTP
+ id o7-20020a056a0015c700b0049ff48bf96emr9491719pfu.65.1637790273655; Wed, 24
+ Nov 2021 13:44:33 -0800 (PST)
 Reply-To: Mingwei Zhang <mizhang@google.com>
-Date:   Wed, 24 Nov 2021 21:44:20 +0000
+Date:   Wed, 24 Nov 2021 21:44:21 +0000
 In-Reply-To: <20211124214421.458549-1-mizhang@google.com>
-Message-Id: <20211124214421.458549-2-mizhang@google.com>
+Message-Id: <20211124214421.458549-3-mizhang@google.com>
 Mime-Version: 1.0
 References: <20211124214421.458549-1-mizhang@google.com>
 X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH 1/2] Revert "KVM: x86/mmu: Don't step down in the TDP iterator
- when zapping all SPTEs"
+Subject: [PATCH 2/2] KVM: mmu/x86: optimize zapping by retaining non-leaf
+ SPTEs and avoid rcu stall
 From:   Mingwei Zhang <mizhang@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -69,15 +70,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not stepping down in TDP iterator in `zap_all` case avoids re-reading the
-non-leaf SPTEs, thus accelerates the zapping process . But when the number
-of SPTEs is too large, we may run out of CPU time and causes a RCU stall
-warnings in __handle_changed_pte() in the context of zap_gfn_range().
+TDP MMU SPTE zapping process currently uses two levels of iterations. The
+first level iteration happens at the for loop within the zap_gfn_range()
+with the purpose of calibrating the accurate range for zapping. The second
+level itreration start at tdp_mmu_set_spte{,_atomic}() that tears down the
+whole paging structures (leaf and non-leaf SPTEs) within the range. The
+former iteration is yield safe, while the second one is not.
 
-Revert this patch to allow eliminating RCU stall warning using a two-phase
-zapping for `zap_all` case.
+In many cases, zapping SPTE process could be optimized since the non-leaf
+SPTEs could most likely be retained for the next allocation. On the other
+hand, for large scale SPTE zapping scenarios, we may end up zapping too
+many SPTEs and use excessive CPU time that causes the RCU stall warning.
 
-This reverts commit 0103098fb4f13b447b26ed514bcd3140f6791047.
+The follow selftest reproduces the warning:
+
+	(env: kvm.tdp_mmu=Y)
+	./dirty_log_perf_test -v 64 -b 8G
+
+Optimize the zapping process by skipping all SPTEs above a certain level in
+the first iteration. This allows us to control the granularity of the
+actual zapping and invoke tdp_mmu_iter_cond_resched() on time. In addition,
+we would retain some of the non-leaf SPTEs to accelerate next allocation.
+
+For the selection of the `certain level`, we choose the PG_LEVEL_1G because
+it is currently the largest page size supported and it natually fits the
+scenario of splitting large pages.
+
+For `zap_all` case (usually) at VM teardown time, we use a two-phase
+mechanism: the 1st phase zaps all SPTEs at PG_LEVEL_1G level and 2nd phase
+zaps everything else. This is achieved by the helper function
+__zap_gfn_range().
 
 Cc: Sean Christopherson <seanjc@google.com>
 Cc: Ben Gardon <bgardon@google.com>
@@ -85,36 +107,103 @@ Cc: David Matlack <dmatlack@google.com>
 
 Signed-off-by: Mingwei Zhang <mizhang@google.com>
 ---
- arch/x86/kvm/mmu/tdp_mmu.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 57 ++++++++++++++++++++++++++------------
+ 1 file changed, 40 insertions(+), 17 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 7c5dd83e52de..89d16bb104de 100644
+index 89d16bb104de..3fadc51c004a 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.c
 +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -706,12 +706,6 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
- 	bool zap_all = (start == 0 && end >= max_gfn_host);
+@@ -697,24 +697,16 @@ static inline bool tdp_mmu_iter_cond_resched(struct kvm *kvm,
+  * account for the possibility that other threads are modifying the paging
+  * structures concurrently. If shared is false, this thread should hold the
+  * MMU lock in write mode.
++ *
++ * If zap_all is true, eliminate all the paging structures that contains the
++ * SPTEs.
+  */
+-static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+-			  gfn_t start, gfn_t end, bool can_yield, bool flush,
+-			  bool shared)
++static bool __zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
++			    gfn_t start, gfn_t end, bool can_yield, bool flush,
++			    bool shared, bool zap_all)
+ {
+-	gfn_t max_gfn_host = 1ULL << (shadow_phys_bits - PAGE_SHIFT);
+-	bool zap_all = (start == 0 && end >= max_gfn_host);
  	struct tdp_iter iter;
  
 -	/*
--	 * No need to try to step down in the iterator when zapping all SPTEs,
--	 * zapping the top-level non-leaf SPTEs will recurse on their children.
+-	 * Bound the walk at host.MAXPHYADDR, guest accesses beyond that will
+-	 * hit a #PF(RSVD) and never get to an EPT Violation/Misconfig / #NPF,
+-	 * and so KVM will never install a SPTE for such addresses.
 -	 */
--	int min_level = zap_all ? root->role.level : PG_LEVEL_4K;
+-	end = min(end, max_gfn_host);
 -
- 	/*
- 	 * Bound the walk at host.MAXPHYADDR, guest accesses beyond that will
- 	 * hit a #PF(RSVD) and never get to an EPT Violation/Misconfig / #NPF,
-@@ -723,8 +717,7 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
- 
+-	kvm_lockdep_assert_mmu_lock_held(kvm, shared);
+-
  	rcu_read_lock();
  
--	for_each_tdp_pte_min_level(iter, root->spt, root->role.level,
--				   min_level, start, end) {
-+	tdp_root_for_each_pte(iter, root, start, end) {
- retry:
- 		if (can_yield &&
- 		    tdp_mmu_iter_cond_resched(kvm, &iter, flush, shared)) {
+ 	tdp_root_for_each_pte(iter, root, start, end) {
+@@ -725,17 +717,24 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+ 			continue;
+ 		}
+ 
+-		if (!is_shadow_present_pte(iter.old_spte))
++		/*
++		 * In zap_all case, ignore the checking of present since we have
++		 * to zap everything.
++		 */
++		if (!zap_all && !is_shadow_present_pte(iter.old_spte))
+ 			continue;
+ 
+ 		/*
+ 		 * If this is a non-last-level SPTE that covers a larger range
+ 		 * than should be zapped, continue, and zap the mappings at a
+-		 * lower level, except when zapping all SPTEs.
++		 * lower level. Actual zapping started at proper granularity
++		 * that is not so large as to cause a soft lockup when handling
++		 * the changed pte (which does not yield).
+ 		 */
+ 		if (!zap_all &&
+ 		    (iter.gfn < start ||
+-		     iter.gfn + KVM_PAGES_PER_HPAGE(iter.level) > end) &&
++		     iter.gfn + KVM_PAGES_PER_HPAGE(iter.level) > end ||
++		     iter.level > PG_LEVEL_1G) &&
+ 		    !is_last_spte(iter.old_spte, iter.level))
+ 			continue;
+ 
+@@ -756,6 +755,30 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+ 	return flush;
+ }
+ 
++static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
++			  gfn_t start, gfn_t end, bool can_yield, bool flush,
++			  bool shared)
++{
++	gfn_t max_gfn_host = 1ULL << (shadow_phys_bits - PAGE_SHIFT);
++	bool zap_all = (start == 0 && end >= max_gfn_host);
++
++	/*
++	 * Bound the walk at host.MAXPHYADDR, guest accesses beyond that will
++	 * hit a #PF(RSVD) and never get to an EPT Violation/Misconfig / #NPF,
++	 * and so KVM will never install a SPTE for such addresses.
++	 */
++	end = min(end, max_gfn_host);
++
++	kvm_lockdep_assert_mmu_lock_held(kvm, shared);
++
++	flush = __zap_gfn_range(kvm, root, start, end, can_yield, flush, shared,
++				false);
++	if (zap_all)
++		flush = __zap_gfn_range(kvm, root, start, end, can_yield, flush,
++					shared, true);
++	return flush;
++}
++
+ /*
+  * Tears down the mappings for the range of gfns, [start, end), and frees the
+  * non-root pages mapping GFNs strictly within that range. Returns true if
 -- 
 2.34.0.rc2.393.gf8c9666880-goog
 
