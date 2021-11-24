@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692CC45C36E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:36:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B885E45C1BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:19:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352867AbhKXNiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:38:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51646 "EHLO mail.kernel.org"
+        id S1347528AbhKXNVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:21:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345399AbhKXNgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:36:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A18261C16;
-        Wed, 24 Nov 2021 12:55:02 +0000 (UTC)
+        id S1347529AbhKXNSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:18:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EA9461059;
+        Wed, 24 Nov 2021 12:45:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758502;
-        bh=JoqDDM8rcUK3i4L38FrxCEInzdKXUwU7prtEBZ82d1s=;
+        s=korg; t=1637757939;
+        bh=nWvDVpW6FeD16pkmmZYihYOkRnvCPAEldk9mR2rjGY8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ywnBrX2wU/+ZOnllSe4sknPlPPKr+5p2vWEZBZTX0/bFMtrGA8F5tPn7Pm42OweBh
-         zDNUWnoOtN8C60S3xWB0Ymj1sNxysK2CN5T5y8lyM2XBql79bWMP3u7GbPiOLDoMO9
-         2r/2jIVWzbz0DhHMur1QkNvBGDiOiW6faxmYVYKA=
+        b=QLFyhFNtmg3C71FryFot4ZJCvXhubrFVFTPd9wwC3EuYPxMjVXA6t2vrWqqtAJEFr
+         Gj0cIdjvnHpXcbHvY0ZWPYPMyxW1rQqoBhGsc5UyF7ksMWlYa3vmsfKsWcjsrb9VDr
+         QEi43/bIpoli0vPGfg0I3qrsqoYIfmH/hiY4NLZ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Hans de Goede <hdegoede@redhat.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>,
+        Eryk Rybak <eryk.roch.rybak@intel.com>,
+        Tony Brelinski <tony.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 091/154] platform/x86: hp_accel: Fix an error handling path in lis3lv02d_probe()
+Subject: [PATCH 4.19 297/323] i40e: Fix changing previously set num_queue_pairs for PFs
 Date:   Wed, 24 Nov 2021 12:58:07 +0100
-Message-Id: <20211124115705.252343801@linuxfoundation.org>
+Message-Id: <20211124115728.937285756@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +44,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Eryk Rybak <eryk.roch.rybak@intel.com>
 
-[ Upstream commit c961a7d2aa23ae19e0099fbcdf1040fb760eea83 ]
+[ Upstream commit d2a69fefd75683004ffe87166de5635b3267ee07 ]
 
-If 'led_classdev_register()' fails, some additional resources should be
-released.
+Currently, the i40e_vsi_setup_queue_map is basing the count of queues in
+TCs on a VSI's alloc_queue_pairs member which is not changed throughout
+any user's action (for example via ethtool's set_channels callback).
 
-Add the missing 'i8042_remove_filter()' and 'lis3lv02d_remove_fs()' calls
-that are already in the remove function but are missing here.
+This implies that vsi->tc_config.tc_info[n].qcount value that is given
+to the kernel via netdev_set_tc_queue() that notifies about the count of
+queues per particular traffic class is constant even if user has changed
+the total count of queues.
 
-Fixes: a4c724d0723b ("platform: hp_accel: add a i8042 filter to remove HPQ6000 data from kb bus stream")
-Fixes: 9e0c79782143 ("lis3lv02d: merge with leds hp disk")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/5a4f218f8f16d2e3a7906b7ca3654ffa946895f8.1636314074.git.christophe.jaillet@wanadoo.fr
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+This in turn caused the kernel warning after setting the queue count to
+the lower value than the initial one:
+
+$ ethtool -l ens801f0
+Channel parameters for ens801f0:
+Pre-set maximums:
+RX:             0
+TX:             0
+Other:          1
+Combined:       64
+Current hardware settings:
+RX:             0
+TX:             0
+Other:          1
+Combined:       64
+
+$ ethtool -L ens801f0 combined 40
+
+[dmesg]
+Number of in use tx queues changed invalidating tc mappings. Priority
+traffic classification disabled!
+
+Reason was that vsi->alloc_queue_pairs stayed at 64 value which was used
+to set the qcount on TC0 (by default only TC0 exists so all of the
+existing queues are assigned to TC0). we update the offset/qcount via
+netdev_set_tc_queue() back to the old value but then the
+netif_set_real_num_tx_queues() is using the vsi->num_queue_pairs as a
+value which got set to 40.
+
+Fix it by using vsi->req_queue_pairs as a queue count that will be
+distributed across TCs. Do it only for non-zero values, which implies
+that user actually requested the new count of queues.
+
+For VSIs other than main, stay with the vsi->alloc_queue_pairs as we
+only allow manipulating the queue count on main VSI.
+
+Fixes: bc6d33c8d93f ("i40e: Fix the number of queues available to be mapped for use")
+Co-developed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Co-developed-by: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
+Signed-off-by: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
+Signed-off-by: Eryk Rybak <eryk.roch.rybak@intel.com>
+Tested-by: Tony Brelinski <tony.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/hp_accel.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 35 ++++++++++++++-------
+ 1 file changed, 23 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/platform/x86/hp_accel.c b/drivers/platform/x86/hp_accel.c
-index 8c0867bda8280..0dfaa1a43b674 100644
---- a/drivers/platform/x86/hp_accel.c
-+++ b/drivers/platform/x86/hp_accel.c
-@@ -372,9 +372,11 @@ static int lis3lv02d_add(struct acpi_device *device)
- 	INIT_WORK(&hpled_led.work, delayed_set_status_worker);
- 	ret = led_classdev_register(NULL, &hpled_led.led_classdev);
- 	if (ret) {
-+		i8042_remove_filter(hp_accel_i8042_filter);
- 		lis3lv02d_joystick_disable(&lis3_dev);
- 		lis3lv02d_poweroff(&lis3_dev);
- 		flush_work(&hpled_led.work);
-+		lis3lv02d_remove_fs(&lis3_dev);
- 		return ret;
- 	}
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index d948ca6368422..222eb82d56109 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -1765,6 +1765,7 @@ static void i40e_vsi_setup_queue_map(struct i40e_vsi *vsi,
+ 				     bool is_add)
+ {
+ 	struct i40e_pf *pf = vsi->back;
++	u16 num_tc_qps = 0;
+ 	u16 sections = 0;
+ 	u8 netdev_tc = 0;
+ 	u16 numtc = 1;
+@@ -1772,13 +1773,29 @@ static void i40e_vsi_setup_queue_map(struct i40e_vsi *vsi,
+ 	u8 offset;
+ 	u16 qmap;
+ 	int i;
+-	u16 num_tc_qps = 0;
  
+ 	sections = I40E_AQ_VSI_PROP_QUEUE_MAP_VALID;
+ 	offset = 0;
+ 
++	if (vsi->type == I40E_VSI_MAIN) {
++		/* This code helps add more queue to the VSI if we have
++		 * more cores than RSS can support, the higher cores will
++		 * be served by ATR or other filters. Furthermore, the
++		 * non-zero req_queue_pairs says that user requested a new
++		 * queue count via ethtool's set_channels, so use this
++		 * value for queues distribution across traffic classes
++		 */
++		if (vsi->req_queue_pairs > 0)
++			vsi->num_queue_pairs = vsi->req_queue_pairs;
++		else if (pf->flags & I40E_FLAG_MSIX_ENABLED)
++			vsi->num_queue_pairs = pf->num_lan_msix;
++	}
++
+ 	/* Number of queues per enabled TC */
+-	num_tc_qps = vsi->alloc_queue_pairs;
++	if (vsi->type == I40E_VSI_MAIN)
++		num_tc_qps = vsi->num_queue_pairs;
++	else
++		num_tc_qps = vsi->alloc_queue_pairs;
+ 	if (enabled_tc && (vsi->back->flags & I40E_FLAG_DCB_ENABLED)) {
+ 		/* Find numtc from enabled TC bitmap */
+ 		for (i = 0, numtc = 0; i < I40E_MAX_TRAFFIC_CLASS; i++) {
+@@ -1856,16 +1873,10 @@ static void i40e_vsi_setup_queue_map(struct i40e_vsi *vsi,
+ 		}
+ 		ctxt->info.tc_mapping[i] = cpu_to_le16(qmap);
+ 	}
+-
+-	/* Set actual Tx/Rx queue pairs */
+-	vsi->num_queue_pairs = offset;
+-	if ((vsi->type == I40E_VSI_MAIN) && (numtc == 1)) {
+-		if (vsi->req_queue_pairs > 0)
+-			vsi->num_queue_pairs = vsi->req_queue_pairs;
+-		else if (pf->flags & I40E_FLAG_MSIX_ENABLED)
+-			vsi->num_queue_pairs = pf->num_lan_msix;
+-	}
+-
++	/* Do not change previously set num_queue_pairs for PFs */
++	if ((vsi->type == I40E_VSI_MAIN && numtc != 1) ||
++	    vsi->type != I40E_VSI_MAIN)
++		vsi->num_queue_pairs = offset;
+ 	/* Scheduler section valid can only be set for ADD VSI */
+ 	if (is_add) {
+ 		sections |= I40E_AQ_VSI_PROP_SCHED_VALID;
 -- 
 2.33.0
 
