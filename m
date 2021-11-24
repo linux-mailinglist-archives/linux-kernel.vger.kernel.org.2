@@ -2,156 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D665145B667
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3707045B66D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:24:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241304AbhKXIYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 03:24:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229733AbhKXIYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 03:24:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A93060F5B;
-        Wed, 24 Nov 2021 08:21:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637742105;
-        bh=OxJsySSCM2zV8683KRsnYt4fvQpCxreUIaMK2taFRYc=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=ehl88ELZxfgLZA3xra8P2fWLfAUT+IPiOjfd57hDY1C3iGMAuS5RGbIKmUovHltoZ
-         7BJOmKpkSA5kLjwykuDz6jLx6YIKUVsTg3CErVFxZlou1dSeOqLuU3tWd/xOm47wUE
-         b9y36IBqQq6Ipodhr4VIEASFlfNHxrrr6Qh5NMS9zUEnt3XCbZ8ruOOGaGrle1Pwcd
-         WKcCCCCIfC/K4jZmgIJtVUyUaLdI5in1a/MvemuKROqYoR141RkWWvlxxRjmVYuBNt
-         gShXTQ0AcoCOCQXLqCQxVvTI46LDqy00zgKckpzwkPZaLiJSKHU7q6TXTO9a0j3UkU
-         dpCrFvUcElICA==
-Date:   Wed, 24 Nov 2021 09:21:41 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     "Coelho, Luciano" <luciano.coelho@intel.com>
-cc:     "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "Berg, Johannes" <johannes.berg@intel.com>,
-        "Grumbach, Emmanuel" <emmanuel.grumbach@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] iwlwifi: mvm: protect regulatory_set_wiphy_regd_sync()
- with wiphy lock
-In-Reply-To: <74c53e65a8f3db89d60718dc1dfb807cd80857ca.camel@intel.com>
-Message-ID: <nycvar.YFH.7.76.2111240921230.16505@cbobk.fhfr.pm>
-References: <nycvar.YFH.7.76.2111232204150.16505@cbobk.fhfr.pm>  <871r366kjy.fsf@codeaurora.org> <74c53e65a8f3db89d60718dc1dfb807cd80857ca.camel@intel.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S240675AbhKXI1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 03:27:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230512AbhKXI1M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 03:27:12 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9524C061714
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 00:24:02 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id n26so1959326pff.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 00:24:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Pd3L21t6usac8YG8wguBE1VQxDXVkFkmT941urDOFp8=;
+        b=tRIxyRrfzpI8BTRuJHrhMEOxfaPvKyNq93QubZbckg1DxYITjGsJXf4kavDhoRKB4x
+         yxxoKrzE2uet5L+cQjClIhr+Wt9CyWur+EOKDYvSTYF5cIndCPF6s7VzdQvWbuqGnbmf
+         z6lJn9CyuFQJLYBrI3xJ2NBrb18FM+Q61q/kEJn/JxlmZ0DhaeWENmt4q3a23EtMWgub
+         LdasYZtUFlR8Pu2XSk5V4XOWFJFq0Ma0B2Z/ZgnfIs1hQLOMMYTAQ0vNFk3im9iaO3qs
+         5EDB8Ez0r82Od1ye+CAYrrck7MOJBex592tD+61243ypU/z0drh4SGlr2JN0qHwJiakf
+         A3dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Pd3L21t6usac8YG8wguBE1VQxDXVkFkmT941urDOFp8=;
+        b=bkXeSHWtE4CETdj6nlSGsO6Hh/tC+eP9Z8lEQMm1Xay1bSGJz0kUGgGdxtcf73wYJo
+         ymyNeIBkcHlzvI+QkzXz+MBDcWFt4lMNPi026wCf0MUVWoIQITN3Pi4dq1NOKB9k4xUM
+         CkSdX6nmxDI7SHZH4sqmay3LAVnfZ0bTrx2FSkPBAZsNJxIM6yjSYbpeg0zx1fAnVNKy
+         XSiryGn8wQ5HPKN3QLJO8Ayfm+rbP0Xrng1wGM4CJVvKaILKQXVCPYkEEV7qUIGcJaiL
+         oZBOE79/9kSB/1agL91ajB9D9SeVIpvj/dxipZqGAJthiGaSILzhf8iBoShLk9zIYeOR
+         dkEA==
+X-Gm-Message-State: AOAM531n2MNufEx94q71WXWeAPcvZ069JAtiYd3qfWlVtgCZkLEePHPT
+        oRcQRuBt9E0babEhFAkKVp+ORA==
+X-Google-Smtp-Source: ABdhPJw7voXYhhphMNoIJU87/mjv7I3/1hmR/2Fhbil59GV9ksDucs9L8fJsUSvFuaEfa5i/Akr4SA==
+X-Received: by 2002:a63:2255:: with SMTP id t21mr9091123pgm.186.1637742242076;
+        Wed, 24 Nov 2021 00:24:02 -0800 (PST)
+Received: from C02FT5A6MD6R.bytedance.net ([61.120.150.76])
+        by smtp.gmail.com with ESMTPSA id k18sm10615228pfc.155.2021.11.24.00.23.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 24 Nov 2021 00:24:00 -0800 (PST)
+From:   Gang Li <ligang.bdlg@bytedance.com>
+To:     Jonathan Corbet <corbet@lwn.net>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     Gang Li <ligang.bdlg@bytedance.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH v2] sched/numa: add per-process numa_balancing
+Date:   Wed, 24 Nov 2021 16:23:38 +0800
+Message-Id: <20211124082340.5496-1-ligang.bdlg@bytedance.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021, Coelho, Luciano wrote:
+This patch add a new api PR_NUMA_BALANCING in prctl.
 
-> > > Since the switch away from rtnl to wiphy lock, 
-> > > regulatory_set_wiphy_regd_sync() has to be called with wiphy lock held; 
-> > > this is currently not the case on the module load codepath.
-> > > 
-> > > Fix that by properly acquiring it in iwl_mvm_start_get_nvm() to maintain 
-> > > also lock ordering against mvm->mutex and RTNL.
-> > > 
-> > > This fixes the splat below.
-> > > 
-> > >  =============================
-> > >  WARNING: suspicious RCU usage
-> > >  5.16.0-rc2 #1 Not tainted
-> > >  -----------------------------
-> > >  drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c:264 suspicious rcu_dereference_protected() usage!
-> > > 
-> > >  other info that might help us debug this:
-> > > 
-> > >  rcu_scheduler_active = 2, debug_locks = 1
-> > >  3 locks held by modprobe/578:
-> > >   #0: ffffffffc0b6f0e8 (iwlwifi_opmode_table_mtx){+.+.}-{3:3}, at: iwl_opmode_register+0x2e/0xe0 [iwlwifi]
-> > >   #1: ffffffff9a856b08 (rtnl_mutex){+.+.}-{3:3}, at: iwl_op_mode_mvm_start+0xa0b/0xcb0 [iwlmvm]
-> > >   #2: ffff8e5242f53380 (&mvm->mutex){+.+.}-{3:3}, at: iwl_op_mode_mvm_start+0xa16/0xcb0 [iwlmvm]
-> > > 
-> > >  stack backtrace:
-> > >  CPU: 1 PID: 578 Comm: modprobe Not tainted 5.16.0-rc2 #1
-> > >  Hardware name: LENOVO 20K5S22R00/20K5S22R00, BIOS R0IET38W (1.16 ) 05/31/2017
-> > >  Call Trace:
-> > >   <TASK>
-> > >   dump_stack_lvl+0x58/0x71
-> > >   iwl_mvm_init_fw_regd+0x13d/0x180 [iwlmvm]
-> > >   iwl_mvm_init_mcc+0x66/0x1d0 [iwlmvm]
-> > >   iwl_op_mode_mvm_start+0xc6d/0xcb0 [iwlmvm]
-> > >   _iwl_op_mode_start.isra.4+0x42/0x80 [iwlwifi]
-> > >   iwl_opmode_register+0x71/0xe0 [iwlwifi]
-> > >   ? 0xffffffffc1062000
-> > >   iwl_mvm_init+0x34/0x1000 [iwlmvm]
-> > >   do_one_initcall+0x5b/0x300
-> > >   do_init_module+0x5b/0x21c
-> > >   load_module+0x1b2f/0x2320
-> > >   ? __do_sys_finit_module+0xaa/0x110
-> > >   __do_sys_finit_module+0xaa/0x110
-> > >   do_syscall_64+0x3a/0xb0
-> > >   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > >  RIP: 0033:0x7f7cdd7c8ded
-> > >  Code: 5b 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d fb ef 0e 00 f7 d8 64 89 01 48
-> > >  RSP: 002b:00007fffb90bf458 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-> > >  RAX: ffffffffffffffda RBX: 0000559c501caf00 RCX: 00007f7cdd7c8ded
-> > >  RDX: 0000000000000000 RSI: 0000559c4eb366ee RDI: 0000000000000002
-> > >  RBP: 0000000000040000 R08: 0000000000000000 R09: 0000559c501ca9f8
-> > >  R10: 0000000000000002 R11: 0000000000000246 R12: 0000559c4eb366ee
-> > >  R13: 0000559c501cadb0 R14: 0000000000000000 R15: 0000559c501cbad0
-> > >   </TASK>
-> > >  ------------[ cut here ]------------
-> > >  WARNING: CPU: 1 PID: 578 at net/wireless/reg.c:3107 reg_process_self_managed_hint+0x183/0x1d0 [cfg80211]
-> > >  Modules linked in:
-> > >  CPU: 1 PID: 578 Comm: modprobe Not tainted 5.16.0-rc2 #1
-> > >  Hardware name: LENOVO 20K5S22R00/20K5S22R00, BIOS R0IET38W (1.16 ) 05/31/2017
-> > >  RIP: 0010:reg_process_self_managed_hint+0x183/0x1d0 [cfg80211]
-> > >  Code: 83 c4 60 5b 41 5a 41 5c 41 5d 41 5e 41 5f 5d 49 8d 62 f8 c3 48 8d 7b 68 be ff ff ff ff e8 75 4a 13 d9 85 c0 0f 85 e6 fe ff ff <0f> 0b e9 df fe ff ff 0f 0b 80 3d bc 2c 0b 00 00 0f 85 c2 fe ff ff
-> > >  RSP: 0018:ffff9994809cfaf0 EFLAGS: 00010246
-> > >  RAX: 0000000000000000 RBX: ffff8e5242f505c0 RCX: 0000000000000000
-> > >  RDX: 0000000000000000 RSI: ffff8e5242f50628 RDI: ffff8e524a2b5cd0
-> > >  RBP: ffff9994809cfb80 R08: 0000000000000001 R09: ffffffff9b2e2f50
-> > >  R10: ffff9994809cfb98 R11: ffffffffffffffff R12: 0000000000000000
-> > >  R13: ffff8e5242f532e8 R14: ffff8e5248914010 R15: ffff8e5242f532e0
-> > >  FS:  00007f7cdd6af740(0000) GS:ffff8e5367480000(0000) knlGS:0000000000000000
-> > >  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > >  CR2: 00007f19430687ac CR3: 00000001088fa003 CR4: 00000000003706e0
-> > >  Call Trace:
-> > >   <TASK>
-> > >   ? lock_is_held_type+0xb4/0x120
-> > >   ? regulatory_set_wiphy_regd_sync+0x2f/0x80 [cfg80211]
-> > >   regulatory_set_wiphy_regd_sync+0x2f/0x80 [cfg80211]
-> > >   iwl_mvm_init_mcc+0xcd/0x1d0 [iwlmvm]
-> > >   iwl_op_mode_mvm_start+0xc6d/0xcb0 [iwlmvm]
-> > >   _iwl_op_mode_start.isra.4+0x42/0x80 [iwlwifi]
-> > >   iwl_opmode_register+0x71/0xe0 [iwlwifi]
-> > >   ? 0xffffffffc1062000
-> > >   iwl_mvm_init+0x34/0x1000 [iwlmvm]
-> > >   do_one_initcall+0x5b/0x300
-> > >   do_init_module+0x5b/0x21c
-> > >   load_module+0x1b2f/0x2320
-> > >   ? __do_sys_finit_module+0xaa/0x110
-> > >   __do_sys_finit_module+0xaa/0x110
-> > >   do_syscall_64+0x3a/0xb0
-> > >   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > >  RIP: 0033:0x7f7cdd7c8ded
-> > >  Code: 5b 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d fb ef 0e 00 f7 d8 64 89 01 48
-> > >  RSP: 002b:00007fffb90bf458 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-> > >  RAX: ffffffffffffffda RBX: 0000559c501caf00 RCX: 00007f7cdd7c8ded
-> > >  RDX: 0000000000000000 RSI: 0000559c4eb366ee RDI: 0000000000000002
-> > >  RBP: 0000000000040000 R08: 0000000000000000 R09: 0000559c501ca9f8
-> > >  R10: 0000000000000002 R11: 0000000000000246 R12: 0000559c4eb366ee
-> > >  R13: 0000559c501cadb0 R14: 0000000000000000 R15: 0000559c501cbad0
-> > > 
-> > > Fixes: a05829a7222e9d1 ("cfg80211: avoid holding the RTNL when calling the driver")
-> > > Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-> > 
-> > I think this should go to wireless-drivers so I assigned this to me.
-> > Luca, ack?
-> 
-> Hmmm, I thought we already had a fix for this as well?
+A large number of page faults will cause performance loss when numa balancing
+is performing. Thus those processes which care about worst-case performance
+need numa balancing disabled. Others, on the contrary, allow a temporary
+performance loss in exchange for higher average performance, so enable numa
+balancing is better for them.
 
-FWIW I don't see this fixed in latest linux-next.
+Numa balancing can only be controlled globally by /proc/sys/kernel/numa_balancing.
+Due to the above case, we want to disable/enable numa_balancing per-process
+instead.
 
+Add numa_balancing under mm_struct. Then use it in task_tick_numa.
+
+Set per-process numa balancing:
+	prctl(PR_NUMA_BALANCING, PR_SET_NUMAB_DISABLE); //disable
+	prctl(PR_NUMA_BALANCING, PR_SET_NUMAB_ENABLE);  //enable
+	prctl(PR_NUMA_BALANCING, PR_SET_NUMAB_DEFAULT); //follow global
+Get numa_balancing state:
+	prctl(PR_NUMA_BALANCING, PR_GET_NUMAB, &ret);
+	cat /proc/<pid>/status | grep NumaB_enabled
+
+Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
+---
+ Documentation/filesystems/proc.rst   |  2 ++
+ fs/proc/task_mmu.c                   | 25 ++++++++++++++++++++
+ include/linux/mm_types.h             |  3 +++
+ include/linux/sched/numa_balancing.h |  6 +++++
+ include/uapi/linux/prctl.h           |  7 ++++++
+ kernel/fork.c                        |  3 +++
+ kernel/sched/fair.c                  |  6 +++--
+ kernel/sys.c                         | 35 ++++++++++++++++++++++++++++
+ 8 files changed, 85 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+index 8d7f141c6fc7..fc44723a821a 100644
+--- a/Documentation/filesystems/proc.rst
++++ b/Documentation/filesystems/proc.rst
+@@ -192,6 +192,7 @@ read the file /proc/PID/status::
+   VmLib:      1412 kB
+   VmPTE:        20 kb
+   VmSwap:        0 kB
++  NumaB_enabled:  default
+   HugetlbPages:          0 kB
+   CoreDumping:    0
+   THP_enabled:	  1
+@@ -273,6 +274,7 @@ It's slow but very precise.
+  VmPTE                       size of page table entries
+  VmSwap                      amount of swap used by anonymous private data
+                              (shmem swap usage is not included)
++ NumaB_enabled               numa balancing state, set by prctl(PR_NUMA_BALANCING, ...)
+  HugetlbPages                size of hugetlb memory portions
+  CoreDumping                 process's memory is currently being dumped
+                              (killing the process may lead to a corrupted core)
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index ad667dbc96f5..5f340f1c926e 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -19,6 +19,7 @@
+ #include <linux/shmem_fs.h>
+ #include <linux/uaccess.h>
+ #include <linux/pkeys.h>
++#include <linux/sched/numa_balancing.h>
+ 
+ #include <asm/elf.h>
+ #include <asm/tlb.h>
+@@ -31,10 +32,16 @@ void task_mem(struct seq_file *m, struct mm_struct *mm)
+ {
+ 	unsigned long text, lib, swap, anon, file, shmem;
+ 	unsigned long hiwater_vm, total_vm, hiwater_rss, total_rss;
++#ifdef CONFIG_NUMA_BALANCING
++	int numab_enabled;
++#endif
+ 
+ 	anon = get_mm_counter(mm, MM_ANONPAGES);
+ 	file = get_mm_counter(mm, MM_FILEPAGES);
+ 	shmem = get_mm_counter(mm, MM_SHMEMPAGES);
++#ifdef CONFIG_NUMA_BALANCING
++	numab_enabled = mm->numab_enabled;
++#endif
+ 
+ 	/*
+ 	 * Note: to minimize their overhead, mm maintains hiwater_vm and
+@@ -75,6 +82,24 @@ void task_mem(struct seq_file *m, struct mm_struct *mm)
+ 		    " kB\nVmPTE:\t", mm_pgtables_bytes(mm) >> 10, 8);
+ 	SEQ_PUT_DEC(" kB\nVmSwap:\t", swap);
+ 	seq_puts(m, " kB\n");
++#ifdef CONFIG_NUMA_BALANCING
++	seq_puts(m, "NumaB_enabled:\t");
++	switch (mm->numab_enabled) {
++	case NUMAB_DEFAULT:
++		seq_puts(m, "default");
++		break;
++	case NUMAB_DISABLED:
++		seq_puts(m, "disabled");
++		break;
++	case NUMAB_ENABLED:
++		seq_puts(m, "enabled");
++		break;
++	default:
++		seq_puts(m, "unknown");
++		break;
++	}
++	seq_putc(m, '\n');
++#endif
+ 	hugetlb_report_usage(m, mm);
+ }
+ #undef SEQ_PUT_DEC
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index bb8c6f5f19bc..3f827b3c0e75 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -612,6 +612,9 @@ struct mm_struct {
+ 
+ 		/* numa_scan_seq prevents two threads setting pte_numa */
+ 		int numa_scan_seq;
++
++		/* Controls whether NUMA balancing is active for this mm. */
++		int numab_enabled;
+ #endif
+ 		/*
+ 		 * An operation with batched TLB flushing is going on. Anything
+diff --git a/include/linux/sched/numa_balancing.h b/include/linux/sched/numa_balancing.h
+index 3988762efe15..35a1c79925ea 100644
+--- a/include/linux/sched/numa_balancing.h
++++ b/include/linux/sched/numa_balancing.h
+@@ -16,6 +16,12 @@
+ #define TNF_MIGRATE_FAIL 0x10
+ 
+ #ifdef CONFIG_NUMA_BALANCING
++enum {
++	NUMAB_DISABLED,
++	NUMAB_ENABLED,
++	NUMAB_DEFAULT
++};
++DECLARE_STATIC_KEY_FALSE(sched_numa_balancing);
+ extern void task_numa_fault(int last_node, int node, int pages, int flags);
+ extern pid_t task_numa_group_id(struct task_struct *p);
+ extern void set_numabalancing_state(bool enabled);
+diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
+index bb73e9a0b24f..525f174a56f5 100644
+--- a/include/uapi/linux/prctl.h
++++ b/include/uapi/linux/prctl.h
+@@ -272,4 +272,11 @@ struct prctl_mm_map {
+ # define PR_SCHED_CORE_SCOPE_THREAD_GROUP	1
+ # define PR_SCHED_CORE_SCOPE_PROCESS_GROUP	2
+ 
++/* Set/get enabled per-process numa_balancing */
++#define PR_NUMA_BALANCING		63
++# define PR_SET_NUMAB_DISABLED		NUMAB_DISABLED
++# define PR_SET_NUMAB_ENABLED		NUMAB_ENABLED
++# define PR_SET_NUMAB_DEFAULT		NUMAB_DEFAULT
++# define PR_GET_NUMAB				3
++
+ #endif /* _LINUX_PRCTL_H */
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 01af6129aa38..d028822d551f 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1110,6 +1110,9 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p,
+ 	init_tlb_flush_pending(mm);
+ #if defined(CONFIG_TRANSPARENT_HUGEPAGE) && !USE_SPLIT_PMD_PTLOCKS
+ 	mm->pmd_huge_pte = NULL;
++#endif
++#ifdef CONFIG_NUMA_BALANCING
++	mm->numab_enabled = NUMAB_DEFAULT;
+ #endif
+ 	mm_init_uprobes_state(mm);
+ 	hugetlb_count_init(mm);
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 6e476f6d9435..1245be1223c8 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -11169,8 +11169,10 @@ static void task_tick_fair(struct rq *rq, struct task_struct *curr, int queued)
+ 		entity_tick(cfs_rq, se, queued);
+ 	}
+ 
+-	if (static_branch_unlikely(&sched_numa_balancing))
+-		task_tick_numa(rq, curr);
++	if (curr->mm && (curr->mm->numab_enabled == NUMAB_ENABLED \
++	    || (static_branch_unlikely(&sched_numa_balancing) \
++	    && curr->mm->numab_enabled == NUMAB_DEFAULT)))
++	    task_tick_numa(rq, curr);
+ 
+ 	update_misfit_status(curr, rq);
+ 	update_overutilized_status(task_rq(curr));
+diff --git a/kernel/sys.c b/kernel/sys.c
+index 8fdac0d90504..de3112e537b8 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -58,6 +58,7 @@
+ #include <linux/sched/coredump.h>
+ #include <linux/sched/task.h>
+ #include <linux/sched/cputime.h>
++#include <linux/sched/numa_balancing.h>
+ #include <linux/rcupdate.h>
+ #include <linux/uidgid.h>
+ #include <linux/cred.h>
+@@ -2081,6 +2082,23 @@ static int prctl_set_auxv(struct mm_struct *mm, unsigned long addr,
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_NUMA_BALANCING
++static int prctl_pid_numa_balancing_write(int numa_balancing)
++{
++	if (numa_balancing != PR_SET_NUMAB_DEFAULT \
++	    && numa_balancing != PR_SET_NUMAB_DISABLED \
++	    && numa_balancing != PR_SET_NUMAB_ENABLED)
++		return -EINVAL;
++	current->mm->numab_enabled = numa_balancing;
++	return 0;
++}
++
++static int prctl_pid_numa_balancing_read(void)
++{
++	return current->mm->numab_enabled;
++}
++#endif
++
+ static int prctl_set_mm(int opt, unsigned long addr,
+ 			unsigned long arg4, unsigned long arg5)
+ {
+@@ -2525,6 +2543,23 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
+ 		error = set_syscall_user_dispatch(arg2, arg3, arg4,
+ 						  (char __user *) arg5);
+ 		break;
++#ifdef CONFIG_NUMA_BALANCING
++	case PR_NUMA_BALANCING:
++		switch (arg2) {
++		case PR_SET_NUMAB_DEFAULT:
++		case PR_SET_NUMAB_DISABLED:
++		case PR_SET_NUMAB_ENABLED:
++			error = prctl_pid_numa_balancing_write((int)arg2);
++			break;
++		case PR_GET_NUMAB:
++			error = put_user(prctl_pid_numa_balancing_read(), (int __user *)arg3);
++			break;
++		default:
++			error = -EINVAL;
++			break;
++		}
++		break;
++#endif
+ #ifdef CONFIG_SCHED_CORE
+ 	case PR_SCHED_CORE:
+ 		error = sched_core_share_pid(arg2, arg3, arg4, arg5);
 -- 
-Jiri Kosina
-SUSE Labs
+2.20.1
 
