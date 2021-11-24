@@ -2,415 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2912345C7F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:48:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5157C45C79A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:37:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355215AbhKXOva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:51:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355223AbhKXOvX (ORCPT
+        id S1357053AbhKXOk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:40:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:35988 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350231AbhKXOku (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:51:23 -0500
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE77C04CD86
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 06:37:10 -0800 (PST)
-Received: by mail-oi1-x22b.google.com with SMTP id m6so5766999oim.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 06:37:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=Q2uRSbObrkePrc/zqU3Ngfzhg//kzaNeGN8p2tOermY=;
-        b=Wpox2BiFdw5LB7Mri2X9dtiqzggWUQ3ce3fZP7mGvLN2qWIr6R+qb7739+z+UBjH5Y
-         OS+LZM7gbxWGZpx6sL0FuwcPnAJrceL277Xm0OZw0Cdzh48Qyo7n/KxiyjmgRBVcwI7w
-         55ScnUVXV+7X6tEuenAlNjJYETvgv46xXhEpjVV6n16XzUJoVnLXYppv28YM4oEpXL1e
-         a1eVfJrzmnWgKSX5TalRIpd6kQ+Ranj4PKYa/ADCd+1iwtWgVf6uSrXsLNztVFZm0wxY
-         4nfgw4iSkpctL59G9mvP8cxWZax6OQjSv35bcfWMfBjWQ8jvUoa8CeY4kO2Ks9ZwL2nB
-         weBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=Q2uRSbObrkePrc/zqU3Ngfzhg//kzaNeGN8p2tOermY=;
-        b=Hg/66mcIWCqWJuQEcC9EGKYecTTUsfVSPgHdqN2kn9vO/fTEkubGEG+0nSAEkXK1z3
-         +pgbq8+y5qW2Txevh6KEfmVDBZOPkqGhxFZd3bke5v/1z69BeV8xbDmJ89hS91yBhg4g
-         R126m/002vegowhdDXs6Dx0paRn11wKL3yJEHcQW8D4S+5ce7M/sw+hc6GDYvOhlxxcI
-         ffjYoaRrcoK9ruee6a1tmUV9M1Rjpvz2ECyx0QRCEr0/A2d9Hx1PSkN5rI8H0uFH7Zny
-         Q01B5cY+8ibzKVv2ycX+yTVfLPhca8wmzGO4YF6zYFb/BGPfCPqyGXGfhpVb31grJf+1
-         pTAQ==
-X-Gm-Message-State: AOAM531VpAMn5QXUANzsd0iRa81EikU0TIrf5+giJK+xWzCaUWkWlcKi
-        nNy6aam8bodFLDDI9CGbHsvat296bg8CNZ39iR90WQ==
-X-Google-Smtp-Source: ABdhPJyoBHUu71mzUSytuaBHiGkmNvNWsL+cSNLvnOPaoc3aXwyog/l3opaP3KACCnJdmgbG+DjUrao2zYz9PhEs5To=
-X-Received: by 2002:aca:1708:: with SMTP id j8mr6452479oii.62.1637764629846;
- Wed, 24 Nov 2021 06:37:09 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 24 Nov 2021 14:37:08 +0000
+        Wed, 24 Nov 2021 09:40:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637764660;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2eFPwkBPSqPY67/O1/+YH8rSc4RzYs89OEyta9CYqvE=;
+        b=CJs59DBFeZb1NsowCuQaB7cz3Jhbo5j3JTkkIN5uoTXyWbXe5DXhWF+7qTY7GIBI1fZCFN
+        XnfAapjfvvfqyM1O7ervAZuG4bZ+/TkGoGegvjTGMC2npNaCOu7Dg50kvzr6zCe7Qtqfyj
+        ICeqMUCPEAlN/ILrc2+Kp0Fizro+n2Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-467--1Rux0--PfKVUJd_vv2mEg-1; Wed, 24 Nov 2021 09:37:36 -0500
+X-MC-Unique: -1Rux0--PfKVUJd_vv2mEg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63EA983DD21;
+        Wed, 24 Nov 2021 14:37:35 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1888226FA3;
+        Wed, 24 Nov 2021 14:37:33 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH 1/2] rxrpc: Fix rxrpc_peer leak in rxrpc_look_up_bundle()
+From:   David Howells <dhowells@redhat.com>
+To:     Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+Cc:     Marc Dionne <marc.dionne@auristor.com>,
+        linux-afs@lists.infradead.org, dhowells@redhat.com,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 24 Nov 2021 14:37:33 +0000
+Message-ID: <163776465314.1844202.9057900281265187616.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-In-Reply-To: <fb09289440d16a0a441cd31a5542d4a6850fabe9.camel@mediatek.com>
-References: <20211110130623.20553-1-granquet@baylibre.com> <20211110130623.20553-7-granquet@baylibre.com>
- <fb09289440d16a0a441cd31a5542d4a6850fabe9.camel@mediatek.com>
-From:   Guillaume Ranquet <granquet@baylibre.com>
-User-Agent: alot/0.10
-Date:   Wed, 24 Nov 2021 14:37:08 +0000
-Message-ID: <CABnWg9s3rR1S5QqUyyUkKtsUqq3GSSLbMFvfoLQUs=4ZGzGqWw@mail.gmail.com>
-Subject: Re: [PATCH v6 6/7] phy: phy-mtk-dp: Add driver for DP phy
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     Markus Schneider-Pargmann <msp@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chunfeng,
+From: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
 
-Quoting Chunfeng Yun (2021-11-13 08:48:37)
-> On Wed, 2021-11-10 at 14:06 +0100, Guillaume Ranquet wrote:
-> > From: Markus Schneider-Pargmann <msp@baylibre.com>
-> >
-> > This is a new driver that supports the integrated DisplayPort phy for
-> > mediatek SoCs, especially the mt8195. The phy is integrated into the
-> > DisplayPort controller and will be created by the mtk-dp driver. This
-> > driver expects a struct regmap to be able to work on the same
-> > registers
-> > as the DisplayPort controller. It sets the device data to be the
-> > struct
-> > phy so that the DisplayPort controller can easily work with it.
-> >
-> > The driver does not have any devicetree bindings because the
-> > datasheet
-> > does not list the controller and the phy as distinct units.
-> >
-> > The interaction with the controller can be covered by the configure
-> > callback of the phy framework and its displayport parameters.
-> >
-> > Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-> > Signed-off-by: Guillaume Ranquet <granquet@baylibre.com>
-> > ---
-> >  MAINTAINERS                       |   1 +
-> >  drivers/phy/mediatek/Kconfig      |   8 ++
-> >  drivers/phy/mediatek/Makefile     |   1 +
-> >  drivers/phy/mediatek/phy-mtk-dp.c | 219
-> > ++++++++++++++++++++++++++++++
-> >  4 files changed, 229 insertions(+)
-> >  create mode 100644 drivers/phy/mediatek/phy-mtk-dp.c
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 170bbbeefc3f4..f9a71b6d2a4a9 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -6367,6 +6367,7 @@ L:      linux-mediatek@lists.infradead.org
-> > (moderated for non-subscribers)
-> >  S:   Supported
-> >  F:   Documentation/devicetree/bindings/display/mediatek/
-> >  F:   drivers/gpu/drm/mediatek/
-> > +F:   drivers/phy/mediatek/phy-mtk-dp.c
-> >  F:   drivers/phy/mediatek/phy-mtk-hdmi*
-> >  F:   drivers/phy/mediatek/phy-mtk-mipi*
-> >
-> > diff --git a/drivers/phy/mediatek/Kconfig
-> > b/drivers/phy/mediatek/Kconfig
-> > index 55f8e6c048ab3..f7ec860590492 100644
-> > --- a/drivers/phy/mediatek/Kconfig
-> > +++ b/drivers/phy/mediatek/Kconfig
-> > @@ -55,3 +55,11 @@ config PHY_MTK_MIPI_DSI
-> >       select GENERIC_PHY
-> >       help
-> >         Support MIPI DSI for Mediatek SoCs.
-> > +
-> > +config PHY_MTK_DP
-> > +     tristate "MediaTek DP-PHY Driver"
-> > +     depends on ARCH_MEDIATEK || COMPILE_TEST
-> > +     depends on OF
-> > +     select GENERIC_PHY
-> > +     help
-> > +       Support DisplayPort PHY for Mediatek SoCs.
-> > diff --git a/drivers/phy/mediatek/Makefile
-> > b/drivers/phy/mediatek/Makefile
-> > index ace660fbed3a1..4ba1e06504346 100644
-> > --- a/drivers/phy/mediatek/Makefile
-> > +++ b/drivers/phy/mediatek/Makefile
-> > @@ -3,6 +3,7 @@
-> >  # Makefile for the phy drivers.
-> >  #
-> >
-> > +obj-$(CONFIG_PHY_MTK_DP)             += phy-mtk-dp.o
-> >  obj-$(CONFIG_PHY_MTK_TPHY)           += phy-mtk-tphy.o
-> >  obj-$(CONFIG_PHY_MTK_UFS)            += phy-mtk-ufs.o
-> >  obj-$(CONFIG_PHY_MTK_XSPHY)          += phy-mtk-xsphy.o
-> > diff --git a/drivers/phy/mediatek/phy-mtk-dp.c
-> > b/drivers/phy/mediatek/phy-mtk-dp.c
-> > new file mode 100644
-> > index 0000000000000..4f8d26ec0346b
-> > --- /dev/null
-> > +++ b/drivers/phy/mediatek/phy-mtk-dp.c
-> > @@ -0,0 +1,219 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (c) 2021 BayLibre
-> > + * Author: Markus Schneider-Pargmann <msp@baylibre.com>
-> > + */
-> > +
-> > +#include <linux/delay.h>
-> > +#include <linux/io.h>
-> > +#include <linux/of.h>
-> > +#include <linux/phy/phy.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/regmap.h>
-> > +
-> > +#define PHY_OFFSET 0x1000
-> Why not provide register base address in DTS?
-> I find that phy's platform device is registered by dp driver but the
-> one automatically created when parse dts?
->
-This phy driver has no dt binding whatsoever, as it shares basically
-the same hardware as the DP driver,
-so everything has to be either hardcoded or passed through from the DP driver.
+Need to call rxrpc_put_peer() for bundle candidate before kfree() as it
+holds a ref to rxrpc_peer.
 
-> > +
-> > +#define MTK_DP_PHY_DIG_PLL_CTL_1             (PHY_OFFSET + 0x014)
-> > +# define TPLL_SSC_EN                         BIT(3)
-> > +
-> > +#define MTK_DP_PHY_DIG_BIT_RATE                      (PHY_OFFSET +
-> > 0x03C)
-> > +# define BIT_RATE_RBR                                0
-> > +# define BIT_RATE_HBR                                1
-> > +# define BIT_RATE_HBR2                               2
-> > +# define BIT_RATE_HBR3                               3
-> > +
-> > +#define MTK_DP_PHY_DIG_SW_RST                        (PHY_OFFSET +
-> > 0x038)
-> > +# define DP_GLB_SW_RST_PHYD                  BIT(0)
-> > +
-> > +#define MTK_DP_LANE0_DRIVING_PARAM_3         (PHY_OFFSET + 0x138)
-> > +#define MTK_DP_LANE1_DRIVING_PARAM_3         (PHY_OFFSET + 0x238)
-> > +#define MTK_DP_LANE2_DRIVING_PARAM_3         (PHY_OFFSET + 0x338)
-> > +#define MTK_DP_LANE3_DRIVING_PARAM_3         (PHY_OFFSET + 0x438)
-> > +# define XTP_LN_TX_LCTXC0_SW0_PRE0_DEFAULT   0x10
-> > +# define XTP_LN_TX_LCTXC0_SW0_PRE1_DEFAULT   (0x14 << 8)
-> > +# define XTP_LN_TX_LCTXC0_SW0_PRE2_DEFAULT   (0x18 << 16)
-> > +# define XTP_LN_TX_LCTXC0_SW0_PRE3_DEFAULT   (0x20 << 24)
-> > +# define DRIVING_PARAM_3_DEFAULT             (XTP_LN_TX_LCTXC0_SW0_P
-> > RE0_DEFAULT | \
-> > +                                              XTP_LN_TX_LCTXC0_SW0_P
-> > RE1_DEFAULT | \
-> > +                                              XTP_LN_TX_LCTXC0_SW0_P
-> > RE2_DEFAULT | \
-> > +                                              XTP_LN_TX_LCTXC0_SW0_P
-> > RE3_DEFAULT)
-> > +
-> > +#define MTK_DP_LANE0_DRIVING_PARAM_4         (PHY_OFFSET + 0x13C)
-> > +#define MTK_DP_LANE1_DRIVING_PARAM_4         (PHY_OFFSET + 0x23C)
-> > +#define MTK_DP_LANE2_DRIVING_PARAM_4         (PHY_OFFSET + 0x33C)
-> > +#define MTK_DP_LANE3_DRIVING_PARAM_4         (PHY_OFFSET + 0x43C)
-> > +# define XTP_LN_TX_LCTXC0_SW1_PRE0_DEFAULT   0x18
-> > +# define XTP_LN_TX_LCTXC0_SW1_PRE1_DEFAULT   (0x1e << 8)
-> > +# define XTP_LN_TX_LCTXC0_SW1_PRE2_DEFAULT   (0x24 << 16)
-> > +# define XTP_LN_TX_LCTXC0_SW2_PRE0_DEFAULT   (0x20 << 24)
-> > +# define DRIVING_PARAM_4_DEFAULT             (XTP_LN_TX_LCTXC0_SW1_P
-> > RE0_DEFAULT | \
-> > +                                              XTP_LN_TX_LCTXC0_SW1_P
-> > RE1_DEFAULT | \
-> > +                                              XTP_LN_TX_LCTXC0_SW1_P
-> > RE2_DEFAULT | \
-> > +                                              XTP_LN_TX_LCTXC0_SW2_P
-> > RE0_DEFAULT)
-> > +
-> > +#define MTK_DP_LANE0_DRIVING_PARAM_5         (PHY_OFFSET + 0x140)
-> > +#define MTK_DP_LANE1_DRIVING_PARAM_5         (PHY_OFFSET + 0x240)
-> > +#define MTK_DP_LANE2_DRIVING_PARAM_5         (PHY_OFFSET + 0x340)
-> > +#define MTK_DP_LANE3_DRIVING_PARAM_5         (PHY_OFFSET + 0x440)
-> > +# define XTP_LN_TX_LCTXC0_SW2_PRE1_DEFAULT   0x28
-> > +# define XTP_LN_TX_LCTXC0_SW3_PRE0_DEFAULT   (0x30 << 8)
-> > +# define DRIVING_PARAM_5_DEFAULT             (XTP_LN_TX_LCTXC0_SW2_P
-> > RE1_DEFAULT | \
-> > +                                              XTP_LN_TX_LCTXC0_SW3_P
-> > RE0_DEFAULT)
-> > +
-> > +#define MTK_DP_LANE0_DRIVING_PARAM_6         (PHY_OFFSET + 0x144)
-> > +#define MTK_DP_LANE1_DRIVING_PARAM_6         (PHY_OFFSET + 0x244)
-> > +#define MTK_DP_LANE2_DRIVING_PARAM_6         (PHY_OFFSET + 0x344)
-> > +#define MTK_DP_LANE3_DRIVING_PARAM_6         (PHY_OFFSET + 0x444)
-> > +# define XTP_LN_TX_LCTXCP1_SW0_PRE0_DEFAULT  0x00
-> > +# define XTP_LN_TX_LCTXCP1_SW0_PRE1_DEFAULT  (0x04 << 8)
-> > +# define XTP_LN_TX_LCTXCP1_SW0_PRE2_DEFAULT  (0x08 << 16)
-> > +# define XTP_LN_TX_LCTXCP1_SW0_PRE3_DEFAULT  (0x10 << 24)
-> > +# define DRIVING_PARAM_6_DEFAULT             (XTP_LN_TX_LCTXCP1_SW0_
-> > PRE0_DEFAULT | \
-> > +                                              XTP_LN_TX_LCTXCP1_SW0_
-> > PRE1_DEFAULT | \
-> > +                                              XTP_LN_TX_LCTXCP1_SW0_
-> > PRE2_DEFAULT | \
-> > +                                              XTP_LN_TX_LCTXCP1_SW0_
-> > PRE3_DEFAULT)
-> > +
-> > +#define MTK_DP_LANE0_DRIVING_PARAM_7         (PHY_OFFSET + 0x148)
-> > +#define MTK_DP_LANE1_DRIVING_PARAM_7         (PHY_OFFSET + 0x248)
-> > +#define MTK_DP_LANE2_DRIVING_PARAM_7         (PHY_OFFSET + 0x348)
-> > +#define MTK_DP_LANE3_DRIVING_PARAM_7         (PHY_OFFSET + 0x448)
-> > +# define XTP_LN_TX_LCTXCP1_SW1_PRE0_DEFAULT  0x00
-> > +# define XTP_LN_TX_LCTXCP1_SW1_PRE1_DEFAULT  (0x06 << 8)
-> > +# define XTP_LN_TX_LCTXCP1_SW1_PRE2_DEFAULT  (0x0c << 16)
-> > +# define XTP_LN_TX_LCTXCP1_SW2_PRE0_DEFAULT  (0x00 << 24)
-> > +# define DRIVING_PARAM_7_DEFAULT             (XTP_LN_TX_LCTXCP1_SW1_
-> > PRE0_DEFAULT | \
-> > +                                              XTP_LN_TX_LCTXCP1_SW1_
-> > PRE1_DEFAULT | \
-> > +                                              XTP_LN_TX_LCTXCP1_SW1_
-> > PRE2_DEFAULT | \
-> > +                                              XTP_LN_TX_LCTXCP1_SW2_
-> > PRE0_DEFAULT)
-> > +
-> > +#define MTK_DP_LANE0_DRIVING_PARAM_8         (PHY_OFFSET + 0x14C)
-> > +#define MTK_DP_LANE1_DRIVING_PARAM_8         (PHY_OFFSET + 0x24C)
-> > +#define MTK_DP_LANE2_DRIVING_PARAM_8         (PHY_OFFSET + 0x34C)
-> > +#define MTK_DP_LANE3_DRIVING_PARAM_8         (PHY_OFFSET + 0x44C)
-> > +# define XTP_LN_TX_LCTXCP1_SW2_PRE1_DEFAULT  0x08
-> > +# define XTP_LN_TX_LCTXCP1_SW3_PRE0_DEFAULT  (0x00 << 8)
-> > +# define DRIVING_PARAM_8_DEFAULT             (XTP_LN_TX_LCTXCP1_SW2_
-> > PRE1_DEFAULT | \
-> > +                                              XTP_LN_TX_LCTXCP1_SW3_
-> > PRE0_DEFAULT)
-> > +
-> > +struct mtk_dp_phy {
-> > +     struct regmap *regs;
-> > +};
-> > +
-> > +static int mtk_dp_phy_init(struct phy *phy)
-> > +{
-> > +     struct mtk_dp_phy *dp_phy = phy_get_drvdata(phy);
-> > +     u32 driving_params[] = {
-> > +             DRIVING_PARAM_3_DEFAULT,
-> > +             DRIVING_PARAM_4_DEFAULT,
-> > +             DRIVING_PARAM_5_DEFAULT,
-> > +             DRIVING_PARAM_6_DEFAULT,
-> > +             DRIVING_PARAM_7_DEFAULT,
-> > +             DRIVING_PARAM_8_DEFAULT
-> > +     };
-> > +
-> > +     regmap_bulk_write(dp_phy->regs, MTK_DP_LANE0_DRIVING_PARAM_3,
-> > +                       driving_params, ARRAY_SIZE(driving_params));
-> > +     regmap_bulk_write(dp_phy->regs, MTK_DP_LANE1_DRIVING_PARAM_3,
-> > +                       driving_params, ARRAY_SIZE(driving_params));
-> > +     regmap_bulk_write(dp_phy->regs, MTK_DP_LANE2_DRIVING_PARAM_3,
-> > +                       driving_params, ARRAY_SIZE(driving_params));
-> > +     regmap_bulk_write(dp_phy->regs, MTK_DP_LANE3_DRIVING_PARAM_3,
-> > +                       driving_params, ARRAY_SIZE(driving_params));
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int mtk_dp_phy_configure(struct phy *phy, union
-> > phy_configure_opts *opts)
-> > +{
-> > +     struct mtk_dp_phy *dp_phy = phy_get_drvdata(phy);
-> > +     u32 val;
-> > +
-> > +     if (opts->dp.set_rate) {
-> > +             switch (opts->dp.link_rate) {
-> > +             default:
-> > +                     dev_err(&phy->dev,
-> > +                             "Implementation error, unknown linkrate
-> > %x\n",
-> > +                             opts->dp.link_rate);
-> > +                     return -EINVAL;
-> > +             case 1620:
-> > +                     val = BIT_RATE_RBR;
-> > +                     break;
-> > +             case 2700:
-> > +                     val = BIT_RATE_HBR;
-> > +                     break;
-> > +             case 5400:
-> > +                     val = BIT_RATE_HBR2;
-> > +                     break;
-> > +             case 8100:
-> > +                     val = BIT_RATE_HBR3;
-> > +                     break;
-> > +             }
-> > +             regmap_write(dp_phy->regs, MTK_DP_PHY_DIG_BIT_RATE,
-> > val);
-> > +     }
-> > +
-> > +     regmap_update_bits(dp_phy->regs, MTK_DP_PHY_DIG_PLL_CTL_1,
-> > +                        TPLL_SSC_EN, opts->dp.ssc ? TPLL_SSC_EN :
-> > 0);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int mtk_dp_phy_reset(struct phy *phy)
-> > +{
-> > +     struct mtk_dp_phy *dp_phy = phy_get_drvdata(phy);
-> > +
-> > +     regmap_update_bits(dp_phy->regs, MTK_DP_PHY_DIG_SW_RST,
-> > +                        DP_GLB_SW_RST_PHYD, 0);
-> > +     usleep_range(50, 200);
-> > +     regmap_update_bits(dp_phy->regs, MTK_DP_PHY_DIG_SW_RST,
-> > +                        DP_GLB_SW_RST_PHYD, 1);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct phy_ops mtk_dp_phy_dev_ops = {
-> > +     .init = mtk_dp_phy_init,
-> > +     .configure = mtk_dp_phy_configure,
-> > +     .reset = mtk_dp_phy_reset,
-> > +     .owner = THIS_MODULE,
-> > +};
-> > +
-> > +static int mtk_dp_phy_probe(struct platform_device *pdev)
-> > +{
-> > +     struct device *dev = &pdev->dev;
-> > +     struct mtk_dp_phy *dp_phy;
-> > +     struct phy *phy;
-> > +
-> > +     dp_phy = devm_kzalloc(dev, sizeof(*dp_phy), GFP_KERNEL);
-> > +     if (!dp_phy)
-> > +             return -ENOMEM;
-> > +
-> > +     dp_phy->regs = *(struct regmap **)dev->platform_data;
-> > +     if (!dp_phy->regs) {
-> > +             dev_err(dev, "No data passed, requires struct
-> > regmap**\n");
-> > +             return -EINVAL;
-> > +     }
-> Why not get it from dts?
->
-No dt bindings, this is passed from the dp driver (which triggers the
-probe of the phy btw).
+[DH: v2: Changed to abstract out the bundle freeing code into a function]
 
-> > +
-> > +     phy = devm_phy_create(dev, NULL, &mtk_dp_phy_dev_ops);
-> > +     if (IS_ERR(phy)) {
-> > +             dev_err(dev, "Failed to create DP PHY: %ld\n",
-> > PTR_ERR(phy));
-> > +             return PTR_ERR(phy);
-> > +     }
-> > +     phy_set_drvdata(phy, dp_phy);
-> > +
-> > +     // Set device data to the phy so that mtk-dp can get it easily
-> use /* */
-> > +     dev_set_drvdata(dev, phy);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +struct platform_driver mtk_dp_phy_driver = {
-> > +     .probe = mtk_dp_phy_probe,
-> > +     .driver = {
-> > +             .name = "mediatek-dp-phy",
-> > +     },
-> > +};
-> > +module_platform_driver(mtk_dp_phy_driver);
-> > +
-> > +MODULE_AUTHOR("Markus Schneider-Pargmann <msp@baylibre.com>");
-> > +MODULE_DESCRIPTION("MediaTek DP PHY Driver");
-> > +MODULE_LICENSE("GPL v2");
+Fixes: 245500d853e9 ("rxrpc: Rewrite the client connection manager")
+Signed-off-by: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Marc Dionne <marc.dionne@auristor.com>
+cc: linux-afs@lists.infradead.org
+Link: https://lore.kernel.org/r/20211121041608.133740-1-eiichi.tsukata@nutanix.com/ # v1
+---
+
+ net/rxrpc/conn_client.c |   14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/net/rxrpc/conn_client.c b/net/rxrpc/conn_client.c
+index dbea0bfee48e..8120138dac01 100644
+--- a/net/rxrpc/conn_client.c
++++ b/net/rxrpc/conn_client.c
+@@ -135,16 +135,20 @@ struct rxrpc_bundle *rxrpc_get_bundle(struct rxrpc_bundle *bundle)
+ 	return bundle;
+ }
+ 
++static void rxrpc_free_bundle(struct rxrpc_bundle *bundle)
++{
++	rxrpc_put_peer(bundle->params.peer);
++	kfree(bundle);
++}
++
+ void rxrpc_put_bundle(struct rxrpc_bundle *bundle)
+ {
+ 	unsigned int d = bundle->debug_id;
+ 	unsigned int u = atomic_dec_return(&bundle->usage);
+ 
+ 	_debug("PUT B=%x %u", d, u);
+-	if (u == 0) {
+-		rxrpc_put_peer(bundle->params.peer);
+-		kfree(bundle);
+-	}
++	if (u == 0)
++		rxrpc_free_bundle(bundle);
+ }
+ 
+ /*
+@@ -328,7 +332,7 @@ static struct rxrpc_bundle *rxrpc_look_up_bundle(struct rxrpc_conn_parameters *c
+ 	return candidate;
+ 
+ found_bundle_free:
+-	kfree(candidate);
++	rxrpc_free_bundle(candidate);
+ found_bundle:
+ 	rxrpc_get_bundle(bundle);
+ 	spin_unlock(&local->client_bundles_lock);
+
+
