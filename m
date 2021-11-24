@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1DC45BBC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:22:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0BC45BA0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:05:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244444AbhKXMXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:23:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36414 "EHLO mail.kernel.org"
+        id S238446AbhKXMHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:07:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243692AbhKXMSp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:18:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D15A460232;
-        Wed, 24 Nov 2021 12:11:41 +0000 (UTC)
+        id S242036AbhKXMFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:05:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0B0A61074;
+        Wed, 24 Nov 2021 12:02:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755902;
-        bh=1vnFhOXJSZ8Vi7qsov5nOLUMlv3K3HGCaBs35V6Sl8w=;
+        s=korg; t=1637755361;
+        bh=IYdtnigu4aWmkhgRXz9+qN9cyxh8qymPil0T/Dmv0nM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EEv4E7myc+2d/aL/BXXj/NfYd9VtHGE3LhAUauOdSG5NpkTDdW15R7r4YIVXJYY2O
-         afiMGIJSQaha3hwB6fqNQS9h9D9vGRpa1ZjUaWfOsr71zSsKwiH1PZTbdSASgEhYea
-         kq36wys5SOFZQpRZNI8G702mSb+5pKaTrqnS+fmE=
+        b=UM5MFhRuHaIoFtplWKpDuBWKOv0E0+DThRq6esRi76NYbXptYZBj9zbxyDE1iaYTO
+         K+hAzHgygRzs1tZQlEZLV9ch+dyTAdX5bbVCAICaO6ouuIhNc1rfAK0AUpGH1nEAlm
+         2EN5LDMNzfjDKQYZkqSm4WMt6pKnQoG/fcjGj9DQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Guenter Roeck <linux@roeck-us.net>,
+        stable@vger.kernel.org, Vladimir Murzin <vladimir.murzin@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 100/207] hwmon: Fix possible memleak in __hwmon_device_register()
+Subject: [PATCH 4.4 068/162] ARM: 9136/1: ARMv7-M uses BE-8, not BE-32
 Date:   Wed, 24 Nov 2021 12:56:11 +0100
-Message-Id: <20211124115707.320515572@linuxfoundation.org>
+Message-Id: <20211124115700.527220139@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit ada61aa0b1184a8fda1a89a340c7d6cc4e59aee5 ]
+[ Upstream commit 345dac33f58894a56d17b92a41be10e16585ceff ]
 
-I got memory leak as follows when doing fault injection test:
+When configuring the kernel for big-endian, we set either BE-8 or BE-32
+based on the CPU architecture level. Until linux-4.4, we did not have
+any ARMv7-M platform allowing big-endian builds, but now i.MX/Vybrid
+is in that category, adn we get a build error because of this:
 
-unreferenced object 0xffff888102740438 (size 8):
-  comm "27", pid 859, jiffies 4295031351 (age 143.992s)
-  hex dump (first 8 bytes):
-    68 77 6d 6f 6e 30 00 00                          hwmon0..
-  backtrace:
-    [<00000000544b5996>] __kmalloc_track_caller+0x1a6/0x300
-    [<00000000df0d62b9>] kvasprintf+0xad/0x140
-    [<00000000d3d2a3da>] kvasprintf_const+0x62/0x190
-    [<000000005f8f0f29>] kobject_set_name_vargs+0x56/0x140
-    [<00000000b739e4b9>] dev_set_name+0xb0/0xe0
-    [<0000000095b69c25>] __hwmon_device_register+0xf19/0x1e50 [hwmon]
-    [<00000000a7e65b52>] hwmon_device_register_with_info+0xcb/0x110 [hwmon]
-    [<000000006f181e86>] devm_hwmon_device_register_with_info+0x85/0x100 [hwmon]
-    [<0000000081bdc567>] tmp421_probe+0x2d2/0x465 [tmp421]
-    [<00000000502cc3f8>] i2c_device_probe+0x4e1/0xbb0
-    [<00000000f90bda3b>] really_probe+0x285/0xc30
-    [<000000007eac7b77>] __driver_probe_device+0x35f/0x4f0
-    [<000000004953d43d>] driver_probe_device+0x4f/0x140
-    [<000000002ada2d41>] __device_attach_driver+0x24c/0x330
-    [<00000000b3977977>] bus_for_each_drv+0x15d/0x1e0
-    [<000000005bf2a8e3>] __device_attach+0x267/0x410
+arch/arm/kernel/module-plts.c: In function 'get_module_plt':
+arch/arm/kernel/module-plts.c:60:46: error: implicit declaration of function '__opcode_to_mem_thumb32' [-Werror=implicit-function-declaration]
 
-When device_register() returns an error, the name allocated in
-dev_set_name() will be leaked, the put_device() should be used
-instead of calling hwmon_dev_release() to give up the device
-reference, then the name will be freed in kobject_cleanup().
+This comes down to picking the wrong default, ARMv7-M uses BE8
+like ARMv7-A does. Changing the default gets the kernel to compile
+and presumably works.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: bab2243ce189 ("hwmon: Introduce hwmon_device_register_with_groups")
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20211012112758.2681084-1-yangyingliang@huawei.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+https://lore.kernel.org/all/1455804123-2526139-2-git-send-email-arnd@arndb.de/
+
+Tested-by: Vladimir Murzin <vladimir.murzin@arm.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/hwmon.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/arm/mm/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hwmon/hwmon.c b/drivers/hwmon/hwmon.c
-index e0a1a118514f9..8b11d2fdf80ab 100644
---- a/drivers/hwmon/hwmon.c
-+++ b/drivers/hwmon/hwmon.c
-@@ -592,8 +592,10 @@ __hwmon_device_register(struct device *dev, const char *name, void *drvdata,
- 	dev_set_drvdata(hdev, drvdata);
- 	dev_set_name(hdev, HWMON_ID_FORMAT, id);
- 	err = device_register(hdev);
--	if (err)
--		goto free_hwmon;
-+	if (err) {
-+		put_device(hdev);
-+		goto ida_remove;
-+	}
+diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
+index 71115afb71a05..f46089b24588f 100644
+--- a/arch/arm/mm/Kconfig
++++ b/arch/arm/mm/Kconfig
+@@ -724,7 +724,7 @@ config CPU_BIG_ENDIAN
+ config CPU_ENDIAN_BE8
+ 	bool
+ 	depends on CPU_BIG_ENDIAN
+-	default CPU_V6 || CPU_V6K || CPU_V7
++	default CPU_V6 || CPU_V6K || CPU_V7 || CPU_V7M
+ 	help
+ 	  Support for the BE-8 (big-endian) mode on ARMv6 and ARMv7 processors.
  
- 	if (chip && chip->ops->is_visible && chip->ops->read &&
- 	    chip->info[0]->type == hwmon_chip &&
 -- 
 2.33.0
 
