@@ -2,86 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7A745CDB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:12:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 280F945CDB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:12:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233519AbhKXUPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 15:15:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231365AbhKXUPv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 15:15:51 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E52C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:12:41 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id u22so7858309lju.7
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:12:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7soODcy9g9USyAcnsCV+bLWbMatBSsTCHZqUXUXsSj4=;
-        b=Yms4+zGyu39UCWV++S7CaSRQGeVCEmSMEz3gocFHBCOuDmBYty1vgMvqYewwqeLCZD
-         ZHm7NWjxJdoJbRuweJb9vapELXAsEGKkoWn1aDgKBAJeGd2m78XKk0S/SM3kBunfcD1m
-         VtKJpqOzOBLaIdndK9yi/b3IJuNSIWngX/Sy3hMrAf45dXw2U3t5jVMOL2DWILFp35z5
-         7ylFYlqWT4QPlJPjfwBcHkMA05BXDtRzaBXL2dGolvos7e6IS9ElM5A2tdISbioMLqZ2
-         S5ZcC/YKBthw2T3/qGwtjNIorvEXWqbSPNOvluDKt34zOzfdJnSfsEoCr0KaXYruj3x0
-         UoIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7soODcy9g9USyAcnsCV+bLWbMatBSsTCHZqUXUXsSj4=;
-        b=wXZoi00G24CqVU5YQ7bl344nwnpOUrAjl23UwkOr3zkr5cjkDi2WYr7+qHRrnhOjxq
-         9XbcNQb2f63nv/jjkZP9K96ag//+agKkFjfowYplAjpKCBkPVKT6HWUf1up3QS3SHhDA
-         1vq1TEVMs+aiIRh1XvyaXBCDkYtKA8F6V3+DWYajiBPqMu7DKj1/OTQQDlLPeXuwnNR5
-         OusMEDpiy88CFS/gLTeUIaCG2ChY/AUqHsk6540+Q2ux6DGV8h4wP6EBpN7uXMottSq4
-         X/S9zVLyYmsrtL6CnaLYZJX9OKwhs8VTVVkQCVWaoW0xscvAxAEmkhIEU7oegqXT+Dk1
-         X1NA==
-X-Gm-Message-State: AOAM532YQr1Q54sKrSQTD9XlYDcLL3iajaOkPbNgU3mEgdkd0r9WVKeo
-        AbRQuXDSNsZKGK34183qZUriwQ==
-X-Google-Smtp-Source: ABdhPJzgCSYUjymEFFnyubOSAooaM8Jh3QpVKGVONm86IcfnDTxWfeicEF/z4JhlZpaT4d0FbGn+qg==
-X-Received: by 2002:a2e:97c7:: with SMTP id m7mr19495389ljj.134.1637784759805;
-        Wed, 24 Nov 2021 12:12:39 -0800 (PST)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id y11sm87202ljh.54.2021.11.24.12.12.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 12:12:39 -0800 (PST)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id D0083103635; Wed, 24 Nov 2021 23:12:38 +0300 (+03)
-Date:   Wed, 24 Nov 2021 23:12:38 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm: thp: update split_queue_len correctly
-Message-ID: <20211124201238.3xzpy2b5zcv7j23s@box.shutemov.name>
-References: <20211123190916.1738458-1-shakeelb@google.com>
+        id S244760AbhKXUQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 15:16:06 -0500
+Received: from www.zeus03.de ([194.117.254.33]:41530 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235415AbhKXUQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 15:16:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=5h+lbC2uEFO5eMdrljkXLD3H2lYi
+        /fQp5F0AEsOmHOg=; b=BO8O/XK6qe/sWBWEdu/Ot0fUjaT3xqTSwXtVku349r/b
+        zeDfMzbsKR/Jv33XFcElBmzoCSm8AycClDGmKce38oxcaqvbznjR6QDbrnmqu/Az
+        LsqSsI9udID3nbS0QLVGxXhTFarUk8vXk/CS3XL+fcB/aLjIdpEJBqTsNDqiSYo=
+Received: (qmail 1783178 invoked from network); 24 Nov 2021 21:12:53 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 24 Nov 2021 21:12:53 +0100
+X-UD-Smtp-Session: l3s3148p1@3q9Se47RMKogAwDPXwvgALdEH2HxEp75
+Date:   Wed, 24 Nov 2021 21:12:46 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-doc <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v5 1/1] gpio: add sloppy logic analyzer using polling
+Message-ID: <YZ6cvkvdVM1Ui0Ck@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-doc <linux-doc@vger.kernel.org>
+References: <20211123164902.35370-1-wsa+renesas@sang-engineering.com>
+ <20211123164902.35370-2-wsa+renesas@sang-engineering.com>
+ <CAMRc=McG6fn_VX7+OPXUWjX1tYozQPg1eyEz-3fJMx35DiXimg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="8kTIr+wg0g78RnTl"
 Content-Disposition: inline
-In-Reply-To: <20211123190916.1738458-1-shakeelb@google.com>
+In-Reply-To: <CAMRc=McG6fn_VX7+OPXUWjX1tYozQPg1eyEz-3fJMx35DiXimg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 11:09:16AM -0800, Shakeel Butt wrote:
-> The deferred THPs are split on memory pressure through shrinker
-> callback and splitting of THP during reclaim can fail for several
-> reasons like unable to lock the THP, under writeback or unexpected
-> number of pins on the THP. Such pages are put back on the deferred split
-> list for consideration later. However kernel does not update the
-> deferred queue size on putting back the pages whose split was failed.
-> This patch fixes that.
 
-Hm. No. split_huge_page_to_list() updates the queue size on split success.
+--8kTIr+wg0g78RnTl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-NAK.
 
--- 
- Kirill A. Shutemov
+> I'd argue that debugfs isn't really the right interface for a useful
+> tool that is this LA.
+
+I have to disagree. This is a kind-of logic analyzer, it is sloppy. To
+emphasize it is for debugging only, I think debugfs is the proper place
+for it.
+
+But thanks for finding it useful :)
+
+
+--8kTIr+wg0g78RnTl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGenLoACgkQFA3kzBSg
+KbZTHBAAl53joTubydDtvDudsOhnY1cCG3jItCrq6QwPsm4d/4gw3fsgCuZiWNKB
+tuismw4Fp8Heq5krH4D7n0lWw36VzIo8UrMZeocI1LW9SV8DL9os1ZjVh5wIMKen
+LEa8rjnFsOg29TKjxw5Yuo0K2td0zNQalvF51VwU21QoD++kfhYdcDJkIfT4/3GO
+uafwKgudSwBzw3X71fUi4LVjEYcTHHcv00dlazfrKxYWXdib79ZF+0i/mHJPjKcr
+icR26/rJ9fWa26zRyFjajq14oE+fgWGFfWkrfFfVmtX/NDR16NcbYrHItcRpi9p/
+pB2tqopqoweMA3B8YV1IWypKuiYSk9AhZcAad3dXPeee+pnpW+25SgnR2vtS5pHf
+eEOko+yzep/LongwLeE7qySt8k3+N7LadxRJ41o7QMbRQuTVrdZLaQTidzRpWd88
+UKGQd1fQZBLnwWYLr5PTcK60LLC/oZ6SGYQe2LBwQdp6c8h0cSK7i06nm0i1/GkZ
+toP5AbhvkLA6BW5Sv8ZB6ZOeDBVE/8AUkh8ZCP3Y7QVgT2cn0y218I/llOHZMdNW
+XJjdACTO9A40srGu4RePqiomv5G6KDJfRX5Dd5xgOvk/rbu7HvVSDYj7Hi5onePT
+WXE4ZigI3JuYx6yK50Mn8sxSOb3pn7ej61uvekUHkUgpOZxRZUw=
+=VLxN
+-----END PGP SIGNATURE-----
+
+--8kTIr+wg0g78RnTl--
