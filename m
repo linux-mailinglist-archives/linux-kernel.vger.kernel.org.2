@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2611445C21F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:22:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80FF945C136
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350352AbhKXNZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:25:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45642 "EHLO mail.kernel.org"
+        id S1347211AbhKXNPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:15:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349433AbhKXNVK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:21:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B52F961B1D;
-        Wed, 24 Nov 2021 12:47:20 +0000 (UTC)
+        id S1344719AbhKXNLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:11:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1252C61A7D;
+        Wed, 24 Nov 2021 12:42:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758041;
-        bh=OUiFxJpxj+/5MpLORH9DKyxWdGQ9Uj4/WrY6UX+GzxM=;
+        s=korg; t=1637757724;
+        bh=nyd9qcJTpgWRvmjKoTXfVhux14jDMACQiRjtJvyn83Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xdwZUY4BxvQ4CTuRG3dEAlptWQNxsCCQWTIo1paHet9PHInoZjfTmiv+To+HTKKnO
-         i7OpFLTP9PL/SH4P9t7YJUsqu5xhi50v1hc8g9/FxSwCrWkJx1jY5t+sU7QOTjqvLP
-         LjkNtdeXwWFF95eOin36I6bib+RDSTzDy9CZJt8w=
+        b=anK325Gbn+MKoe2eQPhLmb3VAiT+CESXSyVQ8lg+9dUofqJddj0puJl/dQ6pYkX8y
+         uW5J6saaH2xDMPRqqdgxOnN2Tkr0akhB0RZrrDYMIkqLRp5Z0YnJU2f6o+8EMBOjHs
+         7B0lF8cfR9XvdrT0F2rcvEvRuySO8iB8BqNC/fVA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 009/100] arm64: dts: qcom: msm8998: Fix CPU/L2 idle state latency and residency
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Subject: [PATCH 4.19 255/323] PCI/MSI: Deal with devices lying about their MSI mask capability
 Date:   Wed, 24 Nov 2021 12:57:25 +0100
-Message-Id: <20211124115655.149758380@linuxfoundation.org>
+Message-Id: <20211124115727.508031801@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,94 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit 3f1dcaff642e75c1d2ad03f783fa8a3b1f56dd50 ]
+commit 2226667a145db2e1f314d7f57fd644fe69863ab9 upstream.
 
-The entry/exit latency and minimum residency in state for the idle
-states of MSM8998 were ..bad: first of all, for all of them the
-timings were written for CPU sleep but the min-residency-us param
-was miscalculated (supposedly, while porting this from downstream);
-Then, the power collapse states are setting PC on both the CPU
-cluster *and* the L2 cache, which have different timings: in the
-specific case of L2 the times are higher so these ones should be
-taken into account instead of the CPU ones.
+It appears that some devices are lying about their mask capability,
+pretending that they don't have it, while they actually do.
+The net result is that now that we don't enable MSIs on such
+endpoint.
 
-This parameter misconfiguration was not giving particular issues
-because on MSM8998 there was no CPU scaling at all, so cluster/L2
-power collapse was rarely (if ever) hit.
-When CPU scaling is enabled, though, the wrong timings will produce
-SoC unstability shown to the user as random, apparently error-less,
-sudden reboots and/or lockups.
+Add a new per-device flag to deal with this. Further patches will
+make use of it, sadly.
 
-This set of parameters are stabilizing the SoC when CPU scaling is
-ON and when power collapse is frequently hit.
-
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20210901183123.1087392-3-angelogioacchino.delregno@somainline.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20211104180130.3825416-2-maz@kernel.org
+Cc: Bjorn Helgaas <helgaas@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/boot/dts/qcom/msm8998.dtsi | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ drivers/pci/msi.c   |    3 +++
+ include/linux/pci.h |    2 ++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8998.dtsi b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-index ccd535edbf4e1..dcb79003ca0e6 100644
---- a/arch/arm64/boot/dts/qcom/msm8998.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-@@ -246,38 +246,42 @@
- 			LITTLE_CPU_SLEEP_0: cpu-sleep-0-0 {
- 				compatible = "arm,idle-state";
- 				idle-state-name = "little-retention";
-+				/* CPU Retention (C2D), L2 Active */
- 				arm,psci-suspend-param = <0x00000002>;
- 				entry-latency-us = <81>;
- 				exit-latency-us = <86>;
--				min-residency-us = <200>;
-+				min-residency-us = <504>;
- 			};
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -569,6 +569,9 @@ msi_setup_entry(struct pci_dev *dev, int
+ 		goto out;
  
- 			LITTLE_CPU_SLEEP_1: cpu-sleep-0-1 {
- 				compatible = "arm,idle-state";
- 				idle-state-name = "little-power-collapse";
-+				/* CPU + L2 Power Collapse (C3, D4) */
- 				arm,psci-suspend-param = <0x40000003>;
--				entry-latency-us = <273>;
--				exit-latency-us = <612>;
--				min-residency-us = <1000>;
-+				entry-latency-us = <814>;
-+				exit-latency-us = <4562>;
-+				min-residency-us = <9183>;
- 				local-timer-stop;
- 			};
+ 	pci_read_config_word(dev, dev->msi_cap + PCI_MSI_FLAGS, &control);
++	/* Lies, damned lies, and MSIs */
++	if (dev->dev_flags & PCI_DEV_FLAGS_HAS_MSI_MASKING)
++		control |= PCI_MSI_FLAGS_MASKBIT;
  
- 			BIG_CPU_SLEEP_0: cpu-sleep-1-0 {
- 				compatible = "arm,idle-state";
- 				idle-state-name = "big-retention";
-+				/* CPU Retention (C2D), L2 Active */
- 				arm,psci-suspend-param = <0x00000002>;
- 				entry-latency-us = <79>;
- 				exit-latency-us = <82>;
--				min-residency-us = <200>;
-+				min-residency-us = <1302>;
- 			};
+ 	entry->msi_attrib.is_msix	= 0;
+ 	entry->msi_attrib.is_64		= !!(control & PCI_MSI_FLAGS_64BIT);
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -205,6 +205,8 @@ enum pci_dev_flags {
+ 	PCI_DEV_FLAGS_NO_FLR_RESET = (__force pci_dev_flags_t) (1 << 10),
+ 	/* Don't use Relaxed Ordering for TLPs directed at this device */
+ 	PCI_DEV_FLAGS_NO_RELAXED_ORDERING = (__force pci_dev_flags_t) (1 << 11),
++	/* Device does honor MSI masking despite saying otherwise */
++	PCI_DEV_FLAGS_HAS_MSI_MASKING = (__force pci_dev_flags_t) (1 << 12),
+ };
  
- 			BIG_CPU_SLEEP_1: cpu-sleep-1-1 {
- 				compatible = "arm,idle-state";
- 				idle-state-name = "big-power-collapse";
-+				/* CPU + L2 Power Collapse (C3, D4) */
- 				arm,psci-suspend-param = <0x40000003>;
--				entry-latency-us = <336>;
--				exit-latency-us = <525>;
--				min-residency-us = <1000>;
-+				entry-latency-us = <724>;
-+				exit-latency-us = <2027>;
-+				min-residency-us = <9419>;
- 				local-timer-stop;
- 			};
- 		};
--- 
-2.33.0
-
+ enum pci_irq_reroute_variant {
 
 
