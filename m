@@ -2,292 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235B745B50A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 08:12:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4696C45B526
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 08:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240632AbhKXHPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 02:15:54 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:14977 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231555AbhKXHPx (ORCPT
+        id S240637AbhKXHTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 02:19:38 -0500
+Received: from mail-lj1-f179.google.com ([209.85.208.179]:43966 "EHLO
+        mail-lj1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231555AbhKXHTh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 02:15:53 -0500
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HzXFt2tLMzZcyJ;
-        Wed, 24 Nov 2021 15:10:10 +0800 (CST)
-Received: from kwepemm600003.china.huawei.com (7.193.23.202) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 24 Nov 2021 15:12:42 +0800
-Received: from [10.67.102.185] (10.67.102.185) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 24 Nov 2021 15:12:40 +0800
-Subject: Re: [PATCH v3] drivers/coresight: Add Ultrasoc System Memory Buffer
- driver
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     <suzuki.poulose@arm.com>, <mike.leach@linaro.org>,
-        <coresight@lists.linaro.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linuxarm@huawei.com>
-References: <20211118110016.40398-1-liuqi115@huawei.com>
- <20211123183026.GA2794106@p14s>
-From:   "liuqi (BA)" <liuqi115@huawei.com>
-Message-ID: <23892559-a300-d886-d945-1a01c4d9ac09@huawei.com>
-Date:   Wed, 24 Nov 2021 15:12:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 24 Nov 2021 02:19:37 -0500
+Received: by mail-lj1-f179.google.com with SMTP id 207so3355363ljf.10
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 23:16:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=hOyNwcjpujQ89PSte/9uG1qn2aVX2XCadmIOMHMjkMg=;
+        b=LI5yFzjU95D5aEl9j1zYYYDajCLKby/zgSxJoUTx1fuaON76aZt9bUASXjJ/oLAXeT
+         2+3W+P4jCSVuI+i1EHFFUEfI7jhYi+45d0D1VIaiwpNula+bp9lDGuvQ3ZpyTK5cxlyc
+         4Y8lTlGPd1jEDynlrlrON8Q6/zs2eRYqAz6NVX8+NUDZpu35eJmy+yu1RCFFD/AynEkw
+         DJe5bVgr/v5fnqi8saoqnGnEVehPqoNn3L7DmWf0hsUieNTBu8PBFnTAQ2zL4BZ4D87+
+         WO44+uN+9K5nBK2xb6mYYyHkLvG2zrx94Li9Ucr1VGaDSBQ8/Mq9rRyicpeGp2QkaPrU
+         EqzA==
+X-Gm-Message-State: AOAM533IwuyCNCDKG4vbOh7s3LokvtBC/dnzlnvjWfefDI2V01UzGAXN
+        nNQG9MJvK4Or/BaUHFP88SUyAfRQgyQ=
+X-Google-Smtp-Source: ABdhPJxHJOl4ZicVqB/6h1O86Rp2I9R7X5OplhlHxdWkn8Q649K096T7zQgdBJDLOjvDgKzNajOmLw==
+X-Received: by 2002:a2e:815a:: with SMTP id t26mr12729641ljg.79.1637738186869;
+        Tue, 23 Nov 2021 23:16:26 -0800 (PST)
+Received: from fedora (dc73szyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16ee:fa00::4])
+        by smtp.gmail.com with ESMTPSA id c2sm1204077lfb.270.2021.11.23.23.16.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 23:16:26 -0800 (PST)
+Date:   Wed, 24 Nov 2021 09:16:18 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] Provide event map helper for regulator drivers
+Message-ID: <cover.1637736436.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-In-Reply-To: <20211123183026.GA2794106@p14s>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.185]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="LqZwnRwUZAwLQPDk"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--LqZwnRwUZAwLQPDk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 2021/11/24 2:30, Mathieu Poirier wrote:
-> Good morning,
-> 
-> On Thu, Nov 18, 2021 at 07:00:16PM +0800, Qi Liu wrote:
->> This patch adds driver for Ultrasoc SMB(System Memory Buffer)
->> device. SMB provides a way to buffer messages from ETM, and
->> store these CPU instructions in system memory.
->>
->> SMB is developed by Ultrasoc technology, which is acquired by
->> Siemens, and we still use "Ultrasoc" to name driver.
->>
->> Signed-off-by: Qi Liu <liuqi115@huawei.com>
->> Tested-by: JunHao He <hejunhao2@hisilicon.com>
->>
->> ---
->>
->> Change since v2:
->> - Move ultrasoc driver to drivers/hwtracing/coresight.
->> - Link:https://lists.linaro.org/pipermail/coresight/2021-November/007310.html
->>
->> Change since v1:
->> - Drop the document of Ultrasoc according to Mathieu's comment.
->> - Add comments to explain some private hardware settings.
->> - Address the comments from Mathieu.
->> - Link: https://lists.linaro.org/pipermail/coresight/2021-August/006842.html
->>
->> Change since RFC:
->> - Move ultrasoc driver to drivers/hwtracing/coresight/ultrasoc.
->> - Remove ultrasoc-axi-com.c, as AXI-COM doesn't need to be configured in
->>    basic tracing function.
->> - Remove ultrasoc.c as SMB does not need to register with the ultrasoc core.
->> - Address the comments from Mathieu and Suzuki.
->> - Link: https://lists.linaro.org/pipermail/coresight/2021-June/006535.html
->>
->>   drivers/hwtracing/coresight/Kconfig        |  12 +
->>   drivers/hwtracing/coresight/Makefile       |   2 +
->>   drivers/hwtracing/coresight/ultrasoc-smb.c | 607 +++++++++++++++++++++
->>   drivers/hwtracing/coresight/ultrasoc-smb.h | 116 ++++
->>   4 files changed, 737 insertions(+)
->>   create mode 100644 drivers/hwtracing/coresight/ultrasoc-smb.c
->>   create mode 100644 drivers/hwtracing/coresight/ultrasoc-smb.h
-> 
-> This set is giving me obvious checkpatch warnings, something that is quite
-> disappointing since 1) you had plenty of time to fix those and 2) someone with
-> your kind of upstream experience should know better.
-> 
-> Despite the above I have decided to review this patch but next time I will simply
-> ignore your submission.
-> 
+This series provides an event map helper for regulator drivers and few
+other minor things.
 
-Hi Mathieu,
+Regulators which provide trivial notification IRQs can use generic IRQ
+mapper. Trivial in this context means the IRQ only informs one type of
+event, for one regulator.
 
-Sorry for my fault, I'll pay attention to these things latter, thanks.
+I did these changes for a new ROHM PMIC - which unfortunately requires
+(hopefully only) one more HW revision before it is good to go. So there
+is no rush with merging the first two patches - but I decided to send
+them as they might lower the barrier of using the notifications with
+some non ROHM ICs. Please use your best judgement whether to include
+them at this phase or not.
 
->>
->> diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
->> index 514a9b8086e3..d24a5d95153a 100644
->> --- a/drivers/hwtracing/coresight/Kconfig
->> +++ b/drivers/hwtracing/coresight/Kconfig
->> @@ -201,4 +201,16 @@ config CORESIGHT_TRBE
->>   
->>   	  To compile this driver as a module, choose M here: the module will be
->>   	  called coresight-trbe.
->> +
->> +config ULTRASOC_SMB
->> +	tristate "Ultrasoc system memory buffer drivers"
->> +	depends on ARM64 && CORESIGHT
-> 
-> You don't need to depend on CORESIGHT since this is already enclosed in "if
-> CORESIGHT".  But like other sink, this should depend on
-> CORESIGHT_LINKS_AND_SINKS.
-> 
+The last patch is a fix for IRQ helper removing an unused struct member
+and I think it should be merged no matter what is the fate of the
+previous patches.
 
-Got it, will fix this.
->> +	help
->> +	  This driver provides support for the Ultrasoc system memory buffer (SMB).
->> +	  SMB is responsible for receiving the trace data from Coresight ETM devices
->> +	  and storing them to a system buffer.
->> +
->> +	  To compile this driver as a module, choose M here: the module will be
->> +	  called ultrasoc-smb.
->> +
->>   endif
->> diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
->> index b6c4a48140ec..2899e5a5d5cd 100644
->> --- a/drivers/hwtracing/coresight/Makefile
->> +++ b/drivers/hwtracing/coresight/Makefile
->> @@ -27,3 +27,5 @@ obj-$(CONFIG_CORESIGHT_CTI) += coresight-cti.o
->>   obj-$(CONFIG_CORESIGHT_TRBE) += coresight-trbe.o
->>   coresight-cti-y := coresight-cti-core.o	coresight-cti-platform.o \
->>   		   coresight-cti-sysfs.o
->> +
-> 
-> Extra newline.
+The series is based on regulator/for-next
 
-got it, thanks.
-> 
->> +obj-$(CONFIG_ULTRASOC_SMB) += ultrasoc-smb.o
->> diff --git a/drivers/hwtracing/coresight/ultrasoc-smb.c b/drivers/hwtracing/coresight/ultrasoc-smb.c
->> new file mode 100644
->> index 000000000000..b477fc51fbbb
->> --- /dev/null
->> +++ b/drivers/hwtracing/coresight/ultrasoc-smb.c
->> @@ -0,0 +1,607 @@
->> +// SPDX-License-Identifier: MIT
->> +/*
->> + * Copyright (C) 2021 HiSilicon Limited.
->> + *
->> + * Code herein communicates with and accesses proprietary hardware which is
->> + * licensed intellectual property (IP) belonging to Siemens Digital Industries
->> + * Software Ltd.
->> + *
->> + * Siemens Digital Industries Software Ltd. asserts and reserves all rights to
->> + * their intellectual property. This paragraph may not be removed or modified
->> + * in any way without permission from Siemens Digital Industries Software Ltd.
->> + */
->> +
->> +#include <linux/acpi.h>
->> +#include <linux/circ_buf.h>
->> +#include <linux/err.h>
->> +#include <linux/module.h>
->> +#include <linux/mod_devicetable.h>
->> +#include <linux/platform_device.h>
->> +
->> +#include "ultrasoc-smb.h"
->> +
->> +DEFINE_CORESIGHT_DEVLIST(sink_devs, "sink_smb");
-> 
-> DEFINE_CORESIGHT_DEVLIST(sink_devs, "smb");
-> got it, will change this.
+---
 
-> More comments at the very bottom of the file.
-> 
->> +
+Matti Vaittinen (3):
+  regulators: Add regulator_err2notif() helper
+  regulators: irq_helper: Provide helper for trivial IRQ notifications
+  regulator: Drop unnecessary struct member
 
-[...]
->> +static const struct acpi_device_id ultrasoc_smb_acpi_match[] = {
->> +	{"HISI03A1", 0},
->> +	{},
->> +};
->> +MODULE_DEVICE_TABLE(acpi, ultrasoc_smb_acpi_match);
-> 
-> Please enclose this in #ifdef CONFIG_ACPI as it is done for the funnel and
-> replicator drivers.
-> 
+ drivers/regulator/irq_helpers.c  | 41 +++++++++++++++++++++++++++++++-
+ include/linux/regulator/driver.h | 37 +++++++++++++++++++++++++++-
+ 2 files changed, 76 insertions(+), 2 deletions(-)
 
-got it, thanks.
->> +
->> +static struct platform_driver smb_driver = {
->> +	.driver = {
->> +		.name = "ultrasoc,smb",
-> 
-> "ultrasoc-smb"
-> 
-got it.
->> +		.acpi_match_table = ACPI_PTR(ultrasoc_smb_acpi_match),
->> +		.suppress_bind_attrs = true,
->> +	},
->> +	.probe = smb_probe,
->> +	.remove = smb_remove,
->> +};
->> +module_platform_driver(smb_driver);
->> +
->> +MODULE_DESCRIPTION("Ultrasoc smb driver");
->> +MODULE_LICENSE("Dual MIT/GPL");
-> 
-> The dual licence is not reflected properly in the SPDX tag at the top of the
-> file.  Please read Documentation/process/license-rules.rst.
-> 
+--=20
+2.31.1
 
-I'll fix this next version, thanks.
 
->> +MODULE_AUTHOR("Jonathan Zhou <jonathan.zhouwen@huawei.com>");
->> +MODULE_AUTHOR("Qi Liu <liuqi115@huawei.com>");
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
 
-[...]
->> +/**
->> + * struct smb_drv_data - specifics associated to an SMB component
->> + * @base:	Memory mapped base address for SMB component.
->> + * @csdev:	Component vitals needed by the framework.
->> + * @sdb:	Data buffer for SMB.
->> + * @miscdev:	Specifics to handle "/dev/xyz.tmc" entry.
-> 
-> What tmc entry would this be?
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
 
-here is a typo, misdev should be an entry to handle /dev/smbx, will fix 
-this, thanks.
+--LqZwnRwUZAwLQPDk
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> 
->> + * @spinlock:	Only one at a time pls.
->> + * @reading:	Synchronise user space access to SMB buffer.
->> + * @pid:	Process ID of the process being monitored by the session
->> + *		that is using this component.
->> + * @mode:	how this SMB is being used, perf mode or sysfs mode.
->> + */
->> +struct smb_drv_data {
->> +	void __iomem *base;
->> +	struct coresight_device	*csdev;
->> +	struct smb_data_buffer sdb;
->> +	struct miscdevice miscdev;
->> +	spinlock_t spinlock;
->> +	local_t reading;
->> +	pid_t pid;
->> +	u32 mode;
->> +};
->> +
->> +#define smb_simple_func(type, name, offset)				\
->> +static ssize_t name##_show(struct device *_dev,				\
->> +			   struct device_attribute *attr, char *buf)	\
->> +{									\
->> +	type *drvdata = dev_get_drvdata(_dev->parent);			\
->> +	u32 val = readl(drvdata->base + offset);				\
->> +									\
->> +	return sysfs_emit(buf, "0x%x\n", val);			\
->> +}									\
->> +static DEVICE_ATTR_RO(name)
-> 
-> I'm pretty sure you can re-use coresight_tmc_reg() instead of writing
-> another macro.  I suggest to look at coresight_tmc_reg() in coresight-tmc-core.c
-> for an example.
-> 
+-----BEGIN PGP SIGNATURE-----
 
-got it, I've check coresight_tmc_reg and will use this next version.
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmGd5rcACgkQeFA3/03a
+ocUVZwgAid2Ba6HdmnwOi4CjXFrgYy4vCJEJI2TWHwsTlbEX3ecomlAr9/96KUw9
+ipcMBHIFW+TizazDJcCSewaHks5bVgHmQVsjODqvFzYTFEfgRZBxnxhhHvdT5oyg
+OImx0Xx9ejWlduZFpxUxWCgg8K7QRJFgawE1SqUnLivME66/luO4KkBx7RYz0ttP
+3zeSbXxJmpjdjTZnnASpuNqZj+fgZKh7KbggjFEowxr/s9YukrH+Fbo7I5AC2aZT
+PMkOW7Me41kz91H0FCsRZBjLpYt3gk6QOnzKA0+tlPr7Y+clXUSLEmRhOX+hqJow
+GJdf/L04lKzBOth3mWKyNNupafbuNg==
+=oE4F
+-----END PGP SIGNATURE-----
 
-> I am out of time for today - I will continue tomorrow.
-
-Thanks for reviewing this patch.
-
-Qi
-> 
-> Thanks,
-> Mathieu
-> 
->> +
->> +#endif
->> -- 
->> 2.33.0
->>
-> .
-> 
+--LqZwnRwUZAwLQPDk--
