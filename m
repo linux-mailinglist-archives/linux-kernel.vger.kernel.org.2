@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FE445C59A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5AEC45C16A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:16:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350810AbhKXN71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:59:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45364 "EHLO mail.kernel.org"
+        id S1345461AbhKXNRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:17:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353037AbhKXN4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:56:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6F5863359;
-        Wed, 24 Nov 2021 13:06:42 +0000 (UTC)
+        id S1347349AbhKXNPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:15:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B36C61AAD;
+        Wed, 24 Nov 2021 12:44:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759203;
-        bh=bH7CpkY5RxFzbgg8R8BVZ4gOpYbNOmd7T+SjI2STAPo=;
+        s=korg; t=1637757848;
+        bh=aJhIcq5GpkXnt+6eFeSlj0EGsC3g80aE/6o+d4Y2BiE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zgGlbIX5Bb5VzjDHpaZeJqskiNRhq3KAxE2spQ/dh0YgZz1uBUcDIFOq7zdapJXnh
-         mgyxaInXPEUDIM0n3vWu0L+Nn03A34vS4V7Cwdvp0N0h+4+q629J4qCNwxyvkTul8S
-         8bDHBikozqpdtcEcEz+KY6/icQNTbynK4MJmMDgw=
+        b=s0CUU8zGAOUfJUjuGGiuO2EKy8mtT2mVFu+E0LAHNwe34nBIXIsuN64Z+x/3J+VU5
+         expn3lQfCrUKYPtTvpQmQ/5olcs+GsS+YEGJ7hAQpIt7eQrA8aL5J8pzYWBItvOjOL
+         kf9ZJFrlrMRUdjFMurSi3gitbPpTvwbm6XFtjPlE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
-        Jedrzej Jagielski <jedrzej.jagielski@intel.com>,
-        Tony Brelinski <tony.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Sven Peter <sven@svenpeter.dev>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 166/279] i40e: Fix creation of first queue by omitting it if is not power of two
-Date:   Wed, 24 Nov 2021 12:57:33 +0100
-Message-Id: <20211124115724.489556155@linuxfoundation.org>
+Subject: [PATCH 4.19 264/323] usb: typec: tipd: Remove WARN_ON in tps6598x_block_read
+Date:   Wed, 24 Nov 2021 12:57:34 +0100
+Message-Id: <20211124115727.798893288@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,114 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jedrzej Jagielski <jedrzej.jagielski@intel.com>
+From: Sven Peter <sven@svenpeter.dev>
 
-[ Upstream commit 2e6d218c1ec6fb9cd70693b78134cbc35ae0b5a9 ]
+[ Upstream commit b7a0a63f3fed57d413bb857de164ea9c3984bc4e ]
 
-Reject TCs creation with proper message if the first queue
-assignment is not equal to the power of two.
-The first queue number was checked too late in the second queue
-iteration, if second queue was configured at all. Now if first queue value
-is not a power of two, then trying to create qdisc will be rejected.
+Calling tps6598x_block_read with a higher than allowed len can be
+handled by just returning an error. There's no need to crash systems
+with panic-on-warn enabled.
 
-Fixes: 8f88b3034db3 ("i40e: Add infrastructure for queue channel support")
-Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
-Signed-off-by: Jedrzej Jagielski <jedrzej.jagielski@intel.com>
-Tested-by: Tony Brelinski <tony.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Sven Peter <sven@svenpeter.dev>
+Link: https://lore.kernel.org/r/20210914140235.65955-3-sven@svenpeter.dev
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_main.c | 59 +++++++--------------
- 1 file changed, 19 insertions(+), 40 deletions(-)
+ drivers/usb/typec/tps6598x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 42e26ee5b6d5f..83413999902e5 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -5786,24 +5786,6 @@ static void i40e_remove_queue_channels(struct i40e_vsi *vsi)
- 	INIT_LIST_HEAD(&vsi->ch_list);
- }
+diff --git a/drivers/usb/typec/tps6598x.c b/drivers/usb/typec/tps6598x.c
+index 987b8fcfb2aae..a4dd23a8f1954 100644
+--- a/drivers/usb/typec/tps6598x.c
++++ b/drivers/usb/typec/tps6598x.c
+@@ -93,7 +93,7 @@ tps6598x_block_read(struct tps6598x *tps, u8 reg, void *val, size_t len)
+ 	u8 data[TPS_MAX_LEN + 1];
+ 	int ret;
  
--/**
-- * i40e_is_any_channel - channel exist or not
-- * @vsi: ptr to VSI to which channels are associated with
-- *
-- * Returns true or false if channel(s) exist for associated VSI or not
-- **/
--static bool i40e_is_any_channel(struct i40e_vsi *vsi)
--{
--	struct i40e_channel *ch, *ch_tmp;
--
--	list_for_each_entry_safe(ch, ch_tmp, &vsi->ch_list, list) {
--		if (ch->initialized)
--			return true;
--	}
--
--	return false;
--}
--
- /**
-  * i40e_get_max_queues_for_channel
-  * @vsi: ptr to VSI to which channels are associated with
-@@ -6310,26 +6292,15 @@ int i40e_create_queue_channel(struct i40e_vsi *vsi,
- 	/* By default we are in VEPA mode, if this is the first VF/VMDq
- 	 * VSI to be added switch to VEB mode.
- 	 */
--	if ((!(pf->flags & I40E_FLAG_VEB_MODE_ENABLED)) ||
--	    (!i40e_is_any_channel(vsi))) {
--		if (!is_power_of_2(vsi->tc_config.tc_info[0].qcount)) {
--			dev_dbg(&pf->pdev->dev,
--				"Failed to create channel. Override queues (%u) not power of 2\n",
--				vsi->tc_config.tc_info[0].qcount);
--			return -EINVAL;
--		}
+-	if (WARN_ON(len + 1 > sizeof(data)))
++	if (len + 1 > sizeof(data))
+ 		return -EINVAL;
  
--		if (!(pf->flags & I40E_FLAG_VEB_MODE_ENABLED)) {
--			pf->flags |= I40E_FLAG_VEB_MODE_ENABLED;
-+	if (!(pf->flags & I40E_FLAG_VEB_MODE_ENABLED)) {
-+		pf->flags |= I40E_FLAG_VEB_MODE_ENABLED;
- 
--			if (vsi->type == I40E_VSI_MAIN) {
--				if (pf->flags & I40E_FLAG_TC_MQPRIO)
--					i40e_do_reset(pf, I40E_PF_RESET_FLAG,
--						      true);
--				else
--					i40e_do_reset_safe(pf,
--							   I40E_PF_RESET_FLAG);
--			}
-+		if (vsi->type == I40E_VSI_MAIN) {
-+			if (pf->flags & I40E_FLAG_TC_MQPRIO)
-+				i40e_do_reset(pf, I40E_PF_RESET_FLAG, true);
-+			else
-+				i40e_do_reset_safe(pf, I40E_PF_RESET_FLAG);
- 		}
- 		/* now onwards for main VSI, number of queues will be value
- 		 * of TC0's queue count
-@@ -7982,12 +7953,20 @@ config_tc:
- 			    vsi->seid);
- 		need_reset = true;
- 		goto exit;
--	} else {
--		dev_info(&vsi->back->pdev->dev,
--			 "Setup channel (id:%u) utilizing num_queues %d\n",
--			 vsi->seid, vsi->tc_config.tc_info[0].qcount);
-+	} else if (enabled_tc &&
-+		   (!is_power_of_2(vsi->tc_config.tc_info[0].qcount))) {
-+		netdev_info(netdev,
-+			    "Failed to create channel. Override queues (%u) not power of 2\n",
-+			    vsi->tc_config.tc_info[0].qcount);
-+		ret = -EINVAL;
-+		need_reset = true;
-+		goto exit;
- 	}
- 
-+	dev_info(&vsi->back->pdev->dev,
-+		 "Setup channel (id:%u) utilizing num_queues %d\n",
-+		 vsi->seid, vsi->tc_config.tc_info[0].qcount);
-+
- 	if (pf->flags & I40E_FLAG_TC_MQPRIO) {
- 		if (vsi->mqprio_qopt.max_rate[0]) {
- 			u64 max_tx_rate = vsi->mqprio_qopt.max_rate[0];
+ 	if (!tps->i2c_protocol)
 -- 
 2.33.0
 
