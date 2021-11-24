@@ -2,252 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0871445CD13
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 20:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 966F445CD12
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 20:18:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243695AbhKXTVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 14:21:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243268AbhKXTVL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S243613AbhKXTVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 24 Nov 2021 14:21:11 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC7FC06173E
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241789AbhKXTVK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 14:21:10 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5246C061748
         for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 11:18:00 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id k23so7656588lje.1
+Received: by mail-pg1-x52b.google.com with SMTP id m15so3017633pgu.11
         for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 11:18:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zUqoK2ixD21E+D4hhBpBUrQmEqbpxmZoYHvCytX0cYY=;
-        b=kZnmoNX3rRcJ4EMX/rtB0ZapeOvMiirq6qfNYFTgZ71QElfz/W+XGUpVGk7Ez6Yehi
-         /3BZUPOsv4yscOJTu3fx/AtLqIIk6R0ulXCjMZdDH6VzA/5U7tPEug79+wQ+HShR1T6h
-         2aBWdteIIVab8XEhCM0zKGeUc4kpbTXiA3NK46ErRfdUG2ggTsOqz6fGdWZI6LLhvVlB
-         SOUwkl1xuIMzpkFbBnodoPpL0uIsFrJEIGurLRbSUZ+QyJAijsL4D0gSP6LgIUbTnR1/
-         QiQmECdfdPBnmVpBMJfGPKKIxvVp8yCm3Mnmut2deYSE+vNiRleRvdMhOSudLTjohwFL
-         RGRA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lRYEiY3a9ZTAs618fN+kr6u8/MAeWH9IPhTcrDyebEs=;
+        b=Jwd4aaU1S34hZ8eU3YFVKMqv59/V+UpXAexAxZdzhKl6xSdlKGIpvBdmuey2W1U195
+         56Q+5H8vAaCTbQwxH4ieIx/YYq3bD5F5H4795begBcCZDdbSWEvAUkc7hK2dZh3wRABM
+         mxG+ifW00Ic2RYdLDjZ/x45WuTTEL3io88eZ8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zUqoK2ixD21E+D4hhBpBUrQmEqbpxmZoYHvCytX0cYY=;
-        b=43aebOa1M8sMivkZiStad1MWgZANVUUuJEiY/u2z+ZP65IPnUxOJbM4edJrHSpmUQO
-         NVEvaGMoGevguYmjKFNVhF8/mrHvnOYiQhZx0FliYeKuGfCFHtEsX8PLNAwSuBVV/r2R
-         nOE1QtR78cysHRlCkkJQB3SvE1ibIRV18L0fDz1gFwEUvPtURiKTpCWyurkneoTCx0zh
-         mbbOjc4y55Q5CmzAqN5rqKXZiYER8KTzNpXnnt76akkfFljUpir5AQVbumLfQRSjWhpk
-         qCeLv39hSNYdtCdoxz2ylCX6C7n/r64vy7XHJstjz6XorkSQRxWSPvQwF2bAXGTwWhtj
-         oA0g==
-X-Gm-Message-State: AOAM532Gz/xt6oOXHeOhNH1yM6gNAsKdKy/3O0hLKiQEXRQAS3htQyAG
-        vj2pt5m2BRqzerFHlTyVHikH8wScR+5sgT+K9BhrjA==
-X-Google-Smtp-Source: ABdhPJy04wVilPDUWU7/CEEJbDm53QuY2yj3fXbaesD4ekIxse9qs8fdNe2qjREMrOII53Xxj6CkPWSksGBr0f4Duvo=
-X-Received: by 2002:a05:651c:10b1:: with SMTP id k17mr18484863ljn.463.1637781478997;
- Wed, 24 Nov 2021 11:17:58 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lRYEiY3a9ZTAs618fN+kr6u8/MAeWH9IPhTcrDyebEs=;
+        b=uDBt7tgSFSjvXboQmK1pk3lquVLqCHO/mgbfD841a0AuugAz0JUe1DYdh5kay5reWI
+         xwwiPrlss777Z+l1LBPa0Ygu7AE4PPq5mDsvdGEB0xMjJ6Jm36k8VdEOYG1L0JRK8/Eg
+         1C9RlD6ov6iJu9al9ww7b8WXHRcAd9Gfbddwb/7kVur8ESV86b+dA659Jft9rwq4Z3qI
+         pFKOKpmqczU1ERd/pDfTLDseX/GhCKl4/DARdaET6ZswgSIZQ7AW8X+ofqdzd4arGwCx
+         Hr2noGLcNO1UmI6nnJLm5toxCEyBnHpFP5WGvyX12//IHySwn5CMUSGbLPcG+uLQ0oOH
+         uCBA==
+X-Gm-Message-State: AOAM530m0yXpNEACrCgOhNh38KW1ALQI1S2rSPeflBQyj3WLSBVySM7q
+        WwUmyBwFM5ZN9VuLrt1I1whBfw==
+X-Google-Smtp-Source: ABdhPJwiXSf0NUB07PV3do00Ol5yCyawJ0mCpxFdorKlBjH/yGbMu8iMRvnjbXI6sEYwVd+hOcx7PQ==
+X-Received: by 2002:a05:6a00:26e3:b0:49f:c0ca:850e with SMTP id p35-20020a056a0026e300b0049fc0ca850emr8595057pfw.4.1637781480427;
+        Wed, 24 Nov 2021 11:18:00 -0800 (PST)
+Received: from localhost ([2620:15c:202:201:d8d8:79a:9375:eb49])
+        by smtp.gmail.com with UTF8SMTPSA id a3sm519742pfv.5.2021.11.24.11.17.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Nov 2021 11:18:00 -0800 (PST)
+Date:   Wed, 24 Nov 2021 11:17:59 -0800
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Deepak Kumar Singh <deesin@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, swboyd@chromium.org,
+        clew@codeaurora.org, mathieu.poirier@linaro.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>
+Subject: Re: [PATCH V1 2/3] rpmsg: glink: Add support to handle signals
+ command
+Message-ID: <YZ6P56yRP9TAtcqa@google.com>
+References: <1633015924-881-1-git-send-email-deesin@codeaurora.org>
+ <1633015924-881-4-git-send-email-deesin@codeaurora.org>
 MIME-Version: 1.0
-References: <20211124125506.2971069-1-daniel.lezcano@linaro.org>
- <CAPDyKFpJHzAxGk=Y52VXcuVbAunwfMo2ErnwXMqnxzHPs6O30g@mail.gmail.com> <65873f24-46da-07f4-9661-e3f1001a4fa2@linaro.org>
-In-Reply-To: <65873f24-46da-07f4-9661-e3f1001a4fa2@linaro.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 24 Nov 2021 20:17:22 +0100
-Message-ID: <CAPDyKFpUG-gyt7_hF_jeuya6FWcKapKo=9MPXo0VzzBXnWOnNA@mail.gmail.com>
-Subject: Re: [PATCH 1/5] dt-bindings: Powerzone new bindings
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     robh@kernel.org, arnd@linaro.org, heiko@sntech.de,
-        rjw@rjwysocki.net, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        lukasz.luba@arm.com, Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1633015924-881-4-git-send-email-deesin@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 at 17:26, Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+On Thu, Sep 30, 2021 at 09:02:03PM +0530, Deepak Kumar Singh wrote:
+> Remote peripherals send signal notifications over glink with commandID 15.
+> 
+> Add support to send and receive the signal command and convert the signals
+> from NATIVE to TIOCM while receiving and vice versa while sending.
+> 
+> Signed-off-by: Chris Lew <clew@codeaurora.org>
+> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
+> ---
+>  drivers/rpmsg/qcom_glink_native.c | 75 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 75 insertions(+)
+> 
+> diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
+> index 05533c7..384fcd2 100644
+> --- a/drivers/rpmsg/qcom_glink_native.c
+> +++ b/drivers/rpmsg/qcom_glink_native.c
 >
+> ...
 >
-> Hi Ulf,
->
-> thanks for the review
->
-> On 24/11/2021 15:54, Ulf Hansson wrote:
->
-> [ ... ]
->
-> >> +  This description is done via a hierarchy and the DT reflects it. It
-> >> +  does not represent the physical location or a topology, eg. on a
-> >> +  big.Little system, the little CPUs may not be represented as they do
-> >> +  not contribute significantly to the heat, however the GPU can be
-> >> +  tied with the big CPUs as they usually have a connection for
-> >> +  multimedia or game workloads.
-> >> +
-> >> +properties:
-> >> +  $nodename:
-> >> +    const: powerzones
-> >> +
-> >
-> > Do we really need a top-node like this? Can't that be left as a
-> > platform/soc specific thing instead? Along the lines of how the last
-> > example below looks like? Maybe we can have both options? I guess Rob
-> > will tell us.
->
-> Do you mean a compatible string?
+> +static int qcom_glink_handle_signals(struct qcom_glink *glink,
+> +				     unsigned int rcid, unsigned int sigs)
+> +{
+> +	struct glink_channel *channel;
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&glink->idr_lock, flags);
+> +	channel = idr_find(&glink->rcids, rcid);
+> +	spin_unlock_irqrestore(&glink->idr_lock, flags);
+> +	if (!channel) {
+> +		dev_err(glink->dev, "signal for non-existing channel\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* convert signals from NATIVE to TIOCM */
+> +	if (sigs & NATIVE_DTR_SIG)
+> +		sigs |= TIOCM_DSR;
+> +	if (sigs & NATIVE_CTS_SIG)
+> +		sigs |= TIOCM_CTS;
+> +	if (sigs & NATIVE_CD_SIG)
+> +		sigs |= TIOCM_CD;
+> +	if (sigs & NATIVE_RI_SIG)
+> +		sigs |= TIOCM_RI;
+> +	sigs &= 0x0fff;
 
-Yes, but there is no need to specify that part of the powerzone
-bindings, I think.
+'sigs' is only used when the channel has a signal handler, hence you could
+return before the above block if there is no signal handler and remove the
+condition below.
 
-Although, let's see what Rob thinks here.
-
->
-> > Moreover, maybe we should put some constraints on the names of
-> > subnodes (provider nodes) with a "patternProperties". Something along
-> > the lines of below.
-> >
-> > patternProperties:
-> >   "^(powerzone)([@-].*)?$":
-> >     type: object
-> >     description:
-> >       Each node represents a powerzone.
->
-> Sure
->
-> >> +  "#powerzone-cells":
-> >> +    description:
-> >> +      Number of cells in powerzone specifier. Typically 0 for nodes
-> >> +      representing but it can be any number in the future to describe
-> >> +      parameters of the powerzone.
-> >> +
-> >> +  powerzone:
-> >
-> > Maybe "powerzones" instead of "powerzone". Unless we believe that we
-> > never need to allow multiple parent-zones for a child-zone.
->
-> May be that could be needed in the future. No objection to rename it to
-> 'powerzones'.
->
-> >> +    description:
-> >> +      A phandle to a parent powerzone. If no powerzone attribute is set, the
-> >> +      described powerzone is the topmost in the hierarchy.
-> >> +
-> >
-> > We should probably state that the "#powerzone-cells"  are required. Like below:
-> >
-> > required:
-> >   - "#powerzone-cells"
->
-> Ok
->
-> > Moreover, we probably need to allow additional properties? At least it
-> > looks so from the last example below. Then:
-> >
-> > additionalProperties: true
->
-> I was unsure about adding it. With the actual description what would be
-> the benefit ?
-
-A powerzone provider node is then allowed to have other properties
-too. Like a compatible string, for example.
-
-Assuming I also have understood the additionalProperties thingy correctly. Rob?
-
->
-> >> +examples:
-> >> +  - |
-> >> +    powerzones {
-> >> +
-> >> +      SOC_PZ: soc {
-> >> +      };
-> >
-> > This looks odd to me.
-> >
-> > Why do we need an empty node? If this is the topmost power-zone,
->
-> Yes it is
->
-> > it
-> > should still have the #powerzone-cells specifier, I think.
->
-> Ok, makes sense
->
-> >> +
-> >> +      PKG_PZ: pkg {
-> >
-> > As I stated above, I would prefer some kind of common pattern of the
-> > subnode names. Maybe "pkg-powerzone"?
->
-> Ok, may be 'powerzone-pkg' to be consistent with the power-domains pattern?
-
-Sure, that seems reasonable.
-
->
-> >> +        #powerzone-cells = <0>;
-> >> +        powerzone = <&SOC_PZ>;
-> >> +      };
-> >> +
-> >> +      BIG_PZ: big {
-> >> +        #powerzone-cells = <0>;
-> >> +        powerzone = <&PKG_PZ>;
-> >> +      };
-> >> +
-> >> +      GPU_PZ: gpu {
-> >> +        #powerzone-cells = <0>;
-> >> +        powerzone = <&PKG_PZ>;
-> >> +      };
-> >> +
-> >> +      MULTIMEDIA_PZ: multimedia {
-> >> +        #powerzone-cells = <0>;
-> >> +        powerzone = <&SOC_PZ>;
-> >> +      };
-> >> +    };
-> >> +
-> >> +  - |
-> >> +    A57_0: big@0 {
-> >> +      compatible = "arm,cortex-a57";
-> >> +      reg = <0x0 0x0>;
-> >> +      device_type = "cpu";
-> >> +      #powerzone-cells = <0>;
-> >> +      powerzone = <&BIG_PZ>;
-> >
-> > Just to make sure I understand correctly. The big@0 node is a
-> > powerzone provider too? Or did you mean to specify it as a consumer?
->
-> I'm not sure 'provider' or 'consumer' make sense in this context.
->
-> big@0 is a powerzone we can act on and its parent is the BIG_PZ powerzone.
-
-I see.
-
-Then it seems like we shouldn't have the toplevel "powerzones" node,
-as it looks like a powerzone provider may very well be part of an
-existing node.
-
->
-> However this description is correct but confusing.
->
-> Given big@0 and big@1 belong to the big 'cluster' and when we act on the
-> performance state of big@0, big@1 is also changed, the correct
-> description would be:
->
->     A57_0: big@0 {
->       compatible = "arm,cortex-a57";
->       reg = <0x0 0x0>;
->       device_type = "cpu";
->       #powerzone-cells = <0>;
->       powerzone = <&PKG_PZ>;
->     };
->
->     A57_1: big@1 {
->       compatible = "arm,cortex-a57";
->       reg = <0x0 0x0>;
->       device_type = "cpu";
->       #powerzone-cells = <0>;
->       powerzone = <&PKG_PZ>;
->     };
->
-> If in the future, there will be a performance domain per core, then the
-> former description above would make sense.
-
-Okay, I see. Thanks for clarifying!
-
-Kind regards
-Uffe
+> +
+> +	if (channel->ept.sig_cb)
+> +		channel->ept.sig_cb(channel->ept.rpdev, channel->ept.priv, sigs);
+> +
+> +	return 0;
+> +}
