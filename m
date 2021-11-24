@@ -2,365 +2,1358 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC46645CC7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 248AF45CC80
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:51:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236519AbhKXSys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 13:54:48 -0500
-Received: from foss.arm.com ([217.140.110.172]:42120 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229704AbhKXSyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 13:54:46 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E6FB31FB;
-        Wed, 24 Nov 2021 10:51:35 -0800 (PST)
-Received: from lakrids (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6BF913F66F;
-        Wed, 24 Nov 2021 10:51:31 -0800 (PST)
-Date:   Wed, 24 Nov 2021 18:51:23 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Tyler Baicar <baicar@os.amperecomputing.com>
-Cc:     patches@amperecomputing.com, abdulhamid@os.amperecomputing.com,
-        darren@os.amperecomputing.com, catalin.marinas@arm.com,
-        will@kernel.org, maz@kernel.org, james.morse@arm.com,
-        alexandru.elisei@arm.com, suzuki.poulose@arm.com,
-        lorenzo.pieralisi@arm.com, guohanjun@huawei.com,
-        sudeep.holla@arm.com, rafael@kernel.org, lenb@kernel.org,
-        tony.luck@intel.com, bp@alien8.de, anshuman.khandual@arm.com,
-        vincenzo.frascino@arm.com, tabba@google.com, marcan@marcan.st,
-        keescook@chromium.org, jthierry@redhat.com, masahiroy@kernel.org,
-        samitolvanen@google.com, john.garry@huawei.com,
-        daniel.lezcano@linaro.org, gor@linux.ibm.com,
-        zhangshaokun@hisilicon.com, tmricht@linux.ibm.com,
-        dchinner@redhat.com, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, linux-acpi@vger.kernel.org,
-        linux-edac@vger.kernel.org, ishii.shuuichir@fujitsu.com,
-        Vineeth.Pillai@microsoft.com
-Subject: Re: [PATCH 1/2] ACPI/AEST: Initial AEST driver
-Message-ID: <YZ6Jq39Z9dIUqcfO@lakrids>
-References: <20211124170708.3874-1-baicar@os.amperecomputing.com>
- <20211124170708.3874-2-baicar@os.amperecomputing.com>
+        id S244281AbhKXSzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 13:55:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236702AbhKXSzA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 13:55:00 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 693F3C06173E
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:51:50 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id y8so2627127plg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:51:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GQmt1E7EpVBK085IpO1alSYShS55M5iTieoUSuRtV3E=;
+        b=xKhaEaISOayCuFVgkT7WAx9ungnUgXSZxvvyu6doO1T1nE2kFoVJ8qLlqC2pBG+urP
+         VICM3kPJmQs/Mq5teoBXJMqKwTbJ0l4+UK6+LkYnWPHqdXUKarRKnujxQKekArHFxqKY
+         BnOrcg2E8cXxIasLQ/9TRuqApvrjvz0EnMLD00KHKDzDCq97r2u0YdztPiPQIh3yLukZ
+         kgpxzf8JmMRADNP2QRi9X6j4Uozs283axmQGMP0Y7/7eQxLQP1YVkHWH0eTMKjrDY5Ri
+         gAbhQm6BpF3DGGxJvLZu0eG2ns/bC0toZY/Q5TxtAyfYwJA3pIKcl7GgxCfQd1xAFVul
+         MkTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GQmt1E7EpVBK085IpO1alSYShS55M5iTieoUSuRtV3E=;
+        b=mOUmmY7heiukCHZKhknJzwBFvs1qWeceLl+wi3f6AxWuamndI6MDPzhVTWCO1CgPK9
+         fxkiHZwDI65V46ad8WnI2FfM10xbltxYbTLCyU+D5xGniVWOdQjl/Nu7mmDE51bPlZWC
+         zLTn5BSj65gYOt8H432rSolYwJRskGBKUdSMvj3J4WiLUBqRMF+EHFHpvT0iJk6HTzaI
+         o8C7FS6iOA3Y0pF2lQUAV9DYXd46l6yB6Hc8PhfZ+setXL5r1tVDx6ywRILyS5TOj9Lq
+         GluoJKHZrqMwR3i87zNcJ0/I6kqSX7ezvAv3mcdSwIzQylkc+fLJ8Sib4mmOfygK+XKn
+         lIbg==
+X-Gm-Message-State: AOAM531/inQrszkwfxeS5aN6+eXoZt8RjDfFDAgINm9qut81yAr0y276
+        l0Es5vICv13PKszddYZd/wMHtg==
+X-Google-Smtp-Source: ABdhPJwS5Z4TZr+zG6OgOX4ZIDEhxu2aTQcU8ejjuqnIEE2E/Y2ojLluPETmzW8kAKkP7jwkX6Hf8g==
+X-Received: by 2002:a17:90a:df88:: with SMTP id p8mr18594103pjv.32.1637779909563;
+        Wed, 24 Nov 2021 10:51:49 -0800 (PST)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id v15sm440886pfu.195.2021.11.24.10.51.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 10:51:48 -0800 (PST)
+Date:   Wed, 24 Nov 2021 11:51:45 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Yicong Yang <yangyicong@hisilicon.com>
+Cc:     gregkh@linuxfoundation.org, helgaas@kernel.org,
+        alexander.shishkin@linux.intel.com, lorenzo.pieralisi@arm.com,
+        will@kernel.org, mark.rutland@arm.com, suzuki.poulose@arm.com,
+        mike.leach@linaro.org, leo.yan@linaro.org,
+        jonathan.cameron@huawei.com, daniel.thompson@linaro.org,
+        joro@8bytes.org, john.garry@huawei.com,
+        shameerali.kolothum.thodi@huawei.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        linux-pci@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        iommu@lists.linux-foundation.org, prime.zeng@huawei.com,
+        liuqi115@huawei.com, zhangshaokun@hisilicon.com,
+        linuxarm@huawei.com, song.bao.hua@hisilicon.com
+Subject: Re: [PATCH v2 2/6] hwtracing: Add trace function support for
+ HiSilicon PCIe Tune and Trace device
+Message-ID: <20211124185145.GB35341@p14s>
+References: <20211116090625.53702-1-yangyicong@hisilicon.com>
+ <20211116090625.53702-3-yangyicong@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211124170708.3874-2-baicar@os.amperecomputing.com>
+In-Reply-To: <20211116090625.53702-3-yangyicong@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Yicong,
 
-I haven't looked at this in great detail, but I spotted a few issues
-from an initial scan.
+On Tue, Nov 16, 2021 at 05:06:21PM +0800, Yicong Yang wrote:
+> HiSilicon PCIe tune and trace device(PTT) is a PCIe Root Complex
+> integrated Endpoint(RCiEP) device, providing the capability
+> to dynamically monitor and tune the PCIe traffic(tune),
+> and trace the TLP headers(trace).
+>
 
-On Wed, Nov 24, 2021 at 12:07:07PM -0500, Tyler Baicar wrote:
-> Add support for parsing the ARM Error Source Table and basic handling of
-> errors reported through both memory mapped and system register interfaces.
+Is there a reason to put "tune" and "trace" are whithin parentheses?  
+
+> Add the driver for the device to enable the trace function. The driver
+> will create PMU device for each PTT device, and users can start trace
+> through perf command.
 > 
-> Assume system register interfaces are only registered with private
-> peripheral interrupts (PPIs); otherwise there is no guarantee the
-> core handling the error is the core which took the error and has the
-> syndrome info in its system registers.
+> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+> ---
+>  drivers/Makefile                       |    1 +
+>  drivers/hwtracing/Kconfig              |    2 +
+>  drivers/hwtracing/hisilicon/Kconfig    |    8 +
+>  drivers/hwtracing/hisilicon/Makefile   |    2 +
+>  drivers/hwtracing/hisilicon/hisi_ptt.c | 1146 ++++++++++++++++++++++++
 
-Can we actually assume that? What does the specification mandate?
+Not sure about the "hisilicon" directory.  Right now we have "coresight",
+"intel_th" and "stm" - they concentrate on the technology rather than the
+vendor.  I think "ptt" would be just fine: 
 
-> Add logging for all detected errors and trigger a kernel panic if there is
-> any uncorrected error present.
+drivers/hwtracing/ptt/Kconfig 
+drivers/hwtracing/ptt/Makefile
+drivers/hwtracing/ptt/hisi_ptt.c
 
-Has this been tested on any hardware or software platform?
+That way if other vendors want to introduce support for the same kind of
+technology we can simply put them under "drivers/hwtracing/ptt/" and things are
+still accurate.
 
-[...]
 
-> +#define ERRDEVARCH_REV_SHIFT	0x16
-
-IIUC This should be 16, not 0x16 (i.e. 22).
-
-> +#define ERRDEVARCH_REV_MASK	0xf
+>  5 files changed, 1159 insertions(+)
+>  create mode 100644 drivers/hwtracing/hisilicon/Kconfig
+>  create mode 100644 drivers/hwtracing/hisilicon/Makefile
+>  create mode 100644 drivers/hwtracing/hisilicon/hisi_ptt.c
+> 
+> diff --git a/drivers/Makefile b/drivers/Makefile
+> index be5d40ae1488..bb0dc9b55ea2 100644
+> --- a/drivers/Makefile
+> +++ b/drivers/Makefile
+> @@ -176,6 +176,7 @@ obj-$(CONFIG_USB4)		+= thunderbolt/
+>  obj-$(CONFIG_CORESIGHT)		+= hwtracing/coresight/
+>  obj-y				+= hwtracing/intel_th/
+>  obj-$(CONFIG_STM)		+= hwtracing/stm/
+> +obj-$(CONFIG_HISI_PTT)         += hwtracing/hisilicon/
+>  obj-$(CONFIG_ANDROID)		+= android/
+>  obj-$(CONFIG_NVMEM)		+= nvmem/
+>  obj-$(CONFIG_FPGA)		+= fpga/
+> diff --git a/drivers/hwtracing/Kconfig b/drivers/hwtracing/Kconfig
+> index 13085835a636..e3796b17541a 100644
+> --- a/drivers/hwtracing/Kconfig
+> +++ b/drivers/hwtracing/Kconfig
+> @@ -5,4 +5,6 @@ source "drivers/hwtracing/stm/Kconfig"
+>  
+>  source "drivers/hwtracing/intel_th/Kconfig"
+>  
+> +source "drivers/hwtracing/hisilicon/Kconfig"
 > +
-> +#define RAS_REV_v1_1		0x1
+>  endmenu
+> diff --git a/drivers/hwtracing/hisilicon/Kconfig b/drivers/hwtracing/hisilicon/Kconfig
+> new file mode 100644
+> index 000000000000..9c3ab80d99fe
+> --- /dev/null
+> +++ b/drivers/hwtracing/hisilicon/Kconfig
+> @@ -0,0 +1,8 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +config HISI_PTT
+> +	tristate "HiSilicon PCIe Tune and Trace Device"
+> +	depends on PCI && HAS_DMA && HAS_IOMEM
+
+What Arm architecture are you aiming this for?  Can it be found on both armv7
+and armv8?
+
+> +	help
+> +	  HiSilicon PCIe Tune and Trace Device exist as a PCIe RCiEP
+> +	  device, provides support for PCIe traffic tuning and
+> +	  tracing TLP headers to the memory.
+
+Please indicate what the name of the driver will be when compiled as a module.
+
+> diff --git a/drivers/hwtracing/hisilicon/Makefile b/drivers/hwtracing/hisilicon/Makefile
+> new file mode 100644
+> index 000000000000..908c09a98161
+> --- /dev/null
+> +++ b/drivers/hwtracing/hisilicon/Makefile
+> @@ -0,0 +1,2 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +obj-$(CONFIG_HISI_PTT) += hisi_ptt.o
+> diff --git a/drivers/hwtracing/hisilicon/hisi_ptt.c b/drivers/hwtracing/hisilicon/hisi_ptt.c
+> new file mode 100644
+> index 000000000000..e11e9b6cc2a8
+> --- /dev/null
+> +++ b/drivers/hwtracing/hisilicon/hisi_ptt.c
+> @@ -0,0 +1,1146 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Driver for HiSilicon PCIe tune and trace device
+> + *
+> + * Copyright (c) 2021 HiSilicon Limited.
+> + */
 > +
-> +struct ras_ext_regs {
-> +	u64 err_fr;
-> +	u64 err_ctlr;
-> +	u64 err_status;
-> +	u64 err_addr;
-> +	u64 err_misc0;
-> +	u64 err_misc1;
-> +	u64 err_misc2;
-> +	u64 err_misc3;
+> +#include <linux/bitfield.h>
+> +#include <linux/bitops.h>
+> +#include <linux/delay.h>
+> +#include <linux/dma-iommu.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/io.h>
+> +#include <linux/iommu.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/kfifo.h>
+> +#include <linux/module.h>
+> +#include <linux/notifier.h>
+> +#include <linux/pci.h>
+> +#include <linux/perf_event.h>
+> +#include <linux/sizes.h>
+> +#include <linux/sysfs.h>
+> +#include <linux/vmalloc.h>
+> +#include <linux/workqueue.h>
+> +
+> +#define HISI_PTT_TRACE_ADDR_SIZE	0x0800
+> +#define HISI_PTT_TRACE_ADDR_BASE_LO_0	0x0810
+> +#define HISI_PTT_TRACE_ADDR_BASE_HI_0	0x0814
+> +#define HISI_PTT_TRACE_ADDR_STRIDE	0x8
+> +#define HISI_PTT_TRACE_CTRL		0x0850
+> +#define   HISI_PTT_TRACE_CTRL_EN	BIT(0)
+> +#define   HISI_PTT_TRACE_CTRL_RST	BIT(1)
+> +#define   HISI_PTT_TRACE_CTRL_RXTX_SEL	GENMASK(3, 2)
+> +#define   HISI_PTT_TRACE_CTRL_TYPE_SEL	GENMASK(7, 4)
+> +#define   HISI_PTT_TRACE_CTRL_DATA_FORMAT	BIT(14)
+> +#define   HISI_PTT_TRACE_CTRL_FILTER_MODE	BIT(15)
+> +#define   HISI_PTT_TRACE_CTRL_TARGET_SEL	GENMASK(31, 16)
+> +#define HISI_PTT_TRACE_INT_STAT		0x0890
+> +#define   HISI_PTT_TRACE_INT_STAT_MASK	GENMASK(3, 0)
+> +#define HISI_PTT_TRACE_INT_MASK		0x0894
+> +#define HISI_PTT_TRACE_WR_STS		0x08a0
+> +#define   HISI_PTT_TRACE_WR_STS_WRITE	GENMASK(27, 0)
+> +#define   HISI_PTT_TRACE_WR_STS_BUFFER	GENMASK(29, 28)
+> +#define HISI_PTT_TRACE_STS		0x08b0
+> +#define   HISI_PTT_TRACE_IDLE		BIT(0)
+> +#define HISI_PTT_DEVICE_RANGE		0x0fe0
+> +#define HISI_PTT_LOCATION		0x0fe8
+> +#define   HISI_PTT_CORE_ID		GENMASK(15, 0)
+> +#define   HISI_PTT_SICL_ID		GENMASK(31, 16)
+
+Extra spaces between #define and the literals.  Please align the values with
+that of HISI_PTT_TRACE_DMA_IRQ below.
+
+> +
+> +#define HISI_PTT_TRACE_DMA_IRQ			0
+> +#define HISI_PTT_TRACE_BUFLETS_CNT		4
+> +#define HISI_PTT_TRACE_BUFLET_SIZE		SZ_4M
+> +#define HISI_PTT_TRACE_BUFFER_SIZE		(HISI_PTT_TRACE_BUFLET_SIZE * \
+> +						 HISI_PTT_TRACE_BUFLETS_CNT)
+> +#define HISI_PTT_FILTER_UPDATE_FIFO_SIZE	16
+> +
+> +/* Delay time for filter updating work */
+> +#define HISI_PTT_WORK_DELAY_MS		100UL
+> +/* Wait time for DMA hardware to reset */
+> +#define HISI_PTT_RESET_WAIT_MS		1000UL
+> +/* Poll timeout and interval for waiting hardware work to finish */
+> +#define HISI_PTT_WAIT_TIMEOUT_US	1000000UL
+> +#define HISI_PTT_WAIT_POLL_INTERVAL_US	100UL
+> +
+> +#define HISI_PCIE_CORE_PORT_ID(devfn)	(PCI_FUNC(devfn) << 1)
+> +
+> +enum hisi_ptt_trace_status {
+> +	HISI_PTT_TRACE_STATUS_OFF = 0,
+> +	HISI_PTT_TRACE_STATUS_ON,
+> +};
+> +
+> +struct hisi_ptt_dma_buflet {
+
+I'm not sure what a "buflet" is...  Probably best to just call this
+hisi_ptt_dma_buffer" if it pertains to a buffer.  On that note it is hard to
+know due to the lack of proper structure documentation.  Please have a look at
+how "coresight_device" is documented.  The same applies to the rest of the
+structures declared below.
+
+> +	struct list_head list;
+> +	unsigned int size;
+> +	dma_addr_t dma;
+> +
+> +	/*
+> +	 * The address of the buflet holding the trace data.
+> +	 * See Documentation/trace/hisi-ptt.rst for the details
+
+As of this writing, hisi-ptt.rst doesn't exist.
+
+> +	 * of the data format.
+> +	 */
+> +	void *addr;
+> +	int index;
+> +};
+> +
+> +struct hisi_ptt_trace_ctrl {
+> +	enum hisi_ptt_trace_status status;
+> +	struct perf_output_handle handle;
+> +	struct list_head trace_buf;
+> +	/*
+> +	 * The index of the buffer which trace data
+> +	 * currently is writing to.
+> +	 */
+> +	u32 buf_index;
+> +
+> +	int default_cpu;
+> +	u32 buflet_size;
+> +	bool is_port;
+> +	u32 format:1;		/* Format of the traced TLP headers */
+> +	u32 type:4;		/* Type of the TLP headers to trace */
+> +	u32 direction:2;	/* Direction of the TLP headers to trace */
+> +	u32 filter:16;		/* Root port or Requester to filter the TLP headers */
+> +
+> +	phys_addr_t rmr_addr;
+> +	size_t rmr_length;
+> +	bool has_rmr;
+> +};
+> +
+> +struct hisi_ptt_filter_desc {
+> +	struct list_head list;
+> +	struct pci_dev *pdev;
+> +	u16 val;
+> +};
+> +
+> +struct hisi_ptt_pmu_buf {
+> +	size_t length;
+> +	int nr_pages;
+> +	void *base;
+> +	long pos;
+> +};
+> +
+> +/* Structure containing the information for filter updating */
+> +struct hisi_ptt_filter_update_info {
+> +	struct pci_dev *pdev;
+> +	u32 port_devid;
+> +	bool is_port;
+> +	bool is_add;
+> +	u16 val;
+> +};
+> +
+> +struct hisi_ptt {
+> +	struct hisi_ptt_trace_ctrl trace_ctrl;
+> +	struct notifier_block hisi_ptt_nb;
+> +	struct pmu hisi_ptt_pmu;
+> +	void __iomem *iobase;
+> +	struct pci_dev *pdev;
+> +	/*
+> +	 * Use the mutex to protect the filter list and
+> +	 * serialize the perf process.
+> +	 */
+> +	struct mutex mutex;
+> +	const char *name;
+> +	u16 core_id;
+> +	u16 sicl_id;
+> +	/* PCI device range managed by the PTT device */
+> +	u32 upper;
+> +	u32 lower;
+> +	u8 busnr;
+> +
+> +	/*
+> +	 * The trace TLP headers can either be filtered by certain
+> +	 * root port, or by the requester ID. Organize the filters
+> +	 * by @port_filters and @req_filters here. The mask of all
+> +	 * the valid ports is also cached for doing sanity check
+> +	 * of user input.
+> +	 */
+> +	struct list_head port_filters;
+> +	struct list_head req_filters;
+> +	u16 port_mask;
+> +
+> +	/*
+> +	 * We use a delayed work here to avoid indefinitely waiting for
+> +	 * the hisi_ptt->mutex which protecting the filter list. The
+> +	 * work will be delayed only if the mutex can not be held,
+> +	 * otherwise no delay will be applied.
+> +	 */
+> +	struct delayed_work work;
+> +	spinlock_t filter_update_lock;
+> +	DECLARE_KFIFO(filter_update_kfifo, struct hisi_ptt_filter_update_info,
+> +		      HISI_PTT_FILTER_UPDATE_FIFO_SIZE);
 > +};
 
-These last four might be better an an array.
+It might be a good idea to spinoff a hisi_ptt.h for the above declarations.
 
-[...]
-
-> +static bool ras_extn_v1p1(void)
+> +
+> +static inline struct hisi_ptt *to_hisi_ptt(struct pmu *pmu)
 > +{
-> +	unsigned long fld, reg = read_sanitised_ftr_reg(SYS_ID_AA64PFR0_EL1);
-> +
-> +	fld = cpuid_feature_extract_unsigned_field(reg, ID_AA64PFR0_RAS_SHIFT);
-> +
-> +	return fld >= ID_AA64PFR0_RAS_V1P1;
+> +	return container_of(pmu, struct hisi_ptt, hisi_ptt_pmu);
 > +}
 
-I suspect it'd be better to pass this value around directly as
-`version`, rather than dropping this into a `misc23_present` temporary
-variable, as that would be a little clearer, and future-proof if/when
-more registers get added.
+I'm not sure there is any value to this inline function.  I suggest to simply
+call container_of() whenever it is needed.
 
-[...]
-
-> +void arch_arm_ras_report_error(u64 implemented, bool clear_misc)
+> +
+> +static u16 hisi_ptt_get_filter_val(struct pci_dev *pdev)
 > +{
-> +	struct ras_ext_regs regs = {0};
-> +	unsigned int i, cpu_num;
-> +	bool misc23_present;
-> +	bool fatal = false;
-> +	u64 num_records;
+> +	if (pci_pcie_type(pdev) == PCI_EXP_TYPE_ROOT_PORT)
+> +		return BIT(HISI_PCIE_CORE_PORT_ID(PCI_SLOT(pdev->devfn)));
 > +
-> +	if (!this_cpu_has_cap(ARM64_HAS_RAS_EXTN))
-> +		return;
-> +
-> +	cpu_num = get_cpu();
-
-Why get_cpu() here? Do you just need smp_processor_id()?
-
-The commit message explained that this would be PE-local (e.g. in a PPI
-handler), and we've already checked this_cpu_has_cap() which assumes
-we're not preemptible.
-
-So I don't see why we should use get_cpu() here -- any time it would
-have a difference implies something has already gone wrong.
-
-> +	num_records = read_sysreg_s(SYS_ERRIDR_EL1) & ERRIDR_NUM_MASK;
-> +
-> +	for (i = 0; i < num_records; i++) {
-> +		if (!(implemented & BIT(i)))
-> +			continue;
-> +
-> +		write_sysreg_s(i, SYS_ERRSELR_EL1);
-> +		isb();
-> +		regs.err_status = read_sysreg_s(SYS_ERXSTATUS_EL1);
-> +
-> +		if (!(regs.err_status & ERR_STATUS_V))
-> +			continue;
-> +
-> +		pr_err("error from processor 0x%x\n", cpu_num);
-
-Why in hex? We normally print 'cpu%d' or 'CPU%d', since this is a
-logical ID anyway.
-
-> +
-> +		if (regs.err_status & ERR_STATUS_AV)
-> +			regs.err_addr = read_sysreg_s(SYS_ERXADDR_EL1);
-> +
-> +		misc23_present = ras_extn_v1p1();
-
-As above, I reckon it's better to have this as 'version' or
-'ras_version', and have the checks below be:
-
-	if (version >= ID_AA64PFR0_RAS_V1P1) {
-		// poke SYS_ERXMISC2_EL1
-		// poke SYS_ERXMISC3_EL1
-	}
-
-> +
-> +		if (regs.err_status & ERR_STATUS_MV) {
-> +			regs.err_misc0 = read_sysreg_s(SYS_ERXMISC0_EL1);
-> +			regs.err_misc1 = read_sysreg_s(SYS_ERXMISC1_EL1);
-> +
-> +			if (misc23_present) {
-> +				regs.err_misc2 = read_sysreg_s(SYS_ERXMISC2_EL1);
-> +				regs.err_misc3 = read_sysreg_s(SYS_ERXMISC3_EL1);
-> +			}
-> +		}
-> +
-> +		arch_arm_ras_print_error(&regs, i, misc23_present);
-> +
-> +		/*
-> +		 * In the future, we will treat UER conditions as potentially
-> +		 * recoverable.
-> +		 */
-> +		if (regs.err_status & ERR_STATUS_UE)
-> +			fatal = true;
-> +
-> +		regs.err_status = arch_arm_ras_get_status_clear_value(regs.err_status);
-> +		write_sysreg_s(regs.err_status, SYS_ERXSTATUS_EL1);
-> +
-> +		if (clear_misc) {
-> +			write_sysreg_s(0x0, SYS_ERXMISC0_EL1);
-> +			write_sysreg_s(0x0, SYS_ERXMISC1_EL1);
-> +
-> +			if (misc23_present) {
-> +				write_sysreg_s(0x0, SYS_ERXMISC2_EL1);
-> +				write_sysreg_s(0x0, SYS_ERXMISC3_EL1);
-> +			}
-> +		}
-
-Any reason not to clear when we read, above? e.g.
-
-#define READ_CLEAR_MISC(nr, clear)					\
-({									\
-	unsigned long __val = read_sysreg_s(SYS_ERXMISC##nr##_EL1);	\
-	if (clear);							\
-		write_sysreg_s(0, SYS_ERXMISC##nr##_EL1);		\
-	__val;								\
-})
-
-if (regs.err_status & ERR_STATUS_MV) {
-	regs.err_misc0 = READ_CLEAR_MISC(0, clear_misc);
-	regs.err_misc1 = READ_CLEAR_MISC(1, clear_misc);
-
-	if (version >= ID_AA64PFR0_RAS_V1P1) {
-		regs.err_misc2 = READ_CLEAR_MISC(2, clear_misc);
-		regs.err_misc3 = READ_CLEAR_MISC(3, clear_misc);
-	}
-
-}
-
-... why does the clearing need to be conditional?
-
-> +
-> +		isb();
-> +	}
-> +
-> +	if (fatal)
-> +		panic("ARM RAS: uncorrectable error encountered");
-> +
-> +	put_cpu();
+> +	return PCI_DEVID(pdev->bus->number, pdev->devfn);
 > +}
-> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-> index e3ec1a44f94d..dc15e9896db4 100644
-> --- a/arch/arm64/kvm/sys_regs.c
-> +++ b/arch/arm64/kvm/sys_regs.c
-> @@ -1573,6 +1573,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
->  	{ SYS_DESC(SYS_ERXADDR_EL1), trap_raz_wi },
->  	{ SYS_DESC(SYS_ERXMISC0_EL1), trap_raz_wi },
->  	{ SYS_DESC(SYS_ERXMISC1_EL1), trap_raz_wi },
-> +	{ SYS_DESC(SYS_ERXMISC2_EL1), trap_raz_wi },
-> +	{ SYS_DESC(SYS_ERXMISC3_EL1), trap_raz_wi },
-
-This should be a preparatory patch; this is preumably a latent bug in
-KVM.
-
-[...]
-
-> +static struct aest_node_data __percpu **ppi_data;
-> +static int ppi_irqs[AEST_MAX_PPI];
-> +static u8 num_ppi;
-> +static u8 ppi_idx;
-
-As above, do we have any guarantee these are actually PPIs?
-
-> +static bool aest_mmio_ras_misc23_present(u64 base_addr)
+> +
+> +static int hisi_ptt_wait_trace_hw_idle(struct hisi_ptt *hisi_ptt)
 > +{
 > +	u32 val;
 > +
-> +	val = readl((void *) (base_addr + ERRDEVARCH_OFFSET));
-> +	val <<= ERRDEVARCH_REV_SHIFT;
-> +	val &= ERRDEVARCH_REV_MASK;
-> +
-> +	return val >= RAS_REV_v1_1;
+> +	return readl_poll_timeout(hisi_ptt->iobase + HISI_PTT_TRACE_STS, val,
+> +				  val & HISI_PTT_TRACE_IDLE,
+> +				  HISI_PTT_WAIT_POLL_INTERVAL_US,
+> +				  HISI_PTT_WAIT_TIMEOUT_US);
 > +}
-
-Is the shift the wrong way around?
-
-Above we have:
-
-	#define ERRDEVARCH_REV_SHIFT 0x16
-	#define ERRDEVARCH_REV_MASK  0xf
-
-	#define RAS_REV_v1_1         0x1
-
-.. so this is:
-
-	val <<= 0x16;
-	val &= 0xf;		// val[0x15:0] == 0, so this is 0
-
-	return val >= 0x1;	// false
-
-It'd be nicer to use FIELD_GET() here.
-
-As above, I also think it would be better to retrun the value of the
-field, and check that explciitly, for future proofing.
-
-[...]
-
-> +static void aest_proc(struct aest_node_data *data)
+> +
+> +static void hisi_ptt_free_trace_buf(struct hisi_ptt *hisi_ptt)
 > +{
-> +	struct ras_ext_regs *regs_p, regs = {0};
-> +	bool misc23_present;
-> +	bool fatal = false;
-> +	u64 errgsr = 0;
-> +	int i;
+> +	struct hisi_ptt_trace_ctrl *ctrl = &hisi_ptt->trace_ctrl;
+> +	struct device *dev = &hisi_ptt->pdev->dev;
+> +	struct hisi_ptt_dma_buflet *buflet, *tbuflet;
+> +
+> +	list_for_each_entry_safe(buflet, tbuflet, &ctrl->trace_buf, list) {
+> +		list_del(&buflet->list);
+> +
+> +		if (ctrl->has_rmr)
+> +			memunmap(buflet->addr);
+> +		else
+> +			dma_free_coherent(dev, buflet->size, buflet->addr,
+> +					  buflet->dma);
+> +
+> +		kfree(buflet);
+> +	}
+> +}
+> +
+> +static int hisi_ptt_alloc_trace_buf(struct hisi_ptt *hisi_ptt)
+> +{
+> +	struct hisi_ptt_trace_ctrl *ctrl = &hisi_ptt->trace_ctrl;
+> +	struct device *dev = &hisi_ptt->pdev->dev;
+> +	struct hisi_ptt_dma_buflet *buflet;
+> +	int i, ret;
+> +
+> +	hisi_ptt->trace_ctrl.buf_index = 0;
+> +
+> +	/* Make sure the trace buffer is empty before allocating */
+> +	if (!list_empty(&ctrl->trace_buf)) {
+> +		list_for_each_entry(buflet, &ctrl->trace_buf, list)
+> +			memset(buflet->addr, 0, buflet->size);
+> +		return 0;
+> +	}
+> +
+> +	for (i = 0; i < HISI_PTT_TRACE_BUFLETS_CNT; ++i) {
+> +		buflet = kzalloc(sizeof(*buflet), GFP_KERNEL);
+> +		if (!buflet) {
+> +			ret = -ENOMEM;
+> +			goto err;
+> +		}
+> +
+> +		if (ctrl->has_rmr) {
+> +			phys_addr_t base = ctrl->rmr_addr + i * ctrl->buflet_size;
+> +
+> +			buflet->dma = base;
+> +			buflet->addr = memremap(base, ctrl->buflet_size, MEMREMAP_WB);
+> +		} else {
+> +			buflet->addr = dma_alloc_coherent(dev, ctrl->buflet_size,
+> +							  &buflet->dma, GFP_KERNEL);
+> +		}
+> +
+> +		if (!buflet->addr) {
+> +			kfree(buflet);
+> +			ret = -ENOMEM;
+> +			goto err;
+> +		}
+> +
+> +		memset(buflet->addr, 0, buflet->size);
+> +
+> +		buflet->index = i;
+> +		buflet->size = ctrl->buflet_size;
+> +		list_add_tail(&buflet->list, &ctrl->trace_buf);
+> +	}
+> +
+> +	return 0;
+> +err:
+> +	hisi_ptt_free_trace_buf(hisi_ptt);
+> +	return ret;
+> +}
+> +
+> +static void hisi_ptt_trace_end(struct hisi_ptt *hisi_ptt)
+> +{
+> +	writel(0, hisi_ptt->iobase + HISI_PTT_TRACE_CTRL);
+> +	hisi_ptt->trace_ctrl.status = HISI_PTT_TRACE_STATUS_OFF;
+> +}
+> +
+> +static int hisi_ptt_trace_start(struct hisi_ptt *hisi_ptt)
+> +{
+> +	struct hisi_ptt_trace_ctrl *ctrl = &hisi_ptt->trace_ctrl;
+> +	struct hisi_ptt_dma_buflet *cur;
+> +	u32 val;
+> +
+> +	/* Check device idle before start trace */
+> +	if (hisi_ptt_wait_trace_hw_idle(hisi_ptt)) {
+> +		pci_err(hisi_ptt->pdev, "Failed to start trace, the device is still busy.\n");
+> +		return -EBUSY;
+> +	}
+> +
+> +	/* Reset the DMA before start tracing */
+> +	val = readl(hisi_ptt->iobase + HISI_PTT_TRACE_CTRL);
+> +	val |= HISI_PTT_TRACE_CTRL_RST;
+> +	writel(val, hisi_ptt->iobase + HISI_PTT_TRACE_CTRL);
 > +
 > +	/*
-> +	 * Currently SR based handling is done through the architected
-> +	 * discovery exposed through SRs. That may change in the future
-> +	 * if there is supplemental information in the AEST that is
-> +	 * needed.
+> +	 * We'll be in the perf context where preemption is disabled,
+> +	 * so use busy loop here.
 > +	 */
-> +	if (data->interface.type == ACPI_AEST_NODE_SYSTEM_REGISTER) {
-> +		arch_arm_ras_report_error(data->interface.implemented,
-> +					  data->interface.flags & AEST_INTERFACE_CLEAR_MISC);
+> +	mdelay(HISI_PTT_RESET_WAIT_MS);
+> +
+> +	val = readl(hisi_ptt->iobase + HISI_PTT_TRACE_CTRL);
+> +	val &= ~HISI_PTT_TRACE_CTRL_RST;
+> +	writel(val, hisi_ptt->iobase + HISI_PTT_TRACE_CTRL);
+> +
+> +	/* clear the interrupt status */
+> +	writel(HISI_PTT_TRACE_INT_STAT_MASK, hisi_ptt->iobase + HISI_PTT_TRACE_INT_STAT);
+> +	writel(0, hisi_ptt->iobase + HISI_PTT_TRACE_INT_MASK);
+> +
+> +	list_for_each_entry(cur, &ctrl->trace_buf, list) {
+> +		writel(lower_32_bits(cur->dma),
+> +		       hisi_ptt->iobase + HISI_PTT_TRACE_ADDR_BASE_LO_0 +
+> +		       cur->index * HISI_PTT_TRACE_ADDR_STRIDE);
+> +		writel(upper_32_bits(cur->dma),
+> +		       hisi_ptt->iobase + HISI_PTT_TRACE_ADDR_BASE_HI_0 +
+> +		       cur->index * HISI_PTT_TRACE_ADDR_STRIDE);
+> +	}
+> +	writel(ctrl->buflet_size, hisi_ptt->iobase + HISI_PTT_TRACE_ADDR_SIZE);
+> +
+> +	/* set the trace control register */
+> +	val = FIELD_PREP(HISI_PTT_TRACE_CTRL_TYPE_SEL, ctrl->type);
+> +	val |= FIELD_PREP(HISI_PTT_TRACE_CTRL_RXTX_SEL, ctrl->direction);
+> +	val |= FIELD_PREP(HISI_PTT_TRACE_CTRL_DATA_FORMAT, ctrl->format);
+> +	val |= FIELD_PREP(HISI_PTT_TRACE_CTRL_TARGET_SEL, hisi_ptt->trace_ctrl.filter);
+> +	if (!hisi_ptt->trace_ctrl.is_port)
+> +		val |= HISI_PTT_TRACE_CTRL_FILTER_MODE;
+> +
+> +	val |= HISI_PTT_TRACE_CTRL_EN;
+> +	writel(val, hisi_ptt->iobase + HISI_PTT_TRACE_CTRL);
+> +
+> +	ctrl->status = HISI_PTT_TRACE_STATUS_ON;
+> +
+> +	return 0;
+> +}
+> +
+> +static int hisi_ptt_update_aux(struct hisi_ptt *hisi_ptt, int index, bool stop)
+> +{
+> +	struct perf_output_handle *handle = &hisi_ptt->trace_ctrl.handle;
+> +	struct perf_event *event = handle->event;
+> +	struct hisi_ptt_dma_buflet *cur;
+> +	struct hisi_ptt_pmu_buf *buf;
+> +
+> +	buf = perf_get_aux(handle);
+> +	if (!buf || !handle->size)
+> +		return -EINVAL;
+> +
+> +	list_for_each_entry(cur, &hisi_ptt->trace_ctrl.trace_buf, list)
+> +		if (cur->index == index)
+> +			break;
+> +
+> +	memcpy(buf->base + buf->pos, cur->addr, cur->size);
+> +	memset(cur->addr, 0, cur->size);
+> +	buf->pos += cur->size;
+> +
+> +	if (stop) {
+> +		perf_aux_output_end(handle, buf->pos);
+> +	} else if (buf->length - buf->pos < cur->size) {
+> +		perf_aux_output_skip(handle, buf->length - buf->pos);
+> +		perf_aux_output_end(handle, buf->pos);
+> +
+> +		buf = perf_aux_output_begin(handle, event);
+> +		if (!buf)
+> +			return -EINVAL;
+> +
+> +		buf->pos = handle->head % buf->length;
+> +		if (buf->length - buf->pos < cur->size) {
+> +			perf_aux_output_end(handle, 0);
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static irqreturn_t hisi_ptt_isr(int irq, void *context)
+> +{
+> +	struct hisi_ptt *hisi_ptt = context;
+> +	u32 status, buf_idx;
+> +
+> +	status = readl(hisi_ptt->iobase + HISI_PTT_TRACE_INT_STAT);
+> +	buf_idx = ffs(status) - 1;
+> +
+> +	/* Clear the interrupt status of buflet @buf_idx */
+> +	writel(status, hisi_ptt->iobase + HISI_PTT_TRACE_INT_STAT);
+> +
+> +	/*
+> +	 * Update the AUX buffer and cache the current buflet index,
+> +	 * as we need to know this and save the data when the trace
+> +	 * is ended out of the interrupt handler. End the trace
+> +	 * if the updating fails.
+> +	 */
+> +	if (hisi_ptt_update_aux(hisi_ptt, buf_idx, false))
+> +		hisi_ptt_trace_end(hisi_ptt);
+> +	else
+> +		hisi_ptt->trace_ctrl.buf_index = (buf_idx + 1) % HISI_PTT_TRACE_BUFLETS_CNT;
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static irqreturn_t hisi_ptt_irq(int irq, void *context)
+> +{
+> +	struct hisi_ptt *hisi_ptt = context;
+> +	u32 status;
+> +
+> +	status = readl(hisi_ptt->iobase + HISI_PTT_TRACE_INT_STAT);
+> +	if (!(status & HISI_PTT_TRACE_INT_STAT_MASK))
+> +		return IRQ_NONE;
+> +
+> +	return IRQ_WAKE_THREAD;
+> +}
+> +
+> +static void hisi_ptt_irq_free_vectors(void *pdev)
+> +{
+> +	pci_free_irq_vectors(pdev);
+> +}
+> +
+> +static int hisi_ptt_register_irq(struct hisi_ptt *hisi_ptt)
+> +{
+> +	struct pci_dev *pdev = hisi_ptt->pdev;
+> +	int ret;
+> +
+> +	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_MSI);
+> +	if (ret < 0) {
+> +		pci_err(pdev, "failed to allocate irq vector, ret = %d.\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = devm_add_action_or_reset(&pdev->dev, hisi_ptt_irq_free_vectors, pdev);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = devm_request_threaded_irq(&pdev->dev,
+> +					pci_irq_vector(pdev, HISI_PTT_TRACE_DMA_IRQ),
+> +					hisi_ptt_irq, hisi_ptt_isr, 0,
+> +					"hisi-ptt", hisi_ptt);
+> +	if (ret) {
+> +		pci_err(pdev, "failed to request irq %d, ret = %d.\n",
+> +			pci_irq_vector(pdev, HISI_PTT_TRACE_DMA_IRQ), ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void hisi_ptt_update_filters(struct work_struct *work)
+> +{
+> +	struct delayed_work *delayed_work = to_delayed_work(work);
+> +	struct hisi_ptt_filter_update_info info;
+> +	struct hisi_ptt_filter_desc *filter;
+> +	struct list_head *target_list;
+> +	struct hisi_ptt *hisi_ptt;
+> +
+> +	hisi_ptt = container_of(delayed_work, struct hisi_ptt, work);
+> +
+> +	if (!mutex_trylock(&hisi_ptt->mutex)) {
+> +		schedule_delayed_work(&hisi_ptt->work, HISI_PTT_WORK_DELAY_MS);
 > +		return;
 > +	}
 > +
-> +	regs_p = data->interface.regs;
-> +	errgsr = readq((void *) (((u64) regs_p) + ERRGSR_OFFSET));
+> +	while (kfifo_get(&hisi_ptt->filter_update_kfifo, &info)) {
+> +		target_list = info.is_port ? &hisi_ptt->port_filters :
+> +			      &hisi_ptt->req_filters;
 > +
-> +	for (i = data->interface.start; i < data->interface.end; i++) {
-> +		if (!(data->interface.implemented & BIT(i)))
-> +			continue;
+> +		if (info.is_add) {
+> +			filter = kzalloc(sizeof(*filter), GFP_KERNEL);
+> +			if (!filter)
+> +				continue;
 > +
-> +		if (!(data->interface.status_reporting & BIT(i)) && !(errgsr & BIT(i)))
-> +			continue;
+> +			filter->pdev = info.pdev;
+> +			filter->val = info.val;
 > +
-> +		regs.err_status = readq(&regs_p[i].err_status);
-> +		if (!(regs.err_status & ERR_STATUS_V))
-> +			continue;
-> +
-> +		if (regs.err_status & ERR_STATUS_AV)
-> +			regs.err_addr = readq(&regs_p[i].err_addr);
-> +
-> +		regs.err_fr = readq(&regs_p[i].err_fr);
-> +		regs.err_ctlr = readq(&regs_p[i].err_ctlr);
-> +
-> +		if (regs.err_status & ERR_STATUS_MV) {
-> +			misc23_present = aest_mmio_ras_misc23_present((u64) regs_p);
-> +			regs.err_misc0 = readq(&regs_p[i].err_misc0);
-> +			regs.err_misc1 = readq(&regs_p[i].err_misc1);
-> +
-> +			if (misc23_present) {
-> +				regs.err_misc2 = readq(&regs_p[i].err_misc2);
-> +				regs.err_misc3 = readq(&regs_p[i].err_misc3);
-> +			}
+> +			list_add_tail(&filter->list, target_list);
+> +		} else {
+> +			list_for_each_entry(filter, target_list, list)
+> +				if (filter->val == info.val) {
+> +					list_del(&filter->list);
+> +					kfree(filter);
+> +					break;
+> +				}
 > +		}
 > +
-> +		aest_print(data, regs, i, misc23_present);
+> +		/* Update the available port mask */
+> +		if (!info.is_port)
+> +			continue;
 > +
-> +		if (regs.err_status & ERR_STATUS_UE)
-> +			fatal = true;
-> +
-> +		regs.err_status = arch_arm_ras_get_status_clear_value(regs.err_status);
-> +		writeq(regs.err_status, &regs_p[i].err_status);
-> +
-> +		if (data->interface.flags & AEST_INTERFACE_CLEAR_MISC) {
-> +			writeq(0x0, &regs_p[i].err_misc0);
-> +			writeq(0x0, &regs_p[i].err_misc1);
-> +
-> +			if (misc23_present) {
-> +				writeq(0x0, &regs_p[i].err_misc2);
-> +				writeq(0x0, &regs_p[i].err_misc3);
-> +			}
-> +		}
+> +		if (info.is_add)
+> +			hisi_ptt->port_mask |= info.val;
+> +		else
+> +			hisi_ptt->port_mask &= ~info.val;
 > +	}
 > +
-> +	if (fatal)
-> +		panic("AEST: uncorrectable error encountered");
+> +	mutex_unlock(&hisi_ptt->mutex);
+> +}
+> +
+> +static void hisi_ptt_update_fifo_in(struct hisi_ptt *hisi_ptt,
+> +				    struct hisi_ptt_filter_update_info *info)
+> +{
+> +	struct pci_dev *root_port = pcie_find_root_port(info->pdev);
+> +
+> +	if (!root_port)
+> +		return;
+> +
+> +	info->port_devid = PCI_DEVID(root_port->bus->number, root_port->devfn);
+> +	if (info->port_devid < hisi_ptt->lower ||
+> +	    info->port_devid > hisi_ptt->upper)
+> +		return;
+> +
+> +	info->is_port = pci_pcie_type(info->pdev) == PCI_EXP_TYPE_ROOT_PORT;
+> +	info->val = hisi_ptt_get_filter_val(info->pdev);
+> +
+> +	if (kfifo_in_spinlocked(&hisi_ptt->filter_update_kfifo, info, 1,
+> +				&hisi_ptt->filter_update_lock))
+> +		schedule_delayed_work(&hisi_ptt->work, 0);
+> +	else
+> +		pci_warn(hisi_ptt->pdev,
+> +			 "filter update fifo overflow for target %s\n",
+> +			 pci_name(info->pdev));
+> +}
+> +
+> +/*
+> + * A PCI bus notifier is used here for dynamically updating the filter
+> + * list.
+> + */
+> +static int hisi_ptt_notifier_call(struct notifier_block *nb, unsigned long action,
+> +				  void *data)
+> +{
+> +	struct hisi_ptt *hisi_ptt = container_of(nb, struct hisi_ptt, hisi_ptt_nb);
+> +	struct hisi_ptt_filter_update_info info;
+> +	struct device *dev = data;
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +
+> +	info.pdev = pdev;
+> +
+> +	switch (action) {
+> +	case BUS_NOTIFY_ADD_DEVICE:
+> +		info.is_add = true;
+> +		break;
+> +	case BUS_NOTIFY_DEL_DEVICE:
+> +		info.is_add = false;
+> +		break;
+> +	default:
+> +		return 0;
+> +	}
+> +
+> +	hisi_ptt_update_fifo_in(hisi_ptt, &info);
+> +
+> +	return 0;
+> +}
+> +
+> +static int hisi_ptt_init_filters(struct pci_dev *pdev, void *data)
+> +{
+> +	struct hisi_ptt_filter_update_info info = {
+> +		.pdev = pdev,
+> +		.is_add = true,
+> +	};
+> +	struct hisi_ptt *hisi_ptt = data;
+> +
+> +	hisi_ptt_update_fifo_in(hisi_ptt, &info);
+> +
+> +	return 0;
+> +}
+> +
+> +static void hisi_ptt_release_filters(struct hisi_ptt *hisi_ptt)
+> +{
+> +	struct hisi_ptt_filter_desc *filter, *tfilter;
+> +
+> +	list_for_each_entry_safe(filter, tfilter, &hisi_ptt->req_filters, list) {
+> +		list_del(&filter->list);
+> +		kfree(filter);
+> +	}
+> +
+> +	list_for_each_entry_safe(filter, tfilter, &hisi_ptt->port_filters, list) {
+> +		list_del(&filter->list);
+> +		kfree(filter);
+> +	}
+> +}
+> +
+> +static void hisi_ptt_init_ctrls(struct hisi_ptt *hisi_ptt)
+> +{
+> +	struct pci_dev *pdev = hisi_ptt->pdev;
+> +	struct pci_bus *bus;
+> +	u32 reg;
+> +
+> +	INIT_DELAYED_WORK(&hisi_ptt->work, hisi_ptt_update_filters);
+> +	spin_lock_init(&hisi_ptt->filter_update_lock);
+> +	INIT_KFIFO(hisi_ptt->filter_update_kfifo);
+> +	INIT_LIST_HEAD(&hisi_ptt->port_filters);
+> +	INIT_LIST_HEAD(&hisi_ptt->req_filters);
+> +
+> +	/*
+> +	 * The device range register provides the information about the
+> +	 * root ports which the RCiEP can control and trace. The RCiEP
+> +	 * and the root ports it support are on the same PCIe core, with
+> +	 * same domain number but maybe different bus number. The device
+> +	 * range register will tell us which root ports we can support,
+> +	 * Bit[31:16] indicates the upper BDF numbers of the root port,
+> +	 * while Bit[15:0] indicates the lower.
+> +	 */
+> +	reg = readl(hisi_ptt->iobase + HISI_PTT_DEVICE_RANGE);
+> +	hisi_ptt->upper = reg >> 16;
+> +	hisi_ptt->lower = reg & 0xffff;
+> +	hisi_ptt->busnr = PCI_BUS_NUM(hisi_ptt->upper);
+> +
+> +	reg = readl(hisi_ptt->iobase + HISI_PTT_LOCATION);
+> +	hisi_ptt->core_id = FIELD_GET(HISI_PTT_CORE_ID, reg);
+> +	hisi_ptt->sicl_id = FIELD_GET(HISI_PTT_SICL_ID, reg);
+> +
+> +	bus = pci_find_bus(pci_domain_nr(pdev->bus), hisi_ptt->busnr);
+> +	if (bus)
+> +		pci_walk_bus(bus, hisi_ptt_init_filters, hisi_ptt);
 
-Why don't we call panic() as soon as we realise an error is fatal?
+What happens if bus is NULL?  Should this be reported to the caller and cause
+hisi_ptt_probe() to fail?  Please add a comment that describes the scenario.
+
+> +
+> +	/* Initialize trace controls */
+> +	INIT_LIST_HEAD(&hisi_ptt->trace_ctrl.trace_buf);
+> +	hisi_ptt->trace_ctrl.buflet_size = HISI_PTT_TRACE_BUFLET_SIZE;
+> +	hisi_ptt->trace_ctrl.default_cpu = cpumask_first(cpumask_of_node(dev_to_node(&pdev->dev)));
+> +}
+> +
+> +#define HISI_PTT_PMU_FILTER_IS_PORT	BIT(19)
+> +#define HISI_PTT_PMU_FILTER_VAL_MASK	GENMASK(15, 0)
+> +#define HISI_PTT_PMU_DIRECTION_MASK	GENMASK(23, 20)
+> +#define HISI_PTT_PMU_TYPE_MASK		GENMASK(31, 24)
+> +#define HISI_PTT_PMU_FORMAT_MASK	GENMASK(35, 32)
+> +
+> +static ssize_t available_filters_show(struct device *dev,
+> +				      struct device_attribute *attr,
+> +				      char *buf)
+> +{
+> +	struct hisi_ptt *hisi_ptt = to_hisi_ptt(dev_get_drvdata(dev));
+> +	struct hisi_ptt_filter_desc *filter;
+> +	int pos = 0;
+> +
+> +	if (list_empty(&hisi_ptt->port_filters))
+> +		return sysfs_emit(buf, "#### No available filter ####\n");
+> +
+> +	mutex_lock(&hisi_ptt->mutex);
+> +	pos += sysfs_emit_at(buf, pos, "#### Root Ports ####\n");
+> +	list_for_each_entry(filter, &hisi_ptt->port_filters, list)
+> +		pos += sysfs_emit_at(buf, pos, "%s	0x%05lx\n",
+> +				     pci_name(filter->pdev),
+> +				     hisi_ptt_get_filter_val(filter->pdev) |
+> +				     HISI_PTT_PMU_FILTER_IS_PORT);
+> +
+> +	pos += sysfs_emit_at(buf, pos, "#### Requesters ####\n");
+> +	list_for_each_entry(filter, &hisi_ptt->req_filters, list)
+> +		pos += sysfs_emit_at(buf, pos, "%s	0x%05x\n",
+> +				     pci_name(filter->pdev),
+> +				     hisi_ptt_get_filter_val(filter->pdev));
+> +
+> +	mutex_unlock(&hisi_ptt->mutex);
+> +	return pos;
+> +}
+> +static DEVICE_ATTR_ADMIN_RO(available_filters);
+> +
+> +PMU_FORMAT_ATTR(filter,		"config:0-19");
+> +PMU_FORMAT_ATTR(direction,	"config:20-23");
+> +PMU_FORMAT_ATTR(type,		"config:24-31");
+> +PMU_FORMAT_ATTR(format,		"config:32-35");
+> +
+> +static struct attribute *hisi_ptt_pmu_format_attrs[] = {
+> +	&format_attr_filter.attr,
+> +	&format_attr_direction.attr,
+> +	&format_attr_type.attr,
+> +	&format_attr_format.attr,
+> +	NULL
+> +};
+> +
+> +static struct attribute_group hisi_ptt_pmu_format_group = {
+> +	.name = "format",
+> +	.attrs = hisi_ptt_pmu_format_attrs,
+> +};
+> +
+> +static struct attribute *hisi_ptt_pmu_filter_attrs[] = {
+> +	&dev_attr_available_filters.attr,
+> +	NULL
+> +};
+> +
+> +static struct attribute_group hisi_ptt_pmu_filter_group = {
+> +	.attrs = hisi_ptt_pmu_filter_attrs,
+> +};
+> +
+> +static const struct attribute_group *hisi_ptt_pmu_groups[] = {
+> +	&hisi_ptt_pmu_format_group,
+> +	&hisi_ptt_pmu_filter_group,
+> +	NULL
+> +};
+> +
+> +/*
+> + * The supported value of the direction parameter. See hisi_ptt.rst
+> + * documentation for more details.
+> + */
+> +static u32 hisi_ptt_trace_available_direction[] = {
+> +	0,
+> +	1,
+> +	2,
+> +	3,
+> +};
+> +
+> +/* Different types can be set simultaneously */
+> +static u32 hisi_ptt_trace_available_type[] = {
+> +	1,	/* posted_request */
+> +	2,	/* non-posted_request */
+> +	4,	/* completion */
+> +};
+> +
+> +static u32 hisi_ptt_trace_availble_format[] = {
+> +	0,	/* 4DW */
+> +	1,	/* 8DW */
+> +};
+> +
+> +/*
+> + * Check whether the config is valid or not. Some configs are multi-selectable
+> + * and can be set simultaneously, while some are single selectable (onehot).
+> + * Use this function to check the non-onehot configs while
+> + * hisi_ptt_trace_valid_config_onehot() for the onehot ones.
+> + */
+> +static int hisi_ptt_trace_valid_config(u32 val, u32 *available_list, u32 list_size)
+> +{
+> +	int i;
+> +
+> +	/*
+> +	 * The non-onehot configs cannot be 0. Walk the available
+> +	 * list and clear the valid bits of the config. If there
+> +	 * is any resident bit after the walk then the config is
+> +	 * invalid.
+> +	 */
+> +	for (i = 0; i < list_size; i++)
+> +		val &= ~available_list[i];
+> +
+> +	return val ? -EINVAL : 0;
+> +}
+> +
+> +static int hisi_ptt_trace_valid_config_onehot(u32 val, u32 *available_list, u32 list_size)
+> +{
+> +	int i, ret = -EINVAL;
+> +
+> +	for (i = 0; i < list_size; i++)
+> +		if (val == available_list[i]) {
+> +			ret = 0;
+> +			break;
+> +		}
+> +
+> +	return ret;
+> +}
+> +
+> +static int hisi_ptt_trace_init_filter(struct hisi_ptt *hisi_ptt, u64 config)
+> +{
+> +	unsigned long val, port_mask = hisi_ptt->port_mask;
+> +	struct hisi_ptt_filter_desc *filter;
+> +	int ret = -EINVAL;
+> +
+> +	hisi_ptt->trace_ctrl.is_port = FIELD_GET(HISI_PTT_PMU_FILTER_IS_PORT, config);
+> +	val = FIELD_GET(HISI_PTT_PMU_FILTER_VAL_MASK, config);
+> +
+> +	/*
+> +	 * Port filters are defined as bit mask. For port filters, check
+> +	 * the bits in the @val are within the range of hisi_ptt->port_mask
+> +	 * and whether it's empty or not, otherwise user has specified
+> +	 * some unsupported root ports.
+> +	 *
+> +	 * For Requester ID filters, walk the available filter list to see
+> +	 * whether we have one matched.
+> +	 */
+> +	if (hisi_ptt->trace_ctrl.is_port &&
+> +	    bitmap_subset(&val, &port_mask, BITS_PER_LONG)) {
+> +		ret = 0;
+> +	} else {
+> +		list_for_each_entry(filter, &hisi_ptt->req_filters, list)
+> +			if (filter->val == val) {
+> +				ret = 0;
+> +				break;
+> +			}
+> +	}
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	hisi_ptt->trace_ctrl.filter = val;
+> +	return 0;
+> +}
+> +
+> +static int hisi_ptt_pmu_event_init(struct perf_event *event)
+> +{
+> +	struct hisi_ptt *hisi_ptt = to_hisi_ptt(event->pmu);
+> +	struct hisi_ptt_trace_ctrl *ctrl = &hisi_ptt->trace_ctrl;
+> +	int ret;
+> +	u32 val;
+> +
+> +	if (event->attr.type != hisi_ptt->hisi_ptt_pmu.type)
+> +		return -ENOENT;
+> +
+> +	mutex_lock(&hisi_ptt->mutex);
+> +
+> +	ret = hisi_ptt_trace_init_filter(hisi_ptt, event->attr.config);
+> +	if (ret < 0)
+> +		goto out;
+> +
+> +	val = FIELD_GET(HISI_PTT_PMU_DIRECTION_MASK, event->attr.config);
+> +	ret = hisi_ptt_trace_valid_config_onehot(val, hisi_ptt_trace_available_direction,
+> +						 ARRAY_SIZE(hisi_ptt_trace_available_direction));
+> +	if (ret < 0)
+> +		goto out;
+> +	ctrl->direction = val;
+> +
+> +	val = FIELD_GET(HISI_PTT_PMU_TYPE_MASK, event->attr.config);
+> +
+> +	ret = hisi_ptt_trace_valid_config(val, hisi_ptt_trace_available_type,
+> +					  ARRAY_SIZE(hisi_ptt_trace_available_type));
+> +	if (ret < 0)
+> +		goto out;
+> +	ctrl->type = val;
+> +
+> +	val = FIELD_GET(HISI_PTT_PMU_FORMAT_MASK, event->attr.config);
+> +	ret = hisi_ptt_trace_valid_config_onehot(val, hisi_ptt_trace_availble_format,
+> +						 ARRAY_SIZE(hisi_ptt_trace_availble_format));
+> +	if (ret < 0)
+> +		goto out;
+> +	ctrl->format = val;
+> +
+> +out:
+> +	mutex_unlock(&hisi_ptt->mutex);
+> +	return ret;
+> +}
+> +
+> +static void *hisi_ptt_pmu_setup_aux(struct perf_event *event, void **pages,
+> +				    int nr_pages, bool overwrite)
+> +{
+> +	struct hisi_ptt_pmu_buf *buf;
+> +	struct page **pagelist;
+> +	int i;
+> +
+> +	if (overwrite) {
+> +		dev_warn(event->pmu->dev, "Overwrite mode is not supported\n");
+> +		return NULL;
+> +	}
+> +
+> +	/* If the pages size less than buflets, we cannot start trace */
+> +	if (nr_pages < HISI_PTT_TRACE_BUFFER_SIZE / PAGE_SIZE)
+> +		return NULL;
+> +
+> +	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
+> +	if (!buf)
+> +		return NULL;
+> +
+> +	pagelist = kcalloc(nr_pages, sizeof(*pagelist), GFP_KERNEL);
+> +	if (!pagelist) {
+> +		kfree(buf);
+> +		return NULL;
+> +	}
+> +
+> +	for (i = 0; i < nr_pages; i++)
+> +		pagelist[i] = virt_to_page(pages[i]);
+> +
+> +	buf->base = vmap(pagelist, nr_pages, VM_MAP, PAGE_KERNEL);
+> +	if (!buf->base) {
+> +		kfree(pagelist);
+> +		kfree(buf);
+> +		return NULL;
+> +	}
+> +
+> +	buf->nr_pages = nr_pages;
+> +	buf->length = nr_pages * PAGE_SIZE;
+> +	buf->pos = 0;
+> +
+> +	kfree(pagelist);
+> +	return buf;
+> +}
+> +
+> +static void hisi_ptt_pmu_free_aux(void *aux)
+> +{
+> +	struct hisi_ptt_pmu_buf *buf = aux;
+> +
+> +	vunmap(buf->base);
+> +	kfree(buf);
+> +}
+> +
+> +static void hisi_ptt_pmu_start(struct perf_event *event, int flags)
+> +{
+> +	struct hisi_ptt *hisi_ptt = to_hisi_ptt(event->pmu);
+> +	struct perf_output_handle *handle = &hisi_ptt->trace_ctrl.handle;
+> +	struct hw_perf_event *hwc = &event->hw;
+> +	struct hisi_ptt_pmu_buf *buf;
+> +	int cpu = event->cpu;
+> +	int ret;
+> +
+> +	hwc->state = 0;
+> +	mutex_lock(&hisi_ptt->mutex);
+> +	if (hisi_ptt->trace_ctrl.status == HISI_PTT_TRACE_STATUS_ON) {
+> +		pci_dbg(hisi_ptt->pdev, "trace has already started\n");
+> +		goto stop;
+> +	}
+> +
+> +	if (cpu == -1)
+> +		cpu = hisi_ptt->trace_ctrl.default_cpu;
+> +
+> +	/*
+> +	 * Handle the interrupt on the same cpu which starts the trace to avoid
+> +	 * context mismatch. Otherwise we'll trigger the WARN from the perf
+> +	 * core in event_function_local().
+> +	 */
+> +	WARN_ON(irq_set_affinity(pci_irq_vector(hisi_ptt->pdev, HISI_PTT_TRACE_DMA_IRQ),
+> +				 cpumask_of(cpu)));
+> +
+> +	ret = hisi_ptt_alloc_trace_buf(hisi_ptt);
+> +	if (ret) {
+> +		pci_dbg(hisi_ptt->pdev, "alloc trace buf failed, ret = %d\n", ret);
+> +		goto stop;
+> +	}
+> +
+> +	buf = perf_aux_output_begin(handle, event);
+> +	if (!buf) {
+> +		pci_dbg(hisi_ptt->pdev, "aux output begin failed\n");
+> +		goto stop;
+> +	}
+> +
+> +	buf->pos = handle->head % buf->length;
+> +
+> +	ret = hisi_ptt_trace_start(hisi_ptt);
+> +	if (ret) {
+> +		pci_dbg(hisi_ptt->pdev, "trace start failed, ret = %d\n", ret);
+> +		perf_aux_output_end(handle, 0);
+> +		goto stop;
+> +	}
+> +
+> +	mutex_unlock(&hisi_ptt->mutex);
+> +	return;
+> +stop:
+> +	event->hw.state |= PERF_HES_STOPPED;
+> +	mutex_unlock(&hisi_ptt->mutex);
+> +}
+> +
+> +static void hisi_ptt_pmu_stop(struct perf_event *event, int flags)
+> +{
+> +	struct hisi_ptt *hisi_ptt = to_hisi_ptt(event->pmu);
+> +	struct hw_perf_event *hwc = &event->hw;
+> +
+> +	if (hwc->state & PERF_HES_STOPPED)
+> +		return;
+> +
+> +	mutex_lock(&hisi_ptt->mutex);
+> +	if (hisi_ptt->trace_ctrl.status == HISI_PTT_TRACE_STATUS_ON) {
+> +		hisi_ptt_trace_end(hisi_ptt);
+> +		WARN(hisi_ptt_wait_trace_hw_idle(hisi_ptt), "Device is still busy");
+> +		hisi_ptt_update_aux(hisi_ptt, hisi_ptt->trace_ctrl.buf_index, true);
+> +	}
+> +	mutex_unlock(&hisi_ptt->mutex);
+> +
+> +	hwc->state |= PERF_HES_STOPPED;
+> +	perf_event_update_userpage(event);
+> +	hwc->state |= PERF_HES_UPTODATE;
+> +}
+> +
+> +static int hisi_ptt_pmu_add(struct perf_event *event, int flags)
+> +{
+> +	struct hisi_ptt *hisi_ptt = to_hisi_ptt(event->pmu);
+> +	struct hw_perf_event *hwc = &event->hw;
+> +	int cpu = event->cpu;
+> +
+> +	if (cpu == -1 && smp_processor_id() != hisi_ptt->trace_ctrl.default_cpu)
+> +		return 0;
+> +
+> +	hwc->state = PERF_HES_STOPPED | PERF_HES_UPTODATE;
+> +
+> +	if (flags & PERF_EF_START) {
+> +		hisi_ptt_pmu_start(event, PERF_EF_RELOAD);
+> +		if (hwc->state & PERF_HES_STOPPED)
+> +			return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void hisi_ptt_pmu_del(struct perf_event *event, int flags)
+> +{
+> +	hisi_ptt_pmu_stop(event, PERF_EF_UPDATE);
+> +}
+> +
+> +static void hisi_ptt_unregister_pmu(void *priv)
+> +{
+> +	perf_pmu_unregister(priv);
+> +}
+> +
+> +static int hisi_ptt_register_pmu(struct hisi_ptt *hisi_ptt)
+> +{
+> +	char *pmu_name;
+> +	int ret;
+> +
+> +	hisi_ptt->hisi_ptt_pmu = (struct pmu) {
+> +		.module		= THIS_MODULE,
+> +		.capabilities	= PERF_PMU_CAP_EXCLUSIVE | PERF_PMU_CAP_ITRACE,
+> +		.task_ctx_nr	= perf_sw_context,
+> +		.attr_groups	= hisi_ptt_pmu_groups,
+> +		.event_init	= hisi_ptt_pmu_event_init,
+> +		.setup_aux	= hisi_ptt_pmu_setup_aux,
+> +		.free_aux	= hisi_ptt_pmu_free_aux,
+> +		.start		= hisi_ptt_pmu_start,
+> +		.stop		= hisi_ptt_pmu_stop,
+> +		.add		= hisi_ptt_pmu_add,
+> +		.del		= hisi_ptt_pmu_del,
+> +	};
+> +
+> +	pmu_name = devm_kasprintf(&hisi_ptt->pdev->dev, GFP_KERNEL, "hisi_ptt%u_%u",
+> +				  hisi_ptt->sicl_id, hisi_ptt->core_id);
+> +	if (!pmu_name)
+> +		return -ENOMEM;
+> +
+> +	ret = perf_pmu_register(&hisi_ptt->hisi_ptt_pmu, pmu_name, -1);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return devm_add_action_or_reset(&hisi_ptt->pdev->dev,
+> +					hisi_ptt_unregister_pmu,
+> +					&hisi_ptt->hisi_ptt_pmu);
+> +}
+> +
+> +/*
+> + * Get RMR address if provided by the firmware.
+> + * Return 0 if the IOMMU doesn't present or the policy of the
+> + * IOMMU domain is passthrough or we get a usable RMR region.
+> + * Otherwise a negative value is returned.
+> + */
+> +static int hisi_ptt_get_rmr(struct hisi_ptt *hisi_ptt)
+> +{
+> +	struct pci_dev *pdev = hisi_ptt->pdev;
+> +	struct iommu_domain *iommu_domain;
+> +	struct iommu_resv_region *region;
+> +	LIST_HEAD(list);
+> +
+> +	/*
+> +	 * Use direct DMA if IOMMU does not present or the policy of the
+> +	 * IOMMU domain is passthrough.
+> +	 */
+> +	iommu_domain = iommu_get_domain_for_dev(&pdev->dev);
+> +	if (!iommu_domain || iommu_domain->type == IOMMU_DOMAIN_IDENTITY)
+> +		return 0;
+> +
+> +	iommu_get_resv_regions(&pdev->dev, &list);
+> +	list_for_each_entry(region, &list, list)
+> +		if (region->type == IOMMU_RESV_DIRECT &&
+> +		    region->length >= HISI_PTT_TRACE_BUFFER_SIZE) {
+> +			hisi_ptt->trace_ctrl.has_rmr = true;
+> +			hisi_ptt->trace_ctrl.rmr_addr = region->start;
+> +			hisi_ptt->trace_ctrl.rmr_length = region->length;
+> +			break;
+> +		}
+> +
+> +	iommu_put_resv_regions(&pdev->dev, &list);
+> +	return hisi_ptt->trace_ctrl.has_rmr ? 0 : -ENOMEM;
+> +}
+> +
+> +static int hisi_ptt_probe(struct pci_dev *pdev,
+> +			  const struct pci_device_id *id)
+> +{
+> +	struct hisi_ptt *hisi_ptt;
+> +	int ret;
+> +
+> +	hisi_ptt = devm_kzalloc(&pdev->dev, sizeof(*hisi_ptt), GFP_KERNEL);
+> +	if (!hisi_ptt)
+> +		return -ENOMEM;
+> +
+> +	mutex_init(&hisi_ptt->mutex);
+> +	hisi_ptt->pdev = pdev;
+> +
+> +	/*
+> +	 * Lifetime of pci_dev is longer than hisi_ptt,
+> +	 * so directly reference to the pci name string.
+> +	 */
+> +	hisi_ptt->name = pci_name(hisi_ptt->pdev);
+> +	pci_set_drvdata(pdev, hisi_ptt);
+> +
+> +	ret = pcim_enable_device(pdev);
+> +	if (ret) {
+> +		pci_err(pdev, "failed to enable device, ret = %d.\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = pcim_iomap_regions(pdev, BIT(2), hisi_ptt->name);
+> +	if (ret) {
+> +		pci_err(pdev, "failed to remap io memory, ret = %d.\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	hisi_ptt->iobase = pcim_iomap_table(pdev)[2];
+> +
+> +	ret = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(64));
+> +	if (ret) {
+> +		pci_err(pdev, "failed to set 64 bit dma mask, ret = %d.\n", ret);
+> +		return ret;
+> +	}
+> +	pci_set_master(pdev);
+> +
+> +	ret = hisi_ptt_register_irq(hisi_ptt);
+> +	if (ret)
+> +		return ret;
+> +
+> +	hisi_ptt_init_ctrls(hisi_ptt);
+> +
+> +	ret = hisi_ptt_register_pmu(hisi_ptt);
+> +	if (ret) {
+> +		pci_err(pdev, "failed to register pmu device, ret = %d", ret);
+> +		return ret;
+> +	}
+
+If this fails the pci_free_irq_vectors() is not called.
+
+I am out of time for today - I will continue tomorrow.
 
 Thanks,
-Mark.
+Mathieu
+
+> +
+> +	ret = hisi_ptt_get_rmr(hisi_ptt);
+> +	if (ret) {
+> +		pci_err(pdev, "failed to get RMR region, ret = %d", ret);
+> +		return ret;
+> +	}
+> +
+> +	/* Register the bus notifier for dynamically updating the filter list */
+> +	hisi_ptt->hisi_ptt_nb.notifier_call = hisi_ptt_notifier_call;
+> +	ret = bus_register_notifier(&pci_bus_type, &hisi_ptt->hisi_ptt_nb);
+> +	if (ret)
+> +		pci_warn(pdev, "failed to register filter update notifier, ret = %d", ret);
+> +
+> +	return 0;
+> +}
+> +
+> +void hisi_ptt_remove(struct pci_dev *pdev)
+> +{
+> +	struct hisi_ptt *hisi_ptt = pci_get_drvdata(pdev);
+> +
+> +	bus_unregister_notifier(&pci_bus_type, &hisi_ptt->hisi_ptt_nb);
+> +
+> +	/* Cancel any work that has been queued */
+> +	cancel_delayed_work_sync(&hisi_ptt->work);
+> +
+> +	if (hisi_ptt->trace_ctrl.status == HISI_PTT_TRACE_STATUS_ON)
+> +		hisi_ptt_trace_end(hisi_ptt);
+> +
+> +	hisi_ptt_free_trace_buf(hisi_ptt);
+> +	hisi_ptt_release_filters(hisi_ptt);
+> +}
+> +
+> +static const struct pci_device_id hisi_ptt_id_tbl[] = {
+> +	{ PCI_DEVICE(PCI_VENDOR_ID_HUAWEI, 0xa12e) },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(pci, hisi_ptt_id_tbl);
+> +
+> +static struct pci_driver hisi_ptt_driver = {
+> +	.name = "hisi_ptt",
+> +	.id_table = hisi_ptt_id_tbl,
+> +	.probe = hisi_ptt_probe,
+> +	.remove = hisi_ptt_remove,
+> +};
+> +module_pci_driver(hisi_ptt_driver);
+> +
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_AUTHOR("Yicong Yang <yangyicong@hisilicon.com>");
+> +MODULE_DESCRIPTION("Driver for HiSilicon PCIe tune and trace device");
+> -- 
+> 2.33.0
+> 
