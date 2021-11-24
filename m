@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31AAD45BA95
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A43B845BC45
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242828AbhKXMMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:12:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34672 "EHLO mail.kernel.org"
+        id S244847AbhKXM1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:27:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240976AbhKXMId (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:08:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56CFC60295;
-        Wed, 24 Nov 2021 12:05:06 +0000 (UTC)
+        id S244451AbhKXMXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:23:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE3F96109D;
+        Wed, 24 Nov 2021 12:14:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755506;
-        bh=AUBpS3ubOHiAhI5sJh5pGe9SIkaMFAgSqepsC0LcDGM=;
+        s=korg; t=1637756047;
+        bh=tFGTaT77JZFxI/VUzBar6Lpl+pYtrphfByvjZPpwnog=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qhDsfRC0tLzVDnbW9AMVQqevRjhUGcHP3swmoay1Gm7ZWZ/4BC/yGBkeKnLJ4WYZV
-         LEVtTOD+BAcc2BsL4xDVmia8NrvLb5wm5dTNOfO3xup3IqYx7z+SmDG+SNl+EI+QPp
-         /CN02vcoiXNiBbbgWkRcXRJ0XL4UbysroD3BBZuw=
+        b=Jdx+D7hwq8oFGhPNLoHqIA4JqRWkHdyPgKeM10gQfnNAylVumBwGyDVH5FDd6BTUa
+         MJBVSvWbAfcT2piP6+iDrwxO+xRYn02wMwenlmZwHOEeOhezKrbZWXLqs+RcgDQiPa
+         Z/VzmZ04TFP5r1jH9oW2uMziNwJ/5I3uUDIjg8/w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guo Zhi <qtxuning1999@sjtu.edu.cn>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
+        Eiichi Tsukata <eiichi.tsukata@nutanix.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 119/162] scsi: advansys: Fix kernel pointer leak
+Subject: [PATCH 4.9 151/207] vsock: prevent unnecessary refcnt inc for nonblocking connect
 Date:   Wed, 24 Nov 2021 12:57:02 +0100
-Message-Id: <20211124115702.165214416@linuxfoundation.org>
+Message-Id: <20211124115708.901588208@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Zhi <qtxuning1999@sjtu.edu.cn>
+From: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
 
-[ Upstream commit d4996c6eac4c81b8872043e9391563f67f13e406 ]
+[ Upstream commit c7cd82b90599fa10915f41e3dd9098a77d0aa7b6 ]
 
-Pointers should be printed with %p or %px rather than cast to 'unsigned
-long' and printed with %lx.
+Currently vosck_connect() increments sock refcount for nonblocking
+socket each time it's called, which can lead to memory leak if
+it's called multiple times because connect timeout function decrements
+sock refcount only once.
 
-Change %lx to %p to print the hashed pointer.
+Fixes it by making vsock_connect() return -EALREADY immediately when
+sock state is already SS_CONNECTING.
 
-Link: https://lore.kernel.org/r/20210929122538.1158235-1-qtxuning1999@sjtu.edu.cn
-Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: d021c344051a ("VSOCK: Introduce VM Sockets")
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+Signed-off-by: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/advansys.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/vmw_vsock/af_vsock.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/scsi/advansys.c b/drivers/scsi/advansys.c
-index 24e57e770432b..6efd17692a55a 100644
---- a/drivers/scsi/advansys.c
-+++ b/drivers/scsi/advansys.c
-@@ -3370,8 +3370,8 @@ static void asc_prt_adv_board_info(struct seq_file *m, struct Scsi_Host *shost)
- 		   shost->host_no);
- 
- 	seq_printf(m,
--		   " iop_base 0x%lx, cable_detect: %X, err_code %u\n",
--		   (unsigned long)v->iop_base,
-+		   " iop_base 0x%p, cable_detect: %X, err_code %u\n",
-+		   v->iop_base,
- 		   AdvReadWordRegister(iop_base,IOPW_SCSI_CFG1) & CABLE_DETECT,
- 		   v->err_code);
- 
+diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+index 2fecdfe49bae3..95470d628d34b 100644
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -1173,6 +1173,8 @@ static int vsock_stream_connect(struct socket *sock, struct sockaddr *addr,
+ 		 * non-blocking call.
+ 		 */
+ 		err = -EALREADY;
++		if (flags & O_NONBLOCK)
++			goto out;
+ 		break;
+ 	default:
+ 		if ((sk->sk_state == VSOCK_SS_LISTEN) ||
 -- 
 2.33.0
 
