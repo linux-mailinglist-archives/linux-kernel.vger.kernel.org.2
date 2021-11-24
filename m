@@ -2,113 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C5845B8C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 12:03:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E4C45B8CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 12:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241666AbhKXLGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 06:06:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49110 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236994AbhKXLGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 06:06:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D38F60F58;
-        Wed, 24 Nov 2021 11:03:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637751791;
-        bh=pNtpfI9OTL0x8QraprdRcpGtrA43z45AvqlIzIQ9RpA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wj0YdZ5ReKQu4zH3Okmc1Yukr74LZ6YZE+sjNAynSobEbl4Plt1WGqZAREauo/o/N
-         WqXCLY09kaXiWR36S0ko0+j6Mvh7KhPhvPvJlU9pNzOtcYJfZjU43iQ2vnrJL9PNfv
-         x7h0hEWXaup6tB10Ih1wd1AdwrpOUwg9uKs3kpWo=
+        id S231196AbhKXLHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 06:07:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241702AbhKXLGj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 06:06:39 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7272CC061746;
+        Wed, 24 Nov 2021 03:03:29 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id l7so4630010lja.2;
+        Wed, 24 Nov 2021 03:03:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=UGBcTMU8e3Nn01ZNbbWLJmUbEOeeYN+AaV3/0kh4e/s=;
+        b=T2XJdDBSg4SOL+JcAvZvJbXSVMcVIf/GGlUJNA/ZRzSX6l1Sa5jtX5QA/H7U4gmIwr
+         oAYtgPTYcarfMGd/O+rAjY0nJxR2d3iJv+71JF6GxYR6zatVGvifDJuJLiMGJRj5sqNT
+         rpsvbYFcTAdCeliFy2Kfb3OSwAm3jzHsoE7ZtABJZUMKslYuSvO6RZFh1QEcsUxod6GZ
+         TTXVCmufo1loV9iUoeJ+wIXqxqgdXAg31X2y7GWD8LEYZT7WPVcElCXPY4wm2QG3yqjc
+         X/oyi8gF69HAoFpXP+eZfNcJkcYwh4G6ts6628ux6WbIkhI76t9esT8epLvbNjXXJ31U
+         82UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=UGBcTMU8e3Nn01ZNbbWLJmUbEOeeYN+AaV3/0kh4e/s=;
+        b=mzwMYrOySA0kvGVC27w55hfiipZNzum99BtM1TjtQ/ZUr6bIP+dMdGkUrRSOy/BzHf
+         5rt9ri19TQQXmvRFLAi36ee9F8Omc6U15eoROyum9QW/9qUn3fqJCUtE9WxQKlgPs7sA
+         4yTaMk5ZlEC2nbKpgg/K8RoYGhdPMaeA4xVyPBmOTMti2Wwchm+W8dUgTUzQzRgQ/J1T
+         2NNQDO60Ux+dPDLBYK/EshGty7k9CVmgoSTeqF6+dq+PX+bT8EA98uKq1KL/KVEZFgVc
+         BLrivYVYpxPFAEY6+rkeOf0Yz6JuGaGtRJYHY+m/xt3/e1TuI/v+lNmPtH1erKRauxNA
+         V/hQ==
+X-Gm-Message-State: AOAM530qdF8zAKzvCJVSTOPsaaVUevzGHLgVlhwdipfaJMy2gsmhB6jW
+        XA+4QzcwFw+WDb4yV45gKIcqISMsYkSmZpka
+X-Google-Smtp-Source: ABdhPJxOf9Pvqu9rJWed+r7nH/8tYLbdepman5UHfS+/wnBfG4KYRWRRAWyQkDKcnaDne7cSq3aYWg==
+X-Received: by 2002:a2e:974e:: with SMTP id f14mr14537168ljj.153.1637751807805;
+        Wed, 24 Nov 2021 03:03:27 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id u22sm1579907lff.118.2021.11.24.03.03.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 03:03:27 -0800 (PST)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH 9/9] tracing: Switch to kvfree_rcu() API
 Date:   Wed, 24 Nov 2021 12:03:08 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Thorsten Leemhuis <regressions@leemhuis.info>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Re: Linux regressions report for mainline [2021-11-24]
-Message-ID: <YZ4b7N4OTjypAtc7@kroah.com>
-References: <163774583541.221636.5062449110647587402@leemhuis.info>
- <ed60649f-db15-db1d-f7b5-a0878f639d64@leemhuis.info>
+Message-Id: <20211124110308.2053-10-urezki@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211124110308.2053-1-urezki@gmail.com>
+References: <20211124110308.2053-1-urezki@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ed60649f-db15-db1d-f7b5-a0878f639d64@leemhuis.info>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 11:01:52AM +0100, Thorsten Leemhuis wrote:
-> Lo! This was the first report sent by regzbot, my Linux kernel
-> regression tracking bot, so I guess it might be a good idea to highlight
-> a few of it's aspects:
-> 
-> On 24.11.21 10:25, Regzbot (on behalf of Thorsten Leemhuis) wrote:
-> > From: Regzbot (for Thorsten Leemhuis) <regressions@leemhuis.info>
-> > 
-> > Hi, this is regzbot, the Linux kernel regression tracking bot.
-> > 
-> > Currently I'm aware of 15 regressions in linux-mainline. Find the
-> > current status below and the latest on the web:
-> > 
-> > https://linux-regtracking.leemhuis.info/regzbot/mainline/
-> > 
-> > Bye bye, hope to see you soon for the next report.
-> >    Regzbot (on behalf of Thorsten Leemhuis)
-> 
-> >From now on I plan to make regzbot send such reports on Monday mornings,
-> e.g. usually a few hours after Linus released a new RC.
-> 
-> Let me know what you think about the format.
-> 
-> A few random thoughts and explanations about the current format:
-> 
-> - next weeks report will highlight regressions that get added to regzbot
-> over the next few days
-> 
-> - I chose to categorize the regressions by identification status and by
-> version line. Those where the culprit is identified come first, as they
-> are the ones which most of the time can be solved by reverting the culprit
-> 
-> - the entries in each section are ordered by time of last activity,
-> which makes it easy to spot those where nothing happened recently, as
-> they are near the end of a section.
-> 
-> - the webui (https://linux-regtracking.leemhuis.info/regzbot/mainline/ )
-> links to the latest five activities regzbot noticed (an activity most of
-> the time will be a mail send in reply to the report or a related thread
-> that regzbot monitors). I for now chose to not do that in the report, as
-> it would make it much longer and might be something that spam filters
-> consider suspicious.
-> 
-> That's it from my side. Let me know what you think.
+Instead of invoking a synchronize_rcu() to free a pointer
+after a grace period we can directly make use of new API
+that does the same but in more efficient way.
 
-I like it, but as a maintainer, I find this hard to know what to do with
-it.
+CC: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ kernel/trace/trace_osnoise.c | 3 +--
+ kernel/trace/trace_probe.c   | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-As a maintainer, I want to be reminded of what regressions have been
-reported for my subsystem, so I know what to do and who to go poke about
-them.
+diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+index 7520d43aed55..4719a848bf17 100644
+--- a/kernel/trace/trace_osnoise.c
++++ b/kernel/trace/trace_osnoise.c
+@@ -138,8 +138,7 @@ static void osnoise_unregister_instance(struct trace_array *tr)
+ 	if (!found)
+ 		return;
+ 
+-	synchronize_rcu();
+-	kfree(inst);
++	kvfree_rcu(inst);
+ }
+ 
+ /*
+diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+index 3ed2a3f37297..8a3822818bf8 100644
+--- a/kernel/trace/trace_probe.c
++++ b/kernel/trace/trace_probe.c
+@@ -1138,8 +1138,7 @@ int trace_probe_remove_file(struct trace_probe *tp,
+ 		return -ENOENT;
+ 
+ 	list_del_rcu(&link->list);
+-	synchronize_rcu();
+-	kfree(link);
++	kvfree_rcu(link);
+ 
+ 	if (list_empty(&tp->event->files))
+ 		trace_probe_clear_flag(tp, TP_FLAG_TRACE);
+-- 
+2.30.2
 
-I could dig through the list and try to see if these are relevant to me,
-but it's not always obvious.
-
-How about something like "one email per issue" as a response from the
-first report, that would cc: the needed maintainers (or people from
-MAINTAINERS, you should be able to get that automatically from
-get_maintainer.pl) and the subsystem mailing list (again from
-get_maintainers.pl), so that I am constantly reminded that "you need to
-get this fixed!".
-
-Pester me, it's my job as a maintainer to get regressions resolved.  If
-I see a long list with no names on it, It's easier for me to just ignore
-:)
-
-Anyway, I know that's more work for you, don't do it if you don't want
-to, but as you have individual items in your database already, maybe it
-is easy to do, I don't know.  Thanks again for doing this work, it's
-great to see happen.
-
-thanks,
-
-greg k-h
