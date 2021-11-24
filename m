@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C36A45BD0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:32:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F9145BD06
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:32:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343827AbhKXMfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:35:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44396 "EHLO mail.kernel.org"
+        id S244484AbhKXMev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:34:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244131AbhKXM1t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:27:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2810F6112D;
-        Wed, 24 Nov 2021 12:17:01 +0000 (UTC)
+        id S245157AbhKXM14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:27:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3DAA6128C;
+        Wed, 24 Nov 2021 12:17:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756222;
-        bh=G9rknTV9T8mnK85PqcPhJA8piYfQwTzEAj81uz40q5A=;
+        s=korg; t=1637756225;
+        bh=pcaQaHRSZaPPOySmsqfDg8FadbWwQYZN4RVJ23sU7dU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qx0yNNYjnRY+Y3pTJ2P1Kt5k5EAVms82dS9ezviGCpfbEOJHHob/hZyM6dUKJZnE0
-         Wxk4fdTf9+E8LoUal/8GlnDO3hdHSuNKmYZb7rFKFZWmB+0JlJykU9TPFCoWEEVfZj
-         FQjB9wFmIEKQU3k66OFKgUW4RiiP3dqJRlU5xb8k=
+        b=jXhQsR7UPAnk8V8Ro/m3GyzqKa0yjnvCGA1grUzlVVEcX18JOMr8VnFgv+r/Ar5ZP
+         FVm0TNGhI5M8o3d4PG0fffOcam27IaS8PFKq/FSrA6BuZyzd36Q198O7i/2dG+AecT
+         fVi8af0mPGybApBkD4vsU/E6syU6KBxIm20zengQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Subject: [PATCH 4.14 010/251] tpm: Check for integer overflow in tpm2_map_response_body()
-Date:   Wed, 24 Nov 2021 12:54:12 +0100
-Message-Id: <20211124115710.574741560@linuxfoundation.org>
+        stable@vger.kernel.org, Bryan Pass <bryan.pass@gmail.com>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 4.14 011/251] media: ite-cir: IR receiver stop working after receive overflow
+Date:   Wed, 24 Nov 2021 12:54:13 +0100
+Message-Id: <20211124115710.605610602@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
 References: <20211124115710.214900256@linuxfoundation.org>
@@ -39,34 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Sean Young <sean@mess.org>
 
-commit a0bcce2b2a169e10eb265c8f0ebdd5ae4c875670 upstream.
+commit fdc881783099c6343921ff017450831c8766d12a upstream.
 
-The "4 * be32_to_cpu(data->count)" multiplication can potentially
-overflow which would lead to memory corruption.  Add a check for that.
+On an Intel NUC6iSYK, no IR is reported after a receive overflow.
 
-Cc: stable@vger.kernel.org
-Fixes: 745b361e989a ("tpm: infrastructure for TPM spaces")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+When a receiver overflow occurs, this condition is only cleared by
+reading the fifo. Make sure we read anything in the fifo.
+
+Fixes: 28c7afb07ccf ("media: ite-cir: check for receive overflow")
+Suggested-by: Bryan Pass <bryan.pass@gmail.com>
+Tested-by: Bryan Pass <bryan.pass@gmail.com>
+Cc: stable@vger.kernel.org>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/char/tpm/tpm2-space.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/media/rc/ite-cir.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/char/tpm/tpm2-space.c
-+++ b/drivers/char/tpm/tpm2-space.c
-@@ -422,6 +422,9 @@ static int tpm2_map_response_body(struct
- 	if (be32_to_cpu(data->capability) != TPM2_CAP_HANDLES)
- 		return 0;
+--- a/drivers/media/rc/ite-cir.c
++++ b/drivers/media/rc/ite-cir.c
+@@ -292,7 +292,7 @@ static irqreturn_t ite_cir_isr(int irq,
+ 	}
  
-+	if (be32_to_cpu(data->count) > (UINT_MAX - TPM_HEADER_SIZE - 9) / 4)
-+		return -EFAULT;
-+
- 	if (len != TPM_HEADER_SIZE + 9 + 4 * be32_to_cpu(data->count))
- 		return -EFAULT;
- 
+ 	/* check for the receive interrupt */
+-	if (iflags & ITE_IRQ_RX_FIFO) {
++	if (iflags & (ITE_IRQ_RX_FIFO | ITE_IRQ_RX_FIFO_OVERRUN)) {
+ 		/* read the FIFO bytes */
+ 		rx_bytes =
+ 			dev->params.get_rx_bytes(dev, rx_buf,
 
 
