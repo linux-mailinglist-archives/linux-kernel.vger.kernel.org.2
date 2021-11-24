@@ -2,277 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C7245B78D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 10:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 058EA45B791
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 10:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234955AbhKXJgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 04:36:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhKXJgl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 04:36:41 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0D0C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 01:33:32 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id z5so7565274edd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 01:33:31 -0800 (PST)
+        id S233601AbhKXJiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 04:38:01 -0500
+Received: from mail-vi1eur05on2066.outbound.protection.outlook.com ([40.107.21.66]:36736
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229675AbhKXJh4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 04:37:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I3evuh+seEe/T+Xx7UyN0fyir5Vqm1qqn+44Rm9/0ev3M3+vc4zjsVtiavpsAaYMyCi05PBPvEJIKIzZUarlJciUFrg9B4pVc5SbD/9YQjzlqsz3NsUDn9E1C7N++g2ima4MABDdBWnMj2aIIEB4chOnXZnIvsFh3EL4572UgTQkO6jkkmhf7RgzTkMANE2KJ1FyUKiK1Wto3c9iLvtrPRcvAM17sgqOQmiop5zwfUXKSNCe3KEtxtpbk53hYYlTLDlIlxGeCzi7+pfhn4n51ExGH0oyDwRnsaEt8lPhGy+ZLyLhlo2DHW+/CVX9sg+arzbYvf6GuPVDN4YyO04m2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rUL6XQrsYxqlQMvOqOelLVF7X51bdGzfe9a8mv5ov0U=;
+ b=fpdFTLuey+0cPaD3oUpApjDQLfU3QCz5OATWE2yO8SLsdrMdq49B3IgP8Jmjh+CcH3e2Pwb4dEPbOs5evR9ieW99ohP/PAxvxEMM/B+U0drlRbF55omqZ1HkC+MADW/o391woIJzNk7atH6iyLxGzUk4zFTMMEhPVGEf20wvBSuvuTgfYpRooqC8z7nL41QXpOrGUN2SytyR2q+3UZq40Xa9mvDn2RAc63NN8Erz+39Al+2SMA7XmZeBZ/mZc+cSf4fCt8tGqdYXgaqFjJmzpsana5C2J1eHg8W+Qzr7hCmO45qMKm51LlkhU3FgMCEl4lKy0vSfclh03uzapDrreQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
+ dkim=pass header.d=diasemi.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=cSNNRcieP5ju9aQgWK0zyOFIYILsPgHyWBzWie+ehYs=;
-        b=hVpOt6SB+ssOWSxwaqcmhruUrd4GuNleWu1/GgDkh2yvPkXB05eakDJAZK8GmypjnH
-         VPLIBqIxYeQ1lwzKf3TUDnQaVU1o3Vmgi1oO3ahT5aJe/bjgbFiFjdq3+vlCkbp2tb5z
-         0/svEpIaR03VpWLWVnR2mGVpsPREAVWmIGipMJSQYVB5/ADAWiVfLcqHAq11JXgXRnVw
-         4ValZQVSsDnO01rDPedxxRl8e334Z2G+pY5QWe+bi4qs8BAGO97a149+GyUuUh4e7NGt
-         xb1MS0/wMd7cPulhd5obfP+ljbgG3wDupTPB1WURhrwwDTQnK9SQBFAQzwN1nUcWe2nc
-         X6LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=cSNNRcieP5ju9aQgWK0zyOFIYILsPgHyWBzWie+ehYs=;
-        b=DP+bBOoCzUNh02Ltucjmyx8B4zFDgz/92JuDxPDaUWS+jX58hf8891y10rFQxIhtxv
-         c4JwxPsSw+3w+I8nggtJZcztiXrQdx/LY/Dou1dazR2CNB+G23x6uDvBaVDX7snL2UqO
-         yueYIw6P9dWEm/U3CiphRYUxGyU4BbiVYThBdkNYukP0c7XdN+IwK3FH2HDpK73jb3+O
-         fj73fsnzjmNt2LaoN5VPgbTKcGTiT5PpLJw3wZXRkYmqwKyAq4VQAo8ilJ851fSDKCmU
-         EmOZmhhHKjgh9Ev0m8WfLOckwGUnj+2VRbye4l5YQvB83aGKVN9kNULOY2j/MtsSntM5
-         xQyw==
-X-Gm-Message-State: AOAM5308PzuwVZ7hVFsWqkldgFxy0e8IGDAGK3179/0rvR4A0pWBlUV0
-        Tey1ZDcEs3xW8XZ96iomEH0=
-X-Google-Smtp-Source: ABdhPJw6pkTZDxbys2xLzDoGwiiUe7wMUw+BIsIv/bL3/BCYNJYdQbDef7wSSu/XwhlJX8EZWGvjvg==
-X-Received: by 2002:aa7:cada:: with SMTP id l26mr22409901edt.376.1637746410555;
-        Wed, 24 Nov 2021 01:33:30 -0800 (PST)
-Received: from [192.168.1.7] ([212.22.223.21])
-        by smtp.gmail.com with ESMTPSA id v3sm7791278edc.69.2021.11.24.01.33.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 01:33:30 -0800 (PST)
-Subject: Re: [PATCH V2 3/4] xen/unpopulated-alloc: Add mechanism to use Xen
- resource
-To:     Stefano Stabellini <sstabellini@kernel.org>
-Cc:     jgross@suse.com, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Julien Grall <julien@xen.org>
-References: <1635264312-3796-1-git-send-email-olekstysh@gmail.com>
- <1635264312-3796-4-git-send-email-olekstysh@gmail.com>
- <alpine.DEB.2.21.2110280920110.20134@sstabellini-ThinkPad-T480s>
- <1d122e60-df9c-2ac6-8148-f6a836b9e51d@gmail.com>
- <alpine.DEB.2.22.394.2111181642340.1412361@ubuntu-linux-20-04-desktop>
- <f1f1025b-911d-3d27-f408-9c042bc4fca4@gmail.com>
- <alpine.DEB.2.22.394.2111191809100.1412361@ubuntu-linux-20-04-desktop>
- <76163855-c5eb-05db-2f39-3c6bfee46345@gmail.com>
- <alpine.DEB.2.22.394.2111231312310.1412361@ubuntu-linux-20-04-desktop>
-From:   Oleksandr <olekstysh@gmail.com>
-Message-ID: <32521815-d932-7ba6-bfab-a47596d23713@gmail.com>
-Date:   Wed, 24 Nov 2021 11:33:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2111231312310.1412361@ubuntu-linux-20-04-desktop>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rUL6XQrsYxqlQMvOqOelLVF7X51bdGzfe9a8mv5ov0U=;
+ b=t2CIVIPd3lZi2l4wtmKN/cN8Xy++74CpsI2O5A9Jyr5paF3RYItaGUegNPJXspNLPHUzL2puTGY/h3aYPn2/xq7f7sqrIvExBVD4us7bVuR0xpyC+tewPkrkgz3aL6aH2GN4FB9lTGcApECfFLV5m+1D5qFuCxaZ+uauoSv3M+Y=
+Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:255::23)
+ by DB6PR1001MB1125.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:4:63::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Wed, 24 Nov
+ 2021 09:34:42 +0000
+Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::852d:c54f:8414:3276]) by DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::852d:c54f:8414:3276%3]) with mapi id 15.20.4734.020; Wed, 24 Nov 2021
+ 09:34:42 +0000
+From:   Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+To:     Andrej Picej <andrej.picej@norik.com>,
+        Support Opensource <Support.Opensource@diasemi.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "s.riedmueller@phytec.de" <s.riedmueller@phytec.de>
+Subject: RE: [PATCH 2/2] mfd: da9063: Make vbcore registers volatile
+Thread-Topic: [PATCH 2/2] mfd: da9063: Make vbcore registers volatile
+Thread-Index: AQHX4QDrJvqufsfstUeKlqESd2v2MKwSakiA
+Date:   Wed, 24 Nov 2021 09:34:42 +0000
+Message-ID: <DB9PR10MB4652A195CDB7E237A0D87F6180619@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+References: <20211124070001.2516750-1-andrej.picej@norik.com>
+ <20211124070001.2516750-2-andrej.picej@norik.com>
+In-Reply-To: <20211124070001.2516750-2-andrej.picej@norik.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=diasemi.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c5dee093-2881-4ea1-31d4-08d9af2da52e
+x-ms-traffictypediagnostic: DB6PR1001MB1125:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-microsoft-antispam-prvs: <DB6PR1001MB112518C05CE204D9B9BBC4A7A7619@DB6PR1001MB1125.EURPRD10.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:1824;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0W9XvR9rd6Ie/AjAJ5SMZKv4oVzi637MU2SAyneH182uxvGckXFjey1W0t3j+Sf62buFe1llVFabZXNDuRA20fHUoGXVB1L9XOUtheOjbLN5k/gmHiAmkA3RFlEqfGd+cl2p/hWvqvH53nu1ENftnId5KrLn7pvLfVPI7ZBf0+irhVfi/0HuvmKp2WgwTCvnW3CGQ8y/jXVfZ8tUNOp3gwsZ3XuXiaTp5pSHzeCj3utsQs02Wly+GJv5IySEU629l/P6HDO1eabN7aI6/PcO1wodD7shJwIzA0pvVdAIpehCtjroSi5UEKDYA4kDpMYJOmS7XQm9Eu55pSLIuXy0HlA45cYh3P7Duo9oBu+Pm4l7maowr1xflevUSgdpTHYxwkgHsI/crf4cPTdR3t8pKkpRGA+GZjLsm2QIC6Rx2S06LZiAriDaMXjtGeO4fviJmauVRde9ZSnjXmaOF7X8DeTWCJT95F4Ey6Ay8wXAWhV3rCTJXYK6f93xSxupuJzmPeowWDT5T7f3dxA0Pro26FtcwBGrTTxIo36R7EUI0KNV+6T6fmd7PsD+dgenCsamwim0duhzIXFcsaWBNHVHoLoZk3QJU5aMzCVjba3v4c3VLQwtTC/3SDOvTb9yyctQ4pa5rlROXG5hcBqs7ipvOZcVKXCEEprMWzvkG4HKu8IG9DO/wCBWo5vNyWzwxTcpU7DL6rocJDHh2Oiwse2BKw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(122000001)(4326008)(110136005)(38070700005)(53546011)(26005)(86362001)(66556008)(54906003)(508600001)(66476007)(38100700002)(33656002)(66446008)(64756008)(66946007)(8676002)(8936002)(2906002)(55236004)(52536014)(6506007)(71200400001)(76116006)(316002)(7696005)(55016003)(5660300002)(186003)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?WKCruyI18ERHqF0RpGokO1r5rW0x0GpCHErnXipMn47g0l3z60/zdX/Ft2xH?=
+ =?us-ascii?Q?HTFhh94s/0/rSgxv89P7xkvdOrJQdC6XMDNhFrmmYKO61RISRn1rB4y5xcVY?=
+ =?us-ascii?Q?9USMltjVmfWRGsM+4PEKbtdo7RyO3FStkWFsgI7ze5YqEKKUJ6TpZNfA7LiI?=
+ =?us-ascii?Q?eyFZhxfyc9EsuCI0cSQUELNcQLFaVurDwB4rs0NBFOMDFDBRvISp4N2ARRXR?=
+ =?us-ascii?Q?LH0eT1wFfiW/ifPgmDkKonjJlFwzsItLUZFXKp5gMXx/LuxBO1rHo6d9afMI?=
+ =?us-ascii?Q?M118mU35Umk3sAuUceWbc14uRNpACkOtw8j6EG5GeS168+JpIIvinQ5kAwjn?=
+ =?us-ascii?Q?9qeSx9bYGX8DKX8KZBftB8dfyWcQlQi9RWGHAlRTJiNAqP0r3i9gYMnXwfAk?=
+ =?us-ascii?Q?TL7A7NWdvWJLtApGbLEsTS1RwIa1kS74cHqsX31n3gBK5o/mUq4q8J05reUa?=
+ =?us-ascii?Q?eCdeEiLaBtpTGrtizyL2NkMo+fLGuye58vmjO0JXE3gUpUtOIVL3SdPjqmHF?=
+ =?us-ascii?Q?b83JfOzpPtg84alCzy1OTWTRikq6lc+inXEFJRZtOJ9/zkSerPNKxfrNoJAR?=
+ =?us-ascii?Q?H6j8ooT1hNJTpyReXKe2dfJZCgUP9bs1zsUKZV+wbD1upnYj/McS5C8UkJY8?=
+ =?us-ascii?Q?3wsxd6Jmfs80j1/nJnFq6r25lnMz875w83rrRB4BUlOI7UxsIBD52dkou5AK?=
+ =?us-ascii?Q?olM5/Pv3201Hx+/Hq/BBKw2D1c8ban0dPhwnXvRezdGLz0yTqlGLY9zCzI3x?=
+ =?us-ascii?Q?nXfE8DxF7CfK92oWRIptuyHn+C7Vdnrrr5Cp2nQ03qEdUo0LrGiYyp7lJNFc?=
+ =?us-ascii?Q?Qq5PhVoQcY7ciXDZHTDa4sxGGlYd+vl/AJsRbfWs3aXSG36p2U0f1gMID4vr?=
+ =?us-ascii?Q?tioxJKS/P9mzXzZqE1prxm1XBpLpyI+lcWaIE+sXh2hiTH3MTqnX8aCZMWW9?=
+ =?us-ascii?Q?WoZ7jUUOLMBjBBGHxtG25KLXGD6V4iUeFKawZbEK1KLKjrodwffHuFtvjz0p?=
+ =?us-ascii?Q?3pmZpq+c3511H6D2oQguWYHh1WMB6tuL6ozxKbg+QtkZKcEjEuQl0CXWJ0bU?=
+ =?us-ascii?Q?CNBSNIFJataciAvjpWUwO1lmY1WJZi/hkPoUvofpb7HQRRJOgAMPuoH5DTry?=
+ =?us-ascii?Q?PiJUdxicGdPN/rvojMug8Xzi0Ab+3nu14b15kxRWHCcIMeV4ViKEs3CxTHhF?=
+ =?us-ascii?Q?m3iJlIGNNQ5Jq0zAkt/lfkjQItOXHs92xEiQQKOIQDSxVytmqI4T8gOdFxdP?=
+ =?us-ascii?Q?wPRwmW3LA5uEY4ypCOuvWuvSALCttDZ1JRU6B6Z1AfsZDB6Nf5+G2ikeMNYH?=
+ =?us-ascii?Q?ciTCJPSV4lymXH1I4iGrilF+7TyTEqBC5UygHGLf8/Vz5FQb6/LIEqI5ZTxD?=
+ =?us-ascii?Q?jHfP0QLIkWjQ3UJnvPEJDa4vgl+6DJFiTb57RHccxG+k511dLprQrHcaN69w?=
+ =?us-ascii?Q?UYqgVEfH4ue0t+hzBG9gFiSdsXrNy2VRhIRhJfW9Mk2qaiS7+AMJ3ywQZ2SZ?=
+ =?us-ascii?Q?acm2VohnvaC9ZUT9VpAO3FtyoJSfauL4zSj3W2vpYUbi/ABbZ30YA3SE84Eb?=
+ =?us-ascii?Q?CBT4MtO/8UzriBwnuZD7SKyMNORamsYmbiJ2vx+rdJsB7zsuR5qDthjgv0J8?=
+ =?us-ascii?Q?eKAcoQTBNUy0/NFQRkGCIsA6bVaUp/uPu089XI3vgDD0CZsDVRALiBNsHpuJ?=
+ =?us-ascii?Q?mrgvGw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: c5dee093-2881-4ea1-31d4-08d9af2da52e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2021 09:34:42.8615
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +ftsdS/GHDVUhhO3dfek8icrHTH/IMXu3Xlm4CoL+n0dOSLYS6olvcBaotCwSYoUJYLhYyTp9Q74wXdsAQ/AqHYzX3IG3TUc5qSx4fPhOeA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR1001MB1125
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 24 November 2021 07:00, Andrej Picej wrote:
 
-On 23.11.21 23:25, Stefano Stabellini wrote:
+> From: Stefan Riedmueller <s.riedmueller@phytec.de>
+>=20
+> The VBCORE1_A and VBCORE2_A registers are used to set the desired output
+> voltage of the BCORE 1 and 2 buck regulators. These values can be critica=
+l
+> if used as input for core voltages. Thus make them volatile so they do no=
+t
+> get cached.
 
-Hi Stefano
+I don't understand the need for this change. What is this fixing? As I
+understand it the registers in question aren't volatile so should persist.
 
-> On Tue, 23 Nov 2021, Oleksandr wrote:
->>> Actually after reading your replies and explanation I changed opinion: I
->>> think we do need the fallback because Linux cannot really assume that
->>> it is running on "new Xen" so it definitely needs to keep working if
->>> CONFIG_XEN_UNPOPULATED_ALLOC is enabled and the extended regions are not
->>> advertised.
->>>
->>> I think we'll have to roll back some of the changes introduced by
->>> 121f2faca2c0a. That's because even if CONFIG_XEN_UNPOPULATED_ALLOC is
->>> enabled we cannot know if we can use unpopulated-alloc or whether we
->>> have to use alloc_xenballooned_pages until we parse the /hypervisor node
->>> in device tree at runtime.
->> Exactly!
->>
->>
->>> In short, we cannot switch between unpopulated-alloc and
->>> alloc_xenballooned_pages at build time, we have to do it at runtime
->>> (boot time).
->> +1
->>
->>
->> I created a patch to partially revert 121f2faca2c0a "xen/balloon: rename
->> alloc/free_xenballooned_pages".
->>
->> If there is no objections I will add it to V3 (which is almost ready, except
->> the fallback bits). Could you please tell me what do you think?
->   
-> It makes sense to me. You can add my Reviewed-by.
-
-Great, thank you!
-
-
->
->   
->>  From dc79bcd425358596d95e715a8bd8b81deaaeb703 Mon Sep 17 00:00:00 2001
->> From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
->> Date: Tue, 23 Nov 2021 18:14:41 +0200
->> Subject: [PATCH] xen/balloon: Bring alloc(free)_xenballooned_pages helpers
->>   back
->>
->> This patch rolls back some of the changes introduced by commit
->> 121f2faca2c0a "xen/balloon: rename alloc/free_xenballooned_pages"
->> in order to make possible to still allocate xenballooned pages
->> if CONFIG_XEN_UNPOPULATED_ALLOC is enabled.
->>
->> On Arm the unpopulated pages will be allocated on top of extended
->> regions provided by Xen via device-tree (the subsequent patches
->> will add required bits to support unpopulated-alloc feature on Arm).
->> The problem is that extended regions feature has been introduced
->> into Xen quite recently (during 4.16 release cycle). So this
->> effectively means that Linux must only use unpopulated-alloc on Arm
->> if it is running on "new Xen" which advertises these regions.
->> But, it will only be known after parsing the "hypervisor" node
->> at boot time, so before doing that we cannot assume anything.
->>
->> In order to keep working if CONFIG_XEN_UNPOPULATED_ALLOC is enabled
->> and the extended regions are not advertised (Linux is running on
->> "old Xen", etc) we need the fallback to alloc_xenballooned_pages().
->>
->> This way we wouldn't reduce the amount of memory usable (wasting
->> RAM pages) for any of the external mappings anymore (and eliminate
->> XSA-300) with "new Xen", but would be still functional ballooning
->> out RAM pages with "old Xen".
->>
->> Also rename alloc(free)_xenballooned_pages to xen_alloc(free)_ballooned_pages.
->>
->> Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
->> ---
->>   drivers/xen/balloon.c | 20 +++++++++-----------
->>   include/xen/balloon.h |  3 +++
->>   include/xen/xen.h     |  6 ++++++
->>   3 files changed, 18 insertions(+), 11 deletions(-)
->>
->> diff --git a/drivers/xen/balloon.c b/drivers/xen/balloon.c
->> index ba2ea11..a2c4fc49 100644
->> --- a/drivers/xen/balloon.c
->> +++ b/drivers/xen/balloon.c
->> @@ -581,7 +581,6 @@ void balloon_set_new_target(unsigned long target)
->>   }
->>   EXPORT_SYMBOL_GPL(balloon_set_new_target);
->>
->> -#ifndef CONFIG_XEN_UNPOPULATED_ALLOC
->>   static int add_ballooned_pages(unsigned int nr_pages)
->>   {
->>       enum bp_state st;
->> @@ -610,12 +609,12 @@ static int add_ballooned_pages(unsigned int nr_pages)
->>   }
->>
->>   /**
->> - * xen_alloc_unpopulated_pages - get pages that have been ballooned out
->> + * xen_alloc_ballooned_pages - get pages that have been ballooned out
->>    * @nr_pages: Number of pages to get
->>    * @pages: pages returned
->>    * @return 0 on success, error otherwise
->>    */
->> -int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page **pages)
->> +int xen_alloc_ballooned_pages(unsigned int nr_pages, struct page **pages)
->>   {
->>       unsigned int pgno = 0;
->>       struct page *page;
->> @@ -652,23 +651,23 @@ int xen_alloc_unpopulated_pages(unsigned int nr_pages,
->> struct page **pages)
->>       return 0;
->>    out_undo:
->>       mutex_unlock(&balloon_mutex);
->> -    xen_free_unpopulated_pages(pgno, pages);
->> +    xen_free_ballooned_pages(pgno, pages);
->>       /*
->> -     * NB: free_xenballooned_pages will only subtract pgno pages, but since
->> +     * NB: xen_free_ballooned_pages will only subtract pgno pages, but since
->>        * target_unpopulated is incremented with nr_pages at the start we need
->>        * to remove the remaining ones also, or accounting will be screwed.
->>        */
->>       balloon_stats.target_unpopulated -= nr_pages - pgno;
->>       return ret;
->>   }
->> -EXPORT_SYMBOL(xen_alloc_unpopulated_pages);
->> +EXPORT_SYMBOL(xen_alloc_ballooned_pages);
->>
->>   /**
->> - * xen_free_unpopulated_pages - return pages retrieved with
->> get_ballooned_pages
->> + * xen_free_ballooned_pages - return pages retrieved with get_ballooned_pages
->>    * @nr_pages: Number of pages
->>    * @pages: pages to return
->>    */
->> -void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages)
->> +void xen_free_ballooned_pages(unsigned int nr_pages, struct page **pages)
->>   {
->>       unsigned int i;
->>
->> @@ -687,9 +686,9 @@ void xen_free_unpopulated_pages(unsigned int nr_pages,
->> struct page **pages)
->>
->>       mutex_unlock(&balloon_mutex);
->>   }
->> -EXPORT_SYMBOL(xen_free_unpopulated_pages);
->> +EXPORT_SYMBOL(xen_free_ballooned_pages);
->>
->> -#if defined(CONFIG_XEN_PV)
->> +#if defined(CONFIG_XEN_PV) && !defined(CONFIG_XEN_UNPOPULATED_ALLOC)
->>   static void __init balloon_add_region(unsigned long start_pfn,
->>                         unsigned long pages)
->>   {
->> @@ -712,7 +711,6 @@ static void __init balloon_add_region(unsigned long
->> start_pfn,
->>       balloon_stats.total_pages += extra_pfn_end - start_pfn;
->>   }
->>   #endif
->> -#endif
->>
->>   static int __init balloon_init(void)
->>   {
->> diff --git a/include/xen/balloon.h b/include/xen/balloon.h
->> index e93d4f0..f78a6cc 100644
->> --- a/include/xen/balloon.h
->> +++ b/include/xen/balloon.h
->> @@ -26,6 +26,9 @@ extern struct balloon_stats balloon_stats;
->>
->>   void balloon_set_new_target(unsigned long target);
->>
->> +int xen_alloc_ballooned_pages(unsigned int nr_pages, struct page **pages);
->> +void xen_free_ballooned_pages(unsigned int nr_pages, struct page **pages);
->> +
->>   #ifdef CONFIG_XEN_BALLOON
->>   void xen_balloon_init(void);
->>   #else
->> diff --git a/include/xen/xen.h b/include/xen/xen.h
->> index 9f031b5..410e3e4 100644
->> --- a/include/xen/xen.h
->> +++ b/include/xen/xen.h
->> @@ -52,7 +52,13 @@ bool xen_biovec_phys_mergeable(const struct bio_vec *vec1,
->>   extern u64 xen_saved_max_mem_size;
->>   #endif
->>
->> +#ifdef CONFIG_XEN_UNPOPULATED_ALLOC
->>   int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page **pages);
->>   void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages);
->> +#else
->> +#define xen_alloc_unpopulated_pages xen_alloc_ballooned_pages
->> +#define xen_free_unpopulated_pages xen_free_ballooned_pages
->> +#include <xen/balloon.h>
->> +#endif
->>
->>   #endif    /* _XEN_XEN_H */
-
--- 
-Regards,
-
-Oleksandr Tyshchenko
+> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+> Signed-off-by: Andrej Picej <andrej.picej@norik.com>
+> ---
+>  drivers/mfd/da9063-i2c.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/drivers/mfd/da9063-i2c.c b/drivers/mfd/da9063-i2c.c
+> index 343ed6e96d87..8a3629c30382 100644
+> --- a/drivers/mfd/da9063-i2c.c
+> +++ b/drivers/mfd/da9063-i2c.c
+> @@ -161,6 +161,7 @@ static const struct regmap_range
+> da9063_ad_volatile_ranges[] =3D {
+>  	regmap_reg_range(DA9063_REG_ADC_RES_L,
+> DA9063_AD_REG_SECOND_D),
+>  	regmap_reg_range(DA9063_REG_SEQ, DA9063_REG_SEQ),
+>  	regmap_reg_range(DA9063_REG_EN_32K, DA9063_REG_EN_32K),
+> +	regmap_reg_range(DA9063_REG_VBCORE2_A,
+> DA9063_REG_VBCORE2_A),
+>  	regmap_reg_range(DA9063_AD_REG_MON_REG_5,
+> DA9063_AD_REG_MON_REG_6),
+>  };
+>=20
+> @@ -206,6 +207,7 @@ static const struct regmap_range
+> da9063_bb_da_volatile_ranges[] =3D {
+>  	regmap_reg_range(DA9063_REG_ADC_RES_L,
+> DA9063_BB_REG_SECOND_D),
+>  	regmap_reg_range(DA9063_REG_SEQ, DA9063_REG_SEQ),
+>  	regmap_reg_range(DA9063_REG_EN_32K, DA9063_REG_EN_32K),
+> +	regmap_reg_range(DA9063_REG_VBCORE2_A,
+> DA9063_REG_VBCORE2_A),
+>  	regmap_reg_range(DA9063_BB_REG_MON_REG_5,
+> DA9063_BB_REG_MON_REG_6),
+>  };
+>=20
+> --
+> 2.25.1
 
