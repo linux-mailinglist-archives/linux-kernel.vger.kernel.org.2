@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC93F45C54C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A1D45C2AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353134AbhKXN4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:56:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42982 "EHLO mail.kernel.org"
+        id S1349617AbhKXNbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:31:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354674AbhKXNwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:52:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5139861A09;
-        Wed, 24 Nov 2021 13:04:47 +0000 (UTC)
+        id S1350937AbhKXN26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:28:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D8B361BA3;
+        Wed, 24 Nov 2021 12:51:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759088;
-        bh=cZtbukhUh69LesKIUr/eJpEdWFV2bxE+zDTWXrwVJN4=;
+        s=korg; t=1637758292;
+        bh=fE5wT2FTzAnz5QSuEHMp5vK6WurJdaiPUDZI1BQi2qc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TlPNGgun1a1OCQAoJoizHUpCs5QtzLSgkHwA86dQRNOIlr1amlPZfW+PQwoExvGHF
-         0t1PwTJmD+rGF1zQAstuK5FTIjIdNh4aO/OV8luHZCdSv3P+BkoShH5AHLRT2tTdtp
-         aAQGntP0VtWlzV/123oljRylnoKcXyQuvxSB+T9U=
+        b=fZ6BrnWsA62qoSJNDDTfc5UZwoCT1nwbFVXN+cjRnveWIxc0AV0YBO+4iCrC73sTa
+         B7iMhkQQIflZbN5TQf3jRoNKhB5F/rXJ0l3jOXYsZviDjphM15PCuBb8rDiF9aETCJ
+         pxyEAVcly3ANLEXi1QDO62wqTKJjyPZ2nMbnbBSw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mitch Williams <mitch.a.williams@intel.com>,
-        Tony Brelinski <tony.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 129/279] iavf: validate pointers
-Date:   Wed, 24 Nov 2021 12:56:56 +0100
-Message-Id: <20211124115723.259663509@linuxfoundation.org>
+Subject: [PATCH 5.10 021/154] arm64: dts: qcom: msm8916: Add unit name for /soc node
+Date:   Wed, 24 Nov 2021 12:56:57 +0100
+Message-Id: <20211124115703.053986442@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,48 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mitch Williams <mitch.a.williams@intel.com>
+From: Stephan Gerhold <stephan@gerhold.net>
 
-[ Upstream commit 131b0edc4028bb88bb472456b1ddba526cfb7036 ]
+[ Upstream commit 7a62bfebc8c94bdb6eb8f54f49889dc6b5b79601 ]
 
-In some cases, the ethtool get_rxfh handler may be called with a null
-key or indir parameter. So check these pointers, or you will have a very
-bad day.
+This fixes the following warning when building with W=1:
+Warning (unit_address_vs_reg): /soc: node has a reg or ranges property,
+but no unit name
 
-Fixes: 43a3d9ba34c9 ("i40evf: Allow PF driver to configure RSS")
-Signed-off-by: Mitch Williams <mitch.a.williams@intel.com>
-Tested-by: Tony Brelinski <tony.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/20210921152120.6710-1-stephan@gerhold.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/iavf/iavf_ethtool.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ arch/arm64/boot/dts/qcom/msm8916.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
-index 136c801f5584a..25ee0606e625f 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
-@@ -1859,14 +1859,13 @@ static int iavf_get_rxfh(struct net_device *netdev, u32 *indir, u8 *key,
+diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+index b1ffc056eea0b..d26f9acf8e126 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+@@ -384,7 +384,7 @@
+ 		};
+ 	};
  
- 	if (hfunc)
- 		*hfunc = ETH_RSS_HASH_TOP;
--	if (!indir)
--		return 0;
--
--	memcpy(key, adapter->rss_key, adapter->rss_key_size);
-+	if (key)
-+		memcpy(key, adapter->rss_key, adapter->rss_key_size);
- 
--	/* Each 32 bits pointed by 'indir' is stored with a lut entry */
--	for (i = 0; i < adapter->rss_lut_size; i++)
--		indir[i] = (u32)adapter->rss_lut[i];
-+	if (indir)
-+		/* Each 32 bits pointed by 'indir' is stored with a lut entry */
-+		for (i = 0; i < adapter->rss_lut_size; i++)
-+			indir[i] = (u32)adapter->rss_lut[i];
- 
- 	return 0;
- }
+-	soc: soc {
++	soc: soc@0 {
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+ 		ranges = <0 0 0 0xffffffff>;
 -- 
 2.33.0
 
