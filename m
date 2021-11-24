@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A1D45C64F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F8E45C1B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:18:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351790AbhKXOGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:06:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52678 "EHLO mail.kernel.org"
+        id S1348764AbhKXNU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:20:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353754AbhKXOCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:02:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02C5361A7B;
-        Wed, 24 Nov 2021 13:10:07 +0000 (UTC)
+        id S1348743AbhKXNRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:17:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A842D60174;
+        Wed, 24 Nov 2021 12:45:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759408;
-        bh=mIc9zoBwSAu9YM8iq3vde0cJhMvZvFexR1p/8EjIv8s=;
+        s=korg; t=1637757927;
+        bh=/BlUbkyTMac28SZfPR0tXVT0ZRyk8LNS3BhNmHhMA5E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZjNB2hHqGqxYoiUOQYm++JiHsyhBE2fbKL9iMsVPVasWN7+3O1Z3eq2e2jxpLZMU8
-         rk9QB9UPAmKJYlbDNyCglnf9g666WBa3/ztVqc9+AIqxWKs1aMFpThyUmRhNY4X6ES
-         3dtBLTYRwY+QJ9kqhiDKcXPbvGU258+dnYpLWhKc=
+        b=2U3YRWREAMHxgNEkkqxPle9hjG47TwTRvPwkdMG5IFs3v4WTO4BOL07Sno9SIPmi6
+         MJy3oJhazJPH3TuquUXJOpC9y32sZqcNwK8Ww0QNjMUhuT+1TMytB3ryq1ipg3aQps
+         JHwG6K7eAAwd8W4TDH7emvBVTyj6Hn/qw1jSn7uI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Quanyang Wang <quanyang.wang@windriver.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.15 198/279] kmap_local: dont assume kmap PTEs are linear arrays in memory
+        stable@vger.kernel.org,
+        Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>,
+        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+        Eryk Rybak <eryk.roch.rybak@intel.com>,
+        Konrad Jankowski <konrad0.jankowski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 295/323] i40e: Fix correct max_pkt_size on VF RX queue
 Date:   Wed, 24 Nov 2021 12:58:05 +0100
-Message-Id: <20211124115725.572318724@linuxfoundation.org>
+Message-Id: <20211124115728.867144201@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,167 +44,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Eryk Rybak <eryk.roch.rybak@intel.com>
 
-commit 825c43f50e3aa811a291ffcb40e02fbf6d91ba86 upstream.
+[ Upstream commit 6afbd7b3c53cb7417189f476e99d431daccb85b0 ]
 
-The kmap_local conversion broke the ARM architecture, because the new
-code assumes that all PTEs used for creating kmaps form a linear array
-in memory, and uses array indexing to look up the kmap PTE belonging to
-a certain kmap index.
+Setting VLAN port increasing RX queue max_pkt_size
+by 4 bytes to take VLAN tag into account.
+Trigger the VF reset when setting port VLAN for
+VF to renegotiate its capabilities and reinitialize.
 
-On ARM, this cannot work, not only because the PTE pages may be
-non-adjacent in memory, but also because ARM/!LPAE interleaves hardware
-entries and extended entries (carrying software-only bits) in a way that
-is not compatible with array indexing.
-
-Fortunately, this only seems to affect configurations with more than 8
-CPUs, due to the way the per-CPU kmap slots are organized in memory.
-
-Work around this by permitting an architecture to set a Kconfig symbol
-that signifies that the kmap PTEs do not form a lineary array in memory,
-and so the only way to locate the appropriate one is to walk the page
-tables.
-
-Link: https://lore.kernel.org/linux-arm-kernel/20211026131249.3731275-1-ardb@kernel.org/
-Link: https://lkml.kernel.org/r/20211116094737.7391-1-ardb@kernel.org
-Fixes: 2a15ba82fa6c ("ARM: highmem: Switch to generic kmap atomic")
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Reported-by: Quanyang Wang <quanyang.wang@windriver.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: ba4e003d29c1 ("i40e: don't hold spinlock while resetting VF")
+Signed-off-by: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
+Signed-off-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+Signed-off-by: Eryk Rybak <eryk.roch.rybak@intel.com>
+Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/Kconfig |    1 +
- mm/Kconfig       |    3 +++
- mm/highmem.c     |   32 +++++++++++++++++++++-----------
- 3 files changed, 25 insertions(+), 11 deletions(-)
+ .../ethernet/intel/i40e/i40e_virtchnl_pf.c    | 53 ++++---------------
+ 1 file changed, 9 insertions(+), 44 deletions(-)
 
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -1455,6 +1455,7 @@ config HIGHMEM
- 	bool "High Memory Support"
- 	depends on MMU
- 	select KMAP_LOCAL
-+	select KMAP_LOCAL_NON_LINEAR_PTE_ARRAY
- 	help
- 	  The address space of ARM processors is only 4 Gigabytes large
- 	  and it has to accommodate user address space, kernel address
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -887,6 +887,9 @@ config MAPPING_DIRTY_HELPERS
- config KMAP_LOCAL
- 	bool
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+index 3c1533c627fd0..02d245970d7fa 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+@@ -621,14 +621,13 @@ static int i40e_config_vsi_rx_queue(struct i40e_vf *vf, u16 vsi_id,
+ 				    u16 vsi_queue_id,
+ 				    struct virtchnl_rxq_info *info)
+ {
++	u16 pf_queue_id = i40e_vc_get_pf_queue_id(vf, vsi_id, vsi_queue_id);
+ 	struct i40e_pf *pf = vf->pf;
++	struct i40e_vsi *vsi = pf->vsi[vf->lan_vsi_idx];
+ 	struct i40e_hw *hw = &pf->hw;
+ 	struct i40e_hmc_obj_rxq rx_ctx;
+-	u16 pf_queue_id;
+ 	int ret = 0;
  
-+config KMAP_LOCAL_NON_LINEAR_PTE_ARRAY
-+	bool
+-	pf_queue_id = i40e_vc_get_pf_queue_id(vf, vsi_id, vsi_queue_id);
+-
+ 	/* clear the context structure first */
+ 	memset(&rx_ctx, 0, sizeof(struct i40e_hmc_obj_rxq));
+ 
+@@ -666,6 +665,10 @@ static int i40e_config_vsi_rx_queue(struct i40e_vf *vf, u16 vsi_id,
+ 	}
+ 	rx_ctx.rxmax = info->max_pkt_size;
+ 
++	/* if port VLAN is configured increase the max packet size */
++	if (vsi->info.pvid)
++		rx_ctx.rxmax += VLAN_HLEN;
 +
- # struct io_mapping based helper.  Selected by drivers that need them
- config IO_MAPPING
- 	bool
---- a/mm/highmem.c
-+++ b/mm/highmem.c
-@@ -504,16 +504,22 @@ static inline int kmap_local_calc_idx(in
+ 	/* enable 32bytes desc always */
+ 	rx_ctx.dsize = 1;
  
- static pte_t *__kmap_pte;
- 
--static pte_t *kmap_get_pte(void)
-+static pte_t *kmap_get_pte(unsigned long vaddr, int idx)
- {
-+	if (IS_ENABLED(CONFIG_KMAP_LOCAL_NON_LINEAR_PTE_ARRAY))
-+		/*
-+		 * Set by the arch if __kmap_pte[-idx] does not produce
-+		 * the correct entry.
-+		 */
-+		return virt_to_kpte(vaddr);
- 	if (!__kmap_pte)
- 		__kmap_pte = virt_to_kpte(__fix_to_virt(FIX_KMAP_BEGIN));
--	return __kmap_pte;
-+	return &__kmap_pte[-idx];
+@@ -3927,34 +3930,6 @@ error_param:
+ 	return ret;
  }
  
- void *__kmap_local_pfn_prot(unsigned long pfn, pgprot_t prot)
- {
--	pte_t pteval, *kmap_pte = kmap_get_pte();
-+	pte_t pteval, *kmap_pte;
- 	unsigned long vaddr;
- 	int idx;
+-/**
+- * i40e_vsi_has_vlans - True if VSI has configured VLANs
+- * @vsi: pointer to the vsi
+- *
+- * Check if a VSI has configured any VLANs. False if we have a port VLAN or if
+- * we have no configured VLANs. Do not call while holding the
+- * mac_filter_hash_lock.
+- */
+-static bool i40e_vsi_has_vlans(struct i40e_vsi *vsi)
+-{
+-	bool have_vlans;
+-
+-	/* If we have a port VLAN, then the VSI cannot have any VLANs
+-	 * configured, as all MAC/VLAN filters will be assigned to the PVID.
+-	 */
+-	if (vsi->info.pvid)
+-		return false;
+-
+-	/* Since we don't have a PVID, we know that if the device is in VLAN
+-	 * mode it must be because of a VLAN filter configured on this VSI.
+-	 */
+-	spin_lock_bh(&vsi->mac_filter_hash_lock);
+-	have_vlans = i40e_is_vsi_in_vlan(vsi);
+-	spin_unlock_bh(&vsi->mac_filter_hash_lock);
+-
+-	return have_vlans;
+-}
+-
+ /**
+  * i40e_ndo_set_vf_port_vlan
+  * @netdev: network interface device structure
+@@ -4007,19 +3982,9 @@ int i40e_ndo_set_vf_port_vlan(struct net_device *netdev, int vf_id,
+ 		/* duplicate request, so just return success */
+ 		goto error_pvid;
  
-@@ -525,9 +531,10 @@ void *__kmap_local_pfn_prot(unsigned lon
- 	preempt_disable();
- 	idx = arch_kmap_local_map_idx(kmap_local_idx_push(), pfn);
- 	vaddr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
--	BUG_ON(!pte_none(*(kmap_pte - idx)));
-+	kmap_pte = kmap_get_pte(vaddr, idx);
-+	BUG_ON(!pte_none(*kmap_pte));
- 	pteval = pfn_pte(pfn, prot);
--	arch_kmap_local_set_pte(&init_mm, vaddr, kmap_pte - idx, pteval);
-+	arch_kmap_local_set_pte(&init_mm, vaddr, kmap_pte, pteval);
- 	arch_kmap_local_post_map(vaddr, pteval);
- 	current->kmap_ctrl.pteval[kmap_local_idx()] = pteval;
- 	preempt_enable();
-@@ -560,7 +567,7 @@ EXPORT_SYMBOL(__kmap_local_page_prot);
- void kunmap_local_indexed(void *vaddr)
- {
- 	unsigned long addr = (unsigned long) vaddr & PAGE_MASK;
--	pte_t *kmap_pte = kmap_get_pte();
-+	pte_t *kmap_pte;
- 	int idx;
+-	if (i40e_vsi_has_vlans(vsi)) {
+-		dev_err(&pf->pdev->dev,
+-			"VF %d has already configured VLAN filters and the administrator is requesting a port VLAN override.\nPlease unload and reload the VF driver for this change to take effect.\n",
+-			vf_id);
+-		/* Administrator Error - knock the VF offline until he does
+-		 * the right thing by reconfiguring his network correctly
+-		 * and then reloading the VF driver.
+-		 */
+-		i40e_vc_disable_vf(vf);
+-		/* During reset the VF got a new VSI, so refresh the pointer. */
+-		vsi = pf->vsi[vf->lan_vsi_idx];
+-	}
+-
++	i40e_vc_disable_vf(vf);
++	/* During reset the VF got a new VSI, so refresh a pointer. */
++	vsi = pf->vsi[vf->lan_vsi_idx];
+ 	/* Locked once because multiple functions below iterate list */
+ 	spin_lock_bh(&vsi->mac_filter_hash_lock);
  
- 	if (addr < __fix_to_virt(FIX_KMAP_END) ||
-@@ -585,8 +592,9 @@ void kunmap_local_indexed(void *vaddr)
- 	idx = arch_kmap_local_unmap_idx(kmap_local_idx(), addr);
- 	WARN_ON_ONCE(addr != __fix_to_virt(FIX_KMAP_BEGIN + idx));
- 
-+	kmap_pte = kmap_get_pte(addr, idx);
- 	arch_kmap_local_pre_unmap(addr);
--	pte_clear(&init_mm, addr, kmap_pte - idx);
-+	pte_clear(&init_mm, addr, kmap_pte);
- 	arch_kmap_local_post_unmap(addr);
- 	current->kmap_ctrl.pteval[kmap_local_idx()] = __pte(0);
- 	kmap_local_idx_pop();
-@@ -608,7 +616,7 @@ EXPORT_SYMBOL(kunmap_local_indexed);
- void __kmap_local_sched_out(void)
- {
- 	struct task_struct *tsk = current;
--	pte_t *kmap_pte = kmap_get_pte();
-+	pte_t *kmap_pte;
- 	int i;
- 
- 	/* Clear kmaps */
-@@ -635,8 +643,9 @@ void __kmap_local_sched_out(void)
- 		idx = arch_kmap_local_map_idx(i, pte_pfn(pteval));
- 
- 		addr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
-+		kmap_pte = kmap_get_pte(addr, idx);
- 		arch_kmap_local_pre_unmap(addr);
--		pte_clear(&init_mm, addr, kmap_pte - idx);
-+		pte_clear(&init_mm, addr, kmap_pte);
- 		arch_kmap_local_post_unmap(addr);
- 	}
- }
-@@ -644,7 +653,7 @@ void __kmap_local_sched_out(void)
- void __kmap_local_sched_in(void)
- {
- 	struct task_struct *tsk = current;
--	pte_t *kmap_pte = kmap_get_pte();
-+	pte_t *kmap_pte;
- 	int i;
- 
- 	/* Restore kmaps */
-@@ -664,7 +673,8 @@ void __kmap_local_sched_in(void)
- 		/* See comment in __kmap_local_sched_out() */
- 		idx = arch_kmap_local_map_idx(i, pte_pfn(pteval));
- 		addr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
--		set_pte_at(&init_mm, addr, kmap_pte - idx, pteval);
-+		kmap_pte = kmap_get_pte(addr, idx);
-+		set_pte_at(&init_mm, addr, kmap_pte, pteval);
- 		arch_kmap_local_post_map(addr, pteval);
- 	}
- }
+-- 
+2.33.0
+
 
 
