@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D2145BF6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:55:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9292645BCE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:31:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345759AbhKXM6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:58:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59184 "EHLO mail.kernel.org"
+        id S242398AbhKXMds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:33:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345226AbhKXMzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:55:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1356F6136A;
-        Wed, 24 Nov 2021 12:31:50 +0000 (UTC)
+        id S245559AbhKXM2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:28:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C282C6127B;
+        Wed, 24 Nov 2021 12:17:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757111;
-        bh=vmhunX6zkGMQ1pBFWB4S+ZXnSY4Sw4TotJ6WSiidUzM=;
+        s=korg; t=1637756228;
+        bh=d9TS26GOOEKT3ntUV5tTPdcraKeZI2CzwpteWVyayus=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SSsc2988n6iwAIZaDDzV51jp51IQFiE8Z6VPJ82MDDv/HVhEARUnp9Arw+BO76ZK8
-         ZiQPhnVsPvIi+XZ/TNZ84ukmuZe0V5Y2+voe91/GX7y7tqGuvvhxj3qAb7cqlGBPZU
-         ZICFPyy7AHat9WBqG14IPCy2Tsu3bE+dTIXFhkrE=
+        b=Hw/VbAr+/lL7sgf52y5Lm8oxpvwvKmF/BiQtr106lBFkO6BFURE9Ha8nR2YxYlGTi
+         SOECEDjIdKfuW5x/n43CTHP6WOJST+NPMrxoyxNKT7jP7pGrz4o8Wj72ci08xE4tlQ
+         XrxJte3gCzolvIcHXA4nu+fGE5jEEpzeECjOB5Ds=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 4.19 063/323] signal: Remove the bogus sigkill_pending in ptrace_stop
-Date:   Wed, 24 Nov 2021 12:54:13 +0100
-Message-Id: <20211124115720.990379972@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 012/251] ALSA: ua101: fix division by zero at probe
+Date:   Wed, 24 Nov 2021 12:54:14 +0100
+Message-Id: <20211124115710.639029914@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,78 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric W. Biederman <ebiederm@xmission.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 7d613f9f72ec8f90ddefcae038fdae5adb8404b3 upstream.
+commit 55f261b73a7e1cb254577c3536cef8f415de220a upstream.
 
-The existence of sigkill_pending is a little silly as it is
-functionally a duplicate of fatal_signal_pending that is used in
-exactly one place.
+Add the missing endpoint max-packet sanity check to probe() to avoid
+division by zero in alloc_stream_buffers() in case a malicious device
+has broken descriptors (or when doing descriptor fuzz testing).
 
-Checking for pending fatal signals and returning early in ptrace_stop
-is actively harmful.  It casues the ptrace_stop called by
-ptrace_signal to return early before setting current->exit_code.
-Later when ptrace_signal reads the signal number from
-current->exit_code is undefined, making it unpredictable what will
-happen.
+Note that USB core will reject URBs submitted for endpoints with zero
+wMaxPacketSize but that drivers doing packet-size calculations still
+need to handle this (cf. commit 2548288b4fb0 ("USB: Fix: Don't skip
+endpoint descriptors with maxpacket=0")).
 
-Instead rely on the fact that schedule will not sleep if there is a
-pending signal that can awaken a task.
-
-Removing the explict sigkill_pending test fixes fixes ptrace_signal
-when ptrace_stop does not stop because current->exit_code is always
-set to to signr.
-
-Cc: stable@vger.kernel.org
-Fixes: 3d749b9e676b ("ptrace: simplify ptrace_stop()->sigkill_pending() path")
-Fixes: 1a669c2f16d4 ("Add arch_ptrace_stop")
-Link: https://lkml.kernel.org/r/87pmsyx29t.fsf@disp2133
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Fixes: 63978ab3e3e9 ("sound: add Edirol UA-101 support")
+Cc: stable@vger.kernel.org      # 2.6.34
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20211026095401.26522-1-johan@kernel.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/signal.c |   18 ++++--------------
- 1 file changed, 4 insertions(+), 14 deletions(-)
+ sound/usb/misc/ua101.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2003,15 +2003,6 @@ static inline bool may_ptrace_stop(void)
- 	return true;
- }
+--- a/sound/usb/misc/ua101.c
++++ b/sound/usb/misc/ua101.c
+@@ -1032,7 +1032,7 @@ static int detect_usb_format(struct ua10
+ 		fmt_playback->bSubframeSize * ua->playback.channels;
  
--/*
-- * Return non-zero if there is a SIGKILL that should be waking us up.
-- * Called with the siglock held.
-- */
--static bool sigkill_pending(struct task_struct *tsk)
--{
--	return sigismember(&tsk->pending.signal, SIGKILL) ||
--	       sigismember(&tsk->signal->shared_pending.signal, SIGKILL);
--}
- 
- /*
-  * This must be called with current->sighand->siglock held.
-@@ -2038,17 +2029,16 @@ static void ptrace_stop(int exit_code, i
- 		 * calling arch_ptrace_stop, so we must release it now.
- 		 * To preserve proper semantics, we must do this before
- 		 * any signal bookkeeping like checking group_stop_count.
--		 * Meanwhile, a SIGKILL could come in before we retake the
--		 * siglock.  That must prevent us from sleeping in TASK_TRACED.
--		 * So after regaining the lock, we must check for SIGKILL.
- 		 */
- 		spin_unlock_irq(&current->sighand->siglock);
- 		arch_ptrace_stop(exit_code, info);
- 		spin_lock_irq(&current->sighand->siglock);
--		if (sigkill_pending(current))
--			return;
+ 	epd = &ua->intf[INTF_CAPTURE]->altsetting[1].endpoint[0].desc;
+-	if (!usb_endpoint_is_isoc_in(epd)) {
++	if (!usb_endpoint_is_isoc_in(epd) || usb_endpoint_maxp(epd) == 0) {
+ 		dev_err(&ua->dev->dev, "invalid capture endpoint\n");
+ 		return -ENXIO;
  	}
+@@ -1040,7 +1040,7 @@ static int detect_usb_format(struct ua10
+ 	ua->capture.max_packet_bytes = usb_endpoint_maxp(epd);
  
-+	/*
-+	 * schedule() will not sleep if there is a pending signal that
-+	 * can awaken the task.
-+	 */
- 	set_special_state(TASK_TRACED);
- 
- 	/*
+ 	epd = &ua->intf[INTF_PLAYBACK]->altsetting[1].endpoint[0].desc;
+-	if (!usb_endpoint_is_isoc_out(epd)) {
++	if (!usb_endpoint_is_isoc_out(epd) || usb_endpoint_maxp(epd) == 0) {
+ 		dev_err(&ua->dev->dev, "invalid playback endpoint\n");
+ 		return -ENXIO;
+ 	}
 
 
