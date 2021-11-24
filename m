@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F90045BC60
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:28:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB34545BAAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245730AbhKXM3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:29:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41740 "EHLO mail.kernel.org"
+        id S243156AbhKXMN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:13:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245039AbhKXMYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:24:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D9CB6120C;
-        Wed, 24 Nov 2021 12:15:03 +0000 (UTC)
+        id S241709AbhKXMKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:10:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 081D6610E9;
+        Wed, 24 Nov 2021 12:06:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756104;
-        bh=0IqvRS0IJRKnNqDAY5t3blXGq9LRZKZOmBpJ5DNEVc4=;
+        s=korg; t=1637755565;
+        bh=leETTxEOUjK8p6dO07fgcIaIw8pBK76xzUPEmbE259w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gm9+3llQOybBCHycsLaCcOK+pQfRkWEmVp+Gs0uPLcBPnljUNd2jesZjwHIrzBTcF
-         bQw/CDro00vdKLICRy/e+BD3SP252KenIK5Q6U5mX5ksoZnHZ9IKytXGlJSBLLlium
-         SKhr5+fTAAJYb6+uGezFMiUuskPytX6Jy4y1aleQ=
+        b=N8CLjfYpMMgZT8isaUbJmLt8SiekUZrJtItsvj56Cs2cnax49saMNUSUv9thhk0Hs
+         biSjiE3TSDOeK61gT+bPN0he/r0rfTTOQPlJ2uu7+Fl7yrVI6f9TRQmdG9iK4F181V
+         j8bwq9QYotw+fDcDzBBGR14ioXAhixSDL1n6INQ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 174/207] powerpc/dcr: Use cmplwi instead of 3-argument cmpli
+        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.4 142/162] hexagon: export raw I/O routines for modules
 Date:   Wed, 24 Nov 2021 12:57:25 +0100
-Message-Id: <20211124115709.618223984@linuxfoundation.org>
+Message-Id: <20211124115702.880545346@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,63 +42,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Nathan Chancellor <nathan@kernel.org>
 
-[ Upstream commit fef071be57dc43679a32d5b0e6ee176d6f12e9f2 ]
+commit ffb92ce826fd801acb0f4e15b75e4ddf0d189bde upstream.
 
-In dcr-low.S we use cmpli with three arguments, instead of four
-arguments as defined in the ISA:
+Patch series "Fixes for ARCH=hexagon allmodconfig", v2.
 
-	cmpli	cr0,r3,1024
+This series fixes some issues noticed with ARCH=hexagon allmodconfig.
 
-This appears to be a PPC440-ism, looking at the "PPC440x5 CPU Core
-User’s Manual" it shows cmpli having no L field, but implied to be 0 due
-to the core being 32-bit. It mentions that the ISA defines four
-arguments and recommends using cmplwi.
+This patch (of 3):
 
-It also corresponds to the old POWER instruction set, which had no L
-field there, a reserved bit instead.
+When building ARCH=hexagon allmodconfig, the following errors occur:
 
-dcr-low.S is only built 32-bit, because it is only built when
-DCR_NATIVE=y, which is only selected by 40x and 44x. Looking at the
-generated code (with gcc/gas) we see cmplwi as expected.
+  ERROR: modpost: "__raw_readsl" [drivers/i3c/master/svc-i3c-master.ko] undefined!
+  ERROR: modpost: "__raw_writesl" [drivers/i3c/master/dw-i3c-master.ko] undefined!
+  ERROR: modpost: "__raw_readsl" [drivers/i3c/master/dw-i3c-master.ko] undefined!
+  ERROR: modpost: "__raw_writesl" [drivers/i3c/master/i3c-master-cdns.ko] undefined!
+  ERROR: modpost: "__raw_readsl" [drivers/i3c/master/i3c-master-cdns.ko] undefined!
 
-Although gas is happy with the 3-argument version when building for
-32-bit, the LLVM assembler is not and errors out with:
+Export these symbols so that modules can use them without any errors.
 
-  arch/powerpc/sysdev/dcr-low.S:27:10: error: invalid operand for instruction
-   cmpli 0,%r3,1024; ...
-           ^
-
-Switch to the cmplwi extended opcode, which avoids any confusion when
-reading the ISA, fixes the issue with the LLVM assembler, and also means
-the code could be built 64-bit in future (though that's very unlikely).
-
-Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-BugLink: https://github.com/ClangBuiltLinux/linux/issues/1419
-Link: https://lore.kernel.org/r/20211014024424.528848-1-mpe@ellerman.id.au
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lkml.kernel.org/r/20211115174250.1994179-1-nathan@kernel.org
+Link: https://lkml.kernel.org/r/20211115174250.1994179-2-nathan@kernel.org
+Fixes: 013bf24c3829 ("Hexagon: Provide basic implementation and/or stubs for I/O routines.")
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Acked-by: Brian Cain <bcain@codeaurora.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/sysdev/dcr-low.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/hexagon/lib/io.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/powerpc/sysdev/dcr-low.S b/arch/powerpc/sysdev/dcr-low.S
-index e687bb2003ff0..5589fbe48bbdc 100644
---- a/arch/powerpc/sysdev/dcr-low.S
-+++ b/arch/powerpc/sysdev/dcr-low.S
-@@ -15,7 +15,7 @@
- #include <asm/export.h>
+--- a/arch/hexagon/lib/io.c
++++ b/arch/hexagon/lib/io.c
+@@ -40,6 +40,7 @@ void __raw_readsw(const void __iomem *ad
+ 		*dst++ = *src;
  
- #define DCR_ACCESS_PROLOG(table) \
--	cmpli	cr0,r3,1024;	 \
-+	cmplwi	cr0,r3,1024;	 \
- 	rlwinm  r3,r3,4,18,27;   \
- 	lis     r5,table@h;      \
- 	ori     r5,r5,table@l;   \
--- 
-2.33.0
-
+ }
++EXPORT_SYMBOL(__raw_readsw);
+ 
+ /*
+  * __raw_writesw - read words a short at a time
+@@ -60,6 +61,7 @@ void __raw_writesw(void __iomem *addr, c
+ 
+ 
+ }
++EXPORT_SYMBOL(__raw_writesw);
+ 
+ /*  Pretty sure len is pre-adjusted for the length of the access already */
+ void __raw_readsl(const void __iomem *addr, void *data, int len)
+@@ -75,6 +77,7 @@ void __raw_readsl(const void __iomem *ad
+ 
+ 
+ }
++EXPORT_SYMBOL(__raw_readsl);
+ 
+ void __raw_writesl(void __iomem *addr, const void *data, int len)
+ {
+@@ -89,3 +92,4 @@ void __raw_writesl(void __iomem *addr, c
+ 
+ 
+ }
++EXPORT_SYMBOL(__raw_writesl);
 
 
