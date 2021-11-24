@@ -2,120 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C3D45CBE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:14:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D92245CBEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:16:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243996AbhKXSR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 13:17:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243924AbhKXSRY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 13:17:24 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA01C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:14:13 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id e3so14390123edu.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:14:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fo4mOTqhHKegk3FsdIGggEWxMKGlpqzxJlRZUDZ6lK8=;
-        b=h4EQIdhoGpX4ZXTjiWQ2vyhcmJAF+1+VP7MYLwAWfABXN6usB8j2QQhvHqi1Gz0+ch
-         qKxs9RoH+Y1E+sPzy/OGZ9+tsKgU//Fa5sH7sDYr2O7hWeentE7GVDW9ax22plVKt/oD
-         FBqRidgp+L9gO6zuRYyHPGzi2bD4LoneunKHo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fo4mOTqhHKegk3FsdIGggEWxMKGlpqzxJlRZUDZ6lK8=;
-        b=IP0Vy/VdJGmL8XHGiuVVIWAtIWnA3xyBaZQyH0BE+y+20CNuEI7bAY8HR7U+/H0r4I
-         9SdXjUXEVghEiyRA1rxaCCe/zA+j7io14tF+Ne+W4rncFUHiBB0sZAdv6GfhgrMSW2HY
-         pVm2ELrsAnMeEMIVB8dqqSU1gz9rWsI+F3Pp0TV2w5eHfpHqjHGgPLFyrgzp9uBcFd6c
-         ap8HMIxyQ+2Wv4x143oH5Uvh+6cV0GPqBvdclWr4ssPVaNIkPuUUfYO0lHcAUVVDjqJs
-         vd+4/JsVqwmy5CZUyLtXqVZ3A/SG5eRkOQVtnAa5WPrqaUdBgtY3K2AnCid3oGBF9ngP
-         G0CA==
-X-Gm-Message-State: AOAM5338o4amFsWyFB+GzlecM3as9QfFYk2I8oea2h/ghqxFWR0ALBqi
-        0i7bCPkmbsIH5Im28VSap0AEX/RNr0pRw2wW
-X-Google-Smtp-Source: ABdhPJwOZLXLRTidsIb0aSajfOKfkhQC4kPGB12X0shdqi8aER8Txj5H6U81/kt66pU+66CmrWViGQ==
-X-Received: by 2002:a17:907:6291:: with SMTP id nd17mr23316583ejc.194.1637777652040;
-        Wed, 24 Nov 2021 10:14:12 -0800 (PST)
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com. [209.85.221.53])
-        by smtp.gmail.com with ESMTPSA id hw8sm310820ejc.58.2021.11.24.10.14.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 10:14:11 -0800 (PST)
-Received: by mail-wr1-f53.google.com with SMTP id a9so5807099wrr.8
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:14:11 -0800 (PST)
-X-Received: by 2002:adf:e5c7:: with SMTP id a7mr20906517wrn.318.1637777651144;
- Wed, 24 Nov 2021 10:14:11 -0800 (PST)
+        id S233439AbhKXSTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 13:19:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350398AbhKXSSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 13:18:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFEAA60F55;
+        Wed, 24 Nov 2021 18:15:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637777737;
+        bh=Qf1psx4hFnkfyS/I8jNT4xJkTgotUILZVrpZCQUH9Sg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gAKEZdL/RPkxGfvpjNwGhSu/lM9HAUWUT0qF3o2BKqanhjeDlciqPauYFZfNAFjFq
+         cnbi74J0jwHGO8eR3NH2tLDGOnYtnxv8jxCa0/sFCYDaZjkL6zgv1g30qKTNHI4SID
+         1JnevlYQEj7Nj3miqWw0D7+Vf9AotQGijdYAh8SU=
+Date:   Wed, 24 Nov 2021 19:15:35 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     Jari Ruusu <jariruusu@users.sourceforge.net>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Alistair Delva <adelva@google.com>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Jens Axboe <axboe@kernel.dk>, Paul Moore <paul@paul-moore.com>,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH 5.10 130/154] block: Check ADMIN before NICE for
+ IOPRIO_CLASS_RT
+Message-ID: <YZ6BR09OXP8x7lRs@kroah.com>
+References: <20211124115702.361983534@linuxfoundation.org>
+ <20211124115706.507376250@linuxfoundation.org>
+ <619E4ABA.DC78AA58@users.sourceforge.net>
+ <YZ5ayhuOMZwkd9j6@kroah.com>
+ <20211124173310.GA12039@mail.hallyn.com>
 MIME-Version: 1.0
-References: <163774583541.221636.5062449110647587402@leemhuis.info>
-In-Reply-To: <163774583541.221636.5062449110647587402@leemhuis.info>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 24 Nov 2021 10:13:55 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wimd-G9+etiTb=_yqxy8H45su-=WXdLBrhi2TJK+gB+Mw@mail.gmail.com>
-Message-ID: <CAHk-=wimd-G9+etiTb=_yqxy8H45su-=WXdLBrhi2TJK+gB+Mw@mail.gmail.com>
-Subject: Re: Linux regressions report for mainline [2021-11-24]
-To:     "Regzbot (on behalf of Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124173310.GA12039@mail.hallyn.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ok, nice to see the new regression tracking bot start to show life.
+On Wed, Nov 24, 2021 at 11:33:11AM -0600, Serge E. Hallyn wrote:
+> On Wed, Nov 24, 2021 at 04:31:22PM +0100, Greg Kroah-Hartman wrote:
+> > On Wed, Nov 24, 2021 at 04:22:50PM +0200, Jari Ruusu wrote:
+> > > Greg Kroah-Hartman wrote:
+> > > > From: Alistair Delva <adelva@google.com>
+> > > > 
+> > > > commit 94c4b4fd25e6c3763941bdec3ad54f2204afa992 upstream.
+> > >  [SNIP]
+> > > > --- a/block/ioprio.c
+> > > > +++ b/block/ioprio.c
+> > > > @@ -69,7 +69,14 @@ int ioprio_check_cap(int ioprio)
+> > > > 
+> > > >         switch (class) {
+> > > >                 case IOPRIO_CLASS_RT:
+> > > > -                       if (!capable(CAP_SYS_NICE) && !capable(CAP_SYS_ADMIN))
+> > > > +                       /*
+> > > > +                        * Originally this only checked for CAP_SYS_ADMIN,
+> > > > +                        * which was implicitly allowed for pid 0 by security
+> > > > +                        * modules such as SELinux. Make sure we check
+> > > > +                        * CAP_SYS_ADMIN first to avoid a denial/avc for
+> > > > +                        * possibly missing CAP_SYS_NICE permission.
+> > > > +                        */
+> > > > +                       if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_NICE))
+> > > >                                 return -EPERM;
+> > > >                         fallthrough;
+> > > >                         /* rt has prio field too */
+> > > 
+> > > What exactly is above patch trying to fix?
+> > > It does not change control flow at all, and added comment is misleading.
+> > 
+> > See the thread on the mailing list for what it does and why it is
+> > needed.
+> > 
+> > It does change the result when selinux is enabled.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> The case where we create a newer more fine grained capability which is a
+> sub-cap of a broader capability like CAP_SYS_ADMIN is analogous.  See
+> check_syslog_permissions() for instance.
+> 
+> So I think a helper like
+> 
+> int capable_either_or(int cap1, int cap2) {
+> 	if (has_capability_noaudit(current, cap1))
+> 		return 0;
+> 	return capable(cap2);
+> }
+> 
+> might be worthwhile.
 
-Greg had one suggestion, I have another - namely about grouping of these things.
+Sure, feel free to work on that and submit it, but for now, this change
+is needed.
 
-I like how you group them by "identified" and "unknown", because
-that's certainly very meaningful.
+thanks,
 
-But at the same time it does mean that if I look for "what are current
-issues with the development kernel", it ends up being very spread out:
-
-On Wed, Nov 24, 2021 at 1:25 AM Regzbot (on behalf of Thorsten
-Leemhuis) <regressions@leemhuis.info> wrote:
->
-> ========================================================
-> current cycle (v5.15.. aka v5.16-rc), culprit identified
-> ========================================================
-...
-> =========================================================================================
-> previous cycle (v5.14..v5.15), culprit identified, with activity in the past three months
-> =========================================================================================
-...
-> ==================================================================================
-> older cycles (..v5.14), culprit identified, with activity in the past three months
-> ==================================================================================
-...
-> ====================================================
-> current cycle (v5.15.. aka v5.16-rc), unkown culprit
-> ====================================================
-...
-
-note how there was a lot of other stuff in between those "culprit
-idenfified" and "unknown culprit" for the current kernel.
-
-One of the things I really liked about the regression tracking you did
-before was that it helped me get a sense for the state of the release,
-and so I'd like to see that "current cycle" in one go.
-
-I suspect that Greg may have a slightly similar issue - as a driver
-maintainer, he cares about current cycle things (but mainly only when
-they affect his subsystems), but with his stable maintainer hat on he
-then cares more about the older cycles.
-
-Greg suggested splitting out the issues one by one - to try to have
-the right people on the Cc for any _particular_ issue, and while I
-think that's not the solution in this case (I very much want to see
-the "summary" email), it would be good to perhaps at least organize
-that summary email slightly differently.
-
-I suspect this is something we'd need to iterate on as we use this in
-our workflow, but that was my initial reaction to this first report.
-
-               Linus
+greg k-h
