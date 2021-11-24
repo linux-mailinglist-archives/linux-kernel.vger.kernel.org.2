@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A7745BBC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:22:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 765D745BD7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244425AbhKXMXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:23:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36026 "EHLO mail.kernel.org"
+        id S1344913AbhKXMjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:39:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243517AbhKXMSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:18:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66039610A8;
-        Wed, 24 Nov 2021 12:11:27 +0000 (UTC)
+        id S245019AbhKXMeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:34:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 083AF61378;
+        Wed, 24 Nov 2021 12:20:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755888;
-        bh=vt/kUNrq1/PKDVlv0B4kdHte0XI2Dw16MpAuLTNk32c=;
+        s=korg; t=1637756447;
+        bh=LWheMsac2MLhKOBfcd9MAnPJyZJjzi9UNrW/13Um3tc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rMuDB+Y9S6uWVSl0pSqOeQf6Yf+r3VDoZvhk1K2entQSCK+Uyi8n+FSeAWBEgMcKt
-         NrR29b5IzuzFxOiB/S2uCielEMg2RbC+m++cwqD2ga+GmUkM1yuLOu/PrzUPNsVu3T
-         t9Z3po6+5YJZrCudBpRh4cZBYP2PpE2xUOapUGX8=
+        b=JHcRaFSzUfCQBfR347C5Xs9FGJsrbblJZjfJDbQdRch9FUklQl49qm2rzQSSbEUMK
+         9QwKAjEGZtt0mAgzpgr77GB70s+UkwdD1e/znwZ++r0bg6CgGbquvWiGpd1hjnFcoL
+         9bFA6Ouo3Os/5uxrXinodZC7wfb5YhV1Yf3s30xA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 061/207] locking/lockdep: Avoid RCU-induced noinstr fail
+Subject: [PATCH 4.14 090/251] leaking_addresses: Always print a trailing newline
 Date:   Wed, 24 Nov 2021 12:55:32 +0100
-Message-Id: <20211124115705.897382355@linuxfoundation.org>
+Message-Id: <20211124115713.375429420@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit ce0b9c805dd66d5e49fd53ec5415ae398f4c56e6 ]
+[ Upstream commit cf2a85efdade117e2169d6e26641016cbbf03ef0 ]
 
-vmlinux.o: warning: objtool: look_up_lock_class()+0xc7: call to rcu_read_lock_any_held() leaves .noinstr.text section
+For files that lack trailing newlines and match a leaking address (e.g.
+wchan[1]), the leaking_addresses.pl report would run together with the
+next line, making things look corrupted.
 
+Unconditionally remove the newline on input, and write it back out on
+output.
+
+[1] https://lore.kernel.org/all/20210103142726.GC30643@xsang-OptiPlex-9020/
+
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20210624095148.311980536@infradead.org
+Link: https://lkml.kernel.org/r/20211008111626.151570317@infradead.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/locking/lockdep.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/leaking_addresses.pl | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 9f56e3fac795a..05dd765e2cbca 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -695,7 +695,7 @@ look_up_lock_class(struct lockdep_map *lock, unsigned int subclass)
- 	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
- 		return NULL;
+diff --git a/scripts/leaking_addresses.pl b/scripts/leaking_addresses.pl
+index 2977371b29563..de5196c08943a 100755
+--- a/scripts/leaking_addresses.pl
++++ b/scripts/leaking_addresses.pl
+@@ -262,8 +262,9 @@ sub parse_file
  
--	hlist_for_each_entry_rcu(class, hash_head, hash_entry) {
-+	hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
- 		if (class->key == key) {
- 			/*
- 			 * Huh! same key, different name? Did someone trample
+ 	open my $fh, "<", $file or return;
+ 	while ( <$fh> ) {
++		chomp;
+ 		if (may_leak_address($_)) {
+-			print $file . ': ' . $_;
++			printf("$file: $_\n");
+ 		}
+ 	}
+ 	close $fh;
 -- 
 2.33.0
 
