@@ -2,153 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC6545C6C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:08:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ECC345C5D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354964AbhKXOLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:11:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355125AbhKXOIa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:08:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA3AC61131
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 13:54:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637762054;
-        bh=89ve5eFO8r4NmQqnGewI9sZ0aIqfSlaIy4w2WN6dIFU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ibi7ljNYdFBRyFN8zJ8ojDjFGjBWbxLu4SGoPAX2WCIICk3xLgFGwt1k6DMjCvrop
-         9yJxCZtOPBYm6of1qs2y1XLkdyCQsLMdHP+rYB9MJY53uO6A17X32OGdezD6x6Ei8f
-         7ttuXWiXdZ/oHPR2G9cyC4I1553PjPC7qppEuHluwCyaGnOiM/++0vMw3bm3LRBW4k
-         tH8a4Wl0cXPRgE79X19Bcc+czx0hKAIcyuGSKyXKzeWWZwtj4Df9tOAcpZb05NOmkg
-         yZa8flVCxl+wFJbl/b62rSnU69ns9jLaNc5Ytk99yGEvffM3UulFsrZOcyMYoGWY1E
-         obMhFMoavdtvw==
-Received: by mail-ot1-f54.google.com with SMTP id h16-20020a9d7990000000b0055c7ae44dd2so4329652otm.10
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 05:54:14 -0800 (PST)
-X-Gm-Message-State: AOAM533w3o0Dg9XOB8pORqp3h0UvUMCup+WuaRsEGdpdrnLeAlRiIRj8
-        55WE/ucgNJE6GSTeAcdPrvjMdCvoSL/aMUdXKW8=
-X-Google-Smtp-Source: ABdhPJxsMnUAhj0BfHNi7qFdJg0D4kmTjT5LlSmzouYEb59aCCuzyyMGlQLf5n/ld4xwVZaccv8q6N7JK6aFkLPiiC4=
-X-Received: by 2002:a05:6830:1445:: with SMTP id w5mr13498620otp.112.1637762054105;
- Wed, 24 Nov 2021 05:54:14 -0800 (PST)
+        id S1353319AbhKXOAy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Nov 2021 09:00:54 -0500
+Received: from relay10.mail.gandi.net ([217.70.178.230]:37749 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352984AbhKXN5v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:57:51 -0500
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 22E4A24000A;
+        Wed, 24 Nov 2021 13:54:36 +0000 (UTC)
+Date:   Wed, 24 Nov 2021 14:54:35 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        linux-mtd@lists.infradead.org, Julien Su <juliensu@mxic.com.tw>,
+        linux-spi@vger.kernel.org, Jaime Liao <jaimeliao@mxic.com.tw>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/18] dt-bindings: mtd: spi-nand: Convert spi-nand
+ description file to yaml
+Message-ID: <20211124145435.4bd01001@xps13>
+In-Reply-To: <YXM84oCOAr6pSOw2@robh.at.kernel.org>
+References: <20211020142809.349347-1-miquel.raynal@bootlin.com>
+        <20211020142809.349347-5-miquel.raynal@bootlin.com>
+        <1634764487.038982.2962586.nullmailer@robh.at.kernel.org>
+        <20211021160932.4169f66f@xps13>
+        <YXM84oCOAr6pSOw2@robh.at.kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <1637658760-5813-1-git-send-email-huangzhaoyang@gmail.com>
- <CAMj1kXGLRr8bnhLPseW=gSj6kA1TKqAC0Bs0Loj8gkpgaMB8MA@mail.gmail.com>
- <CAGWkznGsus77QT4r5X3qDzP3wHsY+=j8m-7DYfm_s_nd5bWQbQ@mail.gmail.com>
- <CAMj1kXHdOn66wrFs78-g0PXnXZjioSPPwZ1TNsFhWAHeRje+sg@mail.gmail.com> <CAGWkznF1-E8bPcZT59SZy3dvmqf=FmBYbAGGE5J7mrL9UGC=VA@mail.gmail.com>
-In-Reply-To: <CAGWkznF1-E8bPcZT59SZy3dvmqf=FmBYbAGGE5J7mrL9UGC=VA@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 24 Nov 2021 14:54:02 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGn-qO5eEer5JmOeGtKQ-mg8iLZ72z1owV8mitVBm+20A@mail.gmail.com>
-Message-ID: <CAMj1kXGn-qO5eEer5JmOeGtKQ-mg8iLZ72z1owV8mitVBm+20A@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm: introduce alloc hook to apply PTE_CONT
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 at 13:01, Zhaoyang Huang <huangzhaoyang@gmail.com> wrote:
->
-> On Wed, Nov 24, 2021 at 5:23 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> > On Wed, 24 Nov 2021 at 09:08, Zhaoyang Huang <huangzhaoyang@gmail.com> wrote:
-> > >
-> > > On Tue, Nov 23, 2021 at 5:58 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > >
-> > > > On Tue, 23 Nov 2021 at 10:13, Huangzhaoyang <huangzhaoyang@gmail.com> wrote:
-> > > > >
-> > > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > > > >
-> > > > > Since there is no PTE_CONT when rodata_full in ARM64, introducing a
-> > > > > hook function to apply PTE_CONT on the proper page blocks.
-> > > > >
-> > > >
-> > > > Given the discussion around your previous patch, I would expect a
-> > > > meticulous explanation here why it is guaranteed to be safe to
-> > > > manipulate the PTE_CONT attribute like this, and how the proposed
-> > > > logic is correct for all supported page sizes.
-> > > >
-> > > > Without using an intermediate invalid mapping for the entire range,
-> > > > this is never going to work reliably (this is the break-before-make
-> > > > requirement). And given that marking the entire block invalid will
-> > > > create intermediate states that are not permitted (a valid PTE_CONT
-> > > > mapping and an invalid ~PTE_CONT mapping covering the same VA), the
-> > > > only way to apply changes like these is to temporarily switch all CPUs
-> > > > to a different translation via TTBR1. And this is not going to happen.
-> > > As there is no safe way to modify PTE_CONT on a live mapping, please
-> > > forget all previous patches except current one.
-> >
-> > OK
-> >
-> > > >
-> > > > Also, you never replied to my question regarding the use case and the
-> > > > performance gain.
-> > > In our android based system, the multimedia related cases suffers from
-> > > small pte granularity mostly which use high order page blocks quite a
-> > > lot. The performance gap even be visible.
-> >
-> > OK, good to know.
-> >
-> > > >
-> > > > In summary, NAK to this patch or any of the previous ones regarding
-> > > > PTE_CONT. If you do insist on pursuing this further, please provide an
-> > > > elaborate and rock solid explanation why your approach is 100% valid
-> > > > and correct (for all page sizes). And make sure you include an
-> > > > explanation how your changes comply with the architectural
-> > > > break-before-make requirements around PTE_CONT attributes.
-> > > IMHO, It is safe to modify the page block's pte undering
-> > > *arch_alloc/free_pages* as there is no one else aware of it.
-> >
-> > Whether the software is 'aware' or not is irrelevant. Speculative
-> > accesses could be made at any time, and these will trigger a page
-> > table walk if no cached TLB entries exist for the region. If more than
-> > one cached TLB entry exists (which would be the case if an adjacent
-> > entry has the PTE_CONT attribute but not the entry itself), you will
-> > hit a TLB conflict abort.
-> Could it be a risk that a speculative load racing with setting pte
-> from VALID to INVALID?
+Hi Rob,
 
-Theorizing about what might go wrong is not very useful. The
-architecture simply does not permit what you are proposing here, and
-this is reason enough not to do it.
+robh@kernel.org wrote on Fri, 22 Oct 2021 17:36:18 -0500:
 
-The ARM ARM says the following [DDI0487G.a D5.2 "Misprogramming of the
-Contiguous bit"]
+> On Thu, Oct 21, 2021 at 04:09:32PM +0200, Miquel Raynal wrote:
+> > Hi Rob,
+> > 
+> > robh@kernel.org wrote on Wed, 20 Oct 2021 16:14:47 -0500:
+> >   
+> > > On Wed, 20 Oct 2021 16:27:55 +0200, Miquel Raynal wrote:  
+> > > > Let's get rid of spi-nand.txt by converting it to yaml schema. While at
+> > > > converting this file, let's actually pull all the generic properties
+> > > > from nand-chip.yaml which might apply to a SPI-NAND chip.
+> > > > 
+> > > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > > ---
+> > > >  .../devicetree/bindings/mtd/spi-nand.txt      |  5 ----
+> > > >  .../devicetree/bindings/mtd/spi-nand.yaml     | 27 +++++++++++++++++++
+> > > >  2 files changed, 27 insertions(+), 5 deletions(-)
+> > > >  delete mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
+> > > >  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.yaml
+> > > >     
+> > > 
+> > > My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> > > on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> > > 
+> > > yamllint warnings/errors:
+> > > 
+> > > dtschema/dtc warnings/errors:
+> > > Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/mtd/nand-chip.yaml'
+> > > xargs: dt-doc-validate: exited with status 255; aborting
+> > > make[1]: *** Deleting file 'Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml'
+> > > Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/mtd/nand-chip.yaml'
+> > > make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.example.dt.yaml] Error 255
+> > > make[1]: *** Waiting for unfinished jobs....
+> > > make: *** [Makefile:1441: dt_binding_check] Error 2  
+> > 
+> > I am not able to reproduce this error and in general I don't understand
+> > it. There is no relationship between this change and
+> > snps,dw-apb-ssi.yaml. Also the fact that nand-chip-yaml do not exist,
+> > it was just created in the patch before so I wonder how much I should
+> > trust this error.  
+> 
+> I think you can ignore this. The prior patch should have been applied, 
+> but looks like it wasn't. My script's patch applying logic is not what 
+> I'd call robust.
 
-"""
-If one or more of the following errors is made in programming the
-translation tables, the TLB might contain overlapping entries:
-- One or more of the contiguous translation table entries does not
-have the Contiguous bit set to 1.
-- One or more of the contiguous translation table entries holds an
-output address that is not consistent with all of the entries pointing
-to the same aligned contiguous address range.
-- The attributes and permissions of the contiguous entries are not all the same.
+Ok, I understand what's happening behind the scenes, no problem with
+this.
 
-Such misprogramming of the translation tables means the output
-address, memory permissions, or attributes for a lookup might be
-corrupted, and might be equal to values that are not consistent with
-any of the programmed translation table values.
+> 
+> > Also, maybe I am not using the tools properly, but it is very hard to
+> > send correct bindings at the first try. Running make dt_binding_check
+> > takes ages, any change in one yaml file will recheck the entire data
+> > base and filtering out on a single yaml file is generally too
+> > restrictive and still prints unrelated errors of syntax on other files.  
+> 
+> Do you set 'DT_SCHEMA_FILES'? That will check just the schema you set 
+> it to. You still need to not set it at the end because any schema could 
+> apply to any example, so we have to check everything.
 
-In some implementations, such misprogramming might also give rise to a
-TLB Conflict abort.
-"""
+Actually I think this is what could be enhanced: when I use
+DT_SCHEMA_FILES the output is always polluted with errors with nothing
+(at least from my user point of view) related to the files I am
+working on. See [1] for an example of output that I found hard to parse
+for errors related to my changes: I am looking for issues in
+nand-chip.yaml and (50 seconds later) I get warnings for:
+- ilitek,ili9341.yaml
+- snps,dwcmshc-sdhci.yaml
+- ti,sn65dsi83.yaml
+- nxp,dwmac-imx.yaml
+- fsl,imx6q-pcie.yaml
 
-This means that none of the entries in the contiguous group are
-reliable when only one entry in the group deviates, and in addition to
-TLB conflict aborts, you may trigger all kinds of corruption due to
-the output address being bogus.
+Do you think the reporting can be improved?
 
-So NAK again.
+> Also using DT_SCHEMA_FILES should be a bit faster with what's queued for 
+> 5.16.
+
+Great!
+
+> 
+> > I don't know how much of this is actually expected and/or if someone is
+> > working on it.  
+> 
+> Due to python startup times being slow, it turns out to generally be 
+> faster to not have make track changes and do things incrementally. 
+> That's why all the schema are checked at once (though sharded with 
+> xargs). So I'm not really sure there's much we can do. I've certainly 
+> investigated it.
+
+I understand it's not that easy and takes a lot of time, thanks anyway
+for all your work on this topic.
+
+Thanks,
+Miquèl
+
+[1]
+$ time make dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/mtd/nand-chip.yaml
+  LINT    Documentation/devicetree/bindings
+./Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml:25:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+  CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
+/home/mraynal/macronix/linux/Documentation/devicetree/bindings/pci/: properties:interrupt-names: 'oneOf' conditional failed, one must be fixed:
+	[{'const': 'msi'}] is too short
+	False schema does not allow 1
+	hint: "minItems" is only needed if less than the "items" list length
+	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
+/home/mraynal/macronix/linux/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml: properties:reg: 'oneOf' conditional failed, one must be fixed:
+	[{'description': 'Offset and length of the register set for the device'}] is too short
+	False schema does not allow 1
+	hint: "minItems" is only needed if less than the "items" list length
+	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
+/home/mraynal/macronix/linux/Documentation/devicetree/bindings/display/bridge/: properties:ports:properties:port@0:properties:endpoint:properties:data-lanes: {'required': ['maxItems']} is not allowed for {'description': 'array of physical DSI data lane indexes.', 'minItems': 1, 'maxItems': 4, 'items': [{'const': 1}, {'const': 2}, {'const': 3}, {'const': 4}]}
+	hint: "maxItems" is not needed with an "items" list
+	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
+/home/mraynal/macronix/linux/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi83.yaml: properties:ports:properties:port@1:properties:endpoint:properties:data-lanes: {'required': ['maxItems']} is not allowed for {'description': 'array of physical DSI data lane indexes.', 'minItems': 1, 'maxItems': 4, 'items': [{'const': 1}, {'const': 2}, {'const': 3}, {'const': 4}]}
+	hint: "maxItems" is not needed with an "items" list
+	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
+/home/mraynal/macronix/linux/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml: properties:clocks: {'required': ['maxItems']} is not allowed for {'minItems': 3, 'maxItems': 5, 'items': [{'description': 'MAC host clock'}, {'description': 'MAC apb clock'}, {'description': 'MAC timer clock'}, {'description': 'MAC RGMII TX clock'}, {'description': 'EQOS MEM clock'}]}
+	hint: "maxItems" is not needed with an "items" list
+	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
+  SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
+/home/mraynal/macronix/linux/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml: ignoring, error in schema: properties: interrupt-names
+warning: no schema found in file: ./Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
+/home/mraynal/macronix/linux/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml: ignoring, error in schema: properties: reg
+warning: no schema found in file: ./Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+/home/mraynal/macronix/linux/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi83.yaml: ignoring, error in schema: properties: ports: properties: port@0: properties: endpoint: properties: data-lanes
+warning: no schema found in file: ./Documentation/devicetree/bindings/display/bridge/ti,sn65dsi83.yaml
+/home/mraynal/macronix/linux/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml: ignoring, error in schema: properties: clocks
+warning: no schema found in file: ./Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml
+  DTEX    Documentation/devicetree/bindings/mtd/nand-chip.example.dts
+  DTC     Documentation/devicetree/bindings/mtd/nand-chip.example.dt.yaml
+  CHECK   Documentation/devicetree/bindings/mtd/nand-chip.example.dt.yaml
+
+real	0m38,958s
+user	0m51,604s
+sys	0m0,632s
