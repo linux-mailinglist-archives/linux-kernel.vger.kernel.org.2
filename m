@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FBA845C67B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E18F745C1B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:18:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349579AbhKXOKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:10:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55206 "EHLO mail.kernel.org"
+        id S1347637AbhKXNVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:21:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353604AbhKXOGQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:06:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6B7E633EB;
-        Wed, 24 Nov 2021 13:11:52 +0000 (UTC)
+        id S1346667AbhKXNRu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:17:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C65B60F5D;
+        Wed, 24 Nov 2021 12:45:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759513;
-        bh=B536EK3DhJYpbOfYtBhSCY+lujpvzWO0y5FIzrnKslw=;
+        s=korg; t=1637757933;
+        bh=qXO9zL7DKiI5S+DRKbWnkzpbkmi8Mg1ocP4lt6h76Jw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oXZSsYcsZGgLYqzNgMGtKXlC9UD1a1+7fiWceXqX991B3+QmAbQfZyJ3M9X6XBT7i
-         LcUfwC2ORUZ0F5eOyPe5JKf0In5HEhNInfyjg/V6IdQYgndGxYEKKmVUsAE4C9hf+J
-         l9f/orJK8L1JZBQPv0ghqruPuZlL5T4R12XoTTyw=
+        b=T8rolWEGYJPNdmEID/mFcHEUwKEWPaaTUQClaU7tR7LMO6m8uM4vIS1x2PHDlCGys
+         +nDQ4x5C/w9pyerDUf4P/uZumXRw/+MsnJtQlZC9x9FHt1fYDte+LgtphWeYTP1Mxa
+         nHSMHibV8yUV0U5On0B/TpvKdA+CeRpiYQ43Ab6U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH 5.15 225/279] KVM: nVMX: dont use vcpu->arch.efer when checking host state on nested state load
-Date:   Wed, 24 Nov 2021 12:58:32 +0100
-Message-Id: <20211124115726.510075060@linuxfoundation.org>
+        stable@vger.kernel.org, Nadav Amit <namit@vmware.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 323/323] hugetlbfs: flush TLBs correctly after huge_pmd_unshare
+Date:   Wed, 24 Nov 2021 12:58:33 +0100
+Message-Id: <20211124115729.826426341@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,91 +43,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Levitsky <mlevitsk@redhat.com>
+From: Nadav Amit <namit@vmware.com>
 
-commit af957eebfcc17433ee83ab85b1195a933ab5049c upstream.
+commit a4a118f2eead1d6c49e00765de89878288d4b890 upstream.
 
-When loading nested state, don't use check vcpu->arch.efer to get the
-L1 host's 64-bit vs. 32-bit state and don't check it for consistency
-with respect to VM_EXIT_HOST_ADDR_SPACE_SIZE, as register state in vCPU
-may be stale when KVM_SET_NESTED_STATE is called---and architecturally
-does not exist.  When restoring L2 state in KVM, the CPU is placed in
-non-root where nested VMX code has no snapshot of L1 host state: VMX
-(conditionally) loads host state fields loaded on VM-exit, but they need
-not correspond to the state before entry.  A simple case occurs in KVM
-itself, where the host RIP field points to vmx_vmexit rather than the
-instruction following vmlaunch/vmresume.
+When __unmap_hugepage_range() calls to huge_pmd_unshare() succeed, a TLB
+flush is missing.  This TLB flush must be performed before releasing the
+i_mmap_rwsem, in order to prevent an unshared PMDs page from being
+released and reused before the TLB flush took place.
 
-However, for the particular case of L1 being in 32- or 64-bit mode
-on entry, the exit controls can be treated instead as the source of
-truth regarding the state of L1 on entry, and can be used to check
-that vmcs12.VM_EXIT_HOST_ADDR_SPACE_SIZE matches vmcs12.HOST_EFER if
-vmcs12.VM_EXIT_LOAD_IA32_EFER is set.  The consistency check on CPU
-EFER vs. vmcs12.VM_EXIT_HOST_ADDR_SPACE_SIZE, instead, happens only
-on VM-Enter.  That's because, again, there's conceptually no "current"
-L1 EFER to check on KVM_SET_NESTED_STATE.
+Arguably, a comprehensive solution would use mmu_gather interface to
+batch the TLB flushes and the PMDs page release, however it is not an
+easy solution: (1) try_to_unmap_one() and try_to_migrate_one() also call
+huge_pmd_unshare() and they cannot use the mmu_gather interface; and (2)
+deferring the release of the page reference for the PMDs page until
+after i_mmap_rwsem is dropeed can confuse huge_pmd_unshare() into
+thinking PMDs are shared when they are not.
 
-Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-Message-Id: <20211115131837.195527-2-mlevitsk@redhat.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fix __unmap_hugepage_range() by adding the missing TLB flush, and
+forcing a flush when unshare is successful.
+
+Fixes: 24669e58477e ("hugetlb: use mmu_gather instead of a temporary linked list for accumulating pages)" # 3.6
+Signed-off-by: Nadav Amit <namit@vmware.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Aneesh Kumar K.V <aneesh.kumar@linux.vnet.ibm.com>
+Cc: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/x86/kvm/vmx/nested.c |   22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
 
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -2854,6 +2854,17 @@ static int nested_vmx_check_controls(str
- 	return 0;
- }
- 
-+static int nested_vmx_check_address_space_size(struct kvm_vcpu *vcpu,
-+				       struct vmcs12 *vmcs12)
-+{
-+#ifdef CONFIG_X86_64
-+	if (CC(!!(vmcs12->vm_exit_controls & VM_EXIT_HOST_ADDR_SPACE_SIZE) !=
-+		!!(vcpu->arch.efer & EFER_LMA)))
-+		return -EINVAL;
-+#endif
-+	return 0;
-+}
-+
- static int nested_vmx_check_host_state(struct kvm_vcpu *vcpu,
- 				       struct vmcs12 *vmcs12)
- {
-@@ -2878,18 +2889,16 @@ static int nested_vmx_check_host_state(s
- 		return -EINVAL;
- 
- #ifdef CONFIG_X86_64
--	ia32e = !!(vcpu->arch.efer & EFER_LMA);
-+	ia32e = !!(vmcs12->vm_exit_controls & VM_EXIT_HOST_ADDR_SPACE_SIZE);
- #else
- 	ia32e = false;
+---
+ include/asm-generic/tlb.h |    6 ++++++
+ mm/hugetlb.c              |   23 +++++++++++++++++++----
+ 2 files changed, 25 insertions(+), 4 deletions(-)
+
+--- a/include/asm-generic/tlb.h
++++ b/include/asm-generic/tlb.h
+@@ -205,6 +205,12 @@ static inline void tlb_remove_check_page
+ #define tlb_end_vma	__tlb_end_vma
  #endif
  
- 	if (ia32e) {
--		if (CC(!(vmcs12->vm_exit_controls & VM_EXIT_HOST_ADDR_SPACE_SIZE)) ||
--		    CC(!(vmcs12->host_cr4 & X86_CR4_PAE)))
-+		if (CC(!(vmcs12->host_cr4 & X86_CR4_PAE)))
- 			return -EINVAL;
- 	} else {
--		if (CC(vmcs12->vm_exit_controls & VM_EXIT_HOST_ADDR_SPACE_SIZE) ||
--		    CC(vmcs12->vm_entry_controls & VM_ENTRY_IA32E_MODE) ||
-+		if (CC(vmcs12->vm_entry_controls & VM_ENTRY_IA32E_MODE) ||
- 		    CC(vmcs12->host_cr4 & X86_CR4_PCIDE) ||
- 		    CC((vmcs12->host_rip) >> 32))
- 			return -EINVAL;
-@@ -3559,6 +3568,9 @@ static int nested_vmx_run(struct kvm_vcp
- 	if (nested_vmx_check_controls(vcpu, vmcs12))
- 		return nested_vmx_fail(vcpu, VMXERR_ENTRY_INVALID_CONTROL_FIELD);
- 
-+	if (nested_vmx_check_address_space_size(vcpu, vmcs12))
-+		return nested_vmx_fail(vcpu, VMXERR_ENTRY_INVALID_HOST_STATE_FIELD);
++static inline void tlb_flush_pmd_range(struct mmu_gather *tlb,
++				unsigned long address, unsigned long size)
++{
++	__tlb_adjust_range(tlb, address, size);
++}
 +
- 	if (nested_vmx_check_host_state(vcpu, vmcs12))
- 		return nested_vmx_fail(vcpu, VMXERR_ENTRY_INVALID_HOST_STATE_FIELD);
+ #ifndef __tlb_remove_tlb_entry
+ #define __tlb_remove_tlb_entry(tlb, ptep, address) do { } while (0)
+ #endif
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -3425,6 +3425,7 @@ void __unmap_hugepage_range(struct mmu_g
+ 	unsigned long sz = huge_page_size(h);
+ 	unsigned long mmun_start = start;	/* For mmu_notifiers */
+ 	unsigned long mmun_end   = end;		/* For mmu_notifiers */
++	bool force_flush = false;
  
+ 	WARN_ON(!is_vm_hugetlb_page(vma));
+ 	BUG_ON(start & ~huge_page_mask(h));
+@@ -3451,10 +3452,8 @@ void __unmap_hugepage_range(struct mmu_g
+ 		ptl = huge_pte_lock(h, mm, ptep);
+ 		if (huge_pmd_unshare(mm, &address, ptep)) {
+ 			spin_unlock(ptl);
+-			/*
+-			 * We just unmapped a page of PMDs by clearing a PUD.
+-			 * The caller's TLB flush range should cover this area.
+-			 */
++			tlb_flush_pmd_range(tlb, address & PUD_MASK, PUD_SIZE);
++			force_flush = true;
+ 			continue;
+ 		}
+ 
+@@ -3511,6 +3510,22 @@ void __unmap_hugepage_range(struct mmu_g
+ 	}
+ 	mmu_notifier_invalidate_range_end(mm, mmun_start, mmun_end);
+ 	tlb_end_vma(tlb, vma);
++
++	/*
++	 * If we unshared PMDs, the TLB flush was not recorded in mmu_gather. We
++	 * could defer the flush until now, since by holding i_mmap_rwsem we
++	 * guaranteed that the last refernece would not be dropped. But we must
++	 * do the flushing before we return, as otherwise i_mmap_rwsem will be
++	 * dropped and the last reference to the shared PMDs page might be
++	 * dropped as well.
++	 *
++	 * In theory we could defer the freeing of the PMD pages as well, but
++	 * huge_pmd_unshare() relies on the exact page_count for the PMD page to
++	 * detect sharing, so we cannot defer the release of the page either.
++	 * Instead, do flush now.
++	 */
++	if (force_flush)
++		tlb_flush_mmu_tlbonly(tlb);
+ }
+ 
+ void __unmap_hugepage_range_final(struct mmu_gather *tlb,
 
 
