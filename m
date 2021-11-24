@@ -2,91 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D87345C7E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:44:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E843545C7EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:47:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348948AbhKXOr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:47:27 -0500
-Received: from pegase2.c-s.fr ([93.17.235.10]:40143 "EHLO pegase2.c-s.fr"
+        id S1354285AbhKXOuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:50:21 -0500
+Received: from mga06.intel.com ([134.134.136.31]:42313 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350320AbhKXOrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:47:04 -0500
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4HzkKJ6YKvz9sSs;
-        Wed, 24 Nov 2021 15:43:48 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id VGJ0UZeZW-Lk; Wed, 24 Nov 2021 15:43:48 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4HzkKJ5rtJz9sSd;
-        Wed, 24 Nov 2021 15:43:48 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B5C728B774;
-        Wed, 24 Nov 2021 15:43:48 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id EDSwOKENqCfz; Wed, 24 Nov 2021 15:43:48 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.108])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A09318B763;
-        Wed, 24 Nov 2021 15:43:48 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1AOEhdgQ343791
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Wed, 24 Nov 2021 15:43:39 +0100
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1AOEhc8I343790;
-        Wed, 24 Nov 2021 15:43:38 +0100
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH] recordmcount: Support empty section from recent binutils
-Date:   Wed, 24 Nov 2021 15:43:30 +0100
-Message-Id: <cd0f6bdfdf1ee096fb2c07e7b38940921b8e9118.1637764848.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.33.1
+        id S1354130AbhKXOuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:50:16 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="296094983"
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="296094983"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 06:47:03 -0800
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="475289889"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 06:47:02 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mptY2-00A8S9-NF;
+        Wed, 24 Nov 2021 16:46:58 +0200
+Date:   Wed, 24 Nov 2021 16:46:58 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Johan Hovold <johan@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] gpiolib: check the 'ngpios' property in core
+ gpiolib code
+Message-ID: <YZ5QYsu2ed5FiSWE@smile.fi.intel.com>
+References: <20211124122850.7095-1-brgl@bgdev.pl>
+ <20211124122850.7095-2-brgl@bgdev.pl>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1637765008; l=1214; s=20211009; h=from:subject:message-id; bh=LFKGdto9BxD3XwnA+xbvk1tj0uMg8K2nc3ka3MH1LxA=; b=kKPr2EvB+f933bX3j4SlmszKBVeJZcMu11wNEYVvHil18VpHl9EmoVmGM1qz6Lxcr1A0CN2smfUS ZePFQtQ0BOBdcQFnrmc6jtJKqnsLlrwvl/J+sZGw1WEolzcBETXU
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124122850.7095-2-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks like recent binutils (2.36 and over ?) may empty some section,
-leading to failure like:
+On Wed, Nov 24, 2021 at 01:28:50PM +0100, Bartosz Golaszewski wrote:
+> Several drivers read the 'ngpios' device property on their own, but
+> since it's defined as a standard GPIO property in the device tree bindings
+> anyway, it's a good candidate for generalization. If the driver didn't
+> set its gc->ngpio, try to read the 'ngpios' property from the GPIO
+> device's firmware node before bailing out.
 
-	Cannot find symbol for section 11: .text.unlikely.
-	kernel/kexec_file.o: failed
-	make[1]: *** [scripts/Makefile.build:287: kernel/kexec_file.o] Error 1
+> Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+> v1 -> v2:
+> - use device_property_read_u32() instead of fwnode_property_read_u32()
+> - reverse the error check logic
+> 
+> v2 -> v3:
+> - don't shadow errors other than -ENODATA in device_property_read_u32()
+> 
+>  drivers/gpio/gpiolib.c | 15 ++++++++++++---
+>  1 file changed, 12 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> index ede8b8a7aa18..f79fd2551cf7 100644
+> --- a/drivers/gpio/gpiolib.c
+> +++ b/drivers/gpio/gpiolib.c
+> @@ -599,6 +599,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+>  	int base = gc->base;
+>  	unsigned int i;
+>  	int ret = 0;
+> +	u32 ngpios;
+>  
+>  	/*
+>  	 * First: allocate and populate the internal stat container, and
+> @@ -647,9 +648,17 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+>  	}
 
-In order to avoid that, ensure that the section has a content before
-returning it's name in has_rel_mcount().
+>  	if (gc->ngpio == 0) {
+> -		chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
+> -		ret = -EINVAL;
+> -		goto err_free_descs;
+> +		ret = device_property_read_u32(&gdev->dev, "ngpios", &ngpios);
+> +		if (ret) {
+> +			if (ret == -ENODATA) {
+> +				chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
+> +				ret = -EINVAL;
+> +			}
+> +
+> +			goto err_free_descs;
+> +		}
 
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-Link: https://github.com/linuxppc/issues/issues/388
-Link: https://lore.kernel.org/all/20210215162209.5e2a475b@gandalf.local.home/
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- scripts/recordmcount.h | 2 ++
- 1 file changed, 2 insertions(+)
+And if the property returns 0 in ngpios?
 
-diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
-index 1e9baa5c4fc6..cc6600b729ae 100644
---- a/scripts/recordmcount.h
-+++ b/scripts/recordmcount.h
-@@ -575,6 +575,8 @@ static char const *has_rel_mcount(Elf_Shdr const *const relhdr,
- 				  char const *const shstrtab,
- 				  char const *const fname)
- {
-+	if (!shdr0->sh_size)
-+		return NULL;
- 	if (w(relhdr->sh_type) != SHT_REL && w(relhdr->sh_type) != SHT_RELA)
- 		return NULL;
- 	return __has_rel_mcount(relhdr, shdr0, shstrtab, fname);
+What about the modified suggestion from previous version:
+
+	if (gc->ngpio == 0) {
+		ret = device_property_read_u32(&gdev->dev, "ngpios", &ngpios);
+		/*
+		 * -ENODATA means that there is no property found and
+		 * we want to issue the error message to the user. Besides
+		 * that, we want to return different error code to state
+		 * that supplied value is not valid.
+		 */
+		if (ret == -ENODATA)
+			ngpios = 0;
+		else if (ret)
+			return ret;
+
+		gc->ngpio = ngpios;
+	}
+
+	if (gc->ngpio == 0) {
+		chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
+		ret = -EINVAL;
+		goto err_free_descs;
+	}
+
+?
+
+> +		gc->ngpio = ngpios;
+>  	}
+>  
+>  	if (gc->ngpio > FASTPATH_NGPIO)
+> -- 
+> 2.25.1
+> 
+
 -- 
-2.33.1
+With Best Regards,
+Andy Shevchenko
+
 
