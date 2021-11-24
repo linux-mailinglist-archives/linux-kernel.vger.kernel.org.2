@@ -2,134 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8966C45B1EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 03:14:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5878145B136
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 02:44:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240690AbhKXCRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 21:17:54 -0500
-Received: from sonic302-26.consmr.mail.ne1.yahoo.com ([66.163.186.152]:44132
-        "EHLO sonic302-26.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231555AbhKXCRl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 21:17:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1637720072; bh=ILfwu5YCWq+aaMpJ0ICX0L0I4dees4dHGOc836rinKI=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=FcehUgNGgdaZ8bYJYqJ0gwcR47myELZIen+NDS7OmuXxWqIg2jWNfAavpZfSKguRKlD62Isp9u6mOPp9ImmbXmwO8BQgU11J4HE6UohAbTO7+VIbMywoM0pyrCno8Km4MgattrwnP82UVKiICiQ0a6dpbcDO1yZXs0azw1ZYLk3cPpEjccKnROMWv98gh08NejCpt76/XiR7kOn9fuaREOsnvkD+UrEjniFyDhFbRFymf4LfpCoUMLjYlZ0nzzvwXI4dxwIsDmFjPSkujYkYzMCjmhKXHugcGUiv/tv2ckbMPXbYyWj+hi5/Hvc+vDD3Q3o23CS2RuC5nQIyMeF9zw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1637720072; bh=xBiLKlq3uTDxd4bd6pUOra3LliEZJKEkhJA2olglmkN=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=fITZ4yZFwbiv7TJaf3royrkUmIIQRr+uyJ2ZxHT8ewbli+jK0xWAKFdemNbbiWUnjKt/6GWCvIQ4zd1EqxrzhwKltjYp8auekXHGA3rf6u0IAI1yHuBCoX6eUXul6QV/dDDcCKYn1bswwkMC86CnMPSxSfoLz0z5trwXbEFgXDaQz5cI+LxneMa55GBofjCHWjXLeLuct830HR8N9IGXng2CI+q3u26L/s1Yg+Hex3GzjIAP9+A/X6rvStAeKsIhyniCYdCVRdoihY7ZfzgL94GfatiulKWwyR5ISCfJgc3YXUJh76bgg2e9s4+j4/UcTzQkZTewhpIdnSZviB6Vuw==
-X-YMail-OSG: 45jzrVAVM1lZbcepjp.ENRkly5I2ZMoM9pmMkK4kFE_dqLdnuEr4TSLhpjaw0kr
- A71NSpJ_BSl5RakQVM.jHAf2B9zGBGDPDZQTY2J797OAqscJ6VGuRDwRDZnqszIZqyGeWoBJ9s3F
- vgMNn3FyUAoMO4idCsaGNm_nfwkVpF8FArwzYEQQDeRqhk6Y7bTLJzCyq.PNgT8iDwPWeJdYCqzz
- 4Xt5Q1TY9XOq6XAzCqruRU75p0leUS4Fvsfhiv3OX9NAWrfhEjNT8N9tFYwdtlo8hSbtvw1OpGcc
- rgrsdeN5f8_hbaPoGMmIvrxeWHjjx5W60_7WbGBAyqZFex0crZJt9SLt5oteud3LIHT6v2WinzjP
- KmDCZdfYZwMOT1LnK8jUWChYEFkj.G15xhHwO_81hKFSOvF0odnurJiCQQms3SKrcGIXDsg_rqRO
- PQyASJTgxacvhXCbxjPSARxXcDFYkXEhc9tn2m5AwnBQ.fgC2z9tXKXSi1A9SqZDYy_a6oy8H0yb
- B_V2Ivc8HrW3ZFyqaRfqX5vlJWfKkgBrd0t7zNYLoVuYa7p0Noot7ph.061oF4TuM6iS62Kyt_Q0
- .Bq0Sdss_QvhT6uL.ifTg2wKex.SxrCQHFyq.BoTIOMBQFQDB66c.x8FomJDCC2s4yoaKb.OFE3R
- tWivyRN7.7EejIC.yvoWT6mP075y8TQJe_JbwtyI3tHeecfjt5valdk0G9GwMrOmBeXviC9s7DI_
- wZ6w6xTgoDtpoyi6PcVXam7z1ecqs7ofwD0OacRwTWd9xmejveDu2fD.ZM7imEezJQk7Qf7jJkrL
- 2g_MNHya6LwRyQaUPtvF.Knj.tYMper.3gsIeI82LRrWSFqdIXl54lMJM1J6OO4iLiAAILl_wKbn
- d4OxCW2ZJu.JUKvm4XdxChD6T5csU9Cxr6yjYIlpLSKCpqKk0QS0DBhEEwmTg4zGFu36CPJ73jqZ
- .TlNeS7rjNhnw1.s1xpUKmGKbv_44PwB6d.XofrgHVts.GolL3OG.PUkPDkYc.YA40zBvpMTi2CB
- sARxaOyHByD2PQTihrmViCFEVDqtAWpsemvqqWuOMrgyegYsFRFdy91Rpr4pl1mM4tSEF4qy.8Hg
- dJ9UmohNcN_EcDHjA5mmib5.LCbuhisqBQ.nMvXZVlFFPdJC8MFR3l4zjUkHqUXJOEqLWaJcvqCn
- hr4Zu_oD2uSikzW5c0B2fp5bX5_CFWYGgGp07f6Dbyd6KiNjyWljtS34jIR17khaQ5P94IFieqEC
- bZiVh9p6Sy9TiQOPjJXlI3zh5KkWFkLzDCImmFwqngjHb.a3jDmuKgTM6WPxrB3_.6zZGlP364xW
- pvFZ7YdoDa5HBpE3.NzusRay.wGiMKRb1KBaamZx7BX__fvbXUsAdUoifcIpurb7vC51XOxPplCP
- QwTYtYPZSiMsUSCMPVCdJeh9ho5PMGPopg72SG.I0dZW94BLZwepyVT9tv5ioBoPFeCZZ.fU1Wrv
- 8myxQCtWbJRihvSQ8vZtNkQCdLG2YgvWBAwggK9K5ZL7srw2jUJN76zhcnrtubqqNAdbuViyGlki
- PFMs2Bz5FetWjhHijaAVUE5CTrrBxFGPpZhjwqLpTrsL4j01JTXDQaznSJXnrvcYKU0tIRGLBdh0
- DzkJaCOqASUo011EZLueIESFxC3cwtaFILdxYNHTGx4MnYaDAiUwFRZeXGquCSCcAsuVt9NR8eqX
- InDH06Qa_YCGNkwirp6GXYqM7aNxyvt4xdiNdxXa.7lr1iVr7k7PT6kuTk9rM4nD9erBHxqiD6lj
- s70lZMsO.RtV98W.Actt45ZR1p2mNLhblbizXOAmsuqrtCK5tBwEFA9kmqENoXicr5Ncl57nSbzV
- E838HtAzHdOKGepegGzVjIMlI6Xc3k8Js9qWRVSBu53vGIrWDZVv6yXVow4yUGaACoz2484ZbiGq
- tHZE3DS_dWiMmHk65CemhrNPbkgnJs8M6cTxB69H660LUUtwpulvFY0mMPC4Zch6u2fg0JoLrpez
- leX7TCD1KUEdgsOiYiPAci6h5pbelnwllAwpeyzmjFETZW44UJVSE5uYWpPJg08Irq9ipsAym_Ao
- 1R4mWpHKki7vDaodadkdqAZUGPO6Uw5AoJGPcp45gh0qFxCr.14fTsWZRS.ok.2sGHdD_WxB8CE3
- ENkLEd5fikesB4bIWF_qXMVkhNAK563hyw1OibzBBADLDbsDilVqpb00hAFhSaRNKTLvBGqFNCS8
- ltx.mQJRZ7PbeSjX3biy4LUfHl.6Db3RFLOBdM9DQZrwzhcEyPn1dJneeZFqOMHqMikfACvlJ3ee
- 2mue7aQAEbK6STs9T
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Wed, 24 Nov 2021 02:14:32 +0000
-Received: by kubenode545.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID d31ad0ab77aa94fadbac5ad1dbcc6cd1;
-          Wed, 24 Nov 2021 02:14:30 +0000 (UTC)
-From:   Casey Schaufler <casey@schaufler-ca.com>
-To:     casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Cc:     casey@schaufler-ca.com, linux-audit@redhat.com,
-        keescook@chromium.org, john.johansen@canonical.com,
-        penguin-kernel@i-love.sakura.ne.jp, paul@paul-moore.com,
-        sds@tycho.nsa.gov, linux-kernel@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>
-Subject: [PATCH v30 28/28] AppArmor: Remove the exclusive flag
-Date:   Tue, 23 Nov 2021 17:43:32 -0800
-Message-Id: <20211124014332.36128-29-casey@schaufler-ca.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211124014332.36128-1-casey@schaufler-ca.com>
-References: <20211124014332.36128-1-casey@schaufler-ca.com>
+        id S234374AbhKXBrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 20:47:20 -0500
+Received: from mga02.intel.com ([134.134.136.20]:64720 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234183AbhKXBrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 20:47:14 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="222402593"
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="222402593"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 17:44:04 -0800
+X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
+   d="scan'208";a="509641783"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.101])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 17:44:01 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+aa5bebed695edaccf0df@syzkaller.appspotmail.com,
+        Nadav Amit <namit@vmware.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>
+Subject: Re: [PATCH] mm/rmap: fix potential batched TLB flush race
+References: <20211123074344.1877731-1-ying.huang@intel.com>
+        <CANpmjNPGkQ2VWmHjt==yWVr5webCHuRQtXau95jvPjR4Z3gxDw@mail.gmail.com>
+Date:   Wed, 24 Nov 2021 09:43:59 +0800
+In-Reply-To: <CANpmjNPGkQ2VWmHjt==yWVr5webCHuRQtXau95jvPjR4Z3gxDw@mail.gmail.com>
+        (Marco Elver's message of "Tue, 23 Nov 2021 10:33:41 +0100")
+Message-ID: <8735nm9vkw.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the inclusion of the interface LSM process attribute
-mechanism AppArmor no longer needs to be treated as an
-"exclusive" security module. Remove the flag that indicates
-it is exclusive. Remove the stub getpeersec_dgram AppArmor
-hook as it has no effect in the single LSM case and
-interferes in the multiple LSM case.
+Marco Elver <elver@google.com> writes:
 
-Acked-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-Acked-by: John Johansen <john.johansen@canonical.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
----
- security/apparmor/lsm.c | 20 +-------------------
- 1 file changed, 1 insertion(+), 19 deletions(-)
+> On Tue, 23 Nov 2021 at 08:44, Huang Ying <ying.huang@intel.com> wrote:
+>>
+>> In theory, the following race is possible for batched TLB flushing.
+>>
+>> CPU0                               CPU1
+>> ----                               ----
+>> shrink_page_list()
+>>                                    unmap
+>>                                      zap_pte_range()
+>>                                        flush_tlb_batched_pending()
+>>                                          flush_tlb_mm()
+>>   try_to_unmap()
+>>     set_tlb_ubc_flush_pending()
+>>       mm->tlb_flush_batched = true
+>>                                          mm->tlb_flush_batched = false
+>>
+>> After the TLB is flushed on CPU1 via flush_tlb_mm() and before
+>> mm->tlb_flush_batched is set to false, some PTE is unmapped on CPU0
+>> and the TLB flushing is pended.  Then the pended TLB flushing will be
+>> lost.  Although both set_tlb_ubc_flush_pending() and
+>> flush_tlb_batched_pending() are called with PTL locked, different PTL
+>> instances may be used.
+>>
+>> Because the race window is really small, and the lost TLB flushing
+>> will cause problem only if a TLB entry is inserted before the
+>> unmapping in the race window, the race is only theoretical.  But the
+>> fix is simple and cheap too.
+>
+> Thanks for fixing this!
+>
+>> Syzbot has reported this too as follows,
+>>
+>> ==================================================================
+>> BUG: KCSAN: data-race in flush_tlb_batched_pending / try_to_unmap_one
+> [...]
+>> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+>> index c3a6e6209600..789778067db9 100644
+>> --- a/include/linux/mm_types.h
+>> +++ b/include/linux/mm_types.h
+>> @@ -632,7 +632,7 @@ struct mm_struct {
+>>                 atomic_t tlb_flush_pending;
+>>  #ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
+>>                 /* See flush_tlb_batched_pending() */
+>> -               bool tlb_flush_batched;
+>> +               atomic_t tlb_flush_batched;
+>>  #endif
+>>                 struct uprobes_state uprobes_state;
+>>  #ifdef CONFIG_PREEMPT_RT
+>> diff --git a/mm/rmap.c b/mm/rmap.c
+>> index 163ac4e6bcee..60902c3cfb4a 100644
+>> --- a/mm/rmap.c
+>> +++ b/mm/rmap.c
+>> @@ -633,7 +633,7 @@ static void set_tlb_ubc_flush_pending(struct mm_struct *mm, bool writable)
+>>          * before the PTE is cleared.
+>>          */
+>>         barrier();
+>> -       mm->tlb_flush_batched = true;
+>> +       atomic_inc(&mm->tlb_flush_batched);
+>
+> The use of barrier() and atomic needs some clarification.
 
-diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
-index 28ed41a3ffcf..816145276c74 100644
---- a/security/apparmor/lsm.c
-+++ b/security/apparmor/lsm.c
-@@ -1138,22 +1138,6 @@ static int apparmor_socket_getpeersec_stream(struct socket *sock,
- 	return error;
- }
- 
--/**
-- * apparmor_socket_getpeersec_dgram - get security label of packet
-- * @sock: the peer socket
-- * @skb: packet data
-- * @secid: pointer to where to put the secid of the packet
-- *
-- * Sets the netlabel socket state on sk from parent
-- */
--static int apparmor_socket_getpeersec_dgram(struct socket *sock,
--					    struct sk_buff *skb, u32 *secid)
--
--{
--	/* TODO: requires secid support */
--	return -ENOPROTOOPT;
--}
--
- /**
-  * apparmor_sock_graft - Initialize newly created socket
-  * @sk: child sock
-@@ -1257,8 +1241,6 @@ static struct security_hook_list apparmor_hooks[] __lsm_ro_after_init = {
- #endif
- 	LSM_HOOK_INIT(socket_getpeersec_stream,
- 		      apparmor_socket_getpeersec_stream),
--	LSM_HOOK_INIT(socket_getpeersec_dgram,
--		      apparmor_socket_getpeersec_dgram),
- 	LSM_HOOK_INIT(sock_graft, apparmor_sock_graft),
- #ifdef CONFIG_NETWORK_SECMARK
- 	LSM_HOOK_INIT(inet_conn_request, apparmor_inet_conn_request),
-@@ -1912,7 +1894,7 @@ static int __init apparmor_init(void)
- 
- DEFINE_LSM(apparmor) = {
- 	.name = "apparmor",
--	.flags = LSM_FLAG_LEGACY_MAJOR | LSM_FLAG_EXCLUSIVE,
-+	.flags = LSM_FLAG_LEGACY_MAJOR,
- 	.enabled = &apparmor_enabled,
- 	.blobs = &apparmor_blob_sizes,
- 	.init = apparmor_init,
--- 
-2.31.1
+There are some comments above barrier() to describe why it is needed.
+For atomic, because the type of mm->tlb_flush_batched is atomic_t, do we
+need extra clarification?
 
+> Is there a
+> requirement that the CPU also doesn't reorder anything after this
+> atomic_inc() (which is unordered)? I.e. should this be
+> atomic_inc_return_release() and remove barrier()?
+
+We don't have an atomic_xx_acquire() to pair with this.  So I guess we
+don't need atomic_inc_return_release()?
+
+Best Regards,
+Huang, Ying
+
+>>         /*
+>>          * If the PTE was dirty then it's best to assume it's writable. The
+>> @@ -680,15 +680,16 @@ static bool should_defer_flush(struct mm_struct *mm, enum ttu_flags flags)
+>>   */
+>>  void flush_tlb_batched_pending(struct mm_struct *mm)
+>>  {
+>> -       if (data_race(mm->tlb_flush_batched)) {
+>> -               flush_tlb_mm(mm);
+>> +       int batched = atomic_read(&mm->tlb_flush_batched);
+>>
+>> +       if (batched) {
+>> +               flush_tlb_mm(mm);
+>>                 /*
+>> -                * Do not allow the compiler to re-order the clearing of
+>> -                * tlb_flush_batched before the tlb is flushed.
+>> +                * If the new TLB flushing is pended during flushing,
+>> +                * leave mm->tlb_flush_batched as is, to avoid to lose
+>> +                * flushing.
+>>                  */
+>> -               barrier();
+>> -               mm->tlb_flush_batched = false;
+>> +               atomic_cmpxchg(&mm->tlb_flush_batched, batched, 0);
+>>         }
+>>  }
+>>  #else
+>> --
+>> 2.30.2
+>>
