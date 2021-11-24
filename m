@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18EC545B9C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FF645C005
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:01:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242003AbhKXMEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:04:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59630 "EHLO mail.kernel.org"
+        id S1344275AbhKXNEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:04:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242089AbhKXME0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:04:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB87661053;
-        Wed, 24 Nov 2021 12:01:15 +0000 (UTC)
+        id S1345904AbhKXNCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:02:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3662961181;
+        Wed, 24 Nov 2021 12:35:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755276;
-        bh=v4zvToYPU7LvTshBgvRdhQubfI+ndeS/1L5vLcLuX4s=;
+        s=korg; t=1637757323;
+        bh=hGWVHhAgHzJunRZHDwTTP5dU3566NUjALwn/F2qqB0c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZvekM/XONwlRakPxzll5ayEYUmHdbYPzGO15NE9/VSqHL4jKss/KQMb9GLDGcAdSs
-         OcdBeBUga4g2CIo+iJwi0AHxdSks3yLp75EzU/DD1IrCf166hVmcV4PG03qBYxpAHf
-         HO55Afu/3ZT80ByQkEgU8TaPg+0uTXJNF99FZULU=
+        b=2bSR3B05q1BWSDtAtLtXF02DCegT0aPLKZwwbri4i2+txnhTDGJYJrMdVBIDsFsR2
+         DkqhF85psS+j6bEoFDXR729PX4BarZWEzAbP5vtmJYtBbpyKj118f3EexsA8PrQusr
+         d1ojR02XFENIO9NDSIzbsAWC89hDf/HHd2J1LfS4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 018/162] hyperv/vmbus: include linux/bitops.h
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+a6969ef522a36d3344c9@syzkaller.appspotmail.com
+Subject: [PATCH 4.19 131/323] media: em28xx: add missing em28xx_close_extension
 Date:   Wed, 24 Nov 2021 12:55:21 +0100
-Message-Id: <20211124115658.914248729@linuxfoundation.org>
+Message-Id: <20211124115723.359815643@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,43 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 8017c99680fa65e1e8d999df1583de476a187830 ]
+[ Upstream commit 2c98b8a3458df03abdc6945bbef67ef91d181938 ]
 
-On arm64 randconfig builds, hyperv sometimes fails with this
-error:
+If em28xx dev has ->dev_next pointer, we need to delete ->dev_next list
+node from em28xx_extension_devlist on disconnect to avoid UAF bugs and
+corrupted list bugs, since driver frees this pointer on disconnect.
 
-In file included from drivers/hv/hv_trace.c:3:
-In file included from drivers/hv/hyperv_vmbus.h:16:
-In file included from arch/arm64/include/asm/sync_bitops.h:5:
-arch/arm64/include/asm/bitops.h:11:2: error: only <linux/bitops.h> can be included directly
-In file included from include/asm-generic/bitops/hweight.h:5:
-include/asm-generic/bitops/arch_hweight.h:9:9: error: implicit declaration of function '__sw_hweight32' [-Werror,-Wimplicit-function-declaration]
-include/asm-generic/bitops/atomic.h:17:7: error: implicit declaration of function 'BIT_WORD' [-Werror,-Wimplicit-function-declaration]
+Reported-and-tested-by: syzbot+a6969ef522a36d3344c9@syzkaller.appspotmail.com
 
-Include the correct header first.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20211018131929.2260087-1-arnd@kernel.org
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Fixes: 1a23f81b7dc3 ("V4L/DVB (9979): em28xx: move usb probe code to a proper place")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hv/hyperv_vmbus.h | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/media/usb/em28xx/em28xx-cards.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hv/hyperv_vmbus.h b/drivers/hv/hyperv_vmbus.h
-index 15e06493c53aa..4e7592addfe2b 100644
---- a/drivers/hv/hyperv_vmbus.h
-+++ b/drivers/hv/hyperv_vmbus.h
-@@ -26,6 +26,7 @@
- #define _HYPERV_VMBUS_H
+diff --git a/drivers/media/usb/em28xx/em28xx-cards.c b/drivers/media/usb/em28xx/em28xx-cards.c
+index 3f59a98dbf9a1..ec608f60d2c75 100644
+--- a/drivers/media/usb/em28xx/em28xx-cards.c
++++ b/drivers/media/usb/em28xx/em28xx-cards.c
+@@ -4030,8 +4030,11 @@ static void em28xx_usb_disconnect(struct usb_interface *intf)
  
- #include <linux/list.h>
-+#include <linux/bitops.h>
- #include <asm/sync_bitops.h>
- #include <linux/atomic.h>
- #include <linux/hyperv.h>
+ 	em28xx_close_extension(dev);
+ 
+-	if (dev->dev_next)
++	if (dev->dev_next) {
++		em28xx_close_extension(dev->dev_next);
+ 		em28xx_release_resources(dev->dev_next);
++	}
++
+ 	em28xx_release_resources(dev);
+ 
+ 	if (dev->dev_next) {
 -- 
 2.33.0
 
