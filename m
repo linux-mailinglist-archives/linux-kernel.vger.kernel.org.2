@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A59B45BBC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:22:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8672845B9C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244399AbhKXMXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:23:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48892 "EHLO mail.kernel.org"
+        id S241465AbhKXMFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:05:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243530AbhKXMSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:18:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24A1661153;
-        Wed, 24 Nov 2021 12:11:32 +0000 (UTC)
+        id S234770AbhKXMEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:04:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C68C6101D;
+        Wed, 24 Nov 2021 12:01:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755893;
-        bh=KtonEn5HvGcYC394V97oFTNdYEp6zGgCSACTXwtaPNw=;
+        s=korg; t=1637755262;
+        bh=nOFldo0WZG4J6k0QFrFceuT0aOxkSIdIRmmj90HWRWI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r3SiNJ1iBYd4Jbi68hmcC99/7LS0+u0Uri2Veyabrnu4eDUyiawvwtP0q3XHwote7
-         fBAhk9TBlcNp5Av46k3KtzGBakEdHyiSe/UJsjoX+Fj0CcgjCwvGMqAau8tBTZeSEK
-         bf1cI05MRFNLoeost0bjLj3zt4ZL8jP3hLjTxLOQ=
+        b=crcrVWJZjzYFcI/w4vXYm8bpG8CAadaN+ukSTUMsgct0L5otCf63pntUfUL8DBr4q
+         6YoBH5QL0l56fj1/agWFjkwIICX+/82K2AD/2lb6AfGvRufDN0OitcFSfgwWnZC1F7
+         fcd0GOxZMefIGHvV3WPUl4ZrO4oD09mdyLEdRiPs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Wang <yun.wang@linux.alibaba.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 063/207] x86: Increase exception stack sizes
+        stable@vger.kernel.org,
+        =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 4.4 031/162] mwifiex: Read a PCI register after writing the TX ring write pointer
 Date:   Wed, 24 Nov 2021 12:55:34 +0100
-Message-Id: <20211124115705.965579826@linuxfoundation.org>
+Message-Id: <20211124115659.342666507@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Jonas Dreßler <verdre@v0yd.nl>
 
-[ Upstream commit 7fae4c24a2b84a66c7be399727aca11e7a888462 ]
+commit e5f4eb8223aa740237cd463246a7debcddf4eda1 upstream.
 
-It turns out that a single page of stack is trivial to overflow with
-all the tracing gunk enabled. Raise the exception stacks to 2 pages,
-which is still half the interrupt stacks, which are at 4 pages.
+On the 88W8897 PCIe+USB card the firmware randomly crashes after setting
+the TX ring write pointer. The issue is present in the latest firmware
+version 15.68.19.p21 of the PCIe+USB card.
 
-Reported-by: Michael Wang <yun.wang@linux.alibaba.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/YUIO9Ye98S5Eb68w@hirez.programming.kicks-ass.net
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Those firmware crashes can be worked around by reading any PCI register
+of the card after setting that register, so read the PCI_VENDOR_ID
+register here. The reason this works is probably because we keep the bus
+from entering an ASPM state for a bit longer, because that's what causes
+the cards firmware to crash.
+
+This fixes a bug where during RX/TX traffic and with ASPM L1 substates
+enabled (the specific substates where the issue happens appear to be
+platform dependent), the firmware crashes and eventually a command
+timeout appears in the logs.
+
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=109681
+Cc: stable@vger.kernel.org
+Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20211011133224.15561-2-verdre@v0yd.nl
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/page_64_types.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/mwifiex/pcie.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
-index 390fdd39e0e21..5a69eee673536 100644
---- a/arch/x86/include/asm/page_64_types.h
-+++ b/arch/x86/include/asm/page_64_types.h
-@@ -19,7 +19,7 @@
- #define THREAD_SIZE  (PAGE_SIZE << THREAD_SIZE_ORDER)
- #define CURRENT_MASK (~(THREAD_SIZE - 1))
- 
--#define EXCEPTION_STACK_ORDER (0 + KASAN_STACK_ORDER)
-+#define EXCEPTION_STACK_ORDER (1 + KASAN_STACK_ORDER)
- #define EXCEPTION_STKSZ (PAGE_SIZE << EXCEPTION_STACK_ORDER)
- 
- #define DEBUG_STACK_ORDER (EXCEPTION_STACK_ORDER + 1)
--- 
-2.33.0
-
+--- a/drivers/net/wireless/mwifiex/pcie.c
++++ b/drivers/net/wireless/mwifiex/pcie.c
+@@ -1210,6 +1210,14 @@ mwifiex_pcie_send_data(struct mwifiex_ad
+ 			ret = -1;
+ 			goto done_unmap;
+ 		}
++
++		/* The firmware (latest version 15.68.19.p21) of the 88W8897 PCIe+USB card
++		 * seems to crash randomly after setting the TX ring write pointer when
++		 * ASPM powersaving is enabled. A workaround seems to be keeping the bus
++		 * busy by reading a random register afterwards.
++		 */
++		mwifiex_read_reg(adapter, PCI_VENDOR_ID, &rx_val);
++
+ 		if ((mwifiex_pcie_txbd_not_full(card)) &&
+ 		    tx_param->next_pkt_len) {
+ 			/* have more packets and TxBD still can hold more */
 
 
