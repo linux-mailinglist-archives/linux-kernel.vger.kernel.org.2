@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A72A745D156
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:44:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F7745D157
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235539AbhKXXrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 18:47:24 -0500
-Received: from mga14.intel.com ([192.55.52.115]:4104 "EHLO mga14.intel.com"
+        id S236199AbhKXXs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 18:48:27 -0500
+Received: from mga06.intel.com ([134.134.136.31]:43570 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231135AbhKXXrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 18:47:23 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="235644499"
+        id S231135AbhKXXsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 18:48:22 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="296209842"
 X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
-   d="scan'208";a="235644499"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 15:44:12 -0800
+   d="scan'208";a="296209842"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 15:45:12 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
-   d="scan'208";a="607366764"
+   d="scan'208";a="554454489"
 Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 24 Nov 2021 15:44:10 -0800
+  by fmsmga008.fm.intel.com with ESMTP; 24 Nov 2021 15:45:10 -0800
 Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mq1vt-0005Up-Tm; Wed, 24 Nov 2021 23:44:09 +0000
-Date:   Thu, 25 Nov 2021 07:43:47 +0800
+        id 1mq1wr-0005V4-Uf; Wed, 24 Nov 2021 23:45:09 +0000
+Date:   Thu, 25 Nov 2021 07:44:10 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/urgent] BUILD SUCCESS
- dce1ca0525bfdc8a69a9343bc714fbc19a2f04b3
-Message-ID: <619ece33.ajL8kyi+KtkS3I+r%lkp@intel.com>
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ c0f2077baa4113f38f008b8e912b9fb3ff8d43df
+Message-ID: <619ece4a.PySzqhcgDrPx5KRt%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,13 +39,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git sched/urgent
-branch HEAD: dce1ca0525bfdc8a69a9343bc714fbc19a2f04b3  sched/scs: Reset task stack state in bringup_cpu()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git x86/urgent
+branch HEAD: c0f2077baa4113f38f008b8e912b9fb3ff8d43df  x86/boot: Mark prepare_command_line() __init
 
 elapsed time: 728m
 
-configs tested: 171
-configs skipped: 3
+configs tested: 161
+configs skipped: 84
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -75,11 +75,6 @@ mips                         bigsur_defconfig
 sh                             espt_defconfig
 um                                  defconfig
 sh                          lboxre2_defconfig
-mips                  cavium_octeon_defconfig
-mips                malta_qemu_32r6_defconfig
-powerpc                         wii_defconfig
-arm                          ixp4xx_defconfig
-sh                     magicpanelr2_defconfig
 powerpc                     tqm8541_defconfig
 powerpc                    socrates_defconfig
 arm                        realview_defconfig
@@ -87,12 +82,7 @@ powerpc                      chrp32_defconfig
 mips                           gcw0_defconfig
 xtensa                         virt_defconfig
 powerpc                 mpc8315_rdb_defconfig
-mips                         rt305x_defconfig
-arm                         axm55xx_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                     taishan_defconfig
-arm                     am200epdkit_defconfig
-xtensa                  nommu_kc705_defconfig
+mips                  cavium_octeon_defconfig
 mips                      bmips_stb_defconfig
 arm                            mmp2_defconfig
 nios2                               defconfig
