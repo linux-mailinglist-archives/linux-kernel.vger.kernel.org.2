@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7848345BBA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C2C45BD77
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242182AbhKXMVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:21:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46748 "EHLO mail.kernel.org"
+        id S1344768AbhKXMil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:38:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242880AbhKXMRP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:17:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E816361107;
-        Wed, 24 Nov 2021 12:10:58 +0000 (UTC)
+        id S1343604AbhKXMdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:33:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C6C561163;
+        Wed, 24 Nov 2021 12:20:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755859;
-        bh=W//OBLEjztCPp+mhxF++JFOJsn+S8A9rmU0+ciYqKg4=;
+        s=korg; t=1637756437;
+        bh=4QXA8Sz8+uy2QwtIoTw8eT2RxQ41eRuIz/FE6ziP7eI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eHY5Ex3nx+5RDmAT5AnokEGYe/JPDsPJTywZ6ly7SH25cWKoBzl3WOF9sQA6igYlU
-         UPAsirgzQIzcy5ZhA847a5hrmtMkT9qZ626sSnqQF9A9Sot3hAA4fZF8WIPT+8DnSN
-         /0wRS0i+5nWJcMFUSD7bO2yNiXUkD0ik6BObnTXg=
+        b=kXn15gu0KtpjbpLqT4KKtnYDgwoUzpknquucrU9wE1itEbrbaOAGsDV6NpQrM/vSd
+         VytWJ+K5+zjNhxxvmL4FEfF+jUY0OmFJ7I9EDlYBC3Vl0X7ZZpqKiZUv7OpiTlyHkE
+         9Kaxo1MEBAqah+amCiNg+Q5LkoHvysVx0IXv5cJ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org,
+        syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 057/207] Bluetooth: fix use-after-free error in lock_sock_nested()
+Subject: [PATCH 4.14 086/251] media: usb: dvd-usb: fix uninit-value bug in dibusb_read_eeprom_byte()
 Date:   Wed, 24 Nov 2021 12:55:28 +0100
-Message-Id: <20211124115705.774117086@linuxfoundation.org>
+Message-Id: <20211124115713.245927123@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,137 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang ShaoBo <bobo.shaobowang@huawei.com>
+From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 
-[ Upstream commit 1bff51ea59a9afb67d2dd78518ab0582a54a472c ]
+[ Upstream commit 899a61a3305d49e8a712e9ab20d0db94bde5929f ]
 
-use-after-free error in lock_sock_nested is reported:
+In dibusb_read_eeprom_byte(), if dibusb_i2c_msg() fails, val gets
+assigned an value that's not properly initialized.
+Using kzalloc() in place of kmalloc() for the buffer fixes this issue,
+as the val can now be set to 0 in the event dibusb_i2c_msg() fails.
 
-[  179.140137][ T3731] =====================================================
-[  179.142675][ T3731] BUG: KMSAN: use-after-free in lock_sock_nested+0x280/0x2c0
-[  179.145494][ T3731] CPU: 4 PID: 3731 Comm: kworker/4:2 Not tainted 5.12.0-rc6+ #54
-[  179.148432][ T3731] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-[  179.151806][ T3731] Workqueue: events l2cap_chan_timeout
-[  179.152730][ T3731] Call Trace:
-[  179.153301][ T3731]  dump_stack+0x24c/0x2e0
-[  179.154063][ T3731]  kmsan_report+0xfb/0x1e0
-[  179.154855][ T3731]  __msan_warning+0x5c/0xa0
-[  179.155579][ T3731]  lock_sock_nested+0x280/0x2c0
-[  179.156436][ T3731]  ? kmsan_get_metadata+0x116/0x180
-[  179.157257][ T3731]  l2cap_sock_teardown_cb+0xb8/0x890
-[  179.158154][ T3731]  ? __msan_metadata_ptr_for_load_8+0x10/0x20
-[  179.159141][ T3731]  ? kmsan_get_metadata+0x116/0x180
-[  179.159994][ T3731]  ? kmsan_get_shadow_origin_ptr+0x84/0xb0
-[  179.160959][ T3731]  ? l2cap_sock_recv_cb+0x420/0x420
-[  179.161834][ T3731]  l2cap_chan_del+0x3e1/0x1d50
-[  179.162608][ T3731]  ? kmsan_get_metadata+0x116/0x180
-[  179.163435][ T3731]  ? kmsan_get_shadow_origin_ptr+0x84/0xb0
-[  179.164406][ T3731]  l2cap_chan_close+0xeea/0x1050
-[  179.165189][ T3731]  ? kmsan_internal_unpoison_shadow+0x42/0x70
-[  179.166180][ T3731]  l2cap_chan_timeout+0x1da/0x590
-[  179.167066][ T3731]  ? __msan_metadata_ptr_for_load_8+0x10/0x20
-[  179.168023][ T3731]  ? l2cap_chan_create+0x560/0x560
-[  179.168818][ T3731]  process_one_work+0x121d/0x1ff0
-[  179.169598][ T3731]  worker_thread+0x121b/0x2370
-[  179.170346][ T3731]  kthread+0x4ef/0x610
-[  179.171010][ T3731]  ? process_one_work+0x1ff0/0x1ff0
-[  179.171828][ T3731]  ? kthread_blkcg+0x110/0x110
-[  179.172587][ T3731]  ret_from_fork+0x1f/0x30
-[  179.173348][ T3731]
-[  179.173752][ T3731] Uninit was created at:
-[  179.174409][ T3731]  kmsan_internal_poison_shadow+0x5c/0xf0
-[  179.175373][ T3731]  kmsan_slab_free+0x76/0xc0
-[  179.176060][ T3731]  kfree+0x3a5/0x1180
-[  179.176664][ T3731]  __sk_destruct+0x8af/0xb80
-[  179.177375][ T3731]  __sk_free+0x812/0x8c0
-[  179.178032][ T3731]  sk_free+0x97/0x130
-[  179.178686][ T3731]  l2cap_sock_release+0x3d5/0x4d0
-[  179.179457][ T3731]  sock_close+0x150/0x450
-[  179.180117][ T3731]  __fput+0x6bd/0xf00
-[  179.180787][ T3731]  ____fput+0x37/0x40
-[  179.181481][ T3731]  task_work_run+0x140/0x280
-[  179.182219][ T3731]  do_exit+0xe51/0x3e60
-[  179.182930][ T3731]  do_group_exit+0x20e/0x450
-[  179.183656][ T3731]  get_signal+0x2dfb/0x38f0
-[  179.184344][ T3731]  arch_do_signal_or_restart+0xaa/0xe10
-[  179.185266][ T3731]  exit_to_user_mode_prepare+0x2d2/0x560
-[  179.186136][ T3731]  syscall_exit_to_user_mode+0x35/0x60
-[  179.186984][ T3731]  do_syscall_64+0xc5/0x140
-[  179.187681][ T3731]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  179.188604][ T3731] =====================================================
-
-In our case, there are two Thread A and B:
-
-Context: Thread A:              Context: Thread B:
-
-l2cap_chan_timeout()            __se_sys_shutdown()
-  l2cap_chan_close()              l2cap_sock_shutdown()
-    l2cap_chan_del()                l2cap_chan_close()
-      l2cap_sock_teardown_cb()        l2cap_sock_teardown_cb()
-
-Once l2cap_sock_teardown_cb() excuted, this sock will be marked as SOCK_ZAPPED,
-and can be treated as killable in l2cap_sock_kill() if sock_orphan() has
-excuted, at this time we close sock through sock_close() which end to call
-l2cap_sock_kill() like Thread C:
-
-Context: Thread C:
-
-sock_close()
-  l2cap_sock_release()
-    sock_orphan()
-    l2cap_sock_kill()  #free sock if refcnt is 1
-
-If C completed, Once A or B reaches l2cap_sock_teardown_cb() again,
-use-after-free happened.
-
-We should set chan->data to NULL if sock is destructed, for telling teardown
-operation is not allowed in l2cap_sock_teardown_cb(), and also we should
-avoid killing an already killed socket in l2cap_sock_close_cb().
-
-Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Reported-by: syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com
+Tested-by: syzbot+e27b4fd589762b0b9329@syzkaller.appspotmail.com
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/l2cap_sock.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/media/usb/dvb-usb/dibusb-common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
-index f46f59129bf39..a47430d843dcf 100644
---- a/net/bluetooth/l2cap_sock.c
-+++ b/net/bluetooth/l2cap_sock.c
-@@ -1319,6 +1319,9 @@ static void l2cap_sock_close_cb(struct l2cap_chan *chan)
- {
- 	struct sock *sk = chan->data;
+diff --git a/drivers/media/usb/dvb-usb/dibusb-common.c b/drivers/media/usb/dvb-usb/dibusb-common.c
+index bcacb0f220282..3e45642ae186b 100644
+--- a/drivers/media/usb/dvb-usb/dibusb-common.c
++++ b/drivers/media/usb/dvb-usb/dibusb-common.c
+@@ -226,7 +226,7 @@ int dibusb_read_eeprom_byte(struct dvb_usb_device *d, u8 offs, u8 *val)
+ 	u8 *buf;
+ 	int rc;
  
-+	if (!sk)
-+		return;
-+
- 	l2cap_sock_kill(sk);
- }
+-	buf = kmalloc(2, GFP_KERNEL);
++	buf = kzalloc(2, GFP_KERNEL);
+ 	if (!buf)
+ 		return -ENOMEM;
  
-@@ -1327,6 +1330,9 @@ static void l2cap_sock_teardown_cb(struct l2cap_chan *chan, int err)
- 	struct sock *sk = chan->data;
- 	struct sock *parent;
- 
-+	if (!sk)
-+		return;
-+
- 	BT_DBG("chan %p state %s", chan, state_to_string(chan->state));
- 
- 	/* This callback can be called both for server (BT_LISTEN)
-@@ -1510,8 +1516,10 @@ static void l2cap_sock_destruct(struct sock *sk)
- {
- 	BT_DBG("sk %p", sk);
- 
--	if (l2cap_pi(sk)->chan)
-+	if (l2cap_pi(sk)->chan) {
-+		l2cap_pi(sk)->chan->data = NULL;
- 		l2cap_chan_put(l2cap_pi(sk)->chan);
-+	}
- 
- 	if (l2cap_pi(sk)->rx_busy_skb) {
- 		kfree_skb(l2cap_pi(sk)->rx_busy_skb);
 -- 
 2.33.0
 
