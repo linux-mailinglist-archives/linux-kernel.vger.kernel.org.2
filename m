@@ -2,89 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D36B145CBD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1A945CBD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:06:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350795AbhKXSJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 13:09:52 -0500
-Received: from foss.arm.com ([217.140.110.172]:41722 "EHLO foss.arm.com"
+        id S1350405AbhKXSJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 13:09:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350841AbhKXSHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 13:07:43 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 42DB71FB;
-        Wed, 24 Nov 2021 10:04:33 -0800 (PST)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3EE213F66F;
-        Wed, 24 Nov 2021 10:04:32 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org,
-        linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
-        dietmar.eggemann@arm.com
-Subject: Re: [PATCH] sched/fair: Fix per-CPU kthread and wakee stacking for asym CPU capacity
-In-Reply-To: <20211124175304.GA3221810@ubiquitous>
-References: <20211124141435.3125147-1-vincent.donnefort@arm.com> <87fsrlcwcb.mognet@arm.com> <20211124175304.GA3221810@ubiquitous>
-Date:   Wed, 24 Nov 2021 18:04:30 +0000
-Message-ID: <87czmpctw1.mognet@arm.com>
+        id S1351552AbhKXSJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 13:09:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C53416102A;
+        Wed, 24 Nov 2021 18:06:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637777172;
+        bh=Yd2zzwjkxvXr2lz7EPUopzKeueXmqiiyttONU7uA5bk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N/+OaFVRWIpV6LXo1I7SGELZaYlpiLjirLRnT+ZyYu2G/Yus9a7W35hx56LKI3Zv7
+         LKifUznPip3eAMf8mAMUC9sYimLzzvVzzI11DxLiLIm6Dk5LnR+E1McWKSNiO04Z4j
+         KAwWKPwWp5v3/AT2etAmQMg+LcELtQb/krbPTjeOSw2CszZflAIA26sseo3jNdl1aN
+         oaohsFfgHxa9M15e7voCdFo/MmDjnZpc+lyzhEL1EhdgXSF0Ueh8Xk45O1jhc/YxoJ
+         T9oCwKUTS3STJUYvxGg3IunqKkvbMaoaUbWsCQiMb3nXyW7Ho9sNPWhDDAnrVB/Ntl
+         5Ldvn9pMepY8A==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mpweY-00017I-6K; Wed, 24 Nov 2021 19:05:54 +0100
+Date:   Wed, 24 Nov 2021 19:05:54 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Mingjie Zhang <superzmj@fibocom.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] USB: serial: option: add Fibocom FM101-GL variants
+Message-ID: <YZ5/AvKK6lPFo/vm@hovoldconsulting.com>
+References: <20211123133757.37475-1-superzmj@fibocom.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211123133757.37475-1-superzmj@fibocom.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/11/21 17:58, Vincent Donnefort wrote:
-> On Wed, Nov 24, 2021 at 05:11:32PM +0000, Valentin Schneider wrote:
->> On 24/11/21 14:14, Vincent Donnefort wrote:
->> > A shortcut has been introduced in select_idle_sibling() to return prev_cpu
->> > if the wakee is woken up by a per-CPU kthread. This is an issue for
->> > asymmetric CPU capacity systems where the wakee might not fit prev_cpu
->> > anymore. Evaluate asym_fits_capacity() for prev_cpu before using that
->> > shortcut.
->> >
->> > Fixes: 52262ee567ad ("sched/fair: Allow a per-CPU kthread waking a task to stack on the same CPU, to fix XFS performance regression")
->>
->> Shouldn't that rather be
->>
->>   b4c9c9f15649 ("sched/fair: Prefer prev cpu in asymmetric wakeup path")
->
-> Yes definitely, my bad!
->
->>
->> ? This is an ulterior commit to the one you point to, and before then
->> asymmetric CPU systems wouldn't use any of the sis() heuristics.
->>
->> I reportedly reviewed said commit back then, and don't recall anything
->> specific about that conditional... The cover-letter for v2 states:
->>
->>   https://lore.kernel.org/lkml/20201028174412.680-1-vincent.guittot@linaro.org/
->>   """
->>   don't check capacity for the per-cpu kthread UC because the assumption is
->>   that the wakee queued work for the per-cpu kthread that is now complete and
->>   the task was already on this cpu.
->>   """
->>
->> So the assumption here is that current is gonna sleep right after waking up
->> p, so current's utilization doesn't matter, and p was already on prev, so
->> it should fit there...
->
-> I don't think the assumption that "p was already on prev should fit" is
-> correct if we take into account uclamp min. That value can change from one
-> activation to the other and make that task artificially too big for prev_cpu...
->
+On Tue, Nov 23, 2021 at 09:37:57PM +0800, Mingjie Zhang wrote:
+> Update the USB serial option driver support for the Fibocom
+> FM101-GL Cat.6
+> LTE modules as there are actually several different variants.
+> - VID:PID 2cb7:01a2, FM101-GL are laptop M.2 cards (with
+>   MBIM interfaces for /Linux/Chrome OS)
+> - VID:PID 2cb7:01a4, FM101-GL for laptop debug M.2 cards(with adb
+>   interface for /Linux/Chrome OS)
+> 
+> 0x01a2: mbim, tty, tty, diag, gnss
+> 0x01a4: mbim, diag, tty, adb, gnss, gnss
+> 
+> Here are the outputs of lsusb -v and usb-devices:
 
-Humph, good point, hadn't thought of that.
+> Signed-off-by: Mingjie Zhang <superzmj@fibocom.com>
+> ---
+> Changes in v3:
+>   - Add the usb device infomation
+>   - Make the entry in sort order (VID,PID)
+> 
+> Changes in v2:
+>   - Add the description of the corresponding interface
+>   - Blacklist the adb interface
 
->>
->> I'm thinking things should actually be OK with your other patch that
->> excludes 'current == swapper' from this condition.
->
-> ...But indeed if we add [1] to the equation, this patch here would only
-> protect against that specific corner case.
->
-> (And probably also against the fact that this same task could have a value
-> that doesn't fit this CPU anymore but didn't trigger misfit during its previous
-> activation?)
+Now applied, thanks!
 
-That would imply crossing the misfit threshold right at the dequeue signal
-update, but that can happen.
+Johan
