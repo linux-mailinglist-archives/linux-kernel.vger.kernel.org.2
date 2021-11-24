@@ -2,36 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE5145C1EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3ECA45C154
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345666AbhKXNYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:24:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45194 "EHLO mail.kernel.org"
+        id S1346951AbhKXNQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:16:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348733AbhKXNUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:20:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 923946128A;
-        Wed, 24 Nov 2021 12:47:05 +0000 (UTC)
+        id S1348631AbhKXNNj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:13:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A37461414;
+        Wed, 24 Nov 2021 12:43:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758026;
-        bh=h00z2kKRn84wX9YSnvmocwlC8bQBN+BoZgdwVROFi+Y=;
+        s=korg; t=1637757796;
+        bh=ohuo0QU48rv3K/ooxaBjdZAhGuDZ37MKhXsozrU9CF4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BDeqOL102xvoPLNFSauY71asOS1lLYQ4gXaib6wPd2iaEN5okmvq776xbduarTxCI
-         ziTpkQOwe5rP6QRDgazT81cwxc6aSkmgYkSGeEO6hpEJThVBKmRNSjxYrNX8g/5HX2
-         +TCRralMaX6PeKA+00kFIyDViTXPQVezzHTFhU3E=
+        b=pN87jApH5nXxNS+HudA/EgHxC2ITauFnf0G658QOB+aYynSQt6EIjN1HuPO4F2Njo
+         DTtNbwEZdflMNUlM9i6Y/jc5elYbGq5KrLJxoFgLlt8q0qB1tHZlLdzH5E2KkWsM+Y
+         gjpBk4aHKBp5XvJRTILbeWmNAz9MMTeUqgGvRIJc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Paul Mundt <lethal@linux-sh.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Miguel Ojeda <ojeda@kernel.org>, Rich Felker <dalias@libc.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 032/100] f2fs: fix up f2fs_lookup tracepoints
-Date:   Wed, 24 Nov 2021 12:57:48 +0100
-Message-Id: <20211124115655.913843312@linuxfoundation.org>
+Subject: [PATCH 4.19 279/323] sh: check return code of request_irq
+Date:   Wed, 24 Nov 2021 12:57:49 +0100
+Message-Id: <20211124115728.318202473@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,75 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
 
-[ Upstream commit 70a9ac36ffd807ac506ed0b849f3e8ce3c6623f2 ]
+[ Upstream commit 0e38225c92c7964482a8bb6b3e37fde4319e965c ]
 
-Fix up a misuse that the filename pointer isn't always valid in
-the ring buffer, and we should copy the content instead.
+request_irq is marked __must_check, but the call in shx3_prepare_cpus
+has a void return type, so it can't propagate failure to the caller.
+Follow cues from hexagon and just print an error.
 
-Fixes: 0c5e36db17f5 ("f2fs: trace f2fs_lookup")
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Fixes: c7936b9abcf5 ("sh: smp: Hook in to the generic IPI handler for SH-X3 SMP.")
+Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: Paul Mundt <lethal@linux-sh.org>
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+Signed-off-by: Rich Felker <dalias@libc.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/trace/events/f2fs.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ arch/sh/kernel/cpu/sh4a/smp-shx3.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
-index 1796ff99c3e9c..a7613efc271ab 100644
---- a/include/trace/events/f2fs.h
-+++ b/include/trace/events/f2fs.h
-@@ -793,20 +793,20 @@ TRACE_EVENT(f2fs_lookup_start,
- 	TP_STRUCT__entry(
- 		__field(dev_t,	dev)
- 		__field(ino_t,	ino)
--		__field(const char *,	name)
-+		__string(name,	dentry->d_name.name)
- 		__field(unsigned int, flags)
- 	),
+diff --git a/arch/sh/kernel/cpu/sh4a/smp-shx3.c b/arch/sh/kernel/cpu/sh4a/smp-shx3.c
+index 0d3637c494bfe..c1f66c35e0c12 100644
+--- a/arch/sh/kernel/cpu/sh4a/smp-shx3.c
++++ b/arch/sh/kernel/cpu/sh4a/smp-shx3.c
+@@ -76,8 +76,9 @@ static void shx3_prepare_cpus(unsigned int max_cpus)
+ 	BUILD_BUG_ON(SMP_MSG_NR >= 8);
  
- 	TP_fast_assign(
- 		__entry->dev	= dir->i_sb->s_dev;
- 		__entry->ino	= dir->i_ino;
--		__entry->name	= dentry->d_name.name;
-+		__assign_str(name, dentry->d_name.name);
- 		__entry->flags	= flags;
- 	),
+ 	for (i = 0; i < SMP_MSG_NR; i++)
+-		request_irq(104 + i, ipi_interrupt_handler,
+-			    IRQF_PERCPU, "IPI", (void *)(long)i);
++		if (request_irq(104 + i, ipi_interrupt_handler,
++			    IRQF_PERCPU, "IPI", (void *)(long)i))
++			pr_err("Failed to request irq %d\n", i);
  
- 	TP_printk("dev = (%d,%d), pino = %lu, name:%s, flags:%u",
- 		show_dev_ino(__entry),
--		__entry->name,
-+		__get_str(name),
- 		__entry->flags)
- );
- 
-@@ -820,7 +820,7 @@ TRACE_EVENT(f2fs_lookup_end,
- 	TP_STRUCT__entry(
- 		__field(dev_t,	dev)
- 		__field(ino_t,	ino)
--		__field(const char *,	name)
-+		__string(name,	dentry->d_name.name)
- 		__field(nid_t,	cino)
- 		__field(int,	err)
- 	),
-@@ -828,14 +828,14 @@ TRACE_EVENT(f2fs_lookup_end,
- 	TP_fast_assign(
- 		__entry->dev	= dir->i_sb->s_dev;
- 		__entry->ino	= dir->i_ino;
--		__entry->name	= dentry->d_name.name;
-+		__assign_str(name, dentry->d_name.name);
- 		__entry->cino	= ino;
- 		__entry->err	= err;
- 	),
- 
- 	TP_printk("dev = (%d,%d), pino = %lu, name:%s, ino:%u, err:%d",
- 		show_dev_ino(__entry),
--		__entry->name,
-+		__get_str(name),
- 		__entry->cino,
- 		__entry->err)
- );
+ 	for (i = 0; i < max_cpus; i++)
+ 		set_cpu_present(i, true);
 -- 
 2.33.0
 
