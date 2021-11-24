@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7312345BA51
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B2445BDB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:38:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242316AbhKXMJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:09:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34104 "EHLO mail.kernel.org"
+        id S1343567AbhKXMkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:40:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242322AbhKXMGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:06:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76C1360F90;
-        Wed, 24 Nov 2021 12:03:43 +0000 (UTC)
+        id S1344468AbhKXMgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:36:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CB136120A;
+        Wed, 24 Nov 2021 12:22:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755423;
-        bh=TtnOT6SqyLZpNB90uBWqIEsCn9Yo+ZFjMmWllVTgTmk=;
+        s=korg; t=1637756528;
+        bh=fKa8rAAyooEbN40y1+yfnuGUfr9qBhlVmquhIExR30w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XzP9vjTECNk6J2O5cTL6YOklxec0nr1fl1w7Vn3Sg88nUlHroCSPAUGIrW27ZD5Ej
-         JQoALF9LEm8upWfvwXsMu/aXk3O2wmcL3ww51zaD5VLXSQzUQk/f7mBrvMTOd4y8sE
-         Ar9ATFuEVXm1lY+ovhVhbDH9VGGGw5DZkNjYg9ls=
+        b=HDXaKQPJ909PQtT6qli1XeUTI3v0BfihuS0oPej0YzI6yzK01Gh0Oe/QNRP6H6FjF
+         lvpZaJaX9d/ac4u3wnvqXSPjECA62HCh5SVMJD8Ct41DLfkNFypLf6I263LDMNpIiP
+         zCNm7jSkxeviOSLog2VPgJbQrzIIflgMTiiT12z0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 057/162] tracefs: Have tracefs directories not set OTH permission bits by default
+Subject: [PATCH 4.14 118/251] memstick: avoid out-of-range warning
 Date:   Wed, 24 Nov 2021 12:56:00 +0100
-Message-Id: <20211124115700.187073302@linuxfoundation.org>
+Message-Id: <20211124115714.331662477@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 49d67e445742bbcb03106b735b2ab39f6e5c56bc ]
+[ Upstream commit 4853396f03c3019eccf5cd113e464231e9ddf0b3 ]
 
-The tracefs file system is by default mounted such that only root user can
-access it. But there are legitimate reasons to create a group and allow
-those added to the group to have access to tracing. By changing the
-permissions of the tracefs mount point to allow access, it will allow
-group access to the tracefs directory.
+clang-14 complains about a sanity check that always passes when the
+page size is 64KB or larger:
 
-There should not be any real reason to allow all access to the tracefs
-directory as it contains sensitive information. Have the default
-permission of directories being created not have any OTH (other) bits set,
-such that an admin that wants to give permission to a group has to first
-disable all OTH bits in the file system.
+drivers/memstick/core/ms_block.c:1739:21: error: result of comparison of constant 65536 with expression of type 'unsigned short' is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+        if (msb->page_size > PAGE_SIZE) {
+            ~~~~~~~~~~~~~~ ^ ~~~~~~~~~
 
-Link: https://lkml.kernel.org/r/20210818153038.664127804@goodmis.org
+This is fine, it will still work on all architectures, so just shut
+up that warning with a cast.
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Fixes: 0ab30494bc4f ("memstick: add support for legacy memorysticks")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20210927094520.696665-1-arnd@kernel.org
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/tracefs/inode.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/memstick/core/ms_block.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
-index c66f2423e1f5c..6ccfd47157d37 100644
---- a/fs/tracefs/inode.c
-+++ b/fs/tracefs/inode.c
-@@ -429,7 +429,8 @@ static struct dentry *__create_dir(const char *name, struct dentry *parent,
- 	if (unlikely(!inode))
- 		return failed_creating(dentry);
+diff --git a/drivers/memstick/core/ms_block.c b/drivers/memstick/core/ms_block.c
+index 22de7f5ed0323..ffe8757406713 100644
+--- a/drivers/memstick/core/ms_block.c
++++ b/drivers/memstick/core/ms_block.c
+@@ -1730,7 +1730,7 @@ static int msb_init_card(struct memstick_dev *card)
+ 	msb->pages_in_block = boot_block->attr.block_size * 2;
+ 	msb->block_size = msb->page_size * msb->pages_in_block;
  
--	inode->i_mode = S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO;
-+	/* Do not set bits for OTH */
-+	inode->i_mode = S_IFDIR | S_IRWXU | S_IRUSR| S_IRGRP | S_IXUSR | S_IXGRP;
- 	inode->i_op = ops;
- 	inode->i_fop = &simple_dir_operations;
- 
+-	if (msb->page_size > PAGE_SIZE) {
++	if ((size_t)msb->page_size > PAGE_SIZE) {
+ 		/* this isn't supported by linux at all, anyway*/
+ 		dbg("device page %d size isn't supported", msb->page_size);
+ 		return -EINVAL;
 -- 
 2.33.0
 
