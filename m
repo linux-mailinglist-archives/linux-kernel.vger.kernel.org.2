@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A27E45C23B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 471EE45C39C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344937AbhKXN0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:26:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48362 "EHLO mail.kernel.org"
+        id S1350520AbhKXNlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:41:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348187AbhKXNYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:24:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88A7461B2F;
-        Wed, 24 Nov 2021 12:48:42 +0000 (UTC)
+        id S1349367AbhKXNiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:38:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 507E26322A;
+        Wed, 24 Nov 2021 12:56:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758123;
-        bh=mBuoZQDenMhgtac0+5Pyq5FblqnIO9polJQAiaVDuwk=;
+        s=korg; t=1637758576;
+        bh=NrSlu56q8yV72/h3x54ISs9qgKaxdnM/7LLMfMyRo8A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l6MZWOoyPx7mLrU1VD9jNrBtCiGlILXjgtGvNwoMm4oSmfV5rzIGZ1nFJxKN23dMD
-         d2t12j3EwNijAltKELbKJIqAVVUORooClv7KT+uv8Zm9vkQg7A7q0VQT8Hp3OxHeYa
-         upQswoc9iFY84OmRmhlmo8s2aBrENjxOa1vl+GeE=
+        b=Cpz+oaqi3x+kHYlAh4maGM0sVa6MF6WibrDlSOPI0H9AllQi0OzDY7R2j4v+XLy66
+         SZeP3+qfaiNHKVEHDk11T78oHLSSx32CupnZ1u6wpuy3VY0cddNCMD97lBcFnLWhe0
+         Cp0F3Oxr9zr9uAeCN5qFDOloUc/Of1NSh5SWYung=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
-        Mateusz Palczewski <mateusz.palczewski@intel.com>,
-        Dave Switzer <david.switzer@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Lin Ma <linma@zju.edu.cn>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 067/100] i40e: Fix display error code in dmesg
+Subject: [PATCH 5.10 107/154] NFC: reorganize the functions in nci_request
 Date:   Wed, 24 Nov 2021 12:58:23 +0100
-Message-Id: <20211124115657.040033817@linuxfoundation.org>
+Message-Id: <20211124115705.748293983@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +40,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
+From: Lin Ma <linma@zju.edu.cn>
 
-[ Upstream commit 5aff430d4e33a0b48a6b3d5beb06f79da23f9916 ]
+[ Upstream commit 86cdf8e38792545161dbe3350a7eced558ba4d15 ]
 
-Fix misleading display error in dmesg if tc filter return fail.
-Only i40e status error code should be converted to string, not linux
-error code. Otherwise, we return false information about the error.
+There is a possible data race as shown below:
 
-Fixes: 2f4b411a3d67 ("i40e: Enable cloud filters via tc-flower")
-Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
-Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
-Tested-by: Dave Switzer <david.switzer@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+thread-A in nci_request()       | thread-B in nci_close_device()
+                                | mutex_lock(&ndev->req_lock);
+test_bit(NCI_UP, &ndev->flags); |
+...                             | test_and_clear_bit(NCI_UP, &ndev->flags)
+mutex_lock(&ndev->req_lock);    |
+                                |
+
+This race will allow __nci_request() to be awaked while the device is
+getting removed.
+
+Similar to commit e2cb6b891ad2 ("bluetooth: eliminate the potential race
+condition when removing the HCI controller"). this patch alters the
+function sequence in nci_request() to prevent the data races between the
+nci_close_device().
+
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+Fixes: 6a2968aaf50c ("NFC: basic NCI protocol implementation")
+Link: https://lore.kernel.org/r/20211115145600.8320-1-linma@zju.edu.cn
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_main.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ net/nfc/nci/core.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index d87771403b578..ce237da003ddb 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -8116,9 +8116,8 @@ static int i40e_configure_clsflower(struct i40e_vsi *vsi,
- 		err = i40e_add_del_cloud_filter(vsi, filter, true);
+diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
+index 32e8154363cab..5e55cb6c087a2 100644
+--- a/net/nfc/nci/core.c
++++ b/net/nfc/nci/core.c
+@@ -144,12 +144,15 @@ inline int nci_request(struct nci_dev *ndev,
+ {
+ 	int rc;
  
- 	if (err) {
--		dev_err(&pf->pdev->dev,
--			"Failed to add cloud filter, err %s\n",
--			i40e_stat_str(&pf->hw, err));
-+		dev_err(&pf->pdev->dev, "Failed to add cloud filter, err %d\n",
-+			err);
- 		goto err;
- 	}
+-	if (!test_bit(NCI_UP, &ndev->flags))
+-		return -ENETDOWN;
+-
+ 	/* Serialize all requests */
+ 	mutex_lock(&ndev->req_lock);
+-	rc = __nci_request(ndev, req, opt, timeout);
++	/* check the state after obtaing the lock against any races
++	 * from nci_close_device when the device gets removed.
++	 */
++	if (test_bit(NCI_UP, &ndev->flags))
++		rc = __nci_request(ndev, req, opt, timeout);
++	else
++		rc = -ENETDOWN;
+ 	mutex_unlock(&ndev->req_lock);
  
+ 	return rc;
 -- 
 2.33.0
 
