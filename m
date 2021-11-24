@@ -2,127 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1766C45CF17
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:32:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3ACE45CF1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:35:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244258AbhKXVfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 16:35:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbhKXVfu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 16:35:50 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E4FC061574;
-        Wed, 24 Nov 2021 13:32:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MD9gDqn477L4qvEwrrJOawMxQWEnHDvjZ5lo8c6MkO8=; b=ZqpstrFkaDOyjrWUwoTpwpnqq9
-        SuhLVa8rM5anBPQVpBU11P17l/1TDo4BSHTkL8cV2UiHD0NoU5JIkwo4Jo0HyEAPCkIA28KWSb3Di
-        8MD7w0qvX66CrcXbbejAPZbtszK3rSdmPlHh27EYJwo49zaUH4vwkKGA4Q+qa+HxIxXnrse49FZ1n
-        2s/1Lb4RgESeo6UMM3gIZwiKo4Nf7DecIMMwPi/3qbjkYkVy7vlYlEDCvsygZB98NxefTn9q3o3MD
-        ao2n9DaWXfcV1BGhGwieOHhkgXlMZ6PARBSf641fpbJTfdDQbetOElWPXRuLZaweJ6hwIhaElAoei
-        UckDKJbQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mpzsO-003Sxq-Tv; Wed, 24 Nov 2021 21:32:25 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 98EE2986843; Wed, 24 Nov 2021 22:32:24 +0100 (CET)
-Date:   Wed, 24 Nov 2021 22:32:24 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Peter Oskolkov <posk@posk.io>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@google.com>,
-        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
-        Thierry Delisle <tdelisle@uwaterloo.ca>
-Subject: Re: [PATCH v0.9.1 3/6] sched/umcg: implement UMCG syscalls
-Message-ID: <20211124213224.GA735260@worktop.programming.kicks-ass.net>
-References: <20211122211327.5931-1-posk@google.com>
- <20211122211327.5931-4-posk@google.com>
- <20211124200822.GF721624@worktop.programming.kicks-ass.net>
+        id S245071AbhKXVin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 16:38:43 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:50896 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229920AbhKXVin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 16:38:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=EI7GShQSKTvjqRLbX+UM0VPPE9bnZ8M+LNJiC6UWQsc=; b=HscuuQondF46GO197L39boqbtv
+        VQrmhfrngPlMwPA6h7kDARGUPKWAw+mL5g88U/0LLYYeJ1HcQeH7r0dFpMTgK6wQ/1qJAMexl82oj
+        7HOMva1KyxyuLR8DMIRpI4r7SXsJSfT6kZAO1BVGCFM0ySWln0GJMoySiu8RttMM4AOo=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mpzvI-00EY0k-OS; Wed, 24 Nov 2021 22:35:24 +0100
+Date:   Wed, 24 Nov 2021 22:35:24 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     David Heidelberg <david@ixit.cz>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        ~okias/devicetree@lists.sr.ht, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: net: ethernet-controller: add 2.5G and 10G
+ speeds
+Message-ID: <YZ6wHOu07okJ1p+3@lunn.ch>
+References: <20211124202046.81136-1-david@ixit.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211124200822.GF721624@worktop.programming.kicks-ass.net>
+In-Reply-To: <20211124202046.81136-1-david@ixit.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 09:08:23PM +0100, Peter Zijlstra wrote:
-> On Mon, Nov 22, 2021 at 01:13:24PM -0800, Peter Oskolkov wrote:
-> > +/**
-> > + * struct umcg_task - controls the state of UMCG tasks.
-> > + *
-> > + * The struct is aligned at 64 bytes to ensure that it fits into
-> > + * a single cache line.
-> > + */
-> > +struct umcg_task {
-> > +	/**
-> > +	 * @state_ts: the current state of the UMCG task described by
-> > +	 *            this struct, with a unique timestamp indicating
-> > +	 *            when the last state change happened.
-> > +	 *
-> > +	 * Readable/writable by both the kernel and the userspace.
-> > +	 *
-> > +	 * UMCG task state:
-> > +	 *   bits  0 -  5: task state;
-> > +	 *   bits  6 -  7: state flags;
-> > +	 *   bits  8 - 12: reserved; must be zeroes;
-> > +	 *   bits 13 - 17: for userspace use;
-> > +	 *   bits 18 - 63: timestamp (see below).
-> > +	 *
-> > +	 * Timestamp: a 46-bit CLOCK_MONOTONIC timestamp, at 16ns resolution.
-> > +	 * See Documentation/userspace-api/umcg.txt for detals.
-> > +	 */
-> > +	__u64	state_ts;		/* r/w */
-> > +
-> > +	/**
-> > +	 * @next_tid: the TID of the UMCG task that should be context-switched
-> > +	 *            into in sys_umcg_wait(). Can be zero.
-> > +	 *
-> > +	 * Running UMCG workers must have next_tid set to point to IDLE
-> > +	 * UMCG servers.
-> > +	 *
-> > +	 * Read-only for the kernel, read/write for the userspace.
-> > +	 */
-> > +	__u32	next_tid;		/* r   */
-> > +
-> > +	__u32	flags;			/* Reserved; must be zero. */
-> > +
-> > +	/**
-> > +	 * @idle_workers_ptr: a single-linked list of idle workers. Can be NULL.
-> > +	 *
-> > +	 * Readable/writable by both the kernel and the userspace: the
-> > +	 * kernel adds items to the list, the userspace removes them.
-> > +	 */
-> > +	__u64	idle_workers_ptr;	/* r/w */
-> > +
-> > +	/**
-> > +	 * @idle_server_tid_ptr: a pointer pointing to a single idle server.
-> > +	 *                       Readonly.
-> > +	 */
-> > +	__u64	idle_server_tid_ptr;	/* r   */
-> > +} __attribute__((packed, aligned(8 * sizeof(__u64))));
+On Wed, Nov 24, 2021 at 09:20:46PM +0100, David Heidelberg wrote:
+> Both are already used by HW and drivers inside Linux.
 > 
-> The thing is; I really don't see how this is supposed to be used. Where
-> did the blocked and runnable list go ?
+> Fix warnings as:
+> arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var2.dt.yaml: ethernet@0,2: fixed-link:speed:0:0: 2500 is not one of [10, 100, 1000]
+>         From schema: Documentation/devicetree/bindings/net/ethernet-controller.yaml
 > 
-> I also don't see why the kernel cares about idle workers at all; that
-> seems something userspace can sort itself just fine.
-> 
-> The whole next_tid thing seems confused too, how can it be the next task
-> when it must be the server? Also, what if there isn't an idle server?
-> 
-> This just all isn't making any sense to me.
+> Signed-off-by: David Heidelberg <david@ixit.cz>
 
-Oooh, someone made things super confusing by doing s/runnable/idle/ on
-the whole thing :-( That only took me most of the day to figure out.
-Naming is important, don't mess about with stuff like this.
+This is valid for the binding, but not all Linux implementations of
+fixed-link support > 1G. Only the phylink one does. But that is
+outside the scope of the binding document.
+
+You probably should list all speeds in
+drivers/net/phy/phy-core.c:phy_setting settings[]. They are all valid
+when using phylink and fixed-link.
+
+	Andrew
