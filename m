@@ -2,81 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0058845CAAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:10:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA8345CAB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243492AbhKXRNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 12:13:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56212 "EHLO mail.kernel.org"
+        id S1349632AbhKXROt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 12:14:49 -0500
+Received: from foss.arm.com ([217.140.110.172]:41276 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236272AbhKXRNl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 12:13:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5590260F5B;
-        Wed, 24 Nov 2021 17:10:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637773830;
-        bh=/njBpvjHQON74J2FR4Ytl+O1BNa+DFPAn2wArZRfQB4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qlM3m0X/v3bSZrp1LPdjGscz7sQxH6/p6J+5hTbXWuKV7elZ5kybYO7c8ZpX7k99l
-         fa/w8o2j28IkFL1vnBMa/UYh/zmXOSxzM5jQ1AUI9peBfITJHuhrqeU+Me+YVWDnha
-         O7sCh22823yP+/ts+l4rrrd20wp9G4UR3a2lTY6Nl1AXUXSX/GZTdzgl51QylQ0VfZ
-         9YM693BwDCLj9QF7JH3x2O/jJkiDdRUGpENxhi+x3Chvk9vcX80pbIQo3ohGBo1+u9
-         TYMt07l7Irm2MQjwa+uqsXU09YnbQ9Lk459oXruCfUDT0RISUQWufAEB9cUOyNrida
-         33NMGFlOXtRzg==
-Date:   Wed, 24 Nov 2021 17:10:25 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     madvenka@linux.microsoft.com
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 2/5] arm64: Rename unwinder functions
-Message-ID: <YZ5yAanQrL17sYeN@sirena.org.uk>
-References: <8b861784d85a21a9bf08598938c11aff1b1249b9>
- <20211123193723.12112-1-madvenka@linux.microsoft.com>
- <20211123193723.12112-3-madvenka@linux.microsoft.com>
+        id S236272AbhKXROp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 12:14:45 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7FA2A1FB;
+        Wed, 24 Nov 2021 09:11:35 -0800 (PST)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 60C593F66F;
+        Wed, 24 Nov 2021 09:11:34 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Vincent Donnefort <vincent.donnefort@arm.com>,
+        peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org
+Cc:     linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
+        dietmar.eggemann@arm.com,
+        Vincent Donnefort <vincent.donnefort@arm.com>
+Subject: Re: [PATCH] sched/fair: Fix per-CPU kthread and wakee stacking for asym CPU capacity
+In-Reply-To: <20211124141435.3125147-1-vincent.donnefort@arm.com>
+References: <20211124141435.3125147-1-vincent.donnefort@arm.com>
+Date:   Wed, 24 Nov 2021 17:11:32 +0000
+Message-ID: <87fsrlcwcb.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="oGibfVigX0tUyvnS"
-Content-Disposition: inline
-In-Reply-To: <20211123193723.12112-3-madvenka@linux.microsoft.com>
-X-Cookie: (null cookie
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 24/11/21 14:14, Vincent Donnefort wrote:
+> A shortcut has been introduced in select_idle_sibling() to return prev_cpu
+> if the wakee is woken up by a per-CPU kthread. This is an issue for
+> asymmetric CPU capacity systems where the wakee might not fit prev_cpu
+> anymore. Evaluate asym_fits_capacity() for prev_cpu before using that
+> shortcut.
+>
+> Fixes: 52262ee567ad ("sched/fair: Allow a per-CPU kthread waking a task to stack on the same CPU, to fix XFS performance regression")
 
---oGibfVigX0tUyvnS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Shouldn't that rather be
 
-On Tue, Nov 23, 2021 at 01:37:20PM -0600, madvenka@linux.microsoft.com wrot=
-e:
-> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->=20
-> Rename unwinder functions for consistency and better naming.
->=20
-> 	- Rename start_backtrace() to unwind_start().
-> 	- Rename unwind_frame() to unwind_next().
-> 	- Rename walk_stackframe() to unwind().
+  b4c9c9f15649 ("sched/fair: Prefer prev cpu in asymmetric wakeup path")
 
-Reviewed-by: Mark Brown <broonie@kernel.org>
+? This is an ulterior commit to the one you point to, and before then
+asymmetric CPU systems wouldn't use any of the sis() heuristics.
 
---oGibfVigX0tUyvnS
-Content-Type: application/pgp-signature; name="signature.asc"
+I reportedly reviewed said commit back then, and don't recall anything
+specific about that conditional... The cover-letter for v2 states:
 
------BEGIN PGP SIGNATURE-----
+  https://lore.kernel.org/lkml/20201028174412.680-1-vincent.guittot@linaro.org/
+  """
+  don't check capacity for the per-cpu kthread UC because the assumption is
+  that the wakee queued work for the per-cpu kthread that is now complete and
+  the task was already on this cpu.
+  """
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGecgAACgkQJNaLcl1U
-h9CF8wf/eWTybYXBAR2qCs8GfVWNYuIkbhBhpiCmUkCOXJ/DRNfCHH30L5kuT+yO
-8yDfMuB784chIi6YXanfsZ4jS8ER8VgXFq9EcOAMfqrCkbjQIPMo7P++qjQSymlD
-491uNAWVeFP2PqZDyyvPpgY/OXjHUo/YM4bBuoG7G3weqfoWW6Rs1AH9ojJkXrmv
-WTDIImLQCAbM6a/l19Gi2iHVwbCcfEe5MxP5znJCWnHSIFJz3bIe7C4RCTJ6vnKj
-87pNdKmS8gDw25ryoILXDSM0Ec+6COBuU9YJmEA5C/AWtNQN4PL2nkrTJm7CgcYD
-ubGb1heis2TwORnykJHajwrV17/iKg==
-=lPKV
------END PGP SIGNATURE-----
+So the assumption here is that current is gonna sleep right after waking up
+p, so current's utilization doesn't matter, and p was already on prev, so
+it should fit there...
 
---oGibfVigX0tUyvnS--
+I'm thinking things should actually be OK with your other patch that
+excludes 'current == swapper' from this condition.
+
+> Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 6291876a9d32..b90dc6fd86ca 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6410,7 +6410,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>        */
+>       if (is_per_cpu_kthread(current) &&
+>           prev == smp_processor_id() &&
+> -	    this_rq()->nr_running <= 1) {
+> +	    this_rq()->nr_running <= 1 &&
+> +	    asym_fits_capacity(task_util, prev)) {
+>               return prev;
+>       }
+>
+> --
+> 2.25.1
