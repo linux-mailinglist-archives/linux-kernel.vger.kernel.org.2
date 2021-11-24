@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F391845B9C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7BB45BD86
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235051AbhKXMEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:04:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59494 "EHLO mail.kernel.org"
+        id S1343604AbhKXMjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:39:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242066AbhKXMET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:04:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6388600EF;
-        Wed, 24 Nov 2021 12:01:09 +0000 (UTC)
+        id S1343711AbhKXMeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:34:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 257E5610CE;
+        Wed, 24 Nov 2021 12:20:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755270;
-        bh=rNvgX8Owg8FTTWASuNrNpXva7ZF5+1OIFagDehMnCJ0=;
+        s=korg; t=1637756460;
+        bh=pOrxFxrKzxbVL3SNg/nmJ9I+n9m57O5vX32HBO8ZiTc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RwOqVq/dYD9rBECUSYssF11k7Sn/2eiq8giepzdP4dniQdLeKvSrdxGkrp1f+QF0s
-         jp+8SbOPUvpD69oT0Z87ABuHyzrK1C8cZYD88XPKpyv9Vz4Vpv/9KCGNAKQh9eEi8f
-         FE8gFylP52biaVENuWWs4Er/k4ORNS9IfVREG+jU=
+        b=ZkCBPLjA8i7/5RIKxS1FZBk1fbLZ+/m1Q9SMnTU20q96wt2gUZ7Foihf/LAIEDLwT
+         PFcjYfSGqsJUNjb2fhnqT1MaE51y+lKuCMv/dt5j8WK//xowCzv2F4Xoqv1Kx2pnlg
+         rhgGZA+UuxacBpQwWJScR2wfBTZCNYfvW8M24ut8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Wolfgang Wiedmeyer <wolfgit@wiedmeyer.de>,
-        Henrik Grimler <henrik@grimler.se>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH 4.4 034/162] power: supply: max17042_battery: use VFSOC for capacity when no rsns
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 095/251] mwl8k: Fix use-after-free in mwl8k_fw_state_machine()
 Date:   Wed, 24 Nov 2021 12:55:37 +0100
-Message-Id: <20211124115659.446767171@linuxfoundation.org>
+Message-Id: <20211124115713.551168197@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,45 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Henrik Grimler <henrik@grimler.se>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-commit 223a3b82834f036a62aa831f67cbf1f1d644c6e2 upstream.
+[ Upstream commit 257051a235c17e33782b6e24a4b17f2d7915aaec ]
 
-On Galaxy S3 (i9300/i9305), which has the max17047 fuel gauge and no
-current sense resistor (rsns), the RepSOC register does not provide an
-accurate state of charge value. The reported value is wrong, and does
-not change over time. VFSOC however, which uses the voltage fuel gauge
-to determine the state of charge, always shows an accurate value.
+When the driver fails to request the firmware, it calls its error
+handler. In the error handler, the driver detaches device from driver
+first before releasing the firmware, which can cause a use-after-free bug.
 
-For devices without current sense, VFSOC is already used for the
-soc-alert (0x0003 is written to MiscCFG register), so with this change
-the source of the alert and the PROP_CAPACITY value match.
+Fix this by releasing firmware first.
 
-Fixes: 359ab9f5b154 ("power_supply: Add MAX17042 Fuel Gauge Driver")
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Suggested-by: Wolfgang Wiedmeyer <wolfgit@wiedmeyer.de>
-Signed-off-by: Henrik Grimler <henrik@grimler.se>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The following log reveals it:
+
+[    9.007301 ] BUG: KASAN: use-after-free in mwl8k_fw_state_machine+0x320/0xba0
+[    9.010143 ] Workqueue: events request_firmware_work_func
+[    9.010830 ] Call Trace:
+[    9.010830 ]  dump_stack_lvl+0xa8/0xd1
+[    9.010830 ]  print_address_description+0x87/0x3b0
+[    9.010830 ]  kasan_report+0x172/0x1c0
+[    9.010830 ]  ? mutex_unlock+0xd/0x10
+[    9.010830 ]  ? mwl8k_fw_state_machine+0x320/0xba0
+[    9.010830 ]  ? mwl8k_fw_state_machine+0x320/0xba0
+[    9.010830 ]  __asan_report_load8_noabort+0x14/0x20
+[    9.010830 ]  mwl8k_fw_state_machine+0x320/0xba0
+[    9.010830 ]  ? mwl8k_load_firmware+0x5f0/0x5f0
+[    9.010830 ]  request_firmware_work_func+0x172/0x250
+[    9.010830 ]  ? read_lock_is_recursive+0x20/0x20
+[    9.010830 ]  ? process_one_work+0x7a1/0x1100
+[    9.010830 ]  ? request_firmware_nowait+0x460/0x460
+[    9.010830 ]  ? __this_cpu_preempt_check+0x13/0x20
+[    9.010830 ]  process_one_work+0x9bb/0x1100
+
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1634356979-6211-1-git-send-email-zheyuma97@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/max17042_battery.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/wireless/marvell/mwl8k.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/power/max17042_battery.c
-+++ b/drivers/power/max17042_battery.c
-@@ -246,7 +246,10 @@ static int max17042_get_property(struct
- 		val->intval = data * 625 / 8;
- 		break;
- 	case POWER_SUPPLY_PROP_CAPACITY:
--		ret = regmap_read(map, MAX17042_RepSOC, &data);
-+		if (chip->pdata->enable_current_sense)
-+			ret = regmap_read(map, MAX17042_RepSOC, &data);
-+		else
-+			ret = regmap_read(map, MAX17042_VFSOC, &data);
- 		if (ret < 0)
- 			return ret;
+diff --git a/drivers/net/wireless/marvell/mwl8k.c b/drivers/net/wireless/marvell/mwl8k.c
+index e39aaee92addb..d5f766044221a 100644
+--- a/drivers/net/wireless/marvell/mwl8k.c
++++ b/drivers/net/wireless/marvell/mwl8k.c
+@@ -5788,8 +5788,8 @@ static void mwl8k_fw_state_machine(const struct firmware *fw, void *context)
+ fail:
+ 	priv->fw_state = FW_STATE_ERROR;
+ 	complete(&priv->firmware_loading_complete);
+-	device_release_driver(&priv->pdev->dev);
+ 	mwl8k_release_firmware(priv);
++	device_release_driver(&priv->pdev->dev);
+ }
  
+ #define MAX_RESTART_ATTEMPTS 1
+-- 
+2.33.0
+
 
 
