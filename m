@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF7F45B9BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:02:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3BA745BBC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:22:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241997AbhKXMEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:04:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59294 "EHLO mail.kernel.org"
+        id S244310AbhKXMXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:23:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240683AbhKXMEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:04:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C39F60FDC;
-        Wed, 24 Nov 2021 12:00:58 +0000 (UTC)
+        id S243522AbhKXMSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:18:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45A6C6115B;
+        Wed, 24 Nov 2021 12:11:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755259;
-        bh=ATdpEOBGZrEp9JVyAQlY3XkiF2y0sS6D9Hhdk1ZkUo4=;
+        s=korg; t=1637755890;
+        bh=e2Jilp331rr99Ef88AIlDbGBjY/CT9vxaixomPDloSg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pRvyJtsglyz6iO+AMgbJ8azNYp0iPz0whs7fZNPSY9sEW9Kg3JjRQHaEkQhB/E8Oq
-         7clhRXcn87pMBBPcva0aDRWIP7EJ6xhedcElkwNKhaJNVwIakKn1z4inriX5AMg5GG
-         3kh5vWWv1/r0Wnc2qndOFd3gXm938VlquXb8GF/M=
+        b=GTDB8kryTJiSykfVcrLHgaPjtUBw+66mVTNAMe6crX0oqadNfcIQx5aAoLdoW8lIj
+         EMdMfb+YBpFH1JzFZd4L+IAadNtf2eBM+U/tZDKnO/NUfvweJVJnslg6mCTt/88i+4
+         l+NklJGoOm5oEQe5rXEvWf/BIRW9LUR7B9+5g9Us=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Loic Poulain <loic.poulain@linaro.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 4.4 030/162] wcn36xx: Fix HT40 capability for 2Ghz band
+        stable@vger.kernel.org,
+        syzbot+3f91de0b813cc3d19a80@syzkaller.appspotmail.com,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 062/207] smackfs: Fix use-after-free in netlbl_catmap_walk()
 Date:   Wed, 24 Nov 2021 12:55:33 +0100
-Message-Id: <20211124115659.310349357@linuxfoundation.org>
+Message-Id: <20211124115705.935793196@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,37 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Loic Poulain <loic.poulain@linaro.org>
+From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
 
-commit 960ae77f25631bbe4e3aafefe209b52e044baf31 upstream.
+[ Upstream commit 0817534ff9ea809fac1322c5c8c574be8483ea57 ]
 
-All wcn36xx controllers are supposed to support HT40 (and SGI40),
-This doubles the maximum bitrate/throughput with compatible APs.
+Syzkaller reported use-after-free bug as described in [1]. The bug is
+triggered when smk_set_cipso() tries to free stale category bitmaps
+while there are concurrent reader(s) using the same bitmaps.
 
-Tested with wcn3620 & wcn3680B.
+Wait for RCU grace period to finish before freeing the category bitmaps
+in smk_set_cipso(). This makes sure that there are no more readers using
+the stale bitmaps and freeing them should be safe.
 
-Cc: stable@vger.kernel.org
-Fixes: 8e84c2582169 ("wcn36xx: mac80211 driver for Qualcomm WCN3660/WCN3680 hardware")
-Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1634737133-22336-1-git-send-email-loic.poulain@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[1] https://lore.kernel.org/netdev/000000000000a814c505ca657a4e@google.com/
+
+Reported-by: syzbot+3f91de0b813cc3d19a80@syzkaller.appspotmail.com
+Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/wcn36xx/main.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ security/smack/smackfs.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/net/wireless/ath/wcn36xx/main.c
-+++ b/drivers/net/wireless/ath/wcn36xx/main.c
-@@ -127,7 +127,9 @@ static struct ieee80211_supported_band w
- 		.cap =	IEEE80211_HT_CAP_GRN_FLD |
- 			IEEE80211_HT_CAP_SGI_20 |
- 			IEEE80211_HT_CAP_DSSSCCK40 |
--			IEEE80211_HT_CAP_LSIG_TXOP_PROT,
-+			IEEE80211_HT_CAP_LSIG_TXOP_PROT |
-+			IEEE80211_HT_CAP_SGI_40 |
-+			IEEE80211_HT_CAP_SUP_WIDTH_20_40,
- 		.ht_supported = true,
- 		.ampdu_factor = IEEE80211_HT_MAX_AMPDU_64K,
- 		.ampdu_density = IEEE80211_HT_MPDU_DENSITY_16,
+diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
+index 966d30bf2e388..e26e7fbb89657 100644
+--- a/security/smack/smackfs.c
++++ b/security/smack/smackfs.c
+@@ -854,6 +854,7 @@ static int smk_open_cipso(struct inode *inode, struct file *file)
+ static ssize_t smk_set_cipso(struct file *file, const char __user *buf,
+ 				size_t count, loff_t *ppos, int format)
+ {
++	struct netlbl_lsm_catmap *old_cat;
+ 	struct smack_known *skp;
+ 	struct netlbl_lsm_secattr ncats;
+ 	char mapcatset[SMK_CIPSOLEN];
+@@ -943,9 +944,11 @@ static ssize_t smk_set_cipso(struct file *file, const char __user *buf,
+ 
+ 	rc = smk_netlbl_mls(maplevel, mapcatset, &ncats, SMK_CIPSOLEN);
+ 	if (rc >= 0) {
+-		netlbl_catmap_free(skp->smk_netlabel.attr.mls.cat);
++		old_cat = skp->smk_netlabel.attr.mls.cat;
+ 		skp->smk_netlabel.attr.mls.cat = ncats.attr.mls.cat;
+ 		skp->smk_netlabel.attr.mls.lvl = ncats.attr.mls.lvl;
++		synchronize_rcu();
++		netlbl_catmap_free(old_cat);
+ 		rc = count;
+ 	}
+ 
+-- 
+2.33.0
+
 
 
