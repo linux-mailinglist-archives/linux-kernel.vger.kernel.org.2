@@ -2,145 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E7245C76E
+	by mail.lfdr.de (Postfix) with ESMTP id BCF6A45C76F
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:32:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355480AbhKXOfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:35:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
+        id S1355678AbhKXOfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:35:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355709AbhKXOf3 (ORCPT
+        with ESMTP id S1355017AbhKXOfa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:35:29 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF90C1A1D66;
-        Wed, 24 Nov 2021 05:21:27 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 1182B1F45A78
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637760086; bh=LoUzXVbB3wCwxf1FW0gK/muFdQnGfNnGszLYYog+/lU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AD0LfFCbtCb0lPtiWFikSc0XLR5Z6wW44k1wjposhAtht5drHk8ffJYsQmH2Q5W6A
-         OlROj7cj/qCKWi5Dy1MbzY5H86DsVfJFk7ojLi7Q+lRqMMZTIpXqBvmpSyD8rLL7Wp
-         9kPDvyGRVZ0BUAwlZP0CdciKecpFD9161Ofc4WS13JQheyb+2y0tmzSTQuDIUs1XZR
-         xhtRWTu111op8oukvWLrydVcD3jHXnt1tVJE86ihwADP8qEbxXmPksbiVuBj1c5F00
-         8kQpWRI1dzZ24tdIJDn/KLdriVfjMzI/zPYHgirq4+XjZzqYI8aUe6ZhQqcmUlCDAI
-         7rJSFBekuqRXA==
-From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-To:     linux-kernel@vger.kernel.org, arnd@arndb.de, geert@linux-m68k.org,
-        monstr@monstr.eu, mpe@ellerman.id.au, ysato@users.sourceforge.jp,
-        dalias@libc.org, davem@davemloft.net, chris@zankel.net,
-        jcmvbkbc@gmail.com, linux-alpha@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org
-Cc:     akpm@linux-foundation.org, andrealmeid@collabora.com,
-        bigeasy@linutronix.de, boqun.feng@gmail.com,
-        linux-next@vger.kernel.org, lkft-triage@lists.linaro.org,
-        longman@redhat.com, minchan@kernel.org, mingo@redhat.com,
-        naresh.kamboju@linaro.org, peterz@infradead.org, rob@landley.net,
-        senozhatsky@chromium.org, sfr@canb.auug.org.au,
-        umgwanakikbuti@gmail.com, will@kernel.org
-Subject: [PATCH 1/1] futex: Wireup futex_waitv syscall
-Date:   Wed, 24 Nov 2021 10:21:12 -0300
-Message-Id: <20211124132112.11641-1-andrealmeid@collabora.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <CAK8P3a3pQW59NVF=5P+ZiBjNJmnWh+iTZUHvqHBrXkHA6pMd4g@mail.gmail.com>
-References: <CAK8P3a3pQW59NVF=5P+ZiBjNJmnWh+iTZUHvqHBrXkHA6pMd4g@mail.gmail.com>
+        Wed, 24 Nov 2021 09:35:30 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB533C0A8893
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 05:21:35 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id n15-20020a17090a160f00b001a75089daa3so5051517pja.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 05:21:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=ZZnceqICuZXQxPcm2fjZ+yNkedIH7ExOGImuK8kHxUU=;
+        b=bGwnHyizE2euGF4OJfhTDD2tgzRvAWwF6PN/DkgD6CTp4z8K9eAW13Jav2pgjImfCK
+         OSon47t018CdVGm9mwvb/92iEYY3llvVuiiZW7fYtR9jv7GbrAtRGtB7p9qqlaXU2Lqi
+         ZGdLYeQHe9ZPJwI5yEtPPR5WbEApMhzyIgis689/J6Y/haHI6FN4DbeQoA11s9T24lyj
+         W/TaflPrQrNy0nXT2rAVInzq+weBRQ+8Is7lcmA7fV5km70Xd8uF/yJQnvd983gJ0DiN
+         GTFC4E0k8tzzeXwn8H4YWGoe67sR09wIqkHUQCsSB1hU0+VljxCfrne+wrRW2W19Blp7
+         2Yyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=ZZnceqICuZXQxPcm2fjZ+yNkedIH7ExOGImuK8kHxUU=;
+        b=UiGOGtOixftlox4YvfE8uRNzL9+fTl/szbrJRGN0TliUYz+s5DLwI5llhXa2s/zMKq
+         7a+qlH16canklJFPweNaxMbaCOor0ISMG6cATPxGwrrSCDV5yGG3h3Ywplvxg3/FP//y
+         //BGeaiQbUGrjc3giynTZ3zFYBDMQUIRKyBfchqp8Cv4MUPpd6dTLdR3inJj6NVRX3Km
+         7WKdhEjiKfybW95CKZN0J9xM03u0kzn+ckV2LWjRgLu52AxoO8/nC4Pspt7X3OubABC2
+         cllRdIkkis6LjDK+/mirZsq5BIYUT4WLmHPjj+s4miCnXsn4Yq+afmCjgUJ5+MNczNZf
+         OOHQ==
+X-Gm-Message-State: AOAM5308uHBr3cvJyis7FJU8lXOt5hfra0HyM3i1l7Pu1xA3J5PxLqfw
+        4+SFa3o73Uz1y3IDbx7bGq8=
+X-Google-Smtp-Source: ABdhPJz1FI1FMD+raRAIrvhT0VvCzZtUkPciJvFR7lj0nGhiV/h2EIZmuWty/vs4et/iSU5mts8Dqw==
+X-Received: by 2002:a17:902:c202:b0:142:2441:aa25 with SMTP id 2-20020a170902c20200b001422441aa25mr18417025pll.68.1637760095555;
+        Wed, 24 Nov 2021 05:21:35 -0800 (PST)
+Received: from localhost ([124.170.11.53])
+        by smtp.gmail.com with ESMTPSA id j6sm17055518pfu.205.2021.11.24.05.21.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 05:21:34 -0800 (PST)
+Date:   Wed, 24 Nov 2021 23:21:28 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH 0/8] Convert powerpc to default topdown mmap layout
+To:     alex@ghiti.fr, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <cover.1637570556.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <cover.1637570556.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
+Message-Id: <1637759994.e3mppl4ly7.astroid@bobo.none>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wireup futex_waitv syscall for all remaining archs.
+Excerpts from Christophe Leroy's message of November 22, 2021 6:48 pm:
+> This series converts powerpc to default topdown mmap layout.
+>=20
+> powerpc provides its own arch_get_unmapped_area() only when
+> slices are needed, which is only for book3s/64. First part of
+> the series moves slices into book3s/64 specific directories
+> and cleans up other subarchitectures.
+>=20
+> Then a small modification is done to core mm to allow
+> powerpc to still provide its own arch_randomize_brk()
+>=20
+> Last part converts to default topdown mmap layout.
 
-Signed-off-by: André Almeida <andrealmeid@collabora.com>
----
- arch/alpha/kernel/syscalls/syscall.tbl      | 1 +
- arch/ia64/kernel/syscalls/syscall.tbl       | 1 +
- arch/m68k/kernel/syscalls/syscall.tbl       | 1 +
- arch/microblaze/kernel/syscalls/syscall.tbl | 1 +
- arch/powerpc/kernel/syscalls/syscall.tbl    | 1 +
- arch/sh/kernel/syscalls/syscall.tbl         | 1 +
- arch/sparc/kernel/syscalls/syscall.tbl      | 1 +
- arch/xtensa/kernel/syscalls/syscall.tbl     | 1 +
- 8 files changed, 8 insertions(+)
+A nice series but will clash badly with the CONFIG_HASH_MMU=20
+series of course. One will have to be rebased if they are
+both to be merged.
 
-diff --git a/arch/alpha/kernel/syscalls/syscall.tbl b/arch/alpha/kernel/syscalls/syscall.tbl
-index e4a041cd5715..ca5a32228cd6 100644
---- a/arch/alpha/kernel/syscalls/syscall.tbl
-+++ b/arch/alpha/kernel/syscalls/syscall.tbl
-@@ -488,3 +488,4 @@
- 556	common	landlock_restrict_self		sys_landlock_restrict_self
- # 557 reserved for memfd_secret
- 558	common	process_mrelease		sys_process_mrelease
-+559	common  futex_waitv                     sys_futex_waitv
-diff --git a/arch/ia64/kernel/syscalls/syscall.tbl b/arch/ia64/kernel/syscalls/syscall.tbl
-index 6fea1844fb95..707ae121f6d3 100644
---- a/arch/ia64/kernel/syscalls/syscall.tbl
-+++ b/arch/ia64/kernel/syscalls/syscall.tbl
-@@ -369,3 +369,4 @@
- 446	common	landlock_restrict_self		sys_landlock_restrict_self
- # 447 reserved for memfd_secret
- 448	common	process_mrelease		sys_process_mrelease
-+449	common  futex_waitv                     sys_futex_waitv
-diff --git a/arch/m68k/kernel/syscalls/syscall.tbl b/arch/m68k/kernel/syscalls/syscall.tbl
-index 7976dff8f879..45bc32a41b90 100644
---- a/arch/m68k/kernel/syscalls/syscall.tbl
-+++ b/arch/m68k/kernel/syscalls/syscall.tbl
-@@ -448,3 +448,4 @@
- 446	common	landlock_restrict_self		sys_landlock_restrict_self
- # 447 reserved for memfd_secret
- 448	common	process_mrelease		sys_process_mrelease
-+449	common  futex_waitv                     sys_futex_waitv
-diff --git a/arch/microblaze/kernel/syscalls/syscall.tbl b/arch/microblaze/kernel/syscalls/syscall.tbl
-index 6b0e11362bd2..2204bde3ce4a 100644
---- a/arch/microblaze/kernel/syscalls/syscall.tbl
-+++ b/arch/microblaze/kernel/syscalls/syscall.tbl
-@@ -454,3 +454,4 @@
- 446	common	landlock_restrict_self		sys_landlock_restrict_self
- # 447 reserved for memfd_secret
- 448	common	process_mrelease		sys_process_mrelease
-+449	common  futex_waitv                     sys_futex_waitv
-diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl b/arch/powerpc/kernel/syscalls/syscall.tbl
-index 7bef917cc84e..15109af9d075 100644
---- a/arch/powerpc/kernel/syscalls/syscall.tbl
-+++ b/arch/powerpc/kernel/syscalls/syscall.tbl
-@@ -528,3 +528,4 @@
- 446	common	landlock_restrict_self		sys_landlock_restrict_self
- # 447 reserved for memfd_secret
- 448	common	process_mrelease		sys_process_mrelease
-+449	common  futex_waitv                     sys_futex_waitv
-diff --git a/arch/sh/kernel/syscalls/syscall.tbl b/arch/sh/kernel/syscalls/syscall.tbl
-index 208f131659c5..d9539d28bdaa 100644
---- a/arch/sh/kernel/syscalls/syscall.tbl
-+++ b/arch/sh/kernel/syscalls/syscall.tbl
-@@ -451,3 +451,4 @@
- 446	common	landlock_restrict_self		sys_landlock_restrict_self
- # 447 reserved for memfd_secret
- 448	common	process_mrelease		sys_process_mrelease
-+449	common  futex_waitv                     sys_futex_waitv
-diff --git a/arch/sparc/kernel/syscalls/syscall.tbl b/arch/sparc/kernel/syscalls/syscall.tbl
-index c37764dc764d..46adabcb1720 100644
---- a/arch/sparc/kernel/syscalls/syscall.tbl
-+++ b/arch/sparc/kernel/syscalls/syscall.tbl
-@@ -494,3 +494,4 @@
- 446	common	landlock_restrict_self		sys_landlock_restrict_self
- # 447 reserved for memfd_secret
- 448	common	process_mrelease		sys_process_mrelease
-+449	common  futex_waitv                     sys_futex_waitv
-diff --git a/arch/xtensa/kernel/syscalls/syscall.tbl b/arch/xtensa/kernel/syscalls/syscall.tbl
-index 104b327f8ac9..3e3e1a506bed 100644
---- a/arch/xtensa/kernel/syscalls/syscall.tbl
-+++ b/arch/xtensa/kernel/syscalls/syscall.tbl
-@@ -419,3 +419,4 @@
- 446	common	landlock_restrict_self		sys_landlock_restrict_self
- # 447 reserved for memfd_secret
- 448	common	process_mrelease		sys_process_mrelease
-+449	common  futex_waitv                     sys_futex_waitv
--- 
-2.33.1
-
+Thanks,
+Nick
