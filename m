@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F86D45C015
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:01:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F307345BB27
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:14:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345946AbhKXNEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:04:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39968 "EHLO mail.kernel.org"
+        id S242276AbhKXMRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:17:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347784AbhKXNDS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:03:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 153A2619F9;
-        Wed, 24 Nov 2021 12:36:09 +0000 (UTC)
+        id S243429AbhKXMOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:14:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F2860E0B;
+        Wed, 24 Nov 2021 12:08:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757370;
-        bh=n1IioQQzOH0POz7eaWR7ENdja0fn4A3UEsNKmpHT5UQ=;
+        s=korg; t=1637755731;
+        bh=eWp0zbdjR3a6Xli6vv2vWnDX+W6t+x220awK9JqbbWM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xJBfPTkQP5ya7OiXu7dJdQuHKglRqE/qc2nQbqJa6xVR4tGXkNAzN2OP6lc/VJ5Bn
-         bCPbOhH9Hyc2tW7qNlAfE7Q4jcAy6lmrdckual3N1U4p+gnWNUWiIPvsjyd9kx+Esd
-         H90pbEov8ypkKH6EwS577SF5amUnSLiuFzWUe3Wg=
+        b=SVnkFYtdY/fo+0KVwaoUXsGyPI8WogV9PCPRX0j8Y/m0Yqj13N7a2eWqN1YYwtGqE
+         diy4kz8w77cfngFZTPdY5NZHWE7JulT7FdfvwfansMHnx1yRFFWEoCQOSdKqvK8ipO
+         XOmaot5EvRuu662Mf0BGRPX04BXXg13FKHu0p1Qg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 118/323] ARM: clang: Do not rely on lr register for stacktrace
+        stable@vger.kernel.org, Austin Kim <austin.kim@lge.com>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Subject: [PATCH 4.9 037/207] evm: mark evm_fixmode as __ro_after_init
 Date:   Wed, 24 Nov 2021 12:55:08 +0100
-Message-Id: <20211124115722.931188595@linuxfoundation.org>
+Message-Id: <20211124115705.144354209@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: Austin Kim <austin.kim@lge.com>
 
-[ Upstream commit b3ea5d56f212ad81328c82454829a736197ebccc ]
+commit 32ba540f3c2a7ef61ed5a577ce25069a3d714fc9 upstream.
 
-Currently the stacktrace on clang compiled arm kernel uses the 'lr'
-register to find the first frame address from pt_regs. However, that
-is wrong after calling another function, because the 'lr' register
-is used by 'bl' instruction and never be recovered.
+The evm_fixmode is only configurable by command-line option and it is never
+modified outside initcalls, so declaring it with __ro_after_init is better.
 
-As same as gcc arm kernel, directly use the frame pointer (r11) of
-the pt_regs to find the first frame address.
-
-Note that this fixes kretprobe stacktrace issue only with
-CONFIG_UNWINDER_FRAME_POINTER=y. For the CONFIG_UNWINDER_ARM,
-we need another fix.
-
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Austin Kim <austin.kim@lge.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/kernel/stacktrace.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ security/integrity/evm/evm_main.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/kernel/stacktrace.c b/arch/arm/kernel/stacktrace.c
-index d23ab9ec130a3..a452b859f485f 100644
---- a/arch/arm/kernel/stacktrace.c
-+++ b/arch/arm/kernel/stacktrace.c
-@@ -53,8 +53,7 @@ int notrace unwind_frame(struct stackframe *frame)
+--- a/security/integrity/evm/evm_main.c
++++ b/security/integrity/evm/evm_main.c
+@@ -54,7 +54,7 @@ char *evm_config_xattrnames[] = {
+ 	NULL
+ };
  
- 	frame->sp = frame->fp;
- 	frame->fp = *(unsigned long *)(fp);
--	frame->pc = frame->lr;
--	frame->lr = *(unsigned long *)(fp + 4);
-+	frame->pc = *(unsigned long *)(fp + 4);
- #else
- 	/* check current frame pointer is within bounds */
- 	if (fp < low + 12 || fp > high - 4)
--- 
-2.33.0
-
+-static int evm_fixmode;
++static int evm_fixmode __ro_after_init;
+ static int __init evm_set_fixmode(char *str)
+ {
+ 	if (strncmp(str, "fix", 3) == 0)
 
 
