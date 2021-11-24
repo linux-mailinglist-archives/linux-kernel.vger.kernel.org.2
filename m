@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7C845BE77
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:46:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 265F545BCD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343692AbhKXMrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:47:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50524 "EHLO mail.kernel.org"
+        id S245338AbhKXMc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:32:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345744AbhKXMoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:44:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8CCB61248;
-        Wed, 24 Nov 2021 12:26:02 +0000 (UTC)
+        id S244572AbhKXM0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:26:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 153CA61220;
+        Wed, 24 Nov 2021 12:16:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756763;
-        bh=c7yLRFh/qPO1cPe8F9ONeJjPdkrpsC5lpe94My3zLeI=;
+        s=korg; t=1637756179;
+        bh=v9/eDXWs2/UBFFOvxlOTEXawMTPdS96w+dxTBRQFPiQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wAFJxJ7HjUbN2S3OY/ZzmygYv+/RztCPJMgnYvEP8oHl+PHbt8C1eFZnPZTNlwB94
-         6P1LwI93vJc03CshFsaUJ1y5MhKGHmygnsnzrNAjfs/U+JEmjiUnAez+Tu+YI0izov
-         MC0K4kHwTyh+r9btmZNTNYl8Un1Y79tgudYzPN3Q=
+        b=Gf5wGEvkD6tUNw1TvQgMCw27sRMcRplCXRIKa7ov7p0YhoCPCT8JPXuh86+eg/nsK
+         sOjdpObEQe9MULSax9ohrJUfoPIhUog1CMSMgb5DDjHeaOSNWEudvHYwuqRx2evUsN
+         KUjutx7BLHQJQiRhWR7nBP5I/fSVHttHa4Bn+KF4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 4.14 197/251] PCI: Add PCI_EXP_DEVCTL_PAYLOAD_* macros
-Date:   Wed, 24 Nov 2021 12:57:19 +0100
-Message-Id: <20211124115717.119569852@linuxfoundation.org>
+        stable@vger.kernel.org, linux-mips@vger.kernel.org,
+        Bart Van Assche <bvanassche@acm.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 169/207] MIPS: sni: Fix the build
+Date:   Wed, 24 Nov 2021 12:57:20 +0100
+Message-Id: <20211124115709.469256293@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Bart Van Assche <bvanassche@acm.org>
 
-commit 460275f124fb072dca218a6b43b6370eebbab20d upstream.
+[ Upstream commit c91cf42f61dc77b289784ea7b15a8531defa41c0 ]
 
-Define a macro PCI_EXP_DEVCTL_PAYLOAD_* for every possible Max Payload
-Size in linux/pci_regs.h, in the same style as PCI_EXP_DEVCTL_READRQ_*.
+This patch fixes the following gcc 10 build error:
 
-Link: https://lore.kernel.org/r/20211005180952.6812-2-kabel@kernel.org
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Reviewed-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+arch/mips/sni/time.c: In function ‘a20r_set_periodic’:
+arch/mips/sni/time.c:15:26: error: unsigned conversion from ‘int’ to ‘u8’ {aka ‘volatile unsigned char’} changes value from ‘576’ to ‘64’ [-Werror=overflow]
+   15 | #define SNI_COUNTER0_DIV ((SNI_CLOCK_TICK_RATE / SNI_COUNTER2_DIV) / HZ)
+      |                          ^
+arch/mips/sni/time.c:21:45: note: in expansion of macro ‘SNI_COUNTER0_DIV’
+   21 |  *(volatile u8 *)(A20R_PT_CLOCK_BASE + 0) = SNI_COUNTER0_DIV;
+      |                                             ^~~~~~~~~~~~~~~~
+
+Cc: linux-mips@vger.kernel.org
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/uapi/linux/pci_regs.h |    6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/mips/sni/time.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/include/uapi/linux/pci_regs.h
-+++ b/include/uapi/linux/pci_regs.h
-@@ -497,6 +497,12 @@
- #define  PCI_EXP_DEVCTL_URRE	0x0008	/* Unsupported Request Reporting En. */
- #define  PCI_EXP_DEVCTL_RELAX_EN 0x0010 /* Enable relaxed ordering */
- #define  PCI_EXP_DEVCTL_PAYLOAD	0x00e0	/* Max_Payload_Size */
-+#define  PCI_EXP_DEVCTL_PAYLOAD_128B 0x0000 /* 128 Bytes */
-+#define  PCI_EXP_DEVCTL_PAYLOAD_256B 0x0020 /* 256 Bytes */
-+#define  PCI_EXP_DEVCTL_PAYLOAD_512B 0x0040 /* 512 Bytes */
-+#define  PCI_EXP_DEVCTL_PAYLOAD_1024B 0x0060 /* 1024 Bytes */
-+#define  PCI_EXP_DEVCTL_PAYLOAD_2048B 0x0080 /* 2048 Bytes */
-+#define  PCI_EXP_DEVCTL_PAYLOAD_4096B 0x00a0 /* 4096 Bytes */
- #define  PCI_EXP_DEVCTL_EXT_TAG	0x0100	/* Extended Tag Field Enable */
- #define  PCI_EXP_DEVCTL_PHANTOM	0x0200	/* Phantom Functions Enable */
- #define  PCI_EXP_DEVCTL_AUX_PME	0x0400	/* Auxiliary Power PM Enable */
+diff --git a/arch/mips/sni/time.c b/arch/mips/sni/time.c
+index 7ee14f41fc25d..1ea060f08ffea 100644
+--- a/arch/mips/sni/time.c
++++ b/arch/mips/sni/time.c
+@@ -17,14 +17,14 @@ static int a20r_set_periodic(struct clock_event_device *evt)
+ {
+ 	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 12) = 0x34;
+ 	wmb();
+-	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 0) = SNI_COUNTER0_DIV;
++	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 0) = SNI_COUNTER0_DIV & 0xff;
+ 	wmb();
+ 	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 0) = SNI_COUNTER0_DIV >> 8;
+ 	wmb();
+ 
+ 	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 12) = 0xb4;
+ 	wmb();
+-	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 8) = SNI_COUNTER2_DIV;
++	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 8) = SNI_COUNTER2_DIV & 0xff;
+ 	wmb();
+ 	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 8) = SNI_COUNTER2_DIV >> 8;
+ 	wmb();
+-- 
+2.33.0
+
 
 
