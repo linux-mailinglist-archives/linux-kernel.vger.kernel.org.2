@@ -2,59 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3451645B817
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 11:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11BFE45B81E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 11:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241153AbhKXKNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 05:13:21 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:57759 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230515AbhKXKNT (ORCPT
+        id S234526AbhKXKPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 05:15:22 -0500
+Received: from so254-9.mailgun.net ([198.61.254.9]:43937 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232329AbhKXKPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 05:13:19 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Uy5htFm_1637748599;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Uy5htFm_1637748599)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 24 Nov 2021 18:10:08 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     woojung.huh@microchip.com
-Cc:     UNGLinuxDriver@microchip.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] lan78xx: Clean up some inconsistent indenting
-Date:   Wed, 24 Nov 2021 18:09:56 +0800
-Message-Id: <1637748596-19168-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Wed, 24 Nov 2021 05:15:21 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1637748731; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=F5fahqnYpyAflep0RmdFu8+qVgtB2nLPPnOrLfo/vAw=;
+ b=RWoua93AKvdKcQHgSLc5a8F3l4Txe+DJPg6QMD/cJEO1tDyp6A50pk59c6AV61eGuDgSrYC1
+ fEky8Xn01IOT/q4vJQmD6aUnR/8spZFdgJzECEk7h4/UrNSXifB3jla8w7+cUe3S+1zvDpZM
+ 7E+xsrbm2H03Y58MWeU4Tn67yxU=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 619e0ffabebfa3d4d51f207b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Nov 2021 10:12:10
+ GMT
+Sender: schowdhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5D4BDC4360D; Wed, 24 Nov 2021 10:12:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: schowdhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 811C3C4338F;
+        Wed, 24 Nov 2021 10:12:09 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 24 Nov 2021 15:42:09 +0530
+From:   schowdhu@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, pure.logic@nexus-software.ie,
+        greg@kroah.com, linux-kernel@vger.kernel.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, satyap@codeaurora.org,
+        pheragu@codeaurora.org, rnayak@codeaurora.org,
+        sibis@codeaurora.org, saiprakash.ranjan@codeaurora.org,
+        quic_schowdhu@quicinc.com
+Subject: Re: [PATCH V1 1/8] dt-bindings: Add the yaml bindings for EUD
+In-Reply-To: <YZ2zx4/8+yCcls/G@ripper>
+References: <cover.1637639009.git.schowdhu@codeaurora.org>
+ <472de38309fd5d773f903f7a0cfb4440ae1dd380.1637639009.git.schowdhu@codeaurora.org>
+ <YZ2zx4/8+yCcls/G@ripper>
+Message-ID: <c1772ad6c60dabd206be9cf91dd08c77@codeaurora.org>
+X-Sender: schowdhu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the follow smatch warning:
+On 2021-11-24 09:08, Bjorn Andersson wrote:
+> On Mon 22 Nov 20:28 PST 2021, Souradeep Chowdhury wrote:
+> 
+>> Documentation for Embedded USB Debugger(EUD) device tree
+>> bindings in yaml format.
+>> 
+>> Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
+>> ---
+>>  .../devicetree/bindings/soc/qcom/qcom,eud.yaml     | 52 
+>> ++++++++++++++++++++++
+>>  1 file changed, 52 insertions(+)
+>>  create mode 100644 
+>> Documentation/devicetree/bindings/soc/qcom/qcom,eud.yaml
+>> 
+>> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,eud.yaml 
+>> b/Documentation/devicetree/bindings/soc/qcom/qcom,eud.yaml
+>> new file mode 100644
+>> index 0000000..724552c
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,eud.yaml
+>> @@ -0,0 +1,52 @@
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: "http://devicetree.org/schemas/soc/qcom/qcom,eud.yaml#"
+>> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+>> +
+>> +title: Qualcomm Embedded USB Debugger
+>> +
+>> +maintainers:
+>> +  - Souradeep Chowdhury <schowdhu@codeaurora.org>
+>> +
+>> +description: |
+> 
+> The '|' indicates that the formatting is significant, but it's not.
 
-drivers/net/usb/lan78xx.c:4961 lan78xx_resume() warn: inconsistent
-indenting.
+Ack
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/net/usb/lan78xx.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+>> +  This binding is used to describe the Qualcomm Embedded USB 
+>> Debugger, which is
+>> +  mini USB-hub implemented on chip to support USB-based debug 
+>> capabilities.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    items:
+>> +      - enum:
+>> +          - qcom,sc7280-eud
+>> +      - const: qcom,eud
+>> +
+>> +  reg:
+>> +    items:
+>> +      - description: EUD Base Register Region
+>> +      - description: EUD Mode Manager Register
+>> +
+>> +  interrupts:
+>> +    description:
+>> +      EUD interrupt
+>> +
+>> +
+> 
+> Drop one of these two empty lines please.
 
-diff --git a/drivers/net/usb/lan78xx.c b/drivers/net/usb/lan78xx.c
-index a9e7cbe..2bfb59a 100644
---- a/drivers/net/usb/lan78xx.c
-+++ b/drivers/net/usb/lan78xx.c
-@@ -4957,8 +4957,7 @@ static int lan78xx_resume(struct usb_interface *intf)
- 			if (ret < 0) {
- 				if (ret == -ENODEV)
- 					netif_device_detach(dev->net);
--
--			netdev_warn(dev->net, "Failed to submit intr URB");
-+				netdev_warn(dev->net, "Failed to submit intr URB");
- 			}
- 		}
- 
--- 
-1.8.3.1
+Ack
 
+> 
+>> +  port:
+>> +    description:
+>> +      Any connector to the data bus of this controller should be 
+>> modelled
+>> +      using the OF graph bindings specified, if the "usb-role-switch"
+>> +      property is used. See graph.txt
+> 
+> This description does unfortunately not help me to understand what to
+> point this port to.
+> 
+> What's "the data bus"?
+> 
+> Is usb-role-switch a property to be put in this node? Doesn't it need 
+> to
+> be mentioned as a valid property?
+
+The end point of this port is attached to the connector child of dwc3 
+node. The dwc3 node has the "usb-role-switch"
+property. So "usb-role-switch" is not a valid property of the EUD node.
+Will update the description with more clarity accordingly.
+
+
+> 
+>> +    $ref: /schemas/graph.yaml#/properties/port
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    eud@88e0000 {
+>> +           compatible = "qcom,sc7280-eud","qcom,eud";
+>> +           reg = <0 0x88e0000 0 0x2000>,
+>> +                 <0 0x88e2000 0 0x1000>;
+> 
+> The example is compiled with #address-cells == #size-cells == 1, so 
+> drop
+> the four lone 0s from the reg.
+
+Ack
+
+> 
+> Regards,
+> Bjorn
+> 
+>> +    };
+>> --
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+>> member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>> 
