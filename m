@@ -2,140 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3875145CC27
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:35:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A65CA45CC2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:35:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244440AbhKXSiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 13:38:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48884 "EHLO
+        id S1350600AbhKXSi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 13:38:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242504AbhKXSiL (ORCPT
+        with ESMTP id S239774AbhKXSi5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 13:38:11 -0500
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4DEC061574;
-        Wed, 24 Nov 2021 10:35:01 -0800 (PST)
-Received: by mail-ot1-x330.google.com with SMTP id a23-20020a9d4717000000b0056c15d6d0caso5638528otf.12;
-        Wed, 24 Nov 2021 10:35:01 -0800 (PST)
+        Wed, 24 Nov 2021 13:38:57 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C39C061746
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:35:47 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id p19so3584683qtw.12
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:35:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oH9617U/I6DUrRnDR7qed36ELwMrT7li0leYhJzrg/Q=;
-        b=OMApE8FVHQTEHQAlJlWDdzx0Hkuhoy8ec9F6qIx8r+SrqRiCwLxpfi9lj+aIUZvmvh
-         Kpqn0fYhcAwYDHoCaVqpUe0lw5GtPbJGNwqH+1jt82etMsOVUDhZO12orREQGQWRbIph
-         ctoZ/DcnSuSoUdlxm5Zp5K/gmzyjOph3nJDcryFI/stliQRn6/8RA90XJ0mXwv/WgAoC
-         X0OHQFxkL2TGLvPTo2ou+hyEpOxV4OGcx8nT0i9i0JrAX+Ck42w7VzYYhIbmLd5+tYGq
-         gR127Jp7DVtKhE+t1kW4/fJCU5V/MK6DlC44PWkVOHNGM4MvgO3Qlrgcac+5NrK5BxRx
-         fTIw==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=in/DjmJsre7pZyqPLOE83SpCPGvaY4gyM0Go0TFST48=;
+        b=ZJk1hn0TiTzgrW0oCVvnxHvUxUqepWkj4oQosBQDtyqCJ+i0CnZt1Hoouaohjvn42z
+         af0h57GBiTyB6s5gN5vRpkHZfkdnid+LSE4pkZD06IGyPV+/EqMV4neaZw62JBzXoTwT
+         eF/cgrracdsnMvrximIZT2KxhMI7J5yA06rXDQ7Kcn8gyV/nbLAp5d3nJuuGbTu2j7E6
+         +8XjjgEYS1ylvwmrB13ZS/ZBfHcbn/v9UGLpQgmMDQpfTQQBEw5nlefq1kn1gGSR2R1b
+         HPk+c6n87wUSW9pcj7NHouTqRKapZ/JMY9kkxtdOUivE+HSmbjijQL4VzTfCyaNwPYjm
+         K4ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oH9617U/I6DUrRnDR7qed36ELwMrT7li0leYhJzrg/Q=;
-        b=1tr1qZgJVecgNtULcVHI6EEazlVjKJEGQACQf/6v7+57HtrYuOgJ8hon/LdI8Xx/OE
-         LZpwiYSEIOOQ2b1Gy8po3n3PbvNPcumX+u/A/wx11HQSYywRyXSfBVbmUeEt28b8aaMe
-         zQ/mE6RBdwYu0ong1pJKTyK/h/xJyVZCP9qCKfEFiZEe0vYFvFy3gQdT5WVloL+igaZL
-         AG+uDMGfcKXI+h7ifgS0RHLbtX9fpfVQbBXYgmVWQ7cegK/oEF/EomOSWhk0LP9gGTC+
-         ps9L+NXROlI6qgrVsfLuDM1E2lvHsjqYCv3NzLaOOd86QiHptzvsB+udwItW6/S8m/DD
-         EvfQ==
-X-Gm-Message-State: AOAM531twmssBxyPD7sZun9pnsG8if4v6f5OJeg8EZksUEhGgNyUoy5p
-        sfUr6WgBkFyXv0XEDPoIO54zfdFdlr6DzaINoBY=
-X-Google-Smtp-Source: ABdhPJxWqBKi3hO9YjvGnIaDU9k+d5+vybcoHZCPY7s6hCAFNZPj4lQgQtQ/b3shnR02c+nj7oV9jkFcKq/YeXCZgXU=
-X-Received: by 2002:a9d:63d2:: with SMTP id e18mr15490894otl.28.1637778901019;
- Wed, 24 Nov 2021 10:35:01 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=in/DjmJsre7pZyqPLOE83SpCPGvaY4gyM0Go0TFST48=;
+        b=Bb9EAMl7Dm5H/weanSudaRgn268scZ5HuaFn3fTFlEWOrcSM7MR9S+sS8c6B8MCAc5
+         XcdNtiNfxVTrhQgBlRGTJuuqik+JFP7wJXaXBLWAytOJqh2ZU/scc2aTdu6DXCZipXvL
+         W9WTIT7bQrdbmaQHrjeWeOHvoT18tlAjPIder0NreCKEPkE0w9UlFdziwcJb6nUipcpx
+         FZuo7Qxi+RJoce4F6ttV1XfVMSo68GqgRLKD9zj//IJyjI1oS3v8dUosTAwrGx3MyCgd
+         w1uJOjB9lXN+LWrszHvx0eXB8uvPLPMeWZicympH493W3ilALX0J79SNRMWsl0cop1Bd
+         r0DQ==
+X-Gm-Message-State: AOAM530Q+2sFK+fisq+NYGk92z7PGavREb+1miw82pgjDp2pKi4VXwaL
+        cxuF8i3bN3zzDEeEuO67q8F8cg==
+X-Google-Smtp-Source: ABdhPJxMtwGVMMEdlpVrmIIAbhGenBFljfqHsGqDIvds+y9qgA6BJreGhRTg9VgHV56aoXmE8yqtDg==
+X-Received: by 2002:a05:622a:14:: with SMTP id x20mr9786392qtw.1.1637778946611;
+        Wed, 24 Nov 2021 10:35:46 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id g5sm251023qko.12.2021.11.24.10.35.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 10:35:45 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mpx7Q-0016Qq-NT; Wed, 24 Nov 2021 14:35:44 -0400
+Date:   Wed, 24 Nov 2021 14:35:44 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        Andrew Dona-Couch <andrew@donacou.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Drew DeVault <sir@cmpwn.com>,
+        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+Message-ID: <20211124183544.GL5112@ziepe.ca>
+References: <20211123235953.GF5112@ziepe.ca>
+ <2adca04f-92e1-5f99-6094-5fac66a22a77@redhat.com>
+ <20211124132353.GG5112@ziepe.ca>
+ <cca0229e-e53e-bceb-e215-327b6401f256@redhat.com>
+ <20211124132842.GH5112@ziepe.ca>
+ <eab5aeba-e064-9f3e-fbc3-f73cd299de83@redhat.com>
+ <20211124134812.GI5112@ziepe.ca>
+ <2cdbebb9-4c57-7839-71ab-166cae168c74@redhat.com>
+ <20211124153405.GJ5112@ziepe.ca>
+ <63294e63-cf82-1f59-5ea8-e996662e6393@redhat.com>
 MIME-Version: 1.0
-References: <20211124115702.361983534@linuxfoundation.org> <20211124115706.507376250@linuxfoundation.org>
- <619E4ABA.DC78AA58@users.sourceforge.net> <YZ5ayhuOMZwkd9j6@kroah.com>
- <20211124173310.GA12039@mail.hallyn.com> <YZ6BR09OXP8x7lRs@kroah.com>
-In-Reply-To: <YZ6BR09OXP8x7lRs@kroah.com>
-From:   =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
-Date:   Wed, 24 Nov 2021 19:34:50 +0100
-Message-ID: <CAJ2a_DejJibTyiiA-+A1WbhcyYD17-h+9FuXL5=sCHEs9Qv+BA@mail.gmail.com>
-Subject: Re: [PATCH 5.10 130/154] block: Check ADMIN before NICE for IOPRIO_CLASS_RT
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
-        Jari Ruusu <jariruusu@users.sourceforge.net>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Alistair Delva <adelva@google.com>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Jens Axboe <axboe@kernel.dk>, Paul Moore <paul@paul-moore.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        linux-security-module@vger.kernel.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <63294e63-cf82-1f59-5ea8-e996662e6393@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 at 19:16, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Nov 24, 2021 at 11:33:11AM -0600, Serge E. Hallyn wrote:
-> > On Wed, Nov 24, 2021 at 04:31:22PM +0100, Greg Kroah-Hartman wrote:
-> > > On Wed, Nov 24, 2021 at 04:22:50PM +0200, Jari Ruusu wrote:
-> > > > Greg Kroah-Hartman wrote:
-> > > > > From: Alistair Delva <adelva@google.com>
-> > > > >
-> > > > > commit 94c4b4fd25e6c3763941bdec3ad54f2204afa992 upstream.
-> > > >  [SNIP]
-> > > > > --- a/block/ioprio.c
-> > > > > +++ b/block/ioprio.c
-> > > > > @@ -69,7 +69,14 @@ int ioprio_check_cap(int ioprio)
-> > > > >
-> > > > >         switch (class) {
-> > > > >                 case IOPRIO_CLASS_RT:
-> > > > > -                       if (!capable(CAP_SYS_NICE) && !capable(CAP_SYS_ADMIN))
-> > > > > +                       /*
-> > > > > +                        * Originally this only checked for CAP_SYS_ADMIN,
-> > > > > +                        * which was implicitly allowed for pid 0 by security
-> > > > > +                        * modules such as SELinux. Make sure we check
-> > > > > +                        * CAP_SYS_ADMIN first to avoid a denial/avc for
-> > > > > +                        * possibly missing CAP_SYS_NICE permission.
-> > > > > +                        */
-> > > > > +                       if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_NICE))
-> > > > >                                 return -EPERM;
-> > > > >                         fallthrough;
-> > > > >                         /* rt has prio field too */
-> > > >
-> > > > What exactly is above patch trying to fix?
-> > > > It does not change control flow at all, and added comment is misleading.
-> > >
-> > > See the thread on the mailing list for what it does and why it is
-> > > needed.
-> > >
-> > > It does change the result when selinux is enabled.
-> > >
-> > > thanks,
-> > >
-> > > greg k-h
-> >
-> > The case where we create a newer more fine grained capability which is a
-> > sub-cap of a broader capability like CAP_SYS_ADMIN is analogous.  See
-> > check_syslog_permissions() for instance.
-> >
-> > So I think a helper like
-> >
-> > int capable_either_or(int cap1, int cap2) {
-> >       if (has_capability_noaudit(current, cap1))
-> >               return 0;
-> >       return capable(cap2);
-> > }
-> >
-> > might be worthwhile.
->
+On Wed, Nov 24, 2021 at 05:43:58PM +0100, David Hildenbrand wrote:
+> On 24.11.21 16:34, Jason Gunthorpe wrote:
+> > On Wed, Nov 24, 2021 at 03:14:00PM +0100, David Hildenbrand wrote:
+> > 
+> >> I'm not aware of any where you can fragment 50% of all pageblocks in the
+> >> system as an unprivileged user essentially consuming almost no memory
+> >> and essentially staying inside well-defined memlock limits. But sure if
+> >> there are "many" people will be able to come up with at least one
+> >> comparable thing. I'll be happy to learn.
+> > 
+> > If the concern is that THP's can be DOS'd then any avenue that renders
+> > the system out of THPs is a DOS attack vector. Including all the
+> > normal workloads that people run and already complain that THPs get
+> > exhausted.
+> > 
+> > A hostile userspace can only quicken this process.
+> 
+> We can not only fragment THP but also easily smaller compound pages,
+> with less impact though (well, as long as people want more than 0.1% per
+> user ...).
 
-I proposed an early prototype at
-https://patchwork.kernel.org/project/selinux/patch/20211116112437.43412-1-cgzones@googlemail.com/
+My point is as long as userspace can drive this fragmentation, by any
+means, we can never have DOS proof higher order pages, so lets not
+worry so much about one of many ways to create fragmentation.
 
-> Sure, feel free to work on that and submit it, but for now, this change
-> is needed.
->
+> >> My position that FOLL_LONGTERM for unprivileged users is a strong no-go
+> >> stands as it is.
+> > 
+> > As this basically excludes long standing pre-existing things like
+> > RDMA, XDP, io_uring, and more I don't think this can be the general
+> > answer for mm, sorry.
+> 
+> Let's think about options to restrict FOLL_LONGTERM usage:
 
-I would argue this change is not necessary since the actual syscall
-still succeeds as this is only an informative avc denial message about
-a failed capability check. But this ship has sailed...
+Which gives me the view that we should be talking about how to make
+high order pages completely DOS proof, not about FOLL_LONGTERM.
 
-> thanks,
->
-> greg k-h
+To me that is exactly what ZONE_MOVABLE strives to achieve, and I
+think anyone who cares about QOS around THP must include ZONE_MOVABLE
+in their solution.
+
+In all of this I am thinking back to the discussion about the 1GB THP
+proposal which was resoundly shot down on the grounds that 2MB THP
+*doesn't work* today due to the existing fragmentation problems.
+
+> Another option would be not accounting FOLL_LONGTERM as RLIMIT_MEMLOCK,
+> but instead as something that explicitly matches the differing
+> semantics. 
+
+Also a good idea, someone who cares about this should really put
+pinned pages into the cgroup machinery (with correct accounting!)
+
+> At the same time, eventually work on proper alternatives with mmu
+> notifiers (and possibly without the any such limits) where possible
+> and required.
+
+mmu_notifiers is also bad, it just offends a different group of MM
+concerns :)
+
+Something like io_ring is registering a bulk amount of memory and then
+doing some potentially long operations against it.
+
+So to use a mmu_notifier scheme you'd have to block the mmu_notifier
+invalidate_range_start until all the operations touching the memory
+finish (and suspend new operations at the same time!).
+
+Blocking the notifier like this locks up the migration/etc threads
+completely, and is destructive to the OOM reclaim.
+
+At least with a pinned page those threads don't even try to touch it
+instead of getting stuck up.
+
+> Don't get me wrong, I really should be working on other stuff, so I have
+> limited brain capacity and time :) OTOH I'm willing to help at least
+> discuss alternatives.
+
+Haha, me too..
+
+Jason
