@@ -2,311 +2,395 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A66DB45B618
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:01:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B7345B620
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:02:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240945AbhKXIE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 03:04:26 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56722 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232944AbhKXIEZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 03:04:25 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AO7HLnc026789;
-        Wed, 24 Nov 2021 08:01:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=pa9nXzRMlG8thI4bC+/EFpLYmgwn0p2lmoO1w9AlEaI=;
- b=ePozwjrAdngzPMwCDWBgvds+aBDdCiNjgkho8lNfG/XAznKrEvd77xXWJSddOEQ4k2Pp
- ISXfgje8YarvfkVZ+bnOScaRG0LV82WvQvz79yq/eBIyTA9Bd0BFYXy6dBsHELEYduyM
- yDp0h2fY3Dxv9FtTY1vKpAIVp7IiEdMYibEsoWQIUMN7WDDsFklB1WOE6OQf5sRDlOSq
- VHdJhhCP94FBZguzOc+jlecI6GsE0hV4hBcUGakEaLcv6hhvXNsAYx/p+poGxXc7K9ww
- 1O+64LYWiM7q3Ve+DYlSpJIPTwqdN0zMkOf04QZ/M6NU2wu0zsmq7zmIznY7d/K2JYN4 TQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3chgvfrrtm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Nov 2021 08:01:00 +0000
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AO7sRBK006948;
-        Wed, 24 Nov 2021 08:01:00 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3chgvfrrsq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Nov 2021 08:00:59 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AO7lCvB009983;
-        Wed, 24 Nov 2021 08:00:57 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 3cernaxqpj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Nov 2021 08:00:56 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AO80rL532440676
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Nov 2021 08:00:53 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6B42211CC50;
-        Wed, 24 Nov 2021 08:00:53 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9A49611CC38;
-        Wed, 24 Nov 2021 08:00:48 +0000 (GMT)
-Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com (unknown [9.43.71.39])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 24 Nov 2021 08:00:48 +0000 (GMT)
-Subject: Re: [PATCH 2/2] perf tools: Improve IBS error handling
-To:     Kim Phillips <kim.phillips@amd.com>, Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Robert Richter <robert.richter@amd.com>,
-        Stephane Eranian <eranian@google.com>
-References: <20211004214114.188477-1-kim.phillips@amd.com>
- <20211004214114.188477-2-kim.phillips@amd.com> <YV8uQVnMnnMd1Led@krava>
- <8a8583dc-5a5d-f107-8ef0-6be96e2f9095@amd.com>
- <fdcfec83-01c6-5e25-5b99-dac05287fdae@linux.ibm.com>
- <74e17a71-98ff-e0b1-61d4-d37992b1ae15@amd.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <f095bebf-77d5-94c7-5787-13a6f38867cc@linux.ibm.com>
-Date:   Wed, 24 Nov 2021 13:30:47 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S240970AbhKXIFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 03:05:51 -0500
+Received: from mga12.intel.com ([192.55.52.136]:1620 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240965AbhKXIFt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 03:05:49 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="215254439"
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="215254439"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 00:02:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="674778578"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 24 Nov 2021 00:02:38 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mpnEj-0004VS-PU; Wed, 24 Nov 2021 08:02:37 +0000
+Date:   Wed, 24 Nov 2021 16:01:56 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Xiaoming Ni <nixiaoming@huawei.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: [mcgrof-next:20211123-sysctl-cleanups 41/41] kernel/kprobes.c:52:1:
+ error: function declaration isn't a prototype
+Message-ID: <202111241540.e3ukBGer-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <74e17a71-98ff-e0b1-61d4-d37992b1ae15@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: AAPNts8oBqWVWo2QzUej6oYjQN5-Ky9I
-X-Proofpoint-ORIG-GUID: AZ4xGN0K4_p-lptSxfBOBUsjBvt7dfAE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-24_02,2021-11-23_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 phishscore=0 spamscore=0 impostorscore=0 adultscore=0
- clxscore=1015 suspectscore=0 bulkscore=0 priorityscore=1501
- mlxlogscore=999 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111240042
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git 20211123-sysctl-cleanups
+head:   c18add41d859b4feec081eab6cfd624a5642973d
+commit: c18add41d859b4feec081eab6cfd624a5642973d [41/41] kprobe: move sysctl_kprobes_optimization to kprobes.c
+config: sparc-randconfig-r002-20211123 (https://download.01.org/0day-ci/archive/20211124/202111241540.e3ukBGer-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?id=c18add41d859b4feec081eab6cfd624a5642973d
+        git remote add mcgrof-next https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git
+        git fetch --no-tags mcgrof-next 20211123-sysctl-cleanups
+        git checkout c18add41d859b4feec081eab6cfd624a5642973d
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=sparc 
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All error/warnings (new ones prefixed by >>):
+
+   In file included from include/linux/key.h:17,
+                    from include/linux/cred.h:13,
+                    from include/linux/sched/signal.h:10,
+                    from include/linux/rcuwait.h:6,
+                    from include/linux/percpu-rwsem.h:7,
+                    from include/linux/fs.h:33,
+                    from include/linux/huge_mm.h:8,
+                    from include/linux/mm.h:717,
+                    from include/linux/kallsyms.h:13,
+                    from include/linux/ftrace.h:12,
+                    from include/linux/kprobes.h:28,
+                    from kernel/kprobes.c:23:
+   include/linux/sysctl.h: In function 'register_sysctl_mount_point':
+   include/linux/sysctl.h:270:1: error: expected ';' before '}' token
+     270 | }
+         | ^
+   kernel/kprobes.c: At top level:
+   kernel/kprobes.c:52:1: error: return type defaults to 'int' [-Werror=return-type]
+      52 | kprobe_sysctls_init() do { } while (0)
+         | ^~~~~~~~~~~~~~~~~~~
+>> kernel/kprobes.c:52:1: error: function declaration isn't a prototype [-Werror=strict-prototypes]
+   kernel/kprobes.c: In function 'kprobe_sysctls_init':
+>> kernel/kprobes.c:52:23: error: expected declaration specifiers before 'do'
+      52 | kprobe_sysctls_init() do { } while (0)
+         |                       ^~
+>> kernel/kprobes.c:52:30: error: expected declaration specifiers before 'while'
+      52 | kprobe_sysctls_init() do { } while (0)
+         |                              ^~~~~
+>> kernel/kprobes.c:61:26: error: storage class specified for parameter 'kprobe_table'
+      61 | static struct hlist_head kprobe_table[KPROBE_TABLE_SIZE];
+         |                          ^~~~~~~~~~~~
+>> kernel/kprobes.c:64:13: error: storage class specified for parameter 'kprobes_all_disarmed'
+      64 | static bool kprobes_all_disarmed;
+         |             ^~~~~~~~~~~~~~~~~~~~
+   In file included from include/linux/notifier.h:14,
+                    from include/linux/kprobes.h:21,
+                    from kernel/kprobes.c:23:
+>> kernel/kprobes.c:67:21: error: storage class specified for parameter 'kprobe_mutex'
+      67 | static DEFINE_MUTEX(kprobe_mutex);
+         |                     ^~~~~~~~~~~~
+   include/linux/mutex.h:116:22: note: in definition of macro 'DEFINE_MUTEX'
+     116 |         struct mutex mutexname = __MUTEX_INITIALIZER(mutexname)
+         |                      ^~~~~~~~~
+>> include/linux/mutex.h:116:16: error: parameter 'kprobe_mutex' is initialized
+     116 |         struct mutex mutexname = __MUTEX_INITIALIZER(mutexname)
+         |                ^~~~~
+   kernel/kprobes.c:67:8: note: in expansion of macro 'DEFINE_MUTEX'
+      67 | static DEFINE_MUTEX(kprobe_mutex);
+         |        ^~~~~~~~~~~~
+   In file included from include/asm-generic/percpu.h:7,
+                    from arch/sparc/include/asm/percpu_64.h:25,
+                    from arch/sparc/include/asm/percpu.h:5,
+                    from include/linux/irqflags.h:17,
+                    from include/asm-generic/cmpxchg-local.h:6,
+                    from arch/sparc/include/asm/cmpxchg_64.h:111,
+                    from arch/sparc/include/asm/cmpxchg.h:5,
+                    from arch/sparc/include/asm/atomic_64.h:12,
+                    from arch/sparc/include/asm/atomic.h:5,
+                    from include/linux/atomic.h:7,
+                    from include/asm-generic/bitops/lock.h:5,
+                    from arch/sparc/include/asm/bitops_64.h:52,
+                    from arch/sparc/include/asm/bitops.h:5,
+                    from include/linux/bitops.h:33,
+                    from include/linux/thread_info.h:27,
+                    from arch/sparc/include/asm/current.h:15,
+                    from include/linux/mutex.h:14,
+                    from include/linux/notifier.h:14,
+                    from include/linux/kprobes.h:21,
+                    from kernel/kprobes.c:23:
+>> kernel/kprobes.c:68:40: error: storage class specified for parameter 'kprobe_instance'
+      68 | static DEFINE_PER_CPU(struct kprobe *, kprobe_instance);
+         |                                        ^~~~~~~~~~~~~~~
+   include/linux/percpu-defs.h:104:44: note: in definition of macro 'DEFINE_PER_CPU_SECTION'
+     104 |         __PCPU_ATTRS(sec) __typeof__(type) name
+         |                                            ^~~~
+   kernel/kprobes.c:68:8: note: in expansion of macro 'DEFINE_PER_CPU'
+      68 | static DEFINE_PER_CPU(struct kprobe *, kprobe_instance);
+         |        ^~~~~~~~~~~~~~
+>> kernel/kprobes.c:68:40: error: section attribute not allowed for 'kprobe_instance'
+      68 | static DEFINE_PER_CPU(struct kprobe *, kprobe_instance);
+         |                                        ^~~~~~~~~~~~~~~
+   include/linux/percpu-defs.h:104:44: note: in definition of macro 'DEFINE_PER_CPU_SECTION'
+     104 |         __PCPU_ATTRS(sec) __typeof__(type) name
+         |                                            ^~~~
+   kernel/kprobes.c:68:8: note: in expansion of macro 'DEFINE_PER_CPU'
+      68 | static DEFINE_PER_CPU(struct kprobe *, kprobe_instance);
+         |        ^~~~~~~~~~~~~~
+>> kernel/kprobes.c:72:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+      72 | {
+         | ^
+   In file included from include/linux/kprobes.h:20,
+                    from kernel/kprobes.c:23:
+>> kernel/kprobes.c:80:18: error: storage class specified for parameter 'kprobe_blacklist'
+      80 | static LIST_HEAD(kprobe_blacklist);
+         |                  ^~~~~~~~~~~~~~~~
+   include/linux/list.h:26:26: note: in definition of macro 'LIST_HEAD'
+      26 |         struct list_head name = LIST_HEAD_INIT(name)
+         |                          ^~~~
+>> include/linux/list.h:26:16: error: parameter 'kprobe_blacklist' is initialized
+      26 |         struct list_head name = LIST_HEAD_INIT(name)
+         |                ^~~~~~~~~
+   kernel/kprobes.c:80:8: note: in expansion of macro 'LIST_HEAD'
+      80 | static LIST_HEAD(kprobe_blacklist);
+         |        ^~~~~~~~~
+   kernel/kprobes.c:361:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     361 | {
+         | ^
+   kernel/kprobes.c:366:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     366 | {
+         | ^
+   kernel/kprobes.c:377:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     377 | {
+         | ^
+   In file included from arch/sparc/include/asm/kprobes.h:5,
+                    from include/linux/kprobes.h:31,
+                    from kernel/kprobes.c:23:
+>> include/asm-generic/kprobes.h:14:9: error: storage class specified for parameter '_kbl_addr_get_kprobe'
+      14 |         _kbl_addr_##fname = (unsigned long)fname;
+         |         ^~~~~~~~~~
+   include/asm-generic/kprobes.h:15:33: note: in expansion of macro '__NOKPROBE_SYMBOL'
+      15 | # define NOKPROBE_SYMBOL(fname) __NOKPROBE_SYMBOL(fname)
+         |                                 ^~~~~~~~~~~~~~~~~
+   kernel/kprobes.c:390:1: note: in expansion of macro 'NOKPROBE_SYMBOL'
+     390 | NOKPROBE_SYMBOL(get_kprobe);
+         | ^~~~~~~~~~~~~~~
+>> kernel/kprobes.c:390:1: error: parameter '_kbl_addr_get_kprobe' is initialized
+>> kernel/kprobes.c:390:1: warning: 'used' attribute ignored [-Wattributes]
+   In file included from arch/sparc/include/asm/kprobes.h:5,
+                    from include/linux/kprobes.h:31,
+                    from kernel/kprobes.c:23:
+>> include/asm-generic/kprobes.h:14:9: error: section attribute not allowed for '_kbl_addr_get_kprobe'
+      14 |         _kbl_addr_##fname = (unsigned long)fname;
+         |         ^~~~~~~~~~
+   include/asm-generic/kprobes.h:15:33: note: in expansion of macro '__NOKPROBE_SYMBOL'
+      15 | # define NOKPROBE_SYMBOL(fname) __NOKPROBE_SYMBOL(fname)
+         |                                 ^~~~~~~~~~~~~~~~~
+   kernel/kprobes.c:390:1: note: in expansion of macro 'NOKPROBE_SYMBOL'
+     390 | NOKPROBE_SYMBOL(get_kprobe);
+         | ^~~~~~~~~~~~~~~
+>> kernel/kprobes.c:390:28: error: expected declaration specifiers before ';' token
+     390 | NOKPROBE_SYMBOL(get_kprobe);
+         |                            ^
+>> kernel/kprobes.c:392:12: error: storage class specified for parameter 'aggr_pre_handler'
+     392 | static int aggr_pre_handler(struct kprobe *p, struct pt_regs *regs);
+         |            ^~~~~~~~~~~~~~~~
+   kernel/kprobes.c:396:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     396 | {
+         | ^
+   kernel/kprobes.c:402:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     402 | {
+         | ^
+   kernel/kprobes.c:409:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+     409 | {
+         | ^
+   kernel/kprobes.c:1038:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+    1038 | {
+         | ^
+   kernel/kprobes.c:1050:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+    1050 | {
+         | ^
+   kernel/kprobes.c:1056:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+    1056 | {
+         | ^
+   kernel/kprobes.c:1144:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+    1144 | {
+         | ^
+   kernel/kprobes.c:1149:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+    1149 | {
+         | ^
+   kernel/kprobes.c:1155:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+    1155 | {
+         | ^
+   kernel/kprobes.c:1164:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+    1164 | {
+         | ^
+   kernel/kprobes.c:1178:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+    1178 | {
+         | ^
+   kernel/kprobes.c:1196:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+    1196 | {
+         | ^
+   In file included from arch/sparc/include/asm/kprobes.h:5,
+                    from include/linux/kprobes.h:31,
+                    from kernel/kprobes.c:23:
+>> include/asm-generic/kprobes.h:14:9: error: storage class specified for parameter '_kbl_addr_aggr_pre_handler'
+      14 |         _kbl_addr_##fname = (unsigned long)fname;
+         |         ^~~~~~~~~~
+   include/asm-generic/kprobes.h:15:33: note: in expansion of macro '__NOKPROBE_SYMBOL'
+      15 | # define NOKPROBE_SYMBOL(fname) __NOKPROBE_SYMBOL(fname)
+         |                                 ^~~~~~~~~~~~~~~~~
+   kernel/kprobes.c:1209:1: note: in expansion of macro 'NOKPROBE_SYMBOL'
+    1209 | NOKPROBE_SYMBOL(aggr_pre_handler);
+         | ^~~~~~~~~~~~~~~
+>> kernel/kprobes.c:1209:1: error: parameter '_kbl_addr_aggr_pre_handler' is initialized
+   kernel/kprobes.c:1209:1: warning: 'used' attribute ignored [-Wattributes]
+   In file included from arch/sparc/include/asm/kprobes.h:5,
+                    from include/linux/kprobes.h:31,
+                    from kernel/kprobes.c:23:
+   include/asm-generic/kprobes.h:14:9: error: section attribute not allowed for '_kbl_addr_aggr_pre_handler'
+      14 |         _kbl_addr_##fname = (unsigned long)fname;
+         |         ^~~~~~~~~~
+   include/asm-generic/kprobes.h:15:33: note: in expansion of macro '__NOKPROBE_SYMBOL'
+      15 | # define NOKPROBE_SYMBOL(fname) __NOKPROBE_SYMBOL(fname)
+         |                                 ^~~~~~~~~~~~~~~~~
+   kernel/kprobes.c:1209:1: note: in expansion of macro 'NOKPROBE_SYMBOL'
+    1209 | NOKPROBE_SYMBOL(aggr_pre_handler);
+         | ^~~~~~~~~~~~~~~
+   kernel/kprobes.c:1209:34: error: expected declaration specifiers before ';' token
+    1209 | NOKPROBE_SYMBOL(aggr_pre_handler);
+         |                                  ^
+   kernel/kprobes.c:1213:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+    1213 | {
+         | ^
+   In file included from arch/sparc/include/asm/kprobes.h:5,
+                    from include/linux/kprobes.h:31,
+                    from kernel/kprobes.c:23:
+   include/asm-generic/kprobes.h:14:9: error: storage class specified for parameter '_kbl_addr_aggr_post_handler'
+      14 |         _kbl_addr_##fname = (unsigned long)fname;
+         |         ^~~~~~~~~~
+   include/asm-generic/kprobes.h:15:33: note: in expansion of macro '__NOKPROBE_SYMBOL'
+      15 | # define NOKPROBE_SYMBOL(fname) __NOKPROBE_SYMBOL(fname)
+         |                                 ^~~~~~~~~~~~~~~~~
+   kernel/kprobes.c:1224:1: note: in expansion of macro 'NOKPROBE_SYMBOL'
+    1224 | NOKPROBE_SYMBOL(aggr_post_handler);
+         | ^~~~~~~~~~~~~~~
+   kernel/kprobes.c:1224:1: error: parameter '_kbl_addr_aggr_post_handler' is initialized
+   kernel/kprobes.c:1224:1: warning: 'used' attribute ignored [-Wattributes]
+   In file included from arch/sparc/include/asm/kprobes.h:5,
+                    from include/linux/kprobes.h:31,
+                    from kernel/kprobes.c:23:
+   include/asm-generic/kprobes.h:14:9: error: section attribute not allowed for '_kbl_addr_aggr_post_handler'
+      14 |         _kbl_addr_##fname = (unsigned long)fname;
+         |         ^~~~~~~~~~
+   include/asm-generic/kprobes.h:15:33: note: in expansion of macro '__NOKPROBE_SYMBOL'
+      15 | # define NOKPROBE_SYMBOL(fname) __NOKPROBE_SYMBOL(fname)
+         |                                 ^~~~~~~~~~~~~~~~~
+   kernel/kprobes.c:1224:1: note: in expansion of macro 'NOKPROBE_SYMBOL'
+    1224 | NOKPROBE_SYMBOL(aggr_post_handler);
+         | ^~~~~~~~~~~~~~~
+   kernel/kprobes.c:1224:17: error: 'aggr_post_handler' undeclared (first use in this function); did you mean 'aggr_pre_handler'?
+    1224 | NOKPROBE_SYMBOL(aggr_post_handler);
+         |                 ^~~~~~~~~~~~~~~~~
+   include/asm-generic/kprobes.h:14:44: note: in definition of macro '__NOKPROBE_SYMBOL'
+      14 |         _kbl_addr_##fname = (unsigned long)fname;
+         |                                            ^~~~~
+   kernel/kprobes.c:1224:1: note: in expansion of macro 'NOKPROBE_SYMBOL'
+    1224 | NOKPROBE_SYMBOL(aggr_post_handler);
+         | ^~~~~~~~~~~~~~~
+   kernel/kprobes.c:1224:17: note: each undeclared identifier is reported only once for each function it appears in
+    1224 | NOKPROBE_SYMBOL(aggr_post_handler);
+         |                 ^~~~~~~~~~~~~~~~~
+   include/asm-generic/kprobes.h:14:44: note: in definition of macro '__NOKPROBE_SYMBOL'
+      14 |         _kbl_addr_##fname = (unsigned long)fname;
+         |                                            ^~~~~
+   kernel/kprobes.c:1224:1: note: in expansion of macro 'NOKPROBE_SYMBOL'
+    1224 | NOKPROBE_SYMBOL(aggr_post_handler);
+         | ^~~~~~~~~~~~~~~
+   kernel/kprobes.c:1224:35: error: expected declaration specifiers before ';' token
+    1224 | NOKPROBE_SYMBOL(aggr_post_handler);
+         |                                   ^
+   kernel/kprobes.c:1228:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+    1228 | {
+         | ^
+   In file included from arch/sparc/include/asm/kprobes.h:5,
+                    from include/linux/kprobes.h:31,
+                    from kernel/kprobes.c:23:
+   include/asm-generic/kprobes.h:14:9: error: storage class specified for parameter '_kbl_addr_kprobes_inc_nmissed_count'
+      14 |         _kbl_addr_##fname = (unsigned long)fname;
+         |         ^~~~~~~~~~
+   include/asm-generic/kprobes.h:15:33: note: in expansion of macro '__NOKPROBE_SYMBOL'
+      15 | # define NOKPROBE_SYMBOL(fname) __NOKPROBE_SYMBOL(fname)
+         |                                 ^~~~~~~~~~~~~~~~~
+   kernel/kprobes.c:1238:1: note: in expansion of macro 'NOKPROBE_SYMBOL'
+    1238 | NOKPROBE_SYMBOL(kprobes_inc_nmissed_count);
+         | ^~~~~~~~~~~~~~~
+   kernel/kprobes.c:1238:1: error: parameter '_kbl_addr_kprobes_inc_nmissed_count' is initialized
+   kernel/kprobes.c:1238:1: warning: 'used' attribute ignored [-Wattributes]
+   In file included from arch/sparc/include/asm/kprobes.h:5,
+                    from include/linux/kprobes.h:31,
+                    from kernel/kprobes.c:23:
+   include/asm-generic/kprobes.h:14:9: error: section attribute not allowed for '_kbl_addr_kprobes_inc_nmissed_count'
+      14 |         _kbl_addr_##fname = (unsigned long)fname;
+         |         ^~~~~~~~~~
+   include/asm-generic/kprobes.h:15:33: note: in expansion of macro '__NOKPROBE_SYMBOL'
+      15 | # define NOKPROBE_SYMBOL(fname) __NOKPROBE_SYMBOL(fname)
+         |                                 ^~~~~~~~~~~~~~~~~
+   kernel/kprobes.c:1238:1: note: in expansion of macro 'NOKPROBE_SYMBOL'
+    1238 | NOKPROBE_SYMBOL(kprobes_inc_nmissed_count);
+         | ^~~~~~~~~~~~~~~
+   kernel/kprobes.c:1238:43: error: expected declaration specifiers before ';' token
+    1238 | NOKPROBE_SYMBOL(kprobes_inc_nmissed_count);
+         |                                           ^
+   kernel/kprobes.c:1241:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+    1241 | {
 
 
-On 11/23/21 8:55 PM, Kim Phillips wrote:
-> On 11/23/21 2:40 AM, kajoljain wrote:
->> On 10/8/21 12:47 AM, Kim Phillips wrote:
->>> On 10/7/21 12:28 PM, Jiri Olsa wrote:
->>>> On Mon, Oct 04, 2021 at 04:41:14PM -0500, Kim Phillips wrote:
->>>>> ---
->>>>>    tools/perf/util/evsel.c | 24 ++++++++++++++++++++++++
->>>>>    1 file changed, 24 insertions(+)
->>>>>
->>>>> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
->>>>> index b915840690d4..f8a9cbd99314 100644
->>>>> --- a/tools/perf/util/evsel.c
->>>>> +++ b/tools/perf/util/evsel.c
->>>>> @@ -2743,9 +2743,22 @@ static bool find_process(const char *name)
->>>>>        return ret ? false : true;
->>>>>    }
->>>>>    +static bool is_amd(const char *arch, const char *cpuid)
->>>>> +{
->>>>> +    return arch && !strcmp("x86", arch) && cpuid && strstarts(cpuid,
->>>>> "AuthenticAMD");
->>>>> +}
->>>>> +
->>>>> +static bool is_amd_ibs(struct evsel *evsel)
->>>>> +{
->>>>> +    return evsel->core.attr.precise_ip || !strncmp(evsel->pmu_name,
->>>>> "ibs", 3);
->>>>> +}
->>>>> +
->>>>>    int evsel__open_strerror(struct evsel *evsel, struct target
->>>>> *target,
->>>>>                 int err, char *msg, size_t size)
->>>>>    {
->>>>> +    struct perf_env *env = evsel__env(evsel);
->>>>> +    const char *arch = perf_env__arch(env);
->>>>> +    const char *cpuid = perf_env__cpuid(env);
->>>>>        char sbuf[STRERR_BUFSIZE];
->>>>>        int printed = 0, enforced = 0;
->>>>>    @@ -2841,6 +2854,17 @@ int evsel__open_strerror(struct evsel
->>>>> *evsel, struct target *target,
->>>>>                return scnprintf(msg, size, "wrong clockid (%d).",
->>>>> clockid);
->>>>>            if (perf_missing_features.aux_output)
->>>>>                return scnprintf(msg, size, "The 'aux_output' feature
->>>>> is not supported, update the kernel.");
->>>>> +        if (is_amd(arch, cpuid)) {
->>>>> +            if (is_amd_ibs(evsel)) {
->>>>
->>>> would single 'is_amd_ibs' call be better? checking on both amd and ibs
->>>
->>> Good suggestion. If you look at the later patch in the
->>> BRS series, I have rewritten it to add the new
->>> AMD PMU like so:
->>>
->>>   if (is_amd()) {
->>>       if (is_amd_ibs()) {
->>>           if (evsel->this)
->>>               return
->>>           if (evsel->that)
->>>               return
->>>       }
->>> +    if (is_amd_brs()) {
->>> +        if (evsel->this)
->>> +            return
->>> +        if (evsel->that)
->>> +            return
->>> +    }
->>>   }
->>
->> Hi Kim,
->>       From my point of view, it won't be a good idea of adding so many
->> checks in common function definition itself.
->> Can you just create a check to see if its amd machine and then add a
->> function call which will handle all four conditions together?
->>
->> which is basically for:
->>
->> +        if (is_amd(arch, cpuid)) {
->> +            if (is_amd_ibs(evsel)) {
->> +                if (evsel->core.attr.exclude_kernel)
->> +                    return scnprintf(msg, size,
->> +    "AMD IBS can't exclude kernel events.  Try running at a higher
->> privilege level.");
->> +                if (!evsel->core.system_wide)
->> +                    return scnprintf(msg, size,
->> +    "AMD IBS may only be available in system-wide/per-cpu mode.  Try
->> using
->> -a, or -C and workload affinity");
->> +            }
->>
->> and this:
->>
->> +            if (is_amd_brs(evsel)) {
->> +                if (evsel->core.attr.freq)
->> +                    return scnprintf(msg, size,
->> +    "AMD Branch Sampling does not support frequency mode sampling, must
->> pass a fixed sampling period via -c option or
->> cpu/branch-brs,period=xxxx/.");
->> +                /* another reason is that the period is too small */
->> +                return scnprintf(msg, size,
->> +    "AMD Branch Sampling does not support sampling period smaller than
->> what is reported in /sys/devices/cpu/caps/branches.");
->> +            }
-> 
-> IIRC, I tried something like that but carrying the
-> 
-> 
-> struct target *target, int err, char *msg, size_t size
-> 
-> parameters made things worse.
-> 
->> So, incase we are in amd machine,  common function evsel__open_strerror
->> will call function may be something like amd_evesel_open_strerror_check
->> which will look for both ibs and brs conditions and return corresponding
->> error statement.
-> 
-> The vast majority of decisions made by evsel__open_strerror are
-> going to be common across most arch/uarches.  AMD has only these
-> two pesky exceptions to the rule and therefore IMO it's ok
-> to have them inline with the common function, since the decisions
-> are so deeply intertwined.  A new amd_evsel_open_strerror_check
-> sounds like it'd duplicate too much of the common function code
-> in order to handle the common error cases.
+vim +52 kernel/kprobes.c
 
-Hi Kim,
-   Sorry for the confusion, what I meant by adding new function is just
-to handle these corner error cases and not duplicating whole
-evsel__open_strerror code.
+    50	
+    51	#ifndef CONFIG_SYSCTL
+  > 52	kprobe_sysctls_init() do { } while (0)
+    53	#endif
+    54	
+    55	static int kprobes_initialized;
+    56	/* kprobe_table can be accessed by
+    57	 * - Normal hlist traversal and RCU add/del under 'kprobe_mutex' is held.
+    58	 * Or
+    59	 * - RCU hlist traversal under disabling preempt (breakpoint handlers)
+    60	 */
+  > 61	static struct hlist_head kprobe_table[KPROBE_TABLE_SIZE];
+    62	
+    63	/* NOTE: change this value only with 'kprobe_mutex' held */
+  > 64	static bool kprobes_all_disarmed;
+    65	
+    66	/* This protects 'kprobe_table' and 'optimizing_list' */
+  > 67	static DEFINE_MUTEX(kprobe_mutex);
+  > 68	static DEFINE_PER_CPU(struct kprobe *, kprobe_instance);
+    69	
+    70	kprobe_opcode_t * __weak kprobe_lookup_name(const char *name,
+    71						unsigned int __unused)
+  > 72	{
+    73		return ((kprobe_opcode_t *)(kallsyms_lookup_name(name)));
+    74	}
+    75	
+    76	/*
+    77	 * Blacklist -- list of 'struct kprobe_blacklist_entry' to store info where
+    78	 * kprobes can not probe.
+    79	 */
+  > 80	static LIST_HEAD(kprobe_blacklist);
+    81	
 
-Maybe something like below code, Its just prototype of code to show you
-the flow, you can refine it and check for any build or indentation
-issues using checkpatch.pl script.
-
-So basically, in common function we can just have 2 calls, first to
-check if we are in amd system and second to return corresponding error
-message, rather then adding whole chunk of if's which are specific to amd.
-
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index ac0127be0459..adefb162ae08 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -2852,9 +2852,40 @@ static bool find_process(const char *name)
-        return ret ? false : true;
- }
-
-+static bool is_amd(const char *arch, const char *cpuid)
-+{
-+       return arch && !strcmp("x86", arch) && cpuid && strstarts(cpuid,
-"AuthenticAMD");
-+}
-+
-+static int error_amd_ibs_brs(struct evsel *evsel, char *msg, size_t size)
-+{
-+       if (evsel->core.attr.precise_ip || !strncmp(evsel->pmu_name,
-"ibs", 3)) {
-+               if (evsel->core.attr.exclude_kernel)
-+                       return scnprintf(msg, size,
-+       "AMD IBS can't exclude kernel events.  Try running at a higher
-privilege level.");
-+               if (!evsel->core.system_wide)
-+                       return scnprintf(msg, size,
-+       "AMD IBS may only be available in system-wide/per-cpu mode.  Try
-using -a, or -C and workload affinity");
-+       }
-+
-+       if (((evsel->core.attr.config & 0xff) == 0xc4) &&
-(evsel->core.attr.sample_type & PERF_SAMPLE_BRANCH_STACK)) {
-+               if (evsel->core.attr.freq) {
-+                       return scnprintf(msg, size,
-+       "AMD Branch Sampling does not support frequency mode sampling,
-must pass a fixed sampling
-+          period via -c option or cpu/branch-brs,period=xxxx/.");
-+                /* another reason is that the period is too small */
-+               return scnprintf(msg, size,
-+       "AMD Branch Sampling does not support sampling period smaller
-than what is reported in /sys/devices/cpu/caps/branches.");
-+               }
-+       }
-+}
-+
- int evsel__open_strerror(struct evsel *evsel, struct target *target,
-                         int err, char *msg, size_t size)
- {
-+       struct perf_env *env = evsel__env(evsel);
-+       const char *arch = perf_env__arch(env);
-+       const char *cpuid = perf_env__cpuid(env);
-        char sbuf[STRERR_BUFSIZE];
-        int printed = 0, enforced = 0;
-
-@@ -2950,6 +2981,8 @@ int evsel__open_strerror(struct evsel *evsel,
-struct target *target,
-                        return scnprintf(msg, size, "wrong clockid
-(%d).", clockid);
-                if (perf_missing_features.aux_output)
-                        return scnprintf(msg, size, "The 'aux_output'
-feature is not supported, update the kernel.");
-+               if (is_amd(arch, cpuid))
-+                       return error_amd_ibs_brs(evsel, msg, size);
-                break;
-        case ENODATA:
-                return scnprintf(msg, size, "Cannot collect data source
-with the load latency event alone. "
-
-Thanks,
-Kajol Jain
-
-> 
-> Kim
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
