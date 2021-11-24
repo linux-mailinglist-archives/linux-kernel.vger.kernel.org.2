@@ -2,104 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E9545C77D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC8E45C328
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:33:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351087AbhKXOhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:37:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356389AbhKXOhH (ORCPT
+        id S1348147AbhKXNfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:35:53 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:49620 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344294AbhKXNcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:37:07 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7CB2C1E0F80
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 05:28:43 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id de30so2826935qkb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 05:28:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WyqwKxdhohLsMuEIkCIlIATDPwH2TE1WlLTF/w/br8k=;
-        b=GY9jyrWtFmcfvg6YIZNtW3Ix56uPG0xBVjVBcS/e4b+IChdZQLov+cmAbydRjXM3yK
-         dHqLCM4rjxEAvDa+geMY6fxngSihcj9pL3VNCzuR1hT2jWo5QsWYH9RlQrq2L4nnidQh
-         XOxKUJHwJcXJbqOHxX+l82Y2bfwOjGCrUMU1BOEJ2KfwQAZTFwflMfFjmrSyvviuzm8Q
-         xUsy2MvOhJP30pa+dsEHvTeYDv5XDY39bOfetq9mDFqGd/vTEEynw9MabZ2vI0zwMFRj
-         Hc3Z61Jzb66T2sLxHgq8fcJUihzG27C2dDAa/isljx+kSgCfURy3AiR0rbrqrhGC8DyQ
-         TOWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WyqwKxdhohLsMuEIkCIlIATDPwH2TE1WlLTF/w/br8k=;
-        b=3AsaTi+EhiZXhPg0kpdn3Io0YyoDJlPrnDqGjcRW6jT4WP1LKMkIC5THK+fgxioq5F
-         BA+F9yPxcmmzg01UAa4KxasyZlmKcNvZzxWXUvwXqMMFJHfrbFCAwOEZLzWsrsHKhTii
-         jQJjNP2c7PzeDy3SBDB7VmTQYFTjmaXWqD+3rNQBKiSTCM2gNCkqJjpkPQVPlGQWWsfn
-         ayQE3FJwKb1GakSd07Gzc/BdRvaI0TGRFgbRYrM7P/2FjZoB2UG/F7byAo1TvIaMb5do
-         Zc62MW3H1P0P0vWfKUou1K6SBWw0uPVy0FUFGOx+nFrnBgBwCSagDowgEr4ujyajRn/p
-         6HSw==
-X-Gm-Message-State: AOAM531rz/4zjkk+y+ZmPeHlMooqY+LO+fSqMdVO4YffQx/tSOsjUPjv
-        SW4+xgzTzhXnyzAMXcU8QD1WQQ==
-X-Google-Smtp-Source: ABdhPJzGbKoVCbaPnqn5zJtUXwEpBDGfjaVJvcoC28XnE+g7caK/5ACu2Wb/+0Qf51NE8Rb35L0EjA==
-X-Received: by 2002:a05:620a:2ef:: with SMTP id a15mr5877836qko.95.1637760522983;
-        Wed, 24 Nov 2021 05:28:42 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id u11sm7819305qko.33.2021.11.24.05.28.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 05:28:42 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mpsKI-0011GP-1M; Wed, 24 Nov 2021 09:28:42 -0400
-Date:   Wed, 24 Nov 2021 09:28:42 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-        Andrew Dona-Couch <andrew@donacou.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Drew DeVault <sir@cmpwn.com>,
-        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        io_uring Mailing List <io-uring@vger.kernel.org>,
-        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
-Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
-Message-ID: <20211124132842.GH5112@ziepe.ca>
-References: <20211123132523.GA5112@ziepe.ca>
- <10ccf01b-f13a-d626-beba-cbee70770cf1@redhat.com>
- <20211123140709.GB5112@ziepe.ca>
- <e4d7d211-5d62-df89-8f94-e49385286f1f@redhat.com>
- <20211123170056.GC5112@ziepe.ca>
- <dd92a69a-6d09-93a1-4f50-5020f5cc59d0@suse.cz>
- <20211123235953.GF5112@ziepe.ca>
- <2adca04f-92e1-5f99-6094-5fac66a22a77@redhat.com>
- <20211124132353.GG5112@ziepe.ca>
- <cca0229e-e53e-bceb-e215-327b6401f256@redhat.com>
+        Wed, 24 Nov 2021 08:32:02 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id ADB911FD37;
+        Wed, 24 Nov 2021 13:28:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1637760531; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kmul1IbP0GnECy1ymvqNlUCJsoqlTASzkS58dvywssg=;
+        b=ZEJ5PnuBiszih5UXgJaGfk48htnkxlak3oSlR+gsJcxUaDIvq/C+QihbR+cSOgBpG+zgd8
+        +K0SHfJOVuvCZ5p8/tLlFazoWL73VNlxHc0nIKokDCaJgYq3FFrzJdjBvkcNLTPEHdH7Nw
+        dl52rAA+SWMLMAv737DIisN9S0JnLz8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1637760531;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kmul1IbP0GnECy1ymvqNlUCJsoqlTASzkS58dvywssg=;
+        b=z67fHxRWZigT6qf7YYjcA3is5C6hHq/rq3j5Mp8klzhWcoWQddC+zDx+5goR1ptD0YeIIc
+        jRvrdCjFrPiJ1ZDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 175E313F20;
+        Wed, 24 Nov 2021 13:28:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id fhDpAxM+nmEsRQAAMHmgww
+        (envelope-from <jroedel@suse.de>); Wed, 24 Nov 2021 13:28:51 +0000
+Date:   Wed, 24 Nov 2021 14:28:49 +0100
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Michael Sterritt <sterritt@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-coco@lists.linux.dev, Paolo Bonzini <pbonzini@redhat.com>,
+        marcorr@google.com, pgonda@google.com
+Subject: Re: [PATCH v2] x86/sev-es: Fix SEV-ES INS/OUTS instructions for
+ word, dword, and qword
+Message-ID: <YZ4+EYF8dhrzRy2h@suse.de>
+References: <20211119232757.176201-1-sterritt@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cca0229e-e53e-bceb-e215-327b6401f256@redhat.com>
+In-Reply-To: <20211119232757.176201-1-sterritt@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 02:25:09PM +0100, David Hildenbrand wrote:
-> On 24.11.21 14:23, Jason Gunthorpe wrote:
-> > On Wed, Nov 24, 2021 at 09:57:32AM +0100, David Hildenbrand wrote:
-> > 
-> >> Unfortunately it will only be a band aid AFAIU. I can rewrite my
-> >> reproducer fairly easily to pin the whole 2M range first, pin a second
-> >> time only a single page, and then unpin the 2M range, resulting in the
-> >> very same way to block THP. (I can block some THP less because I always
-> >> need the possibility to memlock 2M first, though).
-> > 
-> > Oh!
-> > 
-> > The issue is GUP always pins an entire compound, no matter how little
-> > the user requests.
+On Fri, Nov 19, 2021 at 03:27:57PM -0800, Michael Sterritt wrote:
+> Properly type the operands being passed to __put_user()/__get_user().
+> Otherwise, these routines truncate data for dependent instructions
+> (e.g., INSW) and only read/write one byte.
 > 
-> That's a different issue. I make sure to split the compound page before
-> pinning anything :)
+> Tested: Tested by sending a string with `REP OUTSW` to a port and then
+> reading it back in with `REP INSW` on the same port. Previous behavior
+> was to only send and receive the first char of the size. For example,
+> word operations for "abcd" would only read/write "ac". With change, the
+> full string is now written and read back.
+> 
+> Fixes: f980f9c31a923 (x86/sev-es: Compile early handler code into kernel image)
+> Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+> Reviewed-by: Marc Orr <marcorr@google.com>
+> Reviewed-by: Peter Gonda <pgonda@google.com>
+> Signed-off-by: Michael Sterritt <sterritt@google.com>
 
-?? Where is that done in GUP?
+Reviewed-by: Joerg Roedel <jroedel@suse.de>
 
-Jason
