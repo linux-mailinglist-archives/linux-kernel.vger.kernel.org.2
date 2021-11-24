@@ -2,129 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51AD145D13D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:29:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F1045D13F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 00:30:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352618AbhKXXcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 18:32:47 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:36412 "EHLO gloria.sntech.de"
+        id S235176AbhKXXdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 18:33:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345993AbhKXXcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 18:32:46 -0500
-Received: from ip5f5b2004.dynamic.kabel-deutschland.de ([95.91.32.4] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mq1ha-0000eP-BH; Thu, 25 Nov 2021 00:29:22 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linux-efi@vger.kernel.org, linux-arch@vger.kernel.org,
-        Alexandre Ghiti <alexandre.ghiti@canonical.com>
-Cc:     Alexandre Ghiti <alexandre.ghiti@canonical.com>
-Subject: Re: [PATCH v2 00/10] Introduce sv48 support without relocatable kernel
-Date:   Thu, 25 Nov 2021 00:29:20 +0100
-Message-ID: <2700575.YIZvDWadBg@diego>
-In-Reply-To: <20210929145113.1935778-1-alexandre.ghiti@canonical.com>
-References: <20210929145113.1935778-1-alexandre.ghiti@canonical.com>
+        id S234177AbhKXXdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 18:33:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3004A60F55;
+        Wed, 24 Nov 2021 23:30:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637796643;
+        bh=DxCqlQ+PoiA3QcJG5He3IJe+Kxv7xSxe+Xw210sQzLI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PhodRkdh7DMAbGdeIweJgBiONkJCN7Qe6O39enhhUkX5HJZ4QQjmBZq0iyyejDWvA
+         9HwuL7VAlhjWyRcgN9D3m4OE5keHOBASONtRpaDzVT5eOoEU3W/111ClA18j4vLzLl
+         IkTtXKqcnkjLX3E191RxVxgsyCgsPIzIdVg6groO1ohyB/x/Wv55OfRKvT3hXaR96A
+         penOf/4rmItfC3Doe06vOWX+ClBEn7w8qx/BaEKqZadRYjVsI50jJlPcUFhs2rgD2M
+         iHuh7pJNaNnzsGB4GdHGUQ2x9EQXhn+7vdEvjwgfQxZtDQ37OfWvYrrlL2zny9ZNV3
+         w1HyvEsYb6T9A==
+Date:   Wed, 24 Nov 2021 15:30:42 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Dylan Hung <dylan_hung@aspeedtech.com>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-aspeed@lists.ozlabs.org>,
+        <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
+        <andrew@aj.id.au>, <joel@jms.id.au>, <davem@davemloft.net>,
+        <linux@armlinux.org.uk>, <hkallweit1@gmail.com>, <andrew@lunn.ch>,
+        <BMC-SW@aspeedtech.com>
+Subject: Re: [PATCH] net:phy: Fix "Link is Down" issue
+Message-ID: <20211124153042.54d164dd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211124061057.12555-1-dylan_hung@aspeedtech.com>
+References: <20211124061057.12555-1-dylan_hung@aspeedtech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, 29. September 2021, 16:51:03 CET schrieb Alexandre Ghiti:
-> This patchset allows to have a single kernel for sv39 and sv48 without           
-> being relocatable.                                                               
->                                                                                  
-> The idea comes from Arnd Bergmann who suggested to do the same as x86,           
-> that is mapping the kernel to the end of the address space, which allows         
-> the kernel to be linked at the same address for both sv39 and sv48 and           
-> then does not require to be relocated at runtime.                                
->                                                                                  
-> This implements sv48 support at runtime. The kernel will try to                  
-> boot with 4-level page table and will fallback to 3-level if the HW does not     
-> support it. Folding the 4th level into a 3-level page table has almost no        
-> cost at runtime.                                                                 
->                                                                                  
-> Tested on:                                                                       
->   - qemu rv64 sv39: OK                                                           
->   - qemu rv64 sv48: OK                                                           
->   - qemu rv64 sv39 + kasan: OK                                                   
->   - qemu rv64 sv48 + kasan: OK                                                   
->   - qemu rv32: OK                                                                
->   - Unmatched: OK
+On Wed, 24 Nov 2021 14:10:57 +0800 Dylan Hung wrote:
+> Subject: [PATCH] net:phy: Fix "Link is Down" issue
 
-On a beagleV (which supports only sv39) I've tested both the limit via
-the mmu-type in the devicetree and also that the fallback works when
-I disable the mmu-type in the dt, so
-
-Tested-by: Heiko Stuebner <heiko@sntech.de>
-
->   
->                                                                                  
-> Changes in v2:                                                                   
->   - Rebase onto for-next                                                         
->   - Fix KASAN                                                                    
->   - Fix stack canary                                                             
->   - Get completely rid of MAXPHYSMEM configs                                     
->   - Add documentation
-> 
-> Alexandre Ghiti (10):
->   riscv: Allow to dynamically define VA_BITS
->   riscv: Get rid of MAXPHYSMEM configs
->   asm-generic: Prepare for riscv use of pud_alloc_one and pud_free
->   riscv: Implement sv48 support
->   riscv: Use pgtable_l4_enabled to output mmu_type in cpuinfo
->   riscv: Explicit comment about user virtual address space size
->   riscv: Improve virtual kernel memory layout dump
->   Documentation: riscv: Add sv48 description to VM layout
->   riscv: Initialize thread pointer before calling C functions
->   riscv: Allow user to downgrade to sv39 when hw supports sv48
-> 
->  Documentation/riscv/vm-layout.rst             |  36 ++
->  arch/riscv/Kconfig                            |  35 +-
->  arch/riscv/configs/nommu_k210_defconfig       |   1 -
->  .../riscv/configs/nommu_k210_sdcard_defconfig |   1 -
->  arch/riscv/configs/nommu_virt_defconfig       |   1 -
->  arch/riscv/include/asm/csr.h                  |   3 +-
->  arch/riscv/include/asm/fixmap.h               |   1 +
->  arch/riscv/include/asm/kasan.h                |   2 +-
->  arch/riscv/include/asm/page.h                 |  10 +
->  arch/riscv/include/asm/pgalloc.h              |  40 +++
->  arch/riscv/include/asm/pgtable-64.h           | 108 +++++-
->  arch/riscv/include/asm/pgtable.h              |  30 +-
->  arch/riscv/include/asm/sparsemem.h            |   6 +-
->  arch/riscv/kernel/cpu.c                       |  23 +-
->  arch/riscv/kernel/head.S                      |   4 +-
->  arch/riscv/mm/context.c                       |   4 +-
->  arch/riscv/mm/init.c                          | 323 +++++++++++++++---
->  arch/riscv/mm/kasan_init.c                    |  91 +++--
->  drivers/firmware/efi/libstub/efi-stub.c       |   2 +
->  include/asm-generic/pgalloc.h                 |  24 +-
->  include/linux/sizes.h                         |   1 +
->  21 files changed, 615 insertions(+), 131 deletions(-)
-> 
-> 
-
-
-
-
+Since there will be v2, please also add a space between net: and phy:.
