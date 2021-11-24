@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4607945BA99
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E4B45BAD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242035AbhKXMMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:12:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33246 "EHLO mail.kernel.org"
+        id S243028AbhKXMOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:14:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242217AbhKXMIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:08:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E77360C51;
-        Wed, 24 Nov 2021 12:05:11 +0000 (UTC)
+        id S242575AbhKXMMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:12:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74308610A1;
+        Wed, 24 Nov 2021 12:07:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755511;
-        bh=9L5S1wNQqgRAGnTg268+P/TH/VccBWxuhv9lCpuuxG8=;
+        s=korg; t=1637755629;
+        bh=KEqd/P9XT4dClN2JjwUhdQuONgaBrHN6ncMYyDQ/8ro=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0xifp9Ot7xUZF8ubEiPwLoYnapXHg2aQnzJ3bsS251MxIFoIRSQ5NlnV4+5pYdXut
-         OnEmRLu/SnjkH9HWEPEPcoBQdG0Jgp1/Io5UTgssl+ZPIxnj/d1hrzA0F1T8m+WoVn
-         urGo71oCjcbR9TCAr+Z/GkvWdgwSlweCHJVy6MHA=
+        b=XXWlL76tzIRwrrc7Nvq4nP5Jr2lwgFjrDX6c9kEO4fWCTL+umtmuSnu31IiUsCOc2
+         5QRNMuQlT741oKliRb08b4Nv1telMREELwTjw2CDpgwa/NNxSlXlvtQygk9uEy1Oos
+         DzcQxEdeLgQhP7GaFVnKbc4GU4cRv9jgzwHmLbsg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Yang Yingliang <yangyingliang@huawei.com>,
+        stable@vger.kernel.org,
+        Guanghui Feng <guanghuifeng@linux.alibaba.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 121/162] usb: host: ohci-tmio: check return value after calling platform_get_resource()
-Date:   Wed, 24 Nov 2021 12:57:04 +0100
-Message-Id: <20211124115702.224399290@linuxfoundation.org>
+Subject: [PATCH 4.4 122/162] tty: tty_buffer: Fix the softlockup issue in flush_to_ldisc
+Date:   Wed, 24 Nov 2021 12:57:05 +0100
+Message-Id: <20211124115702.255557999@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
 References: <20211124115658.328640564@linuxfoundation.org>
@@ -40,35 +40,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Guanghui Feng <guanghuifeng@linux.alibaba.com>
 
-[ Upstream commit 9eff2b2e59fda25051ab36cd1cb5014661df657b ]
+[ Upstream commit 3968ddcf05fb4b9409cd1859feb06a5b0550a1c1 ]
 
-It will cause null-ptr-deref if platform_get_resource() returns NULL,
-we need check the return value.
+When running ltp testcase(ltp/testcases/kernel/pty/pty04.c) with arm64, there is a soft lockup,
+which look like this one:
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20211011134920.118477-1-yangyingliang@huawei.com
+  Workqueue: events_unbound flush_to_ldisc
+  Call trace:
+   dump_backtrace+0x0/0x1ec
+   show_stack+0x24/0x30
+   dump_stack+0xd0/0x128
+   panic+0x15c/0x374
+   watchdog_timer_fn+0x2b8/0x304
+   __run_hrtimer+0x88/0x2c0
+   __hrtimer_run_queues+0xa4/0x120
+   hrtimer_interrupt+0xfc/0x270
+   arch_timer_handler_phys+0x40/0x50
+   handle_percpu_devid_irq+0x94/0x220
+   __handle_domain_irq+0x88/0xf0
+   gic_handle_irq+0x84/0xfc
+   el1_irq+0xc8/0x180
+   slip_unesc+0x80/0x214 [slip]
+   tty_ldisc_receive_buf+0x64/0x80
+   tty_port_default_receive_buf+0x50/0x90
+   flush_to_ldisc+0xbc/0x110
+   process_one_work+0x1d4/0x4b0
+   worker_thread+0x180/0x430
+   kthread+0x11c/0x120
+
+In the testcase pty04, The first process call the write syscall to send
+data to the pty master. At the same time, the workqueue will do the
+flush_to_ldisc to pop data in a loop until there is no more data left.
+When the sender and workqueue running in different core, the sender sends
+data fastly in full time which will result in workqueue doing work in loop
+for a long time and occuring softlockup in flush_to_ldisc with kernel
+configured without preempt. So I add need_resched check and cond_resched
+in the flush_to_ldisc loop to avoid it.
+
+Signed-off-by: Guanghui Feng <guanghuifeng@linux.alibaba.com>
+Link: https://lore.kernel.org/r/1633961304-24759-1-git-send-email-guanghuifeng@linux.alibaba.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/ohci-tmio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/tty_buffer.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/usb/host/ohci-tmio.c b/drivers/usb/host/ohci-tmio.c
-index 9c9e97294c18d..4d42ae3b2fd6d 100644
---- a/drivers/usb/host/ohci-tmio.c
-+++ b/drivers/usb/host/ohci-tmio.c
-@@ -199,7 +199,7 @@ static int ohci_hcd_tmio_drv_probe(struct platform_device *dev)
- 	if (usb_disabled())
- 		return -ENODEV;
+diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
+index 4706df20191b1..832aec1f145f9 100644
+--- a/drivers/tty/tty_buffer.c
++++ b/drivers/tty/tty_buffer.c
+@@ -519,6 +519,9 @@ static void flush_to_ldisc(struct work_struct *work)
+ 		if (!count)
+ 			break;
+ 		head->read += count;
++
++		if (need_resched())
++			cond_resched();
+ 	}
  
--	if (!cell)
-+	if (!cell || !regs || !config || !sram)
- 		return -EINVAL;
- 
- 	if (irq < 0)
+ 	mutex_unlock(&buf->lock);
 -- 
 2.33.0
 
