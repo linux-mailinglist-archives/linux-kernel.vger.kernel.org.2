@@ -2,123 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD7045CD9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:04:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A767A45CD9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:06:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241938AbhKXUH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 15:07:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236387AbhKXUHY (ORCPT
+        id S243367AbhKXUJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 15:09:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:43271 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233616AbhKXUJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 15:07:24 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F59C061574;
-        Wed, 24 Nov 2021 12:04:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OAtizbSoXoPNAyMg215cuoX14RfVf7vO6HnqYrV3Dvk=; b=pxzUkXYfltPbHw3FE40BsyvVC7
-        q4ztiAKAh9byHa+doug0X32e1mx36FUzfwLCiduYtt8QsQkbTSbkx8rBjcJuIEIoHDU20SEPslrtv
-        aii6BxwmJAhz2jwsFlCGq9xm5OajI8ekPEy4Mqu0PWeXNpXx4DqN2dO+jhaBLFPxibEOqbbPap9kz
-        8hJIYZoj+Zo4YwJWjUUXqgOiIkexnMHh1II250x7Gy2c6CToeqOJJvXycORVmnogatzbWhQ9v5WVB
-        5Azf0IIf4TYYwihfL8WBzt1yNge3rFW3tQIm07tHkpz8QXVV3OMm2hQWnGTYXtG6Kw4Kd8+/dnFER
-        KDp5jGhA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mpyUo-003BgI-Pa; Wed, 24 Nov 2021 20:03:58 +0000
-Date:   Wed, 24 Nov 2021 20:03:58 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+        Wed, 24 Nov 2021 15:09:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637784370;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=g3FNTmsc1SXTLd0gvUMImMwzqQbvxssx/fBfDABEpVI=;
+        b=Ld90LOpU7/QT4jA7Xp33c68XKUck1A25oOVbg58OUeU8JAVYxPysZKSa7YhbmOyFYZGly1
+        2JhpKgsHMphKp5IOrbQPnzmKYPSMiTkFNhI9dO0KwZXagNM8H9EvPJoqsJZlq2qOb3J1qq
+        p1YU49H+qB+Qe0QqkhmTzY2zHIRSY3Q=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-593-Qisw6VKQM9i_3LZ0InGrgA-1; Wed, 24 Nov 2021 15:06:08 -0500
+X-MC-Unique: Qisw6VKQM9i_3LZ0InGrgA-1
+Received: by mail-ed1-f72.google.com with SMTP id n11-20020aa7c68b000000b003e7d68e9874so3382553edq.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:06:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=g3FNTmsc1SXTLd0gvUMImMwzqQbvxssx/fBfDABEpVI=;
+        b=rMOU2P10rOVdB0aPw9USaAGeEVJZoIS29NLrXHjJkebZC8BpaC7nKMLtZ/KsOtXvW5
+         BXafPAhgikjpMGxEtcpLRI8KonWQvy6raV/JeFT0QUQesLlnRXMTfNwqsc4rCiNHmEa9
+         3PHfOl8EumBtacVpmMkB6PdTGt652x3OKg3UGT+bgShtutsnZA3crYgHSDXTlRRdIt7l
+         TTMgIfGzrVjPXhDawH5knkWR4beoVXppGDCFXj7JM6hFyrHxbo24YxbnGP02Y9mNUAWs
+         OJndc+tF574ES+x5a0qWmSII9ZubC4Qy1fOxkq5VfQ2i+huvq7ziSCDKRn1/aRExBzIw
+         yKZA==
+X-Gm-Message-State: AOAM533XFcQtCneXtiBkFKmWI96K8P7vRWpRM58FWY5kA/iMHdf27H8M
+        fkDJngqDA3W1cQq77Q/xh5holU0jvb3by32CbFyHReeeYpV8EhJCP5ZSvf/SHDh9gJ3BHTmgQ36
+        7rDjqxECoYy7p2E+8HEPCa84T
+X-Received: by 2002:a17:906:1f14:: with SMTP id w20mr23379438ejj.365.1637784367441;
+        Wed, 24 Nov 2021 12:06:07 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw7eywc3pFLa+vnFIIagMLyxPXF3qzpHEqeQHc2f64JABQ0cFFptRXuwAGlA4wEZKHT1aIARA==
+X-Received: by 2002:a17:906:1f14:: with SMTP id w20mr23379419ejj.365.1637784367302;
+        Wed, 24 Nov 2021 12:06:07 -0800 (PST)
+Received: from krava ([83.240.60.218])
+        by smtp.gmail.com with ESMTPSA id p13sm586571eds.38.2021.11.24.12.06.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 12:06:06 -0800 (PST)
+Date:   Wed, 24 Nov 2021 21:06:05 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
- with sub-page faults
-Message-ID: <YZ6arlsi2L3LVbFO@casper.infradead.org>
-References: <20211124192024.2408218-1-catalin.marinas@arm.com>
- <20211124192024.2408218-4-catalin.marinas@arm.com>
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [GIT PULL] tracing/uprobe: Fix uprobe_perf_open probes iteration
+Message-ID: <YZ6bLc81ZBeRUG+U@krava>
+References: <20211124100956.6905a198@gandalf.local.home>
+ <CAHk-=wjakjw6-rDzDDBsuMoDCqd+9ogifR_EE1F0K-jYek1CdA@mail.gmail.com>
+ <CAHk-=whYWvdKrFY3-xcRFqyxAMnhMGsmU=0gYWYWuRrR7mFV-A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211124192024.2408218-4-catalin.marinas@arm.com>
+In-Reply-To: <CAHk-=whYWvdKrFY3-xcRFqyxAMnhMGsmU=0gYWYWuRrR7mFV-A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 07:20:24PM +0000, Catalin Marinas wrote:
-> +++ b/fs/btrfs/ioctl.c
-> @@ -2223,7 +2223,8 @@ static noinline int search_ioctl(struct inode *inode,
->  
->  	while (1) {
->  		ret = -EFAULT;
-> -		if (fault_in_writeable(ubuf + sk_offset, *buf_size - sk_offset))
-> +		if (fault_in_exact_writeable(ubuf + sk_offset,
-> +					     *buf_size - sk_offset))
->  			break;
->  
->  		ret = btrfs_search_forward(root, &key, path, sk->min_transid);
+On Wed, Nov 24, 2021 at 10:30:24AM -0800, Linus Torvalds wrote:
+> On Wed, Nov 24, 2021 at 10:27 AM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > Instead, you should do something like
+> >
+> >         list_for_each_entry(pu, trace_probe_probe_list(tp), tp.list) {
+> 
+> That 'pu' is a typo, it should be 'tu'.
+> 
+> The patch itself got it right, I think.
+> 
+> HOWEVER. Despite the patch itself getting it right, I want to point
+> out that that was mostly by luck than anything else.
+> 
+> The patch is ENTIRELY UNTESTED.
 
-Couldn't we avoid all of this nastiness by doing ...
+I put your patch to the test and.. it passed ;-)
 
-@@ -2121,10 +2121,9 @@ static noinline int copy_to_sk(struct btrfs_path *path,
-                 * problem. Otherwise we'll fault and then copy the buffer in
-                 * properly this next time through
-                 */
--               if (copy_to_user_nofault(ubuf + *sk_offset, &sh, sizeof(sh))) {
--                       ret = 0;
-+               ret = __copy_to_user_nofault(ubuf + *sk_offset, &sh, sizeof(sh));
-+               if (ret)
-                        goto out;
--               }
- 
-                *sk_offset += sizeof(sh);
-@@ -2196,6 +2195,7 @@ static noinline int search_ioctl(struct inode *inode,
-        int ret;
-        int num_found = 0;
-        unsigned long sk_offset = 0;
-+       unsigned long next_offset = 0;
- 
-        if (*buf_size < sizeof(struct btrfs_ioctl_search_header)) {
-                *buf_size = sizeof(struct btrfs_ioctl_search_header);
-@@ -2223,7 +2223,8 @@ static noinline int search_ioctl(struct inode *inode,
- 
-        while (1) {
-                ret = -EFAULT;
--               if (fault_in_writeable(ubuf + sk_offset, *buf_size - sk_offset))
-+               if (fault_in_writeable(ubuf + sk_offset + next_offset,
-+                                       *buf_size - sk_offset - next_offset))
-                        break;
- 
-                ret = btrfs_search_forward(root, &key, path, sk->min_transid);
-@@ -2235,11 +2236,12 @@ static noinline int search_ioctl(struct inode *inode,
-                ret = copy_to_sk(path, &key, sk, buf_size, ubuf,
-                                 &sk_offset, &num_found);
-                btrfs_release_path(path);
--               if (ret)
-+               if (ret > 0)
-+                       next_offset = ret;
-+               else if (ret < 0)
-                        break;
--
-        }
--       if (ret > 0)
-+       if (ret == -ENOSPC || ret > 0)
-                ret = 0;
- err:
-        sk->nr_items = num_found;
+there are several other places like this around and also in trace_kprobe.c
+I can send the follow up fix tomorrow
 
-(not shown: the tedious bits where the existing 'ret = 1' are converted
-to 'ret = -ENOSPC' in copy_to_sk())
- 
-(where __copy_to_user_nofault() is a new function that does exactly what
-copy_to_user_nofault() does, but returns the number of bytes copied)
+thanks,
+jirka
 
-That way, the existing fault_in_writable() will get the fault, and we
-don't need to probe every 16 bytes.
+> 
+> Because that's how I roll, as you should all know by now.
+> 
+>                   Linus
+> 
+
