@@ -2,109 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7BD345B734
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 10:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E411E45B737
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 10:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241430AbhKXJTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 04:19:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233439AbhKXJTK (ORCPT
+        id S229521AbhKXJTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 04:19:52 -0500
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:59633 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241440AbhKXJT0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 04:19:10 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFCE7C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 01:16:00 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id np6-20020a17090b4c4600b001a90b011e06so2032135pjb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 01:16:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vpWDTC9TwRzJZvmNFiV3o1UcT2PSTzU0txHmJdlLF3M=;
-        b=OBxn0TbGxfuFHxLwwnLYsQNBr9FLMVE7oaZxKaxiuZMMdujlb+hPzdTv3G0G/Lmbqu
-         NRboLRlb5K7Vk8HDTVzj/0am4rQBs+yQph12SlPpfn/b3t7LozJcbLUAszykqy7ixgn2
-         yscMQZPj9G9liaT4L//5MfMA/fdRFhqMW5o+nrCEV0l0wlBosRhMMd+A/DgrrpQ6DiWx
-         W1IesovgEYJoB0/4qdxK1wBw1hjCCKspoRM38KkIlvAboAGtlltXqKe4HJ9yvyBtOG/m
-         tqCnmbBbFuHywjdF4CG14dEoNhAnp+gZe/tJma1VK27bTpLLRleOgmM5MEf/9hP0qE7c
-         4+cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vpWDTC9TwRzJZvmNFiV3o1UcT2PSTzU0txHmJdlLF3M=;
-        b=pHQ2JogRwnKTy2MUAeFCp/r51GIASSEZhn0QrxiZY2T+KvHEus/pS+hLSQBFuNhzii
-         kcVDHWnhMxpO34XDigjOTgXwYXCbILL29mcCApjPSEh1mgxy1ngwoqbY9IhLIiuEUE0C
-         Tkqy4Ra8t9rov31R40TWruXPKp10RgP4jrWjTuuMnPYJHrD9zHMAN0EevEiyCyCkhn+f
-         y3hdBadW3gU7ORBQXiYYSo65PPDA65k3j+/A68Pk0r6WOTgoAWl4vxuQlOCXKRmemA11
-         gHpYSaeytox/UH1csPG0EKRxIqjPL6M2WAxuF4PPmbieDJwtQdQgHL47KInfJPCFwIMp
-         bEuw==
-X-Gm-Message-State: AOAM5318SatmsrE+OKttPTZAh3iyAWZiytohuvsaEIMmsYGyP1vpJ+mG
-        uluxEr1rrn6Yd9SBoXH7ycs=
-X-Google-Smtp-Source: ABdhPJxCF1+TNn5jg+vIIMtv6J8LDslLLIW1yHmvxg1P9ZszjSo9r4w0wqv9zVi+8CmxpE8EAfPkIA==
-X-Received: by 2002:a17:902:9694:b0:143:6f27:29ad with SMTP id n20-20020a170902969400b001436f2729admr16780940plp.46.1637745360350;
-        Wed, 24 Nov 2021 01:16:00 -0800 (PST)
-Received: from baohua-VirtualBox.localdomain (47-72-151-34.dsl.dyn.ihug.co.nz. [47.72.151.34])
-        by smtp.gmail.com with ESMTPSA id l6sm6757787pfc.51.2021.11.24.01.15.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 01:15:59 -0800 (PST)
-From:   Barry Song <21cnbao@gmail.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        linux-kernel@vger.kernel.org
-Cc:     dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, Barry Song <song.bao.hua@hisilicon.com>
-Subject: [PATCH v2] sched/fair: Remove the cost of a redundant cpumask_next_wrap in select_idle_cpu
-Date:   Wed, 24 Nov 2021 17:15:46 +0800
-Message-Id: <20211124091546.5072-1-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 24 Nov 2021 04:19:26 -0500
+Received: from [79.2.93.196] (port=52016 helo=[192.168.101.73])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1mpoNw-0004yt-EW; Wed, 24 Nov 2021 10:16:12 +0100
+Subject: Re: [PATCH v3 3/3] PCI: apple: Fix #PERST polarity
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        kernel-team@android.com
+References: <20211123180636.80558-1-maz@kernel.org>
+ <20211123180636.80558-4-maz@kernel.org>
+ <453389da-b041-94b3-009e-6c6323134936@lucaceresoli.net>
+ <87fsrmc4e6.wl-maz@kernel.org>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <cc7b1e22-a184-1053-870a-966a210ecfd0@lucaceresoli.net>
+Date:   Wed, 24 Nov 2021 10:16:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <87fsrmc4e6.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Barry Song <song.bao.hua@hisilicon.com>
+Hi,
 
-This patch keeps the same scanning amount, but drops a redundant loop
-of cpumask_next_wrap.
-The original code did for_each_cpu_wrap(cpu, cpus, target + 1), then
-checked --nr; this patch does --nr before doing the next loop, thus,
-it can remove a cpumask_next_wrap() which costs a little bit.
+On 24/11/21 10:02, Marc Zyngier wrote:
+> On Tue, 23 Nov 2021 21:36:11 +0000,
+> Luca Ceresoli <luca@lucaceresoli.net> wrote:
+>>
+>> Hi Mark,
+>>
+>> On 23/11/21 19:06, Marc Zyngier wrote:
+>>> Now that #PERST is properly defined as active-low in the device tree,
+>>> fix the driver to correctly drive the line indemendently of the
+>>> implied polarity.
+>>>
+>>> Fixes: 1e33888fbe44 ("PCI: apple: Add initial hardware bring-up")
+>>> Suggested-by: Pali Rohár <pali@kernel.org>
+>>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+>>
+>> Thanks for quickly addressing this!
+>>
+>> Do we need a transition path for backward compatibility with old DTs
+>> already around? Something like this [0]. You said [1] the DT actually
+>> used is not even the one in the kernel, thus how do we guarantee DT and
+>> driver switch to the new polarity all at once?
+> 
+> No. As it turns out, neither u-boot nor OpenBSD (the only two other
+> payloads that can boot on M1) are upstreamed yet. So we're still in
+> that stage where we don't need to maintain backward compatibility. If
+> we don't get this patches merged by the end of this cycle, we will
+> have to revisit this though.
 
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- -v2: make code clearer with respect to Peter's comment
+Good news!
 
- kernel/sched/fair.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6e476f6..8cd23f1 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6278,6 +6278,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
- 		time = cpu_clock(this);
- 	}
- 
-+	--nr;
- 	for_each_cpu_wrap(cpu, cpus, target + 1) {
- 		if (has_idle_core) {
- 			i = select_idle_core(p, cpu, cpus, &idle_cpu);
-@@ -6285,11 +6286,11 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
- 				return i;
- 
- 		} else {
--			if (!--nr)
--				return -1;
- 			idle_cpu = __select_idle_cpu(cpu, p);
- 			if ((unsigned int)idle_cpu < nr_cpumask_bits)
- 				break;
-+			if (!--nr)
-+				return -1;
- 		}
- 	}
- 
 -- 
-1.8.3.1
-
+Luca
