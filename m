@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E0745BB54
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:16:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E107645BE92
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:47:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243650AbhKXMSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:18:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47684 "EHLO mail.kernel.org"
+        id S243625AbhKXMtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:49:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242954AbhKXMNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:13:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B2FD610FE;
-        Wed, 24 Nov 2021 12:07:26 +0000 (UTC)
+        id S245577AbhKXMqG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:46:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C6CC610A8;
+        Wed, 24 Nov 2021 12:26:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755647;
-        bh=4Q9Za+5KmPVZ4TUcvRbgFLBBLzm6NO2EEEDWk60V+mw=;
+        s=korg; t=1637756818;
+        bh=wPrmmHmvB56jqEavEjnxHpgQFBXTl7D0wdSo4uCMJX4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ydovCjC8ehZ72jZC1qDv/F4/8Kyo1QJMQm3g0uv6viboSKM4zNur8xJRgQiEpt73J
-         mYobz3BJoF57uwXYDB9KqVSfLwWr1EJYq0ppDTPSHlB89GumC0RiWsLwWLrOeN4pZ8
-         oceDECdiE5LsR9dTgf6WFOe0EeJbvHW85EjMlOlY=
+        b=O5Nay7p5zJYRokagLC6Bsqbi6s32LrAdw9Zkxy8YSZXkds4YgrDdebOrp04y/3KRG
+         vv9MvBJNyFhd4U5KpFVCPZbsjWi07aYC5viF10Vby32PJLraO25Ew+zIpYTV5OuwOk
+         SKdiwNhRngJaRbg6qnlsAsnFwrvmqlGTqXiUfWSs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sven Eckelmann <sven@narfation.org>,
-        Simon Wunderlich <sw@simonwunderlich.de>
-Subject: [PATCH 4.4 157/162] batman-adv: Reserve needed_*room for fragments
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rich Felker <dalias@libc.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 218/251] sh: define __BIG_ENDIAN for math-emu
 Date:   Wed, 24 Nov 2021 12:57:40 +0100
-Message-Id: <20211124115703.355280561@linuxfoundation.org>
+Message-Id: <20211124115717.836209203@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,90 +42,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Eckelmann <sven@narfation.org>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-commit c5cbfc87558168ef4c3c27ce36eba6b83391db19 upstream.
+[ Upstream commit b929926f01f2d14635345d22eafcf60feed1085e ]
 
-The batadv net_device is trying to propagate the needed_headroom and
-needed_tailroom from the lower devices. This is needed to avoid cost
-intensive reallocations using pskb_expand_head during the transmission.
+Fix this by defining both ENDIAN macros in
+<asm/sfp-machine.h> so that they can be utilized in
+<math-emu/soft-fp.h> according to the latter's comment:
+/* Allow sfp-machine to have its own byte order definitions. */
 
-But the fragmentation code split the skb's without adding extra room at the
-end/beginning of the various fragments. This reduced the performance of
-transmissions over complex scenarios (batadv on vxlan on wireguard) because
-the lower devices had to perform the reallocations at least once.
+(This is what is done in arch/nds32/include/asm/sfp-machine.h.)
 
-Fixes: ee75ed88879a ("batman-adv: Fragment and send skbs larger than mtu")
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
-[ bp: 4.4 backported: adjust context. ]
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This placates these build warnings:
+
+In file included from ../arch/sh/math-emu/math.c:23:
+.../include/math-emu/single.h:50:21: warning: "__BIG_ENDIAN" is not defined, evaluates to 0 [-Wundef]
+   50 | #if __BYTE_ORDER == __BIG_ENDIAN
+In file included from ../arch/sh/math-emu/math.c:24:
+.../include/math-emu/double.h:59:21: warning: "__BIG_ENDIAN" is not defined, evaluates to 0 [-Wundef]
+   59 | #if __BYTE_ORDER == __BIG_ENDIAN
+
+Fixes: 4b565680d163 ("sh: math-emu support")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Signed-off-by: Rich Felker <dalias@libc.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/batman-adv/fragmentation.c |   15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ arch/sh/include/asm/sfp-machine.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/net/batman-adv/fragmentation.c
-+++ b/net/batman-adv/fragmentation.c
-@@ -394,6 +394,7 @@ out:
+diff --git a/arch/sh/include/asm/sfp-machine.h b/arch/sh/include/asm/sfp-machine.h
+index d3c548443f2a6..dd195c6f3b9d8 100644
+--- a/arch/sh/include/asm/sfp-machine.h
++++ b/arch/sh/include/asm/sfp-machine.h
+@@ -25,6 +25,14 @@
+ #ifndef _SFP_MACHINE_H
+ #define _SFP_MACHINE_H
  
- /**
-  * batadv_frag_create - create a fragment from skb
-+ * @net_dev: outgoing device for fragment
-  * @skb: skb to create fragment from
-  * @frag_head: header to use in new fragment
-  * @fragment_size: size of new fragment
-@@ -404,22 +405,25 @@ out:
-  *
-  * Returns the new fragment, NULL on error.
-  */
--static struct sk_buff *batadv_frag_create(struct sk_buff *skb,
-+static struct sk_buff *batadv_frag_create(struct net_device *net_dev,
-+					  struct sk_buff *skb,
- 					  struct batadv_frag_packet *frag_head,
- 					  unsigned int fragment_size)
- {
-+	unsigned int ll_reserved = LL_RESERVED_SPACE(net_dev);
-+	unsigned int tailroom = net_dev->needed_tailroom;
- 	struct sk_buff *skb_fragment;
- 	unsigned header_size = sizeof(*frag_head);
- 	unsigned mtu = fragment_size + header_size;
- 
--	skb_fragment = netdev_alloc_skb(NULL, mtu + ETH_HLEN);
-+	skb_fragment = dev_alloc_skb(ll_reserved + mtu + tailroom);
- 	if (!skb_fragment)
- 		goto err;
- 
- 	skb->priority = TC_PRIO_CONTROL;
- 
- 	/* Eat the last mtu-bytes of the skb */
--	skb_reserve(skb_fragment, header_size + ETH_HLEN);
-+	skb_reserve(skb_fragment, ll_reserved + header_size);
- 	skb_split(skb, skb_fragment, skb->len - fragment_size);
- 
- 	/* Add the header */
-@@ -442,11 +446,12 @@ bool batadv_frag_send_packet(struct sk_b
- 			     struct batadv_orig_node *orig_node,
- 			     struct batadv_neigh_node *neigh_node)
- {
-+	struct net_device *net_dev = neigh_node->if_incoming->net_dev;
- 	struct batadv_priv *bat_priv;
- 	struct batadv_hard_iface *primary_if = NULL;
- 	struct batadv_frag_packet frag_header;
- 	struct sk_buff *skb_fragment;
--	unsigned mtu = neigh_node->if_incoming->net_dev->mtu;
-+	unsigned mtu = net_dev->mtu;
- 	unsigned header_size = sizeof(frag_header);
- 	unsigned max_fragment_size, num_fragments;
- 	bool ret = false;
-@@ -489,7 +494,7 @@ bool batadv_frag_send_packet(struct sk_b
- 		if (frag_header.no == BATADV_FRAG_MAX_FRAGMENTS - 1)
- 			goto out_err;
- 
--		skb_fragment = batadv_frag_create(skb, &frag_header,
-+		skb_fragment = batadv_frag_create(net_dev, skb, &frag_header,
- 						  max_fragment_size);
- 		if (!skb_fragment)
- 			goto out_err;
++#ifdef __BIG_ENDIAN__
++#define __BYTE_ORDER __BIG_ENDIAN
++#define __LITTLE_ENDIAN 0
++#else
++#define __BYTE_ORDER __LITTLE_ENDIAN
++#define __BIG_ENDIAN 0
++#endif
++
+ #define _FP_W_TYPE_SIZE		32
+ #define _FP_W_TYPE		unsigned long
+ #define _FP_WS_TYPE		signed long
+-- 
+2.33.0
+
 
 
