@@ -2,206 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7966745B8FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 12:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE1545B8FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 12:18:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240940AbhKXLUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 06:20:31 -0500
-Received: from esa8.fujitsucc.c3s2.iphmx.com ([68.232.159.88]:22425 "EHLO
-        esa8.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240887AbhKXLU3 (ORCPT
+        id S241029AbhKXLV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 06:21:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20473 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240882AbhKXLV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 06:20:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1637752640; x=1669288640;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=M1llAIjTQ4nAXtit0NIJu+PorD9tWV19dG6JKu6FlgM=;
-  b=eOCAWzyBTdgWP52o4GCBlp0DL7uyV3oyrGase0qYGn7+nk466J/UnvO2
-   +z0OBdwZwA9Q20Z/jxu9UwtnOnFBux8fSfeiChqf2bPmJC3xTkujJzm+v
-   wiCfcU3GgxzLDSEiSj0391i6UK01y4L8EDY9bkznZokzDee0BCy9lmYdM
-   qaT3EMg0YxB+0orXke4tfRwTJjlzDACc8qraLeOJLwP+Z2HW8MNf8PDjq
-   jHNJrq7OgjDHsB8+HjlGDKy1CSy3eJUXDbhwu+1LQCwliIwhBWe3tIv+C
-   bUaXmyy5v4KmIToWCYvvo3tWBkM8fvxNdcFk5cfAUjgDeOkLZnlyjn4xj
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="44427822"
-X-IronPort-AV: E=Sophos;i="5.87,260,1631545200"; 
-   d="scan'208";a="44427822"
-Received: from mail-os0jpn01lp2110.outbound.protection.outlook.com (HELO JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.110])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 20:17:15 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mOUkO3MIOzT8Yr023UZGZsRZ1cJ0d49IcnJ9CYx16ixUuOF8eNS+sSJaE3gcch24LgL4eZAjPWAbXrmqtbGD2Hc5ghFiNBw1k+b2i0YaPiQYPAShyad1cRfnlnE1ZrTDJvfXsNtsTUSFaIcFBRPBcBHc4MmlBXvsT5ZGX+t5vgB4sMbl5BY6tY3DfUcejRKZniCzqc+i7kqMCxWCHTJDc7q1hAh/TILMFfx3YQIExUHYmKUwcoha4MB0mhWQWofZBkJ3bGLJLurXxRtEo5LHIpuN96VQ2HLW6E6ogCokthqqaRh85uBLRE8YD46a/6ypxvrz5XLEYgeYrpkGMeXCCA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=M1llAIjTQ4nAXtit0NIJu+PorD9tWV19dG6JKu6FlgM=;
- b=Kql7KSOmPNVfMvBHyQpkPcAwVfGC1tTxBxdjEXAwOowJE858zYOzuouxGx8Bqmnfqw3vUkq+3qHqAMPdQQKC4OvjSZA8rUtKviLhyB3AqXhO8RoDUM0eoE2W6iG3jBtUFA8Xe7kvCJcnK51Rgx3QEN92Yjbo1JgcyTEaDbx1HhMRlfUg4ioRwIROmhfyEPwzsvqdTqWDRwCTlGO0gdbtlWEheLENaf0OMQUrQkGGJFXOLNi7BbMmodoKz0HAH4DLVQLawU3uhdQZ7JxGWPd8dUKYJmLxJZJ4NKifbRcz2uXTPXodi/qtsT0WSi/uY4dBhmuaJte76U44QiMMHBSaHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M1llAIjTQ4nAXtit0NIJu+PorD9tWV19dG6JKu6FlgM=;
- b=WTugxhAsLZB3VIcQpcXOKGTJfXNW9jp6v+X4k7OrIMUv/VlP79qOx6si956Ji5Wj/P64lGh9xthh6FwnowouOR2VnSCIuiXwVBsh9WBBtgte6USxNSiN9tO2NOQoiBzOYuzzBGkQVu811C1giC+Cfpoff7wgshZsuFUJdgcsDf4=
-Received: from TYAPR01MB6330.jpnprd01.prod.outlook.com (2603:1096:402:3e::12)
- by TYAPR01MB4141.jpnprd01.prod.outlook.com (2603:1096:404:ca::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.20; Wed, 24 Nov
- 2021 11:17:12 +0000
-Received: from TYAPR01MB6330.jpnprd01.prod.outlook.com
- ([fe80::b839:7029:4084:48dd]) by TYAPR01MB6330.jpnprd01.prod.outlook.com
- ([fe80::b839:7029:4084:48dd%6]) with mapi id 15.20.4713.025; Wed, 24 Nov 2021
- 11:17:12 +0000
-From:   "tan.shaopeng@fujitsu.com" <tan.shaopeng@fujitsu.com>
-To:     'James Morse' <james.morse@arm.com>
-CC:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        "'linux-arm-kernel@lists.infradead.org'" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "'soc@kernel.org'" <soc@kernel.org>,
-        "'tony.luck@intel.com'" <tony.luck@intel.com>,
-        "'arnd@arndb.de'" <arnd@arndb.de>,
-        "'will@kernel.org'" <will@kernel.org>,
-        "'catalin.marinas@arm.com'" <catalin.marinas@arm.com>,
-        "'olof@lixom.net'" <olof@lixom.net>,
-        "misono.tomohiro@fujitsu.com" <misono.tomohiro@fujitsu.com>
-Subject: RE: About resctrl code rebase
-Thread-Topic: About resctrl code rebase
-Thread-Index: AQHXn1NwTLwp8TDbHk+k0EwVJVXXBKwTCk0w
-Date:   Wed, 24 Nov 2021 11:17:12 +0000
-Message-ID: <TYAPR01MB6330F3B97D23A214FB4DA7C48B619@TYAPR01MB6330.jpnprd01.prod.outlook.com>
-References: <TYAPR01MB6330CE3CB67CF8F602D44D098BCD9@TYAPR01MB6330.jpnprd01.prod.outlook.com>
- <97164928-e2d7-fd3f-e063-9174b028ed65@arm.com>
-In-Reply-To: <97164928-e2d7-fd3f-e063-9174b028ed65@arm.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: =?iso-2022-jp?B?TVNJUF9MYWJlbF9hNzI5NWNjMS1kMjc5LTQyYWMtYWI0ZC0zYjBmNGZl?=
- =?iso-2022-jp?B?Y2UwNTBfQWN0aW9uSWQ9OGMyMjNmMDItZmJiZS00N2JkLWJhYjctZmY2?=
- =?iso-2022-jp?B?ZjVkYTk5ZGI5O01TSVBfTGFiZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFi?=
- =?iso-2022-jp?B?NGQtM2IwZjRmZWNlMDUwX0NvbnRlbnRCaXRzPTA7TVNJUF9MYWJlbF9h?=
- =?iso-2022-jp?B?NzI5NWNjMS1kMjc5LTQyYWMtYWI0ZC0zYjBmNGZlY2UwNTBfRW5hYmxl?=
- =?iso-2022-jp?B?ZD10cnVlO01TSVBfTGFiZWxfYTcyOTVjYzEtZDI3OS00MmFjLWFiNGQt?=
- =?iso-2022-jp?B?M2IwZjRmZWNlMDUwX01ldGhvZD1TdGFuZGFyZDtNU0lQX0xhYmVsX2E3?=
- =?iso-2022-jp?B?Mjk1Y2MxLWQyNzktNDJhYy1hYjRkLTNiMGY0ZmVjZTA1MF9OYW1lPUZV?=
- =?iso-2022-jp?B?SklUU1UtUkVTVFJJQ1RFRBskQiJMJT8lUhsoQjtNU0lQX0xhYmVsX2E3?=
- =?iso-2022-jp?B?Mjk1Y2MxLWQyNzktNDJhYy1hYjRkLTNiMGY0ZmVjZTA1MF9TZXREYXRl?=
- =?iso-2022-jp?B?PTIwMjEtMTEtMjRUMTE6MTQ6NDFaO01TSVBfTGFiZWxfYTcyOTVjYzEt?=
- =?iso-2022-jp?B?ZDI3OS00MmFjLWFiNGQtM2IwZjRmZWNlMDUwX1NpdGVJZD1hMTlmMTIx?=
- =?iso-2022-jp?B?ZC04MWUxLTQ4NTgtYTlkOC03MzZlMjY3ZmQ0Yzc7?=
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1b7e6138-af1e-4582-21c7-08d9af3bf687
-x-ms-traffictypediagnostic: TYAPR01MB4141:
-x-microsoft-antispam-prvs: <TYAPR01MB41417522B2A5BC52DB3A63198B619@TYAPR01MB4141.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lq0fgngB7JO9XpNDNTWC3zFASU9Nt6/Mp1OcxSZuqM3sSsNCDbqdwlffHc1SVkW8GW4+7vVzuROFgc9EVu1Yt8Tb+9b9yRxcw7xdcxElCy3YBhc4OeANgAvX1frxGL+9vu985oGxzKZBtQaPB98a5TaMtpWUbxpsFRgkdZL3sBjBsnxsxjfsBp/bDetKnz+PEjbZG8iArOxW/c9EJ7cNTOoKdan4tuejpyE1pyIOJNrWuN9H33dwp6PuDyke6EQBYHwicQDR6N1WZ2mwFu3BQzIMTq9eTCJtY09/+mujtEvf+ua79T23xJO+vbm/+dtylpVqZkVqXJ66WJODyzGAIgjiT7pPnEd+jTz6Mfii6FqWzqFE09L1NnTnXo5xMCMmk1y2vNBL/uVKPLiZzSJ1l7stt9MHm0mukqXNwv+MYiPDaLkKZK6BMR05rtVvgDNrHwt0UI1ujPqgTQ5F/gNqNKqj1/xUezXS1H0GdGKJqHO8xv2yMutQz3AzNp81YTR73l4C49f3+2El314EqWRVqFr6Ry3Ro6o8GE/Dvob8cnqe4vjqP3WxjaqJL7aXSafS0gw21R0C9+URe5kUIUU7aFGCocKMS1C92q9yhStvNw3EcbsdGGB7dRKt/XTyEGIPOvumpSKXVnhmHtG/f8WZa74lfHi7PAkyTM1K5h/+sxjgl7kowQfuSajQwrYhQc1HZvs4hdt6yH05BkacUzTtMLGMPAl/rikgluqmXhyfp+DVJSTnfwo7F/ZjaumWNlv2oE7S8BmCZ3NL3Ifb6Xaw+LGkZY+rDpdF8FXXPKlACe/p8izubzNAPmIBoVrARneLzrqwlisoV4bwsqJW++5Ejg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYAPR01MB6330.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(53546011)(71200400001)(7696005)(26005)(4326008)(508600001)(8676002)(6506007)(6916009)(76116006)(83380400001)(38100700002)(3480700007)(85182001)(52536014)(38070700005)(66476007)(8936002)(122000001)(186003)(66946007)(316002)(33656002)(86362001)(2906002)(966005)(9686003)(66556008)(64756008)(66446008)(54906003)(107886003)(5660300002)(82960400001)(55016003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-2022-jp?B?eGo0TmJjeTBONXkxNWRSTHk2ZDNTUHNXK2NEYW1uNWVnclYyWm1jdUl1?=
- =?iso-2022-jp?B?T1RuVWw3aXBuZzJJOGZ0a0N5ZWMwTjhNRnVrWnZoZEs0ZnJSR3g4MVFQ?=
- =?iso-2022-jp?B?VkxpcTZOZ2lPLzI2UERVb09hTURiS3NRSjcxazRveEZWZFp2cjJBVFRK?=
- =?iso-2022-jp?B?Y2tSSnBhRlRxNi9YU1FvMDNqblVETmxJRmhaN0NOSnJRTGk5NE9iQW9C?=
- =?iso-2022-jp?B?YlVaN1J0R1dZSkFrcWVZRkptQnBmQmZWd2ovemV2STAyVjJyTUFlNU9r?=
- =?iso-2022-jp?B?eDVSYXlvcURvMUVGdytiaGNXc1JsSmhKQ08zY1pyM1BlejdVTWVma0ZU?=
- =?iso-2022-jp?B?N2x5Wkd3U3pKbEZnVVBwV0FIOSs4U3RYUkN4SmhXRUphQklGY2RHUVFC?=
- =?iso-2022-jp?B?VXZOcFhXWWxTTG1vZjkzTFdzTEVJRVJhVnFGUmJvVi8xRUF0NG51YWQv?=
- =?iso-2022-jp?B?U0IrMkk2NUZQOEtaRk9LeldVbFppSDFTUmNPcmZGMkZ3L3BxaUUyeTFT?=
- =?iso-2022-jp?B?WVpsakVLa3JWMDh1ZDBhMzVvQm52WmpxbE04OGpaL01MZ2dLSmlva1Ex?=
- =?iso-2022-jp?B?SnkyUTI0OEdEcUNzczZTcjhUWndGV1RvR3dsbFU4UXdzSUdoMVg1K3lS?=
- =?iso-2022-jp?B?V3d6dGJQSXJiZktrY3FKa29tWEpFbFRObnZ5NjVKNVpRYWlGdXltWFBP?=
- =?iso-2022-jp?B?Q3Q4czBuMCtuUW5RcmsxT2sxdHZGMnNZKzFTWHp4SnY4ajZPejZrS1Iz?=
- =?iso-2022-jp?B?ZmVHanJiRG01MWJ6UEd0WHRZRUo0ZjFxeWhjUGU3bGdKdGh4RXVKR3N1?=
- =?iso-2022-jp?B?T0FydTlSanB4RlBQTCtDNnZYOGtUdnpQcHJ4elhKcnB6WXBCYmd5cUNo?=
- =?iso-2022-jp?B?bTlwOGVHVHlGR1dDenB2VDE4UG5pT0pDQWtndjFrRVczK0tPUlNMV0hI?=
- =?iso-2022-jp?B?cXdsTGh2QVhveUcxT1lPc08zTndHa1hWYndYY281aE9ZeWM1ckhNRWZN?=
- =?iso-2022-jp?B?UzZjc21hN3ZrQ1BRQ0dlaFJkMGZ0V3N3NVlMR2lPZUF3eUZxTlhVOUtw?=
- =?iso-2022-jp?B?Y0RhQzRJWFBGdmxiQi9oK3VFcmg0S3M0T3JDSGE2WjdEZmxKZG41T2ZU?=
- =?iso-2022-jp?B?cVlyZ043ZllVSUJOMEt1MzF1U1YzUkMyNlEvQ1JJTjFTT2ZPYkFBakJi?=
- =?iso-2022-jp?B?aEE2SVZ3NnkxR3BEeXM5d0RFRVpYLyt5Z3VkZ3lwTnZEUk1URDhzMERY?=
- =?iso-2022-jp?B?b3hOUUsxS2cvc0NiV0hGeUYzb0g3NG0yNlhzQ2FWVW5WUkQ4dWZIQUxy?=
- =?iso-2022-jp?B?akZwTzJOb3VLNjM5aEhhNnE3cWpWMGJUZStIZ3hDY2UxcnlWZWIxTUVi?=
- =?iso-2022-jp?B?c2JON0NYWTZwaGNCd1JrZktGWUU2bGkzTWVLV2xOSEdMKzRKTm9qekg1?=
- =?iso-2022-jp?B?NnI1RTZrS2xHYllvRDlZNjJzZVRRS2xuaFIvcVI5a0RBS29vK0hKRjB0?=
- =?iso-2022-jp?B?L3lWaHU1eVQ0bzhHdE9yVGhrSklJSkRkTWVTMm9ZTko1Yjl2QUtQK2w1?=
- =?iso-2022-jp?B?U0ZHL0VRL1kzVkN4VG01T0dWY040QUZSWUxWRTYxVDd6cmlYb21ibzVv?=
- =?iso-2022-jp?B?WCt1MmRyVHZaMkpZRUFTeHBORS9OOWVsS3JSZUR4SFN4ek1HZTJxMVIy?=
- =?iso-2022-jp?B?N3gzdWM4T002c3hRUDJPT2ZiUlcyMGdteVVScUQ3V0tZQ2VzUStuTnMr?=
- =?iso-2022-jp?B?VXZrcStBcTBmclR0K0xRdUZua25jODd5ZkF6dnFnelhDbDZ2akFpVnB3?=
- =?iso-2022-jp?B?dVJiZHQ0TDJ5a3JJdk4yZ21mR3dXcUxPTTBmMWY1bzVFM3BkQlpyNksv?=
- =?iso-2022-jp?B?aXI2WFlnUUxFUkZaUSsvZW5OSytscW42TzZsZXYvYXI4cHhPVC9HTHRz?=
- =?iso-2022-jp?B?WFdJYlh0T3JNT2hmZTZwSDBwNUZiUTVvaXNURzZFRlVqMC9pNnA3Tmd6?=
- =?iso-2022-jp?B?clgwZUFWK3ljKzN6NWtjSStoMGdKSFByQ2JPSWxyREtlVG9oanRlY01G?=
- =?iso-2022-jp?B?NlZZOUo2NG4yVGRFVHVwYVdKRWV0SUthTUJwQXl0cFhCbjJHQkpRUy8y?=
- =?iso-2022-jp?B?KzgwOHlLN3ZNUFFpNXl0MkxIVndrRE40TmxDOTlSZE92MGUzVmcxWUxq?=
- =?iso-2022-jp?B?RmRSZURKZE1BRjNoNzI0S2RCQ0hvYjZ4dW0rVDJmQ2FKTWNSQ2xSWitp?=
- =?iso-2022-jp?B?SFlSRkljMnNUeXR4cXBIdnZ4V1pTTUp1K2NpZ1lsYmlQM2tlUjBSZ1A2?=
- =?iso-2022-jp?B?dis4SVpRVU12WWJ6eVN1YitZWFg2YzR4cFkveEJvUXcyWWEzSmpIYVBP?=
- =?iso-2022-jp?B?STJKa2R5TUdWb2M2MEl1eDRyeVRBczNyeTUxSTJ1WGtOL05BQ1pYMFB0?=
- =?iso-2022-jp?B?OGxwbElBPT0=?=
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 24 Nov 2021 06:21:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637752726;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EXLSeLEr0J3vq9Ir5gCLpfItHKa5rtYcPMMzJxUxGIM=;
+        b=duQlzeviRalGqutZ67DQhZVN0mZWOVfeRmGoS8alF7FvL9U1ZNpAQ3MUFjxKN0iTA/9ouT
+        BfD3lHwTLC9MElgzXYmMZ19m0NypLBdRUSxC/cEEcZvinC+cOZ4K0OovT6W4r3trvFOKkC
+        o44JXrORnr9iBxg0/BO6VSOeK8/oT28=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-534-Rx1Bo858MiCjuZ8XcyzbaQ-1; Wed, 24 Nov 2021 06:18:45 -0500
+X-MC-Unique: Rx1Bo858MiCjuZ8XcyzbaQ-1
+Received: by mail-wm1-f69.google.com with SMTP id n16-20020a05600c3b9000b003331973fdbbso1279972wms.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 03:18:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=EXLSeLEr0J3vq9Ir5gCLpfItHKa5rtYcPMMzJxUxGIM=;
+        b=EsTivI/Baxm80hd2MIorT9hqkDFhh/4JzAZzJdazp5rkjxUJZEHNYAV1OFt86SGGVi
+         yGxgV0H8WChlGFwxB3Gk/+7k7VG4ReI4sOC2RjXeK8PYr6q29+Gfk9r2jDa7/XNNNBtZ
+         IlK17Txu9ea3U0YfNjTLCiSkmzD0t+1jeQbliu56LVs95e20U5oqk8wSr34xUNZcXk7+
+         OA17/O9b1g7hwJtIT1rcfGEX9Zl/fE9HlskEEdR+uRxpRLkRdsRWKk1I4NwoeImkVQTM
+         EGl7I55lqLEOHvWg0qwqeMijPW+fDd3CxQgza90Xio0yWH/+YMASGluQwkELpLyhFY0q
+         FlTQ==
+X-Gm-Message-State: AOAM531zrmaT4jkgRo9wILPd6sJkd+wzeGfoydMMZPqHwCgq0X/9FR7i
+        9WBsIWbjofQY5JDPW7jdENroYiH8xVSku4p7pFPfknzcP0UyfDeF9qdrD+sc7q2/whtwAiS9eE2
+        Urhcsg7L6FpVBJBRASRJ94w9A
+X-Received: by 2002:a05:6000:1568:: with SMTP id 8mr17888300wrz.76.1637752724296;
+        Wed, 24 Nov 2021 03:18:44 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwUFsykw0HGFhTqQnLN7D+ri7et5Vk/6y++jdKzN6SIrBYF+ephUxl+Qt7w4lsYUvICVs6Pkw==
+X-Received: by 2002:a05:6000:1568:: with SMTP id 8mr17888258wrz.76.1637752724065;
+        Wed, 24 Nov 2021 03:18:44 -0800 (PST)
+Received: from fedora (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id t8sm5115342wmq.32.2021.11.24.03.18.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 03:18:43 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     pbonzini@redhat.com, David Woodhouse <dwmw@amazon.co.uk>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot <syzbot+7b7db8bb4db6fd5e157b@syzkaller.appspotmail.com>,
+        syzkaller-bugs@googlegroups.com,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: [syzbot] kernel BUG in kvm_read_guest_offset_cached
+In-Reply-To: <000000000000f854ec05d167f227@google.com>
+References: <000000000000f854ec05d167f227@google.com>
+Date:   Wed, 24 Nov 2021 12:18:42 +0100
+Message-ID: <871r35n6nh.fsf@redhat.com>
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYAPR01MB6330.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1b7e6138-af1e-4582-21c7-08d9af3bf687
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2021 11:17:12.2264
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ubIU8V4AU1KNF4HJKEfyPkZfAA7fg5+YoLj8scT0QJLhRi4NjxfVgLMJvGh6zh5kS4xdJXu959VN8I3lAxTPr4Tr+x61d5had3tu9qQ9J+Y=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB4141
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James
-=20
-> On 01/09/2021 09:35, tan.shaopeng@fujitsu.com wrote:
-> >> As you known, Fujitsu is implementing a feature that add A64FX's
-> >> cache control function into resctrl.
->=20
-> >> Fujitsu will implement this feature base on your rebased code. I
-> >> think the commit of refactoring arch/x86 implementation of resctrl
-> >> has been merged into the x86/cache branch.
-> >> https://lore.kernel.org/lkml/162871088112.395.12879267279872673224.ti
-> >> p-bot2@tip-bot2/
->=20
-> I'm afraid this was only a small part of it.
->=20
-> I've also posted the next series here:
-> https://lore.kernel.org/lkml/20210729223610.29373-1-james.morse@arm.com
-> /
->=20
-> and there are a couple more after that.
+syzbot <syzbot+7b7db8bb4db6fd5e157b@syzkaller.appspotmail.com> writes:
 
-When will you post patches v3? And are there any other patches after this?=
-=20
-=20
-> >> I would like to know whether you have rebased these codes that move
-> >> the common parts of multiple architectures to somewhere.
-> >> And where is the rebase code?
-> >> In addition, when will you release the latest MPAM patch?
->=20
-> I will keep posting 'the next part' of the x86 changes once the earlier p=
-art is
-> reviewed.
-> (please help!)
->=20
-> I can't push the latest branch until the ACPI spec is published, but I ho=
-pe that
-> will happen this month.
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    4c388a8e740d Merge tag 'zstd-for-linus-5.16-rc1' of git://..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=171ff6eeb00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=6d3b8fd1977c1e73
+> dashboard link: https://syzkaller.appspot.com/bug?extid=7b7db8bb4db6fd5e157b
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
 
-Could you tell me when you are planning to push the rebase code?
-Is there anything I can do for you?
+No worries, I think I do.
 
-Best regards,
-Tan shaopeng
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+7b7db8bb4db6fd5e157b@syzkaller.appspotmail.com
+>
+> ------------[ cut here ]------------
+> kernel BUG at arch/x86/kvm/../../../virt/kvm/kvm_main.c:2955!
+> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> CPU: 0 PID: 27639 Comm: syz-executor.0 Not tainted 5.16.0-rc1-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:kvm_read_guest_offset_cached+0x3aa/0x440 arch/x86/kvm/../../../virt/kvm/kvm_main.c:2955
+> Code: 00 48 c7 c2 c0 08 a2 89 be 0b 03 00 00 48 c7 c7 60 0d a2 89 c6 05 71 f9 73 0c 01 e8 62 19 f8 07 e9 d6 fc ff ff e8 36 1b 6f 00 <0f> 0b e8 2f 1b 6f 00 48 8b 74 24 10 4c 89 ef 4c 89 e1 48 8b 54 24
+> RSP: 0018:ffffc9000589fa18 EFLAGS: 00010216
+> RAX: 0000000000003b75 RBX: ffff8880722ba798 RCX: ffffc90002b94000
+> RDX: 0000000000040000 RSI: ffffffff81087cda RDI: 0000000000000003
+> RBP: 0000000000000000 R08: 0000000000000004 R09: ffffc900049dbf53
+> R10: ffffffff81087a0f R11: 0000000000000002 R12: 0000000000000004
+> R13: ffffc900049d1000 R14: 0000000000000000 R15: ffff8880886c0000
+> FS:  00007fd7a562f700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000020000200 CR3: 0000000038e62000 CR4: 00000000003526f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000000000000c0fe
+> DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  handle_vmptrld arch/x86/kvm/vmx/nested.c:5304 [inline]
+
+The code is:
+
+		struct gfn_to_hva_cache *ghc = &vmx->nested.vmcs12_cache;
+		struct vmcs_hdr hdr;
+
+		if (ghc->gpa != vmptr &&
+		    kvm_gfn_to_hva_cache_init(vcpu->kvm, ghc, vmptr, VMCS12_SIZE)) {
+	            ...
+		}
+
+		if (kvm_read_guest_offset_cached(vcpu->kvm, ghc, &hdr,
+						 offsetof(struct vmcs12, hdr),
+						 sizeof(hdr))) {
+                ....
+
+It seems that 'nested.vmcs12_cache' is zero-initalized and 'ghc->gpa !=
+vmptr' check will pass if VMPTRLD is called with '0' argument.
+
+The following hack to 'state_test.c' can be used to crash host's kernel:
+
+diff --git a/tools/testing/selftests/kvm/x86_64/state_test.c b/tools/testing/selftests/kvm/x86_64/state_test.c
+index 32854c1462ad..29b468f1a083 100644
+--- a/tools/testing/selftests/kvm/x86_64/state_test.c
++++ b/tools/testing/selftests/kvm/x86_64/state_test.c
+@@ -81,6 +81,9 @@ static void vmx_l1_guest_code(struct vmx_pages *vmx_pages)
+        GUEST_ASSERT(vmx_pages->vmcs_gpa);
+        GUEST_ASSERT(prepare_for_vmx_operation(vmx_pages));
+        GUEST_SYNC(3);
++
++       vmptrld(0);
++
+        GUEST_ASSERT(load_vmcs(vmx_pages));
+        GUEST_ASSERT(vmptrstz() == vmx_pages->vmcs_gpa);
+ 
+
+This seems to be a regression introduced by
+
+commit cee66664dcd6241a943380ef9dcd2f8a0a7dc47d
+Author: David Woodhouse <dwmw@amazon.co.uk>
+Date:   Mon Nov 15 16:50:26 2021 +0000
+
+    KVM: nVMX: Use a gfn_to_hva_cache for vmptrld
+
+Luckily, it's in 5.16-rc2 only.
+
+I think the solution is to assign 'ghc->gpa' to '-1' upon
+initialization. I can send a patch if my conclusions seem to be right.
+
+-- 
+Vitaly
+
