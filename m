@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE10345C0A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:06:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3714145C544
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345152AbhKXNJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:09:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45424 "EHLO mail.kernel.org"
+        id S1350350AbhKXNzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:55:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347417AbhKXNHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:07:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD87360524;
-        Wed, 24 Nov 2021 12:38:51 +0000 (UTC)
+        id S1354423AbhKXNuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:50:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E941F63365;
+        Wed, 24 Nov 2021 13:03:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757532;
-        bh=KvJdOD6V2r6kk7neSVhLpy8RSHHeNxlmkcv5+kOAo9o=;
+        s=korg; t=1637759013;
+        bh=sVLH/3bPoTcclJCjnqTxHfTrKiW3x4IU7q64XrNSqD4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZNI0nqEks6OQnAdOpwUBhQctfVvfbTRDtGEZUmQhGeFllwDpnX+fJV7xIFcI7KaiY
-         qBbWDwOTlz35QDHaptf+Kt6reWYoJwsLW84L0vMcEI4K+HUKYFNM5/MZsJ82tnISX+
-         DRwwaoE+RinmbbC7M5M3YeT3MUwQILG0reFuW538=
+        b=l+MLxDmMFW4lkfcGhIp5jeE+F32/sJaOLmAzg+/RCC6bxbitEOuX62WKPFMK5yGaK
+         AIRv5uIhksdz/W3wrADdeKIzTm7qqogwtynTVPrFHH+c8hKgd8qaREgBUbzMawa58S
+         tb0aPVAr+Az4QLCSsmQ2D3DoK4jX4fCuhBWJLUh4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        John Johansen <john.johansen@canonical.com>,
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Karol Herbst <kherbst@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 200/323] apparmor: fix error check
-Date:   Wed, 24 Nov 2021 12:56:30 +0100
-Message-Id: <20211124115725.700377783@linuxfoundation.org>
+Subject: [PATCH 5.15 104/279] drm/nouveau: hdmigv100.c: fix corrupted HDMI Vendor InfoFrame
+Date:   Wed, 24 Nov 2021 12:56:31 +0100
+Message-Id: <20211124115722.372472084@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,58 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-[ Upstream commit d108370c644b153382632b3e5511ade575c91c86 ]
+[ Upstream commit 3cc1ae1fa70ab369e4645e38ce335a19438093ad ]
 
-clang static analysis reports this representative problem:
+gv100_hdmi_ctrl() writes vendor_infoframe.subpack0_high to 0x6f0110, and
+then overwrites it with 0. Just drop the overwrite with 0, that's clearly
+a mistake.
 
-label.c:1463:16: warning: Assigned value is garbage or undefined
-        label->hname = name;
-                     ^ ~~~~
+Because of this issue the HDMI VIC is 0 instead of 1 in the HDMI Vendor
+InfoFrame when transmitting 4kp30.
 
-In aa_update_label_name(), this the problem block of code
-
-	if (aa_label_acntsxprint(&name, ...) == -1)
-		return res;
-
-On failure, aa_label_acntsxprint() has a more complicated return
-that just -1.  So check for a negative return.
-
-It was also noted that the aa_label_acntsxprint() main comment refers
-to a nonexistent parameter, so clean up the comment.
-
-Fixes: f1bd904175e8 ("apparmor: add the base fns() for domain labels")
-Signed-off-by: Tom Rix <trix@redhat.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: John Johansen <john.johansen@canonical.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Fixes: 290ffeafcc1a ("drm/nouveau/disp/gv100: initial support")
+Reviewed-by: Ben Skeggs <bskeggs@redhat.com>
+Signed-off-by: Karol Herbst <kherbst@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/3d3bd0f7-c150-2479-9350-35d394ee772d@xs4all.nl
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/apparmor/label.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/nouveau/nvkm/engine/disp/hdmigv100.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/security/apparmor/label.c b/security/apparmor/label.c
-index 6727e6fb69df2..5a80a16a7f751 100644
---- a/security/apparmor/label.c
-+++ b/security/apparmor/label.c
-@@ -1463,7 +1463,7 @@ bool aa_update_label_name(struct aa_ns *ns, struct aa_label *label, gfp_t gfp)
- 	if (label->hname || labels_ns(label) != ns)
- 		return res;
- 
--	if (aa_label_acntsxprint(&name, ns, label, FLAGS_NONE, gfp) == -1)
-+	if (aa_label_acntsxprint(&name, ns, label, FLAGS_NONE, gfp) < 0)
- 		return res;
- 
- 	ls = labels_set(label);
-@@ -1713,7 +1713,7 @@ int aa_label_asxprint(char **strp, struct aa_ns *ns, struct aa_label *label,
- 
- /**
-  * aa_label_acntsxprint - allocate a __counted string buffer and print label
-- * @strp: buffer to write to. (MAY BE NULL if @size == 0)
-+ * @strp: buffer to write to.
-  * @ns: namespace profile is being viewed from
-  * @label: label to view (NOT NULL)
-  * @flags: flags controlling what label info is printed
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/hdmigv100.c b/drivers/gpu/drm/nouveau/nvkm/engine/disp/hdmigv100.c
+index 6e3c450eaacef..3ff49344abc77 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/hdmigv100.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/hdmigv100.c
+@@ -62,7 +62,6 @@ gv100_hdmi_ctrl(struct nvkm_ior *ior, int head, bool enable, u8 max_ac_packet,
+ 		nvkm_wr32(device, 0x6f0108 + hdmi, vendor_infoframe.header);
+ 		nvkm_wr32(device, 0x6f010c + hdmi, vendor_infoframe.subpack0_low);
+ 		nvkm_wr32(device, 0x6f0110 + hdmi, vendor_infoframe.subpack0_high);
+-		nvkm_wr32(device, 0x6f0110 + hdmi, 0x00000000);
+ 		nvkm_wr32(device, 0x6f0114 + hdmi, 0x00000000);
+ 		nvkm_wr32(device, 0x6f0118 + hdmi, 0x00000000);
+ 		nvkm_wr32(device, 0x6f011c + hdmi, 0x00000000);
 -- 
 2.33.0
 
