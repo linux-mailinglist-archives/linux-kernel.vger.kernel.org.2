@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7DF045BBB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:19:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5000C45BBAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243406AbhKXMWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:22:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44310 "EHLO mail.kernel.org"
+        id S242840AbhKXMVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:21:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242765AbhKXMRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242319AbhKXMRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 07:17:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99C4A610A1;
-        Wed, 24 Nov 2021 12:10:47 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1BC2610D1;
+        Wed, 24 Nov 2021 12:10:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755848;
-        bh=ScJ0E7fk9kiI+ok1nZKoJBmKGF7hmaPEPsscSJlXzoQ=;
+        s=korg; t=1637755851;
+        bh=tXNqZFEup+T7Gb0GfPeWhphkJylcrBNUBCMBVQ2ToDo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p3rCsPBsVL/MXMSU6xJ2DoMsFztwiz2/C9nGskNGgONqDWnxR5O6FkTrKlsmIJPL0
-         xIZ9oJYePLWkfJIaRvrMDH+dQP0x08It/qpJxYeCPnGJd1tHHNXfH4cdUSKEPye9rr
-         bGuDrR4gZyOr9wju01gCfn6pCmoyYiXN64cpUU64=
+        b=EgM5CeEe9+zGJffqL8pxDGV24QGhlj/6R98TmEsFLqtn+ATEHJMsaDOvXqLwMbRyd
+         4wKOaGMcXA7bAUVVZFkrFORFN7s1rk+l8hIjsVPyRwcKEZ9LO8ui3NaoLahK5HjZhJ
+         yUgvvT+2DqORk5HvjK8UtqDxwTGKobubQqAcIvaM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ye Bin <yebin10@huawei.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 080/207] PM: hibernate: Get block device exclusively in swsusp_check()
-Date:   Wed, 24 Nov 2021 12:55:51 +0100
-Message-Id: <20211124115706.494118587@linuxfoundation.org>
+Subject: [PATCH 4.9 081/207] iwlwifi: mvm: disable RX-diversity in powersave
+Date:   Wed, 24 Nov 2021 12:55:52 +0100
+Message-Id: <20211124115706.527807766@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
 References: <20211124115703.941380739@linuxfoundation.org>
@@ -40,98 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Bin <yebin10@huawei.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 39fbef4b0f77f9c89c8f014749ca533643a37c9f ]
+[ Upstream commit e5322b9ab5f63536c41301150b7ce64605ce52cc ]
 
-The following kernel crash can be triggered:
+Just like we have default SMPS mode as dynamic in powersave,
+we should not enable RX-diversity in powersave, to reduce
+power consumption when connected to a non-MIMO AP.
 
-[   89.266592] ------------[ cut here ]------------
-[   89.267427] kernel BUG at fs/buffer.c:3020!
-[   89.268264] invalid opcode: 0000 [#1] SMP KASAN PTI
-[   89.269116] CPU: 7 PID: 1750 Comm: kmmpd-loop0 Not tainted 5.10.0-862.14.0.6.x86_64-08610-gc932cda3cef4-dirty #20
-[   89.273169] RIP: 0010:submit_bh_wbc.isra.0+0x538/0x6d0
-[   89.277157] RSP: 0018:ffff888105ddfd08 EFLAGS: 00010246
-[   89.278093] RAX: 0000000000000005 RBX: ffff888124231498 RCX: ffffffffb2772612
-[   89.279332] RDX: 1ffff11024846293 RSI: 0000000000000008 RDI: ffff888124231498
-[   89.280591] RBP: ffff8881248cc000 R08: 0000000000000001 R09: ffffed1024846294
-[   89.281851] R10: ffff88812423149f R11: ffffed1024846293 R12: 0000000000003800
-[   89.283095] R13: 0000000000000001 R14: 0000000000000000 R15: ffff8881161f7000
-[   89.284342] FS:  0000000000000000(0000) GS:ffff88839b5c0000(0000) knlGS:0000000000000000
-[   89.285711] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   89.286701] CR2: 00007f166ebc01a0 CR3: 0000000435c0e000 CR4: 00000000000006e0
-[   89.287919] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   89.289138] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   89.290368] Call Trace:
-[   89.290842]  write_mmp_block+0x2ca/0x510
-[   89.292218]  kmmpd+0x433/0x9a0
-[   89.294902]  kthread+0x2dd/0x3e0
-[   89.296268]  ret_from_fork+0x22/0x30
-[   89.296906] Modules linked in:
-
-by running the following commands:
-
- 1. mkfs.ext4 -O mmp  /dev/sda -b 1024
- 2. mount /dev/sda /home/test
- 3. echo "/dev/sda" > /sys/power/resume
-
-That happens because swsusp_check() calls set_blocksize() on the
-target partition which confuses the file system:
-
-       Thread1                       Thread2
-mount /dev/sda /home/test
-get s_mmp_bh  --> has mapped flag
-start kmmpd thread
-				echo "/dev/sda" > /sys/power/resume
-				  resume_store
-				    software_resume
-				      swsusp_check
-				        set_blocksize
-					  truncate_inode_pages_range
-					    truncate_cleanup_page
-					      block_invalidatepage
-					        discard_buffer --> clean mapped flag
-write_mmp_block
-  submit_bh
-    submit_bh_wbc
-      BUG_ON(!buffer_mapped(bh))
-
-To address this issue, modify swsusp_check() to open the target block
-device with exclusive access.
-
-Signed-off-by: Ye Bin <yebin10@huawei.com>
-[ rjw: Subject and changelog edits ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20211017113927.fc896bc5cdaa.I1d11da71b8a5cbe921a37058d5f578f1b14a2023@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/power/swap.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/utils.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/kernel/power/swap.c b/kernel/power/swap.c
-index a3b1e617bcdc3..8009cd308fcc6 100644
---- a/kernel/power/swap.c
-+++ b/kernel/power/swap.c
-@@ -1528,9 +1528,10 @@ end:
- int swsusp_check(void)
- {
- 	int error;
-+	void *holder;
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/utils.c b/drivers/net/wireless/intel/iwlwifi/mvm/utils.c
+index ff5ce1ed03c42..4746f4b096c56 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/utils.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/utils.c
+@@ -913,6 +913,9 @@ bool iwl_mvm_rx_diversity_allowed(struct iwl_mvm *mvm)
  
- 	hib_resume_bdev = blkdev_get_by_dev(swsusp_resume_device,
--					    FMODE_READ, NULL);
-+					    FMODE_READ | FMODE_EXCL, &holder);
- 	if (!IS_ERR(hib_resume_bdev)) {
- 		set_blocksize(hib_resume_bdev, PAGE_SIZE);
- 		clear_page(swsusp_header);
-@@ -1552,7 +1553,7 @@ int swsusp_check(void)
+ 	lockdep_assert_held(&mvm->mutex);
  
- put:
- 		if (error)
--			blkdev_put(hib_resume_bdev, FMODE_READ);
-+			blkdev_put(hib_resume_bdev, FMODE_READ | FMODE_EXCL);
- 		else
- 			pr_debug("PM: Image signature found, resuming\n");
- 	} else {
++	if (iwlmvm_mod_params.power_scheme != IWL_POWER_SCHEME_CAM)
++		return false;
++
+ 	if (num_of_ant(iwl_mvm_get_valid_rx_ant(mvm)) == 1)
+ 		return false;
+ 
 -- 
 2.33.0
 
