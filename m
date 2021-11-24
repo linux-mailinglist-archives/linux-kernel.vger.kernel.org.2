@@ -2,42 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C402B45BB12
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:13:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5154645BFED
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243337AbhKXMQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:16:01 -0500
+        id S1346795AbhKXNCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:02:54 -0500
 Received: from mail.kernel.org ([198.145.29.99]:39084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242903AbhKXMN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:13:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87D9561075;
-        Wed, 24 Nov 2021 12:08:12 +0000 (UTC)
+        id S1343755AbhKXNAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:00:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00853619E8;
+        Wed, 24 Nov 2021 12:34:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755693;
-        bh=J2USBgA3nvsI5S8KZizLVyZ3l0AWSw6m91TvFiqrA/w=;
+        s=korg; t=1637757295;
+        bh=qiKfiHU3jLJFyBGmDprA/UxBtTZXpr7xegM0qZFqK8c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZiwavtpHEDv5iQhsDoUc8eoXOlY6owKej2Gy4DQIxeiLAfpkzUEMphhxldLHTARNR
-         k1rdYM5gnNw1EIcv9RbPKJEBVsoCCUANHtOO/LdAk+ZPnhF1YtS/0NmMtpTnQe2amv
-         139nL5QsQMJaQvxTknJCxmC8iJ3H++bRJXjY1MhU=
+        b=2E2IxpoHTyv1bp6Z21JthOmNnWkkhQPCVLsPnrMzqP6qgoaXFBtqP3HBDPhq57BKE
+         5DRHyCg4pRYSrSZsmPzsF1klFWQtvPxRUuqZfvMQWWiRo7YO200c0WJ86j2zt568T+
+         S2YLZT8CosXh1Ahkgzhd6IELd9QnOM3VCbz74ZIY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Junxiao Bi <junxiao.bi@oracle.com>,
-        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
-        Jun Piao <piaojun@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 007/207] ocfs2: fix data corruption on truncate
+        stable@vger.kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 088/323] locking/lockdep: Avoid RCU-induced noinstr fail
 Date:   Wed, 24 Nov 2021 12:54:38 +0100
-Message-Id: <20211124115704.178237795@linuxfoundation.org>
+Message-Id: <20211124115721.937655496@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,91 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Peter Zijlstra <peterz@infradead.org>
 
-commit 839b63860eb3835da165642923120d305925561d upstream.
+[ Upstream commit ce0b9c805dd66d5e49fd53ec5415ae398f4c56e6 ]
 
-Patch series "ocfs2: Truncate data corruption fix".
+vmlinux.o: warning: objtool: look_up_lock_class()+0xc7: call to rcu_read_lock_any_held() leaves .noinstr.text section
 
-As further testing has shown, commit 5314454ea3f ("ocfs2: fix data
-corruption after conversion from inline format") didn't fix all the data
-corruption issues the customer started observing after 6dbf7bb55598
-("fs: Don't invalidate page buffers in block_write_full_page()") This
-time I have tracked them down to two bugs in ocfs2 truncation code.
-
-One bug (truncating page cache before clearing tail cluster and setting
-i_size) could cause data corruption even before 6dbf7bb55598, but before
-that commit it needed a race with page fault, after 6dbf7bb55598 it
-started to be pretty deterministic.
-
-Another bug (zeroing pages beyond old i_size) used to be harmless
-inefficiency before commit 6dbf7bb55598.  But after commit 6dbf7bb55598
-in combination with the first bug it resulted in deterministic data
-corruption.
-
-Although fixing only the first problem is needed to stop data
-corruption, I've fixed both issues to make the code more robust.
-
-This patch (of 2):
-
-ocfs2_truncate_file() did unmap invalidate page cache pages before
-zeroing partial tail cluster and setting i_size.  Thus some pages could
-be left (and likely have left if the cluster zeroing happened) in the
-page cache beyond i_size after truncate finished letting user possibly
-see stale data once the file was extended again.  Also the tail cluster
-zeroing was not guaranteed to finish before truncate finished causing
-possible stale data exposure.  The problem started to be particularly
-easy to hit after commit 6dbf7bb55598 "fs: Don't invalidate page buffers
-in block_write_full_page()" stopped invalidation of pages beyond i_size
-from page writeback path.
-
-Fix these problems by unmapping and invalidating pages in the page cache
-after the i_size is reduced and tail cluster is zeroed out.
-
-Link: https://lkml.kernel.org/r/20211025150008.29002-1-jack@suse.cz
-Link: https://lkml.kernel.org/r/20211025151332.11301-1-jack@suse.cz
-Fixes: ccd979bdbce9 ("[PATCH] OCFS2: The Second Oracle Cluster Filesystem")
-Signed-off-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc: Mark Fasheh <mark@fasheh.com>
-Cc: Joel Becker <jlbec@evilplan.org>
-Cc: Junxiao Bi <junxiao.bi@oracle.com>
-Cc: Changwei Ge <gechangwei@live.cn>
-Cc: Gang He <ghe@suse.com>
-Cc: Jun Piao <piaojun@huawei.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20210624095148.311980536@infradead.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ocfs2/file.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ kernel/locking/lockdep.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/ocfs2/file.c
-+++ b/fs/ocfs2/file.c
-@@ -490,10 +490,11 @@ int ocfs2_truncate_file(struct inode *in
- 	 * greater than page size, so we have to truncate them
- 	 * anyway.
- 	 */
--	unmap_mapping_range(inode->i_mapping, new_i_size + PAGE_SIZE - 1, 0, 1);
--	truncate_inode_pages(inode->i_mapping, new_i_size);
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 126c6d524a0f2..4dc79f57af827 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -689,7 +689,7 @@ look_up_lock_class(const struct lockdep_map *lock, unsigned int subclass)
+ 	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
+ 		return NULL;
  
- 	if (OCFS2_I(inode)->ip_dyn_features & OCFS2_INLINE_DATA_FL) {
-+		unmap_mapping_range(inode->i_mapping,
-+				    new_i_size + PAGE_SIZE - 1, 0, 1);
-+		truncate_inode_pages(inode->i_mapping, new_i_size);
- 		status = ocfs2_truncate_inline(inode, di_bh, new_i_size,
- 					       i_size_read(inode), 1);
- 		if (status)
-@@ -512,6 +513,9 @@ int ocfs2_truncate_file(struct inode *in
- 		goto bail_unlock_sem;
- 	}
- 
-+	unmap_mapping_range(inode->i_mapping, new_i_size + PAGE_SIZE - 1, 0, 1);
-+	truncate_inode_pages(inode->i_mapping, new_i_size);
-+
- 	status = ocfs2_commit_truncate(osb, inode, di_bh);
- 	if (status < 0) {
- 		mlog_errno(status);
+-	hlist_for_each_entry_rcu(class, hash_head, hash_entry) {
++	hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
+ 		if (class->key == key) {
+ 			/*
+ 			 * Huh! same key, different name? Did someone trample
+-- 
+2.33.0
+
 
 
