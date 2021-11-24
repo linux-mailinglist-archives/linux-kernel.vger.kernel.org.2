@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E9445C13F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:13:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C35EF45C2BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:29:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347776AbhKXNPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:15:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52052 "EHLO mail.kernel.org"
+        id S1346046AbhKXNcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:32:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347934AbhKXNMP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:12:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C12261407;
-        Wed, 24 Nov 2021 12:42:27 +0000 (UTC)
+        id S1351038AbhKXN3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:29:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8EDF61BB2;
+        Wed, 24 Nov 2021 12:51:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757747;
-        bh=J3HqR3bGwk+zv7mfS73dHaPWxcMzdyWtvMt1La+h8dM=;
+        s=korg; t=1637758301;
+        bh=oG/uIkjLf5CEuRpeIfPLBoyhAMHDQ+aFP2cDf3DGI9k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0nSbBBQH2sV0/jBt8xmg2jp+st/eMDP5cea2b4F53bj/kfE/sSP7fUOYkRaILYpQI
-         MjXqxGa6G5I6UbZc7j1sYQmRClCW/uEVxEwJk44AjgrGdKfyLaAiKXk00iAr398Szg
-         GHoqMxkL2KgxyXJ5nG66KgpffIz2GURNNpgCJZLo=
+        b=BDp/PiEL/6/DQpwfy+qqvmDPKmXBm5FsBEVDvyq9LR6K2t28Hqtnz6065+W4EFqfu
+         Sgrw7kvjMplSzBnMM6mVurF5rGqvjyIZZ2WSTSJkjkPyIFND/7GOpm0s3dbIXE3mum
+         Auol45UGp5aA+Kj8KPFHuPLv2HWJguiRy48B/xPo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
-        Eiichi Tsukata <eiichi.tsukata@nutanix.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 230/323] vsock: prevent unnecessary refcnt inc for nonblocking connect
+        stable@vger.kernel.org,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Abel Vesa <abel.vesa@nxp.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 024/154] clk: imx: imx6ul: Move csi_sel mux to correct base register
 Date:   Wed, 24 Nov 2021 12:57:00 +0100
-Message-Id: <20211124115726.686414340@linuxfoundation.org>
+Message-Id: <20211124115703.148790021@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+From: Stefan Riedmueller <s.riedmueller@phytec.de>
 
-[ Upstream commit c7cd82b90599fa10915f41e3dd9098a77d0aa7b6 ]
+[ Upstream commit 2f9d61869640f732599ec36b984c2b5c46067519 ]
 
-Currently vosck_connect() increments sock refcount for nonblocking
-socket each time it's called, which can lead to memory leak if
-it's called multiple times because connect timeout function decrements
-sock refcount only once.
+The csi_sel mux register is located in the CCM register base and not the
+CCM_ANALOG register base. So move it to the correct position in code.
 
-Fixes it by making vsock_connect() return -EALREADY immediately when
-sock state is already SS_CONNECTING.
+Otherwise changing the parent of the csi clock can lead to a complete
+system failure due to the CCM_ANALOG_PLL_SYS_TOG register being falsely
+modified.
 
-Fixes: d021c344051a ("VSOCK: Introduce VM Sockets")
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-Signed-off-by: Eiichi Tsukata <eiichi.tsukata@nutanix.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Also remove the SET_RATE_PARENT flag since one possible supply for the
+csi_sel mux is the system PLL which we don't want to modify.
+
+Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+Reviewed-by: Abel Vesa <abel.vesa@nxp.com>
+Link: https://lore.kernel.org/r/20210927072857.3940880-1-s.riedmueller@phytec.de
+Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/vmw_vsock/af_vsock.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/clk/imx/clk-imx6ul.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-index 2d31fce5c2185..37329e11dc3cc 100644
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -1159,6 +1159,8 @@ static int vsock_stream_connect(struct socket *sock, struct sockaddr *addr,
- 		 * non-blocking call.
- 		 */
- 		err = -EALREADY;
-+		if (flags & O_NONBLOCK)
-+			goto out;
- 		break;
- 	default:
- 		if ((sk->sk_state == TCP_LISTEN) ||
+diff --git a/drivers/clk/imx/clk-imx6ul.c b/drivers/clk/imx/clk-imx6ul.c
+index 5dbb6a9377324..206e4c43f68f8 100644
+--- a/drivers/clk/imx/clk-imx6ul.c
++++ b/drivers/clk/imx/clk-imx6ul.c
+@@ -161,7 +161,6 @@ static void __init imx6ul_clocks_init(struct device_node *ccm_node)
+ 	hws[IMX6UL_PLL5_BYPASS] = imx_clk_hw_mux_flags("pll5_bypass", base + 0xa0, 16, 1, pll5_bypass_sels, ARRAY_SIZE(pll5_bypass_sels), CLK_SET_RATE_PARENT);
+ 	hws[IMX6UL_PLL6_BYPASS] = imx_clk_hw_mux_flags("pll6_bypass", base + 0xe0, 16, 1, pll6_bypass_sels, ARRAY_SIZE(pll6_bypass_sels), CLK_SET_RATE_PARENT);
+ 	hws[IMX6UL_PLL7_BYPASS] = imx_clk_hw_mux_flags("pll7_bypass", base + 0x20, 16, 1, pll7_bypass_sels, ARRAY_SIZE(pll7_bypass_sels), CLK_SET_RATE_PARENT);
+-	hws[IMX6UL_CLK_CSI_SEL] = imx_clk_hw_mux_flags("csi_sel", base + 0x3c, 9, 2, csi_sels, ARRAY_SIZE(csi_sels), CLK_SET_RATE_PARENT);
+ 
+ 	/* Do not bypass PLLs initially */
+ 	clk_set_parent(hws[IMX6UL_PLL1_BYPASS]->clk, hws[IMX6UL_CLK_PLL1]->clk);
+@@ -270,6 +269,7 @@ static void __init imx6ul_clocks_init(struct device_node *ccm_node)
+ 	hws[IMX6UL_CLK_ECSPI_SEL]	  = imx_clk_hw_mux("ecspi_sel",	base + 0x38, 18, 1, ecspi_sels, ARRAY_SIZE(ecspi_sels));
+ 	hws[IMX6UL_CLK_LCDIF_PRE_SEL]	  = imx_clk_hw_mux_flags("lcdif_pre_sel", base + 0x38, 15, 3, lcdif_pre_sels, ARRAY_SIZE(lcdif_pre_sels), CLK_SET_RATE_PARENT);
+ 	hws[IMX6UL_CLK_LCDIF_SEL]	  = imx_clk_hw_mux("lcdif_sel",	base + 0x38, 9, 3, lcdif_sels, ARRAY_SIZE(lcdif_sels));
++	hws[IMX6UL_CLK_CSI_SEL]		  = imx_clk_hw_mux("csi_sel", base + 0x3c, 9, 2, csi_sels, ARRAY_SIZE(csi_sels));
+ 
+ 	hws[IMX6UL_CLK_LDB_DI0_DIV_SEL]  = imx_clk_hw_mux("ldb_di0", base + 0x20, 10, 1, ldb_di0_div_sels, ARRAY_SIZE(ldb_di0_div_sels));
+ 	hws[IMX6UL_CLK_LDB_DI1_DIV_SEL]  = imx_clk_hw_mux("ldb_di1", base + 0x20, 11, 1, ldb_di1_div_sels, ARRAY_SIZE(ldb_di1_div_sels));
 -- 
 2.33.0
 
