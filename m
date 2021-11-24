@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D06645C348
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5122945C596
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:56:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347667AbhKXNg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:36:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51968 "EHLO mail.kernel.org"
+        id S1349133AbhKXN7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:59:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348607AbhKXNeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:34:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9B5F61B4C;
-        Wed, 24 Nov 2021 12:54:14 +0000 (UTC)
+        id S1352110AbhKXNyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:54:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B11B260524;
+        Wed, 24 Nov 2021 13:06:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758455;
-        bh=m49XzIzx/Jk3TbBc9EgjateyyuJWPMBrWon/YnhATGE=;
+        s=korg; t=1637759168;
+        bh=6lAoik51YWxGd7Yk/OUJa2oexmgrS5rHC89SaK+VIao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MWzUDQ3gefKvmLw2GW9rrhgPJy6Iw/8rhEMVkBj5b4ErSJaPy7/3fVYed1JWMGot+
-         Wvyof/BjM9ySJG6zWpkfz6K9Oi7SEo7d99eNpYfKOmreUxSsgqsaF+G2q/1qr1LTY9
-         1h0VyThMWPotyY1BHn7iWYUKG+PSzgivHm/MqZiM=
+        b=GKnJztDzPRbnd9FD6QWocxEA6/gPs9r1WxhvGuJE9YzJFQS9Zzy30Xj5WOE4mKYD6
+         i9FI84n134SOg2zdLNGJR+sCEwx7DtiCaV2T7K+9jjxQkbrm/FUlbQoYyOz7iBmLAt
+         0QsN6FrIW+5RA1CYbAXi1bhGJtjOyykW3WR+/KUg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Heidelberg <david@ixit.cz>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        lijinlin <lijinlin3@huawei.com>, Wu Bo <wubo40@huawei.com>,
+        Lee Duncan <lduncan@suse.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 044/154] ARM: dts: qcom: fix memory and mdio nodes naming for RB3011
+Subject: [PATCH 5.15 153/279] scsi: core: sysfs: Fix hang when device state is set via sysfs
 Date:   Wed, 24 Nov 2021 12:57:20 +0100
-Message-Id: <20211124115703.770174206@linuxfoundation.org>
+Message-Id: <20211124115724.049668298@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +43,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Heidelberg <david@ixit.cz>
+From: Mike Christie <michael.christie@oracle.com>
 
-[ Upstream commit 14a1f6c9d8017ffbf388e82e1a1f023196d98612 ]
+[ Upstream commit 4edd8cd4e86dd3047e5294bbefcc0a08f66a430f ]
 
-Fixes warnings regarding to memory and mdio nodes and
-apply new naming following dt-schema.
+This fixes a regression added with:
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20211020214741.261509-1-david@ixit.cz
+commit f0f82e2476f6 ("scsi: core: Fix capacity set to zero after
+offlinining device")
+
+The problem is that after iSCSI recovery, iscsid will call into the kernel
+to set the dev's state to running, and with that patch we now call
+scsi_rescan_device() with the state_mutex held. If the SCSI error handler
+thread is just starting to test the device in scsi_send_eh_cmnd() then it's
+going to try to grab the state_mutex.
+
+We are then stuck, because when scsi_rescan_device() tries to send its I/O
+scsi_queue_rq() calls -> scsi_host_queue_ready() -> scsi_host_in_recovery()
+which will return true (the host state is still in recovery) and I/O will
+just be requeued. scsi_send_eh_cmnd() will then never be able to grab the
+state_mutex to finish error handling.
+
+To prevent the deadlock move the rescan-related code to after we drop the
+state_mutex.
+
+This also adds a check for if we are already in the running state. This
+prevents extra scans and helps the iscsid case where if the transport class
+has already onlined the device during its recovery process then we don't
+need userspace to do it again plus possibly block that daemon.
+
+Link: https://lore.kernel.org/r/20211105221048.6541-3-michael.christie@oracle.com
+Fixes: f0f82e2476f6 ("scsi: core: Fix capacity set to zero after offlinining device")
+Cc: Bart Van Assche <bvanassche@acm.org>
+Cc: lijinlin <lijinlin3@huawei.com>
+Cc: Wu Bo <wubo40@huawei.com>
+Reviewed-by: Lee Duncan <lduncan@suse.com>
+Reviewed-by: Wu Bo <wubo40@huawei.com>
+Signed-off-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/qcom-ipq8064-rb3011.dts | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/scsi/scsi_sysfs.c | 30 +++++++++++++++++++-----------
+ 1 file changed, 19 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm/boot/dts/qcom-ipq8064-rb3011.dts b/arch/arm/boot/dts/qcom-ipq8064-rb3011.dts
-index 282b89ce3d451..33545cf40f3ab 100644
---- a/arch/arm/boot/dts/qcom-ipq8064-rb3011.dts
-+++ b/arch/arm/boot/dts/qcom-ipq8064-rb3011.dts
-@@ -19,12 +19,12 @@
- 		stdout-path = "serial0:115200n8";
- 	};
+diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
+index 8bb79ccc9a8b5..9527e734a999a 100644
+--- a/drivers/scsi/scsi_sysfs.c
++++ b/drivers/scsi/scsi_sysfs.c
+@@ -797,6 +797,7 @@ store_state_field(struct device *dev, struct device_attribute *attr,
+ 	int i, ret;
+ 	struct scsi_device *sdev = to_scsi_device(dev);
+ 	enum scsi_device_state state = 0;
++	bool rescan_dev = false;
  
--	memory@0 {
-+	memory@42000000 {
- 		reg = <0x42000000 0x3e000000>;
- 		device_type = "memory";
- 	};
+ 	for (i = 0; i < ARRAY_SIZE(sdev_states); i++) {
+ 		const int len = strlen(sdev_states[i].name);
+@@ -815,20 +816,27 @@ store_state_field(struct device *dev, struct device_attribute *attr,
+ 	}
  
--	mdio0: mdio@0 {
-+	mdio0: mdio-0 {
- 		status = "okay";
- 		compatible = "virtual,mdio-gpio";
- 		gpios = <&qcom_pinmux 1 GPIO_ACTIVE_HIGH>,
-@@ -91,7 +91,7 @@
- 		};
- 	};
+ 	mutex_lock(&sdev->state_mutex);
+-	ret = scsi_device_set_state(sdev, state);
+-	/*
+-	 * If the device state changes to SDEV_RUNNING, we need to
+-	 * run the queue to avoid I/O hang, and rescan the device
+-	 * to revalidate it. Running the queue first is necessary
+-	 * because another thread may be waiting inside
+-	 * blk_mq_freeze_queue_wait() and because that call may be
+-	 * waiting for pending I/O to finish.
+-	 */
+-	if (ret == 0 && state == SDEV_RUNNING) {
++	if (sdev->sdev_state == SDEV_RUNNING && state == SDEV_RUNNING) {
++		ret = count;
++	} else {
++		ret = scsi_device_set_state(sdev, state);
++		if (ret == 0 && state == SDEV_RUNNING)
++			rescan_dev = true;
++	}
++	mutex_unlock(&sdev->state_mutex);
++
++	if (rescan_dev) {
++		/*
++		 * If the device state changes to SDEV_RUNNING, we need to
++		 * run the queue to avoid I/O hang, and rescan the device
++		 * to revalidate it. Running the queue first is necessary
++		 * because another thread may be waiting inside
++		 * blk_mq_freeze_queue_wait() and because that call may be
++		 * waiting for pending I/O to finish.
++		 */
+ 		blk_mq_run_hw_queues(sdev->request_queue, true);
+ 		scsi_rescan_device(dev);
+ 	}
+-	mutex_unlock(&sdev->state_mutex);
  
--	mdio1: mdio@1 {
-+	mdio1: mdio-1 {
- 		status = "okay";
- 		compatible = "virtual,mdio-gpio";
- 		gpios = <&qcom_pinmux 11 GPIO_ACTIVE_HIGH>,
+ 	return ret == 0 ? count : -EINVAL;
+ }
 -- 
 2.33.0
 
