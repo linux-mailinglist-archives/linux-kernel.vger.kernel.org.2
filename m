@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34FD945C4CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:48:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA65945C03D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349928AbhKXNvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:51:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37476 "EHLO mail.kernel.org"
+        id S1347195AbhKXNFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:05:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346141AbhKXNqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:46:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CCAC6332F;
-        Wed, 24 Nov 2021 13:01:03 +0000 (UTC)
+        id S1347995AbhKXNDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:03:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48CED61206;
+        Wed, 24 Nov 2021 12:36:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758864;
-        bh=cu/bqtw9RWtPNA9V8zfU73kT1TMaVL2UnCG56a5XWpE=;
+        s=korg; t=1637757395;
+        bh=pUOlhPtSxwTDpxwkWaljN4R3YlOk7FLKyz4dRr4FNnc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JNeR9MNnWcV1oeisIaaIcBIr2t8TlX986K3zh7ZkO0W/UOxSd+nXSL6cpW1Zx2Kfl
-         00w4yxB/qnfN9F5tUf64hU+wVGKdYmfVB3y4cNzk7OcYCjSzLBhElhsmkI1tMhtTN3
-         xKY7Zabg+1yqhk2bqBZUAg67NKU1/+O/LE2EJsTM=
+        b=bR0QvRoqJbROlsBWyO17qYhIjpq6QS9GcEwOklcHWWNN3QpS3rdZUagKsA2yWfMWr
+         I6fpt4FV0Egv9rjtBz92GO4KJCm8kabEZ5pfLIL+7I+57XkhaRhZT4ckyAHjtJydW7
+         //PqnQEv5EaAdkxsORgSgMBy7yU+925O77vBZbQA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Vladimir Murzin <vladimir.murzin@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 022/279] ARM: dts: ux500: Skomer regulator fixes
-Date:   Wed, 24 Nov 2021 12:55:09 +0100
-Message-Id: <20211124115719.512685948@linuxfoundation.org>
+Subject: [PATCH 4.19 120/323] ARM: 9136/1: ARMv7-M uses BE-8, not BE-32
+Date:   Wed, 24 Nov 2021 12:55:10 +0100
+Message-Id: <20211124115722.994243957@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,48 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 7aee0288beab72cdfa35af51f62e94373fca595d ]
+[ Upstream commit 345dac33f58894a56d17b92a41be10e16585ceff ]
 
-AUX2 has slightly wrong voltage and AUX5 doesn't need to be
-always on.
+When configuring the kernel for big-endian, we set either BE-8 or BE-32
+based on the CPU architecture level. Until linux-4.4, we did not have
+any ARMv7-M platform allowing big-endian builds, but now i.MX/Vybrid
+is in that category, adn we get a build error because of this:
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+arch/arm/kernel/module-plts.c: In function 'get_module_plt':
+arch/arm/kernel/module-plts.c:60:46: error: implicit declaration of function '__opcode_to_mem_thumb32' [-Werror=implicit-function-declaration]
+
+This comes down to picking the wrong default, ARMv7-M uses BE8
+like ARMv7-A does. Changing the default gets the kernel to compile
+and presumably works.
+
+https://lore.kernel.org/all/1455804123-2526139-2-git-send-email-arnd@arndb.de/
+
+Tested-by: Vladimir Murzin <vladimir.murzin@arm.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/ste-ux500-samsung-skomer.dts | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/arm/mm/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/ste-ux500-samsung-skomer.dts b/arch/arm/boot/dts/ste-ux500-samsung-skomer.dts
-index 264f3e9b5fce5..86e83639fadc1 100644
---- a/arch/arm/boot/dts/ste-ux500-samsung-skomer.dts
-+++ b/arch/arm/boot/dts/ste-ux500-samsung-skomer.dts
-@@ -292,10 +292,10 @@
- 					};
+diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
+index b169e580bf829..9738c1f9737c9 100644
+--- a/arch/arm/mm/Kconfig
++++ b/arch/arm/mm/Kconfig
+@@ -751,7 +751,7 @@ config CPU_BIG_ENDIAN
+ config CPU_ENDIAN_BE8
+ 	bool
+ 	depends on CPU_BIG_ENDIAN
+-	default CPU_V6 || CPU_V6K || CPU_V7
++	default CPU_V6 || CPU_V6K || CPU_V7 || CPU_V7M
+ 	help
+ 	  Support for the BE-8 (big-endian) mode on ARMv6 and ARMv7 processors.
  
- 					ab8500_ldo_aux2 {
--						/* Supplies the Cypress TMA140 touchscreen only with 3.3V */
-+						/* Supplies the Cypress TMA140 touchscreen only with 3.0V */
- 						regulator-name = "AUX2";
--						regulator-min-microvolt = <3300000>;
--						regulator-max-microvolt = <3300000>;
-+						regulator-min-microvolt = <3000000>;
-+						regulator-max-microvolt = <3000000>;
- 					};
- 
- 					ab8500_ldo_aux3 {
-@@ -314,9 +314,9 @@
- 
- 					ab8500_ldo_aux5 {
- 						regulator-name = "AUX5";
-+						/* Intended for 1V8 for touchscreen but actually left unused */
- 						regulator-min-microvolt = <1050000>;
- 						regulator-max-microvolt = <2790000>;
--						regulator-always-on;
- 					};
- 
- 					ab8500_ldo_aux6 {
 -- 
 2.33.0
 
