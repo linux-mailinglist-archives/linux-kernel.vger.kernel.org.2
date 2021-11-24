@@ -2,77 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9AC45C92D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:51:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 488DC45C930
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 16:51:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346478AbhKXPyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 10:54:39 -0500
-Received: from ixit.cz ([94.230.151.217]:34952 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240826AbhKXPyh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 10:54:37 -0500
-Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 4C34A20064;
-        Wed, 24 Nov 2021 16:51:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1637769083;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=IU5q06TQT1C9vzgb5Uz3GHm36Avlp6WLGrtHyJxiET4=;
-        b=MIAJzKFXWT+bddlCrj3j5q0t8K83XBjdckPE/hJOBahw4KDwUAiZHmISMLgX32ZqTXSPsA
-        M83GTfm7Sqad5USsi9YjW3fet+mXohuIDqTMJmsmyXOS9nOhO/sewovr/QngCLH/ZsIyjg
-        jJ1K4T57qYNJBHrK2ry1Z1vfK8el6sc=
-From:   David Heidelberg <david@ixit.cz>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        - <patches@opensource.cirrus.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     ~okias/devicetree@lists.sr.ht, David Heidelberg <david@ixit.cz>,
-        Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: dt-bindings: wlf,wm8962: add missing interrupt property
-Date:   Wed, 24 Nov 2021 16:51:01 +0100
-Message-Id: <20211124155101.59694-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+        id S1346578AbhKXPyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 10:54:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346498AbhKXPyr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 10:54:47 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C49EC061574;
+        Wed, 24 Nov 2021 07:51:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=83Z9ctsXhi4n6jL1I+xnZYOsulRili5YtWNkeTxLDvY=; b=O7JOpWGcH4DnhCV+XrFVDi83VC
+        vjiYAQOklY/dedfzCATe0m84ZCCGpC19/nyEcuuM5m94AIzji0oGc9sfnQQR8aolKgTxP4o2GQ+Xc
+        YlZeXOYhBsdXAZMwSi+YqF+bCuqPTBtTzP35dk3g6C58RZTaYf2g+yaXSQOHzwuL/XSGrSB8QmTXd
+        +SxFWxTlgGfheF5iU10JREpJdELdxQSs9O+mJxIg7DkuZhIw1PYGodPZUKjp7VHnkmvgnkmkI5tPh
+        cX/AGJsyoeHQtMxrgWTaBVfptCGiBzQcu5eYlw0mZE5Fu7RfqUixgtVKnAmiuNgx7n30DLyGv2D7+
+        4k6GdpEw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55852)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mpuYP-0000oH-NY; Wed, 24 Nov 2021 15:51:25 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mpuYN-0001JA-4r; Wed, 24 Nov 2021 15:51:23 +0000
+Date:   Wed, 24 Nov 2021 15:51:23 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] arm: ioremap: Implement standard PCI function
+ pci_remap_iospace()
+Message-ID: <YZ5fez3JSUgl+NNq@shell.armlinux.org.uk>
+References: <20211124154116.916-1-pali@kernel.org>
+ <20211124154116.916-2-pali@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211124154116.916-2-pali@kernel.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both, hardware and drivers does support interrupts.
+On Wed, Nov 24, 2021 at 04:41:12PM +0100, Pali Rohár wrote:
+> pci_remap_iospace() is standard PCI core function. Architecture code can
+> reimplement default core implementation if needs custom arch specific
+> functionality.
+> 
+> ARM needs custom implementation due to pci_ioremap_set_mem_type() hook
+> which allows ARM platforms to change mem type for iospace.
+> 
+> Implement this pci_remap_iospace() function for ARM architecture to
+> correctly handle pci_ioremap_set_mem_type() hook, which allows usage of
+> this standard PCI core function also for platforms which needs different
+> mem type (e.g. Marvell Armada 375, 38x and 39x).
+> 
+> Signed-off-by: Pali Rohár <pali@kernel.org>
 
-Fix warnings as:
-arch/arm/boot/dts/tegra30-microsoft-surface-rt-efi.dt.yaml: audio-codec@1a: 'interrupt-parent', 'interrupts' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /home/runner/work/linux/linux/Documentation/devicetree/bindings/sound/wlf,wm8962.yaml
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-Fixes: cd51b942f344 ("ASoC: dt-bindings: wlf,wm8962: Convert to json-schema")
-
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
- Documentation/devicetree/bindings/sound/wlf,wm8962.yaml | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/wlf,wm8962.yaml b/Documentation/devicetree/bindings/sound/wlf,wm8962.yaml
-index 0e6249d7c133..5e172e9462b9 100644
---- a/Documentation/devicetree/bindings/sound/wlf,wm8962.yaml
-+++ b/Documentation/devicetree/bindings/sound/wlf,wm8962.yaml
-@@ -19,6 +19,9 @@ properties:
-   clocks:
-     maxItems: 1
- 
-+  interrupts:
-+    maxItems: 1
-+
-   "#sound-dai-cells":
-     const: 0
- 
 -- 
-2.33.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
