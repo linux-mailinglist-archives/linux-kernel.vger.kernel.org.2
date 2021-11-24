@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E7445BA6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:07:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6197045BE4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242646AbhKXMKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:10:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33882 "EHLO mail.kernel.org"
+        id S245463AbhKXMqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:46:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241239AbhKXMHj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:07:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DAB161078;
-        Wed, 24 Nov 2021 12:04:24 +0000 (UTC)
+        id S1345210AbhKXMlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:41:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3534F61157;
+        Wed, 24 Nov 2021 12:24:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755465;
-        bh=c46/3NevnXrmshmvsd3mQpGvD90qnjezmLcAsN/GfGs=;
+        s=korg; t=1637756683;
+        bh=J61dc9TsTcoo0CAHf8E/6ahJTkfS1da1aj3CGFpL8yM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qlSt0xYUOQofDjc/0uT++aYGf9G/UYDbRKfgqaeuGZdxyB/94AcFYFRFEP3RueQGT
-         ZJ+R23qaCwt/JpVh3l4WtAUQSeABJk0/pifkDgV+LkUyYDX0R9YsmcULvMya/IpCN/
-         6eFiiuD4cAXvw1SPHElOJ+/R48FPcARhPeX3D+iY=
+        b=2Qv3n6ij/Yy93sIaIm+xGQ/jGuozrylBhsKI7K8Z59vqy74806qOh3V5tiK8ZNnm9
+         2re0SXTjHalm/Fhl9RQ0ZH4wN2N/ldM2mbiBrLC4SnXbWiGVZzkt4XK9Gr7WwRj03J
+         sVGVbNnQVtVcz9EApUQfMXdMN5MNc4MuPjItNEx0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Evgeny Novikov <novikov@ispras.ru>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 106/162] llc: fix out-of-bound array index in llc_sk_dev_hash()
+Subject: [PATCH 4.14 167/251] mtd: spi-nor: hisi-sfc: Remove excessive clk_disable_unprepare()
 Date:   Wed, 24 Nov 2021 12:56:49 +0100
-Message-Id: <20211124115701.762450033@linuxfoundation.org>
+Message-Id: <20211124115716.072033222@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Evgeny Novikov <novikov@ispras.ru>
 
-[ Upstream commit 8ac9dfd58b138f7e82098a4e0a0d46858b12215b ]
+[ Upstream commit 78e4d342187625585932bb437ec26e1060f7fc6f ]
 
-Both ifindex and LLC_SK_DEV_HASH_ENTRIES are signed.
+hisi_spi_nor_probe() invokes clk_disable_unprepare() on all paths after
+successful call of clk_prepare_enable(). Besides, the clock is enabled by
+hispi_spi_nor_prep() and disabled by hispi_spi_nor_unprep(). So at remove
+time it is not possible to have the clock enabled. The patch removes
+excessive clk_disable_unprepare() from hisi_spi_nor_remove().
 
-This means that (ifindex % LLC_SK_DEV_HASH_ENTRIES) is negative
-if @ifindex is negative.
+Found by Linux Driver Verification project (linuxtesting.org).
 
-We could simply make LLC_SK_DEV_HASH_ENTRIES unsigned.
-
-In this patch I chose to use hash_32() to get more entropy
-from @ifindex, like llc_sk_laddr_hashfn().
-
-UBSAN: array-index-out-of-bounds in ./include/net/llc.h:75:26
-index -43 is out of range for type 'hlist_head [64]'
-CPU: 1 PID: 20999 Comm: syz-executor.3 Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:151
- __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:291
- llc_sk_dev_hash include/net/llc.h:75 [inline]
- llc_sap_add_socket+0x49c/0x520 net/llc/llc_conn.c:697
- llc_ui_bind+0x680/0xd70 net/llc/af_llc.c:404
- __sys_bind+0x1e9/0x250 net/socket.c:1693
- __do_sys_bind net/socket.c:1704 [inline]
- __se_sys_bind net/socket.c:1702 [inline]
- __x64_sys_bind+0x6f/0xb0 net/socket.c:1702
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fa503407ae9
-
-Fixes: 6d2e3ea28446 ("llc: use a device based hash table to speed up multicast delivery")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: e523f11141bd ("mtd: spi-nor: add hisilicon spi-nor flash controller driver")
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Reviewed-by: Pratyush Yadav <p.yadav@ti.com>
+Link: https://lore.kernel.org/r/20210709144529.31379-1-novikov@ispras.ru
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/llc.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mtd/spi-nor/hisi-sfc.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/include/net/llc.h b/include/net/llc.h
-index 95e5ced4c1339..18dfd3e49a69f 100644
---- a/include/net/llc.h
-+++ b/include/net/llc.h
-@@ -72,7 +72,9 @@ struct llc_sap {
- static inline
- struct hlist_head *llc_sk_dev_hash(struct llc_sap *sap, int ifindex)
- {
--	return &sap->sk_dev_hash[ifindex % LLC_SK_DEV_HASH_ENTRIES];
-+	u32 bucket = hash_32(ifindex, LLC_SK_DEV_HASH_BITS);
-+
-+	return &sap->sk_dev_hash[bucket];
+diff --git a/drivers/mtd/spi-nor/hisi-sfc.c b/drivers/mtd/spi-nor/hisi-sfc.c
+index 9209d225e3152..e84a310dcc6cb 100644
+--- a/drivers/mtd/spi-nor/hisi-sfc.c
++++ b/drivers/mtd/spi-nor/hisi-sfc.c
+@@ -485,7 +485,6 @@ static int hisi_spi_nor_remove(struct platform_device *pdev)
+ 
+ 	hisi_spi_nor_unregister_all(host);
+ 	mutex_destroy(&host->lock);
+-	clk_disable_unprepare(host->clk);
+ 	return 0;
  }
  
- static inline
 -- 
 2.33.0
 
