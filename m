@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D91045BBB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BA745BA69
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243378AbhKXMW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:22:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34640 "EHLO mail.kernel.org"
+        id S241549AbhKXMK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:10:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242850AbhKXMRO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:17:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16207610FE;
-        Wed, 24 Nov 2021 12:10:55 +0000 (UTC)
+        id S238281AbhKXMHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:07:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4367A61058;
+        Wed, 24 Nov 2021 12:03:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755856;
-        bh=YU2DXVZ+7h37o9JM5RlfJzMMJWMvl2Iw7jDeJIdyAxc=;
+        s=korg; t=1637755433;
+        bh=sHv9dwUtlJ5iihueYcUBeW5m+em2fUoVqnhZ9bHlrDs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VkDsXLbDM8s+PsIMUP3jSyllShjNrl2mKiZPk8+7Qia27+HXWmqfGhWjHCNdNmeE5
-         tt6vgnlUUUUco9hl1My3Zjo0dADCJxejqkz/z1/FCfjYyhKzSZLdsr8IOEsB2h9hNw
-         X7Wct9HSt1pD8kesv/xjlm9IZ6SuH2K9qBR5vEDE=
+        b=EueVY0cb+CHZjVuqHXOCbrnOMHTamddxFQtYnsKN35B9VNsTY8jGPDJCNqnvCTJ2q
+         AQ959NI7BPShE0iVheEpJ2cZsPO0jpdET6xG+mE6k01XPFYu6megnFM1//M+uNjNLM
+         9Xl/GpDMLJD6kWZg4Q+8zVjyoAj5NqUTBvAJ9+Ps=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 083/207] ARM: clang: Do not rely on lr register for stacktrace
+Subject: [PATCH 4.4 051/162] media: uvcvideo: Set capability in s_param
 Date:   Wed, 24 Nov 2021 12:55:54 +0100
-Message-Id: <20211124115706.588784186@linuxfoundation.org>
+Message-Id: <20211124115659.993556958@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: Ricardo Ribalda <ribalda@chromium.org>
 
-[ Upstream commit b3ea5d56f212ad81328c82454829a736197ebccc ]
+[ Upstream commit 97a2777a96070afb7da5d587834086c0b586c8cc ]
 
-Currently the stacktrace on clang compiled arm kernel uses the 'lr'
-register to find the first frame address from pt_regs. However, that
-is wrong after calling another function, because the 'lr' register
-is used by 'bl' instruction and never be recovered.
+Fixes v4l2-compliance:
 
-As same as gcc arm kernel, directly use the frame pointer (r11) of
-the pt_regs to find the first frame address.
+Format ioctls (Input 0):
+                warn: v4l2-test-formats.cpp(1339): S_PARM is supported but doesn't report V4L2_CAP_TIMEPERFRAME
+                fail: v4l2-test-formats.cpp(1241): node->has_frmintervals && !cap->capability
 
-Note that this fixes kretprobe stacktrace issue only with
-CONFIG_UNWINDER_FRAME_POINTER=y. For the CONFIG_UNWINDER_ARM,
-we need another fix.
-
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/kernel/stacktrace.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/media/usb/uvc/uvc_v4l2.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/kernel/stacktrace.c b/arch/arm/kernel/stacktrace.c
-index 6e8a50de40e2b..c10c1de244eba 100644
---- a/arch/arm/kernel/stacktrace.c
-+++ b/arch/arm/kernel/stacktrace.c
-@@ -51,8 +51,7 @@ int notrace unwind_frame(struct stackframe *frame)
+diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+index 049d664e94f07..8ac231f6b2d16 100644
+--- a/drivers/media/usb/uvc/uvc_v4l2.c
++++ b/drivers/media/usb/uvc/uvc_v4l2.c
+@@ -436,10 +436,13 @@ static int uvc_v4l2_set_streamparm(struct uvc_streaming *stream,
+ 	uvc_simplify_fraction(&timeperframe.numerator,
+ 		&timeperframe.denominator, 8, 333);
  
- 	frame->sp = frame->fp;
- 	frame->fp = *(unsigned long *)(fp);
--	frame->pc = frame->lr;
--	frame->lr = *(unsigned long *)(fp + 4);
-+	frame->pc = *(unsigned long *)(fp + 4);
- #else
- 	/* check current frame pointer is within bounds */
- 	if (fp < low + 12 || fp > high - 4)
+-	if (parm->type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
++	if (parm->type == V4L2_BUF_TYPE_VIDEO_CAPTURE) {
+ 		parm->parm.capture.timeperframe = timeperframe;
+-	else
++		parm->parm.capture.capability = V4L2_CAP_TIMEPERFRAME;
++	} else {
+ 		parm->parm.output.timeperframe = timeperframe;
++		parm->parm.output.capability = V4L2_CAP_TIMEPERFRAME;
++	}
+ 
+ 	return 0;
+ }
 -- 
 2.33.0
 
