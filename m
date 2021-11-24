@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2064745BCB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D387845BAC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243923AbhKXMbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:31:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41270 "EHLO mail.kernel.org"
+        id S242914AbhKXMOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:14:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245200AbhKXMYp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:24:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 452EA6120F;
-        Wed, 24 Nov 2021 12:15:29 +0000 (UTC)
+        id S242498AbhKXMLb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:11:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BB646109D;
+        Wed, 24 Nov 2021 12:06:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756129;
-        bh=uD7QM3zZ1ifDv+fKhirBA3ejrGhIoMshuO/jRiOTJ/0=;
+        s=korg; t=1637755590;
+        bh=ko8PvQdEl2K1wmJAEXAPeZIKzNEsI1bGym7J0nLuIw4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mNj3AuZIEKT3AJKgG3E6Gc5PLvoHMYtanSmo2HqX1bhT701KjoHJlJyz1+A7VZ4pX
-         SOD9VNcY2hPXetp7eZtvXLCiAtDooFYwHp+03NWtb6eqL6Ynzqpg3eO9o91jsnbAO+
-         VkrrB4WzL4O1hdoSXu3Uyxic2E+Dk7IWgS+2fh4k=
+        b=szf25pgnRI6DlBL8JlhaOOfCq2ojb4n7u1UNL70DGVJwarP4XVW4qjY+18eYBfv5t
+         2yQgOui/IrhvLkyo1Q/SHaT5JhIO33BSrqpSj6hzWZ0PfpSNhKY1H6XPJ+AlSnDvXv
+         tkS5WUioPwgq3gQnm/zotV8U3W19aiWWTZ8O0ERA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Surabhi Boob <surabhi.boob@intel.com>,
-        Tony Brelinski <tony.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 182/207] iavf: Fix for the false positive ASQ/ARQ errors while issuing VF reset
+        =?UTF-8?q?Leonardo=20M=F6rlein?= <me@irrelefant.net>,
+        =?UTF-8?q?Linus=20L=FCssing?= <linus.luessing@c0d3.blue>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        Sven Eckelmann <sven@narfation.org>
+Subject: [PATCH 4.4 150/162] batman-adv: Fix multicast TT issues with bogus ROAM flags
 Date:   Wed, 24 Nov 2021 12:57:33 +0100
-Message-Id: <20211124115709.864978440@linuxfoundation.org>
+Message-Id: <20211124115703.126363471@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Surabhi Boob <surabhi.boob@intel.com>
+From: Linus Lüssing <linus.luessing@c0d3.blue>
 
-[ Upstream commit 321421b57a12e933f92b228e0e6d0b2c6541f41d ]
+commit a44ebeff6bbd6ef50db41b4195fca87b21aefd20 upstream.
 
-While issuing VF Reset from the guest OS, the VF driver prints
-logs about critical / Overflow error detection. This is not an
-actual error since the VF_MBX_ARQLEN register is set to all FF's
-for a short period of time and the VF would catch the bits set if
-it was reading the register during that spike of time.
-This patch introduces an additional check to ignore this condition
-since the VF is in reset.
+When a (broken) node wrongly sends multicast TT entries with a ROAM
+flag then this causes any receiving node to drop all entries for the
+same multicast MAC address announced by other nodes, leading to
+packet loss.
 
-Fixes: 19b73d8efaa4 ("i40evf: Add additional check for reset")
-Signed-off-by: Surabhi Boob <surabhi.boob@intel.com>
-Tested-by: Tony Brelinski <tony.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix this DoS vector by only storing TT sync flags. For multicast TT
+non-sync'ing flag bits like ROAM are unused so far anyway.
+
+Fixes: 1d8ab8d3c176 ("batman-adv: Modified forwarding behaviour for multicast packets")
+Reported-by: Leonardo Mörlein <me@irrelefant.net>
+Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
+Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+[ bp: 4.4 backported: adjust context, use old style to access flags ]
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/i40evf/i40evf_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/batman-adv/translation-table.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/i40evf/i40evf_main.c b/drivers/net/ethernet/intel/i40evf/i40evf_main.c
-index 537776a3e5de1..9ba36425a3ddd 100644
---- a/drivers/net/ethernet/intel/i40evf/i40evf_main.c
-+++ b/drivers/net/ethernet/intel/i40evf/i40evf_main.c
-@@ -1889,7 +1889,7 @@ static void i40evf_adminq_task(struct work_struct *work)
+--- a/net/batman-adv/translation-table.c
++++ b/net/batman-adv/translation-table.c
+@@ -1426,7 +1426,8 @@ static bool batadv_tt_global_add(struct
+ 		ether_addr_copy(common->addr, tt_addr);
+ 		common->vid = vid;
  
- 	/* check for error indications */
- 	val = rd32(hw, hw->aq.arq.len);
--	if (val == 0xdeadbeef) /* indicates device in reset */
-+	if (val == 0xdeadbeef || val == 0xffffffff) /* device in reset */
- 		goto freedom;
- 	oldval = val;
- 	if (val & I40E_VF_ARQLEN1_ARQVFE_MASK) {
--- 
-2.33.0
-
+-		common->flags = flags & (~BATADV_TT_SYNC_MASK);
++		if (!is_multicast_ether_addr(common->addr))
++			common->flags = flags & (~BATADV_TT_SYNC_MASK);
+ 
+ 		tt_global_entry->roam_at = 0;
+ 		/* node must store current time in case of roaming. This is
+@@ -1489,7 +1490,8 @@ static bool batadv_tt_global_add(struct
+ 		 * TT_CLIENT_WIFI, therefore they have to be copied in the
+ 		 * client entry
+ 		 */
+-		tt_global_entry->common.flags |= flags & (~BATADV_TT_SYNC_MASK);
++		if (!is_multicast_ether_addr(common->addr))
++			tt_global_entry->common.flags |= flags & (~BATADV_TT_SYNC_MASK);
+ 
+ 		/* If there is the BATADV_TT_CLIENT_ROAM flag set, there is only
+ 		 * one originator left in the list and we previously received a
 
 
