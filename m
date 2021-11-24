@@ -2,131 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F5145CD8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 20:53:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD7045CD9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236883AbhKXT4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 14:56:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38564 "EHLO
+        id S241938AbhKXUH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 15:07:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235076AbhKXT4b (ORCPT
+        with ESMTP id S236387AbhKXUHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 14:56:31 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E959AC061574;
-        Wed, 24 Nov 2021 11:53:20 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id r8so6348759wra.7;
-        Wed, 24 Nov 2021 11:53:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jfrfq43NyMGbXbt7w7bZ1iCtfGpsFmM7TNkhuhYmJyE=;
-        b=Rv09c/fYvF0EDPJ4cCrEgggM6WXLpXjNtn3EUcHuIW+ga9Vrl9NlAtEcw6OGYNzjmo
-         B12agcR4URtvbUhe01QLz0ezLcdHktXxBkifBXAr+7sadwZ00qOQ6AoRRh60yQ5AmgXr
-         QDa0AMdF/DOSNqfNDEwpkVHDc4eSJMpBAC1DAXTioP6c7qj4yjYWAHpV6neWsNS4ipuK
-         wqCMMiwACH+ddEqRSzZ087wXtb+TNoZFT9fNzUuLM+Kf7hbsBEJxsyLV590lsaS358L0
-         RvEDwdS9UJNUqjwTn1W5F/V4lXNcZl+Ez5RuJxCZlZy0dXDRwWuC5qHiPg0FcBCHh+rw
-         cwgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jfrfq43NyMGbXbt7w7bZ1iCtfGpsFmM7TNkhuhYmJyE=;
-        b=vlH6I+z8R01rTGPE7wgXUUclsEisx0cGIpBLPJBG5jsXAOiImMH2cavXrD/gbCBmkB
-         fy2nwgxzF6OKcznDGaOJUmg4dJEjG5iqx/ZEsDOxL+oOZ0GuJ6AAvNwk/NZEUvUxCoAN
-         JOzV46FvqMqdCkaMOc3VCrszlz3gcdbP8rSSM0LVb0aNT2pRDImMTlU5hY/6um1UESfJ
-         QAOitTygx8PBcOsUm27zV0RT2Ywzibw1zyh8+FBovOHzMBZ3gakatnPGnNJkjVp7f8P9
-         YApA6Lk3R9QScUy4LGxRGzg07HgdtrHjxhXz9cYytw9HvZGqaZpjGPl0IH6Q2+tkzHJA
-         IQGw==
-X-Gm-Message-State: AOAM531x8sdWZDNAjJ/9fT1wpGo7/QxPcNO8pDnXUtL+B3JFdwMJHQEz
-        /EoHGVynELE8j/ErhvHoywY=
-X-Google-Smtp-Source: ABdhPJxCdkcv0VbrlZ3X2OmYdGI3JAntg7J3nS+IHdqnA1mNzxffEWBkgFL96/Phqu4tNRCOmdxJ6A==
-X-Received: by 2002:a5d:4492:: with SMTP id j18mr23177731wrq.397.1637783599449;
-        Wed, 24 Nov 2021 11:53:19 -0800 (PST)
-Received: from elementary ([217.113.240.86])
-        by smtp.gmail.com with ESMTPSA id v2sm583805wmc.36.2021.11.24.11.53.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 11:53:19 -0800 (PST)
-Date:   Wed, 24 Nov 2021 20:53:15 +0100
-From:   =?iso-8859-1?Q?Jos=E9_Exp=F3sito?= <jose.exposito89@gmail.com>
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/1] Do not map BTN_RIGHT/MIDDLE on buttonpads
-Message-ID: <20211124195315.GA9441@elementary>
-References: <20211123191238.12472-1-jose.exposito89@gmail.com>
- <CAO-hwJLB8h6fQRF8UjN3rER_6xS2Shi3ffEr92PhkVCijtYRpQ@mail.gmail.com>
+        Wed, 24 Nov 2021 15:07:24 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F59C061574;
+        Wed, 24 Nov 2021 12:04:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OAtizbSoXoPNAyMg215cuoX14RfVf7vO6HnqYrV3Dvk=; b=pxzUkXYfltPbHw3FE40BsyvVC7
+        q4ztiAKAh9byHa+doug0X32e1mx36FUzfwLCiduYtt8QsQkbTSbkx8rBjcJuIEIoHDU20SEPslrtv
+        aii6BxwmJAhz2jwsFlCGq9xm5OajI8ekPEy4Mqu0PWeXNpXx4DqN2dO+jhaBLFPxibEOqbbPap9kz
+        8hJIYZoj+Zo4YwJWjUUXqgOiIkexnMHh1II250x7Gy2c6CToeqOJJvXycORVmnogatzbWhQ9v5WVB
+        5Azf0IIf4TYYwihfL8WBzt1yNge3rFW3tQIm07tHkpz8QXVV3OMm2hQWnGTYXtG6Kw4Kd8+/dnFER
+        KDp5jGhA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mpyUo-003BgI-Pa; Wed, 24 Nov 2021 20:03:58 +0000
+Date:   Wed, 24 Nov 2021 20:03:58 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
+ with sub-page faults
+Message-ID: <YZ6arlsi2L3LVbFO@casper.infradead.org>
+References: <20211124192024.2408218-1-catalin.marinas@arm.com>
+ <20211124192024.2408218-4-catalin.marinas@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAO-hwJLB8h6fQRF8UjN3rER_6xS2Shi3ffEr92PhkVCijtYRpQ@mail.gmail.com>
+In-Reply-To: <20211124192024.2408218-4-catalin.marinas@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Benjamin,
+On Wed, Nov 24, 2021 at 07:20:24PM +0000, Catalin Marinas wrote:
+> +++ b/fs/btrfs/ioctl.c
+> @@ -2223,7 +2223,8 @@ static noinline int search_ioctl(struct inode *inode,
+>  
+>  	while (1) {
+>  		ret = -EFAULT;
+> -		if (fault_in_writeable(ubuf + sk_offset, *buf_size - sk_offset))
+> +		if (fault_in_exact_writeable(ubuf + sk_offset,
+> +					     *buf_size - sk_offset))
+>  			break;
+>  
+>  		ret = btrfs_search_forward(root, &key, path, sk->min_transid);
 
-Thank you very much for your quick answer.
+Couldn't we avoid all of this nastiness by doing ...
 
-On Wed, Nov 24, 2021 at 10:39:02AM +0100, Benjamin Tissoires wrote:
-> As long as udev intrinsic is happy with it (and it correctly tags the
-> touchpad as ID_INPUT_something), I'm fine with it.
+@@ -2121,10 +2121,9 @@ static noinline int copy_to_sk(struct btrfs_path *path,
+                 * problem. Otherwise we'll fault and then copy the buffer in
+                 * properly this next time through
+                 */
+-               if (copy_to_user_nofault(ubuf + *sk_offset, &sh, sizeof(sh))) {
+-                       ret = 0;
++               ret = __copy_to_user_nofault(ubuf + *sk_offset, &sh, sizeof(sh));
++               if (ret)
+                        goto out;
+-               }
+ 
+                *sk_offset += sizeof(sh);
+@@ -2196,6 +2195,7 @@ static noinline int search_ioctl(struct inode *inode,
+        int ret;
+        int num_found = 0;
+        unsigned long sk_offset = 0;
++       unsigned long next_offset = 0;
+ 
+        if (*buf_size < sizeof(struct btrfs_ioctl_search_header)) {
+                *buf_size = sizeof(struct btrfs_ioctl_search_header);
+@@ -2223,7 +2223,8 @@ static noinline int search_ioctl(struct inode *inode,
+ 
+        while (1) {
+                ret = -EFAULT;
+-               if (fault_in_writeable(ubuf + sk_offset, *buf_size - sk_offset))
++               if (fault_in_writeable(ubuf + sk_offset + next_offset,
++                                       *buf_size - sk_offset - next_offset))
+                        break;
+ 
+                ret = btrfs_search_forward(root, &key, path, sk->min_transid);
+@@ -2235,11 +2236,12 @@ static noinline int search_ioctl(struct inode *inode,
+                ret = copy_to_sk(path, &key, sk, buf_size, ubuf,
+                                 &sk_offset, &num_found);
+                btrfs_release_path(path);
+-               if (ret)
++               if (ret > 0)
++                       next_offset = ret;
++               else if (ret < 0)
+                        break;
+-
+        }
+-       if (ret > 0)
++       if (ret == -ENOSPC || ret > 0)
+                ret = 0;
+ err:
+        sk->nr_items = num_found;
 
-Yes, the device is still tagged correctly. For example, this is the original
-output for "libinput record" (libinput issue 674):
+(not shown: the tedious bits where the existing 'ret = 1' are converted
+to 'ret = -ENOSPC' in copy_to_sk())
+ 
+(where __copy_to_user_nofault() is a new function that does exactly what
+copy_to_user_nofault() does, but returns the number of bytes copied)
 
-  Supported Events:
-  Event type 0 (EV_SYN)
-    Event type 1 (EV_KEY)
-    Event code 272 (BTN_LEFT)
-    Event code 273 (BTN_RIGHT)
-    Event code 325 (BTN_TOOL_FINGER)
-  [...]
-  udev:
-    properties:
-    - ID_INPUT=1
-    - ID_INPUT_HEIGHT_MM=61
-    - ID_INPUT_TOUCHPAD=1
-    - ID_INPUT_WIDTH_MM=93
-
-And the same output after applying the patch:
-
-  Supported Events:
-  Event type 0 (EV_SYN)
-    Event type 1 (EV_KEY)
-    Event code 272 (BTN_LEFT)
-    Event code 325 (BTN_TOOL_FINGER)
-  [...]
-  udev:
-    properties:
-    - ID_INPUT=1
-    - ID_INPUT_HEIGHT_MM=61
-    - ID_INPUT_TOUCHPAD=1
-    - ID_INPUT_WIDTH_MM=93
-
-Notice that BTN_RIGHT is not present but the udev tags are the same.
-I don't have access to that specific touchpad, but I own a Magic
-Trackpad 1 and 2 -whose driver clears the BTN_RIGHT bit- and they
-are properly tagged as well.
-
-> I think it depends if you plan on fixing just hid-multitouch or the others.
-> If you have more than one driver, then yes, adding a new symbol in
-> hid-input.c makes sense. If not, then you are just exposing a new
-> function we won't know if there are users and we won't be able to
-> change without care.
-
-I'd like to fix the issue on every driver. It is not a big amount of
-duplicated code, just a couple of lines on drivers that don't already
-clear the BTN_RIGHT/MIDDLE bit, but I agree with you, moving into a
-common function is cleaner.
-
-Also, the "input_set_property" function would allow us to add more
-conditions associated with other properties in case we wanted to.
-
-Thanks again for your input, I'll send the patchset for review as soon as
-possible.
-
-Jose
+That way, the existing fault_in_writable() will get the fault, and we
+don't need to probe every 16 bytes.
