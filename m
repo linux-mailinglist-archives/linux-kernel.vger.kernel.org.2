@@ -2,165 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D8A45CFF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE55C45CFF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 23:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245411AbhKXWTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 17:19:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:50056 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245131AbhKXWTl (ORCPT
+        id S1343571AbhKXWV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 17:21:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243516AbhKXWVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 17:19:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637792190;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EEVhKDq1EhBHdoS7pTs0RLbzDWey60atk3W5DA5v0B4=;
-        b=OSyF49HBsRBesjnwLpONI2KlKEDOWpy69mX8OXVZYMSAD5PwrVyygjSVVr+H2RaPXoIRW6
-        WGqHU7BcTZQPx26kJ4loOyXZdQ44kfYnyS9W0hEmdAZmTqISWgbb7cnjJFShFTucchodyT
-        lwvgvkcdp+nHjbvMCRQOZOif6JrjtQo=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-391-PfJnu084NsiP49zjO3HVIw-1; Wed, 24 Nov 2021 17:16:29 -0500
-X-MC-Unique: PfJnu084NsiP49zjO3HVIw-1
-Received: by mail-lf1-f71.google.com with SMTP id m2-20020a056512014200b0041042b64791so2079380lfo.6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 14:16:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EEVhKDq1EhBHdoS7pTs0RLbzDWey60atk3W5DA5v0B4=;
-        b=YvRRW6P4YyVfXY0ZsXrjewzK1oOyW/wB2zsfG8NQlfykrq4HyWV7hNKdnNbFXL76hg
-         H2qJZe0QYqV5wKgZkH/KEuPQc4ZGpY1DaHD+M+xXnB7M//fHw4Lw0KcDahNs1Ku2XzFq
-         FoCWcRmToXNpEQP+cgIKOE4D67yKpsm7EUPco142lLS4VaYR4q7UWgS6FtKAaAy86k/2
-         EEZHpUchEq/YOWPUreY9Zk5VqnPf6iP0bPY2NMW4k5XJFXOYab5p4zl38JeI/eGnw8FW
-         4T2QhDJ28xtwmttrtPMDMyilYmG9aj6oBWnKQJN/t1hSMlNaTWefr44bejOgv5GuDf8u
-         BS5g==
-X-Gm-Message-State: AOAM530U06OSUlrsjPQt18kcWDYux2nFbI9g2pUIU/FJXtuz++ZY2L7C
-        xhfCer6gUp+0XS7HDkcJ/s4dPfar742HGXmY1JK8KQlzr01RIy7n63BRm6d/QDk3aUkbMw/mQmO
-        l30HUaihlwkEJa4yuR5Ej+76AQIcClhCED4l1pvjb
-X-Received: by 2002:a05:6512:3096:: with SMTP id z22mr18777544lfd.124.1637792187777;
-        Wed, 24 Nov 2021 14:16:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy3HKmtNAafBBlI7bMVT3RazivdW2g2TUcEskctZmuEaRpOF7Jx2bvW50+8WUNSPiqnQC6nZn8f0zY2CSibUtA=
-X-Received: by 2002:a05:6512:3096:: with SMTP id z22mr18777505lfd.124.1637792187488;
- Wed, 24 Nov 2021 14:16:27 -0800 (PST)
+        Wed, 24 Nov 2021 17:21:55 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A007EC061574;
+        Wed, 24 Nov 2021 14:18:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sEQB/jjB9aOv3YFUMqLZKs+O/a2g4X/PQogVeTcsvsE=; b=polHpjfVG8fg9i75kJGRg4xa8D
+        CijPbahqUUi6seetXzDtp8n06kzPDiMnhB3GaUMGLd7kErl1PoTA+lccFZQ2hzTVbKAIlyZfkImN6
+        95N4BlDXd2eMO/ra2dHy64j0Xn4RfSE67RfjHaROS7NfWxRxVYq4weKVDq2Hg4iV3HI1Ro8gXeGm8
+        WmlWYt/lK0jexevqrdMUfaqQ62P83MhmMR+FtpTbA0ZIOW5okWYttXWLm3kdMAYw8Hx+3a51yfie6
+        EAAicmCO0dfe7x2X34V/ETeS0yPHwR16+fg5U81qaC1Lj6vl4c4zoz4JBLfqe+6A+uG+F8coIQ4J+
+        UC1vzoGw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mq0b3-000KIU-PD; Wed, 24 Nov 2021 22:18:34 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2B7C4986843; Wed, 24 Nov 2021 23:18:33 +0100 (CET)
+Date:   Wed, 24 Nov 2021 23:18:33 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Peter Oskolkov <posk@posk.io>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>
+Subject: Re: [PATCH v0.9.1 3/6] sched/umcg: implement UMCG syscalls
+Message-ID: <20211124221833.GJ721624@worktop.programming.kicks-ass.net>
+References: <20211122211327.5931-1-posk@google.com>
+ <20211122211327.5931-4-posk@google.com>
 MIME-Version: 1.0
-References: <20210903152430.244937-1-nitesh@redhat.com> <CAFki+L=9Hw-2EONFEX6b7k6iRX_yLx1zcS+NmWsDSuBWg8w-Qw@mail.gmail.com>
- <87bl29l5c6.ffs@tglx>
-In-Reply-To: <87bl29l5c6.ffs@tglx>
-From:   Nitesh Lal <nilal@redhat.com>
-Date:   Wed, 24 Nov 2021 17:16:16 -0500
-Message-ID: <CAFki+Lmrv-UjZpuTQWr9c-Rymfm-tuCw9WpwmHgyfjVhJgp--g@mail.gmail.com>
-Subject: Re: [PATCH v6 00/14] genirq: Cleanup the abuse of irq_set_affinity_hint()
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>
-Cc:     Juri Lelli <juri.lelli@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        davem@davemloft.net, ajit.khaparde@broadcom.com,
-        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
-        huangguangbin2@huawei.com, huangdaode@huawei.com,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Alex Belits <abelits@marvell.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, rostedt@goodmis.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ingo Molnar <mingo@kernel.org>, jbrandeb@kernel.org,
-        akpm@linuxfoundation.org, sfr@canb.auug.org.au,
-        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
-        chris.friesen@windriver.com, Marc Zyngier <maz@kernel.org>,
-        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com,
-        Stefan Assmann <sassmann@redhat.com>,
-        Tomas Henzl <thenzl@redhat.com>, james.smart@broadcom.com,
-        Ken Cox <jkc@redhat.com>, faisal.latif@intel.com,
-        shiraz.saleem@intel.com, tariqt@nvidia.com,
-        Alaa Hleihel <ahleihel@redhat.com>,
-        Kamal Heib <kheib@redhat.com>, borisp@nvidia.com,
-        saeedm@nvidia.com,
-        "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        Al Stone <ahs3@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
-        bjorn.andersson@linaro.org, chunkuang.hu@kernel.org,
-        yongqiang.niu@mediatek.com, baolin.wang7@gmail.com,
-        Petr Oros <poros@redhat.com>, Ming Lei <minlei@redhat.com>,
-        Ewan Milne <emilne@redhat.com>, jejb@linux.ibm.com,
-        kabel@kernel.org, Viresh Kumar <viresh.kumar@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>, kashyap.desai@broadcom.com,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        shivasharan.srikanteshwara@broadcom.com,
-        sathya.prakash@broadcom.com,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        suganath-prabu.subramani@broadcom.com, ley.foon.tan@intel.com,
-        jbrunet@baylibre.com, johannes@sipsolutions.net,
-        snelson@pensando.io, lewis.hanly@microchip.com, benve@cisco.com,
-        _govind@gmx.com, jassisinghbrar@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211122211327.5931-4-posk@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 2:30 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Nitesh,
->
-> On Mon, Sep 13 2021 at 10:34, Nitesh Lal wrote:
-> > On Fri, Sep 3, 2021 at 11:25 AM Nitesh Narayan Lal <nitesh@redhat.com> wrote:
-> >>
-> >> The drivers currently rely on irq_set_affinity_hint() to either set the
-> >> affinity_hint that is consumed by the userspace and/or to enforce a custom
-> >> affinity.
-> >>
-> >> irq_set_affinity_hint() as the name suggests is originally introduced to
-> >> only set the affinity_hint to help the userspace in guiding the interrupts
-> >> and not the affinity itself. However, since the commit
-> >>
-> >>         e2e64a932556 "genirq: Set initial affinity in irq_set_affinity_hint()"
->
-> sorry for ignoring this. It fell through the cracks.
+On Mon, Nov 22, 2021 at 01:13:24PM -0800, Peter Oskolkov wrote:
+> +die:
+> +	pr_warn("%s: killing task %d\n", __func__, current->pid);
+> +	force_sig(SIGKILL);
 
+That pr_warn() might need to be pr_warn_ratelimited() in order to no be
+a system log DoS.
 
-No worries, thank you for reviewing.
-
->
->
-> >> Thomas Gleixner (1):
-> >>   genirq: Provide new interfaces for affinity hints
->
-> Did I actually write this?
-
-
-Yeap, the idea and the initial patch came from you. :)
-
->
->
-> > Any suggestions on what should be the next steps here? Unfortunately, I haven't
-> > been able to get any reviews on the following two patches:
-> >   be2net: Use irq_update_affinity_hint
-> >   hinic: Use irq_set_affinity_and_hint
-> >
-> > One option would be to proceed with the remaining patches and I can try
-> > posting these two again when I post patches for the remaining drivers?
->
-> The more general question is whether I should queue all the others or
-> whether some subsystem would prefer to pull in a tagged commit on top of
-> rc1. I'm happy to carry them all of course.
->
-
-I am fine either way.
-In the past, while I was asking for more testing help I was asked if the
-SCSI changes are part of Martins's scsi-fixes tree as that's something
-Broadcom folks test to check for regression.
-So, maybe Martin can pull this up?
-
--- 
-Thanks
-Nitesh
+Because, AFAICT, you can craft userspace to trigger this arbitrarily
+often, just spawn a worker and make it misbehave.
 
