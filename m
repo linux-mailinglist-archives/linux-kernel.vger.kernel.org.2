@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCACC45C3C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09BEA45C25F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350621AbhKXNmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:42:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33126 "EHLO mail.kernel.org"
+        id S1344456AbhKXN15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:27:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350500AbhKXNkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:40:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6C7161881;
-        Wed, 24 Nov 2021 12:57:21 +0000 (UTC)
+        id S1348133AbhKXNZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:25:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C07861B72;
+        Wed, 24 Nov 2021 12:49:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758642;
-        bh=h7oNJwJI9SFyfWSf6gY+J+ZUwBZzXZZJnqW3zBPQv4E=;
+        s=korg; t=1637758188;
+        bh=75YgilEkr+rv3FHrN2C6182LFwNoCZZ9Q6EU3l/v8hQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EcYsRq17W+/BqpizcAdod4hox6IQjftB9Wz9qpd4vn9Uorp678HYzNXCRXsEwodsm
-         IC/Q1bi9qSXdMlLQrsqpGND/9pLOK0ehwsRsGPa8kdUvwCdX8IQkyjPNnFRjDyRmQm
-         OfLUFUJXqzW/hBheneLT2NxzjumOgMr/I1N4S6ug=
+        b=URo3LJvHR3hv7/zCwkVZHcpJ01S8qKpiULkW978Op7SQqvDk33s1XgsZkrciyuqiY
+         Sm8klE59MudGF9o4c61je1fIAxaSOsLqOK814KSZhbH+v2smhqlZ7fyENMWLvcz1H2
+         ymrZ6LbirItXyMMNS56TSDun8nzHS1k4gk0jRTsA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Lin Ma <linma@zju.edu.cn>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 109/154] net: nfc: nci: Change the NCI close sequence
-Date:   Wed, 24 Nov 2021 12:58:25 +0100
-Message-Id: <20211124115705.814506942@linuxfoundation.org>
+Subject: [PATCH 5.4 070/100] NFC: reorder the logic in nfc_{un,}register_device
+Date:   Wed, 24 Nov 2021 12:58:26 +0100
+Message-Id: <20211124115657.129453487@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +41,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bongsu Jeon <bongsu.jeon@samsung.com>
+From: Lin Ma <linma@zju.edu.cn>
 
-[ Upstream commit f011539e723c737b74876ac47345e40270a3c384 ]
+[ Upstream commit 3e3b5dfcd16a3e254aab61bd1e8c417dd4503102 ]
 
-If there is a NCI command in work queue after closing the NCI device at
-nci_unregister_device, The NCI command timer starts at flush_workqueue
-function and then NCI command timeout handler would be called 5 second
-after flushing the NCI command work queue and destroying the queue.
-At that time, the timeout handler would try to use NCI command work queue
-that is destroyed already. it will causes the problem. To avoid this
-abnormal situation, change the sequence to prevent the NCI command timeout
-handler from being called after destroying the NCI command work queue.
+There is a potential UAF between the unregistration routine and the NFC
+netlink operations.
 
-Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+The race that cause that UAF can be shown as below:
+
+ (FREE)                      |  (USE)
+nfcmrvl_nci_unregister_dev   |  nfc_genl_dev_up
+  nci_close_device           |
+  nci_unregister_device      |    nfc_get_device
+    nfc_unregister_device    |    nfc_dev_up
+      rfkill_destory         |
+      device_del             |      rfkill_blocked
+  ...                        |    ...
+
+The root cause for this race is concluded below:
+1. The rfkill_blocked (USE) in nfc_dev_up is supposed to be placed after
+the device_is_registered check.
+2. Since the netlink operations are possible just after the device_add
+in nfc_register_device, the nfc_dev_up() can happen anywhere during the
+rfkill creation process, which leads to data race.
+
+This patch reorder these actions to permit
+1. Once device_del is finished, the nfc_dev_up cannot dereference the
+rfkill object.
+2. The rfkill_register need to be placed after the device_add of nfc_dev
+because the parent device need to be created first. So this patch keeps
+the order but inject device_lock to prevent the data race.
+
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+Fixes: be055b2f89b5 ("NFC: RFKILL support")
+Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Link: https://lore.kernel.org/r/20211116152652.19217-1-linma@zju.edu.cn
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/nfc/nci/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/nfc/core.c | 32 ++++++++++++++++++--------------
+ 1 file changed, 18 insertions(+), 14 deletions(-)
 
-diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
-index 5e55cb6c087a2..4d3ab0f44c9f4 100644
---- a/net/nfc/nci/core.c
-+++ b/net/nfc/nci/core.c
-@@ -568,11 +568,11 @@ static int nci_close_device(struct nci_dev *ndev)
+diff --git a/net/nfc/core.c b/net/nfc/core.c
+index c5f9c3ee82f8e..e752692d36802 100644
+--- a/net/nfc/core.c
++++ b/net/nfc/core.c
+@@ -94,13 +94,13 @@ int nfc_dev_up(struct nfc_dev *dev)
  
- 	clear_bit(NCI_INIT, &ndev->flags);
+ 	device_lock(&dev->dev);
  
--	del_timer_sync(&ndev->cmd_timer);
+-	if (dev->rfkill && rfkill_blocked(dev->rfkill)) {
+-		rc = -ERFKILL;
++	if (!device_is_registered(&dev->dev)) {
++		rc = -ENODEV;
+ 		goto error;
+ 	}
+ 
+-	if (!device_is_registered(&dev->dev)) {
+-		rc = -ENODEV;
++	if (dev->rfkill && rfkill_blocked(dev->rfkill)) {
++		rc = -ERFKILL;
+ 		goto error;
+ 	}
+ 
+@@ -1118,11 +1118,7 @@ int nfc_register_device(struct nfc_dev *dev)
+ 	if (rc)
+ 		pr_err("Could not register llcp device\n");
+ 
+-	rc = nfc_genl_device_added(dev);
+-	if (rc)
+-		pr_debug("The userspace won't be notified that the device %s was added\n",
+-			 dev_name(&dev->dev));
 -
- 	/* Flush cmd wq */
- 	flush_workqueue(ndev->cmd_wq);
- 
-+	del_timer_sync(&ndev->cmd_timer);
++	device_lock(&dev->dev);
+ 	dev->rfkill = rfkill_alloc(dev_name(&dev->dev), &dev->dev,
+ 				   RFKILL_TYPE_NFC, &nfc_rfkill_ops, dev);
+ 	if (dev->rfkill) {
+@@ -1131,6 +1127,12 @@ int nfc_register_device(struct nfc_dev *dev)
+ 			dev->rfkill = NULL;
+ 		}
+ 	}
++	device_unlock(&dev->dev);
 +
- 	/* Clear flags */
- 	ndev->flags = 0;
++	rc = nfc_genl_device_added(dev);
++	if (rc)
++		pr_debug("The userspace won't be notified that the device %s was added\n",
++			 dev_name(&dev->dev));
  
+ 	return 0;
+ }
+@@ -1147,10 +1149,17 @@ void nfc_unregister_device(struct nfc_dev *dev)
+ 
+ 	pr_debug("dev_name=%s\n", dev_name(&dev->dev));
+ 
++	rc = nfc_genl_device_removed(dev);
++	if (rc)
++		pr_debug("The userspace won't be notified that the device %s "
++			 "was removed\n", dev_name(&dev->dev));
++
++	device_lock(&dev->dev);
+ 	if (dev->rfkill) {
+ 		rfkill_unregister(dev->rfkill);
+ 		rfkill_destroy(dev->rfkill);
+ 	}
++	device_unlock(&dev->dev);
+ 
+ 	if (dev->ops->check_presence) {
+ 		device_lock(&dev->dev);
+@@ -1160,11 +1169,6 @@ void nfc_unregister_device(struct nfc_dev *dev)
+ 		cancel_work_sync(&dev->check_pres_work);
+ 	}
+ 
+-	rc = nfc_genl_device_removed(dev);
+-	if (rc)
+-		pr_debug("The userspace won't be notified that the device %s "
+-			 "was removed\n", dev_name(&dev->dev));
+-
+ 	nfc_llcp_unregister_device(dev);
+ 
+ 	mutex_lock(&nfc_devlist_mutex);
 -- 
 2.33.0
 
