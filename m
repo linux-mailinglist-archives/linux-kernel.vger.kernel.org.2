@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491C245CC9C
+	by mail.lfdr.de (Postfix) with ESMTP id AB25F45CC9D
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:59:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244758AbhKXTB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 14:01:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54310 "EHLO
+        id S245276AbhKXTB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 14:01:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232361AbhKXTBt (ORCPT
+        with ESMTP id S234723AbhKXTBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 14:01:49 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E22C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:58:39 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id l8so3704748qtk.6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:58:39 -0800 (PST)
+        Wed, 24 Nov 2021 14:01:51 -0500
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0CA4C06173E
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:58:40 -0800 (PST)
+Received: by mail-qt1-x835.google.com with SMTP id t11so3718941qtw.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 10:58:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=mJgPRgekSlvs885MNHC+5vq6TTVnni6tQ47GqPwt7rg=;
-        b=MvRBGkIQBQAk0E7xGqOI5gYq6jBORKhrthwKkCbSgJAz4nGyJiaNGZ9Mtc6UaDcerB
-         Evff3YgwsZJQmALZSPRPk7KYRo9ix+upCvBTPWj+YniORrUC3Fciabhdlx0Pw35yrFlT
-         nc+IF0wiCz3mGuMVJJjfff0eIRF4fUM0NytTxIsIMaiYC6pV67T2rQ5fRZGxLqiBMdZe
-         wJv50yvJj5xdsvbVlSt9o+jlR8Bb0m30iV/f5+GoF9U8MM8weiViLkUCLQJPUcptRp/f
-         7sxnUVlQnZks8CpMTF3D6YVBpJwQ4a6Cfhiz+8FEFPCicyslwKhlsxDy0haeR1nmSUr2
-         hRwQ==
+        bh=yUZbEu2qOKxvPmHdKRnDIuQkLz23ylqeDgJP0M9V70o=;
+        b=pLK1xNgnsJYjz20Mkovwatdhpjpt5t1XWMrXt20pJLRzpJy7LnNJDGWysp2DedxKcu
+         3sOM/IcQ4crXowfvldT4n3h7aEii8bZF0Oy9/I7KDJAypIr/BekYYmhE2qpu5iH+SiZ8
+         v/LrzB50tpr4eAUzfqouqIX65jdol5+yojoyvsKLWujcHUuBXxxFAvlwRA97HVVij0YD
+         Ihr0K0OupIZuLlRSXPif621Awlgy15vBCR85nnbcTiwuZl4pgCYENe7v84+XteYYZPiV
+         su/+MWV6HBSje+ljGqYAt/FetnQO0f/R2m1CyNKQ5E2/+Zr6c3OWfLlMHXe4BKFILmsc
+         8apA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mJgPRgekSlvs885MNHC+5vq6TTVnni6tQ47GqPwt7rg=;
-        b=QQxMxdL0XggNTfxrw30km2O9abkT/cCw4NtnHp40rj8SnDcFhzaj+jOug3qlkCSO1W
-         FT8hDZ59TP8dtW3LfzOHHEn1JCc8q4tvZF9+lN9AXj/6CoCYn2YnbkxdOT6Mv22ChCk7
-         +5Qo7b8XmfpCg4TEpXhApr1Xt/3RXBbJ/KfEx2DYcIo79RhFwHEOD2zgbeWHICJzPMme
-         VIwmRg4iPUqThV7yRqqqCkeyACRFX/6jZh1BJ87SQx5K2VzRcHTpi0u3WyXVsAJoFrg5
-         hCV6Miv9fTltCx6lAALz8ruogxZcMzHwF7tykp9ryETGGm7PqxhTZg/9sH6UDsn2xxEZ
-         ViNQ==
-X-Gm-Message-State: AOAM532p4iCWma0MWTxi0yDxJ/fqZ4BN+6DU1jtkh6OSAsfABL/AY3NS
-        mISUiaG3AneC5Ts8Qnrf/BQ=
-X-Google-Smtp-Source: ABdhPJyBHAfCScYWsB5ed0Scn3PNhF3ifCh2b+2ctuePXtPnNP1fg4oc+lKSTW6lVUbrPP5Dq3dPwA==
-X-Received: by 2002:a05:622a:188:: with SMTP id s8mr10130369qtw.347.1637780318711;
-        Wed, 24 Nov 2021 10:58:38 -0800 (PST)
+        bh=yUZbEu2qOKxvPmHdKRnDIuQkLz23ylqeDgJP0M9V70o=;
+        b=m9AtFYhpLUIcSO/06yUKmNvkvZY3nfuHqRVdmt0bNGoAeJNyddRJk1+PWqBTxFJE4j
+         /g9/5jF+FCAKqTCnd8bIr5hPlFY21Uvobpxq/D1OfCL2b7BaWgySGM7MtY3ihddapYHp
+         b2qZ8PYoaIeaAfDjynKVONbSMCMX/kDiv0NkrXNhenU708tVwWmBMHCd8z1A7eI/Pr9n
+         bjnvcnm0yrdQ4aUBha7qu03D9ne/LYuyPQWgBHh8xfhzHhD36cQXwR6sParbIq/unfZW
+         t/9xLQ046bD0GFbGJQZSe6xA4aXOnLPmyGHVFV4w+/0J24iNByYte1O+F1zxDiBTkxCP
+         pkKA==
+X-Gm-Message-State: AOAM5319VXNwTNwFyX0hXndZZLbTtI/bsYZM4vHkExYdejbMV4IjMHVu
+        5jcSDdMRX7HAT4X67mq47ME=
+X-Google-Smtp-Source: ABdhPJzMHRf5a1lHvYDJmL/TV72LJ3PpuKPlCs9u4awPUnAWvbUNFGYCKohzdrBP2dJDRE3efAv1rg==
+X-Received: by 2002:ac8:59ce:: with SMTP id f14mr10129047qtf.30.1637780319935;
+        Wed, 24 Nov 2021 10:58:39 -0800 (PST)
 Received: from hasanalmaruf-mbp.thefacebook.com ([2620:10d:c091:480::1:a1b0])
-        by smtp.gmail.com with ESMTPSA id r16sm315775qkp.42.2021.11.24.10.58.37
+        by smtp.gmail.com with ESMTPSA id r16sm315775qkp.42.2021.11.24.10.58.38
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 24 Nov 2021 10:58:38 -0800 (PST)
+        Wed, 24 Nov 2021 10:58:39 -0800 (PST)
 From:   Hasan Al Maruf <hasan3050@gmail.com>
 X-Google-Original-From: Hasan Al Maruf <hasanalmaruf@fb.com>
 To:     dave.hansen@linux.intel.com, ying.huang@intel.com,
         yang.shi@linux.alibaba.com, mgorman@techsingularity.net,
         riel@surriel.com, hannes@cmpxchg.org
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/5] NUMA balancing for tiered-memory system
-Date:   Wed, 24 Nov 2021 13:58:27 -0500
-Message-Id: <06f961992a2c119ed0904825d8ab3f2b2a2c682b.1637778851.git.hasanalmaruf@fb.com>
+Subject: [PATCH 3/5] Decouple reclaim and allocation for toptier nodes
+Date:   Wed, 24 Nov 2021 13:58:28 -0500
+Message-Id: <b45b9bf7cd3e21bca61d82dcd1eb692cd32c122c.1637778851.git.hasanalmaruf@fb.com>
 X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 In-Reply-To: <cover.1637778851.git.hasanalmaruf@fb.com>
 References: <cover.1637778851.git.hasanalmaruf@fb.com>
@@ -66,334 +66,388 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the advent of new memory types and technologies, a server may have
-different types of memory, e.g. DRAM, PMEM, CXL-enabled memory, etc. As
-different types of memory usually have different level of performance
-impact, such a system can be called as a tiered-memory system.
+With a tight memory constraint, we need to proactively keep some
+free memory in toptier node, such that 1) new allocation which is
+mainly for request processing can be directly put in the toptier
+node and 2) toptier node is able to accept hot pages promoted from
+non-toptier node. To achieve that, we decouple the reclamation and
+allocation mechanism, i.e. reclamation gets triggered at a different
+watermark -- WMARK_DEMOTE, while allocation checks for the traditional
+WMARK_HIGH. In this way, toptier nodes can maintain some free space to
+accept both new allocation and promotion from non-toptier nodes.
 
-In a tiered-memory system, NUMA memory nodes can be CPU-less nodes. For
-such a system, memory with CPU are considered as the toptier node while
-memory without CPU are non-toptier nodes.
+On each toptier memory node, kswapd daemon is woken up to demote memory
+when free memory on the node falls below the following fraction
 
-In default NUMA Balancing, NUMA hint faults are generate on both toptier
-and non-toptier nodes. However, in a tiered-memory system, hot memories in
-toptier memory nodes may not need to be migrated around. In such cases,
-it's unnecessary to scan the pages in the toptier memory nodes. We disable
-unnecessary scannings in the toptier nodes for a tiered-memory system.
+    demote_scale_factor/10000
 
-To support NUMA balancing for a tiered-memory system, the existing sysctl
-user-space interface for enabling numa_balancing is extended in a backward
-compatible way, so that users can enable/disable these functionalities
-individually. The sysctl is converted from a Boolean value to a bits field.
-Current definition for '/proc/sys/kernel/numa_balancing' is as follow:
+The default value of demote_scale_factor is 200 , (i.e. 2%) so kswapd will
+be woken up when available free memory on a node falls below 2%. The
+demote_scale_factor can be adjusted higher if we need kswapd to keep more
+free memory around by updating the sysctl variable
 
-- 0x0: NUMA_BALANCING_DISABLED
-- 0x1: NUMA_BALANCING_NORMAL
-- 0x2: NUMA_BALANCING_TIERED_MEMORY
-
-If a system has single toptier node online, default NUMA balancing will
-automatically be downgraded to the tiered-memory mode to avoid the
-unnecessary scanning in the toptier node mentioned above.
+    /proc/sys/vm/demote_scale_factor
 
 Signed-off-by: Hasan Al Maruf <hasanalmaruf@fb.com>
 ---
- Documentation/admin-guide/sysctl/kernel.rst | 18 +++++++++++
- include/linux/mempolicy.h                   |  2 ++
- include/linux/node.h                        |  7 ++++
- include/linux/sched/sysctl.h                |  6 ++++
- kernel/sched/core.c                         | 36 +++++++++++++++++----
- kernel/sched/fair.c                         | 10 +++++-
- kernel/sched/sched.h                        |  1 +
- kernel/sysctl.c                             |  7 ++--
- mm/huge_memory.c                            | 27 ++++++++++------
- mm/mprotect.c                               |  8 ++++-
- 10 files changed, 101 insertions(+), 21 deletions(-)
+ Documentation/admin-guide/sysctl/vm.rst | 12 +++++++++
+ include/linux/mempolicy.h               |  5 ++++
+ include/linux/mm.h                      |  4 +++
+ include/linux/mmzone.h                  |  5 ++++
+ kernel/sched/fair.c                     |  3 +++
+ kernel/sysctl.c                         | 12 ++++++++-
+ mm/mempolicy.c                          | 23 +++++++++++++++++
+ mm/page_alloc.c                         | 34 ++++++++++++++++++++++++-
+ mm/vmscan.c                             | 26 +++++++++++++++++++
+ mm/vmstat.c                             |  7 ++++-
+ 10 files changed, 128 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-index 24ab20d7a50a..1abab69dd5b6 100644
---- a/Documentation/admin-guide/sysctl/kernel.rst
-+++ b/Documentation/admin-guide/sysctl/kernel.rst
-@@ -608,6 +608,24 @@ numa_balancing_scan_delay_ms, numa_balancing_scan_period_max_ms,
- numa_balancing_scan_size_mb`_, and numa_balancing_settle_count sysctls.
+diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
+index 586cd4b86428..027b1f31fec1 100644
+--- a/Documentation/admin-guide/sysctl/vm.rst
++++ b/Documentation/admin-guide/sysctl/vm.rst
+@@ -74,6 +74,7 @@ Currently, these files are in /proc/sys/vm:
+ - vfs_cache_pressure
+ - watermark_boost_factor
+ - watermark_scale_factor
++- demote_scale_factor
+ - zone_reclaim_mode
  
  
-+By default, NUMA hinting faults are generate on both toptier and non-toptier
-+nodes. However, in a tiered-memory system, hot memories in toptier memory nodes
-+may not need to be migrated around. In such cases, it's unnecessary to scan the
-+pages in the toptier memory nodes. For a tiered-memory system, unnecessary scannings
-+and hinting faults in the toptier nodes are disabled.
-+
-+This interface takes bits field as input. Supported values and corresponding modes are
-+as follow:
-+
-+- 0x0: NUMA_BALANCING_DISABLED
-+- 0x1: NUMA_BALANCING_NORMAL
-+- 0x2: NUMA_BALANCING_TIERED_MEMORY
-+
-+If a system has single toptier node online, then default NUMA balancing will
-+automatically be downgraded to the tiered-memory mode to avoid the unnecessary scanning
-+and hinting faults.
-+
-+
- numa_balancing_scan_period_min_ms, numa_balancing_scan_delay_ms, numa_balancing_scan_period_max_ms, numa_balancing_scan_size_mb
- ===============================================================================================================================
+@@ -961,6 +962,17 @@ that the number of free pages kswapd maintains for latency reasons is
+ too small for the allocation bursts occurring in the system. This knob
+ can then be used to tune kswapd aggressiveness accordingly.
  
++demote_scale_factor
++===================
++
++This factor controls when kswapd wakes up to demote pages from toptier
++nodes. It defines the amount of memory left in a toptier node/system
++before kswapd is woken up and how much memory needs to be free from those
++nodes before kswapd goes back to sleep.
++
++The unit is in fractions of 10,000. The default value of 200 means if there
++are less than 2% of free toptier memory in a node/system, we will start  to
++demote pages from that node.
+ 
+ zone_reclaim_mode
+ =================
 diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
-index c7637cfa1be2..ab57b6a82e0a 100644
+index ab57b6a82e0a..0a76ac103b17 100644
 --- a/include/linux/mempolicy.h
 +++ b/include/linux/mempolicy.h
-@@ -188,6 +188,7 @@ extern int mpol_misplaced(struct page *, struct vm_area_struct *, unsigned long,
- extern void mpol_put_task_policy(struct task_struct *);
+@@ -145,6 +145,7 @@ extern void numa_default_policy(void);
+ extern void numa_policy_init(void);
+ extern void mpol_rebind_task(struct task_struct *tsk, const nodemask_t *new);
+ extern void mpol_rebind_mm(struct mm_struct *mm, nodemask_t *new);
++extern void check_toptier_balanced(void);
  
- extern bool numa_demotion_enabled;
-+extern bool numa_promotion_tiered_enabled;
- 
- #else
- 
-@@ -299,5 +300,6 @@ static inline nodemask_t *policy_nodemask_current(gfp_t gfp)
+ extern int huge_node(struct vm_area_struct *vma,
+ 				unsigned long addr, gfp_t gfp_flags,
+@@ -299,6 +300,10 @@ static inline nodemask_t *policy_nodemask_current(gfp_t gfp)
+ 	return NULL;
  }
  
++static inline void check_toptier_balanced(void)
++{
++}
++
  #define numa_demotion_enabled	false
-+#define numa_promotion_tiered_enabled	false
+ #define numa_promotion_tiered_enabled	false
  #endif /* CONFIG_NUMA */
- #endif
-diff --git a/include/linux/node.h b/include/linux/node.h
-index 8e5a29897936..9a69b31cae74 100644
---- a/include/linux/node.h
-+++ b/include/linux/node.h
-@@ -181,4 +181,11 @@ static inline void register_hugetlbfs_with_node(node_registration_func_t reg,
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 9a226787464e..4748e57b7c68 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -3153,6 +3153,10 @@ static inline bool debug_guardpage_enabled(void) { return false; }
+ static inline bool page_is_guard(struct page *page) { return false; }
+ #endif /* CONFIG_DEBUG_PAGEALLOC */
  
- #define to_node(device) container_of(device, struct node, dev)
- 
-+static inline bool node_is_toptier(int node)
-+{
-+	// ideally, toptier nodes should be the memory with CPU.
-+	// for now, just assume node0 is the toptier memory
-+	// return node_state(node, N_CPU);
-+	return (node == 0);
-+}
- #endif /* _LINUX_NODE_H_ */
-diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
-index 3c31ba88aca5..249e00c42246 100644
---- a/include/linux/sched/sysctl.h
-+++ b/include/linux/sched/sysctl.h
-@@ -39,6 +39,12 @@ enum sched_tunable_scaling {
++#ifdef CONFIG_MIGRATION
++extern int demote_scale_factor;
++#endif
++
+ #if MAX_NUMNODES > 1
+ void __init setup_nr_node_ids(void);
+ #else
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 47946cec7584..070284feac03 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -329,12 +329,14 @@ enum zone_watermarks {
+ 	WMARK_MIN,
+ 	WMARK_LOW,
+ 	WMARK_HIGH,
++	WMARK_DEMOTE,
+ 	NR_WMARK
  };
- extern enum sched_tunable_scaling sysctl_sched_tunable_scaling;
  
-+#define NUMA_BALANCING_DISABLED			0x0
-+#define NUMA_BALANCING_NORMAL			0x1
-+#define NUMA_BALANCING_TIERED_MEMORY	0x2
-+
-+extern int sysctl_numa_balancing_mode;
-+
- extern unsigned int sysctl_numa_balancing_scan_delay;
- extern unsigned int sysctl_numa_balancing_scan_period_min;
- extern unsigned int sysctl_numa_balancing_scan_period_max;
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 790c573f7ed4..3d65e601b973 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3596,9 +3596,29 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
- }
+ #define min_wmark_pages(z) (z->_watermark[WMARK_MIN] + z->watermark_boost)
+ #define low_wmark_pages(z) (z->_watermark[WMARK_LOW] + z->watermark_boost)
+ #define high_wmark_pages(z) (z->_watermark[WMARK_HIGH] + z->watermark_boost)
++#define demote_wmark_pages(z) (z->_watermark[WMARK_DEMOTE] + z->watermark_boost)
+ #define wmark_pages(z, i) (z->_watermark[i] + z->watermark_boost)
  
- DEFINE_STATIC_KEY_FALSE(sched_numa_balancing);
-+int sysctl_numa_balancing_mode;
-+bool numa_promotion_tiered_enabled;
- 
- #ifdef CONFIG_NUMA_BALANCING
- 
-+/*
-+ * If there is only one toptier node available, pages on that
-+ * node can not be promotrd to anywhere. In that case, downgrade
-+ * to numa_promotion_tiered_enabled mode
-+ */
-+static void check_numa_promotion_mode(void)
-+{
-+	int node, toptier_node_count = 0;
-+
-+	for_each_online_node(node) {
-+		if (node_is_toptier(node))
-+			++toptier_node_count;
-+	}
-+	if (toptier_node_count == 1) {
-+		numa_promotion_tiered_enabled = true;
-+	}
-+}
-+
- void set_numabalancing_state(bool enabled)
- {
- 	if (enabled)
-@@ -3611,20 +3631,22 @@ void set_numabalancing_state(bool enabled)
- int sysctl_numa_balancing(struct ctl_table *table, int write,
- 			  void *buffer, size_t *lenp, loff_t *ppos)
- {
--	struct ctl_table t;
- 	int err;
--	int state = static_branch_likely(&sched_numa_balancing);
- 
- 	if (write && !capable(CAP_SYS_ADMIN))
- 		return -EPERM;
- 
--	t = *table;
--	t.data = &state;
--	err = proc_dointvec_minmax(&t, write, buffer, lenp, ppos);
-+	err = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
- 	if (err < 0)
- 		return err;
--	if (write)
--		set_numabalancing_state(state);
-+	if (write) {
-+		if (sysctl_numa_balancing_mode & NUMA_BALANCING_NORMAL)
-+			check_numa_promotion_mode();
-+		else if (sysctl_numa_balancing_mode & NUMA_BALANCING_TIERED_MEMORY)
-+			numa_promotion_tiered_enabled = true;
-+
-+		set_numabalancing_state(*(int *)table->data);
-+	}
- 	return err;
- }
- #endif
+ struct per_cpu_pages {
+@@ -884,6 +886,7 @@ bool zone_watermark_ok(struct zone *z, unsigned int order,
+ 		unsigned int alloc_flags);
+ bool zone_watermark_ok_safe(struct zone *z, unsigned int order,
+ 		unsigned long mark, int highest_zoneidx);
++bool pgdat_toptier_balanced(pg_data_t *pgdat, int order, int zone_idx);
+ /*
+  * Memory initialization context, use to differentiate memory added by
+  * the platform statically or via memory hotplug interface.
+@@ -1011,6 +1014,8 @@ int min_free_kbytes_sysctl_handler(struct ctl_table *, int, void *, size_t *,
+ 		loff_t *);
+ int watermark_scale_factor_sysctl_handler(struct ctl_table *, int, void *,
+ 		size_t *, loff_t *);
++int demote_scale_factor_sysctl_handler(struct ctl_table *, int, void __user *,
++		size_t *, loff_t *);
+ extern int sysctl_lowmem_reserve_ratio[MAX_NR_ZONES];
+ int lowmem_reserve_ratio_sysctl_handler(struct ctl_table *, int, void *,
+ 		size_t *, loff_t *);
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 210612c9d1e9..45e39832a2b1 100644
+index 45e39832a2b1..6cada31f7265 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -1424,7 +1424,7 @@ bool should_numa_migrate_memory(struct task_struct *p, struct page * page,
- 
- 	count_vm_numa_event(PGPROMOTE_CANDIDATE);
- 
--	if (flags & TNF_DEMOTED)
-+	if (numa_demotion_enabled && (flags & TNF_DEMOTED))
- 		count_vm_numa_event(PGPROMOTE_CANDIDATE_DEMOTED);
- 
- 	if (page_is_file_lru(page))
-@@ -1435,6 +1435,14 @@ bool should_numa_migrate_memory(struct task_struct *p, struct page * page,
- 	this_cpupid = cpu_pid_to_cpupid(dst_cpu, current->pid);
- 	last_cpupid = page_cpupid_xchg_last(page, this_cpupid);
- 
-+	/*
-+	 * The pages in non-toptier memory node should be migrated
-+	 * according to hot/cold instead of accessing CPU node.
-+	 */
-+	if (numa_promotion_tiered_enabled && !node_is_toptier(src_nid))
-+		return true;
-+
-+
- 	/*
- 	 * Allow first faults or private faults to migrate immediately early in
- 	 * the lifetime of a task. The magic number 4 is based on waiting for
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 6057ad67d223..379f3b6f1a3f 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -51,6 +51,7 @@
- #include <linux/kthread.h>
- #include <linux/membarrier.h>
- #include <linux/migrate.h>
+@@ -21,6 +21,8 @@
+  *  Copyright (C) 2007 Red Hat, Inc., Peter Zijlstra
+  */
+ #include "sched.h"
++#include <trace/events/sched.h>
 +#include <linux/mempolicy.h>
- #include <linux/mm_inline.h>
- #include <linux/mmu_context.h>
- #include <linux/nmi.h>
+ 
+ /*
+  * Targeted preemption latency for CPU-bound tasks:
+@@ -10802,6 +10804,7 @@ void trigger_load_balance(struct rq *rq)
+ 		raise_softirq(SCHED_SOFTIRQ);
+ 
+ 	nohz_balancer_kick(rq);
++	check_toptier_balanced();
+ }
+ 
+ static void rq_online_fair(struct rq *rq)
 diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 6b6653529d92..751b52062eb4 100644
+index 751b52062eb4..7d2995045a94 100644
 --- a/kernel/sysctl.c
 +++ b/kernel/sysctl.c
-@@ -113,6 +113,7 @@ static int sixty = 60;
- 
- static int __maybe_unused neg_one = -1;
- static int __maybe_unused two = 2;
-+static int __maybe_unused three = 3;
- static int __maybe_unused four = 4;
- static unsigned long zero_ul;
- static unsigned long one_ul = 1;
-@@ -1840,12 +1841,12 @@ static struct ctl_table kern_table[] = {
- 	},
- 	{
- 		.procname	= "numa_balancing",
--		.data		= NULL, /* filled in by handler */
--		.maxlen		= sizeof(unsigned int),
-+		.data		= &sysctl_numa_balancing_mode,
-+		.maxlen		= sizeof(int),
- 		.mode		= 0644,
- 		.proc_handler	= sysctl_numa_balancing,
- 		.extra1		= SYSCTL_ZERO,
--		.extra2		= SYSCTL_ONE,
-+		.extra2		= &three,
- 	},
- #endif /* CONFIG_NUMA_BALANCING */
- #endif /* CONFIG_SCHED_DEBUG */
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index e9d7b9125c5e..b76a0990c5f1 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -22,6 +22,7 @@
- #include <linux/freezer.h>
- #include <linux/pfn_t.h>
- #include <linux/mman.h>
-+#include <linux/mempolicy.h>
- #include <linux/memremap.h>
- #include <linux/pagemap.h>
- #include <linux/debugfs.h>
-@@ -1849,16 +1850,24 @@ int change_huge_pmd(struct vm_area_struct *vma, pmd_t *pmd,
- 	}
+@@ -112,6 +112,7 @@ static int sixty = 60;
  #endif
  
--	/*
--	 * Avoid trapping faults against the zero page. The read-only
--	 * data is likely to be read-cached on the local CPU and
--	 * local/remote hits to the zero page are not interesting.
--	 */
--	if (prot_numa && is_huge_zero_pmd(*pmd))
--		goto unlock;
-+	if (prot_numa) {
-+		struct page *page;
-+		/*
-+		 * Avoid trapping faults against the zero page. The read-only
-+		 * data is likely to be read-cached on the local CPU and
-+		 * local/remote hits to the zero page are not interesting.
-+		 */
-+		if (is_huge_zero_pmd(*pmd))
-+			goto unlock;
+ static int __maybe_unused neg_one = -1;
++static int __maybe_unused one = 1;
+ static int __maybe_unused two = 2;
+ static int __maybe_unused three = 3;
+ static int __maybe_unused four = 4;
+@@ -121,8 +122,8 @@ static unsigned long long_max = LONG_MAX;
+ static int one_hundred = 100;
+ static int two_hundred = 200;
+ static int one_thousand = 1000;
+-#ifdef CONFIG_PRINTK
+ static int ten_thousand = 10000;
++#ifdef CONFIG_PRINTK
+ #endif
+ #ifdef CONFIG_PERF_EVENTS
+ static int six_hundred_forty_kb = 640 * 1024;
+@@ -3000,6 +3001,15 @@ static struct ctl_table vm_table[] = {
+ 		.extra1		= SYSCTL_ONE,
+ 		.extra2		= &one_thousand,
+ 	},
++	{
++		.procname       = "demote_scale_factor",
++		.data           = &demote_scale_factor,
++		.maxlen         = sizeof(demote_scale_factor),
++		.mode           = 0644,
++		.proc_handler   = demote_scale_factor_sysctl_handler,
++		.extra1         = &one,
++		.extra2         = &ten_thousand,
++	},
+ 	{
+ 		.procname	= "percpu_pagelist_fraction",
+ 		.data		= &percpu_pagelist_fraction,
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index 580e76ae58e6..ba9b1322bd48 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -1042,6 +1042,29 @@ static long do_get_mempolicy(int *policy, nodemask_t *nmask,
+ 	return err;
+ }
  
--	if (prot_numa && pmd_protnone(*pmd))
--		goto unlock;
-+		if (pmd_protnone(*pmd))
-+			goto unlock;
++void check_toptier_balanced(void)
++{
++	int nid;
++	int balanced;
 +
-+		/* skip scanning toptier node */
-+		page = pmd_page(*pmd);
-+		if (numa_promotion_tiered_enabled && node_is_toptier(page_to_nid(page)))
-+			goto unlock;
++	if (!numa_promotion_tiered_enabled)
++		return;
++
++	for_each_node_state(nid, N_MEMORY) {
++		pg_data_t *pgdat = NODE_DATA(nid);
++
++		if (!node_is_toptier(nid))
++			continue;
++
++		balanced = pgdat_toptier_balanced(pgdat, 0, ZONE_MOVABLE);
++		if (!balanced) {
++			pgdat->kswapd_order = 0;
++			pgdat->kswapd_highest_zoneidx = ZONE_NORMAL;
++			wakeup_kswapd(pgdat->node_zones + ZONE_NORMAL, 0, 1, ZONE_NORMAL);
++		}
 +	}
- 
- 	/*
- 	 * In case prot_numa, we are under mmap_read_lock(mm). It's critical
-diff --git a/mm/mprotect.c b/mm/mprotect.c
-index 94188df1ee55..3171f435925b 100644
---- a/mm/mprotect.c
-+++ b/mm/mprotect.c
-@@ -83,6 +83,7 @@ static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
- 			 */
- 			if (prot_numa) {
- 				struct page *page;
-+				int nid;
- 
- 				/* Avoid TLB flush if possible */
- 				if (pte_protnone(oldpte))
-@@ -109,7 +110,12 @@ static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
- 				 * Don't mess with PTEs if page is already on the node
- 				 * a single-threaded process is running on.
- 				 */
--				if (target_node == page_to_nid(page))
-+				nid = page_to_nid(page);
-+				if (target_node == nid)
-+					continue;
++}
 +
-+				/* skip scanning toptier node */
-+				if (numa_promotion_tiered_enabled && node_is_toptier(nid))
- 					continue;
- 			}
+ #ifdef CONFIG_MIGRATION
+ /*
+  * page migration, thp tail pages can be passed.
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 5f1dd104cf8e..8638e24e1b2f 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -3599,7 +3599,8 @@ struct page *rmqueue(struct zone *preferred_zone,
+ 	if (test_bit(ZONE_BOOSTED_WATERMARK, &zone->flags)) {
+ 		clear_bit(ZONE_BOOSTED_WATERMARK, &zone->flags);
+ 		wakeup_kswapd(zone, 0, 0, zone_idx(zone));
+-	}
++	} else if (!pgdat_toptier_balanced(zone->zone_pgdat, order, zone_idx(zone)))
++		wakeup_kswapd(zone, 0, 0, zone_idx(zone));
  
+ 	VM_BUG_ON_PAGE(page && bad_range(zone, page), page);
+ 	return page;
+@@ -8047,6 +8048,22 @@ static void __setup_per_zone_wmarks(void)
+ 		zone->_watermark[WMARK_LOW]  = min_wmark_pages(zone) + tmp;
+ 		zone->_watermark[WMARK_HIGH] = min_wmark_pages(zone) + tmp * 2;
+ 
++		if (numa_promotion_tiered_enabled) {
++			tmp = mult_frac(zone_managed_pages(zone), demote_scale_factor, 10000);
++
++			/*
++			 * Clamp demote watermark between twice high watermark
++			 * and max managed pages.
++			 */
++			if (tmp < 2 * zone->_watermark[WMARK_HIGH])
++				tmp = 2 * zone->_watermark[WMARK_HIGH];
++			if (tmp > zone_managed_pages(zone))
++				tmp = zone_managed_pages(zone);
++			zone->_watermark[WMARK_DEMOTE] = tmp;
++
++			zone->watermark_boost = 0;
++		}
++
+ 		spin_unlock_irqrestore(&zone->lock, flags);
+ 	}
+ 
+@@ -8163,6 +8180,21 @@ int watermark_scale_factor_sysctl_handler(struct ctl_table *table, int write,
+ 	return 0;
+ }
+ 
++int demote_scale_factor_sysctl_handler(struct ctl_table *table, int write,
++	void __user *buffer, size_t *length, loff_t *ppos)
++{
++	int rc;
++
++	rc = proc_dointvec_minmax(table, write, buffer, length, ppos);
++	if (rc)
++		return rc;
++
++	if (write)
++		setup_per_zone_wmarks();
++
++	return 0;
++}
++
+ #ifdef CONFIG_NUMA
+ static void setup_min_unmapped_ratio(void)
+ {
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 47c868d2ecfd..c39b217effa9 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -41,6 +41,7 @@
+ #include <linux/kthread.h>
+ #include <linux/freezer.h>
+ #include <linux/memcontrol.h>
++#include <linux/mempolicy.h>
+ #include <linux/migrate.h>
+ #include <linux/delayacct.h>
+ #include <linux/sysctl.h>
+@@ -190,6 +191,7 @@ static void set_task_reclaim_state(struct task_struct *task,
+ 
+ static LIST_HEAD(shrinker_list);
+ static DECLARE_RWSEM(shrinker_rwsem);
++int demote_scale_factor = 200;
+ 
+ #ifdef CONFIG_MEMCG
+ /*
+@@ -3598,6 +3600,30 @@ static bool pgdat_balanced(pg_data_t *pgdat, int order, int highest_zoneidx)
+ 	return false;
+ }
+ 
++bool pgdat_toptier_balanced(pg_data_t *pgdat, int order, int zone_idx)
++{
++	unsigned long mark;
++	struct zone *zone;
++
++	if (!node_is_toptier(pgdat->node_id) ||
++		!numa_promotion_tiered_enabled ||
++		order > 0 || zone_idx < ZONE_NORMAL) {
++		return true;
++	}
++
++	zone = pgdat->node_zones + ZONE_NORMAL;
++
++	if (!managed_zone(zone))
++		return true;
++
++	mark = min(demote_wmark_pages(zone), zone_managed_pages(zone));
++
++	if (zone_page_state(zone, NR_FREE_PAGES) < mark)
++		return false;
++
++	return true;
++}
++
+ /* Clear pgdat state for congested, dirty or under writeback. */
+ static void clear_pgdat_congested(pg_data_t *pgdat)
+ {
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index cda2505bb21f..4309f79a6132 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -28,6 +28,7 @@
+ #include <linux/mm_inline.h>
+ #include <linux/page_ext.h>
+ #include <linux/page_owner.h>
++#include <linux/migrate.h>
+ 
+ #include "internal.h"
+ 
+@@ -1649,7 +1650,9 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
+ 							struct zone *zone)
+ {
+ 	int i;
+-	seq_printf(m, "Node %d, zone %8s", pgdat->node_id, zone->name);
++	seq_printf(m, "Node %d, zone %8s, toptier %d next_demotion_node %d",
++			pgdat->node_id, zone->name, node_is_toptier(pgdat->node_id),
++			next_demotion_node(pgdat->node_id));
+ 	if (is_zone_first_populated(pgdat, zone)) {
+ 		seq_printf(m, "\n  per-node stats");
+ 		for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
+@@ -1666,6 +1669,7 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
+ 		   "\n        min      %lu"
+ 		   "\n        low      %lu"
+ 		   "\n        high     %lu"
++		   "\n        demote   %lu"
+ 		   "\n        spanned  %lu"
+ 		   "\n        present  %lu"
+ 		   "\n        managed  %lu"
+@@ -1674,6 +1678,7 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
+ 		   min_wmark_pages(zone),
+ 		   low_wmark_pages(zone),
+ 		   high_wmark_pages(zone),
++		   node_is_toptier(pgdat->node_id) ? demote_wmark_pages(zone) : 0,
+ 		   zone->spanned_pages,
+ 		   zone->present_pages,
+ 		   zone_managed_pages(zone),
 -- 
 2.30.2
 
