@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9681E45BB74
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:17:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6C645BD6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243010AbhKXMTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:19:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41170 "EHLO mail.kernel.org"
+        id S244913AbhKXMiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:38:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243639AbhKXMOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:14:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8E6C61175;
-        Wed, 24 Nov 2021 12:09:34 +0000 (UTC)
+        id S245138AbhKXMcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:32:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA3EF61371;
+        Wed, 24 Nov 2021 12:20:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755775;
-        bh=2Fsm3nztAYtX6C8ybsZoeJWKl/AV67cfZiLxQEht6OY=;
+        s=korg; t=1637756418;
+        bh=Atx7ZiO0oLOeVSGrVDTeC+qmbeDayM/96As/GANmrOk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0P/erWULetu9/fKhu6oR4Ug1xlVlgv4uaOTm5Pu+bsM8s8pUNer/9VFa/jcqqNwpk
-         TI3xj+G/66NuWRg6Khoj9LN4jaRgtxiJztQ8tgWejd3EFv0YZC9meTEbhlZ4zXPHLu
-         lQHoiDFZMYKI0UxKBcKovilSaRLj8bxXLQZWX/54=
+        b=SujcOvGtHnLqWfdTLaC5jPzioOBcp6pXQp3yVqtk6OTNXP34/8Kj/iGw0GfUQmUCX
+         E+56vxXzOVKiv4IUGXQFWCVcqW1Vf4K9kk8aDHU5M9qrRiAFAgy4tBsZhL/2l48NW1
+         ciUb/jNtTFuVFK+Kex18y3ZjkDF6x5xiLRnT3cF4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Yi <yi.zhang@huawei.com>,
-        stable@kernel.org, Jan Kara <jack@suse.cz>
-Subject: [PATCH 4.9 051/207] quota: check block number when reading the block in quota file
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 080/251] media: uvcvideo: Set capability in s_param
 Date:   Wed, 24 Nov 2021 12:55:22 +0100
-Message-Id: <20211124115705.580974669@linuxfoundation.org>
+Message-Id: <20211124115713.040134918@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,54 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Yi <yi.zhang@huawei.com>
+From: Ricardo Ribalda <ribalda@chromium.org>
 
-commit 9bf3d20331295b1ecb81f4ed9ef358c51699a050 upstream.
+[ Upstream commit 97a2777a96070afb7da5d587834086c0b586c8cc ]
 
-The block number in the quota tree on disk should be smaller than the
-v2_disk_dqinfo.dqi_blocks. If the quota file was corrupted, we may be
-allocating an 'allocated' block and that would lead to a loop in a tree,
-which will probably trigger oops later. This patch adds a check for the
-block number in the quota tree to prevent such potential issue.
+Fixes v4l2-compliance:
 
-Link: https://lore.kernel.org/r/20211008093821.1001186-2-yi.zhang@huawei.com
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-Cc: stable@kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Format ioctls (Input 0):
+                warn: v4l2-test-formats.cpp(1339): S_PARM is supported but doesn't report V4L2_CAP_TIMEPERFRAME
+                fail: v4l2-test-formats.cpp(1241): node->has_frmintervals && !cap->capability
+
+Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/quota/quota_tree.c |   14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/media/usb/uvc/uvc_v4l2.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/fs/quota/quota_tree.c
-+++ b/fs/quota/quota_tree.c
-@@ -487,6 +487,13 @@ static int remove_tree(struct qtree_mem_
- 		goto out_buf;
- 	}
- 	newblk = le32_to_cpu(ref[get_index(info, dquot->dq_id, depth)]);
-+	if (newblk < QT_TREEOFF || newblk >= info->dqi_blocks) {
-+		quota_error(dquot->dq_sb, "Getting block too big (%u >= %u)",
-+			    newblk, info->dqi_blocks);
-+		ret = -EUCLEAN;
-+		goto out_buf;
+diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+index fae811b9cde96..2b0ca32d71965 100644
+--- a/drivers/media/usb/uvc/uvc_v4l2.c
++++ b/drivers/media/usb/uvc/uvc_v4l2.c
+@@ -446,10 +446,13 @@ static int uvc_v4l2_set_streamparm(struct uvc_streaming *stream,
+ 	uvc_simplify_fraction(&timeperframe.numerator,
+ 		&timeperframe.denominator, 8, 333);
+ 
+-	if (parm->type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
++	if (parm->type == V4L2_BUF_TYPE_VIDEO_CAPTURE) {
+ 		parm->parm.capture.timeperframe = timeperframe;
+-	else
++		parm->parm.capture.capability = V4L2_CAP_TIMEPERFRAME;
++	} else {
+ 		parm->parm.output.timeperframe = timeperframe;
++		parm->parm.output.capability = V4L2_CAP_TIMEPERFRAME;
 +	}
-+
- 	if (depth == info->dqi_qtree_depth - 1) {
- 		ret = free_dqentry(info, dquot, newblk);
- 		newblk = 0;
-@@ -586,6 +593,13 @@ static loff_t find_tree_dqentry(struct q
- 	blk = le32_to_cpu(ref[get_index(info, dquot->dq_id, depth)]);
- 	if (!blk)	/* No reference? */
- 		goto out_buf;
-+	if (blk < QT_TREEOFF || blk >= info->dqi_blocks) {
-+		quota_error(dquot->dq_sb, "Getting block too big (%u >= %u)",
-+			    blk, info->dqi_blocks);
-+		ret = -EUCLEAN;
-+		goto out_buf;
-+	}
-+
- 	if (depth < info->dqi_qtree_depth - 1)
- 		ret = find_tree_dqentry(info, dquot, blk, depth+1);
- 	else
+ 
+ 	return 0;
+ }
+-- 
+2.33.0
+
 
 
