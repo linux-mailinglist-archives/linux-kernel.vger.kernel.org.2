@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 357EC45C008
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0092645BB79
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:17:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344774AbhKXNEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:04:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38602 "EHLO mail.kernel.org"
+        id S242347AbhKXMUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:20:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345894AbhKXNCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:02:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89DD661179;
-        Wed, 24 Nov 2021 12:35:26 +0000 (UTC)
+        id S243641AbhKXMOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:14:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CEAA61179;
+        Wed, 24 Nov 2021 12:09:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757327;
-        bh=tbKFZ9hmkTXpIXUhsnfpIvlXr/0eN8S+OJ2MV5wrPnY=;
+        s=korg; t=1637755778;
+        bh=fKBZ8UgLuP8nM0/2CUs62qmfFwcH+GDa/HbJimkmt64=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k7N1wnUzfNTwxtKsLUnJNmH4/PMUyI64QKzvkJCoUWQnso4ZDQ2mQJHReNUB91pUK
-         g0tfvBdo1B/bwuI/nneYJwKRlDI6ngGQFOFkw6uhhPBMTvQRo2jpYmK90VbOcbcDol
-         Qer6fG095iGghiGQNlcliUhnYCTA7WSYdES/D51U=
+        b=V+lLrM8UOzal3JnVIzx8swJuxMOVbxXThxN54sLhbSJ35dMInHkqgHiWkkwfG2oRT
+         copViAEp09dPytPxhjYgwLkxkV/luxjj+NEPY5CL129Ot9kscko7EsmOfdSvFjZpeF
+         lCM5bFg2CaYR9wgVL8sXYTSnuoCKGn72E7uDhfYA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+2cd8c5db4a85f0a04142@syzkaller.appspotmail.com
-Subject: [PATCH 4.19 132/323] media: dvb-usb: fix ununit-value in az6027_rc_query
-Date:   Wed, 24 Nov 2021 12:55:22 +0100
-Message-Id: <20211124115723.390297168@linuxfoundation.org>
+        stable@vger.kernel.org, Zhang Yi <yi.zhang@huawei.com>,
+        stable@kernel.org, Jan Kara <jack@suse.cz>
+Subject: [PATCH 4.9 052/207] quota: correct error number in free_dqentry()
+Date:   Wed, 24 Nov 2021 12:55:23 +0100
+Message-Id: <20211124115705.610846538@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Zhang Yi <yi.zhang@huawei.com>
 
-[ Upstream commit afae4ef7d5ad913cab1316137854a36bea6268a5 ]
+commit d0e36a62bd4c60c09acc40e06ba4831a4d0bc75b upstream.
 
-Syzbot reported ununit-value bug in az6027_rc_query(). The problem was
-in missing state pointer initialization. Since this function does nothing
-we can simply initialize state to REMOTE_NO_KEY_PRESSED.
+Fix the error path in free_dqentry(), pass out the error number if the
+block to free is not correct.
 
-Reported-and-tested-by: syzbot+2cd8c5db4a85f0a04142@syzkaller.appspotmail.com
-
-Fixes: 76f9a820c867 ("V4L/DVB: AZ6027: Initial import of the driver")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 1ccd14b9c271 ("quota: Split off quota tree handling into a separate file")
+Link: https://lore.kernel.org/r/20211008093821.1001186-3-yi.zhang@huawei.com
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Cc: stable@kernel.org
+Signed-off-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/usb/dvb-usb/az6027.c | 1 +
+ fs/quota/quota_tree.c |    1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/usb/dvb-usb/az6027.c b/drivers/media/usb/dvb-usb/az6027.c
-index 6321b8e302612..990719727dc37 100644
---- a/drivers/media/usb/dvb-usb/az6027.c
-+++ b/drivers/media/usb/dvb-usb/az6027.c
-@@ -394,6 +394,7 @@ static struct rc_map_table rc_map_az6027_table[] = {
- /* remote control stuff (does not work with my box) */
- static int az6027_rc_query(struct dvb_usb_device *d, u32 *event, int *state)
- {
-+	*state = REMOTE_NO_KEY_PRESSED;
- 	return 0;
- }
- 
--- 
-2.33.0
-
+--- a/fs/quota/quota_tree.c
++++ b/fs/quota/quota_tree.c
+@@ -422,6 +422,7 @@ static int free_dqentry(struct qtree_mem
+ 		quota_error(dquot->dq_sb, "Quota structure has offset to "
+ 			"other block (%u) than it should (%u)", blk,
+ 			(uint)(dquot->dq_off >> info->dqi_blocksize_bits));
++		ret = -EIO;
+ 		goto out_buf;
+ 	}
+ 	ret = read_blk(info, blk, buf);
 
 
