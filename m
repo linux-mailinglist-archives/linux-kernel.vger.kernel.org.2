@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F005845C1BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA4A45C20F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:22:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347991AbhKXNV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:21:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60766 "EHLO mail.kernel.org"
+        id S1350268AbhKXNZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:25:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348922AbhKXNSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:18:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 954786108F;
-        Wed, 24 Nov 2021 12:45:44 +0000 (UTC)
+        id S1348833AbhKXNWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:22:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DD7061506;
+        Wed, 24 Nov 2021 12:47:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757945;
-        bh=hm+LoMnKo2zPalmH+vA/R5od+30Dmt5EFVQPQFKBG6g=;
+        s=korg; t=1637758077;
+        bh=eKvIHxDUtDmLzjO52q3gfrtc/8U9nKb+rjSdjMqkwyY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M1Fq+aWuCXSZWmvmxmAAna5eK0zzsQDHYpabg9GDCRQ3URKbZS4C+XCtDWNRlZptG
-         uMRUv3Fbqn59SDPAGmsCVlkDv8gKuMHjRLHFt0bTT9saENND477AsiHHbjzUVoefcs
-         fnzowJRIkDzi8JFFwY+zz69QjOaxQLmDrk138tVw=
+        b=Yr5ZDS+YXi1DNUTU5NJJ5LW2sVibSxnWkI+A1KU9QuAvxiCjsYpHbTn1jA3WNiWc8
+         DgE9Aa+RvI2piMqzNZk8IAJTXz2UJRa+h4IPbVd6XsXH2l5by2d3jO2Ksv4Tn6WdKZ
+         kcQqpSnivocbZVS1zBndy0a6HRIQm9Zl2Nq5+z88=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lin Ma <linma@zju.edu.cn>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Surabhi Boob <surabhi.boob@intel.com>,
+        Tony Brelinski <tony.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 299/323] NFC: reorganize the functions in nci_request
+Subject: [PATCH 5.4 053/100] iavf: Fix for the false positive ASQ/ARQ errors while issuing VF reset
 Date:   Wed, 24 Nov 2021 12:58:09 +0100
-Message-Id: <20211124115729.006031332@linuxfoundation.org>
+Message-Id: <20211124115656.598226635@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lin Ma <linma@zju.edu.cn>
+From: Surabhi Boob <surabhi.boob@intel.com>
 
-[ Upstream commit 86cdf8e38792545161dbe3350a7eced558ba4d15 ]
+[ Upstream commit 321421b57a12e933f92b228e0e6d0b2c6541f41d ]
 
-There is a possible data race as shown below:
+While issuing VF Reset from the guest OS, the VF driver prints
+logs about critical / Overflow error detection. This is not an
+actual error since the VF_MBX_ARQLEN register is set to all FF's
+for a short period of time and the VF would catch the bits set if
+it was reading the register during that spike of time.
+This patch introduces an additional check to ignore this condition
+since the VF is in reset.
 
-thread-A in nci_request()       | thread-B in nci_close_device()
-                                | mutex_lock(&ndev->req_lock);
-test_bit(NCI_UP, &ndev->flags); |
-...                             | test_and_clear_bit(NCI_UP, &ndev->flags)
-mutex_lock(&ndev->req_lock);    |
-                                |
-
-This race will allow __nci_request() to be awaked while the device is
-getting removed.
-
-Similar to commit e2cb6b891ad2 ("bluetooth: eliminate the potential race
-condition when removing the HCI controller"). this patch alters the
-function sequence in nci_request() to prevent the data races between the
-nci_close_device().
-
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
-Fixes: 6a2968aaf50c ("NFC: basic NCI protocol implementation")
-Link: https://lore.kernel.org/r/20211115145600.8320-1-linma@zju.edu.cn
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 19b73d8efaa4 ("i40evf: Add additional check for reset")
+Signed-off-by: Surabhi Boob <surabhi.boob@intel.com>
+Tested-by: Tony Brelinski <tony.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/nfc/nci/core.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/intel/iavf/iavf_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
-index 33c23af6709d4..1008bbbb3af9c 100644
---- a/net/nfc/nci/core.c
-+++ b/net/nfc/nci/core.c
-@@ -156,12 +156,15 @@ inline int nci_request(struct nci_dev *ndev,
- {
- 	int rc;
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
+index 6f6cd013eef3e..484c2a6f1625d 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_main.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
+@@ -2341,7 +2341,7 @@ static void iavf_adminq_task(struct work_struct *work)
  
--	if (!test_bit(NCI_UP, &ndev->flags))
--		return -ENETDOWN;
--
- 	/* Serialize all requests */
- 	mutex_lock(&ndev->req_lock);
--	rc = __nci_request(ndev, req, opt, timeout);
-+	/* check the state after obtaing the lock against any races
-+	 * from nci_close_device when the device gets removed.
-+	 */
-+	if (test_bit(NCI_UP, &ndev->flags))
-+		rc = __nci_request(ndev, req, opt, timeout);
-+	else
-+		rc = -ENETDOWN;
- 	mutex_unlock(&ndev->req_lock);
- 
- 	return rc;
+ 	/* check for error indications */
+ 	val = rd32(hw, hw->aq.arq.len);
+-	if (val == 0xdeadbeef) /* indicates device in reset */
++	if (val == 0xdeadbeef || val == 0xffffffff) /* device in reset */
+ 		goto freedom;
+ 	oldval = val;
+ 	if (val & IAVF_VF_ARQLEN1_ARQVFE_MASK) {
 -- 
 2.33.0
 
