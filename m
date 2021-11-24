@@ -2,124 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D92145CEC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:12:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FE145CED1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 22:17:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243332AbhKXVPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 16:15:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30286 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235268AbhKXVPp (ORCPT
+        id S243790AbhKXVUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 16:20:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhKXVUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 16:15:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637788354;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RorRY0n5C9glkMtFV4SYCaRBzAHcsHcap7m+J3g1iLk=;
-        b=ePwMCi1DZDZppmBAEH5yzbBGgNfv89jMoW8HEr8zKGjILhEIJvmy8cNmDGUJmL36+5aNJ0
-        O1mYtx9WScdEiaHRYMn4qmBjXX6ThkJYFgkRUdQIoHDkW4qyBof2mIjrMrZ5vcsg2MxL0S
-        beohRrUI4X0f/9UUcknur5sezmCPy/U=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-288-OnMsIalhPxK_Y7Ofp6gpiQ-1; Wed, 24 Nov 2021 16:12:33 -0500
-X-MC-Unique: OnMsIalhPxK_Y7Ofp6gpiQ-1
-Received: by mail-ed1-f71.google.com with SMTP id p4-20020aa7d304000000b003e7ef120a37so3476242edq.16
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 13:12:33 -0800 (PST)
+        Wed, 24 Nov 2021 16:20:31 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B34C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 13:17:20 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id w1so16329116edc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 13:17:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oI7l8M/MEztUdZBSwfddwsly9qSkYWDc6QESfM+2LzA=;
+        b=AG3W+5L1wMKmjV6RP8hADtwGPbtJ+WMtO9Unm4Jp9JnSa7MVLiXBig+JddU7A0oE2P
+         cd7S8Ym5IYrJRRDxOvACxqY2Q6XeI6/ys13O+ryiL/LHu+aiu5WGDBxszxAZSGtpTLYg
+         mAGP28JGxHCvEkDaA7840eh9zO+L5VgJyoENEzn00qtwB3epRmfsgJWcWgdXjIiyoibo
+         tEEjBLijWoMvmAHSxp507eHBA/uFvZoebb5lI9Qv2/4NJfTgePy3+Bp2bCtN/rvCPDaS
+         Mei6xZTlLOZT+dhox3h9Ady5zPqSsnbU9jIQY5jNRV9Pj3cBqR2TKPEZKurSRS4kXl+E
+         QtEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RorRY0n5C9glkMtFV4SYCaRBzAHcsHcap7m+J3g1iLk=;
-        b=PjFeE0koyetvwUhOPy1Xk6LQ2wIS6Yv8OnVo1YB4yDsgMG87xoaCa6NRcjmBUmubW9
-         ONgF67bTUZU1OoSckF/2ikHeUrFo/tor8KrpSWPsyLyUQCSms0dmCw8ZegFcXfnjuIoK
-         Mal7Ged5aLGYiS/crgPOEJX4rstELsfTQZp5sSOBZcCNHv9jJ74/2p25k68qbqIzayFx
-         TLCaGgrAXozUfshh/BgZg3fCPsUp5GENyvshLkEgwTRXzWqG4Ua0+aoUrchc+TduTN9y
-         q0eT7G/S2T9gx7N/VyEjKSEOLQO3Dg1Xwn3ToEThUvRuUwcwiKEhfIXUNhh8p5w5nPdy
-         Y6lg==
-X-Gm-Message-State: AOAM532YXd4yIvncYmr1ZXU6XGz8UbUMT6C3+mi1+HhHeuEYL+q9NTSF
-        DpUostG+a0pE+EUm02lnrbL0aTmMdOEp5YIvw48HvC7ybCcrCqPY5f/NOB2VvSFUxZGDr7i7ju9
-        DAtwNP6s2xpU6QFhocq1t98c5
-X-Received: by 2002:a05:6402:169a:: with SMTP id a26mr31105974edv.292.1637788352277;
-        Wed, 24 Nov 2021 13:12:32 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwqLmOWsCPmneNLjCwAsRX93gntMVvVuAlK+kAEx/6faUF7BKjEYByFENyGpUnzu7kS+ByTsg==
-X-Received: by 2002:a05:6402:169a:: with SMTP id a26mr31105915edv.292.1637788352006;
-        Wed, 24 Nov 2021 13:12:32 -0800 (PST)
-Received: from redhat.com ([2.55.144.93])
-        by smtp.gmail.com with ESMTPSA id em21sm456589ejc.103.2021.11.24.13.12.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 13:12:30 -0800 (PST)
-Date:   Wed, 24 Nov 2021 16:12:26 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Jason Wang <jasowang@redhat.com>
-Subject: Re: [PATCH v2] rpmsg: virtio: don't let virtio core to validate used
- length
-Message-ID: <20211124161055-mutt-send-email-mst@kernel.org>
-References: <20211124162045.25983-1-arnaud.pouliquen@foss.st.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oI7l8M/MEztUdZBSwfddwsly9qSkYWDc6QESfM+2LzA=;
+        b=qPPknezN/ZzV53jxWZrrVSQ+GDJ738WJ9JbC8eIbofa6zv6M/Yhs+IBtW2CFHCMIST
+         9bmCF4WH/118Pz1hQ/coxcKTT/TGqJxbVX2WkAfnDNfzOHylQokzuQ1/5L+PFA6m2LP4
+         cmN2+pn18dPNe6mYV4F5Mls/O6nS6n82HjtVXXojXeenmx1y5yhyt4XPHgqKccBsIHe/
+         vd2JuYDiOTTKFwlE3nNq06OmiFm2PZRykFsPWaoWeYK7FWlurUWRC3vc1IuHTZffTYon
+         9AyAw8RTboh6G3JqA3jEk64n+Df2ck75BqlO5h9KLfjob4L1hJIurXR4IFY/kwPqobVq
+         E1QA==
+X-Gm-Message-State: AOAM533Y9LIK/74m+K8jYUHaRa7x0gI0HUqg/QK9fAq9ccSJc8Cfj0ju
+        yiMY7khCrUJ43l4eju6sBixS//nYOCsuq+nr8JE=
+X-Google-Smtp-Source: ABdhPJyAItHMNcckUspIZ+8HMmX9FtNJ7te1nmG1ApEaJwryCCwwvMdgqwUMolD/OIxXtkExonVhuEAkf/AYUiHJoWo=
+X-Received: by 2002:a05:6402:510e:: with SMTP id m14mr30782968edd.312.1637788639370;
+ Wed, 24 Nov 2021 13:17:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211124162045.25983-1-arnaud.pouliquen@foss.st.com>
+References: <20211123190916.1738458-1-shakeelb@google.com> <20211124201238.3xzpy2b5zcv7j23s@box.shutemov.name>
+ <CALvZod6zUsCajhYcQOod+Nf0Y34x_sS1nnc7zAXUwZX0w3jzTw@mail.gmail.com>
+In-Reply-To: <CALvZod6zUsCajhYcQOod+Nf0Y34x_sS1nnc7zAXUwZX0w3jzTw@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 24 Nov 2021 13:17:07 -0800
+Message-ID: <CAHbLzkqmTks5dGn=yCykKSwqtmsCKVqLx_bU9D1=fTvEgX06xw@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: thp: update split_queue_len correctly
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        David Hildenbrand <david@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Zi Yan <ziy@nvidia.com>, Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 05:20:45PM +0100, Arnaud Pouliquen wrote:
-> Using OpenAMP library on remote side, when the rpmsg framework tries to
-> reuse the buffer the following error message is displayed in
-> the virtqueue_get_buf_ctx_split function:
-> "virtio_rpmsg_bus virtio0: output:used len 28 is larger than in buflen 0"
-> 
-> As described in virtio specification:
-> "many drivers ignored the len value, as a result, many devices set len
-> incorrectly. Thus, when using the legacy interface, it is generally
-> a good idea to ignore the len value in used ring entries if possible."
-> 
-> To stay in compliance with the legacy libraries, this patch prevents the
-> virtio core from validating used length.
-> 
-> Fixes: 939779f5152d ("virtio_ring: validate used buffer length")
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> Cc: Jason Wang <jasowang@redhat.com>
-> Cc: Michael S. Tsirkin <mst@redhat.com>
-> ---
+On Wed, Nov 24, 2021 at 12:44 PM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Wed, Nov 24, 2021 at 12:12 PM Kirill A. Shutemov
+> <kirill@shutemov.name> wrote:
+> >
+> > On Tue, Nov 23, 2021 at 11:09:16AM -0800, Shakeel Butt wrote:
+> > > The deferred THPs are split on memory pressure through shrinker
+> > > callback and splitting of THP during reclaim can fail for several
+> > > reasons like unable to lock the THP, under writeback or unexpected
+> > > number of pins on the THP. Such pages are put back on the deferred split
+> > > list for consideration later. However kernel does not update the
+> > > deferred queue size on putting back the pages whose split was failed.
+> > > This patch fixes that.
+> >
+> > Hm. No. split_huge_page_to_list() updates the queue size on split success.
+> >
+>
+> Right. This is really convoluted. split_huge_page_to_list() is just
+> assuming that if the given page is on a deferred list then it must be
+> on the list returned by get_deferred_split_queue(page). The
+> interaction of move_charge and deferred split seems broken.
 
-Arnaud, thanks a lot for the analysis.
+Because memcg code doesn't move charge for PTE mapped THP at all. See
+the below comment from mem_cgroup_move_charge_pte_range():
 
-Jason, I think this is another good point. We really should not
-validate input for legacy devices at all.
+"We can have a part of the split pmd here. Moving it can be done but
+it would be too convoluted so simply ignore such a partial THP and
+keep it in original memcg. There should be somebody mapping the head."
 
+BTW, did you run into any problem related to this?
 
-> Update vs v1[1]: update commit message to clarify the context.
-> 
-> base-commit: fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf
-> 
-> [1]https://lore.kernel.org/lkml/20211122160812.25125-1-arnaud.pouliquen@foss.st.com/T/
-> ---
->  drivers/rpmsg/virtio_rpmsg_bus.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-> index 9c112aa65040..5f73f19c2c38 100644
-> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
-> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-> @@ -1054,6 +1054,7 @@ static struct virtio_driver virtio_ipc_driver = {
->  	.feature_table_size = ARRAY_SIZE(features),
->  	.driver.name	= KBUILD_MODNAME,
->  	.driver.owner	= THIS_MODULE,
-> +	.suppress_used_validation = true,
->  	.id_table	= id_table,
->  	.probe		= rpmsg_probe,
->  	.remove		= rpmsg_remove,
-> -- 
-> 2.17.1
-
+>
+> Andrew, can you please drop this patch?
