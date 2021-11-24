@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA0445BA07
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:05:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD0145BDC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239035AbhKXMHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:07:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32848 "EHLO mail.kernel.org"
+        id S245541AbhKXMkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:40:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242299AbhKXMFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:05:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A337C60FE7;
-        Wed, 24 Nov 2021 12:02:30 +0000 (UTC)
+        id S245745AbhKXMhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:37:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DDFF61207;
+        Wed, 24 Nov 2021 12:22:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755351;
-        bh=seDpPZluoJ6raimMeIfaj+JkxwBKDH7PejT34Hfd/44=;
+        s=korg; t=1637756553;
+        bh=dDyF3h/XdqgsvTS1zmmx9s7stE34dpx2iDokPXzgzy0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LLiOG+VdvNhjXo1AEx/01r5xWPd3W70AiTUFiYtTC/uJo49tXrlgb4muqoPvYbvUH
-         asnwdNwDZyTxOXN2lrS2Va7XCwLq2YzUeNchKsSTLffn/kZ6X3FXiSno7JZ+65M5pr
-         Kmy4yS65hFHo03CXyOZ20dt30dSIpxb2jSEcr0G4=
+        b=ZNzq11WTqkgVGWGoimWuf9mAbaKMlOnLhPURVrggYlOVaQx6xAHz+7pvx+HhJCfp5
+         zu/zXfL4Kk85vb5G+zO/VCXWtW0nxCpSy0Imr00NjbiLwjsJ6pNUhEGhhd3aLvFEwq
+         0qmOctaeAd2UwPotXJjVd/HU992vXMbsXcSR7K84=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ye Bin <yebin10@huawei.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Tor Vic <torvic9@mailbox.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 064/162] PM: hibernate: Get block device exclusively in swsusp_check()
+Subject: [PATCH 4.14 125/251] platform/x86: thinkpad_acpi: Fix bitwise vs. logical warning
 Date:   Wed, 24 Nov 2021 12:56:07 +0100
-Message-Id: <20211124115700.397337093@linuxfoundation.org>
+Message-Id: <20211124115714.579718491@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,98 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Bin <yebin10@huawei.com>
+From: Nathan Chancellor <nathan@kernel.org>
 
-[ Upstream commit 39fbef4b0f77f9c89c8f014749ca533643a37c9f ]
+[ Upstream commit fd96e35ea7b95f1e216277805be89d66e4ae962d ]
 
-The following kernel crash can be triggered:
+A new warning in clang points out a use of bitwise OR with boolean
+expressions in this driver:
 
-[   89.266592] ------------[ cut here ]------------
-[   89.267427] kernel BUG at fs/buffer.c:3020!
-[   89.268264] invalid opcode: 0000 [#1] SMP KASAN PTI
-[   89.269116] CPU: 7 PID: 1750 Comm: kmmpd-loop0 Not tainted 5.10.0-862.14.0.6.x86_64-08610-gc932cda3cef4-dirty #20
-[   89.273169] RIP: 0010:submit_bh_wbc.isra.0+0x538/0x6d0
-[   89.277157] RSP: 0018:ffff888105ddfd08 EFLAGS: 00010246
-[   89.278093] RAX: 0000000000000005 RBX: ffff888124231498 RCX: ffffffffb2772612
-[   89.279332] RDX: 1ffff11024846293 RSI: 0000000000000008 RDI: ffff888124231498
-[   89.280591] RBP: ffff8881248cc000 R08: 0000000000000001 R09: ffffed1024846294
-[   89.281851] R10: ffff88812423149f R11: ffffed1024846293 R12: 0000000000003800
-[   89.283095] R13: 0000000000000001 R14: 0000000000000000 R15: ffff8881161f7000
-[   89.284342] FS:  0000000000000000(0000) GS:ffff88839b5c0000(0000) knlGS:0000000000000000
-[   89.285711] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   89.286701] CR2: 00007f166ebc01a0 CR3: 0000000435c0e000 CR4: 00000000000006e0
-[   89.287919] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   89.289138] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   89.290368] Call Trace:
-[   89.290842]  write_mmp_block+0x2ca/0x510
-[   89.292218]  kmmpd+0x433/0x9a0
-[   89.294902]  kthread+0x2dd/0x3e0
-[   89.296268]  ret_from_fork+0x22/0x30
-[   89.296906] Modules linked in:
+drivers/platform/x86/thinkpad_acpi.c:9061:11: error: use of bitwise '|' with boolean operands [-Werror,-Wbitwise-instead-of-logical]
+        else if ((strlencmp(cmd, "level disengaged") == 0) |
+                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                                           ||
+drivers/platform/x86/thinkpad_acpi.c:9061:11: note: cast one or both operands to int to silence this warning
+1 error generated.
 
-by running the following commands:
+This should clearly be a logical OR so change it to fix the warning.
 
- 1. mkfs.ext4 -O mmp  /dev/sda -b 1024
- 2. mount /dev/sda /home/test
- 3. echo "/dev/sda" > /sys/power/resume
-
-That happens because swsusp_check() calls set_blocksize() on the
-target partition which confuses the file system:
-
-       Thread1                       Thread2
-mount /dev/sda /home/test
-get s_mmp_bh  --> has mapped flag
-start kmmpd thread
-				echo "/dev/sda" > /sys/power/resume
-				  resume_store
-				    software_resume
-				      swsusp_check
-				        set_blocksize
-					  truncate_inode_pages_range
-					    truncate_cleanup_page
-					      block_invalidatepage
-					        discard_buffer --> clean mapped flag
-write_mmp_block
-  submit_bh
-    submit_bh_wbc
-      BUG_ON(!buffer_mapped(bh))
-
-To address this issue, modify swsusp_check() to open the target block
-device with exclusive access.
-
-Signed-off-by: Ye Bin <yebin10@huawei.com>
-[ rjw: Subject and changelog edits ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: fe98a52ce754 ("ACPI: thinkpad-acpi: add sysfs support to fan subdriver")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1476
+Reported-by: Tor Vic <torvic9@mailbox.org>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Link: https://lore.kernel.org/r/20211018182537.2316800-1-nathan@kernel.org
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/power/swap.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/platform/x86/thinkpad_acpi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/power/swap.c b/kernel/power/swap.c
-index 160e1006640d5..a7630e7b22a5d 100644
---- a/kernel/power/swap.c
-+++ b/kernel/power/swap.c
-@@ -1519,9 +1519,10 @@ end:
- int swsusp_check(void)
- {
- 	int error;
-+	void *holder;
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index 30bc952ea5529..9d836d779d475 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -8978,7 +8978,7 @@ static int fan_write_cmd_level(const char *cmd, int *rc)
  
- 	hib_resume_bdev = blkdev_get_by_dev(swsusp_resume_device,
--					    FMODE_READ, NULL);
-+					    FMODE_READ | FMODE_EXCL, &holder);
- 	if (!IS_ERR(hib_resume_bdev)) {
- 		set_blocksize(hib_resume_bdev, PAGE_SIZE);
- 		clear_page(swsusp_header);
-@@ -1541,7 +1542,7 @@ int swsusp_check(void)
- 
- put:
- 		if (error)
--			blkdev_put(hib_resume_bdev, FMODE_READ);
-+			blkdev_put(hib_resume_bdev, FMODE_READ | FMODE_EXCL);
- 		else
- 			pr_debug("PM: Image signature found, resuming\n");
- 	} else {
+ 	if (strlencmp(cmd, "level auto") == 0)
+ 		level = TP_EC_FAN_AUTO;
+-	else if ((strlencmp(cmd, "level disengaged") == 0) |
++	else if ((strlencmp(cmd, "level disengaged") == 0) ||
+ 			(strlencmp(cmd, "level full-speed") == 0))
+ 		level = TP_EC_FAN_FULLSPEED;
+ 	else if (sscanf(cmd, "level %d", &level) != 1)
 -- 
 2.33.0
 
