@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B61B045BCED
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:31:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE78145BCF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:31:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243571AbhKXMeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:34:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42292 "EHLO mail.kernel.org"
+        id S245075AbhKXMeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:34:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245733AbhKXM3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:29:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B16C36121F;
-        Wed, 24 Nov 2021 12:17:25 +0000 (UTC)
+        id S1343540AbhKXM3R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:29:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C1D66128B;
+        Wed, 24 Nov 2021 12:17:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756246;
-        bh=jLNXBEAczsMj4zibSEOGiTLeHDPtviyawv+fVjtRHRw=;
+        s=korg; t=1637756252;
+        bh=Oy3xvQNTd6mpdQ0Tztw+G8FAmNyt3qnTliCpxN9/zX0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D9a8F+2sSEFTjIqVI/KLTGEGi7XBG3/WCS/PIofzpdHAPCYD41u8GMRLOYBiXzaDw
-         KSvMsrNuyhrMTb3w4VthPyA1s8kjgfjODZJEqM5aKRLpsOa6zWCG3m/aLD7qKc3y/H
-         nih9xd/xbD8pQ84tcvIftuxBlV1/Giw8e3NBOP9A=
+        b=GCQ7fXWyXqdnx8ki+lnov2Kk8NJIQGa8Jlczcib98t1uxWWIjgyRV3kpEuA6EL+LZ
+         iJMFRRdz70z6GkOQ6mCFOVTmpFit9ES+8vih73Bd6EYHZ2biz8nHwnppcXc1gHsg8F
+         RiM5rM6YQiswpX2HFmL79jsVrhEwdkulTY/qzJY8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.14 019/251] x86/irq: Ensure PI wakeup handler is unregistered before module unload
-Date:   Wed, 24 Nov 2021 12:54:21 +0100
-Message-Id: <20211124115710.901610222@linuxfoundation.org>
+        stable@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 020/251] cavium: Return negative value when pci_alloc_irq_vectors() fails
+Date:   Wed, 24 Nov 2021 12:54:22 +0100
+Message-Id: <20211124115710.939629536@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
 References: <20211124115710.214900256@linuxfoundation.org>
@@ -39,43 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Zheyu Ma <zheyuma97@gmail.com>
 
-commit 6ff53f6a438f72998f56e82e76694a1df9d1ea2c upstream.
+[ Upstream commit b2cddb44bddc1a9c5949a978bb454bba863264db ]
 
-Add a synchronize_rcu() after clearing the posted interrupt wakeup handler
-to ensure all readers, i.e. in-flight IRQ handlers, see the new handler
-before returning to the caller.  If the caller is an exiting module and
-is unregistering its handler, failure to wait could result in the IRQ
-handler jumping into an unloaded module.
+During the process of driver probing, the probe function should return < 0
+for failure, otherwise, the kernel will treat value > 0 as success.
 
-The registration path doesn't require synchronization, as it's the
-caller's responsibility to not generate interrupts it cares about until
-after its handler is registered.
-
-Fixes: f6b3c72c2366 ("x86/irq: Define a global vector for VT-d Posted-Interrupts")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20211009001107.3936588-2-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/irq.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/cavium/thunder/nic_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/kernel/irq.c
-+++ b/arch/x86/kernel/irq.c
-@@ -274,8 +274,10 @@ void kvm_set_posted_intr_wakeup_handler(
- {
- 	if (handler)
- 		kvm_posted_intr_wakeup_handler = handler;
--	else
-+	else {
- 		kvm_posted_intr_wakeup_handler = dummy_handler;
-+		synchronize_rcu();
-+	}
- }
- EXPORT_SYMBOL_GPL(kvm_set_posted_intr_wakeup_handler);
+diff --git a/drivers/net/ethernet/cavium/thunder/nic_main.c b/drivers/net/ethernet/cavium/thunder/nic_main.c
+index 819f38a3225db..7f8ea16ad0d0a 100644
+--- a/drivers/net/ethernet/cavium/thunder/nic_main.c
++++ b/drivers/net/ethernet/cavium/thunder/nic_main.c
+@@ -1128,7 +1128,7 @@ static int nic_register_interrupts(struct nicpf *nic)
+ 		dev_err(&nic->pdev->dev,
+ 			"Request for #%d msix vectors failed, returned %d\n",
+ 			   nic->num_vec, ret);
+-		return 1;
++		return ret;
+ 	}
  
+ 	/* Register mailbox interrupt handler */
+-- 
+2.33.0
+
 
 
