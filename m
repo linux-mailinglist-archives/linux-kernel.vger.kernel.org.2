@@ -2,117 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF76145CE03
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:25:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B660E45CE08
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 21:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236951AbhKXU2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 15:28:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45730 "EHLO
+        id S232657AbhKXUb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 15:31:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232344AbhKXU2f (ORCPT
+        with ESMTP id S230114AbhKXUb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 15:28:35 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 073A9C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:25:25 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id x6so4739654iol.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:25:25 -0800 (PST)
+        Wed, 24 Nov 2021 15:31:57 -0500
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00894C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:28:46 -0800 (PST)
+Received: by mail-ua1-x932.google.com with SMTP id y5so7698578ual.7
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 12:28:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EsV2SEwRbXH/MiB85OZ9gOtuzuulNPsgUywfp2AegPE=;
-        b=wRs57miWUjiAN3yKPWYe1Ff4Rp2qfpsN7anHj65SyTRB3SUa7jliQhYH8SbZy6KGjA
-         RWv9bZoBdvG+BwFVGHxB9hu9OPl2AjtmxAXJKsusk0lX4j1NPOSwY/SUj4TobnhI4ipD
-         C8p8/hgp0pyMHxPphDqraqPbHcImo73e6R+EG0yIGNQdTYqKDua/MiKD24fKhqL4VSEt
-         bkiMOjgyDI4ZLWHOeHjNRHDs3NraKsbumZYaC+jqoUAVEDCTY/6EE40TFYjPBsT4mDdz
-         xxfxWMUrYYqT/FKsOJEU4YghDWj6UOMTiF6SXp6CVU42PPGPl9vNeffu3Emr6eZtL/Kt
-         8Vjw==
+        d=engleder-embedded-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NjHH3i4cKOuPr1Ljxjn7FXAF9VpfnkioyuQhHGL8nqo=;
+        b=lfg5QoE6xDdp69EPhHUp8UdrmdizIEtJ1PvxJa+hEE+t7mj3RvLgVCjRzvTTI69bRj
+         e6RmsLBnbshsSWAenOCc5tAHb+XyNA/Zr0rr4jsa8v1+ZF9AeG4XVfs7hPvLuDFCBOT8
+         v8V5UfLi1SvNGYr16y9JPJazmeOYc5WlpPj5753fQ1gs6twa2BL9KhsNnSHA9Pz1yUfs
+         RkNQu/GelCdHt5FPuIlMCrBxhnUdDc2D+D9kToGF+/+/g13sfwJxh3gf5PQc7+LdoUZo
+         vz9i1CF7Us+cEWeLMWTdxFuxTJpd7bvw7D3MmxUlo+biGPFgt4r5ptH1U2pnN4DiFd53
+         fv2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EsV2SEwRbXH/MiB85OZ9gOtuzuulNPsgUywfp2AegPE=;
-        b=jpePdJUcL3W2ynI0zEVvJeohqqhonKs4ESR3MKRPmw7hP69QLyvlxiwtDmFF6UOY4y
-         uBgoX0k66pPZpRsGNQ/aGaX3v0Jj4kIj5nQ4iTvuPxSeaORN0dvAh75wNNb7EFkisGGa
-         E4kdCMbKlZoGxVPdJoSXAk5/SH/lpkGJovckzcsQt0MWUIK28Cr9vDK2dneRdEWF9C7Q
-         Z6fIje+BdWshZ9XGucgHDJCGXGhOoohl8IV/aNtt0ps8yiUXo4OIkwNlzP4S3CUQGurf
-         iW2wm+6DV7AkIyUfDBdd6YxuNf+cWVpO86ds42bxw1khGA838Z0+apkRJdipBrRvfpaR
-         HgrA==
-X-Gm-Message-State: AOAM531daNOvVTNV8+2NbQUMltgjt9pyUkrHdlwlT4Aj37dtz3xdV8ws
-        hU/4ldT8otwYFHx4HsdHjqNh8YSHYHe28sTS
-X-Google-Smtp-Source: ABdhPJz6abhDsO/1DFeTnORM770ghgL/aQBKugHIxMndKddTitNV9WFH/2HF08BKYJIzM7iN/b02mw==
-X-Received: by 2002:a05:6602:14d3:: with SMTP id b19mr18395447iow.17.1637785524195;
-        Wed, 24 Nov 2021 12:25:24 -0800 (PST)
-Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id x2sm312795ile.29.2021.11.24.12.25.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 12:25:23 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     pkurapat@codeaurora.org, avuyyuru@codeaurora.org,
-        bjorn.andersson@linaro.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, evgreen@chromium.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 7/7] net: ipa: rearrange GSI structure fields
-Date:   Wed, 24 Nov 2021 14:25:11 -0600
-Message-Id: <20211124202511.862588-8-elder@linaro.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211124202511.862588-1-elder@linaro.org>
-References: <20211124202511.862588-1-elder@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NjHH3i4cKOuPr1Ljxjn7FXAF9VpfnkioyuQhHGL8nqo=;
+        b=XtdrtjwdnMCJqT5Wc14MVMRu8ZNB1mBDOkQxvxXdC4Oe9nvxLjETwhIP3pZS7TjPRW
+         JQAl2EgePfagGj0TKskmSuMctmkCcnvdWsxzCSU0obCyncnUaAG+qnA4A8X2RgLTbXza
+         f+sx+c77YP1Ic4Bpomawjip3yn9g2fDcioDzM2fNCC+JBKCc8ImRyuQPL2Uq2IvhMPxj
+         eoMgEByE/w6JJqwsOktqiDh00MM4q79XMci84DfbtdxN2NLx3sahE7f9eoaajN+UqIoW
+         jTx2LdBHVCwfvja6RK1DRRf4TCpotHhBdTRX5hLHCGZHq1XUY33nzdbN31ogM87u9pP3
+         Cj2w==
+X-Gm-Message-State: AOAM532op3K3IeRMsOQmvznMHT3iJWlVzBf0vawdBvYSZCzDwe/hObsv
+        LncDDtkp+0SVaXrcuoUDPVRD4y83h89oocgk1NfK+g==
+X-Google-Smtp-Source: ABdhPJzBMhjwTGK3hQCiNYB7yqE9O9MdHrE4g6U3RaW8cqcLT46j14s31Va0VBnOJi0zE77y/0LH/aJCMnL19XjPaDw=
+X-Received: by 2002:a05:6102:32d1:: with SMTP id o17mr28010224vss.19.1637785726120;
+ Wed, 24 Nov 2021 12:28:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1637721384-70836-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1637721384-70836-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Gerhard Engleder <gerhard@engleder-embedded.com>
+Date:   Wed, 24 Nov 2021 21:28:35 +0100
+Message-ID: <CANr-f5w8YBr5UpC0rES+5P+A=ojK-9sqRnUMtRtf6VGCk6ifUg@mail.gmail.com>
+Subject: Re: [PATCH -next 1/2] tsnep: fix resource_size.cocci warnings
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dummy net_device is a large field in the GSI structure, but it
-is not at all interesting from the perspective of debugging.  Move
-it to the end of the GSI structure so the other fields are easier to
-find in memory.
+>         adapter->addr = devm_ioremap_resource(&pdev->dev, io);
+>         if (IS_ERR(adapter->addr))
+>                 return PTR_ERR(adapter->addr);
+> -       adapter->size = io->end - io->start + 1;
+> +       adapter->size = resource_size(io);
 
-The channel and event ring arrays are also very large, so move them
-near the end of the structure as well.
+In fact adapter->size can be removed completely, because it is used nowhere.
+I will submit a patch.
 
-Swap the position of the result and completion fields to improve
-structure packing.
-
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/gsi.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ipa/gsi.h b/drivers/net/ipa/gsi.h
-index ccaa333e37620..75dfc7655f3ba 100644
---- a/drivers/net/ipa/gsi.h
-+++ b/drivers/net/ipa/gsi.h
-@@ -145,21 +145,21 @@ struct gsi_evt_ring {
- struct gsi {
- 	struct device *dev;		/* Same as IPA device */
- 	enum ipa_version version;
--	struct net_device dummy_dev;	/* needed for NAPI */
- 	void __iomem *virt_raw;		/* I/O mapped address range */
- 	void __iomem *virt;		/* Adjusted for most registers */
- 	u32 irq;
- 	u32 channel_count;
- 	u32 evt_ring_count;
--	struct gsi_channel channel[GSI_CHANNEL_COUNT_MAX];
--	struct gsi_evt_ring evt_ring[GSI_EVT_RING_COUNT_MAX];
- 	u32 event_bitmap;		/* allocated event rings */
- 	u32 modem_channel_bitmap;	/* modem channels to allocate */
- 	u32 type_enabled_bitmap;	/* GSI IRQ types enabled */
- 	u32 ieob_enabled_bitmap;	/* IEOB IRQ enabled (event rings) */
--	struct completion completion;	/* Signals GSI command completion */
- 	int result;			/* Negative errno (generic commands) */
-+	struct completion completion;	/* Signals GSI command completion */
- 	struct mutex mutex;		/* protects commands, programming */
-+	struct gsi_channel channel[GSI_CHANNEL_COUNT_MAX];
-+	struct gsi_evt_ring evt_ring[GSI_EVT_RING_COUNT_MAX];
-+	struct net_device dummy_dev;	/* needed for NAPI */
- };
- 
- /**
--- 
-2.32.0
-
+Gerhard
