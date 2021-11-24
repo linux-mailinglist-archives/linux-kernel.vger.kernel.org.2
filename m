@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB1D45C288
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E1D45C28A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:27:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348006AbhKXN3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:29:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56068 "EHLO mail.kernel.org"
+        id S1347948AbhKXN37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:29:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348952AbhKXN1H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:27:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95B8461544;
-        Wed, 24 Nov 2021 12:50:18 +0000 (UTC)
+        id S1349008AbhKXN1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:27:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90BA161B96;
+        Wed, 24 Nov 2021 12:50:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758219;
-        bh=zzSW0xQXM86OxivIEd5k1n4tau/wo13mnGujFeeRgIQ=;
+        s=korg; t=1637758225;
+        bh=4RiHdufeqRe2/PWGm6XyNLAsMoyonUedGo1hqfYFHBI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qMIJuTO8Pe8Kpy0ZV6Zo7y9kAfuGF35oEyHlDt/YFH4k/WM9PHIQY95kpLo1qdbff
-         qP21h4kCDDCb3lbmGbXpSgsmZLHqhKUzoC7jHSPxeQCPRYMj4fE12Ty2Q1nDpw3Kul
-         VuJv48gucs5VgQ/AQ3E7rVhTaC18XjuJVGhNfb9A=
+        b=XG+Chv11kmc6QlTO9BD8MXkwtlBBSBMQj3nxKrMiO6Jz0D4DkG9lhyLfBQf2cTDEY
+         icdHBpv87a60eWdvuWSDuhnds8ZckcSILzqqVF2zv67+9iJCwRUlCzcbcEvZVLSSyf
+         3sy9+RbHTE7Hvausy2hTSO9lw1KQ/X2KM+AJjJoo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Subject: [PATCH 5.4 097/100] usb: max-3421: Use driver data instead of maintaining a list of bound devices
-Date:   Wed, 24 Nov 2021 12:58:53 +0100
-Message-Id: <20211124115657.990465481@linuxfoundation.org>
+        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 098/100] ice: Delete always true check of PF pointer
+Date:   Wed, 24 Nov 2021 12:58:54 +0100
+Message-Id: <20211124115658.022579383@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
 References: <20211124115654.849735859@linuxfoundation.org>
@@ -40,95 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-commit fc153aba3ef371d0d76eb88230ed4e0dee5b38f2 upstream.
+commit 2ff04286a9569675948f39cec2c6ad47c3584633 upstream.
 
-Instead of maintaining a single-linked list of devices that must be
-searched linearly in .remove() just use spi_set_drvdata() to remember the
-link between the spi device and the driver struct. Then the global list
-and the next member can be dropped.
+PF pointer is always valid when PCI core calls its .shutdown() and
+.remove() callbacks. There is no need to check it again.
 
-This simplifies the driver, reduces the memory footprint and the time to
-search the list. Also it makes obvious that there is always a corresponding
-driver struct for a given device in .remove(), so the error path for
-!max3421_hcd can be dropped, too.
-
-As a side effect this fixes a data inconsistency when .probe() races with
-itself for a second max3421 device in manipulating max3421_hcd_list. A
-similar race is fixed in .remove(), too.
-
-Fixes: 2d53139f3162 ("Add support for using a MAX3421E chip as a host driver.")
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Link: https://lore.kernel.org/r/20211018204028.2914597-1-u.kleine-koenig@pengutronix.de
+Fixes: 837f08fdecbe ("ice: Add basic driver framework for Intel(R) E800 Series")
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/max3421-hcd.c |   25 +++++--------------------
- 1 file changed, 5 insertions(+), 20 deletions(-)
+ drivers/net/ethernet/intel/ice/ice_main.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
---- a/drivers/usb/host/max3421-hcd.c
-+++ b/drivers/usb/host/max3421-hcd.c
-@@ -125,8 +125,6 @@ struct max3421_hcd {
+--- a/drivers/net/ethernet/intel/ice/ice_main.c
++++ b/drivers/net/ethernet/intel/ice/ice_main.c
+@@ -3005,9 +3005,6 @@ static void ice_remove(struct pci_dev *p
+ 	struct ice_pf *pf = pci_get_drvdata(pdev);
+ 	int i;
  
- 	struct task_struct *spi_thread;
- 
--	struct max3421_hcd *next;
+-	if (!pf)
+-		return;
 -
- 	enum max3421_rh_state rh_state;
- 	/* lower 16 bits contain port status, upper 16 bits the change mask: */
- 	u32 port_status;
-@@ -174,8 +172,6 @@ struct max3421_ep {
- 	u8 retransmit;			/* packet needs retransmission */
- };
- 
--static struct max3421_hcd *max3421_hcd_list;
--
- #define MAX3421_FIFO_SIZE	64
- 
- #define MAX3421_SPI_DIR_RD	0	/* read register from MAX3421 */
-@@ -1882,9 +1878,8 @@ max3421_probe(struct spi_device *spi)
- 	}
- 	set_bit(HCD_FLAG_POLL_RH, &hcd->flags);
- 	max3421_hcd = hcd_to_max3421(hcd);
--	max3421_hcd->next = max3421_hcd_list;
--	max3421_hcd_list = max3421_hcd;
- 	INIT_LIST_HEAD(&max3421_hcd->ep_list);
-+	spi_set_drvdata(spi, max3421_hcd);
- 
- 	max3421_hcd->tx = kmalloc(sizeof(*max3421_hcd->tx), GFP_KERNEL);
- 	if (!max3421_hcd->tx)
-@@ -1934,28 +1929,18 @@ error:
- static int
- max3421_remove(struct spi_device *spi)
- {
--	struct max3421_hcd *max3421_hcd = NULL, **prev;
--	struct usb_hcd *hcd = NULL;
-+	struct max3421_hcd *max3421_hcd;
-+	struct usb_hcd *hcd;
- 	unsigned long flags;
- 
--	for (prev = &max3421_hcd_list; *prev; prev = &(*prev)->next) {
--		max3421_hcd = *prev;
--		hcd = max3421_to_hcd(max3421_hcd);
--		if (hcd->self.controller == &spi->dev)
--			break;
--	}
--	if (!max3421_hcd) {
--		dev_err(&spi->dev, "no MAX3421 HCD found for SPI device %p\n",
--			spi);
--		return -ENODEV;
--	}
-+	max3421_hcd = spi_get_drvdata(spi);
-+	hcd = max3421_to_hcd(max3421_hcd);
- 
- 	usb_remove_hcd(hcd);
- 
- 	spin_lock_irqsave(&max3421_hcd->lock, flags);
- 
- 	kthread_stop(max3421_hcd->spi_thread);
--	*prev = max3421_hcd->next;
- 
- 	spin_unlock_irqrestore(&max3421_hcd->lock, flags);
- 
+ 	for (i = 0; i < ICE_MAX_RESET_WAIT; i++) {
+ 		if (!ice_is_reset_in_progress(pf->state))
+ 			break;
 
 
