@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA0A45BE72
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4333E45BCD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343812AbhKXMq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:46:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50508 "EHLO mail.kernel.org"
+        id S245318AbhKXMcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:32:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345715AbhKXMoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:44:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E5696124D;
-        Wed, 24 Nov 2021 12:26:00 +0000 (UTC)
+        id S243896AbhKXM0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:26:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A45F661244;
+        Wed, 24 Nov 2021 12:16:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756761;
-        bh=gFkHNSAYPKPl1wN+NS84UXxXrBHMmrC26H9QTnQrHF0=;
+        s=korg; t=1637756177;
+        bh=oLycPXMzTPUkby2xccObb9YfFIyDdYru9mqobGfVQCc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LIyj6f5luIcnCgJqIYm2abnfiIUVCvM/T4NPz3hjnlHTF6kGlkyLqqseRnKf5EVZO
-         d7vSg7mc+7wCAQR5vlXwEYjPmNuYgqzGm5lqI46ruH9NqznT5imqP0PRqyOMGWP12K
-         0C0kIqaZuyftmUS6yDYbJRpnGbYz/HkfDhEbM3AI=
+        b=quItunblqq2R8q/IdINsbhldkNF64LdE9rYJZQZWmg6wZ/jv46W5Oo0PXKos3AbaY
+         BROX8P+1lRJYM9TUzeXkZqdi/HX44Vasoq3YBzErFijFlIMEy9mctKrGTDS51EnhQQ
+         qUmVisJDMZnOEK+Bun6OJwzxnOvsAK/hQJIjxYac=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Cornelia Huck <cohuck@redhat.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 4.14 196/251] s390/cio: check the subchannel validity for dev_busid
-Date:   Wed, 24 Nov 2021 12:57:18 +0100
-Message-Id: <20211124115717.084019018@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Guanghui Feng <guanghuifeng@linux.alibaba.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 168/207] tty: tty_buffer: Fix the softlockup issue in flush_to_ldisc
+Date:   Wed, 24 Nov 2021 12:57:19 +0100
+Message-Id: <20211124115709.440761742@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineeth Vijayan <vneethv@linux.ibm.com>
+From: Guanghui Feng <guanghuifeng@linux.alibaba.com>
 
-commit a4751f157c194431fae9e9c493f456df8272b871 upstream.
+[ Upstream commit 3968ddcf05fb4b9409cd1859feb06a5b0550a1c1 ]
 
-Check the validity of subchanel before reading other fields in
-the schib.
+When running ltp testcase(ltp/testcases/kernel/pty/pty04.c) with arm64, there is a soft lockup,
+which look like this one:
 
-Fixes: d3683c055212 ("s390/cio: add dev_busid sysfs entry for each subchannel")
-CC: <stable@vger.kernel.org>
-Reported-by: Cornelia Huck <cohuck@redhat.com>
-Signed-off-by: Vineeth Vijayan <vneethv@linux.ibm.com>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Link: https://lore.kernel.org/r/20211105154451.847288-1-vneethv@linux.ibm.com
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+  Workqueue: events_unbound flush_to_ldisc
+  Call trace:
+   dump_backtrace+0x0/0x1ec
+   show_stack+0x24/0x30
+   dump_stack+0xd0/0x128
+   panic+0x15c/0x374
+   watchdog_timer_fn+0x2b8/0x304
+   __run_hrtimer+0x88/0x2c0
+   __hrtimer_run_queues+0xa4/0x120
+   hrtimer_interrupt+0xfc/0x270
+   arch_timer_handler_phys+0x40/0x50
+   handle_percpu_devid_irq+0x94/0x220
+   __handle_domain_irq+0x88/0xf0
+   gic_handle_irq+0x84/0xfc
+   el1_irq+0xc8/0x180
+   slip_unesc+0x80/0x214 [slip]
+   tty_ldisc_receive_buf+0x64/0x80
+   tty_port_default_receive_buf+0x50/0x90
+   flush_to_ldisc+0xbc/0x110
+   process_one_work+0x1d4/0x4b0
+   worker_thread+0x180/0x430
+   kthread+0x11c/0x120
+
+In the testcase pty04, The first process call the write syscall to send
+data to the pty master. At the same time, the workqueue will do the
+flush_to_ldisc to pop data in a loop until there is no more data left.
+When the sender and workqueue running in different core, the sender sends
+data fastly in full time which will result in workqueue doing work in loop
+for a long time and occuring softlockup in flush_to_ldisc with kernel
+configured without preempt. So I add need_resched check and cond_resched
+in the flush_to_ldisc loop to avoid it.
+
+Signed-off-by: Guanghui Feng <guanghuifeng@linux.alibaba.com>
+Link: https://lore.kernel.org/r/1633961304-24759-1-git-send-email-guanghuifeng@linux.alibaba.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/cio/css.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/tty/tty_buffer.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/s390/cio/css.c
-+++ b/drivers/s390/cio/css.c
-@@ -337,8 +337,8 @@ static ssize_t dev_busid_show(struct dev
- 	struct subchannel *sch = to_subchannel(dev);
- 	struct pmcw *pmcw = &sch->schib.pmcw;
+diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
+index ca9c82ee6c35d..dfccc102c1ddd 100644
+--- a/drivers/tty/tty_buffer.c
++++ b/drivers/tty/tty_buffer.c
+@@ -536,6 +536,9 @@ static void flush_to_ldisc(struct work_struct *work)
+ 		if (!count)
+ 			break;
+ 		head->read += count;
++
++		if (need_resched())
++			cond_resched();
+ 	}
  
--	if ((pmcw->st == SUBCHANNEL_TYPE_IO ||
--	     pmcw->st == SUBCHANNEL_TYPE_MSG) && pmcw->dnv)
-+	if ((pmcw->st == SUBCHANNEL_TYPE_IO && pmcw->dnv) ||
-+	    (pmcw->st == SUBCHANNEL_TYPE_MSG && pmcw->w))
- 		return sysfs_emit(buf, "0.%x.%04x\n", sch->schid.ssid,
- 				  pmcw->dev);
- 	else
+ 	mutex_unlock(&buf->lock);
+-- 
+2.33.0
+
 
 
