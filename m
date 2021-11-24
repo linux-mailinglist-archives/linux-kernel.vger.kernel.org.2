@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 573D745C634
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:03:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 205F945C6C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:08:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354075AbhKXOFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:05:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48872 "EHLO mail.kernel.org"
+        id S1354860AbhKXOLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:11:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350608AbhKXOAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:00:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2A1963309;
-        Wed, 24 Nov 2021 13:09:38 +0000 (UTC)
+        id S1355167AbhKXOId (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:08:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C32E161BA0;
+        Wed, 24 Nov 2021 12:50:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759379;
-        bh=/shuj1JJUYEOLCvHE5CF2Jks4GmenQynGZ8qEF6Oxjw=;
+        s=korg; t=1637758233;
+        bh=0/rRkYWY6000CvzZW00HHkT68rPkUGbZ2kmutIZq7WM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G7G8/2pTPXl6Mft5j79mRaAWAWK9f/6+tHVzBcPzZlkLN0bAtqJkK4GmfvVlg9xFg
-         MbuhTIm+uyU3tpAGOgNRnNP2JLLOnzzKo7s3nGAzpVRzQWcgJ4KD+ugwNoIyM6wxBX
-         u5iKLTpSUK3axCj9BZepq1EXcnz/Y0Qryqnsqgzw=
+        b=xSrH8TmNFeiu6NC90SFdA0MT6bVk11Jg0Kq7LFJ7RIxIS7xqNQf4tIOqUphNluOrD
+         B4XmyupodpFzkl1mxLdqmg+qy7bD9cVGthSdG0F2HzNG5ci122avYIMCQB73LU7tJN
+         si/l3y6IBnHlw6rPQytLANVZSoZDdTl3iD5tkXgE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Baoquan He <bhe@redhat.com>,
-        Philipp Rudo <prudo@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH 5.15 220/279] s390/kexec: fix memory leak of ipl report buffer
-Date:   Wed, 24 Nov 2021 12:58:27 +0100
-Message-Id: <20211124115726.338347954@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Daniel Axtens <dja@axtens.net>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 072/100] KVM: PPC: Book3S HV: Use GLOBAL_TOC for kvmppc_h_set_dabr/xdabr()
+Date:   Wed, 24 Nov 2021 12:58:28 +0100
+Message-Id: <20211124115657.190528128@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,85 +39,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Baoquan He <bhe@redhat.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-commit 4aa9340584e37debef06fa99b56d064beb723891 upstream.
+[ Upstream commit dae581864609d36fb58855fd59880b4941ce9d14 ]
 
-unreferenced object 0x38000195000 (size 4096):
-  comm "kexec", pid 8548, jiffies 4294953647 (age 32443.270s)
-  hex dump (first 32 bytes):
-    00 00 00 c8 20 00 00 00 00 00 00 c0 02 80 00 00  .... ...........
-    40 40 40 40 40 40 40 40 00 00 00 00 00 00 00 00  @@@@@@@@........
-  backtrace:
-    [<0000000011a2f199>] __vmalloc_node_range+0xc0/0x140
-    [<0000000081fa2752>] vzalloc+0x5a/0x70
-    [<0000000063a4c92d>] ipl_report_finish+0x2c/0x180
-    [<00000000553304da>] kexec_file_add_ipl_report+0xf4/0x150
-    [<00000000862d033f>] kexec_file_add_components+0x124/0x160
-    [<000000000d2717bb>] arch_kexec_kernel_image_load+0x62/0x90
-    [<000000002e0373b6>] kimage_file_alloc_init+0x1aa/0x2e0
-    [<0000000060f2d14f>] __do_sys_kexec_file_load+0x17c/0x2c0
-    [<000000008c86fe5a>] __s390x_sys_kexec_file_load+0x40/0x50
-    [<000000001fdb9dac>] __do_syscall+0x1bc/0x1f0
-    [<000000003ee4258d>] system_call+0x78/0xa0
+kvmppc_h_set_dabr(), and kvmppc_h_set_xdabr() which jumps into
+it, need to use _GLOBAL_TOC to setup the kernel TOC pointer, because
+kvmppc_h_set_dabr() uses LOAD_REG_ADDR() to load dawr_force_enable.
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
-Reviewed-by: Philipp Rudo <prudo@redhat.com>
-Fixes: 99feaa717e55 ("s390/kexec_file: Create ipl report and pass to next kernel")
-Cc: <stable@vger.kernel.org> # v5.2: 20c76e242e70: s390/kexec: fix return code handling
-Cc: <stable@vger.kernel.org> # v5.2
-Link: https://lore.kernel.org/r/20211116033101.GD21646@MiWiFi-R3L-srv
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+When called from hcall_try_real_mode() we have the kernel TOC in r2,
+established near the start of kvmppc_interrupt_hv(), so there is no
+issue.
+
+But they can also be called from kvmppc_pseries_do_hcall() which is
+module code, so the access ends up happening with the kvm-hv module's
+r2, which will not point at dawr_force_enable and could even cause a
+fault.
+
+With the current code layout and compilers we haven't observed a fault
+in practice, the load hits somewhere in kvm-hv.ko and silently returns
+some bogus value.
+
+Note that we we expect p8/p9 guests to use the DAWR, but SLOF uses
+h_set_dabr() to test if sc1 works correctly, see SLOF's
+lib/libhvcall/brokensc1.c.
+
+Fixes: c1fe190c0672 ("powerpc: Add force enable of DAWR on P9 option")
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Reviewed-by: Daniel Axtens <dja@axtens.net>
+Link: https://lore.kernel.org/r/20210923151031.72408-1-mpe@ellerman.id.au
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/include/asm/kexec.h         |    6 ++++++
- arch/s390/kernel/machine_kexec_file.c |   10 ++++++++++
- 2 files changed, 16 insertions(+)
+ arch/powerpc/kvm/book3s_hv_rmhandlers.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/s390/include/asm/kexec.h
-+++ b/arch/s390/include/asm/kexec.h
-@@ -74,6 +74,12 @@ void *kexec_file_add_components(struct k
- int arch_kexec_do_relocs(int r_type, void *loc, unsigned long val,
- 			 unsigned long addr);
+diff --git a/arch/powerpc/kvm/book3s_hv_rmhandlers.S b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
+index f9c7326672b95..c9c6619564ffa 100644
+--- a/arch/powerpc/kvm/book3s_hv_rmhandlers.S
++++ b/arch/powerpc/kvm/book3s_hv_rmhandlers.S
+@@ -2535,7 +2535,7 @@ hcall_real_table:
+ 	.globl	hcall_real_table_end
+ hcall_real_table_end:
  
-+#define ARCH_HAS_KIMAGE_ARCH
-+
-+struct kimage_arch {
-+	void *ipl_buf;
-+};
-+
- extern const struct kexec_file_ops s390_kexec_image_ops;
- extern const struct kexec_file_ops s390_kexec_elf_ops;
+-_GLOBAL(kvmppc_h_set_xdabr)
++_GLOBAL_TOC(kvmppc_h_set_xdabr)
+ EXPORT_SYMBOL_GPL(kvmppc_h_set_xdabr)
+ 	andi.	r0, r5, DABRX_USER | DABRX_KERNEL
+ 	beq	6f
+@@ -2545,7 +2545,7 @@ EXPORT_SYMBOL_GPL(kvmppc_h_set_xdabr)
+ 6:	li	r3, H_PARAMETER
+ 	blr
  
---- a/arch/s390/kernel/machine_kexec_file.c
-+++ b/arch/s390/kernel/machine_kexec_file.c
-@@ -12,6 +12,7 @@
- #include <linux/kexec.h>
- #include <linux/module_signature.h>
- #include <linux/verification.h>
-+#include <linux/vmalloc.h>
- #include <asm/boot_data.h>
- #include <asm/ipl.h>
- #include <asm/setup.h>
-@@ -206,6 +207,7 @@ static int kexec_file_add_ipl_report(str
- 		goto out;
- 	buf.bufsz = data->report->size;
- 	buf.memsz = buf.bufsz;
-+	image->arch.ipl_buf = buf.buffer;
- 
- 	data->memsz += buf.memsz;
- 
-@@ -327,3 +329,11 @@ int arch_kexec_kernel_image_probe(struct
- 
- 	return kexec_image_probe_default(image, buf, buf_len);
- }
-+
-+int arch_kimage_file_post_load_cleanup(struct kimage *image)
-+{
-+	vfree(image->arch.ipl_buf);
-+	image->arch.ipl_buf = NULL;
-+
-+	return kexec_image_post_load_cleanup_default(image);
-+}
+-_GLOBAL(kvmppc_h_set_dabr)
++_GLOBAL_TOC(kvmppc_h_set_dabr)
+ EXPORT_SYMBOL_GPL(kvmppc_h_set_dabr)
+ 	li	r5, DABRX_USER | DABRX_KERNEL
+ 3:
+-- 
+2.33.0
+
 
 
