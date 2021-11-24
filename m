@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A84F45B9F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4538A45BD76
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231881AbhKXMGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:06:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60032 "EHLO mail.kernel.org"
+        id S1344734AbhKXMii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:38:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242014AbhKXMFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:05:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9226560FBF;
-        Wed, 24 Nov 2021 12:02:11 +0000 (UTC)
+        id S1343612AbhKXMdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:33:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1097F611C7;
+        Wed, 24 Nov 2021 12:20:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755332;
-        bh=wKf7Pz+0LZqRhIO3/hWgsFlqJ9rItfBLVB0y+M/r+pY=;
+        s=korg; t=1637756431;
+        bh=qa2LGS9MORmjOwGZ7gLOYE2pKhmN5FUBdJTlO5VQpiE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oRDCi41bJUqACSSUVKqErsuVkuhIlWL2zTfohEO0arJr1OqC004ILhyXD65V0vkcl
-         voKTZhXOInfmZtDxB2N0ActRQu1cED/F61igV5XDQg9mRESY6m4o4fXD23DaO32BUk
-         a2Q92eib0i6/WYN9TNhT9siuKLrMxJ1ARZPzNix0=
+        b=VgxLqXqzHqduIESqvSEXFcszk6Rsos7vhdM1FfWt8HW7WYLUadi7v7bJt0Cwgxq6O
+         CWrW1a2Q0G7G9pFuImlYg6EmFBXTMXHyPzuKGezdro5epJipMMfG6aCPV5MY+lIOPB
+         674pILApjTRBGfss4X5Vz5AQXTwJUHowSwbBmP4Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zev Weiss <zev@bewilderbeest.net>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.4 024/162] hwmon: (pmbus/lm25066) Add offset coefficients
+        stable@vger.kernel.org, Reik Keutterling <spielkind@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 085/251] ACPICA: Avoid evaluating methods too early during system resume
 Date:   Wed, 24 Nov 2021 12:55:27 +0100
-Message-Id: <20211124115659.112446097@linuxfoundation.org>
+Message-Id: <20211124115713.212985158@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,153 +40,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zev Weiss <zev@bewilderbeest.net>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit ae59dc455a78fb73034dd1fbb337d7e59c27cbd8 upstream.
+[ Upstream commit d3c4b6f64ad356c0d9ddbcf73fa471e6a841cc5c ]
 
-With the exception of the lm5066i, all the devices handled by this
-driver had been missing their offset ('b') coefficients for direct
-format readings.
+ACPICA commit 0762982923f95eb652cf7ded27356b247c9774de
 
-Cc: stable@vger.kernel.org
-Fixes: 58615a94f6a1 ("hwmon: (pmbus/lm25066) Add support for LM25056")
-Fixes: e53e6497fc9f ("hwmon: (pmbus/lm25066) Refactor device specific coefficients")
-Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
-Link: https://lore.kernel.org/r/20210928092242.30036-2-zev@bewilderbeest.net
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+During wakeup from system-wide sleep states, acpi_get_sleep_type_data()
+is called and it tries to get memory from the slab allocator in order
+to evaluate a control method, but if KFENCE is enabled in the kernel,
+the memory allocation attempt causes an IRQ work to be queued and a
+self-IPI to be sent to the CPU running the code which requires the
+memory controller to be ready, so if that happens too early in the
+wakeup path, it doesn't work.
+
+Prevent that from taking place by calling acpi_get_sleep_type_data()
+for S0 upfront, when preparing to enter a given sleep state, and
+saving the data obtained by it for later use during system wakeup.
+
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214271
+Reported-by: Reik Keutterling <spielkind@gmail.com>
+Tested-by: Reik Keutterling <spielkind@gmail.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/pmbus/lm25066.c |   23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ drivers/acpi/acpica/acglobal.h  |  2 ++
+ drivers/acpi/acpica/hwesleep.c  |  8 ++------
+ drivers/acpi/acpica/hwsleep.c   | 11 ++++-------
+ drivers/acpi/acpica/hwxfsleep.c |  7 +++++++
+ 4 files changed, 15 insertions(+), 13 deletions(-)
 
---- a/drivers/hwmon/pmbus/lm25066.c
-+++ b/drivers/hwmon/pmbus/lm25066.c
-@@ -69,22 +69,27 @@ static struct __coeff lm25066_coeff[5][P
- 	[lm25056] = {
- 		[PSC_VOLTAGE_IN] = {
- 			.m = 16296,
-+			.b = 1343,
- 			.R = -2,
- 		},
- 		[PSC_CURRENT_IN] = {
- 			.m = 13797,
-+			.b = -1833,
- 			.R = -2,
- 		},
- 		[PSC_CURRENT_IN_L] = {
- 			.m = 6726,
-+			.b = -537,
- 			.R = -2,
- 		},
- 		[PSC_POWER] = {
- 			.m = 5501,
-+			.b = -2908,
- 			.R = -3,
- 		},
- 		[PSC_POWER_L] = {
- 			.m = 26882,
-+			.b = -5646,
- 			.R = -4,
- 		},
- 		[PSC_TEMPERATURE] = {
-@@ -96,26 +101,32 @@ static struct __coeff lm25066_coeff[5][P
- 	[lm25066] = {
- 		[PSC_VOLTAGE_IN] = {
- 			.m = 22070,
-+			.b = -1800,
- 			.R = -2,
- 		},
- 		[PSC_VOLTAGE_OUT] = {
- 			.m = 22070,
-+			.b = -1800,
- 			.R = -2,
- 		},
- 		[PSC_CURRENT_IN] = {
- 			.m = 13661,
-+			.b = -5200,
- 			.R = -2,
- 		},
- 		[PSC_CURRENT_IN_L] = {
- 			.m = 6852,
-+			.b = -3100,
- 			.R = -2,
- 		},
- 		[PSC_POWER] = {
- 			.m = 736,
-+			.b = -3300,
- 			.R = -2,
- 		},
- 		[PSC_POWER_L] = {
- 			.m = 369,
-+			.b = -1900,
- 			.R = -2,
- 		},
- 		[PSC_TEMPERATURE] = {
-@@ -155,26 +166,32 @@ static struct __coeff lm25066_coeff[5][P
- 	[lm5064] = {
- 		[PSC_VOLTAGE_IN] = {
- 			.m = 4611,
-+			.b = -642,
- 			.R = -2,
- 		},
- 		[PSC_VOLTAGE_OUT] = {
- 			.m = 4621,
-+			.b = 423,
- 			.R = -2,
- 		},
- 		[PSC_CURRENT_IN] = {
- 			.m = 10742,
-+			.b = 1552,
- 			.R = -2,
- 		},
- 		[PSC_CURRENT_IN_L] = {
- 			.m = 5456,
-+			.b = 2118,
- 			.R = -2,
- 		},
- 		[PSC_POWER] = {
- 			.m = 1204,
-+			.b = 8524,
- 			.R = -3,
- 		},
- 		[PSC_POWER_L] = {
- 			.m = 612,
-+			.b = 11202,
- 			.R = -3,
- 		},
- 		[PSC_TEMPERATURE] = {
-@@ -184,26 +201,32 @@ static struct __coeff lm25066_coeff[5][P
- 	[lm5066] = {
- 		[PSC_VOLTAGE_IN] = {
- 			.m = 4587,
-+			.b = -1200,
- 			.R = -2,
- 		},
- 		[PSC_VOLTAGE_OUT] = {
- 			.m = 4587,
-+			.b = -2400,
- 			.R = -2,
- 		},
- 		[PSC_CURRENT_IN] = {
- 			.m = 10753,
-+			.b = -1200,
- 			.R = -2,
- 		},
- 		[PSC_CURRENT_IN_L] = {
- 			.m = 5405,
-+			.b = -600,
- 			.R = -2,
- 		},
- 		[PSC_POWER] = {
- 			.m = 1204,
-+			.b = -6000,
- 			.R = -3,
- 		},
- 		[PSC_POWER_L] = {
- 			.m = 605,
-+			.b = -8000,
- 			.R = -3,
- 		},
- 		[PSC_TEMPERATURE] = {
+diff --git a/drivers/acpi/acpica/acglobal.h b/drivers/acpi/acpica/acglobal.h
+index 95eed442703f2..2f4a3fee69e70 100644
+--- a/drivers/acpi/acpica/acglobal.h
++++ b/drivers/acpi/acpica/acglobal.h
+@@ -255,6 +255,8 @@ extern struct acpi_bit_register_info
+ 
+ ACPI_GLOBAL(u8, acpi_gbl_sleep_type_a);
+ ACPI_GLOBAL(u8, acpi_gbl_sleep_type_b);
++ACPI_GLOBAL(u8, acpi_gbl_sleep_type_a_s0);
++ACPI_GLOBAL(u8, acpi_gbl_sleep_type_b_s0);
+ 
+ /*****************************************************************************
+  *
+diff --git a/drivers/acpi/acpica/hwesleep.c b/drivers/acpi/acpica/hwesleep.c
+index 12626d021a9b5..7f8c57177819f 100644
+--- a/drivers/acpi/acpica/hwesleep.c
++++ b/drivers/acpi/acpica/hwesleep.c
+@@ -181,17 +181,13 @@ acpi_status acpi_hw_extended_sleep(u8 sleep_state)
+ 
+ acpi_status acpi_hw_extended_wake_prep(u8 sleep_state)
+ {
+-	acpi_status status;
+ 	u8 sleep_type_value;
+ 
+ 	ACPI_FUNCTION_TRACE(hw_extended_wake_prep);
+ 
+-	status = acpi_get_sleep_type_data(ACPI_STATE_S0,
+-					  &acpi_gbl_sleep_type_a,
+-					  &acpi_gbl_sleep_type_b);
+-	if (ACPI_SUCCESS(status)) {
++	if (acpi_gbl_sleep_type_a_s0 != ACPI_SLEEP_TYPE_INVALID) {
+ 		sleep_type_value =
+-		    ((acpi_gbl_sleep_type_a << ACPI_X_SLEEP_TYPE_POSITION) &
++		    ((acpi_gbl_sleep_type_a_s0 << ACPI_X_SLEEP_TYPE_POSITION) &
+ 		     ACPI_X_SLEEP_TYPE_MASK);
+ 
+ 		(void)acpi_write((u64)(sleep_type_value | ACPI_X_SLEEP_ENABLE),
+diff --git a/drivers/acpi/acpica/hwsleep.c b/drivers/acpi/acpica/hwsleep.c
+index 1fe7387a00e67..2c54d08b20ca6 100644
+--- a/drivers/acpi/acpica/hwsleep.c
++++ b/drivers/acpi/acpica/hwsleep.c
+@@ -218,7 +218,7 @@ acpi_status acpi_hw_legacy_sleep(u8 sleep_state)
+ 
+ acpi_status acpi_hw_legacy_wake_prep(u8 sleep_state)
+ {
+-	acpi_status status;
++	acpi_status status = AE_OK;
+ 	struct acpi_bit_register_info *sleep_type_reg_info;
+ 	struct acpi_bit_register_info *sleep_enable_reg_info;
+ 	u32 pm1a_control;
+@@ -231,10 +231,7 @@ acpi_status acpi_hw_legacy_wake_prep(u8 sleep_state)
+ 	 * This is unclear from the ACPI Spec, but it is required
+ 	 * by some machines.
+ 	 */
+-	status = acpi_get_sleep_type_data(ACPI_STATE_S0,
+-					  &acpi_gbl_sleep_type_a,
+-					  &acpi_gbl_sleep_type_b);
+-	if (ACPI_SUCCESS(status)) {
++	if (acpi_gbl_sleep_type_a_s0 != ACPI_SLEEP_TYPE_INVALID) {
+ 		sleep_type_reg_info =
+ 		    acpi_hw_get_bit_register_info(ACPI_BITREG_SLEEP_TYPE);
+ 		sleep_enable_reg_info =
+@@ -255,9 +252,9 @@ acpi_status acpi_hw_legacy_wake_prep(u8 sleep_state)
+ 
+ 			/* Insert the SLP_TYP bits */
+ 
+-			pm1a_control |= (acpi_gbl_sleep_type_a <<
++			pm1a_control |= (acpi_gbl_sleep_type_a_s0 <<
+ 					 sleep_type_reg_info->bit_position);
+-			pm1b_control |= (acpi_gbl_sleep_type_b <<
++			pm1b_control |= (acpi_gbl_sleep_type_b_s0 <<
+ 					 sleep_type_reg_info->bit_position);
+ 
+ 			/* Write the control registers and ignore any errors */
+diff --git a/drivers/acpi/acpica/hwxfsleep.c b/drivers/acpi/acpica/hwxfsleep.c
+index e5c095ca6083a..827c3242225d9 100644
+--- a/drivers/acpi/acpica/hwxfsleep.c
++++ b/drivers/acpi/acpica/hwxfsleep.c
+@@ -322,6 +322,13 @@ acpi_status acpi_enter_sleep_state_prep(u8 sleep_state)
+ 		return_ACPI_STATUS(status);
+ 	}
+ 
++	status = acpi_get_sleep_type_data(ACPI_STATE_S0,
++					  &acpi_gbl_sleep_type_a_s0,
++					  &acpi_gbl_sleep_type_b_s0);
++	if (ACPI_FAILURE(status)) {
++		acpi_gbl_sleep_type_a_s0 = ACPI_SLEEP_TYPE_INVALID;
++	}
++
+ 	/* Execute the _PTS method (Prepare To Sleep) */
+ 
+ 	arg_list.count = 1;
+-- 
+2.33.0
+
 
 
