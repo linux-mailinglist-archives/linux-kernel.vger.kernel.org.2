@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B6645BC95
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:29:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A210745BA9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245159AbhKXMbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:31:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36508 "EHLO mail.kernel.org"
+        id S242216AbhKXMM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:12:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243596AbhKXMUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:20:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A1A561177;
-        Wed, 24 Nov 2021 12:12:55 +0000 (UTC)
+        id S241596AbhKXMJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:09:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5CCC61058;
+        Wed, 24 Nov 2021 12:05:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755976;
+        s=korg; t=1637755517;
         bh=SJpk/K0GSybni35enQRLM01qjFWUElD4ki3tYsKllnI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1NZCCYVK7iYA+buM9w4ar8uYD4WxLFtVI7yzmRC4N3GMxmGPC1WcQ6HRNGQgI5Fur
-         yjsCRNgZy1lM5ZUif/n8CajM9Zknh2GRRQgtuJxwYu5hwrcplrxe+ZpwJlhM3otq2h
-         OAxYa2bA0kdXAWN2usKXhzEftW8z7feRnq3ltpG4=
+        b=RMsNbNj0suO464ICSXzSL8A0FaPNRtEVp8xIZjI7ohV1kdQsIJIBfbieNJDrzgrds
+         X0d08nt8Cjb1DwrHNLlh6RCyn3UreG9w79+VHwjLHaY/oX1kqCah9iXFt1nhx3k9IY
+         UIwK+SmfA50gZL2bVjaynFpVY05IUChsHiHD2ASE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Christophe Leroy <christophe.leroy@csgroup.eu>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 123/207] video: fbdev: chipsfb: use memset_io() instead of memset()
-Date:   Wed, 24 Nov 2021 12:56:34 +0100
-Message-Id: <20211124115708.039537311@linuxfoundation.org>
+Subject: [PATCH 4.4 092/162] video: fbdev: chipsfb: use memset_io() instead of memset()
+Date:   Wed, 24 Nov 2021 12:56:35 +0100
+Message-Id: <20211124115701.306019531@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
