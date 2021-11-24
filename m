@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF4645B095
+	by mail.lfdr.de (Postfix) with ESMTP id E89E645B096
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 01:12:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240593AbhKXAPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 19:15:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56536 "EHLO
+        id S240611AbhKXAPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 19:15:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239081AbhKXAPn (ORCPT
+        with ESMTP id S240590AbhKXAPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 19:15:43 -0500
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9A0C061714
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 16:12:34 -0800 (PST)
-Received: by mail-pf1-x44a.google.com with SMTP id q82-20020a627555000000b004a4f8cadb6fso419341pfc.20
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 16:12:34 -0800 (PST)
+        Tue, 23 Nov 2021 19:15:45 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6344C061714
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 16:12:36 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id a26-20020a63bd1a000000b002fab31bc2d9so95893pgf.7
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 16:12:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=r7AhAqgjV2rKTWwkAzKHbn6CM2swTuumTBUvYfOAdxA=;
-        b=WIlybyw20/IqPGv4r5lxaiFgeeeVnl/2nshw/ZRrhi6qbzWb025FKIDoeTM9z+xmBj
-         OqIWNYP4/Ky0W/gFsoG8t3ElgA7cUAuErI05uLtTgG8dpg3YJPSLb6Sskcq1U6lS8UVB
-         rC8qJeiHRfmd3GMn0JR1Qcc5D8KB+zBlMgpSormqsL7ocOTCfhZyxCTI5mkkyJPC9gad
-         U4l2Uic0XnKvzIr4sp8fd4y65tFmI5yGbEK3t05hg//GXNrVpAAQOsjmIH/3Ly+irtZd
-         vNjX7TpUA3mGJrw3IJuuiPygPf1YrfjMOh6FEzJ3EGxOx5Qd0Mp2YH5H2jbIetKSAFzu
-         KefA==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=yN9AxgVhP403euh96vyR/P6B46ndFdybNrT4U7XWKGA=;
+        b=O9McHgH/Odph1UfwBgVrusQu4D4wnX0ek4cbT2T05joLVmnA9D62D9n+LmfYeEb5/Z
+         FYICZZWKu72FKhzHlImtfy4+Vz05Bda+Mq2y7IgUgzfuAWOWwG2h9fyouPPxKiw71Tai
+         6pMC42SYZW3JLNKU9PY8K37ldxYRgX6y9J6M0jr5eYS5+IEmN6ClFLR3MmDSyjQuEyvY
+         18E+HZBBHHeM3ah2hcrWlQYvMKHN29yZNbJXU9Kgxbx2r8bO/M88siQZbsH7YQBAUUjm
+         6nfL0PHuD4t0NRd/JfqU7QBaGIWNeC4ti8K+LMDpzN13Iu/P2H5qZ1voKJ0+gTn6c/yV
+         D9tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=r7AhAqgjV2rKTWwkAzKHbn6CM2swTuumTBUvYfOAdxA=;
-        b=QRULn7tZZTMMmkzdo1GlMZ+dYqHFosSixhzsbN4Kmha2Sdfos2t+2TFbRQYmzIxvVb
-         LxT5AW4oQy1U1T8cvMd4rB/nPI/UiFv8evUqRVX5V6lBBu2mbuK6pwoRIZ0Iow4CizV1
-         oguHSrrtQz+xnzFm9PqOon+qr8/XXllmFPmagwBbudG4/RiC1OR80I2HyC7WeAo3HHKe
-         L/Ro26LsdmbFbdeMyKU0jUDAIIPHhz/2TeEP3pOXeVUICKz41HC1p6m6HHe+TTpY3jO9
-         GwhsaDMVurXs7SbIZRn4APMC1D9tLeqi5ONOVUn2/VpDEpXVjF9C7Gy5MorhVPioW9Dd
-         laxg==
-X-Gm-Message-State: AOAM531T7fmKNIHQVF693crnuJKUN7IN5LGxlSzetNLiAi5lPs76bLe4
-        ldkHOiCi+upb2N4xkzf/j/5wKqMCI5IH
-X-Google-Smtp-Source: ABdhPJx5MMGItrF9g98TXg/DgoPLAPJv4hr6kiVeAwZ/T4cQAUL9sJSiwvAyBbvRRVd36uCv0oj4p2osJN2O
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=yN9AxgVhP403euh96vyR/P6B46ndFdybNrT4U7XWKGA=;
+        b=CA77It55dhWEW1USl43+EZJ+hwSatDkdfIxgJs6UDfQkcHnY+0r0hZtO617CAcd5xd
+         rxpahcekQYCQDtN+mfdrOVa/SDRf8UW0YrDc22Vi/hh9NarHgwWup4EbPNRNbqXPfi/d
+         eJh7xfbvjkHemPqYNHMkbceLJF8BRYNAsTpHO7qGHT2QYzC92JwWXEUejd40X9hYFQMP
+         v8P889M7DB6iUbES0YM6rpyvjW3BOANu3SoLFcwXMbhCGpAxQwjRzbKrLlHFeUgGg5PL
+         1J4IDCbZ7GYmUbTWSkkqvDT7PnA4OzV4tXKvI8Z3T0mRQqov9OWNarUBdmQX/Rj4Fhwp
+         5hIg==
+X-Gm-Message-State: AOAM533OCKg/rb9ZqOdr/1JuTy37DVGwdPuaiapX0GqtBCgTvIKrgfpC
+        IzBaDceBU88mtnDuR7XeZJYSwzvZYRll
+X-Google-Smtp-Source: ABdhPJzNEuRRRYrc29XxGDMCWIspDpqFXUsZC0T1lx1Ih2r01Z7AkyiJfWQCCAEP165v2BXeYTAglRSi+vpZ
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:dbab:a6fe:1e3a:91fa])
- (user=irogers job=sendgmr) by 2002:a17:90a:db89:: with SMTP id
- h9mr2121357pjv.71.1637712754074; Tue, 23 Nov 2021 16:12:34 -0800 (PST)
-Date:   Tue, 23 Nov 2021 16:12:28 -0800
-Message-Id: <20211124001231.3277836-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a17:90b:1486:: with SMTP id
+ js6mr92355pjb.0.1637712756019; Tue, 23 Nov 2021 16:12:36 -0800 (PST)
+Date:   Tue, 23 Nov 2021 16:12:29 -0800
+In-Reply-To: <20211124001231.3277836-1-irogers@google.com>
+Message-Id: <20211124001231.3277836-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20211124001231.3277836-1-irogers@google.com>
 X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH v2 1/4] perf expr: Add debug logging for literals
+Subject: [PATCH v2 2/4] perf tools: Fix SMT not detected
 From:   Ian Rogers <irogers@google.com>
 To:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
@@ -68,68 +72,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Useful for diagnosing problems with metrics.
+sysfs__read_int returns 0 on success, and so the fast read path was
+always failing.
 
+Fixes: bb629484d924 (perf tools: Simplify checking if SMT is active.)
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/expr.c | 35 ++++++++++++++++++++++++-----------
- 1 file changed, 24 insertions(+), 11 deletions(-)
+ tools/perf/util/smt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
-index 1d532b9fed29..cdbab4f959fe 100644
---- a/tools/perf/util/expr.c
-+++ b/tools/perf/util/expr.c
-@@ -395,12 +395,17 @@ double expr_id_data__source_count(const struct expr_id_data *data)
- double expr__get_literal(const char *literal)
- {
- 	static struct cpu_topology *topology;
-+	double result = NAN;
+diff --git a/tools/perf/util/smt.c b/tools/perf/util/smt.c
+index 20bacd5972ad..34f1b1b1176c 100644
+--- a/tools/perf/util/smt.c
++++ b/tools/perf/util/smt.c
+@@ -15,7 +15,7 @@ int smt_on(void)
+ 	if (cached)
+ 		return cached_result;
  
--	if (!strcmp("#smt_on", literal))
--		return smt_on() > 0 ? 1.0 : 0.0;
-+	if (!strcmp("#smt_on", literal)) {
-+		result =  smt_on() > 0 ? 1.0 : 0.0;
-+		goto out;
-+	}
+-	if (sysfs__read_int("devices/system/cpu/smt/active", &cached_result) > 0)
++	if (sysfs__read_int("devices/system/cpu/smt/active", &cached_result) >= 0)
+ 		goto done;
  
--	if (!strcmp("#num_cpus", literal))
--		return cpu__max_present_cpu();
-+	if (!strcmp("#num_cpus", literal)) {
-+		result = cpu__max_present_cpu();
-+		goto out;
-+	}
- 
- 	/*
- 	 * Assume that topology strings are consistent, such as CPUs "0-1"
-@@ -415,13 +420,21 @@ double expr__get_literal(const char *literal)
- 			return NAN;
- 		}
- 	}
--	if (!strcmp("#num_packages", literal))
--		return topology->package_cpus_lists;
--	if (!strcmp("#num_dies", literal))
--		return topology->die_cpus_lists;
--	if (!strcmp("#num_cores", literal))
--		return topology->core_cpus_lists;
-+	if (!strcmp("#num_packages", literal)) {
-+		result = topology->package_cpus_lists;
-+		goto out;
-+	}
-+	if (!strcmp("#num_dies", literal)) {
-+		result = topology->die_cpus_lists;
-+		goto out;
-+	}
-+	if (!strcmp("#num_cores", literal)) {
-+		result = topology->core_cpus_lists;
-+		goto out;
-+	}
- 
- 	pr_err("Unrecognized literal '%s'", literal);
--	return NAN;
-+out:
-+	pr_debug2("literal: %s = %f\n", literal, result);
-+	return result;
- }
+ 	ncpu = sysconf(_SC_NPROCESSORS_CONF);
 -- 
 2.34.0.rc2.393.gf8c9666880-goog
 
