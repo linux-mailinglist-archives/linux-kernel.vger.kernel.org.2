@@ -2,133 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B27345C9DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4979B45C9E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348409AbhKXQZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:25:38 -0500
-Received: from mout.gmx.net ([212.227.17.22]:46693 "EHLO mout.gmx.net"
+        id S242127AbhKXQ0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:26:07 -0500
+Received: from foss.arm.com ([217.140.110.172]:40688 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348492AbhKXQZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:25:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1637770914;
-        bh=GH1XHVJ6rTKqgxiKJjhIxDUSl2giLIYfV7O6t1Qd6uU=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=l1IzEmvffhrMG+M508SFXFrOBybyW+vG7yb/4cjZ7dppy8N3ryreS/vRs9buiF0Xe
-         5h088eiT7gjIKy/bjEDkww23JSHUEr0gf6XmG9kwplkeRBnRdWNkQEhg+Z/BEKE6Lr
-         pWNgKRI3KV5viMnmHoSGBX4wDLiB42+Z6E+MP0B4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.216.103]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N0G1n-1mScr72VYl-00xIMA; Wed, 24
- Nov 2021 17:21:54 +0100
-Message-ID: <d6c17c1d587abf4393a70942bf148bf655de2417.camel@gmx.de>
-Subject: Re: mm: LTP/memcg testcase regression induced by
- 8cd7c588decf..66ce520bb7c2 series
-From:   Mike Galbraith <efault@gmx.de>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     lkml <linux-kernel@vger.kernel.org>
-Date:   Wed, 24 Nov 2021 17:21:53 +0100
-In-Reply-To: <20211124145621.GJ3366@techsingularity.net>
-References: <99e779783d6c7fce96448a3402061b9dc1b3b602.camel@gmx.de>
-         <20211123091304.GC3366@techsingularity.net>
-         <21c3489c7ce8342d392c08547a3222a9c289e9fc.camel@gmx.de>
-         <20211124145621.GJ3366@techsingularity.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 
+        id S241485AbhKXQ0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 11:26:05 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1DEF91FB;
+        Wed, 24 Nov 2021 08:22:55 -0800 (PST)
+Received: from [10.57.29.198] (unknown [10.57.29.198])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6F9A13F66F;
+        Wed, 24 Nov 2021 08:22:53 -0800 (PST)
+Subject: Re: [PATCH] base: arch_topology: Use policy->max to calculate
+ freq_factor
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     Thara Gopinath <thara.gopinath@linaro.org>, rafael@kernel.org
+Cc:     sudeep.holla@arm.com, gregkh@linuxfoundation.org,
+        bjorn.andersson@linaro.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20211115201010.68567-1-thara.gopinath@linaro.org>
+ <bce694fc-432c-846b-bd96-592368d12e20@arm.com>
+Message-ID: <37941182-4f0f-0d3c-1831-83ca9765feb6@arm.com>
+Date:   Wed, 24 Nov 2021 16:22:51 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:jB3ujTwtJBdXMnAv7+1NDINJY4UPGMjbIg+E9+cZ8Y8ClD1yjXq
- I8iMzmKv0YRr0c0bHBYkdo6oH6DdcSebljtenarSpxNsCHkTbh1FPV/CokQ6jjPrfKk+U4d
- VYLK+eERcpJWa22xnMKW1GLBTT31KICsMEJE/oc72fthyObjnE41GdLsA3SPWjgpCKvB4HZ
- DtnNHNti/kaZ4fiULVpNg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2RHexs+S5Yg=:HhBH15VSaTZDgezUbVFbbr
- gCwobq9vt7ENLh7RItNcgbPBDJzmECZwW4gNUESWF6QutGmyzvWbApohK0s1D29O9otth0cHu
- 0Dv18gngLpkx6IeW+rUgi1Wmzjdve4A34YTOEXqiGjAQLsOuYFyA3tvUs3KDokRgJR+vVic1R
- SKBGJtH4y7XHJiuM9cPuQw1pd5JD2A3xg3kvJrR1fwATXndQns3JgJRyHeF5be4vBUjWP+SwO
- a4+G8UAVLcYJYpdVbItnFndGXGIYnyglLCySd3egxFCc7HNkKYNhsapcIvg5KzWi3j3w70BXK
- XgQjmQ6HddQFc89stRRC5bCpyHR9VTxWyT38sXFQ8SsFZerQMHhOfTLklLLPkzmn3UCc3Vetf
- uB6D7+AuIO7c4WbVsEcVhTow2GokZex0qqeqs57wSCX4uqqDM6sRZR8sxxcMNXvf0FhVAELg7
- ZVjH6lz0WBeqocKW4RqxMIbA5zyIrXCxr6EBinDHqOxHXzveFqjzmvmQ9dbimgCJAVVvld9kQ
- /QkJFpoGT0wWTgSuE8K48q8i1ZlCO9CLNYnZ4pwozUF8GJV8qrgDy4YLCxfgi+h2pLsiUy5e/
- YTVzeO+VTOxFrUxkW82ezrm8dPfcADbisRtjhe+oFH+RNKaJSkiYxk0WGBgkidVwcc0ODx1tk
- ZqMEF+WQoJzsui1KFQUOBsbujB/CeRp5a+VydUaWAylyk0p9C3xuW/ms+Vcw98MlSFyk3jvRl
- +RdMBqVcn0VS+DDJUTBL/o//d4DNq/ryKzf5j6QxHHX3AAMUyA/17Hm3eNUt9mT+8EvH5iOBZ
- fNgm3wkgIxnXk5hN8WcmN/OsxsTyl5idBufRjGHaSaZQAmH6ZCSxDDnrJUK8WhQQhVdhWg4dI
- QhmfQ2bDajYdbo1Qo4LQzttRhkOpLzMxPBrpNxAlg9HfyBZI4VDxHiVSo2vWKQR7afVhs0bdW
- A33PcwFnzCwhn0WDiMN3QEXyRkE4OzrnP27MnBW/AXlte61PZL0GDxkH3CDzlsx3atLfQAiTG
- UloesuNe41rZSOzp2PXe1+n+51UK5HGtlRz+EJFqM8SGozOvizjBP24dxUH9APV8LJnOr4SDq
- Q6ZcDvBxqu2NA8=
+In-Reply-To: <bce694fc-432c-846b-bd96-592368d12e20@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTExLTI0IGF0IDE0OjU2ICswMDAwLCBNZWwgR29ybWFuIHdyb3RlOg0KPiBP
-biBUdWUsIE5vdiAyMywgMjAyMSBhdCAxMjoxODowMVBNICswMTAwLCBNaWtlIEdhbGJyYWl0aCB3
-cm90ZToNCj4gPiBPbiBUdWUsIDIwMjEtMTEtMjMgYXQgMDk6MTMgKzAwMDAsIE1lbCBHb3JtYW4g
-d3JvdGU6DQo+ID4gPiANCj4gPiA+IEknbGwgc2VlIGNhbiBJIHJlcHJvZHVjZSB0aGlzLi4uDQo+
-ID4gDQo+ID4gWW91IGxpa2VseSBhbHJlYWR5IGtub3cgdGhpcywgYnV0IGp1c3QgaW4gY2FzZSwg
-anVzdCBwbHVuayB0aGUgYmVsb3cNCj4gPiBpbnRvICRMVFBST09UL3J1bnRlc3QvZm9vLCBhbmQg
-JExUUFJPT1QvcnVubHRwIC1mIGZvby4NCj4gPiANCj4gPiAjREVTQ1JJUFRJT046UmVzb3VyY2Ug
-TWFuYWdlbWVudCB0ZXN0aW5nDQo+ID4gbWVtY2dfcmVncmVzc2lvbsKgwqDCoMKgwqDCoMKgIG1l
-bWNnX3JlZ3Jlc3Npb25fdGVzdC5zaA0KPiA+IA0KPiANCj4gVGhhbmtzLiBDYW4geW91IHRyeSB0
-aGUgZm9sbG93aW5nIHBhdGNoIHBsZWFzZT8NCj4gDQo+IFRoZSB0ZXN0IHdpbGwgc3RpbGwgdGFr
-ZSBsb25nZXIgdG8gcmVhY2ggT09NIGFuZCBjb21wbGV0ZSBhcyBpdCdzIHN0YWxsaW5nDQo+IGJ1
-dCBub3QgYXMgc2V2ZXJlbHkuDQoNClllYWgsIHdheSBiZXR0ZXIuICB0ZXN0MSgpIGlzIHN0aWxs
-IHRvIGJlIGF2b2lkZWQsIGJ1dCBldmVyeXRoaW5nIGVsc2UNCnNlZW1zIGZpbmUsIGluY2x1ZGlu
-ZyBzdHJlc3MgKHR3aWRkbGVkIHRvIG5vdCBiZSBzd2FwIHN0b3JtIGZyb20gaGVsbCkuDQoNCj4g
-DQo+IGRpZmYgLS1naXQgYS9tbS92bXNjYW4uYyBiL21tL3Ztc2Nhbi5jDQo+IGluZGV4IDA3ZGIw
-Mzg4MzA2Mi4uZDkxNjZlOTRlYjk1IDEwMDY0NA0KPiAtLS0gYS9tbS92bXNjYW4uYw0KPiArKysg
-Yi9tbS92bXNjYW4uYw0KPiBAQCAtMTA1Nyw3ICsxMDU3LDE3IEBAIHZvaWQgcmVjbGFpbV90aHJv
-dHRsZShwZ19kYXRhX3QgKnBnZGF0LCBlbnVtIHZtc2Nhbl90aHJvdHRsZV9zdGF0ZSByZWFzb24p
-DQo+IMKgDQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgYnJlYWs7DQo+IMKgwqDC
-oMKgwqDCoMKgwqBjYXNlIFZNU0NBTl9USFJPVFRMRV9OT1BST0dSRVNTOg0KPiAtwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgdGltZW91dCA9IEhaLzI7DQo+ICvCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqB0aW1lb3V0ID0gMTsNCj4gKw0KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgLyoNCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqIElmIGtzd2Fw
-ZCBpcyBkaXNhYmxlZCwgcmVzY2hlZHVsZSBpZiBuZWNlc3NhcnkgYnV0IGRvIG5vdA0KPiArwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICogdGhyb3R0bGUgYXMgdGhlIHN5c3RlbSBpcyBs
-aWtlbHkgbmVhciBPT00uDQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKi8NCj4g
-K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmIChwZ2RhdC0+a3N3YXBkX2ZhaWx1cmVz
-ID49IE1BWF9SRUNMQUlNX1JFVFJJRVMpIHsNCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqBjb25kX3Jlc2NoZWQoKTsNCj4gK8KgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm47DQo+ICvCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqB9DQo+ICsNCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBi
-cmVhazsNCj4gwqDCoMKgwqDCoMKgwqDCoGNhc2UgVk1TQ0FOX1RIUk9UVExFX0lTT0xBVEVEOg0K
-PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHRpbWVvdXQgPSBIWi81MDsNCj4gQEAg
-LTMzOTUsNyArMzQwNSw3IEBAIHN0YXRpYyB2b2lkIGNvbnNpZGVyX3JlY2xhaW1fdGhyb3R0bGUo
-cGdfZGF0YV90ICpwZ2RhdCwgc3RydWN0IHNjYW5fY29udHJvbCAqc2MpDQo+IMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuOw0KPiDCoA0KPiDCoMKgwqDCoMKgwqDCoMKgLyog
-VGhyb3R0bGUgaWYgbWFraW5nIG5vIHByb2dyZXNzIGF0IGhpZ2ggcHJpb2l0aWVzLiAqLw0KPiAt
-wqDCoMKgwqDCoMKgwqBpZiAoc2MtPnByaW9yaXR5IDwgREVGX1BSSU9SSVRZIC0gMikNCj4gK8Kg
-wqDCoMKgwqDCoMKgaWYgKHNjLT5wcmlvcml0eSA8IERFRl9QUklPUklUWSAtIDIgJiYgIXNjLT5u
-cl9yZWNsYWltZWQpDQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmVjbGFpbV90
-aHJvdHRsZShwZ2RhdCwgVk1TQ0FOX1RIUk9UVExFX05PUFJPR1JFU1MpOw0KPiDCoH0NCj4gwqAN
-Cj4gQEAgLTM0MTUsNiArMzQyNSw3IEBAIHN0YXRpYyB2b2lkIHNocmlua196b25lcyhzdHJ1Y3Qg
-em9uZWxpc3QgKnpvbmVsaXN0LCBzdHJ1Y3Qgc2Nhbl9jb250cm9sICpzYykNCj4gwqDCoMKgwqDC
-oMKgwqDCoHVuc2lnbmVkIGxvbmcgbnJfc29mdF9zY2FubmVkOw0KPiDCoMKgwqDCoMKgwqDCoMKg
-Z2ZwX3Qgb3JpZ19tYXNrOw0KPiDCoMKgwqDCoMKgwqDCoMKgcGdfZGF0YV90ICpsYXN0X3BnZGF0
-ID0gTlVMTDsNCj4gK8KgwqDCoMKgwqDCoMKgcGdfZGF0YV90ICpmaXJzdF9wZ2RhdCA9IE5VTEw7
-DQo+IMKgDQo+IMKgwqDCoMKgwqDCoMKgwqAvKg0KPiDCoMKgwqDCoMKgwqDCoMKgICogSWYgdGhl
-IG51bWJlciBvZiBidWZmZXJfaGVhZHMgaW4gdGhlIG1hY2hpbmUgZXhjZWVkcyB0aGUgbWF4aW11
-bQ0KPiBAQCAtMzQ3OCwxNCArMzQ4OSwxOCBAQCBzdGF0aWMgdm9pZCBzaHJpbmtfem9uZXMoc3Ry
-dWN0IHpvbmVsaXN0ICp6b25lbGlzdCwgc3RydWN0IHNjYW5fY29udHJvbCAqc2MpDQo+IMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC8qIG5lZWQgc29tZSBj
-aGVjayBmb3IgYXZvaWQgbW9yZSBzaHJpbmtfem9uZSgpICovDQo+IMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgfQ0KPiDCoA0KPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-aWYgKCFmaXJzdF9wZ2RhdCkNCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqBmaXJzdF9wZ2RhdCA9IHpvbmUtPnpvbmVfcGdkYXQ7DQo+ICsNCj4gwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAvKiBTZWUgY29tbWVudCBhYm91dCBzYW1lIGNoZWNr
-IGZvciBnbG9iYWwgcmVjbGFpbSBhYm92ZSAqLw0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoGlmICh6b25lLT56b25lX3BnZGF0ID09IGxhc3RfcGdkYXQpDQo+IMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGNvbnRpbnVlOw0KPiDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGxhc3RfcGdkYXQgPSB6b25lLT56b25lX3BnZGF0Ow0K
-PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHNocmlua19ub2RlKHpvbmUtPnpvbmVf
-cGdkYXQsIHNjKTsNCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGNvbnNpZGVyX3Jl
-Y2xhaW1fdGhyb3R0bGUoem9uZS0+em9uZV9wZ2RhdCwgc2MpOw0KPiDCoMKgwqDCoMKgwqDCoMKg
-fQ0KPiDCoA0KPiArwqDCoMKgwqDCoMKgwqBjb25zaWRlcl9yZWNsYWltX3Rocm90dGxlKGZpcnN0
-X3BnZGF0LCBzYyk7DQo+ICsNCj4gwqDCoMKgwqDCoMKgwqDCoC8qDQo+IMKgwqDCoMKgwqDCoMKg
-wqAgKiBSZXN0b3JlIHRvIG9yaWdpbmFsIG1hc2sgdG8gYXZvaWQgdGhlIGltcGFjdCBvbiB0aGUg
-Y2FsbGVyIGlmIHdlDQo+IMKgwqDCoMKgwqDCoMKgwqAgKiBwcm9tb3RlZCBpdCB0byBfX0dGUF9I
-SUdITUVNLg0KDQo=
+
+
+On 11/17/21 10:12 AM, Lukasz Luba wrote:
+> 
+> 
+> On 11/15/21 8:10 PM, Thara Gopinath wrote:
+>> cpuinfo.max_freq can reflect boost frequency if enabled during boot.  
+>> Since
+>> we don't consider boost frequencies while calculating cpu capacities, use
+>> policy->max to populate the freq_factor during boot up.
+>>
+>> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+>> ---
+>>   drivers/base/arch_topology.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+>> index 43407665918f..df818b439bc3 100644
+>> --- a/drivers/base/arch_topology.c
+>> +++ b/drivers/base/arch_topology.c
+>> @@ -334,7 +334,7 @@ init_cpu_capacity_callback(struct notifier_block *nb,
+>>       cpumask_andnot(cpus_to_visit, cpus_to_visit, policy->related_cpus);
+>>       for_each_cpu(cpu, policy->related_cpus)
+>> -        per_cpu(freq_factor, cpu) = policy->cpuinfo.max_freq / 1000;
+>> +        per_cpu(freq_factor, cpu) = policy->max / 1000;
+>>       if (cpumask_empty(cpus_to_visit)) {
+>>           topology_normalize_cpu_scale();
+>>
+> 
+> LGTM
+> 
+> Reviewed-by: Lukasz Luba <lukasz.luba@armc.com>
+
+Rafael, Thara, please ignore for a while this review.
+We are going to do full investigation of this boost frequency,
+capacity, schedutil util-to-freq mapping with cpuinfo.max_freq.
+The code pointed by Rafael in that sched_util function
+already has issue [1]. We have to figure out the consistent
+solution for all platforms.
+
+Regards,
+Lukasz
+
+[1] 
+https://elixir.bootlin.com/linux/v5.16-rc2/source/kernel/sched/cpufreq_schedutil.c#L152
