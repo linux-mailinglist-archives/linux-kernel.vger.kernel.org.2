@@ -2,237 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EDCD45B08C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 01:03:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 371D045B08D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 01:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240434AbhKXAGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 19:06:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54482 "EHLO
+        id S240241AbhKXALA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 19:11:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbhKXAGN (ORCPT
+        with ESMTP id S230403AbhKXAK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 19:06:13 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA95C061714
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 16:03:05 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id 14so895307ioe.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 16:03:05 -0800 (PST)
+        Tue, 23 Nov 2021 19:10:59 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E47C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 16:07:49 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id g14so2135050edb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 16:07:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Oc4SpM7wg3bYNLnPBYyNuwZV0M6LV5LKztj1k1DfLA4=;
-        b=o07trBniGLeNffSg8eCbyVO4eMWabd8ua7FT9Lx4uKiZSqzT6pxkzxBngwYto4rBEo
-         P1clLQlbtUf98uFx1kfOot8kM0KcO3kGw3bNTbaaEEBr+9Yra/SW+Bw6cJkomCFU6cz+
-         9m2sn/+1V2+GWP8flqrPA5rNgvtYg2y7ffTn8IgzUycqfjWHkKCLcfkWegDQdfTptTIQ
-         SGHLuYDqf45w09Se+StoH6iHr+7cCK39AjAYEDafg6hDKLSkOrnHgcAhkRuMYhg4BoMG
-         VGpevoujkeco03Y/2Dg0qBY/1cawZkbCcC6lk59wFg94U+gqoekxJiAR29yiiu/Y7W5J
-         arMQ==
+         :cc;
+        bh=UPn1RQb6m6ux/VuPOD98r25FyLV3k7Pakxz0gVLX0p0=;
+        b=f3WgkDAEouU49B65aACu6yjJ1LBvot6qbp+fQNb6NcngpWHNa5qi4ouOlwwl0owKC5
+         S8SicoghLHtwgU4GGuLAUhcGXGSvr9AG5Wj+UuR8rixd0JGa0a46D1pEFklabMVHcGE/
+         riJGkiglAu+0bClLpR4qcNBgIwdKKnhQX74pXK+QdXkXVmPtE2QEQ7/WHegAtwHZcTLo
+         ZNnW5sbcrR5gSAa6EnxLhqkDC1krK/oqr7dHKPlMz7nWZMbcCJQhTWYtDrXXlF4hhKTl
+         H2O0C62AZ1KVZxnCRfuG5CxrfWdDhqo4pWU25pTxXrAa48eBUy3EhaJVRHhvN5Mh9rZn
+         A5Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Oc4SpM7wg3bYNLnPBYyNuwZV0M6LV5LKztj1k1DfLA4=;
-        b=Iaaus86CrBtDGgS+mHQxw1zMOs26pC+AWvb9lLbawcfpc+Kgo9nYIfnzaEWI3sdIFz
-         FIkJHMpAoV7fufDKYLl+Zt9RBWlzLGKvwiolo6Ra7eLZjNIOe9d05STxw/bBwMoOnAMg
-         ztH2Jb6+Wb+yugYudqwocuzBMCiWkgQCpUqsg8NlYBrN9RNAHmYihLTfBMmcF00AxMfU
-         Z/DqO9vrw1i4TKiQtZIbxl8otpvbi4qM7jSwbWstDPa0mwmBnKHXx6Z1YfzBtokYtdbg
-         Vaa/9COujlG+Z5IsKjZigk8ytU1zkc46I4JU5VftyXSXarCKdwgMV3esSBV98gxogWB5
-         Us0Q==
-X-Gm-Message-State: AOAM531OKrMetktLEBepHtl4kdeQDRtBXq/+v0DlHDpyrny+PnNXoqcB
-        Kl3WgCwv4dqbiQXrWzZZhoQUcRoQr44EREjwNoRHag==
-X-Google-Smtp-Source: ABdhPJxiyjw1BIh+of+YLYTPV0KhjH8cmwFy/94059bmov5sSmPkPraVeZO2Dwc/nLr4hZYCUvQYUnXtHNfhHsUJEPg=
-X-Received: by 2002:a05:6602:1484:: with SMTP id a4mr10000980iow.35.1637712184217;
- Tue, 23 Nov 2021 16:03:04 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=UPn1RQb6m6ux/VuPOD98r25FyLV3k7Pakxz0gVLX0p0=;
+        b=5NsXcZGuzp22Tc8kUBhe1FXGfEJIQKgTbpLcJ6tnYTWe/IrFmKl0twn8p33lC9+xuu
+         5wvVLNJ3HTOmBeE1XS0pMPl+aU1r9BvcBMORPbXAKYbhwrdmPKf60u8or4DdDKDzCt+s
+         NSdWVZl9z5AhDps4KKgtdiiy3YV8UexWEj/M+kB7MicNXjohjQsIWG0e2x1E8C3uqM+1
+         uXUV7AWRyuO65O3GAahCrWDmbPMosyhLOHn6kkSwNObh9gynuc5SMSy8hWAu6EJ4st9W
+         TxFJqMwzPTru/B8XP2j90AyExIbeMkUAWnKL3c8zjzvbVuLArlSn8JtctR/23FXB5RYL
+         heMA==
+X-Gm-Message-State: AOAM531kIsbmYqaZjbPtjq3Z/WwtGAXP733CSVaEHR2S76j0JV2N/nhT
+        HA0bLvGtZ8DEAm/GRQURhPd0C7NRG8y6Up6kqalV0/HMhxgGMQ==
+X-Google-Smtp-Source: ABdhPJxYsA1ltBo8Cn1EInzoSvxSsht5RcP6JJQbBTQY5nBcTbiigoUPQt0gSZl/Uauwgv7+W1W9khgHCOfrj8C0SX4=
+X-Received: by 2002:a17:906:d92f:: with SMTP id rn15mr13239790ejb.557.1637712467934;
+ Tue, 23 Nov 2021 16:07:47 -0800 (PST)
 MIME-Version: 1.0
-References: <20211123224821.3258649-1-irogers@google.com> <20211123224821.3258649-2-irogers@google.com>
- <YZ16mRRu7HZzUlYe@kernel.org>
-In-Reply-To: <YZ16mRRu7HZzUlYe@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 23 Nov 2021 16:02:51 -0800
-Message-ID: <CAP-5=fWOqj_3vkZEC2SV6oW==M1Kx+ajnkjw5D5f4-mtzicofQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] perf tools: Fix SMT not detected with large core count
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com
+References: <20211123112229.7812-1-21cnbao@gmail.com> <20211123210705.GD721624@worktop.programming.kicks-ass.net>
+In-Reply-To: <20211123210705.GD721624@worktop.programming.kicks-ass.net>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Wed, 24 Nov 2021 13:07:36 +1300
+Message-ID: <CAGsJ_4z-zm=7rCsswTByr_YWzkNHpYyGhhFs1USoOPmwB3XkuA@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Remove the cost of a redundant
+ cpumask_next_wrap in select_idle_cpu
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Barry Song <song.bao.hua@hisilicon.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 3:34 PM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
+On Wed, Nov 24, 2021 at 10:07 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> Em Tue, Nov 23, 2021 at 02:48:20PM -0800, Ian Rogers escreveu:
-> > sysfs__read_int returns 0 on success, and so the fast read path was
-> > always failing.
->
-> Please split this into two patches, the above part should be in one, and
-> the strtoull in another.
-
-Will do.
-
-> Also can't we just do as ./tools/perf/util/cputopo.c and use instead
-> core_cpus_list?
-
-It is more complex for the list case as the list may have a range. It
-shouldn't really matter with the active fix in any case. I think
-ideally we'd have an abstraction like cpuset in util-linux:
-https://github.com/util-linux/util-linux/blob/master/lib/cpuset.c
-This is a bit beyond what I'm trying to fix here.
-
-Thanks,
-Ian
-
-> On a 5950x:
->
-> =E2=AC=A2[acme@toolbox perf]$ cat /sys/devices/system/cpu/cpu31/topology/=
-core_cpus
-> 80008000
-> =E2=AC=A2[acme@toolbox perf]$ cat /sys/devices/system/cpu/cpu31/topology/=
-core_cpus_list
-> 15,31
-> =E2=AC=A2[acme@toolbox perf]$ cat /sys/devices/system/cpu/cpu0/topology/c=
-ore_cpus
-> 00010001
-> =E2=AC=A2[acme@toolbox perf]$ cat /sys/devices/system/cpu/cpu0/topology/c=
-ore_cpus_list
-> 0,16
-> =E2=AC=A2[acme@toolbox perf]$
->
-> - Arnaldo
->
-> > strtoull can only read a 64-bit bitmap. On an AMD EPYC core_cpus may lo=
-ok
-> > like:
-> > 00000000,00000000,00000000,00000001,00000000,00000000,00000000,00000001
-> > and so the sibling wasn't spotted. Fix by writing a simple hweight stri=
-ng
-> > parser.
+> On Tue, Nov 23, 2021 at 07:22:29PM +0800, Barry Song wrote:
+> > From: Barry Song <song.bao.hua@hisilicon.com>
 > >
-> > Fixes: bb629484d924 (perf tools: Simplify checking if SMT is active.)
-> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > This patch keeps the same scanning amount, but drops a redundant loop
+> > of cpumask_next_wrap.
+> > The original code did for_each_cpu_wrap(cpu, cpus, target + 1), then
+> > checked --nr; this patch does --nr before doing the next loop, thus,
+> > it can remove a cpumask_next_wrap() which costs a little bit.
+> >
+> > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 > > ---
-> >  tools/perf/util/smt.c | 68 ++++++++++++++++++++++++++++++++++++-------
-> >  1 file changed, 58 insertions(+), 10 deletions(-)
+> >  kernel/sched/fair.c | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
 > >
-> > diff --git a/tools/perf/util/smt.c b/tools/perf/util/smt.c
-> > index 20bacd5972ad..2636be65305a 100644
-> > --- a/tools/perf/util/smt.c
-> > +++ b/tools/perf/util/smt.c
-> > @@ -5,6 +5,56 @@
-> >  #include "api/fs/fs.h"
-> >  #include "smt.h"
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index ff69f24..e2fb3e0 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -6298,9 +6298,9 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
 > >
-> > +/**
-> > + * hweight_str - Returns the number of bits set in str. Stops at first=
- non-hex
-> > + *          or ',' character.
-> > + */
-> > +static int hweight_str(char *str)
-> > +{
-> > +     int result =3D 0;
-> > +
-> > +     while (*str) {
-> > +             switch (*str++) {
-> > +             case '0':
-> > +             case ',':
-> > +                     break;
-> > +             case '1':
-> > +             case '2':
-> > +             case '4':
-> > +             case '8':
-> > +                     result++;
-> > +                     break;
-> > +             case '3':
-> > +             case '5':
-> > +             case '6':
-> > +             case '9':
-> > +             case 'a':
-> > +             case 'A':
-> > +             case 'c':
-> > +             case 'C':
-> > +                     result +=3D 2;
-> > +                     break;
-> > +             case '7':
-> > +             case 'b':
-> > +             case 'B':
-> > +             case 'd':
-> > +             case 'D':
-> > +             case 'e':
-> > +             case 'E':
-> > +                     result +=3D 3;
-> > +                     break;
-> > +             case 'f':
-> > +             case 'F':
-> > +                     result +=3D 4;
-> > +                     break;
-> > +             default:
-> > +                     goto done;
-> > +             }
-> > +     }
-> > +done:
-> > +     return result;
-> > +}
-> > +
-> >  int smt_on(void)
-> >  {
-> >       static bool cached;
-> > @@ -15,9 +65,12 @@ int smt_on(void)
-> >       if (cached)
-> >               return cached_result;
+> >               span_avg = sd->span_weight * avg_idle;
+> >               if (span_avg > 4*avg_cost)
+> > -                     nr = div_u64(span_avg, avg_cost);
+> > +                     nr = div_u64(span_avg, avg_cost) - 1;
+> >               else
+> > -                     nr = 4;
+> > +                     nr = 3;
 > >
-> > -     if (sysfs__read_int("devices/system/cpu/smt/active", &cached_resu=
-lt) > 0)
-> > -             goto done;
-> > +     if (sysfs__read_int("devices/system/cpu/smt/active", &cached_resu=
-lt) >=3D 0) {
-> > +             cached =3D true;
-> > +             return cached_result;
-> > +     }
+> >               time = cpu_clock(this);
+> >       }
+> > @@ -6312,11 +6312,11 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
+> >                               return i;
 > >
-> > +     cached_result =3D 0;
-> >       ncpu =3D sysconf(_SC_NPROCESSORS_CONF);
-> >       for (cpu =3D 0; cpu < ncpu; cpu++) {
-> >               unsigned long long siblings;
-> > @@ -35,18 +88,13 @@ int smt_on(void)
-> >                               continue;
-> >               }
-> >               /* Entry is hex, but does not have 0x, so need custom par=
-ser */
-> > -             siblings =3D strtoull(str, NULL, 16);
-> > +             siblings =3D hweight_str(str);
-> >               free(str);
-> > -             if (hweight64(siblings) > 1) {
-> > +             if (siblings > 1) {
-> >                       cached_result =3D 1;
-> > -                     cached =3D true;
-> >                       break;
+> >               } else {
+> > -                     if (!--nr)
+> > -                             return -1;
+> >                       idle_cpu = __select_idle_cpu(cpu, p);
+> >                       if ((unsigned int)idle_cpu < nr_cpumask_bits)
+> >                               break;
+> > +                     if (!--nr)
+> > +                             return -1;
 > >               }
 > >       }
-> > -     if (!cached) {
-> > -             cached_result =3D 0;
-> > -done:
-> > -             cached =3D true;
-> > -     }
-> > +     cached =3D true;
-> >       return cached_result;
-> >  }
-> > --
-> > 2.34.0.rc2.393.gf8c9666880-goog
 >
-> --
+> That's just confusing code. Isn't it much clearer to write the whole
+> thing like so ?
 >
-> - Arnaldo
+>         nr--;
+
+this is fine to avoid the code of setting 4 to 3 and setting
+div_u64(span_avg, avg_cost) to
+div_u64(span_avg, avg_cost) - 1;
+
+>         for_each_cpu_wrap(cpu, cpus, target+1) {
+>                 ...
+>                 if (!nr--)
+
+I guess you mean if(!--nr).
+
+For example, if nr=4, the original code will only check 3 cpus for
+__select_idle_cpu.
+the new code "nr--" will check 4 cpus for __select_idle_cpu. to keep the amount
+untouched,  the code should be --nr.
+
+>                         return -1;
+>         }
+>
+
+Thanks
+Barry
