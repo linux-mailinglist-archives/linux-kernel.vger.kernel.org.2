@@ -2,106 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414BF45CA84
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:01:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 846C545CA89
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 18:02:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349414AbhKXREx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 12:04:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242707AbhKXREq (ORCPT
+        id S1349412AbhKXRFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 12:05:22 -0500
+Received: from mail-m972.mail.163.com ([123.126.97.2]:47782 "EHLO
+        mail-m972.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242707AbhKXRFT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 12:04:46 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC6BC061574;
-        Wed, 24 Nov 2021 09:01:36 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id 132so3498234qkj.11;
-        Wed, 24 Nov 2021 09:01:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4l8EHpoHR/MUDumoB/hsOQmLQDeVna4zuNcu6MG7N2Y=;
-        b=oNawTdMVSlhLmOCrDcR19sMj/RztqPP/+Xul1ST0ZdjZqP/GXamlE06D/eZB2NI71+
-         tKrHOxVlG3T5aAXCdaXsBqOpttB7xDhe0zytOjT9XF/Y3kqcM15J6tnRSys3yPlVcfuj
-         8EP1DG66Meqvt2KL14gdwqQ9jbr3N/44XS5CpoXDIWeaEKiqwkaLUHeulZyzxTbsYxOq
-         T6Wi5OfXgyLiFxQ2A14taCw6JYR4yAQ9jvV+sjc9AENZn1PYPL5iPuP5LjAJLWFIOb9y
-         2/kVWUspoQ1F3b/jzWi05rfUah5HK/mQ6U2zRluZPdRWkPa235jsXYLL3mGnRGdQT0aH
-         XKQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4l8EHpoHR/MUDumoB/hsOQmLQDeVna4zuNcu6MG7N2Y=;
-        b=oKt+a3OFza6iWdfZQO0BmiNG9Otjps7U1FInY7cln6i7swnK+R+GhRswIQJ9iaGw1j
-         yH82tyniK3/UqDAImIlb1+gGmJx+qjUiA0XjjgHjWCTrkMxquXiVSdtDBbE98hZc+RTe
-         dUlefd83rqc2rQphbjGvmR8YwIJwRWF9Rafv6okv+/n+oLRTYELCd+6yzHiO3mDcz8n8
-         S8e6vv3PQT70t2H4viD+5KiDV+cTM6KXAKW8QkidSmACbFK57Gu7h+ksgCIjryLK+u8l
-         q3+150ICmh9Y6Gl22eqegP1J2+qiSbiPNe5PwBuaOoR6ILzDt8EWvJ7dUnTl+dgoffRD
-         T68w==
-X-Gm-Message-State: AOAM532M65azHCoDjBaraCZA6KAJMVYbmWpLkyTY0jOqycdjB/YdEmkI
-        wB4s9+58Uh2eLBc2CqzZbko=
-X-Google-Smtp-Source: ABdhPJxMWf3VHGwZdkv0Dz7RlGUGqhel603IxJS5niNv9/50hWXBURFDisFz9q7IqpkQPDpH9JG1hg==
-X-Received: by 2002:ae9:e907:: with SMTP id x7mr7705930qkf.150.1637773295831;
-        Wed, 24 Nov 2021 09:01:35 -0800 (PST)
-Received: from [192.168.1.140] ([65.35.200.237])
-        by smtp.gmail.com with ESMTPSA id x16sm158330qko.15.2021.11.24.09.01.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 09:01:35 -0800 (PST)
-Subject: Re: [PATCH 0/3] of/fdt: Rework early FDT scanning functions
-To:     Rob Herring <robh@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        John Crispin <john@phrozen.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <20211118181213.1433346-1-robh@kernel.org>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <7c3286d4-2da4-b083-b3a4-88d32e475617@gmail.com>
-Date:   Wed, 24 Nov 2021 12:01:33 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 24 Nov 2021 12:05:19 -0500
+X-Greylist: delayed 924 seconds by postgrey-1.27 at vger.kernel.org; Wed, 24 Nov 2021 12:05:17 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=8ERBp
+        /cCG6WzioJCfEWJSK1orI4R+L3An4qXLiZdnB0=; b=OXoqhebDEZzeJ7/tZsJ8J
+        SmHIkZsNHWXXKsahcfmp5T5PaR4vFOn43TKWCwZtcdsvse2Y3iS9n2yfkEkCP2Ci
+        UjVtEpPgC5S6Qv0Tiq1HAYq9yLfeKz9fnQYKqFL7FONJ8brCFR5+TGnmQhNDGfVy
+        crGX80h2iLKCQeg3+CzZFY=
+Received: from localhost.localdomain (unknown [218.106.182.227])
+        by smtp2 (Coremail) with SMTP id GtxpCgBHHNXNa55h7hmJKQ--.39097S4;
+        Thu, 25 Nov 2021 00:44:01 +0800 (CST)
+From:   Jianglei Nie <niejianglei2021@163.com>
+To:     jejb@linux.ibm.com, jarkko@kernel.org, zohar@linux.ibm.com,
+        dhowells@redhat.com, jmorris@namei.org, serge@hallyn.com
+Cc:     linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jianglei Nie <niejianglei@gmail.com>
+Subject: [PATCH] security:trusted_tpm2: Fix memory leak in tpm2_key_encode()
+Date:   Thu, 25 Nov 2021 00:43:54 +0800
+Message-Id: <20211124164354.20448-1-niejianglei2021@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20211118181213.1433346-1-robh@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: GtxpCgBHHNXNa55h7hmJKQ--.39097S4
+X-Coremail-Antispam: 1Uf129KBjvJXoWxJw18Ww1kWF15Gry3XrWrZrb_yoW5XryUpF
+        ZxKF17ZrWagry7Ary7Ja1Svr1fCay5Gr47GwsrW39rGasxJFsxtFy7ArWYgrnrAFWfKw15
+        ZF4qvFWUWrWDtrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bY2-5UUUUU=
+X-Originating-IP: [218.106.182.227]
+X-CM-SenderInfo: xqlhyxxdqjzvrlsqjii6rwjhhfrp/1tbi6xFVjFXlyRVF+AAAsy
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/21 1:12 PM, Rob Herring wrote:
-> The early FDT scanning functions use of_scan_flat_dt() which implements 
-> its own node walking method. This function predates libfdt and is an 
-> unnecessary indirection. This series reworks 
-> early_init_dt_scan_chosen(), early_init_dt_scan_root(), and 
-> early_init_dt_scan_memory() to be called directly and use libfdt calls.
-> 
-> Ultimately, I want to remove of_scan_flat_dt(). Most of the remaining 
-> of_scan_flat_dt() users are in powerpc.
-> 
-> Rob
-> 
-> 
-> Rob Herring (3):
->   of/fdt: Rework early_init_dt_scan_chosen() to call directly
->   of/fdt: Rework early_init_dt_scan_root() to call directly
->   of/fdt: Rework early_init_dt_scan_memory() to call directly
-> 
->  arch/mips/ralink/of.c                |  16 +---
->  arch/powerpc/kernel/prom.c           |  22 ++---
->  arch/powerpc/mm/nohash/kaslr_booke.c |   4 +-
->  drivers/of/fdt.c                     | 121 ++++++++++++++-------------
->  include/linux/of_fdt.h               |   9 +-
->  5 files changed, 79 insertions(+), 93 deletions(-)
-> 
+From: Jianglei Nie <niejianglei@gmail.com>
 
+Line 36 (#1) allocates a memory chunk for scratch by kmalloc(), but
+it is never freed through the function, which will lead to a memory
+leak.
 
-"checkpatch --strict" reports some "CHECK" issues, but review of the patches
-for correctness becomes much more difficult if they are addressed, so they
-should be ignored for this series.
+We should kfree() scratch before the function returns (#2, #3 and #4).
 
--Frank
+31 static int tpm2_key_encode(struct trusted_key_payload *payload,
+32			   struct trusted_key_options *options,
+33			   u8 *src, u32 len)
+34 {
+36	u8 *scratch = kmalloc(SCRATCH_SIZE, GFP_KERNEL);
+        // #1: kmalloc space
+37	u8 *work = scratch, *work1;
+50	if (!scratch)
+51		return -ENOMEM;
+
+56	if (options->blobauth_len == 0) {
+60		if (WARN(IS_ERR(w), "BUG: Boolean failed to encode"))
+61			return PTR_ERR(w); // #2: missing kfree
+63	}
+
+71	if (WARN(work - scratch + pub_len + priv_len + 14 > SCRATCH_SIZE,
+72		 "BUG: scratch buffer is too small"))
+73		return -EINVAL; // #3: missing kfree
+
+  	// #4: missing kfree: scratch is never used afterwards.
+82	if (WARN(IS_ERR(work1), "BUG: ASN.1 encoder failed"))
+83		return PTR_ERR(work1);
+
+85	return work1 - payload->blob;
+86 }
+
+Signed-off-by: Jianglei Nie <niejianglei@gmail.com>
+---
+ security/keys/trusted-keys/trusted_tpm2.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/security/keys/trusted-keys/trusted_tpm2.c b/security/keys/trusted-keys/trusted_tpm2.c
+index 0165da386289..99bb8b2409ac 100644
+--- a/security/keys/trusted-keys/trusted_tpm2.c
++++ b/security/keys/trusted-keys/trusted_tpm2.c
+@@ -57,8 +57,10 @@ static int tpm2_key_encode(struct trusted_key_payload *payload,
+ 		unsigned char bool[3], *w = bool;
+ 		/* tag 0 is emptyAuth */
+ 		w = asn1_encode_boolean(w, w + sizeof(bool), true);
+-		if (WARN(IS_ERR(w), "BUG: Boolean failed to encode"))
++		if (WARN(IS_ERR(w), "BUG: Boolean failed to encode")) {
++			kfree(scratch);
+ 			return PTR_ERR(w);
++		}
+ 		work = asn1_encode_tag(work, end_work, 0, bool, w - bool);
+ 	}
+ 
+@@ -69,8 +71,10 @@ static int tpm2_key_encode(struct trusted_key_payload *payload,
+ 	 * trigger, so if it does there's something nefarious going on
+ 	 */
+ 	if (WARN(work - scratch + pub_len + priv_len + 14 > SCRATCH_SIZE,
+-		 "BUG: scratch buffer is too small"))
++		 "BUG: scratch buffer is too small")){
++		kfree(scratch);
+ 		return -EINVAL;
++	}
+ 
+ 	work = asn1_encode_integer(work, end_work, options->keyhandle);
+ 	work = asn1_encode_octet_string(work, end_work, pub, pub_len);
+@@ -79,6 +83,7 @@ static int tpm2_key_encode(struct trusted_key_payload *payload,
+ 	work1 = payload->blob;
+ 	work1 = asn1_encode_sequence(work1, work1 + sizeof(payload->blob),
+ 				     scratch, work - scratch);
++	kfree(scratch);
+ 	if (WARN(IS_ERR(work1), "BUG: ASN.1 encoder failed"))
+ 		return PTR_ERR(work1);
+ 
+-- 
+2.25.1
+
