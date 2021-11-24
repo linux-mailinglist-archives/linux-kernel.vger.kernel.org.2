@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBB045C2F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B9345C5D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349752AbhKXNeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:34:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57672 "EHLO mail.kernel.org"
+        id S1344355AbhKXOBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:01:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351441AbhKXNbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:31:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A648615A6;
-        Wed, 24 Nov 2021 12:52:50 +0000 (UTC)
+        id S1355582AbhKXN6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:58:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A52B7613CF;
+        Wed, 24 Nov 2021 13:08:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758371;
-        bh=lU/AhEQe/DdLXtk1zubBmRRJyOVRZeWa5760O/Q9GlQ=;
+        s=korg; t=1637759286;
+        bh=f5fuJGsSfGXTcz1n1/xjwWKKfLePmyQrpapm88voYFQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2uUkVZFJfYbxj9YKkShjR/H58CIMZeCQ0f4vqGptKuaUJD/UHGl3fKmohdyIQW5f0
-         WBWv+EzKCbyTB0OXYj7p+WHeHVNUR8DrWiKRONqfoYNoju/UbBN7Rlam4RRzf2XK7P
-         F9LuDKWv3w+V86hydGLdH7JUH/XM0UApZVHPk2mk=
+        b=GnrlkNbBkwkhIm+I+58eByx105ml+I1lyc4qQhXq8y7y0MKgikwQiZ49VbEyDMAO7
+         t4QIXbe1piQVb9VDvtrMnzPbeDfwLwE2up44f3z0+9v5yK99NFdwVi+hXPqNOq+lao
+         jCzuQaIxU/dNjoq8jbGAh2HFL1Ul8RO6aiecROog=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Paul Mundt <lethal@linux-sh.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Miguel Ojeda <ojeda@kernel.org>, Rich Felker <dalias@libc.org>,
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 048/154] sh: check return code of request_irq
-Date:   Wed, 24 Nov 2021 12:57:24 +0100
-Message-Id: <20211124115703.889804044@linuxfoundation.org>
+Subject: [PATCH 5.15 158/279] net: dpaa2-eth: fix use-after-free in dpaa2_eth_remove
+Date:   Wed, 24 Nov 2021 12:57:25 +0100
+Message-Id: <20211124115724.221509683@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,43 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 0e38225c92c7964482a8bb6b3e37fde4319e965c ]
+[ Upstream commit 9b5a333272a48c2f8b30add7a874e46e8b26129c ]
 
-request_irq is marked __must_check, but the call in shx3_prepare_cpus
-has a void return type, so it can't propagate failure to the caller.
-Follow cues from hexagon and just print an error.
+Access to netdev after free_netdev() will cause use-after-free bug.
+Move debug log before free_netdev() call to avoid it.
 
-Fixes: c7936b9abcf5 ("sh: smp: Hook in to the generic IPI handler for SH-X3 SMP.")
-Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: Paul Mundt <lethal@linux-sh.org>
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
-Signed-off-by: Rich Felker <dalias@libc.org>
+Fixes: 7472dd9f6499 ("staging: fsl-dpaa2/eth: Move print message")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/sh/kernel/cpu/sh4a/smp-shx3.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/sh/kernel/cpu/sh4a/smp-shx3.c b/arch/sh/kernel/cpu/sh4a/smp-shx3.c
-index f8a2bec0f260b..1261dc7b84e8b 100644
---- a/arch/sh/kernel/cpu/sh4a/smp-shx3.c
-+++ b/arch/sh/kernel/cpu/sh4a/smp-shx3.c
-@@ -73,8 +73,9 @@ static void shx3_prepare_cpus(unsigned int max_cpus)
- 	BUILD_BUG_ON(SMP_MSG_NR >= 8);
+diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+index 7065c71ed7b86..f3e443f2d9cf9 100644
+--- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
++++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+@@ -4538,10 +4538,10 @@ static int dpaa2_eth_remove(struct fsl_mc_device *ls_dev)
  
- 	for (i = 0; i < SMP_MSG_NR; i++)
--		request_irq(104 + i, ipi_interrupt_handler,
--			    IRQF_PERCPU, "IPI", (void *)(long)i);
-+		if (request_irq(104 + i, ipi_interrupt_handler,
-+			    IRQF_PERCPU, "IPI", (void *)(long)i))
-+			pr_err("Failed to request irq %d\n", i);
+ 	fsl_mc_portal_free(priv->mc_io);
  
- 	for (i = 0; i < max_cpus; i++)
- 		set_cpu_present(i, true);
+-	free_netdev(net_dev);
+-
+ 	dev_dbg(net_dev->dev.parent, "Removed interface %s\n", net_dev->name);
+ 
++	free_netdev(net_dev);
++
+ 	return 0;
+ }
+ 
 -- 
 2.33.0
 
