@@ -2,172 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C4245C95F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E9845C971
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:00:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347700AbhKXQDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:03:16 -0500
-Received: from mga01.intel.com ([192.55.52.88]:6130 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347727AbhKXQDK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:03:10 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="259191533"
-X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
-   d="scan'208";a="259191533"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 08:00:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
-   d="scan'208";a="497717969"
-Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
-  by orsmga007.jf.intel.com with ESMTP; 24 Nov 2021 08:00:00 -0800
-Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
- ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Wed, 24 Nov 2021 07:59:59 -0800
-Received: from orsmsx605.amr.corp.intel.com (10.22.229.18) by
- ORSMSX608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Wed, 24 Nov 2021 07:59:59 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Wed, 24 Nov 2021 07:59:59 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.109)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Wed, 24 Nov 2021 07:59:58 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CEtX0vHKZNBiWc+WCAfOWompJwQejmBaWYIUHvWSkJPRfvbz8H8sI+21j77thyACVPZsRCE+fC+xtSBZbH0sGV21adRxVdSshJhgMa3WppQT5ztnA93vxiRwFn71vR7BLxU+T6UxE5eUIURxtR5D9aerJGMuDLmAB4GxqD+vHK9V498fPd7D5JMPA4t1MPLJ95zpZoKH+M8HJBDQYpLlYJ/6JzSR2P+ksWbOZ1B+Wjs0cVe7yutdDsfc0RcU9kTnFE09C93pInOtwzbuD3FZd2B4/dIds4NdZJV3sdHaShgPrhnP9ku9Br1FfVrVAv936Hjgp4Oh/PIIbKaWSFsnhg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=plOZ1EkOZadHceN/79V2yVloE91nAg5hGKr68fUz6w4=;
- b=Bx27H12hnQ5I8elz0N3iUiQFTvIh4xK4qFKgGhUHIPeKgpH3bjFHxSo9BjeiOsrWI8e5DYBOEX8X2WaP0SJmBAVISTRCG+GYILr6Nvm8TzKff1yaQDOtjLKB5mlC5b2lxdcXWhwS+w8kl/HreH4IEqNF75CmyPVxcWD4ks3jx1oTz7EDuLCWn6yMG5My1mbdjFXo+ZH1MyVmFOMkmeMMJDj452FTIV9doIoVwKetxzM3U6pTA007I0BFt39OB6D9eeC1jU/Tmpi6AAyjbTXBB8X3MFqAeca4mFC49xz/j1ZRj1ib+SC7RDGSRPkIfmSqqp564/ImZt9Jk2DiZn7VUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=plOZ1EkOZadHceN/79V2yVloE91nAg5hGKr68fUz6w4=;
- b=iH25TFLjnuN+aLaIdw8bs/RJ2+t1phUWghVoJkad7iwhCmdvN44SNx9xJBJOE1Moxpi7MEiQWq19prt4vk2/gz3/qt5/9IKo7/c+wp7sbZiOebw8d/Tg4JU4Iztz8LdREr0lPDX6c9/KCsLFMeHyRoKou2yW64gWvCzhwFk00yI=
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
- by DM5PR11MB1851.namprd11.prod.outlook.com (2603:10b6:3:114::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27; Wed, 24 Nov
- 2021 15:59:57 +0000
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::bc8c:4526:43a4:3104]) by DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::bc8c:4526:43a4:3104%5]) with mapi id 15.20.4690.027; Wed, 24 Nov 2021
- 15:59:57 +0000
-From:   "Wu, Hao" <hao.wu@intel.com>
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "mdf@kernel.org" <mdf@kernel.org>
-CC:     "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: RE: [BUG] fpga: dfl: possible ABBA deadlock in
- dfl_fpga_cdev_assign_port() and fme_pr()
-Thread-Topic: [BUG] fpga: dfl: possible ABBA deadlock in
- dfl_fpga_cdev_assign_port() and fme_pr()
-Thread-Index: AQHX4D/TTtA7wqupLkSB90dMoQlpnKwS1fcg
-Date:   Wed, 24 Nov 2021 15:59:57 +0000
-Message-ID: <DM6PR11MB38195CE729A5765E019C226285619@DM6PR11MB3819.namprd11.prod.outlook.com>
-References: <9460c1ba-addd-9757-fe55-ceeeae596ac1@gmail.com>
-In-Reply-To: <9460c1ba-addd-9757-fe55-ceeeae596ac1@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5f9a96c0-75aa-48bf-0c7c-08d9af637683
-x-ms-traffictypediagnostic: DM5PR11MB1851:
-x-microsoft-antispam-prvs: <DM5PR11MB1851C9235D75A8E278218C5185619@DM5PR11MB1851.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: t1cbgbxYT1R99mu8V+2TuGeCQlwvno39RjBVd03QPSMcxpozvbykfvne3uQb4u+ZHgbxxGYf21BRrNJrzGS73LblaMIJNrJjxfoi4DePPhJJ7ts63MjpAN/uh6whOQjRcio7xpWXHbRMOy31hhhwh/Ap6sXkxY7FDi7tV1sC6+1wRsg/Hnl1Cqjj1IvAnLAbfzdyc0PQxTI0WjdsHgRyISJK3B2MlyAU2U9dazo0n6r12Q78INpSGZxQw6yKoT11AzskDlUke4PGSbLOoFmTiHZIuit4wL/Ya509NVapA9HIQRAIS699demW/2BhznT3Fj1/ImK8BYKyzXiEbRO7dMa1X3zvWbEoz9ZJnZXswqW+SEgCEdENDZbFODordDcJzegXGD7Od1ROg85HVzkeqHNUtrVAYlJQO+ge6yil9LwNac51dxNm3R/QguohgKbNPzlKvuvmSIEXYf4K3xzR6dcfuHfe7HeIMGA5/K7kKHg9lIAISGXAeIcMy9t7afL9WVervmw0UlaL6VrIEwXRfddsU5tWANq5H41mMuLrQLcAcIWp93YP+inFYFplLZYnk32SaKEnCO6rYlqQSIxS2Jfx9UnBeUl2kOOj3DDkP9kQk0pnkWhne4jq/lqmUC9hgQfdOhMxD94wzIIsWtntO9DTCjmNMCmALta1IlrpQLKv5esLYIqdI/Oyv90teoZ2ZRUVln7wPpUK1C7JAAwfjQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(4326008)(508600001)(82960400001)(66946007)(316002)(38100700002)(66476007)(66446008)(33656002)(9686003)(7696005)(4744005)(5660300002)(52536014)(86362001)(8936002)(83380400001)(64756008)(186003)(2906002)(55016003)(122000001)(71200400001)(54906003)(38070700005)(26005)(8676002)(110136005)(76116006)(6506007)(66556008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VXlTc0RiaE9TTW11U0tTaVcrNzl5b2FJcElzYWFmWmpHalNwTldZbEkwek53?=
- =?utf-8?B?YUE5U3p4RHJvZE1hSkk0NTlUUllZenlhT2hsc1BTMlFWVGgzT3dOU3RGcjJG?=
- =?utf-8?B?K2hmaW1OZi9wYzRLNnRRWXZWcEovdW94TnJOTDlzVE9TazlhdlphZW9Lc21E?=
- =?utf-8?B?Sjd4dUtKcGJweTd3cTFLdkhKUnovc2lmT0pQWW5jMmgrM2JLWkUwWUJkbHBX?=
- =?utf-8?B?Vk81aCtFaWFMRmMrcE1sRnhYcTZrNVZNUGVVUFNBcCtuMGRmRlVFUjhJdk1S?=
- =?utf-8?B?aFQwN1pTYmdHMXV4T0ltL01iSGpvdm1aQXQ1N0pXRW12dXVPa2orcVpScHlp?=
- =?utf-8?B?MXdPNFcyWkMzRGIvT3NJTk1zeHVPKzd6cE9VUUI0QnBtaHdhT3ZrQnYwRmdF?=
- =?utf-8?B?QVRXZWpEd2svLzY2T29EaDhJWko4R1Urd1VibzJoM0NudktpWVQ3MmFxOGxD?=
- =?utf-8?B?RHFCc3BXK2o5bWpYTVNSVFcvUUV5N2xwNXpUaHVWcklrUWszTHVsYjdCanA5?=
- =?utf-8?B?TE54SnUweDlsdzlBM3ZzOWQ0eitEa2NaWk8xNDZoTXNQVHlpQ3B6R3Vydkov?=
- =?utf-8?B?NGkrbG9ZRlliQngrK1RCRE5JYnYvc0R2Zi80WUdlbnMwK2hjMm41L2p2UWJO?=
- =?utf-8?B?cllsbU9wK2ZiK2ovN1F3eDN3NnZFcWh4OE1Rc1lsYnRxSndqc3djT29zZTdQ?=
- =?utf-8?B?ZW1HMEZDQXc1N2JNM3Z2dlNodi9ZK21rdURCZWFhZUpvVDg0QWpBTlR6L2tE?=
- =?utf-8?B?TWdHRVpMT2NIaWlVQ0M2bk5nZ1VvU3c1YWxkUmttSGh1akFjV2IzOG1wRCtp?=
- =?utf-8?B?Rmk5MGdXRlBzNXdmN2Y0U0RkR29ibDJOeEhMOVJ0NlJ3czNLeCtwV2o1WVM3?=
- =?utf-8?B?Rmd3MUpKOTh2cldya1lmcDhabXNyWGNKTDNHS2RnRWxsSWsxMlh0TGM2cm5S?=
- =?utf-8?B?N0Y5czZNQnRkSndlQWFhSm5DcXYxak1obFRTcHUwSm5Za1ZvckFWYWFjaVZz?=
- =?utf-8?B?NExNdjNNN2Y4aEovWTJ0dXpVTUtldTVnUHRpVlFBVDRyRXovWmxFRjFaSjhC?=
- =?utf-8?B?RzE2NTRTdk5FdW9mYW8zdlREakFIenZTKzhQNGlZSS96S2F5bDEwVHJGSjJV?=
- =?utf-8?B?b3RjdWFGbm5IQ0FINzF2d25jUkZaOEhZTExHc0dISU9IK1hmMmI1cGMvSkhY?=
- =?utf-8?B?OWsyK3lLZlFIcUZOSTF6blIyNEVSZm9ySkRzMEhucEN2SFZBdERLTXpXVFR4?=
- =?utf-8?B?SHJrMk9DOUlmbGdQbnBHK25mV245RWsxZFQxemN6OURXcm1mY09MWnFlZS9z?=
- =?utf-8?B?MkFQVjlhUmp5UW15VHQ4c2xKeGkreFFrTHozZGhGNmNYa0tVMHBzc3c4SXA5?=
- =?utf-8?B?SjY4Wkxab1JFMUxmTUV5ZzNKdmcrM0doQnBtdDRNOU44ZGZLenJuczNvZURZ?=
- =?utf-8?B?TEJiMWtTMnBCTU8wV0drQWJ3VngveHVKVWVRclQ5ODZydFVpRlJZM1JMbXRN?=
- =?utf-8?B?QStWbk9JdVF2R1l1dDVrY2tNVWlFUzRBc3VoVUl3bHNhUzJwVXg3Q3p2MEhL?=
- =?utf-8?B?UlIxT1BIMnJwOHE0amZXQ2NJWkd5ZFhraDBJN0hLNDUxM1VVWDd4WHBWQ2Js?=
- =?utf-8?B?dWRjSUFtNXZLOWhNOFNuK2RMd2RzVVgzYytrcWNpL0dvN2tjZ2ZyNWRheEdu?=
- =?utf-8?B?RlNkaHF6SnQwNy9mU0Zka1ZBSC9zREljNTBDb3kwMnZGRzU5aldFbnQzbnAz?=
- =?utf-8?B?ekN4bFoydW13WFBXZG93NU1yZGpBajRScTVtQndHcXQ3NGFheGFoc0N6dUV2?=
- =?utf-8?B?K1BWMWpoWlQ3bUE4QklDdU9zc0UvNk5Ed2wxejVmYVQ5Uy93YzZ4WjlKVGd3?=
- =?utf-8?B?WDhUcHJSZFI5R2FkUnMxV00rR21uMW9DRmdLWG0wdE5QelVsZ0pMQ0RHM1hR?=
- =?utf-8?B?eTk2dVRBZ1dHdERIbTRoYTBwdmU2djR1c21pZFhIMkk4ckxLOXFIV1lEeUNo?=
- =?utf-8?B?YmFVd01ja2VwZmdSMHRXbUg0T2thNENIa1UwQnoyeVZoTmtWYnpHbGRrUXFM?=
- =?utf-8?B?aFRXWDdPUDQ1c3FaTGpBR2J3aWEzaWIwdlh2R3V2SXM4VGIyWm1OTnVQYzZ1?=
- =?utf-8?B?ODVaWUUwZDJVSjB6RmxqZ3ZRUEpSNlVIUmdwbTRKNEpaT2dWNDM2eEc1ak1R?=
- =?utf-8?Q?N26DbB+uK/HBR/YZqKNc21I=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1348208AbhKXQDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:03:55 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:42794 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348308AbhKXQDi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 11:03:38 -0500
+Received: by mail-il1-f199.google.com with SMTP id l3-20020a056e021c0300b0029fcec8f2ccso2127969ilh.9
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 08:00:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=+ZNciu7HbiMJYkkN0h2daz6frE5XM098ZZFBi/fMcmc=;
+        b=ApoWExHJBC5iED9aQ6RktEEnoFO/LTjrcFW4pRtxGORUH5eysqJyqYB4yocs67CRDb
+         WqcbdIWj35YM5Dopu7WCZGRmAJUBGCZhSOvPfVcGRgtr0Ntk/BSJA07V68LqWrtP1OCA
+         IY2DJGsJ4KE86bVu05V/0pBiNsP0u8gZXlI9ulU0cdOz/TXhZJDMm6vNTkrYrkVLwoUF
+         gYhDeYIabwQCer0U7mRvieAT7B3k0MbL1b++4k6+BfZS3TBvPUEbSNuUD1AJAZhZJVWp
+         v4O5w7XcozJ5n7rqqeguWPzG0oW7yQ93OWGBrIuYLULvrqw3U5qW1+CU856NTupVmFgV
+         xKUw==
+X-Gm-Message-State: AOAM533mz8VyfN2Xu2xFW7fJXJ9QCCdSJQ2EW51OHdhbTrGfSoTv1UUC
+        tKYY8CgpjYyQiezTammKZMV5pK4URDOw6TYrt8DYAg5R8bmy
+X-Google-Smtp-Source: ABdhPJyCqv1ryqS3XGV1f904M1aAcA3M03JWwQUplZpcLnDRDV4wB3SUL5xt+jp5C03xEkO/00gDdb9oqusOzpMMcvoORHzTSRIs
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3819.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f9a96c0-75aa-48bf-0c7c-08d9af637683
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2021 15:59:57.3249
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6dTYudMftDENCGScOaw22Tm42E+tekFY+USD5XwZeVkC/QbVC/h/BCFF3Sxsk2pe04n9VmK21xVKYIniiSeSXg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1851
-X-OriginatorOrg: intel.com
+X-Received: by 2002:a92:c54d:: with SMTP id a13mr13988683ilj.143.1637769628710;
+ Wed, 24 Nov 2021 08:00:28 -0800 (PST)
+Date:   Wed, 24 Nov 2021 08:00:28 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f17e3505d18af405@google.com>
+Subject: [syzbot] possible deadlock in bd_register_pending_holders (2)
+From:   syzbot <syzbot+4b74d06c264d2c1e5af3@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiANCj4gZGZsX2ZwZ2FfY2Rldl9hc3NpZ25fcG9ydCgpDQo+ICDCoCBtdXRleF9sb2NrKCZjZGV2
-LT5sb2NrKTsgLS0+IExpbmUgMTA2NyAoTG9jayBBKQ0KPiAgwqAgbXV0ZXhfbG9jaygmcGRhdGEt
-PmxvY2spOyAtLT4gTGluZSAxNjI0IChMb2NrIEIpDQoNClRoaXMgbG9jayBpcyBmcm9tIHBvcnQg
-cGxhdGZvcm0gZGV2aWNlLg0KDQo+IA0KPiBmbWVfcHIoKQ0KPiAgwqAgbXV0ZXhfbG9jaygmcGRh
-dGEtPmxvY2spOyAtLT4gTGluZSAxMjYgKExvY2sgQikNCg0KVGhpcyBsb2NrIGlzIGZyb20gZm1l
-IHBsYXRmb3JtIGRldmljZS4NCg0KQWN0dWFsbHkgdGhleSBhcmUgZGlmZmVyZW50IGxvY2tzLCBi
-dXQgeWVzLCBtYXliZSB3ZSBzaG91bGQgY29uc2lkZXINCmltcHJvdmluZyB0aGUgbmFtaW5nIHRv
-IGF2b2lkIG1pc3VuZGVyc3RhbmRpbmcuDQoNClRoYW5rcw0KSGFvDQoNCj4gIMKgIGZwZ2FfcmVn
-aW9uX3Byb2dyYW1fZnBnYSgpDQo+ICDCoMKgwqAgZnBnYV9icmlkZ2VzX2VuYWJsZSgpDQo+ICDC
-oMKgwqDCoMKgIGZwZ2FfYnJpZGdlX2VuYWJsZSgpDQo+ICDCoMKgwqDCoMKgwqDCoCBmbWVfYnJp
-ZGdlX2VuYWJsZV9zZXQoKSAtLT4gZnVuY3Rpb24gcG9pbnRlciB2aWENCj4gImJyaWRnZS0+YnJf
-b3BzLT5lbmFibGVfc2V0KCkiDQo+ICDCoMKgwqDCoMKgwqDCoMKgwqAgZGZsX2ZwZ2FfY2Rldl9m
-aW5kX3BvcnQoKQ0KPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBtdXRleF9sb2NrKCZjZGV2LT5s
-b2NrKTsgLS0+IExpbmUgNDk5IChMb2NrQSkNCj4gDQo+IFdoZW4gZGZsX2ZwZ2FfY2Rldl9hc3Np
-Z25fcG9ydCgpIGFuZCBmbWVfcHIoKSBhcmUgY29uY3VycmVudGx5IGV4ZWN1dGVkLA0KPiB0aGUg
-ZGVhZGxvY2sgY2FuIG9jY3VyLg0KPiANCj4gSSBhbSBub3QgcXVpdGUgc3VyZSB3aGV0aGVyIHRo
-aXMgcG9zc2libGUgZGVhZGxvY2sgaXMgcmVhbCBhbmQgaG93IHRvDQo+IGZpeCBpdCBpZiBpdCBp
-cyByZWFsLg0KPiBBbnkgZmVlZGJhY2sgd291bGQgYmUgYXBwcmVjaWF0ZWQsIHRoYW5rcw0KPiAN
-Cj4gUmVwb3J0ZWQtYnk6IFRPVEUgUm9ib3QgPG9zbGFiQHRzaW5naHVhLmVkdS5jbj4NCj4gDQo+
-IA0KPiBCZXN0IHdpc2hlcywNCj4gSmlhLUp1IEJhaQ0K
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    a90af8f15bdc Merge tag 'libata-5.16-rc2' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10575be6b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6c3ab72998e7f1a4
+dashboard link: https://syzkaller.appspot.com/bug?extid=4b74d06c264d2c1e5af3
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4b74d06c264d2c1e5af3@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+5.16.0-rc1-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor.3/4793 is trying to acquire lock:
+ffff88801fc2f118 (&disk->open_mutex){+.+.}-{3:3}, at: bd_register_pending_holders+0x32/0x370 block/holder.c:161
+
+but task is already holding lock:
+ffffffff8d8dbf88 (disks_mutex){+.+.}-{3:3}, at: md_alloc+0x32/0xbc0 drivers/md/md.c:5658
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #9 (disks_mutex){+.+.}-{3:3}:
+       lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5637
+       __mutex_lock_common+0x1d5/0x2590 kernel/locking/mutex.c:607
+       __mutex_lock kernel/locking/mutex.c:740 [inline]
+       mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:792
+       md_alloc+0x32/0xbc0 drivers/md/md.c:5658
+       blk_request_module+0x19d/0x1c0 block/genhd.c:690
+       blkdev_get_no_open+0x37/0x180 block/bdev.c:742
+       blkdev_get_by_dev+0x84/0xb80 block/bdev.c:806
+       swsusp_check+0xb0/0x2b0 kernel/power/swap.c:1520
+       software_resume+0xc8/0x3d0 kernel/power/hibernate.c:979
+       resume_store+0xdc/0x120 kernel/power/hibernate.c:1181
+       kernfs_fop_write_iter+0x3b6/0x510 fs/kernfs/file.c:296
+       call_write_iter include/linux/fs.h:2162 [inline]
+       new_sync_write fs/read_write.c:503 [inline]
+       vfs_write+0xb11/0xe90 fs/read_write.c:590
+       ksys_write+0x18f/0x2c0 fs/read_write.c:643
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #8 (major_names_lock){+.+.}-{3:3}:
+       lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5637
+       __mutex_lock_common+0x1d5/0x2590 kernel/locking/mutex.c:607
+       __mutex_lock kernel/locking/mutex.c:740 [inline]
+       mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:792
+       blk_request_module+0x2f/0x1c0 block/genhd.c:687
+       blkdev_get_no_open+0x37/0x180 block/bdev.c:742
+       blkdev_get_by_dev+0x84/0xb80 block/bdev.c:806
+       swsusp_check+0xb0/0x2b0 kernel/power/swap.c:1520
+       software_resume+0xc8/0x3d0 kernel/power/hibernate.c:979
+       resume_store+0xdc/0x120 kernel/power/hibernate.c:1181
+       kernfs_fop_write_iter+0x3b6/0x510 fs/kernfs/file.c:296
+       call_write_iter include/linux/fs.h:2162 [inline]
+       new_sync_write fs/read_write.c:503 [inline]
+       vfs_write+0xb11/0xe90 fs/read_write.c:590
+       ksys_write+0x18f/0x2c0 fs/read_write.c:643
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #7 (system_transition_mutex/1){+.+.}-{3:3}:
+       lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5637
+       __mutex_lock_common+0x1d5/0x2590 kernel/locking/mutex.c:607
+       __mutex_lock kernel/locking/mutex.c:740 [inline]
+       mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:792
+       software_resume+0x7a/0x3d0 kernel/power/hibernate.c:934
+       resume_store+0xdc/0x120 kernel/power/hibernate.c:1181
+       kernfs_fop_write_iter+0x3b6/0x510 fs/kernfs/file.c:296
+       call_write_iter include/linux/fs.h:2162 [inline]
+       new_sync_write fs/read_write.c:503 [inline]
+       vfs_write+0xb11/0xe90 fs/read_write.c:590
+       ksys_write+0x18f/0x2c0 fs/read_write.c:643
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #6 (&of->mutex){+.+.}-{3:3}:
+       lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5637
+       __mutex_lock_common+0x1d5/0x2590 kernel/locking/mutex.c:607
+       __mutex_lock kernel/locking/mutex.c:740 [inline]
+       mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:792
+       kernfs_seq_start+0x50/0x3b0 fs/kernfs/file.c:112
+       seq_read_iter+0x401/0xdc0 fs/seq_file.c:225
+       call_read_iter include/linux/fs.h:2156 [inline]
+       new_sync_read fs/read_write.c:400 [inline]
+       vfs_read+0xaf9/0xe60 fs/read_write.c:481
+       ksys_read+0x18f/0x2c0 fs/read_write.c:619
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #5 (&p->lock){+.+.}-{3:3}:
+       lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5637
+       __mutex_lock_common+0x1d5/0x2590 kernel/locking/mutex.c:607
+       __mutex_lock kernel/locking/mutex.c:740 [inline]
+       mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:792
+       seq_read_iter+0xb6/0xdc0 fs/seq_file.c:182
+       call_read_iter include/linux/fs.h:2156 [inline]
+       generic_file_splice_read+0x482/0x760 fs/splice.c:311
+       do_splice_to fs/splice.c:796 [inline]
+       splice_direct_to_actor+0x45f/0xd00 fs/splice.c:870
+       do_splice_direct+0x291/0x3e0 fs/splice.c:979
+       do_sendfile+0x6fe/0x1040 fs/read_write.c:1245
+       __do_sys_sendfile64 fs/read_write.c:1310 [inline]
+       __se_sys_sendfile64+0x171/0x1d0 fs/read_write.c:1296
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #4 (sb_writers#3){.+.+}-{0:0}:
+       lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5637
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1810 [inline]
+       sb_start_write include/linux/fs.h:1880 [inline]
+       file_start_write include/linux/fs.h:3009 [inline]
+       lo_write_bvec drivers/block/loop.c:242 [inline]
+       lo_write_simple drivers/block/loop.c:265 [inline]
+       do_req_filebacked drivers/block/loop.c:494 [inline]
+       loop_handle_cmd drivers/block/loop.c:1857 [inline]
+       loop_process_work+0x1682/0x22d0 drivers/block/loop.c:1897
+       process_one_work+0x853/0x1140 kernel/workqueue.c:2298
+       worker_thread+0xac1/0x1320 kernel/workqueue.c:2445
+       kthread+0x468/0x490 kernel/kthread.c:327
+       ret_from_fork+0x1f/0x30
+
+-> #3 ((work_completion)(&lo->rootcg_work)){+.+.}-{0:0}:
+       lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5637
+       process_one_work+0x827/0x1140 kernel/workqueue.c:2274
+       worker_thread+0xac1/0x1320 kernel/workqueue.c:2445
+       kthread+0x468/0x490 kernel/kthread.c:327
+       ret_from_fork+0x1f/0x30
+
+-> #2 ((wq_completion)loop5){+.+.}-{0:0}:
+       lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5637
+       flush_workqueue+0x18e/0x16b0 kernel/workqueue.c:2818
+       drain_workqueue+0xc3/0x3a0 kernel/workqueue.c:2983
+       destroy_workqueue+0x7d/0xed0 kernel/workqueue.c:4420
+       __loop_clr_fd+0x1ec/0x9b0 drivers/block/loop.c:1124
+       blkdev_put_whole block/bdev.c:694 [inline]
+       blkdev_put+0x477/0x7b0 block/bdev.c:956
+       deactivate_locked_super+0xa7/0xf0 fs/super.c:335
+       cleanup_mnt+0x462/0x510 fs/namespace.c:1137
+       task_work_run+0x146/0x1c0 kernel/task_work.c:164
+       tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+       exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+       exit_to_user_mode_prepare+0x209/0x220 kernel/entry/common.c:207
+       __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+       syscall_exit_to_user_mode+0x2e/0x70 kernel/entry/common.c:300
+       do_syscall_64+0x53/0xd0 arch/x86/entry/common.c:86
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #1 (&lo->lo_mutex){+.+.}-{3:3}:
+       lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5637
+       __mutex_lock_common+0x1d5/0x2590 kernel/locking/mutex.c:607
+       __mutex_lock kernel/locking/mutex.c:740 [inline]
+       mutex_lock_killable_nested+0x1a/0x20 kernel/locking/mutex.c:807
+       lo_open+0x68/0x100 drivers/block/loop.c:1733
+       blkdev_get_whole+0x8c/0x3d0 block/bdev.c:671
+       blkdev_get_by_dev+0x298/0xb80 block/bdev.c:826
+       blkdev_open+0x137/0x2f0 block/fops.c:501
+       do_dentry_open+0x78b/0x1020 fs/open.c:822
+       do_open fs/namei.c:3426 [inline]
+       path_openat+0x2896/0x3660 fs/namei.c:3559
+       do_filp_open+0x277/0x4f0 fs/namei.c:3586
+       do_sys_openat2+0x13b/0x500 fs/open.c:1212
+       do_sys_open fs/open.c:1228 [inline]
+       __do_sys_open fs/open.c:1236 [inline]
+       __se_sys_open fs/open.c:1232 [inline]
+       __x64_sys_open+0x221/0x270 fs/open.c:1232
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #0 (&disk->open_mutex){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3063 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3186 [inline]
+       validate_chain+0x1dfb/0x8240 kernel/locking/lockdep.c:3801
+       __lock_acquire+0x1382/0x2b00 kernel/locking/lockdep.c:5027
+       lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5637
+       __mutex_lock_common+0x1d5/0x2590 kernel/locking/mutex.c:607
+       __mutex_lock kernel/locking/mutex.c:740 [inline]
+       mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:792
+       bd_register_pending_holders+0x32/0x370 block/holder.c:161
+       device_add_disk+0x4d4/0xe00 block/genhd.c:485
+       add_disk include/linux/genhd.h:212 [inline]
+       md_alloc+0x819/0xbc0 drivers/md/md.c:5717
+       blk_request_module+0x19d/0x1c0 block/genhd.c:690
+       blkdev_get_no_open+0x37/0x180 block/bdev.c:742
+       blkdev_get_by_dev+0x84/0xb80 block/bdev.c:806
+       swsusp_check+0xb0/0x2b0 kernel/power/swap.c:1520
+       software_resume+0xc8/0x3d0 kernel/power/hibernate.c:979
+       resume_store+0xdc/0x120 kernel/power/hibernate.c:1181
+       kernfs_fop_write_iter+0x3b6/0x510 fs/kernfs/file.c:296
+       call_write_iter include/linux/fs.h:2162 [inline]
+       new_sync_write fs/read_write.c:503 [inline]
+       vfs_write+0xb11/0xe90 fs/read_write.c:590
+       ksys_write+0x18f/0x2c0 fs/read_write.c:643
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+other info that might help us debug this:
+
+Chain exists of:
+  &disk->open_mutex --> major_names_lock --> disks_mutex
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(disks_mutex);
+                               lock(major_names_lock);
+                               lock(disks_mutex);
+  lock(&disk->open_mutex);
+
+ *** DEADLOCK ***
+
+7 locks held by syz-executor.3/4793:
+ #0: ffff88807d658af0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0x24e/0x2f0 fs/file.c:990
+ #1: ffff88807eb10460 (sb_writers#6){.+.+}-{0:0}, at: vfs_write+0x2b5/0xe90 fs/read_write.c:586
+ #2: ffff88803209ec88 (&of->mutex){+.+.}-{3:3}, at: kernfs_fop_write_iter+0x1f3/0x510 fs/kernfs/file.c:287
+ #3: ffff888015d9c830 (kn->active#624){.+.+}-{0:0}, at: kernfs_fop_write_iter+0x217/0x510 fs/kernfs/file.c:288
+ #4: ffffffff8c9d5ce8 (system_transition_mutex/1){+.+.}-{3:3}, at: software_resume+0x7a/0x3d0 kernel/power/hibernate.c:934
+ #5: ffffffff8d1116a8 (major_names_lock){+.+.}-{3:3}, at: blk_request_module+0x2f/0x1c0 block/genhd.c:687
+ #6: ffffffff8d8dbf88 (disks_mutex){+.+.}-{3:3}, at: md_alloc+0x32/0xbc0 drivers/md/md.c:5658
+
+stack backtrace:
+CPU: 1 PID: 4793 Comm: syz-executor.3 Not tainted 5.16.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1dc/0x2d8 lib/dump_stack.c:106
+ check_noncircular+0x2f9/0x3b0 kernel/locking/lockdep.c:2143
+ check_prev_add kernel/locking/lockdep.c:3063 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3186 [inline]
+ validate_chain+0x1dfb/0x8240 kernel/locking/lockdep.c:3801
+ __lock_acquire+0x1382/0x2b00 kernel/locking/lockdep.c:5027
+ lock_acquire+0x19f/0x4d0 kernel/locking/lockdep.c:5637
+ __mutex_lock_common+0x1d5/0x2590 kernel/locking/mutex.c:607
+ __mutex_lock kernel/locking/mutex.c:740 [inline]
+ mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:792
+ bd_register_pending_holders+0x32/0x370 block/holder.c:161
+ device_add_disk+0x4d4/0xe00 block/genhd.c:485
+ add_disk include/linux/genhd.h:212 [inline]
+ md_alloc+0x819/0xbc0 drivers/md/md.c:5717
+ blk_request_module+0x19d/0x1c0 block/genhd.c:690
+ blkdev_get_no_open+0x37/0x180 block/bdev.c:742
+ blkdev_get_by_dev+0x84/0xb80 block/bdev.c:806
+ swsusp_check+0xb0/0x2b0 kernel/power/swap.c:1520
+ software_resume+0xc8/0x3d0 kernel/power/hibernate.c:979
+ resume_store+0xdc/0x120 kernel/power/hibernate.c:1181
+ kernfs_fop_write_iter+0x3b6/0x510 fs/kernfs/file.c:296
+ call_write_iter include/linux/fs.h:2162 [inline]
+ new_sync_write fs/read_write.c:503 [inline]
+ vfs_write+0xb11/0xe90 fs/read_write.c:590
+ ksys_write+0x18f/0x2c0 fs/read_write.c:643
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7faf24dbbae9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007faf22331188 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007faf24ecef60 RCX: 00007faf24dbbae9
+RDX: 000000004000fdef RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 00007faf24e15f6d R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffedf87dfff R14: 00007faf22331300 R15: 0000000000022000
+ </TASK>
+PM: Image not found (code -5)
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
