@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E3A45C3BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B98545C27C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:27:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348133AbhKXNmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:42:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32918 "EHLO mail.kernel.org"
+        id S1345463AbhKXN3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:29:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348956AbhKXNkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:40:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05C5A61374;
-        Wed, 24 Nov 2021 12:56:56 +0000 (UTC)
+        id S245119AbhKXN0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:26:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2083361B7D;
+        Wed, 24 Nov 2021 12:49:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758617;
-        bh=1RRmU7+KSppPEQbuN+YKI487k6dcNnN9qfN0iQ9X0B0=;
+        s=korg; t=1637758191;
+        bh=IChdICO7ulAYaMVi903v/b+GU4v/VY3L7zqB89TEH+A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MgOEtPycr6eTDNYSRdn/mlQDOkQjVBAd09N7B8ibXSvbyJcJawfavdMNXcZgKxDO2
-         h+5T8RfzVUFedGUoWgrFzhuj9ezoJJuftsJfkY8HBflgWWRvK4raUej1hWLBy68vAg
-         x6Vaof3/E5pzdgZqg8qX4Vufh+ThMLWEDQKwcKGI=
+        b=uPMVX0kJyglDQakAcwFsAbSvq8NhEypzqS5cO2NWWzW7GzqZkQTDJPvkYs/W2mS5k
+         ObAKOZOqqSCPf3hLWaWJdZuX3Oz+tGd3b3myaEgE/mFqBDi3g5wUKTk8Dw34ApDHqI
+         81gmrO+n6snlg3TCv/Rj5xUbzVhw7wMjqueEoJ/0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Arun Easi <aeasi@marvell.com>,
-        "Ewan D. Milne" <emilne@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.10 128/154] scsi: qla2xxx: Fix mailbox direction flags in qla2xxx_get_adapter_id()
+        stable@vger.kernel.org, Jeremy Cline <jcline@redhat.com>,
+        Lyude Paul <lyude@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
+        Karol Herbst <kherbst@redhat.com>
+Subject: [PATCH 5.4 088/100] drm/nouveau: use drm_dev_unplug() during device removal
 Date:   Wed, 24 Nov 2021 12:58:44 +0100
-Message-Id: <20211124115706.440311040@linuxfoundation.org>
+Message-Id: <20211124115657.697208287@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ewan D. Milne <emilne@redhat.com>
+From: Jeremy Cline <jcline@redhat.com>
 
-commit 392006871bb26166bcfafa56faf49431c2cfaaa8 upstream.
+commit aff2299e0d81b26304ccc6a1ec0170e437f38efc upstream.
 
-The SCM changes set the flags in mcp->out_mb instead of mcp->in_mb so the
-data was not actually being read into the mcp->mb[] array from the adapter.
+Nouveau does not currently support hot-unplugging, but it still makes
+sense to switch from drm_dev_unregister() to drm_dev_unplug().
+drm_dev_unplug() calls drm_dev_unregister() after marking the device as
+unplugged, but only after any device critical sections are finished.
 
-Link: https://lore.kernel.org/r/20211108183012.13895-1-emilne@redhat.com
-Fixes: 9f2475fe7406 ("scsi: qla2xxx: SAN congestion management implementation")
-Cc: stable@vger.kernel.org
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Reviewed-by: Arun Easi <aeasi@marvell.com>
-Signed-off-by: Ewan D. Milne <emilne@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Since nouveau isn't using drm_dev_enter() and drm_dev_exit(), there are
+no critical sections so this is nearly functionally equivalent. However,
+the DRM layer does check to see if the device is unplugged, and if it is
+returns appropriate error codes.
+
+In the future nouveau can add critical sections in order to truly
+support hot-unplugging.
+
+Cc: stable@vger.kernel.org # 5.4+
+Signed-off-by: Jeremy Cline <jcline@redhat.com>
+Reviewed-by: Lyude Paul <lyude@redhat.com>
+Reviewed-by: Ben Skeggs <bskeggs@redhat.com>
+Tested-by: Karol Herbst <kherbst@redhat.com>
+Signed-off-by: Karol Herbst <kherbst@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201125202648.5220-2-jcline@redhat.com
+Link: https://gitlab.freedesktop.org/drm/nouveau/-/merge_requests/14
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/qla2xxx/qla_mbx.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/nouveau/nouveau_drm.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/scsi/qla2xxx/qla_mbx.c
-+++ b/drivers/scsi/qla2xxx/qla_mbx.c
-@@ -1650,10 +1650,8 @@ qla2x00_get_adapter_id(scsi_qla_host_t *
- 		mcp->in_mb |= MBX_13|MBX_12|MBX_11|MBX_10;
- 	if (IS_FWI2_CAPABLE(vha->hw))
- 		mcp->in_mb |= MBX_19|MBX_18|MBX_17|MBX_16;
--	if (IS_QLA27XX(vha->hw) || IS_QLA28XX(vha->hw)) {
--		mcp->in_mb |= MBX_15;
--		mcp->out_mb |= MBX_7|MBX_21|MBX_22|MBX_23;
--	}
-+	if (IS_QLA27XX(vha->hw) || IS_QLA28XX(vha->hw))
-+		mcp->in_mb |= MBX_15|MBX_21|MBX_22|MBX_23;
+--- a/drivers/gpu/drm/nouveau/nouveau_drm.c
++++ b/drivers/gpu/drm/nouveau/nouveau_drm.c
+@@ -779,7 +779,7 @@ nouveau_drm_device_remove(struct drm_dev
+ 	struct nvkm_client *client;
+ 	struct nvkm_device *device;
  
- 	mcp->tov = MBX_TOV_SECONDS;
- 	mcp->flags = 0;
+-	drm_dev_unregister(dev);
++	drm_dev_unplug(dev);
+ 
+ 	dev->irq_enabled = false;
+ 	client = nvxx_client(&drm->client.base);
 
 
