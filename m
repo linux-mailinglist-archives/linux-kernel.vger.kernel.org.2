@@ -2,96 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D28245C7E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:44:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8EA645C7E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:46:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349121AbhKXOrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:47:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51560 "EHLO
+        id S1352745AbhKXOtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:49:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350273AbhKXOrs (ORCPT
+        with ESMTP id S1354790AbhKXOsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:47:48 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34360C08EB34
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 06:23:30 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id i5so4553638wrb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 06:23:30 -0800 (PST)
+        Wed, 24 Nov 2021 09:48:17 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58D9C05569D;
+        Wed, 24 Nov 2021 06:25:24 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso4492419ots.6;
+        Wed, 24 Nov 2021 06:25:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NTHWBEbfl6JqlHFLRok24iptXGc883mbd52CNkIxXfI=;
-        b=bSODPksyMmyxyHh6830sXlC57MgdbAo+ApijXj+vGXkgdoKxpGbztww9Cer0lbDqxB
-         WhyGBYVtBTkKBfcYQoGcKc6WIBgQvxOqZX6mrFnaGHgiret4pdf5wj364pdNKQZNpHm4
-         pDZBe4HmT1Ht41iRkT6lZCxHpKn3TMmGPOXWKOB81Rxnd3Eiexm/wr3vN/Bo4B/s5eVb
-         MhGmsKhACewHWJfVEiFFYp3z6Mm6GdzK5b/2jHJC4yInV6qYutJOmuZITjE3YNzh6BYC
-         Mp70JGP35UU2PlKbVUi6nbPHucsO7CKocVwp3ETSMl0V4O5oa2Z/5rfXdmdkToZZJM5P
-         JlhQ==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5F5sj4/1b+BhaqAKB9fJInMpLlCSl9KUhZUokJjmkpc=;
+        b=CR4v2six5AEkANEmxeYlLG2LlGbDkQDAAhnYjSmuzthlftU0Y/Yv7EKhuA6VgAb2+8
+         5AD63rQ+/juycneXGNuISMnOTUTRIsldoyI06n1bQqZlso5zDzURlYoGWlKn2Bta49mU
+         WwZjvNwbFzpuHoPW3CHFDxk2FhQHQlblPto5bv7z0KMNr8I/nL2jJLsrZFpmZewOJY7g
+         Ytjg9AtmWvbhMkIujC0JIk48p5uddG0IoKEMo7BiK8EO1RKNKq8hybLIsBjZsFbQzNkr
+         n5JDX/6Tup+LDmLvY/fQDJVEh+VX/LrRFtSfjDwU9OSzQgj1a0hKjsQo/PPz02yuJ24n
+         atrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NTHWBEbfl6JqlHFLRok24iptXGc883mbd52CNkIxXfI=;
-        b=HIIyHE8O5zMCvQHw/I5H0bJqGempfDZ6HrNgRI6eoEcB1JdCOYIkq/+1o7/4jOMdd8
-         t5uQ8/RZkn76ksUDzeFcJXKYOwk3CbXKlmp8jZrdP9ZJRmbw8cN9C/f35WreJThPgJzu
-         8zfXHfMnqoJ7Ypk/FqA+YV3CUMcxzC36WvPPo4fMpGVTd9ThLPYqsDI8nxwLongfyyaQ
-         zD4BEdeSUCGYyj6S5ajgWN6uZPTw2F6SkKJTSgPJF1e7RDCghG+jSfrfPwPxG3XalLNw
-         ntuzD0lTxV3OMGxOWTkAEAzEFuNt3sA7YPISIw9fuu6nDkNSkf2N8cyUOXSU0WsdADlL
-         pVzg==
-X-Gm-Message-State: AOAM5322iaJPwSPpoKGxIkTcXEBcADH63otd6UbAFg9AmGOkBamEhRmk
-        Q2/mAvjcuhF+PIiI0ADIPwVhccTOcyf+uw==
-X-Google-Smtp-Source: ABdhPJzhUqVXfFe4tJ0Xnk8PTMOr2zKFvtEBV4r5HTqXlsj/yYz7hUbszho3s0oZYe5RjCzqqtrDwA==
-X-Received: by 2002:a5d:522e:: with SMTP id i14mr19163299wra.43.1637763808756;
-        Wed, 24 Nov 2021 06:23:28 -0800 (PST)
-Received: from srini-hackbox.lan (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
-        by smtp.gmail.com with ESMTPSA id p12sm15529705wro.33.2021.11.24.06.23.27
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=5F5sj4/1b+BhaqAKB9fJInMpLlCSl9KUhZUokJjmkpc=;
+        b=ouHUZdd5ueOx82m75K9VhvDW9PKCCXqM7EM/vwojhwreemU8WfLUIUg9UGwxW+/PTD
+         UmXlpbWF2UwnDUL1cJXpSv+vAqFkcrbtxxif51kpgOjdR1ypOC99/XK6YOKSrhzagCbi
+         3obXqoOyg2njvXmxNn5exTwmjcwrGih7nI3Hjr+F5PhIZVyP8HdXxcreMWAoWxfvrO11
+         wQ8JIHVVR5f3OPD6h54L63BBXcr8ckVoJlUjP8iv5YD3vGvh9AehgLkqfYblDwtnjSFG
+         lV7nlwsGC8QdHwXmUlTW7Q6Y0ed2KH064+RUuTGky9TB7MnEaqw9G4Nh+cAWwY7jKud1
+         KHQw==
+X-Gm-Message-State: AOAM532r35MBuDkbsyJJy939odRDg7vMeBdQCOE+jF0PuDz5aQ0luFuk
+        ag34ulFTmaO3e02YWt3SrXU=
+X-Google-Smtp-Source: ABdhPJzx7sf89K+TQKZaxJUYWW1IxL59/cS0xWqipJHJ7ue/v5DKHugLim6067vYiw/y3uZXvPyR3g==
+X-Received: by 2002:a05:6830:4d6:: with SMTP id s22mr13746550otd.270.1637763924260;
+        Wed, 24 Nov 2021 06:25:24 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id bh12sm5442oib.25.2021.11.24.06.25.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 06:23:28 -0800 (PST)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     bkumar@qti.qualcomm.com, linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH] MAINTAINERS: add maintainer for Qualcomm FastRPC driver
-Date:   Wed, 24 Nov 2021 14:23:25 +0000
-Message-Id: <20211124142325.27108-1-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
+        Wed, 24 Nov 2021 06:25:23 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 24 Nov 2021 06:25:22 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Xiantao Hu <xt.hu@cqplus1.com>
+Cc:     wim@linux-watchdog.org, p.zabel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        wells.lu@sunplus.com, qinjian@cqplus1.com
+Subject: Re: [PATCH v2 1/2] watchdog: Add watchdog driver for Sunplus SP7021
+Message-ID: <20211124142522.GA3939252@roeck-us.net>
+References: <20211112105952.216280-1-xt.hu@cqplus1.com>
+ <20211124104149.361019-1-xt.hu@cqplus1.com>
+ <20211124104149.361019-2-xt.hu@cqplus1.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124104149.361019-2-xt.hu@cqplus1.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For some reason I forgot to add myself as maintainer when we
-upstreamed FastRPC patches.
+On Wed, Nov 24, 2021 at 06:41:48PM +0800, Xiantao Hu wrote:
+> Sunplus SP7021 requires watchdog timer support.
+> Add watchdog driver to enable this.
+> 
+> Signed-off-by: Xiantao Hu <xt.hu@cqplus1.com>
+> ---
+> +
+> +	priv->base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(priv->base))
+> +		return PTR_ERR(priv->base);
+> +
+> +	/* The registers accessed here shared by multiple drivers. */
+> +	wdt_res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
 
-Add myself and Amol from Qualcomm as maintainers for Qualcomm FastRPC driver.
+This is unusual. Why would other drivers access WDT_CTRL and WDT_CNT
+registers, and how is it ensured that the other drivers do not interfer
+with the accesses by this driver ?
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Normally such a resource would be shared through a parent driver with
+appropriate access functions to ensure that accesses are synchronized.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 09734251e1de..abace2e2c4ab 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15761,6 +15761,15 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/net/qcom,ethqos.txt
- F:	drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
- 
-+QUALCOMM FASTRPC DRIVER
-+M:	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-+M:	Amol Maheshwari <amahesh@qti.qualcomm.com>
-+L:	linux-arm-msm@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/misc/qcom,fastrpc.txt
-+F:	drivers/misc/fastrpc.c
-+F:	include/uapi/misc/fastrpc.h
-+
- QUALCOMM GENERIC INTERFACE I2C DRIVER
- M:	Akash Asthana <akashast@codeaurora.org>
- M:	Mukesh Savaliya <msavaliy@codeaurora.org>
--- 
-2.21.0
-
+Thanks,
+Guenter
