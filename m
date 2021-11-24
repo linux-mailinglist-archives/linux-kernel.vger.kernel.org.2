@@ -2,109 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E52A45C809
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE60445C80F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:53:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348991AbhKXOzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:55:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344961AbhKXOzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:55:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6990D60524;
-        Wed, 24 Nov 2021 14:52:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637765547;
-        bh=5dhCOHOPDLaykpUjwDvndyMO8fDWAczCxAEVkK7Z7WM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=pxZMCdE36FKsG3OKrHfqS8gJ/XQb+zDkgcjWs1LT1CwIW6boCLsAc62ocselrpKPc
-         do1tVWsaG4Fm5fpODLW3v0sz1ovCTL9oSrw0M211Nd5u0FDuAFQ/EG6lu5/9bTKcLQ
-         hcL5k+GW46zEtP7RRGxygNDt+KWrCqkcuW4y9GzagvtATa5m/TfiKuY1jL0tS9P0Lg
-         xuCLDg6JqNaeLjtgx/nZ2sn8KZFLdcgN0vGmLa333f2d886diok6nCi9bfS7PabdnA
-         LKdtZ6gTTkzXkJvIP8bTPeCwJlJW7ZSqg+4xyE9CDrFnIdHx+Eddut/ZnTqXQmz+B0
-         Qo3k1AQcPC+UQ==
-From:   SeongJae Park <sj@kernel.org>
-To:     akpm@linux-foundation.org
-Cc:     shakeelb@google.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, SeongJae Park <sj@kernel.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] mm/damon/core: Avoid fake load reports due to uninterruptible sleeps
-Date:   Wed, 24 Nov 2021 14:52:19 +0000
-Message-Id: <20211124145219.32866-1-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S1350180AbhKXO4f convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Nov 2021 09:56:35 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:47846 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348525AbhKXO4e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:56:34 -0500
+Received: from smtpclient.apple (p5b3d2e91.dip0.t-ipconnect.de [91.61.46.145])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 9C0A8CED24;
+        Wed, 24 Nov 2021 15:53:23 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
+Subject: Re: [PATCH 2/4] Bluetooth: btmtksdio: handle runtime pm only when
+ sdio_func is available
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <07cd9db8ef295bfe3e6b42796ccb8c9fb59dd9ba.1637360076.git.objelf@gmail.com>
+Date:   Wed, 24 Nov 2021 15:53:23 +0100
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        =?utf-8?B?Ik1hcmstWVcgQ2hlbiAo6Zmz5o+a5paHKSI=?= 
+        <Mark-YW.Chen@mediatek.com>, Soul.Huang@mediatek.com,
+        YN.Chen@mediatek.com, Leon.Yen@mediatek.com,
+        Eric-SY.Chang@mediatek.com, Deren.Wu@mediatek.com,
+        km.lin@mediatek.com, robin.chiu@mediatek.com,
+        Eddie.Chen@mediatek.com, ch.yeh@mediatek.com,
+        posh.sun@mediatek.com, ted.huang@mediatek.com,
+        Eric.Liang@mediatek.com, Stella.Chang@mediatek.com,
+        Tom.Chou@mediatek.com, steve.lee@mediatek.com, jsiuda@google.com,
+        frankgor@google.com, jemele@google.com, abhishekpandit@google.com,
+        michaelfsun@google.com, mcchou@chromium.org, shawnku@google.com,
+        linux-bluetooth@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <74A2D0D6-6A65-4832-BAFC-BCBA68F8DE78@holtmann.org>
+References: <4176102d8bbc36e5156e348df666a3e12c5a3d75.1637360076.git.objelf@gmail.com>
+ <07cd9db8ef295bfe3e6b42796ccb8c9fb59dd9ba.1637360076.git.objelf@gmail.com>
+To:     Sean Wang <sean.wang@mediatek.com>
+X-Mailer: Apple Mail (2.3693.20.0.1.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because DAMON sleeps in uninterruptible mode, /proc/loadavg reports fake
-load while DAMON is turned on, though it is doing nothing.  This can
-confuse users[1].  To avoid the case, this commit makes DAMON sleeps in
-idle mode.
+Hi Sean,
 
-[1] https://lore.kernel.org/all/11868371.O9o76ZdvQC@natalenko.name/
+> Runtime pm ops is not aware the sdio_func status that is probably
+> being disabled by btmtksdio_close. Thus, we are only able to access the
+> sdio_func for the runtime pm operations only when the sdio_func is
+> available.
+> 
+> Fixes: 7f3c563c575e7 ("Bluetooth: btmtksdio: Add runtime PM support to SDIO based Bluetooth")
+> Co-developed-by: Mark-yw Chen <mark-yw.chen@mediatek.com>
+> Signed-off-by: Mark-yw Chen <mark-yw.chen@mediatek.com>
+> Signed-off-by: Sean Wang <sean.wang@mediatek.com>
+> ---
+> drivers/bluetooth/btmtksdio.c | 6 ++++++
+> 1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/bluetooth/btmtksdio.c b/drivers/bluetooth/btmtksdio.c
+> index 4f3412ad8fca..4c46c62e4623 100644
+> --- a/drivers/bluetooth/btmtksdio.c
+> +++ b/drivers/bluetooth/btmtksdio.c
+> @@ -1037,6 +1037,9 @@ static int btmtksdio_runtime_suspend(struct device *dev)
+> 	if (!bdev)
+> 		return 0;
+> 
+> +	if (!test_bit(HCI_RUNNING, &bdev->hdev->flags))
+> +		return 0;
+> +
+> 	sdio_claim_host(bdev->func);
+> 
+> 	sdio_writel(bdev->func, C_FW_OWN_REQ_SET, MTK_REG_CHLPCR, &err);
+> @@ -1064,6 +1067,9 @@ static int btmtksdio_runtime_resume(struct device *dev)
+> 	if (!bdev)
+> 		return 0;
+> 
+> +	if (!test_bit(HCI_RUNNING, &bdev->hdev->flags))
+> +		return 0;
+> +
+> 	sdio_claim_host(bdev->func);
+> 
+> 	sdio_writel(bdev->func, C_FW_OWN_REQ_CLR, MTK_REG_CHLPCR, &err);
 
-Fixes: 2224d8485492 ("mm: introduce Data Access MONitor (DAMON)")
-Reported-by: Oleksandr Natalenko <oleksandr@natalenko.name>
-Signed-off-by: SeongJae Park <sj@kernel.org>
-Cc: <stable@vger.kernel.org> # 5.15.x
----
-I think this needs to be applied on v5.15.y, but this cannot cleanly
-applied there as is.  I will back-port this on v5.15.y and post later
-once this is merged in the mainline.
+I dislike looking at HCI_RUNNING since that check should be removed from a driver. Do you really need it? I mean, a driver should now if it is running or not.
 
- mm/damon/core.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+Regards
 
-diff --git a/mm/damon/core.c b/mm/damon/core.c
-index daacd9536c7c..7813f47aadc9 100644
---- a/mm/damon/core.c
-+++ b/mm/damon/core.c
-@@ -12,6 +12,8 @@
- #include <linux/kthread.h>
- #include <linux/mm.h>
- #include <linux/random.h>
-+#include <linux/sched.h>
-+#include <linux/sched/debug.h>
- #include <linux/slab.h>
- #include <linux/string.h>
- 
-@@ -976,12 +978,25 @@ static unsigned long damos_wmark_wait_us(struct damos *scheme)
- 	return 0;
- }
- 
-+/* sleep for @usecs in idle mode */
-+static void __sched damon_usleep_idle(unsigned long usecs)
-+{
-+	ktime_t exp = ktime_add_us(ktime_get(), usecs);
-+	u64 delta = usecs * NSEC_PER_USEC / 100;	/* allow 1% error */
-+
-+	for (;;) {
-+		__set_current_state(TASK_IDLE);
-+		if (!schedule_hrtimeout_range(&exp, delta, HRTIMER_MODE_ABS))
-+			break;
-+	}
-+}
-+
- static void kdamond_usleep(unsigned long usecs)
- {
- 	if (usecs > 100 * 1000)
--		schedule_timeout_interruptible(usecs_to_jiffies(usecs));
-+		schedule_timeout_idle(usecs_to_jiffies(usecs));
- 	else
--		usleep_range(usecs, usecs + 1);
-+		damon_usleep_idle(usecs);
- }
- 
- /* Returns negative error code if it's not activated but should return */
-@@ -1036,7 +1051,7 @@ static int kdamond_fn(void *data)
- 				ctx->callback.after_sampling(ctx))
- 			done = true;
- 
--		usleep_range(ctx->sample_interval, ctx->sample_interval + 1);
-+		kdamond_usleep(ctx->sample_interval);
- 
- 		if (ctx->primitive.check_accesses)
- 			max_nr_accesses = ctx->primitive.check_accesses(ctx);
--- 
-2.17.1
+Marcel
 
