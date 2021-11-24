@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C455E45BD3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:34:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A2045BB47
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344470AbhKXMgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:36:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41738 "EHLO mail.kernel.org"
+        id S243558AbhKXMSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:18:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245376AbhKXMZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:25:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE5BD611C2;
-        Wed, 24 Nov 2021 12:15:54 +0000 (UTC)
+        id S242893AbhKXMNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:13:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A2C0610D1;
+        Wed, 24 Nov 2021 12:07:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756155;
-        bh=leETTxEOUjK8p6dO07fgcIaIw8pBK76xzUPEmbE259w=;
+        s=korg; t=1637755638;
+        bh=xWotumGx3X6o8Xfw0oMVJXJbB55ceRoSFuKgT0o3hAE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pwk+Bncx08XgruarEDVqXUSe9jvWqKlhd/Ku0Tl58b7kPq5YvZrg9l3xLaEEiyTFz
-         KBLuGq+4YXWvuWwSmAZ1PeZfgGmXIbieTjMp501aLDzS2TfwLfq1wx3LjUBg4MYoA/
-         CcROwV67wMA62Ax4Qp7IhMUOpQXW6zEoydAHcw9U=
+        b=yLYgemog2/c+82WgKXkdlGeBFXGFm8THKXx4UDY2gMqy9Jz35zOl1ysk5LMYBSMMm
+         Hxksy3VqEzh6w9Lr13dAcgZoSgh6Xl/2fLN1lwtWe0z1cIynrxc4bYQcvkLYVcK6C+
+         bV/y5Pk83kKWwc7RH8ln+ykJgKCkwhSWeYnwsAEA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 191/207] hexagon: export raw I/O routines for modules
-Date:   Wed, 24 Nov 2021 12:57:42 +0100
-Message-Id: <20211124115710.139416502@linuxfoundation.org>
+        stable@vger.kernel.org, Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.4 160/162] ASoC: DAPM: Cover regression by kctl change notification fix
+Date:   Wed, 24 Nov 2021 12:57:43 +0100
+Message-Id: <20211124115703.454093427@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,70 +39,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit ffb92ce826fd801acb0f4e15b75e4ddf0d189bde upstream.
+commit 827b0913a9d9d07a0c3e559dbb20ca4d6d285a54 upstream.
 
-Patch series "Fixes for ARCH=hexagon allmodconfig", v2.
+The recent fix for DAPM to correct the kctl change notification by the
+commit 5af82c81b2c4 ("ASoC: DAPM: Fix missing kctl change
+notifications") caused other regressions since it changed the behavior
+of snd_soc_dapm_set_pin() that is called from several API functions.
+Formerly it returned always 0 for success, but now it returns 0 or 1.
 
-This series fixes some issues noticed with ARCH=hexagon allmodconfig.
+This patch addresses it, restoring the old behavior of
+snd_soc_dapm_set_pin() while keeping the fix in
+snd_soc_dapm_put_pin_switch().
 
-This patch (of 3):
-
-When building ARCH=hexagon allmodconfig, the following errors occur:
-
-  ERROR: modpost: "__raw_readsl" [drivers/i3c/master/svc-i3c-master.ko] undefined!
-  ERROR: modpost: "__raw_writesl" [drivers/i3c/master/dw-i3c-master.ko] undefined!
-  ERROR: modpost: "__raw_readsl" [drivers/i3c/master/dw-i3c-master.ko] undefined!
-  ERROR: modpost: "__raw_writesl" [drivers/i3c/master/i3c-master-cdns.ko] undefined!
-  ERROR: modpost: "__raw_readsl" [drivers/i3c/master/i3c-master-cdns.ko] undefined!
-
-Export these symbols so that modules can use them without any errors.
-
-Link: https://lkml.kernel.org/r/20211115174250.1994179-1-nathan@kernel.org
-Link: https://lkml.kernel.org/r/20211115174250.1994179-2-nathan@kernel.org
-Fixes: 013bf24c3829 ("Hexagon: Provide basic implementation and/or stubs for I/O routines.")
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Acked-by: Brian Cain <bcain@codeaurora.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
+Fixes: 5af82c81b2c4 ("ASoC: DAPM: Fix missing kctl change notifications")
+Reported-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
 Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20211105090925.20575-1-tiwai@suse.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/hexagon/lib/io.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/soc-dapm.c |   29 +++++++++++++++++++++++------
+ 1 file changed, 23 insertions(+), 6 deletions(-)
 
---- a/arch/hexagon/lib/io.c
-+++ b/arch/hexagon/lib/io.c
-@@ -40,6 +40,7 @@ void __raw_readsw(const void __iomem *ad
- 		*dst++ = *src;
- 
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2373,8 +2373,13 @@ static struct snd_soc_dapm_widget *dapm_
+ 	return NULL;
  }
-+EXPORT_SYMBOL(__raw_readsw);
  
- /*
-  * __raw_writesw - read words a short at a time
-@@ -60,6 +61,7 @@ void __raw_writesw(void __iomem *addr, c
- 
- 
- }
-+EXPORT_SYMBOL(__raw_writesw);
- 
- /*  Pretty sure len is pre-adjusted for the length of the access already */
- void __raw_readsl(const void __iomem *addr, void *data, int len)
-@@ -75,6 +77,7 @@ void __raw_readsl(const void __iomem *ad
- 
- 
- }
-+EXPORT_SYMBOL(__raw_readsl);
- 
- void __raw_writesl(void __iomem *addr, const void *data, int len)
+-static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
+-				const char *pin, int status)
++/*
++ * set the DAPM pin status:
++ * returns 1 when the value has been updated, 0 when unchanged, or a negative
++ * error code; called from kcontrol put callback
++ */
++static int __snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
++				  const char *pin, int status)
  {
-@@ -89,3 +92,4 @@ void __raw_writesl(void __iomem *addr, c
- 
- 
+ 	struct snd_soc_dapm_widget *w = dapm_find_widget(dapm, pin, true);
+ 	int ret = 0;
+@@ -2400,6 +2405,18 @@ static int snd_soc_dapm_set_pin(struct s
+ 	return ret;
  }
-+EXPORT_SYMBOL(__raw_writesl);
+ 
++/*
++ * similar as __snd_soc_dapm_set_pin(), but returns 0 when successful;
++ * called from several API functions below
++ */
++static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
++				const char *pin, int status)
++{
++	int ret = __snd_soc_dapm_set_pin(dapm, pin, status);
++
++	return ret < 0 ? ret : 0;
++}
++
+ /**
+  * snd_soc_dapm_sync_unlocked - scan and power dapm paths
+  * @dapm: DAPM context
+@@ -3294,10 +3311,10 @@ int snd_soc_dapm_put_pin_switch(struct s
+ 	const char *pin = (const char *)kcontrol->private_value;
+ 	int ret;
+ 
+-	if (ucontrol->value.integer.value[0])
+-		ret = snd_soc_dapm_enable_pin(&card->dapm, pin);
+-	else
+-		ret = snd_soc_dapm_disable_pin(&card->dapm, pin);
++	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_RUNTIME);
++	ret = __snd_soc_dapm_set_pin(&card->dapm, pin,
++				     !!ucontrol->value.integer.value[0]);
++	mutex_unlock(&card->dapm_mutex);
+ 
+ 	snd_soc_dapm_sync(&card->dapm);
+ 	return ret;
 
 
