@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE39845C115
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:11:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB0645C2B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244120AbhKXNOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:14:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52010 "EHLO mail.kernel.org"
+        id S1348721AbhKXNbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:31:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347887AbhKXNMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:12:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C81F861A89;
-        Wed, 24 Nov 2021 12:42:14 +0000 (UTC)
+        id S1350934AbhKXN26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:28:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EE0B61178;
+        Wed, 24 Nov 2021 12:51:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757735;
-        bh=DDlsLqg8+tfUhd2h9Ae05lprsiz6+HYoDCa7z0KovnA=;
+        s=korg; t=1637758287;
+        bh=t6AzhWTFVPennLsUMaqa2vYkOYQZYqkGok37nqKV0Xg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NRayowcOdzptb1LbeaLp+Pt1Q36X/zsJQjehRpSRaT/8A3Fno/BFY5/P4yIBOtcHl
-         KLa6ugYTywrSnT93H4vYxctidouF7pjkVCi2/xC0jmDoFAsUkgg0pvSRmiLJ+xBp92
-         v3vGMhyZ5F1OhbHU4vaAG4YKRpASLlIQC2/lPA+4=
+        b=iq5i8N+H5Gztf+NcZonLHXme5deOYP6sU+/FMT9laId8Do7KTUePCPLE8d3zpdU92
+         oOn3K9i4iMF8iDUSWcLDvP5Kmf931D2VCXk2eCzGzGP8KA7fLpNZNociRcfQFUcxt1
+         089tMxwcSF1hxK8ifMOyI07nNEHhf6Ia6LiUyRnw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 226/323] zram: off by one in read_block_state()
+Subject: [PATCH 5.10 020/154] arm64: dts: qcom: ipq6018: Fix qcom,controlled-remotely property
 Date:   Wed, 24 Nov 2021 12:56:56 +0100
-Message-Id: <20211124115726.554164015@linuxfoundation.org>
+Message-Id: <20211124115703.023702286@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,42 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Shawn Guo <shawn.guo@linaro.org>
 
-[ Upstream commit a88e03cf3d190cf46bc4063a9b7efe87590de5f4 ]
+[ Upstream commit 3509de752ea14c7e5781b3a56a4a0bf832f5723a ]
 
-snprintf() returns the number of bytes it would have printed if there
-were space.  But it does not count the NUL terminator.  So that means
-that if "count == copied" then this has already overflowed by one
-character.
+Property qcom,controlled-remotely should be boolean.  Fix it.
 
-This bug likely isn't super harmful in real life.
-
-Link: https://lkml.kernel.org/r/20210916130404.GA25094@kili
-Fixes: c0265342bff4 ("zram: introduce zram memory tracking")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/20210829111628.5543-2-shawn.guo@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/zram/zram_drv.c | 2 +-
+ arch/arm64/boot/dts/qcom/ipq6018.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index 104206a795015..5e05bfcecd7b7 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -699,7 +699,7 @@ static ssize_t read_block_state(struct file *file, char __user *buf,
- 			zram_test_flag(zram, index, ZRAM_WB) ? 'w' : '.',
- 			zram_test_flag(zram, index, ZRAM_HUGE) ? 'h' : '.');
+diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+index 3ceb36cac512f..9cb8f7a052df9 100644
+--- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+@@ -200,7 +200,7 @@
+ 			clock-names = "bam_clk";
+ 			#dma-cells = <1>;
+ 			qcom,ee = <1>;
+-			qcom,controlled-remotely = <1>;
++			qcom,controlled-remotely;
+ 			qcom,config-pipe-trust-reg = <0>;
+ 		};
  
--		if (count < copied) {
-+		if (count <= copied) {
- 			zram_slot_unlock(zram, index);
- 			break;
- 		}
 -- 
 2.33.0
 
