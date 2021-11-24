@@ -2,152 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5878145B136
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 02:44:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F9345B13A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 02:45:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234374AbhKXBrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 20:47:20 -0500
-Received: from mga02.intel.com ([134.134.136.20]:64720 "EHLO mga02.intel.com"
+        id S234855AbhKXBsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 20:48:38 -0500
+Received: from mga01.intel.com ([192.55.52.88]:1272 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234183AbhKXBrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 20:47:14 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="222402593"
+        id S231955AbhKXBse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 20:48:34 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="259061090"
 X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="222402593"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 17:44:04 -0800
+   d="scan'208";a="259061090"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 17:45:25 -0800
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="509641783"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.101])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 17:44:01 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+aa5bebed695edaccf0df@syzkaller.appspotmail.com,
-        Nadav Amit <namit@vmware.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>
-Subject: Re: [PATCH] mm/rmap: fix potential batched TLB flush race
-References: <20211123074344.1877731-1-ying.huang@intel.com>
-        <CANpmjNPGkQ2VWmHjt==yWVr5webCHuRQtXau95jvPjR4Z3gxDw@mail.gmail.com>
-Date:   Wed, 24 Nov 2021 09:43:59 +0800
-In-Reply-To: <CANpmjNPGkQ2VWmHjt==yWVr5webCHuRQtXau95jvPjR4Z3gxDw@mail.gmail.com>
-        (Marco Elver's message of "Tue, 23 Nov 2021 10:33:41 +0100")
-Message-ID: <8735nm9vkw.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+   d="scan'208";a="591415984"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 23 Nov 2021 17:45:22 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mphLe-00048n-4r; Wed, 24 Nov 2021 01:45:22 +0000
+Date:   Wed, 24 Nov 2021 09:45:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>, Vinod Koul <vkoul@kernel.org>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: qcom: clk-alpha-pll: Don't reconfigure running Trion
+Message-ID: <202111240901.R3Fzm2O3-lkp@intel.com>
+References: <20211123161630.123222-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211123161630.123222-1-bjorn.andersson@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marco Elver <elver@google.com> writes:
+Hi Bjorn,
 
-> On Tue, 23 Nov 2021 at 08:44, Huang Ying <ying.huang@intel.com> wrote:
->>
->> In theory, the following race is possible for batched TLB flushing.
->>
->> CPU0                               CPU1
->> ----                               ----
->> shrink_page_list()
->>                                    unmap
->>                                      zap_pte_range()
->>                                        flush_tlb_batched_pending()
->>                                          flush_tlb_mm()
->>   try_to_unmap()
->>     set_tlb_ubc_flush_pending()
->>       mm->tlb_flush_batched = true
->>                                          mm->tlb_flush_batched = false
->>
->> After the TLB is flushed on CPU1 via flush_tlb_mm() and before
->> mm->tlb_flush_batched is set to false, some PTE is unmapped on CPU0
->> and the TLB flushing is pended.  Then the pended TLB flushing will be
->> lost.  Although both set_tlb_ubc_flush_pending() and
->> flush_tlb_batched_pending() are called with PTL locked, different PTL
->> instances may be used.
->>
->> Because the race window is really small, and the lost TLB flushing
->> will cause problem only if a TLB entry is inserted before the
->> unmapping in the race window, the race is only theoretical.  But the
->> fix is simple and cheap too.
->
-> Thanks for fixing this!
->
->> Syzbot has reported this too as follows,
->>
->> ==================================================================
->> BUG: KCSAN: data-race in flush_tlb_batched_pending / try_to_unmap_one
-> [...]
->> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
->> index c3a6e6209600..789778067db9 100644
->> --- a/include/linux/mm_types.h
->> +++ b/include/linux/mm_types.h
->> @@ -632,7 +632,7 @@ struct mm_struct {
->>                 atomic_t tlb_flush_pending;
->>  #ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
->>                 /* See flush_tlb_batched_pending() */
->> -               bool tlb_flush_batched;
->> +               atomic_t tlb_flush_batched;
->>  #endif
->>                 struct uprobes_state uprobes_state;
->>  #ifdef CONFIG_PREEMPT_RT
->> diff --git a/mm/rmap.c b/mm/rmap.c
->> index 163ac4e6bcee..60902c3cfb4a 100644
->> --- a/mm/rmap.c
->> +++ b/mm/rmap.c
->> @@ -633,7 +633,7 @@ static void set_tlb_ubc_flush_pending(struct mm_struct *mm, bool writable)
->>          * before the PTE is cleared.
->>          */
->>         barrier();
->> -       mm->tlb_flush_batched = true;
->> +       atomic_inc(&mm->tlb_flush_batched);
->
-> The use of barrier() and atomic needs some clarification.
+I love your patch! Yet something to improve:
 
-There are some comments above barrier() to describe why it is needed.
-For atomic, because the type of mm->tlb_flush_batched is atomic_t, do we
-need extra clarification?
+[auto build test ERROR on clk/clk-next]
+[also build test ERROR on v5.16-rc2 next-20211123]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-> Is there a
-> requirement that the CPU also doesn't reorder anything after this
-> atomic_inc() (which is unordered)? I.e. should this be
-> atomic_inc_return_release() and remove barrier()?
+url:    https://github.com/0day-ci/linux/commits/Bjorn-Andersson/clk-qcom-clk-alpha-pll-Don-t-reconfigure-running-Trion/20211124-001628
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git clk-next
+config: riscv-randconfig-r042-20211123 (https://download.01.org/0day-ci/archive/20211124/202111240901.R3Fzm2O3-lkp@intel.com/config.gz)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 49e3838145dff1ec91c2e67a2cb562775c8d2a08)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install riscv cross compiling tool for clang build
+        # apt-get install binutils-riscv64-linux-gnu
+        # https://github.com/0day-ci/linux/commit/1c6539db17125d4d4eaf17c4071063fe8a7e2ca6
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Bjorn-Andersson/clk-qcom-clk-alpha-pll-Don-t-reconfigure-running-Trion/20211124-001628
+        git checkout 1c6539db17125d4d4eaf17c4071063fe8a7e2ca6
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=riscv 
 
-We don't have an atomic_xx_acquire() to pair with this.  So I guess we
-don't need atomic_inc_return_release()?
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Best Regards,
-Huang, Ying
+All errors (new ones prefixed by >>):
 
->>         /*
->>          * If the PTE was dirty then it's best to assume it's writable. The
->> @@ -680,15 +680,16 @@ static bool should_defer_flush(struct mm_struct *mm, enum ttu_flags flags)
->>   */
->>  void flush_tlb_batched_pending(struct mm_struct *mm)
->>  {
->> -       if (data_race(mm->tlb_flush_batched)) {
->> -               flush_tlb_mm(mm);
->> +       int batched = atomic_read(&mm->tlb_flush_batched);
->>
->> +       if (batched) {
->> +               flush_tlb_mm(mm);
->>                 /*
->> -                * Do not allow the compiler to re-order the clearing of
->> -                * tlb_flush_batched before the tlb is flushed.
->> +                * If the new TLB flushing is pended during flushing,
->> +                * leave mm->tlb_flush_batched as is, to avoid to lose
->> +                * flushing.
->>                  */
->> -               barrier();
->> -               mm->tlb_flush_batched = false;
->> +               atomic_cmpxchg(&mm->tlb_flush_batched, batched, 0);
->>         }
->>  }
->>  #else
->> --
->> 2.30.2
->>
+>> drivers/clk/qcom/clk-alpha-pll.c:1437:3: error: implicit declaration of function 'pr_dbg' [-Werror,-Wimplicit-function-declaration]
+                   pr_dbg("Trion PLL is already enabled, skipping configuration\n");
+                   ^
+   1 error generated.
+
+
+vim +/pr_dbg +1437 drivers/clk/qcom/clk-alpha-pll.c
+
+  1421	
+  1422	/**
+  1423	 * clk_lucid_pll_configure - configure the lucid pll
+  1424	 *
+  1425	 * @pll: clk alpha pll
+  1426	 * @regmap: register map
+  1427	 * @config: configuration to apply for pll
+  1428	 */
+  1429	void clk_trion_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
+  1430				     const struct alpha_pll_config *config)
+  1431	{
+  1432		/*
+  1433		 * If the bootloader left the PLL enabled it's likely that there are
+  1434		 * RCGs that will lock up if we disable the PLL below.
+  1435		 */
+  1436		if (trion_pll_is_enabled(pll, regmap)) {
+> 1437			pr_dbg("Trion PLL is already enabled, skipping configuration\n");
+  1438			return;
+  1439		}
+  1440	
+  1441		clk_alpha_pll_write_config(regmap, PLL_L_VAL(pll), config->l);
+  1442		regmap_write(regmap, PLL_CAL_L_VAL(pll), TRION_PLL_CAL_VAL);
+  1443		clk_alpha_pll_write_config(regmap, PLL_ALPHA_VAL(pll), config->alpha);
+  1444		clk_alpha_pll_write_config(regmap, PLL_CONFIG_CTL(pll),
+  1445					     config->config_ctl_val);
+  1446		clk_alpha_pll_write_config(regmap, PLL_CONFIG_CTL_U(pll),
+  1447					     config->config_ctl_hi_val);
+  1448		clk_alpha_pll_write_config(regmap, PLL_CONFIG_CTL_U1(pll),
+  1449					     config->config_ctl_hi1_val);
+  1450		clk_alpha_pll_write_config(regmap, PLL_USER_CTL(pll),
+  1451						config->user_ctl_val);
+  1452		clk_alpha_pll_write_config(regmap, PLL_USER_CTL_U(pll),
+  1453						config->user_ctl_hi_val);
+  1454		clk_alpha_pll_write_config(regmap, PLL_USER_CTL_U1(pll),
+  1455						config->user_ctl_hi1_val);
+  1456		clk_alpha_pll_write_config(regmap, PLL_TEST_CTL(pll),
+  1457						config->test_ctl_val);
+  1458		clk_alpha_pll_write_config(regmap, PLL_TEST_CTL_U(pll),
+  1459						config->test_ctl_hi_val);
+  1460		clk_alpha_pll_write_config(regmap, PLL_TEST_CTL_U1(pll),
+  1461						config->test_ctl_hi1_val);
+  1462	
+  1463		regmap_update_bits(regmap, PLL_MODE(pll), PLL_UPDATE_BYPASS,
+  1464				   PLL_UPDATE_BYPASS);
+  1465	
+  1466		/* Disable PLL output */
+  1467		regmap_update_bits(regmap, PLL_MODE(pll),  PLL_OUTCTRL, 0);
+  1468	
+  1469		/* Set operation mode to OFF */
+  1470		regmap_write(regmap, PLL_OPMODE(pll), PLL_STANDBY);
+  1471	
+  1472		/* Place the PLL in STANDBY mode */
+  1473		regmap_update_bits(regmap, PLL_MODE(pll), PLL_RESET_N, PLL_RESET_N);
+  1474	}
+  1475	EXPORT_SYMBOL_GPL(clk_trion_pll_configure);
+  1476	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
