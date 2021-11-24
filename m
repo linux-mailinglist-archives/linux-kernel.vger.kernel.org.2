@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394F845C582
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CFE845C16C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355631AbhKXN6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:58:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46150 "EHLO mail.kernel.org"
+        id S1348898AbhKXNR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:17:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345442AbhKXNzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:55:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAF3963288;
-        Wed, 24 Nov 2021 13:06:36 +0000 (UTC)
+        id S1347100AbhKXNPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:15:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD59061ABC;
+        Wed, 24 Nov 2021 12:43:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759197;
-        bh=svtmji3nmn/5IbK8hMOAl/sZdVQLHghcuAYqas3IcWI=;
+        s=korg; t=1637757839;
+        bh=DXPJin+CE2xZp1acdbPmxh1Z4QPChmnWizcEkUFwARI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SJGJlanBSL9wGYsdI8dZ8ueHq6tTh+VCJoAAifJCQ23/SJYrQRZGERT/QfZf9Xs1s
-         8yVhJSSo3dq6mo5NbF3LxutFyFCFM9viXcgbJtFpo5jCltBzBP8Z3lcMLAdt3wqpb8
-         OhvJhkoVbGN7Zr1RnNJRZlK7KUIQRe07tfkGwDbo=
+        b=o71NbiCQKtFyDvr68CDwv+Glqn0V/xD3Eq4ZHmaRc+gGGbnGu6XTOKye+6EtmBkJD
+         WCVdfXARj/q0m7k9ampwmvCfxzJkjJ5sxSIvJcyvlfOg/ZRC8Lu8/g9lwP2X++5g/n
+         LbDo1wGWiPuTOdDnB/he6Z5EdgWtx6nVtfSySKEk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Wang <jinpu.wang@ionos.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Justin Tee <justin.tee@broadcom.com>,
+        James Smart <jsmart2021@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 164/279] RDMA/mlx4: Do not fail the registration on port stats
+Subject: [PATCH 4.19 261/323] scsi: lpfc: Fix list_add() corruption in lpfc_drain_txq()
 Date:   Wed, 24 Nov 2021 12:57:31 +0100
-Message-Id: <20211124115724.429271450@linuxfoundation.org>
+Message-Id: <20211124115727.701496602@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Wang <jinpu.wang@ionos.com>
+From: James Smart <jsmart2021@gmail.com>
 
-[ Upstream commit 378c67413de18b69fb3bb78d8c4f0f1192cfa973 ]
+[ Upstream commit 99154581b05c8fb22607afb7c3d66c1bace6aa5d ]
 
-If the FW doesn't support MLX4_DEV_CAP_FLAG2_DIAG_PER_PORT, mlx4 driver
-will fail the ib_setup_port_attrs, which is called from
-ib_register_device()/enable_device_and_get(), in the end leads to device
-not detected[1][2]
+When parsing the txq list in lpfc_drain_txq(), the driver attempts to pass
+the requests to the adapter. If such an attempt fails, a local "fail_msg"
+string is set and a log message output.  The job is then added to a
+completions list for cancellation.
 
-To fix it, add a new mlx4_ib_hw_stats_ops1, w/o alloc_hw_port_stats if FW
-does not support MLX4_DEV_CAP_FLAG2_DIAG_PER_PORT.
+Processing of any further jobs from the txq list continues, but since
+"fail_msg" remains set, jobs are added to the completions list regardless
+of whether a wqe was passed to the adapter.  If successfully added to
+txcmplq, jobs are added to both lists resulting in list corruption.
 
-[1] https://bugzilla.redhat.com/show_bug.cgi?id=2014094
-[2] https://lore.kernel.org/linux-rdma/CAMGffEn2wvEnmzc0xe=xYiCLqpphiHDBxCxqAELrBofbUAMQxw@mail.gmail.com
+Fix by clearing the fail_msg string after adding a job to the completions
+list. This stops the subsequent jobs from being added to the completions
+list unless they had an appropriate failure.
 
-Fixes: 4b5f4d3fb408 ("RDMA: Split the alloc_hw_stats() ops to port and device variants")
-Link: https://lore.kernel.org/r/20211115101519.27210-1-jinpu.wang@ionos.com
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Link: https://lore.kernel.org/r/20210910233159.115896-2-jsmart2021@gmail.com
+Co-developed-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx4/main.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ drivers/scsi/lpfc/lpfc_sli.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
-index f367f4a4abffc..aec2e1851fa70 100644
---- a/drivers/infiniband/hw/mlx4/main.c
-+++ b/drivers/infiniband/hw/mlx4/main.c
-@@ -2217,6 +2217,11 @@ static const struct ib_device_ops mlx4_ib_hw_stats_ops = {
- 	.get_hw_stats = mlx4_ib_get_hw_stats,
- };
- 
-+static const struct ib_device_ops mlx4_ib_hw_stats_ops1 = {
-+	.alloc_hw_device_stats = mlx4_ib_alloc_hw_device_stats,
-+	.get_hw_stats = mlx4_ib_get_hw_stats,
-+};
-+
- static int mlx4_ib_alloc_diag_counters(struct mlx4_ib_dev *ibdev)
- {
- 	struct mlx4_ib_diag_counters *diag = ibdev->diag_counters;
-@@ -2229,9 +2234,16 @@ static int mlx4_ib_alloc_diag_counters(struct mlx4_ib_dev *ibdev)
- 		return 0;
- 
- 	for (i = 0; i < MLX4_DIAG_COUNTERS_TYPES; i++) {
--		/* i == 1 means we are building port counters */
--		if (i && !per_port)
--			continue;
-+		/*
-+		 * i == 1 means we are building port counters, set a different
-+		 * stats ops without port stats callback.
-+		 */
-+		if (i && !per_port) {
-+			ib_set_device_ops(&ibdev->ib_dev,
-+					  &mlx4_ib_hw_stats_ops1);
-+
-+			return 0;
-+		}
- 
- 		ret = __mlx4_ib_alloc_diag_counters(ibdev, &diag[i].name,
- 						    &diag[i].offset,
+diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
+index 40d6537e64dd6..e72fc88aeb40e 100644
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -19171,6 +19171,7 @@ lpfc_drain_txq(struct lpfc_hba *phba)
+ 					fail_msg,
+ 					piocbq->iotag, piocbq->sli4_xritag);
+ 			list_add_tail(&piocbq->list, &completions);
++			fail_msg = NULL;
+ 		}
+ 		spin_unlock_irqrestore(&pring->ring_lock, iflags);
+ 	}
 -- 
 2.33.0
 
