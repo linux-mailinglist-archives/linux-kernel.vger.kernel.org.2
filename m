@@ -2,104 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484BB45C787
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:35:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE4AE45C78A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:35:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353546AbhKXOiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:38:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49232 "EHLO
+        id S1353815AbhKXOib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:38:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350936AbhKXOiF (ORCPT
+        with ESMTP id S1351722AbhKXOiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:38:05 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B7EC1E9D8C;
-        Wed, 24 Nov 2021 05:33:50 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id 35-20020a9d08a6000000b00579cd5e605eso4357929otf.0;
-        Wed, 24 Nov 2021 05:33:50 -0800 (PST)
+        Wed, 24 Nov 2021 09:38:08 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B85EC1E9D9F;
+        Wed, 24 Nov 2021 05:34:03 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso2770065pjb.0;
+        Wed, 24 Nov 2021 05:34:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tATyhlZdq0XGywzjbQqGR8CEOKXl8O6LBdffkyjbzEQ=;
+        b=d3oJH2ekvT8CIXNGsQl9TfY3iq6YzwHKmDBRWmTNRNO29KWIGZK3bPXhuQqXXdvitQ
+         pNbzewjuz3W2Oy9utjnFvtmA2Fm4deFmNpg/nebPgd6CMW6W/h0GSLxkSmozfYmGnvHl
+         LPdLDWhcgqUwiAGVqiHRhnHMJ8F53kd307Q3ofVSkyb4rmtH1QfFYX4SqO9JZVu1zOg1
+         2pG1h6rlGXzZsnc+FFoPi6DSLKwWOfh4JhZrmx/aTX0ntE3BSALo/P5seJ6JHQ9vwMlU
+         NDc1DhsOVAdH9QcfzidXYS/FIqvXjAdwZu9W02w7qr4jk9I6jOmoI+JdRDYRR3JCMnFh
+         kt7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=091FqIUggUob/ZEgOD1UGmSVx8eqHMlVt+VyvTQhn6A=;
-        b=5alA6/f+UhETRaXz3Ziw0Mbfo79WBHXEc9krzNgtd01IqyNVmRhY/0lZB/P6eLDJQW
-         eoZjcdR6rFE3pNseQfZ/D4cF20VQuAdK9siwpsGXViPdZGdSZj5I7hCVl20qAoKihTGU
-         9Y2cOZqzkmtsFqHF2VURZQn4cJm3wj70y+AFGjSq6Sge2gQczR5OFVvJJdJ6IFzUWzxq
-         IVi22hsX9WOChk0ReYeUTGW+sRirou0ll7bhp3yZtfxQJtiPER1ed37a6y9j3340xgjb
-         ErontMp+30VXcxUe44s8V4vCUHh05Mex6eQ39n7jGM/fHZcBKylMk53BPCN8cbtkTZqx
-         +ZjA==
-X-Gm-Message-State: AOAM531TyN2EynZbSlLf7LBYl1nok7NN7r4Hxj4bx77v+XJxg7AIKRGn
-        uytjIbBVqRFhWWLNCZpA+SzEgd93DpVRF3YhMW0=
-X-Google-Smtp-Source: ABdhPJzQoNI/Fsb1RYaYMIo8ITBU8mCa/gSsaWPVLoUcuICuMNXnffh1kRK/Zt6rxw8a35LfxbFQ+4vJZ0v59kljSMQ=
-X-Received: by 2002:a05:6830:348f:: with SMTP id c15mr13170421otu.254.1637760829265;
- Wed, 24 Nov 2021 05:33:49 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tATyhlZdq0XGywzjbQqGR8CEOKXl8O6LBdffkyjbzEQ=;
+        b=2tMThgRAskWrDoioo2YcXPBwmkuBwG7ig+8GVzf9DouCHYv4RsQBimy3oc474241hf
+         Go3LoKjycY6d1QmTYAhqMEyP9wR19BoFkNHKeGbik7Bl6h2tOLWtDHgP4JWA0r+XCJ6n
+         ru9xkk/IxXj8E5JLUtwuO5sbk5JoKQ4khzqstHFQwyaIgth4CMvmdl5RFlOS5aASgvNc
+         To8y6+OOyHbYpHhnjuJxHEDN4EHMDdH0qGTvahEcn81AwvppCZC+VdNygQu9To2OcRQD
+         zE2GzaT/tp0YBCluf7pOXJU2FF9rpAJCpZaRD9L7t278FuKVOIA+/HgvYU0YzzpCU85q
+         YP5Q==
+X-Gm-Message-State: AOAM5333BHUjBpcHjMUcQv0HH61Nh5eefW+UKoTQqZ4VB+iX3ZT9KKNN
+        uHtl5sQ5+wdavZIYGHxrsKE=
+X-Google-Smtp-Source: ABdhPJyOjH2HfyS8AAXLxMEI/kOiX3zzssL+dztgoeWCrjEykqmlOLJnWDsW7dauY/UjM99unIZV3w==
+X-Received: by 2002:a17:90a:c58f:: with SMTP id l15mr8750663pjt.168.1637760842593;
+        Wed, 24 Nov 2021 05:34:02 -0800 (PST)
+Received: from localhost.localdomain ([103.99.179.247])
+        by smtp.gmail.com with ESMTPSA id f15sm19137397pfe.171.2021.11.24.05.33.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 05:34:02 -0800 (PST)
+From:   Calvin Zhang <calvinzhang.cool@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Calvin Zhang <calvinzhang.cool@gmail.com>
+Subject: [PATCH] of: unmap memory regions in /memreserve node
+Date:   Wed, 24 Nov 2021 21:33:47 +0800
+Message-Id: <20211124133347.3861391-1-calvinzhang.cool@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210818060533.3569517-1-keescook@chromium.org>
- <20210818060533.3569517-13-keescook@chromium.org> <CAJZ5v0iS3qMgdab1S-NzGfeLLXV=S6p5Qx8AaqJ50rsUngS=LA@mail.gmail.com>
- <c5d1ee1f3b59bf18591a164c185650c77ec8aba7.camel@linux.intel.com>
-In-Reply-To: <c5d1ee1f3b59bf18591a164c185650c77ec8aba7.camel@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 24 Nov 2021 14:33:38 +0100
-Message-ID: <CAJZ5v0i61F9SpwfER8o5J_Kf=J9dJUv-qd+bG9hcL42X2eMRtw@mail.gmail.com>
-Subject: Re: [PATCH v2 12/63] thermal: intel: int340x_thermal: Use
- struct_group() for memcpy() region
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:NETWORKING DRIVERS (WIRELESS)" 
-        <linux-wireless@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 12:53 AM Srinivas Pandruvada
-<srinivas.pandruvada@linux.intel.com> wrote:
->
-> On Tue, 2021-11-23 at 14:19 +0100, Rafael J. Wysocki wrote:
-> > On Wed, Aug 18, 2021 at 8:08 AM Kees Cook <keescook@chromium.org>
-> > wrote:
-> > >
-> > > In preparation for FORTIFY_SOURCE performing compile-time and run-
-> > > time
-> > > field bounds checking for memcpy(), avoid intentionally writing
-> > > across
-> > > neighboring fields.
-> > >
-> > > Use struct_group() in struct art around members weight, and ac[0-
-> > > 9]_max,
-> > > so they can be referenced together. This will allow memcpy() and
-> > > sizeof()
-> > > to more easily reason about sizes, improve readability, and avoid
-> > > future
-> > > warnings about writing beyond the end of weight.
-> > >
-> > > "pahole" shows no size nor member offset changes to struct art.
-> > > "objdump -d" shows no meaningful object code changes (i.e. only
-> > > source
-> > > line number induced differences).
-> > >
-> > > Cc: Zhang Rui <rui.zhang@intel.com>
-> > > Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> > > Cc: Amit Kucheria <amitk@kernel.org>
-> > > Cc: linux-pm@vger.kernel.org
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> >
-> > Rui, Srinivas, any comments here?
-> Looks good.
-> Reviewed-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Reserved memory regions in /memreserve node aren't and shouldn't
+be referenced elsewhere. So mark them no-map to skip direct mapping
+for them.
 
-Applied as 5.17 material, thank you!
+Signed-off-by: Calvin Zhang <calvinzhang.cool@gmail.com>
+---
+ drivers/of/fdt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index bdca35284ceb..9e88cc8445f6 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -638,7 +638,7 @@ void __init early_init_fdt_scan_reserved_mem(void)
+ 		fdt_get_mem_rsv(initial_boot_params, n, &base, &size);
+ 		if (!size)
+ 			break;
+-		early_init_dt_reserve_memory_arch(base, size, false);
++		early_init_dt_reserve_memory_arch(base, size, true);
+ 	}
+ 
+ 	fdt_scan_reserved_mem();
+-- 
+2.30.2
+
