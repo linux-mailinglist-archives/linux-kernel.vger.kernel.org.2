@@ -2,72 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71C445C50F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:52:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B23845C798
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349730AbhKXNyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:54:46 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:54256 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354339AbhKXNuQ (ORCPT
+        id S1348692AbhKXOkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:40:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346637AbhKXOkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:50:16 -0500
-Received: by mail-io1-f72.google.com with SMTP id a12-20020a056602148c00b005e7052734adso1878954iow.20
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 05:47:06 -0800 (PST)
+        Wed, 24 Nov 2021 09:40:39 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3521CC2035B2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 05:48:14 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id t83so2822151qke.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 05:48:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zOXzKhqaRx2erCZtsz+9xALkHd9hNx/cLSQi9Yty6Mg=;
+        b=mqWQPtKzwOR1nkPAD7jr3kr0122cp3KDzbkHN+B+BxUbqGHwEj/KwFx+nzOZg5/uMv
+         yIUSS+MqQcFr+VNaaOdQL2d54qPlp7/uaU1vDWm0bWF/WUjZxiC0fvnyOfXDQtl5pj2C
+         yfEPRxdcQqW0bzw/xo4luil1ejPlXbTZKMrVa3O9+CFypBK9Vxa2Fb/Wi+5LRCM/2Ej+
+         KnIDGXrj+FdBk+m0nclivosH7G9FNhn/mQQycUFZZyEdlBbOlaakTvIJcZrMjFupixhJ
+         0E9iiTnkyJ7//qXBW+4wpIgh/iwCuzV8L27KLQvBSD4qycVQcE7fubpABBHpq7dcXbai
+         5nxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=w8KNWN5k8usq5kIs6yZF5uGq4fyHvwNbxGeGmIcl1SI=;
-        b=no4AYiMsIie0GlwiXONDMx5/blRG7Sb6OHxrhcpg5Iy0u/HcngI20pOFJZ9WreARiJ
-         n6QBwQKlaPhdj9xp6UGX3JhlmoQP7rkBK8B+tBOXDc+UJjQeew7ZQ3b0QF46F3+2fnIt
-         3FQpev3QYiX030CvqcQm5MxgYv8yilJq4nfQKt2AoEtZZf70YXQSbfJ1K85YIKNrEac/
-         J1XP4eZDVHbc+hQ7nfrmiB7BbGaHtTGllTqT3XnNiJsbod1sNyQMBFIQENDxskNrSKYF
-         iDmYF7Uuw2m+YazRd/7kPG873e5nXX6NzyN7aEvbojQbCMz9w4OyJgn54CrG2vnk+XDx
-         a/Bw==
-X-Gm-Message-State: AOAM533CR2AFuW7R4SaYQ95j0W90YKnB8GYY7ybESr9x2K4Wbs5zOmYp
-        cCewcbsoI2WDyUtyVm4UlZ/24fqIiimkmfjFI+HydWwSj6Lx
-X-Google-Smtp-Source: ABdhPJwq3s1JeTA8P4XTcawFUqUpzwHD16hTfE6M5zYXq6aiMGdlavvBPwbljhdJQnalmbuiYvAPEqfkqFTBwMpSHwtAfGUkz3lZ
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zOXzKhqaRx2erCZtsz+9xALkHd9hNx/cLSQi9Yty6Mg=;
+        b=hMXttb9dIFzREKBlwD6j5vJNMYH7HqcmeUV9F8fNYu3oP8vVcXGgUpFwDq9nuoaE7o
+         Ih5vihd5yeVj249hB1E6g6FT9LvVjEuvtCDVhZZGwJVgL414NSoEZHR5HFsxe9dJ3pjo
+         PVGeprm5fO2aPv3uhCVTm39zeW36y7EFQ9fe/G6xbeVHqXdCPYkwQaFEXco2wa9XtS+7
+         0gtRdHp9XlWayvePd+jqxDhv9FNVqHpP0u3F8jnH6mqGH4FUlQA+fm5hHh54/Uz8zy4W
+         7fKj0MvIdRCc5y88uJ3hrAXHif7UD11qlk4bvpnfPqy4TxvPHthj4ZqNb6iSa8/dzLFr
+         pWKw==
+X-Gm-Message-State: AOAM532D1sEMM639GmUO3U46QfPjWz9xRMIz1PSLS3g4J0GzLbGn8NkH
+        bA/enIVsl6IQDs2bRZessreKHQ==
+X-Google-Smtp-Source: ABdhPJzQ5AOoy19Xqda8lOZ1Zk6QX+7bxb6Q0xD34+IJfiCzMeF/udwWMkqUf3c7/DV2nUZ9JOgtyg==
+X-Received: by 2002:a05:620a:22f5:: with SMTP id p21mr6352722qki.498.1637761693453;
+        Wed, 24 Nov 2021 05:48:13 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id o126sm7924464qke.11.2021.11.24.05.48.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 05:48:12 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mpsdA-0011Y1-BA; Wed, 24 Nov 2021 09:48:12 -0400
+Date:   Wed, 24 Nov 2021 09:48:12 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        Andrew Dona-Couch <andrew@donacou.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Drew DeVault <sir@cmpwn.com>,
+        Ammar Faizi <ammarfaizi2@gnuweeb.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        io_uring Mailing List <io-uring@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>, linux-mm@kvack.org
+Subject: Re: [PATCH] Increase default MLOCK_LIMIT to 8 MiB
+Message-ID: <20211124134812.GI5112@ziepe.ca>
+References: <20211123140709.GB5112@ziepe.ca>
+ <e4d7d211-5d62-df89-8f94-e49385286f1f@redhat.com>
+ <20211123170056.GC5112@ziepe.ca>
+ <dd92a69a-6d09-93a1-4f50-5020f5cc59d0@suse.cz>
+ <20211123235953.GF5112@ziepe.ca>
+ <2adca04f-92e1-5f99-6094-5fac66a22a77@redhat.com>
+ <20211124132353.GG5112@ziepe.ca>
+ <cca0229e-e53e-bceb-e215-327b6401f256@redhat.com>
+ <20211124132842.GH5112@ziepe.ca>
+ <eab5aeba-e064-9f3e-fbc3-f73cd299de83@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:587:: with SMTP id c7mr13176266ils.311.1637761626006;
- Wed, 24 Nov 2021 05:47:06 -0800 (PST)
-Date:   Wed, 24 Nov 2021 05:47:06 -0800
-In-Reply-To: <00000000000062d0fc05cef24c57@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f1ea7c05d189175f@google.com>
-Subject: Re: [syzbot] WARNING: refcount bug in sys_memfd_secret
-From:   syzbot <syzbot+b904a1de3ec43711eba5@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, dvyukov@google.com,
-        fgheet255t@gmail.com, fmdefrancesco@gmail.com,
-        jordy@jordyzomer.github.io, jordy@pwning.systems,
-        keescook@chromium.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, rppt@kernel.org,
-        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org,
-        willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <eab5aeba-e064-9f3e-fbc3-f73cd299de83@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Wed, Nov 24, 2021 at 02:29:38PM +0100, David Hildenbrand wrote:
+> On 24.11.21 14:28, Jason Gunthorpe wrote:
+> > On Wed, Nov 24, 2021 at 02:25:09PM +0100, David Hildenbrand wrote:
+> >> On 24.11.21 14:23, Jason Gunthorpe wrote:
+> >>> On Wed, Nov 24, 2021 at 09:57:32AM +0100, David Hildenbrand wrote:
+> >>>
+> >>>> Unfortunately it will only be a band aid AFAIU. I can rewrite my
+> >>>> reproducer fairly easily to pin the whole 2M range first, pin a second
+> >>>> time only a single page, and then unpin the 2M range, resulting in the
+> >>>> very same way to block THP. (I can block some THP less because I always
+> >>>> need the possibility to memlock 2M first, though).
+> >>>
+> >>> Oh!
+> >>>
+> >>> The issue is GUP always pins an entire compound, no matter how little
+> >>> the user requests.
+> >>
+> >> That's a different issue. I make sure to split the compound page before
+> >> pinning anything :)
+> > 
+> > ?? Where is that done in GUP?
+> 
+> It's done in my reproducer manually.
 
-commit 87066fdd2e30fe9dd531125d95257c118a74617e
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun Oct 24 19:48:33 2021 +0000
+Aren't there many ways for hostile unpriv userspace to cause memory
+fragmentation? You are picking on pinning here, but any approach that
+forces the kernel to make a kalloc on a THP subpage would do just as
+well.
 
-    Revert "mm/secretmem: use refcount_t instead of atomic_t"
+Arguably if we want to point to an issue here it is in MADV_FREE/etc
+that is the direct culprit in allowing userspace to break up THPs and
+then trigger fragmentation.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11cccf06b00000
-start commit:   9c0c4d24ac00 Merge tag 'block-5.15-2021-10-22' of git://gi..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=be398dd7862f4b36
-dashboard link: https://syzkaller.appspot.com/bug?extid=b904a1de3ec43711eba5
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=130cabdcb00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=175b91acb00000
+If the objective is to prevent DOS of THP then MADV_FREE should
+conserve the THP and migrate the subpages to non-THP
+memory.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+FOLL_LONGTERM is not the issue here.
 
-#syz fix: Revert "mm/secretmem: use refcount_t instead of atomic_t"
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Jason
