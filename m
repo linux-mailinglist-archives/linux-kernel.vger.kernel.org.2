@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6856745C1D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:19:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC95645C32B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346151AbhKXNWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:22:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37044 "EHLO mail.kernel.org"
+        id S1347045AbhKXNgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:36:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346662AbhKXNT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:19:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5674861B02;
-        Wed, 24 Nov 2021 12:46:36 +0000 (UTC)
+        id S1351799AbhKXNde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:33:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0C1761BD3;
+        Wed, 24 Nov 2021 12:53:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757997;
-        bh=0DFNQf+D2nNrpoWEiiHOZDH/2OGH8W4NFbon9vnXo5c=;
+        s=korg; t=1637758416;
+        bh=UctDOi6sgnFA9Ck2+gmrfdDnMs5ZuezcCI9kSB0HyJ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NQAWtrBkc+N2lxQF2XsFdtK5J/XJmO2OyW8Mmf6xOmgF1mt7h3FEFsQmffKuKSHcE
-         8HssvxIxtDP3AiPONWUamOY3kjGFft3bnpVrBvtKO3Edq8xgzuPOpRoTi14J6713OK
-         Ly8j8BdaOHpsIA0FyE+TFNwAHogy5UH2s/mYJKzo=
+        b=xL90GQtOHc5RW9crQrp/9YaKLJSOzgrDOT3QaqQXeowaBtqeZ4mFdJdQkev/AaEH5
+         jojXhx0I9UPbrh8vvvQClBaXLN7cuMsg2g0mylghgMH9VDzgfmNnSChFkEXKYA3Ll2
+         AqTGr5WqFQtbMJZEMewgVVoOKDw38hDatDtGFM+0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Guanghui Feng <guanghuifeng@linux.alibaba.com>,
+        stable@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
+        Like Xu <likexu@tencent.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 022/100] tty: tty_buffer: Fix the softlockup issue in flush_to_ldisc
+Subject: [PATCH 5.10 062/154] perf/x86/vlbr: Add c->flags to vlbr event constraints
 Date:   Wed, 24 Nov 2021 12:57:38 +0100
-Message-Id: <20211124115655.578887793@linuxfoundation.org>
+Message-Id: <20211124115704.327482886@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,67 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guanghui Feng <guanghuifeng@linux.alibaba.com>
+From: Like Xu <likexu@tencent.com>
 
-[ Upstream commit 3968ddcf05fb4b9409cd1859feb06a5b0550a1c1 ]
+[ Upstream commit 5863702561e625903ec678551cb056a4b19e0b8a ]
 
-When running ltp testcase(ltp/testcases/kernel/pty/pty04.c) with arm64, there is a soft lockup,
-which look like this one:
+Just like what we do in the x86_get_event_constraints(), the
+PERF_X86_EVENT_LBR_SELECT flag should also be propagated
+to event->hw.flags so that the host lbr driver can save/restore
+MSR_LBR_SELECT for the special vlbr event created by KVM or BPF.
 
-  Workqueue: events_unbound flush_to_ldisc
-  Call trace:
-   dump_backtrace+0x0/0x1ec
-   show_stack+0x24/0x30
-   dump_stack+0xd0/0x128
-   panic+0x15c/0x374
-   watchdog_timer_fn+0x2b8/0x304
-   __run_hrtimer+0x88/0x2c0
-   __hrtimer_run_queues+0xa4/0x120
-   hrtimer_interrupt+0xfc/0x270
-   arch_timer_handler_phys+0x40/0x50
-   handle_percpu_devid_irq+0x94/0x220
-   __handle_domain_irq+0x88/0xf0
-   gic_handle_irq+0x84/0xfc
-   el1_irq+0xc8/0x180
-   slip_unesc+0x80/0x214 [slip]
-   tty_ldisc_receive_buf+0x64/0x80
-   tty_port_default_receive_buf+0x50/0x90
-   flush_to_ldisc+0xbc/0x110
-   process_one_work+0x1d4/0x4b0
-   worker_thread+0x180/0x430
-   kthread+0x11c/0x120
-
-In the testcase pty04, The first process call the write syscall to send
-data to the pty master. At the same time, the workqueue will do the
-flush_to_ldisc to pop data in a loop until there is no more data left.
-When the sender and workqueue running in different core, the sender sends
-data fastly in full time which will result in workqueue doing work in loop
-for a long time and occuring softlockup in flush_to_ldisc with kernel
-configured without preempt. So I add need_resched check and cond_resched
-in the flush_to_ldisc loop to avoid it.
-
-Signed-off-by: Guanghui Feng <guanghuifeng@linux.alibaba.com>
-Link: https://lore.kernel.org/r/1633961304-24759-1-git-send-email-guanghuifeng@linux.alibaba.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 097e4311cda9 ("perf/x86: Add constraint to create guest LBR event without hw counter")
+Reported-by: Wanpeng Li <wanpengli@tencent.com>
+Signed-off-by: Like Xu <likexu@tencent.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: Wanpeng Li <wanpengli@tencent.com>
+Link: https://lore.kernel.org/r/20211103091716.59906-1-likexu@tencent.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/tty_buffer.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/x86/events/intel/core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
-index ec145a59f1993..bb148dbfbb88f 100644
---- a/drivers/tty/tty_buffer.c
-+++ b/drivers/tty/tty_buffer.c
-@@ -534,6 +534,9 @@ static void flush_to_ldisc(struct work_struct *work)
- 		if (!count)
- 			break;
- 		head->read += count;
-+
-+		if (need_resched())
-+			cond_resched();
- 	}
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 4684bf9fcc428..a521135247eb6 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -2879,8 +2879,10 @@ intel_vlbr_constraints(struct perf_event *event)
+ {
+ 	struct event_constraint *c = &vlbr_constraint;
  
- 	mutex_unlock(&buf->lock);
+-	if (unlikely(constraint_match(c, event->hw.config)))
++	if (unlikely(constraint_match(c, event->hw.config))) {
++		event->hw.flags |= c->flags;
+ 		return c;
++	}
+ 
+ 	return NULL;
+ }
 -- 
 2.33.0
 
