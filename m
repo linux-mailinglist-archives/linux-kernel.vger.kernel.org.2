@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C072D45C981
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0CE45C986
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:05:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242527AbhKXQHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:07:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
+        id S242637AbhKXQId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:08:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbhKXQHu (ORCPT
+        with ESMTP id S229849AbhKXQIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:07:50 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2ABBC061574;
-        Wed, 24 Nov 2021 08:04:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=5ZjtfcVB4wsq2lV3EPnmXCKirI/GyR928eeJPaIdR7Q=; b=xHAUtbKXS2c2yCggLXgbB/5qq8
-        UIXgJJG9Vf4PSj3Ptpd/MOM6RIEflWW/kF7ZOXgUii9aVJwpjMlLs4Z3DKJyQXWUs3jb8IaUDCKnR
-        KiI/FxzxDQAJF7Hfaiudp1Vb1uZ9It1GGwHm/97OeVD/hXZyLEkMLkHyaoZjKAKevCblQXvuR6ueo
-        aU3uwOjh+ytgSp5o8JKwekLXXXPVgv2kuPHJ1S8KiPm/7dbli39MLwJKxmDq5Z2sNzp60QWrjzloJ
-        PwNen3X607QB94fQMC52djGHljVq7zkDARbrvxWv0y/M0Fgyqn0rFBD9BAkX5PRQ4bIUZmAZ/MFjr
-        07XQEOpA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55858)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mpul8-0000qd-FW; Wed, 24 Nov 2021 16:04:34 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mpul7-0001Jj-1K; Wed, 24 Nov 2021 16:04:33 +0000
-Date:   Wed, 24 Nov 2021 16:04:33 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        UNGLinuxDriver@microchip.com, p.zabel@pengutronix.de,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 3/6] net: lan966x: add port module support
-Message-ID: <YZ5ikamCVeyGFw3x@shell.armlinux.org.uk>
-References: <20211124083915.2223065-1-horatiu.vultur@microchip.com>
- <20211124083915.2223065-4-horatiu.vultur@microchip.com>
- <YZ4SB/wX6UT3zrEV@shell.armlinux.org.uk>
- <20211124145800.my4niep3sifqpg55@soft-dev3-1.localhost>
- <YZ5UXdiNNf011skU@shell.armlinux.org.uk>
- <20211124154323.44liimrwzthsh547@soft-dev3-1.localhost>
+        Wed, 24 Nov 2021 11:08:31 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD832C061574;
+        Wed, 24 Nov 2021 08:05:21 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id b1so8438914lfs.13;
+        Wed, 24 Nov 2021 08:05:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XaZL1gqGefL3we/nKaFes+6q80QBPA1qm8dyiAwLJtk=;
+        b=JvocAoplJmBKFZX3YppjDDIfPCn6erSoH/8cS7ieRxpQvQU9lkBGkVm/twRJKwnLhu
+         I3BawiPYHkOHcDVlzVnkPhrkWTWKwxw+ZCKJIQTMWvN4H09wJnKg/7wBq/6yyB/reMHA
+         8bkNbqQHBWnpBQc7yJBzYiNsqDKjuoRVm5cYDqha+zcWXW5W64aR2B9TSsisc4JX4Jno
+         PUBqy+Docg631q5XAV1+VX1TPXXgnViDug3VSGocGH44cyDbXvBEX/eRpH5oDJIwO1or
+         mVXtQd9ICqWNgl18w6E6hbGq8KSnJ4sGIrdjJLiXOTIomzt9KvYWlIVJc2hzJ0eP+bnP
+         Sw1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XaZL1gqGefL3we/nKaFes+6q80QBPA1qm8dyiAwLJtk=;
+        b=BUvFmY91WEQ92+nwjQJCZ3RAXzN19kTkGrEqZQd+6syMiCCGYZEKfdXDNdaS+CKxNZ
+         ee19CWbI+NUo+oGkjXu5kE9B+3eRU+HucTkQVeAcGR1tiyK1SAQ8M8V4L6mzVBG/wdnM
+         LqBxA0nB2AF8OwfnDGxTE64udMgR60N0TDA9n7krb4FKyZykLr890Mo/25ZeWr6acVzm
+         39TH2GSirUS9IK/eMCXBXa3i79p9JnqWOYCcJfZWG2yVUjRPRn8bCq0frwOSPemWXfkJ
+         OkhVuPGaT9LoHh22JHUgiJGtC31tOgayfK+REmdqRXWrtcTHF6gQqr8G7k8x0ZMgDQB+
+         3JCA==
+X-Gm-Message-State: AOAM532kyKmue0y4xyhyr7CQ47OeJNwj4z+y/xDff8om9GRBEe33tV1A
+        MFB30NB92Bug3BHCS+wPPao=
+X-Google-Smtp-Source: ABdhPJxrdgHea8Krc6d9ZfZFMLQzyWZ6L75uGZec6KisbMsGo8JOFKZjsX4oRJUwAnPRr3c0zWOsZw==
+X-Received: by 2002:a19:5e59:: with SMTP id z25mr16017187lfi.686.1637769919078;
+        Wed, 24 Nov 2021 08:05:19 -0800 (PST)
+Received: from [192.168.2.145] (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
+        by smtp.googlemail.com with ESMTPSA id e14sm25124lfs.150.2021.11.24.08.05.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Nov 2021 08:05:18 -0800 (PST)
+Subject: Re: [PATCH v2] i2c: tegra: Add ACPI support
+To:     Akhil R <akhilrajeev@nvidia.com>,
+        "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>
+Cc:     Shardar Mohammed <smohammed@nvidia.com>
+References: <1637328734-20576-1-git-send-email-akhilrajeev@nvidia.com>
+ <1637651753-5067-1-git-send-email-akhilrajeev@nvidia.com>
+ <eebf20ea-6a7f-1120-5ad8-b6dc1f9935e6@gmail.com>
+ <BN9PR12MB5273A7628D80076F4EF2CC69C0619@BN9PR12MB5273.namprd12.prod.outlook.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <b06a5072-f0f4-c9f9-f9a2-8d76b4432415@gmail.com>
+Date:   Wed, 24 Nov 2021 19:05:17 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211124154323.44liimrwzthsh547@soft-dev3-1.localhost>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <BN9PR12MB5273A7628D80076F4EF2CC69C0619@BN9PR12MB5273.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 04:43:23PM +0100, Horatiu Vultur wrote:
-> > > Actually, port->config.phy_mode will not get zeroed. Because right after
-> > > the memset it follows: 'config = port->config'.
-> > 
-> > Ah, missed that, thanks. However, why should portmode and phy_mode be
-> > different?
-> 
-> Because the serdes knows only few modes(QSGMII, SGMII, GMII) and this
-> information will come from DT. So I would like to have one variable that
-> will configure the serdes ('phy_mode') and one will configure the MAC
-> ('portmode').
+24.11.2021 10:18, Akhil R пишет:
+>> *i2c_dev)
+>>>               i2c_dev->is_vi = true;
+>>>  }
+>> How are you going to differentiate the VI I2C from a non-VI? This doesn't look
+>> right.
+> This patch adds the ACPI support to only non-VI I2C. The device_ids in match table
+> are added accordingly. I suppose, of_device_is_compatible always returns false as 
+> there is no device tree. 
+> Agree with the other comments.
 
-I don't follow why you need this to be different.
-
-Isn't the point of interfaces such as phy_set_mode_ext() such that we
-can achieve independence of the details of what is behind that
-interface - so, as it takes a PHY interface mode, if we're operating
-in 1000BASE-X, we pass that to phy_set_mode_ext(). It is then the
-responsibility of the Serdes PHY driver to decide that means "sgmii"
-mode for the Serdes?
-
-For example, the Marvell CP110 comphy driver does this:
-
-        if (submode == PHY_INTERFACE_MODE_1000BASEX)
-                submode = PHY_INTERFACE_MODE_SGMII;
-
-because the serdes phy settings for PHY_INTERFACE_MODE_1000BASEX are
-no different from PHY_INTERFACE_MODE_SGMII - and that detail is hidden
-from the network driver.
-
-The next question this brings up is... you're setting all the different
-interface modes in phylink_config.supported_interfaces, which basically
-means you're giving permission for phylink to switch between any of
-those modes. So, what if the serdes is in QSGMII mode but phylink
-requests SGMII mode. Doesn't your driver architecture mean that if
-you're in QSGMII mode you can't use SGMII or GMII mode?
-
-Is there some kind of restriction that you need to split this, or is
-this purely down to the way this driver has been written?
-
-I don't see any other driver in the kernel making this kind of split.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Will the VI I2C have a different ACPI ID or how it's going to work?
