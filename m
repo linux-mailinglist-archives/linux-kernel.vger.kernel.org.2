@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C147C45C43F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:44:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4176B45C6A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:07:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351501AbhKXNqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:46:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34764 "EHLO mail.kernel.org"
+        id S1349588AbhKXOKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:10:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353400AbhKXNmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:42:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4336C63291;
-        Wed, 24 Nov 2021 12:58:08 +0000 (UTC)
+        id S1354079AbhKXOGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:06:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0BA961A8A;
+        Wed, 24 Nov 2021 13:12:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758688;
-        bh=SLyoh75FvKzGm9w2pX2yhhsBTaYpcUYt4uL0R1J2xKo=;
+        s=korg; t=1637759557;
+        bh=TIJM1pxBBJ+mMUKMF2ObPNl1rqFzcxcbvLVor8dt0d4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n88AAxk96NRlAcqLdrRgukBY4x2gVw5TpfmCbSckA0epWX6LyURvcCYrV7YDX1fCA
-         YtCgI2nlTuGWAKSvdQO2uqgiycqbR5F2r7dxdDiL5Jo/Bfw9pc/7yItl28TTPLV4Ds
-         eEo2ip4Ufcyd8aw+uHNPkqnPLNKBKbaVULNjJTD4=
+        b=ws+KyHC/HIWBwluhG7UmCw28zSyqEmLXos8rUGLxsnLqWEwLvGtGj6jRhAfrfxVH6
+         ODF7E3FKzSLRHrG6dInzzjk1Q40CsAyqvC6/4GTpQlSK3FlYo6Q1ciQx2/D/1dSi5b
+         LM97+iycXT8z4y9GFuossLJOeztmSoZ4t/q6848I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.10 152/154] fs: export an inode_update_time helper
-Date:   Wed, 24 Nov 2021 12:59:08 +0100
-Message-Id: <20211124115707.396176664@linuxfoundation.org>
+        stable@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, H Peter Anvin <hpa@zytor.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Thomas Backlund <tmb@iki.fi>
+Subject: [PATCH 5.15 262/279] signal/vm86_32: Properly send SIGSEGV when the vm86 state cannot be saved.
+Date:   Wed, 24 Nov 2021 12:59:09 +0100
+Message-Id: <20211124115727.763428513@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,69 +43,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Eric W. Biederman <ebiederm@xmission.com>
 
-commit e60feb445fce9e51c1558a6aa7faf9dd5ded533b upstream.
+commit 1fbd60df8a852d9c55de8cd3621899cf4c72a5b7 upstream.
 
-If you already have an inode and need to update the time on the inode
-there is no way to do this properly.  Export this helper to allow file
-systems to update time on the inode so the appropriate handler is
-called, either ->update_time or generic_update_time.
+Update save_v86_state to always complete all of it's work except
+possibly some of the copies to userspace even if save_v86_state takes
+a fault.  This ensures that the kernel is always in a sane state, even
+if userspace has done something silly.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+When save_v86_state takes a fault update it to force userspace to take
+a SIGSEGV and terminate the userspace application.
+
+As Andy pointed out in review of the first version of this change
+there are races between sigaction and the application terinating.  Now
+that the code has been modified to always perform all save_v86_state's
+work (except possibly copying to userspace) those races do not matter
+from a kernel perspective.
+
+Forcing the userspace application to terminate (by resetting it's
+handler to SIGDFL) is there to keep everything as close to the current
+behavior as possible while removing the unique (and difficult to
+maintain) use of do_exit.
+
+If this new SIGSEGV happens during handle_signal the next time around
+the exit_to_user_mode_loop, SIGSEGV will be delivered to userspace.
+
+All of the callers of handle_vm86_trap and handle_vm86_fault run the
+exit_to_user_mode_loop before they return to userspace any signal sent
+to the current task during their execution will be delivered to the
+current task before that tasks exits to usermode.
+
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org
+Cc: H Peter Anvin <hpa@zytor.com>
+v1: https://lkml.kernel.org/r/20211020174406.17889-10-ebiederm@xmission.com
+Link: https://lkml.kernel.org/r/877de1xcr6.fsf_-_@disp2133
+Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+Cc: Thomas Backlund <tmb@iki.fi>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/inode.c         |    7 ++++---
- include/linux/fs.h |    2 ++
- 2 files changed, 6 insertions(+), 3 deletions(-)
+ arch/x86/kernel/vm86_32.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -1772,12 +1772,13 @@ EXPORT_SYMBOL(generic_update_time);
-  * This does the actual work of updating an inodes time or version.  Must have
-  * had called mnt_want_write() before calling this.
-  */
--static int update_time(struct inode *inode, struct timespec64 *time, int flags)
-+int inode_update_time(struct inode *inode, struct timespec64 *time, int flags)
- {
- 	if (inode->i_op->update_time)
- 		return inode->i_op->update_time(inode, time, flags);
- 	return generic_update_time(inode, time, flags);
+--- a/arch/x86/kernel/vm86_32.c
++++ b/arch/x86/kernel/vm86_32.c
+@@ -142,6 +142,7 @@ void save_v86_state(struct kernel_vm86_r
+ 
+ 	user_access_end();
+ 
++exit_vm86:
+ 	preempt_disable();
+ 	tsk->thread.sp0 = vm86->saved_sp0;
+ 	tsk->thread.sysenter_cs = __KERNEL_CS;
+@@ -161,7 +162,8 @@ Efault_end:
+ 	user_access_end();
+ Efault:
+ 	pr_alert("could not access userspace vm86 info\n");
+-	do_exit(SIGSEGV);
++	force_sigsegv(SIGSEGV);
++	goto exit_vm86;
  }
-+EXPORT_SYMBOL(inode_update_time);
  
- /**
-  *	touch_atime	-	update the access time
-@@ -1847,7 +1848,7 @@ void touch_atime(const struct path *path
- 	 * of the fs read only, e.g. subvolumes in Btrfs.
- 	 */
- 	now = current_time(inode);
--	update_time(inode, &now, S_ATIME);
-+	inode_update_time(inode, &now, S_ATIME);
- 	__mnt_drop_write(mnt);
- skip_update:
- 	sb_end_write(inode->i_sb);
-@@ -1991,7 +1992,7 @@ int file_update_time(struct file *file)
- 	if (__mnt_want_write_file(file))
- 		return 0;
- 
--	ret = update_time(inode, &now, sync_it);
-+	ret = inode_update_time(inode, &now, sync_it);
- 	__mnt_drop_write_file(file);
- 
- 	return ret;
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -2214,6 +2214,8 @@ enum file_time_flags {
- 
- extern bool atime_needs_update(const struct path *, struct inode *);
- extern void touch_atime(const struct path *);
-+int inode_update_time(struct inode *inode, struct timespec64 *time, int flags);
-+
- static inline void file_accessed(struct file *file)
- {
- 	if (!(file->f_flags & O_NOATIME))
+ static int do_vm86_irq_handling(int subfunction, int irqnumber);
 
 
