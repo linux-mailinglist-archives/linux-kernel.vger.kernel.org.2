@@ -2,62 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 256ED45C72E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D0C45C7A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351782AbhKXO0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:26:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:48860 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1353737AbhKXOZN (ORCPT
+        id S1346191AbhKXOmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:42:25 -0500
+Received: from fgw20-4.mail.saunalahti.fi ([62.142.5.107]:29034 "EHLO
+        fgw20-4.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345498AbhKXOmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:25:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637763723;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TLRi7BlITjjM/i+4EHGp/lwGEMw5CmrBYwLEApBpecM=;
-        b=T+ykU8t46fV+xrf3SMGoh/DAA861ozWF2WywBgWnFKJUMbAXaDVzHWhSnBQxXaYMb2A90W
-        kQk5kjI5fJ/xf0vwnjqOs8T/xUz5s6Ml/vYTQNKmBMpF8ZVeYI55Rk9vL3y+/RW5NTbnQG
-        kqP9+55gqZbsiXFhYfnLEThPyKsZthI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-509-fs400FZ6MvKXrNnBYcUuyw-1; Wed, 24 Nov 2021 09:21:59 -0500
-X-MC-Unique: fs400FZ6MvKXrNnBYcUuyw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 31BB61800D41;
-        Wed, 24 Nov 2021 14:21:58 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A602119C46;
-        Wed, 24 Nov 2021 14:21:56 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20211121041608.133740-1-eiichi.tsukata@nutanix.com>
-References: <20211121041608.133740-1-eiichi.tsukata@nutanix.com>
-To:     Eiichi Tsukata <eiichi.tsukata@nutanix.com>
-Cc:     dhowells@redhat.com, marc.dionne@auristor.com, davem@davemloft.net,
-        kuba@kernel.org, linux-afs@lists.infradead.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net 1/2] rxrpc: Fix rxrpc_peer leak in rxrpc_look_up_bundle()
+        Wed, 24 Nov 2021 09:42:15 -0500
+Received: from toshiba (88-113-3-224.elisa-laajakaista.fi [88.113.3.224])
+        by fgw20.mail.saunalahti.fi (Halon) with ESMTP
+        id 0147b8b0-4d32-11ec-8d6d-005056bd6ce9;
+        Wed, 24 Nov 2021 16:22:51 +0200 (EET)
+Message-ID: <619E4ABA.DC78AA58@users.sourceforge.net>
+Date:   Wed, 24 Nov 2021 16:22:50 +0200
+From:   Jari Ruusu <jariruusu@users.sourceforge.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1819849.1637763715.1@warthog.procyon.org.uk>
-Date:   Wed, 24 Nov 2021 14:21:55 +0000
-Message-ID: <1819850.1637763715@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Alistair Delva <adelva@google.com>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Serge Hallyn <serge@hallyn.com>, Jens Axboe <axboe@kernel.dk>,
+        Paul Moore <paul@paul-moore.com>, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH 5.10 130/154] block: Check ADMIN before NICE for 
+ IOPRIO_CLASS_RT
+References: <20211124115702.361983534@linuxfoundation.org> <20211124115706.507376250@linuxfoundation.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good, though I think a better way to do both of these cases is to
-abstract out the freeing sequence into its own function.
+Greg Kroah-Hartman wrote:
+> From: Alistair Delva <adelva@google.com>
+> 
+> commit 94c4b4fd25e6c3763941bdec3ad54f2204afa992 upstream.
+ [SNIP]
+> --- a/block/ioprio.c
+> +++ b/block/ioprio.c
+> @@ -69,7 +69,14 @@ int ioprio_check_cap(int ioprio)
+> 
+>         switch (class) {
+>                 case IOPRIO_CLASS_RT:
+> -                       if (!capable(CAP_SYS_NICE) && !capable(CAP_SYS_ADMIN))
+> +                       /*
+> +                        * Originally this only checked for CAP_SYS_ADMIN,
+> +                        * which was implicitly allowed for pid 0 by security
+> +                        * modules such as SELinux. Make sure we check
+> +                        * CAP_SYS_ADMIN first to avoid a denial/avc for
+> +                        * possibly missing CAP_SYS_NICE permission.
+> +                        */
+> +                       if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_NICE))
+>                                 return -EPERM;
+>                         fallthrough;
+>                         /* rt has prio field too */
 
-David
+What exactly is above patch trying to fix?
+It does not change control flow at all, and added comment is misleading.
 
+-- 
+Jari Ruusu  4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD  ACDF F073 3C80 8132 F189
