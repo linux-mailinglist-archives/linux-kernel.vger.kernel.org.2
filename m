@@ -2,96 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 577E845B28B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 04:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4812045B284
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 04:16:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240808AbhKXDUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 22:20:39 -0500
-Received: from mga09.intel.com ([134.134.136.24]:56227 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240802AbhKXDUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 22:20:38 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="235012512"
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="235012512"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 19:17:29 -0800
-X-IronPort-AV: E=Sophos;i="5.87,258,1631602800"; 
-   d="scan'208";a="674714109"
-Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.255.28.39]) ([10.255.28.39])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2021 19:17:25 -0800
-Subject: Re: [kbuild-all] Re: [PATCH] crypto: fix flexible_array.cocci
- warnings
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Julia Lawall <julia.lawall@inria.fr>
-Cc:     Megha Dey <megha.dey@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Tomasz Kantecki <tomasz.kantecki@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-crypto@vger.kernel.org
-References: <alpine.DEB.2.22.394.2111121154320.2916@hadrien>
- <20211120040625.GA25678@gondor.apana.org.au>
-From:   "Chen, Rong A" <rong.a.chen@intel.com>
-Message-ID: <4514c646-cae1-cd50-8a1c-1a550593c7a8@intel.com>
-Date:   Wed, 24 Nov 2021 11:17:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S239954AbhKXDTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 22:19:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230517AbhKXDTY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 22:19:24 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB58AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 19:16:15 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id 47-20020a9d0332000000b005798ac20d72so2000520otv.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Nov 2021 19:16:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/4CZMcKRdnsZKE9DDAd3orcOGMvFe+sUxaU3u6ZAsoA=;
+        b=dkVW+lWko+uzc9PWiVTCDTBv1MV44aohMbxW9CkOFpa5D8BZNWYehRy/ijzHfSz0jk
+         8/MDKqPIr/mPAA1z3TT1r8SGtjfyd+UuwhfE46bXyzPN6xKWqH96cRab8yzdPN8nOh6t
+         9EclSjlmDGX9TMSwROPjPGGGoR2HdzB0lfAyzRIWPNY15eP/QAxVASrMTh65TJNtWj7c
+         LSC25jUP7WLcuOV4aSektZ5aFzf+9CSAdNcWw6N9v08Vk6ejmolTAZd8+thpWVvDybHV
+         7I9WBf7fBRkjStjnrzr0fUtMqUZCGHiLq0zd/UlXRUJ94K0BP1I+tptywrhV5din/SZj
+         +r2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/4CZMcKRdnsZKE9DDAd3orcOGMvFe+sUxaU3u6ZAsoA=;
+        b=Hc7brK7AlLOqJCJLpna4gM+EjGcH+Rkr6IdDWTIlE6/c6TFMYt7AqMW1Fe5NAiQ/Fg
+         n4EgIZyVXwzHk2aGiihYHbi3j+uJUWZRYzPVwXskRZRdGsEGwSHRwFlFDuKseAU7r24n
+         g7n7M99UaT2lrktBP1k9EmTS4tvTWSZgiH+GDpCY0KfvTqzKsyiiGvrhdF8rakpIgwZM
+         rNw+ycOzwKdJPI2AmyxoLQqrpD4SOiSeSL2UACj6UxQU8ef1TiUMtvhRzDgB8XAeNe6r
+         Oaq/Jhir2BKq+H5hSBlSKrLLk9AhRYc6XA5XdqLcMKNhseQ9oEk/oJyqE2Tvu26obrqD
+         4aPQ==
+X-Gm-Message-State: AOAM530F8v2UtDA0aDqmP4Tf1rA9cxg4FDiE4ezKhUUAzWPkCKHtarSk
+        DWylRf0i1IqRY69IT8nv3oGpwg==
+X-Google-Smtp-Source: ABdhPJwkt0YXn3M+6/frHVA/lPBLfgtItikxEzJr9dnN7yIcXRPVmuhtTqigjNkIKhyai4imABkc8Q==
+X-Received: by 2002:a05:6830:1447:: with SMTP id w7mr9433054otp.199.1637723775115;
+        Tue, 23 Nov 2021 19:16:15 -0800 (PST)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id q22sm2579319ots.62.2021.11.23.19.16.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 19:16:14 -0800 (PST)
+Date:   Tue, 23 Nov 2021 19:17:58 -0800
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Dominik Kobinski <dominikkobinski314@gmail.com>
+Cc:     agross@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
+Subject: Re: [PATCH 4/4] regulator: qcom_spmi: Add pm8226 regulators
+Message-ID: <YZ2u5hHmiNOyuGtr@ripper>
+References: <20211123174127.2261-1-dominikkobinski314@gmail.com>
+ <20211123181119.2897-1-dominikkobinski314@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211120040625.GA25678@gondor.apana.org.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211123181119.2897-1-dominikkobinski314@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Herbert,
+On Tue 23 Nov 10:11 PST 2021, Dominik Kobinski wrote:
 
-On 11/20/2021 12:06 PM, Herbert Xu wrote:
-> On Fri, Nov 12, 2021 at 11:56:22AM +0100, Julia Lawall wrote:
->> From: kernel test robot <lkp@intel.com>
->>
->>   Zero-length and one-element arrays are deprecated, see
->>   Documentation/process/deprecated.rst
->>   Flexible-array members should be used instead.
->>
->> Generated by: scripts/coccinelle/misc/flexible_array.cocci
->>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Signed-off-by: kernel test robot <lkp@intel.com>
->> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
->> ---
->>
->> tree:   https://github.com/meghadey/crypto crypto-avx512
->> head:   9c8c2ca77f6e2575a130bddb9767d068e1162d71
->> commit: 377aede9f10ee28be954473668bc6d33c6c9db75 [5/6] crypto: aesni - AVX512 version of AESNI-GCM using VPCLMULQDQ
+> The PM8226 PMIC is very often seen on
+> MSM8x26 boards.
 
-Sorry for the noise, this patch tries to fix the above commit, it seems
-the commit is still in the private tree, we have fixed it to avoid 
-sending to maintainers.
+The appropriate width of a commit message is 72 chars, so there's no
+need to break this line.
 
-Best Regards,
-Rong Chen
-
->> :::::: branch date: 7 weeks ago
->> :::::: commit date: 7 weeks ago
->>
->>   aesni-intel_glue.c |    2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> --- a/arch/x86/crypto/aesni-intel_glue.c
->> +++ b/arch/x86/crypto/aesni-intel_glue.c
->> @@ -87,7 +87,7 @@ struct gcm_context_data {
->>   	u64 partial_block_len;
->>   	u64 unused;
->>   	/* Allocate space for hash_keys later */
->> -	u8 hash_keys[0];
->> +	u8 hash_keys[];
 > 
-> Which tree did this come from? Not only is this not zero in my
-> tree, but it seems to have never been zero in the git history.
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> Suggested-by: Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
+> Signed-off-by: Dominik Kobinski <dominikkobinski314@gmail.com>
+> ---
+>  drivers/regulator/qcom_spmi-regulator.c | 39 +++++++++++++++++++++++++
+>  1 file changed, 39 insertions(+)
 > 
-> Thanks,
+> diff --git a/drivers/regulator/qcom_spmi-regulator.c b/drivers/regulator/qcom_spmi-regulator.c
+> index 41424a3366d0..02bfce981150 100644
+> --- a/drivers/regulator/qcom_spmi-regulator.c
+> +++ b/drivers/regulator/qcom_spmi-regulator.c
+> @@ -1895,6 +1895,44 @@ static const struct spmi_regulator_data pm8941_regulators[] = {
+>  	{ }
+>  };
+>  
+> +static const struct spmi_regulator_data pm8226_regulators[] = {
+> +	{ "s1", 0x1400, "vdd_s1", },
+> +	{ "s2", 0x1700, "vdd_s2", },
+> +	{ "s3", 0x1a00, "vdd_s3", },
+> +	{ "s4", 0x1d00, "vdd_s4", },
+> +	{ "s5", 0x2000, "vdd_s5", },
+> +	{ "l1", 0x4000, "vdd_l1_l2_l4_l5", },
+> +	{ "l2", 0x4100, "vdd_l1_l2_l4_l5", },
+> +	{ "l3", 0x4200, "vdd_l3_l24_l26", },
+> +	{ "l4", 0x4300, "vdd_l1_l2_l4_l5", },
+> +	{ "l5", 0x4400, "vdd_l1_l2_l4_l5", },
+> +	{ "l6", 0x4500, "vdd_l6_l7_l8_l9_l27", },
+> +	{ "l7", 0x4600, "vdd_l6_l7_l8_l9_l27", },
+> +	{ "l8", 0x4700, "vdd_l6_l7_l8_l9_l27", },
+> +	{ "l9", 0x4800, "vdd_l6_l7_l8_l9_l27", },
+> +	{ "l10", 0x4900, "vdd_l10_l11_l13", },
+> +	{ "l11", 0x4a00, "vdd_l10_l11_l13", },
+> +	{ "l12", 0x4b00, "vdd_l12_l14", },
+> +	{ "l13", 0x4c00, "vdd_l10_l11_l13", },
+> +	{ "l14", 0x4d00, "vdd_l12_l14", },
+> +	{ "l15", 0x4e00, "vdd_l15_l16_l17_l18", },
+> +	{ "l16", 0x4f00, "vdd_l15_l16_l17_l18", },
+> +	{ "l17", 0x5000, "vdd_l15_l16_l17_l18", },
+> +	{ "l18", 0x5100, "vdd_l15_l16_l17_l18", },
+> +	{ "l19", 0x5200, "vdd_l19_l20_l21_l22_l23_l28", },
+> +	{ "l20", 0x5300, "vdd_l19_l20_l21_l22_l23_l28", },
+> +	{ "l21", 0x5400, "vdd_l19_l20_l21_l22_l23_l28", },
+> +	{ "l22", 0x5500, "vdd_l19_l20_l21_l22_l23_l28", },
+> +	{ "l23", 0x5600, "vdd_l19_l20_l21_l22_l23_l28", },
+> +	{ "l24", 0x5700, "vdd_l3_l24_l26", },
+> +	{ "l25", 0x5800, "vdd_l25", },
+> +	{ "l26", 0x5900, "vdd_l3_l24_l26", },
+> +	{ "l27", 0x5a00, "vdd_l6_l7_l8_l9_l27", },
+> +	{ "l28", 0x5b00, "vdd_l19_l20_l21_l22_l23_l28", },
+> +	{ "lvs1", 0x8000, "vdd_lvs1", },
+> +	{ }
+> +};
+> +
+>  static const struct spmi_regulator_data pm8841_regulators[] = {
+>  	{ "s1", 0x1400, "vdd_s1", },
+>  	{ "s2", 0x1700, "vdd_s2", NULL, 0x1c08 },
+> @@ -2095,6 +2133,7 @@ static const struct spmi_regulator_data pms405_regulators[] = {
+>  static const struct of_device_id qcom_spmi_regulator_match[] = {
+>  	{ .compatible = "qcom,pm8004-regulators", .data = &pm8004_regulators },
+>  	{ .compatible = "qcom,pm8005-regulators", .data = &pm8005_regulators },
+> +	{ .compatible = "qcom,pm8226-regulators", .data = &pm8226_regulators },
+>  	{ .compatible = "qcom,pm8841-regulators", .data = &pm8841_regulators },
+>  	{ .compatible = "qcom,pm8916-regulators", .data = &pm8916_regulators },
+>  	{ .compatible = "qcom,pm8941-regulators", .data = &pm8941_regulators },
+> -- 
+> 2.34.0
 > 
