@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8688C45C61F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00EED45C25A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353398AbhKXOFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:05:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50840 "EHLO mail.kernel.org"
+        id S1350658AbhKXN1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:27:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353776AbhKXOCi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:02:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63F31613D0;
-        Wed, 24 Nov 2021 13:10:19 +0000 (UTC)
+        id S1347083AbhKXNZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:25:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8CFF610D2;
+        Wed, 24 Nov 2021 12:49:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759420;
-        bh=o9ZgmHuMDnscFdkQdrLy1fHCKJ4iQp9UG8lRVVffQog=;
+        s=korg; t=1637758185;
+        bh=GlPNcBJeMWL74NKDSLiPyvIHe0+lIbxAWpcpydcbWDg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WfxEYs91S236+x1PM4NO28l6iyTbnPjuydXZcfpVMfWMSmvFlOrq5WvNFlQTHjRsD
-         CkGrphv6vo90n+qAqiGMWCvSpM08Md4iFra5BU1X8BqB/LolSmrhGKsIyhPSknUEfN
-         ljopxbL/Sh3Ei3s7bMQHMY7NZep2ehK/0+wxlCh0=
+        b=CqyoNCIDm0S8NWFT475W8bl2otFSChwLoHeJIt1Qmjh6VCr4acAwS+a6FYuAaeT6a
+         juoS6YhbBUmAAWIEMlqW/PQ/3nF9TA3DSZhK5r7t1WQdYNJ9uFXIuLoq5Odhhs5kNm
+         1svOWEVHkRv5Tn4P9Gln9G4K+cl7PXJKYSh+/Kg8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nguyen Dinh Phi <phind.uet@gmail.com>,
-        syzbot+bbf402b783eeb6d908db@syzkaller.appspotmail.com,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.15 236/279] cfg80211: call cfg80211_stop_ap when switch from P2P_GO type
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH 5.4 087/100] drm/udl: fix control-message timeout
 Date:   Wed, 24 Nov 2021 12:58:43 +0100
-Message-Id: <20211124115726.896931015@linuxfoundation.org>
+Message-Id: <20211124115657.665328444@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nguyen Dinh Phi <phind.uet@gmail.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 563fbefed46ae4c1f70cffb8eb54c02df480b2c2 upstream.
+commit 5591c8f79db1729d9c5ac7f5b4d3a5c26e262d93 upstream.
 
-If the userspace tools switch from NL80211_IFTYPE_P2P_GO to
-NL80211_IFTYPE_ADHOC via send_msg(NL80211_CMD_SET_INTERFACE), it
-does not call the cleanup cfg80211_stop_ap(), this leads to the
-initialization of in-use data. For example, this path re-init the
-sdata->assigned_chanctx_list while it is still an element of
-assigned_vifs list, and makes that linked list corrupt.
+USB control-message timeouts are specified in milliseconds and should
+specifically not vary with CONFIG_HZ.
 
-Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
-Reported-by: syzbot+bbf402b783eeb6d908db@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/20211027173722.777287-1-phind.uet@gmail.com
-Cc: stable@vger.kernel.org
-Fixes: ac800140c20e ("cfg80211: .stop_ap when interface is going down")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 5320918b9a87 ("drm/udl: initial UDL driver (v4)")
+Cc: stable@vger.kernel.org      # 3.4
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20211025115353.5089-1-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/wireless/util.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/udl/udl_connector.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/wireless/util.c
-+++ b/net/wireless/util.c
-@@ -1044,6 +1044,7 @@ int cfg80211_change_iface(struct cfg8021
- 
- 		switch (otype) {
- 		case NL80211_IFTYPE_AP:
-+		case NL80211_IFTYPE_P2P_GO:
- 			cfg80211_stop_ap(rdev, dev, true);
- 			break;
- 		case NL80211_IFTYPE_ADHOC:
+--- a/drivers/gpu/drm/udl/udl_connector.c
++++ b/drivers/gpu/drm/udl/udl_connector.c
+@@ -29,7 +29,7 @@ static int udl_get_edid_block(void *data
+ 		ret = usb_control_msg(udl->udev,
+ 				      usb_rcvctrlpipe(udl->udev, 0),
+ 					  (0x02), (0x80 | (0x02 << 5)), bval,
+-					  0xA1, read_buff, 2, HZ);
++					  0xA1, read_buff, 2, 1000);
+ 		if (ret < 1) {
+ 			DRM_ERROR("Read EDID byte %d failed err %x\n", i, ret);
+ 			kfree(read_buff);
 
 
