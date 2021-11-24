@@ -2,84 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5976645B89F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 11:47:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AFD45B89D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 11:47:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240505AbhKXKuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 05:50:40 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:50844 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhKXKuj (ORCPT
+        id S236582AbhKXKuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 05:50:17 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:43750 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229482AbhKXKuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 05:50:39 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 280071C0BA7; Wed, 24 Nov 2021 11:47:25 +0100 (CET)
-Date:   Wed, 24 Nov 2021 11:47:23 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Dealing with custom hardware on x86
-Message-ID: <20211124104723.GA8909@duo.ucw.cz>
-References: <4ad5a438-ddc4-ca0a-a792-09d17edeb66b@alliedtelesis.co.nz>
+        Wed, 24 Nov 2021 05:50:16 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Uy7GqCS_1637750824;
+Received: from 30.21.164.55(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Uy7GqCS_1637750824)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 24 Nov 2021 18:47:05 +0800
+Message-ID: <d51d8f1a-ebda-e45a-9dd5-e5cca707ccdc@linux.alibaba.com>
+Date:   Wed, 24 Nov 2021 18:47:54 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="4Ckj6UjgE2iN1+kY"
-Content-Disposition: inline
-In-Reply-To: <4ad5a438-ddc4-ca0a-a792-09d17edeb66b@alliedtelesis.co.nz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH 2/3] mm: migrate: Correct the hugetlb migration stats
+To:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     ziy@nvidia.com, shy828301@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1636275127.git.baolin.wang@linux.alibaba.com>
+ <71a4b6c22f208728fe8c78ad26375436c4ff9704.1636275127.git.baolin.wang@linux.alibaba.com>
+ <20211115202146.473fff2404d7fb200dd48bd3@linux-foundation.org>
+ <71816b8f-93e5-5a2a-e616-d52a1c4d354c@linux.alibaba.com>
+ <3e6dcac6-c947-5f94-cd94-b59a8247dbcf@oracle.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <3e6dcac6-c947-5f94-cd94-b59a8247dbcf@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---4Ckj6UjgE2iN1+kY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi!
+On 2021/11/24 3:25, Mike Kravetz wrote:
+> On 11/15/21 22:03, Baolin Wang wrote:
+>>
+>>
+>> On 2021/11/16 12:21, Andrew Morton wrote:
+>>> On Sun,  7 Nov 2021 16:57:26 +0800 Baolin Wang <baolin.wang@linux.alibaba.com> wrote:
+>>>
+>>>> Correct the migration stats for hugetlb with using compound_nr() instead
+>>>> of thp_nr_pages(),
+>>>
+>>> It would be helpful to explain why using thp_nr_pages() was wrong.
+>>
+>> Sure. Using thp_nr_pages() to get the number of subpages for a hugetlb is incorrect, since the number of subpages in te hugetlb is not always HPAGE_PMD_NR.
+>>
+> 
+> Correct.  However, prior to this patch the return value from thp_nr_pages
+> was never used for hugetlb pages; only THP.  So, this really did not have any
+> bad side effects prior to this patch that I can see. >
+>>> And to explain the end user visible effects of this bug so we can
+>>
+>> Actually not also user visible effect, but also hugetlb migration stats in kernel are incorrect. For he end user visible effects, like I described in patch 1,  the syscall move_pages() can return a non-migrated number larger than the number of pages the users tried to migrate, when a THP page is failed to migrate. This is confusing for users.
+>>
+> 
+> It looks like hugetlb pages were never taken into account when originally
+> defining the migration stats.  In the documentation (page_migration.rst) it
+> only talks about Normal and THP pages.  It does not mention how hugetlb pages
+> are counted.
+> 
+> Currently, hugetlb pages count as 'a single page' in the stats
+> PGMIGRATE_SUCCESS/FAIL.  Correct?  After this change we will increment these
+> stats by the number of sub-pages.  Correct?
 
-> I'm about to start a project involving custom hardware using an x86 CPU.=
-=20
-> Complicating things somewhat we will have a CPU board supplied by a 3rd=
-=20
-> party vendor using a COM Express type 7 connector which will plug in to=
-=20
-> the board we're designing (actually 2 different boards each with some=20
-> modular aspects) .
->=20
-> Coming from an embedded (mostly ARM) background I'm used to describing=20
-> the hardware via a devicetree and dealing with plug-in modules by=20
-> loading devicetree overlays. How do people achieve this kind of thing on=
-=20
-> x86?
->=20
-> I gather ACPI is involved somewhere but the knowledge that the BIOS has=
-=20
-> will go as far as the COM Express header and somehow we'll have to tell=
-=20
-> the kernel about the various non-probeable (mostly i2c) devices on our=20
-> board which is kind of where I'm stuck. Any pointers would be greatly=20
-> appreciated.
+Right.
 
-In x86 land, we usually use PCI/PCIE and have a add-on board expose
-unique IDs with driver knowing what the IDs are. ACPI should not be
-involved for add-on boards.
+> 
+> I 'think' this is OK since the behavior is not really defined today.  But, we
+> are changing user visible output.
 
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
+Actually we did not change the user visible output for a hugetlb 
+migration. Since we still return the number of hugetlb failed to migrate 
+as before (though previous hugetlb behavior is not reasonable), not the 
+number of hguetlb subpages. We just correct the hugetlb migration stats 
+for the hugetlb in kernel, like PGMIGRATE_SUCCESS/FAIL stats.
 
---4Ckj6UjgE2iN1+kY
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+> Perhaps we should go ahead and document the hugetlb behavior when making these
+> changes?
 
------BEGIN PGP SIGNATURE-----
+Sure. How about adding below modification for hugetlb?
+diff --git a/Documentation/vm/page_migration.rst 
+b/Documentation/vm/page_migration.rst
+index 08810f5..8c5cb81 100644
+--- a/Documentation/vm/page_migration.rst
++++ b/Documentation/vm/page_migration.rst
+@@ -263,15 +263,15 @@ Monitoring Migration
+  The following events (counters) can be used to monitor page migration.
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYZ4YOwAKCRAw5/Bqldv6
-8gxCAJ94m2cCpKrGAdH4sxgKbLZk9Ht+BgCfd163sgp1Ke5Gu8IT//TlGMNZFaQ=
-=1WmC
------END PGP SIGNATURE-----
+  1. PGMIGRATE_SUCCESS: Normal page migration success. Each count means 
+that a
+-   page was migrated. If the page was a non-THP page, then this counter is
+-   increased by one. If the page was a THP, then this counter is 
+increased by
+-   the number of THP subpages. For example, migration of a single 2MB 
+THP that
+-   has 4KB-size base pages (subpages) will cause this counter to 
+increase by
+-   512.
++   page was migrated. If the page was a non-THP and non-hugetlb page, then
++   this counter is increased by one. If the page was a THP or hugetlb, then
++   this counter is increased by the number of THP or hugetlb subpages.
++   For example, migration of a single 2MB THP that has 4KB-size base pages
++   (subpages) will cause this counter to increase by 512.
 
---4Ckj6UjgE2iN1+kY--
+  2. PGMIGRATE_FAIL: Normal page migration failure. Same counting rules 
+as for
+     PGMIGRATE_SUCCESS, above: this will be increased by the number of 
+subpages,
+-   if it was a THP.
++   if it was a THP or hugetlb.
+
+  3. THP_MIGRATION_SUCCESS: A THP was migrated without being split.
