@@ -2,108 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1ED245B6D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:44:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD1445B6DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:46:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241535AbhKXIrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 03:47:15 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:57100 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241436AbhKXIqY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 03:46:24 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D5B4021959;
-        Wed, 24 Nov 2021 08:43:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637743393; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AaW2/94xFEFY81k6qhflOE63X/xcjLk/Nn9FfoW09KM=;
-        b=SEngNy0UOSzXo0fcXZVbmAu1VGT8yHC9geby1rzzhcCjqMZgxH/HNef57QI4Cgz9Q5k6+Y
-        y5eA+Vid/D9IzO7EEfaz+UWBaxmmBk8tNqhUF2BaGatFBqb8bdg7dJm3X+EgG7GKesMGNY
-        +azvVVM5qEuteXHYS/7j34a3oInyqko=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 905AEA3B81;
-        Wed, 24 Nov 2021 08:43:13 +0000 (UTC)
-Date:   Wed, 24 Nov 2021 09:43:12 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
-        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [PATCH v2 2/4] mm/vmalloc: add support for __GFP_NOFAIL
-Message-ID: <YZ37IJq3+DrVhAcD@dhcp22.suse.cz>
-References: <20211122153233.9924-1-mhocko@kernel.org>
- <20211122153233.9924-3-mhocko@kernel.org>
- <YZ06nna7RirAI+vJ@pc638.lan>
- <20211123170238.f0f780ddb800f1316397f97c@linux-foundation.org>
+        id S231310AbhKXIti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 03:49:38 -0500
+Received: from mx24.baidu.com ([111.206.215.185]:33848 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230020AbhKXItg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 03:49:36 -0500
+Received: from BJHW-Mail-Ex09.internal.baidu.com (unknown [10.127.64.32])
+        by Forcepoint Email with ESMTPS id C590B89AF8D965F93731;
+        Wed, 24 Nov 2021 16:46:24 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BJHW-Mail-Ex09.internal.baidu.com (10.127.64.32) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.20; Wed, 24 Nov 2021 16:46:24 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.20; Wed, 24 Nov 2021 16:46:24 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-staging@lists.linux.dev>
+Subject: [PATCH v2 0/3] staging: zynpu: Add driver support for ARM(China) ZHOUYI AI accelerator
+Date:   Wed, 24 Nov 2021 16:46:14 +0800
+Message-ID: <20211124084620.628-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211123170238.f0f780ddb800f1316397f97c@linux-foundation.org>
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex25.internal.baidu.com (172.31.51.19) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 23-11-21 17:02:38, Andrew Morton wrote:
-> On Tue, 23 Nov 2021 20:01:50 +0100 Uladzislau Rezki <urezki@gmail.com> wrote:
-> 
-> > On Mon, Nov 22, 2021 at 04:32:31PM +0100, Michal Hocko wrote:
-> > > From: Michal Hocko <mhocko@suse.com>
-> > > 
-> > > Dave Chinner has mentioned that some of the xfs code would benefit from
-> > > kvmalloc support for __GFP_NOFAIL because they have allocations that
-> > > cannot fail and they do not fit into a single page.
-> 
-> Perhaps we should tell xfs "no, do it internally".  Because this is a
-> rather nasty-looking thing - do we want to encourage other callsites to
-> start using it?
+ZHOUYI NPU is an AI accelerator chip which is integrated into ARM SOC,
+such as Allwinner R329 SOC.
+Add driver support for this AI accelerator here.
 
-This is what xfs is likely going to do if we do not provide the
-functionality. I just do not see why that would be a better outcome
-though. My longterm experience tells me that whenever we ignore
-requirements by other subsystems then those requirements materialize in
-some form in the end. In many cases done either suboptimaly or outright
-wrong. This might be not the case for xfs as the quality of
-implementation is high there but this is not the case in general.
+v1->v2:
+        *Add TODO file
+        *Update changelog to explain why this code is added to staging 
 
-Even if people start using vmalloc(GFP_NOFAIL) out of lazyness or for
-any other stupid reason then what? Is that something we should worry
-about? Retrying within the allocator doesn't make the things worse. In
-fact it is just easier to find such abusers by grep which would be more
-elaborate with custom retry loops.
- 
-[...]
-> > > +		if (nofail) {
-> > > +			schedule_timeout_uninterruptible(1);
-> > > +			goto again;
-> > > +		}
-> 
-> The idea behind congestion_wait() is to prevent us from having to
-> hard-wire delays like this.  congestion_wait(1) would sleep for up to
-> one millisecond, but will return earlier if reclaim events happened
-> which make it likely that the caller can now proceed with the
-> allocation event, successfully.
-> 
-> However it turns out that congestion_wait() was quietly broken at the
-> block level some time ago.  We could perhaps resurrect the concept at
-> another level - say by releasing congestion_wait() callers if an amount
-> of memory newly becomes allocatable.  This obviously asks for inclusion
-> of zone/node/etc info from the congestion_wait() caller.  But that's
-> just an optimization - if the newly-available memory isn't useful to
-> the congestion_wait() caller, they just fail the allocation attempts
-> and wait again.
+Cai Huoqing (3):
+  staging: zynpu: Add driver support for ARM(China) ZHOUYI AI
+    accelerator
+  dt-bindings: staging: Add the binding documentation for ZHOUYI AI
+    accelerator
+  MAINTAINERS: Add the driver info of the ZHOUYI AI accelerator
 
-vmalloc has two potential failure modes. Depleted memory and vmalloc
-space. So there are two different events to wait for. I do agree that
-schedule_timeout_uninterruptible is both ugly and very simple but do we
-really need a much more sophisticated solution at this stage?
+ .../bindings/staging/arm,zynpu.yaml           |  61 ++
+ MAINTAINERS                                   |   6 +
+ drivers/staging/Kconfig                       |   2 +
+ drivers/staging/Makefile                      |   1 +
+ drivers/staging/zynpu/Kconfig                 |  34 +
+ drivers/staging/zynpu/Makefile                |   7 +
+ drivers/staging/zynpu/TODO                    |  13 +
+ drivers/staging/zynpu/z1.c                    | 233 +++++
+ drivers/staging/zynpu/z2.c                    | 297 +++++++
+ drivers/staging/zynpu/zhouyi.h                |  70 ++
+ drivers/staging/zynpu/zhouyi_base.c           |  71 ++
+ drivers/staging/zynpu/zynpu.h                 | 252 ++++++
+ drivers/staging/zynpu/zynpu_core.c            | 254 ++++++
+ drivers/staging/zynpu/zynpu_drv.c             | 349 ++++++++
+ drivers/staging/zynpu/zynpu_fops.c            | 245 ++++++
+ drivers/staging/zynpu/zynpu_io.c              | 133 +++
+ drivers/staging/zynpu/zynpu_io.h              | 119 +++
+ drivers/staging/zynpu/zynpu_irq.c             | 123 +++
+ drivers/staging/zynpu/zynpu_irq.h             |  85 ++
+ drivers/staging/zynpu/zynpu_job_manager.c     | 467 ++++++++++
+ drivers/staging/zynpu/zynpu_job_manager.h     | 200 +++++
+ drivers/staging/zynpu/zynpu_mm.c              | 704 +++++++++++++++
+ drivers/staging/zynpu/zynpu_mm.h              | 142 +++
+ drivers/staging/zynpu/zynpu_session.c         | 817 ++++++++++++++++++
+ drivers/staging/zynpu/zynpu_session.h         | 283 ++++++
+ drivers/staging/zynpu/zynpu_sysfs.c           | 205 +++++
+ 26 files changed, 5173 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/staging/arm,zynpu.yaml
+ create mode 100644 drivers/staging/zynpu/Kconfig
+ create mode 100644 drivers/staging/zynpu/Makefile
+ create mode 100644 drivers/staging/zynpu/TODO
+ create mode 100644 drivers/staging/zynpu/z1.c
+ create mode 100644 drivers/staging/zynpu/z2.c
+ create mode 100644 drivers/staging/zynpu/zhouyi.h
+ create mode 100644 drivers/staging/zynpu/zhouyi_base.c
+ create mode 100644 drivers/staging/zynpu/zynpu.h
+ create mode 100644 drivers/staging/zynpu/zynpu_core.c
+ create mode 100644 drivers/staging/zynpu/zynpu_drv.c
+ create mode 100644 drivers/staging/zynpu/zynpu_fops.c
+ create mode 100644 drivers/staging/zynpu/zynpu_io.c
+ create mode 100644 drivers/staging/zynpu/zynpu_io.h
+ create mode 100644 drivers/staging/zynpu/zynpu_irq.c
+ create mode 100644 drivers/staging/zynpu/zynpu_irq.h
+ create mode 100644 drivers/staging/zynpu/zynpu_job_manager.c
+ create mode 100644 drivers/staging/zynpu/zynpu_job_manager.h
+ create mode 100644 drivers/staging/zynpu/zynpu_mm.c
+ create mode 100644 drivers/staging/zynpu/zynpu_mm.h
+ create mode 100644 drivers/staging/zynpu/zynpu_session.c
+ create mode 100644 drivers/staging/zynpu/zynpu_session.h
+ create mode 100644 drivers/staging/zynpu/zynpu_sysfs.c
+
 -- 
-Michal Hocko
-SUSE Labs
+2.25.1
+
