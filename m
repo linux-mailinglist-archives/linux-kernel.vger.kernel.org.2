@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A27F45BC1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:23:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA00345BE45
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:43:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244542AbhKXM0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:26:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38272 "EHLO mail.kernel.org"
+        id S244354AbhKXMqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:46:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244536AbhKXMXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:23:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBE98611C4;
-        Wed, 24 Nov 2021 12:14:19 +0000 (UTC)
+        id S1344258AbhKXMnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:43:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3052D61244;
+        Wed, 24 Nov 2021 12:25:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756060;
-        bh=X3x6lVBHTUX3sUpDg4LPkWQgiLnTOqpsXZlylvbrU1s=;
+        s=korg; t=1637756726;
+        bh=OUb3d98ovpdn63yizbbTlkew56odWcINU3UE0nSNSU8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VtEgECcaZ3jLv9HdKSPfPAt59mXAuqf3wZ/aLgEi8o+6UlN9i3SYGQTYl5MQ8N9sY
-         qcmhxBc1l2ByL6/uudJmyPj2Jpv9CroEMIe2YGlJTG7XxC1f/vmXqBzJDTEOwlwSnJ
-         I6FiL19mQ12uVglCCd6Urr+Ka858PCpACNycvrV0=
+        b=gr+j6vcFwCGzZR2Q96Hn3woh0Z1zJeO3XHPzuqfIaXSfXaJvvUoN80BmtohQKFwcf
+         v/Bo4cUpC1UBIrNySZDY/s7D1Hf+okToDivCwAtxo9AgewZS9M7tIBlTWqqNqwyqsb
+         vgNau4+spIxrTYLxIGVsZH51VFR/4Q5mjsno2oZI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.9 155/207] powerpc/bpf: Fix BPF_SUB when imm == 0x80000000
+        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Henry Burns <henryburns@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 184/251] mm/zsmalloc.c: close race window between zs_pool_dec_isolated() and zs_unregister_migration()
 Date:   Wed, 24 Nov 2021 12:57:06 +0100
-Message-Id: <20211124115709.028659966@linuxfoundation.org>
+Message-Id: <20211124115716.664398805@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,63 +44,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-upstream commit 5855c4c1f415ca3ba1046e77c0b3d3dfc96c9025
+[ Upstream commit afe8605ca45424629fdddfd85984b442c763dc47 ]
 
-We aren't handling subtraction involving an immediate value of
-0x80000000 properly. Fix the same.
+There is one possible race window between zs_pool_dec_isolated() and
+zs_unregister_migration() because wait_for_isolated_drain() checks the
+isolated count without holding class->lock and there is no order inside
+zs_pool_dec_isolated().  Thus the below race window could be possible:
 
-Fixes: 156d0e290e969c ("powerpc/ebpf/jit: Implement JIT compiler for extended BPF")
-Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-[mpe: Fold in fix from Naveen to use imm <= 32768]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/fc4b1276eb10761fd7ce0814c8dd089da2815251.1633464148.git.naveen.n.rao@linux.vnet.ibm.com
-[adjust macros to account for commits 0654186510a40e and 3a181237916310]
-Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  zs_pool_dec_isolated		zs_unregister_migration
+    check pool->destroying != 0
+				  pool->destroying = true;
+				  smp_mb();
+				  wait_for_isolated_drain()
+				    wait for pool->isolated_pages == 0
+    atomic_long_dec(&pool->isolated_pages);
+    atomic_long_read(&pool->isolated_pages) == 0
+
+Since we observe the pool->destroying (false) before atomic_long_dec()
+for pool->isolated_pages, waking pool->migration_wait up is missed.
+
+Fix this by ensure checking pool->destroying happens after the
+atomic_long_dec(&pool->isolated_pages).
+
+Link: https://lkml.kernel.org/r/20210708115027.7557-1-linmiaohe@huawei.com
+Fixes: 701d678599d0 ("mm/zsmalloc.c: fix race condition in zs_destroy_pool")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Henry Burns <henryburns@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/net/bpf_jit_comp64.c |   27 +++++++++++++++++----------
- 1 file changed, 17 insertions(+), 10 deletions(-)
+ mm/zsmalloc.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/arch/powerpc/net/bpf_jit_comp64.c
-+++ b/arch/powerpc/net/bpf_jit_comp64.c
-@@ -363,18 +363,25 @@ static int bpf_jit_build_body(struct bpf
- 			PPC_SUB(dst_reg, dst_reg, src_reg);
- 			goto bpf_alu32_trunc;
- 		case BPF_ALU | BPF_ADD | BPF_K: /* (u32) dst += (u32) imm */
--		case BPF_ALU | BPF_SUB | BPF_K: /* (u32) dst -= (u32) imm */
- 		case BPF_ALU64 | BPF_ADD | BPF_K: /* dst += imm */
-+			if (!imm) {
-+				goto bpf_alu32_trunc;
-+			} else if (imm >= -32768 && imm < 32768) {
-+				PPC_ADDI(dst_reg, dst_reg, IMM_L(imm));
-+			} else {
-+				PPC_LI32(b2p[TMP_REG_1], imm);
-+				PPC_ADD(dst_reg, dst_reg, b2p[TMP_REG_1]);
-+			}
-+			goto bpf_alu32_trunc;
-+		case BPF_ALU | BPF_SUB | BPF_K: /* (u32) dst -= (u32) imm */
- 		case BPF_ALU64 | BPF_SUB | BPF_K: /* dst -= imm */
--			if (BPF_OP(code) == BPF_SUB)
--				imm = -imm;
--			if (imm) {
--				if (imm >= -32768 && imm < 32768)
--					PPC_ADDI(dst_reg, dst_reg, IMM_L(imm));
--				else {
--					PPC_LI32(b2p[TMP_REG_1], imm);
--					PPC_ADD(dst_reg, dst_reg, b2p[TMP_REG_1]);
--				}
-+			if (!imm) {
-+				goto bpf_alu32_trunc;
-+			} else if (imm > -32768 && imm <= 32768) {
-+				PPC_ADDI(dst_reg, dst_reg, IMM_L(-imm));
-+			} else {
-+				PPC_LI32(b2p[TMP_REG_1], imm);
-+				PPC_SUB(dst_reg, dst_reg, b2p[TMP_REG_1]);
- 			}
- 			goto bpf_alu32_trunc;
- 		case BPF_ALU | BPF_MUL | BPF_X: /* (u32) dst *= (u32) src */
+diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+index 633ebcac82f8d..6cdb49ae00010 100644
+--- a/mm/zsmalloc.c
++++ b/mm/zsmalloc.c
+@@ -1901,10 +1901,11 @@ static inline void zs_pool_dec_isolated(struct zs_pool *pool)
+ 	VM_BUG_ON(atomic_long_read(&pool->isolated_pages) <= 0);
+ 	atomic_long_dec(&pool->isolated_pages);
+ 	/*
+-	 * There's no possibility of racing, since wait_for_isolated_drain()
+-	 * checks the isolated count under &class->lock after enqueuing
+-	 * on migration_wait.
++	 * Checking pool->destroying must happen after atomic_long_dec()
++	 * for pool->isolated_pages above. Paired with the smp_mb() in
++	 * zs_unregister_migration().
+ 	 */
++	smp_mb__after_atomic();
+ 	if (atomic_long_read(&pool->isolated_pages) == 0 && pool->destroying)
+ 		wake_up_all(&pool->migration_wait);
+ }
+-- 
+2.33.0
+
 
 
