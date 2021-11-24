@@ -2,45 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D278E45C22B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:22:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B491E45C64A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:03:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347314AbhKXNZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:25:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47200 "EHLO mail.kernel.org"
+        id S1351653AbhKXOGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 09:06:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348624AbhKXNWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:22:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6177661288;
-        Wed, 24 Nov 2021 12:47:33 +0000 (UTC)
+        id S1353541AbhKXOCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 09:02:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2686F632ED;
+        Wed, 24 Nov 2021 13:09:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758054;
-        bh=6KHWeQcoARM4R9/c5+12qMBsR1e5cPI96Ro90QMzT5I=;
+        s=korg; t=1637759396;
+        bh=pgkDtIHByAyhTVhaDVXNHeOSkhnjgC0jZKj3W7/UP0A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LVq8LpC7OCg6pHZs0AMeeE5p/R43pHjk8x9En1ve+AOP/KCvDBtYCDHRAIkrxmwOw
-         Riay6McCr5fylrt7d2osZlnvbESie9TpSmlJvIz0ExA3lnwY1ygwlvPx1EnBqZLv2o
-         OaSAYMhcRzaLUNE9n+7+7OXjDnI9D+cssC+jjknU=
+        b=r04xKZD7W34BDFifWIUwL3RL4Stw+ibUoxXxNmpf781aB6XFtGt+8/IxZL/0Qw/CF
+         aQ0pmLYbRJQcDw5EeqBY5ZCRwKMk4m72ELVa4Vwn3g6iAZsVVNr3NfY7Wr6YA2cM4t
+         yJSuweB6VLcyc9N/dS8GcS/r6oa4RFvELD96zKIQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sohaib Mohamed <sohaib.amhmd@gmail.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
-        Darren Hart <dvhart@infradead.org>,
+        stable@vger.kernel.org, Manfred Spraul <manfred@colorfullife.com>,
+        Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
         Davidlohr Bueso <dave@stgolabs.net>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 045/100] perf bench futex: Fix memory leak of perf_cpu_map__new()
+        Andrei Vagin <avagin@gmail.com>,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.15 194/279] ipc: WARN if trying to remove ipc object which is absent
 Date:   Wed, 24 Nov 2021 12:58:01 +0100
-Message-Id: <20211124115656.337659448@linuxfoundation.org>
+Message-Id: <20211124115725.433153454@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,90 +46,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sohaib Mohamed <sohaib.amhmd@gmail.com>
+From: Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
 
-[ Upstream commit 88e48238d53682281c9de2a0b65d24d3b64542a0 ]
+commit 126e8bee943e9926238c891e2df5b5573aee76bc upstream.
 
-ASan reports memory leaks while running:
+Patch series "shm: shm_rmid_forced feature fixes".
 
-  $ sudo ./perf bench futex all
+Some time ago I met kernel crash after CRIU restore procedure,
+fortunately, it was CRIU restore, so, I had dump files and could do
+restore many times and crash reproduced easily.  After some
+investigation I've constructed the minimal reproducer.  It was found
+that it's use-after-free and it happens only if sysctl
+kernel.shm_rmid_forced = 1.
 
-The leaks are caused by perf_cpu_map__new not being freed.
-This patch adds the missing perf_cpu_map__put since it calls
-cpu_map_delete implicitly.
+The key of the problem is that the exit_shm() function not handles shp's
+object destroy when task->sysvshm.shm_clist contains items from
+different IPC namespaces.  In most cases this list will contain only
+items from one IPC namespace.
 
-Fixes: 9c3516d1b850ea93 ("libperf: Add perf_cpu_map__new()/perf_cpu_map__read() functions")
-Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: André Almeida <andrealmeid@collabora.com>
-Cc: Darren Hart <dvhart@infradead.org>
+How can this list contain object from different namespaces? The
+exit_shm() function is designed to clean up this list always when
+process leaves IPC namespace.  But we made a mistake a long time ago and
+did not add a exit_shm() call into the setns() syscall procedures.
+
+The first idea was just to add this call to setns() syscall but it
+obviously changes semantics of setns() syscall and that's
+userspace-visible change.  So, I gave up on this idea.
+
+The first real attempt to address the issue was just to omit forced
+destroy if we meet shp object not from current task IPC namespace [1].
+But that was not the best idea because task->sysvshm.shm_clist was
+protected by rwsem which belongs to current task IPC namespace.  It
+means that list corruption may occur.
+
+Second approach is just extend exit_shm() to properly handle shp's from
+different IPC namespaces [2].  This is really non-trivial thing, I've
+put a lot of effort into that but not believed that it's possible to
+make it fully safe, clean and clear.
+
+Thanks to the efforts of Manfred Spraul working an elegant solution was
+designed.  Thanks a lot, Manfred!
+
+Eric also suggested the way to address the issue in ("[RFC][PATCH] shm:
+In shm_exit destroy all created and never attached segments") Eric's
+idea was to maintain a list of shm_clists one per IPC namespace, use
+lock-less lists.  But there is some extra memory consumption-related
+concerns.
+
+An alternative solution which was suggested by me was implemented in
+("shm: reset shm_clist on setns but omit forced shm destroy").  The idea
+is pretty simple, we add exit_shm() syscall to setns() but DO NOT
+destroy shm segments even if sysctl kernel.shm_rmid_forced = 1, we just
+clean up the task->sysvshm.shm_clist list.
+
+This chages semantics of setns() syscall a little bit but in comparision
+to the "naive" solution when we just add exit_shm() without any special
+exclusions this looks like a safer option.
+
+[1] https://lkml.org/lkml/2021/7/6/1108
+[2] https://lkml.org/lkml/2021/7/14/736
+
+This patch (of 2):
+
+Let's produce a warning if we trying to remove non-existing IPC object
+from IPC namespace kht/idr structures.
+
+This allows us to catch possible bugs when the ipc_rmid() function was
+called with inconsistent struct ipc_ids*, struct kern_ipc_perm*
+arguments.
+
+Link: https://lkml.kernel.org/r/20211027224348.611025-1-alexander.mikhalitsyn@virtuozzo.com
+Link: https://lkml.kernel.org/r/20211027224348.611025-2-alexander.mikhalitsyn@virtuozzo.com
+Co-developed-by: Manfred Spraul <manfred@colorfullife.com>
+Signed-off-by: Manfred Spraul <manfred@colorfullife.com>
+Signed-off-by: Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
 Cc: Davidlohr Bueso <dave@stgolabs.net>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Sohaib Mohamed <sohaib.amhmd@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Link: http://lore.kernel.org/lkml/20211112201134.77892-1-sohaib.amhmd@gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: Greg KH <gregkh@linuxfoundation.org>
+Cc: Andrei Vagin <avagin@gmail.com>
+Cc: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Cc: Vasily Averin <vvs@virtuozzo.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/bench/futex-lock-pi.c       | 1 +
- tools/perf/bench/futex-requeue.c       | 1 +
- tools/perf/bench/futex-wake-parallel.c | 1 +
- tools/perf/bench/futex-wake.c          | 1 +
- 4 files changed, 4 insertions(+)
+ ipc/util.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/bench/futex-lock-pi.c b/tools/perf/bench/futex-lock-pi.c
-index 30d97121dc4fb..c54013806ba4a 100644
---- a/tools/perf/bench/futex-lock-pi.c
-+++ b/tools/perf/bench/futex-lock-pi.c
-@@ -224,6 +224,7 @@ int bench_futex_lock_pi(int argc, const char **argv)
- 	print_summary();
- 
- 	free(worker);
-+	perf_cpu_map__put(cpu);
- 	return ret;
- err:
- 	usage_with_options(bench_futex_lock_pi_usage, options);
-diff --git a/tools/perf/bench/futex-requeue.c b/tools/perf/bench/futex-requeue.c
-index a00a6891447ab..11b7dbd374864 100644
---- a/tools/perf/bench/futex-requeue.c
-+++ b/tools/perf/bench/futex-requeue.c
-@@ -215,6 +215,7 @@ int bench_futex_requeue(int argc, const char **argv)
- 	print_summary();
- 
- 	free(worker);
-+	perf_cpu_map__put(cpu);
- 	return ret;
- err:
- 	usage_with_options(bench_futex_requeue_usage, options);
-diff --git a/tools/perf/bench/futex-wake-parallel.c b/tools/perf/bench/futex-wake-parallel.c
-index a053cf2b70397..c3033d0905db1 100644
---- a/tools/perf/bench/futex-wake-parallel.c
-+++ b/tools/perf/bench/futex-wake-parallel.c
-@@ -319,6 +319,7 @@ int bench_futex_wake_parallel(int argc, const char **argv)
- 	print_summary();
- 
- 	free(blocked_worker);
-+	perf_cpu_map__put(cpu);
- 	return ret;
+--- a/ipc/util.c
++++ b/ipc/util.c
+@@ -447,8 +447,8 @@ static int ipcget_public(struct ipc_name
+ static void ipc_kht_remove(struct ipc_ids *ids, struct kern_ipc_perm *ipcp)
+ {
+ 	if (ipcp->key != IPC_PRIVATE)
+-		rhashtable_remove_fast(&ids->key_ht, &ipcp->khtnode,
+-				       ipc_kht_params);
++		WARN_ON_ONCE(rhashtable_remove_fast(&ids->key_ht, &ipcp->khtnode,
++				       ipc_kht_params));
  }
- #endif /* HAVE_PTHREAD_BARRIER */
-diff --git a/tools/perf/bench/futex-wake.c b/tools/perf/bench/futex-wake.c
-index 58906e9499bb0..ad44a78392dc4 100644
---- a/tools/perf/bench/futex-wake.c
-+++ b/tools/perf/bench/futex-wake.c
-@@ -209,5 +209,6 @@ int bench_futex_wake(int argc, const char **argv)
- 	print_summary();
  
- 	free(worker);
-+	perf_cpu_map__put(cpu);
- 	return ret;
- }
--- 
-2.33.0
-
+ /**
+@@ -498,7 +498,7 @@ void ipc_rmid(struct ipc_ids *ids, struc
+ {
+ 	int idx = ipcid_to_idx(ipcp->id);
+ 
+-	idr_remove(&ids->ipcs_idr, idx);
++	WARN_ON_ONCE(idr_remove(&ids->ipcs_idr, idx) != ipcp);
+ 	ipc_kht_remove(ids, ipcp);
+ 	ids->in_use--;
+ 	ipcp->deleted = true;
 
 
