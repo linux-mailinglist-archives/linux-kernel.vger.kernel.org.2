@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5063145BD91
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:36:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B485C45BB32
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244050AbhKXMj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:39:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49474 "EHLO mail.kernel.org"
+        id S242787AbhKXMR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:17:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343712AbhKXMeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:34:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EE116137A;
-        Wed, 24 Nov 2021 12:21:02 +0000 (UTC)
+        id S243504AbhKXMOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:14:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CD05610D0;
+        Wed, 24 Nov 2021 12:09:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756463;
-        bh=I2o6nHxO20gFl7KxzgRuNj8rn4mK5kS0r16cu7C+wx4=;
+        s=korg; t=1637755742;
+        bh=eOdx1H+NL4oZmlWxAKwQ2F82Tg9Lx5x8wGX7LIWlMVc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tu55ovbhNLAVdS4V5NR+T3MrP3D3W9aD2FxXXrGXz/LZfsr29z0kkRFK35YTZXbBU
-         5tT4fGl508MEulZbY1opm+wcRfPZwXXvnppW0qsc/8IfDDYU5mxvZIPeL7VYMQffEJ
-         +E34GDnlTyzqP3Sh0wAn0hKOi7U909i7cu9iQhIM=
+        b=n9YtoMU5Ulfbhykse9JvWvB++02Qbq1wmpEW+jzQNYAURThWTJSgoM7rSE23u7t09
+         TGBZ76UkByczYldeUWlkirJMBq3nA09wRTzrkXQE6KGBF1TbaNrEJSxLcXXEsrGPw0
+         vp/EVkiS7wmyOyhW4hDO52D783EgbtYZ3Q2ImzJk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 069/251] Bluetooth: fix use-after-free error in lock_sock_nested()
+        stable@vger.kernel.org, Benjamin Li <benl@squareup.com>,
+        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 4.9 040/207] wcn36xx: handle connection loss indication
 Date:   Wed, 24 Nov 2021 12:55:11 +0100
-Message-Id: <20211124115712.647689946@linuxfoundation.org>
+Message-Id: <20211124115705.235592485@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,139 +41,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang ShaoBo <bobo.shaobowang@huawei.com>
+From: Benjamin Li <benl@squareup.com>
 
-[ Upstream commit 1bff51ea59a9afb67d2dd78518ab0582a54a472c ]
+commit d6dbce453b19c64b96f3e927b10230f9a704b504 upstream.
 
-use-after-free error in lock_sock_nested is reported:
+Firmware sends delete_sta_context_ind when it detects the AP has gone
+away in STA mode. Right now the handler for that indication only handles
+AP mode; fix it to also handle STA mode.
 
-[  179.140137][ T3731] =====================================================
-[  179.142675][ T3731] BUG: KMSAN: use-after-free in lock_sock_nested+0x280/0x2c0
-[  179.145494][ T3731] CPU: 4 PID: 3731 Comm: kworker/4:2 Not tainted 5.12.0-rc6+ #54
-[  179.148432][ T3731] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-[  179.151806][ T3731] Workqueue: events l2cap_chan_timeout
-[  179.152730][ T3731] Call Trace:
-[  179.153301][ T3731]  dump_stack+0x24c/0x2e0
-[  179.154063][ T3731]  kmsan_report+0xfb/0x1e0
-[  179.154855][ T3731]  __msan_warning+0x5c/0xa0
-[  179.155579][ T3731]  lock_sock_nested+0x280/0x2c0
-[  179.156436][ T3731]  ? kmsan_get_metadata+0x116/0x180
-[  179.157257][ T3731]  l2cap_sock_teardown_cb+0xb8/0x890
-[  179.158154][ T3731]  ? __msan_metadata_ptr_for_load_8+0x10/0x20
-[  179.159141][ T3731]  ? kmsan_get_metadata+0x116/0x180
-[  179.159994][ T3731]  ? kmsan_get_shadow_origin_ptr+0x84/0xb0
-[  179.160959][ T3731]  ? l2cap_sock_recv_cb+0x420/0x420
-[  179.161834][ T3731]  l2cap_chan_del+0x3e1/0x1d50
-[  179.162608][ T3731]  ? kmsan_get_metadata+0x116/0x180
-[  179.163435][ T3731]  ? kmsan_get_shadow_origin_ptr+0x84/0xb0
-[  179.164406][ T3731]  l2cap_chan_close+0xeea/0x1050
-[  179.165189][ T3731]  ? kmsan_internal_unpoison_shadow+0x42/0x70
-[  179.166180][ T3731]  l2cap_chan_timeout+0x1da/0x590
-[  179.167066][ T3731]  ? __msan_metadata_ptr_for_load_8+0x10/0x20
-[  179.168023][ T3731]  ? l2cap_chan_create+0x560/0x560
-[  179.168818][ T3731]  process_one_work+0x121d/0x1ff0
-[  179.169598][ T3731]  worker_thread+0x121b/0x2370
-[  179.170346][ T3731]  kthread+0x4ef/0x610
-[  179.171010][ T3731]  ? process_one_work+0x1ff0/0x1ff0
-[  179.171828][ T3731]  ? kthread_blkcg+0x110/0x110
-[  179.172587][ T3731]  ret_from_fork+0x1f/0x30
-[  179.173348][ T3731]
-[  179.173752][ T3731] Uninit was created at:
-[  179.174409][ T3731]  kmsan_internal_poison_shadow+0x5c/0xf0
-[  179.175373][ T3731]  kmsan_slab_free+0x76/0xc0
-[  179.176060][ T3731]  kfree+0x3a5/0x1180
-[  179.176664][ T3731]  __sk_destruct+0x8af/0xb80
-[  179.177375][ T3731]  __sk_free+0x812/0x8c0
-[  179.178032][ T3731]  sk_free+0x97/0x130
-[  179.178686][ T3731]  l2cap_sock_release+0x3d5/0x4d0
-[  179.179457][ T3731]  sock_close+0x150/0x450
-[  179.180117][ T3731]  __fput+0x6bd/0xf00
-[  179.180787][ T3731]  ____fput+0x37/0x40
-[  179.181481][ T3731]  task_work_run+0x140/0x280
-[  179.182219][ T3731]  do_exit+0xe51/0x3e60
-[  179.182930][ T3731]  do_group_exit+0x20e/0x450
-[  179.183656][ T3731]  get_signal+0x2dfb/0x38f0
-[  179.184344][ T3731]  arch_do_signal_or_restart+0xaa/0xe10
-[  179.185266][ T3731]  exit_to_user_mode_prepare+0x2d2/0x560
-[  179.186136][ T3731]  syscall_exit_to_user_mode+0x35/0x60
-[  179.186984][ T3731]  do_syscall_64+0xc5/0x140
-[  179.187681][ T3731]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  179.188604][ T3731] =====================================================
-
-In our case, there are two Thread A and B:
-
-Context: Thread A:              Context: Thread B:
-
-l2cap_chan_timeout()            __se_sys_shutdown()
-  l2cap_chan_close()              l2cap_sock_shutdown()
-    l2cap_chan_del()                l2cap_chan_close()
-      l2cap_sock_teardown_cb()        l2cap_sock_teardown_cb()
-
-Once l2cap_sock_teardown_cb() excuted, this sock will be marked as SOCK_ZAPPED,
-and can be treated as killable in l2cap_sock_kill() if sock_orphan() has
-excuted, at this time we close sock through sock_close() which end to call
-l2cap_sock_kill() like Thread C:
-
-Context: Thread C:
-
-sock_close()
-  l2cap_sock_release()
-    sock_orphan()
-    l2cap_sock_kill()  #free sock if refcnt is 1
-
-If C completed, Once A or B reaches l2cap_sock_teardown_cb() again,
-use-after-free happened.
-
-We should set chan->data to NULL if sock is destructed, for telling teardown
-operation is not allowed in l2cap_sock_teardown_cb(), and also we should
-avoid killing an already killed socket in l2cap_sock_close_cb().
-
-Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Benjamin Li <benl@squareup.com>
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210901180606.11686-1-benl@squareup.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/bluetooth/l2cap_sock.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/wcn36xx/smd.c |   44 ++++++++++++++++++++++++---------
+ 1 file changed, 33 insertions(+), 11 deletions(-)
 
-diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
-index 3905af1d300f7..13d070e7738db 100644
---- a/net/bluetooth/l2cap_sock.c
-+++ b/net/bluetooth/l2cap_sock.c
-@@ -1329,6 +1329,9 @@ static void l2cap_sock_close_cb(struct l2cap_chan *chan)
+--- a/drivers/net/wireless/ath/wcn36xx/smd.c
++++ b/drivers/net/wireless/ath/wcn36xx/smd.c
+@@ -2081,30 +2081,52 @@ static int wcn36xx_smd_delete_sta_contex
+ 					      size_t len)
  {
- 	struct sock *sk = chan->data;
+ 	struct wcn36xx_hal_delete_sta_context_ind_msg *rsp = buf;
+-	struct wcn36xx_vif *tmp;
++	struct wcn36xx_vif *vif_priv;
++	struct ieee80211_vif *vif;
++	struct ieee80211_bss_conf *bss_conf;
+ 	struct ieee80211_sta *sta;
++	bool found = false;
  
-+	if (!sk)
-+		return;
+ 	if (len != sizeof(*rsp)) {
+ 		wcn36xx_warn("Corrupted delete sta indication\n");
+ 		return -EIO;
+ 	}
+ 
+-	wcn36xx_dbg(WCN36XX_DBG_HAL, "delete station indication %pM index %d\n",
+-		    rsp->addr2, rsp->sta_id);
++	wcn36xx_dbg(WCN36XX_DBG_HAL,
++		    "delete station indication %pM index %d reason %d\n",
++		    rsp->addr2, rsp->sta_id, rsp->reason_code);
+ 
+-	list_for_each_entry(tmp, &wcn->vif_list, list) {
++	list_for_each_entry(vif_priv, &wcn->vif_list, list) {
+ 		rcu_read_lock();
+-		sta = ieee80211_find_sta(wcn36xx_priv_to_vif(tmp), rsp->addr2);
+-		if (sta)
+-			ieee80211_report_low_ack(sta, 0);
++		vif = wcn36xx_priv_to_vif(vif_priv);
 +
- 	l2cap_sock_kill(sk);
++		if (vif->type == NL80211_IFTYPE_STATION) {
++			/* We could call ieee80211_find_sta too, but checking
++			 * bss_conf is clearer.
++			 */
++			bss_conf = &vif->bss_conf;
++			if (vif_priv->sta_assoc &&
++			    !memcmp(bss_conf->bssid, rsp->addr2, ETH_ALEN)) {
++				found = true;
++				wcn36xx_dbg(WCN36XX_DBG_HAL,
++					    "connection loss bss_index %d\n",
++					    vif_priv->bss_index);
++				ieee80211_connection_loss(vif);
++			}
++		} else {
++			sta = ieee80211_find_sta(vif, rsp->addr2);
++			if (sta) {
++				found = true;
++				ieee80211_report_low_ack(sta, 0);
++			}
++		}
++
+ 		rcu_read_unlock();
+-		if (sta)
++		if (found)
+ 			return 0;
+ 	}
+ 
+-	wcn36xx_warn("STA with addr %pM and index %d not found\n",
+-		     rsp->addr2,
+-		     rsp->sta_id);
++	wcn36xx_warn("BSS or STA with addr %pM not found\n", rsp->addr2);
+ 	return -ENOENT;
  }
  
-@@ -1337,6 +1340,9 @@ static void l2cap_sock_teardown_cb(struct l2cap_chan *chan, int err)
- 	struct sock *sk = chan->data;
- 	struct sock *parent;
- 
-+	if (!sk)
-+		return;
-+
- 	BT_DBG("chan %p state %s", chan, state_to_string(chan->state));
- 
- 	/* This callback can be called both for server (BT_LISTEN)
-@@ -1520,8 +1526,10 @@ static void l2cap_sock_destruct(struct sock *sk)
- {
- 	BT_DBG("sk %p", sk);
- 
--	if (l2cap_pi(sk)->chan)
-+	if (l2cap_pi(sk)->chan) {
-+		l2cap_pi(sk)->chan->data = NULL;
- 		l2cap_chan_put(l2cap_pi(sk)->chan);
-+	}
- 
- 	if (l2cap_pi(sk)->rx_busy_skb) {
- 		kfree_skb(l2cap_pi(sk)->rx_busy_skb);
--- 
-2.33.0
-
 
 
