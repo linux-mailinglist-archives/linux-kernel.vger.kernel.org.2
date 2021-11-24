@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B5E45BD2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:33:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F405B45BFAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:58:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343818AbhKXMgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:36:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49554 "EHLO mail.kernel.org"
+        id S243952AbhKXNAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:00:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343940AbhKXMaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:30:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B5B16128A;
-        Wed, 24 Nov 2021 12:18:26 +0000 (UTC)
+        id S1345827AbhKXM6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:58:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6B426137C;
+        Wed, 24 Nov 2021 12:33:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756306;
-        bh=kGwhXI24Z1/O4TZFZLiCW7mKgYfnLyCqPYZBWjOjpgo=;
+        s=korg; t=1637757207;
+        bh=yJpfEgi86xUwzEv0QSvB5hQZIBPmSZ3laHF0izDcRlM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cBUICKltur0AhQHjyIELnmGqS2wPEU6wAaRNs8/FCpqmV2zFaxFTIoVi9Bd8z8+Wa
-         sOyT3cVVQEYCSj9Snoefa5GBpRmf3utdnuQbXsz93IKctx2D1JL3O3C/qp+i0t7FxE
-         33/LvBThDfcCEc42007ru1sEk+Uv508R9I9NamKQ=
+        b=ANGQdwVKXA6LAFh2fZKGHPMxrZJkvmfUvAdAlueFHPbwjPhT6IMsnXP3i7jY1FEZm
+         OQWsHljzjlrgh+yQ6J7JXmQN/ilhM9C2KpD5wopzNzFA+sgycHA4mptV5B42jx/4qa
+         hGYQ/iStXEE3IlCq2kLYpHUeFxUYY6mIP+Ocunyk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ingmar Klein <ingmar_klein@web.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH 4.14 041/251] PCI: Mark Atheros QCA6174 to avoid bus reset
+        stable@vger.kernel.org,
+        =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 093/323] mwifiex: Properly initialize private structure on interface type changes
 Date:   Wed, 24 Nov 2021 12:54:43 +0100
-Message-Id: <20211124115711.667874318@linuxfoundation.org>
+Message-Id: <20211124115722.091039870@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ingmar Klein <ingmar_klein@web.de>
+From: Jonas Dreßler <verdre@v0yd.nl>
 
-commit e3f4bd3462f6f796594ecc0dda7144ed2d1e5a26 upstream.
+[ Upstream commit c606008b70627a2fc485732a53cc22f0f66d0981 ]
 
-When passing the Atheros QCA6174 through to a virtual machine, the VM hangs
-at the point where the ath10k driver loads.
+When creating a new virtual interface in mwifiex_add_virtual_intf(), we
+update our internal driver states like bss_type, bss_priority, bss_role
+and bss_mode to reflect the mode the firmware will be set to.
 
-Add a quirk to avoid bus resets on this device, which avoids the hang.
+When switching virtual interface mode using
+mwifiex_init_new_priv_params() though, we currently only update bss_mode
+and bss_role. In order for the interface mode switch to actually work,
+we also need to update bss_type to its proper value, so do that.
 
-[bhelgaas: commit log]
-Link: https://lore.kernel.org/r/08982e05-b6e8-5a8d-24ab-da1488ee50a8@web.de
-Signed-off-by: Ingmar Klein <ingmar_klein@web.de>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Pali Rohár <pali@kernel.org>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This fixes a crash of the firmware (because the driver tries to execute
+commands that are invalid in AP mode) when switching from station mode
+to AP mode.
+
+Signed-off-by: Jonas Dreßler <verdre@v0yd.nl>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210914195909.36035-9-verdre@v0yd.nl
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/quirks.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/marvell/mwifiex/cfg80211.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3414,6 +3414,7 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_A
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003c, quirk_no_bus_reset);
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0033, quirk_no_bus_reset);
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0034, quirk_no_bus_reset);
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003e, quirk_no_bus_reset);
- 
- /*
-  * Some TI KeyStone C667X devices do not support bus/hot reset.  The PCIESS
+diff --git a/drivers/net/wireless/marvell/mwifiex/cfg80211.c b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
+index becde7c254de2..892247145f428 100644
+--- a/drivers/net/wireless/marvell/mwifiex/cfg80211.c
++++ b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
+@@ -912,16 +912,20 @@ mwifiex_init_new_priv_params(struct mwifiex_private *priv,
+ 	switch (type) {
+ 	case NL80211_IFTYPE_STATION:
+ 	case NL80211_IFTYPE_ADHOC:
+-		priv->bss_role =  MWIFIEX_BSS_ROLE_STA;
++		priv->bss_role = MWIFIEX_BSS_ROLE_STA;
++		priv->bss_type = MWIFIEX_BSS_TYPE_STA;
+ 		break;
+ 	case NL80211_IFTYPE_P2P_CLIENT:
+-		priv->bss_role =  MWIFIEX_BSS_ROLE_STA;
++		priv->bss_role = MWIFIEX_BSS_ROLE_STA;
++		priv->bss_type = MWIFIEX_BSS_TYPE_P2P;
+ 		break;
+ 	case NL80211_IFTYPE_P2P_GO:
+-		priv->bss_role =  MWIFIEX_BSS_ROLE_UAP;
++		priv->bss_role = MWIFIEX_BSS_ROLE_UAP;
++		priv->bss_type = MWIFIEX_BSS_TYPE_P2P;
+ 		break;
+ 	case NL80211_IFTYPE_AP:
+ 		priv->bss_role = MWIFIEX_BSS_ROLE_UAP;
++		priv->bss_type = MWIFIEX_BSS_TYPE_UAP;
+ 		break;
+ 	default:
+ 		mwifiex_dbg(adapter, ERROR,
+-- 
+2.33.0
+
 
 
