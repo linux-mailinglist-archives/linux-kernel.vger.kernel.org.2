@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B342245C5F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:01:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A27E45C23B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:23:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355946AbhKXODN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:03:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48818 "EHLO mail.kernel.org"
+        id S1344937AbhKXN0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:26:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353699AbhKXOAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:00:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A3946124C;
-        Wed, 24 Nov 2021 13:09:23 +0000 (UTC)
+        id S1348187AbhKXNYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:24:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88A7461B2F;
+        Wed, 24 Nov 2021 12:48:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759364;
-        bh=Pwizb7axEw5ynMLJ3luqOWFVqtMUOCr8iGZOMoKNqDo=;
+        s=korg; t=1637758123;
+        bh=mBuoZQDenMhgtac0+5Pyq5FblqnIO9polJQAiaVDuwk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mA6VbIQMWwcbLSvr5gkpBp/mv7rW4ntHhnt0sVTkRxNg3oOl7mBkeREpn0EAfxroI
-         /4IULT/kBM8Kpuo8Nz4uyfjQzjCydAuA4mJLNTgkrb5vTT5D2+2f+2+63rqIaY0XcW
-         35aSxpQLoifEyX9doiygW/lpmSLl6iycA+dZNWXY=
+        b=l6MZWOoyPx7mLrU1VD9jNrBtCiGlILXjgtGvNwoMm4oSmfV5rzIGZ1nFJxKN23dMD
+         d2t12j3EwNijAltKELbKJIqAVVUORooClv7KT+uv8Zm9vkQg7A7q0VQT8Hp3OxHeYa
+         upQswoc9iFY84OmRmhlmo8s2aBrENjxOa1vl+GeE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Luiz Angelo Daros de Luca <luizluca@gmail.com>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5.15 216/279] pinctrl: ralink: include ralink_regs.h in pinctrl-mt7620.c
+        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
+        Mateusz Palczewski <mateusz.palczewski@intel.com>,
+        Dave Switzer <david.switzer@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 067/100] i40e: Fix display error code in dmesg
 Date:   Wed, 24 Nov 2021 12:58:23 +0100
-Message-Id: <20211124115726.206048999@linuxfoundation.org>
+Message-Id: <20211124115657.040033817@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
+References: <20211124115654.849735859@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,32 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+From: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
 
-commit a5b9703fe11cd1d6d7a60102aa2abe686dc1867f upstream.
+[ Upstream commit 5aff430d4e33a0b48a6b3d5beb06f79da23f9916 ]
 
-mt7620.h, included by pinctrl-mt7620.c, mentions MT762X_SOC_MT7628AN
-declared in ralink_regs.h.
+Fix misleading display error in dmesg if tc filter return fail.
+Only i40e status error code should be converted to string, not linux
+error code. Otherwise, we return false information about the error.
 
-Fixes: 745ec436de72 ("pinctrl: ralink: move MT7620 SoC pinmux config into a new 'pinctrl-mt7620.c' file")
-Cc: stable@vger.kernel.org
-Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Link: https://lore.kernel.org/r/20211031064046.13533-1-sergio.paracuellos@gmail.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 2f4b411a3d67 ("i40e: Enable cloud filters via tc-flower")
+Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
+Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
+Tested-by: Dave Switzer <david.switzer@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/ralink/pinctrl-mt7620.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/drivers/pinctrl/ralink/pinctrl-mt7620.c
-+++ b/drivers/pinctrl/ralink/pinctrl-mt7620.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index d87771403b578..ce237da003ddb 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -8116,9 +8116,8 @@ static int i40e_configure_clsflower(struct i40e_vsi *vsi,
+ 		err = i40e_add_del_cloud_filter(vsi, filter, true);
  
-+#include <asm/mach-ralink/ralink_regs.h>
- #include <asm/mach-ralink/mt7620.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
+ 	if (err) {
+-		dev_err(&pf->pdev->dev,
+-			"Failed to add cloud filter, err %s\n",
+-			i40e_stat_str(&pf->hw, err));
++		dev_err(&pf->pdev->dev, "Failed to add cloud filter, err %d\n",
++			err);
+ 		goto err;
+ 	}
+ 
+-- 
+2.33.0
+
 
 
