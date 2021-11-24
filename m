@@ -2,134 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A953845B987
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 12:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB48145BEB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241840AbhKXMBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:01:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231266AbhKXMBD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:01:03 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D13CC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 03:57:54 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id t5so9439903edd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 03:57:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UblpD9H6Bq7X6zD+cZXYcy45CrIeDupfVdQlSo/Y35E=;
-        b=RQnsgS47xAb52qU3FR92Vdmt2N+KIB85yVjDreDCV50MUAPVDAB0tKvI3o6zhP69H8
-         EtxaWmMqSMGJe18/J3RxHm2L6OjW9GAO24K3DKuGwx8evAhG75ViqPUt8gmgMkEcQ9/X
-         kpBrFaD7aZE/pJcenCuYlCRClWdEdQSe+pcH3LLRd6o01Z/kxxpUmQjAJkoNDJsSBOll
-         gwsjBiGMTFTADpYoODHa4yDRYfbsCT1dWMlkzRpEuI+b2CkhWkveUf17kMOZPnVCKnlE
-         2fZL5CxUKw0sC75L/Yva8wxyjycrjTVspPe2KhhXiKvdUgdnVYhi4AQ0xN6nKy3NMdUV
-         WqWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UblpD9H6Bq7X6zD+cZXYcy45CrIeDupfVdQlSo/Y35E=;
-        b=mtcmhYWkiEqEW3CRLCu5RktF0/BiEljBqkct8C/y1A1188+5RtqQE8nSktFvGOC3qe
-         agOAhiHyaGeM+y7AUH5e+S3OtiYotMCEy5+cvEGGoS3+XU4VmLX6FIq+7UPVBfY6J9FR
-         dWhkXQ1dZLH8X4FEAahWVMoaWL26etfOx6oEmxWLwdJAwWSSh+CGdN4YsH/iWpFXtrMq
-         rfHaF59OUkRiy39iKmC5Mwzr9wd9uEQyD2PapBot9ddWrjgyYrF024VaDR1l+Lxc1Da0
-         /DVwqF2tLzxSDg54fCaBImvJbQWgnKWtDB1l//A+0KOrrhNIOTu1B2y9rdgAu4jp5I0S
-         7H5w==
-X-Gm-Message-State: AOAM532HjlTfXoXYwE07Pzt3aG4KzCh6ndmGPDoRK1yjCvJSd/MfKQvd
-        CGkyEsedFgSTmRrVVgR4pmqpxkcUIeRbkJz02rs=
-X-Google-Smtp-Source: ABdhPJzOF5W8bqzAvP9BMwNiifMHd4+U+uAtZihhxHrPK2XXDhPHfUx7skm4/1AeUVaJqgmlqETJQeL6frWrsJSUAec=
-X-Received: by 2002:a17:906:7109:: with SMTP id x9mr19386216ejj.559.1637755072792;
- Wed, 24 Nov 2021 03:57:52 -0800 (PST)
+        id S1344986AbhKXMuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:50:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245598AbhKXMqH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:46:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 814BB61130;
+        Wed, 24 Nov 2021 12:27:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637756821;
+        bh=tmLUm3WqP+mACu1UeO1IEfDLhyUQ/8f3agjabtl4tG0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ng2pkWsnlqup0wxQQJZSF+fUGHH9gzdMUYqwrI7n8bOc7rIjP1031LFp6mkjBB0tm
+         asV5nFH7Nr66Wrceoo7BLLQzTMb8yf46xn5U/UPqG9IcOa5O3GnC/hemkeOOJIbhgh
+         o+jO+iRx0WHwv6rFucBs9WZk+6ss5KpuyFCFTuGc=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        Paul Burton <paulburton@kernel.org>,
+        Maxime Bizon <mbizon@freebox.fr>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 219/251] mips: BCM63XX: ensure that CPU_SUPPORTS_32BIT_KERNEL is set
+Date:   Wed, 24 Nov 2021 12:57:41 +0100
+Message-Id: <20211124115717.874290797@linuxfoundation.org>
+X-Mailer: git-send-email 2.34.0
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+References: <20211124115710.214900256@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-References: <20211124091546.5072-1-21cnbao@gmail.com> <YZ4eWHarf7QDONLB@hirez.programming.kicks-ass.net>
- <CAGsJ_4xpqvhBW0G5UfCjRD8BfR4m4EUv4B_cxoOtYTO5+iRsCQ@mail.gmail.com>
-In-Reply-To: <CAGsJ_4xpqvhBW0G5UfCjRD8BfR4m4EUv4B_cxoOtYTO5+iRsCQ@mail.gmail.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Thu, 25 Nov 2021 00:57:41 +1300
-Message-ID: <CAGsJ_4yHToqZZ9R59jd0391mE0tAzxDFSvhSV24gx9c5JNvO4w@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/fair: Remove the cost of a redundant
- cpumask_next_wrap in select_idle_cpu
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Barry Song <song.bao.hua@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 12:49 AM Barry Song <21cnbao@gmail.com> wrote:
->
-> On Thu, Nov 25, 2021 at 12:13 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Wed, Nov 24, 2021 at 05:15:46PM +0800, Barry Song wrote:
-> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > index 6e476f6..8cd23f1 100644
-> > > --- a/kernel/sched/fair.c
-> > > +++ b/kernel/sched/fair.c
-> > > @@ -6278,6 +6278,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
-> > >               time = cpu_clock(this);
-> > >       }
-> > >
-> > > +     --nr;
-> > >       for_each_cpu_wrap(cpu, cpus, target + 1) {
-> > >               if (has_idle_core) {
-> > >                       i = select_idle_core(p, cpu, cpus, &idle_cpu);
-> > > @@ -6285,11 +6286,11 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
-> > >                               return i;
-> > >
-> > >               } else {
-> > > -                     if (!--nr)
-> > > -                             return -1;
-> > >                       idle_cpu = __select_idle_cpu(cpu, p);
-> > >                       if ((unsigned int)idle_cpu < nr_cpumask_bits)
-> > >                               break;
-> > > +                     if (!--nr)
-> > > +                             return -1;
-> > >               }
-> > >       }
-> >
-> > This way nr can never be 1 for a single iteration -- it current isn't,
-> > but that's besides the point.
->
-> Yep. nr=1 seems to be a corner case.
-> if nr=1, the original code will return -1 directly without scanning
-> any cpu. but the new code will scan
-> one  time because I haven't checked if(!--nr)  and return before
-> for_each_cpu_wrap(). so this changes
-> the behaviour for this corner case.
->
-> but if i change "--nr" to "nr--", this new code will scan nr  times
-> rather than nr-1, this changes the behaviour
-> for all cases besides nr!=1. The original code was looping nr times
-> but scanning nr-1 times only.
->
-> so you prefer here the codes should scan nr times and change the
-> scanning amount from nr-1
-> to nr?
+From: Randy Dunlap <rdunlap@infradead.org>
 
-Let me make it clearer. if nr=5, the original code will  loop 5 times,
-but in the 5th loop, it returns directly, so  __select_idle_cpu is
-only done 4 times.
+[ Upstream commit 5eeaafc8d69373c095e461bdb39e5c9b62228ac5 ]
 
-if nr=1, the original code will  loop 1 time, but in the 1st loop,
-it returns directly, so  __select_idle_cpu is  done 0 times.
+Several header files need info on CONFIG_32BIT or CONFIG_64BIT,
+but kconfig symbol BCM63XX does not provide that info. This leads
+to many build errors, e.g.:
 
-if i change the code to if(!nr--), while nr=5, the new code will
-do  __select_idle_cpu() 5 times rather than 4 times in the
-original code.
+   arch/mips/include/asm/page.h:196:13: error: use of undeclared identifier 'CAC_BASE'
+           return x - PAGE_OFFSET + PHYS_OFFSET;
+   arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
+   #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
+   arch/mips/include/asm/io.h:134:28: error: use of undeclared identifier 'CAC_BASE'
+           return (void *)(address + PAGE_OFFSET - PHYS_OFFSET);
+   arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
+   #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
 
-but of course the new code changes the  __select_idle_cpu
-from zero to one time for the corner case nr==1.
->
-> Thanks
-> Barry
+arch/mips/include/asm/uaccess.h:82:10: error: use of undeclared identifier '__UA_LIMIT'
+           return (__UA_LIMIT & (addr | (addr + size) | __ua_size(size))) == 0;
+
+Selecting the SYS_HAS_CPU_BMIPS* symbols causes SYS_HAS_CPU_BMIPS to be
+set, which then selects CPU_SUPPORT_32BIT_KERNEL, which causes
+CONFIG_32BIT to be set. (a bit more indirect than v1 [RFC].)
+
+Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs.")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: bcm-kernel-feedback-list@broadcom.com
+Cc: linux-mips@vger.kernel.org
+Cc: Paul Burton <paulburton@kernel.org>
+Cc: Maxime Bizon <mbizon@freebox.fr>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Suggested-by: Florian Fainelli <f.fainelli@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/mips/Kconfig | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 8e77149d658fc..85afd6b4297b2 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -273,6 +273,9 @@ config BCM63XX
+ 	select SYS_SUPPORTS_32BIT_KERNEL
+ 	select SYS_SUPPORTS_BIG_ENDIAN
+ 	select SYS_HAS_EARLY_PRINTK
++	select SYS_HAS_CPU_BMIPS32_3300
++	select SYS_HAS_CPU_BMIPS4350
++	select SYS_HAS_CPU_BMIPS4380
+ 	select SWAP_IO_SPACE
+ 	select GPIOLIB
+ 	select HAVE_CLK
+-- 
+2.33.0
+
+
+
