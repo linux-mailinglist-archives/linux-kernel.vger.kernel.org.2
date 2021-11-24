@@ -2,240 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F396545B687
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:28:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1FB45B68C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:29:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233020AbhKXIb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 03:31:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45870 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229658AbhKXIbx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 03:31:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637742523;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qC1+19qo/TZ579J4U0L2xMIl87l4fuCd0xU7MNzT7yM=;
-        b=dOOYH98GvPluL+rsqWmXKdVEJatIC0kTw6yN3eIiqN61UYm3Ubgbr1qxFb55eLF7oqmAAY
-        qOSjnd65JHyrWxLACUSi5xWBGCU+5iDJufSeGNONZbm+pE7rYIaXDWMh5SzhPeeSxxdms/
-        3YhaTEEtIy2E2rVgjascpYuIiRKTADs=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-598-koxjANjYMo6Gh3RxhW4hgQ-1; Wed, 24 Nov 2021 03:28:42 -0500
-X-MC-Unique: koxjANjYMo6Gh3RxhW4hgQ-1
-Received: by mail-lf1-f72.google.com with SMTP id f15-20020a056512228f00b004037c0ab223so1037236lfu.16
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 00:28:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qC1+19qo/TZ579J4U0L2xMIl87l4fuCd0xU7MNzT7yM=;
-        b=NC3dyADq+EVa9gu1tqeR3v0//L4ElqahT5DUtLSa/74T5WiuSmY2phZEuksdXTny7e
-         8MHLnqASjpxW4cz+EqXila44hd+J5Kpg7r6Hs32mSVoqwrYmXSb9gvQ+d5pqzJ2nwZXc
-         bBmeT/+WzvEXMavDs4pzNs+dMeuPpZSJHnT7bY+infdns9F2CkdgxcXeprpEe+4jEI5L
-         I7U/6LaZi9torB9xk8xF3OOCP98QtM+n9BqjFqPZG4rI/qJKxOPZ5sISaSKEFy+Hy8si
-         32ZCXY0A9oP20r9YOg5ZvRMId2leKL9xsmLtQaOJfqNssRQRMhiuUY0gq539cW9Tn0VO
-         v3uw==
-X-Gm-Message-State: AOAM5307D9yR30jjIAlIgLpwXZMLGNdH1n2sFSp9dEvxjZZkgbAFgqcO
-        fYrZoR8c4teBYTvXMBxJQGJLD91ML9iLJwJbhJ49eqMIWUNDmqKPo8wv8C4aoQAnojcObobrzgy
-        ikWMZtLAtfhqCKRh89p4UNkarpqrjayBBHLCBvAQv
-X-Received: by 2002:a2e:b88d:: with SMTP id r13mr12969172ljp.362.1637742520795;
-        Wed, 24 Nov 2021 00:28:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzkdOU/DH3oB9Vpmgk/WfW6E0kJ9djIqPGqTwD6VBjjg/ChJEenZLAgHbyhmMUt+De1WFKbSTDnStglGugwDWQ=
-X-Received: by 2002:a2e:b88d:: with SMTP id r13mr12969125ljp.362.1637742520498;
- Wed, 24 Nov 2021 00:28:40 -0800 (PST)
+        id S238387AbhKXIcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 03:32:32 -0500
+Received: from m43-7.mailgun.net ([69.72.43.7]:59327 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235612AbhKXIc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 03:32:28 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1637742559; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=OmSbuwl7iL1WdSEQMMnIIrutT3ecoeD7PxVBtYSrxeU=; b=ixfZWk4T+xSKHxpMieW53+hzsyaHWUXk2L9gjnt4arqZBNTWOP4gGtJTEfr/W2e4z/UnVBkz
+ /GRVUZOqhaMxXzERSMomFlWcNH33oK3qwhpOsvCWm1I3D07XxnCfJGYI5fgiD7zFmGKkeTzf
+ LZoB4B9IQARsH+LhaFPBAOR1QAY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 619df7dc4fca5da46d91f433 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Nov 2021 08:29:16
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A426FC4360D; Wed, 24 Nov 2021 08:29:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C9359C4338F;
+        Wed, 24 Nov 2021 08:29:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org C9359C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     "Coelho\, Luciano" <luciano.coelho@intel.com>,
+        "linux-wireless\@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "Berg\, Johannes" <johannes.berg@intel.com>,
+        "Grumbach\, Emmanuel" <emmanuel.grumbach@intel.com>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] iwlwifi: mvm: protect regulatory_set_wiphy_regd_sync() with wiphy lock
+References: <nycvar.YFH.7.76.2111232204150.16505@cbobk.fhfr.pm>
+        <871r366kjy.fsf@codeaurora.org>
+        <74c53e65a8f3db89d60718dc1dfb807cd80857ca.camel@intel.com>
+        <nycvar.YFH.7.76.2111240921230.16505@cbobk.fhfr.pm>
+Date:   Wed, 24 Nov 2021 10:29:10 +0200
+In-Reply-To: <nycvar.YFH.7.76.2111240921230.16505@cbobk.fhfr.pm> (Jiri
+        Kosina's message of "Wed, 24 Nov 2021 09:21:41 +0100 (CET)")
+Message-ID: <87o86a5549.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20211122064922.51b3678e.pasic@linux.ibm.com> <CACGkMEu+9FvMsghyi55Ee5BxetP-YK9wh2oaT8OgLiY5+tV0QQ@mail.gmail.com>
- <20211122212352.4a76232d.pasic@linux.ibm.com> <CACGkMEtmhwDEAvMuMhQEUB-b+=n713pVvjyct8QAqMUk1H-A-g@mail.gmail.com>
- <20211123055906-mutt-send-email-mst@kernel.org> <87zgpupcga.fsf@mpe.ellerman.id.au>
- <CACGkMEteDZJVM8j5pir7_Hcn6Oq=tKbcg4DUiEQBGm5Kg9w30w@mail.gmail.com>
- <CACGkMEs086P=qfMieMQ3wPhcarsdO++iRTwVHtN-4cgKLm8opA@mail.gmail.com>
- <20211124022101-mutt-send-email-mst@kernel.org> <CACGkMEsn8xbdEgrCwCWpGz7u=NoX-yADotCaeB2oNbZy_u9iOQ@mail.gmail.com>
- <20211124032027-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20211124032027-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Wed, 24 Nov 2021 16:28:29 +0800
-Message-ID: <CACGkMEs7bNcp9pghoBJv2y2FFgnFwt2KWPv4asBmrEVu_Hds+A@mail.gmail.com>
-Subject: Re: [PATCH V5 1/4] virtio_ring: validate used buffer length
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "kaplan, david" <david.kaplan@amd.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>, mcgrof@kernel.org,
-        David Hildenbrand <david@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 4:24 PM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> On Wed, Nov 24, 2021 at 03:59:12PM +0800, Jason Wang wrote:
-> > On Wed, Nov 24, 2021 at 3:22 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > >
-> > > On Wed, Nov 24, 2021 at 10:33:28AM +0800, Jason Wang wrote:
-> > > > On Wed, Nov 24, 2021 at 10:26 AM Jason Wang <jasowang@redhat.com> wrote:
-> > > > >
-> > > > > On Wed, Nov 24, 2021 at 9:30 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
-> > > > > >
-> > > > > > "Michael S. Tsirkin" <mst@redhat.com> writes:
-> > > > > > > On Tue, Nov 23, 2021 at 10:25:20AM +0800, Jason Wang wrote:
-> > > > > > >> On Tue, Nov 23, 2021 at 4:24 AM Halil Pasic <pasic@linux.ibm.com> wrote:
-> > > > > > >> >
-> > > > > > >> > On Mon, 22 Nov 2021 14:25:26 +0800
-> > > > > > >> > Jason Wang <jasowang@redhat.com> wrote:
-> > > > > > >> >
-> > > > > > >> > > I think the fixes are:
-> > > > > > >> > >
-> > > > > > >> > > 1) fixing the vhost vsock
-> > > > > > >> > > 2) use suppress_used_validation=true to let vsock driver to validate
-> > > > > > >> > > the in buffer length
-> > > > > > >> > > 3) probably a new feature so the driver can only enable the validation
-> > > > > > >> > > when the feature is enabled.
-> > > > > > >> >
-> > > > > > >> > I'm not sure, I would consider a F_DEV_Y_FIXED_BUG_X a perfectly good
-> > > > > > >> > feature. Frankly the set of such bugs is device implementation
-> > > > > > >> > specific and it makes little sense to specify a feature bit
-> > > > > > >> > that says the device implementation claims to adhere to some
-> > > > > > >> > aspect of the specification. Also what would be the semantic
-> > > > > > >> > of not negotiating F_DEV_Y_FIXED_BUG_X?
-> > > > > > >>
-> > > > > > >> Yes, I agree. Rethink of the feature bit, it seems unnecessary,
-> > > > > > >> especially considering the driver should not care about the used
-> > > > > > >> length for tx.
-> > > > > > >>
-> > > > > > >> >
-> > > > > > >> > On the other hand I see no other way to keep the validation
-> > > > > > >> > permanently enabled for fixed implementations, and get around the problem
-> > > > > > >> > with broken implementations. So we could have something like
-> > > > > > >> > VHOST_USED_LEN_STRICT.
-> > > > > > >>
-> > > > > > >> It's more about a choice of the driver's knowledge. For vsock TX it
-> > > > > > >> should be fine. If we introduce a parameter and disable it by default,
-> > > > > > >> it won't be very useful.
-> > > > > > >>
-> > > > > > >> >
-> > > > > > >> > Maybe, we can also think of 'warn and don't alter behavior' instead of
-> > > > > > >> > 'warn' and alter behavior. Or maybe even not having such checks on in
-> > > > > > >> > production, but only when testing.
-> > > > > > >>
-> > > > > > >> I think there's an agreement that virtio drivers need more hardening,
-> > > > > > >> that's why a lot of patches were merged. Especially considering the
-> > > > > > >> new requirements came from confidential computing, smart NIC and
-> > > > > > >> VDUSE. For virtio drivers, enabling the validation may help to
-> > > > > > >>
-> > > > > > >> 1) protect the driver from the buggy and malicious device
-> > > > > > >> 2) uncover the bugs of the devices (as vsock did, and probably rpmsg)
-> > > > > > >> 3) force the have a smart driver that can do the validation itself
-> > > > > > >> then we can finally remove the validation in the core
-> > > > > > >>
-> > > > > > >> So I'd like to keep it enabled.
-> > > > > > >>
-> > > > > > >> Thanks
-> > > > > > >
-> > > > > > > Let's see how far we can get. But yes, maybe we were too aggressive in
-> > > > > > > breaking things by default, a warning might be a better choice for a
-> > > > > > > couple of cycles.
-> > > > >
-> > > > > Ok, considering we saw the issues with balloons I think I can post a
-> > > > > patch to use warn instead. I wonder if we need to taint the kernel in
-> > > > > this case.
-> > > >
-> > > > Rethink this, consider we still have some time, I tend to convert the
-> > > > drivers to validate the length by themselves. Does this make sense?
-> > > >
-> > > > Thanks
-> > >
-> > > That's separate but let's stop crashing guests for people ASAP.
-> >
-> > Ok, will post a patch soon.
-> >
-> > Thanks
->
-> So let's err on the side of caution now, I will just revert for this
-> release.
->
-> For the next one I think a good plan is:
-> - no checks by default
-> - module param to check and warn
-> - keep adding validation in the drivers as appropriate
+Jiri Kosina <jikos@kernel.org> writes:
 
-Fine, I will do that.
-
-Thanks
-
+> On Wed, 24 Nov 2021, Coelho, Luciano wrote:
 >
-> > >
-> > >
-> > > > >
-> > > > > >
-> > > > > > This series appears to break the virtio_balloon driver as well.
-> > > > > >
-> > > > > > The symptom is soft lockup warnings, eg:
-> > > > > >
-> > > > > >   INFO: task kworker/1:1:109 blocked for more than 614 seconds.
-> > > > > >         Not tainted 5.16.0-rc2-gcc-10.3.0 #21
-> > > > > >   "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > > > > >   task:kworker/1:1     state:D stack:12496 pid:  109 ppid:     2 flags:0x00000800
-> > > > > >   Workqueue: events_freezable update_balloon_size_func
-> > > > > >   Call Trace:
-> > > > > >   [c000000003cef7c0] [c000000003cef820] 0xc000000003cef820 (unreliable)
-> > > > > >   [c000000003cef9b0] [c00000000001e238] __switch_to+0x1e8/0x2f0
-> > > > > >   [c000000003cefa10] [c000000000f0a00c] __schedule+0x2cc/0xb50
-> > > > > >   [c000000003cefae0] [c000000000f0a8fc] schedule+0x6c/0x140
-> > > > > >   [c000000003cefb10] [c00000000095b6c4] tell_host+0xe4/0x130
-> > > > > >   [c000000003cefba0] [c00000000095d234] update_balloon_size_func+0x394/0x3f0
-> > > > > >   [c000000003cefc70] [c000000000178064] process_one_work+0x2c4/0x5b0
-> > > > > >   [c000000003cefd10] [c0000000001783f8] worker_thread+0xa8/0x640
-> > > > > >   [c000000003cefda0] [c000000000185444] kthread+0x1b4/0x1c0
-> > > > > >   [c000000003cefe10] [c00000000000cee4] ret_from_kernel_thread+0x5c/0x64
-> > > > > >
-> > > > > > Similar backtrace reported here by Luis:
-> > > > > >
-> > > > > >   https://lore.kernel.org/lkml/YY2duTi0wAyAKUTJ@bombadil.infradead.org/
-> > > > > >
-> > > > > > Bisect points to:
-> > > > > >
-> > > > > >   # first bad commit: [939779f5152d161b34f612af29e7dc1ac4472fcf] virtio_ring: validate used buffer length
-> > > > > >
-> > > > > > Adding suppress used validation to the virtio balloon driver "fixes" it, eg.
-> > > > > >
-> > > > > > diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-> > > > > > index c22ff0117b46..a14b82ceebb2 100644
-> > > > > > --- a/drivers/virtio/virtio_balloon.c
-> > > > > > +++ b/drivers/virtio/virtio_balloon.c
-> > > > > > @@ -1150,6 +1150,7 @@ static unsigned int features[] = {
-> > > > > >  };
-> > > > > >
-> > > > > >  static struct virtio_driver virtio_balloon_driver = {
-> > > > > > +       .suppress_used_validation = true,
-> > > > > >         .feature_table = features,
-> > > > > >         .feature_table_size = ARRAY_SIZE(features),
-> > > > > >         .driver.name =  KBUILD_MODNAME,
-> > > > >
-> > > > > Looks good, we need a formal patch for this.
-> > > > >
-> > > > > And we need fix Qemu as well which advertise non zero used length for
-> > > > > inflate/deflate queue:
-> > > > >
-> > > > > static void virtio_balloon_handle_output(VirtIODevice *vdev, VirtQueue *vq)
-> > > > > ...
-> > > > >         virtqueue_push(vq, elem, offset);
-> > > > >
-> > > > > Thanks
-> > > > >
-> > > > > >
-> > > > > >
-> > > > > > cheers
-> > > > > >
-> > >
->
+>> > > Since the switch away from rtnl to wiphy lock, 
+>> > > regulatory_set_wiphy_regd_sync() has to be called with wiphy lock held; 
+>> > > this is currently not the case on the module load codepath.
+>> > > 
+>> > > Fix that by properly acquiring it in iwl_mvm_start_get_nvm() to maintain 
+>> > > also lock ordering against mvm->mutex and RTNL.
+>> > > 
+>> > > This fixes the splat below.
+>> > > 
+>> > >  =============================
+>> > >  WARNING: suspicious RCU usage
+>> > >  5.16.0-rc2 #1 Not tainted
+>> > >  -----------------------------
+>> > >  drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c:264 suspicious rcu_dereference_protected() usage!
+>> > > 
+>> > >  other info that might help us debug this:
+>> > > 
+>> > >  rcu_scheduler_active = 2, debug_locks = 1
+>> > >  3 locks held by modprobe/578:
+>> > >   #0: ffffffffc0b6f0e8 (iwlwifi_opmode_table_mtx){+.+.}-{3:3}, at: iwl_opmode_register+0x2e/0xe0 [iwlwifi]
+>> > >   #1: ffffffff9a856b08 (rtnl_mutex){+.+.}-{3:3}, at: iwl_op_mode_mvm_start+0xa0b/0xcb0 [iwlmvm]
+>> > >   #2: ffff8e5242f53380 (&mvm->mutex){+.+.}-{3:3}, at: iwl_op_mode_mvm_start+0xa16/0xcb0 [iwlmvm]
+>> > > 
+>> > >  stack backtrace:
+>> > >  CPU: 1 PID: 578 Comm: modprobe Not tainted 5.16.0-rc2 #1
+>> > >  Hardware name: LENOVO 20K5S22R00/20K5S22R00, BIOS R0IET38W (1.16 ) 05/31/2017
+>> > >  Call Trace:
+>> > >   <TASK>
+>> > >   dump_stack_lvl+0x58/0x71
+>> > >   iwl_mvm_init_fw_regd+0x13d/0x180 [iwlmvm]
+>> > >   iwl_mvm_init_mcc+0x66/0x1d0 [iwlmvm]
+>> > >   iwl_op_mode_mvm_start+0xc6d/0xcb0 [iwlmvm]
+>> > >   _iwl_op_mode_start.isra.4+0x42/0x80 [iwlwifi]
+>> > >   iwl_opmode_register+0x71/0xe0 [iwlwifi]
+>> > >   ? 0xffffffffc1062000
+>> > >   iwl_mvm_init+0x34/0x1000 [iwlmvm]
+>> > >   do_one_initcall+0x5b/0x300
+>> > >   do_init_module+0x5b/0x21c
+>> > >   load_module+0x1b2f/0x2320
+>> > >   ? __do_sys_finit_module+0xaa/0x110
+>> > >   __do_sys_finit_module+0xaa/0x110
+>> > >   do_syscall_64+0x3a/0xb0
+>> > >   entry_SYSCALL_64_after_hwframe+0x44/0xae
+>> > >  RIP: 0033:0x7f7cdd7c8ded
+>> > >  Code: 5b 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d fb ef 0e 00 f7 d8 64 89 01 48
+>> > >  RSP: 002b:00007fffb90bf458 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+>> > >  RAX: ffffffffffffffda RBX: 0000559c501caf00 RCX: 00007f7cdd7c8ded
+>> > >  RDX: 0000000000000000 RSI: 0000559c4eb366ee RDI: 0000000000000002
+>> > >  RBP: 0000000000040000 R08: 0000000000000000 R09: 0000559c501ca9f8
+>> > >  R10: 0000000000000002 R11: 0000000000000246 R12: 0000559c4eb366ee
+>> > >  R13: 0000559c501cadb0 R14: 0000000000000000 R15: 0000559c501cbad0
+>> > >   </TASK>
+>> > >  ------------[ cut here ]------------
+>> > >  WARNING: CPU: 1 PID: 578 at net/wireless/reg.c:3107 reg_process_self_managed_hint+0x183/0x1d0 [cfg80211]
+>> > >  Modules linked in:
+>> > >  CPU: 1 PID: 578 Comm: modprobe Not tainted 5.16.0-rc2 #1
+>> > >  Hardware name: LENOVO 20K5S22R00/20K5S22R00, BIOS R0IET38W (1.16 ) 05/31/2017
+>> > >  RIP: 0010:reg_process_self_managed_hint+0x183/0x1d0 [cfg80211]
+>> > >  Code: 83 c4 60 5b 41 5a 41 5c 41 5d 41 5e 41 5f 5d 49 8d 62 f8 c3 48 8d 7b 68 be ff ff ff ff e8 75 4a 13 d9 85 c0 0f 85 e6 fe ff ff <0f> 0b e9 df fe ff ff 0f 0b 80 3d bc 2c 0b 00 00 0f 85 c2 fe ff ff
+>> > >  RSP: 0018:ffff9994809cfaf0 EFLAGS: 00010246
+>> > >  RAX: 0000000000000000 RBX: ffff8e5242f505c0 RCX: 0000000000000000
+>> > >  RDX: 0000000000000000 RSI: ffff8e5242f50628 RDI: ffff8e524a2b5cd0
+>> > >  RBP: ffff9994809cfb80 R08: 0000000000000001 R09: ffffffff9b2e2f50
+>> > >  R10: ffff9994809cfb98 R11: ffffffffffffffff R12: 0000000000000000
+>> > >  R13: ffff8e5242f532e8 R14: ffff8e5248914010 R15: ffff8e5242f532e0
+>> > >  FS:  00007f7cdd6af740(0000) GS:ffff8e5367480000(0000) knlGS:0000000000000000
+>> > >  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> > >  CR2: 00007f19430687ac CR3: 00000001088fa003 CR4: 00000000003706e0
+>> > >  Call Trace:
+>> > >   <TASK>
+>> > >   ? lock_is_held_type+0xb4/0x120
+>> > >   ? regulatory_set_wiphy_regd_sync+0x2f/0x80 [cfg80211]
+>> > >   regulatory_set_wiphy_regd_sync+0x2f/0x80 [cfg80211]
+>> > >   iwl_mvm_init_mcc+0xcd/0x1d0 [iwlmvm]
+>> > >   iwl_op_mode_mvm_start+0xc6d/0xcb0 [iwlmvm]
+>> > >   _iwl_op_mode_start.isra.4+0x42/0x80 [iwlwifi]
+>> > >   iwl_opmode_register+0x71/0xe0 [iwlwifi]
+>> > >   ? 0xffffffffc1062000
+>> > >   iwl_mvm_init+0x34/0x1000 [iwlmvm]
+>> > >   do_one_initcall+0x5b/0x300
+>> > >   do_init_module+0x5b/0x21c
+>> > >   load_module+0x1b2f/0x2320
+>> > >   ? __do_sys_finit_module+0xaa/0x110
+>> > >   __do_sys_finit_module+0xaa/0x110
+>> > >   do_syscall_64+0x3a/0xb0
+>> > >   entry_SYSCALL_64_after_hwframe+0x44/0xae
+>> > >  RIP: 0033:0x7f7cdd7c8ded
+>> > >  Code: 5b 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d fb ef 0e 00 f7 d8 64 89 01 48
+>> > >  RSP: 002b:00007fffb90bf458 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+>> > >  RAX: ffffffffffffffda RBX: 0000559c501caf00 RCX: 00007f7cdd7c8ded
+>> > >  RDX: 0000000000000000 RSI: 0000559c4eb366ee RDI: 0000000000000002
+>> > >  RBP: 0000000000040000 R08: 0000000000000000 R09: 0000559c501ca9f8
+>> > >  R10: 0000000000000002 R11: 0000000000000246 R12: 0000559c4eb366ee
+>> > >  R13: 0000559c501cadb0 R14: 0000000000000000 R15: 0000559c501cbad0
+>> > > 
+>> > > Fixes: a05829a7222e9d1 ("cfg80211: avoid holding the RTNL when calling the driver")
+>> > > Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+>> > 
+>> > I think this should go to wireless-drivers so I assigned this to me.
+>> > Luca, ack?
+>> 
+>> Hmmm, I thought we already had a fix for this as well?
 
+Indeed, and it looks to be identical even:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers.git/commit/?id=f5cecf1d4c5ff76172928bc32e99ca56a5ca2f56
+
+Marking the bug as superseded.
+
+> FWIW I don't see this fixed in latest linux-next.
+
+This was applied on Monday, maybe there was no linux-next build on
+Tuesday?
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
