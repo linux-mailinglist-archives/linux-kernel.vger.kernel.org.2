@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E49945B9BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:02:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A6C45BBC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:22:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241981AbhKXMEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:04:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58978 "EHLO mail.kernel.org"
+        id S244287AbhKXMXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:23:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242048AbhKXMED (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:04:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CCC160FBF;
-        Wed, 24 Nov 2021 12:00:53 +0000 (UTC)
+        id S243513AbhKXMSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:18:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77E596113D;
+        Wed, 24 Nov 2021 12:11:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637755254;
-        bh=oZhXbpmweQro5ewwkKxk0Yd8mk+wgVBiyc+oC8/xaYg=;
+        s=korg; t=1637755885;
+        bh=Yqvj4ZT7HBMHkDj7mti6c/dF1dJKIeFc/TCVh5PtpgE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CsFc+CIihd/ybyA7Ldhp91JinS30mxqeR/D2YWm7AxsyMModhjgvaLRCYV8um+CPO
-         L3/JayGs82lkek3G+8lWiq/BEYS46WMkiqjS6hrb1oHLcp45BweOWmvmjH4Um68ERt
-         YErAxNdbPDCGUnZ76JILm7DpHc3ywz0tSGRVxtFA=
+        b=aj74fyVpobEnxer+8+af6PFsk2c9tBl9cIPzH4ucZ48Pp+qOajA2S9Sd7vNteGUfX
+         QAhVyi7UKZZ5Yh74pecjTsURyba9L7c/jq/Orz8bJmW+YIDCXPF128RyYsPM1CnAE+
+         jRo9VWm38aikUdQjcgtRZ4cY8TM1iGXjOEM85Vx8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 4.4 028/162] ath6kl: fix control-message timeout
+        stable@vger.kernel.org, Aleksander Jan Bajkowski <olek2@wp.pl>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 060/207] MIPS: lantiq: dma: reset correct number of channel
 Date:   Wed, 24 Nov 2021 12:55:31 +0100
-Message-Id: <20211124115659.245278700@linuxfoundation.org>
+Message-Id: <20211124115705.868125761@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
-References: <20211124115658.328640564@linuxfoundation.org>
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
+References: <20211124115703.941380739@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +40,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Aleksander Jan Bajkowski <olek2@wp.pl>
 
-commit a066d28a7e729f808a3e6eff22e70c003091544e upstream.
+[ Upstream commit 5ca9ce2ba4d5884cd94d1a856c675ab1242cd242 ]
 
-USB control-message timeouts are specified in milliseconds and should
-specifically not vary with CONFIG_HZ.
+Different SoCs have a different number of channels, e.g .:
+* amazon-se has 10 channels,
+* danube+ar9 have 20 channels,
+* vr9 has 28 channels,
+* ar10 has 24 channels.
 
-Fixes: 241b128b6b69 ("ath6kl: add back beginnings of USB support")
-Cc: stable@vger.kernel.org      # 3.4
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20211025120522.6045-3-johan@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+We can read the ID register and, depending on the reported
+number of channels, reset the appropriate number of channels.
+
+Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath6kl/usb.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/lantiq/xway/dma.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
---- a/drivers/net/wireless/ath/ath6kl/usb.c
-+++ b/drivers/net/wireless/ath/ath6kl/usb.c
-@@ -912,7 +912,7 @@ static int ath6kl_usb_submit_ctrl_in(str
- 				 req,
- 				 USB_DIR_IN | USB_TYPE_VENDOR |
- 				 USB_RECIP_DEVICE, value, index, buf,
--				 size, 2 * HZ);
-+				 size, 2000);
+diff --git a/arch/mips/lantiq/xway/dma.c b/arch/mips/lantiq/xway/dma.c
+index d89a9bcf92c85..fc9eff29d8ff0 100644
+--- a/arch/mips/lantiq/xway/dma.c
++++ b/arch/mips/lantiq/xway/dma.c
+@@ -40,6 +40,7 @@
+ #define LTQ_DMA_PCTRL		0x44
+ #define LTQ_DMA_IRNEN		0xf4
  
- 	if (ret < 0) {
- 		ath6kl_warn("Failed to read usb control message: %d\n", ret);
++#define DMA_ID_CHNR		GENMASK(26, 20)	/* channel number */
+ #define DMA_DESCPT		BIT(3)		/* descriptor complete irq */
+ #define DMA_TX			BIT(8)		/* TX channel direction */
+ #define DMA_CHAN_ON		BIT(0)		/* channel on / off bit */
+@@ -50,7 +51,6 @@
+ #define DMA_POLL		BIT(31)		/* turn on channel polling */
+ #define DMA_CLK_DIV4		BIT(6)		/* polling clock divider */
+ #define DMA_2W_BURST		BIT(1)		/* 2 word burst length */
+-#define DMA_MAX_CHANNEL		20		/* the soc has 20 channels */
+ #define DMA_ETOP_ENDIANNESS	(0xf << 8) /* endianness swap etop channels */
+ #define DMA_WEIGHT	(BIT(17) | BIT(16))	/* default channel wheight */
+ 
+@@ -217,7 +217,7 @@ ltq_dma_init(struct platform_device *pdev)
+ {
+ 	struct clk *clk;
+ 	struct resource *res;
+-	unsigned id;
++	unsigned int id, nchannels;
+ 	int i;
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+@@ -239,17 +239,18 @@ ltq_dma_init(struct platform_device *pdev)
+ 	ltq_dma_w32(0, LTQ_DMA_IRNEN);
+ 
+ 	/* reset/configure each channel */
+-	for (i = 0; i < DMA_MAX_CHANNEL; i++) {
++	id = ltq_dma_r32(LTQ_DMA_ID);
++	nchannels = ((id & DMA_ID_CHNR) >> 20);
++	for (i = 0; i < nchannels; i++) {
+ 		ltq_dma_w32(i, LTQ_DMA_CS);
+ 		ltq_dma_w32(DMA_CHAN_RST, LTQ_DMA_CCTRL);
+ 		ltq_dma_w32(DMA_POLL | DMA_CLK_DIV4, LTQ_DMA_CPOLL);
+ 		ltq_dma_w32_mask(DMA_CHAN_ON, 0, LTQ_DMA_CCTRL);
+ 	}
+ 
+-	id = ltq_dma_r32(LTQ_DMA_ID);
+ 	dev_info(&pdev->dev,
+ 		"Init done - hw rev: %X, ports: %d, channels: %d\n",
+-		id & 0x1f, (id >> 16) & 0xf, id >> 20);
++		id & 0x1f, (id >> 16) & 0xf, nchannels);
+ 
+ 	return 0;
+ }
+-- 
+2.33.0
+
 
 
