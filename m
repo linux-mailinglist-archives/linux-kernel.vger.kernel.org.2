@@ -2,45 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5D845BCC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:29:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA93C45BB3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 13:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244100AbhKXMcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 07:32:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42290 "EHLO mail.kernel.org"
+        id S243135AbhKXMRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 07:17:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244905AbhKXMZC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:25:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B4E9610FE;
-        Wed, 24 Nov 2021 12:15:42 +0000 (UTC)
+        id S242543AbhKXML7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 07:11:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 047A961164;
+        Wed, 24 Nov 2021 12:06:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756143;
-        bh=VMCMeR/LsVhWwQNY53W4zZXhXZSc3Gtr5bb1ktanws4=;
+        s=korg; t=1637755606;
+        bh=/x2ClrqaTOta+DF2x4Ym8ixi/d/d//U31mHF5WWTMFU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qg01BQjRGAX0sW1AWB/IKLS8ekcEx/a9Haxz5TxfrfSZ9I+vLGMFagkQGQRhAUWtu
-         6En/RkXySCEH8jfcB9MmnptXZrUhy731QVxrtTQJWaY9hFyTpGjrJ/wk47sk/ulsnB
-         Fd6x7B9vJsGkJ4S7cOTjES9Zvob6SFvXhoUCB/w4=
+        b=nrqOnA1XqA/HTU00Lacm4+G6y/2TqWSLupvr840GZC89LSlZ4mIxPACtdUCai7KFD
+         Uq1idXV4uEgIsdUHBxC1yts22thPnvYUP0SiFX0n2JIPJpoxa0PghVwh+JVULQ3vkv
+         1J6yTG6YwJsNGLYYBrhWs1pkt0igM629m/n/e9YA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sohaib Mohamed <sohaib.amhmd@gmail.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Hitoshi Mitake <h.mitake@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Paul Russel <rusty@rustcorp.com.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Pierre Gondois <pierre.gondois@arm.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 187/207] perf bench: Fix two memory leaks detected with ASan
+        Taehee Yoo <ap420073@gmail.com>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        Sven Eckelmann <sven@narfation.org>
+Subject: [PATCH 4.4 155/162] batman-adv: set .owner to THIS_MODULE
 Date:   Wed, 24 Nov 2021 12:57:38 +0100
-Message-Id: <20211124115710.018937321@linuxfoundation.org>
+Message-Id: <20211124115703.293867014@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
-References: <20211124115703.941380739@linuxfoundation.org>
+In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+References: <20211124115658.328640564@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,56 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sohaib Mohamed <sohaib.amhmd@gmail.com>
+From: Taehee Yoo <ap420073@gmail.com>
 
-[ Upstream commit 92723ea0f11d92496687db8c9725248e9d1e5e1d ]
+commit 14a2e551faea53d45bc11629a9dac88f88950ca7 upstream.
 
-ASan reports memory leaks while running:
+If THIS_MODULE is not set, the module would be removed while debugfs is
+being used.
+It eventually makes kernel panic.
 
-  $ perf bench sched all
-
-Fixes: e27454cc6352c422 ("perf bench: Add sched-messaging.c: Benchmark for scheduler and IPC mechanisms based on hackbench")
-Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
-Acked-by: Ian Rogers <irogers@google.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Hitoshi Mitake <h.mitake@gmail.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Paul Russel <rusty@rustcorp.com.au>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Pierre Gondois <pierre.gondois@arm.com>
-Link: http://lore.kernel.org/lkml/20211110022012.16620-1-sohaib.amhmd@gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: c6c8fea29769 ("net: Add batman-adv meshing protocol")
+Signed-off-by: Taehee Yoo <ap420073@gmail.com>
+Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+[ bp: 4.4 backported: switch to old filename. ]
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/bench/sched-messaging.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ net/batman-adv/debugfs.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/perf/bench/sched-messaging.c b/tools/perf/bench/sched-messaging.c
-index 6a111e775210f..9322fd166bdaf 100644
---- a/tools/perf/bench/sched-messaging.c
-+++ b/tools/perf/bench/sched-messaging.c
-@@ -225,6 +225,8 @@ static unsigned int group(pthread_t *pth,
- 		snd_ctx->out_fds[i] = fds[1];
- 		if (!thread_mode)
- 			close(fds[0]);
-+
-+		free(ctx);
- 	}
+--- a/net/batman-adv/debugfs.c
++++ b/net/batman-adv/debugfs.c
+@@ -214,6 +214,7 @@ static const struct file_operations bata
+ 	.read           = batadv_log_read,
+ 	.poll           = batadv_log_poll,
+ 	.llseek         = no_llseek,
++	.owner          = THIS_MODULE,
+ };
  
- 	/* Now we have all the fds, fork the senders */
-@@ -241,6 +243,8 @@ static unsigned int group(pthread_t *pth,
- 		for (i = 0; i < num_fds; i++)
- 			close(snd_ctx->out_fds[i]);
- 
-+	free(snd_ctx);
-+
- 	/* Return number of children to reap */
- 	return num_fds * 2;
- }
--- 
-2.33.0
-
+ static int batadv_debug_log_setup(struct batadv_priv *bat_priv)
 
 
