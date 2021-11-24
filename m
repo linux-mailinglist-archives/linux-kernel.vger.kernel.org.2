@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965F945C20B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:22:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F005845C1BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:19:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348382AbhKXNZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:25:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48366 "EHLO mail.kernel.org"
+        id S1347991AbhKXNV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:21:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347730AbhKXNWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:22:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F47661B27;
-        Wed, 24 Nov 2021 12:47:51 +0000 (UTC)
+        id S1348922AbhKXNSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:18:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 954786108F;
+        Wed, 24 Nov 2021 12:45:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758071;
-        bh=gm0cpVCI22aiOYMS4Em0K9cCVtlp/8vv9YLJ18RclrI=;
+        s=korg; t=1637757945;
+        bh=hm+LoMnKo2zPalmH+vA/R5od+30Dmt5EFVQPQFKBG6g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q/6b8tzb1X4oNuOYzR8zmTZxSTA0AulFE9SGtcRgvPZMAXyFF8fHwmNvJjV/6bDVC
-         PuTMXmqUtn18GByzW9/c4GOQwPN9OTByCI7nRovboFEccjAodjqdUJeJpZZl2VIVSS
-         aZ/9CLDqGq5Ti4e4bVkboHFE0TklOx8RS8ZpztBo=
+        b=M1Fq+aWuCXSZWmvmxmAAna5eK0zzsQDHYpabg9GDCRQ3URKbZS4C+XCtDWNRlZptG
+         uMRUv3Fbqn59SDPAGmsCVlkDv8gKuMHjRLHFt0bTT9saENND477AsiHHbjzUVoefcs
+         fnzowJRIkDzi8JFFwY+zz69QjOaxQLmDrk138tVw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mitch Williams <mitch.a.williams@intel.com>,
-        Tony Brelinski <tony.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Lin Ma <linma@zju.edu.cn>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 052/100] iavf: validate pointers
-Date:   Wed, 24 Nov 2021 12:58:08 +0100
-Message-Id: <20211124115656.567644031@linuxfoundation.org>
+Subject: [PATCH 4.19 299/323] NFC: reorganize the functions in nci_request
+Date:   Wed, 24 Nov 2021 12:58:09 +0100
+Message-Id: <20211124115729.006031332@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,48 +40,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mitch Williams <mitch.a.williams@intel.com>
+From: Lin Ma <linma@zju.edu.cn>
 
-[ Upstream commit 131b0edc4028bb88bb472456b1ddba526cfb7036 ]
+[ Upstream commit 86cdf8e38792545161dbe3350a7eced558ba4d15 ]
 
-In some cases, the ethtool get_rxfh handler may be called with a null
-key or indir parameter. So check these pointers, or you will have a very
-bad day.
+There is a possible data race as shown below:
 
-Fixes: 43a3d9ba34c9 ("i40evf: Allow PF driver to configure RSS")
-Signed-off-by: Mitch Williams <mitch.a.williams@intel.com>
-Tested-by: Tony Brelinski <tony.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+thread-A in nci_request()       | thread-B in nci_close_device()
+                                | mutex_lock(&ndev->req_lock);
+test_bit(NCI_UP, &ndev->flags); |
+...                             | test_and_clear_bit(NCI_UP, &ndev->flags)
+mutex_lock(&ndev->req_lock);    |
+                                |
+
+This race will allow __nci_request() to be awaked while the device is
+getting removed.
+
+Similar to commit e2cb6b891ad2 ("bluetooth: eliminate the potential race
+condition when removing the HCI controller"). this patch alters the
+function sequence in nci_request() to prevent the data races between the
+nci_close_device().
+
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+Fixes: 6a2968aaf50c ("NFC: basic NCI protocol implementation")
+Link: https://lore.kernel.org/r/20211115145600.8320-1-linma@zju.edu.cn
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/iavf/iavf_ethtool.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ net/nfc/nci/core.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
-index 758bef02a2a86..ad1e796e5544a 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
-@@ -962,14 +962,13 @@ static int iavf_get_rxfh(struct net_device *netdev, u32 *indir, u8 *key,
+diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
+index 33c23af6709d4..1008bbbb3af9c 100644
+--- a/net/nfc/nci/core.c
++++ b/net/nfc/nci/core.c
+@@ -156,12 +156,15 @@ inline int nci_request(struct nci_dev *ndev,
+ {
+ 	int rc;
  
- 	if (hfunc)
- 		*hfunc = ETH_RSS_HASH_TOP;
--	if (!indir)
--		return 0;
+-	if (!test_bit(NCI_UP, &ndev->flags))
+-		return -ENETDOWN;
 -
--	memcpy(key, adapter->rss_key, adapter->rss_key_size);
-+	if (key)
-+		memcpy(key, adapter->rss_key, adapter->rss_key_size);
+ 	/* Serialize all requests */
+ 	mutex_lock(&ndev->req_lock);
+-	rc = __nci_request(ndev, req, opt, timeout);
++	/* check the state after obtaing the lock against any races
++	 * from nci_close_device when the device gets removed.
++	 */
++	if (test_bit(NCI_UP, &ndev->flags))
++		rc = __nci_request(ndev, req, opt, timeout);
++	else
++		rc = -ENETDOWN;
+ 	mutex_unlock(&ndev->req_lock);
  
--	/* Each 32 bits pointed by 'indir' is stored with a lut entry */
--	for (i = 0; i < adapter->rss_lut_size; i++)
--		indir[i] = (u32)adapter->rss_lut[i];
-+	if (indir)
-+		/* Each 32 bits pointed by 'indir' is stored with a lut entry */
-+		for (i = 0; i < adapter->rss_lut_size; i++)
-+			indir[i] = (u32)adapter->rss_lut[i];
- 
- 	return 0;
- }
+ 	return rc;
 -- 
 2.33.0
 
