@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B68145C0CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:08:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86DE545C535
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:52:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347739AbhKXNLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:11:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47536 "EHLO mail.kernel.org"
+        id S1352930AbhKXNzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:55:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348254AbhKXNJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:09:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B83561266;
-        Wed, 24 Nov 2021 12:39:31 +0000 (UTC)
+        id S1352078AbhKXNu5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:50:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0A2463246;
+        Wed, 24 Nov 2021 13:04:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637757571;
-        bh=iBn4D7zMtEq2IYTq2rxFZPleNsv6M8Ce5LQRTYgung4=;
+        s=korg; t=1637759056;
+        bh=lRPTUS005ve+oBZofRJLmAVkhHWw52d0yc4ha8/kfyk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HnzAA/vcQqg1dNSxwzsRdTBC9v8dkJn+d2XEOoTnPsT3MHeby8BIOvdMAJXJaoJVh
-         lmgc0dXB0y7jbNlzpiRdg+Od76/PsrQ511f4z73+FCmM+dhBQW7AnIGytJVeqPdTxA
-         bzt1fWQhbYU9X+X0SIOJCjQxx3ANY7/aYkIQslc4=
+        b=FT5c9P/FmeJYHQ2cdluyW+5lGzK1osIc81DtOBB70X9OuH1x3BSGCS0t7lqXLOlqC
+         8/dAJZsiAk2FpHAjOeGOq+yHTjpbQ485tbxKKirigZy0O9wF2cfl1vPPjxvNFtVQPT
+         dT17ha8GYo1WjVb83UeIo+tq/xSdo4okyhopuL2Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 213/323] dmaengine: dmaengine_desc_callback_valid(): Check for `callback_result`
-Date:   Wed, 24 Nov 2021 12:56:43 +0100
-Message-Id: <20211124115726.116113314@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 117/279] net: bnx2x: fix variable dereferenced before check
+Date:   Wed, 24 Nov 2021 12:56:44 +0100
+Message-Id: <20211124115722.839685802@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
-References: <20211124115718.822024889@linuxfoundation.org>
+In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+References: <20211124115718.776172708@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,61 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars-Peter Clausen <lars@metafoo.de>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit e7e1e880b114ca640a2f280b0d5d38aed98f98c6 ]
+[ Upstream commit f8885ac89ce310570e5391fe0bf0ec9c7c9b4fdc ]
 
-Before the `callback_result` callback was introduced drivers coded their
-invocation to the callback in a similar way to:
+Smatch says:
+	bnx2x_init_ops.h:640 bnx2x_ilt_client_mem_op()
+	warn: variable dereferenced before check 'ilt' (see line 638)
 
-	if (cb->callback) {
-		spin_unlock(&dma->lock);
-		cb->callback(cb->callback_param);
-		spin_lock(&dma->lock);
-	}
+Move ilt_cli variable initialization _after_ ilt validation, because
+it's unsafe to deref the pointer before validation check.
 
-With the introduction of `callback_result` two helpers where introduced to
-transparently handle both types of callbacks. And drivers where updated to
-look like this:
-
-	if (dmaengine_desc_callback_valid(cb)) {
-		spin_unlock(&dma->lock);
-		dmaengine_desc_callback_invoke(cb, ...);
-		spin_lock(&dma->lock);
-	}
-
-dmaengine_desc_callback_invoke() correctly handles both `callback_result`
-and `callback`. But we forgot to update the dmaengine_desc_callback_valid()
-function to check for `callback_result`. As a result DMA descriptors that
-use the `callback_result` rather than `callback` don't have their callback
-invoked by drivers that follow the pattern above.
-
-Fix this by checking for both `callback` and `callback_result` in
-dmaengine_desc_callback_valid().
-
-Fixes: f067025bc676 ("dmaengine: add support to provide error result from a DMA transation")
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Acked-by: Dave Jiang <dave.jiang@intel.com>
-Link: https://lore.kernel.org/r/20211023134101.28042-1-lars@metafoo.de
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Fixes: 523224a3b3cd ("bnx2x, cnic, bnx2i: use new FW/HSI")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/dmaengine.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/dma/dmaengine.h b/drivers/dma/dmaengine.h
-index 501c0b063f852..302f13efd35d9 100644
---- a/drivers/dma/dmaengine.h
-+++ b/drivers/dma/dmaengine.h
-@@ -168,7 +168,7 @@ dmaengine_desc_get_callback_invoke(struct dma_async_tx_descriptor *tx,
- static inline bool
- dmaengine_desc_callback_valid(struct dmaengine_desc_callback *cb)
+diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h
+index 1835d2e451c01..fc7fce642666c 100644
+--- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h
++++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_init_ops.h
+@@ -635,11 +635,13 @@ static int bnx2x_ilt_client_mem_op(struct bnx2x *bp, int cli_num,
  {
--	return (cb->callback) ? true : false;
-+	return cb->callback || cb->callback_result;
- }
+ 	int i, rc;
+ 	struct bnx2x_ilt *ilt = BP_ILT(bp);
+-	struct ilt_client_info *ilt_cli = &ilt->clients[cli_num];
++	struct ilt_client_info *ilt_cli;
  
- #endif
+ 	if (!ilt || !ilt->lines)
+ 		return -1;
+ 
++	ilt_cli = &ilt->clients[cli_num];
++
+ 	if (ilt_cli->flags & (ILT_CLIENT_SKIP_INIT | ILT_CLIENT_SKIP_MEM))
+ 		return 0;
+ 
 -- 
 2.33.0
 
