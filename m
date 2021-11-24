@@ -2,230 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598E145B841
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 11:20:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D99F45B847
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 11:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241221AbhKXKYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 05:24:00 -0500
-Received: from so254-9.mailgun.net ([198.61.254.9]:41979 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbhKXKX6 (ORCPT
+        id S241260AbhKXKYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 05:24:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229866AbhKXKYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 05:23:58 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1637749249; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: From: References: Cc: To: Subject: MIME-Version: Date:
- Message-ID: Sender; bh=pVY3qLJpdZlAOMJ6aJj5+0xrvvs66YniMRHnqCtmKko=; b=ZC8qx+4ru2bQlPwWPkoGZZYuP0mWLnMwt/q6bjrDr20fVvJxT3l4eN7pNE+0eNa75ro/KrYf
- gctGte4N3d2TUOrB82zfE2lt6VFzNNJ7kkW2KzBZBpfyqsBw4gWrynK69kgKiodHKybvDMon
- vA02HCOlZkjOiooRUbtP64bE4+A=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 619e12014fca5da46dd832b0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Nov 2021 10:20:49
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0A512C4338F; Wed, 24 Nov 2021 10:20:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.5] (unknown [117.211.32.249])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A54C6C4338F;
-        Wed, 24 Nov 2021 10:20:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A54C6C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Message-ID: <9a2f8732-14f9-9f8e-b000-24f37125c1a0@codeaurora.org>
-Date:   Wed, 24 Nov 2021 15:50:38 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH v2 4/6] drm/msm/a6xx: Capture gmu log in devcoredump
-Content-Language: en-US
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     freedreno <freedreno@lists.freedesktop.org>,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linux Patches Robot 
-        <linux-patches-robot@chromeos-missing-patches.google.com.iam.gserviceaccount.com>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sean Paul <sean@poorly.run>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        St?phane Marchesin <marcheu@chromium.org>,
+        Wed, 24 Nov 2021 05:24:13 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53644C061714;
+        Wed, 24 Nov 2021 02:21:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=pCdjSOsXdGlJ8+cnfMdWcEIa7d9zwXe6ePu8SPJAXxE=; b=tpIyUYXQ878LgsAQPafzOhlRlO
+        A4BNgBGfLV6gzbhDXUzCjj7NUPYH/Kh/agDOWSCe1/JeayXJin91Yd5i5X2Y5icdQf42iB5jynOUs
+        jdi1x9HfEOeEPsLMVU0BuGoyTVZAm7E+fU4jM2T3k5fpKW5Ucrbwj6KE3HH/ONNsDodmnIvTNkVaO
+        sTL6GbupSmM8L9XL7deMYKa+FVs32wEhXILU62F7jG6nKWnSrGTcRDN2eLSOFbh2L3MLdNkTaFeXc
+        +chdy1lEXQY13EZKLsFFfV3KNL7BeKtJvypEL9isGWtjnZ4/vCtctBNbM/md33ux2BhauzNcWAj2W
+        JDSJpISg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55832)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mppOb-0000Sc-12; Wed, 24 Nov 2021 10:20:57 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mppOZ-00017G-AK; Wed, 24 Nov 2021 10:20:55 +0000
+Date:   Wed, 24 Nov 2021 10:20:55 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        UNGLinuxDriver@microchip.com, p.zabel@pengutronix.de,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20211124024436.v2.1.I2ed37cd8ad45a5a94d9de53330f973a62bd1fb29@changeid>
- <20211124024436.v2.4.Ibb71b3c64d6f98d586131a143c27fbdb233260a1@changeid>
- <YZ1zW/9lsJNrVfqJ@ripper>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-In-Reply-To: <YZ1zW/9lsJNrVfqJ@ripper>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH net-next v3 3/6] net: lan966x: add port module support
+Message-ID: <YZ4SB/wX6UT3zrEV@shell.armlinux.org.uk>
+References: <20211124083915.2223065-1-horatiu.vultur@microchip.com>
+ <20211124083915.2223065-4-horatiu.vultur@microchip.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124083915.2223065-4-horatiu.vultur@microchip.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/2021 4:33 AM, Bjorn Andersson wrote:
-> On Tue 23 Nov 13:17 PST 2021, Akhil P Oommen wrote:
-> 
->> Capture gmu log in coredump to enhance debugging.
->>
->> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
->> ---
->>
->> Changes in v2:
->> - Fix kernel test robot's warning about size_t's format specifier
->>
->>   drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c | 41 +++++++++++++++++++++++++++++
->>   drivers/gpu/drm/msm/adreno/adreno_gpu.c     |  2 +-
->>   drivers/gpu/drm/msm/adreno/adreno_gpu.h     |  2 ++
->>   3 files changed, 44 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
->> index e8f65cd..e6f5571 100644
->> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
->> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
->> @@ -42,6 +42,8 @@ struct a6xx_gpu_state {
->>   	struct a6xx_gpu_state_obj *cx_debugbus;
->>   	int nr_cx_debugbus;
->>   
->> +	struct msm_gpu_state_bo *gmu_log;
->> +
->>   	struct list_head objs;
->>   };
->>   
->> @@ -800,6 +802,30 @@ static void a6xx_get_gmu_registers(struct msm_gpu *gpu,
->>   		&a6xx_state->gmu_registers[2], false);
->>   }
->>   
->> +static void a6xx_get_gmu_log(struct msm_gpu *gpu,
->> +		struct a6xx_gpu_state *a6xx_state)
->> +{
->> +	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
->> +	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
->> +	struct a6xx_gmu *gmu = &a6xx_gpu->gmu;
->> +	struct msm_gpu_state_bo *gmu_log;
->> +
->> +	gmu_log = state_kcalloc(a6xx_state,
->> +		1, sizeof(*a6xx_state->gmu_log));
-> 
-> This line isn't even 80 chars long, so I see no reason to wrap it and if
-> you ran checkpatch --strict on this patch it would complain about how
-> you indent that second line as well.
-> 
-> It would also look better with sizeof(*gmu_log), even though they should
-> have the same size today...
-> 
->> +	if (!gmu_log)
->> +		return;
->> +
->> +	gmu_log->iova = gmu->log.iova;
->> +	gmu_log->size = gmu->log.size;
->> +	gmu_log->data = kvzalloc(gmu_log->size, GFP_KERNEL);
->> +	if (!gmu_log->data)
->> +		return;
->> +
->> +	memcpy(gmu_log->data, gmu->log.virt, gmu->log.size);
->> +
->> +	a6xx_state->gmu_log = gmu_log;
->> +}
->> +
->>   #define A6XX_GBIF_REGLIST_SIZE   1
->>   static void a6xx_get_registers(struct msm_gpu *gpu,
->>   		struct a6xx_gpu_state *a6xx_state,
->> @@ -937,6 +963,8 @@ struct msm_gpu_state *a6xx_gpu_state_get(struct msm_gpu *gpu)
->>   
->>   	a6xx_get_gmu_registers(gpu, a6xx_state);
->>   
->> +	a6xx_get_gmu_log(gpu, a6xx_state);
->> +
->>   	/* If GX isn't on the rest of the data isn't going to be accessible */
->>   	if (!a6xx_gmu_gx_is_on(&a6xx_gpu->gmu))
->>   		return &a6xx_state->base;
->> @@ -978,6 +1006,9 @@ static void a6xx_gpu_state_destroy(struct kref *kref)
->>   	struct a6xx_gpu_state *a6xx_state = container_of(state,
->>   			struct a6xx_gpu_state, base);
->>   
->> +	if (a6xx_state->gmu_log && a6xx_state->gmu_log->data)
->> +		kvfree(a6xx_state->gmu_log->data);
->> +
->>   	list_for_each_entry_safe(obj, tmp, &a6xx_state->objs, node)
->>   		kfree(obj);
->>   
->> @@ -1191,6 +1222,16 @@ void a6xx_show(struct msm_gpu *gpu, struct msm_gpu_state *state,
->>   
->>   	adreno_show(gpu, state, p);
->>   
->> +	drm_puts(p, "gmu-log:\n");
->> +	if (a6xx_state->gmu_log) {
->> +		struct msm_gpu_state_bo *gmu_log = a6xx_state->gmu_log;
->> +
->> +		drm_printf(p, "    iova: 0x%016llx\n", gmu_log->iova);
->> +		drm_printf(p, "    size: %zu\n", gmu_log->size);
->> +		adreno_show_object(p, &gmu_log->data, gmu_log->size,
->> +				&gmu_log->encoded);
->> +	}
->> +
->>   	drm_puts(p, "registers:\n");
->>   	for (i = 0; i < a6xx_state->nr_registers; i++) {
->>   		struct a6xx_gpu_state_obj *obj = &a6xx_state->registers[i];
->> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
->> index 1539b8e..b43346e 100644
->> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
->> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
->> @@ -638,7 +638,7 @@ static char *adreno_gpu_ascii85_encode(u32 *src, size_t len)
->>   }
->>   
->>   /* len is expected to be in bytes */
->> -static void adreno_show_object(struct drm_printer *p, void **ptr, int len,
->> +void adreno_show_object(struct drm_printer *p, void **ptr, int len,
->>   		bool *encoded)
-> 
-> Please indent your broken lines by the ( on the line before.
+Hi,
 
-Just curious, is this a common coding style in kernel?
+On Wed, Nov 24, 2021 at 09:39:12AM +0100, Horatiu Vultur wrote:
+> +static int lan966x_port_open(struct net_device *dev)
+> +{
+> +	struct lan966x_port *port = netdev_priv(dev);
+> +	struct lan966x *lan966x = port->lan966x;
+> +	int err;
+> +
+> +	if (port->serdes) {
+> +		err = phy_set_mode_ext(port->serdes, PHY_MODE_ETHERNET,
+> +				       port->config.phy_mode);
+> +		if (err) {
+> +			netdev_err(dev, "Could not set mode of SerDes\n");
+> +			return err;
+> +		}
+> +	}
 
--Akhil.
+This could be done in the mac_prepare() method.
 
-> 
-> Regards,
-> Bjorn
-> 
->>   {
->>   	if (!*ptr || !len)
->> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
->> index 225c277..6762308 100644
->> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
->> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
->> @@ -306,6 +306,8 @@ void adreno_gpu_state_destroy(struct msm_gpu_state *state);
->>   
->>   int adreno_gpu_state_get(struct msm_gpu *gpu, struct msm_gpu_state *state);
->>   int adreno_gpu_state_put(struct msm_gpu_state *state);
->> +void adreno_show_object(struct drm_printer *p, void **ptr, int len,
->> +		bool *encoded);
->>   
->>   /*
->>    * Common helper function to initialize the default address space for arm-smmu
->> -- 
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
->> of Code Aurora Forum, hosted by The Linux Foundation.
->>
+> +static void lan966x_cleanup_ports(struct lan966x *lan966x)
+> +{
+> +	struct lan966x_port *port;
+> +	int portno;
+> +
+> +	for (portno = 0; portno < lan966x->num_phys_ports; portno++) {
+> +		port = lan966x->ports[portno];
+> +		if (!port)
+> +			continue;
+> +
+> +		if (port->phylink) {
+> +			rtnl_lock();
+> +			lan966x_port_stop(port->dev);
+> +			rtnl_unlock();
+> +			phylink_destroy(port->phylink);
+> +			port->phylink = NULL;
+> +		}
+> +
+> +		if (port->fwnode)
+> +			fwnode_handle_put(port->fwnode);
+> +
+> +		if (port->dev)
+> +			unregister_netdev(port->dev);
 
+This doesn't look like the correct sequence to me. Shouldn't the net
+device be unregistered first, which will take the port down by doing
+so and make it unavailable to userspace to further manipulate. Then
+we should start tearing other stuff down such as destroying phylink
+and disabling interrupts (in the caller of this.)
+
+Don't you need to free the netdev as well at some point?
+
+>  static int lan966x_probe_port(struct lan966x *lan966x, u32 p,
+> -			      phy_interface_t phy_mode)
+> +			      phy_interface_t phy_mode,
+> +			      struct fwnode_handle *portnp)
+>  {
+...
+> +	port->phylink_config.dev = &port->dev->dev;
+> +	port->phylink_config.type = PHYLINK_NETDEV;
+> +	port->phylink_config.pcs_poll = true;
+> +	port->phylink_pcs.poll = true;
+
+You don't need to set both of these - please omit
+port->phylink_config.pcs_poll.
+
+> diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
+> index 7a1ff9d19fbf..ce2798db0449 100644
+> --- a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
+> +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
+...
+> @@ -44,15 +58,48 @@ struct lan966x {
+>  	void __iomem *regs[NUM_TARGETS];
+>  
+>  	int shared_queue_sz;
+> +
+> +	/* interrupts */
+> +	int xtr_irq;
+> +};
+> +
+> +struct lan966x_port_config {
+> +	phy_interface_t portmode;
+> +	phy_interface_t phy_mode;
+
+What is the difference between "portmode" and "phy_mode"? Does it matter
+if port->config.phy_mode get zeroed when lan966x_port_pcs_set() is
+called from lan966x_pcs_config()? It looks to me like the first call
+will clear phy_mode, setting it to PHY_INTERFACE_MODE_NA from that point
+on.
+
+> diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_port.c b/drivers/net/ethernet/microchip/lan966x/lan966x_port.c
+> new file mode 100644
+> index 000000000000..ca1b0c8d1bf5
+> --- /dev/null
+> +++ b/drivers/net/ethernet/microchip/lan966x/lan966x_port.c
+> @@ -0,0 +1,422 @@
+...
+> +void lan966x_port_status_get(struct lan966x_port *port,
+> +			     struct phylink_link_state *state)
+> +{
+> +	struct lan966x *lan966x = port->lan966x;
+> +	u16 lp_adv, ld_adv;
+> +	bool link_down;
+> +	u16 bmsr = 0;
+> +	u32 val;
+> +
+> +	val = lan_rd(lan966x, DEV_PCS1G_STICKY(port->chip_port));
+> +	link_down = DEV_PCS1G_STICKY_LINK_DOWN_STICKY_GET(val);
+> +	if (link_down)
+> +		lan_wr(val, lan966x, DEV_PCS1G_STICKY(port->chip_port));
+> +
+> +	/* Get both current Link and Sync status */
+> +	val = lan_rd(lan966x, DEV_PCS1G_LINK_STATUS(port->chip_port));
+> +	state->link = DEV_PCS1G_LINK_STATUS_LINK_STATUS_GET(val) &&
+> +		      DEV_PCS1G_LINK_STATUS_SYNC_STATUS_GET(val);
+> +	state->link &= !link_down;
+> +
+> +	if (port->config.portmode == PHY_INTERFACE_MODE_1000BASEX)
+> +		state->speed = SPEED_1000;
+> +	else if (port->config.portmode == PHY_INTERFACE_MODE_2500BASEX)
+> +		state->speed = SPEED_2500;
+
+Why not use state->interface? state->interface will be the currently
+configured interface mode (which should be the same as your
+port->config.portmode.)
+
+> +
+> +	state->duplex = DUPLEX_FULL;
+
+Also, what is the purpose of initialising state->speed and state->duplex
+here? phylink_mii_c22_pcs_decode_state() will do that for you when
+decoding the advertisements.
+
+If it's to deal with autoneg disabled, then it ought to be conditional on
+autoneg being disabled and the link being up.
+
+> +
+> +	/* Get PCS ANEG status register */
+> +	val = lan_rd(lan966x, DEV_PCS1G_ANEG_STATUS(port->chip_port));
+> +
+> +	/* Aneg complete provides more information  */
+> +	if (DEV_PCS1G_ANEG_STATUS_ANEG_COMPLETE_GET(val)) {
+> +		lp_adv = DEV_PCS1G_ANEG_STATUS_LP_ADV_GET(val);
+> +		state->an_complete = true;
+> +
+> +		bmsr |= state->link ? BMSR_LSTATUS : 0;
+> +		bmsr |= state->an_complete;
+
+Shouldn't this be setting BMSR_ANEGCOMPLETE?
+
+> +
+> +		if (port->config.portmode == PHY_INTERFACE_MODE_SGMII) {
+> +			phylink_mii_c22_pcs_decode_state(state, bmsr, lp_adv);
+> +		} else {
+> +			val = lan_rd(lan966x, DEV_PCS1G_ANEG_CFG(port->chip_port));
+> +			ld_adv = DEV_PCS1G_ANEG_CFG_ADV_ABILITY_GET(val);
+> +			phylink_mii_c22_pcs_decode_state(state, bmsr, ld_adv);
+> +		}
+
+This looks like it can be improved:
+
+	if (DEV_PCS1G_ANEG_STATUS_ANEG_COMPLETE_GET(val)) {
+		state->an_complete = true;
+
+		bmsr |= state->link ? BMSR_LSTATUS : 0;
+		bmsr |= BMSR_ANEGCOMPLETE;
+
+		if (state->interface == PHY_INTERFACE_MODE_SGMII) {
+			lp_adv = DEV_PCS1G_ANEG_STATUS_LP_ADV_GET(val);
+		} else {
+			val = lan_rd(lan966x, DEV_PCS1G_ANEG_CFG(port->chip_port));
+			lp_adv = DEV_PCS1G_ANEG_CFG_ADV_ABILITY_GET(val);
+		}
+
+		phylink_mii_c22_pcs_decode_state(state, bmsr, lp_adv);
+	}
+
+I'm not sure that the non-SGMII code is actually correct though. Which
+advertisement are you extracting by reading the DEV_PCS1G_ANEG_CFG
+register and extracting DEV_PCS1G_ANEG_CFG_ADV_ABILITY_GET ? From the
+code in lan966x_port_pcs_set(), it suggests this is our advertisement,
+but it's supposed to always be the link partner's advertisement being
+passed to phylink_mii_c22_pcs_decode_state().
+
+> +int lan966x_port_pcs_set(struct lan966x_port *port,
+> +			 struct lan966x_port_config *config)
+> +{
+...
+> +	port->config = *config;
+
+As mentioned elsewhere, "config" won't have phy_mode set, so this clears
+port->config.phymode to PHY_INTERFACE_MODE_NA, which I think will cause
+e.g. lan966x_port_link_up() not to behave as intended.
+
+Thanks.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
