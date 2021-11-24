@@ -2,103 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 724EC45C9D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8F345C9E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 17:24:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348427AbhKXQY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 11:24:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45721 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348420AbhKXQYt (ORCPT
+        id S1348510AbhKXQ1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 11:27:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348617AbhKXQZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 11:24:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637770899;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=90TigdZMMnC7ewblMejePQnNAjZkBXfCyuwYeUoTC3s=;
-        b=cotwoc6dQpyqlUwao1X0uVU9t9Z1f62RTM9OotTw/8AOC51lLinWJr2tXpTlztUJCac7Kc
-        RagDwT0SLw7Yqlxv/+Vn+i/YfR38FfL+DugCqxn8vITE2F6x4bbB+UMNgqQ9A3+JBOLzJG
-        HveRhW3KEaIB7wF3xe54+I5SrHsUkbs=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-350-PHcpvS_APO204zLg3IQu0g-1; Wed, 24 Nov 2021 11:21:37 -0500
-X-MC-Unique: PHcpvS_APO204zLg3IQu0g-1
-Received: by mail-qt1-f200.google.com with SMTP id h20-20020ac85e14000000b002b2e9555bb1so2483920qtx.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 08:21:37 -0800 (PST)
+        Wed, 24 Nov 2021 11:25:33 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E35C061757;
+        Wed, 24 Nov 2021 08:22:08 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id r25so12903176edq.7;
+        Wed, 24 Nov 2021 08:22:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wEXZc8R5yEIrgQ4MYOLlm+SaoIgScgmUX3YPF/pZ09g=;
+        b=DHkqm2r6wH23tUGtFdJrg/ijsnibP52SB/uKaXcgsctINJU4hkAHdL7iEDdTc+/7wW
+         hlvNwOmAmXJK2bEdSLZylwoutiOBotlintnDBoEYDp5s0nSd0ycEfCVatpp+pWCevvMw
+         t3xfTZ/GvKPgfdLI4yF1gsNbHEkNRKtdC9hRxLlnvQ6DGLHZa15ibifMJccmr8wTv13o
+         akoXPn2mLKn19einDNO5bQrWE2n1fH9xJpjGBMDGxkryuHwrjIfEmdpyu7IMpPYtaeXG
+         V6z+ZkQ4SQxP6SlTEzXfpizmf7zStxFLpJ0r6pU6NouKzC32RzotxDQ2vWB11N8Yj08t
+         uEUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=90TigdZMMnC7ewblMejePQnNAjZkBXfCyuwYeUoTC3s=;
-        b=Hn4dNhjRIiUrP5JSdGxwS5TohOh3+zOFNbrVcHzoXULrEQiGuoO7kpqKhtBqCFdq9O
-         M0f4lc5PETP2SpoyN9xGLZd4S2ZGYwjjvtPH8qymdLKdIgH4+ggPL+UcP+VzucU9v0zV
-         Ed9t+TKd+sTC6tZUxEiLS7R87qk6PWEWiSMhPn6m9qOCHJykmt2vJyfhArIJc6QR2/Os
-         R/+XowfJSe4xEayfqvJg3/uh4xH7WKAISIwfLvKVJS9OQKrf4jv5AOjAteeHea+aDms6
-         PX5YUwL12bASG732tl0OnRcQuzdIsSI4aFz3TeaNcaZjBXAicZkDTHXMuko4YXhZALXd
-         qZCg==
-X-Gm-Message-State: AOAM532ueUSPGWcY+sveoT0JoxEEuL8z8Be204LeVZwhOxMr6o4oluUM
-        zuNsE1fNpEUEsFSgojRyK1if1MDBWM1f5T36IVnQGRN3ccheOj7mrD3PklcTf52bbvv39bkr7VZ
-        6oX7XRR6bRl5e52odlhfj7vBMn3bt/MSTjbJnbBKM
-X-Received: by 2002:a05:620a:298e:: with SMTP id r14mr7132015qkp.509.1637770897312;
-        Wed, 24 Nov 2021 08:21:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz+fhe6xQgUQvMw7x2eFGQXvQxfQ2GkuBX44MmkUSmaXmqu6/TnUHIiNOX11TRYsRT4PyQD0pb69t7BShFnHq0=
-X-Received: by 2002:a05:620a:298e:: with SMTP id r14mr7131993qkp.509.1637770897141;
- Wed, 24 Nov 2021 08:21:37 -0800 (PST)
+        bh=wEXZc8R5yEIrgQ4MYOLlm+SaoIgScgmUX3YPF/pZ09g=;
+        b=j58kCoq2hjn8PoKla2bvn1DJYtZNH9bH7C2PgpDz1b+C4d0W3ivvjTOkeVXcmEo1KY
+         PbUQcLA3chk9hat6IcANBxrdiAMhGbePFeKYLeda2r4VEQR/xT7Mw7uwhIXrOetqr2cL
+         2++IkjS1uI7VgMMp2gmCEx5YgC2Zmb6wQVqi6oaoNftDSr96gk7oNkXVWB7Y/Qsuihnf
+         7R4DXeOKyTdcMBlAU9m0aJCAq4ErK0o9N8wKjOedkbTWFsQJ30La/+QHTde2dtTuBWyq
+         2OTSkaDhm9U01plkEp9LMBoE2Jv0Cf0ptR1cES3XDMlqqdKJJ8VY1/qwZr+x1QryjScd
+         hauA==
+X-Gm-Message-State: AOAM530dhORU4IriLjzAclk0GzF3yieOhJgGEsFdZ1yyY4DoerKb87po
+        Bpzytb4QS+n2HXfFKtsb7L8pCAPqQP0qrYsHf0o=
+X-Google-Smtp-Source: ABdhPJxAQTJYrBt7sP/hy533sdjmlUNyL8pMeZfIpiJQkk03O50xJJMIwt3G4bnxD17b8M+ck5HdgndOAKUuRUYrEwc=
+X-Received: by 2002:a05:6402:26d4:: with SMTP id x20mr26549087edd.119.1637770926939;
+ Wed, 24 Nov 2021 08:22:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20211124115658.328640564@linuxfoundation.org> <20211124115701.855204038@linuxfoundation.org>
-In-Reply-To: <20211124115701.855204038@linuxfoundation.org>
-From:   Miklos Szeredi <mszeredi@redhat.com>
-Date:   Wed, 24 Nov 2021 17:21:26 +0100
-Message-ID: <CAOssrKd=XAvCKW9t0gk9g_FBqFs6pPNJFsP7pc2EF6Dcj-se7w@mail.gmail.com>
-Subject: Re: [PATCH 4.4 109/162] fuse: fix page stealing
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Frank Dinoff <fdinoff@google.com>
+References: <20211122212850.321542-1-pauk.denis@gmail.com> <20211122212850.321542-4-pauk.denis@gmail.com>
+In-Reply-To: <20211122212850.321542-4-pauk.denis@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 24 Nov 2021 18:21:30 +0200
+Message-ID: <CAHp75VeKosontsmFJSp-fbV9mPiSWJeLUCpx90=RHy1HFfBDnA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] hwmon: (nct6775) add MAXIMUS VII HERO.
+To:     Denis Pauk <pauk.denis@gmail.com>
+Cc:     Eugene Shalygin <eugene.shalygin@gmail.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        thomas@weissschuh.net, Olli Asikainen <olli.asikainen@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 1:04 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Mon, Nov 22, 2021 at 11:29 PM Denis Pauk <pauk.denis@gmail.com> wrote:
 >
-> From: Miklos Szeredi <mszeredi@redhat.com>
+> ASUS MAXIMUS VII HERO board has got an nct6775 chip, but by default
+> there's no use of it because of resource conflict with WMI method.
 >
-> commit 712a951025c0667ff00b25afc360f74e639dfabe upstream.
+> This commit adds MAXIMUS VII HERO to the list of boards and provides
+> ACPI mutex name that can be used as shared lock with ASUS WMI.
 >
-> It is possible to trigger a crash by splicing anon pipe bufs to the fuse
-> device.
->
-> The reason for this is that anon_pipe_buf_release() will reuse buf->page if
-> the refcount is 1, but that page might have already been stolen and its
-> flags modified (e.g. PG_lru added).
->
-> This happens in the unlikely case of fuse_dev_splice_write() getting around
-> to calling pipe_buf_release() after a page has been stolen, added to the
-> page cache and removed from the page cache.
->
-> Fix by calling pipe_buf_release() right after the page was inserted into
-> the page cache.  In this case the page has an elevated refcount so any
-> release function will know that the page isn't reusable.
->
-> Reported-by: Frank Dinoff <fdinoff@google.com>
-> Link: https://lore.kernel.org/r/CAAmZXrsGg2xsP1CK+cbuEMumtrqdvD-NKnWzhNcvn71RV3c1yw@mail.gmail.com/
-> Fixes: dd3bb14f44a6 ("fuse: support splice() writing to fuse device")
-> Cc: <stable@vger.kernel.org> # v2.6.35
-> Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Logic checks that mutex is available. If mutex is not available
+> tries to get chip version by ACPI WMI interface.
 
+a chip
 
-Hi Greg,
+...
 
-This patch turned out to have a bug, so stable releases that didn't
-yet have it released might be better off backing it out for now and
-releasing only together with the fix to avoid regressions.
+> +struct acpi_board_info {
+> +       char *acpi_mutex_name;
 
-Thanks,
-Miklos
+Looking below the name of the "name" should be rather "path".
 
+>  };
+
+...
+
+> +static const struct dmi_system_id asus_wmi_info_table[] = {
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("MAXIMUS VII HERO", &acpi_board_MAXIMUS_VII_HERO),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("PRIME B360-PLUS", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("PRIME B460-PLUS", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("PRIME B550M-A (WI-FI)", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("PRIME X570-PRO", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("Pro WS X570-ACE", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("ProArt X570-CREATOR WIFI", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG CROSSHAIR VIII DARK HERO", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG CROSSHAIR VIII FORMULA", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG CROSSHAIR VIII HERO", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG CROSSHAIR VIII IMPACT", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG STRIX B550-E GAMING",
+> +                                       &acpi_board_ROG_STRIX_B550_E_GAMING),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG STRIX B550-F GAMING", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG STRIX B550-F GAMING (WI-FI)", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG STRIX B550-I GAMING", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG STRIX X570-F GAMING", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG STRIX Z390-E GAMING", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("ROG STRIX Z490-I GAMING", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("TUF GAMING B550-PLUS", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("TUF GAMING B550-PRO", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("TUF GAMING B550M-PLUS", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("TUF GAMING B550M-PLUS (WI-FI)", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("TUF GAMING X570-PLUS", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("TUF GAMING X570-PLUS (WI-FI)", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("TUF GAMING X570-PRO (WI-FI)", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("TUF GAMING Z490-PLUS", &acpi_board_ANY),
+> +       DMI_EXACT_MATCH_ASUS_BOARD_NAME("TUF GAMING Z490-PLUS (WI-FI)", &acpi_board_ANY),
+
+So, is it possible to eliminate acpi_board_ANY and use some default in
+the code instead?
+
+> +       {}
+> +};
+
+....
+
+> -       if (board_name && board_vendor &&
+> -           !strcmp(board_vendor, "ASUSTeK COMPUTER INC.")) {
+> -               err = match_string(asus_wmi_boards, ARRAY_SIZE(asus_wmi_boards),
+> -                                  board_name);
+
+Do you need string_helpers.h after this change?
+
+> -               if (err >= 0) {
+> -                       /* if reading chip id via WMI succeeds, use WMI */
+> -                       if (!nct6775_asuswmi_read(0, NCT6775_PORT_CHIPID, &tmp)) {
+> -                               pr_info("Using Asus WMI to access %#x chip.\n", tmp);
+> -                               access = access_asuswmi;
+> +               if (board_info->acpi_mutex_name) {
+
+> +                       status = acpi_get_handle(NULL, board_info->acpi_mutex_name,
+> +                                                &acpi_wmi_mutex);
+
+One line?
+
+> +                       if (ACPI_FAILURE(status)) {
+> +                               pr_err("Could not get hardware access guard mutex.\n");
+>                         } else {
+> -                               pr_err("Can't read ChipID by Asus WMI.\n");
+> +                               pr_info("Using Asus WMI mutex: %s\n", board_info->acpi_mutex_name);
+> +                               access = access_direct;
+>                         }
+>                 }
+
+...
+
+> +               /* if reading chip id via WMI succeeds, use WMI */
+
+Be consistent with how you spell "ChipID" / "chip id" / etc everywhere
+in the code.
+
+...
+
+> +               if (access == access_asuswmi &&
+> +                   nct6775_asuswmi_read(0, NCT6775_PORT_CHIPID, &tmp)) {
+> +                       access = access_direct;
+> +                       pr_err("Can't read ChipID by Asus WMI.\n");
+> +               }
+> +
+> +               if (access == access_asuswmi) {
+> +                       if (tmp)
+> +                               pr_info("Using Asus WMI to access %#x chip.\n", tmp);
+> +                       else
+> +                               access = access_direct;
+
+Why not:
+
+        if (access == access_asuswmi) {
+               access = access_direct;
+               if (nct6775_asuswmi_read(0, NCT6775_PORT_CHIPID, &tmp))
+                       pr_err("Can't read ChipID by Asus WMI.\n");
+               if (tmp) {
+                       pr_info("Using Asus WMI to access %#x chip.\n", tmp);
+                      access = access_...; // do you have this?
+               }
+               ...
+        }
+
+?
+
+-- 
+With Best Regards,
+Andy Shevchenko
