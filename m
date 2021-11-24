@@ -2,240 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB7245B67E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:25:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE8D45B682
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 09:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241347AbhKXI2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 03:28:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41424 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233484AbhKXI1v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 03:27:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637742282;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nWczniTByWw7Gi4+S9JJwdXHUhW2CdmH1/a1jEe8mOE=;
-        b=W8eVmSUKM0vgcMRBG8BPHp/FORE2KNJ70W9ic1DrxJ8RB9NbQj/O7LQDIXSvhG19MK3AT0
-        UKYDHgrH4i9/mSeJL2iIdX/uQvL9wGoybq+8dv2wJs1J7hf1+OM/ZgnqwnANiputZ+qTZg
-        qmDk0YRFnt9uurAkgbD/NPxY2ke4pNA=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-566-MgtX3Zk4OjyFTu7aPnR2mQ-1; Wed, 24 Nov 2021 03:24:40 -0500
-X-MC-Unique: MgtX3Zk4OjyFTu7aPnR2mQ-1
-Received: by mail-wm1-f69.google.com with SMTP id i131-20020a1c3b89000000b00337f92384e0so2600398wma.5
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 00:24:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nWczniTByWw7Gi4+S9JJwdXHUhW2CdmH1/a1jEe8mOE=;
-        b=Vl9wdWfvE8DzZXcHezydartL2mjkISp7Q7rmBA2C+fj6gC9U1LJJcx0xQWBsxjWZnO
-         1q0sPJA87ohvEy0Q6m7ghuMdhfzXp68SJ+1tPWthxTV/RmfOQVCeb0jsWvLbpZeSeh7p
-         aBfCvLdJscvTZE0Lx66JAsQFtQR6CIR1XTvcE+/3YHXhMsRBseP89R6Pmhrscv+XZz0n
-         etPAcSr1ebTxJ0W1/Atv1syDauyhQ4YMjGDf/wVrjXZspyXDiXyKRcWvammyeI+kC4bq
-         +R+CQKxCyOe0X3VWMl+ddSEtgcyzo2H135xz7o7Qi4JH6l8aoTY8ZBY/W7E/c3/QE512
-         tF+A==
-X-Gm-Message-State: AOAM5312I2tH2cxabq+h3kSX/CCIrzYPT21o9j1wd3hwuw25OA3n5iAK
-        2EMWn17Jp8OkmD/TojYlSCqfc2nrMxj3xLEh3g7+BI42Ml8DTSbOUN1vvALDZW+TkB0YVZdKQQF
-        woUXfldtMDoC6gjPkdaYKldza
-X-Received: by 2002:a5d:60d0:: with SMTP id x16mr15664885wrt.103.1637742279406;
-        Wed, 24 Nov 2021 00:24:39 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyLobZZKLR8cXQPqwU53pQKSuWBJzt7zqVX4q3QrVznBu5MbYpeMDQkf4pOjxVVRqIR10IF6w==
-X-Received: by 2002:a5d:60d0:: with SMTP id x16mr15664853wrt.103.1637742279175;
-        Wed, 24 Nov 2021 00:24:39 -0800 (PST)
-Received: from redhat.com ([2.55.144.93])
-        by smtp.gmail.com with ESMTPSA id r62sm3855940wmr.35.2021.11.24.00.24.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 00:24:38 -0800 (PST)
-Date:   Wed, 24 Nov 2021 03:24:34 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "kaplan, david" <david.kaplan@amd.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>, mcgrof@kernel.org,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH V5 1/4] virtio_ring: validate used buffer length
-Message-ID: <20211124032027-mutt-send-email-mst@kernel.org>
-References: <20211122064922.51b3678e.pasic@linux.ibm.com>
- <CACGkMEu+9FvMsghyi55Ee5BxetP-YK9wh2oaT8OgLiY5+tV0QQ@mail.gmail.com>
- <20211122212352.4a76232d.pasic@linux.ibm.com>
- <CACGkMEtmhwDEAvMuMhQEUB-b+=n713pVvjyct8QAqMUk1H-A-g@mail.gmail.com>
- <20211123055906-mutt-send-email-mst@kernel.org>
- <87zgpupcga.fsf@mpe.ellerman.id.au>
- <CACGkMEteDZJVM8j5pir7_Hcn6Oq=tKbcg4DUiEQBGm5Kg9w30w@mail.gmail.com>
- <CACGkMEs086P=qfMieMQ3wPhcarsdO++iRTwVHtN-4cgKLm8opA@mail.gmail.com>
- <20211124022101-mutt-send-email-mst@kernel.org>
- <CACGkMEsn8xbdEgrCwCWpGz7u=NoX-yADotCaeB2oNbZy_u9iOQ@mail.gmail.com>
+        id S234745AbhKXI2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 03:28:47 -0500
+Received: from mga06.intel.com ([134.134.136.31]:14465 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230517AbhKXI2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 03:28:46 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10177"; a="296035606"
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="296035606"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 00:25:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,260,1631602800"; 
+   d="scan'208";a="509786154"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga008.jf.intel.com with ESMTP; 24 Nov 2021 00:25:35 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Wed, 24 Nov 2021 00:25:35 -0800
+Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Wed, 24 Nov 2021 00:25:34 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Wed, 24 Nov 2021 00:25:34 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.107)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Wed, 24 Nov 2021 00:25:34 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M3UPp0u13c/dGfrrwz4pOpu3hyzW9RO8MqGQT4JIk8YbCWmB/naADe+6Zsi5fyYKH2JbcRYbMwS1nticu0zCjpatErbX63yo3fVaYx+Gy8eR6UXuJWbfudEXF73thxcTXR5s1RqBMAVuOW536WTKG12/IkGE1sIzjYSadQ4oLVkYaaHG7geiX+MU5khsWp86a6CliAaT2Fh/f7xf3Ha1S95Eh9C0gY/kXlYJz9CrwcFFKNCCTvbJfY868+u0ACFl3Z2/eq7YgEBNoT+iUf1oIJ0qbI5dopKQshmwd7w8k3T1mAovEpP+7UiEFXcxus9VZYa9tkrca3Ez5Aey9P4uEQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ErxsZNoSKIXr8BDFitImwAVL0A2cgMHXN5zOszkte+c=;
+ b=nYuxorKAd/N9H94c5faaT/uhljXkx2h1xTsf9MTM/fsM8kNx7yF+RBI4dbIER0KKSpyCiBccLxH5J+C8fuKmfS/tDfq5kflo7RAcogZ8EYtjuly7pGJw1DsrGhioiK37E7ORGpTMlp/zNQ+mBfNUEoTWf+8mi/zCA0ULUFFIH9xnjSTm76Bt6mKr0XquypWGULWBbXc5GmnW/Ugitct/X1vh2L5bmCA8GRaldr3U/zdymI830C9l2GjqzBi46gZFqOqZcUN6sIyQHmhE3yD/aCEtzsyLE8GZx4vanDNgD9gvVW0ppnjZ+XN705902qx+352lFB3zexEVSWFAxqmlJA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ErxsZNoSKIXr8BDFitImwAVL0A2cgMHXN5zOszkte+c=;
+ b=A/zKDYfO+AOuXrTYRYJnDYvXs8RPiIsNufP86nykt3mdY9fcoxybGfjW6x8cB2IFDBplZS+2KI5GcF8+vhzyreD/Q98rJIbtNV4XtlaorrVNSb06RcdY5iWRenmPU8UAktiv+YCcPKuh/4bi4OSg/YY5IsrNgwSAAf1tt3dpA8U=
+Received: from BYAPR11MB3207.namprd11.prod.outlook.com (2603:10b6:a03:7c::14)
+ by SJ0PR11MB5791.namprd11.prod.outlook.com (2603:10b6:a03:423::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Wed, 24 Nov
+ 2021 08:25:32 +0000
+Received: from BYAPR11MB3207.namprd11.prod.outlook.com
+ ([fe80::e559:d4e6:163c:b1ae]) by BYAPR11MB3207.namprd11.prod.outlook.com
+ ([fe80::e559:d4e6:163c:b1ae%6]) with mapi id 15.20.4690.029; Wed, 24 Nov 2021
+ 08:25:32 +0000
+From:   "Coelho, Luciano" <luciano.coelho@intel.com>
+To:     "jikos@kernel.org" <jikos@kernel.org>
+CC:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "Berg, Johannes" <johannes.berg@intel.com>,
+        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Grumbach, Emmanuel" <emmanuel.grumbach@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] iwlwifi: mvm: protect regulatory_set_wiphy_regd_sync()
+ with wiphy lock
+Thread-Topic: [PATCH] iwlwifi: mvm: protect regulatory_set_wiphy_regd_sync()
+ with wiphy lock
+Thread-Index: AQHX4K387olC32REA0aEpjzQqwFaXKwSVDV4gAABcQCAAAGbgIAAAREA
+Date:   Wed, 24 Nov 2021 08:25:31 +0000
+Message-ID: <665cf18f14d28afa9d8b60bb3020e97b52a08a1a.camel@intel.com>
+References: <nycvar.YFH.7.76.2111232204150.16505@cbobk.fhfr.pm>
+         <871r366kjy.fsf@codeaurora.org>
+         <74c53e65a8f3db89d60718dc1dfb807cd80857ca.camel@intel.com>
+         <nycvar.YFH.7.76.2111240921230.16505@cbobk.fhfr.pm>
+In-Reply-To: <nycvar.YFH.7.76.2111240921230.16505@cbobk.fhfr.pm>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.42.1-1 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9f408f37-24df-494e-493e-08d9af23fb09
+x-ms-traffictypediagnostic: SJ0PR11MB5791:
+x-microsoft-antispam-prvs: <SJ0PR11MB57913906B1F915B34C71AAD090619@SJ0PR11MB5791.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: SErL4rRXHunULIipHA6UfGkx9cLLgBUTHdit7Qq45q4foUH/Ym5RPbzADcr2XFoFY2VzL/uU7lZlYgw037nTU9svyDYiJcKX9r2Av8vP27gAhwFQJ2mrqz2gyIOjrRif7TwKbwqe/v3UT8d+rOLIPzZgDypCyppe/JM+2OKV/OOJbtOlPiD37xGhsPoPtjVwaU1ZBuK0UpvYxrYP2aXxycChds1m66efEknJ5RSBQwjssI2tqC0Uv2QnaskjKnDGuTAE91e5hLLAVN4QBkw7H9yoomkEHGkpQiZVXe+OXYP4uezzjpynMTCv6+CxWebx7Q1xuo7L7a47ARx8kXNw3KF90HwxU/XNtMl1muuoy9X6PGgUaKBZxV0jlhNxXF52LCPZhn3pOjHRe8ZqB2jEUdqt8tnmXeGhEzRINNrQIF1DNmR9RHcb7pBZN+HImrgOFoqpkJckQDjlbqYKwyjHLS7VUqWgK/rHfkUI3J9G2mp9q0jLarHHWuKwR5dGp/MTPOn3qCLqXI44wzU9w0CuGV+fFx7yTNMUb+jlv89U7LNd4wfNef+IM+LjvdTDZxSvJX8GAdXXSkEt8M3tdaUsYrR2jZBmJV6avJkEsLWf9OhX/Ntmye40XDjo/jGT7xX4Nj795JlT0E5qjEXPNMUE+/ORJLKTLlVPg8Gv/+WBEyioc354+fZXkEKL5ZBfG+bc8nqp+5aRQcefjYxVp+G4eA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3207.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(316002)(4001150100001)(6916009)(38100700002)(186003)(122000001)(66446008)(5660300002)(508600001)(54906003)(76116006)(86362001)(6512007)(91956017)(66476007)(45080400002)(64756008)(8676002)(38070700005)(4326008)(66946007)(71200400001)(2616005)(6506007)(26005)(15650500001)(83380400001)(6486002)(82960400001)(66556008)(8936002)(36756003)(2906002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?U0dMejM1UUM2QmpGU2Y4c1hTMUl5dkdJZ2N2U1VVdFFUbzM4WW9veS9PWGo5?=
+ =?utf-8?B?YlhJelVYZnVlU2o5QnRXUTJRZmxMNWQvRTdGRlQzTElwN3FPV0FUMlVpbStl?=
+ =?utf-8?B?SGY4THhrc1cwNWNsRlNIT2ZsMXFrSFhLak0wQTBCNEM5QVUrUGNocS9lZlFY?=
+ =?utf-8?B?a0ovOVlGMUJma2xLbWNXK0RtL1RaL3JOeVRpa0prY29lZHJvdU5jRG80d2p3?=
+ =?utf-8?B?eEhkaHFkeU1IMS9oZnRoRGVyODQ4QTZjb3N0YzJBSWNoT2FiVkUyczRWSUdq?=
+ =?utf-8?B?Qy9ObURyT0pmSnI0ditKemgzaW80TU56aHpvRVVjbjZoWDFpSkxnbmhaYndQ?=
+ =?utf-8?B?WlMzZ2V0U1ZJTTZ5eXVrV1NFZEUxSURPclBHaHBzRWtpNFpTOEJvU0MrT0x2?=
+ =?utf-8?B?R0oyZjNuUDFWeUFEKzZyZXkyZVZzRTRlcUh3TllsM1BSeVRFY1dmWStZd2F4?=
+ =?utf-8?B?VzVIbUZwNWltNnFuQWU5MHNNRFhyNEUvY2ovV1I1RHc5Y0M1OVlocVl4S1J3?=
+ =?utf-8?B?dWxBOGVNdlJOdHprekJabVVIdEJneXN0T3hWZExJdUlES0dCZFA5dU9wd1lJ?=
+ =?utf-8?B?WTZEWTF2ZWN1N3B2RU92TmFOcDhZejNPVUFqSEpLemNhWXpLWWtqK05ReEhT?=
+ =?utf-8?B?UEVudXd5V25IYWI1cGJLRlFsb2M4YkZNY05TZi9rRVNvdnd3ckorVndQOWdj?=
+ =?utf-8?B?RjNjUzR0cWlVeEZCNzVCRHRMeTk3TjFZSWJZdGk2TlNJck1hT0VpYnR4V0gr?=
+ =?utf-8?B?dXk3ZFdiNnpQTUxhSzF2bldBcjNsTS95c1VUQTNKWUlVNzZHNEs1MWt1WXpY?=
+ =?utf-8?B?dG50Y2lxZFllbjZHdVdNK3k1b2swSDlxQXpyb2UxZFFGV1pGWnJGUHFreGpV?=
+ =?utf-8?B?K1kzOEVvRzdXKy8yZXRnTnVLQThxVDA4S2crT2lQR1B0clJveUZwY2d1T1pV?=
+ =?utf-8?B?cy9CV3cxNmhGSzhyYWF2K3l0eEd6aUd6UGs5SEtEeWNOMjllRVhDSE9VbUlp?=
+ =?utf-8?B?UldWS3NMRXFVeXlWZk80L2ZTbVZYSDBOTEJXNVdsdjhhSHVhWDNuYTVmL0RM?=
+ =?utf-8?B?VHMzSEwxUEpobVJkRHp0NXYveTVaOFQ0RDNjTG9oYXNYL0lLeWZjTmdNY2xk?=
+ =?utf-8?B?WEY1K0dWWFQ3QVJVQUNabEJhSjlVT3FJL1hLNVFGU2p5T0dYN0huTnlXU3BZ?=
+ =?utf-8?B?NWRpYmY4YUhmS2RRNTY4STYwQVA3bG55WXFRVitLV2dIcGt2cFdYSkNMbE56?=
+ =?utf-8?B?YjZ1L1Y0bStCMnV0a1dCV0JLNFF5YmRUTU1rQkd3ZDJzb1ZFeEFzRC9rcnNE?=
+ =?utf-8?B?UlA1ZGNCUUkyeHRNRVdVUSthbmV2R2hhZC96K2pRVFNxU0JsSzVNUEM3cjdH?=
+ =?utf-8?B?eWhzcm8yS3Z3bXdqN2hMWWlVTmF6ZTJRQmRoeGM0SkwyR3J0NTdTYm40UXlH?=
+ =?utf-8?B?YmVhdlIyMUxVQTRteTRVVldUejBob1NKNlRsQ2J6L0JNMUF5S1Y4elN3M1hV?=
+ =?utf-8?B?Yk5VYlRKamE4Lys2bi8xWS9xYlhWa1hBdmNjSThUc0ZMb0QyQjRvZWNTZFJG?=
+ =?utf-8?B?MHNmdU9OTGM3M01hZllZVzczMHNMdjQxNEVXTXltSFF6Y2xObE9GVDdVK1l6?=
+ =?utf-8?B?cndsYVBYVXcvYjJuYXFmYWpqSWZZVHlKU2swdU5sYVVvam9hcnVwRU0yN09m?=
+ =?utf-8?B?U3Jtd0E0ems0SENLVmcxVUhmNmYveTJ6N0w4T0szaWRxUkNtS1BUNHk3d21V?=
+ =?utf-8?B?dWtKeDdac01xRWQ4N2ZGdEtwdXl6VUVOeHZlYjhFRitVbnhyanVOT1ZodkVD?=
+ =?utf-8?B?VXAxdW0zRUc5eUMyNkd5VGx2aVA5QkxWR1UvdjlnalpMM3U5YnM2UFNRL3R0?=
+ =?utf-8?B?NGN0c0ZLOGU4TUdmakZxSUpJV3ZVeHFmQzJSNGZhelNZMWJXZC90bWZ2OUlD?=
+ =?utf-8?B?QVVOeXI2ekozY2Y0Z2Z0VDJsYWJDMlIvVmZuZGw5N3AvUndidlNOL1AvelRs?=
+ =?utf-8?B?TFRDVm5BYTV5UmtIMlR6Qjg1TFJEeHlUMUZrYjgxTTFqblpaQnBUL3JpUzFC?=
+ =?utf-8?B?S2psUWtac2FSZURtYnNrV2tTeHliYjNhVjN3Zm9neEZ3T0RUb1JWc1NjVWdO?=
+ =?utf-8?B?RlRBMHNmWDFrS2t6OUpVclZZbzE2enFWbGY3QmJUR3ZXdWpjay9nWkM2Z1ho?=
+ =?utf-8?B?OFJ1QW9XdDNiWE53ZURWbXFPQzVQSFptRXJMMnBHaHpMWmxTRE1PeEhlU2RE?=
+ =?utf-8?Q?6EAUeOU9mzXLvQpuDlBeMS/z7rd+WnVDnN2Y21YRXU=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <5A0976FD371DFE4985D1A54D14DDC338@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACGkMEsn8xbdEgrCwCWpGz7u=NoX-yADotCaeB2oNbZy_u9iOQ@mail.gmail.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3207.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f408f37-24df-494e-493e-08d9af23fb09
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2021 08:25:31.8582
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: FJJMR4pfcl5OYLQxzZ1zDCsHYk9N76uUY4KBcMrEIPvHb2QBkPLFA78oUFsdJXXGKTfxl4UQRNTiW851fIa7J+BkaEkrLiT19i8hF7Ge3sU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5791
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 03:59:12PM +0800, Jason Wang wrote:
-> On Wed, Nov 24, 2021 at 3:22 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> >
-> > On Wed, Nov 24, 2021 at 10:33:28AM +0800, Jason Wang wrote:
-> > > On Wed, Nov 24, 2021 at 10:26 AM Jason Wang <jasowang@redhat.com> wrote:
-> > > >
-> > > > On Wed, Nov 24, 2021 at 9:30 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
-> > > > >
-> > > > > "Michael S. Tsirkin" <mst@redhat.com> writes:
-> > > > > > On Tue, Nov 23, 2021 at 10:25:20AM +0800, Jason Wang wrote:
-> > > > > >> On Tue, Nov 23, 2021 at 4:24 AM Halil Pasic <pasic@linux.ibm.com> wrote:
-> > > > > >> >
-> > > > > >> > On Mon, 22 Nov 2021 14:25:26 +0800
-> > > > > >> > Jason Wang <jasowang@redhat.com> wrote:
-> > > > > >> >
-> > > > > >> > > I think the fixes are:
-> > > > > >> > >
-> > > > > >> > > 1) fixing the vhost vsock
-> > > > > >> > > 2) use suppress_used_validation=true to let vsock driver to validate
-> > > > > >> > > the in buffer length
-> > > > > >> > > 3) probably a new feature so the driver can only enable the validation
-> > > > > >> > > when the feature is enabled.
-> > > > > >> >
-> > > > > >> > I'm not sure, I would consider a F_DEV_Y_FIXED_BUG_X a perfectly good
-> > > > > >> > feature. Frankly the set of such bugs is device implementation
-> > > > > >> > specific and it makes little sense to specify a feature bit
-> > > > > >> > that says the device implementation claims to adhere to some
-> > > > > >> > aspect of the specification. Also what would be the semantic
-> > > > > >> > of not negotiating F_DEV_Y_FIXED_BUG_X?
-> > > > > >>
-> > > > > >> Yes, I agree. Rethink of the feature bit, it seems unnecessary,
-> > > > > >> especially considering the driver should not care about the used
-> > > > > >> length for tx.
-> > > > > >>
-> > > > > >> >
-> > > > > >> > On the other hand I see no other way to keep the validation
-> > > > > >> > permanently enabled for fixed implementations, and get around the problem
-> > > > > >> > with broken implementations. So we could have something like
-> > > > > >> > VHOST_USED_LEN_STRICT.
-> > > > > >>
-> > > > > >> It's more about a choice of the driver's knowledge. For vsock TX it
-> > > > > >> should be fine. If we introduce a parameter and disable it by default,
-> > > > > >> it won't be very useful.
-> > > > > >>
-> > > > > >> >
-> > > > > >> > Maybe, we can also think of 'warn and don't alter behavior' instead of
-> > > > > >> > 'warn' and alter behavior. Or maybe even not having such checks on in
-> > > > > >> > production, but only when testing.
-> > > > > >>
-> > > > > >> I think there's an agreement that virtio drivers need more hardening,
-> > > > > >> that's why a lot of patches were merged. Especially considering the
-> > > > > >> new requirements came from confidential computing, smart NIC and
-> > > > > >> VDUSE. For virtio drivers, enabling the validation may help to
-> > > > > >>
-> > > > > >> 1) protect the driver from the buggy and malicious device
-> > > > > >> 2) uncover the bugs of the devices (as vsock did, and probably rpmsg)
-> > > > > >> 3) force the have a smart driver that can do the validation itself
-> > > > > >> then we can finally remove the validation in the core
-> > > > > >>
-> > > > > >> So I'd like to keep it enabled.
-> > > > > >>
-> > > > > >> Thanks
-> > > > > >
-> > > > > > Let's see how far we can get. But yes, maybe we were too aggressive in
-> > > > > > breaking things by default, a warning might be a better choice for a
-> > > > > > couple of cycles.
-> > > >
-> > > > Ok, considering we saw the issues with balloons I think I can post a
-> > > > patch to use warn instead. I wonder if we need to taint the kernel in
-> > > > this case.
-> > >
-> > > Rethink this, consider we still have some time, I tend to convert the
-> > > drivers to validate the length by themselves. Does this make sense?
-> > >
-> > > Thanks
-> >
-> > That's separate but let's stop crashing guests for people ASAP.
-> 
-> Ok, will post a patch soon.
-> 
-> Thanks
-
-So let's err on the side of caution now, I will just revert for this
-release.
-
-For the next one I think a good plan is:
-- no checks by default
-- module param to check and warn
-- keep adding validation in the drivers as appropriate
-
-> >
-> >
-> > > >
-> > > > >
-> > > > > This series appears to break the virtio_balloon driver as well.
-> > > > >
-> > > > > The symptom is soft lockup warnings, eg:
-> > > > >
-> > > > >   INFO: task kworker/1:1:109 blocked for more than 614 seconds.
-> > > > >         Not tainted 5.16.0-rc2-gcc-10.3.0 #21
-> > > > >   "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > > > >   task:kworker/1:1     state:D stack:12496 pid:  109 ppid:     2 flags:0x00000800
-> > > > >   Workqueue: events_freezable update_balloon_size_func
-> > > > >   Call Trace:
-> > > > >   [c000000003cef7c0] [c000000003cef820] 0xc000000003cef820 (unreliable)
-> > > > >   [c000000003cef9b0] [c00000000001e238] __switch_to+0x1e8/0x2f0
-> > > > >   [c000000003cefa10] [c000000000f0a00c] __schedule+0x2cc/0xb50
-> > > > >   [c000000003cefae0] [c000000000f0a8fc] schedule+0x6c/0x140
-> > > > >   [c000000003cefb10] [c00000000095b6c4] tell_host+0xe4/0x130
-> > > > >   [c000000003cefba0] [c00000000095d234] update_balloon_size_func+0x394/0x3f0
-> > > > >   [c000000003cefc70] [c000000000178064] process_one_work+0x2c4/0x5b0
-> > > > >   [c000000003cefd10] [c0000000001783f8] worker_thread+0xa8/0x640
-> > > > >   [c000000003cefda0] [c000000000185444] kthread+0x1b4/0x1c0
-> > > > >   [c000000003cefe10] [c00000000000cee4] ret_from_kernel_thread+0x5c/0x64
-> > > > >
-> > > > > Similar backtrace reported here by Luis:
-> > > > >
-> > > > >   https://lore.kernel.org/lkml/YY2duTi0wAyAKUTJ@bombadil.infradead.org/
-> > > > >
-> > > > > Bisect points to:
-> > > > >
-> > > > >   # first bad commit: [939779f5152d161b34f612af29e7dc1ac4472fcf] virtio_ring: validate used buffer length
-> > > > >
-> > > > > Adding suppress used validation to the virtio balloon driver "fixes" it, eg.
-> > > > >
-> > > > > diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-> > > > > index c22ff0117b46..a14b82ceebb2 100644
-> > > > > --- a/drivers/virtio/virtio_balloon.c
-> > > > > +++ b/drivers/virtio/virtio_balloon.c
-> > > > > @@ -1150,6 +1150,7 @@ static unsigned int features[] = {
-> > > > >  };
-> > > > >
-> > > > >  static struct virtio_driver virtio_balloon_driver = {
-> > > > > +       .suppress_used_validation = true,
-> > > > >         .feature_table = features,
-> > > > >         .feature_table_size = ARRAY_SIZE(features),
-> > > > >         .driver.name =  KBUILD_MODNAME,
-> > > >
-> > > > Looks good, we need a formal patch for this.
-> > > >
-> > > > And we need fix Qemu as well which advertise non zero used length for
-> > > > inflate/deflate queue:
-> > > >
-> > > > static void virtio_balloon_handle_output(VirtIODevice *vdev, VirtQueue *vq)
-> > > > ...
-> > > >         virtqueue_push(vq, elem, offset);
-> > > >
-> > > > Thanks
-> > > >
-> > > > >
-> > > > >
-> > > > > cheers
-> > > > >
-> >
-
+T24gV2VkLCAyMDIxLTExLTI0IGF0IDA5OjIxICswMTAwLCBKaXJpIEtvc2luYSB3cm90ZToNCj4g
+T24gV2VkLCAyNCBOb3YgMjAyMSwgQ29lbGhvLCBMdWNpYW5vIHdyb3RlOg0KPiANCj4gPiA+ID4g
+U2luY2UgdGhlIHN3aXRjaCBhd2F5IGZyb20gcnRubCB0byB3aXBoeSBsb2NrLCANCj4gPiA+ID4g
+cmVndWxhdG9yeV9zZXRfd2lwaHlfcmVnZF9zeW5jKCkgaGFzIHRvIGJlIGNhbGxlZCB3aXRoIHdp
+cGh5IGxvY2sgaGVsZDsgDQo+ID4gPiA+IHRoaXMgaXMgY3VycmVudGx5IG5vdCB0aGUgY2FzZSBv
+biB0aGUgbW9kdWxlIGxvYWQgY29kZXBhdGguDQo+ID4gPiA+IA0KPiA+ID4gPiBGaXggdGhhdCBi
+eSBwcm9wZXJseSBhY3F1aXJpbmcgaXQgaW4gaXdsX212bV9zdGFydF9nZXRfbnZtKCkgdG8gbWFp
+bnRhaW4gDQo+ID4gPiA+IGFsc28gbG9jayBvcmRlcmluZyBhZ2FpbnN0IG12bS0+bXV0ZXggYW5k
+IFJUTkwuDQo+ID4gPiA+IA0KPiA+ID4gPiBUaGlzIGZpeGVzIHRoZSBzcGxhdCBiZWxvdy4NCj4g
+PiA+ID4gDQo+ID4gPiA+ICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KPiA+ID4gPiAg
+V0FSTklORzogc3VzcGljaW91cyBSQ1UgdXNhZ2UNCj4gPiA+ID4gIDUuMTYuMC1yYzIgIzEgTm90
+IHRhaW50ZWQNCj4gPiA+ID4gIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+ID4gPiA+
+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9pbnRlbC9pd2x3aWZpL212bS9tYWM4MDIxMS5jOjI2NCBz
+dXNwaWNpb3VzIHJjdV9kZXJlZmVyZW5jZV9wcm90ZWN0ZWQoKSB1c2FnZSENCj4gPiA+ID4gDQo+
+ID4gPiA+ICBvdGhlciBpbmZvIHRoYXQgbWlnaHQgaGVscCB1cyBkZWJ1ZyB0aGlzOg0KPiA+ID4g
+PiANCj4gPiA+ID4gIHJjdV9zY2hlZHVsZXJfYWN0aXZlID0gMiwgZGVidWdfbG9ja3MgPSAxDQo+
+ID4gPiA+ICAzIGxvY2tzIGhlbGQgYnkgbW9kcHJvYmUvNTc4Og0KPiA+ID4gPiAgICMwOiBmZmZm
+ZmZmZmMwYjZmMGU4IChpd2x3aWZpX29wbW9kZV90YWJsZV9tdHgpeysuKy59LXszOjN9LCBhdDog
+aXdsX29wbW9kZV9yZWdpc3RlcisweDJlLzB4ZTAgW2l3bHdpZmldDQo+ID4gPiA+ICAgIzE6IGZm
+ZmZmZmZmOWE4NTZiMDggKHJ0bmxfbXV0ZXgpeysuKy59LXszOjN9LCBhdDogaXdsX29wX21vZGVf
+bXZtX3N0YXJ0KzB4YTBiLzB4Y2IwIFtpd2xtdm1dDQo+ID4gPiA+ICAgIzI6IGZmZmY4ZTUyNDJm
+NTMzODAgKCZtdm0tPm11dGV4KXsrLisufS17MzozfSwgYXQ6IGl3bF9vcF9tb2RlX212bV9zdGFy
+dCsweGExNi8weGNiMCBbaXdsbXZtXQ0KPiA+ID4gPiANCj4gPiA+ID4gIHN0YWNrIGJhY2t0cmFj
+ZToNCj4gPiA+ID4gIENQVTogMSBQSUQ6IDU3OCBDb21tOiBtb2Rwcm9iZSBOb3QgdGFpbnRlZCA1
+LjE2LjAtcmMyICMxDQo+ID4gPiA+ICBIYXJkd2FyZSBuYW1lOiBMRU5PVk8gMjBLNVMyMlIwMC8y
+MEs1UzIyUjAwLCBCSU9TIFIwSUVUMzhXICgxLjE2ICkgMDUvMzEvMjAxNw0KPiA+ID4gPiAgQ2Fs
+bCBUcmFjZToNCj4gPiA+ID4gICA8VEFTSz4NCj4gPiA+ID4gICBkdW1wX3N0YWNrX2x2bCsweDU4
+LzB4NzENCj4gPiA+ID4gICBpd2xfbXZtX2luaXRfZndfcmVnZCsweDEzZC8weDE4MCBbaXdsbXZt
+XQ0KPiA+ID4gPiAgIGl3bF9tdm1faW5pdF9tY2MrMHg2Ni8weDFkMCBbaXdsbXZtXQ0KPiA+ID4g
+PiAgIGl3bF9vcF9tb2RlX212bV9zdGFydCsweGM2ZC8weGNiMCBbaXdsbXZtXQ0KPiA+ID4gPiAg
+IF9pd2xfb3BfbW9kZV9zdGFydC5pc3JhLjQrMHg0Mi8weDgwIFtpd2x3aWZpXQ0KPiA+ID4gPiAg
+IGl3bF9vcG1vZGVfcmVnaXN0ZXIrMHg3MS8weGUwIFtpd2x3aWZpXQ0KPiA+ID4gPiAgID8gMHhm
+ZmZmZmZmZmMxMDYyMDAwDQo+ID4gPiA+ICAgaXdsX212bV9pbml0KzB4MzQvMHgxMDAwIFtpd2xt
+dm1dDQo+ID4gPiA+ICAgZG9fb25lX2luaXRjYWxsKzB4NWIvMHgzMDANCj4gPiA+ID4gICBkb19p
+bml0X21vZHVsZSsweDViLzB4MjFjDQo+ID4gPiA+ICAgbG9hZF9tb2R1bGUrMHgxYjJmLzB4MjMy
+MA0KPiA+ID4gPiAgID8gX19kb19zeXNfZmluaXRfbW9kdWxlKzB4YWEvMHgxMTANCj4gPiA+ID4g
+ICBfX2RvX3N5c19maW5pdF9tb2R1bGUrMHhhYS8weDExMA0KPiA+ID4gPiAgIGRvX3N5c2NhbGxf
+NjQrMHgzYS8weGIwDQo+ID4gPiA+ICAgZW50cnlfU1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1lKzB4
+NDQvMHhhZQ0KPiA+ID4gPiAgUklQOiAwMDMzOjB4N2Y3Y2RkN2M4ZGVkDQo+ID4gPiA+ICBDb2Rl
+OiA1YiA0MSA1YyBjMyA2NiAwZiAxZiA4NCAwMCAwMCAwMCAwMCAwMCBmMyAwZiAxZSBmYSA0OCA4
+OSBmOCA0OCA4OSBmNyA0OCA4OSBkNiA0OCA4OSBjYSA0ZCA4OSBjMiA0ZCA4OSBjOCA0YyA4YiA0
+YyAyNCAwOCAwZiAwNSA8NDg+IDNkIDAxIGYwIGZmIGZmIDczIDAxIGMzIDQ4IDhiIDBkIGZiIGVm
+IDBlIDAwIGY3IGQ4IDY0IDg5IDAxIDQ4DQo+ID4gPiA+ICBSU1A6IDAwMmI6MDAwMDdmZmZiOTBi
+ZjQ1OCBFRkxBR1M6IDAwMDAwMjQ2IE9SSUdfUkFYOiAwMDAwMDAwMDAwMDAwMTM5DQo+ID4gPiA+
+ICBSQVg6IGZmZmZmZmZmZmZmZmZmZGEgUkJYOiAwMDAwNTU5YzUwMWNhZjAwIFJDWDogMDAwMDdm
+N2NkZDdjOGRlZA0KPiA+ID4gPiAgUkRYOiAwMDAwMDAwMDAwMDAwMDAwIFJTSTogMDAwMDU1OWM0
+ZWIzNjZlZSBSREk6IDAwMDAwMDAwMDAwMDAwMDINCj4gPiA+ID4gIFJCUDogMDAwMDAwMDAwMDA0
+MDAwMCBSMDg6IDAwMDAwMDAwMDAwMDAwMDAgUjA5OiAwMDAwNTU5YzUwMWNhOWY4DQo+ID4gPiA+
+ICBSMTA6IDAwMDAwMDAwMDAwMDAwMDIgUjExOiAwMDAwMDAwMDAwMDAwMjQ2IFIxMjogMDAwMDU1
+OWM0ZWIzNjZlZQ0KPiA+ID4gPiAgUjEzOiAwMDAwNTU5YzUwMWNhZGIwIFIxNDogMDAwMDAwMDAw
+MDAwMDAwMCBSMTU6IDAwMDA1NTljNTAxY2JhZDANCj4gPiA+ID4gICA8L1RBU0s+DQo+ID4gPiA+
+ICAtLS0tLS0tLS0tLS1bIGN1dCBoZXJlIF0tLS0tLS0tLS0tLS0NCj4gPiA+ID4gIFdBUk5JTkc6
+IENQVTogMSBQSUQ6IDU3OCBhdCBuZXQvd2lyZWxlc3MvcmVnLmM6MzEwNyByZWdfcHJvY2Vzc19z
+ZWxmX21hbmFnZWRfaGludCsweDE4My8weDFkMCBbY2ZnODAyMTFdDQo+ID4gPiA+ICBNb2R1bGVz
+IGxpbmtlZCBpbjoNCj4gPiA+ID4gIENQVTogMSBQSUQ6IDU3OCBDb21tOiBtb2Rwcm9iZSBOb3Qg
+dGFpbnRlZCA1LjE2LjAtcmMyICMxDQo+ID4gPiA+ICBIYXJkd2FyZSBuYW1lOiBMRU5PVk8gMjBL
+NVMyMlIwMC8yMEs1UzIyUjAwLCBCSU9TIFIwSUVUMzhXICgxLjE2ICkgMDUvMzEvMjAxNw0KPiA+
+ID4gPiAgUklQOiAwMDEwOnJlZ19wcm9jZXNzX3NlbGZfbWFuYWdlZF9oaW50KzB4MTgzLzB4MWQw
+IFtjZmc4MDIxMV0NCj4gPiA+ID4gIENvZGU6IDgzIGM0IDYwIDViIDQxIDVhIDQxIDVjIDQxIDVk
+IDQxIDVlIDQxIDVmIDVkIDQ5IDhkIDYyIGY4IGMzIDQ4IDhkIDdiIDY4IGJlIGZmIGZmIGZmIGZm
+IGU4IDc1IDRhIDEzIGQ5IDg1IGMwIDBmIDg1IGU2IGZlIGZmIGZmIDwwZj4gMGIgZTkgZGYgZmUg
+ZmYgZmYgMGYgMGIgODAgM2QgYmMgMmMgMGIgMDAgMDAgMGYgODUgYzIgZmUgZmYgZmYNCj4gPiA+
+ID4gIFJTUDogMDAxODpmZmZmOTk5NDgwOWNmYWYwIEVGTEFHUzogMDAwMTAyNDYNCj4gPiA+ID4g
+IFJBWDogMDAwMDAwMDAwMDAwMDAwMCBSQlg6IGZmZmY4ZTUyNDJmNTA1YzAgUkNYOiAwMDAwMDAw
+MDAwMDAwMDAwDQo+ID4gPiA+ICBSRFg6IDAwMDAwMDAwMDAwMDAwMDAgUlNJOiBmZmZmOGU1MjQy
+ZjUwNjI4IFJESTogZmZmZjhlNTI0YTJiNWNkMA0KPiA+ID4gPiAgUkJQOiBmZmZmOTk5NDgwOWNm
+YjgwIFIwODogMDAwMDAwMDAwMDAwMDAwMSBSMDk6IGZmZmZmZmZmOWIyZTJmNTANCj4gPiA+ID4g
+IFIxMDogZmZmZjk5OTQ4MDljZmI5OCBSMTE6IGZmZmZmZmZmZmZmZmZmZmYgUjEyOiAwMDAwMDAw
+MDAwMDAwMDAwDQo+ID4gPiA+ICBSMTM6IGZmZmY4ZTUyNDJmNTMyZTggUjE0OiBmZmZmOGU1MjQ4
+OTE0MDEwIFIxNTogZmZmZjhlNTI0MmY1MzJlMA0KPiA+ID4gPiAgRlM6ICAwMDAwN2Y3Y2RkNmFm
+NzQwKDAwMDApIEdTOmZmZmY4ZTUzNjc0ODAwMDAoMDAwMCkga25sR1M6MDAwMDAwMDAwMDAwMDAw
+MA0KPiA+ID4gPiAgQ1M6ICAwMDEwIERTOiAwMDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4MDA1
+MDAzMw0KPiA+ID4gPiAgQ1IyOiAwMDAwN2YxOTQzMDY4N2FjIENSMzogMDAwMDAwMDEwODhmYTAw
+MyBDUjQ6IDAwMDAwMDAwMDAzNzA2ZTANCj4gPiA+ID4gIENhbGwgVHJhY2U6DQo+ID4gPiA+ICAg
+PFRBU0s+DQo+ID4gPiA+ICAgPyBsb2NrX2lzX2hlbGRfdHlwZSsweGI0LzB4MTIwDQo+ID4gPiA+
+ICAgPyByZWd1bGF0b3J5X3NldF93aXBoeV9yZWdkX3N5bmMrMHgyZi8weDgwIFtjZmc4MDIxMV0N
+Cj4gPiA+ID4gICByZWd1bGF0b3J5X3NldF93aXBoeV9yZWdkX3N5bmMrMHgyZi8weDgwIFtjZmc4
+MDIxMV0NCj4gPiA+ID4gICBpd2xfbXZtX2luaXRfbWNjKzB4Y2QvMHgxZDAgW2l3bG12bV0NCj4g
+PiA+ID4gICBpd2xfb3BfbW9kZV9tdm1fc3RhcnQrMHhjNmQvMHhjYjAgW2l3bG12bV0NCj4gPiA+
+ID4gICBfaXdsX29wX21vZGVfc3RhcnQuaXNyYS40KzB4NDIvMHg4MCBbaXdsd2lmaV0NCj4gPiA+
+ID4gICBpd2xfb3Btb2RlX3JlZ2lzdGVyKzB4NzEvMHhlMCBbaXdsd2lmaV0NCj4gPiA+ID4gICA/
+IDB4ZmZmZmZmZmZjMTA2MjAwMA0KPiA+ID4gPiAgIGl3bF9tdm1faW5pdCsweDM0LzB4MTAwMCBb
+aXdsbXZtXQ0KPiA+ID4gPiAgIGRvX29uZV9pbml0Y2FsbCsweDViLzB4MzAwDQo+ID4gPiA+ICAg
+ZG9faW5pdF9tb2R1bGUrMHg1Yi8weDIxYw0KPiA+ID4gPiAgIGxvYWRfbW9kdWxlKzB4MWIyZi8w
+eDIzMjANCj4gPiA+ID4gICA/IF9fZG9fc3lzX2Zpbml0X21vZHVsZSsweGFhLzB4MTEwDQo+ID4g
+PiA+ICAgX19kb19zeXNfZmluaXRfbW9kdWxlKzB4YWEvMHgxMTANCj4gPiA+ID4gICBkb19zeXNj
+YWxsXzY0KzB4M2EvMHhiMA0KPiA+ID4gPiAgIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJfaHdmcmFt
+ZSsweDQ0LzB4YWUNCj4gPiA+ID4gIFJJUDogMDAzMzoweDdmN2NkZDdjOGRlZA0KPiA+ID4gPiAg
+Q29kZTogNWIgNDEgNWMgYzMgNjYgMGYgMWYgODQgMDAgMDAgMDAgMDAgMDAgZjMgMGYgMWUgZmEg
+NDggODkgZjggNDggODkgZjcgNDggODkgZDYgNDggODkgY2EgNGQgODkgYzIgNGQgODkgYzggNGMg
+OGIgNGMgMjQgMDggMGYgMDUgPDQ4PiAzZCAwMSBmMCBmZiBmZiA3MyAwMSBjMyA0OCA4YiAwZCBm
+YiBlZiAwZSAwMCBmNyBkOCA2NCA4OSAwMSA0OA0KPiA+ID4gPiAgUlNQOiAwMDJiOjAwMDA3ZmZm
+YjkwYmY0NTggRUZMQUdTOiAwMDAwMDI0NiBPUklHX1JBWDogMDAwMDAwMDAwMDAwMDEzOQ0KPiA+
+ID4gPiAgUkFYOiBmZmZmZmZmZmZmZmZmZmRhIFJCWDogMDAwMDU1OWM1MDFjYWYwMCBSQ1g6IDAw
+MDA3ZjdjZGQ3YzhkZWQNCj4gPiA+ID4gIFJEWDogMDAwMDAwMDAwMDAwMDAwMCBSU0k6IDAwMDA1
+NTljNGViMzY2ZWUgUkRJOiAwMDAwMDAwMDAwMDAwMDAyDQo+ID4gPiA+ICBSQlA6IDAwMDAwMDAw
+MDAwNDAwMDAgUjA4OiAwMDAwMDAwMDAwMDAwMDAwIFIwOTogMDAwMDU1OWM1MDFjYTlmOA0KPiA+
+ID4gPiAgUjEwOiAwMDAwMDAwMDAwMDAwMDAyIFIxMTogMDAwMDAwMDAwMDAwMDI0NiBSMTI6IDAw
+MDA1NTljNGViMzY2ZWUNCj4gPiA+ID4gIFIxMzogMDAwMDU1OWM1MDFjYWRiMCBSMTQ6IDAwMDAw
+MDAwMDAwMDAwMDAgUjE1OiAwMDAwNTU5YzUwMWNiYWQwDQo+ID4gPiA+IA0KPiA+ID4gPiBGaXhl
+czogYTA1ODI5YTcyMjJlOWQxICgiY2ZnODAyMTE6IGF2b2lkIGhvbGRpbmcgdGhlIFJUTkwgd2hl
+biBjYWxsaW5nIHRoZSBkcml2ZXIiKQ0KPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBKaXJpIEtvc2lu
+YSA8amtvc2luYUBzdXNlLmN6Pg0KPiA+ID4gDQo+ID4gPiBJIHRoaW5rIHRoaXMgc2hvdWxkIGdv
+IHRvIHdpcmVsZXNzLWRyaXZlcnMgc28gSSBhc3NpZ25lZCB0aGlzIHRvIG1lLg0KPiA+ID4gTHVj
+YSwgYWNrPw0KPiA+IA0KPiA+IEhtbW0sIEkgdGhvdWdodCB3ZSBhbHJlYWR5IGhhZCBhIGZpeCBm
+b3IgdGhpcyBhcyB3ZWxsPw0KPiANCj4gRldJVyBJIGRvbid0IHNlZSB0aGlzIGZpeGVkIGluIGxh
+dGVzdCBsaW51eC1uZXh0Lg0KDQpZb3UncmUgcmlnaHQsIGl0J3Mgbm90IHRoZXJlLiAgRm9yIHNv
+bWUgcmVhc29uIHRoYXQgaXMgaW4gb3VyIGludGVybmFsDQp0cmVlIGFuZCBjYW1lIGZyb20gYSBt
+ZXJnZSBmcm9tIHVwc3RyZWFtLCB3aGljaCBpcyBzdHJhbmdlLg0KDQpCdXQgcmVnYXJkbGVzcyBv
+ZiB0aGUgcmVhc29uIHdoeSBpdCdzIG5vdCB0aGVyZSwgaXQgc2hvdWxkIGJlIGFwcGxpZWQsDQpz
+byB0aGFua3MhIDopDQoNCkFja2VkLWJ5OiBMdWNhIENvZWxobyA8bHVjaWFuby5jb2VsaG9AaW50
+ZWwuY29tPg0KDQotLQ0KQ2hlZXJzLA0KTHVjYS4NCg==
