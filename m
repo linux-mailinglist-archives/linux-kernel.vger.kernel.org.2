@@ -2,301 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0305445CC39
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:38:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D6145CC3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 19:38:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350737AbhKXSlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 13:41:07 -0500
-Received: from mga11.intel.com ([192.55.52.93]:36449 "EHLO mga11.intel.com"
+        id S1350785AbhKXSl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 13:41:28 -0500
+Received: from mga05.intel.com ([192.55.52.43]:5871 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350749AbhKXSlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 13:41:02 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="232839548"
+        id S243530AbhKXSl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 13:41:27 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="321580174"
 X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
-   d="scan'208";a="232839548"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 10:37:02 -0800
+   d="scan'208";a="321580174"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 10:37:07 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
-   d="scan'208";a="554336169"
+   d="scan'208";a="650486810"
 Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 24 Nov 2021 10:36:59 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 24 Nov 2021 10:37:04 -0800
 Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mpx8c-0005CQ-Is; Wed, 24 Nov 2021 18:36:58 +0000
-Date:   Thu, 25 Nov 2021 02:36:36 +0800
+        id 1mpx8c-0005CO-IY; Wed, 24 Nov 2021 18:36:58 +0000
+Date:   Thu, 25 Nov 2021 02:36:39 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Peter Oskolkov <posk@posk.io>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Paul Turner <pjt@google.com>
-Subject: Re: [PATCH v0.9.1 3/6] sched/umcg: implement UMCG syscalls
-Message-ID: <202111250209.9dBNZjdP-lkp@intel.com>
-References: <20211122211327.5931-4-posk@google.com>
+To:     Liam Beguin <liambeguin@gmail.com>, peda@axentia.se,
+        jic23@kernel.org, lars@metafoo.de
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org
+Subject: Re: [PATCH v9 10/14] iio: test: add basic tests for the iio-rescale
+ driver
+Message-ID: <202111250238.lNOwhSKW-lkp@intel.com>
+References: <20211115034334.1713050-11-liambeguin@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211122211327.5931-4-posk@google.com>
+In-Reply-To: <20211115034334.1713050-11-liambeguin@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+Hi Liam,
 
-Thank you for the patch! Perhaps something to improve:
+Thank you for the patch! Yet something to improve:
 
-[auto build test WARNING on cb0e52b7748737b2cf6481fdd9b920ce7e1ebbdf]
+[auto build test ERROR on 2b6bff0b122785f09cfbdc34b1aa9edceea6e4c1]
 
-url:    https://github.com/0day-ci/linux/commits/Peter-Oskolkov/sched-mm-x86-uaccess-implement-User-Managed-Concurrency-Groups/20211123-051525
-base:   cb0e52b7748737b2cf6481fdd9b920ce7e1ebbdf
-config: arm64-randconfig-r031-20211124 (https://download.01.org/0day-ci/archive/20211125/202111250209.9dBNZjdP-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 67a1c45def8a75061203461ab0060c75c864df1c)
+url:    https://github.com/0day-ci/linux/commits/Liam-Beguin/iio-afe-add-temperature-rescaling-support/20211115-114729
+base:   2b6bff0b122785f09cfbdc34b1aa9edceea6e4c1
+config: openrisc-randconfig-c003-20211115 (https://download.01.org/0day-ci/archive/20211125/202111250238.lNOwhSKW-lkp@intel.com/config)
+compiler: or1k-linux-gcc (GCC) 11.2.0
 reproduce (this is a W=1 build):
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
-        # install arm64 cross compiling tool for clang build
-        # apt-get install binutils-aarch64-linux-gnu
-        # https://github.com/0day-ci/linux/commit/942655474fa2cd59ea3d11a1cc03775dd79a508e
+        # https://github.com/0day-ci/linux/commit/bef63a2e36c2ceccc6f5954ab7e7cbb178c08fd8
         git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Peter-Oskolkov/sched-mm-x86-uaccess-implement-User-Managed-Concurrency-Groups/20211123-051525
-        git checkout 942655474fa2cd59ea3d11a1cc03775dd79a508e
+        git fetch --no-tags linux-review Liam-Beguin/iio-afe-add-temperature-rescaling-support/20211115-114729
+        git checkout bef63a2e36c2ceccc6f5954ab7e7cbb178c08fd8
         # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=arm64 
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=openrisc SHELL=/bin/bash
 
 If you fix the issue, kindly add following tag as appropriate
 Reported-by: kernel test robot <lkp@intel.com>
 
-All warnings (new ones prefixed by >>):
+All errors (new ones prefixed by >>):
 
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                                  ^
-   <scratch space>:34:1: note: expanded from here
-   __arm64_sys_recvmsg
-   ^
-   kernel/sys_ni.c:257:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   arch/arm64/include/asm/syscall_wrapper.h:76:13: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                      ^
-   kernel/sys_ni.c:263:1: warning: no previous prototype for function '__arm64_sys_mremap' [-Wmissing-prototypes]
-   COND_SYSCALL(mremap);
-   ^
-   arch/arm64/include/asm/syscall_wrapper.h:76:25: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                                  ^
-   <scratch space>:39:1: note: expanded from here
-   __arm64_sys_mremap
-   ^
-   kernel/sys_ni.c:263:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   arch/arm64/include/asm/syscall_wrapper.h:76:13: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                      ^
-   kernel/sys_ni.c:266:1: warning: no previous prototype for function '__arm64_sys_add_key' [-Wmissing-prototypes]
-   COND_SYSCALL(add_key);
-   ^
-   arch/arm64/include/asm/syscall_wrapper.h:76:25: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                                  ^
-   <scratch space>:40:1: note: expanded from here
-   __arm64_sys_add_key
-   ^
-   kernel/sys_ni.c:266:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   arch/arm64/include/asm/syscall_wrapper.h:76:13: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                      ^
-   kernel/sys_ni.c:267:1: warning: no previous prototype for function '__arm64_sys_request_key' [-Wmissing-prototypes]
-   COND_SYSCALL(request_key);
-   ^
-   arch/arm64/include/asm/syscall_wrapper.h:76:25: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                                  ^
-   <scratch space>:41:1: note: expanded from here
-   __arm64_sys_request_key
-   ^
-   kernel/sys_ni.c:267:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   arch/arm64/include/asm/syscall_wrapper.h:76:13: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                      ^
-   kernel/sys_ni.c:268:1: warning: no previous prototype for function '__arm64_sys_keyctl' [-Wmissing-prototypes]
-   COND_SYSCALL(keyctl);
-   ^
-   arch/arm64/include/asm/syscall_wrapper.h:76:25: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                                  ^
-   <scratch space>:42:1: note: expanded from here
-   __arm64_sys_keyctl
-   ^
-   kernel/sys_ni.c:268:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   arch/arm64/include/asm/syscall_wrapper.h:76:13: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                      ^
-   kernel/sys_ni.c:272:1: warning: no previous prototype for function '__arm64_sys_landlock_create_ruleset' [-Wmissing-prototypes]
-   COND_SYSCALL(landlock_create_ruleset);
-   ^
-   arch/arm64/include/asm/syscall_wrapper.h:76:25: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                                  ^
-   <scratch space>:47:1: note: expanded from here
-   __arm64_sys_landlock_create_ruleset
-   ^
-   kernel/sys_ni.c:272:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   arch/arm64/include/asm/syscall_wrapper.h:76:13: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                      ^
-   kernel/sys_ni.c:273:1: warning: no previous prototype for function '__arm64_sys_landlock_add_rule' [-Wmissing-prototypes]
-   COND_SYSCALL(landlock_add_rule);
-   ^
-   arch/arm64/include/asm/syscall_wrapper.h:76:25: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                                  ^
-   <scratch space>:48:1: note: expanded from here
-   __arm64_sys_landlock_add_rule
-   ^
-   kernel/sys_ni.c:273:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   arch/arm64/include/asm/syscall_wrapper.h:76:13: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                      ^
-   kernel/sys_ni.c:274:1: warning: no previous prototype for function '__arm64_sys_landlock_restrict_self' [-Wmissing-prototypes]
-   COND_SYSCALL(landlock_restrict_self);
-   ^
-   arch/arm64/include/asm/syscall_wrapper.h:76:25: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                                  ^
-   <scratch space>:49:1: note: expanded from here
-   __arm64_sys_landlock_restrict_self
-   ^
-   kernel/sys_ni.c:274:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   arch/arm64/include/asm/syscall_wrapper.h:76:13: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                      ^
->> kernel/sys_ni.c:277:1: warning: no previous prototype for function '__arm64_sys_umcg_ctl' [-Wmissing-prototypes]
-   COND_SYSCALL(umcg_ctl);
-   ^
-   arch/arm64/include/asm/syscall_wrapper.h:76:25: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                                  ^
-   <scratch space>:50:1: note: expanded from here
-   __arm64_sys_umcg_ctl
-   ^
-   kernel/sys_ni.c:277:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   arch/arm64/include/asm/syscall_wrapper.h:76:13: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                      ^
->> kernel/sys_ni.c:278:1: warning: no previous prototype for function '__arm64_sys_umcg_wait' [-Wmissing-prototypes]
-   COND_SYSCALL(umcg_wait);
-   ^
-   arch/arm64/include/asm/syscall_wrapper.h:76:25: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                                  ^
-   <scratch space>:51:1: note: expanded from here
-   __arm64_sys_umcg_wait
-   ^
-   kernel/sys_ni.c:278:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   arch/arm64/include/asm/syscall_wrapper.h:76:13: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                      ^
-   kernel/sys_ni.c:283:1: warning: no previous prototype for function '__arm64_sys_fadvise64_64' [-Wmissing-prototypes]
-   COND_SYSCALL(fadvise64_64);
-   ^
-   arch/arm64/include/asm/syscall_wrapper.h:76:25: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                                  ^
-   <scratch space>:52:1: note: expanded from here
-   __arm64_sys_fadvise64_64
-   ^
-   kernel/sys_ni.c:283:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   arch/arm64/include/asm/syscall_wrapper.h:76:13: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                      ^
-   kernel/sys_ni.c:286:1: warning: no previous prototype for function '__arm64_sys_swapon' [-Wmissing-prototypes]
-   COND_SYSCALL(swapon);
-   ^
-   arch/arm64/include/asm/syscall_wrapper.h:76:25: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                                  ^
-   <scratch space>:53:1: note: expanded from here
-   __arm64_sys_swapon
-   ^
-   kernel/sys_ni.c:286:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   arch/arm64/include/asm/syscall_wrapper.h:76:13: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                      ^
-   kernel/sys_ni.c:287:1: warning: no previous prototype for function '__arm64_sys_swapoff' [-Wmissing-prototypes]
-   COND_SYSCALL(swapoff);
-   ^
-   arch/arm64/include/asm/syscall_wrapper.h:76:25: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                                  ^
-   <scratch space>:54:1: note: expanded from here
-   __arm64_sys_swapoff
-   ^
-   kernel/sys_ni.c:287:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   arch/arm64/include/asm/syscall_wrapper.h:76:13: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                      ^
-   kernel/sys_ni.c:288:1: warning: no previous prototype for function '__arm64_sys_mprotect' [-Wmissing-prototypes]
-   COND_SYSCALL(mprotect);
-   ^
-   arch/arm64/include/asm/syscall_wrapper.h:76:25: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                                  ^
-   <scratch space>:55:1: note: expanded from here
-   __arm64_sys_mprotect
-   ^
-   kernel/sys_ni.c:288:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   arch/arm64/include/asm/syscall_wrapper.h:76:13: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                      ^
-   kernel/sys_ni.c:289:1: warning: no previous prototype for function '__arm64_sys_msync' [-Wmissing-prototypes]
-   COND_SYSCALL(msync);
-   ^
-   arch/arm64/include/asm/syscall_wrapper.h:76:25: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                                  ^
-   <scratch space>:56:1: note: expanded from here
-   __arm64_sys_msync
-   ^
-   kernel/sys_ni.c:289:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   arch/arm64/include/asm/syscall_wrapper.h:76:13: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                      ^
-   kernel/sys_ni.c:290:1: warning: no previous prototype for function '__arm64_sys_mlock' [-Wmissing-prototypes]
-   COND_SYSCALL(mlock);
-   ^
-   arch/arm64/include/asm/syscall_wrapper.h:76:25: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                                  ^
-   <scratch space>:57:1: note: expanded from here
-   __arm64_sys_mlock
-   ^
-   kernel/sys_ni.c:290:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   arch/arm64/include/asm/syscall_wrapper.h:76:13: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                      ^
-   kernel/sys_ni.c:291:1: warning: no previous prototype for function '__arm64_sys_munlock' [-Wmissing-prototypes]
-   COND_SYSCALL(munlock);
-   ^
-   arch/arm64/include/asm/syscall_wrapper.h:76:25: note: expanded from macro 'COND_SYSCALL'
-           asmlinkage long __weak __arm64_sys_##name(const struct pt_regs *regs)   \
-                                  ^
-   <scratch space>:58:1: note: expanded from here
-   __arm64_sys_munlock
-   ^
-   kernel/sys_ni.c:291:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-
-
-vim +/__arm64_sys_umcg_ctl +277 kernel/sys_ni.c
-
-   275	
-   276	/* kernel/sched/umcg.c */
- > 277	COND_SYSCALL(umcg_ctl);
- > 278	COND_SYSCALL(umcg_wait);
-   279	
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_set_suspend':
+   (.text+0x46c): undefined reference to `fb_set_suspend'
+   (.text+0x46c): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `fb_set_suspend'
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_resume_worker':
+   drm_fb_helper.c:(.text+0x4d8): undefined reference to `fb_set_suspend'
+   drm_fb_helper.c:(.text+0x4d8): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `fb_set_suspend'
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_unregister_fbi':
+   (.text+0x76c): undefined reference to `unregister_framebuffer'
+   (.text+0x76c): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `unregister_framebuffer'
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_fini':
+   (.text+0x878): undefined reference to `framebuffer_release'
+   (.text+0x878): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `framebuffer_release'
+   or1k-linux-ld: (.text+0x9f0): undefined reference to `fb_dealloc_cmap'
+   (.text+0x9f0): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `fb_dealloc_cmap'
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_sys_read':
+   (.text+0xa40): undefined reference to `fb_sys_read'
+   (.text+0xa40): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `fb_sys_read'
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_alloc_fbi':
+   (.text+0x25e8): undefined reference to `framebuffer_alloc'
+   (.text+0x25e8): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `framebuffer_alloc'
+   or1k-linux-ld: (.text+0x2620): undefined reference to `fb_alloc_cmap'
+   (.text+0x2620): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `fb_alloc_cmap'
+   or1k-linux-ld: (.text+0x2648): undefined reference to `framebuffer_release'
+   (.text+0x2648): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `framebuffer_release'
+   or1k-linux-ld: (.text+0x2788): undefined reference to `fb_dealloc_cmap'
+   (.text+0x2788): relocation truncated to fit: R_OR1K_INSN_REL_26 against undefined symbol `fb_dealloc_cmap'
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `__drm_fb_helper_initial_config_and_unlock':
+   drm_fb_helper.c:(.text+0x2854): undefined reference to `register_framebuffer'
+   drm_fb_helper.c:(.text+0x2854): additional relocation overflows omitted from the output
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_set_suspend_unlocked':
+   (.text+0x37a8): undefined reference to `fb_set_suspend'
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_generic_probe':
+   drm_fb_helper.c:(.text+0x45c4): undefined reference to `fb_deferred_io_init'
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_cfb_imageblit':
+   (.text+0x4bd4): undefined reference to `cfb_imageblit'
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_cfb_copyarea':
+   (.text+0x4c54): undefined reference to `cfb_copyarea'
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_cfb_fillrect':
+   (.text+0x4cd4): undefined reference to `cfb_fillrect'
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_sys_imageblit':
+   (.text+0x4d54): undefined reference to `sys_imageblit'
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_sys_copyarea':
+   (.text+0x4dd4): undefined reference to `sys_copyarea'
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_sys_fillrect':
+   (.text+0x4e54): undefined reference to `sys_fillrect'
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fb_helper_sys_write':
+   (.text+0x4ecc): undefined reference to `fb_sys_write'
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fbdev_fb_fillrect':
+   drm_fb_helper.c:(.text+0x5108): undefined reference to `cfb_fillrect'
+   or1k-linux-ld: drm_fb_helper.c:(.text+0x5148): undefined reference to `sys_fillrect'
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fbdev_fb_imageblit':
+   drm_fb_helper.c:(.text+0x51c8): undefined reference to `cfb_imageblit'
+   or1k-linux-ld: drm_fb_helper.c:(.text+0x5208): undefined reference to `sys_imageblit'
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fbdev_fb_copyarea':
+   drm_fb_helper.c:(.text+0x5288): undefined reference to `cfb_copyarea'
+   or1k-linux-ld: drm_fb_helper.c:(.text+0x52c8): undefined reference to `sys_copyarea'
+   or1k-linux-ld: drivers/gpu/drm/drm_fb_helper.o: in function `drm_fbdev_cleanup':
+   drm_fb_helper.c:(.text+0x5570): undefined reference to `fb_deferred_io_cleanup'
+   or1k-linux-ld: drivers/iio/test/iio-test-rescale.o: in function `iio_rescale_test_offset':
+   iio-test-rescale.c:(.text+0x34): undefined reference to `kunit_kmalloc_array'
+>> or1k-linux-ld: iio-test-rescale.c:(.text+0xc4): undefined reference to `kunit_binary_assert_format'
+   or1k-linux-ld: iio-test-rescale.c:(.text+0xc8): undefined reference to `kunit_binary_assert_format'
+>> or1k-linux-ld: iio-test-rescale.c:(.text+0x12c): undefined reference to `kunit_do_assertion'
+>> or1k-linux-ld: iio-test-rescale.c:(.text+0x148): undefined reference to `kunit_binary_str_assert_format'
+   or1k-linux-ld: iio-test-rescale.c:(.text+0x14c): undefined reference to `kunit_binary_str_assert_format'
+   or1k-linux-ld: iio-test-rescale.c:(.text+0x1b0): undefined reference to `kunit_do_assertion'
+   or1k-linux-ld: drivers/iio/test/iio-test-rescale.o: in function `iio_rescale_test_scale':
+   iio-test-rescale.c:(.text+0x380): undefined reference to `kunit_kmalloc_array'
+   or1k-linux-ld: iio-test-rescale.c:(.text+0x420): undefined reference to `kunit_binary_assert_format'
+   or1k-linux-ld: iio-test-rescale.c:(.text+0x440): undefined reference to `kunit_binary_assert_format'
+   or1k-linux-ld: iio-test-rescale.c:(.text+0x470): undefined reference to `kunit_do_assertion'
+   or1k-linux-ld: iio-test-rescale.c:(.text+0x6bc): undefined reference to `kunit_do_assertion'
+   or1k-linux-ld: iio-test-rescale.c:(.text+0x730): undefined reference to `kunit_do_assertion'
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
