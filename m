@@ -2,227 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A44F45B150
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 02:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 598C045B166
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 02:52:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236134AbhKXBw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Nov 2021 20:52:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231310AbhKXBwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Nov 2021 20:52:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFB6D608FB;
-        Wed, 24 Nov 2021 01:49:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637718554;
-        bh=U8DJg4yZaKIYgJGHE+dHQseuegRN58Y6WDSNO1Y30Do=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cf2llT+ExAVMXWCXyQnlOSFKNeETjUZIgz1krKR4uwgI+HMsvTWogR5oUXJ90hS1h
-         u6SFDuXihdOzsTxVmVzgFf5fZrP+swIgINoZD7Oon8399eZ9VXouJOxDz06bO3nVG4
-         2tgkUmY96QJroNrAm6a+7w5+/L37kNpWjJuZ3eh00YGkIwIvcyx4qqazwGlGAm4MbS
-         VZbRyxfqjQBnHYze7B9UbYgSEo3M0/MGZ6thVRCI3+KMltvZoTnjjcCphmx2UwQFIK
-         bCFP6JYHkuRzn3JA3TrZeWwb+ESxytMQe86392yOAtKaKmWORT6VCh1ylp4vGyEq4C
-         wI0pWiL7LbTwg==
-Date:   Tue, 23 Nov 2021 17:49:14 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        NeilBrown <neilb@suse.de>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Rik van Riel <riel@surriel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/8] mm/vmscan: Throttle reclaim when no progress is
- being made
-Message-ID: <20211124014914.GB265983@magnolia>
-References: <20211022144651.19914-1-mgorman@techsingularity.net>
- <20211022144651.19914-4-mgorman@techsingularity.net>
- <20211124011912.GA265983@magnolia>
+        id S237797AbhKXBzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Nov 2021 20:55:38 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:28098 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237665AbhKXBzc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Nov 2021 20:55:32 -0500
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HzP8C3dCPz1DJcH;
+        Wed, 24 Nov 2021 09:49:47 +0800 (CST)
+Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 24 Nov 2021 09:52:19 +0800
+Received: from DESKTOP-27KDQMV.china.huawei.com (10.174.148.223) by
+ dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 24 Nov 2021 09:52:18 +0800
+From:   "Longpeng(Mike)" <longpeng2@huawei.com>
+To:     <mst@redhat.com>, <jasowang@redhat.com>
+CC:     <sgarzare@redhat.com>, <mgurtovoy@nvidia.com>, <parav@nvidia.com>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <arei.gonglei@huawei.com>,
+        Longpeng <longpeng2@huawei.com>, <stable@vger.kernel.org>
+Subject: [PATCH v2] vdpa_sim: avoid putting an uninitialized iova_domain
+Date:   Wed, 24 Nov 2021 09:52:15 +0800
+Message-ID: <20211124015215.119-1-longpeng2@huawei.com>
+X-Mailer: git-send-email 2.25.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211124011912.GA265983@magnolia>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.148.223]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml100016.china.huawei.com (7.185.36.216)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 05:19:12PM -0800, Darrick J. Wong wrote:
-> On Fri, Oct 22, 2021 at 03:46:46PM +0100, Mel Gorman wrote:
-> > Memcg reclaim throttles on congestion if no reclaim progress is made.
-> > This makes little sense, it might be due to writeback or a host of
-> > other factors.
-> > 
-> > For !memcg reclaim, it's messy. Direct reclaim primarily is throttled
-> > in the page allocator if it is failing to make progress. Kswapd
-> > throttles if too many pages are under writeback and marked for
-> > immediate reclaim.
-> > 
-> > This patch explicitly throttles if reclaim is failing to make progress.
-> 
-> Hi Mel,
-> 
-> Ever since Christoph broke swapfiles, I've been carrying around a little
-> fstest in my dev tree[1] that tries to exercise paging things in and out
-> of a swapfile.  Sadly I've been trapped in about three dozen customer
-> escalations for over a month, which means I haven't been able to do much
-> upstream in weeks.  Like submit this test upstream. :(
-> 
-> Now that I've finally gotten around to trying out a 5.16-rc2 build, I
-> notice that the runtime of this test has gone from ~5s to 2 hours.
-> Among other things that it does, the test sets up a cgroup with a memory
-> controller limiting the memory usage to 25MB, then runs a program that
-> tries to dirty 50MB of memory.  There's 2GB of memory in the VM, so
-> we're not running reclaim globally, but the cgroup gets throttled very
-> severely.
-> 
-> AFAICT the system is mostly idle, but it's difficult to tell because ps
-> and top also get stuck waiting for this cgroup for whatever reason.  My
-> uninformed spculation is that usemem_and_swapoff takes a page fault
-> while dirtying the 50MB memory buffer, prepares to pull a page in from
-> swap, tries to evict another page to stay under the memcg limit, but
-> that decides that it's making no progress and calls
-> reclaim_throttle(..., VMSCAN_THROTTLE_NOPROGRESS).
-> 
-> The sleep is uninterruptible, so I can't even kill -9 fstests to shut it
-> down.  Eventually we either finish the test or (for the mlock part) the
-> OOM killer actually kills the process, but this takes a very long time.
-> 
-> Any thoughts?  For now I can just hack around this by skipping
-> reclaim_throttle if cgroup_reclaim() == true, but that's probably not
-> the correct fix. :)
+From: Longpeng <longpeng2@huawei.com>
 
-Update: after adding timing information to usemem_and_swapoff, it looks
-like dirtying the 50MB buffer takes ~22s (up from 0.06s on 5.15).  The
-mlock call stalls for ~280s until the OOM killer kills it (up from
-nearly instantaneous on 5.15), and the swapon/swapoff variant takes
-20 minutes to hours depending on the run.
+The system will crash if we put an uninitialized iova_domain, this
+could happen when an error occurs before initializing the iova_domain
+in vdpasim_create().
 
---D
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+...
+RIP: 0010:__cpuhp_state_remove_instance+0x96/0x1c0
+...
+Call Trace:
+ <TASK>
+ put_iova_domain+0x29/0x220
+ vdpasim_free+0xd1/0x120 [vdpa_sim]
+ vdpa_release_dev+0x21/0x40 [vdpa]
+ device_release+0x33/0x90
+ kobject_release+0x63/0x160
+ vdpasim_create+0x127/0x2a0 [vdpa_sim]
+ vdpasim_net_dev_add+0x7d/0xfe [vdpa_sim_net]
+ vdpa_nl_cmd_dev_add_set_doit+0xe1/0x1a0 [vdpa]
+ genl_family_rcv_msg_doit+0x112/0x140
+ genl_rcv_msg+0xdf/0x1d0
+ ...
 
-> --D
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfstests-dev.git/commit/?h=test-swapfile-io&id=0d0ad843cea366d0ab0a7d8d984e5cd1deba5b43
-> 
-> > 
-> > [vbabka@suse.cz: Remove redundant code]
-> > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> > Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> > ---
-> >  include/linux/mmzone.h        |  1 +
-> >  include/trace/events/vmscan.h |  4 +++-
-> >  mm/memcontrol.c               | 10 +---------
-> >  mm/vmscan.c                   | 28 ++++++++++++++++++++++++++++
-> >  4 files changed, 33 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> > index 9ccd8d95291b..00e305cfb3ec 100644
-> > --- a/include/linux/mmzone.h
-> > +++ b/include/linux/mmzone.h
-> > @@ -276,6 +276,7 @@ enum lru_list {
-> >  enum vmscan_throttle_state {
-> >  	VMSCAN_THROTTLE_WRITEBACK,
-> >  	VMSCAN_THROTTLE_ISOLATED,
-> > +	VMSCAN_THROTTLE_NOPROGRESS,
-> >  	NR_VMSCAN_THROTTLE,
-> >  };
-> >  
-> > diff --git a/include/trace/events/vmscan.h b/include/trace/events/vmscan.h
-> > index d4905bd9e9c4..f25a6149d3ba 100644
-> > --- a/include/trace/events/vmscan.h
-> > +++ b/include/trace/events/vmscan.h
-> > @@ -29,11 +29,13 @@
-> >  
-> >  #define _VMSCAN_THROTTLE_WRITEBACK	(1 << VMSCAN_THROTTLE_WRITEBACK)
-> >  #define _VMSCAN_THROTTLE_ISOLATED	(1 << VMSCAN_THROTTLE_ISOLATED)
-> > +#define _VMSCAN_THROTTLE_NOPROGRESS	(1 << VMSCAN_THROTTLE_NOPROGRESS)
-> >  
-> >  #define show_throttle_flags(flags)						\
-> >  	(flags) ? __print_flags(flags, "|",					\
-> >  		{_VMSCAN_THROTTLE_WRITEBACK,	"VMSCAN_THROTTLE_WRITEBACK"},	\
-> > -		{_VMSCAN_THROTTLE_ISOLATED,	"VMSCAN_THROTTLE_ISOLATED"}	\
-> > +		{_VMSCAN_THROTTLE_ISOLATED,	"VMSCAN_THROTTLE_ISOLATED"},	\
-> > +		{_VMSCAN_THROTTLE_NOPROGRESS,	"VMSCAN_THROTTLE_NOPROGRESS"}	\
-> >  		) : "VMSCAN_THROTTLE_NONE"
-> >  
-> >  
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 6da5020a8656..8b33152c9b85 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -3465,19 +3465,11 @@ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
-> >  
-> >  	/* try to free all pages in this cgroup */
-> >  	while (nr_retries && page_counter_read(&memcg->memory)) {
-> > -		int progress;
-> > -
-> >  		if (signal_pending(current))
-> >  			return -EINTR;
-> >  
-> > -		progress = try_to_free_mem_cgroup_pages(memcg, 1,
-> > -							GFP_KERNEL, true);
-> > -		if (!progress) {
-> > +		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL, true))
-> >  			nr_retries--;
-> > -			/* maybe some writeback is necessary */
-> > -			congestion_wait(BLK_RW_ASYNC, HZ/10);
-> > -		}
-> > -
-> >  	}
-> >  
-> >  	return 0;
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index 1e54e636b927..0450f6867d61 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -3323,6 +3323,33 @@ static inline bool compaction_ready(struct zone *zone, struct scan_control *sc)
-> >  	return zone_watermark_ok_safe(zone, 0, watermark, sc->reclaim_idx);
-> >  }
-> >  
-> > +static void consider_reclaim_throttle(pg_data_t *pgdat, struct scan_control *sc)
-> > +{
-> > +	/* If reclaim is making progress, wake any throttled tasks. */
-> > +	if (sc->nr_reclaimed) {
-> > +		wait_queue_head_t *wqh;
-> > +
-> > +		wqh = &pgdat->reclaim_wait[VMSCAN_THROTTLE_NOPROGRESS];
-> > +		if (waitqueue_active(wqh))
-> > +			wake_up(wqh);
-> > +
-> > +		return;
-> > +	}
-> > +
-> > +	/*
-> > +	 * Do not throttle kswapd on NOPROGRESS as it will throttle on
-> > +	 * VMSCAN_THROTTLE_WRITEBACK if there are too many pages under
-> > +	 * writeback and marked for immediate reclaim at the tail of
-> > +	 * the LRU.
-> > +	 */
-> > +	if (current_is_kswapd())
-> > +		return;
-> > +
-> > +	/* Throttle if making no progress at high prioities. */
-> > +	if (sc->priority < DEF_PRIORITY - 2)
-> > +		reclaim_throttle(pgdat, VMSCAN_THROTTLE_NOPROGRESS, HZ/10);
-> > +}
-> > +
-> >  /*
-> >   * This is the direct reclaim path, for page-allocating processes.  We only
-> >   * try to reclaim pages from zones which will satisfy the caller's allocation
-> > @@ -3407,6 +3434,7 @@ static void shrink_zones(struct zonelist *zonelist, struct scan_control *sc)
-> >  			continue;
-> >  		last_pgdat = zone->zone_pgdat;
-> >  		shrink_node(zone->zone_pgdat, sc);
-> > +		consider_reclaim_throttle(zone->zone_pgdat, sc);
-> >  	}
-> >  
-> >  	/*
-> > -- 
-> > 2.31.1
-> > 
+So we must make sure the iova_domain is already initialized before
+put it.
+
+In addition, we may get the following warning in this case:
+WARNING: ... drivers/iommu/iova.c:344 iova_cache_put+0x58/0x70
+
+So we must make sure the iova_cache_put() is invoked only if the
+iova_cache_get() is already invoked. Let's fix it together.
+
+Cc: stable@vger.kernel.org
+Fixes: 4080fc106750 ("vdpa_sim: use iova module to allocate IOVA addresses")
+Signed-off-by: Longpeng <longpeng2@huawei.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+---
+Changes v2 -> v1:
+ - add "Fixes" tag [Parav, Jason]
+
+---
+ drivers/vdpa/vdpa_sim/vdpa_sim.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+index 5f484ff..41b0cd1 100644
+--- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
++++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+@@ -591,8 +591,11 @@ static void vdpasim_free(struct vdpa_device *vdpa)
+ 		vringh_kiov_cleanup(&vdpasim->vqs[i].in_iov);
+ 	}
+ 
+-	put_iova_domain(&vdpasim->iova);
+-	iova_cache_put();
++	if (vdpa_get_dma_dev(vdpa)) {
++		put_iova_domain(&vdpasim->iova);
++		iova_cache_put();
++	}
++
+ 	kvfree(vdpasim->buffer);
+ 	if (vdpasim->iommu)
+ 		vhost_iotlb_free(vdpasim->iommu);
+-- 
+1.8.3.1
+
