@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8869645C34E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:34:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A050745C160
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:14:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352671AbhKXNhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 08:37:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48536 "EHLO mail.kernel.org"
+        id S1348405AbhKXNR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:17:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350111AbhKXNfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:35:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86C9261B2B;
-        Wed, 24 Nov 2021 12:54:29 +0000 (UTC)
+        id S1348781AbhKXNOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:14:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6CB361AA4;
+        Wed, 24 Nov 2021 12:43:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758470;
-        bh=ueZnaqDSIT6gcs5TX9vWtWM3bacsItUpTwx28RfgmBg=;
+        s=korg; t=1637757827;
+        bh=D5prBRVHoRoICqucyomoCUZB+edbO/DzreDSY6iKGDg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ru0xXgkd2xEZm0w0Iz1bC2rjbJ/+nYfEOY8SbRrt5zMotOVPTKBKDGyWhZIDq1al2
-         eDgmsIlag6Gv9JpeIUsReDXPvkqeapxAg5JInjjvumfX6TOEq7p3i5ed+vBsiMfafS
-         pSUgWwOUHn/CoMDZzo3MCDoL6a0GvpXC1PdmvAFY=
+        b=bvV2fOQxtKt2UUsIRDCiBpp1Kmg4G3RvgoZ4N6Ro9WOAJzska89LWEj9cL/bWMXkT
+         7pzeOgJcqJnm1nzx6GSib5mDoa2i+zPfR21igt1N5qXIfUGA5WqZlUthW6XBAT+Wqh
+         KA1a791sTE3Ybn50HzYQtEzWmV/h+yegF74/2vqA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,12 +28,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Tony Brelinski <tony.brelinski@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 081/154] iavf: check for null in iavf_fix_features
-Date:   Wed, 24 Nov 2021 12:57:57 +0100
-Message-Id: <20211124115704.939768614@linuxfoundation.org>
+Subject: [PATCH 4.19 288/323] iavf: check for null in iavf_fix_features
+Date:   Wed, 24 Nov 2021 12:57:58 +0100
+Message-Id: <20211124115728.624581935@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
-References: <20211124115702.361983534@linuxfoundation.org>
+In-Reply-To: <20211124115718.822024889@linuxfoundation.org>
+References: <20211124115718.822024889@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,16 +58,16 @@ Tested-by: Tony Brelinski <tony.brelinski@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/iavf/iavf_main.c | 3 ++-
+ drivers/net/ethernet/intel/i40evf/i40evf_main.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
-index f06c079e812ec..ef0103a216d1e 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_main.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
-@@ -3419,7 +3419,8 @@ static netdev_features_t iavf_fix_features(struct net_device *netdev,
+diff --git a/drivers/net/ethernet/intel/i40evf/i40evf_main.c b/drivers/net/ethernet/intel/i40evf/i40evf_main.c
+index ac5709624c7ad..1fd8cc5ac306c 100644
+--- a/drivers/net/ethernet/intel/i40evf/i40evf_main.c
++++ b/drivers/net/ethernet/intel/i40evf/i40evf_main.c
+@@ -3185,7 +3185,8 @@ static netdev_features_t i40evf_fix_features(struct net_device *netdev,
  {
- 	struct iavf_adapter *adapter = netdev_priv(netdev);
+ 	struct i40evf_adapter *adapter = netdev_priv(netdev);
  
 -	if (!(adapter->vf_res->vf_cap_flags & VIRTCHNL_VF_OFFLOAD_VLAN))
 +	if (adapter->vf_res &&
