@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A26B345C633
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 15:03:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE19945C3D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Nov 2021 14:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353957AbhKXOFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 09:05:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48876 "EHLO mail.kernel.org"
+        id S1350918AbhKXNnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 08:43:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355803AbhKXODC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:03:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 946A561A85;
-        Wed, 24 Nov 2021 13:10:42 +0000 (UTC)
+        id S1348285AbhKXNkr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:40:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4022063230;
+        Wed, 24 Nov 2021 12:57:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637759443;
-        bh=Nhv6m9EJLgrKwV0PtY41aAOJl4lGmX3GumIHb60Xyms=;
+        s=korg; t=1637758645;
+        bh=o9ZgmHuMDnscFdkQdrLy1fHCKJ4iQp9UG8lRVVffQog=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X+pa4yxf/0DRCQ6l6Y0bFW8jwk8ayqsJOvDieCz4WVzdNCg+o2ruORYXflnTVAJJF
-         gw8clpJVsIVavorKhxIy0OPwFLiWRwtL3v1dWvWTtAvrzIEpFPlXGZGIqP5A/3oEcS
-         hXmbfWdmdInlJtZO/50mDZCL73nwj84RLqBsKm38=
+        b=rqQqZI3kM+VIYUNm73VOZ0NsGKDYXaMjp5XYcA2zylFVm2q5ScJ+F4Ylsq41PqUTT
+         /H7p4PAoEq6hQD79e8wGJXzE3kB2P0auRt0M33ywDy5hyFzq4Zig8vYUcb/xHAoig2
+         G8gCHugMFr567PloWyRkx4HEPevU/gaLjV893zc4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        John Harrison <John.C.Harrison@Intel.com>
-Subject: [PATCH 5.15 244/279] drm/i915/guc: Dont drop ce->guc_active.lock when unwinding context
-Date:   Wed, 24 Nov 2021 12:58:51 +0100
-Message-Id: <20211124115727.156660561@linuxfoundation.org>
+        stable@vger.kernel.org, Nguyen Dinh Phi <phind.uet@gmail.com>,
+        syzbot+bbf402b783eeb6d908db@syzkaller.appspotmail.com,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 5.10 136/154] cfg80211: call cfg80211_stop_ap when switch from P2P_GO type
+Date:   Wed, 24 Nov 2021 12:58:52 +0100
+Message-Id: <20211124115706.702103024@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-References: <20211124115718.776172708@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Brost <matthew.brost@intel.com>
+From: Nguyen Dinh Phi <phind.uet@gmail.com>
 
-commit 88209a8ecb8b8752322908a3c3362a001bdc3a39 upstream.
+commit 563fbefed46ae4c1f70cffb8eb54c02df480b2c2 upstream.
 
-Don't drop ce->guc_active.lock when unwinding a context after reset.
-At one point we had to drop this because of a lock inversion but that is
-no longer the case. It is much safer to hold the lock so let's do that.
+If the userspace tools switch from NL80211_IFTYPE_P2P_GO to
+NL80211_IFTYPE_ADHOC via send_msg(NL80211_CMD_SET_INTERFACE), it
+does not call the cleanup cfg80211_stop_ap(), this leads to the
+initialization of in-use data. For example, this path re-init the
+sdata->assigned_chanctx_list while it is still an element of
+assigned_vifs list, and makes that linked list corrupt.
 
-Fixes: eb5e7da736f3 ("drm/i915/guc: Reset implementation for new GuC interface")
-Reviewed-by: Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>
-Signed-off-by: Matthew Brost <matthew.brost@intel.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: John Harrison <John.C.Harrison@Intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210909164744.31249-5-matthew.brost@intel.com
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+Reported-by: syzbot+bbf402b783eeb6d908db@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/r/20211027173722.777287-1-phind.uet@gmail.com
+Cc: stable@vger.kernel.org
+Fixes: ac800140c20e ("cfg80211: .stop_ap when interface is going down")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c |    4 ----
- 1 file changed, 4 deletions(-)
+ net/wireless/util.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
-+++ b/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
-@@ -814,8 +814,6 @@ __unwind_incomplete_requests(struct inte
- 			continue;
+--- a/net/wireless/util.c
++++ b/net/wireless/util.c
+@@ -1044,6 +1044,7 @@ int cfg80211_change_iface(struct cfg8021
  
- 		list_del_init(&rq->sched.link);
--		spin_unlock(&ce->guc_active.lock);
--
- 		__i915_request_unsubmit(rq);
- 
- 		/* Push the request back into the queue for later resubmission. */
-@@ -828,8 +826,6 @@ __unwind_incomplete_requests(struct inte
- 
- 		list_add_tail(&rq->sched.link, pl);
- 		set_bit(I915_FENCE_FLAG_PQUEUE, &rq->fence.flags);
--
--		spin_lock(&ce->guc_active.lock);
- 	}
- 	spin_unlock(&ce->guc_active.lock);
- 	spin_unlock_irqrestore(&sched_engine->lock, flags);
+ 		switch (otype) {
+ 		case NL80211_IFTYPE_AP:
++		case NL80211_IFTYPE_P2P_GO:
+ 			cfg80211_stop_ap(rdev, dev, true);
+ 			break;
+ 		case NL80211_IFTYPE_ADHOC:
 
 
