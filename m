@@ -2,138 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3BC45DE98
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 17:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD2E45DEB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 17:45:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241441AbhKYQ05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 11:26:57 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:44350 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234232AbhKYQYy (ORCPT
+        id S241053AbhKYQsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 11:48:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240328AbhKYQqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 11:24:54 -0500
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20211125162142euoutp023232bd6387b6844d81326297939dffda~61onZqXjO0188501885euoutp02-
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 16:21:42 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20211125162142euoutp023232bd6387b6844d81326297939dffda~61onZqXjO0188501885euoutp02-
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1637857302;
-        bh=E56KINwcJaJWD0b7KZk2YjPG+prT8IwamA6iLmOBNZs=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=eS6Jebj7dLe739QNxJZqOkmzLGa08V39xTZSws/nukf994axlRUTXl2MAaGYMw/ta
-         OS6g3RIQJvrx1Op7zj6DLO8R2PisQ7uRjXRaqYDloG+/VohTHmwH3m81L5mQACZHjU
-         d8YoGYJX62HQgWj+N3jxznehSGDNsdsnjaNCCAps=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20211125162141eucas1p186b234e4d3299583bbce1f28acd369f8~61om0mMvc3041330413eucas1p17;
-        Thu, 25 Nov 2021 16:21:41 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 49.FF.10260.518BF916; Thu, 25
-        Nov 2021 16:21:41 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20211125162141eucas1p288a33941afc09ce74bd59368495c8581~61omdCCbu2868228682eucas1p2N;
-        Thu, 25 Nov 2021 16:21:41 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20211125162141eusmtrp1dc6666b40ea51ccebc16c795edd7fbff~61omb08HU0630206302eusmtrp1N;
-        Thu, 25 Nov 2021 16:21:41 +0000 (GMT)
-X-AuditID: cbfec7f5-bf3ff70000002814-b2-619fb81563ed
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id F0.7C.09404.418BF916; Thu, 25
-        Nov 2021 16:21:40 +0000 (GMT)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20211125162140eusmtip19d9c3d57bd9319d5ae9c31fc98734a99~61omSNDUb1770817708eusmtip1e;
-        Thu, 25 Nov 2021 16:21:40 +0000 (GMT)
-From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] streamline_config.pl: show the full Kconfig name
-Date:   Thu, 25 Nov 2021 17:20:54 +0100
-Message-Id: <20211125162055.3583991-1-l.stelmach@samsung.com>
+        Thu, 25 Nov 2021 11:46:08 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0F3C0613F4;
+        Thu, 25 Nov 2021 08:21:10 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id z6so4889449plk.6;
+        Thu, 25 Nov 2021 08:21:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DrbLxcTRIr7XI7NN202x3ewaW1KuzI3sJcKCkLAzcmM=;
+        b=eA+6e4w/ezBqGCpY3Pun4HZFK3eTUelIhd2INadnJK6U9EDT0C2iuabO21nkJe7co3
+         o5cnx02pBObO8CBFHp+4nQAxZtRV+0H5kD6VUPvhLZmpx6akXCOJA8GKPPxP5Ql+vSOF
+         nvxTyVPQ/fllOZ2YtphAylFiTdHV4IYu0vryeC4hi1mlXBAHQPtWAUE80DPmoi6hQvJS
+         3PVPw1zLVmtK3nBJTyCnTJOYBZniHlMa0fy2gs93Mxvkj3AbC9vzDByLYuIcKYTfDgXF
+         zCQIGN/R+W/w01EZWn/ismo/gEdG7hQ7+HERbjCWy5xFk0F0PZOE72redURGw3+cAx//
+         9B7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DrbLxcTRIr7XI7NN202x3ewaW1KuzI3sJcKCkLAzcmM=;
+        b=3bYhYAbskmVBMGSEmdo84eItD2wNoCCPhJQaCC2ryVMml9zvyShqPEI6FT7VWOWBLy
+         3wXUQJ8ynXyjREo6C6aUNc3VOaN3gUPMmOMwWBuIIn1O3GRghAkmjtyI+2O0yMERkSBr
+         oPmdTXn4cyWYpSN+6M0tQD6CKifLn9W8LjmpMEhWPWtCJXUXIexYZz2erlU62aqnEUVp
+         LvgU0zhpa84Wk7O2gjSleR6pChKvc+w4VkMBkjE1fepD4/tmMdf7v7fTa10Q4vXkoJhW
+         Y+RYWaVPQ8D+nsbenpTnbALqzxxip1+cy7EwsBuP3ZeY3z67foemkSd2PqgYBkgllqHj
+         RAUQ==
+X-Gm-Message-State: AOAM532Fg/6iYJwUVJB59R2aEe27o636faeBeWrGtUOjEyehrPA9lCzI
+        g+SAHxgQ8Nn+5ItvgX9/TTA=
+X-Google-Smtp-Source: ABdhPJxsPhjikOXxK/FanZR/y7bHOeNPfej/eLeGxgNWY3N8O9RzC7HzghgJhix7hGxdN6Eco7ovtg==
+X-Received: by 2002:a17:902:c745:b0:143:d220:9196 with SMTP id q5-20020a170902c74500b00143d2209196mr31489461plq.74.1637857269919;
+        Thu, 25 Nov 2021 08:21:09 -0800 (PST)
+Received: from debian11-dev-61.localdomain (192.243.120.180.16clouds.com. [192.243.120.180])
+        by smtp.gmail.com with ESMTPSA id 63sm3919685pfz.119.2021.11.25.08.21.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 08:21:09 -0800 (PST)
+From:   davidcomponentone@gmail.com
+X-Google-Original-From: yang.guang5@zte.com.cn
+To:     axboe@kernel.dk
+Cc:     davidcomponentone@gmail.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yang Guang <yang.guang5@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH v2] block: fix parameter not described warning
+Date:   Fri, 26 Nov 2021 00:20:55 +0800
+Message-Id: <acf6fdca867ff78a13099ea6615ac39d69bbfc9b.1637825871.git.yang.guang5@zte.com.cn>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Organization: Samsung R&D Institute Poland
-X-Developer-Signature: v=1; a=openpgp-sha256; l=746;
-        i=l.stelmach@samsung.com; h=from:subject;
-        bh=miFX6uUFc+6RBx/jw8/b9IDeEKjHrGiRMZXpsqew9UQ=;
-        b=owEBbQGS/pANAwAIAbCuHpyYpYAQAcsmYgBhn7fmkbDcGMBxWShZRsOCB4BS/GJG+0gmHhx3piy6
-        fL98LqGJATMEAAEIAB0WIQRem7KqOr2QYRWv1RCwrh6cmKWAEAUCYZ+35gAKCRCwrh6cmKWAEPCSCA
-        CegdFHh41MlgYoSGeBo7TyJo5AjLf+fe04mUkm7tRPoCbwddVNLBBCnkXZEV3QSkhHrubM181S3vlZ
-        OjpFFZOa/N8mUNHi3zeiVc0NKx4snGKw9Qea/r4gdiSUcHz6FjxUEyhT9Vw8y2N3r5s72mSnePhwnR
-        CJ/BPMG3z8u80Fw4clrZiVgCYLSmH2TMzmwG53PubA9p7nT5MlYYGFkdF/2yAcNtgJrCuLmJX6cEWB
-        MDE2d8Rz7YoikAkSLPyLAkvZCIlY7zkJFuZ6x6gBPzAXViv0GC5cD9OMY0NgMKq1VvD+WDrTDgRnm+
-        eooAZ5az78qqY/vuvlgzo+CSCS1oLm
-X-Developer-Key: i=l.stelmach@samsung.com; a=openpgp;
-        fpr=A2B9843766B15A4D32BCBF0DEC1B3A02E80CD5C8
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLIsWRmVeSWpSXmKPExsWy7djP87qiO+YnGkzeKWBx89AKRos/u3Yw
-        WVzeNYfNYu2Ru+wWDx/cYHVg9di0qpPNo2/LKkaPz5vkApijuGxSUnMyy1KL9O0SuDIWH5nL
-        WPCGtWLrrOAGxmcsXYycHBICJhL9N58ydzFycQgJrGCU+HvgFQuE84VRYvnlRYwgVUICnxkl
-        7s5OhOk4dLWPDaJoOaPExw/H2CGc54wSk77dYAapYhNwlOhfeoIVxBYR0JK4s7SDFaSIWWAN
-        o8Tl/utMIAlhoKKLz2+CrWARUJU4MW0D2FG8ArYSB36tZYVYJy/Rdn06I0RcUOLkzCdgNfxA
-        Q9c0XQe7VUJgFqvE/66lzBANKRIPL7eCNTADNTdvnc0MUXSAQ2LCh/dsEEUuElNOdbBD2MIS
-        r45vgbJlJE5P7gGaygFk10tMnmQG0dvDKLFtzg9okFlL3Dn3iw2khllAU2L9Ln2IsKPElHsv
-        2SBa+SRuvBWEOIFPYtK26cwQYV6JjjYhiGoViXX9e1gmMCrPQvLZLCRHz0KYv4CReRWjeGpp
-        cW56arFxXmq5XnFibnFpXrpecn7uJkZgCjn97/jXHYwrXn3UO8TIxMF4iFGCg1lJhNc5cH6i
-        EG9KYmVValF+fFFpTmrxIUZpDhYlcV6RPw2JQgLpiSWp2ampBalFMFkmDk6pBqbZhkL6F3cl
-        HepT5FxoXb7y9Qk9669Fx5pDzqvefOR1TeuAxewFGY9YYqoTev+lbFSr9lseuWe3qeQzqdXb
-        3bwKrpzbsTiAPdl7jV2AOOuBGf8WeV9N2B7vUBgR83Se6VTeyZy6v1q8t/nWxN8u/Pj6olJC
-        Su0V5sjVPnEls+31ex10fvVvWr4m8xnX/MPiTCys9RG3D739Zskc8n1a2pYb7Lu32tgxlIpm
-        qudKtLVG7pofP6PiRkvV7HOfCvXDOYvipzB6Wlz+4Tnvn9XeSMeDdr6Zmdoxy2Sn6l54EvHD
-        /NpkbU22BZ/rLn45rx69Stfy/bXIP/tO7Jqu4pi4K+PX55MneLbsXPTiXEBe8RclluKMREMt
-        5qLiRAC1NxE3kAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplkeLIzCtJLcpLzFFi42I5/e/4XV2RHfMTDZqWmVrcPLSC0eLPrh1M
-        Fpd3zWGzWHvkLrvFwwc3WB1YPTat6mTz6NuyitHj8ya5AOYoPZui/NKSVIWM/OISW6VoQwsj
-        PUNLCz0jE0s9Q2PzWCsjUyV9O5uU1JzMstQifbsEvYzFR+YyFrxhrdg6K7iB8RlLFyMnh4SA
-        icShq31sXYxcHEICSxkl9pxuYu9i5ABKSEmsnJsOUSMs8edaFxuILSTwlFHi+vNkEJtNwFGi
-        f+kJVhBbREBL4s7SDlaQOcwC6xgl5k79yQ6SEAYquvj8JiOIzSKgKnFi2gawxbwCthIHfq1l
-        hVggL9F2fTojRFxQ4uTMJywgNzALqEusnycEEuYHmr+m6ToLyHwJgQ5WiafPDzJC9CZJHFi/
-        DsxmBprTvHU28wRGoVlIRs1CGDULSdUCRuZVjCKppcW56bnFRnrFibnFpXnpesn5uZsYgfGy
-        7djPLTsYV776qHeIkYmD8RCjBAezkgivc+D8RCHelMTKqtSi/Pii0pzU4kOMpkCvTWSWEk3O
-        B0ZsXkm8oZmBqaGJmaWBqaWZsZI4r2dBR6KQQHpiSWp2ampBahFMHxMHp1QDU45Vz57V27c0
-        /d+0+01X7MKPa6RNzM5NedRYuG5655r0kn+WK52n3oyZk/R3mriSrNnvJZHtzfuDdx+4KZQx
-        Y5m5UpRw2FGRdhfzPo/nzx/HlHcc2SSfK/nt7aX5j3x5PKyadmvbxDp//OaTVlWQZ+rBlWW0
-        ZLbkO83n51fKlLMLF5anXzw6Z16MtVWDlubxj6XTHxiH3fp5bHXB73f/rOz6BD6+q1uzZvn8
-        oAWVB/1NbILZL+quzHe5P3/mvFrDe+3nePwfrvox49wh180bXfcn+p1MzV6o3LJ1cYJUlZJ+
-        WdXlOx7HDs28dPX/71SuNuF2qZtBcz+s4Djb0LVPRfqQdmxjHBevtZdUl9lKQSWW4oxEQy3m
-        ouJEALDuwEsgAwAA
-X-CMS-MailID: 20211125162141eucas1p288a33941afc09ce74bd59368495c8581
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20211125162141eucas1p288a33941afc09ce74bd59368495c8581
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20211125162141eucas1p288a33941afc09ce74bd59368495c8581
-References: <CGME20211125162141eucas1p288a33941afc09ce74bd59368495c8581@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Show the very same file name that was passed to open()
-in case the operation failed.
+From: Yang Guang <yang.guang5@zte.com.cn>
 
-Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+The build warning:
+block/blk-core.c:968: warning: Function parameter or member 'iob'
+not described in 'bio_poll'.
+
+Fixes: 5a72e899ceb4 ("block: add a struct io_comp_batch argument to fops->iopoll()")
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
+
 ---
- scripts/kconfig/streamline_config.pl | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/kconfig/streamline_config.pl b/scripts/kconfig/streamline_config.pl
-index 1a5fea0519eb..3387ad7508f7 100755
---- a/scripts/kconfig/streamline_config.pl
-+++ b/scripts/kconfig/streamline_config.pl
-@@ -170,7 +170,7 @@ sub read_kconfig {
- 	$source =~ s/\$\($env\)/$ENV{$env}/;
-     }
- 
--    open(my $kinfile, '<', $source) || die "Can't open $kconfig";
-+    open(my $kinfile, '<', $source) || die "Can't open $source";
-     while (<$kinfile>) {
- 	chomp;
- 
+Changes in v2:
+- Add fixes tag
+---
+ block/blk-core.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/block/blk-core.c b/block/blk-core.c
+index 143cc21db5ef..b0660c9df852 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -958,6 +958,7 @@ EXPORT_SYMBOL(submit_bio);
+ /**
+  * bio_poll - poll for BIO completions
+  * @bio: bio to poll for
++ * @iob: batches of IO
+  * @flags: BLK_POLL_* flags that control the behavior
+  *
+  * Poll for completions on queue associated with the bio. Returns number of
 -- 
 2.30.2
 
