@@ -2,136 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A306A45E2E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 23:03:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F312145E2E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 23:03:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344919AbhKYWGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 17:06:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343562AbhKYWEn (ORCPT
+        id S1345956AbhKYWG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 17:06:57 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:52936 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235528AbhKYWE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 17:04:43 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D43C0613F9;
-        Thu, 25 Nov 2021 14:01:06 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id t11so14928661ljh.6;
-        Thu, 25 Nov 2021 14:01:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3dhxg8En0E5Dy0T1fUht5yDxcC0QMFDHbqiSALx+1hc=;
-        b=EZHM/ujpEkiszbFTFg2/eUYdAySF4sOjsbWD+9wMnjewyQpVNtnPaAv4crp6UxSwqy
-         XsgP9HTzngXgTZHPvLQfsnJ6/TgJ9z+EzsEVOq2VNxfbaR7hj+Mi2sZRLjLigbvgOeAi
-         nR9M2YfEQ3wc9o2V4nFTyl8ZiiBu3L4n3ZSBlyyV1QcDVz1c1Jh3um3J8osJv3oyvQoI
-         9xwgWoHFB1jAbl3XUH/2suTBuqk5TO8fp6+BI6r0dlxvTrxaca9IkAaeD7qom0Crk/6r
-         G7q8y2AfwT2+/reX9XjHE/U8mxzUYF9adhkB97NTDAQxI9TYcHUpyud8ppGbpo8nBJQ4
-         A91w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3dhxg8En0E5Dy0T1fUht5yDxcC0QMFDHbqiSALx+1hc=;
-        b=zCBsPsO2RPt/fmo3so1hS8JaDNSr1hGSnMcM+YP9oe4RBddkxPzC4zahxMpomNwJmL
-         95NI44czWQ3f9KGWRu5U0P9Q6JgdscXaqGtBWd3NL9aLQfuG7bRuhxSD3OSLWzL+gGrY
-         54JOLMaLj00fVXAWIYuJlXl8DJ9KTjzs2hubc5zuhbsFhgMAsfmTOH/fDhhJ/38RBk6Y
-         PMU/sO1gbxtNC/GkI4NP78D0rchVD+HneI6Kjt8sKckmZBkwD0efldoeOCkBRd0ClPHl
-         BtPu3lNgt3anczGT8vSr6NJSH5DUCU+pyJ2sY9Gn1IK5nbURc7CzpTNhUVIe/Fa7wxBd
-         1M/g==
-X-Gm-Message-State: AOAM530E2VlmeMc7bIsndXZGo4xE8Jw3szf2xgCPOVumuyikIG1WjA0t
-        /1TgzSJL5uhYjkZ1Th7mOY0=
-X-Google-Smtp-Source: ABdhPJww0zNElnW4e+ODN23UOnrINeu6Uj2Wr69uac8o6ADiXWKUNZtDMpYKUlTVVrdy5lJ3wJ93fA==
-X-Received: by 2002:a2e:9718:: with SMTP id r24mr28019242lji.406.1637877664477;
-        Thu, 25 Nov 2021 14:01:04 -0800 (PST)
-Received: from localhost.localdomain (public-gprs212807.centertel.pl. [46.134.170.136])
-        by smtp.googlemail.com with ESMTPSA id g26sm326249ljn.107.2021.11.25.14.01.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 14:01:04 -0800 (PST)
-From:   Dominik Kobinski <dominikkobinski314@gmail.com>
-To:     bjorn.andersson@linaro.org
-Cc:     agross@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dominik Kobinski <dominikkobinski314@gmail.com>,
-        Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
-Subject: [PATCH v2,4/5] regulator: qcom_spmi: Add pm8226 regulators
+        Thu, 25 Nov 2021 17:04:56 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7B4AC21958;
+        Thu, 25 Nov 2021 22:01:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637877703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MhGyyEy5L8WgdyokDEpWTRx8+YBeehBixiH5tCcNl20=;
+        b=vDucD2lk//nadMAhVmhbTapYwQZW3ZrItRdCfN0xUXBcsnTWOTfgo/kJDk7ctX/NpNfDqo
+        iZRWzJu6JZ3Btp3IA+Deetob3e8+EQJpG/n84m9KJL1JZQDXXEMvoUqz5Jaq76wOQyEJBP
+        ncIcyEWbIwsOxBFsaq4BJaVqX9B8QsI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637877703;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MhGyyEy5L8WgdyokDEpWTRx8+YBeehBixiH5tCcNl20=;
+        b=UWX+LSYN552ZDT36jWj7VzJFEvX+VgOjIbAMMP4qVurg/P7X/gfd7ZxsQL3luXfb1vkwIW
+        f6tCeZiy9Na/k6Cw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5181013F95;
+        Thu, 25 Nov 2021 22:01:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id MiHxEscHoGHbUQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 25 Nov 2021 22:01:43 +0000
+Message-ID: <7c909b82-8e1c-a8ce-516d-e3aa9bc2fd81@suse.cz>
 Date:   Thu, 25 Nov 2021 23:00:47 +0100
-Message-Id: <20211125220047.62545-1-dominikkobinski314@gmail.com>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211125213451.62010-1-dominikkobinski314@gmail.com>
-References: <20211125213451.62010-1-dominikkobinski314@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [RFC PATCH 1/1] mm/slub: fix endless "No data" printing for
+ alloc/free_traces attribute
+Content-Language: en-US
+To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc:     Faiyaz Mohammed <faiyazm@codeaurora.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20211117193932.4049412-1-gerald.schaefer@linux.ibm.com>
+ <20211117193932.4049412-2-gerald.schaefer@linux.ibm.com>
+ <9a4367c0-8141-f03c-e5a1-13483794d3e8@suse.cz>
+ <20211119205943.1ee5da0d@thinkpad>
+ <b513bbcf-f1ea-cfa6-763a-003a60e51da5@suse.cz>
+ <20211122211400.41bf64cf@thinkpad> <20211122213330.66b7893e@thinkpad>
+ <a081d544-41f0-29ab-6d46-1afa382af8be@suse.cz>
+ <20211125171310.0fd27afa@thinkpad> <20211125211249.23a84729@thinkpad>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20211125211249.23a84729@thinkpad>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PM8226 PMIC is very often seen on MSM8x26 boards.
+On 11/25/21 21:12, Gerald Schaefer wrote:
+> On Thu, 25 Nov 2021 17:13:10 +0100
+> Gerald Schaefer <gerald.schaefer@linux.ibm.com> wrote:
+> 
+>> On Tue, 23 Nov 2021 15:19:49 +0100
+>> Vlastimil Babka <vbabka@suse.cz> wrote:
+>>
+>>> On 11/22/21 21:33, Gerald Schaefer wrote:
+>>>> On Mon, 22 Nov 2021 21:14:00 +0100
+>>>> Gerald Schaefer <gerald.schaefer@linux.ibm.com> wrote:
+>>>>
+>>>> [...]
+>>>>>
+>>>>> Thanks. While testing this properly, yet another bug showed up. The idx
+>>>>> in op->show remains 0 in all iterations, so I always see the same line
+>>>>> printed t->count times (or infinitely, ATM). Not sure if this only shows
+>>>>> on s390 due to endianness, but the reason is this:
+>>>>>
+>>>>>   unsigned int idx = *(unsigned int *)v;
+>>>
+>>> Uh, good catch. I was actually looking suspiciously at how we cast signed to
+>>> unsigned, but didn't occur to me that shortening together with endiannes is
+>>> the problem.
+>>>
+>>>>>
+>>>>> IIUC, void *v is always the same as loff_t *ppos, and therefore idx also
+>>>>> should be *ppos. De-referencing the loff_t * with an unsigned int * only
+>>>>> gives the upper 32 bit half of the 64 bit value, which remains 0.
+>>>>>
+>>>>> This would be fixed e.g. with
+>>>>>
+>>>>>   unsigned int idx = (unsigned int) *(loff_t *) v;
+>>>
+>>> With all this experience I'm now inclined to rather follow more the example
+>>> in Documentation/filesystems/seq_file.rst and don't pass around the pointer
+>>> that we got as ppos in slab_debugfs_start(), and that seq_file.c points to
+>>> m->index.
+>>>
+>>> In that example an own value is kmalloced:
+>>>
+>>> loff_t *spos = kmalloc(sizeof(loff_t), GFP_KERNEL);
+>>>
+>>> while we could just make this a field of loc_track?
+>>
+>> Yes, following the example sounds good, and it would also make proper use
+>> of *v in op->next, which might make the code more readable. It also looks
+>> like it already does exactly what is needed here, i.e. have a simple
+>> iterator that just counts the lines.
+>>
+>> I don't think the iterator needs to be saved in loc_track. IIUC, it is
+>> already passed around like in the example, and can then be simply compared
+>> to t->count, similar to the existing code.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Suggested-by: Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
-Signed-off-by: Dominik Kobinski <dominikkobinski314@gmail.com>
----
- drivers/regulator/qcom_spmi-regulator.c | 39 +++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+Saving it the loc_track doesn't preclude using the pointer that's being
+passed around. It however avoids the extra kmalloc and turns out it
+should also solve the return NULL from op->next() issue you describe below?
 
-diff --git a/drivers/regulator/qcom_spmi-regulator.c b/drivers/regulator/qcom_spmi-regulator.c
-index 41424a3366d0..02bfce981150 100644
---- a/drivers/regulator/qcom_spmi-regulator.c
-+++ b/drivers/regulator/qcom_spmi-regulator.c
-@@ -1895,6 +1895,44 @@ static const struct spmi_regulator_data pm8941_regulators[] = {
- 	{ }
- };
- 
-+static const struct spmi_regulator_data pm8226_regulators[] = {
-+	{ "s1", 0x1400, "vdd_s1", },
-+	{ "s2", 0x1700, "vdd_s2", },
-+	{ "s3", 0x1a00, "vdd_s3", },
-+	{ "s4", 0x1d00, "vdd_s4", },
-+	{ "s5", 0x2000, "vdd_s5", },
-+	{ "l1", 0x4000, "vdd_l1_l2_l4_l5", },
-+	{ "l2", 0x4100, "vdd_l1_l2_l4_l5", },
-+	{ "l3", 0x4200, "vdd_l3_l24_l26", },
-+	{ "l4", 0x4300, "vdd_l1_l2_l4_l5", },
-+	{ "l5", 0x4400, "vdd_l1_l2_l4_l5", },
-+	{ "l6", 0x4500, "vdd_l6_l7_l8_l9_l27", },
-+	{ "l7", 0x4600, "vdd_l6_l7_l8_l9_l27", },
-+	{ "l8", 0x4700, "vdd_l6_l7_l8_l9_l27", },
-+	{ "l9", 0x4800, "vdd_l6_l7_l8_l9_l27", },
-+	{ "l10", 0x4900, "vdd_l10_l11_l13", },
-+	{ "l11", 0x4a00, "vdd_l10_l11_l13", },
-+	{ "l12", 0x4b00, "vdd_l12_l14", },
-+	{ "l13", 0x4c00, "vdd_l10_l11_l13", },
-+	{ "l14", 0x4d00, "vdd_l12_l14", },
-+	{ "l15", 0x4e00, "vdd_l15_l16_l17_l18", },
-+	{ "l16", 0x4f00, "vdd_l15_l16_l17_l18", },
-+	{ "l17", 0x5000, "vdd_l15_l16_l17_l18", },
-+	{ "l18", 0x5100, "vdd_l15_l16_l17_l18", },
-+	{ "l19", 0x5200, "vdd_l19_l20_l21_l22_l23_l28", },
-+	{ "l20", 0x5300, "vdd_l19_l20_l21_l22_l23_l28", },
-+	{ "l21", 0x5400, "vdd_l19_l20_l21_l22_l23_l28", },
-+	{ "l22", 0x5500, "vdd_l19_l20_l21_l22_l23_l28", },
-+	{ "l23", 0x5600, "vdd_l19_l20_l21_l22_l23_l28", },
-+	{ "l24", 0x5700, "vdd_l3_l24_l26", },
-+	{ "l25", 0x5800, "vdd_l25", },
-+	{ "l26", 0x5900, "vdd_l3_l24_l26", },
-+	{ "l27", 0x5a00, "vdd_l6_l7_l8_l9_l27", },
-+	{ "l28", 0x5b00, "vdd_l19_l20_l21_l22_l23_l28", },
-+	{ "lvs1", 0x8000, "vdd_lvs1", },
-+	{ }
-+};
-+
- static const struct spmi_regulator_data pm8841_regulators[] = {
- 	{ "s1", 0x1400, "vdd_s1", },
- 	{ "s2", 0x1700, "vdd_s2", NULL, 0x1c08 },
-@@ -2095,6 +2133,7 @@ static const struct spmi_regulator_data pms405_regulators[] = {
- static const struct of_device_id qcom_spmi_regulator_match[] = {
- 	{ .compatible = "qcom,pm8004-regulators", .data = &pm8004_regulators },
- 	{ .compatible = "qcom,pm8005-regulators", .data = &pm8005_regulators },
-+	{ .compatible = "qcom,pm8226-regulators", .data = &pm8226_regulators },
- 	{ .compatible = "qcom,pm8841-regulators", .data = &pm8841_regulators },
- 	{ .compatible = "qcom,pm8916-regulators", .data = &pm8916_regulators },
- 	{ .compatible = "qcom,pm8941-regulators", .data = &pm8941_regulators },
--- 
-2.34.0
+>> This is what I'm currently testing, and it seems to work fine. Will send
+>> a new patch, if there are no objections:
+> 
+> Oh well, I have one objection, returning NULL from op->next will be
+> passed to op->stop, and then it will not free the allocated value.
+> 
+> The example is elegantly avoiding this, by not returning NULL anywhere,
+> and also not stopping. Sigh.
+> 
+> Maybe not return NULL in op->next, but only from op->start, and only
+> when no allocation was made or it was freed already? Or free it only/
+> already in op->next, when returning NULL?
+
+From these two probably the "free in op->next". But still inclined to
+store it in loc_track.
+Why does the API need to be so awkward...
+
 
