@@ -2,175 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E880B45DB0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 14:25:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F7845DB2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 14:34:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355256AbhKYN2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 08:28:36 -0500
-Received: from mx1.tq-group.com ([93.104.207.81]:50000 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352407AbhKYN0f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 08:26:35 -0500
+        id S1355208AbhKYNh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 08:37:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355302AbhKYNfz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 08:35:55 -0500
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40027C0613F6
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 05:23:45 -0800 (PST)
+Received: by mail-ua1-x92b.google.com with SMTP id t13so12249281uad.9
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 05:23:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1637846604; x=1669382604;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=nalij+YGkHi88VGPLe7ObUzX6oVCCYHDMbRtMDqHOlI=;
-  b=gudbu8SDhCiiv8S6nVnHs/7S7NNg97hQycynRKWK2QXp3TkaVTLPU0KT
-   4QRaGl3MboVymOZiriiDHynkIyS+5RkzZS+dZagFKQ99qHSKQecemzPAl
-   VqqUo2AZgKtg010sGb4wPD7KiGEY7LK2f+ZB2/E5SarLOTnOcTrm0W6fk
-   fWDrG+Fbd+YtxAT19m5fzwlKKuI758KvBEbdpQNPRJcVCIKch/k8Q1+/T
-   I56o4VfyZQNV/ahK0BmrPrqgUyW4q0ab/6it4JtfovLyafhxmBmB0Ep+N
-   UJbzilJcN7+F8XFKVIaX7xIWM4QA806NkUu8QMJEuwH17zy6qvlJLIno7
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.87,263,1631570400"; 
-   d="scan'208";a="20678141"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 25 Nov 2021 14:23:20 +0100
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Thu, 25 Nov 2021 14:23:21 +0100
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Thu, 25 Nov 2021 14:23:21 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1637846601; x=1669382601;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=nalij+YGkHi88VGPLe7ObUzX6oVCCYHDMbRtMDqHOlI=;
-  b=fCPAMtjC8PAjOxelzYpc7h7A5XGH6N+43E3anLOEPWbuXchHXRZeDygt
-   GYP/hbMHoVgUkwQHDuiWn+64oyQDfUc/DDkOVrLxBujfG22o9jt23ZRcm
-   nWoNxN8Y9GmfJ3o2UCUv+ToqAecPlqTSBZCvLyop/FUIkppNDCixOyM6J
-   4asIChJC+qSIsi+OskIwucMUCuz/I7l86DrrzpqNx1YHSWqmUCv1+guJf
-   vurZfYUFTXr618yo1lOxL266/cju8pNusny4Ku0WzASg9yA1a/ENVgPVZ
-   LlawK8r/GjyYMpWshY2ZgO558JLOShT5X5SUIPY+4StzPDdXWMuT5uSxd
-   g==;
-X-IronPort-AV: E=Sophos;i="5.87,263,1631570400"; 
-   d="scan'208";a="20678140"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 25 Nov 2021 14:23:20 +0100
-Received: from steina-w (unknown [10.123.49.12])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id A84D3280065;
-        Thu, 25 Nov 2021 14:23:20 +0100 (CET)
-Message-ID: <d7ea91a59dc57b4825cc82b18df37b94935d60de.camel@ew.tq-group.com>
-Subject: Re: (EXT) Re: (EXT) Re: (EXT) Re: [PATCH v4 12/12] dt-bindings:
- serial: fsl-lpuart: Add i.MX8DXL compatible
-From:   Alexander Stein <alexander.stein@ew.tq-group.com>
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Rob Herring <robh@kernel.org>, Dong Aisheng <aisheng.dong@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
+        d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pD+qJk3r29qPwzJLYfks/oabSI7Y6YhNSM12M9kudsA=;
+        b=J8uByjrN3pIMyLs+oh8F1h51AEiVYGcn/jk6MaCawLgGb4CapJzoFhR0hQKkiQWrEh
+         xKIta24WH4WpCzvI7EIBkg+W6diz1AMrs5Nh5DWnQ17/D1qf7KcJlWZydHbexMjaU0FZ
+         6cO8NeT+7ZFSfHD3SUwtJ2YpxDY9gtwdnbcM+LqO2cSdDvD0pxxXL7jQHFJFJtFlpW78
+         EXpF6w7NvojJcmLBeousUkR+ZeJtQR0X35kMvVAuQ/xzdDhW73D7FpwNWjgCLvULsJY1
+         sEM8l0tNEuPJIsEtq7GxesgoWAZ1LHRcd6g6qsstxazhIP3WaJQ6ie4vvUpt4+Cqu0ic
+         sGig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pD+qJk3r29qPwzJLYfks/oabSI7Y6YhNSM12M9kudsA=;
+        b=ioFtIzv9yKgooegayutSIGwOsHHMvnTg3mhk1bsjlVrD9XhIWw7zNLNV4GGxeMP3Si
+         wTSm5jn2CuqR7V5G8L0WUrMDgh/JiCGM6TGSUz3bkzwhoisHPzvKrfpMJrHVTZduDEWU
+         emuLvEWisM7c0NW/u2ZKzg4zlJH7r8bH3/khMg+e2G9/KKjY5IuVJhc+4Uc0HdUBVpia
+         LMEoBxb1kSr2SZ4VugEX9kqZM4bDvpBtGkWk31lhsJyIWjTPGsqRVgY44forn3d9b8th
+         55k9kBGv9E8jFkgxrtybCtWl35lX+SEok1Zc08ShAo6WZu9jr5eMpiVtu0RX0AyfbSy1
+         sG1Q==
+X-Gm-Message-State: AOAM533Xo0cY7Qo0dGNiGQnAolZcR4j0ZGhsraKHdbsVj36TtE75NJ9/
+        QFfNLaCN0GdJssalavYabsDY4w==
+X-Google-Smtp-Source: ABdhPJzRdO7QoZ3b2O8Hj0UdN3JVKR91c4TnqnGBSgCpEcjeZkf5dyufcKOuzsSpQNPw3BaQ4UsNCQ==
+X-Received: by 2002:a67:2fd0:: with SMTP id v199mr8700734vsv.35.1637846618499;
+        Thu, 25 Nov 2021 05:23:38 -0800 (PST)
+Received: from eze-laptop (host208.201-253-22.telecom.net.ar. [201.253.22.208])
+        by smtp.gmail.com with ESMTPSA id q9sm1674052vkn.44.2021.11.25.05.23.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 05:23:37 -0800 (PST)
+Date:   Thu, 25 Nov 2021 10:23:32 -0300
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Date:   Thu, 25 Nov 2021 14:23:20 +0100
-In-Reply-To: <YZ+Nb8vyH/8P5FoF@ryzen>
-References: <1636566415-22750-1-git-send-email-abel.vesa@nxp.com>
-         <1636566415-22750-13-git-send-email-abel.vesa@nxp.com>
-         <YZb4BClv4fXU65yz@robh.at.kernel.org>
-         <000f8f724ef9a8c2652e9cab0a5bb1f7768869c3.camel@ew.tq-group.com>
-         <YZvJP2ISfc/zyK+4@ryzen>
-         <c3fd087edb757a453bc2a2d745f813e834ccf08e.camel@ew.tq-group.com>
-         <YZ+Nb8vyH/8P5FoF@ryzen>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: hantro: Hook up RK3399 JPEG encoder output
+Message-ID: <YZ+OVEKrvsbbQrjn@eze-laptop>
+References: <20211119074654.470729-1-wenst@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211119074654.470729-1-wenst@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Donnerstag, dem 25.11.2021 um 15:19 +0200 schrieb Abel Vesa:
-> On 21-11-23 08:30:17, Alexander Stein wrote:
-> > Am Montag, dem 22.11.2021 um 18:45 +0200 schrieb Abel Vesa:
-> > > On 21-11-19 08:17:11, Alexander Stein wrote:
-> > > > Am Donnerstag, dem 18.11.2021 um 19:04 -0600 schrieb Rob
-> > > > Herring:
-> > > > > On Wed, Nov 10, 2021 at 07:46:55PM +0200, Abel Vesa wrote:
-> > > > > > Add i.MX8DXL lpuart compatible to the bindings
-> > > > > > documentation.
-> > > > > > 
-> > > > > > Signed-off-by: Abel Vesa <
-> > > > > > abel.vesa@nxp.com
-> > > > > > 
-> > > > > > 
-> > > > > > 
-> > > > > > ---
-> > > > > >  Documentation/devicetree/bindings/serial/fsl-lpuart.yaml |
-> > > > > > 4
-> > > > > > ++++
-> > > > > >  1 file changed, 4 insertions(+)
-> > > > > > 
-> > > > > > diff --git a/Documentation/devicetree/bindings/serial/fsl-
-> > > > > > lpuart.yaml b/Documentation/devicetree/bindings/serial/fsl-
-> > > > > > lpuart.yaml
-> > > > > > index dc1f0e07cbd4..fa8a602ccb22 100644
-> > > > > > --- a/Documentation/devicetree/bindings/serial/fsl-
-> > > > > > lpuart.yaml
-> > > > > > +++ b/Documentation/devicetree/bindings/serial/fsl-
-> > > > > > lpuart.yaml
-> > > > > > @@ -27,6 +27,10 @@ properties:
-> > > > > >        - items:
-> > > > > >            - const: fsl,imx8qm-lpuart
-> > > > > >            - const: fsl,imx8qxp-lpuart
-> > > > > > +      - items:
-> > > > > > +          - const: fsl,imx8dxl-lpuart
-> > > > > > +          - const: fsl,imx8qxp-lpuart
-> > > > > > +          - const: fsl,imx7ulp-lpuart
-> > > > > 
-> > > > > I'm confused why 8dxl is compatible with 7ulp, but 8qm is
-> > > > > not?
-> > > > > From
-> > > > > the 
-> > > > > driver, it looks like the difference is clocks.
-> > > > 
-> > > > There is a difference between 8qm and 7ulp regarding the
-> > > > clocks.
-> > > > Are
-> > > > they still considered compatible? Depending on the answer [1]
-> > > > might
-> > > > not
-> > > > be the correct solution for earlycon regression on 8qm.
-> > > > 
-> > > 
-> > > In NXP's tree, they are not compatible.
-> > > 
-> > > See here:
-> > > 
-> > > https://source.codeaurora.org/external/imx/linux-imx/tree/arch/arm64/boot/dts/freescale/imx8qm-ss-dma.dtsi?h=lf-5.10.y#n9
-> > > 
-> > 
-> > Well, commit 
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b4b844930f27bf7019c0bbd8cc575dde32e00ecc
-> > 
-> >  says otherwise.
-> > This might be true for earlycon only, because clocks should be
-> > setup
-> > already.
-> > 
-> > Together with your other mail regarding the imx7ulp fixup,
-> > commit b4b844930f27bf7019c0bbd8cc575dde32e00ecc should just be
-> > reverted
-> > in order to get earlycon running again on imx8qm and imx8qxp, IMHO.
-> > 
+Hi Chen-Yu,
+
+On Fri, Nov 19, 2021 at 03:46:54PM +0800, Chen-Yu Tsai wrote:
+> The JPEG encoder found in the Hantro H1 encoder block only produces a
+> raw entropy-encoded scan. The driver is responsible for building a JPEG
+> compliant bitstream and placing the entropy-encoded scan in it. Right
+> now the driver uses a bounce buffer for the hardware to output the raw
+> scan to.
 > 
-> I think you're right, the commit b4b844930f27bf7019c should be
-> reverted.
+> In commit e765dba11ec2 ("hantro: Move hantro_enc_buf_finish to JPEG
+> codec_ops.done"), the code that copies the raw scan from the bounce
+> buffer to the capture buffer was moved, but was only hooked up for the
+> Hantro H1 (then RK3288) variant. The RK3399 variant was broken,
+> producing a JPEG bitstream without the scan, and the capture buffer's
+> .bytesused field unset.
 > 
-> You can send the revert yourself, if you want. If not, let me know.
+> Fix this by duplicating the code that is executed when the JPEG encoder
+> finishes encoding a frame. As the encoded length is read back from
+> hardware, and the variants having different register layouts, the
+> code is duplicated rather than shared.
+> 
+> Fixes: e765dba11ec2 ("hantro: Move hantro_enc_buf_finish to JPEG codec_ops.done")
+> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
 
-It's already there:
+Thanks a lot for fixing this.
 
-https://lore.kernel.org/all/20211124073109.805088-1-alexander.stein@ew.tq-group.com/T/
+Reviewed-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 
-Thanks,
-Alexander
-
-
+> ---
+> This was developed on the downstream ChromeOS 5.10 kernel (with a hack
+> for .data_offset) and tested with ChromeOS's jpeg_encode_accelerator_unittest
+> patched to accept non-JFIF JPEG streams (https://crrev.com/c/3291480).
+> 
+> This was then forward-ported to mainline (name and filename changes) and
+> compile tested only.
+> 
+> ---
+>  .../staging/media/hantro/hantro_h1_jpeg_enc.c   |  2 +-
+>  drivers/staging/media/hantro/hantro_hw.h        |  3 ++-
+>  .../media/hantro/rockchip_vpu2_hw_jpeg_enc.c    | 17 +++++++++++++++++
+>  drivers/staging/media/hantro/rockchip_vpu_hw.c  |  5 +++--
+>  4 files changed, 23 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c b/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
+> index 56cf261a8e95..9cd713c02a45 100644
+> --- a/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
+> +++ b/drivers/staging/media/hantro/hantro_h1_jpeg_enc.c
+> @@ -140,7 +140,7 @@ int hantro_h1_jpeg_enc_run(struct hantro_ctx *ctx)
+>  	return 0;
+>  }
+>  
+> -void hantro_jpeg_enc_done(struct hantro_ctx *ctx)
+> +void hantro_h1_jpeg_enc_done(struct hantro_ctx *ctx)
+>  {
+>  	struct hantro_dev *vpu = ctx->dev;
+>  	u32 bytesused = vepu_read(vpu, H1_REG_STR_BUF_LIMIT) / 8;
+> diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
+> index 267a6d33a47b..60d4602d33ed 100644
+> --- a/drivers/staging/media/hantro/hantro_hw.h
+> +++ b/drivers/staging/media/hantro/hantro_hw.h
+> @@ -239,7 +239,8 @@ int hantro_h1_jpeg_enc_run(struct hantro_ctx *ctx);
+>  int rockchip_vpu2_jpeg_enc_run(struct hantro_ctx *ctx);
+>  int hantro_jpeg_enc_init(struct hantro_ctx *ctx);
+>  void hantro_jpeg_enc_exit(struct hantro_ctx *ctx);
+> -void hantro_jpeg_enc_done(struct hantro_ctx *ctx);
+> +void hantro_h1_jpeg_enc_done(struct hantro_ctx *ctx);
+> +void rockchip_vpu2_jpeg_enc_done(struct hantro_ctx *ctx);
+>  
+>  dma_addr_t hantro_h264_get_ref_buf(struct hantro_ctx *ctx,
+>  				   unsigned int dpb_idx);
+> diff --git a/drivers/staging/media/hantro/rockchip_vpu2_hw_jpeg_enc.c b/drivers/staging/media/hantro/rockchip_vpu2_hw_jpeg_enc.c
+> index 991213ce1610..5d9ff420f0b5 100644
+> --- a/drivers/staging/media/hantro/rockchip_vpu2_hw_jpeg_enc.c
+> +++ b/drivers/staging/media/hantro/rockchip_vpu2_hw_jpeg_enc.c
+> @@ -171,3 +171,20 @@ int rockchip_vpu2_jpeg_enc_run(struct hantro_ctx *ctx)
+>  
+>  	return 0;
+>  }
+> +
+> +void rockchip_vpu2_jpeg_enc_done(struct hantro_ctx *ctx)
+> +{
+> +	struct hantro_dev *vpu = ctx->dev;
+> +	u32 bytesused = vepu_read(vpu, VEPU_REG_STR_BUF_LIMIT) / 8;
+> +	struct vb2_v4l2_buffer *dst_buf = hantro_get_dst_buf(ctx);
+> +
+> +	/*
+> +	 * TODO: Rework the JPEG encoder to eliminate the need
+> +	 * for a bounce buffer.
+> +	 */
+> +	memcpy(vb2_plane_vaddr(&dst_buf->vb2_buf, 0) +
+> +	       ctx->vpu_dst_fmt->header_size,
+> +	       ctx->jpeg_enc.bounce_buffer.cpu, bytesused);
+> +	vb2_set_plane_payload(&dst_buf->vb2_buf, 0,
+> +			      ctx->vpu_dst_fmt->header_size + bytesused);
+> +}
+> diff --git a/drivers/staging/media/hantro/rockchip_vpu_hw.c b/drivers/staging/media/hantro/rockchip_vpu_hw.c
+> index d4f52957cc53..0c22039162a0 100644
+> --- a/drivers/staging/media/hantro/rockchip_vpu_hw.c
+> +++ b/drivers/staging/media/hantro/rockchip_vpu_hw.c
+> @@ -343,7 +343,7 @@ static const struct hantro_codec_ops rk3066_vpu_codec_ops[] = {
+>  		.run = hantro_h1_jpeg_enc_run,
+>  		.reset = rockchip_vpu1_enc_reset,
+>  		.init = hantro_jpeg_enc_init,
+> -		.done = hantro_jpeg_enc_done,
+> +		.done = hantro_h1_jpeg_enc_done,
+>  		.exit = hantro_jpeg_enc_exit,
+>  	},
+>  	[HANTRO_MODE_H264_DEC] = {
+> @@ -371,7 +371,7 @@ static const struct hantro_codec_ops rk3288_vpu_codec_ops[] = {
+>  		.run = hantro_h1_jpeg_enc_run,
+>  		.reset = rockchip_vpu1_enc_reset,
+>  		.init = hantro_jpeg_enc_init,
+> -		.done = hantro_jpeg_enc_done,
+> +		.done = hantro_h1_jpeg_enc_done,
+>  		.exit = hantro_jpeg_enc_exit,
+>  	},
+>  	[HANTRO_MODE_H264_DEC] = {
+> @@ -399,6 +399,7 @@ static const struct hantro_codec_ops rk3399_vpu_codec_ops[] = {
+>  		.run = rockchip_vpu2_jpeg_enc_run,
+>  		.reset = rockchip_vpu2_enc_reset,
+>  		.init = hantro_jpeg_enc_init,
+> +		.done = rockchip_vpu2_jpeg_enc_done,
+>  		.exit = hantro_jpeg_enc_exit,
+>  	},
+>  	[HANTRO_MODE_H264_DEC] = {
+> -- 
+> 2.34.0.rc2.393.gf8c9666880-goog
+> 
