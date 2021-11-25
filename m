@@ -2,109 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4089A45D618
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:24:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA7645D647
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349668AbhKYI1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 03:27:23 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:53770 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236816AbhKYIZT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 03:25:19 -0500
-X-UUID: 49045217f8b14659bd3be9f39c3a9638-20211125
-X-UUID: 49045217f8b14659bd3be9f39c3a9638-20211125
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <sean.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1131555005; Thu, 25 Nov 2021 16:22:06 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 25 Nov 2021 16:22:04 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 25 Nov 2021 16:22:04 +0800
-From:   <sean.wang@mediatek.com>
-To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>
-CC:     <Mark-YW.Chen@mediatek.com>, <sean.wang@mediatek.com>,
-        <Soul.Huang@mediatek.com>, <YN.Chen@mediatek.com>,
-        <Leon.Yen@mediatek.com>, <Eric-SY.Chang@mediatek.com>,
-        <Deren.Wu@mediatek.com>, <km.lin@mediatek.com>,
-        <robin.chiu@mediatek.com>, <Eddie.Chen@mediatek.com>,
-        <ch.yeh@mediatek.com>, <posh.sun@mediatek.com>,
-        <ted.huang@mediatek.com>, <Eric.Liang@mediatek.com>,
-        <Stella.Chang@mediatek.com>, <Tom.Chou@mediatek.com>,
-        <steve.lee@mediatek.com>, <jsiuda@google.com>,
-        <frankgor@google.com>, <jemele@google.com>,
-        <abhishekpandit@google.com>, <michaelfsun@google.com>,
-        <mcchou@chromium.org>, <shawnku@google.com>,
-        <linux-bluetooth@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/4] Bluetooth: btmtksdio: handle runtime pm only when sdio_func is available
-Date:   Thu, 25 Nov 2021 16:22:03 +0800
-Message-ID: <1637828523-31925-1-git-send-email-sean.wang@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <74A2D0D6-6A65-4832-BAFC-BCBA68F8DE78@holtmann.org--annotate>
-References: <74A2D0D6-6A65-4832-BAFC-BCBA68F8DE78@holtmann.org--annotate>
+        id S1353185AbhKYIjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 03:39:11 -0500
+Received: from pegase2.c-s.fr ([93.17.235.10]:38011 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352552AbhKYIhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 03:37:10 -0500
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4J09rT5YzZz9sSW;
+        Thu, 25 Nov 2021 09:23:53 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id jZQ4In98YiGg; Thu, 25 Nov 2021 09:23:53 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4J09rM5s9Mz9sSs;
+        Thu, 25 Nov 2021 09:23:47 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B8F358B763;
+        Thu, 25 Nov 2021 09:23:47 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id xdzKrB0X8hTb; Thu, 25 Nov 2021 09:23:47 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.227])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EC0918B77E;
+        Thu, 25 Nov 2021 09:23:46 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1AP8NbZm086344
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 25 Nov 2021 09:23:37 +0100
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1AP8NZ8w086343;
+        Thu, 25 Nov 2021 09:23:35 +0100
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, alex@ghiti.fr
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-mm@kvack.org
+Subject: [PATCH v2 0/9] Convert powerpc to default topdown mmap layout
+Date:   Thu, 25 Nov 2021 09:23:22 +0100
+Message-Id: <cover.1637828367.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1637828608; l=2768; s=20211009; h=from:subject:message-id; bh=Ne8VWHr7UfXdPKHcWWwHDV+u9sxnekcI1jHJ7Ct1EsI=; b=pRH9I5Vx22vrN4e7OT2gh7KvhlTErFlJbr+DAIOoR80mIkJ8i+7+aTY/xkWgRj8Qrf5F2xgDFUE8 ahXrLfCZBVNKu9evBfvVImY9xYLubuSrbwgE35F8/LfrbuNHsNKP
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Wang <sean.wang@mediatek.com>
+This series converts powerpc to default topdown mmap layout.
 
->>Hi Sean,
->
->> Runtime pm ops is not aware the sdio_func status that is probably
->> being disabled by btmtksdio_close. Thus, we are only able to access
->> the sdio_func for the runtime pm operations only when the sdio_func is
->> available.
->>
->> Fixes: 7f3c563c575e7 ("Bluetooth: btmtksdio: Add runtime PM support to
->> SDIO based Bluetooth")
->> Co-developed-by: Mark-yw Chen <mark-yw.chen@mediatek.com>
->> Signed-off-by: Mark-yw Chen <mark-yw.chen@mediatek.com>
->> Signed-off-by: Sean Wang <sean.wang@mediatek.com>
->> ---
->> drivers/bluetooth/btmtksdio.c | 6 ++++++
->> 1 file changed, 6 insertions(+)
->>
->> diff --git a/drivers/bluetooth/btmtksdio.c
->> b/drivers/bluetooth/btmtksdio.c index 4f3412ad8fca..4c46c62e4623
->> 100644
->> --- a/drivers/bluetooth/btmtksdio.c
->> +++ b/drivers/bluetooth/btmtksdio.c
->> @@ -1037,6 +1037,9 @@ static int btmtksdio_runtime_suspend(struct device *dev)
->>	if (!bdev)
->>		return 0;
->>
->> +	if (!test_bit(HCI_RUNNING, &bdev->hdev->flags))
->> +		return 0;
->> +
->>	sdio_claim_host(bdev->func);
->>
->>	sdio_writel(bdev->func, C_FW_OWN_REQ_SET, MTK_REG_CHLPCR, &err); @@
->> -1064,6 +1067,9 @@ static int btmtksdio_runtime_resume(struct device *dev)
->>	if (!bdev)
->>		return 0;
->>
->> +	if (!test_bit(HCI_RUNNING, &bdev->hdev->flags))
->> +		return 0;
->> +
->>	sdio_claim_host(bdev->func);
->>
->>	sdio_writel(bdev->func, C_FW_OWN_REQ_CLR, MTK_REG_CHLPCR, &err);
->
->I dislike looking at HCI_RUNNING since that check should be removed from a driver. Do you really need it? I mean, a driver should now if it is running or not.
+powerpc provides its own arch_get_unmapped_area() only when
+slices are needed, which is only for book3s/64. First part of
+the series moves slices into book3s/64 specific directories
+and cleans up other subarchitectures.
 
-We don't really need it, instead we can use internal flags in the driver to know the status. I will do this in v2.
+Then a small modification is done to core mm to allow
+powerpc to still provide its own arch_randomize_brk()
 
-	Sean
->
->Regards
->
->Marcel
->
+Last part converts to default topdown mmap layout.
+
+Changes in v2:
+- Moved patch 4 before patch 2
+- Make generic arch_randomize_brk() __weak
+- Added patch 9
+
+Christophe Leroy (9):
+  powerpc/mm: Make slice specific to book3s/64
+  powerpc/mm: Move vma_mmu_pagesize() and hugetlb_get_unmapped_area() to
+    slice.c
+  powerpc/mm: Remove CONFIG_PPC_MM_SLICES
+  powerpc/mm: Remove asm/slice.h
+  powerpc/mm: Call radix__arch_get_unmapped_area() from
+    arch_get_unmapped_area()
+  mm: Allow arch specific arch_randomize_brk() with
+    CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
+  powerpc/mm: Convert to default topdown mmap layout
+  powerpc/mm: Properly randomise mmap with slices
+  powerpc: Simplify and move arch_randomize_brk()
+
+ arch/powerpc/Kconfig                          |   2 +-
+ arch/powerpc/include/asm/book3s/64/hash.h     |   5 +-
+ arch/powerpc/include/asm/book3s/64/hugetlb.h  |   4 -
+ arch/powerpc/include/asm/book3s/64/mmu-hash.h |   1 +
+ arch/powerpc/include/asm/book3s/64/slice.h    |  18 ++
+ arch/powerpc/include/asm/hugetlb.h            |   2 +-
+ arch/powerpc/include/asm/paca.h               |   5 -
+ arch/powerpc/include/asm/page.h               |   1 -
+ arch/powerpc/include/asm/processor.h          |   2 -
+ arch/powerpc/include/asm/slice.h              |  46 ----
+ arch/powerpc/kernel/paca.c                    |   5 -
+ arch/powerpc/kernel/process.c                 |  40 ---
+ arch/powerpc/mm/Makefile                      |   3 +-
+ arch/powerpc/mm/book3s64/Makefile             |   2 +-
+ arch/powerpc/mm/book3s64/hash_utils.c         |  32 +--
+ arch/powerpc/mm/book3s64/radix_hugetlbpage.c  |  55 -----
+ arch/powerpc/mm/{ => book3s64}/slice.c        | 200 ++++++++++++++-
+ arch/powerpc/mm/hugetlbpage.c                 |  28 ---
+ arch/powerpc/mm/mmap.c                        | 228 ------------------
+ arch/powerpc/mm/nohash/mmu_context.c          |   9 -
+ arch/powerpc/mm/nohash/tlb.c                  |   4 -
+ arch/powerpc/platforms/Kconfig.cputype        |   4 -
+ include/linux/sizes.h                         |   2 +
+ mm/util.c                                     |   2 +-
+ 24 files changed, 234 insertions(+), 466 deletions(-)
+ delete mode 100644 arch/powerpc/include/asm/slice.h
+ rename arch/powerpc/mm/{ => book3s64}/slice.c (80%)
+ delete mode 100644 arch/powerpc/mm/mmap.c
+
+-- 
+2.33.1
+
