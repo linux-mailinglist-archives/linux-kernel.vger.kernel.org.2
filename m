@@ -2,290 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1F145DC8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 15:43:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCBAC45DCB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 15:49:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355666AbhKYOqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 09:46:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355804AbhKYOoc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 09:44:32 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994C8C06175C
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 06:41:20 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id s13so12189256wrb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 06:41:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=u7oR5jSLi6x2xK4T6TK107bv1l+Sd3I4M38y7DRQ3wc=;
-        b=ka5tYq7FeV/AbEgYRPjJqEqHPiQiiFDSgR1Wc5fhKVKXpjta+J+3erBGBOnI8V2ykt
-         mHnJP2I7jBSXe/KOTWuPxbQB2bfcearbBfH+jjNHSdC+bdA1EIo9/rBAYa2XKFRXuf5n
-         MsTl6oxC/c0jx6G2YJKx06BYO5z3xU0QtWEXOyJ6kCvfnGJ+2OI7GvlCUNr25KRL+NRo
-         3vfmZsgjCvfUakkGwr2jT5LwEGMlEPvhmZSxW+7ui32+aoKgycbDm+GaY6RFHQYeuAKy
-         b3hbIRW/8GzWk1d7b43DOXWVjQnxc+c1IKYJngbVMOWIb9JcIDy/F9lGnx9Vs9rNK6sW
-         BgDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=u7oR5jSLi6x2xK4T6TK107bv1l+Sd3I4M38y7DRQ3wc=;
-        b=fa0DfALo+lYZ5d76XymcOM3R8JwDMqALDf3DqbhKhVdUV+cZZlWsX7ZJ7x/y6GJP+s
-         b2xpubagiZSURjTx5RXcmU5pjLQ2p055IjYjHPu0vzHmm9sWJ3ZehXWK2i8ARg0iSZqu
-         CFiReC5FuBGh21CCZvyUw5n5dRuO0uSkHrACGPuq3b2JjLCHvy+J82gCLqA200F580+P
-         4/fBFyISUsyuVrvhbiaOSMkoQRjlD50BOBBDZCcgjSxcpnyGlzHoQABKqH8Tub0tJxPm
-         kkWe/V6EBJ7M9TzjdRRoq1AcK38ATu+lBHMQMBCQ+/kSSU7P8dQ4cs+bK8/JounOKriL
-         g60Q==
-X-Gm-Message-State: AOAM5314hKcURH8LsLpUatNswiiHTlDcudN8qkj4HARrC3Dn5YYKwflO
-        eXQDdbNFMea/EP8rgauVo/o5RzAaoSMPug==
-X-Google-Smtp-Source: ABdhPJzmoBIhl6HTpdl7Jt3V0QxF7y+UhYnVHW1MZia45q3ylfVZNPYwGsq7gF5kXmRuBOzOIIjfaQ==
-X-Received: by 2002:adf:d1e2:: with SMTP id g2mr7260698wrd.346.1637851279185;
-        Thu, 25 Nov 2021 06:41:19 -0800 (PST)
-Received: from [192.168.86.34] (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
-        by smtp.googlemail.com with ESMTPSA id p2sm9225163wmq.23.2021.11.25.06.41.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Nov 2021 06:41:18 -0800 (PST)
-Subject: Re: [PATCH 1/5] dt-bindings: misc: convert fastrpc bindings to yaml
- and add property
-To:     Jeya R <jeyr@codeaurora.org>, linux-arm-msm@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        fastrpc.upstream@qti.qualcomm.com
-References: <1637849744-24844-1-git-send-email-jeyr@codeaurora.org>
- <1637849744-24844-2-git-send-email-jeyr@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <be50fe57-e109-370d-621b-66bff479b46e@linaro.org>
-Date:   Thu, 25 Nov 2021 14:41:17 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S1355917AbhKYOwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 09:52:35 -0500
+Received: from mga11.intel.com ([192.55.52.93]:21950 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355933AbhKYOuj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 09:50:39 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="233019067"
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="233019067"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 06:45:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="607588018"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 25 Nov 2021 06:45:39 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqG0J-0006VC-7G; Thu, 25 Nov 2021 14:45:39 +0000
+Date:   Thu, 25 Nov 2021 22:44:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [tglx-devel:msi 93/101] drivers/soc/ti/ti_sci_inta_msi.c:116:67:
+ warning: passing argument 3 of 'msi_domain_alloc_irqs_descs_locked' makes
+ pointer from integer without a cast
+Message-ID: <202111252218.u8k5qJA4-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1637849744-24844-2-git-send-email-jeyr@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jeya,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git msi
+head:   1bd31f3b9bc0cc3328fe9030a6b240ac1772d60a
+commit: ff97d45fcc8af0d7ca617f3dfe7f35fb7d5339dc [93/101] genirq/msi: Add range argument to msi_domain_alloc/free_descs_locked()
+config: arm64-buildonly-randconfig-r003-20211125 (https://download.01.org/0day-ci/archive/20211125/202111252218.u8k5qJA4-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git/commit/?id=ff97d45fcc8af0d7ca617f3dfe7f35fb7d5339dc
+        git remote add tglx-devel https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git
+        git fetch --no-tags tglx-devel msi
+        git checkout ff97d45fcc8af0d7ca617f3dfe7f35fb7d5339dc
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=arm64 
 
-You should retain the original patch ownership while sending the patches.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-On 25/11/2021 14:15, Jeya R wrote:
-> Convert Qualcomm FastRPC bindings to yaml format and add a property
-> to set dsp domain as non-secure.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Signed-off-by: Jeya R <jeyr@codeaurora.org>
-> ---
->   .../devicetree/bindings/misc/qcom,fastrpc.txt      | 78 -----------------
->   .../devicetree/bindings/misc/qcom,fastrpc.yaml     | 97 ++++++++++++++++++++++
->   2 files changed, 97 insertions(+), 78 deletions(-)
->   delete mode 100644 Documentation/devicetree/bindings/misc/qcom,fastrpc.txt
->   create mode 100644 Documentation/devicetree/bindings/misc/qcom,fastrpc.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/misc/qcom,fastrpc.txt b/Documentation/devicetree/bindings/misc/qcom,fastrpc.txt
-> deleted file mode 100644
-> index 2a1827a..0000000
-> --- a/Documentation/devicetree/bindings/misc/qcom,fastrpc.txt
-> +++ /dev/null
-> @@ -1,78 +0,0 @@
-> -Qualcomm Technologies, Inc. FastRPC Driver
-> -
-> -The FastRPC implements an IPC (Inter-Processor Communication)
-> -mechanism that allows for clients to transparently make remote method
-> -invocations across DSP and APPS boundaries. This enables developers
-> -to offload tasks to the DSP and free up the application processor for
-> -other tasks.
-> -
-> -- compatible:
-> -	Usage: required
-> -	Value type: <stringlist>
-> -	Definition: must be "qcom,fastrpc"
-> -
-> -- label
-> -	Usage: required
-> -	Value type: <string>
-> -	Definition: should specify the dsp domain name this fastrpc
-> -	corresponds to. must be one of this: "adsp", "mdsp", "sdsp", "cdsp"
-> -
-> -- #address-cells
-> -	Usage: required
-> -	Value type: <u32>
-> -	Definition: Must be 1
-> -
-> -- #size-cells
-> -	Usage: required
-> -	Value type: <u32>
-> -	Definition: Must be 0
-> -
-> -= COMPUTE BANKS
-> -Each subnode of the Fastrpc represents compute context banks available
-> -on the dsp.
-> -- All Compute context banks MUST contain the following properties:
-> -
-> -- compatible:
-> -	Usage: required
-> -	Value type: <stringlist>
-> -	Definition: must be "qcom,fastrpc-compute-cb"
-> -
-> -- reg
-> -	Usage: required
-> -	Value type: <u32>
-> -	Definition: Context Bank ID.
-> -
-> -- qcom,nsessions:
-> -	Usage: Optional
-> -	Value type: <u32>
-> -	Defination: A value indicating how many sessions can share this
-> -		    context bank. Defaults to 1 when this property
-> -		    is not specified.
-> -
-> -Example:
-> -
-> -adsp-pil {
-> -	compatible = "qcom,msm8996-adsp-pil";
-> -	...
-> -	smd-edge {
-> -		label = "lpass";
-> -		fastrpc {
-> -			compatible = "qcom,fastrpc";
-> -			qcom,smd-channels = "fastrpcsmd-apps-dsp";
-> -			label = "adsp";
-> -			#address-cells = <1>;
-> -			#size-cells = <0>;
-> -
-> -			cb@1 {
-> -				compatible = "qcom,fastrpc-compute-cb";
-> -				reg = <1>;
-> -			};
-> -
-> -			cb@2 {
-> -				compatible = "qcom,fastrpc-compute-cb";
-> -				reg = <2>;
-> -			};
-> -			...
-> -		};
-> -	};
-> -};
-> diff --git a/Documentation/devicetree/bindings/misc/qcom,fastrpc.yaml b/Documentation/devicetree/bindings/misc/qcom,fastrpc.yaml
-> new file mode 100644
-> index 0000000..c3fe39b2
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/misc/qcom,fastrpc.yaml
-> @@ -0,0 +1,97 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/misc/qcom,fastrpc.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Qualcomm Technologies, Inc. FastRPC Driver
-> +
-> +maintainers:
-> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> +
-> +description: |
-> +  This binding describes Qualcomm FastRPC an IPC (Inter-Processor Communication)
-> +  mechanism that allows for clients to transparently make remote method
-> +  invocations across DSP and APPS boundaries. This enables developers
-> +  to offload tasks to the DSP and free up the application processor for
-> +  other tasks.
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,fastrpc
-> +
-> +  label:
-> +    enum:
-> +      - adsp
-> +      - mdsp
-> +      - sdsp
-> +      - cdsp
-> +
-> +  qcom,non-secure-domain: true
-> +    # Specify that dsp domain is non-secure.
-> +
+All warnings (new ones prefixed by >>):
 
-This change was not there in the original patch that I shared, you 
-should add this change in a separate patch, as first patch converts to 
-yaml and next one adds new bindings.
-
-This is also not following yaml style bindings.
-Please take some time to look at 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/example-schema.yaml?h=v5.16-rc2
-to add new binding.
+   drivers/soc/ti/ti_sci_inta_msi.c: In function 'ti_sci_inta_msi_domain_alloc_irqs':
+>> drivers/soc/ti/ti_sci_inta_msi.c:116:67: warning: passing argument 3 of 'msi_domain_alloc_irqs_descs_locked' makes pointer from integer without a cast [-Wint-conversion]
+     116 |         ret = msi_domain_alloc_irqs_descs_locked(msi_domain, dev, nvec);
+         |                                                                   ^~~~
+         |                                                                   |
+         |                                                                   int
+   In file included from drivers/soc/ti/ti_sci_inta_msi.c:11:
+   include/linux/msi.h:506:106: note: expected 'struct msi_range *' but argument is of type 'int'
+     506 | int msi_domain_alloc_irqs_descs_locked(struct irq_domain *domain, struct device *dev,  struct msi_range *range);
+         |                                                                                        ~~~~~~~~~~~~~~~~~~^~~~~
 
 
+vim +/msi_domain_alloc_irqs_descs_locked +116 drivers/soc/ti/ti_sci_inta_msi.c
 
---srini
+49b323157bf1e70 Lokesh Vutla    2019-04-30   90  
+49b323157bf1e70 Lokesh Vutla    2019-04-30   91  int ti_sci_inta_msi_domain_alloc_irqs(struct device *dev,
+49b323157bf1e70 Lokesh Vutla    2019-04-30   92  				      struct ti_sci_resource *res)
+49b323157bf1e70 Lokesh Vutla    2019-04-30   93  {
+49b323157bf1e70 Lokesh Vutla    2019-04-30   94  	struct platform_device *pdev = to_platform_device(dev);
+49b323157bf1e70 Lokesh Vutla    2019-04-30   95  	struct irq_domain *msi_domain;
+49b323157bf1e70 Lokesh Vutla    2019-04-30   96  	int ret, nvec;
+49b323157bf1e70 Lokesh Vutla    2019-04-30   97  
+49b323157bf1e70 Lokesh Vutla    2019-04-30   98  	msi_domain = dev_get_msi_domain(dev);
+49b323157bf1e70 Lokesh Vutla    2019-04-30   99  	if (!msi_domain)
+49b323157bf1e70 Lokesh Vutla    2019-04-30  100  		return -EINVAL;
+49b323157bf1e70 Lokesh Vutla    2019-04-30  101  
+49b323157bf1e70 Lokesh Vutla    2019-04-30  102  	if (pdev->id < 0)
+49b323157bf1e70 Lokesh Vutla    2019-04-30  103  		return -ENODEV;
+49b323157bf1e70 Lokesh Vutla    2019-04-30  104  
+025c2c9e7077d3a Thomas Gleixner 2021-11-10  105  	ret = msi_setup_device_data(dev);
+025c2c9e7077d3a Thomas Gleixner 2021-11-10  106  	if (ret)
+025c2c9e7077d3a Thomas Gleixner 2021-11-10  107  		return ret;
+025c2c9e7077d3a Thomas Gleixner 2021-11-10  108  
+b9f8772d4c17ea7 Thomas Gleixner 2021-11-10  109  	msi_lock_descs(dev);
+49b323157bf1e70 Lokesh Vutla    2019-04-30  110  	nvec = ti_sci_inta_msi_alloc_descs(dev, res);
+b9f8772d4c17ea7 Thomas Gleixner 2021-11-10  111  	if (nvec <= 0) {
+b9f8772d4c17ea7 Thomas Gleixner 2021-11-10  112  		ret = nvec;
+b9f8772d4c17ea7 Thomas Gleixner 2021-11-10  113  		goto unlock;
+49b323157bf1e70 Lokesh Vutla    2019-04-30  114  	}
+49b323157bf1e70 Lokesh Vutla    2019-04-30  115  
+b9f8772d4c17ea7 Thomas Gleixner 2021-11-10 @116  	ret = msi_domain_alloc_irqs_descs_locked(msi_domain, dev, nvec);
 
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 0
-> +
-> +patternProperties:
-> +  "^cb@[0-9a-f]$":
-> +    type: object
-> +    description: |
-> +      Compute context bank
-> +
-> +    properties:
-> +      compatible:
-> +        const: qcom,fastrpc-compute-cb
-> +
-> +      reg:
-> +        maxItems: 1
-> +        description: Context Bank ID
-> +
-> +      qcom,nsessions:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: How many sessions can share this context bank.
-> +                     Defaults to 1 when this property is not specified.
-> +
-> +    required:
-> +      - compatible
-> +      - reg
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - label
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    adsp-pil {
-> +        compatible = "qqcom,msm8996-adsp-pil";
-> +
-> +        smd-edge {
-> +            label = "lpass";
-> +
-> +            fastrpc {
-> +                compatible = "qcom,fastrpc";
-> +                label = "adsp";
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +
-> +                cb@1 {
-> +                    compatible = "qcom,fastrpc-compute-cb";
-> +                    reg = <1>;
-> +                };
-> +
-> +                cb@2 {
-> +                    compatible = "qcom,fastrpc-compute-cb";
-> +                    reg = <2>;
-> +                };
-> +            };
-> +        };
-> +    };
-> +
-> +
-> 
+:::::: The code at line 116 was first introduced by commit
+:::::: b9f8772d4c17ea7bb4be6bd44f44077f791e29ca soc: ti: ti_sci_inta_msi: Rework MSI descriptor allocation
+
+:::::: TO: Thomas Gleixner <tglx@linutronix.de>
+:::::: CC: Thomas Gleixner <tglx@linutronix.de>
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
