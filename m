@@ -2,96 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75DFC45E2CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:59:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A1645E2CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:59:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243454AbhKYWC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 17:02:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45096 "EHLO
+        id S245679AbhKYWCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 17:02:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234283AbhKYWA1 (ORCPT
+        with ESMTP id S229618AbhKYWA3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 17:00:27 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79ABFC06179B;
-        Thu, 25 Nov 2021 13:52:46 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id e3so30729209edu.4;
-        Thu, 25 Nov 2021 13:52:46 -0800 (PST)
+        Thu, 25 Nov 2021 17:00:29 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CCB2C06179C;
+        Thu, 25 Nov 2021 13:53:37 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id bu18so19483096lfb.0;
+        Thu, 25 Nov 2021 13:53:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=flIOUkZOz3tjaA5fa6HkaZ5dnqqF8aPvmbEfodvpXWs=;
-        b=f7t+tFpaj6sDYa3XUdzfz//6WEEpGGk/AHcqd8UcUzKHOgWqop/H3XFMFYxlbaeUzX
-         xRDQqDxFucv5BAvcfIu9P2JMzKu/XDKgZ/fNLUzmsasJ7LR4RYjkDTaASWzmx0ld2dUn
-         +20eLMM8eN3wXehxczAwnmm5SYfI+VidvnKVvMhlSZyOFDgn4TOGdlVM/M4gHzSN9N/d
-         8Jsljzd9sCXf1rlACbXxXKZ7W4swFl2VebMTbskZA4ev/F2t0rvd3cnIyYyKtYrdj9H4
-         l5BLsm+qsWGtUjBzDBqgmBrbM3d3Fi6Y0jXL9efSB7wQtH0EKFYWd++fd9CvewfzAEWM
-         6qZA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=YVJr77gpEIa8Ln6f/UcL4zgGfSDpE2hZ3y/G1TUsxAU=;
+        b=G/EQy0KJe/9NsLEsLM0Wr0mCHcKU31I4esiYXF9+4c9lv1PZdoJ9n7WicClBi5JvYq
+         tgeEDiQjUVlQ3bQdLchk61LpABjIfU6UGzIVAkYqSQjIDByldlcEBHsfd9efnUatLh5k
+         AFGY6BmQW/E8tTL7pmFTFzQfx1/9KLT5ee8Iw/OXphjeLwTkYapwpXlFD/PdxpleyOp4
+         FjPFzEs9JZBchf8yVdnaZ3gNARXohCXmeIRM0lGZrba1Tm6QBWvN/EmRcDqAYRIQqq/S
+         zN7eQHS+Zmy2lXDQSqtyvbZN+tEqgbMdNVNKjM3otR4EvoAI/OruYkZeIqoDhFJrOXO1
+         kDHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=flIOUkZOz3tjaA5fa6HkaZ5dnqqF8aPvmbEfodvpXWs=;
-        b=jXI6kDn5dK66yehECspt3kInN1sfd+8/VXFRCRoMwuU6ZTHfDWbO3b6KulMRc26oWa
-         At4KqCwYhG4Qzecep/BjrhfswG3//48GZMCQbKpYlpK/G2ifeNV9FpiZr170dBiH8Fvl
-         mx1rQ+fVyeNEiBzqhcqB9kJG6tkD5/U3VZOZhOqImOiglP+cMS9Z6G30yw6OaxGRz4xu
-         yHvtmu/OaGPvbOuFH49kdIcEuSpGZJB6UUb0BgUQXBhbptM6E0uCkdR8OaQPmaNrs415
-         O9KJ0PBs+BgEEkFVxARp4oWltU+zJEPffUrYpKiX+xH20xxMMKHlBI8ikO1iCP3oMRRV
-         E1ZQ==
-X-Gm-Message-State: AOAM530RgJDqzLLgEc5L4Q9GOWjq/Fsd+g0RIOz6ylVW5mLVTy53nu+9
-        FfeksWPUzV+Q07qYFjRHyBqw79I8gWFuAZdxINTP7I+GRFs=
-X-Google-Smtp-Source: ABdhPJx2TnoFqSWP6hCNWJUIOF8fSr6ej5pUns6bO/sTCK8oMpLD8a7uxKZieAl42XFbn8s1TjpyecjHejMt792BQo4=
-X-Received: by 2002:aa7:d0d1:: with SMTP id u17mr43386732edo.135.1637877164721;
- Thu, 25 Nov 2021 13:52:44 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=YVJr77gpEIa8Ln6f/UcL4zgGfSDpE2hZ3y/G1TUsxAU=;
+        b=2VIvD0XMN5WyjtGKapJRcza7Hwt1R+/hRT417JaiyEmEgRw7fqnQe26Mc0j9/W+Fyg
+         iF0A6Ht6om9oZ7Sa7W+5PWGd3vL590scLUFw47ohWTmtDPK/9CWlxt9Blq3VnIF7i4ub
+         R/QUThNox3syGoAfHRNL7pi255bWMfJkFV3iBzqc7sFZ3oNci7icq9SYojuXtCVCEXlh
+         0WW0rLBEqhITquTbXxHfPhxbbV7UEyIGTRGE8eBkHYRXicmyRdgsPqjpUBgTYbgo6kmP
+         XN3dr3Oox5pV58PYzDV2HZXB1h119dMzb5Nik8kPUBN6l8taWw7SyYwYhtRpjZURDfMh
+         XEiQ==
+X-Gm-Message-State: AOAM533GrELRjrSw/2Nw2gjswFwXnLbNEdsKWpTES2GmlRmodprx8rzK
+        ++Bsl2xdrHqD5KjRkr72tE3NdJ7GHfTATA==
+X-Google-Smtp-Source: ABdhPJz/GZxIjRFQoFp6qOwdkagNuEdAKF7VFzquwQ25bln+kcdz1nHW484XxCWkwsl222IDzokBLQ==
+X-Received: by 2002:ac2:5df6:: with SMTP id z22mr25919312lfq.230.1637877215416;
+        Thu, 25 Nov 2021 13:53:35 -0800 (PST)
+Received: from localhost.localdomain (public-gprs212807.centertel.pl. [46.134.170.136])
+        by smtp.googlemail.com with ESMTPSA id c12sm341606lji.29.2021.11.25.13.53.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 13:53:35 -0800 (PST)
+From:   Dominik Kobinski <dominikkobinski314@gmail.com>
+To:     bjorn.andersson@linaro.org
+Cc:     agross@kernel.org, linus.walleij@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dominik Kobinski <dominikkobinski314@gmail.com>,
+        Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
+Subject: [PATCH v2,1/5] pinctrl: qcom: spmi-gpio: Add pm8226 compatibility
+Date:   Thu, 25 Nov 2021 22:53:10 +0100
+Message-Id: <20211125215310.62371-1-dominikkobinski314@gmail.com>
+X-Mailer: git-send-email 2.34.0
+In-Reply-To: <20211125213451.62010-1-dominikkobinski314@gmail.com>
+References: <20211125213451.62010-1-dominikkobinski314@gmail.com>
 MIME-Version: 1.0
-References: <20211122212850.321542-1-pauk.denis@gmail.com> <20211122212850.321542-3-pauk.denis@gmail.com>
- <CAHp75Vfg7LKX-21+b6f5c34G4Y=ZUqrWRbfDt_quCiJe+By-Ww@mail.gmail.com>
- <CAB95QASDiwM+-AwPgGfc7dP=Ctm0s2WP4xrapJzNHJ22B9foAw@mail.gmail.com>
- <CAHp75VeO2mz7wJpuKdrErnYcw-dUOBs9W4FzA6MkgCQLr0eQUg@mail.gmail.com>
- <CAB95QAT_b8Wef+4wN-H8dKZXxgnznqOk5J0fMuL2XJLhob7d9Q@mail.gmail.com>
- <b7616187-87d8-c87f-8f66-d5936a33395f@roeck-us.net> <CAB95QAQ2vpXFxZC0G6ogbpk+rDzGMN7N8-RaUX9w_U5bQ1WGMg@mail.gmail.com>
- <CAHp75Vdi8ujoC5LTYqNmiWe1dTxrYRQKS+YtZE921d-6CZTs=A@mail.gmail.com>
- <20211125222526.405ce775@netbook-debian> <CAB95QAQnU8t4uY17mO9edEd9jktariU_RcZk_1Jdevfr-o0Gnw@mail.gmail.com>
-In-Reply-To: <CAB95QAQnU8t4uY17mO9edEd9jktariU_RcZk_1Jdevfr-o0Gnw@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 25 Nov 2021 23:52:09 +0200
-Message-ID: <CAHp75VfWnLV29FpJ_FdJg+j3tu9QQzbPAs6OOjZ-3Fdqw8SDOA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] hwmon: (nct6775) Implement custom lock by ACPI mutex.
-To:     Eugene Shalygin <eugene.shalygin@gmail.com>
-Cc:     Denis Pauk <pauk.denis@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        thomas@weissschuh.net, Jean Delvare <jdelvare@suse.com>,
-        linux-hwmon@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 10:33 PM Eugene Shalygin
-<eugene.shalygin@gmail.com> wrote:
-> On Thu, 25 Nov 2021 at 21:25, Denis Pauk <pauk.denis@gmail.com> wrote:
->
-> > I would like to propose to leave the current name of the driver and add
-> > the same logic as in the current patch. So when we know the exact name
-> > of acpi mutex - code will use such mutex for lock and directly read EC
-> > memory region. In case if we don't know the exact mutex name/path or for
-> > some reason ASUS decides to change UEFI code - code will use WMI
-> > methods. In such a case, adding or checking a new motherboard will
-> > require only adding a minimal list of well known registers without
-> > disassembling UEFI code.
-> >
-> > What do you think?
->
-> Sounds reasonable to me, but nevertheless I think dropping the "wmi"
-> part from the driver name would make the name clearer with the
-> proposed functional change.
+Add support for pm8226 SPMI GPIOs. The PMIC features
+8 GPIOs, with no holes inbetween.
 
-We don't do changes for something which is not yet in the kernel or
-about to be there. My proposal stays the same, sorry.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Suggested-by: Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
+Signed-off-by: Dominik Kobinski <dominikkobinski314@gmail.com>
+---
+ drivers/pinctrl/qcom/pinctrl-spmi-gpio.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+index 5283d5e9e8bc..0f0102f38cbb 100644
+--- a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
++++ b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+@@ -1159,6 +1159,7 @@ static const struct of_device_id pmic_gpio_of_match[] = {
+ 	/* pm8150l has 12 GPIOs with holes on 7 */
+ 	{ .compatible = "qcom,pm8150l-gpio", .data = (void *) 12 },
+ 	{ .compatible = "qcom,pmc8180c-gpio", .data = (void *) 12 },
++	{ .compatible = "qcom,pm8226-gpio", .data = (void *) 8 },
+ 	{ .compatible = "qcom,pm8350-gpio", .data = (void *) 10 },
+ 	{ .compatible = "qcom,pm8350b-gpio", .data = (void *) 8 },
+ 	{ .compatible = "qcom,pm8350c-gpio", .data = (void *) 9 },
 -- 
-With Best Regards,
-Andy Shevchenko
+2.34.0
+
