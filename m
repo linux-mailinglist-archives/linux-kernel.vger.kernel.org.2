@@ -2,71 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E6A45D246
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 02:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B572545D248
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 02:06:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346307AbhKYBHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 20:07:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55198 "EHLO mail.kernel.org"
+        id S1345438AbhKYBI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 20:08:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235652AbhKYBFd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 20:05:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B3D4610C8;
-        Thu, 25 Nov 2021 01:02:23 +0000 (UTC)
+        id S1344903AbhKYBG5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 20:06:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DF2661074;
+        Thu, 25 Nov 2021 01:03:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637802143;
-        bh=lvKQsZfga7dHq31IgqM34O5VmfnpbZHFLcWr/bqoZYY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=kkuI+wpjjK8PP0F8SWkV1sMu412kyE2IjZEDJhphy2qklgJnS1XJzLk5tfNOF0BPD
-         Gl/v1o4++o/UhC6IheqW7lHTSURyggpPewt8AkAyk9LLiqtlo1n8JAGpaDBy2uB/jI
-         OHEc0UyVwnmqPhtvgO4/8dWodQ9kPnkSute05fo13H9RxW/lTPVTl/mZsnRCHbJvYr
-         3za2sO1tXOKqhmRdJJxLDU2djCn8uJTlWxwjXBEkSmR3aqhO+uqVGgJjp2iJKHkO6X
-         yCuqyXXLhu69fjU6VjYpA6HtylCyg/L70hkOXtNv9nhFhVpD0K/W6GqqOql603ezQd
-         dhfEvCHjfIPrg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D7F305C0A31; Wed, 24 Nov 2021 17:02:22 -0800 (PST)
-Date:   Wed, 24 Nov 2021 17:02:22 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        yury.norov@gmail.com
-Subject: Re: [PATCH 5/6] rcu/nocb: Allow empty "rcu_nocbs" kernel parameter
-Message-ID: <20211125010222.GX641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211123003708.468409-1-frederic@kernel.org>
- <20211123003708.468409-6-frederic@kernel.org>
- <20211125004720.GV641268@paulmck-ThinkPad-P17-Gen-1>
- <20211125005526.GA490855@lothringen>
+        s=k20201202; t=1637802226;
+        bh=8YH11mUx5QQbDMm44SpjsWpYUKnvhNesjP2DbY73S8k=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=JOFmp/ewYaES9ajzQ9owU25yARJY60qya7i7b6R6RevBTSMpqm2HIKsLk78nkY2ij
+         c+1o3FLOfqmm1QSy+xN1TGL2K6jcE6dcwGRn0sktQU8PJgSFkQu541LOFMSew/PSV5
+         Q+euINRq0NFCZb6aCT+YVOyyBr4JmXXJ/mSkPWiEZq9QmIqV34fdMf5DEu0KNMeZ8K
+         rVMaHDyowXIHnEvkx8EHAITZI8U5bLphMt06wDlgdSkfbI2OsiZPR8fanfhI6uwG4a
+         VEI5DAe4z+FGzp+G2g6lquG59i3mk4lIVUAjk5J093DZ4gamlH3LNoQm9PM0f7DHFz
+         mjfg1FDALNLpA==
+Date:   Wed, 24 Nov 2021 17:03:45 -0800 (PST)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@ubuntu-linux-20-04-desktop
+To:     Oleksandr Tyshchenko <olekstysh@gmail.com>
+cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Julien Grall <julien@xen.org>
+Subject: Re: [PATCH V3 4/6] xen/unpopulated-alloc: Add mechanism to use Xen
+ resource
+In-Reply-To: <1637787223-21129-5-git-send-email-olekstysh@gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2111241701240.1412361@ubuntu-linux-20-04-desktop>
+References: <1637787223-21129-1-git-send-email-olekstysh@gmail.com> <1637787223-21129-5-git-send-email-olekstysh@gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211125005526.GA490855@lothringen>
+Content-Type: multipart/mixed; boundary="8323329-676403013-1637802226=:1412361"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 01:55:26AM +0100, Frederic Weisbecker wrote:
-> On Wed, Nov 24, 2021 at 04:47:20PM -0800, Paul E. McKenney wrote:
-> > On Tue, Nov 23, 2021 at 01:37:07AM +0100, Frederic Weisbecker wrote:
-> > > If a user wants to boot without any CPU in offloaded mode initially but
-> > > with the possibility to offload them later using cpusets, provide a way
-> > > to simply pass an empty "rcu_nocbs" kernel parameter which will enforce
-> > > the creation of dormant nocb kthreads.
-> > 
-> > Huh.  This would have been a use for Yury Norov's "none" bitmask
-> > specifier.  ;-)
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-676403013-1637802226=:1412361
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+
+On Wed, 24 Nov 2021, Oleksandr Tyshchenko wrote:
+> From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
 > 
-> This must be the last missing piece before we can finally support NR_CPUS=0 ;)
-
-;-) ;-) ;-)
-
-							Thanx, Paul
-
-> > I pulled this one in with the usual wordsmithing.
+> The main reason of this change is that unpopulated-alloc
+> code cannot be used in its current form on Arm, but there
+> is a desire to reuse it to avoid wasting real RAM pages
+> for the grant/foreign mappings.
 > 
-> Thanks!
+> The problem is that system "iomem_resource" is used for
+> the address space allocation, but the really unallocated
+> space can't be figured out precisely by the domain on Arm
+> without hypervisor involvement. For example, not all device
+> I/O regions are known by the time domain starts creating
+> grant/foreign mappings. And following the advise from
+> "iomem_resource" we might end up reusing these regions by
+> a mistake. So, the hypervisor which maintains the P2M for
+> the domain is in the best position to provide unused regions
+> of guest physical address space which could be safely used
+> to create grant/foreign mappings.
+> 
+> Introduce new helper arch_xen_unpopulated_init() which purpose
+> is to create specific Xen resource based on the memory regions
+> provided by the hypervisor to be used as unused space for Xen
+> scratch pages. If arch doesn't define arch_xen_unpopulated_init()
+> the default "iomem_resource" will be used.
+> 
+> Update the arguments list of allocate_resource() in fill_list()
+> to always allocate a region from the hotpluggable range
+> (maximum possible addressable physical memory range for which
+> the linear mapping could be created). If arch doesn't define
+> arch_get_mappable_range() the default range (0,-1) will be used.
+> 
+> The behaviour on x86 won't be changed by current patch as both
+> arch_xen_unpopulated_init() and arch_get_mappable_range()
+> are not implemented for it.
+> 
+> Also fallback to allocate xenballooned pages (balloon out RAM
+> pages) if we do not have any suitable resource to work with
+> (target_resource is invalid) and as the result we won't be able
+> to provide unpopulated pages on a request.
+> 
+> Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+
+
+Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
+
+
+> ---
+> Please note the following:
+> for V3 arch_xen_unpopulated_init() was moved to init() as was agreed
+> and gained __init specifier. So the target_resource is initialized there.
+> 
+> With current patch series applied if CONFIG_XEN_UNPOPULATED_ALLOC
+> is enabled:
+> 
+> 1. On Arm, under normal circumstances, the xen_alloc_unpopulated_pages()
+> won't be called “before” arch_xen_unpopulated_init(). It will only be
+> called "before" when either ACPI is in use or something wrong happened
+> with DT (and we failed to read xen_grant_frames), so we fallback to
+> xen_xlate_map_ballooned_pages() in arm/xen/enlighten.c:xen_guest_init(),
+> please see "arm/xen: Switch to use gnttab_setup_auto_xlat_frames() for DT"
+> for details. But in that case, I think, it doesn't matter much whether
+> xen_alloc_unpopulated_pages() is called "before" of "after" target_resource
+> initialization, as we don't have extended regions in place the target_resource
+> will remain invalid even after initialization, so xen_alloc_ballooned_pages()
+> will be used in both scenarios.
+> 
+> 2. On x86, I am not quite sure which modes use unpopulated-alloc (PVH?),
+> but it looks like xen_alloc_unpopulated_pages() can (and will) be called
+> “before” arch_xen_unpopulated_init().
+> At least, I see that xen_xlate_map_ballooned_pages() is called in
+> x86/xen/grant-table.c:xen_pvh_gnttab_setup(). According to the initcall
+> levels for both xen_pvh_gnttab_setup() and init() I expect the former
+> to be called earlier.
+> If it is true, the sentence in the commit description which mentions
+> that “behaviour on x86 is not changed” is not precise. I don’t think
+> it would be correct to fallback to xen_alloc_ballooned_pages() just
+> because we haven’t initialized target_resource yet (on x86 it is just
+> assigning it iomem_resource), at least this doesn't look like an expected
+> behaviour and unlikely would be welcome.
+> 
+> I am wondering whether it would be better to move arch_xen_unpopulated_init()
+> to a dedicated init() marked with an appropriate initcall level (early_initcall?)
+> to make sure it will always be called *before* xen_xlate_map_ballooned_pages().
+> What do you think?
+> 
+> Changes RFC -> V2:
+>    - new patch, instead of
+>     "[RFC PATCH 2/2] xen/unpopulated-alloc: Query hypervisor to provide unallocated space"
+> 
+> Changes V2 -> V3:
+>    - update patch description and comments in code
+>    - modify arch_xen_unpopulated_init() to pass target_resource as an argument
+>      and update default helper to assign iomem_resource to it, also drop
+>      xen_resource as it will be located in arch code in the future
+>    - allocate region from hotpluggable range instead of hardcoded range (0,-1)
+>      in fill_list()
+>    - use %pR specifier in error message
+>    - do not call unpopulated_init() at runtime from xen_alloc_unpopulated_pages(),
+>      drop an extra helper and call arch_xen_unpopulated_init() directly from __init()
+>    - include linux/ioport.h instead of forward declaration of struct resource
+>    - replace insert_resource() with request_resource() in fill_list()
+>    - add __init specifier to arch_xen_unpopulated_init()
+> ---
+>  drivers/xen/unpopulated-alloc.c | 83 +++++++++++++++++++++++++++++++++++++----
+>  include/xen/xen.h               |  2 +
+>  2 files changed, 78 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/xen/unpopulated-alloc.c b/drivers/xen/unpopulated-alloc.c
+> index a03dc5b..07d3578 100644
+> --- a/drivers/xen/unpopulated-alloc.c
+> +++ b/drivers/xen/unpopulated-alloc.c
+> @@ -8,6 +8,7 @@
+>  
+>  #include <asm/page.h>
+>  
+> +#include <xen/balloon.h>
+>  #include <xen/page.h>
+>  #include <xen/xen.h>
+>  
+> @@ -15,13 +16,29 @@ static DEFINE_MUTEX(list_lock);
+>  static struct page *page_list;
+>  static unsigned int list_count;
+>  
+> +static struct resource *target_resource;
+> +
+> +/*
+> + * If arch is not happy with system "iomem_resource" being used for
+> + * the region allocation it can provide it's own view by creating specific
+> + * Xen resource with unused regions of guest physical address space provided
+> + * by the hypervisor.
+> + */
+> +int __weak __init arch_xen_unpopulated_init(struct resource **res)
+> +{
+> +	*res = &iomem_resource;
+> +
+> +	return 0;
+> +}
+> +
+>  static int fill_list(unsigned int nr_pages)
+>  {
+>  	struct dev_pagemap *pgmap;
+> -	struct resource *res;
+> +	struct resource *res, *tmp_res = NULL;
+>  	void *vaddr;
+>  	unsigned int i, alloc_pages = round_up(nr_pages, PAGES_PER_SECTION);
+> -	int ret = -ENOMEM;
+> +	struct range mhp_range;
+> +	int ret;
+>  
+>  	res = kzalloc(sizeof(*res), GFP_KERNEL);
+>  	if (!res)
+> @@ -30,14 +47,40 @@ static int fill_list(unsigned int nr_pages)
+>  	res->name = "Xen scratch";
+>  	res->flags = IORESOURCE_MEM | IORESOURCE_BUSY;
+>  
+> -	ret = allocate_resource(&iomem_resource, res,
+> -				alloc_pages * PAGE_SIZE, 0, -1,
+> +	mhp_range = mhp_get_pluggable_range(true);
+> +
+> +	ret = allocate_resource(target_resource, res,
+> +				alloc_pages * PAGE_SIZE, mhp_range.start, mhp_range.end,
+>  				PAGES_PER_SECTION * PAGE_SIZE, NULL, NULL);
+>  	if (ret < 0) {
+>  		pr_err("Cannot allocate new IOMEM resource\n");
+>  		goto err_resource;
+>  	}
+>  
+> +	/*
+> +	 * Reserve the region previously allocated from Xen resource to avoid
+> +	 * re-using it by someone else.
+> +	 */
+> +	if (target_resource != &iomem_resource) {
+> +		tmp_res = kzalloc(sizeof(*tmp_res), GFP_KERNEL);
+> +		if (!res) {
+> +			ret = -ENOMEM;
+> +			goto err_insert;
+> +		}
+> +
+> +		tmp_res->name = res->name;
+> +		tmp_res->start = res->start;
+> +		tmp_res->end = res->end;
+> +		tmp_res->flags = res->flags;
+> +
+> +		ret = request_resource(&iomem_resource, tmp_res);
+> +		if (ret < 0) {
+> +			pr_err("Cannot request resource %pR (%d)\n", tmp_res, ret);
+> +			kfree(tmp_res);
+> +			goto err_insert;
+> +		}
+> +	}
+> +
+>  	pgmap = kzalloc(sizeof(*pgmap), GFP_KERNEL);
+>  	if (!pgmap) {
+>  		ret = -ENOMEM;
+> @@ -95,6 +138,11 @@ static int fill_list(unsigned int nr_pages)
+>  err_memremap:
+>  	kfree(pgmap);
+>  err_pgmap:
+> +	if (tmp_res) {
+> +		release_resource(tmp_res);
+> +		kfree(tmp_res);
+> +	}
+> +err_insert:
+>  	release_resource(res);
+>  err_resource:
+>  	kfree(res);
+> @@ -112,6 +160,14 @@ int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page **pages)
+>  	unsigned int i;
+>  	int ret = 0;
+>  
+> +	/*
+> +	 * Fallback to default behavior if we do not have any suitable resource
+> +	 * to allocate required region from and as the result we won't be able to
+> +	 * construct pages.
+> +	 */
+> +	if (!target_resource)
+> +		return xen_alloc_ballooned_pages(nr_pages, pages);
+> +
+>  	mutex_lock(&list_lock);
+>  	if (list_count < nr_pages) {
+>  		ret = fill_list(nr_pages - list_count);
+> @@ -159,6 +215,11 @@ void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages)
+>  {
+>  	unsigned int i;
+>  
+> +	if (!target_resource) {
+> +		xen_free_ballooned_pages(nr_pages, pages);
+> +		return;
+> +	}
+> +
+>  	mutex_lock(&list_lock);
+>  	for (i = 0; i < nr_pages; i++) {
+>  		pages[i]->zone_device_data = page_list;
+> @@ -169,9 +230,11 @@ void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages)
+>  }
+>  EXPORT_SYMBOL(xen_free_unpopulated_pages);
+>  
+> -#ifdef CONFIG_XEN_PV
+>  static int __init init(void)
+>  {
+> +	int ret;
+> +
+> +#ifdef CONFIG_XEN_PV
+>  	unsigned int i;
+>  
+>  	if (!xen_domain())
+> @@ -196,8 +259,14 @@ static int __init init(void)
+>  			list_count++;
+>  		}
+>  	}
+> +#endif
+>  
+> -	return 0;
+> +	ret = arch_xen_unpopulated_init(&target_resource);
+> +	if (ret) {
+> +		pr_err("xen:unpopulated: Cannot initialize target resource\n");
+> +		target_resource = NULL;
+> +	}
+> +
+> +	return ret;
+>  }
+>  subsys_initcall(init);
+> -#endif
+> diff --git a/include/xen/xen.h b/include/xen/xen.h
+> index 86c5b37..a99bab8 100644
+> --- a/include/xen/xen.h
+> +++ b/include/xen/xen.h
+> @@ -55,6 +55,8 @@ extern u64 xen_saved_max_mem_size;
+>  #ifdef CONFIG_XEN_UNPOPULATED_ALLOC
+>  int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page **pages);
+>  void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages);
+> +#include <linux/ioport.h>
+> +int arch_xen_unpopulated_init(struct resource **res);
+>  #else
+>  #include <xen/balloon.h>
+>  static inline int xen_alloc_unpopulated_pages(unsigned int nr_pages,
+> -- 
+> 2.7.4
+> 
+--8323329-676403013-1637802226=:1412361--
