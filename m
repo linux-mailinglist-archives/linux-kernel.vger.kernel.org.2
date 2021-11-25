@@ -2,86 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7E345D2E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:06:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 475A845D291
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 02:48:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238374AbhKYCJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 21:09:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231845AbhKYCHK (ORCPT
+        id S1353206AbhKYBvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 20:51:18 -0500
+Received: from smtprelay0223.hostedemail.com ([216.40.44.223]:47582 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S238517AbhKYBtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 21:07:10 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED7FC06175C;
-        Wed, 24 Nov 2021 17:45:38 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id a23-20020a9d4717000000b0056c15d6d0caso7077475otf.12;
-        Wed, 24 Nov 2021 17:45:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Tb+A9/uMadvMjU7dngUaH0IFZ8VSOIfHK/WPcTaWir8=;
-        b=eqWq1I+1/le224ClB2Ej98r73kZJ6tQnRWFvG5ycaoVuzJ8OLMb30rf9Zoe90zm7NC
-         JUawcDAzJDYKoI9mB0cXoYV+RvHA/B9M6sl+OXEfPB24pMAmGnIFAjtEvHXSGyRBo7IL
-         6TaClhA6agoNtO9asVRG2/mT2/tJ1QPGTnO0TnvIAGlO068V9a+8kNCsqOKDM1168un4
-         sj/qyhzk7iYWvBC4LRzS6s9C1gOhPZBxRDMkoxOlfBaIiKI26oFleDY2UNhyBR7LGCqZ
-         cSSI2Hzdv0JdvD+pHWl0rU9xk9D2izqW4nHUitSIhVsBGl2TB/AqrS2iuCGYHqm4UyRa
-         gS3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Tb+A9/uMadvMjU7dngUaH0IFZ8VSOIfHK/WPcTaWir8=;
-        b=rdPU/6IdZsQbAnpY7dTkGPrR1h+pGC12NvxhdvCYI0N+X4v3SMXLzZsqRWXXeuL9gI
-         Mt382nHwmznHZd0jAqLv/5XI1Ri5V0Fkl8lp5qxKh7sfnP1gzDoVUIqlYhgvTtrqSMJe
-         5w+qD2j1rN4ZFuRAPhKJw15hCps5fkFA50D3hxh5XQEmu9JoUlAT8ZVpcU5z2Qq2So97
-         nAwWy1ynqsgiPqv4CBeqiH9v8MYSkNHI4mGsIQC+EazhExfNLa+itAb7duhZuWF7icGo
-         XkEwi6GcAPFtlvQfNIKhIdq4po0ql38zRaYP4pr/4nO747efSw4804eHoEL51ZbUUAgb
-         wEzQ==
-X-Gm-Message-State: AOAM533IFjpTtg/76KnmjfyicIGJjhFJHHO7F0aqtz/FZ63vE17CX23S
-        5NG4rkuujx/Kqki7UaF45tc=
-X-Google-Smtp-Source: ABdhPJwryhz6FUtRgIkl9kJYenthKGLgti4LhPRR1SRwderHd3MrAMruze+r2HyGaKvEG267+kSj1A==
-X-Received: by 2002:a05:6830:90f:: with SMTP id v15mr17399557ott.62.1637804738265;
-        Wed, 24 Nov 2021 17:45:38 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l24sm273272oou.20.2021.11.24.17.45.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 17:45:37 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 24 Nov 2021 17:45:36 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.15 000/279] 5.15.5-rc1 review
-Message-ID: <20211125014536.GF851427@roeck-us.net>
-References: <20211124115718.776172708@linuxfoundation.org>
+        Wed, 24 Nov 2021 20:49:10 -0500
+Received: from omf16.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id C15191848AB03;
+        Thu, 25 Nov 2021 01:45:59 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf16.hostedemail.com (Postfix) with ESMTPA id 2B70351A;
+        Thu, 25 Nov 2021 01:45:57 +0000 (UTC)
+Message-ID: <3530db0aa97eed41553ae94da6c99c8979c41cad.camel@perches.com>
+Subject: Re: [RFC] printk: More consistent loglevel for continuous lines
+From:   Joe Perches <joe@perches.com>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Petr Mladek <pmladek@suse.com>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 24 Nov 2021 17:45:57 -0800
+In-Reply-To: <YZ7enboRQprct49o@google.com>
+References: <20211124154838.5415-1-pmladek@suse.com>
+         <YZ7enboRQprct49o@google.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.83
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: 2B70351A
+X-Stat-Signature: 8zmr8yw31pnt1izp1i7pfj3ctf6nhwo5
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19kOlRXHfUIO0KHguxctVlq1FCd26cE0rM=
+X-HE-Tag: 1637804757-559198
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 12:54:47PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.5 release.
-> There are 279 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Thu, 2021-11-25 at 09:53 +0900, Sergey Senozhatsky wrote:
+> On (21/11/24 16:48), Petr Mladek wrote:
+> > 
+> > Anyway, it looks a bit non-practical to update all existing pr_cont()
+> > callers:
+> > 
+> > 	$> git grep "pr_cont" | wc -l
+> > 	2054
 > 
-> Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
-> Anything received after that time might be too late.
-> 
+> Another question is how many pr_cont()-s are getting compiled with
+> the "average" production kernel config. A number of pr_cont() is in
+> debugging code - lockdep, kasan, etc. - which is not compiled for prod.
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 482 pass: 482 fail: 0
+This was Linus' attempt to make KERN_CONT meaningful again when it
+was IMO a slightly different issue to fix bare printks.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Linus changed the few bare printks that mattered to him at the time.
 
-Guenter
+So the existing bare printk's should also be inspected.
+
+There are still many hundreds of those bare printks around.
+
+$ git grep -P '\bprintk\s*\(\s*(?!KERN_[A-Z]+)\s*"' | wc -l
+6863
+
+But most all of those are in really old and effectively dead code.
+
+To approximately answer to the question of how many pr_cont's and
+bare printks are getting compiled in an x86-64 config:
+
+$ make defconfig
+$ make clean
+$ make
+$ find . -name '*.o' | sed 's/\.o$/\.c/' | \
+  xargs git grep -P '(\bprintk\s*\(\s*(?!KERN_[A-Z]+)|\bpr_cont\b|\bprintk\s*\(\s*KERN_CONT)' -- | \
+  wc -l
+518
+
+
+
