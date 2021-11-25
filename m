@@ -2,285 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E7745E011
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:55:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D9845E029
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 19:01:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350476AbhKYR6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 12:58:49 -0500
-Received: from pegase2.c-s.fr ([93.17.235.10]:42567 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348027AbhKYR4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 12:56:46 -0500
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4J0QTn01Pzz9sT4;
-        Thu, 25 Nov 2021 18:53:33 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id V_8JmRREWLzB; Thu, 25 Nov 2021 18:53:32 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4J0QTm68XDz9sSL;
-        Thu, 25 Nov 2021 18:53:32 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C37A08B78C;
-        Thu, 25 Nov 2021 18:53:32 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id ahK6QcsKIGF4; Thu, 25 Nov 2021 18:53:32 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.227])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1DBBA8B77D;
-        Thu, 25 Nov 2021 18:53:32 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1APHrKPK385519
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 25 Nov 2021 18:53:20 +0100
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1APHrK5g385518;
-        Thu, 25 Nov 2021 18:53:20 +0100
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, alex@ghiti.fr
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-mm@kvack.org
-Subject: [PATCH v2 rebased 2/9] powerpc/mm: Move vma_mmu_pagesize() and hugetlb_get_unmapped_area() to slice.c
-Date:   Thu, 25 Nov 2021 18:52:51 +0100
-Message-Id: <aa992a8fd2e1198d209afceb457b77f6b4d8755c.1637862579.git.christophe.leroy@csgroup.eu>
+        id S236886AbhKYSEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 13:04:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234773AbhKYSCn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 13:02:43 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94F2C06137E
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:52:59 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id x6so28599145edr.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:52:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=nT5H9R/pOtRAaqy/oVUuO0tXM2N6pl9SsLnStip9vsg=;
+        b=ZXZ3q/XrTCV06d2p9G3XYqCeZCK+m6w9Gu8zoUuc8ZxDUZGDZQ8fUo8JYbOJ7wGEpC
+         vIBmhwz8xDBpgzgumwBJvVHAlg1B62ffUlCbMXjrqB6QFbqcwIru6hSeIGdMXll6vIMp
+         mRoa8IdfIyItv6VAFQtkkUTMd34gY/h3n2X5+BhNXXKRG0zb0wSMgECW+zd9l1p9TnaE
+         VoKw6S/0u9Lt91HNlCApu0ce3YVKReRI41IkiYmGfRWFfpxoC52xUCdUjgjtTVs4RRaA
+         SwPt3rSS3i1VOEU6DhhJU6OceeG6SQM/AJP7KLstwx78awRl7+S4P4hUQMvz/Nrygjn9
+         NJjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=nT5H9R/pOtRAaqy/oVUuO0tXM2N6pl9SsLnStip9vsg=;
+        b=7oQEics8ZbWnY85kS2HBOoGlweUM3/OvsJkIxGT4GO4C0zwXnHSdis3djaGzRt3Bbl
+         UgaSnxOFxYGaghmracSwgMEW53wyxJspHPE0hAV7p0k+NDw92PDEif+JJvBYPDhxYxPs
+         C0zelgnbtMhROa8Uv4S/nGq1m3ws58H7c9ucSdepPy4NlG0PEU+6TUGxFTD/ztBRERs9
+         Ewi9mOlXX3VkK6D3xCZzXlxH9lhWe+wr49OWL7Cap+/d9BBVBVC4CwP7IId7okLucB6L
+         wGAcnHdQj1BcM4O06e6RaTDvsEZ2l/HBZbWq0TkhazlH4jZh13L4uOfb0uDaIANZKVKt
+         6VSA==
+X-Gm-Message-State: AOAM532x7saBsknPxDq21WdrIVCsm/eltN0Dud0dE5EXveHdbeSGPKZL
+        MA55cpsggHjKWcgG5TWuTY77uLFt+xkhWg==
+X-Google-Smtp-Source: ABdhPJyLTkMm0/bBtJ6Irz1IhTQI3dCDExfGAYNE19EWaOnbaog/oO1mAoRK0oNzWXQCJkp0TcrLyw==
+X-Received: by 2002:a17:907:1626:: with SMTP id hb38mr33525401ejc.481.1637862778391;
+        Thu, 25 Nov 2021 09:52:58 -0800 (PST)
+Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id hs20sm1949795ejc.26.2021.11.25.09.52.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 09:52:57 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH v3 3/5] [RFC] tracing: Add interface for configuring trace sub buffer size
+Date:   Thu, 25 Nov 2021 19:52:51 +0200
+Message-Id: <20211125175253.186422-4-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <cover.1637862579.git.christophe.leroy@csgroup.eu>
-References: <cover.1637862579.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <20211125175253.186422-1-tz.stoyanov@gmail.com>
+References: <20211125175253.186422-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1637862776; l=7532; s=20211009; h=from:subject:message-id; bh=rf8c2Va0a+oPrjsrDKbsVVqJCso4PiLiMZDeQ0MksqU=; b=tEQbesuyaRUEWYPvN3cZebsDN9qU6BJEvltIRIpQ18s46CA6wRj0s/OdH45nFklcKEK9mcHYd1DL 6mksDnskCe7Rx/W9l1/7jMC6nE2h5WP+gvX49AXkzF84DJI9EyjC
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vma_mmu_pagesize() is only required for slices,
-otherwise there is a generic weak version.
+The trace ring buffer sub page size can be configured, per trace
+instance. A new ftrace file "buffer_subbuf_order" is added to get and
+set the size of the ring buffer sub page for current trace instance.
+The size must be an order of system page size, that's why the new
+interface works with system page order, instead of absolute page size:
+0 means the ring buffer sub page is equal to 1 system page and so
+forth:
+0 - 1 system page
+1 - 2 system pages
+2 - 4 system pages
+...
+The ring buffer sub page size is limited between 1 and 128 system
+pages. The default value is 1 system page.
+New ring buffer APIs are introduced:
+ ring_buffer_subbuf_order_set()
+ ring_buffer_subbuf_order_get()
+ ring_buffer_subbuf_size_get()
 
-hugetlb_get_unmapped_area() is dedicated to slices.
-radix__hugetlb_get_unmapped_area() as well.
-
-Move them to slice.c
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
 ---
- arch/powerpc/include/asm/book3s/64/hugetlb.h |  4 --
- arch/powerpc/mm/book3s64/radix_hugetlbpage.c | 55 --------------
- arch/powerpc/mm/book3s64/slice.c             | 76 ++++++++++++++++++++
- arch/powerpc/mm/hugetlbpage.c                | 28 --------
- 4 files changed, 76 insertions(+), 87 deletions(-)
+ include/linux/ring_buffer.h |  4 ++
+ kernel/trace/ring_buffer.c  | 73 +++++++++++++++++++++++++++++++++++++
+ kernel/trace/trace.c        | 48 ++++++++++++++++++++++++
+ 3 files changed, 125 insertions(+)
 
-diff --git a/arch/powerpc/include/asm/book3s/64/hugetlb.h b/arch/powerpc/include/asm/book3s/64/hugetlb.h
-index 12e150e615b7..b37a28f62cf6 100644
---- a/arch/powerpc/include/asm/book3s/64/hugetlb.h
-+++ b/arch/powerpc/include/asm/book3s/64/hugetlb.h
-@@ -8,10 +8,6 @@
-  */
- void radix__flush_hugetlb_page(struct vm_area_struct *vma, unsigned long vmaddr);
- void radix__local_flush_hugetlb_page(struct vm_area_struct *vma, unsigned long vmaddr);
--extern unsigned long
--radix__hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
--				unsigned long len, unsigned long pgoff,
--				unsigned long flags);
+diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
+index d9a2e6e8fb79..9103462f6e85 100644
+--- a/include/linux/ring_buffer.h
++++ b/include/linux/ring_buffer.h
+@@ -202,6 +202,10 @@ struct trace_seq;
+ int ring_buffer_print_entry_header(struct trace_seq *s);
+ int ring_buffer_print_page_header(struct trace_buffer *buffer, struct trace_seq *s);
  
- extern void radix__huge_ptep_modify_prot_commit(struct vm_area_struct *vma,
- 						unsigned long addr, pte_t *ptep,
-diff --git a/arch/powerpc/mm/book3s64/radix_hugetlbpage.c b/arch/powerpc/mm/book3s64/radix_hugetlbpage.c
-index 23d3e08911d3..d2fb776febb4 100644
---- a/arch/powerpc/mm/book3s64/radix_hugetlbpage.c
-+++ b/arch/powerpc/mm/book3s64/radix_hugetlbpage.c
-@@ -41,61 +41,6 @@ void radix__flush_hugetlb_tlb_range(struct vm_area_struct *vma, unsigned long st
- 		radix__flush_tlb_range_psize(vma->vm_mm, start, end, psize);
++int ring_buffer_subbuf_order_get(struct trace_buffer *buffer);
++int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order);
++int ring_buffer_subbuf_size_get(struct trace_buffer *buffer);
++
+ enum ring_buffer_flags {
+ 	RB_FL_OVERWRITE		= 1 << 0,
+ };
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 68fdeff449c3..4aa5361a8f4c 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -511,6 +511,7 @@ struct trace_buffer {
+ 	bool				time_stamp_abs;
+ 
+ 	unsigned int			subbuf_size;
++	unsigned int			subbuf_order;
+ 	unsigned int			max_data_size;
+ };
+ 
+@@ -5679,6 +5680,78 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
  }
+ EXPORT_SYMBOL_GPL(ring_buffer_read_page);
  
--/*
-- * A vairant of hugetlb_get_unmapped_area doing topdown search
-- * FIXME!! should we do as x86 does or non hugetlb area does ?
-- * ie, use topdown or not based on mmap_is_legacy check ?
-- */
--unsigned long
--radix__hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
--				unsigned long len, unsigned long pgoff,
--				unsigned long flags)
--{
--	struct mm_struct *mm = current->mm;
--	struct vm_area_struct *vma;
--	struct hstate *h = hstate_file(file);
--	int fixed = (flags & MAP_FIXED);
--	unsigned long high_limit;
--	struct vm_unmapped_area_info info;
--
--	high_limit = DEFAULT_MAP_WINDOW;
--	if (addr >= high_limit || (fixed && (addr + len > high_limit)))
--		high_limit = TASK_SIZE;
--
--	if (len & ~huge_page_mask(h))
--		return -EINVAL;
--	if (len > high_limit)
--		return -ENOMEM;
--
--	if (fixed) {
--		if (addr > high_limit - len)
--			return -ENOMEM;
--		if (prepare_hugepage_range(file, addr, len))
--			return -EINVAL;
--		return addr;
--	}
--
--	if (addr) {
--		addr = ALIGN(addr, huge_page_size(h));
--		vma = find_vma(mm, addr);
--		if (high_limit - len >= addr && addr >= mmap_min_addr &&
--		    (!vma || addr + len <= vm_start_gap(vma)))
--			return addr;
--	}
--	/*
--	 * We are always doing an topdown search here. Slice code
--	 * does that too.
--	 */
--	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
--	info.length = len;
--	info.low_limit = max(PAGE_SIZE, mmap_min_addr);
--	info.high_limit = mm->mmap_base + (high_limit - DEFAULT_MAP_WINDOW);
--	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
--	info.align_offset = 0;
--
--	return vm_unmapped_area(&info);
--}
--
- void radix__huge_ptep_modify_prot_commit(struct vm_area_struct *vma,
- 					 unsigned long addr, pte_t *ptep,
- 					 pte_t old_pte, pte_t pte)
-diff --git a/arch/powerpc/mm/book3s64/slice.c b/arch/powerpc/mm/book3s64/slice.c
-index c83be371c6e7..4c3e9601fdf6 100644
---- a/arch/powerpc/mm/book3s64/slice.c
-+++ b/arch/powerpc/mm/book3s64/slice.c
-@@ -777,4 +777,80 @@ int slice_is_hugepage_only_range(struct mm_struct *mm, unsigned long addr,
- 
- 	return !slice_check_range_fits(mm, maskp, addr, len);
- }
-+
-+unsigned long vma_mmu_pagesize(struct vm_area_struct *vma)
-+{
-+	/* With radix we don't use slice, so derive it from vma*/
-+	if (radix_enabled())
-+		return vma_kernel_pagesize(vma);
-+
-+	return 1UL << mmu_psize_to_shift(get_slice_psize(vma->vm_mm, vma->vm_start));
-+}
-+
-+/*
-+ * A variant of hugetlb_get_unmapped_area() doing topdown search
-+ * FIXME!! should we do as x86 does or non hugetlb area does ?
-+ * ie, use topdown or not based on mmap_is_legacy check ?
++/**
++ * ring_buffer_subbuf_size_get - get size of the sub buffer.
++ * @buffer: the buffer to get the sub buffer size from
++ *
++ * Returns size of the sub buffer, in bytes.
 + */
-+static unsigned long
-+radix__hugetlb_get_unmapped_area(struct file *file, unsigned long addr, unsigned long len,
-+				 unsigned long pgoff, unsigned long flags)
++int ring_buffer_subbuf_size_get(struct trace_buffer *buffer)
 +{
-+	struct mm_struct *mm = current->mm;
-+	struct vm_area_struct *vma;
-+	struct hstate *h = hstate_file(file);
-+	int fixed = (flags & MAP_FIXED);
-+	unsigned long high_limit;
-+	struct vm_unmapped_area_info info;
++	return buffer->subbuf_size + BUF_PAGE_HDR_SIZE;
++}
++EXPORT_SYMBOL_GPL(ring_buffer_subbuf_size_get);
 +
-+	high_limit = DEFAULT_MAP_WINDOW;
-+	if (addr >= high_limit || (fixed && (addr + len > high_limit)))
-+		high_limit = TASK_SIZE;
-+
-+	if (len & ~huge_page_mask(h))
++/**
++ * ring_buffer_subbuf_order_get - get order of system sub pages in one buffer page.
++ * @buffer: The ring_buffer to get the system sub page order from
++ *
++ * By default, one ring buffer sub page equals to one system page. This parameter
++ * is configurable, per ring buffer. The size of the ring buffer sub page can be
++ * extended, but must be an order of system page size.
++ *
++ * Returns the order of buffer sub page size, in system pages:
++ * 0 means the sub buffer size is 1 system page and so forth.
++ * In case of an error < 0 is returned.
++ */
++int ring_buffer_subbuf_order_get(struct trace_buffer *buffer)
++{
++	if (!buffer)
 +		return -EINVAL;
-+	if (len > high_limit)
-+		return -ENOMEM;
 +
-+	if (fixed) {
-+		if (addr > high_limit - len)
-+			return -ENOMEM;
-+		if (prepare_hugepage_range(file, addr, len))
-+			return -EINVAL;
-+		return addr;
-+	}
-+
-+	if (addr) {
-+		addr = ALIGN(addr, huge_page_size(h));
-+		vma = find_vma(mm, addr);
-+		if (high_limit - len >= addr && addr >= mmap_min_addr &&
-+		    (!vma || addr + len <= vm_start_gap(vma)))
-+			return addr;
-+	}
-+	/*
-+	 * We are always doing an topdown search here. Slice code
-+	 * does that too.
-+	 */
-+	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
-+	info.length = len;
-+	info.low_limit = max(PAGE_SIZE, mmap_min_addr);
-+	info.high_limit = mm->mmap_base + (high_limit - DEFAULT_MAP_WINDOW);
-+	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
-+	info.align_offset = 0;
-+
-+	return vm_unmapped_area(&info);
++	return buffer->subbuf_order;
 +}
++EXPORT_SYMBOL_GPL(ring_buffer_subbuf_order_get);
 +
-+unsigned long hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
-+					unsigned long len, unsigned long pgoff,
-+					unsigned long flags)
++/**
++ * ring_buffer_subbuf_order_set - set the size of ring buffer sub page.
++ * @buffer: The ring_buffer to set the new page size.
++ * @order: Order of the system pages in one sub buffer page
++ *
++ * By default, one ring buffer pages equals to one system page. This API can be
++ * used to set new size of the ring buffer page. The size must be order of
++ * system page size, that's why the input parameter @order is the order of
++ * system pages that are allocated for one ring buffer page:
++ *  0 - 1 system page
++ *  1 - 2 system pages
++ *  3 - 4 system pages
++ *  ...
++ *
++ * Returns 0 on success or < 0 in case of an error.
++ */
++int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
 +{
-+	struct hstate *hstate = hstate_file(file);
-+	int mmu_psize = shift_to_mmu_psize(huge_page_shift(hstate));
++	int psize;
 +
-+	if (radix_enabled())
-+		return radix__hugetlb_get_unmapped_area(file, addr, len, pgoff, flags);
++	if (!buffer || order < 0)
++		return -EINVAL;
 +
-+	return slice_get_unmapped_area(addr, len, flags, mmu_psize, 1);
++	if (buffer->subbuf_order == order)
++		return 0;
++
++	psize = (1 << order) * PAGE_SIZE;
++	if (psize <= BUF_PAGE_HDR_SIZE)
++		return -EINVAL;
++
++	buffer->subbuf_order = order;
++	buffer->subbuf_size = psize - BUF_PAGE_HDR_SIZE;
++
++	/* Todo: reset the buffer with the new page size */
++
++	return 0;
 +}
- #endif
-diff --git a/arch/powerpc/mm/hugetlbpage.c b/arch/powerpc/mm/hugetlbpage.c
-index 82d8b368ca6d..eb9de09e49a3 100644
---- a/arch/powerpc/mm/hugetlbpage.c
-+++ b/arch/powerpc/mm/hugetlbpage.c
-@@ -542,34 +542,6 @@ struct page *follow_huge_pd(struct vm_area_struct *vma,
- 	return page;
- }
++EXPORT_SYMBOL_GPL(ring_buffer_subbuf_order_set);
++
+ /*
+  * We only allocate new buffers, never free them if the CPU goes down.
+  * If we were to free the buffer, then the user would lose any trace that was in
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 0eb8af875184..867a220b4ef2 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -9015,6 +9015,51 @@ static const struct file_operations buffer_percent_fops = {
+ 	.llseek		= default_llseek,
+ };
  
--#ifdef CONFIG_PPC_MM_SLICES
--unsigned long hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
--					unsigned long len, unsigned long pgoff,
--					unsigned long flags)
--{
--	struct hstate *hstate = hstate_file(file);
--	int mmu_psize = shift_to_mmu_psize(huge_page_shift(hstate));
--
--#ifdef CONFIG_PPC_RADIX_MMU
--	if (radix_enabled())
--		return radix__hugetlb_get_unmapped_area(file, addr, len,
--						       pgoff, flags);
--#endif
--	return slice_get_unmapped_area(addr, len, flags, mmu_psize, 1);
--}
--#endif
--
--unsigned long vma_mmu_pagesize(struct vm_area_struct *vma)
--{
--	/* With radix we don't use slice, so derive it from vma*/
--	if (IS_ENABLED(CONFIG_PPC_MM_SLICES) && !radix_enabled()) {
--		unsigned int psize = get_slice_psize(vma->vm_mm, vma->vm_start);
--
--		return 1UL << mmu_psize_to_shift(psize);
--	}
--	return vma_kernel_pagesize(vma);
--}
--
- bool __init arch_hugetlb_valid_size(unsigned long size)
- {
- 	int shift = __ffs(size);
++static ssize_t
++buffer_order_read(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
++{
++	struct trace_array *tr = filp->private_data;
++	char buf[64];
++	int r;
++
++	r = sprintf(buf, "%d\n", ring_buffer_subbuf_order_get(tr->array_buffer.buffer));
++
++	return simple_read_from_buffer(ubuf, cnt, ppos, buf, r);
++}
++
++static ssize_t
++buffer_order_write(struct file *filp, const char __user *ubuf,
++		   size_t cnt, loff_t *ppos)
++{
++	struct trace_array *tr = filp->private_data;
++	unsigned long val;
++	int ret;
++
++	ret = kstrtoul_from_user(ubuf, cnt, 10, &val);
++	if (ret)
++		return ret;
++
++	/* limit between 1 and 128 system pages */
++	if (val < 0 || val > 7)
++		return -EINVAL;
++
++	ret = ring_buffer_subbuf_order_set(tr->array_buffer.buffer, val);
++	if (ret)
++		return ret;
++
++	(*ppos)++;
++
++	return cnt;
++}
++
++static const struct file_operations buffer_order_fops = {
++	.open		= tracing_open_generic_tr,
++	.read		= buffer_order_read,
++	.write		= buffer_order_write,
++	.release	= tracing_release_generic_tr,
++	.llseek		= default_llseek,
++};
++
+ static struct dentry *trace_instance_dir;
+ 
+ static void
+@@ -9468,6 +9513,9 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
+ 	trace_create_file("buffer_percent", TRACE_MODE_READ, d_tracer,
+ 			tr, &buffer_percent_fops);
+ 
++	trace_create_file("buffer_subbuf_order", TRACE_MODE_WRITE, d_tracer,
++			  tr, &buffer_order_fops);
++
+ 	create_trace_options_dir(tr);
+ 
+ 	trace_create_maxlat_file(tr, d_tracer);
 -- 
-2.33.1
+2.31.1
 
