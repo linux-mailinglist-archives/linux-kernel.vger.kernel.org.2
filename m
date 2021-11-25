@@ -2,112 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339B245D997
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3543C45D99E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239346AbhKYL5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 06:57:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51778 "EHLO
+        id S238966AbhKYMA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 07:00:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239755AbhKYLzB (ORCPT
+        with ESMTP id S236186AbhKYL6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 06:55:01 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B694C0613A1;
-        Thu, 25 Nov 2021 03:48:49 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id j3so11063098wrp.1;
-        Thu, 25 Nov 2021 03:48:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zGTZSlpnGm2n22lxkSJEMVFE+t4NAH4c6Xl/p/baCNU=;
-        b=ggxDlHYdO+nCmw8YUmoTmFXUdtbKl0mS9AliK8qS1pDShNbNhw4sCm8M7F+WbLrHrR
-         QjTnc3i0ghnf46wkkbFOyw9SIiOr656jb8zkJ60WYFAdg2gT+laqeCk9gHAFSaS44Fww
-         Auxyyi63Uo4FKYqTOrabXLVQOlng6hAdeMofcFiUlgVf6f4fRzfdVlqQbcy7g6uKpWin
-         1Nq//GBDfbtiBr3xAVJnJ7qdcBc2y0uw1x6ywo8UGrpYUDhz+SfSq0YQxSHiZDUp3Vf0
-         CPR57y+lqyYN5O27weZ9v7GO0YynKW9NOKDrc0p0w/T1A3RYt8K3Ncj/s1ukEB7+d3hQ
-         5cUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zGTZSlpnGm2n22lxkSJEMVFE+t4NAH4c6Xl/p/baCNU=;
-        b=shfytW1y91NWUQr0ruftIeGlSXoYwRWH9s3FZbQ3g7qZ4L2reGOOW5epthZedb0t3Z
-         EEoQenJhtX341aQRCui8f9irJCjYfoi76JPDASTEftHixu2e2KU/DNfWpmwiNO1HTH0z
-         aMBlHMyDOxfMXLpKCCvvoGCUgxKrEz8gC4xTpIA/DSXskhGDQMzmGO2OUBP5cRHsUrR6
-         tU5dq9twXDSFnOup+vlNsyaS+Enom927P2/5nQwmdRI5LaVJ4+r923U35Yeyj/XsqgDT
-         JINAUUR7FU+VRbzcEYzKC71KJo3qg7sbGCwhPfraEottyFeHqYuzBJcB75/YKlCilwDt
-         GeYA==
-X-Gm-Message-State: AOAM530kg1csmHvG6IWmV+pAvGLRRo0f/d0n/9yVd3NBNmP/1VLbbimB
-        b5GsloP+axc85zecyjVrwQtpn/DYxmM=
-X-Google-Smtp-Source: ABdhPJwGaIlEzWSzYkOIFmFGYLa8i4k+7ojXDZzjuWLF9TI9gTOa0UaEeu8MeB+7/DzoNwcWBPOppw==
-X-Received: by 2002:a5d:64c4:: with SMTP id f4mr5748349wri.6.1637840928209;
-        Thu, 25 Nov 2021 03:48:48 -0800 (PST)
-Received: from archbook.localnet (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
-        by smtp.gmail.com with ESMTPSA id o10sm3285079wri.15.2021.11.25.03.48.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 03:48:47 -0800 (PST)
-From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To:     linux-mmc@vger.kernel.org, linux-rockchip@lists.infradead.org
-Cc:     John Keeping <john@metanate.com>, Heiko Stuebner <heiko@sntech.de>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        John Keeping <john@metanate.com>
-Subject: Re: [PATCH 0/4] mmc: dw_mmc: start deprecating mshcN aliases
-Date:   Thu, 25 Nov 2021 12:48:46 +0100
-Message-ID: <1727408.1NuWAi7hEM@archbook>
-In-Reply-To: <20211124184603.3897245-1-john@metanate.com>
-References: <20211124184603.3897245-1-john@metanate.com>
+        Thu, 25 Nov 2021 06:58:55 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B977C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 03:52:09 -0800 (PST)
+Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1mqDIM-0004lJ-BD; Thu, 25 Nov 2021 12:52:06 +0100
+Message-ID: <b9fc1beb-0495-b6b7-b352-d2505e709af2@leemhuis.info>
+Date:   Thu, 25 Nov 2021 12:52:06 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: Linux regressions report for mainline [2021-11-24]
+Content-Language: en-BS
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux regressions mailing list <regressions@lists.linux.dev>
+References: <163774583541.221636.5062449110647587402@leemhuis.info>
+ <CAHk-=wimd-G9+etiTb=_yqxy8H45su-=WXdLBrhi2TJK+gB+Mw@mail.gmail.com>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <CAHk-=wimd-G9+etiTb=_yqxy8H45su-=WXdLBrhi2TJK+gB+Mw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1637841129;d77ba681;
+X-HE-SMSGID: 1mqDIM-0004lJ-BD
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mittwoch, 24. November 2021 19:45:58 CET John Keeping wrote:
-> This series is prompted by discussion on a previous patch set [1] but is
-> a totally different approach and only a partial solution.
-> 
-> With these patches, the dependency on the mshcN alias is totally removed
-> from dw_mmc-hi3798cv200 and dw_mmc-rockchip and dw_mmc-exynos moves
-> towards being able to consider the mshcN aliases deprecated.
-> 
-> I haven't changed dw_mci_hi6220_caps here, although it looks like it's
-> possible to apply MMC_CAP_CMD23 to all controllers there with no change
-> in behaviour as the final entry is SDIO for which CMD23 is not
-> applicable IIUC.  But I'm not familiar with that hardware and don't feel
-> confident making that change.
-> 
-> [1] https://lore.kernel.org/all/20211116190244.1417591-1-john@metanate.com/
-> 
-> John Keeping (4):
->   mmc: dw_mmc: add common capabilities to replace caps
->   mmc: dw_mmc: hi3798cv200: use common_caps
->   mmc: dw_mmc: rockchip: use common_caps
->   mmc: dw_mmc: exynos: use common_caps
-> 
->  drivers/mmc/host/dw_mmc-exynos.c      |  9 +++++----
->  drivers/mmc/host/dw_mmc-hi3798cv200.c |  9 +--------
->  drivers/mmc/host/dw_mmc-rockchip.c    | 11 +----------
->  drivers/mmc/host/dw_mmc.c             |  3 +++
->  drivers/mmc/host/dw_mmc.h             |  3 +++
->  5 files changed, 13 insertions(+), 22 deletions(-)
-> 
-> 
 
-For rockchip:
+On 24.11.21 19:13, Linus Torvalds wrote:
+> Ok, nice to see the new regression tracking bot start to show life.
 
-Tested-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+Yeah. :-D
 
-Tested on a rk3566 with no obvious issues arising.
+Sadly one of my biggest problems with regression tracking remains:
+getting aware of regression reports. I can fully understand that most
+people don't care about regzbot for now, but it would really help if
+everyone would CC regressions@lists.linux.dev on mails regarding
+regressions (e.g. reports or any replies to them).
 
-Regards,
-Nicolas Frattaroli
+> Greg had one suggestion,
 
+Still not sure how to approach his use case, but for now I started
+adding the usual subsystem commit summary prefixes (e.g. "net:", "usb:",
+"drm/amd") to the title of newly added regression, which might help
+somewhat and won't hurt.
 
+> I have another - namely about grouping of these things.
+>
+> I like how you group them by "identified" and "unknown", because
+> that's certainly very meaningful.
+> 
+> But at the same time it does mean that if I look for "what are current
+> issues with the development kernel", it ends up being very spread out:
+
+Hah, fun fact: the order you purposed was the one I initially had in
+mind. But I later changed my mind, as I thought 'hey, if the culprit of
+the regression is known, it should be able to fix this quickly (e.g. by
+a revert, if there are no conflicts) even for regressions that made it
+into proper releases".
+
+But whatever: I'm totally fine with this and already changed the web
+interface yesterday after your mail arrived, only took a minute:
+
+https://linux-regtracking.leemhuis.info/regzbot/mainline/
+
+Next report will use this order as well.
+
+> I suspect that Greg may have a slightly similar issue - as a driver
+> maintainer, he cares about current cycle things (but mainly only when
+> they affect his subsystems), but with his stable maintainer hat on he
+> then cares more about the older cycles.
+> 
+> Greg suggested splitting out the issues one by one - to try to have
+> the right people on the Cc for any _particular_ issue, and while I
+> think that's not the solution in this case (I very much want to see
+> the "summary" email), it would be good to perhaps at least organize
+> that summary email slightly differently.
+> 
+> I suspect this is something we'd need to iterate on as we use this in
+> our workflow
+
+Definitely. If there is something else you want to see changed or think
+is odd wrt to regzbot or my work as regression tracker, just let me know.
+
+> but that was my initial reaction to this first report.
+
+Thx for the feedback, much appreciated.
+
+Ciao, Thorsten
