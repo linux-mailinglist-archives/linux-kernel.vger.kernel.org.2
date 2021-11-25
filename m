@@ -2,153 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0322245D635
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:31:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0892545D63B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352212AbhKYIeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 03:34:25 -0500
-Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.170]:15011 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236816AbhKYIcY (ORCPT
+        id S1353416AbhKYIf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 03:35:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348858AbhKYIdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 03:32:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637828944;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=hNupkB5Ycrs2ep+wM+k9JG7Vx2CZhHli9LlBG3B/zR4=;
-    b=VyZQoxLc3nRIMAK86FuSrQjTZaLeXU8W7jLtfsq5foieszx0qglMxuGCYbPiXRz9r/
-    LYBxc/cvzwJTzX3f0uOL2Zl2o3mE2WfIkpDjBilzpv66DKWeb7iRMuBJDeK/z/AZiDsa
-    6GKnLe4NYfCJ4HKSR2AoNWZUCwfrEX/s5r9tHKxIsNyxZ6K2fSOzKV8CQeSat/oOqirG
-    IfRYTXgzkVqqx8/j8nF1JmrXO94rmxZp9YzWHs9Vp3tY8vSfGAwN0ARYExMCS8rAdn8c
-    wvtZZu6kCKg/K9yu5NmBlj8FEXu+K/sYL9dHp9WsRmF86fhvp9vU9mB4NgzniK/3cT+L
-    n05g==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3iMMUrw=="
-X-RZG-CLASS-ID: mo00
-Received: from mbp-13-nikolaus.fritz.box
-    by smtp.strato.de (RZmta 47.34.10 DYNA|AUTH)
-    with ESMTPSA id e05ed8xAP8T26En
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Thu, 25 Nov 2021 09:29:02 +0100 (CET)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH v8 6/8] MIPS: DTS: CI20: Add DT nodes for HDMI setup
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <CAMuHMdV5sjVg6BEm3zgvvsJDHJwKP1A8rh-sama8suCG5SYQyA@mail.gmail.com>
-Date:   Thu, 25 Nov 2021 09:29:02 +0100
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <DD6EFFDC-EB04-4C39-8A63-3825C3A9C64D@goldelico.com>
-References: <cover.1637691240.git.hns@goldelico.com>
- <d62023e0872e9b393db736f4a0ecf04b3fc1c91b.1637691240.git.hns@goldelico.com>
- <O0K13R.TIL3JBQ5L8TO1@crapouillou.net>
- <04F0ED7C-3D18-4CCF-8F10-E0A36B0E4F4B@goldelico.com>
- <CAMuHMdWO3yosf5eyTPpydVuT3pwvuw9Q=2BUxq+rxPjE3iSnrw@mail.gmail.com>
- <B622D2B5-D631-43F3-9D50-2B41681C78AB@goldelico.com>
- <CAMuHMdV5sjVg6BEm3zgvvsJDHJwKP1A8rh-sama8suCG5SYQyA@mail.gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Thu, 25 Nov 2021 03:33:50 -0500
+Received: from lb2-smtp-cloud9.xs4all.net (lb2-smtp-cloud9.xs4all.net [IPv6:2001:888:0:108::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC484C06174A;
+        Thu, 25 Nov 2021 00:30:38 -0800 (PST)
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id qA9Im61391HGJqA9Lm2o3M; Thu, 25 Nov 2021 09:30:37 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1637829037; bh=9EAtMFeE4ZFHwDaCGPKmvAvvkvJAdiUCLPzQOH4sMzk=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=Av3SCX4RC918JILq+Qtse9DMmVQkIxxlMYHJSH33l5nCYSJCUEBamJDXNk8HMqdYq
+         F4wv4ZhQCVlPCz7BhILPWRwMWW5M8Fw+JWQSOfrPR9JDgDLwyXyUuPGeeqX07s6hz4
+         McW8+vJom+rzeqdZLabjByn+Dwyvd577wm5xSzCtD+wXSqkohIV/7NQwAMzIV4gp2a
+         BD9VftvysPmuSoKlorU4Sf9elyL/JAt9tcge7N0xC50B3xA/T9Okg+HwI0/aSTuI/p
+         sTCzEsXhUv4SaMEIMzjFUBSn0y2Anu9DA/aJKv3mUhYZr7FQ2iFbl5ZY+Vdn2YQAA2
+         gxXOUs/zfHojg==
+Subject: Re: [PATCH v2 3/7] media: mtk-vcodec: enc: use "stream_started" flag
+ for "stop/start_streaming"
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        linux-media@vger.kernel.org
+Cc:     kernel@collabora.com, acourbot@chromium.org,
+        andrew-ct.chen@mediatek.com, courbot@chromium.org,
+        dafna3@gmail.com, eizan@chromium.org, houlong.wei@mediatek.com,
+        hsinyi@chromium.org, irui.wang@mediatek.com,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        maoguang.meng@mediatek.com, matthias.bgg@gmail.com,
+        mchehab@kernel.org, minghsiu.tsai@mediatek.com, tfiga@chromium.org,
+        tiffany.lin@mediatek.com
+References: <20211117130635.11633-1-dafna.hirschfeld@collabora.com>
+ <20211117130635.11633-4-dafna.hirschfeld@collabora.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <759d6336-f63a-cd9c-80bf-666b47bb9cf7@xs4all.nl>
+Date:   Thu, 25 Nov 2021 09:30:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <20211117130635.11633-4-dafna.hirschfeld@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfAG6teqi8hLRwclr+QvS6o6Y4uotSrdyZ+GCGL1pPLdSd7au7fQuZ35paCdUB5s9Os6AJlLc/MpCvMEQUQ0BZbpLM0L0MKcBtnnPA3ncD0k/swMTlWdg
+ QMa/EcdkGDExjMSHTM2XqHcLdaeYYODs7TS9bLZzkgHlz4U0mYYM8kr4/B3xQ9eRNPXn8EJVeCH8NPCuqVg1hmST1RdrG8v/PnSV4qswUFVIukMXG9ZiwHKS
+ vl9Cj9W6pGOWh8XY/0qQasafX8JOHnjDtYpjR59MjNkhGwNAFiJ5I8jh68OCdKPnb3PbF7HSeXG4H6w8FHIk3SlSpOGVq/LT3xmR1BpLwZI/iYGdNi1FeBMp
+ RMP8B6pAhevD8tjMa705DdPh3S8e3rFTqbQnc1pCWqjxMIkL0HURiBVTmL7mhMBJ9elT/vNyyXMSclX7MM7HLWsnBEViN69NFZnL4lL2kU+ib1siKGU9fi0m
+ Q9dl/5weLwtn919bDF80xpzuKTfalpx9za15TBc1wrEiem4bzEN+S5VlttPTv3aLhx4QYgX3UGnAvVjHMtjNtx11YvVBgvzbmiX8uJpbzJaHuCyYvintBoEe
+ J+M14pHjwuCXKwr/qfBcf7eR6yTHkCzJGSDSrnJh0H1LlVLIHgTszWucVozdr2/NAx34XZLB2fmwG+iz0w+torIWHBIf6tMUofelDvq05BUwXnwEo6CTliuT
+ uLoJh9MnJL5V6j1YeoHe5XrdgU3GHI1dOSw+4UIPPFTJn+9ufS4ncJ2WRKVNwejF+oOkO6LacUdpPoABd/qkxTGbQ1uOf9t74lvbNiEkiEURN1xhmFBnCH0h
+ AGkomg38AWtN/nqb24Y=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gert,
+Hi Dafna,
 
-> Am 25.11.2021 um 08:58 schrieb Geert Uytterhoeven =
-<geert@linux-m68k.org>:
->=20
-> Hi Nikolaus,
->=20
-> On Wed, Nov 24, 2021 at 5:31 PM H. Nikolaus Schaller =
-<hns@goldelico.com> wrote:
->>> Am 24.11.2021 um 17:21 schrieb Geert Uytterhoeven =
-<geert@linux-m68k.org>:
->>> On Wed, Nov 24, 2021 at 5:19 PM H. Nikolaus Schaller =
-<hns@goldelico.com> wrote:
->>>>> Am 23.11.2021 um 21:10 schrieb Paul Cercueil =
-<paul@crapouillou.net>:
->>>>> Le mar., nov. 23 2021 at 19:13:59 +0100, H. Nikolaus Schaller =
-<hns@goldelico.com> a =C3=A9crit :
->>>>>> +    assigned-clock-rates =3D <48000000>, <0>, <54000000>, <0>, =
-<27000000>;
->>>>>> };
->>>>>> &tcu {
->>>>>> @@ -509,6 +534,19 @@ pins_i2c4: i2c4 {
->>>>>>            bias-disable;
->>>>>>    };
->>>>>> +    pins_hdmi_ddc: hdmi_ddc {
->>>>>> +            function =3D "hdmi-ddc";
->>>>>> +            groups =3D "hdmi-ddc";
->>>>>> +            bias-disable;
->>>>>> +    };
->>>>>> +
->>>>>> +    /* switch to PF25 as gpio driving DDC_SDA low */
->>>>>> +    pins_hdmi_ddc_unwedge: hdmi_ddc {
->>>>>> +            function =3D "hdmi-ddc";
->>>>>> +            groups =3D "hdmi-ddc";
->>>>>> +            bias-disable;
->>>>>> +    };
->>>>>=20
->>>>> Your pins_hdmi_ddc and pins_hdmi_ddc_unwedge are the exact same? =
-You could just use the former and pass it to both pinctrl-0 and =
-pinctrl-1.
->>>>=20
->>>> This was forgotten to remove. We do not make use of the unwedge =
-feature because I could not find out how to use pinctrl to switch this =
-to gpio25 and drive it low.
->>>=20
->>> Using gpio-hog?
->>=20
->> well, AFAIR it activates the gpio permanently and is a propery of the =
-gpio controller and not of pinmux.
->=20
-> Yes, hogs are permanently (ignoring DT overlay tricks).
->=20
->> The driver assumes it can use pinmux state switching to drive the =
-DDC_SDA line low on demand.
->=20
-> Add an optional wedge-gpios property for switching?
+On 17/11/2021 14:06, Dafna Hirschfeld wrote:
+> Currently the mtk-vcodec encoder does runtime pm resume
+> in "start_streaming" cb if both queues are streaming
+> and does runtime pm 'put' in "stop_streaming" if both
+> queues are not streaming.
+> This is wrong since the same queue might be started and
+> then stopped causing the driver to turn off the hardware
+> without turning it on. This cause for example unbalanced
+> calls to pm_runtime_*
+> 
+> Fixes: 4e855a6efa547 ("[media] vcodec: mediatek: Add Mediatek V4L2 Video Encoder Driver")
+> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+> ---
+> to reproduce the issue:
+> patch v4l-utils as follow:
+> 
+> static void stateful_m2m(cv4l_fd &fd, cv4l_queue &in, cv4l_queue &out,
+> 
+>  	if (fd.streamon(out.g_type()))
+>  		return;
+> +	if (fd.streamoff(out.g_type()))
+> +		return;
+> +
+> +	exit(1);
+> 
+>  	fd.s_trace(0);
+>  	if (exp_fd_p)
+> 
+> and call:
+> v4l2-ctl -x width=160,height=128,pixelformat=NM12 -v pixelformat=VP80 --stream-mmap --stream-out-mmap -d5
+> then the file /sys/devices/platform/soc/19002000.vcodec/power/runtime_usage
+> will show a negative number and further streaming (with e.g, gstreamer) is not possible.
+> 
+>  drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h | 4 ++++
+>  drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c | 8 ++++++++
+>  2 files changed, 12 insertions(+)
+> 
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
+> index 9d36e3d27369..84c5289f872b 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_drv.h
+> @@ -259,6 +259,9 @@ struct vdec_pic_info {
+>   * @decoded_frame_cnt: number of decoded frames
+>   * @lock: protect variables accessed by V4L2 threads and worker thread such as
+>   *	  mtk_video_dec_buf.
+> + * @stream_started: this flag is turned on when both queues (cap and out) starts streaming
+> + *	  and it is turned off once both queues stop streaming. It is used for a correct
+> + *	  setup and set-down of the hardware when starting and stopping streaming.
+>   */
+>  struct mtk_vcodec_ctx {
+>  	enum mtk_instance_type type;
+> @@ -301,6 +304,7 @@ struct mtk_vcodec_ctx {
+>  
+>  	int decoded_frame_cnt;
+>  	struct mutex lock;
+> +	bool stream_started;
+>  
+>  };
+>  
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
+> index 87a5114bf680..fb3cf804c96a 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
+> @@ -890,6 +890,9 @@ static int vb2ops_venc_start_streaming(struct vb2_queue *q, unsigned int count)
+>  		goto err_start_stream;
+>  	}
+>  
+> +	if (ctx->stream_started)
+> +		return 0;
+> +
+>  	/* Do the initialization when both start_streaming have been called */
+>  	if (V4L2_TYPE_IS_OUTPUT(q->type)) {
+>  		if (!vb2_start_streaming_called(&ctx->m2m_ctx->cap_q_ctx.q))
+> @@ -928,6 +931,7 @@ static int vb2ops_venc_start_streaming(struct vb2_queue *q, unsigned int count)
+>  		ctx->state = MTK_STATE_HEADER;
+>  	}
+>  
+> +	ctx->stream_started = true;
+>  	return 0;
+>  
+>  err_set_param:
+> @@ -1002,6 +1006,9 @@ static void vb2ops_venc_stop_streaming(struct vb2_queue *q)
+>  		}
+>  	}
+>  
+> +	if (!ctx->stream_started)
+> +		return;
+> +
+>  	if ((q->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE &&
+>  	     vb2_is_streaming(&ctx->m2m_ctx->out_q_ctx.q)) ||
+>  	    (q->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE &&
 
-That would touch the synopsys driver core and does not appear to be =
-required for jz4780 operation.
-We just add a separate driver specialisation for some parameters and set =
-up the device tree.
+(copy-and-pasted from my reply to the same patch in the v1 series, you probably
+missed that reply...)
 
-So it is beyond the scope of our work (neither needed, nor can we test =
-it).
-If you want to add that, please go ahead.
+I don't think this patch is the right fix. I think the real problem is that
+vb2ops_venc_start_streaming() calls vb2_start_streaming_called() to
+check that the other queue is also ready to start streaming, whereas
+vb2ops_venc_stop_streaming() incorrectly calls vb2_is_streaming()
+instead of vb2_start_streaming_called().
 
-BR and thanks,
-Nikolaus
+So my guess is that this mismatch is what causes the problem. Regardless,
+it is definitely a bug that vb2ops_venc_stop_streaming() calls vb2_is_streaming().
+
+I'm marking this patch as 'Changes Requested', but I'll accept the other patches
+this series (with patch 4/7 fixed to take care of the kernel test robot report).
+
+Regards,
+
+	Hans
+
+> @@ -1023,6 +1030,7 @@ static void vb2ops_venc_stop_streaming(struct vb2_queue *q)
+>  		mtk_v4l2_err("pm_runtime_put fail %d", ret);
+>  
+>  	ctx->state = MTK_STATE_FREE;
+> +	ctx->stream_started = false;
+>  }
+>  
+>  static int vb2ops_venc_buf_out_validate(struct vb2_buffer *vb)
+> 
 
