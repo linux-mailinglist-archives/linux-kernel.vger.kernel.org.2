@@ -2,81 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958DF45E183
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:21:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F10A45E188
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:26:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357056AbhKYUYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 15:24:41 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:54510 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242493AbhKYUWk (ORCPT
+        id S1356921AbhKYUaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 15:30:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243233AbhKYU14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 15:22:40 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637871568;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2A2mtNS0DKb6dqqC8o4MSgl7FirJUel4InUDXfuBsIU=;
-        b=WFJAiSeqjB5Ake1IU06h2j5Tz+P3t5+Tb+xdEXSAOOby2u2MJW0HNDB/rnbS/+u1lCMikt
-        gj+RdlOIaraI4ywlzXKL+84KrL6Th/FCWIJqOVcKrdeG0Zvr4mPw9XPaIPmtgXg7NvBJv6
-        bryFPV6247oMJ6M7j05cVpv9QH0gMrIGM6/zuYcwaxtr2CYOUrj1cV6Pu6ERAgaddBsWk3
-        LPZQxfoFyL2BW/om5cpQkxRzzARCN8ME/AHd30a+nI9gW3V7EoxqT736g/29kD+UmtjIAa
-        HrvMI+5d7hfZD8ZzuyoI3p/Fbges7W8QlR44/0gyOJ+N9AnlkXFsliRg6ACYjw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637871568;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2A2mtNS0DKb6dqqC8o4MSgl7FirJUel4InUDXfuBsIU=;
-        b=numU1eF43/7g4E/13NfyMmKRCWlWbIgLyDATF3KhsASL6HGQuWcQn0p4hOL8R8gD4sSoIs
-        DKt3LxoQdEF11KBQ==
-To:     isaku.yamahata@intel.com, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Subject: Re: [RFC PATCH v3 47/59] KVM: TDX: Define TDCALL exit reason
-In-Reply-To: <eb5dd2a1d02c7afe320ab3beb6390da43a9bf0bc.1637799475.git.isaku.yamahata@intel.com>
-References: <cover.1637799475.git.isaku.yamahata@intel.com>
- <eb5dd2a1d02c7afe320ab3beb6390da43a9bf0bc.1637799475.git.isaku.yamahata@intel.com>
-Date:   Thu, 25 Nov 2021 21:19:27 +0100
-Message-ID: <87k0gwhttc.ffs@tglx>
+        Thu, 25 Nov 2021 15:27:56 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9429C061763;
+        Thu, 25 Nov 2021 12:21:28 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id l22so18910265lfg.7;
+        Thu, 25 Nov 2021 12:21:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mnoEOb8Hv954j3i4irIBD7t76uu0fsOSVAr2WZwq1j0=;
+        b=pRWmT9Ia87UdxCoz9ngZywa5cyo1TrHHSDhzi/kxAH03obgBufvviWVuWnNvrgamk7
+         otTIj5HnTwkGfW5wfpVFFlVSzyrihfOmwk8KHFDX0Z2C+gDI7A8ZwBvBWibGMdeJKY/7
+         gHBOK5N9+ceIhs+pp+6jJGkJDcCeUdZZPUsHJk9cdIRwuHBe9/RHlwpsDr+bCeQbfq6E
+         JhySC1Ms7V5LkxsiootlkMa7W5tZabwArWAvY5hCtsRVfyzC0zqSBvlo825npiJeONc2
+         JIopjq2LqZA9FWio6fPspxXNCIc7yyLK8yn4nxoOEqfXIrgOIEtHx2bSZfsYVu2TwQ0P
+         0cDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mnoEOb8Hv954j3i4irIBD7t76uu0fsOSVAr2WZwq1j0=;
+        b=WvSD8j4+fk7H9TM/N/MRF7vt7G6wOD1hAjmZEMWB176SnVifQsQSy/Xi9F6BjcxY+/
+         1gt1nPN116MfXtdoUbYwkbxYes19EyPgt2u3XObgtFmk+8WEvEN60pwmHpHzt0sKLX9s
+         H7UmYilrOUSq+ee/mDijmf9VFnudHdJGXGebqKpdr563KXNK3hpq5hf3iwHtIwsZc+2v
+         kysuvvUD1aIefkdhBgYDqSLIenaFq/59q2giQpmZq3WQqv971k2z26fHA2GHnzIb8hOj
+         VTXv0aC3mHSj0BWHARsx3YkIngLwvrqv3V06C0E/xFYM9MC348FdBM93JrUYxT6luIG0
+         bMYA==
+X-Gm-Message-State: AOAM530DEGFtqgHSWOSHapq1EPDl7hgkZsxNtNktTtYKzfXb0U66N3eV
+        /87UtHL/hyqkcxkG5YhXSMY=
+X-Google-Smtp-Source: ABdhPJzv6tVHfjPCNBYsQmVAMCejhhFupK/eFYJ+PY32Yv0mLT+rVrWUAqrkeiZTN0ZKjY9QGhH8qg==
+X-Received: by 2002:a05:6512:31c4:: with SMTP id j4mr26213026lfe.173.1637871687025;
+        Thu, 25 Nov 2021 12:21:27 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id m20sm339742lfu.241.2021.11.25.12.21.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 12:21:25 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Thu, 25 Nov 2021 21:21:23 +0100
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
+        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH v2 2/4] mm/vmalloc: add support for __GFP_NOFAIL
+Message-ID: <YZ/wQ+EuGzpxA0DO@pc638.lan>
+References: <20211122153233.9924-1-mhocko@kernel.org>
+ <20211122153233.9924-3-mhocko@kernel.org>
+ <YZ06nna7RirAI+vJ@pc638.lan>
+ <20211123170238.f0f780ddb800f1316397f97c@linux-foundation.org>
+ <YZ6cfoQah8Wo1eSZ@pc638.lan>
+ <YZ9Nb2XA/OGWL1zz@dhcp22.suse.cz>
+ <CA+KHdyUFjqdhkZdTH=4k=ZQdKWs8MauN1NjXXwDH6J=YDuFOPA@mail.gmail.com>
+ <YZ/i1Dww6rUTyIdD@dhcp22.suse.cz>
+ <YZ/sC/N+fHUREjo0@pc638.lan>
+ <YZ/uUR1SGuMbEtzm@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZ/uUR1SGuMbEtzm@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24 2021 at 16:20, isaku yamahata wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
+> On Thu 25-11-21 21:03:23, Uladzislau Rezki wrote:
+> > On Thu, Nov 25, 2021 at 08:24:04PM +0100, Michal Hocko wrote:
+> > > On Thu 25-11-21 19:02:09, Uladzislau Rezki wrote:
+> > > [...]
+> > > > Therefore i root for simplification and OOM related concerns :) But
+> > > > maybe there will be other opinions.
+> > > 
+> > > I have to say that I disagree with your view. I am not sure we have
+> > > other precedence where an allocator would throw away the primary
+> > > allocation just because a metadata allocation failure.
+> > > 
+> > Well, i tried to do some code review and raised some concerns and
+> > proposals.
+> 
+> I do appreciate your review! No question about that.
+> 
+> I was just surprised by your reaction that your review feedback had been
+> ignored because I do not think this is the case.
+> 
+> We were in a disagreement and that is just fine. It is quite normal to
+> disagree. The question is whether that disagreement is fundamental and
+> poses a roadblock for merging. I definitely do not want and mean to push
+> anything by force. My previous understanding was that your concerns are
+> mostly about aesthetics rather than blocking further progress.
 >
-> Define the TDCALL exit reason, which is carved out from the VMX exit
-> reason namespace as the TDCALL exit from TDX guest to TDX-SEAM is really
-> just a VM-Exit.
+It is not up to me to block you from further progress and of course it
+was not my intention. You asked for a review i did it, that is it :)
 
-How is this carved out? What's the value of this word salad?
-
-It's simply a new exit reason. Not more, not less. So what?
-
-> Co-developed-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-
-I'm pretty sure that it does not take two engineers to add a new exit
-reason define, but it takes at least two engineers to come up with a
-convoluted explanation for it.
-
-Thanks,
-
-        tglx
+--
+Vlad Rezki
