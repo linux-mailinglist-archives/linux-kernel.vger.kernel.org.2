@@ -2,79 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3344645D90A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:17:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8453945D910
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:19:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239808AbhKYLUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 06:20:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44844 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238538AbhKYLTj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 06:19:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 571586104F;
-        Thu, 25 Nov 2021 11:16:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637838988;
-        bh=VJ1qwSVDgj9hVvTEuWtO8t8LX7VUgn9kTYaYnEyXmDg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JY+/DqXGnNWnXLmTMpc6v5fxh5rADdP4gRVwHqBX33ri/qc8+mLUmoYxgFMlQu3nO
-         yXhguqfF5t+BlWUF4U7GrX/a2QYQ8bm5uD70C/xDmZs9NaI8u1+U52shE3Dg/zD9z7
-         A8PLxKNcuDDXmayUa8YtEiJqENI23BSBNf2sF+/k=
-Date:   Thu, 25 Nov 2021 12:16:23 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-Subject: Re: [PATCH 4.9 000/207] 4.9.291-rc1 review
-Message-ID: <YZ9wh9ItjvU9vaQ4@kroah.com>
-References: <20211124115703.941380739@linuxfoundation.org>
- <CA+G9fYvXKXWMQY_X6NCBT41kGKszi3oRBw1HCfg+BN6GOWoRhg@mail.gmail.com>
+        id S237759AbhKYLWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 06:22:49 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:49406 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233354AbhKYLUq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 06:20:46 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 55B0F2114D;
+        Thu, 25 Nov 2021 11:17:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1637839054; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3jn00Br2z13eq+N/xHXiYesCdqcll2rp3dBLk2AO3OQ=;
+        b=ceWZM0hl4arGpDOnxI6KexwLg6TNGk0xXhe1TDn+KgqUKlhCiu37qK7fdn5w03AoqHT9e+
+        byhIY8klO8SRnL0WEVYgbWoM3mxRihtI4waX2LD8YBHNp5vlOWibxw+Y6rgw6G6asoVALw
+        2YjqFIjsomnYnHzBd4oAoQ12g+nT9ek=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1637839054;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3jn00Br2z13eq+N/xHXiYesCdqcll2rp3dBLk2AO3OQ=;
+        b=CYXsQCeAcKMe0INF00cPQX1SQHc4AdfJtZw0yDk8a5F2VtpT6UuPacdGRjIBvVt3cnioFp
+        8LyGIpt7ZAHW+bBg==
+Received: from suse.de (unknown [10.163.43.106])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 3DFF2A3B83;
+        Thu, 25 Nov 2021 11:17:32 +0000 (UTC)
+Date:   Thu, 25 Nov 2021 11:17:31 +0000
+From:   Mel Gorman <mgorman@suse.de>
+To:     Yicong Yang <yangyicong@hisilicon.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        bristot@redhat.com, song.bao.hua@hisilicon.com,
+        prime.zeng@huawei.com, linuxarm@huawei.com, 21cnbao@gmail.com
+Subject: Re: [PATCH] sched/fair: Clear target from cpus to scan in
+ select_idle_cpu
+Message-ID: <20211125111731.GE3301@suse.de>
+References: <20211124085401.14411-1-yangyicong@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <CA+G9fYvXKXWMQY_X6NCBT41kGKszi3oRBw1HCfg+BN6GOWoRhg@mail.gmail.com>
+In-Reply-To: <20211124085401.14411-1-yangyicong@hisilicon.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 09:06:11AM +0530, Naresh Kamboju wrote:
-> On Wed, 24 Nov 2021 at 17:44, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 4.9.291 release.
-> > There are 207 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.291-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
+On Wed, Nov 24, 2021 at 04:54:01PM +0800, Yicong Yang wrote:
+> Commit 56498cfb045d noticed that "When select_idle_cpu starts scanning for
+> an idle CPU, it starts with a target CPU that has already been checked
+> by select_idle_sibling. This patch starts with the next CPU instead."
+> It only changed the scanning start cpu to target + 1 but still leave
+> the target in the scanning cpumask. The target still have a chance to be
+> checked in the last turn. Fix this by clear the target from the cpus
+> to scan.
 > 
-> FYI,
-> New warnings noticed,
-> 
-> Linux 4.9.291-rc1 on arm (defconfig) with gcc-11
-> 
-> drivers/soc/tegra/pmc.c: In function 'tegra_powergate_power_up':
-> drivers/soc/tegra/pmc.c:412:1: warning: label 'powergate_off' defined
-> but not used [-Wunused-label]
->   412 | powergate_off:
->       | ^~~~~~~~~~~~~
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Fixes: 56498cfb045d ("sched/fair: Avoid a second scan of target in select_idle_cpu")
+> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
 
-Now fixed up, thanks.
+Did you check the performance of this? When I tried something like this
+in a different context, I found that the cost of clearing the bit was
+more expensive than simply using target + 1. For the target to be
+rescanned, the whole mask would have to be scanned as no other CPUs are
+idle which is the unlikely case. By clearing the bit, a cost is always
+incurred even if the first CPU scanned is idle.
 
-greg k-h
+-- 
+Mel Gorman
+SUSE Labs
