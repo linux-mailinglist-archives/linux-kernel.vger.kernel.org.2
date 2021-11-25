@@ -2,127 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D1545D314
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:18:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BABC545D320
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:20:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235089AbhKYCVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 21:21:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:56021 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238689AbhKYCTJ (ORCPT
+        id S238431AbhKYCXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 21:23:37 -0500
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:51736 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238437AbhKYCWv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 21:19:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637806558;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=r72uMhfjIYSF88TaYdiXECmLl0Mii7SWfOdaVyCFTl8=;
-        b=HbyZjPq+41l6L8F+jq+XC6xRXJiaUwhToVpOC+t4zG3MW1+AnzDosR3TDj6kFlm8nIqaXY
-        CU8HOC86/isAQVug5oLmU/bAR0DsF2ievmtvq1JKprfAQHpcq9sH4zsq0t/m+0TL7EcA0j
-        YvG9pRzTvppC615kJPM5BIeXcaE4SjE=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-149--rBCSCSNNlm0t2t1DAe3qQ-1; Wed, 24 Nov 2021 21:15:57 -0500
-X-MC-Unique: -rBCSCSNNlm0t2t1DAe3qQ-1
-Received: by mail-lf1-f69.google.com with SMTP id c14-20020a056512104e00b004036d17f91bso2359562lfb.17
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 18:15:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r72uMhfjIYSF88TaYdiXECmLl0Mii7SWfOdaVyCFTl8=;
-        b=rZciiYa6EXVzuSQBctHy/gewXCg4JdB6mwB2z0SlsSvO8iBSnTKRT39Ifug7N3Xrrj
-         rvswI/Gzw4EejJtVFIrduhIOYA4eydv6dmv+7hH3ZbEydMTHf/aLx8yhwNySl/nKqKcM
-         ILSgOV5RveV1iuRqRIN62dpGmPsy/pWqoOTrvVxvYC5PcfV2x3ZwoNMTbn9DJseUPWiO
-         6sH+5H0/9QQiZIvkYIOutFPeX9LXNI8vLAjZHbpow6+HLk7mTkk6LrKzSqyCbMlMPiS3
-         FvvLADQ8z+6pB3Tn0iZJ/lcfo1/1mpPgsEgxuuoMoRGkpLUouY84wwaQcmIvz+JGW3fb
-         bqmQ==
-X-Gm-Message-State: AOAM530lTlA36O7Vbm0iKNzaqwBfIr9DM07Qy/sxiGV8wJoLt0GomW9Y
-        UYsY9TrLSeXL2wayPnyte4yBxivpPfzUsSWnAAKPdqLsU3auq4alJDqlrTHstsk8PGSkc2+dQrQ
-        agTs6YE1K+HtXC4i7ttydpuvCh5C1DtFXqWsxG+wj
-X-Received: by 2002:a2e:b88d:: with SMTP id r13mr20998301ljp.362.1637806556013;
-        Wed, 24 Nov 2021 18:15:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzT9Fnm7W7ku4KzzgyNbW6baOBfxN7dV9GBC3FZtP+i7ldmgANqMnbMbrg7KLgP/dpEX9CSqxPFFGj2DzWKb3k=
-X-Received: by 2002:a2e:b88d:: with SMTP id r13mr20998288ljp.362.1637806555830;
- Wed, 24 Nov 2021 18:15:55 -0800 (PST)
+        Wed, 24 Nov 2021 21:22:51 -0500
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AP1EcR8031342;
+        Thu, 25 Nov 2021 02:17:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=XIExMbmexIaHezqSI/l6ZxC8Z/2Hwa+QIr5mkWtcLk8=;
+ b=NFVwXs/5vmPTY6vPDcX+Mug4rpe1nwWPFxSLIcemtJuZBQQFW7ERlfaytUTXmF0JkT9p
+ IOxucwxK7lJ7ry9239mmxFZXMg/79LBTK5UuxDGyguhHXqkat2pGHATVBdqTxx938VBL
+ C8NS6lylIKZB+xwrUmUNnm/vZosdQb9szwOTsTV9Im3iRjKfs/q1k6GzAVetU4t2f/00
+ +ntE3PotJ1V3sPdh0FYoQhV8NvqJRyW553pL0n6hU4se4z+/pl7LtOCCgnE0qB1f+Lcb
+ ATj5PtVXtzOt0i8x9ykk4+rrCJpUMhbyAXDyl/rQFUIMnazGBVFPLOS6HlmqtiWCxE49 Jg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3chmfn4ed7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Nov 2021 02:17:45 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AP2B8IU040120;
+        Thu, 25 Nov 2021 02:17:44 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2049.outbound.protection.outlook.com [104.47.66.49])
+        by aserp3030.oracle.com with ESMTP id 3ceq2gyrvh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Nov 2021 02:17:44 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nwVH5PMmRewWFxcNUl8jo4h95uf6DrWPCIBFy4hTPfb9F7aq+W5sO7gYot+wn3HSpzIPXZRiztnJOxwchoOkt8dkN2KzVdiyWE8+xB7D8x+dMZEGgClQ4hAOffdyjKVffNgf/j3QlLbLVMR3W/IKRneQ1Z1zAgS4Mv1tMsSo0sPwhT1oz8PxaczWNZUPVscw7OFviSgrr4/R7FhHl8KtEBtpg8T6CpkySpwn18WsBTgH4F47MgfV9Oz8zOTkztcUb6U+kcUQbtqXRsn6Uej0lHqDb0fCDBWpUMhOyCfhoPIIdYKThk3APYcJEqhoW4Zz2SxLUocUakiRA26KhDK6DQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=XIExMbmexIaHezqSI/l6ZxC8Z/2Hwa+QIr5mkWtcLk8=;
+ b=MCsOZo8TKfgtYvHtE3uVJeUDw8k37ERRWSwskj80GuWO2NMhOkK1ZjNBCDNCZ5jorqhrjDM+NYpuU3PelI3S+ARRVA0m9KDnTdg7tocxjP2hX9dApKiYjCx/S8H2VhVsZedL9TCkVAw8ajLZlKlGoAbaYWprMaJjIlv5ytgVQAg8ZmMp85WYdISk6LkPj5yo/uX6EusJEdWndczBGIndurms0GMdU3/Qs2tdrH55eEAVTN123SsAbREdavf80KOlfrvSlbn50FEOL3i8nymfmrnG9wQqPydgdwjiyAGh7SpbGQ3pM3b2Q2ccl3S3HPU48ACLrhfU7hS0tqPZBkeyxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XIExMbmexIaHezqSI/l6ZxC8Z/2Hwa+QIr5mkWtcLk8=;
+ b=mrRgb+yinWBcumDvymicXVS0ct6B+yAnbhlomJbi7EPk5Ce9i9MRKH6FE5foNbdSQj/M8xiFV2e9KXybmvt/dEy4dHAxDyfSvxI3EfMCgMXpHRVBTXjWJYRoFoYpa2k8HKlnHeFjYAqe8NtfffAmWQbtv2GDmaiaX/WMppFxB+g=
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
+ by MN2PR10MB4333.namprd10.prod.outlook.com (2603:10b6:208:199::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.26; Thu, 25 Nov
+ 2021 02:17:42 +0000
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::8d84:1f40:881:7b12]) by BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::8d84:1f40:881:7b12%4]) with mapi id 15.20.4713.025; Thu, 25 Nov 2021
+ 02:17:42 +0000
+Message-ID: <4d04ea65-ea74-dcfd-5b0e-984b44f91961@oracle.com>
+Date:   Wed, 24 Nov 2021 21:17:34 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.3.1
+Subject: Re: [PATCH] cpu/hotplug: Allow the CPU in CPU_UP_PREPARE state to be
+ brought up again.
+Content-Language: en-US
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Gonglei (Arei)" <arei.gonglei@huawei.com>, x86@kernel.org,
+        xen-devel@lists.xenproject.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <20211122154714.xaoxok3fpk5bgznz@linutronix.de>
+ <87y25djhaj.ffs@tglx>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+In-Reply-To: <87y25djhaj.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0031.namprd03.prod.outlook.com
+ (2603:10b6:a03:33e::6) To BLAPR10MB5009.namprd10.prod.outlook.com
+ (2603:10b6:208:321::10)
 MIME-Version: 1.0
-References: <20211124162045.25983-1-arnaud.pouliquen@foss.st.com> <20211124161055-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20211124161055-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Thu, 25 Nov 2021 10:15:44 +0800
-Message-ID: <CACGkMEvQoUcPFgOTvEDGkZHMXhjhPrk0xq-Zq3+G20_Lp-hu8A@mail.gmail.com>
-Subject: Re: [PATCH v2] rpmsg: virtio: don't let virtio core to validate used length
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com
-Content-Type: text/plain; charset="UTF-8"
+Received: from [10.74.109.97] (138.3.200.33) by SJ0PR03CA0031.namprd03.prod.outlook.com (2603:10b6:a03:33e::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22 via Frontend Transport; Thu, 25 Nov 2021 02:17:38 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 83d9c98a-fa39-48ba-bdb8-08d9afb9c29d
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4333:
+X-Microsoft-Antispam-PRVS: <MN2PR10MB4333A7FEE475BCFE49AD391A8A629@MN2PR10MB4333.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: k1QiTl2F3nC1NlHp70TThl61xRM2o6L0NTtwFg3zWd4xMIFGrIOPDsHK6aIA0UBBopOyC2Z+a7UPJcsmN8SCDs59/Ef0TYcn56hr/RH6GTk4o95GdBq2qYz0VjePHL4wE69caX3bP6DjI9aySABbefHsGqG3lAo0HfVGIoUJ6n2opvOZyOCSSKz8B2xoydfxsm3mWPPndzg76xeUK5ghE8nG+37x5oeR/RVeMihpW3PqakR3t3sJn2vH6Ji2jO0NkSxtWAFWcLPXHgXvalaG4FUiGOC6ScRVWKBRFfuJDkTufn0oWqVZ1mqv+CZixTwjXkj/eOWdjc/yIwKYjBjggodyjIxJYHvane6rlbYu7NkNAfWYfcealtUjwgkAxqwQOjh1VkNf6LYIaBYE89BDaYful2AkIh/4HXID28m7/JT6ySwiVPWEpEpUNZIL8fKqKBcnH3fKZAnJoYYrWYEv+38jv3VPVzK0qMG3cZMXF4FUc+5cnYGpJoJDGBTrxdhxHVskMVaXmzqWqSPQsHg5dLROL5DUSkb9N1B/1XT9ftfggxNhIkxU1kIV4LWtF/wkh8Sjom8R8/YkNr4+rPmcoiQhiP5tHWJDqlWLEW0N6MkMEjJPal64HkOAJnHVLEERCqlzKN0TcTltgjeAPFN8i6eFDScpP7KP0rqNvK9WVBve8ShoBPb/chuHDZ0HzFcStnTKmzGNaZSN7As8NvZcfbCsDnSZSzdonhahUUTJlfC0H3Hj1Yi+Acc4JC67Dl4a6SIlUaqcq81WV+C6tRijI3w2rQHnguXN1Ti/EesFHUBwFnCXMywk+B/Awb72cQoeydIGmg90yW9F1UM4+MCEXg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(31696002)(110136005)(7416002)(6486002)(38100700002)(6666004)(186003)(508600001)(54906003)(5660300002)(31686004)(26005)(66476007)(966005)(2906002)(8936002)(8676002)(44832011)(36756003)(956004)(2616005)(86362001)(4326008)(66556008)(83380400001)(16576012)(66946007)(53546011)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?am0rWXZEd3NSV1ByMTdSSy9SR0VEUTRoRTk3SUR0RzVpN3FhY3JXOCthUE05?=
+ =?utf-8?B?ZmJBQkZPRE50RnZPOWhzQm9KMXdOR3habytTV1lyNHJibktKcXZnNHlxYzhz?=
+ =?utf-8?B?dFB6U2NFRExyb0J3blJ6a1FBQmZROVRMaHczL1dmSkNxOC81S2tON3VNd3lu?=
+ =?utf-8?B?eWgzc0RTN0hSL3kxdGhxaDR0WHA1OGJEUVljVHJJUlp6Qkl4UzUzV2pkbnE3?=
+ =?utf-8?B?bkRJUUd2NGY2dEV2U1lXeFJVdEdnN0JIbTJZeE9La0hXYnpaNndxMUhxdVpa?=
+ =?utf-8?B?dXh2TTJmaWRhTm8yV3Vnclc1a01YSTBwVmNnREFwcXZkeStaMjRSQldxYzdM?=
+ =?utf-8?B?Ky9Rd0xvc0F1VG9tUUNqVGorTk5ZMHNWSVZZUTFCWmZsUmdqeDBuTmgzR1lV?=
+ =?utf-8?B?SElDejF2ZTBSYWF3a3lIeWFqRDFmeXpvVkxma2ttSTdEVXNvVTFhaDhJOTNq?=
+ =?utf-8?B?NVJvYjZvb3Z0Wk5MWmNCaVhUZXhDTUVvdE1HRzVkMWtPdHZJZHNIOHlsMXhC?=
+ =?utf-8?B?T2xyMHpxZndEZHFJellQUmhpTzkrQUVhaTdEQkxmd2dLZ2diOUp6ZlRUK1FF?=
+ =?utf-8?B?YkVCYXQ0WmQ1S2dZeUwzODdnZStLeDZNcE8wRUV5YkU2VjRaRkFIWDMvbzRN?=
+ =?utf-8?B?S1VIQUc4Uyt3ckVSRmN1WHhjek5QTFNqWTF5QzZLN0F1OEJTd1FVR2pidmxz?=
+ =?utf-8?B?WGQ3NUlOMnlPMmxIVkpZS1l6bGdQeUVJNVUzVERHdTh2UGIvUHQxM1QzV0pz?=
+ =?utf-8?B?ZnczdWZneVF1Tlh5bnIvRUNNTld4Q3NESnZsMFpRcTNxL1BJVDZXOWR3Zk40?=
+ =?utf-8?B?OGRtWmVHOEhLbmxDY2hwbTR3czVuVTJJQTBRc1lBcUNGRWEwSE5OaVRyRmNz?=
+ =?utf-8?B?b21Qd2wvblBKVWtoTkc0MGEvaHhuNCsyR1pSZ0NxRUZ6WkxpQldOSEtkcTd1?=
+ =?utf-8?B?Nmd3T0EvZjhUVzZPMzByem5HMkFleFRZdG1OcmpvRVVHV0hkb01GSldLQXlU?=
+ =?utf-8?B?Y3Nnd3RKUXNnTXhkNm8zRzhlUXIxWVIyZm51aFJseHVob3lpTW9vblY1L3o2?=
+ =?utf-8?B?ejA2U0VMRkJCbE1HeFJXaGpyYWplM3BiT1ZLditaNFg0MnE1d0NjMERINFZz?=
+ =?utf-8?B?ZkRybDRHUFMwK3V3WVZIRDYzVkpyMEoxYUFNWDZuSVBBQlpPdEVnaUhZQkVy?=
+ =?utf-8?B?NVB1Qm5LRHN1b1p6dnNzdVN0Y0tMWndrd3ZydXEzejFzemVBRzNIRnl0VFli?=
+ =?utf-8?B?NmpUdXlUTU9BbjNuMjVoN3BmRUIvdUlSbzFoWXFjWFVVb1llK3RLOUQwRkZz?=
+ =?utf-8?B?YjYwOTYxQlZQMkhzaS9rZHROOHVsYmJScUhDaUVyd1MydVlrZWFtajRhZVVX?=
+ =?utf-8?B?bzV1cVdqVzZrODlVbWlXdDlhSlY5RXkrTndnajJaVGtZQUpoUEYrak9IZk83?=
+ =?utf-8?B?Y210ZFkwdGdTRm53RVQxYmZ0NDQ0NFRRbElRL0Q4U3Z1Z2pGZURLMlp5c0xK?=
+ =?utf-8?B?NlAybkQ0d3YxdXl0dytNdzdPd0RHdk1EZnhDdWFlR2NIaUtWTVRjSkF5U0pF?=
+ =?utf-8?B?MmtjRmluQ0M1NldhZnFaM0FkL3kwZW5FM0QwRnZEZHo4dlZCdjFNOU9nMXJW?=
+ =?utf-8?B?N3ZBcVUxMzdwVzVDZkg0YVJmUlBxckQ3cU5hTnJ6U0daY2lhTkxJeDA4cFhK?=
+ =?utf-8?B?UmtxWkllSnRsYXBXK3R4bmlweGpRc2hyMGhnYmlmeVlCc2FIRHNzZENxc0hO?=
+ =?utf-8?B?cTBJTGxrV05weTlMRXFKVWFIWTN3YnBkeEJuREl1bHlvWG15WHpsLy9URHRm?=
+ =?utf-8?B?dnRqK1JKWXE4Q21ZM3p3dUQyUzcyVnU2a1RZVS9SS0JwSVBabmFvWHZFYnNW?=
+ =?utf-8?B?ZS9RK2VpMU1aL3d6T285OEJWaGR2S1JnQmZDdUYwRlVGQUgvb0VwTk9mRW00?=
+ =?utf-8?B?TE5PRnpSb3R1b3ExRjNFa3V5aFdnMEtabkFLVUFTbWtpZUVJYVV4WGl2bTQ0?=
+ =?utf-8?B?cnlJREI4RmdwVXYxM1FHbk44M2RsSjVBY2ZNN1cvbkF2cDFNTzIyc1ZWVFdS?=
+ =?utf-8?B?aEpVaGNjYk9zMXZtUFVFemh3S29SaTJWd0JRYlZCb2hZZ3JZSzlpOWhXeExu?=
+ =?utf-8?B?OFRuL25EUkVXYXNRL1hiTzFMbnJXQm1BUnFaTE9yNllnMEpJR2dpOCtQS1lG?=
+ =?utf-8?B?SDV3eUd2WmpWVmVwTlNjSEVMZzY4ZjZ2azZMUGQyajJHMm9Pd05JOG5PSE42?=
+ =?utf-8?B?OGgrcUhVRHh3M2F2TkxmMithQXRnPT0=?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 83d9c98a-fa39-48ba-bdb8-08d9afb9c29d
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2021 02:17:42.0515
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xybOlaEKm0/vN7QoyN6rHZk1OlVLsNPqBCANyikCDVgEQeKOJYmUtJSN6pYkmZGxT5CGZIVcFQvDSCvL4UuKecyLLQDALmK6LdLW6xDl/z0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4333
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10178 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0 spamscore=0
+ bulkscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111250010
+X-Proofpoint-ORIG-GUID: OQhjtSONJBqWvYheHkHfOJjV7zgfYSpb
+X-Proofpoint-GUID: OQhjtSONJBqWvYheHkHfOJjV7zgfYSpb
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 5:12 AM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> On Wed, Nov 24, 2021 at 05:20:45PM +0100, Arnaud Pouliquen wrote:
-> > Using OpenAMP library on remote side, when the rpmsg framework tries to
-> > reuse the buffer the following error message is displayed in
-> > the virtqueue_get_buf_ctx_split function:
-> > "virtio_rpmsg_bus virtio0: output:used len 28 is larger than in buflen 0"
-> >
-> > As described in virtio specification:
-> > "many drivers ignored the len value, as a result, many devices set len
-> > incorrectly. Thus, when using the legacy interface, it is generally
-> > a good idea to ignore the len value in used ring entries if possible."
-> >
-> > To stay in compliance with the legacy libraries, this patch prevents the
-> > virtio core from validating used length.
-> >
-> > Fixes: 939779f5152d ("virtio_ring: validate used buffer length")
-> >
-> > Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> > Cc: Jason Wang <jasowang@redhat.com>
-> > Cc: Michael S. Tsirkin <mst@redhat.com>
-> > ---
->
-> Arnaud, thanks a lot for the analysis.
->
-> Jason, I think this is another good point. We really should not
-> validate input for legacy devices at all.
 
-I agree. Will do that in the next version.
+On 11/24/21 5:54 PM, Thomas Gleixner wrote:
+> On Mon, Nov 22 2021 at 16:47, Sebastian Andrzej Siewior wrote:
+>> From: "Longpeng(Mike)" <longpeng2@huawei.com>
+>>
+>> A CPU will not show up in virtualized environment which includes an
+>> Enclave. The VM splits its resources into a primary VM and a Enclave
+>> VM. While the Enclave is active, the hypervisor will ignore all requests
+>> to bring up a CPU and this CPU will remain in CPU_UP_PREPARE state.
+>> The kernel will wait up to ten seconds for CPU to show up
+>> (do_boot_cpu()) and then rollback the hotplug state back to
+>> CPUHP_OFFLINE leaving the CPU state in CPU_UP_PREPARE. The CPU state is
+>> set back to CPUHP_TEARDOWN_CPU during the CPU_POST_DEAD stage.
+>>
+>> After the Enclave VM terminates, the primary VM can bring up the CPU
+>> again.
+>>
+>> Allow to bring up the CPU if it is in the CPU_UP_PREPARE state.
+>>
+>> [bigeasy: Rewrite commit description.]
+>>
+>> Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
+>> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+>> Link: https://lore.kernel.org/r/20210901051143.2752-1-longpeng2@huawei.com
+>> ---
+>>
+>> For XEN: this changes the behaviour as it allows to invoke
+>> cpu_initialize_context() again should it have have earlier. I *think*
+>> this is okay and would to bring up the CPU again should the memory
+>> allocation in cpu_initialize_context() fail.
+> Any comment from XEN folks?
 
-Thanks
 
->
->
-> > Update vs v1[1]: update commit message to clarify the context.
-> >
-> > base-commit: fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf
-> >
-> > [1]https://lore.kernel.org/lkml/20211122160812.25125-1-arnaud.pouliquen@foss.st.com/T/
-> > ---
-> >  drivers/rpmsg/virtio_rpmsg_bus.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-> > index 9c112aa65040..5f73f19c2c38 100644
-> > --- a/drivers/rpmsg/virtio_rpmsg_bus.c
-> > +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-> > @@ -1054,6 +1054,7 @@ static struct virtio_driver virtio_ipc_driver = {
-> >       .feature_table_size = ARRAY_SIZE(features),
-> >       .driver.name    = KBUILD_MODNAME,
-> >       .driver.owner   = THIS_MODULE,
-> > +     .suppress_used_validation = true,
-> >       .id_table       = id_table,
-> >       .probe          = rpmsg_probe,
-> >       .remove         = rpmsg_remove,
-> > --
-> > 2.17.1
->
+If memory allocation in cpu_initialize_context() fails we will not be able to bring up the VCPU because xen_cpu_initialized_map bit at the top of that routine will already have been set. We will BUG in xen_pv_cpu_up() on second (presumably successful) attempt because nothing for that VCPU would be initialized. This can in principle be fixed by moving allocation to the top of the routine and freeing context if the bit in the bitmap is already set.
+
+
+Having said that, allocation really should not fail: for PV guests we first bring max number of VCPUs up and then offline them down to however many need to run. I think if we fail allocation during boot we are going to have a really bad day anyway.
+
+
+
+-boris
 
