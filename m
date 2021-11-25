@@ -2,130 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF38145E105
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 20:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFAFA45E108
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 20:32:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350111AbhKYTer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 14:34:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351803AbhKYTcq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 14:32:46 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BDEFC061759;
-        Thu, 25 Nov 2021 11:29:34 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id y13so29463547edd.13;
-        Thu, 25 Nov 2021 11:29:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+QdSnn9hnDbXHilVPEzYaOF00rC6aTmARJsrJsKk/HA=;
-        b=eZYdfa3q9HtFJRaW20SwlL7XA8WQ7r8jlBGVqh9TyKPBpv/nzIIQJ1cuusxBBozWUp
-         SmRZuuOksbeR9Ls1NpzezJ370EtRbOBpS3Ct/g+9c5X3nrrFfrbYZPjn+2cdCDkvrKWu
-         Syfgv5XE2Z851DPSLlO0SXfAZ7RcV3EeuawAvCDT+hY6nkmfboeK5w4IHrl9/cDJ73va
-         uXtUsQZIq0M4138F61KBzWewxcAsGrbhmCYYPkhWuDoMzmrEE7fympSIBETcwojM7rWH
-         dl4WCZb0PFuuETHN9RlD3tdpk0F6EE75DHgzpve6zHolLrfHTPaGkzEMAA+ND0mMkrrQ
-         BIhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+QdSnn9hnDbXHilVPEzYaOF00rC6aTmARJsrJsKk/HA=;
-        b=6bgkqjqzkftARJMMlxgaYP8lyF/PrmfP087r+/QDIJTd18EqYtBiiocMJh0yoM/HgQ
-         ugVLkrqtTyAKe1cRUjEgHOYo6ZWa15XOhlt+gYErk9j1y9sHrectZX7WgAWpluIFxI/S
-         nNZ/eoJnOnkXCn2zyHnUnvT2PBDerGFo9cKhYNewR/++MJnGlOhbRUkCbJTCiG/SO5vr
-         NIXNZeQucNFDE5OwJn1i+6FPAzHGSzU9YSiEs9IhtEmpeLFjVUfNh/6DJmYa1kghq0Av
-         dFFqN/dr4cd3EIldl1MbaeK0G/trNui7+Be1N6G8Gs5FfZvGvzChQdfhODc09oFAUj0j
-         Oh5A==
-X-Gm-Message-State: AOAM5325o18HcT2BoK48JDJ86ks3FMFuVHMt4YxD7wFxOduASExMGVPc
-        uVLgAwrqQJqEJI51eC2O1cbK5Y2ap12dovxuaD0=
-X-Google-Smtp-Source: ABdhPJxia6v+ggx0h/6ClA1/sHMg1Q/7ZU1xWeQZA6EVhTerXcEGn294ZgigAx875QVPOK7l2krbLRnAJ036HXO5fPk=
-X-Received: by 2002:a17:906:489b:: with SMTP id v27mr33672901ejq.567.1637868572711;
- Thu, 25 Nov 2021 11:29:32 -0800 (PST)
+        id S1356437AbhKYTfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 14:35:42 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:47052 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243479AbhKYTdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 14:33:41 -0500
+Received: from ip5f5b2004.dynamic.kabel-deutschland.de ([95.91.32.4] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mqKRs-0005mw-Ts; Thu, 25 Nov 2021 20:30:24 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Johan Jonker <jbx6244@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] arm64: dts: rockchip: rk356x: Add HDMI audio nodes
+Date:   Thu, 25 Nov 2021 20:30:24 +0100
+Message-ID: <4335378.eiKhv840gI@diego>
+In-Reply-To: <08774d87-97e0-6afa-2816-bf78949e4e68@gmail.com>
+References: <20211125100836.423808-1-frattaroli.nicolas@gmail.com> <20211125100836.423808-2-frattaroli.nicolas@gmail.com> <08774d87-97e0-6afa-2816-bf78949e4e68@gmail.com>
 MIME-Version: 1.0
-References: <1637859224-5179-1-git-send-email-akhilrajeev@nvidia.com>
-In-Reply-To: <1637859224-5179-1-git-send-email-akhilrajeev@nvidia.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 25 Nov 2021 21:28:56 +0200
-Message-ID: <CAHp75VfPPpTNCaM+GhcqZS53ts-20GBzm+4OWLAjND=z79pgxg@mail.gmail.com>
-Subject: Re: [PATCH v4] i2c: tegra: Add the ACPI support
-To:     Akhil R <akhilrajeev@nvidia.com>
-Cc:     Christian Koenig <christian.koenig@amd.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        linaro-mm-sig@lists.linaro.org,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 6:54 PM Akhil R <akhilrajeev@nvidia.com> wrote:
->
-> Add support for the ACPI based device registration so that the driver
-> can be also enabled through ACPI table.
->
-> This does not include the ACPI support for Tegra VI and DVC I2C.
+Am Donnerstag, 25. November 2021, 20:07:21 CET schrieb Johan Jonker:
+> Hi Nicolas,
+> 
+> Some comments...
+> 
+> On 11/25/21 11:08 AM, Nicolas Frattaroli wrote:
+> > This adds the i2s0 node and an hdmi-sound sound device to the
+> > rk356x device tree. On the rk356[68], the i2s0 controller is
+> > connected to HDMI audio.
+> > 
+> > Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+> > ---
+> >  arch/arm64/boot/dts/rockchip/rk356x.dtsi | 32 ++++++++++++++++++++++++
+> >  1 file changed, 32 insertions(+)
+> > 
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+> > index 3c09cf6d4c37..ad4053402eef 100644
+> > --- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+> > +++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
+> > @@ -614,6 +614,21 @@ hdmi_in_vp2: endpoint@2 {
+> >  		};
+> >  	};
+> >  
+> 
+> > +	hdmi_sound: hdmi-sound {
+> 
+> Some DT sort rules:
+> 
+> For nodes:
+> Sort things without reg alphabetical first,
+> then sort the rest by reg address.
+> 
+> > +		compatible = "simple-audio-card";
+> 
+> simple-audio-card,name = "HDMI";
+> 
+> > +		simple-audio-card,format = "i2s";
+> > +		simple-audio-card,mclk-fs = <256>;
+> 
+> > +		simple-audio-card,name = "hdmi-sound";
+> 
+> Exceptions:
+> Sort simple-audio-card,name above other simple-audio-card properties.
+> 
+> Shouldn't we standardize to SPDIF, HDMI and Analog similar to rk3318/rk3328?
+> Make a shorter label without spaces or special chars, so that chars
+> don't get removed?
+> See "aplay -l" screen print.
+> 
+> Maybe rename to "HDMI"?
+> 
+> > +		status = "disabled";
+> > +
+> > +		simple-audio-card,cpu {
+> > +			sound-dai = <&i2s0_8ch>;
+> > +		};
+> 
+> Add empty line between nodes.
+> 
+> Not sure if Heiko cares, but when alphabetical sort I get this:
+> simple-audio-card,codec
+> simple-audio-card,cpu
 
-Thanks for an update, my comments below.
+Hehe ... I do care, but would normally just (silently) re-sort these
+things when applying ;-) .
 
-...
 
-> -       err = reset_control_reset(i2c_dev->rst);
-> +       if (handle)
+Heiko
 
-> +               err = acpi_evaluate_object(handle, "_RST", NULL, NULL);
 
-Does it compile for CONFIG_ACPI=n case?
+> > +		simple-audio-card,codec {
+> > +			sound-dai = <&hdmi>;
+> > +		};
+> > +	};
+> > +
+> >  	qos_gpu: qos@fe128000 {
+> >  		compatible = "rockchip,rk3568-qos", "syscon";
+> >  		reg = <0x0 0xfe128000 0x0 0x20>;
+> > @@ -789,6 +804,23 @@ spdif: spdif@fe460000 {
+> >  		status = "disabled";
+> >  	};
+> >  
+> > +	i2s0_8ch: i2s@fe400000 {
+> > +		compatible = "rockchip,rk3568-i2s-tdm";
+> > +		reg = <0x0 0xfe400000 0x0 0x1000>;
+> > +		interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
+> > +		assigned-clocks = <&cru CLK_I2S0_8CH_TX_SRC>, <&cru CLK_I2S0_8CH_RX_SRC>;
+> > +		assigned-clock-rates = <1188000000>, <1188000000>;
+> > +		clocks = <&cru MCLK_I2S0_8CH_TX>, <&cru MCLK_I2S0_8CH_RX>, <&cru HCLK_I2S0_8CH>;
+> > +		clock-names = "mclk_tx", "mclk_rx", "hclk";
+> > +		dmas = <&dmac1 0>;
+> > +		dma-names = "tx";
+> > +		resets = <&cru SRST_M_I2S0_8CH_TX>, <&cru SRST_M_I2S0_8CH_RX>;
+> > +		reset-names = "tx-m", "rx-m";
+> > +		rockchip,grf = <&grf>;
+> > +		#sound-dai-cells = <0>;
+> > +		status = "disabled";
+> > +	};
+> > +
+> >  	i2s1_8ch: i2s@fe410000 {
+> >  		compatible = "rockchip,rk3568-i2s-tdm";
+> >  		reg = <0x0 0xfe410000 0x0 0x1000>;
+> > 
+> 
 
-> +       else
-> +               err = reset_control_reset(i2c_dev->rst);
 
-If not, you will need something like this instead:
 
-#ifdef CONFIG_ACPI
-               err = acpi_evaluate_object(ACPI_HANDLE(...), "_RST", NULL, NULL);
-#else
-               err = reset_control_reset(i2c_dev->rst);
-#endif
 
-...
-
-> +       err = device_property_read_u32(i2c_dev->dev, "clock-frequency",
-> +                                      &i2c_dev->bus_clk_rate);
->         if (err)
->                 i2c_dev->bus_clk_rate = I2C_MAX_STANDARD_MODE_FREQ;
-
-Actually you need to switch to use i2c_timings data structure and
-corresponding methods.
-This change will be incorporated there. I.o.w. do it as a prerequisite
-to this patch.
-
-...
-
-> +       if (ACPI_HANDLE(i2c_dev->dev))
-> +               return 0;
-
-With above mentioned ifdeffery this may be converted back to
-has_acpi_companion() which is slightly better in this case.
-
-> +       if (ACPI_HANDLE(i2c_dev->dev))
-> +               return 0;
-
-Ditto.
-
-P.S> Sorry if I missed something in the previous reviews.
-
--- 
-With Best Regards,
-Andy Shevchenko
