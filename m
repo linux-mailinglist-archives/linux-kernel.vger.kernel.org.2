@@ -2,59 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB2F45D80E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:14:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A1C45D812
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354380AbhKYKSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1354561AbhKYKUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 05:20:03 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:55076 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245468AbhKYKSD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 25 Nov 2021 05:18:03 -0500
-Received: from foss.arm.com ([217.140.110.172]:48986 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347793AbhKYKQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 05:16:02 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F8931042;
-        Thu, 25 Nov 2021 02:12:51 -0800 (PST)
-Received: from localhost.localdomain (unknown [10.57.59.112])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 29CEE3F5A1;
-        Thu, 25 Nov 2021 02:12:50 -0800 (PST)
-From:   Vincent Donnefort <vincent.donnefort@arm.com>
-To:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org
-Cc:     linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
-        valentin.schneider@arm.com,
-        Vincent Donnefort <vincent.donnefort@arm.com>
-Subject: [PATCH v2] sched/fair: Fix per-CPU kthread and wakee stacking for asym CPU capacity
-Date:   Thu, 25 Nov 2021 10:12:39 +0000
-Message-Id: <20211125101239.3248857-1-vincent.donnefort@arm.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UyFpqIF_1637835250;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UyFpqIF_1637835250)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 25 Nov 2021 18:14:50 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     rth@twiddle.net
+Cc:     ink@jurassic.park.msu.ru, mattst88@gmail.com,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH v2] mm: Fix warning comparing pointer to 0
+Date:   Thu, 25 Nov 2021 18:14:00 +0800
+Message-Id: <1637835240-51114-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-select_idle_sibling() has a special case for tasks woken up by a per-CPU
-kthread. For this case, the chosen CPU is the previous one. This is an
-issue for asymmetric CPU capacity systems where the wakee might not fit
-that CPU anymore. Evaluate asym_fits_capacity() for prev_cpu before using
-the exit path described above.
+Fix the following coccicheck warning:
 
-Fixes: b4c9c9f15649 ("sched/fair: Prefer prev cpu in asymmetric wakeup path")
-Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+./arch/alpha/mm/fault.c:193:52-53: WARNING comparing pointer to 0.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6291876a9d32..b90dc6fd86ca 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6410,7 +6410,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	 */
- 	if (is_per_cpu_kthread(current) &&
- 	    prev == smp_processor_id() &&
--	    this_rq()->nr_running <= 1) {
-+	    this_rq()->nr_running <= 1 &&
-+	    asym_fits_capacity(task_util, prev)) {
- 		return prev;
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+Changes in v2:
+  -For the follow advice:
+   https://lore.kernel.org/lkml/5391025983087ae9d1292387bc0b2b37c9c57863.camel@perches.com/
+
+ arch/alpha/mm/fault.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/arch/alpha/mm/fault.c b/arch/alpha/mm/fault.c
+index 6c0a277..89e265e 100644
+--- a/arch/alpha/mm/fault.c
++++ b/arch/alpha/mm/fault.c
+@@ -190,10 +190,9 @@
+ 
+  no_context:
+ 	/* Are we prepared to handle this fault as an exception?  */
+-	if ((fixup = search_exception_tables(regs->pc)) != 0) {
+-		unsigned long newpc;
+-		newpc = fixup_exception(dpf_reg, fixup, regs->pc);
+-		regs->pc = newpc;
++	fixup = search_exception_tables(regs->pc);
++	if (fixup) {
++		regs->pc = fixup_exception(dpf_reg, fixup, regs->pc);
+ 		return;
  	}
  
 -- 
-2.25.1
+1.8.3.1
 
