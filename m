@@ -2,108 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4EC045DA2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:37:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE59B45D9E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:18:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354864AbhKYMkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 07:40:49 -0500
-Received: from mx-out.tlen.pl ([193.222.135.158]:7574 "EHLO mx-out.tlen.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353014AbhKYMis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 07:38:48 -0500
-Received: (wp-smtpd smtp.tlen.pl 28409 invoked from network); 25 Nov 2021 06:28:52 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
-          t=1637818132; bh=dm5AajixXHCRSWQL4H2xZWv4TUiiZ2j0GzIFPSh9Avk=;
-          h=Subject:To:From:Cc;
-          b=kmaaLQ0p+m+BA+aCHCJH2QkxjNBK0NuVTdflOVyTelzjZEKGQSyQ1XCHT9YMOtFeq
-           +9TTbFIWKwhsZve//tSpcNv/ArWZyEedYef+IhTkb1pZnLR9jrvmtpMxzjDzST04pk
-           fwE9Sqpp0wAsUU1/AhLC89OeVtgSeVtyFM7Jwkd0=
-Received: from aaen55.neoplus.adsl.tpnet.pl (HELO [192.168.1.22]) (mat.jonczyk@o2.pl@[83.4.117.55])
-          (envelope-sender <mat.jonczyk@o2.pl>)
-          by smtp.tlen.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <alexandre.belloni@bootlin.com>; 25 Nov 2021 06:28:52 +0100
-Message-ID: <1b217171-b301-f2fe-f455-9bddabe2e115@o2.pl>
-Date:   Thu, 25 Nov 2021 06:28:45 +0100
+        id S1348672AbhKYMVZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 25 Nov 2021 07:21:25 -0500
+Received: from [186.226.176.30] ([186.226.176.30]:49094 "EHLO
+        mail.serrinha.ba.gov.br" rhost-flags-FAIL-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1347956AbhKYMUg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 07:20:36 -0500
+X-Greylist: delayed 9404 seconds by postgrey-1.27 at vger.kernel.org; Thu, 25 Nov 2021 07:20:35 EST
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.serrinha.ba.gov.br (Postfix) with ESMTP id C1BB51BA92CE;
+        Thu, 25 Nov 2021 06:55:47 -0200 (BRST)
+X-Virus-Scanned: amavisd-new at mail.serrinha.ba.gov.br
+Received: from mail.serrinha.ba.gov.br ([127.0.0.1])
+        by localhost (mail.serrinha.ba.gov.br [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id HVvYa64MKaMA; Thu, 25 Nov 2021 06:55:47 -0200 (BRST)
+Received: from [209.127.184.115] (unknown [186.226.183.225])
+        by mail.serrinha.ba.gov.br (Postfix) with ESMTP id 3D9A71BA92C8;
+        Thu, 25 Nov 2021 06:55:45 -0200 (BRST)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH RESEND v3 3/7] rtc-mc146818-lib: extract
- mc146818_do_avoiding_UIP
-Content-Language: en-GB
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-References: <20211119204221.66918-1-mat.jonczyk@o2.pl>
- <20211119204221.66918-4-mat.jonczyk@o2.pl> <YZ6/GC3xouzEZmEh@piout.net>
-From:   =?UTF-8?Q?Mateusz_Jo=c5=84czyk?= <mat.jonczyk@o2.pl>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>
-In-Reply-To: <YZ6/GC3xouzEZmEh@piout.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-WP-MailID: fd2290f820c29801a52683fe7f723d61
-X-WP-AV: skaner antywirusowy Poczty o2
-X-WP-SPAM: NO 000000E [QVNk]                               
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Re: Attn
+To:     Recipients <elsayedhamdy041@gmail.com>
+From:   "Hamdy Elsayed" <elsayedhamdy041@gmail.com>
+Date:   Thu, 25 Nov 2021 01:01:02 -0800
+Reply-To: hamdy5@pbefin.com
+Message-Id: <20211125085545.3D9A71BA92C8@mail.serrinha.ba.gov.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W dniu 24.11.2021 o 23:39, Alexandre Belloni pisze:
-> On 19/11/2021 21:42:17+0100, Mateusz Jończyk wrote:
->> Function mc146818_get_time() contains an elaborate mechanism of reading
->> the RTC time while no RTC update is in progress. It turns out that
->> reading the RTC alarm clock also requires avoiding the RTC update (see
->> following patches). Therefore, the mechanism in mc146818_get_time()
->> should be reused - so extract it into a separate function.
->>
->> The logic in mc146818_do_avoiding_UIP() is same as in
->> mc146818_get_time() except that after every
->>
->>         if (CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP) {
->>
->> there is now "mdelay(1)".
->>
->> To avoid producing an unreadable diff, mc146818_get_time() will be
->> refactored to use mc146818_do_avoiding_UIP() in the next patch.
->>
->> Signed-off-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
->> Cc: Alessandro Zummo <a.zummo@towertech.it>
->> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
->>
->> ---
->>  drivers/rtc/rtc-mc146818-lib.c | 69 ++++++++++++++++++++++++++++++++++
->>  include/linux/mc146818rtc.h    |  3 ++
->>  2 files changed, 72 insertions(+)
->>
->> diff --git a/drivers/rtc/rtc-mc146818-lib.c b/drivers/rtc/rtc-mc146818-lib.c
->> index b50612ce1a6d..946ad43a512c 100644
->> --- a/drivers/rtc/rtc-mc146818-lib.c
->> +++ b/drivers/rtc/rtc-mc146818-lib.c
->> @@ -8,6 +8,75 @@
->>  #include <linux/acpi.h>
->>  #endif
->>  
->> +/*
->> + * Execute a function while the UIP (Update-in-progress) bit of the RTC is
->> + * unset.
->> + *
->> + * Warning: callback may be executed more then once.
->> + */
->> +bool mc146818_do_avoiding_UIP(mc146818_callback_t callback, void *param)
-> mc146818_avoid_UIP would be a simpler name. 
-Right
-> Also, I'm pretty sure we can
-> avoid the mc146818_callback_t typedef
+Hello,
 
-Do you mean doing something like:
+How are you once again. I have been having difficulty reaching you. I
+have an important business transaction to discuss with you.
 
-bool mc146818_avoid_UIP(
-	void (*callback)(unsigned char seconds, void *param), void *param);
+There are funds available and ready for investment which we will need
+your assistance to invest.
 
-Thanks for reviewing.
+Do get back to me as soon as you can for more details.
 
-Greetings,
-Mateusz
-
->> +{
->> +	int i;
->> +	unsigned long flags;
-[snip]
+Regards,
+Hamdy Elsayed
