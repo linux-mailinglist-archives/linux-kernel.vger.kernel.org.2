@@ -2,210 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63EBB45D830
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:23:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A226345D83C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354266AbhKYK1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 05:27:03 -0500
-Received: from foss.arm.com ([217.140.110.172]:49082 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354473AbhKYKZC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 05:25:02 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82F661042;
-        Thu, 25 Nov 2021 02:21:51 -0800 (PST)
-Received: from [10.57.59.128] (unknown [10.57.59.128])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BCE043F5A1;
-        Thu, 25 Nov 2021 02:21:49 -0800 (PST)
-Subject: Re: [RESEND PATCH 1/1] perf arm-spe: report all SPE records as "all"
- events
-To:     Leo Yan <leo.yan@linaro.org>, German Gomez <german.gomez@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-References: <20211117142833.226629-1-german.gomez@arm.com>
- <20211125075358.GA1599216@leoy-ThinkPad-X240s>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <12d44d96-1fcd-1fdd-64ea-beef40a27d1d@arm.com>
-Date:   Thu, 25 Nov 2021 10:21:48 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1354322AbhKYK3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 05:29:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35135 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345458AbhKYK1h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 05:27:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637835865;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YAs+wOcrTysA9YV1Vf8sngcPa3FxWosi6YTl8VNcjbQ=;
+        b=Z6udgEN84hvjSwaaTxgm/FAz2LIbOVx8N0kqipSeQLZBQC9nPbH6OLf4mkgcoeCMzJ2RJs
+        ap/tKmveMPI4VEziVT2VHr5HOqt33gqnydGNwo4eJzCEyvOpQrTeBODbzwoUFxfsrVi7Qs
+        y+racqxdjpKF7U3H4JGZrApOwyH5/h8=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-518-gx8qlutAMJqo3t6WxG6WpQ-1; Thu, 25 Nov 2021 05:24:24 -0500
+X-MC-Unique: gx8qlutAMJqo3t6WxG6WpQ-1
+Received: by mail-pj1-f71.google.com with SMTP id x3-20020a17090a1f8300b001a285b9f2cbso2231397pja.6
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 02:24:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YAs+wOcrTysA9YV1Vf8sngcPa3FxWosi6YTl8VNcjbQ=;
+        b=ccJHd3XngWLrIgnT+l2hSGiIAeGWoAbMMSvgQfoc2di4ayrgNFmrHR7wroZIDLpI7f
+         hxrekKyLINTQ3yxT0VkfrDEpuqYEgnORUxiA47ighOom4T1IZ5TDj7lgAD1H6S0yO3jp
+         v8VsqLyZs8Dy/RFHJq9cc7jeJQNmSj9TDhIWWdOmzM+NwNHYpTCjsehUPJ61QH0K0kEM
+         HMISqRSXwP7oZ6OYwz8iVceTHU3UFNEnYTHby18EjoJ2BMYrljoqZor5cPc3xoQumuDY
+         TzoWw+ZYKHf4XsNFove38SRy/Modge4tNP1aobJvAPQGmOLXZ9ld50kHQDyn7Uqs9dWh
+         8lsg==
+X-Gm-Message-State: AOAM533PMuP9pJ+y589O6MFLDr1jGEIcFSavSFlQD4wfHOEeGymYsH7x
+        ZAtSGiVtWUe3LbDB1kKbCQg4D6QUlezEIeHvprjp7WSuQ6nfFMJga75B+D9Qkc4jphNrcCYd+Ws
+        lyP1fPUsyCn6IiTAVJ1bMzH/y
+X-Received: by 2002:a63:894a:: with SMTP id v71mr15286611pgd.337.1637835863313;
+        Thu, 25 Nov 2021 02:24:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwhTSMgJfEb1p1gaKmYXk/HSshjHdQmPcVfAvtIixKoiBODtcQEZlOalgLPB6QdfLRbmM/NZg==
+X-Received: by 2002:a63:894a:: with SMTP id v71mr15286579pgd.337.1637835862911;
+        Thu, 25 Nov 2021 02:24:22 -0800 (PST)
+Received: from xz-m1.local ([94.177.118.150])
+        by smtp.gmail.com with ESMTPSA id il7sm2606487pjb.54.2021.11.25.02.24.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 02:24:22 -0800 (PST)
+Date:   Thu, 25 Nov 2021 18:24:16 +0800
+From:   Peter Xu <peterx@redhat.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: split thp synchronously on MADV_DONTNEED
+Message-ID: <YZ9kUD5AG6inbUEg@xz-m1.local>
+References: <20211120201230.920082-1-shakeelb@google.com>
+ <25b36a5c-5bbd-5423-0c67-05cd6c1432a7@redhat.com>
+ <CALvZod5L1C1DV_DVs9O3xZm6CJnriunAoj89YLDdCp7ef5yBxA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211125075358.GA1599216@leoy-ThinkPad-X240s>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CALvZod5L1C1DV_DVs9O3xZm6CJnriunAoj89YLDdCp7ef5yBxA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 25/11/2021 07:53, Leo Yan wrote:
-> On Wed, Nov 17, 2021 at 02:28:32PM +0000, German Gomez wrote:
->> From: James Clark <james.clark@arm.com>
->>
->> Currently perf-report and perf-inject are dropping a large number of SPE
->> records because they don't contain any of the existing events, but the
->> contextual information of the records is still useful to keep.
->>
->> The synthesized event "all" is generated for every SPE record that is
->> processed, regardless of whether the record contains interesting events
->> or not. The event can be filtered with the flag "--itrace=o".
->>
->> Signed-off-by: James Clark <james.clark@arm.com>
->> Signed-off-by: German Gomez <german.gomez@arm.com>
->> ---
->>  tools/perf/Documentation/itrace.txt |  2 +-
->>  tools/perf/util/arm-spe.c           | 36 +++++++++++++++++++++++++++++
->>  tools/perf/util/auxtrace.h          |  2 +-
->>  3 files changed, 38 insertions(+), 2 deletions(-)
->>
->> diff --git a/tools/perf/Documentation/itrace.txt b/tools/perf/Documentation/itrace.txt
->> index c52755481..57dc12b83 100644
->> --- a/tools/perf/Documentation/itrace.txt
->> +++ b/tools/perf/Documentation/itrace.txt
->> @@ -6,7 +6,7 @@
->>  		w	synthesize ptwrite events
->>  		p	synthesize power events (incl. PSB events for Intel PT)
->>  		o	synthesize other events recorded due to the use
->> -			of aux-output (refer to perf record)
->> +			of aux-output (refer to perf record) (all events for Arm SPE)
->>  		e	synthesize error events
->>  		d	create a debug log
->>  		f	synthesize first level cache events
->> diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
->> index ce77abf90..6428351db 100644
->> --- a/tools/perf/util/arm-spe.c
->> +++ b/tools/perf/util/arm-spe.c
->> @@ -58,6 +58,7 @@ struct arm_spe {
->>  	u8				sample_branch;
->>  	u8				sample_remote_access;
->>  	u8				sample_memory;
->> +	u8				sample_other;
->>  
->>  	u64				l1d_miss_id;
->>  	u64				l1d_access_id;
->> @@ -68,6 +69,7 @@ struct arm_spe {
->>  	u64				branch_miss_id;
->>  	u64				remote_access_id;
->>  	u64				memory_id;
->> +	u64				all_id;
->>  
->>  	u64				kernel_start;
->>  
->> @@ -351,6 +353,23 @@ static int arm_spe__synth_branch_sample(struct arm_spe_queue *speq,
->>  	return arm_spe_deliver_synth_event(spe, speq, event, &sample);
->>  }
->>  
->> +static int arm_spe__synth_other_sample(struct arm_spe_queue *speq,
->> +				       u64 spe_events_id)
->> +{
->> +	struct arm_spe *spe = speq->spe;
->> +	struct arm_spe_record *record = &speq->decoder->record;
->> +	union perf_event *event = speq->event_buf;
->> +	struct perf_sample sample = { .ip = 0, };
->> +
->> +	arm_spe_prep_sample(spe, speq, event, &sample);
->> +
->> +	sample.id = spe_events_id;
->> +	sample.stream_id = spe_events_id;
->> +	sample.addr = record->to_ip;
+On Mon, Nov 22, 2021 at 10:40:54AM -0800, Shakeel Butt wrote:
+> > Do we have a performance evaluation how much overhead is added e.g., for
+> > a single 4k MADV_DONTNEED call on a THP or on a MADV_DONTNEED call that
+> > covers the whole THP?
 > 
-> After checked the event types, I think "other" samples would include
-> below raw event types:
+> I did a simple benchmark of madvise(MADV_DONTNEED) on 10000 THPs on
+> x86 for both settings you suggested. I don't see any statistically
+> significant difference with and without the patch. Let me know if you
+> want me to try something else.
 
-Maybe we should rename some of the functions and variables if there is
-confusion, but I think this new group is "all" rather than "other" because
-it also includes all the events that would be put in other groups.
+I'm a bit surprised that sync split thp didn't bring any extra overhead.
 
-> 
->   EV_EXCEPTION_GEN
->   EV_RETIRED
->   EV_NOT_TAKEN
->   EV_ALIGNMENT
->   EV_PARTIAL_PREDICATE
->   EV_EMPTY_PREDICATE
-> 
-> I am just wander if we can use sample.transaction to store these event
-> types, otherwise, we cannot distinguish the event type for the samples.
+"unmap whole thp" is understandable from that pov, because afaict that won't
+even trigger any thp split anyway even delayed, if this is the simplest case
+that only this process mapped this thp, and it mapped once.
 
-If we can use the transaction field to distinguish sample types, I'm
-wondering why we need the separate groups at all. If this new group
-includes all sample types, and they're all labelled, do we need to
-continue with the other groups like "tlb-access" and "branch-miss"?
+For "unmap 4k upon thp" IIUC that's the worst case and zapping 4k should be
+fast; while what I don't understand since thp split requires all hand-made work
+for copying thp flags into small pages and so on, so I thought there should at
+least be some overhead measured.  Shakeel, could there be something overlooked
+in the test, or maybe it's me that overlooked?
 
-Or does the perf GUI not allow filtering by transaction type?
+I had the same concern as what Kirill/Matthew raised in the other thread - I'm
+worried proactively splitting simply because any 4k page is zapped might
+quickly free up 2m thps in the system and I'm not sure whether it'll exaggerate
+the defragmentation of the system memory in general.  I'm also not sure whether
+that's ideal for some very common workload that frequently uses DONTNEED to
+proactively drop some pages.
 
-James
+To me, the old deffered-split has a point in that it'll only be done when at
+least the memory or cgroup is in low mem, that means we're in extreme cases so
+we'd better start to worry page allocation failures rather than number of thps
+and memory performance.  v2 even added unmap() into account, so that'll further
+amplify that effect, imho.
 
-> 
-> And it's good fill more sample fields for complete info, like:
-> 
->   sample.addr = record->virt_addr;
->   sample.phys_addr = record->phys_addr;
->   sample.data_src = data_src;
-> 
-> Thanks,
-> Leo
-> 
->> +
->> +	return arm_spe_deliver_synth_event(spe, speq, event, &sample);
->> +}
->> +
->>  #define SPE_MEM_TYPE	(ARM_SPE_L1D_ACCESS | ARM_SPE_L1D_MISS | \
->>  			 ARM_SPE_LLC_ACCESS | ARM_SPE_LLC_MISS | \
->>  			 ARM_SPE_REMOTE_ACCESS)
->> @@ -480,6 +499,12 @@ static int arm_spe_sample(struct arm_spe_queue *speq)
->>  			return err;
->>  	}
->>  
->> +	if (spe->sample_other) {
->> +		err = arm_spe__synth_other_sample(speq, spe->all_id);
->> +		if (err)
->> +			return err;
->> +	}
->> +
->>  	return 0;
->>  }
->>  
->> @@ -1107,6 +1132,17 @@ arm_spe_synth_events(struct arm_spe *spe, struct perf_session *session)
->>  			return err;
->>  		spe->memory_id = id;
->>  		arm_spe_set_event_name(evlist, id, "memory");
->> +		id += 1;
->> +	}
->> +
->> +	if (spe->synth_opts.other_events) {
->> +		spe->sample_other = true;
->> +
->> +		err = arm_spe_synth_event(session, &attr, id);
->> +		if (err)
->> +			return err;
->> +		spe->all_id = id;
->> +		arm_spe_set_event_name(evlist, id, "all");
->>  	}
->>  
->>  	return 0;
->> diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
->> index bbf0d78c6..efe1bdc06 100644
->> --- a/tools/perf/util/auxtrace.h
->> +++ b/tools/perf/util/auxtrace.h
->> @@ -74,7 +74,7 @@ enum itrace_period_type {
->>   * @ptwrites: whether to synthesize events for ptwrites
->>   * @pwr_events: whether to synthesize power events
->>   * @other_events: whether to synthesize other events recorded due to the use of
->> - *                aux_output
->> + *                aux_output (all events for Arm SPE)
->>   * @errors: whether to synthesize decoder error events
->>   * @dont_decode: whether to skip decoding entirely
->>   * @log: write a decoding log
->> -- 
->> 2.25.1
->>
+I'm wondering whether MADV_SPLIT would make more sense so as to keep the old
+DONTNEED/unmap behaviors, however before that I think I should understand the
+test results first, because besides 2m pages missing that'll be another
+important factor for "whether a new interface is more welcomed" from perf pov.
+
+Thanks,
+
+-- 
+Peter Xu
+
