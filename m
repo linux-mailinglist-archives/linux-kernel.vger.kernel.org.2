@@ -2,103 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D4B45D85C
+	by mail.lfdr.de (Postfix) with ESMTP id 2F43045D85B
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354483AbhKYKqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 05:46:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352022AbhKYKoE (ORCPT
+        id S1354470AbhKYKqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 05:46:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:60585 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347736AbhKYKoD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 05:44:04 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1830EC061746
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 02:40:53 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id v7so10674096ybq.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 02:40:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Xa1vZazox6ICgKLpFIvg6K1JUC/KEtKPUA08cmaogzs=;
-        b=L36hQ4y5VJsbScrIBBG+WJ8b9mItC1MabGVvD7Hq8NLo3lExxon0sapneQA6D9FRb0
-         gk8wk2D+TNQIgYNY6lCAaitOEE1jvS0kD6/VmRm6wU3fB4RG8ttCeEjqzUKAgVz/cnnL
-         UudUlOvxjC6U51KWZbtVZeTu9hG8lKHwakVzl4RjisfZs1hpl4J4FZTdYmTg1VOSs20q
-         XaVrpEtiXRMcVknmAppC/E/3noqRW1obHfzHz8cE+WnPId6sLHTWSp34Y2ZvxbsZiRRk
-         XX7hQdbM431wElGWKJv54RoNllBuPluhoGI0jnEeujYtLkzHDv4iVqpfNpfZhMpPnyXc
-         Ccwg==
+        Thu, 25 Nov 2021 05:44:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637836851;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5he1m6t1NdCQczldB6T9Fxva3O0cBowXGHxSUlbIFDo=;
+        b=ifPLRJzxVpNGXMXoSEQWJrl8vRcNLyf8e+H2WFp51leB9LHXOKuSA27zdGxUbRcP5TswmJ
+        rgK9f9aZGl8JMFbWrpEtYnichmfT6JjbX6VCb0ngKg7fTq5liM9fdjzztC8amXizSipBgp
+        XC4O1dtfDjyvkaLIZtLyEP77xx2E0aM=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-527-VfE0PeheNHCqzyZ90m5ieQ-1; Thu, 25 Nov 2021 05:40:50 -0500
+X-MC-Unique: VfE0PeheNHCqzyZ90m5ieQ-1
+Received: by mail-ed1-f71.google.com with SMTP id b15-20020aa7c6cf000000b003e7cf0f73daso5091476eds.22
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 02:40:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Xa1vZazox6ICgKLpFIvg6K1JUC/KEtKPUA08cmaogzs=;
-        b=ZsdTq1/g7W55YrPRh+zmG0NlaFO3oAe768qoDtAV44sNMvLHMh7cpFztPETxEnVAxj
-         YNHnmEgAfA0xIoov+8cCeAOMl/SISgIFUja1WdSDO0HdbRwrplpadFLPoiOHRKYt4ndA
-         KnyAKYfDQa+upxEK3ou0jBV2+TTknnQhbRagzv+UZsCcauK0tUMgXCoQ5H6dGl7Zg7xm
-         mqQNUUw2Uzf1EQnj74MB2Llwidc93nO20pmt0ED8hb5C8ueRrjl5eY5LiW98xy3pVWMC
-         +mdJqVKA7ovxBKqmjIC/MwfLtkwF4V0qcZP327DHGDzGLs3uOShbryBzdqYmAlRqwVVg
-         3RtA==
-X-Gm-Message-State: AOAM530YPuekSf9TwkNBDchiqvtJMX8a+OZ94fyCctxXYo3UvDzYyY3r
-        7aVrdXSlvL74dkRqhvyPVZANat7/wz19fAabVmXzWw==
-X-Google-Smtp-Source: ABdhPJzhuxUwCLB7988KOPawNrwByY8pulkA5xPXvlbDYjRLBwkua/kCFbfwQXye+MghxY6YVJaxtrLROtoPY+PwKpM=
-X-Received: by 2002:a25:b0a8:: with SMTP id f40mr5033138ybj.125.1637836852216;
- Thu, 25 Nov 2021 02:40:52 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5he1m6t1NdCQczldB6T9Fxva3O0cBowXGHxSUlbIFDo=;
+        b=jfR4qfJG1KtHHDkUwC4R78B7iGhin9BhSabh8v981NNhU7ayfz4lJeQWc5KQg0lMOE
+         k+04qKncd6YkCtl8WZWF8wOPLS08JygYpx7iDsOEk3ciAGh2yiE+lu0A4RwAe0t+TIUS
+         q7KGDEs2+f1hD5QySBNeua6Nc73l/7hJAdajSoZaL1smwnJ5lF9lijnzhnct4Kd4dFjP
+         l1NsBhtUnutALX4p0vxsN0isP/c/1sIv03hx5BxU9/1GgyCRrKNV+R290g8ZQPuv+TTz
+         nupfk4pqnPnJkCIPFVjtM3YngwlaGl0jOYu7NZ2RL5uAbeIzKPUhsLGhyl1u336sJ6SA
+         RWRA==
+X-Gm-Message-State: AOAM530NAUknLejIB6a5kKW0ayG5nEuOyZzQkDF6URz6CvLoNAmYwkpz
+        BVHvK/TO1mQvmepY9IDs0sxD3qeGXvKs5b+vHMjeSPMI+kXTUv2Hl9Pn1e8HA7g0d2az80fjKGi
+        vBkmaCfdvyJhv48j8Lt/3qhNH
+X-Received: by 2002:a50:d68e:: with SMTP id r14mr36818818edi.5.1637836849026;
+        Thu, 25 Nov 2021 02:40:49 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz/TqPG4ycF6Z2EBWtkjQfr+eSy5n2rbj86EKdj5a+Yk7xMya6qCElb5hQyhaQ0YbKZ5BTbvA==
+X-Received: by 2002:a50:d68e:: with SMTP id r14mr36818794edi.5.1637836848851;
+        Thu, 25 Nov 2021 02:40:48 -0800 (PST)
+Received: from steredhat (host-79-46-195-175.retail.telecomitalia.it. [79.46.195.175])
+        by smtp.gmail.com with ESMTPSA id ho30sm1297351ejc.30.2021.11.25.02.40.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 02:40:48 -0800 (PST)
+Date:   Thu, 25 Nov 2021 11:40:46 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     "Wang, Wei W" <wei.w.wang@intel.com>
+Cc:     "mst@redhat.com" <mst@redhat.com>,
+        "stefanha@redhat.com" <stefanha@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "asias@redhat.com" <asias@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH] virtio/vsock: fix the transport to work with
+ VMADDR_CID_ANY
+Message-ID: <20211125104046.wxupkn6uogvohioi@steredhat>
+References: <20211125071554.16969-1-wei.w.wang@intel.com>
+ <7992566c682b46dc9ec2502e44a2fb04@intel.com>
 MIME-Version: 1.0
-References: <20211125083808.82560-1-geert@linux-m68k.org>
-In-Reply-To: <20211125083808.82560-1-geert@linux-m68k.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 25 Nov 2021 18:40:11 +0800
-Message-ID: <CAMZfGtWUYR0d2QyDA9Y7KZ9dUH4Yj1L6LjfsQ_8qaYyg7s4-aQ@mail.gmail.com>
-Subject: Re: [PATCH -next] nubus: Rename pde_data var to fix conflict with
- external function
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Finn Thain <fthain@linux-m68k.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-m68k@lists.linux-m68k.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <7992566c682b46dc9ec2502e44a2fb04@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 4:38 PM Geert Uytterhoeven <geert@linux-m68k.org> w=
-rote:
+On Thu, Nov 25, 2021 at 09:27:40AM +0000, Wang, Wei W wrote:
+>On Thursday, November 25, 2021 3:16 PM, Wang, Wei W wrote:
+>> -	/* Update CID in case it has changed after a transport reset event */
+>> -	vsk->local_addr.svm_cid = dst.svm_cid;
+>> -
+>>  	if (space_available)
+>>  		sk->sk_write_space(sk);
+>>
 >
-> In file included from drivers/nubus/proc.c:24:
-> drivers/nubus/proc.c: In function =E2=80=98nubus_proc_rsrc_show=E2=80=99:
-> ./include/linux/proc_fs.h:123:21: error: called object =E2=80=98pde_data=
-=E2=80=99 is not a function or function pointer
->   123 | #define PDE_DATA(i) pde_data(i)
->       |                     ^~~~~~~~
-> drivers/nubus/proc.c:112:13: note: in expansion of macro =E2=80=98PDE_DAT=
-A=E2=80=99
->   112 |  pde_data =3D PDE_DATA(inode);
->       |             ^~~~~~~~
-> drivers/nubus/proc.c:110:30: note: declared here
->   110 |  struct nubus_proc_pde_data *pde_data;
->       |                              ^~~~~~~~
->
-> Fix this by renaming the local variable to "pde".  Do this everywhere
-> for consistency.
->
-> Reported-by: noreply@ellerman.id.au
-> Fixes: e7e935db128e724f ("fs: proc: store PDE()->data into inode->i_priva=
-te")
+>Not sure if anybody knows how this affects the transport reset.
 
-Since the commit ID is not stable, Fixes tag is unnecessary.
+I believe the primary use case is when a guest is migrated.
 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
-> Not fixed by commit 5de6353a96bec91d ("proc: remove PDE_DATA()
-> completely"), which just removes the macro indirection.
-> ---
+After the migration, the transport gets a reset event from the 
+hypervisor and all connected sockets are closed. The ones in listen 
+remain open though.
 
-My bad. I didn't realize this situation. Thanks for fixing this.
+Also the guest's CID may have changed after migration. So if an 
+application has open listening sockets, bound to the old CID, this 
+should ensure that the socket continues to be usable.
 
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+The patch would then change this behavior.
 
-Thanks.
+So maybe to avoid problems, we could update the CID only if it is 
+different from VMADDR_CID_ANY:
+
+	if (vsk->local_addr.svm_cid != VMADDR_CID_ANY)
+		vsk->local_addr.svm_cid = dst.svm_cid;
+
+
+When this code was written, a guest only supported a single transport, 
+so it could only have one CID assigned, so that wasn't a problem.
+For that reason I'll add this Fixes tag:
+Fixes: c0cfa2d8a788 ("vsock: add multi-transports support")
+
+Thanks,
+Stefano
+
