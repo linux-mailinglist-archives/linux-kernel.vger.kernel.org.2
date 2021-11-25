@@ -2,88 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 730B945D78D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 10:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C686B45D7B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 10:54:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351513AbhKYJvy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 25 Nov 2021 04:51:54 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:27295 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354185AbhKYJty (ORCPT
+        id S1354077AbhKYJ5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 04:57:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347148AbhKYJzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 04:49:54 -0500
-Received: from dggeme709-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4J0Cgy6Ct8zbj68;
-        Thu, 25 Nov 2021 17:46:38 +0800 (CST)
-Received: from dggeme759-chm.china.huawei.com (10.3.19.105) by
- dggeme709-chm.china.huawei.com (10.1.199.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.20; Thu, 25 Nov 2021 17:46:41 +0800
-Received: from dggeme759-chm.china.huawei.com ([10.8.81.151]) by
- dggeme759-chm.china.huawei.com ([10.8.81.151]) with mapi id 15.01.2308.020;
- Thu, 25 Nov 2021 17:46:41 +0800
-From:   weizhenliang <weizhenliang@huawei.com>
-To:     Sean Anderson <seanga2@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     Changhee Han <ch0.han@lge.com>,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: Re: [PATCH v2 1/2] tools/vm/page_owner_sort.c: Sort by stacktrace
- before culling
-Thread-Topic: [PATCH v2 1/2] tools/vm/page_owner_sort.c: Sort by stacktrace
- before culling
-Thread-Index: Adfh4TSNBRWwucFZSraN+GUTNyvgCQ==
-Date:   Thu, 25 Nov 2021 09:46:41 +0000
-Message-ID: <22bad523dffb4681a201e6fedef7c50d@huawei.com>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.101.97]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Thu, 25 Nov 2021 04:55:12 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF807C061746;
+        Thu, 25 Nov 2021 01:52:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=q9W6nbk9qafMhLY0YqRYIwMk+JEbPSTqLUIMJBGlKXM=; b=Vhewe5zs4XI7v1oVNyYbif7pEw
+        2t4Pi0udOsuQt9qOg2C+Gs3R9B+ydbSzH1omWkU7bQn4/svrrVjabA9t0Xw7424n5NYfRiHiJy1so
+        4NUqjiZOTLLtSv5mB6w3m2C0BWhGSpB+XeSIL5gkyK5V3J5d2hnVF4vxOOtpfZYkc7q6BGVewUBFB
+        urbbXDaCb0oIqrDr1bOmAEuPcdUaLZiZCF5DIu4vItLA14h8/9LdUjuy/MxNlSel0tD6IavmFSWwJ
+        khr5Hm5XP5a9cYdwR33784oE2PSgyRBYKcvJjNcqST1JxT+wrpt6e9nYFmG12qTiNvA4+BbHCVvxh
+        uPHxiDwQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mqBPy-005mvF-Hb; Thu, 25 Nov 2021 09:51:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C3097300093;
+        Thu, 25 Nov 2021 10:51:50 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A8C6A2027B00C; Thu, 25 Nov 2021 10:51:50 +0100 (CET)
+Date:   Thu, 25 Nov 2021 10:51:50 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Maulik Shah <quic_mkshah@quicinc.com>
+Cc:     bjorn.andersson@linaro.org, rafael@kernel.org,
+        daniel.lezcano@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ulf.hansson@linaro.org, quic_lsrao@quicinc.com,
+        rnayak@codeaurora.org, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Subject: Re: [PATCH] sched/idle: Export cpu_idle_poll_ctrl() symbol
+Message-ID: <YZ9ctgCBYJEEjuwt@hirez.programming.kicks-ass.net>
+References: <1637831676-32737-1-git-send-email-quic_mkshah@quicinc.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1637831676-32737-1-git-send-email-quic_mkshah@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/11/25 3:37, Sean Anderson <seanga2@gmail.com> wrote:
+On Thu, Nov 25, 2021 at 02:44:36PM +0530, Maulik Shah wrote:
+> Export cpu_idle_poll_ctrl() so that module drivers can use same.
 
-> static int compare_num(const void *p1, const void *p2) @@ -121,6 
->+122,7 @@ static void add_list(char *buf, int len)  
->list[list_size].page_num = get_page_num(buf);  
->memcpy(list[list_size].txt, buf, len);  list[list_size].txt[len] = 0;
->+ list[list_size].stacktrace = strchr(list[list_size].txt, '\n');
+This does not seem like a really safe interface to expose to the
+world.
 
-When read_block gets an empty line, buf is "\n", then the stacktrace is NULL
-
-> list_size++;
-> if (list_size % 1000 == 0) {
-> printf("loaded %d\r", list_size);
->@@ -199,7 +201,7 @@ int main(int argc, char **argv)
-> 
-> printf("sorting ....\n");
-> 
->- qsort(list, list_size, sizeof(list[0]), compare_txt);
->+ qsort(list, list_size, sizeof(list[0]), compare_stacktrace);
-> 
-> list2 = malloc(sizeof(*list) * list_size);  if (!list2) { @@ -211,7 
->+213,7 @@ int main(int argc, char **argv)
-> 
-> for (i = count = 0; i < list_size; i++) {  if (count == 0 ||
->- strcmp(list2[count-1].txt, list[i].txt) != 0) {
->+ strcmp(list2[count-1].stacktrace, list[i].stacktrace) != 0) {
-
-And when stacktrace is NULL, a segmentation fault will be triggered here.
-
-> list2[count++] = list[i];
-> } else {
-> list2[count-1].num += list[i].num;
-
-1. Maybe you can check whether the ret of read_block is 0 before add_list,
-or whether the len of buf is 0 in add_list
-2. Is it necessary to check stacktrace==NULL before use ?
-
-Wei.
+Surely the better solution is to rework things to not rely on this. I'm
+fairly sure it's not hard to write a cpuidle driver that does much the
+same.
