@@ -2,178 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3E345D316
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:18:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C581645D31E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:20:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238132AbhKYCV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 21:21:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39652 "EHLO
+        id S237013AbhKYCXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 21:23:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231965AbhKYCT1 (ORCPT
+        with ESMTP id S238078AbhKYCV3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 21:19:27 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56A6C061191;
-        Wed, 24 Nov 2021 17:58:34 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id j5-20020a17090a318500b001a6c749e697so5306254pjb.1;
-        Wed, 24 Nov 2021 17:58:34 -0800 (PST)
+        Wed, 24 Nov 2021 21:21:29 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006E0C07E5E2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 17:59:33 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id z18so5651448iof.5
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 17:59:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=P3psQj9uRn1N6+igZlgP67KqBscZ1ZeWmQioyP+cL8A=;
-        b=czX0hZ3DxLNthKEpROko5I2eIAx01IWBG8eVLto4/aFCbFje5qmIxVWPbd4hUty3eH
-         u2dFiCmaqsenyCPfQtBxhxaubxO0aocx7I/LMbhbpzslZ/L78ezkAKaftM/DEXGY9rYE
-         K68N3E7jyykSRlScw98XWeJcwCijoUWpq9fWzv5lzd8Z23Em2VZI4HQd3SSxS3FHGvwf
-         XxzAcahSQ9LPD/zvcNgYDJHW69Mb69b21rekEC6L58nfZuiCqwFkXF8zM051nkrgP99V
-         IdFj2aznksJHvK8TH+d20f3Y908k3HHEQMZlROz04r6RLm077P466HsVvQ66LVgn0Gof
-         OhRQ==
+        h=message-id:from:to:cc:subject:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=kAcNp4X6jrDsjulE8ZaiSIsC+nB87S5IJV/WQip3ae4=;
+        b=ooMulXAP1oM/coKQycRncXg51FQ4J/+ur3ZpoJ9NsAXf9xiRDLmkutjQ/HJ0362f1s
+         Dd4evX/VDBnyv4HBLqwcb+kh0l5d4prZWANC3oQPJLfH/oPyToeiRz+ph/rmoBNzSk48
+         kY2NlGA3OKNLQQVtnIBTzZwNt2oi51EKiSOuLxwE1in9nXrBIAk6KXAV4da6N1ZzMxlS
+         yHuOd1fLdTWoGBB5iyIVaVQOw8RX0mkD6Snff+UFdBfxemAUAaDrdRWuKKzdH6zZcEMU
+         QLMBIogBCLHrHnZvtUW7piya2ook11d4jyZ4tfbBW6EJrNZPAuu0e4Id30MGWkARGV9y
+         lxCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P3psQj9uRn1N6+igZlgP67KqBscZ1ZeWmQioyP+cL8A=;
-        b=pJF8jcMTIzzYpmNcA3tiYgVMnJxGuzASewGLyHez0QpsyRzlC6GljdoivHY8he0+ZM
-         Rp+PoeFq/FDwsUKFBO5g+Jo4vsWRHJrU3ZtHj6qvp5RpHitUknJXZirHcEhgECwAru0l
-         QxoOvshLhBs3Lv3wQIoG+y1rr8aQRmjqYsb6QO6OP7qOPFLOLV6ozipXL9RLz7/8FkEG
-         O3Vt/VGWLRGRTPENHS2IjRJOV9BpyeKiwx09sB/AkhUVi8q45MWIpguto8hDRHNmL2QM
-         vyA05QVCloVIbi8k840mxvGwqSbT1Bqa1Zut0Yp8r83acniMsPnXf4nZxJudY8BpOSYz
-         Obcg==
-X-Gm-Message-State: AOAM532mUEihz3W3DKQE/+PQ3NxaDeGmjdKgC30ndAT0lZm9oMgbiwDE
-        xil3k8A1nBFf9HVLkB+n+Q0=
-X-Google-Smtp-Source: ABdhPJzwFydv5CXDWSb7ADB2x4XY8Sc2ip75pezs6mf2BE7OZbOqWofUmesPfCqhG/m7xdI9UZ4BpQ==
-X-Received: by 2002:a17:90b:3ecc:: with SMTP id rm12mr2337450pjb.75.1637805514357;
-        Wed, 24 Nov 2021 17:58:34 -0800 (PST)
-Received: from shinobu ([138.199.21.11])
-        by smtp.gmail.com with ESMTPSA id p128sm981763pfg.125.2021.11.24.17.58.31
+        h=x-gm-message-state:message-id:from:to:cc:subject:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=kAcNp4X6jrDsjulE8ZaiSIsC+nB87S5IJV/WQip3ae4=;
+        b=YQ8k5pfAAfR5Z//PDO8ZfjyVjU6/9WaE/Z6XCQ4v+WuQR9BSL788F8S/I1GdsQ79kG
+         NgmvvoJFDpJeiIL6Zxr5j8P9xzWqlHsocOVl1B+qVKeWjk++Yyz4ZSilX1WU0NHtxLdW
+         B9LrEZm19C5ogqKaR8KiwpG7X7zboTFG+Vc1SmWYAOfF8tg0T3nX/c08FOblgfHQxs7s
+         fFR8J5p/DPdP8CTpQ6vot8b5WrHkkgiPgviGO4LAQvYvDnqrxhT/N7Ljb0HtWgDViCFW
+         /+H7fJwS9tLM+LJezMUDbfkNaGusRw8Jps60Y52wHRB++MN6c90AMqWtG3HbrV7vkt6o
+         Zeng==
+X-Gm-Message-State: AOAM531bhNdkNv1tiAcdpaXNSK6+1s1tQdIknmWfo+8VXd9Vs7qWnJ3+
+        pgHzFo4JDOmpjoV9qC4beGw=
+X-Google-Smtp-Source: ABdhPJyE+3cWE663pil3AVAZQkRGm+KmLuLmJZk20sNXZsdgdOxx0VTXdFKlaw8NswukaGyS7e1t3g==
+X-Received: by 2002:a05:6638:2bb:: with SMTP id d27mr24995364jaq.66.1637805573366;
+        Wed, 24 Nov 2021 17:59:33 -0800 (PST)
+Received: from localhost.localdomain (mobile-130-126-255-38.near.illinois.edu. [130.126.255.38])
+        by smtp.googlemail.com with ESMTPSA id y11sm775014ioy.19.2021.11.24.17.59.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 17:58:33 -0800 (PST)
-Date:   Thu, 25 Nov 2021 10:58:23 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     linux-iio@vger.kernel.org,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Jonathan Cameron <jic23@kernel.org>, david@lechnology.com
-Subject: Re: [PATCH v1] counter: interrupt-cnt: add counter_push_event()
-Message-ID: <YZ7tv79LQwLL7h3T@shinobu>
-References: <20211123134540.416695-1-o.rempel@pengutronix.de>
- <YZ3XAeYyfGblfaOi@shinobu>
- <20211124072720.GA30281@pengutronix.de>
+        Wed, 24 Nov 2021 17:59:33 -0800 (PST)
+Message-ID: <619eee05.1c69fb81.4b686.4bbc@mx.google.com>
+X-Google-Original-Message-ID: <CANn89i+hQTn26hK-4CA=cAwCxEMzogqD30PYdqz4NP8kjmH2gg@mail.gmail.com> (raw)
+From:   Noah Goldstein <goldstein.w.n@gmail.com>
+To:     edumazet@google.com, Johannes Berg <johannes@sipsolutions.net>
+Cc:     alexanderduyck@fb.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+        lkp@intel.com, peterz@infradead.org, x86@kernel.org,
+        goldstein.w.n@gmail.com
+Subject: Re: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12: error: implicit declaration of function 'load_unaligned_zeropad'
+Date:   Wed, 24 Nov 2021 19:58:57 -0600
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CANn89i+K6=Kc0weayD_phAPn9YT=2UUje+1BZfg=kUiLp7ELqQ@mail.gmail.com>
+References: <CANn89i+hQTn26hK-4CA=cAwCxEMzogqD30PYdqz4NP8kjmH2gg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="QhPtWNvbc3Joztu6"
-Content-Disposition: inline
-In-Reply-To: <20211124072720.GA30281@pengutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Eric Dumazet <edumazet@google.com>
 
---QhPtWNvbc3Joztu6
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Nov 18, 2021 at 8:57 AM Eric Dumazet <edumazet@google.com> wrote:
 
-On Wed, Nov 24, 2021 at 08:27:20AM +0100, Oleksij Rempel wrote:
-> Hi William,
->=20
-> On Wed, Nov 24, 2021 at 03:09:05PM +0900, William Breathitt Gray wrote:
-> > On Tue, Nov 23, 2021 at 02:45:40PM +0100, Oleksij Rempel wrote:
-> > > Add counter_push_event() to notify user space about new pulses
-> > >=20
-> > > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > > ---
-> > >  drivers/counter/interrupt-cnt.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >=20
-> > > diff --git a/drivers/counter/interrupt-cnt.c b/drivers/counter/interr=
-upt-cnt.c
-> > > index 8514a87fcbee..b237137b552b 100644
-> > > --- a/drivers/counter/interrupt-cnt.c
-> > > +++ b/drivers/counter/interrupt-cnt.c
-> > > @@ -31,6 +31,8 @@ static irqreturn_t interrupt_cnt_isr(int irq, void =
-*dev_id)
-> > > =20
-> > >  	atomic_inc(&priv->count);
-> > > =20
-> > > +	counter_push_event(&priv->counter, COUNTER_EVENT_OVERFLOW, 0);
-> > > +
-> > >  	return IRQ_HANDLED;
-> > >  }
-> > > =20
-> > > --=20
-> > > 2.30.2
-> >=20
-> > Hi Oleksij,
-> >=20
-> > It looks like this is pushing a COUNTER_EVENT_OVERFLOW event every time
-> > an interrupt is handled, which I suspect is not what you want to happen.
-> > The COUNTER_EVENT_OVERFLOW event indicates a count value overflow event,
-> > so you'll need to check for a count value overflow before pushing the
-> > event.
-> >=20
-> > It would be good idea to implement a ceiling extension as well (you can
-> > use the COUNTER_COMP_CEILING() macro) so that users can configure the
-> > particular point where the value overflows.
->=20
-> Thank you!
->=20
-> What would be the best and resource effective strategy for periodically
-> getting frequency of interrupts/pulses? This is actual information which =
-is
-> needed for my use case.
->=20
-> So far, I was pushing every event to the user space, which is working
-> but probably not the most resource effective method of doing it.
->=20
-> Regards,
-> Oleskij
-> --=20
-> Pengutronix e.K.                           |                             |
-> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+>
+> Unless fixups can be handled, the signature of the function needs to
+> be different.
+>
+> In UM, we would need to provide a number of bytes that can be read.
 
-We could introduce a new Counter change-of-state event type which would
-trigger whenever the count value changes, but I agree with you that this
-is likely not the best way for us to derive the frequency of the
-interrupts due to the indirection of handling and parsing the event
-data.
+We can make this a bit less ugly  of course.
 
-Instead, perhaps introducing a "frequency" or "period" Count extension
-would make more sense here. This extension could report the value delta
-between counts, or alternatively the time delta from which you can
-derive frequency. Regarding implementation, you can store the previous
-value in a variable, updating it whenever an interrupt occurs, and
-compute the particular delta every time a read is requested by the user.
+diff --git a/arch/x86/lib/csum-partial_64.c b/arch/x86/lib/csum-partial_64.c
+index 5ec35626945b6db2f7f41c6d46d5e422810eac46..7a3c4e7e05c4b21566e1ee3813a071509a9d54ff
+100644
+--- a/arch/x86/lib/csum-partial_64.c
++++ b/arch/x86/lib/csum-partial_64.c
+@@ -21,6 +21,25 @@ static inline unsigned short from32to16(unsigned a)
+        return b;
+ }
 
-David Lechner is implementing something similar for the TI eQEP driver
-to expose speed, so I'm CCing them here in case this is of interest to
-them.
++
++static inline unsigned long load_partial_long(const void *buff, int len)
++{
++#ifndef CONFIG_DCACHE_WORD_ACCESS
++               union {
++                       unsigned long   ulval;
++                       u8              bytes[sizeof(long)];
++               } v;
++
++               v.ulval = 0;
++               memcpy(v.bytes, buff, len);
++               return v.ulval;
++#else
++               unsigned int shift = (sizeof(long) - len) * BITS_PER_BYTE;
++
++               return (load_unaligned_zeropad(buff) << shift) >> shift;
++#endif
++}
++
+ /*
+  * Do a checksum on an arbitrary memory area.
+  * Returns a 32bit checksum.
+@@ -91,11 +110,9 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
+                        : "memory");
+                buff += 8;
+        }
+-       if (len & 7) {
+-               unsigned int shift = (8 - (len & 7)) * 8;
+-               unsigned long trail;
+-
+-               trail = (load_unaligned_zeropad(buff) << shift) >> shift;
++       len &= 7;
++       if (len) {
++               unsigned long trail = load_partial_long(buff, len);
 
-William Breathitt Gray
+                asm("addq %[trail],%[res]\n\t"
+                    "adcq $0,%[res]"
 
---QhPtWNvbc3Joztu6
-Content-Type: application/pgp-signature; name="signature.asc"
+Hi, I'm not sure if this is intentional or not, but I noticed that the output
+of 'csum_partial' is different after this patch. I figured that the checksum
+algorithm is fixed so just wanted mention it incase its a bug. If not sorry
+for the spam.
 
------BEGIN PGP SIGNATURE-----
+Example on x86_64:
 
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmGe7bQACgkQhvpINdm7
-VJK0BRAAlF/X63tFON/5iQnbCUUnB1F+G6BoSoYdtyWa3it34l209vy0k/+CXtjp
-hNQKViK6gek9U8a+7uwEtsxqNaZLFM3efuzCXEtQJEahpl8+DVukBsCG45abEhJ6
-UQiUMABapCgmDOTgAk8zR5ItK9NjpJ8ELLpEzHm/8Zxe4KGmYGTTx0VpoxhnAW+6
-WNtiyY7XO+J7Fp8bh/FsSsyPIV5kV0NOVbXSMiAhPzbKHMin+EFZZG5QmJ7CUP0l
-kxKiHhdpNahqP/5KxDknxwO3+kqnuRHPxJbD06SJ2PKQDIih/CVuqQUQBpFlze5l
-I5fBzONRjB/3MA9JNhp0/Qf+qDu/1ai1dXemw7KF5d9+nRZ9MJOT438clnhnGKqK
-9VR/1R98ihBoUQgLpAC1jnk6KGH5Yyx20CoIHsMCTZJS4ZoN15gkiq8vzMb8rUkz
-cIB0oQ1YBRw2ws4s5AV6Ooz9+CGpwS1OZ5lBudz/zyDh3GeXAzP4f9FMfFvzQNK1
-ZYurZQ83lD2iXL8Y6TY9ZT30VinbAQcJWQYHlHvJJA8Z6YIhEKXocBoVxP/nNsY7
-ygce+vFYQepiRN8f6bz840z8W4nbzRMfcwxbDDjOCsV1NCEXtnck+eC0TwPokX2F
-uE66tF4f16xpunCuG5uaGk4wQvWPciAzZHMJXX64ZyLemgez5A8=
-=Xn1H
------END PGP SIGNATURE-----
+Buff: [ 87, b3, 92, b7, 8b, 53, 96, db, cd, 0f, 7e, 7e ]
+len : 11
+sum : 0
 
---QhPtWNvbc3Joztu6--
+csum_partial new : 2480936615
+csum_partial HEAD: 2472089390
