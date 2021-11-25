@@ -2,198 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 283E545D512
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:05:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78DAE45D515
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:06:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352772AbhKYHJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 02:09:08 -0500
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:48540 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245025AbhKYHHH (ORCPT
+        id S1353058AbhKYHJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 02:09:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348858AbhKYHH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 02:07:07 -0500
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AP6FeLl028328;
-        Thu, 25 Nov 2021 07:03:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : content-type : mime-version; s=corp-2021-07-09;
- bh=yt3fU6qReu1ohrDilfwYKjvoriurgidpnee1fDWSlUs=;
- b=pNHhVPUHAodFd4q3pB+ljGcqiytaZlQlPJpbhIwr/upScmI54W+PGbWIGTq1FNzXkXA0
- 5JPtYLI35AdUA6MFpO2s1hj49La5FymaC+Mkersqc0Hqk8l/qV8izrQIRV46QgjSwN1e
- 7s4Bb5A2bdBJFH64o58nTRp06PCo2zsB+ix9s27fhQSU0+uW3+F2KWDUwRCsLaZPE1cm
- AL+2EJK2M3YEiOnMAX6xgQWoqJboyqRh+6/RbFbnDY/LphhHJMDwJxG4lHMHStXLTxfq
- MllkGxqYlD4VDlJATppD/I0mvWNvGSrgL1RXQEL9nM7qDrIIR4zd8ybzAtN9xiFt93/w 5A== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3chj7g5rys-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Nov 2021 07:03:48 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AP6pA9h088938;
-        Thu, 25 Nov 2021 07:03:47 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2046.outbound.protection.outlook.com [104.47.66.46])
-        by aserp3030.oracle.com with ESMTP id 3ceq2h81b6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Nov 2021 07:03:47 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b+ENgLnY/X1KRJoolIHmCJQp0fBWRw8xrOE0KCLi2WjFq28/KyzQ7CH/2YlmR3gdHGGnVKdl+xTA5O4IcMVi6LzmCQEfGK7lDzLft6SpA/a+p8yxAwlS9vjqSiXVG6RDIdS/6poj9MeqptmfuLkpBinP0ACMGG+muRuQ88A6wWYrEoPkDiOHAZO0b33s1WIs/2Nf+gvj7jB3dzbSS6hb2JsIW4Yb5tb6N7PYBgb43qJ/NG9ymEhz7lbyjY9q4l+u4N1J8aE+8CzEaYsLC7Dz+QVj0L4HHjmP7EF57vT2M49Cp0V5ZK19Q958V3KSXRYOz5V4UxN7NrK658AOI+EA4A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yt3fU6qReu1ohrDilfwYKjvoriurgidpnee1fDWSlUs=;
- b=BMJVyzQXfFiweXvncwP/njNi2NTqpg87zXeinyV0rPEsLZgsV81LNb31OX/uZsFX2RpBOdzO1r9NEu04IDJ21x54HvMsI7uG+jSVr4fCaJP+JPIZCGZG9zN03brkl3elZuICor7LoyYC3uL2LTGJlkABrH+Oc5VXj+6E58VxnvEDTzPDhmrMQVMkoY0AQTeZ+Jb90o1jq34UCnzzCi+xthYI+3RNYUQ6uZ5+NL7wtQUMcVzuhguptnsDW8CbJ6HM/hACFY9c2kQzvbm03eWX54vt56zqUbgSWscIFOxN+4V5X9QUofevYkAZEeogVZlRqUuBWdv1j4ZGLBpug20x7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Thu, 25 Nov 2021 02:07:56 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B755C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 23:04:46 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id bs14-20020a05620a470e00b0046b1e29f53cso4606932qkb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 23:04:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yt3fU6qReu1ohrDilfwYKjvoriurgidpnee1fDWSlUs=;
- b=kfB2nUV14IhZc943DlbA/8szPMICKrhTvl5J9xa2N0l2vxfBxEQ0IOALhSA32fn64o0V5Wr/geJR04gQt9qnhm2wVyQVEpxnVzqQjK1nAC08bOMqn1YH9yyArVVK/zEzFu6uR6P80uk5WC9nE1gWz9i1KaMRN5lQTZQB8c8js10=
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by CO6PR10MB5459.namprd10.prod.outlook.com
- (2603:10b6:5:359::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.25; Thu, 25 Nov
- 2021 07:03:45 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::7194:c377:36cc:d9f0]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::7194:c377:36cc:d9f0%6]) with mapi id 15.20.4734.022; Thu, 25 Nov 2021
- 07:03:45 +0000
-Date:   Thu, 25 Nov 2021 10:03:28 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org, Parav Pandit <parav@nvidia.com>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Eric Dumazet <edumazet@google.com>
-Subject: drivers/vdpa/vdpa.c:296 vdpa_mgmtdev_fill() warn: should '(((1))) <<
- (mdev->id_table[i]->device)' be a 64 bit type?
-Message-ID: <202111250317.VUsGtdox-lkp@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JN2P275CA0032.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::20)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
-MIME-Version: 1.0
-Received: from kadam (102.222.70.114) by JN2P275CA0032.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.20 via Frontend Transport; Thu, 25 Nov 2021 07:03:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b57538d7-000e-4b43-e88d-08d9afe1b88b
-X-MS-TrafficTypeDiagnostic: CO6PR10MB5459:
-X-Microsoft-Antispam-PRVS: <CO6PR10MB5459193D27EABD1C359902A28E629@CO6PR10MB5459.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:172;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6WTwCEl6kdsulcbGwZJD47VN23bJ8xxYVs/RO3EqqgMagZ0SopddERf1I0ASdSQU2JIOf3HOrbtmRbmKbXjTsMg1UYQqcuzNYf/Hm1Tfyi4unIBwd+3On5Y+uJL9J/EUrThmnVOH9Dn8MwRsVwSyBzKSD31xbeZQnRCq3SBRAr3pGoe29gyzuJm1b2j0tlQAla7ncqqqgo2b3nsG8NGI/v+eDbwRpAtKto6uAmpYBoVRSHNvKzZzOkctGCOfWdijBt1N8OGgWO0K3461EJWWJyvll43dEMgsEwYcuTQEroXvQp+WVTZzSogf/RALGsu4P+GbsLUk+2JVcjdIe8gGkaxwJefkfycNwWGISMZKMt7FH4PpkccWY9geFyPC7WB1WgBgQEwvOkaqG+zwok+839Gopoebmmes3+dbDGjUGqLGvYE+h5MALBd8SRgH4hQaBQjJoiPms41XR8kPVFYFnROlWj49fsfR8Q0GU75CF3kQR/B6YEepTNPhlqjst0c7mjryZtPJApGOsBoc+BzSuEe++ANGVGLRAagzDSWo1oOoTvkZVxu64VEF+jKPpH8bzsjUu6NPvGX8uhhemiHL97W23mFMb8YgAOVXnxLLM5Oh8aU1Pt5O6dSLobHgVnuBX1gx4TChOdQIn4VuRBkZyuc2pUp4eLgV5C7QADPXwWF7bOV3BS4SfECkkOE4GImeBpRmC8ALIzKRObs8Avd8Tv9oyI1vuhMt7SmxFPpcyzZTJO2oUQdR7IO9tJXXDlabEVIv0cOWk37BNHaZ3ysviCBzT9dyOVDQqf1+vPeTkMzNPA0e2+bdkNXgFoJVbC549VGVLARdaHYzy6JhJ38OtA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(9686003)(316002)(86362001)(8676002)(66556008)(44832011)(508600001)(1076003)(38350700002)(2906002)(36756003)(4326008)(38100700002)(54906003)(6496006)(66476007)(186003)(6916009)(6666004)(956004)(66946007)(26005)(52116002)(83380400001)(8936002)(5660300002)(966005)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?li6OgPymhFrFdz8bBQmn4zEd/EJLTpZCWnXq+AdwjjXSAnyVDPvSR6lHTSn0?=
- =?us-ascii?Q?3oFzIdTM22WvLlqrrUEcw/Mt7Kmj9rJi0A3x0C1yst0Hs8rnnAKFTOwZBguS?=
- =?us-ascii?Q?BoG1zQXBU2zBySScJeAS3MIoJQ7Kucjlpw/K/PlVszTPWZHFr7jBTrfV4zOb?=
- =?us-ascii?Q?Cx0+rh0eLZ4kKl293IGX0JuNYGGqeduAx3Yo8svTxAoF3mRQEsw5vnUG/Ipf?=
- =?us-ascii?Q?czYzxwXDYnQxA9ixTMoOgvRyjkvSHQM086CTtWVlQSnbmbnFTwMoLqOLYZel?=
- =?us-ascii?Q?twI6AkSwh6oXkzQ5Exu7VMQcrdIEzT36NgX9hMVZdyC+ceSiPcIxb3hHjeg2?=
- =?us-ascii?Q?+hE83UCTDl/Z2xnEcvhFlmpnRd0Cpj7vX3X4DSiFjOH0e0H6TmOj1nSX7xGR?=
- =?us-ascii?Q?+lCCebqunhPuku4mXvkabqwKjkW6eLkNmjv2M7kCqs4zEefVSpPmgVdq2XM8?=
- =?us-ascii?Q?tKsYAc/1yhhtTTCHLr8E/g+558idTc1uwUXFT3RQh0WKCiQf2rqz1Jre7Cpw?=
- =?us-ascii?Q?rov8YZM0VsHT7KbPw3C5GVvfB+JLTe0L8URiFh5yWKhm9o6woiz4MX9xAlKg?=
- =?us-ascii?Q?0y54lSpVXn4Ydtll/m3C2Lxcnk//gxaMmbll0wukbEN5pXwJTPD9Z0dySSWu?=
- =?us-ascii?Q?8CtOPLTa1i2jXwhH88c8ojq2NdxlhOf+O8FYXu79A+/AerpUdHiyPo08ELtp?=
- =?us-ascii?Q?8lV8yxV8p+iWLlqHsDGpo6AaMtsMfOYpJdNedrkgaCl59xuBTvMeofAvpcZr?=
- =?us-ascii?Q?eISIvtXxMjblJW4itcA6g1LN6PGLBWaaIvyWh7djKTrGTrej/Gpi6/hgkc1h?=
- =?us-ascii?Q?v8yaI5HhV7VgCrWEfiQMJBWONXayI/mvASB4bqizq8QZIPsmI48Ultc5Fsjq?=
- =?us-ascii?Q?T6rFfuOa13C4iWwoQcQSM83nPE+nEcU3YP4FYtXB4l9Uruz00pRBtRuZxzMB?=
- =?us-ascii?Q?kctRZgMCwWIfxi5Adpb5IOQIn/aC46L8rV222lYI3+BNcO0Dgm6uo+5PUCqu?=
- =?us-ascii?Q?vuTlI6dOd0xRAs7JL1Q0on9PgX5pNR7ig5dqhrMtXaPCYGTrTJk5jSXBdLwK?=
- =?us-ascii?Q?gqyN1yDVUG/yHJ3pVQy/4E4vOisrRs23wlBDp85Ulvusjp3YD4ZCnGjBfhbp?=
- =?us-ascii?Q?ahQQCnaCuGRG6K5/EU5zY5DHWyK8fLYA0g5HTg+a5KUdjLOLL+RKGHNizTTd?=
- =?us-ascii?Q?JlQZbuzQ1Fz5+qHPzKwQ0gPDPLG8esfuJCDmAv0uj4Pb4HXIDFG7CTYcRfY/?=
- =?us-ascii?Q?Rkfnx2wsReQAGBzMOMQU6zT7Rpf0y2b7NGOAK9VsMb+JNGGNR8hyUaBA+Zic?=
- =?us-ascii?Q?grDCzHfgrSasVCSzxIlyBXYgA4PPSh/4bnGPXQRzyt1lwL0is4GCx7GpmLZU?=
- =?us-ascii?Q?Bj5+wquTuwYpkDIDf6HRyUIDjMlutlK6/50c3cYhkOD97srEPXfnItHyfIU9?=
- =?us-ascii?Q?0QCpRvcXcltDpgbkj1SUcCGu5TFoUMAR8MWv6HenmqFzMzRPVdjtaxI3J2We?=
- =?us-ascii?Q?Dlbsd6EVlG6sPnqNdR5bb+HQRF206yXfG5pkuKIjmrgMbndZVxtdQaifceeY?=
- =?us-ascii?Q?JiGboG/dNs69HTv+HlUuhuT3BnqinVsBVkWe66uGrAJqESVyf7+XJjJYqbtM?=
- =?us-ascii?Q?heuNyC4dj9mzYEk8UEZivxMB2sl/AB5CoYwCFD5JExshkbkfh7yBROfUnRZU?=
- =?us-ascii?Q?uMQkbsDgu4EEg05xUdT7xJ6NXC0=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b57538d7-000e-4b43-e88d-08d9afe1b88b
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2021 07:03:45.1603
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GZ78RrgiPZI+axLiI9g8vGOly8Ra1/C/1dk8gnzQ6ieojt/ewj9ZloPBivB5fGZvegZFLzId5dkNABmHvNO6rgfJoegL4M24BzXa0YB2DJU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5459
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10178 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0 spamscore=0
- bulkscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111250038
-X-Proofpoint-ORIG-GUID: EdEaDJIF7JXkz3MbzP9u_XNgEb7pNXov
-X-Proofpoint-GUID: EdEaDJIF7JXkz3MbzP9u_XNgEb7pNXov
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=qnF9S/WVbJtB6SNaZPimqTxpLICpyTdyDhWxnzxObkI=;
+        b=H7XfQ5p8QSHMsVXHAKeX16az9dOndxxkoU5ZzJ2p2klQeg7xAEQgTFUGORuO2HogYU
+         jemG1W+jiUpODS2niZA4RFQ1UsGkjdugydko8s0eSNqXCZvWYqig69W1bRaR0KfCYxiJ
+         nKdK0cB7DX/SucIn9ux7aiwHpFQpPDR+QEGrvDaXNPCIiUmQNYMRJfJBDlxXA1VS1Pye
+         Lhf5fmI7QZOL2CEgS70PmR47fj4hAEUYFX/EU1/Qej+bqNzxV0oPWkXOOrTTkrRouhfC
+         UqqGF63/5KsU/3H7Gi6iYXAHf6oJpvs3UCZlOPqZnsW6YnLBEK7SaMwweCTko38pVfIv
+         chCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=qnF9S/WVbJtB6SNaZPimqTxpLICpyTdyDhWxnzxObkI=;
+        b=qu+pkyLbJotVaJyeO0zFSRBGXNK+7DTYWLMDw9sdD0iicFRE63k9fU9rt+wUTpGI3Y
+         nY86+gx8/BFzDuVJQSYCc9Qrve+ICulUsn83bsclQgQLPfte75ertHitFIAeJyPEeyvt
+         y5xrxyf6ngroHbUFexhvkF/lPIrLz3cWVsTPCiCGXsemVvOkJPRryXby9FQG8jsNTylm
+         Q43XyRGxXNTVsdoUwz5aR7hq+/PVV8MlteEbagTwsp30mHd8LHSRh9QM2ElYlmc+WSIC
+         Eu0Paf4UpZ2DWVWjKPi3AJUYwju3GodCS7PczBPv4mH3/uS8nOTlw3031NfhELcl7Mi0
+         6Zkw==
+X-Gm-Message-State: AOAM532vnGaaUxrXhgbdh99g4zsZhJ0bPWRRcPfRtLQKSuwKwiYpfOB2
+        XAirRDS3IJgRqxwMMaZRS/m6gOFPJyig
+X-Google-Smtp-Source: ABdhPJwzOa27lBS1LUYCnerWVnbBZmstJ9dgvqaSWe7ZDudiw7jY4/u+e5S7uELuO2QQ+eInTOdEXEKnmhvY
+X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:10:a5d9:6769:9abb:6b2])
+ (user=apusaka job=sendgmr) by 2002:a25:1186:: with SMTP id
+ 128mr3963705ybr.547.1637823885246; Wed, 24 Nov 2021 23:04:45 -0800 (PST)
+Date:   Thu, 25 Nov 2021 15:04:36 +0800
+Message-Id: <20211125150430.v3.1.Id7366eb14b6f48173fcbf17846ace59479179c7c@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
+Subject: [PATCH v3 1/2] Bluetooth: Send device found event on name resolve failure
+From:   Archie Pusaka <apusaka@google.com>
+To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>
+Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5d9f4cf36721aba199975a9be7863a3ff5cd4b59
-commit: 33b347503f014ebf76257327cbc7001c6b721956 vdpa: Define vdpa mgmt device, ops and a netlink interface
-config: i386-randconfig-m021-20211118 (https://download.01.org/0day-ci/archive/20211125/202111250317.VUsGtdox-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+From: Archie Pusaka <apusaka@chromium.org>
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Introducing NAME_REQUEST_FAILED flag that will be sent together with
+device found event on name resolve failure. This will provide the
+userspace with an information so it can decide not to resolve the
+name for these devices in the future.
 
-smatch warnings:
-drivers/vdpa/vdpa.c:296 vdpa_mgmtdev_fill() warn: should '(((1))) << (mdev->id_table[i]->device)' be a 64 bit type?
-
-vim +296 drivers/vdpa/vdpa.c
-
-33b347503f014eb Parav Pandit 2021-01-05  280  static int vdpa_mgmtdev_fill(const struct vdpa_mgmt_dev *mdev, struct sk_buff *msg,
-33b347503f014eb Parav Pandit 2021-01-05  281  			     u32 portid, u32 seq, int flags)
-33b347503f014eb Parav Pandit 2021-01-05  282  {
-33b347503f014eb Parav Pandit 2021-01-05  283  	u64 supported_classes = 0;
-                                                ^^^^^^^^^^^^^^^^^^^^^
-This is a u64
-
-33b347503f014eb Parav Pandit 2021-01-05  284  	void *hdr;
-33b347503f014eb Parav Pandit 2021-01-05  285  	int i = 0;
-33b347503f014eb Parav Pandit 2021-01-05  286  	int err;
-33b347503f014eb Parav Pandit 2021-01-05  287  
-33b347503f014eb Parav Pandit 2021-01-05  288  	hdr = genlmsg_put(msg, portid, seq, &vdpa_nl_family, flags, VDPA_CMD_MGMTDEV_NEW);
-33b347503f014eb Parav Pandit 2021-01-05  289  	if (!hdr)
-33b347503f014eb Parav Pandit 2021-01-05  290  		return -EMSGSIZE;
-33b347503f014eb Parav Pandit 2021-01-05  291  	err = vdpa_nl_mgmtdev_handle_fill(msg, mdev);
-33b347503f014eb Parav Pandit 2021-01-05  292  	if (err)
-33b347503f014eb Parav Pandit 2021-01-05  293  		goto msg_err;
-33b347503f014eb Parav Pandit 2021-01-05  294  
-33b347503f014eb Parav Pandit 2021-01-05  295  	while (mdev->id_table[i].device) {
-33b347503f014eb Parav Pandit 2021-01-05 @296  		supported_classes |= BIT(mdev->id_table[i].device);
-
-Which suggests that this should be BIT_ULL().
-
-33b347503f014eb Parav Pandit 2021-01-05  297  		i++;
-33b347503f014eb Parav Pandit 2021-01-05  298  	}
-33b347503f014eb Parav Pandit 2021-01-05  299  
-33b347503f014eb Parav Pandit 2021-01-05  300  	if (nla_put_u64_64bit(msg, VDPA_ATTR_MGMTDEV_SUPPORTED_CLASSES,
-33b347503f014eb Parav Pandit 2021-01-05  301  			      supported_classes, VDPA_ATTR_UNSPEC)) {
-33b347503f014eb Parav Pandit 2021-01-05  302  		err = -EMSGSIZE;
-33b347503f014eb Parav Pandit 2021-01-05  303  		goto msg_err;
-33b347503f014eb Parav Pandit 2021-01-05  304  	}
-33b347503f014eb Parav Pandit 2021-01-05  305  
-33b347503f014eb Parav Pandit 2021-01-05  306  	genlmsg_end(msg, hdr);
-33b347503f014eb Parav Pandit 2021-01-05  307  	return 0;
-33b347503f014eb Parav Pandit 2021-01-05  308  
-33b347503f014eb Parav Pandit 2021-01-05  309  msg_err:
-33b347503f014eb Parav Pandit 2021-01-05  310  	genlmsg_cancel(msg, hdr);
-33b347503f014eb Parav Pandit 2021-01-05  311  	return err;
-33b347503f014eb Parav Pandit 2021-01-05  312  }
+Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
 
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Hi maintainers,
+
+This is the patch series for remote name request as was discussed here.
+https://patchwork.kernel.org/project/bluetooth/patch/20211028191805.1.I35b7f3a496f834de6b43a32f94b6160cb1467c94@changeid/
+Please also review the corresponding userspace change.
+
+Thanks,
+Archie
+
+Changes in v3:
+* Reindent defines
+* Assign variables inside if block instead of initializing
+
+Changes in v2:
+* Remove the part which accepts DONT_CARE flag in MGMT_OP_CONFIRM_NAME
+* Rename MGMT constant to conform with the docs
+
+ include/net/bluetooth/mgmt.h |  9 +++++----
+ net/bluetooth/hci_event.c    | 11 ++++-------
+ net/bluetooth/mgmt.c         | 12 ++++++++++--
+ 3 files changed, 19 insertions(+), 13 deletions(-)
+
+diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/mgmt.h
+index 23a0524061b7..107b25deae68 100644
+--- a/include/net/bluetooth/mgmt.h
++++ b/include/net/bluetooth/mgmt.h
+@@ -936,10 +936,11 @@ struct mgmt_ev_auth_failed {
+ 	__u8	status;
+ } __packed;
+ 
+-#define MGMT_DEV_FOUND_CONFIRM_NAME    0x01
+-#define MGMT_DEV_FOUND_LEGACY_PAIRING  0x02
+-#define MGMT_DEV_FOUND_NOT_CONNECTABLE 0x04
+-#define MGMT_DEV_FOUND_INITIATED_CONN  0x08
++#define MGMT_DEV_FOUND_CONFIRM_NAME		0x01
++#define MGMT_DEV_FOUND_LEGACY_PAIRING		0x02
++#define MGMT_DEV_FOUND_NOT_CONNECTABLE		0x04
++#define MGMT_DEV_FOUND_INITIATED_CONN		0x08
++#define MGMT_DEV_FOUND_NAME_REQUEST_FAILED	0x10
+ 
+ #define MGMT_EV_DEVICE_FOUND		0x0012
+ struct mgmt_ev_device_found {
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index dee4ef22fc88..bb4c04aecccf 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -2175,13 +2175,10 @@ static void hci_check_pending_name(struct hci_dev *hdev, struct hci_conn *conn,
+ 		return;
+ 
+ 	list_del(&e->list);
+-	if (name) {
+-		e->name_state = NAME_KNOWN;
+-		mgmt_remote_name(hdev, bdaddr, ACL_LINK, 0x00,
+-				 e->data.rssi, name, name_len);
+-	} else {
+-		e->name_state = NAME_NOT_KNOWN;
+-	}
++
++	e->name_state = name ? NAME_KNOWN : NAME_NOT_KNOWN;
++	mgmt_remote_name(hdev, bdaddr, ACL_LINK, 0x00, e->data.rssi,
++			 name, name_len);
+ 
+ 	if (hci_resolve_next_name(hdev))
+ 		return;
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index f8f74d344297..bf989ae03f9f 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -9615,6 +9615,7 @@ void mgmt_remote_name(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 link_type,
+ 	struct mgmt_ev_device_found *ev;
+ 	char buf[sizeof(*ev) + HCI_MAX_NAME_LENGTH + 2];
+ 	u16 eir_len;
++	u32 flags;
+ 
+ 	ev = (struct mgmt_ev_device_found *) buf;
+ 
+@@ -9624,10 +9625,17 @@ void mgmt_remote_name(struct hci_dev *hdev, bdaddr_t *bdaddr, u8 link_type,
+ 	ev->addr.type = link_to_bdaddr(link_type, addr_type);
+ 	ev->rssi = rssi;
+ 
+-	eir_len = eir_append_data(ev->eir, 0, EIR_NAME_COMPLETE, name,
+-				  name_len);
++	if (name) {
++		eir_len = eir_append_data(ev->eir, 0, EIR_NAME_COMPLETE, name,
++					  name_len);
++		flags = 0;
++	} else {
++		eir_len = 0;
++		flags = MGMT_DEV_FOUND_NAME_REQUEST_FAILED;
++	}
+ 
+ 	ev->eir_len = cpu_to_le16(eir_len);
++	ev->flags = cpu_to_le32(flags);
+ 
+ 	mgmt_event(MGMT_EV_DEVICE_FOUND, hdev, ev, sizeof(*ev) + eir_len, NULL);
+ }
+-- 
+2.34.0.rc2.393.gf8c9666880-goog
 
