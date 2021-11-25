@@ -2,91 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D9F45DF4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:03:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74BD845DF4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhKYRDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 12:03:45 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:53162 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242271AbhKYRBR (ORCPT
+        id S241920AbhKYRE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 12:04:27 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:40454 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242492AbhKYRCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 12:01:17 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637859483;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WOKypu9+YuWWJOAfm6+J+ei1DcpdTnJhN0LbMq3CSG0=;
-        b=vzJLcT7uiJpS9vreHdlK/D2976quDuf9ti4wYxxqLNMj0h2wetfIAt5Zf+5DUpe/zUpWF1
-        NdcwlJFBRbknKy/FagWVQ+LA+h1M1QOrhCRpSrmIQsl0A9J9h9s3q+TSCz4Gm+q2zzRtDX
-        tGLQq0xK/BENKSMb2770BKX1FMCV3EuJvQoymF+FVRQnyynJypPiiz11/MKAzZIervk1/6
-        0yJLhEa9/CUWWMOXQ5WGX2gXor75vjWY79lRQaEaGUBcOW7+OyU69SrUi3vpXaA2tOjdVP
-        hD2BHdX66V7Ogyg1B6Wy6eENRlW8/zxmCxDkQgPWLy3HYbOQAsgU8m52jk2Pxw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637859483;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WOKypu9+YuWWJOAfm6+J+ei1DcpdTnJhN0LbMq3CSG0=;
-        b=RzQUjc8ysGU6e5x/jPEHv9T7bdnrbH5ffoiBIQ0jhjIfpPpoaA4PLwyjc1ZzcY9ADpL6mj
-        yF3FqyOv487lLODQ==
-To:     ira.weiny@intel.com, Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
-        linux-mm@kvack.org
-Subject: Re: [PATCH V7 03/18] x86/pks: Add additional PKEY helper macros
-In-Reply-To: <87lf1cl3cq.ffs@tglx>
-References: <20210804043231.2655537-1-ira.weiny@intel.com>
- <20210804043231.2655537-4-ira.weiny@intel.com> <87lf1cl3cq.ffs@tglx>
-Date:   Thu, 25 Nov 2021 17:58:02 +0100
-Message-ID: <87czmokw9x.ffs@tglx>
+        Thu, 25 Nov 2021 12:02:40 -0500
+Received: from [192.168.254.32] (unknown [47.187.212.181])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 4E30520D5F07;
+        Thu, 25 Nov 2021 08:59:28 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4E30520D5F07
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1637859569;
+        bh=TK9fBWTDWdM94LF77A1vdyDGRvknSDniYv7TXuc127c=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Rhn5EK5t0M7KWzHGjKEdMVlmhmTlQ0uPmUZUBO9pCEQ2gXLPHjx9BJWvQQcDhF/tN
+         8SolBnYz2crDiWXl1KiqgxcerWl/YaBQ2LUebIXsqaHUS0EHxhvJM47yssPlBZ5fs/
+         jc5ljfGQOtpqwjJwZDFEHdJq505EKEo9TFjjGvgw=
+Subject: Re: [PATCH v11 4/5] arm64: Introduce stack trace reliability checks
+ in the unwinder
+To:     Mark Brown <broonie@kernel.org>
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
+        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <8b861784d85a21a9bf08598938c11aff1b1249b9>
+ <20211123193723.12112-1-madvenka@linux.microsoft.com>
+ <20211123193723.12112-5-madvenka@linux.microsoft.com>
+ <YZ+kLPT+h6ZGw20p@sirena.org.uk>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <704d73f6-30e2-08e0-3a5c-d3639d8b2da1@linux.microsoft.com>
+Date:   Thu, 25 Nov 2021 10:59:27 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YZ+kLPT+h6ZGw20p@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25 2021 at 15:25, Thomas Gleixner wrote:
-> On Tue, Aug 03 2021 at 21:32, ira weiny wrote:
->> @@ -200,16 +200,14 @@ __setup("init_pkru=", setup_init_pkru);
->>   */
->>  u32 update_pkey_val(u32 pk_reg, int pkey, unsigned int flags)
->>  {
->> -	int pkey_shift = pkey * PKR_BITS_PER_PKEY;
->> -
->>  	/*  Mask out old bit values */
->> -	pk_reg &= ~(((1 << PKR_BITS_PER_PKEY) - 1) << pkey_shift);
->> +	pk_reg &= ~PKR_PKEY_MASK(pkey);
->>  
->>  	/*  Or in new values */
->>  	if (flags & PKEY_DISABLE_ACCESS)
->> -		pk_reg |= PKR_AD_BIT << pkey_shift;
->> +		pk_reg |= PKR_AD_KEY(pkey);
->>  	if (flags & PKEY_DISABLE_WRITE)
->> -		pk_reg |= PKR_WD_BIT << pkey_shift;
->> +		pk_reg |= PKR_WD_KEY(pkey);
->
-> I'm not seeing how this is improving that code. Quite the contrary.
-
-Aside of that why are you ordering it the wrong way around, i.e.
-
-   1) implement turd
-   2) polish turd
-
-instead of implementing the required helpers first if they are really
-providing value.
-
-Thanks,
-
-        tglx
 
 
+On 11/25/21 8:56 AM, Mark Brown wrote:
+> On Tue, Nov 23, 2021 at 01:37:22PM -0600, madvenka@linux.microsoft.com wrote:
+> 
+>> Introduce arch_stack_walk_reliable() for ARM64. This works like
+>> arch_stack_walk() except that it returns -EINVAL if the stack trace is not
+>> reliable.
+> 
+>> Until all the reliability checks are in place, arch_stack_walk_reliable()
+>> may not be used by livepatch. But it may be used by debug and test code.
+> 
+> Probably also worth noting that this doesn't select
+> HAVE_RELIABLE_STACKTRACE which is what any actual users are going to use
+> to identify if the architecture has the feature.  I would have been
+> tempted to add arch_stack_walk() as a separate patch but equally having
+> the user code there (even if it itself can't yet be used...) helps with
+> reviewing the actual unwinder so I don't mind.
+> 
+
+I did not select HAVE_RELIABLE_STACKTRACE just in case we think that some
+more reliability checks need to be added. But if reviewers agree
+that this patch series contains all the reliability checks we need, I
+will add a patch to select HAVE_RELIABLE_STACKTRACE to the series.
+
+>> +static void unwind_check_reliability(struct task_struct *task,
+>> +				     struct stackframe *frame)
+>> +{
+>> +	if (frame->fp == (unsigned long)task_pt_regs(task)->stackframe) {
+>> +		/* Final frame; no more unwind, no need to check reliability */
+>> +		return;
+>> +	}
+> 
+> If the unwinder carries on for some reason (the code for that is
+> elsewhere and may be updated separately...) then this will start
+> checking again.  I'm not sure if this is a *problem* as such but the
+> thing about this being the final frame coupled with not actually
+> explicitly stopping the unwind here makes me think this should at least
+> be clearer, the comment begs the question about what happens if
+> something decides it is not in fact the final frame.
+> 
+
+I can address this by adding an explicit comment to that effect.
+For example, define a separate function to check for the final frame:
+
+/*
+ * Check if this is the final frame. Unwind must stop at the final
+ * frame.
+ */
+static inline bool unwind_is_final_frame(struct task_struct *task,
+                                         struct stackframe *frame)
+{
+	return frame->fp == (unsigned long)task_pt_regs(task)->stackframe;
+}
+
+Then, use this function in unwind_check_reliability() and unwind_continue().
+
+Is this acceptable?
+
+Madhavan
