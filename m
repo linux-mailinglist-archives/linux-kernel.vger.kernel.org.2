@@ -2,219 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1BA45D3DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 05:18:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6485645D3DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 05:21:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236608AbhKYEVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 23:21:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57868 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230129AbhKYETB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 23:19:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63C3B60F55;
-        Thu, 25 Nov 2021 04:15:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637813750;
-        bh=w4NColLle0OcJmVylxAzi21onJskRqfAxmwJBDRQZ64=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=gUjATQLl3w3pSNmmbmPMBm9v51G85DNIZrwQf9mrdZ6knPGUbZCYBTziQwj03boaB
-         qYSEarlMHLn7fWA12Vl1V15QRgwJJeGf1YndKSeChrhebsxoQ5Xy9Gw3JqIXQCt2vj
-         /2KUzXSCb4/08fzVWhixYcTo5wxR2iRLElZf+qUVaGQMPShr4y7mcvTBOwmb4JU73A
-         SdreR6CAxtKrHSGUert3PdQjgyrZ/ltffb5zskMQb/HTwx4q1TpP7KRYAlGh5Go5ze
-         XQBRxIgMBn/JDMdloJDgg72Gn4phKb/Z3uOpHuwhUhXxXGEMOAEyrL8zxekG92Lu+T
-         BimaLV1BlIv9Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 2F6C45C0B15; Wed, 24 Nov 2021 20:15:50 -0800 (PST)
-Date:   Wed, 24 Nov 2021 20:15:50 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Waiman Long <longman@redhat.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Cassio Neri <cassio.neri@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v3 1/4] clocksource: Avoid accidental unstable marking of
- clocksources
-Message-ID: <20211125041550.GA1659740@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211118191439.1000012-1-longman@redhat.com>
- <20211118191439.1000012-2-longman@redhat.com>
- <20211122030223.GG34844@shbuild999.sh.intel.com>
+        id S237274AbhKYEYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 23:24:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:24733 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238200AbhKYEWI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 23:22:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637813937;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1fqU39dED2qlRuJQ5y9Cv0wjsRIVNN7ti/VU1j4R6ig=;
+        b=bcl/piL9rAXh7iifkrKJ9EFaFqFj9DBDyj0P7jXT4VaVS4XPiisfglu2MsNh3STzz0XIKM
+        6OJWcBUoRpH+baI5jiiPYOQhMJvy2kUhluEoHmg3OSmo2wUsSafdYuIebHxSB+4LRMso1L
+        Go10Aq/6+kp30orhMLa1VCG5NZw6Ah0=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-125-btJZ2PupMuGEi-L3tdHx7g-1; Wed, 24 Nov 2021 23:18:56 -0500
+X-MC-Unique: btJZ2PupMuGEi-L3tdHx7g-1
+Received: by mail-pf1-f198.google.com with SMTP id q82-20020a627555000000b004a4f8cadb6fso2776435pfc.20
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 20:18:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1fqU39dED2qlRuJQ5y9Cv0wjsRIVNN7ti/VU1j4R6ig=;
+        b=YTmwHD0nO40OaXRVZJQoxWWOg7MbaYkzmnCMAEo+8xRkYKvs+X2jJNDWtc53TtPUws
+         R5x1V78IDoRz7qesTTyUzdhgjLB9UBvj1wdxcpGUlDtZPebW4/BpfyciH8cXAqB4JvQH
+         Q4DTjIAXJxsmyoQVQIhA4U0y4+zX2+GXWcXmPDL5/7LiJ5fLQF/LxvPLXdRrme6Qoqiy
+         gyzyG4hBGsPLl7TlEzSyz59WRvrMsl127O1s7r3SiN/Xh4xD+003dVP2TtRepyE5NZ73
+         s1j2fZoB7bqaj2SFTTX7LEaT0vNLXMbTyUojY8PxcXRmspUVoljHW4Fzm6HHX289Vlty
+         eyWg==
+X-Gm-Message-State: AOAM530pDnsawfqIAfd3i2uOME5eeBkUwHPFDxpw5S0KE+HuspcnVVxp
+        4bUxSPfaNQG1FMIRFYfYiHRVY+sYRx8Xyp4pTDeYkQnT3O7+RUz2kO8k0S7Elwrb3I7RyedReH+
+        MWCih4+33ncqTlpJOyQ25pkMv
+X-Received: by 2002:a63:7c2:: with SMTP id 185mr13916242pgh.406.1637813934781;
+        Wed, 24 Nov 2021 20:18:54 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwpSDP+7QIYtdhR5abUmEScVhI5NGYueeIt2u1f+jPPHQ9xVyw9uKsmDeflcrB8465BVYWbQQ==
+X-Received: by 2002:a63:7c2:: with SMTP id 185mr13916219pgh.406.1637813934436;
+        Wed, 24 Nov 2021 20:18:54 -0800 (PST)
+Received: from xz-m1.local ([94.177.118.150])
+        by smtp.gmail.com with ESMTPSA id t4sm1316242pfq.163.2021.11.24.20.18.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 20:18:53 -0800 (PST)
+Date:   Thu, 25 Nov 2021 12:18:45 +0800
+From:   Peter Xu <peterx@redhat.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH 15/15] KVM: x86/mmu: Promote pages in-place when
+ disabling dirty logging
+Message-ID: <YZ8OpQmB/8k3/Maj@xz-m1.local>
+References: <20211115234603.2908381-1-bgardon@google.com>
+ <20211115234603.2908381-16-bgardon@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211122030223.GG34844@shbuild999.sh.intel.com>
+In-Reply-To: <20211115234603.2908381-16-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 11:02:23AM +0800, Feng Tang wrote:
-> On Thu, Nov 18, 2021 at 02:14:36PM -0500, Waiman Long wrote:
-> > Since commit db3a34e17433 ("clocksource: Retry clock read if long delays
-> > detected") and commit 2e27e793e280 ("clocksource: Reduce clocksource-skew
-> > threshold"), it is found that tsc clocksource fallback to hpet can
-> > sometimes happen on both Intel and AMD systems especially when they are
-> > running stressful benchmarking workloads. Of the 23 systems tested with
-> > a v5.14 kernel, 10 of them have switched to hpet clock source during
-> > the test run.
-> > 
-> > The result of falling back to hpet is a drastic reduction of performance
-> > when running benchmarks. For example, the fio performance tests can
-> > drop up to 70% whereas the iperf3 performance can drop up to 80%.
-> > 
-> > 4 hpet fallbacks happened during bootup. They were:
-> > 
-> >   [    8.749399] clocksource: timekeeping watchdog on CPU13: hpet read-back delay of 263750ns, attempt 4, marking unstable
-> >   [   12.044610] clocksource: timekeeping watchdog on CPU19: hpet read-back delay of 186166ns, attempt 4, marking unstable
-> >   [   17.336941] clocksource: timekeeping watchdog on CPU28: hpet read-back delay of 182291ns, attempt 4, marking unstable
-> >   [   17.518565] clocksource: timekeeping watchdog on CPU34: hpet read-back delay of 252196ns, attempt 4, marking unstable
-> > 
-> > Other fallbacks happen when the systems were running stressful
-> > benchmarks. For example:
-> > 
-> >   [ 2685.867873] clocksource: timekeeping watchdog on CPU117: hpet read-back delay of 57269ns, attempt 4, marking unstable
-> >   [46215.471228] clocksource: timekeeping watchdog on CPU8: hpet read-back delay of 61460ns, attempt 4, marking unstable
-> > 
-> > Commit 2e27e793e280 ("clocksource: Reduce clocksource-skew threshold"),
-> > changed the skew margin from 100us to 50us. I think this is too small
-> > and can easily be exceeded when running some stressful workloads on a
-> > thermally stressed system.  So it is switched back to 100us.
-> > 
-> > Even a maximum skew margin of 100us may be too small in for some systems
-> > when booting up especially if those systems are under thermal stress. To
-> > eliminate the case that the large skew is due to the system being too
-> > busy slowing down the reading of both the watchdog and the clocksource,
-> > an extra consecutive read of watchdog clock is being done to check this.
-> > 
-> > The consecutive watchdog read delay is compared against
-> > WATCHDOG_MAX_SKEW/2. If the delay exceeds the limit, we assume that
-> > the system is just too busy. A warning will be printed to the console
-> > and the clock skew check is skipped for this round.
->  
-> Reviewed-by: Feng Tang <feng.tang@intel.com>
+Hi, Ben,
 
-I applied #1 and #2 with Feng Tang's Reviewed-by, thank you both!
-
-It turns out that #4 depends on #3, so rather than risk injecting errors
-by sorting that out manually, I will await either an updated #3 and #4
-or a rebased #4, at your option.
-
-							Thanx, Paul
-
-> Thanks,
-> Feng
+On Mon, Nov 15, 2021 at 03:46:03PM -0800, Ben Gardon wrote:
+> When disabling dirty logging, the TDP MMU currently zaps each leaf entry
+> mapping memory in the relevant memslot. This is very slow. Doing the zaps
+> under the mmu read lock requires a TLB flush for every zap and the
+> zapping causes a storm of ETP/NPT violations.
 > 
-> > Fixes: db3a34e17433 ("clocksource: Retry clock read if long delays detected")
-> > Fixes: 2e27e793e280 ("clocksource: Reduce clocksource-skew threshold")
-> > Signed-off-by: Waiman Long <longman@redhat.com>
-> > ---
-> >  kernel/time/clocksource.c | 50 ++++++++++++++++++++++++++++++++-------
-> >  1 file changed, 41 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-> > index b8a14d2fb5ba..bcad1a1e5dcf 100644
-> > --- a/kernel/time/clocksource.c
-> > +++ b/kernel/time/clocksource.c
-> > @@ -107,7 +107,7 @@ static u64 suspend_start;
-> >   * This delay could be due to SMIs, NMIs, or to VCPU preemptions.  Used as
-> >   * a lower bound for cs->uncertainty_margin values when registering clocks.
-> >   */
-> > -#define WATCHDOG_MAX_SKEW (50 * NSEC_PER_USEC)
-> > +#define WATCHDOG_MAX_SKEW (100 * NSEC_PER_USEC)
-> >  
-> >  #ifdef CONFIG_CLOCKSOURCE_WATCHDOG
-> >  static void clocksource_watchdog_work(struct work_struct *work);
-> > @@ -205,17 +205,24 @@ EXPORT_SYMBOL_GPL(max_cswd_read_retries);
-> >  static int verify_n_cpus = 8;
-> >  module_param(verify_n_cpus, int, 0644);
-> >  
-> > -static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
-> > +enum wd_read_status {
-> > +	WD_READ_SUCCESS,
-> > +	WD_READ_UNSTABLE,
-> > +	WD_READ_SKIP
-> > +};
-> > +
-> > +static enum wd_read_status cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
-> >  {
-> >  	unsigned int nretries;
-> > -	u64 wd_end, wd_delta;
-> > -	int64_t wd_delay;
-> > +	u64 wd_end, wd_end2, wd_delta;
-> > +	int64_t wd_delay, wd_seq_delay;
-> >  
-> >  	for (nretries = 0; nretries <= max_cswd_read_retries; nretries++) {
-> >  		local_irq_disable();
-> >  		*wdnow = watchdog->read(watchdog);
-> >  		*csnow = cs->read(cs);
-> >  		wd_end = watchdog->read(watchdog);
-> > +		wd_end2 = watchdog->read(watchdog);
-> >  		local_irq_enable();
-> >  
-> >  		wd_delta = clocksource_delta(wd_end, *wdnow, watchdog->mask);
-> > @@ -226,13 +233,34 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
-> >  				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
-> >  					smp_processor_id(), watchdog->name, nretries);
-> >  			}
-> > -			return true;
-> > +			return WD_READ_SUCCESS;
-> >  		}
-> > +
-> > +		/*
-> > +		 * Now compute delay in consecutive watchdog read to see if
-> > +		 * there is too much external interferences that cause
-> > +		 * significant delay in reading both clocksource and watchdog.
-> > +		 *
-> > +		 * If consecutive WD read-back delay > WATCHDOG_MAX_SKEW/2,
-> > +		 * report system busy, reinit the watchdog and skip the current
-> > +		 * watchdog test.
-> > +		 */
-> > +		wd_delta = clocksource_delta(wd_end2, wd_end, watchdog->mask);
-> > +		wd_seq_delay = clocksource_cyc2ns(wd_delta, watchdog->mult, watchdog->shift);
-> > +		if (wd_seq_delay > WATCHDOG_MAX_SKEW/2)
-> > +			goto skip_test;
-> >  	}
-> >  
-> >  	pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, marking unstable\n",
-> >  		smp_processor_id(), watchdog->name, wd_delay, nretries);
-> > -	return false;
-> > +	return WD_READ_UNSTABLE;
-> > +
-> > +skip_test:
-> > +	pr_info("timekeeping watchdog on CPU%d: %s wd-wd read-back delay of %lldns\n",
-> > +		smp_processor_id(), watchdog->name, wd_seq_delay);
-> > +	pr_info("wd-%s-wd read-back delay of %lldns, clock-skew test skipped!\n",
-> > +		cs->name, wd_delay);
-> > +	return WD_READ_SKIP;
-> >  }
-> >  
-> >  static u64 csnow_mid;
-> > @@ -356,6 +384,7 @@ static void clocksource_watchdog(struct timer_list *unused)
-> >  	int next_cpu, reset_pending;
-> >  	int64_t wd_nsec, cs_nsec;
-> >  	struct clocksource *cs;
-> > +	enum wd_read_status read_ret;
-> >  	u32 md;
-> >  
-> >  	spin_lock(&watchdog_lock);
-> > @@ -373,9 +402,12 @@ static void clocksource_watchdog(struct timer_list *unused)
-> >  			continue;
-> >  		}
-> >  
-> > -		if (!cs_watchdog_read(cs, &csnow, &wdnow)) {
-> > -			/* Clock readout unreliable, so give it up. */
-> > -			__clocksource_unstable(cs);
-> > +		read_ret = cs_watchdog_read(cs, &csnow, &wdnow);
-> > +
-> > +		if (read_ret != WD_READ_SUCCESS) {
-> > +			if (read_ret == WD_READ_UNSTABLE)
-> > +				/* Clock readout unreliable, so give it up. */
-> > +				__clocksource_unstable(cs);
-> >  			continue;
-> >  		}
-> >  
-> > -- 
-> > 2.27.0
+> Instead of zapping, replace the split large pages with large page
+> mappings directly. While this sort of operation has historically only
+> been done in the vCPU page fault handler context, refactorings earlier
+> in this series and the relative simplicity of the TDP MMU make it
+> possible here as well.
+
+Thanks for this patch, it looks very useful.
+
+I've got a few comments below, but before that I've also got one off-topic
+question too; it'll be great if you can help answer.
+
+When I was looking into how the old code recovers the huge pages I found that
+we'll leave the full-zero pgtable page there until the next page fault, then I
+_think_ it'll be released only until the __handle_changed_spte() when we're
+dropping the old spte (handle_removed_tdp_mmu_page).
+
+As comment above handle_removed_tdp_mmu_page() showed, at this point IIUC
+current thread should have exclusive ownership of this orphaned and abandoned
+pgtable page, then why in handle_removed_tdp_mmu_page() we still need all the
+atomic operations and REMOVED_SPTE tricks to protect from concurrent access?
+Since that's cmpxchg-ed out of the old pgtable, what can be accessing it
+besides the current thread?
+
+> 
+> Running the dirty_log_perf_test on an Intel Skylake with 96 vCPUs and 1G
+> of memory per vCPU, this reduces the time required to disable dirty
+> logging from over 45 seconds to just over 1 second. It also avoids
+> provoking page faults, improving vCPU performance while disabling
+> dirty logging.
+> 
+> 
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> ---
+>  arch/x86/kvm/mmu/mmu.c          |  2 +-
+>  arch/x86/kvm/mmu/mmu_internal.h |  4 ++
+>  arch/x86/kvm/mmu/tdp_mmu.c      | 69 ++++++++++++++++++++++++++++++++-
+>  3 files changed, 72 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index ef7a84422463..add724aa9e8c 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -4449,7 +4449,7 @@ static inline bool boot_cpu_is_amd(void)
+>   * the direct page table on host, use as much mmu features as
+>   * possible, however, kvm currently does not do execution-protection.
+>   */
+> -static void
+> +void
+>  build_tdp_shadow_zero_bits_mask(struct rsvd_bits_validate *shadow_zero_check,
+>  				int shadow_root_level)
+>  {
+> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+> index 6563cce9c438..84d439432acf 100644
+> --- a/arch/x86/kvm/mmu/mmu_internal.h
+> +++ b/arch/x86/kvm/mmu/mmu_internal.h
+> @@ -161,4 +161,8 @@ void *mmu_memory_cache_alloc(struct kvm_mmu_memory_cache *mc);
+>  void account_huge_nx_page(struct kvm *kvm, struct kvm_mmu_page *sp);
+>  void unaccount_huge_nx_page(struct kvm *kvm, struct kvm_mmu_page *sp);
+>  
+> +void
+> +build_tdp_shadow_zero_bits_mask(struct rsvd_bits_validate *shadow_zero_check,
+> +				int shadow_root_level);
+> +
+>  #endif /* __KVM_X86_MMU_INTERNAL_H */
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 43c7834b4f0a..b15c8cd11cf9 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -1361,6 +1361,66 @@ void kvm_tdp_mmu_clear_dirty_pt_masked(struct kvm *kvm,
+>  		clear_dirty_pt_masked(kvm, root, gfn, mask, wrprot);
+>  }
+>  
+> +static void try_promote_lpage(struct kvm *kvm,
+> +			      const struct kvm_memory_slot *slot,
+> +			      struct tdp_iter *iter)
+> +{
+> +	struct kvm_mmu_page *sp = sptep_to_sp(iter->sptep);
+> +	struct rsvd_bits_validate shadow_zero_check;
+> +	/*
+> +	 * Since the TDP  MMU doesn't manage nested PTs, there's no need to
+> +	 * write protect for a nested VM when PML is in use.
+> +	 */
+> +	bool ad_need_write_protect = false;
+
+Shall we just pass in "false" in make_spte() and just move the comment there?
+
+> +	bool map_writable;
+> +	kvm_pfn_t pfn;
+> +	u64 new_spte;
+> +	u64 mt_mask;
+> +
+> +	/*
+> +	 * If addresses are being invalidated, don't do in-place promotion to
+> +	 * avoid accidentally mapping an invalidated address.
+> +	 */
+> +	if (unlikely(kvm->mmu_notifier_count))
+> +		return;
+> +
+> +	pfn = __gfn_to_pfn_memslot(slot, iter->gfn, true, NULL, true,
+> +				   &map_writable, NULL);
+
+Should we better check pfn validity and bail out otherwise?  E.g. for atomic I
+think we can also get KVM_PFN_ERR_FAULT when fast-gup failed somehow.
+
+> +
+> +	/*
+> +	 * Can't reconstitute an lpage if the consituent pages can't be
+> +	 * mapped higher.
+> +	 */
+> +	if (iter->level > kvm_mmu_max_mapping_level(kvm, slot, iter->gfn,
+> +						    pfn, PG_LEVEL_NUM))
+> +		return;
+> +
+> +	build_tdp_shadow_zero_bits_mask(&shadow_zero_check, iter->root_level);
+> +
+> +	/*
+> +	 * In some cases, a vCPU pointer is required to get the MT mask,
+> +	 * however in most cases it can be generated without one. If a
+> +	 * vCPU pointer is needed kvm_x86_try_get_mt_mask will fail.
+> +	 * In that case, bail on in-place promotion.
+> +	 */
+> +	if (unlikely(!static_call(kvm_x86_try_get_mt_mask)(kvm, iter->gfn,
+> +							   kvm_is_mmio_pfn(pfn),
+> +							   &mt_mask)))
+> +		return;
+> +
+> +	make_spte(kvm, sp, slot, ACC_ALL, iter->gfn, pfn, 0, false, true,
+> +		  map_writable, ad_need_write_protect, mt_mask,
+> +		  &shadow_zero_check, &new_spte);
+> +
+> +	tdp_mmu_set_spte_atomic(kvm, iter, new_spte);
+> +
+> +	/*
+> +	 * Re-read the SPTE to avoid recursing into one of the removed child
+> +	 * page tables.
+> +	 */
+> +	iter->old_spte = READ_ONCE(*rcu_dereference(iter->sptep));
+
+Is this redundant since it seems the iterator logic handles this already, I'm
+reading try_step_down() here:
+
+	/*
+	 * Reread the SPTE before stepping down to avoid traversing into page
+	 * tables that are no longer linked from this entry.
+	 */
+	iter->old_spte = READ_ONCE(*rcu_dereference(iter->sptep));
+
+The rest looks good to me, thanks.
+
+> +}
+> +
+>  /*
+>   * Clear leaf entries which could be replaced by large mappings, for
+>   * GFNs within the slot.
+> @@ -1381,9 +1441,14 @@ static void zap_collapsible_spte_range(struct kvm *kvm,
+>  		if (tdp_mmu_iter_cond_resched(kvm, &iter, false, true))
+>  			continue;
+>  
+> -		if (!is_shadow_present_pte(iter.old_spte) ||
+> -		    !is_last_spte(iter.old_spte, iter.level))
+> +		if (!is_shadow_present_pte(iter.old_spte))
+> +			continue;
+> +
+> +		/* Try to promote the constitutent pages to an lpage. */
+> +		if (!is_last_spte(iter.old_spte, iter.level)) {
+> +			try_promote_lpage(kvm, slot, &iter);
+>  			continue;
+> +		}
+>  
+>  		pfn = spte_to_pfn(iter.old_spte);
+>  		if (kvm_is_reserved_pfn(pfn) ||
+> -- 
+> 2.34.0.rc1.387.gb447b232ab-goog
+> 
+
+-- 
+Peter Xu
+
