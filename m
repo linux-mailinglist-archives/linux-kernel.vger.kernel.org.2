@@ -2,114 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B4C45D4CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 07:28:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F62A45D4D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 07:32:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347239AbhKYGby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 01:31:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347627AbhKYG3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 01:29:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 67E0C6101D;
-        Thu, 25 Nov 2021 06:26:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637821602;
-        bh=9ilxkP0MowwyQlRFGUCFz/9i0GPcZPYwTNX6q2HydnQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j+CEtR8AhN5afYzdOmy6ckH2PRnHGVJgmfQBM8KmbGnVf4AHhc45/fcw1y5eQ5EJT
-         JdQquZWtaqWlhQ+BcCYkw/Chs+e4biNm5emuPVTZib/mmKgVa9P9+a17OxSB4iRg7O
-         SXlXyu2wy9e7HWixUMaThGw2ryKxj/i+nE9X2T0A=
-Date:   Thu, 25 Nov 2021 07:26:40 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Salvatore Bonaccorso <carnil@debian.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Bard Liao <bard.liao@intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 028/154] ASoC: Intel: sof_sdw: add missing quirk for
- Dell SKU 0A45
-Message-ID: <YZ8soCFxqgawo/NP@kroah.com>
-References: <20211124115702.361983534@linuxfoundation.org>
- <20211124115703.278367629@linuxfoundation.org>
- <YZ60vklYVessSxeU@eldamar.lan>
- <YZ62NH7krtupEhTa@eldamar.lan>
+        id S1348639AbhKYGfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 01:35:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32152 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345135AbhKYGdw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 01:33:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637821841;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2/MroL6oE5BBVYn3KMhwEVkq/8JZw+Q6u+jWrdIUJT8=;
+        b=h2XdapUCAGgpN/Gn5G325Phea8clEmEejxqHeFJcKEbSzE/yEr5AIx9u/kBvoWbMU02gF1
+        e2OpMHJd7Kt4NVpTjdfUg8lF1ZjpAexYgh4Vwy/ywW7zMmCucK2efkUVKwnmhhnbkj08jl
+        UpvjFXFGtj64ZtDfdPxqzj7d+yyYHOo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-524-qBrVQiU3P3yZvxS14D-HYw-1; Thu, 25 Nov 2021 01:30:39 -0500
+X-MC-Unique: qBrVQiU3P3yZvxS14D-HYw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B21831927800;
+        Thu, 25 Nov 2021 06:30:38 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-12-162.pek2.redhat.com [10.72.12.162])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E1C745D9C0;
+        Thu, 25 Nov 2021 06:30:36 +0000 (UTC)
+From:   Jason Wang <jasowang@redhat.com>
+To:     mst@redhat.com, jasowang@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] virtio-mmio: harden interrupt
+Date:   Thu, 25 Nov 2021 14:30:34 +0800
+Message-Id: <20211125063034.12347-1-jasowang@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YZ62NH7krtupEhTa@eldamar.lan>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 11:01:24PM +0100, Salvatore Bonaccorso wrote:
-> On Wed, Nov 24, 2021 at 10:55:10PM +0100, Salvatore Bonaccorso wrote:
-> > Hi Greg,
-> > 
-> > On Wed, Nov 24, 2021 at 12:57:04PM +0100, Greg Kroah-Hartman wrote:
-> > > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > 
-> > > [ Upstream commit 64ba6d2ce72ffde70dc5a1794917bf1573203716 ]
-> > > 
-> > > This device is based on SDCA codecs but with a single amplifier
-> > > instead of two.
-> > > 
-> > > BugLink: https://github.com/thesofproject/linux/issues/3161
-> > > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > Reviewed-by: Rander Wang <rander.wang@intel.com>
-> > > Reviewed-by: Bard Liao <bard.liao@intel.com>
-> > > Link: https://lore.kernel.org/r/20211004213512.220836-6-pierre-louis.bossart@linux.intel.com
-> > > Signed-off-by: Mark Brown <broonie@kernel.org>
-> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > > ---
-> > >  sound/soc/intel/boards/sof_sdw.c | 10 ++++++++++
-> > >  1 file changed, 10 insertions(+)
-> > > 
-> > > diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-> > > index 25548555d8d79..d9b864856be19 100644
-> > > --- a/sound/soc/intel/boards/sof_sdw.c
-> > > +++ b/sound/soc/intel/boards/sof_sdw.c
-> > > @@ -187,6 +187,16 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
-> > >  					SOF_RT715_DAI_ID_FIX |
-> > >  					SOF_SDW_FOUR_SPK),
-> > >  	},
-> > > +	{
-> > > +		.callback = sof_sdw_quirk_cb,
-> > > +		.matches = {
-> > > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
-> > > +			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0A45")
-> > > +		},
-> > > +		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
-> > > +					RT711_JD2 |
-> > > +					SOF_RT715_DAI_ID_FIX),
-> > > +	},
-> > >  	/* AlderLake devices */
-> > >  	{
-> > >  		.callback = sof_sdw_quirk_cb,
-> > 
-> > This one causes a build failure:
-> > 
-> > sound/soc/intel/boards/sof_sdw.c:197:41: error: ‘RT711_JD2’ undeclared here (not in a function)
-> >   197 |                                         RT711_JD2 |
-> >       |                                         ^~~~~~~~~
-> >   CC      lib/mpi/mpicoder.o
-> > make[7]: *** [scripts/Makefile.build:280: sound/soc/intel/boards/sof_sdw.o] Error 1
-> > make[6]: *** [scripts/Makefile.build:497: sound/soc/intel/boards] Error 2
-> > make[5]: *** [scripts/Makefile.build:497: sound/soc/intel] Error 2
-> > make[4]: *** [scripts/Makefile.build:497: sound/soc] Error 2
-> > make[3]: *** [Makefile:1822: sound] Error 2
-> > 
-> > We do not have for instance 8e6c00f1fdea ("ASoC: Intel: sof_sdw: include
-> > rt711.h for RT711 JD mode") for stable series. 
-> 
-> Should have added: [...] before 5.15-rc1.
+This patch tries to make sure the virtio interrupt handler for MMIO
+won't be called after a reset and before virtio_device_ready(). We
+can't use IRQF_NO_AUTOEN since we're using shared interrupt
+(IRQF_SHARED). So this patch tracks the interrupt enabling status in a
+new intr_soft_enabled variable and toggle it during in
+vm_disable/enable_interrupts(). The MMIO interrupt handler will check
+intr_soft_enabled before processing the actual interrupt.
 
-Thanks, I'll go drop the commit for now, if someone needs/wants it, I'll
-take a working backport :)
+Signed-off-by: Jason Wang <jasowang@redhat.com>
+---
+ drivers/virtio/virtio_mmio.c | 37 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-thanks,
+diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
+index 56128b9c46eb..796f0c789b09 100644
+--- a/drivers/virtio/virtio_mmio.c
++++ b/drivers/virtio/virtio_mmio.c
+@@ -90,6 +90,7 @@ struct virtio_mmio_device {
+ 	/* a list of queues so we can dispatch IRQs */
+ 	spinlock_t lock;
+ 	struct list_head virtqueues;
++	bool intr_soft_enabled;
+ };
+ 
+ struct virtio_mmio_vq_info {
+@@ -100,7 +101,37 @@ struct virtio_mmio_vq_info {
+ 	struct list_head node;
+ };
+ 
++/* disable irq handlers */
++void vm_disable_cbs(struct virtio_device *vdev)
++{
++	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
++	int irq = platform_get_irq(vm_dev->pdev, 0);
+ 
++	/*
++	 * The below synchronize() guarantees that any
++	 * interrupt for this line arriving after
++	 * synchronize_irq() has completed is guaranteed to see
++	 * intx_soft_enabled == false.
++	 */
++	WRITE_ONCE(vm_dev->intr_soft_enabled, false);
++	synchronize_irq(irq);
++}
++
++/* enable irq handlers */
++void vm_enable_cbs(struct virtio_device *vdev)
++{
++	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
++	int irq = platform_get_irq(vm_dev->pdev, 0);
++
++	disable_irq(irq);
++	/*
++	 * The above disable_irq() provides TSO ordering and
++	 * as such promotes the below store to store-release.
++	 */
++	WRITE_ONCE(vm_dev->intr_soft_enabled, true);
++	enable_irq(irq);
++	return;
++}
+ 
+ /* Configuration interface */
+ 
+@@ -262,6 +293,8 @@ static void vm_reset(struct virtio_device *vdev)
+ 
+ 	/* 0 status means a reset. */
+ 	writel(0, vm_dev->base + VIRTIO_MMIO_STATUS);
++	/* Disable VQ/configuration callbacks. */
++	vm_disable_cbs(vdev);
+ }
+ 
+ 
+@@ -288,6 +321,9 @@ static irqreturn_t vm_interrupt(int irq, void *opaque)
+ 	unsigned long flags;
+ 	irqreturn_t ret = IRQ_NONE;
+ 
++	if (!READ_ONCE(vm_dev->intr_soft_enabled))
++		return IRQ_NONE;
++
+ 	/* Read and acknowledge interrupts */
+ 	status = readl(vm_dev->base + VIRTIO_MMIO_INTERRUPT_STATUS);
+ 	writel(status, vm_dev->base + VIRTIO_MMIO_INTERRUPT_ACK);
+@@ -529,6 +565,7 @@ static bool vm_get_shm_region(struct virtio_device *vdev,
+ }
+ 
+ static const struct virtio_config_ops virtio_mmio_config_ops = {
++	.enable_cbs     = vm_enable_cbs,
+ 	.get		= vm_get,
+ 	.set		= vm_set,
+ 	.generation	= vm_generation,
+-- 
+2.25.1
 
-greg k-h
