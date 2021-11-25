@@ -2,89 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7939945E28E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:33:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C28245E29F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:38:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351348AbhKYVgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 16:36:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34852 "EHLO mail.kernel.org"
+        id S235882AbhKYVlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 16:41:19 -0500
+Received: from mga17.intel.com ([192.55.52.151]:25831 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244962AbhKYVeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 16:34:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA2F3610D1;
-        Thu, 25 Nov 2021 21:30:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637875857;
-        bh=BZ2XRrPuxKdfNaEoH/zDFQqwXwupV+aI8Q7TqqkjnnY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ikYRx3FDzFKyzSH3hD8lm5xuhQgVPMZiaBKYafBPJfIv5Mx9wShXOG6u/tldl9Wxj
-         2JZtavx55eeNNVfntKC2kJN4GhViymCXY0kS9qS1fQk7bbNYKnXTB0cV5dTWhv/ASf
-         4ACTAVf8s2rfPJPAUf7xc+gfawImhpzb0mrgqH5JBkbojqv3SdLYC87W+26XQUk1BJ
-         PuYtgsFrv19X86sHCm418+hzcxvj1K/FECbP4OdEI+gSSg7v9Io/OhBFtYHgJ3TTZv
-         drXhtbR8G1B6Fa93CtfgtqywRUAIsFABx0LRNlF7vlb0IOZXSn3mtIFKGtUtrz/1lk
-         5+7MrQNGwUF/Q==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C343640002; Thu, 25 Nov 2021 18:30:52 -0300 (-03)
-Date:   Thu, 25 Nov 2021 18:30:52 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com
-Subject: Re: [PATCH v2 2/4] perf tools: Fix SMT not detected
-Message-ID: <YaAAjHUXqY8pkiOA@kernel.org>
-References: <20211124001231.3277836-1-irogers@google.com>
- <20211124001231.3277836-2-irogers@google.com>
+        id S235737AbhKYVjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 16:39:18 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="216279362"
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="216279362"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 13:32:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="554728833"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga008.fm.intel.com with ESMTP; 25 Nov 2021 13:32:02 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id EE31F9F; Thu, 25 Nov 2021 23:32:06 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Prchal <jiri.prchal@aksignal.cz>
+Subject: [PATCH v1 00/10] misc: at25: Code cleanups and improvements
+Date:   Thu, 25 Nov 2021 23:31:53 +0200
+Message-Id: <20211125213203.86693-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211124001231.3277836-2-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Nov 23, 2021 at 04:12:29PM -0800, Ian Rogers escreveu:
-> sysfs__read_int returns 0 on success, and so the fast read path was
-> always failing.
-> 
-> Fixes: bb629484d924 (perf tools: Simplify checking if SMT is active.)
-> Signed-off-by: Ian Rogers <irogers@google.com>
+Code cleanups and improvements. Please read individual commit messages.
 
-Thanks, applied to perf/urgent.
+Series depends on the fixes series [1] sent earlier.
 
-- Arnaldo
+[1]: https://lore.kernel.org/lkml/20211125212729.86585-2-andriy.shevchenko@linux.intel.com/T/#u
 
-> ---
->  tools/perf/util/smt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/smt.c b/tools/perf/util/smt.c
-> index 20bacd5972ad..34f1b1b1176c 100644
-> --- a/tools/perf/util/smt.c
-> +++ b/tools/perf/util/smt.c
-> @@ -15,7 +15,7 @@ int smt_on(void)
->  	if (cached)
->  		return cached_result;
->  
-> -	if (sysfs__read_int("devices/system/cpu/smt/active", &cached_result) > 0)
-> +	if (sysfs__read_int("devices/system/cpu/smt/active", &cached_result) >= 0)
->  		goto done;
->  
->  	ncpu = sysconf(_SC_NPROCESSORS_CONF);
-> -- 
-> 2.34.0.rc2.393.gf8c9666880-goog
+Andy Shevchenko (10):
+  misc: at25: Use at25->chip instead of local chip everywhere in
+    ->probe()
+  misc: at25: Unshadow error codes in at25_fw_to_chip()
+  misc: at25: Check new property ("address-width") first
+  misc: at25: Get platform data via dev_get_platdata()
+  misc: at25: Get rid of intermediate storage for AT25 chip data
+  misc: at25: Switch to use BIT() instead of custom approaches
+  misc: at25: Factor out at_fram_to_chip()
+  misc: at25: Reorganize headers for better maintenance
+  misc: at25: Replace commas by spaces in the ID tables
+  misc: at25: Align comment style
+
+ drivers/misc/eeprom/at25.c | 210 +++++++++++++++++++------------------
+ 1 file changed, 110 insertions(+), 100 deletions(-)
 
 -- 
+2.33.0
 
-- Arnaldo
