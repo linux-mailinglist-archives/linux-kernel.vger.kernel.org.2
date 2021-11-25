@@ -2,151 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF5F45DAD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 14:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A0845DAFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 14:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352357AbhKYNVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 08:21:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44190 "EHLO
+        id S1355095AbhKYNYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 08:24:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351677AbhKYNTx (ORCPT
+        with ESMTP id S1354941AbhKYNVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 08:19:53 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE2AC0613D7
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 05:13:52 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id n12so16312624lfe.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 05:13:52 -0800 (PST)
+        Thu, 25 Nov 2021 08:21:53 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3E6C061748;
+        Thu, 25 Nov 2021 05:15:26 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id y13so25392009edd.13;
+        Thu, 25 Nov 2021 05:15:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cxPtdSVDRQX5bqi7JizAtmVow9MuQt/W0D86xbTHGHQ=;
-        b=VHFWU0HYMzvIxYMMX3dUUCfFvp1Dj5ccaIlW85NX9C/BbApzELtGk5xLBSEWp8gRzK
-         IlK0h/kr6xE0Ha4Myz889IVOFWWUa3K/Pfun2Z+m88D/UYV6wIErEHnsbRdV1LMx0QJ2
-         TbxCLA1qnBrufa0NPu7FXqbgRkdfomtB/4g0vOa6k4TOMLLPgu2FxY8l4oeUrM7Ved26
-         lUNgcQgpa+/iiyT2ln5Oz3DYg5p1bmuI7puKXrsn8r87aPQzK7xG38XULxjrX/dLs+XQ
-         PuAdERBk0ATidB+j8eyJcf4vj4zZIN3NcAQnz4KgmNb58vEYIsqD8Nm2rXJ7wjl8Iyik
-         iM4Q==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PA73+3/UyPk2kFSOVB+rwT5TZjFxua5dDaU36It2FnI=;
+        b=clV8Kp0Me0B6JcQo3OVO6Mrhz6FrVwBOYjdbGe9U9GqINY//2lPla9jMcWvDIyijEH
+         jfR/WXkcZNTXljmj8YLHs4/R1XTGvcRBc+93Z70pKP9L/m0VsTiFeMsb2sHn4Lug/SD9
+         ttct1m7/mY0/WzL8w3sMnFNg9epoI1iZeICJEkA766rYN1EhqYUXk7amUN+9tKIdjN1A
+         fS6zXdCUpH1WuBEzJLtkK1x6fAg6NymH+35MkUgC32XzGRfASGXPxhY185MSbUnn7ZYl
+         IfC3r94wZ+rNM+1PhiVYb+bYNtl/ptTtR+s4+nqbwcTs04GU6pknReKXn3VGEu/wOz0d
+         Yy2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=cxPtdSVDRQX5bqi7JizAtmVow9MuQt/W0D86xbTHGHQ=;
-        b=lRgdeuy39jj55zImSCT+8NRQeZ51YBgnj5abc993l3xzMDc4xcEhi8jOAawzKbZxYg
-         mYh6dlGH6iLo/MXQhik3BpJtApv14K57mAYqZh1vwAz/pT9fa6Tg3Ug/zJ+iuDtA9aoS
-         heWKF0TfJh2DmTe8pQojGRCfXdRMHT75vd7xSRiYwVNhp8CzR2O4NnVe99NMCChOWu1B
-         KD/MzrmsKwXweKzuHC6+Qg8lJqt29Lo9nzPG3kG2oDBxS4C321sPiLsiapPNYJYvc4AA
-         A7Xf917iCbT7Z3qmWauRyXtkqUSj32bIQj0igH1R/HRja3AJuFoE0fs32DU1ZAf+xo+X
-         2FjA==
-X-Gm-Message-State: AOAM531PoB9/FvvX+y6npMhRat77j6wNIfB4Uw7gh4c0uWkkYUnVeqge
-        mGqsOdQUC8bkOSYBs+fIdRnjk0AEW98ypQ==
-X-Google-Smtp-Source: ABdhPJyCGINht0MOg86lGl3cZMWh2pafYvGATuji6Z/rHNAQ59rwn50dOf0aPTgI9Y1weyorvVWkEQ==
-X-Received: by 2002:a05:6512:104f:: with SMTP id c15mr23781125lfb.256.1637846030798;
-        Thu, 25 Nov 2021 05:13:50 -0800 (PST)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id e11sm262053lfq.65.2021.11.25.05.13.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Nov 2021 05:13:50 -0800 (PST)
-Subject: Re: [PATCH v5 7/7] drm/msm/dp: Add sc8180x DP controllers
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20211016221843.2167329-1-bjorn.andersson@linaro.org>
- <20211016221843.2167329-8-bjorn.andersson@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <ce19f893-d805-1285-4bc2-445853498006@linaro.org>
-Date:   Thu, 25 Nov 2021 16:13:49 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        bh=PA73+3/UyPk2kFSOVB+rwT5TZjFxua5dDaU36It2FnI=;
+        b=1P8GQYnh1hobooXwLxeAisUy//vVZqyxvKMkVtncsFuu0Vqw7EoYl7gAD1A3J68Hey
+         56mLy18ArhaK1KP0pED+RyvazExlxtu4E6uKNAboB4+4VxKekCTksC4igLypuThWN6iJ
+         36kFjvs2ml1J3te87zCI9mOD9luo6jh3ONVESQPIpWg65s9Sg+zzrn4/CPMYdWZI1KDO
+         ysHneZOuVXet6H2SEDS+WtwOw43uPirL9mPPFC82hbgKM6xv1s1UI7UG/e5j9IVWmAo3
+         ueed2ucYq6oGGWIavAZSHrFCrA+WR8dDOhfVpoZDl76kT73Cr/QJ++0bu8N0pKz96gJP
+         TwvQ==
+X-Gm-Message-State: AOAM531qhKCnu9GiUDzuP/ZiWhscCDKrf/M7WnQRYReELOO2aK88EA0S
+        yGz9dRJOPy+XSmzqTJecSpI=
+X-Google-Smtp-Source: ABdhPJzbANy9x4lOxWV84SoZWp73OlczFc1JYmN/Qc9/Cfqizbjstvm4kulIdL65ZAUcwTJKK1730A==
+X-Received: by 2002:a17:907:1c8a:: with SMTP id nb10mr2182500ejc.5.1637846125171;
+        Thu, 25 Nov 2021 05:15:25 -0800 (PST)
+Received: from demon-pc.localdomain ([188.24.96.74])
+        by smtp.gmail.com with ESMTPSA id g9sm2187770edb.52.2021.11.25.05.15.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 05:15:24 -0800 (PST)
+From:   Cosmin Tanislav <demonsingur@gmail.com>
+Cc:     demonsingur@gmail.com, cosmin.tanislav@analog.com,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>, linux-gpio@vger.kernel.org
+Subject: [PATCH v4 0/3] Add AD74413R driver
+Date:   Thu, 25 Nov 2021 15:14:19 +0200
+Message-Id: <20211125131422.50657-1-demonsingur@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <20211016221843.2167329-8-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/10/2021 01:18, Bjorn Andersson wrote:
-> The sc8180x has 2 DP and 1 eDP controllers, add support for these to the
-> DP driver.
-> 
-> Link: https://lore.kernel.org/linux-arm-msm/20210725042436.3967173-7-bjorn.andersson@linaro.org/
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+The AD74412R and AD74413R are quad-channel software configurable input/output
+solutions for building and process control applications. They contain
+functionality for analog output, analog input, digital input, resistance
+temperature detector, and thermocouple measurements integrated
+into a single chip solution with an SPI interface.
+The devices feature a 16-bit ADC and four configurable 13-bit DACs to provide
+four configurable input/output channels and a suite of diagnostic functions.
+The AD74413R differentiates itself from the AD74412R by being HART-compatible.
 
-It seems that SC8180x DPU support was never merged (because of 
-hw_interrupt rework, because of hw_catalog TODOs and FIXMEs). Could you 
-please post new iteration of that patchset, squashing this one into it?
+V1 -> V2
+ * sign off using company email
 
+V2 -> V3
+ * replace gpo config firmware flag with one flag specifying whether gpo is in
+   comparator mode
+ * create two separate gpiochips, one output-only for GPO pins not in
+   comparator mode and one input-only for the value of digital input channels
+ * wire up all gpo functionalities using pinconf
+ * keep number of characters per line under 80
+ * rework locking
+ * do not invalidate other chip revisions
+ * do not set indio device parent
+ * print probe error for refin regulator
+ * move conversion from range register value to range / offset / raw offset
+   into separate function
+ * module.h -> mod_devicetable.h
+ * use generic firmware interface functions
+ * add comment regarding cache alignment
+ * add comment regarding ADC channels buffered read setup
+ * un-inline comment regarding 100us delay for conversion start
+ * inline return statements
+ * remove assignments to val2 where not necessary
+ * local_channels -> chans
+ * index -> i
+ * channel_config -> config
+ * IIO_ALTVOLTAGE -> IIO_VOLTAGE
+ * .info_mask_shared_by_type_available -> .info_mask_separate_available
+ * remove unlikely probe error messages
+ * use an array indexed by channel function for retrieving iio channels
+ * count iio channels while parsing
+ * move HART rate rejection outside of setter
+ * move channel function validation outside of setter
+ * use SPI messages for read and write
+ * validate DAC code earlier
+ * simplify switches to only handle existing iio channels
+ * pass indio_dev into functions needing access to it
+ * pass spi into devm_regmap_init
+ * dt-bindings: sort compatibles
+ * dt-bindings: remove driver word from description
+ * dt-bindings: remove refin supply description
+ * dt-bindings: specify channel function default value
+ * dt-bindings: remove maxItems from scalar value
 
-> ---
-> 
-> Changes since v4:
-> - Use the MSM_DP_CONTROLLER_n enums
-> - const the msm_dp_desc array
-> 
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c |  6 +++---
->   drivers/gpu/drm/msm/dp/dp_display.c            | 11 +++++++++++
->   2 files changed, 14 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-> index 47d5d71eb5d3..0ac6a79e8af9 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-> @@ -918,13 +918,13 @@ static const struct dpu_intf_cfg sc7280_intf[] = {
->   };
->   
->   static const struct dpu_intf_cfg sc8180x_intf[] = {
-> -	INTF_BLK("intf_0", INTF_0, 0x6A000, INTF_DP, 0, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 24, 25),
-> +	INTF_BLK("intf_0", INTF_0, 0x6A000, INTF_DP, MSM_DP_CONTROLLER_0, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 24, 25),
->   	INTF_BLK("intf_1", INTF_1, 0x6A800, INTF_DSI, 0, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 26, 27),
->   	INTF_BLK("intf_2", INTF_2, 0x6B000, INTF_DSI, 1, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 28, 29),
->   	/* INTF_3 is for MST, wired to INTF_DP 0 and 1, use dummy index until this is supported */
->   	INTF_BLK("intf_3", INTF_3, 0x6B800, INTF_DP, 999, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 30, 31),
-> -	INTF_BLK("intf_4", INTF_4, 0x6C000, INTF_DP, 1, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 20, 21),
-> -	INTF_BLK("intf_5", INTF_5, 0x6C800, INTF_DP, 2, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 22, 23),
-> +	INTF_BLK("intf_4", INTF_4, 0x6C000, INTF_DP, MSM_DP_CONTROLLER_1, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 20, 21),
-> +	INTF_BLK("intf_5", INTF_5, 0x6C800, INTF_DP, MSM_DP_CONTROLLER_2, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 22, 23),
->   };
->   
->   /*************************************************************
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> index d3c9d7273354..70dcd4e6d466 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -135,8 +135,19 @@ static const struct msm_dp_config sc7180_dp_cfg = {
->   	.num_descs = 1,
->   };
->   
-> +static const struct msm_dp_config sc8180x_dp_cfg = {
-> +	.descs = (const struct msm_dp_desc[]) {
-> +		[MSM_DP_CONTROLLER_0] = { .io_start = 0x0ae90000, .connector_type = DRM_MODE_CONNECTOR_DisplayPort },
-> +		[MSM_DP_CONTROLLER_1] = { .io_start = 0x0ae98000, .connector_type = DRM_MODE_CONNECTOR_DisplayPort },
-> +		[MSM_DP_CONTROLLER_2] = { .io_start = 0x0ae9a000, .connector_type = DRM_MODE_CONNECTOR_eDP },
-> +	},
-> +	.num_descs = 3,
-> +};
-> +
->   static const struct of_device_id dp_dt_match[] = {
->   	{ .compatible = "qcom,sc7180-dp", .data = &sc7180_dp_cfg },
-> +	{ .compatible = "qcom,sc8180x-dp", .data = &sc8180x_dp_cfg },
-> +	{ .compatible = "qcom,sc8180x-edp", .data = &sc8180x_dp_cfg },
->   	{}
->   };
->   
-> 
+V3 -> v4
+ * remove double gpo from macro name
+ * reset at probe
+ * config -> chip_info and store chip name inside chip info
+ * cacheline align every DMA buffer
+ * simplify generation of adc samples message by caching xfer, tx_buf and rx_buf
+ * use mask itself for writing the value of channel enable and gpo data
+ * move reg read and write transfers to the same buffers and use local
+   variables for transfers
+ * merge the two for loops handling gpio configuration
+ * let firmware decide irq edge
+ * remove INDIO_BUFFER_SOFTWARE already set by iio framwork
+ * do not set trigger device parent
+ * return dev_err_probe for regulator error case
+ * do not set cs_change to 0 when not needed
+ * do not set spi device drvdata as it is not needed
+ * fix bug regarding wrong channels being created for resistance input,
+   digital input, and current input with hart
+ * use voltage input channels spec for high impedance mode
+ * put () around macro parameters
+ * merge AD74413R_CHANNEL macro into its uses
+ * remove unused switch case scope
+ * inline return IIO_VAL_INT
+ * use {get,put}_unaligned_be16
+ * use proper types for reg and val
+ * move default case handling into switch statements
+ * pass driver state into regmap functions
+ * use genmask for generating a 16bit max value
+ * alphanumeric order for part numbers
+ * dt-bindings: remove $ref from ohms value
 
+Cosmin Tanislav (3):
+  iio: add adddac subdirectory
+  dt-bindings: iio: add AD74413R
+  iio: addac: add AD74413R driver
+
+ .../bindings/iio/addac/adi,ad74413r.yaml      |  153 ++
+ MAINTAINERS                                   |    9 +
+ drivers/iio/Kconfig                           |    1 +
+ drivers/iio/Makefile                          |    1 +
+ drivers/iio/addac/Kconfig                     |   20 +
+ drivers/iio/addac/Makefile                    |    7 +
+ drivers/iio/addac/ad74413r.c                  | 1473 +++++++++++++++++
+ include/dt-bindings/iio/addac/adi,ad74413r.h  |   21 +
+ 8 files changed, 1685 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/addac/adi,ad74413r.yaml
+ create mode 100644 drivers/iio/addac/Kconfig
+ create mode 100644 drivers/iio/addac/Makefile
+ create mode 100644 drivers/iio/addac/ad74413r.c
+ create mode 100644 include/dt-bindings/iio/addac/adi,ad74413r.h
 
 -- 
-With best wishes
-Dmitry
+2.34.1
+
