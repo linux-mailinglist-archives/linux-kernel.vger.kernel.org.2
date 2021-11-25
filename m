@@ -2,130 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081BA45D7FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:10:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD67A45D801
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354581AbhKYKNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 05:13:10 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:46158 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354382AbhKYKLJ (ORCPT
+        id S1354512AbhKYKPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 05:15:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354590AbhKYKNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 05:11:09 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4061C21954;
-        Thu, 25 Nov 2021 10:07:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637834877; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:  in-reply-to:in-reply-to;
-        bh=egtWqavi5e/lfcU1EU6RtNwK3p+JN+8aD5azguEUeug=;
-        b=REFfTzIV3E0wOzzjQtFOEGHXsaIphgNxvLU9bbyeVGnlbREatZU8UDHRxdp5IuQQxqP95N
-        5WRWrQcLVEW6NLPaw1hlSPyJCeLhI9fnoiFdYfGwj/uZ8i1KcZq/5qTt1q+qJPgQyzT5mj
-        urpqX3tK/gT12mR81Q2/J3fu+vJqWKc=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 26641A3B81;
-        Thu, 25 Nov 2021 10:07:57 +0000 (UTC)
-Date:   Thu, 25 Nov 2021 11:07:56 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Joe Lawrence <joe.lawrence@redhat.com>
-Cc:     Miroslav Benes <mbenes@suse.cz>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, jikos@kernel.org,
-        peterz@infradead.org, linux-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org, shuah@kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 2/3] livepatch: Allow user to specify functions to search
- for on a stack
-Message-ID: <YZ9gfPuCTmDmOj9h@alley>
+        Thu, 25 Nov 2021 05:13:12 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA92C0613ED;
+        Thu, 25 Nov 2021 02:09:23 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id b12so10426612wrh.4;
+        Thu, 25 Nov 2021 02:09:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J+AtvgH+7tJCkwntCUuKAinCiI1X+dL5Twz4eHbpnSA=;
+        b=HxLT5Q1gn5HUt2NyWHrfdnd+rnUJS949xIcNw6EQXva9nC1+AU8e+oPVbDXQHfJtNZ
+         w7vdjVlJZFaxzarDK2i4Wkzhqn+derFY8ugo5Pwu6CAses1ldHNypA3Nm83w6Jzrc7zK
+         MBE0JYCC3xwrjXZJQTUQ8G6THa0ljYucoGHQwyyOEEg/eVZAN+0YAH5yn9VMZVvHsiMC
+         9xYo+hViPXrQ1xgzlJqpk6foca7iIytbdk/q8elp+QK0RUJC2H4uqAGDvToJl3LueEus
+         6mc7lOEVzHfEzf+RrT8NZAfAiGURADZl9U+hX7GAH0IkYWOe2bXNX/gt0c9VQu2JvfdI
+         sNOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J+AtvgH+7tJCkwntCUuKAinCiI1X+dL5Twz4eHbpnSA=;
+        b=QpwQpZXAzoPBy+6XaFlQayjfQasuzSkHU5uz1p/IM8W182CO/ur58l11XYsE/auoCA
+         1Aj64SAgVPftBB31k2veHX/fc3QRrx2Ltq/iwVE37bAHxZZauzdDLGztyPjIubRVEsa+
+         x9F61vSJnuSVHbmrlXPH91nttYV/VqEFeic39gRCTelJ2jFN5jq/M2CsBFfWCnfaCJR0
+         rZkSFeqqZCWbOR2DaeWKT2QJq0szP3k1l+wgIzX9yUPBh3ZDHXhH/HynseAJAvSc+QP7
+         9AtJU2SKH8tDzAzl77J/W0OMq0kn9/RZzRnYjlMv2c+TJIwuV9JpH5+BLnUVZzposJvR
+         DYDA==
+X-Gm-Message-State: AOAM5319xy5nnzMHtuaraCvaLUt0yBpHCUcC6/6lALHSVPNL/rgkJ49L
+        tZtJXhzfIfwoXtSONjLykH8=
+X-Google-Smtp-Source: ABdhPJx2/KokuDdsW4Y+JnPROVHOSvBpezAOB9oUvI0LHwE9CQPCaZKK4T/lBrFt8o/nUhI3D9vQOg==
+X-Received: by 2002:a5d:628f:: with SMTP id k15mr5307647wru.363.1637834962587;
+        Thu, 25 Nov 2021 02:09:22 -0800 (PST)
+Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
+        by smtp.gmail.com with ESMTPSA id l7sm2903533wry.86.2021.11.25.02.09.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 02:09:22 -0800 (PST)
+From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
+Cc:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] HDMI Audio on RK356x/Quartz64 Model A
+Date:   Thu, 25 Nov 2021 11:08:33 +0100
+Message-Id: <20211125100836.423808-1-frattaroli.nicolas@gmail.com>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <40edd48c-6f45-29e3-4749-be37fb61afba@redhat.com>
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2021-11-22 10:53:21, Joe Lawrence wrote:
-> On 11/22/21 2:57 AM, Miroslav Benes wrote:
-> > On Fri, 19 Nov 2021, Josh Poimboeuf wrote:
-> > 
-> >> Thanks for doing this!  And at peterz-esque speed no less :-)
-> >>
-> >> On Fri, Nov 19, 2021 at 10:03:26AM +0100, Miroslav Benes wrote:
-> >>> livepatch's consistency model requires that no live patched function
-> >>> must be found on any task's stack during a transition process after a
-> >>> live patch is applied. It is achieved by walking through stacks of all
-> >>> blocked tasks.
-> >>>
-> >>> The user might also want to define more functions to search for without
-> >>> them being patched at all. It may either help with preparing a live
-> >>> patch, which would otherwise require additional touches to achieve the
-> >>> consistency
-> >>
-> >> Do we have any examples of this situation we can add to the commit log?
-> > 
-> > I do not have anything at hand. Joe, do you remember the case you 
-> > mentioned previously about adding a nop to a function?
-> 
-> Maybe adding a hypothetical scenario to the commit log would suffice?
+This enables HDMI audio on Quartz64 Model A, and the RK356x SoC in
+general. The patches require the VOP2 patchset[1] and my I2S/TDM
+controller fix[2] to work.
 
-I wonder if we could describe a scenario based on the thread about
-.cold code variants, see
-https://lore.kernel.org/all/20211112015003.pefl656m3zmir6ov@treble/
+i2s0 on the RK356x is connected to HDMI, and only has one DMA. I've
+confirmed this with the TRM. With [2] the driver now handles this
+properly, and does not try to register a capture PCM in this case.
 
-This feature would allow to safely livepatch already released
-kernels where the unwinder is not able to reliably detect
-a newly discovered problems.
+To test this, one needs a video clock, i.e. there is no audio if your
+screen is off. I've found that running kmscube momentarily is enough
+to make the VOP2 keep the screen turned on indefinitely, which is
+a pleasant quirk in this case.
 
-> >>> or it can be used to overcome deficiencies the stack
-> >>> checking inherently has. For example, GCC may optimize a function so
-> >>> that a part of it is moved to a different section and the function would
-> >>> jump to it. This child function would not be found on a stack in this
-> >>> case, but it may be important to search for it so that, again, the
-> >>> consistency is achieved.
-> >>>
-> >>> Allow the user to specify such functions on klp_object level.
-> >>>
-> >>> Signed-off-by: Miroslav Benes <mbenes@suse.cz>
-> >>> ---
-> >>>  include/linux/livepatch.h     | 11 +++++++++++
-> >>>  kernel/livepatch/core.c       | 16 ++++++++++++++++
-> >>>  kernel/livepatch/transition.c | 21 ++++++++++++++++-----
-> >>>  3 files changed, 43 insertions(+), 5 deletions(-)
-> >>>
-> >>> diff --git a/include/linux/livepatch.h b/include/linux/livepatch.h
-> >>> index 2614247a9781..89df578af8c3 100644
-> >>> --- a/include/linux/livepatch.h
-> >>> +++ b/include/linux/livepatch.h
-> >>> @@ -106,9 +106,11 @@ struct klp_callbacks {
-> >>>   * struct klp_object - kernel object structure for live patching
-> >>>   * @name:	module name (or NULL for vmlinux)
-> >>>   * @funcs:	function entries for functions to be patched in the object
-> >>> + * @funcs_stack:	function entries for functions to be stack checked
-> >>
-> >> So there are two arrays/lists of 'klp_func', and two implied meanings of
-> >> what a 'klp_func' is and how it's initialized.
-> >>
-> >> Might it be simpler and more explicit to just add a new external field
-> >> to 'klp_func' and continue to have a single 'funcs' array?  Similar to
-> >> what we already do with the special-casing of 'nop', except it would be
-> >> an external field, e.g. 'no_patch' or 'stack_only'.
-> 
-> I'll add that the first thing that came to mind when you raised this
-> feature idea in the other thread was to support existing klp_funcs array
-> with NULL new_func's.
+[1]: https://patchwork.kernel.org/project/linux-rockchip/list/?series=581709
+[2]: https://patchwork.kernel.org/project/linux-rockchip/patch/20211125084900.417102-1-frattaroli.nicolas@gmail.com/
 
-Please, solve this with the extra flag, e.g. .stack_only, as
-already suggested. It will help to distinguish mistakes and
-intentions. Also it will allow to find these symbols by grep.
+Nicolas Frattaroli (2):
+  arm64: dts: rockchip: rk356x: Add HDMI audio nodes
+  arm64: dts: rockchip: Enable HDMI audio on Quartz64 A
 
-> I didn't go look to see how invasive it would be,
-> but it will be interesting to see if a single list approach turns out
-> any simpler for v2.
+ .../boot/dts/rockchip/rk3566-quartz64-a.dts   |  8 +++++
+ arch/arm64/boot/dts/rockchip/rk356x.dtsi      | 32 +++++++++++++++++++
+ 2 files changed, 40 insertions(+)
 
-I am not sure either. But I expect that it will be easier than
-the extra array.
+-- 
+2.34.0
 
-Best Regards,
-Petr
