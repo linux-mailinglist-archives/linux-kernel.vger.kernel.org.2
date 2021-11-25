@@ -2,141 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A345F45D610
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4089A45D618
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:24:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348605AbhKYIXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 03:23:23 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:37786 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348819AbhKYIVW (ORCPT
+        id S1349668AbhKYI1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 03:27:23 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:53770 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S236816AbhKYIZT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 03:21:22 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C084921B36;
-        Thu, 25 Nov 2021 08:18:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637828290; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e3lTvL7X/pLPkMChteUmxKRux3aIsQksbSl01FKz2GE=;
-        b=WDt3JM+g5EKhl7/+0IB6E9eEn4PIn/sOOufrX1Vr22rNIfKaxC7dyYvVUuCvMw4I+eAyf6
-        o6hesNFh9GKyC2w3eFFQ5uekDJfLeFgjZHokRr/yMjbhKrLLcl+AYzHxU8QesiqUqyYt04
-        t+LlRjmWOhh0CIybJAX82uTBBC4RsiU=
-Received: from suse.cz (unknown [10.100.216.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 8CF79A3B85;
-        Thu, 25 Nov 2021 08:18:10 +0000 (UTC)
-Date:   Thu, 25 Nov 2021 09:18:09 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        'Peter Zijlstra' <peterz@infradead.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "dvyukov@google.com" <dvyukov@google.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "mbenes@suse.cz" <mbenes@suse.cz>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH 20/22] x86,word-at-a-time: Remove .fixup usage
-Message-ID: <YZ9Gwclfit3pviA1@alley>
-References: <CAKwvOdkFZ4PSN0GGmKMmoCrcp7_VVNjau_b0sNRm3MuqVi8yow@mail.gmail.com>
- <YYov8SVHk/ZpFsUn@hirez.programming.kicks-ass.net>
- <CAKwvOdn8yrRopXyfd299=SwZS9TAPfPj4apYgdCnzPb20knhbg@mail.gmail.com>
- <20211109210736.GV174703@worktop.programming.kicks-ass.net>
- <f6dbe42651e84278b44e44ed7d0ed74f@AcuMS.aculab.com>
- <YYuogZ+2Dnjyj1ge@hirez.programming.kicks-ass.net>
- <2734a37ebed2432291345aaa8d9fd47e@AcuMS.aculab.com>
- <20211112015003.pefl656m3zmir6ov@treble>
- <YZvXhAYjHrnc3/rv@alley>
- <20211124174213.mspehbgomdqarxea@treble>
+        Thu, 25 Nov 2021 03:25:19 -0500
+X-UUID: 49045217f8b14659bd3be9f39c3a9638-20211125
+X-UUID: 49045217f8b14659bd3be9f39c3a9638-20211125
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <sean.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1131555005; Thu, 25 Nov 2021 16:22:06 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 25 Nov 2021 16:22:04 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 25 Nov 2021 16:22:04 +0800
+From:   <sean.wang@mediatek.com>
+To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>
+CC:     <Mark-YW.Chen@mediatek.com>, <sean.wang@mediatek.com>,
+        <Soul.Huang@mediatek.com>, <YN.Chen@mediatek.com>,
+        <Leon.Yen@mediatek.com>, <Eric-SY.Chang@mediatek.com>,
+        <Deren.Wu@mediatek.com>, <km.lin@mediatek.com>,
+        <robin.chiu@mediatek.com>, <Eddie.Chen@mediatek.com>,
+        <ch.yeh@mediatek.com>, <posh.sun@mediatek.com>,
+        <ted.huang@mediatek.com>, <Eric.Liang@mediatek.com>,
+        <Stella.Chang@mediatek.com>, <Tom.Chou@mediatek.com>,
+        <steve.lee@mediatek.com>, <jsiuda@google.com>,
+        <frankgor@google.com>, <jemele@google.com>,
+        <abhishekpandit@google.com>, <michaelfsun@google.com>,
+        <mcchou@chromium.org>, <shawnku@google.com>,
+        <linux-bluetooth@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/4] Bluetooth: btmtksdio: handle runtime pm only when sdio_func is available
+Date:   Thu, 25 Nov 2021 16:22:03 +0800
+Message-ID: <1637828523-31925-1-git-send-email-sean.wang@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
+In-Reply-To: <74A2D0D6-6A65-4832-BAFC-BCBA68F8DE78@holtmann.org--annotate>
+References: <74A2D0D6-6A65-4832-BAFC-BCBA68F8DE78@holtmann.org--annotate>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211124174213.mspehbgomdqarxea@treble>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-11-24 09:42:13, Josh Poimboeuf wrote:
-> On Mon, Nov 22, 2021 at 06:46:44PM +0100, Petr Mladek wrote:
-> > On Thu 2021-11-11 17:50:03, Josh Poimboeuf wrote:
-> > > On Wed, Nov 10, 2021 at 12:20:47PM +0000, David Laight wrote:
-> > > > > > Wouldn't moving part of a function to .text.cold (or .text.unlikely)
-> > > > > > generate the same problems with the stack backtrace code as the
-> > > > > > .text.fixup section you are removing had??
-> > > > > 
-> > > > > GCC can already split a function into func and func.cold today (or
-> > > > > worse: func, func.isra.N, func.cold, func.isra.N.cold etc..).
-> > > > > 
-> > > > > I'm assuming reliable unwind and livepatch know how to deal with this.
-> > > > 
-> > > > They'll have 'proper' function labels at the top - so backtrace
-> > > > stands a chance.
-> > > > Indeed you (probably) want it to output "func.irsa.n.cold" rather
-> > > > than just "func" to help show which copy it is in.  > 
-> > > > I guess that livepatch will need separate patches for each
-> > > > version of the function - which might be 'interesting' if
-> > > > all the copies actually need patching at the same time.
-> > > > You'd certainly want a warning if there seemed to be multiple
-> > > > copies of the function.
-> > > 
-> > > Hm, I think there is actually a livepatch problem here.
-> > > 
-> > > If the .cold (aka "child") function actually had a fentry hook then we'd
-> > > be fine.  Then we could just patch both "parent" and "child" functions
-> > > at the same time.  We already have the ability to patch multiple
-> > > functions having dependent interface changes.
-> > > 
-> > > But there's no fentry hook in the child, so we can only patch the
-> > > parent.
-> > > 
-> > > If the child schedules out, and then the parent gets patched, things can
-> > > go off-script if the child later jumps back to the unpatched version of
-> > > the parent, and then for example the old parent tries to call another
-> > > patched function with a since-changed ABI.
-> > 
-> > This thread seems to be motivation for the patchset
-> > https://lore.kernel.org/all/20211119090327.12811-1-mbenes@suse.cz/
-> > I am trying to understand the problem here, first. And I am
-> > a bit lost.
-> > 
-> > How exactly is child called in the above scenario, please?
-> > How could parent get livepatched when child is sleeping?
-> > 
-> > I imagine it the following way:
-> > 
-> >     parent_func()
-> >        fentry
-> > 
-> >        /* some parent code */
-> >        jmp child
-> > 	   /* child code */
-> > 	   jmp back_to_parent
-> >        /* more parent code */
-> >        ret
-> 
-> Right.
-> 
-> > In the above example, parent_func() would be on stack and could not
-> > get livepatched even when the process is sleeping in the child code.
-> > 
-> > The livepatching is done via ftrace. Only code with fentry could be
-> > livepatched. And code called via fentry must be visible on stack.
-> 
-> How would parent_func() be on the stack?  If it jumps to the child then
-> it leaves no trace on the stack.
+From: Sean Wang <sean.wang@mediatek.com>
 
-Grr, sure. It was off-by-one error on my side. /o\
+>>Hi Sean,
+>
+>> Runtime pm ops is not aware the sdio_func status that is probably
+>> being disabled by btmtksdio_close. Thus, we are only able to access
+>> the sdio_func for the runtime pm operations only when the sdio_func is
+>> available.
+>>
+>> Fixes: 7f3c563c575e7 ("Bluetooth: btmtksdio: Add runtime PM support to
+>> SDIO based Bluetooth")
+>> Co-developed-by: Mark-yw Chen <mark-yw.chen@mediatek.com>
+>> Signed-off-by: Mark-yw Chen <mark-yw.chen@mediatek.com>
+>> Signed-off-by: Sean Wang <sean.wang@mediatek.com>
+>> ---
+>> drivers/bluetooth/btmtksdio.c | 6 ++++++
+>> 1 file changed, 6 insertions(+)
+>>
+>> diff --git a/drivers/bluetooth/btmtksdio.c
+>> b/drivers/bluetooth/btmtksdio.c index 4f3412ad8fca..4c46c62e4623
+>> 100644
+>> --- a/drivers/bluetooth/btmtksdio.c
+>> +++ b/drivers/bluetooth/btmtksdio.c
+>> @@ -1037,6 +1037,9 @@ static int btmtksdio_runtime_suspend(struct device *dev)
+>>	if (!bdev)
+>>		return 0;
+>>
+>> +	if (!test_bit(HCI_RUNNING, &bdev->hdev->flags))
+>> +		return 0;
+>> +
+>>	sdio_claim_host(bdev->func);
+>>
+>>	sdio_writel(bdev->func, C_FW_OWN_REQ_SET, MTK_REG_CHLPCR, &err); @@
+>> -1064,6 +1067,9 @@ static int btmtksdio_runtime_resume(struct device *dev)
+>>	if (!bdev)
+>>		return 0;
+>>
+>> +	if (!test_bit(HCI_RUNNING, &bdev->hdev->flags))
+>> +		return 0;
+>> +
+>>	sdio_claim_host(bdev->func);
+>>
+>>	sdio_writel(bdev->func, C_FW_OWN_REQ_CLR, MTK_REG_CHLPCR, &err);
+>
+>I dislike looking at HCI_RUNNING since that check should be removed from a driver. Do you really need it? I mean, a driver should now if it is running or not.
 
-Thanks for explanation.
+We don't really need it, instead we can use internal flags in the driver to know the status. I will do this in v2.
 
-Best Regards,
-Petr
+	Sean
+>
+>Regards
+>
+>Marcel
+>
