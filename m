@@ -2,80 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4059045D758
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 10:37:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 073E145D748
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 10:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354134AbhKYJkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 04:40:47 -0500
-Received: from elvis.franken.de ([193.175.24.41]:40429 "EHLO elvis.franken.de"
+        id S1353692AbhKYJiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 04:38:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354150AbhKYJiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 04:38:46 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mqBA6-00032R-00; Thu, 25 Nov 2021 10:35:26 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id B8A25C2F25; Thu, 25 Nov 2021 10:32:56 +0100 (CET)
-Date:   Thu, 25 Nov 2021 10:32:56 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        list@opendingux.net
-Subject: Re: [PATCH] MIPS: boot/compressed/: add __ashldi3 to target for ZSTD
- compression
-Message-ID: <20211125093256.GA6537@alpha.franken.de>
-References: <20211119175052.401771-1-paul@crapouillou.net>
+        id S1354097AbhKYJgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 04:36:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04266610CF;
+        Thu, 25 Nov 2021 09:33:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637832782;
+        bh=LtCgSeMq4Nj9aV36OofJNPQSpqKGjBfqvw+CtKS+Z6w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NQW4ZkLIde1LF6/Kgj4Y10Q26D1aFtiFkWyIgWlbVVBUyQDsdkZT2krgwUnQ4XKqd
+         qR5r9uqIks2Upg5Ze9MGmeXdyanTMsQUPErkL9WsjCqUm7PIJ3IY3RQqaNz54/hrQP
+         QHDD4zXUFiDEoygsfUIYtW0vpOe+t6JeLy2Wyz3v4jj2Tnq7V3WKG+g16KsrwCEv5c
+         8Y/N/U3cco7PnPgR8W6jhiSP4yql+efFOFLttYP61kKD1bUyuy3bE5L9k7EigkDT/w
+         A+0hpw+Pop1w/NKnHrbDqGchdUorJJw76ES7D28z+g77QTEwDrfWub91q/NheLOVtb
+         F+i3gV7aCMQ8g==
+Date:   Thu, 25 Nov 2021 10:32:58 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "linux@roeck-us.net" <linux@roeck-us.net>,
+        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+        "linux@rempel-privat.de" <linux@rempel-privat.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>
+Subject: Re: [PATCH V5 0/8] dt-bindinds/dts: support i.MX8ULP
+Message-ID: <YZ9YSkdpXIK/LwKh@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "linux@roeck-us.net" <linux@roeck-us.net>,
+        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+        "linux@rempel-privat.de" <linux@rempel-privat.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>
+References: <20211120113454.785997-1-peng.fan@oss.nxp.com>
+ <DU0PR04MB9417A88AC1808CBEE76A27E188629@DU0PR04MB9417.eurprd04.prod.outlook.com>
+ <DU0PR04MB94178AB147B5DA8C32F1531388629@DU0PR04MB9417.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Tsd6oFXSzdI9VGy6"
 Content-Disposition: inline
-In-Reply-To: <20211119175052.401771-1-paul@crapouillou.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <DU0PR04MB94178AB147B5DA8C32F1531388629@DU0PR04MB9417.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 05:50:52PM +0000, Paul Cercueil wrote:
-> Just like before with __bswapdi2(), for MIPS pre-boot when
-> CONFIG_KERNEL_ZSTD=y the decompressor function will use __ashldi3(), so
-> the object file should be added to the target object file.
-> 
-> Fixes these build errors:
-> 
-> mipsel-linux-ld: arch/mips/boot/compressed/decompress.o: in function `FSE_buildDTable_internal':
-> decompress.c:(.text.FSE_buildDTable_internal+0x48): undefined reference to `__ashldi3'
-> mipsel-linux-ld: arch/mips/boot/compressed/decompress.o: in function `FSE_decompress_wksp_body_default':
-> decompress.c:(.text.FSE_decompress_wksp_body_default+0xa8): undefined reference to `__ashldi3'
-> mipsel-linux-ld: arch/mips/boot/compressed/decompress.o: in function `ZSTD_getFrameHeader_advanced':
-> decompress.c:(.text.ZSTD_getFrameHeader_advanced+0x134): undefined reference to `__ashldi3'
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  arch/mips/boot/compressed/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-> index 2861a05c2e0c..f27cf31b4140 100644
-> --- a/arch/mips/boot/compressed/Makefile
-> +++ b/arch/mips/boot/compressed/Makefile
-> @@ -52,7 +52,7 @@ endif
->  
->  vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o
->  
-> -vmlinuzobjs-$(CONFIG_KERNEL_ZSTD) += $(obj)/bswapdi.o
-> +vmlinuzobjs-$(CONFIG_KERNEL_ZSTD) += $(obj)/bswapdi.o $(obj)/ashldi3.o
->  
->  targets := $(notdir $(vmlinuzobjs-y))
->  
-> -- 
-> 2.33.0
 
-applied to mips-fixes.
+--Tsd6oFXSzdI9VGy6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thomas.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+> Seems there is conflict after Abel's patchset in next tree, I'll rebase.
+
+True also for the I2C patch. A rebase would be great!
+
+
+--Tsd6oFXSzdI9VGy6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGfWEcACgkQFA3kzBSg
+KbbaCg/+NnWT4wcaSbbzPB7BWeiyRxc347BdDa5okGckaD5+rWvtgMTNQ5/lyOWI
+VjfrLFYmCBLx2rznwcs6nX4ZITripFyIoDe65VMH7zcXLt/2A/LgOq544eCkbu5p
+d+NmSV7O1RhdxpRtJqm3ZtrXWZC6aq6Cbh4DJRSWkFumICD9L1HvhR5rwgLYQKRN
+wrWP4Uh1GVNqm1xZU31sScYqTykNL06Hih1xsJVGN4HFCLRJ1DsB9Bb2944WviN9
+3/NEonimQfP3n7+3jS+xS029y0P40pERJg2riauWtzgUtYaOw+JSFpWRkrIl6gz4
+OAQBeUP3hsePkHP426BJWxOKoNIUmEYkxgqDKYIaq9ahZjJe6E2amd+2rOzOdg+M
+p/fTKPg+zgQ1xKyT31cHqT9fbva0Z+dn0gGhFujWpzEHDTk6GNEeP+0ruwLavtVW
+kYmu5Bjho/ly7VtmZwRQ3/qqW87HdX9rtBQcNFQhCBQVxl+zyI0N03zXRMTmuXYa
+Y5ZhZqHUG5al40IGDPfYG0gp+JPkmyIRby7iUNP9I2VWQPvdiIq8MS7VWUsHZz21
+LINJOQ9/YqEAd3h1ufi2jOYBc0Jgx4EMshxxyFp0VuAsWEzW1TS72nnK30nF4Hl2
+fS+y5rpZkxjIIUTYLGF0m2ypjkvw4ffxFDDsaBkqoM87/DI/i4g=
+=8HuN
+-----END PGP SIGNATURE-----
+
+--Tsd6oFXSzdI9VGy6--
