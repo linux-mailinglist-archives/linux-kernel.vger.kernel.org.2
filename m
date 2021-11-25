@@ -2,81 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97F045DE0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:51:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B920B45DDD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:45:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356390AbhKYPyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:54:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347283AbhKYPww (ORCPT
+        id S1356137AbhKYPsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:48:22 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:45706 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1356146AbhKYPqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:52:52 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D12C06137C
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:41:47 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id m24so4812002pls.10
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:41:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=E+3gVJ87TPbFZWDYjPvymWq4C9Jn/CIQXexBf/RfxFE=;
-        b=OPslBg6V61fKcHJNISAXSxzJyOapAeVkO89bEim7w2P6FVevpqmgeoaRfR05gh32VV
-         fykOMYoojbzB7/IySnOu9HDzIRCoEBxnMwtMHOwutXlSeCcfvHjf7WzQQ7FJMLkpOUSJ
-         f5/LlXlPXiLuw5EEYiKKNUWzZqhSiwJoIhRoFVFo0DfADo/Pt7Qe3QU8VOpswDE+45AN
-         wHOs2P6/kV67spqkSmU7+QJ0jrjR48Vmba8hkLVcBSAwK2AZWIJ3KWZVDK3u0OLyUGyh
-         XfeYwgruBPZhCriYmNYRcIXkARHI8JGhLEAJPo6QV0uh25J4OTz2Li6rWZK36kC7n7Nx
-         fQYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=E+3gVJ87TPbFZWDYjPvymWq4C9Jn/CIQXexBf/RfxFE=;
-        b=iI+wbURFwkXpB1VOYLcF3nifS1ARmf1mDDp8oLquIt/dzj4wEdQ2kotejNKzmsxCaS
-         INGAU8s7QG2CPxTxJuywcbUBVCwKbn0XIRSLjN9AHoUvmK1Lqm3yWeIQxEzHcT78gYXm
-         r50NFYGVeFL/20KIGSD1WEIwBFIU4I7UQS3Kxqwyz7USlAYctcbfl1fkLozd/ZYtCEFV
-         R2hVZe8QQXSLnDf9Cww4oi++vv84V6ILRhWzQrxB/f1CiJg0KhS+2HkFsG0j/bl3lXCv
-         pyXCOpFgJ3o6/RqaXt2JO5ECL91gvWxYCYidR9YLfPowqXOrDqrG0CMv1sLVjPetgeCz
-         WCSQ==
-X-Gm-Message-State: AOAM530ZV+ZXsM6rF95qOESrf6T/asHgCav0G7t7TPGlEBY0xq8EOqNw
-        XctFWJ+0kQBIEdTUH+dlt9AMhIXASUeNjAup786LO5To4Mg=
-X-Google-Smtp-Source: ABdhPJwPTjH7YeESvBxYQejteV3GfashlhmGLAg05JA67FCYJhco4N/aMRtJvqhnefMldIpyt5f4wYLOToDvAW3JSRk=
-X-Received: by 2002:a17:90a:2e16:: with SMTP id q22mr8293300pjd.156.1637854906398;
- Thu, 25 Nov 2021 07:41:46 -0800 (PST)
+        Thu, 25 Nov 2021 10:46:19 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1APEApQ3029076;
+        Thu, 25 Nov 2021 16:42:57 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=0Iz+5s60sQLr6dSevW6pEwhxuRykpii00GdV0s3IDOk=;
+ b=iBNLuo5MreCOWwA86U+bhH6QTU+8LqMGmUUoU/coFT5kAZ94faJjjkEpBLExep1l5nHC
+ D08a9rPHsoDDC0lmH4rE6YNT5PXgO4Hs3upbz96KWwKcsC8HnN6gYtaZABFnYog+eJMu
+ 7aSP/vMgTpwvLdI5oiQFc4YGJD+AlANW4PxJRaUys9+Bra34Z6RXPcl5A2ujjxhyLBk6
+ XSjThNlJTHU4cjikXrj4VScZR406HKiFLxND4Pk/Ncj0H/VkTaiiYBavr96Mdh1eJNPR
+ ijX0fCwdXFgix1LL3ELQqCXXCzvWRiCrCBgmKZc4wJVhHxj+hkox/GGsR/AmslKagElw bg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3cj24vcm8k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Nov 2021 16:42:57 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8AD6610002A;
+        Thu, 25 Nov 2021 16:42:56 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 82CAC23C256;
+        Thu, 25 Nov 2021 16:42:56 +0100 (CET)
+Received: from lmecxl0912.lme.st.com (10.75.127.48) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.26; Thu, 25 Nov
+ 2021 16:42:56 +0100
+Subject: Re: [PATCH 0/2] tune the HS USB PHYs on stm32mp15 eval and disco
+ boards
+To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+CC:     <robh+dt@kernel.org>, <amelie.delaunay@foss.st.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <1635175070-28722-1-git-send-email-fabrice.gasnier@foss.st.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Message-ID: <c101d5eb-00e5-7994-d503-f2a5dad61bf9@foss.st.com>
+Date:   Thu, 25 Nov 2021 16:42:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Received: by 2002:a05:6a20:6da7:b0:5e:b6a1:4900 with HTTP; Thu, 25 Nov 2021
- 07:41:45 -0800 (PST)
-From:   United Nation <unitednnation0@gmail.com>
-Date:   Thu, 25 Nov 2021 03:41:45 -1200
-Message-ID: <CAD4Ty_UFc8BGzOHX9EzjhuzU84hvV62r-EcZ2hEaRZeW4VxhCA@mail.gmail.com>
-Subject: Attention
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1635175070-28722-1-git-send-email-fabrice.gasnier@foss.st.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-25_06,2021-11-25_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attention Sir/Madam
-This is the United Nation (UN). We the United Nations (UN) Globally
-has approved (US$2.500,000)( two Million Five hundred thousand
-dollars) compensation as part of our responsibilities for humanitarian
-Aid for fighting against CoronaVirus and you are among the lucky ones.
+Hi Fabrice
 
+On 10/25/21 5:17 PM, Fabrice Gasnier wrote:
+> This series tune the HS USB PHYs on stm32mp15 eval and disco boards, now that
+> dt-bindings and drivers have been merged in [1].
+> 
+> [1] https://lore.kernel.org/all/20211015161427.220784-1-amelie.delaunay@foss.st.com/
+> 
+> Fabrice Gasnier (2):
+>    ARM: dts: stm32: tune the HS USB PHYs on stm32mp15xx-dkx
+>    ARM: dts: stm32: tune the HS USB PHYs on stm32mp157c-ev1
+> 
+>   arch/arm/boot/dts/stm32mp157c-ev1.dts  | 22 ++++++++++++++++++++++
+>   arch/arm/boot/dts/stm32mp15xx-dkx.dtsi | 16 ++++++++++++++++
+>   2 files changed, 38 insertions(+)
+> 
 
-This compensation is for the most affected countries, communities and
-families across the global. Your funds were deposited with Bank in USA
-to transfer your funds to you via Internet Banking. You have to send
-your full details as state below:with this email Address
-  ( unitednnation0@gmail.com )
-Your full names:
-Address:
-Telephone:
-Occupation:
+Series applied on stm32-next.
 
-
-
-Yours Sincerely
-Mr. Ant=C3=B3nio Guterres
-United Nations (UN)
+Thanks!
+Alex
