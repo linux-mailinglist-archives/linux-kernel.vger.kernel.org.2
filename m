@@ -2,194 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B047F45DD2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:17:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB48F45DD31
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:19:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229773AbhKYPVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:21:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236671AbhKYPTE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:19:04 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E32C06175C
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:15:52 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637853350;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jRa7iK9NQj3v9aP+fOm/dd/YjcWmm7NFeZuxQslHlUA=;
-        b=AguNhJIhQ7ga7djM4ssqvO0btNOEwRfjX/9DuKpPFA9at8QACxnSAlpB1Y+Y/7+aufuDRY
-        PVkNdPB94ODer2wUM6l9nIKvLMAmGRlIobVpGLZqfu6B/u+tJU5iVUo1SJz9SkDBXW8Fan
-        rls2WSCr2IyCfPWEfejfbCW2tdiJV9/elloPMYq3aSMCl2RVZw82y8QsR0uUWKJDypfK21
-        98bNtyVZBY26Q85JU654R/ozs59JbkV+NgigO42h+4QIKMD9Iu2vWHEcthxYT45M+4p636
-        ZO9cOz/3SlgSqXL7RgH6nk4SkkK06Et1gojvKdK/5ahoBLJD7n1DDrEHGaiAzw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637853350;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jRa7iK9NQj3v9aP+fOm/dd/YjcWmm7NFeZuxQslHlUA=;
-        b=a3b4N0U4QpEDAEKjX/YDy8YtUPDDW1bOTzhZ7dOg3ikGcYGY2hg6QnYSnkWfwwM3ndbg1Y
-        sVemkXjXrDWkmdBQ==
-To:     ira.weiny@intel.com, Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
-        linux-mm@kvack.org
-Subject: Re: [PATCH V7 05/18] x86/pks: Add PKS setup code
-In-Reply-To: <20210804043231.2655537-6-ira.weiny@intel.com>
-References: <20210804043231.2655537-1-ira.weiny@intel.com>
- <20210804043231.2655537-6-ira.weiny@intel.com>
-Date:   Thu, 25 Nov 2021 16:15:49 +0100
-Message-ID: <87ilwgl10a.ffs@tglx>
+        id S1355975AbhKYPW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:22:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349951AbhKYPU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 10:20:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0140C610A2;
+        Thu, 25 Nov 2021 15:17:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637853436;
+        bh=dPEIAEOMHWLuakIY3MSI1QOJric9yi6N226AolqdLhc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BbfxYCTks975D+rUrXPjf9YX0oLMt7qAHYr8RzD9jEpd+oimqulPV/c72KsnGRXOy
+         zbdbJ9Umn2UL5a2DHuG9lkmOw9Gs+uljky4Lzfms0JjzQBVHd+URgDrZLT0EjPJR1G
+         elfqalS5EQIEq3KBmTOeWOSH+ZXDCXs6mKGUUxPwzO8YVOdvAncGtmAJ7QEuVap3DJ
+         y60xQ6eKDikir0Ne1QjJvdXyoytDVQgmyP60lE24tqQIQVOki5b9rkP12ejw5GhhqM
+         JGYkEYneXwpsAeVSS8TOx2+UrjGliSp7SOqpQsEb81ALSrug1pzvPSiWmzjTvL/Fy1
+         X0lkVzkSvutsQ==
+Date:   Thu, 25 Nov 2021 15:17:10 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Satya Priya <quic_c_skakit@quicinc.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>, swboyd@chromium.org,
+        collinsd@codeaurora.org, subbaram@codeaurora.org,
+        Das Srinagesh <gurus@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 1/6] dt-bindings: regulator: Add
+ "regulator-min-dropout-voltage-microvolt"
+Message-ID: <YZ+o9sQpECZSrieN@sirena.org.uk>
+References: <1637314953-4215-1-git-send-email-quic_c_skakit@quicinc.com>
+ <1637314953-4215-2-git-send-email-quic_c_skakit@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="AUvJVmE/Uq40jQZU"
+Content-Disposition: inline
+In-Reply-To: <1637314953-4215-2-git-send-email-quic_c_skakit@quicinc.com>
+X-Cookie: This bag is recyclable.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03 2021 at 21:32, ira weiny wrote:
-> +#ifdef CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS
-> +
-> +void setup_pks(void);
 
-pks_setup()
+--AUvJVmE/Uq40jQZU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +#ifdef CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS
-> +
-> +static DEFINE_PER_CPU(u32, pkrs_cache);
-> +u32 __read_mostly pkrs_init_value;
-> +
-> +/*
-> + * write_pkrs() optimizes MSR writes by maintaining a per cpu cache which can
-> + * be checked quickly.
-> + *
-> + * It should also be noted that the underlying WRMSR(MSR_IA32_PKRS) is not
-> + * serializing but still maintains ordering properties similar to WRPKRU.
-> + * The current SDM section on PKRS needs updating but should be the same as
-> + * that of WRPKRU.  So to quote from the WRPKRU text:
-> + *
-> + *     WRPKRU will never execute transiently. Memory accesses
-> + *     affected by PKRU register will not execute (even transiently)
-> + *     until all prior executions of WRPKRU have completed execution
-> + *     and updated the PKRU register.
-> + */
-> +void write_pkrs(u32 new_pkrs)
+On Fri, Nov 19, 2021 at 03:12:28PM +0530, Satya Priya wrote:
 
-pkrs_write()
+> +  regulator-min-dropout-voltage-microvolt:
+> +    description: Specifies the minimum voltage in microvolts that the
+> +      parent supply regulator must output, above the output of this regulator.
 
-> +{
-> +	u32 *pkrs;
-> +
-> +	if (!static_cpu_has(X86_FEATURE_PKS))
-> +		return;
+Usually this is a fixed property of the regulator rather than something
+that varies per board - why have a DT property?
 
-  cpu_feature_enabled() if at all. Why is this function even invoked
-  when PKS is off?
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
-> +
-> +	pkrs = get_cpu_ptr(&pkrs_cache);
+--AUvJVmE/Uq40jQZU
+Content-Type: application/pgp-signature; name="signature.asc"
 
-As far as I've seen this is mostly called from non-preemptible
-regions. So that get/put pair is pointless. Stick a lockdep assert into
-the code and disable preemption at the maybe one callsite which needs
-it.
+-----BEGIN PGP SIGNATURE-----
 
-> +	if (*pkrs != new_pkrs) {
-> +		*pkrs = new_pkrs;
-> +		wrmsrl(MSR_IA32_PKRS, new_pkrs);
-> +	}
-> +	put_cpu_ptr(pkrs);
-> +}
-> +
-> +/*
-> + * Build a default PKRS value from the array specified by consumers
-> + */
-> +static int __init create_initial_pkrs_value(void)
-> +{
-> +	/* All users get Access Disabled unless changed below */
-> +	u8 consumer_defaults[PKS_NUM_PKEYS] = {
-> +		[0 ... PKS_NUM_PKEYS-1] = PKR_AD_BIT
-> +	};
-> +	int i;
-> +
-> +	consumer_defaults[PKS_KEY_DEFAULT] = PKR_RW_BIT;
-> +
-> +	/* Ensure the number of consumers is less than the number of keys */
-> +	BUILD_BUG_ON(PKS_KEY_NR_CONSUMERS > PKS_NUM_PKEYS);
-> +
-> +	pkrs_init_value = 0;
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGfqPYACgkQJNaLcl1U
+h9BnqQf/fCkxEFpBspvrs1Dfz0082VE2JMwJWaaczK5HOcvbmDy2TLz9ndOllyOO
+D2KWB2le9tlimmNIxJgo+qNvNWr+TXcXo85B3JKHMDUW48EohvKwX/lRAeYvoc2C
+Lxadrz73Gq1tEkWRKEpoggxmrTt+VABH8mPpSkwVQggkTONHhL4GREzyq+7pspLp
+EBh1EDmFH8diqjVhs8FIqsUtWH0RHJick9+Bb7iaHSd21cpv+hPVRjVEQk5/Nheh
+tQHRaVZyMySIt6G8kJgD9oS84+YpCb/mkMGCqKW/U+OwFY8rxAb6xPSlmlBeg7+Y
+mA/Qurh2uMnWDKgQo/+EWkAvGr2zDw==
+=L6I5
+-----END PGP SIGNATURE-----
 
-This needs to be cleared because the BSS might be non zero?
-
-> +	/* Fill the defaults for the consumers */
-> +	for (i = 0; i < PKS_NUM_PKEYS; i++)
-> +		pkrs_init_value |= PKR_VALUE(i, consumer_defaults[i]);
-
-Also PKR_RW_BIT is a horrible invention:
-
-> +#define PKR_RW_BIT 0x0
->  #define PKR_AD_BIT 0x1
->  #define PKR_WD_BIT 0x2
->  #define PKR_BITS_PER_PKEY 2
-
-This makes my brain spin. How do you fit 3 bits into 2 bits per key?
-That's really non-intuitive.
-
-PKR_RW_ENABLE		0x0
-PKR_ACCESS_DISABLE	0x1
-PKR_WRITE_DISABLE	0x2
-
-makes it obvious what this is about, no?
-
-Aside of that, the function which set's up the init value is really
-bogus. As you explained in the cover letter a kernel user has to:
-
-   1) Claim an index in the enum
-   2) Add a default value to the array in that function
-
-Seriously? How is that any better than doing:
-
-#define PKS_KEY0_DEFAULT	PKR_RW_ENABLE
-#define PKS_KEY1_DEFAULT	PKR_ACCESS_DISABLE
-...
-#define PKS_KEY15_DEFAULT	PKR_ACCESS_DISABLE
-
-and let the compiler construct pkrs_init_value?
-
-TBH, it's not and this function has to be ripped out in case that you
-need a dynamic allocation of keys some day. So what is this buying us
-aside of horrible to read and utterly pointless code?
-
-> +	return 0;
-> +}
-> +early_initcall(create_initial_pkrs_value);
-> +
-> +/*
-> + * PKS is independent of PKU and either or both may be supported on a CPU.
-> + * Configure PKS if the CPU supports the feature.
-> + */
-> +void setup_pks(void)
-> +{
-> +	if (!cpu_feature_enabled(X86_FEATURE_PKS))
-> +		return;
-> +
-> +	write_pkrs(pkrs_init_value);
-
-Is the init value set up _before_ this function is invoked for the first
-time?
-
-Thanks,
-
-        tglx
+--AUvJVmE/Uq40jQZU--
