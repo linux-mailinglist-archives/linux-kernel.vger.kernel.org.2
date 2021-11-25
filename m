@@ -2,143 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B82D745D59C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:38:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D19945D59F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:38:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236817AbhKYHlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 02:41:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236816AbhKYHjJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 02:39:09 -0500
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729A4C06175C
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 23:35:58 -0800 (PST)
-Received: by mail-qv1-xf31.google.com with SMTP id a24so3823571qvb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 23:35:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KNC33UOfOEobGSH4D2BAGe1O2xKscv36EvgOg4IHB58=;
-        b=Rpw/69UAWSNd8StTv2nscHlaIMcTUiobMTp+ftwkGCsaQtyLxOr7gGSWKoYZgshUWk
-         ewf72wr6GPbS5wtHpXlTgrhNhl+T97U/m5QPSD6tac5ZJR/aUUYbszs5FGZgW4ncfiBa
-         +MrtrH9UwcSQcT3C6GtR9iK8GlmmoOJ45yoDg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KNC33UOfOEobGSH4D2BAGe1O2xKscv36EvgOg4IHB58=;
-        b=rVBiBArxqz78gL0LneT1lT6YDK/X0Gqxu8lP4gr/ypM/3tMsucw3l87IJTW5lmYML2
-         ynR/ECrdekPB5cYfJcEDWrBv9xus4yBYSaLz6HpDbhcrbRD1nzpX2YHmSQWFSY6cCLp4
-         4zIrlZ3J2qKv7oRN7isAlEewD7GZUcFGRycnm3KH6tDWARyhbA7elEBePhbAWQivr7uT
-         SRlLsqmKOUV7qkLBcI6c6IP8h2Bt4WzMkmB/GZEOwe1tKzeOYgEbJdtezPLOCE/OZXb6
-         FVe5J2zfvPhwnc758Eo9Xeljn+ZGJ5nYWzsEIMuR214w54aR66gotXfRy8CMslZGN5+Z
-         4nOA==
-X-Gm-Message-State: AOAM531HAF6QGZ+FyALesqiJEcBRSeyAovNMxyWw3j59Z5otnlzZmIAH
-        IRVE2Wq/CX4r0feBQTxNAud++b6nIueY+g==
-X-Google-Smtp-Source: ABdhPJyb+EQhtRngBwv2zSt3hsc/Z7ZNobpxY9hg/hggWnq/iRbE0pUGmRBIJpcac5JWpUV5Ejyp0g==
-X-Received: by 2002:a05:6214:400e:: with SMTP id kd14mr3016671qvb.72.1637825757282;
-        Wed, 24 Nov 2021 23:35:57 -0800 (PST)
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com. [209.85.222.169])
-        by smtp.gmail.com with ESMTPSA id m20sm1077233qkp.112.2021.11.24.23.35.56
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 23:35:56 -0800 (PST)
-Received: by mail-qk1-f169.google.com with SMTP id 132so9831312qkj.11
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 23:35:56 -0800 (PST)
-X-Received: by 2002:a25:ccd0:: with SMTP id l199mr4122013ybf.39.1637825755668;
- Wed, 24 Nov 2021 23:35:55 -0800 (PST)
+        id S239960AbhKYHlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 02:41:50 -0500
+Received: from mail.ispras.ru ([83.149.199.84]:38090 "EHLO mail.ispras.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237334AbhKYHji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 02:39:38 -0500
+Received: from mail.ispras.ru (unknown [83.149.199.84])
+        by mail.ispras.ru (Postfix) with ESMTPSA id C499440D403E;
+        Thu, 25 Nov 2021 07:36:22 +0000 (UTC)
 MIME-Version: 1.0
-References: <20211123112104.3530135-1-hsinyi@chromium.org> <75ea1026-63e5-165a-9e07-27b5ac4c7579@arm.com>
-In-Reply-To: <75ea1026-63e5-165a-9e07-27b5ac4c7579@arm.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Thu, 25 Nov 2021 16:35:43 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5AA3XCqxOSdQOOCMEdByDKRz5J9vWB0QghO2SSCqOvQBQ@mail.gmail.com>
-Message-ID: <CAAFQd5AA3XCqxOSdQOOCMEdByDKRz5J9vWB0QghO2SSCqOvQBQ@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Allow restricted-dma-pool to customize IO_TLB_SEGSIZE
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        - <devicetree-spec@vger.kernel.org>, devicetree@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, senozhatsky@chromium.org
-Content-Type: text/plain; charset="UTF-8"
+Date:   Thu, 25 Nov 2021 10:36:22 +0300
+From:   baskov@ispras.ru
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>, X86 ML <x86@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC 0/5] Handle UEFI NX-restricted page tables
+In-Reply-To: <CAMj1kXGzdMfj0bdNFODFZ8jfo0iMaZ5SOfueciwtY7Y4V5G2JQ@mail.gmail.com>
+References: <20211110104613.23881-1-baskov@ispras.ru>
+ <CAMj1kXGzdMfj0bdNFODFZ8jfo0iMaZ5SOfueciwtY7Y4V5G2JQ@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.4
+Message-ID: <1b013e77ec3d4c6288408b3caff093ef@ispras.ru>
+X-Sender: baskov@ispras.ru
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
 
-On Tue, Nov 23, 2021 at 8:59 PM Robin Murphy <robin.murphy@arm.com> wrote:
->
-> On 2021-11-23 11:21, Hsin-Yi Wang wrote:
-> > Default IO_TLB_SEGSIZE (128) slabs may be not enough for some use cases.
-> > This series adds support to customize io_tlb_segsize for each
-> > restricted-dma-pool.
-> >
-> > Example use case:
-> >
-> > mtk-isp drivers[1] are controlled by mtk-scp[2] and allocate memory through
-> > mtk-scp. In order to use the noncontiguous DMA API[3], we need to use
-> > the swiotlb pool. mtk-scp needs to allocate memory with 2560 slabs.
-> > mtk-isp drivers also needs to allocate memory with 200+ slabs. Both are
-> > larger than the default IO_TLB_SEGSIZE (128) slabs.
->
-> Are drivers really doing streaming DMA mappings that large? If so, that
-> seems like it might be worth trying to address in its own right for the
-> sake of efficiency - allocating ~5MB of memory twice and copying it back
-> and forth doesn't sound like the ideal thing to do.
->
-> If it's really about coherent DMA buffer allocation, I thought the plan
-> was that devices which expect to use a significant amount and/or size of
-> coherent buffers would continue to use a shared-dma-pool for that? It's
-> still what the binding implies. My understanding was that
-> swiotlb_alloc() is mostly just a fallback for the sake of drivers which
-> mostly do streaming DMA but may allocate a handful of pages worth of
-> coherent buffers here and there. Certainly looking at the mtk_scp
-> driver, that seems like it shouldn't be going anywhere near SWIOTLB at all.
+Hello,
 
-First, thanks a lot for taking a look at this patch series.
+I apologize for delayed reply.
 
-The drivers would do streaming DMA within a reserved region that is
-the only memory accessible to them for security reasons. This seems to
-exactly match the definition of the restricted pool as merged
-recently.
+The system in question runs in a firmware that tries to achieve
+complete W^X protection. Both loader code and loader data
+are not executable, so the suggested approach does not work.
+If you would like to test this, you can set
+the PcdDxeNxMemoryProtectionPolicy in any firmware available to you.
 
-The new dma_alloc_noncontiguous() API would allow allocating suitable
-memory directly from the pool, which would eliminate the need to copy.
-However, for a restricted pool, this would exercise the SWIOTLB
-allocator, which currently suffers from the limitation as described by
-Hsin-Yi. Since the allocator in general is quite general purpose and
-already used for coherent allocations as per the current restricted
-pool implementation, I think it indeed makes sense to lift the
-limitation, rather than trying to come up with yet another thing.
+As a justification for the approach itself, I can use the fact that
+UEFI specification says nothing about the ability to execute
+self-allocated EfiLoaderCode or any other types besides the areas
+allocated by the firmware for UEFI Images. In fact, Table 7-5
+explicitly states that EfiLoaderCode is used for:
 
-Best regards,
-Tomasz
+> The code portions of a loaded UEFI application.
 
->
-> Robin.
->
-> > [1] (not in upstream) https://patchwork.kernel.org/project/linux-media/cover/20190611035344.29814-1-jungo.lin@mediatek.com/
-> > [2] https://elixir.bootlin.com/linux/latest/source/drivers/remoteproc/mtk_scp.c
-> > [3] https://patchwork.kernel.org/project/linux-media/cover/20210909112430.61243-1-senozhatsky@chromium.org/
-> >
-> > Hsin-Yi Wang (3):
-> >    dma: swiotlb: Allow restricted-dma-pool to customize IO_TLB_SEGSIZE
-> >    dt-bindings: Add io-tlb-segsize property for restricted-dma-pool
-> >    arm64: dts: mt8183: use restricted swiotlb for scp mem
-> >
-> >   .../reserved-memory/shared-dma-pool.yaml      |  8 +++++
-> >   .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi |  4 +--
-> >   include/linux/swiotlb.h                       |  1 +
-> >   kernel/dma/swiotlb.c                          | 34 ++++++++++++++-----
-> >   4 files changed, 37 insertions(+), 10 deletions(-)
-> >
+While we do not think it should be interpreted as one cannot allocate
+such areas at all, it is clear that there are no guarantees about the
+other use cases and permissions of the allocations of this type besides
+those stated by 2.3.4:
+
+> Paging mode is enabled and any memory space defined by the UEFI memory
+> map is identity mapped (virtual address equals physical address),
+> although the attributes of certain regions may not have all read,
+> write, and execute attributes or be unmarked for purposes of platform
+> protection.
+
+Long story short, the kernel is not allowed to allocate such areas and
+assume they are executable, it should do paging itself, and the changes
+here address that. For the reference, Windows adheres to this convention
+and works fine on the target system.
+
+Thanks,
+Baskov Evgeniy
+
+On 2021-11-10 14:11, Ard Biesheuvel wrote:
+> On Wed, 10 Nov 2021 at 11:56, Baskov Evgeniy <baskov@ispras.ru> wrote:
+>> 
+>> Note, that this patch series is RFC, since it is yet untested
+>> and possibly incompatible with AMD SEV and related extensions.
+>> 
+>> The UEFI specification states that certain memory regions may
+>> not have every permission, i.e. may not be writable or executable.
+>> 
+>> Furthermore there exist some implementations (at least on i386/x86_64)
+>> that restrict execution of memory regions expected by the kernel to
+>> be executable. E.g. first megabyte of address space, where trampoline
+>> for switching between 4/5 level paging is placed and memory regions,
+>> allocated as loader data.
+>> 
+>> This patch series allows Linux kernel to boot on such UEFI
+>> implementations on i386 and x86_64.
+>> 
+>> The simplest way to achieve that on i386 is to disable paging
+>> before jumping to potentially relocated code.
+>> 
+>> x86_64, on the other hand, does not allow disabling paging so it
+>> is required to build temporary page tables containing memory regions
+>> required for Linux kernel to boot with appropriate access permissions.
+>> 
+> 
+> Hello Baskov,
+> 
+> To be honest, I am truly not a fan of this approach.
+> 
+> Which systems is this issue occurring on? Did you try something like
+> the below to allocate executable memory explicitly?
+> 
+> 
+> diff --git a/drivers/firmware/efi/libstub/relocate.c
+> b/drivers/firmware/efi/libstub/relocate.c
+> index 8ee9eb2b9039..b73012a7bcdc 100644
+> --- a/drivers/firmware/efi/libstub/relocate.c
+> +++ b/drivers/firmware/efi/libstub/relocate.c
+> @@ -80,7 +80,7 @@ efi_status_t efi_low_alloc_above(unsigned long size,
+> unsigned long align,
+>                         continue;
+> 
+>                 status = efi_bs_call(allocate_pages, 
+> EFI_ALLOCATE_ADDRESS,
+> -                                    EFI_LOADER_DATA, nr_pages, 
+> &start);
+> +                                    EFI_LOADER_CODE, nr_pages, 
+> &start);
+>                 if (status == EFI_SUCCESS) {
+>                         *addr = start;
+>                         break;
+> @@ -146,7 +146,7 @@ efi_status_t efi_relocate_kernel(unsigned long 
+> *image_addr,
+>          */
+>         nr_pages = round_up(alloc_size, EFI_ALLOC_ALIGN) / 
+> EFI_PAGE_SIZE;
+>         status = efi_bs_call(allocate_pages, EFI_ALLOCATE_ADDRESS,
+> -                            EFI_LOADER_DATA, nr_pages, &efi_addr);
+> +                            EFI_LOADER_CODE, nr_pages, &efi_addr);
+>         new_addr = efi_addr;
+>         /*
+>          * If preferred address allocation failed allocate as low as
+
+
