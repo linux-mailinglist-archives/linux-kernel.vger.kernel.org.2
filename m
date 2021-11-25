@@ -2,158 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9849345D55F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:25:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A09E45D568
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:27:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232125AbhKYH2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 02:28:44 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:14981 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234638AbhKYH0o (ORCPT
+        id S234040AbhKYHaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 02:30:39 -0500
+Received: from mout.kundenserver.de ([212.227.126.135]:44837 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230441AbhKYH2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 02:26:44 -0500
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4J08Rt0yjczZdHS;
-        Thu, 25 Nov 2021 15:20:58 +0800 (CST)
-Received: from dggema774-chm.china.huawei.com (10.1.198.216) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.20; Thu, 25 Nov 2021 15:23:31 +0800
-Received: from [10.67.102.197] (10.67.102.197) by
- dggema774-chm.china.huawei.com (10.1.198.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.20; Thu, 25 Nov 2021 15:23:31 +0800
-Subject: Re: [PATCH v2 2/2] powerpc:85xx: fix timebase sync issue when
- CONFIG_HOTPLUG_CPU=n
-To:     Martin Kennedy <hurricos@gmail.com>
-CC:     <Yuantian.Tang@feescale.com>, <benh@kernel.crashing.org>,
-        <chenhui.zhao@freescale.com>, <chenjianguo3@huawei.com>,
-        <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <liuwenliang@huawei.com>,
-        <mpe@ellerman.id.au>, <oss@buserror.net>,
-        <paul.gortmaker@windriver.com>, <paulus@samba.org>,
-        <stable@vger.kernel.org>, <wangle6@huawei.com>,
-        "Christian Lamparter" <chunkeey@gmail.com>
-References: <CANA18Uxu5dUYOkDmXpYtLc8iQuAYMv1UujkmEo1bkhm3CqxMAA@mail.gmail.com>
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-Message-ID: <3c7523a3-2de2-3a76-2f46-9e4cf38f40b6@huawei.com>
-Date:   Thu, 25 Nov 2021 15:23:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0.1
+        Thu, 25 Nov 2021 02:28:38 -0500
+Received: from mail-wm1-f42.google.com ([209.85.128.42]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1Mj8Vx-1mBIfr28dJ-00fCq6; Thu, 25 Nov 2021 08:25:26 +0100
+Received: by mail-wm1-f42.google.com with SMTP id p18so4678724wmq.5;
+        Wed, 24 Nov 2021 23:25:26 -0800 (PST)
+X-Gm-Message-State: AOAM530QiXbrOp0z0nvMhOS6QXnPigqBrxhdIMaNXNhNuvQJwshOFc2l
+        yNJ0sG9A3dnOi55NHTbjVLJTKbI1g03V9rGsV+c=
+X-Google-Smtp-Source: ABdhPJyy6ATv8tSD9TCRzguY89cRW48KZUM5hIv/qv6+Bes6O17s3r/PNVx7dDZUxKeck8kOsUP90+k3XKHwUJxujn0=
+X-Received: by 2002:a1c:770e:: with SMTP id t14mr4480662wmi.173.1637825126097;
+ Wed, 24 Nov 2021 23:25:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CANA18Uxu5dUYOkDmXpYtLc8iQuAYMv1UujkmEo1bkhm3CqxMAA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.197]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema774-chm.china.huawei.com (10.1.198.216)
-X-CFilter-Loop: Reflected
+References: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
+ <41206fc7-f8ce-98aa-3718-ba3e1431e320@landley.net> <CAK8P3a3pQW59NVF=5P+ZiBjNJmnWh+iTZUHvqHBrXkHA6pMd4g@mail.gmail.com>
+ <7d5a5249-40ee-9a42-c6a0-a5defa3703c1@landley.net>
+In-Reply-To: <7d5a5249-40ee-9a42-c6a0-a5defa3703c1@landley.net>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 25 Nov 2021 08:25:09 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0XGz=F0nPAW8T-VvfH5bPuGTNiPZ18N+Z6Sj_M_6TrPA@mail.gmail.com>
+Message-ID: <CAK8P3a0XGz=F0nPAW8T-VvfH5bPuGTNiPZ18N+Z6Sj_M_6TrPA@mail.gmail.com>
+Subject: Re: spinlock.c:306:9: error: implicit declaration of function '__raw_write_lock_nested'
+To:     Rob Landley <rob@landley.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Galbraith <umgwanakikbuti@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, lkft-triage@lists.linaro.org,
+        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:PV3UB1U451OsVkwm7gsFutWlYpQna78TOwDYqoGTBfGmnOmrhUK
+ RKIqTED0/QIE8zWbbffyvZblhc0Wj8nlB5mi3FzE+RpPj5gxqiP8VHd7VsxCIHBjbD/REkp
+ ZXzdzLJM/xLf8vKfXYw/KayabTkgQ0qEtc2fkST1iHVdQMnqfslm38bdjnTXEIHHeANhJek
+ sORQv3QcLGad/9PH1GKfg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lBeAplpGVPg=:R7AxkFhqoIjh/THHy0oFZN
+ NZzEH6jh/djMrbqiNQpuvdONzGyFK/2p0KBqavu1UJghlvkkNQ6KPh0WuuJxzpbQZViLDVnBt
+ yhMINBmSREPWLI3+4/xDV0aZfFO6NxdYUJ6MPu2rn8W7B6abrreOojuJrQkS5ZaWIvDv8vSwB
+ Y7VKNtPDfdGPXjc92nY1yxO4PGh1Lj9DxhdwnJRFU1iYAc0RY454kyglLM8gZvXueO6HYlE9f
+ Pi/f5t37H5h9riFrij1A1w9hR8aYPnVRWXIoVNLTf1pK/7qFpkJlpbPs4OYHSX8ANih0gmjDl
+ KYCLY85QZYpB6pu0zZATHt4ZSGvADwViB9aSXu/Z5y3B6KuFgA1TIsW34GcVuwt9Xg+j+2DaQ
+ G0KaxSiPcPW6RnKLZ3LaS+XoWRhjsZCkhwlae5LVi52stQrByxN2JQc9qhdfOKdu4EgfEJbvQ
+ IWLyEihXK13CntZd2a/sztOJ9Tms2MFSFvrKP+/EatH22WYtYRyNUu2DpXcHBSoR3KwDkFwTd
+ +ZCa4+doS7WstuTOQQdVMZ9B+T0E9Kwwz8N+idg+9WyWM4NP8lSHp4HwUETzWNSmIV7b6KK38
+ 3EZYJ0ce3FpE2qbtrlvhwCY2G+nfyohQWxYXGt/R2YxnrnNMpc3FlhIGSimbGd99d3acLe887
+ pLwaUIoD5r7QhP3TTyDMjmwOHEdKGLtqoFJnS2UGz3qCCMdcgsKD1VO+YgitnxosmziKafqGT
+ W5bKMoHALL4C2WXqEdRXKXSy/i/fqTzRWBTjUj68hnvZkaFB/wh7iEhzexD5QhDzOCPRQIBWX
+ MpA9hT+S6fbldm+525x6vhNtkhe8Oce7UOCAc3TKzjllDM8FyQ=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/11/25 12:20, Martin Kennedy wrote:
-> Hi there,
-> 
-> I have bisected OpenWrt master, and then the Linux kernel down to this
-> change, to confirm that this change causes a kernel panic on my
-> P1020RDB-based, dual-core Aerohive HiveAP 370, at initialization of
-> the second CPU:
-> 
-> :
-> [    0.000000] Linux version 5.10.80 (labby@lobon)
-> (powerpc-openwrt-linux-musl-gcc (OpenWrt GCC 11.2.0
-> r18111+1-ebb6f9287e) 11.2.0, GNU ld (GNU Binutils) 2.37) #0 SMP Thu
-> Nov 25 02:49:35 2021
-> [    0.000000] Using P1020 RDB machine description
-> :
-> [    0.627233] smp: Bringing up secondary CPUs ...
-> [    0.681659] kernel tried to execute user page (0) - exploit attempt? (uid: 0)
-> [    0.766618] BUG: Unable to handle kernel instruction fetch (NULL pointer?)
-> [    0.848899] Faulting instruction address: 0x00000000
-> [    0.908273] Oops: Kernel access of bad area, sig: 11 [#1]
-> [    0.972851] BE PAGE_SIZE=4K SMP NR_CPUS=2 P1020 RDB
-> [    1.031179] Modules linked in:
-> [    1.067640] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.80 #0
-> [    1.139507] NIP:  00000000 LR: c0021d2c CTR: 00000000
-> [    1.199921] REGS: c1051cf0 TRAP: 0400   Not tainted  (5.10.80)
-> [    1.269705] MSR:  00021000 <CE,ME>  CR: 84020202  XER: 00000000
-> [    1.340534]
-> [    1.340534] GPR00: c0021cb8 c1051da8 c1048000 00000001 00029000
-> 00000000 00000001 00000000
-> [    1.340534] GPR08: 00000001 00000000 c08b0000 00000040 22000208
-> 00000000 c00032c4 00000000
-> [    1.340534] GPR16: 00000000 00000000 00000000 00000000 00000000
-> 00000000 00029000 00000001
-> [    1.340534] GPR24: 1ffff240 20000000 dffff240 c080a1f4 00000001
-> c08ae0a8 00000001 dffff240
-> [    1.758220] NIP [00000000] 0x0
-> [    1.794688] LR [c0021d2c] smp_85xx_kick_cpu+0xe8/0x568
-> [    1.856126] Call Trace:
-> [    1.885295] [c1051da8] [c0021cb8] smp_85xx_kick_cpu+0x74/0x568 (unreliable)
-> [    1.968633] [c1051de8] [c0011460] __cpu_up+0xc0/0x228
-> [    2.029038] [c1051e18] [c0031bbc] bringup_cpu+0x30/0x224
-> [    2.092572] [c1051e48] [c0031f3c] cpu_up.constprop.0+0x180/0x33c
-> [    2.164443] [c1051e88] [c00322e8] bringup_nonboot_cpus+0x88/0xc8
-> [    2.236326] [c1051eb8] [c07e67bc] smp_init+0x30/0x78
-> [    2.295698] [c1051ed8] [c07d9e28] kernel_init_freeable+0x118/0x2a8
-> [    2.369641] [c1051f18] [c00032d8] kernel_init+0x14/0x124
-> [    2.433176] [c1051f38] [c0010278] ret_from_kernel_thread+0x14/0x1c
-> [    2.507125] Instruction dump:
-> [    2.542541] XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
-> XXXXXXXX XXXXXXXX
-> [    2.635242] XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
-> XXXXXXXX XXXXXXXX
-> [    2.727952] ---[ end trace 9b796a4bafb6bc14 ]---
-> [    2.783149]
-> [    3.800879] Kernel panic - not syncing: Fatal exception
-> [    3.862353] Rebooting in 1 seconds..
-> [    5.905097] System Halted, OK to turn off power
-> 
-> Without this patch, the kernel no longer panics:
-> 
-> [    0.627232] smp: Bringing up secondary CPUs ...
-> [    0.681857] smp: Brought up 1 node, 2 CPUs
-> 
-> Here is the kernel configuration for this built kernel:
-> https://git.openwrt.org/?p=openwrt/openwrt.git;a=blob_plain;f=target/linux/mpc85xx/config-5.10;hb=HEAD
-> 
-> In case a force-push is needed for the source repository
-> (https://github.com/Hurricos/openwrt/commit/ad19bdfc77d60ee1c52b41bb4345fdd02284c4cf),
-> here is the device tree for this board:
-> https://paste.c-net.org/TrousersSliced
-> 
-> Martin
-> .
-> 
-When CONFIG_FSL_PMC is set to n, cpu_up_prepare is not assigned to 
-mpc85xx_pm_ops. I suspect that this is the cause of the current null 
-pointer access.
-I do not have the corresponding board test environment. Can you help me 
-to test whether the following patch solves the problem?
+On Thu, Nov 25, 2021 at 12:38 AM Rob Landley <rob@landley.net> wrote:
+> On 11/24/21 1:49 AM, Arnd Bergmann wrote:
+> > On Wed, Nov 24, 2021 at 8:31 AM Rob Landley <rob@landley.net> wrote:
 
-diff --git a/arch/powerpc/platforms/85xx/smp.c 
-b/arch/powerpc/platforms/85xx/smp.c
-index 83f4a6389a28..d7081e9af65c 100644
---- a/arch/powerpc/platforms/85xx/smp.c
-+++ b/arch/powerpc/platforms/85xx/smp.c
-@@ -220,7 +220,7 @@ static int smp_85xx_start_cpu(int cpu)
-         local_irq_save(flags);
-         hard_irq_disable();
+> > Did you test clone3?
+>
+> Haven't got anything that's using it (musl-libc doesn't know about it yet) but
+> it looked straightforward? (Unlike the #ifdef stack around the previous clone...)
+>
+> I can try building tools/testing/selftests/clone3 if you like, but for some
+> reason the clone3 tests want -lcap which isn't in my cross compiler. (Because to
+> test a clone system call, you need to manipulate capability bits. Of course.)
+> Right, comment out the LDLIBS line in the makefile and the first 3 built, let's
+> try those... Hmmm, it's saying the syscall isn't supported, because it's using
+> syscall.h out of the cross compiler headers (not THIS kernel's #includes) which
+> of course doesn't have it, and then clone3_selftests.h falls back to:
+>
+> #ifndef __NR_clone3
+> #define __NR_clone3 -1
+> #endif
+>
+> Right, stick a 435 in there and... it's still skipping it. Why is it still
+> skipping it... because the RUNTIME syscall is returning ENOSYS. Ok, I have to go
+> stick printk() calls into the kernel. (Do I have to #define those
+> #YES_I_WANT_THIS_SYSCALL_WHY_WOULDNT_I macros? Hmmm...)
 
--   if (qoriq_pm_ops)
-+ if (qoriq_pm_ops && qoriq_pm_ops->cpu_up_prepare)
-                 qoriq_pm_ops->cpu_up_prepare(cpu);
+This specific syscall is protected by a macro so it doesn't get implicitly
+enabled without architecture specific review for those architectures using
+include/uapi/asm-generic/unistd.h.
 
-         /* if cpu is not spinning, reset it */
-@@ -292,7 +292,7 @@ static int smp_85xx_kick_cpu(int nr)
-                 booting_thread_hwid = cpu_thread_in_core(nr);
-                 primary = cpu_first_thread_sibling(nr);
+> > This needs a custom wrapper on most architectures
+> > to have sensible calling conventions.
+>
+> Define "sensible" in this context? It's a new 2 argument syscall? (Do you mean a
+> libc wrapper?)
+>
+> > If sh doesn't need it, that should
+> > be explained in the changelog text.
+>
+> I'm happy to try to fix stuff up, but I don't understand the objection. Does it
+> do something other than what the old clone did, except without the need to pass
+> more arguments than we necessarily have registers defined for? (Calls the same
+> clone plumbing, which should call back into arch/sh/kernel/process_32.c already...?)
+>
+> The most recent clone3 arch addition was commit 59a4e0d5511b which also just
+> pulled in the generic version. (Via #define NO_REALLY_I_WANT_THIS_SYSCALL rather
+> than editing the tbl file? Looks like I've got some reading to do...)
 
--           if (qoriq_pm_ops)
-+         if (qoriq_pm_ops && qoriq_pm_ops->cpu_up_prepare)
-                         qoriq_pm_ops->cpu_up_prepare(nr);
+The best reference I could find is:
 
-                 /*
+https://lore.kernel.org/linux-api/20190604160944.4058-2-christian@brauner.io/
 
+If fork() and clone() don't need special handling on arch/sh, then
+clone3 shouldn't
+need it either, unless the existing ones are also wrong. It looks like
+some architectures
+override these to avoid leaking register state from the kernel to the
+child process.
 
+       Arnd
