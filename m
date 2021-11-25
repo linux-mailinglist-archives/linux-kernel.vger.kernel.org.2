@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5994B45E062
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 19:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2B445E02E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 19:03:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356708AbhKYSJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 13:09:14 -0500
+        id S238512AbhKYSG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 13:06:57 -0500
 Received: from pegase2.c-s.fr ([93.17.235.10]:40331 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237079AbhKYSG5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 13:06:57 -0500
+        id S1348546AbhKYSEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 13:04:55 -0500
 Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4J0QTt2PNZz9sSx;
-        Thu, 25 Nov 2021 18:53:38 +0100 (CET)
+        by localhost (Postfix) with ESMTP id 4J0QTs10qjz9sSs;
+        Thu, 25 Nov 2021 18:53:37 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from pegase2.c-s.fr ([172.26.127.65])
         by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id LPQHkHushite; Thu, 25 Nov 2021 18:53:38 +0100 (CET)
+        with ESMTP id v6aAk9oeh5-y; Thu, 25 Nov 2021 18:53:37 +0100 (CET)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4J0QTm73X0z9sT3;
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4J0QTm735lz9sSx;
         Thu, 25 Nov 2021 18:53:32 +0100 (CET)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E03648B763;
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E18958B77E;
         Thu, 25 Nov 2021 18:53:32 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id sjDGrJXyZpbo; Thu, 25 Nov 2021 18:53:32 +0100 (CET)
+        with ESMTP id J1-XXP08DUs7; Thu, 25 Nov 2021 18:53:32 +0100 (CET)
 Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.227])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2C0968B786;
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 33FB48B788;
         Thu, 25 Nov 2021 18:53:32 +0100 (CET)
 Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1APHrLZR385543
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1APHrLUa385547
         (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
         Thu, 25 Nov 2021 18:53:21 +0100
 Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1APHrLos385542;
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1APHrLjB385546;
         Thu, 25 Nov 2021 18:53:21 +0100
 X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
@@ -46,110 +46,147 @@ To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
 Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
         linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-mm@kvack.org
-Subject: [PATCH v2 rebased 8/9] powerpc/mm: Properly randomise mmap with slices
-Date:   Thu, 25 Nov 2021 18:52:57 +0100
-Message-Id: <31a66d870133f44c30ce5dc19a72de1730fe8ec1.1637862579.git.christophe.leroy@csgroup.eu>
+Subject: [PATCH v2 rebased 9/9] powerpc: Simplify and move arch_randomize_brk()
+Date:   Thu, 25 Nov 2021 18:52:58 +0100
+Message-Id: <27281d506c4c1705143516e5f2558f775c3cfbe3.1637862579.git.christophe.leroy@csgroup.eu>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <cover.1637862579.git.christophe.leroy@csgroup.eu>
 References: <cover.1637862579.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1637862777; l=3498; s=20211009; h=from:subject:message-id; bh=ngfeg/2tmEpq6TE0+FDDvF+lIoivpzUM2irZRsGVREQ=; b=9Pe0efXJOltbYJ82HdElYsMUvhI0Nr68/09R0u1WqH+n0DchFPoEhiBUvFf9Y1DtfxuQgZCRRrpi S6RvOmDVDBMjXPDRTKWXafuYsO4DZ+gIC3zR33dzsY0Op9o5Jd1n
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1637862777; l=4141; s=20211009; h=from:subject:message-id; bh=8tm/fqiMg9uYSM5VnoNA37ImSq9p8NMXx1XalKNqtIA=; b=nnGiMZN2zYzBJjmKb87nUq4f2ZbYOCT7sUIKO9hYgqY1U93QzgBna2Naf2IjYXEUt4FcTWppGRVA cExCkv8sBkS1D1BClajitXILblKt4husvxu/VKH4Lhb07+XyAFwd
 X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that powerpc switched to default topdown mmap layout,
-mm->mmap_base is properly randomised.  However
-slice_find_area_bottomup() doesn't use mm->mmap_base but
-uses the fixed TASK_UNMAPPED_BASE instead.
+arch_randomize_brk() is only needed for hash on book3s/64, for other
+platforms the one provided by the default mmap layout is good enough.
 
-slice_find_area_bottomup() being used as a fallback to
-slice_find_area_topdown(), it can't use mm->mmap_base
-directly.
+Move it to hash_utils.c and use randomize_page() like the generic one.
 
-Instead of always using TASK_UNMAPPED_BASE as base address, leave
-it to the caller. When called from slice_find_area_topdown()
-TASK_UNMAPPED_BASE is used. Otherwise mm->mmap_base is used.
+And properly opt out the radix case instead of making an assumption
+on mmu_highuser_ssize.
+
+Also change to a 32M range like most other architectures instead of 8M.
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/mm/book3s64/slice.c | 18 +++++++-----------
- 1 file changed, 7 insertions(+), 11 deletions(-)
+v3: Add missing include <linux/elf-randomize.h>
 
-diff --git a/arch/powerpc/mm/book3s64/slice.c b/arch/powerpc/mm/book3s64/slice.c
-index 99742dde811c..997f40184e97 100644
---- a/arch/powerpc/mm/book3s64/slice.c
-+++ b/arch/powerpc/mm/book3s64/slice.c
-@@ -276,20 +276,18 @@ static bool slice_scan_available(unsigned long addr,
+v2: New
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/process.c         | 41 ---------------------------
+ arch/powerpc/mm/book3s64/hash_utils.c | 19 +++++++++++++
+ include/linux/sizes.h                 |  2 ++
+ 3 files changed, 21 insertions(+), 41 deletions(-)
+
+diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+index a64cfbb85ca2..44c4bce5211d 100644
+--- a/arch/powerpc/kernel/process.c
++++ b/arch/powerpc/kernel/process.c
+@@ -34,10 +34,8 @@
+ #include <linux/ftrace.h>
+ #include <linux/kernel_stat.h>
+ #include <linux/personality.h>
+-#include <linux/random.h>
+ #include <linux/hw_breakpoint.h>
+ #include <linux/uaccess.h>
+-#include <linux/elf-randomize.h>
+ #include <linux/pkeys.h>
+ #include <linux/seq_buf.h>
+ 
+@@ -2310,42 +2308,3 @@ unsigned long arch_align_stack(unsigned long sp)
+ 		sp -= get_random_int() & ~PAGE_MASK;
+ 	return sp & ~0xf;
  }
- 
- static unsigned long slice_find_area_bottomup(struct mm_struct *mm,
--					      unsigned long len,
-+					      unsigned long addr, unsigned long len,
- 					      const struct slice_mask *available,
- 					      int psize, unsigned long high_limit)
- {
- 	int pshift = max_t(int, mmu_psize_defs[psize].shift, PAGE_SHIFT);
--	unsigned long addr, found, next_end;
-+	unsigned long found, next_end;
- 	struct vm_unmapped_area_info info;
- 
- 	info.flags = 0;
- 	info.length = len;
- 	info.align_mask = PAGE_MASK & ((1ul << pshift) - 1);
- 	info.align_offset = 0;
 -
--	addr = TASK_UNMAPPED_BASE;
- 	/*
- 	 * Check till the allow max value for this mmap request
- 	 */
-@@ -322,12 +320,12 @@ static unsigned long slice_find_area_bottomup(struct mm_struct *mm,
- }
- 
- static unsigned long slice_find_area_topdown(struct mm_struct *mm,
--					     unsigned long len,
-+					     unsigned long addr, unsigned long len,
- 					     const struct slice_mask *available,
- 					     int psize, unsigned long high_limit)
- {
- 	int pshift = max_t(int, mmu_psize_defs[psize].shift, PAGE_SHIFT);
--	unsigned long addr, found, prev;
-+	unsigned long found, prev;
- 	struct vm_unmapped_area_info info;
- 	unsigned long min_addr = max(PAGE_SIZE, mmap_min_addr);
- 
-@@ -335,8 +333,6 @@ static unsigned long slice_find_area_topdown(struct mm_struct *mm,
- 	info.length = len;
- 	info.align_mask = PAGE_MASK & ((1ul << pshift) - 1);
- 	info.align_offset = 0;
+-static inline unsigned long brk_rnd(void)
+-{
+-        unsigned long rnd = 0;
 -
--	addr = mm->mmap_base;
- 	/*
- 	 * If we are trying to allocate above DEFAULT_MAP_WINDOW
- 	 * Add the different to the mmap_base.
-@@ -377,7 +373,7 @@ static unsigned long slice_find_area_topdown(struct mm_struct *mm,
- 	 * can happen with large stack limits and large mmap()
- 	 * allocations.
- 	 */
--	return slice_find_area_bottomup(mm, len, available, psize, high_limit);
-+	return slice_find_area_bottomup(mm, TASK_UNMAPPED_BASE, len, available, psize, high_limit);
+-	/* 8MB for 32bit, 1GB for 64bit */
+-	if (is_32bit_task())
+-		rnd = (get_random_long() % (1UL<<(23-PAGE_SHIFT)));
+-	else
+-		rnd = (get_random_long() % (1UL<<(30-PAGE_SHIFT)));
+-
+-	return rnd << PAGE_SHIFT;
+-}
+-
+-unsigned long arch_randomize_brk(struct mm_struct *mm)
+-{
+-	unsigned long base = mm->brk;
+-	unsigned long ret;
+-
+-#ifdef CONFIG_PPC_BOOK3S_64
+-	/*
+-	 * If we are using 1TB segments and we are allowed to randomise
+-	 * the heap, we can put it above 1TB so it is backed by a 1TB
+-	 * segment. Otherwise the heap will be in the bottom 1TB
+-	 * which always uses 256MB segments and this may result in a
+-	 * performance penalty.
+-	 */
+-	if (!radix_enabled() && !is_32bit_task() && (mmu_highuser_ssize == MMU_SEGSIZE_1T))
+-		base = max_t(unsigned long, mm->brk, 1UL << SID_SHIFT_1T);
+-#endif
+-
+-	ret = PAGE_ALIGN(base + brk_rnd());
+-
+-	if (ret < mm->brk)
+-		return mm->brk;
+-
+-	return ret;
+-}
+-
+diff --git a/arch/powerpc/mm/book3s64/hash_utils.c b/arch/powerpc/mm/book3s64/hash_utils.c
+index 7ecadf5e6bf9..68a5468b0f19 100644
+--- a/arch/powerpc/mm/book3s64/hash_utils.c
++++ b/arch/powerpc/mm/book3s64/hash_utils.c
+@@ -37,6 +37,8 @@
+ #include <linux/cpu.h>
+ #include <linux/pgtable.h>
+ #include <linux/debugfs.h>
++#include <linux/random.h>
++#include <linux/elf-randomize.h>
+ 
+ #include <asm/interrupt.h>
+ #include <asm/processor.h>
+@@ -2171,3 +2173,20 @@ void __init print_system_hash_info(void)
+ 	if (htab_hash_mask)
+ 		pr_info("htab_hash_mask    = 0x%lx\n", htab_hash_mask);
  }
++
++unsigned long arch_randomize_brk(struct mm_struct *mm)
++{
++	/*
++	 * If we are using 1TB segments and we are allowed to randomise
++	 * the heap, we can put it above 1TB so it is backed by a 1TB
++	 * segment. Otherwise the heap will be in the bottom 1TB
++	 * which always uses 256MB segments and this may result in a
++	 * performance penalty.
++	 */
++	if (is_32bit_task())
++		return randomize_page(mm->brk, SZ_32M);
++	else if (!radix_enabled() && mmu_highuser_ssize == MMU_SEGSIZE_1T)
++		return randomize_page(max_t(unsigned long, mm->brk, SZ_1T), SZ_1G);
++	else
++		return randomize_page(mm->brk, SZ_1G);
++}
+diff --git a/include/linux/sizes.h b/include/linux/sizes.h
+index 1ac79bcee2bb..84aa448d8bb3 100644
+--- a/include/linux/sizes.h
++++ b/include/linux/sizes.h
+@@ -47,6 +47,8 @@
+ #define SZ_8G				_AC(0x200000000, ULL)
+ #define SZ_16G				_AC(0x400000000, ULL)
+ #define SZ_32G				_AC(0x800000000, ULL)
++
++#define SZ_1T				_AC(0x10000000000, ULL)
+ #define SZ_64T				_AC(0x400000000000, ULL)
  
- 
-@@ -386,9 +382,9 @@ static unsigned long slice_find_area(struct mm_struct *mm, unsigned long len,
- 				     int topdown, unsigned long high_limit)
- {
- 	if (topdown)
--		return slice_find_area_topdown(mm, len, mask, psize, high_limit);
-+		return slice_find_area_topdown(mm, mm->mmap_base, len, mask, psize, high_limit);
- 	else
--		return slice_find_area_bottomup(mm, len, mask, psize, high_limit);
-+		return slice_find_area_bottomup(mm, mm->mmap_base, len, mask, psize, high_limit);
- }
- 
- static inline void slice_copy_mask(struct slice_mask *dst,
+ #endif /* __LINUX_SIZES_H__ */
 -- 
 2.33.1
 
