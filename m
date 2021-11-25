@@ -2,376 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE8845DBDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 15:04:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C79EA45DBE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 15:05:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346043AbhKYOH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 09:07:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355441AbhKYOF4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 09:05:56 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A0C8C0613D7
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 06:01:35 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id r26so16586201lfn.8
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 06:01:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=gxEXJk+/Nm8yBK7u2SoD1wpBRRgTcv94ctmyKUd0fmw=;
-        b=CcURdyHgCwCK8GMxzcGnknGBBPMTwWdFOULNhk2CMGA9eNSPqmZiBVd3jHvPSmU9MI
-         dbQO7LqHTLAHa+dfdnFa0L9PwwAfsiVRinqXXMoX69vfqqiyjS8AUYDO2SVbMoNOVJCu
-         ehXSM6uYmVWJch7vR6V7zR/ZFqu8/YD3dGOjvdyhDTtVLF8Q1HOhAJWvvMqkpbwN/u9I
-         +1P6NHum1wd5wCrOftH83qkT6CO3parKTYVbZnsP6Rb/+R1aqXtzMf9v4aIYZ2BAPeaU
-         dniGROIorhvmJ5ZB+iKIIeEuPS7J3Ulm9Jy7WMiLapfAX4Q9CGVWgDtLOUU4+h37jles
-         S67Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=gxEXJk+/Nm8yBK7u2SoD1wpBRRgTcv94ctmyKUd0fmw=;
-        b=W3G9qR27VvCliW+NSvmwhLq6SMR0zViGQGlnU+E9xu7npZkecFiiKF30oExsVRy91Q
-         lwLIBs+uIw9EsMgsnJ22wvohdGGnHl9syRalWF1ONaRA6QsUqxNv9sIs3bbyIksCBfFn
-         ud9AbGSxm8wXRIUEKx+IQgKsHRBmIoAMSL0uMchAlYwxIpQ5VCcu1CO3rYiilzuBZqaQ
-         HnFx977DNZ2cPdBlNmfcrbTaudUj29Tn+yN7ryJb84LgHzWHpyUMImFGLSUZsrJqRVzV
-         22Oah1dCxTl4e23uAjElv/QvF1+KMYh/SdgNUVqCXdPYeYfYVJk0t7bQSoKXShSfeaY6
-         ky4g==
-X-Gm-Message-State: AOAM5304jCL5yfYCVmBX9cc+hSvTXJUHATKLB+Gu/t7n+dnY+lQ8VYdd
-        YzDqYjPWuW1uYdkxiqQQJS4=
-X-Google-Smtp-Source: ABdhPJxYV7070hQNJD/zZLe7xYf3MLYW9fX8k8PnMAVuMRfSxCX0E47xMnIHTAR699WJSSqsmS70Xg==
-X-Received: by 2002:a19:7404:: with SMTP id v4mr22825443lfe.76.1637848893098;
-        Thu, 25 Nov 2021 06:01:33 -0800 (PST)
-Received: from [192.168.1.7] ([212.22.223.21])
-        by smtp.gmail.com with ESMTPSA id s4sm269499lfp.198.2021.11.25.06.01.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Nov 2021 06:01:32 -0800 (PST)
-Subject: Re: [PATCH V3 4/6] xen/unpopulated-alloc: Add mechanism to use Xen
- resource
-To:     Stefano Stabellini <sstabellini@kernel.org>
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>, Julien Grall <julien@xen.org>
-References: <1637787223-21129-1-git-send-email-olekstysh@gmail.com>
- <1637787223-21129-5-git-send-email-olekstysh@gmail.com>
- <alpine.DEB.2.22.394.2111241701240.1412361@ubuntu-linux-20-04-desktop>
-From:   Oleksandr <olekstysh@gmail.com>
-Message-ID: <c2e8c00a-3856-8330-8e8f-ab8a92e93e47@gmail.com>
-Date:   Thu, 25 Nov 2021 16:01:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2111241701240.1412361@ubuntu-linux-20-04-desktop>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S1355552AbhKYOIv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 25 Nov 2021 09:08:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37334 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239231AbhKYOGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 09:06:50 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F59E60FD8;
+        Thu, 25 Nov 2021 14:03:39 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mqFLc-007oyD-VE; Thu, 25 Nov 2021 14:03:37 +0000
+Date:   Thu, 25 Nov 2021 14:03:36 +0000
+Message-ID: <87a6hscoxz.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] irqchip/armada-370-xp: Fix support for Multi-MSI interrupts
+In-Reply-To: <20211125130057.26705-2-pali@kernel.org>
+References: <20211125130057.26705-1-pali@kernel.org>
+        <20211125130057.26705-2-pali@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: pali@kernel.org, andrew@lunn.ch, gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com, tglx@linutronix.de, kabel@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 25 Nov 2021 13:00:57 +0000,
+Pali Rohár <pali@kernel.org> wrote:
+> 
+> irq-armada-370-xp driver already sets MSI_FLAG_MULTI_PCI_MSI flag into
+> msi_domain_info structure. But allocated interrupt numbers for Multi-MSI
+> needs to be properly aligned otherwise devices send MSI interrupt with
+> wrong number.
+> 
+> Fix this issue by using function bitmap_find_free_region() instead of
+> bitmap_find_next_zero_area() to allocate aligned interrupt numbers.
+> 
+> Signed-off-by: Pali Rohár <pali@kernel.org>
+> Fixes: a71b9412c90c ("irqchip/armada-370-xp: Allow allocation of multiple MSIs")
+> Cc: stable@vger.kernel.org
+> ---
+>  drivers/irqchip/irq-armada-370-xp.c | 14 +++++---------
+>  1 file changed, 5 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/irqchip/irq-armada-370-xp.c b/drivers/irqchip/irq-armada-370-xp.c
+> index 41ad745cf343..5b8d571c041d 100644
+> --- a/drivers/irqchip/irq-armada-370-xp.c
+> +++ b/drivers/irqchip/irq-armada-370-xp.c
+> @@ -232,16 +232,12 @@ static int armada_370_xp_msi_alloc(struct irq_domain *domain, unsigned int virq,
+>  	int hwirq, i;
+>  
+>  	mutex_lock(&msi_used_lock);
+> +	hwirq = bitmap_find_free_region(msi_used, PCI_MSI_DOORBELL_NR,
+> +					order_base_2(nr_irqs));
+> +	mutex_unlock(&msi_used_lock);
+>  
+> -	hwirq = bitmap_find_next_zero_area(msi_used, PCI_MSI_DOORBELL_NR,
+> -					   0, nr_irqs, 0);
+> -	if (hwirq >= PCI_MSI_DOORBELL_NR) {
+> -		mutex_unlock(&msi_used_lock);
+> +	if (hwirq < 0)
+>  		return -ENOSPC;
+> -	}
+> -
+> -	bitmap_set(msi_used, hwirq, nr_irqs);
+> -	mutex_unlock(&msi_used_lock);
+>  
+>  	for (i = 0; i < nr_irqs; i++) {
+>  		irq_domain_set_info(domain, virq + i, hwirq + i,
+> @@ -259,7 +255,7 @@ static void armada_370_xp_msi_free(struct irq_domain *domain,
+>  	struct irq_data *d = irq_domain_get_irq_data(domain, virq);
+>  
+>  	mutex_lock(&msi_used_lock);
+> -	bitmap_clear(msi_used, d->hwirq, nr_irqs);
+> +	bitmap_release_region(msi_used, d->hwirq, order_base_2(nr_irqs));
+>  	mutex_unlock(&msi_used_lock);
+>  }
+>  
+> -- 
+> 2.20.1
+> 
+> 
 
-On 25.11.21 03:03, Stefano Stabellini wrote:
+Acked-by: Marc Zyngier <maz@kernel.org>
 
-Hi Stefano, all
-
-> On Wed, 24 Nov 2021, Oleksandr Tyshchenko wrote:
->> From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
->>
->> The main reason of this change is that unpopulated-alloc
->> code cannot be used in its current form on Arm, but there
->> is a desire to reuse it to avoid wasting real RAM pages
->> for the grant/foreign mappings.
->>
->> The problem is that system "iomem_resource" is used for
->> the address space allocation, but the really unallocated
->> space can't be figured out precisely by the domain on Arm
->> without hypervisor involvement. For example, not all device
->> I/O regions are known by the time domain starts creating
->> grant/foreign mappings. And following the advise from
->> "iomem_resource" we might end up reusing these regions by
->> a mistake. So, the hypervisor which maintains the P2M for
->> the domain is in the best position to provide unused regions
->> of guest physical address space which could be safely used
->> to create grant/foreign mappings.
->>
->> Introduce new helper arch_xen_unpopulated_init() which purpose
->> is to create specific Xen resource based on the memory regions
->> provided by the hypervisor to be used as unused space for Xen
->> scratch pages. If arch doesn't define arch_xen_unpopulated_init()
->> the default "iomem_resource" will be used.
->>
->> Update the arguments list of allocate_resource() in fill_list()
->> to always allocate a region from the hotpluggable range
->> (maximum possible addressable physical memory range for which
->> the linear mapping could be created). If arch doesn't define
->> arch_get_mappable_range() the default range (0,-1) will be used.
->>
->> The behaviour on x86 won't be changed by current patch as both
->> arch_xen_unpopulated_init() and arch_get_mappable_range()
->> are not implemented for it.
->>
->> Also fallback to allocate xenballooned pages (balloon out RAM
->> pages) if we do not have any suitable resource to work with
->> (target_resource is invalid) and as the result we won't be able
->> to provide unpopulated pages on a request.
->>
->> Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
->
-> Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
-
-Thanks!
-
-
-What still worries me is a concern with x86's xen_pvh_gnttab_setup() I 
-described in post commit remark ...
-
-
->
->
->> ---
->> Please note the following:
->> for V3 arch_xen_unpopulated_init() was moved to init() as was agreed
->> and gained __init specifier. So the target_resource is initialized there.
->>
->> With current patch series applied if CONFIG_XEN_UNPOPULATED_ALLOC
->> is enabled:
->>
->> 1. On Arm, under normal circumstances, the xen_alloc_unpopulated_pages()
->> won't be called “before” arch_xen_unpopulated_init(). It will only be
->> called "before" when either ACPI is in use or something wrong happened
->> with DT (and we failed to read xen_grant_frames), so we fallback to
->> xen_xlate_map_ballooned_pages() in arm/xen/enlighten.c:xen_guest_init(),
->> please see "arm/xen: Switch to use gnttab_setup_auto_xlat_frames() for DT"
->> for details. But in that case, I think, it doesn't matter much whether
->> xen_alloc_unpopulated_pages() is called "before" of "after" target_resource
->> initialization, as we don't have extended regions in place the target_resource
->> will remain invalid even after initialization, so xen_alloc_ballooned_pages()
->> will be used in both scenarios.
->>
->> 2. On x86, I am not quite sure which modes use unpopulated-alloc (PVH?),
->> but it looks like xen_alloc_unpopulated_pages() can (and will) be called
->> “before” arch_xen_unpopulated_init().
->> At least, I see that xen_xlate_map_ballooned_pages() is called in
->> x86/xen/grant-table.c:xen_pvh_gnttab_setup(). According to the initcall
->> levels for both xen_pvh_gnttab_setup() and init() I expect the former
->> to be called earlier.
->> If it is true, the sentence in the commit description which mentions
->> that “behaviour on x86 is not changed” is not precise. I don’t think
->> it would be correct to fallback to xen_alloc_ballooned_pages() just
->> because we haven’t initialized target_resource yet (on x86 it is just
->> assigning it iomem_resource), at least this doesn't look like an expected
->> behaviour and unlikely would be welcome.
->>
->> I am wondering whether it would be better to move arch_xen_unpopulated_init()
->> to a dedicated init() marked with an appropriate initcall level (early_initcall?)
->> to make sure it will always be called *before* xen_xlate_map_ballooned_pages().
->> What do you think?
-
-    ... here (#2). Or I really missed something and there wouldn't be an 
-issue?
-
-
->>
->> Changes RFC -> V2:
->>     - new patch, instead of
->>      "[RFC PATCH 2/2] xen/unpopulated-alloc: Query hypervisor to provide unallocated space"
->>
->> Changes V2 -> V3:
->>     - update patch description and comments in code
->>     - modify arch_xen_unpopulated_init() to pass target_resource as an argument
->>       and update default helper to assign iomem_resource to it, also drop
->>       xen_resource as it will be located in arch code in the future
->>     - allocate region from hotpluggable range instead of hardcoded range (0,-1)
->>       in fill_list()
->>     - use %pR specifier in error message
->>     - do not call unpopulated_init() at runtime from xen_alloc_unpopulated_pages(),
->>       drop an extra helper and call arch_xen_unpopulated_init() directly from __init()
->>     - include linux/ioport.h instead of forward declaration of struct resource
->>     - replace insert_resource() with request_resource() in fill_list()
->>     - add __init specifier to arch_xen_unpopulated_init()
->> ---
->>   drivers/xen/unpopulated-alloc.c | 83 +++++++++++++++++++++++++++++++++++++----
->>   include/xen/xen.h               |  2 +
->>   2 files changed, 78 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/xen/unpopulated-alloc.c b/drivers/xen/unpopulated-alloc.c
->> index a03dc5b..07d3578 100644
->> --- a/drivers/xen/unpopulated-alloc.c
->> +++ b/drivers/xen/unpopulated-alloc.c
->> @@ -8,6 +8,7 @@
->>   
->>   #include <asm/page.h>
->>   
->> +#include <xen/balloon.h>
->>   #include <xen/page.h>
->>   #include <xen/xen.h>
->>   
->> @@ -15,13 +16,29 @@ static DEFINE_MUTEX(list_lock);
->>   static struct page *page_list;
->>   static unsigned int list_count;
->>   
->> +static struct resource *target_resource;
->> +
->> +/*
->> + * If arch is not happy with system "iomem_resource" being used for
->> + * the region allocation it can provide it's own view by creating specific
->> + * Xen resource with unused regions of guest physical address space provided
->> + * by the hypervisor.
->> + */
->> +int __weak __init arch_xen_unpopulated_init(struct resource **res)
->> +{
->> +	*res = &iomem_resource;
->> +
->> +	return 0;
->> +}
->> +
->>   static int fill_list(unsigned int nr_pages)
->>   {
->>   	struct dev_pagemap *pgmap;
->> -	struct resource *res;
->> +	struct resource *res, *tmp_res = NULL;
->>   	void *vaddr;
->>   	unsigned int i, alloc_pages = round_up(nr_pages, PAGES_PER_SECTION);
->> -	int ret = -ENOMEM;
->> +	struct range mhp_range;
->> +	int ret;
->>   
->>   	res = kzalloc(sizeof(*res), GFP_KERNEL);
->>   	if (!res)
->> @@ -30,14 +47,40 @@ static int fill_list(unsigned int nr_pages)
->>   	res->name = "Xen scratch";
->>   	res->flags = IORESOURCE_MEM | IORESOURCE_BUSY;
->>   
->> -	ret = allocate_resource(&iomem_resource, res,
->> -				alloc_pages * PAGE_SIZE, 0, -1,
->> +	mhp_range = mhp_get_pluggable_range(true);
->> +
->> +	ret = allocate_resource(target_resource, res,
->> +				alloc_pages * PAGE_SIZE, mhp_range.start, mhp_range.end,
->>   				PAGES_PER_SECTION * PAGE_SIZE, NULL, NULL);
->>   	if (ret < 0) {
->>   		pr_err("Cannot allocate new IOMEM resource\n");
->>   		goto err_resource;
->>   	}
->>   
->> +	/*
->> +	 * Reserve the region previously allocated from Xen resource to avoid
->> +	 * re-using it by someone else.
->> +	 */
->> +	if (target_resource != &iomem_resource) {
->> +		tmp_res = kzalloc(sizeof(*tmp_res), GFP_KERNEL);
->> +		if (!res) {
->> +			ret = -ENOMEM;
->> +			goto err_insert;
->> +		}
->> +
->> +		tmp_res->name = res->name;
->> +		tmp_res->start = res->start;
->> +		tmp_res->end = res->end;
->> +		tmp_res->flags = res->flags;
->> +
->> +		ret = request_resource(&iomem_resource, tmp_res);
->> +		if (ret < 0) {
->> +			pr_err("Cannot request resource %pR (%d)\n", tmp_res, ret);
->> +			kfree(tmp_res);
->> +			goto err_insert;
->> +		}
->> +	}
->> +
->>   	pgmap = kzalloc(sizeof(*pgmap), GFP_KERNEL);
->>   	if (!pgmap) {
->>   		ret = -ENOMEM;
->> @@ -95,6 +138,11 @@ static int fill_list(unsigned int nr_pages)
->>   err_memremap:
->>   	kfree(pgmap);
->>   err_pgmap:
->> +	if (tmp_res) {
->> +		release_resource(tmp_res);
->> +		kfree(tmp_res);
->> +	}
->> +err_insert:
->>   	release_resource(res);
->>   err_resource:
->>   	kfree(res);
->> @@ -112,6 +160,14 @@ int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page **pages)
->>   	unsigned int i;
->>   	int ret = 0;
->>   
->> +	/*
->> +	 * Fallback to default behavior if we do not have any suitable resource
->> +	 * to allocate required region from and as the result we won't be able to
->> +	 * construct pages.
->> +	 */
->> +	if (!target_resource)
->> +		return xen_alloc_ballooned_pages(nr_pages, pages);
->> +
->>   	mutex_lock(&list_lock);
->>   	if (list_count < nr_pages) {
->>   		ret = fill_list(nr_pages - list_count);
->> @@ -159,6 +215,11 @@ void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages)
->>   {
->>   	unsigned int i;
->>   
->> +	if (!target_resource) {
->> +		xen_free_ballooned_pages(nr_pages, pages);
->> +		return;
->> +	}
->> +
->>   	mutex_lock(&list_lock);
->>   	for (i = 0; i < nr_pages; i++) {
->>   		pages[i]->zone_device_data = page_list;
->> @@ -169,9 +230,11 @@ void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages)
->>   }
->>   EXPORT_SYMBOL(xen_free_unpopulated_pages);
->>   
->> -#ifdef CONFIG_XEN_PV
->>   static int __init init(void)
->>   {
->> +	int ret;
->> +
->> +#ifdef CONFIG_XEN_PV
->>   	unsigned int i;
->>   
->>   	if (!xen_domain())
->> @@ -196,8 +259,14 @@ static int __init init(void)
->>   			list_count++;
->>   		}
->>   	}
->> +#endif
->>   
->> -	return 0;
->> +	ret = arch_xen_unpopulated_init(&target_resource);
->> +	if (ret) {
->> +		pr_err("xen:unpopulated: Cannot initialize target resource\n");
->> +		target_resource = NULL;
->> +	}
->> +
->> +	return ret;
->>   }
->>   subsys_initcall(init);
->> -#endif
->> diff --git a/include/xen/xen.h b/include/xen/xen.h
->> index 86c5b37..a99bab8 100644
->> --- a/include/xen/xen.h
->> +++ b/include/xen/xen.h
->> @@ -55,6 +55,8 @@ extern u64 xen_saved_max_mem_size;
->>   #ifdef CONFIG_XEN_UNPOPULATED_ALLOC
->>   int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page **pages);
->>   void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages);
->> +#include <linux/ioport.h>
->> +int arch_xen_unpopulated_init(struct resource **res);
->>   #else
->>   #include <xen/balloon.h>
->>   static inline int xen_alloc_unpopulated_pages(unsigned int nr_pages,
->> -- 
->> 2.7.4
+	M.
 
 -- 
-Regards,
-
-Oleksandr Tyshchenko
-
+Without deviation from the norm, progress is not possible.
