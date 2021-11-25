@@ -2,245 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B36145D4A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 07:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC07B45D4B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 07:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347014AbhKYGXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 01:23:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347270AbhKYGVy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 01:21:54 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FE4C061757
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 22:18:43 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id z5so20968564edd.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 22:18:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=WITUFjFeoRXXIk21nwQblVv59zXr2jMrNnG1DDq3GJk=;
-        b=L3U/KB84dwjs6K2SclQ9UUSV3GNCyZeYrFNCf+ZpG7d6o56mevUubamlruF0xW7uyq
-         cAvOzdbLopAxwZ30e/aEscW4x/Rdc2BkNcCUtX3UIDynQV4HDALJTnhwWcFb+Lg74nVw
-         eUsKbQlKuLTX8VNlAcJr0XI75vl71QJzTrBZY3zpF4oRa8FYcKwjxdJ1M+kZvueO8EP7
-         UA92cQ7BBg6WJTHcZ2t5y7//2/yvqNiC/XRwnLryRAqndor0fFnOnot/+JkXzvGRMox2
-         gJ06D5SZbVh6c1DFW8F1YF9U0APMXmKctU9ptDnEOPY44aQ/eMPDvL+V6PP27AvBPmAf
-         5Asw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=WITUFjFeoRXXIk21nwQblVv59zXr2jMrNnG1DDq3GJk=;
-        b=sMD+lsrB1h0ND5r8Ren95QNougkn7f3e/rEbRENIdGR/nFIbU+TPzncFVU2ypZnXnU
-         jAcZ+I8sUDs7u56/AstC72JmWB3KbHS7S8nGbQhMxh3OGR06jisiEgJOredGfXstQXTp
-         ATtAp94OEy6fN5lu7rG+oEq4Ib3ePp0uVYLDgkwMzhA4m4cFvP4VphpEraYVd8e4iwjF
-         3CA7206la0pZzwYiDmFU7er3si6eRla0fKv4X+rIuHYC2I0PMYDiyjX//4KOv1kMSs7W
-         4F/tjZwte6pgQ4+Ad4qbT1OWON9cyJj3e1Fzo5g/SKU+ivnQRtLKY1sHyjBhpvGiNGEJ
-         d/Bw==
-X-Gm-Message-State: AOAM533zFF7WYulhbJ71EeYh5kg8CwtL0kbOgWjSou+dE8YIvl9gzS91
-        ZZTsutPvdokrUoOuPMSLNSc7lAONxCyPGXGYWbWr9kPoEdietg==
-X-Google-Smtp-Source: ABdhPJzQs9Jt1no7hOxpl2MdpTlXZNDnTPc6AcTj+35SS9rxTwetNg6wF2u6kO0eOmQqNK1fzoPjD+81bXvGjvG7Uqo=
-X-Received: by 2002:a05:6402:90c:: with SMTP id g12mr34789938edz.217.1637821121545;
- Wed, 24 Nov 2021 22:18:41 -0800 (PST)
+        id S1347719AbhKYG0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 01:26:53 -0500
+Received: from mail-bn8nam08on2062.outbound.protection.outlook.com ([40.107.100.62]:41473
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237478AbhKYGYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 01:24:52 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gtRWnoJ5CqcSgKai4k7DJVxgccp3iMI9u+aKwVe1JZsyC1xQWKOK7BiBtoak6CeQzwn+geBdG3MGHD+rn+0alcGtQX7x8mD8ZWqdnu8yNANkWSGcG6NGjBrxFgxYZuYuZwEbvruwSA0KiLynlmhL5uoZ5+cpmzCIliJsSGvj3wC00xiLdBVAGV+3MdXhMxMHlsOPhE5EXpgHypGdIF4oquwWZnRpXSg8zDB/dhMltDOJqYkmhfYfuyv+g71gvC9QzgieQAM3FKinwDsg7e3EA/sR/eq08RBXFCn8jjFJ2FrMP1LExtZo82+ZE6U27HX036xL/BzwRfu4TtHYJS7big==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rteLx6CLsJxoduLjqV1pKBvheGJGuZVTFasjR6p2yIg=;
+ b=KK77NMbP8XHEEmQCvdCMMoMOmKxKHF1GbhNv6i26h26Ex8I7kKH+8hp9ZOR0PQ9Squm8Uf2yiR6uHtC8XbJn2Hd+tYeK0b86aG6q7BnByB7hPsshEtYKnDKOpcV72QI0bdSqnzj/RtdlXlp5E/uGxwmJ38y4KI6nYP10IyFtD9xZxCRA/Vtolr5DR7IgDCynuCfxJsm9BK/GHS5ML9O2DqMhBY2OLoru5ckakFVvF+FbY2qR3RTo/WenEwzYrwid86nlMB104HPfqejznyhj3Ujons74vPrZtjS0hghKTK9aY0AevdCZ0BSXFWOLsEluiSIoX+JiiHyxoUTY+FsY2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rteLx6CLsJxoduLjqV1pKBvheGJGuZVTFasjR6p2yIg=;
+ b=RrNG9nUFeik2RF5bIojPqgX/fSSIYC5oVu9jfmg7zcU7LvpGTJrmohwTCmHl3nZyBIZpo+aIEKFFZwcFRXM39FOJZU6zmkMHUoT15iFD+BtCC4JsyXqPdTHC5Atl0f8Y7HHuJcQFKGRNEXHDtLEDBqG5wyK5VhqeZjUupvuKlAE=
+Received: from MWHPR21CA0065.namprd21.prod.outlook.com (2603:10b6:300:db::27)
+ by SN6PR12MB4621.namprd12.prod.outlook.com (2603:10b6:805:e4::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.24; Thu, 25 Nov
+ 2021 06:21:38 +0000
+Received: from CO1NAM11FT036.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:db:cafe::b8) by MWHPR21CA0065.outlook.office365.com
+ (2603:10b6:300:db::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.7 via Frontend
+ Transport; Thu, 25 Nov 2021 06:21:37 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com;
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ CO1NAM11FT036.mail.protection.outlook.com (10.13.174.124) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4734.22 via Frontend Transport; Thu, 25 Nov 2021 06:21:37 +0000
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Thu, 25 Nov
+ 2021 00:21:36 -0600
+Received: from chrome.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2375.17 via Frontend
+ Transport; Thu, 25 Nov 2021 00:21:33 -0600
+From:   Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
+To:     <sboyd@kernel.org>, <rafael@kernel.org>,
+        <linux-clk@vger.kernel.org>
+CC:     <Vijendar.Mukunda@amd.com>, <Alexander.Deucher@amd.com>,
+        <Basavaraj.Hiregoudar@amd.com>, <Sunil-kumar.Dommati@amd.com>,
+        <Mario.Limonciello@amd.com>,
+        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 1/7] x86: clk: Add check for PCI root port for fch fixed clk support
+Date:   Thu, 25 Nov 2021 11:50:30 +0530
+Message-ID: <20211125062036.1185994-2-AjitKumar.Pandey@amd.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211125062036.1185994-1-AjitKumar.Pandey@amd.com>
+References: <20211125062036.1185994-1-AjitKumar.Pandey@amd.com>
 MIME-Version: 1.0
-References: <20211124115718.776172708@linuxfoundation.org>
-In-Reply-To: <20211124115718.776172708@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 25 Nov 2021 11:48:30 +0530
-Message-ID: <CA+G9fYu9-5Qwkd7bBapQcah=ZdtfgKmYxp9OKqhnnGwDWgzdvg@mail.gmail.com>
-Subject: Re: [PATCH 5.15 000/279] 5.15.5-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: affb258d-0fd9-444a-e104-08d9afdbd655
+X-MS-TrafficTypeDiagnostic: SN6PR12MB4621:
+X-Microsoft-Antispam-PRVS: <SN6PR12MB4621D4E88F9D34E6D5C9744E82629@SN6PR12MB4621.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /LLFKQuXqe9f9P7VOV/cB9SaINKX4A2jAUeutMXBjbscS6Q1wbfojezQBs8uhWkIUUcRyDu/OGMK6/niggvck7CKNYd7T8p06QBmKKbmzUxxEGO4DmzYpwdV2v4V6tbybEXUK0CzOpEnfF8YixcpJdt7iLoZXq9g5eO/S2u8SeHZm6VAabfWd4EgrB7CwHUMVRkeLkHepu/y0f0LGZ7QrYvjr918aSBpD3TMBQKRZhNaeIq/ngEP+vy8EHPki3U9jKHw6Ev0qV/VlnDXbPBGlWKYLp+SIK4mGixL50CsJPO1v5prGvMvBmi8CYIvb2E1v+ipY/ViP4WGi0qvQ9fc0v8NtuWTeibYuZ2hb+/49STrSGaxqfXJ+jD3o8u03hErYLTEhnkvJTDEfYf6CtT6U4ZDEw9nphSDpaMavfVmcKRjmxNQb/PjOzNmsstVxKMyT9fxjeGYIVXSf0XUAM66ehEl06E7GH7yH1esIBBM+tTOclN6B01ay3GlFfcwctDW+LyNLPxbTMcsRB1RGfYRG87r+KDES+HSCrLDcF6gmpPAeHe0e/tAaVjO4mTDlvpPLHeQ+ihtBSVvFC8WqjZmkAARpQKzXjMKLw0eMAc9EyC1g8VxrPDYktXvXoqZBi9sCkaVw+/5CAoF4x8Yk3VIZEfMfZrG77G6Q3fCVdMMqClN5CzxSNl1vmSeFlQTaXrSyQNBU9Gvm7VG+DWdJxJ7hOr+4/9rODvMx8i8Y7QWlRo=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(54906003)(81166007)(70586007)(86362001)(8676002)(4326008)(82310400004)(7696005)(426003)(316002)(336012)(70206006)(2616005)(2906002)(36860700001)(47076005)(8936002)(186003)(356005)(26005)(1076003)(5660300002)(83380400001)(36756003)(508600001)(110136005)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2021 06:21:37.6337
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: affb258d-0fd9-444a-e104-08d9afdbd655
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT036.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB4621
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 at 18:35, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.15.5 release.
-> There are 279 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.15.5-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.15.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+FCH controller clock configuration slightly differs across AMD's
+SOC architectures. Newer family of SOC only support a 48MHz fixed
+clock while older family has a clk_mux to choose 48MHz and 25MHz.
+At present fixed clk support is only enabled for RV architecture
+using "is-rv" device property initialized from boot loader. This
+limit 48MHz fixed clock gate support to RV platform unless we add
+similar device property in boot loader for other architecture.
 
+Add pci_device_id table with Raven platform id and replace "is-rv"
+device property check with pci id match to support 48MHz fixed clk
+support. This enhanced flexibility to enable fixed 48MHz fch clock
+framework on other architectures by simply adding new entries into
+pci_device_id table. Also replace RV with FIXED as generic naming
+convention across all platforms.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Signed-off-by: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
+---
+ drivers/clk/x86/clk-fch.c | 37 +++++++++++++++++++++++++++++--------
+ 1 file changed, 29 insertions(+), 8 deletions(-)
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+diff --git a/drivers/clk/x86/clk-fch.c b/drivers/clk/x86/clk-fch.c
+index 8f7c5142b0f0..df59fa8ac0a4 100644
+--- a/drivers/clk/x86/clk-fch.c
++++ b/drivers/clk/x86/clk-fch.c
+@@ -8,6 +8,7 @@
+ #include <linux/clk.h>
+ #include <linux/clkdev.h>
+ #include <linux/clk-provider.h>
++#include <linux/pci.h>
+ #include <linux/platform_data/clk-fch.h>
+ #include <linux/platform_device.h>
+ 
+@@ -26,22 +27,37 @@
+ #define ST_CLK_GATE	3
+ #define ST_MAX_CLKS	4
+ 
+-#define RV_CLK_48M	0
+-#define RV_CLK_GATE	1
+-#define RV_MAX_CLKS	2
++#define CLK_48M_FIXED	0
++#define CLK_GATE_FIXED	1
++#define CLK_MAX_FIXED	2
++
++/* List of supported CPU ids for fixed clk */
++#define AMD_CPU_ID_RV			0x15D0
+ 
+ static const char * const clk_oscout1_parents[] = { "clk48MHz", "clk25MHz" };
+ static struct clk_hw *hws[ST_MAX_CLKS];
+ 
++static const struct pci_device_id fch_pci_ids[] = {
++	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, AMD_CPU_ID_RV) },
++	{ }
++};
++
+ static int fch_clk_probe(struct platform_device *pdev)
+ {
+ 	struct fch_clk_data *fch_data;
++	struct pci_dev *fch_dev;
+ 
+ 	fch_data = dev_get_platdata(&pdev->dev);
+ 	if (!fch_data || !fch_data->base)
+ 		return -EINVAL;
+ 
+-	if (!fch_data->is_rv) {
++	fch_dev = pci_get_domain_bus_and_slot(0, 0, PCI_DEVFN(0, 0));
++	if (!fch_dev) {
++		dev_err(&pdev->dev, "FCH device not found\n");
++		return -ENODEV;
++	}
++
++	if (!pci_match_id(fch_pci_ids, fch_dev)) {
+ 		hws[ST_CLK_48M] = clk_hw_register_fixed_rate(NULL, "clk48MHz",
+ 			NULL, 0, 48000000);
+ 		hws[ST_CLK_25M] = clk_hw_register_fixed_rate(NULL, "clk25MHz",
+@@ -61,14 +77,14 @@ static int fch_clk_probe(struct platform_device *pdev)
+ 		devm_clk_hw_register_clkdev(&pdev->dev, hws[ST_CLK_GATE],
+ 			"oscout1", NULL);
+ 	} else {
+-		hws[RV_CLK_48M] = clk_hw_register_fixed_rate(NULL, "clk48MHz",
++		hws[CLK_48M_FIXED] = clk_hw_register_fixed_rate(NULL, "clk48MHz",
+ 			NULL, 0, 48000000);
+ 
+-		hws[RV_CLK_GATE] = clk_hw_register_gate(NULL, "oscout1",
++		hws[CLK_GATE_FIXED] = clk_hw_register_gate(NULL, "oscout1",
+ 			"clk48MHz", 0, fch_data->base + MISCCLKCNTL1,
+ 			OSCCLKENB, CLK_GATE_SET_TO_DISABLE, NULL);
+ 
+-		devm_clk_hw_register_clkdev(&pdev->dev, hws[RV_CLK_GATE],
++		devm_clk_hw_register_clkdev(&pdev->dev, hws[CLK_GATE_FIXED],
+ 			"oscout1", NULL);
+ 	}
+ 
+@@ -79,10 +95,15 @@ static int fch_clk_remove(struct platform_device *pdev)
+ {
+ 	int i, clks;
+ 	struct fch_clk_data *fch_data;
++	struct pci_dev *fch_dev;
+ 
+ 	fch_data = dev_get_platdata(&pdev->dev);
+ 
+-	clks = fch_data->is_rv ? RV_MAX_CLKS : ST_MAX_CLKS;
++	fch_dev = pci_get_domain_bus_and_slot(0, 0, PCI_DEVFN(0, 0));
++	if (!fch_dev)
++		return -ENODEV;
++
++	clks = pci_match_id(fch_pci_ids, fch_dev) ? CLK_MAX_FIXED : ST_MAX_CLKS;
+ 
+ 	for (i = 0; i < clks; i++)
+ 		clk_hw_unregister(hws[i]);
+-- 
+2.25.1
 
-## Build
-* kernel: 5.15.5-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.15.y
-* git commit: e3bb2e602026d5d841d7a2e62bfbe579265bb5ff
-* git describe: v5.15.4-280-ge3bb2e602026
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15=
-.4-280-ge3bb2e602026
-
-## No regressions (compared to v5.15.3)
-
-## No fixes (compared to v5.15.3)
-
-## Test result summary
-total: 97214, pass: 82201, fail: 1196, skip: 13115, xfail: 702
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 259 total, 259 passed, 0 failed
-* arm64: 37 total, 35 passed, 2 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 36 total, 36 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 34 total, 34 passed, 0 failed
-* parisc: 12 total, 12 passed, 0 failed
-* powerpc: 45 total, 42 passed, 3 failed
-* riscv: 24 total, 24 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 20 total, 20 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 37 total, 37 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* perf/Zstd-perf.data-compression
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
