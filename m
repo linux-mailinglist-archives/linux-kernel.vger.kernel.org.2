@@ -2,102 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B04B345DE1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1EF345DCD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356223AbhKYP6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:58:47 -0500
-Received: from mail-m963.mail.126.com ([123.126.96.3]:44138 "EHLO
-        mail-m963.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356235AbhKYP4q (ORCPT
+        id S234334AbhKYPGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:06:14 -0500
+Received: from ppsw-42.csi.cam.ac.uk ([131.111.8.142]:49208 "EHLO
+        ppsw-42.csi.cam.ac.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351482AbhKYPEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:56:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=kAsEn
-        EnfaHIRU+yztl06WBOn7SgNxzGTN5esiiYf4r4=; b=Qu4pJYWW8imp68jv2YSvN
-        QpAU0MPRk8eLlgOOT3NOJS+kuAc7LgHDjqu5IiPP14y5ZSZXxMGQE08h8JG6ApJx
-        shRZkXhk1PzC49iYeV7ma4zBfTlSDFfP4BR0vY3cO7qFiYDxTejPyoAxlnZ1eN5V
-        vW/gkka6ioGtp1wRTpgB3o=
-Received: from localhost.localdomain (unknown [221.218.15.192])
-        by smtp8 (Coremail) with SMTP id NORpCgCXU7yum59hJRBYCg--.2408S2;
-        Thu, 25 Nov 2021 22:20:30 +0800 (CST)
-From:   Honglei Wang <jameshongleiwang@126.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] sched/fair: prevent cpu burst too many periods
-Date:   Thu, 25 Nov 2021 22:20:28 +0800
-Message-Id: <20211125142028.21790-1-jameshongleiwang@126.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        Thu, 25 Nov 2021 10:04:14 -0500
+X-Cam-AntiVirus: no malware found
+X-Cam-ScannerInfo: https://help.uis.cam.ac.uk/email-scanner-virus
+Received: from hades.srcf.societies.cam.ac.uk ([131.111.179.67]:33686)
+        by ppsw-42.csi.cam.ac.uk (ppsw.cam.ac.uk [131.111.8.138]:25)
+        with esmtps (TLS1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        id 1mqGET-0004Mx-8Z (Exim 4.95)
+        (return-path <amc96@srcf.net>);
+        Thu, 25 Nov 2021 15:00:17 +0000
+Received: from [192.168.1.10] (host-92-12-61-86.as13285.net [92.12.61.86])
+        (Authenticated sender: amc96)
+        by hades.srcf.societies.cam.ac.uk (Postfix) with ESMTPSA id 454E51FBFC;
+        Thu, 25 Nov 2021 15:00:17 +0000 (GMT)
+Message-ID: <3c922d47-9eab-5150-f4c6-3db40a77599a@srcf.net>
+Date:   Thu, 25 Nov 2021 15:00:16 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: NORpCgCXU7yum59hJRBYCg--.2408S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Zw17Xw4DKw4rWw45JryDGFg_yoW8ur45pF
-        sxXFy3JF40qr1jvanrArnagFyrZ3s3Z347CFWUGayrZw45W3yjqr15Ka1jgFn0vr1rtF1F
-        vF4YqFW3Cryj9a7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j6MKtUUUUU=
-X-Originating-IP: [221.218.15.192]
-X-CM-SenderInfo: 5mdpv2pkrqwzphlzt0bj6rjloofrz/1tbiYBhWrVpEFXhVXwABs7
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Content-Language: en-GB
+To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, kernel test robot <lkp@intel.com>
+References: <20211125092056.24758-1-jgross@suse.com>
+ <20211125092056.24758-2-jgross@suse.com>
+From:   Andrew Cooper <amc96@srcf.net>
+Subject: Re: [PATCH 1/2] xen: make HYPERVISOR_get_debugreg() always_inline
+In-Reply-To: <20211125092056.24758-2-jgross@suse.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tasks might get more cpu than quota in persistent periods due to the
-cpu burst introduced by commit f4183717b370 ("sched/fair: Introduce the
-burstable CFS controller"). For example, one task group whose quota is
-100ms per period and can get 100ms burst, and its avg utilization is
-around 105ms per period. Once this group gets a free period which
-leaves enough runtime, it has a chance to get computting power more
-than its quota for 10 periods or more in common bandwidth configuration
-(say, 100ms as period). It means tasks can 'steal' the bursted power to
-do daily jobs because all tasks could be scheduled out or sleep to help
-the group get free periods.
+On 25/11/2021 09:20, Juergen Gross wrote:
+> HYPERVISOR_get_debugreg() is being called from noinstr code, so it
+> should be attributed "always_inline".
+>
+> Fixes: f4afb713e5c3a4419ba ("x86/xen: Make get_debugreg() noinstr")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Juergen Gross <jgross@suse.com>
+> ---
+>  arch/x86/include/asm/xen/hypercall.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/include/asm/xen/hypercall.h b/arch/x86/include/asm/xen/hypercall.h
+> index 0575f5863b7f..28ca1119606b 100644
+> --- a/arch/x86/include/asm/xen/hypercall.h
+> +++ b/arch/x86/include/asm/xen/hypercall.h
+> @@ -287,7 +287,7 @@ HYPERVISOR_set_debugreg(int reg, unsigned long value)
+>  	return _hypercall2(int, set_debugreg, reg, value);
+>  }
+>  
+> -static inline unsigned long
+> +static __always_inline unsigned long
+>  HYPERVISOR_get_debugreg(int reg)
+>  {
+>  	return _hypercall1(unsigned long, get_debugreg, reg);
 
-I believe the purpose of cpu burst is to help handling bursty worklod.
-But if one task group can get computting power more than its quota for
-persistent periods even there is no bursty workload, it's kinda broke.
+All this is going to do is push the error one step further in.
 
-This patch limits the burst to one period so that it won't break the
-quota limit for long. With this, we can give task group more cpu burst
-power to handle the real bursty workload and don't worry about the
-'stealing'.
+Next, objtool will complain that hypercall_page isn't noinstr.
 
-Signed-off-by: Honglei Wang <jameshongleiwang@126.com>
----
- kernel/sched/fair.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6e476f6d9435..cc2c4567fc81 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4640,14 +4640,17 @@ void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b)
- 	if (unlikely(cfs_b->quota == RUNTIME_INF))
- 		return;
- 
--	cfs_b->runtime += cfs_b->quota;
--	runtime = cfs_b->runtime_snap - cfs_b->runtime;
-+	runtime = cfs_b->runtime_snap - cfs_b->quota - cfs_b->runtime;
-+
- 	if (runtime > 0) {
- 		cfs_b->burst_time += runtime;
- 		cfs_b->nr_burst++;
-+		cfs_b->runtime = cfs_b->quota;
-+	} else {
-+		cfs_b->runtime += cfs_b->quota;
-+		cfs_b->runtime = min(cfs_b->runtime, cfs_b->quota + cfs_b->burst);
- 	}
- 
--	cfs_b->runtime = min(cfs_b->runtime, cfs_b->quota + cfs_b->burst);
- 	cfs_b->runtime_snap = cfs_b->runtime;
- }
- 
--- 
-2.14.1
-
+~Andrew
