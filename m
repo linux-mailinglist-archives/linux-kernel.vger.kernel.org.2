@@ -2,106 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FDF845D8A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4750A45D8C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:06:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354825AbhKYLFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 06:05:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354869AbhKYLDI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 06:03:08 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88966C0613FF
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 02:58:58 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id j6-20020a17090a588600b001a78a5ce46aso7543239pji.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 02:58:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sCgAh/8By8wNIrpD9ZFYd1/D45MydwuRk8zcWPcXzGQ=;
-        b=cLqXpIgXjTlGOz1+IBYb8VUFp+uxcoeg2qgpXuYboMkZ9nEN2PIueIvHrVwRREeLmb
-         +MrF9p67VwUtwkCOKgMpKFHfMbgQKrRu3A4Ei5fZTDaW/5FP6BRBW4nGfIWSFpYZFNe8
-         0HSKyJrAk7bR75zNpuXPOvX7m7hC7BeqhRGcMfOrHH6huXvQNL5Az0dD8t07sD1vp6fW
-         DSs5Sa4z5eLSfVWXh6wJRcbwCy9qkbxFE/5DrfUZkwUbQAyBimFVikRyc2tPk4rfv6vB
-         IVnUrMjl/5tVH3g09/AQOnibornKoF23XfqUGYJTThaJBEa6V998JrI4MIc7OGUol2aZ
-         HDyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sCgAh/8By8wNIrpD9ZFYd1/D45MydwuRk8zcWPcXzGQ=;
-        b=iXWo258oiH9Or63KNLuj8PS+4CH0W2ckiEK7vSylUSKRfCY3v2MTYKx9YGiQyioMmv
-         Im5ZUOJItw9Bsh/DXbNZZrxZwV1gSMGApbusRLbhM02HSsHH6jWd1fbazTNoXNPVPPt9
-         trILRvU8dwwJ6boWNU0lHnltMtHGKcC1lZeQz0FGz1+QnZDLcqO6xeB4zyBX7fvMKAY5
-         +dYXfS9g+QtoJcsao5t8ZO3WE8qsmVCVu+JYqrVpEZ5QvS7Qz8mmh2yaz5SzF0pDQkyK
-         eFlER+KQi+0OExvzNvPRSQvg2zamER1ILezN9dxOep89eZGyBMtIu9NJCg/IyclUvjK3
-         L28Q==
-X-Gm-Message-State: AOAM530SgWLg2JPrXwQkUVIUOCX4vPiWHccj3+QaiVF3mvtgHlrGUMOI
-        BwARJhSs8aj4xQEY+Gj3XQkJPvYPXtpX0W5qtUinTw==
-X-Google-Smtp-Source: ABdhPJzEuWLGFxkRno8JHC5jNEyjXKuuqBAtEaEU9SYXKzgCatvz+aOmCp4g+jj8lAIvVYTHHBWYGkqPHzjzHeAWsL4=
-X-Received: by 2002:a17:90b:4a05:: with SMTP id kk5mr5895404pjb.232.1637837938076;
- Thu, 25 Nov 2021 02:58:58 -0800 (PST)
+        id S232054AbhKYLJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 06:09:51 -0500
+Received: from foss.arm.com ([217.140.110.172]:49480 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232624AbhKYLHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 06:07:50 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4B1DB1042;
+        Thu, 25 Nov 2021 03:04:39 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.79.63])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A7F2F3F66F;
+        Thu, 25 Nov 2021 03:04:37 -0800 (PST)
+Date:   Thu, 25 Nov 2021 11:04:31 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+Subject: Re: [PATCH] scripts/sorttable: Unify arm64 & x86 sort functions
+Message-ID: <YZ9tv8stXfdSfvAr@FVFF77S0Q05N>
+References: <20211108114220.32796-1-mark.rutland@arm.com>
 MIME-Version: 1.0
-References: <cover.1637781097.git.mchehab+huawei@kernel.org> <c33a6897f5a0803b3fde93fcf4ad652c0915db54.1637781097.git.mchehab+huawei@kernel.org>
-In-Reply-To: <c33a6897f5a0803b3fde93fcf4ad652c0915db54.1637781097.git.mchehab+huawei@kernel.org>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Thu, 25 Nov 2021 11:58:45 +0100
-Message-ID: <CAG3jFyvHvNs93x29s9CoxwRJnpEo_VpyFvCcb6qOAOVpWUs+mA@mail.gmail.com>
-Subject: Re: [PATCH 17/20] media: qcom: camss: mark read reg function as __maybe_unused
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Todor Tomov <todor.too@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211108114220.32796-1-mark.rutland@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for submitting this Mauro.
+[Adding Ingo and Peter]
 
-On Wed, 24 Nov 2021 at 20:13, Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> Such function is currently unused, but could be needed in the
-> future. So, keep it, marking it as __maybe_unused, in order to
-> avoid a clang W=1 error.
->
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+TIP folk, is this something you'd be happy to pick up?
+
+arm64 and x86 simply raced to add the same logic to sorttable.c for v5.16-rc1,
+and it'd be nice to clean those up for v5.16-rc3 or so, since the riscv folk
+want to use the same logic for v5.17 or so:
+
+  https://lore.kernel.org/r/20211118192605.57e06d6b@xhacker
+
+Will's acked this patch in the reply at:
+
+  https://lore.kernel.org/r/20211116100406.GA9851@willie-the-truck
+
+Thanks
+Mark.
+
+On Mon, Nov 08, 2021 at 11:42:20AM +0000, Mark Rutland wrote:
+> The format of the arm64 and x86 exception table entries is essentially
+> the same as of commits:
+> 
+>   46d28947d9876fc0 ("x86/extable: Rework the exception table mechanics")
+>   d6e2cc5647753825 ("arm64: extable: add `type` and `data` fields")
+> 
+> Both use a 12-byte entry consisting of two 32-bit relative offsets and
+> 32 bits of (absolute) data, and their sort functions are identical aside
+> from commentary, with arm64 saying:
+> 
+>    /* Don't touch the fixup type or data */
+> 
+> ... and x86 saying:
+> 
+>   /* Don't touch the fixup type */
+> 
+> Unify the two behind a common sort_relative_table_with_data() function,
+> retaining the arm64 commentary.
+> 
+> There should be no functional change as a result of this patch.
+> 
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
 > ---
->
-> To avoid mailbombing on a large number of people, only mailing lists were C/C on the cover.
-> See [PATCH 00/20] at: https://lore.kernel.org/all/cover.1637781097.git.mchehab+huawei@kernel.org/
->
->  drivers/media/platform/qcom/camss/camss-vfe-170.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/media/platform/qcom/camss/camss-vfe-170.c b/drivers/media/platform/qcom/camss/camss-vfe-170.c
-> index 5c083d70d495..455ae1a819e6 100644
-> --- a/drivers/media/platform/qcom/camss/camss-vfe-170.c
-> +++ b/drivers/media/platform/qcom/camss/camss-vfe-170.c
-> @@ -191,7 +191,7 @@ static u32 vfe_hw_version(struct vfe_device *vfe)
->         return hw_version;
+>  scripts/sorttable.c | 36 +++---------------------------------
+>  1 file changed, 3 insertions(+), 33 deletions(-)
+> 
+> diff --git a/scripts/sorttable.c b/scripts/sorttable.c
+> index b7c2ad71f9cf..ca9db62bf766 100644
+> --- a/scripts/sorttable.c
+> +++ b/scripts/sorttable.c
+> @@ -231,7 +231,7 @@ static void sort_relative_table(char *extab_image, int image_size)
+>  	}
 >  }
->
-> -static inline void vfe_reg_clr(struct vfe_device *vfe, u32 reg, u32 clr_bits)
-> +static inline void __maybe_unused vfe_reg_clr(struct vfe_device *vfe, u32 reg, u32 clr_bits)
+>  
+> -static void arm64_sort_relative_table(char *extab_image, int image_size)
+> +static void sort_relative_table_with_data(char *extab_image, int image_size)
 >  {
->         u32 bits = readl_relaxed(vfe->base + reg);
->
-> --
-> 2.33.1
->
-
-I've submitted a patch[1] for removing this function, with that patch
-applied, this patch is no longer needed.
-
-[1] https://lore.kernel.org/all/20211011121301.421410-1-robert.foss@linaro.org/
+>  	int i = 0;
+>  
+> @@ -259,34 +259,6 @@ static void arm64_sort_relative_table(char *extab_image, int image_size)
+>  	}
+>  }
+>  
+> -static void x86_sort_relative_table(char *extab_image, int image_size)
+> -{
+> -	int i = 0;
+> -
+> -	while (i < image_size) {
+> -		uint32_t *loc = (uint32_t *)(extab_image + i);
+> -
+> -		w(r(loc) + i, loc);
+> -		w(r(loc + 1) + i + 4, loc + 1);
+> -		/* Don't touch the fixup type */
+> -
+> -		i += sizeof(uint32_t) * 3;
+> -	}
+> -
+> -	qsort(extab_image, image_size / 12, 12, compare_relative_table);
+> -
+> -	i = 0;
+> -	while (i < image_size) {
+> -		uint32_t *loc = (uint32_t *)(extab_image + i);
+> -
+> -		w(r(loc) - i, loc);
+> -		w(r(loc + 1) - (i + 4), loc + 1);
+> -		/* Don't touch the fixup type */
+> -
+> -		i += sizeof(uint32_t) * 3;
+> -	}
+> -}
+> -
+>  static void s390_sort_relative_table(char *extab_image, int image_size)
+>  {
+>  	int i;
+> @@ -364,15 +336,13 @@ static int do_file(char const *const fname, void *addr)
+>  
+>  	switch (r2(&ehdr->e_machine)) {
+>  	case EM_386:
+> +	case EM_AARCH64:
+>  	case EM_X86_64:
+> -		custom_sort = x86_sort_relative_table;
+> +		custom_sort = sort_relative_table_with_data;
+>  		break;
+>  	case EM_S390:
+>  		custom_sort = s390_sort_relative_table;
+>  		break;
+> -	case EM_AARCH64:
+> -		custom_sort = arm64_sort_relative_table;
+> -		break;
+>  	case EM_PARISC:
+>  	case EM_PPC:
+>  	case EM_PPC64:
+> -- 
+> 2.11.0
+> 
