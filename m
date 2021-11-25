@@ -2,53 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3D045DF57
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2EC645DF79
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:17:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234895AbhKYRIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 12:08:55 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:53226 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241469AbhKYRGx (ORCPT
+        id S242462AbhKYRUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 12:20:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242351AbhKYRSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 12:06:53 -0500
-Date:   Thu, 25 Nov 2021 17:03:39 -0000
+        Thu, 25 Nov 2021 12:18:13 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7240DC0617A0;
+        Thu, 25 Nov 2021 09:03:45 -0800 (PST)
+Date:   Thu, 25 Nov 2021 17:03:40 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637859820;
+        s=2020; t=1637859821;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=D7qkJZFsmt9YLRE2CDmOJOenCsg6PPtll6M53RU2OnQ=;
-        b=hPe7hhchqPziPCbQKUCHH2/Yevc8IH4WDVezkze7iVKuRcFUls8nPmT1Z9EceiIq6nQPyG
-        ON9XCV097J7ThRBH+gUKz8hGa78zl0e+aYA9HYAGkgoLyfRGUchG9Jrvai3c4hitKBBbuj
-        xNz5Fu9J8apQp7zsXdKqQ2+MwPr9YD2+vu8N1yc35b+a6CN/ohoROAEXIurwKI1eyjxOU3
-        9IcTfNTUs4d9/GBhFd8W3Sgd0rZfeZ76CiZMa9YLj7fPi8jqe8DRQrTxVhSjE8HqO1t+CK
-        igYCruIlSlunJwJDrwvOvNELF0y0H2k6xTdqS9AwuXnxAnLvBtBQ5XUZbGLUeg==
+        bh=5VgVeMn/tzStW43DWFETQfEosJYLh/LxhQ7mM4eGm/k=;
+        b=tPIhetP8li86pl5bSf3OR33yHFFky4z0TeNaqep11Fp5OUpSnRsUqd6z5CGEh28zv1wKCM
+        feoVA5OZUfGuwUeO8xyfvVyQtdN2/LjnA2IVyo+XK3fdthWi4l2eB2zc5gqL4w8Sj7lUsC
+        oitLm4J/d23wthqHUgYgE5fQYXXyfeg3hRYhc0XcVkBQtPIjgkMB0aUlR5G0XLSEM5IJRm
+        6cbVCa2OrsoSzJTjc/+PVEYtn70GpnRyJKmLv5vZCDvt05sYze/11rq3/ybw0AXqB3Z8Dy
+        qu57dpOggLYJ1jtcKgO9SlHOcnHtvDnRzmYlUoHukcfIpfjiXaMreaM25eHz7w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637859820;
+        s=2020e; t=1637859821;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=D7qkJZFsmt9YLRE2CDmOJOenCsg6PPtll6M53RU2OnQ=;
-        b=iQOjsGV0/4KXojkkmnBS9eBOaLmT9RTc5vVJAHK+drH93wLb/PzvCtGvm5Q5gCA1GreLFF
-        +5F7HhXnG+26e2BA==
-From:   "irqchip-bot for Geert Uytterhoeven" <tip-bot2@linutronix.de>
+        bh=5VgVeMn/tzStW43DWFETQfEosJYLh/LxhQ7mM4eGm/k=;
+        b=dWoyvyUZnjZC/m6g6/mq7DCZRJld56Kx6TSXGWfCH3f3W6NIgdOXkKvdQmZds/T/bqfKm+
+        BQhwIdNl+0iuraCQ==
+From:   "irqchip-bot for Billy Tsai" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-fixes] irqchip/mips-gic: Use bitfield helpers
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
-In-Reply-To: =?utf-8?q?=3C74f9d126961a90d3e311b92a54870eaac5b3ae57=2E16375?=
- =?utf-8?q?93297=2Egit=2Egeert+renesas=40glider=2Ebe=3E?=
-References: =?utf-8?q?=3C74f9d126961a90d3e311b92a54870eaac5b3ae57=2E163759?=
- =?utf-8?q?3297=2Egit=2Egeert+renesas=40glider=2Ebe=3E?=
+Subject: [irqchip: irq/irqchip-fixes] irqchip/aspeed-scu: Replace update_bits
+ with write_bits.
+Cc:     Billy Tsai <billy_tsai@aspeedtech.com>,
+        Joel Stanley <joel@jms.id.au>, Marc Zyngier <maz@kernel.org>,
+        stable@vger.kernel.org, tglx@linutronix.de
+In-Reply-To: <20211124094348.11621-1-billy_tsai@aspeedtech.com>
+References: <20211124094348.11621-1-billy_tsai@aspeedtech.com>
 MIME-Version: 1.0
-Message-ID: <163785981944.11128.15688304790396374000.tip-bot2@tip-bot2>
+Message-ID: <163785982037.11128.2338335240854330231.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,43 +62,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-fixes branch of irqchip:
 
-Commit-ID:     357a9c4b79f4c8bbceb77c64ea09d8da3a6a870d
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/357a9c4b79f4c8bbceb77c64ea09d8da3a6a870d
-Author:        Geert Uytterhoeven <geert+renesas@glider.be>
-AuthorDate:    Mon, 22 Nov 2021 16:54:07 +01:00
+Commit-ID:     8958389681b929fcc7301e7dc5f0da12e4a256a0
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/8958389681b929fcc7301e7dc5f0da12e4a256a0
+Author:        Billy Tsai <billy_tsai@aspeedtech.com>
+AuthorDate:    Wed, 24 Nov 2021 17:43:48 +08:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Thu, 25 Nov 2021 16:55:40 
+CommitterDate: Thu, 25 Nov 2021 16:50:44 
 
-irqchip/mips-gic: Use bitfield helpers
+irqchip/aspeed-scu: Replace update_bits with write_bits.
 
-Use the FIELD_GET() helper, instead of open-coding the same operation.
+The interrupt status bits are cleared by writing 1, we should force a
+write to clear the interrupt without checking if the value has changed.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Fixes: 04f605906ff0 ("irqchip: Add Aspeed SCU interrupt controller")
+Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/all/74f9d126961a90d3e311b92a54870eaac5b3ae57.1637593297.git.geert+renesas@glider.be
+Link: https://lore.kernel.org/r/20211124094348.11621-1-billy_tsai@aspeedtech.com
+Cc: stable@vger.kernel.org
 ---
- drivers/irqchip/irq-mips-gic.c | 4 ++--
+ drivers/irqchip/irq-aspeed-scu-ic.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index d02b05a..ff89b36 100644
---- a/drivers/irqchip/irq-mips-gic.c
-+++ b/drivers/irqchip/irq-mips-gic.c
-@@ -9,6 +9,7 @@
+diff --git a/drivers/irqchip/irq-aspeed-scu-ic.c b/drivers/irqchip/irq-aspeed-scu-ic.c
+index f3c6855..18b77c3 100644
+--- a/drivers/irqchip/irq-aspeed-scu-ic.c
++++ b/drivers/irqchip/irq-aspeed-scu-ic.c
+@@ -76,8 +76,8 @@ static void aspeed_scu_ic_irq_handler(struct irq_desc *desc)
+ 		generic_handle_domain_irq(scu_ic->irq_domain,
+ 					  bit - scu_ic->irq_shift);
  
- #define pr_fmt(fmt) "irq-mips-gic: " fmt
+-		regmap_update_bits(scu_ic->scu, scu_ic->reg, mask,
+-				   BIT(bit + ASPEED_SCU_IC_STATUS_SHIFT));
++		regmap_write_bits(scu_ic->scu, scu_ic->reg, mask,
++				  BIT(bit + ASPEED_SCU_IC_STATUS_SHIFT));
+ 	}
  
-+#include <linux/bitfield.h>
- #include <linux/bitmap.h>
- #include <linux/clocksource.h>
- #include <linux/cpuhotplug.h>
-@@ -735,8 +736,7 @@ static int __init gic_of_init(struct device_node *node,
- 	mips_gic_base = ioremap(gic_base, gic_len);
- 
- 	gicconfig = read_gic_config();
--	gic_shared_intrs = gicconfig & GIC_CONFIG_NUMINTERRUPTS;
--	gic_shared_intrs >>= __ffs(GIC_CONFIG_NUMINTERRUPTS);
-+	gic_shared_intrs = FIELD_GET(GIC_CONFIG_NUMINTERRUPTS, gicconfig);
- 	gic_shared_intrs = (gic_shared_intrs + 1) * 8;
- 
- 	if (cpu_has_veic) {
+ 	chained_irq_exit(chip, desc);
