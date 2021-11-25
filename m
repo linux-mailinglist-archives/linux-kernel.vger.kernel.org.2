@@ -2,88 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D69645E1E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:03:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7915445E1E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:04:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239629AbhKYVGp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 25 Nov 2021 16:06:45 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:59860 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237400AbhKYVEl (ORCPT
+        id S1357169AbhKYVHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 16:07:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243233AbhKYVFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 16:04:41 -0500
-Received: from smtpclient.apple (p5b3d2e91.dip0.t-ipconnect.de [91.61.46.145])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 0E95ECECC6;
-        Thu, 25 Nov 2021 22:01:25 +0100 (CET)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
-Subject: Re: [PATCH] Bluetooth: virtio_bt: fix device removal
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20211125154314-mutt-send-email-mst@kernel.org>
-Date:   Thu, 25 Nov 2021 22:01:25 +0100
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <C8D84EA4-E9A8-44CC-918F-57640A05C81D@holtmann.org>
-References: <20211125174200.133230-1-mst@redhat.com>
- <F52F65FE-6A07-486B-8E84-684ED85709E9@holtmann.org>
- <20211125154314-mutt-send-email-mst@kernel.org>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-X-Mailer: Apple Mail (2.3693.20.0.1.32)
+        Thu, 25 Nov 2021 16:05:50 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0DDC061574;
+        Thu, 25 Nov 2021 13:02:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6whOC0TKGHPxQK7AWkvSbq/nnQHgn420BvdvtIX5e9U=; b=fDmyyCipVl5lPnqbKdEPMegTzV
+        HFDsVdla5bphMbGh+7EV0KFHgJLrVEjpxrC7U/+PPFFepp08yoIBFLW7U7hhOmc8MDJJFKatzWbXK
+        WLyDBkfDAtHi7Yjd2VGTc2HhQH9qVumun2C6yBBrQuH49PvfUGHOpM4vgEey9HVHddPH78RKUDHZ0
+        S88l0v/qDztowz1PSr4G7vVaZrSoQOjYdEzrairMtUjVtFkhQObIJojCclDLFOquxxJikzReA3JK/
+        Lkbr76gzdZQH3z2bpMB8djessDrHZSR3hCTrW+27G2j3AvAEzAoxmw16XWjfbjTIuWeIYOBQiTssO
+        W39v+IRA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mqLsz-007nbV-Ak; Thu, 25 Nov 2021 21:02:29 +0000
+Date:   Thu, 25 Nov 2021 21:02:29 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
+ with sub-page faults
+Message-ID: <YZ/55fYE0l7ewo/t@casper.infradead.org>
+References: <20211124192024.2408218-1-catalin.marinas@arm.com>
+ <20211124192024.2408218-4-catalin.marinas@arm.com>
+ <YZ6arlsi2L3LVbFO@casper.infradead.org>
+ <CAHk-=wgHqjX3kenSk5_bCRM+ZC-tgndBMfbVVsbp0CwJf2DU-w@mail.gmail.com>
+ <YZ9vM91Uj8g36VQC@arm.com>
+ <CAHk-=wgUn1vBReeNcZNEObkxPQGhN5EUq5MC94cwF0FaQvd2rQ@mail.gmail.com>
+ <YZ/1jflaSjgRRl2o@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZ/1jflaSjgRRl2o@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
-
->>> Device removal is clearly out of virtio spec: it attempts to remove
->>> unused buffers from a VQ before invoking device reset. To fix, make
->>> open/close NOPs and do all cleanup/setup in probe/remove.
->> 
->> so the virtbt_{open,close} as NOP is not really what a driver is suppose
->> to be doing. These are transport enable/disable callbacks from the BT
->> Core towards the driver. It maps to a device being enabled/disabled by
->> something like bluetoothd for example. So if disabled, I expect that no
->> resources/queues are in use.
->> 
->> Maybe I misunderstand the virtio spec in that regard, but I would like
->> to keep this fundamental concept of a Bluetooth driver. It does work
->> with all other transports like USB, SDIO, UART etc.
->> 
->>> The cost here is a single skb wasted on an unused bt device - which
->>> seems modest.
->> 
->> There should be no buffer used if the device is powered off. We also don’t
->> have any USB URBs in-flight if the transport is not active.
->> 
->>> NB: with this fix in place driver still suffers from a race condition if
->>> an interrupt triggers while device is being reset. Work on a fix for
->>> that issue is in progress.
->> 
->> In the virtbt_close() callback we should deactivate all interrupts.
->> 
+On Thu, Nov 25, 2021 at 08:43:57PM +0000, Catalin Marinas wrote:
+> > I really believe that the fix is to make the read/write probing just
+> > be more aggressive.
+> > 
+> > Make the read/write probing require that AT LEAST <n> bytes be
+> > readable/writable at the beginning, where 'n' is 'min(len,ALIGN)', and
+> > ALIGN is whatever size that copy_from/to_user_xyz() might require just
+> > because it might do multi-byte accesses.
+> > 
+> > In fact, make ALIGN be perhaps something reasonable like 512 bytes or
+> > whatever, and then you know you can handle the btrfs "copy a whole
+> > structure and reset if that fails" case too.
 > 
-> If you want to do that then device has to be reset on close,
-> and fully reinitialized on open.
-> Can you work on a patch like that?
-> Given I don't have the device such a rework is probably more
-> than I can undertake.
+> IIUC what you are suggesting, we still need changes to the btrfs loop
+> similar to willy's but that should work fine together with a slightly
+> more aggressive fault_in_writable().
+> 
+> A probing of at least sizeof(struct btrfs_ioctl_search_key) should
+> suffice without any loop changes and 512 would cover it but it doesn't
+> look generic enough. We could pass a 'probe_prefix' argument to
+> fault_in_exact_writeable() to only probe this and btrfs would just
+> specify the above sizeof().
 
-so you mean move virtio_find_vqs() into virtbt_open() and del_vqs() into
-virtbt_close()?
+How about something like this?
 
-Or is there are way to set up the queues without starting them?
++++ b/mm/gup.c
+@@ -1672,6 +1672,13 @@ size_t fault_in_writeable(char __user *uaddr, size_t size)
 
-However I am failing to understand your initial concern, we do reset()
-before del_vqs() in virtbt_remove(). Should we be doing something different
-in virtbt_close() other than virtqueue_detach_unused_buf(). Why would I
-keep buffers attached if they are not used.
+        if (unlikely(size == 0))
+                return 0;
++       if (SUBPAGE_PROBE_INTERVAL) {
++               while (uaddr < PAGE_ALIGN((unsigned long)uaddr)) {
++                       if (unlikely(__put_user(0, uaddr) != 0))
++                               goto out;
++                       uaddr += SUBPAGE_PROBE_INTERVAL;
++               }
++       }
+        if (!PAGE_ALIGNED(uaddr)) {
+                if (unlikely(__put_user(0, uaddr) != 0))
+                        return size;
 
-Regards
+ARM then defines SUBPAGE_PROBE_INTERVAL to be 16 and the rest of us
+leave it as 0.  That way we probe all the way to the end of the current
+page and the start of the next page.
 
-Marcel
-
+Oh, that needs to be checked to not exceed size as well ... anyway,
+you get the idea.
