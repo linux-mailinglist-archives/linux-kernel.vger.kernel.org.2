@@ -2,106 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD71045D28E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 02:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 128B745D28F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 02:47:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352766AbhKYBu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 20:50:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60218 "EHLO
+        id S1352841AbhKYBu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 20:50:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352722AbhKYBsR (ORCPT
+        with ESMTP id S1352759AbhKYBsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Nov 2021 20:48:17 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CF0C07E5C5;
-        Wed, 24 Nov 2021 16:56:16 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id j6-20020a17090a588600b001a78a5ce46aso6436295pji.0;
-        Wed, 24 Nov 2021 16:56:16 -0800 (PST)
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 367CCC07E5C9
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 16:56:49 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id e144so5482542iof.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 16:56:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vFUCCRJ0w8ukkUkfynRWwva0cJAae/vXn5KqKDDKdmg=;
-        b=p4YUWG41UrMIC3xiiGXWEuk38EfzcDtxJ3iSWPkSegr+EnM2+P/fcPWcXo3i2KB013
-         mHiAcjapaLa/YgyVX0WeHbsmYY6cdq0mQzeA8X3Vwds9waP1zWHDwXRUBwkx7DVOWlOT
-         B3keWLxnoG/SjiAycEWfQPOUVUfUT76Y5VkXkQxZmC6XB/YHxZ1YU+vozZ8j4HpkYfj8
-         e00hemkF11Z/sH1XLQgRTzQj0lF/bBapNfIt1WCMoL3p/s7FBd2pFILAtdFlZK+g3p/d
-         ekvl/hvdsEWxLJTmlcM8rwa5NS3ANzHy3EUKDxz6oQJWUZ5TsgsmVUnfBG4QU0c9BLNl
-         JocA==
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YQECEZaOSnuAkiPU2V5NI9wzqYl9rSxziHehNSDY9mc=;
+        b=yEj/CgFCl/hr7Oo3i9m5Nq1jZp8DDu5fJZn9grSTIdtkREa9BgrmMdMoxW7Hk9w/Rc
+         4RSM6Ui1OmasykZGf3GtxV+dvcW7MOBJ6E5EgQpZ1Aq9n7pNRrRnz2v0LcCrhTqj6jcs
+         +tetlBrOZb0QPcTsvZGx8HRaGIzbm1pTvGMym5EdjReNaHQz+eluzHtkLsnGNv/Mjjlz
+         pXCuS+S2f7gm8dXB+TjZnZtVlxV8L1Eljkt4Wwdf2qLnTFjQHh/AwAZo7+vcmOiR49g3
+         lNaAtKzbQIFdxFnLWPt3ZElqk3LTjgc0qB4a9DwG3BYAFBnSPpVs4BkOzf90NrKorDtk
+         +8nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=vFUCCRJ0w8ukkUkfynRWwva0cJAae/vXn5KqKDDKdmg=;
-        b=pfaDP5tHuaBEOaFOOlJ1lt7wLvICaQxO8T5hwzJ2ZXLWVDt/XgsEZnIUxqhClku9rH
-         YUF4yVdwzsc+N5AMDzdNgnUwV6nW+wTunT5k1GIBJbDQgsy7YW2ugmPN7+osAv6cbw7L
-         Z3GGLNOJnS/Oh0lBMpLa+emVXSDsCPATt6Gvc7/LZy5m5mVp6fwYPB+gBUBEsGWxJZ9m
-         Q/L2hsg4woys6bM612wQVbTP3xyB3fHKZk+sXOroNKXibjywYJ8ZaBHu4I7HCHljjDvH
-         jZAi1CHichqon15Mcp1yYb+qwCPyhSjoQFtfLm1WMFzE7ZEr2j+f531ydGYeLobUDxqG
-         aLFQ==
-X-Gm-Message-State: AOAM532+Wu0Lkn8Cp4MrPMVVKqYu5dYtrvVlNZVXJXzR6sUKcFvUl9BL
-        Ks2QFxWCztD312M8Nr0CiFg=
-X-Google-Smtp-Source: ABdhPJwCguLh0vQ2YDu7PSBaovB9V4aX72xX4Jse6LOmvjHbON3F9fSm2TAcZBbpk1vBQevG6CM6Tg==
-X-Received: by 2002:a17:902:c204:b0:142:2441:aa26 with SMTP id 4-20020a170902c20400b001422441aa26mr24770715pll.84.1637801776457;
-        Wed, 24 Nov 2021 16:56:16 -0800 (PST)
-Received: from debian11-dev-61.localdomain (192.243.120.180.16clouds.com. [192.243.120.180])
-        by smtp.gmail.com with ESMTPSA id o23sm868770pfp.209.2021.11.24.16.56.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 16:56:16 -0800 (PST)
-From:   davidcomponentone@gmail.com
-X-Google-Original-From: yang.guang5@zte.com.cn
-To:     shuah@kernel.org
-Cc:     davidcomponentone@gmail.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yang Guang <yang.guang5@zte.com.cn>,
+        bh=YQECEZaOSnuAkiPU2V5NI9wzqYl9rSxziHehNSDY9mc=;
+        b=ayBMRti4Cnxup/Kk+J1Gf32kNYTsy2cmhNVvlBHGtxgWXLUR0PtueMpijj4ur/IkV1
+         ZbX6iFzc7IRhRzbWD+PetUL9PiJPbKdFxYxZXX80CTvcFIVZqnfwZd6D+grwtG402vFL
+         A7nwDjpzOy9XFL1gIwW1+ML0JBHF8gPY4Y/V9KnfmaJ0UvUs0xVFUatCGbmVRgsNRnZa
+         wO1SSSZfzu32Lu7Y8BBpK7cZdz6kDVJeAnzseZR+ppK1iAbAINdLMtx2xqdE7bJzbpsc
+         EsVfHrvB5CW8RxKnEugS3VEWI4NOpCca1WcbZdkHhUMEe7Ggz9fuy+1lr0g6at65tRNj
+         KHcg==
+X-Gm-Message-State: AOAM530nOINGgbvsHbxQQodO6hZLTx51Wq+y3Py3ZDmguyUGW0/FpOOU
+        xNX7x8y3MeWO641/77UO1bYWjA==
+X-Google-Smtp-Source: ABdhPJwWVqRdKf3NBnTqyTGlkAHlIY6XUp+YcgmQT7OkghhTzfdemlFqdTBdXPGbLVqoNQM0fCzxnw==
+X-Received: by 2002:a05:6602:19a:: with SMTP id m26mr19954552ioo.162.1637801808369;
+        Wed, 24 Nov 2021 16:56:48 -0800 (PST)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id v23sm778469ioj.4.2021.11.24.16.56.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Nov 2021 16:56:47 -0800 (PST)
+Subject: Re: [PATCH] block: fix parameter not described warning
+To:     davidcomponentone@gmail.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Guang <yang.guang5@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] mnt: remove unneeded conversion to bool
-Date:   Thu, 25 Nov 2021 08:56:03 +0800
-Message-Id: <3a7435c9e7e7aa8f24d22fd576ce912eb0540272.1637737086.git.yang.guang5@zte.com.cn>
-X-Mailer: git-send-email 2.30.2
+References: <3ece7228314e89177d022cd514215d8c76485fb8.1637735436.git.yang.guang5@zte.com.cn>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <0145c2a3-4648-ef7b-6f7f-d15a95231327@kernel.dk>
+Date:   Wed, 24 Nov 2021 17:56:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <3ece7228314e89177d022cd514215d8c76485fb8.1637735436.git.yang.guang5@zte.com.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Guang <yang.guang5@zte.com.cn>
+On 11/24/21 5:54 PM, davidcomponentone@gmail.com wrote:
+> From: Yang Guang <yang.guang5@zte.com.cn>
+> 
+> The build warning:
+> block/blk-core.c:968: warning: Function parameter or member 'iob'
+> not described in 'bio_poll'.
 
-The coccinelle report
-./tools/testing/selftests/mount/unprivileged-remount-test.c:285:54-59:
-WARNING: conversion to bool not needed here
-./tools/testing/selftests/mount/unprivileged-remount-test.c:207:54-59:
-WARNING: conversion to bool not needed here
-Relational and logical operators evaluate to bool,
-explicit conversion is overly verbose and unneeded.
+Can you add a Fixes tag as well?
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
----
- tools/testing/selftests/mount/unprivileged-remount-test.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/mount/unprivileged-remount-test.c b/tools/testing/selftests/mount/unprivileged-remount-test.c
-index 584dc6bc3b06..d2917054fe3a 100644
---- a/tools/testing/selftests/mount/unprivileged-remount-test.c
-+++ b/tools/testing/selftests/mount/unprivileged-remount-test.c
-@@ -204,7 +204,7 @@ bool test_unpriv_remount(const char *fstype, const char *mount_options,
- 		if (!WIFEXITED(status)) {
- 			die("child did not terminate cleanly\n");
- 		}
--		return WEXITSTATUS(status) == EXIT_SUCCESS ? true : false;
-+		return WEXITSTATUS(status) == EXIT_SUCCESS;
- 	}
- 
- 	create_and_enter_userns();
-@@ -282,7 +282,7 @@ static bool test_priv_mount_unpriv_remount(void)
- 		if (!WIFEXITED(status)) {
- 			die("child did not terminate cleanly\n");
- 		}
--		return WEXITSTATUS(status) == EXIT_SUCCESS ? true : false;
-+		return WEXITSTATUS(status) == EXIT_SUCCESS;
- 	}
- 
- 	orig_mnt_flags = read_mnt_flags(orig_path);
 -- 
-2.30.2
+Jens Axboe
 
