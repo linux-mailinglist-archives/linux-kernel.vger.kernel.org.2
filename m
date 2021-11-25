@@ -2,197 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A52845DC82
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 15:41:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51BBC45DC7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 15:37:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355736AbhKYOoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 09:44:14 -0500
-Received: from mga05.intel.com ([192.55.52.43]:36704 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352655AbhKYOmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 09:42:13 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="321758087"
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="321758087"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 06:34:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="457418581"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 25 Nov 2021 06:34:39 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqFpf-0006Uf-0P; Thu, 25 Nov 2021 14:34:39 +0000
-Date:   Thu, 25 Nov 2021 22:34:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Trevor Wu <trevor.wu@mediatek.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: sound/soc/mediatek/common/mtk-btcvsd.c:1367:30: sparse: sparse:
- incorrect type in assignment (different address spaces)
-Message-ID: <202111252251.6a95AjTD-lkp@intel.com>
+        id S1355792AbhKYOlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 09:41:02 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:46790 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350357AbhKYOjC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 09:39:02 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1APBqCmJ025807;
+        Thu, 25 Nov 2021 08:35:05 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=z3BncN1/AnEiaG2CTk4wXWUCkATXrlhRVwwvy7lY31E=;
+ b=MoMyh5UJXwdQ2ih8kq2054d+gyFkxXq0/T2qs3S/bKEeOTVlovCBRUToyrLrbo1YtcLw
+ /ug2/F2ZMmarWqQkSCql6sh+a+oxz8SuR1bgs29AX1ZWqn4lKS72e3TbyPjHiOJb81Bq
+ LtqCRGXdwNfV2M3YfEAwBQrVM9zgoq7vMf0QRmhuWzJO2H0JnMiTZO22ZmJRJz2GCSHn
+ 5SCzyFXHzQxfe9bLOGGCW5+dOUdC1eHk9s1BV0A9MKCiqE4ftPoPSb20N9dmsGlWMr2s
+ baYaxSkw4z8uQUt3qnr3nC494Lgn6//mVQnbs3h3V9YrCClJMAX5HfWRAqQbd/LCGiNF 8w== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3chb8whx2c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 25 Nov 2021 08:35:04 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Thu, 25 Nov
+ 2021 14:35:03 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via Frontend
+ Transport; Thu, 25 Nov 2021 14:35:03 +0000
+Received: from aryzen.ad.cirrus.com (unknown [198.61.65.11])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7F8DC2A1;
+        Thu, 25 Nov 2021 14:35:02 +0000 (UTC)
+From:   Lucas Tanure <tanureal@opensource.cirrus.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        David Rhodes <david.rhodes@cirrus.com>
+CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>,
+        Lucas Tanure <tanureal@opensource.cirrus.com>
+Subject: [PATCH] ASoC: cs35l41: Fix link problem
+Date:   Thu, 25 Nov 2021 14:35:01 +0000
+Message-ID: <20211125143501.7720-1-tanureal@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: BF1YdR_Uk6Xtr5PExd2__xeBEJq-y0kH
+X-Proofpoint-ORIG-GUID: BF1YdR_Uk6Xtr5PExd2__xeBEJq-y0kH
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5f53fa508db098c9d372423a6dac31c8a5679cdf
-commit: 6746cc858259985a945a07075a19ec4d24352407 ASoC: mediatek: mt8195: add platform driver
-date:   3 months ago
-config: alpha-randconfig-s032-20211117 (https://download.01.org/0day-ci/archive/20211125/202111252251.6a95AjTD-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 11.2.0
-reproduce:
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # apt-get install sparse
-        # sparse version: v0.6.4-dirty
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6746cc858259985a945a07075a19ec4d24352407
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout 6746cc858259985a945a07075a19ec4d24352407
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=alpha 
+Can't link I2C and SPI to the same binary, better
+to move CS35L41 to 3 modules approach.
+And instead of exposing cs35l41_reg, volatile_reg,
+readable_reg and precious_reg arrays, move
+cs35l41_regmap_i2c/spi to new module and expose it.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-
-sparse warnings: (new ones prefixed by >>)
->> sound/soc/mediatek/common/mtk-btcvsd.c:1367:30: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned int [usertype] *bt_reg_pkt_r @@     got void [noderef] __iomem * @@
-   sound/soc/mediatek/common/mtk-btcvsd.c:1367:30: sparse:     expected unsigned int [usertype] *bt_reg_pkt_r
-   sound/soc/mediatek/common/mtk-btcvsd.c:1367:30: sparse:     got void [noderef] __iomem *
->> sound/soc/mediatek/common/mtk-btcvsd.c:1369:30: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned int [usertype] *bt_reg_pkt_w @@     got void [noderef] __iomem * @@
-   sound/soc/mediatek/common/mtk-btcvsd.c:1369:30: sparse:     expected unsigned int [usertype] *bt_reg_pkt_w
-   sound/soc/mediatek/common/mtk-btcvsd.c:1369:30: sparse:     got void [noderef] __iomem *
->> sound/soc/mediatek/common/mtk-btcvsd.c:1371:28: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned int [usertype] *bt_reg_ctl @@     got void [noderef] __iomem * @@
-   sound/soc/mediatek/common/mtk-btcvsd.c:1371:28: sparse:     expected unsigned int [usertype] *bt_reg_ctl
-   sound/soc/mediatek/common/mtk-btcvsd.c:1371:28: sparse:     got void [noderef] __iomem *
-
-vim +1367 sound/soc/mediatek/common/mtk-btcvsd.c
-
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1281  
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1282  static int mtk_btcvsd_snd_probe(struct platform_device *pdev)
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1283  {
-b6052c3c7a78f5e Christophe JAILLET 2021-06-06  1284  	int ret;
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1285  	int irq_id;
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1286  	u32 offset[5] = {0, 0, 0, 0, 0};
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1287  	struct mtk_btcvsd_snd *btcvsd;
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1288  	struct device *dev = &pdev->dev;
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1289  
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1290  	/* init btcvsd private data */
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1291  	btcvsd = devm_kzalloc(dev, sizeof(*btcvsd), GFP_KERNEL);
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1292  	if (!btcvsd)
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1293  		return -ENOMEM;
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1294  	platform_set_drvdata(pdev, btcvsd);
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1295  	btcvsd->dev = dev;
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1296  
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1297  	/* init tx/rx */
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1298  	btcvsd->rx = devm_kzalloc(btcvsd->dev, sizeof(*btcvsd->rx), GFP_KERNEL);
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1299  	if (!btcvsd->rx)
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1300  		return -ENOMEM;
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1301  
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1302  	btcvsd->tx = devm_kzalloc(btcvsd->dev, sizeof(*btcvsd->tx), GFP_KERNEL);
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1303  	if (!btcvsd->tx)
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1304  		return -ENOMEM;
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1305  
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1306  	spin_lock_init(&btcvsd->tx_lock);
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1307  	spin_lock_init(&btcvsd->rx_lock);
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1308  
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1309  	init_waitqueue_head(&btcvsd->tx_wait);
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1310  	init_waitqueue_head(&btcvsd->rx_wait);
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1311  
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1312  	mtk_btcvsd_snd_tx_init(btcvsd);
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1313  	mtk_btcvsd_snd_rx_init(btcvsd);
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1314  
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1315  	/* irq */
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1316  	irq_id = platform_get_irq(pdev, 0);
-cf9441adb1a3550 Stephen Boyd       2019-07-30  1317  	if (irq_id <= 0)
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1318  		return irq_id < 0 ? irq_id : -ENXIO;
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1319  
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1320  	ret = devm_request_irq(dev, irq_id, mtk_btcvsd_snd_irq_handler,
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1321  			       IRQF_TRIGGER_LOW, "BTCVSD_ISR_Handle",
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1322  			       (void *)btcvsd);
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1323  	if (ret) {
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1324  		dev_err(dev, "could not request_irq for BTCVSD_ISR_Handle\n");
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1325  		return ret;
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1326  	}
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1327  
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1328  	btcvsd->irq_id = irq_id;
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1329  
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1330  	/* iomap */
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1331  	btcvsd->bt_pkv_base = of_iomap(dev->of_node, 0);
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1332  	if (!btcvsd->bt_pkv_base) {
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1333  		dev_err(dev, "iomap bt_pkv_base fail\n");
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1334  		return -EIO;
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1335  	}
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1336  
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1337  	btcvsd->bt_sram_bank2_base = of_iomap(dev->of_node, 1);
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1338  	if (!btcvsd->bt_sram_bank2_base) {
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1339  		dev_err(dev, "iomap bt_sram_bank2_base fail\n");
-b6052c3c7a78f5e Christophe JAILLET 2021-06-06  1340  		ret = -EIO;
-b6052c3c7a78f5e Christophe JAILLET 2021-06-06  1341  		goto unmap_pkv_err;
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1342  	}
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1343  
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1344  	btcvsd->infra = syscon_regmap_lookup_by_phandle(dev->of_node,
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1345  							"mediatek,infracfg");
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1346  	if (IS_ERR(btcvsd->infra)) {
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1347  		dev_err(dev, "cannot find infra controller: %ld\n",
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1348  			PTR_ERR(btcvsd->infra));
-b6052c3c7a78f5e Christophe JAILLET 2021-06-06  1349  		ret = PTR_ERR(btcvsd->infra);
-b6052c3c7a78f5e Christophe JAILLET 2021-06-06  1350  		goto unmap_bank2_err;
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1351  	}
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1352  
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1353  	/* get offset */
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1354  	ret = of_property_read_u32_array(dev->of_node, "mediatek,offset",
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1355  					 offset,
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1356  					 ARRAY_SIZE(offset));
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1357  	if (ret) {
-766cc4965a3a2a8 Colin Ian King     2019-02-04  1358  		dev_warn(dev, "%s(), get offset fail, ret %d\n", __func__, ret);
-b6052c3c7a78f5e Christophe JAILLET 2021-06-06  1359  		goto unmap_bank2_err;
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1360  	}
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1361  	btcvsd->infra_misc_offset = offset[0];
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1362  	btcvsd->conn_bt_cvsd_mask = offset[1];
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1363  	btcvsd->cvsd_mcu_read_offset = offset[2];
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1364  	btcvsd->cvsd_mcu_write_offset = offset[3];
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1365  	btcvsd->cvsd_packet_indicator = offset[4];
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1366  
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30 @1367  	btcvsd->bt_reg_pkt_r = btcvsd->bt_pkv_base +
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1368  			       btcvsd->cvsd_mcu_read_offset;
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30 @1369  	btcvsd->bt_reg_pkt_w = btcvsd->bt_pkv_base +
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1370  			       btcvsd->cvsd_mcu_write_offset;
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30 @1371  	btcvsd->bt_reg_ctl = btcvsd->bt_pkv_base +
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1372  			     btcvsd->cvsd_packet_indicator;
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1373  
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1374  	/* init state */
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1375  	mtk_btcvsd_snd_set_state(btcvsd, btcvsd->tx, BT_SCO_STATE_IDLE);
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1376  	mtk_btcvsd_snd_set_state(btcvsd, btcvsd->rx, BT_SCO_STATE_IDLE);
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1377  
-b6052c3c7a78f5e Christophe JAILLET 2021-06-06  1378  	ret = devm_snd_soc_register_component(dev, &mtk_btcvsd_snd_platform,
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1379  					      NULL, 0);
-b6052c3c7a78f5e Christophe JAILLET 2021-06-06  1380  	if (ret)
-b6052c3c7a78f5e Christophe JAILLET 2021-06-06  1381  		goto unmap_bank2_err;
-b6052c3c7a78f5e Christophe JAILLET 2021-06-06  1382  
-b6052c3c7a78f5e Christophe JAILLET 2021-06-06  1383  	return 0;
-b6052c3c7a78f5e Christophe JAILLET 2021-06-06  1384  
-b6052c3c7a78f5e Christophe JAILLET 2021-06-06  1385  unmap_bank2_err:
-b6052c3c7a78f5e Christophe JAILLET 2021-06-06  1386  	iounmap(btcvsd->bt_sram_bank2_base);
-b6052c3c7a78f5e Christophe JAILLET 2021-06-06  1387  unmap_pkv_err:
-b6052c3c7a78f5e Christophe JAILLET 2021-06-06  1388  	iounmap(btcvsd->bt_pkv_base);
-b6052c3c7a78f5e Christophe JAILLET 2021-06-06  1389  	return ret;
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1390  }
-4bd8597dc36c376 KaiChieh Chuang    2019-01-30  1391  
-
-:::::: The code at line 1367 was first introduced by commit
-:::::: 4bd8597dc36c376a2bb1ef2c72984615bdeb68de ASoC: mediatek: add btcvsd driver
-
-:::::: TO: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-:::::: CC: Mark Brown <broonie@kernel.org>
-
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ sound/soc/codecs/Kconfig          |  5 ++++
+ sound/soc/codecs/Makefile         |  6 +++--
+ sound/soc/codecs/cs35l41-i2c.c    | 15 -----------
+ sound/soc/codecs/cs35l41-spi.c    | 16 ------------
+ sound/soc/codecs/cs35l41-tables.c | 41 ++++++++++++++++++++++++++++---
+ sound/soc/codecs/cs35l41.c        |  2 ++
+ sound/soc/codecs/cs35l41.h        |  7 ++----
+ 7 files changed, 50 insertions(+), 42 deletions(-)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 3fe62df32238..6ca1edf0d066 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -613,14 +613,19 @@ config SND_SOC_CS35L36
+ 	tristate "Cirrus Logic CS35L36 CODEC"
+ 	depends on I2C
+ 
++config SND_SOC_CS35L41
++	tristate
++
+ config SND_SOC_CS35L41_SPI
+ 	tristate "Cirrus Logic CS35L41 CODEC (SPI)"
+ 	depends on SPI_MASTER
++	select SND_SOC_CS35L41
+ 	select REGMAP_SPI
+ 
+ config SND_SOC_CS35L41_I2C
+ 	tristate "Cirrus Logic CS35L41 CODEC (I2C)"
+ 	depends on I2C
++	select SND_SOC_CS35L41
+ 	select REGMAP_I2C
+ 
+ config SND_SOC_CS42L42
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 9acfbcbfc46d..485eee75502b 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -54,8 +54,9 @@ snd-soc-cs35l33-objs := cs35l33.o
+ snd-soc-cs35l34-objs := cs35l34.o
+ snd-soc-cs35l35-objs := cs35l35.o
+ snd-soc-cs35l36-objs := cs35l36.o
+-snd-soc-cs35l41-spi-objs := cs35l41-spi.o cs35l41.o cs35l41-tables.o
+-snd-soc-cs35l41-i2c-objs := cs35l41-i2c.o cs35l41.o cs35l41-tables.o
++snd-soc-cs35l41-objs := cs35l41.o cs35l41-tables.o
++snd-soc-cs35l41-spi-objs := cs35l41-spi.o
++snd-soc-cs35l41-i2c-objs := cs35l41-i2c.o
+ snd-soc-cs42l42-objs := cs42l42.o
+ snd-soc-cs42l51-objs := cs42l51.o
+ snd-soc-cs42l51-i2c-objs := cs42l51-i2c.o
+@@ -391,6 +392,7 @@ obj-$(CONFIG_SND_SOC_CS35L33)	+= snd-soc-cs35l33.o
+ obj-$(CONFIG_SND_SOC_CS35L34)	+= snd-soc-cs35l34.o
+ obj-$(CONFIG_SND_SOC_CS35L35)	+= snd-soc-cs35l35.o
+ obj-$(CONFIG_SND_SOC_CS35L36)	+= snd-soc-cs35l36.o
++obj-$(CONFIG_SND_SOC_CS35L41)	+= snd-soc-cs35l41.o
+ obj-$(CONFIG_SND_SOC_CS35L41_SPI)	+= snd-soc-cs35l41-spi.o
+ obj-$(CONFIG_SND_SOC_CS35L41_I2C)	+= snd-soc-cs35l41-i2c.o
+ obj-$(CONFIG_SND_SOC_CS42L42)	+= snd-soc-cs42l42.o
+diff --git a/sound/soc/codecs/cs35l41-i2c.c b/sound/soc/codecs/cs35l41-i2c.c
+index d5fa8d2c4a70..c9b604af6b71 100644
+--- a/sound/soc/codecs/cs35l41-i2c.c
++++ b/sound/soc/codecs/cs35l41-i2c.c
+@@ -20,21 +20,6 @@
+ #include <sound/cs35l41.h>
+ #include "cs35l41.h"
+ 
+-static struct regmap_config cs35l41_regmap_i2c = {
+-	.reg_bits = 32,
+-	.val_bits = 32,
+-	.reg_stride = CS35L41_REGSTRIDE,
+-	.reg_format_endian = REGMAP_ENDIAN_BIG,
+-	.val_format_endian = REGMAP_ENDIAN_BIG,
+-	.max_register = CS35L41_LASTREG,
+-	.reg_defaults = cs35l41_reg,
+-	.num_reg_defaults = ARRAY_SIZE(cs35l41_reg),
+-	.volatile_reg = cs35l41_volatile_reg,
+-	.readable_reg = cs35l41_readable_reg,
+-	.precious_reg = cs35l41_precious_reg,
+-	.cache_type = REGCACHE_RBTREE,
+-};
+-
+ static const struct i2c_device_id cs35l41_id_i2c[] = {
+ 	{ "cs35l40", 0 },
+ 	{ "cs35l41", 0 },
+diff --git a/sound/soc/codecs/cs35l41-spi.c b/sound/soc/codecs/cs35l41-spi.c
+index 3fa99741779a..c202d9df70ee 100644
+--- a/sound/soc/codecs/cs35l41-spi.c
++++ b/sound/soc/codecs/cs35l41-spi.c
+@@ -18,22 +18,6 @@
+ #include <sound/cs35l41.h>
+ #include "cs35l41.h"
+ 
+-static struct regmap_config cs35l41_regmap_spi = {
+-	.reg_bits = 32,
+-	.val_bits = 32,
+-	.pad_bits = 16,
+-	.reg_stride = CS35L41_REGSTRIDE,
+-	.reg_format_endian = REGMAP_ENDIAN_BIG,
+-	.val_format_endian = REGMAP_ENDIAN_BIG,
+-	.max_register = CS35L41_LASTREG,
+-	.reg_defaults = cs35l41_reg,
+-	.num_reg_defaults = ARRAY_SIZE(cs35l41_reg),
+-	.volatile_reg = cs35l41_volatile_reg,
+-	.readable_reg = cs35l41_readable_reg,
+-	.precious_reg = cs35l41_precious_reg,
+-	.cache_type = REGCACHE_RBTREE,
+-};
+-
+ static const struct spi_device_id cs35l41_id_spi[] = {
+ 	{ "cs35l40", 0 },
+ 	{ "cs35l41", 0 },
+diff --git a/sound/soc/codecs/cs35l41-tables.c b/sound/soc/codecs/cs35l41-tables.c
+index 9d1a7d7dd24d..3eb18b17a7b0 100644
+--- a/sound/soc/codecs/cs35l41-tables.c
++++ b/sound/soc/codecs/cs35l41-tables.c
+@@ -8,7 +8,7 @@
+ 
+ #include "cs35l41.h"
+ 
+-const struct reg_default cs35l41_reg[CS35L41_MAX_CACHE_REG] = {
++static const struct reg_default cs35l41_reg[] = {
+ 	{ CS35L41_PWR_CTRL1,			0x00000000 },
+ 	{ CS35L41_PWR_CTRL3,			0x01000010 },
+ 	{ CS35L41_GPIO_PAD_CONTROL,		0x00000000 },
+@@ -47,7 +47,7 @@ const struct reg_default cs35l41_reg[CS35L41_MAX_CACHE_REG] = {
+ 	{ CS35L41_MIXER_NGATE_CH2_CFG,		0x00000303 },
+ };
+ 
+-bool cs35l41_readable_reg(struct device *dev, unsigned int reg)
++static bool cs35l41_readable_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+ 	case CS35L41_DEVID:
+@@ -331,7 +331,7 @@ bool cs35l41_readable_reg(struct device *dev, unsigned int reg)
+ 	}
+ }
+ 
+-bool cs35l41_precious_reg(struct device *dev, unsigned int reg)
++static bool cs35l41_precious_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+ 	case CS35L41_OTP_MEM0 ... CS35L41_OTP_MEM31:
+@@ -344,7 +344,7 @@ bool cs35l41_precious_reg(struct device *dev, unsigned int reg)
+ 	}
+ }
+ 
+-bool cs35l41_volatile_reg(struct device *dev, unsigned int reg)
++static bool cs35l41_volatile_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+ 	case CS35L41_DEVID:
+@@ -688,3 +688,36 @@ const struct cs35l41_otp_map_element_t cs35l41_otp_map_map[CS35L41_NUM_OTP_MAPS]
+ 		.word_offset = 2,
+ 	},
+ };
++
++struct regmap_config cs35l41_regmap_i2c = {
++	.reg_bits = 32,
++	.val_bits = 32,
++	.reg_stride = CS35L41_REGSTRIDE,
++	.reg_format_endian = REGMAP_ENDIAN_BIG,
++	.val_format_endian = REGMAP_ENDIAN_BIG,
++	.max_register = CS35L41_LASTREG,
++	.reg_defaults = cs35l41_reg,
++	.num_reg_defaults = ARRAY_SIZE(cs35l41_reg),
++	.volatile_reg = cs35l41_volatile_reg,
++	.readable_reg = cs35l41_readable_reg,
++	.precious_reg = cs35l41_precious_reg,
++	.cache_type = REGCACHE_RBTREE,
++};
++EXPORT_SYMBOL_GPL(cs35l41_regmap_i2c);
++
++struct regmap_config cs35l41_regmap_spi = {
++	.reg_bits = 32,
++	.val_bits = 32,
++	.pad_bits = 16,
++	.reg_stride = CS35L41_REGSTRIDE,
++	.reg_format_endian = REGMAP_ENDIAN_BIG,
++	.val_format_endian = REGMAP_ENDIAN_BIG,
++	.max_register = CS35L41_LASTREG,
++	.reg_defaults = cs35l41_reg,
++	.num_reg_defaults = ARRAY_SIZE(cs35l41_reg),
++	.volatile_reg = cs35l41_volatile_reg,
++	.readable_reg = cs35l41_readable_reg,
++	.precious_reg = cs35l41_precious_reg,
++	.cache_type = REGCACHE_RBTREE,
++};
++EXPORT_SYMBOL_GPL(cs35l41_regmap_spi);
+diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
+index e8e997efaa8b..60332eae1162 100644
+--- a/sound/soc/codecs/cs35l41.c
++++ b/sound/soc/codecs/cs35l41.c
+@@ -1724,6 +1724,7 @@ int cs35l41_probe(struct cs35l41_private *cs35l41,
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(cs35l41_probe);
+ 
+ void cs35l41_remove(struct cs35l41_private *cs35l41)
+ {
+@@ -1732,6 +1733,7 @@ void cs35l41_remove(struct cs35l41_private *cs35l41)
+ 	regulator_bulk_disable(CS35L41_NUM_SUPPLIES, cs35l41->supplies);
+ 	gpiod_set_value_cansleep(cs35l41->reset_gpio, 0);
+ }
++EXPORT_SYMBOL_GPL(cs35l41_remove);
+ 
+ MODULE_DESCRIPTION("ASoC CS35L41 driver");
+ MODULE_AUTHOR("David Rhodes, Cirrus Logic Inc, <david.rhodes@cirrus.com>");
+diff --git a/sound/soc/codecs/cs35l41.h b/sound/soc/codecs/cs35l41.h
+index a23eabff074f..c7c45f19754b 100644
+--- a/sound/soc/codecs/cs35l41.h
++++ b/sound/soc/codecs/cs35l41.h
+@@ -538,7 +538,6 @@
+ #define CS35L41_OTP_TRIM_35		0x0000400C
+ #define CS35L41_OTP_TRIM_36		0x00002030
+ 
+-#define CS35L41_MAX_CACHE_REG		36
+ #define CS35L41_OTP_SIZE_WORDS		32
+ #define CS35L41_NUM_OTP_ELEM		100
+ #define CS35L41_NUM_OTP_MAPS		5
+@@ -734,9 +733,8 @@
+ #define CS35L41_RX_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
+ #define CS35L41_TX_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
+ 
+-bool cs35l41_readable_reg(struct device *dev, unsigned int reg);
+-bool cs35l41_precious_reg(struct device *dev, unsigned int reg);
+-bool cs35l41_volatile_reg(struct device *dev, unsigned int reg);
++extern struct regmap_config cs35l41_regmap_i2c;
++extern struct regmap_config cs35l41_regmap_spi;
+ 
+ struct cs35l41_otp_packed_element_t {
+ 	u32 reg;
+@@ -752,7 +750,6 @@ struct cs35l41_otp_map_element_t {
+ 	u32 word_offset;
+ };
+ 
+-extern const struct reg_default cs35l41_reg[CS35L41_MAX_CACHE_REG];
+ extern const struct cs35l41_otp_map_element_t
+ 				cs35l41_otp_map_map[CS35L41_NUM_OTP_MAPS];
+ 
+-- 
+2.34.0
+
