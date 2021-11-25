@@ -2,316 +2,718 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DC845DBAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 14:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 607CD45DB74
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 14:45:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355385AbhKYNyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 08:54:10 -0500
-Received: from mga01.intel.com ([192.55.52.88]:37419 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355291AbhKYNwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 08:52:03 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="259414637"
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="259414637"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 05:43:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="457407725"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 25 Nov 2021 05:43:38 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqF2H-0006Qt-LJ; Thu, 25 Nov 2021 13:43:37 +0000
-Date:   Thu, 25 Nov 2021 21:42:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Akhil R <akhilrajeev@nvidia.com>, dan.j.williams@intel.com,
-        devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
-        jonathanh@nvidia.com, kyarlagadda@nvidia.com, ldewangan@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        p.zabel@pengutronix.de, rgumasta@nvidia.com
-Cc:     kbuild-all@lists.01.org
-Subject: Re: [PATCH v13 2/4] dmaengine: tegra: Add tegra gpcdma driver
-Message-ID: <202111252148.4CbCTolF-lkp@intel.com>
-References: <1637573292-13214-3-git-send-email-akhilrajeev@nvidia.com>
+        id S1355045AbhKYNsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 08:48:31 -0500
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:47560
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1355056AbhKYNqa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 08:46:30 -0500
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id B745740A00
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 13:43:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1637847792;
+        bh=y1mqT2kchlmk6MxBQF3XUUMHtd/DifURnFnfCmfwF8g=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=k4zy9efUt/62yBiCc30MbdKzvkGBNOvcLQdo4pKfTf57my1euWMz1F26KbHdoa2xy
+         jNhxhXnN/E5v6Bi6Jdi40mjwUgmb5hM09br3qXfvnAGssBXvfk8ac9SFQnhzfXKofG
+         MGBU7YXunu1s7Hz4suDzmLjxpe5JgUMBm3LqXxLbJ959KCD/L8R8W5itLb1pby/Suk
+         MvJ3uhNt0gz3I6s+TmSD+fPtZKrjo7w8YCXj/IFQHvhxgEHLTnvXVXZ42zBsHQ+qQm
+         ltKT6lTB1vdTZgR78yjZhfRlDliZxfms170QN1+4zV4x4JbFXVk1ZuUGN4ZqWlFJfx
+         pzWUJY/vCZuVw==
+Received: by mail-wm1-f72.google.com with SMTP id ay34-20020a05600c1e2200b00337fd217772so3556943wmb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 05:43:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=y1mqT2kchlmk6MxBQF3XUUMHtd/DifURnFnfCmfwF8g=;
+        b=t/aipWcIJhhnOvzlSsMu48hqrU9LNO3ooJDgZmV1Usg6pgUwKpLGs2Eb1K0NC3U9fH
+         D/ynp0WfTp4Omm+2aGcte1Kx5LwNz72rW/2pwl+LXFVQncami7/o+5hkpbXPp+0CPL6l
+         f11B9p1iwlTzIvwsN/FBKIkLTcvHAtdN0MJSP+nyIKXlR6ioo6JnOxiTpUulqh6v0j/Y
+         TUPFkwOsa1LpEHgMne0TBG+P7v+NYpVjamXA+ZDYtoRJtw9wpq/5L3KGrk3FhZCaDr6U
+         1n5lNrLmTChFzpKcIGS5KxgWVcYNZp3ukN0uE80d7doquNonBQ/mwKMFcbYEN2LXygxS
+         wU5g==
+X-Gm-Message-State: AOAM532m+UG+wcBSe2xmSqIY6f2xrmjR+AyTOwzHRsyHxgMrmz1KcBv8
+        EQ7VRv1S07sKieMPcBW3UKxPKfGfC9h8LYBM6pvGo2k3N848MwBjJptXHaojyKfwqnBFgafN1JH
+        MIpbt0RD736tYhpQ+cc1q1Gza21vlEDErXAxyAHTH0g==
+X-Received: by 2002:a5d:584c:: with SMTP id i12mr6580558wrf.95.1637847791832;
+        Thu, 25 Nov 2021 05:43:11 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyvWuYYtAwNsdyuMB/DQSinFe7li4PbEQsfAlQabsVQFldpduZOoSKlxwxAC/4QtEzBxGjJ1w==
+X-Received: by 2002:a5d:584c:: with SMTP id i12mr6580511wrf.95.1637847791516;
+        Thu, 25 Nov 2021 05:43:11 -0800 (PST)
+Received: from [192.168.123.55] (ip-88-152-144-157.hsi03.unitymediagroup.de. [88.152.144.157])
+        by smtp.gmail.com with ESMTPSA id az15sm2921667wmb.0.2021.11.25.05.43.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Nov 2021 05:43:11 -0800 (PST)
+Message-ID: <ab49cc92-fc11-d750-f817-f599f0448ce3@canonical.com>
+Date:   Thu, 25 Nov 2021 14:43:09 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1637573292-13214-3-git-send-email-akhilrajeev@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH v2 2/2] leds: sunxi: New driver for the R329/D1 LED
+ controller
+Content-Language: en-US
+To:     Samuel Holland <samuel@sholland.org>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc:     Icenowy Zheng <icenowy@aosc.io>, devicetree@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>,
+        Fu Wei <tekkamanninja@gmail.com>
+References: <20211004022601.10653-1-samuel@sholland.org>
+ <20211004022601.10653-2-samuel@sholland.org>
+From:   Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+In-Reply-To: <20211004022601.10653-2-samuel@sholland.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Akhil,
+On 10/4/21 04:26, Samuel Holland wrote:
+> Some Allwinner sunxi SoCs, starting with the R329, contain an LED
+> controller designed to drive RGB LED pixels. Add a driver for it using
+> the multicolor LED framework, and with LEDs defined in the device tree.
+> 
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+> 
+> Changes from v1:
+>   - Renamed from sunxi-ledc to sun50i-r329-ledc
+>   - Added missing "static" to functions/globals as reported by 0day bot
+> 
+>   drivers/leds/Kconfig            |   8 +
+>   drivers/leds/Makefile           |   1 +
+>   drivers/leds/leds-sun50i-r329.c | 566 ++++++++++++++++++++++++++++++++
+>   3 files changed, 575 insertions(+)
+>   create mode 100644 drivers/leds/leds-sun50i-r329.c
+> 
+> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> index ed800f5da7d8..d5c1396788fe 100644
+> --- a/drivers/leds/Kconfig
+> +++ b/drivers/leds/Kconfig
+> @@ -297,6 +297,14 @@ config LEDS_SUNFIRE
+>   	  This option enables support for the Left, Middle, and Right
+>   	  LEDs on the I/O and CPU boards of SunFire UltraSPARC servers.
+>   
+> +config LEDS_SUN50I_R329
+> +	tristate "LED support for Allwinner R329 LED controller"
+> +	depends on LEDS_CLASS
 
-Thank you for the patch! Yet something to improve:
+This should be
 
-[auto build test ERROR on robh/for-next]
-[also build test ERROR on vkoul-dmaengine/next arm64/for-next/core v5.16-rc2 next-20211125]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+     depends on LEDS_CLASS_MULTICOLOR
 
-url:    https://github.com/0day-ci/linux/commits/Akhil-R/Add-NVIDIA-Tegra-GPC-DMA-driver/20211122-173019
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-config: arc-randconfig-m031-20211123 (https://download.01.org/0day-ci/archive/20211125/202111252148.4CbCTolF-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/7707da9f914433ccc5718dd3431153d3b5bf485d
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Akhil-R/Add-NVIDIA-Tegra-GPC-DMA-driver/20211122-173019
-        git checkout 7707da9f914433ccc5718dd3431153d3b5bf485d
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arc SHELL=/bin/bash drivers/dma/
+as you are using the multicolor LED framework, e.g. function 
+devm_led_classdev_multicolor_register_ext().
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Best regards
 
-All errors (new ones prefixed by >>):
+Heinrich
 
-   drivers/dma/tegra186-gpc-dma.c:966:81: warning: right shift count >= width of type [-Wshift-count-overflow]
-     966 |                                 FIELD_PREP(TEGRA_GPCDMA_HIGH_ADDR_SRC_PTR, (mem >> 32));
-         |                                                                                 ^~
-   include/linux/compiler_types.h:315:23: note: in definition of macro '__compiletime_assert'
-     315 |                 if (!(condition))                                       \
-         |                       ^~~~~~~~~
-   include/linux/compiler_types.h:335:9: note: in expansion of macro '_compiletime_assert'
-     335 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/bitfield.h:49:17: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      49 |                 BUILD_BUG_ON_MSG(__builtin_constant_p(_val) ?           \
-         |                 ^~~~~~~~~~~~~~~~
-   include/linux/bitfield.h:94:17: note: in expansion of macro '__BF_FIELD_CHECK'
-      94 |                 __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");    \
-         |                 ^~~~~~~~~~~~~~~~
-   drivers/dma/tegra186-gpc-dma.c:966:33: note: in expansion of macro 'FIELD_PREP'
-     966 |                                 FIELD_PREP(TEGRA_GPCDMA_HIGH_ADDR_SRC_PTR, (mem >> 32));
-         |                                 ^~~~~~~~~~
-   drivers/dma/tegra186-gpc-dma.c:966:81: warning: right shift count >= width of type [-Wshift-count-overflow]
-     966 |                                 FIELD_PREP(TEGRA_GPCDMA_HIGH_ADDR_SRC_PTR, (mem >> 32));
-         |                                                                                 ^~
-   include/linux/compiler_types.h:315:23: note: in definition of macro '__compiletime_assert'
-     315 |                 if (!(condition))                                       \
-         |                       ^~~~~~~~~
-   include/linux/compiler_types.h:335:9: note: in expansion of macro '_compiletime_assert'
-     335 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/bitfield.h:49:17: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      49 |                 BUILD_BUG_ON_MSG(__builtin_constant_p(_val) ?           \
-         |                 ^~~~~~~~~~~~~~~~
-   include/linux/bitfield.h:94:17: note: in expansion of macro '__BF_FIELD_CHECK'
-      94 |                 __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");    \
-         |                 ^~~~~~~~~~~~~~~~
-   drivers/dma/tegra186-gpc-dma.c:966:33: note: in expansion of macro 'FIELD_PREP'
-     966 |                                 FIELD_PREP(TEGRA_GPCDMA_HIGH_ADDR_SRC_PTR, (mem >> 32));
-         |                                 ^~~~~~~~~~
-   In file included from drivers/dma/tegra186-gpc-dma.c:8:
-   drivers/dma/tegra186-gpc-dma.c:966:81: warning: right shift count >= width of type [-Wshift-count-overflow]
-     966 |                                 FIELD_PREP(TEGRA_GPCDMA_HIGH_ADDR_SRC_PTR, (mem >> 32));
-         |                                                                                 ^~
-   include/linux/bitfield.h:95:34: note: in definition of macro 'FIELD_PREP'
-      95 |                 ((typeof(_mask))(_val) << __bf_shf(_mask)) & (_mask);   \
-         |                                  ^~~~
-   In file included from <command-line>:
-   drivers/dma/tegra186-gpc-dma.c:971:81: warning: right shift count >= width of type [-Wshift-count-overflow]
-     971 |                                 FIELD_PREP(TEGRA_GPCDMA_HIGH_ADDR_DST_PTR, (mem >> 32));
-         |                                                                                 ^~
-   include/linux/compiler_types.h:315:23: note: in definition of macro '__compiletime_assert'
-     315 |                 if (!(condition))                                       \
-         |                       ^~~~~~~~~
-   include/linux/compiler_types.h:335:9: note: in expansion of macro '_compiletime_assert'
-     335 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/bitfield.h:49:17: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      49 |                 BUILD_BUG_ON_MSG(__builtin_constant_p(_val) ?           \
-         |                 ^~~~~~~~~~~~~~~~
-   include/linux/bitfield.h:94:17: note: in expansion of macro '__BF_FIELD_CHECK'
-      94 |                 __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");    \
-         |                 ^~~~~~~~~~~~~~~~
-   drivers/dma/tegra186-gpc-dma.c:971:33: note: in expansion of macro 'FIELD_PREP'
-     971 |                                 FIELD_PREP(TEGRA_GPCDMA_HIGH_ADDR_DST_PTR, (mem >> 32));
-         |                                 ^~~~~~~~~~
-   drivers/dma/tegra186-gpc-dma.c:971:81: warning: right shift count >= width of type [-Wshift-count-overflow]
-     971 |                                 FIELD_PREP(TEGRA_GPCDMA_HIGH_ADDR_DST_PTR, (mem >> 32));
-         |                                                                                 ^~
-   include/linux/compiler_types.h:315:23: note: in definition of macro '__compiletime_assert'
-     315 |                 if (!(condition))                                       \
-         |                       ^~~~~~~~~
-   include/linux/compiler_types.h:335:9: note: in expansion of macro '_compiletime_assert'
-     335 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/bitfield.h:49:17: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      49 |                 BUILD_BUG_ON_MSG(__builtin_constant_p(_val) ?           \
-         |                 ^~~~~~~~~~~~~~~~
-   include/linux/bitfield.h:94:17: note: in expansion of macro '__BF_FIELD_CHECK'
-      94 |                 __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");    \
-         |                 ^~~~~~~~~~~~~~~~
-   drivers/dma/tegra186-gpc-dma.c:971:33: note: in expansion of macro 'FIELD_PREP'
-     971 |                                 FIELD_PREP(TEGRA_GPCDMA_HIGH_ADDR_DST_PTR, (mem >> 32));
-         |                                 ^~~~~~~~~~
-   In file included from drivers/dma/tegra186-gpc-dma.c:8:
-   drivers/dma/tegra186-gpc-dma.c:971:81: warning: right shift count >= width of type [-Wshift-count-overflow]
-     971 |                                 FIELD_PREP(TEGRA_GPCDMA_HIGH_ADDR_DST_PTR, (mem >> 32));
-         |                                                                                 ^~
-   include/linux/bitfield.h:95:34: note: in definition of macro 'FIELD_PREP'
-      95 |                 ((typeof(_mask))(_val) << __bf_shf(_mask)) & (_mask);   \
-         |                                  ^~~~
-   drivers/dma/tegra186-gpc-dma.c: In function 'tegra_dma_probe':
->> drivers/dma/tegra186-gpc-dma.c:1121:31: error: 'struct iommu_fwspec' has no member named 'ids'
-    1121 |         stream_id = iommu_spec->ids[0] & 0xffff;
-         |                               ^~
+> +	depends on ARCH_SUNXI || COMPILE_TEST
+> +	help
+> +	  This option enables support for the RGB LED controller
+> +	  provided in some Allwinner sunxi SoCs, like the R329.
+> +
+>   config LEDS_IPAQ_MICRO
+>   	tristate "LED Support for the Compaq iPAQ h3xxx"
+>   	depends on LEDS_CLASS
+> diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+> index c636ec069612..506b2617099d 100644
+> --- a/drivers/leds/Makefile
+> +++ b/drivers/leds/Makefile
+> @@ -77,6 +77,7 @@ obj-$(CONFIG_LEDS_PWM)			+= leds-pwm.o
+>   obj-$(CONFIG_LEDS_REGULATOR)		+= leds-regulator.o
+>   obj-$(CONFIG_LEDS_S3C24XX)		+= leds-s3c24xx.o
+>   obj-$(CONFIG_LEDS_SC27XX_BLTC)		+= leds-sc27xx-bltc.o
+> +obj-$(CONFIG_LEDS_SUN50I_R329)		+= leds-sun50i-r329.o
+>   obj-$(CONFIG_LEDS_SUNFIRE)		+= leds-sunfire.o
+>   obj-$(CONFIG_LEDS_SYSCON)		+= leds-syscon.o
+>   obj-$(CONFIG_LEDS_TCA6507)		+= leds-tca6507.o
+> diff --git a/drivers/leds/leds-sun50i-r329.c b/drivers/leds/leds-sun50i-r329.c
+> new file mode 100644
+> index 000000000000..3dfa1840a745
+> --- /dev/null
+> +++ b/drivers/leds/leds-sun50i-r329.c
+> @@ -0,0 +1,566 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +//
+> +// Copyright (c) 2021 Samuel Holland <samuel@sholland.org>
+> +//
+> +// Partly based on drivers/leds/leds-turris-omnia.c, which is:
+> +//     Copyright (c) 2020 by Marek Behún <kabel@kernel.org>
+> +//
+> +
+> +#include <linux/clk.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/dmaengine.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/io.h>
+> +#include <linux/led-class-multicolor.h>
+> +#include <linux/leds.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pm.h>
+> +#include <linux/regulator/consumer.h>
+> +#include <linux/reset.h>
+> +#include <linux/spinlock.h>
+> +
+> +#define LEDC_CTRL_REG			0x0000
+> +#define LEDC_CTRL_REG_DATA_LENGTH		(0x1fff << 16)
+> +#define LEDC_CTRL_REG_RGB_MODE			(0x7 << 6)
+> +#define LEDC_CTRL_REG_LEDC_EN			BIT(0)
+> +#define LEDC_T01_TIMING_CTRL_REG	0x0004
+> +#define LEDC_T01_TIMING_CTRL_REG_T1H		(0x3f << 21)
+> +#define LEDC_T01_TIMING_CTRL_REG_T1L		(0x1f << 16)
+> +#define LEDC_T01_TIMING_CTRL_REG_T0H		(0x1f << 6)
+> +#define LEDC_T01_TIMING_CTRL_REG_T0L		(0x3f << 0)
+> +#define LEDC_RESET_TIMING_CTRL_REG	0x000c
+> +#define LEDC_RESET_TIMING_CTRL_REG_LED_NUM	(0x3ff << 0)
+> +#define LEDC_DATA_REG			0x0014
+> +#define LEDC_DMA_CTRL_REG		0x0018
+> +#define LEDC_DMA_CTRL_REG_FIFO_TRIG_LEVEL	(0x1f << 0)
+> +#define LEDC_INT_CTRL_REG		0x001c
+> +#define LEDC_INT_CTRL_REG_GLOBAL_INT_EN		BIT(5)
+> +#define LEDC_INT_CTRL_REG_FIFO_CPUREQ_INT_EN	BIT(1)
+> +#define LEDC_INT_CTRL_REG_TRANS_FINISH_INT_EN	BIT(0)
+> +#define LEDC_INT_STS_REG		0x0020
+> +#define LEDC_INT_STS_REG_FIFO_CPUREQ_INT	BIT(1)
+> +#define LEDC_INT_STS_REG_TRANS_FINISH_INT	BIT(0)
+> +
+> +#define LEDC_FIFO_DEPTH			32
+> +#define LEDC_MAX_LEDS			1024
+> +
+> +#define LEDS_TO_BYTES(n)		((n) * sizeof(u32))
+> +
+> +struct sun50i_r329_ledc_led {
+> +	struct led_classdev_mc mc_cdev;
+> +	struct mc_subled subled_info[3];
+> +};
+> +#define to_ledc_led(mc) container_of(mc, struct sun50i_r329_ledc_led, mc_cdev)
+> +
+> +struct sun50i_r329_ledc_timing {
+> +	u32 t0h_ns;
+> +	u32 t0l_ns;
+> +	u32 t1h_ns;
+> +	u32 t1l_ns;
+> +	u32 treset_ns;
+> +};
+> +
+> +struct sun50i_r329_ledc {
+> +	struct device *dev;
+> +	void __iomem *base;
+> +	struct clk *bus_clk;
+> +	struct clk *mod_clk;
+> +	struct reset_control *reset;
+> +	struct regulator *vled;
+> +
+> +	u32 *buffer;
+> +	struct dma_chan *dma_chan;
+> +	dma_addr_t dma_handle;
+> +	int pio_length;
+> +	int pio_offset;
+> +
+> +	spinlock_t lock;
+> +	int next_length;
+> +	bool xfer_active;
+> +
+> +	u32 format;
+> +	struct sun50i_r329_ledc_timing timing;
+> +
+> +	int num_leds;
+> +	struct sun50i_r329_ledc_led leds[];
+> +};
+> +
+> +static int sun50i_r329_ledc_dma_xfer(struct sun50i_r329_ledc *priv, int length)
+> +{
+> +	struct dma_async_tx_descriptor *desc;
+> +	dma_cookie_t cookie;
+> +
+> +	desc = dmaengine_prep_slave_single(priv->dma_chan, priv->dma_handle,
+> +					   LEDS_TO_BYTES(length),
+> +					   DMA_MEM_TO_DEV, 0);
+> +	if (!desc)
+> +		return -ENOMEM;
+> +
+> +	cookie = dmaengine_submit(desc);
+> +	if (dma_submit_error(cookie))
+> +		return -EIO;
+> +
+> +	dma_async_issue_pending(priv->dma_chan);
+> +
+> +	return 0;
+> +}
+> +
+> +static void sun50i_r329_ledc_pio_xfer(struct sun50i_r329_ledc *priv, int length)
+> +{
+> +	u32 burst, offset, val;
+> +
+> +	if (length) {
+> +		/* New transfer (FIFO is empty). */
+> +		offset = 0;
+> +		burst  = min(length, LEDC_FIFO_DEPTH);
+> +	} else {
+> +		/* Existing transfer (FIFO is half-full). */
+> +		length = priv->pio_length;
+> +		offset = priv->pio_offset;
+> +		burst  = min(length, LEDC_FIFO_DEPTH / 2);
+> +	}
+> +
+> +	writesl(priv->base + LEDC_DATA_REG, priv->buffer + offset, burst);
+> +
+> +	if (burst < length) {
+> +		priv->pio_length = length - burst;
+> +		priv->pio_offset = offset + burst;
+> +
+> +		if (!offset) {
+> +			val = readl(priv->base + LEDC_INT_CTRL_REG);
+> +			val |= LEDC_INT_CTRL_REG_FIFO_CPUREQ_INT_EN;
+> +			writel(val, priv->base + LEDC_INT_CTRL_REG);
+> +		}
+> +	} else {
+> +		/* Disable the request IRQ once all data is written. */
+> +		val = readl(priv->base + LEDC_INT_CTRL_REG);
+> +		val &= ~LEDC_INT_CTRL_REG_FIFO_CPUREQ_INT_EN;
+> +		writel(val, priv->base + LEDC_INT_CTRL_REG);
+> +	}
+> +}
+> +
+> +static void sun50i_r329_ledc_start_xfer(struct sun50i_r329_ledc *priv,
+> +					int length)
+> +{
+> +	u32 val;
+> +
+> +	dev_dbg(priv->dev, "Updating %d LEDs\n", length);
+> +
+> +	val = readl(priv->base + LEDC_CTRL_REG);
+> +	val &= ~LEDC_CTRL_REG_DATA_LENGTH;
+> +	val |= length << 16 | LEDC_CTRL_REG_LEDC_EN;
+> +	writel(val, priv->base + LEDC_CTRL_REG);
+> +
+> +	if (length > LEDC_FIFO_DEPTH) {
+> +		int ret = sun50i_r329_ledc_dma_xfer(priv, length);
+> +
+> +		if (!ret)
+> +			return;
+> +
+> +		dev_warn(priv->dev, "Failed to set up DMA: %d\n", ret);
+> +	}
+> +
+> +	sun50i_r329_ledc_pio_xfer(priv, length);
+> +}
+> +
+> +static irqreturn_t sun50i_r329_ledc_irq(int irq, void *dev_id)
+> +{
+> +	struct sun50i_r329_ledc *priv = dev_id;
+> +	u32 val;
+> +
+> +	val = readl(priv->base + LEDC_INT_STS_REG);
+> +
+> +	if (val & LEDC_INT_STS_REG_TRANS_FINISH_INT) {
+> +		int next_length;
+> +
+> +		/* Start the next transfer if needed. */
+> +		spin_lock(&priv->lock);
+> +		next_length = priv->next_length;
+> +		if (next_length)
+> +			priv->next_length = 0;
+> +		else
+> +			priv->xfer_active = false;
+> +		spin_unlock(&priv->lock);
+> +
+> +		if (next_length)
+> +			sun50i_r329_ledc_start_xfer(priv, next_length);
+> +	} else if (val & LEDC_INT_STS_REG_FIFO_CPUREQ_INT) {
+> +		/* Continue the current transfer. */
+> +		sun50i_r329_ledc_pio_xfer(priv, 0);
+> +	}
+> +
+> +	writel(val, priv->base + LEDC_INT_STS_REG);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static void sun50i_r329_ledc_brightness_set(struct led_classdev *cdev,
+> +					    enum led_brightness brightness)
+> +{
+> +	struct sun50i_r329_ledc *priv = dev_get_drvdata(cdev->dev->parent);
+> +	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(cdev);
+> +	struct sun50i_r329_ledc_led *led = to_ledc_led(mc_cdev);
+> +	int addr = led - priv->leds;
+> +	unsigned long flags;
+> +	bool xfer_active;
+> +	int next_length;
+> +
+> +	led_mc_calc_color_components(mc_cdev, brightness);
+> +
+> +	priv->buffer[addr] = led->subled_info[0].brightness << 16 |
+> +			     led->subled_info[1].brightness <<  8 |
+> +			     led->subled_info[2].brightness;
+> +
+> +	dev_dbg(priv->dev, "LED %d -> #%06x\n", addr, priv->buffer[addr]);
+> +
+> +	spin_lock_irqsave(&priv->lock, flags);
+> +	next_length = max(priv->next_length, addr + 1);
+> +	xfer_active = priv->xfer_active;
+> +	if (xfer_active)
+> +		priv->next_length = next_length;
+> +	else
+> +		priv->xfer_active = true;
+> +	spin_unlock_irqrestore(&priv->lock, flags);
+> +
+> +	if (!xfer_active)
+> +		sun50i_r329_ledc_start_xfer(priv, next_length);
+> +}
+> +
+> +static const char *const sun50i_r329_ledc_formats[] = {
+> +	"rgb",
+> +	"rbg",
+> +	"grb",
+> +	"gbr",
+> +	"brg",
+> +	"bgr",
+> +};
+> +
+> +static int sun50i_r329_ledc_parse_format(const struct device_node *np,
+> +					 struct sun50i_r329_ledc *priv)
+> +{
+> +	const char *format = "grb";
+> +	u32 i;
+> +
+> +	of_property_read_string(np, "format", &format);
+> +
+> +	for (i = 0; i < ARRAY_SIZE(sun50i_r329_ledc_formats); ++i) {
+> +		if (!strcmp(format, sun50i_r329_ledc_formats[i])) {
+> +			priv->format = i;
+> +			return 0;
+> +		}
+> +	}
+> +
+> +	dev_err(priv->dev, "Bad pixel format '%s'\n", format);
+> +
+> +	return -EINVAL;
+> +}
+> +
+> +static void sun50i_r329_ledc_set_format(struct sun50i_r329_ledc *priv)
+> +{
+> +	u32 val;
+> +
+> +	val = readl(priv->base + LEDC_CTRL_REG);
+> +	val &= ~LEDC_CTRL_REG_RGB_MODE;
+> +	val |= priv->format << 6;
+> +	writel(val, priv->base + LEDC_CTRL_REG);
+> +}
+> +
+> +static const struct sun50i_r329_ledc_timing sun50i_r329_ledc_default_timing = {
+> +	.t0h_ns = 336,
+> +	.t0l_ns = 840,
+> +	.t1h_ns = 882,
+> +	.t1l_ns = 294,
+> +	.treset_ns = 300000,
+> +};
+> +
+> +static int sun50i_r329_ledc_parse_timing(const struct device_node *np,
+> +					 struct sun50i_r329_ledc *priv)
+> +{
+> +	struct sun50i_r329_ledc_timing *timing = &priv->timing;
+> +
+> +	*timing = sun50i_r329_ledc_default_timing;
+> +
+> +	of_property_read_u32(np, "t0h-ns", &timing->t0h_ns);
+> +	of_property_read_u32(np, "t0l-ns", &timing->t0l_ns);
+> +	of_property_read_u32(np, "t1h-ns", &timing->t1h_ns);
+> +	of_property_read_u32(np, "t1l-ns", &timing->t1l_ns);
+> +	of_property_read_u32(np, "treset-ns", &timing->treset_ns);
+> +
+> +	return 0;
+> +}
+> +
+> +static void sun50i_r329_ledc_set_timing(struct sun50i_r329_ledc *priv)
+> +{
+> +	const struct sun50i_r329_ledc_timing *timing = &priv->timing;
+> +	unsigned long mod_freq = clk_get_rate(priv->mod_clk);
+> +	u32 cycle_ns = NSEC_PER_SEC / mod_freq;
+> +	u32 val;
+> +
+> +	val = (timing->t1h_ns / cycle_ns) << 21 |
+> +	      (timing->t1l_ns / cycle_ns) << 16 |
+> +	      (timing->t0h_ns / cycle_ns) <<  6 |
+> +	      (timing->t0l_ns / cycle_ns);
+> +	writel(val, priv->base + LEDC_T01_TIMING_CTRL_REG);
+> +
+> +	val = (timing->treset_ns / cycle_ns) << 16 |
+> +	      (priv->num_leds - 1);
+> +	writel(val, priv->base + LEDC_RESET_TIMING_CTRL_REG);
+> +}
+> +
+> +static int sun50i_r329_ledc_resume(struct device *dev)
+> +{
+> +	struct sun50i_r329_ledc *priv = dev_get_drvdata(dev);
+> +	u32 val;
+> +	int ret;
+> +
+> +	ret = regulator_enable(priv->vled);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = reset_control_deassert(priv->reset);
+> +	if (ret)
+> +		goto err_disable_regulator;
+> +
+> +	ret = clk_prepare_enable(priv->bus_clk);
+> +	if (ret)
+> +		goto err_assert_reset;
+> +
+> +	ret = clk_prepare_enable(priv->mod_clk);
+> +	if (ret)
+> +		goto err_disable_bus_clk;
+> +
+> +	sun50i_r329_ledc_set_format(priv);
+> +	sun50i_r329_ledc_set_timing(priv);
+> +
+> +	/* The trigger level must be at least the burst length. */
+> +	val = readl(priv->base + LEDC_DMA_CTRL_REG);
+> +	val &= ~LEDC_DMA_CTRL_REG_FIFO_TRIG_LEVEL;
+> +	val |= LEDC_FIFO_DEPTH / 2;
+> +	writel(val, priv->base + LEDC_DMA_CTRL_REG);
+> +
+> +	val = LEDC_INT_CTRL_REG_GLOBAL_INT_EN |
+> +	      LEDC_INT_CTRL_REG_TRANS_FINISH_INT_EN;
+> +	writel(val, priv->base + LEDC_INT_CTRL_REG);
+> +
+> +	return 0;
+> +
+> +err_disable_bus_clk:
+> +	clk_disable_unprepare(priv->bus_clk);
+> +err_assert_reset:
+> +	reset_control_assert(priv->reset);
+> +err_disable_regulator:
+> +	regulator_disable(priv->vled);
+> +
+> +	return ret;
+> +}
+> +
+> +static int sun50i_r329_ledc_suspend(struct device *dev)
+> +{
+> +	struct sun50i_r329_ledc *priv = dev_get_drvdata(dev);
+> +
+> +	clk_disable_unprepare(priv->mod_clk);
+> +	clk_disable_unprepare(priv->bus_clk);
+> +	reset_control_assert(priv->reset);
+> +	regulator_disable(priv->vled);
+> +
+> +	return 0;
+> +}
+> +
+> +static void sun50i_r329_ledc_dma_cleanup(void *data)
+> +{
+> +	struct sun50i_r329_ledc *priv = data;
+> +	struct device *dma_dev = dmaengine_get_dma_device(priv->dma_chan);
+> +
+> +	if (priv->buffer)
+> +		dma_free_wc(dma_dev, LEDS_TO_BYTES(priv->num_leds),
+> +			    priv->buffer, priv->dma_handle);
+> +	dma_release_channel(priv->dma_chan);
+> +}
+> +
+> +static int sun50i_r329_ledc_probe(struct platform_device *pdev)
+> +{
+> +	const struct device_node *np = pdev->dev.of_node;
+> +	struct dma_slave_config dma_cfg = {};
+> +	struct led_init_data init_data = {};
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *child;
+> +	struct sun50i_r329_ledc *priv;
+> +	struct resource *mem;
+> +	int count, irq, ret;
+> +
+> +	count = of_get_available_child_count(np);
+> +	if (!count)
+> +		return -ENODEV;
+> +	if (count > LEDC_MAX_LEDS) {
+> +		dev_err(dev, "Too many LEDs! (max is %d)\n", LEDC_MAX_LEDS);
+> +		return -EINVAL;
+> +	}
+> +
+> +	priv = devm_kzalloc(dev, struct_size(priv, leds, count), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->dev = dev;
+> +	priv->num_leds = count;
+> +	spin_lock_init(&priv->lock);
+> +	dev_set_drvdata(dev, priv);
+> +
+> +	ret = sun50i_r329_ledc_parse_format(np, priv);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = sun50i_r329_ledc_parse_timing(np, priv);
+> +	if (ret)
+> +		return ret;
+> +
+> +	priv->base = devm_platform_get_and_ioremap_resource(pdev, 0, &mem);
+> +	if (IS_ERR(priv->base))
+> +		return PTR_ERR(priv->base);
+> +
+> +	priv->bus_clk = devm_clk_get(dev, "bus");
+> +	if (IS_ERR(priv->bus_clk))
+> +		return PTR_ERR(priv->bus_clk);
+> +
+> +	priv->mod_clk = devm_clk_get(dev, "mod");
+> +	if (IS_ERR(priv->mod_clk))
+> +		return PTR_ERR(priv->mod_clk);
+> +
+> +	priv->reset = devm_reset_control_get_exclusive(dev, NULL);
+> +	if (IS_ERR(priv->reset))
+> +		return PTR_ERR(priv->reset);
+> +
+> +	priv->vled = devm_regulator_get(dev, "vled");
+> +	if (IS_ERR(priv->vled))
+> +		return PTR_ERR(priv->vled);
+> +
+> +	priv->dma_chan = dma_request_chan(dev, "tx");
+> +	if (IS_ERR(priv->dma_chan))
+> +		return PTR_ERR(priv->dma_chan);
+> +
+> +	ret = devm_add_action_or_reset(dev, sun50i_r329_ledc_dma_cleanup, priv);
+> +	if (ret)
+> +		return ret;
+> +
+> +	dma_cfg.dst_addr	= mem->start + LEDC_DATA_REG;
+> +	dma_cfg.dst_addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES;
+> +	dma_cfg.dst_maxburst	= LEDC_FIFO_DEPTH / 2;
+> +	ret = dmaengine_slave_config(priv->dma_chan, &dma_cfg);
+> +	if (ret)
+> +		return ret;
+> +
+> +	priv->buffer = dma_alloc_wc(dmaengine_get_dma_device(priv->dma_chan),
+> +				    LEDS_TO_BYTES(priv->num_leds),
+> +				    &priv->dma_handle, GFP_KERNEL);
+> +	if (!priv->buffer)
+> +		return -ENOMEM;
+> +
+> +	irq = platform_get_irq(pdev, 0);
+> +	if (irq < 0)
+> +		return irq;
+> +
+> +	ret = devm_request_irq(dev, irq, sun50i_r329_ledc_irq,
+> +			       0, dev_name(dev), priv);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = sun50i_r329_ledc_resume(dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	for_each_available_child_of_node(np, child) {
+> +		struct sun50i_r329_ledc_led *led;
+> +		struct led_classdev *cdev;
+> +		u32 addr, color;
+> +
+> +		ret = of_property_read_u32(child, "reg", &addr);
+> +		if (ret || addr >= count) {
+> +			dev_err(dev, "LED 'reg' values must be from 0 to %d\n",
+> +				priv->num_leds - 1);
+> +			ret = -EINVAL;
+> +			goto err_put_child;
+> +		}
+> +
+> +		ret = of_property_read_u32(child, "color", &color);
+> +		if (ret || color != LED_COLOR_ID_RGB) {
+> +			dev_err(dev, "LED 'color' must be LED_COLOR_ID_RGB\n");
+> +			ret = -EINVAL;
+> +			goto err_put_child;
+> +		}
+> +
+> +		led = &priv->leds[addr];
+> +
+> +		led->subled_info[0].color_index = LED_COLOR_ID_RED;
+> +		led->subled_info[0].channel = 0;
+> +		led->subled_info[1].color_index = LED_COLOR_ID_GREEN;
+> +		led->subled_info[1].channel = 1;
+> +		led->subled_info[2].color_index = LED_COLOR_ID_BLUE;
+> +		led->subled_info[2].channel = 2;
+> +
+> +		led->mc_cdev.num_colors = ARRAY_SIZE(led->subled_info);
+> +		led->mc_cdev.subled_info = led->subled_info;
+> +
+> +		cdev = &led->mc_cdev.led_cdev;
+> +		cdev->max_brightness = U8_MAX;
+> +		cdev->brightness_set = sun50i_r329_ledc_brightness_set;
+> +
+> +		init_data.fwnode = of_fwnode_handle(child);
+> +
+> +		ret = devm_led_classdev_multicolor_register_ext(dev,
+> +								&led->mc_cdev,
+> +								&init_data);
+> +		if (ret) {
+> +			dev_err(dev, "Failed to register LED %u: %d\n",
+> +				addr, ret);
+> +			goto err_put_child;
+> +		}
+> +	}
+> +
+> +	dev_info(dev, "Registered %d LEDs\n", priv->num_leds);
+> +
+> +	return 0;
+> +
+> +err_put_child:
+> +	of_node_put(child);
+> +	sun50i_r329_ledc_suspend(&pdev->dev);
+> +
+> +	return ret;
+> +}
+> +
+> +static int sun50i_r329_ledc_remove(struct platform_device *pdev)
+> +{
+> +	sun50i_r329_ledc_suspend(&pdev->dev);
+> +
+> +	return 0;
+> +}
+> +
+> +static void sun50i_r329_ledc_shutdown(struct platform_device *pdev)
+> +{
+> +	sun50i_r329_ledc_suspend(&pdev->dev);
+> +}
+> +
+> +static const struct of_device_id sun50i_r329_ledc_of_match[] = {
+> +	{ .compatible = "allwinner,sun50i-r329-ledc" },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, sun50i_r329_ledc_of_match);
+> +
+> +static SIMPLE_DEV_PM_OPS(sun50i_r329_ledc_pm,
+> +			 sun50i_r329_ledc_suspend, sun50i_r329_ledc_resume);
+> +
+> +static struct platform_driver sun50i_r329_ledc_driver = {
+> +	.probe		= sun50i_r329_ledc_probe,
+> +	.remove		= sun50i_r329_ledc_remove,
+> +	.shutdown	= sun50i_r329_ledc_shutdown,
+> +	.driver		= {
+> +		.name		= "sun50i-r329-ledc",
+> +		.of_match_table	= sun50i_r329_ledc_of_match,
+> +		.pm		= pm_ptr(&sun50i_r329_ledc_pm),
+> +	},
+> +};
+> +module_platform_driver(sun50i_r329_ledc_driver);
+> +
+> +MODULE_AUTHOR("Samuel Holland <samuel@sholland.org>");
+> +MODULE_DESCRIPTION("Allwinner R329 LED controller driver");
+> +MODULE_LICENSE("GPL");
+> 
 
-
-vim +1121 drivers/dma/tegra186-gpc-dma.c
-
-  1081	
-  1082	static int tegra_dma_probe(struct platform_device *pdev)
-  1083	{
-  1084		const struct tegra_dma_chip_data *cdata = NULL;
-  1085		struct iommu_fwspec *iommu_spec;
-  1086		unsigned int stream_id, i;
-  1087		struct tegra_dma *tdma;
-  1088		struct resource	*res;
-  1089		int ret;
-  1090	
-  1091		cdata = of_device_get_match_data(&pdev->dev);
-  1092	
-  1093		tdma = devm_kzalloc(&pdev->dev, sizeof(*tdma) + cdata->nr_channels *
-  1094				sizeof(struct tegra_dma_channel), GFP_KERNEL);
-  1095		if (!tdma)
-  1096			return -ENOMEM;
-  1097	
-  1098		tdma->dev = &pdev->dev;
-  1099		tdma->chip_data = cdata;
-  1100		platform_set_drvdata(pdev, tdma);
-  1101	
-  1102		tdma->base_addr = devm_platform_ioremap_resource(pdev, 0);
-  1103		if (IS_ERR(tdma->base_addr))
-  1104			return PTR_ERR(tdma->base_addr);
-  1105	
-  1106		tdma->rst = devm_reset_control_get_exclusive(&pdev->dev, "gpcdma");
-  1107		if (IS_ERR(tdma->rst)) {
-  1108			dev_err_probe(&pdev->dev, PTR_ERR(tdma->rst),
-  1109				      "Missing controller reset\n");
-  1110			return PTR_ERR(tdma->rst);
-  1111		}
-  1112		reset_control_reset(tdma->rst);
-  1113	
-  1114		tdma->dma_dev.dev = &pdev->dev;
-  1115	
-  1116		iommu_spec = dev_iommu_fwspec_get(&pdev->dev);
-  1117		if (!iommu_spec) {
-  1118			dev_err(&pdev->dev, "Missing iommu stream-id\n");
-  1119			return -EINVAL;
-  1120		}
-> 1121		stream_id = iommu_spec->ids[0] & 0xffff;
-  1122	
-  1123		INIT_LIST_HEAD(&tdma->dma_dev.channels);
-  1124		for (i = 0; i < cdata->nr_channels; i++) {
-  1125			struct tegra_dma_channel *tdc = &tdma->channels[i];
-  1126	
-  1127			tdc->chan_base_offset = TEGRA_GPCDMA_CHANNEL_BASE_ADD_OFFSET +
-  1128						i * cdata->channel_reg_size;
-  1129			res = platform_get_resource(pdev, IORESOURCE_IRQ, i);
-  1130			if (!res) {
-  1131				dev_err(&pdev->dev, "No irq resource for chan %d\n", i);
-  1132				return -EINVAL;
-  1133			}
-  1134			tdc->irq = res->start;
-  1135			snprintf(tdc->name, sizeof(tdc->name), "gpcdma.%d", i);
-  1136	
-  1137			tdc->tdma = tdma;
-  1138			tdc->id = i;
-  1139			tdc->slave_id = -1;
-  1140	
-  1141			vchan_init(&tdc->vc, &tdma->dma_dev);
-  1142			tdc->vc.desc_free = tegra_dma_desc_free;
-  1143			raw_spin_lock_init(&tdc->lock);
-  1144	
-  1145			/* program stream-id for this channel */
-  1146			tegra_dma_program_sid(tdc, i, stream_id);
-  1147			tdc->stream_id = stream_id;
-  1148		}
-  1149	
-  1150		dma_cap_set(DMA_SLAVE, tdma->dma_dev.cap_mask);
-  1151		dma_cap_set(DMA_PRIVATE, tdma->dma_dev.cap_mask);
-  1152		dma_cap_set(DMA_MEMCPY, tdma->dma_dev.cap_mask);
-  1153		dma_cap_set(DMA_MEMSET, tdma->dma_dev.cap_mask);
-  1154	
-  1155		/*
-  1156		 * Only word aligned transfers are supported. Set the copy
-  1157		 * alignment shift.
-  1158		 */
-  1159		tdma->dma_dev.copy_align = 2;
-  1160		tdma->dma_dev.fill_align = 2;
-  1161		tdma->dma_dev.device_alloc_chan_resources =
-  1162						tegra_dma_alloc_chan_resources;
-  1163		tdma->dma_dev.device_free_chan_resources =
-  1164						tegra_dma_free_chan_resources;
-  1165		tdma->dma_dev.device_prep_slave_sg = tegra_dma_prep_slave_sg;
-  1166		tdma->dma_dev.device_prep_dma_memcpy = tegra_dma_prep_dma_memcpy;
-  1167		tdma->dma_dev.device_prep_dma_memset = tegra_dma_prep_dma_memset;
-  1168		tdma->dma_dev.device_config = tegra_dma_slave_config;
-  1169		tdma->dma_dev.device_terminate_all = tegra_dma_terminate_all;
-  1170		tdma->dma_dev.device_tx_status = tegra_dma_tx_status;
-  1171		tdma->dma_dev.device_issue_pending = tegra_dma_issue_pending;
-  1172		tdma->dma_dev.device_synchronize = tegra_dma_chan_synchronize;
-  1173		tdma->dma_dev.residue_granularity = DMA_RESIDUE_GRANULARITY_BURST;
-  1174	
-  1175		/* Register DMA channel interrupt handlers after everything is setup */
-  1176		for (i = 0; i < cdata->nr_channels; i++) {
-  1177			struct tegra_dma_channel *tdc = &tdma->channels[i];
-  1178	
-  1179			ret = devm_request_irq(&pdev->dev, tdc->irq,
-  1180					       tegra_dma_isr, 0, tdc->name, tdc);
-  1181			if (ret) {
-  1182				dev_err_probe(&pdev->dev, ret,
-  1183					      "request_irq failed for channel %d\n", i);
-  1184				return ret;
-  1185			}
-  1186		}
-  1187	
-  1188		ret = dma_async_device_register(&tdma->dma_dev);
-  1189		if (ret < 0) {
-  1190			dev_err_probe(&pdev->dev, ret,
-  1191				      "GPC DMA driver registration failed\n");
-  1192			return ret;
-  1193		}
-  1194	
-  1195		ret = of_dma_controller_register(pdev->dev.of_node,
-  1196						 tegra_dma_of_xlate, tdma);
-  1197		if (ret < 0) {
-  1198			dev_err_probe(&pdev->dev, ret,
-  1199				      "GPC DMA OF registration failed\n");
-  1200	
-  1201			dma_async_device_unregister(&tdma->dma_dev);
-  1202			return ret;
-  1203		}
-  1204	
-  1205		dev_info(&pdev->dev, "GPC DMA driver register %d channels\n",
-  1206			 cdata->nr_channels);
-  1207	
-  1208		return 0;
-  1209	}
-  1210	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
