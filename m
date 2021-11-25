@@ -2,166 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746D545DDC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:42:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C4245DDF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:49:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356072AbhKYPpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:45:20 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:18344 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1356056AbhKYPnR (ORCPT
+        id S1355185AbhKYPwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:52:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349271AbhKYPuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:43:17 -0500
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1APFLBOW005318;
-        Thu, 25 Nov 2021 15:39:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=+CUNf/nkpXrQBdtD5NiqLWu7tVPu0twJbHsL369Q+2I=;
- b=MgUf87aKvGAkWZNJq9+J9jsWE5wkReOdkBJMMHDCJQjtmn5pWZ6zaL+2DxOsb2wTGsdE
- 2cHOBCmhBsuP3wxP3IDXkclc8hc4quwxXlLcbkUBoi2RvGnfMpHgWj436znT2vGRA9NG
- yewRCSR2UYYiSHnvVy8gaAfuO/ZWtZLdLpj4BRS5z6EaKiTczE/oTPqeFOzykPFjbmqx
- /kFoXa+DWxtY116gx0kYlf8KuUmZDMtltbgLujoUddW4Uc54+TGDtUXZ2eNTQSxEwur1
- Ha905RdAS2vmIP3wwOoXLqfP1ch+LeebHMkIQzA0lGcXNaW9AU4uec7UpG6kzkKBDbSB cw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3chk007tev-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Nov 2021 15:39:34 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1APFb9XN145698;
-        Thu, 25 Nov 2021 15:39:32 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2046.outbound.protection.outlook.com [104.47.73.46])
-        by userp3030.oracle.com with ESMTP id 3cep53rhva-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Nov 2021 15:39:32 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BkXc8FnjkSrKPJRRbHIAmSjC7fjFtwDj1FY0eDkAQ51CN5owZzHGYljLASFGWFYULFw79zP3eJubUJXjeZFnbG5r297sULMsqnktJCSFENN948rwn+J5pErKJxZ2iVo3FDjRAHC97bh0kFvkrYNABOWStj1DR2xBT3lVPMMLkpBD33mIgpntmYbk2wa8S7cDzPZkL5tILNCwjRUV32gMeY7PMyanSczNBOH7kHRKhPl2ukmrEnnCGMlmLrZVxsMHO1RcI2JPmECTrkhrOwul/Ftyqo3duaUTA2ISW4cSg7ox0uegEqxGh649A5HyqV5rq6ccjnZtmc0QHRk7xvO3vw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+CUNf/nkpXrQBdtD5NiqLWu7tVPu0twJbHsL369Q+2I=;
- b=L71IQ8Aa3l50KaGJutTfOAd88dncyXsq0xGmA+luitEcQ33HeFBkjpi48Sc7mHTq1rNMQe427OVstc5LlijxgACPxzZOb4ekBDUXxVX+WbP3LqUqpLQNM8phaPOMLTe2oOwKMg5HMHLY6KuoN2m7GpEyf5Tc8piRKu1dnZZdwOhpPGvVVo+KCKHZK5jTUYLT7SAPceQOHylK3SSTwKGHWor3yVPGdoba/ZuypmxqqJog7JsMHtvyWCmHXLbPHJVjY0cPE/tmcIvctRWY8enEC8Mkc2cgoOJ3s3+9HMePyBlhLskFE6bbl5KlPFOsGhNWQyDxlwODdWyn+HevNNUWmA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Thu, 25 Nov 2021 10:50:40 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9B90C0613B5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:41:09 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id v22so6466216qtx.8
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:41:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+CUNf/nkpXrQBdtD5NiqLWu7tVPu0twJbHsL369Q+2I=;
- b=qTsydae3g2bwjj4SemNzSw/I3CkDVAVXonMDTpU+qaFMqdProbzQ66y/PwA0rFSPoK19jR1NDmAHpdeGtpeHHrP4GxEEdhSG1KLVbOsspNYXU+vNuBc8cfFH90k0vjNdbNm3KV9sruEMguS1R8ik2CMHb+BbNgt8izl0q8E1oHg=
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
- by MN2PR10MB3998.namprd10.prod.outlook.com (2603:10b6:208:182::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Thu, 25 Nov
- 2021 15:39:30 +0000
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::8d84:1f40:881:7b12]) by BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::8d84:1f40:881:7b12%4]) with mapi id 15.20.4713.025; Thu, 25 Nov 2021
- 15:39:30 +0000
-Message-ID: <048d94de-4538-ddd0-dcee-dfdfcb0b8310@oracle.com>
-Date:   Thu, 25 Nov 2021 10:39:23 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.1
-Subject: Re: [PATCH 0/2] xen: make debugreg accessors always_inline
-Content-Language: en-US
-To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-References: <20211125092056.24758-1-jgross@suse.com>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-In-Reply-To: <20211125092056.24758-1-jgross@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN7PR04CA0068.namprd04.prod.outlook.com
- (2603:10b6:806:121::13) To BLAPR10MB5009.namprd10.prod.outlook.com
- (2603:10b6:208:321::10)
+        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=FuDCLMnZBcG4FXTRkAszIGwlmrXUvRfGWOLMCeO71r4=;
+        b=bXR88lw6LhPPgAj95Af7RQ3lMoQa/7QnY5KgsSf2wLn5Ddu9/ssuMn2l/td39RVEIb
+         4v7Oi/qiWyJJZDGAg6wzKKJrOyB8i7GE2EjN9Oun8j7+piRbo+bUZXoY3rn0cF0esrSI
+         gxYh/FDRYGyCFu3CjIY1jI2rMzqQa1wi4thijh0d4JhwwcC1otAA4pdzvVdtzgCWSB5h
+         bC1pEynddVfYbKyWU/9F7iSEPK3q0F9MT/gDy3k/dCc0UdUDfNTJyaUF9oP1XXHhR9iH
+         /RoQRNek3++ONIY6C2j0NRb/LnMwTItrAKbeZcIYBLofV/RFm4ZznjWbnW0b9/LvxkHE
+         exKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=FuDCLMnZBcG4FXTRkAszIGwlmrXUvRfGWOLMCeO71r4=;
+        b=12ek4jX/aFnh321Dufou8y3l35laQtsIazDPjHHoKUIJZCOwIt59xJ2njpGva1Ztu7
+         oA5R9nbh+8CswkhVCykth5V4sK0qKliOvaJogKa1cUgpz9x5Zb2W60KeEKSHquqnxNSc
+         kCHs4HXbPbZwBxRPjfpJBZVLOblqjoPfRJ2G1//Y+w/9F0Yaw/fTdn1KS8UtxOh+9HYb
+         nShuBSJTBWJ5dbfFPT5CCWeomTuiknDUoEUxUOws+UaVERIOF7y+I/N+tH+suEmvDJeM
+         HiPxDgLBZUett0Y418Um6UxjECZ2P627EAO2oe7NluKJ1fPKQ5AoLB+DjvxYJstB+q6q
+         ic8g==
+X-Gm-Message-State: AOAM5326vTgSvhKbvNqU1UNp/xJEwUGgtfQnsKf/yqDv2YQpF5Bw9zyR
+        jwxcCU8MIr31N4Vurhf1ex+dpw==
+X-Google-Smtp-Source: ABdhPJwtFMy/514J4UaQ0/ybTKHlbOITeEKfMCQ7UenTYDSOaJPjLAG9D4Wac2FvXHGB65/bJM8mVQ==
+X-Received: by 2002:a05:622a:1045:: with SMTP id f5mr18225139qte.319.1637854868860;
+        Thu, 25 Nov 2021 07:41:08 -0800 (PST)
+Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
+        by smtp.gmail.com with ESMTPSA id y18sm1666411qkp.120.2021.11.25.07.41.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 07:41:08 -0800 (PST)
+Message-ID: <ae2fa5b455fce8f159e02b3156800b162e424a21.camel@ndufresne.ca>
+Subject: Re: [PATCH] media: hantro: Hook up RK3399 JPEG encoder output
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Date:   Thu, 25 Nov 2021 10:41:07 -0500
+In-Reply-To: <41d75ec1-b3b6-b991-33f0-7188869eb59c@xs4all.nl>
+References: <20211119074654.470729-1-wenst@chromium.org>
+         <5d23258a954eb0076cacf89d6c88b5e6ef13695f.camel@ndufresne.ca>
+         <CAGXv+5Gf-gsB7JXnLiZF_R=0RdxXS7CDZaFftyZ+aESXLXy1Ew@mail.gmail.com>
+         <85e9830ff0c2ed5eb77ce52ec7fde82a08368a2a.camel@ndufresne.ca>
+         <41d75ec1-b3b6-b991-33f0-7188869eb59c@xs4all.nl>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
 MIME-Version: 1.0
-Received: from [10.74.106.108] (138.3.200.44) by SN7PR04CA0068.namprd04.prod.outlook.com (2603:10b6:806:121::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.20 via Frontend Transport; Thu, 25 Nov 2021 15:39:28 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7be7bea4-bfc0-4d33-9ad6-08d9b029c581
-X-MS-TrafficTypeDiagnostic: MN2PR10MB3998:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB3998F595DED09CC6E747C6D18A629@MN2PR10MB3998.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:525;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sn6MGcYGaKOT1oQoAGmSPfOnBoKIfbasgAV5QwCmhdbFC6zcRLdidhurvQW/ahYyc8Tm5wpW51Wf1ArD1vQZsbQHIzsMrSMLxZ6gFAgzlPlTc22yPcIIwrGnrs7ogHKmLjLq5qLQ9pMDC/cYNe3qNFrGFgTv0R1w4mXjiP1okzyHaI1Bqd/2smiyS1b45xPEY+MbcrqNLLn2PcjmSAlUu/AbigmtGYYEVOHJXQYrXP3HCCDmbhqrqhQcDSJq0ro+h2rzWgXTDXoYecAI5xAaaoMOiMl0GiRBFMYbnedO1vqAlF30Zha+yzGWOrF6Cp0Nlnmsogd47VAQtYfLgNgdD2qw/LM0IHATmHY2x6IPqfF2uYTt+sWY/vM54IwtBgrce1g+dhYsUQTYv0z8AZ44NveA1UbR+reF192iVk9nyG+nzIOaj576FgifCmzKZ7zRY6hu+fyLeJq8P3RDtc8vLBELwlte6cNMLT8g0c/oOk2uGu8yYZoaDoot3z65LtL4vETWVNdh57UVnuUN+xYWa2lVwYlDjxsuRqEO1OOGEKiozh4dv64DOcatR/8W1fUrUjga5zDLd423YEeWtwwsWb/F53VD5ihFjPMTWSLQjqnbSAyj4nO3P4pGXh46wpQ+xCjlY0gWsIFfXBacQVnH4oK7HN9We1X5cL26tL8R5MzWQIIG6WFRY7fk4VgOJrc/8t18JODaQi00DLSr/TMsg2x46Wvvjgswi/zgEXyyCBZ7QTUF/nB9AA+PSW067Joe
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(4744005)(54906003)(8936002)(31696002)(44832011)(2906002)(38100700002)(66476007)(66556008)(26005)(66946007)(6486002)(53546011)(6666004)(4326008)(2616005)(16576012)(31686004)(36756003)(5660300002)(83380400001)(86362001)(508600001)(316002)(7416002)(956004)(8676002)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WStmOFJqV0JhS1lhd0l2U2RmekFCUXROME9vOThOamtoUU5zMTUxTmlsV1Z0?=
- =?utf-8?B?dkNXWDJDdG9PSlFLdloxVng0dzJSaVhIZkVGMFM3eERWbDVCVWtFMjdoTUhT?=
- =?utf-8?B?OXpyZGVrTmhQQXZGRXJsYTZNSjUwSlFuRFA2ZVl6cVRjREFrR2ZTenlRbE9H?=
- =?utf-8?B?T000eDNoUmR3L0RiemxVdmVJcUNxcm1NK0pHUFo0T0thbFJySk5zVGU5WUtq?=
- =?utf-8?B?TmJ0dkUzUlc4bFV6VDRESUZleGpFQ0g0ZGp6bkgwZjJJeSs2ei9XTXNSSWo0?=
- =?utf-8?B?Zy9rczhmajJpcCtNWVdKZC94THg4YU5GTHVXc3M5QS8rdG9sMGpoVDFHVDdn?=
- =?utf-8?B?ckJyVTc4ZzRESis2d3hOQytmMHdtTXNwZzVML0lUQzdRK1ZDYS9QMlA0QS8z?=
- =?utf-8?B?Q01sZCsrT1ZOdldKR3RKRWY0S1VpV0lWRjREM1hzdU1IMFJkOFhNQUlqaXRa?=
- =?utf-8?B?WVozdmp3VkJRbzIvUkREYlR4dDFwQzFIOWgzcUYzaUZMS2dlY2d5Qi9JekQw?=
- =?utf-8?B?L1NIdnFvcFNHN0dmZWJzRVpDZ0c2b0NoY0Q3NllRY21PR2NPWnIyeGhHczZs?=
- =?utf-8?B?NzJ1dDVXMVFZak8zemxOU3Z6REdNM2VIRFpmdThKZzFGRG5Yb0ZUMjJ2YXN2?=
- =?utf-8?B?R3VjOUFZL052Q1M4K2FCbjRIYXFHb3I1amJZbjZxZ2NlOXRwTk5qaFBkZGFL?=
- =?utf-8?B?YXpETVN4ZmJJVDZTdXpNakNxTGc5cmVhRHJtclpwQ1o4ZnQxc1MxWkowODZI?=
- =?utf-8?B?QW9XMWRXMzBFcjYvY0Vqa0pKU0ZoQzJaS0JGOGdDQWJOWmVHWHdFbE5pWFll?=
- =?utf-8?B?Ym9teGMrK3hhTk40UGgwRG1GTVN2d29JY2IrcElUS3c5K2o1OUFlSEJIbzl4?=
- =?utf-8?B?QStIMzRINml3MDhtT2QxL3V5T0QrYUszVGhHQ090SUtEZEE5T3p1VWgwd3l5?=
- =?utf-8?B?d0U3TS9YNmRnekMvRVp5eXFMeXYwaTM2WEFXekVhWG1BYXlPbkJScGFpWDNk?=
- =?utf-8?B?VE9BYmY3dDF4VHFKSEpqYnFPbEN2bEdTNkJWNElSSldidjY2MGp0THE4OHk4?=
- =?utf-8?B?Sm5TKzFCMXBIeTIxK3hxbXhMa0t1azZMZEJuYjZwS0d1YUwwTysrSXlPczNv?=
- =?utf-8?B?b3VMeE96N1lJajhYbmxVeW1ML3pWU1Q2eEJKNlJleGZtc2Z1d242MXpJTlcr?=
- =?utf-8?B?Q0VZOWxYaWJ4dXptVnBXeVN0RlBWNFQxakRlSmVpcFUvVlg2Uzg4QUF1Mm84?=
- =?utf-8?B?N2U2ektCd0R6ZzFFMytncHRwM2d3eEZnV2pDQlRDWVArMHppN1h5UUpPbXVH?=
- =?utf-8?B?b08rdXBaUUtLdDgzR0hjYXJ3dlFUS2gwMnZjSUszWUNGcEdUY0NOekZDa2hh?=
- =?utf-8?B?SjNPUDMreS91Y0p2bUIwZTNTZUtGRGN4Qng4NFVDTGdkZTF2RlB2bXRqU3VX?=
- =?utf-8?B?aTRvT2ZadUwyTEtBNlYzQUVPbGd4aEtkVkdTb2J0SkFJWmx0MUJWREJveWFt?=
- =?utf-8?B?bCt3WVN2TmlER2ZBMW8vQW0xNHdvU3ZQN1E5czJRQVA1VG9HM2F1TEt6MUdE?=
- =?utf-8?B?ZDNFUVpBKzd5Ym40ZUZkQUowYnJOUW0vRXdnSzAxREg5WGFMa3piZ0F3ZGxR?=
- =?utf-8?B?TUdoSHpYYmlzNTZsR3Eyc0pRWDRqZkt6dDNERENiWS9wUnNSazZqQkxnaE80?=
- =?utf-8?B?eEtCd1lVcXg5a2hEWjhtbmNzTEdDRm5LeXRQNFJDS1QwbE0wSm11NzhvMUZh?=
- =?utf-8?B?N1NiTmVQc0cvS3BseTVTQWFhT1N3cER1aXhIeTN1Njk4QklucWl1cTBYbGZ5?=
- =?utf-8?B?R1BuVTR4NS9DcW5nSGJqam9ENHR4UHVLWEdLakwyWnFZY3hHT3JrSDZQY2ts?=
- =?utf-8?B?ZDk2czk4Q2V5MmJvZCt5aDZvUWRKNWFEdWNqYUNvbzVuNk45U1NJZGhWVHpW?=
- =?utf-8?B?MUMvakJPRlVsWDhBL2VDVVoxem9rVzE5QlllamdhMHAzSUpBcUJLYVN3UmpO?=
- =?utf-8?B?aFRmZnpzYi9TNE95WTl3dWhjekZxWDVOaDZ2MjN4TkJVOGdlbjVueUhsUFhH?=
- =?utf-8?B?MjdXODVGNlo3RStwVGdVSFhuVm5yYW1KZTVpQ09pSWxpcGtsd0hISDFjamN5?=
- =?utf-8?B?RnZISm1LQ0FjU1J5eXliR3FaQ0FVa0dNWGxDN1hFM09HWGN6YlJkbVJ6aThv?=
- =?utf-8?B?bEtGNVMwQ1didGJaT3FqUVdpKytvTGJ5VnZiQWZ4WDhQeVE5TjBsU1c5ZnVR?=
- =?utf-8?B?cG50ZWR1dEhBNXVQZlRQSDNwK3hnPT0=?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7be7bea4-bfc0-4d33-9ad6-08d9b029c581
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2021 15:39:30.5449
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kVXB5OLzWYhB5F/cIsqrQ8bmhDQNTawTE7w4ics30w4BBOH3u5/SOqQlbAfjQKFU6C9ol2tbrPH4shNOVuU54qD9di1m0vzLGqbgf44eh/4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB3998
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10179 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 mlxscore=0 suspectscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111250086
-X-Proofpoint-ORIG-GUID: F3qNX7ec-cz3Mjczewwlo4lzaIXdgpG_
-X-Proofpoint-GUID: F3qNX7ec-cz3Mjczewwlo4lzaIXdgpG_
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Le jeudi 25 novembre 2021 à 09:44 +0100, Hans Verkuil a écrit :
+> On 23/11/2021 20:39, Nicolas Dufresne wrote:
+> > Le lundi 22 novembre 2021 à 11:57 +0800, Chen-Yu Tsai a écrit :
+> > > On Sat, Nov 20, 2021 at 12:00 AM Nicolas Dufresne <nicolas@ndufresne.ca> wrote:
+> > > > 
+> > > > Le vendredi 19 novembre 2021 à 15:46 +0800, Chen-Yu Tsai a écrit :
+> > > > > The JPEG encoder found in the Hantro H1 encoder block only produces a
+> > > > > raw entropy-encoded scan. The driver is responsible for building a JPEG
+> > > > > compliant bitstream and placing the entropy-encoded scan in it. Right
+> > > > > now the driver uses a bounce buffer for the hardware to output the raw
+> > > > > scan to.
+> > > > > 
+> > > > > In commit e765dba11ec2 ("hantro: Move hantro_enc_buf_finish to JPEG
+> > > > > codec_ops.done"), the code that copies the raw scan from the bounce
+> > > > > buffer to the capture buffer was moved, but was only hooked up for the
+> > > > > Hantro H1 (then RK3288) variant. The RK3399 variant was broken,
+> > > > > producing a JPEG bitstream without the scan, and the capture buffer's
+> > > > > .bytesused field unset.
+> > > > > 
+> > > > > Fix this by duplicating the code that is executed when the JPEG encoder
+> > > > > finishes encoding a frame. As the encoded length is read back from
+> > > > > hardware, and the variants having different register layouts, the
+> > > > > code is duplicated rather than shared.
+> > > > > 
+> > > > > Fixes: e765dba11ec2 ("hantro: Move hantro_enc_buf_finish to JPEG codec_ops.done")
+> > > > > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+> > > > > ---
+> > > > > This was developed on the downstream ChromeOS 5.10 kernel (with a hack
+> > > > > for .data_offset) and tested with ChromeOS's jpeg_encode_accelerator_unittest
+> > > > > patched to accept non-JFIF JPEG streams (https://crrev.com/c/3291480).
+> > > > > 
+> > > > > This was then forward-ported to mainline (name and filename changes) and
+> > > > > compile tested only.
+> > > > 
+> > > > Tested with GStreamer on top of 5.16-rc1 from media_stage.git. Not perfect but
+> > > > at least the the output it valid. Test command was:
+> > > > 
+> > > >   gst-launch-1.0 videotestsrc num-buffers=2 ! v4l2jpegenc ! filesink
+> > > > location=test.jpg
+> > > > 
+> > > > Notice that I encode two frames, it seems like the draining flow is broken in
+> > > > this driver. GStreamer will queue the frame and issue CMD_START immediately, the
+> > > > driver will skip the encode, leaving me with an empty file.
+> > > 
+> > > The hantro driver doesn't implement ENC_CMD, which IIRC is used for the
+> > > draining flow. I guess that's something to fix, since the mem2mem stateful
+> > > encoder spec seems to require it. Or does that spec not apply to the JPEG
+> > > encoders?
+> > 
+> > I'm pretty sure its required. But this isn't a regression from this patch.
+> 
+> I don't think it is required for JPEG encoders today. Each frame is independent of
+> any other, so it behaves just like a m2m scaler for example.
+> 
+> It doesn't hurt to support it, but it shouldn't be necessary for jpeg codecs.
 
-On 11/25/21 4:20 AM, Juergen Gross wrote:
-> Juergen Gross (2):
->    xen: make HYPERVISOR_get_debugreg() always_inline
->    xen: make HYPERVISOR_set_debugreg() always_inline
->
->   arch/x86/include/asm/xen/hypercall.h | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+I believe the requirement in the spec is deliberate to avoid making userland
+work a night mare. If draining a filled queue requires counting frames on top of
+using CMD_STOP, you are duplicating the effort.
 
+I have a strong opinion about this, I believe consistency is key, the frame work
+should provide this feature for JPEG decoder/encoder trivially imho and until
+then, driver should all support the same draining flow. I'm not going to relax
+this in GStreamer.
 
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Nicolas
+
+> 
+> If there is a reason why this is needed, then it would likely also be needed for
+> m2m devices like scalers.
+> 
+> Regards,
+> 
+> 	Hans
+> 
+> > 
+> > > 
+> > > > Tested-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+> > > 
+> > > Thanks!
+> > > 
+> > > ChenYu
+> > 
+> 
 
