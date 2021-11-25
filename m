@@ -2,133 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36EF845DAD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 14:18:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2131345DAEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 14:20:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354839AbhKYNV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 08:21:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44652 "EHLO
+        id S1355401AbhKYNX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 08:23:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355046AbhKYNTx (ORCPT
+        with ESMTP id S1352409AbhKYNVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 08:19:53 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BCAC0613A5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 05:14:32 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id y13so25380590edd.13
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 05:14:32 -0800 (PST)
+        Thu, 25 Nov 2021 08:21:53 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F66C06174A;
+        Thu, 25 Nov 2021 05:15:29 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id x15so25472223edv.1;
+        Thu, 25 Nov 2021 05:15:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qBYSpPhQSJxBhoO91Om3TSZHfZXkClRcC6Qkriy10qI=;
-        b=lktpFgCAKshjISGG6GZ3uRaSyPNiCxnasNkjovBrXXHU3TWe5vydxxgrFTevIGeztO
-         hLKE9EiXmrq2vyvPMIjQQxoP4mZbi5qBu0z1ZxcLEflCF23HvtJa+9RjDKED9Onvl6Ru
-         NXPhFYhN4n++KTZ3XU1Wq+fahnZoFe4Ti6nLCaPyzN1lVGYpfE+GZghsdfh4HwO7bU6e
-         IGBACcYbCAQovqAZTdVcMimOwxH7JyzMhp/uGFW9z4Hs40PnGqBf5ujZSBltX9mq+81R
-         lLrxHYyidyMCAtnTHGwzt94PEHKGdog+Jujt4JiAb2vjfwGM1vZ7d9vJg6D8P2aQXdDu
-         /bwg==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=BAa4zi7oYvYD4vpZ1kEFbpaY38iSHjx1RsDN+9GL+Wc=;
+        b=nos8GOsSbhxSMIAj0q7gUKLRa4S6k3VP1dPN/NtvDlu5Wa2Bsvt220OUrMszDzMbxd
+         SYwNB9p/dx3AmHtTTqynTYxvT/jQPos4EvHxPBpvbCgY8UKuHYBtHnsFeRXbc4TiZQ/b
+         6UJpR8Nl4J71f0Dg5fZo7AwlvVlAdSQ4ARpoFLhsMkDt4+VKLrExRq877UQ33+IfsN6w
+         1DkAqNqDnIxIWyDOgyX8xy0PjZvOaUSO/cgYd6tmyvL0vNTKgVimCiJ4eNya257MSgMo
+         PvBSdDkWVMQ0qR/wiHhnzuyfqxP7su67UaRhdNdkZ3nuzGV8FhMqkKew1okavRdq66c1
+         09NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qBYSpPhQSJxBhoO91Om3TSZHfZXkClRcC6Qkriy10qI=;
-        b=0GOcRHT9zqxI3WCMJHHP6WNwuRHXou5FUT7PInoi98R4A6m6w5f9RIVenGfblHmbZ8
-         8KlddBcrepF5SuZf4ifXBjpO73z+GwEPiUosu7r1EL9IWyozsyp7fIJanokiVtlnTYnI
-         5IOfxJM73xDNK57ijUjx1z8+ME/IUV7PNOemzllZ58edEsFxlbgTJ+hoj0q9jUBTm+tN
-         hpmFbXOBcOucSISKOsIdH7e0B1woFnrQG5HaFS9TShVPw1LYSGgt4wPrtHalevQkwJOS
-         mxYIH56y27OizRdtwSbJvCAuBakvHZhbWQgnlSQrqx1v29fX1H+dyR0qm/d+iMG9Bc3K
-         0xVw==
-X-Gm-Message-State: AOAM531JnFgyUM8cBlUSCocPxQvHStyXqrIS6IKN1BbjYRMJ6bZ0TwST
-        5KM777ohLMPaVLnM6Y6ws8u4G8PxiMy5Eft4ULRxetKoQJAas9rS
-X-Google-Smtp-Source: ABdhPJwTVHuEoOcGJhq154P6oK/ip5o+IJ4/UsZHSzBPWZdWCtyh3T33HjLNmnlpDWzJiYnFDdYbGis28vUeXeS8fNQ=
-X-Received: by 2002:a50:ef02:: with SMTP id m2mr37560636eds.172.1637846071064;
- Thu, 25 Nov 2021 05:14:31 -0800 (PST)
-MIME-Version: 1.0
-References: <20211124114257.19878-1-brgl@bgdev.pl> <20211124114257.19878-3-brgl@bgdev.pl>
-In-Reply-To: <20211124114257.19878-3-brgl@bgdev.pl>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 25 Nov 2021 14:14:20 +0100
-Message-ID: <CAMRc=MeR4ubyVWUmR_x99dLjovcFn3Bn9FwGKgX88-P0_PeStw@mail.gmail.com>
-Subject: Re: [PATCH v10 2/5] gpio: sim: new testing module
-To:     Kent Gibson <warthog618@gmail.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=BAa4zi7oYvYD4vpZ1kEFbpaY38iSHjx1RsDN+9GL+Wc=;
+        b=bPi8RDdVFPgs4J38SVVItCMfWxTJW8eXiPNqsGaYR9b1VqJ6auWDn008Pwv0fcXJ/8
+         ZH8CUv5VrTdmZGLTnQcNrChO7XvUqK8c6KUHUyX+ReTwL+s6gCEac6WPpr4H6DpA3PPP
+         Gbtmy/2T4rLbd7PduW/g6tqX4ne4qE9iowTL8yB29u8c1EoVtMGovbQwYUG4Ls00T1VW
+         PpsCmbxSN0zHD28cT2c9Tkq6tZPQu6QLIOrrsHDP9zZJfj7k303IkZ1/R0DUhQVrhReX
+         41niPyKbmMX0AJIiGQb1mlelX+m4ZoAafBVeyiVljoGF0yp+0nf1W/kea73KVbWlkerS
+         b2QQ==
+X-Gm-Message-State: AOAM532qykIGvlFEXyVOtpi+0LdIhL+m1+PMKrVapEmiQRDD4YcDG2jF
+        m2TJzcCKB+HmRiSYfb+nuhA=
+X-Google-Smtp-Source: ABdhPJzvkVCxeTwVXN1WFMqkdztL5hF1eKHNhnXln7mvbuT956aJcM5bSiiD5zvAsTyc2RBTdy6qzQ==
+X-Received: by 2002:a17:906:c147:: with SMTP id dp7mr31892578ejc.173.1637846128519;
+        Thu, 25 Nov 2021 05:15:28 -0800 (PST)
+Received: from demon-pc.localdomain ([188.24.96.74])
+        by smtp.gmail.com with ESMTPSA id g9sm2187770edb.52.2021.11.25.05.15.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 05:15:28 -0800 (PST)
+From:   Cosmin Tanislav <demonsingur@gmail.com>
+Cc:     demonsingur@gmail.com, cosmin.tanislav@analog.com,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Bartosz Golaszewski <brgl@bgdev.pl>, linux-gpio@vger.kernel.org
+Subject: [PATCH v4 1/3] iio: add adddac subdirectory
+Date:   Thu, 25 Nov 2021 15:14:20 +0200
+Message-Id: <20211125131422.50657-2-demonsingur@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20211125131422.50657-1-demonsingur@gmail.com>
+References: <20211125131422.50657-1-demonsingur@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 12:43 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->
-> Implement a new, modern GPIO testing module controlled by configfs
-> attributes instead of module parameters. The goal of this driver is
-> to provide a replacement for gpio-mockup that will be easily extensible
-> with new features and doesn't require reloading the module to change
-> the setup.
->
-> Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
-> ---
->  Documentation/admin-guide/gpio/gpio-sim.rst |   80 ++
->  drivers/gpio/Kconfig                        |    8 +
->  drivers/gpio/Makefile                       |    1 +
->  drivers/gpio/gpio-sim.c                     | 1370 +++++++++++++++++++
->  4 files changed, 1459 insertions(+)
->  create mode 100644 Documentation/admin-guide/gpio/gpio-sim.rst
->  create mode 100644 drivers/gpio/gpio-sim.c
->
+From: Cosmin Tanislav <cosmin.tanislav@analog.com>
 
-Hi guys!
+For IIO devices that expose both ADC and DAC functionality.
 
-I'd like to get your opinion on some parts of the interface.
+Signed-off-by: Cosmin Tanislav <cosmin.tanislav@analog.com>
+---
+ drivers/iio/Kconfig        | 1 +
+ drivers/iio/Makefile       | 1 +
+ drivers/iio/addac/Kconfig  | 8 ++++++++
+ drivers/iio/addac/Makefile | 6 ++++++
+ 4 files changed, 16 insertions(+)
+ create mode 100644 drivers/iio/addac/Kconfig
+ create mode 100644 drivers/iio/addac/Makefile
 
-Should we allow creating multiple gpiochips per platform device like
-some drivers do? And if so - should the sysfs groups be created for
-each gpiochip device kobject and not the parent?
+diff --git a/drivers/iio/Kconfig b/drivers/iio/Kconfig
+index 2334ad249b46..4fb4321a72cb 100644
+--- a/drivers/iio/Kconfig
++++ b/drivers/iio/Kconfig
+@@ -70,6 +70,7 @@ config IIO_TRIGGERED_EVENT
+ 
+ source "drivers/iio/accel/Kconfig"
+ source "drivers/iio/adc/Kconfig"
++source "drivers/iio/addac/Kconfig"
+ source "drivers/iio/afe/Kconfig"
+ source "drivers/iio/amplifiers/Kconfig"
+ source "drivers/iio/cdc/Kconfig"
+diff --git a/drivers/iio/Makefile b/drivers/iio/Makefile
+index 65e39bd4f934..8d48c70fee4d 100644
+--- a/drivers/iio/Makefile
++++ b/drivers/iio/Makefile
+@@ -15,6 +15,7 @@ obj-$(CONFIG_IIO_TRIGGERED_EVENT) += industrialio-triggered-event.o
+ 
+ obj-y += accel/
+ obj-y += adc/
++obj-y += addac/
+ obj-y += afe/
+ obj-y += amplifiers/
+ obj-y += buffer/
+diff --git a/drivers/iio/addac/Kconfig b/drivers/iio/addac/Kconfig
+new file mode 100644
+index 000000000000..2e64d7755d5e
+--- /dev/null
++++ b/drivers/iio/addac/Kconfig
+@@ -0,0 +1,8 @@
++#
++# ADC DAC drivers
++#
++# When adding new entries keep the list in alphabetical order
++
++menu "Analog to digital and digital to analog converters"
++
++endmenu
+diff --git a/drivers/iio/addac/Makefile b/drivers/iio/addac/Makefile
+new file mode 100644
+index 000000000000..b888b9ee12da
+--- /dev/null
++++ b/drivers/iio/addac/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# Makefile for industrial I/O ADDAC drivers
++#
++
++# When adding new entries keep the list in alphabetical order
+-- 
+2.34.1
 
-Currently we do this:
-
-# Create the chip (platform device + single gpiochip):
-mkdir /sys/kernel/config/gpio-sim/my-chip
-# Configure it
-echo 8 > /sys/kernel/config/gpio-sim/my-chip/num_lines
-# Enable it
-echo 1 > /sys/kernel/config/gpio-sim/my-chip/live
-
-What I mean above would make it look like this:
-
-# Create the platform device
-mkdir /sys/kernel/config/gpio-sim/my-gpio-device
-
-# what's inside?
-ls /sys/kernel/config/gpio-sim/my-gpio-device
-live
-
-# Create GPIO chips
-mkdir /sys/kernel/config/gpio-sim/my-gpio-device/chip0
-mkdir /sys/kernel/config/gpio-sim/my-gpio-device/chip1
-
-# Configure chips
-echo 8 > /sys/kernel/config/gpio-sim/my-gpio-device/chip0/num_lines
-echo 4 > /sys/kernel/config/gpio-sim/my-gpio-device/chip1/num_lines
-echo foobar > /sys/kernel/config/gpio-sim/my-gpio-device/chip1/label
-
-# Enable both chips
-echo 1 > /sys/kernel/config/gpio-sim/my-gpio-device/live
-
-And in sysfs instead of current:
-
-echo pull-up > /sys/devices/platform/gpio-sim.0/sim_line0/pull
-
-We'd have to do:
-
-echo pull-up > /sys/devices/platform/gpio-sim.0/gpiochip1/sim_line0/pull
-
-While I don't see any usefulness of that at this time, if we don't do
-it now, then it'll be hard to extend this module later. What are your
-thoughts?
-
-Bart
