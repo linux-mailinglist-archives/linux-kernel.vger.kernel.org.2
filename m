@@ -2,70 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4030845E124
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 20:46:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 975F645E123
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 20:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356779AbhKYTtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 14:49:06 -0500
-Received: from smtpbg703.qq.com ([203.205.195.89]:56644 "EHLO
-        smtpproxy21.qq.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1356778AbhKYTrF (ORCPT
+        id S1356884AbhKYTtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 14:49:03 -0500
+Received: from smtprelay0013.hostedemail.com ([216.40.44.13]:52600 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1356764AbhKYTrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 14:47:05 -0500
-X-QQ-mid: bizesmtp37t1637869414t7flocso
-Received: from localhost.localdomain.localdoma (unknown [58.251.166.36])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Fri, 26 Nov 2021 03:43:07 +0800 (CST)
-X-QQ-SSF: 01400000000000C0L000000A0000000
-X-QQ-FEAT: Z953UCsBqO6+dtTTTmi9q2ZVeyylH6u5hmnaaeanX/IkKg0BSByxCXu2XDwOe
-        fiaPyEFbvuw2u/KbsO9yP/MrKDmRYVipBT80HfOnS16InuAhubgCkG5bV12O402mxNaHV3j
-        XPtkahN8msXdqlbTlVMadrTTRkXri9zdjcV/Wge7RN+IloN9JK72u4mknypAzPUNcw9W0xf
-        HkxwKwOMoMgAmMLCVz9bhiD+cZXWdaX3Fiyh9oELgyJ3VeC9T/48FOTr2xbj5D1R1mqRwx7
-        wvFqeE8eE0fxlG3hF+Z9r5h2cr+9ufBdiqtbMFu6EgBEI+0pn3s8D30mev5PkKENGOlsk0a
-        c7KU19J8F46VSz44Qea8Q90e8HlfA==
-X-QQ-GoodBg: 2
-From:   Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
-Subject: [PATCH] mm: fix the type of a parameter
-Date:   Fri, 26 Nov 2021 03:43:01 +0800
-Message-Id: <20211125194301.19244-1-caoyixuan2019@email.szu.edu.cn>
-X-Mailer: git-send-email 2.31.1
+        Thu, 25 Nov 2021 14:47:02 -0500
+Received: from omf06.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 2A7958384368;
+        Thu, 25 Nov 2021 19:43:50 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id 8F5A6104628C;
+        Thu, 25 Nov 2021 19:43:46 +0000 (UTC)
+Message-ID: <81cbcf8c782cea2261af55965718a0d8ebb3b21f.camel@perches.com>
+Subject: Re: [norov:bitmap-tmp 7/8] arch/powerpc/xmon/xmon.c:472:64: error:
+ expected ')' before 'return'
+From:   Joe Perches <joe@perches.com>
+To:     kernel test robot <lkp@intel.com>,
+        Yury Norov <yury.norov@gmail.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Date:   Thu, 25 Nov 2021 11:43:48 -0800
+In-Reply-To: <202111260340.kCOW9xsR-lkp@intel.com>
+References: <202111260340.kCOW9xsR-lkp@intel.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:email.szu.edu.cn:qybgforeign:qybgforeign7
-X-QQ-Bgrelay: 1
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.03
+X-Stat-Signature: ydumw6qte9e1jfidj55nrm1ympsy3q34
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 8F5A6104628C
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX194I0kw4rWGgM8wRxRwblhUIW+C2aJBwuc=
+X-HE-Tag: 1637869426-704949
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The type of "last_migrate_reason" in struct page_owner is short.
-However, the type of "reason" in the argument list of function
-__set_page_owner_migrate_reason is int,
-which is inconsistent.
+On Fri, 2021-11-26 at 03:17 +0800, kernel test robot wrote:
+> tree:   https://github.com/norov/linux bitmap-tmp
+> head:   75ee333c81c999b29a49810611fb160cec32217d
+> commit: 29f49f10b3fbef5a88db0a7e370984297616f0fa [7/8] lib/cpumask: replace cpumask_weight with cpumask_{empty,gt,le,eq}
+> config: powerpc-allyesconfig (https://download.01.org/0day-ci/archive/20211126/202111260340.kCOW9xsR-lkp@intel.com/config)
+> compiler: powerpc-linux-gcc (GCC) 11.2.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/norov/linux/commit/29f49f10b3fbef5a88db0a7e370984297616f0fa
+>         git remote add norov https://github.com/norov/linux
+>         git fetch --no-tags norov bitmap-tmp
+>         git checkout 29f49f10b3fbef5a88db0a7e370984297616f0fa
+>         # save the config file to linux build tree
+>         mkdir build_dir
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=powerpc SHELL=/bin/bash
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    arch/powerpc/xmon/xmon.c: In function 'wait_for_other_cpus':
+> > > arch/powerpc/xmon/xmon.c:472:64: error: expected ')' before 'return'
+>      472 |                 if (cpumask_weight_gt(&cpus_in_xmon, ncpus - 1)
+>          |                    ~                                           ^
+>          |                                                                )
+>      473 |                         return true;
+>          |                         ~~~~~~                                  
+> > > arch/powerpc/xmon/xmon.c:476:9: error: expected expression before '}' token
+>      476 |         }
+>          |         ^
 
-Signed-off-by: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
----
- mm/page_owner.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/page_owner.c b/mm/page_owner.c
-index 4f924957ce7a..4c23e910caf9 100644
---- a/mm/page_owner.c
-+++ b/mm/page_owner.c
-@@ -182,7 +182,7 @@ noinline void __set_page_owner(struct page *page, unsigned short order,
- 	__set_page_owner_handle(page_ext, handle, order, gfp_mask);
- }
+It's always good to compile test patches before submitting them and:
  
--void __set_page_owner_migrate_reason(struct page *page, int reason)
-+void __set_page_owner_migrate_reason(struct page *page, short reason)
- {
- 	struct page_ext *page_ext = lookup_page_ext(page);
- 	struct page_owner *page_owner;
--- 
-2.31.1
+> vim +472 arch/powerpc/xmon/xmon.c
+> 
+>    465	
+>    466	static bool wait_for_other_cpus(int ncpus)
+>    467	{
+>    468		unsigned long timeout;
+>    469	
+>    470		/* We wait for 2s, which is a metric "little while" */
+>    471		for (timeout = 20000; timeout != 0; --timeout) {
+>  > 472			if (cpumask_weight_gt(&cpus_in_xmon, ncpus - 1)
+>    473				return true;
+>    474			udelay(100);
 
+unrelated trivia:
+
+It seeems this loop could consume a lot of cpu/power.
+
+Could this use usleep_range() or maybe something else that doesn't allow
+rescheduling on another cpu?
+
+Maybe it should be something like
+
+	unsigned long timeout = jiffies + msecs_to_jiffies(2000);
+
+	while (time_before(jiffies, timeout)) {
+		if (cpumask_weight_gt(&cpus_in_xmon, ncpus - 1)
+				return true;
+		usleep_range(100, 200);
+	}
 
 
