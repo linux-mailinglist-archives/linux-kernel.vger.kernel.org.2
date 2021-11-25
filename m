@@ -2,83 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4730E45D98D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:49:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C7D45D98F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239523AbhKYLwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 06:52:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57736 "EHLO mail.kernel.org"
+        id S236293AbhKYLxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 06:53:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238867AbhKYLu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 06:50:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63A2D60FBF;
-        Thu, 25 Nov 2021 11:47:15 +0000 (UTC)
+        id S238055AbhKYLva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 06:51:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85F236023D;
+        Thu, 25 Nov 2021 11:48:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637840837;
-        bh=3No3aHhaKBIBbI6sfTp5IL0mJhrT1nQJUx5S4ytzxhM=;
+        s=k20201202; t=1637840898;
+        bh=l6Jyc1tU0WmNF0iSFJgB3zxp5No3x8K6EvftOagYU7g=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j9FeHPomai+swTgZZk5vF1XaFl9raK+axoQM2ZQr14qBBqBFicD93VkFgVGzpHWQD
-         NAAHTNW7AEdE+scl4FkXZeW685kZez0M/6iHkahTEDzwEgGrTKHWwhCTCtIJb2GNEl
-         o9s60MTGzVwvIqRzwAV92Obejm20uqxa6hOztfLsUlLNkDNSMgi+0kTaH3d3oaPDVv
-         +jck6L670WadupE9i7yx4868ewYEGGeO+Qgzbqmyg60LSdGXz5/ELM0pWTUDcBJkNf
-         p4OEOKL85ToLgAifseHWYbSnrBZ0j777hwct35j31qj6nZGOSpv/THWLtOpq1Zw9K4
-         R8Q3hZYC3UaPA==
-Date:   Thu, 25 Nov 2021 11:47:12 +0000
+        b=o6dfwCAkAl1fjepojlG72yCZ++ZQCm5u6FOKpszbwGv729SfP7wkjsNpZ0UusOmkD
+         bt5OolF7wWJRr1GSVwtkG6U+yv1BZ3EwRSz5r2RrawceGL66NfIIVj3n87gkEsb3Br
+         H7Q7NBduqqj8nDRUkDryW+E+aaGzdZ7Ou5gAuHFA6Ul2YE8rUYQYF1+ubhbOs5vpJC
+         OYwpViKm1ySvkdvg15+rbxeoIeDzNNESFWsWqYyx3HLGLdd685UCEItUZfdIE0HtqS
+         xLYZ3H9akLCYhFGLNHaEl3q1IIQP6bvaY/oW7/8kYucs0UvKOww5TMacZAzYuqOCH9
+         tFWSExcQe6DxA==
+Date:   Thu, 25 Nov 2021 11:48:13 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     Jayesh Choudhary <j-choudhary@ti.com>
-Cc:     Rob Herring <robh@kernel.org>, lgirdwood@gmail.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, kishon@ti.com
-Subject: Re: [PATCH] ASoC: dt-bindings: davinci-mcasp: convert McASP bindings
- to yaml schema
-Message-ID: <YZ93wOWfHdLUC6bG@sirena.org.uk>
-References: <20211122091525.2290-1-j-choudhary@ti.com>
- <1637685269.740254.3442929.nullmailer@robh.at.kernel.org>
- <d72bac88-8f56-35cd-a953-270a1ed4d34b@ti.com>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     sakari.ailus@linux.intel.com, mchehab@kernel.org,
+        lgirdwood@gmail.com, linux-media@vger.kernel.org, kernel@puri.sm,
+        linux-kernel@vger.kernel.org, Angus Ainslie <angus@akkea.ca>
+Subject: Re: [PATCH] media: i2c: dw9714: add optional regulator support
+Message-ID: <YZ93/dhTH3pUUHm2@sirena.org.uk>
+References: <20211125080922.978583-1-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Dh/qz3bmpLmon4Sl"
+        protocol="application/pgp-signature"; boundary="4QVRVVhlXziUnvSo"
 Content-Disposition: inline
-In-Reply-To: <d72bac88-8f56-35cd-a953-270a1ed4d34b@ti.com>
+In-Reply-To: <20211125080922.978583-1-martin.kepplinger@puri.sm>
 X-Cookie: This bag is recyclable.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---Dh/qz3bmpLmon4Sl
+--4QVRVVhlXziUnvSo
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 25, 2021 at 03:37:36PM +0530, Jayesh Choudhary wrote:
->=20
->=20
-> On 23/11/21 10:04 pm, Rob Herring wrote:
-> > On Mon, 22 Nov 2021 14:45:25 +0530, Jayesh Choudhary wrote:
-> > > Convert the bindings for McASP controllers for TI SOCs
-> > > from txt to YAML schema.
-> > >=20
-> > > Adds additional properties 'clocks', 'clock-names', 'power-domains'
+On Thu, Nov 25, 2021 at 09:09:22AM +0100, Martin Kepplinger wrote:
 
-Please delete unneeded context from mails when replying.  Doing this
-makes it much easier to find your reply in the message, helping ensure
-it won't be missed by people scrolling through the irrelevant quoted
-material.
+> +	dw9714_dev->vcc = devm_regulator_get_optional(&client->dev, "vcc");
+> +	if (IS_ERR(dw9714_dev->vcc)) {
+> +		if (PTR_ERR(dw9714_dev->vcc) != -ENODEV)
 
---Dh/qz3bmpLmon4Sl
+This looks like an abuse of regulator_get_optiona(), unless the supply
+might be physically absent in a system it should be using a normal
+regulator_get().
+
+--4QVRVVhlXziUnvSo
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGfd78ACgkQJNaLcl1U
-h9CAdQf/Zccr8jpu9GYJ1s1e6SIPLaOTHQ7T/GvnYZZWTgn++xolnkLc/bEPn1Q2
-afzCXD85nhCGUqT1mqoF+FMq1LKR/SBzBebIPpHPh5D2Qj1IeNcyhBf+e5sEaLa1
-H/8tN5igeAPxp/QOtoWhJMrcSLVk7M3kXbza1tfUvZOWud2/gE4IczPzphdhIv7M
-Upu/x6p9wibHL5Qi12J5uRZyVgyaE+3KB7vWMlhHlTW+BTxYx+a9+xJMF49Dja75
-RK9avILPAvpkKfOGXYuB/43AJNVuZswPM5Xf5W28DHk4NkbiwT7NysGI59v7I3pr
-b+VSayQk/BMdqGFX2S317GBUtwBGlA==
-=1ZPR
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGfd/wACgkQJNaLcl1U
+h9Cl1gf9GoBR+vf/0EfzsbiofJ5XWkU85yZeb9CHrqdjL2qDftsuuzNtTYUMQNYO
+fUVEQ3Gt76NLGDIf/h68BsRi00I8Lkug3VoIZtQSf5CNgO/6yKlzgjjTnsqPsGV7
+bTtzlfE6uJr4YPZPwg8cj5cIk+22ixWs21XMMS1Ho/mvn/8ECoDNd/XoXTz7wsTZ
+lRGUW6v1XOlvNASOqDX1LNe6p05S7eFc0guqPKgHonnOntOTu1QqRTVDsLWqCmpK
+DGzgi/Mcd/D5JYjeWy7zc2tYSJQzmtrx2ZVnzzMfY0QHFyo/zcORDIQ4WUT2An1I
+o/XVw0bGVfooWL2wXLC56R9rZ1Go/A==
+=eA3p
 -----END PGP SIGNATURE-----
 
---Dh/qz3bmpLmon4Sl--
+--4QVRVVhlXziUnvSo--
