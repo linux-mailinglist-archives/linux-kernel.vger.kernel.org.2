@@ -2,79 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4C445D908
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7FFD45D8FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:16:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239424AbhKYLUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 06:20:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238131AbhKYLTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 06:19:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0177060FC1;
-        Thu, 25 Nov 2021 11:16:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637838963;
-        bh=zFA5bt6BGF/qrfybB7ThfzxCZSJUKNeU5ktlN6DcfsI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OWmB6W3WLMq4nsI9IpdEPk64NTWc98UgjGanXnpqwDpES01rYOpTE5k/ZHkcZ9WvY
-         3MPtVHJvY3sLxiKTE+4/zP5/2gVpUzWwm1gGwoRQGZEYRnwtSY0vmtRERSuqf+9aAH
-         WsJVAv7WV1TzS+U8lDrjWYe7EMu2Rv1cHV2ZdoBs=
-Date:   Thu, 25 Nov 2021 12:16:00 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-Subject: Re: [PATCH 4.14 000/251] 4.14.256-rc1 review
-Message-ID: <YZ9wcEaa/m5qC6ML@kroah.com>
-References: <20211124115710.214900256@linuxfoundation.org>
- <CA+G9fYu83b6_dJ8GOUTcsoUvkZdVWz9Q458f0vsRfXS7pdbXqQ@mail.gmail.com>
+        id S238341AbhKYLTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 06:19:35 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:23047 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239996AbhKYLRe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 06:17:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1637838863; x=1669374863;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Bc8QxHXVsePajHSex4lSnt3xrPHH5iD6DErJOtC05HI=;
+  b=QIHnNOElVnINN9EQuMrjPNr4+f5rg8UidybA4XpiGfA76e85ig1SoWgH
+   K6wEi4ih0fOh2m2VqKl0gQnXzlefF6ufBRNpN4tMY8Y/zDfxVq0kb0vbW
+   7Dlk6Pt2VhcZE9CUxdrR4Vf9M2xyG5IbDL2oegPGTEgeZbshhWKq66/ZC
+   bubCPzAb4zi5y8n0G7jh4mRWrYFnwQvc1ItHylmTf2BP5kz2gGljvwSiU
+   pjP0lLmmabJ0H2pVEzGAq0xURmE7ZwyPEWNtOtQPCxeIn8ML8JIkobCl1
+   ezliuzYx81BmPdc5dTIrtXIjR8pqq7n2zLNU2Tc3jn4ESpAk7KunQVH3M
+   A==;
+IronPort-SDR: 4Swfajmu4PANy8rilbtzs2ePky66Hcs6IV+15CBHARs9oLsNhxwOIJbJqU2ayeW4RhDhN6cFtL
+ guwDJZTJ4bcsVGsrJFhc9IqELBu8kNJxnvQ7elQ64FWMFAtINzGmHEHmuzBIr2kOKgqwnDrahP
+ n1MoVqXoiBaIN7jn7BwSCTqoDAkx6H7gaTOEQ2ORtPC57zf8fRejeeDT2D8SZiPmLlemW4ztPj
+ we1aIetfb3//GF1ZUzJAsWHuIrEyzdIkc/gd7N3M5Mq6xhQzK2LD/AHUPNdqbI37iOqR9TdMLY
+ UvTVeFoEDTPqhkpYEBgSw90x
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="145134329"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 Nov 2021 04:14:22 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 25 Nov 2021 04:14:22 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Thu, 25 Nov 2021 04:14:21 -0700
+Date:   Thu, 25 Nov 2021 12:16:15 +0100
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <robh+dt@kernel.org>,
+        <UNGLinuxDriver@microchip.com>, <p.zabel@pengutronix.de>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v3 3/6] net: lan966x: add port module support
+Message-ID: <20211125111615.4zobdjmyxtss6ngn@soft-dev3-1.localhost>
+References: <20211124083915.2223065-1-horatiu.vultur@microchip.com>
+ <20211124083915.2223065-4-horatiu.vultur@microchip.com>
+ <YZ4SB/wX6UT3zrEV@shell.armlinux.org.uk>
+ <20211124145800.my4niep3sifqpg55@soft-dev3-1.localhost>
+ <YZ5UXdiNNf011skU@shell.armlinux.org.uk>
+ <20211124154323.44liimrwzthsh547@soft-dev3-1.localhost>
+ <YZ5ikamCVeyGFw3x@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <CA+G9fYu83b6_dJ8GOUTcsoUvkZdVWz9Q458f0vsRfXS7pdbXqQ@mail.gmail.com>
+In-Reply-To: <YZ5ikamCVeyGFw3x@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 09:11:53AM +0530, Naresh Kamboju wrote:
-> On Wed, 24 Nov 2021 at 17:51, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
+The 11/24/2021 16:04, Russell King (Oracle) wrote:
+> On Wed, Nov 24, 2021 at 04:43:23PM +0100, Horatiu Vultur wrote:
+> > > > Actually, port->config.phy_mode will not get zeroed. Because right after
+> > > > the memset it follows: 'config = port->config'.
+> > >
+> > > Ah, missed that, thanks. However, why should portmode and phy_mode be
+> > > different?
 > >
-> > This is the start of the stable review cycle for the 4.14.256 release.
-> > There are 251 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.256-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
+> > Because the serdes knows only few modes(QSGMII, SGMII, GMII) and this
+> > information will come from DT. So I would like to have one variable that
+> > will configure the serdes ('phy_mode') and one will configure the MAC
+> > ('portmode').
 > 
+> I don't follow why you need this to be different.
 > 
-> FYI,
-> New warnings on Linux 4.14.256-rc1 on arm and arm64 (defconfig+7) with gcc-11.
-> 
-> drivers/soc/tegra/pmc.c: In function 'tegra_powergate_power_up':
-> drivers/soc/tegra/pmc.c:423:1: warning: label 'powergate_off' defined
-> but not used [-Wunused-label]
->   423 | powergate_off:
->       | ^~~~~~~~~~~~~
-> 
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Isn't the point of interfaces such as phy_set_mode_ext() such that we
+> can achieve independence of the details of what is behind that
+> interface - so, as it takes a PHY interface mode, if we're operating
+> in 1000BASE-X, we pass that to phy_set_mode_ext(). It is then the
+> responsibility of the Serdes PHY driver to decide that means "sgmii"
+> mode for the Serdes?
 
-Now fixed, thanks.
+I have kept the responsability in the network driver to decide which
+interface should for serdes, but I can change that as you suggested.
 
-greg k-h
+> 
+> For example, the Marvell CP110 comphy driver does this:
+> 
+>         if (submode == PHY_INTERFACE_MODE_1000BASEX)
+>                 submode = PHY_INTERFACE_MODE_SGMII;
+> 
+> because the serdes phy settings for PHY_INTERFACE_MODE_1000BASEX are
+> no different from PHY_INTERFACE_MODE_SGMII - and that detail is hidden
+> from the network driver.
+
+Yes, I will add a similar check in the serdes driver.
+
+> 
+> The next question this brings up is... you're setting all the different
+> interface modes in phylink_config.supported_interfaces, which basically
+> means you're giving permission for phylink to switch between any of
+> those modes. So, what if the serdes is in QSGMII mode but phylink
+> requests SGMII mode. Doesn't your driver architecture mean that if
+> you're in QSGMII mode you can't use SGMII or GMII mode?
+> 
+> Is there some kind of restriction that you need to split this, or is
+> this purely down to the way this driver has been written?
+
+It was just the way the driver has been written.
+
+> 
+> I don't see any other driver in the kernel making this kind of split.
+> 
+> --
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+
+-- 
+/Horatiu
