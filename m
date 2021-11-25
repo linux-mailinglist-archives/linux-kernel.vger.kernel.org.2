@@ -2,53 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C3645DB2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 14:35:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 058D245DB20
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 14:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355264AbhKYNiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 08:38:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354973AbhKYNfz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 08:35:55 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C21FC0613FA;
-        Thu, 25 Nov 2021 05:24:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yhVxFenIgPub/w/35qpJsH+EleYVEBaF1uzR5/OHDEM=; b=nMuZ5q02ftuZdEXrib8QaEHK/K
-        NnfP+itfJuQyqIjVI7AmefG1L1r52syNdNFoYXB4lEfnc1oKrUxPfIRJpxOPELHp14ksnn5rl4noV
-        W59zMB/A77wXgelkO2dg0jPl7mJFbCqfrd13V8PZPV9kzdAa8w1H3CIWxlqLm2cbVlNxx3Itd4c4F
-        ej8SlPj8Pi21rg1DVmfsAgvTqHfs/OVjnTYGPdbuwNyI6M/BNbaSGYBlORxhVrGGvaVbX96ZuQHl1
-        22OEyr8FoeLeziUyjm+IoaYBpcLVaOq1061+B7oob/smkZvW15j4j9mfEhz5KkaBImatEApExMqYo
-        VX90oSYw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mqEjG-007e8A-Ih; Thu, 25 Nov 2021 13:23:58 +0000
-Date:   Thu, 25 Nov 2021 05:23:58 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs/iomap: Fix write path page prefaulting
-Message-ID: <YZ+Obqig1hwB0HPB@infradead.org>
-References: <20211123151812.361624-1-agruenba@redhat.com>
+        id S1354811AbhKYNdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 08:33:50 -0500
+Received: from foss.arm.com ([217.140.110.172]:51034 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347729AbhKYNbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 08:31:48 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 22A2E1FB;
+        Thu, 25 Nov 2021 05:28:37 -0800 (PST)
+Received: from [10.57.56.56] (unknown [10.57.56.56])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C3E993F66F;
+        Thu, 25 Nov 2021 05:28:34 -0800 (PST)
+Message-ID: <85eb9053-0ce4-2514-06dc-58b8910dc5f7@arm.com>
+Date:   Thu, 25 Nov 2021 13:28:33 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211123151812.361624-1-agruenba@redhat.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH] dma_heap: use sg_table.orig_nents in sg_table release
+ flow
+Content-Language: en-GB
+To:     guangming.cao@mediatek.com, Sumit Semwal <sumit.semwal@linaro.org>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@redhat.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <john.stultz@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:DMA-BUF HEAPS FRAMEWORK" <linux-media@vger.kernel.org>,
+        "open list:DMA-BUF HEAPS FRAMEWORK" <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA-BUF HEAPS FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Cc:     wsd_upstream@mediatek.com
+References: <20211125124626.60068-1-guangming.cao@mediatek.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20211125124626.60068-1-guangming.cao@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks fine,
+On 2021-11-25 12:46, guangming.cao@mediatek.com wrote:
+> From: Guangming <Guangming.Cao@mediatek.com>
+> 
+> Use (sg_table.orig_nents) rather than (sg_table.nents) to traverse
+> sg_table to free sg_table.
+> Use (sg_table.nents) maybe will casuse some pages can't be freed.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+...and this sort of bug is precisely why we have the 
+for_each_sgtable_sg() helper ;)
+
+Robin.
+
+> Signed-off-by: Guangming <Guangming.Cao@mediatek.com>
+> ---
+>   drivers/dma-buf/heaps/system_heap.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+> index 23a7e74ef966..ce10d4eb674c 100644
+> --- a/drivers/dma-buf/heaps/system_heap.c
+> +++ b/drivers/dma-buf/heaps/system_heap.c
+> @@ -289,7 +289,7 @@ static void system_heap_dma_buf_release(struct dma_buf *dmabuf)
+>   	int i;
+>   
+>   	table = &buffer->sg_table;
+> -	for_each_sg(table->sgl, sg, table->nents, i) {
+> +	for_each_sg(table->sgl, sg, table->orig_nents, i) {
+>   		struct page *page = sg_page(sg);
+>   
+>   		__free_pages(page, compound_order(page));
+> 
