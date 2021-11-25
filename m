@@ -2,127 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E12F645D989
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E94B145D982
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:45:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235336AbhKYLvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 06:51:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237410AbhKYLtA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 06:49:00 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D5EC0613A5;
-        Thu, 25 Nov 2021 03:43:31 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id t26so15592912lfk.9;
-        Thu, 25 Nov 2021 03:43:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bDXVYx5X81obSGfTLlaLT+GQEL0WeJIjOW6vbyLiEIY=;
-        b=Ds59G03w1Vnbc4r3C/ctDco8l7MllxzeTm8/WKHZSxDwIzMP5jW1DiqINzqP3vD494
-         +FkfeLnUOZqaEVrvi3hEDDSWw5X9AnACaklqj+SAAGPaD655qnmtAI3Xq51MgC6Let37
-         oQ2w48Rdc8hakZcrTRmulpW7v7gHPl5KytSsU/AMiZi1m9I0bEuGuSam9qKjmQ8YWCAK
-         vnuzkguNtGnHektjNtmblraZoMwFkA9Ep1uCl1SYYpoxJaMwBTNQlt54HENkmBSFvN28
-         Hz6TiGOSfE1AYILSBQhQ4WICaXMmdNeALgAFZBx+gWTGdgkMrhqbhBebDiiGYDx3Y14J
-         G1vA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bDXVYx5X81obSGfTLlaLT+GQEL0WeJIjOW6vbyLiEIY=;
-        b=TZPXaIemDySyT1VPVOaxW+qanY9Hr0600WHWMO+5EJJsEKyijgH8ffCESRs8ytHLAQ
-         Jjg6NP1leYH5VZ+yQ/kqaffvfUJbcwh5I5HDugfRs6KENRRnZmcNMz6BSvT5IINYDBn3
-         YJSdErHwBNJ3tQ7IbHgbsEUDZEqd2wJtYYRPDeAWbUPjm4sArgE1nYwlUHtqUXnboJb9
-         d+tzFBDFJre4/nWuGTATm1aHMfJNOB2cmXT0G1QQirMv/L0TtbIy11cJl7yp/z2ze9uQ
-         2pbfz6wKdRfaR4jJOfOfkl28r+PO7xMLQY448jgox5UR6xIgxNU36nUehIhFZ+T9dD4U
-         OxLA==
-X-Gm-Message-State: AOAM531awP18LoqHYmqJNzzZ4fPugEjo9WGHo/mCY0wXyCZsLyUtqmEr
-        PuOaBwsy7phzJXhHEZWdMKW3ClkJPEw=
-X-Google-Smtp-Source: ABdhPJyG2BdjoNmTWcafcsMypZIAKd/rFtxtTYdkkGEr8bnVW9y8tdzQ7/Un1LStjvFQVYlQwjMe5g==
-X-Received: by 2002:a05:6512:2246:: with SMTP id i6mr24042132lfu.24.1637840609979;
-        Thu, 25 Nov 2021 03:43:29 -0800 (PST)
-Received: from [192.168.2.145] (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
-        by smtp.googlemail.com with ESMTPSA id v2sm216571ljg.46.2021.11.25.03.43.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Nov 2021 03:43:29 -0800 (PST)
-Subject: Re: [PATCH v1 17/20] ARM: tegra: Add S/PDIF node to Tegra20
- device-tree
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Agneli <poczt@protonmail.ch>, Rob Herring <robh+dt@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20211124220057.15763-1-digetx@gmail.com>
- <20211124220057.15763-18-digetx@gmail.com>
-Message-ID: <98072c48-31ca-aec1-b3a5-3d75d6892e9a@gmail.com>
-Date:   Thu, 25 Nov 2021 14:43:28 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S239655AbhKYLtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 06:49:06 -0500
+Received: from pegase2.c-s.fr ([93.17.235.10]:49591 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237877AbhKYLrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 06:47:01 -0500
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4J0GH84R41z9sSW;
+        Thu, 25 Nov 2021 12:43:48 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id mSG_jw7OqoGR; Thu, 25 Nov 2021 12:43:48 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4J0GH83l6tz9sSV;
+        Thu, 25 Nov 2021 12:43:48 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7124E8B77A;
+        Thu, 25 Nov 2021 12:43:48 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 94hWI3YE42R8; Thu, 25 Nov 2021 12:43:48 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.227])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 38FB78B763;
+        Thu, 25 Nov 2021 12:43:48 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1APBhbTr117898
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 25 Nov 2021 12:43:37 +0100
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1APBhXb1117897;
+        Thu, 25 Nov 2021 12:43:33 +0100
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] powerpc: Don't bother about .data..Lubsan sections
+Date:   Thu, 25 Nov 2021 12:43:33 +0100
+Message-Id: <3eb14570612eef17e01bb67f14a4450136001794.1637840601.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-In-Reply-To: <20211124220057.15763-18-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1637840612; l=1102; s=20211009; h=from:subject:message-id; bh=2pAKPrf6wKL6psT7NzqeviUQb9ty6xwDndN2RJY3ZGI=; b=IW5lPNUNeih3QiIXhtyA7tMwizw8pp0V5PJQ4Nc3oQ24/ZCavIZLEc8n0zq4Bfq8u/nguMLb1Xd1 zjrA16k1CMjf1M4t+kF1lTNGI9lXH7qJ26q3vFfuXzgR2f5oF0W4
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-25.11.2021 01:00, Dmitry Osipenko пишет:
-> Add S/PDIF node to Tegra20 device-tree. It's needed for enabling HDMI
-> audio support.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  arch/arm/boot/dts/tegra20.dtsi | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/tegra20.dtsi b/arch/arm/boot/dts/tegra20.dtsi
-> index 63c2c2f8c0ce..799da7dc929b 100644
-> --- a/arch/arm/boot/dts/tegra20.dtsi
-> +++ b/arch/arm/boot/dts/tegra20.dtsi
-> @@ -197,6 +197,7 @@ hdmi@54280000 {
->  			reset-names = "hdmi";
->  			power-domains = <&pd_core>;
->  			operating-points-v2 = <&hdmi_dvfs_opp_table>;
-> +			#sound-dai-cells = <0>;
->  			status = "disabled";
->  		};
->  
-> @@ -396,6 +397,23 @@ tegra_ac97: ac97@70002000 {
->  		status = "disabled";
->  	};
->  
-> +	tegra_spdif: spdif@70002400 {
-> +		compatible = "nvidia,tegra20-spdif";
-> +		reg = <0x70002400 0x200>;
-> +		interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
-> +		clocks = <&tegra_car TEGRA20_CLK_SPDIF_OUT>,
-> +			 <&tegra_car TEGRA20_CLK_SPDIF_IN>;
-> +		clock-names = "spdif_out", "spdif_in";
-> +		resets = <&tegra_car 10>;
-> +		dmas = <&apbdma 3>, <&apbdma 3>;
-> +		dma-names = "rx", "tx";
-> +		#sound-dai-cells = <0>;
-> +		status = "disabled";
-> +
-> +		assigned-clocks = <&tegra_car TEGRA20_CLK_SPDIF_OUT>;
-> +		assigned-clock-parents = <&tegra_car TEGRA20_CLK_PLL_A_OUT0>;
-> +	};
-> +
->  	tegra_i2s1: i2s@70002800 {
->  		compatible = "nvidia,tegra20-i2s";
->  		reg = <0x70002800 0x200>;
-> 
+Since commit 9a427556fb8e ("vmlinux.lds.h: catch compound literals
+into data and BSS") .data..Lubsan sections are taken into account
+in DATA_MAIN which is included in DATA_DATA macro.
 
-@Thierry, this patch is made on top of [1].
+No need to take care of them anymore in powerpc vmlinux.lds.S
 
-[1] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=271954
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/vmlinux.lds.S | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
+index 18e42c74abdd..dfc3f39d365f 100644
+--- a/arch/powerpc/kernel/vmlinux.lds.S
++++ b/arch/powerpc/kernel/vmlinux.lds.S
+@@ -322,10 +322,6 @@ SECTIONS
+ #ifdef CONFIG_PPC32
+ 	.data : AT(ADDR(.data) - LOAD_OFFSET) {
+ 		DATA_DATA
+-#ifdef CONFIG_UBSAN
+-		*(.data..Lubsan_data*)
+-		*(.data..Lubsan_type*)
+-#endif
+ 		*(.data.rel*)
+ 		*(SDATA_MAIN)
+ 		*(.sdata2)
+@@ -336,10 +332,6 @@ SECTIONS
+ #else
+ 	.data : AT(ADDR(.data) - LOAD_OFFSET) {
+ 		DATA_DATA
+-#ifdef CONFIG_UBSAN
+-		*(.data..Lubsan_data*)
+-		*(.data..Lubsan_type*)
+-#endif
+ 		*(.data.rel*)
+ 		*(.toc1)
+ 		*(.branch_lt)
+-- 
+2.33.1
+
