@@ -2,104 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837FE45E1D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:50:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0679145E1D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242357AbhKYUxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 15:53:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242404AbhKYUvp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 15:51:45 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92905C06175A;
-        Thu, 25 Nov 2021 12:48:32 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id v1so30247273edx.2;
-        Thu, 25 Nov 2021 12:48:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=b7EFiuj7K2e0+37HC3ZL1/QOQUOX4faz2G6FqKq7a10=;
-        b=SsfAgyvalk6mPWrobYQLcTdcfIW3I9Ub9dtg1WOyxlFxBZeBojvoI5eJ9gi8M+EBD8
-         7aG5bphpb4bjWv9dAmMlWDt1v3aE2V6WQBlfJ03b76No1nUBLUwzC4kzcbrtUYj27EIB
-         Q0CWL5N0qPN1cD+A69rrwuEozZf+hlaWHB1gTmpOHjDw6H3FrE54TGUk7NKu+yQ5Nczg
-         mdBqlt4SYlsjnzJLWb9UURLEwam5Qk/oEIcK8S+FqUS4rrDjPR0zfj0AJiJHwAKYRqth
-         BVy2YTNWDmf02lwtNfGVMnC8SjaR4VNl9XKRmr5pbvd1kVrI8oDjjzKeE6BKFrYI5XIf
-         f81w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
-         :subject:content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=b7EFiuj7K2e0+37HC3ZL1/QOQUOX4faz2G6FqKq7a10=;
-        b=kA44dY47lBAIJ2B5Ejt3VqBuZnitsosdW/WkQC0icJq4AdFU6yWuEFbEcBa4qU6osu
-         UquivGOryD4MzjngbgfLvyIOjyXLjgK/GXuYq2ZoUywLpj5CIH3TOPwNlxbmaI3ZQwVn
-         wY5so90wta8s1ecaw1cvp5e1Q0KTIy05aB49TXE22VX9pVYnpQ9OITJ63XVsfZnclZ7J
-         YZtOuQ6+6mk7eq43z0OcAgaf84+Jx8kfYHJIJnk0ngZJg4r/HspycDJTXWqL8if1iI8u
-         VocjOo3dYaCGmf+xx8/7cPezYPuyskTWgWSu/Z2vO98xeJ2+ehSICqlHZ1ndGAu7Nb9/
-         J0jw==
-X-Gm-Message-State: AOAM531TZhsUVEBGmhNTe4D76ppMdRGCIQmepbI2rz8L0O7YTgEL6b53
-        NebPcql/VDmizN1k3x47zNGy21b91Is=
-X-Google-Smtp-Source: ABdhPJzTtWOkAd4Ryd+jwHVRFeUDqE8mMxCBoghNECyzqAp9gKSaNftNl+OQwRNsaXjN3tRWde7kDw==
-X-Received: by 2002:a05:6402:4311:: with SMTP id m17mr41908628edc.103.1637873311140;
-        Thu, 25 Nov 2021 12:48:31 -0800 (PST)
-Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.googlemail.com with ESMTPSA id he17sm2060462ejc.110.2021.11.25.12.48.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Nov 2021 12:48:30 -0800 (PST)
-Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
-Message-ID: <d2437c7c-1276-9c8a-8dbb-218ade7c91d1@redhat.com>
-Date:   Thu, 25 Nov 2021 21:48:28 +0100
+        id S1350128AbhKYUx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 15:53:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237292AbhKYUvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 15:51:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 013B061028;
+        Thu, 25 Nov 2021 20:48:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637873324;
+        bh=vg0Ilz43irK/weKshTjaueM5HrsdjLADePSdElSthOc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=n5wSFXuo2rLbg8dKWZf/ZcLZDu7mwUzw4OQ6plDmNJdVMZe95u5qyqHfOTfROobS3
+         HfjQIluOwVwkQoxccB9fDRDuELiuj6IFtlWJB8whwqNne3kfV4PPZRV8SEzQmtj4jZ
+         e0p6IQERXJ9E+jWGFcry+Xqr0I/Lxkdpiw4O3LIYEnyt2wp8g25nLflRIqzOgtRzcT
+         x8KESc0XlQ36InmUEULc68vYTC11h7RH4IC1HrXcw6OWmcKOaVSneqxQOa8/X1oEQy
+         3kbzj8L73fCqs7oJ6eVkPx0MNJ4z7hOc03s/4h+nTqNjbhyQjm+udBUtmsZEmKMBIc
+         j/JuBPJU9uCfA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 61E3040002; Thu, 25 Nov 2021 17:48:41 -0300 (-03)
+Date:   Thu, 25 Nov 2021 17:48:41 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [FYI][PATCH 1/1] tools headers UAPI: Sync s390 syscall table file
+ changed by new futex_waitv syscall Reply-To:
+Message-ID: <YZ/2qRW/TScYTP1U@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [RFC PATCH v3 54/59] KVM: X86: Introduce initial_tsc_khz in
- struct kvm_arch
-Content-Language: en-US
-To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@gmail.com, Xiaoyao Li <xiaoyao.li@intel.com>
-References: <cover.1637799475.git.isaku.yamahata@intel.com>
- <5ba3573c8b82fcbdc3f3994f6d4d2a3c40445be9.1637799475.git.isaku.yamahata@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <5ba3573c8b82fcbdc3f3994f6d4d2a3c40445be9.1637799475.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/25/21 01:20, isaku.yamahata@intel.com wrote:
-> From: Xiaoyao Li<xiaoyao.li@intel.com>
-> 
-> Introduce a per-vm variable initial_tsc_khz to hold the default tsc_khz
-> for kvm_arch_vcpu_create().
-> 
-> This field is going to be used by TDX since TSC frequency for TD guest
-> is configured at TD VM initialization phase.
-> 
-> Signed-off-by: Xiaoyao Li<xiaoyao.li@intel.com>
-> Signed-off-by: Isaku Yamahata<isaku.yamahata@intel.com>
+To pick the changes in this cset:
 
-Probably some incorrect squashing happened here, since...
+  6c122360cf2f4c5a ("s390: wire up sys_futex_waitv system call")
 
->  arch/x86/include/asm/kvm_host.h |    1 +
->  arch/x86/kvm/vmx/tdx.c          | 2233 +++++++++++++++++++++++++++++++
->  arch/x86/kvm/x86.c              |    3 +-
->  3 files changed, 2236 insertions(+), 1 deletion(-)
->  create mode 100644 arch/x86/kvm/vmx/tdx.c
+That add support for this new syscall in tools such as 'perf trace'.
 
-This patch does a bit more than that. :)
+For instance, this is now possible (adapted from the x86_64 test output):
 
-Paolo
+  # perf trace -e futex_waitv
+  ^C#
+  # perf trace -v -e futex_waitv
+  event qualifier tracepoint filter: (common_pid != 807333 && common_pid != 3564) && (id == 449)
+  ^C#
+  # perf trace -v -e futex* --max-events 10
+  event qualifier tracepoint filter: (common_pid != 812168 && common_pid != 3564) && (id == 238 || id == 449)
+           ? (         ): Timer/219310  ... [continued]: futex())                                            = -1 ETIMEDOUT (Connection timed out)
+       0.012 ( 0.002 ms): Timer/219310 futex(uaddr: 0x7fd0b152d3c8, op: WAKE|PRIVATE_FLAG, val: 1)           = 0
+       0.024 ( 0.060 ms): Timer/219310 futex(uaddr: 0x7fd0b152d420, op: WAIT_BITSET|PRIVATE_FLAG, utime: 0x7fd0b1657840, val3: MATCH_ANY) = 0
+       0.086 ( 0.001 ms): Timer/219310 futex(uaddr: 0x7fd0b152d3c8, op: WAKE|PRIVATE_FLAG, val: 1)           = 0
+       0.088 (         ): Timer/219310 futex(uaddr: 0x7fd0b152d424, op: WAIT_BITSET|PRIVATE_FLAG, utime: 0x7fd0b1657840, val3: MATCH_ANY) ...
+       0.075 ( 0.005 ms): Web Content/219299 futex(uaddr: 0x7fd0b152d420, op: WAKE|PRIVATE_FLAG, val: 1)     = 1
+       0.169 ( 0.004 ms): Web Content/219299 futex(uaddr: 0x7fd0b152d424, op: WAKE|PRIVATE_FLAG, val: 1)     = 1
+       0.088 ( 0.089 ms): Timer/219310  ... [continued]: futex())                                            = 0
+       0.179 ( 0.001 ms): Timer/219310 futex(uaddr: 0x7fd0b152d3c8, op: WAKE|PRIVATE_FLAG, val: 1)           = 0
+       0.181 (         ): Timer/219310 futex(uaddr: 0x7fd0b152d420, op: WAIT_BITSET|PRIVATE_FLAG, utime: 0x7fd0b1657840, val3: MATCH_ANY) ...
+  #
+
+That is the filter expression attached to the raw_syscalls:sys_{enter,exit}
+tracepoints.
+
+  $ grep futex tools/perf/arch/s390/entry/syscalls/syscall.tbl
+  238  common	futex			sys_futex			sys_futex_time32
+  422	32	futex_time64		-				sys_futex
+  449  common	futex_waitv		sys_futex_waitv			sys_futex_waitv
+  $
+
+This addresses this perf build warnings:
+
+  Warning: Kernel ABI header at 'tools/perf/arch/s390/entry/syscalls/syscall.tbl' differs from latest version at 'arch/s390/kernel/syscalls/syscall.tbl'
+  diff -u tools/perf/arch/s390/entry/syscalls/syscall.tbl arch/s390/kernel/syscalls/syscall.tbl
+
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/arch/s390/entry/syscalls/syscall.tbl | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/perf/arch/s390/entry/syscalls/syscall.tbl b/tools/perf/arch/s390/entry/syscalls/syscall.tbl
+index df5261e5cfe1f28d..ed9c5c2eafad700c 100644
+--- a/tools/perf/arch/s390/entry/syscalls/syscall.tbl
++++ b/tools/perf/arch/s390/entry/syscalls/syscall.tbl
+@@ -451,3 +451,4 @@
+ 446  common	landlock_restrict_self	sys_landlock_restrict_self	sys_landlock_restrict_self
+ # 447 reserved for memfd_secret
+ 448  common	process_mrelease	sys_process_mrelease		sys_process_mrelease
++449  common	futex_waitv		sys_futex_waitv			sys_futex_waitv
+-- 
+2.31.1
+
