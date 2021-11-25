@@ -2,83 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E520045E33D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 00:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67BA345E341
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 00:19:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345636AbhKYXSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 18:18:15 -0500
-Received: from www62.your-server.de ([213.133.104.62]:58356 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235289AbhKYXQK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 18:16:10 -0500
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mqNvA-000D4z-L2; Fri, 26 Nov 2021 00:12:52 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mqNvA-000Opl-A3; Fri, 26 Nov 2021 00:12:52 +0100
-Subject: Re: [PATCH] libbpf: remove unneeded conversion to bool
-To:     davidcomponentone@gmail.com, ast@kernel.org,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yang Guang <yang.guang5@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-References: <b7449bd983892bb5a7a76493daa41410ff19bb7d.1637736798.git.yang.guang5@zte.com.cn>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <3b1080c7-c7af-af8c-a7d0-34f7e5ff8e51@iogearbox.net>
-Date:   Fri, 26 Nov 2021 00:12:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1345437AbhKYXWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 18:22:23 -0500
+Received: from mga01.intel.com ([192.55.52.88]:26585 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347032AbhKYXUU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 18:20:20 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="259478083"
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="259478083"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 15:14:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="539083094"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 25 Nov 2021 15:14:55 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqNx8-00073n-R8; Thu, 25 Nov 2021 23:14:54 +0000
+Date:   Fri, 26 Nov 2021 07:14:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Gang Li <ligang.bdlg@bytedance.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     kbuild-all@lists.01.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Gang Li <ligang.bdlg@bytedance.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] shmem: change shrinklist_lock form spinlock to mutex
+ and move iput into it
+Message-ID: <202111260701.YxF96BC5-lkp@intel.com>
+References: <20211122064126.76734-1-ligang.bdlg@bytedance.com>
 MIME-Version: 1.0
-In-Reply-To: <b7449bd983892bb5a7a76493daa41410ff19bb7d.1637736798.git.yang.guang5@zte.com.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26364/Thu Nov 25 10:20:31 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211122064126.76734-1-ligang.bdlg@bytedance.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/25/21 1:54 AM, davidcomponentone@gmail.com wrote:
-> From: Yang Guang <yang.guang5@zte.com.cn>
-> 
-> The coccinelle report
-> ./tools/lib/bpf/libbpf.c:1644:43-48:
-> WARNING: conversion to bool not needed here
-> Relational and logical operators evaluate to bool,
-> explicit conversion is overly verbose and unneeded.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
+Hi Gang,
 
-Nak, dup of: https://lore.kernel.org/bpf/CAEf4BzaADXguVoh0KXxGYhzG68eA1bqfKH1T1SWyPvkE5BHa5g@mail.gmail.com/
+Thank you for the patch! Perhaps something to improve:
 
-> ---
->   tools/lib/bpf/libbpf.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 14a89dc99937..33eb365a0b7f 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -1641,7 +1641,7 @@ static int set_kcfg_value_tri(struct extern_desc *ext, void *ext_val,
->   				ext->name, value);
->   			return -EINVAL;
->   		}
-> -		*(bool *)ext_val = value == 'y' ? true : false;
-> +		*(bool *)ext_val = value == 'y';
->   		break;
->   	case KCFG_TRISTATE:
->   		if (value == 'y')
-> 
+[auto build test WARNING on hnaz-mm/master]
+[also build test WARNING on linux/master linus/master v5.16-rc2 next-20211125]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
+url:    https://github.com/0day-ci/linux/commits/Gang-Li/shmem-change-shrinklist_lock-form-spinlock-to-mutex-and-move-iput-into-it/20211122-144228
+base:   https://github.com/hnaz/linux-mm master
+config: i386-randconfig-m021-20211124 (https://download.01.org/0day-ci/archive/20211126/202111260701.YxF96BC5-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+smatch warnings:
+mm/shmem.c:1139 shmem_evict_inode() warn: inconsistent indenting
+
+vim +1139 mm/shmem.c
+
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1127  
+1f895f75dc0881 Al Viro            2010-06-05  1128  static void shmem_evict_inode(struct inode *inode)
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1129  {
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1130  	struct shmem_inode_info *info = SHMEM_I(inode);
+779750d20b93bb Kirill A. Shutemov 2016-07-26  1131  	struct shmem_sb_info *sbinfo = SHMEM_SB(inode->i_sb);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1132  
+30e6a51dbb0594 Hui Su             2020-12-14  1133  	if (shmem_mapping(inode->i_mapping)) {
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1134  		shmem_unacct_size(info->flags, inode->i_size);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1135  		inode->i_size = 0;
+3889e6e76f66b7 Nicholas Piggin    2010-05-27  1136  		shmem_truncate_range(inode, 0, (loff_t)-1);
+779750d20b93bb Kirill A. Shutemov 2016-07-26  1137  		if (!list_empty(&info->shrinklist)) {
+713e6a98816b68 Gang Li            2021-11-22  1138  		    mutex_lock(&sbinfo->shrinklist_mutex);
+779750d20b93bb Kirill A. Shutemov 2016-07-26 @1139  			if (!list_empty(&info->shrinklist)) {
+779750d20b93bb Kirill A. Shutemov 2016-07-26  1140  				list_del_init(&info->shrinklist);
+779750d20b93bb Kirill A. Shutemov 2016-07-26  1141  				sbinfo->shrinklist_len--;
+779750d20b93bb Kirill A. Shutemov 2016-07-26  1142  			}
+713e6a98816b68 Gang Li            2021-11-22  1143  		    mutex_unlock(&sbinfo->shrinklist_mutex);
+779750d20b93bb Kirill A. Shutemov 2016-07-26  1144  		}
+af53d3e9e04024 Hugh Dickins       2019-04-18  1145  		while (!list_empty(&info->swaplist)) {
+af53d3e9e04024 Hugh Dickins       2019-04-18  1146  			/* Wait while shmem_unuse() is scanning this inode... */
+af53d3e9e04024 Hugh Dickins       2019-04-18  1147  			wait_var_event(&info->stop_eviction,
+af53d3e9e04024 Hugh Dickins       2019-04-18  1148  				       !atomic_read(&info->stop_eviction));
+cb5f7b9a47963d Hugh Dickins       2008-02-04  1149  			mutex_lock(&shmem_swaplist_mutex);
+af53d3e9e04024 Hugh Dickins       2019-04-18  1150  			/* ...but beware of the race if we peeked too early */
+af53d3e9e04024 Hugh Dickins       2019-04-18  1151  			if (!atomic_read(&info->stop_eviction))
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1152  				list_del_init(&info->swaplist);
+cb5f7b9a47963d Hugh Dickins       2008-02-04  1153  			mutex_unlock(&shmem_swaplist_mutex);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1154  		}
+3ed47db34f480d Al Viro            2016-01-22  1155  	}
+b09e0fa4b4ea66 Eric Paris         2011-05-24  1156  
+38f38657444d15 Aristeu Rozanski   2012-08-23  1157  	simple_xattrs_free(&info->xattrs);
+0f3c42f522dc1a Hugh Dickins       2012-11-16  1158  	WARN_ON(inode->i_blocks);
+5b04c6890f0dc7 Pavel Emelyanov    2008-02-04  1159  	shmem_free_inode(inode->i_sb);
+dbd5768f87ff6f Jan Kara           2012-05-03  1160  	clear_inode(inode);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1161  }
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1162  
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
