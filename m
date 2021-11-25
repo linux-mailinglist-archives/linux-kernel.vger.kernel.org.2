@@ -2,134 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2217F45E2ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 23:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED2745E2F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 23:21:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343592AbhKYWTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 17:19:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49196 "EHLO
+        id S243749AbhKYWYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 17:24:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229735AbhKYWRD (ORCPT
+        with ESMTP id S232830AbhKYWWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 17:17:03 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E94C06173E;
-        Thu, 25 Nov 2021 14:13:51 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id x6so30729771edr.5;
-        Thu, 25 Nov 2021 14:13:51 -0800 (PST)
+        Thu, 25 Nov 2021 17:22:38 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE21C06173E;
+        Thu, 25 Nov 2021 14:19:26 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id de30so13111667qkb.0;
+        Thu, 25 Nov 2021 14:19:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=FmBDveGdYzfRFf0c4UcZyJUB+E6D6wLSxmJT8Ou2ANk=;
-        b=JeYd2+EXDtNYgi5B3NnDoyeOAe3qPw3EHZd54XD4kbejmbGUxDZraPj41DbaZwKWkg
-         TVyZkpTPGOtA43QKjCz8Be7rXN1YF1MSmQrm+m8Ox6EgbBDmUCTTlH7wUxITIWd1bcRr
-         E3aRGo6jwkxiOGIXTmNfXfB7cDt0n8EYDp84SLQUtahKvjDeEZ6qgTVqoG37ZKpNijuQ
-         sAj1jTCZRdYCthjIupuuYfmHbPahawYToeHKMLBC60H3ka5zX/AUeCeBb/UwWyTxVYJ6
-         +P6fFGl3HsnvmB917F5vdUZr1hkwTnfRwob06dd81Kk2fYkmDPzZacKTXjIi9I2RwU8L
-         p7Uw==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=Jzu3IGp/+NtN4KbWEJ7SKM9mTl27O4zRYj7bMTCcrDE=;
+        b=OjE3fyUCfvqLCfwTy5oIDirKOGtUiPlm61xh/sjmS8fkEGNT33LdV81wdUB26kbtD+
+         o8zIRbchPNkvhSf82WqVy5cR98VkXUL3DUtCs351sPiQsuLzkzpFRBuV+3yPC9MuKi6w
+         ztjTUmlFr7zgqMeQbvXhCFSvV9tUHahyGpaVEuposSRCXhJL1BEIHoZfJ9nq99Xa5mL0
+         iqlDbGv8MrD6mEQYXgnWOIO7h++bdHD9ETNLZDJhtjpgdzXfMdDeIER6ssS7mJIZveQT
+         OHfPxHMFSGuDUT9msVDJ0QMAOhe4RPz9NmE+MFV0Qbx0CrnoTfZL2xlHs1nyTwC7ZpKn
+         AOLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
-         :subject:content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=FmBDveGdYzfRFf0c4UcZyJUB+E6D6wLSxmJT8Ou2ANk=;
-        b=Wxxe8tmCgnm+6RidZ4KQ78XTwe/kaFlPo5w+TqRXlitGUk+Cf7g93HOJy3TIbp3u9k
-         Bna0LuJdjP3QOIqFLbyK2sauglUD4SYVnn+2W9uR558G9wakhPAUXfYXG9IriTDOk1KD
-         MgoCN3aaqtf6MXu6Hx79jxbmCbCHWLCQk4/MW/XoCWKu1JrEgnRAJGpa8B199EXLQFQw
-         m3pSgsqBXfO5bDJHpWIVUPlCtp0bUJjX7wRHPtHtSsOHDyBrUa/RYa2rj6AiUG4RnpXt
-         KwydOBuaBdjOOTH/pU7zvXU+tVTeDoQsjxCRJV4DnAkHEBeGtxhEJkX2YyUZO7AybWuS
-         CsUg==
-X-Gm-Message-State: AOAM530pbMb4WbnUthHO5Y3vBoRcsApzTx2J6H/v9OAlk9C0E8vuUYck
-        3HsZe++rdlr1vJGHjNDAYUI=
-X-Google-Smtp-Source: ABdhPJxIMIcfZlp1yzImg6En8XI380O06uCXHZdqF32qgNoL4WiajLpUUlRqyDOeCcFC+EQAV9A0wg==
-X-Received: by 2002:a17:906:c301:: with SMTP id s1mr34977187ejz.56.1637878430038;
-        Thu, 25 Nov 2021 14:13:50 -0800 (PST)
-Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.googlemail.com with ESMTPSA id s4sm2332246ejn.25.2021.11.25.14.13.47
+        bh=Jzu3IGp/+NtN4KbWEJ7SKM9mTl27O4zRYj7bMTCcrDE=;
+        b=dyc1jJoVjpacnvHuoQg1jENWFiQJbAd3nMOzRU9nR6Zlss7KTyeveILQZH/7Vj43v3
+         wlp+TDiFNMfoDkVBEFaK9Jkn1zMqOg3/6BjfaUYaAv0LE9Iax7SXII0BgxHsP+HUUzrA
+         r9oYIcoSDaqFTGySROWpz7T7u+KKHHffMrwdDN8dabkpWElvFUtCkvhL5ajFTXgU2I8S
+         Vc8P1Mjm/gTxkDDqM0e7EyzOCahJrSS+V9BvAVsptinH3MUelF2R1wAElM8V2+lY/bv4
+         MZthnHQKlYHpunWFBPpnoHLEGkssxb8gvQ6ntGG0j7Rgv+OPAmrR9ZsNEzTyOxw8ni9V
+         uRlg==
+X-Gm-Message-State: AOAM530SReP5lXov5Vo/WmIRS4AgUshU1SqVUbr2vFVjg16Oe8F7Whx0
+        +SDvt3Pdavz9rzviISo9EfI=
+X-Google-Smtp-Source: ABdhPJxTOSRJIXYg48NDzBO2Igr258AXSKndwwjJmfQt6W5u0VUgTJ2R8cUwxHqE9Pp/9WV8nyLzhQ==
+X-Received: by 2002:a05:620a:2955:: with SMTP id n21mr11102232qkp.586.1637878765420;
+        Thu, 25 Nov 2021 14:19:25 -0800 (PST)
+Received: from [10.4.10.38] (146-115-144-188.s4282.c3-0.nwt-cbr1.sbo-nwt.ma.cable.rcncustomer.com. [146.115.144.188])
+        by smtp.gmail.com with ESMTPSA id d5sm2347779qte.27.2021.11.25.14.19.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Nov 2021 14:13:49 -0800 (PST)
-Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
-Message-ID: <741df444-5cd0-2049-f93a-c2521e4f426d@redhat.com>
-Date:   Thu, 25 Nov 2021 23:13:46 +0100
+        Thu, 25 Nov 2021 14:19:25 -0800 (PST)
+Message-ID: <2801d9c2-f922-5cc7-4e43-c9a8db3004ba@gmail.com>
+Date:   Thu, 25 Nov 2021 17:19:23 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [RFC PATCH v3 54/59] KVM: X86: Introduce initial_tsc_khz in
- struct kvm_arch
+ Thunderbird/91.3.2
+Subject: Re: [PATCH v3 13/13] ARM: imxrt_defconfig: add i.MXRT family
+ defconfig
 Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>, isaku.yamahata@intel.com,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@gmail.com, Xiaoyao Li <xiaoyao.li@intel.com>
-References: <cover.1637799475.git.isaku.yamahata@intel.com>
- <5ba3573c8b82fcbdc3f3994f6d4d2a3c40445be9.1637799475.git.isaku.yamahata@intel.com>
- <875ysghrp8.ffs@tglx>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <875ysghrp8.ffs@tglx>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        gregkh <gregkh@linuxfoundation.org>,
+        Olof Johansson <olof@lixom.net>, SoC Team <soc@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        giulio.benetti@benettiengineering.com,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+References: <20211125211443.1150135-1-Mr.Bossman075@gmail.com>
+ <20211125211443.1150135-14-Mr.Bossman075@gmail.com>
+ <CAK8P3a3dwwBt21o7LDY-CLDdVmOknxDF7sgO_dfiTj8_u4Tx=A@mail.gmail.com>
+From:   Jesse Taube <mr.bossman075@gmail.com>
+In-Reply-To: <CAK8P3a3dwwBt21o7LDY-CLDdVmOknxDF7sgO_dfiTj8_u4Tx=A@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/25/21 22:05, Thomas Gleixner wrote:
-> You can argue that my request is unreasonable until you are blue in
-> your face, it's not going to lift my NAK on this.
 
-There's no need for that.  I'd be saying the same, and I don't think 
-it's particularly helpful that you made it almost a personal issue.
 
-While in this series there is a separation of changes to existing code 
-vs. new code, what's not clear is _why_ you have all those changes. 
-These are not code cleanups or refactorings that can stand on their own 
-feet; lots of the early patches are actually part of the new 
-functionality.  And being in the form of "add an argument here" or 
-"export a function there", it's not really easy (or feasible) to review 
-them without seeing how the new functionality is used, which requires a 
-constant back and forth between early patches and the final 2000 line file.
+On 11/25/21 16:42, Arnd Bergmann wrote:
+> On Thu, Nov 25, 2021 at 10:14 PM Jesse Taube <mr.bossman075@gmail.com> wrote:
+>>
+>> From: Giulio Benetti <giulio.benetti@benettiengineering.com>
+>>
+>> Add generic i.MXRT family defconfig.
+>>
+>> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+>> Signed-off-by: Jesse Taube <Mr.Bossman075@gmail.com>
+> 
+> I see a lot of things in here that probably should not be part of the kernel,
+> either because they are rather obscure, or they take valuable memory:
+> 
+>> ---
+>>   arch/arm/configs/imxrt_defconfig | 157 +++++++++++++++++++++++++++++++
+>>   1 file changed, 157 insertions(+)
+>>   create mode 100644 arch/arm/configs/imxrt_defconfig
+>>
+>> diff --git a/arch/arm/configs/imxrt_defconfig b/arch/arm/configs/imxrt_defconfig
+>> new file mode 100644
+>> index 000000000000..d673745a5462
+>> --- /dev/null
+>> +++ b/arch/arm/configs/imxrt_defconfig
+>> @@ -0,0 +1,157 @@
+>> +# CONFIG_LOCALVERSION_AUTO is not set
+>> +CONFIG_SYSVIPC=y
+>> +CONFIG_USELIB=y
+> 
+> You almost certainly won't want USELIB, and SYSVIPC support
+> would only be useful for certain applications that you probably
+> won't run.
+> 
+>> +CONFIG_BSD_PROCESS_ACCT=y
+>> +CONFIG_BSD_PROCESS_ACCT_V3=y
+>> +CONFIG_PSI=y
+>> +CONFIG_IKCONFIG=y
+>> +CONFIG_IKCONFIG_PROC=y
+> 
+> Probably nonen of these are helpful here.
+> 
+>> +CONFIG_MEMCG=y
+>> +CONFIG_BLK_CGROUP=y
+>> +CONFIG_CFS_BANDWIDTH=y
+>> +CONFIG_CGROUP_PIDS=y
+>> +CONFIG_CGROUP_RDMA=y
+>> +CONFIG_CGROUP_FREEZER=y
+>> +CONFIG_CGROUP_DEVICE=y
+>> +CONFIG_CGROUP_CPUACCT=y
+>> +CONFIG_CGROUP_PERF=y
+>> +CONFIG_CGROUP_BPF=y
+>> +CONFIG_NAMESPACES=y
+>> +CONFIG_USER_NS=y
+>> +CONFIG_CHECKPOINT_RESTORE=y
+> 
+> Same for control groups overall as well as checkpoint_restore
+> 
+>> +CONFIG_RELAY=y
+> 
+> There are a few drivers using CONFIG_RELAY, but I don't see you enable
+> any of them,
+> so this is not actually used.
+> 
+this makes scene will change
+>> +CONFIG_EXPERT=y
+> 
+> Are you losing anything without EXPERT? If not, remove that
+> 
+>> +CONFIG_SGETMASK_SYSCALL=y
+>> +# CONFIG_FUTEX is not set
+> 
+> Futex is probably one of the things you /do/ want.
+> 
+There is a weird bug in futexs that reads from null_ptr, otherwise if 
+you hard code that access isn't allowed it works. This seems to be a 
+problem on other no-MMU platforms. I changed it to not have futexs like 
+the stm32s, CONFIG_EXPERT is required for this option. If you want I can 
+explain more about this but, i was going to do that as a separate patch.
 
-In some sense, the poor commit messages at the beginning of the series 
-are just a symptom of not having any meat until too late, and then 
-dropping it all at once.  There's only so much that you can say about an 
-EXPORT_SYMBOL_GPL, the real thing to talk about is probably the thing 
-that refers to that symbol.
-
-If there are some patches that are actually independent, go ahead and 
-submit them early.  But more practically, for the bulk of the changes 
-what you need to do is:
-
-1) incorporate into patch 55 a version of tdx.c that essentially does 
-KVM_BUG_ON or WARN_ON for each function.  Temporarily keep the same huge 
-patch that adds the remaining 2000 lines of tdx.c
-
-2) squash the tdx.c stub with patch 44.
-
-3) gather a strace of QEMU starting up a TDX domain.
-
-4) figure out which parts of the code are needed to run until the first 
-ioctl.  Make that a first patch.
-
-5) repeat step 4 until you have covered all the code
-
-5) Move the new "KVM: VMX: Add 'main.c' to wrap VMX and TDX" (which also 
-adds the tdx.c stub) as possible in the series.
-
-6) Move each of the new patches as early as possible in the series.
-
-7) Look for candidates for squashing (e.g. commit messages that say it's 
-"used later"; now the use should be very close and the two can be 
-merged).  Add to the commit message a note about changes outside VMX.
-
-The resulting series may not be perfect, but it would be a much better 
-starting point for review.
-
-Paolo
+>> +CONFIG_KALLSYMS_ALL=y
+>> +CONFIG_PC104=y
+> 
+> Turning off KALLSYMS_ALL may save a noticeable amount of RAM.
+Intresting
+> 
+> PC104 isn't actually that big, but it seems unlikely that you have
+> that hardware.
+> 
+>> +CONFIG_PARAVIRT=y
+> 
+> You don't seem to enable XEN, so I don't think PARAVIRT is useful by itself.
+> 
+>> +# CONFIG_ATAGS is not set
+>> +CONFIG_CMDLINE="console=ttyS0 root=/dev/mmcblk0p2 rw earlycon rootwait"
+> 
+> The command line should come from the boot loader, users probably have
+> a different root device.
+Presumably this will never be used but I have it there as an example for 
+others, I can remove it if necessary.
+> 
+>> +CONFIG_BLK_DEV_BSGLIB=y
+>> +CONFIG_BLK_DEV_INTEGRITY=y
+>> +CONFIG_BLK_DEV_ZONED=y
+>> +CONFIG_BLK_DEV_THROTTLING=y
+>> +CONFIG_BLK_WBT=y
+>> +CONFIG_BLK_SED_OPAL=y
+>> +CONFIG_PARTITION_ADVANCED=y
+>> +CONFIG_BSD_DISKLABEL=y
+>> +CONFIG_MINIX_SUBPARTITION=y
+>> +CONFIG_SOLARIS_X86_PARTITION=y
+>> +CONFIG_UNIXWARE_DISKLABEL=y
+>> +CONFIG_LDM_PARTITION=y
+> 
+> I don't see you using OPAL or any of the 1990's partition formats.
+> ot set
+> 
+>> +CONFIG_BINFMT_FLAT=y
+> 
+> For the defconfig, you should probably have ELF_FDPIC enabled,
+> not just FLAT.
+> 
+>> +CONFIG_CLEANCACHE=y
+>> +CONFIG_ZPOOL=y
+>> +CONFIG_ZBUD=y
+>> +CONFIG_Z3FOLD=y
+> 
+> Do these work as expected on NOMMU?
+> 
+>> +CONFIG_BLK_DEV_LOOP=y
+>> +CONFIG_BLK_DEV_RAM=y
+>> +CONFIG_BLK_DEV_RAM_COUNT=1
+>> +CONFIG_BLK_DEV_RAM_SIZE=65536
+> 
+> I don't think you can have a ramdisk larger than RAM ;-)
+> 
+Oh that's funny I left that from testing something I will remove it.
+>> +CONFIG_MEMORY=y
+> 
+> No need to enable the subsystem when you don't enable any
+> of its drivers.
+> 
+>> +CONFIG_EXT2_FS=y
+>> +CONFIG_EXT2_FS_XATTR=y
+>> +CONFIG_EXT2_FS_POSIX_ACL=y
+>> +CONFIG_EXT2_FS_SECURITY=y
+>> +CONFIG_EXT3_FS=y
+>> +CONFIG_EXT3_FS_POSIX_ACL=y
+>> +CONFIG_EXT3_FS_SECURITY=y
+> 
+> Never use EXT3 on eMMC, just use EXT4 instead to make
+> the device actually live longer. You probably don't need to enable
+> EXT2 support separately.
+> 
+>> +# CONFIG_FILE_LOCKING is not set
+>> +# CONFIG_DNOTIFY is not set
+>> +CONFIG_QUOTA=y
+> 
+> dnotify and locking seem more useful than quota here
+> 
+>> +# CONFIG_PRINT_QUOTA_WARNING is not set
+>> +CONFIG_AUTOFS4_FS=y
+> 
+>> +CONFIG_CONFIGFS_FS=y
+> 
+> I don't see anything using configfs
+> 
+>> +CONFIG_LSM="yama,loadpin,integrity,apparmor"
+> 
+> None of these are actually enabled as far as I can tell.
+> 
+>> +CONFIG_DEBUG_INFO=y
+>> +CONFIG_DEBUG_INFO_DWARF4=y
+> 
+> If you use DWARF4, you probably want DEBUG_INFO_SPLIT as well,
+> to reduce the vmlinux size.
+> 
+>         Arnd
+> 
+Thx for telling me about this i will try to use only the necessary ones.
