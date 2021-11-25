@@ -2,84 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB8745DDFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:50:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E67A945DE01
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:50:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356262AbhKYPxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:53:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356149AbhKYPve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:51:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85A06610E8;
-        Thu, 25 Nov 2021 15:48:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637855303;
-        bh=U7MnU5/31mywm76pdPoiwNd1pEooMskUeZ3nm7n/GBE=;
-        h=From:Date:Subject:To:Cc:From;
-        b=HbEF+WgTNYB3xPn4IM34ql3drUawHVQYUXgKN8gPbOUU9TArGoYNNmH09EPLFBw8B
-         F4S18r/ti+4uUNSgXWwgpTv0UxREd8lPzajhj0hwfK1N3c6XNb0HgqyVBflMjl+SCf
-         24g/ZKONqVk11QaqIncwuYMr4H0DoIIXo6tjiAM56obPTFTqBVjpcgbGgLfd3/Sc5v
-         tFVWcNgNbp4r3XXswKUOOIKNYNz3SkC1UU6ka9d8/FiYywRmbjrsX8E7jH+J1JCJoS
-         ei8QcReE5rE8Y75kCY1eWvE5/HagT/g437QIP0eHMsvlhBU9eXh/Hb434zrtjGaK4J
-         xvrXsPKNJOa9A==
-Received: by mail-wm1-f51.google.com with SMTP id p27-20020a05600c1d9b00b0033bf8532855so4964842wms.3;
-        Thu, 25 Nov 2021 07:48:23 -0800 (PST)
-X-Gm-Message-State: AOAM530pw0A7Qjn6VMtmyMOJc/Ec/YVzKMUmFlMXNkBCPVLgpdx/dJeQ
-        ud7Zcnip4ao1LSHkbwYfKTJGepgGjjZ+iv62lpk=
-X-Google-Smtp-Source: ABdhPJxbqqGkf5AOVj86Ru2m9pY6KCLxo9YD5MjcXG82yvgpiF9EdnoAXupJRtGrvNIRhAhII9KPjTwE1tLzjXEtikg=
-X-Received: by 2002:a05:600c:6d2:: with SMTP id b18mr8588376wmn.98.1637855302022;
- Thu, 25 Nov 2021 07:48:22 -0800 (PST)
+        id S1356274AbhKYPxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:53:14 -0500
+Received: from relay11.mail.gandi.net ([217.70.178.231]:44649 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1356120AbhKYPvd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 10:51:33 -0500
+Received: (Authenticated sender: maxime.chevallier@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 66D7210001A;
+        Thu, 25 Nov 2021 15:48:19 +0000 (UTC)
+From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
+To:     davem@davemloft.net
+Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        thomas.petazzoni@bootlin.com, gregory.clement@bootlin.com,
+        Andrew Lunn <andrew@lunn.ch>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH net-next 0/4] net: mvneta: mqprio cleanups and shaping support
+Date:   Thu, 25 Nov 2021 16:48:09 +0100
+Message-Id: <20211125154813.579169-1-maxime.chevallier@bootlin.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 25 Nov 2021 16:48:06 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1JPS=3Zz3H9ptaAnqonnPUo546BP0rAAWT5KOcZEj55g@mail.gmail.com>
-Message-ID: <CAK8P3a1JPS=3Zz3H9ptaAnqonnPUo546BP0rAAWT5KOcZEj55g@mail.gmail.com>
-Subject: [GIT PULL] asm-generic: syscall table updates
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf=
-:
+Hello everyone,
 
-  Linux 5.16-rc1 (2021-11-14 13:56:52 -0800)
+This series adds some improvements to the existing mqprio implementation
+in mvneta, and adds support for egress shaping offload.
 
-are available in the Git repository at:
+The first 3 patches are some minor cleanups, such as using the
+tc_mqprio_qopt_offload structure to get access to more offloading
+options, cleaning the logic to detect wether or not we should offload
+mqprio setting, and allowing to have a 1 to N mapping between TCs and
+queues.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git
-tags/asm-generic-5.16-2
+The last patch adds traffic shaping offload, using mvneta's per-queue
+token buckets, allowing to limit rates from 10Kbps up to 5Gbps with
+10Kbps increments.
 
-for you to fetch changes up to a0eb2da92b715d0c97b96b09979689ea09faefe6:
+This was tested only on an Armada 3720, with traffic up to 2.5Gbps.
 
-  futex: Wireup futex_waitv syscall (2021-11-25 14:26:12 +0100)
+Maxime Chevallier (4):
+  net: mvneta: Use struct tc_mqprio_qopt_offload for MQPrio configuration
+  net: mvneta: Don't force-set the offloading flag
+  net: mvneta: Allow having more than one queue per TC
+  net: mvneta: Add TC traffic shaping offload
 
-----------------------------------------------------------------
-asm-generic: syscall table updates
+ drivers/net/ethernet/marvell/mvneta.c | 161 +++++++++++++++++++++++---
+ 1 file changed, 145 insertions(+), 16 deletions(-)
 
-Andr=C3=A9 Almeida sends an update for the newly added futex_waitv
-syscall that was initially only added to a few architectures.
+-- 
+2.25.4
 
-Some additional ones have since made it through architecture
-maintainer trees, this finishes the remaining ones.
-
-----------------------------------------------------------------
-Andr=C3=A9 Almeida (1):
-      futex: Wireup futex_waitv syscall
-
- arch/alpha/kernel/syscalls/syscall.tbl      | 1 +
- arch/ia64/kernel/syscalls/syscall.tbl       | 1 +
- arch/m68k/kernel/syscalls/syscall.tbl       | 1 +
- arch/microblaze/kernel/syscalls/syscall.tbl | 1 +
- arch/powerpc/kernel/syscalls/syscall.tbl    | 1 +
- arch/sh/kernel/syscalls/syscall.tbl         | 1 +
- arch/sparc/kernel/syscalls/syscall.tbl      | 1 +
- arch/xtensa/kernel/syscalls/syscall.tbl     | 1 +
- 8 files changed, 8 insertions(+)
