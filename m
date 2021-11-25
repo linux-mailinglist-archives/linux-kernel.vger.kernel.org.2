@@ -2,103 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1264245D2DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C08645D279
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 02:38:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238056AbhKYCFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 21:05:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353521AbhKYCDJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 21:03:09 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 345CCC06174A;
-        Wed, 24 Nov 2021 17:36:07 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id q25so9231139oiw.0;
-        Wed, 24 Nov 2021 17:36:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Os3OV2FPDkTjU4WiTzn9kPyZqlbHkg+HZpKJILevVJ4=;
-        b=pI9Y6blWE1yQwDi8EpuGo2HQaoFhQvEP+mu9VXlRe5D1/R/MtghgVnJVS9FYBRYkj+
-         nIW62vm7peWt+2v2K2Aa2rE1PNEnZpm4wGsZhwJjHbEMqpbEtzQ489hmRTzj4KQU9FFG
-         yT+rz0nBFYLfCQz1yqqVt34UzjCWKkV8WuIMyOUqveQ4JTXreEIlFQHxYTP9NiPWRrbU
-         M7Dwl6Wg8za3OroK6kYWZEhsGWXIzrRSqQv1XR7QTejIOuUwKmtC2tlbuGU4e9fjSJhb
-         45jNGFfSWbbYb50WAqJEEHglWNzgDyUEWVtoLwR8XowbZo6QUQJTJy5AJZhFgA35DFmd
-         MFsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Os3OV2FPDkTjU4WiTzn9kPyZqlbHkg+HZpKJILevVJ4=;
-        b=0HpFLG5jqWdXP+6p6rnmniyTFOndlxhd5HOMQvORt9Xc1D7Zk3vjkN0tQ/ucxYp7uZ
-         mxf7EXzA6EQTVCOGMBQV8fY1A0wuMV7x+ugpSHg08bbH7oZGMrRn05wQTXoA1o0msIqC
-         SaqyR4KJ4NuJR2iuBRGALEQNoE3Qdjv29zckeO6tBtkgqQLFVmYGe7+ZEdhudOXjsZze
-         YEuF0gim6NrWDUXxcpbIV0kT0T1VValk8L18phbGOvrUutgxqe5S2V7gBUBT9G1VPJt0
-         Y1DwK9gnL253N219/dvyKN3Tx+kHoqTrG5GwUr6M6rMupE4mWEZTMKvlNt+Kb5YRXWuO
-         +lbQ==
-X-Gm-Message-State: AOAM533feANqLH0R1C3A1THJXxV4QhG3U5XG3E9eIhHxdBumzhNgNlB2
-        FMO33SVdFZXtrLFXTJYhJfFfUL3JOTY=
-X-Google-Smtp-Source: ABdhPJx85DGJ7/0To/zijOaGsTkydOK8Hjeng0fjMj/YaWUhXSrxbc4ZaojpIxhL+oUryVzEC8qLqw==
-X-Received: by 2002:a05:6808:1210:: with SMTP id a16mr11337737oil.113.1637804166418;
-        Wed, 24 Nov 2021 17:36:06 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h6sm274332otb.60.2021.11.24.17.36.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 17:36:05 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 24 Nov 2021 17:36:04 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.4 000/162] 4.4.293-rc1 review
-Message-ID: <20211125013604.GA851427@roeck-us.net>
-References: <20211124115658.328640564@linuxfoundation.org>
+        id S1347827AbhKYBlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 20:41:24 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:50660 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234909AbhKYBjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 20:39:23 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx+NGI6J5hPTQBAA--.2223S2;
+        Thu, 25 Nov 2021 09:36:08 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Xuefeng Li <lixuefeng@loongson.cn>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v2] bpf, mips: Fix build errors about __NR_bpf undeclared
+Date:   Thu, 25 Nov 2021 09:36:07 +0800
+Message-Id: <1637804167-8323-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211124115658.328640564@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dx+NGI6J5hPTQBAA--.2223S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWryruFWxWryrXrW8Jw48Xrb_yoWrWrWxpr
+        42kFy8tw1UGay7K34fZFWFqw43Jwn2yrWjqFWUu3ykCa1Fqa1fJr429rZ5CF1aqr4vva47
+        ur13W345ury8Aw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
+        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
+        Yx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
+        WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK
+        6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VU1ItC7UUUU
+        U==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 12:55:03PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.4.293 release.
-> There are 162 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
-> Anything received after that time might be too late.
-> 
+Add the __NR_bpf definitions to fix the following build errors for mips.
 
-Build results:
-	total: 160 pass: 153 fail: 7
-Failed builds:
-	ia64:defconfig
-	s390:defconfig
-	s390:allmodconfig
-	s390:performance_defconfig
-	sh:dreamcast_defconfig
-	sh:microdev_defconfig
-	sh:shx3_defconfig
-Qemu test results:
-	total: 341 pass: 336 fail: 5
-Failed tests:
-	s390:defconfig:nolocktests:smp2:net,default:initrd
-	s390:defconfig:nolocktests:smp2:virtio-blk-ccw:net,virtio-net-pci:rootfs
-	s390:defconfig:nolocktests:smp2:scsi[virtio-ccw]:net,default:rootfs
-	s390:defconfig:nolocktests:virtio-pci:net,virtio-net-pci:rootfs
-	s390:defconfig:nolocktests:scsi[virtio-pci]:net,default:rootfs
+ $ cd tools/bpf/bpftool
+ $ make
+ [...]
+ bpf.c:54:4: error: #error __NR_bpf not defined. libbpf does not support your arch.
+  #  error __NR_bpf not defined. libbpf does not support your arch.
+     ^~~~~
+ bpf.c: In function ‘sys_bpf’:
+ bpf.c:66:17: error: ‘__NR_bpf’ undeclared (first use in this function); did you mean ‘__NR_brk’?
+   return syscall(__NR_bpf, cmd, attr, size);
+                  ^~~~~~~~
+                  __NR_brk
+ [...]
+ In file included from gen_loader.c:15:0:
+ skel_internal.h: In function ‘skel_sys_bpf’:
+ skel_internal.h:53:17: error: ‘__NR_bpf’ undeclared (first use in this function); did you mean ‘__NR_brk’?
+   return syscall(__NR_bpf, cmd, attr, size);
+                  ^~~~~~~~
+                  __NR_brk
 
-Unlike there are secondary issues, the errors are all due to:
+We can see the following generated definitions:
 
-mm/hugetlb.c: In function '__unmap_hugepage_range':
-mm/hugetlb.c:3294:25: error: implicit declaration of function 'tlb_flush_pmd_range'
+ $ grep -r "#define __NR_bpf" arch/mips
+ arch/mips/include/generated/uapi/asm/unistd_o32.h:#define __NR_bpf (__NR_Linux + 355)
+ arch/mips/include/generated/uapi/asm/unistd_n64.h:#define __NR_bpf (__NR_Linux + 315)
+ arch/mips/include/generated/uapi/asm/unistd_n32.h:#define __NR_bpf (__NR_Linux + 319)
 
-Guenter
+The __NR_Linux is defined in arch/mips/include/uapi/asm/unistd.h:
+
+ $ grep -r "#define __NR_Linux" arch/mips
+ arch/mips/include/uapi/asm/unistd.h:#define __NR_Linux	4000
+ arch/mips/include/uapi/asm/unistd.h:#define __NR_Linux	5000
+ arch/mips/include/uapi/asm/unistd.h:#define __NR_Linux	6000
+
+That is to say, __NR_bpf is
+4000 + 355 = 4355 for mips o32,
+6000 + 319 = 6319 for mips n32,
+5000 + 315 = 5315 for mips n64.
+
+So use the GCC pre-defined macro _ABIO32, _ABIN32 and _ABI64 [1] to define
+the corresponding __NR_bpf.
+
+This patch is similar with commit bad1926dd2f6 ("bpf, s390: fix build for
+libbpf and selftest suite").
+
+[1] https://gcc.gnu.org/git/?p=gcc.git;a=blob;f=gcc/config/mips/mips.h#l549
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+
+v2: use a final number without __NR_Linux to define __NR_bpf
+    suggested by Andrii Nakryiko, thank you.
+
+ tools/build/feature/test-bpf.c |  6 ++++++
+ tools/lib/bpf/bpf.c            |  6 ++++++
+ tools/lib/bpf/skel_internal.h  | 10 ++++++++++
+ 3 files changed, 22 insertions(+)
+
+diff --git a/tools/build/feature/test-bpf.c b/tools/build/feature/test-bpf.c
+index 82070ea..727d22e 100644
+--- a/tools/build/feature/test-bpf.c
++++ b/tools/build/feature/test-bpf.c
+@@ -14,6 +14,12 @@
+ #  define __NR_bpf 349
+ # elif defined(__s390__)
+ #  define __NR_bpf 351
++# elif defined(__mips__) && defined(_ABIO32)
++#  define __NR_bpf 4355
++# elif defined(__mips__) && defined(_ABIN32)
++#  define __NR_bpf 6319
++# elif defined(__mips__) && defined(_ABI64)
++#  define __NR_bpf 5315
+ # else
+ #  error __NR_bpf not defined. libbpf does not support your arch.
+ # endif
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 94560ba..17f9fe2 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -50,6 +50,12 @@
+ #  define __NR_bpf 351
+ # elif defined(__arc__)
+ #  define __NR_bpf 280
++# elif defined(__mips__) && defined(_ABIO32)
++#  define __NR_bpf 4355
++# elif defined(__mips__) && defined(_ABIN32)
++#  define __NR_bpf 6319
++# elif defined(__mips__) && defined(_ABI64)
++#  define __NR_bpf 5315
+ # else
+ #  error __NR_bpf not defined. libbpf does not support your arch.
+ # endif
+diff --git a/tools/lib/bpf/skel_internal.h b/tools/lib/bpf/skel_internal.h
+index 9cf6670..064da66 100644
+--- a/tools/lib/bpf/skel_internal.h
++++ b/tools/lib/bpf/skel_internal.h
+@@ -7,6 +7,16 @@
+ #include <sys/syscall.h>
+ #include <sys/mman.h>
+ 
++#ifndef __NR_bpf
++# if defined(__mips__) && defined(_ABIO32)
++#  define __NR_bpf 4355
++# elif defined(__mips__) && defined(_ABIN32)
++#  define __NR_bpf 6319
++# elif defined(__mips__) && defined(_ABI64)
++#  define __NR_bpf 5315
++# endif
++#endif
++
+ /* This file is a base header for auto-generated *.lskel.h files.
+  * Its contents will change and may become part of auto-generation in the future.
+  *
+-- 
+2.1.0
+
