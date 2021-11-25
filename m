@@ -2,69 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3580845E0F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 20:26:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19CBC45E0FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 20:28:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349935AbhKYT3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 14:29:18 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:49406 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349959AbhKYT1R (ORCPT
+        id S1349818AbhKYTby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 14:31:54 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:54024 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229898AbhKYT3v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 14:27:17 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 059F221891;
-        Thu, 25 Nov 2021 19:24:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637868245; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Thu, 25 Nov 2021 14:29:51 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637868399;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=zeEh+Mnsqm3keavvrhJXx22I1VEL7us1czf+Y+aaH7I=;
-        b=OrPZ9cXgr+eP5+r1Hg6nneERBtX3GXPaHmqDh8O4Sx1tert8at9JAoXCKg4qAumtSxKFjL
-        NRQdqU/et+BzzZ2FvhNWOpLZDpmpu3xRhPcUHrmgOMzzdHF5Bf47WU8r0Aee125c/84etf
-        A4rb0kBzALs1hgTa3KrpWoA59sR2Oi4=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C6A20A3B81;
-        Thu, 25 Nov 2021 19:24:04 +0000 (UTC)
-Date:   Thu, 25 Nov 2021 20:24:04 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
-        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [PATCH v2 2/4] mm/vmalloc: add support for __GFP_NOFAIL
-Message-ID: <YZ/i1Dww6rUTyIdD@dhcp22.suse.cz>
-References: <20211122153233.9924-1-mhocko@kernel.org>
- <20211122153233.9924-3-mhocko@kernel.org>
- <YZ06nna7RirAI+vJ@pc638.lan>
- <20211123170238.f0f780ddb800f1316397f97c@linux-foundation.org>
- <YZ6cfoQah8Wo1eSZ@pc638.lan>
- <YZ9Nb2XA/OGWL1zz@dhcp22.suse.cz>
- <CA+KHdyUFjqdhkZdTH=4k=ZQdKWs8MauN1NjXXwDH6J=YDuFOPA@mail.gmail.com>
+        bh=MI+SfJGn+IjRpP8EdCyxmW0iJCGSvp+elicPiF3BXVE=;
+        b=sjSYPczvr0Fnk+BjfZy2sGJT0vtL0c4qWgvK+EEXXgpkw7l17Z/8rbKUZBvGGqI4P7Sa8B
+        +Fdz7l+yLXLvhaEP221ghBi3XM4024EiuarBh1x4jqW/QBGpo9ln1NmcSYpcV8rMyvbZqB
+        UF0DXrErC8CsLChsvTMNvVJdu1q49BzE7VBscQiXwlVwZHLWX9WlGQ4lkKrk4Na/jWlaxe
+        pr3ji/LAQVPK+UNMGhabTeGqKZi7RCStkYwOfnEthHksK6P72BWKpaD2eFscUNfQy4pAlA
+        NePfUdPe2tRBUyxyYhx7WScmWT5jBTNj45fZTndYJn0iTYGuGd9NKf64w/HImA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637868399;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MI+SfJGn+IjRpP8EdCyxmW0iJCGSvp+elicPiF3BXVE=;
+        b=dyeLW596ga9en350GC2QUAkZy0WhOYKDJhNdxW8TW6saT0mxWOXsNQAR5mrklu2Zlk5Pqa
+        xgGV2lh8/5/lXeAw==
+To:     isaku.yamahata@intel.com, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Subject: Re: [RFC PATCH v3 15/59] KVM: x86: Introduce "protected guest"
+ concept and block disallowed ioctls
+In-Reply-To: <3e78c301460dfabc2aec22bde3907207011435b9.1637799475.git.isaku.yamahata@intel.com>
+References: <cover.1637799475.git.isaku.yamahata@intel.com>
+ <3e78c301460dfabc2aec22bde3907207011435b9.1637799475.git.isaku.yamahata@intel.com>
+Date:   Thu, 25 Nov 2021 20:26:38 +0100
+Message-ID: <87r1b4jatt.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+KHdyUFjqdhkZdTH=4k=ZQdKWs8MauN1NjXXwDH6J=YDuFOPA@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 25-11-21 19:02:09, Uladzislau Rezki wrote:
-[...]
-> Therefore i root for simplification and OOM related concerns :) But
-> maybe there will be other opinions.
+On Wed, Nov 24 2021 at 16:19, isaku yamahata wrote:
+>  
+>  static int kvm_vcpu_ioctl_smi(struct kvm_vcpu *vcpu)
+>  {
+> +	/* TODO: use more precise flag */
 
-I have to say that I disagree with your view. I am not sure we have
-other precedence where an allocator would throw away the primary
-allocation just because a metadata allocation failure.
+Why is this still a todo and not implemented properly from the very beginning?
 
-In any case, if there is a wider consensus that we really want to do
-that I can rework. I would prefer to keep the patch as is though.
--- 
-Michal Hocko
-SUSE Labs
+And then you have this:
+
+> +	if (vcpu->arch.guest_state_protected)
+> +		return -EINVAL;
+
+...
+
+> +	/* TODO: use more precise flag */
+> +	if (vcpu->arch.guest_state_protected)
+> +		return -EINVAL;
+
+and a gazillion of other places. That's beyond lame.
+
+The obvious place to do such a decision is kvm_arch_vcpu_ioctl(), no?
+
+kvm_arch_vcpu_ioctl(.., unsigneg int ioctl, ...)
+
+     if (vcpu->arch.guest_state_protected) {
+     	  if (!(test_bit(_IOC_NR(ioctl), vcpu->ioctl_allowed))
+          	return -EINVAL;
+     }
+
+is way too simple and obvious, right?
+
+Even if you want more fine grained control, then having an array of
+flags per ioctl number is way better than sprinkling this protected muck
+conditions all over the place.
+
+Thanks,
+
+        tglx
+
+    
+
