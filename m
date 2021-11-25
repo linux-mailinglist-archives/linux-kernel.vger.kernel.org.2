@@ -2,51 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C20DC45DF86
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:20:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2033645DF8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:21:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347158AbhKYRXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 12:23:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50432 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241288AbhKYRVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 12:21:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45FDE61059;
-        Thu, 25 Nov 2021 17:17:56 +0000 (UTC)
-Date:   Thu, 25 Nov 2021 17:17:53 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Calvin Zhang <calvinzhang.cool@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] mm: kmemleak: alloc gray object for reserved region with
- direct map.
-Message-ID: <YZ/FQXS3gWZ2xfEy@arm.com>
-References: <20211123090641.3654006-1-calvinzhang.cool@gmail.com>
+        id S237344AbhKYRYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 12:24:41 -0500
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:53381 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347389AbhKYRX7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 12:23:59 -0500
+Received: from tomoyo.flets-east.jp ([114.149.34.46])
+        by smtp.orange.fr with ESMTPA
+        id qIQDm0ronE8xTqIQKm0kjf; Thu, 25 Nov 2021 18:20:45 +0100
+X-ME-Helo: tomoyo.flets-east.jp
+X-ME-Auth: MDU0YmViZGZmMDIzYiBlMiM2NTczNTRjNWZkZTMwOGRiOGQ4ODf3NWI1ZTMyMzdiODlhOQ==
+X-ME-Date: Thu, 25 Nov 2021 18:20:45 +0100
+X-ME-IP: 114.149.34.46
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc:     Oliver Hartkopp <socketcan@hartkopp.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v2 0/5] fix statistics and payload issues for error
+Date:   Fri, 26 Nov 2021 02:20:16 +0900
+Message-Id: <20211125172021.976384-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211123090641.3654006-1-calvinzhang.cool@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 05:06:41PM +0800, Calvin Zhang wrote:
-> Reserved regions with direct mapping may contain references to other
-> regions. CMA region with fixed location is reserved without creating
-> kmemleak_object for it.
-> 
-> So add them as gray kmemleak objects.
+Important: this patch series depends on below patch:
+https://lore.kernel.org/linux-can/20211123111654.621610-1-mailhol.vincent@wanadoo.fr/T/#u
 
-Do you get any kmemleak false positives without this patch? It would be
-good to include them in the commit message.
+There are some common errors which are made when updating the network
+statistics or processing the CAN payload:
 
-Without seeing a false positive caused by this, I'm not convinced it is
-the right approach. You mentioned CMA but telling kmemleak about the
-whole CMA region is a pretty big hammer. I'd rather add individual
-kmemleak_alloc_*() calls in cma_alloc().
+  1. Incrementing the "normal" stats when generating or sending a CAN
+  error message frame. Error message frames are an abstraction of
+  Socket CAN and do not exist on the wire. The first patch of this
+  series fixes the RX stats for 22 different drivers, the second one
+  fixes the TX stasts for the kvaser driver (N.B. only this driver is
+  capable of sending error on the bus).
 
+  2. Copying the payload of RTR frames: RTR frames have no payload and
+  the data buffer only contains garbage. The DLC/length should not be
+  used to do a memory copy. The third patch of this series address
+  this issue for 3 different drivers.
+
+  3. Counting the length of the Remote Transmission Frames (RTR). The
+  length of an RTR frame is the length of the requested frame not the
+  actual payload. In reality the payload of an RTR frame is always 0
+  bytes long. The fourth patch of this series fixes the RX stats for
+  27 different drivers and the fifth one fixes the TX stats for 25
+  different ones.
+
+
+* Changelog *
+
+v1 -> v2:
+
+  * can_rx_offload_napi_poll: v1 used CAN_ERR_MASK instead of
+    CAN_ERR_FLAG. Fixed the issue.
+
+  * use correct vocabulary. The correct term to designate the Socket
+    CAN specific error skb is "error message frames" not "error
+    frames". "error frames" is used in the standard and has a
+    different meaning.
+
+  * better factorize code for the rx RTR frames. Most of the driver
+    already has a switch to check if the frame is a RTR. Moved the
+    instruction to increase net_device_stats:rx_bytes inside the else
+    branch of those switches whenever possible (for some drivers with
+    some complex logic, putting and additional RTR check was easier).
+
+  * add a patch which prevent drivers to copy the payload of RTR
+    frames.
+
+  * add a patch to cover the tx RTR frames (the fifth patch of
+    v2). The tx RTR frames issue was supposedly covered by the
+    can_get_echo_skb() function which returns the correct length for
+    drivers to increase their stats. However, the reality is that most
+    of the drivers do not check this value and instead use a local
+    copy of the length/dlc.
+
+Vincent Mailhol (5):
+  can: do not increase rx statistics when generating a CAN rx error
+    message frame
+  can: kvaser_usb: do not increase tx statistics when sending error
+    message frames
+  can: do not copy the payload of RTR frames
+  can: do not increase rx_bytes statistics for RTR frames
+  can: do not increase tx_bytes statistics for RTR frames
+
+ drivers/net/can/at91_can.c                    | 18 ++---
+ drivers/net/can/c_can/c_can.h                 |  1 -
+ drivers/net/can/c_can/c_can_main.c            | 16 +---
+ drivers/net/can/cc770/cc770.c                 | 16 ++--
+ drivers/net/can/dev/dev.c                     |  4 -
+ drivers/net/can/dev/rx-offload.c              |  7 +-
+ drivers/net/can/grcan.c                       |  6 +-
+ drivers/net/can/ifi_canfd/ifi_canfd.c         | 11 +--
+ drivers/net/can/janz-ican3.c                  |  6 +-
+ drivers/net/can/kvaser_pciefd.c               | 16 ++--
+ drivers/net/can/m_can/m_can.c                 | 13 +---
+ drivers/net/can/mscan/mscan.c                 | 14 ++--
+ drivers/net/can/pch_can.c                     | 33 ++++----
+ drivers/net/can/peak_canfd/peak_canfd.c       | 14 ++--
+ drivers/net/can/rcar/rcar_can.c               | 22 +++---
+ drivers/net/can/rcar/rcar_canfd.c             | 13 +---
+ drivers/net/can/sja1000/sja1000.c             | 11 +--
+ drivers/net/can/slcan.c                       |  7 +-
+ drivers/net/can/softing/softing_main.c        |  8 +-
+ drivers/net/can/spi/hi311x.c                  | 31 ++++----
+ drivers/net/can/spi/mcp251x.c                 | 31 ++++----
+ drivers/net/can/sun4i_can.c                   | 22 +++---
+ drivers/net/can/usb/ems_usb.c                 | 14 ++--
+ drivers/net/can/usb/esd_usb2.c                | 13 ++--
+ drivers/net/can/usb/etas_es58x/es58x_core.c   |  7 --
+ drivers/net/can/usb/gs_usb.c                  |  7 +-
+ drivers/net/can/usb/kvaser_usb/kvaser_usb.h   |  5 +-
+ .../net/can/usb/kvaser_usb/kvaser_usb_core.c  |  4 +-
+ .../net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 78 +++++++++----------
+ .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 20 ++---
+ drivers/net/can/usb/mcba_usb.c                | 23 +++---
+ drivers/net/can/usb/peak_usb/pcan_usb.c       |  9 +--
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c  | 20 +++--
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h  |  1 -
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c    | 11 +--
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c   | 12 +--
+ drivers/net/can/usb/ucan.c                    | 17 ++--
+ drivers/net/can/usb/usb_8dev.c                | 17 ++--
+ drivers/net/can/vcan.c                        |  7 +-
+ drivers/net/can/vxcan.c                       |  2 +-
+ drivers/net/can/xilinx_can.c                  | 19 ++---
+ include/linux/can/skb.h                       |  5 +-
+ 42 files changed, 258 insertions(+), 353 deletions(-)
+
+
+base-commit: 4cc19cc269921210f3da65e4b038ad987835b342
 -- 
-Catalin
+2.32.0
+
