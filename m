@@ -2,80 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E4A45E308
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 23:40:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CBF945E311
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 23:43:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238929AbhKYWmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 17:42:05 -0500
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:51559 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238402AbhKYWkF (ORCPT
+        id S245315AbhKYWqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 17:46:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244180AbhKYWoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 17:40:05 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 016135C01ED;
-        Thu, 25 Nov 2021 17:36:53 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Thu, 25 Nov 2021 17:36:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=5zdxyc
-        JIKRW4j7oFSN3KP5jOmnSpqaDy8dBhTuplRRA=; b=BENsBC6hRoybmKz9OYy6uA
-        51cWrzOWpsN0EuMtNN+LjUSU2Y7R3j5ErS9CgHd9/kfq1ryZoNqZaWcCn1OCRjKL
-        HlmiVH2a1IHiNoWCajIOJI+7s9XgmmgXUqzt3opsU1XFMuqCSiuS+ArqCnvIzeSn
-        PwjX5mymESB/yCBW1yjgdhZ1bRzb8Vdd0dBoHtXPkupW3Xu/73UNLkgL++BeGyXm
-        vqOcNUPJmPU040HnbFiadikkiQ/ELywj5UlogugRvT5eEbvqFN2iYboRI8Lmgfbk
-        2fT1auPiG0r+Vjv3Dhr8Sb1L0+8Der9UhQTf2HOhW8GK5bChEfHzElNSfMGBe9fQ
-        ==
-X-ME-Sender: <xms:BBCgYfktbjoixWvZll1AFf0nhdP5HSt86SpCow2ojalg_Qtbgw-oDg>
-    <xme:BBCgYS1luXXAzaLYnHo-mtyAh_v-KnecBCDnaDbpZmO_4ls7JZHfi_8yP49L6ymtk
-    dQxkwwDGvtfvk58nX8>
-X-ME-Received: <xmr:BBCgYVrasvPT7QO7vhO4PAMJS61tND7XNprtgwS1MgbU89HbNTOMY5elm0GgZ7bLBr2Fkmm0-iBiWRL_x2vGnV_nUIPiWYir8IY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrhedtgdduiedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
-    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
-    htvghrnhepffduhfegfedvieetudfgleeugeehkeekfeevfffhieevteelvdfhtdevffet
-    uedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
-    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
-X-ME-Proxy: <xmx:BBCgYXlALw_P9fJ0LLiHqbtsAjR0BRtCFA_xhFE4lz2KBwyfcLmIPw>
-    <xmx:BBCgYd3t2oTER9Yg3avvfVC9fRGMD6mTZJRvRWYpDRAJDWRcvhiMDA>
-    <xmx:BBCgYWtxjrHW_YX5nMf5qs03IvEebPOVXKljGA7s-4BRbJ0BxR3JGQ>
-    <xmx:BBCgYYRaV0Kl9J6-M7rTFYXFLK7ybxxavy_PG0pDUH46Dtq5M9T4Zw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 25 Nov 2021 17:36:50 -0500 (EST)
-Date:   Fri, 26 Nov 2021 09:36:56 +1100 (AEDT)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-cc:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pata_falcon: Add missing __iomem annotations
-In-Reply-To: <CAMuHMdXy-XyR5PtczK9J1p_i=jugp4yq6JF8_MhVC1FMK5dtPw@mail.gmail.com>
-Message-ID: <9713ea83-b4e7-4eee-5ab1-7fb2dccb4ccd@linux-m68k.org>
-References: <44e0213a681f3c8ee4c6ab2ef9d61ce3ac00e368.1637727935.git.fthain@linux-m68k.org> <CAMuHMdXTxTABOoVgC6fVR44dxUZZEbZV=ewSk9vKFY=U5u+fcw@mail.gmail.com> <35a85d2f-ab6a-4ab7-85a8-626f1560a57d@linux-m68k.org>
- <CAMuHMdXy-XyR5PtczK9J1p_i=jugp4yq6JF8_MhVC1FMK5dtPw@mail.gmail.com>
+        Thu, 25 Nov 2021 17:44:04 -0500
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5F5C06175E;
+        Thu, 25 Nov 2021 14:39:14 -0800 (PST)
+Received: by mail-qv1-xf2e.google.com with SMTP id g9so3788324qvd.2;
+        Thu, 25 Nov 2021 14:39:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=mKEHkuEY6JKO2Lf5S2bk0vEKACBdfzK1NLsInC3tTco=;
+        b=b5zWW42WUaDmRfaoFGxjh0jqJ8aJApjPOFN2afaSyEhMOkjyq7wsICOezf/gVz+AI8
+         ZCqNqqczM7xjI6H1mHQZOWtuLypKj0MdqBAf/Ie9muR7tjN11uzWwTBqASuqa+UR/Bfv
+         eATHiJfp5sJMTfXP59J2i2XlWCCyXmOkeFBXrLZ0llggqjjEzm1VGwmc4sLDfuVj0xrD
+         9u/BeEsjFsdITBYHPyuBZK5R64CXDZR6QQklnrlPkH/B31vnyNoTbYT5pz2CqcRTf1GQ
+         4kOQ8es2eEK1f8nCb5+qIcQihO2i9YDgKEizk7Afb8OCi34dRKdaylbSgJbylEhtJDUq
+         QEIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=mKEHkuEY6JKO2Lf5S2bk0vEKACBdfzK1NLsInC3tTco=;
+        b=nSGfSqqcEYbjoYgdAonL74z9ZxBPy2rwQg30Ux0InFHEmhm5qzCAjURCESADOaDNSB
+         2l7y+GFOaKHcr1P6zw0KZul5kN/0YKOpAiFjPVaJYPjwOpv/oDGtYNqHUF0lfOiXCcc/
+         s40bRfW3tQDZhzCoTJsEsSwXG8cjqmyAW+b+klDsNKn58juglZkEmtdtat4zQ+IOOpcF
+         ZrLHwzbVBnVzx6DZtx7yEYDZIHunZpv8VfwfeQK77p7sio+aavrbSWN+bUfXs553LZig
+         Ef0+LzrVn2SSll/6J07jvKn6it5c4udV5gz+N7OqgTLXHn6flgqP2gs1mPFWAjpLlPIU
+         yVAg==
+X-Gm-Message-State: AOAM532tC0dK4eJefiPtVnL78bNhdilydQqE2W+3S+aM6PH9t4qABfM3
+        T4gWdJ1CG5zq/A9BZmph+gQzw5jUHQNBVWeyKNVyIdfE4RyvXQ==
+X-Google-Smtp-Source: ABdhPJz1nuZYs0+y9KaFEH2jK0iQ7nlGz6lEfMTYNQFZ76+T2unUdBBLgVAy3FLHZy79aqU/sd4G59SDbVQ2HSO3SmU=
+X-Received: by 2002:a05:6214:dc4:: with SMTP id 4mr21284780qvt.45.1637879953680;
+ Thu, 25 Nov 2021 14:39:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <CABXGCsODP8ze_mvzfJKcRYxuS-esVgHXAvDXS5KN3xFUN6bWgA@mail.gmail.com>
+ <CABXGCsMc1_-s5vVv=XVuMJaAtntrfHpCeT3h7wKkK71NuY-izw@mail.gmail.com>
+In-Reply-To: <CABXGCsMc1_-s5vVv=XVuMJaAtntrfHpCeT3h7wKkK71NuY-izw@mail.gmail.com>
+From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date:   Fri, 26 Nov 2021 03:39:03 +0500
+Message-ID: <CABXGCsMJOfGU8axS4FdGfPCgcPL5iuedpZxa4PETSyFHDckOAg@mail.gmail.com>
+Subject: Re: [Bug] Driver mt7921e cause computer reboot.
+To:     Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        sean.wang@mediatek.com,
+        Linux List Kernel Mailing <linux-wireless@vger.kernel.org>,
+        objelf@gmail.com, lorenzo@kernel.org, Soul.Huang@mediatek.com,
+        nbd@nbd.name
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Nov 2021, Geert Uytterhoeven wrote:
+On Tue, 5 Oct 2021 at 01:40, Mikhail Gavrilov
+<mikhail.v.gavrilov@gmail.com> wrote:
+>
 
-> 
-> Yeah, you do have to be careful with macros that derive a size from the 
-> type of the passed data.  The *{in,out}sw() functions do not suffer from 
-> that: they are defined to operate on a 16-bit I/O register. It is very 
-> unlikely these semantics will ever change.
-> 
-> Here I'm more worried about the other danger: keeping casts will silence 
-> any warning that may be introduced in a future change to the driver 
-> code.
-> 
+With recent kernel 5.16.0-0.rc2 commit 5d9f4cf36721 the behavior has
+been changed for the better, but the WiFi adapter still works with
+bugs.
 
-Fair enough. I'll send v2.
+Now spontaneous endless reboots do not occur. But if I restart the
+laptop instead of shutting down, then the next time I boot, the WiFi
+adapter disappears. In order for the WiFi adapter to appear again, it
+needs to turn off the laptop and then turn on. Can this be somehow
+fixed?
+lspci output after reboot and boot after shutdown is different:
+
+After reboot:
+Subsystem: AzureWave Device 4680
+Flags: fast devsel, IRQ 84, IOMMU group 14
+Memory at fc30300000 (64-bit, prefetchable) [size=1M]
+Memory at fc30400000 (64-bit, prefetchable) [size=16K]
+Memory at fc30404000 (64-bit, prefetchable) [size=4K]
+Capabilities: [80] Express Endpoint, MSI 00
+Capabilities: [e0] MSI: Enable- Count=1/32 Maskable+ 64bit+
+Capabilities: [f8] Power Management version 3
+Capabilities: [100] Vendor Specific Information: ID=1556 Rev=1 Len=008 <?>
+Capabilities: [108] Latency Tolerance Reporting
+Capabilities: [110] L1 PM Substates
+Capabilities: [200] Advanced Error Reporting
+Kernel modules: mt7921e
+
+After shutdown:
+05:00.0 Network controller: MEDIATEK Corp. Device 7961
+Subsystem: AzureWave Device 4680
+Flags: bus master, fast devsel, latency 0, IRQ 85, IOMMU group 14
+Memory at fc30300000 (64-bit, prefetchable) [size=1M]
+Memory at fc30400000 (64-bit, prefetchable) [size=16K]
+Memory at fc30404000 (64-bit, prefetchable) [size=4K]
+Capabilities: [80] Express Endpoint, MSI 00
+Capabilities: [e0] MSI: Enable+ Count=1/32 Maskable+ 64bit+
+Capabilities: [f8] Power Management version 3
+Capabilities: [100] Vendor Specific Information: ID=1556 Rev=1 Len=008 <?>
+Capabilities: [108] Latency Tolerance Reporting
+Capabilities: [110] L1 PM Substates
+Capabilities: [200] Advanced Error Reporting
+Kernel driver in use: mt7921e
+Kernel modules: mt7921e
+
+Screen of a visual comparison of lspci in meld: https://postimg.cc/642NKJ5Y
+
+-- 
+Best Regards,
+Mike Gavrilov.
