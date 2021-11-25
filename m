@@ -2,64 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B81C45E15E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:10:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5AC345E162
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:11:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351119AbhKYUNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 15:13:48 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:54430 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356923AbhKYULp (ORCPT
+        id S1356869AbhKYUOH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 25 Nov 2021 15:14:07 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:51487 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1356931AbhKYUMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 15:11:45 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637870912;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ed4k/5AusQTF97PAK053dx1XOC9ZHscKNMEHYGgCSnY=;
-        b=K0JQFqLzCS2k13w7p70QVE2gyZ4xn9IKAa6+rvOAUhYkeXONVXWKmo9wI11Ucwiuq3h6Qt
-        l1nJyT/OY1FU+TPDra0prfJaKCwudLErrQNLesUh5wZtviqj4QKa1IvEk8nff/GzkAupbn
-        uh+ExXgTj0+DXm+byDmy9hGJFQbP3qb6JWoxtbXIyM77ptDVk1IThMQ20r698m0ZXJGvx6
-        ztewr3Sh3pyRu17E+i1IIwdZBkrreKvWSPj/0VCwg4kH03xOUW3Zwj1faCsVE5a9p160I5
-        H8ZaQ6GT7So3/HjI9mCNeilKjkIdwF0f59OvqtpFTNztZHnjUT6sXUNExC1L3Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637870912;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ed4k/5AusQTF97PAK053dx1XOC9ZHscKNMEHYGgCSnY=;
-        b=P0Klh0uhWOThgQ/rUlB6nuh1qcAm3UJIr8FePwd68zcWJABBMBWl6bT7MtVgCYWEsmx+tb
-        uoT6p/eumWihLkDQ==
-To:     isaku.yamahata@intel.com, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [RFC PATCH v3 45/59] KVM: VMX: Move setting of EPT MMU masks to
- common VT-x code
-In-Reply-To: <4f4ab3f9f919f5fa3355163bc01917425adac7d2.1637799475.git.isaku.yamahata@intel.com>
-References: <cover.1637799475.git.isaku.yamahata@intel.com>
- <4f4ab3f9f919f5fa3355163bc01917425adac7d2.1637799475.git.isaku.yamahata@intel.com>
-Date:   Thu, 25 Nov 2021 21:08:31 +0100
-Message-ID: <87pmqohubk.ffs@tglx>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Thu, 25 Nov 2021 15:12:06 -0500
+Received: from smtpclient.apple (p5b3d2e91.dip0.t-ipconnect.de [91.61.46.145])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 90D3FCECC5;
+        Thu, 25 Nov 2021 21:08:53 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
+Subject: Re: [PATCH v3 1/2] Bluetooth: Send device found event on name resolve
+ failure
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20211125150430.v3.1.Id7366eb14b6f48173fcbf17846ace59479179c7c@changeid>
+Date:   Thu, 25 Nov 2021 21:08:53 +0100
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <70A5230B-F6F2-4707-97F3-EE786B1F2D8F@holtmann.org>
+References: <20211125150430.v3.1.Id7366eb14b6f48173fcbf17846ace59479179c7c@changeid>
+To:     Archie Pusaka <apusaka@google.com>
+X-Mailer: Apple Mail (2.3693.20.0.1.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24 2021 at 16:20, isaku yamahata wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
+Hi Archie,
 
-Yet another void ...
+> Introducing NAME_REQUEST_FAILED flag that will be sent together with
+> device found event on name resolve failure. This will provide the
+> userspace with an information so it can decide not to resolve the
+> name for these devices in the future.
+> 
+> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+> 
+> ---
+> Hi maintainers,
+> 
+> This is the patch series for remote name request as was discussed here.
+> https://patchwork.kernel.org/project/bluetooth/patch/20211028191805.1.I35b7f3a496f834de6b43a32f94b6160cb1467c94@changeid/
+> Please also review the corresponding userspace change.
+> 
+> Thanks,
+> Archie
+> 
+> Changes in v3:
+> * Reindent defines
+> * Assign variables inside if block instead of initializing
+> 
+> Changes in v2:
+> * Remove the part which accepts DONT_CARE flag in MGMT_OP_CONFIRM_NAME
+> * Rename MGMT constant to conform with the docs
+> 
+> include/net/bluetooth/mgmt.h |  9 +++++----
+> net/bluetooth/hci_event.c    | 11 ++++-------
+> net/bluetooth/mgmt.c         | 12 ++++++++++--
+> 3 files changed, 19 insertions(+), 13 deletions(-)
+
+patch has been applied to bluetooth-next tree.
+
+Regards
+
+Marcel
 
