@@ -2,224 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC8545DC1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 15:14:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA6945DC1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 15:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352462AbhKYORS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 09:17:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355618AbhKYOPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 09:15:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C59B6101D;
-        Thu, 25 Nov 2021 14:12:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637849525;
-        bh=yphTqVO3vqIdlcckcfNgEk3j7be4ZjIEdwtA7cNO2KQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=G+/EVsDX1YE+x5RZyYvp56vE/TUw9FqTrInQr8wHziyLIhto8jh0AdTu5hYoPDueU
-         PfWs3p5bk1WgvVdvbEjv6Zgeg/7gkPVui9SG1sRrka1W/iMnC7J3AvazEnEQtnUWFy
-         K/u3OvxuGcvYTX8PrIwaKQvNkvGxV8RFH4IrGDGycwXcI4wkpmR+lVagWTVcJrRIbP
-         jZQEI8joAk3x7NlvcDmG0LKiQTtp3mXbYcFClr7S7XACjvmpeCp4I44udBkwuLthk+
-         mv7HcuEz5EAnfc7t70SgFSitJlUlDfesUY2TvdBESuqbEUFxck0++DdHo8/Hqu8557
-         AD7XRBbwny98A==
-Subject: Re: [PATCH 4/4] mtd: nand: omap2: Add support for NAND Controller on
- AM64 SoC
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     richard@nod.at, vigneshr@ti.com, kishon@ti.com, nm@ti.com,
-        tony@atomide.com, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211123103609.14063-1-rogerq@kernel.org>
- <20211123103609.14063-5-rogerq@kernel.org> <20211124131552.6b9bc506@xps13>
-From:   Roger Quadros <rogerq@kernel.org>
-Message-ID: <e52141a6-96fc-97d6-95d7-3e26276fbac3@kernel.org>
-Date:   Thu, 25 Nov 2021 16:12:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S1355509AbhKYOSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 09:18:02 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:52236 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1355576AbhKYOQB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 09:16:01 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637849568;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oGlOADoDQzTJJEUJWNX2CKw9fqVkgomvj7S9qxwFn50=;
+        b=YmU2IX512oZMOv+S0bEfd42DroU8cvUHyI2YJnNxFAJ2neds0zKyxmhFwDTA5lfv4VToOU
+        le040zozWQPhMoUTcPG84pHLJHeBoS9K+xeK9igHG38RiJ1y8OO1TVKn8NblofX9sSwmsT
+        l5WEYU1PgFOE1MJ2nEBOUzEXrhQO5jJY6sXE5NJsKALFem1Qbt+o/vAV0gxgVRSV7Ojme7
+        3ch59gBoT2MT3g8fI1Stvx2DV3QT4EzAbxc65hktpxQCB1xGXCbJ/h3orWNepMd2d/h8TB
+        4GMgHeBWgrrikd8Qhi1wkYxIFCUHpW3TQQfJQ+f94hq88MFHI/dqyugPOrW/2w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637849568;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oGlOADoDQzTJJEUJWNX2CKw9fqVkgomvj7S9qxwFn50=;
+        b=yo79CI88yawGNEw8EdWvLqbO7VEkvbC6wxynf5jW90ckIEvog/f/zSREBuU2hMk80DTuOD
+        fW4BGRM6ERd5RKCg==
+To:     ira.weiny@intel.com, Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
+        linux-mm@kvack.org
+Subject: Re: [PATCH V7 08/18] x86/entry: Preserve PKRS MSR across exceptions
+In-Reply-To: <20210804043231.2655537-9-ira.weiny@intel.com>
+References: <20210804043231.2655537-1-ira.weiny@intel.com>
+ <20210804043231.2655537-9-ira.weiny@intel.com>
+Date:   Thu, 25 Nov 2021 15:12:47 +0100
+Message-ID: <87r1b4l3xc.ffs@tglx>
 MIME-Version: 1.0
-In-Reply-To: <20211124131552.6b9bc506@xps13>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
+Ira,
 
-On 24/11/2021 14:15, Miquel Raynal wrote:
-> Hi Roger,
-> 
-> rogerq@kernel.org wrote on Tue, 23 Nov 2021 12:36:09 +0200:
-> 
->> AM64 SoC has an issue which prevents proper 8-bit and 16-bit
->> reads from GPMC. We are limited to do 32-bit reads only.
-> 
-> First, thanks for this series!
+On Tue, Aug 03 2021 at 21:32, ira weiny wrote:
+> +/*
+> + * __call_ext_ptregs - Helper macro to call into C with extended pt_regs
+> + * @cfunc:		C function to be called
+> + *
+> + * This will ensure that extended_ptregs is added and removed as needed during
+> + * a call into C code.
+> + */
+> +.macro __call_ext_ptregs cfunc annotate_retpoline_safe:req
+> +#ifdef CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS
+> +	/* add space for extended_pt_regs */
+> +	subq    $EXTENDED_PT_REGS_SIZE, %rsp
+> +#endif
+> +	.if \annotate_retpoline_safe == 1
+> +		ANNOTATE_RETPOLINE_SAFE
+> +	.endif
 
-No problem. Just my job :)
+This annotation is new and nowhere mentioned why it is part of this
+patch.
 
-> 
->> Force 32-bit only reads on affected platforms.
->>
-> 
-> Please change the commit title prefix to: "mtd: rawnand: omap2:" in
-> patch 2, 3, 4.
+Can you please do _ONE_ functional change per patch and not a
+unreviewable pile of changes in one go? Same applies for the ASM and the
+C code changes. The ASM change has to go first and then the C code can
+build upon it.
 
-OK.
+> +	call	\cfunc
+> +#ifdef CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS
+> +	/* remove space for extended_pt_regs */
+> +	addq    $EXTENDED_PT_REGS_SIZE, %rsp
+> +#endif
 
+I really have to ask the question whether this #ifdeffery has any value
+at all. 8 bytes extra stack usage is not going to be the end of the
+world and distro kernels will enable that config anyway.
+
+If we really want to save the space then certainly not by sprinkling
+CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS all over the place and hiding the
+extra sized ptregs in the pkrs header.
+
+You are changing generic architecture code so you better think about
+making such a change generic and extensible. Can folks please start
+thinking beyond the brim of their teacup and not pretend that the
+feature they are working on is the unicorn which requires unique magic
+brandnamed after the unicorn of the day.
+
+If the next feature comes around which needs to save something in that
+extended area then we are going to change the world again, right?
+Certainly not.
+
+This wants to go into asm/ptrace.h:
+
+struct pt_regs_aux {
+	u32	pkrs;
+};
+
+struct pt_regs_extended {
+	struct pt_regs_aux	aux;
+        struct pt_regs		regs __attribute__((aligned(8)));
+};
+
+and then have in asm-offset:
+
+   DEFINE(PT_REGS_AUX_SIZE, sizeof(struct pt_regs_extended) - sizeof(struct pt_regs));
+
+which does the right thing whatever the size of pt_regs_aux is. So for
+the above it will have:
+
+ #define PT_REGS_AUX_SIZE 8 /* sizeof(struct pt_regs_extended) - sizeof(struct pt_regs) */
+
+Even, if you do
+
+struct pt_regs_aux {
+#ifdef CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS
+	u32	pkrs;
+#endif        
+};
+
+and the config switch is disabled. It's still correct:
+
+ #define PT_REGS_AUX_SIZE 0 /* sizeof(struct pt_regs_extended) - sizeof(struct pt_regs) */
+
+See? No magic hardcoded constant, no build time error checking for that
+constant. Nothing, it just works.
+
+That's one part, but let me come back to this:
+
+> +#ifdef CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS
+> +	/* add space for extended_pt_regs */
+> +	subq    $EXTENDED_PT_REGS_SIZE, %rsp
+
+What guarantees that RSP points to pt_regs at this point?  Nothing at
+all. It's just pure luck and a question of time until this explodes in
+hard to diagnose ways.
+
+Because between
+
+        movq	%rsp, %rdi
+and
+        call    ....
+
+can legitimately be other code which causes the stack pointer to
+change. It's not the case today, but nothing prevents this in the
+future.
+
+The correct thing to do is:
+
+        movq	%rsp, %rdi
+        RSP_MAKE_PT_REGS_AUX_SPACE
+        call	...
+        RSP_REMOVE_PT_REGS_AUX_SPACE
+
+The few extra macro lines in the actual code are way better as they make
+it completely obvious what's going on and any misuse can be spotted
+easily.
+
+> +#ifdef CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS
+> +/*
+> + * PKRS is a per-logical-processor MSR which overlays additional protection for
+> + * pages which have been mapped with a protection key.
+> + *
+> + * Context switches save the MSR in the task struct thus taking that value to
+> + * other processors if necessary.
+> + *
+> + * To protect against exceptions having access to this memory save the current
+> + * thread value and set the PKRS value to be used during the exception.
+> + */
+> +void pkrs_save_irq(struct pt_regs *regs)
+
+That's a misnomer as this is invoked for _any_ exception not just
+interrupts.
+
+>  #ifdef CONFIG_XEN_PV
+>  #ifndef CONFIG_PREEMPTION
+>  /*
+> @@ -309,6 +361,8 @@ __visible noinstr void xen_pv_evtchn_do_upcall(struct pt_regs *regs)
 >  
->> Signed-off-by: Roger Quadros <rogerq@kernel.org>
->> ---
->>  drivers/mtd/nand/raw/omap2.c | 35 +++++++++++++++++++++++++++++++++++
->>  1 file changed, 35 insertions(+)
->>
->> diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
->> index f1fc146e09b9..d952de771b35 100644
->> --- a/drivers/mtd/nand/raw/omap2.c
->> +++ b/drivers/mtd/nand/raw/omap2.c
->> @@ -28,6 +28,7 @@
->>  
->>  #include <linux/omap-gpmc.h>
->>  #include <linux/platform_data/mtd-nand-omap2.h>
->> +#include <linux/sys_soc.h>
->>  
->>  #define	DRIVER_NAME	"omap2-nand"
->>  #define	OMAP_NAND_TIMEOUT_MS	5000
->> @@ -181,6 +182,7 @@ struct omap_nand_info {
->>  	void (*data_out)(struct nand_chip *chip,
->>  			 const void *buf, unsigned int len,
->>  			 bool force_8bit);
->> +	bool force_32bit;
-> 
-> I believe we should have a driver capability instead of something in
-> the info structure. You can save the value here as well in the probe if
-> you want, but I would like this limitation to be tied to the
-> compatible.
+>  	inhcall = get_and_clear_inhcall();
+>  	if (inhcall && !WARN_ON_ONCE(state.exit_rcu)) {
+> +		/* Normally called by irqentry_exit, restore pkrs here */
+> +		pkrs_restore_irq(regs);
+> 		irqentry_exit_cond_resched();
 
-I will discuss about this at the end.
-> 
->>  };
->>  
->>  static inline struct omap_nand_info *mtd_to_omap(struct mtd_info *mtd)
->> @@ -2070,6 +2072,25 @@ static void omap_nand_data_in(struct nand_chip *chip, void *buf,
->>  	struct omap_nand_info *info = mtd_to_omap(nand_to_mtd(chip));
->>  	u32 alignment = ((uintptr_t)buf | len) & 3;
->>  
->> +	if (info->force_32bit) {
-> 
-> I am a little bit bothered by this limitation. The force8_bit flag does
-> not require the driver to read only 8-bits of the fifo register, it
-> actually requires to use only the first 8-bits of the NAND bus (which
-> can also be 16-bit wide). The older implementation just limited the
-> number of bits reads to be 8 with ioread8, which seems to be a fine
-> solution but would require more accesses than using ioread16 (or
-> ioread32) when reading more than 1 byte on platforms with only 8-bit
-> busses.
+Sigh. Consistency is overrated....
 
-I didn't understand the purpose of force8_bit flag. 
-How should the driver/controller behave if we get a data_in() call with len 8 and force8_bit flag set?
+> +
+>  void setup_pks(void);
+>  void pkrs_write_current(void);
+>  void pks_init_task(struct task_struct *task);
+> +void write_pkrs(u32 new_pkrs);
 
-e.g. if 16-bit NAND ID area contains (little-endian) 2c d3 d0 a6 66 45 67 a3 4f 4e 46 49 ab ef 90 d3
-what should data_in(len = 8, force_8_bit = 1) return in buffer?
+So we have pkrs_write_current() and write_pkrs() now. Can you please
+stick to a common prefix, i.e. pkrs_ ?
 
-Based on what you said earlier my guess is it should return 2c d0 66 67 4f 46 ab 90?
+> diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+> index bf16395b9e13..aa0b1e8dd742 100644
+> --- a/kernel/entry/common.c
+> +++ b/kernel/entry/common.c
+> @@ -6,6 +6,7 @@
+>  #include <linux/livepatch.h>
+>  #include <linux/audit.h>
+>  #include <linux/tick.h>
+> +#include <linux/pkeys.h>
+>  
+>  #include "common.h"
+>  
+> @@ -364,7 +365,7 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
+>  		instrumentation_end();
+>  
+>  		ret.exit_rcu = true;
+> -		return ret;
+> +		goto done;
+>  	}
+>  
+>  	/*
+> @@ -379,6 +380,8 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
+>  	trace_hardirqs_off_finish();
+>  	instrumentation_end();
+>  
+> +done:
+> +	pkrs_save_irq(regs);
 
-> 
-> My point here is that:
-> 1- the limited controllers cannot be used with a 16-bit bus
-> 2- non-limited controllers can use ioread16 if the bus width is 8-bits
+This still calls out into instrumentable code. I explained you before
+why this is wrong. Also objtool emits warnings to that effect if you do a
+proper verified build.
 
-Sorry, I did not understand this either. The TI GPMC controller has a configuration setting where we
-set the NAND device bus width (8-bit or 16-bit). Then it automatically converts ioread16 or
-ioread32 to appropriate number of 8-bit accesses or 16-bit accesses to the NAND chip.
+>  	return ret;
+>  }
+>  
+> @@ -404,7 +407,12 @@ noinstr void irqentry_exit(struct pt_regs *regs, irqentry_state_t state)
+>  	/* Check whether this returns to user mode */
+>  	if (user_mode(regs)) {
+>  		irqentry_exit_to_user_mode(regs);
+> -	} else if (!regs_irqs_disabled(regs)) {
+> +		return;
+> +	}
+> +
+> +	pkrs_restore_irq(regs);
 
-> 
-> I guess it's fine not to change the logic to avoid breaking boards so
-> we can just ignore [2] but I belive we should check chip->options &
-> NAND_BUSWIDTH_16 in ->attach_chip() and refuse probing if this flag is
-> set.
-> 
->> +		u32 val;
->> +		int left;
->> +		u8 *ptr;
->> +
->> +		ioread32_rep(info->fifo, buf, len >> 2);
->> +		left = len & 0x3;
->> +		if (left) {
->> +			val = ioread32(info->fifo);
->> +			ptr = (u8 *)(buf + (len - left));
->> +			while (left--) {
->> +				*ptr++ = val & 0xff;
->> +				val >>= 8;
->> +			}
->> +		}
->> +
->> +		return;
->> +	}
->> +
->>  	if (force_8bit || (alignment & 1))
->>  		ioread8_rep(info->fifo, buf, len);
->>  	else if (alignment & 3)
->> @@ -2169,8 +2190,15 @@ static const struct nand_controller_ops omap_nand_controller_ops = {
->>  static struct nand_controller omap_gpmc_controller;
->>  static bool omap_gpmc_controller_initialized;
->>  
->> +static const struct of_device_id omap_nand_ids[];
->> +
-> 
-> I believe this change should be dropped.
-> 
->>  static int omap_nand_probe(struct platform_device *pdev)
->>  {
->> +	const struct soc_device_attribute k3_soc_devices[] = {
->> +		{ .family = "AM64X", .revision = "SR1.0" },
->> +		{ /* sentinel */ }
->> +	};
->> +
->>  	struct omap_nand_info		*info;
->>  	struct mtd_info			*mtd;
->>  	struct nand_chip		*nand_chip;
->> @@ -2186,6 +2214,12 @@ static int omap_nand_probe(struct platform_device *pdev)
->>  
->>  	info->pdev = pdev;
->>  
->> +	/* Some SoC's have 32-bit at least, read limitation */
->> +	if (soc_device_match(k3_soc_devices)) {
->> +		dev_info(&pdev->dev, "force 32-bit\n");
->> +		info->force_32bit = true;
->> +	}
->> +
-> 
-> As suggested above, just adding a capability structure tied to the
-> compatible string and retrieved with of_device_get_match_data() should
-> be enough and replace this manual tree research.
+At least you are now putting it consistently at the wrong place
+vs. noinstr.
 
-The trouble comes when TI updates the silicon revision to "SR2.0" and that has the issue fixed
-but still uses the same compatible. So compatible string by itself is not sufficient to identify
-the troubled devices. soc_device_match() was the easiest way to address this.
+Though, if you look at the xen_pv_evtchn_do_upcall() part where you
+added this extra invocation you might figure out that adding
+pkrs_restore_irq() to irqentry_exit_cond_resched() and explicitely to
+the 'else' path in irqentry_exit() makes it magically consistent for
+both use cases.
 
-> 
->>  	err = omap_get_dt_info(dev, info);
->>  	if (err)
->>  		return err;
->> @@ -2286,6 +2320,7 @@ static int omap_nand_remove(struct platform_device *pdev)
->>  
->>  static const struct of_device_id omap_nand_ids[] = {
->>  	{ .compatible = "ti,omap2-nand", },
->> +	{ .compatible = "ti,am64-nand", },
->>  	{},
->>  };
->>  MODULE_DEVICE_TABLE(of, omap_nand_ids);
-> 
-> The conversion to exec_op looks fine otherwise :)
+Thanks,
 
-Thanks :)
-
-> 
-> Thanks,
-> Miquèl
-> 
-
-cheers,
--roger
+        tglx
