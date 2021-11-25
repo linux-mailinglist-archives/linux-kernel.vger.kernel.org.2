@@ -2,74 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3F445D31D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02AC245D35B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 04:00:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237728AbhKYCX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 21:23:28 -0500
-Received: from mga12.intel.com ([192.55.52.136]:57404 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229700AbhKYCV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 21:21:27 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="215447716"
-X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
-   d="scan'208";a="215447716"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 18:13:04 -0800
-X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
-   d="scan'208";a="510105492"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.255.31.184]) ([10.255.31.184])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 18:12:58 -0800
-Message-ID: <46eb9fbd-f21f-920d-907f-0fcf327b129a@intel.com>
-Date:   Thu, 25 Nov 2021 10:12:56 +0800
+        id S239266AbhKYDDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 22:03:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232102AbhKYDBi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 22:01:38 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786A6C061395;
+        Wed, 24 Nov 2021 18:15:24 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id u22so9382016lju.7;
+        Wed, 24 Nov 2021 18:15:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Lj/upQN23hUbS3GkdrQq0qv4Yn6ZPxec0EiWH+iqMEA=;
+        b=DLca4MslZlWfLY/LW/Le4nXm0Lum7JkUH2e/qN4ovD8bOQ+kz9mypepqtDwtvBoaTa
+         mKlIhR4I4RdGakqb+PuA9BCZhIPzlsjxmU6hS2jOpVkSDyOEyJwf9nzw+sVzN0v961pb
+         kcjhP48xKzax/6HW6UTL9lOMbHhSLCyM3sy/D8tzTu2ZFfjNvBm0pRO1dBVsecX5Bv0+
+         uVB2/LA4JMvrvkQuDI7dFIEASY5dy7A1FdEswK5yqjMf9+BWmirrXVyxKuvNOLpv8G5W
+         jSgvK2+Ei0SaCozS+BHconKlU2PczXRL7HkGrJ+94JZ3Tb0XxK0branHuIvp1xn8N3+C
+         xR7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Lj/upQN23hUbS3GkdrQq0qv4Yn6ZPxec0EiWH+iqMEA=;
+        b=Zcqn6jV+jcgUNd2PyOypXueMY9vWjGuO+CvmeCxpSfmkU8ApmuoMps9IwgSoPu72gN
+         GDD3TZca3pNmN+pBEDwf834duCsW73egFyUzdJEkdcoyI574PBdidujoI8o//gIO4yhI
+         ZRWQ24eOkr5X42p9a8sSwW2q/oYdZQI7EYR5jw2f1LAbHhD0cqXwdWxrVtODNtGQT9lI
+         btOEQJGYBK7Pix2Anqx1F3dWO/PyIVHfqfi24yLGlOWPu3YmPrjiw3n12GHOb3cnHuld
+         hvRQ2Li2X8SMnTOm6On7SWbT6/I9IHMFvAoZilCkK6uciuXeDwSvZWNzj99GkEzy6ljl
+         wwzA==
+X-Gm-Message-State: AOAM530j7E9/K+3JKYSqBLEfbLtjdxVPeGgPTYhvM1oX8Oe4JFt0u91r
+        CiOfT3oISGaKuUGuYKg7sJ2V7u52U7k=
+X-Google-Smtp-Source: ABdhPJwAyB2heTKPgBeg1gEb9wBYyvxbBdHgV9Gy/aBPiZUAIjZAMyEG1ecw4TwMScq4tOcwaSfJ7g==
+X-Received: by 2002:a2e:b907:: with SMTP id b7mr21347657ljb.214.1637806522563;
+        Wed, 24 Nov 2021 18:15:22 -0800 (PST)
+Received: from [192.168.2.145] (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
+        by smtp.googlemail.com with ESMTPSA id b43sm128479ljr.64.2021.11.24.18.15.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Nov 2021 18:15:22 -0800 (PST)
+Subject: Re: [PATCH] dt-bindings: sound: nvidia,tegra-audio: Convert multiple
+ txt bindings to yaml
+To:     Rob Herring <robh@kernel.org>, David Heidelberg <david@ixit.cz>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        ~okias/devicetree@lists.sr.ht, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211025171927.92332-1-david@ixit.cz>
+ <YYBRTK9KGglu/s9m@robh.at.kernel.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <59a8095b-fa80-258f-f2d7-dc241bfae24a@gmail.com>
+Date:   Thu, 25 Nov 2021 05:15:21 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.3.2
-Subject: Re: [RFC PATCH v3 00/59] KVM: X86: TDX support
+In-Reply-To: <YYBRTK9KGglu/s9m@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@gmail.com
-References: <cover.1637799475.git.isaku.yamahata@intel.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <cover.1637799475.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/25/2021 8:19 AM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
+01.11.2021 23:42, Rob Herring пишет:
+>> Convert Tegra audio complex with the
+>>  * ALC5632
+>>  * MAX98090
+>>  * RT5640
+>>  * RT5677
+>>  * SGTL5000
+>>  * TrimSlice
+>>  * WM8753
+>>  * WM8903
+>>  * WM9712
+>> codec to the YAML format.
+> Perhaps say why they can all be combined.
 > 
-> Changes from v2:
-> - update based on patch review
-> - support TDP MMU
-> - drop non-essential fetures (ftrace etc.) to reduce patch size
+> I don't think that really works because the properties which are valid 
+> varies. Specifically, the GPIO lines vary.
 > 
-> TODO:
-> - integrate vm type patch
+> Instead, define a schema with all the common properties and then 
+> reference it.
+> 
 
-Hi, everyone plans to review this series,
+Those GPIO lines should be more board-specific, rather than
+CODEC-specific. Yes, some of GPIO lines may be unrelated to a specific
+CODEC, but practically it's not worth the effort to split this binding
+because of a couple optional GPIOs, IMO. We actually considered the
+variant with the reference that you're suggesting and decided that it
+should be unnecessary.
 
-Please skip patch 14-22, which aer old and a separate series can be 
-found at 
-https://lore.kernel.org/all/20211112153733.2767561-1-xiaoyao.li@intel.com/
-
-I will post v2 with all the comments from Sean addressed.
-
-thanks,
--Xiaoyao
-
-> - integrate unmapping user space mapping
-
-
+Are you insisting that the binding needs to be split?
