@@ -2,109 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E69E945D258
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 02:11:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 755F345D25A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 02:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346685AbhKYBOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 20:14:15 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:28105 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345285AbhKYBMO (ORCPT
+        id S1347319AbhKYBOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 20:14:52 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:60177 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345567AbhKYBMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 20:12:14 -0500
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4J007m3PLPz1DJWs;
-        Thu, 25 Nov 2021 09:06:28 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 25 Nov 2021 09:09:01 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.20; Thu, 25 Nov 2021 09:09:00 +0800
-Message-ID: <356d857b-1813-6132-d4ae-5bb41190a1a7@huawei.com>
-Date:   Thu, 25 Nov 2021 09:08:59 +0800
+        Wed, 24 Nov 2021 20:12:51 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id D4AB53201CD3;
+        Wed, 24 Nov 2021 20:09:39 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 24 Nov 2021 20:09:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=jGPihi
+        4ljyAa/Ki0//eZ9S9R+JlJhSZ+gF/GSVZZuwo=; b=LSFA+/iTR3YjMYtA2BbTtS
+        PRkSEWiB2o8sIWdBIsWaL7mYe/haIP3RhfAiOlIduPefbZNvTpkbm5PgKzF9Wpdm
+        sN/dL//sGiYv99ByoZb+a5oBQKiMvG71C0lR22Jf6ykMn7g+aCKRh6GF60myooh8
+        9Aq0y+GMvq4Dovr+0AH21Cmw754JvUgsxhZoNSZxspmOwTKabqxkysifVyC2cDdM
+        x6Ar7ajCRpZN3QiQZMTbh6q+UOzzEDM9WfhhqjMjs1RRqwc7/i40a53h0t96CNWk
+        N+BU2bL4y3ErYJ+X9xSVaPHfK9oX6ijx+dSp5/I8cB9WSndsmWga2U0reu+xe9Hg
+        ==
+X-ME-Sender: <xms:UuKeYbSMWWWl99KWp_cBRE5jxsK-pspVktNAJcjV2nOu4Jbt9BLLZg>
+    <xme:UuKeYcy8cLHGH0z3czcn8l-CfScXf933z5u7INVeoIfAWomUgKldDgzrmz29dCHoF
+    snrT_wm0guNSdGmYzU>
+X-ME-Received: <xmr:UuKeYQ0DEMIWIjHnK9suC8IB1YyYYa2xKWJiNLY0r1QzbZ2b92yf2EdpOiSBJdxrT_6fsWk3VYMaFkNyYpCac2gLIk2eiOOkpng>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrgeelgddvkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
+    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeffudfhgeefvdeitedugfelueegheekkeefveffhfeiveetledvhfdtveffteeu
+    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
+    hhrghinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:UuKeYbBmbl5cCspS_mrtdXVGipYJTQGV8m0Fe5_UsRfiJZlG8yG62A>
+    <xmx:UuKeYUidx-sqYLC_xXWcZ2whoBrR0BoWVBK8kYkgvnx0xUuCfvNO_Q>
+    <xmx:UuKeYfpDk6p8spn5tAZX4vzhwHV4DMoaf6e-I7-ZX4bEiH5G_e0lag>
+    <xmx:U-KeYdtu_nLCW5CrNfkNSg5NEewHa8YQ85c045MDUaIZyZ6jLouRkg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 24 Nov 2021 20:09:37 -0500 (EST)
+Date:   Thu, 25 Nov 2021 12:09:41 +1100 (AEDT)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Michael Schmitz <schmitzmic@gmail.com>
+cc:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pata_falcon: Add missing __iomem annotations
+In-Reply-To: <f420bff8-855a-aabe-924c-6d1b74f11001@gmail.com>
+Message-ID: <682664c-836e-ae61-6844-207a980f9cd@linux-m68k.org>
+References: <44e0213a681f3c8ee4c6ab2ef9d61ce3ac00e368.1637727935.git.fthain@linux-m68k.org> <f420bff8-855a-aabe-924c-6d1b74f11001@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v3] mm: Defer kmemleak object creation of module_alloc()
-Content-Language: en-US
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-s390@vger.kernel.org>,
-        <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Alexander Potapenko <glider@google.com>,
-        Yongqiang Liu <liuyongqiang13@huawei.com>
-References: <20211124142034.192078-1-wangkefeng.wang@huawei.com>
- <20211124135014.665649a0bcb872367b248cef@linux-foundation.org>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <20211124135014.665649a0bcb872367b248cef@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggeme701-chm.china.huawei.com (10.1.199.97) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 24 Nov 2021, Michael Schmitz wrote:
 
-On 2021/11/25 5:50, Andrew Morton wrote:
-> On Wed, 24 Nov 2021 22:20:34 +0800 Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
->
->> Yongqiang reports a kmemleak panic when module insmod/rmmod
->> with KASAN enabled(without KASAN_VMALLOC) on x86[1].
->>
->> When the module area allocates memory, it's kmemleak_object
->> is created successfully, but the KASAN shadow memory of module
->> allocation is not ready, so when kmemleak scan the module's
->> pointer, it will panic due to no shadow memory with KASAN check.
->>
->> module_alloc
->>    __vmalloc_node_range
->>      kmemleak_vmalloc
->> 				kmemleak_scan
->> 				  update_checksum
->>    kasan_module_alloc
->>      kmemleak_ignore
->>
->> Note, there is no problem if KASAN_VMALLOC enabled, the modules
->> area entire shadow memory is preallocated. Thus, the bug only
->> exits on ARCH which supports dynamic allocation of module area
->> per module load, for now, only x86/arm64/s390 are involved.
->>
->> Add a VM_DEFER_KMEMLEAK flags, defer vmalloc'ed object register
->> of kmemleak in module_alloc() to fix this issue.
->>
-> I guess this is worth backporting into -stable kernels?  If so, what
-> would be a suitable Fixes: target?  I suspect it goes back to the
-> initial KASAN merge date?
+> On 24/11/21 17:25, Finn Thain wrote:
+> > The zero day bot reported some sparse complaints in pata_falcon.c. E.g.
+> >
+> > drivers/ata/pata_falcon.c:58:41: warning: cast removes address space
+> > '__iomem' of expression
+> > drivers/ata/pata_falcon.c:58:41: warning: incorrect type in argument 1
+> > (different address spaces)
+> > drivers/ata/pata_falcon.c:58:41:    expected unsigned short volatile
+> > [noderef] [usertype] __iomem *port
+> > drivers/ata/pata_falcon.c:58:41:    got unsigned short [usertype] *
+> >
+> > The same thing shows up in 8 places, all told. Avoid this by use of
+> > __iomem type casts.
+> 
+> Seeing as data_addr was explicitly typed as __iomem, your fix is clearly
+> correct. Bit embarrassing to have missed that (I remember adding __iomem
+> annotations elsewhere at some stage).
+> 
+> If you think there's any need to test this change, say so.
+> 
 
-The kasan_module_alloc() was introduced from v4.0,
+There's no change in pata_falcon.o.
 
-s390: v4.20
+> Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+> 
 
-793213a82de4 s390/kasan: dynamic shadow mem allocation for modules
-
-arm64: v4.4
-
-39d114ddc682 arm64: add KASAN support
-
-x86: v4.0
-
-bebf56a1b176 kasan: enable instrumentation of global variables
-
-> .
+Thanks.
