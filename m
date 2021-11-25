@@ -2,119 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8603045E1FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BCC45E204
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350417AbhKYVQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 16:16:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbhKYVOa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 16:14:30 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FEDC061761;
-        Thu, 25 Nov 2021 13:08:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JbPu0sanHIoDdCdNVaSqLJ/ATyCk1958f2ugIhUQGQ0=; b=v1nkFrq//MZVSs4ZVxUaxeuNfp
-        6OCy9uc7M4DrudT7JEykQ2r2hNUkj+6QRL8z0Yj4wI6E+gu7LlJbyeDZq5m96R3coBFAZvLSLZOvv
-        dw1mctTaJlQUMNwVWmmMGxV9iXGiEcIjk8lWVwF7RbIR8DTn9CtBKqClXCxrzlWyxJvrBNLYttafX
-        lY+Mw8ldQ6LfUsN8zegw00ApSNMiPaJ3IJShrnwJA5X2Pysp5tCaIHFLHYQfWgI+Ee57J1mis+Axy
-        Q1DwEotOgm3HRlBiDSPVavGhG870BESemCtkjOO3t2VfYxL/6pF/kr8dCPmC9w3y/SdKQL6t4Z34L
-        Dsun5cXw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mqLyV-007og9-Cf; Thu, 25 Nov 2021 21:08:11 +0000
-Date:   Thu, 25 Nov 2021 21:08:11 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: iomap folio conversion for 5.17
-Message-ID: <YZ/7O9Zb3PSsCbk9@casper.infradead.org>
-References: <20211124183905.GE266024@magnolia>
+        id S1357178AbhKYVSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 16:18:22 -0500
+Received: from mga06.intel.com ([134.134.136.31]:59842 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232617AbhKYVQV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 16:16:21 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="296372646"
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="296372646"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 13:11:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="457487608"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 25 Nov 2021 13:11:52 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqM23-0006vt-FO; Thu, 25 Nov 2021 21:11:51 +0000
+Date:   Fri, 26 Nov 2021 05:11:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>
+Subject: [ti:ti-rt-linux-5.10.y 7559/10206]
+ drivers/media/pci/intel/ipu3/ipu3-cio2.c:983:27: error: incompatible pointer
+ types passing 'struct media_entity *' to parameter of type 'struct media_pad
+ *'
+Message-ID: <202111260514.iLTDT5ia-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211124183905.GE266024@magnolia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 10:39:05AM -0800, Darrick J. Wong wrote:
-> Hi folks,
-> 
-> The iomap-for-next branch of the xfs-linux repository at:
-> 
-> 	git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
-> 
-> has just been updated.
+Hi Sakari,
 
-Hi Darrick,
+FYI, the error/warning still remains.
 
-Would you like to pull the folio changes from my git tree?
-They are generally as posted previously, with minor tweaks to match
-upstream changes.  They do not introduce any new xfstests problems
-in my testing.
+tree:   git://git.ti.com/ti-linux-kernel/ti-linux-kernel.git ti-rt-linux-5.10.y
+head:   0c67d996db8f3c9149598bc98657ae28fee22208
+commit: d42003cd0440e21c8940801e58ba2aabf3dc13b6 [7559/10206] media: entity: Use pad as the starting point for a pipeline
+config: i386-randconfig-a003-20211118 (https://download.01.org/0day-ci/archive/20211126/202111260514.iLTDT5ia-lkp@intel.com/config)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        git remote add ti git://git.ti.com/ti-linux-kernel/ti-linux-kernel.git
+        git fetch --no-tags ti ti-rt-linux-5.10.y
+        git checkout d42003cd0440e21c8940801e58ba2aabf3dc13b6
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=i386 
 
-The following changes since commit b501b85957deb17f1fe0a861fee820255519d526:
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-  Merge tag 'asm-generic-5.16-2' of git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic (2021-11-25 10:41:28 -0800)
+All errors (new ones prefixed by >>):
 
-are available in the Git repository at:
+>> drivers/media/pci/intel/ipu3/ipu3-cio2.c:983:27: error: incompatible pointer types passing 'struct media_entity *' to parameter of type 'struct media_pad *' [-Werror,-Wincompatible-pointer-types]
+           r = media_pipeline_start(&q->vdev.entity, &q->pipe);
+                                    ^~~~~~~~~~~~~~~
+   include/media/media-entity.h:948:57: note: passing argument to parameter 'pad' here
+   __must_check int media_pipeline_start(struct media_pad *pad,
+                                                           ^
+   drivers/media/pci/intel/ipu3/ipu3-cio2.c:1003:22: error: incompatible pointer types passing 'struct media_entity *' to parameter of type 'struct media_pad *' [-Werror,-Wincompatible-pointer-types]
+           media_pipeline_stop(&q->vdev.entity);
+                               ^~~~~~~~~~~~~~~
+   include/media/media-entity.h:972:44: note: passing argument to parameter 'pad' here
+   void media_pipeline_stop(struct media_pad *pad);
+                                              ^
+   drivers/media/pci/intel/ipu3/ipu3-cio2.c:1024:22: error: incompatible pointer types passing 'struct media_entity *' to parameter of type 'struct media_pad *' [-Werror,-Wincompatible-pointer-types]
+           media_pipeline_stop(&q->vdev.entity);
+                               ^~~~~~~~~~~~~~~
+   include/media/media-entity.h:972:44: note: passing argument to parameter 'pad' here
+   void media_pipeline_stop(struct media_pad *pad);
+                                              ^
+   3 errors generated.
 
-  git://git.infradead.org/users/willy/linux.git tags/iomap-folio-5.17
 
-for you to fetch changes up to 979fe192e8a935968fd739983217128b431f6268:
+vim +983 drivers/media/pci/intel/ipu3/ipu3-cio2.c
 
-  xfs: Support large folios (2021-11-25 14:03:56 -0500)
+c2a6a07afe4a466 Yong Zhi 2017-11-08   966  
+c2a6a07afe4a466 Yong Zhi 2017-11-08   967  static int cio2_vb2_start_streaming(struct vb2_queue *vq, unsigned int count)
+c2a6a07afe4a466 Yong Zhi 2017-11-08   968  {
+c2a6a07afe4a466 Yong Zhi 2017-11-08   969  	struct cio2_queue *q = vb2q_to_cio2_queue(vq);
+c2a6a07afe4a466 Yong Zhi 2017-11-08   970  	struct cio2_device *cio2 = vb2_get_drv_priv(vq);
+c2a6a07afe4a466 Yong Zhi 2017-11-08   971  	int r;
+c2a6a07afe4a466 Yong Zhi 2017-11-08   972  
+c2a6a07afe4a466 Yong Zhi 2017-11-08   973  	cio2->cur_queue = q;
+c2a6a07afe4a466 Yong Zhi 2017-11-08   974  	atomic_set(&q->frame_sequence, 0);
+c2a6a07afe4a466 Yong Zhi 2017-11-08   975  
+c2a6a07afe4a466 Yong Zhi 2017-11-08   976  	r = pm_runtime_get_sync(&cio2->pci_dev->dev);
+c2a6a07afe4a466 Yong Zhi 2017-11-08   977  	if (r < 0) {
+c2a6a07afe4a466 Yong Zhi 2017-11-08   978  		dev_info(&cio2->pci_dev->dev, "failed to set power %d\n", r);
+c2a6a07afe4a466 Yong Zhi 2017-11-08   979  		pm_runtime_put_noidle(&cio2->pci_dev->dev);
+c2a6a07afe4a466 Yong Zhi 2017-11-08   980  		return r;
+c2a6a07afe4a466 Yong Zhi 2017-11-08   981  	}
+c2a6a07afe4a466 Yong Zhi 2017-11-08   982  
+c2a6a07afe4a466 Yong Zhi 2017-11-08  @983  	r = media_pipeline_start(&q->vdev.entity, &q->pipe);
+c2a6a07afe4a466 Yong Zhi 2017-11-08   984  	if (r)
+c2a6a07afe4a466 Yong Zhi 2017-11-08   985  		goto fail_pipeline;
+c2a6a07afe4a466 Yong Zhi 2017-11-08   986  
+c2a6a07afe4a466 Yong Zhi 2017-11-08   987  	r = cio2_hw_init(cio2, q);
+c2a6a07afe4a466 Yong Zhi 2017-11-08   988  	if (r)
+c2a6a07afe4a466 Yong Zhi 2017-11-08   989  		goto fail_hw;
+c2a6a07afe4a466 Yong Zhi 2017-11-08   990  
+c2a6a07afe4a466 Yong Zhi 2017-11-08   991  	/* Start streaming on sensor */
+c2a6a07afe4a466 Yong Zhi 2017-11-08   992  	r = v4l2_subdev_call(q->sensor, video, s_stream, 1);
+c2a6a07afe4a466 Yong Zhi 2017-11-08   993  	if (r)
+c2a6a07afe4a466 Yong Zhi 2017-11-08   994  		goto fail_csi2_subdev;
+c2a6a07afe4a466 Yong Zhi 2017-11-08   995  
+c2a6a07afe4a466 Yong Zhi 2017-11-08   996  	cio2->streaming = true;
+c2a6a07afe4a466 Yong Zhi 2017-11-08   997  
+c2a6a07afe4a466 Yong Zhi 2017-11-08   998  	return 0;
+c2a6a07afe4a466 Yong Zhi 2017-11-08   999  
+c2a6a07afe4a466 Yong Zhi 2017-11-08  1000  fail_csi2_subdev:
+c2a6a07afe4a466 Yong Zhi 2017-11-08  1001  	cio2_hw_exit(cio2, q);
+c2a6a07afe4a466 Yong Zhi 2017-11-08  1002  fail_hw:
+c2a6a07afe4a466 Yong Zhi 2017-11-08  1003  	media_pipeline_stop(&q->vdev.entity);
+c2a6a07afe4a466 Yong Zhi 2017-11-08  1004  fail_pipeline:
+c2a6a07afe4a466 Yong Zhi 2017-11-08  1005  	dev_dbg(&cio2->pci_dev->dev, "failed to start streaming (%d)\n", r);
+dcd80955a0a13d6 Yong Zhi 2018-01-03  1006  	cio2_vb2_return_all_buffers(q, VB2_BUF_STATE_QUEUED);
+c2a6a07afe4a466 Yong Zhi 2017-11-08  1007  	pm_runtime_put(&cio2->pci_dev->dev);
+c2a6a07afe4a466 Yong Zhi 2017-11-08  1008  
+c2a6a07afe4a466 Yong Zhi 2017-11-08  1009  	return r;
+c2a6a07afe4a466 Yong Zhi 2017-11-08  1010  }
+c2a6a07afe4a466 Yong Zhi 2017-11-08  1011  
 
-----------------------------------------------------------------
-Convert fs/iomap to use folios
+:::::: The code at line 983 was first introduced by commit
+:::::: c2a6a07afe4a466896c250cbb203657162b86f4b media: intel-ipu3: cio2: add new MIPI-CSI2 driver
 
-These patches prepare XFS to use large folios to cache files.
-There are some preliminary patches to add folio interfaces to the
-block layer & buffer layer, then all the iomap functions are
-converted to use folios instead of pages.
+:::::: TO: Yong Zhi <yong.zhi@intel.com>
+:::::: CC: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 
-----------------------------------------------------------------
-Matthew Wilcox (Oracle) (24):
-      block: Add bio_add_folio()
-      block: Add bio_for_each_folio_all()
-      fs/buffer: Convert __block_write_begin_int() to take a folio
-      iomap: Convert to_iomap_page to take a folio
-      iomap: Convert iomap_page_create to take a folio
-      iomap: Convert iomap_page_release to take a folio
-      iomap: Convert iomap_releasepage to use a folio
-      iomap: Add iomap_invalidate_folio
-      iomap: Pass the iomap_page into iomap_set_range_uptodate
-      iomap: Convert bio completions to use folios
-      iomap: Use folio offsets instead of page offsets
-      iomap: Convert iomap_read_inline_data to take a folio
-      iomap: Convert readahead and readpage to use a folio
-      iomap: Convert iomap_page_mkwrite to use a folio
-      iomap: Convert __iomap_zero_iter to use a folio
-      iomap: Convert iomap_write_begin() and iomap_write_end() to folios
-      iomap: Convert iomap_write_end_inline to take a folio
-      iomap,xfs: Convert ->discard_page to ->discard_folio
-      iomap: Simplify iomap_writepage_map()
-      iomap: Simplify iomap_do_writepage()
-      iomap: Convert iomap_add_to_ioend() to take a folio
-      iomap: Convert iomap_migrate_page() to use folios
-      iomap: Support large folios in invalidatepage
-      xfs: Support large folios
-
- Documentation/core-api/kernel-api.rst |   1 +
- block/bio.c                           |  22 ++
- fs/buffer.c                           |  23 +-
- fs/internal.h                         |   2 +-
- fs/iomap/buffered-io.c                | 506 +++++++++++++++++-----------------
- fs/xfs/xfs_aops.c                     |  24 +-
- fs/xfs/xfs_icache.c                   |   2 +
- include/linux/bio.h                   |  56 +++-
- include/linux/iomap.h                 |   3 +-
- 9 files changed, 363 insertions(+), 276 deletions(-)
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
