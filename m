@@ -2,202 +2,398 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1BB45D9D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A145645D9E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347366AbhKYMPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 07:15:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348305AbhKYMNw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 07:13:52 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2589C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 04:10:40 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id r26so12128089oiw.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 04:10:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TvO93ObMgTYHjDl6zNqxFkX4IbiTkta5TxuIJ9/0KE0=;
-        b=uj6zTQLmvsacomfu4ja02b3+QGGKnR2VvOCjQU6GDqQ3tSfWyLurrZmiVooaYsYVzv
-         91noICmFahhM2vJXHUdCdTC86dC4J0O0xLYX4HIAwgPJ6ltgW4iNqa0B8NnE/WGJ/pyv
-         RcIQxqyNbQpST93lIaay+4v6cWXmlUDW1XMsoPw0v5MFoABHU5D6lIglCa6why1vMTKG
-         ghUkK4/sBk0AAFtwPgDTot1oh+N0ceGiI7fYmvR8pB3rI5st37sHO9UrlT3yTBbTzF9v
-         l6/R9Z6Cf57Si1tdLTZKp+N/SWdeuHs9eEu34sG7jl2pePNKba83A453HTwSGfj4ZIta
-         jAcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TvO93ObMgTYHjDl6zNqxFkX4IbiTkta5TxuIJ9/0KE0=;
-        b=SJvOSSt6ZMhzCU1J54OufmFMSf0sr6LGwqNalDs0qW9mLdAx/uo8dcv/ypZg8ommon
-         0FFb/LghZ65XnCdFtAGrKppbyvZia2SKz3J9ppnIqgNfOj57iAxEYH3O8qhWolzZFMpO
-         9r5smpSb5sRv5NOacGp4Ytrc4O4XcLO4sO65fTdyrmb0LxZ7D4UJJ1A/oR+GWsMBh/m1
-         I8nIw36QS8VsHlxk0YR9zy4r1+oeUNQnWUH2Bgtcw9D2Y4DfEfA/Bh1DBic6QifxYWnu
-         y4d/ZkNXSlE01jYaMqFltp23Jg3P8oQRfmss7zQPzRD04BNLm3tQ9gkDHekgTRq2nE8r
-         Qlfw==
-X-Gm-Message-State: AOAM532wl16Olv4N+pVuJi71rURqgoyJ8Y9/yvj+eKOVx93valyyGaMw
-        QMqjIb61U3AkpfmkbP9//3R93g==
-X-Google-Smtp-Source: ABdhPJwfIBTpcnLWlUhrZerKtW/NA0YMhumz3pqkLqPb4YSPTm3bW+wCISbyS5i+PNkBiKGPcdXqkg==
-X-Received: by 2002:a05:6808:14c3:: with SMTP id f3mr14791412oiw.162.1637842240252;
-        Thu, 25 Nov 2021 04:10:40 -0800 (PST)
-Received: from ?IPv6:2607:fb90:c2ea:cdb4:6680:99ff:fe6f:cb54? ([2607:fb90:c2ea:cdb4:6680:99ff:fe6f:cb54])
-        by smtp.gmail.com with ESMTPSA id a16sm486384otj.79.2021.11.25.04.10.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Nov 2021 04:10:39 -0800 (PST)
-Subject: Re: spinlock.c:306:9: error: implicit declaration of function
- '__raw_write_lock_nested'
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Galbraith <umgwanakikbuti@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, lkft-triage@lists.linaro.org,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-References: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
- <41206fc7-f8ce-98aa-3718-ba3e1431e320@landley.net>
- <CAK8P3a3pQW59NVF=5P+ZiBjNJmnWh+iTZUHvqHBrXkHA6pMd4g@mail.gmail.com>
- <7d5a5249-40ee-9a42-c6a0-a5defa3703c1@landley.net>
- <CAK8P3a0XGz=F0nPAW8T-VvfH5bPuGTNiPZ18N+Z6Sj_M_6TrPA@mail.gmail.com>
-From:   Rob Landley <rob@landley.net>
-Message-ID: <eef6670c-1fb7-2d01-72ed-258d49227de1@landley.net>
-Date:   Thu, 25 Nov 2021 06:10:54 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S1349308AbhKYMXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 07:23:13 -0500
+Received: from mga14.intel.com ([192.55.52.115]:21817 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241277AbhKYMVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 07:21:11 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="235746964"
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="235746964"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 04:14:29 -0800
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="457387129"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 04:14:26 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mqDdv-00AQZq-Ow;
+        Thu, 25 Nov 2021 14:14:23 +0200
+Date:   Thu, 25 Nov 2021 14:14:23 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
+Cc:     linux-kernel@vger.kernel.org, jic23@kernel.org, lars@metafoo.de,
+        linux-iio@vger.kernel.org, git@xilinx.com, michal.simek@xilinx.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        linux-acpi@vger.kernel.org, heikki.krogerus@linux.intel.com,
+        Manish Narani <manish.narani@xilinx.com>
+Subject: Re: [PATCH v11 3/5] iio: adc: Add Xilinx AMS driver
+Message-ID: <YZ9+HxSRmT1XHld2@smile.fi.intel.com>
+References: <20211124225407.17793-1-anand.ashok.dumbre@xilinx.com>
+ <20211124225407.17793-4-anand.ashok.dumbre@xilinx.com>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a0XGz=F0nPAW8T-VvfH5bPuGTNiPZ18N+Z6Sj_M_6TrPA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124225407.17793-4-anand.ashok.dumbre@xilinx.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/25/21 1:25 AM, Arnd Bergmann wrote:
-> On Thu, Nov 25, 2021 at 12:38 AM Rob Landley <rob@landley.net> wrote:
->> On 11/24/21 1:49 AM, Arnd Bergmann wrote:
->> > On Wed, Nov 24, 2021 at 8:31 AM Rob Landley <rob@landley.net> wrote:
+On Wed, Nov 24, 2021 at 10:54:05PM +0000, Anand Ashok Dumbre wrote:
+> The AMS includes an ADC as well as on-chip sensors that can be used to
+> sample external voltages and monitor on-die operating conditions, such
+> as temperature and supply voltage levels. The AMS has two SYSMON blocks.
+> PL-SYSMON block is capable of monitoring off chip voltage and
+> temperature.
 > 
->> > Did you test clone3?
->>
->> Haven't got anything that's using it (musl-libc doesn't know about it yet) but
->> it looked straightforward? (Unlike the #ifdef stack around the previous clone...)
->>
->> I can try building tools/testing/selftests/clone3 if you like, but for some
->> reason the clone3 tests want -lcap which isn't in my cross compiler. (Because to
->> test a clone system call, you need to manipulate capability bits. Of course.)
->> Right, comment out the LDLIBS line in the makefile and the first 3 built, let's
->> try those... Hmmm, it's saying the syscall isn't supported, because it's using
->> syscall.h out of the cross compiler headers (not THIS kernel's #includes) which
->> of course doesn't have it, and then clone3_selftests.h falls back to:
->>
->> #ifndef __NR_clone3
->> #define __NR_clone3 -1
->> #endif
->>
->> Right, stick a 435 in there and... it's still skipping it. Why is it still
->> skipping it... because the RUNTIME syscall is returning ENOSYS. Ok, I have to go
->> stick printk() calls into the kernel. (Do I have to #define those
->> #YES_I_WANT_THIS_SYSCALL_WHY_WOULDNT_I macros? Hmmm...)
+> PL-SYSMON block has DRP, JTAG and I2C interface to enable monitoring
+> from an external master. Out of these interfaces currently only DRP is
+> supported. Other block PS-SYSMON is memory mapped to PS.
 > 
-> This specific syscall is protected by a macro so it doesn't get implicitly
-> enabled without architecture specific review for those architectures using
-> include/uapi/asm-generic/unistd.h.
-
-Sigh.
-
->> > This needs a custom wrapper on most architectures
->> > to have sensible calling conventions.
->>
->> Define "sensible" in this context? It's a new 2 argument syscall? (Do you mean a
->> libc wrapper?)
->>
->> > If sh doesn't need it, that should
->> > be explained in the changelog text.
->>
->> I'm happy to try to fix stuff up, but I don't understand the objection. Does it
->> do something other than what the old clone did, except without the need to pass
->> more arguments than we necessarily have registers defined for? (Calls the same
->> clone plumbing, which should call back into arch/sh/kernel/process_32.c already...?)
->>
->> The most recent clone3 arch addition was commit 59a4e0d5511b which also just
->> pulled in the generic version. (Via #define NO_REALLY_I_WANT_THIS_SYSCALL rather
->> than editing the tbl file? Looks like I've got some reading to do...)
+> The AMS can use internal channels to monitor voltage and temperature as
+> well as one primary and up to 16 auxiliary channels for measuring
+> external voltages.
 > 
-> The best reference I could find is:
-> 
-> https://lore.kernel.org/linux-api/20190604160944.4058-2-christian@brauner.io/
+> The voltage and temperature monitoring channels also have event capability
+> which allows to generate an interrupt when their value falls below or
+> raises above a set threshold.
 
-Does not say what the special handling is. Does not provide an example of said
-special handling. Implied that only three do NOT need special handling, two of
-which are x86 and arm, which seems... convenient.
+...
 
-Right, let's see what "grep -r clone arch/" says:
+> +#define AMS_IDR_1			0x02c
+...
+> +#define AMS_VCC_PSPLL3			0x06C
+...
+> +#define AMS_VCCBRAM			0x07C
+...
+> +#define AMS_PSINTFPDDR			0x09C
+...and so on
 
-m68k/kernel/process.c is obviously overriding
-arc/include/syscalls.h has sys_clone_wrapper()
-nios2/kernel/process.c has nios2_clone()
-openrisc/kernel/entry.S has __sys_clone()
-sparc/kernel/process.c has sparce_clone()
-h8300/kernel/process.c has its own sys_clone()
-ia64/kernel/process.c has ia64_clone()
-user mode linux is just weird.
+Be consistent with the capitalization in the hex values.
 
-So the architectures that wrap clone are m68k, arc, nios2, openrisc, sparc,
-h8300, and ia64.
+...
 
-Implying that the ones that DON'T are alpha, arm64, hexagon, nds32, parisc,
-s390, csky, microblaze, powerpc, sh, x86, arm, mips, riscv, and xtensa.
+> +#define AMS_INIT_POLL_TIME		200
 
-Which would mean 2/3 of architectures don't wrap clone, and thus arch/sh not
-doing so isn't unusual.
+Does it need unit?
 
-> If fork() and clone() don't need special handling on arch/sh, then
-> clone3 shouldn't
-> need it either, unless the existing ones are also wrong. It looks like
-> some architectures
-> override these to avoid leaking register state from the kernel to the
-> child process.
+> +#define AMS_SUPPLY_SCALE_1VOLT		1000
+> +#define AMS_SUPPLY_SCALE_3VOLT		3000
+> +#define AMS_SUPPLY_SCALE_6VOLT		6000
 
-$ cd arch/sh
+I would rather make units with these:
 
-$ grep -r clone
-tools/Makefile:# Shamelessly cloned from ARM.
-kernel/process_32.c:int copy_thread(unsigned long clone_flags, unsigned long
-usp, unsigned long arg,
-kernel/process_32.c:	if (clone_flags & CLONE_SETTLS)
-kernel/syscalls/syscall.tbl:120	common	clone				sys_clone
-kernel/syscalls/syscall.tbl:435	common	clone3				sys_clone3
+#define AMS_SUPPLY_SCALE_1VOLT_mV		1000
+#define AMS_SUPPLY_SCALE_3VOLT_mV		3000
+#define AMS_SUPPLY_SCALE_6VOLT_mV		6000
 
-$ grep -r fork
-include/asm/cacheflush.h: *  - flush_cache_dup mm(mm) handles cache flushing
-when forking
-kernel/entry-common.S:	.globl	ret_from_fork
-kernel/entry-common.S:ret_from_fork:
-kernel/cpu/init.c: * state prior to hand forking the idle loop.
-kernel/process_32.c:asmlinkage void ret_from_fork(void);
-kernel/process_32.c:	p->thread.pc = (unsigned long) ret_from_fork;
-kernel/syscalls/syscall.tbl:2	common	fork				sys_fork
-kernel/syscalls/syscall.tbl:190	common	vfork				sys_vfork
+...
 
-Hard to prove a negative, but I'm not seeing any wrappers. It's got some
-callbacks, but I think the existing plumbing is calling them already?
+> +#define AMS_PL_AUX_CHAN_VOLTAGE(_auxno) \
 
->        Arnd
+> +	AMS_CHAN_VOLTAGE(PL_SEQ(AMS_SEQ(_auxno)), \
+> +			AMS_REG_VAUX(_auxno), false)
 
-Rob
+One line?
+
+> +#define AMS_CTRL_CHAN_VOLTAGE(_scan_index, _addr) \
+
+> +	AMS_CHAN_VOLTAGE(PL_SEQ(AMS_SEQ(AMS_SEQ(_scan_index))), \
+> +			_addr, false)
+
+Ditto.
+
+...
+
+> +/**
+> + * struct ams - Driver data for xilinx-ams
+> + * @base: physical base address of device
+> + * @ps_base: physical base address of PS device
+> + * @pl_base: physical base address of PL device
+> + * @clk: clocks associated with the device
+> + * @dev: pointer to device struct
+> + * @lock: to handle multiple user interaction
+> + * @intr_lock: to protect interrupt mask values
+> + * @alarm_mask: alarm configuration
+> + * @current_masked_alarm: currently masked due to alarm
+> + * @intr_mask: interrupt configuration
+> + * @ams_unmask_work: re-enables event once the event condition disappears
+
+> + * This structure contains necessary state for Sysmon driver to operate
+
+Shouldn't be this "state for Sysmon driver to operate" a summary above?
+
+> + */
+
+...
+
+> +	u32 reg, value;
+> +	u32 expect = AMS_PS_CSTS_PS_READY;
+> +	int ret;
+
+	u32 expect = AMS_PS_CSTS_PS_READY;
+	u32 reg, value;
+	int ret;
+
+...
+
+> +	u32 reg;
+> +	u32 expect = AMS_ISR1_EOC_MASK;
+> +	int ret;
+
+Ditto.
+
+...
+
+> +	ret = readl_poll_timeout(ams->base + AMS_ISR_1, reg,
+> +				 (reg & expect), AMS_INIT_POLL_TIME, AMS_INIT_TIMEOUT_US);
+
+Something wrong with line lengths... There is enough space on previous line for
+one parameter.
+
+> +	if (ret)
+> +		return ret;
+
+...
+
+> +	case IIO_CHAN_INFO_RAW:
+> +		mutex_lock(&ams->lock);
+> +		if (chan->scan_index >= AMS_CTRL_SEQ_BASE) {
+> +			ret = ams_read_vcc_reg(ams, chan->address, val);
+> +			if (ret) {
+
+> +				mutex_unlock(&ams->lock);
+> +				return ret;
+
+Can it be
+				goto out_unlock;
+
+> +			}
+> +			ams_enable_channel_sequence(indio_dev);
+> +		} else if (chan->scan_index >= AMS_PS_SEQ_MAX)
+> +			*val = readl(ams->pl_base + chan->address);
+> +		else
+> +			*val = readl(ams->ps_base + chan->address);
+
+		ret = IIO_VAL_INT;
+out_unlock:
+
+> +		mutex_unlock(&ams->lock);
+> +
+> +		return IIO_VAL_INT;
+
+		mutex_unlock(&ams->lock);
+		return ret;
+
+?
+
+Also the question, why mutex only against INFO_RAW case?
+
+...
+
+> +		switch (chan->type) {
+> +		case IIO_VOLTAGE:
+> +			if (chan->scan_index < AMS_PS_SEQ_MAX) {
+> +				switch (chan->address) {
+> +				case AMS_SUPPLY1:
+> +				case AMS_SUPPLY2:
+> +				case AMS_SUPPLY3:
+> +				case AMS_SUPPLY4:
+> +				case AMS_SUPPLY9:
+> +				case AMS_SUPPLY10:
+> +				case AMS_VCCAMS:
+> +					*val = AMS_SUPPLY_SCALE_3VOLT;
+> +					break;
+> +				case AMS_SUPPLY5:
+> +				case AMS_SUPPLY6:
+> +				case AMS_SUPPLY7:
+> +				case AMS_SUPPLY8:
+> +					*val = AMS_SUPPLY_SCALE_6VOLT;
+> +					break;
+> +				default:
+> +					*val = AMS_SUPPLY_SCALE_1VOLT;
+> +					break;
+> +				}
+> +			} else if (chan->scan_index >= AMS_PS_SEQ_MAX &&
+> +				   chan->scan_index < AMS_CTRL_SEQ_BASE) {
+> +				switch (chan->address) {
+> +				case AMS_SUPPLY1:
+> +				case AMS_SUPPLY2:
+> +				case AMS_SUPPLY3:
+> +				case AMS_SUPPLY4:
+> +				case AMS_SUPPLY5:
+> +				case AMS_SUPPLY6:
+> +				case AMS_VCCAMS:
+> +				case AMS_VREFP:
+> +				case AMS_VREFN:
+> +					*val = AMS_SUPPLY_SCALE_3VOLT;
+> +					break;
+> +				case AMS_SUPPLY7:
+> +					regval = readl(ams->pl_base + AMS_REG_CONFIG4);
+> +					if (FIELD_GET(AMS_VUSER0_MASK, regval))
+> +						*val = AMS_SUPPLY_SCALE_6VOLT;
+> +					else
+> +						*val = AMS_SUPPLY_SCALE_3VOLT;
+> +					break;
+> +				case AMS_SUPPLY8:
+> +					regval = readl(ams->pl_base + AMS_REG_CONFIG4);
+> +					if (FIELD_GET(AMS_VUSER1_MASK, regval))
+> +						*val = AMS_SUPPLY_SCALE_6VOLT;
+> +					else
+> +						*val = AMS_SUPPLY_SCALE_3VOLT;
+> +					break;
+> +				case AMS_SUPPLY9:
+> +					regval = readl(ams->pl_base + AMS_REG_CONFIG4);
+> +					if (FIELD_GET(AMS_VUSER2_MASK, regval))
+> +						*val = AMS_SUPPLY_SCALE_6VOLT;
+> +					else
+> +						*val = AMS_SUPPLY_SCALE_3VOLT;
+> +					break;
+> +				case AMS_SUPPLY10:
+> +					regval = readl(ams->pl_base + AMS_REG_CONFIG4);
+> +					if (FIELD_GET(AMS_VUSER3_MASK, regval))
+> +						*val = AMS_SUPPLY_SCALE_6VOLT;
+> +					else
+> +						*val = AMS_SUPPLY_SCALE_3VOLT;
+> +					break;
+> +				case AMS_VP_VN:
+> +				case AMS_REG_VAUX(0) ... AMS_REG_VAUX(15):
+> +					*val = AMS_SUPPLY_SCALE_1VOLT;
+> +					break;
+> +				default:
+> +					*val = AMS_SUPPLY_SCALE_1VOLT;
+> +					break;
+> +				}
+> +			} else {
+> +				switch (chan->address) {
+> +				case AMS_VCC_PSPLL0:
+> +				case AMS_VCC_PSPLL3:
+> +				case AMS_VCCINT:
+> +				case AMS_VCCBRAM:
+> +				case AMS_VCCAUX:
+> +				case AMS_PSDDRPLL:
+> +				case AMS_PSINTFPDDR:
+> +					*val = AMS_SUPPLY_SCALE_3VOLT;
+> +					break;
+> +				default:
+> +					*val = AMS_SUPPLY_SCALE_1VOLT;
+> +					break;
+> +				}
+> +			}
+> +			*val2 = AMS_SUPPLY_SCALE_DIV_BIT;
+> +			return IIO_VAL_FRACTIONAL_LOG2;
+> +		case IIO_TEMP:
+> +			*val = AMS_TEMP_SCALE;
+> +			*val2 = AMS_TEMP_SCALE_DIV_BIT;
+> +			return IIO_VAL_FRACTIONAL_LOG2;
+> +		default:
+> +			return -EINVAL;
+> +		}
+
+Isn't it a bit too looong for a single switch case?
+
+...
+
+> +/**
+> + * ams_unmask_worker - ams alarm interrupt unmask worker
+
+> + * @work :		work to be done
+
+Be consistent with a style on how you describe parameters in the kernel doc.
+
+> + * The ZynqMP threshold interrupts are level sensitive. Since we can't make the
+> + * threshold condition go way from within the interrupt handler, this means as
+> + * soon as a threshold condition is present we would enter the interrupt handler
+> + * again and again. To work around this we mask all active threshold interrupts
+> + * in the interrupt handler and start a timer. In this timer we poll the
+> + * interrupt status and only if the interrupt is inactive we unmask it again.
+> + */
+
+...
+
+> +	fwnode_for_each_child_node(chan_node, child) {
+> +		ret = fwnode_property_read_u32(child, "reg", &reg);
+> +		if (ret || reg > AMS_PL_MAX_EXT_CHANNEL + 30)
+> +			continue;
+> +
+> +		chan = &channels[num_channels];
+> +		ext_chan = reg + AMS_PL_MAX_FIXED_CHANNEL - 30;
+> +		memcpy(chan, &ams_pl_channels[ext_chan], sizeof(*channels));
+> +
+> +		if (fwnode_property_read_bool(child, "xlnx,bipolar"))
+> +			chan->scan_type.sign =	's';
+
+Needless double spacing.
+
+> +		num_channels++;
+> +	}
+
+...
+
+> +		/* add PS channels to iio device channels */
+> +		memcpy(channels, ams_ps_channels,
+> +		       sizeof(ams_ps_channels));
+
+One line.
+
+...
+
+> +		/* Copy only first 10 fix channels */
+
+Be consistent with one line comments (pay attention to the capitalization,
+compare to the above).
+
+> +		memcpy(channels, ams_pl_channels,
+> +		       AMS_PL_MAX_FIXED_CHANNEL * sizeof(*channels));
+
+One line?
+
+...
+
+> +		/* add AMS channels to iio device channels */
+> +		memcpy(channels, ams_ctrl_channels,
+> +		       sizeof(ams_ctrl_channels));
+
+One line.
+
+...
+
+> +	fwnode_for_each_child_node(fwnode, child) {
+> +		if (fwnode_device_is_available(child)) {
+
+> +			ret = ams_init_module(indio_dev, child,
+> +					      ams_channels + num_channels);
+
+One line?
+
+> +			if (ret < 0) {
+> +				fwnode_handle_put(child);
+> +				return ret;
+> +			}
+> +
+> +			num_channels += ret;
+> +		}
+> +	}
+
+...
+
+> +	dev_size = sizeof(*dev_channels) * num_channels;
+
+Here you need to have an array_size(). Or introduce a devm_krealloc_array().
+
+> +	dev_channels = devm_krealloc(dev, ams_channels, dev_size, GFP_KERNEL);
+> +	if (!dev_channels)
+> +		ret = -ENOMEM;
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
