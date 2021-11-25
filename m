@@ -2,179 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D59445D865
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:44:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F6445D86E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:49:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354743AbhKYKru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 05:47:50 -0500
-Received: from pegase2.c-s.fr ([93.17.235.10]:54981 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236759AbhKYKpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 05:45:49 -0500
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4J0DwY21xqz9sSF;
-        Thu, 25 Nov 2021 11:42:37 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id nw29zLpg9ntr; Thu, 25 Nov 2021 11:42:37 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4J0DwY0pwpz9sRt;
-        Thu, 25 Nov 2021 11:42:37 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id F23758B77A;
-        Thu, 25 Nov 2021 11:42:36 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id glwMjUd7MNY6; Thu, 25 Nov 2021 11:42:36 +0100 (CET)
-Received: from [192.168.203.227] (unknown [192.168.203.227])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 485A28B763;
-        Thu, 25 Nov 2021 11:42:36 +0100 (CET)
-Message-ID: <3f3578d4-168e-54ef-a3a7-cb7ec2aed43c@csgroup.eu>
-Date:   Thu, 25 Nov 2021 11:42:35 +0100
+        id S1350150AbhKYKw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 05:52:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346984AbhKYKux (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 05:50:53 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0C5C061748
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 02:45:48 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637837144;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a/5ioNz2eZoyujBuJczRG3UiiWN+u5gYNuKMcwYJIgw=;
+        b=mZabj9PYJelcKAHCPkyFxAJ38yrbXl05VXRQiWP4ug+9k70/lgkbWOkQY4AVthY16EJ+iu
+        EqD3hYscpdKOpB3uoRndEVgbKzn/wb8GzCQl7w2lJ31ziHQ/cVS7yEYpLyw1xs6qNhrw5F
+        Hh6qql4n8NVGMSJzv811qFBKjuqBGnJTJRT/In6AE7Mn9N/8gel6013ACc+1ZQQu+7bteS
+        AWB5nkL0Z0MiOYf1E0LL6USINpRLZAju9T91QhXplGp4dq9wE2YTq0FSPxnEV+M8Z0zouu
+        /jZVMXS+iozOMMMyyPHFn1wYz7UF5f9HRPbWu8Bjeve3Hua8MSASfss0H+mnRQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637837144;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a/5ioNz2eZoyujBuJczRG3UiiWN+u5gYNuKMcwYJIgw=;
+        b=9g1gSg5T1oW2PIqM0/wXxOjehTx+t6z2VEPqLjD/X5Yw0CAo1ufJej7laQF3DT/zvnSyYh
+        Z6MKvNkLJeb8qiCw==
+To:     Muchun Song <songmuchun@bytedance.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Anvin <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: Re: [RFC PATCH] x86/fault: move might_sleep() out of mmap read lock
+In-Reply-To: <CAMZfGtVDgbLAS3uyB0QPHpDsA8Mam0sVYFdq9HhU4rSjqZG0qw@mail.gmail.com>
+References: <20211119065831.31406-1-songmuchun@bytedance.com>
+ <396ef026-c299-6560-fe7c-7b9932164fe3@intel.com>
+ <CAMZfGtVDgbLAS3uyB0QPHpDsA8Mam0sVYFdq9HhU4rSjqZG0qw@mail.gmail.com>
+Date:   Thu, 25 Nov 2021 11:45:44 +0100
+Message-ID: <87a6hsms2v.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH v2 9/9] powerpc: Simplify and move arch_randomize_brk()
-Content-Language: fr-FR
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, alex@ghiti.fr
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-mm@kvack.org
-References: <cover.1637828367.git.christophe.leroy@csgroup.eu>
- <4c5a2b18774552c2226573f7069ffeee71ad77cb.1637828367.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-In-Reply-To: <4c5a2b18774552c2226573f7069ffeee71ad77cb.1637828367.git.christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Muchun, Dave!
 
+On Mon, Nov 22 2021 at 14:59, Muchun Song wrote:
+> On Fri, Nov 19, 2021 at 11:04 PM Dave Hansen <dave.hansen@intel.com> wrote:
+>> >
+>> > +     might_sleep();
+>> > +
+>> >       /*
+>> >        * Kernel-mode access to the user address space should only occur
+>> >        * on well-defined single instructions listed in the exception
+>> > @@ -1346,13 +1348,6 @@ void do_user_addr_fault(struct pt_regs *regs,
+>> >               }
+>> >  retry:
+>> >               mmap_read_lock(mm);
+>> > -     } else {
+>> > -             /*
+>> > -              * The above down_read_trylock() might have succeeded in
+>> > -              * which case we'll have missed the might_sleep() from
+>> > -              * down_read():
+>> > -              */
+>> > -             might_sleep();
+>> >       }
+>> >
+>> >       vma = find_vma(mm, address);
+>>
+>> The comment is stale, which isn't great.  The might_sleep() is already
+>> in the fast path.  So, moving it up above makes a lot of sense just in
+>> terms of simplicity.
 
-Le 25/11/2021 à 09:23, Christophe Leroy a écrit :
-> arch_randomize_brk() is only needed for hash on book3s/64, for other
-> platforms the one provided by the default mmap layout is good enough.
-> 
-> Move it to hash_utils.c and use randomize_page() like the generic one.
-> 
-> And properly opt out the radix case instead of making an assumption
-> on mmu_highuser_ssize.
-> 
-> Also change to a 32M range like most other architectures instead of 8M.
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
-> v2: New
-> ---
->   arch/powerpc/kernel/process.c         | 40 ---------------------------
->   arch/powerpc/mm/book3s64/hash_utils.c | 18 ++++++++++++
->   include/linux/sizes.h                 |  2 ++
->   3 files changed, 20 insertions(+), 40 deletions(-)
-> 
-> diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-> index 406d7ee9e322..f1f2f17543d6 100644
-> --- a/arch/powerpc/kernel/process.c
-> +++ b/arch/powerpc/kernel/process.c
-> @@ -2274,43 +2274,3 @@ unsigned long arch_align_stack(unsigned long sp)
->   		sp -= get_random_int() & ~PAGE_MASK;
->   	return sp & ~0xf;
->   }
-> -
-> -static inline unsigned long brk_rnd(void)
-> -{
-> -        unsigned long rnd = 0;
-> -
-> -	/* 8MB for 32bit, 1GB for 64bit */
-> -	if (is_32bit_task())
-> -		rnd = (get_random_long() % (1UL<<(23-PAGE_SHIFT)));
-> -	else
-> -		rnd = (get_random_long() % (1UL<<(30-PAGE_SHIFT)));
-> -
-> -	return rnd << PAGE_SHIFT;
-> -}
-> -
-> -unsigned long arch_randomize_brk(struct mm_struct *mm)
-> -{
-> -	unsigned long base = mm->brk;
-> -	unsigned long ret;
-> -
-> -#ifdef CONFIG_PPC_BOOK3S_64
-> -	/*
-> -	 * If we are using 1TB segments and we are allowed to randomise
-> -	 * the heap, we can put it above 1TB so it is backed by a 1TB
-> -	 * segment. Otherwise the heap will be in the bottom 1TB
-> -	 * which always uses 256MB segments and this may result in a
-> -	 * performance penalty. We don't need to worry about radix. For
-> -	 * radix, mmu_highuser_ssize remains unchanged from 256MB.
-> -	 */
-> -	if (!is_32bit_task() && (mmu_highuser_ssize == MMU_SEGSIZE_1T))
-> -		base = max_t(unsigned long, mm->brk, 1UL << SID_SHIFT_1T);
-> -#endif
-> -
-> -	ret = PAGE_ALIGN(base + brk_rnd());
-> -
-> -	if (ret < mm->brk)
-> -		return mm->brk;
-> -
-> -	return ret;
-> -}
-> -
-> diff --git a/arch/powerpc/mm/book3s64/hash_utils.c b/arch/powerpc/mm/book3s64/hash_utils.c
-> index 1d09d4aeddbf..3521fad6a479 100644
-> --- a/arch/powerpc/mm/book3s64/hash_utils.c
-> +++ b/arch/powerpc/mm/book3s64/hash_utils.c
-> @@ -37,6 +37,7 @@
->   #include <linux/cpu.h>
->   #include <linux/pgtable.h>
->   #include <linux/debugfs.h>
-> +#include <linux/random.h>
+I don't think so. The point is:
 
-Also need <linux/elf-randomize.h> to get the declaration of 
-arch_randomize_brk() and make sparse happy :)
+	if (unlikely(!mmap_read_trylock(mm))) {
+		if (!user_mode(regs) && !search_exception_tables(regs->ip)) {
+			/*
+			 * Fault from code in kernel from
+			 * which we do not expect faults.
+			 */
+			bad_area_nosemaphore(regs, error_code, address);
+			return;
+		}
 
-Michael can you add it if you apply this version ?
+Moving it up will make the might_sleep() splat more important than an
+unexpected fault when the unexpected fault happens in e.g. a preemption
+disabled region. That's wrong because the important information in this
+case is not the might sleep splat. The important information is the
+fault itself.
 
-Thanks
+But moving it up is even more wrong for spurious faults which are
+correctly handled in that case via:
 
->   
->   #include <asm/interrupt.h>
->   #include <asm/processor.h>
-> @@ -2072,3 +2073,20 @@ void __init print_system_hash_info(void)
->   	if (htab_hash_mask)
->   		pr_info("htab_hash_mask    = 0x%lx\n", htab_hash_mask);
->   }
-> +
-> +unsigned long arch_randomize_brk(struct mm_struct *mm)
-> +{
-> +	/*
-> +	 * If we are using 1TB segments and we are allowed to randomise
-> +	 * the heap, we can put it above 1TB so it is backed by a 1TB
-> +	 * segment. Otherwise the heap will be in the bottom 1TB
-> +	 * which always uses 256MB segments and this may result in a
-> +	 * performance penalty.
-> +	 */
-> +	if (is_32bit_task())
-> +		return randomize_page(mm->brk, SZ_32M);
-> +	else if (!radix_enabled() && mmu_highuser_ssize == MMU_SEGSIZE_1T)
-> +		return randomize_page(max_t(unsigned long, mm->brk, SZ_1T), SZ_1G);
-> +	else
-> +		return randomize_page(mm->brk, SZ_1G);
-> +}
-> diff --git a/include/linux/sizes.h b/include/linux/sizes.h
-> index 1ac79bcee2bb..84aa448d8bb3 100644
-> --- a/include/linux/sizes.h
-> +++ b/include/linux/sizes.h
-> @@ -47,6 +47,8 @@
->   #define SZ_8G				_AC(0x200000000, ULL)
->   #define SZ_16G				_AC(0x400000000, ULL)
->   #define SZ_32G				_AC(0x800000000, ULL)
-> +
-> +#define SZ_1T				_AC(0x10000000000, ULL)
->   #define SZ_64T				_AC(0x400000000000, ULL)
->   
->   #endif /* __LINUX_SIZES_H__ */
-> 
+     bad_area_nosemaphore()
+       __bad_area_nosemaphore()
+         kernelmode_fixup_or_oops()
+            handle(AMD erratum #91)
+              is_prefetch()
+
+So if such a spurious fault happens in a condition which would trigger
+the might_sleep() splat then moving might_sleep() before the trylock()
+will cause false positives. So, no. It's going to stay where it is.
+
+> Without this patch, I didn't see the might_sleep() in the fast path. What
+> am I missing here?
+
+I have no idea what you are doing. If the trylock() succeeds and the
+fault happened in e.g. a preemption disabled region then the
+might_sleep() in the else path will trigger no matter what.
+
+Thanks,
+
+        tglx
