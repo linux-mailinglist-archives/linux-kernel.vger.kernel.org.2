@@ -2,129 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F6445D86E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:49:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BCF745D879
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:54:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350150AbhKYKw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 05:52:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346984AbhKYKux (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 05:50:53 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0C5C061748
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 02:45:48 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637837144;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a/5ioNz2eZoyujBuJczRG3UiiWN+u5gYNuKMcwYJIgw=;
-        b=mZabj9PYJelcKAHCPkyFxAJ38yrbXl05VXRQiWP4ug+9k70/lgkbWOkQY4AVthY16EJ+iu
-        EqD3hYscpdKOpB3uoRndEVgbKzn/wb8GzCQl7w2lJ31ziHQ/cVS7yEYpLyw1xs6qNhrw5F
-        Hh6qql4n8NVGMSJzv811qFBKjuqBGnJTJRT/In6AE7Mn9N/8gel6013ACc+1ZQQu+7bteS
-        AWB5nkL0Z0MiOYf1E0LL6USINpRLZAju9T91QhXplGp4dq9wE2YTq0FSPxnEV+M8Z0zouu
-        /jZVMXS+iozOMMMyyPHFn1wYz7UF5f9HRPbWu8Bjeve3Hua8MSASfss0H+mnRQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637837144;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a/5ioNz2eZoyujBuJczRG3UiiWN+u5gYNuKMcwYJIgw=;
-        b=9g1gSg5T1oW2PIqM0/wXxOjehTx+t6z2VEPqLjD/X5Yw0CAo1ufJej7laQF3DT/zvnSyYh
-        Z6MKvNkLJeb8qiCw==
-To:     Muchun Song <songmuchun@bytedance.com>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Anvin <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [RFC PATCH] x86/fault: move might_sleep() out of mmap read lock
-In-Reply-To: <CAMZfGtVDgbLAS3uyB0QPHpDsA8Mam0sVYFdq9HhU4rSjqZG0qw@mail.gmail.com>
-References: <20211119065831.31406-1-songmuchun@bytedance.com>
- <396ef026-c299-6560-fe7c-7b9932164fe3@intel.com>
- <CAMZfGtVDgbLAS3uyB0QPHpDsA8Mam0sVYFdq9HhU4rSjqZG0qw@mail.gmail.com>
-Date:   Thu, 25 Nov 2021 11:45:44 +0100
-Message-ID: <87a6hsms2v.ffs@tglx>
+        id S1354683AbhKYK54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 05:57:56 -0500
+Received: from mga05.intel.com ([192.55.52.43]:22702 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349526AbhKYKzy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 05:55:54 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="321728672"
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="321728672"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 02:51:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="457827367"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 25 Nov 2021 02:51:33 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqCLk-0006F5-WE; Thu, 25 Nov 2021 10:51:33 +0000
+Date:   Thu, 25 Nov 2021 18:51:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>,
+        linux-kernel@vger.kernel.org, jic23@kernel.org, lars@metafoo.de,
+        linux-iio@vger.kernel.org, git@xilinx.com, michal.simek@xilinx.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        linux-acpi@vger.kernel.org, andriy.shevchenko@linux.intel.com
+Cc:     kbuild-all@lists.01.org
+Subject: Re: [PATCH] device property: Add fwnode_iomap()
+Message-ID: <202111251817.YgUIj6sh-lkp@intel.com>
+References: <20211115173819.22778-1-anand.ashok.dumbre@xilinx.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211115173819.22778-1-anand.ashok.dumbre@xilinx.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Muchun, Dave!
+Hi Anand,
 
-On Mon, Nov 22 2021 at 14:59, Muchun Song wrote:
-> On Fri, Nov 19, 2021 at 11:04 PM Dave Hansen <dave.hansen@intel.com> wrote:
->> >
->> > +     might_sleep();
->> > +
->> >       /*
->> >        * Kernel-mode access to the user address space should only occur
->> >        * on well-defined single instructions listed in the exception
->> > @@ -1346,13 +1348,6 @@ void do_user_addr_fault(struct pt_regs *regs,
->> >               }
->> >  retry:
->> >               mmap_read_lock(mm);
->> > -     } else {
->> > -             /*
->> > -              * The above down_read_trylock() might have succeeded in
->> > -              * which case we'll have missed the might_sleep() from
->> > -              * down_read():
->> > -              */
->> > -             might_sleep();
->> >       }
->> >
->> >       vma = find_vma(mm, address);
->>
->> The comment is stale, which isn't great.  The might_sleep() is already
->> in the fast path.  So, moving it up above makes a lot of sense just in
->> terms of simplicity.
+Thank you for the patch! Yet something to improve:
 
-I don't think so. The point is:
+[auto build test ERROR on linux/master]
+[also build test ERROR on driver-core/driver-core-testing linus/master v5.16-rc2 next-20211125]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-	if (unlikely(!mmap_read_trylock(mm))) {
-		if (!user_mode(regs) && !search_exception_tables(regs->ip)) {
-			/*
-			 * Fault from code in kernel from
-			 * which we do not expect faults.
-			 */
-			bad_area_nosemaphore(regs, error_code, address);
-			return;
-		}
+url:    https://github.com/0day-ci/linux/commits/Anand-Ashok-Dumbre/device-property-Add-fwnode_iomap/20211116-014240
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git debe436e77c72fcee804fb867f275e6d31aa999c
+config: s390-randconfig-m031-20211115 (https://download.01.org/0day-ci/archive/20211125/202111251817.YgUIj6sh-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/057b01427afce16994b109c1f32a95bc46973e39
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Anand-Ashok-Dumbre/device-property-Add-fwnode_iomap/20211116-014240
+        git checkout 057b01427afce16994b109c1f32a95bc46973e39
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=s390 SHELL=/bin/bash
 
-Moving it up will make the might_sleep() splat more important than an
-unexpected fault when the unexpected fault happens in e.g. a preemption
-disabled region. That's wrong because the important information in this
-case is not the might sleep splat. The important information is the
-fault itself.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-But moving it up is even more wrong for spurious faults which are
-correctly handled in that case via:
+All errors (new ones prefixed by >>):
 
-     bad_area_nosemaphore()
-       __bad_area_nosemaphore()
-         kernelmode_fixup_or_oops()
-            handle(AMD erratum #91)
-              is_prefetch()
+   s390-linux-ld: drivers/dma/idma64.o: in function `idma64_platform_probe':
+   idma64.c:(.text+0x463e): undefined reference to `devm_ioremap_resource'
+   s390-linux-ld: drivers/dma/qcom/hidma.o: in function `hidma_probe':
+   hidma.c:(.text+0x1cde): undefined reference to `devm_ioremap_resource'
+   s390-linux-ld: hidma.c:(.text+0x1da8): undefined reference to `devm_ioremap_resource'
+   s390-linux-ld: drivers/base/property.o: in function `fwnode_iomap':
+>> property.c:(.text+0x4f34): undefined reference to `of_iomap'
+   s390-linux-ld: drivers/pcmcia/cistpl.o: in function `set_cis_map':
+   cistpl.c:(.text+0x19fc): undefined reference to `ioremap'
+   s390-linux-ld: cistpl.c:(.text+0x1ad6): undefined reference to `iounmap'
+   s390-linux-ld: cistpl.c:(.text+0x1bbe): undefined reference to `iounmap'
+   s390-linux-ld: cistpl.c:(.text+0x1c18): undefined reference to `ioremap'
+   s390-linux-ld: drivers/pcmcia/cistpl.o: in function `release_cis_mem':
+   cistpl.c:(.text+0x371e): undefined reference to `iounmap'
+   s390-linux-ld: drivers/firmware/google/coreboot_table.o: in function `coreboot_table_probe':
+   coreboot_table.c:(.text+0x98e): undefined reference to `memremap'
+   s390-linux-ld: coreboot_table.c:(.text+0xa46): undefined reference to `memunmap'
+   s390-linux-ld: coreboot_table.c:(.text+0xad2): undefined reference to `memremap'
+   s390-linux-ld: coreboot_table.c:(.text+0xc70): undefined reference to `memunmap'
+   s390-linux-ld: drivers/firmware/google/memconsole-coreboot.o: in function `memconsole_probe':
+   memconsole-coreboot.c:(.text+0x3be): undefined reference to `memremap'
+   s390-linux-ld: memconsole-coreboot.c:(.text+0x47a): undefined reference to `devm_memremap'
+   s390-linux-ld: memconsole-coreboot.c:(.text+0x4c4): undefined reference to `memunmap'
+   s390-linux-ld: drivers/firmware/google/vpd.o: in function `vpd_section_destroy.isra.0':
+   vpd.c:(.text+0xaee): undefined reference to `memunmap'
+   s390-linux-ld: drivers/firmware/google/vpd.o: in function `vpd_section_init':
+   vpd.c:(.text+0xcce): undefined reference to `memremap'
+   s390-linux-ld: vpd.c:(.text+0x1178): undefined reference to `memunmap'
+   s390-linux-ld: drivers/firmware/google/vpd.o: in function `vpd_sections_init':
+   vpd.c:(.text+0x122e): undefined reference to `memremap'
+   s390-linux-ld: vpd.c:(.text+0x12c4): undefined reference to `memunmap'
 
-So if such a spurious fault happens in a condition which would trigger
-the might_sleep() splat then moving might_sleep() before the trylock()
-will cause false positives. So, no. It's going to stay where it is.
-
-> Without this patch, I didn't see the might_sleep() in the fast path. What
-> am I missing here?
-
-I have no idea what you are doing. If the trylock() succeeds and the
-fault happened in e.g. a preemption disabled region then the
-might_sleep() in the else path will trigger no matter what.
-
-Thanks,
-
-        tglx
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
