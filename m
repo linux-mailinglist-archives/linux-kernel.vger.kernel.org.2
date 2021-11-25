@@ -2,105 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879AE45D974
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:43:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C28DF45D970
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:42:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237613AbhKYLq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 06:46:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238085AbhKYLoz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 06:44:55 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A94C061746;
-        Thu, 25 Nov 2021 03:37:51 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id g17so10844542ybe.13;
-        Thu, 25 Nov 2021 03:37:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=URm6ZWUfxchA16w1ij07A+03cvDLxhDqhsPzShg+v+E=;
-        b=PaCRUvW1W00c4jfML41lt4hu65ASX4DDzmnXw7fEZPlSOhD74KimgvC6uXWYqIcxPx
-         rQ9yCRplElME4UjdVUbDBE1rvO67aYWWWrsBZ/Idn7YQs0N+metgEH8D3E8QJzfrcXin
-         z197meFn5rbzbUsCAb/8NfRH572uo2+REBe2p4SUZnx/nBlBUHfDnNU7aQhduRHMF7kz
-         ekPTalGZ1ybJdn1U9/pVPpn3iYRdp8xD+guzSJUjV8SyarA45y//WNH+A3ZD2vFDo2ny
-         V9htczUZCBbPd7cn5B6Kk3WM1JghwofAkwghRIj2D8E1XP2lENUD9DsALgdIrozIp7gm
-         51Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=URm6ZWUfxchA16w1ij07A+03cvDLxhDqhsPzShg+v+E=;
-        b=CuhlX9hhkuNRjb4AKyzWDHWIOIGjfwxjkcdvch1xyC9P8IndM56Rn0R3P16toxJqeI
-         gMKan55dOioDTtu0xJIUGMxg1BdDQiBkZqbbAhzA+2FRf9raCBPee3uvfYtndRmUI8sf
-         miNb4P5OmM2pygl3T+cQ6EstLhiRvf/8Ezm+MZ7+o6u1c9jbw3yFSrwdDirHA4Nl+7ny
-         9yQLEfpMS6mme7RaM4+o9lvkRiCZ+exvDRirnM/AKtUbbGMUAwW/5p/EamsOw0j3kjmL
-         EGRmnHwHnWwOadAMFzlBrHAljgo8Ig3H+BlqK4CwWnb+91OYnskpLjX4KkRB2oLzMVCt
-         g9MQ==
-X-Gm-Message-State: AOAM533bV3w2NLFEe7pygkj0n8B7jeV7JGZabNT9PrlBGCqd/hfKGo9j
-        QOQ3+Plm8ahBliAOPcy1+u6OSnlQpDeEUVopGaQ=
-X-Google-Smtp-Source: ABdhPJxOtyYiVC0L2G/p1HOoM1hO3jXUEWdObOdBw37UpmM6XjmQSqygXwLBaLXzjneBIdgZVvkN0YxjpJtlqf9bN6c=
-X-Received: by 2002:a25:b7c6:: with SMTP id u6mr5876697ybj.16.1637840270575;
- Thu, 25 Nov 2021 03:37:50 -0800 (PST)
+        id S238295AbhKYLpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 06:45:05 -0500
+Received: from mga18.intel.com ([134.134.136.126]:33802 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236060AbhKYLnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 06:43:02 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="222372137"
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="222372137"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 03:38:06 -0800
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="457380120"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 03:38:03 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mqD4i-00AQ2A-UF;
+        Thu, 25 Nov 2021 13:38:00 +0200
+Date:   Thu, 25 Nov 2021 13:38:00 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH 5/6] rcu/nocb: Allow empty "rcu_nocbs" kernel parameter
+Message-ID: <YZ91mJ0kmTjh3sRx@smile.fi.intel.com>
+References: <20211123003708.468409-1-frederic@kernel.org>
+ <20211123003708.468409-6-frederic@kernel.org>
+ <20211125004720.GV641268@paulmck-ThinkPad-P17-Gen-1>
+ <20211125044132.GA105778@lapt>
 MIME-Version: 1.0
-References: <20211124115702.361983534@linuxfoundation.org> <20211124135311.GA29193@duo.ucw.cz>
-In-Reply-To: <20211124135311.GA29193@duo.ucw.cz>
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Thu, 25 Nov 2021 11:37:14 +0000
-Message-ID: <CADVatmPhw41K9Eg75_7w89bgXLMnuGcJDNcsP0KMVxhkTQmTxw@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/154] 5.10.82-rc1 review
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211125044132.GA105778@lapt>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Wed, Nov 24, 2021 at 08:41:32PM -0800, Yury Norov wrote:
+> On Wed, Nov 24, 2021 at 04:47:20PM -0800, Paul E. McKenney wrote:
+> > On Tue, Nov 23, 2021 at 01:37:07AM +0100, Frederic Weisbecker wrote:
 
-On Wed, Nov 24, 2021 at 1:57 PM Pavel Machek <pavel@denx.de> wrote:
->
-> Hi!
->
-> > This is the start of the stable review cycle for the 5.10.82 release.
-> > There are 154 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
->
-> CIP is running tests here:
->
-> https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-5.10.y
->
-> And there's a build failure in CIP testing there:
->
->   CC      drivers/mmc/core/sdio_ops.o
-> 5040drivers/cpuidle/cpuidle-tegra.c: In function 'tegra_cpuidle_probe':
-> 5041drivers/cpuidle/cpuidle-tegra.c:349:38: error: 'TEGRA_SUSPEND_NOT_READY' undeclared (first use in this function); did you mean 'TEGRA_SUSPEND_NONE'?
-> 5042  if (tegra_pmc_get_suspend_mode() == TEGRA_SUSPEND_NOT_READY)
+...
 
-I also having the same build failures for arm.
+> +	if (!strncasecmp(str, "none", 4)) {
+> +		r->start = 0;
+> +		r->end = 0;
+> +		r->off = 0;
+> +		r->group_len = r->nbits;
+> +		str += 4;
 
-drivers/cpuidle/cpuidle-tegra.c: In function 'tegra_cpuidle_probe':
-drivers/cpuidle/cpuidle-tegra.c:349:45: error:
-'TEGRA_SUSPEND_NOT_READY' undeclared (first use in this function); did
-you mean 'TEGRA_SUSPEND_NONE'?
-  349 |         if (tegra_pmc_get_suspend_mode() == TEGRA_SUSPEND_NOT_READY)
+> +		goto out;
 
-And it should be for 4d895b601038 (\"cpuidle: tegra: Check whether PMC
-is ready\").
+Side remark, I would make the name of the label a bit more verbose on what it's
+going to be done there, "out_end_of_region:" or alike.
 
+> +	}
 
 -- 
-Regards
-Sudip
+With Best Regards,
+Andy Shevchenko
+
+
