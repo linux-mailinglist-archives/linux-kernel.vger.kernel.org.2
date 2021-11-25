@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA0645DE18
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ABFA45DDE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:47:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345334AbhKYP6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:58:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356227AbhKYP4l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:56:41 -0500
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CBC0C0619E4;
-        Thu, 25 Nov 2021 07:45:26 -0800 (PST)
-Received: by mail-ot1-x330.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso9974574ots.6;
-        Thu, 25 Nov 2021 07:45:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=No0vuIKUUWd8wCmisiET3NNJ4gz4w6NOLgT4BfCkyhQ=;
-        b=jFsUn1dd3c6xci8NNHvjO1NLzKQxSjRYmOdTGtw3HXOXGzNxt/6Vy/Ife8xFV3RLEL
-         RKLaUJQTp0FPoHz6E793lWkYECK++MO/K8uRD2dh2xfGvpksSn4cQAs3kA+THFqDxXdB
-         y19EYZyQIjJd4ogPs4+UX+YpS/+PiEUBWqUlCwNaufI5dtUGfgUYFdTisHiHMwIyuBZg
-         /WHJrtQU3SKmbDAxfc38Pz6O31w8n2FmpYHn5IlBteWSQkcTLTkZ+MZHOrSNhdn2dolG
-         qy49cB/GkR62W+5AES53CbeoNsVXnaowxSE+0T9iPkDS24ASEpnk3VQcpd+MLm9bKUzG
-         Kzlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=No0vuIKUUWd8wCmisiET3NNJ4gz4w6NOLgT4BfCkyhQ=;
-        b=ta98ac10sPjuKymtzCwR3aHdkON5Kr1YaYaXPPPmCdzTaw0W7o5vv3yLf7IbG4AG2S
-         gU5qqgde9TZIbOOjN0y5VRKo29+FCXk6CWbr4G0oQ2SvVfQ197SEvcQGbNeYTinAxPsp
-         9PZjQRo6vxhgLxL3Xbdh2GAFZeExNm6fpWtukSl20g/4EJHkblTNwGtNdRGjlm5AJ3L4
-         8c3SPAvJ8EJT8nnLFpqUNCwYj8DlR+JkOwWDlC2BkFS+1j5N2nJn0qFLbUjbVNrOLL+H
-         YL/L8zrossVgslRnx6m+f12on3MIp4IItvLdkpze/gD0G4mBov6McNdL0StA1immvTQK
-         s07g==
-X-Gm-Message-State: AOAM531Fe5gWAmM4m9fj+Plx6rocF5mG8ZOIMVoeysqrqDMJMfbKAtuj
-        Ix0Y8fvv9FpZBAdoqcL91wY8ul+TOz0=
-X-Google-Smtp-Source: ABdhPJzOl0Cte2Vm0yiVOC/CDVQJAxTxpFcgmanw1wd4Ourf3qSyG12kDlh3mFr59BIhCW1hOS0Pfw==
-X-Received: by 2002:a9d:7586:: with SMTP id s6mr22272301otk.158.1637855125481;
-        Thu, 25 Nov 2021 07:45:25 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z2sm562257oto.38.2021.11.25.07.45.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Nov 2021 07:45:24 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-References: <20211125125641.226524689@linuxfoundation.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 4.9 000/206] 4.9.291-rc2 review
-Message-ID: <dd620210-af02-189c-f972-e31bd21008b4@roeck-us.net>
-Date:   Thu, 25 Nov 2021 07:45:22 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1356155AbhKYPuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:50:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1356190AbhKYPsu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 10:48:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B817E610C8;
+        Thu, 25 Nov 2021 15:45:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637855139;
+        bh=5RgsiEBJ9/rtL8DrXdq8915UIX/Wyea9VvxiwKazdjo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M5ztynTNl5G/wrvPCKG4Z3lhOi+3zdatMWCZ6EPcvavtXMitANZarcAS2aWA2OrNN
+         WUqarfNji/zHWMcn2YspNFw2WtZ6fNWzBJBQ3Lzu9JZLBsSieZytxMT+ncPQVpyvpc
+         ykfOc1AVJ+gG5kjPZhIqQjsLvpWLmNR9jkRvCVEhQSM038MOg/oftaZxjTD9HQdn/l
+         BNS8gRQP5y5hJhKF9FNpD91NpIJxRBlzclRISvhY+z3heww4A+5+W6wT1vCPcS/b8l
+         VCuwmSGuKRWSMhI+vcuFfpz/EWGC5etQtbKDxPG2x1/S6iP1R7zITLyeDk2Z8Jfv6U
+         7+1M0jshR2qjA==
+Date:   Thu, 25 Nov 2021 15:45:33 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Satya Priya <quic_c_skakit@quicinc.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>, swboyd@chromium.org,
+        collinsd@codeaurora.org, subbaram@codeaurora.org,
+        Das Srinagesh <gurus@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 4/6] regulator: Add a regulator driver for the PM8008
+ PMIC
+Message-ID: <YZ+vnV12gDCtia5S@sirena.org.uk>
+References: <1637314953-4215-1-git-send-email-quic_c_skakit@quicinc.com>
+ <1637314953-4215-5-git-send-email-quic_c_skakit@quicinc.com>
 MIME-Version: 1.0
-In-Reply-To: <20211125125641.226524689@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yT0yWrM1Hvr0VdiY"
+Content-Disposition: inline
+In-Reply-To: <1637314953-4215-5-git-send-email-quic_c_skakit@quicinc.com>
+X-Cookie: This bag is recyclable.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/25/21 4:57 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.291 release.
-> There are 206 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 27 Nov 2021 12:56:08 +0000.
-> Anything received after that time might be too late.
-> 
 
-In file included from arch/sh/mm/init.c:25:
-arch/sh/include/asm/tlb.h:118:15: error: return type defaults to 'int' [-Werror=return-type]
-   118 | static inline tlb_flush_pmd_range(struct mmu_gather *tlb, unsigned long address,
+--yT0yWrM1Hvr0VdiY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The problem affects v4.9.y, v4.14.y, and v4.19.y.
+On Fri, Nov 19, 2021 at 03:12:31PM +0530, Satya Priya wrote:
 
-Commit aca917cb287ba99c5 ("hugetlbfs: flush TLBs correctly after huge_pmd_unshare")
-doesn't really match the upstream commit and obviously was not even build tested
-on sh (and I would suspect it was not tested on other architectures either).
-It seems to me that it may do more harm than good.
+> +	for (reg = &reg_data[0]; reg->name; reg++) {
 
-Guenter
+Why is this not just iterating from 0 to ARRAY_SIZE() - that's the more
+normal way to write things and doesn't require a terminator on the
+array.
+
+> +		child_node = of_get_child_by_name(parent_node, reg->name);
+> +		if (!child_node) {
+> +			dev_err(dev, "child node %s not found\n", reg->name);
+> +			return -ENODEV;
+> +		}
+
+This could be pulled out of the array.  I think you're also missing an
+of_node_put() on the child_node.
+
+> +		rc = of_property_read_u32(child_node, "reg", &base);
+> +		if (rc < 0) {
+> +			dev_err(dev, "%s: failed to get regulator base rc=%d\n",
+> +						reg->name, rc);
+> +			return rc;
+> +		}
+
+It's not clear to me why this in particular is being read out of the DT
+binding, I'd expect this to be in the array describing the regulator the
+same as everything else?
+
+--yT0yWrM1Hvr0VdiY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGfr5wACgkQJNaLcl1U
+h9Cdpgf/eag5hpAiJ69Ar39sC/0LmSBkI1e5b+DAb2nX7n+0bXjhlVDVG1ybGObj
+nwKjVJQW3ZgrLLhYVMowMdc2m6711Jlxw4Q9DS8WNEOVkao1TXHyzynse0sK2sc0
+A63l4g1X+Xn7Vyd1LdquYgz7G6JhG2gg+/m3vJgpsWQ8N3dCXA2+iSmjL3x7ArFl
+G6r9uEG3xzH9ffxlJO1gYZtb/8kNdKkAXRVARWnQdEAJIWiSrdWT57l5y3Il1nlm
+dX7cAxav81/iIKDIOZYbh7RHzoUzzjnj7LPxZRVxaymUrQFnOuEiPVguh3APHCBQ
+Ogvq8db6lsIA1tJ3ZDpqJSOqkf6nNA==
+=BMhi
+-----END PGP SIGNATURE-----
+
+--yT0yWrM1Hvr0VdiY--
