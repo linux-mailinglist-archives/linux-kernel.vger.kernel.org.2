@@ -2,297 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB91345D94D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:33:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D04CC45D8DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:12:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235263AbhKYLhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 06:37:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231318AbhKYLey (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 06:34:54 -0500
-Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59EC5C0613E0;
-        Thu, 25 Nov 2021 03:24:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-         s=20160729; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=hbaOcZCXJO4zqnMFhpmCn2GhwsYR/k75cYWQvSpX8rU=; b=QqK5KyRpakSDbThA9rJdmWgIdn
-        dLtLOV4IsrT897iiNC0xQcO/mTSiedAuhzafMcEndOBTnQWXhtKxA+PExdhLNX5WPgv7ipPPgzpyu
-        h0E1vPd5v1i+Cqez/8/vcFvZwhnYfnFYdgCW9d/b77IFS6/76lvxMlkFWbn0eKJwNpyo=;
-Received: from p54ae9f3f.dip0.t-ipconnect.de ([84.174.159.63] helo=localhost.localdomain)
-        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <nbd@nbd.name>)
-        id 1mqCbZ-0002ws-9G; Thu, 25 Nov 2021 12:07:53 +0100
-From:   Felix Fietkau <nbd@nbd.name>
-To:     linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     john@phrozen.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: [PATCH v4 12/12] gpio: Add support for Airoha EN7523 GPIO controller
-Date:   Thu, 25 Nov 2021 12:07:38 +0100
-Message-Id: <20211125110738.41028-13-nbd@nbd.name>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20211125110738.41028-1-nbd@nbd.name>
-References: <20211125110738.41028-1-nbd@nbd.name>
+        id S234711AbhKYLQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 06:16:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41828 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232138AbhKYLN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 06:13:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C807360230;
+        Thu, 25 Nov 2021 11:10:45 +0000 (UTC)
+Date:   Thu, 25 Nov 2021 11:10:43 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
+ with sub-page faults
+Message-ID: <YZ9vM91Uj8g36VQC@arm.com>
+References: <20211124192024.2408218-1-catalin.marinas@arm.com>
+ <20211124192024.2408218-4-catalin.marinas@arm.com>
+ <YZ6arlsi2L3LVbFO@casper.infradead.org>
+ <CAHk-=wgHqjX3kenSk5_bCRM+ZC-tgndBMfbVVsbp0CwJf2DU-w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgHqjX3kenSk5_bCRM+ZC-tgndBMfbVVsbp0CwJf2DU-w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Crispin <john@phrozen.org>
+On Wed, Nov 24, 2021 at 03:00:00PM -0800, Linus Torvalds wrote:
+> On Wed, Nov 24, 2021 at 12:04 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > (where __copy_to_user_nofault() is a new function that does exactly what
+> > copy_to_user_nofault() does, but returns the number of bytes copied)
+> 
+> If we want the "how many bytes" part, then we should just make
+> copy_to_user_nofault() have the same semantics as a plain
+> copy_to_user().
+> 
+> IOW, change it to return "number of bytes not copied".
+> 
+> Looking at the current uses, such a change would be trivial. The only
+> case that wants a 0/-EFAULT error is the bpf_probe_write_user(),
+> everybody else already just wants "zero for success", so changing
+> copy_to_user_nofault() would be trivial.
 
-Airoha's GPIO controller on their ARM EN7523 SoCs consists of two banks of 32
-GPIOs. Each instance in DT is for an single bank.
+I agree, if we want the number of byte not copied, we should just change
+copy_{to,from}_user_nofault() and their callers (I can count three
+each).
 
-Signed-off-by: John Crispin <john@phrozen.org>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
----
- arch/arm/boot/dts/en7523-evb.dts |   8 ++
- arch/arm/boot/dts/en7523.dtsi    |  21 +++++
- drivers/gpio/Kconfig             |   9 ++
- drivers/gpio/Makefile            |   1 +
- drivers/gpio/gpio-en7523.c       | 136 +++++++++++++++++++++++++++++++
- 5 files changed, 175 insertions(+)
- create mode 100644 drivers/gpio/gpio-en7523.c
+For this specific btrfs case, if we want go with tuning the offset based
+on the fault address, we'd need copy_to_user_nofault() (or a new
+function) to be exact. IOW, fall back to byte-at-a-time copy until it
+hits the real faulting address.
 
-diff --git a/arch/arm/boot/dts/en7523-evb.dts b/arch/arm/boot/dts/en7523-evb.dts
-index af1a8dd40a41..4082bf61bd79 100644
---- a/arch/arm/boot/dts/en7523-evb.dts
-+++ b/arch/arm/boot/dts/en7523-evb.dts
-@@ -37,3 +37,11 @@ &pcie0 {
- &pcie1 {
- 	status = "okay";
- };
-+
-+&gpio0 {
-+	status = "okay";
-+};
-+
-+&gpio1 {
-+	status = "okay";
-+};
-diff --git a/arch/arm/boot/dts/en7523.dtsi b/arch/arm/boot/dts/en7523.dtsi
-index d9bdb51614b5..6e0275984b69 100644
---- a/arch/arm/boot/dts/en7523.dtsi
-+++ b/arch/arm/boot/dts/en7523.dtsi
-@@ -3,6 +3,7 @@
- #include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/clock/en7523-clk.h>
-+#include <dt-bindings/gpio/gpio.h>
- 
- / {
- 	interrupt-parent = <&gic>;
-@@ -120,6 +121,26 @@ uart1: serial@1fbf0000 {
- 		status = "okay";
- 	};
- 
-+	gpio0: gpio@1fbf0200 {
-+		compatible = "airoha,en7523-gpio";
-+		reg = <0x1fbf0204 0x4>,
-+		      <0x1fbf0200 0x4>,
-+		      <0x1fbf0220 0x4>,
-+		      <0x1fbf0214 0x4>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+
-+	gpio1: gpio@1fbf0270 {
-+		compatible = "airoha,en7523-gpio";
-+		reg = <0x1fbf0270 0x4>,
-+		      <0x1fbf0260 0x4>,
-+		      <0x1fbf0264 0x4>,
-+		      <0x1fbf0278 0x4>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+
- 	pcie: pcie@1a140000 {
- 		compatible = "airoha,en7523-pcie", "mediatek,mt7622-pcie";
- 		device_type = "pci";
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index 072ed610f9c6..e4a34272504f 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -247,6 +247,15 @@ config GPIO_EM
- 	help
- 	  Say yes here to support GPIO on Renesas Emma Mobile SoCs.
- 
-+config GPIO_EN7523
-+	tristate "Airoha GPIO support"
-+	depends on ARCH_AIROHA
-+	default ARCH_AIROHA
-+	select GPIO_GENERIC
-+	select GPIOLIB_IRQCHIP
-+	help
-+	  Say yes here to support the GPIO controller on Airoha EN7523.
-+
- config GPIO_EP93XX
- 	def_bool y
- 	depends on ARCH_EP93XX
-diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-index 71ee9fc2ff83..d2269ee0948e 100644
---- a/drivers/gpio/Makefile
-+++ b/drivers/gpio/Makefile
-@@ -56,6 +56,7 @@ obj-$(CONFIG_GPIO_DLN2)			+= gpio-dln2.o
- obj-$(CONFIG_GPIO_DWAPB)		+= gpio-dwapb.o
- obj-$(CONFIG_GPIO_EIC_SPRD)		+= gpio-eic-sprd.o
- obj-$(CONFIG_GPIO_EM)			+= gpio-em.o
-+obj-$(CONFIG_GPIO_EN7523)		+= gpio-en7523.o
- obj-$(CONFIG_GPIO_EP93XX)		+= gpio-ep93xx.o
- obj-$(CONFIG_GPIO_EXAR)			+= gpio-exar.o
- obj-$(CONFIG_GPIO_F7188X)		+= gpio-f7188x.o
-diff --git a/drivers/gpio/gpio-en7523.c b/drivers/gpio/gpio-en7523.c
-new file mode 100644
-index 000000000000..3ae0d9831d83
---- /dev/null
-+++ b/drivers/gpio/gpio-en7523.c
-@@ -0,0 +1,136 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/gpio/driver.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/property.h>
-+
-+#define AIROHA_GPIO_MAX		32
-+
-+/**
-+ * airoha_gpio_ctrl - Airoha GPIO driver data
-+ *
-+ * @gc: Associated gpio_chip instance.
-+ * @data: The data register.
-+ * @dir0: The direction register for the lower 16 pins.
-+ * @dir1: The direction register for the lower 16 pins.
-+ * @output: The output enable register.
-+ */
-+struct airoha_gpio_ctrl {
-+	struct gpio_chip gc;
-+	void __iomem *data;
-+	void __iomem *dir[2];
-+	void __iomem *output;
-+};
-+
-+static struct airoha_gpio_ctrl *gc_to_ctrl(struct gpio_chip *gc)
-+{
-+	return container_of(gc, struct airoha_gpio_ctrl, gc);
-+}
-+
-+static int airoha_dir_set(struct gpio_chip *gc, unsigned int gpio,
-+			  int val, int out)
-+{
-+	struct airoha_gpio_ctrl *ctrl = gc_to_ctrl(gc);
-+	u32 dir = ioread32(ctrl->dir[gpio / 16]);
-+	u32 output = ioread32(ctrl->output);
-+	u32 mask = BIT((gpio % 16) * 2);
-+
-+	if (out) {
-+		dir |= mask;
-+		output |= BIT(gpio);
-+	} else {
-+		dir &= ~mask;
-+		output &= ~BIT(gpio);
-+	}
-+
-+	iowrite32(dir, ctrl->dir[gpio / 16]);
-+	iowrite32(output, ctrl->output);
-+
-+	if (out)
-+		gc->set(gc, gpio, val);
-+
-+	return 0;
-+}
-+
-+static int airoha_dir_out(struct gpio_chip *gc, unsigned int gpio,
-+			  int val)
-+{
-+	return airoha_dir_set(gc, gpio, val, 1);
-+}
-+
-+static int airoha_dir_in(struct gpio_chip *gc, unsigned int gpio)
-+{
-+	return airoha_dir_set(gc, gpio, 0, 0);
-+}
-+
-+static int airoha_get_dir(struct gpio_chip *gc, unsigned int gpio)
-+{
-+	struct airoha_gpio_ctrl *ctrl = gc_to_ctrl(gc);
-+	u32 dir = ioread32(ctrl->dir[gpio / 16]);
-+	u32 mask = BIT((gpio % 16) * 2);
-+
-+	return dir & mask;
-+}
-+
-+static const struct of_device_id airoha_gpio_of_match[] = {
-+	{ .compatible = "airoha,en7523-gpio" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, airoha_gpio_of_match);
-+
-+static int airoha_gpio_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct airoha_gpio_ctrl *ctrl;
-+	int err;
-+
-+	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
-+	if (!ctrl)
-+		return -ENOMEM;
-+
-+	ctrl->data = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(ctrl->data))
-+		return PTR_ERR(ctrl->data);
-+
-+	ctrl->dir[0] = devm_platform_ioremap_resource(pdev, 1);
-+	if (IS_ERR(ctrl->dir[0]))
-+		return PTR_ERR(ctrl->dir[0]);
-+
-+	ctrl->dir[1] = devm_platform_ioremap_resource(pdev, 2);
-+	if (IS_ERR(ctrl->dir[1]))
-+		return PTR_ERR(ctrl->dir[1]);
-+
-+	ctrl->output = devm_platform_ioremap_resource(pdev, 3);
-+	if (IS_ERR(ctrl->output))
-+		return PTR_ERR(ctrl->output);
-+
-+	err = bgpio_init(&ctrl->gc, dev, 4, ctrl->data, NULL,
-+			 NULL, NULL, NULL, 0);
-+	if (err) {
-+		dev_err(dev, "unable to init generic GPIO");
-+		return err;
-+	}
-+
-+	ctrl->gc.ngpio = AIROHA_GPIO_MAX;
-+	ctrl->gc.owner = THIS_MODULE;
-+	ctrl->gc.direction_output = airoha_dir_out;
-+	ctrl->gc.direction_input = airoha_dir_in;
-+	ctrl->gc.get_direction = airoha_get_dir;
-+
-+	return devm_gpiochip_add_data(dev, &ctrl->gc, ctrl);
-+}
-+
-+static struct platform_driver airoha_gpio_driver = {
-+	.driver = {
-+		.name = "airoha-gpio",
-+		.of_match_table	= airoha_gpio_of_match,
-+	},
-+	.probe = airoha_gpio_probe,
-+};
-+module_platform_driver(airoha_gpio_driver);
-+
-+MODULE_DESCRIPTION("Airoha GPIO support");
-+MODULE_AUTHOR("John Crispin <john@phrozen.org>");
-+MODULE_LICENSE("GPL v2");
 -- 
-2.30.1
-
+Catalin
