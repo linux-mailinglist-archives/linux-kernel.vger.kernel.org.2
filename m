@@ -2,103 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE90B45E08F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 19:31:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C69A345E093
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 19:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236473AbhKYSe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 13:34:57 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:41605 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230347AbhKYSc4 (ORCPT
+        id S239353AbhKYSfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 13:35:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232053AbhKYSdr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 13:32:56 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 072925C01F9;
-        Thu, 25 Nov 2021 13:29:44 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 25 Nov 2021 13:29:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alyssa.is; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=TXkFOC5OLjUvrOgouPoCBJ79UU
-        U8W1VbrggoBpuMqtI=; b=S9WHltksoi+93Q5d0dulhEZN5zTkYujE1263kHYWGS
-        /EVMTdWJpsmHVfK5LRQchQ1BdvBI5B360Joq39GoYP85ELim+rDhU0mdVEMAXsNe
-        Cplj0ayVJfxpGGWcvJPJPhDpVFEJdZIP/0MMVyRcLB7SSN9U703DTdZXbZByrZR1
-        Fzn1khp4CPiwPNW5F2Qhbs9s/snWb/MMJxQg2eKP7oQJlrZw//oAEh1fP06LlaL5
-        YWObT9hc4HbntxAPHvK1zXURxHE/P/ebYw4ljeAuMPFMrO+30sxQCp7cjLI06MmH
-        xkIoA0DKIzMIsYmyJNIi1M1pgf3HjO24wxXMCGTH08lw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=TXkFOC5OLjUvrOgou
-        PoCBJ79UUU8W1VbrggoBpuMqtI=; b=TYaMWbEppUXIGFU3bYuaC7VMr4KWvVSeS
-        CjU/jdzTZQ9/5ooQM4XN00XpUnGfxphH9Vc5QrRbgjYLynqO09HBlUwoZa7qO3Ed
-        7xu9HcrRAV6QqNKXs5cFJqQNCKLmba+xqUfVdSZD9ZZ1eWpPr9idyrrbDNC9zxxE
-        xtFPU7Kgq6JDEjjw+ZU4ZLz8cNUS8eaGh4BWAiJwhrRBlTlWnJ/hzjY5GB0y1qiU
-        N0428gqbtC95LFu+p5iY6najl9gYJQtitQS4EIprOgG7xKjcYO6cNQCVGk+Vvn8s
-        QYrm2VoW88w6jvFnqVoUn2yQ/bI/94i5L9DrD9I7d5arszqmQqFng==
-X-ME-Sender: <xms:F9afYVRupp2A9JLeyjYhd554wZadthg99FKKjKbpZthVrfLhPmHEJQ>
-    <xme:F9afYeyNYnxmjkThWKOTJlHs4HgvljyrxXhfZhn4_ptSgrTEPXxw4v7HlbWkC4Miw
-    EMWjkIttwnqzxG0bQ>
-X-ME-Received: <xmr:F9afYa3NaPaHVKIkUQtoBXi_N0yzuhUk1VSSH-Foqc6WMEN4pItS0VH98_f5J5uU7aG7HOJlRydEhQ7Bth8gNVDvsM-9Jgs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrhedtgdduudefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeetlhihshhsrgcu
-    tfhoshhsuceohhhisegrlhihshhsrgdrihhsqeenucggtffrrghtthgvrhhnpeehvdffgf
-    fhteeijefgteeftdfghfdvheeuhedvjedugfeggfeljefgleefvefgfeenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehqhihlihhsshesgidvvd
-    dtrdhqhihlihhsshdrnhgvth
-X-ME-Proxy: <xmx:F9afYdBsyPnqcolUtu8zUkKq44_d6urxheatugQ4rj0mNRgFgkXRSg>
-    <xmx:F9afYej4HFisQcrSngoxvkeOYURdxMYVmf9x2vJg1PDRLjHK6Vm0bA>
-    <xmx:F9afYRoHvbL3ySjcueb2gdbEin1LYRJhGJLMj6EOElgM_My4QG4g5Q>
-    <xmx:GNafYXV7SqwwO-mSP7AEnbZme6j8UrZyyaL63hlJJ0ztbV2VTDTuSw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 25 Nov 2021 13:29:43 -0500 (EST)
-Received: by x220.qyliss.net (Postfix, from userid 1000)
-        id 1AB5D13E2; Thu, 25 Nov 2021 18:29:41 +0000 (UTC)
-From:   Alyssa Ross <hi@alyssa.is>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     Alyssa Ross <hi@alyssa.is>,
-        linux-iio@vger.kernel.org (open list:IIO SUBSYSTEM AND DRIVERS),
-        linux-stm32@st-md-mailman.stormreply.com (moderated list:ARM/STM32
-        ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/STM32
-        ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] iio: trigger: stm32-timer: fix MODULE_ALIAS
-Date:   Thu, 25 Nov 2021 18:28:48 +0000
-Message-Id: <20211125182850.2645424-1-hi@alyssa.is>
-X-Mailer: git-send-email 2.33.0
+        Thu, 25 Nov 2021 13:33:47 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72435C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 10:30:35 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id l25so28830856eda.11
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 10:30:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0VXWosJRZAdkGHkgPUkUbLsblOpwkRU9t0kVTz+wwXg=;
+        b=aZ1d66Q3FjxufcyDrG5sO7rBtW6xBxxncf529xeXVkFg7i084i42gBiUR0jPmg3eqJ
+         ujLFKzC55+62dPTwmZrFaaWnO9LWDwnS4WnoVX+QFrBKqe8U6BsrzdWBH1s8Ie2gV7Pb
+         poX3s2EO6OZ/lIUUyQeNUucwNdyUg1wgxQN2MnfRorRnxkaoIll656UH49dWZqRB38ij
+         hm8tlVHsEU8laWxAlFWS+Yp6MLB8K0KQryRxgzeu7KkuIoGKGbqW21LkIIy4glntQLUt
+         xstWzUL0u3dfqg25VOw/huexC+n5rrQ5hwykCxiJLhVydUyOYrcxWkRKYSONKh/sTT1j
+         3G4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0VXWosJRZAdkGHkgPUkUbLsblOpwkRU9t0kVTz+wwXg=;
+        b=OUlR16coB/Yw7+VUxd0CbnY/fygghHupkQZi7y9czO6UKx7e3fDZNqaqMPcDwL/7Jn
+         YaKO2VRLFhnujAvp491bULZ/vUzJlrnQBxKJ71u9X3ihCOFLL6V7M64lF/iIYz1rzS4X
+         uqXHmiRheZvxfWAJkP7g7xv/AUnrlFv+x+tWNXNH4SKnrZL97ARaoGw6CY3CM9AC7X0F
+         9ofTVnIyzebg28BrBumlHA1U1YDRGCsHZp0n56EnxFizemEGhbeKvleRVBYEjlwL/jHi
+         lLnz9cpHYttoVLK/sx7ot0FZ2J3hoYtrCWAInVq9Kbw59OA24PUmpfb4vDvkYCFJ1uFa
+         42JQ==
+X-Gm-Message-State: AOAM531+Tp84Kf2ElILC9Oq8NmK1vmdnfG24mCu+sCztDsbSOP5Uz1Hx
+        cO1A81XxepxMZa7Kboeom550wYepF9yVQN1szOwnbw==
+X-Google-Smtp-Source: ABdhPJyUlVZeKNY4ZGd2psjPCYKQVLwpj/v/0iqY2LHayqcn3w2Ornp0N2FsI4dNLH70istMPTgJ4SpHdF1+EgO9DEM=
+X-Received: by 2002:a17:906:c302:: with SMTP id s2mr33570132ejz.499.1637865033725;
+ Thu, 25 Nov 2021 10:30:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211125092029.973858485@linuxfoundation.org>
+In-Reply-To: <20211125092029.973858485@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 26 Nov 2021 00:00:22 +0530
+Message-ID: <CA+G9fYsadBOzy2yNVTrq_N6DXNoKyH264M68HSLPVFA=+4VeTQ@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/153] 5.10.82-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-modprobe can't handle spaces in aliases.
+On Thu, 25 Nov 2021 at 15:03, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.82 release.
+> There are 153 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 27 Nov 2021 09:20:04 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.82-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Fixes: 93fbe91b5521 ("iio: Add STM32 timer trigger driver")
-Signed-off-by: Alyssa Ross <hi@alyssa.is>
----
- drivers/iio/trigger/stm32-timer-trigger.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-diff --git a/drivers/iio/trigger/stm32-timer-trigger.c b/drivers/iio/trigger/stm32-timer-trigger.c
-index 33083877cd19..4353b749ecef 100644
---- a/drivers/iio/trigger/stm32-timer-trigger.c
-+++ b/drivers/iio/trigger/stm32-timer-trigger.c
-@@ -912,6 +912,6 @@ static struct platform_driver stm32_timer_trigger_driver = {
- };
- module_platform_driver(stm32_timer_trigger_driver);
- 
--MODULE_ALIAS("platform: stm32-timer-trigger");
-+MODULE_ALIAS("platform:stm32-timer-trigger");
- MODULE_DESCRIPTION("STMicroelectronics STM32 Timer Trigger driver");
- MODULE_LICENSE("GPL v2");
--- 
-2.33.0
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+## Build
+* kernel: 5.10.82-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.10.y
+* git commit: c7ee3713feb580103e956dd5980d3805868a677d
+* git describe: v5.10.81-154-gc7ee3713feb5
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.81-154-gc7ee3713feb5
+
+## No regressions (compared to v5.10.81-155-gf8f271281cd8)
+
+## No fixes (compared to v5.10.81-155-gf8f271281cd8)
+
+
+## Test result summary
+total: 89088, pass: 76022, fail: 464, skip: 11925, xfail: 677
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 259 total, 259 passed, 0 failed
+* arm64: 37 total, 37 passed, 0 failed
+* dragonboard-410c: 1 total, 0 passed, 1 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 36 total, 36 passed, 0 failed
+* juno-r2: 1 total, 0 passed, 1 failed
+* mips: 34 total, 34 passed, 0 failed
+* parisc: 12 total, 12 passed, 0 failed
+* powerpc: 54 total, 46 passed, 8 failed
+* riscv: 24 total, 24 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 20 total, 20 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 37 total, 37 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* perf/Zstd-perf.data-compression
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
