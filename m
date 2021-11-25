@@ -2,139 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23FC545DD82
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:32:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 206BB45DDA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:39:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241832AbhKYPfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:35:25 -0500
-Received: from foss.arm.com ([217.140.110.172]:52408 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237654AbhKYPdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:33:24 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 16B051FB;
-        Thu, 25 Nov 2021 07:30:13 -0800 (PST)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 13DAE3F66F;
-        Thu, 25 Nov 2021 07:30:11 -0800 (PST)
-From:   Valentin Schneider <Valentin.Schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Vincent Donnefort <Vincent.Donnefort@arm.com>,
-        peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
-        dietmar.eggemann@arm.com
-Subject: Re: [PATCH] sched/fair: Fix detection of per-CPU kthreads waking a task
-In-Reply-To: <CAKfTPtDPskVdEd-KQ_cwe-R_zVFPQOgdbk9x+3eD12pKs8fGFw@mail.gmail.com>
-References: <20211124154239.3191366-1-vincent.donnefort@arm.com> <CAKfTPtDX8sOfguZhJt5QV3j5D_JetcgncuF2w+uLa0XDk7UXkw@mail.gmail.com> <8735nkcwov.mognet@arm.com> <CAKfTPtDPskVdEd-KQ_cwe-R_zVFPQOgdbk9x+3eD12pKs8fGFw@mail.gmail.com>
-Date:   Thu, 25 Nov 2021 15:30:05 +0000
-Message-ID: <87zgpsb6de.mognet@arm.com>
+        id S1356138AbhKYPmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:42:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235890AbhKYPky (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 10:40:54 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D136C0619E0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:30:31 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id m25-20020a7bcb99000000b0033aa12cdd33so1139884wmi.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:30:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mT5CztXXGEVtVu2lf/CwV1g7OPVgRExJfPGlfmMywm0=;
+        b=PEQF6bMcJoShAAAQZkOF5BkWuiwr/n8dHKen+aLofuFtfwvoi1JRGleq7frRxwDwPz
+         dnnd09H6YI8fqa/4VFmNOCorgx79h5Kb8CTaEQBFTgi9u06DecieiPFcyxaALI3u/tie
+         nIGrxVpEgmrjxTTqEkl42sXE71D31J1/kYVeo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=mT5CztXXGEVtVu2lf/CwV1g7OPVgRExJfPGlfmMywm0=;
+        b=zyouYSuPOAB7OdyBlYZHnMJQlwpDE/AacUIJ1njmlyb6kmw5L3nrKWUyTW6L+80NH7
+         JBjuhiSsOxyKizvw+2R06T58a4Q/SNG3v2PjJ1ilcsknSx2mrpoIuJ1+pMxle9MzR6Le
+         eifxKwZ/2XerrXMzIM7PYq+yMemdPe4R1CyWpnspL95Bf6h8Mxhz2xEDJIIVG/T43svd
+         ljmsNSukdXvRjIYixImL73lTa688dBMVVKAPHR4mEbw1aO0r7sKWDt7TVsjVXSF59DMv
+         aXT46/qMYpmOvf/su3GVrbZ/phQN/Dfcj9E2DOdmH4hmja5eLCtvLyfRIO0X79r4C4nV
+         5/SQ==
+X-Gm-Message-State: AOAM531ml2FNVFBE6J8Mo8gZA3WdwdmGsYC7gauIv9BEDO3bIVBaeQuz
+        D/OYOf+X3G4l+3Wvw2p3yPy3EQ==
+X-Google-Smtp-Source: ABdhPJxhA/VhsuDIAS0OWxUiI3i8TAhLLHvv9SkU+3wJwc/Kf9vwByE1Bdg0iWstOjaQzCy5lMbUTQ==
+X-Received: by 2002:a1c:6a0e:: with SMTP id f14mr8313877wmc.58.1637854229881;
+        Thu, 25 Nov 2021 07:30:29 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id p27sm3220547wmi.28.2021.11.25.07.30.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 07:30:29 -0800 (PST)
+Date:   Thu, 25 Nov 2021 16:30:27 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Pekka Paalanen <ppaalanen@gmail.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, Simon Ser <contact@emersion.fr>,
+        Rob Clark <robdclark@chromium.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Doug Anderson <dianders@chromium.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-input@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] drm/input_helper: Add new input-handling helper
+Message-ID: <YZ+sEw2ya80bYYaC@phenom.ffwll.local>
+Mail-Followup-To: Pekka Paalanen <ppaalanen@gmail.com>,
+        Simon Ser <contact@emersion.fr>, Rob Clark <robdclark@chromium.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Doug Anderson <dianders@chromium.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-input@vger.kernel.org
+References: <20211117224841.3442482-1-briannorris@chromium.org>
+ <20211117144807.v2.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
+ <20211118123928.545dec8a@eldfell>
+ <CAF6AEGuc9JbOsC4Lrvoqo8VzMHq+7ru7Y6_UwoZaGV2wHQ6E5g@mail.gmail.com>
+ <20211119115419.505155b5@eldfell>
+ <YZfIgd8s7uGXAD2X@phenom.ffwll.local>
+ <98236dpcx39iOz8xAYrwGLfiLdwgUlljrbBgHL3wd8A0Wz4KzRk3PR8s_tb5Rxu4eScKI4483kB6Vhv-T64CJYOeQqwXlqo2c-64HvoS5cg=@emersion.fr>
+ <YZfMm3GkFereYPTZ@phenom.ffwll.local>
+ <20211122114342.0d23890f@eldfell>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211122114342.0d23890f@eldfell>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/11/21 14:23, Vincent Guittot wrote:
-> On Thu, 25 Nov 2021 at 12:16, Valentin Schneider
-> <Valentin.Schneider@arm.com> wrote:
->> I think you can still hit this on a symmetric system; let me try to
->> reformulate my other email.
->>
->> If this (non-patched) condition evaluates to true, it means the previous
->> condition
->>
->>   (available_idle_cpu(target) || sched_idle_cpu(target)) &&
->>    asym_fits_capacity(task_util, target)
->>
->> evaluated to false, so for a symmetric system target sure isn't idle.
->>
->> prev == smp_processor_id() implies prev == target, IOW prev isn't
->> idle. Now, consider:
->>
->>   p0.prev = CPU1
->>   p1.prev = CPU1
->>
->>   CPU0                     CPU1
->>   current = don't care     current = swapper/1
->>
->>   ttwu(p1)
->>     ttwu_queue(p1, CPU1)
->>     // or
->>     ttwu_queue_wakelist(p1, CPU1)
->>
->>                           hrtimer_wakeup()
->>                             wake_up_process()
->>                               ttwu()
->>                                 idle_cpu(CPU1)? no
->>
->>                                 is_per_cpu_kthread(current)? yes
->>                                 prev == smp_processor_id()? yes
->>                                 this_rq()->nr_running <= 1? yes
->>                                 => self enqueue
->>
->>                           ...
->>                           schedule_idle()
->>
->> This works if CPU0 does either a full enqueue (rq->nr_running == 1) or just
->> a wakelist enqueue (rq->ttwu_pending > 0). If there was an idle CPU3
->> around, we'd still be stacking p0 and p1 onto CPU1.
->>
->> IOW this opens a window between a remote ttwu() and the idle task invoking
->> schedule_idle() where the idle task can stack more tasks onto its CPU.
->
-> Your use case above is out of the scope of this patch and has always
-> been there, even for other per cpu kthreads. In such case, the wake up
-> is not triggered by current (idle or another per cpu kthread) but by
-> an interrupt (hrtimer in your case).
+On Mon, Nov 22, 2021 at 11:43:42AM +0200, Pekka Paalanen wrote:
+> On Fri, 19 Nov 2021 17:11:07 +0100
+> Daniel Vetter <daniel@ffwll.ch> wrote:
+> 
+> > On Fri, Nov 19, 2021 at 04:04:28PM +0000, Simon Ser wrote:
+> > > On Friday, November 19th, 2021 at 16:53, Daniel Vetter <daniel@ffwll.ch> wrote:
+> > >   
+> > > > Random idea ... should we perhaps let userspace connect the boosting? I.e.
+> > > > we do a bunch of standardized boost targets (render clocks, display sr
+> > > > exit), and userspace can then connect it to whichever input device it
+> > > > wants to?  
+> > > 
+> > > On IRC we discussed having user-space hand over a FD to the kernel. When the FD
+> > > becomes readable, the kernel triggers the boost.
+> > > 
+> > > This would let user-space use e.g. an input device, an eventfd, or an epoll FD
+> > > with any combination of these as the boost signal.  
+> > 
+> > Can userspace filter eventfd appropriately like we do here? And can they
+> > get at that maybe 2nd eventfd from logind or whatever there is on distros
+> > where /dev access is locked down for compositors/users.
+> 
+> (Mind, eventfd is a specific thing, see 'man eventfd', and evdev/input
+> device fd is different.)
 
-Technically the idle task didn't pass is_per_cpu_kthread(p) when that
-condition was added, this is somewhat of a "new development" - but you're
-right on the hardirq side of things.
+Yeah I was a bit sloppy, but I knew.
 
-> If we want to filter wakeup
-> generated by interrupt context while a per cpu kthread is running, it
-> would be better to fix all cases and test the running context like
-> this
->
+> I don't think any of that is any problem when userspace prepares an
+> epoll fd to be given to the boosting machinery. The boosting machinery
+> could have several different targets as well, PSR vs. GPU clocks and
+> whatnot.
+> 
+> I envision a compositor to maintain an epoll fd for boosting by
+> adding/removing the same device fds to it that it already uses in its
+> operations. I don't see any need to open new device fds just for
+> boosting. It's only the epoll fd given to the kernel and after that the
+> epoll set can still be changed, right?
+> 
+> The boosting machinery would never actually read or write the
+> registered fd(s), so it would not interfere with the normal operations.
+> But it also means the fd will remain readable until userspace services
+> it. Userspace may need to set up that epoll set very carefully to have
+> it work right (e.g. edge-triggered?).
+> 
+> If your input handling is in a different process than the DRM poking
+> for some reason, the epoll fd should still work if:
+> - it is possible to use SCM_RIGHTS to pass the epollfd from the
+>   input process to the DRM process, and
+> - you cannot extract the watched fds from an epoll fd.
+> 
+> Do we have those assumptions today?
+> 
+> Then the attack surface in the DRM process is limited to changing the
+> epoll set of which fds can trigger boosting, but the DRM process can do
+> that anyway. I also presume the input process can still add and remove
+> fds from the epoll set even afterwards.
+> 
+> > I do agree that if we can do this generically maybe we should, but also
+> > the use-case for input boosting is pretty well defined. I think it's just
+> > about making sure that compositors is in control, and that we don't make
+> > it worse (e.g. with the sr exit adding latency when the compositor can
+> > redraw quickly enough).
+> 
+> The epollfd design sounds very good to me. One can register an
+> arbitrary set of fds with it, and use even eventfds in the set to have
+> purely software triggers.
 
-I think that could make sense - though can the idle task issue wakeups in
-process context? If so that won't be sufficient. A quick audit tells me:
-
-o rcu_nocb_flush_deferred_wakeup() happens before calling into cpuidle
-o I didn't see any wakeup issued from the cpu_pm_notifier call chain
-o I'm not entirely sure about flush_smp_call_function_from_idle(). I found
-  this thing in RCU:
-
-  smp_call_function_single(cpu, rcu_exp_handler)
-
-    rcu_exp_handler()
-      rcu_report_exp_rdp()
-        rcu_report_exp_cpu_mult()
-          __rcu_report_exp_rnp()
-            swake_up_one()
-
-IIUC if set_nr_if_polling() then the smp_call won't send an IPI and should be
-handled in that flush_foo_from_idle() call.
-
-I'd be tempted to stick your VincentD's conditions together, just to be
-safe...
-
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6397,7 +6397,8 @@ static int select_idle_sibling(struct
-> task_struct *p, int prev, int target)
->          * essentially a sync wakeup. An obvious example of this
->          * pattern is IO completions.
->          */
-> -       if (is_per_cpu_kthread(current) &&
-> +       if (!in_interrupt() &&
-> +           is_per_cpu_kthread(current) &&
->             prev == smp_processor_id() &&
->             this_rq()->nr_running <= 1) {
->                 return prev;
->
->>
->> >
->> >> --
->> >> 2.25.1
->> >>
+Yeah I think just allowing to internall poll on any arbitrary fd sounds
+like a neat interface. Userspace should then be able to do whatever it
+wants to.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
