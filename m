@@ -2,268 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA6945DC1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 15:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3042045DC24
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 15:15:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355509AbhKYOSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 09:18:02 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:52236 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355576AbhKYOQB (ORCPT
+        id S1355635AbhKYOTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 09:19:04 -0500
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:6050 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239002AbhKYORD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 09:16:01 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637849568;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oGlOADoDQzTJJEUJWNX2CKw9fqVkgomvj7S9qxwFn50=;
-        b=YmU2IX512oZMOv+S0bEfd42DroU8cvUHyI2YJnNxFAJ2neds0zKyxmhFwDTA5lfv4VToOU
-        le040zozWQPhMoUTcPG84pHLJHeBoS9K+xeK9igHG38RiJ1y8OO1TVKn8NblofX9sSwmsT
-        l5WEYU1PgFOE1MJ2nEBOUzEXrhQO5jJY6sXE5NJsKALFem1Qbt+o/vAV0gxgVRSV7Ojme7
-        3ch59gBoT2MT3g8fI1Stvx2DV3QT4EzAbxc65hktpxQCB1xGXCbJ/h3orWNepMd2d/h8TB
-        4GMgHeBWgrrikd8Qhi1wkYxIFCUHpW3TQQfJQ+f94hq88MFHI/dqyugPOrW/2w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637849568;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oGlOADoDQzTJJEUJWNX2CKw9fqVkgomvj7S9qxwFn50=;
-        b=yo79CI88yawGNEw8EdWvLqbO7VEkvbC6wxynf5jW90ckIEvog/f/zSREBuU2hMk80DTuOD
-        fW4BGRM6ERd5RKCg==
-To:     ira.weiny@intel.com, Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
-        linux-mm@kvack.org
-Subject: Re: [PATCH V7 08/18] x86/entry: Preserve PKRS MSR across exceptions
-In-Reply-To: <20210804043231.2655537-9-ira.weiny@intel.com>
-References: <20210804043231.2655537-1-ira.weiny@intel.com>
- <20210804043231.2655537-9-ira.weiny@intel.com>
-Date:   Thu, 25 Nov 2021 15:12:47 +0100
-Message-ID: <87r1b4l3xc.ffs@tglx>
+        Thu, 25 Nov 2021 09:17:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1637849632; x=1669385632;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=9B1kagCGofhMafAlXRiDA3X0zfmqJUebEtDe625FPrc=;
+  b=FnP5F9nhO6KVaQL1aSUsoPwLmx0SOC0NHuZgBdjrTMpRwUfMSWjFqO2c
+   YbHep6FhUenwDPyu5S8P4XyHuFKVGyjYAP6iNn2CAd4YF2VikRO9LLzQA
+   fKBp+E0Vao1M42dpAoX2gCVPeQBhZ8LV0uSNxBbMq53qfCYPFPzyKCfnu
+   E=;
+Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 25 Nov 2021 06:13:52 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 06:13:52 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Thu, 25 Nov 2021 06:13:51 -0800
+Received: from [10.216.32.234] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Thu, 25 Nov
+ 2021 06:13:45 -0800
+Message-ID: <687d97b6-347a-92c0-34ba-00331dfb6c82@quicinc.com>
+Date:   Thu, 25 Nov 2021 19:43:42 +0530
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH] sched/idle: Export cpu_idle_poll_ctrl() symbol
+To:     Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+CC:     <bjorn.andersson@linaro.org>, <rafael@kernel.org>,
+        <daniel.lezcano@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <ulf.hansson@linaro.org>, <quic_lsrao@quicinc.com>,
+        <rnayak@codeaurora.org>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        "Vincent Guittot" <vincent.guittot@linaro.org>
+References: <1637831676-32737-1-git-send-email-quic_mkshah@quicinc.com>
+ <YZ9ctgCBYJEEjuwt@hirez.programming.kicks-ass.net>
+From:   Maulik Shah <quic_mkshah@quicinc.com>
+In-Reply-To: <YZ9ctgCBYJEEjuwt@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ira,
+Hi Peter,
 
-On Tue, Aug 03 2021 at 21:32, ira weiny wrote:
-> +/*
-> + * __call_ext_ptregs - Helper macro to call into C with extended pt_regs
-> + * @cfunc:		C function to be called
-> + *
-> + * This will ensure that extended_ptregs is added and removed as needed during
-> + * a call into C code.
-> + */
-> +.macro __call_ext_ptregs cfunc annotate_retpoline_safe:req
-> +#ifdef CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS
-> +	/* add space for extended_pt_regs */
-> +	subq    $EXTENDED_PT_REGS_SIZE, %rsp
-> +#endif
-> +	.if \annotate_retpoline_safe == 1
-> +		ANNOTATE_RETPOLINE_SAFE
-> +	.endif
+On 11/25/2021 3:21 PM, Peter Zijlstra wrote:
+> On Thu, Nov 25, 2021 at 02:44:36PM +0530, Maulik Shah wrote:
+>> Export cpu_idle_poll_ctrl() so that module drivers can use same.
+> This does not seem like a really safe interface to expose to the
+> world.
 
-This annotation is new and nowhere mentioned why it is part of this
-patch.
+Thanks for the review.
 
-Can you please do _ONE_ functional change per patch and not a
-unreviewable pile of changes in one go? Same applies for the ASM and the
-C code changes. The ASM change has to go first and then the C code can
-build upon it.
+Keeping the cpuidle enabled from boot up may delay/increase the boot up 
+time.
+Below is our use case to force cpuidle to stay in cpu_idle_poll().
 
-> +	call	\cfunc
-> +#ifdef CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS
-> +	/* remove space for extended_pt_regs */
-> +	addq    $EXTENDED_PT_REGS_SIZE, %rsp
-> +#endif
+We keep cpuidle disabled from boot up using "nohlt" option of kernel 
+command line which internally sets cpu_idle_force_poll = 1;
+and once the device bootup reaches till certain point (for example the 
+android homescreen is up) userspace may notify a
+vendor module driver which can invoke cpu_idle_poll_ctrl(false); to come 
+out of poll mode.
+So vendor module driver needs cpu_idle_poll_ctrl() exported symbol.
 
-I really have to ask the question whether this #ifdeffery has any value
-at all. 8 bytes extra stack usage is not going to be the end of the
-world and distro kernels will enable that config anyway.
+We can not take PM-QoS from driver to prevent deep cpuidle since all the 
+vendor modules are kept in a separate partition and will be loaded only 
+after kernel boot up is done
+and by this time kernel already starts executing deep cpuidle modes.
+>
+> Surely the better solution is to rework things to not rely on this. I'm
+> fairly sure it's not hard to write a cpuidle driver that does much the
+> same.
+The other option i think is to pass cpuidle.off=1 in kernel command line 
+and then add enable_cpuidle() in drivers/cpuidle/cpuidle.c
+something similar as below which can be called by vendor module.
 
-If we really want to save the space then certainly not by sprinkling
-CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS all over the place and hiding the
-extra sized ptregs in the pkrs header.
+void enable_cpuidle(void)
+{
+         off = 0;
+}
+EXPORT_SYMBOL_GPL(enable_cpuidle);
 
-You are changing generic architecture code so you better think about
-making such a change generic and extensible. Can folks please start
-thinking beyond the brim of their teacup and not pretend that the
-feature they are working on is the unicorn which requires unique magic
-brandnamed after the unicorn of the day.
+This may be a good option since we have already disable_cpuidle() but 
+not enable_cpuidle().
 
-If the next feature comes around which needs to save something in that
-extended area then we are going to change the world again, right?
-Certainly not.
+void disable_cpuidle(void)
+{
+         off = 1;
+}
 
-This wants to go into asm/ptrace.h:
-
-struct pt_regs_aux {
-	u32	pkrs;
-};
-
-struct pt_regs_extended {
-	struct pt_regs_aux	aux;
-        struct pt_regs		regs __attribute__((aligned(8)));
-};
-
-and then have in asm-offset:
-
-   DEFINE(PT_REGS_AUX_SIZE, sizeof(struct pt_regs_extended) - sizeof(struct pt_regs));
-
-which does the right thing whatever the size of pt_regs_aux is. So for
-the above it will have:
-
- #define PT_REGS_AUX_SIZE 8 /* sizeof(struct pt_regs_extended) - sizeof(struct pt_regs) */
-
-Even, if you do
-
-struct pt_regs_aux {
-#ifdef CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS
-	u32	pkrs;
-#endif        
-};
-
-and the config switch is disabled. It's still correct:
-
- #define PT_REGS_AUX_SIZE 0 /* sizeof(struct pt_regs_extended) - sizeof(struct pt_regs) */
-
-See? No magic hardcoded constant, no build time error checking for that
-constant. Nothing, it just works.
-
-That's one part, but let me come back to this:
-
-> +#ifdef CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS
-> +	/* add space for extended_pt_regs */
-> +	subq    $EXTENDED_PT_REGS_SIZE, %rsp
-
-What guarantees that RSP points to pt_regs at this point?  Nothing at
-all. It's just pure luck and a question of time until this explodes in
-hard to diagnose ways.
-
-Because between
-
-        movq	%rsp, %rdi
-and
-        call    ....
-
-can legitimately be other code which causes the stack pointer to
-change. It's not the case today, but nothing prevents this in the
-future.
-
-The correct thing to do is:
-
-        movq	%rsp, %rdi
-        RSP_MAKE_PT_REGS_AUX_SPACE
-        call	...
-        RSP_REMOVE_PT_REGS_AUX_SPACE
-
-The few extra macro lines in the actual code are way better as they make
-it completely obvious what's going on and any misuse can be spotted
-easily.
-
-> +#ifdef CONFIG_ARCH_ENABLE_SUPERVISOR_PKEYS
-> +/*
-> + * PKRS is a per-logical-processor MSR which overlays additional protection for
-> + * pages which have been mapped with a protection key.
-> + *
-> + * Context switches save the MSR in the task struct thus taking that value to
-> + * other processors if necessary.
-> + *
-> + * To protect against exceptions having access to this memory save the current
-> + * thread value and set the PKRS value to be used during the exception.
-> + */
-> +void pkrs_save_irq(struct pt_regs *regs)
-
-That's a misnomer as this is invoked for _any_ exception not just
-interrupts.
-
->  #ifdef CONFIG_XEN_PV
->  #ifndef CONFIG_PREEMPTION
->  /*
-> @@ -309,6 +361,8 @@ __visible noinstr void xen_pv_evtchn_do_upcall(struct pt_regs *regs)
->  
->  	inhcall = get_and_clear_inhcall();
->  	if (inhcall && !WARN_ON_ONCE(state.exit_rcu)) {
-> +		/* Normally called by irqentry_exit, restore pkrs here */
-> +		pkrs_restore_irq(regs);
-> 		irqentry_exit_cond_resched();
-
-Sigh. Consistency is overrated....
-
-> +
->  void setup_pks(void);
->  void pkrs_write_current(void);
->  void pks_init_task(struct task_struct *task);
-> +void write_pkrs(u32 new_pkrs);
-
-So we have pkrs_write_current() and write_pkrs() now. Can you please
-stick to a common prefix, i.e. pkrs_ ?
-
-> diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-> index bf16395b9e13..aa0b1e8dd742 100644
-> --- a/kernel/entry/common.c
-> +++ b/kernel/entry/common.c
-> @@ -6,6 +6,7 @@
->  #include <linux/livepatch.h>
->  #include <linux/audit.h>
->  #include <linux/tick.h>
-> +#include <linux/pkeys.h>
->  
->  #include "common.h"
->  
-> @@ -364,7 +365,7 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
->  		instrumentation_end();
->  
->  		ret.exit_rcu = true;
-> -		return ret;
-> +		goto done;
->  	}
->  
->  	/*
-> @@ -379,6 +380,8 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
->  	trace_hardirqs_off_finish();
->  	instrumentation_end();
->  
-> +done:
-> +	pkrs_save_irq(regs);
-
-This still calls out into instrumentable code. I explained you before
-why this is wrong. Also objtool emits warnings to that effect if you do a
-proper verified build.
-
->  	return ret;
->  }
->  
-> @@ -404,7 +407,12 @@ noinstr void irqentry_exit(struct pt_regs *regs, irqentry_state_t state)
->  	/* Check whether this returns to user mode */
->  	if (user_mode(regs)) {
->  		irqentry_exit_to_user_mode(regs);
-> -	} else if (!regs_irqs_disabled(regs)) {
-> +		return;
-> +	}
-> +
-> +	pkrs_restore_irq(regs);
-
-At least you are now putting it consistently at the wrong place
-vs. noinstr.
-
-Though, if you look at the xen_pv_evtchn_do_upcall() part where you
-added this extra invocation you might figure out that adding
-pkrs_restore_irq() to irqentry_exit_cond_resched() and explicitely to
-the 'else' path in irqentry_exit() makes it magically consistent for
-both use cases.
+Hi Rafael/Daniel, can you please let me know your suggestion on 
+this/similar implementation?
 
 Thanks,
-
-        tglx
+Maulik
