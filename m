@@ -2,110 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6B545D9DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E152745D9DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:17:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241102AbhKYMU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 07:20:28 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:42192 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S239350AbhKYMS1 (ORCPT
+        id S1348852AbhKYMUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 07:20:46 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:46464 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240188AbhKYMSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 07:18:27 -0500
-X-UUID: 03107496eb0f4250a40eceae39071db7-20211125
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=XNa56ptSVW/PBObhWFXTIZ22GAfC+uM5uwwEbvv6o/M=;
-        b=nHIEfA3DaVVfdCd8h/Bi4AlcPB95vpZffM6B2xWRkW+1JuIIw+E/dMIWJu5a0K5mRGOAfEz3a7paWQbhgQ5G91lvR/BUnlkltRdGSJfVGXPPWT9vnCkTl0sSrFcV8ceGaED+STcGxpgIMzjkN0sNwqz/Ff2Lm7GQewaAIO9FZeM=;
-X-UUID: 03107496eb0f4250a40eceae39071db7-20211125
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <jianjun.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1041156523; Thu, 25 Nov 2021 20:15:13 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Thu, 25 Nov 2021 20:15:12 +0800
-Received: from mhfsdcap04 (10.17.3.154) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 25 Nov 2021 20:15:11 +0800
-Message-ID: <926a0bb2ec2ad64ba579d38e761e1e97ba5bba3f.camel@mediatek.com>
-Subject: Re: [PATCH v4 10/12] ARM: dts: Add PCIe support for Airoha EN7523
-From:   Jianjun Wang <jianjun.wang@mediatek.com>
-To:     Felix Fietkau <nbd@nbd.name>,
-        <linux-arm-kernel@lists.infradead.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <john@phrozen.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>
-Date:   Thu, 25 Nov 2021 20:15:11 +0800
-In-Reply-To: <20211125110738.41028-11-nbd@nbd.name>
-References: <20211125110738.41028-1-nbd@nbd.name>
-         <20211125110738.41028-11-nbd@nbd.name>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Thu, 25 Nov 2021 07:18:42 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1APCFNJI108601;
+        Thu, 25 Nov 2021 06:15:23 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1637842523;
+        bh=B56SSf3OI5ndesdzCgGnMjaerg8TnEWV2iLDM5eRd90=;
+        h=From:To:CC:Subject:Date;
+        b=Gnei533leSNBKur56XU/rdh9q2bM8qjF4LVmv3KfKU6tVtmmtq0BEHH1nOop5kXbf
+         cPofoVVwb1+ljlal1bITFAFHuXoK4pnZD54hY2yjbIyaedOvHX7Kl6VxcJL9sYKrQw
+         9QhDp7ILVOfl1C5whuVg26duh0U6C45HncCXb4p8=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1APCFNXQ028429
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 25 Nov 2021 06:15:23 -0600
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 25
+ Nov 2021 06:15:22 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Thu, 25 Nov 2021 06:15:22 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1APCFMoq005975;
+        Thu, 25 Nov 2021 06:15:22 -0600
+From:   Jayesh Choudhary <j-choudhary@ti.com>
+To:     <robh+dt@kernel.org>
+CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <j-choudhary@ti.com>,
+        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] ASoC: dt-bindings: davinci-mcasp: convert McASP bindings to yaml schema
+Date:   Thu, 25 Nov 2021 17:45:21 +0530
+Message-ID: <20211125121521.31554-1-j-choudhary@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgRmVsaXgsDQoNCk9uIFRodSwgMjAyMS0xMS0yNSBhdCAxMjowNyArMDEwMCwgRmVsaXggRmll
-dGthdSB3cm90ZToNCj4gVGhpcyB1c2VzIHRoZSBNZWRpYVRlayBNVDc2MjIgUENJZSBkcml2ZXIs
-IHNpbmNlIHRoZSBQQ0llIElQIGJsb2NrIGlzDQo+IG5lYXJseQ0KPiBpZGVudGljYWwgdG8gdGhl
-IG9uZSBpbiBNVDc2MjINCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEZlbGl4IEZpZXRrYXUgPG5iZEBu
-YmQubmFtZT4NCj4gLS0tDQo+ICBhcmNoL2FybS9ib290L2R0cy9lbjc1MjMtZXZiLmR0cyB8IDEy
-ICsrKysrKysNCj4gIGFyY2gvYXJtL2Jvb3QvZHRzL2VuNzUyMy5kdHNpICAgIHwgNjANCj4gKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gIDIgZmlsZXMgY2hhbmdlZCwgNzIgaW5z
-ZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtL2Jvb3QvZHRzL2VuNzUyMy1l
-dmIuZHRzDQo+IGIvYXJjaC9hcm0vYm9vdC9kdHMvZW43NTIzLWV2Yi5kdHMNCj4gaW5kZXggZThl
-NWMwMzRjZWU3Li5hZjFhOGRkNDBhNDEgMTAwNjQ0DQo+IC0tLSBhL2FyY2gvYXJtL2Jvb3QvZHRz
-L2VuNzUyMy1ldmIuZHRzDQo+ICsrKyBiL2FyY2gvYXJtL2Jvb3QvZHRzL2VuNzUyMy1ldmIuZHRz
-DQo+IEBAIC0yNSwzICsyNSwxNSBAQCBtZW1vcnlAODAwMDAwMDAgew0KPiAgCQlyZWcgPSA8MHg4
-MDAwMDAwMCAweDIwMDAwMDAwPjsNCj4gIAl9Ow0KPiAgfTsNCj4gKw0KPiArJnBjaWUgew0KPiAr
-CXN0YXR1cyA9ICJva2F5IjsNCj4gK307DQo+ICsNCj4gKyZwY2llMCB7DQo+ICsJc3RhdHVzID0g
-Im9rYXkiOw0KPiArfTsNCj4gKw0KPiArJnBjaWUxIHsNCj4gKwlzdGF0dXMgPSAib2theSI7DQo+
-ICt9Ow0KPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm0vYm9vdC9kdHMvZW43NTIzLmR0c2kNCj4gYi9h
-cmNoL2FybS9ib290L2R0cy9lbjc1MjMuZHRzaQ0KPiBpbmRleCBlYWJmM2ZkYjNkNTIuLmQ5YmRi
-NTE2MTRiNSAxMDA2NDQNCj4gLS0tIGEvYXJjaC9hcm0vYm9vdC9kdHMvZW43NTIzLmR0c2kNCj4g
-KysrIGIvYXJjaC9hcm0vYm9vdC9kdHMvZW43NTIzLmR0c2kNCj4gQEAgLTExOSw0ICsxMTksNjQg
-QEAgdWFydDE6IHNlcmlhbEAxZmJmMDAwMCB7DQo+ICAJCWNsb2NrLWZyZXF1ZW5jeSA9IDwxODQz
-MjAwPjsNCj4gIAkJc3RhdHVzID0gIm9rYXkiOw0KPiAgCX07DQo+ICsNCj4gKwlwY2llOiBwY2ll
-QDFhMTQwMDAwIHsNCj4gKwkJY29tcGF0aWJsZSA9ICJhaXJvaGEsZW43NTIzLXBjaWUiLCAibWVk
-aWF0ZWssbXQ3NjIyLQ0KPiBwY2llIjsNCj4gKwkJZGV2aWNlX3R5cGUgPSAicGNpIjsNCj4gKwkJ
-cmVnID0gPDB4MWZhOTEwMDAgMHgxMDAwPiwNCj4gKwkJICAgICAgPDB4MWZhOTIwMDAgMHgxMDAw
-PjsNCj4gKwkJcmVnLW5hbWVzID0gInBvcnQwIiwgInBvcnQxIjsNCj4gKwkJI2FkZHJlc3MtY2Vs
-bHMgPSA8Mz47DQo+ICsJCSNzaXplLWNlbGxzID0gPDI+Ow0KPiArCQlpbnRlcnJ1cHRzID0gPEdJ
-Q19TUEkgMzkgSVJRX1RZUEVfTEVWRUxfSElHSD4sDQo+ICsJCQkgICAgIDxHSUNfU1BJIDQwIElS
-UV9UWVBFX0xFVkVMX0hJR0g+Ow0KPiArCQljbG9ja3MgPSA8JnNjdSBFTjc1MjNfQ0xLX1BDSUU+
-LA0KPiArCQkJIDwmc2N1IEVONzUyM19DTEtfUENJRT47DQo+ICsJCWNsb2NrLW5hbWVzID0gInN5
-c19jazAiLCAic3lzX2NrMSI7DQo+ICsJCWJ1cy1yYW5nZSA9IDwweDAwIDB4ZmY+Ow0KPiArCQly
-YW5nZXMgPSA8MHg4MjAwMDAwMCAwIDB4MjAwMDAwMDAgIDB4MjAwMDAwMDAgIDANCj4gMHgxMDAw
-MDAwMD47DQo+ICsJCXN0YXR1cyA9ICJkaXNhYmxlZCI7DQo+ICsNCj4gKwkJcGNpZTA6IHBjaWVA
-MCwwIHsNCj4gKwkJCWRldmljZV90eXBlID0gInBjaSI7DQo+ICsJCQlyZWcgPSA8MHgwMDAwIDAg
-MCAwIDA+Ow0KPiArCQkJI2FkZHJlc3MtY2VsbHMgPSA8Mz47DQo+ICsJCQkjc2l6ZS1jZWxscyA9
-IDwyPjsNCj4gKwkJCSNpbnRlcnJ1cHQtY2VsbHMgPSA8MT47DQo+ICsJCQlyYW5nZXM7DQo+ICsJ
-CQlzdGF0dXMgPSAiZGlzYWJsZWQiOw0KPiArDQo+ICsJCQlpbnRlcnJ1cHQtbWFwLW1hc2sgPSA8
-MCAwIDAgNz47DQo+ICsJCQlpbnRlcnJ1cHQtbWFwID0gPDAgMCAwIDEgJnBjaWVfaW50YzAgMD4s
-DQo+ICsJCQkJCTwwIDAgMCAyICZwY2llX2ludGMwIDE+LA0KPiArCQkJCQk8MCAwIDAgMyAmcGNp
-ZV9pbnRjMCAyPiwNCj4gKwkJCQkJPDAgMCAwIDQgJnBjaWVfaW50YzAgMz47DQo+ICsJCQlwY2ll
-X2ludGMwOiBpbnRlcnJ1cHQtY29udHJvbGxlciB7DQo+ICsJCQkJaW50ZXJydXB0LWNvbnRyb2xs
-ZXI7DQo+ICsJCQkJI2FkZHJlc3MtY2VsbHMgPSA8MD47DQo+ICsJCQkJI2ludGVycnVwdC1jZWxs
-cyA9IDwxPjsNCj4gKwkJCX07DQo+ICsJCX07DQo+ICsNCj4gKwkJcGNpZTE6IHBjaWVAMSwwIHsN
-Cj4gKwkJCWRldmljZV90eXBlID0gInBjaSI7DQo+ICsJCQlyZWcgPSA8MHgwODAwIDAgMCAwIDA+
-Ow0KPiArCQkJI2FkZHJlc3MtY2VsbHMgPSA8Mz47DQo+ICsJCQkjc2l6ZS1jZWxscyA9IDwyPjsN
-Cj4gKwkJCSNpbnRlcnJ1cHQtY2VsbHMgPSA8MT47DQo+ICsJCQlyYW5nZXM7DQo+ICsJCQlzdGF0
-dXMgPSAiZGlzYWJsZWQiOw0KPiArDQo+ICsJCQlpbnRlcnJ1cHQtbWFwLW1hc2sgPSA8MCAwIDAg
-Nz47DQo+ICsJCQlpbnRlcnJ1cHQtbWFwID0gPDAgMCAwIDEgJnBjaWVfaW50YzEgMD4sDQo+ICsJ
-CQkJCTwwIDAgMCAyICZwY2llX2ludGMxIDE+LA0KPiArCQkJCQk8MCAwIDAgMyAmcGNpZV9pbnRj
-MSAyPiwNCj4gKwkJCQkJPDAgMCAwIDQgJnBjaWVfaW50YzEgMz47DQo+ICsJCQlwY2llX2ludGMx
-OiBpbnRlcnJ1cHQtY29udHJvbGxlciB7DQo+ICsJCQkJaW50ZXJydXB0LWNvbnRyb2xsZXI7DQo+
-ICsJCQkJI2FkZHJlc3MtY2VsbHMgPSA8MD47DQo+ICsJCQkJI2ludGVycnVwdC1jZWxscyA9IDwx
-PjsNCj4gKwkJCX07DQo+ICsJCX07DQo+ICsJfTsNCg0KVGhlcmUgYXJlIHNvbWUga25vd24gaXNz
-dWVzIHdpdGggdGhpcyBkZXZpY2Ugbm9kZSBzdHlsZSwgcGxlYXNlIHNwbGl0DQp0aGUgUENJZSBu
-b2RlIGludG8gdHdvIGluZGVwZW5kZW50IG5vZGVzIHRvIGNvbXBseSB3aXRoIHRoZSBoYXJkd2Fy
-ZQ0KZGVzaWduLg0KDQpIZXJlIGlzIHRoZSBmaXggcGF0Y2ggd2Ugc2VudCBiZWZvcmU6DQoNCmh0
-dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LXBjaS8yMDIxMDgyMzAzMjgwMC4xNjYwLTYtY2h1
-YW5qaWEubGl1QG1lZGlhdGVrLmNvbS8NCg0KVGhhbmtzLg0KDQo+ICB9Ow0K
+Convert the bindings for McASP controllers for TI SOCs
+from txt to YAML schema.
+
+Adds additional properties 'clocks', 'clock-names', 'power-domains'
+'#sound-dai-cells', 'num-serializer' and 'port' which were not there
+in the txt file.
+Adds 'dmas' and 'dma-names' in the example which were not there in
+the txt file.
+Changes 'interrupts' and 'interrupt-names' from optional to
+required properties.
+
+Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+---
+Changelog:
+v2:
+- changes the commit message
+- modifies the properties 'clocks', 'clock-names', 'dma-names',
+  'dmas', 'interrupts' and 'interrupt-names' according to the 
+  arm SOCs
+- adds 'port' and 'num-serializer' as node properties.
+
+ .../bindings/sound/davinci-mcasp-audio.txt    |  86 ---------
+ .../bindings/sound/davinci-mcasp-audio.yaml   | 179 ++++++++++++++++++
+ 2 files changed, 179 insertions(+), 86 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
+
+diff --git a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
+deleted file mode 100644
+index bd863bd69501..000000000000
+--- a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
++++ /dev/null
+@@ -1,86 +0,0 @@
+-Texas Instruments McASP controller
+-
+-Required properties:
+-- compatible :
+-	"ti,dm646x-mcasp-audio"	: for DM646x platforms
+-	"ti,da830-mcasp-audio"	: for both DA830 & DA850 platforms
+-	"ti,am33xx-mcasp-audio"	: for AM33xx platforms (AM33xx, AM43xx, TI81xx)
+-	"ti,dra7-mcasp-audio"	: for DRA7xx platforms
+-	"ti,omap4-mcasp-audio"	: for OMAP4
+-
+-- reg : Should contain reg specifiers for the entries in the reg-names property.
+-- reg-names : Should contain:
+-         * "mpu" for the main registers (required). For compatibility with
+-           existing software, it is recommended this is the first entry.
+-         * "dat" for separate data port register access (optional).
+-- op-mode : I2S/DIT ops mode. 0 for I2S mode. 1 for DIT mode used for S/PDIF,
+-  	    IEC60958-1, and AES-3 formats.
+-- tdm-slots : Slots for TDM operation. Indicates number of channels transmitted
+-  	      or received over one serializer.
+-- serial-dir : A list of serializer configuration. Each entry is a number
+-               indication for serializer pin direction.
+-               (0 - INACTIVE, 1 - TX, 2 - RX)
+-- dmas: two element list of DMA controller phandles and DMA request line
+-        ordered pairs.
+-- dma-names: identifier string for each DMA request line in the dmas property.
+-	     These strings correspond 1:1 with the ordered pairs in dmas. The dma
+-	     identifiers must be "rx" and "tx".
+-
+-Optional properties:
+-
+-- ti,hwmods : Must be "mcasp<n>", n is controller instance starting 0
+-- tx-num-evt : FIFO levels.
+-- rx-num-evt : FIFO levels.
+-- dismod : Specify the drive on TX pin during inactive slots
+-	0 : 3-state
+-	2 : logic low
+-	3 : logic high
+-	Defaults to 'logic low' when the property is not present
+-- sram-size-playback : size of sram to be allocated during playback
+-- sram-size-capture  : size of sram to be allocated during capture
+-- interrupts : Interrupt numbers for McASP
+-- interrupt-names : Known interrupt names are "tx" and "rx"
+-- pinctrl-0: Should specify pin control group used for this controller.
+-- pinctrl-names: Should contain only one value - "default", for more details
+-  		 please refer to pinctrl-bindings.txt
+-- fck_parent : Should contain a valid clock name which will be used as parent
+-	       for the McASP fck
+-- auxclk-fs-ratio: When McASP is bus master indicates the ratio between AUCLK
+-		   and FS rate if applicable:
+-		   AUCLK rate = auxclk-fs-ratio * FS rate
+-
+-Optional GPIO support:
+-If any McASP pin need to be used as GPIO then the McASP node must have:
+-...
+-  gpio-controller
+-  #gpio-cells = <2>;
+-...
+-
+-When requesting a GPIO, the first parameter is the PIN index in McASP_P*
+-registers.
+-For example to request the AXR2 pin of mcasp8:
+-function-gpios = <&mcasp8 2 0>;
+-
+-Or to request the ACLKR pin of mcasp8:
+-function-gpios = <&mcasp8 29 0>;
+-
+-For generic gpio information, please refer to bindings/gpio/gpio.txt
+-
+-Example:
+-
+-mcasp0: mcasp0@1d00000 {
+-	compatible = "ti,da830-mcasp-audio";
+-	reg = <0x100000 0x3000>;
+-	reg-names "mpu";
+-	interrupts = <82>, <83>;
+-	interrupt-names = "tx", "rx";
+-	op-mode = <0>;		/* MCASP_IIS_MODE */
+-	tdm-slots = <2>;
+-	serial-dir = <
+-			0 0 0 0	/* 0: INACTIVE, 1: TX, 2: RX */
+-			0 0 0 0
+-			0 0 0 1
+-			2 0 0 0 >;
+-	tx-num-evt = <1>;
+-	rx-num-evt = <1>;
+-};
+diff --git a/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
+new file mode 100644
+index 000000000000..2f8b2aca8c34
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
+@@ -0,0 +1,179 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/davinci-mcasp-audio.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: McASP Controller for TI SoCs
++
++maintainers:
++  - Jayesh Choudhary <j-choudhary@ti.com>
++
++properties:
++  compatible:
++    enum:
++      - ti,dm646x-mcasp-audio
++      - ti,da830-mcasp-audio
++      - ti,am33xx-mcasp-audio
++      - ti,dra7-mcasp-audio
++      - ti,omap4-mcasp-audio
++
++  reg:
++    minItems: 1
++    items:
++      - description: main registers
++      - description: data port register
++
++  reg-names:
++    minItems: 1
++    items:
++      - const: mpu
++      - const: dat
++
++  op-mode:
++    description: I2S - 0 or DIT - 1 mode
++    enum:
++      - 0
++      - 1
++
++  tdm-slots:
++    maxItems: 1
++
++  serial-dir:
++    description:
++      A list of serializer configuration
++      Entry is indication for serializer pin direction
++      0 - Inactive, 1 - TX, 2 - RX
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    minItems: 1
++    maxItems: 16
++    items:
++      minimum: 0
++      maximum: 2
++      default: 0
++
++  dmas:
++    minItems: 1
++    items:
++      - description: transmission DMA channel
++      - description: reception DMA channel
++
++  dma-names:
++    minItems: 1
++    items:
++      - const: tx
++      - const: rx
++
++  ti,hwmods:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: Name of hwmod associated with McASP
++    maxItems: 1
++    deprecated: true
++
++  tx-num-evt:
++    maxItems: 1
++
++  rx-num-evt:
++    maxItems: 1
++
++  dismod:
++    enum:
++      - 0
++      - 2
++      - 3
++    default: 2
++
++  sram-size-playback:
++    maxItems: 1
++
++  sram-size-capture:
++    maxItems: 1
++
++  interrupts:
++    minItems: 1
++    items:
++      - description: TX FIFO interrupt
++      - description: RX FIFO interrupt
++
++  interrupt-names:
++    oneOf:
++      - minItems: 1
++        items:
++          - const: tx
++          - const: rx
++      - const: common
++
++  fck_parent:
++    description: parent clock for McASP fck
++    maxItems: 1
++
++  auxclk-fs-ratio:
++    description: ratio of AUCLK and FS if applicable
++    maxItems: 1
++
++  gpio-controller: true
++
++  "#gpio-cells":
++    const: 2
++
++  function-gpios:
++    maxItems: 1
++
++  clocks:
++    minItems: 1
++    maxItems: 3
++
++  clock-names:
++    minItems: 1
++    maxItems: 3
++    items:
++      - const: fck
++      - const: ahclkx
++      - const: ahclkr
++
++  power-domains:
++    maxItems: 1
++
++  "#sound-dai-cells":
++    const: 0
++
++  num-serializer:
++    maxItems: 1
++
++  port:
++    type: object
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - dmas
++  - dma-names
++  - interrupts
++  - interrupt-names
++  - serial-dir
++  - op-mode
++  - tdm-slots
++
++additionalProperties: false
++
++examples:
++  - |
++    mcasp0: mcasp0@1d00000 {
++      compatible = "ti,da830-mcasp-audio";
++      reg = <0x100000 0x3000>;
++      reg-names = "mpu";
++      interrupts = <82>, <83>;
++      interrupt-names = "tx", "rx";
++      op-mode = <0>;		/* MCASP_IIS_MODE */
++      tdm-slots = <2>;
++      dmas = <&main_udmap 0xc400>, <&main_udmap 0x4400>;
++      dma-names = "tx", "rx";
++      serial-dir = <
++          0 0 0 0	/* 0: INACTIVE, 1: TX, 2: RX */
++          0 0 0 0
++          0 0 0 1
++          2 0 0 0 >;
++      tx-num-evt = <1>;
++      rx-num-evt = <1>;
++    };
+-- 
+2.17.1
 
