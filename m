@@ -2,135 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A09E45D568
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:27:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D183C45D56D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:28:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234040AbhKYHaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 02:30:39 -0500
-Received: from mout.kundenserver.de ([212.227.126.135]:44837 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230441AbhKYH2i (ORCPT
+        id S234472AbhKYHbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 02:31:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52514 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230471AbhKYH3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 02:28:38 -0500
-Received: from mail-wm1-f42.google.com ([209.85.128.42]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1Mj8Vx-1mBIfr28dJ-00fCq6; Thu, 25 Nov 2021 08:25:26 +0100
-Received: by mail-wm1-f42.google.com with SMTP id p18so4678724wmq.5;
-        Wed, 24 Nov 2021 23:25:26 -0800 (PST)
-X-Gm-Message-State: AOAM530QiXbrOp0z0nvMhOS6QXnPigqBrxhdIMaNXNhNuvQJwshOFc2l
-        yNJ0sG9A3dnOi55NHTbjVLJTKbI1g03V9rGsV+c=
-X-Google-Smtp-Source: ABdhPJyy6ATv8tSD9TCRzguY89cRW48KZUM5hIv/qv6+Bes6O17s3r/PNVx7dDZUxKeck8kOsUP90+k3XKHwUJxujn0=
-X-Received: by 2002:a1c:770e:: with SMTP id t14mr4480662wmi.173.1637825126097;
- Wed, 24 Nov 2021 23:25:26 -0800 (PST)
+        Thu, 25 Nov 2021 02:29:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637825182;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KCI9CPt99xPAxo4OPIihJLE+9ULo5GUcCD2zEw3zAm0=;
+        b=MmAOUjSXwHGYgLyON40rZREWkuxvRJQzAlU4tSMhh5eNMxeNaLbCsB7MWR57ov7HNBRfbE
+        1LDGY+U2pRQS3FyOvwiLyVzUgcX22bQnelvoWiasyBsV5MdFor4CgibkV5nEYWRuEDjeuc
+        NL7gKQEEY9LJ274R1S3uMdktx4YevbM=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-104-stG_uwZfPYuuy4B0SBveYw-1; Thu, 25 Nov 2021 02:26:21 -0500
+X-MC-Unique: stG_uwZfPYuuy4B0SBveYw-1
+Received: by mail-wm1-f72.google.com with SMTP id 201-20020a1c04d2000000b003335bf8075fso2746667wme.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 23:26:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KCI9CPt99xPAxo4OPIihJLE+9ULo5GUcCD2zEw3zAm0=;
+        b=ap6Usu+j4yXMs/Vt7Cs04r8cyRl5QUeokRFTohrvEW74GnAYkswJn9BUQQnMKsMDR9
+         HU4vtOQ6r9Ruj3S8CyfGPIRF4i3vMX7eI9v9HZfIj/ryBaui2ZBeF0vocXXACy+DziGO
+         L4tpfR9jxc4NewvoLqeUHAYXopWJyPFpexE8CPKmm8Wa53xrOm0SXB2VOrVLQEPVAEll
+         yRWCKfnBsRg/KEmbhU7DjX1vVbuXMgsUyp2pC7mQuC7nInBCaAci4lfb2i3rYWVrlDOg
+         dswNcTaabOHVdkgWLYWXx4O2GOF9Ff8YRbodkwiOGaY030AOgphWLp2wuW4MWSG7awJr
+         qw4A==
+X-Gm-Message-State: AOAM531kTmkWj/KuycTqh7TC6YvGg1uSytO0aQmvBKKGnv02UfiO7oLD
+        MA1vUFvzWq4zehuexSkw8PjCS/S1U9o7ACYcPEvk3+RvUpqF0NJeUpRB2t1+5MIz3xaFrz41dO0
+        3ttqEFDTrQ3ya8MYE177y7p07
+X-Received: by 2002:adf:b18e:: with SMTP id q14mr4435682wra.477.1637825180314;
+        Wed, 24 Nov 2021 23:26:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzM6lbQ3uDZ5zJpkNVH+bqgGz375VJK1frTc+q8xHT9a96tyQUcZyAB+1UDheXMUsphwXYylg==
+X-Received: by 2002:adf:b18e:: with SMTP id q14mr4435665wra.477.1637825180075;
+        Wed, 24 Nov 2021 23:26:20 -0800 (PST)
+Received: from redhat.com ([45.15.18.67])
+        by smtp.gmail.com with ESMTPSA id f19sm9035167wmq.34.2021.11.24.23.26.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 23:26:19 -0800 (PST)
+Date:   Thu, 25 Nov 2021 02:26:13 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Eli Cohen <elic@nvidia.com>
+Subject: Re: [PATCH net] virtio-net: enable big mode correctly
+Message-ID: <20211125022442-mutt-send-email-mst@kernel.org>
+References: <20211125060547.11961-1-jasowang@redhat.com>
+ <20211125015532-mutt-send-email-mst@kernel.org>
+ <CACGkMEv+hehZazXRG9mavv=KZ76XfCrkeNqB8CPOnkwRF9cdHA@mail.gmail.com>
+ <20211125021308-mutt-send-email-mst@kernel.org>
+ <CACGkMEscBZw+PjX2fP5yN03SDVYc12tsQLXL=woAXdYWnC2q9w@mail.gmail.com>
 MIME-Version: 1.0
-References: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
- <41206fc7-f8ce-98aa-3718-ba3e1431e320@landley.net> <CAK8P3a3pQW59NVF=5P+ZiBjNJmnWh+iTZUHvqHBrXkHA6pMd4g@mail.gmail.com>
- <7d5a5249-40ee-9a42-c6a0-a5defa3703c1@landley.net>
-In-Reply-To: <7d5a5249-40ee-9a42-c6a0-a5defa3703c1@landley.net>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 25 Nov 2021 08:25:09 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0XGz=F0nPAW8T-VvfH5bPuGTNiPZ18N+Z6Sj_M_6TrPA@mail.gmail.com>
-Message-ID: <CAK8P3a0XGz=F0nPAW8T-VvfH5bPuGTNiPZ18N+Z6Sj_M_6TrPA@mail.gmail.com>
-Subject: Re: spinlock.c:306:9: error: implicit declaration of function '__raw_write_lock_nested'
-To:     Rob Landley <rob@landley.net>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Galbraith <umgwanakikbuti@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, lkft-triage@lists.linaro.org,
-        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:PV3UB1U451OsVkwm7gsFutWlYpQna78TOwDYqoGTBfGmnOmrhUK
- RKIqTED0/QIE8zWbbffyvZblhc0Wj8nlB5mi3FzE+RpPj5gxqiP8VHd7VsxCIHBjbD/REkp
- ZXzdzLJM/xLf8vKfXYw/KayabTkgQ0qEtc2fkST1iHVdQMnqfslm38bdjnTXEIHHeANhJek
- sORQv3QcLGad/9PH1GKfg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:lBeAplpGVPg=:R7AxkFhqoIjh/THHy0oFZN
- NZzEH6jh/djMrbqiNQpuvdONzGyFK/2p0KBqavu1UJghlvkkNQ6KPh0WuuJxzpbQZViLDVnBt
- yhMINBmSREPWLI3+4/xDV0aZfFO6NxdYUJ6MPu2rn8W7B6abrreOojuJrQkS5ZaWIvDv8vSwB
- Y7VKNtPDfdGPXjc92nY1yxO4PGh1Lj9DxhdwnJRFU1iYAc0RY454kyglLM8gZvXueO6HYlE9f
- Pi/f5t37H5h9riFrij1A1w9hR8aYPnVRWXIoVNLTf1pK/7qFpkJlpbPs4OYHSX8ANih0gmjDl
- KYCLY85QZYpB6pu0zZATHt4ZSGvADwViB9aSXu/Z5y3B6KuFgA1TIsW34GcVuwt9Xg+j+2DaQ
- G0KaxSiPcPW6RnKLZ3LaS+XoWRhjsZCkhwlae5LVi52stQrByxN2JQc9qhdfOKdu4EgfEJbvQ
- IWLyEihXK13CntZd2a/sztOJ9Tms2MFSFvrKP+/EatH22WYtYRyNUu2DpXcHBSoR3KwDkFwTd
- +ZCa4+doS7WstuTOQQdVMZ9B+T0E9Kwwz8N+idg+9WyWM4NP8lSHp4HwUETzWNSmIV7b6KK38
- 3EZYJ0ce3FpE2qbtrlvhwCY2G+nfyohQWxYXGt/R2YxnrnNMpc3FlhIGSimbGd99d3acLe887
- pLwaUIoD5r7QhP3TTyDMjmwOHEdKGLtqoFJnS2UGz3qCCMdcgsKD1VO+YgitnxosmziKafqGT
- W5bKMoHALL4C2WXqEdRXKXSy/i/fqTzRWBTjUj68hnvZkaFB/wh7iEhzexD5QhDzOCPRQIBWX
- MpA9hT+S6fbldm+525x6vhNtkhe8Oce7UOCAc3TKzjllDM8FyQ=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACGkMEscBZw+PjX2fP5yN03SDVYc12tsQLXL=woAXdYWnC2q9w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 12:38 AM Rob Landley <rob@landley.net> wrote:
-> On 11/24/21 1:49 AM, Arnd Bergmann wrote:
-> > On Wed, Nov 24, 2021 at 8:31 AM Rob Landley <rob@landley.net> wrote:
+On Thu, Nov 25, 2021 at 03:20:07PM +0800, Jason Wang wrote:
+> On Thu, Nov 25, 2021 at 3:15 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> >
+> > On Thu, Nov 25, 2021 at 03:11:58PM +0800, Jason Wang wrote:
+> > > On Thu, Nov 25, 2021 at 3:00 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > >
+> > > > On Thu, Nov 25, 2021 at 02:05:47PM +0800, Jason Wang wrote:
+> > > > > When VIRTIO_NET_F_MTU feature is not negotiated, we assume a very
+> > > > > large max_mtu. In this case, using small packet mode is not correct
+> > > > > since it may breaks the networking when MTU is grater than
+> > > > > ETH_DATA_LEN.
+> > > > >
+> > > > > To have a quick fix, simply enable the big packet mode when
+> > > > > VIRTIO_NET_F_MTU is not negotiated.
+> > > >
+> > > > This will slow down dpdk hosts which disable mergeable buffers
+> > > > and send standard MTU sized packets.
+> > > >
+> > > > > We can do optimization on top.
+> > > >
+> > > > I don't think it works like this, increasing mtu
+> > > > from guest >4k never worked,
+> > >
+> > > Looking at add_recvbuf_small() it's actually GOOD_PACKET_LEN if I was not wrong.
+> >
+> > OK, even more so then.
+> >
+> > > > we can't regress everyone's
+> > > > performance with a promise to maybe sometime bring it back.
+> > >
+> > > So consider it never work before I wonder if we can assume a 1500 as
+> > > max_mtu value instead of simply using MAX_MTU?
+> > >
+> > > Thanks
+> >
+> > You want to block guests from setting MTU to a value >GOOD_PACKET_LEN?
+> 
+> Yes, or fix the issue to let large packets on RX work (e.g as the TODO
+> said, size the buffer: for <=4K mtu continue to work as
+> add_recvbuf_small(), for >= 4K switch to use big).
 
-> > Did you test clone3?
->
-> Haven't got anything that's using it (musl-libc doesn't know about it yet) but
-> it looked straightforward? (Unlike the #ifdef stack around the previous clone...)
->
-> I can try building tools/testing/selftests/clone3 if you like, but for some
-> reason the clone3 tests want -lcap which isn't in my cross compiler. (Because to
-> test a clone system call, you need to manipulate capability bits. Of course.)
-> Right, comment out the LDLIBS line in the makefile and the first 3 built, let's
-> try those... Hmmm, it's saying the syscall isn't supported, because it's using
-> syscall.h out of the cross compiler headers (not THIS kernel's #includes) which
-> of course doesn't have it, and then clone3_selftests.h falls back to:
->
-> #ifndef __NR_clone3
-> #define __NR_clone3 -1
-> #endif
->
-> Right, stick a 435 in there and... it's still skipping it. Why is it still
-> skipping it... because the RUNTIME syscall is returning ENOSYS. Ok, I have to go
-> stick printk() calls into the kernel. (Do I have to #define those
-> #YES_I_WANT_THIS_SYSCALL_WHY_WOULDNT_I macros? Hmmm...)
+Right. The difficulty is with changing modes, current code isn't
+designed for it.
 
-This specific syscall is protected by a macro so it doesn't get implicitly
-enabled without architecture specific review for those architectures using
-include/uapi/asm-generic/unistd.h.
+> > Maybe ... it will prevent sending large packets which did work ...
+> 
+> Yes, but it's strange to allow TX but not RX
+> 
+> > I'd tread carefully here, and I don't think this kind of thing is net
+> > material.
+> 
+> I agree consider it can't be fixed easily.
+> 
+> Thanks
+> 
+> >
+> > > >
+> > > > > Reported-by: Eli Cohen <elic@nvidia.com>
+> > > > > Cc: Eli Cohen <elic@nvidia.com>
+> > > > > Signed-off-by: Jason Wang <jasowang@redhat.com>
+> > > > >
+> > > > > ---
+> > > > >  drivers/net/virtio_net.c | 7 ++++---
+> > > > >  1 file changed, 4 insertions(+), 3 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > > > > index 7c43bfc1ce44..83ae3ef5eb11 100644
+> > > > > --- a/drivers/net/virtio_net.c
+> > > > > +++ b/drivers/net/virtio_net.c
+> > > > > @@ -3200,11 +3200,12 @@ static int virtnet_probe(struct virtio_device *vdev)
+> > > > >               dev->mtu = mtu;
+> > > > >               dev->max_mtu = mtu;
+> > > > >
+> > > > > -             /* TODO: size buffers correctly in this case. */
+> > > > > -             if (dev->mtu > ETH_DATA_LEN)
+> > > > > -                     vi->big_packets = true;
+> > > > >       }
+> > > > >
+> > > > > +     /* TODO: size buffers correctly in this case. */
+> > > > > +     if (dev->max_mtu > ETH_DATA_LEN)
+> > > > > +             vi->big_packets = true;
+> > > > > +
+> > > > >       if (vi->any_header_sg)
+> > > > >               dev->needed_headroom = vi->hdr_len;
+> > > > >
+> > > > > --
+> > > > > 2.25.1
+> > > >
+> >
 
-> > This needs a custom wrapper on most architectures
-> > to have sensible calling conventions.
->
-> Define "sensible" in this context? It's a new 2 argument syscall? (Do you mean a
-> libc wrapper?)
->
-> > If sh doesn't need it, that should
-> > be explained in the changelog text.
->
-> I'm happy to try to fix stuff up, but I don't understand the objection. Does it
-> do something other than what the old clone did, except without the need to pass
-> more arguments than we necessarily have registers defined for? (Calls the same
-> clone plumbing, which should call back into arch/sh/kernel/process_32.c already...?)
->
-> The most recent clone3 arch addition was commit 59a4e0d5511b which also just
-> pulled in the generic version. (Via #define NO_REALLY_I_WANT_THIS_SYSCALL rather
-> than editing the tbl file? Looks like I've got some reading to do...)
-
-The best reference I could find is:
-
-https://lore.kernel.org/linux-api/20190604160944.4058-2-christian@brauner.io/
-
-If fork() and clone() don't need special handling on arch/sh, then
-clone3 shouldn't
-need it either, unless the existing ones are also wrong. It looks like
-some architectures
-override these to avoid leaking register state from the kernel to the
-child process.
-
-       Arnd
