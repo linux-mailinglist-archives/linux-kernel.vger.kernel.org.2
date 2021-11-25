@@ -2,87 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCBDD45D89A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0665145D88F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:59:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354902AbhKYLDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 06:03:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354691AbhKYLBH (ORCPT
+        id S1354728AbhKYLC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 06:02:27 -0500
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:27669 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349870AbhKYLA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 06:01:07 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68678C061746;
-        Thu, 25 Nov 2021 02:56:54 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: shreeya)
-        with ESMTPSA id 13DB71F434FE
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637837813; bh=pRh80ao/XXYuFlKiG3+ZTO7a4wz1IzxIaMtns5dPMz8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=CmcdYXlamM2LVwUhdmIoGGwoJWxHGW8OFlUaiymdXO2K7TyS7l8U2MTApb4f0WKpA
-         K188Yje1luvp0+3j+Blisupv7cMhJpkuO4BlfdZ9Ye6rOfVoRyKYbGTTM+/C787i+E
-         BIEa8nW3kQCMRvnpK3ZJfOmoSMQ7LwAOA6p5Va6pO6JFt6fS3qvTzTrNFaN94Vl1b+
-         MRclKawRfNojdlB+hrSjYQC95UtDsUPujMMcNS82oMwCAsQIHzJZs0LQqY621GCj7o
-         Q/iIr1kVsozOFkdFoGhB7ahgNbu0w7sazwiwu300jzFgo+3blhglaLSTjRdC9mu4Ky
-         cIYLoSnaClenA==
-Subject: Re: [PATCH] gpio: Initialize gc->irq.domain before setting gc->to_irq
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        linus.walleij@linaro.org, andy.shevchenko@gmail.com,
-        sebastian.reichel@collabora.com
-Cc:     brgl@bgdev.pl, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        Emil Velikov <emil.velikov@collabora.com>
-References: <20211108214148.9724-1-shreeya.patel@collabora.com>
- <YYp8JzxfLK2u0fU4@arch-x1c3> <87tugdxkj6.fsf@collabora.com>
-From:   Shreeya Patel <shreeya.patel@collabora.com>
-Message-ID: <d7d8bd97-3c12-bf04-a0ad-e0f391158d01@collabora.com>
-Date:   Thu, 25 Nov 2021 16:26:45 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 25 Nov 2021 06:00:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1637837835; x=1669373835;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=amCIHawtN/pC9ZDAKPBFZV2qD9VS958Y5zjo1xIWmTc=;
+  b=kiqNKO+BF1q2C7iVk2fVFIo+dFrnadovH2FZ+Tjao778TZboJ1WGYcXA
+   dSY1SynrzYaXAicoE6Yns+cPszYsw/P+MZW5aMGEfypy0rgxFsjBWp2iY
+   t2GdwuFRYrceC+RFRzEL3mOVEFuVCbcdFzhoWCrxdgzJh/w97xqTuC+yU
+   E=;
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 25 Nov 2021 02:57:14 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 02:57:14 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Thu, 25 Nov 2021 02:57:12 -0800
+Received: from c-sanm-linux.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Thu, 25 Nov 2021 02:57:07 -0800
+From:   Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+To:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+CC:     <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_pkondeti@quicinc.com>,
+        <quic_ppratap@quicinc.com>,
+        Sandeep Maheswaram <quic_c_sanm@quicinc.com>
+Subject: [PATCH 0/2] Remove USB2 nodes from SC7280 IDP common dtsi file
+Date:   Thu, 25 Nov 2021 16:26:53 +0530
+Message-ID: <1637837815-8532-1-git-send-email-quic_c_sanm@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <87tugdxkj6.fsf@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Remove USB2 controller and phy nodes from common dtsi file as it is
+required only for SKU1 board.
+Add these nodes in SKU1 dtsi file.
 
-On 16/11/21 1:23 am, Gabriel Krisman Bertazi wrote:
-> Emil Velikov <emil.velikov@collabora.com> writes:
->
->> Hi Shreeya, all,
->>
->> On 2021/11/09, Shreeya Patel wrote:
->>> There is a race in registering of gc->irq.domain when
->>> probing the I2C driver.
->>> This sometimes leads to a Kernel NULL pointer dereference
->>> in gpiochip_to_irq function which uses the domain variable.
->>>
->>> To avoid this issue, set gc->to_irq after domain is
->>> initialized. This will make sure whenever gpiochip_to_irq
->>> is called, it has domain already initialized.
->>>
->> What is stopping the next developer to moving the assignment to the
->> incorrect place? Aka should we add an inline comment about this?
-> I agree with Emil.  The patch seems like a workaround that doesn't
-> really solve the underlying issue.  I'm not familiar with this code, but
-> it seems that gc is missing a lock during this initialization, to prevent
-> it from exposing a partially initialized gc->irq.
+Sandeep Maheswaram (2):
+  arm64: qcom: sc7280: Remove USB2 controller and phy nodes from common
+    dtsi
+  arm64: qcom: sc7280: Add USB2 controller and phy nodes for SKU1 board
 
-I do not see any locking mechanism used for protecting the use of gc 
-members before they are
-initialized. We faced a very similar problem with gc->to_irq as well 
-where we had to return EPROBE_DEFER until it was initialized and ready 
-to be used.
+ arch/arm64/boot/dts/qcom/sc7280-idp.dts  | 16 ++++++++++++++++
+ arch/arm64/boot/dts/qcom/sc7280-idp.dtsi | 16 ----------------
+ 2 files changed, 16 insertions(+), 16 deletions(-)
 
-Linus, do you have any suggestion on what would be the correct way to 
-fix this issue of race in registration of gc members?
+-- 
+2.7.4
 
-
-Thanks,
-Shreeya Patel
->
