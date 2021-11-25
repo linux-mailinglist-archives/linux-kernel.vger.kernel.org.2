@@ -2,114 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E933345D9AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1084245D9AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:02:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238907AbhKYMF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 07:05:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54042 "EHLO
+        id S240016AbhKYMFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 07:05:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238946AbhKYMDZ (ORCPT
+        with ESMTP id S232753AbhKYMDn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 07:03:25 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D37FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 04:00:14 -0800 (PST)
-Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1mqDQC-0004Av-6v; Thu, 25 Nov 2021 13:00:12 +0100
-Message-ID: <d9acb4ba-691b-3496-f77b-175c441f887d@leemhuis.info>
-Date:   Thu, 25 Nov 2021 13:00:11 +0100
+        Thu, 25 Nov 2021 07:03:43 -0500
+Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC35AC06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 04:00:32 -0800 (PST)
+Received: by mail-vk1-xa36.google.com with SMTP id j1so3730373vkr.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 04:00:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6Lylh8DR+450t+VKD+Wrn7i+Xuwy9BF3AUDecTVOK4g=;
+        b=erksV85QXm/bqtxQPmB7msXlbNBDCVOQLjiysuFCaDkVczzFvYyAl5dXhwb+8YbvxT
+         yYfptkjAO28P25RNMRp7yU2utcDxwTtprCmykjLrDjlwBXc+xEXFM03rSibA7KbedEpP
+         Z4tEpYadJa01M2Ewa2YfPP0S+CIEP7EDKn+vc1o3jAuGRqF6ucXS4hC9ZTURS8fm2GwZ
+         AMhr8TAKYcvFsrQUlRtTGtPVu/3nW1h5xGvbd79S22JduH8vIEZDlT0gKFOtiwU+JybA
+         JkVte1dr+fEhRJ19HCwBFy3luCv+Aa+nIQm8NWdS+NN/a1+vHezBFoJ1lkIVnEjat7Ka
+         o1RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6Lylh8DR+450t+VKD+Wrn7i+Xuwy9BF3AUDecTVOK4g=;
+        b=K5DmoKlYk0rT54okqcMebv78cNlVoEo94HFhIsLe7SxKp4fT6g7JnAYFcqNb1+PJrV
+         FTsbo9RJ2npac4fm//ipbKtN5ysShxOcVtj95gzCrQ+RDM5O3wM2s4SNizOymh3EUnBu
+         U4iFUVMPjl/Np0jhbXYc3FKBguwy/i/zMm1AKIGogyYrFRv/AhWGHymuneiDbN5gz/RM
+         YvHpFXjNu3/hMyk2+NV6ALhLh3y0krLpF4QVrsBTBQQ90oS1mFHpX8wuyFFQqZQTsOU0
+         iGUV3eJ5fL18J2hyl4amILYUYy7AvW4uJvpgTk0Vdu8HQoMcuSx9W4f6GQUWKm5s3M1+
+         pirw==
+X-Gm-Message-State: AOAM533OO/rWNaMJHky0xgNPt8ROi/73DZRp29p+X1yN+UIt//DZLxLk
+        FU6cC/Ex6YOI+BwM17na9A7Vlg==
+X-Google-Smtp-Source: ABdhPJygr6uthtUgThXM0nJKXNt/5LsubRRa0ZItKbmNtKp+p8GFTBFPOJp05+fRHPe/w8EB24DpCg==
+X-Received: by 2002:a05:6122:d08:: with SMTP id az8mr9774743vkb.15.1637841631793;
+        Thu, 25 Nov 2021 04:00:31 -0800 (PST)
+Received: from eze-laptop (host208.201-253-22.telecom.net.ar. [201.253.22.208])
+        by smtp.gmail.com with ESMTPSA id c9sm1710140uaf.12.2021.11.25.04.00.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 04:00:30 -0800 (PST)
+Date:   Thu, 25 Nov 2021 09:00:24 -0300
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To:     Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc:     linux-media@vger.kernel.org, nicolas.dufresne@collabora.com,
+        mchehab@kernel.org, robh+dt@kernel.org, mripard@kernel.org,
+        wens@csie.org, p.zabel@pengutronix.de, andrzej.p@collabora.com,
+        gregkh@linuxfoundation.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH 4/7] media: hantro: move postproc enablement for old cores
+Message-ID: <YZ962CvUbKoiIGyZ@eze-laptop>
+References: <20211122184702.768341-1-jernej.skrabec@gmail.com>
+ <20211122184702.768341-5-jernej.skrabec@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: 5.15 regression: CONFIG_SYSFB_SIMPLEFB breaks console scrolling
-Content-Language: en-BW
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-To:     Harald Dunkel <harri@afaics.de>,
-        Javier Martinez Canillas <javierm@redhat.com>
-Cc:     Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
-References: <e50d5ad5-19fd-07ae-41e4-5a2d26a98bcf@afaics.de>
- <4bf94684-6410-db9f-5bec-ea0540a2ea76@leemhuis.info>
-In-Reply-To: <4bf94684-6410-db9f-5bec-ea0540a2ea76@leemhuis.info>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1637841614;23889fd9;
-X-HE-SMSGID: 1mqDQC-0004Av-6v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211122184702.768341-5-jernej.skrabec@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.11.21 12:47, Thorsten Leemhuis wrote:
-> Hi, this is your Linux kernel regression tracker speaking.
+Hi Jernej,
 
-/me again
-
-> On 16.11.21 05:52, Harald Dunkel wrote:
->>
->> if I enable CONFIG_SYSFB_SIMPLEFB in 5.15.2 and use grub's default
->> configuration
->> (Debian sid amd64), then a few lines at the bottom of /dev/tty1 including
->> login prompt are off-screen. Scrolling is broken. I can login, though.
->>
->> Enabling GRUB_TERMINAL=console in grub doesn't make a difference. Using
->> the same kernel except for CONFIG_SYSFB_SIMPLEFB the problem is gone.
->>
->> Graphics card is a GeForce GTX 1650. I tried with both CONFIG_DRM_NOUVEAU
->> and proprietary graphics drivers disabled.
->>
->> Attached you can find the config file. Please mail if I can help to track
->> this problem down.
+On Mon, Nov 22, 2021 at 07:46:59PM +0100, Jernej Skrabec wrote:
+> Older G2 cores, like that in Allwinner H6, seem to have issue with
+> latching postproc register values if this is first thing done in job.
+> Moving that to the end solves the issue.
 > 
-> Thx for the report. I'm not totally sure if this is a regression, as
-> that's a new config option. But it might be one considered a successor
-> to an older one, hence it might count as regression. Adding two
-> developers and a mailing list to the CC, hopefully someone can clarify.
 
-Javier, I'd be interested in your option on this.
+Any idea what exact register should be written before the post-processor
+is enabled, for H6 to work? Also, which of the PP registers need
+to be written "at the end"?
 
-Harald, did you have CONFIG_X86_SYSFB enabled in earlier kernel versions
-(and did console scrolling work then)? The answer would help me to
-decide if this a regression, as those ideally should be fixed as quickly
-as possible.
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+> ---
+>  drivers/staging/media/hantro/hantro_drv.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+> index 8c3de31f51b3..530994ab3024 100644
+> --- a/drivers/staging/media/hantro/hantro_drv.c
+> +++ b/drivers/staging/media/hantro/hantro_drv.c
+> @@ -130,7 +130,7 @@ void hantro_start_prepare_run(struct hantro_ctx *ctx)
+>  	v4l2_ctrl_request_setup(src_buf->vb2_buf.req_obj.req,
+>  				&ctx->ctrl_handler);
+>  
+> -	if (!ctx->is_encoder) {
+> +	if (!ctx->is_encoder && !ctx->dev->variant->legacy_regs) {
 
-Ciao, Thorsten
+To make this less fragile, do you think it would make sense to
+have a dedicated quirk flag, something like "legacy_post_proc",
+instead of overloading the meaning of legacy_regs.
 
-> TWIMC: To be sure this issue doesn't fall through the cracks unnoticed,
-> I'm adding it to regzbot, my Linux kernel regression tracking bot:
-> 
-> #regzbot ^introduced 8633ef82f101c040427b57d4df7b706261420b94
-> #regzbot title CONFIG_SYSFB_SIMPLEFB breaks console scrolling
-> #regzbot ignore-activity
-> 
-> Ciao, Thorsten, your Linux kernel regression tracker.
-> 
-> P.S.: If you want to know more about regzbot, check out its
-> web-interface, the getting start guide, and/or the references documentation:
-> 
-> https://linux-regtracking.leemhuis.info/regzbot/
-> https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
-> https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
-> 
-> The last two documents will explain how you can interact with regzbot
-> yourself if your want to.
-> 
-> Hint for the reporter: when reporting a regression it's in your interest
-> to tell #regzbot about it in the report, as that will ensure the
-> regression gets on the radar of regzbot and the regression tracker.
-> That's in your interest, as they will make sure the report won't fall
-> through the cracks unnoticed.
-> 
-> Hint for developers: you normally don't need to care about regzbot, just
-> fix the issue as you normally would. Just remember to include a 'Link:'
-> tag to the report in the commit message, as explained in
-> Documentation/process/submitting-patches.rst
-> That aspect was recently was made more explicit in commit 1f57bd42b77c:
-> https://git.kernel.org/linus/1f57bd42b77c
+What do you think?
 
-#regzbot title drm: CONFIG_SYSFB_SIMPLEFB breaks console scrolling
+Thanks,
+Ezequiel
 
-
+>  		if (hantro_needs_postproc(ctx, ctx->vpu_dst_fmt))
+>  			hantro_postproc_enable(ctx);
+>  		else
+> @@ -142,6 +142,13 @@ void hantro_end_prepare_run(struct hantro_ctx *ctx)
+>  {
+>  	struct vb2_v4l2_buffer *src_buf;
+>  
+> +	if (ctx->dev->variant->legacy_regs && !ctx->is_encoder) {
+> +		if (hantro_needs_postproc(ctx, ctx->vpu_dst_fmt))
+> +			hantro_postproc_enable(ctx);
+> +		else
+> +			hantro_postproc_disable(ctx);
+> +	}
+> +
+>  	src_buf = hantro_get_src_buf(ctx);
+>  	v4l2_ctrl_request_complete(src_buf->vb2_buf.req_obj.req,
+>  				   &ctx->ctrl_handler);
+> -- 
+> 2.34.0
+> 
