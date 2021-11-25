@@ -2,61 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E997545DE13
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:53:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4280645DE10
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356323AbhKYP4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:56:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356238AbhKYPyt (ORCPT
+        id S234350AbhKYPzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:55:41 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:41005 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241268AbhKYPxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:54:49 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE3CC0613FA
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:44:15 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id b40so17300518lfv.10
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:44:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zjdtC5GIxYnl5iuWdNGFM3Hr3h23E1k1oPnPZHzamQY=;
-        b=pqy2TW0bsBo5u1QZ2nCCwi5+QVw2p6auHI5QbjTULerGJrcj7TbW+iaStA4URJwIuO
-         fOn8rVo1e8/KRQFsav5cOZvzPKce06KSrbKMRm/+RX+FDZJOzIuJc1OLH4Yl07gOeuvh
-         etiGPY5mBWaBpxwbTUQ1cZdZFHSCq7OubyvvyIgyiDijd8tqenSY9FLFzC8HUmlJhb84
-         XQcTxgFjcSmXxgoBvC0x/r+0yJKvH2rtat9hVSwiQGoGt9MkPgUreADgdP6RMlTcgOnG
-         5SFw4ZHrD+rH5LN06xwLde1VDzIDzATJWkaGRZAtvXH63ufNzuBOxbottQltNiPsYkIm
-         yWjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zjdtC5GIxYnl5iuWdNGFM3Hr3h23E1k1oPnPZHzamQY=;
-        b=f9wdJvt/FvBIBucrE9q/RYQF5m5k3B273DG5W9bpT97AZnH/BhV5aSa6Ejj4kH2m4N
-         aGjcRSeC1Bw0IlyoRaF3yqOSl0r5m3QcqthxWpoYlKKdQ8U1+CmZkzbtussPRxGvCz5Z
-         XBQMAm1B1PjE1knkmy+frygUMk/f1L04A3dw9EpZ4BmyxLtAJFCSIRKGpMkuaxPKHfW6
-         oPfy8kNVkcxeV/+w3VkERBxXbOYslE8hKanifF3pHkAJ1zLuO5SZSg5HsUUkZravsO/l
-         RShcn5HKOapo5+Un5Fm0jQmw/7KB8yjbvRG22/NRle4N5Lqy/l9oXHZAQwaqvEKEJjff
-         pgyA==
-X-Gm-Message-State: AOAM530KfG39xuOZHt88Pn/tUwQwETNiVlGVywlF6J3Jr0jR1bcr528H
-        /KNGSuaTOvXa1dZL99FH/d+5Tw==
-X-Google-Smtp-Source: ABdhPJyiWyvugY0ouHq1meoMZp+lYl8AA/jg9WpkSyn1m8R7vRBtv3L2hntYxgDFLYy/rL7jBtf4eg==
-X-Received: by 2002:a05:6512:3602:: with SMTP id f2mr24700962lfs.399.1637855054256;
-        Thu, 25 Nov 2021 07:44:14 -0800 (PST)
-Received: from localhost (c-9b28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.155])
-        by smtp.gmail.com with ESMTPSA id x12sm261627ljc.121.2021.11.25.07.44.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 07:44:13 -0800 (PST)
-From:   Anders Roxell <anders.roxell@linaro.org>
-To:     benh@kernel.crashing.org, paulus@samba.org
-Cc:     nathan@kernel.org, ndesaulniers@google.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Anders Roxell <anders.roxell@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] powerpc: mm: radix_tlb: rearrange the if-else block
-Date:   Thu, 25 Nov 2021 16:44:06 +0100
-Message-Id: <20211125154406.470082-1-anders.roxell@linaro.org>
+        Thu, 25 Nov 2021 10:53:40 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id B90343201591;
+        Thu, 25 Nov 2021 10:50:27 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Thu, 25 Nov 2021 10:50:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alyssa.is; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=psUq8cfL3Y18aL207fic5TExY6
+        JYclYjaN+xqGP4j2Q=; b=C0aNshtIvBR4og8sVJcEcyA+Die5Lw6gZEKfHRDBek
+        uGFSqZ9KNt6L3E7hyVQYMGOp5fR3FBkVfOiZ4dFmOI6X73Gy/KNyVvodpoM4Sjcu
+        26ymfJLKJ0s33swzibYoG7/1PUnA6cmm0Ww3Rc3kthrHCj+evn54cJtj00kYsS84
+        zxrfHA0ck68h2KEsiY7Ssb8CzbRcPEPWi8l/3akZohScLRRq+bUn30W7bGIQw1wX
+        zS1PIe1xt5jMhyBU135g9YrmQDKTCH+Ddk0h2G8qQgdEmq/uyn0jGvx5zwwN4qd+
+        C2ulaYW9xOtS6y4YR9DJcZGZsGr/OFSs/44rl0MXfsWQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=psUq8cfL3Y18aL207
+        fic5TExY6JYclYjaN+xqGP4j2Q=; b=RILYT49/GubGbyTEYR7Pjla1NLKEriggY
+        i9m2T/L3iFJQXwqdqcEq9rsJJhRWnxLF0Tr19LieEbHxzZhaA4NqXJg9m7Fm7SW9
+        NfpMZPGiswzD/H/EztKGt6RtNfmNXQk0jmDxWgm8it0uBQrJbebKWwS/jNxNAKTZ
+        ATFj2xYfMgSxxza4qZU5IbU2TZLjsifU7eSA8lHegjEqJfGfSngXinbEWwGolIan
+        J2HIUt2jXpLPbB/5vEydPa19fCrQLHxpgT9jjAPduyIPn11xngPP4XO89QtBX3T7
+        eSpLdgGfinifqBWiqv9BjVLbP7GILW6gelAUeyni5BkHTlBKN6fMg==
+X-ME-Sender: <xms:wrCfYUTMHgeWkhdhQ2Z93rkIHN8gEF8aezDJZWOiM7YwyItFWkEbaA>
+    <xme:wrCfYRwtSEKRMxnOMXeKtiqO56QKU02EzgXjt9N5XUzfMCn8hQM-8WDlxmtSjOlmw
+    hxXdGW-a6xx7QIdTw>
+X-ME-Received: <xmr:wrCfYR21cubg5fXIt5qUOdjYs0sIbvxFl9l4JHN9EAvfly28fKxL7T3dYmhBOlxhxyWkHCosAd2Q1s3amNYuq216fvTAHjU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrhedtgdektdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomheptehlhihsshgrucft
+    ohhsshcuoehhihesrghlhihsshgrrdhisheqnecuggftrfgrthhtvghrnhephedvfffghf
+    etieejgfetfedtgffhvdehueehvdejudfggefgleejgfelfeevgfefnecuvehluhhsthgv
+    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepqhihlhhishhsseigvddvtd
+    drqhihlhhishhsrdhnvght
+X-ME-Proxy: <xmx:wrCfYYCXLo-T0sdmR_F86AnXhdfQaiwvkuSyUUIqWtPnzTLb-e_aJw>
+    <xmx:wrCfYdhFN7kbTwD6kiS6zmdltJ091WqpPVGMszR2OcpDB1rZ5_NIgA>
+    <xmx:wrCfYUppT7mdg9N1vqbJDvu2GrZ9ZnLE0tccYB4bXus2Iz-fc5OODg>
+    <xmx:w7CfYbZwmmBejz_UZz_lrDk0OBEiFY3_j_jYiVH6HxmMff2NOAn8gQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 25 Nov 2021 10:50:26 -0500 (EST)
+Received: by x220.qyliss.net (Postfix, from userid 1000)
+        id E41761339; Thu, 25 Nov 2021 15:50:24 +0000 (UTC)
+From:   Alyssa Ross <hi@alyssa.is>
+To:     Patrice Chotard <patrice.chotard@foss.st.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Ludovic Barre <ludovic.barre@st.com>,
+        Peter Griffin <peter.griffin@linaro.org>
+Cc:     Alyssa Ross <hi@alyssa.is>,
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/STI
+        ARCHITECTURE),
+        dmaengine@vger.kernel.org (open list:DMA GENERIC OFFLOAD ENGINE
+        SUBSYSTEM), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] dmaengine: st_fdma: fix MODULE_ALIAS
+Date:   Thu, 25 Nov 2021 15:44:38 +0000
+Message-Id: <20211125154441.2626214-1-hi@alyssa.is>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -64,87 +76,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang warns:
+modprobe can't handle spaces in aliases.
 
-arch/powerpc/mm/book3s64/radix_tlb.c:1191:23: error: variable 'hstart' is uninitialized when used here [-Werror,-Wuninitialized]
-                                __tlbiel_va_range(hstart, hend, pid,
-                                                  ^~~~~~
-arch/powerpc/mm/book3s64/radix_tlb.c:1175:23: note: initialize the variable 'hstart' to silence this warning
-                unsigned long hstart, hend;
-                                    ^
-                                     = 0
-arch/powerpc/mm/book3s64/radix_tlb.c:1191:31: error: variable 'hend' is uninitialized when used here [-Werror,-Wuninitialized]
-                                __tlbiel_va_range(hstart, hend, pid,
-                                                          ^~~~
-arch/powerpc/mm/book3s64/radix_tlb.c:1175:29: note: initialize the variable 'hend' to silence this warning
-                unsigned long hstart, hend;
-                                          ^
-                                           = 0
-2 errors generated.
-
-Rework the if-else to pull the 'IS_ENABLE(CONFIG_TRANSPARENT_HUGEPAGE)'
-check one level up, this will silent the warnings. That will also
-simplify the 'else' path. Clang is getting confused with these warnings,
-but the warnings is a false-positive.
-
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+Fixes: 6b4cd727eaf1 ("dmaengine: st_fdma: Add STMicroelectronics FDMA engine driver support")
+Signed-off-by: Alyssa Ross <hi@alyssa.is>
 ---
- arch/powerpc/mm/book3s64/radix_tlb.c | 31 +++++++++++++++++++++-------
- 1 file changed, 24 insertions(+), 7 deletions(-)
+ drivers/dma/st_fdma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/mm/book3s64/radix_tlb.c b/arch/powerpc/mm/book3s64/radix_tlb.c
-index 7724af19ed7e..e494a45ce1b4 100644
---- a/arch/powerpc/mm/book3s64/radix_tlb.c
-+++ b/arch/powerpc/mm/book3s64/radix_tlb.c
-@@ -1170,16 +1170,14 @@ static inline void __radix__flush_tlb_range(struct mm_struct *mm,
- 				_tlbiel_pid_multicast(mm, pid, RIC_FLUSH_ALL);
- 			}
- 		}
--	} else {
-+	} else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
- 		bool hflush = false;
- 		unsigned long hstart, hend;
- 
--		if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
--			hstart = (start + PMD_SIZE - 1) & PMD_MASK;
--			hend = end & PMD_MASK;
--			if (hstart < hend)
--				hflush = true;
--		}
-+		hstart = (start + PMD_SIZE - 1) & PMD_MASK;
-+		hend = end & PMD_MASK;
-+		if (hstart < hend)
-+			hflush = true;
- 
- 		if (type == FLUSH_TYPE_LOCAL) {
- 			asm volatile("ptesync": : :"memory");
-@@ -1207,6 +1205,25 @@ static inline void __radix__flush_tlb_range(struct mm_struct *mm,
- 				_tlbiel_va_range_multicast(mm,
- 					hstart, hend, pid, PMD_SIZE, MMU_PAGE_2M, flush_pwc);
- 		}
-+	} else {
-+
-+		if (type == FLUSH_TYPE_LOCAL) {
-+			asm volatile("ptesync" : : : "memory");
-+			if (flush_pwc)
-+				/* For PWC, only one flush is needed */
-+				__tlbiel_pid(pid, 0, RIC_FLUSH_PWC);
-+			__tlbiel_va_range(start, end, pid, page_size, mmu_virtual_psize);
-+			ppc_after_tlbiel_barrier();
-+		} else if (cputlb_use_tlbie()) {
-+			asm volatile("ptesync" : : : "memory");
-+			if (flush_pwc)
-+				__tlbie_pid(pid, RIC_FLUSH_PWC);
-+			__tlbie_va_range(start, end, pid, page_size, mmu_virtual_psize);
-+			asm volatile("eieio; tlbsync; ptesync" : : : "memory");
-+		} else {
-+			_tlbiel_va_range_multicast(mm,
-+					start, end, pid, page_size, mmu_virtual_psize, flush_pwc);
-+		}
- 	}
- out:
- 	preempt_enable();
+diff --git a/drivers/dma/st_fdma.c b/drivers/dma/st_fdma.c
+index 962b6e05287b..d95c421877fb 100644
+--- a/drivers/dma/st_fdma.c
++++ b/drivers/dma/st_fdma.c
+@@ -874,4 +874,4 @@ MODULE_LICENSE("GPL v2");
+ MODULE_DESCRIPTION("STMicroelectronics FDMA engine driver");
+ MODULE_AUTHOR("Ludovic.barre <Ludovic.barre@st.com>");
+ MODULE_AUTHOR("Peter Griffin <peter.griffin@linaro.org>");
+-MODULE_ALIAS("platform: " DRIVER_NAME);
++MODULE_ALIAS("platform:" DRIVER_NAME);
 -- 
 2.33.0
 
