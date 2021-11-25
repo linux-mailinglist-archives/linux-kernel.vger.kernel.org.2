@@ -2,125 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7FFD45D8FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB7E45D909
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:17:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238341AbhKYLTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 06:19:35 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:23047 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239996AbhKYLRe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 06:17:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1637838863; x=1669374863;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Bc8QxHXVsePajHSex4lSnt3xrPHH5iD6DErJOtC05HI=;
-  b=QIHnNOElVnINN9EQuMrjPNr4+f5rg8UidybA4XpiGfA76e85ig1SoWgH
-   K6wEi4ih0fOh2m2VqKl0gQnXzlefF6ufBRNpN4tMY8Y/zDfxVq0kb0vbW
-   7Dlk6Pt2VhcZE9CUxdrR4Vf9M2xyG5IbDL2oegPGTEgeZbshhWKq66/ZC
-   bubCPzAb4zi5y8n0G7jh4mRWrYFnwQvc1ItHylmTf2BP5kz2gGljvwSiU
-   pjP0lLmmabJ0H2pVEzGAq0xURmE7ZwyPEWNtOtQPCxeIn8ML8JIkobCl1
-   ezliuzYx81BmPdc5dTIrtXIjR8pqq7n2zLNU2Tc3jn4ESpAk7KunQVH3M
-   A==;
-IronPort-SDR: 4Swfajmu4PANy8rilbtzs2ePky66Hcs6IV+15CBHARs9oLsNhxwOIJbJqU2ayeW4RhDhN6cFtL
- guwDJZTJ4bcsVGsrJFhc9IqELBu8kNJxnvQ7elQ64FWMFAtINzGmHEHmuzBIr2kOKgqwnDrahP
- n1MoVqXoiBaIN7jn7BwSCTqoDAkx6H7gaTOEQ2ORtPC57zf8fRejeeDT2D8SZiPmLlemW4ztPj
- we1aIetfb3//GF1ZUzJAsWHuIrEyzdIkc/gd7N3M5Mq6xhQzK2LD/AHUPNdqbI37iOqR9TdMLY
- UvTVeFoEDTPqhkpYEBgSw90x
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="145134329"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 Nov 2021 04:14:22 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 25 Nov 2021 04:14:22 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
- Transport; Thu, 25 Nov 2021 04:14:21 -0700
-Date:   Thu, 25 Nov 2021 12:16:15 +0100
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <robh+dt@kernel.org>,
-        <UNGLinuxDriver@microchip.com>, <p.zabel@pengutronix.de>,
-        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v3 3/6] net: lan966x: add port module support
-Message-ID: <20211125111615.4zobdjmyxtss6ngn@soft-dev3-1.localhost>
-References: <20211124083915.2223065-1-horatiu.vultur@microchip.com>
- <20211124083915.2223065-4-horatiu.vultur@microchip.com>
- <YZ4SB/wX6UT3zrEV@shell.armlinux.org.uk>
- <20211124145800.my4niep3sifqpg55@soft-dev3-1.localhost>
- <YZ5UXdiNNf011skU@shell.armlinux.org.uk>
- <20211124154323.44liimrwzthsh547@soft-dev3-1.localhost>
- <YZ5ikamCVeyGFw3x@shell.armlinux.org.uk>
+        id S239648AbhKYLUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 06:20:52 -0500
+Received: from foss.arm.com ([217.140.110.172]:49694 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234205AbhKYLTe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 06:19:34 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 291831042;
+        Thu, 25 Nov 2021 03:16:23 -0800 (PST)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2626D3F66F;
+        Thu, 25 Nov 2021 03:16:22 -0800 (PST)
+From:   Valentin Schneider <Valentin.Schneider@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Vincent Donnefort <Vincent.Donnefort@arm.com>
+Cc:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
+        dietmar.eggemann@arm.com
+Subject: Re: [PATCH] sched/fair: Fix detection of per-CPU kthreads waking a task
+In-Reply-To: <CAKfTPtDX8sOfguZhJt5QV3j5D_JetcgncuF2w+uLa0XDk7UXkw@mail.gmail.com>
+References: <20211124154239.3191366-1-vincent.donnefort@arm.com> <CAKfTPtDX8sOfguZhJt5QV3j5D_JetcgncuF2w+uLa0XDk7UXkw@mail.gmail.com>
+Date:   Thu, 25 Nov 2021 11:16:16 +0000
+Message-ID: <8735nkcwov.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <YZ5ikamCVeyGFw3x@shell.armlinux.org.uk>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 11/24/2021 16:04, Russell King (Oracle) wrote:
-> On Wed, Nov 24, 2021 at 04:43:23PM +0100, Horatiu Vultur wrote:
-> > > > Actually, port->config.phy_mode will not get zeroed. Because right after
-> > > > the memset it follows: 'config = port->config'.
-> > >
-> > > Ah, missed that, thanks. However, why should portmode and phy_mode be
-> > > different?
-> >
-> > Because the serdes knows only few modes(QSGMII, SGMII, GMII) and this
-> > information will come from DT. So I would like to have one variable that
-> > will configure the serdes ('phy_mode') and one will configure the MAC
-> > ('portmode').
-> 
-> I don't follow why you need this to be different.
-> 
-> Isn't the point of interfaces such as phy_set_mode_ext() such that we
-> can achieve independence of the details of what is behind that
-> interface - so, as it takes a PHY interface mode, if we're operating
-> in 1000BASE-X, we pass that to phy_set_mode_ext(). It is then the
-> responsibility of the Serdes PHY driver to decide that means "sgmii"
-> mode for the Serdes?
+On 25/11/21 10:05, Vincent Guittot wrote:
+> On Wed, 24 Nov 2021 at 16:42, Vincent Donnefort
+> <vincent.donnefort@arm.com> wrote:
+>>
+>> select_idle_sibling() will return prev_cpu for the case where the task is
+>> woken up by a per-CPU kthread. However, the idle task has been recently
+>> modified and is now identified by is_per_cpu_kthread(), breaking the
+>> behaviour described above. Using !is_idle_task() ensures we do not
+>> spuriously trigger that select_idle_sibling() exit path.
+>>
+>> Fixes: 00b89fe0197f ("sched: Make the idle task quack like a per-CPU kthread")
+>> Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+>>
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 945d987246c5..8bf95b0e368d 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -6399,6 +6399,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>>          * pattern is IO completions.
+>>          */
+>>         if (is_per_cpu_kthread(current) &&
+>> +           !is_idle_task(current) &&
+>>             prev == smp_processor_id() &&
+>>             this_rq()->nr_running <= 1) {
+>>                 return prev;
+>
+> AFAICT, this can't be possible for a symmetric system because it would
+> have been already returned by other conditions.
+> Only an asymmetric system can face such a situation if the task
+> doesn't fit which is the subject of your other patch.
+> so this patch seems irrelevant outside the other one
+>
 
-I have kept the responsability in the network driver to decide which
-interface should for serdes, but I can change that as you suggested.
+I think you can still hit this on a symmetric system; let me try to
+reformulate my other email.
 
-> 
-> For example, the Marvell CP110 comphy driver does this:
-> 
->         if (submode == PHY_INTERFACE_MODE_1000BASEX)
->                 submode = PHY_INTERFACE_MODE_SGMII;
-> 
-> because the serdes phy settings for PHY_INTERFACE_MODE_1000BASEX are
-> no different from PHY_INTERFACE_MODE_SGMII - and that detail is hidden
-> from the network driver.
+If this (non-patched) condition evaluates to true, it means the previous
+condition
 
-Yes, I will add a similar check in the serdes driver.
+  (available_idle_cpu(target) || sched_idle_cpu(target)) &&
+   asym_fits_capacity(task_util, target)
 
-> 
-> The next question this brings up is... you're setting all the different
-> interface modes in phylink_config.supported_interfaces, which basically
-> means you're giving permission for phylink to switch between any of
-> those modes. So, what if the serdes is in QSGMII mode but phylink
-> requests SGMII mode. Doesn't your driver architecture mean that if
-> you're in QSGMII mode you can't use SGMII or GMII mode?
-> 
-> Is there some kind of restriction that you need to split this, or is
-> this purely down to the way this driver has been written?
+evaluated to false, so for a symmetric system target sure isn't idle.
 
-It was just the way the driver has been written.
+prev == smp_processor_id() implies prev == target, IOW prev isn't
+idle. Now, consider:
 
-> 
-> I don't see any other driver in the kernel making this kind of split.
-> 
-> --
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+  p0.prev = CPU1
+  p1.prev = CPU1
 
--- 
-/Horatiu
+  CPU0                     CPU1
+  current = don't care     current = swapper/1
+
+  ttwu(p1)
+    ttwu_queue(p1, CPU1)
+    // or
+    ttwu_queue_wakelist(p1, CPU1)
+
+                          hrtimer_wakeup()
+                            wake_up_process()
+                              ttwu()
+                                idle_cpu(CPU1)? no
+
+                                is_per_cpu_kthread(current)? yes
+                                prev == smp_processor_id()? yes
+                                this_rq()->nr_running <= 1? yes
+                                => self enqueue
+
+                          ...
+                          schedule_idle()
+
+This works if CPU0 does either a full enqueue (rq->nr_running == 1) or just
+a wakelist enqueue (rq->ttwu_pending > 0). If there was an idle CPU3
+around, we'd still be stacking p0 and p1 onto CPU1.
+
+IOW this opens a window between a remote ttwu() and the idle task invoking
+schedule_idle() where the idle task can stack more tasks onto its CPU.
+
+>
+>> --
+>> 2.25.1
+>>
