@@ -2,149 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D41E545DFFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 184BC45E017
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:57:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349418AbhKYRuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 12:50:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41029 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243584AbhKYRsF (ORCPT
+        id S1346786AbhKYSAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 13:00:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242533AbhKYR6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 12:48:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637862294;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=e7BvKG8FTSCUywCGOxNtwP0noXjOs1TD9Frr4bEkwQo=;
-        b=O2aSF/RD7Oq8atMYDNJbtbEOj9wgCr5m6KvCvhsog9CeK1uk3zQ3rxOOusIu2xDhKU+hL0
-        2risWaKQmETVCQx+qSN60/vWDvWKaYVSz2gbZ5Ssx/i9M9b3OITnIqIZ9EvPaotGoQFA0d
-        aDZsvfGlo/VUXwe52H3nhlkHM/o11c8=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-454-A8bCljkBPYeDh0CDGNfeKg-1; Thu, 25 Nov 2021 12:44:52 -0500
-X-MC-Unique: A8bCljkBPYeDh0CDGNfeKg-1
-Received: by mail-ed1-f72.google.com with SMTP id w18-20020a056402071200b003e61cbafdb4so6009891edx.4
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:44:52 -0800 (PST)
+        Thu, 25 Nov 2021 12:58:41 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FFEC061397
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:45:52 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id j140-20020a1c2392000000b003399ae48f58so8912015wmj.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:45:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=4vKqoKfjDwsNRdAizQ80SN172ZaMHTtRepnJkLw9D24=;
+        b=jXcv+8tm92aTNy0ngcHrZEFmgOqgRAV0p1GYWK5dAoWC3KDsYbfKcT9deZSlDsgzww
+         dCEnyMEYlYdaGiDAzL3l49J9OefCtj32tRakYPAx1cKtNhzOweg0lnImcrCh6zrqq9jf
+         ze/NoEl2eCLFCZW7SydWLI5Jy+UkEG26MSjjciakeFp1rsb76sY7ovij45yinkTxYxJx
+         S6DaZAGDH7LkT85Vj8GWjWZcP6pn0ALEMAA0ao+PfXaM3YE6oH7Gi4buVPmR6WNjnezk
+         oxF9Z3XJv6SJV/OUJGREOIYC7u29ZjKyRrZtbZ8rzfEytQ7soUIm+1LbHKw2/ctcj2oM
+         yzrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=e7BvKG8FTSCUywCGOxNtwP0noXjOs1TD9Frr4bEkwQo=;
-        b=xXsmIJViVP7zgulaSiuFWCE3IOgV1Xg7k87xTcvBuhX45RJSfouOZ8pWY7G3YXlgwK
-         AX2ZiPsWvEcJo+9BCnn9rarWtK9Gx0x3V11RgoQCS4mg7nEojVj9IPldG3ppE7lPx80V
-         JZV2zuEF6ZquKUAOyl8JQxWUZiVdIjZhzG1pYs+FV26a+Rw3aRm7/zWRBJU+PxTzAMZR
-         UeLOXz0evCRR8f4MMuXrJ+1YXRD6kmPYvEqm72pkKsdMJ5K5GAPkL1fBnMRCENMEbd1N
-         /NfMqop7LNC54SxmM3xdZVag1BciDwOp/3POpXKx+VBQUDE50mP8ns8FavCChA8ITytX
-         sNzQ==
-X-Gm-Message-State: AOAM531cEpMQ+VHwGp/jAAMl4d5PRhCRZv4dJSBrxB14YBBtHGFvxVnl
-        1R/VWkf4XbDoKD+fYHwzl6kkg5cUDcmY+5wdgjtgp0KFcmcSH8MF+HFtN+C/m+EiAlSNDx5DaGI
-        dlaMEgBH3aSl//qdt3dBBUnFqsEbPiF55R5Ib5/7RZZluVGJXHSe9vbEXTNITbBdwlF2Ipg==
-X-Received: by 2002:a05:6402:26c5:: with SMTP id x5mr41644321edd.198.1637862291252;
-        Thu, 25 Nov 2021 09:44:51 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwpwEn3VYvVMPaGoZd0qGJp74+cDdsbX2UWjVLjI4yEEPSqkH08d/TIHMG/MWFEShL7tUlQ4g==
-X-Received: by 2002:a05:6402:26c5:: with SMTP id x5mr41644274edd.198.1637862291043;
-        Thu, 25 Nov 2021 09:44:51 -0800 (PST)
-Received: from redhat.com ([176.12.197.47])
-        by smtp.gmail.com with ESMTPSA id og14sm1925383ejc.107.2021.11.25.09.44.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 09:44:50 -0800 (PST)
-Date:   Thu, 25 Nov 2021 12:44:48 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH] Bluetooth: virtio_bt: fix device removal
-Message-ID: <20211125174200.133230-1-mst@redhat.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=4vKqoKfjDwsNRdAizQ80SN172ZaMHTtRepnJkLw9D24=;
+        b=dmu+5gmQ0COONeVeO7sqp9i1auKZEsDSF4m/EAFMK5rd0xcEMLdxT7wze/C5r4Sh3X
+         A6OjB+RMxIhTRIAvQbTxo8wfiudl9qnwS/2JhaY8QiSDgPglToV13pgn3HaP6O0tLoNp
+         jh+TFoa/yjnh4AuKxm5xzmMQZApAk1E8MokiALAqoVL8U6UEtTm/eRMdSYcS4RW0HIhE
+         x31TR/mzGnYOZJunMhaf2W7I3nbZ8tn981ewfu0Dovr2C/q94FRnbEMY5ZsV2FmJQI+P
+         fC/05vXFCpERpSsfdWAMaX930GPvU22xDE+JFJCrEjmD2IbAmvsnIw6IJE1k/vJB5qoS
+         2ohQ==
+X-Gm-Message-State: AOAM530Tg5MZGp+cXUMmAjzjrtPOQjmVmI0C11AHfqpGg6J4EHUfL47L
+        as8Gyp+Bsxw4Y4Zzs6qZ/zU=
+X-Google-Smtp-Source: ABdhPJxH0bo/xUh688xVLIl06WpH3hPkdySXAVIOcjOcP/WVpDGWSc8Si3r1Udvhh9k0LVEjSKpiAQ==
+X-Received: by 2002:a05:600c:6016:: with SMTP id az22mr9726744wmb.11.1637862351044;
+        Thu, 25 Nov 2021 09:45:51 -0800 (PST)
+Received: from ?IPV6:2a02:8108:96c0:3b88::7311? ([2a02:8108:96c0:3b88::7311])
+        by smtp.gmail.com with ESMTPSA id r83sm8596136wma.22.2021.11.25.09.45.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Nov 2021 09:45:50 -0800 (PST)
+Message-ID: <a484ba55-7d3c-4238-7821-08826e8b0faa@gmail.com>
+Date:   Thu, 25 Nov 2021 18:45:50 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
-X-Mutt-Fcc: =sent
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH 2/4] staging: r8188eu: remove _ps_open_RF
+Content-Language: en-US
+To:     Martin Kaiser <martin@kaiser.cx>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20211125164745.8188-1-martin@kaiser.cx>
+ <20211125164745.8188-3-martin@kaiser.cx>
+From:   Michael Straube <straube.linux@gmail.com>
+In-Reply-To: <20211125164745.8188-3-martin@kaiser.cx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Device removal is clearly out of virtio spec: it attempts to remove
-unused buffers from a VQ before invoking device reset. To fix, make
-open/close NOPs and do all cleanup/setup in probe/remove.
+On 11/25/21 17:47, Martin Kaiser wrote:
+> The _ps_open_RF function is empty. Remove it.
+> 
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+>   drivers/staging/r8188eu/hal/usb_halinit.c | 8 --------
+>   1 file changed, 8 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
+> index 04518e9838ea..995ea4a55435 100644
+> --- a/drivers/staging/r8188eu/hal/usb_halinit.c
+> +++ b/drivers/staging/r8188eu/hal/usb_halinit.c
+> @@ -615,8 +615,6 @@ u32 rtl8188eu_hal_init(struct adapter *Adapter)
+>   	HAL_INIT_PROFILE_TAG(HAL_INIT_STAGES_BEGIN);
+>   
+>   	if (Adapter->pwrctrlpriv.bkeepfwalive) {
+> -		_ps_open_RF(Adapter);
+> -
+>   		if (haldata->odmpriv.RFCalibrateInfo.bIQKInitialized) {
+>   			PHY_IQCalibrate_8188E(Adapter, true);
+>   		} else {
+> @@ -852,12 +850,6 @@ u32 rtl8188eu_hal_init(struct adapter *Adapter)
+>   	return status;
+>   }
+>   
+> -void _ps_open_RF(struct adapter *adapt)
+> -{
+> -	/* here call with bRegSSPwrLvl 1, bRegSSPwrLvl 2 needs to be verified */
+> -	/* phy_SsPwrSwitch92CU(adapt, rf_on, 1); */
+> -}
+> -
+>   static void _ps_close_RF(struct adapter *adapt)
+>   {
+>   	/* here call with bRegSSPwrLvl 1, bRegSSPwrLvl 2 needs to be verified */
+> 
 
-The cost here is a single skb wasted on an unused bt device - which
-seems modest.
+Hi Martin,
 
-NB: with this fix in place driver still suffers from a race condition if
-an interrupt triggers while device is being reset. Work on a fix for
-that issue is in progress.
+The prototype of _ps_open_RF() should also be removed from
+rtl8188e_hal.h.
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
-
-Note: completely untested, in particular the device isn't supported in QEMU.
-Please do not queue directly - please help review and test and ack,
-and I will queue this together with reset fixes.
-Thanks!
-
-
- drivers/bluetooth/virtio_bt.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/bluetooth/virtio_bt.c b/drivers/bluetooth/virtio_bt.c
-index 24a9258962fa..aea33ba9522c 100644
---- a/drivers/bluetooth/virtio_bt.c
-+++ b/drivers/bluetooth/virtio_bt.c
-@@ -50,8 +50,11 @@ static int virtbt_add_inbuf(struct virtio_bluetooth *vbt)
- 
- static int virtbt_open(struct hci_dev *hdev)
- {
--	struct virtio_bluetooth *vbt = hci_get_drvdata(hdev);
-+	return 0;
-+}
- 
-+static int virtbt_open_vdev(struct virtio_bluetooth *vbt)
-+{
- 	if (virtbt_add_inbuf(vbt) < 0)
- 		return -EIO;
- 
-@@ -61,7 +64,11 @@ static int virtbt_open(struct hci_dev *hdev)
- 
- static int virtbt_close(struct hci_dev *hdev)
- {
--	struct virtio_bluetooth *vbt = hci_get_drvdata(hdev);
-+	return 0;
-+}
-+
-+static int virtbt_close_vdev(struct virtio_bluetooth *vbt)
-+{
- 	int i;
- 
- 	cancel_work_sync(&vbt->rx);
-@@ -351,8 +358,14 @@ static int virtbt_probe(struct virtio_device *vdev)
- 		goto failed;
- 	}
- 
-+	virtio_device_ready(vdev);
-+	if (virtbt_open_vdev(vbt))
-+		goto open_failed;
-+
- 	return 0;
- 
-+open_failed:
-+	hci_free_dev(hdev);
- failed:
- 	vdev->config->del_vqs(vdev);
- 	return err;
-@@ -365,6 +378,7 @@ static void virtbt_remove(struct virtio_device *vdev)
- 
- 	hci_unregister_dev(hdev);
- 	vdev->config->reset(vdev);
-+	virtbt_close_vdev(vbt);
- 
- 	hci_free_dev(hdev);
- 	vbt->hdev = NULL;
--- 
-MST
-
+Thanks,
+Michael
