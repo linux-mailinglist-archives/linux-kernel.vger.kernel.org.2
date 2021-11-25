@@ -2,107 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B87345E143
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3EE45E145
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:03:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356902AbhKYUFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 15:05:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48122 "EHLO
+        id S1350551AbhKYUGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 15:06:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350110AbhKYUDG (ORCPT
+        with ESMTP id S242716AbhKYUEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 15:03:06 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F08AC061763
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 11:59:55 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id d24so13993968wra.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 11:59:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ODnVjpTLttRxb05aaD1tiJImMPR2M4ruN0kVPtiNAwg=;
-        b=oq44UYjhCUqKbjpyqQrmPBV473RckuYm4ABcyk2rmk5elUP4yJvPHTtbv4rrAqYMvt
-         XPA+VE/Gr9vsj6TgyCcQWMHdWmNdBIPttj6r1Ay8ioqpS8pJecACGhullNYES8UKqwBg
-         Mk47BN0liyiIdxDE7iP3s5dG4jG0J47p1Cr+k/moCOK/4B1D9sMDNPFvjreAx/SZn9Pa
-         k+hX5aUXA5ZwNOQNADTWa/vQ8iEMWeL+oxiyBCpJx1KLN1eznCQRqUTCgrfO4GGWjnns
-         KMWT6pCc2Huos/cw9tzmWxtnqa4Ir2nzKPwkI7sowjfPYJi8WgnafKUPY8TbrJh2eTAD
-         gegA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ODnVjpTLttRxb05aaD1tiJImMPR2M4ruN0kVPtiNAwg=;
-        b=c/t8tGgn2RG0L87gr0rgGT/mLE7ePIZg3tqI/3WgEQzLFCx0iIP/Bk8y4KcH2ozs0F
-         wUxwUzhB1uE2y6t+401EsVneHvMVPoAtLfdb0orgbwcujK1NcEeGJWsgfgYROk3gI1yy
-         NflcR1znFbKmT5RuUtcPWLPB3veLewlCPimcR5FzqNNCwhZVpI50GOMHC1sOvYdq+orP
-         JnL+35xkqaxCp2VpAJkPUsHEcWNNVNdbwo0SjcijwbXdbvFoT+zvS7h9PWA6vP+Gk4dm
-         unNA78kzTPVjNK1cWxE5mGCuVobNeNqO1/4DRHPLjLMTo4+4ZcPgJZTG8z/2+MrB0Nyt
-         IM4g==
-X-Gm-Message-State: AOAM530SPl5pYMWnOPbWTKrazk0qesR/DKySJEQv4Gzqr6wODL21qz37
-        NzSiQQaH3Dh8bfZ+HEyesOM=
-X-Google-Smtp-Source: ABdhPJz+8Cjzvt0+IZhAoMtYNDgYheZj7U5yyvVSr5tyTGmgnTexg4MUuz6OgmhK1rUOmY6McaM9mw==
-X-Received: by 2002:adf:aac5:: with SMTP id i5mr9886807wrc.67.1637870393725;
-        Thu, 25 Nov 2021 11:59:53 -0800 (PST)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::ac86])
-        by smtp.gmail.com with ESMTPSA id h13sm3762721wrx.82.2021.11.25.11.59.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 11:59:53 -0800 (PST)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 5/5] staging: r8188eu: remove TxCount from getTxPowerIndex88E()
-Date:   Thu, 25 Nov 2021 20:59:36 +0100
-Message-Id: <20211125195936.10060-6-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211125195936.10060-1-straube.linux@gmail.com>
-References: <20211125195936.10060-1-straube.linux@gmail.com>
+        Thu, 25 Nov 2021 15:04:47 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB30C0613F4;
+        Thu, 25 Nov 2021 12:00:40 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637870438;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vyj4zrdlQYEceaVOafU1FSry85RnhzwkSreDVk7TpTo=;
+        b=fsp5+4ECdZi5Rmed/xTXMjOxVcUr5/xbcBYpPw6xe1sRRDvpPyC6xv54JXjttQCNOY/G0X
+        1U9rBLBbsHtO256hAbj9fTKHvqM1NApYt83GznnF/dkQ85jzxIXo3vycEC3ey5vKFwzVTH
+        LCktto2X8tlWwLVYRWGtL+D8bSvEBSn0D+n2VmJTjF4Xz7KhKjk2AQV2fSFqwXuEghLmok
+        5ir+W8E9foAj3L3iS5hP6rRUP2Kfl6G+NVsW8JXmkimSCSKkRIR/2yEiCz6yJsElPa+rOM
+        lrCEPoJXbQHNkAkor2Jhu4lnX8N1UyqPdp0XNq7swzERBeQKhuKKgJWBYTbjSA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637870438;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vyj4zrdlQYEceaVOafU1FSry85RnhzwkSreDVk7TpTo=;
+        b=K0xPG8pa0GOI3KNlpDq2A6RJw+y7rffDs91XR/ITPYbdpnhwr/0FClZEu7MTzlq9Wxm7FN
+        4e3kE94eDT8WYSDA==
+To:     isaku.yamahata@intel.com, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>
+Subject: Re: [RFC PATCH v3 31/59] KVM: x86: Add infrastructure for stolen
+ GPA bits
+In-Reply-To: <89046548aa74778658c6e66d219e157e71e439ab.1637799475.git.isaku.yamahata@intel.com>
+References: <cover.1637799475.git.isaku.yamahata@intel.com>
+ <89046548aa74778658c6e66d219e157e71e439ab.1637799475.git.isaku.yamahata@intel.com>
+Date:   Thu, 25 Nov 2021 21:00:37 +0100
+Message-ID: <871r34j996.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In getTxPowerIndex88E() the variable TxCount is set to RF_PATH_A and
-never changed. Remove the unnecessary extra variable and replace its
-usage with RF_PATH_A.
+On Wed, Nov 24 2021 at 16:20, isaku yamahata wrote:
+> Add support in KVM's MMU for aliasing multiple GPAs (from a hardware
+> perspective) to a single GPA (from a memslot perspective). GPA alising
+> will be used to repurpose GPA bits as attribute bits, e.g. to expose an
+> execute-only permission bit to the guest. To keep the implementation
+> simple (relatively speaking), GPA aliasing is only supported via TDP.
+>
+> Today KVM assumes two things that are broken by GPA aliasing.
+>   1. GPAs coming from hardware can be simply shifted to get the GFNs.
+>   2. GPA bits 51:MAXPHYADDR are reserved to zero.
+>
+> With GPA aliasing, translating a GPA to GFN requires masking off the
+> repurposed bit, and a repurposed bit may reside in 51:MAXPHYADDR.
+>
+> To support GPA aliasing, introduce the concept of per-VM GPA stolen bits,
+> that is, bits stolen from the GPA to act as new virtualized attribute
+> bits. A bit in the mask will cause the MMU code to create aliases of the
+> GPA. It can also be used to find the GFN out of a GPA coming from a tdp
+> fault.
+>
+> To handle case (1) from above, retain any stolen bits when passing a GPA
+> in KVM's MMU code, but strip them when converting to a GFN so that the
+> GFN contains only the "real" GFN, i.e. never has repurposed bits set.
+>
+> GFNs (without stolen bits) continue to be used to:
+> 	-Specify physical memory by userspace via memslots
+> 	-Map GPAs to TDP PTEs via RMAP
+> 	-Specify dirty tracking and write protection
+> 	-Look up MTRR types
+> 	-Inject async page faults
+>
+> Since there are now multiple aliases for the same aliased GPA, when
+> userspace memory backing the memslots is paged out, both aliases need to be
+> modified. Fortunately this happens automatically. Since rmap supports
+> multiple mappings for the same GFN for PTE shadowing based paging, by
+> adding/removing each alias PTE with its GFN, kvm_handle_hva() based
+> operations will be applied to both aliases.
+>
+> In the case of the rmap being removed in the future, the needed
+> information could be recovered by iterating over the stolen bits and
+> walking the TDP page tables.
+>
+> For TLB flushes that are address based, make sure to flush both aliases
+> in the stolen bits case.
+>
+> Only support stolen bits in 64 bit guest paging modes (long, PAE).
+> Features that use this infrastructure should restrict the stolen bits to
+> exclude the other paging modes. Don't support stolen bits for shadow EPT.
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/r8188eu/hal/rtl8188e_phycfg.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+This is a real reasonable and informative changelog. Thanks to Rick for
+writing this up!
 
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_phycfg.c b/drivers/staging/r8188eu/hal/rtl8188e_phycfg.c
-index 7124b9880efa..73d5eb53a927 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_phycfg.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_phycfg.c
-@@ -611,18 +611,17 @@ static void getTxPowerIndex88E(struct adapter *Adapter, u8 channel, u8 *cckPower
- {
- 	struct hal_data_8188e *pHalData = GET_HAL_DATA(Adapter);
- 	u8 index = (channel - 1);
--	u8 TxCount = RF_PATH_A;
- 
- 	/*  1. CCK */
--	cckPowerLevel[TxCount] = pHalData->Index24G_CCK_Base[TxCount][index];
-+	cckPowerLevel[RF_PATH_A] = pHalData->Index24G_CCK_Base[RF_PATH_A][index];
- 	/* 2. OFDM */
--	ofdmPowerLevel[TxCount] = pHalData->Index24G_BW40_Base[RF_PATH_A][index] +
--		pHalData->OFDM_24G_Diff[TxCount][RF_PATH_A];
-+	ofdmPowerLevel[RF_PATH_A] = pHalData->Index24G_BW40_Base[RF_PATH_A][index] +
-+		pHalData->OFDM_24G_Diff[RF_PATH_A][RF_PATH_A];
- 	/*  1. BW20 */
--	BW20PowerLevel[TxCount] = pHalData->Index24G_BW40_Base[RF_PATH_A][index] +
--		pHalData->BW20_24G_Diff[TxCount][RF_PATH_A];
-+	BW20PowerLevel[RF_PATH_A] = pHalData->Index24G_BW40_Base[RF_PATH_A][index] +
-+		pHalData->BW20_24G_Diff[RF_PATH_A][RF_PATH_A];
- 	/* 2. BW40 */
--	BW40PowerLevel[TxCount] = pHalData->Index24G_BW40_Base[TxCount][index];
-+	BW40PowerLevel[RF_PATH_A] = pHalData->Index24G_BW40_Base[RF_PATH_A][index];
- }
- 
- static void phy_PowerIndexCheck88E(struct adapter *Adapter, u8 channel, u8 *cckPowerLevel,
--- 
-2.33.1
+Thanks,
 
+        tglx
