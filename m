@@ -2,77 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57EB45DD54
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A73745DD47
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:23:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356145AbhKYP0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:26:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355986AbhKYPYk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:24:40 -0500
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A147C0613E1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:20:14 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:1511:ffa3:275:45dd])
-        by andre.telenet-ops.be with bizsmtp
-        id NfLA2600H5CGg7701fLAey; Thu, 25 Nov 2021 16:20:11 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mqGXi-000DKG-4j; Thu, 25 Nov 2021 16:20:10 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mqGXh-000gIs-Kt; Thu, 25 Nov 2021 16:20:09 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heng Sia <jee.heng.sia@intel.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>
-Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] dt-bindings: dma: snps,dw-axi-dmac: Document optional reset
-Date:   Thu, 25 Nov 2021 16:20:08 +0100
-Message-Id: <20211125152008.162571-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        id S1356078AbhKYP0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:26:00 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:52190 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231931AbhKYPYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 10:24:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=0gTqvjQUjjNxDHvgF8Fupxl1PXplc8BHRwL0CZelpQU=; b=s56owq4RZMUMwM06qhbkWD7ODk
+        /+ZHl5EBHJnGEcJS9BqD6vnOvVv9UgyE34vxb7smmegwbDHv/anFFl4F+xCRCYu5U47r+RJjocyeN
+        /Ul90DX2EXrJPi2N/iBVaM4VPTFQIaGzTKGKM902/efP1JD94qej0Nx1JQLPi3I1cZ0Y=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mqGYG-00EcXT-7O; Thu, 25 Nov 2021 16:20:44 +0100
+Date:   Thu, 25 Nov 2021 16:20:44 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Wells Lu =?utf-8?B?5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
+Cc:     Wells Lu <wellslutw@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        Vincent Shih =?utf-8?B?5pa96YyV6bS7?= 
+        <vincent.shih@sunplus.com>
+Subject: Re: [PATCH v2 2/2] net: ethernet: Add driver for Sunplus SP7021
+Message-ID: <YZ+pzFRCB0faDikb@lunn.ch>
+References: <cover.1636620754.git.wells.lu@sunplus.com>
+ <519b61af544f4c6920012d44afd35a0f8761b24f.1636620754.git.wells.lu@sunplus.com>
+ <YY7/v1msiaqJF3Uy@lunn.ch>
+ <7cccf9f79363416ca8115a7ed9b1b7fd@sphcmbx02.sunplus.com.tw>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7cccf9f79363416ca8115a7ed9b1b7fd@sphcmbx02.sunplus.com.tw>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"make dtbs_check":
+> Due to hardware design, we still need to set PHY address,
+> because MDIO controller of SP7021 only sends out MDIO 
+> commands with the same address listed in PHY address 
+> registers. The function below needs to be kept.
 
-    Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
-    arch/riscv/boot/dts/canaan/sipeed_maix_bit.dt.yaml: dma-controller@50000000: 'resets' does not match any of the regexes: 'pinctrl-[0-9]+'
-	    From schema: Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
+I suggest you actually set it to some other address. One of the
+good/bad things about MDIO is you have no idea if the device is
+there. A read to a device which does not exist just returns 0xffff,
+not an error. So i would set the address of 0x1f. I've never seen a
+PHY actually use that address.
 
-The Synopsys DesignWare AXI DMA Controller on the Canaan K210 SoC
-exposes its reset signal.
-
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml b/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
-index 90d9274e5464e396..06ddffaada295171 100644
---- a/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
-+++ b/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
-@@ -53,6 +53,9 @@ properties:
-     minimum: 1
-     maximum: 8
- 
-+  resets:
-+    maxItems: 1
-+
-   snps,dma-masters:
-     description: |
-       Number of AXI masters supported by the hardware.
--- 
-2.25.1
-
+    Andrew
