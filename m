@@ -2,214 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EDE845D398
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 04:24:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D243845D39A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 04:24:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236006AbhKYD1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 22:27:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54052 "EHLO
+        id S238869AbhKYD1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 22:27:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234070AbhKYDZa (ORCPT
+        with ESMTP id S236768AbhKYDZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 22:25:30 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B49C0619D8
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 19:12:54 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id h63so3869565pgc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 19:12:54 -0800 (PST)
+        Wed, 24 Nov 2021 22:25:39 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B52C8C0619E0;
+        Wed, 24 Nov 2021 19:14:07 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id y13so19122880edd.13;
+        Wed, 24 Nov 2021 19:14:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=glg1j47E6Aumck1TvU69ObionOgNID+ISN0rKvu33AA=;
-        b=yn2UNbxlYFY2bGnEcm0Uitdr39Sk/YbEfknDVPLdKL15PNdiHKWj+rAcIrHIr47CbU
-         j3K4EakXwUpgxzau9nnhiOWabJ7xYZtJh9P1k+iE1nreuTjM5cWD9piyc8sEOsvIMcwG
-         uKRIx1qT4FHE6YeUJraue0Wu+zZUMTMRpAmA+aASFZ8asatw8s7nltStdPAaGZwNeeFO
-         ETCqGVHsxsrJmpAKSyVnDkfw14n7MjEo3vr0aYJGnyd8AvyxGISpxbg8D/aAUES+y1wm
-         Y7oRrBR2NVhCAescMY0ZOIl4a7QvNm74hN1lziUgU9cH3K1rlqPDb5CjUwp4MGMnKJ23
-         E7IA==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LUJ2xL+Px+DOun+h5cyap9d/dwV4T1osfNsX5aVR3pw=;
+        b=nDcBW1cRvwI3INDB/78zeUB31/ODkKV5AQk+Mv9y1EzYqq4NByJ2IuLdxSnJvIVwPR
+         PPYZJ5f1JTGOlao2bfW/eExJuS02Do+tl2cpuuBbw9gy6QL6HQj1NLFJ51enf9mhG5KN
+         X5f8/n2GVyfST9jajOklGweUJG2VNBiPWjxZW47TPHj6mvwOlwceHiBAaTFp1vWa3xGq
+         oI4Iwq/XBps2Q4wSsH6nfi6dsta5cktP1DweFQ2XPn329xrU0sR5CAEi1J4UQrrQ3q2i
+         TOS6SHWMslVeZWSAf+qsnzpFZm2+/AJsoTqe43/Ryyta71lv7BjIFkHXJvdC/CBf/mpJ
+         FbSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=glg1j47E6Aumck1TvU69ObionOgNID+ISN0rKvu33AA=;
-        b=NeCBqNRlQuCAJyBWIRjJ0ss+veW9wKd9uTEY5IEaZ3WrT6ILRVr1xRB6pHTCZyS6c6
-         hLqiHdjpY2WB+YHSMjkhE2qtQnXAVaIkDTLLS+t77nMbr2DBHA1E2msCo6mINw7jv37V
-         2XB/z/wIFDecyPz8BU2Cbw0j6kf/AqsKPypYaU3pMhDGUUrbTpWq7yyNcMhbSX7EIOwF
-         6wTzrFAnacZqJ2OV/6AFRTSMhc//B0H2OMPO/yX91zxnagcLVEXYBVx3gDAgxtkHIJt3
-         txET9bMcrxIDwoFnz1Ab/P5G1pJrZytfv4J0j8ohaQsiNoQECwJox6LBda4qfj8iz5x0
-         dfJw==
-X-Gm-Message-State: AOAM533waHhlAzESFYDW5xMXmWgK358EO6BIOsDI5WPUtg/b8o0RNIHC
-        kDTYsz8bZwr3VnxKn5sXmb2Exw==
-X-Google-Smtp-Source: ABdhPJwsDUQx2tG9dyc5T5xwcOQ8UU5feP0PsguUtZmWM6A25NY8Er/dsWohJHQqW0f+aMQUhvJooQ==
-X-Received: by 2002:a63:1a4e:: with SMTP id a14mr13854390pgm.273.1637809974247;
-        Wed, 24 Nov 2021 19:12:54 -0800 (PST)
-Received: from C02FT5A6MD6R.bytedance.net ([61.120.150.76])
-        by smtp.gmail.com with ESMTPSA id k2sm1238755pfc.9.2021.11.24.19.12.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 24 Nov 2021 19:12:53 -0800 (PST)
-From:   Gang Li <ligang.bdlg@bytedance.com>
-To:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     stable@vger.kernel.org, songmuchun@bytedance.com,
-        Gang Li <ligang.bdlg@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4] shmem: fix a race between shmem_unused_huge_shrink and shmem_evict_inode
-Date:   Thu, 25 Nov 2021 11:12:43 +0800
-Message-Id: <20211125031244.89848-1-ligang.bdlg@bytedance.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LUJ2xL+Px+DOun+h5cyap9d/dwV4T1osfNsX5aVR3pw=;
+        b=NPWaYSwWdaqwcUXt64K3uRgHPVcgy1estGvuf9cHVZGa1dIzrgOrhXFLSbfy52U87M
+         GjY1MeV6zxu3Jv3m8VZViPbkHv1w0xgAjW7kBz7aPj2Tk4Hk2bTkbgu/zQqj5AbU9w47
+         0n/Y2PFR5hoBrfmshjEsTPDhwWngT88myRCfff18qmirpZlEW0GJUqh51ifebX5rwBEs
+         OZi75lrF7poG1UEUatXl2WbBNtj1zSrDF3Z1SV35n8uSZBl3WJhIfDvv8+KxBQZ3jq42
+         h5wgNSRCMODV7RX6xHnanhH/CTGUG5McEtPUviikieYen75/Dv9QLaGThASL4fseFFXQ
+         lQNg==
+X-Gm-Message-State: AOAM533x+RoOVpVPkqcwKsDPwC7WIsKxJ/w1rsy4JA/TsWjXOn2vpJJS
+        JJVaWVRwKMB9Qgc1IzB8IO1gFJ27aiz8YsTS3e8=
+X-Google-Smtp-Source: ABdhPJwoRS/tohgTWgFAJPxXbo8/xibUjch7SlGQl9ze/Bd7FE7P8ZqYx6H2IQ+8pYaFsTCAdaakCh68g53Y+cz/SPk=
+X-Received: by 2002:a05:6402:2806:: with SMTP id h6mr32986106ede.120.1637810046318;
+ Wed, 24 Nov 2021 19:14:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211124151915.GA6163@haolee.io> <YZ5hBtWPBpHDWzE4@casper.infradead.org>
+In-Reply-To: <YZ5hBtWPBpHDWzE4@casper.infradead.org>
+From:   Hao Lee <haolee.swjtu@gmail.com>
+Date:   Thu, 25 Nov 2021 11:13:54 +0800
+Message-ID: <CA+PpKPm4nfFM1XNifQoQT6Q_f3hQ6gSNnCgUumLDnruaLaUgvQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: reduce spinlock contention in release_pages()
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, Shakeel Butt <shakeelb@google.com>,
+        cgroups@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes a data race in commit 779750d20b93 ("shmem: split huge pages
-beyond i_size under memory pressure").
+On Wed, Nov 24, 2021 at 11:58 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Wed, Nov 24, 2021 at 03:19:15PM +0000, Hao Lee wrote:
+> > When several tasks are terminated simultaneously, lots of pages will be
+> > released, which can cause severe spinlock contention. Other tasks which
+> > are running on the same core will be seriously affected. We can yield
+> > cpu to fix this problem.
+>
+> The realtime people will eat you alive for this suggestion.
 
-Here are call traces causing race:
+Thanks for pointing out this.
 
-   Call Trace 1:
-     shmem_unused_huge_shrink+0x3ae/0x410
-     ? __list_lru_walk_one.isra.5+0x33/0x160
-     super_cache_scan+0x17c/0x190
-     shrink_slab.part.55+0x1ef/0x3f0
-     shrink_node+0x10e/0x330
-     kswapd+0x380/0x740
-     kthread+0xfc/0x130
-     ? mem_cgroup_shrink_node+0x170/0x170
-     ? kthread_create_on_node+0x70/0x70
-     ret_from_fork+0x1f/0x30
-
-   Call Trace 2:
-     shmem_evict_inode+0xd8/0x190
-     evict+0xbe/0x1c0
-     do_unlinkat+0x137/0x330
-     do_syscall_64+0x76/0x120
-     entry_SYSCALL_64_after_hwframe+0x3d/0xa2
-
-A simple explanation:
-
-Image there are 3 items in the local list (@list).
-In the first traversal, A is not deleted from @list.
-
-  1)    A->B->C
-        ^
-        |
-        pos (leave)
-
-In the second traversal, B is deleted from @list. Concurrently, A is
-deleted from @list through shmem_evict_inode() since last reference counter of
-inode is dropped by other thread. Then the @list is corrupted.
-
-  2)    A->B->C
-        ^  ^
-        |  |
-     evict pos (drop)
-
-We should make sure the inode is either on the global list or deleted from
-any local list before iput().
-
-Fixed by moving inodes back to global list before we put them.
-
-Fixes: 779750d20b93 ("shmem: split huge pages beyond i_size under memory pressure")
-Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
----
- mm/shmem.c | 34 +++++++++++++++++++---------------
- 1 file changed, 19 insertions(+), 15 deletions(-)
-
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 9023103ee7d8..e6ccb2a076ff 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -569,7 +569,6 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
- 		/* inode is about to be evicted */
- 		if (!inode) {
- 			list_del_init(&info->shrinklist);
--			removed++;
- 			goto next;
- 		}
- 
-@@ -577,12 +576,12 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
- 		if (round_up(inode->i_size, PAGE_SIZE) ==
- 				round_up(inode->i_size, HPAGE_PMD_SIZE)) {
- 			list_move(&info->shrinklist, &to_remove);
--			removed++;
- 			goto next;
- 		}
- 
- 		list_move(&info->shrinklist, &list);
- next:
-+		sbinfo->shrinklist_len--;
- 		if (!--batch)
- 			break;
- 	}
-@@ -602,7 +601,7 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
- 		inode = &info->vfs_inode;
- 
- 		if (nr_to_split && split >= nr_to_split)
--			goto leave;
-+			goto move_back;
- 
- 		page = find_get_page(inode->i_mapping,
- 				(inode->i_size & HPAGE_PMD_MASK) >> PAGE_SHIFT);
-@@ -616,38 +615,43 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
- 		}
- 
- 		/*
--		 * Leave the inode on the list if we failed to lock
--		 * the page at this time.
-+		 * Move the inode on the list back to shrinklist if we failed
-+		 * to lock the page at this time.
- 		 *
- 		 * Waiting for the lock may lead to deadlock in the
- 		 * reclaim path.
- 		 */
- 		if (!trylock_page(page)) {
- 			put_page(page);
--			goto leave;
-+			goto move_back;
- 		}
- 
- 		ret = split_huge_page(page);
- 		unlock_page(page);
- 		put_page(page);
- 
--		/* If split failed leave the inode on the list */
-+		/* If split failed move the inode on the list back to shrinklist */
- 		if (ret)
--			goto leave;
-+			goto move_back;
- 
- 		split++;
- drop:
- 		list_del_init(&info->shrinklist);
--		removed++;
--leave:
-+		goto put;
-+move_back:
-+		/*
-+		* Make sure the inode is either on the global list or deleted from
-+		* any local list before iput() since it could be deleted in another
-+		* thread once we put the inode (then the local list is corrupted).
-+		*/
-+		spin_lock(&sbinfo->shrinklist_lock);
-+		list_move(&info->shrinklist, &sbinfo->shrinklist);
-+		sbinfo->shrinklist_len++;
-+		spin_unlock(&sbinfo->shrinklist_lock);
-+put:
- 		iput(inode);
- 	}
- 
--	spin_lock(&sbinfo->shrinklist_lock);
--	list_splice_tail(&list, &sbinfo->shrinklist);
--	sbinfo->shrinklist_len -= removed;
--	spin_unlock(&sbinfo->shrinklist_lock);
--
- 	return split;
- }
- 
--- 
-2.20.1
-
+>
+> > +++ b/mm/swap.c
+> > @@ -960,8 +960,14 @@ void release_pages(struct page **pages, int nr)
+> >               if (PageLRU(page)) {
+> >                       struct lruvec *prev_lruvec = lruvec;
+> >
+> > -                     lruvec = folio_lruvec_relock_irqsave(folio, lruvec,
+> > +retry:
+> > +                     lruvec = folio_lruvec_tryrelock_irqsave(folio, lruvec,
+> >                                                                       &flags);
+> > +                     if (!lruvec) {
+> > +                             cond_resched();
+> > +                             goto retry;
+> > +                     }
+> > +
+> >                       if (prev_lruvec != lruvec)
