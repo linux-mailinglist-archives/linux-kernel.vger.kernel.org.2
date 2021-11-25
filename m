@@ -2,93 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E0545DD71
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:29:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B25B045DD8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:35:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355983AbhKYPcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:32:11 -0500
-Received: from relay05.th.seeweb.it ([5.144.164.166]:50045 "EHLO
-        relay05.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230158AbhKYPaK (ORCPT
+        id S1356053AbhKYPil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:38:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1356056AbhKYPgk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:30:10 -0500
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id A3F5E3F748;
-        Thu, 25 Nov 2021 16:26:53 +0100 (CET)
-Subject: Re: [PATCH 3/3] dt-bindings: display: msm: Add binding for msm8998
- dpu
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Herring <robh@kernel.org>
-Cc:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
-        daniel@ffwll.ch, abhinavk@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, ~postmarketos/upstreaming@lists.sr.ht,
-        phone-devel@vger.kernel.org, paul.bouchara@somainline.org,
-        devicetree@vger.kernel.org
-References: <20210901181138.1052653-1-angelogioacchino.delregno@somainline.org>
- <20210901181138.1052653-3-angelogioacchino.delregno@somainline.org>
- <YTexaJuQSNazh9sn@robh.at.kernel.org>
- <d9ad36f5-1913-2cb3-d4be-125ed2d29041@linaro.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <fca60152-7f35-e38d-8a51-c9cd74e20674@somainline.org>
-Date:   Thu, 25 Nov 2021 16:26:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 25 Nov 2021 10:36:40 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6318C061785
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:27:07 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id v11so12402780wrw.10
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:27:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=aJGhzRapkjxnSquRFQKdZiwXU/SjGJ7w38ExsLPAS2A=;
+        b=EO/nVb5iod4bsDoCm3UD2u7+zCp3ZRp8SwHsRDdIsKKqoDGtKPRa+7aZkytV+FF3c2
+         be+ykRZhM8B9uRRTgX8Z3uXfHvMpMO/JvQ8p9JNcE7b4e/lJrxf9fE3RGwto8Uqn2nSE
+         yibEAJiGgv653/eg+oCa1mWUq8ZxfDkeILZcw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=aJGhzRapkjxnSquRFQKdZiwXU/SjGJ7w38ExsLPAS2A=;
+        b=4THNko5nTOjiqmlC6ejdLPqcshue3OSJDgrBSD0jx4tDEc32G+s1e20jaMY6n1IpyF
+         tCKDmrrtSUHi60NV2fodfYwcWXCkoSJzH3wrQ0TTUIgwbWvB99lUB3STC8j+V35O6V7p
+         W2Qj5I1b96cpFwckTS24B1/U1tdaso+NvIeft1DtRRboQ8I2xboJb8jFCULQVs5f2bKe
+         PKvawBRWuDkvDvwYYTR+DfHqHOqYrSn9NNNOPovyEDYXvTUzzXId1dwolmS/KASXMCCm
+         hhxPyYi8w6onjbwIJfXCRLtK53lVEzoCHWyh0MXq6PKqLnmsAk0SEjBCqxyaqlPxFBgU
+         s/Mw==
+X-Gm-Message-State: AOAM533BIo2OFdeJ8VkFtEkFMl/74iFDj28vnNm+trOWbTNbqTmGHIHb
+        zAqkqooG3QiyjzNG928XYTIJD1Sue6/6fw==
+X-Google-Smtp-Source: ABdhPJxsHddb9FpqPS3lP+icqHfabOZVXFoAOCQFOfbOxipWKNbUFgEs4eInNop8/mNtSbgGGUAP/w==
+X-Received: by 2002:a5d:55d1:: with SMTP id i17mr7418506wrw.618.1637854026426;
+        Thu, 25 Nov 2021 07:27:06 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id b14sm4077017wrd.24.2021.11.25.07.27.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 07:27:05 -0800 (PST)
+Date:   Thu, 25 Nov 2021 16:27:04 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     George Kennedy <george.kennedy@oracle.com>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Ville =?iso-8859-1?Q?Syrj=E4l=E4?= 
+        <ville.syrjala@linux.intel.com>, airlied@linux.ie,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, tzimmermann@suse.de
+Subject: Re: [PATCH] drm: check drm_format_info hsub and vsub to avoid divide
+ by zero
+Message-ID: <YZ+rSG7VmZ2XbJrf@phenom.ffwll.local>
+Mail-Followup-To: George Kennedy <george.kennedy@oracle.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
+        airlied@linux.ie, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        tzimmermann@suse.de
+References: <1635429437-21718-1-git-send-email-george.kennedy@oracle.com>
+ <YXqt46TPL9tUZCL1@intel.com>
+ <YZdxFvGkBPXrtoQ7@phenom.ffwll.local>
+ <YZd2VI820CUGrMjv@intel.com>
+ <YZd8tpDN9lsq0ZbZ@phenom.ffwll.local>
+ <87a6i0jk8r.fsf@intel.com>
+ <706003ee-62ca-17a1-f629-6bc010aa5d49@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <d9ad36f5-1913-2cb3-d4be-125ed2d29041@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <706003ee-62ca-17a1-f629-6bc010aa5d49@oracle.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 25/11/21 12:53, Dmitry Baryshkov ha scritto:
-> On 07/09/2021 21:37, Rob Herring wrote:
->> On Wed, Sep 01, 2021 at 08:11:38PM +0200, AngeloGioacchino Del Regno wrote:
->>> Add yaml binding for msm8998 dpu1 support.
->>>
->>> Signed-off-by: AngeloGioacchino Del Regno 
->>> <angelogioacchino.delregno@somainline.org>
->>> ---
->>>   .../bindings/display/msm/dpu-msm8998.yaml     | 220 ++++++++++++++++++
->>>   1 file changed, 220 insertions(+)
->>>   create mode 100644 Documentation/devicetree/bindings/display/msm/dpu-msm8998.yaml
->>>
->>> diff --git a/Documentation/devicetree/bindings/display/msm/dpu-msm8998.yaml 
->>> b/Documentation/devicetree/bindings/display/msm/dpu-msm8998.yaml
->>> new file mode 100644
->>> index 000000000000..db435342ecbf
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/display/msm/dpu-msm8998.yaml
->>> @@ -0,0 +1,220 @@
->>> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
->>> +%YAML 1.2
->>> +---
-
-<snip>
-
->>> +
->>> +        power-domains = <&mmcc MDSS_GDSC>;
->>> +        ranges;
->>> +        status = "disabled";
->>
->> Drop. Why disable an example?
+On Mon, Nov 22, 2021 at 10:29:05AM -0500, George Kennedy wrote:
 > 
-> AngeloGioacchino, could you please update and repost this patch series? I'd like to 
-> get it merged.
 > 
+> On 11/19/2021 9:25 AM, Jani Nikula wrote:
+> > On Fri, 19 Nov 2021, Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > On Fri, Nov 19, 2021 at 12:03:00PM +0200, Ville Syrj�l� wrote:
+> > > > On Fri, Nov 19, 2021 at 10:40:38AM +0100, Daniel Vetter wrote:
+> > > > > On Thu, Oct 28, 2021 at 05:04:19PM +0300, Ville Syrj�l� wrote:
+> > > > > > On Thu, Oct 28, 2021 at 08:57:17AM -0500, George Kennedy wrote:
+> > > > > > > Do a sanity check on struct drm_format_info hsub and vsub values to
+> > > > > > > avoid divide by zero.
+> > > > > > > 
+> > > > > > > Syzkaller reported a divide error in framebuffer_check() when the
+> > > > > > > DRM_FORMAT_Q410 or DRM_FORMAT_Q401 pixel_format is passed in via
+> > > > > > > the DRM_IOCTL_MODE_ADDFB2 ioctl. The drm_format_info struct for
+> > > > > > > the DRM_FORMAT_Q410 pixel_pattern has ".hsub = 0" and ".vsub = 0".
+> > > > > > > fb_plane_width() uses hsub as a divisor and fb_plane_height() uses
+> > > > > > > vsub as a divisor. These divisors need to be sanity checked for
+> > > > > > > zero before use.
+> > > > > > > 
+> > > > > > > divide error: 0000 [#1] SMP KASAN NOPTI
+> > > > > > > CPU: 0 PID: 14995 Comm: syz-executor709 Not tainted 5.15.0-rc6-syzk #1
+> > > > > > > Hardware name: Red Hat KVM, BIOS 1.13.0-2
+> > > > > > > RIP: 0010:framebuffer_check drivers/gpu/drm/drm_framebuffer.c:199 [inline]
+> > > > > > > RIP: 0010:drm_internal_framebuffer_create+0x604/0xf90
+> > > > > > > drivers/gpu/drm/drm_framebuffer.c:317
+> > > > > > > 
+> > > > > > > Call Trace:
+> > > > > > >   drm_mode_addfb2+0xdc/0x320 drivers/gpu/drm/drm_framebuffer.c:355
+> > > > > > >   drm_mode_addfb2_ioctl+0x2a/0x40 drivers/gpu/drm/drm_framebuffer.c:391
+> > > > > > >   drm_ioctl_kernel+0x23a/0x2e0 drivers/gpu/drm/drm_ioctl.c:795
+> > > > > > >   drm_ioctl+0x589/0xac0 drivers/gpu/drm/drm_ioctl.c:898
+> > > > > > >   vfs_ioctl fs/ioctl.c:51 [inline]
+> > > > > > >   __do_sys_ioctl fs/ioctl.c:874 [inline]
+> > > > > > >   __se_sys_ioctl fs/ioctl.c:860 [inline]
+> > > > > > >   __x64_sys_ioctl+0x19d/0x220 fs/ioctl.c:860
+> > > > > > >   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> > > > > > >   do_syscall_64+0x3a/0x80 arch/x86/entry/common.c:80
+> > > > > > >   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > > > > > > 
+> > > > > > > Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+> > > > > > > ---
+> > > > > > >   drivers/gpu/drm/drm_framebuffer.c | 10 ++++++++++
+> > > > > > >   1 file changed, 10 insertions(+)
+> > > > > > > 
+> > > > > > > diff --git a/drivers/gpu/drm/drm_framebuffer.c b/drivers/gpu/drm/drm_framebuffer.c
+> > > > > > > index 07f5abc..a146e4b 100644
+> > > > > > > --- a/drivers/gpu/drm/drm_framebuffer.c
+> > > > > > > +++ b/drivers/gpu/drm/drm_framebuffer.c
+> > > > > > > @@ -195,6 +195,16 @@ static int framebuffer_check(struct drm_device *dev,
+> > > > > > >   	/* now let the driver pick its own format info */
+> > > > > > >   	info = drm_get_format_info(dev, r);
+> > > > > > > +	if (info->hsub == 0) {
+> > > > > > > +		DRM_DEBUG_KMS("bad horizontal chroma subsampling factor %u\n", info->hsub);
+> > > > > > > +		return -EINVAL;
+> > > > > > > +	}
+> > > > > > > +
+> > > > > > > +	if (info->vsub == 0) {
+> > > > > > > +		DRM_DEBUG_KMS("bad vertical chroma subsampling factor %u\n", info->vsub);
+> > > > > > > +		return -EINVAL;
+> > > > > > > +	}
+> > > > > > Looks like duct tape to me. I think we need to either fix those formats
+> > > > > > to have valid format info, or just revert the whole patch that added such
+> > > > > > broken things.
+> > > > > Yeah maybe even a compile-time check of the format table(s) to validate
+> > > > > them properly and scream ... Or at least a selftest.
+> > > > I really wish C had (even very limited) compile time evaluation
+> > > > so one could actually loop over arrays like at compile time to
+> > > > check each element. As it stands you either have to check each
+> > > > array element by hand, or you do some cpp macro horrors to
+> > > > pretend you're iterating the array.
+> > > Python preprocess or so seems to be the usual answer, and that then just
+> > > generates the C table after it's all checked.
+> > > 
+> > > Or a post-processor which fishes the table out from the .o (or just links
+> > > against it).
+> > > 
+> > > But yeah doing this in cpp isn't going to work, aside from it'd be really
+> > > ugly.
+> > Kbuild does have support for hostprogs which are typically used in the
+> > build. The obvious idea is to use that for code generation, but it would
+> > also be interesting to see how that could be used for compile-time
+> > evaluation of sorts. Kind of like compile-time selftests? And, of
+> > course, how badly that would be frowned upon.
+> > 
+> > git grep says there are only four hostprogs users in drivers/, so it
+> > certainly isn't a popularity contest winner. (One of them is
+> > "mkregtable" in radeon.)
+> 
+> So, can someone suggest a fix? A cpp type of approach does not seem
+> feasible.
+> 
+> Adding the sanity checks that are in the patch, which are similar to the
+> sanity checks preceding them in framebuffer_check(), along with a self-test
+> that ran through all the table entries, might address all the concerns
+> brought up in this thread.
 
-Hey Dmitry,
-
-Sure I can!
-Will update/rebase/fix as soon as I find some spare time around.
-
-Thanks,
-- Angelo
+drm selftest sounds like a reasonable approach to me.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
