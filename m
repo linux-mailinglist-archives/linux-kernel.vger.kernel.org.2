@@ -2,112 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCBAC45DCB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 15:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5C945DCA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 15:48:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355917AbhKYOwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 09:52:35 -0500
-Received: from mga11.intel.com ([192.55.52.93]:21950 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355933AbhKYOuj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 09:50:39 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="233019067"
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="233019067"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 06:45:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="607588018"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 25 Nov 2021 06:45:39 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqG0J-0006VC-7G; Thu, 25 Nov 2021 14:45:39 +0000
-Date:   Thu, 25 Nov 2021 22:44:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: [tglx-devel:msi 93/101] drivers/soc/ti/ti_sci_inta_msi.c:116:67:
- warning: passing argument 3 of 'msi_domain_alloc_irqs_descs_locked' makes
- pointer from integer without a cast
-Message-ID: <202111252218.u8k5qJA4-lkp@intel.com>
+        id S1355954AbhKYOv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 09:51:27 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:34456 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344978AbhKYOtY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 09:49:24 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 4948921958;
+        Thu, 25 Nov 2021 14:46:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637851572; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jp9Byyv2i/lpogY+ZZSli8+lqVck+WI312/v0Kss16Y=;
+        b=oY5yPIYjnGTpVQ0lsxAecwzuyZTYraOlbDanHMiKlAbOsEBgBsBoa93v6+EHr3Pq9aqQ5X
+        0PkOCZkz4LdjdKVtLxF9X63lfc7GCgd9AGEKfo0oWjj+34wLJynzKaT16DhgLGA1yM2NVg
+        oZRvBpqR+Cf35Itth5CwlIi39nqw7nk=
+Received: from suse.cz (unknown [10.100.216.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 96986A3B84;
+        Thu, 25 Nov 2021 14:46:11 +0000 (UTC)
+Date:   Thu, 25 Nov 2021 15:46:11 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        oliver.sang@intel.com, lkp@intel.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH v2] kthread: dynamically allocate memory to store
+ kthread's full name
+Message-ID: <YZ+hsx52TyDuHvE1@alley>
+References: <20211120112850.46047-1-laoar.shao@gmail.com>
+ <435fab0b-d345-3698-79af-ff858181666a@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <435fab0b-d345-3698-79af-ff858181666a@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git msi
-head:   1bd31f3b9bc0cc3328fe9030a6b240ac1772d60a
-commit: ff97d45fcc8af0d7ca617f3dfe7f35fb7d5339dc [93/101] genirq/msi: Add range argument to msi_domain_alloc/free_descs_locked()
-config: arm64-buildonly-randconfig-r003-20211125 (https://download.01.org/0day-ci/archive/20211125/202111252218.u8k5qJA4-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git/commit/?id=ff97d45fcc8af0d7ca617f3dfe7f35fb7d5339dc
-        git remote add tglx-devel https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git
-        git fetch --no-tags tglx-devel msi
-        git checkout ff97d45fcc8af0d7ca617f3dfe7f35fb7d5339dc
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=arm64 
+On Thu 2021-11-25 10:36:49, David Hildenbrand wrote:
+> On 20.11.21 12:28, Yafang Shao wrote:
+> > When I was implementing a new per-cpu kthread cfs_migration, I found the
+> > comm of it "cfs_migration/%u" is truncated due to the limitation of
+> > TASK_COMM_LEN. For example, the comm of the percpu thread on CPU10~19 are
+> > all with the same name "cfs_migration/1", which will confuse the user. This
+> > issue is not critical, because we can get the corresponding CPU from the
+> > task's Cpus_allowed. But for kthreads correspoinding to other hardware
+> > devices, it is not easy to get the detailed device info from task comm,
+> > for example,
+> > 
+> >     jbd2/nvme0n1p2-
+> >     xfs-reclaim/sdf
+> > 
+> > Currently there are so many truncated kthreads:
+> > 
+> >     rcu_tasks_kthre
+> >     rcu_tasks_rude_
+> >     rcu_tasks_trace
+> >     poll_mpt3sas0_s
+> >     ext4-rsv-conver
+> >     xfs-reclaim/sd{a, b, c, ...}
+> >     xfs-blockgc/sd{a, b, c, ...}
+> >     xfs-inodegc/sd{a, b, c, ...}
+> >     audit_send_repl
+> >     ecryptfs-kthrea
+> >     vfio-irqfd-clea
+> >     jbd2/nvme0n1p2-
+> >     ...
+> > 
+> > We can shorten these names to work around this problem, but it may be
+> > not applied to all of the truncated kthreads. Take 'jbd2/nvme0n1p2-' for
+> > example, it is a nice name, and it is not a good idea to shorten it.
+> > 
+> > One possible way to fix this issue is extending the task comm size, but
+> > as task->comm is used in lots of places, that may cause some potential
+> > buffer overflows. Another more conservative approach is introducing a new
+> > pointer to store kthread's full name if it is truncated, which won't
+> > introduce too much overhead as it is in the non-critical path. Finally we
+> > make a dicision to use the second approach. See also the discussions in
+> > this thread:
+> > https://lore.kernel.org/lkml/20211101060419.4682-1-laoar.shao@gmail.com/
+> > 
+> > After this change, the full name of these truncated kthreads will be
+> > displayed via /proc/[pid]/comm:
+> > 
+> >     rcu_tasks_kthread
+> >     rcu_tasks_rude_kthread
+> >     rcu_tasks_trace_kthread
+> >     poll_mpt3sas0_statu
+> >     ext4-rsv-conversion
+> >     xfs-reclaim/sdf1
+> >     xfs-blockgc/sdf1
+> >     xfs-inodegc/sdf1
+> >     audit_send_reply
+> >     ecryptfs-kthread
+> >     vfio-irqfd-cleanup
+> >     jbd2/nvme0n1p2-8
+> 
+> I do wonder if that could break some user space that assumes these names
+> have maximum length ..
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+There is high chance that we will be on the safe side. Workqueue
+kthreads already provided longer names. They are even dynamic
+because the currently handled workqueue name is part of the name,
+see wq_worker_comm().
 
-All warnings (new ones prefixed by >>):
-
-   drivers/soc/ti/ti_sci_inta_msi.c: In function 'ti_sci_inta_msi_domain_alloc_irqs':
->> drivers/soc/ti/ti_sci_inta_msi.c:116:67: warning: passing argument 3 of 'msi_domain_alloc_irqs_descs_locked' makes pointer from integer without a cast [-Wint-conversion]
-     116 |         ret = msi_domain_alloc_irqs_descs_locked(msi_domain, dev, nvec);
-         |                                                                   ^~~~
-         |                                                                   |
-         |                                                                   int
-   In file included from drivers/soc/ti/ti_sci_inta_msi.c:11:
-   include/linux/msi.h:506:106: note: expected 'struct msi_range *' but argument is of type 'int'
-     506 | int msi_domain_alloc_irqs_descs_locked(struct irq_domain *domain, struct device *dev,  struct msi_range *range);
-         |                                                                                        ~~~~~~~~~~~~~~~~~~^~~~~
-
-
-vim +/msi_domain_alloc_irqs_descs_locked +116 drivers/soc/ti/ti_sci_inta_msi.c
-
-49b323157bf1e70 Lokesh Vutla    2019-04-30   90  
-49b323157bf1e70 Lokesh Vutla    2019-04-30   91  int ti_sci_inta_msi_domain_alloc_irqs(struct device *dev,
-49b323157bf1e70 Lokesh Vutla    2019-04-30   92  				      struct ti_sci_resource *res)
-49b323157bf1e70 Lokesh Vutla    2019-04-30   93  {
-49b323157bf1e70 Lokesh Vutla    2019-04-30   94  	struct platform_device *pdev = to_platform_device(dev);
-49b323157bf1e70 Lokesh Vutla    2019-04-30   95  	struct irq_domain *msi_domain;
-49b323157bf1e70 Lokesh Vutla    2019-04-30   96  	int ret, nvec;
-49b323157bf1e70 Lokesh Vutla    2019-04-30   97  
-49b323157bf1e70 Lokesh Vutla    2019-04-30   98  	msi_domain = dev_get_msi_domain(dev);
-49b323157bf1e70 Lokesh Vutla    2019-04-30   99  	if (!msi_domain)
-49b323157bf1e70 Lokesh Vutla    2019-04-30  100  		return -EINVAL;
-49b323157bf1e70 Lokesh Vutla    2019-04-30  101  
-49b323157bf1e70 Lokesh Vutla    2019-04-30  102  	if (pdev->id < 0)
-49b323157bf1e70 Lokesh Vutla    2019-04-30  103  		return -ENODEV;
-49b323157bf1e70 Lokesh Vutla    2019-04-30  104  
-025c2c9e7077d3a Thomas Gleixner 2021-11-10  105  	ret = msi_setup_device_data(dev);
-025c2c9e7077d3a Thomas Gleixner 2021-11-10  106  	if (ret)
-025c2c9e7077d3a Thomas Gleixner 2021-11-10  107  		return ret;
-025c2c9e7077d3a Thomas Gleixner 2021-11-10  108  
-b9f8772d4c17ea7 Thomas Gleixner 2021-11-10  109  	msi_lock_descs(dev);
-49b323157bf1e70 Lokesh Vutla    2019-04-30  110  	nvec = ti_sci_inta_msi_alloc_descs(dev, res);
-b9f8772d4c17ea7 Thomas Gleixner 2021-11-10  111  	if (nvec <= 0) {
-b9f8772d4c17ea7 Thomas Gleixner 2021-11-10  112  		ret = nvec;
-b9f8772d4c17ea7 Thomas Gleixner 2021-11-10  113  		goto unlock;
-49b323157bf1e70 Lokesh Vutla    2019-04-30  114  	}
-49b323157bf1e70 Lokesh Vutla    2019-04-30  115  
-b9f8772d4c17ea7 Thomas Gleixner 2021-11-10 @116  	ret = msi_domain_alloc_irqs_descs_locked(msi_domain, dev, nvec);
-
-:::::: The code at line 116 was first introduced by commit
-:::::: b9f8772d4c17ea7bb4be6bd44f44077f791e29ca soc: ti: ti_sci_inta_msi: Rework MSI descriptor allocation
-
-:::::: TO: Thomas Gleixner <tglx@linutronix.de>
-:::::: CC: Thomas Gleixner <tglx@linutronix.de>
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Best Regards,
+Petr
