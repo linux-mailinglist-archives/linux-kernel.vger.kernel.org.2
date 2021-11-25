@@ -2,102 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7A745D2A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 02:56:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2CD45D26B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 02:25:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351344AbhKYB7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 20:59:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347359AbhKYB5R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 20:57:17 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB738C06139E;
-        Wed, 24 Nov 2021 17:23:12 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4J00W201Zhz4xbC;
-        Thu, 25 Nov 2021 12:23:09 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1637803390;
-        bh=BCmABNL8H1gx0oQrVYQp9yxanjIOM1oYqNOSzCOnkt0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=fE5gMnJpJrz0hvOAW4xispXwwer4+acawz3OFkpCL59KmPoUSKVpGVUxq56RDqjsH
-         xhL/iMIJJqPn9AYvJcR5WP9HolnUFUVe98c1Mp7uExmNNWnIo9qMRVN99vFQpbHKso
-         +vx4EwSTFTTD7DgvrG3TlFms7QZfqJLgEutT7AkbjmQ3VlBL7DuW4QSPJR0KVAp21T
-         CT6zUvYevQbYIvx4BoFCY5w1qY5nR1lvdD7O/6lcA7Tl5a2TaZavJO6Dt+xDEYAKvJ
-         lmNHeU4NL3gF5k1dLDQAo9rLQMXlWVYEfNveufJnIqyhm+HXPWjo8OB6ZzsJlcbPb7
-         4Z00HWSCS8PWg==
-Date:   Thu, 25 Nov 2021 12:23:07 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the vhost tree
-Message-ID: <20211125122307.090784cb@canb.auug.org.au>
+        id S1346385AbhKYB2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 20:28:47 -0500
+Received: from mga06.intel.com ([134.134.136.31]:63888 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238769AbhKYB0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 20:26:46 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="296223090"
+X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
+   d="scan'208";a="296223090"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 17:23:35 -0800
+X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
+   d="scan'208";a="510091926"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.101])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 17:23:33 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Hasan Al Maruf <hasan3050@gmail.com>
+Cc:     dave.hansen@linux.intel.com, yang.shi@linux.alibaba.com,
+        mgorman@techsingularity.net, riel@surriel.com, hannes@cmpxchg.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] Transparent Page Placement for Tiered-Memory
+References: <cover.1637778851.git.hasanalmaruf@fb.com>
+Date:   Thu, 25 Nov 2021 09:23:31 +0800
+In-Reply-To: <cover.1637778851.git.hasanalmaruf@fb.com> (Hasan Al Maruf's
+        message of "Wed, 24 Nov 2021 13:58:25 -0500")
+Message-ID: <874k812fl8.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Kb2w7RwEjjM9ZSeleIAODtS";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Kb2w7RwEjjM9ZSeleIAODtS
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hasan Al Maruf <hasan3050@gmail.com> writes:
 
-Hi all,
+> [resend in proper format]
+>
+> With the advent of new memory types and technologies, we can see different
+> types of memory together, e.g. DRAM, PMEM, CXL-enabled memory, etc. In
+> recent future, we can see CXL-Memory be available in the physical address-
+> space as a CPU-less NUMA node along with the native DDR memory channels.
+> As different types of memory have different level of performance impact,
+> how we manage pages across the NUMA nodes should be a matter of concern.
+>
+> Dave Hansen's patchset on "Migrate Pages in lieu of discard" demotes
+> toptier pages to a slow tier node during the reclamation process.
+>
+>     		https://lwn.net/Articles/860215/
+>
+> However, that patchset does not include the features to promote pages on
+> slow tier memory node to the toptier one. As a result, pages demoted or
+> newly allocated on the slow tier node, experiences NUMA latency and hurt
+> application performance. In this patch set, we augment existing AutoNUMA
+> mechanism to promote pages from slow tier nodes to toptier nodes.
+>
+> We decouple reclamation and allocation logics for the toptier node so that
+> reclamation gets triggered at a higher watermark and demotes colder pages
+> to the slow-tier memory. As a result, toptier nodes can maintain some free
+> space to accept both new allocation and promotion from slowtier nodes.
+> During promotion, we add hysteresis to page and only promote pages that
+> are less likely to be demoted within a short period of time. This reduces
+> the chance for a page being ping-ponged across the NUMA nodes due to
+> frequent demotion and promotion within a short period of time.
+>
+> We tested this patchset on systems with CXL-enabled DRAM and PMEM tiers.
+> We find this patchset can bring hotter pages to the toptier node while
+> moving the colder pages to the slow-tier nodes for a good range of Meta
+> production workloads with live traffic. As a result, toptier nodes serve
+> more hot pages and the application performance improves.
+>
+> Case Study of a Meta cache application with two NUMA nodes
+> ==========================================================
+> Toptier node: DRAM directly attached to the CPU
+> Slowtier node: DRAM attached through CXL
+>
+> Toptier vs Slowtier memory capacity ratio is 1:4
+>
+> With default page placement policy, file caches fills up the toptier node
+> and anons get trapped in the slowtier node. Only 14% of the total anons
+> reside in toptier node. Remote NUMA read bandwidth is 80%. Throughput
+> regression is 18% compared to all memory being served from toptier node.
+>
+> This patchset brings 80% of the anons to the toptier node. Anons on the
+> slowtier memory is mostly cold anons. As the toptier node can not host all
+> the hot memory, some hot files still remain on the slowtier node. Even
+> though, remote NUMA read bandwidth reduces from 80% to 40%. With this
+> patchset, throughput regression is only 5% compared to the baseline of
+> toptier node serving the whole working set.
 
-After merging the vhost tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+Hi, Hasan,
 
-net/vmw_vsock/virtio_transport.c:734:3: error: 'struct virtio_driver' has n=
-o member named 'suppress_used_validation'
-  734 |  .suppress_used_validation =3D true,
-      |   ^~~~~~~~~~~~~~~~~~~~~~~~
-net/vmw_vsock/virtio_transport.c:734:30: error: initialization of 'const un=
-signed int *' from 'int' makes pointer from integer without a cast [-Werror=
-=3Dint-conversion]
-  734 |  .suppress_used_validation =3D true,
-      |                              ^~~~
-net/vmw_vsock/virtio_transport.c:734:30: note: (near initialization for 'vi=
-rtio_vsock_driver.feature_table_legacy')
+I found that quite some code in your patchset is exactly same as that in
+my patchset as follows,
 
-Caused by commit
+https://lore.kernel.org/lkml/20211116013522.140575-1-ying.huang@intel.com/
 
-  f124034faa91 ("Revert "virtio_ring: validate used buffer length"")
+and patches in the following repo we used to publish some patchset that
+hasn't been sent to community for review,
 
-interacting with commit
+https://git.kernel.org/pub/scm/linux/kernel/git/vishal/tiering.git/log/?h=tiering-0.72
 
-  f7a36b03a732 ("vsock/virtio: suppress used length validation")
+I am glad that more people have interest and worked on optimizing page
+placement for tiering memory system.  How about we merge instead of
+duplicate our effort?
 
-from the net tree.
+Because I tried to make the patches above as simple as possible (at
+least first 3), can you comment the most basic patches there to help
+them to be improved.  And then we can build our more complex/advanced
+patches on top of that?
 
-I have reverted commit f7a36b03a732 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Kb2w7RwEjjM9ZSeleIAODtS
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGe5XsACgkQAVBC80lX
-0GzYYQgAhCbEXUR6I7i2zyksjS/dlHgkNADubcqjyHp8LFviUaFEi4+74lhaf0AQ
-Rww9iN2hfQtNwL1rJiBZ80g6nMDBu+Lf/lCM045XjJ7TuVN0VK09D3Bq8iUSI76v
-xD95PiXgCNHKXqNCWi6cZMJMpCb8oC/IVWRNTAjkAY+QoXmvnzYjWBXvrmKvewVT
-HzbQeoLlxp3iEsqEj+P6onmMOPULXjP0rToQ0EPxhYa/QfeenP/8/CNEypY8OTsP
-xsowaSf06ZaBuWq5LS8MKtEkO/gCl4yOvvGFFeerWOlySCCe3vk00jTgL1Hs1hYt
-Cq2WdF60fJiiX7J4GHIALNFIBZ8B/g==
-=neLn
------END PGP SIGNATURE-----
-
---Sig_/Kb2w7RwEjjM9ZSeleIAODtS--
+Best Regards,
+Huang, Ying
