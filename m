@@ -2,83 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7CF445E1A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:32:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE71745E19F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357173AbhKYUf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 15:35:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357110AbhKYUd4 (ORCPT
+        id S1357139AbhKYUeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 15:34:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:57867 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233937AbhKYUcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 15:33:56 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0938FC0613FE;
-        Thu, 25 Nov 2021 12:28:45 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id r2so6871347ilb.10;
-        Thu, 25 Nov 2021 12:28:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UF7bxqoO6JrinwXL/4rYhg/6TjsTgpExSTTC8wwpd14=;
-        b=jjPUG07lcm8r0SVY8pTw+HsMRN23h+L6+1/PBDQbdUB3JWOfptDHzV1RpbSsqLEsN+
-         eit+NR8VaoD607F7EhOne7kL80ov2OYQMoqfgH+z6GYIdv+sEqsvWZ6TJUVxPrvEglj4
-         TFrMnp0Pio1+vEKJJ+/pkVJPkCx8VT7VUxJqBzWUOZJKocNccZ1NHJvpjcQeHMozYzjM
-         6397czk/OsJVZbpx/VTwES3gIhDvyJRyhrMAWJqBo/E3TAeydJhx//XhuidotbuQWbN6
-         jotlywgZr2+nRCbVG2hMV4FtsSyW33RT4O+5WjAQXtvHoX+Q/0EzDCs42ReY8bOM+gSV
-         7qiA==
+        Thu, 25 Nov 2021 15:32:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637872136;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=kaFkFJhlQt54sqolDJOMVBjHMKjdPtNBa+f74SVCoTU=;
+        b=Zdlhq8Zg0YaTY5UaZpMl9PoeResOo/BxSrcnvG0xgJ5jYOBK7mr/X/6fv1w69OmETsoZGM
+        vZEG+/cdiWh/4mp+V84HfGpbst8wAjd1aKMqB7L9aKDG2FPHzSzCNzE9srLjnCo6k+GlW0
+        p5ge9+GKgMS8cpYOvTrlRT/neZBd/RM=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-377-4FLuKMOiPoSp9kn4PU_fQw-1; Thu, 25 Nov 2021 15:28:55 -0500
+X-MC-Unique: 4FLuKMOiPoSp9kn4PU_fQw-1
+Received: by mail-ed1-f72.google.com with SMTP id b15-20020aa7c6cf000000b003e7cf0f73daso6167233eds.22
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 12:28:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UF7bxqoO6JrinwXL/4rYhg/6TjsTgpExSTTC8wwpd14=;
-        b=dt6fh+k2DG2/ktFvXNOzhpNZu6JfEccTgxBJLEuVwvE9AWqI1QpULJQPjSvjbJsmFL
-         Y6hTkE5dkDA1f+hCVwkX3B6pOsYRaBZjpSp1orXUT1FVlli5juryV2sUiosMTzWYt5TO
-         FlkVKQSQwhy6/LzovDXCa3neOkoSAaL7w/xEazEkQmERKXei3YYMe4p4WELG29D8U2Dk
-         vyyttrlvDljeoSaTOpxfTQp+zYm8wcScx9Wm29NMgzHiafWdB3sc+5PFyWDvh9uMPT9W
-         5dYJnTmW9I71gv+Zov7sPs5Q7Xy05Tl9iN5mywpnhHEGRxwTFvfrHJBrYuo/rACfJpmh
-         gTxA==
-X-Gm-Message-State: AOAM530YgXYTb0pnd0DB2xz1VCoDdXB0GfsiQXQQLIREbMbqbNxrwj+D
-        g2AevNpq0g5HHeKMLhahAfrHeQn1GI+XuSiB+0m0GtE1p3Y=
-X-Google-Smtp-Source: ABdhPJx4tcbk5X+2a/nX1SM+1HJL9uzlnRHnexBIzCpOdSCLIqVsGQJ/+UIuGWShZ/b+Jt99SrrTaHYeah8a3YceG8I=
-X-Received: by 2002:a05:6e02:106c:: with SMTP id q12mr22335434ilj.125.1637872124495;
- Thu, 25 Nov 2021 12:28:44 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kaFkFJhlQt54sqolDJOMVBjHMKjdPtNBa+f74SVCoTU=;
+        b=ZKPitkP4mFmbyG1etdSNgkn3Vyhq/4laWo1Dg7IZe01AWtrWbW/egxuRWo7uCBz1xd
+         +qaAYH7w3gB7fARMMGp1prt9uPc9AFG6hofM3wgoLHJ05NcomvXlvbn8ttpGLm0wfrro
+         otfnTEG0Aif/VM3cPBuvB01LvQWrT4PDjF9nanxdPztoLk31dZXaNU1p+lNYhpCiS09o
+         g5X0kFfR4OqhIft9KcrmqXB23xBX9lwiBoXTLMkAILSqnWUK7GTZLIERjSAFjzd4obzK
+         /6BvOkTPAm5+CtmYl7jUdo8nrfFAjQJEnOzX1eqEE/wnmeG1nPskFYqNax+MZeruRmzi
+         OE/g==
+X-Gm-Message-State: AOAM5303oveJCwQWVdHqbxhFEkr3OBcImSyGZy7kFBCjExJHY07itQAy
+        wy4afyoQsVztCW9vgGcdbi5WuDcFB2z60rXJyrzKtFRCtibPh/i043qhU02tPOgbLLjRgymohWP
+        OBzDA7T+3msOHDegwbdIS5rlx
+X-Received: by 2002:aa7:d546:: with SMTP id u6mr43598808edr.311.1637872134155;
+        Thu, 25 Nov 2021 12:28:54 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzFZafI+O2MXnfP5k6Jf9iTyI0vV1jfTKYH579Wwi7ieAjuj+y35KsRkbAPWxf0c6E4jRDNzQ==
+X-Received: by 2002:aa7:d546:: with SMTP id u6mr43598774edr.311.1637872133993;
+        Thu, 25 Nov 2021 12:28:53 -0800 (PST)
+Received: from krava.redhat.com ([94.113.247.3])
+        by smtp.gmail.com with ESMTPSA id f7sm2504742edw.44.2021.11.25.12.28.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 12:28:53 -0800 (PST)
+From:   Jiri Olsa <jolsa@redhat.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [PATCH] tracing: Iterate trace_[ku]probe objects directly
+Date:   Thu, 25 Nov 2021 21:28:52 +0100
+Message-Id: <20211125202852.406405-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20211122212850.321542-1-pauk.denis@gmail.com> <20211122212850.321542-3-pauk.denis@gmail.com>
- <CAHp75Vfg7LKX-21+b6f5c34G4Y=ZUqrWRbfDt_quCiJe+By-Ww@mail.gmail.com>
- <CAB95QASDiwM+-AwPgGfc7dP=Ctm0s2WP4xrapJzNHJ22B9foAw@mail.gmail.com>
- <CAHp75VeO2mz7wJpuKdrErnYcw-dUOBs9W4FzA6MkgCQLr0eQUg@mail.gmail.com>
- <CAB95QAT_b8Wef+4wN-H8dKZXxgnznqOk5J0fMuL2XJLhob7d9Q@mail.gmail.com>
- <b7616187-87d8-c87f-8f66-d5936a33395f@roeck-us.net> <CAB95QAQ2vpXFxZC0G6ogbpk+rDzGMN7N8-RaUX9w_U5bQ1WGMg@mail.gmail.com>
- <CAHp75Vdi8ujoC5LTYqNmiWe1dTxrYRQKS+YtZE921d-6CZTs=A@mail.gmail.com>
-In-Reply-To: <CAHp75Vdi8ujoC5LTYqNmiWe1dTxrYRQKS+YtZE921d-6CZTs=A@mail.gmail.com>
-From:   Eugene Shalygin <eugene.shalygin@gmail.com>
-Date:   Thu, 25 Nov 2021 21:28:33 +0100
-Message-ID: <CAB95QAS_Cafc5uy7auH+Z05rrBLNFZqhZRJ_cwn8OFRfpe44mA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] hwmon: (nct6775) Implement custom lock by ACPI mutex.
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Denis Pauk <pauk.denis@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        thomas@weissschuh.net, Jean Delvare <jdelvare@suse.com>,
-        linux-hwmon@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Nov 2021 at 21:10, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+As suggested by Linus [1] using list_for_each_entry to iterate
+directly trace_[ku]probe objects so we can skip another call to
+container_of in these loops.
 
-> Since you are talking about something which is not ready yet (as I
-> read "will" above), I propose a compromise variant, i.e. let's leave
-> current driver(s) as is for v5.17 and after v5.17-rc1 you submit your
-> proposal for review. Okay?
->
+[1] https://lore.kernel.org/r/CAHk-=wjakjw6-rDzDDBsuMoDCqd+9ogifR_EE1F0K-jYek1CdA@mail.gmail.com
 
-Andy, I'm pretty sure the submission will happen and my only intention
-is to save possible users from driver name change right after the
-driver is introduced. I see no harm in renaming it.
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ kernel/trace/trace_kprobe.c | 13 ++++---------
+ kernel/trace/trace_uprobe.c | 23 ++++++++---------------
+ 2 files changed, 12 insertions(+), 24 deletions(-)
 
-Eugene
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index 33272a7b6912..1cddb42af20c 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -327,11 +327,9 @@ static inline int __enable_trace_kprobe(struct trace_kprobe *tk)
+ 
+ static void __disable_trace_kprobe(struct trace_probe *tp)
+ {
+-	struct trace_probe *pos;
+ 	struct trace_kprobe *tk;
+ 
+-	list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
+-		tk = container_of(pos, struct trace_kprobe, tp);
++	list_for_each_entry(tk, trace_probe_probe_list(tp), tp.list) {
+ 		if (!trace_kprobe_is_registered(tk))
+ 			continue;
+ 		if (trace_kprobe_is_return(tk))
+@@ -348,7 +346,7 @@ static void __disable_trace_kprobe(struct trace_probe *tp)
+ static int enable_trace_kprobe(struct trace_event_call *call,
+ 				struct trace_event_file *file)
+ {
+-	struct trace_probe *pos, *tp;
++	struct trace_probe *tp;
+ 	struct trace_kprobe *tk;
+ 	bool enabled;
+ 	int ret = 0;
+@@ -369,8 +367,7 @@ static int enable_trace_kprobe(struct trace_event_call *call,
+ 	if (enabled)
+ 		return 0;
+ 
+-	list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
+-		tk = container_of(pos, struct trace_kprobe, tp);
++	list_for_each_entry(tk, trace_probe_probe_list(tp), tp.list) {
+ 		if (trace_kprobe_has_gone(tk))
+ 			continue;
+ 		ret = __enable_trace_kprobe(tk);
+@@ -559,11 +556,9 @@ static bool trace_kprobe_has_same_kprobe(struct trace_kprobe *orig,
+ 					 struct trace_kprobe *comp)
+ {
+ 	struct trace_probe_event *tpe = orig->tp.event;
+-	struct trace_probe *pos;
+ 	int i;
+ 
+-	list_for_each_entry(pos, &tpe->probes, list) {
+-		orig = container_of(pos, struct trace_kprobe, tp);
++	list_for_each_entry(orig, &tpe->probes, tp.list) {
+ 		if (strcmp(trace_kprobe_symbol(orig),
+ 			   trace_kprobe_symbol(comp)) ||
+ 		    trace_kprobe_offset(orig) != trace_kprobe_offset(comp))
+diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+index f5f0039d31e5..a9a294e6b183 100644
+--- a/kernel/trace/trace_uprobe.c
++++ b/kernel/trace/trace_uprobe.c
+@@ -409,12 +409,10 @@ static bool trace_uprobe_has_same_uprobe(struct trace_uprobe *orig,
+ 					 struct trace_uprobe *comp)
+ {
+ 	struct trace_probe_event *tpe = orig->tp.event;
+-	struct trace_probe *pos;
+ 	struct inode *comp_inode = d_real_inode(comp->path.dentry);
+ 	int i;
+ 
+-	list_for_each_entry(pos, &tpe->probes, list) {
+-		orig = container_of(pos, struct trace_uprobe, tp);
++	list_for_each_entry(orig, &tpe->probes, tp.list) {
+ 		if (comp_inode != d_real_inode(orig->path.dentry) ||
+ 		    comp->offset != orig->offset)
+ 			continue;
+@@ -1075,14 +1073,12 @@ static int trace_uprobe_enable(struct trace_uprobe *tu, filter_func_t filter)
+ 
+ static void __probe_event_disable(struct trace_probe *tp)
+ {
+-	struct trace_probe *pos;
+ 	struct trace_uprobe *tu;
+ 
+ 	tu = container_of(tp, struct trace_uprobe, tp);
+ 	WARN_ON(!uprobe_filter_is_empty(tu->tp.event->filter));
+ 
+-	list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
+-		tu = container_of(pos, struct trace_uprobe, tp);
++	list_for_each_entry(tu, trace_probe_probe_list(tp), tp.list) {
+ 		if (!tu->inode)
+ 			continue;
+ 
+@@ -1094,7 +1090,7 @@ static void __probe_event_disable(struct trace_probe *tp)
+ static int probe_event_enable(struct trace_event_call *call,
+ 			struct trace_event_file *file, filter_func_t filter)
+ {
+-	struct trace_probe *pos, *tp;
++	struct trace_probe *tp;
+ 	struct trace_uprobe *tu;
+ 	bool enabled;
+ 	int ret;
+@@ -1129,8 +1125,7 @@ static int probe_event_enable(struct trace_event_call *call,
+ 	if (ret)
+ 		goto err_flags;
+ 
+-	list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
+-		tu = container_of(pos, struct trace_uprobe, tp);
++	list_for_each_entry(tu, trace_probe_probe_list(tp), tp.list) {
+ 		ret = trace_uprobe_enable(tu, filter);
+ 		if (ret) {
+ 			__probe_event_disable(tp);
+@@ -1275,7 +1270,7 @@ static bool trace_uprobe_filter_add(struct trace_uprobe_filter *filter,
+ static int uprobe_perf_close(struct trace_event_call *call,
+ 			     struct perf_event *event)
+ {
+-	struct trace_probe *pos, *tp;
++	struct trace_probe *tp;
+ 	struct trace_uprobe *tu;
+ 	int ret = 0;
+ 
+@@ -1287,8 +1282,7 @@ static int uprobe_perf_close(struct trace_event_call *call,
+ 	if (trace_uprobe_filter_remove(tu->tp.event->filter, event))
+ 		return 0;
+ 
+-	list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
+-		tu = container_of(pos, struct trace_uprobe, tp);
++	list_for_each_entry(tu, trace_probe_probe_list(tp), tp.list) {
+ 		ret = uprobe_apply(tu->inode, tu->offset, &tu->consumer, false);
+ 		if (ret)
+ 			break;
+@@ -1300,7 +1294,7 @@ static int uprobe_perf_close(struct trace_event_call *call,
+ static int uprobe_perf_open(struct trace_event_call *call,
+ 			    struct perf_event *event)
+ {
+-	struct trace_probe *pos, *tp;
++	struct trace_probe *tp;
+ 	struct trace_uprobe *tu;
+ 	int err = 0;
+ 
+@@ -1312,8 +1306,7 @@ static int uprobe_perf_open(struct trace_event_call *call,
+ 	if (trace_uprobe_filter_add(tu->tp.event->filter, event))
+ 		return 0;
+ 
+-	list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
+-		tu = container_of(pos, struct trace_uprobe, tp);
++	list_for_each_entry(tu, trace_probe_probe_list(tp), tp.list) {
+ 		err = uprobe_apply(tu->inode, tu->offset, &tu->consumer, true);
+ 		if (err) {
+ 			uprobe_perf_close(call, event);
+-- 
+2.33.1
+
