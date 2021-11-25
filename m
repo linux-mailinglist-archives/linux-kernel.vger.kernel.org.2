@@ -2,99 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10B545D980
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:45:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C7645D96E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:41:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236587AbhKYLs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 06:48:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236253AbhKYLqy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 06:46:54 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF3DC06179E
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 03:39:08 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id k37so15647945lfv.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 03:39:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QQHaD9Txbs+YqnVFTQVUah9dRuHXv52COwlrZP0qSXA=;
-        b=Q9MZsBn9M6sfe4zNLAumUeRG31c3T58WM1qgrRkMxZvPi0HVLMHruCd+DUVxA2YRMn
-         A1c7q6QRGSvPLhVNUr+zLWFJ263bLNEYVeSwI2p1p8EjDixpgR3zbmaS02sIL6q6FAP9
-         Ns3qFlU6iAlhPcDSrqpJmneiqw+wsbfud3qleFDBGVfTVX+cQfK5cx9J4/GxspqJMFLt
-         RVG8R1ySmvyy3LRTlLHajNm4jIoBQher3c5JOJt1wTGWS1W7qWbdgF8ojX86sbO1jXF0
-         +O081hT3yldBAavYUtzp5WCwGjUW/g+jqlh49G8ADgFf5b++U3nQmzIILHhj/GjH8gDW
-         +zMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QQHaD9Txbs+YqnVFTQVUah9dRuHXv52COwlrZP0qSXA=;
-        b=BUQazv8FmO//EAmfG2Px9l19KV3lV2hh5YdCpny+Obkjsy6cmOT4amprC2lXsmsucf
-         pOYyD1qtxYNpwBCe52jghBDh9p8cKoHHLntBnJR0A0eqBqf9yCyjSkwB7Blg29p29NfB
-         BwtW48Ycs0oM/oyhgCxa8jN7hCIDw2w6oXLJ48hPnHxGIoJ02jz16pieP1QYWIngtX/O
-         wRLl3xAeOIK/jrICiDtl1Oq162YzqOTHL1H9VxpLs9PHt05SR3pZFdXyP/9veUxNDUbW
-         NDJ3SDkOBbR4xI2rG87nWWnFwIU/MaBcvrqbw+r9p0bRD+UA8DU362nxXZpK1YPh3UCb
-         xrQw==
-X-Gm-Message-State: AOAM532yggaT4YAvFiO5VbekhUgRYQPxDghVWOS+ApkoSV9P1W2NhA7y
-        rBLOZXNMrVmLus/aSQWMd1QNVTBPhWN8Uw==
-X-Google-Smtp-Source: ABdhPJzlG30kK4JbRdw/TaSOXXDqNQj9vIewf6GaWsy2uQD/hxhmzBejbbNG+maY/xnuolKOKq+1qw==
-X-Received: by 2002:ac2:4aca:: with SMTP id m10mr23035513lfp.437.1637840346426;
-        Thu, 25 Nov 2021 03:39:06 -0800 (PST)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id h20sm241601lfv.248.2021.11.25.03.39.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Nov 2021 03:39:06 -0800 (PST)
-Subject: Re: [PATCH v4 0/6] add fixes to pass DP Link Layer compliance test
- cases
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
-        sean@poorly.run, swboyd@chromium.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        id S237565AbhKYLot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 06:44:49 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:45486 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235144AbhKYLms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 06:42:48 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxZ+j1dZ9hTVoBAA--.6082S2;
+        Thu, 25 Nov 2021 19:39:34 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <1628699407-28358-1-git-send-email-khsieh@codeaurora.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <efe700b3-9e08-10fa-405f-bc608f617407@linaro.org>
-Date:   Thu, 25 Nov 2021 14:39:05 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <1628699407-28358-1-git-send-email-khsieh@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH v2] MIPS: Fix using smp_processor_id() in preemptible in show_cpuinfo()
+Date:   Thu, 25 Nov 2021 19:39:32 +0800
+Message-Id: <1637840372-27773-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9AxZ+j1dZ9hTVoBAA--.6082S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7WF47JF1Dur17Zr47ZryftFb_yoW8Zr4rpa
+        y7Ar1Utr4UWw4UJas5JrZ3uryrXFs8Za42kayxJ3y3Z3W5Wr1DXrnagF47uFyqgr1rta1I
+        gF9Fqr4Yqry8ZaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4k
+        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
+        W8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjTa0PUUUU
+        U==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/08/2021 19:30, Kuogee Hsieh wrote:
-> drm/msm/dp: add fixes to pass DP Link Layer compliance test cases
-> 
-> Kuogee Hsieh (6):
->    drm/msm/dp: use dp_ctrl_off_link_stream during PHY compliance test run
->    drm/msm/dp: reduce link rate if failed at link training 1
->    drm/msm/dp: reset aux controller after dp_aux_cmd_fifo_tx() failed.
->    drm/msm/dp: replug event is converted into an unplug followed by an
->      plug events
->    drm/msm/dp: return correct edid checksum after corrupted edid checksum
->      read
->    drm/msm/dp: do not end dp link training until video is ready
-> 
->   drivers/gpu/drm/msm/dp/dp_aux.c     |   3 +
->   drivers/gpu/drm/msm/dp/dp_ctrl.c    | 137 +++++++++++++++++++++++-------------
->   drivers/gpu/drm/msm/dp/dp_display.c |  14 ++--
->   drivers/gpu/drm/msm/dp/dp_panel.c   |   9 ++-
->   4 files changed, 102 insertions(+), 61 deletions(-)
+There exists the following issue under DEBUG_PREEMPT:
 
-Previous version of this patchset is already merged. If there are any 
-changes on top of it, please submit the incremental diff/fixup.
+ BUG: using smp_processor_id() in preemptible [00000000] code: systemd/1
+ caller is show_cpuinfo+0x460/0xea0
+ ...
+ Call Trace:
+ [<ffffffff8020f0dc>] show_stack+0x94/0x128
+ [<ffffffff80e6cab4>] dump_stack_lvl+0x94/0xd8
+ [<ffffffff80e74c5c>] check_preemption_disabled+0x104/0x110
+ [<ffffffff802209c8>] show_cpuinfo+0x460/0xea0
+ [<ffffffff80539d54>] seq_read_iter+0xfc/0x4f8
+ [<ffffffff804fcc10>] new_sync_read+0x110/0x1b8
+ [<ffffffff804ff57c>] vfs_read+0x1b4/0x1d0
+ [<ffffffff804ffb18>] ksys_read+0xd0/0x110
+ [<ffffffff8021c090>] syscall_common+0x34/0x58
 
+We can see the following call trace:
+ show_cpuinfo()
+   cpu_has_fpu
+     current_cpu_data
+       smp_processor_id()
 
+ $ addr2line -f -e vmlinux 0xffffffff802209c8
+ show_cpuinfo
+ arch/mips/kernel/proc.c:188
+
+ $ head -188 arch/mips/kernel/proc.c | tail -1
+	 if (cpu_has_fpu)
+
+ arch/mips/include/asm/cpu-features.h
+ #  define cpu_has_fpu		(current_cpu_data.options & MIPS_CPU_FPU)
+
+ arch/mips/include/asm/cpu-info.h
+ #define current_cpu_data cpu_data[smp_processor_id()]
+
+Based on the above analysis, fix the issue by using raw_cpu_has_fpu
+which calls raw_smp_processor_id() in show_cpuinfo().
+
+Fixes: 626bfa037299 ("MIPS: kernel: proc: add CPU option reporting")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/mips/kernel/proc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
+index 376a6e2..9f47a88 100644
+--- a/arch/mips/kernel/proc.c
++++ b/arch/mips/kernel/proc.c
+@@ -185,7 +185,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+ 		seq_puts(m, " tx39_cache");
+ 	if (cpu_has_octeon_cache)
+ 		seq_puts(m, " octeon_cache");
+-	if (cpu_has_fpu)
++	if (raw_cpu_has_fpu)
+ 		seq_puts(m, " fpu");
+ 	if (cpu_has_32fpr)
+ 		seq_puts(m, " 32fpr");
 -- 
-With best wishes
-Dmitry
+2.1.0
+
