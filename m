@@ -2,75 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2B945DC3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 15:22:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F24AC45DCBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 15:54:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354523AbhKYOZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 09:25:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355726AbhKYOXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 09:23:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 884F061130;
-        Thu, 25 Nov 2021 14:20:20 +0000 (UTC)
-Date:   Thu, 25 Nov 2021 09:20:18 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Tao Zhou <tao.zhou@linux.dev>, Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
+        id S1355925AbhKYO5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 09:57:44 -0500
+Received: from mail-m963.mail.126.com ([123.126.96.3]:37994 "EHLO
+        mail-m963.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348797AbhKYOzn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 09:55:43 -0500
+X-Greylist: delayed 1861 seconds by postgrey-1.27 at vger.kernel.org; Thu, 25 Nov 2021 09:55:42 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=kAsEn
+        EnfaHIRU+yztl06WBOn7SgNxzGTN5esiiYf4r4=; b=Qu4pJYWW8imp68jv2YSvN
+        QpAU0MPRk8eLlgOOT3NOJS+kuAc7LgHDjqu5IiPP14y5ZSZXxMGQE08h8JG6ApJx
+        shRZkXhk1PzC49iYeV7ma4zBfTlSDFfP4BR0vY3cO7qFiYDxTejPyoAxlnZ1eN5V
+        vW/gkka6ioGtp1wRTpgB3o=
+Received: from localhost.localdomain (unknown [221.218.15.192])
+        by smtp8 (Coremail) with SMTP id NORpCgCXU7yum59hJRBYCg--.2408S2;
+        Thu, 25 Nov 2021 22:20:30 +0800 (CST)
+From:   Honglei Wang <jameshongleiwang@126.com>
+To:     Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V7 05/14] rtla/osnoise: Add the hist mode
-Message-ID: <20211125092018.17e36369@oasis.local.home>
-In-Reply-To: <f815794d-bfb6-3e76-3572-3c1cc059c492@kernel.org>
-References: <cover.1635535309.git.bristot@kernel.org>
-        <1d9826696a1e8c3584158c0dd570b8b22db708db.1635535309.git.bristot@kernel.org>
-        <20211124171212.537b43c3@gandalf.local.home>
-        <20211124171503.584c8dd2@gandalf.local.home>
-        <f815794d-bfb6-3e76-3572-3c1cc059c492@kernel.org>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Subject: [PATCH] sched/fair: prevent cpu burst too many periods
+Date:   Thu, 25 Nov 2021 22:20:28 +0800
+Message-Id: <20211125142028.21790-1-jameshongleiwang@126.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: NORpCgCXU7yum59hJRBYCg--.2408S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Zw17Xw4DKw4rWw45JryDGFg_yoW8ur45pF
+        sxXFy3JF40qr1jvanrArnagFyrZ3s3Z347CFWUGayrZw45W3yjqr15Ka1jgFn0vr1rtF1F
+        vF4YqFW3Cryj9a7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j6MKtUUUUU=
+X-Originating-IP: [221.218.15.192]
+X-CM-SenderInfo: 5mdpv2pkrqwzphlzt0bj6rjloofrz/1tbiYBhWrVpEFXhVXwABs7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Nov 2021 14:45:30 +0100
-Daniel Bristot de Oliveira <bristot@kernel.org> wrote:
+Tasks might get more cpu than quota in persistent periods due to the
+cpu burst introduced by commit f4183717b370 ("sched/fair: Introduce the
+burstable CFS controller"). For example, one task group whose quota is
+100ms per period and can get 100ms burst, and its avg utilization is
+around 105ms per period. Once this group gets a free period which
+leaves enough runtime, it has a chance to get computting power more
+than its quota for 10 periods or more in common bandwidth configuration
+(say, 100ms as period). It means tasks can 'steal' the bursted power to
+do daily jobs because all tasks could be scheduled out or sleep to help
+the group get free periods.
 
-> > Or do you think that 1d should be the default, and we have:
-> > 
-> > 	tracefs_hist_alloc()	-- 1d histogram
-> > 	tracefs_hist_alloc_2d()	-- 2d histogram
-> > 	tracefs_hist_alloc_nd()	-- Nd histogram?
-> > 
-> > ??  
-> 
-> IMHO, the function names in your second email sound more intuitive, i.e.,
-> tracefs_hist_alloc()/tracefs_hist_alloc_2d()/tracefs_hist_alloc_nd().
-> 
-> > We haven't tagged it yet, so we could change it again (and then your code
-> > will work as is).  
-> 
-> two birds with a single stone :-)
+I believe the purpose of cpu burst is to help handling bursty worklod.
+But if one task group can get computting power more than its quota for
+persistent periods even there is no bursty workload, it's kinda broke.
 
-Just to confirm (confused by "second email" above), you prefer that we
-update the API to:
+This patch limits the burst to one period so that it won't break the
+quota limit for long. With this, we can give task group more cpu burst
+power to handle the real bursty workload and don't worry about the
+'stealing'.
 
-	tracefs_hist_alloc()
-	tracefs_hist_alloc_2d()
-	tracefs_hist_alloc_nd()
+Signed-off-by: Honglei Wang <jameshongleiwang@126.com>
+---
+ kernel/sched/fair.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-Right?
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 6e476f6d9435..cc2c4567fc81 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4640,14 +4640,17 @@ void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b)
+ 	if (unlikely(cfs_b->quota == RUNTIME_INF))
+ 		return;
+ 
+-	cfs_b->runtime += cfs_b->quota;
+-	runtime = cfs_b->runtime_snap - cfs_b->runtime;
++	runtime = cfs_b->runtime_snap - cfs_b->quota - cfs_b->runtime;
++
+ 	if (runtime > 0) {
+ 		cfs_b->burst_time += runtime;
+ 		cfs_b->nr_burst++;
++		cfs_b->runtime = cfs_b->quota;
++	} else {
++		cfs_b->runtime += cfs_b->quota;
++		cfs_b->runtime = min(cfs_b->runtime, cfs_b->quota + cfs_b->burst);
+ 	}
+ 
+-	cfs_b->runtime = min(cfs_b->runtime, cfs_b->quota + cfs_b->burst);
+ 	cfs_b->runtime_snap = cfs_b->runtime;
+ }
+ 
+-- 
+2.14.1
 
-Thanks,
-
--- Steve
