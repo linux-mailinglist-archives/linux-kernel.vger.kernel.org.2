@@ -2,311 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4344645D5A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9DE45D5AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:42:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344835AbhKYHmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 02:42:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234579AbhKYHj4 (ORCPT
+        id S236279AbhKYHpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 02:45:22 -0500
+Received: from mail-ua1-f48.google.com ([209.85.222.48]:41664 "EHLO
+        mail-ua1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349771AbhKYHnV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 02:39:56 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29E3C06175D
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 23:36:45 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id bu18so14166964lfb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 23:36:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hiObrTf9v1RU1iPUzjRKa2X5bHrBY+vq37yRCw4SQfg=;
-        b=xJM97+HaGHEuZbldHf8LtFpYrwkTEqoHiVBbrK47linMt8oiBxA8Q+Qa5bKTWGnw93
-         XcyV+jt1YOZvvDZXyeMRa+bf2+Dki0Pbl9WPvD+R6yNOehkWitsG0HRqjOar7eJpts93
-         wjZotE0QJy04G+Sw5MwR9bF4X8ATSBtxX1D5BQQ0Nb3Bm6GDwDB27FOcdQbtEkSOcwzr
-         rgwqHrTUJ1LRpzqdIaI8hcMh+kHvgJBw1OYlAxCZvznaoB1mgrKGl6uskjA/ModEUbou
-         Z9zB2NPuKCSWxZAMrLWPQE5wsgU7xuANt7DdKVwhxG2QPerbDL3LrTP4yTGPfLQ430Qh
-         wDIA==
+        Thu, 25 Nov 2021 02:43:21 -0500
+Received: by mail-ua1-f48.google.com with SMTP id p37so10482061uae.8;
+        Wed, 24 Nov 2021 23:40:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hiObrTf9v1RU1iPUzjRKa2X5bHrBY+vq37yRCw4SQfg=;
-        b=nzab2GNn0mSsIhvdYa63ExtQIr8MV4Qx29q8ybqjj18FMHtIj8FjQd15im3CKCv8UZ
-         +IqusxOda3TfLwJmaDurwhHR2/j1lQwWhiN6Sz4Ef/mT2DBvSoJZee0yl13V3uRwP3vc
-         EQHM/F6fXDooRgMaixpnbsaButc6EmSuMpZ2kftPKLHjAVCI4zYsAO7IGpHSmrpO1am5
-         ODk55XrSdMdQ2odEk9EaJltv9VAMMfzWbVCDMNz870j4Zm2y41F8XhdkSOMEs0klODhF
-         skGjlNjK75bXTPURaihKvesjDacr/0RqS5fEwgYTKp2+ZG1kly0Q1nvPcApKUqTUWuk5
-         OaCg==
-X-Gm-Message-State: AOAM5330LYRjNfoQ3kKsvRlt4zAl8TxvRKDDZZ98A952XjvNUMl5EMTm
-        fp3TO2HdrhU71xxLp6UVco+65gzIrnrJ8Q==
-X-Google-Smtp-Source: ABdhPJwqZErZYiffJ6x0dq1P6hgBrtHAkjYogcBg0mpyDkFuQEt7j0rZdxzcrn+0CDA9aTRgaTJlLw==
-X-Received: by 2002:ac2:5a0a:: with SMTP id q10mr22360431lfn.610.1637825803819;
-        Wed, 24 Nov 2021 23:36:43 -0800 (PST)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id j15sm195193lfg.167.2021.11.24.23.36.43
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+Xww3NmiLJg8wUoKC432ZnWMLq8MLYHwiXtDDzGojtg=;
+        b=kkH41+E1MnsSGhvNufobE8N6ssD+chgtULuG5c5PFetYRdeNfV9GuVptUl0VxAWatT
+         SAo7NjiskRn+/4LHIZrKnXwRlCb1EkqoJ/4jY0giGPCJy9eUHyCJ79LS1eYHYGRDIWkd
+         4qqnaEtojy/xhT3DsJxrPEW1XLAB1kOToOyVhbuSQlqHn3bbNNbNqnZm7eIr0+Vtbv1b
+         94CE8AvMmHIBRNitcby5l/F+cIVsRiVxq9AOLs8r2b/hmFfVfRVNCBosBdXsqIChZ8Ji
+         ezz0kLVs2rRfqSMFgNLPS7uJaxjgXBPuFVZDybHTzyFX/5fX1b84WjsNHmeuaWeBrvwn
+         jg5Q==
+X-Gm-Message-State: AOAM533oJ566udOOlcNaCK1bns+K9pVOe7fc5PDwfad4urU9Xae+jXqF
+        8WVVXfHPKsJBqNjt2O/7uHNjLfTWqQ2CRA==
+X-Google-Smtp-Source: ABdhPJxMKPnYCHfMILvXueqVlLfPc8y6KRbt59Epoe4Hl8lhvi2INUzQqIVWB4g7v7d0D8HBtPJEPA==
+X-Received: by 2002:a05:6102:dc7:: with SMTP id e7mr6400909vst.21.1637826009266;
+        Wed, 24 Nov 2021 23:40:09 -0800 (PST)
+Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com. [209.85.221.174])
+        by smtp.gmail.com with ESMTPSA id 17sm1445511uaq.10.2021.11.24.23.40.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 23:36:43 -0800 (PST)
-Subject: Re: [PATCH 1/2] drm/msm: Handle ringbuffer overflow
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     Jordan Crouse <jordan@cosmicpenguin.net>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        "Kristian H. Kristensen" <hoegsberg@google.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Dave Airlie <airlied@redhat.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210428193654.1498482-1-robdclark@gmail.com>
- <20210428193654.1498482-2-robdclark@gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <e6f04ed5-100d-6ef9-c272-1a1370e45579@linaro.org>
-Date:   Thu, 25 Nov 2021 10:36:42 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 24 Nov 2021 23:40:09 -0800 (PST)
+Received: by mail-vk1-f174.google.com with SMTP id m16so2339684vkl.13;
+        Wed, 24 Nov 2021 23:40:08 -0800 (PST)
+X-Received: by 2002:a1f:ac48:: with SMTP id v69mr7479303vke.0.1637826003913;
+ Wed, 24 Nov 2021 23:40:03 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210428193654.1498482-2-robdclark@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <44e0213a681f3c8ee4c6ab2ef9d61ce3ac00e368.1637727935.git.fthain@linux-m68k.org>
+ <CAMuHMdXTxTABOoVgC6fVR44dxUZZEbZV=ewSk9vKFY=U5u+fcw@mail.gmail.com> <35a85d2f-ab6a-4ab7-85a8-626f1560a57d@linux-m68k.org>
+In-Reply-To: <35a85d2f-ab6a-4ab7-85a8-626f1560a57d@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 25 Nov 2021 08:39:52 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXy-XyR5PtczK9J1p_i=jugp4yq6JF8_MhVC1FMK5dtPw@mail.gmail.com>
+Message-ID: <CAMuHMdXy-XyR5PtczK9J1p_i=jugp4yq6JF8_MhVC1FMK5dtPw@mail.gmail.com>
+Subject: Re: [PATCH] pata_falcon: Add missing __iomem annotations
+To:     Finn Thain <fthain@linux-m68k.org>
+Cc:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/04/2021 22:36, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
-> 
-> Currently if userspace manages to fill up the ring faster than the GPU
-> can consume we (a) spin for up to 1sec, and then (b) overwrite the
-> ringbuffer contents from previous submits that the GPU is still busy
-> executing.  Which predictably goes rather badly.
-> 
-> Instead, just skip flushing (updating WPTR) and reset ring->next back to
-> where it was before we tried writing the submit into the ringbuffer, and
-> return an error to userspace (which can then try again).
-> 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+Hi Finn,
 
-Rob, you've posted this patch, but never merged it. Should it be merged 
-at some point?
+On Thu, Nov 25, 2021 at 2:06 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> On Wed, 24 Nov 2021, Geert Uytterhoeven wrote:
+> > > --- a/drivers/ata/pata_falcon.c
+> > > +++ b/drivers/ata/pata_falcon.c
+> > > @@ -55,14 +55,14 @@ static unsigned int pata_falcon_data_xfer(struct ata_queued_cmd *qc,
+> > >         /* Transfer multiple of 2 bytes */
+> > >         if (rw == READ) {
+> > >                 if (swap)
+> > > -                       raw_insw_swapw((u16 *)data_addr, (u16 *)buf, words);
+> > > +                       raw_insw_swapw((u16 __iomem *)data_addr, (u16 *)buf, words);
+> > >                 else
+> > > -                       raw_insw((u16 *)data_addr, (u16 *)buf, words);
+> > > +                       raw_insw((u16 __iomem *)data_addr, (u16 *)buf, words);
+> > >         } else {
+> > >                 if (swap)
+> > > -                       raw_outsw_swapw((u16 *)data_addr, (u16 *)buf, words);
+> > > +                       raw_outsw_swapw((u16 __iomem *)data_addr, (u16 *)buf, words);
+> > >                 else
+> > > -                       raw_outsw((u16 *)data_addr, (u16 *)buf, words);
+> > > +                       raw_outsw((u16 __iomem *)data_addr, (u16 *)buf, words);
+> >
+> > Can't you just drop the casts? data_addr is an __iomem void *.
+>
+> Yes, that works here (i.e. removing the data_addr casts and not the buf
+> casts). But is it prudent?
+>
+> Given the implementation of raw_in/out is subject to change, it seems like
+> the original casts were defensive programming.
+>
+> Here's an example of a recent regression that was fixed by casting a macro
+> argument to a specific width:
+>
+> https://lore.kernel.org/linuxppc-dev/79ae1f49-f6b1-e9ad-977d-0cc7e553c7b9@csgroup.eu/
+> https://lore.kernel.org/linuxppc-dev/08bbe7240b384016e0b2912ecf3bf5e2d25ef2c6.1636501628.git.fthain@linux-m68k.org/
 
-> ---
->   drivers/gpu/drm/msm/adreno/a5xx_gpu.c   |  3 +++
->   drivers/gpu/drm/msm/adreno/a6xx_gpu.c   |  3 +++
->   drivers/gpu/drm/msm/adreno/adreno_gpu.c | 24 +++++++++++++++++-
->   drivers/gpu/drm/msm/msm_gem_submit.c    |  7 +++++-
->   drivers/gpu/drm/msm/msm_gpu.c           | 33 +++++++++++++++++++++++--
->   drivers/gpu/drm/msm/msm_gpu.h           |  2 +-
->   drivers/gpu/drm/msm/msm_ringbuffer.h    |  5 ++++
->   7 files changed, 72 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> index ce13d49e615b..0c8faad3b328 100644
-> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-> @@ -36,6 +36,9 @@ void a5xx_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring,
->   		OUT_RING(ring, upper_32_bits(shadowptr(a5xx_gpu, ring)));
->   	}
->   
-> +	if (unlikely(ring->overflow))
-> +		return;
-> +
->   	spin_lock_irqsave(&ring->preempt_lock, flags);
->   
->   	/* Copy the shadow to the actual register */
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> index d553f62f4eeb..4a4728a774c0 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> @@ -68,6 +68,9 @@ static void a6xx_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
->   		OUT_RING(ring, upper_32_bits(shadowptr(a6xx_gpu, ring)));
->   	}
->   
-> +	if (unlikely(ring->overflow))
-> +		return;
-> +
->   	spin_lock_irqsave(&ring->preempt_lock, flags);
->   
->   	/* Copy the shadow to the actual register */
-> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> index 0f184c3dd9d9..a658777e07b1 100644
-> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> @@ -467,6 +467,9 @@ void adreno_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring, u32 reg)
->   {
->   	uint32_t wptr;
->   
-> +	if (unlikely(ring->overflow))
-> +		return;
-> +
->   	/* Copy the shadow to the actual register */
->   	ring->cur = ring->next;
->   
-> @@ -788,12 +791,31 @@ static uint32_t ring_freewords(struct msm_ringbuffer *ring)
->   	return (rptr + (size - 1) - wptr) % size;
->   }
->   
-> +static bool space_avail(struct msm_ringbuffer *ring, uint32_t ndwords)
-> +{
-> +	if (ring_freewords(ring) >= ndwords)
-> +		return true;
-> +
-> +	/* We don't have a good way to know in general when the RPTR has
-> +	 * advanced.. newer things that use CP_WHERE_AM_I to update the
-> +	 * shadow rptr could possibly insert a packet to generate an irq.
-> +	 * But that doesn't cover older GPUs.  But if the ringbuffer is
-> +	 * full, it could take a while before it is empty again, so just
-> +	 * insert a blind sleep to avoid a busy loop.
-> +	 */
-> +	msleep(1);
-> +
-> +	return false;
-> +}
-> +
->   void adreno_wait_ring(struct msm_ringbuffer *ring, uint32_t ndwords)
->   {
-> -	if (spin_until(ring_freewords(ring) >= ndwords))
-> +	if (spin_until(space_avail(ring, ndwords))) {
->   		DRM_DEV_ERROR(ring->gpu->dev->dev,
->   			"timeout waiting for space in ringbuffer %d\n",
->   			ring->id);
-> +		ring->overflow = true;
-> +	}
->   }
->   
->   /* Get legacy powerlevels from qcom,gpu-pwrlevels and populate the opp table */
-> diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
-> index 5480852bdeda..4bc669460fda 100644
-> --- a/drivers/gpu/drm/msm/msm_gem_submit.c
-> +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
-> @@ -683,6 +683,9 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
->   	submitid = atomic_inc_return(&ident) - 1;
->   
->   	ring = gpu->rb[queue->prio];
-> +
-> +	GEM_WARN_ON(ring->overflow);
-> +
->   	trace_msm_gpu_submit(pid_nr(pid), ring->id, submitid,
->   		args->nr_bos, args->nr_cmds);
->   
-> @@ -829,7 +832,9 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
->   		}
->   	}
->   
-> -	msm_gpu_submit(gpu, submit);
-> +	ret = msm_gpu_submit(gpu, submit);
-> +	if (ret)
-> +		goto out;
->   
->   	args->fence = submit->fence->seqno;
->   
-> diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
-> index ab7c167b0623..7655ad9108c8 100644
-> --- a/drivers/gpu/drm/msm/msm_gpu.c
-> +++ b/drivers/gpu/drm/msm/msm_gpu.c
-> @@ -787,7 +787,7 @@ void msm_gpu_retire(struct msm_gpu *gpu)
->   }
->   
->   /* add bo's to gpu's ring, and kick gpu: */
-> -void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
-> +int msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
->   {
->   	struct drm_device *dev = gpu->dev;
->   	struct msm_drm_private *priv = dev->dev_private;
-> @@ -834,9 +834,38 @@ void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
->   	spin_unlock(&ring->submit_lock);
->   
->   	gpu->funcs->submit(gpu, submit);
-> -	priv->lastctx = submit->queue->ctx;
->   
->   	hangcheck_timer_reset(gpu);
-> +
-> +	if (unlikely(ring->overflow)) {
-> +		/*
-> +		 * Reset the ptr back to before the submit, so the GPU
-> +		 * doesn't see a partial submit:
-> +		 */
-> +		ring->next = ring->cur;
-> +
-> +		/*
-> +		 * Clear the overflow flag, hopefully the next submit on
-> +		 * the ring actually fits
-> +		 */
-> +		ring->overflow = false;
-> +
-> +		/*
-> +		 * One might be tempted to remove the submit from the
-> +		 * submits list, and drop it's reference (and drop the
-> +		 * active reference for all the bos).  But we can't
-> +		 * really signal the fence attached to obj->resv without
-> +		 * disturbing other fences on the timeline.  So instead
-> +		 * just leave it and let it retire normally when a
-> +		 * later submit completes.
-> +		 */
-> +
-> +		return -ENOSPC;
-> +	}
-> +
-> +	priv->lastctx = submit->queue->ctx;
-> +
-> +	return 0;
->   }
->   
->   /*
-> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
-> index d7cd02cd2109..2dd2ef1f8328 100644
-> --- a/drivers/gpu/drm/msm/msm_gpu.h
-> +++ b/drivers/gpu/drm/msm/msm_gpu.h
-> @@ -302,7 +302,7 @@ int msm_gpu_perfcntr_sample(struct msm_gpu *gpu, uint32_t *activetime,
->   		uint32_t *totaltime, uint32_t ncntrs, uint32_t *cntrs);
->   
->   void msm_gpu_retire(struct msm_gpu *gpu);
-> -void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit);
-> +int msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit);
->   
->   int msm_gpu_init(struct drm_device *drm, struct platform_device *pdev,
->   		struct msm_gpu *gpu, const struct msm_gpu_funcs *funcs,
-> diff --git a/drivers/gpu/drm/msm/msm_ringbuffer.h b/drivers/gpu/drm/msm/msm_ringbuffer.h
-> index fe55d4a1aa16..d8ad9818c389 100644
-> --- a/drivers/gpu/drm/msm/msm_ringbuffer.h
-> +++ b/drivers/gpu/drm/msm/msm_ringbuffer.h
-> @@ -40,6 +40,8 @@ struct msm_ringbuffer {
->   	struct drm_gem_object *bo;
->   	uint32_t *start, *end, *cur, *next;
->   
-> +	bool overflow;
-> +
->   	/*
->   	 * List of in-flight submits on this ring.  Protected by submit_lock.
->   	 */
-> @@ -69,6 +71,9 @@ void msm_ringbuffer_destroy(struct msm_ringbuffer *ring);
->   static inline void
->   OUT_RING(struct msm_ringbuffer *ring, uint32_t data)
->   {
-> +	if (ring->overflow)
-> +		return;
-> +
->   	/*
->   	 * ring->next points to the current command being written - it won't be
->   	 * committed as ring->cur until the flush
-> 
+Yeah, you do have to be careful with macros that derive a size from
+the type of the passed data.  The *{in,out}sw() functions do not suffer
+from that: they are defined to operate on a 16-bit I/O register.
+It is very unlikely these semantics will ever change.
 
+Here I'm more worried about the other danger: keeping casts will
+silence any warning that may be introduced in a future change to the
+driver code.
 
--- 
-With best wishes
-Dmitry
+BTW, insw() and readsw() in asm-generic take void *.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
