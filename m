@@ -2,58 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5E045DA0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:28:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7AC545DA12
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240188AbhKYMbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 07:31:45 -0500
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:43749 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348941AbhKYMa1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 07:30:27 -0500
-Received: by mail-ot1-f41.google.com with SMTP id h16-20020a9d7990000000b0055c7ae44dd2so9159078otm.10;
-        Thu, 25 Nov 2021 04:27:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9HbXFpIh/y4w8a8eT1ZfLzvqZSm5LG22VgGOZnieP9k=;
-        b=Uf+/MSZdr/WSNXA+QxmwOK6dV/cI28ZbUxOPtkSs2Z0TJ1l6tMHB6+zMsqra9c+QQJ
-         GMLm2mnRfvBfCNIpVAMsKW9DRGFEI2pjPKAT3tbGO++rz5Rystrhqo4ITZFu+VkSQNsN
-         d4y7yorzBail3tgfz6ixXO3JlcFyDduzQdZLtE6fIV4ekKiA/mtbd+KZ0hqW74ii9112
-         zahNjSjO+2PwBRVRCcBUJNmng9O2TWu4y5BLnccI3jDRf94lDPS834M8khYq/PvVCqrJ
-         Qg9EZwFsDshaXRLqHCKxpzAKbUd2EXL0VwkKuvo3rM4R8dxI7tYbCCtsHJcXPxpBIUq1
-         7RJg==
-X-Gm-Message-State: AOAM532wYQ81iSSsVIHhJiLtR9N+8wjyx9CcUiKFfLNHGmzNRpgxIqHN
-        dpgp45MhRdB4n835Lx6/EwrD6r5v/XjrItbCcaU=
-X-Google-Smtp-Source: ABdhPJzXTx2FQb+cCeHwjuDPFTvFkWd0PGZt5EoZW9Ob4rnnSPE2b84X4PkMW0KHIr039bqkSQkbJaOpoWqM9dRX+aA=
-X-Received: by 2002:a9d:4c10:: with SMTP id l16mr10811837otf.198.1637843235097;
- Thu, 25 Nov 2021 04:27:15 -0800 (PST)
+        id S1352686AbhKYMdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 07:33:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38886 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345004AbhKYMbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 07:31:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C6FA61074;
+        Thu, 25 Nov 2021 12:28:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637843302;
+        bh=c6XrtSt+7tVxiYxPHL5gzsTXTdIfYjn9rP6f1kfJk7Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mDamCPimpQUp5wCP8aJp9An3+y9xq8r2aiiru7LpRTuRSJi9quedYmHck7JyCzBgA
+         j03+JGiY5bTbQYmsTvi0fzp5sD/6QqiCSDn68CwF+RD2lcdbNMaAs4/1c9xCVeMubJ
+         hYSvkRhIgwaHMNtuhPDWl8683OxG1XOKGQlhPibY=
+Date:   Thu, 25 Nov 2021 13:28:09 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] USB-serial fixes for 5.16-rc3
+Message-ID: <YZ+BWehxNBVbyqfV@kroah.com>
+References: <YZ97xbN1Ln83r+hP@hovoldconsulting.com>
 MIME-Version: 1.0
-References: <1637830481-21709-1-git-send-email-quic_mkshah@quicinc.com>
-In-Reply-To: <1637830481-21709-1-git-send-email-quic_mkshah@quicinc.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 25 Nov 2021 13:27:03 +0100
-Message-ID: <CAJZ5v0hhUSjNdHwF4dRUQ1Fgos-jqg1agHBShhhwFUGK6wiedQ@mail.gmail.com>
-Subject: Re: [PATCH 0/4] Allow cpuidle governors to be compiled as modules
-To:     Maulik Shah <quic_mkshah@quicinc.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>, quic_lsrao@quicinc.com,
-        "Nayak, Rajendra" <rnayak@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZ97xbN1Ln83r+hP@hovoldconsulting.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 9:55 AM Maulik Shah <quic_mkshah@quicinc.com> wrote:
->
-> This series makes changes to allow cpuidle governors menu, ladder and teo
-> to compiled as modules when building with allmodconfig.
+On Thu, Nov 25, 2021 at 01:04:21PM +0100, Johan Hovold wrote:
+> The following changes since commit fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf:
+> 
+>   Linux 5.16-rc1 (2021-11-14 13:56:52 -0800)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git tags/usb-serial-5.16-rc3
 
-What's the purpose of this?
+Pulled and pushed out, thanks.
+
+greg k-h
