@@ -2,104 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B2945DA99
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 14:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F58D45DA86
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:57:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354986AbhKYNDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 08:03:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354989AbhKYNBw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 08:01:52 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BBA4C061756;
-        Thu, 25 Nov 2021 04:53:55 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id m27so16052079lfj.12;
-        Thu, 25 Nov 2021 04:53:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Co+wBZHiOseLu7CK7UphzK0BLsQ6VV5mZ6eGuslWoqo=;
-        b=oktqB96h7vZOItZGklHhm+PkXDcygsJhAUIroFnXj//gvB6OoF/lYcPjatrZAITeRh
-         LKYeWYSWoIrkfV/rENrFvRbHWe/jDYBbFmY8tynbUZLFQksZt1svx9n5zfxC+ZzAn69e
-         ci+aisbhNDgGnXjzLkpWJ/muy4AL/5Ix4ozfVNPdevB0/qeX0AnSPkif/58dlc0LDf1Y
-         TiQX3udryAUjKmlcecArNEm2QqFiXEnALqXo/3XhpCrjg5zk7VT3IAMX0I6TmYfHfdFo
-         Lm9c+BHxz6c3e2fp/xEBvQi87aA2LqkXbRHDtKxPfax3KIH6pOHiA2ik4MQhoEXmo4nW
-         H9Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Co+wBZHiOseLu7CK7UphzK0BLsQ6VV5mZ6eGuslWoqo=;
-        b=zgV3fMTRZJ8VBNfOow/epdq5nElY3sAjmmtTeCYy/RJEwlct3oH4EVmdSvGsm1zMFp
-         jt+WizfR5hDUJvOSGntfMUTs1Uqfdx1C1pONTk9IQAkZ6T8qYwTC6TWqUAyeLtg+TxNa
-         8m/slHNi/0xGkWAN1AADaOXTtaDRAgV6Dkwpi/fdew/cKXvItnsUwVOFRSE4EA5eHtO8
-         lmpzYuevog/53NcgwdTPMH3HgFoszG1cp6l3LCcQWfkCiTk0YKOj+5YKbELNC7f9B2x1
-         FzETjz+Xs5tB2mQAXlEF6Y9ZQARxABvbhcX68sSprGwGVQARYaGs3qsTFbSdrKPWflzN
-         XDcw==
-X-Gm-Message-State: AOAM530cF0bv9r+tZgPWvf7tp6NseH3lpqX+PWAmn8MVtKdI5aNF8dJe
-        O1sr5teWdCsGbPtoeTXxmJlGtVGpdOA=
-X-Google-Smtp-Source: ABdhPJy68jGQks+cI3kMem632OtGqJd3jo9wWEaciMGUlc8Z24BdPeoer1sbsgb8JnhBJSeu3hqFWA==
-X-Received: by 2002:a05:6512:114e:: with SMTP id m14mr22880893lfg.418.1637844833711;
-        Thu, 25 Nov 2021 04:53:53 -0800 (PST)
-Received: from [192.168.2.145] (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
-        by smtp.googlemail.com with ESMTPSA id m9sm233423ljg.80.2021.11.25.04.53.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Nov 2021 04:53:53 -0800 (PST)
-Subject: Re: [PATCH v1 07/20] ASoC: tegra20: spdif: Set FIFO trigger level
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Agneli <poczt@protonmail.ch>, Rob Herring <robh+dt@kernel.org>,
-        linux-tegra@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20211124220057.15763-1-digetx@gmail.com>
- <20211124220057.15763-8-digetx@gmail.com> <YZ97Qo500CrSmhXu@sirena.org.uk>
- <5670741a-1517-fc64-e390-b01c53947f25@gmail.com>
- <YZ+BZRB0sUC08lCs@sirena.org.uk>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <d0748829-5f42-2ab3-5620-6949b4139e59@gmail.com>
-Date:   Thu, 25 Nov 2021 15:53:52 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S1354246AbhKYNAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 08:00:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47186 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351652AbhKYM6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 07:58:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4916A60FDA;
+        Thu, 25 Nov 2021 12:55:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637844925;
+        bh=rGQEwqbV7F/oexWNSwSDJCM/SfG93ZHSBjdAtJVxI+c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fPduLzI1Er3exmTnRX2zOnX1ZYRTymmNK3JefZLKyg7+edj6RYRhrGkM1Ryc9flDD
+         d6M/4qa0/UrOG1fncB+mqKXEzrq9gtuLaDdglD3p4lDfWUKat5r7iwZzQtOHghjTM+
+         ch1OnYTAL3w7QieR4FKLKT4RadI3/J94mMBxKw7w=
+Date:   Thu, 25 Nov 2021 13:55:12 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.14 000/251] 4.14.256-rc1 review
+Message-ID: <YZ+HsDVL0sp0kPqr@kroah.com>
+References: <20211124115710.214900256@linuxfoundation.org>
+ <20211125013850.GB851427@roeck-us.net>
 MIME-Version: 1.0
-In-Reply-To: <YZ+BZRB0sUC08lCs@sirena.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211125013850.GB851427@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-25.11.2021 15:28, Mark Brown пишет:
-> On Thu, Nov 25, 2021 at 03:04:35PM +0300, Dmitry Osipenko wrote:
->> 25.11.2021 15:02, Mark Brown пишет:
->>> On Thu, Nov 25, 2021 at 01:00:44AM +0300, Dmitry Osipenko wrote:
->>>> Program FIFO trigger level properly to fix x4 accelerated playback.
+On Wed, Nov 24, 2021 at 05:38:50PM -0800, Guenter Roeck wrote:
+> On Wed, Nov 24, 2021 at 12:54:02PM +0100, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 4.14.256 release.
+> > There are 251 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
+> > Anything received after that time might be too late.
+> > 
 > 
->>> Fixes like this should really go before any new stuff so they can be
->>> sent as fixes and backported.
+> Build results:
+> 	total: 168 pass: 161 fail: 7
+> Failed builds:
+> 	ia64:defconfig
+> 	s390:defconfig
+> 	s390:allmodconfig
+> 	s390:performance_defconfig
+> 	sh:dreamcast_defconfig
+> 	sh:microdev_defconfig
+> 	sh:shx3_defconfig
+> Qemu test results:
+> 	total: 423 pass: 418 fail: 5
+> Failed tests:
+> 	s390:defconfig:nolocktests:smp2:net,default:initrd
+> 	s390:defconfig:nolocktests:smp2:virtio-blk-ccw:net,virtio-net-pci:rootfs
+> 	s390:defconfig:nolocktests:smp2:scsi[virtio-ccw]:net,default:rootfs
+> 	s390:defconfig:nolocktests:virtio-pci:net,virtio-net-pci:rootfs
+> 	s390:defconfig:nolocktests:scsi[virtio-pci]:net,default:rootfs
 > 
->> This driver never worked before this patchset, hence there is nothing to
->> backport, this is explained in the cover letter. But in general you're
->> correct.
-> 
-> That's not going to stop the stable people backporting things, and I'd
-> guess it might've worked at some point on some systems - I'm not seeing
-> anything that jumps out as making the driver completely unworkable in
-> your patches.
-> 
+> mm/hugetlb.c: In function '__unmap_hugepage_range':
+> mm/hugetlb.c:3411:25: error: implicit declaration of function 'tlb_flush_pmd_range'
 
-I can change commit message with the "fix" word removed, this should
-prevent patch from backporting.
+Should be fixed in -rc1.
 
-This driver never worked in mainline because S/PDIF device was never
-created, thus driver was never bound. Driver doesn't work properly
-without this patch. Nobody used this driver as-is before this patchset.
+thanks,
+
+greg k-h
