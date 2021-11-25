@@ -2,273 +2,1408 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E2445D661
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:41:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E1545D663
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:41:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353686AbhKYIot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 03:44:49 -0500
-Received: from mail-bn1nam07on2082.outbound.protection.outlook.com ([40.107.212.82]:12004
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1353372AbhKYImo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 03:42:44 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BqrwQ4DCmciw29avKjeHH/C2fiGkQgECQ0/y0g64LStT7kgGTl3UYwJLjjFQUvJx4hEgsLHocxFBHY1yIaEhqa925w6I3B9825GzTLQuq/RIKYhVNyL+ZqlDfj2EA4Gt7qhlzvbWAhnFS8ezjPqKsGAMibLh2HOYEO8IzQX68+T8bUtbq/cAA8WwWdd/A5Z9HrxHM0pr+TMFyNVGOIxPqN51R4DpIJzZJFliF9UyIkUEqY5xLjoF/QrDe/qGl1o97HYcyh10508vAmMoU3ei08fl6Sq6no+XfWc00nYPetWkptrSoiVoRSu8rTb5/yaMONsFtoRWvS2ZisSzsplSOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ecPhM2Th0UZ7H2xi93X2Wecw+eAcx7s5LsqoEK1kCdw=;
- b=EJtKv2jY0lAecwLL+64gkbPAJszwhS4tT0vZqhiIwJGjF5oaYumzjeRO0Px122pGVOyphJIFVkn1YPf2jOTusn3rtPftrhbTHWhXJWpjC8mjDj48kGmPiTOK8IQSzLWGJZnMbF2wT38GLpERr9lcg+E+GrMhWuA9vmYkxq0mf52sVyDIVY49xPNBUPz1uKJPjiR/ZGg2Z9Ysz+47AZMmBZlWmcxjP0ZDjXRPn5kgW8OOyoGEA1GwKkd9wZUXXTqIFyDvBMj9vmOgpxvJQVYTRTJtFZIuqVKgZsVxEnvFSnYkoL7Qin406WhAktujrde9Zy29y5SjXSPqOSfYuGxZBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ecPhM2Th0UZ7H2xi93X2Wecw+eAcx7s5LsqoEK1kCdw=;
- b=quEvY7XWCCpviC9TQ34m1ce5vG/AvCLHYgwkb8VQ/a+Y9dr4CLkaDJqlSCWAh5Iw1evhrxoG6gvcZ6jgiVuqaMyedavphlxEVgFo+9Y8TVKvzINixrfmK8qYNmb/k/SYHWjz0coFmWRCVDMTnohRdconQwsF+QTJ8dJYWx8xCEk=
-Received: from SA1PR05MB8534.namprd05.prod.outlook.com (2603:10b6:806:1dd::19)
- by SN6PR05MB5485.namprd05.prod.outlook.com (2603:10b6:805:c1::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.13; Thu, 25 Nov
- 2021 08:39:31 +0000
-Received: from SA1PR05MB8534.namprd05.prod.outlook.com
- ([fe80::3d29:8c60:622d:f780]) by SA1PR05MB8534.namprd05.prod.outlook.com
- ([fe80::3d29:8c60:622d:f780%3]) with mapi id 15.20.4734.017; Thu, 25 Nov 2021
- 08:39:31 +0000
-From:   Nadav Amit <namit@vmware.com>
-To:     Huang Ying <ying.huang@intel.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzbot <syzbot+aa5bebed695edaccf0df@syzkaller.appspotmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Marco Elver <elver@google.com>
-Subject: Re: [PATCH -V2] mm/rmap: fix potential batched TLB flush race
-Thread-Topic: [PATCH -V2] mm/rmap: fix potential batched TLB flush race
-Thread-Index: AQHX4cjS3STDTP9ADEyUi3cshccfbawT7FsA
-Date:   Thu, 25 Nov 2021 08:39:31 +0000
-Message-ID: <7127B0FC-A00D-48C3-9C01-0B85FB1BD63F@vmware.com>
-References: <20211125065026.142735-1-ying.huang@intel.com>
-In-Reply-To: <20211125065026.142735-1-ying.huang@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.120.0.1.13)
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vmware.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cc274fb3-d4ac-40f6-cb1f-08d9afef19c3
-x-ms-traffictypediagnostic: SN6PR05MB5485:
-x-microsoft-antispam-prvs: <SN6PR05MB54852CFD474FAFD7680E635FD0629@SN6PR05MB5485.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IYsHoZBtHz3VIP+yBASgiUCgOJnbDytfsXdYlvxx+nlPWSSAO/SWOLSWsKumxiEM0Zx5GW7M7yGkytnM7Vx3l++AFtZZ3SvEjTY03elu7rYC2I7zKwZ3SZVcdbLCJbQvaEmlVGrkVpxjAoTjsWPhzqWrNMUEhnL1jERYHsHvpHnxGu02n49cpTthKrwgHd8CS72PxD8ks6mSCiIPE472mtbquMKOR6LOcNnztJ4KeHUwnpytMxN1+kGQimgHMdHkfT26Pa9WIN8jtkOz6L4XpLUIeR1dBPanfcBhdKP0eXEuOCqmVJncAvt624PlHyJqbhxo/wAKkz7bQAsiQ6/lax/UiFW/tW3ibSMt2Ph0wt6U7ZMQ4qB7fyaR1K/oO39ep6Ahqt13UlOXDWec8LdmB7YN98DGSWdnmCjuGuekpLHAL2OYu7frxNslHgEUxmExI1kqdwWVxWhVAhFzRgv+TQklXA0IYBmNGk+iJmeXpoiGCLaunBsEA+erBh0APPtxjBMuIycCrmZulD8hKDPohAx8Ig5bq9ofamJs8AtdBZX2cbmR9oKQa0NRVSeBpvlWvBBho1I/boH4qcgwd2PFDRjAqoOuP+rIQ0rEJ06/8zksSKyI9OOnoI1XsJL/BkjPEG4jO3XehaMek4E/veZ457JVNHl8B4sAvVH+sClYZKkzwfTvdeQezcn56dUSnqb03YJXv5OAlT51xNU7H7GdjK3SRXuizGgV3+m/bto1Siwc4OyafoZhqZ6kOU634geg
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR05MB8534.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(71200400001)(66446008)(316002)(186003)(54906003)(5660300002)(66476007)(508600001)(7416002)(66556008)(2616005)(8676002)(8936002)(76116006)(64756008)(66946007)(122000001)(26005)(91956017)(83380400001)(4326008)(6506007)(38100700002)(2906002)(33656002)(6512007)(6486002)(6916009)(36756003)(38070700005)(53546011)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?T3FMTi9US3dYOGwxVWlaTnAydndBMXFyN01YVUpnSUM0VTAvbzZIOUxLL1V3?=
- =?utf-8?B?KzNncVVtOG1LNmVRN0hCWFV0RmRSMnRORmtvT250NUp5SXZQSkQyM0dJZXJG?=
- =?utf-8?B?bVU1MWtlcnRSblA1bHdLbWhzRWNKNWQxdmZtYmpiVVVRdnkzdHhuNTM2T2xn?=
- =?utf-8?B?ZlM1SDdDYVBwUDROY1lRTlZGWWlSYWVRR2V1cThFbEV2K3FxNEVOa3NsWVpD?=
- =?utf-8?B?VjJMaGZEYlB1RnN0SE9pS2tjaGE0RlRMQldnYm5JR3dyYXg3TFFhVldURWVi?=
- =?utf-8?B?VDNkTkE2aC9OL1h3Z0pIdzJBQUpwQ3RWL05NSTNxMnh6RjIyS3lGWm9POFJz?=
- =?utf-8?B?YktkazhKajRUWmdFQkVNMnJsNEIrSVV1R1lKa3d3b2ZLUy92NHpVMFphOWoy?=
- =?utf-8?B?bnZJaUJBMTJVOC9iU1RaZnUvRlJYbkUvbGJYNTQxSUdrdjk3ZmxMWjFWTDZ5?=
- =?utf-8?B?dktpK3JYZkRFNzVzVHVKOTZESG95MTk2YklMY1NXMDhwQ3ZUZ2taRnAvV2Mv?=
- =?utf-8?B?M1JQQ2lHeGtBTHpEbzV6TXI2cTNwSGszT3hESU8xTkwvaHdDRGFsVlJmcmph?=
- =?utf-8?B?SmxYSmJZV1ltN2twZEFqNnc5UFRUeDlieDZIRkoxYjEwVG9OWXhHWFd6Y0xU?=
- =?utf-8?B?cysvam8vdGxIZ0NoTDM5MkJ2bEVzWFVyeEk4b3ltWUZaeVlBYWExdGpzLy9S?=
- =?utf-8?B?bjVlcllZdk9pUlU3U3F5cTdJK3JFaVdFK1llMzJJWld2WmlOaTl5VG5aZUcw?=
- =?utf-8?B?UlpOemdjRmtlMC9HUHliSXFzTkxRZWpHNG1aK2VIZExaY1JIbHpLamQ4Wjh5?=
- =?utf-8?B?QlJRZFhkWTRiU0cwcUkya3ZKQTFKd09PM0VNalZ2MnMvdng0YUNlNnlLSXB2?=
- =?utf-8?B?UGMySUxHeDlzRlZZYTNGeHBIeVVUbmQ3Wkc0a0VKSE5DdTUxSG1EbTRuRGYw?=
- =?utf-8?B?a1F3M1MwVmsxWllQQW5Nc3NiemtyZTI1NkxzUXorK3pJTzRtc0krazFDVE81?=
- =?utf-8?B?NTBxMHo4Z21BcitzMXA3TFlIQTBOaUJvL3ByTGVwZTBxbnV5OTNBMDBNUzNt?=
- =?utf-8?B?VjhPRVMzR0ErbWIzaU1nT2kwVVNocGRqdS9HeTZvdDc1R1JUQXdhWXl6UDNW?=
- =?utf-8?B?bTRtTnFVWkYzZW9GRGsrcEdUbzhmajJGbHV3dUdLKzZseWQrSk5NVE82WXVP?=
- =?utf-8?B?SFZYaG44MjJEVVM5S2VyRzFVSXVub0wzaW9XcXRwV2s2N01nbVlKbjdvdkNw?=
- =?utf-8?B?ZFlQM01rYzFORU1vY0lyUUEzV2FuR3FwNlByd2lUVlRrT0RsM0hYRktEV1FW?=
- =?utf-8?B?VVlUbWI4NVhPdEs5cXdvYmt1Z2YxRHZJaTdYN3h2VS8zRUFKNlArRTVySEFh?=
- =?utf-8?B?SXU0RHFzMzNKQmJuWGNJSkdYV1NYVEV6M0VJVFBxUVJ2SUUvZnJJZWJ1YW9B?=
- =?utf-8?B?ektUV3pwTlZPa3NtUE5ZczZGVlJQQ1VnaURvZGJnSmFGQW9VVC9XdTJtZXlo?=
- =?utf-8?B?OHdjNVVBdjhNNUw2N3Z2cU9mdHJ3VytTcWxiSkxBOXRLR0dGdnk1MVVsOUtp?=
- =?utf-8?B?cUw0NGpJdFFiQUhCUTVLKzRLeTh6OFd5SUtrWUZGbUtUREZmUUpFek02cFpE?=
- =?utf-8?B?SlhZMWd5WlJVdjgyYk5NVEFYZnpIM2Y2eU5yVUUzOXlQR1A0NHNZQlBtSkVQ?=
- =?utf-8?B?ZEtOYVhjSjZXWVdtSy9UZWExVDZaK3VQU0ZiRVgrMm9kY3o1U2FMVk1zMHI4?=
- =?utf-8?B?QnVMOU9lT21FSnltMEhDeTA2cFNWZnJ2aU1pcDVsS3piMGk4K2xmL0tsa2Vm?=
- =?utf-8?B?QXcrZlBqamEyc0xZRzczT1llUFVrcWpMaDhBenQ5TkpHQ2c5cVF5Zk5RNGln?=
- =?utf-8?B?cWM3VGowcUpUN1JkckZiSlJmNm1NRmFBTVpGY01mRHdoZVpMM2x6bCtCT1dy?=
- =?utf-8?B?SUdIdkp3N3djU0pleHpWY3BkTFhURW94TndaK2hCTTh2cEtvL3gwZGtxMkxE?=
- =?utf-8?B?THkvQjVZNzUyOFo2U1p6Z0orTGdLK0xZRzZzWHJYaWc1bDFGR3drbGNKZ2Y5?=
- =?utf-8?B?QzBFQkFQdm9wRys3R0M3MWxMeFRWY092ME9vZnNGSW90aEY0V25ieElnYU9a?=
- =?utf-8?B?ckFyVS9wcVh6bzQ4eXdZcWtYQVpHMzhzcHdOamxIalJKNkIwUXBPbVFXWGxZ?=
- =?utf-8?Q?R6y+I6+PnCfC5A7f7RCFVUM=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A7C280D5BEAF914EA51572182E46761E@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1353747AbhKYIpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 03:45:02 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:28107 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353377AbhKYInB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 03:43:01 -0500
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4J0B7t21X3z1DJdb;
+        Thu, 25 Nov 2021 16:37:14 +0800 (CST)
+Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.20; Thu, 25 Nov 2021 16:39:47 +0800
+Received: from [10.67.102.169] (10.67.102.169) by
+ dggema772-chm.china.huawei.com (10.1.198.214) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.20; Thu, 25 Nov 2021 16:39:47 +0800
+CC:     <yangyicong@hisilicon.com>, <gregkh@linuxfoundation.org>,
+        <helgaas@kernel.org>, <alexander.shishkin@linux.intel.com>,
+        <lorenzo.pieralisi@arm.com>, <will@kernel.org>,
+        <mark.rutland@arm.com>, <suzuki.poulose@arm.com>,
+        <mike.leach@linaro.org>, <leo.yan@linaro.org>,
+        <jonathan.cameron@huawei.com>, <daniel.thompson@linaro.org>,
+        <joro@8bytes.org>, <john.garry@huawei.com>,
+        <shameerali.kolothum.thodi@huawei.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <coresight@lists.linaro.org>, <linux-pci@vger.kernel.org>,
+        <linux-perf-users@vger.kernel.org>,
+        <iommu@lists.linux-foundation.org>, <prime.zeng@huawei.com>,
+        <liuqi115@huawei.com>, <zhangshaokun@hisilicon.com>,
+        <linuxarm@huawei.com>, <song.bao.hua@hisilicon.com>
+Subject: Re: [PATCH v2 2/6] hwtracing: Add trace function support for
+ HiSilicon PCIe Tune and Trace device
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+References: <20211116090625.53702-1-yangyicong@hisilicon.com>
+ <20211116090625.53702-3-yangyicong@hisilicon.com>
+ <20211124185145.GB35341@p14s>
+From:   Yicong Yang <yangyicong@hisilicon.com>
+Message-ID: <904f8bda-5bc6-0d0e-5187-656bcd4fd8ae@hisilicon.com>
+Date:   Thu, 25 Nov 2021 16:39:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR05MB8534.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cc274fb3-d4ac-40f6-cb1f-08d9afef19c3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Nov 2021 08:39:31.2409
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: buMY2PBGWXIMTG7lGczPOjS78kUp2EGNWts/e4SnvzjQ+GhX2xsihdIv7pzX+L9H9gdb5EekUUnuLNC1jPtodQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR05MB5485
+In-Reply-To: <20211124185145.GB35341@p14s>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.169]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema772-chm.china.huawei.com (10.1.198.214)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gT24gTm92IDI0LCAyMDIxLCBhdCAxMDo1MCBQTSwgSHVhbmcgWWluZyA8eWluZy5odWFu
-Z0BpbnRlbC5jb20+IHdyb3RlOg0KPiANCj4gSW4gdGhlb3J5LCB0aGUgZm9sbG93aW5nIHJhY2Ug
-aXMgcG9zc2libGUgZm9yIGJhdGNoZWQgVExCIGZsdXNoaW5nLg0KPiANCj4gQ1BVMCAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBDUFUxDQo+IC0tLS0gICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgLS0tLQ0KPiBzaHJpbmtfcGFnZV9saXN0KCkNCj4gICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIHVubWFwDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHphcF9wdGVfcmFuZ2UoKQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIGZsdXNoX3RsYl9iYXRjaGVkX3BlbmRpbmcoKQ0KPiAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgZmx1c2hfdGxiX21tKCkNCj4gIHRyeV90b191bm1hcCgpDQo+ICAg
-IHNldF90bGJfdWJjX2ZsdXNoX3BlbmRpbmcoKQ0KPiAgICAgIG1tLT50bGJfZmx1c2hfYmF0Y2hl
-ZCA9IHRydWUNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG1tLT50
-bGJfZmx1c2hfYmF0Y2hlZCA9IGZhbHNlDQo+IA0KPiBBZnRlciB0aGUgVExCIGlzIGZsdXNoZWQg
-b24gQ1BVMSB2aWEgZmx1c2hfdGxiX21tKCkgYW5kIGJlZm9yZQ0KPiBtbS0+dGxiX2ZsdXNoX2Jh
-dGNoZWQgaXMgc2V0IHRvIGZhbHNlLCBzb21lIFBURSBpcyB1bm1hcHBlZCBvbiBDUFUwDQo+IGFu
-ZCB0aGUgVExCIGZsdXNoaW5nIGlzIHBlbmRlZC4gIFRoZW4gdGhlIHBlbmRlZCBUTEIgZmx1c2hp
-bmcgd2lsbCBiZQ0KPiBsb3N0LiAgQWx0aG91Z2ggYm90aCBzZXRfdGxiX3ViY19mbHVzaF9wZW5k
-aW5nKCkgYW5kDQo+IGZsdXNoX3RsYl9iYXRjaGVkX3BlbmRpbmcoKSBhcmUgY2FsbGVkIHdpdGgg
-UFRMIGxvY2tlZCwgZGlmZmVyZW50IFBUTA0KPiBpbnN0YW5jZXMgbWF5IGJlIHVzZWQuDQo+IA0K
-PiBCZWNhdXNlIHRoZSByYWNlIHdpbmRvdyBpcyByZWFsbHkgc21hbGwsIGFuZCB0aGUgbG9zdCBU
-TEIgZmx1c2hpbmcNCj4gd2lsbCBjYXVzZSBwcm9ibGVtIG9ubHkgaWYgYSBUTEIgZW50cnkgaXMg
-aW5zZXJ0ZWQgYmVmb3JlIHRoZQ0KPiB1bm1hcHBpbmcgaW4gdGhlIHJhY2Ugd2luZG93LCB0aGUg
-cmFjZSBpcyBvbmx5IHRoZW9yZXRpY2FsLiAgQnV0IHRoZQ0KPiBmaXggaXMgc2ltcGxlIGFuZCBj
-aGVhcCB0b28uDQo+IA0KPiBTeXpib3QgaGFzIHJlcG9ydGVkIHRoaXMgdG9vIGFzIGZvbGxvd3Ms
-DQo+IA0KPiA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT0NCj4gQlVHOiBLQ1NBTjogZGF0YS1yYWNlIGluIGZsdXNoX3RsYl9i
-YXRjaGVkX3BlbmRpbmcgLyB0cnlfdG9fdW5tYXBfb25lDQo+IA0KPiB3cml0ZSB0byAweGZmZmY4
-ODgxMDcyY2ZiYmMgb2YgMSBieXRlcyBieSB0YXNrIDE3NDA2IG9uIGNwdSAxOg0KPiBmbHVzaF90
-bGJfYmF0Y2hlZF9wZW5kaW5nKzB4NWYvMHg4MCBtbS9ybWFwLmM6NjkxDQo+IG1hZHZpc2VfZnJl
-ZV9wdGVfcmFuZ2UrMHhlZS8weDdkMCBtbS9tYWR2aXNlLmM6NTk0DQo+IHdhbGtfcG1kX3Jhbmdl
-IG1tL3BhZ2V3YWxrLmM6MTI4IFtpbmxpbmVdDQo+IHdhbGtfcHVkX3JhbmdlIG1tL3BhZ2V3YWxr
-LmM6MjA1IFtpbmxpbmVdDQo+IHdhbGtfcDRkX3JhbmdlIG1tL3BhZ2V3YWxrLmM6MjQwIFtpbmxp
-bmVdDQo+IHdhbGtfcGdkX3JhbmdlIG1tL3BhZ2V3YWxrLmM6Mjc3IFtpbmxpbmVdDQo+IF9fd2Fs
-a19wYWdlX3JhbmdlKzB4OTgxLzB4MTE2MCBtbS9wYWdld2Fsay5jOjM3OQ0KPiB3YWxrX3BhZ2Vf
-cmFuZ2UrMHgxMzEvMHgzMDAgbW0vcGFnZXdhbGsuYzo0NzUNCj4gbWFkdmlzZV9mcmVlX3Npbmds
-ZV92bWEgbW0vbWFkdmlzZS5jOjczNCBbaW5saW5lXQ0KPiBtYWR2aXNlX2RvbnRuZWVkX2ZyZWUg
-bW0vbWFkdmlzZS5jOjgyMiBbaW5saW5lXQ0KPiBtYWR2aXNlX3ZtYSBtbS9tYWR2aXNlLmM6OTk2
-IFtpbmxpbmVdDQo+IGRvX21hZHZpc2UrMHhlNGEvMHgxMTQwIG1tL21hZHZpc2UuYzoxMjAyDQo+
-IF9fZG9fc3lzX21hZHZpc2UgbW0vbWFkdmlzZS5jOjEyMjggW2lubGluZV0NCj4gX19zZV9zeXNf
-bWFkdmlzZSBtbS9tYWR2aXNlLmM6MTIyNiBbaW5saW5lXQ0KPiBfX3g2NF9zeXNfbWFkdmlzZSsw
-eDVkLzB4NzAgbW0vbWFkdmlzZS5jOjEyMjYNCj4gZG9fc3lzY2FsbF94NjQgYXJjaC94ODYvZW50
-cnkvY29tbW9uLmM6NTAgW2lubGluZV0NCj4gZG9fc3lzY2FsbF82NCsweDQ0LzB4ZDAgYXJjaC94
-ODYvZW50cnkvY29tbW9uLmM6ODANCj4gZW50cnlfU1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1lKzB4
-NDQvMHhhZQ0KPiANCj4gd3JpdGUgdG8gMHhmZmZmODg4MTA3MmNmYmJjIG9mIDEgYnl0ZXMgYnkg
-dGFzayA3MSBvbiBjcHUgMDoNCj4gc2V0X3RsYl91YmNfZmx1c2hfcGVuZGluZyBtbS9ybWFwLmM6
-NjM2IFtpbmxpbmVdDQo+IHRyeV90b191bm1hcF9vbmUrMHg2MGUvMHgxMjIwIG1tL3JtYXAuYzox
-NTE1DQo+IHJtYXBfd2Fsa19hbm9uKzB4MmZiLzB4NDcwIG1tL3JtYXAuYzoyMzAxDQo+IHRyeV90
-b191bm1hcCsweGVjLzB4MTEwDQo+IHNocmlua19wYWdlX2xpc3QrMHhlOTEvMHgyNjIwIG1tL3Zt
-c2Nhbi5jOjE3MTkNCj4gc2hyaW5rX2luYWN0aXZlX2xpc3QrMHgzZmIvMHg3MzAgbW0vdm1zY2Fu
-LmM6MjM5NA0KPiBzaHJpbmtfbGlzdCBtbS92bXNjYW4uYzoyNjIxIFtpbmxpbmVdDQo+IHNocmlu
-a19scnV2ZWMrMHgzYzkvMHg3MTAgbW0vdm1zY2FuLmM6Mjk0MA0KPiBzaHJpbmtfbm9kZV9tZW1j
-Z3MrMHgyM2UvMHg0MTAgbW0vdm1zY2FuLmM6MzEyOQ0KPiBzaHJpbmtfbm9kZSsweDhmNi8weDEx
-OTAgbW0vdm1zY2FuLmM6MzI1Mg0KPiBrc3dhcGRfc2hyaW5rX25vZGUgbW0vdm1zY2FuLmM6NDAy
-MiBbaW5saW5lXQ0KPiBiYWxhbmNlX3BnZGF0KzB4NzAyLzB4ZDMwIG1tL3Ztc2Nhbi5jOjQyMTMN
-Cj4ga3N3YXBkKzB4MjAwLzB4MzQwIG1tL3Ztc2Nhbi5jOjQ0NzMNCj4ga3RocmVhZCsweDJjNy8w
-eDJlMCBrZXJuZWwva3RocmVhZC5jOjMyNw0KPiByZXRfZnJvbV9mb3JrKzB4MWYvMHgzMA0KPiAN
-Cj4gdmFsdWUgY2hhbmdlZDogMHgwMSAtPiAweDAwDQo+IA0KPiBSZXBvcnRlZCBieSBLZXJuZWwg
-Q29uY3VycmVuY3kgU2FuaXRpemVyIG9uOg0KPiBDUFU6IDAgUElEOiA3MSBDb21tOiBrc3dhcGQw
-IE5vdCB0YWludGVkIDUuMTYuMC1yYzEtc3l6a2FsbGVyICMwDQo+IEhhcmR3YXJlIG5hbWU6IEdv
-b2dsZSBHb29nbGUgQ29tcHV0ZSBFbmdpbmUvR29vZ2xlIENvbXB1dGUgRW5naW5lLCBCSU9TIEdv
-b2dsZSAwMS8wMS8yMDExDQo+ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KPiANCj4gU2lnbmVkLW9mZi1ieTogIkh1YW5n
-LCBZaW5nIiA8eWluZy5odWFuZ0BpbnRlbC5jb20+DQo+IFJlcG9ydGVkLWJ5OiBzeXpib3QrYWE1
-YmViZWQ2OTVlZGFjY2YwZGZAc3l6a2FsbGVyLmFwcHNwb3RtYWlsLmNvbQ0KPiBDYzogTmFkYXYg
-QW1pdCA8bmFtaXRAdm13YXJlLmNvbT4NCj4gQ2M6IE1lbCBHb3JtYW4gPG1nb3JtYW5AdGVjaHNp
-bmd1bGFyaXR5Lm5ldD4NCj4gQ2M6IEFuZHJlYSBBcmNhbmdlbGkgPGFhcmNhbmdlQHJlZGhhdC5j
-b20+DQo+IENjOiBBbmR5IEx1dG9taXJza2kgPGx1dG9Aa2VybmVsLm9yZz4NCj4gQ2M6IERhdmUg
-SGFuc2VuIDxkYXZlLmhhbnNlbkBsaW51eC5pbnRlbC5jb20+DQo+IENjOiBXaWxsIERlYWNvbiA8
-d2lsbEBrZXJuZWwub3JnPg0KPiBDYzogWXUgWmhhbyA8eXV6aGFvQGdvb2dsZS5jb20+DQo+IENj
-OiBNYXJjbyBFbHZlciA8ZWx2ZXJAZ29vZ2xlLmNvbT4NCj4gLS0tDQo+IGluY2x1ZGUvbGludXgv
-bW1fdHlwZXMuaCB8ICAyICstDQo+IG1tL3JtYXAuYyAgICAgICAgICAgICAgICB8IDMwICsrKysr
-KysrKysrKysrKysrKysrKysrLS0tLS0tLQ0KPiAyIGZpbGVzIGNoYW5nZWQsIDI0IGluc2VydGlv
-bnMoKyksIDggZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9t
-bV90eXBlcy5oIGIvaW5jbHVkZS9saW51eC9tbV90eXBlcy5oDQo+IGluZGV4IGMzYTZlNjIwOTYw
-MC4uNzg5Nzc4MDY3ZGI5IDEwMDY0NA0KPiAtLS0gYS9pbmNsdWRlL2xpbnV4L21tX3R5cGVzLmgN
-Cj4gKysrIGIvaW5jbHVkZS9saW51eC9tbV90eXBlcy5oDQo+IEBAIC02MzIsNyArNjMyLDcgQEAg
-c3RydWN0IG1tX3N0cnVjdCB7DQo+IAkJYXRvbWljX3QgdGxiX2ZsdXNoX3BlbmRpbmc7DQo+ICNp
-ZmRlZiBDT05GSUdfQVJDSF9XQU5UX0JBVENIRURfVU5NQVBfVExCX0ZMVVNIDQo+IAkJLyogU2Vl
-IGZsdXNoX3RsYl9iYXRjaGVkX3BlbmRpbmcoKSAqLw0KPiAtCQlib29sIHRsYl9mbHVzaF9iYXRj
-aGVkOw0KPiArCQlhdG9taWNfdCB0bGJfZmx1c2hfYmF0Y2hlZDsNCj4gI2VuZGlmDQo+IAkJc3Ry
-dWN0IHVwcm9iZXNfc3RhdGUgdXByb2Jlc19zdGF0ZTsNCj4gI2lmZGVmIENPTkZJR19QUkVFTVBU
-X1JUDQo+IGRpZmYgLS1naXQgYS9tbS9ybWFwLmMgYi9tbS9ybWFwLmMNCj4gaW5kZXggMTYzYWM0
-ZTZiY2VlLi4yZTZiMTliZTVhMTggMTAwNjQ0DQo+IC0tLSBhL21tL3JtYXAuYw0KPiArKysgYi9t
-bS9ybWFwLmMNCj4gQEAgLTYyMSw2ICs2MjEsMTggQEAgdm9pZCB0cnlfdG9fdW5tYXBfZmx1c2hf
-ZGlydHkodm9pZCkNCj4gCQl0cnlfdG9fdW5tYXBfZmx1c2goKTsNCj4gfQ0KPiANCj4gKy8qIFRo
-ZSB1cHBlciAxNSBiaXQgb2YgbW0tPnRsYl9mbHVzaF9iYXRjaGVkIHJlY29yZHMgcGVuZGluZyBm
-bHVzaGVzICovDQoNCldoeSAxNT8gSSB0aGluayBpdCB3aWxsIGJlIGVhc2llciB0byBzd2FsbG93
-IGlmIGl0IHdhcyAzMi1iaXQgKHdoaWNoDQpjb3JyZXNwb25kIHRvIG51bWJlciBvZiBQSURzPykN
-Cg0KV2hhdCB3b3VsZCBoYXBwZW4gb24gYW4gb3ZlcmZsb3c/IElmIHlvdSByZWdhcmRlZCBlYWNo
-IHBuZWRpbmcvZmx1c2hlZA0KY291bnRlciBhcyBhIHNlcGFyYXRlIGF0b21pYywgdGhhdCB3b3Vs
-ZCBoYXZlIGJlZW4gZWFzaWVyLiBCdXQgYW55aG93LA0KYSBjb21tZW50IGlzIG5lY2Vzc2FyeSBJ
-TUhPLg0KDQo+ICsjZGVmaW5lIFRMQl9GTFVTSF9CQVRDSF9QRU5ESU5HX1NISUZUCTE2DQo+ICsj
-ZGVmaW5lIFRMQl9GTFVTSF9CQVRDSF9DT1VOVF9NQVNLCTB4N2YNCg0KMHg3ZiBpcyBub3QgMTUg
-Yml0cyB0aGUgbGFzdCB0aW1lIEkgY2hlY2tlZC4NCg0KPiArI2RlZmluZSBUTEJfRkxVU0hfQkFU
-Q0hfUEVORElOR19PTkUJKDEgPDwgVExCX0ZMVVNIX0JBVENIX1BFTkRJTkdfU0hJRlQpDQo+ICsN
-Cj4gKyNkZWZpbmUgVExCX0ZMVVNIX0JBVENIX1BFTkRJTkcoY250KQkJCQkJXA0KPiArCSgoKGNu
-dCkgPj4gVExCX0ZMVVNIX0JBVENIX1BFTkRJTkdfU0hJRlQpICYgVExCX0ZMVVNIX0JBVENIX0NP
-VU5UX01BU0spDQo+ICsjZGVmaW5lIFRMQl9GTFVTSF9CQVRDSF9GTFVTSEVEKGNudCkJCQkJCVwN
-Cj4gKwkoKGNudCkgJiBUTEJfRkxVU0hfQkFUQ0hfQ09VTlRfTUFTSykNCj4gKyNkZWZpbmUgVExC
-X0ZMVVNIX0JBVENIX1BBQ0socGVuZGluZywgZmx1c2hlZCkJCQkJXA0KPiArCSgoKHBlbmRpbmcp
-IDw8IFRMQl9GTFVTSF9CQVRDSF9QRU5ESU5HX1NISUZUKSB8IChmbHVzaGVkKSkNCg0KSSB3b3Vs
-ZCBoYXZlIHByZWZlcnJlZCwgd2hlbiBwb3NzaWJsZSB0byBhdm9pZCBzdWNoIG1hY3Jvcy4gSXQg
-anVzdCBtYWtlcw0KcmVhZGluZyB0aGUgY29kZSBoYXJkZXIuDQoNCj4gKw0KPiBzdGF0aWMgdm9p
-ZCBzZXRfdGxiX3ViY19mbHVzaF9wZW5kaW5nKHN0cnVjdCBtbV9zdHJ1Y3QgKm1tLCBib29sIHdy
-aXRhYmxlKQ0KPiB7DQo+IAlzdHJ1Y3QgdGxiZmx1c2hfdW5tYXBfYmF0Y2ggKnRsYl91YmMgPSAm
-Y3VycmVudC0+dGxiX3ViYzsNCj4gQEAgLTYzMyw3ICs2NDUsNyBAQCBzdGF0aWMgdm9pZCBzZXRf
-dGxiX3ViY19mbHVzaF9wZW5kaW5nKHN0cnVjdCBtbV9zdHJ1Y3QgKm1tLCBib29sIHdyaXRhYmxl
-KQ0KPiAJICogYmVmb3JlIHRoZSBQVEUgaXMgY2xlYXJlZC4NCj4gCSAqLw0KPiAJYmFycmllcigp
-Ow0KPiAtCW1tLT50bGJfZmx1c2hfYmF0Y2hlZCA9IHRydWU7DQo+ICsJYXRvbWljX2FkZChUTEJf
-RkxVU0hfQkFUQ0hfUEVORElOR19PTkUsICZtbS0+dGxiX2ZsdXNoX2JhdGNoZWQpOw0KDQpBbnkg
-cmVhc29uIHRvIHB1dCB0aGUgcGVuZGluZyBpbiB0aGUgdG9wIGJpdHMgaW5zdGVhZCBvZiB0aGUg
-bG93IG9uZXM/DQpJdCBjYW4gYXQgbGVhc3Qgc2ltcGxpZnkgdGhlIGNvZGUgYSBiaXQuIEFzIGZv
-ciB0aGUgYmFycmllciwgSSB3b3VsZA0KY2hhbmdlIGl0IGZvciBzbXBfbWJfX2JlZm9yZV9hdG9t
-aWMoKSBvciBzbXBfd21iKCkuIFlvdSB3YW50IHRoZQ0KUFRFIGNoYW5nZXMgYW5kIHRoZSBjb3Vu
-dGVyIHVwZGF0ZXMgdG8gYmUgb3JkZXJlZC4NCg0KPiANCj4gCS8qDQo+IAkgKiBJZiB0aGUgUFRF
-IHdhcyBkaXJ0eSB0aGVuIGl0J3MgYmVzdCB0byBhc3N1bWUgaXQncyB3cml0YWJsZS4gVGhlDQo+
-IEBAIC02ODAsMTUgKzY5MiwxOSBAQCBzdGF0aWMgYm9vbCBzaG91bGRfZGVmZXJfZmx1c2goc3Ry
-dWN0IG1tX3N0cnVjdCAqbW0sIGVudW0gdHR1X2ZsYWdzIGZsYWdzKQ0KPiAgKi8NCj4gdm9pZCBm
-bHVzaF90bGJfYmF0Y2hlZF9wZW5kaW5nKHN0cnVjdCBtbV9zdHJ1Y3QgKm1tKQ0KPiB7DQo+IC0J
-aWYgKGRhdGFfcmFjZShtbS0+dGxiX2ZsdXNoX2JhdGNoZWQpKSB7DQo+IC0JCWZsdXNoX3RsYl9t
-bShtbSk7DQoNClRoZSBwcmV2aW91cyBzbXBfbWJfX2JlZm9yZV9hdG9taWMoKSBvciBzbXBfd21i
-KCkgc2hvdWxkIGJlIG1hdGNoZWQNCndpdGggYW4gc21wX21iX19iZWZvcmVfYXRvbWljKCkgb3Ig
-c21wX3JtYigpIGhlcmUsIEkgdGhpbmsuDQoNCj4gKwlpbnQgYmF0Y2hlZCA9IGF0b21pY19yZWFk
-KCZtbS0+dGxiX2ZsdXNoX2JhdGNoZWQpOw0KPiArCWludCBwZW5kaW5nID0gVExCX0ZMVVNIX0JB
-VENIX1BFTkRJTkcoYmF0Y2hlZCk7DQo+ICsJaW50IGZsdXNoZWQgPSBUTEJfRkxVU0hfQkFUQ0hf
-RkxVU0hFRChiYXRjaGVkKTsNCg0KSSB3b3VsZCBwcmVmZXIgdGhlbSBiZWluZyB1bnNpZ25lZC4N
-Cg0KPiANCj4gKwlpZiAocGVuZGluZyAhPSBmbHVzaGVkKSB7DQo+ICsJCWZsdXNoX3RsYl9tbSht
-bSk7DQo+IAkJLyoNCj4gLQkJICogRG8gbm90IGFsbG93IHRoZSBjb21waWxlciB0byByZS1vcmRl
-ciB0aGUgY2xlYXJpbmcgb2YNCj4gLQkJICogdGxiX2ZsdXNoX2JhdGNoZWQgYmVmb3JlIHRoZSB0
-bGIgaXMgZmx1c2hlZC4NCj4gKwkJICogSWYgdGhlIG5ldyBUTEIgZmx1c2hpbmcgaXMgcGVuZGVk
-IGR1cmluZyBmbHVzaGluZywNCj4gKwkJICogbGVhdmUgbW0tPnRsYl9mbHVzaF9iYXRjaGVkIGFz
-IGlzLCB0byBhdm9pZCB0byBsb3NlDQo+ICsJCSAqIGZsdXNoaW5nLg0KPiAJCSAqLw0KPiAtCQli
-YXJyaWVyKCk7DQo+IC0JCW1tLT50bGJfZmx1c2hfYmF0Y2hlZCA9IGZhbHNlOw0KPiArCQlhdG9t
-aWNfY21weGNoZygmbW0tPnRsYl9mbHVzaF9iYXRjaGVkLCBiYXRjaGVkLA0KPiArCQkJICAgICAg
-IFRMQl9GTFVTSF9CQVRDSF9QQUNLKHBlbmRpbmcsIHBlbmRpbmcpKTsNCj4gCX0NCg0KT3ZlcmFs
-bCwgSSBhbSBub3Qgb3Zlcmx5IGV4Y2l0ZWQgYWJvdXQgdGhlIGZhY3QgdGhlIHRoZSBtbSBnZW5l
-cmF0aW9uDQphbmQgdGhpcyBiYXRjaGluZyBtZWNoYW5pc20gcmVtYWluIHNlcGFyYXRlZC4gVGhp
-cyBtYWtlcyByZWFzb25pbmcNCmFib3V0IFRMQiBmbHVzaGVzIGhhcmRlciBhbmQgY2FuIGxlYWQg
-dG8gdW5uZWNlc3NhcnkgZmx1c2hlcy4NCg0KSSB1bmRlcnN0YW5kIHRoZSBjb21wbGV4aXR5IGlu
-IGNoYW5naW5nIHRoZSBjb2RlIHRvIGdldCB0aGVyZSwNCmFuZCBwZXJoYXBzIHlvdXIgYXBwcm9h
-Y2ggaXMgcmVhc29uYWJsZSBmb3Igbm93LCBpZiB5b3UgYXQgbGVhc3QNCm1hbmFnZSB0byBkZWFs
-IHdpdGggb3ZlcmZsb3dzLg0KDQpUaGFua3MgZm9yIGRvaW5nIGFsbCBvZiB0aGF0LCBzb3JyeSBm
-b3IgYmVpbmcgbmVnYXRpdmUuIEkgZ3Vlc3MgSSANCnN1ZmZlciBmcm9tIE5JSCAoIm5vdCBpbnZl
-bnRlZCBoZXJl4oCdKS4=
+Hi Mathieu,
+
+Thanks for the comments! Replies inline.
+
+On 2021/11/25 2:51, Mathieu Poirier wrote:
+> Hi Yicong,
+> 
+> On Tue, Nov 16, 2021 at 05:06:21PM +0800, Yicong Yang wrote:
+>> HiSilicon PCIe tune and trace device(PTT) is a PCIe Root Complex
+>> integrated Endpoint(RCiEP) device, providing the capability
+>> to dynamically monitor and tune the PCIe traffic(tune),
+>> and trace the TLP headers(trace).
+>>
+> 
+> Is there a reason to put "tune" and "trace" are whithin parentheses?  
+> 
+
+yeah. I want to use these single word to denote the related function, and
+place them in the parantheses near the function's description to make sure
+readers can match them.
+
+>> Add the driver for the device to enable the trace function. The driver
+>> will create PMU device for each PTT device, and users can start trace
+>> through perf command.
+>>
+>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+>> ---
+>>  drivers/Makefile                       |    1 +
+>>  drivers/hwtracing/Kconfig              |    2 +
+>>  drivers/hwtracing/hisilicon/Kconfig    |    8 +
+>>  drivers/hwtracing/hisilicon/Makefile   |    2 +
+>>  drivers/hwtracing/hisilicon/hisi_ptt.c | 1146 ++++++++++++++++++++++++
+> 
+> Not sure about the "hisilicon" directory.  Right now we have "coresight",
+> "intel_th" and "stm" - they concentrate on the technology rather than the
+> vendor.  I think "ptt" would be just fine: 
+> 
+> drivers/hwtracing/ptt/Kconfig 
+> drivers/hwtracing/ptt/Makefile
+> drivers/hwtracing/ptt/hisi_ptt.c
+> 
+> That way if other vendors want to introduce support for the same kind of
+> technology we can simply put them under "drivers/hwtracing/ptt/" and things are
+> still accurate.
+> 
+
+sure. sounds sensible. will rename the directory to "ptt" if no objection.
+
+> 
+>>  5 files changed, 1159 insertions(+)
+>>  create mode 100644 drivers/hwtracing/hisilicon/Kconfig
+>>  create mode 100644 drivers/hwtracing/hisilicon/Makefile
+>>  create mode 100644 drivers/hwtracing/hisilicon/hisi_ptt.c
+>>
+>> diff --git a/drivers/Makefile b/drivers/Makefile
+>> index be5d40ae1488..bb0dc9b55ea2 100644
+>> --- a/drivers/Makefile
+>> +++ b/drivers/Makefile
+>> @@ -176,6 +176,7 @@ obj-$(CONFIG_USB4)		+= thunderbolt/
+>>  obj-$(CONFIG_CORESIGHT)		+= hwtracing/coresight/
+>>  obj-y				+= hwtracing/intel_th/
+>>  obj-$(CONFIG_STM)		+= hwtracing/stm/
+>> +obj-$(CONFIG_HISI_PTT)         += hwtracing/hisilicon/
+>>  obj-$(CONFIG_ANDROID)		+= android/
+>>  obj-$(CONFIG_NVMEM)		+= nvmem/
+>>  obj-$(CONFIG_FPGA)		+= fpga/
+>> diff --git a/drivers/hwtracing/Kconfig b/drivers/hwtracing/Kconfig
+>> index 13085835a636..e3796b17541a 100644
+>> --- a/drivers/hwtracing/Kconfig
+>> +++ b/drivers/hwtracing/Kconfig
+>> @@ -5,4 +5,6 @@ source "drivers/hwtracing/stm/Kconfig"
+>>  
+>>  source "drivers/hwtracing/intel_th/Kconfig"
+>>  
+>> +source "drivers/hwtracing/hisilicon/Kconfig"
+>> +
+>>  endmenu
+>> diff --git a/drivers/hwtracing/hisilicon/Kconfig b/drivers/hwtracing/hisilicon/Kconfig
+>> new file mode 100644
+>> index 000000000000..9c3ab80d99fe
+>> --- /dev/null
+>> +++ b/drivers/hwtracing/hisilicon/Kconfig
+>> @@ -0,0 +1,8 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only
+>> +config HISI_PTT
+>> +	tristate "HiSilicon PCIe Tune and Trace Device"
+>> +	depends on PCI && HAS_DMA && HAS_IOMEM
+> 
+> What Arm architecture are you aiming this for?  Can it be found on both armv7
+> and armv8?
+> 
+
+currently the device will appear on Kunpeng 930, which is armv8.
+
+>> +	help
+>> +	  HiSilicon PCIe Tune and Trace Device exist as a PCIe RCiEP
+>> +	  device, provides support for PCIe traffic tuning and
+>> +	  tracing TLP headers to the memory.
+> 
+> Please indicate what the name of the driver will be when compiled as a module.
+> 
+
+sure. will add the module's name here.
+
+>> diff --git a/drivers/hwtracing/hisilicon/Makefile b/drivers/hwtracing/hisilicon/Makefile
+>> new file mode 100644
+>> index 000000000000..908c09a98161
+>> --- /dev/null
+>> +++ b/drivers/hwtracing/hisilicon/Makefile
+>> @@ -0,0 +1,2 @@
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +obj-$(CONFIG_HISI_PTT) += hisi_ptt.o
+>> diff --git a/drivers/hwtracing/hisilicon/hisi_ptt.c b/drivers/hwtracing/hisilicon/hisi_ptt.c
+>> new file mode 100644
+>> index 000000000000..e11e9b6cc2a8
+>> --- /dev/null
+>> +++ b/drivers/hwtracing/hisilicon/hisi_ptt.c
+>> @@ -0,0 +1,1146 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Driver for HiSilicon PCIe tune and trace device
+>> + *
+>> + * Copyright (c) 2021 HiSilicon Limited.
+>> + */
+>> +
+>> +#include <linux/bitfield.h>
+>> +#include <linux/bitops.h>
+>> +#include <linux/delay.h>
+>> +#include <linux/dma-iommu.h>
+>> +#include <linux/dma-mapping.h>
+>> +#include <linux/interrupt.h>
+>> +#include <linux/io.h>
+>> +#include <linux/iommu.h>
+>> +#include <linux/iopoll.h>
+>> +#include <linux/kfifo.h>
+>> +#include <linux/module.h>
+>> +#include <linux/notifier.h>
+>> +#include <linux/pci.h>
+>> +#include <linux/perf_event.h>
+>> +#include <linux/sizes.h>
+>> +#include <linux/sysfs.h>
+>> +#include <linux/vmalloc.h>
+>> +#include <linux/workqueue.h>
+>> +
+>> +#define HISI_PTT_TRACE_ADDR_SIZE	0x0800
+>> +#define HISI_PTT_TRACE_ADDR_BASE_LO_0	0x0810
+>> +#define HISI_PTT_TRACE_ADDR_BASE_HI_0	0x0814
+>> +#define HISI_PTT_TRACE_ADDR_STRIDE	0x8
+>> +#define HISI_PTT_TRACE_CTRL		0x0850
+>> +#define   HISI_PTT_TRACE_CTRL_EN	BIT(0)
+>> +#define   HISI_PTT_TRACE_CTRL_RST	BIT(1)
+>> +#define   HISI_PTT_TRACE_CTRL_RXTX_SEL	GENMASK(3, 2)
+>> +#define   HISI_PTT_TRACE_CTRL_TYPE_SEL	GENMASK(7, 4)
+>> +#define   HISI_PTT_TRACE_CTRL_DATA_FORMAT	BIT(14)
+>> +#define   HISI_PTT_TRACE_CTRL_FILTER_MODE	BIT(15)
+>> +#define   HISI_PTT_TRACE_CTRL_TARGET_SEL	GENMASK(31, 16)
+>> +#define HISI_PTT_TRACE_INT_STAT		0x0890
+>> +#define   HISI_PTT_TRACE_INT_STAT_MASK	GENMASK(3, 0)
+>> +#define HISI_PTT_TRACE_INT_MASK		0x0894
+>> +#define HISI_PTT_TRACE_WR_STS		0x08a0
+>> +#define   HISI_PTT_TRACE_WR_STS_WRITE	GENMASK(27, 0)
+>> +#define   HISI_PTT_TRACE_WR_STS_BUFFER	GENMASK(29, 28)
+>> +#define HISI_PTT_TRACE_STS		0x08b0
+>> +#define   HISI_PTT_TRACE_IDLE		BIT(0)
+>> +#define HISI_PTT_DEVICE_RANGE		0x0fe0
+>> +#define HISI_PTT_LOCATION		0x0fe8
+>> +#define   HISI_PTT_CORE_ID		GENMASK(15, 0)
+>> +#define   HISI_PTT_SICL_ID		GENMASK(31, 16)
+> 
+> Extra spaces between #define and the literals.  Please align the values with
+> that of HISI_PTT_TRACE_DMA_IRQ below.
+> 
+
+Spaces are intended to distinguish the definition of the register offset and
+related register fields. also used in include/uapi/linux/pci_regs.h.
+
+HISI_PTT_TRACE_DMA_IRQ is well aligned with tab but seems with problem display
+in the mail text, maybe because the tab is not 8 characters when display.
+
+>> +
+>> +#define HISI_PTT_TRACE_DMA_IRQ			0
+>> +#define HISI_PTT_TRACE_BUFLETS_CNT		4
+>> +#define HISI_PTT_TRACE_BUFLET_SIZE		SZ_4M
+>> +#define HISI_PTT_TRACE_BUFFER_SIZE		(HISI_PTT_TRACE_BUFLET_SIZE * \
+>> +						 HISI_PTT_TRACE_BUFLETS_CNT)
+>> +#define HISI_PTT_FILTER_UPDATE_FIFO_SIZE	16
+>> +
+>> +/* Delay time for filter updating work */
+>> +#define HISI_PTT_WORK_DELAY_MS		100UL
+>> +/* Wait time for DMA hardware to reset */
+>> +#define HISI_PTT_RESET_WAIT_MS		1000UL
+>> +/* Poll timeout and interval for waiting hardware work to finish */
+>> +#define HISI_PTT_WAIT_TIMEOUT_US	1000000UL
+>> +#define HISI_PTT_WAIT_POLL_INTERVAL_US	100UL
+>> +
+>> +#define HISI_PCIE_CORE_PORT_ID(devfn)	(PCI_FUNC(devfn) << 1)
+>> +
+>> +enum hisi_ptt_trace_status {
+>> +	HISI_PTT_TRACE_STATUS_OFF = 0,
+>> +	HISI_PTT_TRACE_STATUS_ON,
+>> +};
+>> +
+>> +struct hisi_ptt_dma_buflet {
+> 
+> I'm not sure what a "buflet" is...  Probably best to just call this
+> hisi_ptt_dma_buffer" if it pertains to a buffer.  On that note it is hard to
+> know due to the lack of proper structure documentation.  Please have a look at
+> how "coresight_device" is documented.  The same applies to the rest of the
+> structures declared below.
+> 
+
+It's mentioned in section 5 of hisi_ptt.rst as "Driver will allocate each DMA buffer
+(we call it buflet) of 4MiB ...".
+
+The total DMA buffer of PTT device is divided into 4 parts, and each part is called
+a 'buflet', which means a small buffer (there exists other words with similiar
+format: droplet, wavelet, ...).
+
+The device is designed like this to make sure we won't lose any data when we have to change
+the buffer address, the device can continue to write to the next buflet and don't
+neet to pause.
+
+>> +	struct list_head list;
+>> +	unsigned int size;
+>> +	dma_addr_t dma;
+>> +
+>> +	/*
+>> +	 * The address of the buflet holding the trace data.
+>> +	 * See Documentation/trace/hisi-ptt.rst for the details
+> 
+> As of this writing, hisi-ptt.rst doesn't exist.
+> 
+
+The comment intends to direct the user to the documentation if the user
+want to know details about the data format. The data format is decribed
+in the section 4 of the doc.
+
+>> +	 * of the data format.
+>> +	 */
+>> +	void *addr;
+>> +	int index;
+>> +};
+>> +
+>> +struct hisi_ptt_trace_ctrl {
+>> +	enum hisi_ptt_trace_status status;
+>> +	struct perf_output_handle handle;
+>> +	struct list_head trace_buf;
+>> +	/*
+>> +	 * The index of the buffer which trace data
+>> +	 * currently is writing to.
+>> +	 */
+>> +	u32 buf_index;
+>> +
+>> +	int default_cpu;
+>> +	u32 buflet_size;
+>> +	bool is_port;
+>> +	u32 format:1;		/* Format of the traced TLP headers */
+>> +	u32 type:4;		/* Type of the TLP headers to trace */
+>> +	u32 direction:2;	/* Direction of the TLP headers to trace */
+>> +	u32 filter:16;		/* Root port or Requester to filter the TLP headers */
+>> +
+>> +	phys_addr_t rmr_addr;
+>> +	size_t rmr_length;
+>> +	bool has_rmr;
+>> +};
+>> +
+>> +struct hisi_ptt_filter_desc {
+>> +	struct list_head list;
+>> +	struct pci_dev *pdev;
+>> +	u16 val;
+>> +};
+>> +
+>> +struct hisi_ptt_pmu_buf {
+>> +	size_t length;
+>> +	int nr_pages;
+>> +	void *base;
+>> +	long pos;
+>> +};
+>> +
+>> +/* Structure containing the information for filter updating */
+>> +struct hisi_ptt_filter_update_info {
+>> +	struct pci_dev *pdev;
+>> +	u32 port_devid;
+>> +	bool is_port;
+>> +	bool is_add;
+>> +	u16 val;
+>> +};
+>> +
+>> +struct hisi_ptt {
+>> +	struct hisi_ptt_trace_ctrl trace_ctrl;
+>> +	struct notifier_block hisi_ptt_nb;
+>> +	struct pmu hisi_ptt_pmu;
+>> +	void __iomem *iobase;
+>> +	struct pci_dev *pdev;
+>> +	/*
+>> +	 * Use the mutex to protect the filter list and
+>> +	 * serialize the perf process.
+>> +	 */
+>> +	struct mutex mutex;
+>> +	const char *name;
+>> +	u16 core_id;
+>> +	u16 sicl_id;
+>> +	/* PCI device range managed by the PTT device */
+>> +	u32 upper;
+>> +	u32 lower;
+>> +	u8 busnr;
+>> +
+>> +	/*
+>> +	 * The trace TLP headers can either be filtered by certain
+>> +	 * root port, or by the requester ID. Organize the filters
+>> +	 * by @port_filters and @req_filters here. The mask of all
+>> +	 * the valid ports is also cached for doing sanity check
+>> +	 * of user input.
+>> +	 */
+>> +	struct list_head port_filters;
+>> +	struct list_head req_filters;
+>> +	u16 port_mask;
+>> +
+>> +	/*
+>> +	 * We use a delayed work here to avoid indefinitely waiting for
+>> +	 * the hisi_ptt->mutex which protecting the filter list. The
+>> +	 * work will be delayed only if the mutex can not be held,
+>> +	 * otherwise no delay will be applied.
+>> +	 */
+>> +	struct delayed_work work;
+>> +	spinlock_t filter_update_lock;
+>> +	DECLARE_KFIFO(filter_update_kfifo, struct hisi_ptt_filter_update_info,
+>> +		      HISI_PTT_FILTER_UPDATE_FIFO_SIZE);
+>> +};
+> 
+> It might be a good idea to spinoff a hisi_ptt.h for the above declarations.
+> 
+
+I'm not sure whether it is common or permitted to provide a header which is only used by
+this driver with a single file.
+
+>> +
+>> +static inline struct hisi_ptt *to_hisi_ptt(struct pmu *pmu)
+>> +{
+>> +	return container_of(pmu, struct hisi_ptt, hisi_ptt_pmu);
+>> +}
+> 
+> I'm not sure there is any value to this inline function.  I suggest to simply
+> call container_of() whenever it is needed.
+> 
+
+ok.
+
+>> +
+>> +static u16 hisi_ptt_get_filter_val(struct pci_dev *pdev)
+>> +{
+>> +	if (pci_pcie_type(pdev) == PCI_EXP_TYPE_ROOT_PORT)
+>> +		return BIT(HISI_PCIE_CORE_PORT_ID(PCI_SLOT(pdev->devfn)));
+>> +
+>> +	return PCI_DEVID(pdev->bus->number, pdev->devfn);
+>> +}
+>> +
+>> +static int hisi_ptt_wait_trace_hw_idle(struct hisi_ptt *hisi_ptt)
+>> +{
+>> +	u32 val;
+>> +
+>> +	return readl_poll_timeout(hisi_ptt->iobase + HISI_PTT_TRACE_STS, val,
+>> +				  val & HISI_PTT_TRACE_IDLE,
+>> +				  HISI_PTT_WAIT_POLL_INTERVAL_US,
+>> +				  HISI_PTT_WAIT_TIMEOUT_US);
+>> +}
+>> +
+>> +static void hisi_ptt_free_trace_buf(struct hisi_ptt *hisi_ptt)
+>> +{
+>> +	struct hisi_ptt_trace_ctrl *ctrl = &hisi_ptt->trace_ctrl;
+>> +	struct device *dev = &hisi_ptt->pdev->dev;
+>> +	struct hisi_ptt_dma_buflet *buflet, *tbuflet;
+>> +
+>> +	list_for_each_entry_safe(buflet, tbuflet, &ctrl->trace_buf, list) {
+>> +		list_del(&buflet->list);
+>> +
+>> +		if (ctrl->has_rmr)
+>> +			memunmap(buflet->addr);
+>> +		else
+>> +			dma_free_coherent(dev, buflet->size, buflet->addr,
+>> +					  buflet->dma);
+>> +
+>> +		kfree(buflet);
+>> +	}
+>> +}
+>> +
+>> +static int hisi_ptt_alloc_trace_buf(struct hisi_ptt *hisi_ptt)
+>> +{
+>> +	struct hisi_ptt_trace_ctrl *ctrl = &hisi_ptt->trace_ctrl;
+>> +	struct device *dev = &hisi_ptt->pdev->dev;
+>> +	struct hisi_ptt_dma_buflet *buflet;
+>> +	int i, ret;
+>> +
+>> +	hisi_ptt->trace_ctrl.buf_index = 0;
+>> +
+>> +	/* Make sure the trace buffer is empty before allocating */
+>> +	if (!list_empty(&ctrl->trace_buf)) {
+>> +		list_for_each_entry(buflet, &ctrl->trace_buf, list)
+>> +			memset(buflet->addr, 0, buflet->size);
+>> +		return 0;
+>> +	}
+>> +
+>> +	for (i = 0; i < HISI_PTT_TRACE_BUFLETS_CNT; ++i) {
+>> +		buflet = kzalloc(sizeof(*buflet), GFP_KERNEL);
+>> +		if (!buflet) {
+>> +			ret = -ENOMEM;
+>> +			goto err;
+>> +		}
+>> +
+>> +		if (ctrl->has_rmr) {
+>> +			phys_addr_t base = ctrl->rmr_addr + i * ctrl->buflet_size;
+>> +
+>> +			buflet->dma = base;
+>> +			buflet->addr = memremap(base, ctrl->buflet_size, MEMREMAP_WB);
+>> +		} else {
+>> +			buflet->addr = dma_alloc_coherent(dev, ctrl->buflet_size,
+>> +							  &buflet->dma, GFP_KERNEL);
+>> +		}
+>> +
+>> +		if (!buflet->addr) {
+>> +			kfree(buflet);
+>> +			ret = -ENOMEM;
+>> +			goto err;
+>> +		}
+>> +
+>> +		memset(buflet->addr, 0, buflet->size);
+>> +
+>> +		buflet->index = i;
+>> +		buflet->size = ctrl->buflet_size;
+>> +		list_add_tail(&buflet->list, &ctrl->trace_buf);
+>> +	}
+>> +
+>> +	return 0;
+>> +err:
+>> +	hisi_ptt_free_trace_buf(hisi_ptt);
+>> +	return ret;
+>> +}
+>> +
+>> +static void hisi_ptt_trace_end(struct hisi_ptt *hisi_ptt)
+>> +{
+>> +	writel(0, hisi_ptt->iobase + HISI_PTT_TRACE_CTRL);
+>> +	hisi_ptt->trace_ctrl.status = HISI_PTT_TRACE_STATUS_OFF;
+>> +}
+>> +
+>> +static int hisi_ptt_trace_start(struct hisi_ptt *hisi_ptt)
+>> +{
+>> +	struct hisi_ptt_trace_ctrl *ctrl = &hisi_ptt->trace_ctrl;
+>> +	struct hisi_ptt_dma_buflet *cur;
+>> +	u32 val;
+>> +
+>> +	/* Check device idle before start trace */
+>> +	if (hisi_ptt_wait_trace_hw_idle(hisi_ptt)) {
+>> +		pci_err(hisi_ptt->pdev, "Failed to start trace, the device is still busy.\n");
+>> +		return -EBUSY;
+>> +	}
+>> +
+>> +	/* Reset the DMA before start tracing */
+>> +	val = readl(hisi_ptt->iobase + HISI_PTT_TRACE_CTRL);
+>> +	val |= HISI_PTT_TRACE_CTRL_RST;
+>> +	writel(val, hisi_ptt->iobase + HISI_PTT_TRACE_CTRL);
+>> +
+>> +	/*
+>> +	 * We'll be in the perf context where preemption is disabled,
+>> +	 * so use busy loop here.
+>> +	 */
+>> +	mdelay(HISI_PTT_RESET_WAIT_MS);
+>> +
+>> +	val = readl(hisi_ptt->iobase + HISI_PTT_TRACE_CTRL);
+>> +	val &= ~HISI_PTT_TRACE_CTRL_RST;
+>> +	writel(val, hisi_ptt->iobase + HISI_PTT_TRACE_CTRL);
+>> +
+>> +	/* clear the interrupt status */
+>> +	writel(HISI_PTT_TRACE_INT_STAT_MASK, hisi_ptt->iobase + HISI_PTT_TRACE_INT_STAT);
+>> +	writel(0, hisi_ptt->iobase + HISI_PTT_TRACE_INT_MASK);
+>> +
+>> +	list_for_each_entry(cur, &ctrl->trace_buf, list) {
+>> +		writel(lower_32_bits(cur->dma),
+>> +		       hisi_ptt->iobase + HISI_PTT_TRACE_ADDR_BASE_LO_0 +
+>> +		       cur->index * HISI_PTT_TRACE_ADDR_STRIDE);
+>> +		writel(upper_32_bits(cur->dma),
+>> +		       hisi_ptt->iobase + HISI_PTT_TRACE_ADDR_BASE_HI_0 +
+>> +		       cur->index * HISI_PTT_TRACE_ADDR_STRIDE);
+>> +	}
+>> +	writel(ctrl->buflet_size, hisi_ptt->iobase + HISI_PTT_TRACE_ADDR_SIZE);
+>> +
+>> +	/* set the trace control register */
+>> +	val = FIELD_PREP(HISI_PTT_TRACE_CTRL_TYPE_SEL, ctrl->type);
+>> +	val |= FIELD_PREP(HISI_PTT_TRACE_CTRL_RXTX_SEL, ctrl->direction);
+>> +	val |= FIELD_PREP(HISI_PTT_TRACE_CTRL_DATA_FORMAT, ctrl->format);
+>> +	val |= FIELD_PREP(HISI_PTT_TRACE_CTRL_TARGET_SEL, hisi_ptt->trace_ctrl.filter);
+>> +	if (!hisi_ptt->trace_ctrl.is_port)
+>> +		val |= HISI_PTT_TRACE_CTRL_FILTER_MODE;
+>> +
+>> +	val |= HISI_PTT_TRACE_CTRL_EN;
+>> +	writel(val, hisi_ptt->iobase + HISI_PTT_TRACE_CTRL);
+>> +
+>> +	ctrl->status = HISI_PTT_TRACE_STATUS_ON;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int hisi_ptt_update_aux(struct hisi_ptt *hisi_ptt, int index, bool stop)
+>> +{
+>> +	struct perf_output_handle *handle = &hisi_ptt->trace_ctrl.handle;
+>> +	struct perf_event *event = handle->event;
+>> +	struct hisi_ptt_dma_buflet *cur;
+>> +	struct hisi_ptt_pmu_buf *buf;
+>> +
+>> +	buf = perf_get_aux(handle);
+>> +	if (!buf || !handle->size)
+>> +		return -EINVAL;
+>> +
+>> +	list_for_each_entry(cur, &hisi_ptt->trace_ctrl.trace_buf, list)
+>> +		if (cur->index == index)
+>> +			break;
+>> +
+>> +	memcpy(buf->base + buf->pos, cur->addr, cur->size);
+>> +	memset(cur->addr, 0, cur->size);
+>> +	buf->pos += cur->size;
+>> +
+>> +	if (stop) {
+>> +		perf_aux_output_end(handle, buf->pos);
+>> +	} else if (buf->length - buf->pos < cur->size) {
+>> +		perf_aux_output_skip(handle, buf->length - buf->pos);
+>> +		perf_aux_output_end(handle, buf->pos);
+>> +
+>> +		buf = perf_aux_output_begin(handle, event);
+>> +		if (!buf)
+>> +			return -EINVAL;
+>> +
+>> +		buf->pos = handle->head % buf->length;
+>> +		if (buf->length - buf->pos < cur->size) {
+>> +			perf_aux_output_end(handle, 0);
+>> +			return -EINVAL;
+>> +		}
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static irqreturn_t hisi_ptt_isr(int irq, void *context)
+>> +{
+>> +	struct hisi_ptt *hisi_ptt = context;
+>> +	u32 status, buf_idx;
+>> +
+>> +	status = readl(hisi_ptt->iobase + HISI_PTT_TRACE_INT_STAT);
+>> +	buf_idx = ffs(status) - 1;
+>> +
+>> +	/* Clear the interrupt status of buflet @buf_idx */
+>> +	writel(status, hisi_ptt->iobase + HISI_PTT_TRACE_INT_STAT);
+>> +
+>> +	/*
+>> +	 * Update the AUX buffer and cache the current buflet index,
+>> +	 * as we need to know this and save the data when the trace
+>> +	 * is ended out of the interrupt handler. End the trace
+>> +	 * if the updating fails.
+>> +	 */
+>> +	if (hisi_ptt_update_aux(hisi_ptt, buf_idx, false))
+>> +		hisi_ptt_trace_end(hisi_ptt);
+>> +	else
+>> +		hisi_ptt->trace_ctrl.buf_index = (buf_idx + 1) % HISI_PTT_TRACE_BUFLETS_CNT;
+>> +
+>> +	return IRQ_HANDLED;
+>> +}
+>> +
+>> +static irqreturn_t hisi_ptt_irq(int irq, void *context)
+>> +{
+>> +	struct hisi_ptt *hisi_ptt = context;
+>> +	u32 status;
+>> +
+>> +	status = readl(hisi_ptt->iobase + HISI_PTT_TRACE_INT_STAT);
+>> +	if (!(status & HISI_PTT_TRACE_INT_STAT_MASK))
+>> +		return IRQ_NONE;
+>> +
+>> +	return IRQ_WAKE_THREAD;
+>> +}
+>> +
+>> +static void hisi_ptt_irq_free_vectors(void *pdev)
+>> +{
+>> +	pci_free_irq_vectors(pdev);
+>> +}
+>> +
+>> +static int hisi_ptt_register_irq(struct hisi_ptt *hisi_ptt)
+>> +{
+>> +	struct pci_dev *pdev = hisi_ptt->pdev;
+>> +	int ret;
+>> +
+>> +	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_MSI);
+>> +	if (ret < 0) {
+>> +		pci_err(pdev, "failed to allocate irq vector, ret = %d.\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = devm_add_action_or_reset(&pdev->dev, hisi_ptt_irq_free_vectors, pdev);
+>> +	if (ret < 0)
+>> +		return ret;
+>> +
+>> +	ret = devm_request_threaded_irq(&pdev->dev,
+>> +					pci_irq_vector(pdev, HISI_PTT_TRACE_DMA_IRQ),
+>> +					hisi_ptt_irq, hisi_ptt_isr, 0,
+>> +					"hisi-ptt", hisi_ptt);
+>> +	if (ret) {
+>> +		pci_err(pdev, "failed to request irq %d, ret = %d.\n",
+>> +			pci_irq_vector(pdev, HISI_PTT_TRACE_DMA_IRQ), ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void hisi_ptt_update_filters(struct work_struct *work)
+>> +{
+>> +	struct delayed_work *delayed_work = to_delayed_work(work);
+>> +	struct hisi_ptt_filter_update_info info;
+>> +	struct hisi_ptt_filter_desc *filter;
+>> +	struct list_head *target_list;
+>> +	struct hisi_ptt *hisi_ptt;
+>> +
+>> +	hisi_ptt = container_of(delayed_work, struct hisi_ptt, work);
+>> +
+>> +	if (!mutex_trylock(&hisi_ptt->mutex)) {
+>> +		schedule_delayed_work(&hisi_ptt->work, HISI_PTT_WORK_DELAY_MS);
+>> +		return;
+>> +	}
+>> +
+>> +	while (kfifo_get(&hisi_ptt->filter_update_kfifo, &info)) {
+>> +		target_list = info.is_port ? &hisi_ptt->port_filters :
+>> +			      &hisi_ptt->req_filters;
+>> +
+>> +		if (info.is_add) {
+>> +			filter = kzalloc(sizeof(*filter), GFP_KERNEL);
+>> +			if (!filter)
+>> +				continue;
+>> +
+>> +			filter->pdev = info.pdev;
+>> +			filter->val = info.val;
+>> +
+>> +			list_add_tail(&filter->list, target_list);
+>> +		} else {
+>> +			list_for_each_entry(filter, target_list, list)
+>> +				if (filter->val == info.val) {
+>> +					list_del(&filter->list);
+>> +					kfree(filter);
+>> +					break;
+>> +				}
+>> +		}
+>> +
+>> +		/* Update the available port mask */
+>> +		if (!info.is_port)
+>> +			continue;
+>> +
+>> +		if (info.is_add)
+>> +			hisi_ptt->port_mask |= info.val;
+>> +		else
+>> +			hisi_ptt->port_mask &= ~info.val;
+>> +	}
+>> +
+>> +	mutex_unlock(&hisi_ptt->mutex);
+>> +}
+>> +
+>> +static void hisi_ptt_update_fifo_in(struct hisi_ptt *hisi_ptt,
+>> +				    struct hisi_ptt_filter_update_info *info)
+>> +{
+>> +	struct pci_dev *root_port = pcie_find_root_port(info->pdev);
+>> +
+>> +	if (!root_port)
+>> +		return;
+>> +
+>> +	info->port_devid = PCI_DEVID(root_port->bus->number, root_port->devfn);
+>> +	if (info->port_devid < hisi_ptt->lower ||
+>> +	    info->port_devid > hisi_ptt->upper)
+>> +		return;
+>> +
+>> +	info->is_port = pci_pcie_type(info->pdev) == PCI_EXP_TYPE_ROOT_PORT;
+>> +	info->val = hisi_ptt_get_filter_val(info->pdev);
+>> +
+>> +	if (kfifo_in_spinlocked(&hisi_ptt->filter_update_kfifo, info, 1,
+>> +				&hisi_ptt->filter_update_lock))
+>> +		schedule_delayed_work(&hisi_ptt->work, 0);
+>> +	else
+>> +		pci_warn(hisi_ptt->pdev,
+>> +			 "filter update fifo overflow for target %s\n",
+>> +			 pci_name(info->pdev));
+>> +}
+>> +
+>> +/*
+>> + * A PCI bus notifier is used here for dynamically updating the filter
+>> + * list.
+>> + */
+>> +static int hisi_ptt_notifier_call(struct notifier_block *nb, unsigned long action,
+>> +				  void *data)
+>> +{
+>> +	struct hisi_ptt *hisi_ptt = container_of(nb, struct hisi_ptt, hisi_ptt_nb);
+>> +	struct hisi_ptt_filter_update_info info;
+>> +	struct device *dev = data;
+>> +	struct pci_dev *pdev = to_pci_dev(dev);
+>> +
+>> +	info.pdev = pdev;
+>> +
+>> +	switch (action) {
+>> +	case BUS_NOTIFY_ADD_DEVICE:
+>> +		info.is_add = true;
+>> +		break;
+>> +	case BUS_NOTIFY_DEL_DEVICE:
+>> +		info.is_add = false;
+>> +		break;
+>> +	default:
+>> +		return 0;
+>> +	}
+>> +
+>> +	hisi_ptt_update_fifo_in(hisi_ptt, &info);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int hisi_ptt_init_filters(struct pci_dev *pdev, void *data)
+>> +{
+>> +	struct hisi_ptt_filter_update_info info = {
+>> +		.pdev = pdev,
+>> +		.is_add = true,
+>> +	};
+>> +	struct hisi_ptt *hisi_ptt = data;
+>> +
+>> +	hisi_ptt_update_fifo_in(hisi_ptt, &info);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void hisi_ptt_release_filters(struct hisi_ptt *hisi_ptt)
+>> +{
+>> +	struct hisi_ptt_filter_desc *filter, *tfilter;
+>> +
+>> +	list_for_each_entry_safe(filter, tfilter, &hisi_ptt->req_filters, list) {
+>> +		list_del(&filter->list);
+>> +		kfree(filter);
+>> +	}
+>> +
+>> +	list_for_each_entry_safe(filter, tfilter, &hisi_ptt->port_filters, list) {
+>> +		list_del(&filter->list);
+>> +		kfree(filter);
+>> +	}
+>> +}
+>> +
+>> +static void hisi_ptt_init_ctrls(struct hisi_ptt *hisi_ptt)
+>> +{
+>> +	struct pci_dev *pdev = hisi_ptt->pdev;
+>> +	struct pci_bus *bus;
+>> +	u32 reg;
+>> +
+>> +	INIT_DELAYED_WORK(&hisi_ptt->work, hisi_ptt_update_filters);
+>> +	spin_lock_init(&hisi_ptt->filter_update_lock);
+>> +	INIT_KFIFO(hisi_ptt->filter_update_kfifo);
+>> +	INIT_LIST_HEAD(&hisi_ptt->port_filters);
+>> +	INIT_LIST_HEAD(&hisi_ptt->req_filters);
+>> +
+>> +	/*
+>> +	 * The device range register provides the information about the
+>> +	 * root ports which the RCiEP can control and trace. The RCiEP
+>> +	 * and the root ports it support are on the same PCIe core, with
+>> +	 * same domain number but maybe different bus number. The device
+>> +	 * range register will tell us which root ports we can support,
+>> +	 * Bit[31:16] indicates the upper BDF numbers of the root port,
+>> +	 * while Bit[15:0] indicates the lower.
+>> +	 */
+>> +	reg = readl(hisi_ptt->iobase + HISI_PTT_DEVICE_RANGE);
+>> +	hisi_ptt->upper = reg >> 16;
+>> +	hisi_ptt->lower = reg & 0xffff;
+>> +	hisi_ptt->busnr = PCI_BUS_NUM(hisi_ptt->upper);
+>> +
+>> +	reg = readl(hisi_ptt->iobase + HISI_PTT_LOCATION);
+>> +	hisi_ptt->core_id = FIELD_GET(HISI_PTT_CORE_ID, reg);
+>> +	hisi_ptt->sicl_id = FIELD_GET(HISI_PTT_SICL_ID, reg);
+>> +
+>> +	bus = pci_find_bus(pci_domain_nr(pdev->bus), hisi_ptt->busnr);
+>> +	if (bus)
+>> +		pci_walk_bus(bus, hisi_ptt_init_filters, hisi_ptt);
+> 
+> What happens if bus is NULL?  Should this be reported to the caller and cause
+> hisi_ptt_probe() to fail?  Please add a comment that describes the scenario.
+> 
+
+It's ok if the list is NULL in the probe process,
+as the device maybe hotplugged after the PTT driver probe, in which case
+we can detect the event and update the list as we register a bus notifier.
+
+>> +
+>> +	/* Initialize trace controls */
+>> +	INIT_LIST_HEAD(&hisi_ptt->trace_ctrl.trace_buf);
+>> +	hisi_ptt->trace_ctrl.buflet_size = HISI_PTT_TRACE_BUFLET_SIZE;
+>> +	hisi_ptt->trace_ctrl.default_cpu = cpumask_first(cpumask_of_node(dev_to_node(&pdev->dev)));
+>> +}
+>> +
+>> +#define HISI_PTT_PMU_FILTER_IS_PORT	BIT(19)
+>> +#define HISI_PTT_PMU_FILTER_VAL_MASK	GENMASK(15, 0)
+>> +#define HISI_PTT_PMU_DIRECTION_MASK	GENMASK(23, 20)
+>> +#define HISI_PTT_PMU_TYPE_MASK		GENMASK(31, 24)
+>> +#define HISI_PTT_PMU_FORMAT_MASK	GENMASK(35, 32)
+>> +
+>> +static ssize_t available_filters_show(struct device *dev,
+>> +				      struct device_attribute *attr,
+>> +				      char *buf)
+>> +{
+>> +	struct hisi_ptt *hisi_ptt = to_hisi_ptt(dev_get_drvdata(dev));
+>> +	struct hisi_ptt_filter_desc *filter;
+>> +	int pos = 0;
+>> +
+>> +	if (list_empty(&hisi_ptt->port_filters))
+>> +		return sysfs_emit(buf, "#### No available filter ####\n");
+>> +
+>> +	mutex_lock(&hisi_ptt->mutex);
+>> +	pos += sysfs_emit_at(buf, pos, "#### Root Ports ####\n");
+>> +	list_for_each_entry(filter, &hisi_ptt->port_filters, list)
+>> +		pos += sysfs_emit_at(buf, pos, "%s	0x%05lx\n",
+>> +				     pci_name(filter->pdev),
+>> +				     hisi_ptt_get_filter_val(filter->pdev) |
+>> +				     HISI_PTT_PMU_FILTER_IS_PORT);
+>> +
+>> +	pos += sysfs_emit_at(buf, pos, "#### Requesters ####\n");
+>> +	list_for_each_entry(filter, &hisi_ptt->req_filters, list)
+>> +		pos += sysfs_emit_at(buf, pos, "%s	0x%05x\n",
+>> +				     pci_name(filter->pdev),
+>> +				     hisi_ptt_get_filter_val(filter->pdev));
+>> +
+>> +	mutex_unlock(&hisi_ptt->mutex);
+>> +	return pos;
+>> +}
+>> +static DEVICE_ATTR_ADMIN_RO(available_filters);
+>> +
+>> +PMU_FORMAT_ATTR(filter,		"config:0-19");
+>> +PMU_FORMAT_ATTR(direction,	"config:20-23");
+>> +PMU_FORMAT_ATTR(type,		"config:24-31");
+>> +PMU_FORMAT_ATTR(format,		"config:32-35");
+>> +
+>> +static struct attribute *hisi_ptt_pmu_format_attrs[] = {
+>> +	&format_attr_filter.attr,
+>> +	&format_attr_direction.attr,
+>> +	&format_attr_type.attr,
+>> +	&format_attr_format.attr,
+>> +	NULL
+>> +};
+>> +
+>> +static struct attribute_group hisi_ptt_pmu_format_group = {
+>> +	.name = "format",
+>> +	.attrs = hisi_ptt_pmu_format_attrs,
+>> +};
+>> +
+>> +static struct attribute *hisi_ptt_pmu_filter_attrs[] = {
+>> +	&dev_attr_available_filters.attr,
+>> +	NULL
+>> +};
+>> +
+>> +static struct attribute_group hisi_ptt_pmu_filter_group = {
+>> +	.attrs = hisi_ptt_pmu_filter_attrs,
+>> +};
+>> +
+>> +static const struct attribute_group *hisi_ptt_pmu_groups[] = {
+>> +	&hisi_ptt_pmu_format_group,
+>> +	&hisi_ptt_pmu_filter_group,
+>> +	NULL
+>> +};
+>> +
+>> +/*
+>> + * The supported value of the direction parameter. See hisi_ptt.rst
+>> + * documentation for more details.
+>> + */
+>> +static u32 hisi_ptt_trace_available_direction[] = {
+>> +	0,
+>> +	1,
+>> +	2,
+>> +	3,
+>> +};
+>> +
+>> +/* Different types can be set simultaneously */
+>> +static u32 hisi_ptt_trace_available_type[] = {
+>> +	1,	/* posted_request */
+>> +	2,	/* non-posted_request */
+>> +	4,	/* completion */
+>> +};
+>> +
+>> +static u32 hisi_ptt_trace_availble_format[] = {
+>> +	0,	/* 4DW */
+>> +	1,	/* 8DW */
+>> +};
+>> +
+>> +/*
+>> + * Check whether the config is valid or not. Some configs are multi-selectable
+>> + * and can be set simultaneously, while some are single selectable (onehot).
+>> + * Use this function to check the non-onehot configs while
+>> + * hisi_ptt_trace_valid_config_onehot() for the onehot ones.
+>> + */
+>> +static int hisi_ptt_trace_valid_config(u32 val, u32 *available_list, u32 list_size)
+>> +{
+>> +	int i;
+>> +
+>> +	/*
+>> +	 * The non-onehot configs cannot be 0. Walk the available
+>> +	 * list and clear the valid bits of the config. If there
+>> +	 * is any resident bit after the walk then the config is
+>> +	 * invalid.
+>> +	 */
+>> +	for (i = 0; i < list_size; i++)
+>> +		val &= ~available_list[i];
+>> +
+>> +	return val ? -EINVAL : 0;
+>> +}
+>> +
+>> +static int hisi_ptt_trace_valid_config_onehot(u32 val, u32 *available_list, u32 list_size)
+>> +{
+>> +	int i, ret = -EINVAL;
+>> +
+>> +	for (i = 0; i < list_size; i++)
+>> +		if (val == available_list[i]) {
+>> +			ret = 0;
+>> +			break;
+>> +		}
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static int hisi_ptt_trace_init_filter(struct hisi_ptt *hisi_ptt, u64 config)
+>> +{
+>> +	unsigned long val, port_mask = hisi_ptt->port_mask;
+>> +	struct hisi_ptt_filter_desc *filter;
+>> +	int ret = -EINVAL;
+>> +
+>> +	hisi_ptt->trace_ctrl.is_port = FIELD_GET(HISI_PTT_PMU_FILTER_IS_PORT, config);
+>> +	val = FIELD_GET(HISI_PTT_PMU_FILTER_VAL_MASK, config);
+>> +
+>> +	/*
+>> +	 * Port filters are defined as bit mask. For port filters, check
+>> +	 * the bits in the @val are within the range of hisi_ptt->port_mask
+>> +	 * and whether it's empty or not, otherwise user has specified
+>> +	 * some unsupported root ports.
+>> +	 *
+>> +	 * For Requester ID filters, walk the available filter list to see
+>> +	 * whether we have one matched.
+>> +	 */
+>> +	if (hisi_ptt->trace_ctrl.is_port &&
+>> +	    bitmap_subset(&val, &port_mask, BITS_PER_LONG)) {
+>> +		ret = 0;
+>> +	} else {
+>> +		list_for_each_entry(filter, &hisi_ptt->req_filters, list)
+>> +			if (filter->val == val) {
+>> +				ret = 0;
+>> +				break;
+>> +			}
+>> +	}
+>> +
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	hisi_ptt->trace_ctrl.filter = val;
+>> +	return 0;
+>> +}
+>> +
+>> +static int hisi_ptt_pmu_event_init(struct perf_event *event)
+>> +{
+>> +	struct hisi_ptt *hisi_ptt = to_hisi_ptt(event->pmu);
+>> +	struct hisi_ptt_trace_ctrl *ctrl = &hisi_ptt->trace_ctrl;
+>> +	int ret;
+>> +	u32 val;
+>> +
+>> +	if (event->attr.type != hisi_ptt->hisi_ptt_pmu.type)
+>> +		return -ENOENT;
+>> +
+>> +	mutex_lock(&hisi_ptt->mutex);
+>> +
+>> +	ret = hisi_ptt_trace_init_filter(hisi_ptt, event->attr.config);
+>> +	if (ret < 0)
+>> +		goto out;
+>> +
+>> +	val = FIELD_GET(HISI_PTT_PMU_DIRECTION_MASK, event->attr.config);
+>> +	ret = hisi_ptt_trace_valid_config_onehot(val, hisi_ptt_trace_available_direction,
+>> +						 ARRAY_SIZE(hisi_ptt_trace_available_direction));
+>> +	if (ret < 0)
+>> +		goto out;
+>> +	ctrl->direction = val;
+>> +
+>> +	val = FIELD_GET(HISI_PTT_PMU_TYPE_MASK, event->attr.config);
+>> +
+>> +	ret = hisi_ptt_trace_valid_config(val, hisi_ptt_trace_available_type,
+>> +					  ARRAY_SIZE(hisi_ptt_trace_available_type));
+>> +	if (ret < 0)
+>> +		goto out;
+>> +	ctrl->type = val;
+>> +
+>> +	val = FIELD_GET(HISI_PTT_PMU_FORMAT_MASK, event->attr.config);
+>> +	ret = hisi_ptt_trace_valid_config_onehot(val, hisi_ptt_trace_availble_format,
+>> +						 ARRAY_SIZE(hisi_ptt_trace_availble_format));
+>> +	if (ret < 0)
+>> +		goto out;
+>> +	ctrl->format = val;
+>> +
+>> +out:
+>> +	mutex_unlock(&hisi_ptt->mutex);
+>> +	return ret;
+>> +}
+>> +
+>> +static void *hisi_ptt_pmu_setup_aux(struct perf_event *event, void **pages,
+>> +				    int nr_pages, bool overwrite)
+>> +{
+>> +	struct hisi_ptt_pmu_buf *buf;
+>> +	struct page **pagelist;
+>> +	int i;
+>> +
+>> +	if (overwrite) {
+>> +		dev_warn(event->pmu->dev, "Overwrite mode is not supported\n");
+>> +		return NULL;
+>> +	}
+>> +
+>> +	/* If the pages size less than buflets, we cannot start trace */
+>> +	if (nr_pages < HISI_PTT_TRACE_BUFFER_SIZE / PAGE_SIZE)
+>> +		return NULL;
+>> +
+>> +	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
+>> +	if (!buf)
+>> +		return NULL;
+>> +
+>> +	pagelist = kcalloc(nr_pages, sizeof(*pagelist), GFP_KERNEL);
+>> +	if (!pagelist) {
+>> +		kfree(buf);
+>> +		return NULL;
+>> +	}
+>> +
+>> +	for (i = 0; i < nr_pages; i++)
+>> +		pagelist[i] = virt_to_page(pages[i]);
+>> +
+>> +	buf->base = vmap(pagelist, nr_pages, VM_MAP, PAGE_KERNEL);
+>> +	if (!buf->base) {
+>> +		kfree(pagelist);
+>> +		kfree(buf);
+>> +		return NULL;
+>> +	}
+>> +
+>> +	buf->nr_pages = nr_pages;
+>> +	buf->length = nr_pages * PAGE_SIZE;
+>> +	buf->pos = 0;
+>> +
+>> +	kfree(pagelist);
+>> +	return buf;
+>> +}
+>> +
+>> +static void hisi_ptt_pmu_free_aux(void *aux)
+>> +{
+>> +	struct hisi_ptt_pmu_buf *buf = aux;
+>> +
+>> +	vunmap(buf->base);
+>> +	kfree(buf);
+>> +}
+>> +
+>> +static void hisi_ptt_pmu_start(struct perf_event *event, int flags)
+>> +{
+>> +	struct hisi_ptt *hisi_ptt = to_hisi_ptt(event->pmu);
+>> +	struct perf_output_handle *handle = &hisi_ptt->trace_ctrl.handle;
+>> +	struct hw_perf_event *hwc = &event->hw;
+>> +	struct hisi_ptt_pmu_buf *buf;
+>> +	int cpu = event->cpu;
+>> +	int ret;
+>> +
+>> +	hwc->state = 0;
+>> +	mutex_lock(&hisi_ptt->mutex);
+>> +	if (hisi_ptt->trace_ctrl.status == HISI_PTT_TRACE_STATUS_ON) {
+>> +		pci_dbg(hisi_ptt->pdev, "trace has already started\n");
+>> +		goto stop;
+>> +	}
+>> +
+>> +	if (cpu == -1)
+>> +		cpu = hisi_ptt->trace_ctrl.default_cpu;
+>> +
+>> +	/*
+>> +	 * Handle the interrupt on the same cpu which starts the trace to avoid
+>> +	 * context mismatch. Otherwise we'll trigger the WARN from the perf
+>> +	 * core in event_function_local().
+>> +	 */
+>> +	WARN_ON(irq_set_affinity(pci_irq_vector(hisi_ptt->pdev, HISI_PTT_TRACE_DMA_IRQ),
+>> +				 cpumask_of(cpu)));
+>> +
+>> +	ret = hisi_ptt_alloc_trace_buf(hisi_ptt);
+>> +	if (ret) {
+>> +		pci_dbg(hisi_ptt->pdev, "alloc trace buf failed, ret = %d\n", ret);
+>> +		goto stop;
+>> +	}
+>> +
+>> +	buf = perf_aux_output_begin(handle, event);
+>> +	if (!buf) {
+>> +		pci_dbg(hisi_ptt->pdev, "aux output begin failed\n");
+>> +		goto stop;
+>> +	}
+>> +
+>> +	buf->pos = handle->head % buf->length;
+>> +
+>> +	ret = hisi_ptt_trace_start(hisi_ptt);
+>> +	if (ret) {
+>> +		pci_dbg(hisi_ptt->pdev, "trace start failed, ret = %d\n", ret);
+>> +		perf_aux_output_end(handle, 0);
+>> +		goto stop;
+>> +	}
+>> +
+>> +	mutex_unlock(&hisi_ptt->mutex);
+>> +	return;
+>> +stop:
+>> +	event->hw.state |= PERF_HES_STOPPED;
+>> +	mutex_unlock(&hisi_ptt->mutex);
+>> +}
+>> +
+>> +static void hisi_ptt_pmu_stop(struct perf_event *event, int flags)
+>> +{
+>> +	struct hisi_ptt *hisi_ptt = to_hisi_ptt(event->pmu);
+>> +	struct hw_perf_event *hwc = &event->hw;
+>> +
+>> +	if (hwc->state & PERF_HES_STOPPED)
+>> +		return;
+>> +
+>> +	mutex_lock(&hisi_ptt->mutex);
+>> +	if (hisi_ptt->trace_ctrl.status == HISI_PTT_TRACE_STATUS_ON) {
+>> +		hisi_ptt_trace_end(hisi_ptt);
+>> +		WARN(hisi_ptt_wait_trace_hw_idle(hisi_ptt), "Device is still busy");
+>> +		hisi_ptt_update_aux(hisi_ptt, hisi_ptt->trace_ctrl.buf_index, true);
+>> +	}
+>> +	mutex_unlock(&hisi_ptt->mutex);
+>> +
+>> +	hwc->state |= PERF_HES_STOPPED;
+>> +	perf_event_update_userpage(event);
+>> +	hwc->state |= PERF_HES_UPTODATE;
+>> +}
+>> +
+>> +static int hisi_ptt_pmu_add(struct perf_event *event, int flags)
+>> +{
+>> +	struct hisi_ptt *hisi_ptt = to_hisi_ptt(event->pmu);
+>> +	struct hw_perf_event *hwc = &event->hw;
+>> +	int cpu = event->cpu;
+>> +
+>> +	if (cpu == -1 && smp_processor_id() != hisi_ptt->trace_ctrl.default_cpu)
+>> +		return 0;
+>> +
+>> +	hwc->state = PERF_HES_STOPPED | PERF_HES_UPTODATE;
+>> +
+>> +	if (flags & PERF_EF_START) {
+>> +		hisi_ptt_pmu_start(event, PERF_EF_RELOAD);
+>> +		if (hwc->state & PERF_HES_STOPPED)
+>> +			return -EINVAL;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void hisi_ptt_pmu_del(struct perf_event *event, int flags)
+>> +{
+>> +	hisi_ptt_pmu_stop(event, PERF_EF_UPDATE);
+>> +}
+>> +
+>> +static void hisi_ptt_unregister_pmu(void *priv)
+>> +{
+>> +	perf_pmu_unregister(priv);
+>> +}
+>> +
+>> +static int hisi_ptt_register_pmu(struct hisi_ptt *hisi_ptt)
+>> +{
+>> +	char *pmu_name;
+>> +	int ret;
+>> +
+>> +	hisi_ptt->hisi_ptt_pmu = (struct pmu) {
+>> +		.module		= THIS_MODULE,
+>> +		.capabilities	= PERF_PMU_CAP_EXCLUSIVE | PERF_PMU_CAP_ITRACE,
+>> +		.task_ctx_nr	= perf_sw_context,
+>> +		.attr_groups	= hisi_ptt_pmu_groups,
+>> +		.event_init	= hisi_ptt_pmu_event_init,
+>> +		.setup_aux	= hisi_ptt_pmu_setup_aux,
+>> +		.free_aux	= hisi_ptt_pmu_free_aux,
+>> +		.start		= hisi_ptt_pmu_start,
+>> +		.stop		= hisi_ptt_pmu_stop,
+>> +		.add		= hisi_ptt_pmu_add,
+>> +		.del		= hisi_ptt_pmu_del,
+>> +	};
+>> +
+>> +	pmu_name = devm_kasprintf(&hisi_ptt->pdev->dev, GFP_KERNEL, "hisi_ptt%u_%u",
+>> +				  hisi_ptt->sicl_id, hisi_ptt->core_id);
+>> +	if (!pmu_name)
+>> +		return -ENOMEM;
+>> +
+>> +	ret = perf_pmu_register(&hisi_ptt->hisi_ptt_pmu, pmu_name, -1);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	return devm_add_action_or_reset(&hisi_ptt->pdev->dev,
+>> +					hisi_ptt_unregister_pmu,
+>> +					&hisi_ptt->hisi_ptt_pmu);
+>> +}
+>> +
+>> +/*
+>> + * Get RMR address if provided by the firmware.
+>> + * Return 0 if the IOMMU doesn't present or the policy of the
+>> + * IOMMU domain is passthrough or we get a usable RMR region.
+>> + * Otherwise a negative value is returned.
+>> + */
+>> +static int hisi_ptt_get_rmr(struct hisi_ptt *hisi_ptt)
+>> +{
+>> +	struct pci_dev *pdev = hisi_ptt->pdev;
+>> +	struct iommu_domain *iommu_domain;
+>> +	struct iommu_resv_region *region;
+>> +	LIST_HEAD(list);
+>> +
+>> +	/*
+>> +	 * Use direct DMA if IOMMU does not present or the policy of the
+>> +	 * IOMMU domain is passthrough.
+>> +	 */
+>> +	iommu_domain = iommu_get_domain_for_dev(&pdev->dev);
+>> +	if (!iommu_domain || iommu_domain->type == IOMMU_DOMAIN_IDENTITY)
+>> +		return 0;
+>> +
+>> +	iommu_get_resv_regions(&pdev->dev, &list);
+>> +	list_for_each_entry(region, &list, list)
+>> +		if (region->type == IOMMU_RESV_DIRECT &&
+>> +		    region->length >= HISI_PTT_TRACE_BUFFER_SIZE) {
+>> +			hisi_ptt->trace_ctrl.has_rmr = true;
+>> +			hisi_ptt->trace_ctrl.rmr_addr = region->start;
+>> +			hisi_ptt->trace_ctrl.rmr_length = region->length;
+>> +			break;
+>> +		}
+>> +
+>> +	iommu_put_resv_regions(&pdev->dev, &list);
+>> +	return hisi_ptt->trace_ctrl.has_rmr ? 0 : -ENOMEM;
+>> +}
+>> +
+>> +static int hisi_ptt_probe(struct pci_dev *pdev,
+>> +			  const struct pci_device_id *id)
+>> +{
+>> +	struct hisi_ptt *hisi_ptt;
+>> +	int ret;
+>> +
+>> +	hisi_ptt = devm_kzalloc(&pdev->dev, sizeof(*hisi_ptt), GFP_KERNEL);
+>> +	if (!hisi_ptt)
+>> +		return -ENOMEM;
+>> +
+>> +	mutex_init(&hisi_ptt->mutex);
+>> +	hisi_ptt->pdev = pdev;
+>> +
+>> +	/*
+>> +	 * Lifetime of pci_dev is longer than hisi_ptt,
+>> +	 * so directly reference to the pci name string.
+>> +	 */
+>> +	hisi_ptt->name = pci_name(hisi_ptt->pdev);
+>> +	pci_set_drvdata(pdev, hisi_ptt);
+>> +
+>> +	ret = pcim_enable_device(pdev);
+>> +	if (ret) {
+>> +		pci_err(pdev, "failed to enable device, ret = %d.\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = pcim_iomap_regions(pdev, BIT(2), hisi_ptt->name);
+>> +	if (ret) {
+>> +		pci_err(pdev, "failed to remap io memory, ret = %d.\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	hisi_ptt->iobase = pcim_iomap_table(pdev)[2];
+>> +
+>> +	ret = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(64));
+>> +	if (ret) {
+>> +		pci_err(pdev, "failed to set 64 bit dma mask, ret = %d.\n", ret);
+>> +		return ret;
+>> +	}
+>> +	pci_set_master(pdev);
+>> +
+>> +	ret = hisi_ptt_register_irq(hisi_ptt);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	hisi_ptt_init_ctrls(hisi_ptt);
+>> +
+>> +	ret = hisi_ptt_register_pmu(hisi_ptt);
+>> +	if (ret) {
+>> +		pci_err(pdev, "failed to register pmu device, ret = %d", ret);
+>> +		return ret;
+>> +	}
+> 
+> If this fails the pci_free_irq_vectors() is not called.
+> 
+
+It'll be called as we've registered a devm callback when
+allocating the irq vector. See hisi_ptt_register_irq().
+
+> I am out of time for today - I will continue tomorrow.
+> 
+
+Sure. Thanks!
+Yicong
+
+> Thanks,
+> Mathieu
+> 
+>> +
+>> +	ret = hisi_ptt_get_rmr(hisi_ptt);
+>> +	if (ret) {
+>> +		pci_err(pdev, "failed to get RMR region, ret = %d", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	/* Register the bus notifier for dynamically updating the filter list */
+>> +	hisi_ptt->hisi_ptt_nb.notifier_call = hisi_ptt_notifier_call;
+>> +	ret = bus_register_notifier(&pci_bus_type, &hisi_ptt->hisi_ptt_nb);
+>> +	if (ret)
+>> +		pci_warn(pdev, "failed to register filter update notifier, ret = %d", ret);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +void hisi_ptt_remove(struct pci_dev *pdev)
+>> +{
+>> +	struct hisi_ptt *hisi_ptt = pci_get_drvdata(pdev);
+>> +
+>> +	bus_unregister_notifier(&pci_bus_type, &hisi_ptt->hisi_ptt_nb);
+>> +
+>> +	/* Cancel any work that has been queued */
+>> +	cancel_delayed_work_sync(&hisi_ptt->work);
+>> +
+>> +	if (hisi_ptt->trace_ctrl.status == HISI_PTT_TRACE_STATUS_ON)
+>> +		hisi_ptt_trace_end(hisi_ptt);
+>> +
+>> +	hisi_ptt_free_trace_buf(hisi_ptt);
+>> +	hisi_ptt_release_filters(hisi_ptt);
+>> +}
+>> +
+>> +static const struct pci_device_id hisi_ptt_id_tbl[] = {
+>> +	{ PCI_DEVICE(PCI_VENDOR_ID_HUAWEI, 0xa12e) },
+>> +	{ }
+>> +};
+>> +MODULE_DEVICE_TABLE(pci, hisi_ptt_id_tbl);
+>> +
+>> +static struct pci_driver hisi_ptt_driver = {
+>> +	.name = "hisi_ptt",
+>> +	.id_table = hisi_ptt_id_tbl,
+>> +	.probe = hisi_ptt_probe,
+>> +	.remove = hisi_ptt_remove,
+>> +};
+>> +module_pci_driver(hisi_ptt_driver);
+>> +
+>> +MODULE_LICENSE("GPL v2");
+>> +MODULE_AUTHOR("Yicong Yang <yangyicong@hisilicon.com>");
+>> +MODULE_DESCRIPTION("Driver for HiSilicon PCIe tune and trace device");
+>> -- 
+>> 2.33.0
+>>
+> .
+> 
