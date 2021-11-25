@@ -2,191 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2B445E02E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 19:03:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1421745E06E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 19:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238512AbhKYSG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 13:06:57 -0500
-Received: from pegase2.c-s.fr ([93.17.235.10]:40331 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348546AbhKYSEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 13:04:55 -0500
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4J0QTs10qjz9sSs;
-        Thu, 25 Nov 2021 18:53:37 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id v6aAk9oeh5-y; Thu, 25 Nov 2021 18:53:37 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4J0QTm735lz9sSx;
-        Thu, 25 Nov 2021 18:53:32 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E18958B77E;
-        Thu, 25 Nov 2021 18:53:32 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id J1-XXP08DUs7; Thu, 25 Nov 2021 18:53:32 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.227])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 33FB48B788;
-        Thu, 25 Nov 2021 18:53:32 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1APHrLUa385547
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 25 Nov 2021 18:53:21 +0100
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1APHrLjB385546;
-        Thu, 25 Nov 2021 18:53:21 +0100
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, alex@ghiti.fr
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-mm@kvack.org
-Subject: [PATCH v2 rebased 9/9] powerpc: Simplify and move arch_randomize_brk()
-Date:   Thu, 25 Nov 2021 18:52:58 +0100
-Message-Id: <27281d506c4c1705143516e5f2558f775c3cfbe3.1637862579.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <cover.1637862579.git.christophe.leroy@csgroup.eu>
-References: <cover.1637862579.git.christophe.leroy@csgroup.eu>
+        id S234998AbhKYSOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 13:14:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233600AbhKYSMk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 13:12:40 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D5DAC06137D;
+        Thu, 25 Nov 2021 10:02:22 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id x15so28739659edv.1;
+        Thu, 25 Nov 2021 10:02:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZJ+SaV/eDM4q53VkttaI0dp2MED2ax+NU0/r940A7o4=;
+        b=Qu8819WrY12xyyyyok1zR9A+YMBN8poogIQOKBPMIa/UTfYyJq4TAA6lpI0Z/W2Us5
+         xy0zcqi2ewUo9XrOBFoyk+zFVjZ+9/olz7NE9ULXIvn1qdSuKbwRtTjDI4tfmpxutwwA
+         ZcY/uZzK8kk870L6/J4NPVFtlZgLQqcxHb+8XORolmSOVKJIJ5/4m9E8eQfjuAYz2fj9
+         YtzCwUZRI4w9LlgNVW+4YF0XKYT6y9uIsefi9wKJH7FfHNnc7UOqzjGr236lkwrnTAQf
+         UoK2SIdONgUoCQsfQAgwgku9wGcCqE5oST8Q8AyZXHiLyQWzNCYgUPj7wHeFbIGetYIf
+         N1iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZJ+SaV/eDM4q53VkttaI0dp2MED2ax+NU0/r940A7o4=;
+        b=a7bAkexy2yKxSl27Gagnp9kFCGHF+Q0wB9wXGYJ/LpCPg31onuy4RV2S6aEtWO9q9Y
+         0EolfGCYl6OR4SaHaJ81YBGOBCwL+aZ+17KLQ0oOyI5oEmdhmxZpmJguc4lZelCrSPDZ
+         MlEPv5TFgoGk71dvDZGDkx9PKxC7UPwYxr7Miols0FpOgT7HmQ0oKOX/LaYLZvoscdwo
+         MaQ7pi3gEvwjjjxS22lgrVTyTw2A6BLQEddMP6OV4WoWVBBVhpr8brTiAQ+DekmHkAtk
+         9tq9YHVnp9awRrb2vGKgc5f/KO7YFtm7zgWG3YkUDdg2mPXp4/hS1MeXoAZ1dUj02iEE
+         JnIw==
+X-Gm-Message-State: AOAM530Sb4XLpL9OpGJ8IlxcQ/Xy802tm3VONZkXO2MS9aeucXHMzIt8
+        OCR75QiZu1YWYNuQSofuEGdB1udYhsCkoLGfRcQ=
+X-Google-Smtp-Source: ABdhPJzdU3cWnsA12BQIupjc5eX0+2HubATbsuDvAdmDgOFkpDSZnb5YKJBtAXnUxTV2x/1FiK/ontL5OC8P89AvEp0=
+X-Received: by 2002:a50:d883:: with SMTP id p3mr40853791edj.94.1637863340496;
+ Thu, 25 Nov 2021 10:02:20 -0800 (PST)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1637862777; l=4141; s=20211009; h=from:subject:message-id; bh=8tm/fqiMg9uYSM5VnoNA37ImSq9p8NMXx1XalKNqtIA=; b=nnGiMZN2zYzBJjmKb87nUq4f2ZbYOCT7sUIKO9hYgqY1U93QzgBna2Naf2IjYXEUt4FcTWppGRVA cExCkv8sBkS1D1BClajitXILblKt4husvxu/VKH4Lhb07+XyAFwd
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+References: <20211122153233.9924-1-mhocko@kernel.org> <20211122153233.9924-3-mhocko@kernel.org>
+ <YZ06nna7RirAI+vJ@pc638.lan> <20211123170238.f0f780ddb800f1316397f97c@linux-foundation.org>
+ <YZ6cfoQah8Wo1eSZ@pc638.lan> <YZ9Nb2XA/OGWL1zz@dhcp22.suse.cz>
+In-Reply-To: <YZ9Nb2XA/OGWL1zz@dhcp22.suse.cz>
+From:   Uladzislau Rezki <urezki@gmail.com>
+Date:   Thu, 25 Nov 2021 19:02:09 +0100
+Message-ID: <CA+KHdyUFjqdhkZdTH=4k=ZQdKWs8MauN1NjXXwDH6J=YDuFOPA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] mm/vmalloc: add support for __GFP_NOFAIL
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
+        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arch_randomize_brk() is only needed for hash on book3s/64, for other
-platforms the one provided by the default mmap layout is good enough.
+On Thu, Nov 25, 2021 at 9:46 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Wed 24-11-21 21:11:42, Uladzislau Rezki wrote:
+> > On Tue, Nov 23, 2021 at 05:02:38PM -0800, Andrew Morton wrote:
+> > > On Tue, 23 Nov 2021 20:01:50 +0100 Uladzislau Rezki <urezki@gmail.com> wrote:
+> > >
+> > > > On Mon, Nov 22, 2021 at 04:32:31PM +0100, Michal Hocko wrote:
+> > > > > From: Michal Hocko <mhocko@suse.com>
+> > > > >
+> > > > > Dave Chinner has mentioned that some of the xfs code would benefit from
+> > > > > kvmalloc support for __GFP_NOFAIL because they have allocations that
+> > > > > cannot fail and they do not fit into a single page.
+> > >
+> > > Perhaps we should tell xfs "no, do it internally".  Because this is a
+> > > rather nasty-looking thing - do we want to encourage other callsites to
+> > > start using it?
+> > >
+> > > > > The large part of the vmalloc implementation already complies with the
+> > > > > given gfp flags so there is no work for those to be done. The area
+> > > > > and page table allocations are an exception to that. Implement a retry
+> > > > > loop for those.
+> > > > >
+> > > > > Add a short sleep before retrying. 1 jiffy is a completely random
+> > > > > timeout. Ideally the retry would wait for an explicit event - e.g.
+> > > > > a change to the vmalloc space change if the failure was caused by
+> > > > > the space fragmentation or depletion. But there are multiple different
+> > > > > reasons to retry and this could become much more complex. Keep the retry
+> > > > > simple for now and just sleep to prevent from hogging CPUs.
+> > > > >
+> > >
+> > > Yes, the horse has already bolted.  But we didn't want that horse anyway ;)
+> > >
+> > > I added GFP_NOFAIL back in the mesozoic era because quite a lot of
+> > > sites were doing open-coded try-forever loops.  I thought "hey, they
+> > > shouldn't be doing that in the first place, but let's at least
+> > > centralize the concept to reduce code size, code duplication and so
+> > > it's something we can now grep for".  But longer term, all GFP_NOFAIL
+> > > sites should be reworked to no longer need to do the retry-forever
+> > > thing.  In retrospect, this bright idea of mine seems to have added
+> > > license for more sites to use retry-forever.  Sigh.
+> > >
+> > > > > +               if (nofail) {
+> > > > > +                       schedule_timeout_uninterruptible(1);
+> > > > > +                       goto again;
+> > > > > +               }
+> > >
+> > > The idea behind congestion_wait() is to prevent us from having to
+> > > hard-wire delays like this.  congestion_wait(1) would sleep for up to
+> > > one millisecond, but will return earlier if reclaim events happened
+> > > which make it likely that the caller can now proceed with the
+> > > allocation event, successfully.
+> > >
+> > > However it turns out that congestion_wait() was quietly broken at the
+> > > block level some time ago.  We could perhaps resurrect the concept at
+> > > another level - say by releasing congestion_wait() callers if an amount
+> > > of memory newly becomes allocatable.  This obviously asks for inclusion
+> > > of zone/node/etc info from the congestion_wait() caller.  But that's
+> > > just an optimization - if the newly-available memory isn't useful to
+> > > the congestion_wait() caller, they just fail the allocation attempts
+> > > and wait again.
+> > >
+> > > > well that is sad...
+> > > > I have raised two concerns in our previous discussion about this change,
+> > >
+> > > Can you please reiterate those concerns here?
+> > >
+> > 1. I proposed to repeat(if fails) in one solid place, i.e. get rid of
+> > duplication and spreading the logic across several places. This is about
+> > simplification.
+>
+> I am all for simplifications. But the presented simplification lead to 2) and ...
+>
+> > 2. Second one is about to do an unwinding and release everything what we
+> > have just accumulated in terms of memory consumption. The failure might
+> > occur, if so a condition we are in is a low memory one or high memory
+> > pressure. In this case, since we are about to sleep some milliseconds
+> > in order to repeat later, IMHO it makes sense to release memory:
+> >
+> > - to prevent killing apps or possible OOM;
+> > - we can end up looping quite a lot of time or even forever if users do
+> >   nasty things with vmalloc API and __GFP_NOFAIL flag.
+>
+> ... this is where we disagree and I have tried to explain why. The primary
+> memory to allocate are pages to back the vmalloc area. Failing to
+> allocate few page tables - which btw. do not fail as they are order-0 -
+> and result into the whole and much more expensive work to allocate the
+> former is really wasteful. You've had a concern about OOM killer
+> invocation while retrying the page table allocation but you should
+> realize that page table allocations might already invoke OOM killer so that
+> is absolutely nothing new.
+>
+We are in a slow path and this is a corner case, it means we will
+timeout for many
+milliseconds, for example for CONFIG_HZ_100 it is 10 milliseconds. I would agree
+with you if it was requesting some memory and repeating in a tight loop because
+of any time constraint and workloads sensitive to latency.
 
-Move it to hash_utils.c and use randomize_page() like the generic one.
+Is it sensitive to any workload? If so, we definitely can not go with
+any delay there.
 
-And properly opt out the radix case instead of making an assumption
-on mmu_highuser_ssize.
+As for OOM, right you are. But it also can be that we are the source
+who triggers it,
+directly or indirectly. Unwinding and cleaning is a maximum what we
+actually can do
+here staying fair to OOM.
 
-Also change to a 32M range like most other architectures instead of 8M.
+Therefore i root for simplification and OOM related concerns :) But
+maybe there will
+be other opinions.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v3: Add missing include <linux/elf-randomize.h>
+Thanks!
 
-v2: New
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/process.c         | 41 ---------------------------
- arch/powerpc/mm/book3s64/hash_utils.c | 19 +++++++++++++
- include/linux/sizes.h                 |  2 ++
- 3 files changed, 21 insertions(+), 41 deletions(-)
-
-diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-index a64cfbb85ca2..44c4bce5211d 100644
---- a/arch/powerpc/kernel/process.c
-+++ b/arch/powerpc/kernel/process.c
-@@ -34,10 +34,8 @@
- #include <linux/ftrace.h>
- #include <linux/kernel_stat.h>
- #include <linux/personality.h>
--#include <linux/random.h>
- #include <linux/hw_breakpoint.h>
- #include <linux/uaccess.h>
--#include <linux/elf-randomize.h>
- #include <linux/pkeys.h>
- #include <linux/seq_buf.h>
- 
-@@ -2310,42 +2308,3 @@ unsigned long arch_align_stack(unsigned long sp)
- 		sp -= get_random_int() & ~PAGE_MASK;
- 	return sp & ~0xf;
- }
--
--static inline unsigned long brk_rnd(void)
--{
--        unsigned long rnd = 0;
--
--	/* 8MB for 32bit, 1GB for 64bit */
--	if (is_32bit_task())
--		rnd = (get_random_long() % (1UL<<(23-PAGE_SHIFT)));
--	else
--		rnd = (get_random_long() % (1UL<<(30-PAGE_SHIFT)));
--
--	return rnd << PAGE_SHIFT;
--}
--
--unsigned long arch_randomize_brk(struct mm_struct *mm)
--{
--	unsigned long base = mm->brk;
--	unsigned long ret;
--
--#ifdef CONFIG_PPC_BOOK3S_64
--	/*
--	 * If we are using 1TB segments and we are allowed to randomise
--	 * the heap, we can put it above 1TB so it is backed by a 1TB
--	 * segment. Otherwise the heap will be in the bottom 1TB
--	 * which always uses 256MB segments and this may result in a
--	 * performance penalty.
--	 */
--	if (!radix_enabled() && !is_32bit_task() && (mmu_highuser_ssize == MMU_SEGSIZE_1T))
--		base = max_t(unsigned long, mm->brk, 1UL << SID_SHIFT_1T);
--#endif
--
--	ret = PAGE_ALIGN(base + brk_rnd());
--
--	if (ret < mm->brk)
--		return mm->brk;
--
--	return ret;
--}
--
-diff --git a/arch/powerpc/mm/book3s64/hash_utils.c b/arch/powerpc/mm/book3s64/hash_utils.c
-index 7ecadf5e6bf9..68a5468b0f19 100644
---- a/arch/powerpc/mm/book3s64/hash_utils.c
-+++ b/arch/powerpc/mm/book3s64/hash_utils.c
-@@ -37,6 +37,8 @@
- #include <linux/cpu.h>
- #include <linux/pgtable.h>
- #include <linux/debugfs.h>
-+#include <linux/random.h>
-+#include <linux/elf-randomize.h>
- 
- #include <asm/interrupt.h>
- #include <asm/processor.h>
-@@ -2171,3 +2173,20 @@ void __init print_system_hash_info(void)
- 	if (htab_hash_mask)
- 		pr_info("htab_hash_mask    = 0x%lx\n", htab_hash_mask);
- }
-+
-+unsigned long arch_randomize_brk(struct mm_struct *mm)
-+{
-+	/*
-+	 * If we are using 1TB segments and we are allowed to randomise
-+	 * the heap, we can put it above 1TB so it is backed by a 1TB
-+	 * segment. Otherwise the heap will be in the bottom 1TB
-+	 * which always uses 256MB segments and this may result in a
-+	 * performance penalty.
-+	 */
-+	if (is_32bit_task())
-+		return randomize_page(mm->brk, SZ_32M);
-+	else if (!radix_enabled() && mmu_highuser_ssize == MMU_SEGSIZE_1T)
-+		return randomize_page(max_t(unsigned long, mm->brk, SZ_1T), SZ_1G);
-+	else
-+		return randomize_page(mm->brk, SZ_1G);
-+}
-diff --git a/include/linux/sizes.h b/include/linux/sizes.h
-index 1ac79bcee2bb..84aa448d8bb3 100644
---- a/include/linux/sizes.h
-+++ b/include/linux/sizes.h
-@@ -47,6 +47,8 @@
- #define SZ_8G				_AC(0x200000000, ULL)
- #define SZ_16G				_AC(0x400000000, ULL)
- #define SZ_32G				_AC(0x800000000, ULL)
-+
-+#define SZ_1T				_AC(0x10000000000, ULL)
- #define SZ_64T				_AC(0x400000000000, ULL)
- 
- #endif /* __LINUX_SIZES_H__ */
--- 
-2.33.1
-
+--
+Uladzislau Rezki
