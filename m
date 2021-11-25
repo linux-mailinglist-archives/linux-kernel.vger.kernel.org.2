@@ -2,102 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A78B45E139
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 20:57:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFAF745E0D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 20:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356803AbhKYUAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 15:00:33 -0500
-Received: from mail-m963.mail.126.com ([123.126.96.3]:54700 "EHLO
-        mail-m963.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbhKYT6c (ORCPT
+        id S1350023AbhKYTHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 14:07:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350057AbhKYTFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 14:58:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=kAsEn
-        EnfaHIRU+yztl06WBOn7SgNxzGTN5esiiYf4r4=; b=Qu4pJYWW8imp68jv2YSvN
-        QpAU0MPRk8eLlgOOT3NOJS+kuAc7LgHDjqu5IiPP14y5ZSZXxMGQE08h8JG6ApJx
-        shRZkXhk1PzC49iYeV7ma4zBfTlSDFfP4BR0vY3cO7qFiYDxTejPyoAxlnZ1eN5V
-        vW/gkka6ioGtp1wRTpgB3o=
-Received: from localhost.localdomain (unknown [221.218.15.192])
-        by smtp8 (Coremail) with SMTP id NORpCgCXU7yum59hJRBYCg--.2408S2;
-        Thu, 25 Nov 2021 22:20:30 +0800 (CST)
-From:   Honglei Wang <jameshongleiwang@126.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] sched/fair: prevent cpu burst too many periods
-Date:   Thu, 25 Nov 2021 22:20:28 +0800
-Message-Id: <20211125142028.21790-1-jameshongleiwang@126.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        Thu, 25 Nov 2021 14:05:46 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE0D8C061746;
+        Thu, 25 Nov 2021 11:02:34 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637866952;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=T2XxSbGmOETo/1xgmmcSAzfWmmIjkyNEg8evDzTjJq0=;
+        b=NQULa9X3po7Ns6LXdqV6rPSwg71DXnQBLl/L+KXsUdHndmwLTv3Cx9FV8SDGIesqN/obbO
+        Ootq4trFyFRcM9ZAgwPegBS38vgbclX/kPXah6D573VvkBlc5PLdJBJMfadrAsFv5RsoYl
+        B4TMsLGcipP8eR6dap1VYYo7gin7xdfN8SsbfyqwZAAlW66CwdYsF8Nj6pv8C0pgx60TiS
+        igH7F5tmNXlpqzyk8K2WdyKgsTkL8icAQNdNtyITBdWi18emZGHiSWVIJtqUjJQklRNOIO
+        LZ0oRY2O6xN82p7FM4Rtzr1pMdmoXLlZFQ8UPZwr8mQqcH96u8yhdxs2ANEXAA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637866952;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=T2XxSbGmOETo/1xgmmcSAzfWmmIjkyNEg8evDzTjJq0=;
+        b=G8qVjTGkkC3XPiDR57L960IIfQOFtzeAJ3zNoL2Uoh3mT7x4by2XrtKWHPJktuMYwTIYuW
+        jM+DGTreoopjzGBg==
+To:     isaku.yamahata@intel.com, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [RFC PATCH v3 09/59] KVM: Enable hardware before doing arch VM
+ initialization
+In-Reply-To: <0763173807466be61a823cd30c2c334adecb0a95.1637799475.git.isaku.yamahata@intel.com>
+References: <cover.1637799475.git.isaku.yamahata@intel.com>
+ <0763173807466be61a823cd30c2c334adecb0a95.1637799475.git.isaku.yamahata@intel.com>
+Date:   Thu, 25 Nov 2021 20:02:31 +0100
+Message-ID: <8735nkkqig.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: NORpCgCXU7yum59hJRBYCg--.2408S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Zw17Xw4DKw4rWw45JryDGFg_yoW8ur45pF
-        sxXFy3JF40qr1jvanrArnagFyrZ3s3Z347CFWUGayrZw45W3yjqr15Ka1jgFn0vr1rtF1F
-        vF4YqFW3Cryj9a7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j6MKtUUUUU=
-X-Originating-IP: [221.218.15.192]
-X-CM-SenderInfo: 5mdpv2pkrqwzphlzt0bj6rjloofrz/1tbiYBhWrVpEFXhVXwABs7
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tasks might get more cpu than quota in persistent periods due to the
-cpu burst introduced by commit f4183717b370 ("sched/fair: Introduce the
-burstable CFS controller"). For example, one task group whose quota is
-100ms per period and can get 100ms burst, and its avg utilization is
-around 105ms per period. Once this group gets a free period which
-leaves enough runtime, it has a chance to get computting power more
-than its quota for 10 periods or more in common bandwidth configuration
-(say, 100ms as period). It means tasks can 'steal' the bursted power to
-do daily jobs because all tasks could be scheduled out or sleep to help
-the group get free periods.
+On Wed, Nov 24 2021 at 16:19, isaku yamahata wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+>
+> Swap the order of hardware_enable_all() and kvm_arch_init_vm() to
+> accommodate Intel's TDX, which needs VMX to be enabled during VM init in
+> order to make SEAMCALLs.
+>
+> This also provides consistent ordering between kvm_create_vm() and
+> kvm_destroy_vm() with respect to calling kvm_arch_destroy_vm() and
+> hardware_disable_all().
 
-I believe the purpose of cpu burst is to help handling bursty worklod.
-But if one task group can get computting power more than its quota for
-persistent periods even there is no bursty workload, it's kinda broke.
+So far so good. This should also explain that there is no downside with
+that order change especially as this order has been that way for a long
+time.
 
-This patch limits the burst to one period so that it won't break the
-quota limit for long. With this, we can give task group more cpu burst
-power to handle the real bursty workload and don't worry about the
-'stealing'.
+Thanks,
 
-Signed-off-by: Honglei Wang <jameshongleiwang@126.com>
----
- kernel/sched/fair.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6e476f6d9435..cc2c4567fc81 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4640,14 +4640,17 @@ void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b)
- 	if (unlikely(cfs_b->quota == RUNTIME_INF))
- 		return;
- 
--	cfs_b->runtime += cfs_b->quota;
--	runtime = cfs_b->runtime_snap - cfs_b->runtime;
-+	runtime = cfs_b->runtime_snap - cfs_b->quota - cfs_b->runtime;
-+
- 	if (runtime > 0) {
- 		cfs_b->burst_time += runtime;
- 		cfs_b->nr_burst++;
-+		cfs_b->runtime = cfs_b->quota;
-+	} else {
-+		cfs_b->runtime += cfs_b->quota;
-+		cfs_b->runtime = min(cfs_b->runtime, cfs_b->quota + cfs_b->burst);
- 	}
- 
--	cfs_b->runtime = min(cfs_b->runtime, cfs_b->quota + cfs_b->burst);
- 	cfs_b->runtime_snap = cfs_b->runtime;
- }
- 
--- 
-2.14.1
-
+      tglx
