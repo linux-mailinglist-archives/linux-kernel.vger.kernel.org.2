@@ -2,140 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4E545D221
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 01:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 558DE45D224
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 01:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345994AbhKYAfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 19:35:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353254AbhKYAdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 19:33:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08336610A1;
-        Thu, 25 Nov 2021 00:30:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637800227;
-        bh=K1pqvi8+0Zb+ovV0NRF5pJj40cbHS21w9/SxAzRAl9Q=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=WNCUc7WEmj++gzQzRXABZ3hB1OT2/P7VmyJxowiDhOZPiRcS+HyHYE8l9zARUGFep
-         KjNX5Wl26XjuL0tclIb9N+ZK62GZehJNsDzoyc+2fHRL30KFn4ldM9Jpp3Sk3+o8Kb
-         mZ4+bcQ5c/3bMB+QA1ayuMarRGSKYwWJ9ShxwsOHgyDNd1JLDiGaueKU55ZkUpQnYL
-         fTA3wDHXqgAfFhAkp2B0GyLfpMea1uIbGzvVzEhFqYktVQxHu6LTi16fzRKtpUL68a
-         UlUE/ebmYgZv4dziq9GaSUGUj8jX4bTxv6DrGuy3S/euu4X44pt56wENjNaiQq4J+4
-         59WzOVRU8oXHQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id CE1555C0A31; Wed, 24 Nov 2021 16:30:26 -0800 (PST)
-Date:   Wed, 24 Nov 2021 16:30:26 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
+        id S1346557AbhKYAiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 19:38:02 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:40506 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1346686AbhKYAgA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 19:36:00 -0500
+Received: from callcc.thunk.org ([64.129.1.15])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1AP0WWkq015823
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Nov 2021 19:32:34 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 4C07E4200F8; Wed, 24 Nov 2021 19:32:31 -0500 (EST)
+Date:   Wed, 24 Nov 2021 19:32:31 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 3/6] rcu/nocb: Optimize kthreads and rdp initialization
-Message-ID: <20211125003026.GT641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211123003708.468409-1-frederic@kernel.org>
- <20211123003708.468409-4-frederic@kernel.org>
+        Michal Hocko <mhocko@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH v2 2/4] mm/vmalloc: add support for __GFP_NOFAIL
+Message-ID: <YZ7Zn8pEp9D/oqS1@mit.edu>
+References: <20211122153233.9924-1-mhocko@kernel.org>
+ <20211122153233.9924-3-mhocko@kernel.org>
+ <YZ06nna7RirAI+vJ@pc638.lan>
+ <20211123170238.f0f780ddb800f1316397f97c@linux-foundation.org>
+ <163772381628.1891.9102201563412921921@noble.neil.brown.name>
+ <20211123194833.4711add38351d561f8a1ae3e@linux-foundation.org>
+ <163773141164.1891.1440920123016055540@noble.neil.brown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211123003708.468409-4-frederic@kernel.org>
+In-Reply-To: <163773141164.1891.1440920123016055540@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 01:37:05AM +0100, Frederic Weisbecker wrote:
-> Currently cpumask_available() is used to prevent from unwanted
-> NOCB initialization. However if neither "rcu_nocbs=" nor "nohz_full="
-> parameters are passed but CONFIG_CPUMASK_OFFSTACK=n, the initialization
-> path is still taken, running through all sorts of needless operations
-> and iterations on an empty cpumask.
+On Wed, Nov 24, 2021 at 04:23:31PM +1100, NeilBrown wrote:
 > 
-> Fix this with relying on a real initialization state instead. This
-> also optimize kthreads creation, sparing iteration over all online CPUs
-> when nocb isn't initialized.
-> 
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: Uladzislau Rezki <urezki@gmail.com>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> ---
->  kernel/rcu/tree_nocb.h | 24 +++++++++++++++++-------
->  1 file changed, 17 insertions(+), 7 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index e1cb06840454..d8ed3ee47a67 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -60,6 +60,9 @@ static inline bool rcu_current_is_nocb_kthread(struct rcu_data *rdp)
->   * Parse the boot-time rcu_nocb_mask CPU list from the kernel parameters.
->   * If the list is invalid, a warning is emitted and all CPUs are offloaded.
->   */
-> +
-> +static bool rcu_nocb_is_setup;
+> It would get particularly painful if some system call started returned
+> -ENOMEM, which had never returned that before.  I note that ext4 uses
+> __GFP_NOFAIL when handling truncate.  I don't think user-space would be
+> happy with ENOMEM from truncate (or fallocate(PUNHC_HOLE)), though a
+> recent commit which adds it focuses more on wanting to avoid the need
+> for fsck.
 
-I am taking this as is for now (modulo wordsmithing), but should this
-variable instead be in the rcu_state structure?  The advantage of putting
-it there is keeping the state together.  The corresponding disadvantage
-is that the state is globally visible within RCU.
+If the inode is in use (via an open file descriptor) when it is
+unlocked, we can't actually do the truncate until the inode is
+evicted, and at that point, there is no user space to return to.  For
+that reason, the evict_inode() method is not *allowed* to fail.  So
+this is why we need to use GFP_NOFAIL or an open-coded retry loop.
+The alternative would be to mark the file system corrupt, and then
+either remount the file system, panic the system and reboot, or leave
+the file system corrupted ("don't worry, be happy").  I considered
+GFP_NOFAIL to be the lesser of the evils.  :-)
 
-Thoughts?
+If the VFS allowed evict_inode() to fail, all it could do is to put
+the inode back on the list of inodes to be later evicted --- which is
+to say, we would have to add a lot of complexity to effectively add a
+gigantic retry loop.  
 
-							Thanx, Paul
+Granted, we wouldn't need to be holding any locks in between retries,
+so perhaps it'a better than adding a retry loop deep in the guts of
+the ext4 truncate codepath.  But then we would need to worry about
+userspace getting ENOMEM for system calls which historically, users
+have traditionally never failing.  I suppose we could also solve this
+problem by adding retry logic in the top-level VFS truncate codepath,
+so instead of returning ENOMEM, we just retry the truncate(2) system
+call and hope that we have enough memory to succeed this time.
 
-> +
->  static int __init rcu_nocb_setup(char *str)
->  {
->  	alloc_bootmem_cpumask_var(&rcu_nocb_mask);
-> @@ -67,6 +70,7 @@ static int __init rcu_nocb_setup(char *str)
->  		pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
->  		cpumask_setall(rcu_nocb_mask);
->  	}
-> +	rcu_nocb_is_setup = true;
->  	return 1;
->  }
->  __setup("rcu_nocbs=", rcu_nocb_setup);
-> @@ -1159,13 +1163,17 @@ void __init rcu_init_nohz(void)
->  		need_rcu_nocb_mask = true;
->  #endif /* #if defined(CONFIG_NO_HZ_FULL) */
->  
-> -	if (!cpumask_available(rcu_nocb_mask) && need_rcu_nocb_mask) {
-> -		if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
-> -			pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
-> -			return;
-> +	if (need_rcu_nocb_mask) {
-> +		if (!cpumask_available(rcu_nocb_mask)) {
-> +			if (!zalloc_cpumask_var(&rcu_nocb_mask, GFP_KERNEL)) {
-> +				pr_info("rcu_nocb_mask allocation failed, callback offloading disabled.\n");
-> +				return;
-> +			}
->  		}
-> +		rcu_nocb_is_setup = true;
->  	}
-> -	if (!cpumask_available(rcu_nocb_mask))
-> +
-> +	if (!rcu_nocb_is_setup)
->  		return;
->  
->  #if defined(CONFIG_NO_HZ_FULL)
-> @@ -1267,8 +1275,10 @@ static void __init rcu_spawn_nocb_kthreads(void)
->  {
->  	int cpu;
->  
-> -	for_each_online_cpu(cpu)
-> -		rcu_spawn_cpu_nocb_kthread(cpu);
-> +	if (rcu_nocb_is_setup) {
-> +		for_each_online_cpu(cpu)
-> +			rcu_spawn_cpu_nocb_kthread(cpu);
-> +	}
->  }
->  
->  /* How many CB CPU IDs per GP kthread?  Default of -1 for sqrt(nr_cpu_ids). */
-> -- 
-> 2.25.1
-> 
+After all, can the userspace do if truncate() fails with ENOMEM?  It
+can fail the userspace program, which in the case of a long-running
+daemon such as mysqld, is basically the userspace equivalent of "panic
+and reboot", or it can retry truncate(2) syste call at the userspace
+level.
+
+Are we detecting a pattern here?  There will always be cases where the
+choice is "panic" or "retry".
+
+							- Ted
