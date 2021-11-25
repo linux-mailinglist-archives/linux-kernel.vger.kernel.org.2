@@ -2,50 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D738D45D41D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 06:20:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2284145D44C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 06:27:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236673AbhKYFX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 00:23:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36146 "EHLO mail.kernel.org"
+        id S232976AbhKYFat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 00:30:49 -0500
+Received: from mga04.intel.com ([192.55.52.120]:37710 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229748AbhKYFVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 00:21:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B1F661028;
-        Thu, 25 Nov 2021 05:18:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637817494;
-        bh=YDz9EtJ1GxSuD4rmvrjJYpxzhE5XyXCl2MBng7O/syk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jHy3ZUeKZkHU8eiLC4B+UNrfWpwPRUA7h1GxTFYSx7AwpUHz/JIKRoe4UjtSYGXiV
-         HRjUPiPdc41R4sKIogcMoXcLJVFCuq91tkT1cDOwSd14nG7E/9OdnDh/f0OpML2bpx
-         /b/asU6gdrj5YE2Hghy4ZDF4zaCPoU3MEzfyov86ZCN1NY5jCuG+R+6a7+QZCvvd52
-         fp/8OfPe4DJaLHvmnDU3wYCqo9lMaOVzeXi0vhCMu5RkN0A95T90JgRk0EbBgNukBa
-         sWfhV+zYR5ucLuXi15vhqS/Lz0+WPVL2FblGVWjiWceeL0IXwqlRpU5JAxuBLQ1YHv
-         yYx1LVCn2kGVQ==
-Date:   Thu, 25 Nov 2021 10:48:09 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Jason Wang <wangborong@cdjrlc.com>
-Cc:     salah.triki@gmail.com, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dmaengine: ppc4xx: remove unused variable `rval'
-Message-ID: <YZ8ckcRIvyLsFq81@matsya>
-References: <20211114060856.239314-1-wangborong@cdjrlc.com>
+        id S238444AbhKYF2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 00:28:48 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="234174725"
+X-IronPort-AV: E=Sophos;i="5.87,262,1631602800"; 
+   d="scan'208";a="234174725"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 21:25:37 -0800
+X-IronPort-AV: E=Sophos;i="5.87,262,1631602800"; 
+   d="scan'208";a="457721499"
+Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.249.174.10]) ([10.249.174.10])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 21:25:33 -0800
+Subject: Re: [kbuild-all] Re: [PATCH v43 01/15] Linux Random Number Generator
+To:     Stephan Mueller <smueller@chronox.de>, Tso Ted <tytso@mit.edu>,
+        linux-crypto@vger.kernel.org, kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, Willy Tarreau <w@1wt.eu>,
+        Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>
+References: <4641592.OV4Wx5bFTl@positron.chronox.de>
+ <202111221831.lPHo6KJJ-lkp@intel.com> <5540546.7F5nsSknLy@tauon.chronox.de>
+From:   "Chen, Rong A" <rong.a.chen@intel.com>
+Message-ID: <7ee4a94e-496e-67a0-897a-0dd84bbce72f@intel.com>
+Date:   Thu, 25 Nov 2021 13:25:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211114060856.239314-1-wangborong@cdjrlc.com>
+In-Reply-To: <5540546.7F5nsSknLy@tauon.chronox.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14-11-21, 14:08, Jason Wang wrote:
-> The variable used for returning status in
-> `ppc440spe_adma_dma2rxor_prep_src' function is never changed
-> and this function just need to return 0. Thus, the `rval' can
-> be removed and return 0 from `ppc440spe_adma_dma2rxor_prep_src'.
 
-Applied, thanks
 
--- 
-~Vinod
+On 11/22/2021 7:47 PM, Stephan Mueller wrote:
+> Am Montag, 22. November 2021, 11:33:26 CET schrieb kernel test robot:
+> 
+> Hi,
+> 
+>> All errors (new ones prefixed by >>):
+>>>> drivers/char/lrng/lrng_chacha20.c:32:8: error: structure variable
+>>>> 'chacha20' with 'latent_entropy' attribute has a non-integer field
+>>>> 'block'
+>>        32 | struct chacha20_state chacha20 __latent_entropy;
+>>
+>>           |        ^~~~~~~~~~~~~~
+>>
+>> vim +32 drivers/char/lrng/lrng_chacha20.c
+> 
+> Thanks for the notification.
+> 
+> I think this is a false-positive discussed before. __latent_entropy is
+> seemingly allowed for an entire linear buffer as seen in the declaration of
+> the variable input_pool_data in driver/char/random.c which is an array of u32.
+> 
+> The struct chacha20_state is a linear buffer of u32 words.
+> 
+> struct chacha20_block {
+>          u32 constants[4];
+>          union {
+>                  u32 u[CHACHA_KEY_SIZE_WORDS];
+>                  u8  b[CHACHA_KEY_SIZE];
+>          } key;
+>          u32 counter;
+>          u32 nonce[3];
+> };
+> 
+> Therefore it should be identical to the aforementioned example. The
+> __latent_entropy marker therefore seems to be appropriate for this structure.
+> 
+> Ciao
+> Stephan
+> 
+> 
+
+Hi Stephan,
+
+Thanks for the explanation, we'll add the error to the ignore list.
+
+Best Regards,
+Rong Chen
