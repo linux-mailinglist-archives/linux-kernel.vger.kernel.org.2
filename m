@@ -2,109 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9373D45E1CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:44:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8600D45E1CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:45:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357051AbhKYUru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 15:47:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48324 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237436AbhKYUpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 15:45:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B342B6104F;
-        Thu, 25 Nov 2021 20:42:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637872957;
-        bh=amR8tb2SzcBDz8KxsW8hK2Vsnwqpnwq5zTmXgdQLQMc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=PMg013MclxOrO0oPRBTgymV3fYnPG8IhfzcGwl+0saRahwX2HYXuUQJwBxvGpD14G
-         NdDXHB6bWbbhQKoCzGbq2sqIGYTE9UxDjCem5QReAK74X0pXACRCd81dhLh7TjwciI
-         6YuuPC/OcqAfFVnldTquP2O+jSrS2ZaDMW6Gom7LFxlWy08P5SwTU3VivQrlFzDAcD
-         CPPNk0Ab/wUAwCCsqvAhWdOsNdK5xOD017seR2KM+d9GSsdkMKUf3nVQjJfj1StQNv
-         Tp0P4FGGoWKCjKra8JLZ5J1TmgkdN9Na3hE3HSfnvrA7e0IqowKnVzXKBdMY5CBHLg
-         xF1Fet1c1Mr/A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 18B0540002; Thu, 25 Nov 2021 17:42:33 -0300 (-03)
-Date:   Thu, 25 Nov 2021 17:42:33 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: [FYI][PATCH 1/1] tools headers UAPI: Sync powerpc syscall table file
- changed by new futex_waitv syscall
-Message-ID: <YZ/1OU9mJuyS2HMa@kernel.org>
+        id S1357188AbhKYUsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 15:48:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233937AbhKYUqQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 15:46:16 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF46C06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 12:43:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=7qlcS+ge7hsZOtjwKm94/eIrDorkzsfp9oGAwvwAovg=;
+        t=1637872985; x=1639082585; b=eqDnE3qAf6sR5V6g82F6O91Mpbr/KJvdEpIUkX/q3bS9aCX
+        CK1lqXYsXpb7VmCmbzCsqpCT1otWv1gc4OOJ0d2xAF70AVljFuGTE0IEHiNKIJfi2Pew0P/Q3aafk
+        qN3lkvuVZKapTjLHdcbz4iAx36d9HI1+85fQObk43h5aZXHdjtHrDEPpPMmxxT3WhIIVWCWdF0vVA
+        PqYSUwXbkoxu2wmfOvuE4c1e+pQFn0ks9JPZjvl/wdjGiPTlboCN7YH9nxtMcdisAmVz3cCYmaM8g
+        FyHNqXUtHHAEdNNsLaKL9RqYP1Q1UkXcCwAD1Ls10fGMG8nSWoh+NyDZxl+UnT+g==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.95)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1mqLa2-002tB9-N1;
+        Thu, 25 Nov 2021 21:42:55 +0100
+Message-ID: <d4e9d61034eb6dd3afccc3d30e995ff89701e3b4.camel@sipsolutions.net>
+Subject: Re: [gcov] 1391efa952: BUG:KASAN:slab-out-of-bounds_in_gcov_info_add
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Hackmann <ghackmann@android.com>,
+        Tri Vo <trong@android.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>
+Cc:     "Sang, Oliver" <oliver.sang@intel.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "lkp@lists.01.org" <lkp@lists.01.org>, lkp <lkp@intel.com>
+Date:   Thu, 25 Nov 2021 21:42:47 +0100
+In-Reply-To: <CAHk-=wj7OZQcHPdcTz1cAXN1fdRJ4kqqeQHqOTP8CChHHS=bjQ@mail.gmail.com>
+References: <20211125142622.GD3109@xsang-OptiPlex-9020>
+         <a5274ba1922d5eaf9568886191e0a05bdfc55506.camel@sipsolutions.net>
+         <CAHk-=wj7OZQcHPdcTz1cAXN1fdRJ4kqqeQHqOTP8CChHHS=bjQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To pick the changes in this cset:
+On Thu, 2021-11-25 at 09:48 -0800, Linus Torvalds wrote:
+> 
+> The report isn't wonderful (the KASAN report is garbled, and the "code
+> disassembly" is not from the actual KASAN report, it's from the return
+> to user space code), but it blames a 8-byte read at
+> 
+>     gcov_info_add (kernel/gcov/clang.c:328)
+> 
+> which in that kernel version (1391efa952e8) is that
+> 
+>         for (i = 0; i < sfn_ptr->num_counters; i++)
+> ->              dfn_ptr->counters[i] += sfn_ptr->counters[i];
+> 
+> and so it looks like that 'sfn_ptr->counters[i]' access is the problem case.
+> 
 
-  a0eb2da92b715d0c ("futex: Wireup futex_waitv syscall")
+Not sure. Note the +=, so it has to read both sides first. Would KASAN
+report the follow-up write as well?
 
-That add support for this new syscall in tools such as 'perf trace'.
+The loop is going to sfn_ptr->num_counters, so that seems less likely to
+get confused, unless clang has a bug, which is where the original
+counters and num_counters comes from, afaict?
 
-For instance, this is now possible (adapted from the x86_64 test output):
+I mean, we seem to always consistently allocate counters from
+num_counters for these things, but here we use sfn_ptr and dfn_ptr, and
+the loop checks only dfn_ptr. Just being suspicious I guess, but I
+really don't know anything about this. All I know that vmalloc made this
+really slow on ARCH=um and so I converted all of this ... :)
 
-  # perf trace -e futex_waitv
-  ^C#
-  # perf trace -v -e futex_waitv
-  event qualifier tracepoint filter: (common_pid != 807333 && common_pid != 3564) && (id == 449)
-  ^C#
-  # perf trace -v -e futex* --max-events 10
-  event qualifier tracepoint filter: (common_pid != 812168 && common_pid != 3564) && (id == 221 || id == 449)
-  mmap size 528384B
-           ? (         ): Timer/219310  ... [continued]: futex())                                            = -1 ETIMEDOUT (Connection timed out)
-       0.012 ( 0.002 ms): Timer/219310 futex(uaddr: 0x7fd0b152d3c8, op: WAKE|PRIVATE_FLAG, val: 1)           = 0
-       0.024 ( 0.060 ms): Timer/219310 futex(uaddr: 0x7fd0b152d420, op: WAIT_BITSET|PRIVATE_FLAG, utime: 0x7fd0b1657840, val3: MATCH_ANY) = 0
-       0.086 ( 0.001 ms): Timer/219310 futex(uaddr: 0x7fd0b152d3c8, op: WAKE|PRIVATE_FLAG, val: 1)           = 0
-       0.088 (         ): Timer/219310 futex(uaddr: 0x7fd0b152d424, op: WAIT_BITSET|PRIVATE_FLAG, utime: 0x7fd0b1657840, val3: MATCH_ANY) ...
-       0.075 ( 0.005 ms): Web Content/219299 futex(uaddr: 0x7fd0b152d420, op: WAKE|PRIVATE_FLAG, val: 1)     = 1
-       0.169 ( 0.004 ms): Web Content/219299 futex(uaddr: 0x7fd0b152d424, op: WAKE|PRIVATE_FLAG, val: 1)     = 1
-       0.088 ( 0.089 ms): Timer/219310  ... [continued]: futex())                                            = 0
-       0.179 ( 0.001 ms): Timer/219310 futex(uaddr: 0x7fd0b152d3c8, op: WAKE|PRIVATE_FLAG, val: 1)           = 0
-       0.181 (         ): Timer/219310 futex(uaddr: 0x7fd0b152d420, op: WAIT_BITSET|PRIVATE_FLAG, utime: 0x7fd0b1657840, val3: MATCH_ANY) ...
-  #
-
-That is the filter expression attached to the raw_syscalls:sys_{enter,exit}
-tracepoints.
-
-  $ grep futex tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
-  221	32	futex				sys_futex_time32
-  221	64	futex				sys_futex
-  221	spu	futex				sys_futex
-  422	32	futex_time64			sys_futex			sys_futex
-  449	common  futex_waitv                     sys_futex_waitv
-  $
-
-This addresses this perf build warnings:
-
-  Warning: Kernel ABI header at 'tools/perf/arch/s390/entry/syscalls/syscall.tbl' differs from latest version at 'arch/s390/kernel/syscalls/syscall.tbl'
-  diff -u tools/perf/arch/s390/entry/syscalls/syscall.tbl arch/s390/kernel/syscalls/syscall.tbl
-
-Cc: André Almeida <andrealmeid@collabora.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/arch/powerpc/entry/syscalls/syscall.tbl | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl b/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
-index 7bef917cc84e6499..15109af9d0754d5f 100644
---- a/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
-+++ b/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
-@@ -528,3 +528,4 @@
- 446	common	landlock_restrict_self		sys_landlock_restrict_self
- # 447 reserved for memfd_secret
- 448	common	process_mrelease		sys_process_mrelease
-+449	common  futex_waitv                     sys_futex_waitv
--- 
-2.31.1
-
+johannes
