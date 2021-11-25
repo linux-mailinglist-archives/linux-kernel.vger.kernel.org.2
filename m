@@ -2,89 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B199E45D97E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F61445D981
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:45:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239117AbhKYLsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 06:48:31 -0500
-Received: from mga12.intel.com ([192.55.52.136]:23942 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236233AbhKYLqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 06:46:30 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="215525353"
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="215525353"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 03:40:25 -0800
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="741736989"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 03:40:24 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mqD6z-00AQ4B-Gn;
-        Thu, 25 Nov 2021 13:40:21 +0200
-Date:   Thu, 25 Nov 2021 13:40:21 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     lianzhi chang <changlianzhi@uniontech.com>
-Cc:     "dmitry.torokhov" <dmitry.torokhov@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        jirislaby <jirislaby@kernel.org>, 282827961 <282827961@qq.com>
-Subject: Re: [PATCH v14] tty: Fix the keyboard led light display problem
-Message-ID: <YZ92JaKnUbXb0shZ@smile.fi.intel.com>
-References: <20211108055139.7202-1-changlianzhi@uniontech.com>
- <YYtpr/bP0HqBsmbW@google.com>
- <tencent_032E4FE80FDB8EA164AE0644@qq.com>
- <tencent_5573CD56296D5E2F4C59A664@qq.com>
+        id S237667AbhKYLtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 06:49:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235319AbhKYLq5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 06:46:57 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 241D9C0613F1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 03:41:30 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id b1so15514812lfs.13
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 03:41:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=c+s/ogUtJiq8S6eCkJtlg22v9K/HbWbi58ZiTPq2lfQ=;
+        b=fEsKucNIoXRU8fo1RSw4S8M/6nduiyxDjhqJA4RiKZ+9nzT/MbK9afRfBn5g5SUR18
+         iglOJ+IYQZcHBXgOfPgSM2Ue3RD9HGykxe7VGf/+Bw/5irbG8S3T0RiiZs1QvQiDgX8D
+         IhT6G73L4XYoVnu1AvVvCvbFtXgOT0gZnOPImOJF6q4jEXt8IqMunTAcrJ5Yvk2XLyUt
+         kAnJkjO1id1VHd8fkz4VwIdRw5FNGPfOWVApGLzWSDB1CJYRJzz5bsxA0EiQK3Lwc54P
+         NHNyuVTP68C85JrREwxySo6awlAUd/uTo3L+vt2dcuWhGniSh/jgGevZW2tAxqMKI12A
+         xb9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=c+s/ogUtJiq8S6eCkJtlg22v9K/HbWbi58ZiTPq2lfQ=;
+        b=WbiPEkISW8tRugVa82kdjv6awZsXEPlugEZtiGs/TZqYSPY8g0bGfBWsVraHj8+DmZ
+         zJCyFxoHd8RTM4dXBuwP0bZc8liXEbjG5/udJNlxxrEkqP2Z4Ury4NKTMQdC/yIB/WAm
+         NUYgM1RL4sbNuix2RmtBKWogWxx4SxLu8vi8GJKt1eCNBRdLGa7/t8XZePK1FMoeWSSZ
+         WWPFllBY6Bu/4XZtDDZjBXPgnsCwW8UrI7ItO6o1vvQmjttbop43tpePz6PsRYF6f/VO
+         aP3sp2VXjkbyyYtmgRTnsSeILMIKjZ9lz4PjIlwIl+PhrMpaIClC7QQ8fQagLa1pwLKZ
+         c4cQ==
+X-Gm-Message-State: AOAM533DDCpHZPIJ/hQMh957+g6MbK+BKFfnfG0hMOLLHilCShUf1wBK
+        bLEhA9bpV/WAVPXzlMonBDA=
+X-Google-Smtp-Source: ABdhPJwMfQ7CxY+YVrpFAi0AiKCeie5qzWnKWf11oidpWyS5Ss9HlABYbHfrCBdhkQNwbB3mJec7pw==
+X-Received: by 2002:a05:6512:10c5:: with SMTP id k5mr15043810lfg.367.1637840488404;
+        Thu, 25 Nov 2021 03:41:28 -0800 (PST)
+Received: from [192.168.1.7] ([212.22.223.21])
+        by smtp.gmail.com with ESMTPSA id n15sm213163ljm.32.2021.11.25.03.41.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Nov 2021 03:41:28 -0800 (PST)
+Subject: Re: [PATCH V3 2/6] arm/xen: Switch to use
+ gnttab_setup_auto_xlat_frames() for DT
+To:     Stefano Stabellini <sstabellini@kernel.org>
+Cc:     xen-devel@lists.xenproject.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Julien Grall <julien@xen.org>
+References: <1637787223-21129-1-git-send-email-olekstysh@gmail.com>
+ <1637787223-21129-3-git-send-email-olekstysh@gmail.com>
+ <alpine.DEB.2.22.394.2111241534090.1412361@ubuntu-linux-20-04-desktop>
+From:   Oleksandr <olekstysh@gmail.com>
+Message-ID: <f69cb505-d14f-c37c-cccb-49d79a66af54@gmail.com>
+Date:   Thu, 25 Nov 2021 13:41:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_5573CD56296D5E2F4C59A664@qq.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <alpine.DEB.2.22.394.2111241534090.1412361@ubuntu-linux-20-04-desktop>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 10:33:23AM +0800, lianzhi chang wrote:
-> > > On Mon, Nov 08, 2021 at 01:51:39PM +0800, lianzhi chang wrote:
-> > > > Switching from the desktop environment to the tty environment,
-> > > > the state of the keyboard led lights and the state of the keyboard
-> > > > lock are inconsistent. This is because the attribute kb->kbdmode
-> > > > of the tty bound in the desktop environment (Xorg) is set to
-> > > > VC_OFF, which causes the ledstate and kb->ledflagstate
-> 
-> > > We know that Xorg sets kbdmode mode to VC_OFF, but it does not mean that
-> > > you can say for sure that it is Xorg instance that controls a VT simply
-> > > by observing kb->kbdmode. There may be something else entirely. That is
-> > > why you want drivers/tty/vt/keyboard.c to reset LEDs and leave it to
-> > > whoever is controlling VT to set them to something else if it is
-> > > desired.
-> 
-> > Does this mean let me change the description information? Or is the
-> > judgment of VC_OFF in patch incorrect?
-> > The setup method of Xorg mentioned here is just to describe a process
-> > in which I found the problem;
-> > My understanding is that when the mode of kbdmode is set to VC_OFF,
-> > VT shouldn't interfere with the state of the keyboard light, right? This is
-> > how functions such as kbd_keycode() are implemented.
-> > When VT is switched, if the VT mode is VC_OFF, there is also no need
-> > to set the state of the keyboard light. I think this is reasonable.
-> 
-> > > > > values of the bound tty to always be 0, which causes the switch
-> > > > > from the desktop When to the tty environment, the LED light
-> > > > > status is inconsistent with the keyboard lock status.
-> > > > > In order to ensure that the keyboard LED lights are displayed
-> > > > > normally during the VT switching process, when the VT is
-> > > > > switched, the current VT LED configuration is forced to be issued.
 
-> Hi friends, how is this patch progressing now, do I need to modify it further?
+On 25.11.21 01:35, Stefano Stabellini wrote:
 
-At least I have told you already twice that I'm not the guy who suggested this
-solution. Others seem gave you other comments.
+Hi Stefano
+
+
+> On Wed, 24 Nov 2021, Oleksandr Tyshchenko wrote:
+>> From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+>>
+>> Read the start address of the grant table space from DT
+>> (region 0).
+>>
+>> This patch mostly restores behaviour before commit 3cf4095d7446
+>> ("arm/xen: Use xen_xlate_map_ballooned_pages to setup grant table")
+>> but trying not to break the ACPI support added after that commit.
+>> So the patch touches DT part only and leaves the ACPI part with
+>> xen_xlate_map_ballooned_pages(). Also in order to make a code more
+>> resilient use a fallback to xen_xlate_map_ballooned_pages() if grant
+>> table region wasn't found.
+>>
+>> This is a preparation for using Xen extended region feature
+>> where unused regions of guest physical address space (provided
+>> by the hypervisor) will be used to create grant/foreign/whatever
+>> mappings instead of wasting real RAM pages from the domain memory
+>> for establishing these mappings.
+>>
+>> The immediate benefit of this change:
+>> - Avoid superpage shattering in Xen P2M when establishing
+>>    stage-2 mapping (GFN <-> MFN) for the grant table space
+>> - Avoid wasting real RAM pages (reducing the amount of memory
+>>    usuable) for mapping grant table space
+>> - The grant table space is always mapped at the exact
+>>    same place (region 0 is reserved for the grant table)
+>>
+>> Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+>> ---
+>> Changes RFC -> V2:
+>>     - new patch
+>>
+>> Changes V2 -> V3:
+>>     - add __read_mostly specifier to xen_grant_frames
+>>     - retain a fallback to xen_xlate_map_ballooned_pages() if
+>>       xen_grant_frames is invalid
+>>     - process xen_events_irq before xen_grant_frames in
+>>       xen_dt_guest_init()
+>>     - update patch description
+>> ---
+>>   arch/arm/xen/enlighten.c | 26 ++++++++++++++++++++------
+>>   1 file changed, 20 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
+>> index 7619fbf..3fb3384 100644
+>> --- a/arch/arm/xen/enlighten.c
+>> +++ b/arch/arm/xen/enlighten.c
+>> @@ -59,6 +59,9 @@ unsigned long xen_released_pages;
+>>   struct xen_memory_region xen_extra_mem[XEN_EXTRA_MEM_MAX_REGIONS] __initdata;
+>>   
+>>   static __read_mostly unsigned int xen_events_irq;
+>> +static __read_mostly phys_addr_t xen_grant_frames;
+>> +
+>> +#define GRANT_TABLE_INDEX   0
+>>   
+>>   uint32_t xen_start_flags;
+>>   EXPORT_SYMBOL(xen_start_flags);
+>> @@ -303,6 +306,7 @@ static void __init xen_acpi_guest_init(void)
+>>   static void __init xen_dt_guest_init(void)
+>>   {
+>>   	struct device_node *xen_node;
+>> +	struct resource res;
+>>   
+>>   	xen_node = of_find_compatible_node(NULL, NULL, "xen,xen");
+>>   	if (!xen_node) {
+>> @@ -311,13 +315,19 @@ static void __init xen_dt_guest_init(void)
+>>   	}
+>>   
+>>   	xen_events_irq = irq_of_parse_and_map(xen_node, 0);
+>> +
+>> +	if (of_address_to_resource(xen_node, GRANT_TABLE_INDEX, &res)) {
+>> +		pr_err("Xen grant table region is not found\n");
+>> +		return;
+>> +	}
+>> +	xen_grant_frames = res.start;
+>>   }
+>>   
+>>   static int __init xen_guest_init(void)
+>>   {
+>>   	struct xen_add_to_physmap xatp;
+>>   	struct shared_info *shared_info_page = NULL;
+>> -	int cpu;
+>> +	int rc, cpu;
+>>   
+>>   	if (!xen_domain())
+>>   		return 0;
+>> @@ -370,12 +380,16 @@ static int __init xen_guest_init(void)
+>>   	for_each_possible_cpu(cpu)
+>>   		per_cpu(xen_vcpu_id, cpu) = cpu;
+>>   
+>> -	xen_auto_xlat_grant_frames.count = gnttab_max_grant_frames();
+>> -	if (xen_xlate_map_ballooned_pages(&xen_auto_xlat_grant_frames.pfn,
+>> -					  &xen_auto_xlat_grant_frames.vaddr,
+>> -					  xen_auto_xlat_grant_frames.count)) {
+>> +	if (!acpi_disabled || !xen_grant_frames) {
+> I realize now that we only need:
+>
+>      if (!xen_grant_frames) {
+
+Indeed, the first part of the check looks superfluous, will do.
+
+
+>
+> with that:
+>
+> Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
+
+Thanks!
+
+
+>
+>
+>
+>> +		xen_auto_xlat_grant_frames.count = gnttab_max_grant_frames();
+>> +		rc = xen_xlate_map_ballooned_pages(&xen_auto_xlat_grant_frames.pfn,
+>> +										   &xen_auto_xlat_grant_frames.vaddr,
+>> +										   xen_auto_xlat_grant_frames.count);
+>> +	} else
+>> +		rc = gnttab_setup_auto_xlat_frames(xen_grant_frames);
+>> +	if (rc) {
+>>   		free_percpu(xen_vcpu_info);
+>> -		return -ENOMEM;
+>> +		return rc;
+>>   	}
+>>   	gnttab_init();
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards,
 
+Oleksandr Tyshchenko
 
