@@ -2,247 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E06945D553
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:18:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29EF245D554
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:18:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232917AbhKYHVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 02:21:43 -0500
-Received: from mga18.intel.com ([134.134.136.126]:34790 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348047AbhKYHTl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 02:19:41 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="222333230"
-X-IronPort-AV: E=Sophos;i="5.87,262,1631602800"; 
-   d="scan'208";a="222333230"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 23:16:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,262,1631602800"; 
-   d="scan'208";a="675138989"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 24 Nov 2021 23:16:26 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mq8zZ-0005xI-5L; Thu, 25 Nov 2021 07:16:25 +0000
-Date:   Thu, 25 Nov 2021 15:16:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: arch/powerpc/include/asm/kvm_ppc.h:978:1: sparse: sparse: incorrect
- type in assignment (different base types)
-Message-ID: <202111251523.PG4QWwjV-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S231821AbhKYHVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 02:21:51 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:46764 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349638AbhKYHTs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 02:19:48 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id DE7B31FD37;
+        Thu, 25 Nov 2021 07:16:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1637824595; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bivuk8+TOfI88WAx+Dq2CA6QO4hbkTvK3r7JmyxWBDo=;
+        b=BPAh724KjTcaM7uKk1k7LXxFUb04i9xuI0sFmsosYE17XXCS58y0e82FN+Jql8lEeZkqZX
+        WDihlsdgUZwHdjJrNoCoxxF7oweC7y+hvwl03rAqqvY8iYOLSV3IqyAMi6kxqp8q8r2CgP
+        oSk2MlNpo6ZcrNadlFneTPvEaT9y3Uw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1637824595;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bivuk8+TOfI88WAx+Dq2CA6QO4hbkTvK3r7JmyxWBDo=;
+        b=PZfSu3jh/frN9T5YmYM9ooocboq/KcoVOCFcQrgUW5DrMyUIjvaO4AInEAg/vZu/ibEOas
+        gu2FFZL6qKCeeyDg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id C3CEFA3B83;
+        Thu, 25 Nov 2021 07:16:35 +0000 (UTC)
+Date:   Thu, 25 Nov 2021 08:16:35 +0100
+Message-ID: <s5h5ysg7lik.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Cc:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, <alsa-devel@alsa-project.org>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
+        Stefan Binding <sbinding@opensource.cirrus.com>
+Subject: Re: [PATCH] ALSA: hda/cs8409: Schedule delayed work for jack detect on resume
+In-Reply-To: <20211124181908.50672-1-vitalyr@opensource.cirrus.com>
+References: <20211124181908.50672-1-vitalyr@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5f53fa508db098c9d372423a6dac31c8a5679cdf
-commit: d991bb1c8da842a2a0b9dc83b1005e655783f861 include/linux/compiler-gcc.h: sparse can do constant folding of __builtin_bswap*()
-date:   7 months ago
-config: powerpc-randconfig-s031-20211028 (https://download.01.org/0day-ci/archive/20211125/202111251523.PG4QWwjV-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 11.2.0
-reproduce:
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # apt-get install sparse
-        # sparse version: v0.6.4-dirty
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d991bb1c8da842a2a0b9dc83b1005e655783f861
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout d991bb1c8da842a2a0b9dc83b1005e655783f861
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=powerpc 
+On Wed, 24 Nov 2021 19:19:08 +0100,
+Vitaly Rodionov wrote:
+> 
+> From: Stefan Binding <sbinding@opensource.cirrus.com>
+> 
+> CS42L42 runs jack detect on resume, however this requires unsol
+> events, and unsol events are ignored whilst the power state is
+> not set to ON. The power state is set to ON only after the resume
+> finishes.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+This statement isn't clear to me: which power state and who ignores?
+In the basic design of hda_jack, the all jack states get updated once
+after the resume by reading the pin sense.  Doesn't this work in the
+case of cs8409 because the code relies on unsol event?
+
+> Schedule a delayed work timer to run jack detect
+> after the resume call finishes.
+
+This kind of approach is OK-ish as a last resort workaround, but I
+think it'd be cleaner to rewrite the code to use directly snd_jack
+stuff like HDMI codec driver without hda_jack stuff, supposing that
+all jack states on cs8409 are read rather via i2c.  HDMI codec driver
+re-probes jacks at its own resume callback, and issue
+snd_jack_report() accordingly, as well as the same check for the
+unsol_event.
+
+Or, just faked unsol event handling at the resume callback would be
+minimalistic change, I suppose.
 
 
-sparse warnings: (new ones prefixed by >>)
-   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     expected unsigned int [usertype] int_pending
-   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     got restricted __le32 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] dar @@     got restricted __be64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse:     expected unsigned long long [usertype] dar
-   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse:     got restricted __be64 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] dar @@     got restricted __le64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse:     expected unsigned long long [usertype] dar
-   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse:     got restricted __le64 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] dsisr @@     got restricted __be32 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse:     expected unsigned int [usertype] dsisr
-   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse:     got restricted __be32 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] dsisr @@     got restricted __le32 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse:     expected unsigned int [usertype] dsisr
-   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse:     got restricted __le32 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:959:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:959:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] int_pending @@     got restricted __be32 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     expected unsigned int [usertype] int_pending
-   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     got restricted __be32 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] int_pending @@     got restricted __le32 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     expected unsigned int [usertype] int_pending
-   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     got restricted __le32 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] int_pending @@     got restricted __be32 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     expected unsigned int [usertype] int_pending
-   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     got restricted __be32 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] int_pending @@     got restricted __le32 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     expected unsigned int [usertype] int_pending
-   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     got restricted __le32 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:965:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:965:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:960:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:960:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:961:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:961:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:978:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:978:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:979:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:979:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:980:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:980:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:981:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:981:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] srr0 @@     got restricted __be64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     expected unsigned long long [usertype] srr0
-   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     got restricted __be64 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] srr0 @@     got restricted __le64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     expected unsigned long long [usertype] srr0
-   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     got restricted __le64 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:965:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] srr1 @@     got restricted __be64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:965:1: sparse:     expected unsigned long long [usertype] srr1
-   arch/powerpc/include/asm/kvm_ppc.h:965:1: sparse:     got restricted __be64 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:965:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] srr1 @@     got restricted __le64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:965:1: sparse:     expected unsigned long long [usertype] srr1
-   arch/powerpc/include/asm/kvm_ppc.h:965:1: sparse:     got restricted __le64 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:960:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg0 @@     got restricted __be64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:960:1: sparse:     expected unsigned long long [usertype] sprg0
-   arch/powerpc/include/asm/kvm_ppc.h:960:1: sparse:     got restricted __be64 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:960:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg0 @@     got restricted __le64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:960:1: sparse:     expected unsigned long long [usertype] sprg0
-   arch/powerpc/include/asm/kvm_ppc.h:960:1: sparse:     got restricted __le64 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:961:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg1 @@     got restricted __be64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:961:1: sparse:     expected unsigned long long [usertype] sprg1
-   arch/powerpc/include/asm/kvm_ppc.h:961:1: sparse:     got restricted __be64 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:961:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg1 @@     got restricted __le64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:961:1: sparse:     expected unsigned long long [usertype] sprg1
-   arch/powerpc/include/asm/kvm_ppc.h:961:1: sparse:     got restricted __le64 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg2 @@     got restricted __be64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse:     expected unsigned long long [usertype] sprg2
-   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse:     got restricted __be64 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg2 @@     got restricted __le64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse:     expected unsigned long long [usertype] sprg2
-   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse:     got restricted __le64 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg3 @@     got restricted __be64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse:     expected unsigned long long [usertype] sprg3
-   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse:     got restricted __be64 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg3 @@     got restricted __le64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse:     expected unsigned long long [usertype] sprg3
-   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse:     got restricted __le64 [usertype]
->> arch/powerpc/include/asm/kvm_ppc.h:978:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg4 @@     got restricted __be64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:978:1: sparse:     expected unsigned long long [usertype] sprg4
-   arch/powerpc/include/asm/kvm_ppc.h:978:1: sparse:     got restricted __be64 [usertype]
->> arch/powerpc/include/asm/kvm_ppc.h:978:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg4 @@     got restricted __le64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:978:1: sparse:     expected unsigned long long [usertype] sprg4
-   arch/powerpc/include/asm/kvm_ppc.h:978:1: sparse:     got restricted __le64 [usertype]
->> arch/powerpc/include/asm/kvm_ppc.h:979:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg5 @@     got restricted __be64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:979:1: sparse:     expected unsigned long long [usertype] sprg5
-   arch/powerpc/include/asm/kvm_ppc.h:979:1: sparse:     got restricted __be64 [usertype]
->> arch/powerpc/include/asm/kvm_ppc.h:979:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg5 @@     got restricted __le64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:979:1: sparse:     expected unsigned long long [usertype] sprg5
-   arch/powerpc/include/asm/kvm_ppc.h:979:1: sparse:     got restricted __le64 [usertype]
->> arch/powerpc/include/asm/kvm_ppc.h:980:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg6 @@     got restricted __be64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:980:1: sparse:     expected unsigned long long [usertype] sprg6
-   arch/powerpc/include/asm/kvm_ppc.h:980:1: sparse:     got restricted __be64 [usertype]
->> arch/powerpc/include/asm/kvm_ppc.h:980:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg6 @@     got restricted __le64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:980:1: sparse:     expected unsigned long long [usertype] sprg6
-   arch/powerpc/include/asm/kvm_ppc.h:980:1: sparse:     got restricted __le64 [usertype]
->> arch/powerpc/include/asm/kvm_ppc.h:981:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg7 @@     got restricted __be64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:981:1: sparse:     expected unsigned long long [usertype] sprg7
-   arch/powerpc/include/asm/kvm_ppc.h:981:1: sparse:     got restricted __be64 [usertype]
->> arch/powerpc/include/asm/kvm_ppc.h:981:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg7 @@     got restricted __le64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:981:1: sparse:     expected unsigned long long [usertype] sprg7
-   arch/powerpc/include/asm/kvm_ppc.h:981:1: sparse:     got restricted __le64 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
-   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
-   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse: sparse: cast to restricted __be32
-   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse: sparse: cast to restricted __le32
-   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse: sparse: cast to restricted __be32
-   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse: sparse: cast to restricted __le32
-   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] dar @@     got restricted __be64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse:     expected unsigned long long [usertype] dar
-   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse:     got restricted __be64 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] dar @@     got restricted __le64 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse:     expected unsigned long long [usertype] dar
-   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse:     got restricted __le64 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] dsisr @@     got restricted __be32 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse:     expected unsigned int [usertype] dsisr
-   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse:     got restricted __be32 [usertype]
-   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] dsisr @@     got restricted __le32 [usertype] @@
-   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse:     expected unsigned int [usertype] dsisr
-   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse:     got restricted __le32 [usertype]
+thanks,
 
-vim +978 arch/powerpc/include/asm/kvm_ppc.h
+Takashi
 
-1dc0c5b88cae1c2 Bharat Bhushan 2014-07-17  958  
-5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  959  SHARED_WRAPPER(critical, 64)
-1dc0c5b88cae1c2 Bharat Bhushan 2014-07-17  960  SHARED_SPRNG_WRAPPER(sprg0, 64, SPRN_GSPRG0)
-1dc0c5b88cae1c2 Bharat Bhushan 2014-07-17  961  SHARED_SPRNG_WRAPPER(sprg1, 64, SPRN_GSPRG1)
-1dc0c5b88cae1c2 Bharat Bhushan 2014-07-17  962  SHARED_SPRNG_WRAPPER(sprg2, 64, SPRN_GSPRG2)
-1dc0c5b88cae1c2 Bharat Bhushan 2014-07-17  963  SHARED_SPRNG_WRAPPER(sprg3, 64, SPRN_GSPRG3)
-1dc0c5b88cae1c2 Bharat Bhushan 2014-07-17  964  SHARED_SPRNG_WRAPPER(srr0, 64, SPRN_GSRR0)
-1dc0c5b88cae1c2 Bharat Bhushan 2014-07-17  965  SHARED_SPRNG_WRAPPER(srr1, 64, SPRN_GSRR1)
-1dc0c5b88cae1c2 Bharat Bhushan 2014-07-17  966  SHARED_SPRNG_WRAPPER(dar, 64, SPRN_GDEAR)
-dc168549d9a0fb5 Bharat Bhushan 2014-07-17  967  SHARED_SPRNG_WRAPPER(esr, 64, SPRN_GESR)
-5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  968  SHARED_WRAPPER_GET(msr, 64)
-5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  969  static inline void kvmppc_set_msr_fast(struct kvm_vcpu *vcpu, u64 val)
-5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  970  {
-5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  971  	if (kvmppc_shared_big_endian(vcpu))
-5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  972  	       vcpu->arch.shared->msr = cpu_to_be64(val);
-5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  973  	else
-5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  974  	       vcpu->arch.shared->msr = cpu_to_le64(val);
-5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  975  }
-5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  976  SHARED_WRAPPER(dsisr, 32)
-5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  977  SHARED_WRAPPER(int_pending, 32)
-5deb8e7ad8ac7e3 Alexander Graf 2014-04-24 @978  SHARED_WRAPPER(sprg4, 64)
-5deb8e7ad8ac7e3 Alexander Graf 2014-04-24 @979  SHARED_WRAPPER(sprg5, 64)
-5deb8e7ad8ac7e3 Alexander Graf 2014-04-24 @980  SHARED_WRAPPER(sprg6, 64)
-5deb8e7ad8ac7e3 Alexander Graf 2014-04-24 @981  SHARED_WRAPPER(sprg7, 64)
-5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  982  
-
-:::::: The code at line 978 was first introduced by commit
-:::::: 5deb8e7ad8ac7e3fcdfa042acff617f461b361c2 KVM: PPC: Make shared struct aka magic page guest endian
-
-:::::: TO: Alexander Graf <agraf@suse.de>
-:::::: CC: Alexander Graf <agraf@suse.de>
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
+> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+> ---
+>  sound/pci/hda/patch_cs8409.c | 79 +++++++++++++++++++++++++++++-------
+>  sound/pci/hda/patch_cs8409.h |  1 +
+>  2 files changed, 65 insertions(+), 15 deletions(-)
+> 
+> diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
+> index 31ff11ab868e..88213e95f0b3 100644
+> --- a/sound/pci/hda/patch_cs8409.c
+> +++ b/sound/pci/hda/patch_cs8409.c
+> @@ -634,6 +634,30 @@ static void cs42l42_run_jack_detect(struct sub_codec *cs42l42)
+>  	cs8409_i2c_write(cs42l42, 0x1120, 0xc0);
+>  }
+>  
+> +static void cs42l42_run_jack_detect_all(struct hda_codec *codec)
+> +{
+> +	struct cs8409_spec *spec = codec->spec;
+> +	struct sub_codec *cs42l42;
+> +	int i;
+> +
+> +	for (i = 0; i < spec->num_scodecs; i++) {
+> +		cs42l42 = spec->scodecs[i];
+> +		cs42l42_enable_jack_detect(cs42l42);
+> +		if (!cs42l42->hp_jack_in)
+> +			cs42l42_run_jack_detect(cs42l42);
+> +	}
+> +}
+> +
+> +/*
+> + * cs42l42_jack_detect_worker - Worker that retries jack detect
+> + */
+> +static void cs42l42_jack_detect_worker(struct work_struct *work)
+> +{
+> +	struct cs8409_spec *spec = container_of(work, struct cs8409_spec, jack_detect_work.work);
+> +
+> +	cs42l42_run_jack_detect_all(spec->codec);
+> +}
+> +
+>  static int cs42l42_handle_tip_sense(struct sub_codec *cs42l42, unsigned int reg_ts_status)
+>  {
+>  	int status_changed = 0;
+> @@ -749,8 +773,6 @@ static void cs42l42_resume(struct sub_codec *cs42l42)
+>  
+>  	if (cs42l42->full_scale_vol)
+>  		cs8409_i2c_write(cs42l42, 0x2001, 0x01);
+> -
+> -	cs42l42_enable_jack_detect(cs42l42);
+>  }
+>  
+>  #ifdef CONFIG_PM
+> @@ -800,6 +822,7 @@ static void cs8409_free(struct hda_codec *codec)
+>  
+>  	/* Cancel i2c clock disable timer, and disable clock if left enabled */
+>  	cancel_delayed_work_sync(&spec->i2c_clk_work);
+> +	cancel_delayed_work_sync(&spec->jack_detect_work);
+>  	cs8409_disable_i2c_clock(codec);
+>  
+>  	snd_hda_gen_free(codec);
+> @@ -863,6 +886,7 @@ static int cs8409_cs42l42_suspend(struct hda_codec *codec)
+>  
+>  	/* Cancel i2c clock disable timer, and disable clock if left enabled */
+>  	cancel_delayed_work_sync(&spec->i2c_clk_work);
+> +	cancel_delayed_work_sync(&spec->jack_detect_work);
+>  	cs8409_disable_i2c_clock(codec);
+>  
+>  	snd_hda_shutup_pins(codec);
+> @@ -970,6 +994,8 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
+>  		spec->scodecs[CS8409_CODEC0]->codec = codec;
+>  		codec->patch_ops = cs8409_cs42l42_patch_ops;
+>  
+> +		INIT_DELAYED_WORK(&spec->jack_detect_work, cs42l42_jack_detect_worker);
+> +
+>  		spec->gen.suppress_auto_mute = 1;
+>  		spec->gen.no_primary_hp = 1;
+>  		spec->gen.suppress_vmaster = 1;
+> @@ -1029,9 +1055,16 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
+>  	case HDA_FIXUP_ACT_INIT:
+>  		cs8409_cs42l42_hw_init(codec);
+>  		spec->init_done = 1;
+> -		if (spec->init_done && spec->build_ctrl_done
+> -			&& !spec->scodecs[CS8409_CODEC0]->hp_jack_in)
+> -			cs42l42_run_jack_detect(spec->scodecs[CS8409_CODEC0]);
+> +		if (spec->init_done && spec->build_ctrl_done) {
+> +			/* No point in running jack detect until we have fully resumed */
+> +			if (codec->core.dev.power.power_state.event != PM_EVENT_ON) {
+> +				codec_warn(codec, "Not ready to detect jack, deferring...\n");
+> +				schedule_delayed_work(&spec->jack_detect_work, msecs_to_jiffies(25));
+> +				return;
+> +			} else {
+> +				cs42l42_run_jack_detect_all(codec);
+> +			}
+> +		}
+>  		break;
+>  	case HDA_FIXUP_ACT_BUILD:
+>  		spec->build_ctrl_done = 1;
+> @@ -1040,9 +1073,16 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
+>  		 * been already plugged in.
+>  		 * Run immediately after init.
+>  		 */
+> -		if (spec->init_done && spec->build_ctrl_done
+> -			&& !spec->scodecs[CS8409_CODEC0]->hp_jack_in)
+> -			cs42l42_run_jack_detect(spec->scodecs[CS8409_CODEC0]);
+> +		if (spec->init_done && spec->build_ctrl_done) {
+> +			/* No point in running jack detect until we have fully resumed */
+> +			if (codec->core.dev.power.power_state.event != PM_EVENT_ON) {
+> +				codec_warn(codec, "Not ready to detect jack, deferring...\n");
+> +				schedule_delayed_work(&spec->jack_detect_work, msecs_to_jiffies(25));
+> +				return;
+> +			} else {
+> +				cs42l42_run_jack_detect_all(codec);
+> +			}
+> +		}
+>  		break;
+>  	default:
+>  		break;
+> @@ -1178,7 +1218,6 @@ void dolphin_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int ac
+>  {
+>  	struct cs8409_spec *spec = codec->spec;
+>  	struct snd_kcontrol_new *kctrl;
+> -	int i;
+>  
+>  	switch (action) {
+>  	case HDA_FIXUP_ACT_PRE_PROBE:
+> @@ -1193,6 +1232,8 @@ void dolphin_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int ac
+>  		spec->scodecs[CS8409_CODEC1]->codec = codec;
+>  		spec->num_scodecs = 2;
+>  
+> +		INIT_DELAYED_WORK(&spec->jack_detect_work, cs42l42_jack_detect_worker);
+> +
+>  		codec->patch_ops = cs8409_dolphin_patch_ops;
+>  
+>  		/* GPIO 1,5 out, 0,4 in */
+> @@ -1237,9 +1278,13 @@ void dolphin_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int ac
+>  		dolphin_hw_init(codec);
+>  		spec->init_done = 1;
+>  		if (spec->init_done && spec->build_ctrl_done) {
+> -			for (i = 0; i < spec->num_scodecs; i++) {
+> -				if (!spec->scodecs[i]->hp_jack_in)
+> -					cs42l42_run_jack_detect(spec->scodecs[i]);
+> +			/* No point in running jack detect until we have fully resumed */
+> +			if (codec->core.dev.power.power_state.event != PM_EVENT_ON) {
+> +				codec_warn(codec, "Not ready to detect jack, deferring...\n");
+> +				schedule_delayed_work(&spec->jack_detect_work, msecs_to_jiffies(25));
+> +				return;
+> +			} else {
+> +				cs42l42_run_jack_detect_all(codec);
+>  			}
+>  		}
+>  		break;
+> @@ -1251,9 +1296,13 @@ void dolphin_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int ac
+>  		 * Run immediately after init.
+>  		 */
+>  		if (spec->init_done && spec->build_ctrl_done) {
+> -			for (i = 0; i < spec->num_scodecs; i++) {
+> -				if (!spec->scodecs[i]->hp_jack_in)
+> -					cs42l42_run_jack_detect(spec->scodecs[i]);
+> +			/* No point in running jack detect until we have fully resumed */
+> +			if (codec->core.dev.power.power_state.event != PM_EVENT_ON) {
+> +				codec_warn(codec, "Not ready to detect jack, deferring...\n");
+> +				schedule_delayed_work(&spec->jack_detect_work, msecs_to_jiffies(25));
+> +				return;
+> +			} else {
+> +				cs42l42_run_jack_detect_all(codec);
+>  			}
+>  		}
+>  		break;
+> diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
+> index ade2b838590c..632d3ec8322d 100644
+> --- a/sound/pci/hda/patch_cs8409.h
+> +++ b/sound/pci/hda/patch_cs8409.h
+> @@ -330,6 +330,7 @@ struct cs8409_spec {
+>  	unsigned int i2c_clck_enabled;
+>  	unsigned int dev_addr;
+>  	struct delayed_work i2c_clk_work;
+> +	struct delayed_work jack_detect_work;
+>  
+>  	unsigned int playback_started:1;
+>  	unsigned int capture_started:1;
+> -- 
+> 2.25.1
+> 
