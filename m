@@ -2,121 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E2345E074
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 19:12:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2323445E07D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 19:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243064AbhKYSO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 13:14:57 -0500
-Received: from mail-mw2nam08on2063.outbound.protection.outlook.com ([40.107.101.63]:64609
-        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236050AbhKYSMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 13:12:44 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IpRUEf8CV+cI32ang0Zl4w7yPh40FINIBDeYYiGHcrkxwqD6GHbFVxza7rkEUFmHXdK6YbJvBEthX/b6vGfr4UUJNJiiDezKdEJaC6j1Hmjw5FWofujGxBqPCEhHecmF3AdGPvXMH3xemajoQwToMlKTXiQqItNDB8j8NjlVPsleWBMC1xk7ZcRYOd5NvndM1To9H6+nVIpPEh5JrjjDLa9AjXLnWEJYzSECYxAbLUtjnVjJFMVPteF+pr4Sp2UYwpMuoWl7/WWEn2PItclrzF0QNupwSbsGA/CrmbZDq3R5Tei3RJoq0a+pRsCTkaQde3nVXS6VSgCXoC6D7m8IBA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XPbO5jokEpnNzFmCmu/Yff4uVFFMSdRIenyqJoKCs9s=;
- b=Z8CfV5u4pKAM2JZtv8x22+Im6Ar8xhJo9/lf1+NZ4lOIlzcRYbLVmUmAGAaO6GQFCfJ3q4lP0Y85rc9YhGGZKV1SjhvIZSTHwbr/qkHW5eyIpyqP+pfQWSqcWGFP6GiKai6yv63oyVQ76X2jjk5EAJDPKYVKXjgqZMJfmnXVToWxjVrux+H46QyGoBm7CogVjcK5yFh4aNqEoUAg9EH94hySUZf2q4S1BxQKm2imQYfiu10dWB+EumElutJSVGYOGNMYCCUaxqsrBvMl7Ou6d8JdWwOzKP0N801rsDIDkq1B8zVFDYcisLvlHErcHsxsOobs9MLvgE2w4SKNE56pew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XPbO5jokEpnNzFmCmu/Yff4uVFFMSdRIenyqJoKCs9s=;
- b=EWalMNbVqSNr1+D5hODVKQF9byq72ETJ+mDO94NXnTlIfiu/KI3+CUymGWq8ZPELlB6vbEY7ebbApuJh5AY/DqObsoOpyJToObnYyUmZTy1HLxJv6PCGQAxWs6zRb2gJ/4Ulx7WPHDE8X2T5HbZSDbY8vfeOqEzBpNc3TmuZZAFCrYPj8jMmYGCwmwwbUkclme0ug6GZcqRFW1+6cLCCrXLLl8Vp8sUYL55sTWw3pDh45toPf1UWgw+GXB7hR2x1QPMxYLLyTcztPY7PRrYbZaSOoevFbQc01aF2wWgyLmSHgdcF8CJoRJulW/Ny1AoYeCGMTVYJsrmYmWFF/tsHmA==
-Received: from BN7PR02CA0018.namprd02.prod.outlook.com (2603:10b6:408:20::31)
- by CY4PR1201MB2532.namprd12.prod.outlook.com (2603:10b6:903:d8::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.22; Thu, 25 Nov
- 2021 18:09:29 +0000
-Received: from BN8NAM11FT017.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:20:cafe::2f) by BN7PR02CA0018.outlook.office365.com
- (2603:10b6:408:20::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.25 via Frontend
- Transport; Thu, 25 Nov 2021 18:09:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT017.mail.protection.outlook.com (10.13.177.93) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4734.22 via Frontend Transport; Thu, 25 Nov 2021 18:09:29 +0000
-Received: from sw-mtx-036.mtx.labs.mlnx (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 25 Nov
- 2021 18:09:27 +0000
-From:   Parav Pandit <parav@nvidia.com>
-To:     <virtualization@lists.linux-foundation.org>, <mst@redhat.com>,
-        <jasowang@redhat.com>
-CC:     <edumazet@google.com>, <kbuild-all@lists.01.org>, <lkp@intel.com>,
-        <linux-kernel@vger.kernel.org>, <kbuild@lists.01.org>,
-        <elic@nvidia.com>, Parav Pandit <parav@nvidia.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] vdpa: Consider device id larger than 31
-Date:   Thu, 25 Nov 2021 20:09:15 +0200
-Message-ID: <20211125180915.649652-1-parav@nvidia.com>
-X-Mailer: git-send-email 2.26.2
+        id S237079AbhKYS0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 13:26:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236223AbhKYSYp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 13:24:45 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27244C06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 10:13:46 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id x6so28797579edr.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 10:13:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Gv+HQYkMF2MUdwH7i5Rls63Sav/Z6H1TGrZ+exMMaZQ=;
+        b=TItRyyYyk4ENYxCUQ4Qsl3l6tZLo/FYeFCqpdiBNSGTaisgS2/ZoqSG/jbgW+X7inj
+         iq4iqO/R43G4MV2H+P2Wfu6d4eSHT28liGzs2PrK7DA3wxxtZGxPg7gc6oUzfEYJZefq
+         EnMeRVfLN7yBg4Vf3gPpuSzCNtdwPuZ69RxxA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Gv+HQYkMF2MUdwH7i5Rls63Sav/Z6H1TGrZ+exMMaZQ=;
+        b=6YcpzEk32RnDUGo2evP4gLYIjg5NwOqPM6+JbiRi6QPeQKq4mNkdEAtgM5rLd50xvS
+         w+C+MMdzSCCZtlvXPSIBQYDFb1zYL2OibeHs05HbEmQPUp4vvElEd7gTjuxgipwZeEZY
+         PNqkVWJ7DJ43Vbzepuro50sNNxaGp6Fde6T+GYMcZa7NphpHIta86w5O+IDgdyK6Gv60
+         hdOL7rUsS1nlKiVzO1m6AdmwYaBIwMPjpIoYtevD1ox+/CacuCKaXhCy0QpJNuvmu5+i
+         oPA09hiGDA1I2C31Xtendkc2qpEAMf9bcXQ9xiJVrJ4EqvSAXmkWRc7kuo8zBWYV2zwg
+         QAUw==
+X-Gm-Message-State: AOAM530bQwPHMzRsiIgKKseD1iS0ZmpPg+N3r0E29Oj4Yh9Iu6crZN4a
+        EbDSaVR+vL6e8/0ReJxzJfZmRv+NlQSWXFb6
+X-Google-Smtp-Source: ABdhPJyrdPtKob/jMiO/Q7o1NDiX2nloe59D5zrK4hUZPsz+WGrWKD+wjiQAHttat4rYM21a69ObNA==
+X-Received: by 2002:a50:998c:: with SMTP id m12mr40785709edb.19.1637864024480;
+        Thu, 25 Nov 2021 10:13:44 -0800 (PST)
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com. [209.85.221.54])
+        by smtp.gmail.com with ESMTPSA id nd22sm2258487ejc.98.2021.11.25.10.13.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Nov 2021 10:13:42 -0800 (PST)
+Received: by mail-wr1-f54.google.com with SMTP id l16so13405410wrp.11
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 10:13:41 -0800 (PST)
+X-Received: by 2002:adf:e5c7:: with SMTP id a7mr9078200wrn.318.1637864021623;
+ Thu, 25 Nov 2021 10:13:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1ae7e1b5-b9ec-465f-e89a-08d9b03eb979
-X-MS-TrafficTypeDiagnostic: CY4PR1201MB2532:
-X-Microsoft-Antispam-PRVS: <CY4PR1201MB25321740CF1C15E5F1936A73DC629@CY4PR1201MB2532.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:935;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lzU2hqMpEP3omrFfQ0ndPnYwDcMTzltQ2UDzOJjYIzEXr1u+3xPNcH9qzZwgFE/VOnTijGc7tS+ROgPJ4jsMTIB5rGPwDuLBXBzNDFmI21i7uQTT9bwgDcm/QtTdBObYJQcRYGgRQC6SzJBAQrMWbMOwuQX+UOC32pE60BNYIlv7owPzIU27P+Ri9UwaE2xTwYz+XvLyeFnWJxSX7FfaJMgtk9EO/gxlShn0aKQdyEbuSsfnPFlwbfrTdIpcFz1pfZQosjv710Nrn19vGqQ60ms2WcKpSPL4ez8tDJDziokaUawafV47H3gTR7TMQq1X+I3Ht+lLf7exB1qqr4fQM7AVwL6IW/IvYPbo/jgfcHdBvM1GPgS1NG+Dl4uVmfam0uYPYWt/9BJ0y6lJEy1zHx3RPdjLvzRw8fKz/U+S5uGKytPCbNUYzVaZtA8WyJgvkoB6oEAwhfB0o+RfmJipp7Pm06AAomLldijrenjfzI3H9eyhwEJ0pXw1jszAIIShWmDz1QY/1yfp14Yk7SNE40r9lHiAFyuG90+r8QE8gj7nVPuI6voStCW5Y1SaYW2WOK1R+UJvkSMuOlZDTdQ94Og8GyeDjVQ57TKnm16y+jMjZfAdxJsWTxmypOrtfa5oH6YJuV39fe6m0VZEzjncYWdbTx7COpyn/WT3O6Qc8YvBxN2QmsiiA1CZ2VJOJ/XoyDPbZ/lqSum/SJHzuhelZQ==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(36860700001)(2616005)(8676002)(70586007)(6666004)(5660300002)(110136005)(508600001)(8936002)(47076005)(70206006)(83380400001)(426003)(4326008)(336012)(54906003)(4744005)(36756003)(316002)(86362001)(16526019)(26005)(2906002)(186003)(7636003)(1076003)(356005)(82310400004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2021 18:09:29.4039
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ae7e1b5-b9ec-465f-e89a-08d9b03eb979
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT017.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB2532
+References: <20211124192024.2408218-1-catalin.marinas@arm.com>
+ <20211124192024.2408218-4-catalin.marinas@arm.com> <YZ6arlsi2L3LVbFO@casper.infradead.org>
+ <CAHk-=wgHqjX3kenSk5_bCRM+ZC-tgndBMfbVVsbp0CwJf2DU-w@mail.gmail.com> <YZ9vM91Uj8g36VQC@arm.com>
+In-Reply-To: <YZ9vM91Uj8g36VQC@arm.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 25 Nov 2021 10:13:25 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgUn1vBReeNcZNEObkxPQGhN5EUq5MC94cwF0FaQvd2rQ@mail.gmail.com>
+Message-ID: <CAHk-=wgUn1vBReeNcZNEObkxPQGhN5EUq5MC94cwF0FaQvd2rQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
+ with sub-page faults
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-virtio device id value can be more than 31. Hence, use BIT_ULL in
-assignment.
+On Thu, Nov 25, 2021 at 3:10 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
+>
+> For this specific btrfs case, if we want go with tuning the offset based
+> on the fault address, we'd need copy_to_user_nofault() (or a new
+> function) to be exact.
 
-Fixes: 33b347503f01 ("vdpa: Define vdpa mgmt device, ops and a netlink interface")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Parav Pandit <parav@nvidia.com>
----
- drivers/vdpa/vdpa.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I really don't see why you harp on the exactness.
 
-diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
-index 7332a74a4b00..e91c71aeeddf 100644
---- a/drivers/vdpa/vdpa.c
-+++ b/drivers/vdpa/vdpa.c
-@@ -404,7 +404,7 @@ static int vdpa_mgmtdev_fill(const struct vdpa_mgmt_dev *mdev, struct sk_buff *m
- 		goto msg_err;
- 
- 	while (mdev->id_table[i].device) {
--		supported_classes |= BIT(mdev->id_table[i].device);
-+		supported_classes |= BIT_ULL(mdev->id_table[i].device);
- 		i++;
- 	}
- 
--- 
-2.26.2
+I really believe that the fix is to make the read/write probing just
+be more aggressive.
 
+Make the read/write probing require that AT LEAST <n> bytes be
+readable/writable at the beginning, where 'n' is 'min(len,ALIGN)', and
+ALIGN is whatever size that copy_from/to_user_xyz() might require just
+because it might do multi-byte accesses.
+
+In fact, make ALIGN be perhaps something reasonable like 512 bytes or
+whatever, and then you know you can handle the btrfs "copy a whole
+structure and reset if that fails" case too.
+
+Don't require that the fundamental copying routines (and whatever
+fixup the code might need) be some kind of byte-precise - it's the
+error case that should instead be made stricter.
+
+If the user gave you a range that triggered a pointer color mismatch,
+then returning an error is fine, rather than say "we'll do as much as
+we can and waste time and effort on being byte-exact too".
+
+Your earlier argument was that it was too expensive to probe things.
+That was based on looking at the whole range that migth be MB (or GB)
+in size. So just make it check the first <n> bytes, and problem
+solved.
+
+                 Linus
