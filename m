@@ -2,142 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC15F45D5CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:55:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC64945D5D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348062AbhKYH6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 02:58:33 -0500
-Received: from gandalf.ozlabs.org ([150.107.74.76]:41105 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbhKYH4b (ORCPT
+        id S1347005AbhKYIBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 03:01:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346039AbhKYH7t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 02:56:31 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4J099758TQz4xbs;
-        Thu, 25 Nov 2021 18:53:15 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1637826799;
-        bh=m6sipBcVTJjllE1ha3s2FeaLnzEFuD5JT7WBAgFhJfE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SN0pN1tQiLdxjjIBmnzzGmT9w2Mm6cRc4j1UDezCutpYIdE9sJtb/KoFTBNteH7N7
-         TFp1bPXEjQg7B+DrIW6jku/LrrcEv9quR1lR1tq9vVxSFVlbm9GTY/OFMwQJs6Gg64
-         yQxmFEveynh2+4bMKaAiAy0qmYo2yLqfEzVTFcp5iyh14DlxE+6irYZbhrkoQmjsro
-         fW48a4g/jxyMUrcdnldl6fr5zg+QMxMGLXiO2IYzBfAk+nbqUiJs1sMeR39FU3BR3d
-         tgRmHqnZd9ZFNjlsjSIbkpCMQr87GXQa/GoxB0t/mq+WAKow4dK0XyhEiHoENQrkIh
-         YywmnFLQnLXuA==
-Date:   Thu, 25 Nov 2021 18:53:13 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Yongqiang Liu <liuyongqiang13@huawei.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        Thu, 25 Nov 2021 02:59:49 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7015C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 23:54:09 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id b68so5145903pfg.11
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 23:54:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8Wv822/jiFy6kR7lmixyoAId5E8/Qt673Ad/6b/9Axc=;
+        b=EyBk6nqeZEB4YkZczQkzU0lrvLC3eGGModtukK2alJlo+0jTFZ4Nt7pIqB6ALbzxf9
+         tXJ/C0/6s6CO/HuuKBwTKG6BLEaPJ2vstMIXSpcCfl1HKvc3915ObU4lEmkZ3qOvaMK7
+         FWpTSYrQB3n74QRBzmT39CH/gJ0lH1nkpMZR53mvPZ0BBUnQ5w05St7l01VeU2y7MUiJ
+         CXEi7659N+6GyeJjScXO2/W2kAmVUMfVBMzGuRnCAikp1xIZufB3bcDeVUHfm+PjA9BL
+         CMb1GC6hXC0ZIjrVLfsy7pJ/yM8bJeoUpsMjA7/IgyEaR0u07ISE5wxWdh3VRPUfN1b4
+         wTYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8Wv822/jiFy6kR7lmixyoAId5E8/Qt673Ad/6b/9Axc=;
+        b=Isl4nBn7Vo00slLcL87T9lwaeX8ndqlFruSczQNE8Fp3EkaYOQwofPimi3iJJn0YI8
+         9wxwmSNBMuGalVyuXJb0KTosOeBMTnyF4kxA7wYB04P73FJPa5nmuv3W9SSAM0fkG4Lj
+         MhA9pU7nxz/wl2CxPDbpjvwL72XWEmUM+tHHAfMy3zxdJ3lz/4s+SKSxuF827xDhi98g
+         0lFSVUTIe4rSXLPF0JuaN+jHdH5DTgP56MijvB7k9+oNrxNGouL57JOFXwmsMaPqUWoA
+         FHnQg9YbFAt+AWcxZMQ/y7IG3Tzf4TG5MFOoF/lGubyOEGeDWEjegc1I4fmgxp5yJEV0
+         FevA==
+X-Gm-Message-State: AOAM532Sed7les073HBNULV/vrFqq7PRuh2TQoh3CwhIRMAYFl+UGRmo
+        LTuSIuEatnT3kKtXyE2UwZcNYQ==
+X-Google-Smtp-Source: ABdhPJweeLGCcXw+DnNYd9KB0VW0F5kTCBoJcSRTiIoppce2exLhlc8gTsBBmnp7rSRmlhO1W+UdLQ==
+X-Received: by 2002:a05:6a00:2391:b0:4a2:cb64:2e43 with SMTP id f17-20020a056a00239100b004a2cb642e43mr12694041pfc.49.1637826849228;
+        Wed, 24 Nov 2021 23:54:09 -0800 (PST)
+Received: from leoy-ThinkPad-X240s ([66.23.193.248])
+        by smtp.gmail.com with ESMTPSA id u30sm1483831pgo.60.2021.11.24.23.54.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 23:54:08 -0800 (PST)
+Date:   Thu, 25 Nov 2021 15:53:58 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     German Gomez <german.gomez@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org, James Clark <james.clark@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
         Will Deacon <will@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Alexander Potapenko <glider@google.com>
-Subject: Re: [next] kasan: shadow.c:528:33: error: 'VM_DELAY_KMEMLEAK'
- undeclared
-Message-ID: <20211125185313.77e20bc5@canb.auug.org.au>
-In-Reply-To: <CA+G9fYuLv7491Q2AHcaUAQ2AQeFBQgx8w0DzK95Qf6Fh9gGFfQ@mail.gmail.com>
-References: <CA+G9fYuLv7491Q2AHcaUAQ2AQeFBQgx8w0DzK95Qf6Fh9gGFfQ@mail.gmail.com>
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RESEND PATCH 1/1] perf arm-spe: report all SPE records as "all"
+ events
+Message-ID: <20211125075358.GA1599216@leoy-ThinkPad-X240s>
+References: <20211117142833.226629-1-german.gomez@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/.DyF2x5Y=NaNAowk5G14Joj";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211117142833.226629-1-german.gomez@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/.DyF2x5Y=NaNAowk5G14Joj
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Nov 17, 2021 at 02:28:32PM +0000, German Gomez wrote:
+> From: James Clark <james.clark@arm.com>
+> 
+> Currently perf-report and perf-inject are dropping a large number of SPE
+> records because they don't contain any of the existing events, but the
+> contextual information of the records is still useful to keep.
+> 
+> The synthesized event "all" is generated for every SPE record that is
+> processed, regardless of whether the record contains interesting events
+> or not. The event can be filtered with the flag "--itrace=o".
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
+> Signed-off-by: German Gomez <german.gomez@arm.com>
+> ---
+>  tools/perf/Documentation/itrace.txt |  2 +-
+>  tools/perf/util/arm-spe.c           | 36 +++++++++++++++++++++++++++++
+>  tools/perf/util/auxtrace.h          |  2 +-
+>  3 files changed, 38 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/Documentation/itrace.txt b/tools/perf/Documentation/itrace.txt
+> index c52755481..57dc12b83 100644
+> --- a/tools/perf/Documentation/itrace.txt
+> +++ b/tools/perf/Documentation/itrace.txt
+> @@ -6,7 +6,7 @@
+>  		w	synthesize ptwrite events
+>  		p	synthesize power events (incl. PSB events for Intel PT)
+>  		o	synthesize other events recorded due to the use
+> -			of aux-output (refer to perf record)
+> +			of aux-output (refer to perf record) (all events for Arm SPE)
+>  		e	synthesize error events
+>  		d	create a debug log
+>  		f	synthesize first level cache events
+> diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
+> index ce77abf90..6428351db 100644
+> --- a/tools/perf/util/arm-spe.c
+> +++ b/tools/perf/util/arm-spe.c
+> @@ -58,6 +58,7 @@ struct arm_spe {
+>  	u8				sample_branch;
+>  	u8				sample_remote_access;
+>  	u8				sample_memory;
+> +	u8				sample_other;
+>  
+>  	u64				l1d_miss_id;
+>  	u64				l1d_access_id;
+> @@ -68,6 +69,7 @@ struct arm_spe {
+>  	u64				branch_miss_id;
+>  	u64				remote_access_id;
+>  	u64				memory_id;
+> +	u64				all_id;
+>  
+>  	u64				kernel_start;
+>  
+> @@ -351,6 +353,23 @@ static int arm_spe__synth_branch_sample(struct arm_spe_queue *speq,
+>  	return arm_spe_deliver_synth_event(spe, speq, event, &sample);
+>  }
+>  
+> +static int arm_spe__synth_other_sample(struct arm_spe_queue *speq,
+> +				       u64 spe_events_id)
+> +{
+> +	struct arm_spe *spe = speq->spe;
+> +	struct arm_spe_record *record = &speq->decoder->record;
+> +	union perf_event *event = speq->event_buf;
+> +	struct perf_sample sample = { .ip = 0, };
+> +
+> +	arm_spe_prep_sample(spe, speq, event, &sample);
+> +
+> +	sample.id = spe_events_id;
+> +	sample.stream_id = spe_events_id;
+> +	sample.addr = record->to_ip;
 
-Hi Naresh,
+After checked the event types, I think "other" samples would include
+below raw event types:
 
-On Thu, 25 Nov 2021 12:43:41 +0530 Naresh Kamboju <naresh.kamboju@linaro.or=
-g> wrote:
->
-> [ Please ignore this email if it is already reported ]
->=20
-> While building Linux next 20211125 x86 with CONFIG_KASAN=3Dy gcc-11
-> following warnings / errors noticed.
->=20
-> mm/kasan/shadow.c: In function 'kasan_module_alloc':
-> mm/kasan/shadow.c:528:33: error: 'VM_DELAY_KMEMLEAK' undeclared (first
-> use in this function); did you mean 'VM_DEFER_KMEMLEAK'?
->   528 |                 if (vm->flags & VM_DELAY_KMEMLEAK)
->       |                                 ^~~~~~~~~~~~~~~~~
->       |                                 VM_DEFER_KMEMLEAK
-> mm/kasan/shadow.c:528:33: note: each undeclared identifier is reported
-> only once for each function it appears in
-> make[3]: *** [scripts/Makefile.build:288: mm/kasan/shadow.o] Error 1
->=20
-> Build config:
-> https://builds.tuxbuild.com/21OjEyx87iCX9bqOwJrZdl1wFFj/config
->=20
->=20
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->=20
-> meta data:
-> -----------
->     git describe: next-20211125
->     git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
->     git_sha: f81e94e91878bded599cc60f2881cfd50991aeb9
->     git_short_log: f81e94e91878 (\"Add linux-next specific files for 2021=
-1125\")
->     target_arch: x86
->     toolchain: gcc-11
->=20
-> steps to reproduce:
-> tuxmake --runtime podman --target-arch x86_64 --toolchain gcc-11
-> --kconfig defconfig \
-> --kconfig-add https://builds.tuxbuild.com/21OjEyx87iCX9bqOwJrZdl1wFFj/con=
-fig
->=20
-> https://builds.tuxbuild.com/21OjEyx87iCX9bqOwJrZdl1wFFj/tuxmake_reproduce=
-r.sh
->=20
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
+  EV_EXCEPTION_GEN
+  EV_RETIRED
+  EV_NOT_TAKEN
+  EV_ALIGNMENT
+  EV_PARTIAL_PREDICATE
+  EV_EMPTY_PREDICATE
 
-Caused by commit
+I am just wander if we can use sample.transaction to store these event
+types, otherwise, we cannot distinguish the event type for the samples.
 
-  f61bc9ffcab1 ("mm: defer kmemleak object creation of module_alloc()")
+And it's good fill more sample fields for complete info, like:
 
-from the akpm-current tree.  The define is VM_DEFER_KMEMLEAK :-(
+  sample.addr = record->virt_addr;
+  sample.phys_addr = record->phys_addr;
+  sample.data_src = data_src;
 
---=20
-Cheers,
-Stephen Rothwell
+Thanks,
+Leo
 
---Sig_/.DyF2x5Y=NaNAowk5G14Joj
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGfQOkACgkQAVBC80lX
-0GwUCwf/c0EEARMBwDYIgb1onsp9z7UjATvVkcBnNVbPcZbLLqQ1ZAFNVBuYz0FY
-zR6eUDVuIinxV1f+0qNnZ+0UrlXOnVXB8dyQGQk1nuwdRO/q4yqgS/s/l3wb/tMd
-dH4hFSbCb61V8opBuQ9XykPoOkY3fpI9J0G1QMlp5FdDVWKLC6VvPE3HwtTUoAvq
-BWRDFRc8RivX0YzI2gdP+x7vi/ol4ENUyq5hjjEZhmpzyT7tozDhY894fSv+sSFa
-Wa8yJPaRDXLuyyRnLumkOrOOVzgJsWakjM73hjvzavqek+wAts8QDSKqCHt2bg2l
-a304CvmUneLHJlBru4lSBjRbGiBU4Q==
-=DEkn
------END PGP SIGNATURE-----
-
---Sig_/.DyF2x5Y=NaNAowk5G14Joj--
+> +
+> +	return arm_spe_deliver_synth_event(spe, speq, event, &sample);
+> +}
+> +
+>  #define SPE_MEM_TYPE	(ARM_SPE_L1D_ACCESS | ARM_SPE_L1D_MISS | \
+>  			 ARM_SPE_LLC_ACCESS | ARM_SPE_LLC_MISS | \
+>  			 ARM_SPE_REMOTE_ACCESS)
+> @@ -480,6 +499,12 @@ static int arm_spe_sample(struct arm_spe_queue *speq)
+>  			return err;
+>  	}
+>  
+> +	if (spe->sample_other) {
+> +		err = arm_spe__synth_other_sample(speq, spe->all_id);
+> +		if (err)
+> +			return err;
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> @@ -1107,6 +1132,17 @@ arm_spe_synth_events(struct arm_spe *spe, struct perf_session *session)
+>  			return err;
+>  		spe->memory_id = id;
+>  		arm_spe_set_event_name(evlist, id, "memory");
+> +		id += 1;
+> +	}
+> +
+> +	if (spe->synth_opts.other_events) {
+> +		spe->sample_other = true;
+> +
+> +		err = arm_spe_synth_event(session, &attr, id);
+> +		if (err)
+> +			return err;
+> +		spe->all_id = id;
+> +		arm_spe_set_event_name(evlist, id, "all");
+>  	}
+>  
+>  	return 0;
+> diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
+> index bbf0d78c6..efe1bdc06 100644
+> --- a/tools/perf/util/auxtrace.h
+> +++ b/tools/perf/util/auxtrace.h
+> @@ -74,7 +74,7 @@ enum itrace_period_type {
+>   * @ptwrites: whether to synthesize events for ptwrites
+>   * @pwr_events: whether to synthesize power events
+>   * @other_events: whether to synthesize other events recorded due to the use of
+> - *                aux_output
+> + *                aux_output (all events for Arm SPE)
+>   * @errors: whether to synthesize decoder error events
+>   * @dont_decode: whether to skip decoding entirely
+>   * @log: write a decoding log
+> -- 
+> 2.25.1
+> 
