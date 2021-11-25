@@ -2,253 +2,649 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0C645D7F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:09:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B4645D7F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:09:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354311AbhKYKMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 05:12:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244132AbhKYKKQ (ORCPT
+        id S1354553AbhKYKNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 05:13:00 -0500
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:32882 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348074AbhKYKLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 05:10:16 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E83C061757;
-        Thu, 25 Nov 2021 02:07:05 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id v1so23263602edx.2;
-        Thu, 25 Nov 2021 02:07:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=tIPuoEGGl3rHozJHiwHRScnLRDDOqtNdMuXjLxGZ2X0=;
-        b=Whdva+N2tVDW1lSbZnSXjKpZ9qP9sC/nbcbBmvEOQPkKGEpAodbPmC5964Xg2CMQPb
-         SDoy40QRmTEXexz0U0H9XvkCMUXI/1Na4cjIQQC/ukbwQCyjmgdqobwvap5oMTLW6Ppf
-         dH4Vstugvs8AHRVrNLjsnALh1dGWFKV63VsBvY2H62NygT85e0pCjKYt9O1U4S9uzcnQ
-         DwG+IufbZ2halbwJ7E1zKZZhVuIjRHMHKZhdV6Fb5CKsT/rEhLLbVwd/rc22zafsBz/Z
-         l+1AamKm0MS9ODoWP1OHrcO0CApbtYvl+5Ygdt6Ycuagswn/GY3BguGTiYgKrC6wB8LC
-         /rPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tIPuoEGGl3rHozJHiwHRScnLRDDOqtNdMuXjLxGZ2X0=;
-        b=bL+SjHwc2nwb2tNnXUtRPHQRIV+52B5IBDJgWvZIBMmVRa7QInOzd8el2zUkPsvdA4
-         EanJLliLBf5o07GKfkrHM8GHwSKHZPwlY57RExNDB5f3zA5OvkKCfSUc5ll7kKMEdiJ4
-         SUqJcbqp3EHY0fQoLkevF1ChQs8NkcEfc802br2Zip+CJnlrYKXP9FghZirjLTqWycZG
-         DJBWH1AhTfuBk7v4JqWtvNJQrfWKyfkx+USJ+iT39Tvyz5DQEiHDKMUig7A7Nrq3QAhv
-         mXmHy2my1g5mmFAD2P1vYhnuDjgbuMIYljStYuuSPsQrXfBJyUhIw9KfxOIGmeKAtFDx
-         jumQ==
-X-Gm-Message-State: AOAM531US+9WLLSYeUPVpupRaYGoxGWSuuBChkBLPW1FxmhZ2eMbChB0
-        LiFQ7xBbL/i15m6TzXxRxMwlnyiUduq6/n631YM=
-X-Google-Smtp-Source: ABdhPJx8PxgUcMnxoDsENWlav2EDs7/Xs92zGWvl8WeSEPqYjji/OTmedmaVPTGL4A4IJkPfiFyFuGn2mqYxddQ8l7g=
-X-Received: by 2002:a17:907:9196:: with SMTP id bp22mr28694756ejb.69.1637834823276;
- Thu, 25 Nov 2021 02:07:03 -0800 (PST)
+        Thu, 25 Nov 2021 05:11:00 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1APA7eZq025119;
+        Thu, 25 Nov 2021 04:07:40 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1637834860;
+        bh=dxUYeqKsigxChZuCE55XHKCRDEyPw0OJvF7ruVYvGeU=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=prMo48tmRywHvj/lAIkiBsf7kHqbS5V/AKDbuP+Cq5aAaXZpvoPF6FEOElH1NceeM
+         squA5ZZyb+uPtlkGysz3s7aH0gv+PC2wjaq2n9LbgEeXxEHDaikOIBO5N9FY/uT5zN
+         TYgT9rsPa+MvYuHGrfg7UqP76hXoZcHQ/NxOzvG8=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1APA7eEs066857
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 25 Nov 2021 04:07:40 -0600
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 25
+ Nov 2021 04:07:40 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Thu, 25 Nov 2021 04:07:40 -0600
+Received: from [172.24.145.91] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1APA7bKJ049184;
+        Thu, 25 Nov 2021 04:07:38 -0600
+Subject: Re: [PATCH] ASoC: dt-bindings: davinci-mcasp: convert McASP bindings
+ to yaml schema
+To:     Rob Herring <robh@kernel.org>
+CC:     <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
+        <broonie@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>, <kishon@ti.com>
+References: <20211122091525.2290-1-j-choudhary@ti.com>
+ <1637685269.740254.3442929.nullmailer@robh.at.kernel.org>
+From:   Jayesh Choudhary <j-choudhary@ti.com>
+Message-ID: <d72bac88-8f56-35cd-a953-270a1ed4d34b@ti.com>
+Date:   Thu, 25 Nov 2021 15:37:36 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <1635747525-31243-1-git-send-email-lh.kuo@sunplus.com>
- <cover.1637547799.git.lh.kuo@sunplus.com> <e5f2549224cf875d81306ef5f6e98db1cfd81c2e.1637547799.git.lh.kuo@sunplus.com>
- <CAHp75Vd2=OHbrpGtsU8AMXdtNfvSPhpc7vhzkWnahaV48XbfUQ@mail.gmail.com>
- <YZz0n6Mpjl3tKmMe@sirena.org.uk> <CAHp75Vf6+monqu4Hq-yoFSohD9tNFqZTuKjqDDKAJE3Om2BUYQ@mail.gmail.com>
- <6eb68a8153ba46c48862d00f7aa6e0fe@sphcmbx02.sunplus.com.tw>
-In-Reply-To: <6eb68a8153ba46c48862d00f7aa6e0fe@sphcmbx02.sunplus.com.tw>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 25 Nov 2021 12:06:27 +0200
-Message-ID: <CAHp75VftSORts5cbDxvfyHgqhxmb7K74BfPd=mST+75C+Ch9dQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] SPI: Add SPI driver for Sunplus SP7021
-To:     =?UTF-8?B?TGggS3VvIOmDreWKm+ixqg==?= <lh.Kuo@sunplus.com>
-Cc:     Mark Brown <broonie@kernel.org>, "LH.Kuo" <lhjeff911@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "dvorkin@tibbo.com" <dvorkin@tibbo.com>,
-        "qinjian@cqplus1.com" <qinjian@cqplus1.com>,
-        =?UTF-8?B?V2VsbHMgTHUg5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1637685269.740254.3442929.nullmailer@robh.at.kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 11:47 AM Lh Kuo =E9=83=AD=E5=8A=9B=E8=B1=AA <lh.Kuo=
-@sunplus.com> wrote:
 
->     I have already modified most of the driver. And the probe function is=
- as follows. Is it okay?
 
-Can be done a bit better, see below (seems you missed few of the comments)
+On 23/11/21 10:04 pm, Rob Herring wrote:
+> On Mon, 22 Nov 2021 14:45:25 +0530, Jayesh Choudhary wrote:
+>> Convert the bindings for McASP controllers for TI SOCs
+>> from txt to YAML schema.
+>>
+>> Adds additional properties 'clocks', 'clock-names', 'power-domains'
+>> and '#sound-dai-cells' which were not there in txt file.
+>> Adds 'dmas' and 'dma-names' in the example which were not there in
+>> txt file.
+>> Changes 'interrupts' and 'interrupt-names' from optional to
+>> required properties.
+>>
+>> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+>> ---
+>>   .../bindings/sound/davinci-mcasp-audio.txt    |  86 ----------
+>>   .../bindings/sound/davinci-mcasp-audio.yaml   | 161 ++++++++++++++++++
+>>   2 files changed, 161 insertions(+), 86 deletions(-)
+>>   delete mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.txt
+>>   create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
+>>
+> 
+> Running 'make dtbs_check' with the schema in this patch gives the
+> following warnings. Consider if they are expected or the schema is
+> incorrect. These may not be new warnings.
+> 
+> Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+> This will change in the future.
+> 
+> Full log is available here: https://patchwork.ozlabs.org/patch/1557927
+> 
+> 
+> mcasp@0: clock-names: Additional items are not allowed ('ahclkx', 'ahclkr' were unexpected)
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 
+> mcasp@0: clock-names: Additional items are not allowed ('ahclkx' was unexpected)
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 
+> mcasp@0: clock-names: ['fck', 'ahclkx', 'ahclkr'] is too long
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 
+> mcasp@0: clock-names: ['fck', 'ahclkx'] is too long
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[155, 0, 0], [155, 0, 24], [155, 0, 28]] is too long
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 
+> mcasp@0: clocks: [[156, 0, 0], [156, 0, 24], [156, 0, 28]] is too long
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[157, 0, 0], [157, 0, 24], [157, 0, 28]] is too long
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[158, 0, 0], [158, 0, 24], [158, 0, 28]] is too long
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 
+> mcasp@0: clocks: [[91, 340, 0], [156, 0, 24], [91, 340, 28]] is too long
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[91, 348, 0], [91, 348, 24]] is too long
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[91, 364, 0], [91, 364, 24]] is too long
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[91, 388, 0], [91, 388, 24]] is too long
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[91, 396, 0], [91, 396, 24]] is too long
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[91, 504, 0], [91, 504, 24]] is too long
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[91, 508, 0], [91, 508, 24]] is too long
+> 	arch/arm/boot/dts/dra71-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[92, 340, 0], [155, 0, 24], [92, 340, 28]] is too long
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 
+> mcasp@0: clocks: [[92, 340, 0], [156, 0, 24], [92, 340, 28]] is too long
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 
+> mcasp@0: clocks: [[92, 340, 0], [157, 0, 24], [92, 340, 28]] is too long
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[92, 340, 0], [158, 0, 24], [92, 340, 28]] is too long
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 
+> mcasp@0: clocks: [[92, 348, 0], [92, 348, 24]] is too long
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[92, 364, 0], [92, 364, 24]] is too long
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[92, 388, 0], [92, 388, 24]] is too long
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[92, 396, 0], [92, 396, 24]] is too long
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[92, 504, 0], [92, 504, 24]] is too long
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[92, 508, 0], [92, 508, 24]] is too long
+> 	arch/arm/boot/dts/am571x-idk.dt.yaml
+> 	arch/arm/boot/dts/am5729-beagleboneai.dt.yaml
+> 	arch/arm/boot/dts/am572x-idk.dt.yaml
+> 	arch/arm/boot/dts/am574x-idk.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+> 	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+> 	arch/arm/boot/dts/am57xx-cl-som-am57x.dt.yaml
+> 	arch/arm/boot/dts/am57xx-sbc-am57x.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm.dt.yaml
+> 	arch/arm/boot/dts/dra72-evm-revc.dt.yaml
+> 	arch/arm/boot/dts/dra7-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[94, 340, 0], [157, 0, 24], [94, 340, 28]] is too long
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[94, 348, 0], [94, 348, 24]] is too long
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[94, 364, 0], [94, 364, 24]] is too long
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[94, 388, 0], [94, 388, 24]] is too long
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[94, 396, 0], [94, 396, 24]] is too long
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[94, 504, 0], [94, 504, 24]] is too long
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 
+> mcasp@0: clocks: [[94, 508, 0], [94, 508, 24]] is too long
+> 	arch/arm/boot/dts/dra76-evm.dt.yaml
+> 
+> mcasp@0: dma-names: ['tx'] is too short
+> 	arch/arm/boot/dts/omap4-droid4-xt894.dt.yaml
+> 	arch/arm/boot/dts/omap4-droid-bionic-xt875.dt.yaml
+> 	arch/arm/boot/dts/omap4-duovero-parlor.dt.yaml
+> 	arch/arm/boot/dts/omap4-kc1.dt.yaml
+> 	arch/arm/boot/dts/omap4-panda-a4.dt.yaml
+> 	arch/arm/boot/dts/omap4-panda.dt.yaml
+> 	arch/arm/boot/dts/omap4-panda-es.dt.yaml
+> 	arch/arm/boot/dts/omap4-sdp.dt.yaml
+> 	arch/arm/boot/dts/omap4-sdp-es23plus.dt.yaml
+> 	arch/arm/boot/dts/omap4-var-dvk-om44.dt.yaml
+> 	arch/arm/boot/dts/omap4-var-stk-om44.dt.yaml
+> 
+> mcasp@0: dmas: [[119, 8]] is too short
+> 	arch/arm/boot/dts/omap4-droid4-xt894.dt.yaml
+> 	arch/arm/boot/dts/omap4-droid-bionic-xt875.dt.yaml
+> 	arch/arm/boot/dts/omap4-kc1.dt.yaml
+> 
+> mcasp@0: dmas: [[124, 8]] is too short
+> 	arch/arm/boot/dts/omap4-duovero-parlor.dt.yaml
+> 
+> mcasp@0: dmas: [[127, 8]] is too short
+> 	arch/arm/boot/dts/omap4-panda-a4.dt.yaml
+> 	arch/arm/boot/dts/omap4-panda.dt.yaml
+> 	arch/arm/boot/dts/omap4-sdp.dt.yaml
+> 	arch/arm/boot/dts/omap4-sdp-es23plus.dt.yaml
+> 
+> mcasp@0: dmas: [[130, 8]] is too short
+> 	arch/arm/boot/dts/omap4-var-dvk-om44.dt.yaml
+> 	arch/arm/boot/dts/omap4-var-stk-om44.dt.yaml
+> 
+> mcasp@0: dmas: [[132, 8]] is too short
+> 	arch/arm/boot/dts/omap4-panda-es.dt.yaml
+> 
+> mcasp@0: interrupt-names: ['tx'] is too short
+> 	arch/arm/boot/dts/omap4-droid4-xt894.dt.yaml
+> 	arch/arm/boot/dts/omap4-droid-bionic-xt875.dt.yaml
+> 	arch/arm/boot/dts/omap4-duovero-parlor.dt.yaml
+> 	arch/arm/boot/dts/omap4-kc1.dt.yaml
+> 	arch/arm/boot/dts/omap4-panda-a4.dt.yaml
+> 	arch/arm/boot/dts/omap4-panda.dt.yaml
+> 	arch/arm/boot/dts/omap4-panda-es.dt.yaml
+> 	arch/arm/boot/dts/omap4-sdp.dt.yaml
+> 	arch/arm/boot/dts/omap4-sdp-es23plus.dt.yaml
+> 	arch/arm/boot/dts/omap4-var-dvk-om44.dt.yaml
+> 	arch/arm/boot/dts/omap4-var-stk-om44.dt.yaml
+> 
+> mcasp@0: interrupts: [[0, 109, 4]] is too short
+> 	arch/arm/boot/dts/omap4-droid4-xt894.dt.yaml
+> 	arch/arm/boot/dts/omap4-droid-bionic-xt875.dt.yaml
+> 	arch/arm/boot/dts/omap4-duovero-parlor.dt.yaml
+> 	arch/arm/boot/dts/omap4-kc1.dt.yaml
+> 	arch/arm/boot/dts/omap4-panda-a4.dt.yaml
+> 	arch/arm/boot/dts/omap4-panda.dt.yaml
+> 	arch/arm/boot/dts/omap4-panda-es.dt.yaml
+> 	arch/arm/boot/dts/omap4-sdp.dt.yaml
+> 	arch/arm/boot/dts/omap4-sdp-es23plus.dt.yaml
+> 	arch/arm/boot/dts/omap4-var-dvk-om44.dt.yaml
+> 	arch/arm/boot/dts/omap4-var-stk-om44.dt.yaml
+> 
+> mcasp@0: 'num-serializer' does not match any of the regexes: 'pinctrl-[0-9]+'
+> 	arch/arm/boot/dts/am335x-cm-t335.dt.yaml
+> 	arch/arm/boot/dts/am335x-sbc-t335.dt.yaml
+> 
+> mcasp@0: 'port' does not match any of the regexes: 'pinctrl-[0-9]+'
+> 	arch/arm/boot/dts/am335x-sl50.dt.yaml
+> 
+> mcasp@0: 'rt-num-evt' does not match any of the regexes: 'pinctrl-[0-9]+'
+> 	arch/arm/boot/dts/am335x-wega-rdk.dt.yaml
+> 
+This particular error looks like a typo error in the dts file. I will 
+send a seperate patch to fix it.
 
-> static int sp7021_spi_controller_probe(struct platform_device *pdev)
-> {
->         int ret;
->         int mode;
->         struct spi_controller *ctlr;
->         struct sp7021_spi_ctlr *pspim;
->         struct device *dev =3D &pdev->dev;
+> mcasp@100000: interrupt-names:0: 'tx' was expected
+> 	arch/arm/boot/dts/da850-enbw-cmc.dt.yaml
+> 	arch/arm/boot/dts/da850-evm.dt.yaml
+> 	arch/arm/boot/dts/da850-lcdk.dt.yaml
+> 	arch/arm/boot/dts/da850-lego-ev3.dt.yaml
+> 
+> mcasp@100000: interrupt-names: ['common'] is too short
+> 	arch/arm/boot/dts/da850-enbw-cmc.dt.yaml
+> 	arch/arm/boot/dts/da850-evm.dt.yaml
+> 	arch/arm/boot/dts/da850-lcdk.dt.yaml
+> 	arch/arm/boot/dts/da850-lego-ev3.dt.yaml
+> 
+> mcasp@100000: interrupts: [[54]] is too short
+> 	arch/arm/boot/dts/da850-enbw-cmc.dt.yaml
+> 	arch/arm/boot/dts/da850-evm.dt.yaml
+> 	arch/arm/boot/dts/da850-lcdk.dt.yaml
+> 	arch/arm/boot/dts/da850-lego-ev3.dt.yaml
+> v2 patch will take care of rest of the arm SoC errors as well.
 
-Other way around, or i.o.w. "reversed tree".
+> mcasp@2b00000: 'op-mode' is a required property
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
+> 
+> mcasp@2b00000: 'serial-dir' is a required property
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
+> 
+> mcasp@2b00000: 'tdm-slots' is a required property
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
+> 
+> mcasp@2b10000: 'op-mode' is a required property
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
+> 
+> mcasp@2b10000: 'serial-dir' is a required property
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
+> 
+> mcasp@2b10000: 'tdm-slots' is a required property
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
+> 
+> mcasp@2b20000: 'op-mode' is a required property
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
+> 
+> mcasp@2b20000: 'serial-dir' is a required property
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
+> 
+> mcasp@2b20000: 'tdm-slots' is a required property
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-pg2.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dt.yaml
+> 	arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-pg2.dt.yaml
+> 
+For these arm64 SoC errors, a patch has already been sent that disables 
+the nodes in the dtsi file since some required properties are added via 
+overlay.
 
->         mode =3D SP7021_MASTER_MODE;
->         pdev->id =3D of_alias_get_id(pdev->dev.of_node, "sp_spi");
->
->         if (of_property_read_bool(pdev->dev.of_node, "spi-slave"))
->                 mode =3D SP7021_SLAVE_MODE;
+Patch link: 
+https://lore.kernel.org/all/20211117053806.10095-1-j-choudhary@ti.com/
 
-         pdev->id =3D of_alias_get_id(pdev->dev.of_node, "sp_spi");
-
-         mode =3D SP7021_MASTER_MODE;
-         if (of_property_read_bool(pdev->dev.of_node, "spi-slave"))
-                 mode =3D SP7021_SLAVE_MODE;
-
->         if (mode =3D=3D SP7021_SLAVE_MODE)
->                 ctlr =3D devm_spi_alloc_slave(dev, sizeof(*pspim));
->         else
->                 ctlr =3D devm_spi_alloc_master(dev, sizeof(*pspim));
->         if (!ctlr)
->                 return -ENOMEM;
->
->         ctlr->dev.of_node =3D pdev->dev.of_node;
->         ctlr->bus_num =3D pdev->id;
->         ctlr->mode_bits =3D SPI_CPOL | SPI_CPHA | SPI_CS_HIGH | SPI_LSB_F=
-IRST;
->         ctlr->auto_runtime_pm =3D true;
->         ctlr->prepare_message =3D sp7021_spi_controller_prepare_message;
->         if (mode =3D=3D SP7021_SLAVE_MODE) {
->                 ctlr->transfer_one =3D sp7021_spi_sla_transfer_one;
->                 ctlr->slave_abort =3D sp7021_spi_sla_abort;
->                 ctlr->flags =3D SPI_CONTROLLER_HALF_DUPLEX;
->         } else {
->                 ctlr->bits_per_word_mask =3D SPI_BPW_MASK(8);
->                 ctlr->min_speed_hz =3D 40000;
->                 ctlr->max_speed_hz =3D 25000000;
->                 ctlr->use_gpio_descriptors =3D true;
->                 ctlr->flags =3D SPI_CONTROLLER_MUST_RX | SPI_CONTROLLER_M=
-UST_TX;
->                 ctlr->transfer_one =3D sp7021_spi_mas_transfer_one;
->         }
->         platform_set_drvdata(pdev, ctlr);
->         pspim =3D spi_controller_get_devdata(ctlr);
->         pspim->ctlr =3D ctlr;
->         pspim->dev =3D dev;
->         spin_lock_init(&pspim->lock);
->         mutex_init(&pspim->buf_lock);
->         init_completion(&pspim->isr_done);
->         init_completion(&pspim->sla_isr);
->         pspim->mas_base =3D devm_platform_ioremap_resource_byname(pdev, "=
-spi_master");
->         pspim->sla_base =3D devm_platform_ioremap_resource_byname(pdev, "=
-spi_slave");
->
->         pspim->mas_irq =3D platform_get_irq_byname(pdev, "mas_risc_intr")=
-;
->         if (pspim->mas_irq < 0) {
-
->                 dev_err(dev, "failed to get mas intr\n");
-
-Dup. No need to repeat what's done by platform core.
-
->                 return pspim->mas_irq;
->         }
->
->         pspim->sla_irq =3D platform_get_irq_byname(pdev, "slave_risc_intr=
-");
->         if (pspim->sla_irq < 0) {
-
->                 dev_err(dev, "failed to get sla intr\n");
-
-Dup.
-
->                 return pspim->sla_irq;
->         }
->
->         ret =3D devm_request_irq(dev, pspim->mas_irq, sp7021_spi_mas_irq
->                                                 , IRQF_TRIGGER_RISING, pd=
-ev->name, pspim);
-
-Ugly indentation.
-
->         if (ret) {
->                 dev_err(dev, "mas intr devm_request_irq fail\n");
->                 return ret;
->         }
->
->         ret =3D devm_request_irq(dev, pspim->sla_irq, sp7021_spi_sla_irq
->                                                 , IRQF_TRIGGER_RISING, pd=
-ev->name, pspim);
-
-Ditto.
-
->         if (ret) {
->                 dev_err(dev, "slave intr devm_request_irq fail\n");
->                 return ret;
->         }
->
->         pspim->spi_clk =3D devm_clk_get(dev, NULL);
-
->         if (IS_ERR(pspim->spi_clk)) {
->                 return dev_err_probe(dev, PTR_ERR(pspim->spi_clk), "clk g=
-et fail\n");
->         }
-
-Does checkpatch compains on this?
-Hint: {} around a single statement shouldn't be added.
-
->         pspim->rstc =3D devm_reset_control_get_exclusive(dev, NULL);
->         if (IS_ERR(pspim->rstc)) {
->                 return dev_err_probe(dev, PTR_ERR(pspim->rstc), "rst get =
-fail\n");
-
-Ditto.
-
->         }
->
->         ret =3D clk_prepare_enable(pspim->spi_clk);
->         if (ret)
-
->                 return dev_err_probe(dev, ret,
->                         "failed to enable clk\n");
-
-One line
-
->         ret =3D reset_control_deassert(pspim->rstc);
->         if (ret) {
->                 dev_err_probe(dev, ret,
->                         "failed to deassert reset\n");
-
-One line.
-
->                 goto free_reset_assert;
-
->
-
-Really, pay attention to a stray blank line here and there.
-
->         }
->
->         pm_runtime_enable(dev);
->
->         ret =3D devm_spi_register_controller(dev, ctlr);
-
-You can't mix non-devm with devm APIs. Either all non-devm, or devm
-followed by non-devm.
-
->         if (ret) {
->                 dev_err(dev, "spi_register_master fail\n");
->                 goto err_disable_pm_runtime;
->         }
->
->         return ret;
->
-> err_disable_pm_runtime:
->         pm_runtime_disable(dev);
-> free_reset_assert:
->         reset_control_assert(pspim->rstc);
->         clk_disable_unprepare(pspim->spi_clk);
->
->         return ret;
-> }
-
---=20
-With Best Regards,
-Andy Shevchenko
+Warm Regards,
+Jayesh
