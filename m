@@ -2,143 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFAFA45E108
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 20:32:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD69445E10B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 20:33:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356437AbhKYTfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 14:35:42 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:47052 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243479AbhKYTdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 14:33:41 -0500
-Received: from ip5f5b2004.dynamic.kabel-deutschland.de ([95.91.32.4] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mqKRs-0005mw-Ts; Thu, 25 Nov 2021 20:30:24 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Johan Jonker <jbx6244@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] arm64: dts: rockchip: rk356x: Add HDMI audio nodes
-Date:   Thu, 25 Nov 2021 20:30:24 +0100
-Message-ID: <4335378.eiKhv840gI@diego>
-In-Reply-To: <08774d87-97e0-6afa-2816-bf78949e4e68@gmail.com>
-References: <20211125100836.423808-1-frattaroli.nicolas@gmail.com> <20211125100836.423808-2-frattaroli.nicolas@gmail.com> <08774d87-97e0-6afa-2816-bf78949e4e68@gmail.com>
+        id S1356738AbhKYTgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 14:36:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230361AbhKYTep (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 14:34:45 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75613C06173E;
+        Thu, 25 Nov 2021 11:31:33 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637868692;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gpUN5LfxUwziCHZGBBCmGs+KW8h5+IJ1c0CfPbKoypk=;
+        b=D1V3v60SFpMXgH4XlHLPQB5pnAALo79hGM7wcQmx2UtiMLCjjaj31/mcQ3XtgfvnrwPHVV
+        PujbkOu8/NhLqPbuENTbIucltFZgA27hB9nQzIessAxlITJGOyhfsgPzyWoPxg/aNMtZjb
+        dbZTqhcJV0jUrtN58OFqIdFr384tCCMgx+FGiZpMZ84ff9hAKcHnZklBSyxLKpOj+2fI1X
+        6TgEmPwIYueEI1X34wJzIR6Eyzl4ji7aOv8O7yfdSwzvW6kR2+fvIaCPGn1mwFkzHpLDO0
+        NYUO+QYvOFFicU4guFJg0ADrb/sfXIpzBmvBlWpR0dh9i9Hqup9xRKr4ZhRoDQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637868692;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gpUN5LfxUwziCHZGBBCmGs+KW8h5+IJ1c0CfPbKoypk=;
+        b=Sgho37z2/ampj7dMUCz9rJuM5k+anbpXD+Cq0HwRImTcm4FkDmm+SXs/A9m1nsBuofIkgH
+        bVqOdauSQRByl2CA==
+To:     isaku.yamahata@intel.com, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [RFC PATCH v3 16/59] KVM: x86: Add per-VM flag to disable
+ direct IRQ injection
+In-Reply-To: <dbf8648ee18606a5a450bce32100771a3de5fd83.1637799475.git.isaku.yamahata@intel.com>
+References: <cover.1637799475.git.isaku.yamahata@intel.com>
+ <dbf8648ee18606a5a450bce32100771a3de5fd83.1637799475.git.isaku.yamahata@intel.com>
+Date:   Thu, 25 Nov 2021 20:31:31 +0100
+Message-ID: <87o868jalo.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Donnerstag, 25. November 2021, 20:07:21 CET schrieb Johan Jonker:
-> Hi Nicolas,
-> 
-> Some comments...
-> 
-> On 11/25/21 11:08 AM, Nicolas Frattaroli wrote:
-> > This adds the i2s0 node and an hdmi-sound sound device to the
-> > rk356x device tree. On the rk356[68], the i2s0 controller is
-> > connected to HDMI audio.
-> > 
-> > Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-> > ---
-> >  arch/arm64/boot/dts/rockchip/rk356x.dtsi | 32 ++++++++++++++++++++++++
-> >  1 file changed, 32 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> > index 3c09cf6d4c37..ad4053402eef 100644
-> > --- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> > +++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> > @@ -614,6 +614,21 @@ hdmi_in_vp2: endpoint@2 {
-> >  		};
-> >  	};
-> >  
-> 
-> > +	hdmi_sound: hdmi-sound {
-> 
-> Some DT sort rules:
-> 
-> For nodes:
-> Sort things without reg alphabetical first,
-> then sort the rest by reg address.
-> 
-> > +		compatible = "simple-audio-card";
-> 
-> simple-audio-card,name = "HDMI";
-> 
-> > +		simple-audio-card,format = "i2s";
-> > +		simple-audio-card,mclk-fs = <256>;
-> 
-> > +		simple-audio-card,name = "hdmi-sound";
-> 
-> Exceptions:
-> Sort simple-audio-card,name above other simple-audio-card properties.
-> 
-> Shouldn't we standardize to SPDIF, HDMI and Analog similar to rk3318/rk3328?
-> Make a shorter label without spaces or special chars, so that chars
-> don't get removed?
-> See "aplay -l" screen print.
-> 
-> Maybe rename to "HDMI"?
-> 
-> > +		status = "disabled";
-> > +
-> > +		simple-audio-card,cpu {
-> > +			sound-dai = <&i2s0_8ch>;
-> > +		};
-> 
-> Add empty line between nodes.
-> 
-> Not sure if Heiko cares, but when alphabetical sort I get this:
-> simple-audio-card,codec
-> simple-audio-card,cpu
+On Wed, Nov 24 2021 at 16:19, isaku yamahata wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+>
+> Add a flag to disable IRQ injection, which is not supported by TDX.
+...
+> @@ -4506,7 +4506,8 @@ static int kvm_vcpu_ready_for_interrupt_injection(struct kvm_vcpu *vcpu)
+>  static int kvm_vcpu_ioctl_interrupt(struct kvm_vcpu *vcpu,
+>  				    struct kvm_interrupt *irq)
+>  {
+> -	if (irq->irq >= KVM_NR_INTERRUPTS)
+> +	if (irq->irq >= KVM_NR_INTERRUPTS ||
+> +	    vcpu->kvm->arch.irq_injection_disallowed)
+>  		return -EINVAL;
 
-Hehe ... I do care, but would normally just (silently) re-sort these
-things when applying ;-) .
-
-
-Heiko
-
-
-> > +		simple-audio-card,codec {
-> > +			sound-dai = <&hdmi>;
-> > +		};
-> > +	};
-> > +
-> >  	qos_gpu: qos@fe128000 {
-> >  		compatible = "rockchip,rk3568-qos", "syscon";
-> >  		reg = <0x0 0xfe128000 0x0 0x20>;
-> > @@ -789,6 +804,23 @@ spdif: spdif@fe460000 {
-> >  		status = "disabled";
-> >  	};
-> >  
-> > +	i2s0_8ch: i2s@fe400000 {
-> > +		compatible = "rockchip,rk3568-i2s-tdm";
-> > +		reg = <0x0 0xfe400000 0x0 0x1000>;
-> > +		interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
-> > +		assigned-clocks = <&cru CLK_I2S0_8CH_TX_SRC>, <&cru CLK_I2S0_8CH_RX_SRC>;
-> > +		assigned-clock-rates = <1188000000>, <1188000000>;
-> > +		clocks = <&cru MCLK_I2S0_8CH_TX>, <&cru MCLK_I2S0_8CH_RX>, <&cru HCLK_I2S0_8CH>;
-> > +		clock-names = "mclk_tx", "mclk_rx", "hclk";
-> > +		dmas = <&dmac1 0>;
-> > +		dma-names = "tx";
-> > +		resets = <&cru SRST_M_I2S0_8CH_TX>, <&cru SRST_M_I2S0_8CH_RX>;
-> > +		reset-names = "tx-m", "rx-m";
-> > +		rockchip,grf = <&grf>;
-> > +		#sound-dai-cells = <0>;
-> > +		status = "disabled";
-> > +	};
-> > +
-> >  	i2s1_8ch: i2s@fe410000 {
-> >  		compatible = "rockchip,rk3568-i2s-tdm";
-> >  		reg = <0x0 0xfe410000 0x0 0x1000>;
-> > 
-> 
-
-
-
+That's required here because you forgot to copy & pasta the protect
+guest condition muck into that ioctl, right?
 
