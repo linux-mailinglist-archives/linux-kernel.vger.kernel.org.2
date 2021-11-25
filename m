@@ -2,76 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C386545E138
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 20:57:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A75DB45E13D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356798AbhKYUA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 15:00:29 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:54292 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbhKYT62 (ORCPT
+        id S1350315AbhKYUDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 15:03:35 -0500
+Received: from smtprelay0039.hostedemail.com ([216.40.44.39]:39842 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233721AbhKYUBe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 14:58:28 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637870116;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hSMowqhqzhm6IutQ/pfqymHz8EouPjwX/7DhgDwhw+A=;
-        b=dOh0OK4juYj+bNo3uMlN4kTYNaWfz4LgLBB9tK74Z8CDGMty7xPey7hE0YeLI7t/DRcC3x
-        cH7yfaf3qv76hgdYFxTsAv77Kk6IcOObjOaBrmodT1WZGjzP5tv/FS+I3J3+WYVnfn2DJZ
-        McDaBGgRzbuo+c0zyBEt7QfRbcItYRwinb0bUHP+Wsd/PratbW/+0vF4RDSq/n9rzQlKAx
-        iIDoayOrNGK+ed6RYEdx7u41hQb5sjVWzLDJ9/zTTXmDfbw1XZKIa+z2fkNYYHqd2oqnJb
-        Jg/uq5SU0qv1I0EnipuI59O6PApZFTk/ycYvkwUE/r7d3HEt1AhUwzIK8kBiMA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637870116;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hSMowqhqzhm6IutQ/pfqymHz8EouPjwX/7DhgDwhw+A=;
-        b=Ql+VbgtR+/I72NyJMGgVKTZLTOjMGhdNBRtccauUMjyXhVdjqUPRldDHspj5I5QQI7Jkig
-        /gjrnRoVDtEufRCQ==
-To:     isaku.yamahata@intel.com, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [RFC PATCH v3 30/59] KVM: x86: Add guest_supported_xss placholder
-In-Reply-To: <79e3a44d6b7852b255520ef57b59ce1324695630.1637799475.git.isaku.yamahata@intel.com>
-References: <cover.1637799475.git.isaku.yamahata@intel.com>
- <79e3a44d6b7852b255520ef57b59ce1324695630.1637799475.git.isaku.yamahata@intel.com>
-Date:   Thu, 25 Nov 2021 20:55:15 +0100
-Message-ID: <874k80j9i4.ffs@tglx>
+        Thu, 25 Nov 2021 15:01:34 -0500
+Received: from omf02.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 7BCC8182CED28;
+        Thu, 25 Nov 2021 19:58:21 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id 3C137B00018A;
+        Thu, 25 Nov 2021 19:58:18 +0000 (UTC)
+Message-ID: <ddef1847b4694071ae914eab93b0d2bd45fdf050.camel@perches.com>
+Subject: Re: [PATCH] RDMA/mlx4: Use bitmap_alloc() when applicable
+From:   Joe Perches <joe@perches.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        yishaih@nvidia.com, selvin.xavier@broadcom.com,
+        dledford@redhat.com, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Date:   Thu, 25 Nov 2021 11:58:19 -0800
+In-Reply-To: <4c93b4e02f5d784ddfd3efd4af9e673b9117d641.1637869328.git.christophe.jaillet@wanadoo.fr>
+References: <4c93b4e02f5d784ddfd3efd4af9e673b9117d641.1637869328.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.15
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 3C137B00018A
+X-Stat-Signature: yn53aj5yzrhutyoeq7rdpr4cc3gnxx3u
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+75TsI88XshvqkCZYPF2FcNlF9F4sYqEY=
+X-HE-Tag: 1637870298-589355
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24 2021 at 16:20, isaku yamahata wrote:
+On Thu, 2021-11-25 at 20:42 +0100, Christophe JAILLET wrote:
+> Use 'bitmap_alloc()' to simplify code, improve the semantic and avoid some
+> open-coded arithmetic in allocator arguments.
+> 
+> Also change the corresponding 'kfree()' into 'bitmap_free()' to keep
+> consistency.
 
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
->
-> Add a per-vcpu placeholder for the support XSS of the guest so that the
-> TDX configuration code doesn't need to hack in manual computation of the
-> supported XSS.  KVM XSS enabling is currently being upstreamed, i.e.
-> guest_supported_xss will no longer be a placeholder by the time TDX is
-> ready for upstreaming (hopefully).
+Thanks.
 
-Yes, hope dies last... Definitely technical useful information for a
-changelog. There is a reason why notes should go below the --- separator
-line.
+> diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
+[]
+> @@ -2784,10 +2784,8 @@ static void *mlx4_ib_add(struct mlx4_dev *dev)
+>  		if (err)
+>  			goto err_counter;
+>  
+> -		ibdev->ib_uc_qpns_bitmap =
+> -			kmalloc_array(BITS_TO_LONGS(ibdev->steer_qpn_count),
+> -				      sizeof(long),
+> -				      GFP_KERNEL);
+> +		ibdev->ib_uc_qpns_bitmap = bitmap_alloc(ibdev->steer_qpn_count,
+> +							GFP_KERNEL);
 
-Thanks,
+I wonder if it'd be simpler/smaller to change this to bitmap_zalloc and
+remove the bitmap_zero in the if below.
 
-        tglx
 
