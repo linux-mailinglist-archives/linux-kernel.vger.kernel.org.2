@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EFDF45D5E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E41E45D5EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348091AbhKYID5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 03:03:57 -0500
-Received: from mga04.intel.com ([192.55.52.120]:31103 "EHLO mga04.intel.com"
+        id S1349835AbhKYIFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 03:05:11 -0500
+Received: from mga17.intel.com ([192.55.52.151]:39901 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348592AbhKYIB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 03:01:56 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="234196773"
+        id S1352289AbhKYIDK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 03:03:10 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="216174978"
 X-IronPort-AV: E=Sophos;i="5.87,262,1631602800"; 
-   d="scan'208";a="234196773"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 23:57:28 -0800
+   d="scan'208";a="216174978"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 23:57:30 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,262,1631602800"; 
-   d="scan'208";a="675150960"
+   d="scan'208";a="457312152"
 Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 24 Nov 2021 23:57:27 -0800
+  by orsmga003.jf.intel.com with ESMTP; 24 Nov 2021 23:57:27 -0800
 Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mq9dG-0005zy-PW; Thu, 25 Nov 2021 07:57:26 +0000
-Date:   Thu, 25 Nov 2021 15:57:06 +0800
+        id 1mq9dG-000600-Pr; Thu, 25 Nov 2021 07:57:26 +0000
+Date:   Thu, 25 Nov 2021 15:57:12 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: [mcgrof-next:20211116-sysctl-cleanups-v3 11/20]
- drivers/macintosh/mac_hid.c:246:31: warning: assignment to 'struct
- ctl_table_header *' from 'int' makes pointer from integer without a cast
-Message-ID: <202111251523.kkvJodHq-lkp@intel.com>
+To:     Karol Kolacinski <karol.kolacinski@intel.com>
+Cc:     kbuild-all@lists.01.org,
+        Intel Wired LAN <intel-wired-lan@lists.osuosl.org>,
+        linux-kernel@vger.kernel.org,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sudhansu Sekhar Mishra <sudhansu.mishra@intel.com>
+Subject: [tnguy-next-queue:dev-queue 94/108] ice_gnss.c:undefined reference
+ to `tty_buffer_request_room'
+Message-ID: <202111251527.xSdxs2Xm-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -40,51 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git 20211116-sysctl-cleanups-v3
-head:   06113f1d9a2d0669964adfa2e0128bd50e56b621
-commit: 72daf12fc8290df22f4479f912a74c73a6a2fe38 [11/20] macintosh/mac_hid.c: use new sysctl subdir helper register_sysctl_subdir()
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20211125/202111251523.kkvJodHq-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 11.2.0
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue.git dev-queue
+head:   1bc0d12c31e7e35dcb167e62c8bcde3c7c09d95d
+commit: d837bf714865bcefbf83c3f4e7b886a50ecda8b1 [94/108] ice: add TTY for GNSS module for E810T device
+config: arm64-buildonly-randconfig-r003-20211125 (https://download.01.org/0day-ci/archive/20211125/202111251527.xSdxs2Xm-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 11.2.0
 reproduce (this is a W=1 build):
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?id=72daf12fc8290df22f4479f912a74c73a6a2fe38
-        git remote add mcgrof-next https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git
-        git fetch --no-tags mcgrof-next 20211116-sysctl-cleanups-v3
-        git checkout 72daf12fc8290df22f4479f912a74c73a6a2fe38
+        # https://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue.git/commit/?id=d837bf714865bcefbf83c3f4e7b886a50ecda8b1
+        git remote add tnguy-next-queue https://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue.git
+        git fetch --no-tags tnguy-next-queue dev-queue
+        git checkout d837bf714865bcefbf83c3f4e7b886a50ecda8b1
         # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=m68k 
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arm64 SHELL=/bin/bash
 
 If you fix the issue, kindly add following tag as appropriate
 Reported-by: kernel test robot <lkp@intel.com>
 
-All warnings (new ones prefixed by >>):
+All errors (new ones prefixed by >>):
 
-   drivers/macintosh/mac_hid.c: In function 'mac_hid_init':
-   drivers/macintosh/mac_hid.c:246:33: error: implicit declaration of function 'register_sysctl_subdir'; did you mean 'register_sysctl_init'? [-Werror=implicit-function-declaration]
-     246 |         mac_hid_sysctl_header = register_sysctl_subdir("dev", "mac_hid",
-         |                                 ^~~~~~~~~~~~~~~~~~~~~~
-         |                                 register_sysctl_init
->> drivers/macintosh/mac_hid.c:246:31: warning: assignment to 'struct ctl_table_header *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     246 |         mac_hid_sysctl_header = register_sysctl_subdir("dev", "mac_hid",
-         |                               ^
-   cc1: some warnings being treated as errors
-
-
-vim +246 drivers/macintosh/mac_hid.c
-
-   243	
-   244	static int __init mac_hid_init(void)
-   245	{
- > 246		mac_hid_sysctl_header = register_sysctl_subdir("dev", "mac_hid",
-   247							       mac_hid_files);
-   248		if (!mac_hid_sysctl_header)
-   249			return -ENOMEM;
-   250	
-   251		return 0;
-   252	}
-   253	module_init(mac_hid_init);
-   254	
+   aarch64-linux-ld: Unexpected GOT/PLT entries detected!
+   aarch64-linux-ld: Unexpected run-time procedure linkages detected!
+   aarch64-linux-ld: drivers/net/ethernet/intel/ice/ice_gnss.o: in function `ice_gnss_read':
+>> ice_gnss.c:(.text+0x204): undefined reference to `tty_buffer_request_room'
+>> aarch64-linux-ld: ice_gnss.c:(.text+0x270): undefined reference to `tty_insert_flip_string_fixed_flag'
+>> aarch64-linux-ld: ice_gnss.c:(.text+0x278): undefined reference to `tty_flip_buffer_push'
+   aarch64-linux-ld: drivers/net/ethernet/intel/ice/ice_gnss.o: in function `ice_gnss_create_tty_driver':
+>> ice_gnss.c:(.text+0x300): undefined reference to `__tty_alloc_driver'
+>> aarch64-linux-ld: ice_gnss.c:(.text+0x3c0): undefined reference to `tty_std_termios'
+   aarch64-linux-ld: drivers/net/ethernet/intel/ice/ice_gnss.o: relocation R_AARCH64_ADR_PREL_PG_HI21 against symbol `tty_std_termios' which may bind externally can not be used when making a shared object; recompile with -fPIC
+   ice_gnss.c:(.text+0x3c0): dangerous relocation: unsupported relocation
+   aarch64-linux-ld: ice_gnss.c:(.text+0x3c4): undefined reference to `tty_std_termios'
+>> aarch64-linux-ld: ice_gnss.c:(.text+0x488): undefined reference to `tty_termios_encode_baud_rate'
+>> aarch64-linux-ld: ice_gnss.c:(.text+0x4b4): undefined reference to `tty_port_init'
+>> aarch64-linux-ld: ice_gnss.c:(.text+0x4c4): undefined reference to `tty_port_link_device'
+>> aarch64-linux-ld: ice_gnss.c:(.text+0x4cc): undefined reference to `tty_register_driver'
+>> aarch64-linux-ld: ice_gnss.c:(.text+0x4d8): undefined reference to `tty_port_destroy'
+>> aarch64-linux-ld: ice_gnss.c:(.text+0x4f4): undefined reference to `tty_driver_kref_put'
+   aarch64-linux-ld: drivers/net/ethernet/intel/ice/ice_gnss.o: in function `ice_gnss_exit':
+>> ice_gnss.c:(.text+0x7b4): undefined reference to `tty_port_destroy'
+>> aarch64-linux-ld: ice_gnss.c:(.text+0x7f0): undefined reference to `tty_unregister_driver'
+   aarch64-linux-ld: ice_gnss.c:(.text+0x81c): undefined reference to `tty_driver_kref_put'
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
