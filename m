@@ -2,43 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FBAF45D9CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:12:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1BB45D9D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:12:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240773AbhKYMPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 07:15:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34110 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240957AbhKYMNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 07:13:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 67C4461057;
-        Thu, 25 Nov 2021 12:09:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637842196;
-        bh=4J4WHQF4+ox4W0Ntb6+xSi9bzNckSv0hkcp0qiE5qJc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=PuHwJC2PsB458gARqRKmm221wadaTEprtzFQQ+RYG4bBo1TFrvlhOZT/3boMZTcdq
-         8Ch4YiMX7NpIdM9Fmd+Br82f7zNoK9ejxUeHGsSP10/+cOY6we57M9iC69QrFP9kte
-         fWK/p/y2/1y7fTMSUfr6PtmEpKLZ1saWSWg/5lJlqzb7j0Jfqb93dWnudyoKKSyDz6
-         wZtTFospYqDY7AZfh/YHlbjsl0zT7cVOiUvLpCU2Z/OPcZtEV+DduKTT4yOEfdRn2y
-         HA9uNQtmYWKAb512JrnkDSfSdAzX5Z96Dp2BwVubnsvQsMED6Wd0YcO0FcMrWg3+nw
-         uRfRbNd/E77fw==
-Subject: Re: [PATCH 2/4] memory: omap-gpmc: Fix menuconfig visibility
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        tony@atomide.com
-Cc:     kishon@ti.com, nm@ti.com, vigneshr@ti.com,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20211123102607.13002-1-rogerq@kernel.org>
- <20211123102607.13002-4-rogerq@kernel.org>
- <6a8f93a4-7390-1f1e-6ba0-601859c21ac0@canonical.com>
-From:   Roger Quadros <rogerq@kernel.org>
-Message-ID: <15a58477-5a8b-6236-be15-ce1d8226fdc8@kernel.org>
-Date:   Thu, 25 Nov 2021 14:09:53 +0200
+        id S1347366AbhKYMPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 07:15:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348305AbhKYMNw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 07:13:52 -0500
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2589C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 04:10:40 -0800 (PST)
+Received: by mail-oi1-x236.google.com with SMTP id r26so12128089oiw.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 04:10:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=landley-net.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TvO93ObMgTYHjDl6zNqxFkX4IbiTkta5TxuIJ9/0KE0=;
+        b=uj6zTQLmvsacomfu4ja02b3+QGGKnR2VvOCjQU6GDqQ3tSfWyLurrZmiVooaYsYVzv
+         91noICmFahhM2vJXHUdCdTC86dC4J0O0xLYX4HIAwgPJ6ltgW4iNqa0B8NnE/WGJ/pyv
+         RcIQxqyNbQpST93lIaay+4v6cWXmlUDW1XMsoPw0v5MFoABHU5D6lIglCa6why1vMTKG
+         ghUkK4/sBk0AAFtwPgDTot1oh+N0ceGiI7fYmvR8pB3rI5st37sHO9UrlT3yTBbTzF9v
+         l6/R9Z6Cf57Si1tdLTZKp+N/SWdeuHs9eEu34sG7jl2pePNKba83A453HTwSGfj4ZIta
+         jAcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TvO93ObMgTYHjDl6zNqxFkX4IbiTkta5TxuIJ9/0KE0=;
+        b=SJvOSSt6ZMhzCU1J54OufmFMSf0sr6LGwqNalDs0qW9mLdAx/uo8dcv/ypZg8ommon
+         0FFb/LghZ65XnCdFtAGrKppbyvZia2SKz3J9ppnIqgNfOj57iAxEYH3O8qhWolzZFMpO
+         9r5smpSb5sRv5NOacGp4Ytrc4O4XcLO4sO65fTdyrmb0LxZ7D4UJJ1A/oR+GWsMBh/m1
+         I8nIw36QS8VsHlxk0YR9zy4r1+oeUNQnWUH2Bgtcw9D2Y4DfEfA/Bh1DBic6QifxYWnu
+         y4d/ZkNXSlE01jYaMqFltp23Jg3P8oQRfmss7zQPzRD04BNLm3tQ9gkDHekgTRq2nE8r
+         Qlfw==
+X-Gm-Message-State: AOAM532wl16Olv4N+pVuJi71rURqgoyJ8Y9/yvj+eKOVx93valyyGaMw
+        QMqjIb61U3AkpfmkbP9//3R93g==
+X-Google-Smtp-Source: ABdhPJwfIBTpcnLWlUhrZerKtW/NA0YMhumz3pqkLqPb4YSPTm3bW+wCISbyS5i+PNkBiKGPcdXqkg==
+X-Received: by 2002:a05:6808:14c3:: with SMTP id f3mr14791412oiw.162.1637842240252;
+        Thu, 25 Nov 2021 04:10:40 -0800 (PST)
+Received: from ?IPv6:2607:fb90:c2ea:cdb4:6680:99ff:fe6f:cb54? ([2607:fb90:c2ea:cdb4:6680:99ff:fe6f:cb54])
+        by smtp.gmail.com with ESMTPSA id a16sm486384otj.79.2021.11.25.04.10.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Nov 2021 04:10:39 -0800 (PST)
+Subject: Re: spinlock.c:306:9: error: implicit declaration of function
+ '__raw_write_lock_nested'
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Galbraith <umgwanakikbuti@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, lkft-triage@lists.linaro.org,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+References: <CA+G9fYtH2JR=L0cPoOEqsEGrZW_uOJgX6qLGMe_hbLpBtjVBwA@mail.gmail.com>
+ <41206fc7-f8ce-98aa-3718-ba3e1431e320@landley.net>
+ <CAK8P3a3pQW59NVF=5P+ZiBjNJmnWh+iTZUHvqHBrXkHA6pMd4g@mail.gmail.com>
+ <7d5a5249-40ee-9a42-c6a0-a5defa3703c1@landley.net>
+ <CAK8P3a0XGz=F0nPAW8T-VvfH5bPuGTNiPZ18N+Z6Sj_M_6TrPA@mail.gmail.com>
+From:   Rob Landley <rob@landley.net>
+Message-ID: <eef6670c-1fb7-2d01-72ed-258d49227de1@landley.net>
+Date:   Thu, 25 Nov 2021 06:10:54 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <6a8f93a4-7390-1f1e-6ba0-601859c21ac0@canonical.com>
+In-Reply-To: <CAK8P3a0XGz=F0nPAW8T-VvfH5bPuGTNiPZ18N+Z6Sj_M_6TrPA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -46,25 +88,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 23/11/2021 21:43, Krzysztof Kozlowski wrote:
-> On 23/11/2021 11:26, Roger Quadros wrote:
->> GPMC was not being visible if COMPILE_TEST is not enabled.
->>
->> Signed-off-by: Roger Quadros <rogerq@kernel.org>
->> ---
->>  drivers/memory/Kconfig | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
+On 11/25/21 1:25 AM, Arnd Bergmann wrote:
+> On Thu, Nov 25, 2021 at 12:38 AM Rob Landley <rob@landley.net> wrote:
+>> On 11/24/21 1:49 AM, Arnd Bergmann wrote:
+>> > On Wed, Nov 24, 2021 at 8:31 AM Rob Landley <rob@landley.net> wrote:
 > 
-> ... which was probably on purpose, similarly to many other SoC drivers
-> which are selected by platform. Therefore there is no bug to fix here -
-> lack of visibility is not a problem. Please document instead why you
-> want to change it, e.g. why this is a problem or unwanted behavior.
+>> > Did you test clone3?
+>>
+>> Haven't got anything that's using it (musl-libc doesn't know about it yet) but
+>> it looked straightforward? (Unlike the #ifdef stack around the previous clone...)
+>>
+>> I can try building tools/testing/selftests/clone3 if you like, but for some
+>> reason the clone3 tests want -lcap which isn't in my cross compiler. (Because to
+>> test a clone system call, you need to manipulate capability bits. Of course.)
+>> Right, comment out the LDLIBS line in the makefile and the first 3 built, let's
+>> try those... Hmmm, it's saying the syscall isn't supported, because it's using
+>> syscall.h out of the cross compiler headers (not THIS kernel's #includes) which
+>> of course doesn't have it, and then clone3_selftests.h falls back to:
+>>
+>> #ifndef __NR_clone3
+>> #define __NR_clone3 -1
+>> #endif
+>>
+>> Right, stick a 435 in there and... it's still skipping it. Why is it still
+>> skipping it... because the RUNTIME syscall is returning ENOSYS. Ok, I have to go
+>> stick printk() calls into the kernel. (Do I have to #define those
+>> #YES_I_WANT_THIS_SYSCALL_WHY_WOULDNT_I macros? Hmmm...)
 > 
+> This specific syscall is protected by a macro so it doesn't get implicitly
+> enabled without architecture specific review for those architectures using
+> include/uapi/asm-generic/unistd.h.
 
-No strong enough reason. I'll drop this patch.
+Sigh.
 
-cheers,
--roger
+>> > This needs a custom wrapper on most architectures
+>> > to have sensible calling conventions.
+>>
+>> Define "sensible" in this context? It's a new 2 argument syscall? (Do you mean a
+>> libc wrapper?)
+>>
+>> > If sh doesn't need it, that should
+>> > be explained in the changelog text.
+>>
+>> I'm happy to try to fix stuff up, but I don't understand the objection. Does it
+>> do something other than what the old clone did, except without the need to pass
+>> more arguments than we necessarily have registers defined for? (Calls the same
+>> clone plumbing, which should call back into arch/sh/kernel/process_32.c already...?)
+>>
+>> The most recent clone3 arch addition was commit 59a4e0d5511b which also just
+>> pulled in the generic version. (Via #define NO_REALLY_I_WANT_THIS_SYSCALL rather
+>> than editing the tbl file? Looks like I've got some reading to do...)
+> 
+> The best reference I could find is:
+> 
+> https://lore.kernel.org/linux-api/20190604160944.4058-2-christian@brauner.io/
+
+Does not say what the special handling is. Does not provide an example of said
+special handling. Implied that only three do NOT need special handling, two of
+which are x86 and arm, which seems... convenient.
+
+Right, let's see what "grep -r clone arch/" says:
+
+m68k/kernel/process.c is obviously overriding
+arc/include/syscalls.h has sys_clone_wrapper()
+nios2/kernel/process.c has nios2_clone()
+openrisc/kernel/entry.S has __sys_clone()
+sparc/kernel/process.c has sparce_clone()
+h8300/kernel/process.c has its own sys_clone()
+ia64/kernel/process.c has ia64_clone()
+user mode linux is just weird.
+
+So the architectures that wrap clone are m68k, arc, nios2, openrisc, sparc,
+h8300, and ia64.
+
+Implying that the ones that DON'T are alpha, arm64, hexagon, nds32, parisc,
+s390, csky, microblaze, powerpc, sh, x86, arm, mips, riscv, and xtensa.
+
+Which would mean 2/3 of architectures don't wrap clone, and thus arch/sh not
+doing so isn't unusual.
+
+> If fork() and clone() don't need special handling on arch/sh, then
+> clone3 shouldn't
+> need it either, unless the existing ones are also wrong. It looks like
+> some architectures
+> override these to avoid leaking register state from the kernel to the
+> child process.
+
+$ cd arch/sh
+
+$ grep -r clone
+tools/Makefile:# Shamelessly cloned from ARM.
+kernel/process_32.c:int copy_thread(unsigned long clone_flags, unsigned long
+usp, unsigned long arg,
+kernel/process_32.c:	if (clone_flags & CLONE_SETTLS)
+kernel/syscalls/syscall.tbl:120	common	clone				sys_clone
+kernel/syscalls/syscall.tbl:435	common	clone3				sys_clone3
+
+$ grep -r fork
+include/asm/cacheflush.h: *  - flush_cache_dup mm(mm) handles cache flushing
+when forking
+kernel/entry-common.S:	.globl	ret_from_fork
+kernel/entry-common.S:ret_from_fork:
+kernel/cpu/init.c: * state prior to hand forking the idle loop.
+kernel/process_32.c:asmlinkage void ret_from_fork(void);
+kernel/process_32.c:	p->thread.pc = (unsigned long) ret_from_fork;
+kernel/syscalls/syscall.tbl:2	common	fork				sys_fork
+kernel/syscalls/syscall.tbl:190	common	vfork				sys_vfork
+
+Hard to prove a negative, but I'm not seeing any wrappers. It's got some
+callbacks, but I think the existing plumbing is calling them already?
+
+>        Arnd
+
+Rob
