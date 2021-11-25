@@ -2,100 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893EF45D371
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 04:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EDD045D380
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 04:12:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238545AbhKYDLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 22:11:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50610 "EHLO
+        id S238646AbhKYDPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 22:15:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245421AbhKYDJh (ORCPT
+        with ESMTP id S1344369AbhKYDNa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 22:09:37 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA95C0619E6;
-        Wed, 24 Nov 2021 18:33:19 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id 47-20020a9d0332000000b005798ac20d72so7240176otv.9;
-        Wed, 24 Nov 2021 18:33:19 -0800 (PST)
+        Wed, 24 Nov 2021 22:13:30 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D69C061A14
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 18:43:51 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id a11so7516536qkh.13
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 18:43:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FzruCpHTuVDhBSIsG1eTOXd9RDdSQPTEZ/7U28aWtgw=;
-        b=gH9gEdqwyXOHMCnta4W3bG65lK1pTrnVSMIIZzyJR1B5/Ew4VqWIJfOqYW0K3SjOLD
-         6CEI7m4MqIH7j5jsEBArVNWBwisK6MW6hH9k5b5uGhfTBKoFGJdPZWC9vaotmaqWFlVR
-         xR2ApiDfOzJmoTvwtBujKXBR8Sj8JDBAKAGsxp2tRGQiXNBhyChn4VQdn2w0AgGm+pgz
-         r8kfxDxwk4gVBIN4aD8qVJpl8X5oSb589NL/5kNtCs/PKj8/rQxYF7A3pVfcW00STQPO
-         wqR8nwSDhTvbo6mxLy6lfiUHd1NL9VGhRDIaKlsNn9y+rKhrkAQ49zBQ+oE15TpPttuj
-         rMmw==
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PXridyzDH88ezOus9JldJrTVkWKs5hAHCUfqx0GIMqI=;
+        b=FZ/WlhCbLrF4pDZucpHyb60GApFv+G4q/M1qakBJnNRaf+fylT6zkfnanpTfVWWVKL
+         wfiJRJMlDxORaIBtPwgXJZPsyr6HK1+IJUDjYevTOtD2n1j0ba9gt6D6kdsm5vGmbFSW
+         JcibHE1SChL0p/7JENnWAs7NBvGZlsokZ2Gtm2g17AWeaQamPv1ZHGP+pyP/gySY7dAQ
+         WrGn+gW6/l90Jt/Wymi0YdQeWy0BTzfh6i41eMgUzmwWXUnh/TdwV6lSFrJinvBmPAyb
+         uEA/5wP+IXf02ZJXWI8rr2edhQ1sn7VSkeCJADNbPKALDbdGV43wTEyWWJ+wwudxreeB
+         WRxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=FzruCpHTuVDhBSIsG1eTOXd9RDdSQPTEZ/7U28aWtgw=;
-        b=oS1MYd9Dg+lfiBcazTK7+wTfo5QH9AZzNQ61KrLlpmz54wEj5dNLYCGvK25rc7Wkql
-         JI7bfC6rMUVHUt4Mra51I0FpDuBMAns3WjJ7yhvVRdgbMbxAybCXNtphp8P5ruocAk55
-         CZnL3a6YF+qPqNCGwvrgm443+2Oxb1jtUofFn79kAZ0sFJoOZ3ZXsv9MItBhN/h/z/gx
-         OCUBOdZEFKyKuOMQWt7WjnxMFTvHEUUTgfrpgMyLBK0HtVAAunZIzBcEsynWeceCwMzf
-         uiLvdXRiuuXqYvfEs3hhFQ1fgAGAqYHeZlnxy69u2TVcmWCW4OsaUJh2dO+N/hzYh3WM
-         dtpA==
-X-Gm-Message-State: AOAM532fmMWwpV5jrj+JKPZw30jFay2eE+ZhhTdRdnmF3sph3yVoHdDy
-        X1/k5WGdykI0A6zNqCVqGzMeSmcIJIg=
-X-Google-Smtp-Source: ABdhPJzQ/gsw0ESgF4EaGULaMV01pscDEYyj0XKYKKqpHrHESLg1ERw33D6cAIdLj/oIrzaWDnOWrw==
-X-Received: by 2002:a05:6830:44c:: with SMTP id d12mr17809980otc.66.1637807598545;
-        Wed, 24 Nov 2021 18:33:18 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n6sm306100otj.78.2021.11.24.18.33.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 18:33:18 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 24 Nov 2021 18:33:16 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     cgel.zte@gmail.com
-Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Changcheng Deng <deng.changcheng@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH] watchdog: davinci: Use div64_ul instead of do_div
-Message-ID: <20211125023316.GH851427@roeck-us.net>
-References: <20211125014924.46297-1-deng.changcheng@zte.com.cn>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PXridyzDH88ezOus9JldJrTVkWKs5hAHCUfqx0GIMqI=;
+        b=J7Zu6F2dU3VkZ4CFCJvIl9PBAs/BKTWPAHVulcBGTZVHaUiY3Av+8vp0Db90OUKvnK
+         JZ4kIUIvYqZL2/HVfO4I91daGQYXFVcbjJRJRgZ00zwf4hT3bPhRebGZ9ObRUKHz+ju7
+         bP1dRBcfCcj5kJqai5ovNnfg3Qz4Nvp/7JqZ6xRcwjcVq7WXfZz5NsFw0azuyh46Onyc
+         eLmZqUYC0vc4tVB9M+dp5x69sNMPx43x9dCt7sezAlrCx5mq6nrZbiTGLyD9wsqMN/B0
+         blGB4KL+plus2aB4efiT3GsSh+MW2XgDbLp6x9MJKNEXZZLn8gqGimliLiU7Nk0Aa9gR
+         0iWw==
+X-Gm-Message-State: AOAM531umJXV4b3qTrPWpXH2IDPM+PgAJRzCPtIvGRTpRLwQxrsdOjVx
+        Z9btqBEJx9UlGdA2pY1h/9uxozuMj3/n/JjskuTsOw==
+X-Google-Smtp-Source: ABdhPJxd7aaatYgJmCD/NjuKZ1DDUCqtM13QZ2gH1QLSFgZAYzleM+VQCps0+oIRLuGzKTJuLA6reBxY3fXIVVKVUTs=
+X-Received: by 2002:a25:b0a8:: with SMTP id f40mr2368543ybj.125.1637808230156;
+ Wed, 24 Nov 2021 18:43:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211125014924.46297-1-deng.changcheng@zte.com.cn>
+References: <20211124094317.69719-1-ligang.bdlg@bytedance.com>
+In-Reply-To: <20211124094317.69719-1-ligang.bdlg@bytedance.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 25 Nov 2021 10:43:11 +0800
+Message-ID: <CAMZfGtX6n=H+7QXR2zpBTA5u6Q18DaJL=wZ6CFPVwEpGevGtBg@mail.gmail.com>
+Subject: Re: [PATCH v3] shmem: fix a race between shmem_unused_huge_shrink and shmem_evict_inode
+To:     Gang Li <ligang.bdlg@bytedance.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        linux- stable <stable@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 01:49:24AM +0000, cgel.zte@gmail.com wrote:
-> From: Changcheng Deng <deng.changcheng@zte.com.cn>
-> 
-> do_div() does a 64-by-32 division. Here the divisor is an unsigned long
-> which on some platforms is 64 bit wide. So use div64_ul instead of do_div
-> to avoid a possible truncation.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
-
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
+On Wed, Nov 24, 2021 at 5:43 PM Gang Li <ligang.bdlg@bytedance.com> wrote:
+>
+> This patch fixes a data race in commit 779750d20b93 ("shmem: split huge pages
+> beyond i_size under memory pressure").
+>
+> Here are call traces:
+>
+> Call Trace 1:
+>         shmem_unused_huge_shrink+0x3ae/0x410
+>         ? __list_lru_walk_one.isra.5+0x33/0x160
+>         super_cache_scan+0x17c/0x190
+>         shrink_slab.part.55+0x1ef/0x3f0
+>         shrink_node+0x10e/0x330
+>         kswapd+0x380/0x740
+>         kthread+0xfc/0x130
+>         ? mem_cgroup_shrink_node+0x170/0x170
+>         ? kthread_create_on_node+0x70/0x70
+>         ret_from_fork+0x1f/0x30
+>
+> Call Trace 2:
+>         shmem_evict_inode+0xd8/0x190
+>         evict+0xbe/0x1c0
+>         do_unlinkat+0x137/0x330
+>         do_syscall_64+0x76/0x120
+>         entry_SYSCALL_64_after_hwframe+0x3d/0xa2
+>
+> The simultaneous deletion of adjacent elements in the local list (@list)
+> by shmem_unused_huge_shrink and shmem_evict_inode will break the list.
+>
+> Image there are 3 items in the local list (@list).
+> In the first traversal, A is not deleted from @list.
+>
+>   1)    A->B->C
+>         ^
+>         |
+>         pos (leave)
+>
+> In the second traversal, B is deleted from @list. Concurrently, A is
+> deleted from @list through shmem_evict_inode() since last reference counter of
+> inode is dropped by other thread. Then the @list is corrupted.
+>
+>   2)    A->B->C
+>         ^  ^
+>         |  |
+>      evict pos (drop)
+>
+> Fix:
+>
+> We should make sure the item is either on the global list or deleted from
+> any local list before iput().
+>
+> Fixed by moving inodes that are on @list and will not be deleted back to
+> global list before iput.
+>
+> Fixes: 779750d20b93 ("shmem: split huge pages beyond i_size under memory pressure")
+> Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
+>
 > ---
->  drivers/watchdog/davinci_wdt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/watchdog/davinci_wdt.c b/drivers/watchdog/davinci_wdt.c
-> index e6eaba6bae5b..584a56893b81 100644
-> --- a/drivers/watchdog/davinci_wdt.c
-> +++ b/drivers/watchdog/davinci_wdt.c
-> @@ -134,7 +134,7 @@ static unsigned int davinci_wdt_get_timeleft(struct watchdog_device *wdd)
->  	timer_counter = ioread32(davinci_wdt->base + TIM12);
->  	timer_counter |= ((u64)ioread32(davinci_wdt->base + TIM34) << 32);
->  
-> -	do_div(timer_counter, freq);
-> +	timer_counter = div64_ul(timer_counter, freq);
->  
->  	return wdd->timeout - timer_counter;
+>
+> Changes in v3:
+> - Add more comment.
+> - Use list_move(&info->shrinklist, &sbinfo->shrinklist) instead of
+>   list_move(pos, &sbinfo->shrinklist) for consistency.
+>
+> Changes in v2: https://lore.kernel.org/all/20211124030840.88455-1-ligang.bdlg@bytedance.com/
+> - Move spinlock to the front of iput instead of changing lock type
+>   since iput will call evict which may cause deadlock by requesting
+>   shrinklist_lock.
+> - Add call trace in commit message.
+>
+> v1: https://lore.kernel.org/lkml/20211122064126.76734-1-ligang.bdlg@bytedance.com/
+>
+> ---
+>  mm/shmem.c | 35 ++++++++++++++++++++---------------
+>  1 file changed, 20 insertions(+), 15 deletions(-)
+>
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 9023103ee7d8..ab2df692bd58 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -569,7 +569,6 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+>                 /* inode is about to be evicted */
+>                 if (!inode) {
+>                         list_del_init(&info->shrinklist);
+> -                       removed++;
+>                         goto next;
+>                 }
+>
+> @@ -577,15 +576,16 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+>                 if (round_up(inode->i_size, PAGE_SIZE) ==
+>                                 round_up(inode->i_size, HPAGE_PMD_SIZE)) {
+>                         list_move(&info->shrinklist, &to_remove);
+> -                       removed++;
+>                         goto next;
+>                 }
+>
+>                 list_move(&info->shrinklist, &list);
+>  next:
+> +               removed++;
+>                 if (!--batch)
+>                         break;
+>         }
+> +       sbinfo->shrinklist_len -= removed;
+>         spin_unlock(&sbinfo->shrinklist_lock);
+>
+>         list_for_each_safe(pos, next, &to_remove) {
+> @@ -602,7 +602,7 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+>                 inode = &info->vfs_inode;
+>
+>                 if (nr_to_split && split >= nr_to_split)
+> -                       goto leave;
+> +                       goto move_back;
+>
+>                 page = find_get_page(inode->i_mapping,
+>                                 (inode->i_size & HPAGE_PMD_MASK) >> PAGE_SHIFT);
+> @@ -616,38 +616,43 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+>                 }
+>
+>                 /*
+> -                * Leave the inode on the list if we failed to lock
+> -                * the page at this time.
+> +                * Move the inode on the list back to shrinklist if we failed
+> +                * to lock the page at this time.
+>                  *
+>                  * Waiting for the lock may lead to deadlock in the
+>                  * reclaim path.
+>                  */
+>                 if (!trylock_page(page)) {
+>                         put_page(page);
+> -                       goto leave;
+> +                       goto move_back;
+>                 }
+>
+>                 ret = split_huge_page(page);
+>                 unlock_page(page);
+>                 put_page(page);
+>
+> -               /* If split failed leave the inode on the list */
+> +               /* If split failed move the inode on the list back to shrinklist */
+>                 if (ret)
+> -                       goto leave;
+> +                       goto move_back;
+>
+>                 split++;
+>  drop:
+>                 list_del_init(&info->shrinklist);
+> -               removed++;
+> -leave:
+> +               goto put;
+> +move_back:
+> +               /* inodes that are on @list and will not be deleted must be moved back to
+> +                * global list before iput for two reasons:
+> +                * 1. iput in lock: iput call shmem_evict_inode, then cause deadlock.
+> +                * 2. iput before lock: shmem_evict_inode may grab the inode on @list,
+> +                *    which will cause race.
+> +                */
+
+Multi-line comment is like the following format.
+
+/*
+ * Comment here.
+ */
+
+And I also suggest reworking the comments here. Something like:
+
+/*
+ * Make sure the inode is either on the global list or deleted from
+ * any local list before iput() since it could be deleted in another
+ * thread once we put the inode (then the local list is corrupted).
+ */
+
+With that.
+
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+
+> +               spin_lock(&sbinfo->shrinklist_lock);
+> +               list_move(&info->shrinklist, &sbinfo->shrinklist);
+> +               sbinfo->shrinklist_len++;
+> +               spin_unlock(&sbinfo->shrinklist_lock);
+> +put:
+>                 iput(inode);
+>         }
+>
+> -       spin_lock(&sbinfo->shrinklist_lock);
+> -       list_splice_tail(&list, &sbinfo->shrinklist);
+> -       sbinfo->shrinklist_len -= removed;
+> -       spin_unlock(&sbinfo->shrinklist_lock);
+> -
+>         return split;
 >  }
-> -- 
-> 2.25.1
-> 
+>
+> --
+> 2.20.1
+>
