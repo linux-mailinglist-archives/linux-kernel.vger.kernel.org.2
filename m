@@ -2,125 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE1C45E1F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:11:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8603045E1FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:13:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242097AbhKYVOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 16:14:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35108 "EHLO
+        id S1350417AbhKYVQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 16:16:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233583AbhKYVMg (ORCPT
+        with ESMTP id S229588AbhKYVOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 16:12:36 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94AEC06175E;
-        Thu, 25 Nov 2021 13:07:35 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id z8so14727080ljz.9;
-        Thu, 25 Nov 2021 13:07:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fDWVlGc9bkfdx0uGoZEsq0fC8zJhCxYYZIKbBpnGA24=;
-        b=AEN2AeDMq5pd5sT+WTKPV6Ck8A2r0WdZyPZ/BTTvBFM9W3KRgcQS40P9g9m2HPwbWK
-         56oYBQb9QqEbwy//ALKtx869/tFjcbpTTxaGVb9Agc29MUK/CR6YzXiAb55KXfurgkKs
-         uf9Tnkm8gb7qy0ohdwIgRuBf2+g0z1eUnhnHNVWRZq6eW+qpGGPq/ydqWB6lk4eG1NYH
-         VUSwirp1RfInXfko4Eob3zBr61jiY5qkRm09/abMq6hKjx5GxGxhobQvNrkY57mJScp3
-         tnWbdZiW8B4UYJBkpALG8mAEG1+YdmpkpoA/I5U2UkVEMk5qUK+9yK8ZW+P9wgJ0qOTj
-         jNkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fDWVlGc9bkfdx0uGoZEsq0fC8zJhCxYYZIKbBpnGA24=;
-        b=TNnQtqFgUT1yUZ2AzAdrWEPpXQwvq5QKvuHv4JBOpa3BO1V/ETM6wc1KTUBb14NMiW
-         Ft67iQHd2A6KqHFZVFcxSPYit+M1cFRIkOYYIOnUiJGcGKcwQ8r/S7mqPf8W6g/qlTe3
-         oyau0a1wCY9X5B86IUsKt7p3nahptt0PvYjdVGzdxwLzprocuUHXItHUBqn6DF7pHGXY
-         CekTWOxtwPZ8Ml93jPehnD7D/4niSSyG7J0R7YiPMiB7JItwM5XdlcoBZslSrE0Y8GFa
-         QaVXSzaO8kGoVwImt1ql15gSXxE/DGHv9TrNqLRtYa79lpTbSEA95YTFn+BQVI4mrROB
-         q2aA==
-X-Gm-Message-State: AOAM530dhzOkiHnre+znV/hJioXeDWpChbpwbwQbBxHzG/UkUz3J0UiZ
-        sJt15eU+7yi/x94D/HjesM4=
-X-Google-Smtp-Source: ABdhPJyAn1heOEmcVZdI7bU/B89WZITYQzw3nQ9+EMs5qbVA6MfZ6P6S7Q6k+29KOR+5bxgzQrzSdw==
-X-Received: by 2002:a2e:a378:: with SMTP id i24mr28530130ljn.290.1637874454136;
-        Thu, 25 Nov 2021 13:07:34 -0800 (PST)
-Received: from netbook-debian (110-38-179-94.pool.ukrtel.net. [94.179.38.110])
-        by smtp.gmail.com with ESMTPSA id u22sm347968lff.118.2021.11.25.13.07.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 13:07:33 -0800 (PST)
-Date:   Thu, 25 Nov 2021 23:07:30 +0200
-From:   Denis Pauk <pauk.denis@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Eugene Shalygin <eugene.shalygin@gmail.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        thomas@weissschuh.net, Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] hwmon: (nct6775) Use nct6775_*() lock function
- pointers in nct6775_data.
-Message-ID: <20211125230730.485ca7b0@netbook-debian>
-In-Reply-To: <CAHp75VfAAyHEnOS7npPOJqpgMgJpaukFcYC+1TH+UhTK5iksMg@mail.gmail.com>
-References: <20211122212850.321542-1-pauk.denis@gmail.com>
-        <20211122212850.321542-2-pauk.denis@gmail.com>
-        <CAHp75VfAAyHEnOS7npPOJqpgMgJpaukFcYC+1TH+UhTK5iksMg@mail.gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 25 Nov 2021 16:14:30 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FEDC061761;
+        Thu, 25 Nov 2021 13:08:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JbPu0sanHIoDdCdNVaSqLJ/ATyCk1958f2ugIhUQGQ0=; b=v1nkFrq//MZVSs4ZVxUaxeuNfp
+        6OCy9uc7M4DrudT7JEykQ2r2hNUkj+6QRL8z0Yj4wI6E+gu7LlJbyeDZq5m96R3coBFAZvLSLZOvv
+        dw1mctTaJlQUMNwVWmmMGxV9iXGiEcIjk8lWVwF7RbIR8DTn9CtBKqClXCxrzlWyxJvrBNLYttafX
+        lY+Mw8ldQ6LfUsN8zegw00ApSNMiPaJ3IJShrnwJA5X2Pysp5tCaIHFLHYQfWgI+Ee57J1mis+Axy
+        Q1DwEotOgm3HRlBiDSPVavGhG870BESemCtkjOO3t2VfYxL/6pF/kr8dCPmC9w3y/SdKQL6t4Z34L
+        Dsun5cXw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mqLyV-007og9-Cf; Thu, 25 Nov 2021 21:08:11 +0000
+Date:   Thu, 25 Nov 2021 21:08:11 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: iomap folio conversion for 5.17
+Message-ID: <YZ/7O9Zb3PSsCbk9@casper.infradead.org>
+References: <20211124183905.GE266024@magnolia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124183905.GE266024@magnolia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 18:03:25 +0200
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+On Wed, Nov 24, 2021 at 10:39:05AM -0800, Darrick J. Wong wrote:
+> Hi folks,
+> 
+> The iomap-for-next branch of the xfs-linux repository at:
+> 
+> 	git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
+> 
+> has just been updated.
 
-> On Mon, Nov 22, 2021 at 11:29 PM Denis Pauk <pauk.denis@gmail.com>
-> wrote:
-> 
-> Better subject line (after prefix): Use lock function pointers in
-> nct6775_data (note no period and drop of redundancy)
-> 
-> > Prepare for platform specific callbacks usage:
-> > * Use nct6775 lock function pointers in struct nct6775_data instead
-> >   direct calls.  
-> 
-> ...
-> 
-> > +static int nct6775_lock(struct nct6775_data *data)
-> > +{
-> > +       mutex_lock(&data->update_lock);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static void nct6775_unlock(struct nct6775_data *data, struct
-> > device *dev) +{
-> > +       mutex_unlock(&data->update_lock);
-> > +}  
-> 
-> Have you run `sparse` against this?
-> Install `sparse` in your distribution and make kernel with
-> `make W=1 C=1 CF=-D__CHECK_ENDIAN__ ...`
-> 
-> It might require using special annotations to these functions to make
-> static analysers happy.
-> 
+Hi Darrick,
 
-Thank you, I will validate my patches before sending with sparse also.
+Would you like to pull the folio changes from my git tree?
+They are generally as posted previously, with minor tweaks to match
+upstream changes.  They do not introduce any new xfstests problems
+in my testing.
 
-I have tried with sparse==0.6.4:
----
-$ make CC="ccache gcc" W=1 C=2 CF=-D__CHECK_ENDIAN__ 2>&1 | grep
-nct6775 -n5
-....
-27219-  CHECK   drivers/hwmon/nct6683.c
-27220:  CHECK   drivers/hwmon/nct6775.c
-27221-  CHECK   drivers/hwmon/nct7802.c
-....
----
+The following changes since commit b501b85957deb17f1fe0a861fee820255519d526:
 
-It has not showed any warnings. Have I missed some flag? 
+  Merge tag 'asm-generic-5.16-2' of git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic (2021-11-25 10:41:28 -0800)
 
+are available in the Git repository at:
 
-Best regards,
-             Denis.
+  git://git.infradead.org/users/willy/linux.git tags/iomap-folio-5.17
+
+for you to fetch changes up to 979fe192e8a935968fd739983217128b431f6268:
+
+  xfs: Support large folios (2021-11-25 14:03:56 -0500)
+
+----------------------------------------------------------------
+Convert fs/iomap to use folios
+
+These patches prepare XFS to use large folios to cache files.
+There are some preliminary patches to add folio interfaces to the
+block layer & buffer layer, then all the iomap functions are
+converted to use folios instead of pages.
+
+----------------------------------------------------------------
+Matthew Wilcox (Oracle) (24):
+      block: Add bio_add_folio()
+      block: Add bio_for_each_folio_all()
+      fs/buffer: Convert __block_write_begin_int() to take a folio
+      iomap: Convert to_iomap_page to take a folio
+      iomap: Convert iomap_page_create to take a folio
+      iomap: Convert iomap_page_release to take a folio
+      iomap: Convert iomap_releasepage to use a folio
+      iomap: Add iomap_invalidate_folio
+      iomap: Pass the iomap_page into iomap_set_range_uptodate
+      iomap: Convert bio completions to use folios
+      iomap: Use folio offsets instead of page offsets
+      iomap: Convert iomap_read_inline_data to take a folio
+      iomap: Convert readahead and readpage to use a folio
+      iomap: Convert iomap_page_mkwrite to use a folio
+      iomap: Convert __iomap_zero_iter to use a folio
+      iomap: Convert iomap_write_begin() and iomap_write_end() to folios
+      iomap: Convert iomap_write_end_inline to take a folio
+      iomap,xfs: Convert ->discard_page to ->discard_folio
+      iomap: Simplify iomap_writepage_map()
+      iomap: Simplify iomap_do_writepage()
+      iomap: Convert iomap_add_to_ioend() to take a folio
+      iomap: Convert iomap_migrate_page() to use folios
+      iomap: Support large folios in invalidatepage
+      xfs: Support large folios
+
+ Documentation/core-api/kernel-api.rst |   1 +
+ block/bio.c                           |  22 ++
+ fs/buffer.c                           |  23 +-
+ fs/internal.h                         |   2 +-
+ fs/iomap/buffered-io.c                | 506 +++++++++++++++++-----------------
+ fs/xfs/xfs_aops.c                     |  24 +-
+ fs/xfs/xfs_icache.c                   |   2 +
+ include/linux/bio.h                   |  56 +++-
+ include/linux/iomap.h                 |   3 +-
+ 9 files changed, 363 insertions(+), 276 deletions(-)
+
