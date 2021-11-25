@@ -2,102 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E77D245D942
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:31:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F80245D93A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233097AbhKYLfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 06:35:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232986AbhKYLc4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 06:32:56 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B96C0619EF
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 03:23:14 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id be32so11847601oib.11
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 03:23:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k33uva8py5s2sQ2S/wXwTEnMmE00okSQ3bv6VjoGK/4=;
-        b=GLOggkqDbW8ICV/aUCEEyyyIRNpaJZt/3arlFFqeMmeU3gh4AAMlHftDeh8MWx1B2F
-         jHPI2u76GirnHEYSl7USl12A3ctGfWQTYJhY7fF0yhumtDNLlgDsWSn8uGNcQ7cBP1ZX
-         0RDKy0cPxtzKLCGtU35KJ5ndDLBSt3psyMOxAxg98lyq+V1GgSgQoF3Z8a+P18SH2f2f
-         CIStmSXG3kLufY3OEz/YYmHmX+Dkgz9aRasqAn2ID82nOUEsVVobKbZfJq0MPajbYMo1
-         CKJQzTa4QCZ7ckDDLZBMGn0wIdywTxSeqngh9LPXCv9Z3FQJvE7p4pS4AIb0lu6TziEN
-         NLwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k33uva8py5s2sQ2S/wXwTEnMmE00okSQ3bv6VjoGK/4=;
-        b=Yt2yfGeyxt24u639l3W0XWZ9pss++QhGq4w9YPx5LeekmLjbrsd+w8SjvH2UeTUXnc
-         N5cpOFAwSljp1UryKtc4MOAxaBRlaYKvbCb/haqDEfkzVXcgPA5mj/7hPHYVXA1S/s6i
-         i9GRRCQUHw3YPBDTJoLtA1eyBIEE61xFEp++EJcFTIDW8uu9YCohPsELjq23OtDwG2Hj
-         yexBgPeLqDJtdYWjNeEpeq6C3H2WQDRYlXXrCbrcg4y1GvIWR07vUHDfL65euPHuuIQu
-         e2c1julrugezTcZOpZlhswPt7sYmk/t4kLZ0yBmfRrzY1bFvGd31a0SdiXiulwDigW8U
-         O6dg==
-X-Gm-Message-State: AOAM53188ItshWk+NORDG8YwuL7V2F852RIkzkCnTvE0BAmdsD423V7m
-        f5YDkTicjZyPTN/IFw20kiF6oarwN98MfEXs171kvg==
-X-Google-Smtp-Source: ABdhPJznmS+DCdkfV67Q90sseiY8351bIVaeUAxLKuYAbuidYb6JUYEPLjjFbAaRquWAUiOqrjr+7KdtQeS+ptMNNLw=
-X-Received: by 2002:a05:6808:ec9:: with SMTP id q9mr14497632oiv.160.1637839393932;
- Thu, 25 Nov 2021 03:23:13 -0800 (PST)
+        id S229775AbhKYLbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 06:31:03 -0500
+Received: from mga01.intel.com ([192.55.52.88]:29177 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234513AbhKYLau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 06:30:50 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="259395639"
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="259395639"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 03:25:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="510269878"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 25 Nov 2021 03:25:34 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqCsf-0006HP-Kq; Thu, 25 Nov 2021 11:25:33 +0000
+Date:   Thu, 25 Nov 2021 19:25:05 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     James Morse <james.morse@arm.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: [morse:mpam/snapshot/v5.15 132/139]
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c:2835:5: warning: no previous
+ prototype for function 'arm_smmu_group_set_mpam'
+Message-ID: <202111251929.J9Dyac7K-lkp@intel.com>
 MIME-Version: 1.0
-References: <000000000000c93bd505bf3646ed@google.com> <00000000000006b5b205d0f55d49@google.com>
- <CAJfpegtASmSmbNakuCYcgaF0Cy8kY=wu-w9_imiJnsCJngnR=A@mail.gmail.com>
-In-Reply-To: <CAJfpegtASmSmbNakuCYcgaF0Cy8kY=wu-w9_imiJnsCJngnR=A@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 25 Nov 2021 12:23:02 +0100
-Message-ID: <CACT4Y+bJ4Ap74hBOBg7WMNDvhkjE2soD4MZ267gGP11G6s7Dsw@mail.gmail.com>
-Subject: Re: [syzbot] WARNING in inc_nlink (2)
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     syzbot <syzbot+1c8034b9f0e640f9ba45@syzkaller.appspotmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Nov 2021 at 08:25, Miklos Szeredi <miklos@szeredi.hu> wrote:
->
-> On Wed, 17 Nov 2021 at 06:32, syzbot
-> <syzbot+1c8034b9f0e640f9ba45@syzkaller.appspotmail.com> wrote:
-> >
-> > syzbot suspects this issue was fixed by commit:
-> >
-> > commit 97f044f690bac2b094bfb7fb2d177ef946c85880
-> > Author: Miklos Szeredi <mszeredi@redhat.com>
-> > Date:   Fri Oct 22 15:03:02 2021 +0000
-> >
-> >     fuse: don't increment nlink in link()
-> >
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10563ac9b00000
-> > start commit:   1da38549dd64 Merge tag 'nfsd-5.15-3' of git://git.kernel.o..
-> > git tree:       upstream
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=e2ffb281e6323643
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=1c8034b9f0e640f9ba45
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11f16d57300000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15758d57300000
-> >
-> > If the result looks correct, please mark the issue as fixed by replying with:
->
-> Highly unlikely: the original report was for sysvfs and the fix is for fuse.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git mpam/snapshot/v5.15
+head:   ce3629841262f725a5f3a327403fcaf0e604a85e
+commit: 2f98d2f8d6ffedf8a76bc37dd864aa41cff0c9ea [132/139] untested: iommu/arm-smmu-v3: Add mpam helpers to query and set state
+config: arm64-randconfig-r012-20211115 (https://download.01.org/0day-ci/archive/20211125/202111251929.J9Dyac7K-lkp@intel.com/config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project fbe72e41b99dc7994daac300d208a955be3e4a0a)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install arm64 cross compiling tool for clang build
+        # apt-get install binutils-aarch64-linux-gnu
+        # https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/commit/?id=2f98d2f8d6ffedf8a76bc37dd864aa41cff0c9ea
+        git remote add morse https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git
+        git fetch --no-tags morse mpam/snapshot/v5.15
+        git checkout 2f98d2f8d6ffedf8a76bc37dd864aa41cff0c9ea
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=arm64 
 
-Hi Miklos,
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-The fuse bug was folded into this report (on the dashboard you can see
-examples of reports in fuse).
-This is unavoidable for bugs that are left unaddressed for long. They
-become piles of assorted stuff.
+All warnings (new ones prefixed by >>):
 
-Now the best course of action is to mark it as fixed. Or we will
-exacerbate the problem even more: it will be a bug about sysvfs, this
-fuse bug, and the next similar bug in fuse and bugs in other file
-systems.
+   In file included from drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c:14:
+   In file included from include/linux/arm_mpam.h:11:
+   arch/arm64/include/asm/mpam.h:110:6: warning: variable 'regval' set but not used [-Wunused-but-set-variable]
+           u64 regval;
+               ^
+   arch/arm64/include/asm/mpam.h:133:6: warning: variable 'regval' set but not used [-Wunused-but-set-variable]
+           u64 regval = mpam_get_regval(tsk);
+               ^
+>> drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c:2835:5: warning: no previous prototype for function 'arm_smmu_group_set_mpam' [-Wmissing-prototypes]
+   int arm_smmu_group_set_mpam(struct iommu_group *group, u16 partid, u8 pmg)
+       ^
+   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c:2835:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   int arm_smmu_group_set_mpam(struct iommu_group *group, u16 partid, u8 pmg)
+   ^
+   static 
+>> drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c:2886:5: warning: no previous prototype for function 'arm_smmu_group_get_mpam' [-Wmissing-prototypes]
+   int arm_smmu_group_get_mpam(struct iommu_group *group, u16 *partid, u8 *pmg)
+       ^
+   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c:2886:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   int arm_smmu_group_get_mpam(struct iommu_group *group, u16 *partid, u8 *pmg)
+   ^
+   static 
+   4 warnings generated.
 
-#syz fix: fuse: don't increment nlink in link()
+
+vim +/arm_smmu_group_set_mpam +2835 drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+
+  2834	
+> 2835	int arm_smmu_group_set_mpam(struct iommu_group *group, u16 partid, u8 pmg)
+  2836	{
+  2837		int i;
+  2838		u32 sid;
+  2839		__le64 *step;
+  2840		unsigned long flags;
+  2841		struct iommu_domain *domain;
+  2842		struct arm_smmu_device *smmu;
+  2843		struct arm_smmu_master *master;
+  2844		struct arm_smmu_cmdq_batch cmds;
+  2845		struct arm_smmu_domain *smmu_domain;
+  2846		struct arm_smmu_cmdq_ent cmd = {
+  2847			.opcode	= CMDQ_OP_CFGI_STE,
+  2848			.cfgi	= {
+  2849				.leaf	= true,
+  2850			},
+  2851		};
+  2852	
+  2853		domain = iommu_get_domain_for_group(group);
+  2854		if (!domain || domain->ops != &arm_smmu_ops)
+  2855			return -EINVAL;
+  2856	
+  2857		smmu_domain = to_smmu_domain(domain);
+  2858		if (!(smmu_domain->smmu->features & ARM_SMMU_FEAT_MPAM))
+  2859			return -EIO;
+  2860		smmu = smmu_domain->smmu;
+  2861	
+  2862		spin_lock_irqsave(&smmu_domain->devices_lock, flags);
+  2863		list_for_each_entry(master, &smmu_domain->devices, domain_head) {
+  2864			for (i = 0; i < master->num_streams; i++) {
+  2865				sid = master->streams[i].id;
+  2866				step = arm_smmu_get_step_for_sid(smmu, sid);
+  2867	
+  2868				/* These need locking if the VMSPtr is ever used */
+  2869				step[4] = FIELD_PREP(STRTAB_STE_4_PARTID, partid);
+  2870				step[5] = FIELD_PREP(STRTAB_STE_5_PMG, pmg);
+  2871	
+  2872				cmd.cfgi.sid = sid;
+  2873				arm_smmu_cmdq_batch_add(smmu, &cmds, &cmd);
+  2874			}
+  2875	
+  2876			master->partid = partid;
+  2877			master->pmg = pmg;
+  2878		}
+  2879		spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
+  2880	
+  2881		arm_smmu_cmdq_batch_submit(smmu, &cmds);
+  2882	
+  2883		return 0;
+  2884	}
+  2885	
+> 2886	int arm_smmu_group_get_mpam(struct iommu_group *group, u16 *partid, u8 *pmg)
+  2887	{
+  2888		int err = -EINVAL;
+  2889		unsigned long flags;
+  2890		struct iommu_domain *domain;
+  2891		struct arm_smmu_master *master;
+  2892		struct arm_smmu_domain *smmu_domain;
+  2893	
+  2894		domain = iommu_get_domain_for_group(group);
+  2895		if (!domain || domain->ops != &arm_smmu_ops)
+  2896			return -EINVAL;
+  2897	
+  2898		smmu_domain = to_smmu_domain(domain);
+  2899		if (!(smmu_domain->smmu->features & ARM_SMMU_FEAT_MPAM))
+  2900			return -EIO;
+  2901	
+  2902		if (!partid && !pmg)
+  2903			return 0;
+  2904	
+  2905		spin_lock_irqsave(&smmu_domain->devices_lock, flags);
+  2906		master = list_first_entry_or_null(&smmu_domain->devices,
+  2907						  typeof(*master), domain_head);
+  2908		if (master) {
+  2909			if (partid)
+  2910				*partid = master->partid;
+  2911			if (pmg)
+  2912				*pmg = master->pmg;
+  2913			err = 0;
+  2914		}
+  2915		spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
+  2916	
+  2917		return err;
+  2918	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
