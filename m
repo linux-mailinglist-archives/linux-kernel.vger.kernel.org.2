@@ -2,80 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22FA345D880
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:55:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 841BF45D899
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:00:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354807AbhKYK6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 05:58:51 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:34602 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350909AbhKYK4m (ORCPT
+        id S1354874AbhKYLDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 06:03:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354693AbhKYLBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 05:56:42 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1APArSab076934;
-        Thu, 25 Nov 2021 04:53:28 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1637837608;
-        bh=hq+jbBY8FwWxm2D0OQwVWEAEKF4FYNiMLiwTnw33f1A=;
-        h=From:To:CC:Subject:Date;
-        b=IAdhgLwK3XqnwjZKPkNOBRExXwlsFQAbuXH+KppFZLcCLoS1Q0uoh38rjn8tLtLC5
-         oFwa2W/0F9+/jROePUiW0FJWz/wafiKVmCBCl/VXAbDRtyf2it0jKt7L7os7NLpXQm
-         k2y6PvNf8rEalrYUXOzLj0VnUdcBpivGe+wH33K8=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1APArS73048719
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 25 Nov 2021 04:53:28 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 25
- Nov 2021 04:53:27 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Thu, 25 Nov 2021 04:53:27 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1APArQTV120557;
-        Thu, 25 Nov 2021 04:53:27 -0600
-From:   Jayesh Choudhary <j-choudhary@ti.com>
-To:     <robh+dt@kernel.org>
-CC:     <bcousson@baylibre.com>, <tony@atomide.com>, <j-choudhary@ti.com>,
-        <linux-omap@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ARM: dts: am335x-wega: Fix typo in mcasp property rx-num-evt
-Date:   Thu, 25 Nov 2021 16:23:26 +0530
-Message-ID: <20211125105326.17000-1-j-choudhary@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 25 Nov 2021 06:01:07 -0500
+Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88184C061748;
+        Thu, 25 Nov 2021 02:56:54 -0800 (PST)
+Received: by mail-vk1-xa2f.google.com with SMTP id s17so3592360vka.5;
+        Thu, 25 Nov 2021 02:56:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=19XxhN1cPhuBovF+Xh4gn1b03Gy0GpCCVXwbXEhLi/Y=;
+        b=g4HEKhiSSbHpHj5yFd7PfkOCC7OjRDa51IdTeUlVTfAai66FDIoyoUR79zc+fQdbz8
+         tc19wl9pyY+DEs1Xm1MIoS1J4IdjHoGTNF+3mryBMD6ckQs32XzAN1SqwFz9BcnloFXK
+         tQUXtmCqgQZDGSKbAfvUMhM8RF1byNDRfaALLRJWWSCiGK4n4ishPhzsVn9InWnUBVeK
+         yBatM+MagxOFcS9yfsEcGz7aRivqX2fYTK+L9aHZyHr4H3xhnvnMHBNfruDN1KHILche
+         hZJuQHctID1iokGll0VabYZIhGU5u5KwNIwgOHXrT6M4E9/M3Gf0QoediHeCnYvum+Sh
+         GRqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=19XxhN1cPhuBovF+Xh4gn1b03Gy0GpCCVXwbXEhLi/Y=;
+        b=gJ447K/qg7wkk3r4eW4zW2h2koXGoCUr5dPCLaaYGopmLGQq5/lUsecqXlxIkxNybH
+         pfFhVbBPbltVM/lM0XFhyu3y2M7ARsjUCW7AJiPmY6olhJ8K9JlESGuO5nZK8XkrcHA1
+         ZjU/nwgO7YdCvQZlodjINKNA2ocAQ3V6Cu00PDYqV+zF+MjF/THaD7IE388uFajuDHYZ
+         0vhlZwHAzYa5ExEOeKPrlD5NxSssdrWBs3kc4kbuke2FEaLXXXfxxeQbLI73l5H/9vQ9
+         EAZAY+on/ZHzfjRmPWqBdmzdAdzg2pk7hDWZ1/CU58NNsor6rczWsY0RGZbtCexIf/9M
+         uauA==
+X-Gm-Message-State: AOAM533F9r9ioZ4NMsaVQQgGXFovf+15/Wd207nGc69scT3P0le+Mt7w
+        oP/g09lNaNAazMwOAKDNNXKn1lv2rEvKOGME5qs=
+X-Google-Smtp-Source: ABdhPJw08+vO8xvImD361nCgmPTJ+oAFgtqZIP1QpMejp7pxO+ovFtVtHwaNa0Pb3/X68lyALNXkewo6EsgomvUodzo=
+X-Received: by 2002:a05:6122:8cf:: with SMTP id 15mr9414800vkg.16.1637837813643;
+ Thu, 25 Nov 2021 02:56:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210929172234.31620-1-mcroce@linux.microsoft.com> <20210929172234.31620-4-mcroce@linux.microsoft.com>
+In-Reply-To: <20210929172234.31620-4-mcroce@linux.microsoft.com>
+From:   Ley Foon Tan <lftan.linux@gmail.com>
+Date:   Thu, 25 Nov 2021 18:56:41 +0800
+Message-ID: <CAFiDJ5-OJzWWR0hSZDsuAmxzxTE7cRR9Bsetpfh5vvrTxzkKPw@mail.gmail.com>
+Subject: Re: [PATCH v5 3/3] riscv: optimized memset
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Bin Meng <bmeng.cn@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Guo Ren <guoren@kernel.org>, Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the property name 'rx-num-evt'.
+On Thu, Sep 30, 2021 at 1:56 AM Matteo Croce <mcroce@linux.microsoft.com> wrote:
+>
+> From: Matteo Croce <mcroce@microsoft.com>
+>
+> The generic memset is defined as a byte at time write. This is always
+> safe, but it's slower than a 4 byte or even 8 byte write.
+>
+> Write a generic memset which fills the data one byte at time until the
+> destination is aligned, then fills using the largest size allowed,
+> and finally fills the remaining data one byte at time.
+>
+> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+> ---
+>  arch/riscv/include/asm/string.h |  10 +--
+>  arch/riscv/kernel/Makefile      |   1 -
+>  arch/riscv/kernel/riscv_ksyms.c |  13 ----
+>  arch/riscv/lib/Makefile         |   1 -
+>  arch/riscv/lib/memset.S         | 113 --------------------------------
+>  arch/riscv/lib/string.c         |  41 ++++++++++++
+>  6 files changed, 44 insertions(+), 135 deletions(-)
+>  delete mode 100644 arch/riscv/kernel/riscv_ksyms.c
+>  delete mode 100644 arch/riscv/lib/memset.S
 
-Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
----
-The modification has not been tested. It needs to be tested
-to ensure that there are no regressions.
+This patch causes the Linux kernel to hang if compile with LLVM/Clang.
+Tested on Qemu.
 
- arch/arm/boot/dts/am335x-wega.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Steps to compile with Clang:
+make CC=clang  defconfig
+make CC=clang -j
 
-diff --git a/arch/arm/boot/dts/am335x-wega.dtsi b/arch/arm/boot/dts/am335x-wega.dtsi
-index 673159d93a6a..f957fea8208e 100644
---- a/arch/arm/boot/dts/am335x-wega.dtsi
-+++ b/arch/arm/boot/dts/am335x-wega.dtsi
-@@ -55,7 +55,7 @@
- 		2 1 0 0 /* # 0: INACTIVE, 1: TX, 2: RX */
- 	>;
- 	tx-num-evt = <16>;
--	rt-num-evt = <16>;
-+	rx-num-evt = <16>;
- 	status = "okay";
- };
- 
--- 
-2.17.1
+Boot log:
 
+[    0.000000] Linux version 5.15.4-01003-g23eeaac40da8 (xxxxx@ubuntu)
+(clang version 14.0.0 (https://github.com/llvm/llvm-project
+6b715e9c4d9cc00f59906d48cd57f4c767229093), GNU ld (GNU Binutils)
+2.36.1) #151 SMP Thu Nov 25 18:41:47 +08 2021
+[    0.000000] OF: fdt: Ignoring memory range 0x80000000 - 0x80200000
+[    0.000000] Machine model: riscv-virtio,qemu
+[    0.000000] earlycon: sbi0 at I/O port 0x0 (options '')
+[    0.000000] printk: bootconsole [sbi0] enabled
+[    0.000000] efi: UEFI not found.
+
+Regards
+Ley Foon
