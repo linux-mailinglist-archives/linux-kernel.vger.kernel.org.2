@@ -2,147 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A64FD45E2B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:47:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 658A645E2B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244906AbhKYVuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 16:50:14 -0500
-Received: from mga17.intel.com ([192.55.52.151]:25768 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235889AbhKYVsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 16:48:13 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="216280236"
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="216280236"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 13:41:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="592106788"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 25 Nov 2021 13:41:52 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqMV6-0006xT-38; Thu, 25 Nov 2021 21:41:52 +0000
-Date:   Fri, 26 Nov 2021 05:41:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: drivers/firmware/efi/sysfb_efi.c:70:6: warning: no previous
- prototype for function 'efifb_setup_from_dmi'
-Message-ID: <202111260502.49nh07NH-lkp@intel.com>
+        id S1351295AbhKYVsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 16:48:30 -0500
+Received: from mout.kundenserver.de ([217.72.192.75]:33677 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351387AbhKYVq3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 16:46:29 -0500
+Received: from mail-wr1-f50.google.com ([209.85.221.50]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MEV7U-1moloX0GnS-00G06i; Thu, 25 Nov 2021 22:43:15 +0100
+Received: by mail-wr1-f50.google.com with SMTP id o13so14309241wrs.12;
+        Thu, 25 Nov 2021 13:43:14 -0800 (PST)
+X-Gm-Message-State: AOAM531mNV9pKP5rRN+V+1xqPGFQhWhbyWtsyoeUqwrDEJR/ImtuoE75
+        GxVYb8uRXTI/GT1+x2hoOV1vGwgK/I/N+0CrwTw=
+X-Google-Smtp-Source: ABdhPJwjKapht7W/sukRuCfcX+lckyEPy1NdAnaERzdim0N17M/wef+Nllp0lT2Vmf332KaJEcKdDsO7PSXmL6JXu0w=
+X-Received: by 2002:a5d:64ea:: with SMTP id g10mr10262560wri.137.1637876594530;
+ Thu, 25 Nov 2021 13:43:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211125211443.1150135-1-Mr.Bossman075@gmail.com> <20211125211443.1150135-14-Mr.Bossman075@gmail.com>
+In-Reply-To: <20211125211443.1150135-14-Mr.Bossman075@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 25 Nov 2021 22:42:58 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3dwwBt21o7LDY-CLDdVmOknxDF7sgO_dfiTj8_u4Tx=A@mail.gmail.com>
+Message-ID: <CAK8P3a3dwwBt21o7LDY-CLDdVmOknxDF7sgO_dfiTj8_u4Tx=A@mail.gmail.com>
+Subject: Re: [PATCH v3 13/13] ARM: imxrt_defconfig: add i.MXRT family defconfig
+To:     Jesse Taube <mr.bossman075@gmail.com>
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        gregkh <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        SoC Team <soc@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Abel Vesa <abel.vesa@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        giulio.benetti@benettiengineering.com,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:9F1HmoWqAz0eILnTfnh1h6cvsqim0DA76W87jivWA2xvAi4HeaW
+ h7scqcNGj1atWyUUkF6OogKEfwq1D1iv9+vmiaTItFZ3qT5Rl27Zt1DUh/qQN757atQdiu1
+ VcDKlBcWYrLU8IEKemf2kiD5RzQKKyJZhnRU+MSYZOp/trlQpuIOr6iYbtNaoGuGa6zjACZ
+ aIbhiPddPPARMcYW7NYBg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Yz/1iYbOgPI=:F81e9KRFfoBNchdd179cgq
+ aef64Jl/PNTfK4bq4LVyKvxDeeVx0HYXFJ/+lpYVd5j6m/H+1s969WnsdhuTQz25w+6PELdrm
+ a5WF4/TP334wHbOeV8rg+DVHCi9kOp/oFySryVu+ef3Bg3Bm04VpGd068F4zPrrpWw9FM0DgM
+ Ot1P5IuBzpL8C30bsx5uPPTcmspNdovPXvR8sFCrTK9koiD+GLY/YO16auhg3xiZsiOEuJTL7
+ +Hwu0EousHqmCUWAlwNECrLg2KjhGnlDQU8wYznfpkaHHefvmzRmlNcFYJdnfz4Rfw7TPBAUf
+ IUiCaYWZERea5X00X2T49khvNfAB+91c3FpZThcb9Pp8cPUmpHNeKEPlRG7PsTvl1bJczKvbG
+ XwE4AG62LElp8GGWwyYivSt2/MeZqbwO2Zk62uetyfS9uTrM3OktfRzwZskx/vQzbL5Z5sTs/
+ cfGaui/rM4hltp9MMLJpxviwODrPVkOHZvOBnofjObl+AWaLSYry51aZGOKwTvuWmmfsyAbhC
+ Byecw3GzzgexHh6Kdt5BBv7G9EBxt/vvmYqJfzjQM+sVg6Cr0z+MwMFB/SID0njUP+7VyU5bk
+ ZtO/1CQbPdepyAwdSssLxSB1mnEtUlLi0SraO/Udo3xMmaXjullZHulRfmulLmi0VrTcp/AzB
+ ZvB7x+c5kev0OdqeJqjpoKU6Ozg0w6G3gpQZoDFhBxaH72YMgVexmazg2hcPYD9xY/GXZC0p1
+ JTCeawzr6I32D99vKvKu1n5M7zzcUE21khY/YZYgEF6U57UjnpfXDjRusggrrIlH7FPeCogo/
+ dLLEPDEizWPh8zF5Noh4sp0tUmYHBNbeW+MtXmU7DtiVV3CR4k=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Javier,
+On Thu, Nov 25, 2021 at 10:14 PM Jesse Taube <mr.bossman075@gmail.com> wrote:
+>
+> From: Giulio Benetti <giulio.benetti@benettiengineering.com>
+>
+> Add generic i.MXRT family defconfig.
+>
+> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+> Signed-off-by: Jesse Taube <Mr.Bossman075@gmail.com>
 
-FYI, the error/warning still remains.
+I see a lot of things in here that probably should not be part of the kernel,
+either because they are rather obscure, or they take valuable memory:
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   8ced7ca3570333998ad2088d5a6275701970e28e
-commit: d391c58271072d0b0fad93c82018d495b2633448 drivers/firmware: move x86 Generic System Framebuffers support
-date:   4 months ago
-config: x86_64-randconfig-a016-20210927 (https://download.01.org/0day-ci/archive/20211126/202111260502.49nh07NH-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project dc6e8dfdfe7efecfda318d43a06fae18b40eb498)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d391c58271072d0b0fad93c82018d495b2633448
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout d391c58271072d0b0fad93c82018d495b2633448
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=x86_64 
+> ---
+>  arch/arm/configs/imxrt_defconfig | 157 +++++++++++++++++++++++++++++++
+>  1 file changed, 157 insertions(+)
+>  create mode 100644 arch/arm/configs/imxrt_defconfig
+>
+> diff --git a/arch/arm/configs/imxrt_defconfig b/arch/arm/configs/imxrt_defconfig
+> new file mode 100644
+> index 000000000000..d673745a5462
+> --- /dev/null
+> +++ b/arch/arm/configs/imxrt_defconfig
+> @@ -0,0 +1,157 @@
+> +# CONFIG_LOCALVERSION_AUTO is not set
+> +CONFIG_SYSVIPC=y
+> +CONFIG_USELIB=y
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+You almost certainly won't want USELIB, and SYSVIPC support
+would only be useful for certain applications that you probably
+won't run.
 
-All warnings (new ones prefixed by >>):
+> +CONFIG_BSD_PROCESS_ACCT=y
+> +CONFIG_BSD_PROCESS_ACCT_V3=y
+> +CONFIG_PSI=y
+> +CONFIG_IKCONFIG=y
+> +CONFIG_IKCONFIG_PROC=y
 
->> drivers/firmware/efi/sysfb_efi.c:70:6: warning: no previous prototype for function 'efifb_setup_from_dmi' [-Wmissing-prototypes]
-   void efifb_setup_from_dmi(struct screen_info *si, const char *opt)
-        ^
-   drivers/firmware/efi/sysfb_efi.c:70:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   void efifb_setup_from_dmi(struct screen_info *si, const char *opt)
-   ^
-   static 
-   drivers/firmware/efi/sysfb_efi.c:270:1: warning: attribute declaration must precede definition [-Wignored-attributes]
-   __init void sysfb_apply_efi_quirks(void)
-   ^
-   include/linux/init.h:50:17: note: expanded from macro '__init'
-   #define __init          __section(".init.text") __cold  __latent_entropy __noinitretpoline __nocfi
-                           ^
-   include/linux/compiler_attributes.h:263:56: note: expanded from macro '__section'
-   #define __section(section)              __attribute__((__section__(section)))
-                                                          ^
-   include/linux/sysfb.h:65:20: note: previous definition is here
-   static inline void sysfb_apply_efi_quirks(void)
-                      ^
-   drivers/firmware/efi/sysfb_efi.c:270:1: warning: attribute declaration must precede definition [-Wignored-attributes]
-   __init void sysfb_apply_efi_quirks(void)
-   ^
-   include/linux/init.h:50:41: note: expanded from macro '__init'
-   #define __init          __section(".init.text") __cold  __latent_entropy __noinitretpoline __nocfi
-                                                   ^
-   include/linux/compiler_attributes.h:92:56: note: expanded from macro '__cold'
-   #define __cold                          __attribute__((__cold__))
-                                                          ^
-   include/linux/sysfb.h:65:20: note: previous definition is here
-   static inline void sysfb_apply_efi_quirks(void)
-                      ^
-   drivers/firmware/efi/sysfb_efi.c:270:1: warning: attribute declaration must precede definition [-Wignored-attributes]
-   __init void sysfb_apply_efi_quirks(void)
-   ^
-   include/linux/init.h:50:84: note: expanded from macro '__init'
-   #define __init          __section(".init.text") __cold  __latent_entropy __noinitretpoline __nocfi
-                                                                                              ^
-   include/linux/compiler-clang.h:65:33: note: expanded from macro '__nocfi'
-   #define __nocfi         __attribute__((__no_sanitize__("cfi")))
-                                          ^
-   include/linux/sysfb.h:65:20: note: previous definition is here
-   static inline void sysfb_apply_efi_quirks(void)
-                      ^
-   drivers/firmware/efi/sysfb_efi.c:270:13: error: redefinition of 'sysfb_apply_efi_quirks'
-   __init void sysfb_apply_efi_quirks(void)
-               ^
-   include/linux/sysfb.h:65:20: note: previous definition is here
-   static inline void sysfb_apply_efi_quirks(void)
-                      ^
-   4 warnings and 1 error generated.
+Probably nonen of these are helpful here.
 
+> +CONFIG_MEMCG=y
+> +CONFIG_BLK_CGROUP=y
+> +CONFIG_CFS_BANDWIDTH=y
+> +CONFIG_CGROUP_PIDS=y
+> +CONFIG_CGROUP_RDMA=y
+> +CONFIG_CGROUP_FREEZER=y
+> +CONFIG_CGROUP_DEVICE=y
+> +CONFIG_CGROUP_CPUACCT=y
+> +CONFIG_CGROUP_PERF=y
+> +CONFIG_CGROUP_BPF=y
+> +CONFIG_NAMESPACES=y
+> +CONFIG_USER_NS=y
+> +CONFIG_CHECKPOINT_RESTORE=y
 
-vim +/efifb_setup_from_dmi +70 drivers/firmware/efi/sysfb_efi.c
+Same for control groups overall as well as checkpoint_restore
 
-2995e506276bfdc arch/x86/kernel/sysfb_efi.c David Herrmann 2013-08-02  69  
-21289ec02b41c4b arch/x86/kernel/sysfb_efi.c Ard Biesheuvel 2016-04-25 @70  void efifb_setup_from_dmi(struct screen_info *si, const char *opt)
-21289ec02b41c4b arch/x86/kernel/sysfb_efi.c Ard Biesheuvel 2016-04-25  71  {
-21289ec02b41c4b arch/x86/kernel/sysfb_efi.c Ard Biesheuvel 2016-04-25  72  	int i;
-21289ec02b41c4b arch/x86/kernel/sysfb_efi.c Ard Biesheuvel 2016-04-25  73  
-21289ec02b41c4b arch/x86/kernel/sysfb_efi.c Ard Biesheuvel 2016-04-25  74  	for (i = 0; i < M_UNKNOWN; i++) {
-21289ec02b41c4b arch/x86/kernel/sysfb_efi.c Ard Biesheuvel 2016-04-25  75  		if (efifb_dmi_list[i].base != 0 &&
-21289ec02b41c4b arch/x86/kernel/sysfb_efi.c Ard Biesheuvel 2016-04-25  76  		    !strcmp(opt, efifb_dmi_list[i].optname)) {
-21289ec02b41c4b arch/x86/kernel/sysfb_efi.c Ard Biesheuvel 2016-04-25  77  			si->lfb_base = efifb_dmi_list[i].base;
-21289ec02b41c4b arch/x86/kernel/sysfb_efi.c Ard Biesheuvel 2016-04-25  78  			si->lfb_linelength = efifb_dmi_list[i].stride;
-21289ec02b41c4b arch/x86/kernel/sysfb_efi.c Ard Biesheuvel 2016-04-25  79  			si->lfb_width = efifb_dmi_list[i].width;
-21289ec02b41c4b arch/x86/kernel/sysfb_efi.c Ard Biesheuvel 2016-04-25  80  			si->lfb_height = efifb_dmi_list[i].height;
-21289ec02b41c4b arch/x86/kernel/sysfb_efi.c Ard Biesheuvel 2016-04-25  81  		}
-21289ec02b41c4b arch/x86/kernel/sysfb_efi.c Ard Biesheuvel 2016-04-25  82  	}
-21289ec02b41c4b arch/x86/kernel/sysfb_efi.c Ard Biesheuvel 2016-04-25  83  }
-21289ec02b41c4b arch/x86/kernel/sysfb_efi.c Ard Biesheuvel 2016-04-25  84  
+> +CONFIG_RELAY=y
 
-:::::: The code at line 70 was first introduced by commit
-:::::: 21289ec02b41c4b928a0b3de1778b325d714eea3 x86/efi/efifb: Move DMI based quirks handling out of generic code
+There are a few drivers using CONFIG_RELAY, but I don't see you enable
+any of them,
+so this is not actually used.
 
-:::::: TO: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-:::::: CC: Ingo Molnar <mingo@kernel.org>
+> +CONFIG_EXPERT=y
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Are you losing anything without EXPERT? If not, remove that
+
+> +CONFIG_SGETMASK_SYSCALL=y
+> +# CONFIG_FUTEX is not set
+
+Futex is probably one of the things you /do/ want.
+
+> +CONFIG_KALLSYMS_ALL=y
+> +CONFIG_PC104=y
+
+Turning off KALLSYMS_ALL may save a noticeable amount of RAM.
+
+PC104 isn't actually that big, but it seems unlikely that you have
+that hardware.
+
+> +CONFIG_PARAVIRT=y
+
+You don't seem to enable XEN, so I don't think PARAVIRT is useful by itself.
+
+> +# CONFIG_ATAGS is not set
+> +CONFIG_CMDLINE="console=ttyS0 root=/dev/mmcblk0p2 rw earlycon rootwait"
+
+The command line should come from the boot loader, users probably have
+a different root device.
+
+> +CONFIG_BLK_DEV_BSGLIB=y
+> +CONFIG_BLK_DEV_INTEGRITY=y
+> +CONFIG_BLK_DEV_ZONED=y
+> +CONFIG_BLK_DEV_THROTTLING=y
+> +CONFIG_BLK_WBT=y
+> +CONFIG_BLK_SED_OPAL=y
+> +CONFIG_PARTITION_ADVANCED=y
+> +CONFIG_BSD_DISKLABEL=y
+> +CONFIG_MINIX_SUBPARTITION=y
+> +CONFIG_SOLARIS_X86_PARTITION=y
+> +CONFIG_UNIXWARE_DISKLABEL=y
+> +CONFIG_LDM_PARTITION=y
+
+I don't see you using OPAL or any of the 1990's partition formats.
+ot set
+
+> +CONFIG_BINFMT_FLAT=y
+
+For the defconfig, you should probably have ELF_FDPIC enabled,
+not just FLAT.
+
+> +CONFIG_CLEANCACHE=y
+> +CONFIG_ZPOOL=y
+> +CONFIG_ZBUD=y
+> +CONFIG_Z3FOLD=y
+
+Do these work as expected on NOMMU?
+
+> +CONFIG_BLK_DEV_LOOP=y
+> +CONFIG_BLK_DEV_RAM=y
+> +CONFIG_BLK_DEV_RAM_COUNT=1
+> +CONFIG_BLK_DEV_RAM_SIZE=65536
+
+I don't think you can have a ramdisk larger than RAM ;-)
+
+> +CONFIG_MEMORY=y
+
+No need to enable the subsystem when you don't enable any
+of its drivers.
+
+> +CONFIG_EXT2_FS=y
+> +CONFIG_EXT2_FS_XATTR=y
+> +CONFIG_EXT2_FS_POSIX_ACL=y
+> +CONFIG_EXT2_FS_SECURITY=y
+> +CONFIG_EXT3_FS=y
+> +CONFIG_EXT3_FS_POSIX_ACL=y
+> +CONFIG_EXT3_FS_SECURITY=y
+
+Never use EXT3 on eMMC, just use EXT4 instead to make
+the device actually live longer. You probably don't need to enable
+EXT2 support separately.
+
+> +# CONFIG_FILE_LOCKING is not set
+> +# CONFIG_DNOTIFY is not set
+> +CONFIG_QUOTA=y
+
+dnotify and locking seem more useful than quota here
+
+> +# CONFIG_PRINT_QUOTA_WARNING is not set
+> +CONFIG_AUTOFS4_FS=y
+
+> +CONFIG_CONFIGFS_FS=y
+
+I don't see anything using configfs
+
+> +CONFIG_LSM="yama,loadpin,integrity,apparmor"
+
+None of these are actually enabled as far as I can tell.
+
+> +CONFIG_DEBUG_INFO=y
+> +CONFIG_DEBUG_INFO_DWARF4=y
+
+If you use DWARF4, you probably want DEBUG_INFO_SPLIT as well,
+to reduce the vmlinux size.
+
+       Arnd
