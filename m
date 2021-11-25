@@ -2,127 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1084245D9AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F8845D9B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240016AbhKYMFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 07:05:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232753AbhKYMDn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 07:03:43 -0500
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC35AC06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 04:00:32 -0800 (PST)
-Received: by mail-vk1-xa36.google.com with SMTP id j1so3730373vkr.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 04:00:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6Lylh8DR+450t+VKD+Wrn7i+Xuwy9BF3AUDecTVOK4g=;
-        b=erksV85QXm/bqtxQPmB7msXlbNBDCVOQLjiysuFCaDkVczzFvYyAl5dXhwb+8YbvxT
-         yYfptkjAO28P25RNMRp7yU2utcDxwTtprCmykjLrDjlwBXc+xEXFM03rSibA7KbedEpP
-         Z4tEpYadJa01M2Ewa2YfPP0S+CIEP7EDKn+vc1o3jAuGRqF6ucXS4hC9ZTURS8fm2GwZ
-         AMhr8TAKYcvFsrQUlRtTGtPVu/3nW1h5xGvbd79S22JduH8vIEZDlT0gKFOtiwU+JybA
-         JkVte1dr+fEhRJ19HCwBFy3luCv+Aa+nIQm8NWdS+NN/a1+vHezBFoJ1lkIVnEjat7Ka
-         o1RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6Lylh8DR+450t+VKD+Wrn7i+Xuwy9BF3AUDecTVOK4g=;
-        b=K5DmoKlYk0rT54okqcMebv78cNlVoEo94HFhIsLe7SxKp4fT6g7JnAYFcqNb1+PJrV
-         FTsbo9RJ2npac4fm//ipbKtN5ysShxOcVtj95gzCrQ+RDM5O3wM2s4SNizOymh3EUnBu
-         U4iFUVMPjl/Np0jhbXYc3FKBguwy/i/zMm1AKIGogyYrFRv/AhWGHymuneiDbN5gz/RM
-         YvHpFXjNu3/hMyk2+NV6ALhLh3y0krLpF4QVrsBTBQQ90oS1mFHpX8wuyFFQqZQTsOU0
-         iGUV3eJ5fL18J2hyl4amILYUYy7AvW4uJvpgTk0Vdu8HQoMcuSx9W4f6GQUWKm5s3M1+
-         pirw==
-X-Gm-Message-State: AOAM533OO/rWNaMJHky0xgNPt8ROi/73DZRp29p+X1yN+UIt//DZLxLk
-        FU6cC/Ex6YOI+BwM17na9A7Vlg==
-X-Google-Smtp-Source: ABdhPJygr6uthtUgThXM0nJKXNt/5LsubRRa0ZItKbmNtKp+p8GFTBFPOJp05+fRHPe/w8EB24DpCg==
-X-Received: by 2002:a05:6122:d08:: with SMTP id az8mr9774743vkb.15.1637841631793;
-        Thu, 25 Nov 2021 04:00:31 -0800 (PST)
-Received: from eze-laptop (host208.201-253-22.telecom.net.ar. [201.253.22.208])
-        by smtp.gmail.com with ESMTPSA id c9sm1710140uaf.12.2021.11.25.04.00.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 04:00:30 -0800 (PST)
-Date:   Thu, 25 Nov 2021 09:00:24 -0300
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To:     Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     linux-media@vger.kernel.org, nicolas.dufresne@collabora.com,
-        mchehab@kernel.org, robh+dt@kernel.org, mripard@kernel.org,
-        wens@csie.org, p.zabel@pengutronix.de, andrzej.p@collabora.com,
-        gregkh@linuxfoundation.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH 4/7] media: hantro: move postproc enablement for old cores
-Message-ID: <YZ962CvUbKoiIGyZ@eze-laptop>
-References: <20211122184702.768341-1-jernej.skrabec@gmail.com>
- <20211122184702.768341-5-jernej.skrabec@gmail.com>
+        id S1345985AbhKYMH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 07:07:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60782 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238867AbhKYMF1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 07:05:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E59260F50;
+        Thu, 25 Nov 2021 12:02:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637841736;
+        bh=BWGMZCrHH6xxi12p5oO7mIRasp8rFf7thNKaWsGdakg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WinQ1hlBhbKrnSPiGWFGvYPT0LPQ2KOzqOipkUVzFhHPQeyzv/vkK68EtinskPqYD
+         D3IOPvpUWgeTTnc2L5pVOxlDnd2BhvPi3jK62FDoZN2wxtFEgi2O8+bAJRt80zCtSX
+         O2mdYW0u/S4sY8MpxlSHNKaliK+VixWhizpl2jt5yMoGGp1IuOo1r5Ep5u+qZ4Agzt
+         IA0LO+jRra170vOR3QP9m7Z3dF8ENPEIvmt2WXiRh1/rLrBMtq4DG5Qcgo2YGiyQpA
+         va2PFUpABj6D0ftdKmvAi7HvwwVsZ+tObZg15Ez2ue0V9oNg/sSS71x+q0s9zGYiSZ
+         xOVXNjK79SIHQ==
+Date:   Thu, 25 Nov 2021 12:02:10 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Agneli <poczt@protonmail.ch>, Rob Herring <robh+dt@kernel.org>,
+        linux-tegra@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v1 07/20] ASoC: tegra20: spdif: Set FIFO trigger level
+Message-ID: <YZ97Qo500CrSmhXu@sirena.org.uk>
+References: <20211124220057.15763-1-digetx@gmail.com>
+ <20211124220057.15763-8-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9M5ShoIPHrxjoCgm"
 Content-Disposition: inline
-In-Reply-To: <20211122184702.768341-5-jernej.skrabec@gmail.com>
+In-Reply-To: <20211124220057.15763-8-digetx@gmail.com>
+X-Cookie: This bag is recyclable.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jernej,
 
-On Mon, Nov 22, 2021 at 07:46:59PM +0100, Jernej Skrabec wrote:
-> Older G2 cores, like that in Allwinner H6, seem to have issue with
-> latching postproc register values if this is first thing done in job.
-> Moving that to the end solves the issue.
-> 
+--9M5ShoIPHrxjoCgm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Any idea what exact register should be written before the post-processor
-is enabled, for H6 to work? Also, which of the PP registers need
-to be written "at the end"?
+On Thu, Nov 25, 2021 at 01:00:44AM +0300, Dmitry Osipenko wrote:
+> Program FIFO trigger level properly to fix x4 accelerated playback.
 
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-> ---
->  drivers/staging/media/hantro/hantro_drv.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-> index 8c3de31f51b3..530994ab3024 100644
-> --- a/drivers/staging/media/hantro/hantro_drv.c
-> +++ b/drivers/staging/media/hantro/hantro_drv.c
-> @@ -130,7 +130,7 @@ void hantro_start_prepare_run(struct hantro_ctx *ctx)
->  	v4l2_ctrl_request_setup(src_buf->vb2_buf.req_obj.req,
->  				&ctx->ctrl_handler);
->  
-> -	if (!ctx->is_encoder) {
-> +	if (!ctx->is_encoder && !ctx->dev->variant->legacy_regs) {
+Fixes like this should really go before any new stuff so they can be
+sent as fixes and backported.
 
-To make this less fragile, do you think it would make sense to
-have a dedicated quirk flag, something like "legacy_post_proc",
-instead of overloading the meaning of legacy_regs.
+--9M5ShoIPHrxjoCgm
+Content-Type: application/pgp-signature; name="signature.asc"
 
-What do you think?
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Ezequiel
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGfe0EACgkQJNaLcl1U
+h9CjcAgAg9IvrDEWAOwL3WYl7S3HkK2dMw76b1z6wB1iQW4pAmj8r+/wVBjfQ0Qf
+xQl5b/a4Bho/sLhKkSo3zeR6gM0V9cxM5xqGeMi4faGNYPNVQyhqzMkAs8SCSj81
+GWJ1S1xThLnY/VHcScXLXxh1bCz5KxCMg9AI1SxDnWvXbMd+MnGtJMa3cEE68Gls
+jWUBtNNNBiC0GWl3kdlardl/0sfvH9w1kDYDNmd1ZBx3yNOO8rWKQPnS94NJaRSP
+xcYyoDZZQueifuXSiKWDQLbqLQgiXXOGS1EEr9QGefjpZq95WutVv+gMQGHM1lQ8
+9CR+Aau1jB2PG1PDq5c0jL7/58QcQw==
+=kuKW
+-----END PGP SIGNATURE-----
 
->  		if (hantro_needs_postproc(ctx, ctx->vpu_dst_fmt))
->  			hantro_postproc_enable(ctx);
->  		else
-> @@ -142,6 +142,13 @@ void hantro_end_prepare_run(struct hantro_ctx *ctx)
->  {
->  	struct vb2_v4l2_buffer *src_buf;
->  
-> +	if (ctx->dev->variant->legacy_regs && !ctx->is_encoder) {
-> +		if (hantro_needs_postproc(ctx, ctx->vpu_dst_fmt))
-> +			hantro_postproc_enable(ctx);
-> +		else
-> +			hantro_postproc_disable(ctx);
-> +	}
-> +
->  	src_buf = hantro_get_src_buf(ctx);
->  	v4l2_ctrl_request_complete(src_buf->vb2_buf.req_obj.req,
->  				   &ctx->ctrl_handler);
-> -- 
-> 2.34.0
-> 
+--9M5ShoIPHrxjoCgm--
