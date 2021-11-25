@@ -2,62 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B51945D955
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC3145D95C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:38:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234747AbhKYLkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 06:40:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54040 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237218AbhKYLiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 06:38:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BAC860F12;
-        Thu, 25 Nov 2021 11:35:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637840113;
-        bh=oS427/y07tDHWhR+wjXkzJYAqLUSfEGp46TTMpPDERI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aWGh+GCux2DvjkBq88jqX96T1VpQGOB+FnRD87o4q7uBmCJScAX7jYolJtGLK/ZcM
-         xEGZLEOaV7EbicexsFZAiix579vRIWUIkdqAMQgI9h23Qdj83IUFe3JuyYq7G8vX/1
-         +cn74WjO0lTa+weYlCNSSgd29ndzwoxe4wvZGW/O+6Kq8D5LJbzP7Qac3fUVOwT4V8
-         9TNsDaBc6eZD7LvHJOo5Fan9oHUJ1VGCXYCNHTibaW8RocjdSxjlftaCRAJOYH/v5f
-         muAu5R1GirTRmDb59SkxQ3hOsp3zEVGU3QyWgqvrecd9S2EsWjaFuQc8oAq1HP1Nyk
-         fB52G1s/pL8jg==
-Date:   Thu, 25 Nov 2021 13:35:07 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     =?iso-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-rc v2] RDMA/cma: Remove open coding of overflow
- checking for private_data_len
-Message-ID: <YZ9068DjutjBON/I@unreal>
-References: <1637661978-18770-1-git-send-email-haakon.bugge@oracle.com>
+        id S233740AbhKYLlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 06:41:05 -0500
+Received: from mailgw.kylinos.cn ([123.150.8.42]:18688 "EHLO nksmu.kylinos.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233814AbhKYLjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 06:39:40 -0500
+X-UUID: 5c4d54c99707443db35721a783cfc701-20211125
+X-UUID: 5c4d54c99707443db35721a783cfc701-20211125
+X-User: zhangyue1@kylinos.cn
+Received: from localhost.localdomain [(172.17.127.2)] by nksmu.kylinos.cn
+        (envelope-from <zhangyue1@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 722217407; Thu, 25 Nov 2021 19:44:57 +0800
+From:   zhangyue <zhangyue1@kylinos.cn>
+To:     aelior@marvell.com, GR-everest-linux-l2@marvell.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: qed: fix the array may be out of bound
+Date:   Thu, 25 Nov 2021 19:36:10 +0800
+Message-Id: <20211125113610.273841-1-zhangyue1@kylinos.cn>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1637661978-18770-1-git-send-email-haakon.bugge@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 11:06:18AM +0100, Håkon Bugge wrote:
-> The existing tests are a little hard to comprehend. Use
-> check_add_overflow() instead.
-> 
-> Fixes: 04ded1672402 ("RDMA/cma: Verify private data length")
-> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
-> 
-> ---
-> 
-> v1 -> v2:
-> 
->    * Also fixed same issue in cma_resolve_ib_udp() as pointed out
->      by Leon
-> ---
->  drivers/infiniband/core/cma.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
+If the variable 'p_bit->flags' is always 0,
+the loop condition is always 0.
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+The variable 'j' may be greater than or equal to 32.
+
+At this time, the array 'p_aeu->bits[32]' may be out
+of bound.
+
+Signed-off-by: zhangyue <zhangyue1@kylinos.cn>
+---
+ drivers/net/ethernet/qlogic/qed/qed_int.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_int.c b/drivers/net/ethernet/qlogic/qed/qed_int.c
+index f78e6055f654..27a74977f7a1 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_int.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_int.c
+@@ -1045,7 +1045,7 @@ static int qed_int_deassertion(struct qed_hwfn  *p_hwfn,
+ 		if (!parities)
+ 			continue;
+ 
+-		for (j = 0, bit_idx = 0; bit_idx < 32; j++) {
++		for (j = 0, bit_idx = 0; bit_idx < 32 && j < 32; j++) {
+ 			struct aeu_invert_reg_bit *p_bit = &p_aeu->bits[j];
+ 
+ 			if (qed_int_is_parity_flag(p_hwfn, p_bit) &&
+@@ -1083,7 +1083,7 @@ static int qed_int_deassertion(struct qed_hwfn  *p_hwfn,
+ 			 * to current group, making them responsible for the
+ 			 * previous assertion.
+ 			 */
+-			for (j = 0, bit_idx = 0; bit_idx < 32; j++) {
++			for (j = 0, bit_idx = 0; bit_idx < 32 && j < 32; j++) {
+ 				long unsigned int bitmask;
+ 				u8 bit, bit_len;
+ 
+@@ -1382,7 +1382,7 @@ static void qed_int_sb_attn_init(struct qed_hwfn *p_hwfn,
+ 	memset(sb_info->parity_mask, 0, sizeof(u32) * NUM_ATTN_REGS);
+ 	for (i = 0; i < NUM_ATTN_REGS; i++) {
+ 		/* j is array index, k is bit index */
+-		for (j = 0, k = 0; k < 32; j++) {
++		for (j = 0, k = 0; k < 32 && j < 32; j++) {
+ 			struct aeu_invert_reg_bit *p_aeu;
+ 
+ 			p_aeu = &aeu_descs[i].bits[j];
+-- 
+2.30.0
+
