@@ -2,105 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0679145E1D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:50:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85DCE45E1DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350128AbhKYUx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 15:53:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49726 "EHLO mail.kernel.org"
+        id S1351021AbhKYU4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 15:56:09 -0500
+Received: from mga06.intel.com ([134.134.136.31]:39598 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237292AbhKYUvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 15:51:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 013B061028;
-        Thu, 25 Nov 2021 20:48:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637873324;
-        bh=vg0Ilz43irK/weKshTjaueM5HrsdjLADePSdElSthOc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=n5wSFXuo2rLbg8dKWZf/ZcLZDu7mwUzw4OQ6plDmNJdVMZe95u5qyqHfOTfROobS3
-         HfjQIluOwVwkQoxccB9fDRDuELiuj6IFtlWJB8whwqNne3kfV4PPZRV8SEzQmtj4jZ
-         e0p6IQERXJ9E+jWGFcry+Xqr0I/Lxkdpiw4O3LIYEnyt2wp8g25nLflRIqzOgtRzcT
-         x8KESc0XlQ36InmUEULc68vYTC11h7RH4IC1HrXcw6OWmcKOaVSneqxQOa8/X1oEQy
-         3kbzj8L73fCqs7oJ6eVkPx0MNJ4z7hOc03s/4h+nTqNjbhyQjm+udBUtmsZEmKMBIc
-         j/JuBPJU9uCfA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 61E3040002; Thu, 25 Nov 2021 17:48:41 -0300 (-03)
-Date:   Thu, 25 Nov 2021 17:48:41 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [FYI][PATCH 1/1] tools headers UAPI: Sync s390 syscall table file
- changed by new futex_waitv syscall Reply-To:
-Message-ID: <YZ/2qRW/TScYTP1U@kernel.org>
+        id S1350944AbhKYUyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 15:54:06 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="296370919"
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="296370919"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 12:50:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="457484987"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 25 Nov 2021 12:50:51 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqLhj-0006ut-6y; Thu, 25 Nov 2021 20:50:51 +0000
+Date:   Fri, 26 Nov 2021 04:50:19 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Robert Richter <rric@kernel.org>
+Subject: drivers/pci/controller/pci-xgene.c:626:34: warning: unused variable
+ 'xgene_pcie_match_table'
+Message-ID: <202111260409.W9j5FDps-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To pick the changes in this cset:
+Hi Arnd,
 
-  6c122360cf2f4c5a ("s390: wire up sys_futex_waitv system call")
+First bad commit (maybe != root cause):
 
-That add support for this new syscall in tools such as 'perf trace'.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   b501b85957deb17f1fe0a861fee820255519d526
+commit: 6e5a1fff9096ecd259dedcbbdc812aa90986a40e PCI: Avoid building empty drivers
+date:   9 months ago
+config: x86_64-buildonly-randconfig-r003-20211118 (https://download.01.org/0day-ci/archive/20211126/202111260409.W9j5FDps-lkp@intel.com/config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project c46becf500df2a7fb4b4fce16178a036c344315a)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6e5a1fff9096ecd259dedcbbdc812aa90986a40e
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout 6e5a1fff9096ecd259dedcbbdc812aa90986a40e
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=x86_64 
 
-For instance, this is now possible (adapted from the x86_64 test output):
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-  # perf trace -e futex_waitv
-  ^C#
-  # perf trace -v -e futex_waitv
-  event qualifier tracepoint filter: (common_pid != 807333 && common_pid != 3564) && (id == 449)
-  ^C#
-  # perf trace -v -e futex* --max-events 10
-  event qualifier tracepoint filter: (common_pid != 812168 && common_pid != 3564) && (id == 238 || id == 449)
-           ? (         ): Timer/219310  ... [continued]: futex())                                            = -1 ETIMEDOUT (Connection timed out)
-       0.012 ( 0.002 ms): Timer/219310 futex(uaddr: 0x7fd0b152d3c8, op: WAKE|PRIVATE_FLAG, val: 1)           = 0
-       0.024 ( 0.060 ms): Timer/219310 futex(uaddr: 0x7fd0b152d420, op: WAIT_BITSET|PRIVATE_FLAG, utime: 0x7fd0b1657840, val3: MATCH_ANY) = 0
-       0.086 ( 0.001 ms): Timer/219310 futex(uaddr: 0x7fd0b152d3c8, op: WAKE|PRIVATE_FLAG, val: 1)           = 0
-       0.088 (         ): Timer/219310 futex(uaddr: 0x7fd0b152d424, op: WAIT_BITSET|PRIVATE_FLAG, utime: 0x7fd0b1657840, val3: MATCH_ANY) ...
-       0.075 ( 0.005 ms): Web Content/219299 futex(uaddr: 0x7fd0b152d420, op: WAKE|PRIVATE_FLAG, val: 1)     = 1
-       0.169 ( 0.004 ms): Web Content/219299 futex(uaddr: 0x7fd0b152d424, op: WAKE|PRIVATE_FLAG, val: 1)     = 1
-       0.088 ( 0.089 ms): Timer/219310  ... [continued]: futex())                                            = 0
-       0.179 ( 0.001 ms): Timer/219310 futex(uaddr: 0x7fd0b152d3c8, op: WAKE|PRIVATE_FLAG, val: 1)           = 0
-       0.181 (         ): Timer/219310 futex(uaddr: 0x7fd0b152d420, op: WAIT_BITSET|PRIVATE_FLAG, utime: 0x7fd0b1657840, val3: MATCH_ANY) ...
-  #
+All warnings (new ones prefixed by >>):
 
-That is the filter expression attached to the raw_syscalls:sys_{enter,exit}
-tracepoints.
+>> drivers/pci/controller/pci-xgene.c:626:34: warning: unused variable 'xgene_pcie_match_table' [-Wunused-const-variable]
+   static const struct of_device_id xgene_pcie_match_table[] = {
+                                    ^
+   1 warning generated.
 
-  $ grep futex tools/perf/arch/s390/entry/syscalls/syscall.tbl
-  238  common	futex			sys_futex			sys_futex_time32
-  422	32	futex_time64		-				sys_futex
-  449  common	futex_waitv		sys_futex_waitv			sys_futex_waitv
-  $
 
-This addresses this perf build warnings:
+vim +/xgene_pcie_match_table +626 drivers/pci/controller/pci-xgene.c
 
-  Warning: Kernel ABI header at 'tools/perf/arch/s390/entry/syscalls/syscall.tbl' differs from latest version at 'arch/s390/kernel/syscalls/syscall.tbl'
-  diff -u tools/perf/arch/s390/entry/syscalls/syscall.tbl arch/s390/kernel/syscalls/syscall.tbl
+5f6b6ccdbe1cdf drivers/pci/host/pci-xgene.c Tanmay Inamdar 2014-10-01  625  
+5f6b6ccdbe1cdf drivers/pci/host/pci-xgene.c Tanmay Inamdar 2014-10-01 @626  static const struct of_device_id xgene_pcie_match_table[] = {
+5f6b6ccdbe1cdf drivers/pci/host/pci-xgene.c Tanmay Inamdar 2014-10-01  627  	{.compatible = "apm,xgene-pcie",},
+5f6b6ccdbe1cdf drivers/pci/host/pci-xgene.c Tanmay Inamdar 2014-10-01  628  	{},
+5f6b6ccdbe1cdf drivers/pci/host/pci-xgene.c Tanmay Inamdar 2014-10-01  629  };
+5f6b6ccdbe1cdf drivers/pci/host/pci-xgene.c Tanmay Inamdar 2014-10-01  630  
 
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+:::::: The code at line 626 was first introduced by commit
+:::::: 5f6b6ccdbe1cdfa5aa4347ec5412509b8995db27 PCI: xgene: Add APM X-Gene PCIe driver
+
+:::::: TO: Tanmay Inamdar <tinamdar@apm.com>
+:::::: CC: Bjorn Helgaas <bhelgaas@google.com>
+
 ---
- tools/perf/arch/s390/entry/syscalls/syscall.tbl | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/perf/arch/s390/entry/syscalls/syscall.tbl b/tools/perf/arch/s390/entry/syscalls/syscall.tbl
-index df5261e5cfe1f28d..ed9c5c2eafad700c 100644
---- a/tools/perf/arch/s390/entry/syscalls/syscall.tbl
-+++ b/tools/perf/arch/s390/entry/syscalls/syscall.tbl
-@@ -451,3 +451,4 @@
- 446  common	landlock_restrict_self	sys_landlock_restrict_self	sys_landlock_restrict_self
- # 447 reserved for memfd_secret
- 448  common	process_mrelease	sys_process_mrelease		sys_process_mrelease
-+449  common	futex_waitv		sys_futex_waitv			sys_futex_waitv
--- 
-2.31.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
