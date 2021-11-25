@@ -2,142 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F62A45D4D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 07:32:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C9845D4DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 07:35:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348639AbhKYGfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 01:35:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32152 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345135AbhKYGdw (ORCPT
+        id S1347338AbhKYGiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 01:38:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347627AbhKYGgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 01:33:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637821841;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=2/MroL6oE5BBVYn3KMhwEVkq/8JZw+Q6u+jWrdIUJT8=;
-        b=h2XdapUCAGgpN/Gn5G325Phea8clEmEejxqHeFJcKEbSzE/yEr5AIx9u/kBvoWbMU02gF1
-        e2OpMHJd7Kt4NVpTjdfUg8lF1ZjpAexYgh4Vwy/ywW7zMmCucK2efkUVKwnmhhnbkj08jl
-        UpvjFXFGtj64ZtDfdPxqzj7d+yyYHOo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-524-qBrVQiU3P3yZvxS14D-HYw-1; Thu, 25 Nov 2021 01:30:39 -0500
-X-MC-Unique: qBrVQiU3P3yZvxS14D-HYw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B21831927800;
-        Thu, 25 Nov 2021 06:30:38 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-12-162.pek2.redhat.com [10.72.12.162])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E1C745D9C0;
-        Thu, 25 Nov 2021 06:30:36 +0000 (UTC)
-From:   Jason Wang <jasowang@redhat.com>
-To:     mst@redhat.com, jasowang@redhat.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] virtio-mmio: harden interrupt
-Date:   Thu, 25 Nov 2021 14:30:34 +0800
-Message-Id: <20211125063034.12347-1-jasowang@redhat.com>
+        Thu, 25 Nov 2021 01:36:12 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A62FC0613F8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 22:32:35 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id a9so9207662wrr.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 22:32:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=drz3+1/lxGxb1snGH+uLzFz+KStB/L2QdGu/80IF35o=;
+        b=plpjKQNGmQVqlY2pTqUIDVpiaSI5FPXQ5h0iLTJBEB1ZFwSa8C1+zdTgsG2EaXDefI
+         MiJ+9D7EQVINfKmMAQj/qGcm/ZIQxP2rkYctuQqN9xO9Yv4jrVVEGuepKhoKEhMwy+oi
+         dkDpOPupfVwznnNElnNZQ729n6d2s2fwlK50e59Wh8e+E5LBq5DQXiF2VaEyLP6GR7uf
+         k1xjoOJHcCLJw4mIJxajzbt2HM4X0bXuhzxw8CQOqQsOBYO52EPH0Hti3a1wSh10tmbR
+         egGA4sFlc9xWGDl6oN84ro7ECjWf0Dg0EKuuqnQ1fRgZ/tJtzn+RmYF1ITaYrZS0tGuk
+         AqfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=drz3+1/lxGxb1snGH+uLzFz+KStB/L2QdGu/80IF35o=;
+        b=3ZVvhQ7eFHCsLk6udSWebQszL31nBnsJgBf4TD5RoT6sVUnqWZ9JE4Z7WE8y+CYKAY
+         biFdtwy80Dvea7FJ7EazYuorlM9v8y9RpbY3AOhPo1L0rpromcepieCV2I4P7rUdUa2X
+         qHWsKzPrWrfln25fAX+PaEoDallgC2Ec9TaFvh+GaB55k5thivnbP1Va7VM/nfws9Jq7
+         lPldGy71xdpZkgKe8OQeBUxwETfSa/8M6v7qmr7eQ98gjVWADUH6axigks4fWOoQmkLX
+         UlMh4YRuf3kbPxRu28XlprqRGWKeilBuv3ecRYwBhcHNylvfFAPskKvDCsyyq0Uz43UM
+         uG+g==
+X-Gm-Message-State: AOAM530hv84cyhaWV15HKkGN/jXppW2opfY/xeAwrxrVSDGJSfKzk73B
+        8FTx77VFimhT5ur7krK6ikIw5C6SQbzUIaKpGSZOSw==
+X-Google-Smtp-Source: ABdhPJwKrJcgQtDWIAChMLG1FrayYrmfAzaAwzQjhx8O2fh/5bl8UjxquXGQrZ8EUbt0TGzNdE2xCsEBeN4Ofe4yI5E=
+X-Received: by 2002:adf:fb86:: with SMTP id a6mr3872989wrr.35.1637821953434;
+ Wed, 24 Nov 2021 22:32:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <CANn89i+hQTn26hK-4CA=cAwCxEMzogqD30PYdqz4NP8kjmH2gg@mail.gmail.com>
+ <CANn89i+K6=Kc0weayD_phAPn9YT=2UUje+1BZfg=kUiLp7ELqQ@mail.gmail.com>
+ <619eee05.1c69fb81.4b686.4bbc@mx.google.com> <CANn89iJdQ1VTLYUKu1hYNm4wF__ZzrwNYr28v_vGM0MCybJpxg@mail.gmail.com>
+ <CAFUsyf+5zp+p_0TPFLr-fMNry0M_CnNAFDG30PKDuy2jA5MhNw@mail.gmail.com>
+ <CANn89iLtZmSyBYtvJ0nxdrM3CKyf3D9y9AWBC4GVbPCxtjOROw@mail.gmail.com>
+ <CANn89i+edPKsp63R16kx4_kQ884ks=is8pg=W0wDbNV46UZ3vw@mail.gmail.com>
+ <CANn89iJqZm9Mcfu+4-aZ_pZok1j4RsHK8YoFBVqjVYpGbt_P8Q@mail.gmail.com>
+ <CAFUsyfL3RF-UC-HBUcbRn0e5S3URo9gpz5V85buF8C7xVb6K7w@mail.gmail.com> <CAFUsyfLz89DrkvTwDTDqNCHVbBzk1QgEKu0+PuwBoF=Y6me7cQ@mail.gmail.com>
+In-Reply-To: <CAFUsyfLz89DrkvTwDTDqNCHVbBzk1QgEKu0+PuwBoF=Y6me7cQ@mail.gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 24 Nov 2021 22:32:21 -0800
+Message-ID: <CANn89iLYHkyaLawrZJYuRETx63c0QWQ0kLGysPbGpWj2+C5Jfw@mail.gmail.com>
+Subject: Re: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12:
+ error: implicit declaration of function 'load_unaligned_zeropad'
+To:     Noah Goldstein <goldstein.w.n@gmail.com>
+Cc:     Johannes Berg <johannes@sipsolutions.net>, alexanderduyck@fb.com,
+        kbuild-all@lists.01.org, open list <linux-kernel@vger.kernel.org>,
+        linux-um@lists.infradead.org, lkp@intel.com, peterz@infradead.org,
+        X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch tries to make sure the virtio interrupt handler for MMIO
-won't be called after a reset and before virtio_device_ready(). We
-can't use IRQF_NO_AUTOEN since we're using shared interrupt
-(IRQF_SHARED). So this patch tracks the interrupt enabling status in a
-new intr_soft_enabled variable and toggle it during in
-vm_disable/enable_interrupts(). The MMIO interrupt handler will check
-intr_soft_enabled before processing the actual interrupt.
+On Wed, Nov 24, 2021 at 9:09 PM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
+>
+>
+>
+> Although I see slightly worse performance with aligned `buff`  in
+> the branch-free approach. Imagine if non-aligned `buff` is that
+> uncommon might be better to speculate past the work of `ror`.
 
-Signed-off-by: Jason Wang <jasowang@redhat.com>
----
- drivers/virtio/virtio_mmio.c | 37 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+Yes, no clear win here removing the conditional (same cost really),
+although using a ror32() is removing the from32to16() helper and get
+rid of one folding.
 
-diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
-index 56128b9c46eb..796f0c789b09 100644
---- a/drivers/virtio/virtio_mmio.c
-+++ b/drivers/virtio/virtio_mmio.c
-@@ -90,6 +90,7 @@ struct virtio_mmio_device {
- 	/* a list of queues so we can dispatch IRQs */
- 	spinlock_t lock;
- 	struct list_head virtqueues;
-+	bool intr_soft_enabled;
- };
- 
- struct virtio_mmio_vq_info {
-@@ -100,7 +101,37 @@ struct virtio_mmio_vq_info {
- 	struct list_head node;
- };
- 
-+/* disable irq handlers */
-+void vm_disable_cbs(struct virtio_device *vdev)
-+{
-+	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
-+	int irq = platform_get_irq(vm_dev->pdev, 0);
- 
-+	/*
-+	 * The below synchronize() guarantees that any
-+	 * interrupt for this line arriving after
-+	 * synchronize_irq() has completed is guaranteed to see
-+	 * intx_soft_enabled == false.
-+	 */
-+	WRITE_ONCE(vm_dev->intr_soft_enabled, false);
-+	synchronize_irq(irq);
-+}
-+
-+/* enable irq handlers */
-+void vm_enable_cbs(struct virtio_device *vdev)
-+{
-+	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
-+	int irq = platform_get_irq(vm_dev->pdev, 0);
-+
-+	disable_irq(irq);
-+	/*
-+	 * The above disable_irq() provides TSO ordering and
-+	 * as such promotes the below store to store-release.
-+	 */
-+	WRITE_ONCE(vm_dev->intr_soft_enabled, true);
-+	enable_irq(irq);
-+	return;
-+}
- 
- /* Configuration interface */
- 
-@@ -262,6 +293,8 @@ static void vm_reset(struct virtio_device *vdev)
- 
- 	/* 0 status means a reset. */
- 	writel(0, vm_dev->base + VIRTIO_MMIO_STATUS);
-+	/* Disable VQ/configuration callbacks. */
-+	vm_disable_cbs(vdev);
+I will formally submit this change, thanks !
+
+diff --git a/arch/x86/lib/csum-partial_64.c b/arch/x86/lib/csum-partial_64.c
+index 1eb8f2d11f7c785be624eba315fe9ca7989fd56d..cf4bd3ef66e56c681b3435d43011ece78438376d
+100644
+--- a/arch/x86/lib/csum-partial_64.c
++++ b/arch/x86/lib/csum-partial_64.c
+@@ -11,16 +11,6 @@
+ #include <asm/checksum.h>
+ #include <asm/word-at-a-time.h>
+
+-static inline unsigned short from32to16(unsigned a)
+-{
+-       unsigned short b = a >> 16;
+-       asm("addw %w2,%w0\n\t"
+-           "adcw $0,%w0\n"
+-           : "=r" (b)
+-           : "0" (b), "r" (a));
+-       return b;
+-}
+-
+ /*
+  * Do a checksum on an arbitrary memory area.
+  * Returns a 32bit checksum.
+@@ -41,6 +31,7 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
+        if (unlikely(odd)) {
+                if (unlikely(len == 0))
+                        return sum;
++               temp64 = ror32((__force u32)sum, 8);
+                temp64 += (*(unsigned char *)buff << 8);
+                len--;
+                buff++;
+@@ -129,10 +120,8 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
+ #endif
+        }
+        result = add32_with_carry(temp64 >> 32, temp64 & 0xffffffff);
+-       if (unlikely(odd)) {
+-               result = from32to16(result);
+-               result = ((result >> 8) & 0xff) | ((result & 0xff) << 8);
+-       }
++       if (unlikely(odd))
++               result = ror32(result, 8);
+        return (__force __wsum)result;
  }
- 
- 
-@@ -288,6 +321,9 @@ static irqreturn_t vm_interrupt(int irq, void *opaque)
- 	unsigned long flags;
- 	irqreturn_t ret = IRQ_NONE;
- 
-+	if (!READ_ONCE(vm_dev->intr_soft_enabled))
-+		return IRQ_NONE;
-+
- 	/* Read and acknowledge interrupts */
- 	status = readl(vm_dev->base + VIRTIO_MMIO_INTERRUPT_STATUS);
- 	writel(status, vm_dev->base + VIRTIO_MMIO_INTERRUPT_ACK);
-@@ -529,6 +565,7 @@ static bool vm_get_shm_region(struct virtio_device *vdev,
- }
- 
- static const struct virtio_config_ops virtio_mmio_config_ops = {
-+	.enable_cbs     = vm_enable_cbs,
- 	.get		= vm_get,
- 	.set		= vm_set,
- 	.generation	= vm_generation,
--- 
-2.25.1
-
+ EXPORT_SYMBOL(csum_partial);
