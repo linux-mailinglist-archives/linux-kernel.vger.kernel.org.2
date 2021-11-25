@@ -2,81 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7576745D464
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 06:41:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7F145D467
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 06:44:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243563AbhKYFoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 00:44:15 -0500
-Received: from gandalf.ozlabs.org ([150.107.74.76]:42373 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232169AbhKYFmP (ORCPT
+        id S1343856AbhKYFrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 00:47:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345900AbhKYFpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 00:42:15 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4J06BH1y25z4xbs;
-        Thu, 25 Nov 2021 16:39:03 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1637818743;
-        bh=mGmqV9fNZ9W5jFeC/Rezztr6KtZ/RfhqyWXyOdRutJg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=uXVHX/vFalAVdvUBPXabQup/t2D1uLQinUEUqGofefBlfNS9+2NvoIBBFEq2OPzhg
-         /KHArA+ENmuxaHLUqgL9NhBnLAMRpTJfI+ODpRqz3jJlnXuAl3VM1qhhZeOtY1JG5y
-         aGKTS1D7LuQkKgUDnG4mgC2IjgFFIWd/xjjyaq2L6P3ydvgQBDX3ujOjET0gKZoQVc
-         aOFMJLZhFudSxTejQLUkTWfjm00z+pRA5iHae99EhNqCOxLjliEoVibG5iDbiMuNBX
-         J/AZJOLPUL584U+sW8mv1O8/HHj2SP3EyZbY4iuEkNfBWasBR0G4cNt18/6czhw5Nt
-         N76kcmo+DK62A==
-Date:   Thu, 25 Nov 2021 16:39:02 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Steve French <smfrench@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the ksmbd tree
-Message-ID: <20211125163902.46d47238@canb.auug.org.au>
+        Thu, 25 Nov 2021 00:45:40 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A2BC061757
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 21:42:29 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id y13so20365752edd.13
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 21:42:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mVokkW0aterUUH0jexbVC9W/wjaVPSuabPLWpcX7R2A=;
+        b=FNT3EP7+Uy+OAfQjGgZAc++CUzXezJHka6CQFvQnrppLEF+n5eFf8/OK3iz/nID7Ka
+         wRLmeLGyaF1jGYgOYIaSGCvX7xyrt/8iQdM/WV5N87Ys7Vd5v6pjairuAdLtq//2KWTz
+         Jj1lg1F39ySbEV1Q4TgQTh/ScXiJdjAozrLg4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mVokkW0aterUUH0jexbVC9W/wjaVPSuabPLWpcX7R2A=;
+        b=54IZJwBlL6KW68HUVOtMsRNemMOQHp7NHwWS6sDZV1Meaza33SB+PQ4FRvKCtIUvsj
+         bQI3cUNVVe+lcBdkOkv8/OyJr3SenBtoGN28rdYoARLTK4QupCokcu8wi1n18UGPs7D8
+         zIxW1hiNcjK+bdv4GXFXx2AGxEhFuwvf35p2PxsC+00CWeTEpA1x9NNHefXkN36CzzeJ
+         rRBkqDuNAITaBdir2GfF6KCjgU0hJCFN80HTe8FzPAt3Af5aPhas0tq1jsxwirFnrkEk
+         Pote9WKJvWcvcHftE/qWoveaWEp9wT1/wGR8CygUWTy0ZEz5ALhsdjonBafY+nfNXQiN
+         3N1g==
+X-Gm-Message-State: AOAM5317rpxVJGrkN/f9pPPG9YR+unM88lQYJONcJs4rsE5IhX9ijQ+B
+        M11NH48ali9Ns5pP61/O643s5MuInELnSxtwzl3crQ==
+X-Google-Smtp-Source: ABdhPJxfuEmhMR9o0/g2hgYVXDx6lw/n8Xqvuwbr/l6/CUCx+M7LoZiDWCL6t/nIP5gZg+qjAKK7pDaYQakPi7afJ+8=
+X-Received: by 2002:a05:6402:5cc:: with SMTP id n12mr35554738edx.246.1637818948087;
+ Wed, 24 Nov 2021 21:42:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/a9uJV6hizNB1TA4J.cd.XBW";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20211106155427.753197-1-aford173@gmail.com> <YZrHWkbYkrILP9oo@pendragon.ideasonboard.com>
+ <CAHCN7xLwYcS55N7SNT4k3NqF=Lgdjfe92nJHSVMKkhCuSAPaYw@mail.gmail.com>
+In-Reply-To: <CAHCN7xLwYcS55N7SNT4k3NqF=Lgdjfe92nJHSVMKkhCuSAPaYw@mail.gmail.com>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Thu, 25 Nov 2021 11:12:17 +0530
+Message-ID: <CAMty3ZDCCRXLvHaoW=8gqq+3B0j4uQvAk72YjXKr=cxuf7GAkg@mail.gmail.com>
+Subject: Re: [PATCH V2 1/5] soc: imx: imx8m-blk-ctrl: Fix imx8mm mipi reset
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Schrempf Frieder <frieder.schrempf@kontron.de>,
+        linux-media <linux-media@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        cstevens@beaconembedded.com, Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peng Fan <peng.fan@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/a9uJV6hizNB1TA4J.cd.XBW
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Nov 23, 2021 at 7:29 PM Adam Ford <aford173@gmail.com> wrote:
+>
+> On Sun, Nov 21, 2021 at 4:25 PM Laurent Pinchart
+> <laurent.pinchart@ideasonboard.com> wrote:
+> >
+> > Hi Adam,
+> >
+> > On Sat, Nov 06, 2021 at 10:54:23AM -0500, Adam Ford wrote:
+> > > Most of the blk-ctrl reset bits are found in one register, however
+> > > there are two bits in offset 8 for pulling the MIPI DPHY out of reset
+> > > and these need to be set when IMX8MM_DISPBLK_PD_MIPI_CSI is brought
+> > > out of reset or the MIPI_CSI hangs.
+> > >
+> > > Fixes: 926e57c065df ("soc: imx: imx8m-blk-ctrl: add DISP blk-ctrl")
+> > > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > > ---
+> > >
+> > > V2:  Make a note that the extra register is only for Mini/Nano DISPLAY_BLK_CTRL
+> > >      Rename the new register to mipi_phy_rst_mask
+> > >      Encapsulate the edits to this register with an if-statement
+> > >
+> > >  drivers/soc/imx/imx8m-blk-ctrl.c | 18 ++++++++++++++++++
+> > >  1 file changed, 18 insertions(+)
+> > >
+> > > diff --git a/drivers/soc/imx/imx8m-blk-ctrl.c b/drivers/soc/imx/imx8m-blk-ctrl.c
+> > > index 519b3651d1d9..581eb4bc7f7d 100644
+> > > --- a/drivers/soc/imx/imx8m-blk-ctrl.c
+> > > +++ b/drivers/soc/imx/imx8m-blk-ctrl.c
+> > > @@ -17,6 +17,7 @@
+> > >
+> > >  #define BLK_SFT_RSTN 0x0
+> > >  #define BLK_CLK_EN   0x4
+> > > +#define BLK_MIPI_RESET_DIV   0x8 /* Mini/Nano DISPLAY_BLK_CTRL only */
+> > >
+> > >  struct imx8m_blk_ctrl_domain;
+> > >
+> > > @@ -36,6 +37,15 @@ struct imx8m_blk_ctrl_domain_data {
+> > >       const char *gpc_name;
+> > >       u32 rst_mask;
+> > >       u32 clk_mask;
+> > > +
+> > > +     /*
+> > > +      * i.MX8M Mini and Nano have a third DISPLAY_BLK_CTRL register
+> > > +      * which is used to control the reset for the MIPI Phy.
+> > > +      * Since it's only present in certain circumstances,
+> > > +      * an if-statement should be used before setting and clearing this
+> > > +      * register.
+> > > +      */
+> > > +     u32 mipi_phy_rst_mask;
+> > >  };
+> > >
+> > >  #define DOMAIN_MAX_CLKS 3
+> > > @@ -78,6 +88,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
+> > >
+> > >       /* put devices into reset */
+> > >       regmap_clear_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
+> > > +     if (data->mipi_phy_rst_mask)
+> > > +             regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
+> > >
+> > >       /* enable upstream and blk-ctrl clocks to allow reset to propagate */
+> > >       ret = clk_bulk_prepare_enable(data->num_clks, domain->clks);
+> > > @@ -99,6 +111,8 @@ static int imx8m_blk_ctrl_power_on(struct generic_pm_domain *genpd)
+> > >
+> > >       /* release reset */
+> > >       regmap_set_bits(bc->regmap, BLK_SFT_RSTN, data->rst_mask);
+> > > +     if (data->mipi_phy_rst_mask)
+> > > +             regmap_set_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
+> > >
+> > >       /* disable upstream clocks */
+> > >       clk_bulk_disable_unprepare(data->num_clks, domain->clks);
+> > > @@ -120,6 +134,9 @@ static int imx8m_blk_ctrl_power_off(struct generic_pm_domain *genpd)
+> > >       struct imx8m_blk_ctrl *bc = domain->bc;
+> > >
+> > >       /* put devices into reset and disable clocks */
+> > > +     if (data->mipi_phy_rst_mask)
+> > > +             regmap_clear_bits(bc->regmap, BLK_MIPI_RESET_DIV, data->mipi_phy_rst_mask);
+> > > +
+> >
+> > Is it the best option to enable/disable both the master and slave MIPI
+> > DPHY, regardless of whether they're used or not ? Or would it be better
+> > to implement a reset controller to expose the two resets independently,
+> > and acquire them from the corresponding display and camera drivers ?
+>
+> In some early attempts to implement the blk-ctrl driver, there was an
+> attempt to enable a reset controller, but it caused some hanging and
+> issues with suspend-resume due to chicken-egg issues where some items
+> were coming up in the wrong order.  I think the decision was made to
+> make the resets part of the power domain so it's very clear that the
+> order of operations.  Lucas might be able to elaborate more on this.
 
-Hi all,
+I think supporting via phy driver make sense to me since this resent
+is DPHY specific and nothing related to blk-ctrl.
 
-Commits
+>
+> If bits 16 and 17 can act independently and bit 16 only impacts the
+> CSI  and doesn't require bit 17, it seems reasonable to me to have the
+> power-domain part of  the CSI, since this would only be enabled when
+> the CSI is active.  The power domain is idled when the CSI is idled
+> which would effectively place the phy in and out of reset only
+> depending on the state of the CSI.  I am guessing this reset bit
+> should be assigned to DISPBLK_PD_MIPI_CSI and not
+> DISPBLK_PD_CSI_BRIDGE, but I can run some more tests.
+>
+> AFAIK, there is no phy driver for the CSI like there is the DSI, so
+> adding that would require additional work to the CSI driver to work
+> around this quirk.  We don't have an acceptable DSI driver yet, so I'd
+> like to push a V3 with just the corresponding bit enabled for MIPI_CSI
+> after some testing.  FWICT, NXP set both bits 16 and 17 in their ATF
+> gpc code, and it never gets cleared, so I think having the bit set and
+> cleared on demand is an improvement.
 
-  a48fe999b8a6 ("ksmbd: fix memleak in get_file_stream_info()")
-  43e65dbd9ace ("ksmbd: contain default data stream even if xattr is empty")
-  b8d4e5a1a063 ("ksmbd: downgrade addition info error msg to debug in smb2_=
-get_info_sec()")
-  b7783e56d8dd ("docs: filesystem: cifs: ksmbd: Fix small layout issues")
-  240a60f0d025 ("ksmbd: Fix an error handling path in 'smb2_sess_setup()'")
+How about using the previous one that Marek sent. Add it via CSI
+pipeline and i think it would directly.
 
-are missing a Signed-off-by from their committer.
+https://www.spinics.net/lists/devicetree/msg381691.html
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/a9uJV6hizNB1TA4J.cd.XBW
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGfIXYACgkQAVBC80lX
-0GzMzgf+PC2AUVxbZFbpKJjhRwJe2cjZsduyM+coWzSNoA82iHQnEyWFxgcTRUcW
-bDolHvgaD4l0o8YdDp02LwxHumxG+B4Kzbuyz91nugcHjsTIL3B2VawYkeDh8jxq
-sVdG/uE/mqICh9ydf89fcfP02lnywKQDIB1hJ57cQU/1zTej3b5gcmN8jdUW/jRK
-LPpX8EoyYQz1qBF1wboV4ePpjssF5Nv/nfP+fwVgIqaWLSVbXDYuEw7t77NsEpma
-5yV1T7DZRrGVx9ke7rKbGu4Y+iPpCNVHxIuoJsneYND3RppEac8un+xbAMDpi1Qy
-i0X9HKpia8lIvk2u/84DpogBJz+6jw==
-=FhQd
------END PGP SIGNATURE-----
-
---Sig_/a9uJV6hizNB1TA4J.cd.XBW--
+Jagan.
