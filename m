@@ -2,459 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01C045D1FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 01:25:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 021D345D20D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 01:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346832AbhKYA2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 19:28:05 -0500
-Received: from mga12.intel.com ([192.55.52.136]:16285 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351197AbhKYAYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 19:24:53 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="215432288"
-X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
-   d="scan'208";a="215432288"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 16:21:30 -0800
-X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
-   d="scan'208";a="675042433"
-Received: from ls.sc.intel.com (HELO localhost) ([143.183.96.54])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 16:21:30 -0800
-From:   isaku.yamahata@intel.com
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com
-Subject: [RFC PATCH v3 59/59] Documentation/virtual/kvm: Add Trust Domain Extensions(TDX)
-Date:   Wed, 24 Nov 2021 16:20:42 -0800
-Message-Id: <76efd2ff089115c9ebccc77bf8b910083e737772.1637799475.git.isaku.yamahata@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1637799475.git.isaku.yamahata@intel.com>
-References: <cover.1637799475.git.isaku.yamahata@intel.com>
+        id S1346631AbhKYAcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 19:32:55 -0500
+Received: from mail-eopbgr80085.outbound.protection.outlook.com ([40.107.8.85]:38658
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S244652AbhKYAax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 19:30:53 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SFu3oc/Sjx5d0ToQ3NmcZse6JAf7SA4byLJ+c88LW8d2F1qLwD9QeDuJR7lEgLQbM8lVnXQFLDOcjgvYtQVD5hlgffsvBQ3pbaEM7feMDAdekFWyQq82gMh5FLBKYSkK9Itb70pFGO24KJtU0QFnHSFw0j2wYhBedbEdOH+rsR18R9/hBVv7MkT+iKGstsQfwdAAotThzEehgbiR2Sf3jVGMe8gx66AtYCOorabBbfW+FmWX9YywLbalYbBYzCMeaAbFV5A5wfQ9M9ZCptWpAHakxR1Fc95dq836HE+Gp17Mu9kI2bXlFkwVNqTaC1edE91zmhxhwrsImttXxgaFYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lwkIZ2fbszSJtQYnJpM93Za2kRUUXxcnPuDlJsN96O4=;
+ b=MZ45yr2AYl6dgJSrn3Nx6CW5ZPMORodpAY8oG8pZsUWlZjMxHA3Lhpacc2KFomRfXUaazo6c1Qqm3lSx6a6UQAl+LYNDDzgYmXT/6g4IfqWzQEqzCoIatb4jh+JWorS9/t75ydI4BCVbksQurfOdXBhQ1ZpxntQV0o+ebUyW8J1KxqaqoW1d/lKiouPrOc0u3yoyKfQ3UDKI6Hh5bzMYpeb2Cz5Nk/tM8PAfWVp7CuLvFgcRqQ96CAAztZ7mauNrTPj0YQykRicj2Y/Srd2hztqRWfgdg/xdT7s9q3JF1sqDm3I6Ed3preBp8nAkbBEAlDhjqjMyjk7UBeZZM2krPA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lwkIZ2fbszSJtQYnJpM93Za2kRUUXxcnPuDlJsN96O4=;
+ b=i+GSl2ivNwds0NN23X9dN/3WL+zH7GW8VhutWqP2RblXB94dMAZPpT0SX4FPS6qrpQBh/zJbGLgAb5P9hb7bEpw4G+4UNCychHVgf6v4NDJ1TVFugbbwD4b2RHT5qapgzzopS8Y4TCsBW4QWhHGYlTjpiGRCMRCTB9EBwJlpCJc=
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by DB9PR04MB8478.eurprd04.prod.outlook.com (2603:10a6:10:2c4::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Thu, 25 Nov
+ 2021 00:27:40 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::82e:6ad2:dd1d:df43]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::82e:6ad2:dd1d:df43%9]) with mapi id 15.20.4713.027; Thu, 25 Nov 2021
+ 00:27:40 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>
+CC:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: RE: [PATCH] mailbox: imx: Fix an IS_ERR() vs NULL bug
+Thread-Topic: [PATCH] mailbox: imx: Fix an IS_ERR() vs NULL bug
+Thread-Index: AQHX4ULbPmzdSb+TpEijaM96T42qk6wTY+EA
+Date:   Thu, 25 Nov 2021 00:27:40 +0000
+Message-ID: <DU0PR04MB9417AC0DD29F7610DE794C0688629@DU0PR04MB9417.eurprd04.prod.outlook.com>
+References: <20211124145126.GC13656@kili>
+In-Reply-To: <20211124145126.GC13656@kili>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d2778bdd-5c1d-41e5-2ce5-08d9afaa63eb
+x-ms-traffictypediagnostic: DB9PR04MB8478:
+x-microsoft-antispam-prvs: <DB9PR04MB84783F097D0183339F37F8E188629@DB9PR04MB8478.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:213;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: DBsuDaPB/yhBHCbHxqXESGCPw0IhfcZevXA0T1zI1ihGlHKO3caDZ8NBEK2BJmtqB2VPdjhJRwVQjcJu91lQLXPWuFRQxcuEr/59IKEPbM1mGXFer8gz3b1wyR8zhgABql46fWoc9k189Z0POYixwbh4I9PZB4JzVEQH66m2NhZNO+pZ/AwXgZHo3Vzds3EekJB+M51c7J/363pPHFhkYgBx25jeE+CdSHqQ2yf4pxXRfs1K7+8RMTUkrr0cb83eM29bEYJCC2FZR7ynuhh3aPYJiChEUUpQ9Sqo6kgSTXznlCXSpjnPs1Y4CPLIQuy7fGHzzWefE2LX2rd5XFD9saNmkJjzyPbBlhSpQ0i26YJgcTp4hbYfEkKhZpDR9TbabM4UdBg7E732XpnJz9Q3e/ofn/1BYWiC04AH2cyEVTiUuKzWJUNMswnfEvrHavoRHGzCBsBd1PP8kxxqmwOqcJ4gz4zTnEc9zYaBQUcrfLJ9/LYDUIvnaMGKm2bMELDqVJ+4oUY14WlSUjeVchF2f3Veyok5fyDSw72MiIFfsMW7DdxVi7m4EG53D+iZnL4CWbfBVoHP0fuiiSUFFgmn8TYAewxxuOf2hvfwPn6EEo//WnZ/YaJSlUxI/ddmUqYq/u9Ob+3jt1/Y9YdLAgUTc8khvsq2ZkLTB24bvmixN3ZNLtapzkHjFSFrfuLqwqGl0lkyQHq4JSYiPH0DjwzTVA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(33656002)(86362001)(8936002)(52536014)(66946007)(44832011)(76116006)(8676002)(4326008)(66476007)(316002)(66446008)(110136005)(2906002)(38070700005)(7696005)(64756008)(66556008)(186003)(15650500001)(26005)(38100700002)(5660300002)(4744005)(508600001)(55016003)(71200400001)(122000001)(9686003)(6506007)(54906003)(83380400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?pdmUxXtdbgqjBFe2ywCrrtdSr693L+GB+LZWux0pAfDd6YRQQZPAZkW9iwxJ?=
+ =?us-ascii?Q?+L4Cih6OLT83KcCxtEqx4jqPhD/tw4BEUxSuy+GGbbOyyfMG8qnzwzmXPtfQ?=
+ =?us-ascii?Q?ds58pm2i34chpSXQcpDA0cPqr9A/yTHqizvRIdR8mAx/MLR4GHtUIg5qlQVH?=
+ =?us-ascii?Q?vyoG+NznokyJc06qeZgROFpqefdhKXfGD8n+F0M5/lztqsqPqR24CCxqE7Gw?=
+ =?us-ascii?Q?ZoQewNOxe4lfiffrxFdh9p3d6Wf3ZVlF/PzArJZA9h5xLphPuQFWWH6n8gSk?=
+ =?us-ascii?Q?rb6c5aR3Amc7pdMJj5Esvq3pUfGyyYNnVD+iVifWVMbjNI3dsnPuYcFhie9q?=
+ =?us-ascii?Q?oj8d7GWl2QFSeVVPXJD34ShG/dUsltzO2CVZZTNmEp4GSVfBJwLI/RvvpsKy?=
+ =?us-ascii?Q?gTGekgA7zRCV+pVwyhak2pNWHPAPR8o4oiwFj3JGyhCIcx9YJfj8Tyr/0Sc3?=
+ =?us-ascii?Q?a9t+ZrGDHPzXJbd9OdGYrfViqvQQjufbMKb06bn8Glv9JpxxMu44er9mugq/?=
+ =?us-ascii?Q?N8j46/vHm4BBVqnXmENBKFgdhM3cMkTde5SnlcQEryXCA9lC1GP+sRagScVz?=
+ =?us-ascii?Q?+/BVWjIpg/IaIu2LHe1pvjKzPmDAjdfsdU1eUrJJnX7f7Cz/Sk1I9EnTDUzk?=
+ =?us-ascii?Q?zdAA/oZJ5nreu4Qj0vKhqr+IwdJUCLELbVVtT6PV5lsBfAYD1mxUQGTD8eN5?=
+ =?us-ascii?Q?8ZLQWVMP1jV+J2VhIIe8iIEyeO0065YASwS9euQVebZnudc7Ve2FWhDgiOG/?=
+ =?us-ascii?Q?ws+LLQ/2dV5NgGO7pwN7LLWeS+BJYU8EBPeu8VOsmn5iSTNIaEfgnoTSwXeJ?=
+ =?us-ascii?Q?bsjnmVsMItaufI+0JprmvVGujH5PE6kb7JPyr1k0TlztsZIx9YdrHhP2GOWf?=
+ =?us-ascii?Q?FHF24dLPG4GgDCd+YBGzl8xBT2zJ1ypnS2A6cuLu6SfsE4LNCbw5JdukRuzy?=
+ =?us-ascii?Q?XtGIRb4NS107sx7CjK/7aQGYobjERVTSwWiCHgLghW6D38GZHI4Sl4oOnkfn?=
+ =?us-ascii?Q?neDlFkrey8L8tPSZUmeqtOBhKiLl/JtjHUTRhuic6UqFzmWT9PDQ48j8hO4I?=
+ =?us-ascii?Q?E6n4bpy2Q5Ta3pBb8sRsVPA3p2KpPtwG5ztyUrHok7/WMYbZT61ch8344TgV?=
+ =?us-ascii?Q?891YEGYIIJKFdNSo2DaD7CWfjFqc9v5+hS8doYiskJlR1SXBkKkinI6C7d9H?=
+ =?us-ascii?Q?E2xO/oDqMupYfaTL6lsxG1Hb+thlHbE0VYOciSwlNECC56h5OYRySM5BjX5i?=
+ =?us-ascii?Q?SmJz4B/mzTtlyrlrcZ3F7lQ5xsnYo089h81wuX4pEG4Jdde6wNli6f0D6Zj+?=
+ =?us-ascii?Q?h26o3zQFKX7jFlXTx7tQB6ZjtP/4v8mGuFV6eZcTrgphiDM/G3UDdfJpxa/w?=
+ =?us-ascii?Q?YoA/BjdjZFkUMNb58pWgQHb2qU618RGcC6DKdmLdERMD0EsbiPto7xoJjscw?=
+ =?us-ascii?Q?GdNV+U/QTNoLj1Pn9j5z+t4XuLWjgQeoVpFFwPvGfyWw/OWRjGxkeJj48v6d?=
+ =?us-ascii?Q?triIRP2OV1cfgF9D+i5XxhGoA9LJw/F3znQyAc6FOzE/wjYx8gPpYN10E4mU?=
+ =?us-ascii?Q?mrbC2kBpAuCleQXc+oqws2I1Hls1mIFb7+n5lHXOlBnSdKOffBebJw6Po9bP?=
+ =?us-ascii?Q?h5bghkJUOcZoh5DGihHK2lk=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d2778bdd-5c1d-41e5-2ce5-08d9afaa63eb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Nov 2021 00:27:40.4069
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8/ryocoXeDMQTXy8is1DH6ku+CScONN3bXqIm4x04KBLSWFuL6OJbk+XbpPlENzme+r4q0mA0FAajMa7GR081w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8478
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Isaku Yamahata <isaku.yamahata@intel.com>
+> Subject: [PATCH] mailbox: imx: Fix an IS_ERR() vs NULL bug
+>=20
+> The devm_kzalloc() function does not return error pointers, it returns NU=
+LL on
+> failure.
+>=20
+> Fixes: 97961f78e8bc ("mailbox: imx: support i.MX8ULP S4 MU")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Add a documentation to Intel Trusted Docmain Extensions(TDX) support.
+Reviewed-by: Peng Fan <peng.fan@nxp.com>
 
-Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
----
- Documentation/virt/kvm/api.rst       |   9 +-
- Documentation/virt/kvm/intel-tdx.rst | 359 +++++++++++++++++++++++++++
- 2 files changed, 367 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/virt/kvm/intel-tdx.rst
-
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index aeeb071c7688..72341707d98f 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -1366,6 +1366,9 @@ It is recommended to use this API instead of the KVM_SET_MEMORY_REGION ioctl.
- The KVM_SET_MEMORY_REGION does not allow fine grained control over memory
- allocation and is deprecated.
- 
-+For TDX guest, deleting/moving memory region loses guest memory contents.
-+Read only region isn't supported.  Only as-id 0 is supported.
-+
- 
- 4.36 KVM_SET_TSS_ADDR
- ---------------------
-@@ -4489,7 +4492,7 @@ H_GET_CPU_CHARACTERISTICS hypercall.
- 
- :Capability: basic
- :Architectures: x86
--:Type: vm
-+:Type: vm ioctl, vcpu ioctl
- :Parameters: an opaque platform specific structure (in/out)
- :Returns: 0 on success; -1 on error
- 
-@@ -4501,6 +4504,10 @@ Currently, this ioctl is used for issuing Secure Encrypted Virtualization
- (SEV) commands on AMD Processors. The SEV commands are defined in
- Documentation/virt/kvm/amd-memory-encryption.rst.
- 
-+Currently, this ioctl is used for issuing Trusted Domain Extensions
-+(TDX) commands on Intel Processors. The TDX commands are defined in
-+Documentation/virt/kvm/intel-tdx.rst.
-+
- 4.111 KVM_MEMORY_ENCRYPT_REG_REGION
- -----------------------------------
- 
-diff --git a/Documentation/virt/kvm/intel-tdx.rst b/Documentation/virt/kvm/intel-tdx.rst
-new file mode 100644
-index 000000000000..2b4d6cd852d4
---- /dev/null
-+++ b/Documentation/virt/kvm/intel-tdx.rst
-@@ -0,0 +1,359 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+===================================
-+Intel Trust Dodmain Extensions(TDX)
-+===================================
-+
-+Overview
-+========
-+TDX stands for Trust Domain Extensions which isolates VMs from
-+the virtual-machine manager (VMM)/hypervisor and any other software on
-+the platform. [1]
-+For details, the specifications, [2], [3], [4], [5], [6], [7], are
-+available.
-+
-+
-+API description
-+===============
-+
-+KVM_MEMORY_ENCRYPT_OP
-+---------------------
-+:Type: system ioctl, vm ioctl, vcpu ioctl
-+
-+For TDX operations, KVM_MEMORY_ENCRYPT_OP is re-purposed to be generic
-+ioctl with TDX specific sub ioctl command.
-+
-+::
-+
-+  /* Trust Domain eXtension sub-ioctl() commands. */
-+  enum kvm_tdx_cmd_id {
-+          KVM_TDX_CAPABILITIES = 0,
-+          KVM_TDX_INIT_VM,
-+          KVM_TDX_INIT_VCPU,
-+          KVM_TDX_INIT_MEM_REGION,
-+          KVM_TDX_FINALIZE_VM,
-+
-+          KVM_TDX_CMD_NR_MAX,
-+  };
-+
-+  struct kvm_tdx_cmd {
-+          __u32 id;             /* tdx_cmd_id */
-+          __u32 metadata;       /* sub comamnd specific */
-+          __u64 data;           /* sub command specific */
-+  };
-+
-+
-+KVM_TDX_CAPABILITIES
-+--------------------
-+:Type: system ioctl
-+
-+subset of TDSYSINFO_STRCUCT retrieved by TDH.SYS.INFO TDX SEAM call will be
-+returned. which describes about Intel TDX module.
-+
-+- id: KVM_TDX_CAPABILITIES
-+- metadata: must be 0
-+- data: pointer to struct kvm_tdx_capabilities
-+
-+::
-+
-+  struct kvm_tdx_cpuid_config {
-+          __u32 leaf;
-+          __u32 sub_leaf;
-+          __u32 eax;
-+          __u32 ebx;
-+          __u32 ecx;
-+          __u32 edx;
-+  };
-+
-+  struct kvm_tdx_capabilities {
-+          __u64 attrs_fixed0;
-+          __u64 attrs_fixed1;
-+          __u64 xfam_fixed0;
-+          __u64 xfam_fixed1;
-+
-+          __u32 nr_cpuid_configs;
-+          struct kvm_tdx_cpuid_config cpuid_configs[0];
-+  };
-+
-+
-+KVM_TDX_INIT_VM
-+---------------
-+:Type: vm ioctl
-+
-+Does additional VM initialization specific to TDX which corresponds to
-+TDH.MNG.INIT TDX SEAM call.
-+
-+- id: KVM_TDX_INIT_VM
-+- metadata: must be 0
-+- data: pointer to struct kvm_tdx_init_vm
-+- reserved: must be 0
-+
-+::
-+
-+  struct kvm_tdx_init_vm {
-+          __u32 max_vcpus;
-+          __u32 reserved;
-+          __u64 attributes;
-+          __u64 cpuid;  /* pointer to struct kvm_cpuid2 */
-+          __u64 mrconfigid[6];          /* sha384 digest */
-+          __u64 mrowner[6];             /* sha384 digest */
-+          __u64 mrownerconfig[6];       /* sha348 digest */
-+          __u64 reserved[43];           /* must be zero for future extensibility */
-+  };
-+
-+
-+KVM_TDX_INIT_VCPU
-+-----------------
-+:Type: vcpu ioctl
-+
-+Does additional VCPU initialization specific to TDX which corresponds to
-+TDH.VP.INIT TDX SEAM call.
-+
-+- id: KVM_TDX_INIT_VCPU
-+- metadata: must be 0
-+- data: initial value of the guest TD VCPU RCX
-+
-+
-+KVM_TDX_INIT_MEM_REGION
-+-----------------------
-+:Type: vm ioctl
-+
-+Encrypt a memory continuous region which corresponding to TDH.MEM.PAGE.ADD
-+TDX SEAM call.
-+If KVM_TDX_MEASURE_MEMORY_REGION flag is specified, it also extends measurement
-+which corresponds to TDH.MR.EXTEND TDX SEAM call.
-+
-+- id: KVM_TDX_INIT_VCPU
-+- metadata: flags
-+            currently only KVM_TDX_MEASURE_MEMORY_REGION is defined
-+- data: pointer to struct kvm_tdx_init_mem_region
-+
-+::
-+
-+  #define KVM_TDX_MEASURE_MEMORY_REGION   (1UL << 0)
-+
-+  struct kvm_tdx_init_mem_region {
-+          __u64 source_addr;
-+          __u64 gpa;
-+          __u64 nr_pages;
-+  };
-+
-+
-+KVM_TDX_FINALIZE_VM
-+-------------------
-+:Type: vm ioctl
-+
-+Complete measurement of the initial TD contents and mark it ready to run
-+which corresponds to TDH.MR.FINALIZE
-+
-+- id: KVM_TDX_FINALIZE_VM
-+- metadata: ignored
-+- data: ignored
-+
-+
-+KVM TDX creation flow
-+=====================
-+In addition to KVM normal flow, new TDX ioctls need to be called.  The control flow
-+looks like as follows.
-+
-+#. system wide capability check
-+  * KVM_TDX_CAPABILITIES: query if TDX is supported on the platform.
-+  * KVM_CAP_xxx: check other KVM extensions same to normal KVM case.
-+
-+#. creating VM
-+  * KVM_CREATE_VM
-+  * KVM_TDX_INIT_VM: pass TDX specific VM parameters.
-+
-+#. creating VCPU
-+  * KVM_CREATE_VCPU
-+  * KVM_TDX_INIT_VCPU: pass TDX specific VCPU parameters.
-+
-+#. initializing guest memory
-+  * allocate guest memory and initialize page same to normal KVM case
-+    In TDX case, parse and load TDVF into guest memory in addition.
-+  * KVM_TDX_INIT_MEM_REGION to add and measure guest pages.
-+    If the pages has contents above, those pages need to be added.
-+    Otherwise the contents will be lost and guest sees zero pages.
-+  * KVM_TDX_FINALIAZE_VM: Finalize VM and measurement
-+    This must be after KVM_TDX_INIT_MEM_REGION.
-+
-+#. run vcpu
-+
-+Design discussion
-+=================
-+
-+Coexistence of normal(VMX) VM and TD VM
-+---------------------------------------
-+It's required to allow both legacy(normal VMX) VMs and new TD VMs to
-+coexist. Otherwise the benefits of VM flexibility would be eliminated.
-+The main issue for it is that the logic of kvm_x86_ops callbacks for
-+TDX is different from VMX. On the other hand, the variable,
-+kvm_x86_ops, is global single variable. Not per-VM, not per-vcpu.
-+
-+Several points to be considered.
-+  . No or minimal overhead when TDX is disabled(CONFIG_INTEL_TDX_HOST=n).
-+  . Avoid overhead of indirect call via function pointers.
-+  . Contain the changes under arch/x86/kvm/vmx directory and share logic
-+    with VMX for maintenance.
-+    Even though the ways to operation on VM (VMX instruction vs TDX
-+    SEAM call) is different, the basic idea remains same. So, many
-+    logic can be shared.
-+  . Future maintenance
-+    The huge change of kvm_x86_ops in (near) future isn't expected.
-+    a centralized file is acceptable.
-+
-+- Wrapping kvm x86_ops: The current choice
-+  Introduce dedicated file for arch/x86/kvm/vmx/main.c (the name,
-+  main.c, is just chosen to show main entry points for callbacks.) and
-+  wrapper functions around all the callbacks with
-+  "if (is-tdx) tdx-callback() else vmx-callback()".
-+
-+  Pros:
-+  - No major change in common x86 KVM code. The change is (mostly)
-+    contained under arch/x86/kvm/vmx/.
-+  - When TDX is disabled(CONFIG_INTEL_TDX_HOST=n), the overhead is
-+    optimized out.
-+  - Micro optimization by avoiding function pointer.
-+  Cons:
-+  - Many boiler plates in arch/x86/kvm/vmx/main.c.
-+
-+Alternative:
-+- Introduce another callback layer under arch/x86/kvm/vmx.
-+  Pros:
-+  - No major change in common x86 KVM code. The change is (mostly)
-+    contained under arch/x86/kvm/vmx/.
-+  - clear separation on callbacks.
-+  Cons:
-+  - overhead in VMX even when TDX is disabled(CONFIG_INTEL_TDX_HOST=n).
-+
-+- Allow per-VM kvm_x86_ops callbacks instead of global kvm_x86_ops
-+  Pros:
-+  - clear separation on callbacks.
-+  Cons:
-+  - Big change in common x86 code.
-+  - overhead in common code even when TDX is
-+    disabled(CONFIG_INTEL_TDX_HOST=n).
-+
-+- Introduce new directory arch/x86/kvm/tdx
-+  Pros:
-+  - It clarifies that TDX is different from VMX.
-+  Cons:
-+  - Given the level of code sharing, it complicates code sharing.
-+
-+KVM MMU Changes
-+---------------
-+KVM MMU needs to be enhanced to handle Secure/Shared-EPT. The
-+high-level execution flow is mostly same to normal EPT case.
-+EPT violation/misconfiguration -> invoke TDP fault handler ->
-+resolve TDP fault -> resume execution. (or emulate MMIO)
-+The difference is, that S-EPT is operated(read/write) via TDX SEAM
-+call which is expensive instead of direct read/write EPT entry.
-+One bit of GPA (51 or 47 bit) is repurposed so that it means shared
-+with host(if set to 1) or private to TD(if cleared to 0).
-+
-+- The current implementation
-+  . Reuse the existing MMU code with minimal update.  Because the
-+    execution flow is mostly same. But additional operation, TDX call
-+    for S-EPT, is needed. So add hooks for it to kvm_x86_ops.
-+  . For performance, minimize TDX SEAM call to operate on S-EPT. When
-+    getting corresponding S-EPT pages/entry from faulting GPA, don't
-+    use TDX SEAM call to read S-EPT entry. Instead create shadow copy
-+    in host memory.
-+    Repurpose the existing kvm_mmu_page as shadow copy of S-EPT and
-+    associate S-EPT to it.
-+  . Treats share bit as attributes. mask/unmask the bit where
-+    necessary to keep the existing traversing code works.
-+    Introduce kvm.arch.gfn_shared_mask and use "if (gfn_share_mask)"
-+    for special case.
-+    = 0 : for non-TDX case
-+    = 51 or 47 bit set for TDX case.
-+
-+  Pros:
-+  - Large code reuse with minimal new hooks.
-+  - Execution path is same.
-+  Cons:
-+  - Complicates the existing code.
-+  - Repurpose kvm_mmu_page as shadow of Secure-EPT can be confusing.
-+
-+Alternative:
-+- Replace direct read/write on EPT entry with TDX-SEAM call by
-+  introducing callbacks on EPT entry.
-+  Pros:
-+  - Straightforward.
-+  Cons:
-+  - Too many touching point.
-+  - Too slow due to TDX-SEAM call.
-+  - Overhead even when TDX is disabled(CONFIG_INTEL_TDX_HOST=n).
-+
-+- Sprinkle "if (is-tdx)" for TDX special case
-+  Pros:
-+  - Straightforward.
-+  Cons:
-+  - The result is non-generic and ugly.
-+  - Put TDX specific logic into common KVM MMU code.
-+
-+New KVM API, ioctl (sub)command, to manage TD VMs
-+-------------------------------------------------
-+Additional KVM API are needed to control TD VMs. The operations on TD
-+VMs are specific to TDX.
-+
-+- Piggyback and repurpose KVM_MEMORY_ENCRYPT_OP
-+  Although not all operation isn't memory encryption, repupose to get
-+  TDX specific ioctls.
-+  Pros:
-+  - No major change in common x86 KVM code.
-+  Cons:
-+  - The operations aren't actually memory encryption, but operations
-+    on TD VMs.
-+
-+Alternative:
-+- Introduce new ioctl for guest protection like
-+  KVM_GUEST_PROTECTION_OP and introduce subcommand for TDX.
-+  Pros:
-+  - Clean name.
-+  Cons:
-+  - One more new ioctl for guest protection.
-+  - Confusion with KVM_MEMORY_ENCRYPT_OP with KVM_GUEST_PROTECTION_OP.
-+
-+- Rename KVM_MEMORY_ENCRYPT_OP to KVM_GUEST_PROTECTION_OP and keep
-+  KVM_MEMORY_ENCRYPT_OP as same value for user API for compatibility.
-+  "#define KVM_MEMORY_ENCRYPT_OP KVM_GUEST_PROTECTION_OP" for uapi
-+  compatibility.
-+  Pros:
-+  - No new ioctl with more suitable name.
-+  Cons:
-+  - May cause confusion to the existing user program.
-+
-+
-+References
-+==========
-+
-+.. [1] TDX specification
-+   https://software.intel.com/content/www/us/en/develop/articles/intel-trust-domain-extensions.html
-+.. [2] Intel Trust Domain Extensions (Intel TDX)
-+   https://software.intel.com/content/dam/develop/external/us/en/documents/tdx-whitepaper-final9-17.pdf
-+.. [3] Intel CPU Architectural Extensions Specification
-+   https://software.intel.com/content/dam/develop/external/us/en/documents/intel-tdx-cpu-architectural-specification.pdf
-+.. [4] Intel TDX Module 1.0 EAS
-+   https://software.intel.com/content/dam/develop/external/us/en/documents/intel-tdx-module-1eas.pdf
-+.. [5] Intel TDX Loader Interface Specification
-+   https://software.intel.com/content/dam/develop/external/us/en/documents/intel-tdx-seamldr-interface-specification.pdf
-+.. [6] Intel TDX Guest-Hypervisor Communication Interface
-+   https://software.intel.com/content/dam/develop/external/us/en/documents/intel-tdx-guest-hypervisor-communication-interface.pdf
-+.. [7] Intel TDX Virtual Firmware Design Guide
-+   https://software.intel.com/content/dam/develop/external/us/en/documents/tdx-virtual-firmware-design-guide-rev-1.
-+.. [8] intel public github
-+   kvm TDX branch: https://github.com/intel/tdx/tree/kvm
-+   TDX guest branch: https://github.com/intel/tdx/tree/guest
-+.. [9] tdvf
-+    https://github.com/tianocore/edk2-staging/tree/TDVF
-+.. [10] KVM forum 2020: Intel Virtualization Technology Extensions to
-+     Enable Hardware Isolated VMs
-+     https://osseu2020.sched.com/event/eDzm/intel-virtualization-technology-extensions-to-enable-hardware-isolated-vms-sean-christopherson-intel
-+.. [11] Linux Security Summit EU 2020:
-+     Architectural Extensions for Hardware Virtual Machine Isolation
-+     to Advance Confidential Computing in Public Clouds - Ravi Sahita
-+     & Jun Nakajima, Intel Corporation
-+     https://osseu2020.sched.com/event/eDOx/architectural-extensions-for-hardware-virtual-machine-isolation-to-advance-confidential-computing-in-public-clouds-ravi-sahita-jun-nakajima-intel-corporation
-+.. [12] [RFCv2,00/16] KVM protected memory extension
-+     https://lkml.org/lkml/2020/10/20/66
--- 
-2.25.1
+> ---
+>  drivers/mailbox/imx-mailbox.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/mailbox/imx-mailbox.c b/drivers/mailbox/imx-mailbox.=
+c
+> index ffe36a6bef9e..544de2db6453 100644
+> --- a/drivers/mailbox/imx-mailbox.c
+> +++ b/drivers/mailbox/imx-mailbox.c
+> @@ -563,8 +563,8 @@ static int imx_mu_probe(struct platform_device
+> *pdev)
+>  		size =3D sizeof(struct imx_sc_rpc_msg_max);
+>=20
+>  	priv->msg =3D devm_kzalloc(dev, size, GFP_KERNEL);
+> -	if (IS_ERR(priv->msg))
+> -		return PTR_ERR(priv->msg);
+> +	if (!priv->msg)
+> +		return -ENOMEM;
+>=20
+>  	priv->clk =3D devm_clk_get(dev, NULL);
+>  	if (IS_ERR(priv->clk)) {
+> --
+> 2.20.1
 
