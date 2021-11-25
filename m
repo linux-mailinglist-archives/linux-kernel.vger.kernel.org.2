@@ -2,109 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F7F45DA24
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B8445DA20
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353249AbhKYMi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 07:38:56 -0500
-Received: from mga05.intel.com ([192.55.52.43]:28899 "EHLO mga05.intel.com"
+        id S1351139AbhKYMhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 07:37:31 -0500
+Received: from mga02.intel.com ([134.134.136.20]:46403 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348017AbhKYMgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 07:36:55 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="321742316"
+        id S1352299AbhKYMfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 07:35:30 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="222732555"
 X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="321742316"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 04:30:37 -0800
+   d="scan'208";a="222732555"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 04:30:37 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="457391779"
+   d="scan'208";a="675248163"
 Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 25 Nov 2021 04:30:35 -0800
+  by orsmga005.jf.intel.com with ESMTP; 25 Nov 2021 04:30:35 -0800
 Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mqDtb-0006LJ-4v; Thu, 25 Nov 2021 12:30:35 +0000
-Date:   Thu, 25 Nov 2021 20:30:04 +0800
+        id 1mqDtb-0006LA-2M; Thu, 25 Nov 2021 12:30:35 +0000
+Date:   Thu, 25 Nov 2021 20:30:17 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cpu] BUILD SUCCESS
- 9c7e2634f647630db4e0719391dd80cd81132a66
-Message-ID: <619f81cc.ZnPlITnngn8BLU2R%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Robert Richter <rric@kernel.org>
+Subject: drivers/pci/controller/dwc/pcie-hisi.c:61:37: sparse: sparse:
+ incorrect type in initializer (different address spaces)
+Message-ID: <202111252029.qFIRAyKL-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cpu
-branch HEAD: 9c7e2634f647630db4e0719391dd80cd81132a66  x86/cpu: Don't write CSTAR MSR on Intel CPUs
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5f53fa508db098c9d372423a6dac31c8a5679cdf
+commit: 6e5a1fff9096ecd259dedcbbdc812aa90986a40e PCI: Avoid building empty drivers
+date:   9 months ago
+config: alpha-randconfig-s032-20211117 (https://download.01.org/0day-ci/archive/20211125/202111252029.qFIRAyKL-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 11.2.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6e5a1fff9096ecd259dedcbbdc812aa90986a40e
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout 6e5a1fff9096ecd259dedcbbdc812aa90986a40e
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=alpha 
 
-elapsed time: 720m
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-configs tested: 54
-configs skipped: 45
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+sparse warnings: (new ones prefixed by >>)
+>> drivers/pci/controller/dwc/pcie-hisi.c:61:37: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void [noderef] __iomem *reg_base @@     got void *priv @@
+   drivers/pci/controller/dwc/pcie-hisi.c:61:37: sparse:     expected void [noderef] __iomem *reg_base
+   drivers/pci/controller/dwc/pcie-hisi.c:61:37: sparse:     got void *priv
+>> drivers/pci/controller/dwc/pcie-hisi.c:132:19: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *priv @@     got void [noderef] __iomem *[assigned] reg_base @@
+   drivers/pci/controller/dwc/pcie-hisi.c:132:19: sparse:     expected void *priv
+   drivers/pci/controller/dwc/pcie-hisi.c:132:19: sparse:     got void [noderef] __iomem *[assigned] reg_base
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20211125
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
+vim +61 drivers/pci/controller/dwc/pcie-hisi.c
+
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   56  
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   57  static void __iomem *hisi_pcie_map_bus(struct pci_bus *bus, unsigned int devfn,
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   58  				       int where)
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   59  {
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   60  	struct pci_config_window *cfg = bus->sysdata;
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  @61  	void __iomem *reg_base = cfg->priv;
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   62  
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   63  	if (bus->number == cfg->busr.start)
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   64  		return reg_base + where;
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   65  	else
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   66  		return pci_ecam_map_bus(bus, devfn, where);
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   67  }
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   68  
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06   69  #if defined(CONFIG_ACPI) && defined(CONFIG_PCI_QUIRKS)
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06   70  
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   71  static int hisi_pcie_init(struct pci_config_window *cfg)
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   72  {
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   73  	struct device *dev = cfg->parent;
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   74  	struct acpi_device *adev = to_acpi_device(dev);
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   75  	struct acpi_pci_root *root = acpi_driver_data(adev);
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   76  	struct resource *res;
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   77  	void __iomem *reg_base;
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   78  	int ret;
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   79  
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   80  	/*
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   81  	 * Retrieve RC base and size from a HISI0081 device with _UID
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   82  	 * matching our segment.
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   83  	 */
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   84  	res = devm_kzalloc(dev, sizeof(*res), GFP_KERNEL);
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   85  	if (!res)
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   86  		return -ENOMEM;
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   87  
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   88  	ret = acpi_get_rc_resources(dev, "HISI0081", root->segment, res);
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   89  	if (ret) {
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   90  		dev_err(dev, "can't get rc base address\n");
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   91  		return -ENOMEM;
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   92  	}
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   93  
+e313a447e73527e drivers/pci/dwc/pcie-hisi.c            Lorenzo Pieralisi 2017-04-19   94  	reg_base = devm_pci_remap_cfgspace(dev, res->start, resource_size(res));
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   95  	if (!reg_base)
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   96  		return -ENOMEM;
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   97  
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   98  	cfg->priv = reg_base;
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   99  	return 0;
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  100  }
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  101  
+0b104773b4f72cc drivers/pci/controller/dwc/pcie-hisi.c Rob Herring       2020-04-09  102  const struct pci_ecam_ops hisi_pcie_ops = {
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  103  	.init         =  hisi_pcie_init,
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  104  	.pci_ops      = {
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  105  		.map_bus    = hisi_pcie_map_bus,
+4788316f7435390 drivers/pci/host/pcie-hisi.c           Bjorn Helgaas     2017-02-07  106  		.read       = hisi_pcie_rd_conf,
+4788316f7435390 drivers/pci/host/pcie-hisi.c           Bjorn Helgaas     2017-02-07  107  		.write      = hisi_pcie_wr_conf,
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  108  	}
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  109  };
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  110  
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  111  #endif
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  112  
+5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  113  #ifdef CONFIG_PCI_HISI
+500a1d9a43e0a16 drivers/pci/host/pcie-hisi.c           Zhou Wang         2015-10-29  114  
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  115  static int hisi_pcie_platform_init(struct pci_config_window *cfg)
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  116  {
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  117  	struct device *dev = cfg->parent;
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  118  	struct platform_device *pdev = to_platform_device(dev);
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  119  	struct resource *res;
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  120  	void __iomem *reg_base;
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  121  
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  122  	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  123  	if (!res) {
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  124  		dev_err(dev, "missing \"reg[1]\"property\n");
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  125  		return -EINVAL;
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  126  	}
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  127  
+e313a447e73527e drivers/pci/dwc/pcie-hisi.c            Lorenzo Pieralisi 2017-04-19  128  	reg_base = devm_pci_remap_cfgspace(dev, res->start, resource_size(res));
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  129  	if (!reg_base)
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  130  		return -ENOMEM;
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  131  
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06 @132  	cfg->priv = reg_base;
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  133  	return 0;
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  134  }
+a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  135  
+
+:::::: The code at line 61 was first introduced by commit
+:::::: 5f00f1a0178cf52928366a5e1f376a65f1f3f389 PCI: Add MCFG quirks for HiSilicon Hip05/06/07 host controllers
+
+:::::: TO: Dongdong Liu <liudongdong3@huawei.com>
+:::::: CC: Bjorn Helgaas <helgaas@kernel.org>
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
