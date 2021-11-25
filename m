@@ -2,94 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C41F45E273
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:28:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AB7E45E27B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:28:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245560AbhKYVbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 16:31:32 -0500
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:33636 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239140AbhKYV33 (ORCPT
+        id S1350745AbhKYVbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 16:31:37 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:41819 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235734AbhKYV3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 16:29:29 -0500
-Received: by mail-oi1-f174.google.com with SMTP id q25so15040301oiw.0;
-        Thu, 25 Nov 2021 13:26:17 -0800 (PST)
+        Thu, 25 Nov 2021 16:29:35 -0500
+Received: by mail-oi1-f169.google.com with SMTP id u74so14939887oie.8;
+        Thu, 25 Nov 2021 13:26:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=ATQGc9kY+JyWouwzNMT+5eMUiqUTPfsc2py8BE07UUU=;
-        b=VmA0E8Q6aYSEoMl42Szarzh8brIt4SGgMMcFZHUE93NyO9fUcJc96+i3PiAytaJidB
-         85QsXrkTuc+J6r1ONAkAbgRfr+YPAMENnagI0Oz1/ILdy00ez6PBmT2w0nD2dnVwWZDF
-         mvSBQtYWAhErlF5OmyObR7+nd209JsfaiF05Y6zwLjA1HZe9zNhyKiG0XEgwofN5vslR
-         Zm44PHq9NCtExA25pmWNDge4FZ7if7OOdTmEpssPrQiDls1Xz7C6m8o/y7pWTdG+4vfs
-         +2yiGKN74e8oIKY3LEKGynGPIYX7JzTYzhdh7t+YqbjO/FAVcJnSEfAIRru2AFudtqJ1
-         iKrQ==
-X-Gm-Message-State: AOAM5304DY9im8G/sQeuY2dW3CpRq/RjuCowH7lw7RKO/IvChcP8BadM
-        xFtPS7LtMGJGeJx62nHx7A==
-X-Google-Smtp-Source: ABdhPJzoE1mjv1m+nj0OMQrJ0pG7JCaWF1N2WspnzxdZpkiI3QMzNDqnQA1Na6SgHhWlX8psmy9F2w==
-X-Received: by 2002:a05:6808:f8e:: with SMTP id o14mr18906207oiw.33.1637875576978;
-        Thu, 25 Nov 2021 13:26:16 -0800 (PST)
+        bh=B6wyCDAmUSCibSY1414flm92lyIj8FXeL6fX67zL5Jw=;
+        b=F0cWaLGT3UOVMMl0DxupnHSTOlb3Q2TJvcsukldsEwOzzLhH+7+s2L0QBXacsjQzB+
+         bpnHPIU48dKbmaseG04tMbJxcOOI1SvV8O8GRInknjNfH9jqkxNQ6w+lHC324LsZx6GR
+         hauZJEPQ32KRIPFiGOVeLFTy3q8aEmdObFOmVCW0mLT977m0hV2JkMTKqf94RcEUWxNJ
+         LAq2s4Q0qg5HTowVbK6ssOJvW2+LwkVErUC4azsI3f4QTR945Czxil4SPcBkOFwAOOka
+         T75kpmht6yLzmIanl1rgkP9h5UcjCutRgbP4WYtYi5HISUObiyK2lL+Wmbaaq3emTAlr
+         gGIA==
+X-Gm-Message-State: AOAM531edzLSNZWXwfIRuIj5wiy9DokmZNyN9MAQ+rtnXUVmcOQz/Sdn
+        eMalx8w8z4qc2s+Q4XgRKI/c6iNcuQ==
+X-Google-Smtp-Source: ABdhPJy2R9t+40EAgpr2S6XGtSWSnhEPJsptRSXK8jQhEK8v2yhDQATbssIRHRP9tz+jMibWZPuxew==
+X-Received: by 2002:aca:b843:: with SMTP id i64mr18863323oif.109.1637875583352;
+        Thu, 25 Nov 2021 13:26:23 -0800 (PST)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id s26sm931393oiw.19.2021.11.25.13.26.12
+        by smtp.gmail.com with ESMTPSA id be12sm938107oib.50.2021.11.25.13.26.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 13:26:15 -0800 (PST)
-Received: (nullmailer pid 2858309 invoked by uid 1000);
+        Thu, 25 Nov 2021 13:26:22 -0800 (PST)
+Received: (nullmailer pid 2858317 invoked by uid 1000);
         Thu, 25 Nov 2021 21:26:02 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        linux-kernel@vger.kernel.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Paul Boddie <paul@boddie.org.uk>,
-        David Airlie <airlied@linux.ie>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Robert Foss <robert.foss@linaro.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-mips@vger.kernel.org, letux-kernel@openphoenux.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        dri-devel@lists.freedesktop.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Mark Brown <broonie@kernel.org>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jonas Karlman <jonas@kwiboo.se>
-In-Reply-To: <d678e785d95487202ac0660eb66796e9fb5beb50.1637789354.git.hns@goldelico.com>
-References: <cover.1637789354.git.hns@goldelico.com> <d678e785d95487202ac0660eb66796e9fb5beb50.1637789354.git.hns@goldelico.com>
-Subject: Re: [PATCH v9 3/8] dt-bindings: display: Add ingenic,jz4780-dw-hdmi DT Schema
+To:     Cosmin Tanislav <demonsingur@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        linux-iio@vger.kernel.org, cosmin.tanislav@analog.com,
+        linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+In-Reply-To: <20211125131422.50657-3-demonsingur@gmail.com>
+References: <20211125131422.50657-1-demonsingur@gmail.com> <20211125131422.50657-3-demonsingur@gmail.com>
+Subject: Re: [PATCH v4 2/3] dt-bindings: iio: add AD74413R
 Date:   Thu, 25 Nov 2021 14:26:02 -0700
-Message-Id: <1637875562.255498.2858308.nullmailer@robh.at.kernel.org>
+Message-Id: <1637875562.336876.2858316.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 22:29:09 +0100, H. Nikolaus Schaller wrote:
-> From: Sam Ravnborg <sam@ravnborg.org>
+On Thu, 25 Nov 2021 15:14:21 +0200, Cosmin Tanislav wrote:
+> The AD74412R and AD74413R are quad-channel software configurable input/output
+> solutions for building and process control applications. They contain
+> functionality for analog output, analog input, digital input, resistance
+> temperature detector, and thermocouple measurements integrated
+> into a single chip solution with an SPI interface.
+> The devices feature a 16-bit ADC and four configurable 13-bit DACs to provide
+> four configurable input/output channels and a suite of diagnostic functions.
+> The AD74413R differentiates itself from the AD74412R by being HART-compatible.
 > 
-> Add DT bindings for the hdmi driver for the Ingenic JZ4780 SoC.
-> Based on .txt binding from Zubair Lutfullah Kakakhel
-> 
-> We also add generic ddc-i2c-bus to synopsys,dw-hdmi.yaml
-> 
-> Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: devicetree@vger.kernel.org
+> Signed-off-by: Cosmin Tanislav <cosmin.tanislav@analog.com>
 > ---
->  .../display/bridge/ingenic,jz4780-hdmi.yaml   | 76 +++++++++++++++++++
->  .../display/bridge/synopsys,dw-hdmi.yaml      |  3 +
->  2 files changed, 79 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/ingenic,jz4780-hdmi.yaml
+>  .../bindings/iio/addac/adi,ad74413r.yaml      | 153 ++++++++++++++++++
+>  include/dt-bindings/iio/addac/adi,ad74413r.h  |  21 +++
+>  2 files changed, 174 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/addac/adi,ad74413r.yaml
+>  create mode 100644 include/dt-bindings/iio/addac/adi,ad74413r.h
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -98,17 +79,15 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/bridge/bridge/synopsys,dw-hdmi.yaml'
-xargs: dt-doc-validate: exited with status 255; aborting
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/display/bridge/ingenic,jz4780-hdmi.example.dt.yaml'
-Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/bridge/bridge/synopsys,dw-hdmi.yaml'
-make[1]: *** [scripts/Makefile.lib:373: Documentation/devicetree/bindings/display/bridge/ingenic,jz4780-hdmi.example.dt.yaml] Error 255
+Error: Documentation/devicetree/bindings/iio/addac/adi,ad74413r.example.dts:23.32-33 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:373: Documentation/devicetree/bindings/iio/addac/adi,ad74413r.example.dt.yaml] Error 1
 make[1]: *** Waiting for unfinished jobs....
 make: *** [Makefile:1413: dt_binding_check] Error 2
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1559375
+See https://patchwork.ozlabs.org/patch/1559714
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
