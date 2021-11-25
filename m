@@ -2,105 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02AC245D35B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 04:00:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E2145D324
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239266AbhKYDDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 22:03:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232102AbhKYDBi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 22:01:38 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786A6C061395;
-        Wed, 24 Nov 2021 18:15:24 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id u22so9382016lju.7;
-        Wed, 24 Nov 2021 18:15:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Lj/upQN23hUbS3GkdrQq0qv4Yn6ZPxec0EiWH+iqMEA=;
-        b=DLca4MslZlWfLY/LW/Le4nXm0Lum7JkUH2e/qN4ovD8bOQ+kz9mypepqtDwtvBoaTa
-         mKlIhR4I4RdGakqb+PuA9BCZhIPzlsjxmU6hS2jOpVkSDyOEyJwf9nzw+sVzN0v961pb
-         kcjhP48xKzax/6HW6UTL9lOMbHhSLCyM3sy/D8tzTu2ZFfjNvBm0pRO1dBVsecX5Bv0+
-         uVB2/LA4JMvrvkQuDI7dFIEASY5dy7A1FdEswK5yqjMf9+BWmirrXVyxKuvNOLpv8G5W
-         jSgvK2+Ei0SaCozS+BHconKlU2PczXRL7HkGrJ+94JZ3Tb0XxK0branHuIvp1xn8N3+C
-         xR7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Lj/upQN23hUbS3GkdrQq0qv4Yn6ZPxec0EiWH+iqMEA=;
-        b=Zcqn6jV+jcgUNd2PyOypXueMY9vWjGuO+CvmeCxpSfmkU8ApmuoMps9IwgSoPu72gN
-         GDD3TZca3pNmN+pBEDwf834duCsW73egFyUzdJEkdcoyI574PBdidujoI8o//gIO4yhI
-         ZRWQ24eOkr5X42p9a8sSwW2q/oYdZQI7EYR5jw2f1LAbHhD0cqXwdWxrVtODNtGQT9lI
-         btOEQJGYBK7Pix2Anqx1F3dWO/PyIVHfqfi24yLGlOWPu3YmPrjiw3n12GHOb3cnHuld
-         hvRQ2Li2X8SMnTOm6On7SWbT6/I9IHMFvAoZilCkK6uciuXeDwSvZWNzj99GkEzy6ljl
-         wwzA==
-X-Gm-Message-State: AOAM530j7E9/K+3JKYSqBLEfbLtjdxVPeGgPTYhvM1oX8Oe4JFt0u91r
-        CiOfT3oISGaKuUGuYKg7sJ2V7u52U7k=
-X-Google-Smtp-Source: ABdhPJwAyB2heTKPgBeg1gEb9wBYyvxbBdHgV9Gy/aBPiZUAIjZAMyEG1ecw4TwMScq4tOcwaSfJ7g==
-X-Received: by 2002:a2e:b907:: with SMTP id b7mr21347657ljb.214.1637806522563;
-        Wed, 24 Nov 2021 18:15:22 -0800 (PST)
-Received: from [192.168.2.145] (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
-        by smtp.googlemail.com with ESMTPSA id b43sm128479ljr.64.2021.11.24.18.15.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 18:15:22 -0800 (PST)
-Subject: Re: [PATCH] dt-bindings: sound: nvidia,tegra-audio: Convert multiple
- txt bindings to yaml
-To:     Rob Herring <robh@kernel.org>, David Heidelberg <david@ixit.cz>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        ~okias/devicetree@lists.sr.ht, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211025171927.92332-1-david@ixit.cz>
- <YYBRTK9KGglu/s9m@robh.at.kernel.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <59a8095b-fa80-258f-f2d7-dc241bfae24a@gmail.com>
-Date:   Thu, 25 Nov 2021 05:15:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S240260AbhKYCZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 21:25:26 -0500
+Received: from mga03.intel.com ([134.134.136.65]:47795 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231458AbhKYCXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 21:23:24 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="235364437"
+X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
+   d="scan'208";a="235364437"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 18:16:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
+   d="scan'208";a="554485280"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 24 Nov 2021 18:16:14 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mq4J3-0005c7-DK; Thu, 25 Nov 2021 02:16:13 +0000
+Date:   Thu, 25 Nov 2021 10:15:30 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Prashant Malani <pmalani@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, wonchung@google.com, bleung@chromium.org,
+        heikki.krogerus@linux.intel.com,
+        Prashant Malani <pmalani@chromium.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 2/4] usb: Use notifier to link Type C ports
+Message-ID: <202111251010.fxed9VtQ-lkp@intel.com>
+References: <20211124231028.696982-3-pmalani@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <YYBRTK9KGglu/s9m@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124231028.696982-3-pmalani@chromium.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.11.2021 23:42, Rob Herring пишет:
->> Convert Tegra audio complex with the
->>  * ALC5632
->>  * MAX98090
->>  * RT5640
->>  * RT5677
->>  * SGTL5000
->>  * TrimSlice
->>  * WM8753
->>  * WM8903
->>  * WM9712
->> codec to the YAML format.
-> Perhaps say why they can all be combined.
-> 
-> I don't think that really works because the properties which are valid 
-> varies. Specifically, the GPIO lines vary.
-> 
-> Instead, define a schema with all the common properties and then 
-> reference it.
-> 
+Hi Prashant,
 
-Those GPIO lines should be more board-specific, rather than
-CODEC-specific. Yes, some of GPIO lines may be unrelated to a specific
-CODEC, but practically it's not worth the effort to split this binding
-because of a couple optional GPIOs, IMO. We actually considered the
-variant with the reference that you're suggesting and decided that it
-should be unnecessary.
+I love your patch! Perhaps something to improve:
 
-Are you insisting that the binding needs to be split?
+[auto build test WARNING on usb/usb-testing]
+[also build test WARNING on linux/master linus/master peter-chen-usb/for-usb-next v5.16-rc2 next-20211124]
+[cannot apply to balbi-usb/testing/next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/0day-ci/linux/commits/Prashant-Malani/usb-Use-notifier-for-linking-Type-C-ports/20211125-071439
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+config: i386-defconfig (https://download.01.org/0day-ci/archive/20211125/202111251010.fxed9VtQ-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/0day-ci/linux/commit/d56a1c2271ef9c1877e9400fb1adc5adbb278e51
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Prashant-Malani/usb-Use-notifier-for-linking-Type-C-ports/20211125-071439
+        git checkout d56a1c2271ef9c1877e9400fb1adc5adbb278e51
+        # save the config file to linux build tree
+        make W=1 ARCH=i386 
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+   In file included from drivers/usb/core/port.c:12:
+>> include/linux/usb/typec.h:322:5: warning: no previous prototype for 'typec_port_registration_register_notify' [-Wmissing-prototypes]
+     322 | int typec_port_registration_register_notify(struct notifier_block *nb)
+         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> include/linux/usb/typec.h:327:5: warning: no previous prototype for 'typec_port_registration_unregister_notify' [-Wmissing-prototypes]
+     327 | int typec_port_registration_unregister_notify(struct notifier_block *nb)
+         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/typec_port_registration_register_notify +322 include/linux/usb/typec.h
+
+ed296d8d0a92758 Prashant Malani 2021-11-24  321  
+ed296d8d0a92758 Prashant Malani 2021-11-24 @322  int typec_port_registration_register_notify(struct notifier_block *nb)
+ed296d8d0a92758 Prashant Malani 2021-11-24  323  {
+ed296d8d0a92758 Prashant Malani 2021-11-24  324  	return 0;
+ed296d8d0a92758 Prashant Malani 2021-11-24  325  }
+ed296d8d0a92758 Prashant Malani 2021-11-24  326  
+ed296d8d0a92758 Prashant Malani 2021-11-24 @327  int typec_port_registration_unregister_notify(struct notifier_block *nb)
+ed296d8d0a92758 Prashant Malani 2021-11-24  328  {
+ed296d8d0a92758 Prashant Malani 2021-11-24  329  	return 0;
+ed296d8d0a92758 Prashant Malani 2021-11-24  330  }
+ae196ddb0d3186b Heikki Krogerus 2021-04-07  331  #endif
+ae196ddb0d3186b Heikki Krogerus 2021-04-07  332  
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
