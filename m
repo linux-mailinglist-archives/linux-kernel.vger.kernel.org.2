@@ -2,270 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F211E45D9A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:58:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CCAC45D9B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240453AbhKYMBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 07:01:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:44551 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235199AbhKYL7T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 06:59:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637841367;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Zn5qUDNHigeTHkfOIEeNHxGhyTGmOPHFVQziaWMqPvM=;
-        b=aeJ6eK25GzeZU9x8GJIoFRRYMIhOKi3XTHMKa40e7VIsZGdKb3n0c1Mzi6GiGWWnG1Q6tj
-        PV9Oyz5ZixOsB0LQm9LMJqy1zOVTUtqWFoq5+OQ7qobJdzdJ2zlOs3EuhEsDYdLSdq0NTV
-        sGr7e8o1wWcusTOu5sSqd3A09wpmSM4=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-487-4btyKCsEN--mV-6f6ErNGQ-1; Thu, 25 Nov 2021 06:56:06 -0500
-X-MC-Unique: 4btyKCsEN--mV-6f6ErNGQ-1
-Received: by mail-ed1-f69.google.com with SMTP id n11-20020aa7c68b000000b003e7d68e9874so5325614edq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 03:56:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=Zn5qUDNHigeTHkfOIEeNHxGhyTGmOPHFVQziaWMqPvM=;
-        b=sTTd2IxOw2UK40SKSbvWMEeoVvbHPi45bXrrFL86P/2342kP5S4BmVF7x0lsBGZTTr
-         eqS/xHWtAeSCDuteM1SDnBPoEgXTEEZHIOVA+9NnHLcJeRh0DBh4C3XOpPUbfPsHl3N9
-         UgZqL2LiIGHxKYhPmeX+DwJwW7Lydw9+9q1d5RhWR3hpAC/au5zoHoIBkwkCZzBsHwpm
-         481vNM31MWVjDbw443do1GuUVedu0bP0LSR7yB54Gh/ZKhanbUUROvDdsOfH+rBSfstB
-         7LNIyflGKIkdRoecgCF69rjyBLUeG0ZH0duIfDqYmoG4ssMak1zomXRcArQ6JI19PQqv
-         ilEQ==
-X-Gm-Message-State: AOAM5300vPYYnzTqyHh5Ugfm2kNz9VAuEUELdtnaccrgYoDJIXtGd5mu
-        S1VutsVx9BDQUhKsLsASfWo+FcIcfgq46R4h8706cEKPi1EEYg8my8OgFYLcOT9tu9r5HGxVHwO
-        FLDpApC9xTR87IBE2spFeVF0u
-X-Received: by 2002:a17:906:4904:: with SMTP id b4mr29488581ejq.174.1637841364377;
-        Thu, 25 Nov 2021 03:56:04 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxy2FXQerCQWL0wz8KKtmO9VIUCLeFCt/3u04ynCT2Qttsffm9/94f9BQjkCB8lwUvJzBQCww==
-X-Received: by 2002:a17:906:4904:: with SMTP id b4mr29488392ejq.174.1637841362580;
-        Thu, 25 Nov 2021 03:56:02 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id ne33sm1507828ejc.6.2021.11.25.03.56.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 03:56:01 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 2A0F21802A0; Thu, 25 Nov 2021 12:56:01 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 net-next 21/26] ice: add XDP and XSK generic
- per-channel statistics
-In-Reply-To: <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
-References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
- <20211123163955.154512-22-alexandr.lobakin@intel.com>
- <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 25 Nov 2021 12:56:01 +0100
-Message-ID: <87bl28bga6.fsf@toke.dk>
+        id S240176AbhKYMIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 07:08:13 -0500
+Received: from mga03.intel.com ([134.134.136.65]:10777 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240462AbhKYMGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 07:06:09 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="235442591"
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="235442591"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 03:58:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="475621281"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 25 Nov 2021 03:58:35 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqDOc-0006JF-8C; Thu, 25 Nov 2021 11:58:34 +0000
+Date:   Thu, 25 Nov 2021 19:57:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Marcel Holtmann <marcel@holtmann.org>
+Subject: drivers/bluetooth/hci_qca.c:1860:37: warning: unused variable
+ 'qca_soc_data_wcn6750'
+Message-ID: <202111251945.DaHpCtny-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
+Hi Venkata,
 
-> Hi Alexander,
->
-> On 11/23/21 5:39 PM, Alexander Lobakin wrote:
-> [...]
->
-> Just commenting on ice here as one example (similar applies to other drivers):
->
->> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
->> index 1dd7e84f41f8..7dc287bc3a1a 100644
->> --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
->> +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
->> @@ -258,6 +258,8 @@ static void ice_clean_xdp_irq(struct ice_tx_ring *xdp_ring)
->>   		xdp_ring->next_dd = ICE_TX_THRESH - 1;
->>   	xdp_ring->next_to_clean = ntc;
->>   	ice_update_tx_ring_stats(xdp_ring, total_pkts, total_bytes);
->> +	xdp_update_tx_drv_stats(&xdp_ring->xdp_stats->xdp_tx, total_pkts,
->> +				total_bytes);
->>   }
->> 
->>   /**
->> @@ -277,6 +279,7 @@ int ice_xmit_xdp_ring(void *data, u16 size, struct ice_tx_ring *xdp_ring)
->>   		ice_clean_xdp_irq(xdp_ring);
->> 
->>   	if (!unlikely(ICE_DESC_UNUSED(xdp_ring))) {
->> +		xdp_update_tx_drv_full(&xdp_ring->xdp_stats->xdp_tx);
->>   		xdp_ring->tx_stats.tx_busy++;
->>   		return ICE_XDP_CONSUMED;
->>   	}
->> diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
->> index ff55cb415b11..62ef47a38d93 100644
->> --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
->> +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
->> @@ -454,42 +454,58 @@ ice_construct_skb_zc(struct ice_rx_ring *rx_ring, struct xdp_buff **xdp_arr)
->>    * @xdp: xdp_buff used as input to the XDP program
->>    * @xdp_prog: XDP program to run
->>    * @xdp_ring: ring to be used for XDP_TX action
->> + * @lrstats: onstack Rx XDP stats
->>    *
->>    * Returns any of ICE_XDP_{PASS, CONSUMED, TX, REDIR}
->>    */
->>   static int
->>   ice_run_xdp_zc(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp,
->> -	       struct bpf_prog *xdp_prog, struct ice_tx_ring *xdp_ring)
->> +	       struct bpf_prog *xdp_prog, struct ice_tx_ring *xdp_ring,
->> +	       struct xdp_rx_drv_stats_local *lrstats)
->>   {
->>   	int err, result = ICE_XDP_PASS;
->>   	u32 act;
->> 
->> +	lrstats->bytes += xdp->data_end - xdp->data;
->> +	lrstats->packets++;
->> +
->>   	act = bpf_prog_run_xdp(xdp_prog, xdp);
->> 
->>   	if (likely(act == XDP_REDIRECT)) {
->>   		err = xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
->> -		if (err)
->> +		if (err) {
->> +			lrstats->redirect_errors++;
->>   			goto out_failure;
->> +		}
->> +		lrstats->redirect++;
->>   		return ICE_XDP_REDIR;
->>   	}
->> 
->>   	switch (act) {
->>   	case XDP_PASS:
->> +		lrstats->pass++;
->>   		break;
->>   	case XDP_TX:
->>   		result = ice_xmit_xdp_buff(xdp, xdp_ring);
->> -		if (result == ICE_XDP_CONSUMED)
->> +		if (result == ICE_XDP_CONSUMED) {
->> +			lrstats->tx_errors++;
->>   			goto out_failure;
->> +		}
->> +		lrstats->tx++;
->>   		break;
->>   	default:
->>   		bpf_warn_invalid_xdp_action(act);
->> -		fallthrough;
->> +		lrstats->invalid++;
->> +		goto out_failure;
->>   	case XDP_ABORTED:
->> +		lrstats->aborted++;
->>   out_failure:
->>   		trace_xdp_exception(rx_ring->netdev, xdp_prog, act);
->> -		fallthrough;
->> +		result = ICE_XDP_CONSUMED;
->> +		break;
->>   	case XDP_DROP:
->>   		result = ICE_XDP_CONSUMED;
->> +		lrstats->drop++;
->>   		break;
->>   	}
->
-> Imho, the overall approach is way too bloated. I can see the
-> packets/bytes but now we have 3 counter updates with return codes
-> included and then the additional sync of the on-stack counters into
-> the ring counters via xdp_update_rx_drv_stats(). So we now need
-> ice_update_rx_ring_stats() as well as xdp_update_rx_drv_stats() which
-> syncs 10 different stat counters via u64_stats_add() into the per ring
-> ones. :/
->
-> I'm just taking our XDP L4LB in Cilium as an example: there we already
-> count errors and export them via per-cpu map that eventually lead to
-> XDP_DROP cases including the /reason/ which caused the XDP_DROP (e.g.
-> Prometheus can then scrape these insights from all the nodes in the
-> cluster). Given the different action codes are very often application
-> specific, there's not much debugging that you can do when /only/
-> looking at `ip link xdpstats` to gather insight on *why* some of these
-> actions were triggered (e.g. fib lookup failure, etc). If really of
-> interest, then maybe libxdp could have such per-action counters as
-> opt-in in its call chain..
+FYI, the error/warning still remains.
 
-To me, standardising these counters is less about helping people debug
-their XDP programs (as you say, you can put your own telemetry into
-those), and more about making XDP less "mystical" to the system
-administrator (who may not be the same person who wrote the XDP
-programs). So at the very least, they need to indicate "where are the
-packets going", which means at least counters for DROP, REDIRECT and TX
-(+ errors for tx/redirect) in addition to the "processed by XDP" initial
-counter. Which in the above means 'pass', 'invalid' and 'aborted' could
-be dropped, I guess; but I don't mind terribly keeping them either given
-that there's no measurable performance impact.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5f53fa508db098c9d372423a6dac31c8a5679cdf
+commit: d8f97da1b92d2fe89d51c673ecf80c4016119e5c Bluetooth: hci_qca: Add support for QTI Bluetooth chip wcn6750
+date:   5 months ago
+config: x86_64-buildonly-randconfig-r005-20211118 (https://download.01.org/0day-ci/archive/20211125/202111251945.DaHpCtny-lkp@intel.com/config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project c46becf500df2a7fb4b4fce16178a036c344315a)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d8f97da1b92d2fe89d51c673ecf80c4016119e5c
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout d8f97da1b92d2fe89d51c673ecf80c4016119e5c
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=x86_64 
 
-> But then it also seems like above in ice_xmit_xdp_ring() we now need
-> to bump counters twice just for sake of ethtool vs xdp counters which
-> sucks a bit, would be nice to only having to do it once:
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-This I agree with, and while I can see the layering argument for putting
-them into 'ip' and rtnetlink instead of ethtool, I also worry that these
-counters will simply be lost in obscurity, so I do wonder if it wouldn't
-be better to accept the "layering violation" and keeping them all in the
-'ethtool -S' output?
+All warnings (new ones prefixed by >>):
 
-[...]
+   drivers/bluetooth/hci_qca.c:1821:37: warning: unused variable 'qca_soc_data_wcn3990' [-Wunused-const-variable]
+   static const struct qca_device_data qca_soc_data_wcn3990 = {
+                                       ^
+   drivers/bluetooth/hci_qca.c:1832:37: warning: unused variable 'qca_soc_data_wcn3991' [-Wunused-const-variable]
+   static const struct qca_device_data qca_soc_data_wcn3991 = {
+                                       ^
+   drivers/bluetooth/hci_qca.c:1844:37: warning: unused variable 'qca_soc_data_wcn3998' [-Wunused-const-variable]
+   static const struct qca_device_data qca_soc_data_wcn3998 = {
+                                       ^
+>> drivers/bluetooth/hci_qca.c:1860:37: warning: unused variable 'qca_soc_data_wcn6750' [-Wunused-const-variable]
+   static const struct qca_device_data qca_soc_data_wcn6750 = {
+                                       ^
+   4 warnings generated.
 
-> +  xdp-channel0-rx_xdp_redirect: 7
-> +  xdp-channel0-rx_xdp_redirect_errors: 8
-> +  xdp-channel0-rx_xdp_tx: 9
-> +  xdp-channel0-rx_xdp_tx_errors: 10
-> +  xdp-channel0-tx_xdp_xmit_packets: 11
-> +  xdp-channel0-tx_xdp_xmit_bytes: 12
-> +  xdp-channel0-tx_xdp_xmit_errors: 13
-> +  xdp-channel0-tx_xdp_xmit_full: 14
->
->  From a user PoV to avoid confusion, maybe should be made more clear that the latter refers
-> to xsk.
 
-+1, these should probably be xdp-channel0-tx_xsk_* or something like
-that...
+vim +/qca_soc_data_wcn6750 +1860 drivers/bluetooth/hci_qca.c
 
--Toke
+  1859	
+> 1860	static const struct qca_device_data qca_soc_data_wcn6750 = {
+  1861		.soc_type = QCA_WCN6750,
+  1862		.vregs = (struct qca_vreg []) {
+  1863			{ "vddio", 5000 },
+  1864			{ "vddaon", 26000 },
+  1865			{ "vddbtcxmx", 126000 },
+  1866			{ "vddrfacmn", 12500 },
+  1867			{ "vddrfa0p8", 102000 },
+  1868			{ "vddrfa1p7", 302000 },
+  1869			{ "vddrfa1p2", 257000 },
+  1870			{ "vddrfa2p2", 1700000 },
+  1871			{ "vddasd", 200 },
+  1872		},
+  1873		.num_vregs = 9,
+  1874		.capabilities = QCA_CAP_WIDEBAND_SPEECH | QCA_CAP_VALID_LE_STATES,
+  1875	};
+  1876	
 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
