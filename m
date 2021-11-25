@@ -2,398 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A145645D9E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6B545D9DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349308AbhKYMXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 07:23:13 -0500
-Received: from mga14.intel.com ([192.55.52.115]:21817 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241277AbhKYMVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 07:21:11 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="235746964"
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="235746964"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 04:14:29 -0800
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="457387129"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 04:14:26 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mqDdv-00AQZq-Ow;
-        Thu, 25 Nov 2021 14:14:23 +0200
-Date:   Thu, 25 Nov 2021 14:14:23 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, jic23@kernel.org, lars@metafoo.de,
-        linux-iio@vger.kernel.org, git@xilinx.com, michal.simek@xilinx.com,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        linux-acpi@vger.kernel.org, heikki.krogerus@linux.intel.com,
-        Manish Narani <manish.narani@xilinx.com>
-Subject: Re: [PATCH v11 3/5] iio: adc: Add Xilinx AMS driver
-Message-ID: <YZ9+HxSRmT1XHld2@smile.fi.intel.com>
-References: <20211124225407.17793-1-anand.ashok.dumbre@xilinx.com>
- <20211124225407.17793-4-anand.ashok.dumbre@xilinx.com>
+        id S241102AbhKYMU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 07:20:28 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:42192 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S239350AbhKYMS1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 07:18:27 -0500
+X-UUID: 03107496eb0f4250a40eceae39071db7-20211125
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=XNa56ptSVW/PBObhWFXTIZ22GAfC+uM5uwwEbvv6o/M=;
+        b=nHIEfA3DaVVfdCd8h/Bi4AlcPB95vpZffM6B2xWRkW+1JuIIw+E/dMIWJu5a0K5mRGOAfEz3a7paWQbhgQ5G91lvR/BUnlkltRdGSJfVGXPPWT9vnCkTl0sSrFcV8ceGaED+STcGxpgIMzjkN0sNwqz/Ff2Lm7GQewaAIO9FZeM=;
+X-UUID: 03107496eb0f4250a40eceae39071db7-20211125
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1041156523; Thu, 25 Nov 2021 20:15:13 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Thu, 25 Nov 2021 20:15:12 +0800
+Received: from mhfsdcap04 (10.17.3.154) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 25 Nov 2021 20:15:11 +0800
+Message-ID: <926a0bb2ec2ad64ba579d38e761e1e97ba5bba3f.camel@mediatek.com>
+Subject: Re: [PATCH v4 10/12] ARM: dts: Add PCIe support for Airoha EN7523
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Felix Fietkau <nbd@nbd.name>,
+        <linux-arm-kernel@lists.infradead.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <john@phrozen.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>
+Date:   Thu, 25 Nov 2021 20:15:11 +0800
+In-Reply-To: <20211125110738.41028-11-nbd@nbd.name>
+References: <20211125110738.41028-1-nbd@nbd.name>
+         <20211125110738.41028-11-nbd@nbd.name>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211124225407.17793-4-anand.ashok.dumbre@xilinx.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 10:54:05PM +0000, Anand Ashok Dumbre wrote:
-> The AMS includes an ADC as well as on-chip sensors that can be used to
-> sample external voltages and monitor on-die operating conditions, such
-> as temperature and supply voltage levels. The AMS has two SYSMON blocks.
-> PL-SYSMON block is capable of monitoring off chip voltage and
-> temperature.
-> 
-> PL-SYSMON block has DRP, JTAG and I2C interface to enable monitoring
-> from an external master. Out of these interfaces currently only DRP is
-> supported. Other block PS-SYSMON is memory mapped to PS.
-> 
-> The AMS can use internal channels to monitor voltage and temperature as
-> well as one primary and up to 16 auxiliary channels for measuring
-> external voltages.
-> 
-> The voltage and temperature monitoring channels also have event capability
-> which allows to generate an interrupt when their value falls below or
-> raises above a set threshold.
-
-...
-
-> +#define AMS_IDR_1			0x02c
-...
-> +#define AMS_VCC_PSPLL3			0x06C
-...
-> +#define AMS_VCCBRAM			0x07C
-...
-> +#define AMS_PSINTFPDDR			0x09C
-...and so on
-
-Be consistent with the capitalization in the hex values.
-
-...
-
-> +#define AMS_INIT_POLL_TIME		200
-
-Does it need unit?
-
-> +#define AMS_SUPPLY_SCALE_1VOLT		1000
-> +#define AMS_SUPPLY_SCALE_3VOLT		3000
-> +#define AMS_SUPPLY_SCALE_6VOLT		6000
-
-I would rather make units with these:
-
-#define AMS_SUPPLY_SCALE_1VOLT_mV		1000
-#define AMS_SUPPLY_SCALE_3VOLT_mV		3000
-#define AMS_SUPPLY_SCALE_6VOLT_mV		6000
-
-...
-
-> +#define AMS_PL_AUX_CHAN_VOLTAGE(_auxno) \
-
-> +	AMS_CHAN_VOLTAGE(PL_SEQ(AMS_SEQ(_auxno)), \
-> +			AMS_REG_VAUX(_auxno), false)
-
-One line?
-
-> +#define AMS_CTRL_CHAN_VOLTAGE(_scan_index, _addr) \
-
-> +	AMS_CHAN_VOLTAGE(PL_SEQ(AMS_SEQ(AMS_SEQ(_scan_index))), \
-> +			_addr, false)
-
-Ditto.
-
-...
-
-> +/**
-> + * struct ams - Driver data for xilinx-ams
-> + * @base: physical base address of device
-> + * @ps_base: physical base address of PS device
-> + * @pl_base: physical base address of PL device
-> + * @clk: clocks associated with the device
-> + * @dev: pointer to device struct
-> + * @lock: to handle multiple user interaction
-> + * @intr_lock: to protect interrupt mask values
-> + * @alarm_mask: alarm configuration
-> + * @current_masked_alarm: currently masked due to alarm
-> + * @intr_mask: interrupt configuration
-> + * @ams_unmask_work: re-enables event once the event condition disappears
-
-> + * This structure contains necessary state for Sysmon driver to operate
-
-Shouldn't be this "state for Sysmon driver to operate" a summary above?
-
-> + */
-
-...
-
-> +	u32 reg, value;
-> +	u32 expect = AMS_PS_CSTS_PS_READY;
-> +	int ret;
-
-	u32 expect = AMS_PS_CSTS_PS_READY;
-	u32 reg, value;
-	int ret;
-
-...
-
-> +	u32 reg;
-> +	u32 expect = AMS_ISR1_EOC_MASK;
-> +	int ret;
-
-Ditto.
-
-...
-
-> +	ret = readl_poll_timeout(ams->base + AMS_ISR_1, reg,
-> +				 (reg & expect), AMS_INIT_POLL_TIME, AMS_INIT_TIMEOUT_US);
-
-Something wrong with line lengths... There is enough space on previous line for
-one parameter.
-
-> +	if (ret)
-> +		return ret;
-
-...
-
-> +	case IIO_CHAN_INFO_RAW:
-> +		mutex_lock(&ams->lock);
-> +		if (chan->scan_index >= AMS_CTRL_SEQ_BASE) {
-> +			ret = ams_read_vcc_reg(ams, chan->address, val);
-> +			if (ret) {
-
-> +				mutex_unlock(&ams->lock);
-> +				return ret;
-
-Can it be
-				goto out_unlock;
-
-> +			}
-> +			ams_enable_channel_sequence(indio_dev);
-> +		} else if (chan->scan_index >= AMS_PS_SEQ_MAX)
-> +			*val = readl(ams->pl_base + chan->address);
-> +		else
-> +			*val = readl(ams->ps_base + chan->address);
-
-		ret = IIO_VAL_INT;
-out_unlock:
-
-> +		mutex_unlock(&ams->lock);
-> +
-> +		return IIO_VAL_INT;
-
-		mutex_unlock(&ams->lock);
-		return ret;
-
-?
-
-Also the question, why mutex only against INFO_RAW case?
-
-...
-
-> +		switch (chan->type) {
-> +		case IIO_VOLTAGE:
-> +			if (chan->scan_index < AMS_PS_SEQ_MAX) {
-> +				switch (chan->address) {
-> +				case AMS_SUPPLY1:
-> +				case AMS_SUPPLY2:
-> +				case AMS_SUPPLY3:
-> +				case AMS_SUPPLY4:
-> +				case AMS_SUPPLY9:
-> +				case AMS_SUPPLY10:
-> +				case AMS_VCCAMS:
-> +					*val = AMS_SUPPLY_SCALE_3VOLT;
-> +					break;
-> +				case AMS_SUPPLY5:
-> +				case AMS_SUPPLY6:
-> +				case AMS_SUPPLY7:
-> +				case AMS_SUPPLY8:
-> +					*val = AMS_SUPPLY_SCALE_6VOLT;
-> +					break;
-> +				default:
-> +					*val = AMS_SUPPLY_SCALE_1VOLT;
-> +					break;
-> +				}
-> +			} else if (chan->scan_index >= AMS_PS_SEQ_MAX &&
-> +				   chan->scan_index < AMS_CTRL_SEQ_BASE) {
-> +				switch (chan->address) {
-> +				case AMS_SUPPLY1:
-> +				case AMS_SUPPLY2:
-> +				case AMS_SUPPLY3:
-> +				case AMS_SUPPLY4:
-> +				case AMS_SUPPLY5:
-> +				case AMS_SUPPLY6:
-> +				case AMS_VCCAMS:
-> +				case AMS_VREFP:
-> +				case AMS_VREFN:
-> +					*val = AMS_SUPPLY_SCALE_3VOLT;
-> +					break;
-> +				case AMS_SUPPLY7:
-> +					regval = readl(ams->pl_base + AMS_REG_CONFIG4);
-> +					if (FIELD_GET(AMS_VUSER0_MASK, regval))
-> +						*val = AMS_SUPPLY_SCALE_6VOLT;
-> +					else
-> +						*val = AMS_SUPPLY_SCALE_3VOLT;
-> +					break;
-> +				case AMS_SUPPLY8:
-> +					regval = readl(ams->pl_base + AMS_REG_CONFIG4);
-> +					if (FIELD_GET(AMS_VUSER1_MASK, regval))
-> +						*val = AMS_SUPPLY_SCALE_6VOLT;
-> +					else
-> +						*val = AMS_SUPPLY_SCALE_3VOLT;
-> +					break;
-> +				case AMS_SUPPLY9:
-> +					regval = readl(ams->pl_base + AMS_REG_CONFIG4);
-> +					if (FIELD_GET(AMS_VUSER2_MASK, regval))
-> +						*val = AMS_SUPPLY_SCALE_6VOLT;
-> +					else
-> +						*val = AMS_SUPPLY_SCALE_3VOLT;
-> +					break;
-> +				case AMS_SUPPLY10:
-> +					regval = readl(ams->pl_base + AMS_REG_CONFIG4);
-> +					if (FIELD_GET(AMS_VUSER3_MASK, regval))
-> +						*val = AMS_SUPPLY_SCALE_6VOLT;
-> +					else
-> +						*val = AMS_SUPPLY_SCALE_3VOLT;
-> +					break;
-> +				case AMS_VP_VN:
-> +				case AMS_REG_VAUX(0) ... AMS_REG_VAUX(15):
-> +					*val = AMS_SUPPLY_SCALE_1VOLT;
-> +					break;
-> +				default:
-> +					*val = AMS_SUPPLY_SCALE_1VOLT;
-> +					break;
-> +				}
-> +			} else {
-> +				switch (chan->address) {
-> +				case AMS_VCC_PSPLL0:
-> +				case AMS_VCC_PSPLL3:
-> +				case AMS_VCCINT:
-> +				case AMS_VCCBRAM:
-> +				case AMS_VCCAUX:
-> +				case AMS_PSDDRPLL:
-> +				case AMS_PSINTFPDDR:
-> +					*val = AMS_SUPPLY_SCALE_3VOLT;
-> +					break;
-> +				default:
-> +					*val = AMS_SUPPLY_SCALE_1VOLT;
-> +					break;
-> +				}
-> +			}
-> +			*val2 = AMS_SUPPLY_SCALE_DIV_BIT;
-> +			return IIO_VAL_FRACTIONAL_LOG2;
-> +		case IIO_TEMP:
-> +			*val = AMS_TEMP_SCALE;
-> +			*val2 = AMS_TEMP_SCALE_DIV_BIT;
-> +			return IIO_VAL_FRACTIONAL_LOG2;
-> +		default:
-> +			return -EINVAL;
-> +		}
-
-Isn't it a bit too looong for a single switch case?
-
-...
-
-> +/**
-> + * ams_unmask_worker - ams alarm interrupt unmask worker
-
-> + * @work :		work to be done
-
-Be consistent with a style on how you describe parameters in the kernel doc.
-
-> + * The ZynqMP threshold interrupts are level sensitive. Since we can't make the
-> + * threshold condition go way from within the interrupt handler, this means as
-> + * soon as a threshold condition is present we would enter the interrupt handler
-> + * again and again. To work around this we mask all active threshold interrupts
-> + * in the interrupt handler and start a timer. In this timer we poll the
-> + * interrupt status and only if the interrupt is inactive we unmask it again.
-> + */
-
-...
-
-> +	fwnode_for_each_child_node(chan_node, child) {
-> +		ret = fwnode_property_read_u32(child, "reg", &reg);
-> +		if (ret || reg > AMS_PL_MAX_EXT_CHANNEL + 30)
-> +			continue;
-> +
-> +		chan = &channels[num_channels];
-> +		ext_chan = reg + AMS_PL_MAX_FIXED_CHANNEL - 30;
-> +		memcpy(chan, &ams_pl_channels[ext_chan], sizeof(*channels));
-> +
-> +		if (fwnode_property_read_bool(child, "xlnx,bipolar"))
-> +			chan->scan_type.sign =	's';
-
-Needless double spacing.
-
-> +		num_channels++;
-> +	}
-
-...
-
-> +		/* add PS channels to iio device channels */
-> +		memcpy(channels, ams_ps_channels,
-> +		       sizeof(ams_ps_channels));
-
-One line.
-
-...
-
-> +		/* Copy only first 10 fix channels */
-
-Be consistent with one line comments (pay attention to the capitalization,
-compare to the above).
-
-> +		memcpy(channels, ams_pl_channels,
-> +		       AMS_PL_MAX_FIXED_CHANNEL * sizeof(*channels));
-
-One line?
-
-...
-
-> +		/* add AMS channels to iio device channels */
-> +		memcpy(channels, ams_ctrl_channels,
-> +		       sizeof(ams_ctrl_channels));
-
-One line.
-
-...
-
-> +	fwnode_for_each_child_node(fwnode, child) {
-> +		if (fwnode_device_is_available(child)) {
-
-> +			ret = ams_init_module(indio_dev, child,
-> +					      ams_channels + num_channels);
-
-One line?
-
-> +			if (ret < 0) {
-> +				fwnode_handle_put(child);
-> +				return ret;
-> +			}
-> +
-> +			num_channels += ret;
-> +		}
-> +	}
-
-...
-
-> +	dev_size = sizeof(*dev_channels) * num_channels;
-
-Here you need to have an array_size(). Or introduce a devm_krealloc_array().
-
-> +	dev_channels = devm_krealloc(dev, ams_channels, dev_size, GFP_KERNEL);
-> +	if (!dev_channels)
-> +		ret = -ENOMEM;
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+SGkgRmVsaXgsDQoNCk9uIFRodSwgMjAyMS0xMS0yNSBhdCAxMjowNyArMDEwMCwgRmVsaXggRmll
+dGthdSB3cm90ZToNCj4gVGhpcyB1c2VzIHRoZSBNZWRpYVRlayBNVDc2MjIgUENJZSBkcml2ZXIs
+IHNpbmNlIHRoZSBQQ0llIElQIGJsb2NrIGlzDQo+IG5lYXJseQ0KPiBpZGVudGljYWwgdG8gdGhl
+IG9uZSBpbiBNVDc2MjINCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEZlbGl4IEZpZXRrYXUgPG5iZEBu
+YmQubmFtZT4NCj4gLS0tDQo+ICBhcmNoL2FybS9ib290L2R0cy9lbjc1MjMtZXZiLmR0cyB8IDEy
+ICsrKysrKysNCj4gIGFyY2gvYXJtL2Jvb3QvZHRzL2VuNzUyMy5kdHNpICAgIHwgNjANCj4gKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gIDIgZmlsZXMgY2hhbmdlZCwgNzIgaW5z
+ZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtL2Jvb3QvZHRzL2VuNzUyMy1l
+dmIuZHRzDQo+IGIvYXJjaC9hcm0vYm9vdC9kdHMvZW43NTIzLWV2Yi5kdHMNCj4gaW5kZXggZThl
+NWMwMzRjZWU3Li5hZjFhOGRkNDBhNDEgMTAwNjQ0DQo+IC0tLSBhL2FyY2gvYXJtL2Jvb3QvZHRz
+L2VuNzUyMy1ldmIuZHRzDQo+ICsrKyBiL2FyY2gvYXJtL2Jvb3QvZHRzL2VuNzUyMy1ldmIuZHRz
+DQo+IEBAIC0yNSwzICsyNSwxNSBAQCBtZW1vcnlAODAwMDAwMDAgew0KPiAgCQlyZWcgPSA8MHg4
+MDAwMDAwMCAweDIwMDAwMDAwPjsNCj4gIAl9Ow0KPiAgfTsNCj4gKw0KPiArJnBjaWUgew0KPiAr
+CXN0YXR1cyA9ICJva2F5IjsNCj4gK307DQo+ICsNCj4gKyZwY2llMCB7DQo+ICsJc3RhdHVzID0g
+Im9rYXkiOw0KPiArfTsNCj4gKw0KPiArJnBjaWUxIHsNCj4gKwlzdGF0dXMgPSAib2theSI7DQo+
+ICt9Ow0KPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm0vYm9vdC9kdHMvZW43NTIzLmR0c2kNCj4gYi9h
+cmNoL2FybS9ib290L2R0cy9lbjc1MjMuZHRzaQ0KPiBpbmRleCBlYWJmM2ZkYjNkNTIuLmQ5YmRi
+NTE2MTRiNSAxMDA2NDQNCj4gLS0tIGEvYXJjaC9hcm0vYm9vdC9kdHMvZW43NTIzLmR0c2kNCj4g
+KysrIGIvYXJjaC9hcm0vYm9vdC9kdHMvZW43NTIzLmR0c2kNCj4gQEAgLTExOSw0ICsxMTksNjQg
+QEAgdWFydDE6IHNlcmlhbEAxZmJmMDAwMCB7DQo+ICAJCWNsb2NrLWZyZXF1ZW5jeSA9IDwxODQz
+MjAwPjsNCj4gIAkJc3RhdHVzID0gIm9rYXkiOw0KPiAgCX07DQo+ICsNCj4gKwlwY2llOiBwY2ll
+QDFhMTQwMDAwIHsNCj4gKwkJY29tcGF0aWJsZSA9ICJhaXJvaGEsZW43NTIzLXBjaWUiLCAibWVk
+aWF0ZWssbXQ3NjIyLQ0KPiBwY2llIjsNCj4gKwkJZGV2aWNlX3R5cGUgPSAicGNpIjsNCj4gKwkJ
+cmVnID0gPDB4MWZhOTEwMDAgMHgxMDAwPiwNCj4gKwkJICAgICAgPDB4MWZhOTIwMDAgMHgxMDAw
+PjsNCj4gKwkJcmVnLW5hbWVzID0gInBvcnQwIiwgInBvcnQxIjsNCj4gKwkJI2FkZHJlc3MtY2Vs
+bHMgPSA8Mz47DQo+ICsJCSNzaXplLWNlbGxzID0gPDI+Ow0KPiArCQlpbnRlcnJ1cHRzID0gPEdJ
+Q19TUEkgMzkgSVJRX1RZUEVfTEVWRUxfSElHSD4sDQo+ICsJCQkgICAgIDxHSUNfU1BJIDQwIElS
+UV9UWVBFX0xFVkVMX0hJR0g+Ow0KPiArCQljbG9ja3MgPSA8JnNjdSBFTjc1MjNfQ0xLX1BDSUU+
+LA0KPiArCQkJIDwmc2N1IEVONzUyM19DTEtfUENJRT47DQo+ICsJCWNsb2NrLW5hbWVzID0gInN5
+c19jazAiLCAic3lzX2NrMSI7DQo+ICsJCWJ1cy1yYW5nZSA9IDwweDAwIDB4ZmY+Ow0KPiArCQly
+YW5nZXMgPSA8MHg4MjAwMDAwMCAwIDB4MjAwMDAwMDAgIDB4MjAwMDAwMDAgIDANCj4gMHgxMDAw
+MDAwMD47DQo+ICsJCXN0YXR1cyA9ICJkaXNhYmxlZCI7DQo+ICsNCj4gKwkJcGNpZTA6IHBjaWVA
+MCwwIHsNCj4gKwkJCWRldmljZV90eXBlID0gInBjaSI7DQo+ICsJCQlyZWcgPSA8MHgwMDAwIDAg
+MCAwIDA+Ow0KPiArCQkJI2FkZHJlc3MtY2VsbHMgPSA8Mz47DQo+ICsJCQkjc2l6ZS1jZWxscyA9
+IDwyPjsNCj4gKwkJCSNpbnRlcnJ1cHQtY2VsbHMgPSA8MT47DQo+ICsJCQlyYW5nZXM7DQo+ICsJ
+CQlzdGF0dXMgPSAiZGlzYWJsZWQiOw0KPiArDQo+ICsJCQlpbnRlcnJ1cHQtbWFwLW1hc2sgPSA8
+MCAwIDAgNz47DQo+ICsJCQlpbnRlcnJ1cHQtbWFwID0gPDAgMCAwIDEgJnBjaWVfaW50YzAgMD4s
+DQo+ICsJCQkJCTwwIDAgMCAyICZwY2llX2ludGMwIDE+LA0KPiArCQkJCQk8MCAwIDAgMyAmcGNp
+ZV9pbnRjMCAyPiwNCj4gKwkJCQkJPDAgMCAwIDQgJnBjaWVfaW50YzAgMz47DQo+ICsJCQlwY2ll
+X2ludGMwOiBpbnRlcnJ1cHQtY29udHJvbGxlciB7DQo+ICsJCQkJaW50ZXJydXB0LWNvbnRyb2xs
+ZXI7DQo+ICsJCQkJI2FkZHJlc3MtY2VsbHMgPSA8MD47DQo+ICsJCQkJI2ludGVycnVwdC1jZWxs
+cyA9IDwxPjsNCj4gKwkJCX07DQo+ICsJCX07DQo+ICsNCj4gKwkJcGNpZTE6IHBjaWVAMSwwIHsN
+Cj4gKwkJCWRldmljZV90eXBlID0gInBjaSI7DQo+ICsJCQlyZWcgPSA8MHgwODAwIDAgMCAwIDA+
+Ow0KPiArCQkJI2FkZHJlc3MtY2VsbHMgPSA8Mz47DQo+ICsJCQkjc2l6ZS1jZWxscyA9IDwyPjsN
+Cj4gKwkJCSNpbnRlcnJ1cHQtY2VsbHMgPSA8MT47DQo+ICsJCQlyYW5nZXM7DQo+ICsJCQlzdGF0
+dXMgPSAiZGlzYWJsZWQiOw0KPiArDQo+ICsJCQlpbnRlcnJ1cHQtbWFwLW1hc2sgPSA8MCAwIDAg
+Nz47DQo+ICsJCQlpbnRlcnJ1cHQtbWFwID0gPDAgMCAwIDEgJnBjaWVfaW50YzEgMD4sDQo+ICsJ
+CQkJCTwwIDAgMCAyICZwY2llX2ludGMxIDE+LA0KPiArCQkJCQk8MCAwIDAgMyAmcGNpZV9pbnRj
+MSAyPiwNCj4gKwkJCQkJPDAgMCAwIDQgJnBjaWVfaW50YzEgMz47DQo+ICsJCQlwY2llX2ludGMx
+OiBpbnRlcnJ1cHQtY29udHJvbGxlciB7DQo+ICsJCQkJaW50ZXJydXB0LWNvbnRyb2xsZXI7DQo+
+ICsJCQkJI2FkZHJlc3MtY2VsbHMgPSA8MD47DQo+ICsJCQkJI2ludGVycnVwdC1jZWxscyA9IDwx
+PjsNCj4gKwkJCX07DQo+ICsJCX07DQo+ICsJfTsNCg0KVGhlcmUgYXJlIHNvbWUga25vd24gaXNz
+dWVzIHdpdGggdGhpcyBkZXZpY2Ugbm9kZSBzdHlsZSwgcGxlYXNlIHNwbGl0DQp0aGUgUENJZSBu
+b2RlIGludG8gdHdvIGluZGVwZW5kZW50IG5vZGVzIHRvIGNvbXBseSB3aXRoIHRoZSBoYXJkd2Fy
+ZQ0KZGVzaWduLg0KDQpIZXJlIGlzIHRoZSBmaXggcGF0Y2ggd2Ugc2VudCBiZWZvcmU6DQoNCmh0
+dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LXBjaS8yMDIxMDgyMzAzMjgwMC4xNjYwLTYtY2h1
+YW5qaWEubGl1QG1lZGlhdGVrLmNvbS8NCg0KVGhhbmtzLg0KDQo+ICB9Ow0K
 
