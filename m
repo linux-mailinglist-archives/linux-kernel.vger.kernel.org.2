@@ -2,100 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92AF45D29E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 02:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6644845D2F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:10:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352856AbhKYBxD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Nov 2021 20:53:03 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:28106 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345693AbhKYBvc (ORCPT
+        id S235309AbhKYCN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 21:13:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235401AbhKYCNK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 20:51:32 -0500
-Received: from dggeml708-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4J01172DPDz1DJY9;
-        Thu, 25 Nov 2021 09:45:47 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggeml708-chm.china.huawei.com (10.3.17.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.20; Thu, 25 Nov 2021 09:48:20 +0800
-Received: from dggpemm500006.china.huawei.com ([7.185.36.236]) by
- dggpemm500006.china.huawei.com ([7.185.36.236]) with mapi id 15.01.2308.020;
- Thu, 25 Nov 2021 09:48:20 +0800
-From:   "chenjun (AM)" <chenjun102@huawei.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "Xiangrui (Euler)" <rui.xiang@huawei.com>
-Subject: Re: [PATCH] trace: Fix a kmemleak noise
-Thread-Topic: [PATCH] trace: Fix a kmemleak noise
-Thread-Index: AQHX4UY5012gcbVNnkawSmybmmRxiw==
-Date:   Thu, 25 Nov 2021 01:48:20 +0000
-Message-ID: <c02fa0f22fc94a8d8efb374ceb19e5c2@huawei.com>
-References: <20211124140801.87121-1-chenjun102@huawei.com>
- <20211124101616.618ee8f2@gandalf.local.home>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.178.43]
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 8BIT
+        Wed, 24 Nov 2021 21:13:10 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62506C0698CD;
+        Wed, 24 Nov 2021 17:49:32 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id v2so3067188qve.11;
+        Wed, 24 Nov 2021 17:49:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vja4AHnlTaMIcDb/SHQiaOGkis7osMdBc7ty1ZAf/nY=;
+        b=eBfRTJzcTR3vI7uwEdQuf7a1xHTr6aE5rwTJ+n3Bh/yDeGrbYFRRxutkheQtfnciIB
+         JI7sgZg9hFalVxetRIWBDLuhUNsp67nbe9apgQmR2vWnWgvER92DmbwmVdOaraZlwzZm
+         rKTvgjI76hjCNCfMORkx7czfCUMd7evM7YRcaPKHw2YxqI3ScPRC1P2AKbrd7Y6KuzSl
+         MDbKjRhoI7v20VY2D/beI+cA2nc5SncY6tmkpe5BPBVDUwiouAjk3aJHNiFg3sQK0FyY
+         uDtuiiLDlQp1SoWeioKjBY3OE6fzYqNNITSRDCnM4gbxN6ryRRpjU1KU4CxDoP78uuBO
+         pV+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vja4AHnlTaMIcDb/SHQiaOGkis7osMdBc7ty1ZAf/nY=;
+        b=Y0XSCI4ETNXibW2nA6qw59OonlzGLjgJ4ymml1R+uzF1aybB3MF2Ou3WIhb3dWB0WI
+         gaER9N7u5pEwOs/Ql+C8XKkq2j/IKBd9ypyI2LIbAO4qBg2KIYq2gIbK8AafkSflIqNB
+         68546DTanq4/3RGud/5NDwX1BdxsMS38aV9pDURGKiSxjUvla3DwVPO/XE5kLlKuMbeN
+         LkKvpFqiDXw0VoofuAQ7kDhPb33EFQJecJSJaY5JyL1X1c7mEzViH6a9xypJVuOsuAjs
+         QnjboJuT7pAknz1O7uxZV+hFjZvvKA8pWgiPJo/Zf48J70v2Zyur9r3iqWSVjJnfW62w
+         Bo4g==
+X-Gm-Message-State: AOAM531Dxt36bzcNjPZFH7caEQIMluBy/NUPAWIh1cvn/+gCEA5MM3R0
+        vddv1eIYHtj8T8MrlGq+piI=
+X-Google-Smtp-Source: ABdhPJyMsvUyZ9zhLh4OQK/PQGfcFILX37gsgk2EBLfKDwjbkm2DJFhX7VydLCXnKhSCaClFn7T6OA==
+X-Received: by 2002:a05:6214:c42:: with SMTP id r2mr1369622qvj.69.1637804971649;
+        Wed, 24 Nov 2021 17:49:31 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id e13sm801260qte.56.2021.11.24.17.49.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 17:49:31 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: deng.changcheng@zte.com.cn
+To:     wim@linux-watchdog.org
+Cc:     linux@roeck-us.net, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] watchdog: davinci: Use div64_ul instead of do_div
+Date:   Thu, 25 Nov 2021 01:49:24 +0000
+Message-Id: <20211125014924.46297-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2021/11/24 23:16, Steven Rostedt 写道:
-Hi
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-> On Wed, 24 Nov 2021 14:08:01 +0000
-> Chen Jun <chenjun102@huawei.com> wrote:
-> 
->> The reason is elts->pages[i] is alloced by get_zeroed_page.
->> and kmemleak will not scan the area alloced by get_zeroed_page.
->> The address stored in elts->pages will be regarded as leaked.
-> 
-> Why doesn't kmemleak scan get_zeroed_page? And if that's the case, how does
-> all the other locations in the kernel that call get_zeroed_page handle this?
-> I think in most cases, the page do not contain pointers. But I am not 
-sure. Maybe we should better ask Catalin.
+do_div() does a 64-by-32 division. Here the divisor is an unsigned long
+which on some platforms is 64 bit wide. So use div64_ul instead of do_div
+to avoid a possible truncation.
 
-In block/blk-mq.c
-blk_mq_alloc_rqs
-.
-   page = alloc_pages_node(node,..
-.
-   p = page_address(page);
-   /*$
-    * Allow kmemleak to scan these pages as they contain pointers
-    * to additional allocations like via ops->init_request().
-    */$
-   kmemleak_alloc(p, order_to_size(this_order), 1, GFP_NOIO);
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+---
+ drivers/watchdog/davinci_wdt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-In lib/scatterlist.c
-static struct scatterlist *sg_kmalloc(unsigned int nents, gfp_t gfp_mask)
-{
-   if (nents == SG_MAX_SINGLE_ALLOC) {
-   /*
-    * Kmemleak doesn't track page allocations as they are not
-    * commonly used (in a raw form) for kernel data structures.
-    * As we chain together a list of pages and then a normal
-    * kmalloc (tracked by kmemleak), in order to for that last
-    * allocation not to become decoupled (and thus a
-    * false-positive) we need to inform kmemleak of all the
-    * intermediate allocations.
-    */
-    void *ptr = (void *) __get_free_page(gfp_mask);
-    kmemleak_alloc(ptr, PAGE_SIZE, 1, gfp_mask);
-    return ptr;
-.
-
-> -- Steve
-> 
-
-
+diff --git a/drivers/watchdog/davinci_wdt.c b/drivers/watchdog/davinci_wdt.c
+index e6eaba6bae5b..584a56893b81 100644
+--- a/drivers/watchdog/davinci_wdt.c
++++ b/drivers/watchdog/davinci_wdt.c
+@@ -134,7 +134,7 @@ static unsigned int davinci_wdt_get_timeleft(struct watchdog_device *wdd)
+ 	timer_counter = ioread32(davinci_wdt->base + TIM12);
+ 	timer_counter |= ((u64)ioread32(davinci_wdt->base + TIM34) << 32);
+ 
+-	do_div(timer_counter, freq);
++	timer_counter = div64_ul(timer_counter, freq);
+ 
+ 	return wdd->timeout - timer_counter;
+ }
 -- 
-Regards
-Chen Jun
+2.25.1
+
