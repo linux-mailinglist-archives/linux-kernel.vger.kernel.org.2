@@ -2,99 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A427845D482
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 07:03:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E85F445D47E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 07:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346990AbhKYGGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 01:06:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244002AbhKYGEl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 01:04:41 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CB2DC061574;
-        Wed, 24 Nov 2021 22:00:41 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id f20so5158282qtb.4;
-        Wed, 24 Nov 2021 22:00:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=t+yyWN3NnkiYOkpDcW6wXNJGv8udDGL/BSC5HOvefek=;
-        b=CrFqKTv/vO8VYObhtq80BD65+iqDDpy28e0145ShIt3ZqKH6T5xT/xhe1RV/UWyvQM
-         wJkSMFjNf5ebnfJrICt8+9zui4ct6jaZzEPEZsYoeBCHCcQMvEuTDpLWapJijrYlWcWk
-         Ks9djLhf/NnaKUE+HzJNSc3mBm3QSSv54OtJLspX6+WXXlVSi25BE6pdghxZTA8vu+QT
-         fAy4CUJpeB/DzB0E6Ktg0qqEkxseihU1OX4H66Ulb2XKB+we824sbIqvtGi1AEC59BOZ
-         F7TzMTQ0G1mqw2g9soGnVqmu6GIbUmmUbT6fLuHPzxtOlflt2bBdOP25qXT5mDtF3RUh
-         0MlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=t+yyWN3NnkiYOkpDcW6wXNJGv8udDGL/BSC5HOvefek=;
-        b=gXzR5aevYW04orUILstMdHlxwKitqOcSMdnTd6e3ISS3YHOx7tpXuvvXLbL46koSaO
-         rfQoF/wyeABOJ8XooqzIu9QO5N17K/cciHZBX0iLXITnGl3RTMfOn6SE2TTjodrM+v3t
-         EFGhKijgZBYaQpVepXcQr3kbsq2vTPHnYYLWJE37zEdqCUWCcWSOCy8jW/hCCSDWZBlo
-         iUm8hFfslftKYx4eRS7s3LUu07FElp7dFSwoX2lrpXgOYC8UgQ+U97wFo4o7Lmb9tV9H
-         Sw3i9Gr+9r+oPI1krhtXVCxNJhttatE9NuHZf4Nl60JIhYkYaLrk5iMi1S7ZtwovNzk2
-         RGRA==
-X-Gm-Message-State: AOAM533lqbClDzGlejKCAVzgeaw/AUo7QdR0qGVinNCr5Nb5Z2i3e/QO
-        pjzhW/kMbSpJHLU1RmlAV+vsPTZPlmIbnKAwxTg=
-X-Google-Smtp-Source: ABdhPJwNW/8Jzygtcv8FN5ZAz7jujmg3uEGc3DDpRjxhTlL/THJoKRoxEqj4c5cBnXBQ+8LXeunB2ie9lLNOQgD/VbA=
-X-Received: by 2002:ac8:5f89:: with SMTP id j9mr14079256qta.391.1637820040521;
- Wed, 24 Nov 2021 22:00:40 -0800 (PST)
+        id S1346638AbhKYGFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 01:05:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47762 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345878AbhKYGDg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 01:03:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24FAE6108F;
+        Thu, 25 Nov 2021 06:00:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637820025;
+        bh=3ctKRzNkGfDKJL56FA56OZ8Yhk44PDb09vDAtnXuLAo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bIQ0MHxqaQsVL5k7lRYiC3s76TtwMsSRV3bFb/vxi6rmDEbyA+NdeAfFDrFpVIfjF
+         Mf5SlMoBcoTPs8xx5Y9t3fP3UpwiEHetgxYaKPFJjsj8EueEgtFVNURebt1e9LwrKc
+         7t2PJOqdkVrlspfU5FdYcJtr1KHuU/irIfI/GXms=
+Date:   Thu, 25 Nov 2021 07:00:22 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kyle Tso <kyletso@google.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v1] usb: typec: tcpm: Wait in SNK_DEBOUNCED until
+ disconnect
+Message-ID: <YZ8mdjPn39ekClLq@kroah.com>
+References: <20211124224036.734679-1-badhri@google.com>
 MIME-Version: 1.0
-References: <20210915213550.3696532-1-guro@fb.com> <20210916162451.709260-1-guro@fb.com>
- <52EC1E80-4C89-43AD-8A59-8ACA184EAE53@gmail.com>
-In-Reply-To: <52EC1E80-4C89-43AD-8A59-8ACA184EAE53@gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 25 Nov 2021 14:00:04 +0800
-Message-ID: <CALOAHbC0xNnqWt=og+g=DT0yRqST6cTAUvZkQ-7o8Nw8O-2J9w@mail.gmail.com>
-Subject: Re: [PATCH rfc 0/6] Scheduler BPF
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124224036.734679-1-badhri@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roman,
+On Wed, Nov 24, 2021 at 02:40:36PM -0800, Badhri Jagan Sridharan wrote:
+> Stub from the spec:
+> "4.5.2.2.4.2 Exiting from AttachWait.SNK State
+> A Sink shall transition to Unattached.SNK when the state of both
+> the CC1 and CC2 pins is SNK.Open for at least tPDDebounce.
+> A DRP shall transition to Unattached.SRC when the state of both
+> the CC1 and CC2 pins is SNK.Open for at least tPDDebounce."
+> 
+> This change makes TCPM to wait in SNK_DEBOUNCED state until
+> CC1 and CC2 pins is SNK.Open for at least tPDDebounce. Previously,
+> TCPM resets the port if vbus is not present in PD_T_PS_SOURCE_ON.
+> This causes TCPM to loop continuously when connected to a
+> faulty power source that does not present vbus. Waiting in
+> SNK_DEBOUNCED also ensures that TCPM is adherant to
+> "4.5.2.2.4.2 Exiting from AttachWait.SNK State" requirements.
+> 
+> [ 6169.280751] CC1: 0 -> 0, CC2: 0 -> 5 [state TOGGLING, polarity 0, connected]
+> [ 6169.280759] state change TOGGLING -> SNK_ATTACH_WAIT [rev2 NONE_AMS]
+> [ 6169.280771] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev2 NONE_AMS]
+> [ 6169.282427] CC1: 0 -> 0, CC2: 5 -> 5 [state SNK_ATTACH_WAIT, polarity 0, connected]
+> [ 6169.450825] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
+> [ 6169.450834] pending state change SNK_DEBOUNCED -> PORT_RESET @ 480 ms [rev2 NONE_AMS]
+> [ 6169.930892] state change SNK_DEBOUNCED -> PORT_RESET [delayed 480 ms]
+> [ 6169.931296] disable vbus discharge ret:0
+> [ 6169.931301] Setting usb_comm capable false
+> [ 6169.932783] Setting voltage/current limit 0 mV 0 mA
+> [ 6169.932802] polarity 0
+> [ 6169.933706] Requesting mux state 0, usb-role 0, orientation 0
+> [ 6169.936689] cc:=0
+> [ 6169.936812] pending state change PORT_RESET -> PORT_RESET_WAIT_OFF @ 100 ms [rev2 NONE_AMS]
+> [ 6169.937157] CC1: 0 -> 0, CC2: 5 -> 0 [state PORT_RESET, polarity 0, disconnected]
+> [ 6170.036880] state change PORT_RESET -> PORT_RESET_WAIT_OFF [delayed 100 ms]
+> [ 6170.036890] state change PORT_RESET_WAIT_OFF -> SNK_UNATTACHED [rev2 NONE_AMS]
+> [ 6170.036896] Start toggling
+> [ 6170.041412] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
+> [ 6170.042973] CC1: 0 -> 0, CC2: 0 -> 5 [state TOGGLING, polarity 0, connected]
+> [ 6170.042976] state change TOGGLING -> SNK_ATTACH_WAIT [rev2 NONE_AMS]
+> [ 6170.042981] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev2 NONE_AMS]
+> [ 6170.213014] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
+> [ 6170.213019] pending state change SNK_DEBOUNCED -> PORT_RESET @ 480 ms [rev2 NONE_AMS]
+> [ 6170.693068] state change SNK_DEBOUNCED -> PORT_RESET [delayed 480 ms]
+> [ 6170.693304] disable vbus discharge ret:0
+> [ 6170.693308] Setting usb_comm capable false
+> [ 6170.695193] Setting voltage/current limit 0 mV 0 mA
+> [ 6170.695210] polarity 0
+> [ 6170.695990] Requesting mux state 0, usb-role 0, orientation 0
+> [ 6170.701896] cc:=0
+> [ 6170.702181] pending state change PORT_RESET -> PORT_RESET_WAIT_OFF @ 100 ms [rev2 NONE_AMS]
+> [ 6170.703343] CC1: 0 -> 0, CC2: 5 -> 0 [state PORT_RESET, polarity 0, disconnected]
+> 
+> Fixes: f0690a25a140b8 ("staging: typec: USB Type-C Port Manager (tcpm)")
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 4 ----
+>  1 file changed, 4 deletions(-)
 
-Scheduler BPF is a great idea.
-Thanks for the work.
 
-Scheduler BPF won=E2=80=99t be a small feature,  I think we=E2=80=99d bette=
-r give a
-summary of possible hooks it may add first.
-We must have a *basic rule* to control what it will tend to be to
-avoid adding BPF hooks here and there.
-I haven=E2=80=99t found a clear rule yet, but maybe we can learn it from
-netfilter, which has 5 basic hooks.
-Regarding the scheduler BPF hooks, some possible basic hooks may be:
-  - Hook for Enqueue
-  - Hook for Dequeue
-  - Hook for Put Prev Task
-   - Hook for Set Next Task
+<formletter>
 
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
 
-> An example of an userspace part, which loads some simple hooks is availab=
-le
-> here [3]. It's very simple, provided only to simplify playing with the pr=
-ovided
-> kernel patches.
->
-
-You=E2=80=99d better add this userspace code into samples/bpf/.
-
-
-[Some error occurs in my mail client, so I resend it]
-
-
---
-Thanks
-Yafang
+</formletter>
