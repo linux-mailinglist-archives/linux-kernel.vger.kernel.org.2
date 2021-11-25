@@ -2,143 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13F945D332
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:35:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F1F45D334
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:39:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244547AbhKYCis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 21:38:48 -0500
-Received: from smtpbguseast1.qq.com ([54.204.34.129]:51046 "EHLO
-        smtpbguseast1.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237790AbhKYCgm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 21:36:42 -0500
-X-QQ-GoodBg: 1
-X-QQ-SSF: B0400000000000F0
-X-QQ-FEAT: 7jw2iSiCazoXTPOXxNx8TAAgWRd1IUVbzNWBGROABMxUOynXHfLNm4LGI7VT9
-        b+HLpp8Rbw405UztceRDfw6DiXzm1a7BcVEoFspEDQXtTIlxzwQ4AxLVptOY+9bSsl/fmxh
-        yJvwFhW/J5e1qZu53AGxxc42Mv/NH4L+l4uujdFbh09vZbw/7atIBCjh6uETM83/P7JthU9
-        NIi2/xOKU0jroeLMz2yFT8zNL5kqpR4BrMKqTwPz3AzD6PRFBFIZZCaNF966AtdiYuwi8bz
-        XXG2jmamh+KbaCuc1j2WOTGj8OqR65JCFEQ1na2V5X8nYVG7M9Fh5PMdw5pNqaml89Pjfux
-        XzyqdVA2AwrnXHQa1974Jr/El0oEnPxpJYybvaF4QghisARRBBEkhfA1lClF5uwERlMn/8f
-X-QQ-BUSINESS-ORIGIN: 2
-X-Originating-IP: 113.57.13.187
-X-QQ-STYLE: 
-X-QQ-mid: logic531t1637807603t8976761
-From:   "=?utf-8?B?bGlhbnpoaSBjaGFuZw==?=" <changlianzhi@uniontech.com>
-To:     "=?utf-8?B?ZG1pdHJ5LnRvcm9raG92?=" <dmitry.torokhov@gmail.com>
-Cc:     "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>,
-        "=?utf-8?B?R3JlZyBLSA==?=" <gregkh@linuxfoundation.org>,
-        "=?utf-8?B?amlyaXNsYWJ5?=" <jirislaby@kernel.org>,
-        "=?utf-8?B?QW5keSBTaGV2Y2hlbmtv?=" 
-        <andriy.shevchenko@linux.intel.com>,
-        "=?utf-8?B?MjgyODI3OTYx?=" <282827961@qq.com>
-Subject: Re: [PATCH v14] tty: Fix the keyboard led light display problem
-Mime-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: base64
-Date:   Thu, 25 Nov 2021 10:33:23 +0800
-X-Priority: 3
-Message-ID: <tencent_5573CD56296D5E2F4C59A664@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <20211108055139.7202-1-changlianzhi@uniontech.com>
-        <YYtpr/bP0HqBsmbW@google.com>
-        <tencent_032E4FE80FDB8EA164AE0644@qq.com>
-In-Reply-To: <tencent_032E4FE80FDB8EA164AE0644@qq.com>
-X-QQ-ReplyHash: 4029738618
-X-QQ-SENDSIZE: 520
-Received: from qq.com (unknown [127.0.0.1])
-        by smtp.qq.com (ESMTP) with SMTP
-        id ; Thu, 25 Nov 2021 10:33:25 +0800 (CST)
-Feedback-ID: logic:uniontech.com:qybgforeign:qybgforeign2
-X-QQ-Bgrelay: 1
+        id S238553AbhKYCm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 21:42:28 -0500
+Received: from mga02.intel.com ([134.134.136.20]:37414 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236617AbhKYCk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 21:40:27 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="222649708"
+X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
+   d="scan'208";a="222649708"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 18:37:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
+   d="scan'208";a="650608450"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 24 Nov 2021 18:37:14 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mq4dO-0005dF-3D; Thu, 25 Nov 2021 02:37:14 +0000
+Date:   Thu, 25 Nov 2021 10:36:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: arch/powerpc/include/asm/kvm_ppc.h:978:1: sparse: sparse: incorrect
+ type in assignment (different base types)
+Message-ID: <202111251050.QcFaOy3h-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+IE9uIE1vbiwgTm92IDA4LCAyMDIxIGF0IDAxOjUxOjM5UE0gKzA4MDAsIGxpYW56aGkg
-Y2hhbmcgd3JvdGU6DQo+ID4gPiBTd2l0Y2hpbmcgZnJvbSB0aGUgZGVza3RvcCBlbnZpcm9u
-bWVudCB0byB0aGUgdHR5IGVudmlyb25tZW50LA0KPiA+ID4gdGhlIHN0YXRlIG9mIHRoZSBr
-ZXlib2FyZCBsZWQgbGlnaHRzIGFuZCB0aGUgc3RhdGUgb2YgdGhlIGtleWJvYXJkDQo+ID4g
-PiBsb2NrIGFyZSBpbmNvbnNpc3RlbnQuIFRoaXMgaXMgYmVjYXVzZSB0aGUgYXR0cmlidXRl
-IGtiLT5rYmRtb2RlDQo+ID4gPiBvZiB0aGUgdHR5IGJvdW5kIGluIHRoZSBkZXNrdG9wIGVu
-dmlyb25tZW50IChYb3JnKSBpcyBzZXQgdG8NCj4gPiA+IFZDX09GRiwgd2hpY2ggY2F1c2Vz
-IHRoZSBsZWRzdGF0ZSBhbmQga2ItPmxlZGZsYWdzdGF0ZQ0KDQo+ID4gV2Uga25vdyB0aGF0
-IFhvcmcgc2V0cyBrYmRtb2RlIG1vZGUgdG8gVkNfT0ZGLCBidXQgaXQgZG9lcyBub3QgbWVh
-biB0aGF0DQo+ID4geW91IGNhbiBzYXkgZm9yIHN1cmUgdGhhdCBpdCBpcyBYb3JnIGluc3Rh
-bmNlIHRoYXQgY29udHJvbHMgYSBWVCBzaW1wbHkNCj4gPiBieSBvYnNlcnZpbmcga2ItPmti
-ZG1vZGUuIFRoZXJlIG1heSBiZSBzb21ldGhpbmcgZWxzZSBlbnRpcmVseS4gVGhhdCBpcw0K
-PiA+IHdoeSB5b3Ugd2FudCBkcml2ZXJzL3R0eS92dC9rZXlib2FyZC5jIHRvIHJlc2V0IExF
-RHMgYW5kIGxlYXZlIGl0IHRvDQo+ID4gd2hvZXZlciBpcyBjb250cm9sbGluZyBWVCB0byBz
-ZXQgdGhlbSB0byBzb21ldGhpbmcgZWxzZSBpZiBpdCBpcw0KPiA+IGRlc2lyZWQuDQoNCj4g
-RG9lcyB0aGlzIG1lYW4gbGV0IG1lIGNoYW5nZSB0aGUgZGVzY3JpcHRpb24gaW5mb3JtYXRp
-b24/IE9yIGlzIHRoZQ0KPiBqdWRnbWVudCBvZiBWQ19PRkYgaW4gcGF0Y2ggaW5jb3JyZWN0
-Pw0KPiBUaGUgc2V0dXAgbWV0aG9kIG9mIFhvcmcgbWVudGlvbmVkIGhlcmUgaXMganVzdCB0
-byBkZXNjcmliZSBhIHByb2Nlc3MNCj4gaW4gd2hpY2ggSSBmb3VuZCB0aGUgcHJvYmxlbTsN
-Cj4gTXkgdW5kZXJzdGFuZGluZyBpcyB0aGF0IHdoZW4gdGhlIG1vZGUgb2Yga2JkbW9kZSBp
-cyBzZXQgdG8gVkNfT0ZGLA0KPiBWVCBzaG91bGRuJ3QgaW50ZXJmZXJlIHdpdGggdGhlIHN0
-YXRlIG9mIHRoZSBrZXlib2FyZCBsaWdodCwgcmlnaHQ/IFRoaXMgaXMNCj4gaG93IGZ1bmN0
-aW9ucyBzdWNoIGFzIGtiZF9rZXljb2RlKCkgYXJlIGltcGxlbWVudGVkLg0KPiBXaGVuIFZU
-IGlzIHN3aXRjaGVkLCBpZiB0aGUgVlQgbW9kZSBpcyBWQ19PRkYsIHRoZXJlIGlzIGFsc28g
-bm8gbmVlZA0KPiB0byBzZXQgdGhlIHN0YXRlIG9mIHRoZSBrZXlib2FyZCBsaWdodC4gSSB0
-aGluayB0aGlzIGlzIHJlYXNvbmFibGUuDQoNCj4gPiA+ID4gdmFsdWVzIG9mIHRoZSBib3Vu
-ZCB0dHkgdG8gYWx3YXlzIGJlIDAsIHdoaWNoIGNhdXNlcyB0aGUgc3dpdGNoDQo+ID4gPiA+
-IGZyb20gdGhlIGRlc2t0b3AgV2hlbiB0byB0aGUgdHR5IGVudmlyb25tZW50LCB0aGUgTEVE
-IGxpZ2h0DQo+ID4gPiA+IHN0YXR1cyBpcyBpbmNvbnNpc3RlbnQgd2l0aCB0aGUga2V5Ym9h
-cmQgbG9jayBzdGF0dXMuDQo+ID4gPiA+IEluIG9yZGVyIHRvIGVuc3VyZSB0aGF0IHRoZSBr
-ZXlib2FyZCBMRUQgbGlnaHRzIGFyZSBkaXNwbGF5ZWQNCj4gPiA+ID4gbm9ybWFsbHkgZHVy
-aW5nIHRoZSBWVCBzd2l0Y2hpbmcgcHJvY2Vzcywgd2hlbiB0aGUgVlQgaXMNCj4gPiA+ID4g
-c3dpdGNoZWQsIHRoZSBjdXJyZW50IFZUIExFRCBjb25maWd1cmF0aW9uIGlzIGZvcmNlZCB0
-byBiZSBpc3N1ZWQuDQo+ID4gPg0KPiA+ID4gU2lnbmVkLW9mZi1ieTogbGlhbnpoaSBjaGFu
-ZyA8Y2hhbmdsaWFuemhpQHVuaW9udGVjaC5jb20+DQo+ID4gPiBTdWdnZXN0ZWQtYnk6IGRt
-aXRyeS50b3Jva2hvdiA8ZG1pdHJ5LnRvcm9raG92QGdtYWlsLmNvbT4NCj4gPiA+IFN1Z2dl
-c3RlZC1ieTogQW5keSBTaGV2Y2hlbmtvIDxhbmRyaXkuc2hldmNoZW5rb0BsaW51eC5pbnRl
-bC5jb20+DQo+ID4gPiAtLS0NCj4gPiA+ICB2MTM6DQo+ID4gPiAgVGhlIGtiZF9iaCBmdW5j
-dGlvbiBubyBsb25nZXIgaGFuZGxlcyB0aGUgImtiLT5rYmRtb2RlID09IFZDX09GRiINCj4g
-PiA+ICBzY2VuZSwgYnV0IHB1dHMgdGhpcyBwcm9jZXNzIGluIHZ0X3NldF9sZWRzX2NvbXB1
-dGVfc2hpZnRzdGF0ZQ0KPiA+ID4gIHRvZ2V0aGVyLiBCZWNhdXNlIHRoZSBjdXJyZW50IGNp
-cmN1bXZlbnRpb24gaXMgdGhhdCBvdGhlciB0dHlzDQo+ID4gPiAgc3dpdGNoIHRvIHRoZSBY
-b3JnLWJvdW5kIHR0eSBzY2VuZSwgc28gdGhpcyBCZXR0ZXIuDQo+ID4gPiAgdjE0Og0KPiA+
-ID4gIFNvcnJ5LCBJIGZvcmdvdCB0byB2ZXJpZnkgdGhlIGZvcm1hdCwgaXQgaXMgZ29vZCBu
-b3cuDQo+ID4gPg0KPiA+ID4gIGRyaXZlcnMvdHR5L3Z0L2tleWJvYXJkLmMgfCAxOSArKysr
-KysrKysrKysrKysrKystDQo+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDE4IGluc2VydGlvbnMo
-KyksIDEgZGVsZXRpb24oLSkNCj4gPiA+DQo+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy90
-dHkvdnQva2V5Ym9hcmQuYyBiL2RyaXZlcnMvdHR5L3Z0L2tleWJvYXJkLmMNCj4gPiA+IGlu
-ZGV4IGM3ZmJiY2RjYzM0Ni4uOTFlMWM1ZDkyMDI5IDEwMDY0NA0KPiA+ID4gLS0tIGEvZHJp
-dmVycy90dHkvdnQva2V5Ym9hcmQuYw0KPiA+ID4gKysrIGIvZHJpdmVycy90dHkvdnQva2V5
-Ym9hcmQuYw0KPiA+ID4gPiBAQCAtMTUzLDYgKzE1Myw3IEBAIHN0YXRpYyBpbnQgc2hpZnRf
-c3RhdGUgPSAwOw0KPiA+ID4NCj4gPiA+ICBzdGF0aWMgdW5zaWduZWQgaW50IGxlZHN0YXRl
-ID0gLTFVOyAvKiB1bmRlZmluZWQgKi8NCj4gPiA+ICBzdGF0aWMgdW5zaWduZWQgY2hhciBs
-ZWRpb2N0bDsNCj4gPiA+ICtzdGF0aWMgYm9vbCB2dF9zd2l0Y2g7DQo+ID4gPg0KPiA+ID4g
-IC8qDQo+ID4gPiAgICogTm90aWZpZXIgbGlzdCBmb3IgY29uc29sZSBrZXlib2FyZCBldmVu
-dHMNCj4gPiA+IEBAIC00MTIsOSArNDEzLDIwIEBAIHN0YXRpYyB2b2lkIGRvX2NvbXB1dGVf
-c2hpZnRzdGF0ZSh2b2lkKQ0KPiA+ID4gIC8qIFdlIHN0aWxsIGhhdmUgdG8gZXhwb3J0IHRo
-aXMgbWV0aG9kIHRvIHZ0LmMgKi8NCj4gPiA+ICB2b2lkIHZ0X3NldF9sZWRzX2NvbXB1dGVf
-c2hpZnRzdGF0ZSh2b2lkKQ0KPiA+ID4gIHsNCj4gPiA+ICsgc3RydWN0IGtiZF9zdHJ1Y3Qg
-KmtiOw0KPiA+ID4gIHVuc2lnbmVkIGxvbmcgZmxhZ3M7DQo+ID4gPg0KPiA+ID4gLSBzZXRf
-bGVkcygpOw0KPiA+ID4gKyAvKiBYb3JnIHdpbGwgYmluZCBhIHR0eSwgdGhlIGtiLT5rYmRt
-b2RlIG9mIHRoaXMgdHR5IHdpbGwgYmUgc2V0IHRvDQo+ID4gPiArICogVkNfT0ZGLCBhbmQg
-dGhpcyB0dHkgd2lsbCBubyBsb25nZXIgc2V0IHRoZSBrZXlib2FyZCBsaWdodC4gSWYNCj4g
-PiA+ICsgKiB0aGVyZSBpcyBubyBzdWNoIHJlc3RyaWN0aW9uLCB3aGVuIHN3aXRjaGluZyBm
-cm9tIG90aGVyIHR0eSB0bw0KPiA+ID4gKyAqIFhvcmctYm91bmQgdHR5LCB0aGUgdHR5IHdp
-bGwgc2V0IHRoZSBrZXlib2FyZCBsaWdodCwgd2hpY2ggaXMNCj4gPiA+ICsgKiB1bnJlYXNv
-bmFibGUNCj4gPiA+ICsgKi8NCj4gPiA+ICsga2IgPSBrYmRfdGFibGUgKyBmZ19jb25zb2xl
-Ow0KPiA+ID4gKyBpZiAoa2ItPmtiZG1vZGUgIT0gVkNfT0ZGKSB7DQo+ID4gPiArIHZ0X3N3
-aXRjaCA9IHRydWU7DQo+ID4gPiArIHNldF9sZWRzKCk7DQo+ID4gPiArIH0NCj4gPiA+DQo+
-ID4gPiAgc3Bpbl9sb2NrX2lycXNhdmUoJmtiZF9ldmVudF9sb2NrLCBmbGFncyk7DQo+ID4g
-PiAgZG9fY29tcHV0ZV9zaGlmdHN0YXRlKCk7DQo+ID4gPiBAQCAtMTI1NSw2ICsxMjY3LDEx
-IEBAIHN0YXRpYyB2b2lkIGtiZF9iaChzdHJ1Y3QgdGFza2xldF9zdHJ1Y3QgKnVudXNlZCkN
-Cj4gPiA+ICBsZWRzIHw9ICh1bnNpZ25lZCBpbnQpa2JkLT5sb2Nrc3RhdGUgPDwgODsNCj4g
-PiA+ICBzcGluX3VubG9ja19pcnFyZXN0b3JlKCZsZWRfbG9jaywgZmxhZ3MpOw0KPiA+ID4N
-Cj4gPiA+ICsgaWYgKHZ0X3N3aXRjaCkgew0KPiA+ID4gKyBsZWRzdGF0ZSA9IH5sZWRzOw0K
-PiA+ID4gKyB2dF9zd2l0Y2ggPSBmYWxzZTsNCj4gPiA+ICsgfQ0KPiA+ID4gKw0KPiA+ID4g
-IGlmIChsZWRzICE9IGxlZHN0YXRlKSB7DQo+ID4gPiAga2JkX3Byb3BhZ2F0ZV9sZWRfc3Rh
-dGUobGVkc3RhdGUsIGxlZHMpOw0KPiA+ID4gIGxlZHN0YXRlID0gbGVkczsNCj4gPiA+IC0t
-DQoNCkhpIGZyaWVuZHMsIGhvdyBpcyB0aGlzIHBhdGNoIHByb2dyZXNzaW5nIG5vdywgZG8g
-SSBuZWVkIHRvIG1vZGlmeSBpdCBmdXJ0aGVyPw0KDQpUaGFua3MuDQotLQ0KbGlhbnpoaSBj
-aGFuZw==
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5f53fa508db098c9d372423a6dac31c8a5679cdf
+commit: d991bb1c8da842a2a0b9dc83b1005e655783f861 include/linux/compiler-gcc.h: sparse can do constant folding of __builtin_bswap*()
+date:   7 months ago
+config: powerpc-randconfig-s031-20211028 (https://download.01.org/0day-ci/archive/20211125/202111251050.QcFaOy3h-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 11.2.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d991bb1c8da842a2a0b9dc83b1005e655783f861
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout d991bb1c8da842a2a0b9dc83b1005e655783f861
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=powerpc 
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
 
+sparse warnings: (new ones prefixed by >>)
+   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     expected unsigned int [usertype] int_pending
+   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     got restricted __le32 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] dar @@     got restricted __be64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse:     expected unsigned long long [usertype] dar
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse:     got restricted __be64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] dar @@     got restricted __le64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse:     expected unsigned long long [usertype] dar
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse:     got restricted __le64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] dsisr @@     got restricted __be32 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse:     expected unsigned int [usertype] dsisr
+   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse:     got restricted __be32 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] dsisr @@     got restricted __le32 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse:     expected unsigned int [usertype] dsisr
+   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse:     got restricted __le32 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:959:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:959:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] int_pending @@     got restricted __be32 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     expected unsigned int [usertype] int_pending
+   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     got restricted __be32 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] int_pending @@     got restricted __le32 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     expected unsigned int [usertype] int_pending
+   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     got restricted __le32 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] int_pending @@     got restricted __be32 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     expected unsigned int [usertype] int_pending
+   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     got restricted __be32 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] int_pending @@     got restricted __le32 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     expected unsigned int [usertype] int_pending
+   arch/powerpc/include/asm/kvm_ppc.h:977:1: sparse:     got restricted __le32 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:968:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:965:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:965:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:960:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:960:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:961:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:961:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:978:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:978:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:979:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:979:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:980:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:980:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:981:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:981:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] srr0 @@     got restricted __be64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     expected unsigned long long [usertype] srr0
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     got restricted __be64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] srr0 @@     got restricted __le64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     expected unsigned long long [usertype] srr0
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     got restricted __le64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:965:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] srr1 @@     got restricted __be64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:965:1: sparse:     expected unsigned long long [usertype] srr1
+   arch/powerpc/include/asm/kvm_ppc.h:965:1: sparse:     got restricted __be64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:965:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] srr1 @@     got restricted __le64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:965:1: sparse:     expected unsigned long long [usertype] srr1
+   arch/powerpc/include/asm/kvm_ppc.h:965:1: sparse:     got restricted __le64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:960:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg0 @@     got restricted __be64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:960:1: sparse:     expected unsigned long long [usertype] sprg0
+   arch/powerpc/include/asm/kvm_ppc.h:960:1: sparse:     got restricted __be64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:960:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg0 @@     got restricted __le64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:960:1: sparse:     expected unsigned long long [usertype] sprg0
+   arch/powerpc/include/asm/kvm_ppc.h:960:1: sparse:     got restricted __le64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:961:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg1 @@     got restricted __be64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:961:1: sparse:     expected unsigned long long [usertype] sprg1
+   arch/powerpc/include/asm/kvm_ppc.h:961:1: sparse:     got restricted __be64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:961:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg1 @@     got restricted __le64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:961:1: sparse:     expected unsigned long long [usertype] sprg1
+   arch/powerpc/include/asm/kvm_ppc.h:961:1: sparse:     got restricted __le64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg2 @@     got restricted __be64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse:     expected unsigned long long [usertype] sprg2
+   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse:     got restricted __be64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg2 @@     got restricted __le64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse:     expected unsigned long long [usertype] sprg2
+   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse:     got restricted __le64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg3 @@     got restricted __be64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse:     expected unsigned long long [usertype] sprg3
+   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse:     got restricted __be64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg3 @@     got restricted __le64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse:     expected unsigned long long [usertype] sprg3
+   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse:     got restricted __le64 [usertype]
+>> arch/powerpc/include/asm/kvm_ppc.h:978:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg4 @@     got restricted __be64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:978:1: sparse:     expected unsigned long long [usertype] sprg4
+   arch/powerpc/include/asm/kvm_ppc.h:978:1: sparse:     got restricted __be64 [usertype]
+>> arch/powerpc/include/asm/kvm_ppc.h:978:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg4 @@     got restricted __le64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:978:1: sparse:     expected unsigned long long [usertype] sprg4
+   arch/powerpc/include/asm/kvm_ppc.h:978:1: sparse:     got restricted __le64 [usertype]
+>> arch/powerpc/include/asm/kvm_ppc.h:979:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg5 @@     got restricted __be64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:979:1: sparse:     expected unsigned long long [usertype] sprg5
+   arch/powerpc/include/asm/kvm_ppc.h:979:1: sparse:     got restricted __be64 [usertype]
+>> arch/powerpc/include/asm/kvm_ppc.h:979:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg5 @@     got restricted __le64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:979:1: sparse:     expected unsigned long long [usertype] sprg5
+   arch/powerpc/include/asm/kvm_ppc.h:979:1: sparse:     got restricted __le64 [usertype]
+>> arch/powerpc/include/asm/kvm_ppc.h:980:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg6 @@     got restricted __be64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:980:1: sparse:     expected unsigned long long [usertype] sprg6
+   arch/powerpc/include/asm/kvm_ppc.h:980:1: sparse:     got restricted __be64 [usertype]
+>> arch/powerpc/include/asm/kvm_ppc.h:980:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg6 @@     got restricted __le64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:980:1: sparse:     expected unsigned long long [usertype] sprg6
+   arch/powerpc/include/asm/kvm_ppc.h:980:1: sparse:     got restricted __le64 [usertype]
+>> arch/powerpc/include/asm/kvm_ppc.h:981:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg7 @@     got restricted __be64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:981:1: sparse:     expected unsigned long long [usertype] sprg7
+   arch/powerpc/include/asm/kvm_ppc.h:981:1: sparse:     got restricted __be64 [usertype]
+>> arch/powerpc/include/asm/kvm_ppc.h:981:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] sprg7 @@     got restricted __le64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:981:1: sparse:     expected unsigned long long [usertype] sprg7
+   arch/powerpc/include/asm/kvm_ppc.h:981:1: sparse:     got restricted __le64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse: sparse: cast to restricted __be32
+   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse: sparse: cast to restricted __le32
+   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse: sparse: cast to restricted __be32
+   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse: sparse: cast to restricted __le32
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] dar @@     got restricted __be64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse:     expected unsigned long long [usertype] dar
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse:     got restricted __be64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] dar @@     got restricted __le64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse:     expected unsigned long long [usertype] dar
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse:     got restricted __le64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] dsisr @@     got restricted __be32 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse:     expected unsigned int [usertype] dsisr
+   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse:     got restricted __be32 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] dsisr @@     got restricted __le32 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse:     expected unsigned int [usertype] dsisr
+   arch/powerpc/include/asm/kvm_ppc.h:976:1: sparse:     got restricted __le32 [usertype]
 
+vim +978 arch/powerpc/include/asm/kvm_ppc.h
+
+1dc0c5b88cae1c2 Bharat Bhushan 2014-07-17  958  
+5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  959  SHARED_WRAPPER(critical, 64)
+1dc0c5b88cae1c2 Bharat Bhushan 2014-07-17  960  SHARED_SPRNG_WRAPPER(sprg0, 64, SPRN_GSPRG0)
+1dc0c5b88cae1c2 Bharat Bhushan 2014-07-17  961  SHARED_SPRNG_WRAPPER(sprg1, 64, SPRN_GSPRG1)
+1dc0c5b88cae1c2 Bharat Bhushan 2014-07-17  962  SHARED_SPRNG_WRAPPER(sprg2, 64, SPRN_GSPRG2)
+1dc0c5b88cae1c2 Bharat Bhushan 2014-07-17  963  SHARED_SPRNG_WRAPPER(sprg3, 64, SPRN_GSPRG3)
+1dc0c5b88cae1c2 Bharat Bhushan 2014-07-17  964  SHARED_SPRNG_WRAPPER(srr0, 64, SPRN_GSRR0)
+1dc0c5b88cae1c2 Bharat Bhushan 2014-07-17  965  SHARED_SPRNG_WRAPPER(srr1, 64, SPRN_GSRR1)
+1dc0c5b88cae1c2 Bharat Bhushan 2014-07-17  966  SHARED_SPRNG_WRAPPER(dar, 64, SPRN_GDEAR)
+dc168549d9a0fb5 Bharat Bhushan 2014-07-17  967  SHARED_SPRNG_WRAPPER(esr, 64, SPRN_GESR)
+5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  968  SHARED_WRAPPER_GET(msr, 64)
+5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  969  static inline void kvmppc_set_msr_fast(struct kvm_vcpu *vcpu, u64 val)
+5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  970  {
+5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  971  	if (kvmppc_shared_big_endian(vcpu))
+5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  972  	       vcpu->arch.shared->msr = cpu_to_be64(val);
+5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  973  	else
+5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  974  	       vcpu->arch.shared->msr = cpu_to_le64(val);
+5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  975  }
+5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  976  SHARED_WRAPPER(dsisr, 32)
+5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  977  SHARED_WRAPPER(int_pending, 32)
+5deb8e7ad8ac7e3 Alexander Graf 2014-04-24 @978  SHARED_WRAPPER(sprg4, 64)
+5deb8e7ad8ac7e3 Alexander Graf 2014-04-24 @979  SHARED_WRAPPER(sprg5, 64)
+5deb8e7ad8ac7e3 Alexander Graf 2014-04-24 @980  SHARED_WRAPPER(sprg6, 64)
+5deb8e7ad8ac7e3 Alexander Graf 2014-04-24 @981  SHARED_WRAPPER(sprg7, 64)
+5deb8e7ad8ac7e3 Alexander Graf 2014-04-24  982  
+
+:::::: The code at line 978 was first introduced by commit
+:::::: 5deb8e7ad8ac7e3fcdfa042acff617f461b361c2 KVM: PPC: Make shared struct aka magic page guest endian
+
+:::::: TO: Alexander Graf <agraf@suse.de>
+:::::: CC: Alexander Graf <agraf@suse.de>
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
