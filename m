@@ -2,99 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFAC245E181
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:20:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8260745E17F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357004AbhKYUX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 15:23:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234768AbhKYUVy (ORCPT
+        id S1356745AbhKYUXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 15:23:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34797 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1356928AbhKYUVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 15:21:54 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9408C0617A0;
-        Thu, 25 Nov 2021 12:14:12 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id b12so13996648wrh.4;
-        Thu, 25 Nov 2021 12:14:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cGRbAmIntrNReggdNZPPRZCbQxv16T4ePIwmHccKtII=;
-        b=qGhk6U6lUDkX6iODY9J/rlWrlJjsTzcluDUgPLZx/ZhjyEy/fm5dsevvfwJ6UsaZjX
-         wejDqYw1o3KuUsXIbt5NhbfwrHMOQxaLxq2objnavwXBG+On+8ytBWEngnIuZ6Lrzx7h
-         93Yr4DyvNbTrO3nQy+X+w2+4j6ebMgM0ttWo0jJk9uXz4rlh+5rH7ZQZavW5OF5Y6EZk
-         UB1YC7XVagT+jC2egknyRlXBiDQD3JCg9ePOrYFqR8F4Wt22lE1pdsj/WvNEC9fTDpCb
-         sr/QIY9H+nAr1UlqgIN0xgklRsYjqgRLIpPI8j7m7NN9EfIwcoZXWd/eUNONkOywHr6B
-         MIHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cGRbAmIntrNReggdNZPPRZCbQxv16T4ePIwmHccKtII=;
-        b=x4jMuPZvKyWExU/tjHfRiNnpiIPXNy51mP29EOaHYaeQ7KKhXoK0SVAQhaJOyORFny
-         x3pk5EoFJjoXC4y0cK6rMfUSw92BfCeEpZ2z0eyR6CI6hKROiub0+Trd8DvSRR8d+0F9
-         YnZ07uyjF7alfv0eL7rKtD5Vsx8YDSsg5RWcrByVKhowka1oWtff+Fdrp4MX4yVjybGc
-         g2ZFaN6zZA9H8LnUtw6QRpMiUnl69v4jOKBdwO3iZRZ12bkkX3A2xYd9iNHVzNoD8wX2
-         LIZsC6FFzThiQhTbN8R+/kZqPmuzfKeVkCB0/GCEyBLZa927WxyXQqJIzfdNJObtfs8S
-         f67g==
-X-Gm-Message-State: AOAM531lhlxcLxlqA4Wu+3NcEk90s1BrYbjbx5dB103RLKDYodJ/Pd7C
-        Lky1j7oYWj5h74I5eCK8f9o=
-X-Google-Smtp-Source: ABdhPJw1bH0RcFBIJErZH2jKj2I70LTvQb6zLEOeB6YKXg64OyIGn+w24wOc8XhUZ97eLv7IY1yNeQ==
-X-Received: by 2002:a5d:614f:: with SMTP id y15mr9385395wrt.587.1637871251449;
-        Thu, 25 Nov 2021 12:14:11 -0800 (PST)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id v2sm3578376wmc.36.2021.11.25.12.14.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 12:14:11 -0800 (PST)
-Date:   Thu, 25 Nov 2021 20:14:09 +0000
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/153] 5.10.82-rc2 review
-Message-ID: <YZ/ukR9KkNZkCQx5@debian>
-References: <20211125092029.973858485@linuxfoundation.org>
+        Thu, 25 Nov 2021 15:21:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637871486;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vWvDIzaR2bx+Vdo3MkX6KaH7zFuYCjV3qRrLqKSpquM=;
+        b=QRJ6X3CfldMZRvmBzVwvKX5YsnLMY2pG1hqGe1ZJhiURS7DnfN6ah7lzdJ8V6rU0qTGPnC
+        r+TGMX98fRp/5VmdEm+EUkwfzL5rEKGRT08Xkmz/nAChRHsp+jF5g52X3hObbBWXNm37D8
+        vaop1WEzWpEJAt1lVg82JDLrzelNa6c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-58-s5dDJZ-2OV2JjHk2k2lTyw-1; Thu, 25 Nov 2021 15:18:03 -0500
+X-MC-Unique: s5dDJZ-2OV2JjHk2k2lTyw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 426FF8042E2;
+        Thu, 25 Nov 2021 20:18:01 +0000 (UTC)
+Received: from [10.39.192.99] (unknown [10.39.192.99])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0CEF81000324;
+        Thu, 25 Nov 2021 20:17:48 +0000 (UTC)
+Message-ID: <620e127f-59d3-ccad-e0f6-39ca9ee7098e@redhat.com>
+Date:   Thu, 25 Nov 2021 21:17:47 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211125092029.973858485@linuxfoundation.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [RFC PATCH v3 46/59] KVM: VMX: Move register caching logic to
+ common code
+Content-Language: en-US
+To:     Thomas Gleixner <tglx@linutronix.de>, isaku.yamahata@intel.com,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <cover.1637799475.git.isaku.yamahata@intel.com>
+ <2f3c1207f66f44fdd2f3eb0809d552f5632e4b41.1637799475.git.isaku.yamahata@intel.com>
+ <87mtlshu66.ffs@tglx>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <87mtlshu66.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Thu, Nov 25, 2021 at 10:23:48AM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.82 release.
-> There are 153 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 11/25/21 21:11, Thomas Gleixner wrote:
+>>
+>> Use kvm_x86_ops.cache_reg() in ept_update_paging_mode_cr0() rather than
+>> trying to expose vt_cache_reg() to vmx.c, even though it means taking a
+>> retpoline.  The code runs if and only if EPT is enabled but unrestricted
+>> guest.
+> This sentence does not parse because it's not a proper sentence.
 > 
-> Responses should be made by Sat, 27 Nov 2021 09:20:04 +0000.
-> Anything received after that time might be too late.
+>> Only one generation of CPU, Nehalem, supports EPT but not
+>> unrestricted guest, and disabling unrestricted guest without also
+>> disabling EPT is, to put it bluntly, dumb.
+> This one is only significantly better and lacks an explanation what this
+> means for the dumb case.
 
-Build test:
-mips (gcc version 11.2.1 20211112): 63 configs -> no new failure
-arm (gcc version 11.2.1 20211112): 105 configs -> no new failure
-arm64 (gcc version 11.2.1 20211112): 3 configs -> no failure
-x86_64 (gcc version 11.2.1 20211112): 4 configs -> no failure
+Well, it means a retpoline (see paragraph before).  However, I'm not 
+sure why it one wouldn't create a vt.h header with all vt_* functions.
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-arm64: Booted on rpi4b (4GB model). No regression. [2]
-
-[1]. https://openqa.qa.codethink.co.uk/tests/430
-[2]. https://openqa.qa.codethink.co.uk/tests/427
-
-
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
---
-Regards
-Sudip
+Paolo
 
