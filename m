@@ -2,85 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 714C845E203
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:13:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BDC945E211
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:17:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357223AbhKYVQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 16:16:58 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:54874 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357074AbhKYVO5 (ORCPT
+        id S1357201AbhKYVUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 16:20:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357161AbhKYVSV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 16:14:57 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637874704;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ei6BbjfXmiegGIxn055IaCo1HunjXkDEFUAK/rZBh+s=;
-        b=qmRj7ZHqJt9kjsiKoHAU2q7qkuyptXUW9/viq1tuDnZ+OLsMtLYos2M7ykQ+F1F1BvMxsz
-        sBxVHNj2Q6GXMnsXvG+M5EmjHTmyHXhJ2HexnNaVejA1HBw2nKsUrU1j8UUHs2FsuO1l5B
-        9QqOcRmP0BRZHzlwxHOAhF1kw37y9kWjdrhtebllpV4bWbDMzsMJ/MLPdtrovX6Bky305D
-        Bm78L6y3z0/0VfKBoqfCGuk1j6TxSDyd8XPrsxYNgqYO98MDMNCXGyVY3APBhGoK0o7DQK
-        t5VuNtoaC1JIyQbq1b5ANQD+9rChs3b8ZtX94zIJW8wa+iOIFI/uasB+Q+t/OA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637874704;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ei6BbjfXmiegGIxn055IaCo1HunjXkDEFUAK/rZBh+s=;
-        b=+LWDPfJHUUZ+SyomF1JSF094i7WZfugEzLom/j2USfZswmkfp222rQU/Ued8bCkGYAzPOO
-        TM2sq8EqRe7fyXDQ==
-To:     Paolo Bonzini <pbonzini@redhat.com>, isaku.yamahata@intel.com,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [RFC PATCH v3 26/59] KVM: x86: Introduce vm_teardown() hook in
- kvm_arch_vm_destroy()
-In-Reply-To: <21e8d65c-62bd-b410-1260-1ff4b0e0c251@redhat.com>
-References: <cover.1637799475.git.isaku.yamahata@intel.com>
- <1fa2d0db387a99352d44247728c5b8ae5f5cab4d.1637799475.git.isaku.yamahata@intel.com>
- <87a6hsj9wd.ffs@tglx> <21e8d65c-62bd-b410-1260-1ff4b0e0c251@redhat.com>
-Date:   Thu, 25 Nov 2021 22:11:43 +0100
-Message-ID: <8735nkhre8.ffs@tglx>
+        Thu, 25 Nov 2021 16:18:21 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC82C06175A;
+        Thu, 25 Nov 2021 13:14:47 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id i13so5612363qvm.1;
+        Thu, 25 Nov 2021 13:14:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rcsEiTi+eHQy+XVMsalejRcUe2GieQgt0POka9myaY8=;
+        b=BGxgmUy0j0r784aRhXWt0laZ0/z2UWQpi8lZ7m7O3B15h3S1HoPUBaBFEhB3ri5fBi
+         h1U5knTqswqqvnFErQhfGPQ8FRUNuRokGxdqRWePvbUpyoAoflq+g4enkzpEd0/K7J2Q
+         Na58k939i1CwOt/WyM+KEvYuvTekNLDX8qq3LM9AthN6A3HQZ744HjXWyot2vkHE/wmS
+         JAwjOT9BysTFzXw9jXvVLsQN0o9w1Cs4Muj8TQWv03xoUTWryrFPb2U6P9ez2p3jPAhn
+         mDRXLo9hqU0krKmon8Pjo78ukOtPpZSNKYhyV9A86osqOASEEnewMVQCt5Ba1sEBMGHp
+         KTzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rcsEiTi+eHQy+XVMsalejRcUe2GieQgt0POka9myaY8=;
+        b=TsVPSr4DbL/xuLKkSxRx+2rf0FWgXA/bLK7bErAHymyr4N34wG9IiVTFy4LOmPiAHp
+         THn/SMgTJ3wh5KzG0RMDFiPk+0DUsWLOyf8AuAQ4ubRGMofaKdV+o7oxTvPoCBxLI4N9
+         CospTg+WjCB0tI5DpYlYzxUe0ZVik7iRvS+k0YVH4EgbxFvH7uG2tI4qnsvc1xN40MSN
+         dn7BxVxENQmB4iGeSP74JQQl7ul2+jOL1Uej45R/06WaOK7YJk7lOmBXkJEFQoqdUxTo
+         RAZf1CI9Ads4TKvDo6NjPD0306yNlUm/REuyVwOBoplpijkf0ebqryIG5A3ZgGp3UDNi
+         7qhA==
+X-Gm-Message-State: AOAM531lQf7FoixcE7OYH51DXCA2355ONabnZ0pXBWzuqIeocbap4YTU
+        qPQoOjBijLzRLppyqohXIDo=
+X-Google-Smtp-Source: ABdhPJyNNHdfuxbmU951V6ltW+cUv29LNMHqYTMcxfstL6CSArQIOl5a2C/M3r2n0PeSqDfUUE93UQ==
+X-Received: by 2002:ad4:4765:: with SMTP id d5mr8802008qvx.121.1637874886230;
+        Thu, 25 Nov 2021 13:14:46 -0800 (PST)
+Received: from jesse-desktop.jtp-bos.lab (146-115-144-188.s4282.c3-0.nwt-cbr1.sbo-nwt.ma.cable.rcncustomer.com. [146.115.144.188])
+        by smtp.gmail.com with ESMTPSA id j22sm2068175qko.68.2021.11.25.13.14.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 13:14:45 -0800 (PST)
+From:   Jesse Taube <mr.bossman075@gmail.com>
+X-Google-Original-From: Jesse Taube <Mr.Bossman075@gmail.com>
+To:     linux-imx@nxp.com
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, ulf.hansson@linaro.org, aisheng.dong@nxp.com,
+        stefan@agner.ch, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, arnd@arndb.de, olof@lixom.net,
+        soc@kernel.org, linux@armlinux.org.uk, abel.vesa@nxp.com,
+        adrian.hunter@intel.com, jirislaby@kernel.org,
+        giulio.benetti@benettiengineering.com,
+        nobuhiro1.iwamatsu@toshiba.co.jp, Mr.Bossman075@gmail.com,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Subject: [PATCH v3 00/13]  add initial support for the i.MXRTxxxx SoC family starting from i.IMXRT1050 SoC.
+Date:   Thu, 25 Nov 2021 16:14:30 -0500
+Message-Id: <20211125211443.1150135-1-Mr.Bossman075@gmail.com>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25 2021 at 21:54, Paolo Bonzini wrote:
-> On 11/25/21 20:46, Thomas Gleixner wrote:
->> On Wed, Nov 24 2021 at 16:20, isaku yamahata wrote:
->>> Add a second kvm_x86_ops hook in kvm_arch_vm_destroy() to support TDX's
->>> destruction path, which needs to first put the VM into a teardown state,
->>> then free per-vCPU resource, and finally free per-VM resources.
->>>
->>> Note, this knowingly creates a discrepancy in nomenclature for SVM as
->>> svm_vm_teardown() invokes avic_vm_destroy() and sev_vm_destroy().
->>> Moving the now-misnamed functions or renaming them is left to a future
->>> patch so as not to introduce a functional change for SVM.
->> That's just the wrong way around. Fixup SVM first and then add the TDX
->> muck on top. Stop this 'left to a future patch' nonsense. I know for
->> sure that those future patches never materialize.
->
-> Or just keep vm_destroy for the "early" destruction, and give a new name 
-> to the new hook.  It is used to give back the TDCS memory, so perhaps 
-> you can call it vm_free?
+This patchset contains:
+- i.MXRT10xx family infrastructure
+- i.MXRT1050 pinctrl driver adaption
+- i.MXRT1050 clock driver adaption
+- i.MXRT1050 sd-card driver adaption
+- i.MXRT1050 uart driver adaption
+- i.MXRT1050-evk basic support
 
-Up to you, but the current approach is bogus. I rather go for a fully
-symmetric interface and let the various incarnations opt in at the right
-place. Similar to what cpu hotplug states are implementing.
+The i.MXRTxxxx family that could have support by Linux actually spreads
+from i.MXRT1020 to i.MXRT1170 with the first one supporting 1 USB OTG &
+100M ethernet with a cortex-M7@500Mhz up to the latter with i.MXRT1170
+with cortex-M7@1Ghz and cortex-M4@400Mhz, 2MB of internal SRAM, 2D GPU,
+2x 1Gb and 1x 100Mb ENET. The i.MXRT family is NXP's answer to
+STM32F7XX, as it uses only simple SDRAM, it gives the chance of a 4 or
+less layer PCBs. Seeing that these chips are comparable to the
+STM32F7XXs which have linux ported to them it seems reasonable to add
+support for them.
 
-Thanks,
+Giving Linux support to this family should ease the development process,
+instead of using a RTOS they could use Embedded Linux allowing for more
+portability, ease of design and will broaden the scope of people using
+embedded linux.
 
-        tglx
+The EVK has very little SDRAM, generally 32MB starting from
+i.MXRT1020(the lowest P/N), although the i.MXRT1160/70 provide instead
+64MB of SDRAM for more functionality.
+
+At the moment we do not support XIP for either u-boot or Linux but it
+should be done in the future. XIP will also save SDRAM.
+
+Another interesting fact is the amount of internal SRAM, as the P/N
+increases the SRAM will reach up to 2MB(some could be for cache and
+some would be for video).
+
+Also, some parts have embed flash of 4MB that can be used for
+u-boot/Linux, if both correctly sized it will leave the SDRAM free.
+
+External flash can be Quad SPI and HyperFlash, so throughput would be
+decent.
+
+The i.MXRT11xx series supports MIPI interface too.
+
+The family in general provide CAN bus, audio I/O, 1 or more
+USB(otg/host), 1 or more 100Mb/1Gb ethernet, camera interface, sd-card.
+
+All this can be used for simple GUIs, web-servers, point-of-sale
+stations, etc.
+
+Giulio Benetti (5):
+  ARM: imx: add initial support for i.MXRT10xx family
+  pinctrl: freescale: Add i.MXRT1050 pinctrl driver support
+  dt-bindings: imx: Add clock binding for i.MXRT1050
+  ARM: dts: imx: add i.MXRT1050-EVK support
+  ARM: imxrt_defconfig: add i.MXRT family defconfig
+
+Jesse Taube (8):
+  dt-bindings: pinctrl: add i.MXRT1050 pinctrl binding doc
+  ARM: dts: imxrt1050-pinfunc: Add pinctrl binding header
+  dt-bindings: clock: imx: Add documentation for i.MXRT clock
+  clk: imx: Add initial support for i.MXRT clock driver
+  dt-bindings: serial: fsl-lpuart: add i.MXRT compatible
+  tty: serial: fsl_lpuart: add i.MXRT support
+  dt-bindings: mmc: fsl-imx-esdhc: add i.MXRT compatible string
+  mmc: sdhci-esdhc-imx: Add sdhc support for i.MXRT series
+
+ .../bindings/clock/imxrt-clock.yaml           |  67 ++
+ .../bindings/mmc/fsl-imx-esdhc.yaml           |   1 +
+ .../bindings/pinctrl/fsl,imxrt1050.yaml       |  79 ++
+ .../bindings/serial/fsl-lpuart.yaml           |   1 +
+ arch/arm/boot/dts/Makefile                    |   2 +
+ arch/arm/boot/dts/imxrt1050-evk.dts           |  72 ++
+ arch/arm/boot/dts/imxrt1050-pinfunc.h         | 993 ++++++++++++++++++
+ arch/arm/boot/dts/imxrt1050.dtsi              | 165 +++
+ arch/arm/configs/imxrt_defconfig              | 157 +++
+ arch/arm/mach-imx/Kconfig                     |   7 +
+ arch/arm/mach-imx/Makefile                    |   2 +
+ arch/arm/mach-imx/mach-imxrt.c                |  19 +
+ drivers/clk/imx/Kconfig                       |   4 +
+ drivers/clk/imx/Makefile                      |   1 +
+ drivers/clk/imx/clk-imxrt.c                   | 156 +++
+ drivers/mmc/host/sdhci-esdhc-imx.c            |   4 +
+ drivers/pinctrl/freescale/Kconfig             |   7 +
+ drivers/pinctrl/freescale/Makefile            |   1 +
+ drivers/pinctrl/freescale/pinctrl-imxrt1050.c | 349 ++++++
+ drivers/tty/serial/fsl_lpuart.c               |   8 +
+ include/dt-bindings/clock/imxrt1050-clock.h   |  73 ++
+ 21 files changed, 2168 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/imxrt-clock.yaml
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/fsl,imxrt1050.yaml
+ create mode 100644 arch/arm/boot/dts/imxrt1050-evk.dts
+ create mode 100644 arch/arm/boot/dts/imxrt1050-pinfunc.h
+ create mode 100644 arch/arm/boot/dts/imxrt1050.dtsi
+ create mode 100644 arch/arm/configs/imxrt_defconfig
+ create mode 100644 arch/arm/mach-imx/mach-imxrt.c
+ create mode 100644 drivers/clk/imx/clk-imxrt.c
+ create mode 100644 drivers/pinctrl/freescale/pinctrl-imxrt1050.c
+ create mode 100644 include/dt-bindings/clock/imxrt1050-clock.h
+
+-- 
+2.34.0
+
