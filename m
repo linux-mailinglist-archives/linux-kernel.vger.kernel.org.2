@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F0145D803
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:12:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D988B45D805
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:12:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354532AbhKYKPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 05:15:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57806 "EHLO
+        id S1354605AbhKYKPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 05:15:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354609AbhKYKNP (ORCPT
+        with ESMTP id S229938AbhKYKNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 05:13:15 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 149AEC0613F3;
-        Thu, 25 Nov 2021 02:09:29 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id 133so5112507wme.0;
-        Thu, 25 Nov 2021 02:09:29 -0800 (PST)
+        Thu, 25 Nov 2021 05:13:19 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728DAC0613F4;
+        Thu, 25 Nov 2021 02:09:32 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id r8so10382786wra.7;
+        Thu, 25 Nov 2021 02:09:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JtO60bk1RCy4qMnS1/rQRVPFrbrpTCMvxJUpVoIqlWA=;
-        b=ReGBe7+5AvucSDE2RMRe5whSP0SAb8lWJ5R/KQNu4gOzSMIVWWo8n4AEi2CAsOG+9C
-         uT5lCxuRrHfNXGsy4hMnBGvq59ZDMERw0+e7nOYaEJERSDd8Kb+Bsia/8lQVEdKt79H+
-         +jQChXvEmRcQtGbDpqbJTuQgXAZJYA15oa74+hpAfOxd8vphXFG0U3wr2r5MdvwVsCjw
-         hRL9GYS5W8sHfVStw+KXnTNCxcYZUNOAqrluKAKeMhA5rL5Ke8WWEWsOLZGorPt+Y2rn
-         zi38of35vQIKl7TCWldclrKRxMjFbXq0F8SQ+VcOCR/+Vzr9jfinZZNXjiYIzm95kuM0
-         Zq6Q==
+        bh=sonVc1z4s9yp3qxr+30Ehdj21m5HXG+GbXci1EkRyd0=;
+        b=hwSRl65sCjY5p6Ah68cgEhOn5lyv3p5q0Ihu2PGJCQ8QQLD1TREGoM9k4Vod5IpK4+
+         v4UurAfVX/1ESHnGkeiZ0juIiGePZJD0cUCRHOCsVlDJOwGnJNyVA7yc9MX/MFE0vf+d
+         1Z+n8TCef3/M2CVpLTqQEK5gz+0sfaB2/sFq/vmu8aOK+k+FKP++udq/wgg11dbe1N7J
+         kzPOkbaRuOdBTYvNtgqT2Q1kdWArEUSZWbPyjpd9WScUz6nNRypAmeoy2CmzT0WBj2gG
+         FvqwmSWeFqLiOtIdCCfPBZ+IXz9eHUGR9bkJarMRJInpsA1Wf43QZ28Rh1y6D74gEkio
+         BWdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JtO60bk1RCy4qMnS1/rQRVPFrbrpTCMvxJUpVoIqlWA=;
-        b=IoY+Aqwg5HwBt70InOJBT6HsFxojjywAf43wwwu8j74iJ1CdRBTTFUqOhriqpJB4RO
-         XSTpD/nn2g+xtYYY73rq8B75MwzN5sc9NOlajC53RoqD2v7WAjA3iCn09Rfo7qRUhhn5
-         ESxqxFpvmOGi+9HeWnLoMFr+kgbVTwqpd67wuHt6mFr65nAknQsUPR9skS1gGpxR1i8b
-         uIeSfuJ9k2iyBsonskG92vnK6N4S8pzrXzfk+ypmoNu6faBv0ujDx7TgTS1X7BnQs4IO
-         TcDVmnpbj/+NwkxjWkGgEwgG5wk0jQDHy519rGmpXH4+VnSR9QSru+Z1xCbP34NGgKVP
-         zxzg==
-X-Gm-Message-State: AOAM530XEwWbYDnmKJuo0619jITofKQhzwP75V2TBQO6SW8TCeEgFMhi
-        WU5kcXEkmtdV2w7GMBkSE8w=
-X-Google-Smtp-Source: ABdhPJzZLPDc2HewTHumJfbaWU/Daj4OM99frT8vDFf8AI3I960W9RaDktVTqGH9eNyMTYFmOMcx0Q==
-X-Received: by 2002:a05:600c:1e1c:: with SMTP id ay28mr5726488wmb.131.1637834967755;
-        Thu, 25 Nov 2021 02:09:27 -0800 (PST)
+        bh=sonVc1z4s9yp3qxr+30Ehdj21m5HXG+GbXci1EkRyd0=;
+        b=JBbnFY4AcS4mGwAO93V5txT6lzCVHZ9E2PlGyy7jTWGArWrq0R05bvcwERXSXRPafk
+         i0Ij+ynVapP37qE+UWpzOM0lUQoSXKWjDpi5JgtqBkdBvwmc6MTuXUT1Q9Btzeks+P2S
+         8wnSq67CJJ0VVl0LsJIo8CWz95oA+LPMUzpGQGBrHxKerDIThcpPb30+Oao3oOawtK+o
+         b+L5lT8SgJD5DRFCMoMEc6Y0KJartghZBvcf7FJ4BuY3BIOkxMrsjGsM3sFgcONHa3Xr
+         /r6CXB+mWjEldMkV5+6rPyfCBVsO3eHVFlVRN/z65dB4KijxSIoqVbcizXSUevCc8V1O
+         fMJw==
+X-Gm-Message-State: AOAM533HLfLH2UzEXKBaWB6XR3xT0fw0fFnPcIEHpsxkgQLrmmleUoU6
+        dZRvFPMZQahp/RJAqebj+vA=
+X-Google-Smtp-Source: ABdhPJz7Sq1cO0e4VX/vnA//UUtpVjsWfZx/+npu6v564qfgpY05nOs4hhGcU62Dfts5NH7unWsh+Q==
+X-Received: by 2002:adf:ee0c:: with SMTP id y12mr5105453wrn.82.1637834971101;
+        Thu, 25 Nov 2021 02:09:31 -0800 (PST)
 Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
-        by smtp.gmail.com with ESMTPSA id l7sm2903533wry.86.2021.11.25.02.09.27
+        by smtp.gmail.com with ESMTPSA id l7sm2903533wry.86.2021.11.25.02.09.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 02:09:27 -0800 (PST)
+        Thu, 25 Nov 2021 02:09:30 -0800 (PST)
 From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
 Cc:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] arm64: dts: rockchip: rk356x: Add HDMI audio nodes
-Date:   Thu, 25 Nov 2021 11:08:34 +0100
-Message-Id: <20211125100836.423808-2-frattaroli.nicolas@gmail.com>
+Subject: [PATCH 2/2] arm64: dts: rockchip: Enable HDMI audio on Quartz64 A
+Date:   Thu, 25 Nov 2021 11:08:35 +0100
+Message-Id: <20211125100836.423808-3-frattaroli.nicolas@gmail.com>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211125100836.423808-1-frattaroli.nicolas@gmail.com>
 References: <20211125100836.423808-1-frattaroli.nicolas@gmail.com>
@@ -66,65 +66,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the i2s0 node and an hdmi-sound sound device to the
-rk356x device tree. On the rk356[68], the i2s0 controller is
-connected to HDMI audio.
+This enables the i2s0 controller and the hdmi-sound node on
+the PINE64 Quartz64 Model A single-board computer.
 
 Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
 ---
- arch/arm64/boot/dts/rockchip/rk356x.dtsi | 32 ++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-index 3c09cf6d4c37..ad4053402eef 100644
---- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-@@ -614,6 +614,21 @@ hdmi_in_vp2: endpoint@2 {
- 		};
- 	};
+diff --git a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
+index a4453c82b03d..0598510dce58 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
+@@ -215,6 +215,10 @@ &hdmi_in_vp0 {
+ 	status = "okay";
+ };
  
-+	hdmi_sound: hdmi-sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,mclk-fs = <256>;
-+		simple-audio-card,name = "hdmi-sound";
-+		status = "disabled";
++&hdmi_sound {
++	status = "okay";
++};
 +
-+		simple-audio-card,cpu {
-+			sound-dai = <&i2s0_8ch>;
-+		};
-+		simple-audio-card,codec {
-+			sound-dai = <&hdmi>;
-+		};
-+	};
-+
- 	qos_gpu: qos@fe128000 {
- 		compatible = "rockchip,rk3568-qos", "syscon";
- 		reg = <0x0 0xfe128000 0x0 0x20>;
-@@ -789,6 +804,23 @@ spdif: spdif@fe460000 {
- 		status = "disabled";
+ &gpu {
+ 	mali-supply = <&vdd_gpu>;
+ 	status = "okay";
+@@ -444,6 +448,10 @@ regulator-state-mem {
  	};
+ };
  
-+	i2s0_8ch: i2s@fe400000 {
-+		compatible = "rockchip,rk3568-i2s-tdm";
-+		reg = <0x0 0xfe400000 0x0 0x1000>;
-+		interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
-+		assigned-clocks = <&cru CLK_I2S0_8CH_TX_SRC>, <&cru CLK_I2S0_8CH_RX_SRC>;
-+		assigned-clock-rates = <1188000000>, <1188000000>;
-+		clocks = <&cru MCLK_I2S0_8CH_TX>, <&cru MCLK_I2S0_8CH_RX>, <&cru HCLK_I2S0_8CH>;
-+		clock-names = "mclk_tx", "mclk_rx", "hclk";
-+		dmas = <&dmac1 0>;
-+		dma-names = "tx";
-+		resets = <&cru SRST_M_I2S0_8CH_TX>, <&cru SRST_M_I2S0_8CH_RX>;
-+		reset-names = "tx-m", "rx-m";
-+		rockchip,grf = <&grf>;
-+		#sound-dai-cells = <0>;
-+		status = "disabled";
-+	};
++&i2s0_8ch {
++	status = "okay";
++};
 +
- 	i2s1_8ch: i2s@fe410000 {
- 		compatible = "rockchip,rk3568-i2s-tdm";
- 		reg = <0x0 0xfe410000 0x0 0x1000>;
+ &i2s1_8ch {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&i2s1m0_sclktx
 -- 
 2.34.0
 
