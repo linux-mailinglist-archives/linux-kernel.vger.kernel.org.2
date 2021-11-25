@@ -2,124 +2,454 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C95445E02C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 19:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B708F45E027
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 19:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238856AbhKYSEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 13:04:54 -0500
-Received: from pegase2.c-s.fr ([93.17.235.10]:50819 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238512AbhKYSCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 13:02:52 -0500
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4J0QTr2C9Zz9sSc;
-        Thu, 25 Nov 2021 18:53:36 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id OCU5f0EQOYcY; Thu, 25 Nov 2021 18:53:36 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4J0QTm6tl9z9sSs;
-        Thu, 25 Nov 2021 18:53:32 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DB0FB8B78D;
-        Thu, 25 Nov 2021 18:53:32 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id m_M4jOlQWhbp; Thu, 25 Nov 2021 18:53:32 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.227])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 205898B77E;
-        Thu, 25 Nov 2021 18:53:32 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1APHrJc2385511
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 25 Nov 2021 18:53:19 +0100
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1APHrEbD385509;
-        Thu, 25 Nov 2021 18:53:14 +0100
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, alex@ghiti.fr
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-mm@kvack.org
-Subject: [PATCH v2 rebased 0/9] Convert powerpc to default topdown mmap layout
-Date:   Thu, 25 Nov 2021 18:52:49 +0100
-Message-Id: <cover.1637862579.git.christophe.leroy@csgroup.eu>
+        id S239684AbhKYSEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 13:04:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234305AbhKYSCl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 13:02:41 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF1EC0613E0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:52:59 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id r11so28687226edd.9
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:52:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=bCIx1BVrLko0dhM92OtB1DY3hCidNHVWnvKRP/P1ZR4=;
+        b=Eu+9wYh4FbJSagXghtVD0z2GA5+Q7gMnkDPG/HK8eI2gVPt7LNDRb6lOHV1WJ8RdAd
+         sxLpuQHfOq+gLQBr+/CxIRfSAAWhztC8OvNUKbWEifTeoSTcdgnVy4/8gUytndjQRAuR
+         vUxbw8IAwNxBT/FDCkQvj9IFOSkXEjQRN2abJOnCdQxI8/YafTH05wc063mTcpZgtzLS
+         Xmka8bNw9xGO4PHqYlaVIeu6blEZ5m89CeG2QkFZwU9jPsCLHId7vo2JXrrD7Tjvfhv2
+         DoUIL+IBrdtedDY5O3kyJpTr9xNFphvVm0bMn9adXJdjvbmJ0dHyt0B1nSzroVSA1hQu
+         Xq+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=bCIx1BVrLko0dhM92OtB1DY3hCidNHVWnvKRP/P1ZR4=;
+        b=eVPP6VjsCkS0GtvDgj6hrT1z0LxDab5Esa0F8mJp+c9H4uU/0gl3e3a3eu45TrxieS
+         Dtqs6txtSj7DG84SerOjA/LhbO3WLT0G49gY38wgQiGJre82g3mWaGJW3T8DDBU/gxnM
+         4MsilHeyHhqogbuLq0KwTPe8xh4+GpFfV6lKN5DnHZJznOXEplm3OwGM4EQYJawKQMm/
+         pP5MlRsPJOrb4M0fWHKNiBI8bV0UNTvwHJ5nyaJIdqDAcNkrNzdVfS7IpkFBvI0uScEu
+         aEnk5UpV5VDaAHZkNX3YvdzdeJ0epDFIaeKbajCClo38/ZL9Vkb/w8ZEkFPMV+NTLJov
+         M5Ug==
+X-Gm-Message-State: AOAM532T6zCqd9IPPb9kEcJ1+QLTWwo8fis9akTw+/seFjAps4T+kpyH
+        +HqZ1Gd2BGnxqFgw3ZkwA7ECvC/7/TYc+Q==
+X-Google-Smtp-Source: ABdhPJxyv+O1YXPrvcoS/YnruuV8Uz/opqW79bA3gwchQ09tQT2M1j0aMkamUNvpVFmxIYqalIVmtA==
+X-Received: by 2002:a17:907:a40b:: with SMTP id sg11mr32553032ejc.534.1637862777536;
+        Thu, 25 Nov 2021 09:52:57 -0800 (PST)
+Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
+        by smtp.gmail.com with ESMTPSA id hs20sm1949795ejc.26.2021.11.25.09.52.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 09:52:57 -0800 (PST)
+From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+To:     rostedt@goodmis.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH v3 2/5] [RFC] tracing: Page size per ring buffer
+Date:   Thu, 25 Nov 2021 19:52:50 +0200
+Message-Id: <20211125175253.186422-3-tz.stoyanov@gmail.com>
 X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211125175253.186422-1-tz.stoyanov@gmail.com>
+References: <20211125175253.186422-1-tz.stoyanov@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1637862776; l=2870; s=20211009; h=from:subject:message-id; bh=7bwl2JTsVET3ON+eXly75sHul/r8R8DKYECszZMJh2w=; b=s0Ryj9w3bsj0m2oYIutnWRtp67buMgF4l4oIB4I4OYmBi7PlZgDsMXO+TC4fu3p11O0aOs6JMzmP z2vKN9kyD+8HlKx0Kkw6XVzgmEPxe4TM0GyswQBOdNlA4k1/ggJT
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Same as v2 but rebased on top of Nic's v4 series "powerpc: Make hash MMU code build configurable"
+Currently the size of one sub buffer page is global for all buffers and
+it is hard coded to one system page. In order to introduce configurable
+ring buffer sub page size, the internal logic should be refactored to
+work with sub page size per ring buffer.
 
-This series converts powerpc to default topdown mmap layout.
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+---
+ include/linux/ring_buffer.h |  2 +-
+ kernel/trace/ring_buffer.c  | 66 ++++++++++++++++++++-----------------
+ kernel/trace/trace.c        |  2 +-
+ kernel/trace/trace.h        |  1 +
+ kernel/trace/trace_events.c | 50 ++++++++++++++++++++++------
+ 5 files changed, 79 insertions(+), 42 deletions(-)
 
-powerpc provides its own arch_get_unmapped_area() only when
-slices are needed, which is only for book3s/64. First part of
-the series moves slices into book3s/64 specific directories
-and cleans up other subarchitectures.
-
-Then a small modification is done to core mm to allow
-powerpc to still provide its own arch_randomize_brk()
-
-Last part converts to default topdown mmap layout.
-
-Changes in v2:
-- Moved patch 4 before patch 2
-- Make generic arch_randomize_brk() __weak
-- Added patch 9
-
-Christophe Leroy (9):
-  powerpc/mm: Make slice specific to book3s/64
-  powerpc/mm: Move vma_mmu_pagesize() and hugetlb_get_unmapped_area() to
-    slice.c
-  powerpc/mm: Remove CONFIG_PPC_MM_SLICES
-  powerpc/mm: Remove asm/slice.h
-  powerpc/mm: Call radix__arch_get_unmapped_area() from
-    arch_get_unmapped_area()
-  mm: Allow arch specific arch_randomize_brk() with
-    CONFIG_ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
-  powerpc/mm: Convert to default topdown mmap layout
-  powerpc/mm: Properly randomise mmap with slices
-  powerpc: Simplify and move arch_randomize_brk()
-
- arch/powerpc/Kconfig                          |   2 +-
- arch/powerpc/include/asm/book3s/64/hash.h     |   7 +-
- arch/powerpc/include/asm/book3s/64/hugetlb.h  |   4 -
- arch/powerpc/include/asm/book3s/64/mmu-hash.h |   1 +
- arch/powerpc/include/asm/book3s/64/slice.h    |  18 ++
- arch/powerpc/include/asm/hugetlb.h            |   2 +-
- arch/powerpc/include/asm/paca.h               |   7 -
- arch/powerpc/include/asm/page.h               |   1 -
- arch/powerpc/include/asm/processor.h          |   2 -
- arch/powerpc/include/asm/slice.h              |  46 ----
- arch/powerpc/kernel/paca.c                    |   5 -
- arch/powerpc/kernel/process.c                 |  41 ----
- arch/powerpc/mm/Makefile                      |   3 +-
- arch/powerpc/mm/book3s64/Makefile             |   2 +-
- arch/powerpc/mm/book3s64/hash_utils.c         |  33 +--
- arch/powerpc/mm/book3s64/radix_hugetlbpage.c  |  55 -----
- arch/powerpc/mm/{ => book3s64}/slice.c        | 200 ++++++++++++++-
- arch/powerpc/mm/hugetlbpage.c                 |  28 ---
- arch/powerpc/mm/mmap.c                        | 228 ------------------
- arch/powerpc/mm/nohash/mmu_context.c          |   9 -
- arch/powerpc/mm/nohash/tlb.c                  |   4 -
- arch/powerpc/platforms/Kconfig.cputype        |   4 -
- include/linux/sizes.h                         |   2 +
- mm/util.c                                     |   2 +-
- 24 files changed, 237 insertions(+), 469 deletions(-)
- delete mode 100644 arch/powerpc/include/asm/slice.h
- rename arch/powerpc/mm/{ => book3s64}/slice.c (80%)
- delete mode 100644 arch/powerpc/mm/mmap.c
-
+diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
+index dac53fd3afea..d9a2e6e8fb79 100644
+--- a/include/linux/ring_buffer.h
++++ b/include/linux/ring_buffer.h
+@@ -200,7 +200,7 @@ int ring_buffer_read_page(struct trace_buffer *buffer, void **data_page,
+ struct trace_seq;
+ 
+ int ring_buffer_print_entry_header(struct trace_seq *s);
+-int ring_buffer_print_page_header(struct trace_seq *s);
++int ring_buffer_print_page_header(struct trace_buffer *buffer, struct trace_seq *s);
+ 
+ enum ring_buffer_flags {
+ 	RB_FL_OVERWRITE		= 1 << 0,
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index cc34dbfdd29b..68fdeff449c3 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -366,12 +366,6 @@ static inline int test_time_stamp(u64 delta)
+ 	return 0;
+ }
+ 
+-#define BUF_PAGE_SIZE (PAGE_SIZE - BUF_PAGE_HDR_SIZE)
+-
+-/* Max payload is BUF_PAGE_SIZE - header (8bytes) */
+-#define BUF_MAX_DATA_SIZE (BUF_PAGE_SIZE - (sizeof(u32) * 2))
+-
+-
+ struct rb_irq_work {
+ 	struct irq_work			work;
+ 	wait_queue_head_t		waiters;
+@@ -515,6 +509,9 @@ struct trace_buffer {
+ 
+ 	struct rb_irq_work		irq_work;
+ 	bool				time_stamp_abs;
++
++	unsigned int			subbuf_size;
++	unsigned int			max_data_size;
+ };
+ 
+ struct ring_buffer_iter {
+@@ -530,7 +527,7 @@ struct ring_buffer_iter {
+ 	int				missed_events;
+ };
+ 
+-int ring_buffer_print_page_header(struct trace_seq *s)
++int ring_buffer_print_page_header(struct trace_buffer *buffer, struct trace_seq *s)
+ {
+ 	struct buffer_data_page field;
+ 
+@@ -554,7 +551,7 @@ int ring_buffer_print_page_header(struct trace_seq *s)
+ 	trace_seq_printf(s, "\tfield: char data;\t"
+ 			 "offset:%u;\tsize:%u;\tsigned:%u;\n",
+ 			 (unsigned int)offsetof(typeof(field), data),
+-			 (unsigned int)BUF_PAGE_SIZE,
++			 (unsigned int)buffer->subbuf_size,
+ 			 (unsigned int)is_signed_type(char));
+ 
+ 	return !trace_seq_has_overflowed(s);
+@@ -1726,7 +1723,13 @@ struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
+ 	if (!zalloc_cpumask_var(&buffer->cpumask, GFP_KERNEL))
+ 		goto fail_free_buffer;
+ 
+-	nr_pages = DIV_ROUND_UP(size, BUF_PAGE_SIZE);
++	/* Default buffer page size - one system page */
++	buffer->subbuf_size = PAGE_SIZE - BUF_PAGE_HDR_SIZE;
++
++	/* Max payload is buffer page size - header (8bytes) */
++	buffer->max_data_size = buffer->subbuf_size - (sizeof(u32) * 2);
++
++	nr_pages = DIV_ROUND_UP(size, buffer->subbuf_size);
+ 	buffer->flags = flags;
+ 	buffer->clock = trace_clock_local;
+ 	buffer->reader_lock_key = key;
+@@ -1920,7 +1923,8 @@ rb_remove_pages(struct ring_buffer_per_cpu *cpu_buffer, unsigned long nr_pages)
+ 			 * Increment overrun to account for the lost events.
+ 			 */
+ 			local_add(page_entries, &cpu_buffer->overrun);
+-			local_sub(BUF_PAGE_SIZE, &cpu_buffer->entries_bytes);
++			local_sub(cpu_buffer->buffer->subbuf_size,
++				  &cpu_buffer->entries_bytes);
+ 		}
+ 
+ 		/*
+@@ -2042,7 +2046,7 @@ static void update_pages_handler(struct work_struct *work)
+  * @size: the new size.
+  * @cpu_id: the cpu buffer to resize
+  *
+- * Minimum size is 2 * BUF_PAGE_SIZE.
++ * Minimum size is 2 * buffer->subbuf_size.
+  *
+  * Returns 0 on success and < 0 on failure.
+  */
+@@ -2064,7 +2068,7 @@ int ring_buffer_resize(struct trace_buffer *buffer, unsigned long size,
+ 	    !cpumask_test_cpu(cpu_id, buffer->cpumask))
+ 		return 0;
+ 
+-	nr_pages = DIV_ROUND_UP(size, BUF_PAGE_SIZE);
++	nr_pages = DIV_ROUND_UP(size, buffer->subbuf_size);
+ 
+ 	/* we need a minimum of two pages */
+ 	if (nr_pages < 2)
+@@ -2291,7 +2295,7 @@ rb_iter_head_event(struct ring_buffer_iter *iter)
+ 	 */
+ 	barrier();
+ 
+-	if ((iter->head + length) > commit || length > BUF_MAX_DATA_SIZE)
++	if ((iter->head + length) > commit || length > iter->cpu_buffer->buffer->max_data_size)
+ 		/* Writer corrupted the read? */
+ 		goto reset;
+ 
+@@ -2404,7 +2408,8 @@ rb_handle_head_page(struct ring_buffer_per_cpu *cpu_buffer,
+ 		 * the counters.
+ 		 */
+ 		local_add(entries, &cpu_buffer->overrun);
+-		local_sub(BUF_PAGE_SIZE, &cpu_buffer->entries_bytes);
++		local_sub(cpu_buffer->buffer->subbuf_size,
++			  &cpu_buffer->entries_bytes);
+ 
+ 		/*
+ 		 * The entries will be zeroed out when we move the
+@@ -2523,6 +2528,7 @@ static inline void
+ rb_reset_tail(struct ring_buffer_per_cpu *cpu_buffer,
+ 	      unsigned long tail, struct rb_event_info *info)
+ {
++	unsigned long bsize = READ_ONCE(cpu_buffer->buffer->subbuf_size);
+ 	struct buffer_page *tail_page = info->tail_page;
+ 	struct ring_buffer_event *event;
+ 	unsigned long length = info->length;
+@@ -2531,13 +2537,13 @@ rb_reset_tail(struct ring_buffer_per_cpu *cpu_buffer,
+ 	 * Only the event that crossed the page boundary
+ 	 * must fill the old tail_page with padding.
+ 	 */
+-	if (tail >= BUF_PAGE_SIZE) {
++	if (tail >= bsize) {
+ 		/*
+ 		 * If the page was filled, then we still need
+ 		 * to update the real_end. Reset it to zero
+ 		 * and the reader will ignore it.
+ 		 */
+-		if (tail == BUF_PAGE_SIZE)
++		if (tail == bsize)
+ 			tail_page->real_end = 0;
+ 
+ 		local_sub(length, &tail_page->write);
+@@ -2547,7 +2553,7 @@ rb_reset_tail(struct ring_buffer_per_cpu *cpu_buffer,
+ 	event = __rb_page_index(tail_page, tail);
+ 
+ 	/* account for padding bytes */
+-	local_add(BUF_PAGE_SIZE - tail, &cpu_buffer->entries_bytes);
++	local_add(bsize - tail, &cpu_buffer->entries_bytes);
+ 
+ 	/*
+ 	 * Save the original length to the meta data.
+@@ -2567,7 +2573,7 @@ rb_reset_tail(struct ring_buffer_per_cpu *cpu_buffer,
+ 	 * If we are less than the minimum size, we don't need to
+ 	 * worry about it.
+ 	 */
+-	if (tail > (BUF_PAGE_SIZE - RB_EVNT_MIN_SIZE)) {
++	if (tail > (bsize - RB_EVNT_MIN_SIZE)) {
+ 		/* No room for any events */
+ 
+ 		/* Mark the rest of the page with padding */
+@@ -2579,13 +2585,13 @@ rb_reset_tail(struct ring_buffer_per_cpu *cpu_buffer,
+ 	}
+ 
+ 	/* Put in a discarded event */
+-	event->array[0] = (BUF_PAGE_SIZE - tail) - RB_EVNT_HDR_SIZE;
++	event->array[0] = (bsize - tail) - RB_EVNT_HDR_SIZE;
+ 	event->type_len = RINGBUF_TYPE_PADDING;
+ 	/* time delta must be non zero */
+ 	event->time_delta = 1;
+ 
+ 	/* Set write to end of buffer */
+-	length = (tail + length) - BUF_PAGE_SIZE;
++	length = (tail + length) - bsize;
+ 	local_sub(length, &tail_page->write);
+ }
+ 
+@@ -3477,7 +3483,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 	tail = write - info->length;
+ 
+ 	/* See if we shot pass the end of this buffer page */
+-	if (unlikely(write > BUF_PAGE_SIZE)) {
++	if (unlikely(write > cpu_buffer->buffer->subbuf_size)) {
+ 		/* before and after may now different, fix it up*/
+ 		b_ok = rb_time_read(&cpu_buffer->before_stamp, &info->before);
+ 		a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
+@@ -3686,7 +3692,7 @@ ring_buffer_lock_reserve(struct trace_buffer *buffer, unsigned long length)
+ 	if (unlikely(atomic_read(&cpu_buffer->record_disabled)))
+ 		goto out;
+ 
+-	if (unlikely(length > BUF_MAX_DATA_SIZE))
++	if (unlikely(length > buffer->max_data_size))
+ 		goto out;
+ 
+ 	if (unlikely(trace_recursive_lock(cpu_buffer)))
+@@ -3836,7 +3842,7 @@ int ring_buffer_write(struct trace_buffer *buffer,
+ 	if (atomic_read(&cpu_buffer->record_disabled))
+ 		goto out;
+ 
+-	if (length > BUF_MAX_DATA_SIZE)
++	if (length > buffer->max_data_size)
+ 		goto out;
+ 
+ 	if (unlikely(trace_recursive_lock(cpu_buffer)))
+@@ -4958,7 +4964,7 @@ ring_buffer_read_prepare(struct trace_buffer *buffer, int cpu, gfp_t flags)
+ 	if (!iter)
+ 		return NULL;
+ 
+-	iter->event = kmalloc(BUF_MAX_DATA_SIZE, flags);
++	iter->event = kmalloc(buffer->max_data_size, flags);
+ 	if (!iter->event) {
+ 		kfree(iter);
+ 		return NULL;
+@@ -5076,14 +5082,14 @@ unsigned long ring_buffer_size(struct trace_buffer *buffer, int cpu)
+ {
+ 	/*
+ 	 * Earlier, this method returned
+-	 *	BUF_PAGE_SIZE * buffer->nr_pages
++	 *	buffer->subbuf_size * buffer->nr_pages
+ 	 * Since the nr_pages field is now removed, we have converted this to
+ 	 * return the per cpu buffer value.
+ 	 */
+ 	if (!cpumask_test_cpu(cpu, buffer->cpumask))
+ 		return 0;
+ 
+-	return BUF_PAGE_SIZE * buffer->buffers[cpu]->nr_pages;
++	return buffer->subbuf_size * buffer->buffers[cpu]->nr_pages;
+ }
+ EXPORT_SYMBOL_GPL(ring_buffer_size);
+ 
+@@ -5619,7 +5625,7 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
+ 	} else {
+ 		/* update the entry counter */
+ 		cpu_buffer->read += rb_page_entries(reader);
+-		cpu_buffer->read_bytes += BUF_PAGE_SIZE;
++		cpu_buffer->read_bytes += buffer->subbuf_size;
+ 
+ 		/* swap the pages */
+ 		rb_init_page(bpage);
+@@ -5650,7 +5656,7 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
+ 		/* If there is room at the end of the page to save the
+ 		 * missed events, then record it there.
+ 		 */
+-		if (BUF_PAGE_SIZE - commit >= sizeof(missed_events)) {
++		if (buffer->subbuf_size - commit >= sizeof(missed_events)) {
+ 			memcpy(&bpage->data[commit], &missed_events,
+ 			       sizeof(missed_events));
+ 			local_add(RB_MISSED_STORED, &bpage->commit);
+@@ -5662,8 +5668,8 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
+ 	/*
+ 	 * This page may be off to user land. Zero it out here.
+ 	 */
+-	if (commit < BUF_PAGE_SIZE)
+-		memset(&bpage->data[commit], 0, BUF_PAGE_SIZE - commit);
++	if (commit < buffer->subbuf_size)
++		memset(&bpage->data[commit], 0, buffer->subbuf_size - commit);
+ 
+  out_unlock:
+ 	raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 88de94da596b..0eb8af875184 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -4877,7 +4877,7 @@ static int tracing_release(struct inode *inode, struct file *file)
+ 	return 0;
+ }
+ 
+-static int tracing_release_generic_tr(struct inode *inode, struct file *file)
++int tracing_release_generic_tr(struct inode *inode, struct file *file)
+ {
+ 	struct trace_array *tr = inode->i_private;
+ 
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index 6b60ab9475ed..c71a329a0947 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -580,6 +580,7 @@ void tracing_reset_current(int cpu);
+ void tracing_reset_all_online_cpus(void);
+ int tracing_open_generic(struct inode *inode, struct file *filp);
+ int tracing_open_generic_tr(struct inode *inode, struct file *filp);
++int tracing_release_generic_tr(struct inode *inode, struct file *file);
+ bool tracing_is_disabled(void);
+ bool tracer_tracing_is_on(struct trace_array *tr);
+ void tracer_tracing_on(struct trace_array *tr);
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index 4021b9a79f93..c2206cdf8267 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -1847,9 +1847,9 @@ subsystem_filter_write(struct file *filp, const char __user *ubuf, size_t cnt,
+ }
+ 
+ static ssize_t
+-show_header(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
++show_header_page_file(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
+ {
+-	int (*func)(struct trace_seq *s) = filp->private_data;
++	struct trace_array *tr = filp->private_data;
+ 	struct trace_seq *s;
+ 	int r;
+ 
+@@ -1862,7 +1862,31 @@ show_header(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
+ 
+ 	trace_seq_init(s);
+ 
+-	func(s);
++	ring_buffer_print_page_header(tr->array_buffer.buffer, s);
++	r = simple_read_from_buffer(ubuf, cnt, ppos,
++				    s->buffer, trace_seq_used(s));
++
++	kfree(s);
++
++	return r;
++}
++
++static ssize_t
++show_header_event_file(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
++{
++	struct trace_seq *s;
++	int r;
++
++	if (*ppos)
++		return 0;
++
++	s = kmalloc(sizeof(*s), GFP_KERNEL);
++	if (!s)
++		return -ENOMEM;
++
++	trace_seq_init(s);
++
++	ring_buffer_print_entry_header(s);
+ 	r = simple_read_from_buffer(ubuf, cnt, ppos,
+ 				    s->buffer, trace_seq_used(s));
+ 
+@@ -2117,10 +2141,18 @@ static const struct file_operations ftrace_tr_enable_fops = {
+ 	.release = subsystem_release,
+ };
+ 
+-static const struct file_operations ftrace_show_header_fops = {
+-	.open = tracing_open_generic,
+-	.read = show_header,
++static const struct file_operations ftrace_show_header_page_fops = {
++	.open = tracing_open_generic_tr,
++	.read = show_header_page_file,
++	.llseek = default_llseek,
++	.release = tracing_release_generic_tr,
++};
++
++static const struct file_operations ftrace_show_header_event_fops = {
++	.open = tracing_open_generic_tr,
++	.read = show_header_event_file,
+ 	.llseek = default_llseek,
++	.release = tracing_release_generic_tr,
+ };
+ 
+ static int
+@@ -3469,14 +3501,12 @@ create_event_toplevel_files(struct dentry *parent, struct trace_array *tr)
+ 
+ 	/* ring buffer internal formats */
+ 	entry = trace_create_file("header_page", TRACE_MODE_READ, d_events,
+-				  ring_buffer_print_page_header,
+-				  &ftrace_show_header_fops);
++				  tr, &ftrace_show_header_page_fops);
+ 	if (!entry)
+ 		pr_warn("Could not create tracefs 'header_page' entry\n");
+ 
+ 	entry = trace_create_file("header_event", TRACE_MODE_READ, d_events,
+-				  ring_buffer_print_entry_header,
+-				  &ftrace_show_header_fops);
++				  tr, &ftrace_show_header_event_fops);
+ 	if (!entry)
+ 		pr_warn("Could not create tracefs 'header_event' entry\n");
+ 
 -- 
-2.33.1
+2.31.1
 
