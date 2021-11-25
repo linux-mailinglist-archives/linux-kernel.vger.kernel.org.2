@@ -2,188 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F38945DCD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:03:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE45345DCDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:06:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234212AbhKYPG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:06:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55422 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232051AbhKYPEy (ORCPT
+        id S236061AbhKYPJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:09:14 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:35160 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232933AbhKYPHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:04:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637852502;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Thu, 25 Nov 2021 10:07:13 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id BC3C82193C;
+        Thu, 25 Nov 2021 15:04:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637852640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pzY+nlb0WLLo3q9EhtWI9RItnRnZnbWS8p2iLJT22S4=;
-        b=gQoTfj6BeePVoRDBskdRK6Sq0IKkO6158TFwpFSvcBHuO5Gd6Io0J2o9ToZL/QrhkxvdDZ
-        CcoQUJsJYZftxAjo/Tl+Ug2A4b2mrFFhXYVp5oYCkFpckvHx3Kxw0FcvT/A3sQXTiKup4H
-        F0EnWinonLGwGZOAAS8L1zDcpD23a2w=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-8-m4eSdIyUNhaWdO5Q1NBaJg-1; Thu, 25 Nov 2021 10:01:41 -0500
-X-MC-Unique: m4eSdIyUNhaWdO5Q1NBaJg-1
-Received: by mail-ed1-f71.google.com with SMTP id n11-20020aa7c68b000000b003e7d68e9874so5724200edq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:01:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=pzY+nlb0WLLo3q9EhtWI9RItnRnZnbWS8p2iLJT22S4=;
-        b=SxnanRZ56O5ou7f2NdG5Fn4eZhyAPW/tsn85h8s3mwgW1hIwhjJ54hGgMqBsdX2auU
-         GX6Bmsg0d9rX6pZmSvB4fJh720pctgtNG8MQ8O55KNlqa8UM2NIYPY1ai2hzetVFnl7g
-         P97QlTj/ThIko1Q5e+oofzchIpgR0G7OOLG17TmOaGOsD94RDnJG3wKr6LHJEJbCq6xY
-         Dk1YgE67J6c+5fjjtRp6oA2oujgISXkp2GtF9nHP9alZFq56TXAnUG3/RhHj2RvdCYhW
-         jqzrxHIHH790ESMmbxTCymqBs+46muNGJS24fC2rP6SOINix13Esm9qGESdCZ7rgPYXx
-         GlcQ==
-X-Gm-Message-State: AOAM5337AXPdwdl7qTi0I2hgIxqOTQS4yqcqhZRcw7r4BtJfBOkmINLJ
-        Iu6HCETHznyIU0RqVxvJJzXMdED+ujsH2j7nx6v4lv/Wtg8yD+RUvo17t8OU9cCs0nwRRCJ1mww
-        A5joY6RLpONuODKjL95z19urw
-X-Received: by 2002:a05:6402:5c9:: with SMTP id n9mr40305208edx.306.1637852500386;
-        Thu, 25 Nov 2021 07:01:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzMuiDvP4QYeeLwDI2JCOjzlhRkJeTB36IJtfD88XbWM3LPA2G1s9P+fBWdUkpvYv4+DeiFNA==
-X-Received: by 2002:a05:6402:5c9:: with SMTP id n9mr40305178edx.306.1637852500217;
-        Thu, 25 Nov 2021 07:01:40 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id gt18sm1725641ejc.46.2021.11.25.07.01.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Nov 2021 07:01:39 -0800 (PST)
-Message-ID: <09cdb0bd-56f6-d0fe-c35a-ed86c5919b4d@redhat.com>
-Date:   Thu, 25 Nov 2021 16:01:38 +0100
+        bh=77jlTeIrtkwCzy1kBCLb2SkHLxssS+UT50zrqiIuDCE=;
+        b=nB6wG5CTmkack7MIOO4HUjUSBi9EmPoIG+CyFjR6tLSnoSiMpX20EM+91hF71rKprFrPbu
+        DxcaHI7RN3xAstWtvfIR/CNhxu8zzIv2NyBpuIVN5qbIuFM3pcWzi6uWNjGyOxpWD7oWJ3
+        sF+T3fZGsiOoBkeznRXYFLLaojXE4iQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637852640;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=77jlTeIrtkwCzy1kBCLb2SkHLxssS+UT50zrqiIuDCE=;
+        b=0H+ysMseQxltEVifW5+dcWbngxRFEsXHDOIOqUkzKUIrGrcWiIl7vGRIm87TBmGRj3hEDX
+        oseRP/AwU3S9LsDg==
+Received: from [10.163.29.78] (unknown [10.163.29.78])
+        by relay2.suse.de (Postfix) with ESMTP id 0D15DA3B87;
+        Thu, 25 Nov 2021 15:04:00 +0000 (UTC)
+Message-ID: <dbb61b3a2602150aa091d3b456c1866a580e3c53.camel@suse.cz>
+Subject: Re: [PATCH v4 06/22] cpufreq: amd: introduce a new amd pstate
+ driver to support future processors
+From:   Giovanni Gherdovich <ggherdovich@suse.cz>
+To:     Huang Rui <ray.huang@amd.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, linux-pm@vger.kernel.org
+Cc:     Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Steven Noonan <steven@valvesoftware.com>,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Jinzhou Su <Jinzhou.Su@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Date:   Thu, 25 Nov 2021 16:03:58 +0100
+In-Reply-To: <20211119103102.88124-7-ray.huang@amd.com>
+References: <20211119103102.88124-1-ray.huang@amd.com>
+         <20211119103102.88124-7-ray.huang@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re:
-Content-Language: en-US
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Mark Gross <markgross@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Rafael J.Wysocki" <rjw@rjwysocki.net>,
-        Wolfram Sang <wsa@the-dreams.de>
-Cc:     Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20211102094907.31271-1-hdegoede@redhat.com>
- <20211102094907.31271-6-hdegoede@redhat.com>
- <163588780885.2993099.2088131017920983969@swboyd.mtv.corp.google.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <163588780885.2993099.2088131017920983969@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 11/2/21 22:16, Stephen Boyd wrote:
-> Quoting Hans de Goede (2021-11-02 02:49:01)
->> diff --git a/drivers/clk/clk-tps68470.c b/drivers/clk/clk-tps68470.c
->> new file mode 100644
->> index 000000000000..2ad0ac2f4096
->> --- /dev/null
->> +++ b/drivers/clk/clk-tps68470.c
->> @@ -0,0 +1,257 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Clock driver for TPS68470 PMIC
->> + *
->> + * Copyright (c) 2021 Red Hat Inc.
->> + * Copyright (C) 2018 Intel Corporation
->> + *
->> + * Authors:
->> + *     Hans de Goede <hdegoede@redhat.com>
->> + *     Zaikuo Wang <zaikuo.wang@intel.com>
->> + *     Tianshu Qiu <tian.shu.qiu@intel.com>
->> + *     Jian Xu Zheng <jian.xu.zheng@intel.com>
->> + *     Yuning Pu <yuning.pu@intel.com>
->> + *     Antti Laakso <antti.laakso@intel.com>
->> + */
->> +
->> +#include <linux/clk-provider.h>
->> +#include <linux/clkdev.h>
->> +#include <linux/kernel.h>
->> +#include <linux/mfd/tps68470.h>
->> +#include <linux/module.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/platform_data/tps68470.h>
->> +#include <linux/regmap.h>
->> +
->> +#define TPS68470_CLK_NAME "tps68470-clk"
->> +
->> +#define to_tps68470_clkdata(clkd) \
->> +       container_of(clkd, struct tps68470_clkdata, clkout_hw)
->> +
-> [...]
->> +
->> +static int tps68470_clk_set_rate(struct clk_hw *hw, unsigned long rate,
->> +                                unsigned long parent_rate)
->> +{
->> +       struct tps68470_clkdata *clkdata = to_tps68470_clkdata(hw);
->> +       unsigned int idx = tps68470_clk_cfg_lookup(rate);
->> +
->> +       if (rate != clk_freqs[idx].freq)
->> +               return -EINVAL;
->> +
->> +       clkdata->clk_cfg_idx = idx;
+On Fri, 2021-11-19 at 18:30 +0800, Huang Rui wrote:
+> <snip>
+>
+> Performance Per Watt (PPW) Calculation:
 > 
-> It deserves a comment that set_rate can only be called when the clk is
-> gated. We have CLK_SET_RATE_GATE flag as well that should be set if the
-> clk can't support changing rate while enabled. With that flag set, this
-> function should be able to actually change hardware with the assumption
-> that the framework won't call down into this clk_op when the clk is
-> enabled.
-
-Ok for v6 I've added the CLK_SET_RATE_GATE flag + a comment why
-it used and moved the divider programming to tps68470_clk_set_rate()m
-while keeping the PLL_EN + output-enable writes in tps68470_clk_prepare()
-
-
+> The PPW calculation is referred by below paper:
+> https://software.intel.com/content/dam/develop/external/us/en/documents/performance-per-what-paper.pdf
 > 
->> +
->> +       return 0;
->> +}
->> +
->> +static const struct clk_ops tps68470_clk_ops = {
->> +       .is_prepared = tps68470_clk_is_prepared,
->> +       .prepare = tps68470_clk_prepare,
->> +       .unprepare = tps68470_clk_unprepare,
->> +       .recalc_rate = tps68470_clk_recalc_rate,
->> +       .round_rate = tps68470_clk_round_rate,
->> +       .set_rate = tps68470_clk_set_rate,
->> +};
->> +
->> +static const struct clk_init_data tps68470_clk_initdata = {
+> Below formula is referred from below spec to measure the PPW:
 > 
-> Is there a reason to make this a static global? It's probably better to
-> throw it on the stack so that a structure isn't sitting around after
-> driver probe being unused.
-
-Fixed for v6.
-
-Thanks & Regards,
-
-Hans
-
-
+> (F / t) / P = F * t / (t * E) = F / E,
 > 
->> +       .name = TPS68470_CLK_NAME,
->> +       .ops = &tps68470_clk_ops,
->> +};
+> "F" is the number of frames per second.
+> "P" is power measured in watts.
+> "E" is energy measured in joules.
+
+Hello, I'd appreciate if you can remove the reference to the above paper and
+formula, because it is not really relevant to this context, and ends up being
+confusing.
+
+It describes performance per watt tailored to graphics benchmarks, in the form
+of frames per joule. Nothing wrong with that, but it only works for tests that
+measure frames per second, and none of the tests below is of that type.
+
+You have:
+
+- tbench measures throughput (MB/sec)
+- gitsource, aka run the git test suite, measures elapsed time
+- speedometer, a web browser test that gives "runs per minute"
+
+If you want performance per watt, you need to express your result as
+"operations per second", where "operations" is up to you to define. For
+tbench, one "operation" is moving a MB of data. For speedometer, one
+"operation" is one "run", as defined in the benchmark. Once you have op/sec
+(aka performance), divide by the average power measured over the entire
+duration of the benchmark.
+
+In cases like gitsource, where you have elapsed_time as a result, performance
+per watt is 1 / (elapsed_time * average_power).
+
+> We use the RAPL interface with "perf" tool to get the energy data of the
+> package power.
 > 
+> The data comparisons between amd-pstate and acpi-freq module are tested on
+> AMD Cezanne processor:
+> 
+> 1) TBench CPU benchmark:
+> 
+> +---------------------------------------------------------------------+
+> >                                                                     |
+> >               TBench (Performance Per Watt)                         |
+> >                                                    Higher is better |
+> +-------------------+------------------------+------------------------+
+> >                   |  Performance Per Watt  |  Performance Per Watt  |
+> >   Kernel Module   |       (Schedutil)      |       (Ondemand)       |
+> >                   |  Unit: MB / (s * J)    |  Unit: MB / (s * J)    |
+
+The unit "MB / (s * J)" doesn't really work, it should be "MB / (sec * watt)".
+Can you double check that you divided the performance result by the average
+power? Same for the other tests.
+
+It is also relevant to show performance, alongside with perf-per-watt.
+
+
+Thanks!
+Giovanni
 
