@@ -2,86 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667A745D984
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4730E45D98D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:49:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239738AbhKYLtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 06:49:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56600 "EHLO mail.kernel.org"
+        id S239523AbhKYLwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 06:52:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232753AbhKYLrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 06:47:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 116C160FBF;
-        Thu, 25 Nov 2021 11:43:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637840638;
-        bh=JNAvp0d48GJY6heYg3QVPsruIjM8EwRa0v8wQzOybb8=;
+        id S238867AbhKYLu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 06:50:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63A2D60FBF;
+        Thu, 25 Nov 2021 11:47:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637840837;
+        bh=3No3aHhaKBIBbI6sfTp5IL0mJhrT1nQJUx5S4ytzxhM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fd5B09pgAULni1Er4wXgWx4KvTLkQd4cnVdonVdrcNsn2Yvy/vQyDtVCL2vV5crbh
-         ZC5uFTI26oUB0KWELFYDT+T99O7OW4b+pbIZ0xR0EVtlfP6rQHkA4nUvxz9LqKsv0p
-         /NkiuqMmbwF4a671TWLzjYWuEAVDdWrtnIKsj5TA=
-Date:   Thu, 25 Nov 2021 12:43:48 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Pavel Machek <pavel@denx.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Stable <stable@vger.kernel.org>
-Subject: Re: [PATCH 5.10 000/154] 5.10.82-rc1 review
-Message-ID: <YZ929M6+fNYMZ0fg@kroah.com>
-References: <20211124115702.361983534@linuxfoundation.org>
- <20211124135311.GA29193@duo.ucw.cz>
- <CADVatmPhw41K9Eg75_7w89bgXLMnuGcJDNcsP0KMVxhkTQmTxw@mail.gmail.com>
+        b=j9FeHPomai+swTgZZk5vF1XaFl9raK+axoQM2ZQr14qBBqBFicD93VkFgVGzpHWQD
+         NAAHTNW7AEdE+scl4FkXZeW685kZez0M/6iHkahTEDzwEgGrTKHWwhCTCtIJb2GNEl
+         o9s60MTGzVwvIqRzwAV92Obejm20uqxa6hOztfLsUlLNkDNSMgi+0kTaH3d3oaPDVv
+         +jck6L670WadupE9i7yx4868ewYEGGeO+Qgzbqmyg60LSdGXz5/ELM0pWTUDcBJkNf
+         p4OEOKL85ToLgAifseHWYbSnrBZ0j777hwct35j31qj6nZGOSpv/THWLtOpq1Zw9K4
+         R8Q3hZYC3UaPA==
+Date:   Thu, 25 Nov 2021 11:47:12 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Jayesh Choudhary <j-choudhary@ti.com>
+Cc:     Rob Herring <robh@kernel.org>, lgirdwood@gmail.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, kishon@ti.com
+Subject: Re: [PATCH] ASoC: dt-bindings: davinci-mcasp: convert McASP bindings
+ to yaml schema
+Message-ID: <YZ93wOWfHdLUC6bG@sirena.org.uk>
+References: <20211122091525.2290-1-j-choudhary@ti.com>
+ <1637685269.740254.3442929.nullmailer@robh.at.kernel.org>
+ <d72bac88-8f56-35cd-a953-270a1ed4d34b@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Dh/qz3bmpLmon4Sl"
 Content-Disposition: inline
-In-Reply-To: <CADVatmPhw41K9Eg75_7w89bgXLMnuGcJDNcsP0KMVxhkTQmTxw@mail.gmail.com>
+In-Reply-To: <d72bac88-8f56-35cd-a953-270a1ed4d34b@ti.com>
+X-Cookie: This bag is recyclable.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 11:37:14AM +0000, Sudip Mukherjee wrote:
-> Hi Greg,
-> 
-> On Wed, Nov 24, 2021 at 1:57 PM Pavel Machek <pavel@denx.de> wrote:
-> >
-> > Hi!
-> >
-> > > This is the start of the stable review cycle for the 5.10.82 release.
-> > > There are 154 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> >
-> > CIP is running tests here:
-> >
-> > https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-5.10.y
-> >
-> > And there's a build failure in CIP testing there:
-> >
-> >   CC      drivers/mmc/core/sdio_ops.o
-> > 5040drivers/cpuidle/cpuidle-tegra.c: In function 'tegra_cpuidle_probe':
-> > 5041drivers/cpuidle/cpuidle-tegra.c:349:38: error: 'TEGRA_SUSPEND_NOT_READY' undeclared (first use in this function); did you mean 'TEGRA_SUSPEND_NONE'?
-> > 5042  if (tegra_pmc_get_suspend_mode() == TEGRA_SUSPEND_NOT_READY)
-> 
-> I also having the same build failures for arm.
-> 
-> drivers/cpuidle/cpuidle-tegra.c: In function 'tegra_cpuidle_probe':
-> drivers/cpuidle/cpuidle-tegra.c:349:45: error:
-> 'TEGRA_SUSPEND_NOT_READY' undeclared (first use in this function); did
-> you mean 'TEGRA_SUSPEND_NONE'?
->   349 |         if (tegra_pmc_get_suspend_mode() == TEGRA_SUSPEND_NOT_READY)
-> 
-> And it should be for 4d895b601038 (\"cpuidle: tegra: Check whether PMC
-> is ready\").
 
-Should be fixed -rc2.
+--Dh/qz3bmpLmon4Sl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-thanks,
+On Thu, Nov 25, 2021 at 03:37:36PM +0530, Jayesh Choudhary wrote:
+>=20
+>=20
+> On 23/11/21 10:04 pm, Rob Herring wrote:
+> > On Mon, 22 Nov 2021 14:45:25 +0530, Jayesh Choudhary wrote:
+> > > Convert the bindings for McASP controllers for TI SOCs
+> > > from txt to YAML schema.
+> > >=20
+> > > Adds additional properties 'clocks', 'clock-names', 'power-domains'
 
-greg k-h
+Please delete unneeded context from mails when replying.  Doing this
+makes it much easier to find your reply in the message, helping ensure
+it won't be missed by people scrolling through the irrelevant quoted
+material.
+
+--Dh/qz3bmpLmon4Sl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGfd78ACgkQJNaLcl1U
+h9CAdQf/Zccr8jpu9GYJ1s1e6SIPLaOTHQ7T/GvnYZZWTgn++xolnkLc/bEPn1Q2
+afzCXD85nhCGUqT1mqoF+FMq1LKR/SBzBebIPpHPh5D2Qj1IeNcyhBf+e5sEaLa1
+H/8tN5igeAPxp/QOtoWhJMrcSLVk7M3kXbza1tfUvZOWud2/gE4IczPzphdhIv7M
+Upu/x6p9wibHL5Qi12J5uRZyVgyaE+3KB7vWMlhHlTW+BTxYx+a9+xJMF49Dja75
+RK9avILPAvpkKfOGXYuB/43AJNVuZswPM5Xf5W28DHk4NkbiwT7NysGI59v7I3pr
+b+VSayQk/BMdqGFX2S317GBUtwBGlA==
+=1ZPR
+-----END PGP SIGNATURE-----
+
+--Dh/qz3bmpLmon4Sl--
