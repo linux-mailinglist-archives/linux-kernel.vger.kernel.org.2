@@ -2,95 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318FC45DF51
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:04:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF6FA45DF54
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:04:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239228AbhKYRGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 12:06:45 -0500
-Received: from smtprelay0245.hostedemail.com ([216.40.44.245]:50712 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S242135AbhKYREo (ORCPT
+        id S242135AbhKYRHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 12:07:43 -0500
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:60740 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S242087AbhKYRFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 12:04:44 -0500
-Received: from omf03.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id DAD60180A9C6E;
-        Thu, 25 Nov 2021 17:01:31 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id AFBEF9000EDB;
-        Thu, 25 Nov 2021 17:01:29 +0000 (UTC)
-Message-ID: <7a56a2431825bb71b76bb3e90d3ce0897596bd48.camel@perches.com>
-Subject: Re: [PATCH 2/2] get_maintainer: ignore "my" e-mail address
-From:   Joe Perches <joe@perches.com>
-To:     Lukasz Stelmach <l.stelmach@samsung.com>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 25 Nov 2021 09:01:30 -0800
-In-Reply-To: <dleftjpmqob4c0.fsf%l.stelmach@samsung.com>
-References: <a0bd71ce82c7c7b9cb72972b091f9f1054b6595c.camel@perches.com>
-         <CGME20211125161420eucas1p2b3dbac252dab05d0a5406d0fca8ab945@eucas1p2.samsung.com>
-         <dleftjpmqob4c0.fsf%l.stelmach@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4-1 
+        Thu, 25 Nov 2021 12:05:42 -0500
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1APDwa56011922;
+        Thu, 25 Nov 2021 11:02:08 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=fUfqRxiYoRbxdy1ZSEccjSxBRfTJK48M8Na1ieirrOI=;
+ b=WuNTzhmVFPJLsxBdvwfPc7dNsg7RAGTBPmTnsEOoR5va3MbI9L+nxKLx0l8T3pprJCs1
+ pZjfihzItOrhrHWIK9q0tCRxwxl8akq9bG3T8kRnmjpCiN2FWjpfmaN8UE30wm65KBcL
+ Ztm+tIYR8tpsxzbe5QlwnybQ9SlWS1/FinleT2hl0yp63z73xNAy+2AN9FNyUWRxT1gt
+ /35PQ/wiHSyz1JAVlPy16wcV8e4Nlu11wKhekUKKSoKZoMwO7g9vTTHveJWbMH15vNx1
+ /ainImGUhbVq5q8N9+HKX+SAN/3CsNojQKfg/SL0lSLJfdhD9YPk9GVg8ZzLRFFrfrj3 gA== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3chds7hykr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 25 Nov 2021 11:02:08 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Thu, 25 Nov
+ 2021 17:02:06 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.17 via Frontend
+ Transport; Thu, 25 Nov 2021 17:02:06 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4F127477;
+        Thu, 25 Nov 2021 17:02:05 +0000 (UTC)
+Date:   Thu, 25 Nov 2021 17:02:05 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Lucas Tanure <tanureal@opensource.cirrus.com>
+CC:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ASoC: cs35l41: Fix link problem
+Message-ID: <20211125170205.GI18506@ediswmail.ad.cirrus.com>
+References: <20211125143501.7720-1-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.69
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: AFBEF9000EDB
-X-Stat-Signature: ehfxejky8phpya5zyx67f55t3pbxoukp
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/fjjxGgLhj+DZkhN2bsufHdA2hn/jL5L8=
-X-HE-Tag: 1637859689-388833
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20211125143501.7720-1-tanureal@opensource.cirrus.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: Wanejz1T9KWz8nrSOxWt-KMBgAk10tNK
+X-Proofpoint-ORIG-GUID: Wanejz1T9KWz8nrSOxWt-KMBgAk10tNK
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(I dislike my email client sometimes, apologies for the blank reply)
-
-On Thu, 2021-11-25 at 17:14 +0100, Lukasz Stelmach wrote:
-> It was <2021-11-16 wto 15:14>, when Joe Perches wrote:
-> > On Tue, 2021-11-16 at 22:34 +0100, Łukasz Stelmach wrote:
-> > > Ignore one's own e-mail address given as a parameter to --ignore-me
-> > > or in the EMAIL environment variable.
-> > 
-> > Why is this useful?
-> > 
-> > git send-email already supports this.
-> > 
-> >        --suppress-cc=<category>
-> >            Specify an additional category of recipients to suppress
-> >            the auto-cc of:
-> > 
-> >            •   author will avoid including the patch author
-> > 
-> >            •   self will avoid including the sender
-> > 
-> >       --[no-]suppress-from
-> >            If this is set, do not add the From: address to the cc:
-> >            list. Default is the value of sendemail.suppressFrom
-> >            configuration value; if that is unspecified, default to
-> >            --no-suppress-from.
-> > 
+On Thu, Nov 25, 2021 at 02:35:01PM +0000, Lucas Tanure wrote:
+> Can't link I2C and SPI to the same binary, better
+> to move CS35L41 to 3 modules approach.
+> And instead of exposing cs35l41_reg, volatile_reg,
+> readable_reg and precious_reg arrays, move
+> cs35l41_regmap_i2c/spi to new module and expose it.
 > 
-> Not really, git send-email does not support --suppress-to, and with
-> get_maintainers.pl coupled with git send-email as follows
-> 
-> --8<---------------cut here---------------start------------->8---
-> [sendemail]
->         tocmd = "`pwd`/scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats --nol --"
->         cccmd = "`pwd`/scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats --nom --nor --nofixes --"
-> --8<---------------cut here---------------end--------------->8---
-> 
-> my address is added to To: if I am a maintainer of the patched files.
-> To avoid this the --ignore-me options can be added to tocmd.
+> Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+> ---
 
-Rather than add complexity to the original get_maintainer script, is
-it possible to add a pipe like " | grep -v '<your_address>'" to tocmd ?
+Thanks for picking this up looks good to me.
 
-I think it better to have these cmds use scripts ala:
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-https://lore.kernel.org/all/1473862411.32273.25.camel@perches.com/
-
-And if not a script and the complexity is warranted (though I think not)
-I'd rather have something like --suppress-addresss "<addr>" added to
-get_maintainer.pl to allow one or more addresses to be suppressed.
-
-
+Thanks,
+Charles
