@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 744F945D4B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 07:24:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 347DE45D4BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 07:24:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348078AbhKYG1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 01:27:11 -0500
-Received: from mail-dm6nam12on2067.outbound.protection.outlook.com ([40.107.243.67]:31520
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        id S1348275AbhKYG1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 01:27:16 -0500
+Received: from mail-bn8nam11on2058.outbound.protection.outlook.com ([40.107.236.58]:9697
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1346900AbhKYGZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 01:25:10 -0500
+        id S1347364AbhKYGZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 01:25:14 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T4ro4lI7wrLuitdHedLZUzlqoU00oz7yuNGPEjFnSS0b+v51Di9z+9UOt+LEYvyPnKc4r0MKsK8t348gMMOw18x+0a81C/gHBf30+SVngydTnl0pI98RMPtvTZzEXTEAvt2F7j+oaCBwAtPuiVyCj1Hp9akyiGNPxuU2B/DMVhriRdVRpfmJzvaqtnCDf9pPentxfrdLIfzH3gbEdQVUTf7gtRK+8LrvpfL8o0FXgyX7UctU5+Hw7/yfvf0kPKh2mglkhFeIUJtGlgsfB9fUCkGo41QFHD677GQX/CPu9eP1XsNter5eYARPW5fUSqOE0eXfmWGhjH3/FTWbEkvK9w==
+ b=kvUqbvRndd1FWnn0R1EIO6tKN2ZIYVryHpTjXQIRz1nkqY8WLRuKRVkaT6sxi+i5tvwcB2kiqs8+AkSYzoyu5JGIvF+gn2Yqd3htE4u5ck7/wZuKRTKJ6aqrqYKRTzDPuia6nM8b45mz1IHcCITNfsKjzlyB6bLHw1gGhkvmXXF/lJmUgakY9ewUtCcnZDfLKDk1MTDPth9U0yo+L14Sk4JJLQsuPkHMua/NBmuLOI+PwRYmCvj8ydaUFH1p35QyfK5IbRK7L9ypdCUe18qWfkDF6z7cA7MC7VoEJhedfZX+AC2LJ+F5UoFFCIw+L1aVk9MJfE14vixTrRtF3H6N6A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sYnM5mG24DGTZEIpH26Sf/F+NFIfUiPney5r6GNsd+M=;
- b=ZqbsWhxMc2vOW/D4A1pO34AEtbmJt+eObpcjmyGTQZ5W0lI/09q6wAdXC97V2031vvL/b/ilOTlHPuMs7+LMhqUcHxO0K+T2aZ1gRrz0JFcOit4Q0wvlL2MCGoXxLIA0AFAR0FfFxv25xwOB5z0vuY1EMM+i/hQB+y7KjhALB1Cvgzl90AAbtZDo+bN+5Q+tQZE/5RXZlXlXuHdOBmO0fHNPxgZZhsSYJkv6hn7BBG+aQnJaHMhdvNSC1cs2MCA+qHWDEJOFDMP+py5yW8dTSiRx323mBZPAPDb8fO7cJDK2U/CfdH7w1kowlxBVRuMHSb/lOMpdUluHuEVwXhaV9A==
+ bh=W/+GybTVL4O6JHThG3flxM88YhmghZZF/FJncu089fI=;
+ b=Ns0jlWOmTX7VN1fXgo5HfSCtvMWkyRfT6Uk4Im+ZzqZU9HySdvdN5TvjXJAmNdDfyxmrIDNDkuC+v1d8xR9Cs4qVsbPLjiNdCfp9kEgG+MTpww8/Un9c1AtbJ7Hf0kXpwxDdsRE3grWcD5Gi8MQkithzC09Qj7VmgX4t4IpCVCIAQYB6cY71ijxf9l5ZRhAaE8EKQq2KFTU8RGQ88Mhp8FpyaYDic77IlH7xb+lkl20ajvbinrKnLaOOC7UANT/3S7OUscrdsjQ3MSu6h8570O5G/PD0JX3plrZqpZxIByGujuImZ7vFgFaAIbP1Lf3c685ZxrLoNyqpeWXbqBjrwQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sYnM5mG24DGTZEIpH26Sf/F+NFIfUiPney5r6GNsd+M=;
- b=zQlNxwYQ1w+BzrvRdLB/x2ReqbAxkIKUJXqibflPFiIXKleByEFmEpJx1l8vVWe3qzYxnleuFDgx5TPLIlHV1Jo4G7i9HbXtJkg9u0q002rNZWwgFsYS8YSqFfB7eDd2snAXwE35juthsNqtvS1UA3sEqJgGrv/aSa0R/upLRdc=
-Received: from MW4PR04CA0120.namprd04.prod.outlook.com (2603:10b6:303:83::35)
- by CY4PR12MB1941.namprd12.prod.outlook.com (2603:10b6:903:11a::16) with
+ bh=W/+GybTVL4O6JHThG3flxM88YhmghZZF/FJncu089fI=;
+ b=Yxp63UpeUcURpUkENORw31F7/MW95oiv1SYP+nJ1Z798rqLKoVMJrDvmU/lD/6iRLYCHeBinUagKeluqB48a2PUVGHtq9LyIvFE6sfkxYh2h3SGcFlt8yqbaGGZyHtNDmoxixy+RQGjxi5nzkzFbMLFIvVzCdyBceuP/U6/EZag=
+Received: from DM5PR18CA0060.namprd18.prod.outlook.com (2603:10b6:3:22::22) by
+ CY4PR1201MB0119.namprd12.prod.outlook.com (2603:10b6:910:1e::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.24; Thu, 25 Nov
- 2021 06:21:55 +0000
-Received: from CO1NAM11FT053.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:83:cafe::1d) by MW4PR04CA0120.outlook.office365.com
- (2603:10b6:303:83::35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.19 via Frontend
- Transport; Thu, 25 Nov 2021 06:21:55 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Thu, 25 Nov
+ 2021 06:22:01 +0000
+Received: from DM6NAM11FT042.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:22:cafe::79) by DM5PR18CA0060.outlook.office365.com
+ (2603:10b6:3:22::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.24 via Frontend
+ Transport; Thu, 25 Nov 2021 06:22:01 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com;
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CO1NAM11FT053.mail.protection.outlook.com (10.13.175.63) with Microsoft SMTP
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT042.mail.protection.outlook.com (10.13.173.165) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4734.22 via Frontend Transport; Thu, 25 Nov 2021 06:21:55 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ 15.20.4734.22 via Frontend Transport; Thu, 25 Nov 2021 06:22:01 +0000
+Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Thu, 25 Nov
- 2021 00:21:54 -0600
+ 2021 00:22:01 -0600
 Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
  (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.17; Thu, 25 Nov
- 2021 00:21:53 -0600
+ 2021 00:22:00 -0600
 Received: from chrome.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server id 15.1.2375.17 via Frontend
- Transport; Thu, 25 Nov 2021 00:21:50 -0600
+ Transport; Thu, 25 Nov 2021 00:21:57 -0600
 From:   Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
 To:     <sboyd@kernel.org>, <rafael@kernel.org>,
         <linux-clk@vger.kernel.org>
@@ -65,12 +65,11 @@ CC:     <Vijendar.Mukunda@amd.com>, <Alexander.Deucher@amd.com>,
         <Basavaraj.Hiregoudar@amd.com>, <Sunil-kumar.Dommati@amd.com>,
         <Mario.Limonciello@amd.com>,
         Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
-        Len Brown <lenb@kernel.org>,
-        "open list:ACPI" <linux-acpi@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
         open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 3/7] ACPI: APD: Add a fmw property clk-name
-Date:   Thu, 25 Nov 2021 11:50:32 +0530
-Message-ID: <20211125062036.1185994-4-AjitKumar.Pandey@amd.com>
+Subject: [PATCH v3 4/7] clk: x86: Use dynamic con_id string during clk registration
+Date:   Thu, 25 Nov 2021 11:50:33 +0530
+Message-ID: <20211125062036.1185994-5-AjitKumar.Pandey@amd.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211125062036.1185994-1-AjitKumar.Pandey@amd.com>
 References: <20211125062036.1185994-1-AjitKumar.Pandey@amd.com>
@@ -79,70 +78,52 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0b6cb3be-f3b5-434e-ca8f-08d9afdbe0ae
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1941:
-X-Microsoft-Antispam-PRVS: <CY4PR12MB194124C9FAA32F43092A45C482629@CY4PR12MB1941.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
+X-MS-Office365-Filtering-Correlation-Id: 60198354-f91f-476a-8887-08d9afdbe48e
+X-MS-TrafficTypeDiagnostic: CY4PR1201MB0119:
+X-Microsoft-Antispam-PRVS: <CY4PR1201MB011968DD67638FB3A8E49CF582629@CY4PR1201MB0119.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1201;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WM8WP3uMT/f6Q3nvqwLJzc3jkdiDViN/xet4MDkxLM6LwjJp9OMwOE5ln30Q5LYsi+cRLrrErA9PkPMRN6PWDBsbPwfo22SKLg4G/eCOHU2l3eeIIJWiJf9O4NTR3VYh0Kls/qD0nC7mXBZDyAjFjx9z/BSymtKR0Xqqw9Nl0sNStapxj5vFX+phthCpIPViVMXGDiLHsIM16sQ22jFu8GP3/NFASK290uSlQsgdC97/ZyL7S7u63kga+/9KFNIZARKypoJ7Vb18oFqo0YxUGQ8j9uJLoBbWRSCy9/lvpNw5GFMHUCblYleBukUfEZ4wtzubYMAD1M9MU/Qaxc8Ql3jMZNyBxlnBFILTngaPBjadgiM9/x2ZqXvE0mICiC/irrIvPh4/KMi5XCswbkpL3HYoWFM5ZIAu5magDW1SWyK63+as2jgdV+a1HIYzxhKhrnotqqKmKMOccR15Kra5oaV956ug0j5ZL1DSpFQD37QMVyuZziEBqxyTtToUCkWpdRuc5XrBkUoB3YrZ7tpSBu4zNR71INmvWa4O9x34Uxwd3MtwgvNynn/MTMc1/hKECNh1MxiWs2ozKKhrKFJn5SYHPsGiF+SCsYqS09n8TW4r/Zpe90Kd29Cld7Cgi32M4IolFudpuFrh2Dm3RgpwbdPyO+fiqM0L8UGq3u4MuxmXi471WhZ3Eq/fCfhSh1Pz8CRfQTgYVC2I/zgFQpbgAQ+ZU/CZ8mzbD3PnnmxJMd4=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(86362001)(82310400004)(5660300002)(8676002)(2616005)(54906003)(70206006)(81166007)(36860700001)(2906002)(1076003)(336012)(426003)(186003)(508600001)(110136005)(356005)(47076005)(36756003)(26005)(4326008)(6666004)(8936002)(7696005)(316002)(70586007)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: AS+WgJlJBcdKu3og9tjRyhdEyVeWDjYIX3rdx14KgCWwh6CShmjHb/hheYdOL5Ky6E7ihrlD/O30GY033aXPgZ56Mz+UAshhOM6EHRzdOkyb635bnKqVTxWEWYpJ6atHox2rR8yPI2WFh/+uukUlzR1qULAYG6wxd0vhs4ph4+e5DnTpbd5jh/AR+UlUT+OydRwMOVljGvtY3AlxGPt4iXnQwQ9rVk8nFsCI7TzoWWQHjfceHWwjdiQgcpSDTBMSGUwboEF8rBV8fahR0+V5UqidolFXbA6jauJB7/3KnShczdCAkrdc+dRMBdV2t4hWJQJi5nPNN2Okve4DodJTnfHUeU/j6M6RzF060cq9OIkpkwSfxn+o9WzmHdLLKAxkmCJuwj8XSUhOEE8ZDeQLkpG8xNZwR9B68ZviPOgcNJRSe8PUIz/IZ4WVf4wDoAVX5zteyyw0UlfhQz2lsz4VHcNd2FMdG3C7DXk+0b+HoKFxLO9Px8p9ammJWrUcrkfdviNJZmSFHfyant0n30cmYZ6xhZmyfCw72pd3T+6qumsQwIDTNVCNh2RZX2dvMxYhv6SEBx1lWtYhoLuR1REaYAgQ40T4xf/GC0AWXMYDM+BYcg3xiwGFp85U51PBgSHGR7aLTubIPmYIl4JQ5GIzoQnrKD3qoI5czPJ3YrezVGE0nGCpvrVRC7r+yGRa5FRbsvnDcOt8mE/hc3+t73vHN/i/Zp/wsA7yG4uUGSTpKGc=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(2906002)(2616005)(426003)(36756003)(8936002)(4744005)(86362001)(26005)(83380400001)(7696005)(54906003)(110136005)(4326008)(8676002)(6666004)(5660300002)(81166007)(82310400004)(1076003)(316002)(356005)(336012)(186003)(47076005)(508600001)(70586007)(70206006)(36860700001)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2021 06:21:55.0286
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2021 06:22:01.6141
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b6cb3be-f3b5-434e-ca8f-08d9afdbe0ae
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60198354-f91f-476a-8887-08d9afdbe48e
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT053.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT042.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1941
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB0119
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new device property to fetch clk-name from firmware.
+Replace hard coded con_id string with fch_data->name. We have clk
+consumers looking up with different clock names, hence use dynamic
+con_id string during clk lookup registration. fch_data->name will
+be initialized in acpi driver based on fmw property value.
 
 Signed-off-by: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
 ---
- drivers/acpi/acpi_apd.c               | 10 ++++++++++
- include/linux/platform_data/clk-fch.h |  1 +
- 2 files changed, 11 insertions(+)
+ drivers/clk/x86/clk-fch.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/acpi/acpi_apd.c b/drivers/acpi/acpi_apd.c
-index 6913e9712852..2b958b426b03 100644
---- a/drivers/acpi/acpi_apd.c
-+++ b/drivers/acpi/acpi_apd.c
-@@ -87,6 +87,16 @@ static int fch_misc_setup(struct apd_private_data *pdata)
- 	if (ret < 0)
- 		return -ENOENT;
+diff --git a/drivers/clk/x86/clk-fch.c b/drivers/clk/x86/clk-fch.c
+index df59fa8ac0a4..4ff2e1b3b3e9 100644
+--- a/drivers/clk/x86/clk-fch.c
++++ b/drivers/clk/x86/clk-fch.c
+@@ -85,7 +85,7 @@ static int fch_clk_probe(struct platform_device *pdev)
+ 			OSCCLKENB, CLK_GATE_SET_TO_DISABLE, NULL);
  
-+	if (!acpi_dev_get_property(adev, "clk-name", ACPI_TYPE_STRING, &obj)) {
-+		clk_data->name = devm_kzalloc(&adev->dev, obj->string.length,
-+					      GFP_KERNEL);
-+
-+		strcpy(clk_data->name, obj->string.pointer);
-+	} else {
-+		/* Set default name to mclk if entry missing in firmware */
-+		clk_data->name = "mclk";
-+	}
-+
- 	list_for_each_entry(rentry, &resource_list, node) {
- 		clk_data->base = devm_ioremap(&adev->dev, rentry->res->start,
- 					      resource_size(rentry->res));
-diff --git a/include/linux/platform_data/clk-fch.h b/include/linux/platform_data/clk-fch.h
-index 850ca776156d..11a2a23fd9b2 100644
---- a/include/linux/platform_data/clk-fch.h
-+++ b/include/linux/platform_data/clk-fch.h
-@@ -12,6 +12,7 @@
+ 		devm_clk_hw_register_clkdev(&pdev->dev, hws[CLK_GATE_FIXED],
+-			"oscout1", NULL);
++					    fch_data->name, NULL);
+ 	}
  
- struct fch_clk_data {
- 	void __iomem *base;
-+	char *name;
- };
- 
- #endif /* __CLK_FCH_H */
+ 	return 0;
 -- 
 2.25.1
 
