@@ -2,160 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49C4245DDF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:49:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64EDB45DDCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355185AbhKYPwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:52:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349271AbhKYPuk (ORCPT
+        id S241736AbhKYPrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:47:16 -0500
+Received: from ppsw-33.csi.cam.ac.uk ([131.111.8.133]:49880 "EHLO
+        ppsw-33.csi.cam.ac.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345423AbhKYPpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:50:40 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9B90C0613B5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:41:09 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id v22so6466216qtx.8
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:41:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=FuDCLMnZBcG4FXTRkAszIGwlmrXUvRfGWOLMCeO71r4=;
-        b=bXR88lw6LhPPgAj95Af7RQ3lMoQa/7QnY5KgsSf2wLn5Ddu9/ssuMn2l/td39RVEIb
-         4v7Oi/qiWyJJZDGAg6wzKKJrOyB8i7GE2EjN9Oun8j7+piRbo+bUZXoY3rn0cF0esrSI
-         gxYh/FDRYGyCFu3CjIY1jI2rMzqQa1wi4thijh0d4JhwwcC1otAA4pdzvVdtzgCWSB5h
-         bC1pEynddVfYbKyWU/9F7iSEPK3q0F9MT/gDy3k/dCc0UdUDfNTJyaUF9oP1XXHhR9iH
-         /RoQRNek3++ONIY6C2j0NRb/LnMwTItrAKbeZcIYBLofV/RFm4ZznjWbnW0b9/LvxkHE
-         exKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=FuDCLMnZBcG4FXTRkAszIGwlmrXUvRfGWOLMCeO71r4=;
-        b=12ek4jX/aFnh321Dufou8y3l35laQtsIazDPjHHoKUIJZCOwIt59xJ2njpGva1Ztu7
-         oA5R9nbh+8CswkhVCykth5V4sK0qKliOvaJogKa1cUgpz9x5Zb2W60KeEKSHquqnxNSc
-         kCHs4HXbPbZwBxRPjfpJBZVLOblqjoPfRJ2G1//Y+w/9F0Yaw/fTdn1KS8UtxOh+9HYb
-         nShuBSJTBWJ5dbfFPT5CCWeomTuiknDUoEUxUOws+UaVERIOF7y+I/N+tH+suEmvDJeM
-         HiPxDgLBZUett0Y418Um6UxjECZ2P627EAO2oe7NluKJ1fPKQ5AoLB+DjvxYJstB+q6q
-         ic8g==
-X-Gm-Message-State: AOAM5326vTgSvhKbvNqU1UNp/xJEwUGgtfQnsKf/yqDv2YQpF5Bw9zyR
-        jwxcCU8MIr31N4Vurhf1ex+dpw==
-X-Google-Smtp-Source: ABdhPJwtFMy/514J4UaQ0/ybTKHlbOITeEKfMCQ7UenTYDSOaJPjLAG9D4Wac2FvXHGB65/bJM8mVQ==
-X-Received: by 2002:a05:622a:1045:: with SMTP id f5mr18225139qte.319.1637854868860;
-        Thu, 25 Nov 2021 07:41:08 -0800 (PST)
-Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id y18sm1666411qkp.120.2021.11.25.07.41.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 07:41:08 -0800 (PST)
-Message-ID: <ae2fa5b455fce8f159e02b3156800b162e424a21.camel@ndufresne.ca>
-Subject: Re: [PATCH] media: hantro: Hook up RK3399 JPEG encoder output
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Date:   Thu, 25 Nov 2021 10:41:07 -0500
-In-Reply-To: <41d75ec1-b3b6-b991-33f0-7188869eb59c@xs4all.nl>
-References: <20211119074654.470729-1-wenst@chromium.org>
-         <5d23258a954eb0076cacf89d6c88b5e6ef13695f.camel@ndufresne.ca>
-         <CAGXv+5Gf-gsB7JXnLiZF_R=0RdxXS7CDZaFftyZ+aESXLXy1Ew@mail.gmail.com>
-         <85e9830ff0c2ed5eb77ce52ec7fde82a08368a2a.camel@ndufresne.ca>
-         <41d75ec1-b3b6-b991-33f0-7188869eb59c@xs4all.nl>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
+        Thu, 25 Nov 2021 10:45:15 -0500
+X-Cam-AntiVirus: no malware found
+X-Cam-ScannerInfo: https://help.uis.cam.ac.uk/email-scanner-virus
+Received: from hades.srcf.societies.cam.ac.uk ([131.111.179.67]:49588)
+        by ppsw-33.csi.cam.ac.uk (ppsw.cam.ac.uk [131.111.8.137]:25)
+        with esmtps (TLS1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        id 1mqGsV-000iZJ-hX (Exim 4.95)
+        (return-path <amc96@srcf.net>);
+        Thu, 25 Nov 2021 15:41:39 +0000
+Received: from [192.168.1.10] (host-92-12-61-86.as13285.net [92.12.61.86])
+        (Authenticated sender: amc96)
+        by hades.srcf.societies.cam.ac.uk (Postfix) with ESMTPSA id 279221FBFC;
+        Thu, 25 Nov 2021 15:41:39 +0000 (GMT)
+Message-ID: <0b674f45-d82a-74cb-5853-97cb5e8eead9@srcf.net>
+Date:   Thu, 25 Nov 2021 15:41:38 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH 1/2] xen: make HYPERVISOR_get_debugreg() always_inline
+Content-Language: en-GB
+To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, kernel test robot <lkp@intel.com>
+References: <20211125092056.24758-1-jgross@suse.com>
+ <20211125092056.24758-2-jgross@suse.com>
+ <3c922d47-9eab-5150-f4c6-3db40a77599a@srcf.net>
+ <c4a1657b-2904-0d10-3a95-07b84062eb52@suse.com>
+From:   Andrew Cooper <amc96@srcf.net>
+In-Reply-To: <c4a1657b-2904-0d10-3a95-07b84062eb52@suse.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le jeudi 25 novembre 2021 à 09:44 +0100, Hans Verkuil a écrit :
-> On 23/11/2021 20:39, Nicolas Dufresne wrote:
-> > Le lundi 22 novembre 2021 à 11:57 +0800, Chen-Yu Tsai a écrit :
-> > > On Sat, Nov 20, 2021 at 12:00 AM Nicolas Dufresne <nicolas@ndufresne.ca> wrote:
-> > > > 
-> > > > Le vendredi 19 novembre 2021 à 15:46 +0800, Chen-Yu Tsai a écrit :
-> > > > > The JPEG encoder found in the Hantro H1 encoder block only produces a
-> > > > > raw entropy-encoded scan. The driver is responsible for building a JPEG
-> > > > > compliant bitstream and placing the entropy-encoded scan in it. Right
-> > > > > now the driver uses a bounce buffer for the hardware to output the raw
-> > > > > scan to.
-> > > > > 
-> > > > > In commit e765dba11ec2 ("hantro: Move hantro_enc_buf_finish to JPEG
-> > > > > codec_ops.done"), the code that copies the raw scan from the bounce
-> > > > > buffer to the capture buffer was moved, but was only hooked up for the
-> > > > > Hantro H1 (then RK3288) variant. The RK3399 variant was broken,
-> > > > > producing a JPEG bitstream without the scan, and the capture buffer's
-> > > > > .bytesused field unset.
-> > > > > 
-> > > > > Fix this by duplicating the code that is executed when the JPEG encoder
-> > > > > finishes encoding a frame. As the encoded length is read back from
-> > > > > hardware, and the variants having different register layouts, the
-> > > > > code is duplicated rather than shared.
-> > > > > 
-> > > > > Fixes: e765dba11ec2 ("hantro: Move hantro_enc_buf_finish to JPEG codec_ops.done")
-> > > > > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> > > > > ---
-> > > > > This was developed on the downstream ChromeOS 5.10 kernel (with a hack
-> > > > > for .data_offset) and tested with ChromeOS's jpeg_encode_accelerator_unittest
-> > > > > patched to accept non-JFIF JPEG streams (https://crrev.com/c/3291480).
-> > > > > 
-> > > > > This was then forward-ported to mainline (name and filename changes) and
-> > > > > compile tested only.
-> > > > 
-> > > > Tested with GStreamer on top of 5.16-rc1 from media_stage.git. Not perfect but
-> > > > at least the the output it valid. Test command was:
-> > > > 
-> > > >   gst-launch-1.0 videotestsrc num-buffers=2 ! v4l2jpegenc ! filesink
-> > > > location=test.jpg
-> > > > 
-> > > > Notice that I encode two frames, it seems like the draining flow is broken in
-> > > > this driver. GStreamer will queue the frame and issue CMD_START immediately, the
-> > > > driver will skip the encode, leaving me with an empty file.
-> > > 
-> > > The hantro driver doesn't implement ENC_CMD, which IIRC is used for the
-> > > draining flow. I guess that's something to fix, since the mem2mem stateful
-> > > encoder spec seems to require it. Or does that spec not apply to the JPEG
-> > > encoders?
-> > 
-> > I'm pretty sure its required. But this isn't a regression from this patch.
-> 
-> I don't think it is required for JPEG encoders today. Each frame is independent of
-> any other, so it behaves just like a m2m scaler for example.
-> 
-> It doesn't hurt to support it, but it shouldn't be necessary for jpeg codecs.
+On 25/11/2021 15:04, Juergen Gross wrote:
+> On 25.11.21 16:00, Andrew Cooper wrote:
+>> On 25/11/2021 09:20, Juergen Gross wrote:
+>>> HYPERVISOR_get_debugreg() is being called from noinstr code, so it
+>>> should be attributed "always_inline".
+>>>
+>>> Fixes: f4afb713e5c3a4419ba ("x86/xen: Make get_debugreg() noinstr")
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>>> ---
+>>>   arch/x86/include/asm/xen/hypercall.h | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/x86/include/asm/xen/hypercall.h
+>>> b/arch/x86/include/asm/xen/hypercall.h
+>>> index 0575f5863b7f..28ca1119606b 100644
+>>> --- a/arch/x86/include/asm/xen/hypercall.h
+>>> +++ b/arch/x86/include/asm/xen/hypercall.h
+>>> @@ -287,7 +287,7 @@ HYPERVISOR_set_debugreg(int reg, unsigned long
+>>> value)
+>>>       return _hypercall2(int, set_debugreg, reg, value);
+>>>   }
+>>>   -static inline unsigned long
+>>> +static __always_inline unsigned long
+>>>   HYPERVISOR_get_debugreg(int reg)
+>>>   {
+>>>       return _hypercall1(unsigned long, get_debugreg, reg);
+>>
+>> All this is going to do is push the error one step further in.
+>>
+>> Next, objtool will complain that hypercall_page isn't noinstr.
+>
+> I don't think so:
+>
+> .pushsection .noinstr.text, "ax"
+>         .balign PAGE_SIZE
+> SYM_CODE_START(hypercall_page)
+>         .rept (PAGE_SIZE / 32)
+>                 UNWIND_HINT_FUNC
+>                 .skip 31, 0x90
+>                 ret
+>         .endr
 
-I believe the requirement in the spec is deliberate to avoid making userland
-work a night mare. If draining a filled queue requires counting frames on top of
-using CMD_STOP, you are duplicating the effort.
+/sigh yes.  It would help if I was reading an up to date tree.
 
-I have a strong opinion about this, I believe consistency is key, the frame work
-should provide this feature for JPEG decoder/encoder trivially imho and until
-then, driver should all support the same draining flow. I'm not going to relax
-this in GStreamer.
+Sorry for the noise.
 
-Nicolas
-
-> 
-> If there is a reason why this is needed, then it would likely also be needed for
-> m2m devices like scalers.
-> 
-> Regards,
-> 
-> 	Hans
-> 
-> > 
-> > > 
-> > > > Tested-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-> > > 
-> > > Thanks!
-> > > 
-> > > ChenYu
-> > 
-> 
-
+~Andrew
