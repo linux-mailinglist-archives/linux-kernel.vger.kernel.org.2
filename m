@@ -2,78 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E706645D72D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 10:29:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CBC45D73A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 10:32:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351389AbhKYJc4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 25 Nov 2021 04:32:56 -0500
-Received: from mga05.intel.com ([192.55.52.43]:16836 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353977AbhKYJay (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 04:30:54 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="321715480"
-X-IronPort-AV: E=Sophos;i="5.87,262,1631602800"; 
-   d="scan'208";a="321715480"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 01:27:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,262,1631602800"; 
-   d="scan'208";a="475587501"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by orsmga002.jf.intel.com with ESMTP; 25 Nov 2021 01:27:43 -0800
-Received: from shsmsx602.ccr.corp.intel.com (10.109.6.142) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Thu, 25 Nov 2021 01:27:42 -0800
-Received: from shsmsx601.ccr.corp.intel.com (10.109.6.141) by
- SHSMSX602.ccr.corp.intel.com (10.109.6.142) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Thu, 25 Nov 2021 17:27:40 +0800
-Received: from shsmsx601.ccr.corp.intel.com ([10.109.6.141]) by
- SHSMSX601.ccr.corp.intel.com ([10.109.6.141]) with mapi id 15.01.2242.012;
- Thu, 25 Nov 2021 17:27:40 +0800
-From:   "Wang, Wei W" <wei.w.wang@intel.com>
-To:     "mst@redhat.com" <mst@redhat.com>,
-        "stefanha@redhat.com" <stefanha@redhat.com>,
-        "sgarzare@redhat.com" <sgarzare@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "asias@redhat.com" <asias@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>
-Subject: RE: [PATCH] virtio/vsock: fix the transport to work with
- VMADDR_CID_ANY
-Thread-Topic: [PATCH] virtio/vsock: fix the transport to work with
- VMADDR_CID_ANY
-Thread-Index: AQHX4daqV2Omz/OJfUqBSDdTk17B0qwT+K9Q
-Date:   Thu, 25 Nov 2021 09:27:40 +0000
-Message-ID: <7992566c682b46dc9ec2502e44a2fb04@intel.com>
-References: <20211125071554.16969-1-wei.w.wang@intel.com>
-In-Reply-To: <20211125071554.16969-1-wei.w.wang@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-x-originating-ip: [10.239.127.36]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1353973AbhKYJfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 04:35:45 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:55524 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344571AbhKYJdl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 04:33:41 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 1E8B11FDF1;
+        Thu, 25 Nov 2021 09:30:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637832629; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7wjymsJw1KuuOaku602rZWWeCSBGE+/RZzn+XDn1Ko8=;
+        b=DlPa4EjjqNYOQrMm9Ow0lnQOXNUmNwmMUCZ48pzutvrLmSXcNN8mo/cQVPHFWdedIVF9IN
+        NvBZVFwBQEZYRHN2OIb7ck+onih1PPnqGVJeeuj7b8oO4stNYO4rCmQtGtlQpfeZ81FuR8
+        /voxQX5FnMpJUCt3CsbqhwOYrDQn5Sg=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id E730FA3B8F;
+        Thu, 25 Nov 2021 09:30:28 +0000 (UTC)
+Date:   Thu, 25 Nov 2021 10:30:28 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Neil Brown <neilb@suse.de>, Christoph Hellwig <hch@lst.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v2 0/4] extend vmalloc support for constrained allocations
+Message-ID: <YZ9XtLY4AEjVuiEI@dhcp22.suse.cz>
+References: <20211122153233.9924-1-mhocko@kernel.org>
+ <20211124225526.GM418105@dread.disaster.area>
+ <YZ9QNeHYt99mdfbZ@dhcp22.suse.cz>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZ9QNeHYt99mdfbZ@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, November 25, 2021 3:16 PM, Wang, Wei W wrote:
-> -	/* Update CID in case it has changed after a transport reset event */
-> -	vsk->local_addr.svm_cid = dst.svm_cid;
-> -
->  	if (space_available)
->  		sk->sk_write_space(sk);
+[Cc Sebastian and Vlastimil]
+
+On Thu 25-11-21 09:58:31, Michal Hocko wrote:
+> On Thu 25-11-21 09:55:26, Dave Chinner wrote:
+> [...]
+> > Correct __GFP_NOLOCKDEP support is also needed. See:
+> > 
+> > https://lore.kernel.org/linux-mm/20211119225435.GZ449541@dread.disaster.area/
 > 
+> I will have a closer look. This will require changes on both vmalloc and
+> sl?b sides.
 
-Not sure if anybody knows how this affects the transport reset.
+This should hopefully make the trick
+--- 
+From 0082d29c771d831e5d1b9bb4c0a61d39bac017f0 Mon Sep 17 00:00:00 2001
+From: Michal Hocko <mhocko@suse.com>
+Date: Thu, 25 Nov 2021 10:20:16 +0100
+Subject: [PATCH] mm: make slab and vmalloc allocators __GFP_NOLOCKDEP aware
 
-Thanks,
-Wei
+sl?b and vmalloc allocators reduce the given gfp mask for their internal
+needs. For that they use GFP_RECLAIM_MASK to preserve the reclaim
+behavior and constrains.
+
+__GFP_NOLOCKDEP is not a part of that mask because it doesn't really
+control the reclaim behavior strictly speaking. On the other hand
+it tells the underlying page allocator to disable reclaim recursion
+detection so arguably it should be part of the mask.
+
+Having __GFP_NOLOCKDEP in the mask will not alter the behavior in any
+form so this change is safe pretty much by definition. It also adds
+a support for this flag to SL?B and vmalloc allocators which will in
+turn allow its use to kvmalloc as well. A lack of the support has been
+noticed recently in http://lkml.kernel.org/r/20211119225435.GZ449541@dread.disaster.area
+
+Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Michal Hocko <mhocko@suse.com>
+---
+ mm/internal.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/internal.h b/mm/internal.h
+index 3b79a5c9427a..2ceea20b5b2a 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -21,7 +21,7 @@
+ #define GFP_RECLAIM_MASK (__GFP_RECLAIM|__GFP_HIGH|__GFP_IO|__GFP_FS|\
+ 			__GFP_NOWARN|__GFP_RETRY_MAYFAIL|__GFP_NOFAIL|\
+ 			__GFP_NORETRY|__GFP_MEMALLOC|__GFP_NOMEMALLOC|\
+-			__GFP_ATOMIC)
++			__GFP_ATOMIC|__GFP_NOLOCKDEP)
+ 
+ /* The GFP flags allowed during early boot */
+ #define GFP_BOOT_MASK (__GFP_BITS_MASK & ~(__GFP_RECLAIM|__GFP_IO|__GFP_FS))
+-- 
+2.30.2
+
+-- 
+Michal Hocko
+SUSE Labs
