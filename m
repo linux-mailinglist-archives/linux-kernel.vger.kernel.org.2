@@ -2,147 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE2045DFE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0982145DFB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242484AbhKYRml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 12:42:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241395AbhKYRkj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 12:40:39 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809D9C0613F1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:26:05 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id j3so13206154wrp.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:26:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ymZelrb7KzOn/PJyiCiUaGyHyZ2Hoc1vLnFtSp8LvdE=;
-        b=mJnM/izD+nsitJlievhuRcvf/DMhGZYBbJNUCAHwXSC0s+MsFJqb0KyEt5sxjvKcIj
-         QXyHTWDX6tv0mI9bfzLstpQjOkevk2aY6JV6nBm0ZXkkm/hu0SfDxjy9RHQbSv0XzDvg
-         9lOcGd4E9M4HJ4lmBO+FxV5h3b8aS4BCHeUNE1nmaZruP6mMgz/C1yDXqT7QkFuz8f4y
-         oZ1gkK1ki4R9qIOVTy0Tb8S57TuRN6c5BMYp3uLUl0pP9Yd3jOpOF1uGm/zTf/4uQD2a
-         rb4CeHBlLEPtnnMO1lxU7Fb9CZKYWy66yEd3GcxTJ0y88To+zYXm2m84T/tio1GWuFvf
-         IwgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ymZelrb7KzOn/PJyiCiUaGyHyZ2Hoc1vLnFtSp8LvdE=;
-        b=UQbL9a4kEFSNelp/btfrOf7N0S9a61WVBdxJiiVvynx+/rPRqjrl7gUeukn4GJ7moG
-         L0mf+JmTiP+mdCFp3wDFxhIM6uyT0evujWbSlh/YqzIUPuwt9c1bAw3vf8h3FWHHOSoM
-         5uEoatTefanUbMqh/7UAVQOiRgrRPYXAv6k5TDufTQhQR7Ys0lcHdkdtReDvf1Bh4pL3
-         x+e8ZNSM5AXOaa8vpKjNkwFPbFbs+HCOppZ4ukIISe6VjZ/NYOcEtTUa7Hzlv4eP70au
-         QyA9S43+VuS6uiLQXvX/RWsgyetkY9IsNCJRLXPdfLrPlBlFVSawmrkt15kPAyDfLSnk
-         GpOw==
-X-Gm-Message-State: AOAM531dvMDBywRJ1FB6bjlYV2r+C5ibg/kX2VBfVPK8jgkdITNoLh4e
-        qoSlQIxPWPZSlJMDXhFxcnJ4kw==
-X-Google-Smtp-Source: ABdhPJzNrxF26RFAHPi+aUzYJTbWVxlVIELTLFjA7eN4upC9HjgyS9vb3THJOtWFC9fTm9lDLwa01A==
-X-Received: by 2002:a05:6000:181:: with SMTP id p1mr8506708wrx.292.1637861163860;
-        Thu, 25 Nov 2021 09:26:03 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:47ed:5339:c53f:6a8? ([2a01:e34:ed2f:f020:47ed:5339:c53f:6a8])
-        by smtp.googlemail.com with ESMTPSA id h27sm9592940wmc.43.2021.11.25.09.26.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Nov 2021 09:26:03 -0800 (PST)
-Subject: Re: [PATCH] sched/idle: Export cpu_idle_poll_ctrl() symbol
-To:     Maulik Shah <quic_mkshah@quicinc.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ulf.hansson@linaro.org, quic_lsrao@quicinc.com,
-        rnayak@codeaurora.org, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-References: <1637831676-32737-1-git-send-email-quic_mkshah@quicinc.com>
- <YZ9ctgCBYJEEjuwt@hirez.programming.kicks-ass.net>
- <687d97b6-347a-92c0-34ba-00331dfb6c82@quicinc.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <0fb74083-e378-e1b4-624b-4f2076f237df@linaro.org>
-Date:   Thu, 25 Nov 2021 18:26:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1349168AbhKYRb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 12:31:58 -0500
+Received: from mail-bn8nam11on2047.outbound.protection.outlook.com ([40.107.236.47]:65249
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232053AbhKYR34 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 12:29:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nBlKl0oFbCIDj+NLWZvVkLUqlyXor3urfRiOljuheOXb040QK2GpzKnNzKmJKHADgyykukUbhSnA3RRwPXPakbQQCOo9wyLdrCt/hS96geOdy/Cq3ooEvCTWfOLMK0JWh52yAY1V9NIDON92d/PMMOuj8azW3FniRSzMT82gCHYHWmd2RTE3EPqyb6p/kUCCwmOqVnYB9jDo0N+3mzpyuX5rg+y7kVVVhrkR8qUY8scif1C+zIGoB3OCS69MNf1qFXy9aTjKwaeSWu/26AfOJpauecQBwNBdiY0/l5if6FhGDpMKgwjeJ6LdzTIi0LZOUW8UqGq0xr8ap4LXu6lKmw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4YU2Uvfa585GwOBLMuWW+iYd346h/Bc9ZPL0vcsgXzg=;
+ b=ae97CVdX5CJBlyBLg8ilYHM3zOHDxwpsk+dPmeqVENBIa6deBm8HPiN876Qt+CTWfaCyas/rUl/ILqBYHriJfC0H2Zewoc3ydrtyLxoMU9b38cYOdBpW6oSXhyW6qx1Jks4V3xjtcj6etjxHiVI5CLClGU8tpQ8Z1wLefov6gORQfIe86knv75NBILoKjSsFJ7Xkdiqp4lykLsMmzFxmVE/snf+fypWItR+5gmSCGFz/oQO7Ppzb4g9lDf2JY/y+tEA6TH+IMtu93kwedhJHAInXr345IODfbkoUBQw6izpHjn5rWYFxH/wc2ZAboayTG5V7BF62aFs1RV8W4oktwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4YU2Uvfa585GwOBLMuWW+iYd346h/Bc9ZPL0vcsgXzg=;
+ b=MOgIajIS7FZAr04xq2Oln66sLAyN3bjt8rlZ3w8ukpiEyQqDJqoS9Dox/IixBnU7f6qdLcZKgUL4o7MSYoJR/BjVoOhq9sZzAML4C8Yhlkyh1IBeZzUweBGiIXiBqQF3hGoUcVycDZgJWjHMRUcwFWirgcuLkaHiiqtzlQQmFPwJIsEN3Qijtg9/dDfz2PR0jT1uQvvHvuYxH3C1rJEGpSY7HECReHHvU/KYe6cfWr/BIN/zQd2DwJBXOBtP0fEEXefPeIV4GoxLMC8s4zz2SiGVAHtQo6yxS2KUtvq+E4T6uJCVzZQ9FuCYY84P0Uw/vG4sscdmIF8Xo97GfNZr7g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5128.namprd12.prod.outlook.com (2603:10b6:208:316::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.22; Thu, 25 Nov
+ 2021 17:26:09 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::5897:83b2:a704:7909]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::5897:83b2:a704:7909%8]) with mapi id 15.20.4734.023; Thu, 25 Nov 2021
+ 17:26:09 +0000
+Date:   Thu, 25 Nov 2021 13:26:08 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>, Alaa Hleihel <alaa@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-rc v1] RDMA/mlx5: Fix releasing unallocated memory
+ in dereg MR flow
+Message-ID: <20211125172608.GB490586@nvidia.com>
+References: <66bb1dd253c1fd7ceaa9fc411061eefa457b86fb.1637581144.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <66bb1dd253c1fd7ceaa9fc411061eefa457b86fb.1637581144.git.leonro@nvidia.com>
+X-ClientProxiedBy: BL0PR01CA0033.prod.exchangelabs.com (2603:10b6:208:71::46)
+ To BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-In-Reply-To: <687d97b6-347a-92c0-34ba-00331dfb6c82@quicinc.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR01CA0033.prod.exchangelabs.com (2603:10b6:208:71::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.22 via Frontend Transport; Thu, 25 Nov 2021 17:26:09 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mqIVc-0023e9-Fs; Thu, 25 Nov 2021 13:26:08 -0400
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0a699783-6eed-43e6-e76b-08d9b038abb6
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5128:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5128FD206C70309D1CA72E3CC2629@BL1PR12MB5128.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hoL1WxKf7x4Egb9WanC0NzE6eXvr9mvSyBc60naWiAU49gk3DKc4SneAd4vioZmwqnk6xVpWOqv5MiEOpJdFGdxEc6J9HJ2AoMzkR6btQMLKxEohHPgii/fyVhJMYWEETXPc6dKFSzTrYbtyfpclbO3njv4oP/3IA5Yy8K/Hc5EobUj7RKtXr7bBbTi7wu6aPpOmW2BDA7zDRJ8wXDKpeqizebPkuCBGbYLCYV3DDAHAvL74PrDA8CIcnBJqUEwtHL+l7iIjF42AwVHr4iTWqdyfu5kzn7+Q/D6vZBGo8LKs6WTTr6KVf2jsAyTlhw66VFXlSH6TfrrFWVG8ctHcqZk1HaF0TLd+Vrf7RzZLetRYfzxWKdDrrIrwGHxnO+zeGzcbf9PQRtsrukoZ4M0sReAlWyEXxkR6ZA+CfL+MeIwa284FI/00+DT8VYnuAwlR1LUNFDnmjnrdbEQntmetyxKUauhM50VnR9moarbwDfZfsfZoyXvqMjxE3EU5J+f1lUPvFvPdCez5aR6ulia1cmdkuax/brZa/pnM4VuzHOhUOTgobyPiQzuD4+QawDWqJrZkZsl5tMq1lJjwI4OnwQNk4Vb2NbjvCPUYXA18cQIPQ/PQEELVBYXQ0XXWhMFzIfxXgOslLSkYfE9xemF5Nl3NHAzw6YYqstsNzADwiBSEIwzGR7YmXn90OeHPQMG5E6sFdBeKIfPmfnM9wwDqXI8uYacfHYfVApPRHRo+gGPMqXvZG/cK6fAB16ar4TqzOU4kpbrAqMXCkujR+Zul5bnL3i/6LGjyDf+o4AQiSvU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(1076003)(9746002)(83380400001)(426003)(33656002)(6916009)(508600001)(54906003)(66946007)(2616005)(316002)(86362001)(26005)(36756003)(9786002)(2906002)(8676002)(38100700002)(66556008)(66476007)(8936002)(5660300002)(186003)(966005)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?J0LIcDhd6tGDPHQFuJL1iVQQ2lILnX4BYMMwv8G65ynLA4fCTwSYDlm1BS4l?=
+ =?us-ascii?Q?UHqOXR9jD3Nq63f+p1QZ4cwEXjxvicT8VF4NRRDY/oo/IeUdFnORJjVxDX8h?=
+ =?us-ascii?Q?scChCt9plLLwlOQR0WLwBccJSpC2oUk/2dPBDbp3IINGOwI76btQgsawd1o6?=
+ =?us-ascii?Q?OO16fJOrQNFSTaR7tsSStOHV8WCh9qW4hh01mbqbDT2e5saOxN3thQQtfCbC?=
+ =?us-ascii?Q?ToCaZt4q2bql9IEGwPpghg7ENa66xF8FTCFCuf9gsJAj2PJgoLmkd2SWF9Wx?=
+ =?us-ascii?Q?Be8hfZN5dwW857qqdXlGlOiym2Uym1dcizbhRTOtxs9N4Xcq8c8HNF53LT0Z?=
+ =?us-ascii?Q?wOilOePEnAnrbyAgIlWzq2dr8EWswMoOcfi5hyXPoDGFIM4JWYKXwJwykWxO?=
+ =?us-ascii?Q?WfgeBHMmMBjq4a7tDXzV8P0Nn+cj11tZ/TBnVq5SJvJn+O3CIjbAqeBzgauV?=
+ =?us-ascii?Q?Fm72dq1Im/RgqOVIMWxzIZAvn7wVgx+UzH2XGJBN80dsJW6bj/bo695KgErO?=
+ =?us-ascii?Q?JBorwPDgI4W2klplLpD97ow8VIb2oUCJNVS9GiCx861CGsl5N/VU3qjLAM/F?=
+ =?us-ascii?Q?tH7PXL/YbbpFOOZ6ecAfq2pMQPFqvySV6DkwAzwQ8Tbs2mKi7+w+sHxnOom8?=
+ =?us-ascii?Q?pB3fjw8mkJBsEF7NAsgFGtHamHT5OhHsfMnsv7Au2SDN2Fj9E2/uOGGimorz?=
+ =?us-ascii?Q?kYNpm+9XYb80ZQa8JvGKr08bMrpghWATq5FS/0b6YbG+asIhX6K0V8qXXMzu?=
+ =?us-ascii?Q?+Re7/qT2Pjr4gibypjjoVQaCZkwEeuMyd7LdjKmR5gD/o9aZQfW8AmF4DF/p?=
+ =?us-ascii?Q?bhUmCF67Yo37mhILOT8xgtrMZuxbYJAnDSInnIyBf64wjbcb1zYpnJLWJv9k?=
+ =?us-ascii?Q?Qch5d/40/3uUIUAtSLNUdsPac22l2b3SrfdfMa+Zd9NIf0gTVZ0R/Cd2dhHy?=
+ =?us-ascii?Q?voImJhI6+ON93KUfKRqNrQBqtZcMn3jhqmHxsM28dizsNsQmBqgEmL9IcdWa?=
+ =?us-ascii?Q?Bfa2rtWLPOV/R10RYVzYsiCyvSDTma6F5oK38uYg7bKMelnWl3oZCLRQCdra?=
+ =?us-ascii?Q?SvxlE1FLwjWoKPUV9SO6iuF7y4XXqk1UkLXEPmN8UCN9zVbYq0wMPmZs/H83?=
+ =?us-ascii?Q?CpwQ+2jZhpDo/wkL8+zCvj7r3/q3q460yuzgFXGJgSNdJ256fTgGAPAkALFw?=
+ =?us-ascii?Q?AfGaz4PKBZWAiDebvMKG829S2kQJDTDWKxBMN1nqiqeyN6B5a8QusltaAfTA?=
+ =?us-ascii?Q?pRcV4bUtAYZ5EwDpRMWrk8sM6cn6vMFnBxeaAb/vCOgLE0KJTIqcVGpkgei8?=
+ =?us-ascii?Q?SrJ+/nqaky83mxDOeW+BjjGyRe8I/oZuxP1IIa3jMcv7lNiQGFuL0Ul5khlO?=
+ =?us-ascii?Q?UOwbHWI2YRB1PsbC9ZGvI4AOgtKVvyh9Q3nm2o2du4OYz5x3OYDKfR4SvUaE?=
+ =?us-ascii?Q?GLBTzhe7znk+pMPINjiUFIKlys3Z8xlPYz23UctXpZG+sZtGSGWXYQ2tN+SB?=
+ =?us-ascii?Q?K0Rk6Fr1OzsQSto0CZfJdpec6XE7BsyprG9OmbeOR/Zl+up0buS8z3c48wQN?=
+ =?us-ascii?Q?Hu/vDG8LmEhJKOFBqiM=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0a699783-6eed-43e6-e76b-08d9b038abb6
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2021 17:26:09.6587
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Bqn/rpzKhQpRnsYkKVyJPnirKIorK/Aa54Xi5EGQkNTK2VBgdvGMv8lUMyiaZ7Dn
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5128
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/11/2021 15:13, Maulik Shah wrote:
-> Hi Peter,
+On Mon, Nov 22, 2021 at 01:41:51PM +0200, Leon Romanovsky wrote:
+> From: Alaa Hleihel <alaa@nvidia.com>
 > 
-> On 11/25/2021 3:21 PM, Peter Zijlstra wrote:
->> On Thu, Nov 25, 2021 at 02:44:36PM +0530, Maulik Shah wrote:
->>> Export cpu_idle_poll_ctrl() so that module drivers can use same.
->> This does not seem like a really safe interface to expose to the
->> world.
+> After the cited patch, and for the case of IB_MR_TYPE_DM that doesn't
+> have a umem (even though it is a user MR), function mlx5_free_priv_descs()
+> will think that it's a kernel MR, leading to wrongly accessing mr->descs
+> that will get wrong values in the union which leads to attempt to release
+> resources that were not allocated in the first place.
 > 
-> Thanks for the review.
+> For example:
+>  DMA-API: mlx5_core 0000:08:00.1: device driver tries to free DMA memory it has not allocated [device address=0x0000000000000000] [size=0 bytes]
+>  WARNING: CPU: 8 PID: 1021 at kernel/dma/debug.c:961 check_unmap+0x54f/0x8b0
+>  RIP: 0010:check_unmap+0x54f/0x8b0
+>  Call Trace:
+>   debug_dma_unmap_page+0x57/0x60
+>   mlx5_free_priv_descs+0x57/0x70 [mlx5_ib]
+>   mlx5_ib_dereg_mr+0x1fb/0x3d0 [mlx5_ib]
+>   ib_dereg_mr_user+0x60/0x140 [ib_core]
+>   uverbs_destroy_uobject+0x59/0x210 [ib_uverbs]
+>   uobj_destroy+0x3f/0x80 [ib_uverbs]
+>   ib_uverbs_cmd_verbs+0x435/0xd10 [ib_uverbs]
+>   ? uverbs_finalize_object+0x50/0x50 [ib_uverbs]
+>   ? lock_acquire+0xc4/0x2e0
+>   ? lock_acquired+0x12/0x380
+>   ? lock_acquire+0xc4/0x2e0
+>   ? lock_acquire+0xc4/0x2e0
+>   ? ib_uverbs_ioctl+0x7c/0x140 [ib_uverbs]
+>   ? lock_release+0x28a/0x400
+>   ib_uverbs_ioctl+0xc0/0x140 [ib_uverbs]
+>   ? ib_uverbs_ioctl+0x7c/0x140 [ib_uverbs]
+>   __x64_sys_ioctl+0x7f/0xb0
+>   do_syscall_64+0x38/0x90
 > 
-> Keeping the cpuidle enabled from boot up may delay/increase the boot up
-> time.
-> Below is our use case to force cpuidle to stay in cpu_idle_poll().
+> Fix it by reorganizing the dereg flow and mlx5_ib_mr structure:
+>  - Move the ib_umem field into the user MRs structure in the union as
+>    it's applicable on there.
+>  - Function mlx5_ib_dereg_mr() will now call mlx5_free_priv_descs() only
+>    in case there isn't udata (which indicates that this isn't a user MR.
 > 
-> We keep cpuidle disabled from boot up using "nohlt" option of kernel
-> command line which internally sets cpu_idle_force_poll = 1;
-> and once the device bootup reaches till certain point (for example the
-> android homescreen is up) userspace may notify a
-> vendor module driver which can invoke cpu_idle_poll_ctrl(false); to come
-> out of poll mode.
-> So vendor module driver needs cpu_idle_poll_ctrl() exported symbol.
-> 
-> We can not take PM-QoS from driver to prevent deep cpuidle since all the
-> vendor modules are kept in a separate partition and will be loaded only
-> after kernel boot up is done
-> and by this time kernel already starts executing deep cpuidle modes.
->>
->> Surely the better solution is to rework things to not rely on this. I'm
->> fairly sure it's not hard to write a cpuidle driver that does much the
->> same.
-> The other option i think is to pass cpuidle.off=1 in kernel command line
-> and then add enable_cpuidle() in drivers/cpuidle/cpuidle.c
-> something similar as below which can be called by vendor module.
-> 
-> void enable_cpuidle(void)
-> {
->         off = 0;
-> }
-> EXPORT_SYMBOL_GPL(enable_cpuidle);
-> 
-> This may be a good option since we have already disable_cpuidle() but
-> not enable_cpuidle().
-> 
-> void disable_cpuidle(void)
-> {
->         off = 1;
-> }
-> 
-> Hi Rafael/Daniel, can you please let me know your suggestion on
-> this/similar implementation?
+> Fixes: f18ec4223117 ("RDMA/mlx5: Use a union inside mlx5_ib_mr")
+> Signed-off-by: Alaa Hleihel <alaa@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+> v1: 
+>  * Different implementation
+> v0: https://lore.kernel.org/linux-rdma/e13b7014857ea296285ee5cfcdaaada9007f6978.1634638695.git.leonro@nvidia.com/
+> ---
+>  drivers/infiniband/hw/mlx5/mlx5_ib.h |  6 +++---
+>  drivers/infiniband/hw/mlx5/mr.c      | 26 ++++++++++++--------------
+>  2 files changed, 15 insertions(+), 17 deletions(-)
 
-Did you try to use the QoS latency? Sounds like it is exactly for this
-purpose.
+Applied to for-rc, thanks
 
-Set it to zero to force cpuidle to choose the shallowest idle state and
-then INT_MAX to disable the constraint.
-
- cpu_latency_qos_add_request();
-
-Hope that helps
-
-  -- Daniel
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Jason
