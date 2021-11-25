@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AB7E45E27B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E447C45E270
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350745AbhKYVbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 16:31:37 -0500
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:41819 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235734AbhKYV3f (ORCPT
+        id S244929AbhKYVbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 16:31:24 -0500
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:46025 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235874AbhKYV3Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 16:29:35 -0500
-Received: by mail-oi1-f169.google.com with SMTP id u74so14939887oie.8;
-        Thu, 25 Nov 2021 13:26:23 -0800 (PST)
+        Thu, 25 Nov 2021 16:29:24 -0500
+Received: by mail-ot1-f49.google.com with SMTP id a23-20020a9d4717000000b0056c15d6d0caso11132896otf.12;
+        Thu, 25 Nov 2021 13:26:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=B6wyCDAmUSCibSY1414flm92lyIj8FXeL6fX67zL5Jw=;
-        b=F0cWaLGT3UOVMMl0DxupnHSTOlb3Q2TJvcsukldsEwOzzLhH+7+s2L0QBXacsjQzB+
-         bpnHPIU48dKbmaseG04tMbJxcOOI1SvV8O8GRInknjNfH9jqkxNQ6w+lHC324LsZx6GR
-         hauZJEPQ32KRIPFiGOVeLFTy3q8aEmdObFOmVCW0mLT977m0hV2JkMTKqf94RcEUWxNJ
-         LAq2s4Q0qg5HTowVbK6ssOJvW2+LwkVErUC4azsI3f4QTR945Czxil4SPcBkOFwAOOka
-         T75kpmht6yLzmIanl1rgkP9h5UcjCutRgbP4WYtYi5HISUObiyK2lL+Wmbaaq3emTAlr
-         gGIA==
-X-Gm-Message-State: AOAM531edzLSNZWXwfIRuIj5wiy9DokmZNyN9MAQ+rtnXUVmcOQz/Sdn
-        eMalx8w8z4qc2s+Q4XgRKI/c6iNcuQ==
-X-Google-Smtp-Source: ABdhPJy2R9t+40EAgpr2S6XGtSWSnhEPJsptRSXK8jQhEK8v2yhDQATbssIRHRP9tz+jMibWZPuxew==
-X-Received: by 2002:aca:b843:: with SMTP id i64mr18863323oif.109.1637875583352;
-        Thu, 25 Nov 2021 13:26:23 -0800 (PST)
+        bh=K9sBfhhvh3TyySdJ4+kH3HFS2nUgK5mo6oF+b8evIIw=;
+        b=ABG0AYWQQR6yg6fARRndhQ3NlQwfj5b5BxfrdzzKRzZm04xH6zCbGCYTTYX9ZvOQ60
+         DVdr0uPOwTm/906YDJLsEglwcRa4S24iMV3D+Tsjg6P6hURK3SD1SSyzVwKbM3T/iCD8
+         cVIxW7JF1jHNZazrVrqQ0Zqcwf7J2Rl04ILtKXk+B+utuvyC/JubBS4Pqdb58WBqq6Fb
+         nMu7pgWbS7MaGYbi3iZDc91sihmjhqDnPyU9RgRCFOwo2XIx5fDYYzfZoiIy7z1MHGR9
+         3hAef/lFmASxJnBfKnXJpvY4tJ3Wz3KkesTpcLAOK6Pw9m0WEd5QcLMzD+q3IVrUY0N6
+         0TiA==
+X-Gm-Message-State: AOAM531A+/UbBD+5tGbbPaXxC4+klpkSp6cXH555djTqcrzZgtXLNyWo
+        Z/dnHfSpcEjlkFMZ5r5Dsw==
+X-Google-Smtp-Source: ABdhPJzzt0Csr7okspWgSLe+I1n4SZvDhCX1LyaO2Mr9NAGUFau59mr2FaZq2piH3W6tpFyYwBeH1w==
+X-Received: by 2002:a9d:6c54:: with SMTP id g20mr24876267otq.30.1637875571987;
+        Thu, 25 Nov 2021 13:26:11 -0800 (PST)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id be12sm938107oib.50.2021.11.25.13.26.21
+        by smtp.gmail.com with ESMTPSA id w19sm870433oih.44.2021.11.25.13.26.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 13:26:22 -0800 (PST)
-Received: (nullmailer pid 2858317 invoked by uid 1000);
+        Thu, 25 Nov 2021 13:26:11 -0800 (PST)
+Received: (nullmailer pid 2858311 invoked by uid 1000);
         Thu, 25 Nov 2021 21:26:02 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Cosmin Tanislav <demonsingur@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
         Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        linux-iio@vger.kernel.org, cosmin.tanislav@analog.com,
-        linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-In-Reply-To: <20211125131422.50657-3-demonsingur@gmail.com>
-References: <20211125131422.50657-1-demonsingur@gmail.com> <20211125131422.50657-3-demonsingur@gmail.com>
-Subject: Re: [PATCH v4 2/3] dt-bindings: iio: add AD74413R
+        linux-tegra@vger.kernel.org,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Agneli <poczt@protonmail.ch>, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+In-Reply-To: <20211124220057.15763-3-digetx@gmail.com>
+References: <20211124220057.15763-1-digetx@gmail.com> <20211124220057.15763-3-digetx@gmail.com>
+Subject: Re: [PATCH v1 02/20] ASoC: dt-bindings: tegra20-i2s: Convert to schema
 Date:   Thu, 25 Nov 2021 14:26:02 -0700
-Message-Id: <1637875562.336876.2858316.nullmailer@robh.at.kernel.org>
+Message-Id: <1637875562.276093.2858310.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Nov 2021 15:14:21 +0200, Cosmin Tanislav wrote:
-> The AD74412R and AD74413R are quad-channel software configurable input/output
-> solutions for building and process control applications. They contain
-> functionality for analog output, analog input, digital input, resistance
-> temperature detector, and thermocouple measurements integrated
-> into a single chip solution with an SPI interface.
-> The devices feature a 16-bit ADC and four configurable 13-bit DACs to provide
-> four configurable input/output channels and a suite of diagnostic functions.
-> The AD74413R differentiates itself from the AD74412R by being HART-compatible.
+On Thu, 25 Nov 2021 01:00:39 +0300, Dmitry Osipenko wrote:
+> Convert NVIDIA Tegra20 I2S binding to schema.
 > 
-> Signed-off-by: Cosmin Tanislav <cosmin.tanislav@analog.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > ---
->  .../bindings/iio/addac/adi,ad74413r.yaml      | 153 ++++++++++++++++++
->  include/dt-bindings/iio/addac/adi,ad74413r.h  |  21 +++
->  2 files changed, 174 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/addac/adi,ad74413r.yaml
->  create mode 100644 include/dt-bindings/iio/addac/adi,ad74413r.h
+>  .../bindings/sound/nvidia,tegra20-i2s.txt     | 30 --------
+>  .../bindings/sound/nvidia,tegra20-i2s.yaml    | 71 +++++++++++++++++++
+>  2 files changed, 71 insertions(+), 30 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -79,15 +75,12 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/iio/addac/adi,ad74413r.example.dts:23.32-33 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:373: Documentation/devicetree/bindings/iio/addac/adi,ad74413r.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1413: dt_binding_check] Error 2
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.example.dt.yaml: i2s@70002800: 'clock-names' is a required property
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/nvidia,tegra20-i2s.yaml
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1559714
+See https://patchwork.ozlabs.org/patch/1559387
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
