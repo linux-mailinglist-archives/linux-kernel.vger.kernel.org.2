@@ -2,117 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB7E45D909
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3344645D90A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:17:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239648AbhKYLUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 06:20:52 -0500
-Received: from foss.arm.com ([217.140.110.172]:49694 "EHLO foss.arm.com"
+        id S239808AbhKYLUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 06:20:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234205AbhKYLTe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 06:19:34 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 291831042;
-        Thu, 25 Nov 2021 03:16:23 -0800 (PST)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2626D3F66F;
-        Thu, 25 Nov 2021 03:16:22 -0800 (PST)
-From:   Valentin Schneider <Valentin.Schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Vincent Donnefort <Vincent.Donnefort@arm.com>
-Cc:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
-        dietmar.eggemann@arm.com
-Subject: Re: [PATCH] sched/fair: Fix detection of per-CPU kthreads waking a task
-In-Reply-To: <CAKfTPtDX8sOfguZhJt5QV3j5D_JetcgncuF2w+uLa0XDk7UXkw@mail.gmail.com>
-References: <20211124154239.3191366-1-vincent.donnefort@arm.com> <CAKfTPtDX8sOfguZhJt5QV3j5D_JetcgncuF2w+uLa0XDk7UXkw@mail.gmail.com>
-Date:   Thu, 25 Nov 2021 11:16:16 +0000
-Message-ID: <8735nkcwov.mognet@arm.com>
+        id S238538AbhKYLTj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 06:19:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 571586104F;
+        Thu, 25 Nov 2021 11:16:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637838988;
+        bh=VJ1qwSVDgj9hVvTEuWtO8t8LX7VUgn9kTYaYnEyXmDg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JY+/DqXGnNWnXLmTMpc6v5fxh5rADdP4gRVwHqBX33ri/qc8+mLUmoYxgFMlQu3nO
+         yXhguqfF5t+BlWUF4U7GrX/a2QYQ8bm5uD70C/xDmZs9NaI8u1+U52shE3Dg/zD9z7
+         A8PLxKNcuDDXmayUa8YtEiJqENI23BSBNf2sF+/k=
+Date:   Thu, 25 Nov 2021 12:16:23 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Subject: Re: [PATCH 4.9 000/207] 4.9.291-rc1 review
+Message-ID: <YZ9wh9ItjvU9vaQ4@kroah.com>
+References: <20211124115703.941380739@linuxfoundation.org>
+ <CA+G9fYvXKXWMQY_X6NCBT41kGKszi3oRBw1HCfg+BN6GOWoRhg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYvXKXWMQY_X6NCBT41kGKszi3oRBw1HCfg+BN6GOWoRhg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/11/21 10:05, Vincent Guittot wrote:
-> On Wed, 24 Nov 2021 at 16:42, Vincent Donnefort
-> <vincent.donnefort@arm.com> wrote:
->>
->> select_idle_sibling() will return prev_cpu for the case where the task is
->> woken up by a per-CPU kthread. However, the idle task has been recently
->> modified and is now identified by is_per_cpu_kthread(), breaking the
->> behaviour described above. Using !is_idle_task() ensures we do not
->> spuriously trigger that select_idle_sibling() exit path.
->>
->> Fixes: 00b89fe0197f ("sched: Make the idle task quack like a per-CPU kthread")
->> Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
->>
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index 945d987246c5..8bf95b0e368d 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -6399,6 +6399,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->>          * pattern is IO completions.
->>          */
->>         if (is_per_cpu_kthread(current) &&
->> +           !is_idle_task(current) &&
->>             prev == smp_processor_id() &&
->>             this_rq()->nr_running <= 1) {
->>                 return prev;
->
-> AFAICT, this can't be possible for a symmetric system because it would
-> have been already returned by other conditions.
-> Only an asymmetric system can face such a situation if the task
-> doesn't fit which is the subject of your other patch.
-> so this patch seems irrelevant outside the other one
->
+On Thu, Nov 25, 2021 at 09:06:11AM +0530, Naresh Kamboju wrote:
+> On Wed, 24 Nov 2021 at 17:44, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 4.9.291 release.
+> > There are 207 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.291-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+> 
+> FYI,
+> New warnings noticed,
+> 
+> Linux 4.9.291-rc1 on arm (defconfig) with gcc-11
+> 
+> drivers/soc/tegra/pmc.c: In function 'tegra_powergate_power_up':
+> drivers/soc/tegra/pmc.c:412:1: warning: label 'powergate_off' defined
+> but not used [-Wunused-label]
+>   412 | powergate_off:
+>       | ^~~~~~~~~~~~~
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-I think you can still hit this on a symmetric system; let me try to
-reformulate my other email.
+Now fixed up, thanks.
 
-If this (non-patched) condition evaluates to true, it means the previous
-condition
-
-  (available_idle_cpu(target) || sched_idle_cpu(target)) &&
-   asym_fits_capacity(task_util, target)
-
-evaluated to false, so for a symmetric system target sure isn't idle.
-
-prev == smp_processor_id() implies prev == target, IOW prev isn't
-idle. Now, consider:
-
-  p0.prev = CPU1
-  p1.prev = CPU1
-
-  CPU0                     CPU1
-  current = don't care     current = swapper/1
-
-  ttwu(p1)
-    ttwu_queue(p1, CPU1)
-    // or
-    ttwu_queue_wakelist(p1, CPU1)
-
-                          hrtimer_wakeup()
-                            wake_up_process()
-                              ttwu()
-                                idle_cpu(CPU1)? no
-
-                                is_per_cpu_kthread(current)? yes
-                                prev == smp_processor_id()? yes
-                                this_rq()->nr_running <= 1? yes
-                                => self enqueue
-
-                          ...
-                          schedule_idle()
-
-This works if CPU0 does either a full enqueue (rq->nr_running == 1) or just
-a wakelist enqueue (rq->ttwu_pending > 0). If there was an idle CPU3
-around, we'd still be stacking p0 and p1 onto CPU1.
-
-IOW this opens a window between a remote ttwu() and the idle task invoking
-schedule_idle() where the idle task can stack more tasks onto its CPU.
-
->
->> --
->> 2.25.1
->>
+greg k-h
