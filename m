@@ -2,169 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352DF45DF6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:13:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D810345DFC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:31:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241205AbhKYRQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 12:16:18 -0500
-Received: from mga09.intel.com ([134.134.136.24]:11030 "EHLO mga09.intel.com"
+        id S1348286AbhKYReY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 12:34:24 -0500
+Received: from thoth.sbs.de ([192.35.17.2]:48726 "EHLO thoth.sbs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241288AbhKYROQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 12:14:16 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="235366702"
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="235366702"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 09:08:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="539030792"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 25 Nov 2021 09:08:45 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqIEm-0006gV-Hk; Thu, 25 Nov 2021 17:08:44 +0000
-Date:   Fri, 26 Nov 2021 01:08:15 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     kbuild-all@lists.01.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars:for-next/kspp-misc-fixes 3/3]
- sound/soc/sof/topology.c:2230:47: error: invalid use of flexible array
- member
-Message-ID: <202111260100.ucJw3jNQ-lkp@intel.com>
+        id S1349373AbhKYRcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 12:32:22 -0500
+X-Greylist: delayed 1181 seconds by postgrey-1.27 at vger.kernel.org; Thu, 25 Nov 2021 12:32:20 EST
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by thoth.sbs.de (8.15.2/8.15.2) with ESMTPS id 1APH8s2V030334
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Nov 2021 18:08:54 +0100
+Received: from md1za8fc.ad001.siemens.net ([139.25.69.80])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 1APH8r6V023783;
+        Thu, 25 Nov 2021 18:08:53 +0100
+Date:   Thu, 25 Nov 2021 18:08:52 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
+        <platform-driver-x86@vger.kernel.org>,
+        <linux-watchdog@vger.kernel.org>
+Cc:     Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        "Gerd Haeussler" <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Enrico Weigelt <lkml@metux.net>
+Subject: Re: [PATCH v3 3/4] watchdog: simatic-ipc-wdt: add new driver for
+ Siemens Industrial PCs
+Message-ID: <20211125180852.190e4eec@md1za8fc.ad001.siemens.net>
+In-Reply-To: <20210329174928.18816-4-henning.schild@siemens.com>
+References: <20210329174928.18816-1-henning.schild@siemens.com>
+        <20210329174928.18816-4-henning.schild@siemens.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/kspp-misc-fixes
-head:   004a9cea9666ecd470e442ef776a22d24870bba9
-commit: 004a9cea9666ecd470e442ef776a22d24870bba9 [3/3] treewide: Replace zero-length arrays with flexible-array members
-config: arc-allyesconfig (https://download.01.org/0day-ci/archive/20211126/202111260100.ucJw3jNQ-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/commit/?id=004a9cea9666ecd470e442ef776a22d24870bba9
-        git remote add gustavoars https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git
-        git fetch --no-tags gustavoars for-next/kspp-misc-fixes
-        git checkout 004a9cea9666ecd470e442ef776a22d24870bba9
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arc SHELL=/bin/bash
+Am Mon, 29 Mar 2021 19:49:27 +0200
+schrieb Henning Schild <henning.schild@siemens.com>:
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+> This driver adds initial support for several devices from Siemens. It
+> is based on a platform driver introduced in an earlier commit.
+> 
+> Signed-off-by: Henning Schild <henning.schild@siemens.com>
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+>  drivers/watchdog/Kconfig           |  11 ++
+>  drivers/watchdog/Makefile          |   1 +
+>  drivers/watchdog/simatic-ipc-wdt.c | 215
+> +++++++++++++++++++++++++++++ 3 files changed, 227 insertions(+)
+>  create mode 100644 drivers/watchdog/simatic-ipc-wdt.c
+> 
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index 1fe0042a48d2..948497eb4bef 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -1575,6 +1575,17 @@ config NIC7018_WDT
+>  	  To compile this driver as a module, choose M here: the
+> module will be called nic7018_wdt.
+>  
+> +config SIEMENS_SIMATIC_IPC_WDT
+> +	tristate "Siemens Simatic IPC Watchdog"
+> +	depends on SIEMENS_SIMATIC_IPC
+> +	select WATCHDOG_CORE
+> +	help
+> +	  This driver adds support for several watchdogs found in
+> Industrial
+> +	  PCs from Siemens.
+> +
+> +	  To compile this driver as a module, choose M here: the
+> module will be
+> +	  called simatic-ipc-wdt.
+> +
+>  # M68K Architecture
+>  
+>  config M54xx_WATCHDOG
+> diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
+> index f3a6540e725e..7f5c73ec058c 100644
+> --- a/drivers/watchdog/Makefile
+> +++ b/drivers/watchdog/Makefile
+> @@ -142,6 +142,7 @@ obj-$(CONFIG_NI903X_WDT) += ni903x_wdt.o
+>  obj-$(CONFIG_NIC7018_WDT) += nic7018_wdt.o
+>  obj-$(CONFIG_MLX_WDT) += mlx_wdt.o
+>  obj-$(CONFIG_KEEMBAY_WATCHDOG) += keembay_wdt.o
+> +obj-$(CONFIG_SIEMENS_SIMATIC_IPC_WDT) += simatic-ipc-wdt.o
+>  
+>  # M68K Architecture
+>  obj-$(CONFIG_M54xx_WATCHDOG) += m54xx_wdt.o
+> diff --git a/drivers/watchdog/simatic-ipc-wdt.c
+> b/drivers/watchdog/simatic-ipc-wdt.c new file mode 100644
+> index 000000000000..e901718d05b9
+> --- /dev/null
+> +++ b/drivers/watchdog/simatic-ipc-wdt.c
+> @@ -0,0 +1,215 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Siemens SIMATIC IPC driver for Watchdogs
+> + *
+> + * Copyright (c) Siemens AG, 2020-2021
+> + *
+> + * Authors:
+> + *  Gerd Haeussler <gerd.haeussler.ext@siemens.com>
+> + */
+> +
+> +#include <linux/device.h>
+> +#include <linux/errno.h>
+> +#include <linux/init.h>
+> +#include <linux/io.h>
+> +#include <linux/ioport.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/pci.h>
+> +#include <linux/platform_data/x86/simatic-ipc-base.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/sizes.h>
+> +#include <linux/util_macros.h>
+> +#include <linux/watchdog.h>
+> +
+> +#define WD_ENABLE_IOADR			0x62
+> +#define WD_TRIGGER_IOADR		0x66
+> +#define GPIO_COMMUNITY0_PORT_ID		0xaf
+> +#define PAD_CFG_DW0_GPP_A_23		0x4b8
+> +#define SAFE_EN_N_427E			0x01
+> +#define SAFE_EN_N_227E			0x04
+> +#define WD_ENABLED			0x01
+> +#define WD_TRIGGERED			0x80
+> +#define WD_MACROMODE			0x02
+> +
+> +#define TIMEOUT_MIN	2
+> +#define TIMEOUT_DEF	64
+> +#define TIMEOUT_MAX	64
+> +
+> +#define GP_STATUS_REG_227E	0x404D	/* IO PORT for
+> SAFE_EN_N on 227E */ +
+> +static bool nowayout = WATCHDOG_NOWAYOUT;
+> +module_param(nowayout, bool, 0000);
+> +MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started
+> (default="
+> +		 __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
+> +
+> +static struct resource gp_status_reg_227e_res =
+> +	DEFINE_RES_IO_NAMED(GP_STATUS_REG_227E, SZ_1,
+> KBUILD_MODNAME); +
+> +static struct resource io_resource =
+> +	DEFINE_RES_IO_NAMED(WD_ENABLE_IOADR, SZ_1,
+> +			    KBUILD_MODNAME " WD_ENABLE_IOADR");
 
-All errors (new ones prefixed by >>):
+WD_TRIGGER_IOADR, SZ_1 missing here and in request_region part
 
-   sound/soc/sof/topology.c: In function 'sof_process_load':
->> sound/soc/sof/topology.c:2230:47: error: invalid use of flexible array member
-    2230 |                         memcpy(&process->data + offset,
-         |                                               ^
+Henning
 
+> +/* the actual start will be discovered with pci, 0 is a placeholder
+> */ +static struct resource mem_resource =
+> +	DEFINE_RES_MEM_NAMED(0, SZ_4, "WD_RESET_BASE_ADR");
+> +
+> +static u32 wd_timeout_table[] = {2, 4, 6, 8, 16, 32, 48, 64 };
+> +static void __iomem *wd_reset_base_addr;
+> +
+> +static int wd_start(struct watchdog_device *wdd)
+> +{
+> +	outb(inb(WD_ENABLE_IOADR) | WD_ENABLED, WD_ENABLE_IOADR);
+> +	return 0;
+> +}
+> +
+> +static int wd_stop(struct watchdog_device *wdd)
+> +{
+> +	outb(inb(WD_ENABLE_IOADR) & ~WD_ENABLED, WD_ENABLE_IOADR);
+> +	return 0;
+> +}
+> +
+> +static int wd_ping(struct watchdog_device *wdd)
+> +{
+> +	inb(WD_TRIGGER_IOADR);
+> +	return 0;
+> +}
+> +
+> +static int wd_set_timeout(struct watchdog_device *wdd, unsigned int
+> t) +{
+> +	int timeout_idx = find_closest(t, wd_timeout_table,
+> +				       ARRAY_SIZE(wd_timeout_table));
+> +
+> +	outb((inb(WD_ENABLE_IOADR) & 0xc7) | timeout_idx << 3,
+> WD_ENABLE_IOADR);
+> +	wdd->timeout = wd_timeout_table[timeout_idx];
+> +	return 0;
+> +}
+> +
+> +static const struct watchdog_info wdt_ident = {
+> +	.options	= WDIOF_MAGICCLOSE | WDIOF_KEEPALIVEPING |
+> +			  WDIOF_SETTIMEOUT,
+> +	.identity	= KBUILD_MODNAME,
+> +};
+> +
+> +static const struct watchdog_ops wdt_ops = {
+> +	.owner		= THIS_MODULE,
+> +	.start		= wd_start,
+> +	.stop		= wd_stop,
+> +	.ping		= wd_ping,
+> +	.set_timeout	= wd_set_timeout,
+> +};
+> +
+> +static void wd_secondary_enable(u32 wdtmode)
+> +{
+> +	u16 resetbit;
+> +
+> +	/* set safe_en_n so we are not just WDIOF_ALARMONLY */
+> +	if (wdtmode == SIMATIC_IPC_DEVICE_227E) {
+> +		/* enable SAFE_EN_N on GP_STATUS_REG_227E */
+> +		resetbit = inw(GP_STATUS_REG_227E);
+> +		outw(resetbit & ~SAFE_EN_N_227E, GP_STATUS_REG_227E);
+> +	} else {
+> +		/* enable SAFE_EN_N on PCH D1600 */
+> +		resetbit = ioread16(wd_reset_base_addr);
+> +		iowrite16(resetbit & ~SAFE_EN_N_427E,
+> wd_reset_base_addr);
+> +	}
+> +}
+> +
+> +static int wd_setup(u32 wdtmode)
+> +{
+> +	unsigned int bootstatus = 0;
+> +	int timeout_idx;
+> +
+> +	timeout_idx = find_closest(TIMEOUT_DEF, wd_timeout_table,
+> +				   ARRAY_SIZE(wd_timeout_table));
+> +
+> +	if (inb(WD_ENABLE_IOADR) & WD_TRIGGERED)
+> +		bootstatus |= WDIOF_CARDRESET;
+> +
+> +	/* reset alarm bit, set macro mode, and set timeout */
+> +	outb(WD_TRIGGERED | WD_MACROMODE | timeout_idx << 3,
+> WD_ENABLE_IOADR); +
+> +	wd_secondary_enable(wdtmode);
+> +
+> +	return bootstatus;
+> +}
+> +
+> +static struct watchdog_device wdd_data = {
+> +	.info = &wdt_ident,
+> +	.ops = &wdt_ops,
+> +	.min_timeout = TIMEOUT_MIN,
+> +	.max_timeout = TIMEOUT_MAX
+> +};
+> +
+> +static int simatic_ipc_wdt_probe(struct platform_device *pdev)
+> +{
+> +	struct simatic_ipc_platform *plat = pdev->dev.platform_data;
+> +	struct device *dev = &pdev->dev;
+> +	struct resource *res;
+> +
+> +	switch (plat->devmode) {
+> +	case SIMATIC_IPC_DEVICE_227E:
+> +		if (!devm_request_region(dev,
+> gp_status_reg_227e_res.start,
+> +
+> resource_size(&gp_status_reg_227e_res),
+> +					 KBUILD_MODNAME)) {
+> +			dev_err(dev,
+> +				"Unable to register IO resource at
+> %pR\n",
+> +				&gp_status_reg_227e_res);
+> +			return -EBUSY;
+> +		}
+> +		fallthrough;
+> +	case SIMATIC_IPC_DEVICE_427E:
+> +		wdd_data.parent = dev;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (!devm_request_region(dev, io_resource.start,
+> +				 resource_size(&io_resource),
+> +				 io_resource.name)) {
+> +		dev_err(dev,
+> +			"Unable to register IO resource at %#x\n",
+> +			WD_ENABLE_IOADR);
+> +		return -EBUSY;
+> +	}
+> +
+> +	if (plat->devmode == SIMATIC_IPC_DEVICE_427E) {
+> +		res = &mem_resource;
+> +
+> +		/* get GPIO base from PCI */
+> +		res->start =
+> simatic_ipc_get_membase0(PCI_DEVFN(0x1f, 1));
+> +		if (res->start == 0)
+> +			return -ENODEV;
+> +
+> +		/* do the final address calculation */
+> +		res->start = res->start + (GPIO_COMMUNITY0_PORT_ID
+> << 16) +
+> +			     PAD_CFG_DW0_GPP_A_23;
+> +		res->end += res->start;
+> +
+> +		wd_reset_base_addr = devm_ioremap_resource(dev, res);
+> +		if (IS_ERR(wd_reset_base_addr))
+> +			return PTR_ERR(wd_reset_base_addr);
+> +	}
+> +
+> +	wdd_data.bootstatus = wd_setup(plat->devmode);
+> +	if (wdd_data.bootstatus)
+> +		dev_warn(dev, "last reboot caused by watchdog
+> reset\n"); +
+> +	watchdog_set_nowayout(&wdd_data, nowayout);
+> +	watchdog_stop_on_reboot(&wdd_data);
+> +	return devm_watchdog_register_device(dev, &wdd_data);
+> +}
+> +
+> +static struct platform_driver simatic_ipc_wdt_driver = {
+> +	.probe = simatic_ipc_wdt_probe,
+> +	.driver = {
+> +		.name = KBUILD_MODNAME,
+> +	},
+> +};
+> +
+> +module_platform_driver(simatic_ipc_wdt_driver);
+> +
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_ALIAS("platform:" KBUILD_MODNAME);
+> +MODULE_AUTHOR("Gerd Haeussler <gerd.haeussler.ext@siemens.com>");
 
-vim +2230 sound/soc/sof/topology.c
-
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2160  
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2161  static int sof_process_load(struct snd_soc_component *scomp, int index,
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2162  			    struct snd_sof_widget *swidget,
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2163  			    struct snd_soc_tplg_dapm_widget *tw,
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2164  			    int type)
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2165  {
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2166  	struct snd_soc_dapm_widget *widget = swidget->widget;
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2167  	struct snd_soc_tplg_private *private = &tw->priv;
-c81a4ef725362db Guennadi Liakhovetski 2020-08-24  2168  	struct sof_ipc_comp_process *process;
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2169  	struct sof_widget_data *wdata = NULL;
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2170  	size_t ipc_data_size = 0;
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2171  	size_t ipc_size;
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2172  	int offset = 0;
-c81a4ef725362db Guennadi Liakhovetski 2020-08-24  2173  	int ret;
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2174  	int i;
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2175  
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2176  	/* allocate struct for widget control data sizes and types */
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2177  	if (widget->num_kcontrols) {
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2178  		wdata = kcalloc(widget->num_kcontrols,
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2179  				sizeof(*wdata),
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2180  				GFP_KERNEL);
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2181  
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2182  		if (!wdata)
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2183  			return -ENOMEM;
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2184  
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2185  		/* get possible component controls and get size of all pdata */
-ee1e79b72e3cf5e Ranjani Sridharan     2019-12-04  2186  		ret = sof_get_control_data(scomp, widget, wdata,
-b2f3e0c9e4ee2e0 Jaska Uimonen         2019-08-22  2187  					   &ipc_data_size);
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2188  
-b2f3e0c9e4ee2e0 Jaska Uimonen         2019-08-22  2189  		if (ret < 0)
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2190  			goto out;
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2191  	}
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2192  
-878694dcbe51794 Keyon Jie             2020-08-25  2193  	ipc_size = sizeof(struct sof_ipc_comp_process) + ipc_data_size;
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2194  
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2195  	/* we are exceeding max ipc size, config needs to be sent separately */
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2196  	if (ipc_size > SOF_IPC_MSG_MAX_SIZE) {
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2197  		ipc_size -= ipc_data_size;
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2198  		ipc_data_size = 0;
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2199  	}
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2200  
-783898ce68de526 Keyon Jie             2020-09-04  2201  	process = (struct sof_ipc_comp_process *)
-2263063fc4880d5 Keyon Jie             2020-09-21  2202  		  sof_comp_alloc(swidget, &ipc_size, index);
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2203  	if (!process) {
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2204  		ret = -ENOMEM;
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2205  		goto out;
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2206  	}
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2207  
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2208  	/* configure iir IPC message */
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2209  	process->comp.type = type;
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2210  	process->config.hdr.size = sizeof(process->config);
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2211  
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2212  	ret = sof_parse_tokens(scomp, &process->config, comp_tokens,
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2213  			       ARRAY_SIZE(comp_tokens), private->array,
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2214  			       le32_to_cpu(private->size));
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2215  	if (ret != 0) {
-ee1e79b72e3cf5e Ranjani Sridharan     2019-12-04  2216  		dev_err(scomp->dev, "error: parse process.cfg tokens failed %d\n",
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2217  			le32_to_cpu(private->size));
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2218  		goto err;
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2219  	}
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2220  
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2221  	sof_dbg_comp_config(scomp, &process->config);
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2222  
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2223  	/*
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2224  	 * found private data in control, so copy it.
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2225  	 * get possible component controls - get size of all pdata,
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2226  	 * then memcpy with headers
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2227  	 */
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2228  	if (ipc_data_size) {
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2229  		for (i = 0; i < widget->num_kcontrols; i++) {
-cac974a51ebb955 Jaska Uimonen         2019-08-09 @2230  			memcpy(&process->data + offset,
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2231  			       wdata[i].pdata->data,
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2232  			       wdata[i].pdata->size);
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2233  			offset += wdata[i].pdata->size;
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2234  		}
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2235  	}
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2236  
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2237  	process->size = ipc_data_size;
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2238  	swidget->private = process;
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2239  err:
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2240  	if (ret < 0)
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2241  		kfree(process);
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2242  out:
-cac974a51ebb955 Jaska Uimonen         2019-08-09  2243  	kfree(wdata);
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2244  	return ret;
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2245  }
-311ce4fe7637d96 Liam Girdwood         2019-04-12  2246  
-
-:::::: The code at line 2230 was first introduced by commit
-:::::: cac974a51ebb955f3be260a9633836e1413c8672 ASoC: SOF: topology: use set_get_data in process load
-
-:::::: TO: Jaska Uimonen <jaska.uimonen@intel.com>
-:::::: CC: Mark Brown <broonie@kernel.org>
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
