@@ -2,131 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F20FF45E2AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:43:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB3D45E2B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:47:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238881AbhKYVqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 16:46:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:52822 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238655AbhKYVoU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 16:44:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637876468;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zy1D3BcfbmTkQAKQ8xyKaO+OdCXbfXv9jg1mQpYzJQU=;
-        b=eFdPVysPfUn6i2C6KFj1OdMDjxV9inm+/XgxWjR+rJuD4zKCxxiQrz/4OWfJNwsp2Rli8s
-        Tm8CMU0vX5KT8wWL6fywzDKk90Ja/EPuLF+g2HR/ToKfint9cWFC6a3KwIkZ+0jflUV1zL
-        eM8OCBMwzGzM5TNrp7Uxojnr++OVJhI=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-419-7snnXUKkO1y4gA6-DcOKeg-1; Thu, 25 Nov 2021 16:41:06 -0500
-X-MC-Unique: 7snnXUKkO1y4gA6-DcOKeg-1
-Received: by mail-wm1-f72.google.com with SMTP id a64-20020a1c7f43000000b003335e5dc26bso3833159wmd.8
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 13:41:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zy1D3BcfbmTkQAKQ8xyKaO+OdCXbfXv9jg1mQpYzJQU=;
-        b=2mo6Y5gi3GVq7ATUhULKQmi6amFrMZu9rMoR+4J8KwDl6ordj7qXAOb4iN1QqlU5ok
-         hiPu2JzncBWpOywMsvjLoQUhuF10sZOWUqIYoBCJP40VIPhkjq7gn197PJCz3wtFGFBD
-         bKcqIkPgYMWfkor2pYETWRYf7HCyn8XeaL4Y8GNLA357jFVIizhdgP5+uMiuMaEppdiS
-         /gAGsHcdf/SzKXlwi9hnyhInKv5Vcq8bexM23+pW2w/CJZbfL7DPiD4o1h8HFx4yfcOo
-         As3qCbXRfwzm8LyuVQki+tPtwyKGUQVxcCpiObcKO3+KMu4wl21YrXAZoxkRY02XyHI3
-         +C+w==
-X-Gm-Message-State: AOAM532WrhfvDepM/gBxggD9QbmYwgLh66wLfm/VRaeb7tOshimpa3aW
-        fPoBQbEq7aubPVpo5pYtt88oZmNAnfXcT/r0dV9+CHSs7pwFAwCCYub1S7lW6Jyvcphi6xxkqTf
-        QJMYISTQ/oHgeo05+G3+1ryB671URsVstfT9Ho17s
-X-Received: by 2002:a05:600c:1e26:: with SMTP id ay38mr11407737wmb.14.1637876465786;
-        Thu, 25 Nov 2021 13:41:05 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxBOJN0sKvw/32yrofU9l5xWSU9km9NEYBCalXaAIBq9JyTlz4/gcW6rG7s0RNEsFbdNvJaMjB37Li1S3SYJcE=
-X-Received: by 2002:a05:600c:1e26:: with SMTP id ay38mr11407713wmb.14.1637876465617;
- Thu, 25 Nov 2021 13:41:05 -0800 (PST)
-MIME-Version: 1.0
-References: <20211124192024.2408218-1-catalin.marinas@arm.com>
- <20211124192024.2408218-4-catalin.marinas@arm.com> <YZ6arlsi2L3LVbFO@casper.infradead.org>
- <CAHk-=wgHqjX3kenSk5_bCRM+ZC-tgndBMfbVVsbp0CwJf2DU-w@mail.gmail.com>
- <YZ9vM91Uj8g36VQC@arm.com> <CAHk-=wgUn1vBReeNcZNEObkxPQGhN5EUq5MC94cwF0FaQvd2rQ@mail.gmail.com>
- <YZ/1jflaSjgRRl2o@arm.com> <YZ/55fYE0l7ewo/t@casper.infradead.org>
-In-Reply-To: <YZ/55fYE0l7ewo/t@casper.infradead.org>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Thu, 25 Nov 2021 22:40:54 +0100
-Message-ID: <CAHc6FU6zwmwK3fEaDY_-Qxn2+PA8pnwXUPRKRZ=SGd_6RbKoQQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
- with sub-page faults
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+        id S1357247AbhKYVuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 16:50:19 -0500
+Received: from mga04.intel.com ([192.55.52.120]:60572 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235791AbhKYVsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 16:48:16 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="234302392"
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="234302392"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 13:41:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="741374968"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 25 Nov 2021 13:41:52 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqMV6-0006xV-3S; Thu, 25 Nov 2021 21:41:52 +0000
+Date:   Fri, 26 Nov 2021 05:41:39 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: WARNING: modpost: vmlinux.o(.text+0x5b811): Section mismatch in
+ reference from the function test_bit() to the variable
+ .init.data:numa_nodes_parsed
+Message-ID: <202111260506.fhLfHV1D-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 10:02 PM Matthew Wilcox <willy@infradead.org> wrote:
-> On Thu, Nov 25, 2021 at 08:43:57PM +0000, Catalin Marinas wrote:
-> > > I really believe that the fix is to make the read/write probing just
-> > > be more aggressive.
-> > >
-> > > Make the read/write probing require that AT LEAST <n> bytes be
-> > > readable/writable at the beginning, where 'n' is 'min(len,ALIGN)', and
-> > > ALIGN is whatever size that copy_from/to_user_xyz() might require just
-> > > because it might do multi-byte accesses.
-> > >
-> > > In fact, make ALIGN be perhaps something reasonable like 512 bytes or
-> > > whatever, and then you know you can handle the btrfs "copy a whole
-> > > structure and reset if that fails" case too.
-> >
-> > IIUC what you are suggesting, we still need changes to the btrfs loop
-> > similar to willy's but that should work fine together with a slightly
-> > more aggressive fault_in_writable().
-> >
-> > A probing of at least sizeof(struct btrfs_ioctl_search_key) should
-> > suffice without any loop changes and 512 would cover it but it doesn't
-> > look generic enough. We could pass a 'probe_prefix' argument to
-> > fault_in_exact_writeable() to only probe this and btrfs would just
-> > specify the above sizeof().
->
-> How about something like this?
->
-> +++ b/mm/gup.c
-> @@ -1672,6 +1672,13 @@ size_t fault_in_writeable(char __user *uaddr, size_t size)
->
->         if (unlikely(size == 0))
->                 return 0;
-> +       if (SUBPAGE_PROBE_INTERVAL) {
-> +               while (uaddr < PAGE_ALIGN((unsigned long)uaddr)) {
-> +                       if (unlikely(__put_user(0, uaddr) != 0))
-> +                               goto out;
-> +                       uaddr += SUBPAGE_PROBE_INTERVAL;
-> +               }
-> +       }
->         if (!PAGE_ALIGNED(uaddr)) {
->                 if (unlikely(__put_user(0, uaddr) != 0))
->                         return size;
->
-> ARM then defines SUBPAGE_PROBE_INTERVAL to be 16 and the rest of us
-> leave it as 0.  That way we probe all the way to the end of the current
-> page and the start of the next page.
->
-> Oh, that needs to be checked to not exceed size as well ... anyway,
-> you get the idea.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   b501b85957deb17f1fe0a861fee820255519d526
+commit: d0a3ac549f389c1511a4df0d7638536305205d20 ubsan: enable for all*config builds
+date:   12 months ago
+config: x86_64-buildonly-randconfig-r001-20211122 (https://download.01.org/0day-ci/archive/20211126/202111260506.fhLfHV1D-lkp@intel.com/config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project c133fb321f7ca6083ce15b6aa5bf89de6600e649)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d0a3ac549f389c1511a4df0d7638536305205d20
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout d0a3ac549f389c1511a4df0d7638536305205d20
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
 
-Note that we don't need this additional probing when accessing the
-buffer with byte granularity. That's probably the common case.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Andreas
+All warnings (new ones prefixed by >>, old ones prefixed by <<):
 
+>> WARNING: modpost: vmlinux.o(.text+0x5b811): Section mismatch in reference from the function test_bit() to the variable .init.data:numa_nodes_parsed
+The function test_bit() references
+the variable __initdata numa_nodes_parsed.
+This is often because test_bit lacks a __initdata
+annotation or the annotation of numa_nodes_parsed is wrong.
+--
+>> WARNING: modpost: vmlinux.o(.text+0x5b877): Section mismatch in reference from the function __next_node() to the variable .init.data:numa_nodes_parsed
+The function __next_node() references
+the variable __initdata numa_nodes_parsed.
+This is often because __next_node lacks a __initdata
+annotation or the annotation of numa_nodes_parsed is wrong.
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
