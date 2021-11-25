@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECC6245DBA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 14:50:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B662745DBB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 14:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355430AbhKYNxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 08:53:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355332AbhKYNvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 08:51:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C25DB60FD8;
-        Thu, 25 Nov 2021 13:48:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637848087;
-        bh=B8R3ztlbM99Jeh4nG9RnTDnVANUUkqCv0VxD/QuuUiM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FGnC/d2K5qPnnAUR9xnN+XK9P/Cbr75SurJrMFWoo5OoWvZsfBqWhvpPSwsWCcvG/
-         2k+HtGk/xcIgVdTRKbLtgTR2CJ6PJr322Avr0ctdojJr2Kmr0vr8f+Ho8N0fMkGRME
-         RO+ryfb0EspHf5OqCXJ6MYoXxqyFF9kbzxM7xhwzebnNp1sb/c8SJ9TX/DOIUZTdNH
-         JgTR8YbpL2xA0mm4oBa5mYI/fJiAQ+MlutIJfE3rmipgX6jxRr5WC3m1hcKAO5FQyr
-         ntOqYWucI7U6n6GNWOAbWbFJgNmQyoUyNbQHFICXX/ZX9O9Ys8SZ0VdFh9DVfYSK47
-         cU1yFFuoszHzA==
-Date:   Thu, 25 Nov 2021 13:48:01 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     madvenka@linux.microsoft.com
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
-        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 1/5] arm64: Call stack_backtrace() only from within
- walk_stackframe()
-Message-ID: <YZ+UEdW2Ss096HlJ@sirena.org.uk>
-References: <8b861784d85a21a9bf08598938c11aff1b1249b9>
- <20211123193723.12112-1-madvenka@linux.microsoft.com>
- <20211123193723.12112-2-madvenka@linux.microsoft.com>
+        id S1355505AbhKYNyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 08:54:49 -0500
+Received: from mailgw01.mediatek.com ([60.244.123.138]:60436 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1355402AbhKYNwo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 08:52:44 -0500
+X-UUID: 622c73e086f749b79f51c32a8971b9ed-20211125
+X-UUID: 622c73e086f749b79f51c32a8971b9ed-20211125
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <guangming.cao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1143569343; Thu, 25 Nov 2021 21:49:28 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Thu, 25 Nov 2021 21:49:27 +0800
+Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
+ mtkcas10.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Thu, 25 Nov 2021 21:49:26 +0800
+From:   <guangming.cao@mediatek.com>
+To:     <robin.murphy@arm.com>
+CC:     <Brian.Starkey@arm.com>, <benjamin.gaignard@linaro.org>,
+        <christian.koenig@amd.com>, <dri-devel@lists.freedesktop.org>,
+        <guangming.cao@mediatek.com>, <john.stultz@linaro.org>,
+        <labbott@redhat.com>, <linaro-mm-sig@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <lmark@codeaurora.org>,
+        <matthias.bgg@gmail.com>, <sumit.semwal@linaro.org>,
+        <wsd_upstream@mediatek.com>, Guangming <Guangming.Cao@mediatek.com>
+Subject: [PATCH v2] dma_heap: use for_each_sgtable_sg in sg_table release flow
+Date:   Thu, 25 Nov 2021 21:49:51 +0800
+Message-ID: <20211125134951.62002-1-guangming.cao@mediatek.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <85eb9053-0ce4-2514-06dc-58b8910dc5f7@arm.com>
+References: <85eb9053-0ce4-2514-06dc-58b8910dc5f7@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="AyrLmaYXnWaR0eCf"
-Content-Disposition: inline
-In-Reply-To: <20211123193723.12112-2-madvenka@linux.microsoft.com>
-X-Cookie: This bag is recyclable.
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Guangming <Guangming.Cao@mediatek.com>
 
---AyrLmaYXnWaR0eCf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Use (for_each_sgtable_sg) rather than (for_each_sg) to traverse
+sg_table to free sg_table.
+Use (for_each_sg) maybe will casuse some pages can't be freed
+when send wrong nents number.
 
-On Tue, Nov 23, 2021 at 01:37:19PM -0600, madvenka@linux.microsoft.com wrot=
-e:
-> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->=20
-> Currently, arch_stack_walk() calls start_backtrace() and walk_stackframe()
-> separately. There is no need to do that. Instead, call start_backtrace()
-> from within walk_stackframe(). In other words, walk_stackframe() is the o=
-nly
-> unwind function a consumer needs to call.
+Signed-off-by: Guangming <Guangming.Cao@mediatek.com>
+---
+ drivers/dma-buf/heaps/system_heap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Mark Brown <broonie@kernel.org>
+diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+index 23a7e74ef966..8660508f3684 100644
+--- a/drivers/dma-buf/heaps/system_heap.c
++++ b/drivers/dma-buf/heaps/system_heap.c
+@@ -289,7 +289,7 @@ static void system_heap_dma_buf_release(struct dma_buf *dmabuf)
+ 	int i;
+ 
+ 	table = &buffer->sg_table;
+-	for_each_sg(table->sgl, sg, table->nents, i) {
++	for_each_sgtable_sg(table, sg, i) {
+ 		struct page *page = sg_page(sg);
+ 
+ 		__free_pages(page, compound_order(page));
+-- 
+2.17.1
 
---AyrLmaYXnWaR0eCf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGflBEACgkQJNaLcl1U
-h9BeDwf8CLvHS4gPhTR0PESblCIfFkZQSUhKeQxobmrHQ5XnW6H7TDyzusjAxK8D
-dVX4YbJxh3arUwPQXrU7uXqT+y+Wm1RotWJd0RcF2dUvcgrKOgVztxxfLRwfHY5f
-raiFv06vqzDckVxLaW/4tqEkl9HR60VtHNhylTQtK1cZXGYiHFVm2aClRdzrbREC
-GUqNvwnc8MMc/2QI2RYdN7iRSs21Up8bXxt9/PC9js+3Gc7XEW8Yk3r0Gz7vkygs
-RJ5adaqSs3GBR44Y62f2UqE+FOK+EPRrlLYEeHPan0MhKnILOmGETC+F4ByYJrUW
-n2Qtdjhgw10GqKHsVwZf8QWYRu1o8w==
-=JQmW
------END PGP SIGNATURE-----
-
---AyrLmaYXnWaR0eCf--
