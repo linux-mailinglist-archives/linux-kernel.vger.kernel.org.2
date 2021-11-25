@@ -2,154 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5941345DE94
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 17:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B34345DE64
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 17:11:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356408AbhKYQY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 11:24:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235358AbhKYQWz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 11:22:55 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAEF5C0619D4
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 08:08:05 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id l16so12676206wrp.11
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 08:08:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jrtc27.com; s=gmail.jrtc27.user;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=BBIjRQcQTe/p8MPuV8+84d+JQi/ynOVnTogY5pdUch4=;
-        b=U5U0b+/ziFIlFc/ux3ZoOEDrb8zzXm42loeB46lAIDLcsnt8g6LWZdNab9N8LgYlBs
-         L2mRETMzguDlzF40i7NiRt7NjZuiBifM2pDWQRDEHu/u6BhpIYjfFvSPeGIPTvoe6JBC
-         MksqgkSQoO3GHgQTEW4TYyslTwW6c2ieEypd6eiUTfOaAJsQotX2Ec6VSsM0qH9g0sDq
-         dA2AbPP3uBCQRuL5gelcz6ZFqlqJgVbKAnIeQZX2KkK7uqcclGI6+bPHg7ItfYie/Gf9
-         3yq6kV28i+vJ4C8D1fR+x82AGaUYttYQOL1pBf19OiLJE6pGTrtxUY61ixIQIfnZI8bU
-         BoCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=BBIjRQcQTe/p8MPuV8+84d+JQi/ynOVnTogY5pdUch4=;
-        b=8DEFw90mGViNELPeixyIRVrKvuBtmEyguH1iHMmxIb3D1lejGx3FI9bzG+Wl8Cf9jL
-         yENVFm+2DuLoUbk7T6q4DL+G9M7zHvF17ACDib1yJEg5M3DJkX25eFmPztamDJpUk+WR
-         4OiODvgTiPnVrDihUcTTdCXor1GuQRqCF2IjcqzVE+TwRpEVhyadSUeOXBZYK5QIxWPV
-         ZyJWdDw2Qbv0ebQc1USjhOZsvybfMuNirAO/d3yklodBX9sql4dDFOagGjUlzZLyHU+F
-         7wqXMBU3rxdSlMo5goy3abMkP0agZikGMNXXWUn8vwRKXBY+AHtb1Re8adwNsiF6wxT+
-         L6Kg==
-X-Gm-Message-State: AOAM532joroM4H+0hjNZEsbihokwAHk50HU9YzpHtkc/WnD8bRjtIdl1
-        BwsglJ4mWKWUmB6nBej3VysG6w==
-X-Google-Smtp-Source: ABdhPJxkfPB4Sn6d4awiD0RuzY3zDfpzeOlG0sL9DlrmFmkTSBbPNNh9f/BRCMQorDtbL8Bv6xl9lA==
-X-Received: by 2002:adf:ea8c:: with SMTP id s12mr7622120wrm.535.1637856484276;
-        Thu, 25 Nov 2021 08:08:04 -0800 (PST)
-Received: from smtpclient.apple (global-5-141.nat-2.net.cam.ac.uk. [131.111.5.141])
-        by smtp.gmail.com with ESMTPSA id l15sm3313235wme.47.2021.11.25.08.08.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 25 Nov 2021 08:08:04 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH] dt-bindings: interrupt-controller: sifive, plic: Fix
- number of interrupts
-From:   Jessica Clarke <jrtc27@jrtc27.com>
-In-Reply-To: <20211125152233.162868-1-geert@linux-m68k.org>
-Date:   Thu, 25 Nov 2021 16:08:03 +0000
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Sagar Kadam <sagar.kadam@sifive.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <161F972E-7972-4001-BE19-C88F81EF8047@jrtc27.com>
-References: <20211125152233.162868-1-geert@linux-m68k.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        id S1356558AbhKYQNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 11:13:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36162 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1356315AbhKYQLv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 11:11:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7718461100;
+        Thu, 25 Nov 2021 16:08:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637856516;
+        bh=N5TLbEnpaRUARJ76fwRz7ItfnXC2ozGdxm0U6oH0+KE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Cb0vmqBIiyBwLDI/QA9Hy+DbIBlokK6kWIuIoGUkhO0UaFUvwO5Q87Ds1bOKEJbzC
+         b6eXrH5+8Z1X0W3z2H2aZotndER7wWRxvXQiCcFQuUFwwlEGMEwqL8WytnVuoQZEaI
+         AbQorLSh//vLx1Zv9eOJUe6zbMcpCOcWD825NPdDBF1Q6zlhPjq0yYD+i6PWdrY1u+
+         B5+bdT9FOF145ZSaB/LFppGP5RYaNj6IUZeH7c1AmHUL22P25k092IioiU04EabR7m
+         ucvoQZcHsRoc3O0p7b6dcrgwwtRRyWxr3LEyJgK99rRdNl89BxwnDwG8DkXb57D0pR
+         cnGSogHSG+MwA==
+From:   SeongJae Park <sj@kernel.org>
+To:     akpm@linux-foundation.org
+Cc:     john.stultz@linaro.org, tglx@linutronix.de, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, SeongJae Park <sj@kernel.org>
+Subject: [PATCH v2 0/2] mm/damon: Fix fake /proc/loadavg reports
+Date:   Thu, 25 Nov 2021 16:08:28 +0000
+Message-Id: <20211125160830.30153-1-sj@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25 Nov 2021, at 15:22, Geert Uytterhoeven <geert@linux-m68k.org> =
-wrote:
->=20
-> To improve human readability and enable automatic validation, the =
-tuples
-> in "interrupts-extended" properties should be grouped using angle
-> brackets.  As the DT bindings lack an upper bound on the number of
-> interrupts, thus assuming one, proper grouping is currently flagged as
-> an error.
->=20
-> Fix this by adding the missing "maxItems", limiting it to 9 interrupts
-> (one interrupt for a system management core, and two interrupts per =
-core
-> for other cores), which should be sufficient for now.
+This patchset fixes DAMON's fake load report issue.  The first patch
+makes yet another variant of usleep_range() for this fix, and the second
+patch fixes the issue of DAMON by making it using the newly introduced
+function.
 
-This is SiFive=E2=80=99s IP, so is this actually true? I would imagine =
-it=E2=80=99s
-just parameterised and could be generated with as many targets as fit
-in the MMIO space, and that this is thus inaccurate. Besides, such a
-function change should be made separately from the grouping change.
+I think these need to be applied on v5.15.y, but the second patch cannot
+cleanly applied there as is.  I will back-port this on v5.15.y and post
+later once this is merged in the mainline.  If you think this is not
+appropriate for stable tree, please let me know.
 
-The same goes for your equivalent sifive,clint0 patch.
+Changelog
+---------
 
-Jess
+From v1
+(https://lore.kernel.org/linux-mm/20211124145219.32866-1-sj@kernel.org/)
+- Avoid copy-and-pasting usleep_delay() in DAMON code (Andrew Morton)
 
-> Group the tuples in the example.
->=20
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
-> .../interrupt-controller/sifive,plic-1.0.0.yaml      | 12 ++++++------
-> 1 file changed, 6 insertions(+), 6 deletions(-)
->=20
-> diff --git =
-a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0=
-.yaml =
-b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0=
-.yaml
-> index 08d5a57ce00ff446..198b373f984f3438 100644
-> --- =
-a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0=
-.yaml
-> +++ =
-b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0=
-.yaml
-> @@ -61,6 +61,7 @@ properties:
->=20
->   interrupts-extended:
->     minItems: 1
-> +    maxItems: 9
->     description:
->       Specifies which contexts are connected to the PLIC, with "-1" =
-specifying
->       that a context is not present. Each node pointed to should be a
-> @@ -89,12 +90,11 @@ examples:
->       #interrupt-cells =3D <1>;
->       compatible =3D "sifive,fu540-c000-plic", "sifive,plic-1.0.0";
->       interrupt-controller;
-> -      interrupts-extended =3D <
-> -        &cpu0_intc 11
-> -        &cpu1_intc 11 &cpu1_intc 9
-> -        &cpu2_intc 11 &cpu2_intc 9
-> -        &cpu3_intc 11 &cpu3_intc 9
-> -        &cpu4_intc 11 &cpu4_intc 9>;
-> +      interrupts-extended =3D <&cpu0_intc 11>,
-> +                            <&cpu1_intc 11>, <&cpu1_intc 9>,
-> +                            <&cpu2_intc 11>, <&cpu2_intc 9>,
-> +                            <&cpu3_intc 11>, <&cpu3_intc 9>,
-> +                            <&cpu4_intc 11>, <&cpu4_intc 9>;
->       reg =3D <0xc000000 0x4000000>;
->       riscv,ndev =3D <10>;
->     };
-> --=20
-> 2.25.1
->=20
->=20
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+SeongJae Park (2):
+  timers: Implement usleep_idle_range()
+  mm/damon/core: Fix fake load reports due to uninterruptible sleeps
+
+ include/linux/delay.h | 14 +++++++++++++-
+ kernel/time/timer.c   | 16 +++++++++-------
+ mm/damon/core.c       |  6 +++---
+ 3 files changed, 25 insertions(+), 11 deletions(-)
+
+-- 
+2.17.1
 
