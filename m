@@ -2,80 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC3245E1CC
+	by mail.lfdr.de (Postfix) with ESMTP id 9373D45E1CB
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350282AbhKYUrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 15:47:48 -0500
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:53420 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237292AbhKYUpn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 15:45:43 -0500
-Received: from pop-os.home ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id qLZdmbwfgqYovqLZdmKCfE; Thu, 25 Nov 2021 21:42:30 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Thu, 25 Nov 2021 21:42:30 +0100
-X-ME-IP: 86.243.171.122
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     selvin.xavier@broadcom.com, dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] RDMA/bnxt_re: Use bitmap_zalloc() when applicable
-Date:   Thu, 25 Nov 2021 21:42:28 +0100
-Message-Id: <5c029daf43b92fdc27926fe8a98084843437c498.1637872888.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        id S1357051AbhKYUru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 15:47:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48324 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237436AbhKYUpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 15:45:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B342B6104F;
+        Thu, 25 Nov 2021 20:42:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637872957;
+        bh=amR8tb2SzcBDz8KxsW8hK2Vsnwqpnwq5zTmXgdQLQMc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=PMg013MclxOrO0oPRBTgymV3fYnPG8IhfzcGwl+0saRahwX2HYXuUQJwBxvGpD14G
+         NdDXHB6bWbbhQKoCzGbq2sqIGYTE9UxDjCem5QReAK74X0pXACRCd81dhLh7TjwciI
+         6YuuPC/OcqAfFVnldTquP2O+jSrS2ZaDMW6Gom7LFxlWy08P5SwTU3VivQrlFzDAcD
+         CPPNk0Ab/wUAwCCsqvAhWdOsNdK5xOD017seR2KM+d9GSsdkMKUf3nVQjJfj1StQNv
+         Tp0P4FGGoWKCjKra8JLZ5J1TmgkdN9Na3hE3HSfnvrA7e0IqowKnVzXKBdMY5CBHLg
+         xF1Fet1c1Mr/A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 18B0540002; Thu, 25 Nov 2021 17:42:33 -0300 (-03)
+Date:   Thu, 25 Nov 2021 17:42:33 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: [FYI][PATCH 1/1] tools headers UAPI: Sync powerpc syscall table file
+ changed by new futex_waitv syscall
+Message-ID: <YZ/1OU9mJuyS2HMa@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use 'bitmap_zalloc()' to simplify code, improve the semantic and avoid some
-open-coded arithmetic in allocator arguments.
+To pick the changes in this cset:
 
-Also change the corresponding 'kfree()' into 'bitmap_free()' to keep
-consistency.
+  a0eb2da92b715d0c ("futex: Wireup futex_waitv syscall")
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+That add support for this new syscall in tools such as 'perf trace'.
+
+For instance, this is now possible (adapted from the x86_64 test output):
+
+  # perf trace -e futex_waitv
+  ^C#
+  # perf trace -v -e futex_waitv
+  event qualifier tracepoint filter: (common_pid != 807333 && common_pid != 3564) && (id == 449)
+  ^C#
+  # perf trace -v -e futex* --max-events 10
+  event qualifier tracepoint filter: (common_pid != 812168 && common_pid != 3564) && (id == 221 || id == 449)
+  mmap size 528384B
+           ? (         ): Timer/219310  ... [continued]: futex())                                            = -1 ETIMEDOUT (Connection timed out)
+       0.012 ( 0.002 ms): Timer/219310 futex(uaddr: 0x7fd0b152d3c8, op: WAKE|PRIVATE_FLAG, val: 1)           = 0
+       0.024 ( 0.060 ms): Timer/219310 futex(uaddr: 0x7fd0b152d420, op: WAIT_BITSET|PRIVATE_FLAG, utime: 0x7fd0b1657840, val3: MATCH_ANY) = 0
+       0.086 ( 0.001 ms): Timer/219310 futex(uaddr: 0x7fd0b152d3c8, op: WAKE|PRIVATE_FLAG, val: 1)           = 0
+       0.088 (         ): Timer/219310 futex(uaddr: 0x7fd0b152d424, op: WAIT_BITSET|PRIVATE_FLAG, utime: 0x7fd0b1657840, val3: MATCH_ANY) ...
+       0.075 ( 0.005 ms): Web Content/219299 futex(uaddr: 0x7fd0b152d420, op: WAKE|PRIVATE_FLAG, val: 1)     = 1
+       0.169 ( 0.004 ms): Web Content/219299 futex(uaddr: 0x7fd0b152d424, op: WAKE|PRIVATE_FLAG, val: 1)     = 1
+       0.088 ( 0.089 ms): Timer/219310  ... [continued]: futex())                                            = 0
+       0.179 ( 0.001 ms): Timer/219310 futex(uaddr: 0x7fd0b152d3c8, op: WAKE|PRIVATE_FLAG, val: 1)           = 0
+       0.181 (         ): Timer/219310 futex(uaddr: 0x7fd0b152d420, op: WAIT_BITSET|PRIVATE_FLAG, utime: 0x7fd0b1657840, val3: MATCH_ANY) ...
+  #
+
+That is the filter expression attached to the raw_syscalls:sys_{enter,exit}
+tracepoints.
+
+  $ grep futex tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
+  221	32	futex				sys_futex_time32
+  221	64	futex				sys_futex
+  221	spu	futex				sys_futex
+  422	32	futex_time64			sys_futex			sys_futex
+  449	common  futex_waitv                     sys_futex_waitv
+  $
+
+This addresses this perf build warnings:
+
+  Warning: Kernel ABI header at 'tools/perf/arch/s390/entry/syscalls/syscall.tbl' differs from latest version at 'arch/s390/kernel/syscalls/syscall.tbl'
+  diff -u tools/perf/arch/s390/entry/syscalls/syscall.tbl arch/s390/kernel/syscalls/syscall.tbl
+
+Cc: André Almeida <andrealmeid@collabora.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ tools/perf/arch/powerpc/entry/syscalls/syscall.tbl | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-index 19a0778d38a2..061b2895dd9b 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-@@ -555,7 +555,7 @@ int bnxt_qplib_init_rcfw(struct bnxt_qplib_rcfw *rcfw,
- 
- void bnxt_qplib_free_rcfw_channel(struct bnxt_qplib_rcfw *rcfw)
- {
--	kfree(rcfw->cmdq.cmdq_bitmap);
-+	bitmap_free(rcfw->cmdq.cmdq_bitmap);
- 	kfree(rcfw->qp_tbl);
- 	kfree(rcfw->crsqe_tbl);
- 	bnxt_qplib_free_hwq(rcfw->res, &rcfw->cmdq.hwq);
-@@ -572,7 +572,6 @@ int bnxt_qplib_alloc_rcfw_channel(struct bnxt_qplib_res *res,
- 	struct bnxt_qplib_sg_info sginfo = {};
- 	struct bnxt_qplib_cmdq_ctx *cmdq;
- 	struct bnxt_qplib_creq_ctx *creq;
--	u32 bmap_size = 0;
- 
- 	rcfw->pdev = res->pdev;
- 	cmdq = &rcfw->cmdq;
-@@ -613,8 +612,7 @@ int bnxt_qplib_alloc_rcfw_channel(struct bnxt_qplib_res *res,
- 	if (!rcfw->crsqe_tbl)
- 		goto fail;
- 
--	bmap_size = BITS_TO_LONGS(rcfw->cmdq_depth) * sizeof(unsigned long);
--	cmdq->cmdq_bitmap = kzalloc(bmap_size, GFP_KERNEL);
-+	cmdq->cmdq_bitmap = bitmap_zalloc(rcfw->cmdq_depth, GFP_KERNEL);
- 	if (!cmdq->cmdq_bitmap)
- 		goto fail;
- 
+diff --git a/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl b/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
+index 7bef917cc84e6499..15109af9d0754d5f 100644
+--- a/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
++++ b/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
+@@ -528,3 +528,4 @@
+ 446	common	landlock_restrict_self		sys_landlock_restrict_self
+ # 447 reserved for memfd_secret
+ 448	common	process_mrelease		sys_process_mrelease
++449	common  futex_waitv                     sys_futex_waitv
 -- 
-2.30.2
+2.31.1
 
