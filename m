@@ -2,61 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB45A45DCCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:01:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7273645DEA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 17:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355890AbhKYPE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:04:29 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:52130 "EHLO vps0.lunn.ch"
+        id S234457AbhKYQks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 11:40:48 -0500
+Received: from mx-out.tlen.pl ([193.222.135.158]:4614 "EHLO mx-out.tlen.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245692AbhKYPC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:02:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=gqwm+WwSBdhNa5k1gRBsMXc4iKnVFzc7Y348LHychwQ=; b=l6DFNbzi1OgF0eyyCHA2Jl+BT+
-        Dj7hzZY7cIQOmtRjSAzCRNCrAo/MVLjkP25Gd9/mArpepnceU8KbAHpbB/Y9BUM1qlgUeb9wbexPv
-        jdnn5BgA+4Cil8bCyFQ4917ejNf+yvsbX6iP1gBd+zN7zj/F7vc5hANWlwY+Z3KxrbEE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mqGDO-00EcOp-PF; Thu, 25 Nov 2021 15:59:10 +0100
-Date:   Thu, 25 Nov 2021 15:59:10 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        UNGLinuxDriver@microchip.com, p.zabel@pengutronix.de,
-        linux@armlinux.org.uk, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 3/6] net: lan966x: add port module support
-Message-ID: <YZ+kvpCmWomKNr9l@lunn.ch>
-References: <20211123135517.4037557-1-horatiu.vultur@microchip.com>
- <20211123135517.4037557-4-horatiu.vultur@microchip.com>
- <YZ59hpDWjNjvx5kP@lunn.ch>
- <20211125092638.7b2u75zdv2ulekmo@soft-dev3-1.localhost>
+        id S237194AbhKYQir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 11:38:47 -0500
+Received: (wp-smtpd smtp.tlen.pl 28409 invoked from network); 25 Nov 2021 06:28:52 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
+          t=1637818132; bh=dm5AajixXHCRSWQL4H2xZWv4TUiiZ2j0GzIFPSh9Avk=;
+          h=Subject:To:From:Cc;
+          b=kmaaLQ0p+m+BA+aCHCJH2QkxjNBK0NuVTdflOVyTelzjZEKGQSyQ1XCHT9YMOtFeq
+           +9TTbFIWKwhsZve//tSpcNv/ArWZyEedYef+IhTkb1pZnLR9jrvmtpMxzjDzST04pk
+           fwE9Sqpp0wAsUU1/AhLC89OeVtgSeVtyFM7Jwkd0=
+Received: from aaen55.neoplus.adsl.tpnet.pl (HELO [192.168.1.22]) (mat.jonczyk@o2.pl@[83.4.117.55])
+          (envelope-sender <mat.jonczyk@o2.pl>)
+          by smtp.tlen.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <alexandre.belloni@bootlin.com>; 25 Nov 2021 06:28:52 +0100
+Message-ID: <1b217171-b301-f2fe-f455-9bddabe2e115@o2.pl>
+Date:   Thu, 25 Nov 2021 06:28:45 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211125092638.7b2u75zdv2ulekmo@soft-dev3-1.localhost>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH RESEND v3 3/7] rtc-mc146818-lib: extract
+ mc146818_do_avoiding_UIP
+Content-Language: en-GB
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+References: <20211119204221.66918-1-mat.jonczyk@o2.pl>
+ <20211119204221.66918-4-mat.jonczyk@o2.pl> <YZ6/GC3xouzEZmEh@piout.net>
+From:   =?UTF-8?Q?Mateusz_Jo=c5=84czyk?= <mat.jonczyk@o2.pl>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>
+In-Reply-To: <YZ6/GC3xouzEZmEh@piout.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-WP-MailID: fd2290f820c29801a52683fe7f723d61
+X-WP-AV: skaner antywirusowy Poczty o2
+X-WP-SPAM: NO 000000E [QVNk]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> If I undestood you correctly I have tried to do the following:
-> 
-> struct lan966x_ifh {
->     __be32 timestamp;
->     __be32 bypass : 1;
->     __be32 port : 3;
->     ...
-> };
-> 
-> But then I start to get errors from sparse:
-> 
-> error: invalid bitfield specifier for type restricted __be32.
+W dniu 24.11.2021 o 23:39, Alexandre Belloni pisze:
+> On 19/11/2021 21:42:17+0100, Mateusz Jończyk wrote:
+>> Function mc146818_get_time() contains an elaborate mechanism of reading
+>> the RTC time while no RTC update is in progress. It turns out that
+>> reading the RTC alarm clock also requires avoiding the RTC update (see
+>> following patches). Therefore, the mechanism in mc146818_get_time()
+>> should be reused - so extract it into a separate function.
+>>
+>> The logic in mc146818_do_avoiding_UIP() is same as in
+>> mc146818_get_time() except that after every
+>>
+>>         if (CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP) {
+>>
+>> there is now "mdelay(1)".
+>>
+>> To avoid producing an unreadable diff, mc146818_get_time() will be
+>> refactored to use mc146818_do_avoiding_UIP() in the next patch.
+>>
+>> Signed-off-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
+>> Cc: Alessandro Zummo <a.zummo@towertech.it>
+>> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+>>
+>> ---
+>>  drivers/rtc/rtc-mc146818-lib.c | 69 ++++++++++++++++++++++++++++++++++
+>>  include/linux/mc146818rtc.h    |  3 ++
+>>  2 files changed, 72 insertions(+)
+>>
+>> diff --git a/drivers/rtc/rtc-mc146818-lib.c b/drivers/rtc/rtc-mc146818-lib.c
+>> index b50612ce1a6d..946ad43a512c 100644
+>> --- a/drivers/rtc/rtc-mc146818-lib.c
+>> +++ b/drivers/rtc/rtc-mc146818-lib.c
+>> @@ -8,6 +8,75 @@
+>>  #include <linux/acpi.h>
+>>  #endif
+>>  
+>> +/*
+>> + * Execute a function while the UIP (Update-in-progress) bit of the RTC is
+>> + * unset.
+>> + *
+>> + * Warning: callback may be executed more then once.
+>> + */
+>> +bool mc146818_do_avoiding_UIP(mc146818_callback_t callback, void *param)
+> mc146818_avoid_UIP would be a simpler name. 
+Right
+> Also, I'm pretty sure we can
+> avoid the mc146818_callback_t typedef
 
-Maybe look at struct iphdr. It has bitfields for the header length and
-the IP version.
+Do you mean doing something like:
 
-    Andrew
+bool mc146818_avoid_UIP(
+	void (*callback)(unsigned char seconds, void *param), void *param);
+
+Thanks for reviewing.
+
+Greetings,
+Mateusz
+
+>> +{
+>> +	int i;
+>> +	unsigned long flags;
+[snip]
