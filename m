@@ -2,166 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E4E45DD36
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:21:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0DF45DD4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:23:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356014AbhKYPYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:24:40 -0500
-Received: from outbound-smtp22.blacknight.com ([81.17.249.190]:36502 "EHLO
-        outbound-smtp22.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229498AbhKYPWj (ORCPT
+        id S1356114AbhKYP0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:26:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232996AbhKYPYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:22:39 -0500
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp22.blacknight.com (Postfix) with ESMTPS id 5CE9C148044
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 15:19:26 +0000 (GMT)
-Received: (qmail 14803 invoked from network); 25 Nov 2021 15:19:26 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.17.29])
-  by 81.17.254.9 with ESMTPA; 25 Nov 2021 15:19:26 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 1/1] sched/fair: Increase wakeup_gran if current task has not executed the minimum granularity
-Date:   Thu, 25 Nov 2021 15:19:15 +0000
-Message-Id: <20211125151915.8628-1-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.31.1
+        Thu, 25 Nov 2021 10:24:18 -0500
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335CAC061758
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:19:27 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:1511:ffa3:275:45dd])
+        by baptiste.telenet-ops.be with bizsmtp
+        id NfKQ2600H5CGg7701fKQWd; Thu, 25 Nov 2021 16:19:25 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mqGWy-000DJx-6C; Thu, 25 Nov 2021 16:19:24 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mqGWx-000gGr-Kt; Thu, 25 Nov 2021 16:19:23 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heng Sia <jee.heng.sia@intel.com>
+Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] dt-bindings: dma: snps,dw-axi-dmac: Group tuples in snps properties
+Date:   Thu, 25 Nov 2021 16:19:18 +0100
+Message-Id: <20211125151918.162446-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 8a99b6833c88 ("sched: Move SCHED_DEBUG sysctl to debugfs")
-moved the kernel.sched_wakeup_granularity_ns sysctl under debugfs.
-One of the reasons why this sysctl may be used may be for "optimising
-for throughput", particularly when overloaded. The tool TuneD sometimes
-alters this for two profiles e.g. "mssql" and "throughput-performance". At
-least version 2.9 does but it changed in master where it also will poke
-at debugfs instead. This patch aims to reduce the motivation to tweak
-sysctl_sched_wakeup_granularity by increasing sched_wakeup_granularity
-if the running task runtime has not exceeded sysctl_sched_min_granularity.
+To improve human readability and enable automatic validation, the tuples
+in "snps,block-size" and "snps,priority" properties should be grouped
+using angle brackets.
 
-During task migration or wakeup, a decision is made on whether
-to preempt the current task or not. To limit over-scheduled,
-sysctl_sched_wakeup_granularity delays the preemption to allow at least 1ms
-of runtime before preempting. However, when a domain is heavily overloaded
-(e.g. hackbench), the degree of over-scheduling is still severe. This is
-problematic as time is wasted rescheduling tasks that could instead be
-used by userspace tasks.
-
-However, care must be taken. Even if a system is overloaded, there may
-be high priority threads that must still be able to run. Mike Galbraith
-explained the constraints as follows;
-
-        CFS came about because the O1 scheduler was unfair to the
-        point it had starvation problems. People pretty much across the
-        board agreed that a fair scheduler was a much way better way
-        to go, and CFS was born.  It didn't originally have the sleep
-        credit business, but had to grow it to become _short term_ fair.
-        Ingo cut the sleep credit in half because of overscheduling, and
-        that has worked out pretty well all told.. but now you're pushing
-        it more in the unfair direction, all the way to extremely unfair
-        for anything and everything very light.
-
-        Fairness isn't the holy grail mind you, and at some point, giving
-        up on short term fairness certainly isn't crazy, as proven by your
-        hackbench numbers and other numbers we've seen over the years,
-        but taking bites out of the 'CF' in the CFS that was born to be a
-        corner-case killer is.. worrisome.  The other shoe will drop.. it
-        always does :)
-
-This patch increases the wakeup granularity if the current task has not
-reached its minimum preemption granularity. The current task may still
-be preempted but the difference in runtime must be higher.
-
-hackbench-process-pipes
-                          5.15.0-rc3             5.15.0-rc3
-               sched-wakeeflips-v1r1sched-scalewakegran-v3r2
-Amean     1        0.3890 (   0.00%)      0.3823 (   1.71%)
-Amean     4        0.5217 (   0.00%)      0.4867 (   6.71%)
-Amean     7        0.5387 (   0.00%)      0.5053 (   6.19%)
-Amean     12       0.5443 (   0.00%)      0.5450 (  -0.12%)
-Amean     21       0.6487 (   0.00%)      0.6807 (  -4.93%)
-Amean     30       0.8033 (   0.00%)      0.7107 *  11.54%*
-Amean     48       1.2400 (   0.00%)      1.0447 *  15.75%*
-Amean     79       1.8200 (   0.00%)      1.6033 *  11.90%*
-Amean     110      2.5820 (   0.00%)      2.0763 *  19.58%*
-Amean     141      3.2203 (   0.00%)      2.5313 *  21.40%*
-Amean     172      3.8200 (   0.00%)      3.1163 *  18.42%*
-Amean     203      4.3357 (   0.00%)      3.5560 *  17.98%*
-Amean     234      4.8047 (   0.00%)      3.8913 *  19.01%*
-Amean     265      5.1243 (   0.00%)      4.2293 *  17.47%*
-Amean     296      5.5940 (   0.00%)      4.5357 *  18.92%*
-
-                  5.15.0-rc3  5.15.0-rc3
-         sched-wakeeflips-v1r1 sched-scalewakegran-v3r2
-Duration User        2567.27     2034.17
-Duration System     21098.79    17137.08
-Duration Elapsed      136.49      120.2
-
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- kernel/sched/fair.c     | 17 +++++++++++++++--
- kernel/sched/features.h |  2 ++
- 2 files changed, 17 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6e476f6d9435..b07ac726e011 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7012,10 +7012,23 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- }
- #endif /* CONFIG_SMP */
- 
--static unsigned long wakeup_gran(struct sched_entity *se)
-+static unsigned long
-+wakeup_gran(struct sched_entity *curr, struct sched_entity *se)
- {
- 	unsigned long gran = sysctl_sched_wakeup_granularity;
- 
-+	if (sched_feat(SCALE_WAKEUP_GRAN)) {
-+		unsigned long delta_exec;
-+
-+		/*
-+		 * Increase the wakeup granularity if curr's runtime
-+		 * is less than the minimum preemption granularity.
-+		 */
-+		delta_exec = curr->sum_exec_runtime - curr->prev_sum_exec_runtime;
-+		if (delta_exec < sysctl_sched_min_granularity)
-+			gran += sysctl_sched_min_granularity;
-+	}
-+
- 	/*
- 	 * Since its curr running now, convert the gran from real-time
- 	 * to virtual-time in his units.
-@@ -7054,7 +7067,7 @@ wakeup_preempt_entity(struct sched_entity *curr, struct sched_entity *se)
- 	if (vdiff <= 0)
- 		return -1;
- 
--	gran = wakeup_gran(se);
-+	gran = wakeup_gran(curr, se);
- 	if (vdiff > gran)
- 		return 1;
- 
-diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-index 1cf435bbcd9c..7b70a409cfa5 100644
---- a/kernel/sched/features.h
-+++ b/kernel/sched/features.h
-@@ -100,3 +100,5 @@ SCHED_FEAT(LATENCY_WARN, false)
- 
- SCHED_FEAT(ALT_PERIOD, true)
- SCHED_FEAT(BASE_SLICE, true)
-+
-+SCHED_FEAT(SCALE_WAKEUP_GRAN, true)
+diff --git a/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml b/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
+index 79e241498e2532ce..90d9274e5464e396 100644
+--- a/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
++++ b/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
+@@ -120,7 +120,7 @@ examples:
+          dma-channels = <4>;
+          snps,dma-masters = <2>;
+          snps,data-width = <3>;
+-         snps,block-size = <4096 4096 4096 4096>;
+-         snps,priority = <0 1 2 3>;
++         snps,block-size = <4096>, <4096>, <4096>, <4096>;
++         snps,priority = <0>, <1>, <2>, <3>;
+          snps,axi-max-burst-len = <16>;
+      };
 -- 
-2.31.1
+2.25.1
 
