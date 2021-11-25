@@ -2,87 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB49745DDEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:49:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB8745DDFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356221AbhKYPwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:52:18 -0500
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:43725 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347861AbhKYPuH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:50:07 -0500
-Received: by mail-ot1-f46.google.com with SMTP id h16-20020a9d7990000000b0055c7ae44dd2so9978633otm.10;
-        Thu, 25 Nov 2021 07:46:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iCerFhrT655vbv4nCL7oKRYJTOa2nuC2HJ+XBleEaic=;
-        b=xFWMEz+znu4RnRR//O9/ZrVk+h+I8T4WMgoWQEXwb0354ROoANzBtZk2GYln112QYE
-         1BXUNcob+8FH3cNsr8nm4YaaZxFQstW3QRWldqdnPm1QaLJ57iHzcc7Yh49Rp+H5ADa2
-         AsOZZJSFqq505kZB+ONIUyLywWLxDvDLxnHb0gajTlbGbiBbU8qk/JNmYBfXShVe3gko
-         QtrOgYkYClQnk2SjsD5AipDtp+kgj8xzGgL2LJ2xHgncB1+N9jmx3CRSNyI/jL9xIFBN
-         veDPOOl0J426JpI2+sy2DGrT4rorS8NBZxBz207slyjWKkTRMf1ByLSqc7ZN1Ne504kG
-         87FQ==
-X-Gm-Message-State: AOAM5338ylkRMWaVHNZFv3Flhqv/OU597PB2wQNBjSihZYFKs8HH9nZE
-        jT0r7vkH/aaO6b7blKpfwAvv5pLUqeHaHGd3fPY=
-X-Google-Smtp-Source: ABdhPJw6kC4CgpTqN/QGPY8kv41HRrZ+mJbwBj5XI3Q6nKglnh017y0ljFHKh1XAnfdLKKP3bdiXwNtXNNpqqSeAxco=
-X-Received: by 2002:a05:6830:348f:: with SMTP id c15mr22458073otu.254.1637855215279;
- Thu, 25 Nov 2021 07:46:55 -0800 (PST)
+        id S1356262AbhKYPxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:53:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1356149AbhKYPve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 10:51:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85A06610E8;
+        Thu, 25 Nov 2021 15:48:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637855303;
+        bh=U7MnU5/31mywm76pdPoiwNd1pEooMskUeZ3nm7n/GBE=;
+        h=From:Date:Subject:To:Cc:From;
+        b=HbEF+WgTNYB3xPn4IM34ql3drUawHVQYUXgKN8gPbOUU9TArGoYNNmH09EPLFBw8B
+         F4S18r/ti+4uUNSgXWwgpTv0UxREd8lPzajhj0hwfK1N3c6XNb0HgqyVBflMjl+SCf
+         24g/ZKONqVk11QaqIncwuYMr4H0DoIIXo6tjiAM56obPTFTqBVjpcgbGgLfd3/Sc5v
+         tFVWcNgNbp4r3XXswKUOOIKNYNz3SkC1UU6ka9d8/FiYywRmbjrsX8E7jH+J1JCJoS
+         ei8QcReE5rE8Y75kCY1eWvE5/HagT/g437QIP0eHMsvlhBU9eXh/Hb434zrtjGaK4J
+         xvrXsPKNJOa9A==
+Received: by mail-wm1-f51.google.com with SMTP id p27-20020a05600c1d9b00b0033bf8532855so4964842wms.3;
+        Thu, 25 Nov 2021 07:48:23 -0800 (PST)
+X-Gm-Message-State: AOAM530pw0A7Qjn6VMtmyMOJc/Ec/YVzKMUmFlMXNkBCPVLgpdx/dJeQ
+        ud7Zcnip4ao1LSHkbwYfKTJGepgGjjZ+iv62lpk=
+X-Google-Smtp-Source: ABdhPJxbqqGkf5AOVj86Ru2m9pY6KCLxo9YD5MjcXG82yvgpiF9EdnoAXupJRtGrvNIRhAhII9KPjTwE1tLzjXEtikg=
+X-Received: by 2002:a05:600c:6d2:: with SMTP id b18mr8588376wmn.98.1637855302022;
+ Thu, 25 Nov 2021 07:48:22 -0800 (PST)
 MIME-Version: 1.0
-References: <1637830481-21709-1-git-send-email-quic_mkshah@quicinc.com>
- <CAJZ5v0hhUSjNdHwF4dRUQ1Fgos-jqg1agHBShhhwFUGK6wiedQ@mail.gmail.com> <ac35bafa-a57f-e9ea-4dee-9af547de34e2@quicinc.com>
-In-Reply-To: <ac35bafa-a57f-e9ea-4dee-9af547de34e2@quicinc.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 25 Nov 2021 16:46:44 +0100
-Message-ID: <CAJZ5v0jqfvgEGjhiq6Cbd5S2Aj7+Jvi2Pj_GE8==Q2vjATRXCg@mail.gmail.com>
-Subject: Re: [PATCH 0/4] Allow cpuidle governors to be compiled as modules
-To:     Maulik Shah <quic_mkshah@quicinc.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>, quic_lsrao@quicinc.com,
-        "Nayak, Rajendra" <rnayak@codeaurora.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 25 Nov 2021 16:48:06 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1JPS=3Zz3H9ptaAnqonnPUo546BP0rAAWT5KOcZEj55g@mail.gmail.com>
+Message-ID: <CAK8P3a1JPS=3Zz3H9ptaAnqonnPUo546BP0rAAWT5KOcZEj55g@mail.gmail.com>
+Subject: [GIT PULL] asm-generic: syscall table updates
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 2:18 PM Maulik Shah <quic_mkshah@quicinc.com> wrote:
->
-> Hi Rafael,
->
-> On 11/25/2021 5:57 PM, Rafael J. Wysocki wrote:
-> > On Thu, Nov 25, 2021 at 9:55 AM Maulik Shah <quic_mkshah@quicinc.com> wrote:
-> >> This series makes changes to allow cpuidle governors menu, ladder and teo
-> >> to compiled as modules when building with allmodconfig.
-> > What's the purpose of this?
->
-> There are two purposes of this series.
->
-> 1. The series enables cpuidle governors to be allowed to compiled as
-> modules.
->      This is something similar to what cpufreq/devfreq governors do
-> today as they can be be compiled as modules or built-in depending on the
-> build config.
+The following changes since commit fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf=
+:
 
-Which is not the case for all of them, though, and I don't see why
-this would imply that making cpuidle governors modular would be
-useful.
+  Linux 5.16-rc1 (2021-11-14 13:56:52 -0800)
 
-> 2. The series will also enable custom cpuidle governor to be able to
-> register with cpuidle framework by using cpuidle_register_governor() API.
->      This will be already achieved by (1) since it will export the
-> required APIs for menu/ladder/teo governors to be compiled as module.
+are available in the Git repository at:
 
-No custom cpuidle governors in the mainline, please.  If you have one
-you want to be included, please submit it.
+  git://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git
+tags/asm-generic-5.16-2
 
-So from the mainline perspective this series doesn't serve any useful
-purpose at all.
+for you to fetch changes up to a0eb2da92b715d0c97b96b09979689ea09faefe6:
 
-Sorry about that.
+  futex: Wireup futex_waitv syscall (2021-11-25 14:26:12 +0100)
+
+----------------------------------------------------------------
+asm-generic: syscall table updates
+
+Andr=C3=A9 Almeida sends an update for the newly added futex_waitv
+syscall that was initially only added to a few architectures.
+
+Some additional ones have since made it through architecture
+maintainer trees, this finishes the remaining ones.
+
+----------------------------------------------------------------
+Andr=C3=A9 Almeida (1):
+      futex: Wireup futex_waitv syscall
+
+ arch/alpha/kernel/syscalls/syscall.tbl      | 1 +
+ arch/ia64/kernel/syscalls/syscall.tbl       | 1 +
+ arch/m68k/kernel/syscalls/syscall.tbl       | 1 +
+ arch/microblaze/kernel/syscalls/syscall.tbl | 1 +
+ arch/powerpc/kernel/syscalls/syscall.tbl    | 1 +
+ arch/sh/kernel/syscalls/syscall.tbl         | 1 +
+ arch/sparc/kernel/syscalls/syscall.tbl      | 1 +
+ arch/xtensa/kernel/syscalls/syscall.tbl     | 1 +
+ 8 files changed, 8 insertions(+)
