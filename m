@@ -2,81 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59FF445DE14
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:53:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA0645DE18
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356353AbhKYP4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:56:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49534 "EHLO
+        id S1345334AbhKYP6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:58:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356385AbhKYPyx (ORCPT
+        with ESMTP id S1356227AbhKYP4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:54:53 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16FD1C0619D5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:45:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=LXQYLcp960apIGbPoKxQF0mN2aizT63xwlc7nrknHaM=;
-        t=1637855113; x=1639064713; b=I5S5xClVYdAAU7wuM2drqabFXbQl8z7aECntfeQuJcNAy+t
-        tm3xAr/HmytcYuDf2dVGZza4gZa1IBYkqGOLhkhOxQsxJdX9N9wyem2kwdFQvxYDYeWtGSH1SaZcv
-        t7jojvF+HqNV9ArEVnQxeuXacQLhdYTULsVpUxAs9dbmrr3Qnf1D24m8tP+XiRZiEmTlcpYzr68jr
-        tjBASn22D2AY8JEenR3jBe5ek4vOEhsFZgMhV34SllXOpX1PVUbjqvir1r/b1/tE+mN5vkj4mU+RJ
-        edn/LSUsS654B20b6sq7bBnMTXv9IagKH7o1IiylERAhlpEJQxSy+FP9dfVmn29w==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.95)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1mqGvs-002nF4-7l;
-        Thu, 25 Nov 2021 16:45:08 +0100
-Message-ID: <a5274ba1922d5eaf9568886191e0a05bdfc55506.camel@sipsolutions.net>
-Subject: Re: [gcov]  1391efa952:
- BUG:KASAN:slab-out-of-bounds_in_gcov_info_add
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     "Sang, Oliver" <oliver.sang@intel.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "lkp@lists.01.org" <lkp@lists.01.org>, lkp <lkp@intel.com>
-Date:   Thu, 25 Nov 2021 16:45:07 +0100
-In-Reply-To: <20211125142622.GD3109@xsang-OptiPlex-9020>
-References: <20211125142622.GD3109@xsang-OptiPlex-9020>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
+        Thu, 25 Nov 2021 10:56:41 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CBC0C0619E4;
+        Thu, 25 Nov 2021 07:45:26 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso9974574ots.6;
+        Thu, 25 Nov 2021 07:45:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=No0vuIKUUWd8wCmisiET3NNJ4gz4w6NOLgT4BfCkyhQ=;
+        b=jFsUn1dd3c6xci8NNHvjO1NLzKQxSjRYmOdTGtw3HXOXGzNxt/6Vy/Ife8xFV3RLEL
+         RKLaUJQTp0FPoHz6E793lWkYECK++MO/K8uRD2dh2xfGvpksSn4cQAs3kA+THFqDxXdB
+         y19EYZyQIjJd4ogPs4+UX+YpS/+PiEUBWqUlCwNaufI5dtUGfgUYFdTisHiHMwIyuBZg
+         /WHJrtQU3SKmbDAxfc38Pz6O31w8n2FmpYHn5IlBteWSQkcTLTkZ+MZHOrSNhdn2dolG
+         qy49cB/GkR62W+5AES53CbeoNsVXnaowxSE+0T9iPkDS24ASEpnk3VQcpd+MLm9bKUzG
+         Kzlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=No0vuIKUUWd8wCmisiET3NNJ4gz4w6NOLgT4BfCkyhQ=;
+        b=ta98ac10sPjuKymtzCwR3aHdkON5Kr1YaYaXPPPmCdzTaw0W7o5vv3yLf7IbG4AG2S
+         gU5qqgde9TZIbOOjN0y5VRKo29+FCXk6CWbr4G0oQ2SvVfQ197SEvcQGbNeYTinAxPsp
+         9PZjQRo6vxhgLxL3Xbdh2GAFZeExNm6fpWtukSl20g/4EJHkblTNwGtNdRGjlm5AJ3L4
+         8c3SPAvJ8EJT8nnLFpqUNCwYj8DlR+JkOwWDlC2BkFS+1j5N2nJn0qFLbUjbVNrOLL+H
+         YL/L8zrossVgslRnx6m+f12on3MIp4IItvLdkpze/gD0G4mBov6McNdL0StA1immvTQK
+         s07g==
+X-Gm-Message-State: AOAM531Fe5gWAmM4m9fj+Plx6rocF5mG8ZOIMVoeysqrqDMJMfbKAtuj
+        Ix0Y8fvv9FpZBAdoqcL91wY8ul+TOz0=
+X-Google-Smtp-Source: ABdhPJzOl0Cte2Vm0yiVOC/CDVQJAxTxpFcgmanw1wd4Ourf3qSyG12kDlh3mFr59BIhCW1hOS0Pfw==
+X-Received: by 2002:a9d:7586:: with SMTP id s6mr22272301otk.158.1637855125481;
+        Thu, 25 Nov 2021 07:45:25 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z2sm562257oto.38.2021.11.25.07.45.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Nov 2021 07:45:24 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+References: <20211125125641.226524689@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 4.9 000/206] 4.9.291-rc2 review
+Message-ID: <dd620210-af02-189c-f972-e31bd21008b4@roeck-us.net>
+Date:   Thu, 25 Nov 2021 07:45:22 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+In-Reply-To: <20211125125641.226524689@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-11-25 at 14:26 +0000, Sang, Oliver wrote:
+On 11/25/21 4:57 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.291 release.
+> There are 206 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Greeting,
-> 
-> FYI, we noticed the following commit (built with clang-14):
-> 
-> commit: 1391efa952e8b22088f8626fc63ade26767b92d6 ("gcov: use kvmalloc()")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> in testcase: boot
-> 
-> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-> 
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> Responses should be made by Sat, 27 Nov 2021 12:56:08 +0000.
+> Anything received after that time might be too late.
 > 
 
-I don't think it actually *caused* the issue, but who knows? To me it
-rather looks like it exposed an issue, which wasn't noticed before
-because vmalloc() always allocates a page anyway? Assuming KASAN doesn't
-track vmalloc() allocations more granular than their actual page-aligned
-memory size (though perhaps it should?)
+In file included from arch/sh/mm/init.c:25:
+arch/sh/include/asm/tlb.h:118:15: error: return type defaults to 'int' [-Werror=return-type]
+   118 | static inline tlb_flush_pmd_range(struct mmu_gather *tlb, unsigned long address,
 
-In any case, reviewing my commit again I see nothing wrong there, and I
-don't understand the code/clang well enough to see what might be the
-issue.
+The problem affects v4.9.y, v4.14.y, and v4.19.y.
 
-johannes
+Commit aca917cb287ba99c5 ("hugetlbfs: flush TLBs correctly after huge_pmd_unshare")
+doesn't really match the upstream commit and obviously was not even build tested
+on sh (and I would suspect it was not tested on other architectures either).
+It seems to me that it may do more harm than good.
+
+Guenter
