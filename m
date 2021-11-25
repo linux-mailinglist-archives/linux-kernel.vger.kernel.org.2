@@ -2,75 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C781645DF87
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4640045DF71
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242796AbhKYRYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 12:24:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242320AbhKYRWN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 12:22:13 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE2EC0613B8
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:08:16 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id c4so13035379wrd.9
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:08:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MGh2DLNS/hhJyZQIObSk6tHMQ2KGLvBP7mcZX6l/Xpk=;
-        b=myjOAKYGovGV9PEdZhCETyYZtcDup2aU0YXJjix2Q9FHBkQyfdSRSGG2z6zTekd4Jr
-         iU+2l2IHWiauJIhrLcLXoYMDUMRF8t43QS/W1orCTr8N9R6V+h/FvecH3rBKiNpezDJX
-         msLq4WNisW/tTDGBl9h1XVbHZQar5llPEBH0MNfyldtEH5STyWkWJ4NVGB17+KF2iEor
-         rUuZtYjuCDVU21pL30qeg9jyDuSIW3N1vhQBkk2BIQnHp+zuPK8/dmayNmRTHnKFzPkQ
-         p+syaA/KywXeZDlRWgQD72sdU4Xtv2sG+we6m3b/dRZjBgpZ4cE+zlzZhKYxJkzdvktf
-         v7nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MGh2DLNS/hhJyZQIObSk6tHMQ2KGLvBP7mcZX6l/Xpk=;
-        b=UJ/KWO/0weA87tjYEajin4TbyB7TRD66Y5tBkrojGnHnHqRlPNhXoRisRfSCb4uJK6
-         s7hLB7mp91IM9dMacWLz+C0GR97hRKvLaD7HKEJ7gU88/SD82fkHXTtA3AFRuMpxg6dJ
-         DDko/JnhRHp58NSvZ5AsbYPP640fXTdiwNi79jRKMqeAxExkgQhsPYUsL4WsjSJPgO7Q
-         SxSLK1PhXxX6blJAlbgG5Qu8JnIkt2PeuAk32aufhV4qV+zr84aGktXC9jurRVELixTg
-         8A5HWi43+snmK/DwqqrL316fkKmA0/aQWPB92RBLfcGMgmML1yTCTxjHTY1y22zvCSo/
-         N5gw==
-X-Gm-Message-State: AOAM531QTN3YfIHrqwrsnVC8psUaJsZoHShI6N1zm41qkvj0mtr0xMQp
-        oeRdXzX5VLmV7hvs271rzW3kUYa5VajSwYEltP82hg==
-X-Google-Smtp-Source: ABdhPJyh5mOfDI1hes5JAKVqu7jhhHV3VkGhFyzpVmc+T8IaEG4DsoNQqRZtyikjiDUmrLqJ4xqA1GoJHdi4OkTzPu0=
-X-Received: by 2002:adf:cd04:: with SMTP id w4mr8405735wrm.406.1637860094302;
- Thu, 25 Nov 2021 09:08:14 -0800 (PST)
+        id S240644AbhKYRSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 12:18:35 -0500
+Received: from mga12.intel.com ([192.55.52.136]:45367 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243108AbhKYRQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 12:16:31 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="215569108"
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="215569108"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 09:08:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="592067220"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 25 Nov 2021 09:08:45 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqIEm-0006gX-IC; Thu, 25 Nov 2021 17:08:44 +0000
+Date:   Fri, 26 Nov 2021 01:08:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Helge Deller <deller@gmx.de>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        John David Anglin <dave.anglin@bell.net>
+Subject: arch/parisc/kernel/cache.c:50:1: sparse: sparse: symbol
+ 'pa_swapper_pg_lock' was not declared. Should it be static?
+Message-ID: <202111260110.KkIdLdT2-lkp@intel.com>
 MIME-Version: 1.0
-References: <20211122103931.GA6514@kadam> <20211122170335.1468730-1-zoebm@google.com>
- <YZ4Nej0yftiWh5rc@kroah.com>
-In-Reply-To: <YZ4Nej0yftiWh5rc@kroah.com>
-From:   Zoeb Mithaiwala <zoebm@google.com>
-Date:   Thu, 25 Nov 2021 22:37:37 +0530
-Message-ID: <CANMHzA4U-qc3mqz5XV4YOex-=CtsJ1UA2Xv4VaEQsf66Qfnh7g@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] Staging: rtl8712: Fixes a camel case variable name
- style issue
-To:     Greg KH <greg@kroah.com>
-Cc:     dan.carpenter@oracle.com, trivial@kernel.org,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Where are patches 1/3 and 2/3 of this series?
-Apologies, I was unaware that the preferred method is a single email containing
-all the patches instead of a reply on the thread with only a single
-latest patch.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5f53fa508db098c9d372423a6dac31c8a5679cdf
+commit: b7795074a04669d0a023babf786d29bf67c68783 parisc: Optimize per-pagetable spinlocks
+date:   10 months ago
+config: parisc-randconfig-s031-20211122 (https://download.01.org/0day-ci/archive/20211126/202111260110.KkIdLdT2-lkp@intel.com/config)
+compiler: hppa-linux-gcc (GCC) 11.2.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b7795074a04669d0a023babf786d29bf67c68783
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout b7795074a04669d0a023babf786d29bf67c68783
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=parisc SHELL=/bin/bash
 
-> And this looks like it does not apply to any tree at all, are you sure
-you made it against the correct kernel branch?  If so, what one?
-This was against torvalds/linux, but I just saw that
-https://kernelnewbies.org/FirstKernelPatch suggests using gregkh/staging,
-I will clone and make further changes on that.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Thanks,
-Zoeb
+
+sparse warnings: (new ones prefixed by >>)
+>> arch/parisc/kernel/cache.c:50:1: sparse: sparse: symbol 'pa_swapper_pg_lock' was not declared. Should it be static?
+
+vim +/pa_swapper_pg_lock +50 arch/parisc/kernel/cache.c
+
+b37d1c1898b288 Mikulas Patocka 2019-04-28  48  
+b37d1c1898b288 Mikulas Patocka 2019-04-28  49  /* Swapper page setup lock. */
+b37d1c1898b288 Mikulas Patocka 2019-04-28 @50  DEFINE_SPINLOCK(pa_swapper_pg_lock);
+b37d1c1898b288 Mikulas Patocka 2019-04-28  51  
+
+:::::: The code at line 50 was first introduced by commit
+:::::: b37d1c1898b288c69f3dc9267bc2c41af06f4a4b parisc: Use per-pagetable spinlock
+
+:::::: TO: Mikulas Patocka <mpatocka@redhat.com>
+:::::: CC: Helge Deller <deller@gmx.de>
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
