@@ -2,44 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F7145D9B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:03:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E933345D9AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240569AbhKYMG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 07:06:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54372 "EHLO
+        id S238907AbhKYMF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 07:05:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237410AbhKYME4 (ORCPT
+        with ESMTP id S238946AbhKYMDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 07:04:56 -0500
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE7F7C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 04:01:03 -0800 (PST)
-Received: from [2a02:fe0:c700:2:bd83:e4f3:bd3e:98d5] (port=61070)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <Ywe_C4rlyn@norir.net>)
-        id 1mqDQy-0000CP-2m
-        for linux-kernel@vger.kernel.org; Thu, 25 Nov 2021 13:01:00 +0100
-Message-ID: <bbe5b0ea-f4fa-13ed-75e3-c96b9016bac3@norir.net>
-Date:   Thu, 25 Nov 2021 12:59:38 +0100
+        Thu, 25 Nov 2021 07:03:25 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D37FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 04:00:14 -0800 (PST)
+Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1mqDQC-0004Av-6v; Thu, 25 Nov 2021 13:00:12 +0100
+Message-ID: <d9acb4ba-691b-3496-f77b-175c441f887d@leemhuis.info>
+Date:   Thu, 25 Nov 2021 13:00:11 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-To:     linux-kernel@vger.kernel.org
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C4rlyn@norir.net>
-Subject: Fair IT Final Namings: IT X, IT Source
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: 5.15 regression: CONFIG_SYSFB_SIMPLEFB breaks console scrolling
+Content-Language: en-BW
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+To:     Harald Dunkel <harri@afaics.de>,
+        Javier Martinez Canillas <javierm@redhat.com>
+Cc:     Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+References: <e50d5ad5-19fd-07ae-41e4-5a2d26a98bcf@afaics.de>
+ <4bf94684-6410-db9f-5bec-ea0540a2ea76@leemhuis.info>
+In-Reply-To: <4bf94684-6410-db9f-5bec-ea0540a2ea76@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1637841614;23889fd9;
+X-HE-SMSGID: 1mqDQC-0004Av-6v
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fair IT Final Namings: IT X, IT Source
+On 21.11.21 12:47, Thorsten Leemhuis wrote:
+> Hi, this is your Linux kernel regression tracker speaking.
 
-Channel IT Smiley - 
-https://www.youtube.com/channel/UCkrhLWMvTc09IxFG9lt9mHg/videos
+/me again
 
-Serenity,
-Ywe Cærlyn
-https://norir.net/
+> On 16.11.21 05:52, Harald Dunkel wrote:
+>>
+>> if I enable CONFIG_SYSFB_SIMPLEFB in 5.15.2 and use grub's default
+>> configuration
+>> (Debian sid amd64), then a few lines at the bottom of /dev/tty1 including
+>> login prompt are off-screen. Scrolling is broken. I can login, though.
+>>
+>> Enabling GRUB_TERMINAL=console in grub doesn't make a difference. Using
+>> the same kernel except for CONFIG_SYSFB_SIMPLEFB the problem is gone.
+>>
+>> Graphics card is a GeForce GTX 1650. I tried with both CONFIG_DRM_NOUVEAU
+>> and proprietary graphics drivers disabled.
+>>
+>> Attached you can find the config file. Please mail if I can help to track
+>> this problem down.
+> 
+> Thx for the report. I'm not totally sure if this is a regression, as
+> that's a new config option. But it might be one considered a successor
+> to an older one, hence it might count as regression. Adding two
+> developers and a mailing list to the CC, hopefully someone can clarify.
+
+Javier, I'd be interested in your option on this.
+
+Harald, did you have CONFIG_X86_SYSFB enabled in earlier kernel versions
+(and did console scrolling work then)? The answer would help me to
+decide if this a regression, as those ideally should be fixed as quickly
+as possible.
+
+Ciao, Thorsten
+
+> TWIMC: To be sure this issue doesn't fall through the cracks unnoticed,
+> I'm adding it to regzbot, my Linux kernel regression tracking bot:
+> 
+> #regzbot ^introduced 8633ef82f101c040427b57d4df7b706261420b94
+> #regzbot title CONFIG_SYSFB_SIMPLEFB breaks console scrolling
+> #regzbot ignore-activity
+> 
+> Ciao, Thorsten, your Linux kernel regression tracker.
+> 
+> P.S.: If you want to know more about regzbot, check out its
+> web-interface, the getting start guide, and/or the references documentation:
+> 
+> https://linux-regtracking.leemhuis.info/regzbot/
+> https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
+> https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
+> 
+> The last two documents will explain how you can interact with regzbot
+> yourself if your want to.
+> 
+> Hint for the reporter: when reporting a regression it's in your interest
+> to tell #regzbot about it in the report, as that will ensure the
+> regression gets on the radar of regzbot and the regression tracker.
+> That's in your interest, as they will make sure the report won't fall
+> through the cracks unnoticed.
+> 
+> Hint for developers: you normally don't need to care about regzbot, just
+> fix the issue as you normally would. Just remember to include a 'Link:'
+> tag to the report in the commit message, as explained in
+> Documentation/process/submitting-patches.rst
+> That aspect was recently was made more explicit in commit 1f57bd42b77c:
+> https://git.kernel.org/linus/1f57bd42b77c
+
+#regzbot title drm: CONFIG_SYSFB_SIMPLEFB breaks console scrolling
+
+
