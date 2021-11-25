@@ -2,119 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A861945D38E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 04:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3343045D390
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 04:19:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbhKYDWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 22:22:30 -0500
-Received: from mga01.intel.com ([192.55.52.88]:52952 "EHLO mga01.intel.com"
+        id S235603AbhKYDWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 22:22:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346211AbhKYDU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 22:20:29 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="259326856"
-X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
-   d="scan'208";a="259326856"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 19:17:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
-   d="scan'208";a="497910205"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 24 Nov 2021 19:17:16 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mq5G7-0005ge-N6; Thu, 25 Nov 2021 03:17:15 +0000
-Date:   Thu, 25 Nov 2021 11:16:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: drivers/mmc/host/sdhci-of-aspeed-test.c:47:1: warning: the frame
- size of 1152 bytes is larger than 1024 bytes
-Message-ID: <202111251155.avGLQdO3-lkp@intel.com>
+        id S1346430AbhKYDUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 22:20:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4249460234;
+        Thu, 25 Nov 2021 03:17:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637810262;
+        bh=/eqF4lIxc2rV7wwWPFPONu8gGqSyQi3U1Rx7DHBuAfQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=grU6xoucVGAPIwekmCvSsIl1tr6ZfmHZU2gX71QnZrMw7X3JBJitH/+oNBP3uuhY2
+         IYfYfKYVHyXJxp+hoBo8Z2jvojVHT87llSXfOLL3PAKsZq0w1VmYBKkUpqsKgf5Oxr
+         mHtwmqe5JAlhOrK6lHzsyjl8ssIzBWqnEU+/8hv2qZ7HQmhSUglOBgvsU14xNTo8Dz
+         53aCqadK3fPOmu5w/ySK2/UZhSsbtfUXWqkvJM5zrt5Qd9df3jFZDgCCz2IIhU0Col
+         igazJwlI+RnPupWMuFShmLFlVYW5stidkuUyNHmPmqKDa6zFkqY7PgcfSJggxhjwYA
+         zJgP6Wfhr+Q1w==
+Date:   Wed, 24 Nov 2021 19:17:41 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>
+Cc:     netdev@vger.kernel.org, Taras Chornyi <taras.chornyi@plvision.eu>,
+        Mickey Rachamim <mickeyr@marvell.com>,
+        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
+        Volodymyr Mytnyk <vmytnyk@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        Yevhen Orlov <yevhen.orlov@plvision.eu>
+Subject: Re: [PATCH net-next 1/3] net: prestera: acl: migrate to new vTCAM
+ api
+Message-ID: <20211124191741.3cc944b6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1637686684-2492-2-git-send-email-volodymyr.mytnyk@plvision.eu>
+References: <1637686684-2492-1-git-send-email-volodymyr.mytnyk@plvision.eu>
+        <1637686684-2492-2-git-send-email-volodymyr.mytnyk@plvision.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5f53fa508db098c9d372423a6dac31c8a5679cdf
-commit: 0bbcd22556ef203b29e39a6ce1bd7e9523b6032e mmc: sdhci-of-aspeed: Add KUnit tests for phase calculations
-date:   10 months ago
-config: powerpc-randconfig-r011-20211122 (https://download.01.org/0day-ci/archive/20211125/202111251155.avGLQdO3-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=0bbcd22556ef203b29e39a6ce1bd7e9523b6032e
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout 0bbcd22556ef203b29e39a6ce1bd7e9523b6032e
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=powerpc 
+On Tue, 23 Nov 2021 18:58:00 +0200 Volodymyr Mytnyk wrote:
+> +static inline bool
+> +prestera_flow_block_is_bound(const struct prestera_flow_block *block)
+> +{
+> +	return block->ruleset_zero;
+> +}
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+No static inlines in C sources, let the compiler decide.
 
-All warnings (new ones prefixed by >>):
-
-   In file included from drivers/mmc/host/sdhci-of-aspeed.c:583:
-   drivers/mmc/host/sdhci-of-aspeed-test.c: In function 'aspeed_sdhci_phase_ddr52':
->> drivers/mmc/host/sdhci-of-aspeed-test.c:47:1: warning: the frame size of 1152 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-      47 | }
-         | ^
-
-
-vim +47 drivers/mmc/host/sdhci-of-aspeed-test.c
-
-     5	
-     6	static void aspeed_sdhci_phase_ddr52(struct kunit *test)
-     7	{
-     8		int rate = 52000000;
-     9	
-    10		KUNIT_EXPECT_EQ(test, 0,
-    11				aspeed_sdhci_phase_to_tap(NULL, rate, 0));
-    12		KUNIT_EXPECT_EQ(test, 0,
-    13				aspeed_sdhci_phase_to_tap(NULL, rate, 1));
-    14		KUNIT_EXPECT_EQ(test, 1,
-    15				aspeed_sdhci_phase_to_tap(NULL, rate, 2));
-    16		KUNIT_EXPECT_EQ(test, 1,
-    17				aspeed_sdhci_phase_to_tap(NULL, rate, 3));
-    18		KUNIT_EXPECT_EQ(test, 2,
-    19				aspeed_sdhci_phase_to_tap(NULL, rate, 4));
-    20		KUNIT_EXPECT_EQ(test, 3,
-    21				aspeed_sdhci_phase_to_tap(NULL, rate, 5));
-    22		KUNIT_EXPECT_EQ(test, 14,
-    23				aspeed_sdhci_phase_to_tap(NULL, rate, 23));
-    24		KUNIT_EXPECT_EQ(test, 15,
-    25				aspeed_sdhci_phase_to_tap(NULL, rate, 24));
-    26		KUNIT_EXPECT_EQ(test, 15,
-    27				aspeed_sdhci_phase_to_tap(NULL, rate, 25));
-    28	
-    29		KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 0,
-    30				aspeed_sdhci_phase_to_tap(NULL, rate, 180));
-    31		KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 0,
-    32				aspeed_sdhci_phase_to_tap(NULL, rate, 181));
-    33		KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
-    34				aspeed_sdhci_phase_to_tap(NULL, rate, 182));
-    35		KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
-    36				aspeed_sdhci_phase_to_tap(NULL, rate, 183));
-    37		KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 2,
-    38				aspeed_sdhci_phase_to_tap(NULL, rate, 184));
-    39		KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 3,
-    40				aspeed_sdhci_phase_to_tap(NULL, rate, 185));
-    41		KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 14,
-    42				aspeed_sdhci_phase_to_tap(NULL, rate, 203));
-    43		KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
-    44				aspeed_sdhci_phase_to_tap(NULL, rate, 204));
-    45		KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
-    46				aspeed_sdhci_phase_to_tap(NULL, rate, 205));
-  > 47	}
-    48	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Please fix all cases.
