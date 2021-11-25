@@ -2,264 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D9845E029
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 19:01:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D872345E076
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 19:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236886AbhKYSEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 13:04:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234773AbhKYSCn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 13:02:43 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94F2C06137E
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:52:59 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id x6so28599145edr.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:52:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nT5H9R/pOtRAaqy/oVUuO0tXM2N6pl9SsLnStip9vsg=;
-        b=ZXZ3q/XrTCV06d2p9G3XYqCeZCK+m6w9Gu8zoUuc8ZxDUZGDZQ8fUo8JYbOJ7wGEpC
-         vIBmhwz8xDBpgzgumwBJvVHAlg1B62ffUlCbMXjrqB6QFbqcwIru6hSeIGdMXll6vIMp
-         mRoa8IdfIyItv6VAFQtkkUTMd34gY/h3n2X5+BhNXXKRG0zb0wSMgECW+zd9l1p9TnaE
-         VoKw6S/0u9Lt91HNlCApu0ce3YVKReRI41IkiYmGfRWFfpxoC52xUCdUjgjtTVs4RRaA
-         SwPt3rSS3i1VOEU6DhhJU6OceeG6SQM/AJP7KLstwx78awRl7+S4P4hUQMvz/Nrygjn9
-         NJjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nT5H9R/pOtRAaqy/oVUuO0tXM2N6pl9SsLnStip9vsg=;
-        b=7oQEics8ZbWnY85kS2HBOoGlweUM3/OvsJkIxGT4GO4C0zwXnHSdis3djaGzRt3Bbl
-         UgaSnxOFxYGaghmracSwgMEW53wyxJspHPE0hAV7p0k+NDw92PDEif+JJvBYPDhxYxPs
-         C0zelgnbtMhROa8Uv4S/nGq1m3ws58H7c9ucSdepPy4NlG0PEU+6TUGxFTD/ztBRERs9
-         Ewi9mOlXX3VkK6D3xCZzXlxH9lhWe+wr49OWL7Cap+/d9BBVBVC4CwP7IId7okLucB6L
-         wGAcnHdQj1BcM4O06e6RaTDvsEZ2l/HBZbWq0TkhazlH4jZh13L4uOfb0uDaIANZKVKt
-         6VSA==
-X-Gm-Message-State: AOAM532x7saBsknPxDq21WdrIVCsm/eltN0Dud0dE5EXveHdbeSGPKZL
-        MA55cpsggHjKWcgG5TWuTY77uLFt+xkhWg==
-X-Google-Smtp-Source: ABdhPJyLTkMm0/bBtJ6Irz1IhTQI3dCDExfGAYNE19EWaOnbaog/oO1mAoRK0oNzWXQCJkp0TcrLyw==
-X-Received: by 2002:a17:907:1626:: with SMTP id hb38mr33525401ejc.481.1637862778391;
-        Thu, 25 Nov 2021 09:52:58 -0800 (PST)
-Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id hs20sm1949795ejc.26.2021.11.25.09.52.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 09:52:57 -0800 (PST)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/5] [RFC] tracing: Add interface for configuring trace sub buffer size
-Date:   Thu, 25 Nov 2021 19:52:51 +0200
-Message-Id: <20211125175253.186422-4-tz.stoyanov@gmail.com>
+        id S236807AbhKYSRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 13:17:03 -0500
+Received: from pegase2.c-s.fr ([93.17.235.10]:34033 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236050AbhKYSO6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 13:14:58 -0500
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4J0QTy0j6pz9sT6;
+        Thu, 25 Nov 2021 18:53:42 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id JKZr6sHzLKqM; Thu, 25 Nov 2021 18:53:42 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4J0QTn5PFGz9sT7;
+        Thu, 25 Nov 2021 18:53:33 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A5FFB8B763;
+        Thu, 25 Nov 2021 18:53:33 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id f8FmeaiqEnNQ; Thu, 25 Nov 2021 18:53:33 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.227])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2D0558B787;
+        Thu, 25 Nov 2021 18:53:32 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1APHrKMr385523
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 25 Nov 2021 18:53:20 +0100
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1APHrKGX385522;
+        Thu, 25 Nov 2021 18:53:20 +0100
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, alex@ghiti.fr
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-mm@kvack.org
+Subject: [PATCH v2 rebased 3/9] powerpc/mm: Remove CONFIG_PPC_MM_SLICES
+Date:   Thu, 25 Nov 2021 18:52:52 +0100
+Message-Id: <103550e29fc95a6f93ec8848f9ebf9054ca024a3.1637862579.git.christophe.leroy@csgroup.eu>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211125175253.186422-1-tz.stoyanov@gmail.com>
-References: <20211125175253.186422-1-tz.stoyanov@gmail.com>
+In-Reply-To: <cover.1637862579.git.christophe.leroy@csgroup.eu>
+References: <cover.1637862579.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1637862776; l=7117; s=20211009; h=from:subject:message-id; bh=1us26gq1SoYKOG9JqO6e69de3MxJApgW4aTtJF4Xukc=; b=mLDQYd60bgFp1w2rMB26lU2xx9ukJAXM9S3pzxALgEGZJPZ1mPDNqGCAYNUk86mA78GmpXi2r+Jp mRA6sxYzA9g7ZuK/MlQepswfGHnpLWNHgqrgaKy4GWZZit+rXtj3
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The trace ring buffer sub page size can be configured, per trace
-instance. A new ftrace file "buffer_subbuf_order" is added to get and
-set the size of the ring buffer sub page for current trace instance.
-The size must be an order of system page size, that's why the new
-interface works with system page order, instead of absolute page size:
-0 means the ring buffer sub page is equal to 1 system page and so
-forth:
-0 - 1 system page
-1 - 2 system pages
-2 - 4 system pages
-...
-The ring buffer sub page size is limited between 1 and 128 system
-pages. The default value is 1 system page.
-New ring buffer APIs are introduced:
- ring_buffer_subbuf_order_set()
- ring_buffer_subbuf_order_get()
- ring_buffer_subbuf_size_get()
+CONFIG_PPC_MM_SLICES is always selected by hash book3s/64.
+CONFIG_PPC_MM_SLICES is never selected by other platforms.
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+Remove it.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- include/linux/ring_buffer.h |  4 ++
- kernel/trace/ring_buffer.c  | 73 +++++++++++++++++++++++++++++++++++++
- kernel/trace/trace.c        | 48 ++++++++++++++++++++++++
- 3 files changed, 125 insertions(+)
+ arch/powerpc/include/asm/book3s/64/hash.h |  4 ++--
+ arch/powerpc/include/asm/hugetlb.h        |  2 +-
+ arch/powerpc/include/asm/paca.h           |  7 -------
+ arch/powerpc/include/asm/slice.h          | 13 ++-----------
+ arch/powerpc/kernel/paca.c                |  5 -----
+ arch/powerpc/mm/book3s64/Makefile         |  3 +--
+ arch/powerpc/mm/book3s64/hash_utils.c     | 14 --------------
+ arch/powerpc/platforms/Kconfig.cputype    |  4 ----
+ 8 files changed, 6 insertions(+), 46 deletions(-)
 
-diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-index d9a2e6e8fb79..9103462f6e85 100644
---- a/include/linux/ring_buffer.h
-+++ b/include/linux/ring_buffer.h
-@@ -202,6 +202,10 @@ struct trace_seq;
- int ring_buffer_print_entry_header(struct trace_seq *s);
- int ring_buffer_print_page_header(struct trace_buffer *buffer, struct trace_seq *s);
+diff --git a/arch/powerpc/include/asm/book3s/64/hash.h b/arch/powerpc/include/asm/book3s/64/hash.h
+index 674fe0e890dc..97f2fc217a49 100644
+--- a/arch/powerpc/include/asm/book3s/64/hash.h
++++ b/arch/powerpc/include/asm/book3s/64/hash.h
+@@ -99,10 +99,10 @@
+  * Defines the address of the vmemap area, in its own region on
+  * hash table CPUs.
+  */
+-#ifdef CONFIG_PPC_MM_SLICES
++#ifdef CONFIG_PPC_64S_HASH_MMU
+ #define HAVE_ARCH_UNMAPPED_AREA
+ #define HAVE_ARCH_UNMAPPED_AREA_TOPDOWN
+-#endif /* CONFIG_PPC_MM_SLICES */
++#endif
  
-+int ring_buffer_subbuf_order_get(struct trace_buffer *buffer);
-+int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order);
-+int ring_buffer_subbuf_size_get(struct trace_buffer *buffer);
-+
- enum ring_buffer_flags {
- 	RB_FL_OVERWRITE		= 1 << 0,
- };
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 68fdeff449c3..4aa5361a8f4c 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -511,6 +511,7 @@ struct trace_buffer {
- 	bool				time_stamp_abs;
- 
- 	unsigned int			subbuf_size;
-+	unsigned int			subbuf_order;
- 	unsigned int			max_data_size;
- };
- 
-@@ -5679,6 +5680,78 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
+ /* PTEIDX nibble */
+ #define _PTEIDX_SECONDARY	0x8
+diff --git a/arch/powerpc/include/asm/hugetlb.h b/arch/powerpc/include/asm/hugetlb.h
+index f18c543bc01d..86a60ba6bd2a 100644
+--- a/arch/powerpc/include/asm/hugetlb.h
++++ b/arch/powerpc/include/asm/hugetlb.h
+@@ -24,7 +24,7 @@ static inline int is_hugepage_only_range(struct mm_struct *mm,
+ 					 unsigned long addr,
+ 					 unsigned long len)
+ {
+-	if (IS_ENABLED(CONFIG_PPC_MM_SLICES) && !radix_enabled())
++	if (IS_ENABLED(CONFIG_PPC_64S_HASH_MMU) && !radix_enabled())
+ 		return slice_is_hugepage_only_range(mm, addr, len);
+ 	return 0;
  }
- EXPORT_SYMBOL_GPL(ring_buffer_read_page);
+diff --git a/arch/powerpc/include/asm/paca.h b/arch/powerpc/include/asm/paca.h
+index 295573a82c66..bd4dd02e61c8 100644
+--- a/arch/powerpc/include/asm/paca.h
++++ b/arch/powerpc/include/asm/paca.h
+@@ -152,16 +152,9 @@ struct paca_struct {
+ 	struct tlb_core_data tcd;
+ #endif /* CONFIG_PPC_BOOK3E */
  
-+/**
-+ * ring_buffer_subbuf_size_get - get size of the sub buffer.
-+ * @buffer: the buffer to get the sub buffer size from
-+ *
-+ * Returns size of the sub buffer, in bytes.
-+ */
-+int ring_buffer_subbuf_size_get(struct trace_buffer *buffer)
-+{
-+	return buffer->subbuf_size + BUF_PAGE_HDR_SIZE;
-+}
-+EXPORT_SYMBOL_GPL(ring_buffer_subbuf_size_get);
-+
-+/**
-+ * ring_buffer_subbuf_order_get - get order of system sub pages in one buffer page.
-+ * @buffer: The ring_buffer to get the system sub page order from
-+ *
-+ * By default, one ring buffer sub page equals to one system page. This parameter
-+ * is configurable, per ring buffer. The size of the ring buffer sub page can be
-+ * extended, but must be an order of system page size.
-+ *
-+ * Returns the order of buffer sub page size, in system pages:
-+ * 0 means the sub buffer size is 1 system page and so forth.
-+ * In case of an error < 0 is returned.
-+ */
-+int ring_buffer_subbuf_order_get(struct trace_buffer *buffer)
-+{
-+	if (!buffer)
-+		return -EINVAL;
-+
-+	return buffer->subbuf_order;
-+}
-+EXPORT_SYMBOL_GPL(ring_buffer_subbuf_order_get);
-+
-+/**
-+ * ring_buffer_subbuf_order_set - set the size of ring buffer sub page.
-+ * @buffer: The ring_buffer to set the new page size.
-+ * @order: Order of the system pages in one sub buffer page
-+ *
-+ * By default, one ring buffer pages equals to one system page. This API can be
-+ * used to set new size of the ring buffer page. The size must be order of
-+ * system page size, that's why the input parameter @order is the order of
-+ * system pages that are allocated for one ring buffer page:
-+ *  0 - 1 system page
-+ *  1 - 2 system pages
-+ *  3 - 4 system pages
-+ *  ...
-+ *
-+ * Returns 0 on success or < 0 in case of an error.
-+ */
-+int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
-+{
-+	int psize;
-+
-+	if (!buffer || order < 0)
-+		return -EINVAL;
-+
-+	if (buffer->subbuf_order == order)
-+		return 0;
-+
-+	psize = (1 << order) * PAGE_SIZE;
-+	if (psize <= BUF_PAGE_HDR_SIZE)
-+		return -EINVAL;
-+
-+	buffer->subbuf_order = order;
-+	buffer->subbuf_size = psize - BUF_PAGE_HDR_SIZE;
-+
-+	/* Todo: reset the buffer with the new page size */
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(ring_buffer_subbuf_order_set);
-+
+-#ifdef CONFIG_PPC_BOOK3S
+ #ifdef CONFIG_PPC_64S_HASH_MMU
+-#ifdef CONFIG_PPC_MM_SLICES
+ 	unsigned char mm_ctx_low_slices_psize[BITS_PER_LONG / BITS_PER_BYTE];
+ 	unsigned char mm_ctx_high_slices_psize[SLICE_ARRAY_SIZE];
+-#else
+-	u16 mm_ctx_user_psize;
+-	u16 mm_ctx_sllp;
+-#endif
+-#endif
+ #endif
+ 
+ 	/*
+diff --git a/arch/powerpc/include/asm/slice.h b/arch/powerpc/include/asm/slice.h
+index 0bdd9c62eca0..b15141f2bd76 100644
+--- a/arch/powerpc/include/asm/slice.h
++++ b/arch/powerpc/include/asm/slice.h
+@@ -10,7 +10,7 @@
+ 
+ struct mm_struct;
+ 
+-#ifdef CONFIG_PPC_MM_SLICES
++#ifdef CONFIG_PPC_64S_HASH_MMU
+ 
+ #ifdef CONFIG_HUGETLB_PAGE
+ #define HAVE_ARCH_HUGETLB_UNMAPPED_AREA
+@@ -30,16 +30,7 @@ void slice_set_range_psize(struct mm_struct *mm, unsigned long start,
+ void slice_init_new_context_exec(struct mm_struct *mm);
+ void slice_setup_new_exec(void);
+ 
+-#else /* CONFIG_PPC_MM_SLICES */
+-
+-static inline void slice_init_new_context_exec(struct mm_struct *mm) {}
+-
+-static inline unsigned int get_slice_psize(struct mm_struct *mm, unsigned long addr)
+-{
+-	return 0;
+-}
+-
+-#endif /* CONFIG_PPC_MM_SLICES */
++#endif /* CONFIG_PPC_64S_HASH_MMU */
+ 
+ #endif /* __ASSEMBLY__ */
+ 
+diff --git a/arch/powerpc/kernel/paca.c b/arch/powerpc/kernel/paca.c
+index 39da688a9455..ba593fd60124 100644
+--- a/arch/powerpc/kernel/paca.c
++++ b/arch/powerpc/kernel/paca.c
+@@ -344,15 +344,10 @@ void copy_mm_to_paca(struct mm_struct *mm)
+ {
+ 	mm_context_t *context = &mm->context;
+ 
+-#ifdef CONFIG_PPC_MM_SLICES
+ 	VM_BUG_ON(!mm_ctx_slb_addr_limit(context));
+ 	memcpy(&get_paca()->mm_ctx_low_slices_psize, mm_ctx_low_slices(context),
+ 	       LOW_SLICE_ARRAY_SZ);
+ 	memcpy(&get_paca()->mm_ctx_high_slices_psize, mm_ctx_high_slices(context),
+ 	       TASK_SLICE_ARRAY_SZ(context));
+-#else /* CONFIG_PPC_MM_SLICES */
+-	get_paca()->mm_ctx_user_psize = context->user_psize;
+-	get_paca()->mm_ctx_sllp = context->sllp;
+-#endif
+ }
+ #endif /* CONFIG_PPC_64S_HASH_MMU */
+diff --git a/arch/powerpc/mm/book3s64/Makefile b/arch/powerpc/mm/book3s64/Makefile
+index af2f3e75d458..d527dc8e30a8 100644
+--- a/arch/powerpc/mm/book3s64/Makefile
++++ b/arch/powerpc/mm/book3s64/Makefile
+@@ -5,7 +5,7 @@ ccflags-y	:= $(NO_MINIMAL_TOC)
+ obj-y				+= mmu_context.o pgtable.o trace.o
+ ifdef CONFIG_PPC_64S_HASH_MMU
+ CFLAGS_REMOVE_slb.o = $(CC_FLAGS_FTRACE)
+-obj-y				+= hash_pgtable.o hash_utils.o hash_tlb.o slb.o
++obj-y				+= hash_pgtable.o hash_utils.o hash_tlb.o slb.o slice.o
+ obj-$(CONFIG_PPC_HASH_MMU_NATIVE)	+= hash_native.o
+ obj-$(CONFIG_PPC_4K_PAGES)	+= hash_4k.o
+ obj-$(CONFIG_PPC_64K_PAGES)	+= hash_64k.o
+@@ -21,7 +21,6 @@ obj-$(CONFIG_PPC_RADIX_MMU)	+= radix_hugetlbpage.o
+ endif
+ obj-$(CONFIG_SPAPR_TCE_IOMMU)	+= iommu_api.o
+ obj-$(CONFIG_PPC_PKEY)	+= pkeys.o
+-obj-$(CONFIG_PPC_MM_SLICES)	+= slice.o
+ 
+ # Instrumenting the SLB fault path can lead to duplicate SLB entries
+ KCOV_INSTRUMENT_slb.o := n
+diff --git a/arch/powerpc/mm/book3s64/hash_utils.c b/arch/powerpc/mm/book3s64/hash_utils.c
+index eced266dc5e9..7ecadf5e6bf9 100644
+--- a/arch/powerpc/mm/book3s64/hash_utils.c
++++ b/arch/powerpc/mm/book3s64/hash_utils.c
+@@ -1264,7 +1264,6 @@ unsigned int hash_page_do_lazy_icache(unsigned int pp, pte_t pte, int trap)
+ 	return pp;
+ }
+ 
+-#ifdef CONFIG_PPC_MM_SLICES
+ static unsigned int get_paca_psize(unsigned long addr)
+ {
+ 	unsigned char *psizes;
+@@ -1281,12 +1280,6 @@ static unsigned int get_paca_psize(unsigned long addr)
+ 	return (psizes[index >> 1] >> (mask_index * 4)) & 0xF;
+ }
+ 
+-#else
+-unsigned int get_paca_psize(unsigned long addr)
+-{
+-	return get_paca()->mm_ctx_user_psize;
+-}
+-#endif
+ 
  /*
-  * We only allocate new buffers, never free them if the CPU goes down.
-  * If we were to free the buffer, then the user would lose any trace that was in
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 0eb8af875184..867a220b4ef2 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -9015,6 +9015,51 @@ static const struct file_operations buffer_percent_fops = {
- 	.llseek		= default_llseek,
- };
+  * Demote a segment to using 4k pages.
+@@ -1710,7 +1703,6 @@ DEFINE_INTERRUPT_HANDLER_RAW(do_hash_fault)
+ 	return 0;
+ }
  
-+static ssize_t
-+buffer_order_read(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
-+{
-+	struct trace_array *tr = filp->private_data;
-+	char buf[64];
-+	int r;
-+
-+	r = sprintf(buf, "%d\n", ring_buffer_subbuf_order_get(tr->array_buffer.buffer));
-+
-+	return simple_read_from_buffer(ubuf, cnt, ppos, buf, r);
-+}
-+
-+static ssize_t
-+buffer_order_write(struct file *filp, const char __user *ubuf,
-+		   size_t cnt, loff_t *ppos)
-+{
-+	struct trace_array *tr = filp->private_data;
-+	unsigned long val;
-+	int ret;
-+
-+	ret = kstrtoul_from_user(ubuf, cnt, 10, &val);
-+	if (ret)
-+		return ret;
-+
-+	/* limit between 1 and 128 system pages */
-+	if (val < 0 || val > 7)
-+		return -EINVAL;
-+
-+	ret = ring_buffer_subbuf_order_set(tr->array_buffer.buffer, val);
-+	if (ret)
-+		return ret;
-+
-+	(*ppos)++;
-+
-+	return cnt;
-+}
-+
-+static const struct file_operations buffer_order_fops = {
-+	.open		= tracing_open_generic_tr,
-+	.read		= buffer_order_read,
-+	.write		= buffer_order_write,
-+	.release	= tracing_release_generic_tr,
-+	.llseek		= default_llseek,
-+};
-+
- static struct dentry *trace_instance_dir;
+-#ifdef CONFIG_PPC_MM_SLICES
+ static bool should_hash_preload(struct mm_struct *mm, unsigned long ea)
+ {
+ 	int psize = get_slice_psize(mm, ea);
+@@ -1727,12 +1719,6 @@ static bool should_hash_preload(struct mm_struct *mm, unsigned long ea)
  
- static void
-@@ -9468,6 +9513,9 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
- 	trace_create_file("buffer_percent", TRACE_MODE_READ, d_tracer,
- 			tr, &buffer_percent_fops);
+ 	return true;
+ }
+-#else
+-static bool should_hash_preload(struct mm_struct *mm, unsigned long ea)
+-{
+-	return true;
+-}
+-#endif
  
-+	trace_create_file("buffer_subbuf_order", TRACE_MODE_WRITE, d_tracer,
-+			  tr, &buffer_order_fops);
-+
- 	create_trace_options_dir(tr);
+ static void hash_preload(struct mm_struct *mm, pte_t *ptep, unsigned long ea,
+ 			 bool is_exec, unsigned long trap)
+diff --git a/arch/powerpc/platforms/Kconfig.cputype b/arch/powerpc/platforms/Kconfig.cputype
+index 7806a9661aa4..307e61ea65b8 100644
+--- a/arch/powerpc/platforms/Kconfig.cputype
++++ b/arch/powerpc/platforms/Kconfig.cputype
+@@ -374,7 +374,6 @@ config SPE
+ config PPC_64S_HASH_MMU
+ 	bool "Hash MMU Support"
+ 	depends on PPC_BOOK3S_64
+-	select PPC_MM_SLICES
+ 	default y
+ 	help
+ 	  Enable support for the Power ISA Hash style MMU. This is implemented
+@@ -451,9 +450,6 @@ config PPC_BOOK3E_MMU
+ 	def_bool y
+ 	depends on FSL_BOOKE || PPC_BOOK3E
  
- 	trace_create_maxlat_file(tr, d_tracer);
+-config PPC_MM_SLICES
+-	bool
+-
+ config PPC_HAVE_PMU_SUPPORT
+ 	bool
+ 
 -- 
-2.31.1
+2.33.1
 
