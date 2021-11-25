@@ -2,143 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA5B45D32B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:30:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A13F945D332
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237404AbhKYCdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 21:33:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:44994 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231755AbhKYCbU (ORCPT
+        id S244547AbhKYCis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 21:38:48 -0500
+Received: from smtpbguseast1.qq.com ([54.204.34.129]:51046 "EHLO
+        smtpbguseast1.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237790AbhKYCgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 21:31:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637807289;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=u113tr+XHgf/tPsn5GKDgoAmZjL+yOW8H+2x+NeaHKE=;
-        b=IgJzVhOTDBQOgQuWrnIsmpAwpIeh7ETXO4Oc2vitNjbk+Ix3Aw0hAff5DAT9CV/5MLPmBO
-        9BO3nNiUSzo8T/pgv6+AaX3pE8fwvCLLmve4u80hMkw/tBsfYxf1FDfXFgshmuER7/gVzO
-        giA433S1wXhmSxSHScnPlJ8E6OnCzdg=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-303-5XqRbMahPCeTD12hK3B-Qg-1; Wed, 24 Nov 2021 21:28:07 -0500
-X-MC-Unique: 5XqRbMahPCeTD12hK3B-Qg-1
-Received: by mail-lf1-f71.google.com with SMTP id q26-20020ac2515a000000b0040adfeb8132so2373334lfd.9
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 18:28:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u113tr+XHgf/tPsn5GKDgoAmZjL+yOW8H+2x+NeaHKE=;
-        b=u6xP+lFCzfCDra4dMDdlVqyplv1AxDpH7xTvc8Y+NBFDjo7CziPeB6LSpNxykUfLzM
-         H6wf17ly9gXD7MvdCWyeKG+OZTnIOGA3EBr/MNQU4NaV8QF6S11ljX//zh5U10wPFoQH
-         OT/0+cxKHtpK8AccrNLV6TffJVSX2PUr9/hkKUpfNtDm5uwPlbyeXhvzHmwBLo7CRRBe
-         fPJYafKVMHpD2kHCBOo5jjOEZU9k6CHURqi6f6H9rbt3KDMTHwYCScz6FPO/o2bC7t85
-         cRWhXf/nO1K0TwE2HkLW5D68+XK+JW+oShDjsdaR9Y/0csjc3G4lrsgZUmX4ie6cY/Ok
-         9qqQ==
-X-Gm-Message-State: AOAM533rBRkPBaMpBvWN1v2f6/PMIpq1rQI+L2c49P9GYSVi/bWrNvoT
-        X7f5TeJAtdRhj39juZseRiipgNv4QKPj9O3EPu999d7TvzBVXeTllIk6O1Zs8sgR5GIa3/sfPZH
-        ZAzd/0rgtbjA7X5LSJdJZ//k753ItA0uzhCB+d9yK
-X-Received: by 2002:a05:6512:3b2b:: with SMTP id f43mr20862622lfv.629.1637807285909;
-        Wed, 24 Nov 2021 18:28:05 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzK6BuAse/hOVXKz3JLz0KL4b+eODJeYiAN6J8Ec/Tf+RixyxmjYUlG288A643B1Puvy2YR2z6eJwsu+kIw4bA=
-X-Received: by 2002:a05:6512:3b2b:: with SMTP id f43mr20862602lfv.629.1637807285742;
- Wed, 24 Nov 2021 18:28:05 -0800 (PST)
-MIME-Version: 1.0
-References: <20211027022107.14357-1-jasowang@redhat.com> <20211027022107.14357-2-jasowang@redhat.com>
- <20211119160951.5f2294c8.pasic@linux.ibm.com> <CACGkMEtja2TPC=ujgMrpaPmdsy+zHowbBTvPj8k7nm_+zB8vig@mail.gmail.com>
- <20211122063518.37929c01.pasic@linux.ibm.com> <20211122064922.51b3678e.pasic@linux.ibm.com>
- <CACGkMEu+9FvMsghyi55Ee5BxetP-YK9wh2oaT8OgLiY5+tV0QQ@mail.gmail.com>
- <20211122212352.4a76232d.pasic@linux.ibm.com> <CACGkMEtmhwDEAvMuMhQEUB-b+=n713pVvjyct8QAqMUk1H-A-g@mail.gmail.com>
- <20211123055906-mutt-send-email-mst@kernel.org> <87zgpupcga.fsf@mpe.ellerman.id.au>
- <CACGkMEteDZJVM8j5pir7_Hcn6Oq=tKbcg4DUiEQBGm5Kg9w30w@mail.gmail.com>
- <CACGkMEs086P=qfMieMQ3wPhcarsdO++iRTwVHtN-4cgKLm8opA@mail.gmail.com> <20211124123328.5ed9ce78.pasic@linux.ibm.com>
-In-Reply-To: <20211124123328.5ed9ce78.pasic@linux.ibm.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Thu, 25 Nov 2021 10:27:54 +0800
-Message-ID: <CACGkMEu1ZsUFt4_-R74+6JtqCr+swBzYVnQU3E+XympEcTv_CA@mail.gmail.com>
-Subject: Re: [PATCH V5 1/4] virtio_ring: validate used buffer length
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        "Hetzelt, Felicitas" <f.hetzelt@tu-berlin.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "kaplan, david" <david.kaplan@amd.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>, mcgrof@kernel.org,
-        David Hildenbrand <david@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 24 Nov 2021 21:36:42 -0500
+X-QQ-GoodBg: 1
+X-QQ-SSF: B0400000000000F0
+X-QQ-FEAT: 7jw2iSiCazoXTPOXxNx8TAAgWRd1IUVbzNWBGROABMxUOynXHfLNm4LGI7VT9
+        b+HLpp8Rbw405UztceRDfw6DiXzm1a7BcVEoFspEDQXtTIlxzwQ4AxLVptOY+9bSsl/fmxh
+        yJvwFhW/J5e1qZu53AGxxc42Mv/NH4L+l4uujdFbh09vZbw/7atIBCjh6uETM83/P7JthU9
+        NIi2/xOKU0jroeLMz2yFT8zNL5kqpR4BrMKqTwPz3AzD6PRFBFIZZCaNF966AtdiYuwi8bz
+        XXG2jmamh+KbaCuc1j2WOTGj8OqR65JCFEQ1na2V5X8nYVG7M9Fh5PMdw5pNqaml89Pjfux
+        XzyqdVA2AwrnXHQa1974Jr/El0oEnPxpJYybvaF4QghisARRBBEkhfA1lClF5uwERlMn/8f
+X-QQ-BUSINESS-ORIGIN: 2
+X-Originating-IP: 113.57.13.187
+X-QQ-STYLE: 
+X-QQ-mid: logic531t1637807603t8976761
+From:   "=?utf-8?B?bGlhbnpoaSBjaGFuZw==?=" <changlianzhi@uniontech.com>
+To:     "=?utf-8?B?ZG1pdHJ5LnRvcm9raG92?=" <dmitry.torokhov@gmail.com>
+Cc:     "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>,
+        "=?utf-8?B?R3JlZyBLSA==?=" <gregkh@linuxfoundation.org>,
+        "=?utf-8?B?amlyaXNsYWJ5?=" <jirislaby@kernel.org>,
+        "=?utf-8?B?QW5keSBTaGV2Y2hlbmtv?=" 
+        <andriy.shevchenko@linux.intel.com>,
+        "=?utf-8?B?MjgyODI3OTYx?=" <282827961@qq.com>
+Subject: Re: [PATCH v14] tty: Fix the keyboard led light display problem
+Mime-Version: 1.0
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: base64
+Date:   Thu, 25 Nov 2021 10:33:23 +0800
+X-Priority: 3
+Message-ID: <tencent_5573CD56296D5E2F4C59A664@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
+References: <20211108055139.7202-1-changlianzhi@uniontech.com>
+        <YYtpr/bP0HqBsmbW@google.com>
+        <tencent_032E4FE80FDB8EA164AE0644@qq.com>
+In-Reply-To: <tencent_032E4FE80FDB8EA164AE0644@qq.com>
+X-QQ-ReplyHash: 4029738618
+X-QQ-SENDSIZE: 520
+Received: from qq.com (unknown [127.0.0.1])
+        by smtp.qq.com (ESMTP) with SMTP
+        id ; Thu, 25 Nov 2021 10:33:25 +0800 (CST)
+Feedback-ID: logic:uniontech.com:qybgforeign:qybgforeign2
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 7:33 PM Halil Pasic <pasic@linux.ibm.com> wrote:
->
-> On Wed, 24 Nov 2021 10:33:28 +0800
-> Jason Wang <jasowang@redhat.com> wrote:
->
-> > > > > Let's see how far we can get. But yes, maybe we were too aggressive in
-> > > > > breaking things by default, a warning might be a better choice for a
-> > > > > couple of cycles.
-> > >
-> > > Ok, considering we saw the issues with balloons I think I can post a
-> > > patch to use warn instead. I wonder if we need to taint the kernel in
-> > > this case.
-> >
-> > Rethink this, consider we still have some time, I tend to convert the
-> > drivers to validate the length by themselves. Does this make sense?
->
-> I do find value in doing the validation in a single place for every
-> driver. This is really a common concern. But I think, not breaking
-> what used to work before is a good idea. So I would opt for producing
-> a warning, but otherwise preserving old behavior unless there is an
-> explicit opt-in for something more strict.
+PiA+IE9uIE1vbiwgTm92IDA4LCAyMDIxIGF0IDAxOjUxOjM5UE0gKzA4MDAsIGxpYW56aGkg
+Y2hhbmcgd3JvdGU6DQo+ID4gPiBTd2l0Y2hpbmcgZnJvbSB0aGUgZGVza3RvcCBlbnZpcm9u
+bWVudCB0byB0aGUgdHR5IGVudmlyb25tZW50LA0KPiA+ID4gdGhlIHN0YXRlIG9mIHRoZSBr
+ZXlib2FyZCBsZWQgbGlnaHRzIGFuZCB0aGUgc3RhdGUgb2YgdGhlIGtleWJvYXJkDQo+ID4g
+PiBsb2NrIGFyZSBpbmNvbnNpc3RlbnQuIFRoaXMgaXMgYmVjYXVzZSB0aGUgYXR0cmlidXRl
+IGtiLT5rYmRtb2RlDQo+ID4gPiBvZiB0aGUgdHR5IGJvdW5kIGluIHRoZSBkZXNrdG9wIGVu
+dmlyb25tZW50IChYb3JnKSBpcyBzZXQgdG8NCj4gPiA+IFZDX09GRiwgd2hpY2ggY2F1c2Vz
+IHRoZSBsZWRzdGF0ZSBhbmQga2ItPmxlZGZsYWdzdGF0ZQ0KDQo+ID4gV2Uga25vdyB0aGF0
+IFhvcmcgc2V0cyBrYmRtb2RlIG1vZGUgdG8gVkNfT0ZGLCBidXQgaXQgZG9lcyBub3QgbWVh
+biB0aGF0DQo+ID4geW91IGNhbiBzYXkgZm9yIHN1cmUgdGhhdCBpdCBpcyBYb3JnIGluc3Rh
+bmNlIHRoYXQgY29udHJvbHMgYSBWVCBzaW1wbHkNCj4gPiBieSBvYnNlcnZpbmcga2ItPmti
+ZG1vZGUuIFRoZXJlIG1heSBiZSBzb21ldGhpbmcgZWxzZSBlbnRpcmVseS4gVGhhdCBpcw0K
+PiA+IHdoeSB5b3Ugd2FudCBkcml2ZXJzL3R0eS92dC9rZXlib2FyZC5jIHRvIHJlc2V0IExF
+RHMgYW5kIGxlYXZlIGl0IHRvDQo+ID4gd2hvZXZlciBpcyBjb250cm9sbGluZyBWVCB0byBz
+ZXQgdGhlbSB0byBzb21ldGhpbmcgZWxzZSBpZiBpdCBpcw0KPiA+IGRlc2lyZWQuDQoNCj4g
+RG9lcyB0aGlzIG1lYW4gbGV0IG1lIGNoYW5nZSB0aGUgZGVzY3JpcHRpb24gaW5mb3JtYXRp
+b24/IE9yIGlzIHRoZQ0KPiBqdWRnbWVudCBvZiBWQ19PRkYgaW4gcGF0Y2ggaW5jb3JyZWN0
+Pw0KPiBUaGUgc2V0dXAgbWV0aG9kIG9mIFhvcmcgbWVudGlvbmVkIGhlcmUgaXMganVzdCB0
+byBkZXNjcmliZSBhIHByb2Nlc3MNCj4gaW4gd2hpY2ggSSBmb3VuZCB0aGUgcHJvYmxlbTsN
+Cj4gTXkgdW5kZXJzdGFuZGluZyBpcyB0aGF0IHdoZW4gdGhlIG1vZGUgb2Yga2JkbW9kZSBp
+cyBzZXQgdG8gVkNfT0ZGLA0KPiBWVCBzaG91bGRuJ3QgaW50ZXJmZXJlIHdpdGggdGhlIHN0
+YXRlIG9mIHRoZSBrZXlib2FyZCBsaWdodCwgcmlnaHQ/IFRoaXMgaXMNCj4gaG93IGZ1bmN0
+aW9ucyBzdWNoIGFzIGtiZF9rZXljb2RlKCkgYXJlIGltcGxlbWVudGVkLg0KPiBXaGVuIFZU
+IGlzIHN3aXRjaGVkLCBpZiB0aGUgVlQgbW9kZSBpcyBWQ19PRkYsIHRoZXJlIGlzIGFsc28g
+bm8gbmVlZA0KPiB0byBzZXQgdGhlIHN0YXRlIG9mIHRoZSBrZXlib2FyZCBsaWdodC4gSSB0
+aGluayB0aGlzIGlzIHJlYXNvbmFibGUuDQoNCj4gPiA+ID4gdmFsdWVzIG9mIHRoZSBib3Vu
+ZCB0dHkgdG8gYWx3YXlzIGJlIDAsIHdoaWNoIGNhdXNlcyB0aGUgc3dpdGNoDQo+ID4gPiA+
+IGZyb20gdGhlIGRlc2t0b3AgV2hlbiB0byB0aGUgdHR5IGVudmlyb25tZW50LCB0aGUgTEVE
+IGxpZ2h0DQo+ID4gPiA+IHN0YXR1cyBpcyBpbmNvbnNpc3RlbnQgd2l0aCB0aGUga2V5Ym9h
+cmQgbG9jayBzdGF0dXMuDQo+ID4gPiA+IEluIG9yZGVyIHRvIGVuc3VyZSB0aGF0IHRoZSBr
+ZXlib2FyZCBMRUQgbGlnaHRzIGFyZSBkaXNwbGF5ZWQNCj4gPiA+ID4gbm9ybWFsbHkgZHVy
+aW5nIHRoZSBWVCBzd2l0Y2hpbmcgcHJvY2Vzcywgd2hlbiB0aGUgVlQgaXMNCj4gPiA+ID4g
+c3dpdGNoZWQsIHRoZSBjdXJyZW50IFZUIExFRCBjb25maWd1cmF0aW9uIGlzIGZvcmNlZCB0
+byBiZSBpc3N1ZWQuDQo+ID4gPg0KPiA+ID4gU2lnbmVkLW9mZi1ieTogbGlhbnpoaSBjaGFu
+ZyA8Y2hhbmdsaWFuemhpQHVuaW9udGVjaC5jb20+DQo+ID4gPiBTdWdnZXN0ZWQtYnk6IGRt
+aXRyeS50b3Jva2hvdiA8ZG1pdHJ5LnRvcm9raG92QGdtYWlsLmNvbT4NCj4gPiA+IFN1Z2dl
+c3RlZC1ieTogQW5keSBTaGV2Y2hlbmtvIDxhbmRyaXkuc2hldmNoZW5rb0BsaW51eC5pbnRl
+bC5jb20+DQo+ID4gPiAtLS0NCj4gPiA+ICB2MTM6DQo+ID4gPiAgVGhlIGtiZF9iaCBmdW5j
+dGlvbiBubyBsb25nZXIgaGFuZGxlcyB0aGUgImtiLT5rYmRtb2RlID09IFZDX09GRiINCj4g
+PiA+ICBzY2VuZSwgYnV0IHB1dHMgdGhpcyBwcm9jZXNzIGluIHZ0X3NldF9sZWRzX2NvbXB1
+dGVfc2hpZnRzdGF0ZQ0KPiA+ID4gIHRvZ2V0aGVyLiBCZWNhdXNlIHRoZSBjdXJyZW50IGNp
+cmN1bXZlbnRpb24gaXMgdGhhdCBvdGhlciB0dHlzDQo+ID4gPiAgc3dpdGNoIHRvIHRoZSBY
+b3JnLWJvdW5kIHR0eSBzY2VuZSwgc28gdGhpcyBCZXR0ZXIuDQo+ID4gPiAgdjE0Og0KPiA+
+ID4gIFNvcnJ5LCBJIGZvcmdvdCB0byB2ZXJpZnkgdGhlIGZvcm1hdCwgaXQgaXMgZ29vZCBu
+b3cuDQo+ID4gPg0KPiA+ID4gIGRyaXZlcnMvdHR5L3Z0L2tleWJvYXJkLmMgfCAxOSArKysr
+KysrKysrKysrKysrKystDQo+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDE4IGluc2VydGlvbnMo
+KyksIDEgZGVsZXRpb24oLSkNCj4gPiA+DQo+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy90
+dHkvdnQva2V5Ym9hcmQuYyBiL2RyaXZlcnMvdHR5L3Z0L2tleWJvYXJkLmMNCj4gPiA+IGlu
+ZGV4IGM3ZmJiY2RjYzM0Ni4uOTFlMWM1ZDkyMDI5IDEwMDY0NA0KPiA+ID4gLS0tIGEvZHJp
+dmVycy90dHkvdnQva2V5Ym9hcmQuYw0KPiA+ID4gKysrIGIvZHJpdmVycy90dHkvdnQva2V5
+Ym9hcmQuYw0KPiA+ID4gPiBAQCAtMTUzLDYgKzE1Myw3IEBAIHN0YXRpYyBpbnQgc2hpZnRf
+c3RhdGUgPSAwOw0KPiA+ID4NCj4gPiA+ICBzdGF0aWMgdW5zaWduZWQgaW50IGxlZHN0YXRl
+ID0gLTFVOyAvKiB1bmRlZmluZWQgKi8NCj4gPiA+ICBzdGF0aWMgdW5zaWduZWQgY2hhciBs
+ZWRpb2N0bDsNCj4gPiA+ICtzdGF0aWMgYm9vbCB2dF9zd2l0Y2g7DQo+ID4gPg0KPiA+ID4g
+IC8qDQo+ID4gPiAgICogTm90aWZpZXIgbGlzdCBmb3IgY29uc29sZSBrZXlib2FyZCBldmVu
+dHMNCj4gPiA+IEBAIC00MTIsOSArNDEzLDIwIEBAIHN0YXRpYyB2b2lkIGRvX2NvbXB1dGVf
+c2hpZnRzdGF0ZSh2b2lkKQ0KPiA+ID4gIC8qIFdlIHN0aWxsIGhhdmUgdG8gZXhwb3J0IHRo
+aXMgbWV0aG9kIHRvIHZ0LmMgKi8NCj4gPiA+ICB2b2lkIHZ0X3NldF9sZWRzX2NvbXB1dGVf
+c2hpZnRzdGF0ZSh2b2lkKQ0KPiA+ID4gIHsNCj4gPiA+ICsgc3RydWN0IGtiZF9zdHJ1Y3Qg
+KmtiOw0KPiA+ID4gIHVuc2lnbmVkIGxvbmcgZmxhZ3M7DQo+ID4gPg0KPiA+ID4gLSBzZXRf
+bGVkcygpOw0KPiA+ID4gKyAvKiBYb3JnIHdpbGwgYmluZCBhIHR0eSwgdGhlIGtiLT5rYmRt
+b2RlIG9mIHRoaXMgdHR5IHdpbGwgYmUgc2V0IHRvDQo+ID4gPiArICogVkNfT0ZGLCBhbmQg
+dGhpcyB0dHkgd2lsbCBubyBsb25nZXIgc2V0IHRoZSBrZXlib2FyZCBsaWdodC4gSWYNCj4g
+PiA+ICsgKiB0aGVyZSBpcyBubyBzdWNoIHJlc3RyaWN0aW9uLCB3aGVuIHN3aXRjaGluZyBm
+cm9tIG90aGVyIHR0eSB0bw0KPiA+ID4gKyAqIFhvcmctYm91bmQgdHR5LCB0aGUgdHR5IHdp
+bGwgc2V0IHRoZSBrZXlib2FyZCBsaWdodCwgd2hpY2ggaXMNCj4gPiA+ICsgKiB1bnJlYXNv
+bmFibGUNCj4gPiA+ICsgKi8NCj4gPiA+ICsga2IgPSBrYmRfdGFibGUgKyBmZ19jb25zb2xl
+Ow0KPiA+ID4gKyBpZiAoa2ItPmtiZG1vZGUgIT0gVkNfT0ZGKSB7DQo+ID4gPiArIHZ0X3N3
+aXRjaCA9IHRydWU7DQo+ID4gPiArIHNldF9sZWRzKCk7DQo+ID4gPiArIH0NCj4gPiA+DQo+
+ID4gPiAgc3Bpbl9sb2NrX2lycXNhdmUoJmtiZF9ldmVudF9sb2NrLCBmbGFncyk7DQo+ID4g
+PiAgZG9fY29tcHV0ZV9zaGlmdHN0YXRlKCk7DQo+ID4gPiBAQCAtMTI1NSw2ICsxMjY3LDEx
+IEBAIHN0YXRpYyB2b2lkIGtiZF9iaChzdHJ1Y3QgdGFza2xldF9zdHJ1Y3QgKnVudXNlZCkN
+Cj4gPiA+ICBsZWRzIHw9ICh1bnNpZ25lZCBpbnQpa2JkLT5sb2Nrc3RhdGUgPDwgODsNCj4g
+PiA+ICBzcGluX3VubG9ja19pcnFyZXN0b3JlKCZsZWRfbG9jaywgZmxhZ3MpOw0KPiA+ID4N
+Cj4gPiA+ICsgaWYgKHZ0X3N3aXRjaCkgew0KPiA+ID4gKyBsZWRzdGF0ZSA9IH5sZWRzOw0K
+PiA+ID4gKyB2dF9zd2l0Y2ggPSBmYWxzZTsNCj4gPiA+ICsgfQ0KPiA+ID4gKw0KPiA+ID4g
+IGlmIChsZWRzICE9IGxlZHN0YXRlKSB7DQo+ID4gPiAga2JkX3Byb3BhZ2F0ZV9sZWRfc3Rh
+dGUobGVkc3RhdGUsIGxlZHMpOw0KPiA+ID4gIGxlZHN0YXRlID0gbGVkczsNCj4gPiA+IC0t
+DQoNCkhpIGZyaWVuZHMsIGhvdyBpcyB0aGlzIHBhdGNoIHByb2dyZXNzaW5nIG5vdywgZG8g
+SSBuZWVkIHRvIG1vZGlmeSBpdCBmdXJ0aGVyPw0KDQpUaGFua3MuDQotLQ0KbGlhbnpoaSBj
+aGFuZw==
 
-Yes, I totally agree with you after more thought and discussion.
 
->
-> BTW AFAIU if we detect a problem here, there are basically two
-> cases:
-> (1) Either the device is over-reporting what it has written, or
-> (2) we have a memory corruption in the guest because the device has
-> written beyond the end of the provided buffer. This can be because
->   (2.1) the driver provided a smaller buffer than mandated by the spec,
->   or
->   (2.2) the device is broken.
->
-> Case (1) is relatively harmless, and I believe a warning for it is more
-> than appropriate. Whoever sees the warning should push for a fixed device
-> if possible.
-
-Yes.
-
->
-> Case (2) is nasty. What would be the sanest course of action if we were
-> reasonably sure we have have case (2.2)?
-
-I think that's why a per driver validation is more preferable. The
-driver can choose the comfortable action, e.g for networking it may
-just drop the packets.
-
->
-> Maybe we can detect case (2) with a canary. I.e. artificially extend
-> the buffer with an extra descriptor that has a poisoned buffer, and
-> check if the value of that poisoned buffer is different than poison. I'm
-> not sure it is worth the effort though in production.
-
-This might work but it might cause performance overhead. I still think
-doing the validation per driver is better, the driver can choose to
-fix the used length and taint the kernel anyway.
-
-Thanks
-
->
-> Regards,
-> Halil
->
 
