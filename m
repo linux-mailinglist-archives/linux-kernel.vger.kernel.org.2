@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 882F945E37B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 00:41:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A30BA45E381
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 00:41:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350968AbhKYXoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 18:44:14 -0500
-Received: from gandalf.ozlabs.org ([150.107.74.76]:58361 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351629AbhKYXmM (ORCPT
+        id S1351576AbhKYXom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 18:44:42 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:37388 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232344AbhKYXml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 18:42:12 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4J0Z8L5nYqz4xcb;
-        Fri, 26 Nov 2021 10:38:58 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1637883539;
-        bh=MKfbgbcVcn3gQUZApNA95JIPa0dkTXjyz94Q0AneKGc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=MyGNkeQdEQUlGkm+M25O6hI0pgRKWjoUnaMepgYt1USm02Isql5WrRTirf+qphDAV
-         rcV0Bvm8W6VnsNJk7nTFBkpXDPoKAykdVVi2a4Hojs+38hBkqd3X7y7ama6O/lHfNJ
-         o2wtLxBO89/tAeSsg+MSvfFJEB/UWIy9DtPcJSB4+QiqX1tBmV8SOdwYAUNqyVoGdu
-         Wxb0nMfviThIdyCAa8aI+U9XXC6c0NfR4o9Yd3kuSUPAgpd41PDA2BwwBAai/ltI8S
-         A1KQbUACroP31P98mXcsd5QWyhE8rQLCbaBTa/QM6EYoJtWEq/nG6c/zRBSRrllSwM
-         QcuuxEqeO4p1Q==
-Date:   Fri, 26 Nov 2021 10:38:57 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Ming Lei <ming.lei@redhat.com>
-Subject: linux-next: manual merge of the block tree with Linus' tree
-Message-ID: <20211126103857.50628410@canb.auug.org.au>
+        Thu, 25 Nov 2021 18:42:41 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 59FF7FD7;
+        Fri, 26 Nov 2021 00:39:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1637883566;
+        bh=e/88nyQPFqvYKj8EETiiJv+//BkB8gj96nheD+iYq7A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lkb9OAOJJnIWFaIvu4Ar1l+5rc1in50j6aLb5V/UbDmKuO7xxy0noL4+60JzJCGjN
+         By4Wiy9K3MwjUv5EdEzD9rM1xDOJn6GW/Q3gayy9DeI0L5vt045EsTpNFil/w3D51l
+         rri7NyOjYiYIT97v4wsrCISxSfR5mGWAR0If8N4c=
+Date:   Fri, 26 Nov 2021 01:39:03 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v6 07/15] platform/x86: int3472: Enable I2c daisy chain
+Message-ID: <YaAel9HuAvemRg2s@pendragon.ideasonboard.com>
+References: <20211125165412.535063-1-hdegoede@redhat.com>
+ <20211125165412.535063-8-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/anadDgOt88u9.Fa8TAFyYOe";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211125165412.535063-8-hdegoede@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/anadDgOt88u9.Fa8TAFyYOe
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Hans,
 
-Hi all,
+Thank you for the patch.
 
-Today's linux-next merge of the block tree got a conflict in:
+On Thu, Nov 25, 2021 at 05:54:04PM +0100, Hans de Goede wrote:
+> From: Daniel Scally <djrscally@gmail.com>
+> 
+> The TPS68470 PMIC has an I2C passthrough mode through which I2C traffic
+> can be forwarded to a device connected to the PMIC as though it were
+> connected directly to the system bus. Enable this mode when the chip
+> is initialised.
 
-  block/bdev.c
+Is there any drawback doing this unconditionally, if nothing is
+connected to the bus on the other side (including no pull-ups) ?
 
-between commit:
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+>  .../x86/intel/int3472/intel_skl_int3472_tps68470.c         | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/platform/x86/intel/int3472/intel_skl_int3472_tps68470.c b/drivers/platform/x86/intel/int3472/intel_skl_int3472_tps68470.c
+> index c05b4cf502fe..42e688f4cad4 100644
+> --- a/drivers/platform/x86/intel/int3472/intel_skl_int3472_tps68470.c
+> +++ b/drivers/platform/x86/intel/int3472/intel_skl_int3472_tps68470.c
+> @@ -45,6 +45,13 @@ static int tps68470_chip_init(struct device *dev, struct regmap *regmap)
+>  		return ret;
+>  	}
+>  
+> +	/* Enable I2C daisy chain */
+> +	ret = regmap_write(regmap, TPS68470_REG_S_I2C_CTL, 0x03);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to enable i2c daisy chain\n");
+> +		return ret;
+> +	}
+> +
+>  	dev_info(dev, "TPS68470 REVID: 0x%02x\n", version);
+>  
+>  	return 0;
 
-  efcf5932230b ("block: avoid to touch unloaded module instance when openin=
-g bdev")
+-- 
+Regards,
 
-from Linus' tree and commit:
-
-  a1525fbf1d76 ("block: remove the GENHD_FL_HIDDEN check in blkdev_get_no_o=
-pen")
-
-from the block tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc block/bdev.c
-index b1d087e5e205,ae063041f291..000000000000
---- a/block/bdev.c
-+++ b/block/bdev.c
-@@@ -753,10 -753,10 +753,6 @@@ struct block_device *blkdev_get_no_open
- =20
-  	if (!bdev)
-  		return NULL;
-- 	if ((bdev->bd_disk->flags & GENHD_FL_HIDDEN)) {
- -	if (!try_module_get(bdev->bd_disk->fops->owner)) {
---		put_device(&bdev->bd_device);
---		return NULL;
---	}
- =20
-  	return bdev;
-  }
-
---Sig_/anadDgOt88u9.Fa8TAFyYOe
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGgHpEACgkQAVBC80lX
-0Gxj2gf+I0DkkNU/1ooEf8qak87XghJYOTyJjLzY4Tp8zVWrAkowBbqIXziBl+Xo
-C9KEfecKCwEZKVqdGovLVRrMgcFAn2gG/RyhQwijXtAw9OWv6lCWiS989NRRYB8K
-og6v9iHZVvTmPO6xBG50c4dqXb6WmJpnxrPQnRHPcRaZD0bnqtT1B+kw7ww/4xd6
-kJRT1poIFBtoZMRJxcBQIir2I0L+PX+Br3Ibg+tMSYOu7wJcrH2zZEu3a/ALJcwn
-5pHIdEEf13eO/Z3FwS62RPyntRHOsKCaGXcGmhvZ7PW2peD4pW7Ea5LGq2teEv1q
-yYCOwamuAwIhzd7bic5lC1L7wToi3g==
-=5K/m
------END PGP SIGNATURE-----
-
---Sig_/anadDgOt88u9.Fa8TAFyYOe--
+Laurent Pinchart
