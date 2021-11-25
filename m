@@ -2,69 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 018FE45E09E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 19:44:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC91A45E0A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 19:46:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344249AbhKYSsF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 25 Nov 2021 13:48:05 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:43169 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229852AbhKYSqE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 13:46:04 -0500
-Received: from smtpclient.apple (p5b3d2e91.dip0.t-ipconnect.de [91.61.46.145])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 1FE51CECC4;
-        Thu, 25 Nov 2021 19:42:51 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
-Subject: Re: [PATCH v1] Bluetooth: hci_qca: Stop IBS timer during BT OFF
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <1637846230-4798-2-git-send-email-pharish@codeaurora.org>
-Date:   Thu, 25 Nov 2021 19:42:50 +0100
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>, mka@chromium.org,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        hemantg@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        bgodavar@codeaurora.org, rjliao@codeaurora.org,
-        hbandi@codeaurora.org, abhishekpandit@chromium.org,
-        mcchou@chromium.org, saluvala@codeaurora.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <A078C973-AAAF-4BD2-85DA-F8017CE89012@holtmann.org>
-References: <1637846230-4798-1-git-send-email-pharish@codeaurora.org>
- <1637846230-4798-2-git-send-email-pharish@codeaurora.org>
-To:     pharish <pharish@codeaurora.org>
-X-Mailer: Apple Mail (2.3693.20.0.1.32)
+        id S1349375AbhKYStL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 13:49:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46192 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232053AbhKYSrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 13:47:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 0885860E8E;
+        Thu, 25 Nov 2021 18:43:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637865838;
+        bh=Ww36dVQvD7Y54YQ3VLNNtyqWcKw4HjCvbAsripqXkys=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=UGgKjTBFnT3fl5i/LxNQXLM2dJ4uz1ppniKGYGMiSt5CT00hByfBAp3S6ScFL8QZE
+         Q5K9wzFOoB7E53nhYasTckREi85/FVwfux9xf/MCbd1kS7hDKBB1UVzgNfIUqG1Kq2
+         0IHcblV3du9ljkBGyprm8s6Ykx7mUqkxr8HE0Y3BFnifqAmGK+la5czkgiGBFwJnRK
+         JcswHYDypGCF8Tzi5rvpfALbP2NgHNrgW3yft9CEQQm17Ox8e9pKpKWgQ9sOx8w79p
+         664GLatiAbWzOhk5GBmu+U2iAVOqgv2jSoYdd6cEnoFLzUQiKLvNBX5FshDMnw+CjZ
+         pC33CskSxagmg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E997A609D5;
+        Thu, 25 Nov 2021 18:43:57 +0000 (UTC)
+Subject: Re: [GIT PULL] Folio fixes for 5.16
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YZ6enA9aRgJLL55w@casper.infradead.org>
+References: <YZ6enA9aRgJLL55w@casper.infradead.org>
+X-PR-Tracked-List-Id: <linux-mm.kvack.org>
+X-PR-Tracked-Message-Id: <YZ6enA9aRgJLL55w@casper.infradead.org>
+X-PR-Tracked-Remote: git://git.infradead.org/users/willy/pagecache.git tags/folio-5.16b
+X-PR-Tracked-Commit-Id: c035713998700e8843c7d087f55bce3c54c0e3ec
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 79941493ff3e75219fd1d37a09b46a604e9e55ac
+Message-Id: <163786583789.16379.16587477525658554494.pr-tracker-bot@kernel.org>
+Date:   Thu, 25 Nov 2021 18:43:57 +0000
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The pull request you sent on Wed, 24 Nov 2021 20:20:44 +0000:
 
-> This change stops IBS timers during BT OFF.
-> 
-> Signed-off-by: pharish <pharish@codeaurora.org>
+> git://git.infradead.org/users/willy/pagecache.git tags/folio-5.16b
 
-clear name please.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/79941493ff3e75219fd1d37a09b46a604e9e55ac
 
-> ---
-> drivers/bluetooth/hci_qca.c | 3 +++
-> 1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-> index dd768a8..6f44b26 100644
-> --- a/drivers/bluetooth/hci_qca.c
-> +++ b/drivers/bluetooth/hci_qca.c
-> @@ -1928,6 +1928,9 @@ static int qca_power_off(struct hci_dev *hdev)
-> 	hu->hdev->hw_error = NULL;
-> 	hu->hdev->cmd_timeout = NULL;
-> 
-> +	mod_timer(&qca->tx_idle_timer, 0);
-> +	mod_timer(&qca->wake_retrans_timer, 0);
-> +
+Thank you!
 
-And I would really prefer if this gets changed to use a workqueue instead of a timer.
-
-Regards
-
-Marcel
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
