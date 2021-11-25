@@ -2,85 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19B645E11F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 20:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3E3745E121
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 20:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356642AbhKYTsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 14:48:09 -0500
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:53297 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356741AbhKYTqI (ORCPT
+        id S1356821AbhKYTsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 14:48:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350167AbhKYTqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 14:46:08 -0500
-Received: from pop-os.home ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id qKdxmbbOcqYovqKdymK6ek; Thu, 25 Nov 2021 20:42:54 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Thu, 25 Nov 2021 20:42:54 +0100
-X-ME-IP: 86.243.171.122
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     yishaih@nvidia.com, selvin.xavier@broadcom.com,
-        dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] RDMA/mlx4: Use bitmap_alloc() when applicable
-Date:   Thu, 25 Nov 2021 20:42:51 +0100
-Message-Id: <4c93b4e02f5d784ddfd3efd4af9e673b9117d641.1637869328.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Thu, 25 Nov 2021 14:46:31 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B638C06175A;
+        Thu, 25 Nov 2021 11:42:56 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637869375;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jcWGg+lxFUhwergvF0ahBfG0QbqcGHggbAdEpKkPyXg=;
+        b=Jz//u7KRGqRW6QiUlP/CDW6iMmhDdQzGdAUb24z2usQ6doDTDsy3kCVDGg8P4732WeKBeN
+        Id5kqWAnWLa0OlNcbUOEVSp8Y1Y1vE1OlKbGwjf/wCiTI8ciGoNA+AHiAUNDJzQ6OoXoiq
+        s8t98OSeBD6Iw6x1YhHMov5ZQgefTkKxksVclDuNMBpx/FuIrs7hbyk5584ej6aUWwxSUG
+        ICDSLtjrnn4cCUbN3DfloonsaBas32ac8izAt9MkM+DctKzhyD1I955HHm6VwLceOzdhSO
+        rS5KgYEeGKYQAS86QJFAFUEfQTK8bkCieyTKVmIdeXh9ycQyAJbw/mWUS7d9Vg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637869375;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jcWGg+lxFUhwergvF0ahBfG0QbqcGHggbAdEpKkPyXg=;
+        b=f1dQhXYnkJqt4QiRb1jQVVOFajZzna/jjoMKo5BGXNVxPR5S2AHzZzBFPchYc8tSJiusxg
+        SQQ+yFYHGCYufIBg==
+To:     isaku.yamahata@intel.com, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [RFC PATCH v3 25/59] KVM: x86: Add support for vCPU and
+ device-scoped KVM_MEMORY_ENCRYPT_OP
+In-Reply-To: <2afae6ea803290415814b96b7ac118bc5364780f.1637799475.git.isaku.yamahata@intel.com>
+References: <cover.1637799475.git.isaku.yamahata@intel.com>
+ <2afae6ea803290415814b96b7ac118bc5364780f.1637799475.git.isaku.yamahata@intel.com>
+Date:   Thu, 25 Nov 2021 20:42:54 +0100
+Message-ID: <87czmoja2p.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use 'bitmap_alloc()' to simplify code, improve the semantic and avoid some
-open-coded arithmetic in allocator arguments.
+On Wed, Nov 24 2021 at 16:20, isaku yamahata wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-Also change the corresponding 'kfree()' into 'bitmap_free()' to keep
-consistency.
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/infiniband/hw/mlx4/main.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
-index 0d2fa3338784..d66ce7694bbe 100644
---- a/drivers/infiniband/hw/mlx4/main.c
-+++ b/drivers/infiniband/hw/mlx4/main.c
-@@ -2784,10 +2784,8 @@ static void *mlx4_ib_add(struct mlx4_dev *dev)
- 		if (err)
- 			goto err_counter;
- 
--		ibdev->ib_uc_qpns_bitmap =
--			kmalloc_array(BITS_TO_LONGS(ibdev->steer_qpn_count),
--				      sizeof(long),
--				      GFP_KERNEL);
-+		ibdev->ib_uc_qpns_bitmap = bitmap_alloc(ibdev->steer_qpn_count,
-+							GFP_KERNEL);
- 		if (!ibdev->ib_uc_qpns_bitmap)
- 			goto err_steer_qp_release;
- 
-@@ -2875,7 +2873,7 @@ static void *mlx4_ib_add(struct mlx4_dev *dev)
- 	mlx4_ib_diag_cleanup(ibdev);
- 
- err_steer_free_bitmap:
--	kfree(ibdev->ib_uc_qpns_bitmap);
-+	bitmap_free(ibdev->ib_uc_qpns_bitmap);
- 
- err_steer_qp_release:
- 	mlx4_qp_release_range(dev, ibdev->steer_qpn_base,
-@@ -2988,7 +2986,7 @@ static void mlx4_ib_remove(struct mlx4_dev *dev, void *ibdev_ptr)
- 
- 	mlx4_qp_release_range(dev, ibdev->steer_qpn_base,
- 			      ibdev->steer_qpn_count);
--	kfree(ibdev->ib_uc_qpns_bitmap);
-+	bitmap_free(ibdev->ib_uc_qpns_bitmap);
- 
- 	iounmap(ibdev->uar_map);
- 	for (p = 0; p < ibdev->num_ports; ++p)
--- 
-2.30.2
-
+Yet another changelog with a significant amount of void content.
