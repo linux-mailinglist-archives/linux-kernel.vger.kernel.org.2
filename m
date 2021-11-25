@@ -2,215 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C130E45DE04
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:50:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC0F45DE07
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:51:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356302AbhKYPxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:53:19 -0500
-Received: from relay11.mail.gandi.net ([217.70.178.231]:41171 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356173AbhKYPvk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:51:40 -0500
-Received: (Authenticated sender: maxime.chevallier@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 96E9910001D;
-        Thu, 25 Nov 2021 15:48:26 +0000 (UTC)
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     davem@davemloft.net
-Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thomas.petazzoni@bootlin.com, gregory.clement@bootlin.com,
-        Andrew Lunn <andrew@lunn.ch>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-Subject: [PATCH net-next 4/4] net: mvneta: Add TC traffic shaping offload
-Date:   Thu, 25 Nov 2021 16:48:13 +0100
-Message-Id: <20211125154813.579169-5-maxime.chevallier@bootlin.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20211125154813.579169-1-maxime.chevallier@bootlin.com>
-References: <20211125154813.579169-1-maxime.chevallier@bootlin.com>
+        id S1356256AbhKYPyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:54:51 -0500
+Received: from foss.arm.com ([217.140.110.172]:52606 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1356252AbhKYPwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 10:52:50 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8819E1FB;
+        Thu, 25 Nov 2021 07:49:34 -0800 (PST)
+Received: from [10.57.56.56] (unknown [10.57.56.56])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 77B2A3F73B;
+        Thu, 25 Nov 2021 07:49:30 -0800 (PST)
+Message-ID: <38bfa372-54c8-2e81-adab-ca24051a0fe6@arm.com>
+Date:   Thu, 25 Nov 2021 15:49:24 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH v2 2/6] hwtracing: Add trace function support for
+ HiSilicon PCIe Tune and Trace device
+Content-Language: en-GB
+To:     Yicong Yang <yangyicong@hisilicon.com>, gregkh@linuxfoundation.org,
+        helgaas@kernel.org, alexander.shishkin@linux.intel.com,
+        lorenzo.pieralisi@arm.com, will@kernel.org, mark.rutland@arm.com,
+        mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
+        mike.leach@linaro.org, leo.yan@linaro.org,
+        jonathan.cameron@huawei.com, daniel.thompson@linaro.org,
+        joro@8bytes.org, john.garry@huawei.com,
+        shameerali.kolothum.thodi@huawei.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        linux-pci@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        iommu@lists.linux-foundation.org
+Cc:     zhangshaokun@hisilicon.com, liuqi115@huawei.com,
+        linuxarm@huawei.com, prime.zeng@huawei.com
+References: <20211116090625.53702-1-yangyicong@hisilicon.com>
+ <20211116090625.53702-3-yangyicong@hisilicon.com>
+ <0b67745c-13dd-1fea-1b8b-d55212bad232@arm.com>
+ <3644ad6e-d800-c84b-9d62-6dda8462450f@hisilicon.com>
+ <e7d4afb7-e4e4-e581-872b-2477850ad8da@hisilicon.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <e7d4afb7-e4e4-e581-872b-2477850ad8da@hisilicon.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mvneta controller is able to do some tocken-bucket per-queue traffic
-shaping. This commit adds support for setting these using the TC mqprio
-interface.
+On 2021-11-18 09:01, Yicong Yang via iommu wrote:
+> Hi Robin,
+> 
+> On 2021/11/16 19:37, Yicong Yang wrote:
+>> On 2021/11/16 18:56, Robin Murphy wrote:
+>>> On 2021-11-16 09:06, Yicong Yang via iommu wrote:
+>>> [...]
+>>>> +/*
+>>>> + * Get RMR address if provided by the firmware.
+>>>> + * Return 0 if the IOMMU doesn't present or the policy of the
+>>>> + * IOMMU domain is passthrough or we get a usable RMR region.
+>>>> + * Otherwise a negative value is returned.
+>>>> + */
+>>>> +static int hisi_ptt_get_rmr(struct hisi_ptt *hisi_ptt)
+>>>> +{
+>>>> +    struct pci_dev *pdev = hisi_ptt->pdev;
+>>>> +    struct iommu_domain *iommu_domain;
+>>>> +    struct iommu_resv_region *region;
+>>>> +    LIST_HEAD(list);
+>>>> +
+>>>> +    /*
+>>>> +     * Use direct DMA if IOMMU does not present or the policy of the
+>>>> +     * IOMMU domain is passthrough.
+>>>> +     */
+>>>> +    iommu_domain = iommu_get_domain_for_dev(&pdev->dev);
+>>>> +    if (!iommu_domain || iommu_domain->type == IOMMU_DOMAIN_IDENTITY)
+>>>> +        return 0;
+>>>> +
+>>>> +    iommu_get_resv_regions(&pdev->dev, &list);
+>>>> +    list_for_each_entry(region, &list, list)
+>>>> +        if (region->type == IOMMU_RESV_DIRECT &&
+>>>> +            region->length >= HISI_PTT_TRACE_BUFFER_SIZE) {
+>>>> +            hisi_ptt->trace_ctrl.has_rmr = true;
+>>>> +            hisi_ptt->trace_ctrl.rmr_addr = region->start;
+>>>> +            hisi_ptt->trace_ctrl.rmr_length = region->length;
+>>>> +            break;
+>>>> +        }
+>>>> +
+>>>> +    iommu_put_resv_regions(&pdev->dev, &list);
+>>>> +    return hisi_ptt->trace_ctrl.has_rmr ? 0 : -ENOMEM;
+>>>> +}
+>>>
+>>> No.
+>>>
+>>> The whole point of RMRs is for devices that are already configured to access the given address range in a manner beyond the kernel's control. If you can do this, it proves that you should not have an RMR in the first place.
+>>>
+>>> The notion of a kernel driver explicitly configuring its device to DMA into any random RMR that looks big enough is so egregiously wrong that I'm almost lost for words...
+>>>
+>>
+>> our bios will reserve such a region and reported it through iort. the device will write to the region and in the driver we need to access the region
+>> to get the traced data. the region is reserved exclusively and will not be accessed by kernel or other devices.
+>>
+>> is it ok to let bios configure the address to the device and from CPU side we just read it?
+>>
+> 
+> Any suggestion?  Is this still an issue you concern if we move the configuration of the device address to BIOS and just read from the CPU side?
 
-The token-bucket parameters are customisable, but the current
-implementation configures them to have a 10kbps resolution for the
-rate limitation, since it allows to cover the whole range of max_rate
-values from 10kbps to 5Gbps with 10kbps increments.
+If the firmware configures the device so that it's actively tracing and 
+writing out to memory while the kernel boots, then that is a valid 
+reason to have an RMR. However what you're doing in the driver is still 
+complete nonsense. As far as I can follow, the way it's working is this:
 
-Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
----
- drivers/net/ethernet/marvell/mvneta.c | 121 +++++++++++++++++++++++++-
- 1 file changed, 120 insertions(+), 1 deletion(-)
+- At probe time, the initial state of the hardware is entirely ignored. 
+If it *is* already active, there appears to be a fun chance of crashing 
+if TRACE_INT_MASK is clear and an interrupt happens to fire before 
+anyone has got round to calling perf_aux_output_begin() to make 
+trace_ctrl.handle.rb non-NULL.
 
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index aba452e8abfe..ca7b3c5cfe0a 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -248,12 +248,39 @@
- #define      MVNETA_TXQ_SENT_DESC_MASK           0x3fff0000
- #define MVNETA_PORT_TX_RESET                     0x3cf0
- #define      MVNETA_PORT_TX_DMA_RESET            BIT(0)
-+#define MVNETA_TXQ_CMD1_REG			 0x3e00
-+#define      MVNETA_TXQ_CMD1_BW_LIM_SEL_V1	 BIT(3)
-+#define      MVNETA_TXQ_CMD1_BW_LIM_EN		 BIT(0)
-+#define MVNETA_REFILL_NUM_CLK_REG		 0x3e08
-+#define      MVNETA_REFILL_MAX_NUM_CLK		 0x0000ffff
- #define MVNETA_TX_MTU                            0x3e0c
- #define MVNETA_TX_TOKEN_SIZE                     0x3e14
- #define      MVNETA_TX_TOKEN_SIZE_MAX            0xffffffff
-+#define MVNETA_TXQ_BUCKET_REFILL_REG(q)		 (0x3e20 + ((q) << 2))
-+#define      MVNETA_TXQ_BUCKET_REFILL_PERIOD_MASK	0x3ff00000
-+#define      MVNETA_TXQ_BUCKET_REFILL_PERIOD_SHIFT	20
-+#define      MVNETA_TXQ_BUCKET_REFILL_VALUE_MAX	 0x0007ffff
- #define MVNETA_TXQ_TOKEN_SIZE_REG(q)             (0x3e40 + ((q) << 2))
- #define      MVNETA_TXQ_TOKEN_SIZE_MAX           0x7fffffff
- 
-+/* The values of the bucket refill base period and refill period are taken from
-+ * the reference manual, and adds up to a base resolution of 10Kbps. This allows
-+ * to cover all rate-limit values from 10Kbps up to 5Gbps
-+ */
-+
-+/* Base period for the rate limit algorithm */
-+#define MVNETA_TXQ_BUCKET_REFILL_BASE_PERIOD_NS	100
-+
-+/* Number of Base Period to wait between each bucket refill */
-+#define MVNETA_TXQ_BUCKET_REFILL_PERIOD	1000
-+
-+/* The base resolution for rate limiting, in bps. Any max_rate value should be
-+ * a multiple of that value.
-+ */
-+#define MVNETA_TXQ_RATE_LIMIT_RESOLUTION (NSEC_PER_SEC / \
-+					 (MVNETA_TXQ_BUCKET_REFILL_BASE_PERIOD_NS * \
-+					  MVNETA_TXQ_BUCKET_REFILL_PERIOD))
-+
- #define MVNETA_LPI_CTRL_0                        0x2cc0
- #define MVNETA_LPI_CTRL_1                        0x2cc4
- #define      MVNETA_LPI_REQUEST_ENABLE           BIT(0)
-@@ -4906,11 +4933,75 @@ static void mvneta_map_vlan_prio_to_rxq(struct mvneta_port *pp, u8 pri, u8 rxq)
- 	mvreg_write(pp, MVNETA_VLAN_PRIO_TO_RXQ, val);
- }
- 
-+static int mvneta_enable_per_queue_rate_limit(struct mvneta_port *pp)
-+{
-+	unsigned long core_clk_rate;
-+	u32 refill_cycles;
-+	u32 val;
-+
-+	core_clk_rate = clk_get_rate(pp->clk);
-+	if (!core_clk_rate)
-+		return -EINVAL;
-+
-+	refill_cycles = MVNETA_TXQ_BUCKET_REFILL_BASE_PERIOD_NS /
-+			(NSEC_PER_SEC / core_clk_rate);
-+
-+	if (refill_cycles > MVNETA_REFILL_MAX_NUM_CLK)
-+		return -EINVAL;
-+
-+	/* Enable bw limit algorithm version 3 */
-+	val = mvreg_read(pp, MVNETA_TXQ_CMD1_REG);
-+	val &= ~(MVNETA_TXQ_CMD1_BW_LIM_SEL_V1 | MVNETA_TXQ_CMD1_BW_LIM_EN);
-+	mvreg_write(pp, MVNETA_TXQ_CMD1_REG, val);
-+
-+	/* Set the base refill rate */
-+	mvreg_write(pp, MVNETA_REFILL_NUM_CLK_REG, refill_cycles);
-+
-+	return 0;
-+}
-+
-+static void mvneta_disable_per_queue_rate_limit(struct mvneta_port *pp)
-+{
-+	u32 val = mvreg_read(pp, MVNETA_TXQ_CMD1_REG);
-+
-+	val |= (MVNETA_TXQ_CMD1_BW_LIM_SEL_V1 | MVNETA_TXQ_CMD1_BW_LIM_EN);
-+	mvreg_write(pp, MVNETA_TXQ_CMD1_REG, val);
-+}
-+
-+static int mvneta_setup_queue_rates(struct mvneta_port *pp, int queue,
-+				    u64 min_rate, u64 max_rate)
-+{
-+	u32 refill_val;
-+	u32 val = 0;
-+
-+	/* Convert to from Bps to bps */
-+	max_rate *= 8;
-+
-+	if (min_rate)
-+		return -EINVAL;
-+
-+	if (max_rate % MVNETA_TXQ_RATE_LIMIT_RESOLUTION)
-+		return -EINVAL;
-+
-+	refill_val = max_rate / MVNETA_TXQ_RATE_LIMIT_RESOLUTION;
-+
-+	if (refill_val == 0 || refill_val > MVNETA_TXQ_BUCKET_REFILL_VALUE_MAX)
-+		return -EINVAL;
-+
-+	val = refill_val;
-+	val |= (MVNETA_TXQ_BUCKET_REFILL_PERIOD <<
-+		MVNETA_TXQ_BUCKET_REFILL_PERIOD_SHIFT);
-+
-+	mvreg_write(pp, MVNETA_TXQ_BUCKET_REFILL_REG(queue), val);
-+
-+	return 0;
-+}
-+
- static int mvneta_setup_mqprio(struct net_device *dev,
- 			       struct tc_mqprio_qopt_offload *mqprio)
- {
- 	struct mvneta_port *pp = netdev_priv(dev);
--	int rxq, tc;
-+	int rxq, txq, tc, ret;
- 	u8 num_tc;
- 
- 	if (mqprio->qopt.hw != TC_MQPRIO_HW_OFFLOAD_TCS)
-@@ -4924,6 +5015,7 @@ static int mvneta_setup_mqprio(struct net_device *dev,
- 	mvneta_clear_rx_prio_map(pp);
- 
- 	if (!num_tc) {
-+		mvneta_disable_per_queue_rate_limit(pp);
- 		netdev_reset_tc(dev);
- 		return 0;
- 	}
-@@ -4944,6 +5036,33 @@ static int mvneta_setup_mqprio(struct net_device *dev,
- 		}
- 	}
- 
-+	if (mqprio->shaper != TC_MQPRIO_SHAPER_BW_RATE) {
-+		mvneta_disable_per_queue_rate_limit(pp);
-+		return 0;
-+	}
-+
-+	if (mqprio->qopt.num_tc > txq_number)
-+		return -EINVAL;
-+
-+	ret = mvneta_enable_per_queue_rate_limit(pp);
-+	if (ret)
-+		return ret;
-+
-+	for (tc = 0; tc < mqprio->qopt.num_tc; tc++) {
-+		for (txq = mqprio->qopt.offset[tc];
-+		     txq < mqprio->qopt.count[tc] + mqprio->qopt.offset[tc];
-+		     txq++) {
-+			if (txq >= txq_number)
-+				return -EINVAL;
-+
-+			ret = mvneta_setup_queue_rates(pp, txq,
-+						       mqprio->min_rate[tc],
-+						       mqprio->max_rate[tc]);
-+			if (ret)
-+				return ret;
-+		}
-+	}
-+
- 	return 0;
- }
- 
--- 
-2.25.4
+- Later, once the user starts a tracing session, a buffer is set up 
+*either* as a completely normal DMA allocation, or by memremap()ing some 
+random IOVA carveout which may or may not be whatever memory the 
+firmware was tracing to.
 
+- The hardware is then reset and completely reprogrammed to use the new 
+buffer, again without any consideration of its previous state (other 
+than possibly timing out and failing if it's already running and that 
+means it never goes idle).
+
+Therefore the driver does not seem to respect any prior configuration of 
+the device by firmware, does not seem to expect it to be running at boot 
+time, does not seem to have any way to preserve and export any trace 
+data captured in an RMR if it *was* running at boot time, and thus 
+without loss of generality could simply use the dma_alloc_coherent() 
+path all the time. Am I missing anything?
+
+As things stand, RMRs are not yet supported upstream (FYI we're still 
+working on fixing the spec...), so the code above is at best dead, and 
+at worst actively wrong. Furthermore, if the expected usage model *is* 
+that the kernel driver completely resets and reprograms the hardware, 
+then even if there is an RMR for boot-time tracing I would rather expect 
+it to be flagged as remappable, and thus potentially end up as an 
+IOMMU_RESV_DIRECT_RELAXABLE reservation which you wouldn't match anyway.
+
+And after all that, if you really do have a genuine need to respect and 
+preserve prior firmware configuration of the device, then I would surely 
+expect to see the driver actually doing exactly that. Presumably: at 
+probe time, look at TRACE_CTRL; if the device is already configured, 
+read out that configuration - especially including TRACE_ADDR_* - and 
+make sure to reuse it. Not go off on a tangent blindly poking into 
+internal IOMMU API abstractions in the vain hope that the first thing 
+you find happens to be sort-of-related to the information that you 
+actually care about.
+
+Thanks,
+Robin.
