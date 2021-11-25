@@ -2,132 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB91E45D3E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 05:23:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1D645D3E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 05:26:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237644AbhKYE0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 23:26:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38542 "EHLO
+        id S238355AbhKYE3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 23:29:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230360AbhKYEYF (ORCPT
+        with ESMTP id S238918AbhKYE1N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 23:24:05 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53DFDC061746;
-        Wed, 24 Nov 2021 20:20:54 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id t26so12877100lfk.9;
-        Wed, 24 Nov 2021 20:20:54 -0800 (PST)
+        Wed, 24 Nov 2021 23:27:13 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E73C0613F6;
+        Wed, 24 Nov 2021 20:23:03 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id bi37so12917860lfb.5;
+        Wed, 24 Nov 2021 20:23:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=1BJtHCCY9G3E1sfZMPHG2DaRPAvcmGSHXzzpanPe5c8=;
-        b=kMmEciTCvceVq3mnLjwbyTZFVgh3eJTGkcDfssstvhmgXroKSWwbkByvBLv6o2XBWP
-         K8udpwgk4KWSDCVrkurmiGnhvxvjgeHNudEOjRkxdU3oEp/myaKXe71RcrWoAJjKxos3
-         OEjPSV9zEFr1rSXSOfVehccc489x9SoeKbf77epTNpuVw16sORDqc04qgqAAzVooSvcU
-         xRMo5hdo6gS1fMMrttQbxyE9Tw+Z9gVU5wWK0Az5mjqc7sE5i/81jH8DWhiVCI+g7aem
-         gTd4Tq4L1LrbSt4e3GvjLcNU+yhcKv6OGLkWnqbya1IRzxz4xQwSSnnkrja3KOzhHV1x
-         Xyww==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yW96xTqN22+VgfWvofFKJ2uQthCcWS6JMEwqDhv1mBo=;
+        b=XubA+7GtvDkj0ES1YstwmKTLp3xvVzHzRaeqB//qspqLlT8c48Wlax7bQSlzp42qNC
+         +stMeEnSn6dW90xZoBfnm4+YUAwZdF5NTf56STCg0KHDg5/wUrPGZGtbtfcvcx0EmYAl
+         OFb9mNbpoQ1kvJpKgux/RtthQduVob3vB7uRzR1CE5fWlugQqqrl43yTIpGlayo3utdl
+         0210Y4AAyzU1iD5uyNIYK87Gvqp2UyfZZZXC1YbpHxShhim6MTnFSYP90wJsv4kHD+iE
+         UzBK0TCOQHc8Z5y7fo35nnCF+o829D1RtNIzvCexl4mWWq42ixAFQe632iS1Ianz7p9F
+         5fyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=1BJtHCCY9G3E1sfZMPHG2DaRPAvcmGSHXzzpanPe5c8=;
-        b=DHkLyoMpA0AoNMkeFi8ArnUSACQXc7GZhot+cLeD/6640Au3wcUhhptY+WuWeXzPKh
-         0tm1WRtShQDhGf7qtX34UFRB0SoRGbKLhifYF1nm5eBscLu3NA0Gym9JmY+daKnFkeF2
-         ttsO13TwwHb1mRtwukNPiDgPMi9pWmHpkVxf5z3Co9ABkFuQCzC06/cjEwQUrH+e8Vda
-         eoUo8kEeVAWf/t3mXiYG8LNWv4dpk4JMBE783XHl2aePu5CqfytdpzCGfiIeIXS9H1FZ
-         Sy+l55mQBL1K+pqz5HBdj4VLAlFEEcggdM2Np1KKgwpmXCjB92ppcr+xr/PkEUIbT9KR
-         AI0Q==
-X-Gm-Message-State: AOAM5310TP/5GkDf/c6u0Lum/iGQ/zy9t2Wu2x41FnblrAfBcdZNayex
-        GZ18MM3x22xeDj+i24tWC/HQ5hRESj4DpOyoBKw=
-X-Google-Smtp-Source: ABdhPJwIUVOssHp4RJMjyoSr68KBMRojUjNHwX3vpvilFt42LJ1Vj3q8MPELBB+vaW00fTUs5ywW7Nl/+MJVK3l9gww=
-X-Received: by 2002:a05:6512:310e:: with SMTP id n14mr21359864lfb.475.1637814052533;
- Wed, 24 Nov 2021 20:20:52 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yW96xTqN22+VgfWvofFKJ2uQthCcWS6JMEwqDhv1mBo=;
+        b=xRIAvGZLw6T2O0XXHVuYtCVlW+sbZY1khFHlIfxrz5iyaLJEYLuzamd0dnpMkFOBi7
+         Ju0eNpdADYRvzkko8trJbRzhBqJ/1tqpYD4NyYsb9b5v7rxf6mmqQMMHAgXKJFkZudjN
+         VzomzQHfREuBTzI9b33S8jFNwEJGb5UNXcBoV23sk7gFP4uYQVdbqKLQSQqbN9My7ecI
+         3McymngF+gG6yLWLtKW4twNC0IdNIvUbpXZMdQ+HJvw7lCBybLBLM9UBVoI+g2UUBLOK
+         0wHPUaRVly/P4FzQXR7tFaGTSLvqxI3FsT5JQvw/F+KXzVphaFf/69SLaGyppNuNutP+
+         YvLQ==
+X-Gm-Message-State: AOAM533ItGeFPGkWkGMgqfMQBYkSh4ngauJ6KR/cCYjW+gyD8Djlc3Ep
+        mzvEoTjIdJk2wRU4irl06yCavKoEF4Y=
+X-Google-Smtp-Source: ABdhPJzSViA3nbJpeKg2as0KQ93wxdxlYCRirpiJ3L9FZiRWPS2phT5FbugeHgNJ3EZGhLvHMdIfaA==
+X-Received: by 2002:a19:495c:: with SMTP id l28mr21433144lfj.484.1637814181497;
+        Wed, 24 Nov 2021 20:23:01 -0800 (PST)
+Received: from [192.168.2.145] (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
+        by smtp.googlemail.com with ESMTPSA id v2sm144156ljg.46.2021.11.24.20.23.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Nov 2021 20:23:01 -0800 (PST)
+Subject: Re: [PATCH] dt-bindings: sound: nvidia,tegra-audio: Convert multiple
+ txt bindings to yaml
+To:     Rob Herring <robh@kernel.org>, David Heidelberg <david@ixit.cz>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        ~okias/devicetree@lists.sr.ht, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211025171927.92332-1-david@ixit.cz>
+ <YYBRTK9KGglu/s9m@robh.at.kernel.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <39c21327-c2ec-b9c5-95c2-047ac347fd23@gmail.com>
+Date:   Thu, 25 Nov 2021 07:23:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-From:   Martin Kennedy <hurricos@gmail.com>
-Date:   Wed, 24 Nov 2021 23:20:41 -0500
-Message-ID: <CANA18Uxu5dUYOkDmXpYtLc8iQuAYMv1UujkmEo1bkhm3CqxMAA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] powerpc:85xx: fix timebase sync issue when CONFIG_HOTPLUG_CPU=n
-To:     nixiaoming@huawei.com
-Cc:     Yuantian.Tang@feescale.com, benh@kernel.crashing.org,
-        chenhui.zhao@freescale.com, chenjianguo3@huawei.com,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, liuwenliang@huawei.com,
-        mpe@ellerman.id.au, oss@buserror.net, paul.gortmaker@windriver.com,
-        paulus@samba.org, stable@vger.kernel.org, wangle6@huawei.com,
-        Christian Lamparter <chunkeey@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YYBRTK9KGglu/s9m@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi there,
+01.11.2021 23:42, Rob Herring пишет:
+>> +  assigned-clocks: true
+>> +
+>> +  assigned-clock-parents: true
+>> +
+>> +  assigned-clock-rates: true
+> These properties are always allowed when 'clocks' is present. So you 
+> don't have to list them.
+> 
 
-I have bisected OpenWrt master, and then the Linux kernel down to this
-change, to confirm that this change causes a kernel panic on my
-P1020RDB-based, dual-core Aerohive HiveAP 370, at initialization of
-the second CPU:
-
-:
-[    0.000000] Linux version 5.10.80 (labby@lobon)
-(powerpc-openwrt-linux-musl-gcc (OpenWrt GCC 11.2.0
-r18111+1-ebb6f9287e) 11.2.0, GNU ld (GNU Binutils) 2.37) #0 SMP Thu
-Nov 25 02:49:35 2021
-[    0.000000] Using P1020 RDB machine description
-:
-[    0.627233] smp: Bringing up secondary CPUs ...
-[    0.681659] kernel tried to execute user page (0) - exploit attempt? (uid: 0)
-[    0.766618] BUG: Unable to handle kernel instruction fetch (NULL pointer?)
-[    0.848899] Faulting instruction address: 0x00000000
-[    0.908273] Oops: Kernel access of bad area, sig: 11 [#1]
-[    0.972851] BE PAGE_SIZE=4K SMP NR_CPUS=2 P1020 RDB
-[    1.031179] Modules linked in:
-[    1.067640] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.80 #0
-[    1.139507] NIP:  00000000 LR: c0021d2c CTR: 00000000
-[    1.199921] REGS: c1051cf0 TRAP: 0400   Not tainted  (5.10.80)
-[    1.269705] MSR:  00021000 <CE,ME>  CR: 84020202  XER: 00000000
-[    1.340534]
-[    1.340534] GPR00: c0021cb8 c1051da8 c1048000 00000001 00029000
-00000000 00000001 00000000
-[    1.340534] GPR08: 00000001 00000000 c08b0000 00000040 22000208
-00000000 c00032c4 00000000
-[    1.340534] GPR16: 00000000 00000000 00000000 00000000 00000000
-00000000 00029000 00000001
-[    1.340534] GPR24: 1ffff240 20000000 dffff240 c080a1f4 00000001
-c08ae0a8 00000001 dffff240
-[    1.758220] NIP [00000000] 0x0
-[    1.794688] LR [c0021d2c] smp_85xx_kick_cpu+0xe8/0x568
-[    1.856126] Call Trace:
-[    1.885295] [c1051da8] [c0021cb8] smp_85xx_kick_cpu+0x74/0x568 (unreliable)
-[    1.968633] [c1051de8] [c0011460] __cpu_up+0xc0/0x228
-[    2.029038] [c1051e18] [c0031bbc] bringup_cpu+0x30/0x224
-[    2.092572] [c1051e48] [c0031f3c] cpu_up.constprop.0+0x180/0x33c
-[    2.164443] [c1051e88] [c00322e8] bringup_nonboot_cpus+0x88/0xc8
-[    2.236326] [c1051eb8] [c07e67bc] smp_init+0x30/0x78
-[    2.295698] [c1051ed8] [c07d9e28] kernel_init_freeable+0x118/0x2a8
-[    2.369641] [c1051f18] [c00032d8] kernel_init+0x14/0x124
-[    2.433176] [c1051f38] [c0010278] ret_from_kernel_thread+0x14/0x1c
-[    2.507125] Instruction dump:
-[    2.542541] XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
-XXXXXXXX XXXXXXXX
-[    2.635242] XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
-XXXXXXXX XXXXXXXX
-[    2.727952] ---[ end trace 9b796a4bafb6bc14 ]---
-[    2.783149]
-[    3.800879] Kernel panic - not syncing: Fatal exception
-[    3.862353] Rebooting in 1 seconds..
-[    5.905097] System Halted, OK to turn off power
-
-Without this patch, the kernel no longer panics:
-
-[    0.627232] smp: Bringing up secondary CPUs ...
-[    0.681857] smp: Brought up 1 node, 2 CPUs
-
-Here is the kernel configuration for this built kernel:
-https://git.openwrt.org/?p=openwrt/openwrt.git;a=blob_plain;f=target/linux/mpc85xx/config-5.10;hb=HEAD
-
-In case a force-push is needed for the source repository
-(https://github.com/Hurricos/openwrt/commit/ad19bdfc77d60ee1c52b41bb4345fdd02284c4cf),
-here is the device tree for this board:
-https://paste.c-net.org/TrousersSliced
-
-Martin
+That is a very nice new feature!
