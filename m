@@ -2,90 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B3A45D776
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 10:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B7845D77B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 10:43:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354168AbhKYJqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 04:46:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353889AbhKYJn7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 04:43:59 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE49FC0613F7;
-        Thu, 25 Nov 2021 01:39:17 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id o19-20020a1c7513000000b0033a93202467so4226417wmc.2;
-        Thu, 25 Nov 2021 01:39:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JsWSBzoF6q60IKzONTXTKTOX38hGEElpEC5e1cFXxMw=;
-        b=e9BNmaZr+9frNsh1OxVSxcuyZYi5JHpT5RH5ySRVrg9VUsQimIf8iryHBDnjO6Q/Gf
-         4CNOcPC6pF1ffCESR/nfd1pkj8i3Gn2KIczOpCw7emtLwlsjCR6Zc0U9eVjQdzoAO+HW
-         Z3mBdV04WIQp60cXuw3cXABF49Fku3m7yzAuwWHTKndsWNTG/8EXu8Gr+H4NOscy6vM7
-         qHV1d4UduVpXX8Rqi83rOxxNjQmGhtLLHwyW/MBcL2oSl8pkgaILPA/q1wHvGLZp35sq
-         s7ofF4kG609Ul/4jqIOS27xPi0I5gJwpRIgkWEauHJb7uL74APaGL0UiSKaOQSUQQer7
-         fQnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JsWSBzoF6q60IKzONTXTKTOX38hGEElpEC5e1cFXxMw=;
-        b=7ftbDRRTGSm0CKQ1WsDUk1fNcigITIMkunRQVcGBOH30JrCaAdyY8K5/b/3t0/Au5P
-         6nB8A2WYsGYllNtkwqHL04Pk0MTen/XYGv4Ul9XunMEtkA9zmguaTV+pjroorbW0WG46
-         lOaDb0HDsBO1v2CZQM8avlgRkOea5YFFRq/p027gDUJV3ULGLBn53Avp1PDJhfcW3Ukv
-         J5cj3jM21su00cAUS9pIV6TjE8syjtqv/UPvLnoubmt3dlJeuqKRUwG4FZk9KO6atyZb
-         2mFJlRIBifuP2EPvPFw9m4+6h/+c6cLkDeQ+mX79WSzXOEO/L1HEPuHu//cyyrCpxQM6
-         X+rQ==
-X-Gm-Message-State: AOAM532JWgD/s9dPwEQawzBNkxtJCNtGB2JwV94tgdwofvc6F+2P6QRn
-        M5orSDdak6r9enRmrLUGVSU=
-X-Google-Smtp-Source: ABdhPJwn9WYM4A5Ba6uOrUY3qZJujkwovHFYdpg+NpSmE67uRNgza9NoVF3XBWhs8MyNZm5A0klAMw==
-X-Received: by 2002:a05:600c:4f03:: with SMTP id l3mr5548476wmq.47.1637833156147;
-        Thu, 25 Nov 2021 01:39:16 -0800 (PST)
-Received: from archbook.localnet (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
-        by smtp.gmail.com with ESMTPSA id i17sm2732092wmq.48.2021.11.25.01.39.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 01:39:15 -0800 (PST)
-From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-rockchip@lists.infradead.org
-Cc:     Kyle Copperfield <kmcopper@danwin1210.me>,
-        Dragan Simic <dragan.simic@gmail.com>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kyle Copperfield <kmcopper@danwin1210.me>
-Subject: Re: [PATCH] media: rockchip/rga: do proper error checking in probe
-Date:   Thu, 25 Nov 2021 10:39:14 +0100
-Message-ID: <1864840.RQ6cyUMOaI@archbook>
-In-Reply-To: <20211120122321.20253-1-kmcopper@danwin1210.me>
-References: <20211120122321.20253-1-kmcopper@danwin1210.me>
+        id S1354064AbhKYJq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 04:46:57 -0500
+Received: from mga17.intel.com ([192.55.52.151]:48367 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349497AbhKYJo4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 04:44:56 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="216191871"
+X-IronPort-AV: E=Sophos;i="5.87,262,1631602800"; 
+   d="scan'208";a="216191871"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 01:41:45 -0800
+X-IronPort-AV: E=Sophos;i="5.87,262,1631602800"; 
+   d="scan'208";a="475590916"
+Received: from dshe-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.10.64])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 01:41:35 -0800
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>, akpm@linux-foundation.org,
+        keescook@chromium.org, yzaikin@google.com, nixiaoming@huawei.com,
+        ebiederm@xmission.com, clemens@ladisch.de, arnd@arndb.de,
+        gregkh@linuxfoundation.org, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, tvrtko.ursulin@linux.intel.com,
+        airlied@linux.ie, daniel@ffwll.chairlied, benh@kernel.crashing.org,
+        mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+        jack@suse.cz, amir73il@gmail.com, phil@philpotter.co.uk,
+        viro@zeniv.linux.org.uk, julia.lawall@inria.fr
+Cc:     ocfs2-devel@oss.oracle.com, linuxppc-dev@lists.ozlabs.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [PATCH v2 2/8] i915: simplify subdirectory registration with
+ register_sysctl()
+In-Reply-To: <20211123202422.819032-3-mcgrof@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211123202422.819032-1-mcgrof@kernel.org>
+ <20211123202422.819032-3-mcgrof@kernel.org>
+Date:   Thu, 25 Nov 2021 11:41:30 +0200
+Message-ID: <87fsrklghh.fsf@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Samstag, 20. November 2021 13:23:02 CET Kyle Copperfield wrote:
-> The latest fix for probe error handling contained a typo that causes
-> probing to fail with the following message:
-> 
->   rockchip-rga: probe of ff680000.rga failed with error -12
-> 
-> This patch fixes the typo.
-> 
-> Fixes: e58430e1d4fd (media: rockchip/rga: fix error handling in probe)
-> Reviewed-by: Dragan Simic <dragan.simic@gmail.com>
-> Signed-off-by: Kyle Copperfield <kmcopper@danwin1210.me>
+On Tue, 23 Nov 2021, Luis Chamberlain <mcgrof@kernel.org> wrote:
+> There is no need to user boiler plate code to specify a set of base
+> directories we're going to stuff sysctls under. Simplify this by using
+> register_sysctl() and specifying the directory path directly.
+
+\o/
+
+Acked-by: Jani Nikula <jani.nikula@intel.com>
+
+>
+> // pycocci sysctl-subdir-register-sysctl-simplify.cocci PATH
+>
+> @c1@
+> expression E1;
+> identifier subdir, sysctls;
+> @@
+>
+> static struct ctl_table subdir[] = {
+> 	{
+> 		.procname = E1,
+> 		.maxlen = 0,
+> 		.mode = 0555,
+> 		.child = sysctls,
+> 	},
+> 	{ }
+> };
+>
+> @c2@
+> identifier c1.subdir;
+>
+> expression E2;
+> identifier base;
+> @@
+>
+> static struct ctl_table base[] = {
+> 	{
+> 		.procname = E2,
+> 		.maxlen = 0,
+> 		.mode = 0555,
+> 		.child = subdir,
+> 	},
+> 	{ }
+> };
+>
+> @c3@
+> identifier c2.base;
+> identifier header;
+> @@
+>
+> header = register_sysctl_table(base);
+>
+> @r1 depends on c1 && c2 && c3@
+> expression c1.E1;
+> identifier c1.subdir, c1.sysctls;
+> @@
+>
+> -static struct ctl_table subdir[] = {
+> -	{
+> -		.procname = E1,
+> -		.maxlen = 0,
+> -		.mode = 0555,
+> -		.child = sysctls,
+> -	},
+> -	{ }
+> -};
+>
+> @r2 depends on c1 && c2 && c3@
+> identifier c1.subdir;
+>
+> expression c2.E2;
+> identifier c2.base;
+> @@
+> -static struct ctl_table base[] = {
+> -	{
+> -		.procname = E2,
+> -		.maxlen = 0,
+> -		.mode = 0555,
+> -		.child = subdir,
+> -	},
+> -	{ }
+> -};
+>
+> @initialize:python@
+> @@
+>
+> def make_my_fresh_expression(s1, s2):
+>   return '"' + s1.strip('"') + "/" + s2.strip('"') + '"'
+>
+> @r3 depends on c1 && c2 && c3@
+> expression c1.E1;
+> identifier c1.sysctls;
+> expression c2.E2;
+> identifier c2.base;
+> identifier c3.header;
+> fresh identifier E3 = script:python(E2, E1) { make_my_fresh_expression(E2, E1) };
+> @@
+>
+> header =
+> -register_sysctl_table(base);
+> +register_sysctl(E3, sysctls);
+>
+> Generated-by: Coccinelle SmPL
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 > ---
+>  drivers/gpu/drm/i915/i915_perf.c | 22 +---------------------
+>  1 file changed, 1 insertion(+), 21 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/i915/i915_perf.c b/drivers/gpu/drm/i915/i915_perf.c
+> index 2f01b8c0284c..5979e3258647 100644
+> --- a/drivers/gpu/drm/i915/i915_perf.c
+> +++ b/drivers/gpu/drm/i915/i915_perf.c
+> @@ -4273,26 +4273,6 @@ static struct ctl_table oa_table[] = {
+>  	{}
+>  };
+>  
+> -static struct ctl_table i915_root[] = {
+> -	{
+> -	 .procname = "i915",
+> -	 .maxlen = 0,
+> -	 .mode = 0555,
+> -	 .child = oa_table,
+> -	 },
+> -	{}
+> -};
+> -
+> -static struct ctl_table dev_root[] = {
+> -	{
+> -	 .procname = "dev",
+> -	 .maxlen = 0,
+> -	 .mode = 0555,
+> -	 .child = i915_root,
+> -	 },
+> -	{}
+> -};
+> -
+>  static void oa_init_supported_formats(struct i915_perf *perf)
+>  {
+>  	struct drm_i915_private *i915 = perf->i915;
+> @@ -4488,7 +4468,7 @@ static int destroy_config(int id, void *p, void *data)
+>  
+>  int i915_perf_sysctl_register(void)
+>  {
+> -	sysctl_header = register_sysctl_table(dev_root);
+> +	sysctl_header = register_sysctl("dev/i915", oa_table);
+>  	return 0;
+>  }
 
-Tested-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-
-Fixes RGA probing for me, many thanks!
-
-
+-- 
+Jani Nikula, Intel Open Source Graphics Center
