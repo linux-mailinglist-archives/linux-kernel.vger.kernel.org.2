@@ -2,50 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E14045D795
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 10:49:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF88645D762
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 10:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354223AbhKYJwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 04:52:46 -0500
-Received: from gandalf.ozlabs.org ([150.107.74.76]:57289 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348365AbhKYJup (ORCPT
+        id S1354202AbhKYJmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 04:42:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34781 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1353978AbhKYJkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 04:50:45 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4J0Cj106q3z4xd8;
-        Thu, 25 Nov 2021 20:47:32 +1100 (AEDT)
-From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     npiggin@gmail.com, masahiroy@kernel.org, adobriyan@gmail.com,
-        andriy.shevchenko@linux.intel.com, Peiwei Hu <jlu.hpw@foxmail.com>,
-        mpe@ellerman.id.au, aneesh.kumar@linux.ibm.com,
-        rafael.j.wysocki@intel.com, benh@kernel.crashing.org,
-        paulus@samba.org, ardb@kernel.org, clg@kaod.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        trivial@kernel.org
-In-Reply-To: <tencent_BA28CC6897B7C95A92EB8C580B5D18589105@qq.com>
-References: <tencent_BA28CC6897B7C95A92EB8C580B5D18589105@qq.com>
-Subject: Re: [PATCH] powerpc/prom_init: fix the improper check of prom_getprop
-Message-Id: <163783299816.1228879.14308105440652175596.b4-ty@ellerman.id.au>
-Date:   Thu, 25 Nov 2021 20:36:38 +1100
+        Thu, 25 Nov 2021 04:40:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637833014;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1j3sEyc7U5pLLP7CDKkBf36qc69o78zC3HxT76AE2R0=;
+        b=bxRJ0cHsxVoxBs1osi2vNK1d6yKSDIANe8hUIprtvQXyQakPTxZj/SOPZ0+va5e/YNIpVY
+        rb6YaaHCbSWIMMqm5xoBeS0xDjfGoN4HGNJ68DAsnEgQPNHKKOB+6LZ2myBieOASq1iAKG
+        AdFkwIJTwM1ZAax1+w2bMmUp8/wOZhs=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-232-KhKOSsa5M168ht-8ySKzGQ-1; Thu, 25 Nov 2021 04:36:53 -0500
+X-MC-Unique: KhKOSsa5M168ht-8ySKzGQ-1
+Received: by mail-wm1-f69.google.com with SMTP id z138-20020a1c7e90000000b003319c5f9164so4629353wmc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 01:36:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:organization:in-reply-to
+         :content-transfer-encoding;
+        bh=1j3sEyc7U5pLLP7CDKkBf36qc69o78zC3HxT76AE2R0=;
+        b=mpBxGuPGvO26TdRWLMnm2r8Xesjh/KZaQQIZHuhJkBW0UGYfriX4VFnuZJXmpm6coT
+         vRAuZgtYczauJnyQzwC7r6ParcsVOwXLuKHBcXK11iSGn+1H8E5f58Aerw65JMhsBvsR
+         QiQGn0L4uUGHwSrBWq5wlMGGWNP9bQJqAGVkYXhdFHv8cfUg4pDzbb+YvCgFZ7AVLp3K
+         8uQqVcJmDmB2p2Hrg3BladZj8/CfIGU5Nz8J4d9rIDgFG567jot5NYJf1JntuxI8L+sl
+         Vsy/a0c0N8lnujEnN3qGBz27DACkz8KYKzsC5urBPcNSX8Kzg8J8i8sN41j9I5pY6Hj5
+         y4pw==
+X-Gm-Message-State: AOAM533dGx1dmAIBfhLy5dzDalS2kplW4TdlMwRFs4j1m3W5zFZRyWex
+        ZPaZc/eYPvL5Qs0gHc3wMbNKnNb92g12CV+7yj5uNZ6Rg625aPH4Tg3nrIiXgHDod9nsFRvUlfi
+        Rm0L5aNxaOoREQ4IbXZu5JaT/
+X-Received: by 2002:a1c:4c19:: with SMTP id z25mr5259398wmf.177.1637833011740;
+        Thu, 25 Nov 2021 01:36:51 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxNT7yd66eB6qLpcYDn59R65nZF06/c+i4fTo/9h0VU3346D4G4ZX5Keq0oDymUbsMTzkxV8g==
+X-Received: by 2002:a1c:4c19:: with SMTP id z25mr5259366wmf.177.1637833011529;
+        Thu, 25 Nov 2021 01:36:51 -0800 (PST)
+Received: from [192.168.3.132] (p5b0c679e.dip0.t-ipconnect.de. [91.12.103.158])
+        by smtp.gmail.com with ESMTPSA id d2sm2428646wmb.31.2021.11.25.01.36.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Nov 2021 01:36:50 -0800 (PST)
+Message-ID: <435fab0b-d345-3698-79af-ff858181666a@redhat.com>
+Date:   Thu, 25 Nov 2021 10:36:49 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2] kthread: dynamically allocate memory to store
+ kthread's full name
+Content-Language: en-US
+To:     Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        oliver.sang@intel.com, lkp@intel.com,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>
+References: <20211120112850.46047-1-laoar.shao@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20211120112850.46047-1-laoar.shao@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Nov 2021 17:12:18 +0800, Peiwei Hu wrote:
-> prom_getprop() can return PROM_ERROR. Binary operator can not identify it.
+On 20.11.21 12:28, Yafang Shao wrote:
+> When I was implementing a new per-cpu kthread cfs_migration, I found the
+> comm of it "cfs_migration/%u" is truncated due to the limitation of
+> TASK_COMM_LEN. For example, the comm of the percpu thread on CPU10~19 are
+> all with the same name "cfs_migration/1", which will confuse the user. This
+> issue is not critical, because we can get the corresponding CPU from the
+> task's Cpus_allowed. But for kthreads correspoinding to other hardware
+> devices, it is not easy to get the detailed device info from task comm,
+> for example,
 > 
+>     jbd2/nvme0n1p2-
+>     xfs-reclaim/sdf
 > 
+> Currently there are so many truncated kthreads:
+> 
+>     rcu_tasks_kthre
+>     rcu_tasks_rude_
+>     rcu_tasks_trace
+>     poll_mpt3sas0_s
+>     ext4-rsv-conver
+>     xfs-reclaim/sd{a, b, c, ...}
+>     xfs-blockgc/sd{a, b, c, ...}
+>     xfs-inodegc/sd{a, b, c, ...}
+>     audit_send_repl
+>     ecryptfs-kthrea
+>     vfio-irqfd-clea
+>     jbd2/nvme0n1p2-
+>     ...
+> 
+> We can shorten these names to work around this problem, but it may be
+> not applied to all of the truncated kthreads. Take 'jbd2/nvme0n1p2-' for
+> example, it is a nice name, and it is not a good idea to shorten it.
+> 
+> One possible way to fix this issue is extending the task comm size, but
+> as task->comm is used in lots of places, that may cause some potential
+> buffer overflows. Another more conservative approach is introducing a new
+> pointer to store kthread's full name if it is truncated, which won't
+> introduce too much overhead as it is in the non-critical path. Finally we
+> make a dicision to use the second approach. See also the discussions in
+> this thread:
+> https://lore.kernel.org/lkml/20211101060419.4682-1-laoar.shao@gmail.com/
+> 
+> After this change, the full name of these truncated kthreads will be
+> displayed via /proc/[pid]/comm:
+> 
+>     rcu_tasks_kthread
+>     rcu_tasks_rude_kthread
+>     rcu_tasks_trace_kthread
+>     poll_mpt3sas0_statu
+>     ext4-rsv-conversion
+>     xfs-reclaim/sdf1
+>     xfs-blockgc/sdf1
+>     xfs-inodegc/sdf1
+>     audit_send_reply
+>     ecryptfs-kthread
+>     vfio-irqfd-cleanup
+>     jbd2/nvme0n1p2-8
 
-Applied to powerpc/next.
+I do wonder if that could break some user space that assumes these names
+have maximum length ..
 
-[1/1] powerpc/prom_init: fix the improper check of prom_getprop
-      https://git.kernel.org/powerpc/c/869fb7e5aecbc163003f93f36dcc26d0554319f6
+But LGTM
 
-cheers
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
