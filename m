@@ -2,90 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B16245D38C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 04:18:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A861945D38E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 04:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345013AbhKYDWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 22:22:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38154 "EHLO mail.kernel.org"
+        id S229718AbhKYDWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 22:22:30 -0500
+Received: from mga01.intel.com ([192.55.52.88]:52952 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238752AbhKYDUB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 22:20:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D8366108B;
-        Thu, 25 Nov 2021 03:16:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637810210;
-        bh=v8EnFvaWn1dsw5XtWPGIJHBw/XRhcawsTpJuGMLdQv4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QyhWNSsYRJSeg6AWDIrXt0x98gXrJgCoKARxJeW+n5jAht0AORIP40mpvpw8v9aJZ
-         1onkEQodQkyLjsyZ72avzuP+oqdDzWnvPVKY7f+tzDASVBG1tTIhPbY+JKAjhpqpxY
-         z3ba0/ilC01G3qz1NFwE0qk588tIm+8gej4jPJKx6FvaH//+0nqvPTtoRIcxxfO3Pa
-         tP47UbYMys7N+uzk0g9RKt/hu9jED2GZXEJVtNfQ6CCIm9CIF20nkGhfU0uz3/3k1D
-         MNT0eCTV2e9wimtGY73FAPGXDzswjwU7sagaUYOmJ+v3P1OqS+MSne4VckzvI508LR
-         cKMzzHMltjRvA==
-Date:   Wed, 24 Nov 2021 19:16:49 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>
-Cc:     netdev@vger.kernel.org, Taras Chornyi <taras.chornyi@plvision.eu>,
-        Mickey Rachamim <mickeyr@marvell.com>,
-        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
-        Volodymyr Mytnyk <vmytnyk@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Serhiy Boiko <serhiy.boiko@marvell.com>
-Subject: Re: [PATCH net-next 2/3] net: prestera: add counter HW API
-Message-ID: <20211124191649.08f7ba14@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1637686684-2492-3-git-send-email-volodymyr.mytnyk@plvision.eu>
-References: <1637686684-2492-1-git-send-email-volodymyr.mytnyk@plvision.eu>
-        <1637686684-2492-3-git-send-email-volodymyr.mytnyk@plvision.eu>
+        id S1346211AbhKYDU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 22:20:29 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="259326856"
+X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
+   d="scan'208";a="259326856"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 19:17:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
+   d="scan'208";a="497910205"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 24 Nov 2021 19:17:16 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mq5G7-0005ge-N6; Thu, 25 Nov 2021 03:17:15 +0000
+Date:   Thu, 25 Nov 2021 11:16:50 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: drivers/mmc/host/sdhci-of-aspeed-test.c:47:1: warning: the frame
+ size of 1152 bytes is larger than 1024 bytes
+Message-ID: <202111251155.avGLQdO3-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Nov 2021 18:58:01 +0200 Volodymyr Mytnyk wrote:
-> +	block = prestera_counter_block_lookup_not_full(counter, client);
-> +	if (!block) {
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5f53fa508db098c9d372423a6dac31c8a5679cdf
+commit: 0bbcd22556ef203b29e39a6ce1bd7e9523b6032e mmc: sdhci-of-aspeed: Add KUnit tests for phase calculations
+date:   10 months ago
+config: powerpc-randconfig-r011-20211122 (https://download.01.org/0day-ci/archive/20211125/202111251155.avGLQdO3-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=0bbcd22556ef203b29e39a6ce1bd7e9523b6032e
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout 0bbcd22556ef203b29e39a6ce1bd7e9523b6032e
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=powerpc 
 
-if (block)
-	return block;
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-> +		block = kzalloc(sizeof(*block), GFP_KERNEL);
-> +		if (!block)
-> +			return ERR_PTR(-ENOMEM);
-> +
-> +		err = prestera_hw_counter_block_get(counter->sw, client,
-> +						    &block->id, &block->offset,
-> +						    &block->num_counters);
-> +		if (err)
-> +			goto err_block;
-> +
-> +		block->stats = kcalloc(block->num_counters,
-> +				       sizeof(*block->stats), GFP_KERNEL);
-> +		if (!block->stats) {
-> +			err = -ENOMEM;
-> +			goto err_stats;
-> +		}
-> +
-> +		block->counter_flag = kcalloc(block->num_counters,
-> +					      sizeof(*block->counter_flag),
-> +					      GFP_KERNEL);
-> +		if (!block->counter_flag) {
-> +			err = -ENOMEM;
-> +			goto err_flag;
-> +		}
-> +
-> +		block->client = client;
-> +		mutex_init(&block->mtx);
-> +		refcount_set(&block->refcnt, 1);
-> +		idr_init_base(&block->counter_idr, block->offset);
-> +
-> +		err = prestera_counter_block_list_add(counter, block);
-> +		if (err)
-> +			goto err_list_add;
-> +	}
-> +
-> +	return block;
+All warnings (new ones prefixed by >>):
+
+   In file included from drivers/mmc/host/sdhci-of-aspeed.c:583:
+   drivers/mmc/host/sdhci-of-aspeed-test.c: In function 'aspeed_sdhci_phase_ddr52':
+>> drivers/mmc/host/sdhci-of-aspeed-test.c:47:1: warning: the frame size of 1152 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+      47 | }
+         | ^
+
+
+vim +47 drivers/mmc/host/sdhci-of-aspeed-test.c
+
+     5	
+     6	static void aspeed_sdhci_phase_ddr52(struct kunit *test)
+     7	{
+     8		int rate = 52000000;
+     9	
+    10		KUNIT_EXPECT_EQ(test, 0,
+    11				aspeed_sdhci_phase_to_tap(NULL, rate, 0));
+    12		KUNIT_EXPECT_EQ(test, 0,
+    13				aspeed_sdhci_phase_to_tap(NULL, rate, 1));
+    14		KUNIT_EXPECT_EQ(test, 1,
+    15				aspeed_sdhci_phase_to_tap(NULL, rate, 2));
+    16		KUNIT_EXPECT_EQ(test, 1,
+    17				aspeed_sdhci_phase_to_tap(NULL, rate, 3));
+    18		KUNIT_EXPECT_EQ(test, 2,
+    19				aspeed_sdhci_phase_to_tap(NULL, rate, 4));
+    20		KUNIT_EXPECT_EQ(test, 3,
+    21				aspeed_sdhci_phase_to_tap(NULL, rate, 5));
+    22		KUNIT_EXPECT_EQ(test, 14,
+    23				aspeed_sdhci_phase_to_tap(NULL, rate, 23));
+    24		KUNIT_EXPECT_EQ(test, 15,
+    25				aspeed_sdhci_phase_to_tap(NULL, rate, 24));
+    26		KUNIT_EXPECT_EQ(test, 15,
+    27				aspeed_sdhci_phase_to_tap(NULL, rate, 25));
+    28	
+    29		KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 0,
+    30				aspeed_sdhci_phase_to_tap(NULL, rate, 180));
+    31		KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 0,
+    32				aspeed_sdhci_phase_to_tap(NULL, rate, 181));
+    33		KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
+    34				aspeed_sdhci_phase_to_tap(NULL, rate, 182));
+    35		KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 1,
+    36				aspeed_sdhci_phase_to_tap(NULL, rate, 183));
+    37		KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 2,
+    38				aspeed_sdhci_phase_to_tap(NULL, rate, 184));
+    39		KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 3,
+    40				aspeed_sdhci_phase_to_tap(NULL, rate, 185));
+    41		KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 14,
+    42				aspeed_sdhci_phase_to_tap(NULL, rate, 203));
+    43		KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
+    44				aspeed_sdhci_phase_to_tap(NULL, rate, 204));
+    45		KUNIT_EXPECT_EQ(test, (int)ASPEED_SDHCI_TAP_PARAM_INVERT_CLK | 15,
+    46				aspeed_sdhci_phase_to_tap(NULL, rate, 205));
+  > 47	}
+    48	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
