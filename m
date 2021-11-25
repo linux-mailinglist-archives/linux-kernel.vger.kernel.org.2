@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F4445DF76
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9C445DF9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241579AbhKYRTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 12:19:54 -0500
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:55527 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235101AbhKYRRx (ORCPT
+        id S241782AbhKYR0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 12:26:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231145AbhKYRYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 12:17:53 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 77B263200E82;
-        Thu, 25 Nov 2021 12:14:40 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 25 Nov 2021 12:14:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=MRbn5e6m1y/4TZefRh+adX8Q0JT
-        3M5qVzD7hR+Z5Adk=; b=R++7kqaStJ6ivChRZuiOEPgd4ArNeWCVpwbwNoOMedh
-        TEtZXZAtAOhsFxqEcbbpV9dSi1+ZoZsTY6ibdZMuiVF+UwwDWhpyl1AxdlXsSg+S
-        h50KCkOgGLCnTCQMbwh46/TAJRVOCYT0kX/SSAXePbwKF/qaHFmlfBmxcS7rRJgA
-        PGkMbbHg6S6ZaepDO+qEeo5a1jS04iLnsnVdhpdaPvWgsaypW3/ZpWpML8qZ8Pvc
-        Kbu2VmwWXOdzNVVP/jFDWZpcNkeYgLMpG2DO9ySmTxYtu9XeDSAf1JJ+vv6DH9wd
-        Jx+iIK20sDOikNURtAMpiT3GPi7k1w7dRvTk0giW/Dg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=MRbn5e
-        6m1y/4TZefRh+adX8Q0JT3M5qVzD7hR+Z5Adk=; b=bfzOPyZKDnIfO4jChZN+3x
-        Ejw0mc2lBfZm0bctEdr91lbwyUL3bI2FwY0pysWSTNkuMpqFabQ7AO+g9d1eA3F0
-        R1fd6fnqzYjQ9DdLWP+9kGDVFI1GzrHZGztxLjn4mBliu6u5IbGBOd0Q7bQ4wYpp
-        ndasYHBLTp2skHIpufi7i8uIGP18mlwwEj8tSkMa91kRBlVdgXq8P1vWIgEq0yRO
-        DU/yKIJGdW/oWVoLUx3yb2dgfbMD059pM2W4ZBsBU88+bocwBe+X56mWUeqUmKx7
-        TCgbDTD6uXn8yiuUnsAPlRI4br71RWhJmAS3/5zio8wALTvttXbELic3u/OBJg2Q
-        ==
-X-ME-Sender: <xms:f8SfYS1fT2y5M3sCvkkO2AGkuR9BjuEtyecGgK0Gi2QkrP6vbqVDuQ>
-    <xme:f8SfYVEQwHiEECcjJwYgmnIQaKT6kDcNXwnWNZeX5LedbUSm15XGHG-I4s6S418wX
-    dfAUiD4KB1Hjg>
-X-ME-Received: <xmr:f8SfYa4QfDgEhLGkaNyRNNDgY0NC0oWHiEkXQaea4d9Y4_E1UYyQ6Oy--QjRhyLIalmCWZkxeEaxKRvVu-LUrvWGPBSC7DGl>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrhedtgdelkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepkeduhefhhe
-    fggfeggedtueeiffehfeejgfduiedtkeegieekfeegudfhgfejkefgnecuffhomhgrihhn
-    pehkvghrnhgvlhhnvgifsghivghsrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:f8SfYT3aGg0MFH_8RAsGYOb-4HCq1U8ccmM_6fx3WmZ6eBVNy0YXTA>
-    <xmx:f8SfYVF-AQcyVWWKfWBdseS2cIDN4Sg5KNGpaj0wR0MkOsp_1jgMsA>
-    <xmx:f8SfYc8qsoQvWPkxipvHfDa0vASNNG50PopSZNAmH7yr9Oh47lSGaA>
-    <xmx:f8SfYbaAKFaLIMioJ6pdgKsFfmMRQ3goJKjxJq9rb4Cq5MnB4jjRtA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 25 Nov 2021 12:14:38 -0500 (EST)
-Date:   Thu, 25 Nov 2021 18:14:36 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Zoeb Mithaiwala <zoebm@google.com>
-Cc:     dan.carpenter@oracle.com, trivial@kernel.org,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH v3 3/3] Staging: rtl8712: Fixes a camel case variable
- name style issue
-Message-ID: <YZ/EfPYxpsXg/gSm@kroah.com>
-References: <20211122103931.GA6514@kadam>
- <20211122170335.1468730-1-zoebm@google.com>
- <YZ4Nej0yftiWh5rc@kroah.com>
- <CANMHzA4U-qc3mqz5XV4YOex-=CtsJ1UA2Xv4VaEQsf66Qfnh7g@mail.gmail.com>
+        Thu, 25 Nov 2021 12:24:40 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093E4C0619F8;
+        Thu, 25 Nov 2021 09:14:49 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1637860486;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LL/5ce9I075bREwdkAPDj5xcKSWxoEt5ZmGokCJm/Y8=;
+        b=jk3EwCul194w55gondVINdtl0j2sATS0mMm/2Frp5sBjuixnkzMjZX7lEavMtIz91apRty
+        48SeOy15dsDuMFOXr3XPqwXt7Akw2QD6kBrpOa5kh6iC/5l2dF5rmGBHVgz+OPq9MdSoVZ
+        DIyWpFAsgQP8DCJXrs597Dt6BOArmdKPGTHT76REyeg6GdS1p3ZtKHdJc7TLsJ6mooSiq5
+        fHfnf5NbtLFtSXULIhmV5E2cSiFDOjzydy6acEc964ik/3qv6dpdXg7rJn9beGu7KcKMAN
+        U1xrUotpA2rm0NlKUxV0XNDjLJ5rzuCKvnqJDp8ao/1FTkVW63okDfYCEFSOgw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1637860486;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LL/5ce9I075bREwdkAPDj5xcKSWxoEt5ZmGokCJm/Y8=;
+        b=n/TJMWJeKQbISYcq2MXsKC4q6WGiCYJFykjqE4/jnpHQpKXz4d2pfwdRuKU9GJZilNOBB8
+        NoJModPs01o00aCA==
+To:     isaku.yamahata@intel.com, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [RFC PATCH v3 08/59] KVM: Export kvm_io_bus_read for use by TDX
+ for PV MMIO
+In-Reply-To: <7adb093f872ead3f69c03dcc26a15fb9d1c499f2.1637799475.git.isaku.yamahata@intel.com>
+References: <cover.1637799475.git.isaku.yamahata@intel.com>
+ <7adb093f872ead3f69c03dcc26a15fb9d1c499f2.1637799475.git.isaku.yamahata@intel.com>
+Date:   Thu, 25 Nov 2021 18:14:45 +0100
+Message-ID: <875ysgkvi2.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANMHzA4U-qc3mqz5XV4YOex-=CtsJ1UA2Xv4VaEQsf66Qfnh7g@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 10:37:37PM +0530, Zoeb Mithaiwala wrote:
-> > Where are patches 1/3 and 2/3 of this series?
-> Apologies, I was unaware that the preferred method is a single email containing
-> all the patches instead of a reply on the thread with only a single
-> latest patch.
+On Wed, Nov 24 2021 at 16:19, isaku yamahata wrote:
 
-No one could work with a reply thread like that, right?  Would you want
-to review patches sent that way?  :)
+What is PV MMIO? This has nothing to do with PV=, aka paravirt because
+it's used in the tdx exit handler for emulation. Please stop confusing
+concepts.
 
-> > And this looks like it does not apply to any tree at all, are you sure
-> you made it against the correct kernel branch?  If so, what one?
-> This was against torvalds/linux, but I just saw that
-> https://kernelnewbies.org/FirstKernelPatch suggests using gregkh/staging,
-> I will clone and make further changes on that.
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+>
+> Later kvm_intel.ko will use it.
 
-Wonderful, good luck!
+That sentence is useless, as are the other 'later patches' phrases all
+over the place. At submission time it's obvious and once this is merged
+it's not helpful at all.
 
-greg k-h
+What's even worse is that this happens right at the beginning of the
+series and the actual use case is introduced 50 patches later. That's
+not how exports are done. Exports are next to the use case and in the
+best case they can be just part of the use case patch.
+
+This is not how fine granular patching works. Just splitting out stupid
+things into separate patches does not make a proper patch series. It
+creates an illusion, that's it.
+
+And if I look at the patch which makes actual use of that export then
+it's just the proof. I'll come to that later.
+
+Thanks,
+
+        tglx
+
