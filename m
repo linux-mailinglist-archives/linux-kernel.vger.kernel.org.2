@@ -2,147 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC4E45E1EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:07:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE1C45E1F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:11:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231506AbhKYVK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 16:10:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33748 "EHLO
+        id S242097AbhKYVOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 16:14:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231390AbhKYVIY (ORCPT
+        with ESMTP id S233583AbhKYVMg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 16:08:24 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8B58C061748;
-        Thu, 25 Nov 2021 13:05:09 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637874308;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YNmPmUoFAxppOmBMYLIuVqNX0F602oVcaNqwhbaiy3w=;
-        b=Tn/FIXi09j4ilV5LHyGKcmCOym19CT7NJno5pR+DNNM7F1p5ld/DRVpXecO5863YhmwFCh
-        wrir6Iui24FgfwmSTxz0FeixrHJZLihtQEiM2kZnKgBd1qZPw35KcgOlEC8vrMP6/xJ111
-        0F/lARlqjJg6C24vuStz8wJEfPaFV4cX+NOEK8EdsGNS8pcw8hH9p60dALOWxQmPQuJC+2
-        4bj8Do2u5FR/9qcAhrprx6wXYvOdQFv5yrLL7MQQ30zY2sL4IjqKVyzWy57BAytI3s/cFK
-        ZrPGNO71+t0pEatqjdSFJKRHJNdEsa10KiHtqEDCRrBZChuQKd62tCcVQVGpIA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637874308;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YNmPmUoFAxppOmBMYLIuVqNX0F602oVcaNqwhbaiy3w=;
-        b=ygoL6+hsUkV5ODhLi1TowwlyURPzmHTdByQx3+54q/C3yWGUvwrKJGbKveRx3DUtwaenzb
-        LmRBVtkL5+X3yABA==
-To:     isaku.yamahata@intel.com, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Subject: Re: [RFC PATCH v3 54/59] KVM: X86: Introduce initial_tsc_khz in
- struct kvm_arch
-In-Reply-To: <5ba3573c8b82fcbdc3f3994f6d4d2a3c40445be9.1637799475.git.isaku.yamahata@intel.com>
-References: <cover.1637799475.git.isaku.yamahata@intel.com>
- <5ba3573c8b82fcbdc3f3994f6d4d2a3c40445be9.1637799475.git.isaku.yamahata@intel.com>
-Date:   Thu, 25 Nov 2021 22:05:07 +0100
-Message-ID: <875ysghrp8.ffs@tglx>
+        Thu, 25 Nov 2021 16:12:36 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94AEC06175E;
+        Thu, 25 Nov 2021 13:07:35 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id z8so14727080ljz.9;
+        Thu, 25 Nov 2021 13:07:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=fDWVlGc9bkfdx0uGoZEsq0fC8zJhCxYYZIKbBpnGA24=;
+        b=AEN2AeDMq5pd5sT+WTKPV6Ck8A2r0WdZyPZ/BTTvBFM9W3KRgcQS40P9g9m2HPwbWK
+         56oYBQb9QqEbwy//ALKtx869/tFjcbpTTxaGVb9Agc29MUK/CR6YzXiAb55KXfurgkKs
+         uf9Tnkm8gb7qy0ohdwIgRuBf2+g0z1eUnhnHNVWRZq6eW+qpGGPq/ydqWB6lk4eG1NYH
+         VUSwirp1RfInXfko4Eob3zBr61jiY5qkRm09/abMq6hKjx5GxGxhobQvNrkY57mJScp3
+         tnWbdZiW8B4UYJBkpALG8mAEG1+YdmpkpoA/I5U2UkVEMk5qUK+9yK8ZW+P9wgJ0qOTj
+         jNkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=fDWVlGc9bkfdx0uGoZEsq0fC8zJhCxYYZIKbBpnGA24=;
+        b=TNnQtqFgUT1yUZ2AzAdrWEPpXQwvq5QKvuHv4JBOpa3BO1V/ETM6wc1KTUBb14NMiW
+         Ft67iQHd2A6KqHFZVFcxSPYit+M1cFRIkOYYIOnUiJGcGKcwQ8r/S7mqPf8W6g/qlTe3
+         oyau0a1wCY9X5B86IUsKt7p3nahptt0PvYjdVGzdxwLzprocuUHXItHUBqn6DF7pHGXY
+         CekTWOxtwPZ8Ml93jPehnD7D/4niSSyG7J0R7YiPMiB7JItwM5XdlcoBZslSrE0Y8GFa
+         QaVXSzaO8kGoVwImt1ql15gSXxE/DGHv9TrNqLRtYa79lpTbSEA95YTFn+BQVI4mrROB
+         q2aA==
+X-Gm-Message-State: AOAM530dhzOkiHnre+znV/hJioXeDWpChbpwbwQbBxHzG/UkUz3J0UiZ
+        sJt15eU+7yi/x94D/HjesM4=
+X-Google-Smtp-Source: ABdhPJyAn1heOEmcVZdI7bU/B89WZITYQzw3nQ9+EMs5qbVA6MfZ6P6S7Q6k+29KOR+5bxgzQrzSdw==
+X-Received: by 2002:a2e:a378:: with SMTP id i24mr28530130ljn.290.1637874454136;
+        Thu, 25 Nov 2021 13:07:34 -0800 (PST)
+Received: from netbook-debian (110-38-179-94.pool.ukrtel.net. [94.179.38.110])
+        by smtp.gmail.com with ESMTPSA id u22sm347968lff.118.2021.11.25.13.07.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 13:07:33 -0800 (PST)
+Date:   Thu, 25 Nov 2021 23:07:30 +0200
+From:   Denis Pauk <pauk.denis@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Eugene Shalygin <eugene.shalygin@gmail.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        thomas@weissschuh.net, Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] hwmon: (nct6775) Use nct6775_*() lock function
+ pointers in nct6775_data.
+Message-ID: <20211125230730.485ca7b0@netbook-debian>
+In-Reply-To: <CAHp75VfAAyHEnOS7npPOJqpgMgJpaukFcYC+1TH+UhTK5iksMg@mail.gmail.com>
+References: <20211122212850.321542-1-pauk.denis@gmail.com>
+        <20211122212850.321542-2-pauk.denis@gmail.com>
+        <CAHp75VfAAyHEnOS7npPOJqpgMgJpaukFcYC+1TH+UhTK5iksMg@mail.gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24 2021 at 16:20, isaku yamahata wrote:
-> From: Xiaoyao Li <xiaoyao.li@intel.com>
->
-> Introduce a per-vm variable initial_tsc_khz to hold the default tsc_khz
-> for kvm_arch_vcpu_create().
->
-> This field is going to be used by TDX since TSC frequency for TD guest
-> is configured at TD VM initialization phase.
+On Wed, 24 Nov 2021 18:03:25 +0200
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-So now almost 50 patches after exporting kvm_io_bus_read() I have
-finally reached the place which makes use of it. But that's just a minor
-detail compared to this:
+> On Mon, Nov 22, 2021 at 11:29 PM Denis Pauk <pauk.denis@gmail.com>
+> wrote:
+> 
+> Better subject line (after prefix): Use lock function pointers in
+> nct6775_data (note no period and drop of redundancy)
+> 
+> > Prepare for platform specific callbacks usage:
+> > * Use nct6775 lock function pointers in struct nct6775_data instead
+> >   direct calls.  
+> 
+> ...
+> 
+> > +static int nct6775_lock(struct nct6775_data *data)
+> > +{
+> > +       mutex_lock(&data->update_lock);
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static void nct6775_unlock(struct nct6775_data *data, struct
+> > device *dev) +{
+> > +       mutex_unlock(&data->update_lock);
+> > +}  
+> 
+> Have you run `sparse` against this?
+> Install `sparse` in your distribution and make kernel with
+> `make W=1 C=1 CF=-D__CHECK_ENDIAN__ ...`
+> 
+> It might require using special annotations to these functions to make
+> static analysers happy.
+> 
 
->  arch/x86/include/asm/kvm_host.h |    1 +
->  arch/x86/kvm/vmx/tdx.c          | 2233 +++++++++++++++++++++++++++++++
+Thank you, I will validate my patches before sending with sparse also.
 
-Can you pretty please explain how this massive pile of code is related
-to the subject line and the change log of this patch?
+I have tried with sparse==0.6.4:
+---
+$ make CC="ccache gcc" W=1 C=2 CF=-D__CHECK_ENDIAN__ 2>&1 | grep
+nct6775 -n5
+....
+27219-  CHECK   drivers/hwmon/nct6683.c
+27220:  CHECK   drivers/hwmon/nct6775.c
+27221-  CHECK   drivers/hwmon/nct7802.c
+....
+---
 
-It takes more than 2000 lines of code to add a new member to struct
-kvm_arch?
+It has not showed any warnings. Have I missed some flag? 
 
-Seriously? This definitely earns an award for the most disconnected
-changelog ever.
 
->  arch/x86/kvm/x86.c              |    3 +-
->  3 files changed, 2236 insertions(+), 1 deletion(-)
->  create mode 100644 arch/x86/kvm/vmx/tdx.c
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 17d6e4bcf84b..f10c7c2830e5 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1111,6 +1111,7 @@ struct kvm_arch {
->  	u64 last_tsc_write;
->  	u32 last_tsc_khz;
->  	u64 last_tsc_offset;
-> +	u32 initial_tsc_khz;
->  	u64 cur_tsc_nsec;
->  	u64 cur_tsc_write;
->  	u64 cur_tsc_offset;
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> new file mode 100644
-> index 000000000000..64b2841064c4
-
-< SNIP>
-
-Yes, the above would be the patch which would be expected according to
-the changelog and the subject line.
-
-And no. Throwing a 2000+ lines patch over the fence which builds up the
-complete infrastructure for TDX in KVM is not how that works. This patch
-(aside of the silly changelog) is an unreviewable maze.
-
-So far in this series, there was a continuous build up of infrastructure
-in reviewable chunks and then you expect a reviewer to digest 2000+
-lines at once for no reason and with the most disconneted changelog
-ever?
-
-This can be done structured and gradually, really.
-
-     1) Add the basic infrastructure
-
-     2) Add functionality piece by piece
-
-There is no fundamental dependency up to the point where you enable TDX,
-but there is a fundamental difference of reviewing 2000+ lines of code
-at once or reviewing a gradual build up of 2000+ lines of code in small
-pieces with proper changelogs for each of them.
-
-You can argue that my request is unreasonable until you are blue in
-your face, it's not going to lift my NAK on this.
-
-I've mopped up enough half baken crap in x86/kvm over the years and I
-have absolutely no interest at all to mop up after you again.
-
-x86/kvm is not a special part of the kernel and neither exempt from
-general kernel process nor from x86 specific scrunity rules.
-
-That said, I'm stopping the review right here simply because looking at
-any further changes does not make any sense at all.
-
-Thanks,
-
-        tglx
+Best regards,
+             Denis.
