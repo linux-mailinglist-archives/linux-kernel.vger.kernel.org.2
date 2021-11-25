@@ -2,130 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFB845D3B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 04:43:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0654B45D3B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 04:44:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238868AbhKYDqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 22:46:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58234 "EHLO
+        id S1343680AbhKYDrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 22:47:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232093AbhKYDol (ORCPT
+        with ESMTP id S234928AbhKYDpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 22:44:41 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20DEC06173E
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 19:41:30 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id iq11so4125851pjb.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 19:41:30 -0800 (PST)
+        Wed, 24 Nov 2021 22:45:16 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB2DC061746
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 19:42:05 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id x6so19434218edr.5
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 19:42:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=I0urWh5kyX/7OdsoA6yYxBrS2aT/BuVxDjFE/a0zn6U=;
-        b=hXVCd+M4EMTJ0xnd+MS29sd2YQqeXf7raO74B+2+Z95Bdef7L9E5iesgSU32o6rZ7h
-         jDctqifkbJMerRWBOeJVmmwLcVaDEpBKJwy3G/wJDWljrSSRHjwsOeYlALYvfgD6CMIG
-         2c9qgcPztdeOhON3YjyTLpo8tz2NE6ImR9M+NGTUtI97kB10x8o85KXvruzTRkbpjjXE
-         4xGd1rLuGwexIriJC/mv8MwI+Oar1ANPPaFI1IEtw0S+kWvZhDjrlVqOYUabiontIGQ2
-         LYWOQ4/dNYlQ9THWJwKQuRxebxDoTiseTMg2DmnrtseDR2bUfWKRE+Hq2te7x0DYoKIM
-         sRBA==
+        bh=qHPissG71QpvjrT6a3/2z8N7PuL+tihvv/52XC6h0hM=;
+        b=Mqt0hWNJBdAGUwO5EiRFaA1swINTcew/kHOPQsio8jlCmfc/UjdLvpDuEhFFoGUB+1
+         czJL0RS6/0Iz98IrrBZQhxJ39ab6vWfxB8dA6Y2FTemn553lkRn5kkyUeUcRUgXWt0k9
+         qviBnDohCCk9I5e6c7J25aFNrGZ3i7D6v1SJmufiCFw0m0bLCBDSYnFmpSDNTjqj2jrS
+         YqKt97Ob9i723DjMZ5X00OO8DvJGDyygKb/arEVY26sIQvVPY6mjrySz+wX67+OV1TGg
+         fpCkmWLrKbEQRgh+7/cBfgG9d3tfqNII2+MVI5O5fFQkRVhoOeoJbinemMCCS6EQRJWD
+         ynug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=I0urWh5kyX/7OdsoA6yYxBrS2aT/BuVxDjFE/a0zn6U=;
-        b=m+PvVmSMdjfUM7qAxfiGpaZlI/QJtdwRSUsizkhnH9Isel4vZ1yIHkwvdrYXMWGhGp
-         mgnwYaA3KTaMIDLp/KtDoMSGHPL1hhWlHnOirj3Db9ixkz2XL5qlEPbLkKItvX9C2ojB
-         CIkgFVOAT1QhCei1HX/Pm0IJ67SKBLItTjjJnW3NS0iTR/SfEmYOSFHtaezTjjWuYS4Y
-         2b68S9EkK/LtvDnb41NR92T4ZYCePoUYlbHhtlsjsAKNNoqAEnhNNEmkLX20SKollsnu
-         otRi31BR0D07SJgOqJ8wtY3XZPOOn7HjKpQ4Br+IzI923KAYVZIsHToG7IyDPpLdlMhN
-         asaQ==
-X-Gm-Message-State: AOAM533FAFicSSXqD4eFaBPl5pAWKNi4KhnQ8hGYhvlk/d06068SIlIv
-        vDtuVeY7vVFrovdrCRan7UKGpDPEniAcnd8jdzM=
-X-Google-Smtp-Source: ABdhPJwfJHfK9XFIeHNBa8g24eIsmZQITv5sKETh7/I0wTPNAc2MZyi6LhvTS6iv9mBgGEILO08b/RgTyI0vG0Zm1d8=
-X-Received: by 2002:a17:903:32d1:b0:142:1ce1:30c9 with SMTP id
- i17-20020a17090332d100b001421ce130c9mr25786977plr.0.1637811690063; Wed, 24
- Nov 2021 19:41:30 -0800 (PST)
+        bh=qHPissG71QpvjrT6a3/2z8N7PuL+tihvv/52XC6h0hM=;
+        b=bWpqeWkA9TiNTM/Swydbt4Gd9nYNWATsyovwTSBolHMdtwIrQPUTH3c0Tn9i0VFZwT
+         dKiD0aSdhtS2d1dmiB4kFQJtGQXU8PGA1WpSsFfN0cxKprmddHC2WyldIArMiQoer/WV
+         Jqs02EVYi4d1sTUGed88pgmLO/wwyt3So/uLq+ChoEGWuoqQT6Cju/62jUb24HrSGRoP
+         rjO0BhVDlMzSSk2vWNYG32pVW4sdcuBWF2hy0/3+mv05sWJSBhG3cemhNcaswjw4xSg7
+         QV1xzifEvzbBmyjf4OIeSrszSQaaVuFvAcUcMX8QJ5gSlpmW7eyeowl8jcs8tp08y6vp
+         hRiQ==
+X-Gm-Message-State: AOAM531Sc8yIxC0ZxlsgK/n2B1C2ZNgsvAwLMbtf0jFt9BhsygP9Zv46
+        zIwt4p2DZIuzRNAn6A1L/961FIYvvDPgFWWZR6WfJQ==
+X-Google-Smtp-Source: ABdhPJzBoQfr2ga+waKUthRWdr+KyjBxa+4oYyKD2T9uCcZ3xbhbqXPSXXRKip2atA44sUHOLjbG3hog6TSiCK+cjBc=
+X-Received: by 2002:a17:907:9196:: with SMTP id bp22mr26479472ejb.69.1637811724433;
+ Wed, 24 Nov 2021 19:42:04 -0800 (PST)
 MIME-Version: 1.0
-References: <CANn89i+hQTn26hK-4CA=cAwCxEMzogqD30PYdqz4NP8kjmH2gg@mail.gmail.com>
- <CANn89i+K6=Kc0weayD_phAPn9YT=2UUje+1BZfg=kUiLp7ELqQ@mail.gmail.com>
- <619eee05.1c69fb81.4b686.4bbc@mx.google.com> <CANn89iJdQ1VTLYUKu1hYNm4wF__ZzrwNYr28v_vGM0MCybJpxg@mail.gmail.com>
-In-Reply-To: <CANn89iJdQ1VTLYUKu1hYNm4wF__ZzrwNYr28v_vGM0MCybJpxg@mail.gmail.com>
-From:   Noah Goldstein <goldstein.w.n@gmail.com>
-Date:   Wed, 24 Nov 2021 21:41:19 -0600
-Message-ID: <CAFUsyf+5zp+p_0TPFLr-fMNry0M_CnNAFDG30PKDuy2jA5MhNw@mail.gmail.com>
-Subject: Re: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12:
- error: implicit declaration of function 'load_unaligned_zeropad'
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Johannes Berg <johannes@sipsolutions.net>, alexanderduyck@fb.com,
-        kbuild-all@lists.01.org, open list <linux-kernel@vger.kernel.org>,
-        linux-um@lists.infradead.org, lkp@intel.com, peterz@infradead.org,
-        X86 ML <x86@kernel.org>
+References: <20211124115710.214900256@linuxfoundation.org>
+In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 25 Nov 2021 09:11:53 +0530
+Message-ID: <CA+G9fYu83b6_dJ8GOUTcsoUvkZdVWz9Q458f0vsRfXS7pdbXqQ@mail.gmail.com>
+Subject: Re: [PATCH 4.14 000/251] 4.14.256-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 8:56 PM Eric Dumazet <edumazet@google.com> wrote:
+On Wed, 24 Nov 2021 at 17:51, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> On Wed, Nov 24, 2021 at 5:59 PM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
-> >
+> This is the start of the stable review cycle for the 4.14.256 release.
+> There are 251 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> >
-> > Hi, I'm not sure if this is intentional or not, but I noticed that the output
-> > of 'csum_partial' is different after this patch. I figured that the checksum
-> > algorithm is fixed so just wanted mention it incase its a bug. If not sorry
-> > for the spam.
-> >
-> > Example on x86_64:
-> >
-> > Buff: [ 87, b3, 92, b7, 8b, 53, 96, db, cd, 0f, 7e, 7e ]
-> > len : 11
-> > sum : 0
-> >
-> > csum_partial new : 2480936615
-> > csum_partial HEAD: 2472089390
+> Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
+> Anything received after that time might be too late.
 >
-> No worries.
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.256-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+> and the diffstat can be found below.
 >
-> skb->csum is 32bit, but really what matters is the 16bit folded value.
+> thanks,
 >
-> So make sure to apply csum_fold() before comparing the results.
->
-> A minimal C and generic version of csum_fold() would be something like
->
-> static unsigned short csum_fold(u32 csum)
-> {
->   u32 sum = csum;
->   sum = (sum & 0xffff) + (sum >> 16);
->   sum = (sum & 0xffff) + (sum >> 16);
->   return ~sum;
-> }
->
-> I bet that csum_fold(2480936615) == csum_fold(2472089390)
->
+> greg k-h
 
-Correct :)
 
-The outputs seem to match if `buff` is aligned to 64-bit. Still see
-difference with `csum_fold(csum_partial())` if `buff` is not 64-bit aligned.
+FYI,
+New warnings on Linux 4.14.256-rc1 on arm and arm64 (defconfig+7) with gcc-11.
 
-The comment at the top says it's "best" to have `buff` 64-bit aligned but
-the code logic seems meant to support the misaligned case so not
-sure if it's an issue.
+drivers/soc/tegra/pmc.c: In function 'tegra_powergate_power_up':
+drivers/soc/tegra/pmc.c:423:1: warning: label 'powergate_off' defined
+but not used [-Wunused-label]
+  423 | powergate_off:
+      | ^~~~~~~~~~~~~
 
-Example:
 
-csum_fold(csum_partial) new : 0x3764
-csum_fold(csum_partial) HEAD: 0x3a61
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-buff        : [ 11, ea, 75, 76, e9, ab, 86, 48 ]
-buff addr   : ffff88eaf5fb0001
-len         : 8
-sum_in      : 25
-
-> It would be nice if we had a csum test suite, hint, hint ;)
-
-Where in the kernel would that belong?
-
->
-> Thanks !
+--
+Linaro LKFT
+https://lkft.linaro.org
