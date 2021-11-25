@@ -2,177 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B87A245D65B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:40:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0322245D635
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:31:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353420AbhKYInP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 03:43:15 -0500
-Received: from pegase2.c-s.fr ([93.17.235.10]:38011 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352302AbhKYIlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 03:41:14 -0500
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4J09rW6S39z9sT2;
-        Thu, 25 Nov 2021 09:23:55 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id XMRS3j_NWamp; Thu, 25 Nov 2021 09:23:55 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4J09rM65d2z9sSx;
-        Thu, 25 Nov 2021 09:23:47 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C10B98B77B;
-        Thu, 25 Nov 2021 09:23:47 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id AVbd-du857Au; Thu, 25 Nov 2021 09:23:47 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.227])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id EA9D18B77D;
-        Thu, 25 Nov 2021 09:23:46 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1AP8NdTl086380
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 25 Nov 2021 09:23:39 +0100
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1AP8NdJv086379;
-        Thu, 25 Nov 2021 09:23:39 +0100
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, alex@ghiti.fr
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-mm@kvack.org
-Subject: [PATCH v2 9/9] powerpc: Simplify and move arch_randomize_brk()
-Date:   Thu, 25 Nov 2021 09:23:31 +0100
-Message-Id: <4c5a2b18774552c2226573f7069ffeee71ad77cb.1637828367.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <cover.1637828367.git.christophe.leroy@csgroup.eu>
-References: <cover.1637828367.git.christophe.leroy@csgroup.eu>
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1637828609; l=3773; s=20211009; h=from:subject:message-id; bh=uDMNxxQ2lNaP63d0uIkwxjHDa3IfpqMt7N58uCcNJIM=; b=Tn0UK+dlcWXuMeocBLofKxqdqjcqqlONZwe8JqKJQQdMw2fNGRYyBDArfjOd0qDjjxzE/MdEcNal mGjmrut4D9s2VJQyx/hSgIpb1ekBl7TeIwmTiwgx5PnBeFi685v2
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+        id S1352212AbhKYIeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 03:34:25 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.170]:15011 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236816AbhKYIcY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 03:32:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637828944;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=hNupkB5Ycrs2ep+wM+k9JG7Vx2CZhHli9LlBG3B/zR4=;
+    b=VyZQoxLc3nRIMAK86FuSrQjTZaLeXU8W7jLtfsq5foieszx0qglMxuGCYbPiXRz9r/
+    LYBxc/cvzwJTzX3f0uOL2Zl2o3mE2WfIkpDjBilzpv66DKWeb7iRMuBJDeK/z/AZiDsa
+    6GKnLe4NYfCJ4HKSR2AoNWZUCwfrEX/s5r9tHKxIsNyxZ6K2fSOzKV8CQeSat/oOqirG
+    IfRYTXgzkVqqx8/j8nF1JmrXO94rmxZp9YzWHs9Vp3tY8vSfGAwN0ARYExMCS8rAdn8c
+    wvtZZu6kCKg/K9yu5NmBlj8FEXu+K/sYL9dHp9WsRmF86fhvp9vU9mB4NgzniK/3cT+L
+    n05g==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3iMMUrw=="
+X-RZG-CLASS-ID: mo00
+Received: from mbp-13-nikolaus.fritz.box
+    by smtp.strato.de (RZmta 47.34.10 DYNA|AUTH)
+    with ESMTPSA id e05ed8xAP8T26En
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Thu, 25 Nov 2021 09:29:02 +0100 (CET)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH v8 6/8] MIPS: DTS: CI20: Add DT nodes for HDMI setup
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <CAMuHMdV5sjVg6BEm3zgvvsJDHJwKP1A8rh-sama8suCG5SYQyA@mail.gmail.com>
+Date:   Thu, 25 Nov 2021 09:29:02 +0100
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
+        DRI Development <dri-devel@lists.freedesktop.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <DD6EFFDC-EB04-4C39-8A63-3825C3A9C64D@goldelico.com>
+References: <cover.1637691240.git.hns@goldelico.com>
+ <d62023e0872e9b393db736f4a0ecf04b3fc1c91b.1637691240.git.hns@goldelico.com>
+ <O0K13R.TIL3JBQ5L8TO1@crapouillou.net>
+ <04F0ED7C-3D18-4CCF-8F10-E0A36B0E4F4B@goldelico.com>
+ <CAMuHMdWO3yosf5eyTPpydVuT3pwvuw9Q=2BUxq+rxPjE3iSnrw@mail.gmail.com>
+ <B622D2B5-D631-43F3-9D50-2B41681C78AB@goldelico.com>
+ <CAMuHMdV5sjVg6BEm3zgvvsJDHJwKP1A8rh-sama8suCG5SYQyA@mail.gmail.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arch_randomize_brk() is only needed for hash on book3s/64, for other
-platforms the one provided by the default mmap layout is good enough.
+Hi Gert,
 
-Move it to hash_utils.c and use randomize_page() like the generic one.
+> Am 25.11.2021 um 08:58 schrieb Geert Uytterhoeven =
+<geert@linux-m68k.org>:
+>=20
+> Hi Nikolaus,
+>=20
+> On Wed, Nov 24, 2021 at 5:31 PM H. Nikolaus Schaller =
+<hns@goldelico.com> wrote:
+>>> Am 24.11.2021 um 17:21 schrieb Geert Uytterhoeven =
+<geert@linux-m68k.org>:
+>>> On Wed, Nov 24, 2021 at 5:19 PM H. Nikolaus Schaller =
+<hns@goldelico.com> wrote:
+>>>>> Am 23.11.2021 um 21:10 schrieb Paul Cercueil =
+<paul@crapouillou.net>:
+>>>>> Le mar., nov. 23 2021 at 19:13:59 +0100, H. Nikolaus Schaller =
+<hns@goldelico.com> a =C3=A9crit :
+>>>>>> +    assigned-clock-rates =3D <48000000>, <0>, <54000000>, <0>, =
+<27000000>;
+>>>>>> };
+>>>>>> &tcu {
+>>>>>> @@ -509,6 +534,19 @@ pins_i2c4: i2c4 {
+>>>>>>            bias-disable;
+>>>>>>    };
+>>>>>> +    pins_hdmi_ddc: hdmi_ddc {
+>>>>>> +            function =3D "hdmi-ddc";
+>>>>>> +            groups =3D "hdmi-ddc";
+>>>>>> +            bias-disable;
+>>>>>> +    };
+>>>>>> +
+>>>>>> +    /* switch to PF25 as gpio driving DDC_SDA low */
+>>>>>> +    pins_hdmi_ddc_unwedge: hdmi_ddc {
+>>>>>> +            function =3D "hdmi-ddc";
+>>>>>> +            groups =3D "hdmi-ddc";
+>>>>>> +            bias-disable;
+>>>>>> +    };
+>>>>>=20
+>>>>> Your pins_hdmi_ddc and pins_hdmi_ddc_unwedge are the exact same? =
+You could just use the former and pass it to both pinctrl-0 and =
+pinctrl-1.
+>>>>=20
+>>>> This was forgotten to remove. We do not make use of the unwedge =
+feature because I could not find out how to use pinctrl to switch this =
+to gpio25 and drive it low.
+>>>=20
+>>> Using gpio-hog?
+>>=20
+>> well, AFAIR it activates the gpio permanently and is a propery of the =
+gpio controller and not of pinmux.
+>=20
+> Yes, hogs are permanently (ignoring DT overlay tricks).
+>=20
+>> The driver assumes it can use pinmux state switching to drive the =
+DDC_SDA line low on demand.
+>=20
+> Add an optional wedge-gpios property for switching?
 
-And properly opt out the radix case instead of making an assumption
-on mmu_highuser_ssize.
+That would touch the synopsys driver core and does not appear to be =
+required for jz4780 operation.
+We just add a separate driver specialisation for some parameters and set =
+up the device tree.
 
-Also change to a 32M range like most other architectures instead of 8M.
+So it is beyond the scope of our work (neither needed, nor can we test =
+it).
+If you want to add that, please go ahead.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v2: New
----
- arch/powerpc/kernel/process.c         | 40 ---------------------------
- arch/powerpc/mm/book3s64/hash_utils.c | 18 ++++++++++++
- include/linux/sizes.h                 |  2 ++
- 3 files changed, 20 insertions(+), 40 deletions(-)
-
-diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-index 406d7ee9e322..f1f2f17543d6 100644
---- a/arch/powerpc/kernel/process.c
-+++ b/arch/powerpc/kernel/process.c
-@@ -2274,43 +2274,3 @@ unsigned long arch_align_stack(unsigned long sp)
- 		sp -= get_random_int() & ~PAGE_MASK;
- 	return sp & ~0xf;
- }
--
--static inline unsigned long brk_rnd(void)
--{
--        unsigned long rnd = 0;
--
--	/* 8MB for 32bit, 1GB for 64bit */
--	if (is_32bit_task())
--		rnd = (get_random_long() % (1UL<<(23-PAGE_SHIFT)));
--	else
--		rnd = (get_random_long() % (1UL<<(30-PAGE_SHIFT)));
--
--	return rnd << PAGE_SHIFT;
--}
--
--unsigned long arch_randomize_brk(struct mm_struct *mm)
--{
--	unsigned long base = mm->brk;
--	unsigned long ret;
--
--#ifdef CONFIG_PPC_BOOK3S_64
--	/*
--	 * If we are using 1TB segments and we are allowed to randomise
--	 * the heap, we can put it above 1TB so it is backed by a 1TB
--	 * segment. Otherwise the heap will be in the bottom 1TB
--	 * which always uses 256MB segments and this may result in a
--	 * performance penalty. We don't need to worry about radix. For
--	 * radix, mmu_highuser_ssize remains unchanged from 256MB.
--	 */
--	if (!is_32bit_task() && (mmu_highuser_ssize == MMU_SEGSIZE_1T))
--		base = max_t(unsigned long, mm->brk, 1UL << SID_SHIFT_1T);
--#endif
--
--	ret = PAGE_ALIGN(base + brk_rnd());
--
--	if (ret < mm->brk)
--		return mm->brk;
--
--	return ret;
--}
--
-diff --git a/arch/powerpc/mm/book3s64/hash_utils.c b/arch/powerpc/mm/book3s64/hash_utils.c
-index 1d09d4aeddbf..3521fad6a479 100644
---- a/arch/powerpc/mm/book3s64/hash_utils.c
-+++ b/arch/powerpc/mm/book3s64/hash_utils.c
-@@ -37,6 +37,7 @@
- #include <linux/cpu.h>
- #include <linux/pgtable.h>
- #include <linux/debugfs.h>
-+#include <linux/random.h>
- 
- #include <asm/interrupt.h>
- #include <asm/processor.h>
-@@ -2072,3 +2073,20 @@ void __init print_system_hash_info(void)
- 	if (htab_hash_mask)
- 		pr_info("htab_hash_mask    = 0x%lx\n", htab_hash_mask);
- }
-+
-+unsigned long arch_randomize_brk(struct mm_struct *mm)
-+{
-+	/*
-+	 * If we are using 1TB segments and we are allowed to randomise
-+	 * the heap, we can put it above 1TB so it is backed by a 1TB
-+	 * segment. Otherwise the heap will be in the bottom 1TB
-+	 * which always uses 256MB segments and this may result in a
-+	 * performance penalty.
-+	 */
-+	if (is_32bit_task())
-+		return randomize_page(mm->brk, SZ_32M);
-+	else if (!radix_enabled() && mmu_highuser_ssize == MMU_SEGSIZE_1T)
-+		return randomize_page(max_t(unsigned long, mm->brk, SZ_1T), SZ_1G);
-+	else
-+		return randomize_page(mm->brk, SZ_1G);
-+}
-diff --git a/include/linux/sizes.h b/include/linux/sizes.h
-index 1ac79bcee2bb..84aa448d8bb3 100644
---- a/include/linux/sizes.h
-+++ b/include/linux/sizes.h
-@@ -47,6 +47,8 @@
- #define SZ_8G				_AC(0x200000000, ULL)
- #define SZ_16G				_AC(0x400000000, ULL)
- #define SZ_32G				_AC(0x800000000, ULL)
-+
-+#define SZ_1T				_AC(0x10000000000, ULL)
- #define SZ_64T				_AC(0x400000000000, ULL)
- 
- #endif /* __LINUX_SIZES_H__ */
--- 
-2.33.1
+BR and thanks,
+Nikolaus
 
