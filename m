@@ -2,144 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D19945D59F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:38:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4344645D5A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239960AbhKYHlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 02:41:50 -0500
-Received: from mail.ispras.ru ([83.149.199.84]:38090 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237334AbhKYHji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 02:39:38 -0500
-Received: from mail.ispras.ru (unknown [83.149.199.84])
-        by mail.ispras.ru (Postfix) with ESMTPSA id C499440D403E;
-        Thu, 25 Nov 2021 07:36:22 +0000 (UTC)
+        id S1344835AbhKYHmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 02:42:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234579AbhKYHj4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 02:39:56 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29E3C06175D
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 23:36:45 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id bu18so14166964lfb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 23:36:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hiObrTf9v1RU1iPUzjRKa2X5bHrBY+vq37yRCw4SQfg=;
+        b=xJM97+HaGHEuZbldHf8LtFpYrwkTEqoHiVBbrK47linMt8oiBxA8Q+Qa5bKTWGnw93
+         XcyV+jt1YOZvvDZXyeMRa+bf2+Dki0Pbl9WPvD+R6yNOehkWitsG0HRqjOar7eJpts93
+         wjZotE0QJy04G+Sw5MwR9bF4X8ATSBtxX1D5BQQ0Nb3Bm6GDwDB27FOcdQbtEkSOcwzr
+         rgwqHrTUJ1LRpzqdIaI8hcMh+kHvgJBw1OYlAxCZvznaoB1mgrKGl6uskjA/ModEUbou
+         Z9zB2NPuKCSWxZAMrLWPQE5wsgU7xuANt7DdKVwhxG2QPerbDL3LrTP4yTGPfLQ430Qh
+         wDIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hiObrTf9v1RU1iPUzjRKa2X5bHrBY+vq37yRCw4SQfg=;
+        b=nzab2GNn0mSsIhvdYa63ExtQIr8MV4Qx29q8ybqjj18FMHtIj8FjQd15im3CKCv8UZ
+         +IqusxOda3TfLwJmaDurwhHR2/j1lQwWhiN6Sz4Ef/mT2DBvSoJZee0yl13V3uRwP3vc
+         EQHM/F6fXDooRgMaixpnbsaButc6EmSuMpZ2kftPKLHjAVCI4zYsAO7IGpHSmrpO1am5
+         ODk55XrSdMdQ2odEk9EaJltv9VAMMfzWbVCDMNz870j4Zm2y41F8XhdkSOMEs0klODhF
+         skGjlNjK75bXTPURaihKvesjDacr/0RqS5fEwgYTKp2+ZG1kly0Q1nvPcApKUqTUWuk5
+         OaCg==
+X-Gm-Message-State: AOAM5330LYRjNfoQ3kKsvRlt4zAl8TxvRKDDZZ98A952XjvNUMl5EMTm
+        fp3TO2HdrhU71xxLp6UVco+65gzIrnrJ8Q==
+X-Google-Smtp-Source: ABdhPJwqZErZYiffJ6x0dq1P6hgBrtHAkjYogcBg0mpyDkFuQEt7j0rZdxzcrn+0CDA9aTRgaTJlLw==
+X-Received: by 2002:ac2:5a0a:: with SMTP id q10mr22360431lfn.610.1637825803819;
+        Wed, 24 Nov 2021 23:36:43 -0800 (PST)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id j15sm195193lfg.167.2021.11.24.23.36.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Nov 2021 23:36:43 -0800 (PST)
+Subject: Re: [PATCH 1/2] drm/msm: Handle ringbuffer overflow
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     Jordan Crouse <jordan@cosmicpenguin.net>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        "Kristian H. Kristensen" <hoegsberg@google.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Dave Airlie <airlied@redhat.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210428193654.1498482-1-robdclark@gmail.com>
+ <20210428193654.1498482-2-robdclark@gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <e6f04ed5-100d-6ef9-c272-1a1370e45579@linaro.org>
+Date:   Thu, 25 Nov 2021 10:36:42 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Date:   Thu, 25 Nov 2021 10:36:22 +0300
-From:   baskov@ispras.ru
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, X86 ML <x86@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC 0/5] Handle UEFI NX-restricted page tables
-In-Reply-To: <CAMj1kXGzdMfj0bdNFODFZ8jfo0iMaZ5SOfueciwtY7Y4V5G2JQ@mail.gmail.com>
-References: <20211110104613.23881-1-baskov@ispras.ru>
- <CAMj1kXGzdMfj0bdNFODFZ8jfo0iMaZ5SOfueciwtY7Y4V5G2JQ@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.4
-Message-ID: <1b013e77ec3d4c6288408b3caff093ef@ispras.ru>
-X-Sender: baskov@ispras.ru
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20210428193654.1498482-2-robdclark@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hello,
-
-I apologize for delayed reply.
-
-The system in question runs in a firmware that tries to achieve
-complete W^X protection. Both loader code and loader data
-are not executable, so the suggested approach does not work.
-If you would like to test this, you can set
-the PcdDxeNxMemoryProtectionPolicy in any firmware available to you.
-
-As a justification for the approach itself, I can use the fact that
-UEFI specification says nothing about the ability to execute
-self-allocated EfiLoaderCode or any other types besides the areas
-allocated by the firmware for UEFI Images. In fact, Table 7-5
-explicitly states that EfiLoaderCode is used for:
-
-> The code portions of a loaded UEFI application.
-
-While we do not think it should be interpreted as one cannot allocate
-such areas at all, it is clear that there are no guarantees about the
-other use cases and permissions of the allocations of this type besides
-those stated by 2.3.4:
-
-> Paging mode is enabled and any memory space defined by the UEFI memory
-> map is identity mapped (virtual address equals physical address),
-> although the attributes of certain regions may not have all read,
-> write, and execute attributes or be unmarked for purposes of platform
-> protection.
-
-Long story short, the kernel is not allowed to allocate such areas and
-assume they are executable, it should do paging itself, and the changes
-here address that. For the reference, Windows adheres to this convention
-and works fine on the target system.
-
-Thanks,
-Baskov Evgeniy
-
-On 2021-11-10 14:11, Ard Biesheuvel wrote:
-> On Wed, 10 Nov 2021 at 11:56, Baskov Evgeniy <baskov@ispras.ru> wrote:
->> 
->> Note, that this patch series is RFC, since it is yet untested
->> and possibly incompatible with AMD SEV and related extensions.
->> 
->> The UEFI specification states that certain memory regions may
->> not have every permission, i.e. may not be writable or executable.
->> 
->> Furthermore there exist some implementations (at least on i386/x86_64)
->> that restrict execution of memory regions expected by the kernel to
->> be executable. E.g. first megabyte of address space, where trampoline
->> for switching between 4/5 level paging is placed and memory regions,
->> allocated as loader data.
->> 
->> This patch series allows Linux kernel to boot on such UEFI
->> implementations on i386 and x86_64.
->> 
->> The simplest way to achieve that on i386 is to disable paging
->> before jumping to potentially relocated code.
->> 
->> x86_64, on the other hand, does not allow disabling paging so it
->> is required to build temporary page tables containing memory regions
->> required for Linux kernel to boot with appropriate access permissions.
->> 
+On 28/04/2021 22:36, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
 > 
-> Hello Baskov,
+> Currently if userspace manages to fill up the ring faster than the GPU
+> can consume we (a) spin for up to 1sec, and then (b) overwrite the
+> ringbuffer contents from previous submits that the GPU is still busy
+> executing.  Which predictably goes rather badly.
 > 
-> To be honest, I am truly not a fan of this approach.
+> Instead, just skip flushing (updating WPTR) and reset ring->next back to
+> where it was before we tried writing the submit into the ringbuffer, and
+> return an error to userspace (which can then try again).
 > 
-> Which systems is this issue occurring on? Did you try something like
-> the below to allocate executable memory explicitly?
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+
+Rob, you've posted this patch, but never merged it. Should it be merged 
+at some point?
+
+> ---
+>   drivers/gpu/drm/msm/adreno/a5xx_gpu.c   |  3 +++
+>   drivers/gpu/drm/msm/adreno/a6xx_gpu.c   |  3 +++
+>   drivers/gpu/drm/msm/adreno/adreno_gpu.c | 24 +++++++++++++++++-
+>   drivers/gpu/drm/msm/msm_gem_submit.c    |  7 +++++-
+>   drivers/gpu/drm/msm/msm_gpu.c           | 33 +++++++++++++++++++++++--
+>   drivers/gpu/drm/msm/msm_gpu.h           |  2 +-
+>   drivers/gpu/drm/msm/msm_ringbuffer.h    |  5 ++++
+>   7 files changed, 72 insertions(+), 5 deletions(-)
 > 
+> diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> index ce13d49e615b..0c8faad3b328 100644
+> --- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+> @@ -36,6 +36,9 @@ void a5xx_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring,
+>   		OUT_RING(ring, upper_32_bits(shadowptr(a5xx_gpu, ring)));
+>   	}
+>   
+> +	if (unlikely(ring->overflow))
+> +		return;
+> +
+>   	spin_lock_irqsave(&ring->preempt_lock, flags);
+>   
+>   	/* Copy the shadow to the actual register */
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> index d553f62f4eeb..4a4728a774c0 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> @@ -68,6 +68,9 @@ static void a6xx_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
+>   		OUT_RING(ring, upper_32_bits(shadowptr(a6xx_gpu, ring)));
+>   	}
+>   
+> +	if (unlikely(ring->overflow))
+> +		return;
+> +
+>   	spin_lock_irqsave(&ring->preempt_lock, flags);
+>   
+>   	/* Copy the shadow to the actual register */
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> index 0f184c3dd9d9..a658777e07b1 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> @@ -467,6 +467,9 @@ void adreno_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring, u32 reg)
+>   {
+>   	uint32_t wptr;
+>   
+> +	if (unlikely(ring->overflow))
+> +		return;
+> +
+>   	/* Copy the shadow to the actual register */
+>   	ring->cur = ring->next;
+>   
+> @@ -788,12 +791,31 @@ static uint32_t ring_freewords(struct msm_ringbuffer *ring)
+>   	return (rptr + (size - 1) - wptr) % size;
+>   }
+>   
+> +static bool space_avail(struct msm_ringbuffer *ring, uint32_t ndwords)
+> +{
+> +	if (ring_freewords(ring) >= ndwords)
+> +		return true;
+> +
+> +	/* We don't have a good way to know in general when the RPTR has
+> +	 * advanced.. newer things that use CP_WHERE_AM_I to update the
+> +	 * shadow rptr could possibly insert a packet to generate an irq.
+> +	 * But that doesn't cover older GPUs.  But if the ringbuffer is
+> +	 * full, it could take a while before it is empty again, so just
+> +	 * insert a blind sleep to avoid a busy loop.
+> +	 */
+> +	msleep(1);
+> +
+> +	return false;
+> +}
+> +
+>   void adreno_wait_ring(struct msm_ringbuffer *ring, uint32_t ndwords)
+>   {
+> -	if (spin_until(ring_freewords(ring) >= ndwords))
+> +	if (spin_until(space_avail(ring, ndwords))) {
+>   		DRM_DEV_ERROR(ring->gpu->dev->dev,
+>   			"timeout waiting for space in ringbuffer %d\n",
+>   			ring->id);
+> +		ring->overflow = true;
+> +	}
+>   }
+>   
+>   /* Get legacy powerlevels from qcom,gpu-pwrlevels and populate the opp table */
+> diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+> index 5480852bdeda..4bc669460fda 100644
+> --- a/drivers/gpu/drm/msm/msm_gem_submit.c
+> +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+> @@ -683,6 +683,9 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+>   	submitid = atomic_inc_return(&ident) - 1;
+>   
+>   	ring = gpu->rb[queue->prio];
+> +
+> +	GEM_WARN_ON(ring->overflow);
+> +
+>   	trace_msm_gpu_submit(pid_nr(pid), ring->id, submitid,
+>   		args->nr_bos, args->nr_cmds);
+>   
+> @@ -829,7 +832,9 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+>   		}
+>   	}
+>   
+> -	msm_gpu_submit(gpu, submit);
+> +	ret = msm_gpu_submit(gpu, submit);
+> +	if (ret)
+> +		goto out;
+>   
+>   	args->fence = submit->fence->seqno;
+>   
+> diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
+> index ab7c167b0623..7655ad9108c8 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu.c
+> +++ b/drivers/gpu/drm/msm/msm_gpu.c
+> @@ -787,7 +787,7 @@ void msm_gpu_retire(struct msm_gpu *gpu)
+>   }
+>   
+>   /* add bo's to gpu's ring, and kick gpu: */
+> -void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+> +int msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>   {
+>   	struct drm_device *dev = gpu->dev;
+>   	struct msm_drm_private *priv = dev->dev_private;
+> @@ -834,9 +834,38 @@ void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>   	spin_unlock(&ring->submit_lock);
+>   
+>   	gpu->funcs->submit(gpu, submit);
+> -	priv->lastctx = submit->queue->ctx;
+>   
+>   	hangcheck_timer_reset(gpu);
+> +
+> +	if (unlikely(ring->overflow)) {
+> +		/*
+> +		 * Reset the ptr back to before the submit, so the GPU
+> +		 * doesn't see a partial submit:
+> +		 */
+> +		ring->next = ring->cur;
+> +
+> +		/*
+> +		 * Clear the overflow flag, hopefully the next submit on
+> +		 * the ring actually fits
+> +		 */
+> +		ring->overflow = false;
+> +
+> +		/*
+> +		 * One might be tempted to remove the submit from the
+> +		 * submits list, and drop it's reference (and drop the
+> +		 * active reference for all the bos).  But we can't
+> +		 * really signal the fence attached to obj->resv without
+> +		 * disturbing other fences on the timeline.  So instead
+> +		 * just leave it and let it retire normally when a
+> +		 * later submit completes.
+> +		 */
+> +
+> +		return -ENOSPC;
+> +	}
+> +
+> +	priv->lastctx = submit->queue->ctx;
+> +
+> +	return 0;
+>   }
+>   
+>   /*
+> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
+> index d7cd02cd2109..2dd2ef1f8328 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu.h
+> +++ b/drivers/gpu/drm/msm/msm_gpu.h
+> @@ -302,7 +302,7 @@ int msm_gpu_perfcntr_sample(struct msm_gpu *gpu, uint32_t *activetime,
+>   		uint32_t *totaltime, uint32_t ncntrs, uint32_t *cntrs);
+>   
+>   void msm_gpu_retire(struct msm_gpu *gpu);
+> -void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit);
+> +int msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit);
+>   
+>   int msm_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+>   		struct msm_gpu *gpu, const struct msm_gpu_funcs *funcs,
+> diff --git a/drivers/gpu/drm/msm/msm_ringbuffer.h b/drivers/gpu/drm/msm/msm_ringbuffer.h
+> index fe55d4a1aa16..d8ad9818c389 100644
+> --- a/drivers/gpu/drm/msm/msm_ringbuffer.h
+> +++ b/drivers/gpu/drm/msm/msm_ringbuffer.h
+> @@ -40,6 +40,8 @@ struct msm_ringbuffer {
+>   	struct drm_gem_object *bo;
+>   	uint32_t *start, *end, *cur, *next;
+>   
+> +	bool overflow;
+> +
+>   	/*
+>   	 * List of in-flight submits on this ring.  Protected by submit_lock.
+>   	 */
+> @@ -69,6 +71,9 @@ void msm_ringbuffer_destroy(struct msm_ringbuffer *ring);
+>   static inline void
+>   OUT_RING(struct msm_ringbuffer *ring, uint32_t data)
+>   {
+> +	if (ring->overflow)
+> +		return;
+> +
+>   	/*
+>   	 * ring->next points to the current command being written - it won't be
+>   	 * committed as ring->cur until the flush
 > 
-> diff --git a/drivers/firmware/efi/libstub/relocate.c
-> b/drivers/firmware/efi/libstub/relocate.c
-> index 8ee9eb2b9039..b73012a7bcdc 100644
-> --- a/drivers/firmware/efi/libstub/relocate.c
-> +++ b/drivers/firmware/efi/libstub/relocate.c
-> @@ -80,7 +80,7 @@ efi_status_t efi_low_alloc_above(unsigned long size,
-> unsigned long align,
->                         continue;
-> 
->                 status = efi_bs_call(allocate_pages, 
-> EFI_ALLOCATE_ADDRESS,
-> -                                    EFI_LOADER_DATA, nr_pages, 
-> &start);
-> +                                    EFI_LOADER_CODE, nr_pages, 
-> &start);
->                 if (status == EFI_SUCCESS) {
->                         *addr = start;
->                         break;
-> @@ -146,7 +146,7 @@ efi_status_t efi_relocate_kernel(unsigned long 
-> *image_addr,
->          */
->         nr_pages = round_up(alloc_size, EFI_ALLOC_ALIGN) / 
-> EFI_PAGE_SIZE;
->         status = efi_bs_call(allocate_pages, EFI_ALLOCATE_ADDRESS,
-> -                            EFI_LOADER_DATA, nr_pages, &efi_addr);
-> +                            EFI_LOADER_CODE, nr_pages, &efi_addr);
->         new_addr = efi_addr;
->         /*
->          * If preferred address allocation failed allocate as low as
 
 
+-- 
+With best wishes
+Dmitry
