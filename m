@@ -2,191 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B9745DD03
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:12:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F151545DD05
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:12:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348367AbhKYPPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:15:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353210AbhKYPNL (ORCPT
+        id S1355895AbhKYPQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:16:00 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:38898 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352143AbhKYPN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:13:11 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B27F6C0613D7;
-        Thu, 25 Nov 2021 07:09:59 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id 069CB1F45900
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637852996; bh=Rv1jRLcowZm99hT/zu7+THzcYVzW6fHVM8XmlXMUXeY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LQpcwBkI3xvrvAEDTnF5OywjJ/5S04v2FtMZ/nP1dB+EyqJMMwZEQzU698tKJ8gIG
-         9RijVStBQR3JTbfa6GpyWK9qV/eP90PvJ5VTdpzQgG2i8UyPaMnKn+czqYa+J/rWWO
-         f4y0EAGaNwYk/Xvgd+EnH96LDpx3OYdtzWixWYneDMhvAxP61GLJt+dcxAs3URpTob
-         fWxkLy0IOYAQxSMC/TA+b8LmnYjwbK0rFHUjejd6o7afLKzUtX2p4U9llYYNbAloKp
-         9UZ3kfRbfhIPupkNIlmejdp7hdnEQxi+2W4CXRyER2WcEiMSjyWQJYS3vgUmf+k7zW
-         KzblCYInOGydQ==
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     robdclark@gmail.com
-Cc:     sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
-        maxime@cerno.tech, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        jami.kettunen@somainline.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH] drm/msm: Initialize MDSS irq domain at probe time
-Date:   Thu, 25 Nov 2021 16:09:47 +0100
-Message-Id: <20211125150947.354076-1-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.33.1
+        Thu, 25 Nov 2021 10:13:59 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AP9GKwf002630;
+        Thu, 25 Nov 2021 16:10:39 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=ZNpw/wEl79xLxGfptoydRS3NBKjqN1tzwe8TzZvAg5g=;
+ b=YXm8SP6htVEqYHadkROkvqRar4Nmf45yosi0uj5v1/qEqefkGbQ5KnvoTPqjZCF7AprG
+ mCgR+RVLZO4ud1WoxxMVKgjXtCuEcn1LnAbofmXf/djAXkDgDvEf3UNd544GoiTQA698
+ kjRg+/S7owgH2Bmki65f5u4BQyYmXznzRLIl610QIo/+Es3NzavrcruadT3/RvaCCula
+ 37SZnO3z2dYPKQpnSkH41W33Qs1XplZ5/Zigjm3kaI0B/285oTh+B4UzE4nyZiXHwKaD
+ w1tpQtkh1/rzQpLHgAV/gVPiVVd9hN59tdnLFriXaKx4bJYXqBfZMxRNSd4f5LsdG1ZW DA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3cj3cym0bs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Nov 2021 16:10:39 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D1BDC10002A;
+        Thu, 25 Nov 2021 16:10:38 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C8791234542;
+        Thu, 25 Nov 2021 16:10:38 +0100 (CET)
+Received: from lmecxl0912.lme.st.com (10.75.127.50) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.26; Thu, 25 Nov
+ 2021 16:10:38 +0100
+Subject: Re: [PATCH 1/1] ARM: dts: stm32: add pull-up to USART3 and UART7 RX
+ pins on DKx boards
+To:     Erwan Le Ray <erwan.leray@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Valentin Caron <valentin.caron@foss.st.com>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>
+References: <20211020150311.10101-1-erwan.leray@foss.st.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Message-ID: <40ff7701-7911-28e1-a217-0f1a3448df8e@foss.st.com>
+Date:   Thu, 25 Nov 2021 16:10:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211020150311.10101-1-erwan.leray@foss.st.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-25_06,2021-11-25_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 8f59ee9a570c ("drm/msm/dsi: Adjust probe order"), the
-DSI host gets initialized earlier, but this caused unability to probe
-the entire stack of components because they all depend on interrupts
-coming from the main `mdss` node (mdp5, or dpu1).
+On 10/20/21 5:03 PM, Erwan Le Ray wrote:
+> Add pull-up to USART3 and UART7 RX pins to allow loop tests between USART3
+> and UART7 on stm32mp15 DKx boards.
+> 
+> Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
 
-To fix this issue, also anticipate probing mdp5 or dpu1 by initializing
-them at msm_pdev_probe() time: this will make sure that we add the
-required interrupt controller mapping before dsi and/or other components
-try to initialize, finally satisfying the dependency.
+Applied on stm32-next.
 
-While at it, also change the allocation of msm_drm_private to use the
-devm variant of kzalloc().
+thanks
+Alex
 
-Fixes: 8f59ee9a570c ("drm/msm/dsi: Adjust probe order")
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- drivers/gpu/drm/msm/msm_drv.c | 81 ++++++++++++++++-------------------
- 1 file changed, 38 insertions(+), 43 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index 7936e8d498dd..790acf4993c0 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -512,45 +512,12 @@ static int msm_init_vram(struct drm_device *dev)
- static int msm_drm_init(struct device *dev, const struct drm_driver *drv)
- {
- 	struct platform_device *pdev = to_platform_device(dev);
--	struct drm_device *ddev;
--	struct msm_drm_private *priv;
--	struct msm_kms *kms;
--	struct msm_mdss *mdss;
-+	struct drm_device *ddev = platform_get_drvdata(pdev);
-+	struct msm_drm_private *priv = ddev->dev_private;
-+	struct msm_kms *kms = priv->kms;
-+	struct msm_mdss *mdss = priv->mdss;
- 	int ret, i;
- 
--	ddev = drm_dev_alloc(drv, dev);
--	if (IS_ERR(ddev)) {
--		DRM_DEV_ERROR(dev, "failed to allocate drm_device\n");
--		return PTR_ERR(ddev);
--	}
--
--	platform_set_drvdata(pdev, ddev);
--
--	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
--	if (!priv) {
--		ret = -ENOMEM;
--		goto err_put_drm_dev;
--	}
--
--	ddev->dev_private = priv;
--	priv->dev = ddev;
--
--	switch (get_mdp_ver(pdev)) {
--	case KMS_MDP5:
--		ret = mdp5_mdss_init(ddev);
--		break;
--	case KMS_DPU:
--		ret = dpu_mdss_init(ddev);
--		break;
--	default:
--		ret = 0;
--		break;
--	}
--	if (ret)
--		goto err_free_priv;
--
--	mdss = priv->mdss;
--
- 	priv->wq = alloc_ordered_workqueue("msm", 0);
- 	priv->hangcheck_period = DRM_MSM_HANGCHECK_DEFAULT_PERIOD;
- 
-@@ -685,11 +652,6 @@ static int msm_drm_init(struct device *dev, const struct drm_driver *drv)
- err_destroy_mdss:
- 	if (mdss && mdss->funcs)
- 		mdss->funcs->destroy(ddev);
--err_free_priv:
--	kfree(priv);
--err_put_drm_dev:
--	drm_dev_put(ddev);
--	platform_set_drvdata(pdev, NULL);
- 	return ret;
- }
- 
-@@ -1382,12 +1344,42 @@ static const struct component_master_ops msm_drm_ops = {
- static int msm_pdev_probe(struct platform_device *pdev)
- {
- 	struct component_match *match = NULL;
-+	struct msm_drm_private *priv;
-+	struct drm_device *ddev;
- 	int ret;
- 
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	ddev = drm_dev_alloc(&msm_driver, &pdev->dev);
-+	if (IS_ERR(ddev)) {
-+		DRM_DEV_ERROR(&pdev->dev, "failed to allocate drm_device\n");
-+		return PTR_ERR(ddev);
-+	}
-+
-+	platform_set_drvdata(pdev, ddev);
-+	ddev->dev_private = priv;
-+	priv->dev = ddev;
-+
-+	switch (get_mdp_ver(pdev)) {
-+	case KMS_MDP5:
-+		ret = mdp5_mdss_init(ddev);
-+		break;
-+	case KMS_DPU:
-+		ret = dpu_mdss_init(ddev);
-+		break;
-+	default:
-+		ret = 0;
-+		break;
-+	}
-+	if (ret)
-+		goto err_put_drm_dev;
-+
- 	if (get_mdp_ver(pdev)) {
- 		ret = add_display_components(pdev, &match);
- 		if (ret)
--			return ret;
-+			goto fail;
- 	}
- 
- 	ret = add_gpu_components(&pdev->dev, &match);
-@@ -1409,6 +1401,9 @@ static int msm_pdev_probe(struct platform_device *pdev)
- 
- fail:
- 	of_platform_depopulate(&pdev->dev);
-+err_put_drm_dev:
-+	drm_dev_put(ddev);
-+	platform_set_drvdata(pdev, NULL);
- 	return ret;
- }
- 
--- 
-2.33.1
+> 
+> diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+> index e13c2a9762b8..fe6e6f50151d 100644
+> --- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+> +++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+> @@ -1816,7 +1816,7 @@
+>   		};
+>   		pins2 {
+>   			pinmux = <STM32_PINMUX('E', 7, AF7)>; /* UART7_RX */
+> -			bias-disable;
+> +			bias-pull-up;
+>   		};
+>   	};
+>   
+> @@ -1826,7 +1826,7 @@
+>   		};
+>   		pins2 {
+>   			pinmux = <STM32_PINMUX('E', 7, AF7)>; /* UART7_RX */
+> -			bias-disable;
+> +			bias-pull-up;
+>   		};
+>   	};
+>   
+> @@ -1971,7 +1971,7 @@
+>   		pins2 {
+>   			pinmux = <STM32_PINMUX('B', 12, AF8)>, /* USART3_RX */
+>   				 <STM32_PINMUX('I', 10, AF8)>; /* USART3_CTS_NSS */
+> -			bias-disable;
+> +			bias-pull-up;
+>   		};
+>   	};
+>   
+> @@ -1988,7 +1988,7 @@
+>   		};
+>   		pins3 {
+>   			pinmux = <STM32_PINMUX('B', 12, AF8)>; /* USART3_RX */
+> -			bias-disable;
+> +			bias-pull-up;
+>   		};
+>   	};
+>   
+> @@ -2012,7 +2012,7 @@
+>   		pins2 {
+>   			pinmux = <STM32_PINMUX('B', 12, AF8)>, /* USART3_RX */
+>   				 <STM32_PINMUX('B', 13, AF7)>; /* USART3_CTS_NSS */
+> -			bias-disable;
+> +			bias-pull-up;
+>   		};
+>   	};
+>   
+> @@ -2029,7 +2029,7 @@
+>   		};
+>   		pins3 {
+>   			pinmux = <STM32_PINMUX('B', 12, AF8)>; /* USART3_RX */
+> -			bias-disable;
+> +			bias-pull-up;
+>   		};
+>   	};
+>   
+> 
 
