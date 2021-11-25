@@ -2,138 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6B845DE1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:55:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A1C45DE6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 17:12:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356303AbhKYP7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:59:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33792 "EHLO mail.kernel.org"
+        id S243677AbhKYQPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 11:15:46 -0500
+Received: from elvis.franken.de ([193.175.24.41]:41068 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234943AbhKYP47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:56:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0323061107;
-        Thu, 25 Nov 2021 15:53:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637855628;
-        bh=WQKBVuM8/HahVHD2Ha+5Ib66vd148D5kd4JIoF5YXYw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NJkIymGInuducGSTAKj/FQ8gLVkz2guOuDv+NT8zNFhcLJ4OYAtEIftb7v5XFBcgX
-         JZ1x/jgUqfHXU9vVfmZSYZy+b6Vg/gw9woBsTGPEL9+Vv12wpZ6iUXQIt7lCnN8yln
-         0GIaZUtswzpAGLUtFCwwUNzktWCSwsj3XmnCEx1tqK4MOe/+N6++JLBF/TshxWVyZc
-         Chsh5hPgEKTETRUaPkgZ17zyJMxFNCoQWkQXk9ODLTxZam0Yr7erF/f/XmtfmW/B2s
-         ky4iDsYpMMQyo5zvVp/y9/lzZbQ5joAp6UYTWD9IERHDzmy6/XjtkNkO8RQSZ0RKKq
-         7BH3JvLwRkKng==
-Received: by mail-ed1-f42.google.com with SMTP id t5so27696777edd.0;
-        Thu, 25 Nov 2021 07:53:47 -0800 (PST)
-X-Gm-Message-State: AOAM531AkcTxxShINyYq2yRWmvtFRSpy3PoyJKYGFyDNfxpbLdFLQLQu
-        m3IzgXR/j75j4L8LfnYXqw9Je201N4IRbOLgcw==
-X-Google-Smtp-Source: ABdhPJyWuSCxWweua9Qb5oiDhlo9g8K+nlZBzMrHfDLk16MCEQQl+zFjUJxBfRZ+oWeUyMxTWfL4Uc81RcQThqCEADs=
-X-Received: by 2002:a17:906:79c8:: with SMTP id m8mr30595476ejo.511.1637855626321;
- Thu, 25 Nov 2021 07:53:46 -0800 (PST)
+        id S1356570AbhKYQNp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 11:13:45 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1mqHKR-0005zr-00; Thu, 25 Nov 2021 17:10:31 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id CBB14C2F81; Thu, 25 Nov 2021 16:54:58 +0100 (CET)
+Date:   Thu, 25 Nov 2021 16:54:58 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] MIPS: Fix using smp_processor_id() in preemptible in
+ show_cpuinfo()
+Message-ID: <20211125155458.GA11524@alpha.franken.de>
+References: <1637840372-27773-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
-References: <20211026155911.17651-1-jason-jh.lin@mediatek.com> <20211026155911.17651-12-jason-jh.lin@mediatek.com>
-In-Reply-To: <20211026155911.17651-12-jason-jh.lin@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 25 Nov 2021 23:53:34 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__8Bh_Me8sDYgAM4ZQiDxkz55BZyrwNuVRqxyfK79rYkg@mail.gmail.com>
-Message-ID: <CAAOTY__8Bh_Me8sDYgAM4ZQiDxkz55BZyrwNuVRqxyfK79rYkg@mail.gmail.com>
-Subject: Re: [PATCH v12 11/16] drm/mediatek: remove unused define in mtk_drm_ddp_comp.c
-To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fei Shao <fshao@chromium.org>,
-        Moudy Ho <moudy.ho@mediatek.com>, roy-cw.yeh@mediatek.com,
-        Fabien Parent <fparent@baylibre.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com,
-        DTML <devicetree@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1637840372-27773-1-git-send-email-yangtiezhu@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jason:
-
-When I apply this patch to mediatek-drm-next, I get this error:
-
-Applying: drm/mediatek: remove unused define in mtk_drm_ddp_comp.c
-error: patch failed: drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c:53
-
-Please rebase this patch onto mediatek-drm-next.
-
-Regards,
-Chun-Kuang.
-
-jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B410=E6=9C=88=
-26=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8811:59=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> Remove the unsed define in mtk_drm_ddp_comp.c
->
-> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
-> Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+On Thu, Nov 25, 2021 at 07:39:32PM +0800, Tiezhu Yang wrote:
+> There exists the following issue under DEBUG_PREEMPT:
+> 
+>  BUG: using smp_processor_id() in preemptible [00000000] code: systemd/1
+>  caller is show_cpuinfo+0x460/0xea0
+>  ...
+>  Call Trace:
+>  [<ffffffff8020f0dc>] show_stack+0x94/0x128
+>  [<ffffffff80e6cab4>] dump_stack_lvl+0x94/0xd8
+>  [<ffffffff80e74c5c>] check_preemption_disabled+0x104/0x110
+>  [<ffffffff802209c8>] show_cpuinfo+0x460/0xea0
+>  [<ffffffff80539d54>] seq_read_iter+0xfc/0x4f8
+>  [<ffffffff804fcc10>] new_sync_read+0x110/0x1b8
+>  [<ffffffff804ff57c>] vfs_read+0x1b4/0x1d0
+>  [<ffffffff804ffb18>] ksys_read+0xd0/0x110
+>  [<ffffffff8021c090>] syscall_common+0x34/0x58
+> 
+> We can see the following call trace:
+>  show_cpuinfo()
+>    cpu_has_fpu
+>      current_cpu_data
+>        smp_processor_id()
+> 
+>  $ addr2line -f -e vmlinux 0xffffffff802209c8
+>  show_cpuinfo
+>  arch/mips/kernel/proc.c:188
+> 
+>  $ head -188 arch/mips/kernel/proc.c | tail -1
+> 	 if (cpu_has_fpu)
+> 
+>  arch/mips/include/asm/cpu-features.h
+>  #  define cpu_has_fpu		(current_cpu_data.options & MIPS_CPU_FPU)
+> 
+>  arch/mips/include/asm/cpu-info.h
+>  #define current_cpu_data cpu_data[smp_processor_id()]
+> 
+> Based on the above analysis, fix the issue by using raw_cpu_has_fpu
+> which calls raw_smp_processor_id() in show_cpuinfo().
+> 
+> Fixes: 626bfa037299 ("MIPS: kernel: proc: add CPU option reporting")
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 > ---
->  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 10 ----------
->  1 file changed, 10 deletions(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/dr=
-m/mediatek/mtk_drm_ddp_comp.c
-> index f3db96a1b24d..839ffae3019c 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> @@ -21,8 +21,6 @@
->  #include "mtk_drm_crtc.h"
->
->  #define DISP_OD_EN                             0x0000
-> -#define DISP_OD_INTEN                          0x0008
-> -#define DISP_OD_INTSTA                         0x000c
->  #define DISP_OD_CFG                            0x0020
->  #define DISP_OD_SIZE                           0x0030
->  #define DISP_DITHER_5                          0x0114
-> @@ -39,8 +37,6 @@
->  #define DITHER_ENGINE_EN                       BIT(1)
->  #define DISP_DITHER_SIZE                       0x0030
->
-> -#define LUT_10BIT_MASK                         0x03ff
-> -
->  #define OD_RELAYMODE                           BIT(0)
->
->  #define UFO_BYPASS                             BIT(2)
-> @@ -53,18 +49,12 @@
->
->  #define DISP_DITHERING                         BIT(2)
->  #define DITHER_LSB_ERR_SHIFT_R(x)              (((x) & 0x7) << 28)
-> -#define DITHER_OVFLW_BIT_R(x)                  (((x) & 0x7) << 24)
->  #define DITHER_ADD_LSHIFT_R(x)                 (((x) & 0x7) << 20)
-> -#define DITHER_ADD_RSHIFT_R(x)                 (((x) & 0x7) << 16)
->  #define DITHER_NEW_BIT_MODE                    BIT(0)
->  #define DITHER_LSB_ERR_SHIFT_B(x)              (((x) & 0x7) << 28)
-> -#define DITHER_OVFLW_BIT_B(x)                  (((x) & 0x7) << 24)
->  #define DITHER_ADD_LSHIFT_B(x)                 (((x) & 0x7) << 20)
-> -#define DITHER_ADD_RSHIFT_B(x)                 (((x) & 0x7) << 16)
->  #define DITHER_LSB_ERR_SHIFT_G(x)              (((x) & 0x7) << 12)
-> -#define DITHER_OVFLW_BIT_G(x)                  (((x) & 0x7) << 8)
->  #define DITHER_ADD_LSHIFT_G(x)                 (((x) & 0x7) << 4)
-> -#define DITHER_ADD_RSHIFT_G(x)                 (((x) & 0x7) << 0)
->
->  struct mtk_ddp_comp_dev {
->         struct clk *clk;
-> --
-> 2.18.0
->
+>  arch/mips/kernel/proc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
+> index 376a6e2..9f47a88 100644
+> --- a/arch/mips/kernel/proc.c
+> +++ b/arch/mips/kernel/proc.c
+> @@ -185,7 +185,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+>  		seq_puts(m, " tx39_cache");
+>  	if (cpu_has_octeon_cache)
+>  		seq_puts(m, " octeon_cache");
+> -	if (cpu_has_fpu)
+> +	if (raw_cpu_has_fpu)
+>  		seq_puts(m, " fpu");
+>  	if (cpu_has_32fpr)
+>  		seq_puts(m, " 32fpr");
+> -- 
+> 2.1.0
+
+applied to mips-fixes.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
