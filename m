@@ -2,96 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D2E45D297
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 02:48:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A5845D245
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 02:03:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346532AbhKYBvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 20:51:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346395AbhKYBtt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 20:49:49 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2860AC07E5E1;
-        Wed, 24 Nov 2021 16:58:21 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id n8so3256789plf.4;
-        Wed, 24 Nov 2021 16:58:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YzIxUYIqkQOMo9SX2v8OF7Y8+z3ebsgKCPCZNs6Su4k=;
-        b=bgkSczEDoMzlDJJ7SKa7gQVPKboIiNIfeCaj1JFlrssCRQw5rsodZXKh4ZZEdmJaAe
-         hU3gzPL1oU3e+U2xXG7xWjzmQg6q7ZhyB1duovGIwU6bP7/D72zsD8UCcEf5qFf/AFCW
-         ylHIVAqv5bpG5aLJg+s3Jo5bTC+NpmsmMmBaXvUVdeLwfyDHGva5IjOYCfkeMAAeNNuJ
-         uUxXFhBKpDXT/U+HhkvgYq8Paz1AiTZEKjn3wyrdw6n6tvg+qn1LXPk8XIspMnggbFP5
-         yCJevEeZKgYmwzTV9jnDZ5f4eYcRiYVfC7zq5eGAqTOiNfyTmaDMENn2dvKMqtt/XkcT
-         VkPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YzIxUYIqkQOMo9SX2v8OF7Y8+z3ebsgKCPCZNs6Su4k=;
-        b=3WHXy3v3WNN2AJQGjrTRH2LekyMyrakvOyZGsBFyo2qHQon6hql/yCFFr8zwJOsmkl
-         GnBCgFBD/JXNh1h6eA3XN/fgMz+ly4H1LghJ08zyYj9ClVRx21rtmzGeL8XFyolZzlTF
-         TSW4RKC2zE8zRpisp3RhiCphB8lZhP3P3QSClWGjLTc+k2jJi9U2pYXuQ5M2nigF8v+7
-         KFBBuIL3mYw0FioZ0wpz4w0kBzV2+O80d4N5TxTyoFRt+4WrXQsVmJ8w1mI0r2zrXjAa
-         w2eZK7S5PQhotLsOjhTpqW0n3u1jq+82Lf5abhpnMAYCOmHb+mhN4QQMyBipZGVhcn+p
-         aPPg==
-X-Gm-Message-State: AOAM533Vzu5c11Bu8jI/hkVlqv6dXwabYVLcSWm99jeFF5M9gHqv5NIL
-        ykLe0lQoGCrrW2cxjZssfc4=
-X-Google-Smtp-Source: ABdhPJz8xeRoRvyefgULIBOU3wStHCHI/T1ERhp68O412PGD/a18RIkyOaFsJjG2Q/743nuYa9C6cA==
-X-Received: by 2002:a17:902:6b47:b0:142:82e1:6cf5 with SMTP id g7-20020a1709026b4700b0014282e16cf5mr24710050plt.28.1637801900772;
-        Wed, 24 Nov 2021 16:58:20 -0800 (PST)
-Received: from debian11-dev-61.localdomain (192.243.120.180.16clouds.com. [192.243.120.180])
-        by smtp.gmail.com with ESMTPSA id lx15sm759594pjb.44.2021.11.24.16.58.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 16:58:20 -0800 (PST)
-From:   davidcomponentone@gmail.com
-X-Google-Original-From: yang.guang5@zte.com.cn
-To:     shuah@kernel.org
-Cc:     davidcomponentone@gmail.com, christian.brauner@ubuntu.com,
-        ptikhomirov@virtuozzo.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yang Guang <yang.guang5@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] tests: remove unneeded conversion to bool
-Date:   Thu, 25 Nov 2021 08:58:07 +0800
-Message-Id: <f1fe5f6b00e62a6f70c47f1d8b4c41d5d7d03d7d.1637736469.git.yang.guang5@zte.com.cn>
-X-Mailer: git-send-email 2.30.2
+        id S1345326AbhKYBGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 20:06:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54914 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236229AbhKYBET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 20:04:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FC9A61074;
+        Thu, 25 Nov 2021 01:01:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637802068;
+        bh=fRw4MQUGUZ+hWSnuk5YWGpQCBlWLGvUeWSoE63/BYyU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=qZcenZfx/qRetjGLSIa7x8sMuE/YaMfW2D1pgkZ6SFasoWKc9Lnoy9U9RsnTaGRAN
+         kF8zB2OnIJXKpBzf4YN1z5q/2yWYrnBS3G9HYZr3/h98eLuYsqetisogJ9ywXXNP6G
+         QU5Mn31gkhqx9eE4oGEOsoo1hmQno/mT2ItvuBW9NdIs72oiJe4uTMrIbmG6Cbvi40
+         f2/t2myI1GloacAD9JNzLF/hUB/kKux/BW6KzoDPA8v2e6VIBbSEo4A7z92UWqEfV1
+         HmR4xH7IjAqynJ67h//1mkhYtBoMRGC1gQUGnGUoXsOZCp6Mm6QFlhRzzMm4NwfKoa
+         SytVecoFE6qVw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 5F93C5C0A31; Wed, 24 Nov 2021 17:01:08 -0800 (PST)
+Date:   Wed, 24 Nov 2021 17:01:08 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 0/6] rcu/nocb: Last prep work before cpuset interface v2
+Message-ID: <20211125010108.GW641268@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20211123003708.468409-1-frederic@kernel.org>
+ <20211123172534.iaaagfa4eygfsjew@localhost.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211123172534.iaaagfa4eygfsjew@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Guang <yang.guang5@zte.com.cn>
+On Tue, Nov 23, 2021 at 05:25:34PM +0000, Juri Lelli wrote:
+> Hi,
+> 
+> On 23/11/21 01:37, Frederic Weisbecker wrote:
+> > Changes since v1 after Paul's reviews:
+> > 
+> > * Clarify why the DEL vs ADD possible race on rdp group list is ok [1/6]
+> > * Update kernel parameters documentation [5/6]
+> > * Only create rcuo[sp] kthreads for CPUs that have ever come online [4/6]
+> > * Consider nohz_full= on changelogs
+> > 
+> > git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> > 	rcu/nocb
+> > 
+> > HEAD: da51363e5ddf54d6ce9c2cfbab946f8914519290
+> 
+> I run this on RT. It survived rcutorture on different kernel cmdline
+> configurations and creation of rcuox/N kthreads seemed sane. :)
+> 
+> FWIW, feel free to add
+> 
+> Tested-by: Juri Lelli <juri.lelli@redhat.com>
+> 
+> Thanks for working on this!
 
-The coccinelle report
-./tools/testing/selftests/move_mount_set_group/move_mount_set_group_test.c:225:18-23:
-WARNING: conversion to bool not needed here
-Relational and logical operators evaluate to bool,
-explicit conversion is overly verbose and unneeded.
+And thank you for testing!  Applied to all but the first one, which
+I will catch on the next rebase.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Yang Guang <yang.guang5@zte.com.cn>
----
- .../selftests/move_mount_set_group/move_mount_set_group_test.c  | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/move_mount_set_group/move_mount_set_group_test.c b/tools/testing/selftests/move_mount_set_group/move_mount_set_group_test.c
-index 860198f83a53..80ff0b692486 100644
---- a/tools/testing/selftests/move_mount_set_group/move_mount_set_group_test.c
-+++ b/tools/testing/selftests/move_mount_set_group/move_mount_set_group_test.c
-@@ -222,7 +222,7 @@ static int move_mount_set_group_supported(void)
- 		      AT_FDCWD, SET_GROUP_TO, MOVE_MOUNT_SET_GROUP);
- 	umount2("/tmp", MNT_DETACH);
- 
--	return ret < 0 ? false : true;
-+	return ret >= 0;
- }
- 
- FIXTURE(move_mount_set_group) {
--- 
-2.30.2
-
+							Thanx, Paul
