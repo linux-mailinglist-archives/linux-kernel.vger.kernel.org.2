@@ -2,66 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E3745E121
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 20:45:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4030845E124
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 20:46:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356821AbhKYTsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 14:48:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350167AbhKYTqb (ORCPT
+        id S1356779AbhKYTtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 14:49:06 -0500
+Received: from smtpbg703.qq.com ([203.205.195.89]:56644 "EHLO
+        smtpproxy21.qq.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1356778AbhKYTrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 14:46:31 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B638C06175A;
-        Thu, 25 Nov 2021 11:42:56 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637869375;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jcWGg+lxFUhwergvF0ahBfG0QbqcGHggbAdEpKkPyXg=;
-        b=Jz//u7KRGqRW6QiUlP/CDW6iMmhDdQzGdAUb24z2usQ6doDTDsy3kCVDGg8P4732WeKBeN
-        Id5kqWAnWLa0OlNcbUOEVSp8Y1Y1vE1OlKbGwjf/wCiTI8ciGoNA+AHiAUNDJzQ6OoXoiq
-        s8t98OSeBD6Iw6x1YhHMov5ZQgefTkKxksVclDuNMBpx/FuIrs7hbyk5584ej6aUWwxSUG
-        ICDSLtjrnn4cCUbN3DfloonsaBas32ac8izAt9MkM+DctKzhyD1I955HHm6VwLceOzdhSO
-        rS5KgYEeGKYQAS86QJFAFUEfQTK8bkCieyTKVmIdeXh9ycQyAJbw/mWUS7d9Vg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637869375;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jcWGg+lxFUhwergvF0ahBfG0QbqcGHggbAdEpKkPyXg=;
-        b=f1dQhXYnkJqt4QiRb1jQVVOFajZzna/jjoMKo5BGXNVxPR5S2AHzZzBFPchYc8tSJiusxg
-        SQQ+yFYHGCYufIBg==
-To:     isaku.yamahata@intel.com, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [RFC PATCH v3 25/59] KVM: x86: Add support for vCPU and
- device-scoped KVM_MEMORY_ENCRYPT_OP
-In-Reply-To: <2afae6ea803290415814b96b7ac118bc5364780f.1637799475.git.isaku.yamahata@intel.com>
-References: <cover.1637799475.git.isaku.yamahata@intel.com>
- <2afae6ea803290415814b96b7ac118bc5364780f.1637799475.git.isaku.yamahata@intel.com>
-Date:   Thu, 25 Nov 2021 20:42:54 +0100
-Message-ID: <87czmoja2p.ffs@tglx>
+        Thu, 25 Nov 2021 14:47:05 -0500
+X-QQ-mid: bizesmtp37t1637869414t7flocso
+Received: from localhost.localdomain.localdoma (unknown [58.251.166.36])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Fri, 26 Nov 2021 03:43:07 +0800 (CST)
+X-QQ-SSF: 01400000000000C0L000000A0000000
+X-QQ-FEAT: Z953UCsBqO6+dtTTTmi9q2ZVeyylH6u5hmnaaeanX/IkKg0BSByxCXu2XDwOe
+        fiaPyEFbvuw2u/KbsO9yP/MrKDmRYVipBT80HfOnS16InuAhubgCkG5bV12O402mxNaHV3j
+        XPtkahN8msXdqlbTlVMadrTTRkXri9zdjcV/Wge7RN+IloN9JK72u4mknypAzPUNcw9W0xf
+        HkxwKwOMoMgAmMLCVz9bhiD+cZXWdaX3Fiyh9oELgyJ3VeC9T/48FOTr2xbj5D1R1mqRwx7
+        wvFqeE8eE0fxlG3hF+Z9r5h2cr+9ufBdiqtbMFu6EgBEI+0pn3s8D30mev5PkKENGOlsk0a
+        c7KU19J8F46VSz44Qea8Q90e8HlfA==
+X-QQ-GoodBg: 2
+From:   Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Subject: [PATCH] mm: fix the type of a parameter
+Date:   Fri, 26 Nov 2021 03:43:01 +0800
+Message-Id: <20211125194301.19244-1-caoyixuan2019@email.szu.edu.cn>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:email.szu.edu.cn:qybgforeign:qybgforeign7
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24 2021 at 16:20, isaku yamahata wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
+The type of "last_migrate_reason" in struct page_owner is short.
+However, the type of "reason" in the argument list of function
+__set_page_owner_migrate_reason is int,
+which is inconsistent.
 
-Yet another changelog with a significant amount of void content.
+Signed-off-by: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+---
+ mm/page_owner.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/page_owner.c b/mm/page_owner.c
+index 4f924957ce7a..4c23e910caf9 100644
+--- a/mm/page_owner.c
++++ b/mm/page_owner.c
+@@ -182,7 +182,7 @@ noinline void __set_page_owner(struct page *page, unsigned short order,
+ 	__set_page_owner_handle(page_ext, handle, order, gfp_mask);
+ }
+ 
+-void __set_page_owner_migrate_reason(struct page *page, int reason)
++void __set_page_owner_migrate_reason(struct page *page, short reason)
+ {
+ 	struct page_ext *page_ext = lookup_page_ext(page);
+ 	struct page_owner *page_owner;
+-- 
+2.31.1
+
+
+
