@@ -2,120 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C67945D34B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9309A45D353
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:55:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237805AbhKYCzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 21:55:07 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20638 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231406AbhKYCxG (ORCPT
+        id S238726AbhKYC6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 21:58:24 -0500
+Received: from [113.204.237.245] ([113.204.237.245]:37614 "EHLO
+        test.cqplus1.com" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S240035AbhKYC4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 21:53:06 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AP0N6aF002895;
-        Thu, 25 Nov 2021 02:49:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=x7BpjpC4BkEYA1QyGTEcevnGCoPkRtbkKIs3gNljZf4=;
- b=nXgNXxnlOdQLKWCL+fWGi4Pl2rg4RUf4fPnxpUCLdmrI6QFwBhKlDXnM7/PYXio0q1Jp
- 3DRISq+xakyCtALQ7wmkPe+Y4xXPQqNwZTcVQMaeomWwKydQtKn8L3d1IlDfrNpCZ9F3
- fdN0QVlyCBltWgCy5ZC/0a/mZWrHlTDnrQFiuX5J31plf/S1v9hc9K+eYZ0soocqH85K
- AuYqdCN0zedNRsJGR6Yrm4euDg+Fbn+K1EYfG88u8kypzNRshznegXqNOZ7/dNSBeSKE
- NiSnrr1XniA6Br+U7DKuunkwc79ACIdTb1Oeo40hutE9B/4PgqBD+bQehsAXak6oEEOJ VQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3chyvxhyah-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Nov 2021 02:49:29 +0000
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AP2eoCD028314;
-        Thu, 25 Nov 2021 02:49:28 GMT
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3chyvxhy9t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Nov 2021 02:49:28 +0000
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AP2mWXf002901;
-        Thu, 25 Nov 2021 02:49:26 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma02fra.de.ibm.com with ESMTP id 3cerna4xc1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Nov 2021 02:49:25 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AP2nNT827787596
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Nov 2021 02:49:23 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 721FBA4057;
-        Thu, 25 Nov 2021 02:49:23 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 19546A4051;
-        Thu, 25 Nov 2021 02:49:20 +0000 (GMT)
-Received: from sig-9-65-94-172.ibm.com (unknown [9.65.94.172])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 25 Nov 2021 02:49:19 +0000 (GMT)
-Message-ID: <15a001964945969dd7fc2422f0ab1eecfa299211.camel@linux.ibm.com>
-Subject: Re: [PATCH v8 03/17] integrity: Introduce a Linux keyring called
- machine
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
-        linux-integrity@vger.kernel.org, dhowells@redhat.com,
-        dwmw2@infradead.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, jarkko@kernel.org, jmorris@namei.org,
-        serge@hallyn.com
-Cc:     keescook@chromium.org, torvalds@linux-foundation.org,
-        weiyongjun1@huawei.com, nayna@linux.ibm.com, ebiggers@google.com,
-        ardb@kernel.org, nramas@linux.microsoft.com, lszubowi@redhat.com,
-        jason@zx2c4.com, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
-        konrad.wilk@oracle.com
-Date:   Wed, 24 Nov 2021 21:49:19 -0500
-In-Reply-To: <20211124044124.998170-4-eric.snowberg@oracle.com>
-References: <20211124044124.998170-1-eric.snowberg@oracle.com>
-         <20211124044124.998170-4-eric.snowberg@oracle.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: V_3CuNHUmU9v5qMjEBj-uA1CplgcJnAB
-X-Proofpoint-GUID: AohbSyEKSs0hFWJeNBr125MSw3tVV2TW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-24_06,2021-11-24_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
- lowpriorityscore=0 suspectscore=0 bulkscore=0 clxscore=1015 mlxscore=0
- spamscore=0 priorityscore=1501 malwarescore=0 impostorscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111250011
+        Wed, 24 Nov 2021 21:56:22 -0500
+X-MailGates: (flag:1,DYNAMIC,RELAY,NOHOST,LAN:PASS)(compute_score:DELIVE
+        R,40,3)
+Received: from 172.27.96.203
+        by cqmailgates with MailGates ESMTP Server V5.0(1206:0:AUTH_RELAY)
+        (envelope-from <xt.hu@cqplus1.com>); Thu, 25 Nov 2021 10:52:33 +0800 (CST)
+Received: from CQEXMAIL01.cqplus1.com (172.27.96.203) by
+ CQEXMAIL01.cqplus1.com (172.27.96.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17; Thu, 25 Nov 2021 10:52:28 +0800
+Received: from CQEXMAIL01.cqplus1.com ([::1]) by CQEXMAIL01.cqplus1.com
+ ([::1]) with mapi id 15.01.2375.017; Thu, 25 Nov 2021 10:52:28 +0800
+From:   =?utf-8?B?eHQuaHVb6IOh5YWI6Z+sXQ==?= <xt.hu@cqplus1.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+CC:     "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        =?utf-8?B?V2VsbHMgTHUg5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>,
+        =?utf-8?B?cWluamlhblvopoPlgaVd?= <qinjian@cqplus1.com>
+Subject: RE: [PATCH v2 0/2] Add watchdog driver for Sunplus SP7021 SoC
+Thread-Topic: [PATCH v2 0/2] Add watchdog driver for Sunplus SP7021 SoC
+Thread-Index: AQHX4SAsaIwYOAFNOkGFl2dRmzd7YKwSM7QAgAFWVBA=
+Date:   Thu, 25 Nov 2021 02:52:28 +0000
+Message-ID: <0d6a4dc2987b41fb8b9a9be2e5598f08@cqplus1.com>
+References: <20211112105952.216280-1-xt.hu@cqplus1.com>
+ <20211124104149.361019-1-xt.hu@cqplus1.com>
+ <20211124141738.GA3802978@roeck-us.net>
+In-Reply-To: <20211124141738.GA3802978@roeck-us.net>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.28.110.16]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
-
-On Tue, 2021-11-23 at 23:41 -0500, Eric Snowberg wrote:
-> +config INTEGRITY_MACHINE_KEYRING
-> +       bool "Provide a keyring to which CA Machine Owner Keys may be added"
-> +       depends on SECONDARY_TRUSTED_KEYRING
-> +       depends on INTEGRITY_ASYMMETRIC_KEYS
-
-Shouldn't this be "ASYMMETRIC_PUBLIC_KEY_SUBTYPE=y"?   With this
-change, is  "KEYS: Create static version of
-public_key_verify_signature" trusted needed?
-
-Mimi
-
-> +       depends on SYSTEM_BLACKLIST_KEYRING
-> +       depends on LOAD_UEFI_KEYS
-> +       help
-> +        If set, provide a keyring to which CA Machine Owner Keys (MOK) may
-> +        be added. This keyring shall contain just CA MOK keys.  Unlike keys
-> +        in the platform keyring, keys contained in the .machine keyring will
-> +        be trusted within the kernel.
-> +
-
-
+SGkgR3VlbnRlciwNCglUaGlzIGlzIG15IHNlY29uZCBzdWJtaXR0aW5nLiBJIGFsc28gcmVmZXIg
+dG8gdGhlIGZvcm1hdCBpbiBvdGhlcnMnIGVtYWlscy4NCglJZiB0aGUgZm9ybWF0IGlzIG5vdCBj
+b3JyZWN0LCBJIHdpbGwgZHJvcCAtLWluLXJlcGx5LXRvIHdoZW4gc3VibWl0IHBhdGhjaCBuZXh0
+IHRpbWUuDQoNCkJlc3QgUmVnYXJkcywNClhpYW50YW8NCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdl
+LS0tLS0NCj4gRnJvbTogR3VlbnRlciBSb2VjayBbbWFpbHRvOmdyb2VjazdAZ21haWwuY29tXSBP
+biBCZWhhbGYgT2YgR3VlbnRlciBSb2Vjaw0KPiBTZW50OiBXZWRuZXNkYXksIE5vdmVtYmVyIDI0
+LCAyMDIxIDEwOjE4IFBNDQo+IFRvOiB4dC5odVvog6HlhYjpn6xdIDx4dC5odUBjcXBsdXMxLmNv
+bT4NCj4gQ2M6IHdpbUBsaW51eC13YXRjaGRvZy5vcmc7IHAuemFiZWxAcGVuZ3V0cm9uaXguZGU7
+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7DQo+IGxpbnV4LXdhdGNoZG9nQHZnZXIua2Vy
+bmVsLm9yZzsgcm9iaCtkdEBrZXJuZWwub3JnOyBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsg
+V2VsbHMgTHUg5ZGC6Iqz6aiwDQo+IDx3ZWxscy5sdUBzdW5wbHVzLmNvbT47IHFpbmppYW5b6KaD
+5YGlXSA8cWluamlhbkBjcXBsdXMxLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2MiAwLzJd
+IEFkZCB3YXRjaGRvZyBkcml2ZXIgZm9yIFN1bnBsdXMgU1A3MDIxIFNvQw0KPiANCj4gT24gV2Vk
+LCBOb3YgMjQsIDIwMjEgYXQgMDY6NDE6NDdQTSArMDgwMCwgWGlhbnRhbyBIdSB3cm90ZToNCj4g
+PiBUaGlzIGlzIGEgcGF0Y2ggc2VyaWVzIGZvciB3YXRjaGRvZyBkcml2ZXIgZm9yIFN1bnBsdXMg
+U1A3MDIxIFNvQy4NCj4gPg0KPiA+IFN1bnBsdXMgU1A3MDIxIGlzIGFuIEFSTSBDb3J0ZXggQTcg
+KDQgY29yZXMpIGJhc2VkIFNvQy4gSXQgaW50ZWdyYXRlcw0KPiA+IG1hbnkgcGVyaXBoZXJhbHMg
+KGV4OiBVQVJULCBJMkMsIFNQSSwgU0RJTywgZU1NQywgVVNCLCBTRCBjYXJkIGFuZA0KPiA+IGV0
+Yy4pIGludG8gYSBzaW5nbGUgY2hpcC4gSXQgaXMgZGVzaWduZWQgZm9yIGluZHVzdHJpYWwgY29u
+dHJvbC4NCj4gPg0KPiANCj4gV2h5IGFyZSBtb3JlIGFuZCBtb3JlIHBlb3BsZSBzZW5kaW5nIHBh
+dGNoZXMgb3IgcGF0Y2ggc2VyaWVzIGFzIHJlcGx5IHRvDQo+IHByZXZpb3VzIHBhdGNoZXMgPyBU
+aGlzIGFsbCBieSBlbnN1cmVzIHRoYXQgcGF0Y2hlcyBnZXQgbG9zdC4NCj4gDQo+IElzIHRoYXQg
+cHJvbW90ZWQgc29tZXdoZXJlID8NCj4gDQo+IFRoYW5rcywNCj4gR3VlbnRlcg0K
