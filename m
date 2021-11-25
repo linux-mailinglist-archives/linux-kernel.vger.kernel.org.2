@@ -2,463 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F124045E02B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 19:02:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CDBA45E06B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 19:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238663AbhKYSEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 13:04:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234798AbhKYSCn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 13:02:43 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5C3C061191
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:53:01 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id y12so28596021eda.12
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:53:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8eZNZvZZ0egYYCpR8Y+kKs5gSsExXSch9Zmp88c8V/Y=;
-        b=Orr1JQx9Hq5CvxWCCLp09f/ouXaEaFdcv9Z6n9CxLbtMHSER7mxAyqujNbclg5COco
-         +J+ur4Nc/HrdvcCkFpgFasPowaavILMothC7h6UtUS2goms6XQWfKTdWiT0s6l9xApJj
-         lgE43CgoxuFePb4xvr0axczHumsjGVp2O43xYojGbKWpMGnnzzlypXQpwPZSKTjVsdd7
-         KacrxgigCdiq/2ljwsA4wP1hw9Jcy/Ej3+K7dkDPeJcedxrac3TzybPeVmbETIUlCDvn
-         uqx1Nq4YSEaBBMyuTtxN6AZ1qLdrqWjwYB0QXSsMrQncshS7WUZOjwLWRPsiwQx7FHai
-         hr/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8eZNZvZZ0egYYCpR8Y+kKs5gSsExXSch9Zmp88c8V/Y=;
-        b=4GgJ08iq5yZrvZ2n97xJn1hTUR/s/vaN1igJxdaW+ahNQBZezt7k2GtjBHrVgQwERd
-         e98ZaIyDPyKoXgTIAbqdn58j4EFKbc/MPPhB+ovK8jEV8bin/uwWJ+jacHW4ZLO42l2v
-         uSXSfv8tF02wun+NxRR2BaLrI1eEVwS1UMguWVA5bP5Nc49nHo0NZdZ+DKxXhnWl/MGB
-         jyRa29098S3uZhY2XkriupX7Yd+ojEQPEUoYOhnhbpHkIiCNwFXhjedSVVy4HiTiWuFE
-         225fBqEU8/G/41LeVlD2Jnimt3FE0vzOBK1vHACynd0gQdNxjBJY7LLQItSwAgSZ3eH7
-         blgg==
-X-Gm-Message-State: AOAM533E/KazhHS2B36qAsqiBgjv3YOMLZzVbsSVAyTI51bA0oz5MmHl
-        ZLNmfDkSqrEGTjBbv6Aw7CYKOBhKX0O9+A==
-X-Google-Smtp-Source: ABdhPJwqt90GWguUv5xwDCGNfBM2Yc+i1/DaFoDxNqcytvfF3bH7X9lnZcctKwu5ZQNNJvQebhzL/A==
-X-Received: by 2002:a17:906:6a0a:: with SMTP id qw10mr34902590ejc.141.1637862780239;
-        Thu, 25 Nov 2021 09:53:00 -0800 (PST)
-Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id hs20sm1949795ejc.26.2021.11.25.09.52.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 09:52:59 -0800 (PST)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/5] [RFC] tracing: Read and write to ring buffers with custom sub buffer size
-Date:   Thu, 25 Nov 2021 19:52:53 +0200
-Message-Id: <20211125175253.186422-6-tz.stoyanov@gmail.com>
+        id S237012AbhKYSND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 13:13:03 -0500
+Received: from pegase2.c-s.fr ([93.17.235.10]:34033 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242951AbhKYSLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 13:11:02 -0500
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4J0QTw0jjyz9sSL;
+        Thu, 25 Nov 2021 18:53:40 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id y_zK1W73gplk; Thu, 25 Nov 2021 18:53:40 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4J0QTn0LqZz9sT5;
+        Thu, 25 Nov 2021 18:53:33 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EFDDE8B77D;
+        Thu, 25 Nov 2021 18:53:32 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id l-8CA-Ym6xAl; Thu, 25 Nov 2021 18:53:32 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.227])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 350A28B78B;
+        Thu, 25 Nov 2021 18:53:32 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1APHrKdp385531
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 25 Nov 2021 18:53:20 +0100
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1APHrKpw385530;
+        Thu, 25 Nov 2021 18:53:20 +0100
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, alex@ghiti.fr
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-mm@kvack.org
+Subject: [PATCH v2 rebased 5/9] powerpc/mm: Call radix__arch_get_unmapped_area() from arch_get_unmapped_area()
+Date:   Thu, 25 Nov 2021 18:52:54 +0100
+Message-Id: <6ba86b0ef347c04a6c4e475c059f486b0db170ec.1637862579.git.christophe.leroy@csgroup.eu>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211125175253.186422-1-tz.stoyanov@gmail.com>
-References: <20211125175253.186422-1-tz.stoyanov@gmail.com>
+In-Reply-To: <cover.1637862579.git.christophe.leroy@csgroup.eu>
+References: <cover.1637862579.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1637862776; l=8800; s=20211009; h=from:subject:message-id; bh=xhmMDhewW/TRmUJ1bjg7TfwHU+gY/5N0CfluBZorISk=; b=mWuTX2K1COyFwYcLwAp0HqjlhMmXXBF2DXQz3o545lUT3SKlH6WO1psckxh+oQQJrNXSd/qcw1Tj 192LydAtBI6KFGKwlX+MGY+2z3hALyhfBK17BtIGaCl2kNtN40Fu
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the size of the ring sub buffer page can be changed dynamically,
-the logic that reads and writes to the buffer should be fixed to take
-that into account. Some internal ring buffer APIs are changed:
- ring_buffer_alloc_read_page()
- ring_buffer_free_read_page()
- ring_buffer_read_page()
-A new API is introduced:
- ring_buffer_read_page_data()
+Instead of setting mm->get_unmapped_area() to either
+arch_get_unmapped_area() or radix__arch_get_unmapped_area(),
+always set it to arch_get_unmapped_area() and call
+radix__arch_get_unmapped_area() from there when radix is enabled.
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+To keep radix__arch_get_unmapped_area() static, move it to slice.c
+
+Do the same with radix__arch_get_unmapped_area_topdown()
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- include/linux/ring_buffer.h          | 11 ++--
- kernel/trace/ring_buffer.c           | 75 ++++++++++++++++++++--------
- kernel/trace/ring_buffer_benchmark.c | 10 ++--
- kernel/trace/trace.c                 | 38 ++++++++------
- 4 files changed, 92 insertions(+), 42 deletions(-)
+ arch/powerpc/mm/book3s64/slice.c | 104 ++++++++++++++++++++++++++
+ arch/powerpc/mm/mmap.c           | 123 -------------------------------
+ 2 files changed, 104 insertions(+), 123 deletions(-)
 
-diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-index 9103462f6e85..8d6807e3865d 100644
---- a/include/linux/ring_buffer.h
-+++ b/include/linux/ring_buffer.h
-@@ -192,10 +192,15 @@ bool ring_buffer_time_stamp_abs(struct trace_buffer *buffer);
- size_t ring_buffer_nr_pages(struct trace_buffer *buffer, int cpu);
- size_t ring_buffer_nr_dirty_pages(struct trace_buffer *buffer, int cpu);
- 
--void *ring_buffer_alloc_read_page(struct trace_buffer *buffer, int cpu);
--void ring_buffer_free_read_page(struct trace_buffer *buffer, int cpu, void *data);
--int ring_buffer_read_page(struct trace_buffer *buffer, void **data_page,
-+struct buffer_data_read_page;
-+struct buffer_data_read_page *
-+ring_buffer_alloc_read_page(struct trace_buffer *buffer, int cpu);
-+void ring_buffer_free_read_page(struct trace_buffer *buffer, int cpu,
-+				struct buffer_data_read_page *page);
-+int ring_buffer_read_page(struct trace_buffer *buffer,
-+			  struct buffer_data_read_page *data_page,
- 			  size_t len, int cpu, int full);
-+void *ring_buffer_read_page_data(struct buffer_data_read_page *page);
- 
- struct trace_seq;
- 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index a40fcb1cb299..fd22e0fc7195 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -309,6 +309,11 @@ struct buffer_data_page {
- 	unsigned char	 data[] RB_ALIGN_DATA;	/* data of buffer page */
- };
- 
-+struct buffer_data_read_page {
-+	unsigned		order;	/* order of the page */
-+	struct buffer_data_page	*data;	/* actual data, stored in this page */
-+};
-+
- /*
-  * Note, the buffer_page list must be first. The buffer pages
-  * are allocated in cache lines, which means that each buffer
-@@ -5414,40 +5419,48 @@ EXPORT_SYMBOL_GPL(ring_buffer_swap_cpu);
-  * Returns:
-  *  The page allocated, or ERR_PTR
-  */
--void *ring_buffer_alloc_read_page(struct trace_buffer *buffer, int cpu)
-+struct buffer_data_read_page *
-+ring_buffer_alloc_read_page(struct trace_buffer *buffer, int cpu)
- {
- 	struct ring_buffer_per_cpu *cpu_buffer;
--	struct buffer_data_page *bpage = NULL;
-+	struct buffer_data_read_page *bpage = NULL;
- 	unsigned long flags;
- 	struct page *page;
- 
- 	if (!cpumask_test_cpu(cpu, buffer->cpumask))
- 		return ERR_PTR(-ENODEV);
- 
-+	bpage = kzalloc(sizeof(*bpage), GFP_KERNEL);
-+	if (!bpage)
-+		return ERR_PTR(-ENOMEM);
-+
-+	bpage->order = buffer->subbuf_order;
- 	cpu_buffer = buffer->buffers[cpu];
- 	local_irq_save(flags);
- 	arch_spin_lock(&cpu_buffer->lock);
- 
- 	if (cpu_buffer->free_page) {
--		bpage = cpu_buffer->free_page;
-+		bpage->data = cpu_buffer->free_page;
- 		cpu_buffer->free_page = NULL;
- 	}
- 
- 	arch_spin_unlock(&cpu_buffer->lock);
- 	local_irq_restore(flags);
- 
--	if (bpage)
-+	if (bpage->data)
- 		goto out;
- 
- 	page = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL | __GFP_NORETRY,
- 				cpu_buffer->buffer->subbuf_order);
--	if (!page)
-+	if (!page) {
-+		kfree(bpage);
- 		return ERR_PTR(-ENOMEM);
-+	}
- 
--	bpage = page_address(page);
-+	bpage->data = page_address(page);
- 
-  out:
--	rb_init_page(bpage);
-+	rb_init_page(bpage->data);
- 
- 	return bpage;
+diff --git a/arch/powerpc/mm/book3s64/slice.c b/arch/powerpc/mm/book3s64/slice.c
+index 4c3e9601fdf6..99742dde811c 100644
+--- a/arch/powerpc/mm/book3s64/slice.c
++++ b/arch/powerpc/mm/book3s64/slice.c
+@@ -639,12 +639,113 @@ unsigned long slice_get_unmapped_area(unsigned long addr, unsigned long len,
  }
-@@ -5457,19 +5470,24 @@ EXPORT_SYMBOL_GPL(ring_buffer_alloc_read_page);
-  * ring_buffer_free_read_page - free an allocated read page
-  * @buffer: the buffer the page was allocate for
-  * @cpu: the cpu buffer the page came from
-- * @data: the page to free
-+ * @page: the page to free
-  *
-  * Free a page allocated from ring_buffer_alloc_read_page.
-  */
--void ring_buffer_free_read_page(struct trace_buffer *buffer, int cpu, void *data)
-+void ring_buffer_free_read_page(struct trace_buffer *buffer, int cpu,
-+				struct buffer_data_read_page *data_page)
- {
- 	struct ring_buffer_per_cpu *cpu_buffer = buffer->buffers[cpu];
--	struct buffer_data_page *bpage = data;
-+	struct buffer_data_page *bpage = data_page->data;
- 	struct page *page = virt_to_page(bpage);
- 	unsigned long flags;
+ EXPORT_SYMBOL_GPL(slice_get_unmapped_area);
  
--	/* If the page is still in use someplace else, we can't reuse it */
--	if (page_ref_count(page) > 1)
-+	/*
-+	 * If the page is still in use someplace else, or order of the page
-+	 * is different from the subbuffer order of the buffer -
-+	 * we can't reuse it
-+	 */
-+	if (page_ref_count(page) > 1 || data_page->order != buffer->subbuf_order)
- 		goto out;
- 
- 	local_irq_save(flags);
-@@ -5484,7 +5502,8 @@ void ring_buffer_free_read_page(struct trace_buffer *buffer, int cpu, void *data
- 	local_irq_restore(flags);
- 
-  out:
--	free_pages((unsigned long)bpage, buffer->subbuf_order);
-+	free_pages((unsigned long)bpage, data_page->order);
-+	kfree(data_page);
- }
- EXPORT_SYMBOL_GPL(ring_buffer_free_read_page);
- 
-@@ -5505,9 +5524,10 @@ EXPORT_SYMBOL_GPL(ring_buffer_free_read_page);
-  *	rpage = ring_buffer_alloc_read_page(buffer, cpu);
-  *	if (IS_ERR(rpage))
-  *		return PTR_ERR(rpage);
-- *	ret = ring_buffer_read_page(buffer, &rpage, len, cpu, 0);
-+ *	ret = ring_buffer_read_page(buffer, rpage, len, cpu, 0);
-  *	if (ret >= 0)
-- *		process_page(rpage, ret);
-+ *		process_page(ring_buffer_read_page_data(rpage), ret);
-+ *	ring_buffer_free_read_page(buffer, cpu, rpage);
-  *
-  * When @full is set, the function will not return true unless
-  * the writer is off the reader page.
-@@ -5522,7 +5542,8 @@ EXPORT_SYMBOL_GPL(ring_buffer_free_read_page);
-  *  <0 if no data has been transferred.
-  */
- int ring_buffer_read_page(struct trace_buffer *buffer,
--			  void **data_page, size_t len, int cpu, int full)
-+			  struct buffer_data_read_page *data_page,
-+			  size_t len, int cpu, int full)
- {
- 	struct ring_buffer_per_cpu *cpu_buffer = buffer->buffers[cpu];
- 	struct ring_buffer_event *event;
-@@ -5547,10 +5568,12 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
- 
- 	len -= BUF_PAGE_HDR_SIZE;
- 
--	if (!data_page)
-+	if (!data_page || !data_page->data)
-+		goto out;
-+	if (data_page->order != buffer->subbuf_order)
- 		goto out;
- 
--	bpage = *data_page;
-+	bpage = data_page->data;
- 	if (!bpage)
- 		goto out;
- 
-@@ -5636,11 +5659,11 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
- 		/* swap the pages */
- 		rb_init_page(bpage);
- 		bpage = reader->page;
--		reader->page = *data_page;
-+		reader->page = data_page->data;
- 		local_set(&reader->write, 0);
- 		local_set(&reader->entries, 0);
- 		reader->read = 0;
--		*data_page = bpage;
-+		data_page->data = bpage;
- 
- 		/*
- 		 * Use the real_end for the data size,
-@@ -5685,6 +5708,18 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
- }
- EXPORT_SYMBOL_GPL(ring_buffer_read_page);
- 
-+/**
-+ * ring_buffer_read_page_data - get pointer to the data in the page.
-+ * @page:  the page to get the data from
-+ *
-+ * Returns pointer to the actual data in this page.
++/*
++ * Same function as generic code used only for radix, because we don't need to overload
++ * the generic one. But we will have to duplicate, because hash select
++ * HAVE_ARCH_UNMAPPED_AREA
 + */
-+void *ring_buffer_read_page_data(struct buffer_data_read_page *page)
++static unsigned long
++radix__arch_get_unmapped_area(struct file *filp, unsigned long addr, unsigned long len,
++			      unsigned long pgoff, unsigned long flags)
 +{
-+	return page->data;
++	struct mm_struct *mm = current->mm;
++	struct vm_area_struct *vma;
++	int fixed = (flags & MAP_FIXED);
++	unsigned long high_limit;
++	struct vm_unmapped_area_info info;
++
++	high_limit = DEFAULT_MAP_WINDOW;
++	if (addr >= high_limit || (fixed && (addr + len > high_limit)))
++		high_limit = TASK_SIZE;
++
++	if (len > high_limit)
++		return -ENOMEM;
++
++	if (fixed) {
++		if (addr > high_limit - len)
++			return -ENOMEM;
++		return addr;
++	}
++
++	if (addr) {
++		addr = PAGE_ALIGN(addr);
++		vma = find_vma(mm, addr);
++		if (high_limit - len >= addr && addr >= mmap_min_addr &&
++		    (!vma || addr + len <= vm_start_gap(vma)))
++			return addr;
++	}
++
++	info.flags = 0;
++	info.length = len;
++	info.low_limit = mm->mmap_base;
++	info.high_limit = high_limit;
++	info.align_mask = 0;
++
++	return vm_unmapped_area(&info);
 +}
-+EXPORT_SYMBOL_GPL(ring_buffer_read_page_data);
 +
- /**
-  * ring_buffer_subbuf_size_get - get size of the sub buffer.
-  * @buffer: the buffer to get the sub buffer size from
-diff --git a/kernel/trace/ring_buffer_benchmark.c b/kernel/trace/ring_buffer_benchmark.c
-index 78e576575b79..7202d6d650e6 100644
---- a/kernel/trace/ring_buffer_benchmark.c
-+++ b/kernel/trace/ring_buffer_benchmark.c
-@@ -104,10 +104,11 @@ static enum event_status read_event(int cpu)
- 
- static enum event_status read_page(int cpu)
- {
-+	struct buffer_data_read_page *bpage;
- 	struct ring_buffer_event *event;
- 	struct rb_page *rpage;
- 	unsigned long commit;
--	void *bpage;
-+	int page_size;
- 	int *entry;
- 	int ret;
- 	int inc;
-@@ -117,14 +118,15 @@ static enum event_status read_page(int cpu)
- 	if (IS_ERR(bpage))
- 		return EVENT_DROPPED;
- 
--	ret = ring_buffer_read_page(buffer, &bpage, PAGE_SIZE, cpu, 1);
-+	page_size = ring_buffer_subbuf_size_get(buffer);
-+	ret = ring_buffer_read_page(buffer, bpage, page_size, cpu, 1);
- 	if (ret >= 0) {
--		rpage = bpage;
-+		rpage = ring_buffer_read_page_data(bpage);
- 		/* The commit may have missed event flags set, clear them */
- 		commit = local_read(&rpage->commit) & 0xfffff;
- 		for (i = 0; i < commit && !test_error ; i += inc) {
- 
--			if (i >= (PAGE_SIZE - offsetof(struct rb_page, data))) {
-+			if (i >= (page_size - offsetof(struct rb_page, data))) {
- 				TEST_ERROR();
- 				break;
- 			}
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 867a220b4ef2..5fcf5e9cba76 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2740,9 +2740,11 @@ trace_event_buffer_lock_reserve(struct trace_buffer **current_rb,
- {
- 	struct ring_buffer_event *entry;
- 	struct trace_array *tr = trace_file->tr;
-+	int page_size;
- 	int val;
- 
- 	*current_rb = tr->array_buffer.buffer;
-+	page_size = ring_buffer_subbuf_size_get(*current_rb);
- 
- 	if (!tr->no_filter_buffering_ref &&
- 	    (trace_file->flags & (EVENT_FILE_FL_SOFT_DISABLED | EVENT_FILE_FL_FILTERED)) &&
-@@ -2764,7 +2766,7 @@ trace_event_buffer_lock_reserve(struct trace_buffer **current_rb,
- 		 * is still quicker than no copy on match, but having
- 		 * to discard out of the ring buffer on a failed match.
- 		 */
--		int max_len = PAGE_SIZE - struct_size(entry, array, 1);
-+		int max_len = page_size - struct_size(entry, array, 1);
- 
- 		val = this_cpu_inc_return(trace_buffered_event_cnt);
- 
-@@ -8004,6 +8006,8 @@ tracing_buffers_read(struct file *filp, char __user *ubuf,
- {
- 	struct ftrace_buffer_info *info = filp->private_data;
- 	struct trace_iterator *iter = &info->iter;
-+	void *trace_data;
-+	int page_size;
- 	ssize_t ret = 0;
- 	ssize_t size;
- 
-@@ -8015,6 +8019,8 @@ tracing_buffers_read(struct file *filp, char __user *ubuf,
- 		return -EBUSY;
- #endif
- 
-+	page_size = ring_buffer_subbuf_size_get(iter->array_buffer->buffer);
++static unsigned long
++radix__arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
++				      const unsigned long len, const unsigned long pgoff,
++				      const unsigned long flags)
++{
++	struct vm_area_struct *vma;
++	struct mm_struct *mm = current->mm;
++	unsigned long addr = addr0;
++	int fixed = (flags & MAP_FIXED);
++	unsigned long high_limit;
++	struct vm_unmapped_area_info info;
 +
- 	if (!info->spare) {
- 		info->spare = ring_buffer_alloc_read_page(iter->array_buffer->buffer,
- 							  iter->cpu_file);
-@@ -8029,13 +8035,13 @@ tracing_buffers_read(struct file *filp, char __user *ubuf,
- 		return ret;
++	high_limit = DEFAULT_MAP_WINDOW;
++	if (addr >= high_limit || (fixed && (addr + len > high_limit)))
++		high_limit = TASK_SIZE;
++
++	if (len > high_limit)
++		return -ENOMEM;
++
++	if (fixed) {
++		if (addr > high_limit - len)
++			return -ENOMEM;
++		return addr;
++	}
++
++	if (addr) {
++		addr = PAGE_ALIGN(addr);
++		vma = find_vma(mm, addr);
++		if (high_limit - len >= addr && addr >= mmap_min_addr &&
++		    (!vma || addr + len <= vm_start_gap(vma)))
++			return addr;
++	}
++
++	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
++	info.length = len;
++	info.low_limit = max(PAGE_SIZE, mmap_min_addr);
++	info.high_limit = mm->mmap_base + (high_limit - DEFAULT_MAP_WINDOW);
++	info.align_mask = 0;
++
++	addr = vm_unmapped_area(&info);
++	if (!(addr & ~PAGE_MASK))
++		return addr;
++	VM_BUG_ON(addr != -ENOMEM);
++
++	/*
++	 * A failed mmap() very likely causes application failure,
++	 * so fall back to the bottom-up function here. This scenario
++	 * can happen with large stack limits and large mmap()
++	 * allocations.
++	 */
++	return radix__arch_get_unmapped_area(filp, addr0, len, pgoff, flags);
++}
++
+ unsigned long arch_get_unmapped_area(struct file *filp,
+ 				     unsigned long addr,
+ 				     unsigned long len,
+ 				     unsigned long pgoff,
+ 				     unsigned long flags)
+ {
++	if (radix_enabled())
++		return radix__arch_get_unmapped_area(filp, addr, len, pgoff, flags);
++
+ 	return slice_get_unmapped_area(addr, len, flags,
+ 				       mm_ctx_user_psize(&current->mm->context), 0);
+ }
+@@ -655,6 +756,9 @@ unsigned long arch_get_unmapped_area_topdown(struct file *filp,
+ 					     const unsigned long pgoff,
+ 					     const unsigned long flags)
+ {
++	if (radix_enabled())
++		return radix__arch_get_unmapped_area_topdown(filp, addr0, len, pgoff, flags);
++
+ 	return slice_get_unmapped_area(addr0, len, flags,
+ 				       mm_ctx_user_psize(&current->mm->context), 1);
+ }
+diff --git a/arch/powerpc/mm/mmap.c b/arch/powerpc/mm/mmap.c
+index ae683fdc716c..5972d619d274 100644
+--- a/arch/powerpc/mm/mmap.c
++++ b/arch/powerpc/mm/mmap.c
+@@ -80,126 +80,6 @@ static inline unsigned long mmap_base(unsigned long rnd,
+ 	return PAGE_ALIGN(DEFAULT_MAP_WINDOW - gap - rnd);
+ }
  
- 	/* Do we have previous read data to read? */
--	if (info->read < PAGE_SIZE)
-+	if (info->read < page_size)
- 		goto read;
- 
-  again:
- 	trace_access_lock(iter->cpu_file);
- 	ret = ring_buffer_read_page(iter->array_buffer->buffer,
--				    &info->spare,
-+				    info->spare,
- 				    count,
- 				    iter->cpu_file, 0);
- 	trace_access_unlock(iter->cpu_file);
-@@ -8056,11 +8062,11 @@ tracing_buffers_read(struct file *filp, char __user *ubuf,
- 
- 	info->read = 0;
-  read:
--	size = PAGE_SIZE - info->read;
-+	size = page_size - info->read;
- 	if (size > count)
- 		size = count;
+-#ifdef CONFIG_PPC_RADIX_MMU
+-/*
+- * Same function as generic code used only for radix, because we don't need to overload
+- * the generic one. But we will have to duplicate, because hash select
+- * HAVE_ARCH_UNMAPPED_AREA
+- */
+-static unsigned long
+-radix__arch_get_unmapped_area(struct file *filp, unsigned long addr,
+-			     unsigned long len, unsigned long pgoff,
+-			     unsigned long flags)
+-{
+-	struct mm_struct *mm = current->mm;
+-	struct vm_area_struct *vma;
+-	int fixed = (flags & MAP_FIXED);
+-	unsigned long high_limit;
+-	struct vm_unmapped_area_info info;
 -
--	ret = copy_to_user(ubuf, info->spare + info->read, size);
-+	trace_data = ring_buffer_read_page_data(info->spare);
-+	ret = copy_to_user(ubuf, trace_data + info->read, size);
- 	if (ret == size)
- 		return -EFAULT;
+-	high_limit = DEFAULT_MAP_WINDOW;
+-	if (addr >= high_limit || (fixed && (addr + len > high_limit)))
+-		high_limit = TASK_SIZE;
+-
+-	if (len > high_limit)
+-		return -ENOMEM;
+-
+-	if (fixed) {
+-		if (addr > high_limit - len)
+-			return -ENOMEM;
+-		return addr;
+-	}
+-
+-	if (addr) {
+-		addr = PAGE_ALIGN(addr);
+-		vma = find_vma(mm, addr);
+-		if (high_limit - len >= addr && addr >= mmap_min_addr &&
+-		    (!vma || addr + len <= vm_start_gap(vma)))
+-			return addr;
+-	}
+-
+-	info.flags = 0;
+-	info.length = len;
+-	info.low_limit = mm->mmap_base;
+-	info.high_limit = high_limit;
+-	info.align_mask = 0;
+-
+-	return vm_unmapped_area(&info);
+-}
+-
+-static unsigned long
+-radix__arch_get_unmapped_area_topdown(struct file *filp,
+-				     const unsigned long addr0,
+-				     const unsigned long len,
+-				     const unsigned long pgoff,
+-				     const unsigned long flags)
+-{
+-	struct vm_area_struct *vma;
+-	struct mm_struct *mm = current->mm;
+-	unsigned long addr = addr0;
+-	int fixed = (flags & MAP_FIXED);
+-	unsigned long high_limit;
+-	struct vm_unmapped_area_info info;
+-
+-	high_limit = DEFAULT_MAP_WINDOW;
+-	if (addr >= high_limit || (fixed && (addr + len > high_limit)))
+-		high_limit = TASK_SIZE;
+-
+-	if (len > high_limit)
+-		return -ENOMEM;
+-
+-	if (fixed) {
+-		if (addr > high_limit - len)
+-			return -ENOMEM;
+-		return addr;
+-	}
+-
+-	if (addr) {
+-		addr = PAGE_ALIGN(addr);
+-		vma = find_vma(mm, addr);
+-		if (high_limit - len >= addr && addr >= mmap_min_addr &&
+-		    (!vma || addr + len <= vm_start_gap(vma)))
+-			return addr;
+-	}
+-
+-	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
+-	info.length = len;
+-	info.low_limit = max(PAGE_SIZE, mmap_min_addr);
+-	info.high_limit = mm->mmap_base + (high_limit - DEFAULT_MAP_WINDOW);
+-	info.align_mask = 0;
+-
+-	addr = vm_unmapped_area(&info);
+-	if (!(addr & ~PAGE_MASK))
+-		return addr;
+-	VM_BUG_ON(addr != -ENOMEM);
+-
+-	/*
+-	 * A failed mmap() very likely causes application failure,
+-	 * so fall back to the bottom-up function here. This scenario
+-	 * can happen with large stack limits and large mmap()
+-	 * allocations.
+-	 */
+-	return radix__arch_get_unmapped_area(filp, addr0, len, pgoff, flags);
+-}
+-
+-static void radix__arch_pick_mmap_layout(struct mm_struct *mm,
+-					unsigned long random_factor,
+-					struct rlimit *rlim_stack)
+-{
+-	if (mmap_is_legacy(rlim_stack)) {
+-		mm->mmap_base = TASK_UNMAPPED_BASE;
+-		mm->get_unmapped_area = radix__arch_get_unmapped_area;
+-	} else {
+-		mm->mmap_base = mmap_base(random_factor, rlim_stack);
+-		mm->get_unmapped_area = radix__arch_get_unmapped_area_topdown;
+-	}
+-}
+-#else
+-/* dummy */
+-extern void radix__arch_pick_mmap_layout(struct mm_struct *mm,
+-					unsigned long random_factor,
+-					struct rlimit *rlim_stack);
+-#endif
+ /*
+  * This function, called very early during the creation of a new
+  * process VM image, sets up which VM layout function to use:
+@@ -211,9 +91,6 @@ void arch_pick_mmap_layout(struct mm_struct *mm, struct rlimit *rlim_stack)
+ 	if (current->flags & PF_RANDOMIZE)
+ 		random_factor = arch_mmap_rnd();
  
-@@ -8165,6 +8171,7 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
- 		.spd_release	= buffer_spd_release,
- 	};
- 	struct buffer_ref *ref;
-+	int page_size;
- 	int entries, i;
- 	ssize_t ret = 0;
- 
-@@ -8173,13 +8180,14 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
- 		return -EBUSY;
- #endif
- 
--	if (*ppos & (PAGE_SIZE - 1))
-+	page_size = ring_buffer_subbuf_size_get(iter->array_buffer->buffer);
-+	if (*ppos & (page_size - 1))
- 		return -EINVAL;
- 
--	if (len & (PAGE_SIZE - 1)) {
--		if (len < PAGE_SIZE)
-+	if (len & (page_size - 1)) {
-+		if (len < page_size)
- 			return -EINVAL;
--		len &= PAGE_MASK;
-+		len &= (~(page_size - 1));
- 	}
- 
- 	if (splice_grow_spd(pipe, &spd))
-@@ -8189,7 +8197,7 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
- 	trace_access_lock(iter->cpu_file);
- 	entries = ring_buffer_entries_cpu(iter->array_buffer->buffer, iter->cpu_file);
- 
--	for (i = 0; i < spd.nr_pages_max && len && entries; i++, len -= PAGE_SIZE) {
-+	for (i = 0; i < spd.nr_pages_max && len && entries; i++, len -= page_size) {
- 		struct page *page;
- 		int r;
- 
-@@ -8210,7 +8218,7 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
- 		}
- 		ref->cpu = iter->cpu_file;
- 
--		r = ring_buffer_read_page(ref->buffer, &ref->page,
-+		r = ring_buffer_read_page(ref->buffer, ref->page,
- 					  len, iter->cpu_file, 1);
- 		if (r < 0) {
- 			ring_buffer_free_read_page(ref->buffer, ref->cpu,
-@@ -8219,14 +8227,14 @@ tracing_buffers_splice_read(struct file *file, loff_t *ppos,
- 			break;
- 		}
- 
--		page = virt_to_page(ref->page);
-+		page = virt_to_page(ring_buffer_read_page_data(ref->page));
- 
- 		spd.pages[i] = page;
--		spd.partial[i].len = PAGE_SIZE;
-+		spd.partial[i].len = page_size;
- 		spd.partial[i].offset = 0;
- 		spd.partial[i].private = (unsigned long)ref;
- 		spd.nr_pages++;
--		*ppos += PAGE_SIZE;
-+		*ppos += page_size;
- 
- 		entries = ring_buffer_entries_cpu(iter->array_buffer->buffer, iter->cpu_file);
- 	}
+-	if (radix_enabled())
+-		return radix__arch_pick_mmap_layout(mm, random_factor,
+-						    rlim_stack);
+ 	/*
+ 	 * Fall back to the standard layout if the personality
+ 	 * bit is set, or if the expected stack growth is unlimited:
 -- 
-2.31.1
+2.33.1
 
