@@ -2,223 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D99EB45D3FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 05:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF5045D405
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 06:05:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238290AbhKYEqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 23:46:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
+        id S229679AbhKYFBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 00:01:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231646AbhKYEoq (ORCPT
+        with ESMTP id S231646AbhKYE7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 23:44:46 -0500
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1CEEC061574;
-        Wed, 24 Nov 2021 20:41:35 -0800 (PST)
-Received: by mail-qk1-x729.google.com with SMTP id b67so8434642qkg.6;
-        Wed, 24 Nov 2021 20:41:35 -0800 (PST)
+        Wed, 24 Nov 2021 23:59:42 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6850CC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 20:56:31 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id y7so3670482plp.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 20:56:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UyUuOkxYpdVnZCGRGmG6yNWotEFjjwbnIhu+eCTBlDk=;
-        b=HGfRVguEdswibJgeC/mhhfoRWmne+mY9m4t6/mr2Onmr0G+8CwJ05NMkmIr5dx8gxh
-         MO3SH98fITQAXv6Fi6IPn0Omwjc2c1Kn9yT7cLF/0Y382hhJdvYvNza8VrtTW8TN0RTo
-         dwQPdElQuRU/ZTNadLK1dK155Lyi02HMR/qDwO4ZrH3QU6U4REvg2WGqtwLV+P7sh8en
-         E4PrxBk3zcBknjiJdr1D3LUMl7MnvHGjFmo2ty2ItdSfsXR8wBmh3gVpq64PTHK0BLgL
-         xzhojCKYz4HHA2+hpLlunCkcM6aHQdB+Dea6Ex7nlGXnUXtnZB46BsdEsSG5h3jnMvvx
-         SmaQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bGalc5vNffPGwVzGOhJUGlxHQAzjz377ajF/zJb0e/Q=;
+        b=iO93cGLXwgW8TAKpeYweegndUzcvXmaqtRn9N0gFEegtV5OhJcGMqmlzTfubARcaqq
+         lUv/K8K7FD+4N+YQqa6RvYKspgd6cZ+llRLviTU/Wm+56pUIfntHOeDP+cMGeBI0Bnev
+         LoROQM7W1LXnUoCimhQQSP36XmSnu43cuyknuJTPPRbgfBgMT2V4o/+xwC2855v3AZrS
+         IApzUzirQnow7G6LEYLziZrxTVlhA8RQ8uqca9asyRksUZUTNv6YX9m04e48FSTVxfj3
+         9E1L1Z6YkIkuoUs0ZqQlqj65/q6JlWwauaMnPs4vxrqCWSbFzX96YROqZ6E29YuryoVN
+         RYsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UyUuOkxYpdVnZCGRGmG6yNWotEFjjwbnIhu+eCTBlDk=;
-        b=Fnd1SqfL0J68dJV5h/BXaSVEDruyRD7rLAv9sjE0QZ/X8W5sKnwg/sZulqF4T306HM
-         K1hNujVXbA22QA5/WfN77a4OFWhufJ9iMX7WbsapxKjvdJq4VBip9DMYjEfXjSWCAvJ8
-         Z0tZhfqsNlwrHEkCF+VzQISiZMB4f/pJLnFB3NrwD9JkCK6dl91vCr4EYODlluLfku9m
-         S+aLqWfYzvbd/DpgTV+nsYvGamcugoO9gQzwOpPCeYilwq0/HT1d5MNS8Et/Lq1LmXAC
-         H5qBRjm2kgb8cZN0agx5UWmJwREsGVPzzMx7vdz/eKNuEjpEquSBtj7T0XGx37aQ2zqp
-         xcXw==
-X-Gm-Message-State: AOAM532o9vvpV3mZ4wrYDw3M92fykuKRFtX8zU4sBivuoOvG0l8eiwqk
-        22VzPfw/xhq9s7PR3E/2TYsMxv0boI8=
-X-Google-Smtp-Source: ABdhPJy7qfimOxSr4/fMIE7a2D4KDer/6cV3LsKxzuCkCEJlgsMJJHGEPQorNf5S0C16PETlewJPqw==
-X-Received: by 2002:a37:6682:: with SMTP id a124mr12157869qkc.110.1637815294759;
-        Wed, 24 Nov 2021 20:41:34 -0800 (PST)
-Received: from localhost ([66.216.211.25])
-        by smtp.gmail.com with ESMTPSA id l25sm857260qkk.48.2021.11.24.20.41.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 20:41:34 -0800 (PST)
-Date:   Wed, 24 Nov 2021 20:41:32 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH 5/6] rcu/nocb: Allow empty "rcu_nocbs" kernel parameter
-Message-ID: <20211125044132.GA105778@lapt>
-References: <20211123003708.468409-1-frederic@kernel.org>
- <20211123003708.468409-6-frederic@kernel.org>
- <20211125004720.GV641268@paulmck-ThinkPad-P17-Gen-1>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bGalc5vNffPGwVzGOhJUGlxHQAzjz377ajF/zJb0e/Q=;
+        b=qeyEh1uGkvspxsHKTqmi2tM2f31FoKMkCbI5qqUt456wgkOxYsIyh14zAlpe4rFP1r
+         u1lwDHNJzOUe6QPoPo5eMLg2uVBLAYysyDoAKwVJ+IEojvwUShBTWiqzvzFnSL0Bs5mJ
+         VwyunxMEpeaP33m5h3ji7lzZlIgahHpWZVQyxZNNvWcynf1Iq1AHxUGF+yP7Kc6nKzJ7
+         wtadnDwRgKHwsjnqRLelynb3OGV5NTZEA5Eq6VlrRdMavoAloyX/wR+3r/uDI+Da0OFs
+         W9OxSYHz2m0zdWpukfGqNjTb7wLremQQULuIyJjUgudv13wGS+9+q+x+Q5cYFMYGUaZf
+         zXUg==
+X-Gm-Message-State: AOAM531bVwrjc+lz6+BTWLJbTda4d7dI0oqhIxtpfM1qW+jzhz8nbjNI
+        p7HiRJtopJjHGl39sJCSnsNap9CsFbm+kGNkATE=
+X-Google-Smtp-Source: ABdhPJzPx5w5w/SU9ovaWbQEM1MCezMbDw2eUwionIqklVMH9N0PvczDv4B7+e5Z1vbWGkv9zE1b1Pm4XJKcSON6Rqk=
+X-Received: by 2002:a17:902:ab14:b0:143:77d8:2558 with SMTP id
+ ik20-20020a170902ab1400b0014377d82558mr26345760plb.54.1637816189350; Wed, 24
+ Nov 2021 20:56:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211125004720.GV641268@paulmck-ThinkPad-P17-Gen-1>
+References: <CANn89i+hQTn26hK-4CA=cAwCxEMzogqD30PYdqz4NP8kjmH2gg@mail.gmail.com>
+ <CANn89i+K6=Kc0weayD_phAPn9YT=2UUje+1BZfg=kUiLp7ELqQ@mail.gmail.com>
+ <619eee05.1c69fb81.4b686.4bbc@mx.google.com> <CANn89iJdQ1VTLYUKu1hYNm4wF__ZzrwNYr28v_vGM0MCybJpxg@mail.gmail.com>
+ <CAFUsyf+5zp+p_0TPFLr-fMNry0M_CnNAFDG30PKDuy2jA5MhNw@mail.gmail.com>
+ <CANn89iLtZmSyBYtvJ0nxdrM3CKyf3D9y9AWBC4GVbPCxtjOROw@mail.gmail.com>
+ <CANn89i+edPKsp63R16kx4_kQ884ks=is8pg=W0wDbNV46UZ3vw@mail.gmail.com> <CANn89iJqZm9Mcfu+4-aZ_pZok1j4RsHK8YoFBVqjVYpGbt_P8Q@mail.gmail.com>
+In-Reply-To: <CANn89iJqZm9Mcfu+4-aZ_pZok1j4RsHK8YoFBVqjVYpGbt_P8Q@mail.gmail.com>
+From:   Noah Goldstein <goldstein.w.n@gmail.com>
+Date:   Wed, 24 Nov 2021 22:56:18 -0600
+Message-ID: <CAFUsyfL3RF-UC-HBUcbRn0e5S3URo9gpz5V85buF8C7xVb6K7w@mail.gmail.com>
+Subject: Re: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12:
+ error: implicit declaration of function 'load_unaligned_zeropad'
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Johannes Berg <johannes@sipsolutions.net>, alexanderduyck@fb.com,
+        kbuild-all@lists.01.org, open list <linux-kernel@vger.kernel.org>,
+        linux-um@lists.infradead.org, lkp@intel.com, peterz@infradead.org,
+        X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 04:47:20PM -0800, Paul E. McKenney wrote:
-> On Tue, Nov 23, 2021 at 01:37:07AM +0100, Frederic Weisbecker wrote:
-> > If a user wants to boot without any CPU in offloaded mode initially but
-> > with the possibility to offload them later using cpusets, provide a way
-> > to simply pass an empty "rcu_nocbs" kernel parameter which will enforce
-> > the creation of dormant nocb kthreads.
-> 
-> Huh.  This would have been a use for Yury Norov's "none" bitmask
-> specifier.  ;-)
-> 
-> I pulled this one in with the usual wordsmithing.
-> 
-> 							Thanx, Paul
+On Wed, Nov 24, 2021 at 10:20 PM Eric Dumazet <edumazet@google.com> wrote:
+>
+> On Wed, Nov 24, 2021 at 8:08 PM Eric Dumazet <edumazet@google.com> wrote:
+> >
+> > On Wed, Nov 24, 2021 at 8:00 PM Eric Dumazet <edumazet@google.com> wrote:
+> >
+> > >
+> > > It is an issue in general, not in standard cases because network
+> > > headers are aligned.
+> > >
+> > > I think it came when I folded csum_partial() and do_csum(), I forgot
+> > > to ror() the seed.
+> > >
+> > > I suspect the following would help:
+> > >
+> > > diff --git a/arch/x86/lib/csum-partial_64.c b/arch/x86/lib/csum-partial_64.c
+> > > index 1eb8f2d11f7c785be624eba315fe9ca7989fd56d..ee7b0e7a6055bcbef42d22f7e1d8f52ddbd6be6d
+> > > 100644
+> > > --- a/arch/x86/lib/csum-partial_64.c
+> > > +++ b/arch/x86/lib/csum-partial_64.c
+> > > @@ -41,6 +41,7 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
+> > >         if (unlikely(odd)) {
+> > >                 if (unlikely(len == 0))
+> > >                         return sum;
+> > > +               temp64 = ror32((__force u64)sum, 8);
+> > >                 temp64 += (*(unsigned char *)buff << 8);
+> > >                 len--;
+> > >                 buff++;
+> > >
+> > >
+> >
+> > It is a bit late here, I will test the following later this week.
+> >
+> > We probably can remove one conditional jump at the end of the function
+> >
+> > diff --git a/arch/x86/lib/csum-partial_64.c b/arch/x86/lib/csum-partial_64.c
+> > index 1eb8f2d11f7c785be624eba315fe9ca7989fd56d..15986ad42ed5ccb8241ff467a34188cf901ec98e
+> > 100644
+> > --- a/arch/x86/lib/csum-partial_64.c
+> > +++ b/arch/x86/lib/csum-partial_64.c
+> > @@ -41,9 +41,11 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
+> >         if (unlikely(odd)) {
+> >                 if (unlikely(len == 0))
+> >                         return sum;
+> > +               temp64 = ror32((__force u64)sum, 8);
+> >                 temp64 += (*(unsigned char *)buff << 8);
+> >                 len--;
+> >                 buff++;
+> > +               odd = 8;
+> >         }
+> >
+> >         while (unlikely(len >= 64)) {
+> > @@ -129,10 +131,7 @@ __wsum csum_partial(const void *buff, int len, __wsum sum)
+> >  #endif
+> >         }
+> >         result = add32_with_carry(temp64 >> 32, temp64 & 0xffffffff);
+> > -       if (unlikely(odd)) {
+> > -               result = from32to16(result);
+> > -               result = ((result >> 8) & 0xff) | ((result & 0xff) << 8);
+> > -       }
+> > +       ror32(result, odd);
+>
+> this would be
+>           result = ror32(result, odd);
+>
+> definitely time to stop working today for me.
+>
+> >         return (__force __wsum)result;
+> >  }
+> >  EXPORT_SYMBOL(csum_partial);
 
-I think 'rcu_nocbs=,' should work as 'none'. But I admit that it looks
-awkward. The following patch adds clear 'none' semantics to the parser.
-If you like it, I think you may drop non-documentation part of this
-patch.
-
-From e3a9cfe4830141c88aa5d8a93eae3512b2ae2882 Mon Sep 17 00:00:00 2001
-From: Yury Norov <yury.norov@gmail.com>
-Date: Wed, 24 Nov 2021 19:34:05 -0800
-Subject: [PATCH] lib/bitmap: add 'none' specifier for bitmap_parselist()
-
-Currently bitmap_parselist() has no clear notation to specify empty bitmap.
-The format allows ',' or '0:0-N' for doing this, but it looks hacky.
-
-Frederic Weisbecker needs to pass an empty rcu_nocbs to the kernel, and
-without such a notation has to hack his own code:
-
-https://lore.kernel.org/rcu/20211125005526.GA490855@lothringen/
-
-This patch adds 'none' to the bitmap_parselist, so that no such hacks would
-be needed. 'None' is case-insensitive and doesn't support group semantics
-('none:1/2' is meaningless and wouldn't work).
-
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
----
- Documentation/admin-guide/kernel-parameters.rst |  7 +++++--
- lib/bitmap.c                                    | 12 +++++++++++-
- lib/test_bitmap.c                               | 13 +++++++++++++
- 3 files changed, 29 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.rst b/Documentation/admin-guide/kernel-parameters.rst
-index 01ba293a2d70..af261018bab5 100644
---- a/Documentation/admin-guide/kernel-parameters.rst
-+++ b/Documentation/admin-guide/kernel-parameters.rst
-@@ -76,11 +76,14 @@ to change, such as less cores in the CPU list, then N and any ranges using N
- will also change.  Use the same on a small 4 core system, and "16-N" becomes
- "16-3" and now the same boot input will be flagged as invalid (start > end).
- 
-+The special case-tolerant group name "none" has a meaning of selecting no CPUs,
-+so that "rcu_nocps=none" would allow to disable offloading mode for all CPUs.
-+
- The special case-tolerant group name "all" has a meaning of selecting all CPUs,
- so that "nohz_full=all" is the equivalent of "nohz_full=0-N".
- 
--The semantics of "N" and "all" is supported on a level of bitmaps and holds for
--all users of bitmap_parse().
-+The semantics of "none", "N" and "all" is supported on a level of bitmaps and
-+holds for all users of bitmap_parse().
- 
- This document may not be entirely up to date and comprehensive. The command
- "modinfo -p ${modulename}" shows a current list of all parameters of a loadable
-diff --git a/lib/bitmap.c b/lib/bitmap.c
-index d7b80a069819..bcb38d055ec1 100644
---- a/lib/bitmap.c
-+++ b/lib/bitmap.c
-@@ -771,6 +771,16 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
- 		goto check_pattern;
- 	}
- 
-+	if (!strncasecmp(str, "none", 4)) {
-+		r->start = 0;
-+		r->end = 0;
-+		r->off = 0;
-+		r->group_len = r->nbits;
-+		str += 4;
-+
-+		goto out;
-+	}
-+
- 	str = bitmap_getnum(str, &r->start, lastbit);
- 	if (IS_ERR(str))
- 		return str;
-@@ -806,7 +816,7 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
- no_pattern:
- 	r->off = r->end + 1;
- 	r->group_len = r->end + 1;
--
-+out:
- 	return end_of_str(*str) ? NULL : str;
- }
- 
-diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-index 0c82f07f74fc..1111d0d0df5f 100644
---- a/lib/test_bitmap.c
-+++ b/lib/test_bitmap.c
-@@ -351,18 +351,26 @@ static const struct test_bitmap_parselist parselist_tests[] __initconst = {
- 	{0, ",,  ,,  , ,  ,",		&exp1[12 * step], 8, 0},
- 	{0, " ,  ,,  , ,   ",		&exp1[12 * step], 8, 0},
- 	{0, " ,  ,,  , ,   \n",		&exp1[12 * step], 8, 0},
-+	{0, "none",             	&exp1[12 * step], 8, 0},
-+	{0, " , NONE ,,  , ,   \n",	&exp1[12 * step], 8, 0},
-+	{0, " ,  ,none,  , ,   \n",	&exp1[12 * step], 8, 0},
-+	{0, " ,  ,,  , ,none   \n",	&exp1[12 * step], 8, 0},
- 
- 	{0, "0-0",			&exp1[0], 32, 0},
- 	{0, "1-1",			&exp1[1 * step], 32, 0},
- 	{0, "15-15",			&exp1[13 * step], 32, 0},
- 	{0, "31-31",			&exp1[14 * step], 32, 0},
-+	{0, "31-31,none",		&exp1[14 * step], 32, 0},
- 
- 	{0, "0-0:0/1",			&exp1[12 * step], 32, 0},
-+	{0, "0-0:0/1,none",		&exp1[12 * step], 32, 0},
- 	{0, "0-0:1/1",			&exp1[0], 32, 0},
- 	{0, "0-0:1/31",			&exp1[0], 32, 0},
- 	{0, "0-0:31/31",		&exp1[0], 32, 0},
- 	{0, "1-1:1/1",			&exp1[1 * step], 32, 0},
- 	{0, "0-15:16/31",		&exp1[2 * step], 32, 0},
-+	{0, "0-15:16/31,none",		&exp1[2 * step], 32, 0},
-+	{0, "none,0-15:16/31",		&exp1[2 * step], 32, 0},
- 	{0, "15-15:1/2",		&exp1[13 * step], 32, 0},
- 	{0, "15-15:31/31",		&exp1[13 * step], 32, 0},
- 	{0, "15-31:1/31",		&exp1[13 * step], 32, 0},
-@@ -381,6 +389,7 @@ static const struct test_bitmap_parselist parselist_tests[] __initconst = {
- 	{0, "0-N:1/3,1-N:1/3,2-N:1/3",		&exp1[8 * step], 32, 0},
- 	{0, "0-31:1/3,1-31:1/3,2-31:1/3",	&exp1[8 * step], 32, 0},
- 	{0, "1-10:8/12,8-31:24/29,0-31:0/3",	&exp1[9 * step], 32, 0},
-+	{0, "1-10:8/12,none,8-31:24/29,0-31:0/3",	&exp1[9 * step], 32, 0},
- 
- 	{0,	  "all",		&exp1[8 * step], 32, 0},
- 	{0,	  "0, 1, all,  ",	&exp1[8 * step], 32, 0},
-@@ -388,6 +397,10 @@ static const struct test_bitmap_parselist parselist_tests[] __initconst = {
- 	{0,	  "ALL:1/2",		&exp1[4 * step], 32, 0},
- 	{-EINVAL, "al", NULL, 8, 0},
- 	{-EINVAL, "alll", NULL, 8, 0},
-+	{-EINVAL, "non", NULL, 8, 0},
-+	{-EINVAL, "one", NULL, 8, 0},
-+	{-EINVAL, "NONEE", NULL, 8, 0},
-+	{-EINVAL, "NONE:1/2", NULL, 8, 0},
- 
- 	{-EINVAL, "-1",	NULL, 8, 0},
- 	{-EINVAL, "-0",	NULL, 8, 0},
--- 
-2.25.1
-
-
+All my tests pass with that change :)
