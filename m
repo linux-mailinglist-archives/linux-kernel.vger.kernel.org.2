@@ -2,144 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FFF445D2F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:10:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3657645D301
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237615AbhKYCNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 21:13:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38290 "EHLO
+        id S235152AbhKYCP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 21:15:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236374AbhKYCNL (ORCPT
+        with ESMTP id S229821AbhKYCN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 21:13:11 -0500
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB215C0698D6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 17:49:52 -0800 (PST)
-Received: by mail-pj1-x1049.google.com with SMTP id n6-20020a17090a670600b001a9647fd1aaso3924051pjj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 17:49:52 -0800 (PST)
+        Wed, 24 Nov 2021 21:13:26 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28540C0698DC;
+        Wed, 24 Nov 2021 17:50:19 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id v15-20020a9d604f000000b0056cdb373b82so7124171otj.7;
+        Wed, 24 Nov 2021 17:50:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=pxR1NPHuzRsrzxrqk2JiOjLQ1DwZgeXTpOJUqyHl/6A=;
-        b=rSBoDxu1CW93c7R6xJJRfcuRY078jGLz4wFBtqM+zyfp65HEi9ztAQrKnVsOH4kUV2
-         R5Dm7EgrY+/mi9ssk/lGFsS8+j6hEbZ6/M9z1N33izQVxIYxgg54Z7hNkI6oPKdaYKYH
-         URPpcnrXKMol6M3hOV6Nf+fj/HiglfEt050rt9/h/dNWtydN7zUaHsaEl3mbCA9YwWOt
-         dPe0toi9LEpKA8GpjB9E/QXHkNNWLGRe7zLijTwqFalNQRFngDuywMocIJ2+LdlP8Dud
-         RuGkTKsBUMsI/zZQl4pqlJYwexR2oYQAqqWJVA9F3fEQ3Q4KHApcG5rFY+EoDdDhb58R
-         QU9Q==
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xOPhCOlCNp6uUIBaUHNqh+qJKVIjQdFpa4WJew+wXmM=;
+        b=qewz+LoKoG28hL94OD4MdcdP1EJBRKSARjjgX61lJfv20iMGfNVXj4KTF8evPTnX0/
+         E/2tNGNN07RIAbUCGcMKCVoV7fmQvog/qi0BWkFCI//sMRb/gQ0t0fRtRm6ADl10n4+F
+         yYzeXEqJUDQlwd8+PWd1/t3JflZFQLSKHm3jqxnPexGiEZIN/h6mx5e08tnEn9UO8W/q
+         NOj+eT4VqD4ARBEp08B1UuL6xnuEnIfSzyTo9UZyjWy3Gg8gcenD2vozvpQ5r6bjkOCw
+         V313FA49tZyT22oNxGHaqvXdrQoNYVN0RCBUjUDIoLm7p7KHWZUkzpjTnUkWaTc7Jm0+
+         nEZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=pxR1NPHuzRsrzxrqk2JiOjLQ1DwZgeXTpOJUqyHl/6A=;
-        b=6OvS4EirBwKPV5uDINo1mXYLwtqOyR7V8CJ0si+1oTtriP65w5s4lnAK4Fbp23hYZ4
-         VmoIM8L7tgJglw6BUnmOmu2Z5zWAhFHSmVi7A5g+2+X1N4O82tRom4URYmnNj20GuKSE
-         Ed3wST+nsiGHi2ljgeNMx4hd/TSDMXLUZR94KGGS4+xq6lXrWolAM3nyK4fwph4C6VLn
-         VNPC2YqFq/XCM8/l/Se2MNup3UH8Z8F0oroKvdfCq3RGyt5knJbQF/rF+yIu6f7xpOQU
-         HdQhtemGMIGaMf1KxR9MJnXX7aqUlM6FaHQP9wV6olrWfVLZCK1mekK5MSRL9RxEcHDK
-         34ZQ==
-X-Gm-Message-State: AOAM533WuKHKrkv8qmOWKOjdDZ6ZU9eqssIpZLGiue7VJEG0OivXjWNt
-        vOV7q52Jy0g7/UCvw1yqhfSwvsj8ywA=
-X-Google-Smtp-Source: ABdhPJxqCKMdDjiz9nRFieKO+Z5+ZKjQxR7J5i2ChEtGh0fTtZksT9j1/QVz/G9W6693lvym+0RucwnfVXw=
-X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
- (user=seanjc job=sendgmr) by 2002:a17:90a:284f:: with SMTP id
- p15mr455456pjf.1.1637804991895; Wed, 24 Nov 2021 17:49:51 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 25 Nov 2021 01:49:44 +0000
-In-Reply-To: <20211125014944.536398-1-seanjc@google.com>
-Message-Id: <20211125014944.536398-3-seanjc@google.com>
-Mime-Version: 1.0
-References: <20211125014944.536398-1-seanjc@google.com>
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH 2/2] KVM: nVMX: Emulate guest TLB flush on nested VM-Enter
- with new vpid12
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=xOPhCOlCNp6uUIBaUHNqh+qJKVIjQdFpa4WJew+wXmM=;
+        b=4pEu96rKSAT1cV+W1KCcDd9WfrAAKTZZB9LaaSduyUOzEYkqf2L8BAkiFoPSi++dWv
+         vJyq1T/nvoxpQMTR+Gr06DrDwTIhT0Zy3OKvWPofG6GHtYednEdyRD8ORDG8zDBnJkFo
+         Lc/VpJ+kd6EiR4m1n2/X0Yt/JvavzyoUnShjlFoGZ0PAc4B0R6NI7r+fsF17doA+/fjN
+         D0lcfta59yT+NeaAd1MphxfFh1l9ft8/kgmyfPmE7/NlZ0/B5GKM5rNAKywnQbajCsWR
+         miiqRXnZYKfQOZLxc+Fz6QZhaGBI9QMHZoU2iiwhUHUlipf7SaycIO7rMHAoQ8FDPhcM
+         WopA==
+X-Gm-Message-State: AOAM5329hC1RuBMBxxYAxOfU4AWTvPdBxy17Ymf828qcyiSg13jMwTtd
+        B/iF9e1Apfb/QcBx+b6cghk=
+X-Google-Smtp-Source: ABdhPJx8e4Q3tcdFNIyyzSFjCRee9m4aKH03siICvBDwW9lkHGd4bWIVxuhLqn+NTHGdBUkf7lwz2A==
+X-Received: by 2002:a9d:ea6:: with SMTP id 35mr17699064otj.304.1637805018595;
+        Wed, 24 Nov 2021 17:50:18 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c9sm307314oog.43.2021.11.24.17.50.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 17:50:18 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 24 Nov 2021 17:50:16 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.9 000/207] 4.9.291-rc1 review
+Message-ID: <20211125015016.GG851427@roeck-us.net>
+References: <20211124115703.941380739@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124115703.941380739@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fully emulate a guest TLB flush on nested VM-Enter which changes vpid12,
-i.e. L2's VPID, instead of simply doing INVVPID to flush real hardware's
-TLB entries for vpid02.  From L1's perspective, changing L2's VPID is
-effectively a TLB flush unless "hardware" has previously cached entries
-for the new vpid12.  Because KVM tracks only a single vpid12, KVM doesn't
-know if the new vpid12 has been used in the past and so must treat it as
-a brand new, never been used VPID, i.e. must assume that the new vpid12
-represents a TLB flush from L1's perspective.
+On Wed, Nov 24, 2021 at 12:54:31PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.291 release.
+> There are 207 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
+> Anything received after that time might be too late.
+> 
 
-For example, if L1 and L2 share a CR3, the first VM-Enter to L2 (with a
-VPID) is effectively a TLB flush as hardware/KVM has never seen vpid12
-and thus can't have cached entries in the TLB for vpid12.
+Build results:
+	total: 163 pass: 134 fail: 29
+Failed builds:
+	arm:allnoconfig
+	arm:tinyconfig
+	arm:efm32_defconfig
+	blackfin:defconfig
+	blackfin:BF561-EZKIT-SMP_defconfig
+	c6x:dsk6455_defconfig
+	c6x:evmc6457_defconfig
+	c6x:evmc6678_defconfig
+	h8300:allnoconfig
+	h8300:tinyconfig
+	h8300:edosk2674_defconfig
+	h8300:h8300h-sim_defconfig
+	h8300:h8s-sim_defconfig
+	ia64:defconfig
+	m68k:allnoconfig
+	m68k:tinyconfig
+	m68k_nommu:m5272c3_defconfig
+	m68k_nommu:m5307c3_defconfig
+	m68k_nommu:m5249evb_defconfig
+	m68k_nommu:m5407c3_defconfig
+	microblaze:nommu_defconfig
+	microblaze:allnoconfig
+	microblaze:tinyconfig
+	s390:defconfig
+	s390:allmodconfig
+	s390:performance_defconfig
+	sh:dreamcast_defconfig
+	sh:microdev_defconfig
+	sh:shx3_defconfig
+Qemu test results:
+	total: 396 pass: 389 fail: 7
+Failed tests:
+	arm:mps2-an385:mps2_defconfig:mps2-an385:initrd
+	mcf5208evb:m5208:m5208evb_defconfig:initrd
+	s390:defconfig:nolocktests:smp2:net,default:initrd
+	s390:defconfig:nolocktests:smp2:virtio-blk-ccw:net,virtio-net-pci:rootfs
+	s390:defconfig:nolocktests:smp2:scsi[virtio-ccw]:net,default:rootfs
+	s390:defconfig:nolocktests:virtio-pci:net,virtio-net-pci:rootfs
+	s390:defconfig:nolocktests:scsi[virtio-pci]:net,default:rootfs
 
-Reported-by: Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Fixes: 5c614b3583e7 ("KVM: nVMX: nested VPID emulation")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/vmx/nested.c | 37 +++++++++++++++++--------------------
- 1 file changed, 17 insertions(+), 20 deletions(-)
+include/asm-generic/tlb.h: In function 'tlb_flush_pmd_range':
+include/asm-generic/tlb.h:208:54: error: 'PMD_SIZE' undeclared
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 2ef1d5562a54..dafe5881ae51 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -1162,29 +1162,26 @@ static void nested_vmx_transition_tlb_flush(struct kvm_vcpu *vcpu,
- 	WARN_ON(!enable_vpid);
- 
- 	/*
--	 * If VPID is enabled and used by vmc12, but L2 does not have a unique
--	 * TLB tag (ASID), i.e. EPT is disabled and KVM was unable to allocate
--	 * a VPID for L2, flush the current context as the effective ASID is
--	 * common to both L1 and L2.
--	 *
--	 * Defer the flush so that it runs after vmcs02.EPTP has been set by
--	 * KVM_REQ_LOAD_MMU_PGD (if nested EPT is enabled) and to avoid
--	 * redundant flushes further down the nested pipeline.
--	 *
--	 * If a TLB flush isn't required due to any of the above, and vpid12 is
--	 * changing then the new "virtual" VPID (vpid12) will reuse the same
--	 * "real" VPID (vpid02), and so needs to be flushed.  There's no direct
--	 * mapping between vpid02 and vpid12, vpid02 is per-vCPU and reused for
--	 * all nested vCPUs.  Remember, a flush on VM-Enter does not invalidate
--	 * guest-physical mappings, so there is no need to sync the nEPT MMU.
-+	 * VPID is enabled and in use by vmcs12.  If vpid12 is changing, then
-+	 * emulate a guest TLB flush as KVM does not track vpid12 history nor
-+	 * is the VPID incorporated into the MMU context.  I.e. KVM must assume
-+	 * that the new vpid12 has never been used and thus represents a new
-+	 * guest ASID that cannot have entries in the TLB.
- 	 */
--	if (!nested_has_guest_tlb_tag(vcpu)) {
--		kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
--	} else if (is_vmenter &&
--		   vmcs12->virtual_processor_id != vmx->nested.last_vpid) {
-+	if (is_vmenter && vmcs12->virtual_processor_id != vmx->nested.last_vpid) {
- 		vmx->nested.last_vpid = vmcs12->virtual_processor_id;
--		vpid_sync_context(nested_get_vpid02(vcpu));
-+		kvm_make_request(KVM_REQ_TLB_FLUSH_GUEST, vcpu);
-+		return;
- 	}
-+
-+	/*
-+	 * If VPID is enabled, used by vmc12, and vpid12 is not changing but
-+	 * does not have a unique TLB tag (ASID), i.e. EPT is disabled and
-+	 * KVM was unable to allocate a VPID for L2, flush the current context
-+	 * as the effective ASID is common to both L1 and L2.
-+	 */
-+	if (!nested_has_guest_tlb_tag(vcpu))
-+		kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
- }
- 
- static bool is_bitwise_subset(u64 superset, u64 subset, u64 mask)
--- 
-2.34.0.rc2.393.gf8c9666880-goog
+mm/hugetlb.c: In function '__unmap_hugepage_range':
+mm/hugetlb.c:3415:25: error: implicit declaration of function 'tlb_flush_pmd_range'
 
+Guenter
