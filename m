@@ -2,87 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25BD945DD60
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 266A045DD87
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:33:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349313AbhKYP3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:29:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55574 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355990AbhKYP1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:27:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B52996101D;
-        Thu, 25 Nov 2021 15:24:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637853861;
-        bh=N1FOICKYx8df62U0dhSbL5O2MFUzMOtFlbsNrPsZvoU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Lmsrwdpe+ttX0IEen+wS5tkOVZlggnt7+sGvMuSB2upDolQDFHo67mcV7ADniGSVm
-         HsBM4V93aMLrO64U1h13bMFa1jnUk5kneZBV2O1aZ56i76VKGPc/PVS4Z56NyhfbAn
-         VsBVa8+abzQOFveTu3qiiwGO8gD3aG4qCMNHRyW7+0D6vznAqes14fBEImRDt9VK+o
-         URmXbRJUeMwJ57txKy92b9fafgYaStoundWlpSmwD5wOFAb1Zz4k5Se/3L3HO/HsmR
-         ZounNt+sa0lQYcMeYd/NCDQhhn8ITGCs5OzqokgXFN1gS58dFe0N1CO3AaQ4LNTR58
-         /RPxdQteCeEqA==
-Date:   Thu, 25 Nov 2021 15:24:15 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Satya Priya <quic_c_skakit@quicinc.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>, swboyd@chromium.org,
-        collinsd@codeaurora.org, subbaram@codeaurora.org,
-        Das Srinagesh <gurus@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4 2/6] dt-bindings: regulator: Add pm8008 regulator
- bindings
-Message-ID: <YZ+qn2hA4MzNEqM+@sirena.org.uk>
-References: <1637314953-4215-1-git-send-email-quic_c_skakit@quicinc.com>
- <1637314953-4215-3-git-send-email-quic_c_skakit@quicinc.com>
+        id S1356095AbhKYPgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:36:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235524AbhKYPel (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 10:34:41 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE3D4C061746
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:25:09 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id d24so12502118wra.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:25:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bgokrwfXdRB9SClU9n/nKdZVyUcKPx1fDzLulUzJIPU=;
+        b=BktAf1OS+eudDpfgrdZDTSFFMA7Yx1oBn5NMzdoU7qIo8aNQ9mok4e2egctvZU1mko
+         URk5CsZF+wfaS2PBAqP0GONNNyChiLkL+Cn3nlkbJubQzzbvN+ZxhxMH6RQhCRyrTmWO
+         zzBIJ4Mhg0tjItLDamKowUeOk7aREzY9Rg5Nw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=bgokrwfXdRB9SClU9n/nKdZVyUcKPx1fDzLulUzJIPU=;
+        b=wVJAIzwZmJ3KUlKj3FWzds+Pf90/Ks6j9VyYdlVs28Y19RyJvVsXztj1gh/2Z4YKTg
+         rgFCI0BSLzaMgk33+LIb3tElfQ+auEKrPj1H6OVTwwHrBHAtM8NGeW+bE5hxsjBau2n7
+         LihZEj9UjYUWyhgyGQ3M2jYnarO2H24cV24gGxIDfcoMiC5cFUBxq8bAvz1yc9O1f7Ln
+         JGLU10TiizjL/9wuTaBUU69zL2y+2dY0bJGWppABoJQ8fWJFF3GB2cBPLRRtCEE1lOaN
+         /HODhsC9N+WM5qsb6oFe125/EwlCs/x5LW2zWhPrQmtceoLTsfRq7nk/rq8VPzPbz1gJ
+         6IvQ==
+X-Gm-Message-State: AOAM533aWUO/ULycVP3U/tHm/UGEz8XEzd3nv3zCGV9omYsf4zn9FHIN
+        zugKyxh4BbnFpKCzqRaPZCkiIQ==
+X-Google-Smtp-Source: ABdhPJwe8pptmsJdDF9M6JUSyrscCdaDaxsY8JQgVcoGOgo8XjGLEdr1e+oL4tgyhJgNNAWjvV0HCw==
+X-Received: by 2002:a5d:6111:: with SMTP id v17mr7637482wrt.512.1637853908242;
+        Thu, 25 Nov 2021 07:25:08 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id bg12sm4220870wmb.5.2021.11.25.07.25.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 07:25:07 -0800 (PST)
+Date:   Thu, 25 Nov 2021 16:25:05 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Doug Anderson <dianders@chromium.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Rob Clark <robdclark@gmail.com>, linux-input@vger.kernel.org,
+        Rob Clark <robdclark@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v2 1/2] drm/input_helper: Add new input-handling helper
+Message-ID: <YZ+q0ZlIRoq4nZMl@phenom.ffwll.local>
+Mail-Followup-To: Brian Norris <briannorris@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Doug Anderson <dianders@chromium.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Rob Clark <robdclark@gmail.com>, linux-input@vger.kernel.org,
+        Rob Clark <robdclark@chromium.org>, David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org
+References: <20211117224841.3442482-1-briannorris@chromium.org>
+ <20211117144807.v2.1.I09b516eff75ead160a6582dd557e7e7e900c9e8e@changeid>
+ <YZYXR4u6VBEi4qnM@phenom.ffwll.local>
+ <YZap4zKo8D5eZc1y@google.com>
+ <YZd17jm5Nkfu5YRO@phenom.ffwll.local>
+ <YZf15Ir0LDjkYNF2@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="CswzH+vgELyYIlv6"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1637314953-4215-3-git-send-email-quic_c_skakit@quicinc.com>
-X-Cookie: This bag is recyclable.
+In-Reply-To: <YZf15Ir0LDjkYNF2@google.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 19, 2021 at 11:07:16AM -0800, Brian Norris wrote:
+> Hi Daniel,
+> 
+> On Fri, Nov 19, 2021 at 11:01:18AM +0100, Daniel Vetter wrote:
+> > On Thu, Nov 18, 2021 at 11:30:43AM -0800, Brian Norris wrote:
+> > > On Thu, Nov 18, 2021 at 10:05:11AM +0100, Daniel Vetter wrote:
+> > > > On Wed, Nov 17, 2021 at 02:48:40PM -0800, Brian Norris wrote:
+> > > > > --- a/drivers/gpu/drm/Kconfig
+> > > > > +++ b/drivers/gpu/drm/Kconfig
+> > > > > @@ -79,9 +79,15 @@ config DRM_DEBUG_SELFTEST
+> > > > >  
+> > > > >  	  If in doubt, say "N".
+> > > > >  
+> > > > > +config DRM_INPUT_HELPER
+> > > > > +	def_bool y
+> > > > > +	depends on DRM_KMS_HELPER
+> > > > > +	depends on INPUT
+> > > > 
+> > > > Uh please no configs for each thing, it just makes everything more
+> > > > complex. Do we _really_ need this?
+> > > 
+> > > First, it's not a configurable option (a user will never see this nor
+> > > have to answer Y/N to it); it only serves as an intermediary to express
+> > > the CONFIG_INPUT dependency (which is necessary) without making
+> > > DRM_KMS_HELPER fully depend on CONFIG_INPUT. (We should be able to run
+> > > display stacks without the input subsystem.)
+> > 
+> > I'm not so much worried about the user cost, but the maintenance cost.
+> > Kbuild config complexity is ridiculous, anything that adds even a bit is
+> > really silly.
+> > 
+> > > The closest alternative I can think of with fewer Kconfig symbols is to
+> > > just use CONFIG_INPUT directly in the code, to decide whether to provide
+> > > the helpers or else just stub them out. But that has a problem of not
+> > > properly expressing the =m vs. =y necessity: if, for example,
+> > > CONFIG_DRM_KMS_HELPER=y and CONFIG_INPUT=m, then we'll have linker
+> > > issues.
+> > 
+> > Usually this is done by providing static inline dummy implementations in
+> > the headers. That avoids having to sprinkle new Kconfig symbols all over.
+> 
+> Right, I already did that, and I'm not sprinkling
+> CONFIG_DRM_INPUT_HELPER much. (I do include one around the module
+> parameter, because it doesn't make much sense to have the module
+> parameter even exist, if the underlying feature is stubbed out.)
+> 
+> But that doesn't solve the problem in my last sentence, involving
+> tristates. The "stub inline" approach only works well for boolean
+> features -- either built-in, or disabled. Once your feature is in a
+> module, you need to ensure that no built-in code depends on it.
+> 
+> Do you want DRM_KMS_HELPER to unconditionally depend on CONFIG_INPUT? If
+> so, I can just add a 'select' or 'depend' and drop this intermediate
+> symbol.
+> If not, then what do you expect to happen with DRM_KMS_HELPER=y and
+> CONFIG_INPUT=m?
 
---CswzH+vgELyYIlv6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yeah just add the dependency. If you still want to keep it optional the
+way to do it is to add
 
-On Fri, Nov 19, 2021 at 03:12:29PM +0530, Satya Priya wrote:
+	depends on FOO || FOO=n
 
-> +properties:
-> +  compatible:
-> +    const: qcom,pm8008-regulators
-
-Why are we adding a separate compatible for this when we already know
-that this is a pm8008 based on the parent?
-
-> +  vdd_l1_l2-supply:
-> +    description: Input supply phandle of ldo1 and ldo2 regulators.
-
-These supply nodes should be chip level, they're going into the chip and
-in general the expectation is that you should be able to describe the
-supplies going into a device without worrying about how or if any
-particular OS splits things up.
-
---CswzH+vgELyYIlv6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGfqp4ACgkQJNaLcl1U
-h9Dr+Af9FLcGk6WdCH+gR9n1V50xl6lQHFr24c6T9C95z/NK0w7JfDffo6TSTDGL
-GmiESrCqPxdpXeWjB9irMYdZQ654ZWXriQ0cf94mQt3cuOs92HMcMP+6MMdHJL00
-woFVqYyMWzAhXoDB7R+iI2pbI4DwgBU7ZHNQLRZ5MnXMJ5Yb/kqG2ZKTxNbzpylb
-XgP6SddLv9y+cesJODllwyiLbIf0Mbt54eD+e57pmkMy1HDxOKMJdtWPpF9m2U7i
-hLE8dm2G9nUzmKJVhSjix3rkA8h++OZBzzoUly3dbry+yTV7Ej+Asr629driMH6W
-AW+qU/Y9zDYqjHSEe5JYPGRhooOldQ==
-=gTjl
------END PGP SIGNATURE-----
-
---CswzH+vgELyYIlv6--
+And then just have #if IS_ENABLED(FOO) around your inline wrappers.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
