@@ -2,135 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3471845DE87
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 17:17:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3BC45DE98
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 17:23:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356326AbhKYQU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 11:20:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:31738 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234992AbhKYQSz (ORCPT
+        id S241441AbhKYQ05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 11:26:57 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:44350 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234232AbhKYQYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 11:18:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637856943;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2KR4RQ0Y3MoZbQHw5POdZV7GalDa4Jy+7l1ZIir+FVw=;
-        b=G2QyjMXGAFreX1h7m4LVfMCRVCLbWvUc7O2qdkZKUoB8tWz1jVv/4FiBZfQCJMD1imGypy
-        +2NOeDBdVJ0sQHjqcydbG4u4M/7rhiq6bsuUQgDLuEqg+q7ropXFrLxNG6sj9K0LTe6RGB
-        H60i1GJp3n81ho7J3mq8GjrFX6u/amM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-103-mYE3IkmoNrqBjvL6fR8owg-1; Thu, 25 Nov 2021 11:15:42 -0500
-X-MC-Unique: mYE3IkmoNrqBjvL6fR8owg-1
-Received: by mail-ed1-f72.google.com with SMTP id n11-20020aa7c68b000000b003e7d68e9874so5866979edq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 08:15:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2KR4RQ0Y3MoZbQHw5POdZV7GalDa4Jy+7l1ZIir+FVw=;
-        b=Zg7NcuU0GVkKylLyc6JmXIj3CqNNnmtPuJYcb41OWUEQArZduPTzbuFN+rFF6COBlm
-         ro/PYc7Qqnd1PW/k5y6N7sXNHjuaHE5HCDKhKRM/F6sRKSbS4f44eE7MXIeYSo4+Fy7n
-         9LMURi5CgnKGnK1+f/QXs8CisWM0w219N/871mXsLBQ+MEFWXaLDPDEcPpcxIqgm+aR0
-         9QkJy2All/DHvFc7yCKpHYXq2eM+4rGw+zuDgXkG5ijEBYJkhN7YEJOdBdlw3lWVZLOc
-         YdLOmScyw1jQbE0l8VgmnmR8fTJqn2iGw2jRkbcLLLdSjjJawTQcnpkWAXf5GjBAs1eh
-         yp2A==
-X-Gm-Message-State: AOAM5319VVKShZALIEK4Mzud8TvNCYypypqgvw83Bpw+jNIfjK8vM0pw
-        UHY6I1uAAoJG5gvt1EdbYPZv2RZtG3RUcmkIBEyowvvXNM1260Shz3o7XiS0+4VtoyjgW0ItRMt
-        dUEpfCU+K5yq+tYg+knD6yVpO
-X-Received: by 2002:a17:907:d14:: with SMTP id gn20mr31923173ejc.73.1637856940933;
-        Thu, 25 Nov 2021 08:15:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxFk9QcfhxCEL7BcCV9s1MaxWtAqsxHaQO8OQvgpOnFkZOtYqzhUSfxRBivVUUUwPpZZDXxmA==
-X-Received: by 2002:a17:907:d14:: with SMTP id gn20mr31923141ejc.73.1637856940682;
-        Thu, 25 Nov 2021 08:15:40 -0800 (PST)
-Received: from redhat.com ([176.12.197.47])
-        by smtp.gmail.com with ESMTPSA id qa7sm1863380ejc.64.2021.11.25.08.15.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 08:15:39 -0800 (PST)
-Date:   Thu, 25 Nov 2021 11:15:35 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     kbuild@lists.01.org, Parav Pandit <parav@nvidia.com>,
-        lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Eric Dumazet <edumazet@google.com>
-Subject: Re: drivers/vdpa/vdpa.c:296 vdpa_mgmtdev_fill() warn: should
- '(((1))) << (mdev->id_table[i]->device)' be a 64 bit type?
-Message-ID: <20211125111511-mutt-send-email-mst@kernel.org>
-References: <202111250317.VUsGtdox-lkp@intel.com>
+        Thu, 25 Nov 2021 11:24:54 -0500
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20211125162142euoutp023232bd6387b6844d81326297939dffda~61onZqXjO0188501885euoutp02-
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 16:21:42 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20211125162142euoutp023232bd6387b6844d81326297939dffda~61onZqXjO0188501885euoutp02-
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1637857302;
+        bh=E56KINwcJaJWD0b7KZk2YjPG+prT8IwamA6iLmOBNZs=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=eS6Jebj7dLe739QNxJZqOkmzLGa08V39xTZSws/nukf994axlRUTXl2MAaGYMw/ta
+         OS6g3RIQJvrx1Op7zj6DLO8R2PisQ7uRjXRaqYDloG+/VohTHmwH3m81L5mQACZHjU
+         d8YoGYJX62HQgWj+N3jxznehSGDNsdsnjaNCCAps=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20211125162141eucas1p186b234e4d3299583bbce1f28acd369f8~61om0mMvc3041330413eucas1p17;
+        Thu, 25 Nov 2021 16:21:41 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 49.FF.10260.518BF916; Thu, 25
+        Nov 2021 16:21:41 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20211125162141eucas1p288a33941afc09ce74bd59368495c8581~61omdCCbu2868228682eucas1p2N;
+        Thu, 25 Nov 2021 16:21:41 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20211125162141eusmtrp1dc6666b40ea51ccebc16c795edd7fbff~61omb08HU0630206302eusmtrp1N;
+        Thu, 25 Nov 2021 16:21:41 +0000 (GMT)
+X-AuditID: cbfec7f5-bf3ff70000002814-b2-619fb81563ed
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id F0.7C.09404.418BF916; Thu, 25
+        Nov 2021 16:21:40 +0000 (GMT)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20211125162140eusmtip19d9c3d57bd9319d5ae9c31fc98734a99~61omSNDUb1770817708eusmtip1e;
+        Thu, 25 Nov 2021 16:21:40 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] streamline_config.pl: show the full Kconfig name
+Date:   Thu, 25 Nov 2021 17:20:54 +0100
+Message-Id: <20211125162055.3583991-1-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202111250317.VUsGtdox-lkp@intel.com>
+Organization: Samsung R&D Institute Poland
+X-Developer-Signature: v=1; a=openpgp-sha256; l=746;
+        i=l.stelmach@samsung.com; h=from:subject;
+        bh=miFX6uUFc+6RBx/jw8/b9IDeEKjHrGiRMZXpsqew9UQ=;
+        b=owEBbQGS/pANAwAIAbCuHpyYpYAQAcsmYgBhn7fmkbDcGMBxWShZRsOCB4BS/GJG+0gmHhx3piy6
+        fL98LqGJATMEAAEIAB0WIQRem7KqOr2QYRWv1RCwrh6cmKWAEAUCYZ+35gAKCRCwrh6cmKWAEPCSCA
+        CegdFHh41MlgYoSGeBo7TyJo5AjLf+fe04mUkm7tRPoCbwddVNLBBCnkXZEV3QSkhHrubM181S3vlZ
+        OjpFFZOa/N8mUNHi3zeiVc0NKx4snGKw9Qea/r4gdiSUcHz6FjxUEyhT9Vw8y2N3r5s72mSnePhwnR
+        CJ/BPMG3z8u80Fw4clrZiVgCYLSmH2TMzmwG53PubA9p7nT5MlYYGFkdF/2yAcNtgJrCuLmJX6cEWB
+        MDE2d8Rz7YoikAkSLPyLAkvZCIlY7zkJFuZ6x6gBPzAXViv0GC5cD9OMY0NgMKq1VvD+WDrTDgRnm+
+        eooAZ5az78qqY/vuvlgzo+CSCS1oLm
+X-Developer-Key: i=l.stelmach@samsung.com; a=openpgp;
+        fpr=A2B9843766B15A4D32BCBF0DEC1B3A02E80CD5C8
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLIsWRmVeSWpSXmKPExsWy7djP87qiO+YnGkzeKWBx89AKRos/u3Yw
+        WVzeNYfNYu2Ru+wWDx/cYHVg9di0qpPNo2/LKkaPz5vkApijuGxSUnMyy1KL9O0SuDIWH5nL
+        WPCGtWLrrOAGxmcsXYycHBICJhL9N58ydzFycQgJrGCU+HvgFQuE84VRYvnlRYwgVUICnxkl
+        7s5OhOk4dLWPDaJoOaPExw/H2CGc54wSk77dYAapYhNwlOhfeoIVxBYR0JK4s7SDFaSIWWAN
+        o8Tl/utMIAlhoKKLz2+CrWARUJU4MW0D2FG8ArYSB36tZYVYJy/Rdn06I0RcUOLkzCdgNfxA
+        Q9c0XQe7VUJgFqvE/66lzBANKRIPL7eCNTADNTdvnc0MUXSAQ2LCh/dsEEUuElNOdbBD2MIS
+        r45vgbJlJE5P7gGaygFk10tMnmQG0dvDKLFtzg9okFlL3Dn3iw2khllAU2L9Ln2IsKPElHsv
+        2SBa+SRuvBWEOIFPYtK26cwQYV6JjjYhiGoViXX9e1gmMCrPQvLZLCRHz0KYv4CReRWjeGpp
+        cW56arFxXmq5XnFibnFpXrpecn7uJkZgCjn97/jXHYwrXn3UO8TIxMF4iFGCg1lJhNc5cH6i
+        EG9KYmVValF+fFFpTmrxIUZpDhYlcV6RPw2JQgLpiSWp2ampBalFMFkmDk6pBqbZhkL6F3cl
+        HepT5FxoXb7y9Qk9669Fx5pDzqvefOR1TeuAxewFGY9YYqoTev+lbFSr9lseuWe3qeQzqdXb
+        3bwKrpzbsTiAPdl7jV2AOOuBGf8WeV9N2B7vUBgR83Se6VTeyZy6v1q8t/nWxN8u/Pj6olJC
+        Su0V5sjVPnEls+31ex10fvVvWr4m8xnX/MPiTCys9RG3D739Zskc8n1a2pYb7Lu32tgxlIpm
+        qudKtLVG7pofP6PiRkvV7HOfCvXDOYvipzB6Wlz+4Tnvn9XeSMeDdr6Zmdoxy2Sn6l54EvHD
+        /NpkbU22BZ/rLn45rx69Stfy/bXIP/tO7Jqu4pi4K+PX55MneLbsXPTiXEBe8RclluKMREMt
+        5qLiRAC1NxE3kAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplkeLIzCtJLcpLzFFi42I5/e/4XV2RHfMTDZqWmVrcPLSC0eLPrh1M
+        Fpd3zWGzWHvkLrvFwwc3WB1YPTat6mTz6NuyitHj8ya5AOYoPZui/NKSVIWM/OISW6VoQwsj
+        PUNLCz0jE0s9Q2PzWCsjUyV9O5uU1JzMstQifbsEvYzFR+YyFrxhrdg6K7iB8RlLFyMnh4SA
+        icShq31sXYxcHEICSxkl9pxuYu9i5ABKSEmsnJsOUSMs8edaFxuILSTwlFHi+vNkEJtNwFGi
+        f+kJVhBbREBL4s7SDlaQOcwC6xgl5k79yQ6SEAYquvj8JiOIzSKgKnFi2gawxbwCthIHfq1l
+        hVggL9F2fTojRFxQ4uTMJywgNzALqEusnycEEuYHmr+m6ToLyHwJgQ5WiafPDzJC9CZJHFi/
+        DsxmBprTvHU28wRGoVlIRs1CGDULSdUCRuZVjCKppcW56bnFRnrFibnFpXnpesn5uZsYgfGy
+        7djPLTsYV776qHeIkYmD8RCjBAezkgivc+D8RCHelMTKqtSi/Pii0pzU4kOMpkCvTWSWEk3O
+        B0ZsXkm8oZmBqaGJmaWBqaWZsZI4r2dBR6KQQHpiSWp2ampBahFMHxMHp1QDU45Vz57V27c0
+        /d+0+01X7MKPa6RNzM5NedRYuG5655r0kn+WK52n3oyZk/R3mriSrNnvJZHtzfuDdx+4KZQx
+        Y5m5UpRw2FGRdhfzPo/nzx/HlHcc2SSfK/nt7aX5j3x5PKyadmvbxDp//OaTVlWQZ+rBlWW0
+        ZLbkO83n51fKlLMLF5anXzw6Z16MtVWDlubxj6XTHxiH3fp5bHXB73f/rOz6BD6+q1uzZvn8
+        oAWVB/1NbILZL+quzHe5P3/mvFrDe+3nePwfrvox49wh180bXfcn+p1MzV6o3LJ1cYJUlZJ+
+        WdXlOx7HDs28dPX/71SuNuF2qZtBcz+s4Djb0LVPRfqQdmxjHBevtZdUl9lKQSWW4oxEQy3m
+        ouJEALDuwEsgAwAA
+X-CMS-MailID: 20211125162141eucas1p288a33941afc09ce74bd59368495c8581
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20211125162141eucas1p288a33941afc09ce74bd59368495c8581
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20211125162141eucas1p288a33941afc09ce74bd59368495c8581
+References: <CGME20211125162141eucas1p288a33941afc09ce74bd59368495c8581@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 10:03:28AM +0300, Dan Carpenter wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   5d9f4cf36721aba199975a9be7863a3ff5cd4b59
-> commit: 33b347503f014ebf76257327cbc7001c6b721956 vdpa: Define vdpa mgmt device, ops and a netlink interface
-> config: i386-randconfig-m021-20211118 (https://download.01.org/0day-ci/archive/20211125/202111250317.VUsGtdox-lkp@intel.com/config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> smatch warnings:
-> drivers/vdpa/vdpa.c:296 vdpa_mgmtdev_fill() warn: should '(((1))) << (mdev->id_table[i]->device)' be a 64 bit type?
-> 
-> vim +296 drivers/vdpa/vdpa.c
-> 
-> 33b347503f014eb Parav Pandit 2021-01-05  280  static int vdpa_mgmtdev_fill(const struct vdpa_mgmt_dev *mdev, struct sk_buff *msg,
-> 33b347503f014eb Parav Pandit 2021-01-05  281  			     u32 portid, u32 seq, int flags)
-> 33b347503f014eb Parav Pandit 2021-01-05  282  {
-> 33b347503f014eb Parav Pandit 2021-01-05  283  	u64 supported_classes = 0;
->                                                 ^^^^^^^^^^^^^^^^^^^^^
-> This is a u64
-> 
-> 33b347503f014eb Parav Pandit 2021-01-05  284  	void *hdr;
-> 33b347503f014eb Parav Pandit 2021-01-05  285  	int i = 0;
-> 33b347503f014eb Parav Pandit 2021-01-05  286  	int err;
-> 33b347503f014eb Parav Pandit 2021-01-05  287  
-> 33b347503f014eb Parav Pandit 2021-01-05  288  	hdr = genlmsg_put(msg, portid, seq, &vdpa_nl_family, flags, VDPA_CMD_MGMTDEV_NEW);
-> 33b347503f014eb Parav Pandit 2021-01-05  289  	if (!hdr)
-> 33b347503f014eb Parav Pandit 2021-01-05  290  		return -EMSGSIZE;
-> 33b347503f014eb Parav Pandit 2021-01-05  291  	err = vdpa_nl_mgmtdev_handle_fill(msg, mdev);
-> 33b347503f014eb Parav Pandit 2021-01-05  292  	if (err)
-> 33b347503f014eb Parav Pandit 2021-01-05  293  		goto msg_err;
-> 33b347503f014eb Parav Pandit 2021-01-05  294  
-> 33b347503f014eb Parav Pandit 2021-01-05  295  	while (mdev->id_table[i].device) {
-> 33b347503f014eb Parav Pandit 2021-01-05 @296  		supported_classes |= BIT(mdev->id_table[i].device);
-> 
-> Which suggests that this should be BIT_ULL().
-> 
-> 33b347503f014eb Parav Pandit 2021-01-05  297  		i++;
-> 33b347503f014eb Parav Pandit 2021-01-05  298  	}
-> 33b347503f014eb Parav Pandit 2021-01-05  299  
-> 33b347503f014eb Parav Pandit 2021-01-05  300  	if (nla_put_u64_64bit(msg, VDPA_ATTR_MGMTDEV_SUPPORTED_CLASSES,
-> 33b347503f014eb Parav Pandit 2021-01-05  301  			      supported_classes, VDPA_ATTR_UNSPEC)) {
-> 33b347503f014eb Parav Pandit 2021-01-05  302  		err = -EMSGSIZE;
-> 33b347503f014eb Parav Pandit 2021-01-05  303  		goto msg_err;
-> 33b347503f014eb Parav Pandit 2021-01-05  304  	}
-> 33b347503f014eb Parav Pandit 2021-01-05  305  
-> 33b347503f014eb Parav Pandit 2021-01-05  306  	genlmsg_end(msg, hdr);
-> 33b347503f014eb Parav Pandit 2021-01-05  307  	return 0;
-> 33b347503f014eb Parav Pandit 2021-01-05  308  
-> 33b347503f014eb Parav Pandit 2021-01-05  309  msg_err:
-> 33b347503f014eb Parav Pandit 2021-01-05  310  	genlmsg_cancel(msg, hdr);
-> 33b347503f014eb Parav Pandit 2021-01-05  311  	return err;
-> 33b347503f014eb Parav Pandit 2021-01-05  312  }
+Show the very same file name that was passed to open()
+in case the operation failed.
 
+Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+---
+ scripts/kconfig/streamline_config.pl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Parav? Any patches for this one?
-
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+diff --git a/scripts/kconfig/streamline_config.pl b/scripts/kconfig/streamline_config.pl
+index 1a5fea0519eb..3387ad7508f7 100755
+--- a/scripts/kconfig/streamline_config.pl
++++ b/scripts/kconfig/streamline_config.pl
+@@ -170,7 +170,7 @@ sub read_kconfig {
+ 	$source =~ s/\$\($env\)/$ENV{$env}/;
+     }
+ 
+-    open(my $kinfile, '<', $source) || die "Can't open $kconfig";
++    open(my $kinfile, '<', $source) || die "Can't open $source";
+     while (<$kinfile>) {
+ 	chomp;
+ 
+-- 
+2.30.2
 
