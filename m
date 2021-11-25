@@ -2,87 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1D645D3E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 05:26:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3D645D3EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 05:26:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238355AbhKYE3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 23:29:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238918AbhKYE1N (ORCPT
+        id S240258AbhKYE3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 23:29:44 -0500
+Received: from mailgw01.mediatek.com ([60.244.123.138]:58334 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S239315AbhKYE1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 23:27:13 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E73C0613F6;
-        Wed, 24 Nov 2021 20:23:03 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id bi37so12917860lfb.5;
-        Wed, 24 Nov 2021 20:23:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yW96xTqN22+VgfWvofFKJ2uQthCcWS6JMEwqDhv1mBo=;
-        b=XubA+7GtvDkj0ES1YstwmKTLp3xvVzHzRaeqB//qspqLlT8c48Wlax7bQSlzp42qNC
-         +stMeEnSn6dW90xZoBfnm4+YUAwZdF5NTf56STCg0KHDg5/wUrPGZGtbtfcvcx0EmYAl
-         OFb9mNbpoQ1kvJpKgux/RtthQduVob3vB7uRzR1CE5fWlugQqqrl43yTIpGlayo3utdl
-         0210Y4AAyzU1iD5uyNIYK87Gvqp2UyfZZZXC1YbpHxShhim6MTnFSYP90wJsv4kHD+iE
-         UzBK0TCOQHc8Z5y7fo35nnCF+o829D1RtNIzvCexl4mWWq42ixAFQe632iS1Ianz7p9F
-         5fyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yW96xTqN22+VgfWvofFKJ2uQthCcWS6JMEwqDhv1mBo=;
-        b=xRIAvGZLw6T2O0XXHVuYtCVlW+sbZY1khFHlIfxrz5iyaLJEYLuzamd0dnpMkFOBi7
-         Ju0eNpdADYRvzkko8trJbRzhBqJ/1tqpYD4NyYsb9b5v7rxf6mmqQMMHAgXKJFkZudjN
-         VzomzQHfREuBTzI9b33S8jFNwEJGb5UNXcBoV23sk7gFP4uYQVdbqKLQSQqbN9My7ecI
-         3McymngF+gG6yLWLtKW4twNC0IdNIvUbpXZMdQ+HJvw7lCBybLBLM9UBVoI+g2UUBLOK
-         0wHPUaRVly/P4FzQXR7tFaGTSLvqxI3FsT5JQvw/F+KXzVphaFf/69SLaGyppNuNutP+
-         YvLQ==
-X-Gm-Message-State: AOAM533ItGeFPGkWkGMgqfMQBYkSh4ngauJ6KR/cCYjW+gyD8Djlc3Ep
-        mzvEoTjIdJk2wRU4irl06yCavKoEF4Y=
-X-Google-Smtp-Source: ABdhPJzSViA3nbJpeKg2as0KQ93wxdxlYCRirpiJ3L9FZiRWPS2phT5FbugeHgNJ3EZGhLvHMdIfaA==
-X-Received: by 2002:a19:495c:: with SMTP id l28mr21433144lfj.484.1637814181497;
-        Wed, 24 Nov 2021 20:23:01 -0800 (PST)
-Received: from [192.168.2.145] (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
-        by smtp.googlemail.com with ESMTPSA id v2sm144156ljg.46.2021.11.24.20.23.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 20:23:01 -0800 (PST)
-Subject: Re: [PATCH] dt-bindings: sound: nvidia,tegra-audio: Convert multiple
- txt bindings to yaml
-To:     Rob Herring <robh@kernel.org>, David Heidelberg <david@ixit.cz>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        ~okias/devicetree@lists.sr.ht, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211025171927.92332-1-david@ixit.cz>
- <YYBRTK9KGglu/s9m@robh.at.kernel.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <39c21327-c2ec-b9c5-95c2-047ac347fd23@gmail.com>
-Date:   Thu, 25 Nov 2021 07:23:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 24 Nov 2021 23:27:43 -0500
+X-UUID: d7268dbebc954e7fb2a094e9e93a9b8d-20211125
+X-UUID: d7268dbebc954e7fb2a094e9e93a9b8d-20211125
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <jiaxin.yu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1768316012; Thu, 25 Nov 2021 12:24:28 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Thu, 25 Nov 2021 12:24:27 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkcas10.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Thu, 25 Nov 2021 12:24:26 +0800
+From:   Jiaxin Yu <jiaxin.yu@mediatek.com>
+To:     <broonie@kernel.org>, <matthias.bgg@gmail.com>,
+        <tzungbi@google.com>, <garlic.tseng@mediatek.com>,
+        <kaichieh.chuang@mediatek.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <alsa-devel@alsa-project.org>,
+        "Jiaxin Yu" <jiaxin.yu@mediatek.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] ASoC: mediatek: remove unnecessary CONFIG_PM
+Date:   Thu, 25 Nov 2021 12:24:22 +0800
+Message-ID: <20211125042422.2349-1-jiaxin.yu@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YYBRTK9KGglu/s9m@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.11.2021 23:42, Rob Herring пишет:
->> +  assigned-clocks: true
->> +
->> +  assigned-clock-parents: true
->> +
->> +  assigned-clock-rates: true
-> These properties are always allowed when 'clocks' is present. So you 
-> don't have to list them.
-> 
+The unnecessary conditional inclusion caused the following warning.
 
-That is a very nice new feature!
+Such as:
+>> sound/soc/mediatek/mt8192/mt8192-afe-pcm.c:2368:32: warning: unused
+>> variable 'mt8192_afe_pm_ops' [-Wunused-const-variable]
+   static const struct dev_pm_ops mt8192_afe_pm_ops = {
+
+Because runtime_pm already handles the case without CONFIG_PM, we
+can remove CONFIG_PM condition.
+
+Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
+Reported-by: kernel test robot <lkp@intel.com>
+---
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c       | 2 --
+ sound/soc/mediatek/mt6797/mt6797-afe-pcm.c       | 2 --
+ sound/soc/mediatek/mt8173/mt8173-max98090.c      | 2 --
+ sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c | 2 --
+ sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c | 2 --
+ sound/soc/mediatek/mt8173/mt8173-rt5650.c        | 2 --
+ sound/soc/mediatek/mt8183/mt8183-afe-pcm.c       | 2 --
+ sound/soc/mediatek/mt8192/mt8192-afe-pcm.c       | 2 --
+ 8 files changed, 16 deletions(-)
+
+diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+index bc3d0466472b..0f178de92a0f 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
++++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+@@ -1474,9 +1474,7 @@ static struct platform_driver mt2701_afe_pcm_driver = {
+ 	.driver = {
+ 		   .name = "mt2701-audio",
+ 		   .of_match_table = mt2701_afe_pcm_dt_match,
+-#ifdef CONFIG_PM
+ 		   .pm = &mt2701_afe_pm_ops,
+-#endif
+ 	},
+ 	.probe = mt2701_afe_pcm_dev_probe,
+ 	.remove = mt2701_afe_pcm_dev_remove,
+diff --git a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
+index 3d68e4726ea2..fb4abec9aa5f 100644
+--- a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
++++ b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
+@@ -901,9 +901,7 @@ static struct platform_driver mt6797_afe_pcm_driver = {
+ 	.driver = {
+ 		   .name = "mt6797-audio",
+ 		   .of_match_table = mt6797_afe_pcm_dt_match,
+-#ifdef CONFIG_PM
+ 		   .pm = &mt6797_afe_pm_ops,
+-#endif
+ 	},
+ 	.probe = mt6797_afe_pcm_dev_probe,
+ 	.remove = mt6797_afe_pcm_dev_remove,
+diff --git a/sound/soc/mediatek/mt8173/mt8173-max98090.c b/sound/soc/mediatek/mt8173/mt8173-max98090.c
+index fc94314bfc02..2408c9d3d9b3 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-max98090.c
++++ b/sound/soc/mediatek/mt8173/mt8173-max98090.c
+@@ -193,9 +193,7 @@ static struct platform_driver mt8173_max98090_driver = {
+ 	.driver = {
+ 		   .name = "mt8173-max98090",
+ 		   .of_match_table = mt8173_max98090_dt_match,
+-#ifdef CONFIG_PM
+ 		   .pm = &snd_soc_pm_ops,
+-#endif
+ 	},
+ 	.probe = mt8173_max98090_dev_probe,
+ };
+diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
+index 0f28dc2217c0..e6e824f3d24a 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
++++ b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
+@@ -231,9 +231,7 @@ static struct platform_driver mt8173_rt5650_rt5514_driver = {
+ 	.driver = {
+ 		   .name = "mtk-rt5650-rt5514",
+ 		   .of_match_table = mt8173_rt5650_rt5514_dt_match,
+-#ifdef CONFIG_PM
+ 		   .pm = &snd_soc_pm_ops,
+-#endif
+ 	},
+ 	.probe = mt8173_rt5650_rt5514_dev_probe,
+ };
+diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
+index 077c6ee06780..ba6fe3d90bfc 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
++++ b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
+@@ -298,9 +298,7 @@ static struct platform_driver mt8173_rt5650_rt5676_driver = {
+ 	.driver = {
+ 		   .name = "mtk-rt5650-rt5676",
+ 		   .of_match_table = mt8173_rt5650_rt5676_dt_match,
+-#ifdef CONFIG_PM
+ 		   .pm = &snd_soc_pm_ops,
+-#endif
+ 	},
+ 	.probe = mt8173_rt5650_rt5676_dev_probe,
+ };
+diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
+index 2cbf679f5c74..9b933cce0b20 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
++++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
+@@ -336,9 +336,7 @@ static struct platform_driver mt8173_rt5650_driver = {
+ 	.driver = {
+ 		   .name = "mtk-rt5650",
+ 		   .of_match_table = mt8173_rt5650_dt_match,
+-#ifdef CONFIG_PM
+ 		   .pm = &snd_soc_pm_ops,
+-#endif
+ 	},
+ 	.probe = mt8173_rt5650_dev_probe,
+ };
+diff --git a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+index 14e77df06b01..86c8a523fe9e 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
++++ b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
+@@ -1279,9 +1279,7 @@ static struct platform_driver mt8183_afe_pcm_driver = {
+ 	.driver = {
+ 		   .name = "mt8183-audio",
+ 		   .of_match_table = mt8183_afe_pcm_dt_match,
+-#ifdef CONFIG_PM
+ 		   .pm = &mt8183_afe_pm_ops,
+-#endif
+ 	},
+ 	.probe = mt8183_afe_pcm_dev_probe,
+ 	.remove = mt8183_afe_pcm_dev_remove,
+diff --git a/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c b/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c
+index 31c280339c50..e1e4ca931551 100644
+--- a/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c
++++ b/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c
+@@ -2381,9 +2381,7 @@ static struct platform_driver mt8192_afe_pcm_driver = {
+ 	.driver = {
+ 		   .name = "mt8192-audio",
+ 		   .of_match_table = mt8192_afe_pcm_dt_match,
+-#ifdef CONFIG_PM
+ 		   .pm = &mt8192_afe_pm_ops,
+-#endif
+ 	},
+ 	.probe = mt8192_afe_pcm_dev_probe,
+ 	.remove = mt8192_afe_pcm_dev_remove,
+-- 
+2.25.1
+
