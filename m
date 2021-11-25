@@ -2,130 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2430F45DFA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:26:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65BBD45DFB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:27:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348609AbhKYR2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 12:28:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348743AbhKYR0j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 12:26:39 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E282EC061763
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:16:27 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id p18-20020a17090ad31200b001a78bb52876so8182077pju.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:16:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google;
-        h=from:to:cc:references:in-reply-to:subject:date:message-id
-         :mime-version:content-transfer-encoding:content-language
-         :thread-index;
-        bh=ZcJ/rON8wGKNLK176u9S8NH6zRHqqLGaIZ+pfZTgUPw=;
-        b=KYBujD2+qTiES1emT1f3fzJuzyE2lUUnM/LTtkjBnxBAUhT+zffA43ZqQYFgTgvW3Q
-         VuZlDKrnoghBs6ucT88wfDb3XfbT5Fx7DqdICQcsHfUeok1e27YohMC4d+uc59ka8t7O
-         yzcQomsiXRkIxYyVsjQlPSty7UqL/fXxj7qrd4WzWH44SOT8lr3RvAu1C8NhDm1aOv80
-         Hwu4eZ32bVxA6r1FqqF+7nKM+Mxfd923iJK3+UpmHMYLZURLl8OG5zbcshJT6cFsuTKA
-         fn/7GJJzXx5GirjTMD0IeDST+KNBmCSs3PzRtcJziIedv27hNJ7EehzRd6Wg38Zzi/yW
-         osLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
-         :message-id:mime-version:content-transfer-encoding:content-language
-         :thread-index;
-        bh=ZcJ/rON8wGKNLK176u9S8NH6zRHqqLGaIZ+pfZTgUPw=;
-        b=k7oWnE0ivJ7SW/mSoLsQRfx7JxDNHrrpp85EUzUIZp2WxRIcueb9ON9vEstndCJ96S
-         F7jbh2nYhoGzK75uGJTAMaSs7tmSmKLgvRyNeZ48LN7z4TTi0Z94pIOqeMy/R+Ie7je/
-         o+bbUDvXHaPkNS0ThVADaCZztaBxNC6JAEHwuycrDodyFp2xWEFucIClzbXjkn9sA6zW
-         Ta7zn0kcl1hHs8Woy1sQJGXxokX4mLaeB7rCRIyxWKRjy86JPWBhQkANUJ6o6B+53Fxq
-         MIDDDBLeCYzTiRD+kW/iO+sfDvzm05E097iOXeZVYRVpdbEl8XnTy3C5twmgUdPbGHGx
-         a2Vg==
-X-Gm-Message-State: AOAM531x7ijsf4SinoAcedPffZB+tREO4LbSYQ3DdZmLuOrTot3N8inf
-        CMkDuV/swZBTjYT72LSWmB4rhg==
-X-Google-Smtp-Source: ABdhPJxwCha2L7wGusNFfYXQo9nPmyDSPKWcNCr9tjNDLTishpMt2VdlrMjkVW0M4ibOqj5ePn2+Lg==
-X-Received: by 2002:a17:902:b712:b0:143:72b7:4096 with SMTP id d18-20020a170902b71200b0014372b74096mr31733673pls.25.1637860587337;
-        Thu, 25 Nov 2021 09:16:27 -0800 (PST)
-Received: from DougS18 ([173.180.45.4])
-        by smtp.gmail.com with ESMTPSA id b10sm4044140pfl.200.2021.11.25.09.16.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 25 Nov 2021 09:16:26 -0800 (PST)
-From:   "Doug Smythies" <dsmythies@telus.net>
-To:     "'Maulik Shah'" <quic_mkshah@quicinc.com>,
-        <bjorn.andersson@linaro.org>, <rafael@kernel.org>,
-        <daniel.lezcano@linaro.org>
-Cc:     <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <ulf.hansson@linaro.org>,
-        <quic_lsrao@quicinc.com>, <rnayak@codeaurora.org>,
-        "Doug Smythies" <dsmythies@telus.net>
-References: <1637830481-21709-1-git-send-email-quic_mkshah@quicinc.com>
-In-Reply-To: <1637830481-21709-1-git-send-email-quic_mkshah@quicinc.com>
-Subject: RE: [PATCH 0/4] Allow cpuidle governors to be compiled as modules
-Date:   Thu, 25 Nov 2021 09:16:25 -0800
-Message-ID: <000601d7e220$2dd78990$89869cb0$@telus.net>
+        id S1347699AbhKYRai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 12:30:38 -0500
+Received: from mga02.intel.com ([134.134.136.20]:37834 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242904AbhKYR2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 12:28:37 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="222770518"
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="222770518"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 09:17:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="509828399"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by fmsmga007.fm.intel.com with ESMTP; 25 Nov 2021 09:17:12 -0800
+Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1APHH9FD003210;
+        Thu, 25 Nov 2021 17:17:09 GMT
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 net-next 07/26] mvneta: add .ndo_get_xdp_stats() callback
+Date:   Thu, 25 Nov 2021 18:16:49 +0100
+Message-Id: <20211125171649.127647-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <YZ4kWXnqZQhSu+mw@shell.armlinux.org.uk>
+References: <20211123163955.154512-1-alexandr.lobakin@intel.com> <20211123163955.154512-8-alexandr.lobakin@intel.com> <YZ4kWXnqZQhSu+mw@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: en-ca
-Thread-Index: AQGT+IG2EWhj5x7yn247xTDGojnxHKycPHaA
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+From: Russell King (Oracle) <linux@armlinux.org.uk>
+Date: Wed, 24 Nov 2021 11:39:05 +0000
 
-I realize that previous replies render this one useless
-but sending anyhow.
+> On Tue, Nov 23, 2021 at 05:39:36PM +0100, Alexander Lobakin wrote:
+> > +	for_each_possible_cpu(cpu) {
+> > +		const struct mvneta_pcpu_stats *stats;
+> > +		const struct mvneta_stats *ps;
+> > +		u64 xdp_xmit_err;
+> > +		u64 xdp_redirect;
+> > +		u64 xdp_tx_err;
+> > +		u64 xdp_pass;
+> > +		u64 xdp_drop;
+> > +		u64 xdp_xmit;
+> > +		u64 xdp_tx;
+> > +		u32 start;
+> > +
+> > +		stats = per_cpu_ptr(pp->stats, cpu);
+> > +		ps = &stats->es.ps;
+> > +
+> > +		do {
+> > +			start = u64_stats_fetch_begin_irq(&stats->syncp);
+> > +
+> > +			xdp_drop = ps->xdp_drop;
+> > +			xdp_pass = ps->xdp_pass;
+> > +			xdp_redirect = ps->xdp_redirect;
+> > +			xdp_tx = ps->xdp_tx;
+> > +			xdp_tx_err = ps->xdp_tx_err;
+> > +			xdp_xmit = ps->xdp_xmit;
+> > +			xdp_xmit_err = ps->xdp_xmit_err;
+> > +		} while (u64_stats_fetch_retry_irq(&stats->syncp, start));
+> > +
+> > +		xdp_stats->drop += xdp_drop;
+> > +		xdp_stats->pass += xdp_pass;
+> > +		xdp_stats->redirect += xdp_redirect;
+> > +		xdp_stats->tx += xdp_tx;
+> > +		xdp_stats->tx_errors += xdp_tx_err;
+> > +		xdp_stats->xmit_packets += xdp_xmit;
+> > +		xdp_stats->xmit_errors += xdp_xmit_err;
+> 
+> Same comment as for mvpp2 - this could share a lot of code from
+> mvneta_ethtool_update_pcpu_stats() (although it means we end up
+> calculating a little more for the alloc error and refill error
+> that this API doesn't need) but I think sharing that code would be
+> a good idea.
 
-On 2021.11.25 00:55 Maulik Shah wrote:
+Ah, I didn't do that because in my first series I was removing
+Ethtool counters at all. In this one, I left them as-is due to
+some of folks hinted me that those counters (not specifically
+on mvpp2 or mvneta, let's say on virtio-net or so) could have
+already been used in some admin scripts somewhere in the world
+(but with a TODO to figure out which driver I could remove them
+in and do that).
+It would be great if you know and would hint me if I could remove
+those XDP-related Ethtool counters from Marvell drivers or not.
+If so, I'll wipe them, otherwise just factor out common parts to
+wipe out code duplication.
 
-> This series makes changes to allow cpuidle governors
-> menu, ladder and teo to compiled as modules when
-> building with allmodconfig.
+> -- 
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
 
-One current issue with governors being available as modules
-is that they don't appear on the available governors list unless
-they are loaded.
-
-Example with this patch set, all done as modules:
-
-~$ grep . /sys/devices/system/cpu/cpuidle/*
-/sys/devices/system/cpu/cpuidle/current_driver:none
-/sys/devices/system/cpu/cpuidle/current_governor:none
-/sys/devices/system/cpu/cpuidle/current_governor_ro:none
-
-However, and based on my systems power consumption,
-some sort of idle must be running.
-
-~$ echo teo | sudo tee /sys/devices/system/cpu/cpuidle/current_governor
-teo
-tee: /sys/devices/system/cpu/cpuidle/current_governor: Invalid argument
-
-~$ sudo modprobe teo
-~$ grep . /sys/devices/system/cpu/cpuidle/*
-/sys/devices/system/cpu/cpuidle/available_governors:teo
-/sys/devices/system/cpu/cpuidle/current_driver:none
-/sys/devices/system/cpu/cpuidle/current_governor:teo
-/sys/devices/system/cpu/cpuidle/current_governor_ro:teo
-
-By the way, for the cpufreq stuff, while governors that
-are actually available, but are modules, changing to them
-without first force loading the module works:
-
-$ grep . /sys/devices/system/cpu/cpu*/cpufreq/scaling_available_governors
-/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors:performance schedutil
-/sys/devices/system/cpu/cpu10/cpufreq/scaling_available_governors:performance schedutil
-...
-
-$ echo ondemand | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-ondemand
-
-$ grep . /sys/devices/system/cpu/cpu*/cpufreq/scaling_available_governors
-/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors:ondemand performance schedutil
-/sys/devices/system/cpu/cpu10/cpufreq/scaling_available_governors:ondemand performance schedutil
-
-... Doug
-
-
+Thanks,
+Al
