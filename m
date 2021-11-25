@@ -2,202 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7AA945D686
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:56:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E070A45D67C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:51:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353378AbhKYI7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 03:59:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350822AbhKYI5p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 03:57:45 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4FD4C061799
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 00:49:10 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id v11so9916397wrw.10
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 00:49:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZXv6Jzb5SFH68Jd64JT8apKFHuvDqOPlffO+TYcXQtY=;
-        b=AKRvG4+UulX55UiCC4Ng2Y9uoNqhfPYcCi3MxdkcQcSh9t2XdvQPlFSiYo7kp9KOaA
-         vvb9cO7nAW/USZk/WGRayw38aBwAtKryDbHIfbAfBKmOJB5g2CJqGRIYkj1ko/tGe1am
-         q2WwM62+cu5GHhCqmBAW7GA9DMz5MW0iUG4XS+rS3CavVHe0AeuEvbBZqva7pFMw5mYm
-         IkN0DAs3yNwJCjSKSxSr3k/fo2k0qxZFPij0x0JRfMbxBsAyDAZWEX5c/OW323+9di+Q
-         ZKJNGOoi41yRwO4rksbjNqAISCbmVllXH5uenpiYsupVL3EIvm4uaZz1WCHZraadHmsD
-         O2LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZXv6Jzb5SFH68Jd64JT8apKFHuvDqOPlffO+TYcXQtY=;
-        b=3iU4tXsMfUPdQ7xfCUi77jqvwFf09YwQPjfors8EGMQHj8kv+SbIrq/xZeAUO/ncYq
-         FEmfRt5kYP1mqQoT/ROT5Jbnt0WK6cKv9rq4bFxU5Wk96oSnGgcJgzVr9mJa6i4i179M
-         mLIRsFCkThmmCiBlwMp+3ZYdse/4cgU3NFCH0CB18tqxpY3hFGZO726sDynQsqDP65h9
-         FBOdJzoEyoHhflLQA60nYQX5HkJsLXB4jc+v8WAc5oGnE7eXsDxTYid3WVEjYPOkKRPp
-         VC8myHfGgYk46YSa+wXXb+ymRUlZ1ka6SKCjGRn6aRpxv9dZL72xCW+IiheHKomHtO69
-         2bsQ==
-X-Gm-Message-State: AOAM53278xF3K/62oss3VG5i4zOPXuKAj8K/HhG1pRJuf2o88EV0g3uX
-        MeiuhdFY5qknCFCzbdJ+2dg=
-X-Google-Smtp-Source: ABdhPJwTZldI+270r7Sfhiuta0uUF9IWR/ikPaEuYdnjLEVCqRPB6BDiHGPszf3aY+c1uwUzTakBDw==
-X-Received: by 2002:a5d:64ea:: with SMTP id g10mr4866677wri.242.1637830149421;
-        Thu, 25 Nov 2021 00:49:09 -0800 (PST)
-Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
-        by smtp.gmail.com with ESMTPSA id m1sm2290568wme.39.2021.11.25.00.49.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 00:49:08 -0800 (PST)
-From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>
-Cc:     linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] ASoC: rockchip: i2s_tdm: Dup static DAI template
-Date:   Thu, 25 Nov 2021 09:48:59 +0100
-Message-Id: <20211125084900.417102-1-frattaroli.nicolas@gmail.com>
-X-Mailer: git-send-email 2.34.0
+        id S1352317AbhKYIyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 03:54:43 -0500
+Received: from mga17.intel.com ([192.55.52.151]:44401 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349337AbhKYIwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 03:52:43 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="216183905"
+X-IronPort-AV: E=Sophos;i="5.87,262,1631602800"; 
+   d="scan'208";a="216183905"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 00:49:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,262,1631602800"; 
+   d="scan'208";a="607484839"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 25 Nov 2021 00:49:29 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqARc-00064r-Sr; Thu, 25 Nov 2021 08:49:28 +0000
+Date:   Thu, 25 Nov 2021 16:49:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: arch/powerpc/kvm/book3s_pr.c:660:22: sparse: sparse: cast to
+ restricted __be32
+Message-ID: <202111251641.T8TrqxkW-lkp@intel.com>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously, the DAI template was used directly, which lead to
-fun bugs such as "why is my channels_max changing?" when one
-instantiated more than one i2s_tdm IP block in a device tree.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5f53fa508db098c9d372423a6dac31c8a5679cdf
+commit: cb53a93e33e108bfec00a13cd12696e1c0ccc8b6 KVM: PPC: Book3S PR: Declare kvmppc_handle_exit_pr()
+date:   3 months ago
+config: powerpc-randconfig-s031-20211028 (https://download.01.org/0day-ci/archive/20211125/202111251641.T8TrqxkW-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 11.2.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cb53a93e33e108bfec00a13cd12696e1c0ccc8b6
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout cb53a93e33e108bfec00a13cd12696e1c0ccc8b6
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=powerpc SHELL=/bin/bash arch/powerpc/kvm/
 
-This change makes it so that we instead duplicate the template
-struct, and then use that.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Fixes: 081068fd6414 ("ASoC: rockchip: add support for i2s-tdm controller")
-Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+
+sparse warnings: (new ones prefixed by >>)
+>> arch/powerpc/kvm/book3s_pr.c:660:22: sparse: sparse: cast to restricted __be32
+>> arch/powerpc/kvm/book3s_pr.c:661:33: sparse: sparse: invalid assignment: &=
+>> arch/powerpc/kvm/book3s_pr.c:661:33: sparse:    left side has type unsigned int
+>> arch/powerpc/kvm/book3s_pr.c:661:33: sparse:    right side has type restricted __be32
+   arch/powerpc/kvm/book3s_pr.c: note: in included file:
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] srr0 @@     got restricted __be64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse:     expected unsigned long long [usertype] srr0
+   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse:     got restricted __be64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] srr0 @@     got restricted __le64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse:     expected unsigned long long [usertype] srr0
+   arch/powerpc/include/asm/kvm_ppc.h:962:1: sparse:     got restricted __le64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] srr1 @@     got restricted __be64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse:     expected unsigned long long [usertype] srr1
+   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse:     got restricted __be64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] srr1 @@     got restricted __le64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse:     expected unsigned long long [usertype] srr1
+   arch/powerpc/include/asm/kvm_ppc.h:963:1: sparse:     got restricted __le64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:970:39: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] msr @@     got restricted __be64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:970:39: sparse:     expected unsigned long long [usertype] msr
+   arch/powerpc/include/asm/kvm_ppc.h:970:39: sparse:     got restricted __be64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:972:39: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] msr @@     got restricted __le64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:972:39: sparse:     expected unsigned long long [usertype] msr
+   arch/powerpc/include/asm/kvm_ppc.h:972:39: sparse:     got restricted __le64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:970:39: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] msr @@     got restricted __be64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:970:39: sparse:     expected unsigned long long [usertype] msr
+   arch/powerpc/include/asm/kvm_ppc.h:970:39: sparse:     got restricted __be64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:972:39: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] msr @@     got restricted __le64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:972:39: sparse:     expected unsigned long long [usertype] msr
+   arch/powerpc/include/asm/kvm_ppc.h:972:39: sparse:     got restricted __le64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] dar @@     got restricted __be64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     expected unsigned long long [usertype] dar
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     got restricted __be64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] dar @@     got restricted __le64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     expected unsigned long long [usertype] dar
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     got restricted __le64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] dar @@     got restricted __be64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     expected unsigned long long [usertype] dar
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     got restricted __be64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] dar @@     got restricted __le64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     expected unsigned long long [usertype] dar
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     got restricted __le64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+   arch/powerpc/include/asm/kvm_ppc.h:974:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] dsisr @@     got restricted __be32 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:974:1: sparse:     expected unsigned int [usertype] dsisr
+   arch/powerpc/include/asm/kvm_ppc.h:974:1: sparse:     got restricted __be32 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:974:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] dsisr @@     got restricted __le32 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:974:1: sparse:     expected unsigned int [usertype] dsisr
+   arch/powerpc/include/asm/kvm_ppc.h:974:1: sparse:     got restricted __le32 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] dar @@     got restricted __be64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     expected unsigned long long [usertype] dar
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     got restricted __be64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long long [usertype] dar @@     got restricted __le64 [usertype] @@
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     expected unsigned long long [usertype] dar
+   arch/powerpc/include/asm/kvm_ppc.h:964:1: sparse:     got restricted __le64 [usertype]
+   arch/powerpc/include/asm/kvm_ppc.h:984:23: sparse: sparse: cast to restricted __be32
+   arch/powerpc/include/asm/kvm_ppc.h:986:23: sparse: sparse: cast to restricted __le32
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __be64
+   arch/powerpc/include/asm/kvm_ppc.h:966:1: sparse: sparse: cast to restricted __le64
+
+vim +660 arch/powerpc/kvm/book3s_pr.c
+
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  630  
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  631  /* Book3s_32 CPUs always have 32 bytes cache line size, which Linux assumes. To
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  632   * make Book3s_32 Linux work on Book3s_64, we have to make sure we trap dcbz to
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  633   * emulate 32 bytes dcbz length.
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  634   *
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  635   * The Book3s_64 inventors also realized this case and implemented a special bit
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  636   * in the HID5 register, which is a hypervisor ressource. Thus we can't use it.
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  637   *
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  638   * My approach here is to patch the dcbz instruction on executing pages.
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  639   */
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  640  static void kvmppc_patch_dcbz(struct kvm_vcpu *vcpu, struct kvmppc_pte *pte)
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  641  {
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  642  	struct page *hpage;
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  643  	u64 hpage_offset;
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  644  	u32 *page;
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  645  	int i;
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  646  
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  647  	hpage = gfn_to_page(vcpu->kvm, pte->raddr >> PAGE_SHIFT);
+32cad84f44d1866 Xiao Guangrong 2012-08-03  648  	if (is_error_page(hpage))
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  649  		return;
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  650  
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  651  	hpage_offset = pte->raddr & ~PAGE_MASK;
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  652  	hpage_offset &= ~0xFFFULL;
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  653  	hpage_offset /= 4;
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  654  
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  655  	get_page(hpage);
+2480b2089210de3 Cong Wang      2011-11-25  656  	page = kmap_atomic(hpage);
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  657  
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  658  	/* patch dcbz into reserved instruction, so we trap */
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  659  	for (i=hpage_offset; i < hpage_offset + (HW_PAGE_SIZE / 4); i++)
+cd087eefe637d54 Alexander Graf 2014-04-24 @660  		if ((be32_to_cpu(page[i]) & 0xff0007ff) == INS_DCBZ)
+cd087eefe637d54 Alexander Graf 2014-04-24 @661  			page[i] &= cpu_to_be32(0xfffffff7);
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  662  
+2480b2089210de3 Cong Wang      2011-11-25  663  	kunmap_atomic(page);
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  664  	put_page(hpage);
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  665  }
+f05ed4d56e9cff1 Paul Mackerras 2011-06-29  666  
+
+:::::: The code at line 660 was first introduced by commit
+:::::: cd087eefe637d545345ea5f888d4ea4fe52e312c KVM: PPC: Book3S PR: Do dcbz32 patching with big endian instructions
+
+:::::: TO: Alexander Graf <agraf@suse.de>
+:::::: CC: Alexander Graf <agraf@suse.de>
+
 ---
-
-Changes in v3:
- - constify the i2s_tdm_dai struct
- - remove remaining direct i2s_tdm_dai uses
- - move symmetric_rate setting to _init_dai
- - store pointer to dai struct in rk_i2s_tdm_dev struct
-
-Changes in v2:
- - remove accidental whitespace changes
-
- sound/soc/rockchip/rockchip_i2s_tdm.c | 52 ++++++++++++++++-----------
- 1 file changed, 31 insertions(+), 21 deletions(-)
-
-diff --git a/sound/soc/rockchip/rockchip_i2s_tdm.c b/sound/soc/rockchip/rockchip_i2s_tdm.c
-index 17b9b287853a..5f9cb5c4c7f0 100644
---- a/sound/soc/rockchip/rockchip_i2s_tdm.c
-+++ b/sound/soc/rockchip/rockchip_i2s_tdm.c
-@@ -95,6 +95,7 @@ struct rk_i2s_tdm_dev {
- 	spinlock_t lock; /* xfer lock */
- 	bool has_playback;
- 	bool has_capture;
-+	struct snd_soc_dai_driver *dai;
- };
- 
- static int to_ch_num(unsigned int val)
-@@ -1310,19 +1311,14 @@ static const struct of_device_id rockchip_i2s_tdm_match[] = {
- 	{},
- };
- 
--static struct snd_soc_dai_driver i2s_tdm_dai = {
-+static const struct snd_soc_dai_driver i2s_tdm_dai = {
- 	.probe = rockchip_i2s_tdm_dai_probe,
--	.playback = {
--		.stream_name  = "Playback",
--	},
--	.capture = {
--		.stream_name  = "Capture",
--	},
- 	.ops = &rockchip_i2s_tdm_dai_ops,
- };
- 
--static void rockchip_i2s_tdm_init_dai(struct rk_i2s_tdm_dev *i2s_tdm)
-+static int rockchip_i2s_tdm_init_dai(struct rk_i2s_tdm_dev *i2s_tdm)
- {
-+	struct snd_soc_dai_driver *dai;
- 	struct property *dma_names;
- 	const char *dma_name;
- 	u64 formats = (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
-@@ -1337,19 +1333,33 @@ static void rockchip_i2s_tdm_init_dai(struct rk_i2s_tdm_dev *i2s_tdm)
- 			i2s_tdm->has_capture = true;
- 	}
- 
-+	dai = devm_kmemdup(i2s_tdm->dev, &i2s_tdm_dai,
-+			   sizeof(*dai), GFP_KERNEL);
-+	if (!dai)
-+		return -ENOMEM;
-+
- 	if (i2s_tdm->has_playback) {
--		i2s_tdm_dai.playback.channels_min = 2;
--		i2s_tdm_dai.playback.channels_max = 8;
--		i2s_tdm_dai.playback.rates = SNDRV_PCM_RATE_8000_192000;
--		i2s_tdm_dai.playback.formats = formats;
-+		dai->playback.stream_name  = "Playback";
-+		dai->playback.channels_min = 2;
-+		dai->playback.channels_max = 8;
-+		dai->playback.rates = SNDRV_PCM_RATE_8000_192000;
-+		dai->playback.formats = formats;
- 	}
- 
- 	if (i2s_tdm->has_capture) {
--		i2s_tdm_dai.capture.channels_min = 2;
--		i2s_tdm_dai.capture.channels_max = 8;
--		i2s_tdm_dai.capture.rates = SNDRV_PCM_RATE_8000_192000;
--		i2s_tdm_dai.capture.formats = formats;
-+		dai->capture.stream_name  = "Capture";
-+		dai->capture.channels_min = 2;
-+		dai->capture.channels_max = 8;
-+		dai->capture.rates = SNDRV_PCM_RATE_8000_192000;
-+		dai->capture.formats = formats;
- 	}
-+
-+	if (i2s_tdm->clk_trcm != TRCM_TXRX)
-+		dai->symmetric_rate = 1;
-+
-+	i2s_tdm->dai = dai;
-+
-+	return 0;
- }
- 
- static int rockchip_i2s_tdm_path_check(struct rk_i2s_tdm_dev *i2s_tdm,
-@@ -1541,8 +1551,6 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
- 	spin_lock_init(&i2s_tdm->lock);
- 	i2s_tdm->soc_data = (struct rk_i2s_soc_data *)of_id->data;
- 
--	rockchip_i2s_tdm_init_dai(i2s_tdm);
--
- 	i2s_tdm->frame_width = 64;
- 
- 	i2s_tdm->clk_trcm = TRCM_TXRX;
-@@ -1555,8 +1563,10 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
- 		}
- 		i2s_tdm->clk_trcm = TRCM_RX;
- 	}
--	if (i2s_tdm->clk_trcm != TRCM_TXRX)
--		i2s_tdm_dai.symmetric_rate = 1;
-+
-+	ret = rockchip_i2s_tdm_init_dai(i2s_tdm);
-+	if (ret)
-+		return ret;
- 
- 	i2s_tdm->grf = syscon_regmap_lookup_by_phandle(node, "rockchip,grf");
- 	if (IS_ERR(i2s_tdm->grf))
-@@ -1678,7 +1688,7 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev,
- 					      &rockchip_i2s_tdm_component,
--					      &i2s_tdm_dai, 1);
-+					      i2s_tdm->dai, 1);
- 
- 	if (ret) {
- 		dev_err(&pdev->dev, "Could not register DAI\n");
--- 
-2.34.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
