@@ -2,84 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058D245DB20
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 14:30:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01DC945DB22
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 14:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354811AbhKYNdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 08:33:50 -0500
-Received: from foss.arm.com ([217.140.110.172]:51034 "EHLO foss.arm.com"
+        id S1354411AbhKYNeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 08:34:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347729AbhKYNbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 08:31:48 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 22A2E1FB;
-        Thu, 25 Nov 2021 05:28:37 -0800 (PST)
-Received: from [10.57.56.56] (unknown [10.57.56.56])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C3E993F66F;
-        Thu, 25 Nov 2021 05:28:34 -0800 (PST)
-Message-ID: <85eb9053-0ce4-2514-06dc-58b8910dc5f7@arm.com>
-Date:   Thu, 25 Nov 2021 13:28:33 +0000
+        id S1348505AbhKYNcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 08:32:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60F3A604DC;
+        Thu, 25 Nov 2021 13:28:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637846935;
+        bh=yqiqGbuyTjJTG0oblRRU3rs5NLfBTBZCOCZce5YSkZo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uhyd8RgHCVgmy0Y/SxVKJ60pGso4EW0WK5oEJH3gkMsgsfmzBrBo/4hIvGb1jCI7D
+         efSli2X2qafiyBWijtRCk3QoDt9qruAKO+Y6US2FdDbez5K1Nx6/H0pK46QLQ0ry3V
+         WNznP8n5gmDfyJ3SDtlbZbDeV12Hk6EGUSweVee1BI60TK53+xOvHF0894AwpYzQsN
+         R9QCzwpZ+cYXEDRXv6qR7gqlsvJHHXNdfja2j+dyOdh5mvJLnQ84PwvGXj7FClGizI
+         6UJUL4milykd9zr/Gm/m9r5TBTe9863Zbhx4jZE7TDPCbsfLHoZEWSnS8BHASSULRi
+         54M+FmhXTDS7Q==
+Date:   Thu, 25 Nov 2021 14:28:53 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH 5/6] rcu/nocb: Allow empty "rcu_nocbs" kernel parameter
+Message-ID: <20211125132853.GA509134@lothringen>
+References: <20211123003708.468409-1-frederic@kernel.org>
+ <20211123003708.468409-6-frederic@kernel.org>
+ <20211125004720.GV641268@paulmck-ThinkPad-P17-Gen-1>
+ <20211125044132.GA105778@lapt>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH] dma_heap: use sg_table.orig_nents in sg_table release
- flow
-Content-Language: en-GB
-To:     guangming.cao@mediatek.com, Sumit Semwal <sumit.semwal@linaro.org>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <john.stultz@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:DMA-BUF HEAPS FRAMEWORK" <linux-media@vger.kernel.org>,
-        "open list:DMA-BUF HEAPS FRAMEWORK" <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA-BUF HEAPS FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Cc:     wsd_upstream@mediatek.com
-References: <20211125124626.60068-1-guangming.cao@mediatek.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20211125124626.60068-1-guangming.cao@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211125044132.GA105778@lapt>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-11-25 12:46, guangming.cao@mediatek.com wrote:
-> From: Guangming <Guangming.Cao@mediatek.com>
+On Wed, Nov 24, 2021 at 08:41:32PM -0800, Yury Norov wrote:
+> On Wed, Nov 24, 2021 at 04:47:20PM -0800, Paul E. McKenney wrote:
+> > On Tue, Nov 23, 2021 at 01:37:07AM +0100, Frederic Weisbecker wrote:
+> > > If a user wants to boot without any CPU in offloaded mode initially but
+> > > with the possibility to offload them later using cpusets, provide a way
+> > > to simply pass an empty "rcu_nocbs" kernel parameter which will enforce
+> > > the creation of dormant nocb kthreads.
+> > 
+> > Huh.  This would have been a use for Yury Norov's "none" bitmask
+> > specifier.  ;-)
+> > 
+> > I pulled this one in with the usual wordsmithing.
+> > 
+> > 							Thanx, Paul
 > 
-> Use (sg_table.orig_nents) rather than (sg_table.nents) to traverse
-> sg_table to free sg_table.
-> Use (sg_table.nents) maybe will casuse some pages can't be freed.
+> I think 'rcu_nocbs=,' should work as 'none'. But I admit that it looks
+> awkward. The following patch adds clear 'none' semantics to the parser.
+> If you like it, I think you may drop non-documentation part of this
+> patch.
 
-...and this sort of bug is precisely why we have the 
-for_each_sgtable_sg() helper ;)
+I don't have real objection, but I fear that "rcu_nocbs=none" might be
+interpretated as rcu_nocbs is entirely deactivated, whereas "rcu_nocbs"
+alone makes it clear that we are turning something on.
 
-Robin.
+We can support both though.
 
-> Signed-off-by: Guangming <Guangming.Cao@mediatek.com>
-> ---
->   drivers/dma-buf/heaps/system_heap.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-> index 23a7e74ef966..ce10d4eb674c 100644
-> --- a/drivers/dma-buf/heaps/system_heap.c
-> +++ b/drivers/dma-buf/heaps/system_heap.c
-> @@ -289,7 +289,7 @@ static void system_heap_dma_buf_release(struct dma_buf *dmabuf)
->   	int i;
->   
->   	table = &buffer->sg_table;
-> -	for_each_sg(table->sgl, sg, table->nents, i) {
-> +	for_each_sg(table->sgl, sg, table->orig_nents, i) {
->   		struct page *page = sg_page(sg);
->   
->   		__free_pages(page, compound_order(page));
-> 
+Thanks.
