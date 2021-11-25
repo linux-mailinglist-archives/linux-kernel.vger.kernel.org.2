@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1771C45D58B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 431BE45D58F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:35:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235957AbhKYHhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 02:37:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235914AbhKYHfj (ORCPT
+        id S235206AbhKYHiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 02:38:55 -0500
+Received: from mail-vk1-f171.google.com ([209.85.221.171]:42629 "EHLO
+        mail-vk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235419AbhKYHgy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 02:35:39 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7AFEC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 23:32:23 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id k37so14041666lfv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 23:32:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tY0dI4JKSMqLqN8bCT5xhyliQM9cl3Za+ENI5kRKGSo=;
-        b=MStlbuYF8XwOtaZm2IZDizPpaqNzw/O0bk5WXfDpOkji9Fo+7tKIwAdHX1Q1q2Ddn6
-         4wKOsAgl/kwiIf6TDdRbFcKFBoIko4gHB3sEpXZ2h92dsV+AehEE78QfLPfoS6325J4K
-         4jEuVVTdsl0tZBaPYqCYSH+/mBWzSLxkhq+23G/7my8i6fiU6Bd7jvvkVtjIewIznFz0
-         mluf8oJk+qvs0tnccQ15XopVMiFaCIaD5sqpwAHFci8jxVfmJXboeQKJzKYUZ9mjiS4s
-         CyKtnFdE784toKoJ2yas/U8sqRsgQdvq8uc6YlKb5oST5hgnqwSUPiw7BuP4UUogoFNU
-         lSjg==
+        Thu, 25 Nov 2021 02:36:54 -0500
+Received: by mail-vk1-f171.google.com with SMTP id b125so3242936vkb.9;
+        Wed, 24 Nov 2021 23:33:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tY0dI4JKSMqLqN8bCT5xhyliQM9cl3Za+ENI5kRKGSo=;
-        b=kAxZk7p0IeK9bhF0KygrlO39t25BwC0kRsCFZMqzkmkWOm4o8872H4x6zL6xslZoWa
-         5Hb4cSaF8iUNucIURpQgqi/p86JFRDXVt7lyEiZ8mtKumIsceGlWFTLHnKcGYHOnk8eG
-         2j+J3OZmBUV3bDHNlOXB32ME+kQ8Tnr9BTWJjN1sCeo6PQKMRfV2maimA7tYnSUH71e6
-         ZNFKpZim7RRfJFPYifDpo+5eqjfjBWwH4G2+QdSEUvq+Y27DWATIXVKDbmKC6x4oXTFD
-         DbGE9SkRwnDBCEAB9M2eBG/y29aS9cSkrqgvJIN5U1OzLhOAILDxY0hBirZondWUsxBM
-         Uk+A==
-X-Gm-Message-State: AOAM533py+/J9Sn+8ujVhzFfWYeNFkv5rt2nxnZ0ccMZekxBXIS1tEwa
-        49UD39YkGdGCB3WDWMpUK7de7+n6I2UdZQ==
-X-Google-Smtp-Source: ABdhPJwXQ9uRH7aqsvlifGN5TFtW5mUpNOGPU6NkYy5ht0oPrCfiw1c4pfU6DkFusieGl3fIGNkrHw==
-X-Received: by 2002:a05:6512:1316:: with SMTP id x22mr1314120lfu.639.1637825541825;
-        Wed, 24 Nov 2021 23:32:21 -0800 (PST)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id m14sm179162ljg.2.2021.11.24.23.32.21
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ugpVh5eVFcoLVCWRbPKzq92m0amK53xVN2bsl5MSGy0=;
+        b=BRjrRgyM+A8McJ/YI5PBg6IXU2XGf3Flp97LxMYFG3celISig3ju7QESHhwH/9GHDa
+         42MSvj3c8EI6Fnpn3noNt5Es0FbUOAlmZqo6QNdmR4sgUvCTL8AYKOk7H6jlsiEMXKeN
+         apiI0ALbyxLK0sAS1gO/MR4sdlHT3GGrK2C40JQ1UVdwNMOQ6pNP5Bg3v05EAM4LI18q
+         Pmb4L3/GKJzIoY0SE9I5H1aGFVxhTnL9v8mtHM1/l2OGsPSNWLguTZOpJn7yTWguf9DY
+         oBC2ZSihRBfd8avU5NC1dk6WqB2lMSqGZQrCEvoavyM0E5bLyiuyShr8T7s+rvDypFaW
+         XfrA==
+X-Gm-Message-State: AOAM531ALBSaqame9OzAv/nPxy03jipBPFbA7faAf9Spzo5Id3SfDpLx
+        HStHheR8vii2XdWtWgAfbD+DD2odWsfWbw==
+X-Google-Smtp-Source: ABdhPJzi+HXCmPDOWGxSTgzMa52rO2qQxWXcSTOkIAm30J3VSnjVwmW5s4FosaloHqFShx2CbE0i0g==
+X-Received: by 2002:a1f:d903:: with SMTP id q3mr2615955vkg.37.1637825622541;
+        Wed, 24 Nov 2021 23:33:42 -0800 (PST)
+Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com. [209.85.221.169])
+        by smtp.gmail.com with ESMTPSA id v8sm1234705vkc.52.2021.11.24.23.33.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 23:32:21 -0800 (PST)
-Subject: Re: [PATCH v4 4/4] drm/msm/dp: dp_link_parse_sink_count() return
- immediately if aux read failed
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
-        sean@poorly.run
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <1619048258-8717-1-git-send-email-khsieh@codeaurora.org>
- <1619048258-8717-5-git-send-email-khsieh@codeaurora.org>
- <CAE-0n519sFBeLsNF8=Ci1y_xfY4dRuPRNHnJ++ZXHgj6Z6LhQA@mail.gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <ff384e41-cc86-8028-fc81-b0b41140dcd2@linaro.org>
-Date:   Thu, 25 Nov 2021 10:32:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 24 Nov 2021 23:33:42 -0800 (PST)
+Received: by mail-vk1-f169.google.com with SMTP id 188so3254327vku.8;
+        Wed, 24 Nov 2021 23:33:42 -0800 (PST)
+X-Received: by 2002:a05:6122:104f:: with SMTP id z15mr2634547vkn.39.1637825621983;
+ Wed, 24 Nov 2021 23:33:41 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAE-0n519sFBeLsNF8=Ci1y_xfY4dRuPRNHnJ++ZXHgj6Z6LhQA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <44e0213a681f3c8ee4c6ab2ef9d61ce3ac00e368.1637727935.git.fthain@linux-m68k.org>
+ <CAMuHMdXTxTABOoVgC6fVR44dxUZZEbZV=ewSk9vKFY=U5u+fcw@mail.gmail.com> <CAOmrzkJhXvN0gOU8fc5jNu3Q9LnT4dgCGdrznYbCbGXxq0dJpQ@mail.gmail.com>
+In-Reply-To: <CAOmrzkJhXvN0gOU8fc5jNu3Q9LnT4dgCGdrznYbCbGXxq0dJpQ@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 25 Nov 2021 08:33:30 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXfFtn9b_2d5BQdzeyMH_puKJ8tzQeLu-Cw4dxfovcb5w@mail.gmail.com>
+Message-ID: <CAMuHMdXfFtn9b_2d5BQdzeyMH_puKJ8tzQeLu-Cw4dxfovcb5w@mail.gmail.com>
+Subject: Re: [PATCH] pata_falcon: Add missing __iomem annotations
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     Finn Thain <fthain@linux-m68k.org>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/05/2021 07:35, Stephen Boyd wrote:
-> Quoting Kuogee Hsieh (2021-04-21 16:37:38)
->> Add checking aux read/write status at both dp_link_parse_sink_count()
->> and dp_link_parse_sink_status_filed() to avoid long timeout delay if
-> 
-> s/filed/field/
-> 
->> dp aux read/write failed at timeout due to cable unplugged.
->>
->> Changes in V4:
->> -- split this patch as stand alone patch
->>
->> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> 
-> Can this patch come before the one previously? And then some fixes tag
-> be added? Otherwise looks good to me.
-> 
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> Tested-by: Stephen Boyd <swboyd@chromium.org>
+Hi Michael,
 
-Is this something that we still need to pursue/merge?
+On Wed, Nov 24, 2021 at 9:50 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+> On Wed, Nov 24, 2021 at 8:51 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > --- a/drivers/ata/pata_falcon.c
+> > > +++ b/drivers/ata/pata_falcon.c
+> > > @@ -55,14 +55,14 @@ static unsigned int pata_falcon_data_xfer(struct ata_queued_cmd *qc,
+> > >         /* Transfer multiple of 2 bytes */
+> > >         if (rw == READ) {
+> > >                 if (swap)
+> > > -                       raw_insw_swapw((u16 *)data_addr, (u16 *)buf, words);
+> > > +                       raw_insw_swapw((u16 __iomem *)data_addr, (u16 *)buf, words);
+> > >                 else
+> > > -                       raw_insw((u16 *)data_addr, (u16 *)buf, words);
+> > > +                       raw_insw((u16 __iomem *)data_addr, (u16 *)buf, words);
+> > >         } else {
+> > >                 if (swap)
+> > > -                       raw_outsw_swapw((u16 *)data_addr, (u16 *)buf, words);
+> > > +                       raw_outsw_swapw((u16 __iomem *)data_addr, (u16 *)buf, words);
+> > >                 else
+> > > -                       raw_outsw((u16 *)data_addr, (u16 *)buf, words);
+> > > +                       raw_outsw((u16 __iomem *)data_addr, (u16 *)buf, words);
+> >
+> > Can't you just drop the casts? data_addr is an __iomem void *.
+>
+> It's not u16 though, and the raw_ IO functions require that. But we
+> could cast data_addr as __iomem u16 * (compile tested).
 
-There were changes requested for this and for the previous patch, but no 
-new versions were posted.
+The raw_ IO functions do not require that: you can pass a void *
+to a function that expects a different pointer type.
 
+Gr{oetje,eeting}s,
 
--- 
-With best wishes
-Dmitry
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
