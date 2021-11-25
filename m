@@ -2,166 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3CC45D82A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:22:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63EBB45D830
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354564AbhKYKZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 05:25:21 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:58636 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354371AbhKYKXQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 05:23:16 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id B53131FDF1;
-        Thu, 25 Nov 2021 10:20:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637835604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v8y1Z8l+5H9ro6ZVY0cIqzUQoY7K3Ii5PzPw9rqgiog=;
-        b=Oz4Tou4rY7D3CRTHB/8XRcvrxXYWXjXgRs+MlRJv8eam6yROSItADJ8Xv0KmxRytSxyAX0
-        3M/6XOhxuq02Y0d8VvAHUHISl6HkqK6+Q3KvUDjtxR1ah8AujLyW3NTaOclufcBtjBIlt2
-        BAW9HzDIXIx50FZcDKEYPcm4Y3FKP1E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637835604;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v8y1Z8l+5H9ro6ZVY0cIqzUQoY7K3Ii5PzPw9rqgiog=;
-        b=vCBayQ62J4CWmGJvUSjxsyVXXq8fnWA4wL4Ins9My+sbokGjinxAFCllutZKr/gM7S+UZQ
-        0oze1KIHLc34pWBw==
-Received: from pobox.suse.cz (pobox.suse.cz [10.100.2.14])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 9D32AA3B83;
-        Thu, 25 Nov 2021 10:20:04 +0000 (UTC)
-Date:   Thu, 25 Nov 2021 11:20:04 +0100 (CET)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Petr Mladek <pmladek@suse.com>
-cc:     Joe Lawrence <joe.lawrence@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, jikos@kernel.org,
-        peterz@infradead.org, linux-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org, shuah@kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 2/3] livepatch: Allow user to specify functions to search
- for on a stack
-In-Reply-To: <YZ9gfPuCTmDmOj9h@alley>
-Message-ID: <alpine.LSU.2.21.2111251110130.28836@pobox.suse.cz>
-References: <YZ9gfPuCTmDmOj9h@alley>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1354266AbhKYK1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 05:27:03 -0500
+Received: from foss.arm.com ([217.140.110.172]:49082 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1354473AbhKYKZC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 05:25:02 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82F661042;
+        Thu, 25 Nov 2021 02:21:51 -0800 (PST)
+Received: from [10.57.59.128] (unknown [10.57.59.128])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BCE043F5A1;
+        Thu, 25 Nov 2021 02:21:49 -0800 (PST)
+Subject: Re: [RESEND PATCH 1/1] perf arm-spe: report all SPE records as "all"
+ events
+To:     Leo Yan <leo.yan@linaro.org>, German Gomez <german.gomez@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-arm-kernel@lists.infradead.org
+References: <20211117142833.226629-1-german.gomez@arm.com>
+ <20211125075358.GA1599216@leoy-ThinkPad-X240s>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <12d44d96-1fcd-1fdd-64ea-beef40a27d1d@arm.com>
+Date:   Thu, 25 Nov 2021 10:21:48 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20211125075358.GA1599216@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Nov 2021, Petr Mladek wrote:
 
-> On Mon 2021-11-22 10:53:21, Joe Lawrence wrote:
-> > On 11/22/21 2:57 AM, Miroslav Benes wrote:
-> > > On Fri, 19 Nov 2021, Josh Poimboeuf wrote:
-> > > 
-> > >> Thanks for doing this!  And at peterz-esque speed no less :-)
-> > >>
-> > >> On Fri, Nov 19, 2021 at 10:03:26AM +0100, Miroslav Benes wrote:
-> > >>> livepatch's consistency model requires that no live patched function
-> > >>> must be found on any task's stack during a transition process after a
-> > >>> live patch is applied. It is achieved by walking through stacks of all
-> > >>> blocked tasks.
-> > >>>
-> > >>> The user might also want to define more functions to search for without
-> > >>> them being patched at all. It may either help with preparing a live
-> > >>> patch, which would otherwise require additional touches to achieve the
-> > >>> consistency
-> > >>
-> > >> Do we have any examples of this situation we can add to the commit log?
-> > > 
-> > > I do not have anything at hand. Joe, do you remember the case you 
-> > > mentioned previously about adding a nop to a function?
-> > 
-> > Maybe adding a hypothetical scenario to the commit log would suffice?
+
+On 25/11/2021 07:53, Leo Yan wrote:
+> On Wed, Nov 17, 2021 at 02:28:32PM +0000, German Gomez wrote:
+>> From: James Clark <james.clark@arm.com>
+>>
+>> Currently perf-report and perf-inject are dropping a large number of SPE
+>> records because they don't contain any of the existing events, but the
+>> contextual information of the records is still useful to keep.
+>>
+>> The synthesized event "all" is generated for every SPE record that is
+>> processed, regardless of whether the record contains interesting events
+>> or not. The event can be filtered with the flag "--itrace=o".
+>>
+>> Signed-off-by: James Clark <james.clark@arm.com>
+>> Signed-off-by: German Gomez <german.gomez@arm.com>
+>> ---
+>>  tools/perf/Documentation/itrace.txt |  2 +-
+>>  tools/perf/util/arm-spe.c           | 36 +++++++++++++++++++++++++++++
+>>  tools/perf/util/auxtrace.h          |  2 +-
+>>  3 files changed, 38 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/perf/Documentation/itrace.txt b/tools/perf/Documentation/itrace.txt
+>> index c52755481..57dc12b83 100644
+>> --- a/tools/perf/Documentation/itrace.txt
+>> +++ b/tools/perf/Documentation/itrace.txt
+>> @@ -6,7 +6,7 @@
+>>  		w	synthesize ptwrite events
+>>  		p	synthesize power events (incl. PSB events for Intel PT)
+>>  		o	synthesize other events recorded due to the use
+>> -			of aux-output (refer to perf record)
+>> +			of aux-output (refer to perf record) (all events for Arm SPE)
+>>  		e	synthesize error events
+>>  		d	create a debug log
+>>  		f	synthesize first level cache events
+>> diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
+>> index ce77abf90..6428351db 100644
+>> --- a/tools/perf/util/arm-spe.c
+>> +++ b/tools/perf/util/arm-spe.c
+>> @@ -58,6 +58,7 @@ struct arm_spe {
+>>  	u8				sample_branch;
+>>  	u8				sample_remote_access;
+>>  	u8				sample_memory;
+>> +	u8				sample_other;
+>>  
+>>  	u64				l1d_miss_id;
+>>  	u64				l1d_access_id;
+>> @@ -68,6 +69,7 @@ struct arm_spe {
+>>  	u64				branch_miss_id;
+>>  	u64				remote_access_id;
+>>  	u64				memory_id;
+>> +	u64				all_id;
+>>  
+>>  	u64				kernel_start;
+>>  
+>> @@ -351,6 +353,23 @@ static int arm_spe__synth_branch_sample(struct arm_spe_queue *speq,
+>>  	return arm_spe_deliver_synth_event(spe, speq, event, &sample);
+>>  }
+>>  
+>> +static int arm_spe__synth_other_sample(struct arm_spe_queue *speq,
+>> +				       u64 spe_events_id)
+>> +{
+>> +	struct arm_spe *spe = speq->spe;
+>> +	struct arm_spe_record *record = &speq->decoder->record;
+>> +	union perf_event *event = speq->event_buf;
+>> +	struct perf_sample sample = { .ip = 0, };
+>> +
+>> +	arm_spe_prep_sample(spe, speq, event, &sample);
+>> +
+>> +	sample.id = spe_events_id;
+>> +	sample.stream_id = spe_events_id;
+>> +	sample.addr = record->to_ip;
 > 
-> I wonder if we could describe a scenario based on the thread about
-> .cold code variants, see
-> https://lore.kernel.org/all/20211112015003.pefl656m3zmir6ov@treble/
+> After checked the event types, I think "other" samples would include
+> below raw event types:
+
+Maybe we should rename some of the functions and variables if there is
+confusion, but I think this new group is "all" rather than "other" because
+it also includes all the events that would be put in other groups.
+
 > 
-> This feature would allow to safely livepatch already released
-> kernels where the unwinder is not able to reliably detect
-> a newly discovered problems.
-
-and is described (well, without actually using .cold suffix) a few lines 
-below. I'll try to improve the changelog.
- 
-> > >>> or it can be used to overcome deficiencies the stack
-> > >>> checking inherently has. For example, GCC may optimize a function so
-> > >>> that a part of it is moved to a different section and the function would
-> > >>> jump to it. This child function would not be found on a stack in this
-> > >>> case, but it may be important to search for it so that, again, the
-> > >>> consistency is achieved.
-> > >>>
-> > >>> Allow the user to specify such functions on klp_object level.
-> > >>>
-> > >>> Signed-off-by: Miroslav Benes <mbenes@suse.cz>
-> > >>> ---
-> > >>>  include/linux/livepatch.h     | 11 +++++++++++
-> > >>>  kernel/livepatch/core.c       | 16 ++++++++++++++++
-> > >>>  kernel/livepatch/transition.c | 21 ++++++++++++++++-----
-> > >>>  3 files changed, 43 insertions(+), 5 deletions(-)
-> > >>>
-> > >>> diff --git a/include/linux/livepatch.h b/include/linux/livepatch.h
-> > >>> index 2614247a9781..89df578af8c3 100644
-> > >>> --- a/include/linux/livepatch.h
-> > >>> +++ b/include/linux/livepatch.h
-> > >>> @@ -106,9 +106,11 @@ struct klp_callbacks {
-> > >>>   * struct klp_object - kernel object structure for live patching
-> > >>>   * @name:	module name (or NULL for vmlinux)
-> > >>>   * @funcs:	function entries for functions to be patched in the object
-> > >>> + * @funcs_stack:	function entries for functions to be stack checked
-> > >>
-> > >> So there are two arrays/lists of 'klp_func', and two implied meanings of
-> > >> what a 'klp_func' is and how it's initialized.
-> > >>
-> > >> Might it be simpler and more explicit to just add a new external field
-> > >> to 'klp_func' and continue to have a single 'funcs' array?  Similar to
-> > >> what we already do with the special-casing of 'nop', except it would be
-> > >> an external field, e.g. 'no_patch' or 'stack_only'.
-> > 
-> > I'll add that the first thing that came to mind when you raised this
-> > feature idea in the other thread was to support existing klp_funcs array
-> > with NULL new_func's.
+>   EV_EXCEPTION_GEN
+>   EV_RETIRED
+>   EV_NOT_TAKEN
+>   EV_ALIGNMENT
+>   EV_PARTIAL_PREDICATE
+>   EV_EMPTY_PREDICATE
 > 
-> Please, solve this with the extra flag, e.g. .stack_only, as
-> already suggested. It will help to distinguish mistakes and
-> intentions. Also it will allow to find these symbols by grep.
+> I am just wander if we can use sample.transaction to store these event
+> types, otherwise, we cannot distinguish the event type for the samples.
 
-Indeed, that is what I did for v2. I used new_func being NULL fact even in 
-v1, but I do not like it much. Extra flag is definitely more robust.
- 
-> > I didn't go look to see how invasive it would be,
-> > but it will be interesting to see if a single list approach turns out
-> > any simpler for v2.
+If we can use the transaction field to distinguish sample types, I'm
+wondering why we need the separate groups at all. If this new group
+includes all sample types, and they're all labelled, do we need to
+continue with the other groups like "tlb-access" and "branch-miss"?
+
+Or does the perf GUI not allow filtering by transaction type?
+
+James
+
 > 
-> I am not sure either. But I expect that it will be easier than
-> the extra array.
-
-So, extra flag and one array makes certain things (initialization) 
-definitely easier. On the other hand, there are suddenly more problems to 
-think about (and I haven't solved them yet):
-
-  - I need to make it work with nops functions. Especially if we allow a 
-    scenario where there could be klp_object instance with just stack_only 
-    functions. Would that be useful? For example, to patch something in a 
-    module and add a stack_only for a function in vmlinux.
- 
-    If yes, then the interaction with nops is not completely 
-    straightforward and also some parts of the code would have to be 
-    changed (for example how obj->patched flag is handled).
-
-  - klp_func instances are directly mirrored in sysfs. Do we want to keep 
-    stack_only functions there too? If not, it makes the whole thing 
-    slighly more difficult given how we manage kobjects.
-
-Nothing really difficult to implement if we come up with answers.
-
-Miroslav
+> And it's good fill more sample fields for complete info, like:
+> 
+>   sample.addr = record->virt_addr;
+>   sample.phys_addr = record->phys_addr;
+>   sample.data_src = data_src;
+> 
+> Thanks,
+> Leo
+> 
+>> +
+>> +	return arm_spe_deliver_synth_event(spe, speq, event, &sample);
+>> +}
+>> +
+>>  #define SPE_MEM_TYPE	(ARM_SPE_L1D_ACCESS | ARM_SPE_L1D_MISS | \
+>>  			 ARM_SPE_LLC_ACCESS | ARM_SPE_LLC_MISS | \
+>>  			 ARM_SPE_REMOTE_ACCESS)
+>> @@ -480,6 +499,12 @@ static int arm_spe_sample(struct arm_spe_queue *speq)
+>>  			return err;
+>>  	}
+>>  
+>> +	if (spe->sample_other) {
+>> +		err = arm_spe__synth_other_sample(speq, spe->all_id);
+>> +		if (err)
+>> +			return err;
+>> +	}
+>> +
+>>  	return 0;
+>>  }
+>>  
+>> @@ -1107,6 +1132,17 @@ arm_spe_synth_events(struct arm_spe *spe, struct perf_session *session)
+>>  			return err;
+>>  		spe->memory_id = id;
+>>  		arm_spe_set_event_name(evlist, id, "memory");
+>> +		id += 1;
+>> +	}
+>> +
+>> +	if (spe->synth_opts.other_events) {
+>> +		spe->sample_other = true;
+>> +
+>> +		err = arm_spe_synth_event(session, &attr, id);
+>> +		if (err)
+>> +			return err;
+>> +		spe->all_id = id;
+>> +		arm_spe_set_event_name(evlist, id, "all");
+>>  	}
+>>  
+>>  	return 0;
+>> diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
+>> index bbf0d78c6..efe1bdc06 100644
+>> --- a/tools/perf/util/auxtrace.h
+>> +++ b/tools/perf/util/auxtrace.h
+>> @@ -74,7 +74,7 @@ enum itrace_period_type {
+>>   * @ptwrites: whether to synthesize events for ptwrites
+>>   * @pwr_events: whether to synthesize power events
+>>   * @other_events: whether to synthesize other events recorded due to the use of
+>> - *                aux_output
+>> + *                aux_output (all events for Arm SPE)
+>>   * @errors: whether to synthesize decoder error events
+>>   * @dont_decode: whether to skip decoding entirely
+>>   * @log: write a decoding log
+>> -- 
+>> 2.25.1
+>>
