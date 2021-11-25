@@ -2,103 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E2145D324
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:22:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D1545D314
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:18:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240260AbhKYCZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 21:25:26 -0500
-Received: from mga03.intel.com ([134.134.136.65]:47795 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231458AbhKYCXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 21:23:24 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="235364437"
-X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
-   d="scan'208";a="235364437"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 18:16:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
-   d="scan'208";a="554485280"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 24 Nov 2021 18:16:14 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mq4J3-0005c7-DK; Thu, 25 Nov 2021 02:16:13 +0000
-Date:   Thu, 25 Nov 2021 10:15:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Prashant Malani <pmalani@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, wonchung@google.com, bleung@chromium.org,
-        heikki.krogerus@linux.intel.com,
-        Prashant Malani <pmalani@chromium.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 2/4] usb: Use notifier to link Type C ports
-Message-ID: <202111251010.fxed9VtQ-lkp@intel.com>
-References: <20211124231028.696982-3-pmalani@chromium.org>
+        id S235089AbhKYCVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 21:21:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:56021 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238689AbhKYCTJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 21:19:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637806558;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r72uMhfjIYSF88TaYdiXECmLl0Mii7SWfOdaVyCFTl8=;
+        b=HbyZjPq+41l6L8F+jq+XC6xRXJiaUwhToVpOC+t4zG3MW1+AnzDosR3TDj6kFlm8nIqaXY
+        CU8HOC86/isAQVug5oLmU/bAR0DsF2ievmtvq1JKprfAQHpcq9sH4zsq0t/m+0TL7EcA0j
+        YvG9pRzTvppC615kJPM5BIeXcaE4SjE=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-149--rBCSCSNNlm0t2t1DAe3qQ-1; Wed, 24 Nov 2021 21:15:57 -0500
+X-MC-Unique: -rBCSCSNNlm0t2t1DAe3qQ-1
+Received: by mail-lf1-f69.google.com with SMTP id c14-20020a056512104e00b004036d17f91bso2359562lfb.17
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 18:15:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r72uMhfjIYSF88TaYdiXECmLl0Mii7SWfOdaVyCFTl8=;
+        b=rZciiYa6EXVzuSQBctHy/gewXCg4JdB6mwB2z0SlsSvO8iBSnTKRT39Ifug7N3Xrrj
+         rvswI/Gzw4EejJtVFIrduhIOYA4eydv6dmv+7hH3ZbEydMTHf/aLx8yhwNySl/nKqKcM
+         ILSgOV5RveV1iuRqRIN62dpGmPsy/pWqoOTrvVxvYC5PcfV2x3ZwoNMTbn9DJseUPWiO
+         6sH+5H0/9QQiZIvkYIOutFPeX9LXNI8vLAjZHbpow6+HLk7mTkk6LrKzSqyCbMlMPiS3
+         FvvLADQ8z+6pB3Tn0iZJ/lcfo1/1mpPgsEgxuuoMoRGkpLUouY84wwaQcmIvz+JGW3fb
+         bqmQ==
+X-Gm-Message-State: AOAM530lTlA36O7Vbm0iKNzaqwBfIr9DM07Qy/sxiGV8wJoLt0GomW9Y
+        UYsY9TrLSeXL2wayPnyte4yBxivpPfzUsSWnAAKPdqLsU3auq4alJDqlrTHstsk8PGSkc2+dQrQ
+        agTs6YE1K+HtXC4i7ttydpuvCh5C1DtFXqWsxG+wj
+X-Received: by 2002:a2e:b88d:: with SMTP id r13mr20998301ljp.362.1637806556013;
+        Wed, 24 Nov 2021 18:15:56 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzT9Fnm7W7ku4KzzgyNbW6baOBfxN7dV9GBC3FZtP+i7ldmgANqMnbMbrg7KLgP/dpEX9CSqxPFFGj2DzWKb3k=
+X-Received: by 2002:a2e:b88d:: with SMTP id r13mr20998288ljp.362.1637806555830;
+ Wed, 24 Nov 2021 18:15:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211124231028.696982-3-pmalani@chromium.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211124162045.25983-1-arnaud.pouliquen@foss.st.com> <20211124161055-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20211124161055-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Thu, 25 Nov 2021 10:15:44 +0800
+Message-ID: <CACGkMEvQoUcPFgOTvEDGkZHMXhjhPrk0xq-Zq3+G20_Lp-hu8A@mail.gmail.com>
+Subject: Re: [PATCH v2] rpmsg: virtio: don't let virtio core to validate used length
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prashant,
+On Thu, Nov 25, 2021 at 5:12 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Wed, Nov 24, 2021 at 05:20:45PM +0100, Arnaud Pouliquen wrote:
+> > Using OpenAMP library on remote side, when the rpmsg framework tries to
+> > reuse the buffer the following error message is displayed in
+> > the virtqueue_get_buf_ctx_split function:
+> > "virtio_rpmsg_bus virtio0: output:used len 28 is larger than in buflen 0"
+> >
+> > As described in virtio specification:
+> > "many drivers ignored the len value, as a result, many devices set len
+> > incorrectly. Thus, when using the legacy interface, it is generally
+> > a good idea to ignore the len value in used ring entries if possible."
+> >
+> > To stay in compliance with the legacy libraries, this patch prevents the
+> > virtio core from validating used length.
+> >
+> > Fixes: 939779f5152d ("virtio_ring: validate used buffer length")
+> >
+> > Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> > Cc: Jason Wang <jasowang@redhat.com>
+> > Cc: Michael S. Tsirkin <mst@redhat.com>
+> > ---
+>
+> Arnaud, thanks a lot for the analysis.
+>
+> Jason, I think this is another good point. We really should not
+> validate input for legacy devices at all.
 
-I love your patch! Perhaps something to improve:
+I agree. Will do that in the next version.
 
-[auto build test WARNING on usb/usb-testing]
-[also build test WARNING on linux/master linus/master peter-chen-usb/for-usb-next v5.16-rc2 next-20211124]
-[cannot apply to balbi-usb/testing/next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+Thanks
 
-url:    https://github.com/0day-ci/linux/commits/Prashant-Malani/usb-Use-notifier-for-linking-Type-C-ports/20211125-071439
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-config: i386-defconfig (https://download.01.org/0day-ci/archive/20211125/202111251010.fxed9VtQ-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/0day-ci/linux/commit/d56a1c2271ef9c1877e9400fb1adc5adbb278e51
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Prashant-Malani/usb-Use-notifier-for-linking-Type-C-ports/20211125-071439
-        git checkout d56a1c2271ef9c1877e9400fb1adc5adbb278e51
-        # save the config file to linux build tree
-        make W=1 ARCH=i386 
+>
+>
+> > Update vs v1[1]: update commit message to clarify the context.
+> >
+> > base-commit: fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf
+> >
+> > [1]https://lore.kernel.org/lkml/20211122160812.25125-1-arnaud.pouliquen@foss.st.com/T/
+> > ---
+> >  drivers/rpmsg/virtio_rpmsg_bus.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+> > index 9c112aa65040..5f73f19c2c38 100644
+> > --- a/drivers/rpmsg/virtio_rpmsg_bus.c
+> > +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+> > @@ -1054,6 +1054,7 @@ static struct virtio_driver virtio_ipc_driver = {
+> >       .feature_table_size = ARRAY_SIZE(features),
+> >       .driver.name    = KBUILD_MODNAME,
+> >       .driver.owner   = THIS_MODULE,
+> > +     .suppress_used_validation = true,
+> >       .id_table       = id_table,
+> >       .probe          = rpmsg_probe,
+> >       .remove         = rpmsg_remove,
+> > --
+> > 2.17.1
+>
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
-   In file included from drivers/usb/core/port.c:12:
->> include/linux/usb/typec.h:322:5: warning: no previous prototype for 'typec_port_registration_register_notify' [-Wmissing-prototypes]
-     322 | int typec_port_registration_register_notify(struct notifier_block *nb)
-         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> include/linux/usb/typec.h:327:5: warning: no previous prototype for 'typec_port_registration_unregister_notify' [-Wmissing-prototypes]
-     327 | int typec_port_registration_unregister_notify(struct notifier_block *nb)
-         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/typec_port_registration_register_notify +322 include/linux/usb/typec.h
-
-ed296d8d0a92758 Prashant Malani 2021-11-24  321  
-ed296d8d0a92758 Prashant Malani 2021-11-24 @322  int typec_port_registration_register_notify(struct notifier_block *nb)
-ed296d8d0a92758 Prashant Malani 2021-11-24  323  {
-ed296d8d0a92758 Prashant Malani 2021-11-24  324  	return 0;
-ed296d8d0a92758 Prashant Malani 2021-11-24  325  }
-ed296d8d0a92758 Prashant Malani 2021-11-24  326  
-ed296d8d0a92758 Prashant Malani 2021-11-24 @327  int typec_port_registration_unregister_notify(struct notifier_block *nb)
-ed296d8d0a92758 Prashant Malani 2021-11-24  328  {
-ed296d8d0a92758 Prashant Malani 2021-11-24  329  	return 0;
-ed296d8d0a92758 Prashant Malani 2021-11-24  330  }
-ae196ddb0d3186b Heikki Krogerus 2021-04-07  331  #endif
-ae196ddb0d3186b Heikki Krogerus 2021-04-07  332  
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
