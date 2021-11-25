@@ -2,150 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4317645D697
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:57:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE7D45D69F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 10:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353809AbhKYJAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 04:00:45 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:45906 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353137AbhKYI6l (ORCPT
+        id S1350370AbhKYJDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 04:03:44 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:41020 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352941AbhKYJBn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 03:58:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637830531; x=1669366531;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=C1SMImgKRYYI+V5asR9+c50EUAXTpvbf8imgtE5v1XQ=;
-  b=VwkQKi0e9BEOvwe6aZAOmCEDpH1EucFbjJR3ByoC3pX5JGBixhZTHhVX
-   tyYzmG+xln4+HotdEwXHVwKSy7kArv6xpXjE493XfXoVkhcXee8Nv1k8C
-   hczER3MNraoTykYboo8XMwdA3Bae7GTJbWPaIiGndGzwh2Qr28c7KcFGV
-   8=;
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 25 Nov 2021 00:55:30 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 00:55:30 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Thu, 25 Nov 2021 00:55:29 -0800
-Received: from mkshah-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Thu, 25 Nov 2021 00:55:26 -0800
-From:   Maulik Shah <quic_mkshah@quicinc.com>
-To:     <bjorn.andersson@linaro.org>, <rafael@kernel.org>,
-        <daniel.lezcano@linaro.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <ulf.hansson@linaro.org>,
-        <quic_lsrao@quicinc.com>, <rnayak@codeaurora.org>,
-        Maulik Shah <quic_mkshah@quicinc.com>
-Subject: [PATCH 4/4] cpuidle: governors: Allow the governors to be compiled as modules
-Date:   Thu, 25 Nov 2021 14:24:41 +0530
-Message-ID: <1637830481-21709-5-git-send-email-quic_mkshah@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1637830481-21709-1-git-send-email-quic_mkshah@quicinc.com>
-References: <1637830481-21709-1-git-send-email-quic_mkshah@quicinc.com>
+        Thu, 25 Nov 2021 04:01:43 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 5E8F921B37;
+        Thu, 25 Nov 2021 08:58:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637830711; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r8v94X25YY4fcAeTnaWPpMzCIwjzAXXnPYIj480Yedk=;
+        b=Qcm5SY3iE4SX3JZQhUL2iqP90cRb0oV1+j2X5SDK7znkWEPosG3c9/PHBRQ0UqmmsmH9NW
+        ke8Fxm9qKrz9s/eCLdO8ZFmRJc3rB6tMuCZiDageIxcROBvE7gVTN/IGzN3Laz3EN/tCnn
+        UlAQB8QawNoWRNnXaJN7O1S5vbgaw4M=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 4B666A3B8D;
+        Thu, 25 Nov 2021 08:58:30 +0000 (UTC)
+Date:   Thu, 25 Nov 2021 09:58:29 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Neil Brown <neilb@suse.de>, Christoph Hellwig <hch@lst.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH v2 0/4] extend vmalloc support for constrained allocations
+Message-ID: <YZ9QNeHYt99mdfbZ@dhcp22.suse.cz>
+References: <20211122153233.9924-1-mhocko@kernel.org>
+ <20211124225526.GM418105@dread.disaster.area>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124225526.GM418105@dread.disaster.area>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow the menu, ladder and teo governors to be compiled as modules
-when building allmodconfig.
+On Thu 25-11-21 09:55:26, Dave Chinner wrote:
+[...]
+> Correct __GFP_NOLOCKDEP support is also needed. See:
+> 
+> https://lore.kernel.org/linux-mm/20211119225435.GZ449541@dread.disaster.area/
 
-Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
----
- drivers/cpuidle/Kconfig            | 6 +++---
- drivers/cpuidle/governors/ladder.c | 4 ++++
- drivers/cpuidle/governors/menu.c   | 4 ++++
- drivers/cpuidle/governors/teo.c    | 4 ++++
- 4 files changed, 15 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/cpuidle/Kconfig b/drivers/cpuidle/Kconfig
-index c0aeedd..d71e3e4 100644
---- a/drivers/cpuidle/Kconfig
-+++ b/drivers/cpuidle/Kconfig
-@@ -19,13 +19,13 @@ config CPU_IDLE_MULTIPLE_DRIVERS
- 	bool
- 
- config CPU_IDLE_GOV_LADDER
--	bool "Ladder governor (for periodic timer tick)"
-+	tristate "Ladder governor (for periodic timer tick)"
- 
- config CPU_IDLE_GOV_MENU
--	bool "Menu governor (for tickless system)"
-+	tristate "Menu governor (for tickless system)"
- 
- config CPU_IDLE_GOV_TEO
--	bool "Timer events oriented (TEO) governor (for tickless systems)"
-+	tristate "Timer events oriented (TEO) governor (for tickless systems)"
- 	help
- 	  This governor implements a simplified idle state selection method
- 	  focused on timer events and does not do any interactivity boosting.
-diff --git a/drivers/cpuidle/governors/ladder.c b/drivers/cpuidle/governors/ladder.c
-index 8e9058c..4de5b3d 100644
---- a/drivers/cpuidle/governors/ladder.c
-+++ b/drivers/cpuidle/governors/ladder.c
-@@ -15,6 +15,7 @@
- #include <linux/kernel.h>
- #include <linux/cpuidle.h>
- #include <linux/jiffies.h>
-+#include <linux/module.h>
- #include <linux/tick.h>
- 
- #include <asm/io.h>
-@@ -195,3 +196,6 @@ static int __init init_ladder(void)
- }
- 
- postcore_initcall(init_ladder);
-+
-+MODULE_DESCRIPTION("CPUidle Ladder governor (for periodic timer tick)");
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/cpuidle/governors/menu.c b/drivers/cpuidle/governors/menu.c
-index 2e56704..2ef7cfc 100644
---- a/drivers/cpuidle/governors/menu.c
-+++ b/drivers/cpuidle/governors/menu.c
-@@ -13,6 +13,7 @@
- #include <linux/time.h>
- #include <linux/ktime.h>
- #include <linux/hrtimer.h>
-+#include <linux/module.h>
- #include <linux/tick.h>
- #include <linux/sched.h>
- #include <linux/sched/loadavg.h>
-@@ -577,3 +578,6 @@ static int __init init_menu(void)
- }
- 
- postcore_initcall(init_menu);
-+
-+MODULE_DESCRIPTION("CPUidle Menu governor (for tickless system)");
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/cpuidle/governors/teo.c b/drivers/cpuidle/governors/teo.c
-index d9262db..1a1d9ef 100644
---- a/drivers/cpuidle/governors/teo.c
-+++ b/drivers/cpuidle/governors/teo.c
-@@ -104,6 +104,7 @@
- #include <linux/cpuidle.h>
- #include <linux/jiffies.h>
- #include <linux/kernel.h>
-+#include <linux/module.h>
- #include <linux/sched/clock.h>
- #include <linux/tick.h>
- 
-@@ -532,3 +533,6 @@ static int __init teo_governor_init(void)
- }
- 
- postcore_initcall(teo_governor_init);
-+
-+MODULE_DESCRIPTION("CPUidle Timer events oriented (TEO) governor (for tickless systems)");
-+MODULE_LICENSE("GPL v2");
+I will have a closer look. This will require changes on both vmalloc and
+sl?b sides.
 -- 
-2.7.4
-
+Michal Hocko
+SUSE Labs
