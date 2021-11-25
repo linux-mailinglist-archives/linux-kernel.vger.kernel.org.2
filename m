@@ -2,117 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3EE45E145
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:03:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F77645E147
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:04:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350551AbhKYUGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 15:06:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242716AbhKYUEr (ORCPT
+        id S1356852AbhKYUHQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 25 Nov 2021 15:07:16 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:55339 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1356906AbhKYUFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 15:04:47 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB30C0613F4;
-        Thu, 25 Nov 2021 12:00:40 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637870438;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vyj4zrdlQYEceaVOafU1FSry85RnhzwkSreDVk7TpTo=;
-        b=fsp5+4ECdZi5Rmed/xTXMjOxVcUr5/xbcBYpPw6xe1sRRDvpPyC6xv54JXjttQCNOY/G0X
-        1U9rBLBbsHtO256hAbj9fTKHvqM1NApYt83GznnF/dkQ85jzxIXo3vycEC3ey5vKFwzVTH
-        LCktto2X8tlWwLVYRWGtL+D8bSvEBSn0D+n2VmJTjF4Xz7KhKjk2AQV2fSFqwXuEghLmok
-        5ir+W8E9foAj3L3iS5hP6rRUP2Kfl6G+NVsW8JXmkimSCSKkRIR/2yEiCz6yJsElPa+rOM
-        lrCEPoJXbQHNkAkor2Jhu4lnX8N1UyqPdp0XNq7swzERBeQKhuKKgJWBYTbjSA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637870438;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vyj4zrdlQYEceaVOafU1FSry85RnhzwkSreDVk7TpTo=;
-        b=K0xPG8pa0GOI3KNlpDq2A6RJw+y7rffDs91XR/ITPYbdpnhwr/0FClZEu7MTzlq9Wxm7FN
-        4e3kE94eDT8WYSDA==
-To:     isaku.yamahata@intel.com, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>
-Subject: Re: [RFC PATCH v3 31/59] KVM: x86: Add infrastructure for stolen
- GPA bits
-In-Reply-To: <89046548aa74778658c6e66d219e157e71e439ab.1637799475.git.isaku.yamahata@intel.com>
-References: <cover.1637799475.git.isaku.yamahata@intel.com>
- <89046548aa74778658c6e66d219e157e71e439ab.1637799475.git.isaku.yamahata@intel.com>
-Date:   Thu, 25 Nov 2021 21:00:37 +0100
-Message-ID: <871r34j996.ffs@tglx>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Thu, 25 Nov 2021 15:05:15 -0500
+Received: from smtpclient.apple (p5b3d2e91.dip0.t-ipconnect.de [91.61.46.145])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 34E96CECC6;
+        Thu, 25 Nov 2021 21:02:02 +0100 (CET)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
+Subject: Re: [PATCH] Bluetooth: virtio_bt: fix device removal
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20211125174200.133230-1-mst@redhat.com>
+Date:   Thu, 25 Nov 2021 21:02:01 +0100
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-bluetooth@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <F52F65FE-6A07-486B-8E84-684ED85709E9@holtmann.org>
+References: <20211125174200.133230-1-mst@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+X-Mailer: Apple Mail (2.3693.20.0.1.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24 2021 at 16:20, isaku yamahata wrote:
-> Add support in KVM's MMU for aliasing multiple GPAs (from a hardware
-> perspective) to a single GPA (from a memslot perspective). GPA alising
-> will be used to repurpose GPA bits as attribute bits, e.g. to expose an
-> execute-only permission bit to the guest. To keep the implementation
-> simple (relatively speaking), GPA aliasing is only supported via TDP.
->
-> Today KVM assumes two things that are broken by GPA aliasing.
->   1. GPAs coming from hardware can be simply shifted to get the GFNs.
->   2. GPA bits 51:MAXPHYADDR are reserved to zero.
->
-> With GPA aliasing, translating a GPA to GFN requires masking off the
-> repurposed bit, and a repurposed bit may reside in 51:MAXPHYADDR.
->
-> To support GPA aliasing, introduce the concept of per-VM GPA stolen bits,
-> that is, bits stolen from the GPA to act as new virtualized attribute
-> bits. A bit in the mask will cause the MMU code to create aliases of the
-> GPA. It can also be used to find the GFN out of a GPA coming from a tdp
-> fault.
->
-> To handle case (1) from above, retain any stolen bits when passing a GPA
-> in KVM's MMU code, but strip them when converting to a GFN so that the
-> GFN contains only the "real" GFN, i.e. never has repurposed bits set.
->
-> GFNs (without stolen bits) continue to be used to:
-> 	-Specify physical memory by userspace via memslots
-> 	-Map GPAs to TDP PTEs via RMAP
-> 	-Specify dirty tracking and write protection
-> 	-Look up MTRR types
-> 	-Inject async page faults
->
-> Since there are now multiple aliases for the same aliased GPA, when
-> userspace memory backing the memslots is paged out, both aliases need to be
-> modified. Fortunately this happens automatically. Since rmap supports
-> multiple mappings for the same GFN for PTE shadowing based paging, by
-> adding/removing each alias PTE with its GFN, kvm_handle_hva() based
-> operations will be applied to both aliases.
->
-> In the case of the rmap being removed in the future, the needed
-> information could be recovered by iterating over the stolen bits and
-> walking the TDP page tables.
->
-> For TLB flushes that are address based, make sure to flush both aliases
-> in the stolen bits case.
->
-> Only support stolen bits in 64 bit guest paging modes (long, PAE).
-> Features that use this infrastructure should restrict the stolen bits to
-> exclude the other paging modes. Don't support stolen bits for shadow EPT.
+Hi Michael,
 
-This is a real reasonable and informative changelog. Thanks to Rick for
-writing this up!
+> Device removal is clearly out of virtio spec: it attempts to remove
+> unused buffers from a VQ before invoking device reset. To fix, make
+> open/close NOPs and do all cleanup/setup in probe/remove.
 
-Thanks,
+so the virtbt_{open,close} as NOP is not really what a driver is suppose
+to be doing. These are transport enable/disable callbacks from the BT
+Core towards the driver. It maps to a device being enabled/disabled by
+something like bluetoothd for example. So if disabled, I expect that no
+resources/queues are in use.
 
-        tglx
+Maybe I misunderstand the virtio spec in that regard, but I would like
+to keep this fundamental concept of a Bluetooth driver. It does work
+with all other transports like USB, SDIO, UART etc.
+
+> The cost here is a single skb wasted on an unused bt device - which
+> seems modest.
+
+There should be no buffer used if the device is powered off. We also don’t
+have any USB URBs in-flight if the transport is not active.
+
+> NB: with this fix in place driver still suffers from a race condition if
+> an interrupt triggers while device is being reset. Work on a fix for
+> that issue is in progress.
+
+In the virtbt_close() callback we should deactivate all interrupts.
+
+Regards
+
+Marcel
+
