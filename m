@@ -2,201 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 307B045D510
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 283E545D512
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:05:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349478AbhKYHIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 02:08:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54958 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1352620AbhKYHGN (ORCPT
+        id S1352772AbhKYHJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 02:09:08 -0500
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:48540 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245025AbhKYHHH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 02:06:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637823782;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VKZ4W8dUJsff2qgbh+MXcvWMXfjgct4ziZKazp/bmHw=;
-        b=P3RlUHdZlcRiKYCMnZ91BuS2PfbBkeIhSenWW+0eaufeJGCBmFO1FfYMfJyyxD6IP5Qk7F
-        Dk9qqRtsXS1nVW3CU+pzMzA31ZWTyUpxyqENfcCzWkSIvprVgj6mnkxF6C8P1AaSp3/aTY
-        WvMtiAbt1FeNwcR5W7K+MBVfkr/PUIk=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-326-CEf7u3jWMhK1wQcWogNXqg-1; Thu, 25 Nov 2021 02:02:59 -0500
-X-MC-Unique: CEf7u3jWMhK1wQcWogNXqg-1
-Received: by mail-ed1-f69.google.com with SMTP id t9-20020aa7d709000000b003e83403a5cbso4603229edq.19
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 23:02:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=VKZ4W8dUJsff2qgbh+MXcvWMXfjgct4ziZKazp/bmHw=;
-        b=MyZ3/gSO3lQmlG0xSJtFZ1+U5JTtkGXhblr6brP+b/rIRZTWe0B3jX4VsNmSztNHSm
-         B/6fLSslnB3iGAZQeGdgGSklXiY4cmkm6gIdwZNzrbm5eEWFdKAwL8H1yQ2A6qwW1DZw
-         Pyl8GEvpidlwl8P1dyZFxFTcWHfpxnOqHabLRGBzCsWrbqZ9rUDVONCrKW8C4g/j9i+X
-         T7owYes8I0k5cK7JQnnwvwuezsDssT8r03y9Favpk5Tm97UVCMqfdwtCkHjIOxWRS8D5
-         G3SwAW+X3uWYsiOY1fjZBcBhTQFF776LhqAHq+u6aufTWJXlw1zBVuNDQmZ4vbhDZ27y
-         BzoA==
-X-Gm-Message-State: AOAM531LlkyIJDm2tyFbCA8XoNKFjQ8LR4jx/t8cGkHLkB2XdGTH3Ycz
-        ocgxPISDDB158ixgYA6ANLhMB8eZ4DCvTqdYqUjTuR8+gBQD+9MdvfC/ob9gjW06bccnLMd6Z7T
-        vZZO63CfOi9XOZye34wMg1Shy
-X-Received: by 2002:a05:6402:5156:: with SMTP id n22mr36646990edd.222.1637823777782;
-        Wed, 24 Nov 2021 23:02:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyYcHfM0EP+0ZsTjbg+b2mmor3qHoBJ/QIj7HfoEGeddfE30NFvqno9TE2xCMsIv67T6XnoKg==
-X-Received: by 2002:a05:6402:5156:: with SMTP id n22mr36646962edd.222.1637823777600;
-        Wed, 24 Nov 2021 23:02:57 -0800 (PST)
-Received: from redhat.com ([45.15.18.67])
-        by smtp.gmail.com with ESMTPSA id aq14sm992371ejc.23.2021.11.24.23.02.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 23:02:56 -0800 (PST)
-Date:   Thu, 25 Nov 2021 02:02:50 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Jason Wang <jasowang@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        kernel-janitors@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        Wu Zongyong <wuzongyong@linux.alibaba.com>
-Subject: Re: [PATCH 1/2] eni_vdpa: Fix an error handling path in
- 'eni_vdpa_probe()'
-Message-ID: <20211125020139-mutt-send-email-mst@kernel.org>
-References: <f6b2d087ca3840604b4e711a208d35b5d6285cb4.1636301587.git.christophe.jaillet@wanadoo.fr>
- <CACGkMEvN0cgFQhJmLF3xDXHt_EyZ-TnfBM8CnpNwA9sKcwpzBg@mail.gmail.com>
- <393fb7b7-653b-eae6-16bd-5ffc7d600619@wanadoo.fr>
- <CACGkMEt3yA+fkFJxKfrXyui-rYVSk78=1AqrT0TYQqzcqTJVyg@mail.gmail.com>
- <069ed3fb-ef99-ff36-136d-a0221ba85a96@wanadoo.fr>
- <20211124185834-mutt-send-email-mst@kernel.org>
- <131b9250-f338-c931-39e6-ca3c1e3a9b66@wanadoo.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+        Thu, 25 Nov 2021 02:07:07 -0500
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AP6FeLl028328;
+        Thu, 25 Nov 2021 07:03:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : content-type : mime-version; s=corp-2021-07-09;
+ bh=yt3fU6qReu1ohrDilfwYKjvoriurgidpnee1fDWSlUs=;
+ b=pNHhVPUHAodFd4q3pB+ljGcqiytaZlQlPJpbhIwr/upScmI54W+PGbWIGTq1FNzXkXA0
+ 5JPtYLI35AdUA6MFpO2s1hj49La5FymaC+Mkersqc0Hqk8l/qV8izrQIRV46QgjSwN1e
+ 7s4Bb5A2bdBJFH64o58nTRp06PCo2zsB+ix9s27fhQSU0+uW3+F2KWDUwRCsLaZPE1cm
+ AL+2EJK2M3YEiOnMAX6xgQWoqJboyqRh+6/RbFbnDY/LphhHJMDwJxG4lHMHStXLTxfq
+ MllkGxqYlD4VDlJATppD/I0mvWNvGSrgL1RXQEL9nM7qDrIIR4zd8ybzAtN9xiFt93/w 5A== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3chj7g5rys-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Nov 2021 07:03:48 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AP6pA9h088938;
+        Thu, 25 Nov 2021 07:03:47 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2046.outbound.protection.outlook.com [104.47.66.46])
+        by aserp3030.oracle.com with ESMTP id 3ceq2h81b6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Nov 2021 07:03:47 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b+ENgLnY/X1KRJoolIHmCJQp0fBWRw8xrOE0KCLi2WjFq28/KyzQ7CH/2YlmR3gdHGGnVKdl+xTA5O4IcMVi6LzmCQEfGK7lDzLft6SpA/a+p8yxAwlS9vjqSiXVG6RDIdS/6poj9MeqptmfuLkpBinP0ACMGG+muRuQ88A6wWYrEoPkDiOHAZO0b33s1WIs/2Nf+gvj7jB3dzbSS6hb2JsIW4Yb5tb6N7PYBgb43qJ/NG9ymEhz7lbyjY9q4l+u4N1J8aE+8CzEaYsLC7Dz+QVj0L4HHjmP7EF57vT2M49Cp0V5ZK19Q958V3KSXRYOz5V4UxN7NrK658AOI+EA4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yt3fU6qReu1ohrDilfwYKjvoriurgidpnee1fDWSlUs=;
+ b=BMJVyzQXfFiweXvncwP/njNi2NTqpg87zXeinyV0rPEsLZgsV81LNb31OX/uZsFX2RpBOdzO1r9NEu04IDJ21x54HvMsI7uG+jSVr4fCaJP+JPIZCGZG9zN03brkl3elZuICor7LoyYC3uL2LTGJlkABrH+Oc5VXj+6E58VxnvEDTzPDhmrMQVMkoY0AQTeZ+Jb90o1jq34UCnzzCi+xthYI+3RNYUQ6uZ5+NL7wtQUMcVzuhguptnsDW8CbJ6HM/hACFY9c2kQzvbm03eWX54vt56zqUbgSWscIFOxN+4V5X9QUofevYkAZEeogVZlRqUuBWdv1j4ZGLBpug20x7A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yt3fU6qReu1ohrDilfwYKjvoriurgidpnee1fDWSlUs=;
+ b=kfB2nUV14IhZc943DlbA/8szPMICKrhTvl5J9xa2N0l2vxfBxEQ0IOALhSA32fn64o0V5Wr/geJR04gQt9qnhm2wVyQVEpxnVzqQjK1nAC08bOMqn1YH9yyArVVK/zEzFu6uR6P80uk5WC9nE1gWz9i1KaMRN5lQTZQB8c8js10=
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by CO6PR10MB5459.namprd10.prod.outlook.com
+ (2603:10b6:5:359::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.25; Thu, 25 Nov
+ 2021 07:03:45 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::7194:c377:36cc:d9f0]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::7194:c377:36cc:d9f0%6]) with mapi id 15.20.4734.022; Thu, 25 Nov 2021
+ 07:03:45 +0000
+Date:   Thu, 25 Nov 2021 10:03:28 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     kbuild@lists.01.org, Parav Pandit <parav@nvidia.com>
+Cc:     lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>, Eli Cohen <elic@nvidia.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Eric Dumazet <edumazet@google.com>
+Subject: drivers/vdpa/vdpa.c:296 vdpa_mgmtdev_fill() warn: should '(((1))) <<
+ (mdev->id_table[i]->device)' be a 64 bit type?
+Message-ID: <202111250317.VUsGtdox-lkp@intel.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <131b9250-f338-c931-39e6-ca3c1e3a9b66@wanadoo.fr>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JN2P275CA0032.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::20)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+MIME-Version: 1.0
+Received: from kadam (102.222.70.114) by JN2P275CA0032.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.20 via Frontend Transport; Thu, 25 Nov 2021 07:03:38 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b57538d7-000e-4b43-e88d-08d9afe1b88b
+X-MS-TrafficTypeDiagnostic: CO6PR10MB5459:
+X-Microsoft-Antispam-PRVS: <CO6PR10MB5459193D27EABD1C359902A28E629@CO6PR10MB5459.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:172;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6WTwCEl6kdsulcbGwZJD47VN23bJ8xxYVs/RO3EqqgMagZ0SopddERf1I0ASdSQU2JIOf3HOrbtmRbmKbXjTsMg1UYQqcuzNYf/Hm1Tfyi4unIBwd+3On5Y+uJL9J/EUrThmnVOH9Dn8MwRsVwSyBzKSD31xbeZQnRCq3SBRAr3pGoe29gyzuJm1b2j0tlQAla7ncqqqgo2b3nsG8NGI/v+eDbwRpAtKto6uAmpYBoVRSHNvKzZzOkctGCOfWdijBt1N8OGgWO0K3461EJWWJyvll43dEMgsEwYcuTQEroXvQp+WVTZzSogf/RALGsu4P+GbsLUk+2JVcjdIe8gGkaxwJefkfycNwWGISMZKMt7FH4PpkccWY9geFyPC7WB1WgBgQEwvOkaqG+zwok+839Gopoebmmes3+dbDGjUGqLGvYE+h5MALBd8SRgH4hQaBQjJoiPms41XR8kPVFYFnROlWj49fsfR8Q0GU75CF3kQR/B6YEepTNPhlqjst0c7mjryZtPJApGOsBoc+BzSuEe++ANGVGLRAagzDSWo1oOoTvkZVxu64VEF+jKPpH8bzsjUu6NPvGX8uhhemiHL97W23mFMb8YgAOVXnxLLM5Oh8aU1Pt5O6dSLobHgVnuBX1gx4TChOdQIn4VuRBkZyuc2pUp4eLgV5C7QADPXwWF7bOV3BS4SfECkkOE4GImeBpRmC8ALIzKRObs8Avd8Tv9oyI1vuhMt7SmxFPpcyzZTJO2oUQdR7IO9tJXXDlabEVIv0cOWk37BNHaZ3ysviCBzT9dyOVDQqf1+vPeTkMzNPA0e2+bdkNXgFoJVbC549VGVLARdaHYzy6JhJ38OtA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(9686003)(316002)(86362001)(8676002)(66556008)(44832011)(508600001)(1076003)(38350700002)(2906002)(36756003)(4326008)(38100700002)(54906003)(6496006)(66476007)(186003)(6916009)(6666004)(956004)(66946007)(26005)(52116002)(83380400001)(8936002)(5660300002)(966005)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?li6OgPymhFrFdz8bBQmn4zEd/EJLTpZCWnXq+AdwjjXSAnyVDPvSR6lHTSn0?=
+ =?us-ascii?Q?3oFzIdTM22WvLlqrrUEcw/Mt7Kmj9rJi0A3x0C1yst0Hs8rnnAKFTOwZBguS?=
+ =?us-ascii?Q?BoG1zQXBU2zBySScJeAS3MIoJQ7Kucjlpw/K/PlVszTPWZHFr7jBTrfV4zOb?=
+ =?us-ascii?Q?Cx0+rh0eLZ4kKl293IGX0JuNYGGqeduAx3Yo8svTxAoF3mRQEsw5vnUG/Ipf?=
+ =?us-ascii?Q?czYzxwXDYnQxA9ixTMoOgvRyjkvSHQM086CTtWVlQSnbmbnFTwMoLqOLYZel?=
+ =?us-ascii?Q?twI6AkSwh6oXkzQ5Exu7VMQcrdIEzT36NgX9hMVZdyC+ceSiPcIxb3hHjeg2?=
+ =?us-ascii?Q?+hE83UCTDl/Z2xnEcvhFlmpnRd0Cpj7vX3X4DSiFjOH0e0H6TmOj1nSX7xGR?=
+ =?us-ascii?Q?+lCCebqunhPuku4mXvkabqwKjkW6eLkNmjv2M7kCqs4zEefVSpPmgVdq2XM8?=
+ =?us-ascii?Q?tKsYAc/1yhhtTTCHLr8E/g+558idTc1uwUXFT3RQh0WKCiQf2rqz1Jre7Cpw?=
+ =?us-ascii?Q?rov8YZM0VsHT7KbPw3C5GVvfB+JLTe0L8URiFh5yWKhm9o6woiz4MX9xAlKg?=
+ =?us-ascii?Q?0y54lSpVXn4Ydtll/m3C2Lxcnk//gxaMmbll0wukbEN5pXwJTPD9Z0dySSWu?=
+ =?us-ascii?Q?8CtOPLTa1i2jXwhH88c8ojq2NdxlhOf+O8FYXu79A+/AerpUdHiyPo08ELtp?=
+ =?us-ascii?Q?8lV8yxV8p+iWLlqHsDGpo6AaMtsMfOYpJdNedrkgaCl59xuBTvMeofAvpcZr?=
+ =?us-ascii?Q?eISIvtXxMjblJW4itcA6g1LN6PGLBWaaIvyWh7djKTrGTrej/Gpi6/hgkc1h?=
+ =?us-ascii?Q?v8yaI5HhV7VgCrWEfiQMJBWONXayI/mvASB4bqizq8QZIPsmI48Ultc5Fsjq?=
+ =?us-ascii?Q?T6rFfuOa13C4iWwoQcQSM83nPE+nEcU3YP4FYtXB4l9Uruz00pRBtRuZxzMB?=
+ =?us-ascii?Q?kctRZgMCwWIfxi5Adpb5IOQIn/aC46L8rV222lYI3+BNcO0Dgm6uo+5PUCqu?=
+ =?us-ascii?Q?vuTlI6dOd0xRAs7JL1Q0on9PgX5pNR7ig5dqhrMtXaPCYGTrTJk5jSXBdLwK?=
+ =?us-ascii?Q?gqyN1yDVUG/yHJ3pVQy/4E4vOisrRs23wlBDp85Ulvusjp3YD4ZCnGjBfhbp?=
+ =?us-ascii?Q?ahQQCnaCuGRG6K5/EU5zY5DHWyK8fLYA0g5HTg+a5KUdjLOLL+RKGHNizTTd?=
+ =?us-ascii?Q?JlQZbuzQ1Fz5+qHPzKwQ0gPDPLG8esfuJCDmAv0uj4Pb4HXIDFG7CTYcRfY/?=
+ =?us-ascii?Q?Rkfnx2wsReQAGBzMOMQU6zT7Rpf0y2b7NGOAK9VsMb+JNGGNR8hyUaBA+Zic?=
+ =?us-ascii?Q?grDCzHfgrSasVCSzxIlyBXYgA4PPSh/4bnGPXQRzyt1lwL0is4GCx7GpmLZU?=
+ =?us-ascii?Q?Bj5+wquTuwYpkDIDf6HRyUIDjMlutlK6/50c3cYhkOD97srEPXfnItHyfIU9?=
+ =?us-ascii?Q?0QCpRvcXcltDpgbkj1SUcCGu5TFoUMAR8MWv6HenmqFzMzRPVdjtaxI3J2We?=
+ =?us-ascii?Q?Dlbsd6EVlG6sPnqNdR5bb+HQRF206yXfG5pkuKIjmrgMbndZVxtdQaifceeY?=
+ =?us-ascii?Q?JiGboG/dNs69HTv+HlUuhuT3BnqinVsBVkWe66uGrAJqESVyf7+XJjJYqbtM?=
+ =?us-ascii?Q?heuNyC4dj9mzYEk8UEZivxMB2sl/AB5CoYwCFD5JExshkbkfh7yBROfUnRZU?=
+ =?us-ascii?Q?uMQkbsDgu4EEg05xUdT7xJ6NXC0=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b57538d7-000e-4b43-e88d-08d9afe1b88b
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2021 07:03:45.1603
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GZ78RrgiPZI+axLiI9g8vGOly8Ra1/C/1dk8gnzQ6ieojt/ewj9ZloPBivB5fGZvegZFLzId5dkNABmHvNO6rgfJoegL4M24BzXa0YB2DJU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR10MB5459
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10178 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0 spamscore=0
+ bulkscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111250038
+X-Proofpoint-ORIG-GUID: EdEaDJIF7JXkz3MbzP9u_XNgEb7pNXov
+X-Proofpoint-GUID: EdEaDJIF7JXkz3MbzP9u_XNgEb7pNXov
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 07:34:02AM +0100, Christophe JAILLET wrote:
-> Le 25/11/2021 à 00:58, Michael S. Tsirkin a écrit :
-> > On Tue, Nov 09, 2021 at 10:21:44PM +0100, Christophe JAILLET wrote:
-> > > Le 09/11/2021 à 03:54, Jason Wang a écrit :
-> > > > On Tue, Nov 9, 2021 at 3:32 AM Christophe JAILLET
-> > > > <christophe.jaillet@wanadoo.fr> wrote:
-> > > > > 
-> > > > > Le 08/11/2021 à 06:55, Jason Wang a écrit :
-> > > > > > On Mon, Nov 8, 2021 at 12:15 AM Christophe JAILLET
-> > > > > > <christophe.jaillet@wanadoo.fr> wrote:
-> > > > > > > 
-> > > > > > > In the error handling path, a successful 'vp_legacy_probe()' should be
-> > > > > > > balanced by a corresponding 'vp_legacy_remove()' call, as already done in
-> > > > > > > the remove function.
-> > > > > > > 
-> > > > > > > Add the missing call and update gotos accordingly.
-> > > > > > > 
-> > > > > > > Fixes: e85087beedca ("eni_vdpa: add vDPA driver for Alibaba ENI")
-> > > > > > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > > > > > > ---
-> > > > > > >     drivers/vdpa/alibaba/eni_vdpa.c | 6 ++++--
-> > > > > > >     1 file changed, 4 insertions(+), 2 deletions(-)
-> > > > > > > 
-> > > > > > > diff --git a/drivers/vdpa/alibaba/eni_vdpa.c b/drivers/vdpa/alibaba/eni_vdpa.c
-> > > > > > > index 3f788794571a..12b3db6b4517 100644
-> > > > > > > --- a/drivers/vdpa/alibaba/eni_vdpa.c
-> > > > > > > +++ b/drivers/vdpa/alibaba/eni_vdpa.c
-> > > > > > > @@ -501,7 +501,7 @@ static int eni_vdpa_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> > > > > > >            if (!eni_vdpa->vring) {
-> > > > > > >                    ret = -ENOMEM;
-> > > > > > >                    ENI_ERR(pdev, "failed to allocate virtqueues\n");
-> > > > > > > -               goto err;
-> > > > > > > +               goto err_remove_vp_legacy;
-> > > > > > >            }
-> > > > > > > 
-> > > > > > >            for (i = 0; i < eni_vdpa->queues; i++) {
-> > > > > > > @@ -513,11 +513,13 @@ static int eni_vdpa_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> > > > > > >            ret = vdpa_register_device(&eni_vdpa->vdpa, eni_vdpa->queues);
-> > > > > > >            if (ret) {
-> > > > > > >                    ENI_ERR(pdev, "failed to register to vdpa bus\n");
-> > > > > > > -               goto err;
-> > > > > > > +               goto err_remove_vp_legacy;
-> > > > > > >            }
-> > > > > > > 
-> > > > > > >            return 0;
-> > > > > > > 
-> > > > > > > +err_remove_vp_legacy:
-> > > > > > > +       vp_legacy_remove(&eni_vdpa->ldev);
-> > > > > > 
-> > > > > > Won't vp_legacy_remove() be triggered by the put_devic() below?
-> > > > > 
-> > > > > Hi, I'm sorry but i don't see how.
-> > > > > 
-> > > > > My understanding is that:
-> > > > >      - on "put_device(&eni_vdpa->vdpa.dev);", the corresponding release
-> > > > > function will be called.
-> > > > > 
-> > > > >      - This release function is the one recorded in the
-> > > > > '__vdpa_alloc_device()' function.
-> > > > > 
-> > > > >      - So it should be 'vdpa_release_dev()'.
-> > > > > 
-> > > > >      - This function, AFAIU, has no knowledge of 'vp_legacy_remove()' or
-> > > > > anything that could call it.
-> > > > > 
-> > > > > 
-> > > > > Unless I misread something or miss something obvious, I don't see how
-> > > > > 'vp_legacy_remove() would be called.
-> > > > > 
-> > > > > 
-> > > > > Could you elaborate?
-> > > > 
-> > > > I think the device should release the driver (see
-> > > > device_release_driver()) during during its deleting.
-> > > 
-> > > Hi, I still don't follow the logic and I don't understand how
-> > > 'vp_legacy_remove()' will finely be called, but it is not that important.
-> > > 
-> > > If it's fine for you, it's fine for me :)
-> > > 
-> > > CJ
-> > 
-> > So pls post just patch 2?
-> 
-> Patch 2/2 should apply cleanly with or without patch 1/2.
-> Do I really need to send a v2 just for dropping the first patch? :/
-> 
-> CJ
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5d9f4cf36721aba199975a9be7863a3ff5cd4b59
+commit: 33b347503f014ebf76257327cbc7001c6b721956 vdpa: Define vdpa mgmt device, ops and a netlink interface
+config: i386-randconfig-m021-20211118 (https://download.01.org/0day-ci/archive/20211125/202111250317.VUsGtdox-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
 
-It is preferable, yes. A patch in isolation is not the same as a patch
-in the series.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-> > 
-> > > > 
-> > > > Thanks
-> > > > 
-> > > > > 
-> > > > > CJ
-> > > > > 
-> > > > > > 
-> > > > > > Thanks
-> > > > > > 
-> > > > > > >     err:
-> > > > > > >            put_device(&eni_vdpa->vdpa.dev);
-> > > > > > >            return ret;
-> > > > > > > --
-> > > > > > > 2.30.2
-> > > > > > > 
-> > > > > > 
-> > > > > > 
-> > > > > 
-> > > > 
-> > > > _______________________________________________
-> > > > Virtualization mailing list
-> > > > Virtualization@lists.linux-foundation.org
-> > > > https://lists.linuxfoundation.org/mailman/listinfo/virtualization
-> > > > 
-> > 
-> > 
+smatch warnings:
+drivers/vdpa/vdpa.c:296 vdpa_mgmtdev_fill() warn: should '(((1))) << (mdev->id_table[i]->device)' be a 64 bit type?
+
+vim +296 drivers/vdpa/vdpa.c
+
+33b347503f014eb Parav Pandit 2021-01-05  280  static int vdpa_mgmtdev_fill(const struct vdpa_mgmt_dev *mdev, struct sk_buff *msg,
+33b347503f014eb Parav Pandit 2021-01-05  281  			     u32 portid, u32 seq, int flags)
+33b347503f014eb Parav Pandit 2021-01-05  282  {
+33b347503f014eb Parav Pandit 2021-01-05  283  	u64 supported_classes = 0;
+                                                ^^^^^^^^^^^^^^^^^^^^^
+This is a u64
+
+33b347503f014eb Parav Pandit 2021-01-05  284  	void *hdr;
+33b347503f014eb Parav Pandit 2021-01-05  285  	int i = 0;
+33b347503f014eb Parav Pandit 2021-01-05  286  	int err;
+33b347503f014eb Parav Pandit 2021-01-05  287  
+33b347503f014eb Parav Pandit 2021-01-05  288  	hdr = genlmsg_put(msg, portid, seq, &vdpa_nl_family, flags, VDPA_CMD_MGMTDEV_NEW);
+33b347503f014eb Parav Pandit 2021-01-05  289  	if (!hdr)
+33b347503f014eb Parav Pandit 2021-01-05  290  		return -EMSGSIZE;
+33b347503f014eb Parav Pandit 2021-01-05  291  	err = vdpa_nl_mgmtdev_handle_fill(msg, mdev);
+33b347503f014eb Parav Pandit 2021-01-05  292  	if (err)
+33b347503f014eb Parav Pandit 2021-01-05  293  		goto msg_err;
+33b347503f014eb Parav Pandit 2021-01-05  294  
+33b347503f014eb Parav Pandit 2021-01-05  295  	while (mdev->id_table[i].device) {
+33b347503f014eb Parav Pandit 2021-01-05 @296  		supported_classes |= BIT(mdev->id_table[i].device);
+
+Which suggests that this should be BIT_ULL().
+
+33b347503f014eb Parav Pandit 2021-01-05  297  		i++;
+33b347503f014eb Parav Pandit 2021-01-05  298  	}
+33b347503f014eb Parav Pandit 2021-01-05  299  
+33b347503f014eb Parav Pandit 2021-01-05  300  	if (nla_put_u64_64bit(msg, VDPA_ATTR_MGMTDEV_SUPPORTED_CLASSES,
+33b347503f014eb Parav Pandit 2021-01-05  301  			      supported_classes, VDPA_ATTR_UNSPEC)) {
+33b347503f014eb Parav Pandit 2021-01-05  302  		err = -EMSGSIZE;
+33b347503f014eb Parav Pandit 2021-01-05  303  		goto msg_err;
+33b347503f014eb Parav Pandit 2021-01-05  304  	}
+33b347503f014eb Parav Pandit 2021-01-05  305  
+33b347503f014eb Parav Pandit 2021-01-05  306  	genlmsg_end(msg, hdr);
+33b347503f014eb Parav Pandit 2021-01-05  307  	return 0;
+33b347503f014eb Parav Pandit 2021-01-05  308  
+33b347503f014eb Parav Pandit 2021-01-05  309  msg_err:
+33b347503f014eb Parav Pandit 2021-01-05  310  	genlmsg_cancel(msg, hdr);
+33b347503f014eb Parav Pandit 2021-01-05  311  	return err;
+33b347503f014eb Parav Pandit 2021-01-05  312  }
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
