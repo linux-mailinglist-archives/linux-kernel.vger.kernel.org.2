@@ -2,100 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 431BE45D58F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:35:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A42045D590
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235206AbhKYHiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 02:38:55 -0500
-Received: from mail-vk1-f171.google.com ([209.85.221.171]:42629 "EHLO
-        mail-vk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235419AbhKYHgy (ORCPT
+        id S235217AbhKYHi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 02:38:57 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:28173 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232441AbhKYHh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 02:36:54 -0500
-Received: by mail-vk1-f171.google.com with SMTP id b125so3242936vkb.9;
-        Wed, 24 Nov 2021 23:33:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ugpVh5eVFcoLVCWRbPKzq92m0amK53xVN2bsl5MSGy0=;
-        b=BRjrRgyM+A8McJ/YI5PBg6IXU2XGf3Flp97LxMYFG3celISig3ju7QESHhwH/9GHDa
-         42MSvj3c8EI6Fnpn3noNt5Es0FbUOAlmZqo6QNdmR4sgUvCTL8AYKOk7H6jlsiEMXKeN
-         apiI0ALbyxLK0sAS1gO/MR4sdlHT3GGrK2C40JQ1UVdwNMOQ6pNP5Bg3v05EAM4LI18q
-         Pmb4L3/GKJzIoY0SE9I5H1aGFVxhTnL9v8mtHM1/l2OGsPSNWLguTZOpJn7yTWguf9DY
-         oBC2ZSihRBfd8avU5NC1dk6WqB2lMSqGZQrCEvoavyM0E5bLyiuyShr8T7s+rvDypFaW
-         XfrA==
-X-Gm-Message-State: AOAM531ALBSaqame9OzAv/nPxy03jipBPFbA7faAf9Spzo5Id3SfDpLx
-        HStHheR8vii2XdWtWgAfbD+DD2odWsfWbw==
-X-Google-Smtp-Source: ABdhPJzi+HXCmPDOWGxSTgzMa52rO2qQxWXcSTOkIAm30J3VSnjVwmW5s4FosaloHqFShx2CbE0i0g==
-X-Received: by 2002:a1f:d903:: with SMTP id q3mr2615955vkg.37.1637825622541;
-        Wed, 24 Nov 2021 23:33:42 -0800 (PST)
-Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com. [209.85.221.169])
-        by smtp.gmail.com with ESMTPSA id v8sm1234705vkc.52.2021.11.24.23.33.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 23:33:42 -0800 (PST)
-Received: by mail-vk1-f169.google.com with SMTP id 188so3254327vku.8;
-        Wed, 24 Nov 2021 23:33:42 -0800 (PST)
-X-Received: by 2002:a05:6122:104f:: with SMTP id z15mr2634547vkn.39.1637825621983;
- Wed, 24 Nov 2021 23:33:41 -0800 (PST)
+        Thu, 25 Nov 2021 02:37:27 -0500
+Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4J08hz4ttXz8vdg;
+        Thu, 25 Nov 2021 15:32:19 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 25 Nov 2021 15:34:07 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.20; Thu, 25 Nov 2021 15:34:06 +0800
+Message-ID: <4d951721-caa2-f692-293d-ee8b93e62597@huawei.com>
+Date:   Thu, 25 Nov 2021 15:34:06 +0800
 MIME-Version: 1.0
-References: <44e0213a681f3c8ee4c6ab2ef9d61ce3ac00e368.1637727935.git.fthain@linux-m68k.org>
- <CAMuHMdXTxTABOoVgC6fVR44dxUZZEbZV=ewSk9vKFY=U5u+fcw@mail.gmail.com> <CAOmrzkJhXvN0gOU8fc5jNu3Q9LnT4dgCGdrznYbCbGXxq0dJpQ@mail.gmail.com>
-In-Reply-To: <CAOmrzkJhXvN0gOU8fc5jNu3Q9LnT4dgCGdrznYbCbGXxq0dJpQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 25 Nov 2021 08:33:30 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXfFtn9b_2d5BQdzeyMH_puKJ8tzQeLu-Cw4dxfovcb5w@mail.gmail.com>
-Message-ID: <CAMuHMdXfFtn9b_2d5BQdzeyMH_puKJ8tzQeLu-Cw4dxfovcb5w@mail.gmail.com>
-Subject: Re: [PATCH] pata_falcon: Add missing __iomem annotations
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Finn Thain <fthain@linux-m68k.org>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [next] kasan: shadow.c:528:33: error: 'VM_DELAY_KMEMLEAK'
+ undeclared
+Content-Language: en-US
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yongqiang Liu <liuyongqiang13@huawei.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Alexander Potapenko <glider@google.com>
+References: <CA+G9fYuLv7491Q2AHcaUAQ2AQeFBQgx8w0DzK95Qf6Fh9gGFfQ@mail.gmail.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <CA+G9fYuLv7491Q2AHcaUAQ2AQeFBQgx8w0DzK95Qf6Fh9gGFfQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggeme702-chm.china.huawei.com (10.1.199.98) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+Sorry for the missing change of VM_DEFER_KMEMLEAK.
 
-On Wed, Nov 24, 2021 at 9:50 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
-> On Wed, Nov 24, 2021 at 8:51 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > --- a/drivers/ata/pata_falcon.c
-> > > +++ b/drivers/ata/pata_falcon.c
-> > > @@ -55,14 +55,14 @@ static unsigned int pata_falcon_data_xfer(struct ata_queued_cmd *qc,
-> > >         /* Transfer multiple of 2 bytes */
-> > >         if (rw == READ) {
-> > >                 if (swap)
-> > > -                       raw_insw_swapw((u16 *)data_addr, (u16 *)buf, words);
-> > > +                       raw_insw_swapw((u16 __iomem *)data_addr, (u16 *)buf, words);
-> > >                 else
-> > > -                       raw_insw((u16 *)data_addr, (u16 *)buf, words);
-> > > +                       raw_insw((u16 __iomem *)data_addr, (u16 *)buf, words);
-> > >         } else {
-> > >                 if (swap)
-> > > -                       raw_outsw_swapw((u16 *)data_addr, (u16 *)buf, words);
-> > > +                       raw_outsw_swapw((u16 __iomem *)data_addr, (u16 *)buf, words);
-> > >                 else
-> > > -                       raw_outsw((u16 *)data_addr, (u16 *)buf, words);
-> > > +                       raw_outsw((u16 __iomem *)data_addr, (u16 *)buf, words);
-> >
-> > Can't you just drop the casts? data_addr is an __iomem void *.
+I will  add Fixes tag and resend v4.
+
+On 2021/11/25 15:13, Naresh Kamboju wrote:
+> [ Please ignore this email if it is already reported ]
 >
-> It's not u16 though, and the raw_ IO functions require that. But we
-> could cast data_addr as __iomem u16 * (compile tested).
-
-The raw_ IO functions do not require that: you can pass a void *
-to a function that expects a different pointer type.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> While building Linux next 20211125 x86 with CONFIG_KASAN=y gcc-11
+> following warnings / errors noticed.
+>
+> mm/kasan/shadow.c: In function 'kasan_module_alloc':
+> mm/kasan/shadow.c:528:33: error: 'VM_DELAY_KMEMLEAK' undeclared (first
+> use in this function); did you mean 'VM_DEFER_KMEMLEAK'?
+>    528 |                 if (vm->flags & VM_DELAY_KMEMLEAK)
+>        |                                 ^~~~~~~~~~~~~~~~~
+>        |                                 VM_DEFER_KMEMLEAK
+> mm/kasan/shadow.c:528:33: note: each undeclared identifier is reported
+> only once for each function it appears in
+> make[3]: *** [scripts/Makefile.build:288: mm/kasan/shadow.o] Error 1
+>
+> Build config:
+> https://builds.tuxbuild.com/21OjEyx87iCX9bqOwJrZdl1wFFj/config
+>
+>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>
+> meta data:
+> -----------
+>      git describe: next-20211125
+>      git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+>      git_sha: f81e94e91878bded599cc60f2881cfd50991aeb9
+>      git_short_log: f81e94e91878 (\"Add linux-next specific files for 20211125\")
+>      target_arch: x86
+>      toolchain: gcc-11
+>
+> steps to reproduce:
+> tuxmake --runtime podman --target-arch x86_64 --toolchain gcc-11
+> --kconfig defconfig \
+> --kconfig-add https://builds.tuxbuild.com/21OjEyx87iCX9bqOwJrZdl1wFFj/config
+>
+> https://builds.tuxbuild.com/21OjEyx87iCX9bqOwJrZdl1wFFj/tuxmake_reproducer.sh
+>
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
+> .
