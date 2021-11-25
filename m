@@ -2,71 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B11D945DE2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B21B45DE28
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:59:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356375AbhKYQCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 11:02:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356149AbhKYQAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 11:00:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 353D661028;
-        Thu, 25 Nov 2021 15:56:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637855819;
-        bh=s0i3ezSE1IxuveYY+JQMFSCwcdblj9+81E0vhnTv7EE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BaKTbQ95gIfgHvQ50d09qzP6jo+5girSZzd6Hhfvk7Pc5RYmOv/4o+JjFM16Xx/SN
-         K/h+47rRmFT2f+UDW+YfSeksWuZtayLWcN3PJ2FkEfrJy4odyD6OxNI3DpqbPm1xTJ
-         Msb8QjL1FEp+WlVKsQtcSFsB+ppHGhv76xWhxIwA=
-Date:   Thu, 25 Nov 2021 16:56:36 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>, Nadav Amit <namit@vmware.com>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.9 000/206] 4.9.291-rc2 review
-Message-ID: <YZ+yNK3TOXNg+Q5k@kroah.com>
-References: <20211125125641.226524689@linuxfoundation.org>
- <dd620210-af02-189c-f972-e31bd21008b4@roeck-us.net>
+        id S1356166AbhKYQCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 11:02:08 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:40628 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232892AbhKYQAH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 11:00:07 -0500
+Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:2581:f820:804e:edb9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 6C9131F464B1;
+        Thu, 25 Nov 2021 15:56:53 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1637855813; bh=gY+zp9vPvH8Yfyvu4eMVhjohWxix4aAoiT0fFLyuGyc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=d6EhfGJWltZKcP2P4XEpqUawVG3xWktoaszQ4AwlUA19QRsRO3BK/Yc+N6SJyrfWk
+         UCUKbM5abqyzV3BUH1P6dMbc/Zy40Ja9iYInXHWUpO9HCs0+zkJ3Ca/ZSLmIMNLYbp
+         Pnj+cKyhWTYffAyh9Da6vx6qcuMutMDgpjZ3WShYMpXCXG6h5x8YNlRbdXLo/PsOmJ
+         pN5sN7XeJgSoqXfbZXOPD+5OJcCn+ED3fKcAPevtEJpfKwDuc0a7FA9vxEv+Lcurp+
+         GEK9HAss9dbm9kDoK5EJ9qPsm2LeYtVVbkiHaugYEYrjuGZoYbCf4hx3m2/MUGYl8D
+         XdhES0Jf0MEsA==
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To:     mchehab@kernel.org, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        hverkuil-cisco@xs4all.nl
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev, kernel@collabora.com,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH v3 0/4] media: HEVC: RPS clean up
+Date:   Thu, 25 Nov 2021 16:56:46 +0100
+Message-Id: <20211125155650.630977-1-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dd620210-af02-189c-f972-e31bd21008b4@roeck-us.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 07:45:22AM -0800, Guenter Roeck wrote:
-> On 11/25/21 4:57 AM, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 4.9.291 release.
-> > There are 206 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Sat, 27 Nov 2021 12:56:08 +0000.
-> > Anything received after that time might be too late.
-> > 
-> 
-> In file included from arch/sh/mm/init.c:25:
-> arch/sh/include/asm/tlb.h:118:15: error: return type defaults to 'int' [-Werror=return-type]
->   118 | static inline tlb_flush_pmd_range(struct mmu_gather *tlb, unsigned long address,
-> 
-> The problem affects v4.9.y, v4.14.y, and v4.19.y.
-> 
-> Commit aca917cb287ba99c5 ("hugetlbfs: flush TLBs correctly after huge_pmd_unshare")
-> doesn't really match the upstream commit and obviously was not even build tested
-> on sh (and I would suspect it was not tested on other architectures either).
-> It seems to me that it may do more harm than good.
+This series aims to clean up Reference Picture Set usage and flags.
 
-Ok, at this point in time, I think this needs more work, especially over
-a holliday weekend for parts of the world.
+Long term flag was named with RPS prefix while it is not used for RPS
+but for mark long term references in DBP. Remane it and remove the two
+other useless RPS flags.
 
-I'll go drop this, and the other hugetlb patch from 4.4, 4.9, 4.14, and
-4.19 queues and wait for a new version from Nadav.
+Clarify documentation about RPS lists content and make sure that Hantro
+driver use them correctly (i.e without look up in DBP).
 
-thanks,
+version 3:
+- rebased on top of v5.16-rc1
 
-greg k-h
+version 2:
+- change DPB field name from rps to flags
+
+Please note that the only purpose of commits 3 and 4 is to allow to test
+G2 hardware block for IMX8MQ until a proper solution isuing power domain
+can be found. Do not merge them.
+
+GStreamer HEVC plugin merge request can be found here:
+https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/1079
+
+With those piece of code fluster score is 77/147.
+
+Benjamin Gaignard (4):
+  media: hevc: Remove RPS named flags
+  media: hevc: Embedded indexes in RPS
+  media: hantro: Use syscon instead of 'ctrl' register
+  arm64: dts: imx8mq: Add node to G2 hardware
+
+ .../media/v4l/ext-ctrls-codec.rst             | 14 +++---
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi     | 43 +++++++++++++----
+ drivers/staging/media/hantro/hantro.h         |  5 +-
+ .../staging/media/hantro/hantro_g2_hevc_dec.c | 27 +++--------
+ drivers/staging/media/hantro/imx8m_vpu_hw.c   | 48 ++++++++++++-------
+ .../staging/media/sunxi/cedrus/cedrus_h265.c  |  2 +-
+ include/media/hevc-ctrls.h                    |  6 +--
+ 7 files changed, 84 insertions(+), 61 deletions(-)
+
+-- 
+2.30.2
+
