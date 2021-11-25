@@ -2,160 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FAF745D4E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 07:40:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6BC45D4E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 07:40:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348444AbhKYGn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 01:43:28 -0500
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:41604 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346473AbhKYGl0 (ORCPT
+        id S1346090AbhKYGnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 01:43:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23897 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1346104AbhKYGlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 01:41:26 -0500
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AP6Fei7028350;
-        Thu, 25 Nov 2021 06:38:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=yPWqJ4ioEyyvaMojtr/nzVDMi0ZGxjGFsI2vfeRtqaw=;
- b=ShsPqyLx8tnEJfxaGKwfZteh4xqGIgCN/pW7jAOB/EO3uWrxkNlfUluXMEHD+LhnGWRe
- zgzN/sJHYn25q/tjWGOa8pZj/HT1EFjySz2HQ96k9lwcEeboM/PyfL7y9JY5yZIUq1nH
- AkynhrCzQSDUHTozUDNkPQKcqS1kF8b0eoWkgGOcn3kWzuT7jHx8M2//9ohtuCA1WSd+
- OP1xHHgLpDP9qA/SXHedGeL3wP1zeFcYNpEedWy1dZNJdzLpgAHKTOBs+IHGMo7jADOp
- wCoAaScVUFWdoQuQiqnyLceS4ZTMYZKUY9CTcyNKX6Vopu/CakohrAUIy1qGIlqwmZo6 Lg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3chj7g5p2e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Nov 2021 06:38:06 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AP6ZJLG005541;
-        Thu, 25 Nov 2021 06:38:05 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2104.outbound.protection.outlook.com [104.47.55.104])
-        by userp3020.oracle.com with ESMTP id 3chtx7b1bn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Nov 2021 06:38:04 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lriuewInSzcS3f8hUn87eCDNHNaNZaWHiE0Lt1g6GKolEY4dJCiGgp2yqfjuBQ9+pv+kX5sINPs466Ckf2sBmcdouqGE/19vJxQ2hWtF4m0jJ2dMXZNMflpJjfCJ+PacjdSy8Mdfe05CkzhlAXZRTIjVoGConTLAxeQ4vGzydp9mBz49pkRIabl0NeoNSdqqxgoOalGJ9oaOfBpEawzHHsD1RvMkpRn41AJcgvVOilah3blrD7ssa6BPOjTSjnVohR0mbCXjMlB6ISjH43o0KdNc79qhonvFWEFp0/uzXPFE0UPtfgBCAEx7vycYvNJBraZTD5NfF+LCaWIRFyXt5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yPWqJ4ioEyyvaMojtr/nzVDMi0ZGxjGFsI2vfeRtqaw=;
- b=lhooMP0gqQuulk+o3otVETqoFMZ+NVrfL1hpb8kfKMLi6PFwqXdbM+/ZPPV+BpuMGdkiJJyy+j1YEQnD7uOfXDTj9PzfisuZQnc//eixyQtbqMMFg/tBv1s6Q7iVvxGmmKAOPPJZBn+aqvgKO4FGsam+pe2oH2gVBp+yMHT6gRZpc6O0e+/RoUcC6NQmRJf4QqmRLxRTzgBbH+QOPlvyJLsFpGTLjtad8nBbO1ohhHIwkfwdlsj/3F6hXsqDbKBp5WDd3aCMmdNkFWMRu01mCb2czPuEie6LtSodHMJJgsjY8E++7srucTe5yaXx8ZoOGkExDGTFycBBlLMdvpycPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yPWqJ4ioEyyvaMojtr/nzVDMi0ZGxjGFsI2vfeRtqaw=;
- b=TNnp1WUS79ZWaV6Q3XfVYzgYbAN/uzRf1cg6tVqUUdgmibe2yea1qOF/mVMEtCBsdjpIAplJjjmZHUbehXq5v66b4oFjOBk9+M0/skd5zAfRTccv2W4JNAofKfJG2U61XWHfNHDIEW68YMM66trVrAtWbLIpTblWa9G1WXV7rL0=
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MWHPR10MB1295.namprd10.prod.outlook.com
- (2603:10b6:300:1e::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Thu, 25 Nov
- 2021 06:38:02 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::7194:c377:36cc:d9f0]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::7194:c377:36cc:d9f0%6]) with mapi id 15.20.4734.022; Thu, 25 Nov 2021
- 06:38:02 +0000
-Date:   Thu, 25 Nov 2021 09:37:38 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Todd Kjos <tkjos@google.com>
-Cc:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, arve@android.com, maco@google.com,
-        joel@joelfernandes.org, kernel-team@android.com,
-        christian@brauner.io
-Subject: Re: [PATCH 2/3] binder: read pre-translated fds from sender buffer
-Message-ID: <20211125063738.GK6514@kadam>
-References: <20211123191737.1296541-1-tkjos@google.com>
- <20211123191737.1296541-3-tkjos@google.com>
- <20211124123719.GG6514@kadam>
- <CAHRSSEzj10quNV6mK9QQezPRMyO49xNA14O4wCsx+eY_UkjQWQ@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHRSSEzj10quNV6mK9QQezPRMyO49xNA14O4wCsx+eY_UkjQWQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JNXP275CA0003.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:19::15)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        Thu, 25 Nov 2021 01:41:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637822280;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eHJ7MMRM38qWNKAfIMagbO6YequielqNERfHEsYHFTs=;
+        b=NhbfXD459N4blxY6iUQn41Y0uKQnImFscg8PdzCW9I4+V/b1gCHHDuO9FEGbICZOlP0FV5
+        j4XOxdy4jglGgYGt6CAQREsw8Rum8AhU0c/DuqPzVYmuB3kZrB7jmWkU9JIlBDnhLF1dZ3
+        nK8h4XuhHDsr1ay1yqCiiuEbA5MLq3o=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-388-K_J7848HPjOVu1U7uWO-Iw-1; Thu, 25 Nov 2021 01:37:58 -0500
+X-MC-Unique: K_J7848HPjOVu1U7uWO-Iw-1
+Received: by mail-lj1-f200.google.com with SMTP id b16-20020a2ebc10000000b00218d00045c4so1550126ljf.5
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 22:37:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=eHJ7MMRM38qWNKAfIMagbO6YequielqNERfHEsYHFTs=;
+        b=pf+7Qh7VCy60IYkyABeJK1upPeRAQ/wwuuON0DIdiZZWI+waIvRdkp1a1yPLKnyFLG
+         tgKSGUuR7f1OJNgbaV+XZZREtPJFlIjkOT2Xe5s/SmGRwu8ZVRySaLCg9DkL6FHaOAPJ
+         nGOqvwUgIda2o4i3N2ZhnBauwIxSM78UcwpA4Qprz0oHeuvDXTzj+Plbo8dTqesqUdO7
+         dTIidflPt4/PC29YpXGA/MW5ozwfHFKdXBbR0jC42QwBabRUDCfYFDavq3QruXhQuK5d
+         BXHSzEKs42janwgd4lkdinbA7Leo+mBwdyBQLUZqwpopkwWQ+/KpvOwD2lSL+zTikVB+
+         WMaw==
+X-Gm-Message-State: AOAM532g8ZU95mllBvc23ICuo1a8n4pf27HwKVbFUUxBUsLiW5s4cmWq
+        ja7Ew688GHv3kwoFpI+4OgK1W1L6IxprF9ypslXYBflz7wHM3himUtE98PX5YGIOrZk2Zh+ID/r
+        tkYux3x67I46KMDiBD7WZv6GY3nr+pfuHqkV0m8A8
+X-Received: by 2002:a2e:b742:: with SMTP id k2mr23160436ljo.107.1637822277354;
+        Wed, 24 Nov 2021 22:37:57 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxfKDzopEf5gBdNkwJMujTdQMOR0YDXUEhfMXk5jRnMH1m3UyG7mWtqK+GkarTWkC+zcci02fv6RLhaAyr0vd8=
+X-Received: by 2002:a2e:b742:: with SMTP id k2mr23160418ljo.107.1637822277134;
+ Wed, 24 Nov 2021 22:37:57 -0800 (PST)
 MIME-Version: 1.0
-Received: from kadam (102.222.70.114) by JNXP275CA0003.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:19::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.20 via Frontend Transport; Thu, 25 Nov 2021 06:37:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 94faadd4-fd39-4aba-babc-08d9afde20ff
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1295:
-X-Microsoft-Antispam-PRVS: <MWHPR10MB12959E83967F416A32676F058E629@MWHPR10MB1295.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9p7cSU1AHWDeUkxbwTESst4tYV4TAEh55ALmQyr/yQVdQwPT7aVA+xOSDAHxNqE8QrEKBAQjcIqYVEPzWJOzfTel6TEHTb9Iwj8Ah7G+g7sMudTltv3LmeoCJTn/jj02rI0wTOIAYVAp4eIRm6mJWke3gkgtfpt6hLgzzIZTIDW7/AHlKekaZibRdztPgYjn2yOdO7Ws/nd/efwlFOhcgNBS3qDE+dk9fpMZptuGuKu22k6WeC56dFfhBNANtHQeL6nsH8QcNfRFRdoZoRTs+nZkTxTD9Xb/3PTmk47cBjqP6Fk0oxIn3Tefx1JLQL0fl9+/vRluRww1/JbT1pqKhdgvZ8BS2zegczVtuDYqgDDgS464dOq0D2ujAxjpyt4wFknYyq9EnATVZzWjAgYvb45UoIovE9Lz3POJuvZZcC3r88Nix6d7uNfAoJTpn5GFbsByLu9Zi8f/Nqdxa2mEpuNkSo3tBthBopQ7jAsFz8rhedGjvEtAuNCkOPMjVCDc77JMudw7hnPMxk1cnFcTR//hRs/oIVZJntbj6HG88jDaKITi0HU88qvE9Tebi6nkPEeGXsjhVLNJsumZ9rQFBLlwV76hUsnXXtH0TcT/k3Od6a9qDjz45Kw247mcaF+NAtGSOe5Wt6seTn3PCxBLPKpURWeLFV44cgVoYNC9TWh/2L/wCWjaI72AKCvjxDz48taZhFfgJyzJVc54WYPQEw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(8936002)(9686003)(26005)(6496006)(38350700002)(6666004)(6916009)(508600001)(66556008)(8676002)(186003)(9576002)(1076003)(316002)(86362001)(4326008)(33716001)(66946007)(2906002)(44832011)(33656002)(956004)(4744005)(66476007)(5660300002)(38100700002)(55016003)(52116002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4dSyR7QO3O11HhjEkpYXcqnQkDrvWdeZ9gP7p9x/AGmW+MGmDZQcSyzniSy0?=
- =?us-ascii?Q?Ol0EFUUdBeld7daD12d3mRpwF51B0tIxz2eanEkDJBaaMEdOdg82K6NZRamm?=
- =?us-ascii?Q?AFwIoor5GP2KR2EDoBgVxN2TzTe5phyp0JCRoDy3L7oprcQK5eycuZ19GQKw?=
- =?us-ascii?Q?7bHGgDHiTBlYDZhdGVIGp/KSZPfNy0xoV3tp3zmYVs1IRWNG4AbETYQr7CbK?=
- =?us-ascii?Q?+RjthJQ51qZMgYx5DYi2Cszmclbnd0b7kigTLQ1meYJG77PRPsGNBEGsOp3h?=
- =?us-ascii?Q?zcaXVu81N+s1aeVAFFTHEq9JvNLmdKngKnCrFtGgNDfgn/o0xEol14Wk0xFL?=
- =?us-ascii?Q?WoatIHij5jvDsExU6SiTlAoMwl/augCuFnxLqxHd22xnLjwGZ+OR5ezyfxUS?=
- =?us-ascii?Q?45QqZz2/yfYSqYMGHAqQeCegYRZ1IDy51fHgmRpcCUnHuv1tDOiYLcNQkWhN?=
- =?us-ascii?Q?wD8rCxchLLZkiv6HlirJrPIhiBzx3yImTXz4yt8FvwqRGWLt1Gs0ie/7MmUe?=
- =?us-ascii?Q?lpKSctws4njhY7kcvt5ZuyBL8yS7q0nKd1NePkexeGst+iFjBpc71QdZpzMT?=
- =?us-ascii?Q?vEXfz8ezNMWMA9VSCVwAifn+VP3GUWSqA1znJz9gGKYkWf8dLjObdmossYMX?=
- =?us-ascii?Q?vaxQwwjtmB49gxVGmlvesiF5H/1P9SAaL21EunYK8Fr3Zq7ujd5O2SBN1ofO?=
- =?us-ascii?Q?dS1GN0hjpy4+Yh3EfUx/jho+yGxh7EBj6OnkHY6aK5RCpNvhCJQrobiVw/Td?=
- =?us-ascii?Q?UZ2L1Qpogc+Q1Wm+Hc1lgKkTm/uSUHQgYLwXW9suiXcla6tKX44x+AnuhonJ?=
- =?us-ascii?Q?gxctuoIRuRmwHHqmruJ/56x+uW4wPOxrpLBJV51oaif34gXYKP81RIy/gw3w?=
- =?us-ascii?Q?GxjkX/eK59Alqtj53GHFP7vGLRzIsfUSSqa906wABN3NXYdZiBVG5i7ciOzz?=
- =?us-ascii?Q?Oo/VAARGp0PxeXbA48L5cTdJ4jVG+GH6tmutkIPq4Kb1IF0mr6k3MjOdBhw1?=
- =?us-ascii?Q?0BrF5WEYZH59WbnYTDPb7t55U4JX3NhK9sDsZi57KJCEgGLJbiUwhP4CvYWb?=
- =?us-ascii?Q?fB6vgjbZeiD6oZRraFqTCc2ylIBmJXzfe3pq6GFygrRnsenD9qzv378ksoCX?=
- =?us-ascii?Q?zH4KdVUNI4aORqfGwBu417qrDWL1IxrVYDcqQzuEailiNQlKAY+5W9CyizO3?=
- =?us-ascii?Q?ljhfLs/xqrMgBzBLshNtEFocDWNNBXzw0SMuhpneSAeTa6xT4n1HcnEfpqAF?=
- =?us-ascii?Q?3Nnnji7mZkfdhhX9o7mozl+HCf8tDMzRTon+/1EO3HqiJ41/SGAewyfZPBXv?=
- =?us-ascii?Q?A0PvRwpK970xLcZ9BkesYMx/a6Z9zOgtvt2Bvy+saKGzALbKb2pKzL3D0M3U?=
- =?us-ascii?Q?9/WpnLAAjyWXxxjcQhSLRoTQrMZMBaz6LQKkRxP2rEZg8cczCm5nOsh2I7b0?=
- =?us-ascii?Q?lOv9bWYACqN+AuznyPTJAWYweYd20xEv/ChCBdWxSPoILws4cgaQushNbGor?=
- =?us-ascii?Q?4Pk2M/jGB/GYjT7lGyyBxUsMOqEOcrF/u2AX+3KiScahw7+jwY4sfWm0K0dQ?=
- =?us-ascii?Q?nwiW0GsAP1Z9YMFZ7jrTlzck4PF4tDlgJ2Aiu4B6EgRMk4mLTar/UTmvwqzv?=
- =?us-ascii?Q?GOqD7ejsEA8M6GdzOoFiRDMvgkqQ6+cFr+w3cP7x6AJsS3hNv7WrojOoR8c6?=
- =?us-ascii?Q?TPgiQs/2f3pX++uMrKOR7PRlFbI=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 94faadd4-fd39-4aba-babc-08d9afde20ff
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2021 06:38:02.4044
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TlbNhS/WTkPnMIRoFtjcBP79192hrRzQb4tnOPJgBf8UXyqmEyWzAAsA8kxdR3oTqbNR7IqGJmpdpionlPpoWdv1RfOC8YlRnjnIJ5pTgaE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1295
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10178 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 mlxscore=0
- bulkscore=0 malwarescore=0 phishscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111250036
-X-Proofpoint-ORIG-GUID: 5I-jBMChqq-HKzoY0Nsm0qX0QlaFSfuq
-X-Proofpoint-GUID: 5I-jBMChqq-HKzoY0Nsm0qX0QlaFSfuq
+References: <71d7b0463629471e9d4887d7fcef1d8d@intel.com> <20211110054121-mutt-send-email-mst@kernel.org>
+ <dcaf10bed215456ab689956275d4b998@intel.com>
+In-Reply-To: <dcaf10bed215456ab689956275d4b998@intel.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Thu, 25 Nov 2021 14:37:46 +0800
+Message-ID: <CACGkMEsY_XkRo_P+R=ipQ1iYm-AimvLvfXUwEy40Nn4f1D_suA@mail.gmail.com>
+Subject: Re: [RFC] hypercall-vsock: add a new vsock transport
+To:     "Wang, Wei W" <wei.w.wang@intel.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        "sgarzare@redhat.com" <sgarzare@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "kys@microsoft.com" <kys@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "srutherford@google.com" <srutherford@google.com>,
+        "erdemaktas@google.com" <erdemaktas@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 12:33:20PM -0800, Todd Kjos wrote:
-> I agree -- if copy_from_user() for some reason doesn't copy the whole
-> buffer, it might return a positive integer. Then it would skip
-> binder_translate_fd(), but not return. That should probably be
-> something like:
-> 
->   if (ret)
->     return ret > 0 ? -EINVAL : ret;
-> 
-> Will fix in next version.
+On Thu, Nov 11, 2021 at 3:59 PM Wang, Wei W <wei.w.wang@intel.com> wrote:
+>
+> On Wednesday, November 10, 2021 6:50 PM, Michael S. Tsirkin wrote:
+> > On Wed, Nov 10, 2021 at 07:12:36AM +0000, Wang, Wei W wrote:
+> >
+> > hypercalls are fundamentally hypervisor dependent though.
+>
+> Yes, each hypervisor needs to support it.
+> We could simplify the design and implementation to the minimal, so that e=
+ach hypervisor can easily support it.
+> Once every hypervisor has the support, the guest (MigTD) could be a unifi=
+ed version.
+> (e.g. no need for each hypervisor user to develop their own MigTD using t=
+heir own vsock transport)
+>
+> > Assuming you can carve up a hypervisor independent hypercall, using it =
+for
+> > something as mundane and specific as vsock for TDX seems like a huge ov=
+erkill.
+> > For example, virtio could benefit from faster vmexits that hypercalls g=
+ive you
+> > for signalling.
+> > How about a combination of virtio-mmio and hypercalls for fast-path sig=
+nalling
+> > then?
+>
+> We thought about virtio-mmio. There are some barriers:
+> 1) It wasn't originally intended for x86 machines. The only machine type =
+in QEMU
+> that supports it (to run on x86) is microvm. But "microvm" doesn=E2=80=99=
+t support TDX currently,
+> and adding this support might need larger effort.
 
-It should really be a separate patch at the start of the series because
-it's from the original code and unrelated.
+Can you explain why microvm needs larger effort? It looks to me it
+fits for TDX perfectly since it has less attack surface.
 
-regards,
-dan carpenter
+Thanks
+
+> 2) It's simpler than virtio-pci, but still more complex than hypercall.
+> 3) Some CSPs don't have virtio support in their software, so this might a=
+dd too much development effort for them.
+>
+> This usage doesn=E2=80=99t need high performance, so faster hypercall for=
+ signalling isn't required, I think.
+> (but if hypercall has been verified to be much faster than the current EP=
+T misconfig based notification,
+> it could be added for the general virtio usages)
+>
+> >
+> > > 2)       It is simpler. It doesn=E2=80=99t rely on any complex bus en=
+umeration
+> > >
+> > > (e.g. virtio-pci based vsock device may need the whole implementation=
+ of
+> > PCI).
+> > >
+> >
+> > Next thing people will try to do is implement a bunch of other device o=
+n top of
+> > it.  virtio used pci simply because everyone implements pci.  And the r=
+eason
+> > for *that* is because implementing a basic pci bus is dead simple, whol=
+e of
+> > pci.c in qemu is <3000 LOC.
+>
+> This doesn=E2=80=99t include the PCI enumeration in seaBIOS and the PCI d=
+river in the guest though.
+>
+> Virtio has high performance, I think that's an important reason that more=
+ devices are continually added.
+> For this transport, I couldn=E2=80=99t envision that a bunch of devices w=
+ould be added. It's a simple PV method.
+>
+>
+> >
+> > >
+> > > An example usage is the communication between MigTD and host (Page 8
+> > > at
+> > >
+> > > https://static.sched.com/hosted_files/kvmforum2021/ef/
+> > > TDX%20Live%20Migration_Wei%20Wang.pdf).
+> > >
+> > > MigTD communicates to host to assist the migration of the target (use=
+r) TD.
+> > >
+> > > MigTD is part of the TCB, so its implementation is expected to be as
+> > > simple as possible
+> > >
+> > > (e.g. bare mental implementation without OS, no PCI driver support).
+> > >
+> > >
+> >
+> > Try to list drawbacks? For example, passthrough for nested virt isn't p=
+ossible
+> > unlike pci, neither are hardware implementations.
+> >
+>
+> Why hypercall wouldn't be possible for nested virt?
+> L2 hypercall goes to L0 directly and L0 can decide whether to forward the=
+ call the L1 (in our case, I think no need as the packet will go out), righ=
+t?
+>
+> Its drawbacks are obvious (e.g. low performance).
+> In general, I think it could be considered as a complement to virtio.
+> I think most usages would choose virtio as they don=E2=80=99t worry about=
+ the complexity and they purse high performance.
+> For some special usages that think virtio is too complex to suffice and t=
+hey want something simpler, they would consider to use this transport=E3=80=
+=82
+>
+> Thanks,
+> Wei
+>
 
