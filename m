@@ -2,78 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C28DF45D970
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A10B545D980
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 12:45:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238295AbhKYLpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 06:45:05 -0500
-Received: from mga18.intel.com ([134.134.136.126]:33802 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236060AbhKYLnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 06:43:02 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="222372137"
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="222372137"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 03:38:06 -0800
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="457380120"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 03:38:03 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mqD4i-00AQ2A-UF;
-        Thu, 25 Nov 2021 13:38:00 +0200
-Date:   Thu, 25 Nov 2021 13:38:00 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH 5/6] rcu/nocb: Allow empty "rcu_nocbs" kernel parameter
-Message-ID: <YZ91mJ0kmTjh3sRx@smile.fi.intel.com>
-References: <20211123003708.468409-1-frederic@kernel.org>
- <20211123003708.468409-6-frederic@kernel.org>
- <20211125004720.GV641268@paulmck-ThinkPad-P17-Gen-1>
- <20211125044132.GA105778@lapt>
+        id S236587AbhKYLs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 06:48:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236253AbhKYLqy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 06:46:54 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF3DC06179E
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 03:39:08 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id k37so15647945lfv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 03:39:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QQHaD9Txbs+YqnVFTQVUah9dRuHXv52COwlrZP0qSXA=;
+        b=Q9MZsBn9M6sfe4zNLAumUeRG31c3T58WM1qgrRkMxZvPi0HVLMHruCd+DUVxA2YRMn
+         A1c7q6QRGSvPLhVNUr+zLWFJ263bLNEYVeSwI2p1p8EjDixpgR3zbmaS02sIL6q6FAP9
+         Ns3qFlU6iAlhPcDSrqpJmneiqw+wsbfud3qleFDBGVfTVX+cQfK5cx9J4/GxspqJMFLt
+         RVG8R1ySmvyy3LRTlLHajNm4jIoBQher3c5JOJt1wTGWS1W7qWbdgF8ojX86sbO1jXF0
+         +O081hT3yldBAavYUtzp5WCwGjUW/g+jqlh49G8ADgFf5b++U3nQmzIILHhj/GjH8gDW
+         +zMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QQHaD9Txbs+YqnVFTQVUah9dRuHXv52COwlrZP0qSXA=;
+        b=BUQazv8FmO//EAmfG2Px9l19KV3lV2hh5YdCpny+Obkjsy6cmOT4amprC2lXsmsucf
+         pOYyD1qtxYNpwBCe52jghBDh9p8cKoHHLntBnJR0A0eqBqf9yCyjSkwB7Blg29p29NfB
+         BwtW48Ycs0oM/oyhgCxa8jN7hCIDw2w6oXLJ48hPnHxGIoJ02jz16pieP1QYWIngtX/O
+         wRLl3xAeOIK/jrICiDtl1Oq162YzqOTHL1H9VxpLs9PHt05SR3pZFdXyP/9veUxNDUbW
+         NDJ3SDkOBbR4xI2rG87nWWnFwIU/MaBcvrqbw+r9p0bRD+UA8DU362nxXZpK1YPh3UCb
+         xrQw==
+X-Gm-Message-State: AOAM532yggaT4YAvFiO5VbekhUgRYQPxDghVWOS+ApkoSV9P1W2NhA7y
+        rBLOZXNMrVmLus/aSQWMd1QNVTBPhWN8Uw==
+X-Google-Smtp-Source: ABdhPJzlG30kK4JbRdw/TaSOXXDqNQj9vIewf6GaWsy2uQD/hxhmzBejbbNG+maY/xnuolKOKq+1qw==
+X-Received: by 2002:ac2:4aca:: with SMTP id m10mr23035513lfp.437.1637840346426;
+        Thu, 25 Nov 2021 03:39:06 -0800 (PST)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id h20sm241601lfv.248.2021.11.25.03.39.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Nov 2021 03:39:06 -0800 (PST)
+Subject: Re: [PATCH v4 0/6] add fixes to pass DP Link Layer compliance test
+ cases
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <1628699407-28358-1-git-send-email-khsieh@codeaurora.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <efe700b3-9e08-10fa-405f-bc608f617407@linaro.org>
+Date:   Thu, 25 Nov 2021 14:39:05 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211125044132.GA105778@lapt>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <1628699407-28358-1-git-send-email-khsieh@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 08:41:32PM -0800, Yury Norov wrote:
-> On Wed, Nov 24, 2021 at 04:47:20PM -0800, Paul E. McKenney wrote:
-> > On Tue, Nov 23, 2021 at 01:37:07AM +0100, Frederic Weisbecker wrote:
+On 11/08/2021 19:30, Kuogee Hsieh wrote:
+> drm/msm/dp: add fixes to pass DP Link Layer compliance test cases
+> 
+> Kuogee Hsieh (6):
+>    drm/msm/dp: use dp_ctrl_off_link_stream during PHY compliance test run
+>    drm/msm/dp: reduce link rate if failed at link training 1
+>    drm/msm/dp: reset aux controller after dp_aux_cmd_fifo_tx() failed.
+>    drm/msm/dp: replug event is converted into an unplug followed by an
+>      plug events
+>    drm/msm/dp: return correct edid checksum after corrupted edid checksum
+>      read
+>    drm/msm/dp: do not end dp link training until video is ready
+> 
+>   drivers/gpu/drm/msm/dp/dp_aux.c     |   3 +
+>   drivers/gpu/drm/msm/dp/dp_ctrl.c    | 137 +++++++++++++++++++++++-------------
+>   drivers/gpu/drm/msm/dp/dp_display.c |  14 ++--
+>   drivers/gpu/drm/msm/dp/dp_panel.c   |   9 ++-
+>   4 files changed, 102 insertions(+), 61 deletions(-)
 
-...
+Previous version of this patchset is already merged. If there are any 
+changes on top of it, please submit the incremental diff/fixup.
 
-> +	if (!strncasecmp(str, "none", 4)) {
-> +		r->start = 0;
-> +		r->end = 0;
-> +		r->off = 0;
-> +		r->group_len = r->nbits;
-> +		str += 4;
-
-> +		goto out;
-
-Side remark, I would make the name of the label a bit more verbose on what it's
-going to be done there, "out_end_of_region:" or alike.
-
-> +	}
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+With best wishes
+Dmitry
