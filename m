@@ -2,108 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D6A45D2D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:02:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E72C745D276
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 02:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353497AbhKYCFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 21:05:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353061AbhKYCDJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 21:03:09 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56F3C0619F6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 17:32:31 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id n17-20020a9d64d1000000b00579cf677301so7071630otl.8
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 17:32:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tcIV9fs5PyBSfa8FV0YzjooJWjW0D+74R3qAHQeRX8M=;
-        b=QUhGk3vk91ygQk18q/T2Obk2GdUO7o4voQUE+c550rL2W99ipNmHT/v6D+I5MNCNju
-         s78xKvZ4o3fNcLDsBIkwt3npsvk2nbziDgNlI2TT7BHn5QqvcwLBVlERPA9jPjaROtc7
-         /Ru3j06woPJtEhRt6j+8fVxNvSqVvBJsIyk3cgwqbmeY85/E3MU+e6ayx0mbVYtqlt6C
-         hU7hoDbOYxat10F4yktTnsiUOOMqWxvpGqNdNBav4McUizb94Hgl9Cl3tdKS+THTSTRq
-         YTiutGC6w/50nsgnwLCUmmSUgg0O1KpKYq5al+IeHKw1HFfmsuS7k8jNSVN+fCBfWk1s
-         4RsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tcIV9fs5PyBSfa8FV0YzjooJWjW0D+74R3qAHQeRX8M=;
-        b=JJonp/7zc9LotxgUlkW4eRMrKhiMZ8utc6/DYo1X0Hy17ufxIc5ToAu+c2xifCeoQR
-         V+iuly49DYdwcs2d9La2+5UFXmnBSpiK8+dRRACKeUiDqZla54gYcxnHszg4gvJREMRh
-         gryrvBDZh2TdtQoHoafwoTyYlWSKdp+5XSyBy4oBxjfWtE7gNh1rtBVE2ijdf+TQB8OB
-         LBo2re/8jl5zsJ0VCDfLOL/AvEZ27haxnmDHhMHXWrWaIHr3U6r2yI5CkNzZcdDbjcO1
-         HuX0BB3oicGlSzWdNfr1FpHZJTfuPK4JIsCg93pFX5/02I5IfpPQoHHEPas0Hj059w5G
-         vG/A==
-X-Gm-Message-State: AOAM532/OSOGnDVXjVpv6vs3gRvbgHf3v0eN5IIOiCpT3XFzkO0mIjy9
-        EBKRmFIcRmVAdlJAHAYLWs4amix85KmOqnG8lyhIJ/iz7+H09Ddl
-X-Google-Smtp-Source: ABdhPJxitMWPao0qjKr4Y4SZbF53M1MtR/rPyuY0L6znUn1P5gW/0cKis5BNE+ptHSw62jbZT2mp5fzErNiD6xYc9I8=
-X-Received: by 2002:a9d:326:: with SMTP id 35mr17920012otv.41.1637803951319;
- Wed, 24 Nov 2021 17:32:31 -0800 (PST)
+        id S1346876AbhKYBkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 20:40:25 -0500
+Received: from mga12.intel.com ([192.55.52.136]:1495 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229770AbhKYBiZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 20:38:25 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="215441941"
+X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
+   d="scan'208";a="215441941"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 17:35:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,261,1631602800"; 
+   d="scan'208";a="538817294"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 24 Nov 2021 17:35:12 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mq3fL-0005Zg-So; Thu, 25 Nov 2021 01:35:11 +0000
+Date:   Thu, 25 Nov 2021 09:34:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Romain Perier <romain.perier@gmail.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Daniel Palmer <daniel@0x0f.com>
+Subject: [chenxing:msc313_mainlining 65/69]
+ drivers/clocksource/timer-msc313e.c:38:28: error: field 'delay' has
+ incomplete type
+Message-ID: <202111250946.5iqZaZsO-lkp@intel.com>
 MIME-Version: 1.0
-References: <20211122195350.GA166134@makvihas> <YZ4NL3TvLYMa/Tzu@kroah.com>
-In-Reply-To: <YZ4NL3TvLYMa/Tzu@kroah.com>
-From:   Vihas Mak <makvihas@gmail.com>
-Date:   Thu, 25 Nov 2021 07:02:20 +0530
-Message-ID: <CAH1kMwRPLP998GjKx7bkL_LQE8hVNdCThwBJ7W8iNo1mPUyEZQ@mail.gmail.com>
-Subject: Re: [PATCH] staging: r8188eu: remove unnecessary NULL check
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Larry.Finger@lwfinger.net, Phillip Potter <phil@philpotter.co.uk>,
-        straube.linux@gmail.com, martin@kaiser.cx,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> And are you sure this ever could be NULL?
-Yes.
+tree:   git://github.com/linux-chenxing/linux.git msc313_mainlining
+head:   df6df62e60f3a32773b02a41e0d6a4e0f2b353b5
+commit: 063085946a8ea8f058410324bc3860e7572b913b [65/69] clocksource: Add MStar MSC313e timer support
+config: nios2-randconfig-r013-20211121 (https://download.01.org/0day-ci/archive/20211125/202111250946.5iqZaZsO-lkp@intel.com/config)
+compiler: nios2-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/linux-chenxing/linux/commit/063085946a8ea8f058410324bc3860e7572b913b
+        git remote add chenxing git://github.com/linux-chenxing/linux.git
+        git fetch --no-tags chenxing msc313_mainlining
+        git checkout 063085946a8ea8f058410324bc3860e7572b913b
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=nios2 SHELL=/bin/bash drivers/
 
-The function rtw_free_netdev() performs a NULL check before actually
-freeing the structure, so the "if (pnetdev)" check isn't really
-necessary before calling rtw_free_netdev().
-That's the reason why I removed that check.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
+All errors (new ones prefixed by >>):
 
-On Wed, Nov 24, 2021 at 3:30 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Nov 23, 2021 at 01:23:50AM +0530, Vihas Mak wrote:
-> > remove unnecessary NULL check surrounding rtw_free_netdev(), as the check
-> > is already performed inside rtw_free_netdev() in
-> > drivers/staging/r8188eu/os_dep/osdep_service.c.
-> >
-> > Signed-off-by: Vihas Mak <makvihas@gmail.com>
-> > ---
-> >  drivers/staging/r8188eu/os_dep/usb_intf.c | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
-> > index 5a35d9fe3fc9..392bd7868519 100644
-> > --- a/drivers/staging/r8188eu/os_dep/usb_intf.c
-> > +++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
-> > @@ -466,8 +466,7 @@ static void rtw_usb_if1_deinit(struct adapter *if1)
-> >               if1->hw_init_completed);
-> >       rtw_handle_dualmac(if1, 0);
-> >       rtw_free_drv_sw(if1);
-> > -     if (pnetdev)
-> > -             rtw_free_netdev(pnetdev);
-> > +     rtw_free_netdev(pnetdev);
->
-> As Dan said, this isn't usually a good idea to hide this.
->
-> And are you sure this ever could be NULL?
->
-> thanks,
->
-> greg k-h
+>> drivers/clocksource/timer-msc313e.c:38:28: error: field 'delay' has incomplete type
+      38 |         struct delay_timer delay;
+         |                            ^~~~~
+   drivers/clocksource/timer-msc313e.c: In function 'msc313e_clksrc_init':
+>> drivers/clocksource/timer-msc313e.c:197:9: error: implicit declaration of function 'register_current_timer_delay' [-Werror=implicit-function-declaration]
+     197 |         register_current_timer_delay(&msc313e_delay.delay);
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
 
 
+vim +/delay +38 drivers/clocksource/timer-msc313e.c
 
--- 
-Thanks,
-Vihas
+    35	
+    36	struct msc313e_delay {
+    37		void __iomem *base;
+  > 38		struct delay_timer delay;
+    39	};
+    40	
+    41	static void __iomem *msc313e_clksrc;
+    42	static struct msc313e_delay msc313e_delay;
+    43	
+    44	static void msc313e_timer_stop(void __iomem *base)
+    45	{
+    46		writew(0, base + MSC313E_REG_CTRL);
+    47	}
+    48	
+    49	static void msc313e_timer_start(void __iomem *base, bool periodic)
+    50	{
+    51		u16 reg;
+    52	
+    53		reg = readw(base + MSC313E_REG_CTRL);
+    54		if (periodic)
+    55			reg |= MSC313E_REG_CTRL_TIMER_EN;
+    56		else
+    57			reg |= MSC313E_REG_CTRL_TIMER_TRIG;
+    58		writew(reg | MSC313E_REG_CTRL_TIMER_INT_EN, base + MSC313E_REG_CTRL);
+    59	}
+    60	
+    61	static void msc313e_timer_setup(void __iomem *base, unsigned long delay)
+    62	{
+    63		writew(delay >> 16, base + MSC313E_REG_TIMER_MAX_HIGH);
+    64		writew(delay & 0xffff, base + MSC313E_REG_TIMER_MAX_LOW);
+    65	}
+    66	
+    67	static unsigned long msc313e_timer_current_value(void __iomem *base)
+    68	{
+    69		unsigned long result;
+    70	
+    71		result = readw(base + MSC313E_REG_COUNTER_LOW);
+    72		result |= readw(base + MSC313E_REG_COUNTER_HIGH) << 16;
+    73	
+    74		return result;
+    75	}
+    76	
+    77	static int msc313e_timer_clkevt_shutdown(struct clock_event_device *evt)
+    78	{
+    79		struct timer_of *timer = to_timer_of(evt);
+    80	
+    81		msc313e_timer_stop(timer_of_base(timer));
+    82	
+    83		return 0;
+    84	}
+    85	
+    86	static int msc313e_timer_clkevt_set_oneshot(struct clock_event_device *evt)
+    87	{
+    88		struct timer_of *timer = to_timer_of(evt);
+    89	
+    90		msc313e_timer_stop(timer_of_base(timer));
+    91		msc313e_timer_start(timer_of_base(timer), false);
+    92	
+    93		return 0;
+    94	}
+    95	
+    96	static int msc313e_timer_clkevt_set_periodic(struct clock_event_device *evt)
+    97	{
+    98		struct timer_of *timer = to_timer_of(evt);
+    99	
+   100		msc313e_timer_stop(timer_of_base(timer));
+   101		msc313e_timer_setup(timer_of_base(timer), timer_of_period(timer));
+   102		msc313e_timer_start(timer_of_base(timer), true);
+   103	
+   104		return 0;
+   105	}
+   106	
+   107	static int msc313e_timer_clkevt_next_event(unsigned long evt, struct clock_event_device *clkevt)
+   108	{
+   109		struct timer_of *timer = to_timer_of(clkevt);
+   110	
+   111		msc313e_timer_stop(timer_of_base(timer));
+   112		msc313e_timer_setup(timer_of_base(timer), evt);
+   113		msc313e_timer_start(timer_of_base(timer), false);
+   114	
+   115		return 0;
+   116	}
+   117	
+   118	static irqreturn_t msc313e_timer_clkevt_irq(int irq, void *dev_id)
+   119	{
+   120		struct clock_event_device *evt = dev_id;
+   121	
+   122		evt->event_handler(evt);
+   123	
+   124		return IRQ_HANDLED;
+   125	}
+   126	
+   127	static u64 msc313e_timer_clksrc_read(struct clocksource *cs)
+   128	{
+   129		return msc313e_timer_current_value(msc313e_clksrc) & cs->mask;
+   130	}
+   131	
+   132	static unsigned long msc313e_read_delay_timer_read(void)
+   133	{
+   134		return msc313e_timer_current_value(msc313e_delay.base);
+   135	}
+   136	
+   137	static u64 msc313e_timer_sched_clock_read(void)
+   138	{
+   139		return msc313e_timer_current_value(msc313e_clksrc);
+   140	}
+   141	
+   142	static struct clock_event_device msc313e_clkevt = {
+   143		.name = TIMER_NAME,
+   144		.rating = 300,
+   145		.features = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT,
+   146		.set_state_shutdown = msc313e_timer_clkevt_shutdown,
+   147		.set_state_periodic = msc313e_timer_clkevt_set_periodic,
+   148		.set_state_oneshot = msc313e_timer_clkevt_set_oneshot,
+   149		.tick_resume = msc313e_timer_clkevt_shutdown,
+   150		.set_next_event = msc313e_timer_clkevt_next_event,
+   151	};
+   152	
+   153	static int __init msc313e_clkevt_init(struct device_node *np)
+   154	{
+   155		int ret;
+   156		struct timer_of *to;
+   157	
+   158		to = kzalloc(sizeof(*to), GFP_KERNEL);
+   159		if (!to)
+   160			return -ENOMEM;
+   161	
+   162		to->flags = TIMER_OF_IRQ | TIMER_OF_CLOCK | TIMER_OF_BASE;
+   163		to->of_irq.handler = msc313e_timer_clkevt_irq;
+   164		ret = timer_of_init(np, to);
+   165		if (ret)
+   166			return ret;
+   167	
+   168		msc313e_clkevt.cpumask = cpu_possible_mask;
+   169		msc313e_clkevt.irq = to->of_irq.irq;
+   170		to->clkevt = msc313e_clkevt;
+   171	
+   172		clockevents_config_and_register(&to->clkevt, timer_of_rate(to),
+   173						TIMER_SYNC_TICKS, 0xffffffff);
+   174		return 0;
+   175	}
+   176	
+   177	static int __init msc313e_clksrc_init(struct device_node *np)
+   178	{
+   179		struct timer_of to = { 0 };
+   180		int ret;
+   181		u16 reg;
+   182	
+   183		to.flags = TIMER_OF_BASE | TIMER_OF_CLOCK;
+   184		ret = timer_of_init(np, &to);
+   185		if (ret)
+   186			return ret;
+   187	
+   188		msc313e_delay.base = timer_of_base(&to);
+   189		msc313e_delay.delay.read_current_timer = msc313e_read_delay_timer_read;
+   190		msc313e_delay.delay.freq = timer_of_rate(&to);
+   191	
+   192		msc313e_clksrc = timer_of_base(&to);
+   193		reg = readw(msc313e_clksrc + MSC313E_REG_CTRL);
+   194		reg |= MSC313E_REG_CTRL_TIMER_EN;
+   195		writew(reg, msc313e_clksrc + MSC313E_REG_CTRL);
+   196	
+ > 197		register_current_timer_delay(&msc313e_delay.delay);
+   198	
+   199		sched_clock_register(msc313e_timer_sched_clock_read, 32, timer_of_rate(&to));
+   200		return clocksource_mmio_init(timer_of_base(&to), TIMER_NAME, timer_of_rate(&to), 300, 32,
+   201					     msc313e_timer_clksrc_read);
+   202	}
+   203	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
