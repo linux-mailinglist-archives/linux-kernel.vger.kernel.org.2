@@ -2,108 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93D045D882
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D2945D6A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 10:02:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354612AbhKYLAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 06:00:49 -0500
-Received: from mx-out.tlen.pl ([193.222.135.158]:53685 "EHLO mx-out.tlen.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354784AbhKYK6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 05:58:49 -0500
-Received: (wp-smtpd smtp.tlen.pl 28409 invoked from network); 25 Nov 2021 06:28:52 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
-          t=1637818132; bh=dm5AajixXHCRSWQL4H2xZWv4TUiiZ2j0GzIFPSh9Avk=;
-          h=Subject:To:From:Cc;
-          b=kmaaLQ0p+m+BA+aCHCJH2QkxjNBK0NuVTdflOVyTelzjZEKGQSyQ1XCHT9YMOtFeq
-           +9TTbFIWKwhsZve//tSpcNv/ArWZyEedYef+IhTkb1pZnLR9jrvmtpMxzjDzST04pk
-           fwE9Sqpp0wAsUU1/AhLC89OeVtgSeVtyFM7Jwkd0=
-Received: from aaen55.neoplus.adsl.tpnet.pl (HELO [192.168.1.22]) (mat.jonczyk@o2.pl@[83.4.117.55])
-          (envelope-sender <mat.jonczyk@o2.pl>)
-          by smtp.tlen.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <alexandre.belloni@bootlin.com>; 25 Nov 2021 06:28:52 +0100
-Message-ID: <1b217171-b301-f2fe-f455-9bddabe2e115@o2.pl>
-Date:   Thu, 25 Nov 2021 06:28:45 +0100
+        id S1352853AbhKYJFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 04:05:47 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:17335 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352552AbhKYJDp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 04:03:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1637830834; x=1669366834;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=yntWQq2s6rENg52cXI2UmyUNFuqMzu+tM7bIw/XQ7wA=;
+  b=rxFMF1KfgQVzHbBDJkQqvC//LDAk7UIOwRFfkgQ8GcR9Ubj5WEQQh7l4
+   UoGPRkvUT+qkLYwSJQmUxSOxYJivDnCtdOeZ3PtuKllvaIaSS1Ytb5hsF
+   rOuOfokiy9+uR9FMS2wh/YuK+DM14wbFyJwecF9fVrf5307ro0LvJYGDf
+   k14KypA27cOvAnTdW9zP9guA91SXiSQWmwXNEruNZLzuCRxVjZzzlKoFN
+   8QU8W8RA4baVH43BIfSolrux5HsxDLCNZkGUlmsTJ72Oyw1solg7onA/O
+   XEleAwC6uO6WHVmZBDinBPl/BpjaJDfplNf5Is//iQeA/Hd/qvXtwkm31
+   w==;
+IronPort-SDR: H4eKI2SZC2nbwsnpXCQzQ1Rndu2kSZ5psdi64tcWeGFA4k6DWjrSmRXFB+Vcl5LMF9TWz4FE2t
+ 1hgro89K5rEjiFa/AvvlUOXNXSzKWX7w8z1VSjxXXIfB+oDL11owqRZm3ppCwnzXEpr5GYlHgV
+ Sc/EfZZCWCPJlHSr1ZDVU3YesAFV9j95n/vDTxLr+3bvXtW8snPxdZxFT93IS7ukAKJP5aCdyc
+ LGDX96PjXgy55gIEmfVLc5fyY71mTuSUVyd+L0NeImY7Jxz4tTj2b8u0an1aS/BNFkdwcxG5H5
+ U8E6G/IpBOjstFwqYYO3yOTB
+X-IronPort-AV: E=Sophos;i="5.87,262,1631602800"; 
+   d="scan'208";a="137700169"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 Nov 2021 02:00:32 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 25 Nov 2021 02:00:32 -0700
+Received: from ROB-ULT-M18064N.mchp-main.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Thu, 25 Nov 2021 02:00:29 -0700
+From:   Tudor Ambarus <tudor.ambarus@microchip.com>
+To:     <ludovic.desroches@microchip.com>, <vkoul@kernel.org>,
+        <richard.genoud@gmail.com>, <gregkh@linuxfoundation.org>,
+        <jirislaby@kernel.org>
+CC:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <mripard@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-serial@vger.kernel.org>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: [PATCH v2 00/13] dmaengine: at_xdmac: Various fixes
+Date:   Thu, 25 Nov 2021 11:00:15 +0200
+Message-ID: <20211125090028.786832-1-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH RESEND v3 3/7] rtc-mc146818-lib: extract
- mc146818_do_avoiding_UIP
-Content-Language: en-GB
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-References: <20211119204221.66918-1-mat.jonczyk@o2.pl>
- <20211119204221.66918-4-mat.jonczyk@o2.pl> <YZ6/GC3xouzEZmEh@piout.net>
-From:   =?UTF-8?Q?Mateusz_Jo=c5=84czyk?= <mat.jonczyk@o2.pl>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>
-In-Reply-To: <YZ6/GC3xouzEZmEh@piout.net>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-WP-MailID: fd2290f820c29801a52683fe7f723d61
-X-WP-AV: skaner antywirusowy Poczty o2
-X-WP-SPAM: NO 000000E [QVNk]                               
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W dniu 24.11.2021 o 23:39, Alexandre Belloni pisze:
-> On 19/11/2021 21:42:17+0100, Mateusz Jończyk wrote:
->> Function mc146818_get_time() contains an elaborate mechanism of reading
->> the RTC time while no RTC update is in progress. It turns out that
->> reading the RTC alarm clock also requires avoiding the RTC update (see
->> following patches). Therefore, the mechanism in mc146818_get_time()
->> should be reused - so extract it into a separate function.
->>
->> The logic in mc146818_do_avoiding_UIP() is same as in
->> mc146818_get_time() except that after every
->>
->>         if (CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP) {
->>
->> there is now "mdelay(1)".
->>
->> To avoid producing an unreadable diff, mc146818_get_time() will be
->> refactored to use mc146818_do_avoiding_UIP() in the next patch.
->>
->> Signed-off-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
->> Cc: Alessandro Zummo <a.zummo@towertech.it>
->> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
->>
->> ---
->>  drivers/rtc/rtc-mc146818-lib.c | 69 ++++++++++++++++++++++++++++++++++
->>  include/linux/mc146818rtc.h    |  3 ++
->>  2 files changed, 72 insertions(+)
->>
->> diff --git a/drivers/rtc/rtc-mc146818-lib.c b/drivers/rtc/rtc-mc146818-lib.c
->> index b50612ce1a6d..946ad43a512c 100644
->> --- a/drivers/rtc/rtc-mc146818-lib.c
->> +++ b/drivers/rtc/rtc-mc146818-lib.c
->> @@ -8,6 +8,75 @@
->>  #include <linux/acpi.h>
->>  #endif
->>  
->> +/*
->> + * Execute a function while the UIP (Update-in-progress) bit of the RTC is
->> + * unset.
->> + *
->> + * Warning: callback may be executed more then once.
->> + */
->> +bool mc146818_do_avoiding_UIP(mc146818_callback_t callback, void *param)
-> mc146818_avoid_UIP would be a simpler name. 
-Right
-> Also, I'm pretty sure we can
-> avoid the mc146818_callback_t typedef
+Bugs identified when debugging a hang encountered when operating
+an octal DTR SPI NOR memory. The culprit was the flash, not the
+DMA driver, so all these bugs are not experienced in real life,
+they are all theoretical fixes. Nevertheless the bugs are there
+and I think they should be squashed.
 
-Do you mean doing something like:
+If all of you consider that all these are worthy to be applied,
+I would suggest that all the patches to be taken via an immutable
+branch of the DMA tree. The serial patches depend on the first patch
+in the series. The DMA transactions are no longer started at tx_submit()
+level, but at device_issue_pending() level, as the DMA API requires.
+The atmel serial driver wrongly assumed that the DMA transactions
+are started at tx_submit() level and never called
+dma_async_issue_pending(). Applying first patch, but not the atmel_serial
+patches will break atmel_serial when using DMA.
 
-bool mc146818_avoid_UIP(
-	void (*callback)(unsigned char seconds, void *param), void *param);
+Tested the serial with DMA on sama5d2_xplained. Tested QSPI with DMA on
+sama7g5ek. All went well.
 
-Thanks for reviewing.
+v2:
+- drop local chan_rx local variable in patch 3/13, focus just on fixes
+for now.
+- collect Richard's Acked-by tag.
+- add details in the cover letter about what tests were performed.
 
-Greetings,
-Mateusz
+Tudor Ambarus (13):
+  dmaengine: at_xdmac: Don't start transactions at tx_submit level
+  tty: serial: atmel: Check return code of dmaengine_submit()
+  tty: serial: atmel: Call dma_async_issue_pending()
+  dmaengine: at_xdmac: Start transfer for cyclic channels in
+    issue_pending
+  dmaengine: at_xdmac: Print debug message after realeasing the lock
+  dmaengine: at_xdmac: Fix concurrency over chan's completed_cookie
+  dmaengine: at_xdmac: Fix race for the tx desc callback
+  dmaengine: at_xdmac: Move the free desc to the tail of the desc list
+  dmaengine: at_xdmac: Fix concurrency over xfers_list
+  dmaengine: at_xdmac: Remove a level of indentation in
+    at_xdmac_advance_work()
+  dmaengine: at_xdmac: Fix lld view setting
+  dmaengine: at_xdmac: Fix at_xdmac_lld struct definition
+  dmaengine: at_xdmac: Fix race over irq_status
 
->> +{
->> +	int i;
->> +	unsigned long flags;
-[snip]
+ drivers/dma/at_xdmac.c            | 186 ++++++++++++++----------------
+ drivers/tty/serial/atmel_serial.c |  14 +++
+ 2 files changed, 101 insertions(+), 99 deletions(-)
+
+-- 
+2.25.1
+
