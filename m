@@ -2,93 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 755F345D25A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 02:11:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0825A45D25C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 02:11:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347319AbhKYBOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 20:14:52 -0500
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:60177 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345567AbhKYBMv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 20:12:51 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id D4AB53201CD3;
-        Wed, 24 Nov 2021 20:09:39 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 24 Nov 2021 20:09:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=jGPihi
-        4ljyAa/Ki0//eZ9S9R+JlJhSZ+gF/GSVZZuwo=; b=LSFA+/iTR3YjMYtA2BbTtS
-        PRkSEWiB2o8sIWdBIsWaL7mYe/haIP3RhfAiOlIduPefbZNvTpkbm5PgKzF9Wpdm
-        sN/dL//sGiYv99ByoZb+a5oBQKiMvG71C0lR22Jf6ykMn7g+aCKRh6GF60myooh8
-        9Aq0y+GMvq4Dovr+0AH21Cmw754JvUgsxhZoNSZxspmOwTKabqxkysifVyC2cDdM
-        x6Ar7ajCRpZN3QiQZMTbh6q+UOzzEDM9WfhhqjMjs1RRqwc7/i40a53h0t96CNWk
-        N+BU2bL4y3ErYJ+X9xSVaPHfK9oX6ijx+dSp5/I8cB9WSndsmWga2U0reu+xe9Hg
-        ==
-X-ME-Sender: <xms:UuKeYbSMWWWl99KWp_cBRE5jxsK-pspVktNAJcjV2nOu4Jbt9BLLZg>
-    <xme:UuKeYcy8cLHGH0z3czcn8l-CfScXf933z5u7INVeoIfAWomUgKldDgzrmz29dCHoF
-    snrT_wm0guNSdGmYzU>
-X-ME-Received: <xmr:UuKeYQ0DEMIWIjHnK9suC8IB1YyYYa2xKWJiNLY0r1QzbZ2b92yf2EdpOiSBJdxrT_6fsWk3VYMaFkNyYpCac2gLIk2eiOOkpng>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrgeelgddvkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
-    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeffudfhgeefvdeitedugfelueegheekkeefveffhfeiveetledvhfdtveffteeu
-    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
-    hhrghinheslhhinhhugidqmheikehkrdhorhhg
-X-ME-Proxy: <xmx:UuKeYbBmbl5cCspS_mrtdXVGipYJTQGV8m0Fe5_UsRfiJZlG8yG62A>
-    <xmx:UuKeYUidx-sqYLC_xXWcZ2whoBrR0BoWVBK8kYkgvnx0xUuCfvNO_Q>
-    <xmx:UuKeYfpDk6p8spn5tAZX4vzhwHV4DMoaf6e-I7-ZX4bEiH5G_e0lag>
-    <xmx:U-KeYdtu_nLCW5CrNfkNSg5NEewHa8YQ85c045MDUaIZyZ6jLouRkg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 24 Nov 2021 20:09:37 -0500 (EST)
-Date:   Thu, 25 Nov 2021 12:09:41 +1100 (AEDT)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-cc:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pata_falcon: Add missing __iomem annotations
-In-Reply-To: <f420bff8-855a-aabe-924c-6d1b74f11001@gmail.com>
-Message-ID: <682664c-836e-ae61-6844-207a980f9cd@linux-m68k.org>
-References: <44e0213a681f3c8ee4c6ab2ef9d61ce3ac00e368.1637727935.git.fthain@linux-m68k.org> <f420bff8-855a-aabe-924c-6d1b74f11001@gmail.com>
+        id S1347619AbhKYBPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 20:15:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56796 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347737AbhKYBNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 20:13:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7391260EB5;
+        Thu, 25 Nov 2021 01:09:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637802593;
+        bh=W6nLin1+LvBCgJkpYXar9Oqp+/QHlRQYFRxdQA/dIjo=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=Ka5imFAgS53mPJWlrVRyDatvOeLWfpQWUYakqO9s0gOpjC/l1M3/SVntiV1zJ2XBL
+         T9AUvvgEwnJC1qIt2ZkRsN+QTgZVE++SbWy16Qp/6W83gPCAQ3MOuVIVF2cqMRVb5p
+         nqqyN52DYXUa3tD0T3FyYmBEwJmo0Sk1BZO6grgrx0V7nDPNJQuezDM3mkNRlvuRXd
+         +/d2nT1SMocHLfJOFIH37nUBR6DaIAVzpc7SarEDXh6CpZjQU8Z0bozSDvF24zjMns
+         cov5Slx/hqPf1gmMOKwSHQu1Dp7aEcm3brzS6deAWmYDW1xoVPvDWjI2HBifUzpvuB
+         iPglqefMTPz+Q==
+Date:   Wed, 24 Nov 2021 17:09:52 -0800 (PST)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@ubuntu-linux-20-04-desktop
+To:     Oleksandr Tyshchenko <olekstysh@gmail.com>
+cc:     xen-devel@lists.xenproject.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Julien Grall <julien@xen.org>
+Subject: Re: [PATCH V3 6/6] dt-bindings: xen: Clarify "reg" purpose
+In-Reply-To: <1637787223-21129-7-git-send-email-olekstysh@gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2111241708170.1412361@ubuntu-linux-20-04-desktop>
+References: <1637787223-21129-1-git-send-email-olekstysh@gmail.com> <1637787223-21129-7-git-send-email-olekstysh@gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021, Michael Schmitz wrote:
-
-> On 24/11/21 17:25, Finn Thain wrote:
-> > The zero day bot reported some sparse complaints in pata_falcon.c. E.g.
-> >
-> > drivers/ata/pata_falcon.c:58:41: warning: cast removes address space
-> > '__iomem' of expression
-> > drivers/ata/pata_falcon.c:58:41: warning: incorrect type in argument 1
-> > (different address spaces)
-> > drivers/ata/pata_falcon.c:58:41:    expected unsigned short volatile
-> > [noderef] [usertype] __iomem *port
-> > drivers/ata/pata_falcon.c:58:41:    got unsigned short [usertype] *
-> >
-> > The same thing shows up in 8 places, all told. Avoid this by use of
-> > __iomem type casts.
+On Wed, 24 Nov 2021, Oleksandr Tyshchenko wrote:
+> From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
 > 
-> Seeing as data_addr was explicitly typed as __iomem, your fix is clearly
-> correct. Bit embarrassing to have missed that (I remember adding __iomem
-> annotations elsewhere at some stage).
+> Xen on Arm has gained new support recently to calculate and report
+> extended regions (unused address space) safe to use for external
+> mappings. These regions are reported via "reg" property under
+> "hypervisor" node in the guest device-tree. As region 0 is reserved
+> for grant table space (always present), the indexes for extended
+> regions are 1...N.
 > 
-> If you think there's any need to test this change, say so.
+> No device-tree bindings update is needed (except clarifying the text)
+> as guest infers the presence of extended regions from the number
+> of regions in "reg" property.
 > 
-
-There's no change in pata_falcon.o.
-
-> Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+> Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+> ---
+> According to the recent update to Xen's guest.txt:
+> https://xenbits.xen.org/gitweb/?p=xen.git;a=blob_plain;f=docs/misc/arm/device-tree/guest.txt;hb=refs/heads/master
 > 
+> Changes V2 -> V3:
+>    - new patch
+> ---
+>  Documentation/devicetree/bindings/arm/xen.txt | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/xen.txt b/Documentation/devicetree/bindings/arm/xen.txt
+> index db5c56d..156fe10b 100644
+> --- a/Documentation/devicetree/bindings/arm/xen.txt
+> +++ b/Documentation/devicetree/bindings/arm/xen.txt
+> @@ -7,10 +7,14 @@ the following properties:
+>  	compatible = "xen,xen-<version>", "xen,xen";
+>    where <version> is the version of the Xen ABI of the platform.
+>  
+> -- reg: specifies the base physical address and size of a region in
+> -  memory where the grant table should be mapped to, using an
+> -  HYPERVISOR_memory_op hypercall. The memory region is large enough to map
+> -  the whole grant table (it is larger or equal to gnttab_max_grant_frames()).
+> +- reg: specifies the base physical address and size of the regions in memory
+> +  where the special resources should be mapped to, using an HYPERVISOR_memory_op
+> +  hypercall.
+> +  Region 0 is reserved for mapping grant table, it must be always present.
+> +  The memory region is large enough to map the whole grant table (it is larger
+> +  or equal to gnttab_max_grant_frames()).
+> +  Regions 1...N are extended regions (unused address space) for mapping foreign
+> +  GFNs and grants, they might be absent if there is nothing to expose.
+>    This property is unnecessary when booting Dom0 using ACPI.
 
-Thanks.
+I would remove the last sentence about ACPI as the initialization is not
+done via the xen,xen device tree node in that case anyway.
+
+With that change:
+
+Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
