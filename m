@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D322645DA34
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:38:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F7F45DA24
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354655AbhKYMlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 07:41:37 -0500
-Received: from mga09.intel.com ([134.134.136.24]:4086 "EHLO mga09.intel.com"
+        id S1353249AbhKYMi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 07:38:56 -0500
+Received: from mga05.intel.com ([192.55.52.43]:28899 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352314AbhKYMjf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 07:39:35 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="235329862"
+        id S1348017AbhKYMgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 07:36:55 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="321742316"
 X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="235329862"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 04:30:37 -0800
+   d="scan'208";a="321742316"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 04:30:37 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="475629448"
+   d="scan'208";a="457391779"
 Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 25 Nov 2021 04:30:35 -0800
+  by orsmga003.jf.intel.com with ESMTP; 25 Nov 2021 04:30:35 -0800
 Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mqDtb-0006LM-6T; Thu, 25 Nov 2021 12:30:35 +0000
-Date:   Thu, 25 Nov 2021 20:30:01 +0800
+        id 1mqDtb-0006LJ-4v; Thu, 25 Nov 2021 12:30:35 +0000
+Date:   Thu, 25 Nov 2021 20:30:04 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:locking/core] BUILD REGRESSION
- 3297481d688a5cc2973ea58bd78e66b8639748b1
-Message-ID: <619f81c9.6/xwdTcZcEe7c0nC%lkp@intel.com>
+Subject: [tip:x86/cpu] BUILD SUCCESS
+ 9c7e2634f647630db4e0719391dd80cd81132a66
+Message-ID: <619f81cc.ZnPlITnngn8BLU2R%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,52 +39,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/core
-branch HEAD: 3297481d688a5cc2973ea58bd78e66b8639748b1  futex: Remove futex_cmpxchg detection
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cpu
+branch HEAD: 9c7e2634f647630db4e0719391dd80cd81132a66  x86/cpu: Don't write CSTAR MSR on Intel CPUs
 
-possible Error/Warning in current branch (please contact us if interested):
-
-include/asm-generic/futex.h:17:9: error: implicit declaration of function 'futex_atomic_cmpxchg_inatomic_local_generic'; did you mean 'futex_atomic_cmpxchg_inatomic_local'? [-Werror=implicit-function-declaration]
-include/asm-generic/futex.h:19:9: error: implicit declaration of function 'arch_futex_atomic_op_inuser_local_generic'; did you mean 'futex_atomic_op_inuser_local'? [-Werror=implicit-function-declaration]
-
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- h8300-allyesconfig
-|   |-- include-asm-generic-futex.h:error:implicit-declaration-of-function-arch_futex_atomic_op_inuser_local_generic
-|   `-- include-asm-generic-futex.h:error:implicit-declaration-of-function-futex_atomic_cmpxchg_inatomic_local_generic
-|-- h8300-buildonly-randconfig-r001-20211125
-|   |-- include-asm-generic-futex.h:error:implicit-declaration-of-function-arch_futex_atomic_op_inuser_local_generic
-|   `-- include-asm-generic-futex.h:error:implicit-declaration-of-function-futex_atomic_cmpxchg_inatomic_local_generic
-|-- m68k-allmodconfig
-|   |-- include-asm-generic-futex.h:error:implicit-declaration-of-function-arch_futex_atomic_op_inuser_local_generic
-|   `-- include-asm-generic-futex.h:error:implicit-declaration-of-function-futex_atomic_cmpxchg_inatomic_local_generic
-|-- m68k-allyesconfig
-|   |-- include-asm-generic-futex.h:error:implicit-declaration-of-function-arch_futex_atomic_op_inuser_local_generic
-|   `-- include-asm-generic-futex.h:error:implicit-declaration-of-function-futex_atomic_cmpxchg_inatomic_local_generic
-|-- m68k-defconfig
-|   |-- include-asm-generic-futex.h:error:implicit-declaration-of-function-arch_futex_atomic_op_inuser_local_generic
-|   `-- include-asm-generic-futex.h:error:implicit-declaration-of-function-futex_atomic_cmpxchg_inatomic_local_generic
-|-- m68k-randconfig-c003-20211125
-|   |-- include-asm-generic-futex.h:error:implicit-declaration-of-function-arch_futex_atomic_op_inuser_local_generic
-|   `-- include-asm-generic-futex.h:error:implicit-declaration-of-function-futex_atomic_cmpxchg_inatomic_local_generic
-|-- nios2-allyesconfig
-|   |-- include-asm-generic-futex.h:error:implicit-declaration-of-function-arch_futex_atomic_op_inuser_local_generic
-|   `-- include-asm-generic-futex.h:error:implicit-declaration-of-function-futex_atomic_cmpxchg_inatomic_local_generic
-|-- nios2-defconfig
-|   |-- include-asm-generic-futex.h:error:implicit-declaration-of-function-arch_futex_atomic_op_inuser_local_generic
-|   `-- include-asm-generic-futex.h:error:implicit-declaration-of-function-futex_atomic_cmpxchg_inatomic_local_generic
-|-- nios2-randconfig-c023-20211125
-|   |-- include-asm-generic-futex.h:error:implicit-declaration-of-function-arch_futex_atomic_op_inuser_local_generic
-|   `-- include-asm-generic-futex.h:error:implicit-declaration-of-function-futex_atomic_cmpxchg_inatomic_local_generic
-`-- sparc-defconfig
-    |-- include-asm-generic-futex.h:error:implicit-declaration-of-function-arch_futex_atomic_op_inuser_local_generic
-    `-- include-asm-generic-futex.h:error:implicit-declaration-of-function-futex_atomic_cmpxchg_inatomic_local_generic
-
-elapsed time: 721m
+elapsed time: 720m
 
 configs tested: 54
-configs skipped: 3
+configs skipped: 45
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
 gcc tested configs:
 arm                                 defconfig
@@ -102,8 +66,8 @@ m68k                             allyesconfig
 nios2                               defconfig
 arc                              allyesconfig
 nds32                             allnoconfig
-nios2                            allyesconfig
 nds32                               defconfig
+nios2                            allyesconfig
 csky                                defconfig
 alpha                               defconfig
 alpha                            allyesconfig
