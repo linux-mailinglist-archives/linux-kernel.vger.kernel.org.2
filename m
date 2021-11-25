@@ -2,130 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3BAF45DFB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE2045DFE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 18:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348930AbhKYRbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 12:31:11 -0500
-Received: from mail-bn8nam11on2047.outbound.protection.outlook.com ([40.107.236.47]:5056
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S243166AbhKYR3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 12:29:09 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cbGA1Km5s+YwPLeT1Tyrah+AtHkTczkA/HrrvafF8v2eIWaSei9VA4JzRyYOxCI9Ft99idc34WbvdtzbZ9Fxv2X6agOFYzFHGtC91n69DOoFD2QOGTkPMZdG+a0CfNc/6+oMYh19c2vz+PMOmq7Q2frKv+baKtpZnJdpMkJRAKVaSl2o5NYzPPnODfLpLtNkLrg71g59n05TCYTXuoo69l1D9mkPjYtbVb3sfuC9xi/Gi40t1JPghMnKJUIF0hzaZl8m3V2tBJPz2JlSVOaYA2HXnxGalPxqTF5qnzqgGY/upa+4onnUCKiYUO2UXMd3mf5soX83kpP6xFZXF2KTMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eUwhRS1NSjakpGpsSUuioAq8yb1h9ovWW17YhCTIGCQ=;
- b=H3u/R1o0JoreEsAMwVV7xeASh1gJAnLbGQgTLVKkjQbCBekM2iMciKzDA+Y3KdM/Wzhy9PU5aRACa5NWSa3Wv9fAn6SXrAm4vkmKIGtdazEJBnIaR7w/Wl5r/P9HnGL/yCIt3uG5YMb6y0Bd/EYTnFZwFnoHvLo7oQXvGmnfaXerJliyPmYBObf27Zz/cB0c9dRMyhV1GOIzII5Gjmo9L5MMZA/jG3oXcj6PePReAy0D+vL7dNt3mBNXVzK5gGjwefTV2Y2EA9TKoohg0pOZ53vgAfBxV2gbfioyuediaTZVb54tmqernTsKzysoruT26gBXYhwxBcwxwcgPPtShsw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eUwhRS1NSjakpGpsSUuioAq8yb1h9ovWW17YhCTIGCQ=;
- b=MoywvFMBaSCmuJhI0NgkQVUFa3b69Bm6yyXNq6mzn8pZ8Wqiz4h7Xry3nYPIsIAO5Ey35QZYeHhwn/t7UOY/YXs5TkaQFsmeJQ1qGq3x8HtAmHy0+UxY50PEMTbkeH1h/9RIotxlUR/1fN1q/QOg3LuGA9WkWirxcs1kdSgDQddBiLqDPrAiksucIoA7RTGDkhOuzwSZpcZN1wfMST4t7c2SKIDzJbUZhpY9sHy69bLt/u2eTzukE1bRoc9FOx31QaQ/mgVXELsI3xnKt8mJ2ldQzZ2A8CKIBr29AvqOdHqWqqMWMJxPtmyQynRKUYNoug1/87Fnzh2evgkq5F1iVQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5128.namprd12.prod.outlook.com (2603:10b6:208:316::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.22; Thu, 25 Nov
- 2021 17:25:57 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::5897:83b2:a704:7909]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::5897:83b2:a704:7909%8]) with mapi id 15.20.4734.023; Thu, 25 Nov 2021
- 17:25:57 +0000
-Date:   Thu, 25 Nov 2021 13:25:55 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     zyjzyj2000@gmail.com, dledford@redhat.com, leon@kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+aab53008a5adf26abe91@syzkaller.appspotmail.com
-Subject: Re: [PATCH] RDMA: fix use-after-free in rxe_queue_cleanup
-Message-ID: <20211125172555.GA490586@nvidia.com>
-References: <YZpUnR05mK6taHs9@unreal>
- <20211121202239.3129-1-paskripkin@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211121202239.3129-1-paskripkin@gmail.com>
-X-ClientProxiedBy: MN2PR11CA0023.namprd11.prod.outlook.com
- (2603:10b6:208:23b::28) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S242484AbhKYRml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 12:42:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241395AbhKYRkj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 12:40:39 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809D9C0613F1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:26:05 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id j3so13206154wrp.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:26:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ymZelrb7KzOn/PJyiCiUaGyHyZ2Hoc1vLnFtSp8LvdE=;
+        b=mJnM/izD+nsitJlievhuRcvf/DMhGZYBbJNUCAHwXSC0s+MsFJqb0KyEt5sxjvKcIj
+         QXyHTWDX6tv0mI9bfzLstpQjOkevk2aY6JV6nBm0ZXkkm/hu0SfDxjy9RHQbSv0XzDvg
+         9lOcGd4E9M4HJ4lmBO+FxV5h3b8aS4BCHeUNE1nmaZruP6mMgz/C1yDXqT7QkFuz8f4y
+         oZ1gkK1ki4R9qIOVTy0Tb8S57TuRN6c5BMYp3uLUl0pP9Yd3jOpOF1uGm/zTf/4uQD2a
+         rb4CeHBlLEPtnnMO1lxU7Fb9CZKYWy66yEd3GcxTJ0y88To+zYXm2m84T/tio1GWuFvf
+         IwgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ymZelrb7KzOn/PJyiCiUaGyHyZ2Hoc1vLnFtSp8LvdE=;
+        b=UQbL9a4kEFSNelp/btfrOf7N0S9a61WVBdxJiiVvynx+/rPRqjrl7gUeukn4GJ7moG
+         L0mf+JmTiP+mdCFp3wDFxhIM6uyT0evujWbSlh/YqzIUPuwt9c1bAw3vf8h3FWHHOSoM
+         5uEoatTefanUbMqh/7UAVQOiRgrRPYXAv6k5TDufTQhQR7Ys0lcHdkdtReDvf1Bh4pL3
+         x+e8ZNSM5AXOaa8vpKjNkwFPbFbs+HCOppZ4ukIISe6VjZ/NYOcEtTUa7Hzlv4eP70au
+         QyA9S43+VuS6uiLQXvX/RWsgyetkY9IsNCJRLXPdfLrPlBlFVSawmrkt15kPAyDfLSnk
+         GpOw==
+X-Gm-Message-State: AOAM531dvMDBywRJ1FB6bjlYV2r+C5ibg/kX2VBfVPK8jgkdITNoLh4e
+        qoSlQIxPWPZSlJMDXhFxcnJ4kw==
+X-Google-Smtp-Source: ABdhPJzNrxF26RFAHPi+aUzYJTbWVxlVIELTLFjA7eN4upC9HjgyS9vb3THJOtWFC9fTm9lDLwa01A==
+X-Received: by 2002:a05:6000:181:: with SMTP id p1mr8506708wrx.292.1637861163860;
+        Thu, 25 Nov 2021 09:26:03 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:47ed:5339:c53f:6a8? ([2a01:e34:ed2f:f020:47ed:5339:c53f:6a8])
+        by smtp.googlemail.com with ESMTPSA id h27sm9592940wmc.43.2021.11.25.09.26.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Nov 2021 09:26:03 -0800 (PST)
+Subject: Re: [PATCH] sched/idle: Export cpu_idle_poll_ctrl() symbol
+To:     Maulik Shah <quic_mkshah@quicinc.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ulf.hansson@linaro.org, quic_lsrao@quicinc.com,
+        rnayak@codeaurora.org, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+References: <1637831676-32737-1-git-send-email-quic_mkshah@quicinc.com>
+ <YZ9ctgCBYJEEjuwt@hirez.programming.kicks-ass.net>
+ <687d97b6-347a-92c0-34ba-00331dfb6c82@quicinc.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <0fb74083-e378-e1b4-624b-4f2076f237df@linaro.org>
+Date:   Thu, 25 Nov 2021 18:26:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR11CA0023.namprd11.prod.outlook.com (2603:10b6:208:23b::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.22 via Frontend Transport; Thu, 25 Nov 2021 17:25:56 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mqIVP-0023dc-Uk; Thu, 25 Nov 2021 13:25:55 -0400
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b638805c-b262-4b2f-13fa-08d9b038a418
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5128:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5128EC1B53903B610245FFBBC2629@BL1PR12MB5128.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dPdfNeRkUxHyGPOGl/y9nMcJxd1yM/IpaGiAAjG7CFVnY0SAse+zQFdChBJTXS1r3ujkV+oGZIrwbCgRdM9OLBmTqw4g1jkedL8ibw8xGnTFh7ubUpSC++KR/uX94uS+o8I/RLfNfYyAgh9KfYrlOt2wyRL89Q/oBd5zRLG0EhxXjmaJwcF0QPoFBoSe1QFv4CgkdwN0wWJAPqxBEqWBA6XTlT1Xs35KTdkdvbYIaiGO626Iz/W3eLdtjKSNoIhHwXuWWGxt2UD8AhrBR8EN8lKpcrN2WNP4v2DFKGgJ5qtpSN9fROat0AkZf9mELHQOpcYSreqhAhqe4VzNzxNxSDxfLCPqapw/gMljpNJIVEcRlVrYZriA+7aAmsrIFMH0enBAUbZ5AzEQAiiIWC5CSNJXfXBo88R0W+v6gJEhVHDrY0m+ZqJ56uihj9mjWTRpztIl8CsAv6aJVObLJKm4jNbOjRE4YIepq3QOz2GQYQJQy3eMhqGaiJwvvsN/WWNnZUVhYzpLODjC8nNgpKIZfdgV6EMX1LLyKMspzUxgucBkA1qvcHrNxGHCO4vzAv6j1WXQbvOacKlwKFi1myYhee0QtDpQpnhMCk9vEv7lSAO86y7Mb57sBGVmXP0n9hRNBUnedf77Qb9X10EeWn/O9OUypfz3CK1+hvdGLezSc6XtDS34Lw3p7EdTZw40jOqooUpkx3zSMzcfdKxKSvTKbQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(1076003)(9746002)(426003)(33656002)(6916009)(4744005)(508600001)(66946007)(2616005)(316002)(86362001)(26005)(36756003)(9786002)(2906002)(8676002)(38100700002)(66556008)(66476007)(8936002)(5660300002)(186003)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9n3KIPl6Ar1DRMIxmmtDwDPneywp+m3mFQ3q23jIY992MmOGzKplHd8VUrFP?=
- =?us-ascii?Q?LVwrKYt23anfzZ7pkx284WBYKINsyL3zS0qPmhbWdLEWN4XW4ylv4BDCiPbq?=
- =?us-ascii?Q?dxHstLCQcdHKGQagLuXzpg5Wkb73f08bIaw6MInRwTVZ4MOwUZl3kAS6mqBH?=
- =?us-ascii?Q?ajB/YqaBG3k8miBM+uvxWcRQSeau38/ltRzmLkSvQQHcqpEDPFZW+Czpt+rX?=
- =?us-ascii?Q?vqMvMm0dFDAFotzEd3sM7LSZacs9UCT59IcLpaQs4fgy6qJqV4pSN+0tZLZh?=
- =?us-ascii?Q?QlJbKIGYOquBXbBh3jRrdL9wFnX5RPtuAyAsDKOUzGlJM0d/4vUHZaEaXSjz?=
- =?us-ascii?Q?mDUra3lgJtvtwJG4pq1rh8t9sZFaN6r27P1b/BDVym6q5+JSysmwC2UXhgDj?=
- =?us-ascii?Q?SXBxl+T22ltJXNY6BqYH2G3hUz0YONKlCbBbOCeIERs07PuLEST9+AwbdY7E?=
- =?us-ascii?Q?3ac4n5DcdrDgmuue3A4rmXsv2sfxU9VSYAQqXKzueK/a+QiH95HzxkOcginH?=
- =?us-ascii?Q?odroFsovMAEi8g9ZyFn760XElua0FTrKPYvtJL5b7/x613BAIqKYVypc9EsY?=
- =?us-ascii?Q?12uuBTMtfXaDElfsiL4+mtC2rdptiM9GDnXPsiz81NRRhFUaMXinbDJ2UTm3?=
- =?us-ascii?Q?eK/PThvwZlpOcXHTPSfK3+3BgXbrwu+EZFwxDTQTpHD3ghE96O2/B9+gR5lI?=
- =?us-ascii?Q?YDrgrJ8DHIJuMtZWtXnXFAdoOAWnGyKKSDtrbOdWGx3NbT8FFY0F4iol79Ke?=
- =?us-ascii?Q?98hDJ3iAe+qKIgTAD0+TPZBOq6Z2wGA9vxH6+6+d+pXgFQEul4KLswqwSgQp?=
- =?us-ascii?Q?DMmPPPUuqTid0xQ9XqeKeVWIZO3jCMmqtH2bP5/2fQ+x1GY1npRLnXMW65PX?=
- =?us-ascii?Q?OYycIqygVJizD1af0ul4vU2V9/Zf+BGKl0y4yWImtfcKHxiJi7iQ1hFYcQJ9?=
- =?us-ascii?Q?K7Nu7IQUMHfJcgnC/cGHuvDkr0NN7K14SUs3OqQuUrKKUEMT+/natn2ZV6ts?=
- =?us-ascii?Q?BBDE6ydnyAUlceoT6C7twiQxAEt+a2wExPI4Q//HTh6UlODCHD8jAUi9A06a?=
- =?us-ascii?Q?u12PPI6clNwaoUMxPGoznvol/F1mpwMFvWzWQ4tDcAhP02iIMIfG4WNz11HP?=
- =?us-ascii?Q?iDaLCI9zOvLA51rl5gJqsiBJg+Z8g73K7iTapfMtmldIuvkPysjEVs/T8yuv?=
- =?us-ascii?Q?e2g8rBai/7NObzjVIngqNr5EBpch3qeFBVkX7WBIwvfuwYxBlRHU18urnaoZ?=
- =?us-ascii?Q?LuDkd3Htq25EeJAiz7jHbIageCIrCkHHu9URpPwTExAr/rw47aNM7KBzormW?=
- =?us-ascii?Q?l933pw9aLFCNNtC6tmO6F1DAxd53xzvFQE7je+a2Hy//CUDKBYKJ2R8UrOuZ?=
- =?us-ascii?Q?UfUS3yxiolmFDyOHR2LMfvgp1lxYIWhDU5cRLVHqf7JYYSRUVEb0hvHju/Jv?=
- =?us-ascii?Q?P5litcKSgQm4VZulJmkXJa0jhg9hr4rcqhBPAubBir5Ue7phFtrZgrmKdZiR?=
- =?us-ascii?Q?6uPGeNdFfiweZvQ63LMFiuusvK9PPhUUP5nHod5+JcPkaJaDd4akWjtUQ9wI?=
- =?us-ascii?Q?V18VUv49rcW2wYYevlw=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b638805c-b262-4b2f-13fa-08d9b038a418
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2021 17:25:57.1277
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ks2xdzbibZWMWBnHgNbF4Hmoe2KsmFYRLUjXWNTxou/HaW5vBOwjpAGlq9X2ph8W
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5128
+In-Reply-To: <687d97b6-347a-92c0-34ba-00331dfb6c82@quicinc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 21, 2021 at 11:22:39PM +0300, Pavel Skripkin wrote:
-> On error handling path in rxe_qp_from_init() qp->sq.queue is freed and
-> then rxe_create_qp() will drop last reference to this object. qp clean
-> up function will try to free this queue one time and it causes UAF bug.
+On 25/11/2021 15:13, Maulik Shah wrote:
+> Hi Peter,
 > 
-> Fix it by zeroing queue pointer after freeing queue in
-> rxe_qp_from_init().
+> On 11/25/2021 3:21 PM, Peter Zijlstra wrote:
+>> On Thu, Nov 25, 2021 at 02:44:36PM +0530, Maulik Shah wrote:
+>>> Export cpu_idle_poll_ctrl() so that module drivers can use same.
+>> This does not seem like a really safe interface to expose to the
+>> world.
 > 
-> Fixes: 514aee660df4 ("RDMA: Globally allocate and release QP memory")
-> Reported-by: syzbot+aab53008a5adf26abe91@syzkaller.appspotmail.com
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> Reviewed-by: Zhu Yanjun <zyjzyj2000@gmail.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe_qp.c | 1 +
->  1 file changed, 1 insertion(+)
+> Thanks for the review.
+> 
+> Keeping the cpuidle enabled from boot up may delay/increase the boot up
+> time.
+> Below is our use case to force cpuidle to stay in cpu_idle_poll().
+> 
+> We keep cpuidle disabled from boot up using "nohlt" option of kernel
+> command line which internally sets cpu_idle_force_poll = 1;
+> and once the device bootup reaches till certain point (for example the
+> android homescreen is up) userspace may notify a
+> vendor module driver which can invoke cpu_idle_poll_ctrl(false); to come
+> out of poll mode.
+> So vendor module driver needs cpu_idle_poll_ctrl() exported symbol.
+> 
+> We can not take PM-QoS from driver to prevent deep cpuidle since all the
+> vendor modules are kept in a separate partition and will be loaded only
+> after kernel boot up is done
+> and by this time kernel already starts executing deep cpuidle modes.
+>>
+>> Surely the better solution is to rework things to not rely on this. I'm
+>> fairly sure it's not hard to write a cpuidle driver that does much the
+>> same.
+> The other option i think is to pass cpuidle.off=1 in kernel command line
+> and then add enable_cpuidle() in drivers/cpuidle/cpuidle.c
+> something similar as below which can be called by vendor module.
+> 
+> void enable_cpuidle(void)
+> {
+>         off = 0;
+> }
+> EXPORT_SYMBOL_GPL(enable_cpuidle);
+> 
+> This may be a good option since we have already disable_cpuidle() but
+> not enable_cpuidle().
+> 
+> void disable_cpuidle(void)
+> {
+>         off = 1;
+> }
+> 
+> Hi Rafael/Daniel, can you please let me know your suggestion on
+> this/similar implementation?
 
-Applied to for-next, thanks
+Did you try to use the QoS latency? Sounds like it is exactly for this
+purpose.
 
-Jason
+Set it to zero to force cpuidle to choose the shallowest idle state and
+then INT_MAX to disable the constraint.
+
+ cpu_latency_qos_add_request();
+
+Hope that helps
+
+  -- Daniel
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
