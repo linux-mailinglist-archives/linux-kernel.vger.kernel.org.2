@@ -2,87 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA03045DCEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:09:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 900D945DCED
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:09:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238674AbhKYPMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:12:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52536 "EHLO mail.kernel.org"
+        id S239277AbhKYPMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:12:31 -0500
+Received: from foss.arm.com ([217.140.110.172]:52110 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230167AbhKYPKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:10:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B6A3610FB;
-        Thu, 25 Nov 2021 15:07:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637852820;
-        bh=NBk2ZywPpR9zMd+czkeAb2gbQb8w/M83yM/9BZa1Zpc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=W4ynoImd8V5wyJAe1zeOiRqEL2YIvlDymE5z3roFVcRqL8MpbGJUFUIw+/RThZVLF
-         4Lk6R4FME68Cgb44BkKW3WwTPzvDvt5tkD5A7/NOIkI9vdFkE6dclI5NxXvf8nwUQp
-         njW6oB8gEj+Pr8gPhU98O9zvk+uw1aiMTnK8YITJVhnR+3FLxIbZ7RBqwDVVNfZ31H
-         2x2cCpr86o0LubhfZf/wQsMEGtqejad+5jjxnBLeGS7aXsGOSrMUZnrz5ZPv7MFSS0
-         QB9pgZT0VolC9ygIWPrp0G8eBCMD7gGzJxT/JaSJLJgQ+ZPES3cetqPlbLXW5T3vo5
-         dLWQab2E9vHUg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id F2B755C04B0; Thu, 25 Nov 2021 07:06:59 -0800 (PST)
-Date:   Thu, 25 Nov 2021 07:06:59 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH 5/6] rcu/nocb: Allow empty "rcu_nocbs" kernel parameter
-Message-ID: <20211125150659.GE641268@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20211123003708.468409-1-frederic@kernel.org>
- <20211123003708.468409-6-frederic@kernel.org>
- <20211125004720.GV641268@paulmck-ThinkPad-P17-Gen-1>
- <20211125044132.GA105778@lapt>
- <20211125132853.GA509134@lothringen>
+        id S239997AbhKYPKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 10:10:49 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 292191FB;
+        Thu, 25 Nov 2021 07:07:38 -0800 (PST)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 426063F66F;
+        Thu, 25 Nov 2021 07:07:37 -0800 (PST)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Sudeep Holla <sudeep.holla@arm.com>, linux-kernel@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Etienne Carriere <etienne.carriere@linaro.org>
+Subject: [PATCH] firmware: arm_scmi: optee: Drop the support for the OPTEE shared dynamic buffer
+Date:   Thu, 25 Nov 2021 15:07:30 +0000
+Message-Id: <20211125150730.188487-1-sudeep.holla@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211125132853.GA509134@lothringen>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 02:28:53PM +0100, Frederic Weisbecker wrote:
-> On Wed, Nov 24, 2021 at 08:41:32PM -0800, Yury Norov wrote:
-> > On Wed, Nov 24, 2021 at 04:47:20PM -0800, Paul E. McKenney wrote:
-> > > On Tue, Nov 23, 2021 at 01:37:07AM +0100, Frederic Weisbecker wrote:
-> > > > If a user wants to boot without any CPU in offloaded mode initially but
-> > > > with the possibility to offload them later using cpusets, provide a way
-> > > > to simply pass an empty "rcu_nocbs" kernel parameter which will enforce
-> > > > the creation of dormant nocb kthreads.
-> > > 
-> > > Huh.  This would have been a use for Yury Norov's "none" bitmask
-> > > specifier.  ;-)
-> > > 
-> > > I pulled this one in with the usual wordsmithing.
-> > > 
-> > > 							Thanx, Paul
-> > 
-> > I think 'rcu_nocbs=,' should work as 'none'. But I admit that it looks
-> > awkward. The following patch adds clear 'none' semantics to the parser.
-> > If you like it, I think you may drop non-documentation part of this
-> > patch.
-> 
-> I don't have real objection, but I fear that "rcu_nocbs=none" might be
-> interpretated as rcu_nocbs is entirely deactivated, whereas "rcu_nocbs"
-> alone makes it clear that we are turning something on.
+The shared memory buffer allocated by the optee driver is normal cached
+memory and can't be used with IOMEM APIs used in shmem_*.
 
-How about "rcu_nocbs=,"?  ;-)
+We currently support only IO memory for shared memory and supporting
+normal cached memory needs more changes and needs to be thought through
+properly. So for now, let us drop the support for this OPTEE shared buffer.
 
-							Thanx, Paul
+Cc: Cristian Marussi <cristian.marussi@arm.com>
+Cc: Etienne Carriere <etienne.carriere@linaro.org>
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+---
+ drivers/firmware/arm_scmi/optee.c | 19 +------------------
+ 1 file changed, 1 insertion(+), 18 deletions(-)
 
-> We can support both though.
-> 
-> Thanks.
+diff --git a/drivers/firmware/arm_scmi/optee.c b/drivers/firmware/arm_scmi/optee.c
+index 901737c9f5f8..175b39bcd470 100644
+--- a/drivers/firmware/arm_scmi/optee.c
++++ b/drivers/firmware/arm_scmi/optee.c
+@@ -282,23 +282,6 @@ static void scmi_optee_clear_channel(struct scmi_chan_info *cinfo)
+ 	shmem_clear_channel(channel->shmem);
+ }
+ 
+-static int setup_dynamic_shmem(struct device *dev, struct scmi_optee_channel *channel)
+-{
+-	const size_t msg_size = SCMI_OPTEE_MAX_MSG_SIZE;
+-
+-	channel->tee_shm = tee_shm_alloc_kernel_buf(scmi_optee_private->tee_ctx, msg_size);
+-	if (IS_ERR(channel->tee_shm)) {
+-		dev_err(channel->cinfo->dev, "shmem allocation failed\n");
+-		return -ENOMEM;
+-	}
+-
+-	channel->shmem = (void *)tee_shm_get_va(channel->tee_shm, 0);
+-	memset(channel->shmem, 0, msg_size);
+-	shmem_clear_channel(channel->shmem);
+-
+-	return 0;
+-}
+-
+ static int setup_static_shmem(struct device *dev, struct scmi_chan_info *cinfo,
+ 			      struct scmi_optee_channel *channel)
+ {
+@@ -342,7 +325,7 @@ static int setup_shmem(struct device *dev, struct scmi_chan_info *cinfo,
+ 	if (of_find_property(cinfo->dev->of_node, "shmem", NULL))
+ 		return setup_static_shmem(dev, cinfo, channel);
+ 	else
+-		return setup_dynamic_shmem(dev, channel);
++		return -ENOMEM;
+ }
+ 
+ static int scmi_optee_chan_setup(struct scmi_chan_info *cinfo, struct device *dev, bool tx)
+-- 
+2.25.1
+
