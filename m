@@ -2,83 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C305C45D75F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 10:38:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2BE45D799
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 10:49:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349450AbhKYJmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 04:42:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50560 "EHLO
+        id S1354243AbhKYJwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 04:52:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345522AbhKYJj7 (ORCPT
+        with ESMTP id S1348778AbhKYJut (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 04:39:59 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CFC5C0613F3;
-        Thu, 25 Nov 2021 01:35:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=P1pcydZs6dZBLovcMA7qf5gPH03iCI6G8kSvFerDlv0=; b=CMhXsaaCx/Ca63hdpuIXQf48vF
-        CUAc22bJGKl48YoCqg/mclRSFhvEDQDytgoKvA3P163Z9T5VAC2wbGYt52xIADEkTSYGYgjxIctyT
-        ffHeg5CVgX9cBJaHc2RNW4nSXh11o2DqzIynwkYIeiWfxf9aXemDOV9tsPZgKDIJLc+OnEWvQifXy
-        vEEQNnXJYUakSyJBunMvfPVwMRz8gmrYyCFdTgGai1Su4x3M0Uxmo4cuZosKsinbFM1k6lFPF9lFP
-        rmyPZCtcarDICYTdaapQVR8BlynPJIj09SqxiZr9OTJwKjE9vE5uVBgTr8mpY0E3AzXkSvbtShcYK
-        rBg0It7g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mqBA3-005jht-T7; Thu, 25 Nov 2021 09:35:24 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Thu, 25 Nov 2021 04:50:49 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE02C061746;
+        Thu, 25 Nov 2021 01:47:38 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 88316300093;
-        Thu, 25 Nov 2021 10:35:23 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 606032010E27D; Thu, 25 Nov 2021 10:35:23 +0100 (CET)
-Date:   Thu, 25 Nov 2021 10:35:23 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Maulik Shah <quic_mkshah@quicinc.com>
-Cc:     bjorn.andersson@linaro.org, rafael@kernel.org,
-        daniel.lezcano@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ulf.hansson@linaro.org, quic_lsrao@quicinc.com,
-        rnayak@codeaurora.org, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: [PATCH 2/4] sched/core: Export symbols used by cpuidle governors
-Message-ID: <YZ9Y2w2xIrw39B/K@hirez.programming.kicks-ass.net>
-References: <1637830481-21709-1-git-send-email-quic_mkshah@quicinc.com>
- <1637830481-21709-3-git-send-email-quic_mkshah@quicinc.com>
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4J0Cj45ZLFz4xcs;
+        Thu, 25 Nov 2021 20:47:36 +1100 (AEDT)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     Julia Lawall <Julia.Lawall@lip6.fr>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <1448051604-25256-1-git-send-email-Julia.Lawall@lip6.fr>
+References: <1448051604-25256-1-git-send-email-Julia.Lawall@lip6.fr>
+Subject: Re: (subset) [PATCH 0/6] add missing of_node_put
+Message-Id: <163783295820.1228879.10682208282272545718.b4-ty@ellerman.id.au>
+Date:   Thu, 25 Nov 2021 20:35:58 +1100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1637830481-21709-3-git-send-email-quic_mkshah@quicinc.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 02:24:39PM +0530, Maulik Shah wrote:
-> Export symbols that are used by cpuidle menu governor in preparation
-> to allow cpuidle governors to be compiled as modules.
+On Fri, 20 Nov 2015 20:33:18 +0000, Julia Lawall wrote:
+> The various for_each device_node iterators performs an of_node_get on each
+> iteration, so a break out of the loop requires an of_node_put.
 > 
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
-> ---
->  kernel/sched/core.c | 1 +
->  1 file changed, 1 insertion(+)
+> The complete semantic patch that fixes this problem is
+> (http://coccinelle.lip6.fr):
 > 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 8cffe31..1d031e0 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -5047,6 +5047,7 @@ unsigned int nr_iowait_cpu(int cpu)
->  {
->  	return atomic_read(&cpu_rq(cpu)->nr_iowait);
->  }
-> +EXPORT_SYMBOL(nr_iowait_cpu);
+> // <smpl>
+> @r@
+> local idexpression n;
+> expression e1,e2;
+> iterator name for_each_node_by_name, for_each_node_by_type,
+> for_each_compatible_node, for_each_matching_node,
+> for_each_matching_node_and_match, for_each_child_of_node,
+> for_each_available_child_of_node, for_each_node_with_property;
+> iterator i;
+> statement S;
+> expression list [n1] es;
+> @@
+> 
+> [...]
 
-NACK, that function is batshit insane, exporting it serves nobody.
+Patch 5 applied to powerpc/next.
+
+[5/6] powerpc/btext: add missing of_node_put
+      https://git.kernel.org/powerpc/c/a1d2b210ffa52d60acabbf7b6af3ef7e1e69cda0
+
+cheers
