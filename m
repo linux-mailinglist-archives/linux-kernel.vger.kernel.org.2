@@ -2,71 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0DF45DD4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7087345DD3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:22:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356114AbhKYP0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 10:26:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232996AbhKYPYS (ORCPT
+        id S1355850AbhKYPZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 10:25:06 -0500
+Received: from outbound-smtp32.blacknight.com ([81.17.249.64]:35958 "EHLO
+        outbound-smtp32.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1355841AbhKYPXF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 10:24:18 -0500
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335CAC061758
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:19:27 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:1511:ffa3:275:45dd])
-        by baptiste.telenet-ops.be with bizsmtp
-        id NfKQ2600H5CGg7701fKQWd; Thu, 25 Nov 2021 16:19:25 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mqGWy-000DJx-6C; Thu, 25 Nov 2021 16:19:24 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mqGWx-000gGr-Kt; Thu, 25 Nov 2021 16:19:23 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heng Sia <jee.heng.sia@intel.com>
-Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] dt-bindings: dma: snps,dw-axi-dmac: Group tuples in snps properties
-Date:   Thu, 25 Nov 2021 16:19:18 +0100
-Message-Id: <20211125151918.162446-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Thu, 25 Nov 2021 10:23:05 -0500
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp32.blacknight.com (Postfix) with ESMTPS id EDAB9BF085
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 15:19:52 +0000 (GMT)
+Received: (qmail 25424 invoked from network); 25 Nov 2021 15:19:52 -0000
+Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPA; 25 Nov 2021 15:19:52 -0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Mike Galbraith <efault@gmx.de>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: [PATCH 0/2] Adjust NUMA imbalance for multiple LLCs
+Date:   Thu, 25 Nov 2021 15:19:39 +0000
+Message-Id: <20211125151941.8710-1-mgorman@techsingularity.net>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To improve human readability and enable automatic validation, the tuples
-in "snps,block-size" and "snps,priority" properties should be grouped
-using angle brackets.
+Commit 7d2b5dd0bcc4 ("sched/numa: Allow a floating imbalance between NUMA
+nodes") allowed an imbalance between NUMA nodes such that communicating
+tasks would not be pulled apart by the load balancer. This works fine when
+there is a 1:1 relationship between LLC and node but can be suboptimal
+for multiple LLCs if independent tasks prematurely use CPUs sharing cache.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The series addresses two problems -- inconsistent use of scheduler domain
+weights and sub-optimal performance when there are many LLCs per NUMA node.
 
-diff --git a/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml b/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
-index 79e241498e2532ce..90d9274e5464e396 100644
---- a/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
-+++ b/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
-@@ -120,7 +120,7 @@ examples:
-          dma-channels = <4>;
-          snps,dma-masters = <2>;
-          snps,data-width = <3>;
--         snps,block-size = <4096 4096 4096 4096>;
--         snps,priority = <0 1 2 3>;
-+         snps,block-size = <4096>, <4096>, <4096>, <4096>;
-+         snps,priority = <0>, <1>, <2>, <3>;
-          snps,axi-max-burst-len = <16>;
-      };
+ include/linux/sched/topology.h |  1 +
+ kernel/sched/fair.c            | 26 +++++++++++++++-----------
+ kernel/sched/topology.c        | 24 ++++++++++++++++++++++++
+ 3 files changed, 40 insertions(+), 11 deletions(-)
+
 -- 
-2.25.1
+2.31.1
 
