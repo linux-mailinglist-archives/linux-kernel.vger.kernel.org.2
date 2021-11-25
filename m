@@ -2,94 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0399D45E14B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:06:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D5545E155
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 21:08:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350879AbhKYUJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 15:09:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48590 "EHLO
+        id S1356795AbhKYULj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 15:11:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356720AbhKYUHI (ORCPT
+        with ESMTP id S234768AbhKYUJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 15:07:08 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E46C06174A;
-        Thu, 25 Nov 2021 12:03:27 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id k23so14564385lje.1;
-        Thu, 25 Nov 2021 12:03:27 -0800 (PST)
+        Thu, 25 Nov 2021 15:09:37 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED78C06175B;
+        Thu, 25 Nov 2021 12:05:24 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id p23so8858313iod.7;
+        Thu, 25 Nov 2021 12:05:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7p/0Jku+qCm+8vv6WBeeFjWQ8UEiYTDZ+FwuFwo6po0=;
-        b=YRu3bS8YBSqpNQWfwxhsfN0YGZIbWkiIfCUxv1eDC9sam9AKQz/3ISYOdcikWR4prR
-         9edCkBA7vvjZK9G7CSJLvPM098m3CNDwB06TOFBH4nyor3pssFXVarKQu5CmmmkKTH0r
-         LJGOWfTsG+E+Wo65yL77uqreaQbrxOE5FPX5XzR/xP8jfG5lpgDexjQjPMl5gluO2lQj
-         5nR+W1LCIGKVVpfOHt7GjTl76JploFGn/9GqCg3FkxvDtAqtG858uMWfgOPWNsRqS+uS
-         2n8J0koPX/lAOAi2eVGbuAnIdEYFQg2juE89kT2Aif658rEl8/peutgiU7CVkbZOfvz5
-         nw9w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tk+wDJ0OIJSyvhiVPqoj4E54xUK6n2Q3zpVGN+CGegs=;
+        b=BKd/b6HTWV41bKS7ciC/+NwIZ1/4K4nhUOFF05GvfEleMDUKUp0HJvC0fsXMj4eY4z
+         kdB0L6rLa2EMarlJcU9K8hC9ODloAx/r+6mN/f0//qS4fUKED23rj6PwTT7rm8vpIR29
+         x0RYemJOjXgGOU5s29uSzQKPa0WIJ/6dVU+tPeqf2rj4NtgnChdJXjOJSIlp6bhxE/tu
+         1UQZyHlixcwrhuOGfCby12FU1ycsHodJr38CGbN9MXeXDU57WrJMQj6Ya0Nv6g6p78lL
+         qNP9kb9uvjl+hkVK4AxXg7jUeD7EpEUV4v0NvceQu2voTy46on4YfpSS1BAaDdGZ/1ia
+         9+Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7p/0Jku+qCm+8vv6WBeeFjWQ8UEiYTDZ+FwuFwo6po0=;
-        b=BPalExpd7MweTtpCMgsCT4i0YZfiM7/THWGd2wWPxGdPFt59tgYaGdkZ7CtecP+PrJ
-         YthYZYyK1B7DcytdzbpI2047LhkemC3rpawq55D0MXCyYEWsZsKiqk6A8cUyaKCmaDz/
-         fXoOOCC7GuyHbD7y/Da6hZ+ldiqeTlhldtsSqtghC4EaxGDfZ7R75c2ocSft0K882izs
-         wUbnaK/lJrogLUlmw2PUbZrYzYQokZ/XFq8aDaeSLPJ6CjfnzXYx0QdahJMpT9JD5g7D
-         ybGff0jPC1zvf7ZtLAY8YxrKfTD7CtwygQy5bjOBBn6IzxG4v/viHzG8lZeABe4xZH/N
-         pTxA==
-X-Gm-Message-State: AOAM532KQfNW8K35ud9vsxaPpLUc5eNorzZX5aXFcdSyU5y4KGBEKgO8
-        0rZ8J80QNncTQdUA5JLolvY=
-X-Google-Smtp-Source: ABdhPJx4DWJw5wxZ76NVyXRts+DU62de9yu6D2DNcBUWlouwK5XqqpxGD+pcp2WEUnLB3NH0bwseMg==
-X-Received: by 2002:a2e:5852:: with SMTP id x18mr26523009ljd.184.1637870605782;
-        Thu, 25 Nov 2021 12:03:25 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id q13sm336566lfe.121.2021.11.25.12.03.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 12:03:25 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Thu, 25 Nov 2021 21:03:23 +0100
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
-        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [PATCH v2 2/4] mm/vmalloc: add support for __GFP_NOFAIL
-Message-ID: <YZ/sC/N+fHUREjo0@pc638.lan>
-References: <20211122153233.9924-1-mhocko@kernel.org>
- <20211122153233.9924-3-mhocko@kernel.org>
- <YZ06nna7RirAI+vJ@pc638.lan>
- <20211123170238.f0f780ddb800f1316397f97c@linux-foundation.org>
- <YZ6cfoQah8Wo1eSZ@pc638.lan>
- <YZ9Nb2XA/OGWL1zz@dhcp22.suse.cz>
- <CA+KHdyUFjqdhkZdTH=4k=ZQdKWs8MauN1NjXXwDH6J=YDuFOPA@mail.gmail.com>
- <YZ/i1Dww6rUTyIdD@dhcp22.suse.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tk+wDJ0OIJSyvhiVPqoj4E54xUK6n2Q3zpVGN+CGegs=;
+        b=bYawYtidrj08zJu0QM0tj/72eC+D1rIcpM+ckphM4w+oBhVQMtxObVD/orPBxvOxLc
+         Bn2H+CBy4TE1OkQThJaOoUEdVp96D4AiUxH3g8Wr/SosoIFnI77Id6hahSHGrezxgGYi
+         Sb6Qd1sAz7RdC5MxkNWym719sWX2tw5IaTvkbhzoLZrd74x8blkTRXAMExxZT2vtDp13
+         cWd2yYQnXdcCuJsCs4ifEvCeqF5mBDuuQYstMrS+2VdOPOciF5RaGuTMerjPGMoEwE17
+         8vgiQFlmb0mu4k2k58O1trQWqouk5mksQttKe6wOxGpJxj4SmFWGmMs6HxMK+zdNqGDE
+         eUKQ==
+X-Gm-Message-State: AOAM532dbur06bPT+Z0Lvbmx8k5b1/g2et/eDtHZmexqjCVli8xXG8+P
+        tSTHrDhcRjzAPHnnae3aPnaKTtx0zkzR4/z7zq8=
+X-Google-Smtp-Source: ABdhPJyyvN2jld5oPPLGEqT0uIXzet5/CMmfRu2rP0BA1sAFw4EAgn07nDoNish5O5T941XUkXMy3i7nlN3bWbJwu+Y=
+X-Received: by 2002:a05:6638:3014:: with SMTP id r20mr10004991jak.146.1637870724006;
+ Thu, 25 Nov 2021 12:05:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZ/i1Dww6rUTyIdD@dhcp22.suse.cz>
+References: <20211122212850.321542-1-pauk.denis@gmail.com> <20211122212850.321542-3-pauk.denis@gmail.com>
+ <CAHp75Vfg7LKX-21+b6f5c34G4Y=ZUqrWRbfDt_quCiJe+By-Ww@mail.gmail.com>
+ <CAB95QASDiwM+-AwPgGfc7dP=Ctm0s2WP4xrapJzNHJ22B9foAw@mail.gmail.com>
+ <CAHp75VeO2mz7wJpuKdrErnYcw-dUOBs9W4FzA6MkgCQLr0eQUg@mail.gmail.com>
+ <CAB95QAT_b8Wef+4wN-H8dKZXxgnznqOk5J0fMuL2XJLhob7d9Q@mail.gmail.com> <b7616187-87d8-c87f-8f66-d5936a33395f@roeck-us.net>
+In-Reply-To: <b7616187-87d8-c87f-8f66-d5936a33395f@roeck-us.net>
+From:   Eugene Shalygin <eugene.shalygin@gmail.com>
+Date:   Thu, 25 Nov 2021 21:05:12 +0100
+Message-ID: <CAB95QAQ2vpXFxZC0G6ogbpk+rDzGMN7N8-RaUX9w_U5bQ1WGMg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] hwmon: (nct6775) Implement custom lock by ACPI mutex.
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Denis Pauk <pauk.denis@gmail.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        thomas@weissschuh.net, Jean Delvare <jdelvare@suse.com>,
+        linux-hwmon@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 08:24:04PM +0100, Michal Hocko wrote:
-> On Thu 25-11-21 19:02:09, Uladzislau Rezki wrote:
-> [...]
-> > Therefore i root for simplification and OOM related concerns :) But
-> > maybe there will be other opinions.
-> 
-> I have to say that I disagree with your view. I am not sure we have
-> other precedence where an allocator would throw away the primary
-> allocation just because a metadata allocation failure.
-> 
-Well, i tried to do some code review and raised some concerns and
-proposals. If you do not agree, then of course i will not be arguing
-here.
+On Thu, 25 Nov 2021 at 20:54, Guenter Roeck <linux@roeck-us.net> wrote:
+> We won't be heving two drivers with the same functionality. Give me one
+> reason why I should not drop the wmi driver (or both of them; I am not
+> sure which one we are talking about here).
+>
+> On top of all that, this submission isn't about any of the wmi drivers,
+> but for the nct6775 driver, which just adds to the confusion.
 
---
-Vlad Rezki
+Let me try to explain once again, please. I began to dig into the ASUS
+sensors and how to read their values and at first found the WMI
+function to do that, wrote a driver and Denis submitted it as
+asus_wmi_ec_sensors. Now, I know a better and simpler way to read
+those sensors, which uses ACPI mutex directly. I suggested Denis to
+use the mutex way for the nct6775 driver for motherboards without WMI
+functions to read from the nct chip. With that change entering the nct
+driver, I want to submit my updated driver for EC sensors, replacing
+the asus_wmi_ec_sensors code (which is essentially my old driver).
+
+So, now I ask to rename asus_wmi_sensors to asus_ec_sensors (source
+file and KBuild options) already before 5.16 is released, because the
+updated code, which I will submit later, and which will replace that
+in asus_wmi_ec_sensors.c, does not use WMI.
+
+Hope this clarifies my request and intention.
+
+Best regards,
+Eugene
