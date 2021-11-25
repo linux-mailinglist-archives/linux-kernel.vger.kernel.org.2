@@ -2,159 +2,497 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF88645D762
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 10:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE2745D76C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 10:40:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354202AbhKYJmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 04:42:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34781 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1353978AbhKYJkG (ORCPT
+        id S1354157AbhKYJnH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 25 Nov 2021 04:43:07 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:4166 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345599AbhKYJlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 04:40:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637833014;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1j3sEyc7U5pLLP7CDKkBf36qc69o78zC3HxT76AE2R0=;
-        b=bxRJ0cHsxVoxBs1osi2vNK1d6yKSDIANe8hUIprtvQXyQakPTxZj/SOPZ0+va5e/YNIpVY
-        rb6YaaHCbSWIMMqm5xoBeS0xDjfGoN4HGNJ68DAsnEgQPNHKKOB+6LZ2myBieOASq1iAKG
-        AdFkwIJTwM1ZAax1+w2bMmUp8/wOZhs=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-232-KhKOSsa5M168ht-8ySKzGQ-1; Thu, 25 Nov 2021 04:36:53 -0500
-X-MC-Unique: KhKOSsa5M168ht-8ySKzGQ-1
-Received: by mail-wm1-f69.google.com with SMTP id z138-20020a1c7e90000000b003319c5f9164so4629353wmc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 01:36:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=1j3sEyc7U5pLLP7CDKkBf36qc69o78zC3HxT76AE2R0=;
-        b=mpBxGuPGvO26TdRWLMnm2r8Xesjh/KZaQQIZHuhJkBW0UGYfriX4VFnuZJXmpm6coT
-         vRAuZgtYczauJnyQzwC7r6ParcsVOwXLuKHBcXK11iSGn+1H8E5f58Aerw65JMhsBvsR
-         QiQGn0L4uUGHwSrBWq5wlMGGWNP9bQJqAGVkYXhdFHv8cfUg4pDzbb+YvCgFZ7AVLp3K
-         8uQqVcJmDmB2p2Hrg3BladZj8/CfIGU5Nz8J4d9rIDgFG567jot5NYJf1JntuxI8L+sl
-         Vsy/a0c0N8lnujEnN3qGBz27DACkz8KYKzsC5urBPcNSX8Kzg8J8i8sN41j9I5pY6Hj5
-         y4pw==
-X-Gm-Message-State: AOAM533dGx1dmAIBfhLy5dzDalS2kplW4TdlMwRFs4j1m3W5zFZRyWex
-        ZPaZc/eYPvL5Qs0gHc3wMbNKnNb92g12CV+7yj5uNZ6Rg625aPH4Tg3nrIiXgHDod9nsFRvUlfi
-        Rm0L5aNxaOoREQ4IbXZu5JaT/
-X-Received: by 2002:a1c:4c19:: with SMTP id z25mr5259398wmf.177.1637833011740;
-        Thu, 25 Nov 2021 01:36:51 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxNT7yd66eB6qLpcYDn59R65nZF06/c+i4fTo/9h0VU3346D4G4ZX5Keq0oDymUbsMTzkxV8g==
-X-Received: by 2002:a1c:4c19:: with SMTP id z25mr5259366wmf.177.1637833011529;
-        Thu, 25 Nov 2021 01:36:51 -0800 (PST)
-Received: from [192.168.3.132] (p5b0c679e.dip0.t-ipconnect.de. [91.12.103.158])
-        by smtp.gmail.com with ESMTPSA id d2sm2428646wmb.31.2021.11.25.01.36.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Nov 2021 01:36:50 -0800 (PST)
-Message-ID: <435fab0b-d345-3698-79af-ff858181666a@redhat.com>
-Date:   Thu, 25 Nov 2021 10:36:49 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2] kthread: dynamically allocate memory to store
- kthread's full name
+        Thu, 25 Nov 2021 04:41:05 -0500
+Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4J0CTC59hfz67yHr;
+        Thu, 25 Nov 2021 17:37:19 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 25 Nov 2021 10:37:52 +0100
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2308.020;
+ Thu, 25 Nov 2021 10:37:52 +0100
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     "deven.desai@linux.microsoft.com" <deven.desai@linux.microsoft.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "agk@redhat.com" <agk@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "ebiggers@kernel.org" <ebiggers@kernel.org>,
+        "tytso@mit.edu" <tytso@mit.edu>,
+        "paul@paul-moore.com" <paul@paul-moore.com>,
+        "eparis@redhat.com" <eparis@redhat.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>
+CC:     "jannh@google.com" <jannh@google.com>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
+        "linux-audit@redhat.com" <linux-audit@redhat.com>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "tusharsu@linux.microsoft.com" <tusharsu@linux.microsoft.com>
+Subject: RE: [RFC PATCH v7 11/16] ipe: add support for dm-verity as a trust
+ provider
+Thread-Topic: [RFC PATCH v7 11/16] ipe: add support for dm-verity as a trust
+ provider
+Thread-Index: AQHXwGWKgSExirn2CUCoXyZKYCfiOKwUOhXA
+Date:   Thu, 25 Nov 2021 09:37:51 +0000
+Message-ID: <721462c3da064d359ca3c83845298ccf@huawei.com>
+References: <1634151995-16266-1-git-send-email-deven.desai@linux.microsoft.com>
+ <1634151995-16266-12-git-send-email-deven.desai@linux.microsoft.com>
+In-Reply-To: <1634151995-16266-12-git-send-email-deven.desai@linux.microsoft.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Yafang Shao <laoar.shao@gmail.com>, akpm@linux-foundation.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        oliver.sang@intel.com, lkp@intel.com,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>
-References: <20211120112850.46047-1-laoar.shao@gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20211120112850.46047-1-laoar.shao@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.204.63.33]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.11.21 12:28, Yafang Shao wrote:
-> When I was implementing a new per-cpu kthread cfs_migration, I found the
-> comm of it "cfs_migration/%u" is truncated due to the limitation of
-> TASK_COMM_LEN. For example, the comm of the percpu thread on CPU10~19 are
-> all with the same name "cfs_migration/1", which will confuse the user. This
-> issue is not critical, because we can get the corresponding CPU from the
-> task's Cpus_allowed. But for kthreads correspoinding to other hardware
-> devices, it is not easy to get the detailed device info from task comm,
-> for example,
+> From: deven.desai@linux.microsoft.com
+> [mailto:deven.desai@linux.microsoft.com]
+> Sent: Wednesday, October 13, 2021 9:07 PM
+> From: Deven Bowers <deven.desai@linux.microsoft.com>
 > 
->     jbd2/nvme0n1p2-
->     xfs-reclaim/sdf
+> Allows author of IPE policy to indicate trust for a singular dm-verity
+> volume, identified by roothash, through "dmverity_roothash" and all
+> signed dm-verity volumes, through "dmverity_signature".
 > 
-> Currently there are so many truncated kthreads:
+> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+> ---
 > 
->     rcu_tasks_kthre
->     rcu_tasks_rude_
->     rcu_tasks_trace
->     poll_mpt3sas0_s
->     ext4-rsv-conver
->     xfs-reclaim/sd{a, b, c, ...}
->     xfs-blockgc/sd{a, b, c, ...}
->     xfs-inodegc/sd{a, b, c, ...}
->     audit_send_repl
->     ecryptfs-kthrea
->     vfio-irqfd-clea
->     jbd2/nvme0n1p2-
->     ...
+> Relevant changes since v6:
+>   * Squash patch 08/12, 10/12 to [11/16]
 > 
-> We can shorten these names to work around this problem, but it may be
-> not applied to all of the truncated kthreads. Take 'jbd2/nvme0n1p2-' for
-> example, it is a nice name, and it is not a good idea to shorten it.
+> ---
+>  security/ipe/eval.c                       |  5 ++
+>  security/ipe/eval.h                       | 10 +++
+>  security/ipe/hooks.c                      | 48 ++++++++++++++
+>  security/ipe/hooks.h                      |  6 ++
+>  security/ipe/ipe.c                        |  9 +++
+>  security/ipe/ipe.h                        |  3 +
+>  security/ipe/modules/Kconfig              | 23 +++++++
+>  security/ipe/modules/Makefile             |  2 +
+>  security/ipe/modules/dmverity_roothash.c  | 80 +++++++++++++++++++++++
+>  security/ipe/modules/dmverity_signature.c | 25 +++++++
+>  10 files changed, 211 insertions(+)
+>  create mode 100644 security/ipe/modules/dmverity_roothash.c
+>  create mode 100644 security/ipe/modules/dmverity_signature.c
 > 
-> One possible way to fix this issue is extending the task comm size, but
-> as task->comm is used in lots of places, that may cause some potential
-> buffer overflows. Another more conservative approach is introducing a new
-> pointer to store kthread's full name if it is truncated, which won't
-> introduce too much overhead as it is in the non-critical path. Finally we
-> make a dicision to use the second approach. See also the discussions in
-> this thread:
-> https://lore.kernel.org/lkml/20211101060419.4682-1-laoar.shao@gmail.com/
+> diff --git a/security/ipe/eval.c b/security/ipe/eval.c
+> index 361efccebad4..facc05c753f4 100644
+> --- a/security/ipe/eval.c
+> +++ b/security/ipe/eval.c
+> @@ -23,6 +23,7 @@ static struct super_block *pinned_sb;
+>  static DEFINE_SPINLOCK(pin_lock);
 > 
-> After this change, the full name of these truncated kthreads will be
-> displayed via /proc/[pid]/comm:
+>  #define FILE_SUPERBLOCK(f) ((f)->f_path.mnt->mnt_sb)
+> +#define FILE_BLOCK_DEV(f) (FILE_SUPERBLOCK(f)->s_bdev)
 > 
->     rcu_tasks_kthread
->     rcu_tasks_rude_kthread
->     rcu_tasks_trace_kthread
->     poll_mpt3sas0_statu
->     ext4-rsv-conversion
->     xfs-reclaim/sdf1
->     xfs-blockgc/sdf1
->     xfs-inodegc/sdf1
->     audit_send_reply
->     ecryptfs-kthread
->     vfio-irqfd-cleanup
->     jbd2/nvme0n1p2-8
+>  /**
+>   * pin_sb: pin the underlying superblock of @f, marking it as trusted
+> @@ -95,6 +96,10 @@ static struct ipe_eval_ctx *build_ctx(const struct file *file,
+>  	ctx->hook = hook;
+>  	ctx->ci_ctx = ipe_current_ctx();
+>  	ctx->from_init_sb = from_pinned(file);
+> +	if (file) {
+> +		if (FILE_BLOCK_DEV(file))
+> +			ctx->ipe_bdev = ipe_bdev(FILE_BLOCK_DEV(file));
+> +	}
+> 
+>  	return ctx;
+>  }
+> diff --git a/security/ipe/eval.h b/security/ipe/eval.h
+> index 42fb7fdf2599..25d2d8d55702 100644
+> --- a/security/ipe/eval.h
+> +++ b/security/ipe/eval.h
+> @@ -13,6 +13,14 @@
+>  #include "hooks.h"
+>  #include "policy.h"
+> 
+> +struct ipe_bdev {
+> +	const u8       *sigdata;
+> +	size_t		siglen;
+> +
+> +	const u8       *hash;
+> +	size_t		hashlen;
+> +};
+> +
+>  struct ipe_eval_ctx {
+>  	enum ipe_hook hook;
+>  	enum ipe_operation op;
+> @@ -20,6 +28,8 @@ struct ipe_eval_ctx {
+>  	const struct file *file;
+>  	struct ipe_context *ci_ctx;
+> 
+> +	const struct ipe_bdev *ipe_bdev;
+> +
+>  	bool from_init_sb;
+>  };
+> 
+> diff --git a/security/ipe/hooks.c b/security/ipe/hooks.c
+> index 2d4a4f0eead0..470fb48e490c 100644
+> --- a/security/ipe/hooks.c
+> +++ b/security/ipe/hooks.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/types.h>
+>  #include <linux/refcount.h>
+>  #include <linux/rcupdate.h>
+> +#include <linux/blk_types.h>
+>  #include <linux/binfmts.h>
+>  #include <linux/mman.h>
+> 
+> @@ -219,3 +220,50 @@ void ipe_sb_free_security(struct super_block *mnt_sb)
+>  {
+>  	ipe_invalidate_pinned_sb(mnt_sb);
+>  }
+> +
+> +/**
+> + * ipe_bdev_free_security: free nested structures within IPE's LSM blob
+> + *			   in block_devices
+> + * @bdev: Supplies a pointer to a block_device that contains the structure
+> + *	  to free.
+> + */
+> +void ipe_bdev_free_security(struct block_device *bdev)
+> +{
+> +	struct ipe_bdev *blob = ipe_bdev(bdev);
+> +
+> +	kfree(blob->sigdata);
+> +}
+> +
+> +/**
+> + * ipe_bdev_setsecurity: associate some data from the block device layer
+> + *			 with IPE's LSM blob.
+> + * @bdev: Supplies a pointer to a block_device that contains the LSM blob.
+> + * @key: Supplies the string key that uniquely identifies the value.
+> + * @value: Supplies the value to store.
+> + * @len: The length of @value.
+> + */
+> +int ipe_bdev_setsecurity(struct block_device *bdev, const char *key,
+> +			 const void *value, size_t len)
+> +{
+> +	struct ipe_bdev *blob = ipe_bdev(bdev);
+> +
+> +	if (!strcmp(key, DM_VERITY_SIGNATURE_SEC_NAME)) {
+> +		blob->siglen = len;
+> +		blob->sigdata = kmemdup(value, len, GFP_KERNEL);
+> +		if (!blob->sigdata)
+> +			return -ENOMEM;
+> +
+> +		return 0;
+> +	}
+> +
+> +	if (!strcmp(key, DM_VERITY_ROOTHASH_SEC_NAME)) {
+> +		blob->hashlen = len;
+> +		blob->hash = kmemdup(value, len, GFP_KERNEL);
+> +		if (!blob->hash)
+> +			return -ENOMEM;
+> +
+> +		return 0;
+> +	}
+> +
+> +	return -ENOSYS;
+> +}
+> diff --git a/security/ipe/hooks.h b/security/ipe/hooks.h
+> index e7f107ab5620..285f35187188 100644
+> --- a/security/ipe/hooks.h
+> +++ b/security/ipe/hooks.h
+> @@ -10,6 +10,7 @@
+>  #include <linux/sched.h>
+>  #include <linux/binfmts.h>
+>  #include <linux/security.h>
+> +#include <linux/device-mapper.h>
+> 
+>  enum ipe_hook {
+>  	ipe_hook_exec = 0,
+> @@ -40,4 +41,9 @@ int ipe_on_kernel_load_data(enum kernel_load_data_id
+> id, bool contents);
+> 
+>  void ipe_sb_free_security(struct super_block *mnt_sb);
+> 
+> +void ipe_bdev_free_security(struct block_device *bdev);
+> +
+> +int ipe_bdev_setsecurity(struct block_device *bdev, const char *key,
+> +			 const void *value, size_t len);
+> +
+>  #endif /* IPE_HOOKS_H */
+> diff --git a/security/ipe/ipe.c b/security/ipe/ipe.c
+> index 1382d50078ec..215936cb4574 100644
+> --- a/security/ipe/ipe.c
+> +++ b/security/ipe/ipe.c
+> @@ -9,6 +9,7 @@
+>  #include "ipe_parser.h"
+>  #include "modules/ipe_module.h"
+>  #include "modules.h"
+> +#include "eval.h"
+> 
+>  #include <linux/fs.h>
+>  #include <linux/sched.h>
+> @@ -20,8 +21,14 @@
+> 
+>  struct lsm_blob_sizes ipe_blobs __lsm_ro_after_init = {
+>  	.lbs_task = sizeof(struct ipe_context __rcu *),
+> +	.lbs_bdev = sizeof(struct ipe_bdev),
+>  };
+> 
+> +struct ipe_bdev *ipe_bdev(struct block_device *b)
+> +{
+> +	return b->security + ipe_blobs.lbs_bdev;
+> +}
+> +
+>  static struct security_hook_list ipe_hooks[] __lsm_ro_after_init = {
+>  	LSM_HOOK_INIT(task_alloc, ipe_task_alloc),
+>  	LSM_HOOK_INIT(task_free, ipe_task_free),
+> @@ -31,6 +38,8 @@ static struct security_hook_list ipe_hooks[]
+> __lsm_ro_after_init = {
+>  	LSM_HOOK_INIT(kernel_read_file, ipe_on_kernel_read),
+>  	LSM_HOOK_INIT(kernel_load_data, ipe_on_kernel_load_data),
+>  	LSM_HOOK_INIT(sb_free_security, ipe_sb_free_security),
+> +	LSM_HOOK_INIT(bdev_free_security, ipe_bdev_free_security),
+> +	LSM_HOOK_INIT(bdev_setsecurity, ipe_bdev_setsecurity),
+>  };
+> 
+>  /**
+> diff --git a/security/ipe/ipe.h b/security/ipe/ipe.h
+> index ad16d2bebfec..6b4c7e07f204 100644
+> --- a/security/ipe/ipe.h
+> +++ b/security/ipe/ipe.h
+> @@ -14,10 +14,13 @@
+> 
+>  #include <linux/types.h>
+>  #include <linux/sched.h>
+> +#include <linux/blk_types.h>
+>  #include <linux/lsm_hooks.h>
+> 
+>  extern struct lsm_blob_sizes ipe_blobs;
+>  extern struct ipe_parser __start_ipe_parsers[], __end_ipe_parsers[];
+>  extern struct ipe_module __start_ipe_modules[], __end_ipe_modules[];
+> 
+> +struct ipe_bdev *ipe_bdev(struct block_device *b);
+> +
+>  #endif /* IPE_H */
+> diff --git a/security/ipe/modules/Kconfig b/security/ipe/modules/Kconfig
+> index fad96ba534e2..a6ea06cf0737 100644
+> --- a/security/ipe/modules/Kconfig
+> +++ b/security/ipe/modules/Kconfig
+> @@ -16,5 +16,28 @@ config IPE_PROP_BOOT_VERIFIED
+> 
+>  	  If unsure, answer N.
+> 
+> +config IPE_PROP_DM_VERITY_SIGNATURE
+> +	bool "Enable support for signed dm-verity volumes"
+> +	depends on DM_VERITY_VERIFY_ROOTHASH_SIG
+> +	default Y
+> +	help
+> +	  This option enables the property 'dmverity_signature' in
+> +	  IPE policy. This property evaluates to TRUE when a file
+> +	  is evaluated against a dm-verity volume that was mounted
+> +	  with a signed root-hash.
+> +
+> +	  If unsure, answer Y.
+> +
+> +config IPE_PROP_DM_VERITY_ROOTHASH
+> +	bool "Enable support for dm-verity volumes"
+> +	depends on DM_VERITY
+> +	default Y
+> +	help
+> +	  This option enables the property 'dmverity_roothash' in
+> +	  IPE policy. This property evaluates to TRUE when a file
+> +	  is evaluated against a dm-verity volume whose root hash
+> +	  matches the supplied value.
+> +
+> +	  If unsure, answer Y.
+> 
+>  endmenu
+> diff --git a/security/ipe/modules/Makefile b/security/ipe/modules/Makefile
+> index e0045ec65434..84fadce85193 100644
+> --- a/security/ipe/modules/Makefile
+> +++ b/security/ipe/modules/Makefile
+> @@ -6,3 +6,5 @@
+>  #
+> 
+>  obj-$(CONFIG_IPE_PROP_BOOT_VERIFIED) += boot_verified.o
+> +obj-$(CONFIG_IPE_PROP_DM_VERITY_SIGNATURE) += dmverity_signature.o
+> +obj-$(CONFIG_IPE_PROP_DM_VERITY_ROOTHASH) += dmverity_roothash.o
+> diff --git a/security/ipe/modules/dmverity_roothash.c
+> b/security/ipe/modules/dmverity_roothash.c
+> new file mode 100644
+> index 000000000000..0f82bec3b842
+> --- /dev/null
+> +++ b/security/ipe/modules/dmverity_roothash.c
+> @@ -0,0 +1,80 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) Microsoft Corporation. All rights reserved.
+> + */
+> +
+> +#include "ipe_module.h"
+> +
+> +#include <linux/fs.h>
+> +#include <linux/types.h>
+> +
+> +struct counted_array {
+> +	size_t	len;
+> +	u8     *data;
+> +};
+> +
+> +static int dvrh_parse(const char *valstr, void **value)
+> +{
+> +	int rv = 0;
+> +	struct counted_array *arr;
+> +
+> +	arr = kzalloc(sizeof(*arr), GFP_KERNEL);
+> +	if (!arr) {
+> +		rv = -ENOMEM;
+> +		goto err;
+> +	}
+> +
+> +	arr->len = (strlen(valstr) / 2);
+> +
+> +	arr->data = kzalloc(arr->len, GFP_KERNEL);
+> +	if (!arr->data) {
+> +		rv = -ENOMEM;
+> +		goto err;
+> +	}
+> +
+> +	rv = hex2bin(arr->data, valstr, arr->len);
+> +	if (rv != 0)
+> +		goto err2;
+> +
+> +	*value = arr;
+> +	return rv;
+> +err2:
+> +	kfree(arr->data);
+> +err:
+> +	kfree(arr);
+> +	return rv;
+> +}
+> +
+> +static bool dvrh_eval(const struct ipe_eval_ctx *ctx, const void *val)
+> +{
+> +	const u8 *src;
+> +	struct counted_array *expect = (struct counted_array *)val;
+> +
+> +	if (!ctx->ipe_bdev)
+> +		return false;
+> +
+> +	if (ctx->ipe_bdev->hashlen != expect->len)
+> +		return false;
+> +
+> +	src = ctx->ipe_bdev->hash;
+> +
+> +	return !memcmp(expect->data, src, expect->len);
 
-I do wonder if that could break some user space that assumes these names
-have maximum length ..
+Hi Deven
 
-But LGTM
+I was curious to see if determining the property at run-time
+could apply also to dm-verity. It seems it could be done
+(I omit some checks, I also keep the expected value in hex
+format):
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+---
+        md = dm_get_md(file_inode(ctx->file)->i_sb->s_dev);
+        table = dm_get_live_table(md, &srcu_idx);
+        num_targets = dm_table_get_num_targets(table);
 
+        for (i = 0; i < num_targets; i++) {
+                struct dm_target *ti = dm_table_get_target(table, i);
 
--- 
-Thanks,
+                if (strcmp(ti->type->name, "verity"))
+                        continue;
 
-David / dhildenb
+                ti->type->status(ti, STATUSTYPE_IMA, 0, result, sizeof(result));
+        }
+
+        dm_put_live_table(md, srcu_idx);
+        dm_put(md);
+
+        root_digest_ptr = strstr(result, "root_digest=");
+        return !strncmp(expect->data, root_digest_ptr + 12, expect->len);
+---
+
+Only dm_table_get_target() is not exported yet, but I guess it could
+be. dm_table_get_num_targets() is exported.
+
+With this code, you would not have to manage security blobs
+outside IPE. Maybe you could add a blob for the super block, so
+that you verify the dm-verity property just once per filesystem.
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Zhong Ronghua
+
+> +}
+> +
+> +static int dvrh_free(void **val)
+> +{
+> +	struct counted_array *expect = (struct counted_array *)val;
+> +
+> +	kfree(expect->data);
+> +	kfree(expect);
+> +
+> +	return 0;
+> +}
+> +
+> +IPE_MODULE(dvrh) = {
+> +	.name = "dmverity_roothash",
+> +	.version = 1,
+> +	.parse = dvrh_parse,
+> +	.free = dvrh_free,
+> +	.eval = dvrh_eval,
+> +};
+> diff --git a/security/ipe/modules/dmverity_signature.c
+> b/security/ipe/modules/dmverity_signature.c
+> new file mode 100644
+> index 000000000000..08746fcbcb3e
+> --- /dev/null
+> +++ b/security/ipe/modules/dmverity_signature.c
+> @@ -0,0 +1,25 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) Microsoft Corporation. All rights reserved.
+> + */
+> +
+> +#include "ipe_module.h"
+> +
+> +#include <linux/fs.h>
+> +#include <linux/types.h>
+> +
+> +static bool dvv_eval(const struct ipe_eval_ctx *ctx, const void *val)
+> +{
+> +	bool expect = (bool)val;
+> +	bool eval = ctx->ipe_bdev && (!!ctx->ipe_bdev->sigdata);
+> +
+> +	return expect == eval;
+> +}
+> +
+> +IPE_MODULE(dvv) = {
+> +	.name = "dmverity_signature",
+> +	.version = 1,
+> +	.parse = ipe_bool_parse,
+> +	.free = NULL,
+> +	.eval = dvv_eval,
+> +};
+> --
+> 2.33.0
 
