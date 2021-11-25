@@ -2,102 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA0745D2DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 03:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C2E45D27D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 02:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232659AbhKYCHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 21:07:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235157AbhKYCFK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 21:05:10 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0C0C061A1A;
-        Wed, 24 Nov 2021 17:39:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
-        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
-        bh=qYw5RIZBYu+7TC3KjriRLSrZwn1E3iMtbuXhHAISxsY=; b=yGbXk3L+x2f8HhRmR6X1X25pSa
-        wGsZIl/Rbsf/xlDcxMSq8Wf94/PcPWJ+9mlpAoJj/EmWa1YSoGFbVKUz+wyn41B583pr36qTKlmEs
-        VO7Kom827tHmWzwmS9yw+mmeSwxmfIoWVmXLK2r5mLDJeKX2NYNT/4i8YKqVF54zBr2PkMz+Pt7qr
-        gSANvH66vibc9Bplw3++VO0sA3X0O2YvhtkyNmrNiM6+g1tgNGK5GCET5YQzLqLCJ5WRf/4n6qGsE
-        uI0L4sp/KfdfmuT4pKXL7WDs/FrcAucukzFICpMEqDDUtXc95SpzeCwZPuzuafV0wd/YLXB4wkXHE
-        m8JMl8Kg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mq3j9-006El5-N1; Thu, 25 Nov 2021 01:39:07 +0000
-Subject: Re: mmotm 2021-11-24-15-49 uploaded (drivers/usb/host/xhci-hub.c)
-To:     akpm@linux-foundation.org, broonie@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
-        linux-usb@vger.kernel.org
-References: <20211124234931.iDJQctzrQ%akpm@linux-foundation.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <2b4fcff8-d7a0-b235-c94d-147e19738d72@infradead.org>
-Date:   Wed, 24 Nov 2021 17:39:06 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1347497AbhKYBpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 20:45:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36210 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244268AbhKYBnT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 20:43:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id A9972610D1;
+        Thu, 25 Nov 2021 01:40:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637804408;
+        bh=zuYI0KGqw6w80V5c26J7ZBCR3sWIcykVgOY1mZV/yAg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=gmvg/XAW5whK+3sz03z4LHj6FMzld6a7pkGlzklSCc/rzg/GIyLyNCwB0mQdfnANz
+         pXv3GxB/55RahDrBTeNbiigEJQpPZcgRjIybQqLtddtBXjmN5P+ncBKlSB1psNiLq0
+         rvUBAQM58H1FSICUYtUPmOi3Fz9Sh3seZ9Js9Ri4SkjNK8ETXUcYB0o5hiEe1D3bb5
+         oW4E9A/PyvumASrgNzQNwodQw6brdl9x+r0zA7LyiSZrxcY5emkA4tfrJZUfLCIOrR
+         XiKPWgU2ZZbJD0BUdPqfBOJnV7MKW+G5+3fDvLS+bKleUwa40fEduMsagzrytWO1Fw
+         CDZz/c1+jB2UQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9D3D7609D5;
+        Thu, 25 Nov 2021 01:40:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20211124234931.iDJQctzrQ%akpm@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Subject: Re: [net-next PATCH] net: dsa: qca8k: fix warning in LAG feature
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163780440863.8890.1394468759774734999.git-patchwork-notify@kernel.org>
+Date:   Thu, 25 Nov 2021 01:40:08 +0000
+References: <20211123154446.31019-1-ansuelsmth@gmail.com>
+In-Reply-To: <20211123154446.31019-1-ansuelsmth@gmail.com>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org, lkp@intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/21 3:49 PM, akpm@linux-foundation.org wrote:
-> The mm-of-the-moment snapshot 2021-11-24-15-49 has been uploaded to
-> 
->     https://www.ozlabs.org/~akpm/mmotm/
-> 
-> mmotm-readme.txt says
-> 
-> README for mm-of-the-moment:
-> 
-> https://www.ozlabs.org/~akpm/mmotm/
-> 
-> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-> more than once a week.
-> 
-> You will need quilt to apply these patches to the latest Linus release (5.x
-> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
-> https://ozlabs.org/~akpm/mmotm/series
-> 
+Hello:
 
+This patch was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
-on i386:
+On Tue, 23 Nov 2021 16:44:46 +0100 you wrote:
+> Fix warning reported by bot.
+> Make sure hash is init to 0 and fix wrong logic for hash_type in
+> qca8k_lag_can_offload.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> 
+> [...]
 
-../drivers/usb/host/xhci-hub.c: In function ‘xhci_create_usb3x_bos_desc’:
-./../include/linux/compiler_types.h:335:38: error: call to ‘__compiletime_assert_608’ declared with attribute error: FIELD_PREP: value too large for the field
-   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-                                       ^
-./../include/linux/compiler_types.h:316:4: note: in definition of macro ‘__compiletime_assert’
-     prefix ## suffix();    \
-     ^~~~~~
-./../include/linux/compiler_types.h:335:2: note: in expansion of macro ‘_compiletime_assert’
-   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-   ^~~~~~~~~~~~~~~~~~~
-../include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
-  #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-                                      ^~~~~~~~~~~~~~~~~~
-../include/linux/bitfield.h:49:3: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
-    BUILD_BUG_ON_MSG(__builtin_constant_p(_val) ?  \
-    ^~~~~~~~~~~~~~~~
-../include/linux/bitfield.h:94:3: note: in expansion of macro ‘__BF_FIELD_CHECK’
-    __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: "); \
-    ^~~~~~~~~~~~~~~~
-../drivers/usb/host/xhci-hub.c:220:4: note: in expansion of macro ‘FIELD_PREP’
-     FIELD_PREP(USB_SSP_SUBLINK_SPEED_LSM, lane_mantissa));
-     ^~~~~~~~~~
+Here is the summary with links:
+  - [net-next] net: dsa: qca8k: fix warning in LAG feature
+    https://git.kernel.org/netdev/net-next/c/0898ca67b86e
 
-
-$ gcc --version
-gcc (SUSE Linux) 7.5.0
-
-
+You are awesome, thank you!
 -- 
-~Randy
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
