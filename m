@@ -2,133 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5CD045D808
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:12:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFB0445D80D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 11:14:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354629AbhKYKPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 05:15:23 -0500
-Received: from smtp2.axis.com ([195.60.68.18]:43622 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354391AbhKYKNW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 05:13:22 -0500
+        id S1351867AbhKYKRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 05:17:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351469AbhKYKPL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 05:15:11 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE082C06175E
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 02:10:20 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id r11so23227135edd.9
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 02:10:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1637835012;
-  x=1669371012;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GdIrusbwRXXLYGW13kTKv3iwu2ddLrB+iTcqiTjJaeo=;
-  b=jajnKAODDJwFxONv7H5T9Qay8wejY2kquQX/fSlORGliWeym1PwFAoaX
-   c+hyYHlj5mL9IdgHRChiHz0W+fpW6Z0S1J/jruCVLNumsKzTIKYXQNndT
-   SZrgyEBkd9x2yqf12eC11Gq7qUmN0D7Z3Ii0llbwI3uv7hkk6S7PHYN5D
-   YQZ9KD/4Aoy4D8FOAMFtzMkX34JbDP8p71KdWu1o4s8Af4w0pBu8e3ivk
-   2lnq6TqqavbaUAdIFxwQqJ4YexQGCVR6n9JTmxsNvu3KKxw6bAZj4lVli
-   UG+e3drTpZek+n8GmfUBw64JH6b6uocq4peGodIA4gfYQoGNyfv3NsOpT
-   Q==;
-Date:   Thu, 25 Nov 2021 11:10:07 +0100
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, kernel <kernel@axis.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH] af_unix: fix regression in read after shutdown
-Message-ID: <20211125101007.GA13511@axis.com>
-References: <20211119120521.18813-1-vincent.whitchurch@axis.com>
- <YZ19J+jZrOXxR1oR@unknown>
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uY1320pfARFP0aqCxH2XJgkIqC5MefeMwkvkI1jomHM=;
+        b=1LvqB7ZzUTj0dRExAAGL9FsbK5F16YizN76SGabC9iuEkGBzMErW86CEyEd5exphPf
+         n0mdPUY1gSdp1zx78M39z89pBt+aUdvUm+p4ow0eqgjBJL8s0MD6Noi523q3M/00AmBD
+         uoa7WNSrW7cbHG5AkF1Gr1yspFZngpw7KRxXcR+AQ3a51sIaaswP7LR6CsJpgOpJv6Gy
+         RJNRPwcWSFklJ3mw9+GDo2sELhk9Jya+DKKyLe5iEmLBBKLKXubyqNQW+JjdCV7ct53H
+         k3pjarOa/wKJJzfve2C0n/5ZwrZPFVCV0x+qOseHklOHHpPfCd0qad39s14MdgRSCWEF
+         zymg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uY1320pfARFP0aqCxH2XJgkIqC5MefeMwkvkI1jomHM=;
+        b=sDfHXTmURx+eWo3XpzCor/leeWbJkSEQPyPWPnVRy39MDf8T1ZF9DZvWhV28eJSJXd
+         x49j74fSahzkpSDfZSsX7vz34PHjrMubiV7wowfGIXkoj2Ws2i5WOb9GzKLSQtMlMMgT
+         DSLUps08C5UZlmA+xvKjwVsy0z93adZ5Q/Lian7dEVvt4i6JwVDo+O4pm28yFy+CjPBj
+         bYwtkqotD3ixbJhxu20I7dqkWczWYti6MwfngavA5yLxl+Shz5jBEYcu5lrAZK92N/Ym
+         cUgmDhaRD8VnA8j9Guca0ShoIrG+Jx6B67zc1mvC+Cogq38Wdr0YPrKIFHwcwG0g1/s0
+         DhVA==
+X-Gm-Message-State: AOAM533RKnqU5Rt9R4NOqeu2JKrpp6plnbyxMU6oivIrF0alnAnX5sn9
+        PPx6Ak8c6bmmlYL1EHAYJT5zaHwAh6KDhk7cf0BX8vF0Cigrlzti
+X-Google-Smtp-Source: ABdhPJxcJWKIiC3o+XJYDTa3abClgRQH1270vQEYzDAfENegSLf/yPfu1BI9/wyfxb0PX544PQ7+DWzsNcrIM6K6UVU=
+X-Received: by 2002:a17:906:5343:: with SMTP id j3mr29879323ejo.538.1637835018828;
+ Thu, 25 Nov 2021 02:10:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YZ19J+jZrOXxR1oR@unknown>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211124122850.7095-1-brgl@bgdev.pl> <20211124122850.7095-2-brgl@bgdev.pl>
+ <YZ5QYsu2ed5FiSWE@smile.fi.intel.com>
+In-Reply-To: <YZ5QYsu2ed5FiSWE@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Thu, 25 Nov 2021 11:10:08 +0100
+Message-ID: <CAMRc=Mfcph_YPryowhtGtb9G_GOveRm+27BJYyznjxc=BK-jWg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] gpiolib: check the 'ngpios' property in core
+ gpiolib code
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Johan Hovold <johan@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 12:45:43AM +0100, Cong Wang wrote:
-> On Fri, Nov 19, 2021 at 01:05:21PM +0100, Vincent Whitchurch wrote:
-> > On kernels before v5.15, calling read() on a unix socket after
-> > shutdown(SHUT_RD) or shutdown(SHUT_RDWR) would return the data
-> > previously written or EOF.  But now, while read() after
-> > shutdown(SHUT_RD) still behaves the same way, read() after
-> > shutdown(SHUT_RDWR) always fails with -EINVAL.
-> 
-> Maybe just lift the socket tate check in unix_stream_read_generic()?
+On Wed, Nov 24, 2021 at 3:47 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Wed, Nov 24, 2021 at 01:28:50PM +0100, Bartosz Golaszewski wrote:
+> > Several drivers read the 'ngpios' device property on their own, but
+> > since it's defined as a standard GPIO property in the device tree bindings
+> > anyway, it's a good candidate for generalization. If the driver didn't
+> > set its gc->ngpio, try to read the 'ngpios' property from the GPIO
+> > device's firmware node before bailing out.
+>
+> > Signed-off-by: Bartosz Golaszewski <brgl@bgdev.pl>
+> > Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > ---
+> > v1 -> v2:
+> > - use device_property_read_u32() instead of fwnode_property_read_u32()
+> > - reverse the error check logic
+> >
+> > v2 -> v3:
+> > - don't shadow errors other than -ENODATA in device_property_read_u32()
+> >
+> >  drivers/gpio/gpiolib.c | 15 ++++++++++++---
+> >  1 file changed, 12 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> > index ede8b8a7aa18..f79fd2551cf7 100644
+> > --- a/drivers/gpio/gpiolib.c
+> > +++ b/drivers/gpio/gpiolib.c
+> > @@ -599,6 +599,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+> >       int base = gc->base;
+> >       unsigned int i;
+> >       int ret = 0;
+> > +     u32 ngpios;
+> >
+> >       /*
+> >        * First: allocate and populate the internal stat container, and
+> > @@ -647,9 +648,17 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+> >       }
+>
+> >       if (gc->ngpio == 0) {
+> > -             chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
+> > -             ret = -EINVAL;
+> > -             goto err_free_descs;
+> > +             ret = device_property_read_u32(&gdev->dev, "ngpios", &ngpios);
+> > +             if (ret) {
+> > +                     if (ret == -ENODATA) {
+> > +                             chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
+> > +                             ret = -EINVAL;
+> > +                     }
+> > +
+> > +                     goto err_free_descs;
+> > +             }
+>
+> And if the property returns 0 in ngpios?
+>
+> What about the modified suggestion from previous version:
+>
+>         if (gc->ngpio == 0) {
+>                 ret = device_property_read_u32(&gdev->dev, "ngpios", &ngpios);
 
-That would have have handled the specific case of read(2) on
-SOCK_STREAM, but the sk->sk_state is checked in many other places in
-af_unix.c so there would still be userspace-visible behaviour changes in
-several other situations, which could cause regressions.  Just to give
-one such example, the sendfile(2) call in the following program gets
-killed by SIGPIPE on earlier kernels but would now instead start to
-return -ENOTCONN:
+The comment is a good idea but other than that - it's overcomplicating things.
 
-#include <err.h>
-#include <errno.h>
-#include <stdio.h>
-#include <sys/socket.h>
-#include <sys/unistd.h>
-#include <sys/sendfile.h>
-#include <sys/types.h>
-#include <fcntl.h>
+>                 if (ret == -ENODATA)
+>                         ngpios = 0;
+>                 else if (ret)
+>                         return ret;
 
-int main(int argc, char *argv[]) {
-  int sock[2];
-  int ret;
+You still need to goto err_free_descs here.
 
-  ret = socketpair(AF_UNIX, SOCK_STREAM, 0, sock);
-  if (ret < 0)
-    err(1, "socketpair");
+>
+>                 gc->ngpio = ngpios;
+>         }
+>
+>         if (gc->ngpio == 0) {
 
-  ret = shutdown(sock[0], SHUT_RDWR);
-  if (ret < 0)
-    err(1, "shutdown");
+Why check that again? We already know the driver set it to 0, we
+checked it a couple lines before. If we can't get the setting from the
+properties then it won't be non 0 here right?
 
-  ssize_t bytes = sendfile(sock[0], open(argv[0], O_RDONLY), NULL, 16);
-  if (bytes < 0)
-    err(1, "sendfile");
+>                 chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
+>                 ret = -EINVAL;
+>                 goto err_free_descs;
+>         }
+>
+> ?
+>
+> > +             gc->ngpio = ngpios;
+> >       }
+> >
+> >       if (gc->ngpio > FASTPATH_NGPIO)
+> > --
+> > 2.25.1
+> >
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
 
-  printf("sendfile %zd bytes\n", bytes);
+I suggest the following:
 
-  return 0;
-}
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index ede8b8a7aa18..08c1e8fc0dfa 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -599,6 +599,7 @@ int gpiochip_add_data_with_key(struct gpio_chip
+*gc, void *data,
+     int base = gc->base;
+     unsigned int i;
+     int ret = 0;
++    u32 ngpios;
 
-> > 
-> > This behaviour change was apparently inadvertently introduced as part of
-> > a bug fix for a different regression caused by the commit adding sockmap
-> > support to af_unix, commit 94531cfcbe79c359 ("af_unix: Add
-> > unix_stream_proto for sockmap").  Those commits, for unclear reasons,
-> > started setting the socket state to TCP_CLOSE on shutdown(SHUT_RDWR),
-> 
-> Not sure why it is unclear here, for an connection oriented socket, it
-> can be closed for just one direction, in this case we want to prevent it
-> from being redirected in sockmap, hence the point of the commits.
+     /*
+      * First: allocate and populate the internal stat container, and
+@@ -647,9 +648,23 @@ int gpiochip_add_data_with_key(struct gpio_chip
+*gc, void *data,
+     }
 
-I must admit I'm not really familiar with either af_unix.c or sockmap,
-but clearly the existing code in af_unix.c does not expect sk_state to
-be changed in shutdown.  If we want to prevent UNIX sockets which have
-had shutdown(SHUT_RDWR) called on then from being redirect to sockmap,
-then maybe some other flag should be used to achieve that?
+     if (gc->ngpio == 0) {
+-        chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
+-        ret = -EINVAL;
+-        goto err_free_descs;
++        /*
++         * If the driver didn't specify the number of GPIOs, try to
++         * get this value from the device properties as a fall-back.
++         */
++        ret = device_property_read_u32(&gdev->dev, "ngpios", &ngpios);
++        if (ret) {
++            /*
++             * -ENODATA means that there is no property found and
++             * we want to issue the error message to the user.
++             * Besides that, we want to return different error code
++             * to state that supplied value is not valid.
++             * */
++            if (ret == -ENODATA) {
++                chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
++                ret = -EINVAL;
++            }
++
++            goto err_free_descs;
++        }
++
++        gc->ngpio = ngpios;
+     }
 
-(Also, I wonder why the code added by the patch handled SHUT_RDWR
- differently from a SHUT_RD followed by a SHUT_WR?)
-
-> > while this state change had previously only been done in
-> > unix_release_sock().
-> > 
-> > Restore the original behaviour.  The sockmap tests in
-> > tests/selftests/bpf continue to pass after this patch.
-> 
-> Isn't this because we don't have shutdown() in sockmap tests?
-
-That may well be the case, I just assumed that the tests added along
-with the new feature were comprehensive.
+     if (gc->ngpio > FASTPATH_NGPIO)
