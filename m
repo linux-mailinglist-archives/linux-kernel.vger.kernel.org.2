@@ -2,100 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBCD145E2E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 23:05:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB3D45E2E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 23:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236079AbhKYWIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 17:08:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344915AbhKYWGi (ORCPT
+        id S1345593AbhKYWI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 17:08:56 -0500
+Received: from mout.kundenserver.de ([212.227.126.134]:47767 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345883AbhKYWGz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 17:06:38 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D03C061758;
-        Thu, 25 Nov 2021 14:02:59 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id bu18so19521785lfb.0;
-        Thu, 25 Nov 2021 14:02:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sjNM0SmpprH2Ybt3lGnDr03lBtbdsYNvqzNEYejWd8Q=;
-        b=PYKkfTiTWkYf8HvGWbMcVxPSDsJb6kPY2+lTxviXtA5LgWGkD258oHR5zzlBWjHM8B
-         u/z3UH+Qd67RTQvNeQo6oCo3lH30Hm8uniImTK2FEvYh5RrmkjOtwP++L/fjtI9NPrsq
-         xX1mvH4fTNr4xsF4IfqAzgSZYLGJNvLdxZS1d8iKfQN0DXT5gZNnhgDMeA0SwGMvUsAZ
-         V402AE4RUTLHq2eV1UYmow6l1cGGK9+KmBvBpronprAICQINMNOmpzp3Fvy6GkFi+SyQ
-         yadvmffsnm+2Uv3mNvRGUWyjbPwL6Zn85zKtDwuusg1AMVJa20hd666a0clnTIFiyY6v
-         qOCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sjNM0SmpprH2Ybt3lGnDr03lBtbdsYNvqzNEYejWd8Q=;
-        b=XmDCM/xjsKi2noinCtyZW1c1MKdPrGsS31fAGIg0k6XF1U2ZQBX91UWVa4v7miLfpM
-         BN8p+vUHyRMxT9l6/I1qRn0tOALxkYOtLT+QFp4kx4W/fJ2xYQms/AV6w1xFJq9uLJwe
-         f1/IdumYrLP8P69QZJyYEO3veB+2rKWsAkf+NVxcCCSrGI6GZDZ5sa3WwxnDv8t1HG9V
-         oDZclypp7U6PgzOla5sBEKTSVXpau/pcJtMEZZdiUQxCMXGozFNGpIRPbrzZnKALjqbk
-         3e24H4PQFYx93q6fmlLz5qcwpGZVfqs1wuuip9cs9RObKgMfVKigDFidZwT4KgkK50dG
-         vkxQ==
-X-Gm-Message-State: AOAM530bXMHXs7bQwlfCEsrti2lM2D33Zktg8ubep6TQIA51Bj5oSEm8
-        f7yC60dN7sQNbEO9mw8FVgo=
-X-Google-Smtp-Source: ABdhPJxNL52UiWFbYeqwEGrMXJ+nV0qL6DktEPN4uXUgMqYCgi03MNvgXvsPFqudLKWRhqupELw6OQ==
-X-Received: by 2002:a05:6512:398b:: with SMTP id j11mr25360757lfu.170.1637877777392;
-        Thu, 25 Nov 2021 14:02:57 -0800 (PST)
-Received: from localhost.localdomain (public-gprs212807.centertel.pl. [46.134.170.136])
-        by smtp.googlemail.com with ESMTPSA id b27sm342732ljf.52.2021.11.25.14.02.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 14:02:57 -0800 (PST)
-From:   Dominik Kobinski <dominikkobinski314@gmail.com>
-To:     bjorn.andersson@linaro.org
-Cc:     agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Dominik Kobinski <dominikkobinski314@gmail.com>,
-        Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
-Subject: [PATCH v2,5/5] arm: dts: qcom: pm8226: Support SPMI regulators on PMIC sid 1
-Date:   Thu, 25 Nov 2021 23:02:44 +0100
-Message-Id: <20211125220244.62586-1-dominikkobinski314@gmail.com>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211125213451.62010-1-dominikkobinski314@gmail.com>
-References: <20211125213451.62010-1-dominikkobinski314@gmail.com>
+        Thu, 25 Nov 2021 17:06:55 -0500
+Received: from mail-wm1-f42.google.com ([209.85.128.42]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MAfQe-1mjnFu3gRE-00B6fB for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021
+ 23:03:42 +0100
+Received: by mail-wm1-f42.google.com with SMTP id k37-20020a05600c1ca500b00330cb84834fso9362104wms.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 14:03:42 -0800 (PST)
+X-Gm-Message-State: AOAM532usrGACouox0sROr0Wh2LycYA+6WK4hT4aRGtA3Ea8DhO/u8KO
+        eIkyX8LP6hkM1ObJ1ldpXj9GMHWA3vEoacD2xIg=
+X-Google-Smtp-Source: ABdhPJxNqrpGiwNkEFIJ+GcWnr9u+pKtzCJn7XveBJ1xlA/jPsnuxoQSgc5xfSsYLVHplWsvU3brV0cs8lSwxeqygew=
+X-Received: by 2002:a1c:1c1:: with SMTP id 184mr11677329wmb.1.1637877822595;
+ Thu, 25 Nov 2021 14:03:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211125213203.86693-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20211125213203.86693-1-andriy.shevchenko@linux.intel.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 25 Nov 2021 23:03:26 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3Pu-ygd9dkhS=d2ZGKjbt0V=mdxaEG8tXUhueSKMJXQg@mail.gmail.com>
+Message-ID: <CAK8P3a3Pu-ygd9dkhS=d2ZGKjbt0V=mdxaEG8tXUhueSKMJXQg@mail.gmail.com>
+Subject: Re: [PATCH v1 00/10] misc: at25: Code cleanups and improvements
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Prchal <jiri.prchal@aksignal.cz>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:adXvJyT5J5OsZqEIK+gdEBAhVoGZF8G2vUvcz4pwCbdlYjh+3/h
+ gPHNtB9C7Hi382RJVHkQSHMzQPSuZ2clDubWorj3eEt0j/2YeyhzxSzhYty+S7OFEwjZCsi
+ LTPWN470nuaXE4AcswB5eSPdEguzn04wtzcCEAUnbO5NhsMUEP4LWcihmYg3QGzMefSYpEy
+ gCVse3Dhb2kNowzSDxLag==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:l0mKNvCOGgI=:ZcfRcfy1jIB5duG4djlK3O
+ QSzPrS8WTYS1cpnACt6WihBiHOVqjNF1+n0D1ZpYNHU10JwSOPRaJjDiuBuVlGu0RAEXV5gf1
+ pCQkCb5VoQc67cYFAE8gp0a8rgEvKcolCafc7SaseY+VC1f+tPgQKagtMT4jYQ0HDkfWHNae4
+ qW8+pa4DlIYYls7Zs1M1cZz/pa2W3uscSMU+TPlFjNzjcc1hNvMsKEj8sa8TXau8JLEu/iqjD
+ AAxnjEesJenoROAXCGaQz9cLLFdCmP5rW8/IMnc+rkY3A66Osg2l/ZCXxMBkXyftqfIkTQzFw
+ LgYNVeV/ytOo+fWeH2K2NjGtycVDG3ivBteEktK7ecgeMrl5EHeEcDim07qg6IHLhJtBoOqPY
+ /dFMcw6jWl2DO8BXe2MgLz13oekIiJYkZt2OB8riC8tV3g0uAIzfPdqto2yGs49vzqDqbnTpO
+ uzk4iqlae7Xx6j+KRyLO8c7pRFkFSBP15ypV67HJTHCkmzUwA+mch0PicVBW955r/EOIuM49R
+ UPlZxmeSDS4lstuMAKNnUBm+g/SrBxZGLAjD7Gq0xMtnnAhH2IjsqOtU6OGX00q2SaAwvpWnN
+ O9IR0RVJoMyD1OlWt5m409CVNEXW6a/hTJYkhW64c3Xs6El1Q/l7oINWXmg9B7LxCIk9u9Y2h
+ ZeeWvM2b9vd6ZbYzju6q+pmAuxGVY/saSH/F3WNha8Lpgv+qu+kainXoYhd1wnp0yZsc9CVUl
+ FD/V8AY3T4d17Rw2k4MYin4QYexPPL8uTch7ly1Nwljj+tvLA+IKEA8cRo1uOYbWcqRRvs8bj
+ fAGzohMOxg+IEs3zt8d0YR5GSc9BxI+rG1+5uxHYnmR/e9yvZI=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PM8226 PMIC has SPMI regulators on the PMIC SID 1:
-add the spmi vregs compatible to probe them.
+On Thu, Nov 25, 2021 at 10:31 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> Code cleanups and improvements. Please read individual commit messages.
+>
+> Series depends on the fixes series [1] sent earlier.
+>
+> [1]: https://lore.kernel.org/lkml/20211125212729.86585-2-andriy.shevchenko@linux.intel.com/T/#u
+>
+> Andy Shevchenko (10):
+>   misc: at25: Use at25->chip instead of local chip everywhere in
+>     ->probe()
+>   misc: at25: Unshadow error codes in at25_fw_to_chip()
+>   misc: at25: Check new property ("address-width") first
+>   misc: at25: Get platform data via dev_get_platdata()
+>   misc: at25: Get rid of intermediate storage for AT25 chip data
+>   misc: at25: Switch to use BIT() instead of custom approaches
+>   misc: at25: Factor out at_fram_to_chip()
+>   misc: at25: Reorganize headers for better maintenance
+>   misc: at25: Replace commas by spaces in the ID tables
+>   misc: at25: Align comment style
 
-Suggested-by: Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
-Signed-off-by: Dominik Kobinski <dominikkobinski314@gmail.com>>
----
-This patch is based on changes done in the following patches :
- - https://patchwork.kernel.org/project/linux-arm-msm/patch/20211118210210.160895-3-luca@z3ntu.xyz/
- - https://patchwork.kernel.org/project/linux-arm-msm/patch/20211122235230.2467246-1-jm5112356@gmail.com/
- - https://patchwork.kernel.org/project/linux-arm-msm/patch/20211123003256.2467776-1-jm5112356@gmail.com/
+These also look good to me,
 
- arch/arm/boot/dts/qcom-pm8226.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-diff --git a/arch/arm/boot/dts/qcom-pm8226.dtsi b/arch/arm/boot/dts/qcom-pm8226.dtsi
-index 25780c8fa2e9..49c2fac6f287 100644
---- a/arch/arm/boot/dts/qcom-pm8226.dtsi
-+++ b/arch/arm/boot/dts/qcom-pm8226.dtsi
-@@ -62,6 +62,10 @@ pm8226_1: pm8226@1 {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 
-+		pm8226_spmi_regulators: pm8226-regulators {
-+			compatible = "qcom,pm8226-regulators";
-+		};
-+
- 		pm8226_vib: vibrator@c000 {
- 			compatible = "qcom,pm8916-vib";
- 			reg = <0xc000>;
--- 
-2.34.0
+It would be nice to change the three remaining board files that fill
+struct spi_eeprom so they use device properties and unify the
+rest of the probe path. Not sure how much of a change that would
+be.
 
+         Arnd
