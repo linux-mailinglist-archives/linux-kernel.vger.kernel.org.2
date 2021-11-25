@@ -2,59 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CCE45D681
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D76545D689
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:57:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353029AbhKYI4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 03:56:06 -0500
-Received: from mail.globalbizbuy.pl ([217.61.121.138]:52204 "EHLO
-        mail.globalbizbuy.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350301AbhKYIyE (ORCPT
+        id S1353530AbhKYJA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 04:00:26 -0500
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:17462 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347256AbhKYI6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 03:54:04 -0500
-Received: by mail.globalbizbuy.pl (Postfix, from userid 1001)
-        id 3CD0FA2A6C; Thu, 25 Nov 2021 08:51:03 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=globalbizbuy.pl;
-        s=mail; t=1637830264;
-        bh=keciCK/Bg4sJmGUq5pgzLAbvC1lwGkAxKqnASfuHvcc=;
-        h=Date:From:To:Subject:From;
-        b=cAlHU0civy9PwsfbpA5rOqgfvO6caLjDUla86bjfUu6PL4XTTj79LbtMOELBnC7pj
-         cz0n2vstc/8kNTqTHaAZ9c9CKU4qUgWENl+izku1h648YwJP3Ee/Pr2gqxv1SkCuis
-         u4VPXx3Dvyw2h1hPRn9+bQrRg4+qvYpkC9Cn62+z/4iwfGchs2vN94VAFhIoPw1kav
-         WepI/7b7kkieTGXsan61wW9Eh2CCRrRX02JivjafLLucXq8XMSx6ayMBlUErM3Tnd1
-         q5Bq6LCWvqzDFKmcx83QmiNrGAXAdmDnxQXHFTOhiMDb25GpeF+dK5NbwmLyoXWe5B
-         2G50Egl2KI7Qw==
-Received: by mail.globalbizbuy.pl for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 08:51:03 GMT
-Message-ID: <20211125074500-0.1.52.fhju.0.frn5l20r01@globalbizbuy.pl>
-Date:   Thu, 25 Nov 2021 08:51:03 GMT
-From:   =?UTF-8?Q? "Arkadiusz_Soko=C5=82owski" ?= 
-        <arkadiusz.sokolowski@globalbizbuy.pl>
-To:     <linux-kernel@vger.kernel.org>
-Subject: Koszty instalacji fotowoltaicznej
-X-Mailer: mail.globalbizbuy.pl
+        Thu, 25 Nov 2021 03:58:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1637830514; x=1669366514;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=r7GIIZvrFMco61k+OSGwSvJkeX/1O1fu0L7TKc0IwCs=;
+  b=c5Y3NmsQML31Uq0+IOddmHCeoRMgfehS6MoCXn4pGv/4U+ZYjHeOCXnV
+   feKNjlT6eM4SuLZ8kRHaG139uuFMS2vNvP5+hbhUfscjbMytV+jTn9AjK
+   Oi+HYng6qee7sq2kWH/SCGVnGjFlZQssM5MWoQcjvAoud5uU6Z9Tw1iv8
+   U=;
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 25 Nov 2021 00:55:13 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 00:55:13 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Thu, 25 Nov 2021 00:55:13 -0800
+Received: from mkshah-linux.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Thu, 25 Nov 2021 00:55:09 -0800
+From:   Maulik Shah <quic_mkshah@quicinc.com>
+To:     <bjorn.andersson@linaro.org>, <rafael@kernel.org>,
+        <daniel.lezcano@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <ulf.hansson@linaro.org>,
+        <quic_lsrao@quicinc.com>, <rnayak@codeaurora.org>,
+        Maulik Shah <quic_mkshah@quicinc.com>
+Subject: [PATCH 0/4] Allow cpuidle governors to be compiled as modules
+Date:   Thu, 25 Nov 2021 14:24:37 +0530
+Message-ID: <1637830481-21709-1-git-send-email-quic_mkshah@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dzie=C5=84 dobry,
+This series makes changes to allow cpuidle governors menu, ladder and teo
+to compiled as modules when building with allmodconfig.
 
-stworzyli=C5=9Bmy specjaln=C4=85 ofert=C4=99 dla firm, na kompleksow=C4=85=
- obs=C5=82ug=C4=99 inwestycji w fotowoltaik=C4=99. =20
+Patch 3 of the series is taken from [1] which brings back the change
+removed in Commit 83788c0caed3 ("cpuidle: remove unused exports").
 
-Specjalizujemy si=C4=99 w zakresie doboru, monta=C5=BCu i serwisie instal=
-acji fotowoltaicznych, dysponujemy najnowocze=C5=9Bniejszymi rozwi=C4=85z=
-ania, kt=C3=B3re zapewni=C4=85 Pa=C5=84stwu oczekiwane rezultaty.
+[1] https://lore.kernel.org/all/010101746fc98add-45e77496-d2d6-4bc1-a1ce-0692599a9a7a-000000@us-west-2.amazonses.com/
 
-Mo=C5=BCemy przygotowa=C4=87 dla Pa=C5=84stwa wst=C4=99pn=C4=85 kalkulacj=
-=C4=99 i przeanalizowa=C4=87 efekty mo=C5=BCliwe do osi=C4=85gni=C4=99cia=
-=2E
+Lina Iyer (1):
+  cpuidle: governor: export cpuidle governor functions
 
-Czy s=C4=85 Pa=C5=84stwo otwarci na wst=C4=99pn=C4=85 rozmow=C4=99 w tym =
-temacie?
+Maulik Shah (3):
+  tick/sched: Export symbols used by cpuidle governors
+  sched/core: Export symbols used by cpuidle governors
+  cpuidle: governors: Allow the governors to be compiled as modules
 
+ drivers/cpuidle/Kconfig            | 6 +++---
+ drivers/cpuidle/governor.c         | 2 ++
+ drivers/cpuidle/governors/ladder.c | 4 ++++
+ drivers/cpuidle/governors/menu.c   | 4 ++++
+ drivers/cpuidle/governors/teo.c    | 4 ++++
+ kernel/sched/core.c                | 1 +
+ kernel/time/tick-sched.c           | 5 +++++
+ 7 files changed, 23 insertions(+), 3 deletions(-)
 
-Pozdrawiam,
-Arkadiusz Soko=C5=82owski
+-- 
+2.7.4
+
