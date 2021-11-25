@@ -2,167 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B9945E0DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 20:09:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 838C345E0DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 20:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356686AbhKYTMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 14:12:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232137AbhKYTKg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 14:10:36 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645DEC061574;
-        Thu, 25 Nov 2021 11:07:24 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id g14so29359639edb.8;
-        Thu, 25 Nov 2021 11:07:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8RETl6EZ/q+KZQKZQu0x6dpqQFHJLgaukB+KnrSsVWE=;
-        b=gAPMEiTgu4btwGQ8d7RmgT8TGL3bXGeUy0Lx6GU06BEZ0uzPUfsZKeAYyskjgsKY2n
-         J6w44kxfSf7g2wg2vuuvtZ1hrIcKiNMNRcD3Qzpn2ygOAvPQZTltx8lhRncgam/DzmyI
-         z19LfOAV5nAsE9SQ5/2Uz/ufwYKpGsmKiKv+pHVt+w9rJviqfCDgcnqfV9Nloecry+H/
-         FxBp4nS8f/iTg5qJgVOpLT6RBSRXgwEjeT3fiWLu2QwLkTZAWMC+iQ9XadAmwPkj2ICc
-         +Ml+7CwNFhUVdrv527GDQQ/cE3zqmJ2EiVbwtFYOrOi6/+04yJ7JPves8T94CkHHZZjI
-         oWcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8RETl6EZ/q+KZQKZQu0x6dpqQFHJLgaukB+KnrSsVWE=;
-        b=BpUd4zir4xE6gNWSBl+a2by3TbC9oR06E9szB/PfNZwhwTW0Dd/eYcftADFBAQZ11w
-         cpF+p9hVFfIJTFInsF0jP021dknzIGq1g4fXvCt30+RYKd2J/zGy+CzbUDO4dHQHnu/N
-         9bqVopi5BUuYoNhSSCtBhZw5GaoVqsXFslr0re1e8wKKuZ+eXud3VSyuC7PDAGE6TNmk
-         G+Adji5nigfxnjcXTLgkTyxGZVy5tPPaWfowQ4w/Cj2WG0TilBquAIosezRKHxfjnCda
-         dMhuk1M6pllAbvGYszFhmqRk1GkQhH9rgkNvpg56FWGoq6gcX/nbt6P34znTN1MizJT7
-         rLUg==
-X-Gm-Message-State: AOAM532FyzYJfGeSFj27BKrKE9GZCQfOvQsLkoX8Bd9ypp7usO/Qxszp
-        SEfOYXlddYQc0oO+LQX9bYcHc4LsgEg=
-X-Google-Smtp-Source: ABdhPJzdR4fS3FSUgtdtqASK6+b1zMem6EG63SPfkBRBIsZFX7+F/U/i1bney2lGJqz6OmegdjV52A==
-X-Received: by 2002:a05:6402:34d1:: with SMTP id w17mr41913845edc.229.1637867242903;
-        Thu, 25 Nov 2021 11:07:22 -0800 (PST)
-Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id b11sm2893032edz.50.2021.11.25.11.07.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Nov 2021 11:07:22 -0800 (PST)
-Subject: Re: [PATCH 1/2] arm64: dts: rockchip: rk356x: Add HDMI audio nodes
-To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211125100836.423808-1-frattaroli.nicolas@gmail.com>
- <20211125100836.423808-2-frattaroli.nicolas@gmail.com>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <08774d87-97e0-6afa-2816-bf78949e4e68@gmail.com>
-Date:   Thu, 25 Nov 2021 20:07:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S1350353AbhKYTNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 14:13:02 -0500
+Received: from mga18.intel.com ([134.134.136.126]:23908 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232430AbhKYTLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 14:11:02 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="222427415"
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="222427415"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 11:07:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="675337255"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 25 Nov 2021 11:07:48 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqK5z-0006oh-Ob; Thu, 25 Nov 2021 19:07:47 +0000
+Date:   Fri, 26 Nov 2021 03:07:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: drivers/scsi/qedi/qedi_main.c:1540:13: warning: variable 'page' set
+ but not used
+Message-ID: <202111260317.6lzepIX6-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20211125100836.423808-2-frattaroli.nicolas@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
+Hi Florian,
 
-Some comments...
+First bad commit (maybe != root cause):
 
-On 11/25/21 11:08 AM, Nicolas Frattaroli wrote:
-> This adds the i2s0 node and an hdmi-sound sound device to the
-> rk356x device tree. On the rk356[68], the i2s0 controller is
-> connected to HDMI audio.
-> 
-> Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-> ---
->  arch/arm64/boot/dts/rockchip/rk356x.dtsi | 32 ++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> index 3c09cf6d4c37..ad4053402eef 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> @@ -614,6 +614,21 @@ hdmi_in_vp2: endpoint@2 {
->  		};
->  	};
->  
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5f53fa508db098c9d372423a6dac31c8a5679cdf
+commit: 1d987052e32f3554e84a296c4494551bc60f3877 MIPS: BMIPS: Enable PCI Kconfig
+date:   2 weeks ago
+config: mips-randconfig-c004-20211118 (https://download.01.org/0day-ci/archive/20211126/202111260317.6lzepIX6-lkp@intel.com/config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project c46becf500df2a7fb4b4fce16178a036c344315a)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install mips cross compiling tool for clang build
+        # apt-get install binutils-mips-linux-gnu
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1d987052e32f3554e84a296c4494551bc60f3877
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout 1d987052e32f3554e84a296c4494551bc60f3877
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=mips 
 
-> +	hdmi_sound: hdmi-sound {
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Some DT sort rules:
+All warnings (new ones prefixed by >>):
 
-For nodes:
-Sort things without reg alphabetical first,
-then sort the rest by reg address.
+>> drivers/scsi/qedi/qedi_main.c:1540:13: warning: variable 'page' set but not used [-Wunused-but-set-variable]
+           dma_addr_t page;
+                      ^
+>> drivers/scsi/qedi/qedi_main.c:2092:10: warning: format specifies type 'char' but the argument has type 'int' [-Wformat]
+                                 SYSFS_FLAG_FW_SEL_BOOT);
+                                 ^~~~~~~~~~~~~~~~~~~~~~
+   drivers/scsi/qedi/qedi.h:361:32: note: expanded from macro 'SYSFS_FLAG_FW_SEL_BOOT'
+   #define SYSFS_FLAG_FW_SEL_BOOT 2
+                                  ^
+   drivers/scsi/qedi/qedi_main.c:2259:35: warning: format specifies type 'char' but the argument has type 'int' [-Wformat]
+                   rc = snprintf(buf, 3, "%hhd\n", SYSFS_FLAG_FW_SEL_BOOT);
+                                          ~~~~     ^~~~~~~~~~~~~~~~~~~~~~
+                                          %d
+   drivers/scsi/qedi/qedi.h:361:32: note: expanded from macro 'SYSFS_FLAG_FW_SEL_BOOT'
+   #define SYSFS_FLAG_FW_SEL_BOOT 2
+                                  ^
+   3 warnings generated.
 
-> +		compatible = "simple-audio-card";
 
-simple-audio-card,name = "HDMI";
+vim +/page +1540 drivers/scsi/qedi/qedi_main.c
 
-> +		simple-audio-card,format = "i2s";
-> +		simple-audio-card,mclk-fs = <256>;
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1534  
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1535  static int qedi_alloc_bdq(struct qedi_ctx *qedi)
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1536  {
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1537  	int i;
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1538  	struct scsi_bd *pbl;
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1539  	u64 *list;
+ace7f46ba5fde7 Manish Rangankar 2016-12-01 @1540  	dma_addr_t page;
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1541  
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1542  	/* Alloc dma memory for BDQ buffers */
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1543  	for (i = 0; i < QEDI_BDQ_NUM; i++) {
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1544  		qedi->bdq[i].buf_addr =
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1545  				dma_alloc_coherent(&qedi->pdev->dev,
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1546  						   QEDI_BDQ_BUF_SIZE,
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1547  						   &qedi->bdq[i].buf_dma,
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1548  						   GFP_KERNEL);
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1549  		if (!qedi->bdq[i].buf_addr) {
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1550  			QEDI_ERR(&qedi->dbg_ctx,
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1551  				 "Could not allocate BDQ buffer %d.\n", i);
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1552  			return -ENOMEM;
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1553  		}
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1554  	}
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1555  
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1556  	/* Alloc dma memory for BDQ page buffer list */
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1557  	qedi->bdq_pbl_mem_size = QEDI_BDQ_NUM * sizeof(struct scsi_bd);
+fa97c51109867c Nilesh Javali    2018-11-21  1558  	qedi->bdq_pbl_mem_size = ALIGN(qedi->bdq_pbl_mem_size, QEDI_PAGE_SIZE);
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1559  	qedi->rq_num_entries = qedi->bdq_pbl_mem_size / sizeof(struct scsi_bd);
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1560  
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1561  	QEDI_INFO(&qedi->dbg_ctx, QEDI_LOG_CONN, "rq_num_entries = %d.\n",
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1562  		  qedi->rq_num_entries);
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1563  
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1564  	qedi->bdq_pbl = dma_alloc_coherent(&qedi->pdev->dev,
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1565  					   qedi->bdq_pbl_mem_size,
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1566  					   &qedi->bdq_pbl_dma, GFP_KERNEL);
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1567  	if (!qedi->bdq_pbl) {
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1568  		QEDI_ERR(&qedi->dbg_ctx, "Could not allocate BDQ PBL.\n");
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1569  		return -ENOMEM;
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1570  	}
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1571  
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1572  	/*
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1573  	 * Populate BDQ PBL with physical and virtual address of individual
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1574  	 * BDQ buffers
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1575  	 */
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1576  	pbl = (struct scsi_bd  *)qedi->bdq_pbl;
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1577  	for (i = 0; i < QEDI_BDQ_NUM; i++) {
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1578  		pbl->address.hi =
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1579  				cpu_to_le32(QEDI_U64_HI(qedi->bdq[i].buf_dma));
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1580  		pbl->address.lo =
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1581  				cpu_to_le32(QEDI_U64_LO(qedi->bdq[i].buf_dma));
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1582  		QEDI_INFO(&qedi->dbg_ctx, QEDI_LOG_CONN,
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1583  			  "pbl [0x%p] pbl->address hi [0x%llx] lo [0x%llx], idx [%d]\n",
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1584  			  pbl, pbl->address.hi, pbl->address.lo, i);
+da09091732aecc Tomer Tayar      2017-12-27  1585  		pbl->opaque.iscsi_opaque.reserved_zero[0] = 0;
+da09091732aecc Tomer Tayar      2017-12-27  1586  		pbl->opaque.iscsi_opaque.reserved_zero[1] = 0;
+da09091732aecc Tomer Tayar      2017-12-27  1587  		pbl->opaque.iscsi_opaque.reserved_zero[2] = 0;
+da09091732aecc Tomer Tayar      2017-12-27  1588  		pbl->opaque.iscsi_opaque.opaque = cpu_to_le16(i);
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1589  		pbl++;
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1590  	}
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1591  
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1592  	/* Allocate list of PBL pages */
+750afb08ca7131 Luis Chamberlain 2019-01-04  1593  	qedi->bdq_pbl_list = dma_alloc_coherent(&qedi->pdev->dev,
+fa97c51109867c Nilesh Javali    2018-11-21  1594  						QEDI_PAGE_SIZE,
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1595  						&qedi->bdq_pbl_list_dma,
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1596  						GFP_KERNEL);
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1597  	if (!qedi->bdq_pbl_list) {
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1598  		QEDI_ERR(&qedi->dbg_ctx,
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1599  			 "Could not allocate list of PBL pages.\n");
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1600  		return -ENOMEM;
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1601  	}
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1602  
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1603  	/*
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1604  	 * Now populate PBL list with pages that contain pointers to the
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1605  	 * individual buffers.
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1606  	 */
+fa97c51109867c Nilesh Javali    2018-11-21  1607  	qedi->bdq_pbl_list_num_entries = qedi->bdq_pbl_mem_size /
+fa97c51109867c Nilesh Javali    2018-11-21  1608  					 QEDI_PAGE_SIZE;
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1609  	list = (u64 *)qedi->bdq_pbl_list;
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1610  	page = qedi->bdq_pbl_list_dma;
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1611  	for (i = 0; i < qedi->bdq_pbl_list_num_entries; i++) {
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1612  		*list = qedi->bdq_pbl_dma;
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1613  		list++;
+fa97c51109867c Nilesh Javali    2018-11-21  1614  		page += QEDI_PAGE_SIZE;
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1615  	}
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1616  
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1617  	return 0;
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1618  }
+ace7f46ba5fde7 Manish Rangankar 2016-12-01  1619  
 
-> +		simple-audio-card,name = "hdmi-sound";
+:::::: The code at line 1540 was first introduced by commit
+:::::: ace7f46ba5fde7273207c7122b0650ceb72510e0 scsi: qedi: Add QLogic FastLinQ offload iSCSI driver framework.
 
-Exceptions:
-Sort simple-audio-card,name above other simple-audio-card properties.
+:::::: TO: Manish Rangankar <manish.rangankar@cavium.com>
+:::::: CC: Martin K. Petersen <martin.petersen@oracle.com>
 
-Shouldn't we standardize to SPDIF, HDMI and Analog similar to rk3318/rk3328?
-Make a shorter label without spaces or special chars, so that chars
-don't get removed?
-See "aplay -l" screen print.
-
-Maybe rename to "HDMI"?
-
-> +		status = "disabled";
-> +
-> +		simple-audio-card,cpu {
-> +			sound-dai = <&i2s0_8ch>;
-> +		};
-
-Add empty line between nodes.
-
-Not sure if Heiko cares, but when alphabetical sort I get this:
-simple-audio-card,codec
-simple-audio-card,cpu
-
-> +		simple-audio-card,codec {
-> +			sound-dai = <&hdmi>;
-> +		};
-> +	};
-> +
->  	qos_gpu: qos@fe128000 {
->  		compatible = "rockchip,rk3568-qos", "syscon";
->  		reg = <0x0 0xfe128000 0x0 0x20>;
-> @@ -789,6 +804,23 @@ spdif: spdif@fe460000 {
->  		status = "disabled";
->  	};
->  
-> +	i2s0_8ch: i2s@fe400000 {
-> +		compatible = "rockchip,rk3568-i2s-tdm";
-> +		reg = <0x0 0xfe400000 0x0 0x1000>;
-> +		interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
-> +		assigned-clocks = <&cru CLK_I2S0_8CH_TX_SRC>, <&cru CLK_I2S0_8CH_RX_SRC>;
-> +		assigned-clock-rates = <1188000000>, <1188000000>;
-> +		clocks = <&cru MCLK_I2S0_8CH_TX>, <&cru MCLK_I2S0_8CH_RX>, <&cru HCLK_I2S0_8CH>;
-> +		clock-names = "mclk_tx", "mclk_rx", "hclk";
-> +		dmas = <&dmac1 0>;
-> +		dma-names = "tx";
-> +		resets = <&cru SRST_M_I2S0_8CH_TX>, <&cru SRST_M_I2S0_8CH_RX>;
-> +		reset-names = "tx-m", "rx-m";
-> +		rockchip,grf = <&grf>;
-> +		#sound-dai-cells = <0>;
-> +		status = "disabled";
-> +	};
-> +
->  	i2s1_8ch: i2s@fe410000 {
->  		compatible = "rockchip,rk3568-i2s-tdm";
->  		reg = <0x0 0xfe410000 0x0 0x1000>;
-> 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
