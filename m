@@ -2,179 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 493D045DE78
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 17:15:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F35945DE7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 17:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242437AbhKYQS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 11:18:27 -0500
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:13426 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234898AbhKYQQO (ORCPT
+        id S1356398AbhKYQSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 11:18:35 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46866 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234339AbhKYQQe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 11:16:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1637856781; x=1669392781;
-  h=from:to:cc:subject:date:message-id:
-   content-transfer-encoding:mime-version;
-  bh=YOnPg1yWvhlcDajxbwiBgxnb2utQRtNzzz9A2k2ygLE=;
-  b=Fe+CG96Bry6a4o6G9zjTj+WEZrShpllDBF4r6lv+RagzIhrl1iJyxhN5
-   Lvw2QVfcpgYfaJnoG3lOCVjlU9TUrECv34skPrSyGCP9a+CRWf75YTlYb
-   tyUY2hiKLPz0bctXcxTgWAqujeTXik0WpBSdT0qQFTa19SsJFkwdqBXE0
-   eSnY4L4+V4KVzOhiFi671FEPyd5XGgtIip91GZzwLLNVKRncFt8DEYy4e
-   LaUQQRpyYhMiqWrqcBehL8Y773uu2wPPNlrBQS7fN41Yp2DlExFSnBn0u
-   2nCpCgGsgBr4L6fOVN5iE0Z9YkkVsjGWj2a+mLRms9aAR27Tpa5Bc2DtF
-   w==;
-X-IronPort-AV: E=Sophos;i="5.87,263,1631548800"; 
-   d="scan'208";a="191436745"
-Received: from mail-mw2nam12lp2044.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.44])
-  by ob1.hgst.iphmx.com with ESMTP; 26 Nov 2021 00:13:00 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AxFtOWRsdIQJe3+74NhMY4zOGksoEUBUY2UN6Mwf4TrRRv7K6Rv6kgzxMjrta5fYizwoIdlzYZkNaSvE43rS5WwpeWzlYQYWWxdbx0Y30DS2pTLHw1QS2kGOQ0mJ5C+GcYIjPSXTSOdEYMlcdouIzZGlK3bjorpur4Aq3iNm8lhZDzAXxgz1nXX78VPSwhi8WSsLD0g3qsPkXxm6Iq8nWbYRIA2gha39GahxvDBBdo5L2ofN6hpCVmwR+o93mCjbuSwDlOEd4dUP3J6RL7ohxwdrRQ2Sa3vxRBmZqnkGxORHNHSw6ZhGm0Wd6/Lre6beAAOMZegXUL6DGz5Y2InxdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KmO85t9IjdT7UK3eaXCTEdRR7ZIJ+0ZWKG3E+y2umq0=;
- b=RsAIYE3RuXCRrJkzYkmdvhSAtqF/0UtwrzzK8HuLyoF3VtgjovQ4thJ9SJ5Rqm9TOtFq2wZCYyT3RQhPvBCvqV4+0MUNw5vsSw+iP4d3Sdmy84aWzUbpXm51t98/zabeBD9aAt0RLg/Rnu09x/T+FOCUzMV1YgwrbIADykykKXSnk0SFFZaFX+GORGc4jkjFJ/FWPaGxPuJLwJ2ULqFkwm8K6qmOnCoIOmwZQbBuk9H8bsqT/oZsFp/+e0ivuEDISZCaX+nMx+De2XndT0dcCH96/7pm5xN25YsRUOn3rW1QPeNLiXGFPT+3g9ySlhP9W9n9gDRoy12ishN33VTYXA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KmO85t9IjdT7UK3eaXCTEdRR7ZIJ+0ZWKG3E+y2umq0=;
- b=aNvCqU0u/OiIwlqShyYPEqDmyeG96K282DwjPsHBFMdEivajoq4H4y/8a8BWrFKomDC8979myMexBXOtfHkb3hUpg+PKiZ4Hjwoyj4WLs+80Rbq07cw2LMHrQmEIP8RHMF7IIQQjE1wEiUe2rRsHuTznYaTAjPDDymQW3fWZbOM=
-Received: from PH0PR04MB7158.namprd04.prod.outlook.com (2603:10b6:510:8::18)
- by PH0PR04MB7269.namprd04.prod.outlook.com (2603:10b6:510:1c::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Thu, 25 Nov
- 2021 16:13:01 +0000
-Received: from PH0PR04MB7158.namprd04.prod.outlook.com
- ([fe80::c504:3d44:5aef:f3ca]) by PH0PR04MB7158.namprd04.prod.outlook.com
- ([fe80::c504:3d44:5aef:f3ca%4]) with mapi id 15.20.4734.022; Thu, 25 Nov 2021
- 16:13:01 +0000
-From:   Niklas Cassel <Niklas.Cassel@wdc.com>
-To:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>
-CC:     Niklas Cassel <Niklas.Cassel@wdc.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [PATCH] nvme: report write pointer for a full zone as zone start +
- zone len
-Thread-Topic: [PATCH] nvme: report write pointer for a full zone as zone start
- + zone len
-Thread-Index: AQHX4hdRt5zKIuN2cE+GwwUsJOKF0w==
-Date:   Thu, 25 Nov 2021 16:13:01 +0000
-Message-ID: <20211125161247.164381-1-Niklas.Cassel@wdc.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: git-send-email 2.33.1
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2a19c671-f100-4bf2-f5e6-08d9b02e7438
-x-ms-traffictypediagnostic: PH0PR04MB7269:
-x-microsoft-antispam-prvs: <PH0PR04MB7269F3DA33ED416AE0BABAE2F2629@PH0PR04MB7269.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6bqQJTASfyEgrbLao7Qi18BOQ8SJ1RlYrxwlnAF7RaPF2MwXH9n4aVco5YUX9njEzH+bwLEC3FG2d9z9ju1IKZhlid+5Ck6VA6oyTc58UaRQf6unHtTXjmfo2JwkXVdAl1NJB5mQNQw7CVncYSv+08V04enGoEDq8gQZ30WOP/fL54EnexbNkL2TCA0uuYG3vwbdjmqJe+pxDzPJrGtfRdLF1DCqq5bBEJKpJ0RJzqO9/gSx/7DW0alsxrxpZhBqiP5pg1rMf7GaeTF5fK7nvnd7E5cxRKDMPhjUYtDsQ4bfmNNhhJm9aAtc0WK4gqjDUUTRYWrj1NDMN64Xl+ANEFAgmyK4WIHWiMBS17Ly3kYTTqASiI0n0xAHbX7RDcMzkS1dBUqt8zUFv+KOUhlI+wnoo6EX831CmqQSU3rbgSXfoGqUFK3X175GfIIjOqJc3xoTC/DMwn8Fv4P7FtahASeYllHCIKjOtUIM587xNx3bBeR4cYpHnYgB4DfaoGuuaSZPvoSKGOQVVX07invSKIOKap+bebqfyB56LpcuO18pgigdTUizHyeJAFwf+wsirbo411XRS2pdWTZxoin4JvGWYP3O3egCe1EomjpxvHxoPiMrZnoc6IgxMyuc8wJ5+uVeg6bHaPNqFe7VxqaCKKOWUPxdt7WPHjno1mxyYi6+cersCAIpMbiwMuzMmdQ73s4ylsmp5NlUkcrLNEaDsA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7158.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(122000001)(1076003)(66446008)(82960400001)(36756003)(8676002)(38100700002)(71200400001)(2616005)(66556008)(38070700005)(66476007)(66946007)(64756008)(83380400001)(508600001)(5660300002)(2906002)(76116006)(91956017)(4326008)(186003)(6486002)(8936002)(316002)(6506007)(110136005)(26005)(6512007)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?xY9H1YSX5FjGGAt77hzVb8WQSXsKtT5u/zPOBcNEEH5iLimNqc94Dr9jJB?=
- =?iso-8859-1?Q?dFrVAvV0e0ZF4j3SlBvGriheC/stVMvowtwb/isAwikacT8LwaLvDVv/XV?=
- =?iso-8859-1?Q?RRrF6b0IjE4XpMMvOL1MdiW+Bcviqr++r4cMTB9f211JSd5z/RzyVDCIyb?=
- =?iso-8859-1?Q?wWpjgNc+CoRZy+/6fMk4d2nA9yTQmuZ/U21gL8DnBXDf/6Sv9A5f+mjhWa?=
- =?iso-8859-1?Q?JVfZY89GwUoKO1vqf23c0qFmcK6d6iZTSG0Jol6rYAMmUdw3MUNe8bKjgg?=
- =?iso-8859-1?Q?HMofz19Hn7s33udgA72ANS6M5YOyfdoAMQbNI3/dgEPYa9/Fi5vt6v766e?=
- =?iso-8859-1?Q?HheWwiGfOIfHhIDvBMhRp1L5GKZJhAzhin1rYvY/izUcqgyuhJ+TM2mu1/?=
- =?iso-8859-1?Q?HunbCb5UrEEihtyvWUCf27l0lCUKD+whTZfcVFuerf0dI4ezOuX8vzjXjy?=
- =?iso-8859-1?Q?4BZBZrp6Y5do6gIZk0Y2Lhb+Ntjogcou6TkkGvvVY0WrhfEh7BuPURPOg9?=
- =?iso-8859-1?Q?/ZN23GaaPJSFlnfn/tPVj8eHae+OXkK0NK4L27JQ1I9rARLdWRK/0NLygp?=
- =?iso-8859-1?Q?pjR7p4IByRPrxTwpKuR9dELzBoxXx57DBHakRJFLJDB3vUUmkwNJEJAp8E?=
- =?iso-8859-1?Q?aKqxU5elR66DAzryoPSmFuzOklLlsbRsj2I/sZ5Gra2mcUdZkPzBAvHMc6?=
- =?iso-8859-1?Q?ByCY4oX61xa7O7uPJDWSkD9E//GgM8/ZNlynvg0K/RxUL8/Nf4+ycG/+X0?=
- =?iso-8859-1?Q?UkIKnO31ulaUNFNIDCOtEh+su2ZU0CpGB0Z0IE9q/RSlS3fAT2hq8TYlId?=
- =?iso-8859-1?Q?NvREDO0F40IEFnHZbYpdhcdNuxu80UZ86RlqpwlMVOqvAA1n4+VxTiUPlB?=
- =?iso-8859-1?Q?ggoI8KLcyytFA8JsbuijWODHVtjinGDt7UHunXRqv2A6ac6FiTN1w2FO0y?=
- =?iso-8859-1?Q?MDbbdaHV7oxCOAT5Ang4S3RktRR4hf48UJ16vi40SZiyyvnpLDG5TeNdwI?=
- =?iso-8859-1?Q?uZZDOyqumdmNb/AQvDS3o/LncgPSDYDuWkV2UB40Sz+isgA0Vx8Xs4DM2Z?=
- =?iso-8859-1?Q?9eiy96l2J1h6B2tX3qByP6YjOu10+UPMT8cWgoVGDpO0hp22sYRE5uEVVW?=
- =?iso-8859-1?Q?RXuPmExIb8oelilvl0LeK6ylGUzgojI+P3271WXQli2VkQuss7BZL7n0as?=
- =?iso-8859-1?Q?KViGxWaRF2UJL/qtd/bbw6XVRmqTDbCfTf5oVQT4nl3ULmGPKcuhiZ+Nbj?=
- =?iso-8859-1?Q?Ly7pmrql03a6t+DtYeM6CrGa9BCp13buv+fnHI93RK9tIlYAiuOHKUtNAq?=
- =?iso-8859-1?Q?as3glkhFEaYT7ZBuT+Kmtu9ydMmZduUPTkCvc/3y8jLjCsf92oEaqPMWDG?=
- =?iso-8859-1?Q?XWv2mHyCrcbT80ez/XXQYDCkloNAwZNt8rPde45VOi4j2CSTT7YXTBsYjg?=
- =?iso-8859-1?Q?mEXg0ndoM3wiDSaVGGXuHVHur+e+eKaxlgqQd7/bNX8vgy7bS/wioWBaY+?=
- =?iso-8859-1?Q?gyRmwRLB+VhemnjJ7/0blFl6hGFacUSc+vIvdMdLTx1mIsZYtrhGohrJZ1?=
- =?iso-8859-1?Q?/KoM8YE3j+LjnElErw/Iilgnxt1RHB+tr2XWVNJ8Dq9JZf/vXNsXdjtzzS?=
- =?iso-8859-1?Q?I4rOd9lYAUtf3/pFEFIT6NOtRixOt3UPvO+0zRE9wSmgwIvqOSWTs2gsgB?=
- =?iso-8859-1?Q?62zI7DAgL3m6TwmZOkE=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 25 Nov 2021 11:16:34 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1APF1AaS031305;
+        Thu, 25 Nov 2021 16:13:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=cdKAV0f7xwqGAzQlwfnGcviBWxxPjXMrAZX1/EbOHeI=;
+ b=UjiwJ1ZKPydVOmsBE3BeLu/PUNQUerWCtQXnv7nXFc9GkbqTmgqN3OafZOV9lGN9VYwr
+ 4eIrMqsI0m4l+VNiDHdsDAioK6fKJxgl2idtxLfoIyOVQMA/NdIS28nSsjp55+64+5CS
+ JomT/1Qmcq9TDVv+chPFIqs6XIHHnl3Fguknze92ZMWADIV+XmWobDCL17gidfNVSv1y
+ Lu54AwKrT89HZt0L3T9CN8DhoCSsWkAxY4+WU6pu/aGOQnvyx0MxMXIDiu9GA0riSzic
+ qVMeYuTfCyO7MgUxYGZIkkIG0TEL2wIiv1+vitYFQlD7oL888vCUPdWjPSleZBIyhQr1 +A== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cj7qf057b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Nov 2021 16:13:17 +0000
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1APG3GVg025884;
+        Thu, 25 Nov 2021 16:13:15 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03fra.de.ibm.com with ESMTP id 3cernatpje-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Nov 2021 16:13:14 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1APGDClq34079000
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Nov 2021 16:13:12 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 86C5BAE051;
+        Thu, 25 Nov 2021 16:13:12 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2F534AE056;
+        Thu, 25 Nov 2021 16:13:12 +0000 (GMT)
+Received: from thinkpad (unknown [9.171.40.168])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Thu, 25 Nov 2021 16:13:12 +0000 (GMT)
+Date:   Thu, 25 Nov 2021 17:13:10 +0100
+From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Faiyaz Mohammed <faiyazm@codeaurora.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH 1/1] mm/slub: fix endless "No data" printing for
+ alloc/free_traces attribute
+Message-ID: <20211125171310.0fd27afa@thinkpad>
+In-Reply-To: <a081d544-41f0-29ab-6d46-1afa382af8be@suse.cz>
+References: <20211117193932.4049412-1-gerald.schaefer@linux.ibm.com>
+        <20211117193932.4049412-2-gerald.schaefer@linux.ibm.com>
+        <9a4367c0-8141-f03c-e5a1-13483794d3e8@suse.cz>
+        <20211119205943.1ee5da0d@thinkpad>
+        <b513bbcf-f1ea-cfa6-763a-003a60e51da5@suse.cz>
+        <20211122211400.41bf64cf@thinkpad>
+        <20211122213330.66b7893e@thinkpad>
+        <a081d544-41f0-29ab-6d46-1afa382af8be@suse.cz>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7158.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a19c671-f100-4bf2-f5e6-08d9b02e7438
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Nov 2021 16:13:01.2857
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dzLAcC9bTkEegZp7BchnJ/63FsxeJM8MQSylwTDE2fmP9RE7ir4rC4PU3fZm5hAOSY81RpeeijL3G5+/1FmZxw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7269
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: --l6ZNj_MkE0tNUneJECDjsMlInWDatD
+X-Proofpoint-ORIG-GUID: --l6ZNj_MkE0tNUneJECDjsMlInWDatD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-25_06,2021-11-25_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ lowpriorityscore=0 mlxlogscore=999 spamscore=0 suspectscore=0 bulkscore=0
+ priorityscore=1501 impostorscore=0 clxscore=1015 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111250089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Niklas Cassel <niklas.cassel@wdc.com>
+On Tue, 23 Nov 2021 15:19:49 +0100
+Vlastimil Babka <vbabka@suse.cz> wrote:
 
-The write pointer in NVMe ZNS is invalid for a zone in zone state full.
-The same also holds true for ZAC/ZBC.
+> On 11/22/21 21:33, Gerald Schaefer wrote:
+> > On Mon, 22 Nov 2021 21:14:00 +0100
+> > Gerald Schaefer <gerald.schaefer@linux.ibm.com> wrote:
+> > 
+> > [...]
+> >> 
+> >> Thanks. While testing this properly, yet another bug showed up. The idx
+> >> in op->show remains 0 in all iterations, so I always see the same line
+> >> printed t->count times (or infinitely, ATM). Not sure if this only shows
+> >> on s390 due to endianness, but the reason is this:
+> >> 
+> >>   unsigned int idx = *(unsigned int *)v;
+> 
+> Uh, good catch. I was actually looking suspiciously at how we cast signed to
+> unsigned, but didn't occur to me that shortening together with endiannes is
+> the problem.
+> 
+> >> 
+> >> IIUC, void *v is always the same as loff_t *ppos, and therefore idx also
+> >> should be *ppos. De-referencing the loff_t * with an unsigned int * only
+> >> gives the upper 32 bit half of the 64 bit value, which remains 0.
+> >> 
+> >> This would be fixed e.g. with
+> >> 
+> >>   unsigned int idx = (unsigned int) *(loff_t *) v;
+> 
+> With all this experience I'm now inclined to rather follow more the example
+> in Documentation/filesystems/seq_file.rst and don't pass around the pointer
+> that we got as ppos in slab_debugfs_start(), and that seq_file.c points to
+> m->index.
+> 
+> In that example an own value is kmalloced:
+> 
+> loff_t *spos = kmalloc(sizeof(loff_t), GFP_KERNEL);
+> 
+> while we could just make this a field of loc_track?
 
-The current behavior for NVMe is to simply propagate the wp reported by
-the drive, even for full zones. Since the wp is invalid for a full zone,
-the wp reported by the drive might be implemented as a don't care term.
+Yes, following the example sounds good, and it would also make proper use
+of *v in op->next, which might make the code more readable. It also looks
+like it already does exactly what is needed here, i.e. have a simple
+iterator that just counts the lines.
 
-The way that the sd_zbc driver handles a full zone is to always report
-the wp as zone start + zone len, regardless of what the drive reported.
-null_blk also follows this convention.
+I don't think the iterator needs to be saved in loc_track. IIUC, it is
+already passed around like in the example, and can then be simply compared
+to t->count, similar to the existing code.
 
-Do the same for NVMe, so that a BLKREPORTZONE ioctl reports the write
-pointer for a full zone in a consistent way, regardless of the interface
-of the underlying zoned block device.
+This is what I'm currently testing, and it seems to work fine. Will send
+a new patch, if there are no objections:
 
-blkzone report before patch:
-start: 0x000040000, len 0x040000, cap 0x03e000, wptr 0xfffffffffffbfff8
-reset:0 non-seq:0, zcond:14(fu) [type: 2(SEQ_WRITE_REQUIRED)]
-
-blkzone report after patch:
-start: 0x000040000, len 0x040000, cap 0x03e000, wptr 0x040000 reset:0
-non-seq:0, zcond:14(fu) [type: 2(SEQ_WRITE_REQUIRED)]
-
-Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
 ---
- drivers/nvme/host/zns.c | 2 ++
- 1 file changed, 2 insertions(+)
+ mm/slub.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/nvme/host/zns.c b/drivers/nvme/host/zns.c
-index bfc259e0d7b8..4091b955ce62 100644
---- a/drivers/nvme/host/zns.c
-+++ b/drivers/nvme/host/zns.c
-@@ -167,6 +167,8 @@ static int nvme_zone_parse_entry(struct nvme_ns *ns,
- 	zone.capacity =3D nvme_lba_to_sect(ns, le64_to_cpu(entry->zcap));
- 	zone.start =3D nvme_lba_to_sect(ns, le64_to_cpu(entry->zslba));
- 	zone.wp =3D nvme_lba_to_sect(ns, le64_to_cpu(entry->wp));
-+	if (zone.cond =3D=3D BLK_ZONE_COND_FULL)
-+		zone.wp =3D zone.start + zone.len;
-=20
- 	return cb(&zone, idx, data);
+diff --git a/mm/slub.c b/mm/slub.c
+index a8626825a829..effb7b8d8f88 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -6052,10 +6052,9 @@ __initcall(slab_sysfs_init);
+ #if defined(CONFIG_SLUB_DEBUG) && defined(CONFIG_DEBUG_FS)
+ static int slab_debugfs_show(struct seq_file *seq, void *v)
+ {
+-
+-	struct location *l;
+-	unsigned int idx = *(unsigned int *)v;
+ 	struct loc_track *t = seq->private;
++	loff_t idx = *(loff_t *) v;
++	struct location *l;
+ 
+ 	if (idx < t->count) {
+ 		l = &t->loc[idx];
+@@ -6099,23 +6098,29 @@ static int slab_debugfs_show(struct seq_file *seq, void *v)
+ 
+ static void slab_debugfs_stop(struct seq_file *seq, void *v)
+ {
++	kfree(v);
  }
---=20
-2.33.1
+ 
+ static void *slab_debugfs_next(struct seq_file *seq, void *v, loff_t *ppos)
+ {
+ 	struct loc_track *t = seq->private;
++	loff_t *idxp = (loff_t *) v;
+ 
+-	v = ppos;
+-	++*ppos;
+-	if (*ppos <= t->count)
+-		return v;
++	*ppos = ++(*idxp);
++	if (*idxp <= t->count)
++		return idxp;
+ 
+ 	return NULL;
+ }
+ 
+ static void *slab_debugfs_start(struct seq_file *seq, loff_t *ppos)
+ {
+-	return ppos;
++	loff_t *idxp = kmalloc(sizeof(loff_t), GFP_KERNEL);
++
++	if (!idxp)
++		return NULL;
++	*idxp = *ppos;
++	return idxp;
+ }
+ 
+ static const struct seq_operations slab_debugfs_sops = {
+-- 
+2.32.0
+
