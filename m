@@ -2,101 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F31B45D4F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 07:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 105A445D4F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 07:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347751AbhKYGwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 01:52:36 -0500
-Received: from mga07.intel.com ([134.134.136.100]:24478 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229914AbhKYGuf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 01:50:35 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="298858882"
-X-IronPort-AV: E=Sophos;i="5.87,262,1631602800"; 
-   d="scan'208";a="298858882"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2021 22:44:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,262,1631602800"; 
-   d="scan'208";a="497957878"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 24 Nov 2021 22:44:24 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mq8UZ-0005uM-Qp; Thu, 25 Nov 2021 06:44:23 +0000
-Date:   Thu, 25 Nov 2021 14:44:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: [mcgrof-next:20211116-sysctl-cleanups-v3 9/20]
- drivers/char/hpet.c:1044:23: warning: assignment to 'struct ctl_table_header
- *' from 'int' makes pointer from integer without a cast
-Message-ID: <202111251417.kSQaTZ8j-lkp@intel.com>
+        id S1349460AbhKYGvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 01:51:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346776AbhKYGt1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 01:49:27 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0173CC061746
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 22:46:16 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id v19so3797260plo.7
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 22:46:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AJKeYDChQLO4ew6FjZ6Y8Jm0rawpzT+mEb6zq+ylthQ=;
+        b=OIJaXwOyYjpHI1G9DWSPynQ3Wdu8P1n50oK6pqqXtnBW2cVj+LLSV8VwhYefEO1SAY
+         zrj9hgsv9jw7UlluOzPEu7+lVMz8wY8koTifDwOT+T3QHSFR9DPnaGO1xaCtf5w0Dg00
+         TSG99VmpJuAtUb4dc6viHVwBfOanRme39VVz8BBmW7joKZ+Z2CX/Q0M3zbcvvj7Et3Vz
+         rZJNfbrXVxyOPLBug+WdLoOCpEqA3hIoXxe+lNCMZfO8xBP7DO9wrYj22LPHFhbxDgUM
+         To993p4Ma5Llc13o4FQLjYRK/DtfqhfhW+C6nHT1ybduI1/wRJU0/jhqPfpDL/+zQ0Se
+         nmlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AJKeYDChQLO4ew6FjZ6Y8Jm0rawpzT+mEb6zq+ylthQ=;
+        b=46y9s7FIFiiAhUIJj6S0jkDuYUv/KU4IPDaKUasiGKkGdrPDwj2qlN7wvtCSvKxg8i
+         Prp4Q6COMynWZ6GQYmc2cnb2baW9Ulbh4FEvrEvLY3OkHB/IbwEU6k19ebttbjwwy1Ea
+         TgZb/rWwAA9SU2ZwRliesksUn3r5iIeAQGWLn8ndiFsYxCXBkoDLJ8cR3mzPx9T7Umo6
+         0fxlC4H9p0b9HHirXSGjsSrBmRqZuCiSMBYr1h1l0jtE1z7/RdA3lbh1GpnLRi8Kx1VL
+         zDt8j39/glkOb0hp/iRbCFZlYrdCcQMrtP0hB4iqOMAjhZP/LR6BLQwAxDc5nAbU9qRm
+         Qr3g==
+X-Gm-Message-State: AOAM533pVqUGPgQl5ThDCFgE44nOeN+x9gbX4vQxHQx14KEk30N80NLz
+        omJWuwW5A8bTxeE979ig7cATvQ==
+X-Google-Smtp-Source: ABdhPJwSiyVd0tMvU745BGU1v1Zfqqhru6Spx8LM0JTu1aWBPBkd1HNKcqGMPKfBIRAsFKd3azMakg==
+X-Received: by 2002:a17:902:ea10:b0:142:112d:c0b9 with SMTP id s16-20020a170902ea1000b00142112dc0b9mr26227788plg.35.1637822776457;
+        Wed, 24 Nov 2021 22:46:16 -0800 (PST)
+Received: from C02FT5A6MD6R.bytedance.net ([61.120.150.76])
+        by smtp.gmail.com with ESMTPSA id j17sm2082294pfj.55.2021.11.24.22.46.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 24 Nov 2021 22:46:15 -0800 (PST)
+From:   Gang Li <ligang.bdlg@bytedance.com>
+To:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Gang Li <ligang.bdlg@bytedance.com>, stable@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5] shmem: fix a race between shmem_unused_huge_shrink and shmem_evict_inode
+Date:   Thu, 25 Nov 2021 14:45:00 +0800
+Message-Id: <20211125064502.99983-1-ligang.bdlg@bytedance.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git 20211116-sysctl-cleanups-v3
-head:   06113f1d9a2d0669964adfa2e0128bd50e56b621
-commit: 766042fb8971eaa61f89cdf9b340e602ad6bc7ef [9/20] hpet: use new sysctl subdir helper register_sysctl_subdir()
-config: ia64-allyesconfig (https://download.01.org/0day-ci/archive/20211125/202111251417.kSQaTZ8j-lkp@intel.com/config)
-compiler: ia64-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/commit/?id=766042fb8971eaa61f89cdf9b340e602ad6bc7ef
-        git remote add mcgrof-next https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git
-        git fetch --no-tags mcgrof-next 20211116-sysctl-cleanups-v3
-        git checkout 766042fb8971eaa61f89cdf9b340e602ad6bc7ef
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=ia64 
+This patch fixes a data race in commit 779750d20b93 ("shmem: split huge pages
+beyond i_size under memory pressure").
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Here are call traces causing race:
 
-All warnings (new ones prefixed by >>):
+   Call Trace 1:
+     shmem_unused_huge_shrink+0x3ae/0x410
+     ? __list_lru_walk_one.isra.5+0x33/0x160
+     super_cache_scan+0x17c/0x190
+     shrink_slab.part.55+0x1ef/0x3f0
+     shrink_node+0x10e/0x330
+     kswapd+0x380/0x740
+     kthread+0xfc/0x130
+     ? mem_cgroup_shrink_node+0x170/0x170
+     ? kthread_create_on_node+0x70/0x70
+     ret_from_fork+0x1f/0x30
 
-   drivers/char/hpet.c: In function 'hpet_init':
-   drivers/char/hpet.c:1044:25: error: implicit declaration of function 'register_sysctl_subdir'; did you mean 'register_sysctl_init'? [-Werror=implicit-function-declaration]
-    1044 |         sysctl_header = register_sysctl_subdir("dev", "hpet", hpet_table);
-         |                         ^~~~~~~~~~~~~~~~~~~~~~
-         |                         register_sysctl_init
->> drivers/char/hpet.c:1044:23: warning: assignment to 'struct ctl_table_header *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-    1044 |         sysctl_header = register_sysctl_subdir("dev", "hpet", hpet_table);
-         |                       ^
-   cc1: some warnings being treated as errors
+   Call Trace 2:
+     shmem_evict_inode+0xd8/0x190
+     evict+0xbe/0x1c0
+     do_unlinkat+0x137/0x330
+     do_syscall_64+0x76/0x120
+     entry_SYSCALL_64_after_hwframe+0x3d/0xa2
 
+A simple explanation:
 
-vim +1044 drivers/char/hpet.c
+Image there are 3 items in the local list (@list).
+In the first traversal, A is not deleted from @list.
 
-  1035	
-  1036	static int __init hpet_init(void)
-  1037	{
-  1038		int result;
-  1039	
-  1040		result = misc_register(&hpet_misc);
-  1041		if (result < 0)
-  1042			return -ENODEV;
-  1043	
-> 1044		sysctl_header = register_sysctl_subdir("dev", "hpet", hpet_table);
-  1045	
-  1046		result = acpi_bus_register_driver(&hpet_acpi_driver);
-  1047		if (result < 0) {
-  1048			if (sysctl_header)
-  1049				unregister_sysctl_table(sysctl_header);
-  1050			misc_deregister(&hpet_misc);
-  1051			return result;
-  1052		}
-  1053	
-  1054		return 0;
-  1055	}
-  1056	device_initcall(hpet_init);
-  1057	
+  1)    A->B->C
+        ^
+        |
+        pos (leave)
+
+In the second traversal, B is deleted from @list. Concurrently, A is
+deleted from @list through shmem_evict_inode() since last reference counter of
+inode is dropped by other thread. Then the @list is corrupted.
+
+  2)    A->B->C
+        ^  ^
+        |  |
+     evict pos (drop)
+
+We should make sure the inode is either on the global list or deleted from
+any local list before iput().
+
+Fixed by moving inodes back to global list before we put them.
+
+Fixes: 779750d20b93 ("shmem: split huge pages beyond i_size under memory pressure")
+Cc: stable@vger.kernel.org # v4.8+
+Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+Changes in v5:
+- Fix a compile warning
+
+Changes in v4:
+- Rework the comments
+
+Changes in v3:
+- Add more comment.
+- Use list_move(&info->shrinklist, &sbinfo->shrinklist) instead of
+  list_move(pos, &sbinfo->shrinklist) for consistency.
+
+Changes in v2: https://lore.kernel.org/all/20211124030840.88455-1-ligang.bdlg@bytedance.com/
+- Move spinlock to the front of iput instead of changing lock type
+  since iput will call evict which may cause deadlock by requesting
+  shrinklist_lock.
+- Add call trace in commit message.
+
+v1: https://lore.kernel.org/lkml/20211122064126.76734-1-ligang.bdlg@bytedance.com/
+
+---
+ mm/shmem.c | 36 ++++++++++++++++++++----------------
+ 1 file changed, 20 insertions(+), 16 deletions(-)
+
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 9023103ee7d8..a6487fe0583f 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -554,7 +554,7 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+ 	struct shmem_inode_info *info;
+ 	struct page *page;
+ 	unsigned long batch = sc ? sc->nr_to_scan : 128;
+-	int removed = 0, split = 0;
++	int split = 0;
+ 
+ 	if (list_empty(&sbinfo->shrinklist))
+ 		return SHRINK_STOP;
+@@ -569,7 +569,6 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+ 		/* inode is about to be evicted */
+ 		if (!inode) {
+ 			list_del_init(&info->shrinklist);
+-			removed++;
+ 			goto next;
+ 		}
+ 
+@@ -577,12 +576,12 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+ 		if (round_up(inode->i_size, PAGE_SIZE) ==
+ 				round_up(inode->i_size, HPAGE_PMD_SIZE)) {
+ 			list_move(&info->shrinklist, &to_remove);
+-			removed++;
+ 			goto next;
+ 		}
+ 
+ 		list_move(&info->shrinklist, &list);
+ next:
++		sbinfo->shrinklist_len--;
+ 		if (!--batch)
+ 			break;
+ 	}
+@@ -602,7 +601,7 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+ 		inode = &info->vfs_inode;
+ 
+ 		if (nr_to_split && split >= nr_to_split)
+-			goto leave;
++			goto move_back;
+ 
+ 		page = find_get_page(inode->i_mapping,
+ 				(inode->i_size & HPAGE_PMD_MASK) >> PAGE_SHIFT);
+@@ -616,38 +615,43 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
+ 		}
+ 
+ 		/*
+-		 * Leave the inode on the list if we failed to lock
+-		 * the page at this time.
++		 * Move the inode on the list back to shrinklist if we failed
++		 * to lock the page at this time.
+ 		 *
+ 		 * Waiting for the lock may lead to deadlock in the
+ 		 * reclaim path.
+ 		 */
+ 		if (!trylock_page(page)) {
+ 			put_page(page);
+-			goto leave;
++			goto move_back;
+ 		}
+ 
+ 		ret = split_huge_page(page);
+ 		unlock_page(page);
+ 		put_page(page);
+ 
+-		/* If split failed leave the inode on the list */
++		/* If split failed move the inode on the list back to shrinklist */
+ 		if (ret)
+-			goto leave;
++			goto move_back;
+ 
+ 		split++;
+ drop:
+ 		list_del_init(&info->shrinklist);
+-		removed++;
+-leave:
++		goto put;
++move_back:
++		/*
++		* Make sure the inode is either on the global list or deleted from
++		* any local list before iput() since it could be deleted in another
++		* thread once we put the inode (then the local list is corrupted).
++		*/
++		spin_lock(&sbinfo->shrinklist_lock);
++		list_move(&info->shrinklist, &sbinfo->shrinklist);
++		sbinfo->shrinklist_len++;
++		spin_unlock(&sbinfo->shrinklist_lock);
++put:
+ 		iput(inode);
+ 	}
+ 
+-	spin_lock(&sbinfo->shrinklist_lock);
+-	list_splice_tail(&list, &sbinfo->shrinklist);
+-	sbinfo->shrinklist_len -= removed;
+-	spin_unlock(&sbinfo->shrinklist_lock);
+-
+ 	return split;
+ }
+ 
+-- 
+2.20.1
+
