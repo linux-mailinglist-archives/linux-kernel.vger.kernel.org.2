@@ -2,77 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7893545D63E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3149045D658
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348851AbhKYIi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 03:38:56 -0500
-Received: from esa12.hc1455-7.c3s2.iphmx.com ([139.138.37.100]:53261 "EHLO
-        esa12.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347233AbhKYIgz (ORCPT
+        id S1353314AbhKYIli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 03:41:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353291AbhKYIjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 03:36:55 -0500
-IronPort-SDR: XUDKK/TWQwdQ9f0wktc9lgsBdGkGjQQaUQ0uXVJwDtVWJyM5DdujUw8mzTZ3Tf8C6sjt13KZjP
- Ed+AXIG9UKYU3FMeb+z0KBk12kqrkPkhenkUMcUHK1DIjPi5zeg3q2jQXviKUWPWTJGDOUr1xk
- Y33NMXq65z+EIU4LmJknDm2B7lBS2XjfBtGldpkro8BhOvWra5WKJbvS+h3Dl7EeFqD4cN6IDP
- /udg+wMtTL3PWIoHOUEarikHP3/dkv5xh9/BGQESJk4n0nxdpVp8uVXNxvD/guEJAUe7c5sutK
- HBQkwwHWjZsrlxOpnnCSTmql
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="33669373"
-X-IronPort-AV: E=Sophos;i="5.87,262,1631545200"; 
-   d="scan'208";a="33669373"
-Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
-  by esa12.hc1455-7.c3s2.iphmx.com with ESMTP; 25 Nov 2021 17:33:41 +0900
-Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com [192.168.83.64])
-        by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id DF7376CC6A;
-        Thu, 25 Nov 2021 17:33:40 +0900 (JST)
-Received: from yto-om1.fujitsu.com (yto-om1.o.css.fujitsu.com [10.128.89.162])
-        by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 1A105E0F89;
-        Thu, 25 Nov 2021 17:33:40 +0900 (JST)
-Received: from localhost.localdomain (n3235113.np.ts.nmh.cs.fujitsu.co.jp [10.123.235.113])
-        by yto-om1.fujitsu.com (Postfix) with ESMTP id CB3BE404AFF02;
-        Thu, 25 Nov 2021 17:33:39 +0900 (JST)
-From:   Shuuichirou Ishii <ishii.shuuichir@fujitsu.com>
-To:     rafael@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lorenzo.pieralisi@arm.com,
-        guohanjun@huawei.com, sudeep.holla@arm.com
-Cc:     linux-arm-kernel@lists.infradead.org, ishii.shuuichir@fujitsu.com
-Subject: [PATCH v2] acpi/tables: Add AEST in ACPI Table Definition
-Date:   Thu, 25 Nov 2021 17:32:40 +0900
-Message-Id: <20211125083240.123131-1-ishii.shuuichir@fujitsu.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 25 Nov 2021 03:39:35 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41379C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 00:36:23 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id n12so14453162lfe.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 00:36:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ragnatech-se.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ADRTBrUjRd1rAOanvGXkScUFM0gsVWmkuqdva+XDWDM=;
+        b=7MxVXhzOBPI1WLFJ1LYc2sbO/uR1ZYyn+KzC66T0Fs6gWZudI0M/AZPd+tqnkbfC0J
+         NSxuB+HIQ5F+KnM57b9q4JlpFUVwU5V4QVmRUvY9q9HRmZDeexkPPMC+Hh368JqngKi1
+         EHrvboah3+7sAn8AFaDzgAU3AnM5Gxsu7jbRJ9oM7bPQhySGkaELEI0I/dzTaumPuRXg
+         4y/F8ZAyDc6XWpkC5VTnNY3+SxmOONAcviuBhTU2HWfdVvlM1s9NP8M2YD1i3V0T01B4
+         I1iIe1kDDY2xXsgOcFoOg2lGK4qNOB2n+Svo86klEbYszjtUzJmYjAzzIdlM1dxJpR3b
+         hBig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ADRTBrUjRd1rAOanvGXkScUFM0gsVWmkuqdva+XDWDM=;
+        b=zuBTazwLrwDzKJ+7X3HSd6tcZ63OoX8Av8FTzlucSS7iSm9e3L8VHNA5uBjV94m2HB
+         uRxyOF52sOejr5lQYPVMZ3qn+2FKsh9ADte14uAGRJ8o2d64Aaph9RTYBOgzhnr8SEbW
+         1GK2EWD1v1yFpTqFz5jgb6oTsMP56nsdyQgHGhS1VcbpYjMmBX+vNL6DHcGuDfSsNcz5
+         EJwxlexNshc7DyEB6wCxD8uSmEfckeNYWQhMhNHIiFAvEOPNsgEZtZ4jV7+esTXqXWJ8
+         +sXVvt2UAD70+sFA64VOVpeLsriX5sm9+6UmGApnHBrIV324vIa8Qos4aETV3VNJqJih
+         /bZA==
+X-Gm-Message-State: AOAM531w0pf+xvFtQgDNc6G0UPefu079EDqkmgkk0gTM4TXQwiUJkgxW
+        cTt6Xyn53gACfGqZ5tIUNGGa/0BXr6zraIQ6
+X-Google-Smtp-Source: ABdhPJyJ3FfAm0lbVXXHIYabujh2mQ2IQwaE/Ii+KLYpOULik/cHZzqrE6uXVv1twRcod1g2b+UJZw==
+X-Received: by 2002:a05:6512:230e:: with SMTP id o14mr22942804lfu.490.1637829381595;
+        Thu, 25 Nov 2021 00:36:21 -0800 (PST)
+Received: from localhost (h-46-59-88-219.A463.priv.bahnhof.se. [46.59.88.219])
+        by smtp.gmail.com with ESMTPSA id c2sm189576ljf.50.2021.11.25.00.36.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 00:36:21 -0800 (PST)
+Date:   Thu, 25 Nov 2021 09:36:20 +0100
+From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@ragnatech.se>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: linux-next: Tree for Nov 25
+ [drivers/staging/media/max96712/max96712.ko]
+Message-ID: <YZ9LBN3UeGSqRVd7@oden.dyn.berto.se>
+References: <20211125160957.4ffdeb88@canb.auug.org.au>
+ <4c2aabad-bf41-efc0-c9ba-da4a330e9015@infradead.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
+In-Reply-To: <4c2aabad-bf41-efc0-c9ba-da4a330e9015@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When We added AEST using the Upgrading ACPI tables via initrd function,
-the kernel could not recognize the AEST, so added the AEST table to
-the list to enable the table upgrade function.
+Hi Randy,
 
-Change log:
-v2 : The reason for committing in the commit log was not clear,
-     so it was pointed out and corrected.
+Thanks for your bug report.
 
-Signed-off-by: Shuuichirou Ishii <ishii.shuuichir@fujitsu.com>
----
- drivers/acpi/tables.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sakari have fixed this problem, but it seems to be some confusion in 
+patchwork.
 
-diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
-index 71419eb16e09..2699bf7e21ab 100644
---- a/drivers/acpi/tables.c
-+++ b/drivers/acpi/tables.c
-@@ -500,7 +500,7 @@ static const char table_sigs[][ACPI_NAMESEG_SIZE] __initconst = {
- 	ACPI_SIG_WDDT, ACPI_SIG_WDRT, ACPI_SIG_DSDT, ACPI_SIG_FADT,
- 	ACPI_SIG_PSDT, ACPI_SIG_RSDT, ACPI_SIG_XSDT, ACPI_SIG_SSDT,
- 	ACPI_SIG_IORT, ACPI_SIG_NFIT, ACPI_SIG_HMAT, ACPI_SIG_PPTT,
--	ACPI_SIG_NHLT };
-+	ACPI_SIG_NHLT, ACPI_SIG_AEST };
- 
- #define ACPI_HEADER_SIZE sizeof(struct acpi_table_header)
- 
+https://patchwork.linuxtv.org/project/linux-media/patch/20211101132502.700505-1-sakari.ailus@linux.intel.com/
+
+On 2021-11-24 22:57:12 -0800, Randy Dunlap wrote:
+> On 11/24/21 9:09 PM, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Changes since 20211124:
+> > 
+> 
+> on x86_64:
+> 
+> WARNING: unmet direct dependencies detected for VIDEO_V4L2_SUBDEV_API
+>   Depends on [n]: MEDIA_SUPPORT [=m] && VIDEO_DEV [=n] && MEDIA_CONTROLLER [=y]
+>   Selected by [m]:
+>   - VIDEO_MAX96712 [=m] && STAGING [=y] && STAGING_MEDIA [=y] && MEDIA_SUPPORT [=m] && I2C [=y] && OF_GPIO [=y]
+> 
+> and then
+> 
+> ERROR: modpost: "v4l2_ctrl_handler_free" [drivers/staging/media/max96712/max96712.ko] undefined!
+> ERROR: modpost: "v4l2_async_register_subdev" [drivers/staging/media/max96712/max96712.ko] undefined!
+> ERROR: modpost: "v4l2_ctrl_new_std_menu_items" [drivers/staging/media/max96712/max96712.ko] undefined!
+> ERROR: modpost: "v4l2_ctrl_new_std" [drivers/staging/media/max96712/max96712.ko] undefined!
+> ERROR: modpost: "v4l2_ctrl_handler_init_class" [drivers/staging/media/max96712/max96712.ko] undefined!
+> ERROR: modpost: "v4l2_fwnode_endpoint_parse" [drivers/staging/media/max96712/max96712.ko] undefined!
+> ERROR: modpost: "v4l2_async_unregister_subdev" [drivers/staging/media/max96712/max96712.ko] undefined!
+> 
+> 
+> Full randconfig file is attached.
+> 
+> -- 
+> ~Randy
+
+
+
 -- 
-2.27.0
-
+Kind Regards,
+Niklas Söderlund
