@@ -2,238 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D894045E02A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 19:01:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3A745E075
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 19:12:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237111AbhKYSEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 13:04:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234961AbhKYSCn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 13:02:43 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DECC06137F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:53:00 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id o20so28418367eds.10
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 09:53:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dEBZrJY7x9+p5wonW466oAoCm/VHVN/Kkq9coJG1KbM=;
-        b=VMZVwCdXk2SW6lKojatuft5S9IVTpx0qw3YhpF0Odd740qnkFV5z+l4KaGBMtbh8oT
-         1ln9AJ9BRJjerYFCKoiIgFdlJlEOF2uGut8EY7eRD5AaHR5wBhCc8DWaUP+KE2FUGZrn
-         lIdyHVUSalND+7297wDfJlZkuDOTm1iXYWEmhgBDU3dTGnlzS9j9JHnZCpJOO3XIWkha
-         wXXWYmknn/Olt/war1Xqqxw0tBcch92vIgYMkY9Wol+YxLL2P8w1XN02H2EZ2mRAqrLq
-         ZMqcvvCV82tZYPjZk8uNQ5+jgJ/J9YwCqdP1AhQ16xHiyD3kPURXQUF8Xv7SW7G7rvL1
-         yEjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dEBZrJY7x9+p5wonW466oAoCm/VHVN/Kkq9coJG1KbM=;
-        b=nhRIjA1v7PJOeI0rDk1YMh7AVo4jOWxtUHcTZ723kq539sMQgagzvkj2eTr3Y51XF4
-         whVAjdLcg4lX1N3tMWUWAQ9QOCi7iPEz91fCAt1ATdo+DWY5l2AS63+FsabMlEFKbDTQ
-         7gwrDEVDSiHkIXOy+MKWIAgylqLAhHZraQcsto7ddRLli/FcOyXRQnC5VfWYSYeL6/Tc
-         6OliVpPV401IY0V/GfLLmcLEIZE4EBoc9hEO+I1f2RMUTvG3sRt+KUK63x12RnlplKtS
-         f6CMwQBCr455HdUW7oTo1MywjcKWM2KTinRXj25EC79XnmQCYJXS8Cmxs5NkgHlXKLBl
-         qTFA==
-X-Gm-Message-State: AOAM532+wedDBcIwFmZkfIDP/8afESZ/V8fEJbyfJA2Ap5xkXaTRJSBX
-        Lnpd6q2HJDM3+1FO8FvhuRSATtOl/GzCBw==
-X-Google-Smtp-Source: ABdhPJwZKccE11aKBA2JY/05/RTTNlTMOe9jItZi4g92WKprzPlUaeX2LbP2FqAHmYXEAS6IBKdLEg==
-X-Received: by 2002:a17:906:2f10:: with SMTP id v16mr33409015eji.434.1637862779290;
-        Thu, 25 Nov 2021 09:52:59 -0800 (PST)
-Received: from oberon.zico.biz.zico.biz ([83.222.187.186])
-        by smtp.gmail.com with ESMTPSA id hs20sm1949795ejc.26.2021.11.25.09.52.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 09:52:58 -0800 (PST)
-From:   "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
-To:     rostedt@goodmis.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v3 4/5] [RFC] tracing: Set new size of the ring buffer sub page
-Date:   Thu, 25 Nov 2021 19:52:52 +0200
-Message-Id: <20211125175253.186422-5-tz.stoyanov@gmail.com>
+        id S1348956AbhKYSPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 13:15:02 -0500
+Received: from pegase2.c-s.fr ([93.17.235.10]:34033 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237253AbhKYSNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 13:13:04 -0500
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4J0QTx1JVwz9sT5;
+        Thu, 25 Nov 2021 18:53:41 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id aIs71G40QDTe; Thu, 25 Nov 2021 18:53:41 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4J0QTn0YGxz9sT6;
+        Thu, 25 Nov 2021 18:53:33 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 035BD8B780;
+        Thu, 25 Nov 2021 18:53:33 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id IugKrVGeS30c; Thu, 25 Nov 2021 18:53:32 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.203.227])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 29BF68B783;
+        Thu, 25 Nov 2021 18:53:32 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1APHrKd8385527
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 25 Nov 2021 18:53:20 +0100
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1APHrKv4385526;
+        Thu, 25 Nov 2021 18:53:20 +0100
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, alex@ghiti.fr
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-mm@kvack.org
+Subject: [PATCH v2 rebased 4/9] powerpc/mm: Remove asm/slice.h
+Date:   Thu, 25 Nov 2021 18:52:53 +0100
+Message-Id: <8ba40287876c2d6fe806b130f8c83b874f2469bb.1637862579.git.christophe.leroy@csgroup.eu>
 X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211125175253.186422-1-tz.stoyanov@gmail.com>
-References: <20211125175253.186422-1-tz.stoyanov@gmail.com>
+In-Reply-To: <cover.1637862579.git.christophe.leroy@csgroup.eu>
+References: <cover.1637862579.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1637862776; l=4276; s=20211009; h=from:subject:message-id; bh=2aRzeye83rSinbLEp9frmuS7EvQlzWonE9gD0u0UBvo=; b=Ws9XeFekskr6/GThZbgkhNXsYwAHEjV597A4pcwQU029ELb7tFTh3UgCDo6sxcF85dj2bFYoDk4+ 0kbAMXttATn6bTKyLm8zzaXZKrcG0PlRlN//S4UQ3NXJFlnYrwS/
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two approaches when changing the size of the ring buffer
-sub page:
- 1. Destroying all pages and allocating new pages with the new size.
- 2. Allocating new pages, copying the content of the old pages before
-    destroying them.
-The first approach is easier, it is selected in the proposed
-implementation. Changing the ring buffer sub page size is supposed to
-not happen frequently. Usually, that size should be set only once,
-when the buffer is not in use yet and is supposed to be empty.
+Move necessary stuff in asm/book3s/64/slice.h and
+remove asm/slice.h
 
-Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- kernel/trace/ring_buffer.c | 80 ++++++++++++++++++++++++++++++++++----
- 1 file changed, 73 insertions(+), 7 deletions(-)
+ arch/powerpc/include/asm/book3s/64/hash.h     |  3 ++
+ arch/powerpc/include/asm/book3s/64/mmu-hash.h |  1 +
+ arch/powerpc/include/asm/book3s/64/slice.h    | 18 +++++++++
+ arch/powerpc/include/asm/page.h               |  1 -
+ arch/powerpc/include/asm/slice.h              | 37 -------------------
+ 5 files changed, 22 insertions(+), 38 deletions(-)
+ delete mode 100644 arch/powerpc/include/asm/slice.h
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 4aa5361a8f4c..a40fcb1cb299 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -323,6 +323,7 @@ struct buffer_page {
- 	unsigned	 read;		/* index for next read */
- 	local_t		 entries;	/* entries on this page */
- 	unsigned long	 real_end;	/* real end of data */
-+	unsigned	 order;		/* order of the page */
- 	struct buffer_data_page *page;	/* Actual data page */
- };
- 
-@@ -352,7 +353,7 @@ static void rb_init_page(struct buffer_data_page *bpage)
+diff --git a/arch/powerpc/include/asm/book3s/64/hash.h b/arch/powerpc/include/asm/book3s/64/hash.h
+index 97f2fc217a49..fab032f552f3 100644
+--- a/arch/powerpc/include/asm/book3s/64/hash.h
++++ b/arch/powerpc/include/asm/book3s/64/hash.h
+@@ -100,6 +100,9 @@
+  * hash table CPUs.
   */
- static void free_buffer_page(struct buffer_page *bpage)
- {
--	free_page((unsigned long)bpage->page);
-+	free_pages((unsigned long)bpage->page, bpage->order);
- 	kfree(bpage);
- }
- 
-@@ -1563,10 +1564,12 @@ static int __rb_allocate_pages(struct ring_buffer_per_cpu *cpu_buffer,
- 
- 		list_add(&bpage->list, pages);
- 
--		page = alloc_pages_node(cpu_to_node(cpu_buffer->cpu), mflags, 0);
-+		page = alloc_pages_node(cpu_to_node(cpu_buffer->cpu), mflags,
-+					cpu_buffer->buffer->subbuf_order);
- 		if (!page)
- 			goto free_pages;
- 		bpage->page = page_address(page);
-+		bpage->order = cpu_buffer->buffer->subbuf_order;
- 		rb_init_page(bpage->page);
- 
- 		if (user_thread && fatal_signal_pending(current))
-@@ -1645,7 +1648,8 @@ rb_allocate_cpu_buffer(struct trace_buffer *buffer, long nr_pages, int cpu)
- 	rb_check_bpage(cpu_buffer, bpage);
- 
- 	cpu_buffer->reader_page = bpage;
--	page = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL, 0);
-+
-+	page = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL, cpu_buffer->buffer->subbuf_order);
- 	if (!page)
- 		goto fail_free_reader;
- 	bpage->page = page_address(page);
-@@ -1725,6 +1729,7 @@ struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
- 		goto fail_free_buffer;
- 
- 	/* Default buffer page size - one system page */
-+	buffer->subbuf_order = 0;
- 	buffer->subbuf_size = PAGE_SIZE - BUF_PAGE_HDR_SIZE;
- 
- 	/* Max payload is buffer page size - header (8bytes) */
-@@ -5434,8 +5439,8 @@ void *ring_buffer_alloc_read_page(struct trace_buffer *buffer, int cpu)
- 	if (bpage)
- 		goto out;
- 
--	page = alloc_pages_node(cpu_to_node(cpu),
--				GFP_KERNEL | __GFP_NORETRY, 0);
-+	page = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL | __GFP_NORETRY,
-+				cpu_buffer->buffer->subbuf_order);
- 	if (!page)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -5479,7 +5484,7 @@ void ring_buffer_free_read_page(struct trace_buffer *buffer, int cpu, void *data
- 	local_irq_restore(flags);
- 
-  out:
--	free_page((unsigned long)bpage);
-+	free_pages((unsigned long)bpage, buffer->subbuf_order);
- }
- EXPORT_SYMBOL_GPL(ring_buffer_free_read_page);
- 
-@@ -5731,7 +5736,13 @@ EXPORT_SYMBOL_GPL(ring_buffer_subbuf_order_get);
+ #ifdef CONFIG_PPC_64S_HASH_MMU
++#ifdef CONFIG_HUGETLB_PAGE
++#define HAVE_ARCH_HUGETLB_UNMAPPED_AREA
++#endif
+ #define HAVE_ARCH_UNMAPPED_AREA
+ #define HAVE_ARCH_UNMAPPED_AREA_TOPDOWN
+ #endif
+diff --git a/arch/powerpc/include/asm/book3s/64/mmu-hash.h b/arch/powerpc/include/asm/book3s/64/mmu-hash.h
+index 3004f3323144..b4b2ca111f75 100644
+--- a/arch/powerpc/include/asm/book3s/64/mmu-hash.h
++++ b/arch/powerpc/include/asm/book3s/64/mmu-hash.h
+@@ -18,6 +18,7 @@
+  * complete pgtable.h but only a portion of it.
   */
- int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
- {
-+	struct ring_buffer_per_cpu **cpu_buffers;
-+	int old_order, old_size;
-+	int nr_pages;
- 	int psize;
-+	int bsize;
-+	int err;
-+	int cpu;
+ #include <asm/book3s/64/pgtable.h>
++#include <asm/book3s/64/slice.h>
+ #include <asm/task_size_64.h>
+ #include <asm/cpu_has_feature.h>
  
- 	if (!buffer || order < 0)
- 		return -EINVAL;
-@@ -5743,12 +5754,67 @@ int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
- 	if (psize <= BUF_PAGE_HDR_SIZE)
- 		return -EINVAL;
+diff --git a/arch/powerpc/include/asm/book3s/64/slice.h b/arch/powerpc/include/asm/book3s/64/slice.h
+index f0d3194ba41b..5b0f7105bc8b 100644
+--- a/arch/powerpc/include/asm/book3s/64/slice.h
++++ b/arch/powerpc/include/asm/book3s/64/slice.h
+@@ -2,6 +2,8 @@
+ #ifndef _ASM_POWERPC_BOOK3S_64_SLICE_H
+ #define _ASM_POWERPC_BOOK3S_64_SLICE_H
  
-+	bsize = sizeof(void *) * buffer->cpus;
-+	cpu_buffers = kzalloc(bsize, GFP_KERNEL);
-+	if (!cpu_buffers)
-+		return -ENOMEM;
++#ifndef __ASSEMBLY__
 +
-+	old_order = buffer->subbuf_order;
-+	old_size = buffer->subbuf_size;
-+
-+	/* prevent another thread from changing buffer sizes */
-+	mutex_lock(&buffer->mutex);
-+	atomic_inc(&buffer->record_disabled);
-+
-+	/* Make sure all commits have finished */
-+	synchronize_rcu();
-+
- 	buffer->subbuf_order = order;
- 	buffer->subbuf_size = psize - BUF_PAGE_HDR_SIZE;
+ #define SLICE_LOW_SHIFT		28
+ #define SLICE_LOW_TOP		(0x100000000ul)
+ #define SLICE_NUM_LOW		(SLICE_LOW_TOP >> SLICE_LOW_SHIFT)
+@@ -13,4 +15,20 @@
  
--	/* Todo: reset the buffer with the new page size */
-+	/* Make sure all new buffers are allocated, before deleting the old ones */
-+	for_each_buffer_cpu(buffer, cpu) {
-+		if (!cpumask_test_cpu(cpu, buffer->cpumask))
-+			continue;
-+
-+		nr_pages = buffer->buffers[cpu]->nr_pages;
-+		cpu_buffers[cpu] = rb_allocate_cpu_buffer(buffer, nr_pages, cpu);
-+		if (!cpu_buffers[cpu]) {
-+			err = -ENOMEM;
-+			goto error;
-+		}
-+	}
-+
-+	for_each_buffer_cpu(buffer, cpu) {
-+		if (!cpumask_test_cpu(cpu, buffer->cpumask))
-+			continue;
-+
-+		rb_free_cpu_buffer(buffer->buffers[cpu]);
-+		buffer->buffers[cpu] = cpu_buffers[cpu];
-+	}
-+
-+	atomic_dec(&buffer->record_disabled);
-+	mutex_unlock(&buffer->mutex);
-+
-+	kfree(cpu_buffers);
+ #define SLB_ADDR_LIMIT_DEFAULT	DEFAULT_MAP_WINDOW_USER64
  
- 	return 0;
++struct mm_struct;
 +
-+error:
-+	buffer->subbuf_order = old_order;
-+	buffer->subbuf_size = old_size;
++unsigned long slice_get_unmapped_area(unsigned long addr, unsigned long len,
++				      unsigned long flags, unsigned int psize,
++				      int topdown);
 +
-+	atomic_dec(&buffer->record_disabled);
-+	mutex_unlock(&buffer->mutex);
++unsigned int get_slice_psize(struct mm_struct *mm, unsigned long addr);
 +
-+	for_each_buffer_cpu(buffer, cpu) {
-+		if (!cpu_buffers[cpu])
-+			continue;
-+		kfree(cpu_buffers[cpu]);
-+	}
-+	kfree(cpu_buffers);
++void slice_set_range_psize(struct mm_struct *mm, unsigned long start,
++			   unsigned long len, unsigned int psize);
 +
-+	return err;
- }
- EXPORT_SYMBOL_GPL(ring_buffer_subbuf_order_set);
++void slice_init_new_context_exec(struct mm_struct *mm);
++void slice_setup_new_exec(void);
++
++#endif /* __ASSEMBLY__ */
++
+ #endif /* _ASM_POWERPC_BOOK3S_64_SLICE_H */
+diff --git a/arch/powerpc/include/asm/page.h b/arch/powerpc/include/asm/page.h
+index 254687258f42..62e0c6f12869 100644
+--- a/arch/powerpc/include/asm/page.h
++++ b/arch/powerpc/include/asm/page.h
+@@ -329,6 +329,5 @@ static inline unsigned long kaslr_offset(void)
  
+ #include <asm-generic/memory_model.h>
+ #endif /* __ASSEMBLY__ */
+-#include <asm/slice.h>
+ 
+ #endif /* _ASM_POWERPC_PAGE_H */
+diff --git a/arch/powerpc/include/asm/slice.h b/arch/powerpc/include/asm/slice.h
+deleted file mode 100644
+index b15141f2bd76..000000000000
+--- a/arch/powerpc/include/asm/slice.h
++++ /dev/null
+@@ -1,37 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _ASM_POWERPC_SLICE_H
+-#define _ASM_POWERPC_SLICE_H
+-
+-#ifdef CONFIG_PPC_BOOK3S_64
+-#include <asm/book3s/64/slice.h>
+-#endif
+-
+-#ifndef __ASSEMBLY__
+-
+-struct mm_struct;
+-
+-#ifdef CONFIG_PPC_64S_HASH_MMU
+-
+-#ifdef CONFIG_HUGETLB_PAGE
+-#define HAVE_ARCH_HUGETLB_UNMAPPED_AREA
+-#endif
+-#define HAVE_ARCH_UNMAPPED_AREA
+-#define HAVE_ARCH_UNMAPPED_AREA_TOPDOWN
+-
+-unsigned long slice_get_unmapped_area(unsigned long addr, unsigned long len,
+-				      unsigned long flags, unsigned int psize,
+-				      int topdown);
+-
+-unsigned int get_slice_psize(struct mm_struct *mm, unsigned long addr);
+-
+-void slice_set_range_psize(struct mm_struct *mm, unsigned long start,
+-			   unsigned long len, unsigned int psize);
+-
+-void slice_init_new_context_exec(struct mm_struct *mm);
+-void slice_setup_new_exec(void);
+-
+-#endif /* CONFIG_PPC_64S_HASH_MMU */
+-
+-#endif /* __ASSEMBLY__ */
+-
+-#endif /* _ASM_POWERPC_SLICE_H */
 -- 
-2.31.1
+2.33.1
 
