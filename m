@@ -2,72 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47AC45D5B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1044D45D5BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:50:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236691AbhKYHs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 02:48:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234489AbhKYHq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 02:46:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0BA861107;
-        Thu, 25 Nov 2021 07:43:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637826197;
-        bh=5JmydjakFnLr1DXYN6HX8GSmUQA89caK93Xg2HhpGcc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Lo5Q88DYMszIwzEUP4xaWaHGk4thoYzc5zXWgjpJuOTUVXi1mPa8iX/67WsoBF7VX
-         rD+xFR2liyM3yRAaTbAXGsOj47cCGJ+pmRW4xo3//I0BaJCRWB7Z/kA9Bg6qN82TTp
-         AyNEbOE2BXH9BstgBxeYZFkKd5estm6tPwCv0ZhK5vFObG7HXzo9p2BkZTOqP06Ado
-         D9rIbDKkqEiQCL6iTDt/xMw4g5anPMfwERqQRsWQdkDFjcXO12pCFH7xee6CupoAY/
-         BgeUpmSYEn4QRRAuJK5p8WSv720GLXo7fAlnvaSQGonBLPRyg5X15OgHidOKf1WCNO
-         bnEzHNLpF18uQ==
-Received: by mail-wr1-f54.google.com with SMTP id i5so9612926wrb.2;
-        Wed, 24 Nov 2021 23:43:17 -0800 (PST)
-X-Gm-Message-State: AOAM5317Pt88MKlMckofCA2lrlV7fz6db+TI+tZa4F6mcggpkQdXaGDG
-        8+FEohGDVNjooei9b1Zkfvwu62+jCHCj2/SbTWg=
-X-Google-Smtp-Source: ABdhPJyuLBhKBRzn/KY8mhWpsA5nVPv2Qy5ZAD6+THS3UuR1IIWEOkVnw5icB8DlWWMQACCSb4V0WCkZu7KyR+FPEq4=
-X-Received: by 2002:adf:d091:: with SMTP id y17mr4508644wrh.418.1637826196259;
- Wed, 24 Nov 2021 23:43:16 -0800 (PST)
+        id S236787AbhKYHxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 02:53:47 -0500
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:47380
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236341AbhKYHvq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 02:51:46 -0500
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com [209.85.128.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 04AAD3F1D7
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 07:48:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1637826515;
+        bh=nDiYTORIhCmTcIZFOH/2usjtHzZYDziIu23Zdg/+Lbw=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=mqwdX3Gj5u/Gu8NAiy3CpIs91enSiss1ajdlmLjG8qo4sY6RfRH78nSQU2yErNfdi
+         dljhp51ZE6yUbhPqUO01BvZ3K+Ra8pHsWuTvLmXi+p3oLLp6Xj/3KdmvbWX1g3M7cT
+         CEf2BAWLS0TS7fGv8CIbEMfab15jaC/eWyi0ocbY+FeUMHEHk17m8qsRZJ7RQZG42i
+         MjbZkx2NyQoezfe/xBey82ozVOXgb1jawR6jKjAdwOx9ifNNACH2KY9VbYPbZpcSuS
+         vxVaLyQ4aCAsuo7lR0lE6WZq/lSse5ezljnHkLwR6AzC3YK1qWlEvG6u3an5iBKB+H
+         +S1ZoJX3wxi8g==
+Received: by mail-wm1-f71.google.com with SMTP id 138-20020a1c0090000000b00338bb803204so2760017wma.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 23:48:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nDiYTORIhCmTcIZFOH/2usjtHzZYDziIu23Zdg/+Lbw=;
+        b=VqUEdozQA//J3k1t8RTxjNCDiDjSsu842vLD0TCkXHLIlNT+VG4HWFR4g5UKCCjlQq
+         FMuwduJZvCT6+adLoOekRAZpRDktKenJAHz7MGrikAG5ULeSK0mN5N+SICLQiiafwuLi
+         cNPufJh9WpTZ20HGjd0RrTmiRVpRJzbMMXOdN05LwcBQMWhnertqb+p1iLzTOXNwZtU1
+         bimhmr8RR9Lb5KYrqV/lV9aLSUdnsiWCvlREa30hqRaOJCCm5s4vEw2MSvwWTm4IIoR3
+         KqYcilvP4TFTFEDD9LkXAf0Emr3Rt5BBbYKK96tPFW9PeSLMybUz1UIgwhpeBI0v2cma
+         etIw==
+X-Gm-Message-State: AOAM530bnLs8hqmv3UjIjliW5tBPkERQX7LtVLPIBAP0Cw3GKbJTWEmA
+        hzOXGC8M7dHnhbyGrDcmi5/KaWAkEk4zgEaZKHmRswMHJzv8foFOp21zmVOjy4QDXdhHaUuSwVw
+        iODlXHcqcUuTt9zkPM9vVVL2jTTGl1PXDkroE+Izlqw==
+X-Received: by 2002:a1c:80c6:: with SMTP id b189mr5004636wmd.40.1637826514717;
+        Wed, 24 Nov 2021 23:48:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJykVEfdmg1lTA/thq9Kt1uoUGcDwlCkPesNsB5fAR0U1yBNntrVQZGlbxSG9t3RzeAfy0x9Kw==
+X-Received: by 2002:a1c:80c6:: with SMTP id b189mr5004617wmd.40.1637826514580;
+        Wed, 24 Nov 2021 23:48:34 -0800 (PST)
+Received: from krzk-bin.lan (89-77-68-124.dynamic.chello.pl. [89.77.68.124])
+        by smtp.gmail.com with ESMTPSA id o3sm8087937wms.10.2021.11.24.23.48.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 23:48:34 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] mfd/regulator: dt-bindings: max77686: convert to dtschema
+Date:   Thu, 25 Nov 2021 08:48:24 +0100
+Message-Id: <20211125074826.7947-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20211124192430.74541-1-arnd@kernel.org> <YZ68G09viJA/vkby@pendragon.ideasonboard.com>
-In-Reply-To: <YZ68G09viJA/vkby@pendragon.ideasonboard.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 25 Nov 2021 08:43:00 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2kEByuNJu9NMiD2m3v+K0acE-XwdevHGByi_82bko7Uw@mail.gmail.com>
-Message-ID: <CAK8P3a2kEByuNJu9NMiD2m3v+K0acE-XwdevHGByi_82bko7Uw@mail.gmail.com>
-Subject: Re: [PATCH] media: omap3isp: fix out-of-range warning
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Vaibhav Hiremath <hvaibhav@ti.com>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Dominic Curran <dcurran@ti.com>,
-        David Cohen <dacohen@gmail.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 11:26 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
-> On Wed, Nov 24, 2021 at 08:24:15PM +0100, Arnd Bergmann wrote:
-> >
-> > Add a cast to 32-bit to avoid the warning. Checking just the lower bounds
-> > would be sufficient as well, but it seems more consistent to use
-> > the IS_OUT_OF_BOUNDS() check for all members.
->
-> Mauro has submitted a fix that handles the cast in the
-> IS_OUT_OF_BOUNDS() macro, see
-> https://lore.kernel.org/all/b70f819b11e024649f113be1158f34b24914a1ed.1637573097.git.mchehab+huawei@kernel.org/.
+Hi,
 
-Ok, thanks. I've marked my patch as 'Obsoleted' in patchwork now.
+Convert Maxim MAX77686 bindings to dtschema.  The MFD patch (2/2)
+depends on regulator, so this should go via one tree.
 
-      Arnd
+Changes since v2:
+1. Rebased.
+
+Best regards,
+Krzysztof
+
+Krzysztof Kozlowski (2):
+  regulator: dt-bindings: maxim,max77686: convert to dtschema
+  dt-bindings: mfd: maxim,max77686: convert to dtschema
+
+ .../devicetree/bindings/mfd/max77686.txt      |  26 ----
+ .../bindings/mfd/maxim,max77686.yaml          | 132 ++++++++++++++++++
+ .../bindings/regulator/max77686.txt           |  71 ----------
+ .../bindings/regulator/maxim,max77686.yaml    |  83 +++++++++++
+ MAINTAINERS                                   |   2 +-
+ 5 files changed, 216 insertions(+), 98 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mfd/max77686.txt
+ create mode 100644 Documentation/devicetree/bindings/mfd/maxim,max77686.yaml
+ delete mode 100644 Documentation/devicetree/bindings/regulator/max77686.txt
+ create mode 100644 Documentation/devicetree/bindings/regulator/maxim,max77686.yaml
+
+-- 
+2.32.0
+
