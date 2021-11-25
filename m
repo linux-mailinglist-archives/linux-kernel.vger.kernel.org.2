@@ -2,104 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 328EE45D756
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 10:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D28E45D754
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 10:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354114AbhKYJkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 04:40:42 -0500
-Received: from elvis.franken.de ([193.175.24.41]:40426 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354125AbhKYJil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 04:38:41 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mqBA6-00032R-01; Thu, 25 Nov 2021 10:35:26 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id D0CE6C2F81; Thu, 25 Nov 2021 10:34:20 +0100 (CET)
-Date:   Thu, 25 Nov 2021 10:34:20 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Fix using smp_processor_id() in preemptible in
- show_cpuinfo()
-Message-ID: <20211125093420.GB6537@alpha.franken.de>
-References: <1637576257-11590-1-git-send-email-yangtiezhu@loongson.cn>
+        id S1353903AbhKYJkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 04:40:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349450AbhKYJiV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 04:38:21 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BE6C061748;
+        Thu, 25 Nov 2021 01:35:10 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4J0CQg74YDz4xcs;
+        Thu, 25 Nov 2021 20:35:07 +1100 (AEDT)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+In-Reply-To: <ce30364fb7ccda489272af4a1612b6aa147e1d23.1637227521.git.christophe.leroy@csgroup.eu>
+References: <ce30364fb7ccda489272af4a1612b6aa147e1d23.1637227521.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH] powerpc/32: Fix hardlockup on vmap stack overflow
+Message-Id: <163783287691.1228083.396612201232244532.b4-ty@ellerman.id.au>
+Date:   Thu, 25 Nov 2021 20:34:36 +1100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1637576257-11590-1-git-send-email-yangtiezhu@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 06:17:37PM +0800, Tiezhu Yang wrote:
-> There exists the following issue under DEBUG_PREEMPT:
+On Thu, 18 Nov 2021 10:39:53 +0100, Christophe Leroy wrote:
+> Since the commit c118c7303ad5 ("powerpc/32: Fix vmap stack - Do not
+> activate MMU before reading task struct") a vmap stack overflow
+> results in a hard lockup. This is because emergency_ctx is still
+> addressed with its virtual address allthough data MMU is not active
+> anymore at that time.
 > 
->  BUG: using smp_processor_id() in preemptible [00000000] code: systemd/1
->  caller is show_cpuinfo+0x460/0xea0
->  ...
->  Call Trace:
->  [<ffffffff8020f0dc>] show_stack+0x94/0x128
->  [<ffffffff80e6cab4>] dump_stack_lvl+0x94/0xd8
->  [<ffffffff80e74c5c>] check_preemption_disabled+0x104/0x110
->  [<ffffffff802209c8>] show_cpuinfo+0x460/0xea0
->  [<ffffffff80539d54>] seq_read_iter+0xfc/0x4f8
->  [<ffffffff804fcc10>] new_sync_read+0x110/0x1b8
->  [<ffffffff804ff57c>] vfs_read+0x1b4/0x1d0
->  [<ffffffff804ffb18>] ksys_read+0xd0/0x110
->  [<ffffffff8021c090>] syscall_common+0x34/0x58
+> Fix it by using a physical address instead.
 > 
-> We can see the following call trace:
->  show_cpuinfo()
->    cpu_has_fpu
->      current_cpu_data
->        smp_processor_id()
-> 
->  $ addr2line -f -e vmlinux 0xffffffff802209c8
->  show_cpuinfo
->  arch/mips/kernel/proc.c:188
-> 
->  $ head -188 arch/mips/kernel/proc.c | tail -1
-> 	 if (cpu_has_fpu)
-> 
->  arch/mips/include/asm/cpu-features.h
->  #  define cpu_has_fpu		(current_cpu_data.options & MIPS_CPU_FPU)
-> 
->  arch/mips/include/asm/cpu-info.h
->  #define current_cpu_data cpu_data[smp_processor_id()]
-> 
-> Based on the above analysis, fix the issue by disabling preemption
-> around cpu_has_fpu in show_cpuinfo().
-> 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> [...]
 
-missing 
+Applied to powerpc/fixes.
 
-Fixes: 626bfa037299 ("MIPS: kernel: proc: add CPU option reporting")
+[1/1] powerpc/32: Fix hardlockup on vmap stack overflow
+      https://git.kernel.org/powerpc/c/5bb60ea611db1e04814426ed4bd1c95d1487678e
 
-> ---
->  arch/mips/kernel/proc.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
-> index 376a6e2..c6c2661 100644
-> --- a/arch/mips/kernel/proc.c
-> +++ b/arch/mips/kernel/proc.c
-> @@ -185,8 +185,10 @@ static int show_cpuinfo(struct seq_file *m, void *v)
->  		seq_puts(m, " tx39_cache");
->  	if (cpu_has_octeon_cache)
->  		seq_puts(m, " octeon_cache");
-> +	preempt_disable();
->  	if (cpu_has_fpu)
->  		seq_puts(m, " fpu");
-> +	preempt_enable();
-
-what about using raw_cpu_has_fpu() instead ?
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+cheers
