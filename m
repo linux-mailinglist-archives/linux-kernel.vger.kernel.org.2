@@ -2,100 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0654B45D3B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 04:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E532945D3B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 04:44:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343680AbhKYDrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 22:47:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58358 "EHLO
+        id S1345639AbhKYDr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 22:47:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234928AbhKYDpQ (ORCPT
+        with ESMTP id S239952AbhKYDp0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 22:45:16 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB2DC061746
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 19:42:05 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id x6so19434218edr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 19:42:05 -0800 (PST)
+        Wed, 24 Nov 2021 22:45:26 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04532C061758
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 19:42:15 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id d11so9697198ljg.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 19:42:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qHPissG71QpvjrT6a3/2z8N7PuL+tihvv/52XC6h0hM=;
-        b=Mqt0hWNJBdAGUwO5EiRFaA1swINTcew/kHOPQsio8jlCmfc/UjdLvpDuEhFFoGUB+1
-         czJL0RS6/0Iz98IrrBZQhxJ39ab6vWfxB8dA6Y2FTemn553lkRn5kkyUeUcRUgXWt0k9
-         qviBnDohCCk9I5e6c7J25aFNrGZ3i7D6v1SJmufiCFw0m0bLCBDSYnFmpSDNTjqj2jrS
-         YqKt97Ob9i723DjMZ5X00OO8DvJGDyygKb/arEVY26sIQvVPY6mjrySz+wX67+OV1TGg
-         fpCkmWLrKbEQRgh+7/cBfgG9d3tfqNII2+MVI5O5fFQkRVhoOeoJbinemMCCS6EQRJWD
-         ynug==
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=YMrhOIl8HoNRb8UK9oz7IZwbnC4/TM+2ttuSVPr6seY=;
+        b=QP3baR2c09O3n6364boLqwV7FSlkJ4vBU8I2Wyac+ku9KA8zZVAbAp6kIEBY8kDisP
+         Rr1LXMvG31KAkj30m1WSi6xid1h1oVqXgpvcWM9MxB6QRPhE4EiL0z5zG2py8AqA10HY
+         BTtJlliYiRFZRCsusUgTqok1D0afXuEa+oG6ZjSbkPpD+40/ATJ4Vl1Nf5p3DKxxB2sn
+         khNcfC6D/RfYnQ/Zae0nX/YkNA5VQ+a5JyeU1O+rmBvgdQD9+bccRdtLil1zaDky/jvI
+         snEHyJxP1uxIUqH0JzNVe7Lycb9uWl3YMSkIItve8tcBmNiWPPH4KxExL/2Gtrusn97q
+         Z4qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qHPissG71QpvjrT6a3/2z8N7PuL+tihvv/52XC6h0hM=;
-        b=bWpqeWkA9TiNTM/Swydbt4Gd9nYNWATsyovwTSBolHMdtwIrQPUTH3c0Tn9i0VFZwT
-         dKiD0aSdhtS2d1dmiB4kFQJtGQXU8PGA1WpSsFfN0cxKprmddHC2WyldIArMiQoer/WV
-         Jqs02EVYi4d1sTUGed88pgmLO/wwyt3So/uLq+ChoEGWuoqQT6Cju/62jUb24HrSGRoP
-         rjO0BhVDlMzSSk2vWNYG32pVW4sdcuBWF2hy0/3+mv05sWJSBhG3cemhNcaswjw4xSg7
-         QV1xzifEvzbBmyjf4OIeSrszSQaaVuFvAcUcMX8QJ5gSlpmW7eyeowl8jcs8tp08y6vp
-         hRiQ==
-X-Gm-Message-State: AOAM531Sc8yIxC0ZxlsgK/n2B1C2ZNgsvAwLMbtf0jFt9BhsygP9Zv46
-        zIwt4p2DZIuzRNAn6A1L/961FIYvvDPgFWWZR6WfJQ==
-X-Google-Smtp-Source: ABdhPJzBoQfr2ga+waKUthRWdr+KyjBxa+4oYyKD2T9uCcZ3xbhbqXPSXXRKip2atA44sUHOLjbG3hog6TSiCK+cjBc=
-X-Received: by 2002:a17:907:9196:: with SMTP id bp22mr26479472ejb.69.1637811724433;
- Wed, 24 Nov 2021 19:42:04 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=YMrhOIl8HoNRb8UK9oz7IZwbnC4/TM+2ttuSVPr6seY=;
+        b=EnVf6hzzvKrZBEGjQLHyMDPSJF/jhpwV1auDAsyn4QqH6rxOYmdqWf5OE0GMMqnJwd
+         4lrFhAB16xSLYWFoepDS8XcwSrH0giOzalWjhoC50TtdPd8DEj17y4kVGy6WZDaBeyx+
+         mJAqtQrCHlGz37wrKbyVdI2xR5ogEz3CztQYkHRFeDUdWx1TIQLaZ7/T1CAosZ0WtDwc
+         4/z2CNbY14Kyul9HVXCQTtjEhjc1aRjBKhtgLlaeiQsoHGn2uvfAxya0CkzhhZ0K1bKR
+         1qe+ctpu+LV8GNA8/uAe4obUUeT2LyULm50BbMRRRow+xu7Y+HfXnxHJju9b+b5ZIK5Z
+         Abjg==
+X-Gm-Message-State: AOAM530M2Y5Gd66v98zazFVRO+kGuTxA7VXY5WomJpjRRztQXNTcV/Rq
+        gFN/32fV4mCmABvoGgp9lroyWhoVOxLu4GSJmaE=
+X-Google-Smtp-Source: ABdhPJxsoVZNmX+GyWwoa14B4wZtWuRgFMhqjNwZBEg+DhhjW8BFyKVOYFVmRAYitmE8u2aqs8FB8WBcl67mNWXQeeo=
+X-Received: by 2002:a2e:918e:: with SMTP id f14mr21248805ljg.109.1637811734157;
+ Wed, 24 Nov 2021 19:42:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20211124115710.214900256@linuxfoundation.org>
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 25 Nov 2021 09:11:53 +0530
-Message-ID: <CA+G9fYu83b6_dJ8GOUTcsoUvkZdVWz9Q458f0vsRfXS7pdbXqQ@mail.gmail.com>
-Subject: Re: [PATCH 4.14 000/251] 4.14.256-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
+Received: by 2002:ac2:4199:0:0:0:0:0 with HTTP; Wed, 24 Nov 2021 19:42:13
+ -0800 (PST)
+From:   "Mr.James Gomez" <adamsrobinson2019@gmail.com>
+Date:   Thu, 25 Nov 2021 04:42:13 +0100
+Message-ID: <CA+gMR=eoWCROHHqsHDgo1qxKKtXCqX+ZuGqJNcwbjKb3gyzf6Q@mail.gmail.com>
+Subject: We need your Urgent Reply
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021 at 17:51, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.256 release.
-> There are 251 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.256-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+-- 
 
+Attention:Sir,
 
-FYI,
-New warnings on Linux 4.14.256-rc1 on arm and arm64 (defconfig+7) with gcc-11.
+RE: GOOD NEWS AS YOU WILL RECEIVE YOUR FUNDS THIS LAST QUARTER OF THE
+FISCAL YEAR 2021.
+I write to inform you that your name is among the beneficiaries that
+will receive their funds of usd$883,000=Only,(eight hundred and eight
+three thousand us doll Dollars Only).has been approved being for the
+draws the United Nation Secretary General {Antnio Guterres} organized
+on his visit to your country to help individuals/Internet Scam
+victims) this second quarter of the fiscal  year 2021.
+In view of this good news, I am pleased to inform you that your total
+Payment Compensation Entitlement of usd$883,000=Only has been cleared
+and approved to be released to you finally through our Offshore
+Payment Centers in two different countries which will be disclosed to
+you as soon as you respond to my proposal.
 
-drivers/soc/tegra/pmc.c: In function 'tegra_powergate_power_up':
-drivers/soc/tegra/pmc.c:423:1: warning: label 'powergate_off' defined
-but not used [-Wunused-label]
-  423 | powergate_off:
-      | ^~~~~~~~~~~~~
+I need your urgent verification in this Home office email: aaaa2293@outlook.com
 
+Your Full Names.
+Your Full Address.
+Your Mobile Tel. No./Whats app Tel. No.
+Your Occupation.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Kindly contact me on my private email address thus:aaaa2293@outlook.com
+Await your urgent reply.
 
---
-Linaro LKFT
-https://lkft.linaro.org
+Mr.James Gomez
