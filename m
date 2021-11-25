@@ -2,140 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A3345E315
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 23:44:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3693B45E322
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 23:58:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239991AbhKYWrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 17:47:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54086 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240668AbhKYWpS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 17:45:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 796B761131;
-        Thu, 25 Nov 2021 22:42:04 +0000 (UTC)
-Date:   Thu, 25 Nov 2021 22:42:01 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
- with sub-page faults
-Message-ID: <YaAROdPCqNzSKCjh@arm.com>
-References: <20211124192024.2408218-1-catalin.marinas@arm.com>
- <20211124192024.2408218-4-catalin.marinas@arm.com>
- <YZ6arlsi2L3LVbFO@casper.infradead.org>
- <YZ6idVy3zqQC4atv@arm.com>
- <CAHc6FU4-P9sVexcNt5CDQxROtMAo=kH8hEu==AAhZ_+Zv53=Ag@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHc6FU4-P9sVexcNt5CDQxROtMAo=kH8hEu==AAhZ_+Zv53=Ag@mail.gmail.com>
+        id S1348830AbhKYXBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 18:01:07 -0500
+Received: from smtp-16.italiaonline.it ([213.209.10.16]:43752 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1345267AbhKYW7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 17:59:04 -0500
+X-Greylist: delayed 490 seconds by postgrey-1.27 at vger.kernel.org; Thu, 25 Nov 2021 17:59:04 EST
+Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
+ ([95.244.92.113])
+        by smtp-16.iol.local with ESMTPA
+        id qNWimq44e7VizqNWmmmHb4; Thu, 25 Nov 2021 23:47:41 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1637880461; bh=C0EMV/lsq5GhT8XslPYkwJKTMpamyTd3jyXd0/hMrDA=;
+        h=From;
+        b=RT1uQqn+Ozz/QXNREn2SfJqGUUoFb/kozFlSiY/pjn2MVZmlgLnaMKrbn4poUoZWK
+         w+6+O4Dt91MogI5Q5CXgJ9s1wWOl19IYYXHKXFxf5RPpVSUia5/OLYIc9S1noQ8GJj
+         MQHykON+zjHi6xggozmypd83IZqu1AeL1l7pjAGcocw0aBFiHcMRgrU4qpJZXzBAdH
+         q7DwYJ/UmFBoYItmp4nxWXV1ifpuI2GaXYjH9lUvgI3PZ+qVdK0fHf7ahlEOVUNSKA
+         EoqnnLPCqmgNQcBt8BHv0LvSayWE3id5b92Q3SWAxtaddPpvYpOmki2xtWMVWuW6M7
+         4WJEDkIY3Sebw==
+X-CNFS-Analysis: v=2.4 cv=ftYZ2H0f c=1 sm=1 tr=0 ts=61a0128d cx=a_exe
+ a=GpwmefRDj0jp2XoEX/Ct1w==:117 a=GpwmefRDj0jp2XoEX/Ct1w==:17
+ a=tYUMCb69UOylhIbTagwA:9
+From:   Dario Binacchi <dariobin@libero.it>
+To:     linux-kernel@vger.kernel.org
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-input@vger.kernel.org, Felipe Balbi <balbi@ti.com>,
+        Zubair Lutfullah <zubair.lutfullah@gmail.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Dave Gerlach <d-gerlach@ti.com>,
+        "Andrew F . Davis" <afd@ti.com>, Vignesh R <vigneshr@ti.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Wolfram Sang <wsa@kernel.org>, Brad Griffis <bgriffis@ti.com>,
+        Jeff Lance <j-lance1@ti.com>, Rachna Patil <rachna@ti.com>,
+        Dario Binacchi <dariobin@libero.it>
+Subject: [PATCH v2 0/4] input: touchscreen: am335x: fix and improvements
+Date:   Thu, 25 Nov 2021 23:46:38 +0100
+Message-Id: <20211125224642.21011-1-dariobin@libero.it>
+X-Mailer: git-send-email 2.17.1
+X-CMAE-Envelope: MS4xfPMTzI5IDSdWS1dG5FPW60MvJHxNf8Jn69AqmWHdquHfniOK9NSYpqHujCBTY5w8SZ2CSMCCs4pispBp+NgovHCkKi1SYVgcKQH0Dj5BTphegPI0bqez
+ Uzp+YFsE0hRyVOfoyzDoN3781zOxHm0CwjL/UuBqrKU0EKL93vKBhXAohbk+o12dn6KnM9jCetVrFFE12lCp87plMBJjWDfslPINDjaQqmW+Cc3wcbcjcvlX
+ Qj7j4dXTWYUic12KTrKV0uOT6YzDMpm2mYapf+UDF3kde1z3l/ThdVPcMG4uVBPPgAAk9LoJP8AM5Kgm4FiL8M8cwixf03TKyGTL7n1W5aiQFExn2fbXp7gf
+ fHc9Pp8wAyrSZf+UsGq0deWTq08nrJ5cC90sgDdggwCftTOKMV1GdUdp73NkWIPbS+fPwwa+CaH9iXNEr4WjkJ767cpdnhQygx9QFM+aOF5Zrjvsa3V9a8S7
+ 3u0ESnodQvplSy5PMxuUHeqz1xHq5gn23ltyQnoHJU77lPXe7wzEKD0Md38/cRFoDpbbIlw5KH2CFYDIomQsI7s+VsO09dTzsWh3+G5AxuAb1f9OQhNcwlRB
+ f2ZztHDZHR6rM/oHRpe1vagfXH95cRBARFHMNr4gYe4ylDpr8Hx/3+j2yMU9lRI7yFN7z0IstbByY19seMRSejPjn2rthP8n4FIW1Ga7H0gkpg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 11:25:54PM +0100, Andreas Gruenbacher wrote:
-> On Wed, Nov 24, 2021 at 9:37 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > On Wed, Nov 24, 2021 at 08:03:58PM +0000, Matthew Wilcox wrote:
-> > > On Wed, Nov 24, 2021 at 07:20:24PM +0000, Catalin Marinas wrote:
-> > > > +++ b/fs/btrfs/ioctl.c
-> > > > @@ -2223,7 +2223,8 @@ static noinline int search_ioctl(struct inode *inode,
-> > > >
-> > > >     while (1) {
-> > > >             ret = -EFAULT;
-> > > > -           if (fault_in_writeable(ubuf + sk_offset, *buf_size - sk_offset))
-> > > > +           if (fault_in_exact_writeable(ubuf + sk_offset,
-> > > > +                                        *buf_size - sk_offset))
-> > > >                     break;
-> > > >
-> > > >             ret = btrfs_search_forward(root, &key, path, sk->min_transid);
-> > >
-> > > Couldn't we avoid all of this nastiness by doing ...
-> >
-> > I had a similar attempt initially but I concluded that it doesn't work:
-> >
-> > https://lore.kernel.org/r/YS40qqmXL7CMFLGq@arm.com
-> >
-> > > @@ -2121,10 +2121,9 @@ static noinline int copy_to_sk(struct btrfs_path *path,
-> > >                  * problem. Otherwise we'll fault and then copy the buffer in
-> > >                  * properly this next time through
-> > >                  */
-> > > -               if (copy_to_user_nofault(ubuf + *sk_offset, &sh, sizeof(sh))) {
-> > > -                       ret = 0;
-> > > +               ret = __copy_to_user_nofault(ubuf + *sk_offset, &sh, sizeof(sh));
-> > > +               if (ret)
-> >
-> > There is no requirement for the arch implementation to be exact and copy
-> > the maximum number of bytes possible. It can fail early while there are
-> > still some bytes left that would not fault. The only requirement is that
-> > if it is restarted from where it faulted, it makes some progress (on
-> > arm64 there is one extra byte).
-> >
-> > >                         goto out;
-> > > -               }
-> > >
-> > >                 *sk_offset += sizeof(sh);
-> > > @@ -2196,6 +2195,7 @@ static noinline int search_ioctl(struct inode *inode,
-> > >         int ret;
-> > >         int num_found = 0;
-> > >         unsigned long sk_offset = 0;
-> > > +       unsigned long next_offset = 0;
-> > >
-> > >         if (*buf_size < sizeof(struct btrfs_ioctl_search_header)) {
-> > >                 *buf_size = sizeof(struct btrfs_ioctl_search_header);
-> > > @@ -2223,7 +2223,8 @@ static noinline int search_ioctl(struct inode *inode,
-> > >
-> > >         while (1) {
-> > >                 ret = -EFAULT;
-> > > -               if (fault_in_writeable(ubuf + sk_offset, *buf_size - sk_offset))
-> > > +               if (fault_in_writeable(ubuf + sk_offset + next_offset,
-> > > +                                       *buf_size - sk_offset - next_offset))
-> > >                         break;
-> > >
-> > >                 ret = btrfs_search_forward(root, &key, path, sk->min_transid);
-> > > @@ -2235,11 +2236,12 @@ static noinline int search_ioctl(struct inode *inode,
-> > >                 ret = copy_to_sk(path, &key, sk, buf_size, ubuf,
-> > >                                  &sk_offset, &num_found);
-> > >                 btrfs_release_path(path);
-> > > -               if (ret)
-> > > +               if (ret > 0)
-> > > +                       next_offset = ret;
-> >
-> > So after this point, ubuf+sk_offset+next_offset is writeable by
-> > fault_in_writable(). If copy_to_user() was attempted on
-> > ubuf+sk_offset+next_offset, all would be fine, but copy_to_sk() restarts
-> > the copy from ubuf+sk_offset, so it returns exacting the same ret as in
-> > the previous iteration.
-> 
-> So this means that after a short copy_to_user_nofault(), copy_to_sk()
-> needs to figure out the actual point of failure. We'll have the same
-> problem elsewhere, so this should probably be a generic helper. The
-> alignment hacks are arch specific, so maybe we can have a generic
-> version that assumes no alignment restrictions, with arch-specific
-> overrides.
-> 
-> Once we know the exact point of failure, a
-> fault_in_writeable(point_of_failure, 1) in search_ioctl() will tell if
-> the failure is pertinent. Once we know that the failure isn't
-> pertinent, we're safe to retry the original fault_in_writeable().
 
-The "exact point of failure" is problematic since copy_to_user() may
-fail a few bytes before the actual fault point (e.g. by doing an
-unaligned store). As per Linus' reply, we can work around this by doing
-a sub-page fault_in_writable(point_of_failure, align) where 'align'
-should cover the copy_to_user() impreciseness.
+This series grew out of a touchscreen validation activity on a custom
+board. Oscilloscope measurements and driver source analysis led to these
+patches.
 
-(of course, fault_in_writable() takes the full size argument but behind
-the scene it probes the 'align' prefix at sub-page fault granularity)
+Changes in v2:
+- Rebase the series onto v5.16-rc2
+- Replace CNTRLREG_8WIRE with CNTRLREG_TSC_8WIRE. In the meantime, the
+  file ti_am335x_tscadc.h has been modified, so the patch must be
+  updated.
+- Drop patch 4/6 ("dt-bindings: input: ti-tsc-adc: fix tsc node example")
+- Drop patch 5/6 ("mfd: ti_am335x_tscadc: fix reading a tsc property from DT")
+
+Dario Binacchi (4):
+  input: ti_am335x_tsc: set ADCREFM for X configuration
+  input: ti_am335x_tsc: fix STEPCONFIG setup for Z2
+  input: ti_am335x_tsc: lower the X and Y sampling time
+  mfd: ti_am335x_tscadc: drop the CNTRLREG_TSC_8WIRE macro
+
+ drivers/input/touchscreen/ti_am335x_tsc.c | 18 +++++++++++++-----
+ include/linux/mfd/ti_am335x_tscadc.h      |  1 -
+ 2 files changed, 13 insertions(+), 6 deletions(-)
 
 -- 
-Catalin
+2.17.1
+
