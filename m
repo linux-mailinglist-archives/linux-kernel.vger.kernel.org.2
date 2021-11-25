@@ -2,159 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F4745D5F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 09:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7557345D5CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:54:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347802AbhKYIJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 03:09:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236816AbhKYIH6 (ORCPT
+        id S239326AbhKYH5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 02:57:15 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15866 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348091AbhKYHzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 03:07:58 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A4C9C06179F;
-        Thu, 25 Nov 2021 00:02:41 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id r5so4508901pgi.6;
-        Thu, 25 Nov 2021 00:02:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=CSciBp70ctz/T70TEHciU/vFhHdn0cLDtlceFTilb1c=;
-        b=It30LTcXDZF58CHAlmKZ7KsZm6cBiiG66ou8PSaAROYspvZMNMWnzN6Yk9neUAPDjS
-         GueCzvSqJwQ6/exWRTYZGJ0Zx9yWvNJ3rhzNXB37Q7np9hdsIK8UWe6tblkLG7s8KwyL
-         /Qa/Q6ZGm4bFPECOBzayBO3QS1FyG6l2waLmn9B+nSfBogIq1lvOzCLq5nuORnVVDPZw
-         GSo9gm8OTNzZ/jq4fHqt+JGTvUSP8ymwaC1ViJ2wxHTfnrzAjLJUPtyxflk9C0+Amqyq
-         lbWFiMfsYVgeNoA6BT2ujDDGFHSSfUHVYlIASGg5/JI7ZDeIOxAPvcm3z53nHvw93Cy1
-         U23w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CSciBp70ctz/T70TEHciU/vFhHdn0cLDtlceFTilb1c=;
-        b=z0Zc+BAYSRgA4YHWFJZNyh6ZlSFSqasPpDZFYF6b0vPEbIAdYHn3zC4cY6p8vko97u
-         82wHxsnwl3pjblIs/gcIP27begAk0fLU3563X7huXRdPNyRoLTIRAfP4fR0CZkbSSkLQ
-         PZaAA7H/GPAX8sLyX/m7RituHEOZ1Mn2SOzyZCgO6AlMWjL+Sj0iCgDQd7tMqDXYRIY1
-         HgJbuYUN9YP4RrKJpB+PAwjtkYTHOHXyPmNNN62+b5DY6Xi10OHTkz2gl/AIJBlnO062
-         8o7ETg4YqZIyig0Nd3Zdc4DpZmN507fjtIYzUM3Ed2WPPb6tTbWGO3dGNnRbrZz9wuAj
-         4svA==
-X-Gm-Message-State: AOAM5329Zp3RzFRSO3O9S4PYFBrSn1mTEAsBlON4gWFKtd+g8kKUUjcf
-        qLN5/YrLlI3S2ORP0+HQjtIMdTSDIkOyCT95Tzs=
-X-Google-Smtp-Source: ABdhPJwALKYZnA4tE3kx/LJ+PM6uutmsRQ4tIKRYroIQ0hHi86Cgy3EaVgZEMxaJNwbClYCdinrkLQ==
-X-Received: by 2002:aa7:8717:0:b0:4a2:967c:96b with SMTP id b23-20020aa78717000000b004a2967c096bmr12351089pfo.14.1637827361120;
-        Thu, 25 Nov 2021 00:02:41 -0800 (PST)
-Received: from haolee.io ([2600:3c01::f03c:91ff:fe02:b162])
-        by smtp.gmail.com with ESMTPSA id u9sm2215737pfi.23.2021.11.25.00.02.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 00:02:40 -0800 (PST)
-Date:   Thu, 25 Nov 2021 08:02:38 +0000
-From:   Hao Lee <haolee.swjtu@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Michal Hocko <mhocko@suse.com>, Linux MM <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>, vdavydov.dev@gmail.com,
-        Shakeel Butt <shakeelb@google.com>, cgroups@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: reduce spinlock contention in release_pages()
-Message-ID: <20211125080238.GA7356@haolee.io>
-References: <20211124151915.GA6163@haolee.io>
- <YZ5o/VmU59evp65J@dhcp22.suse.cz>
- <CA+PpKPmy-u_BxYMCQOFyz78t2+3uM6nR9mQeX+MPyH6H2tOOHA@mail.gmail.com>
- <YZ8DZHERun6Fej2P@casper.infradead.org>
+        Thu, 25 Nov 2021 02:55:13 -0500
+Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4J09792nkfz91Jh;
+        Thu, 25 Nov 2021 15:51:33 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 25 Nov 2021 15:52:00 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 25 Nov 2021 15:51:59 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-s390@vger.kernel.org>,
+        <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Alexander Potapenko <glider@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Yongqiang Liu <liuyongqiang13@huawei.com>
+Subject: [PATCH v4] mm: Defer kmemleak object creation of module_alloc()
+Date:   Thu, 25 Nov 2021 16:03:07 +0800
+Message-ID: <20211125080307.27225-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZ8DZHERun6Fej2P@casper.infradead.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 03:30:44AM +0000, Matthew Wilcox wrote:
-> On Thu, Nov 25, 2021 at 11:24:02AM +0800, Hao Lee wrote:
-> > On Thu, Nov 25, 2021 at 12:31 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > We do batch currently so no single task should be
-> > > able to monopolize the cpu for too long. Why this is not sufficient?
-> > 
-> > uncharge and unref indeed take advantage of the batch process, but
-> > del_from_lru needs more time to complete. Several tasks will contend
-> > spinlock in the loop if nr is very large.
-> 
-> Is SWAP_CLUSTER_MAX too large?  Or does your architecture's spinlock
-> implementation need to be fixed?
-> 
+Yongqiang reports a kmemleak panic when module insmod/rmmod
+with KASAN enabled(without KASAN_VMALLOC) on x86[1].
 
-My testing server is x86_64 with 5.16-rc2. The spinlock should be normal.
+When the module area allocates memory, it's kmemleak_object
+is created successfully, but the KASAN shadow memory of module
+allocation is not ready, so when kmemleak scan the module's
+pointer, it will panic due to no shadow memory with KASAN check.
 
-I think lock_batch is not the point. lock_batch only break spinning time
-into small parts, but it doesn't reduce spinning time. The thing may get
-worse if lock_batch is very small.
+module_alloc
+  __vmalloc_node_range
+    kmemleak_vmalloc
+				kmemleak_scan
+				  update_checksum
+  kasan_module_alloc
+    kmemleak_ignore
 
-Here is an example about two tasks contending spinlock. Let's assume each
-task need a total of 4 seconds in critical section to complete its work.
-
-Example1:
-
-lock_batch = x
-
-task A      taskB
-hold 4s     wait 4s
-            hold 4s
-
-total waiting time is 4s.
+Note, there is no problem if KASAN_VMALLOC enabled, the modules
+area entire shadow memory is preallocated. Thus, the bug only
+exits on ARCH which supports dynamic allocation of module area
+per module load, for now, only x86/arm64/s390 are involved.
 
 
+Add a VM_DEFER_KMEMLEAK flags, defer vmalloc'ed object register
+of kmemleak in module_alloc() to fix this issue.
 
-Example2:
+[1] https://lore.kernel.org/all/6d41e2b9-4692-5ec4-b1cd-cbe29ae89739@huawei.com/
 
-if lock_batch = x/2
+Fixes: 793213a82de4 ("s390/kasan: dynamic shadow mem allocation for modules")
+Fixes: 39d114ddc682 ("arm64: add KASAN support")
+Fixes: bebf56a1b176 ("kasan: enable instrumentation of global variables")
+Reported-by: Yongqiang Liu <liuyongqiang13@huawei.com>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+---
+V4:
+- add fix tag
+- fix missing change about VM_DELAY_KMEMLEAK
+v3:
+- update changelog to add more explanation
+- use DEFER instead of DELAY sugguested by Catalin.
+v2:
+- fix type error on changelog and kasan_module_alloc()
 
-task A      taskB
-hold 2s     wait 2s
-wait 2s     hold 2s
-hold 2s     wait 2s
-            hold 2s
+ arch/arm64/kernel/module.c | 4 ++--
+ arch/s390/kernel/module.c  | 5 +++--
+ arch/x86/kernel/module.c   | 7 ++++---
+ include/linux/kasan.h      | 4 ++--
+ include/linux/vmalloc.h    | 7 +++++++
+ mm/kasan/shadow.c          | 9 +++++++--
+ mm/vmalloc.c               | 3 ++-
+ 7 files changed, 27 insertions(+), 12 deletions(-)
 
-total waiting time is 6s.
-
-
-The above theoretical example can also be proved by a test using usemem.
-
-# ./usemem -j 4096 -n 20 10g -s 5
-
-lock_batch=SWAP_CLUSTER_MAX          59.50% native_queued_spin_lock_slowpath
-lock_batch=SWAP_CLUSTER_MAX/4        69.95% native_queued_spin_lock_slowpath
-lock_batch=SWAP_CLUSTER_MAX/16       82.22% native_queued_spin_lock_slowpath
-
-Nonetheless, enlarging lock_batch can't improve performance obviously
-though it won't make it worse, and it's not a good idea to hold a
-irq-disabled spinlock for long time.
-
-
-If cond_reched() will break the task fairness, the only way I can think
-of is doing uncharge and unref if the current task can't get the
-spinlock. This will reduce the wasted cpu cycles, although the
-performance gain is still small (about 4%). However, this way will hurt
-batch processing in uncharge(). Maybe there exist a better way...
-
-diff --git a/mm/swap.c b/mm/swap.c
-index e8c9dc6d0377..8a947f8d0aaa 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -960,8 +960,16 @@ void release_pages(struct page **pages, int nr)
- 		if (PageLRU(page)) {
- 			struct lruvec *prev_lruvec = lruvec;
+diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
+index b5ec010c481f..309a27553c87 100644
+--- a/arch/arm64/kernel/module.c
++++ b/arch/arm64/kernel/module.c
+@@ -36,7 +36,7 @@ void *module_alloc(unsigned long size)
+ 		module_alloc_end = MODULES_END;
  
--			lruvec = folio_lruvec_relock_irqsave(folio, lruvec,
-+			lruvec = folio_lruvec_tryrelock_irqsave(folio, lruvec,
- 									&flags);
-+			if (!lruvec) {
-+				mem_cgroup_uncharge_list(&pages_to_free);
-+				free_unref_page_list(&pages_to_free);
-+				INIT_LIST_HEAD(&pages_to_free);
-+				lruvec = folio_lruvec_relock_irqsave(folio,
-+							lruvec, &flags);
-+			}
+ 	p = __vmalloc_node_range(size, MODULE_ALIGN, module_alloc_base,
+-				module_alloc_end, gfp_mask, PAGE_KERNEL, 0,
++				module_alloc_end, gfp_mask, PAGE_KERNEL, VM_DEFER_KMEMLEAK,
+ 				NUMA_NO_NODE, __builtin_return_address(0));
+ 
+ 	if (!p && IS_ENABLED(CONFIG_ARM64_MODULE_PLTS) &&
+@@ -58,7 +58,7 @@ void *module_alloc(unsigned long size)
+ 				PAGE_KERNEL, 0, NUMA_NO_NODE,
+ 				__builtin_return_address(0));
+ 
+-	if (p && (kasan_module_alloc(p, size) < 0)) {
++	if (p && (kasan_module_alloc(p, size, gfp_mask) < 0)) {
+ 		vfree(p);
+ 		return NULL;
+ 	}
+diff --git a/arch/s390/kernel/module.c b/arch/s390/kernel/module.c
+index b01ba460b7ca..d52d85367bf7 100644
+--- a/arch/s390/kernel/module.c
++++ b/arch/s390/kernel/module.c
+@@ -37,14 +37,15 @@
+ 
+ void *module_alloc(unsigned long size)
+ {
++	gfp_t gfp_mask = GFP_KERNEL;
+ 	void *p;
+ 
+ 	if (PAGE_ALIGN(size) > MODULES_LEN)
+ 		return NULL;
+ 	p = __vmalloc_node_range(size, MODULE_ALIGN, MODULES_VADDR, MODULES_END,
+-				 GFP_KERNEL, PAGE_KERNEL_EXEC, 0, NUMA_NO_NODE,
++				 gfp_mask, PAGE_KERNEL_EXEC, VM_DEFER_KMEMLEAK, NUMA_NO_NODE,
+ 				 __builtin_return_address(0));
+-	if (p && (kasan_module_alloc(p, size) < 0)) {
++	if (p && (kasan_module_alloc(p, size, gfp_mask) < 0)) {
+ 		vfree(p);
+ 		return NULL;
+ 	}
+diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
+index 169fb6f4cd2e..95fa745e310a 100644
+--- a/arch/x86/kernel/module.c
++++ b/arch/x86/kernel/module.c
+@@ -67,6 +67,7 @@ static unsigned long int get_module_load_offset(void)
+ 
+ void *module_alloc(unsigned long size)
+ {
++	gfp_t gfp_mask = GFP_KERNEL;
+ 	void *p;
+ 
+ 	if (PAGE_ALIGN(size) > MODULES_LEN)
+@@ -74,10 +75,10 @@ void *module_alloc(unsigned long size)
+ 
+ 	p = __vmalloc_node_range(size, MODULE_ALIGN,
+ 				    MODULES_VADDR + get_module_load_offset(),
+-				    MODULES_END, GFP_KERNEL,
+-				    PAGE_KERNEL, 0, NUMA_NO_NODE,
++				    MODULES_END, gfp_mask,
++				    PAGE_KERNEL, VM_DEFER_KMEMLEAK, NUMA_NO_NODE,
+ 				    __builtin_return_address(0));
+-	if (p && (kasan_module_alloc(p, size) < 0)) {
++	if (p && (kasan_module_alloc(p, size, gfp_mask) < 0)) {
+ 		vfree(p);
+ 		return NULL;
+ 	}
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index d8783b682669..89c99e5e67de 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -474,12 +474,12 @@ static inline void kasan_populate_early_vm_area_shadow(void *start,
+  * allocations with real shadow memory. With KASAN vmalloc, the special
+  * case is unnecessary, as the work is handled in the generic case.
+  */
+-int kasan_module_alloc(void *addr, size_t size);
++int kasan_module_alloc(void *addr, size_t size, gfp_t gfp_mask);
+ void kasan_free_shadow(const struct vm_struct *vm);
+ 
+ #else /* (CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS) && !CONFIG_KASAN_VMALLOC */
+ 
+-static inline int kasan_module_alloc(void *addr, size_t size) { return 0; }
++static inline int kasan_module_alloc(void *addr, size_t size, gfp_t gfp_mask) { return 0; }
+ static inline void kasan_free_shadow(const struct vm_struct *vm) {}
+ 
+ #endif /* (CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS) && !CONFIG_KASAN_VMALLOC */
+diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+index 6e022cc712e6..506fc6e6a126 100644
+--- a/include/linux/vmalloc.h
++++ b/include/linux/vmalloc.h
+@@ -28,6 +28,13 @@ struct notifier_block;		/* in notifier.h */
+ #define VM_MAP_PUT_PAGES	0x00000200	/* put pages and free array in vfree */
+ #define VM_NO_HUGE_VMAP		0x00000400	/* force PAGE_SIZE pte mapping */
+ 
++#if defined(CONFIG_KASAN) && (defined(CONFIG_KASAN_GENERIC) || \
++	defined(CONFIG_KASAN_SW_TAGS)) && !defined(CONFIG_KASAN_VMALLOC)
++#define VM_DEFER_KMEMLEAK	0x00000800	/* defer kmemleak object creation */
++#else
++#define VM_DEFER_KMEMLEAK	0
++#endif
 +
- 			if (prev_lruvec != lruvec)
- 				lock_batch = 0;
+ /*
+  * VM_KASAN is used slightly differently depending on CONFIG_KASAN_VMALLOC.
+  *
+diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+index 4a4929b29a23..2ade2f484562 100644
+--- a/mm/kasan/shadow.c
++++ b/mm/kasan/shadow.c
+@@ -498,7 +498,7 @@ void kasan_release_vmalloc(unsigned long start, unsigned long end,
+ 
+ #else /* CONFIG_KASAN_VMALLOC */
+ 
+-int kasan_module_alloc(void *addr, size_t size)
++int kasan_module_alloc(void *addr, size_t size, gfp_t gfp_mask)
+ {
+ 	void *ret;
+ 	size_t scaled_size;
+@@ -520,9 +520,14 @@ int kasan_module_alloc(void *addr, size_t size)
+ 			__builtin_return_address(0));
+ 
+ 	if (ret) {
++		struct vm_struct *vm = find_vm_area(addr);
+ 		__memset(ret, KASAN_SHADOW_INIT, shadow_size);
+-		find_vm_area(addr)->flags |= VM_KASAN;
++		vm->flags |= VM_KASAN;
+ 		kmemleak_ignore(ret);
++
++		if (vm->flags & VM_DEFER_KMEMLEAK)
++			kmemleak_vmalloc(vm, size, gfp_mask);
++
+ 		return 0;
+ 	}
+ 
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index d2a00ad4e1dd..bf3c2fe8f528 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -3074,7 +3074,8 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
+ 	clear_vm_uninitialized_flag(area);
+ 
+ 	size = PAGE_ALIGN(size);
+-	kmemleak_vmalloc(area, size, gfp_mask);
++	if (!(vm_flags & VM_DEFER_KMEMLEAK))
++		kmemleak_vmalloc(area, size, gfp_mask);
+ 
+ 	return addr;
+ 
+-- 
+2.26.2
+
