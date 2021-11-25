@@ -2,101 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6F845DA9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 14:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43FE445DAA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 14:01:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355053AbhKYNEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 08:04:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47814 "EHLO mail.kernel.org"
+        id S1355115AbhKYNEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 08:04:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353997AbhKYNCA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 08:02:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53FA860187;
-        Thu, 25 Nov 2021 12:58:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637845129;
-        bh=ktjngJ2/FeECqMmLlRKeC9UC1fcA0HHoCKJVLEwGJHo=;
+        id S1355041AbhKYNCX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 08:02:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64DE460FDA;
+        Thu, 25 Nov 2021 12:59:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637845152;
+        bh=GN/QemKl8WQxik3fKssLCxp8R+dmbYdNVBK2d22vV2U=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cFxw8vE6qVkKblQpGBDmucSzWrdWesEq0MRVlMYvBFaWzreEZWqWdUUukTmIkyx59
-         aA/UXIBTDedRtwIL6RpTffs9mMB4aWhGpklZX1ocuKGIb+TmQAeQrUr0XVmZXWpztW
-         Rdr11ORHKWRG9hiWDxNwLc6W/+brwv21P74kQnYI=
-Date:   Thu, 25 Nov 2021 13:58:35 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net,
-        Nadav Amit <namit@vmware.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
-Subject: Re: [PATCH 4.9 000/207] 4.9.291-rc1 review
-Message-ID: <YZ+Ie3bhYDXYDvUP@kroah.com>
-References: <20211124115703.941380739@linuxfoundation.org>
- <CA+G9fYuZqV51ZGQd-ySaDqSQ_YDJHYav4KW4B0zEq1Rh2_KCDA@mail.gmail.com>
+        b=jcYAoxrN8GVfqamOvj0rjliGSGgCuNer5RzuuejV24NUSMwORht3ATviviJawXkek
+         zmiI6RzjQzKv2cl+01T3tOlVbBluPRbQsfN4xd94hXjfrT7o+hHvpQVK8/obLNVT7l
+         GKvX71YzOy8NaDXH7pVHQypikvNPsMgO4a+6PP3y4gUj5tIm7tL2WPp48BiqEdDuP5
+         uhBtUAsJGiH/WHPFAWqS+JO3+OHhUPGrb4TdypmsthTqDzk716wMjloLfqEs/wbT7z
+         HBz+/GM1b7KAWNz9yMSxrPHe37S3aQe2md26sZ21YR+FL9DKNDlZGx0t/l0beHpioL
+         bC4uq5awQZWqg==
+Date:   Thu, 25 Nov 2021 12:59:05 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Krishna Yarlagadda <kyarlagadda@nvidia.com>
+Cc:     Laxman Dewangan <ldewangan@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-tegra@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] spi: tegra210-quad: add acpi support
+Message-ID: <YZ+ImY1LrvB5a5iF@sirena.org.uk>
+References: <1637834152-32093-1-git-send-email-kyarlagadda@nvidia.com>
+ <1637834152-32093-2-git-send-email-kyarlagadda@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wYbJFy+iqilKIVSO"
 Content-Disposition: inline
-In-Reply-To: <CA+G9fYuZqV51ZGQd-ySaDqSQ_YDJHYav4KW4B0zEq1Rh2_KCDA@mail.gmail.com>
+In-Reply-To: <1637834152-32093-2-git-send-email-kyarlagadda@nvidia.com>
+X-Cookie: This bag is recyclable.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 08:42:27PM +0530, Naresh Kamboju wrote:
-> On Wed, 24 Nov 2021 at 17:44, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 4.9.291 release.
-> > There are 207 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Fri, 26 Nov 2021 11:56:36 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.291-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> Regression found on arm gcc-11 builds with tinyconfig and allnoconfig.
-> As a reported in this email,
-> 
-> https://lore.kernel.org/stable/CA+G9fYvU4yoOx7BEBxJXRVZx4pO5fYPRELmkNz+iBu7kdN_9Ew@mail.gmail.com/
-> 
-> 
-> build error :
-> --------------
-> make --silent --keep-going --jobs=8
-> O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=arm
-> CROSS_COMPILE=arm-linux-gnueabihf- 'CC=sccache
-> arm-linux-gnueabihf-gcc' 'HOSTCC=sccache gcc'
-> In file included from arch/arm/include/asm/tlb.h:28,
->                  from arch/arm/mm/init.c:34:
-> include/asm-generic/tlb.h: In function 'tlb_flush_pmd_range':
-> include/asm-generic/tlb.h:208:54: error: 'PMD_SIZE' undeclared (first
-> use in this function); did you mean 'PUD_SIZE'?
->   208 |         if (tlb->page_size != 0 && tlb->page_size != PMD_SIZE)
->       |                                                      ^~~~~~~~
->       |                                                      PUD_SIZE
-> include/asm-generic/tlb.h:208:54: note: each undeclared identifier is
-> reported only once for each function it appears in
-> make[2]: *** [scripts/Makefile.build:307: arch/arm/mm/init.o] Error 1
-> make[2]: Target '__build' not remade because of errors.
-> make[1]: *** [Makefile:1036: arch/arm/mm] Error 2
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
-> Patch pointing to,
-> 
-> hugetlbfs: flush TLBs correctly after huge_pmd_unshare
-> commit a4a118f2eead1d6c49e00765de89878288d4b890 upstream.
 
-Should be fixed in -rc2
+--wYbJFy+iqilKIVSO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Nov 25, 2021 at 03:25:52PM +0530, Krishna Yarlagadda wrote:
+
+> +#ifdef CONFIG_ACPI
+> +	if (ACPI_FAILURE(acpi_evaluate_object(ACPI_HANDLE(tqspi->dev),
+> +					      "_RST", NULL, NULL)))
+> +		dev_err(tqspi->dev, "failed to reset device\n");
+> +#endif
+
+What happens when this runs on a DT system?
+
+--wYbJFy+iqilKIVSO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGfiJgACgkQJNaLcl1U
+h9CdZgf/Wl+0SliPZI5T7h/w5woXgBdw9MoIfPZD5A9VyGgItquHqW7CSfp0an6n
+7HwjhmkYj2fgk9prgwY0jOBaCN2WQMeqAPGPgxzHjsuAazdleeFeQI/lGiPazrEI
+tJ5/2zWKHy5LJAGglYVaUYgYjiFoTq4vnPp/ddM95It83LRSSVUnL6beH9X9r4DZ
+p4B+bI7EPoMgqWyA0X4zoKZi6mrz1HKJ8wSx+SGesVHkRfpJmIbSjn/csOr414Zb
+1LLh0hsWEFx/qkJ8rUODpkKo9bcjEP2I4eUkjfdbeg3YnuQglPnLo5jEirNaW40w
+SkN0K0hs2Xly8QOiPhmC2+haguIBYg==
+=jjch
+-----END PGP SIGNATURE-----
+
+--wYbJFy+iqilKIVSO--
