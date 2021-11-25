@@ -2,70 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A472645E282
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DAC45E289
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 22:31:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357203AbhKYVcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 16:32:47 -0500
-Received: from mga09.intel.com ([134.134.136.24]:21457 "EHLO mga09.intel.com"
+        id S1350940AbhKYVeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 16:34:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235610AbhKYVan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 16:30:43 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="235392645"
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="235392645"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 13:27:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="475725469"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga002.jf.intel.com with ESMTP; 25 Nov 2021 13:27:28 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 353EDE6; Thu, 25 Nov 2021 23:27:33 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Prchal <jiri.prchal@aksignal.cz>
-Subject: [PATCH v1 3/3] misc: at25: Check proper value of chip length in FRAM case
-Date:   Thu, 25 Nov 2021 23:27:29 +0200
-Message-Id: <20211125212729.86585-4-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211125212729.86585-1-andriy.shevchenko@linux.intel.com>
-References: <20211125212729.86585-1-andriy.shevchenko@linux.intel.com>
+        id S1351924AbhKYVcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 16:32:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AE0A60527;
+        Thu, 25 Nov 2021 21:29:04 +0000 (UTC)
+Date:   Thu, 25 Nov 2021 21:29:01 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
+ with sub-page faults
+Message-ID: <YaAAHfAaOg2tmLKU@arm.com>
+References: <20211124192024.2408218-1-catalin.marinas@arm.com>
+ <20211124192024.2408218-4-catalin.marinas@arm.com>
+ <YZ6arlsi2L3LVbFO@casper.infradead.org>
+ <CAHk-=wgHqjX3kenSk5_bCRM+ZC-tgndBMfbVVsbp0CwJf2DU-w@mail.gmail.com>
+ <YZ9vM91Uj8g36VQC@arm.com>
+ <CAHk-=wgUn1vBReeNcZNEObkxPQGhN5EUq5MC94cwF0FaQvd2rQ@mail.gmail.com>
+ <YZ/1jflaSjgRRl2o@arm.com>
+ <YZ/55fYE0l7ewo/t@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZ/55fYE0l7ewo/t@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Obviously the byte_len value should be checked from the chip
-and not from at25->chip.
+On Thu, Nov 25, 2021 at 09:02:29PM +0000, Matthew Wilcox wrote:
+> On Thu, Nov 25, 2021 at 08:43:57PM +0000, Catalin Marinas wrote:
+> > > I really believe that the fix is to make the read/write probing just
+> > > be more aggressive.
+> > > 
+> > > Make the read/write probing require that AT LEAST <n> bytes be
+> > > readable/writable at the beginning, where 'n' is 'min(len,ALIGN)', and
+> > > ALIGN is whatever size that copy_from/to_user_xyz() might require just
+> > > because it might do multi-byte accesses.
+> > > 
+> > > In fact, make ALIGN be perhaps something reasonable like 512 bytes or
+> > > whatever, and then you know you can handle the btrfs "copy a whole
+> > > structure and reset if that fails" case too.
+> > 
+> > IIUC what you are suggesting, we still need changes to the btrfs loop
+> > similar to willy's but that should work fine together with a slightly
+> > more aggressive fault_in_writable().
+> > 
+> > A probing of at least sizeof(struct btrfs_ioctl_search_key) should
+> > suffice without any loop changes and 512 would cover it but it doesn't
+> > look generic enough. We could pass a 'probe_prefix' argument to
+> > fault_in_exact_writeable() to only probe this and btrfs would just
+> > specify the above sizeof().
+> 
+> How about something like this?
+> 
+> +++ b/mm/gup.c
+> @@ -1672,6 +1672,13 @@ size_t fault_in_writeable(char __user *uaddr, size_t size)
+> 
+>         if (unlikely(size == 0))
+>                 return 0;
+> +       if (SUBPAGE_PROBE_INTERVAL) {
+> +               while (uaddr < PAGE_ALIGN((unsigned long)uaddr)) {
+> +                       if (unlikely(__put_user(0, uaddr) != 0))
+> +                               goto out;
+> +                       uaddr += SUBPAGE_PROBE_INTERVAL;
+> +               }
+> +       }
+>         if (!PAGE_ALIGNED(uaddr)) {
+>                 if (unlikely(__put_user(0, uaddr) != 0))
+>                         return size;
+> 
+> ARM then defines SUBPAGE_PROBE_INTERVAL to be 16 and the rest of us
+> leave it as 0.  That way we probe all the way to the end of the current
+> page and the start of the next page.
 
-Fixes: fd307a4ad332 ("nvmem: prepare basics for FRAM support")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/misc/eeprom/at25.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+It doesn't help if the copy_to_user() fault happens 16 bytes into the
+second page for example. The fault_in() passes, copy_to_user() fails and
+the loop restarts from the same place. With sub-page faults, the page
+boundary doesn't have any relevance. We want to probe the beginning of
+the buffer that's at least as big as the loop rewind size even if it
+goes past a page boundary.
 
-diff --git a/drivers/misc/eeprom/at25.c b/drivers/misc/eeprom/at25.c
-index f0b0efc30ee6..e21216541b0f 100644
---- a/drivers/misc/eeprom/at25.c
-+++ b/drivers/misc/eeprom/at25.c
-@@ -433,9 +433,9 @@ static int at25_probe(struct spi_device *spi)
- 			dev_err(&spi->dev, "Error: unsupported size (id %02x)\n", id[7]);
- 			return -ENODEV;
- 		}
--		chip.byte_len = int_pow(2, id[7] - 0x21 + 4) * 1024;
- 
--		if (at25->chip.byte_len > 64 * 1024)
-+		chip.byte_len = int_pow(2, id[7] - 0x21 + 4) * 1024;
-+		if (chip.byte_len > 64 * 1024)
- 			at25->chip.flags |= EE_ADDR3;
- 		else
- 			at25->chip.flags |= EE_ADDR2;
 -- 
-2.33.0
-
+Catalin
