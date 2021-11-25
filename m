@@ -2,164 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23B8445DA20
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0076045DA28
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 13:36:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351139AbhKYMhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 07:37:31 -0500
-Received: from mga02.intel.com ([134.134.136.20]:46403 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352299AbhKYMfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 07:35:30 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10178"; a="222732555"
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="222732555"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 04:30:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="675248163"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 25 Nov 2021 04:30:35 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqDtb-0006LA-2M; Thu, 25 Nov 2021 12:30:35 +0000
-Date:   Thu, 25 Nov 2021 20:30:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Robert Richter <rric@kernel.org>
-Subject: drivers/pci/controller/dwc/pcie-hisi.c:61:37: sparse: sparse:
- incorrect type in initializer (different address spaces)
-Message-ID: <202111252029.qFIRAyKL-lkp@intel.com>
+        id S1352756AbhKYMjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 07:39:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244519AbhKYMhg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 07:37:36 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B88B2C06175D
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 04:31:05 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id b68so5773184pfg.11
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 04:31:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WxxRmY1avsvh6dVkHZJ0dbIbMG7eaT3D29WZ6XTQGMs=;
+        b=JPWtHFwlPnlpUr3V/uXoLYvEvb1FSiBRFURrSZ6rQTizm+1BC+SRUOhK+I46O9QwLo
+         M5gV5xZoZnA+4ROQZAa91s0taIZDwrMrPgi5XSDVc8BkfBFa/cLRBkj3F5tsuqY4mnT2
+         aVYvggaaRT4cNJfuQ1lrshfhq/COInHmAWQrpqgsQYPtbtsKXWeMj2O6SDfAywoqT4P2
+         wqURwsrukniCuS5RP9Hq+7Ycb9RIPUZYhIlS7AXQlk2zKfl/dgf0WUmSEK4HYuPAdMMN
+         AT3mKc5n+wzoPzvpCewKtuNqYpGIExJD4Nu1jUahx5ThOQxWbe3RX4VbnoPFjLPNg6S8
+         qV+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WxxRmY1avsvh6dVkHZJ0dbIbMG7eaT3D29WZ6XTQGMs=;
+        b=jAJygi2EOIqyWhsVwcX8nVernUtlPC0rdJmYJ0WmdNLnqo+mtz/UqHIFfEfA7Ez8v0
+         hwQlSvq+xbuTfBqqiRZ2NQNivqY9YtIcO16ckU3O7yLbua+aJBkQm5zzqsLYxVEtlaoe
+         T5n+tqVrUJ9fsHWSpYGTlt1ZaErdZJOGSZO+aA8ar/eubYzIO0evNbT/Uvlx60a1UhI2
+         FyYFeLobJYUESxy3e7aB7RykLV7dWn2YqI5Tru/8rqD+UYBGsf6uKwaQyMJ0GICsdUs1
+         nEyN+2lJRClO9OfGEZZP6V+AAZW3olST9Yimtva0iRJvcIxrh3l278mek5F24mItYYSw
+         p6mQ==
+X-Gm-Message-State: AOAM533tMASI9Iw6byR4XljL2JteTq5+aHzaggL/wcplXgI25Cv53DFW
+        ErYd4BBGdlM1DegpXefgrT6sCA==
+X-Google-Smtp-Source: ABdhPJwQ4psZYW/HCtjGYY7kSbXNJVPF5eF6TJ9jiqCaiirse0B+1fNkkGePy0pzM01h5vKljnBYJg==
+X-Received: by 2002:a63:e04f:: with SMTP id n15mr16336706pgj.31.1637843465170;
+        Thu, 25 Nov 2021 04:31:05 -0800 (PST)
+Received: from leoy-ThinkPad-X240s ([66.23.193.248])
+        by smtp.gmail.com with ESMTPSA id g7sm3395196pfv.159.2021.11.25.04.30.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 04:31:00 -0800 (PST)
+Date:   Thu, 25 Nov 2021 20:30:53 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     German Gomez <german.gomez@arm.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, acme@kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RESEND PATCH 1/1] perf arm-spe: report all SPE records as "all"
+ events
+Message-ID: <20211125123053.GB1599216@leoy-ThinkPad-X240s>
+References: <20211117142833.226629-1-german.gomez@arm.com>
+ <20211125075358.GA1599216@leoy-ThinkPad-X240s>
+ <12d44d96-1fcd-1fdd-64ea-beef40a27d1d@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <12d44d96-1fcd-1fdd-64ea-beef40a27d1d@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5f53fa508db098c9d372423a6dac31c8a5679cdf
-commit: 6e5a1fff9096ecd259dedcbbdc812aa90986a40e PCI: Avoid building empty drivers
-date:   9 months ago
-config: alpha-randconfig-s032-20211117 (https://download.01.org/0day-ci/archive/20211125/202111252029.qFIRAyKL-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 11.2.0
-reproduce:
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # apt-get install sparse
-        # sparse version: v0.6.4-dirty
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6e5a1fff9096ecd259dedcbbdc812aa90986a40e
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout 6e5a1fff9096ecd259dedcbbdc812aa90986a40e
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=alpha 
+On Thu, Nov 25, 2021 at 10:21:48AM +0000, James Clark wrote:
+> On 25/11/2021 07:53, Leo Yan wrote:
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+[...]
 
+> >> +static int arm_spe__synth_other_sample(struct arm_spe_queue *speq,
+> >> +				       u64 spe_events_id)
+> >> +{
+> >> +	struct arm_spe *spe = speq->spe;
+> >> +	struct arm_spe_record *record = &speq->decoder->record;
+> >> +	union perf_event *event = speq->event_buf;
+> >> +	struct perf_sample sample = { .ip = 0, };
+> >> +
+> >> +	arm_spe_prep_sample(spe, speq, event, &sample);
+> >> +
+> >> +	sample.id = spe_events_id;
+> >> +	sample.stream_id = spe_events_id;
+> >> +	sample.addr = record->to_ip;
+> > 
+> > After checked the event types, I think "other" samples would include
+> > below raw event types:
+> 
+> Maybe we should rename some of the functions and variables if there is
+> confusion, but I think this new group is "all" rather than "other" because
+> it also includes all the events that would be put in other groups.
+> 
+> > 
+> >   EV_EXCEPTION_GEN
+> >   EV_RETIRED
+> >   EV_NOT_TAKEN
+> >   EV_ALIGNMENT
+> >   EV_PARTIAL_PREDICATE
+> >   EV_EMPTY_PREDICATE
+> > 
+> > I am just wander if we can use sample.transaction to store these event
+> > types, otherwise, we cannot distinguish the event type for the samples.
+> 
+> If we can use the transaction field to distinguish sample types, I'm
+> wondering why we need the separate groups at all. If this new group
+> includes all sample types, and they're all labelled, do we need to
+> continue with the other groups like "tlb-access" and "branch-miss"?
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/pci/controller/dwc/pcie-hisi.c:61:37: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void [noderef] __iomem *reg_base @@     got void *priv @@
-   drivers/pci/controller/dwc/pcie-hisi.c:61:37: sparse:     expected void [noderef] __iomem *reg_base
-   drivers/pci/controller/dwc/pcie-hisi.c:61:37: sparse:     got void *priv
->> drivers/pci/controller/dwc/pcie-hisi.c:132:19: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *priv @@     got void [noderef] __iomem *[assigned] reg_base @@
-   drivers/pci/controller/dwc/pcie-hisi.c:132:19: sparse:     expected void *priv
-   drivers/pci/controller/dwc/pcie-hisi.c:132:19: sparse:     got void [noderef] __iomem *[assigned] reg_base
+I admit the samples for "tlb-access" and "branch-miss" might not a
+good practice.  At the time when I was upstreaming the Arm SPE patches
+(mainly based Hisilicon patches), the main idea for use some events to
+output samples, this is why "tlb-access" and "branch-miss" events were
+introduced.
 
-vim +61 drivers/pci/controller/dwc/pcie-hisi.c
+But when worked on Arm SPE for enabling "perf mem" and "perf c2c", I
+recognized that _consuming_ hardware trace data is much more important
+than merely outputting samples.  A better way for _consuming_ the Arm SPE
+trace data is to synthesize samples with a prominent type and use an
+extra field in sample for the associated attribution.  E.g. we can
+synthesize memory samples and uses field "sample.data_src" to
+distinguish different memory attributions, thus the events
+"tlb-access" and "branch-miss" are not useful.  This approach can be
+applied to instruction event and branch event, and both of them use
+field "sample.flags" to indicate what's the type of instruction or
+branch.
 
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   56  
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   57  static void __iomem *hisi_pcie_map_bus(struct pci_bus *bus, unsigned int devfn,
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   58  				       int where)
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   59  {
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   60  	struct pci_config_window *cfg = bus->sysdata;
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  @61  	void __iomem *reg_base = cfg->priv;
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   62  
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   63  	if (bus->number == cfg->busr.start)
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   64  		return reg_base + where;
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   65  	else
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   66  		return pci_ecam_map_bus(bus, devfn, where);
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   67  }
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   68  
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06   69  #if defined(CONFIG_ACPI) && defined(CONFIG_PCI_QUIRKS)
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06   70  
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   71  static int hisi_pcie_init(struct pci_config_window *cfg)
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   72  {
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   73  	struct device *dev = cfg->parent;
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   74  	struct acpi_device *adev = to_acpi_device(dev);
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   75  	struct acpi_pci_root *root = acpi_driver_data(adev);
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   76  	struct resource *res;
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   77  	void __iomem *reg_base;
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   78  	int ret;
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   79  
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   80  	/*
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   81  	 * Retrieve RC base and size from a HISI0081 device with _UID
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   82  	 * matching our segment.
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   83  	 */
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   84  	res = devm_kzalloc(dev, sizeof(*res), GFP_KERNEL);
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   85  	if (!res)
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   86  		return -ENOMEM;
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   87  
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   88  	ret = acpi_get_rc_resources(dev, "HISI0081", root->segment, res);
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   89  	if (ret) {
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   90  		dev_err(dev, "can't get rc base address\n");
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   91  		return -ENOMEM;
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   92  	}
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   93  
-e313a447e73527e drivers/pci/dwc/pcie-hisi.c            Lorenzo Pieralisi 2017-04-19   94  	reg_base = devm_pci_remap_cfgspace(dev, res->start, resource_size(res));
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   95  	if (!reg_base)
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   96  		return -ENOMEM;
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   97  
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   98  	cfg->priv = reg_base;
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01   99  	return 0;
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  100  }
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  101  
-0b104773b4f72cc drivers/pci/controller/dwc/pcie-hisi.c Rob Herring       2020-04-09  102  const struct pci_ecam_ops hisi_pcie_ops = {
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  103  	.init         =  hisi_pcie_init,
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  104  	.pci_ops      = {
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  105  		.map_bus    = hisi_pcie_map_bus,
-4788316f7435390 drivers/pci/host/pcie-hisi.c           Bjorn Helgaas     2017-02-07  106  		.read       = hisi_pcie_rd_conf,
-4788316f7435390 drivers/pci/host/pcie-hisi.c           Bjorn Helgaas     2017-02-07  107  		.write      = hisi_pcie_wr_conf,
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  108  	}
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  109  };
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  110  
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  111  #endif
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  112  
-5f00f1a0178cf52 drivers/pci/host/pcie-hisi.c           Dongdong Liu      2016-12-01  113  #ifdef CONFIG_PCI_HISI
-500a1d9a43e0a16 drivers/pci/host/pcie-hisi.c           Zhou Wang         2015-10-29  114  
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  115  static int hisi_pcie_platform_init(struct pci_config_window *cfg)
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  116  {
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  117  	struct device *dev = cfg->parent;
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  118  	struct platform_device *pdev = to_platform_device(dev);
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  119  	struct resource *res;
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  120  	void __iomem *reg_base;
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  121  
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  122  	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  123  	if (!res) {
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  124  		dev_err(dev, "missing \"reg[1]\"property\n");
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  125  		return -EINVAL;
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  126  	}
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  127  
-e313a447e73527e drivers/pci/dwc/pcie-hisi.c            Lorenzo Pieralisi 2017-04-19  128  	reg_base = devm_pci_remap_cfgspace(dev, res->start, resource_size(res));
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  129  	if (!reg_base)
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  130  		return -ENOMEM;
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  131  
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06 @132  	cfg->priv = reg_base;
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  133  	return 0;
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  134  }
-a2ec1996098c7da drivers/pci/host/pcie-hisi.c           Dongdong Liu      2017-02-06  135  
+If we follow up this approach, below records can be considered to
+synthesize instruction or branch samples:
 
-:::::: The code at line 61 was first introduced by commit
-:::::: 5f00f1a0178cf52928366a5e1f376a65f1f3f389 PCI: Add MCFG quirks for HiSilicon Hip05/06/07 host controllers
+  EV_EXCEPTION_GEN
+  EV_RETIRED
+  EV_NOT_TAKEN
 
-:::::: TO: Dongdong Liu <liudongdong3@huawei.com>
-:::::: CC: Bjorn Helgaas <helgaas@kernel.org>
+Below records can be considered to generate memory samples:
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+  EV_ALIGNMENT
+  EV_PARTIAL_PREDICATE
+  EV_EMPTY_PREDICATE
+
+We can consider to extend sample's three fields:
+sample::flags for instruction/branch samples
+sample::data_srouce for memory samples
+sample::transaction for memory transactions (see macros with
+prefix PERF_TXN_).
+
+> Or does the perf GUI not allow filtering by transaction type?
+
+To be honest, when introduced the events "tlb-access" and
+"branch-miss", I didn't consider transaction type at all.
+
+Thanks,
+Leo
