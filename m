@@ -2,110 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C913C45D24F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 02:08:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5E045D250
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 02:09:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346167AbhKYBLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Nov 2021 20:11:42 -0500
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:58255 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235652AbhKYBJk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Nov 2021 20:09:40 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 3EB263201CCD;
-        Wed, 24 Nov 2021 20:06:29 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 24 Nov 2021 20:06:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ZZzaNw
-        Uz3U4hcZU/AFAuT4cjKidA9gwJwj+D57cATy4=; b=nZWMSoR7w7Hvt3CKOZn7xR
-        r2NAeHtQj4MEQldQl+6DpNqSfHtV49idMsU8Iaw80IGiw0rtSWebbmhxHZjkhXDj
-        b+G3IWjSxpiwZEatIvOL44m/DKpmSpfobgTgIn1AiSxfbUdvKdSj3P5cVvhSclxd
-        ifj8YcJaO3fzReVnNDLab7xUNuOU6wm0RLdNwbEMchecHZb0I191pMzsR35WtZpq
-        7BANLjI33mQqmIyXOZU6NpyNabBc6YpCgmxoXnYb9E0vwgXGnGSZbRb8bUKOKYGf
-        cSkSSLX6LQwBsMZzGYwT8+CGQA1Kc3HSXN11v0pLKxGTsoZ08QI3zEzwNZJlJiGw
-        ==
-X-ME-Sender: <xms:k-GeYeUxq7CRwD3cQTzGe1TAYcUIJsljQkoTYlZevGSTaaDFST_aVQ>
-    <xme:k-GeYakYyuSyLIK2W-KorZUtfpijSU2Fm8Ecvmgmk6OB9_lZ_c-ntkBHOBn6agw8z
-    CuIr4zGib9wpOE2MyI>
-X-ME-Received: <xmr:k-GeYSauYD2B0HCvDnhSTWaeuHsGYUb9TEi8sV-l77fbCreswHyZmenQFlDzmqyw0NWeqQ0kks1Z13yt0pyZpg28gEJ13fCR7jQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrgeelgddviecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcuvfhh
-    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
-    gvrhhnpeekveevtdekfedtfefhvdfgleelfefhtdefieetjeejvefghfdufeejkeehgfeu
-    udenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrihhnsehlihhnuhigqdhmieekkhdr
-    ohhrgh
-X-ME-Proxy: <xmx:k-GeYVW2i8Jyyk2_cF3KYfcqKhl0EM1GJvkRcEDur15WQw5Si5vlhA>
-    <xmx:k-GeYYnE7GMqLB7RLh4YkjkX3Y1b3FJG8Lt40KpQ-xSIq7bt8pqOsQ>
-    <xmx:k-GeYadglcHeSXIt7voxRdhsx44cdMfAod5uYB62z1Mdpp9-n7DjPA>
-    <xmx:lOGeYZCkUo1sz6CaEcUx68Q8AWkh9DBfqALgpO2853VhTWY5ReBE1w>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 24 Nov 2021 20:06:24 -0500 (EST)
-Date:   Thu, 25 Nov 2021 12:06:27 +1100 (AEDT)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-cc:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pata_falcon: Add missing __iomem annotations
-In-Reply-To: <CAMuHMdXTxTABOoVgC6fVR44dxUZZEbZV=ewSk9vKFY=U5u+fcw@mail.gmail.com>
-Message-ID: <35a85d2f-ab6a-4ab7-85a8-626f1560a57d@linux-m68k.org>
-References: <44e0213a681f3c8ee4c6ab2ef9d61ce3ac00e368.1637727935.git.fthain@linux-m68k.org> <CAMuHMdXTxTABOoVgC6fVR44dxUZZEbZV=ewSk9vKFY=U5u+fcw@mail.gmail.com>
+        id S244239AbhKYBMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Nov 2021 20:12:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345427AbhKYBKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Nov 2021 20:10:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B29560EB5;
+        Thu, 25 Nov 2021 01:07:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637802422;
+        bh=cSUCk7AT90ZPuLfC+MzDMxzjrF3CntV1HeNTtvnw5w4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K6eIP8GPfJiz0g+2FjdpD+/yWeczhh0KSzRYSM/hRdYFdQGULZcPPNlNNXv6hF2mS
+         qORnE06ARDeMmWe0SKgiIhex9kN+RceSEvsK0+Z+JMe/xfxdDCplh4WNVWHk/H+S5v
+         VhXB9xWL4dXPLjYog5vckrGARDoa9Q2FbL7oFJCTfTVDrlDJzIStCwQyLdC7ZVDL1V
+         BEr7WNbaLOm8wH1blLhNrtAlH8oAVnFZ/SWyofsE8F5ejDGnyAbrI40PhaEyby9SdF
+         VbJI/jb81J1YyPRYGTervZtjLqh3L7Ie7RemmaVhKUBX/GCYVRt+ElLrH+FZRIKV+e
+         H8RHufepIX6tw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id A1E4240002; Wed, 24 Nov 2021 22:06:58 -0300 (-03)
+Date:   Wed, 24 Nov 2021 22:06:58 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Thomas Richter <tmricht@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
+        hca@linux.ibm.com
+Subject: Re: [PATCH] tools/perf: Fix perf test 7 Simple expression parser on
+ s390
+Message-ID: <YZ7hsokbiFQRhNMB@kernel.org>
+References: <20211124090343.9436-1-tmricht@linux.ibm.com>
+ <CAP-5=fXdOQUNDTXvt7GHRvu_7jyTPp_53f8_5DzDCXWCpWLtEQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fXdOQUNDTXvt7GHRvu_7jyTPp_53f8_5DzDCXWCpWLtEQ@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Nov 2021, Geert Uytterhoeven wrote:
+Em Wed, Nov 24, 2021 at 07:41:40AM -0800, Ian Rogers escreveu:
+> On Wed, Nov 24, 2021 at 1:04 AM Thomas Richter <tmricht@linux.ibm.com> wrote:
+> > Fix this by adding s390 architecture to support CPU die list.
 
-> Thanks for your patch!
-> 
-> > --- a/drivers/ata/pata_falcon.c
-> > +++ b/drivers/ata/pata_falcon.c
-> > @@ -55,14 +55,14 @@ static unsigned int pata_falcon_data_xfer(struct ata_queued_cmd *qc,
-> >         /* Transfer multiple of 2 bytes */
-> >         if (rw == READ) {
-> >                 if (swap)
-> > -                       raw_insw_swapw((u16 *)data_addr, (u16 *)buf, words);
-> > +                       raw_insw_swapw((u16 __iomem *)data_addr, (u16 *)buf, words);
-> >                 else
-> > -                       raw_insw((u16 *)data_addr, (u16 *)buf, words);
-> > +                       raw_insw((u16 __iomem *)data_addr, (u16 *)buf, words);
-> >         } else {
-> >                 if (swap)
-> > -                       raw_outsw_swapw((u16 *)data_addr, (u16 *)buf, words);
-> > +                       raw_outsw_swapw((u16 __iomem *)data_addr, (u16 *)buf, words);
-> >                 else
-> > -                       raw_outsw((u16 *)data_addr, (u16 *)buf, words);
-> > +                       raw_outsw((u16 __iomem *)data_addr, (u16 *)buf, words);
-> 
-> Can't you just drop the casts? data_addr is an __iomem void *.
-> 
+> > Output after:
+> >  # ./perf test -Fv 7
+> >   7: Simple expression parser                                        :
+> >   --- start ---
+> >   division by zero
+> >   syntax error
+> >   ---- end ----
+> >   Simple expression parser: Ok
+> >  #
+> > Cc: Ian Rogers <irogers@google.com>
+> > Fixes: fdf1e29b6118 ("perf expr: Add metric literals for topology.")
 
-Yes, that works here (i.e. removing the data_addr casts and not the buf 
-casts). But is it prudent?
+> > Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
 
-Given the implementation of raw_in/out is subject to change, it seems like 
-the original casts were defensive programming.
+> Reviewed-by: Ian Rogers <irogers@google.com>
 
-Here's an example of a recent regression that was fixed by casting a macro 
-argument to a specific width:
+Thanks, applied.
 
-https://lore.kernel.org/linuxppc-dev/79ae1f49-f6b1-e9ad-977d-0cc7e553c7b9@csgroup.eu/ 
-https://lore.kernel.org/linuxppc-dev/08bbe7240b384016e0b2912ecf3bf5e2d25ef2c6.1636501628.git.fthain@linux-m68k.org/ 
+- Arnaldo
 
-BTW, that bug eventually got fixed using a different patch.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/powerpc/kernel/signal.h?id=5499802b2284331788a440585869590f1bd63f7f
-
-Note that __get_user_sigset() still lacks width casts here, so it remains 
-non-portable.
