@@ -2,74 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2E8545DE35
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 17:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B1B45DE23
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 16:58:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356227AbhKYQFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 11:05:00 -0500
-Received: from mga06.intel.com ([134.134.136.31]:50815 "EHLO mga06.intel.com"
+        id S235238AbhKYQB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 11:01:56 -0500
+Received: from mga12.intel.com ([192.55.52.136]:41275 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234741AbhKYQC7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 11:02:59 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="296338374"
+        id S231359AbhKYP7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 10:59:54 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="215558269"
 X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="296338374"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 07:56:44 -0800
+   d="scan'208";a="215558269"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 07:56:43 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="592050758"
+   d="scan'208";a="498121581"
 Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 25 Nov 2021 07:56:41 -0800
+  by orsmga007.jf.intel.com with ESMTP; 25 Nov 2021 07:56:41 -0800
 Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mqH73-0006ap-5v; Thu, 25 Nov 2021 15:56:41 +0000
-Date:   Thu, 25 Nov 2021 23:56:27 +0800
+        id 1mqH73-0006an-56; Thu, 25 Nov 2021 15:56:41 +0000
+Date:   Thu, 25 Nov 2021 23:56:31 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
-        tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, airlied@redhat.com, airlied@linux.ie,
-        daniel@ffwll.ch, jenmin_yuan@aspeedtech.com,
-        kuohsiang_chou@aspeedtech.com, arc_sung@aspeedtech.com,
-        tommy_huang@aspeedtech.com
-Subject: Re: [PATCH] drm/ast: Create the driver for ASPEED proprietory
-  Display-Port
-Message-ID: <202111252305.4CNMgIAc-lkp@intel.com>
-References: <20211122103617.3496-1-kuohsiang_chou@aspeedtech.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: drivers/dma/sun6i-dma.c:244:45: sparse: sparse: incorrect type in
+ argument 1 (different address spaces)
+Message-ID: <202111252303.HyoCSVcA-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211122103617.3496-1-kuohsiang_chou@aspeedtech.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi KuoHsiang,
-
-Thank you for the patch! Perhaps something to improve:
-
-[auto build test WARNING on drm/drm-next]
-[also build test WARNING on drm-intel/for-linux-next drm-tip/drm-tip drm-exynos/exynos-drm-next tegra-drm/drm/tegra/for-next v5.16-rc2 next-20211125]
-[cannot apply to airlied/drm-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/0day-ci/linux/commits/KuoHsiang-Chou/drm-ast-Create-the-driver-for-ASPEED-proprietory-Display-Port/20211122-183830
-base:   git://anongit.freedesktop.org/drm/drm drm-next
-config: i386-randconfig-c021-20211123 (https://download.01.org/0day-ci/archive/20211125/202111252305.4CNMgIAc-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5f53fa508db098c9d372423a6dac31c8a5679cdf
+commit: 35a3f4ef0ab543daa1725b0c963eb8c05e3376f8 alpha: Declare virt_to_phys and virt_to_bus parameter as pointer to volatile
+date:   2 months ago
+config: alpha-randconfig-s032-20211117 (https://download.01.org/0day-ci/archive/20211125/202111252303.HyoCSVcA-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 11.2.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=35a3f4ef0ab543daa1725b0c963eb8c05e3376f8
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout 35a3f4ef0ab543daa1725b0c963eb8c05e3376f8
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=alpha 
 
 If you fix the issue, kindly add following tag as appropriate
 Reported-by: kernel test robot <lkp@intel.com>
 
 
-cocci warnings: (new ones prefixed by >>)
->> drivers/gpu/drm/ast/ast_dp.c:166:3-4: Unneeded semicolon
+sparse warnings: (new ones prefixed by >>)
+>> drivers/dma/sun6i-dma.c:244:45: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile *address @@     got void [noderef] __iomem *base @@
+   drivers/dma/sun6i-dma.c:244:45: sparse:     expected void volatile *address
+   drivers/dma/sun6i-dma.c:244:45: sparse:     got void [noderef] __iomem *base
 
-Please review and possibly fold the followup patch.
+vim +244 drivers/dma/sun6i-dma.c
+
+555859308723d8d Maxime Ripard 2014-07-17  240  
+555859308723d8d Maxime Ripard 2014-07-17  241  static inline void sun6i_dma_dump_chan_regs(struct sun6i_dma_dev *sdev,
+555859308723d8d Maxime Ripard 2014-07-17  242  					    struct sun6i_pchan *pchan)
+555859308723d8d Maxime Ripard 2014-07-17  243  {
+42c0d54e6236958 Vinod Koul    2014-07-28 @244  	phys_addr_t reg = virt_to_phys(pchan->base);
+555859308723d8d Maxime Ripard 2014-07-17  245  
+555859308723d8d Maxime Ripard 2014-07-17  246  	dev_dbg(sdev->slave.dev, "Chan %d reg: %pa\n"
+555859308723d8d Maxime Ripard 2014-07-17  247  		"\t___en(%04x): \t0x%08x\n"
+555859308723d8d Maxime Ripard 2014-07-17  248  		"\tpause(%04x): \t0x%08x\n"
+555859308723d8d Maxime Ripard 2014-07-17  249  		"\tstart(%04x): \t0x%08x\n"
+555859308723d8d Maxime Ripard 2014-07-17  250  		"\t__cfg(%04x): \t0x%08x\n"
+555859308723d8d Maxime Ripard 2014-07-17  251  		"\t__src(%04x): \t0x%08x\n"
+555859308723d8d Maxime Ripard 2014-07-17  252  		"\t__dst(%04x): \t0x%08x\n"
+555859308723d8d Maxime Ripard 2014-07-17  253  		"\tcount(%04x): \t0x%08x\n"
+555859308723d8d Maxime Ripard 2014-07-17  254  		"\t_para(%04x): \t0x%08x\n\n",
+555859308723d8d Maxime Ripard 2014-07-17  255  		pchan->idx, &reg,
+555859308723d8d Maxime Ripard 2014-07-17  256  		DMA_CHAN_ENABLE,
+555859308723d8d Maxime Ripard 2014-07-17  257  		readl(pchan->base + DMA_CHAN_ENABLE),
+555859308723d8d Maxime Ripard 2014-07-17  258  		DMA_CHAN_PAUSE,
+555859308723d8d Maxime Ripard 2014-07-17  259  		readl(pchan->base + DMA_CHAN_PAUSE),
+555859308723d8d Maxime Ripard 2014-07-17  260  		DMA_CHAN_LLI_ADDR,
+555859308723d8d Maxime Ripard 2014-07-17  261  		readl(pchan->base + DMA_CHAN_LLI_ADDR),
+555859308723d8d Maxime Ripard 2014-07-17  262  		DMA_CHAN_CUR_CFG,
+555859308723d8d Maxime Ripard 2014-07-17  263  		readl(pchan->base + DMA_CHAN_CUR_CFG),
+555859308723d8d Maxime Ripard 2014-07-17  264  		DMA_CHAN_CUR_SRC,
+555859308723d8d Maxime Ripard 2014-07-17  265  		readl(pchan->base + DMA_CHAN_CUR_SRC),
+555859308723d8d Maxime Ripard 2014-07-17  266  		DMA_CHAN_CUR_DST,
+555859308723d8d Maxime Ripard 2014-07-17  267  		readl(pchan->base + DMA_CHAN_CUR_DST),
+555859308723d8d Maxime Ripard 2014-07-17  268  		DMA_CHAN_CUR_CNT,
+555859308723d8d Maxime Ripard 2014-07-17  269  		readl(pchan->base + DMA_CHAN_CUR_CNT),
+555859308723d8d Maxime Ripard 2014-07-17  270  		DMA_CHAN_CUR_PARA,
+555859308723d8d Maxime Ripard 2014-07-17  271  		readl(pchan->base + DMA_CHAN_CUR_PARA));
+555859308723d8d Maxime Ripard 2014-07-17  272  }
+555859308723d8d Maxime Ripard 2014-07-17  273  
+
+:::::: The code at line 244 was first introduced by commit
+:::::: 42c0d54e62369584f2491f072f405602ff504e0e dmaengine: sun6i: fix build failure on x86, xilinx targets
+
+:::::: TO: Vinod Koul <vinod.koul@intel.com>
+:::::: CC: Vinod Koul <vinod.koul@intel.com>
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
