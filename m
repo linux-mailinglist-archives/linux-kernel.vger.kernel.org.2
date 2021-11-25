@@ -2,144 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8C645D518
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C2645D521
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Nov 2021 08:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353159AbhKYHKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 02:10:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349264AbhKYHID (ORCPT
+        id S1353360AbhKYHKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 02:10:54 -0500
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:25396 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352620AbhKYHIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 02:08:03 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037E8C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 23:04:53 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id bp17-20020a05620a459100b0045e893f2ed8so5315998qkb.11
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Nov 2021 23:04:52 -0800 (PST)
+        Thu, 25 Nov 2021 02:08:51 -0500
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AP6Ekn7011267;
+        Thu, 25 Nov 2021 07:05:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : content-type : mime-version; s=corp-2021-07-09;
+ bh=hfgdCk8FcfhLExq4eeVT2WLy75N3rKlprxVxOgJmDD4=;
+ b=ZRLyZc9NpPWZJf2y5TYP+XPGByvdCU5BoISjj7Im1twiAnJ7cC/FlJ9XZ9Sp0Tr45DS6
+ o+iLyVoHHjcsFd+8gjDtR5s+sPSa27Si8hNpuBrM7VGQ/wJvI6nKCAppQbLfq0+EVxqJ
+ 9r760oTb5oDxKuHKza45pOivq5q9BuInMksmxxVREow6Rpfo7M+Aj4+9ocLGeAaWIm49
+ UlJiDpSNVH9oBJ/9PTWGk8RTl02lERtfxSikJ0DrksTHXTBt2MdI27XDRI5EwmvFCFft
+ vdaJBFRai/5cL1bvUmy46/0VjBta/NzUxn8fcYcIcUP0mznqaKhr71cg+VHwq8eMLiVU tA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3chpeevmk3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Nov 2021 07:05:35 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AP6pQ71075874;
+        Thu, 25 Nov 2021 07:05:34 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2175.outbound.protection.outlook.com [104.47.57.175])
+        by aserp3020.oracle.com with ESMTP id 3ceru87u35-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Nov 2021 07:05:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MbGMwR+rREwQ0/Oumfl1BdidNQV4H6Bp9kqh0vWajFRUTaUmnu/rzWRRF+U7hUVrDhyGfnxb+hIWOrZLG5Jk4cdlNidDaBviLZVDoQ3/xdNQ/YCtTNeGBUX2dhVHvjzgE1X+fI5rSqggqR6+B3d9wqKpeCPQ/G8yQZ8TgVNg4SmI/iQPi1Fhx9/UNUQVdFsEWA3LsVqsAzutVywZ0Gx3ScBDiV3D3xj6bq84Kuj2BfaqUI1KzoAxO23dpco42CsevWnAbkh1X60sdrjkd2Ey3Uuh6hpp0iRKh0J83+nLQeamDsIhKkC28iWohb2brWaxO2/IERGUPUddrXqwxdKkeQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hfgdCk8FcfhLExq4eeVT2WLy75N3rKlprxVxOgJmDD4=;
+ b=NzIWU1rLiNVzGpN7tP5BRMydhGnYBcZpqwglUFT9of2AZYfgJN9/8pbFTSffqgfAVGCS7anssyY402WvOZVKUTbCSCax53t2EYxI6WSxqO5wfPR0vtKE0ufDr5Hvzc/1DHdjexIREIdNepdaBHfDFEU0C3jeKewYOQraGgV8JNdhyqTCwu3zytML1WtKikHtsZe+QsSbngvGKomOFllAHBExS2LUG06kfVn33iG2ddv2qw/GdI0IonlDl6hL8rMoiksqOWVMrG/R3ck3XzTasHiRqEQ3DrMMEbpja1OKKYub1GCgIGOS5PJK7zBfr01gTApZkyeqpdb3sya8uwcfTg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=LOjoYmrd2S6QYfeGuru3HSevSjNWgVFTXSpO3QT/YXg=;
-        b=FGL2CkoLOg+R2jSXT1T3bOqmdf3/3Y8avkIV20Y8yUu4PUzZ7ij1opTrjlAAfVYjRK
-         07oX0qAi45Oitv5n3nYLPThHHtpAfIBnXzVXYBOpjuhu0BOvD+WAqxC3vgYgXFQyliEV
-         JM+rlMrqyfyCW1BsiXD6hqe1QlsL7wqb2Imgzk595dwCUPC73ZsTBTspbZEEGVnQicAw
-         /DZ1qu1DDcV2IShuNlHi4HMDRM12kleg357yihx68lKsNTzAR+g1aKUCOTcEiqR7U4Uq
-         iLqEyRoCEOJEasMSAtp1x3D9d405S3LtQB8YsuxzraWTtf5UtgLW3a7hBOsyF7DHbXtR
-         65hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=LOjoYmrd2S6QYfeGuru3HSevSjNWgVFTXSpO3QT/YXg=;
-        b=cnwVck7p7Z4VeqGWrPVzSSjZ0HrC7TCHnHLoJhk/kof8ZOqoui0MvsZ6uRdLAthIus
-         7jP174HeA6w0j5+EL1ZqlLKmO6HI8HsAy+9PvdsAnQkBU4T5eYDQX8jmJeuGWLeSQaS3
-         yMeVGapLMqI11uv2mSMbEKzzYEg51NrxL2HpjYH4TjZDLic3sStCYwREhGUI7U+GeLq9
-         UtKV/XK1MAEJncYVDXhFjsIE7tTISOrsr7BclJhYU7ZSrGCHfUOM6ewheNek6dqQN/h7
-         QilvPJmaZkklAT+D8wiGzgYENBof1SJL9SQ4kFRIwO9OAEXP32qOmbPk4dA2nzh8HoKa
-         hClA==
-X-Gm-Message-State: AOAM532zAyig4FEDWbxlQfnvzojL69GP2jbUcD1jlED4aBu36+1p5Q+Z
-        Al0F6bjtQKD9MyDJpbAKEuG7HV2CG10F
-X-Google-Smtp-Source: ABdhPJxrZkvFBF8UzSG087ddSILKyfHI0bTUOavkbLwrv0kJQXY20qxGd/pf3GIjeaM25NHjRTGxvQoMMq9M
-X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:10:a5d9:6769:9abb:6b2])
- (user=apusaka job=sendgmr) by 2002:ac8:5b90:: with SMTP id
- a16mr14348096qta.300.1637823892177; Wed, 24 Nov 2021 23:04:52 -0800 (PST)
-Date:   Thu, 25 Nov 2021 15:04:37 +0800
-In-Reply-To: <20211125150430.v3.1.Id7366eb14b6f48173fcbf17846ace59479179c7c@changeid>
-Message-Id: <20211125150430.v3.2.I35b7f3a496f834de6b43a32f94b6160cb1467c94@changeid>
-Mime-Version: 1.0
-References: <20211125150430.v3.1.Id7366eb14b6f48173fcbf17846ace59479179c7c@changeid>
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH v3 2/2] Bluetooth: Limit duration of Remote Name Resolve
-From:   Archie Pusaka <apusaka@google.com>
-To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>
-Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hfgdCk8FcfhLExq4eeVT2WLy75N3rKlprxVxOgJmDD4=;
+ b=buTU9ePQq0q6wThnEbbRG7Cbpxz70wEjWxXAjns5mtAxlc+GHkSfdhVk0Ibk/IY+yeFXERgPZlXrY70M0+fv39j4h/KjT1QIBx3HOAe+bfQfspa4MA2EvQiqURMrj825sDNc/HgsxoeT4wENAitm12kDojhrOrW8z6LlwZFiQx8=
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MW5PR10MB5667.namprd10.prod.outlook.com
+ (2603:10b6:303:19c::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Thu, 25 Nov
+ 2021 07:05:32 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::7194:c377:36cc:d9f0]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::7194:c377:36cc:d9f0%6]) with mapi id 15.20.4734.022; Thu, 25 Nov 2021
+ 07:05:32 +0000
+Date:   Thu, 25 Nov 2021 10:05:17 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     kbuild@lists.01.org, Jeremy Kerr <jk@codeconstruct.com.au>
+Cc:     lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: net/mctp/test/utils.c:15 mctp_test_dev_tx() error: use kfree_skb()
+ here instead of kfree(skb)
+Message-ID: <202111250652.KJ5iJFpx-lkp@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNAP275CA0035.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::19)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+MIME-Version: 1.0
+Received: from kadam (102.222.70.114) by JNAP275CA0035.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.21 via Frontend Transport; Thu, 25 Nov 2021 07:05:28 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 53b8c9f4-de1e-408d-48f3-08d9afe1f8d9
+X-MS-TrafficTypeDiagnostic: MW5PR10MB5667:
+X-Microsoft-Antispam-PRVS: <MW5PR10MB566719A7C5BC114C62DD4A7D8E629@MW5PR10MB5667.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:154;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ttK/LHVhd+hLmzFc7ee4k6aBPcDxn3Cr5IfRgPsM7vw5NK1q7BR3cGMaoeiLwPHCyxpqNiC5uAgTxsdZ62zu4/n39GwKxCxzOonU8CoAOs/ghjJ8OkC5kaKhP4lCnXyP/HgUvqpg+9RJLOYUpwmVROm4SSl8eV9CZAdZERBQ7CSFbBe0eoaOix/rOnU+Kxu2nHdiaGhcpkzpjVfZlYbFj3oXflGpVGEUqTrEEbTsKQTEUb/aAX8Quzdz4R14lqez0BovwUM94jP70oE8hYLy82HcwnbYAs9A/X6jtV89nd7dDTsDoFn1WkQEaaAQpen+fBArsYDPwFnuTn6aBLorGIwAxz7DVjydC210NggaSEof1W38IxL8uT7i6RHeSobYNya7FjLGlc+hq0BY2z2uhTkn+Rcvs3DLaOYrvF2AkLKf1RKMm2ScTpjvT/36hJLlecSlxETj8BtwN13fUvTNvWTd4+d5kDRwV/r+hFvjt0nFLLE5tlqPJylTtHgbNNotWBENKUMMLROjwMylvnW6ykrqKwG4zC8AzRObbaBOsHtTSISExINjFxVHwetU0xJEW73p+X3BFYXxK+5my0uIp9KrIhKBmo68h5S7qYFMP4gygStU6EFv1owN6/sWvXeTS6vaYAS5+JoO1pFDOyJhdSqJOlGoH68R3OWBVBgCQICD27mZz7dQqoZZzcwM6ta6nwHdvOEk72C6pz2UblQt9l2qsU5o+WELpb7nYhITEB3P6SkMKGU9MHKulClJjtexX0rlupcZfrITxCpDPDF6XDp37X1mv5rVlMZRcVvKrcK9ZZ176KKbldm2akhGYIBedNhfPV95KMDhxq7w3JD3/w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(1076003)(956004)(66476007)(2906002)(508600001)(86362001)(6916009)(4326008)(6666004)(6496006)(8676002)(26005)(316002)(6486002)(66556008)(36756003)(83380400001)(9686003)(52116002)(44832011)(966005)(5660300002)(186003)(38350700002)(66946007)(38100700002)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zbvQFqffN7gJFtvbsCr9WFfNE0bw0EMvVpLJWN0VIncY2SmlJ0iBDJP6sXcn?=
+ =?us-ascii?Q?TTHnlrNGfq7JUH11cecGab9b1EWFhVJsos2CYEGOFFkAvcN8cmgf1uI3z4oT?=
+ =?us-ascii?Q?WjoIc9HTv3lrxs0AVcSm3VTHGxs+UPS7G83hKzkVhiKCou4aOQ5NeltX9hri?=
+ =?us-ascii?Q?2HJR5VpDL/6I+OVNza1AIrLLV8h/y+Hm0d1a10WPcNyinNEBD3sp1s67eWPg?=
+ =?us-ascii?Q?xj7OsMyhCZ4pY5hNn0Nstal4C9ZniguFlqDt2j4WiMGOAuuvPd2w+k4ASzu5?=
+ =?us-ascii?Q?VTrhKoLUgetvHALubILF4igtFWNphnjUeBQFBidH6+r5mhULeRdV9nWvowEE?=
+ =?us-ascii?Q?W5VpDaSfkPcHi7w1dbZq6/3w4nPOAY6dWPsJdfxZB5iycQy+fA7yZwYMV23L?=
+ =?us-ascii?Q?vC9BPH+L4AZe3QI/rvW5Jd3iDhLtgPi6BYQuQ2QTJsRag5cMXzjvftqwL/1k?=
+ =?us-ascii?Q?HOLfHmX0Ks15fi++J+LGCP3OeygW+ruhzmyKjp6GRSGTLj/O41w/ck+qW5/l?=
+ =?us-ascii?Q?5NgInL2OozGKry3t7glEQfG2fd137ls22f4vx9DHX7z0VNaCK7S4fLuQWl+b?=
+ =?us-ascii?Q?IyNvBiDWuCmmLYDGqdyays0fu/Y/DvwQ+KVpje1JdGqpZY0n9z7k02oftrUo?=
+ =?us-ascii?Q?VFQaK12GPdo/ZcoadkFCrVU3/uotHiYzmBuePLUbASx3W9fCEXmL/dcFayDd?=
+ =?us-ascii?Q?zaMfS2G30wC0xglIiMVy2n+XWhxp00TgJMjXoxG+8onqESKd/ZffDqUSFVyu?=
+ =?us-ascii?Q?mWHv6AZPTApFPznh9p6F1EljY5aVMFOM57urv6UEFVVvkTvUSMz2diC9OqDB?=
+ =?us-ascii?Q?ruFVJLcsXZaaVS/mnjxAyIoW6tF+R5JyoTfwmptqdzyDYHpMZeGoKc0T9fp4?=
+ =?us-ascii?Q?tg91K/wzoc+heasByj4JWSd7f8Ugo0UT4hsb5RfxMQrzVdALi3eT3G+qVq8o?=
+ =?us-ascii?Q?3Z2N1wx4wZjgsFti1Iq6/lLZOAIJEyiWoehX5fLMssMRthU5x1aJ7AWdH62+?=
+ =?us-ascii?Q?AoXyK8D9l+wTzgQYH02rng0I7p5acVucbOZXTD0qUKRCAKf0R679lylU3dBk?=
+ =?us-ascii?Q?GK821GTPNZr/KGxGHswwXXKAz7VcvCEVfgxbbKb7docyxfINS0ryPzj6LMld?=
+ =?us-ascii?Q?RwExe0+UV53SO1NXpU1sdGoLryE7+K0/PPnetJuIg/KLYfyQzzsidc5Mpsft?=
+ =?us-ascii?Q?0kTs0EjtbSQ2/VmTI7sJ/al5rcHeYZhi4CUroEVYWUX6lEzDG4zO+AQqC8Bv?=
+ =?us-ascii?Q?CROyD7wJ1UgYSVUJbOt5MAgORY11Z0IDzvTKw5Lp8Vj03jKY9Qmw+xWEmxGz?=
+ =?us-ascii?Q?K8H/XJa0949ol+8Hg+S6GoE+NiyueYcAxuWMu+1AbbjrRrsZWLpdSAQyjxcv?=
+ =?us-ascii?Q?2AqQlBEE7swuB3ZPxYMwx7p9Shve7AQw2giuo24XP3yM5IPovcV39Hsbol2i?=
+ =?us-ascii?Q?HlUjdWVBS0AbCVLsvkxi9U1jOoaZtkbkI3yC114SZcaIZri645eBBm31m3hO?=
+ =?us-ascii?Q?LBTjii8NQPj4l18mlPFtfMqdDWv9tCnYvciu3lBbeqnhf3RK34jLQrXbiuvg?=
+ =?us-ascii?Q?lGyWzxmI0AdGj0E6sGdV9VYm62K0+6FxtTv1PfvQcrV1U74F28urUR4SfaA5?=
+ =?us-ascii?Q?4iwGniN7TZSawxPdpEJrpzGy2znylmfKtH+mhbLYRVqQsn1pUg+XP9C90uHF?=
+ =?us-ascii?Q?ruJ3PZuZtCz3H9hUjftKuw9WSIM=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 53b8c9f4-de1e-408d-48f3-08d9afe1f8d9
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Nov 2021 07:05:32.8287
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QCV5apR4ZF752wMy3kGMPNHNuE511Ug+IKiGzdn9TU1h558P0EAU6GVmIXZGOH874mDA8xYd5Fvc4G9+/14FIxMo5eETUD5h2tD706+rKqY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR10MB5667
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10178 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111250038
+X-Proofpoint-GUID: 9IWjfgI3Rb1zPgA4TRXSsj95Gz5M9Awz
+X-Proofpoint-ORIG-GUID: 9IWjfgI3Rb1zPgA4TRXSsj95Gz5M9Awz
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Archie Pusaka <apusaka@chromium.org>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5f53fa508db098c9d372423a6dac31c8a5679cdf
+commit: ded21b72299529cc143a4213ea0ec4b0c620b8eb mctp: Add test utils
+config: x86_64-randconfig-m001-20211122 (https://download.01.org/0day-ci/archive/20211125/202111250652.KJ5iJFpx-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
 
-When doing remote name request, we cannot scan. In the normal case it's
-OK since we can expect it to finish within a short amount of time.
-However, there is a possibility to scan lots of devices that
-(1) requires Remote Name Resolve
-(2) is unresponsive to Remote Name Resolve
-When this happens, we are stuck to do Remote Name Resolve until all is
-done before continue scanning.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-This patch adds a time limit to stop us spending too long on remote
-name request.
+smatch warnings:
+net/mctp/test/utils.c:15 mctp_test_dev_tx() error: use kfree_skb() here instead of kfree(skb)
 
-Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+vim +15 net/mctp/test/utils.c
+
+ded21b72299529c Jeremy Kerr 2021-10-03  12  static netdev_tx_t mctp_test_dev_tx(struct sk_buff *skb,
+ded21b72299529c Jeremy Kerr 2021-10-03  13  				    struct net_device *ndev)
+ded21b72299529c Jeremy Kerr 2021-10-03  14  {
+ded21b72299529c Jeremy Kerr 2021-10-03 @15  	kfree(skb);
+
+This should be kfree_skb(skb);
+
+ded21b72299529c Jeremy Kerr 2021-10-03  16  	return NETDEV_TX_OK;
+ded21b72299529c Jeremy Kerr 2021-10-03  17  }
 
 ---
-
-Changes in v3:
-* Add units in comment
-* change debug log to warn
-
- include/net/bluetooth/hci_core.h | 3 +++
- net/bluetooth/hci_event.c        | 7 +++++++
- 2 files changed, 10 insertions(+)
-
-diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
-index 2560cfe80db8..742cde106ae3 100644
---- a/include/net/bluetooth/hci_core.h
-+++ b/include/net/bluetooth/hci_core.h
-@@ -88,6 +88,7 @@ struct discovery_state {
- 	u8			(*uuids)[16];
- 	unsigned long		scan_start;
- 	unsigned long		scan_duration;
-+	unsigned long		name_resolve_timeout;
- };
- 
- #define SUSPEND_NOTIFIER_TIMEOUT	msecs_to_jiffies(2000) /* 2 seconds */
-@@ -1759,6 +1760,8 @@ void hci_mgmt_chan_unregister(struct hci_mgmt_chan *c);
- #define DISCOV_LE_FAST_ADV_INT_MIN	0x00A0	/* 100 msec */
- #define DISCOV_LE_FAST_ADV_INT_MAX	0x00F0	/* 150 msec */
- 
-+#define NAME_RESOLVE_DURATION		msecs_to_jiffies(10240)	/* 10.24 sec */
-+
- void mgmt_fill_version_info(void *ver);
- int mgmt_new_settings(struct hci_dev *hdev);
- void mgmt_index_added(struct hci_dev *hdev);
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index bb4c04aecccf..779c70b21039 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -2129,6 +2129,12 @@ static bool hci_resolve_next_name(struct hci_dev *hdev)
- 	if (list_empty(&discov->resolve))
- 		return false;
- 
-+	/* We should stop if we already spent too much time resolving names. */
-+	if (time_after(jiffies, discov->name_resolve_timeout)) {
-+		bt_dev_warn_ratelimited(hdev, "Name resolve takes too long.");
-+		return false;
-+	}
-+
- 	e = hci_inquiry_cache_lookup_resolve(hdev, BDADDR_ANY, NAME_NEEDED);
- 	if (!e)
- 		return false;
-@@ -2716,6 +2722,7 @@ static void hci_inquiry_complete_evt(struct hci_dev *hdev, struct sk_buff *skb)
- 	if (e && hci_resolve_name(hdev, e) == 0) {
- 		e->name_state = NAME_PENDING;
- 		hci_discovery_set_state(hdev, DISCOVERY_RESOLVING);
-+		discov->name_resolve_timeout = jiffies + NAME_RESOLVE_DURATION;
- 	} else {
- 		/* When BR/EDR inquiry is active and no LE scanning is in
- 		 * progress, then change discovery state to indicate completion.
--- 
-2.34.0.rc2.393.gf8c9666880-goog
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
