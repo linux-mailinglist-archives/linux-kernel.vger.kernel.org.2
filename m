@@ -2,56 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D230F45F0D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:37:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE1845F0B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:31:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378120AbhKZPkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:40:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378143AbhKZPip (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:38:45 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67684C0613F2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 07:29:17 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 025E6B82811;
-        Fri, 26 Nov 2021 15:29:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 125A0C93056;
-        Fri, 26 Nov 2021 15:29:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637940554;
-        bh=xWAYeSXvSv88kJNEunVREZHHQoDhcTk0/UaJ3ba86Jg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zz2r/N6YG9o1YB6q4AGV7CZphcVMQqpwmkKtP+dt9WdWGeBJGlmKjhvZZIOPOoEC7
-         KY0DSCnsuZLq7L4VjfoUwAotG9SazgxsuP+QhzmLU+iWSmNhTtWyUqRxe5wgKpC+t8
-         MtfZyCqddEBiTc5WvKQISfXqGhZBpEpXWPI/MUuY=
-Date:   Fri, 26 Nov 2021 16:28:13 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/23] tty: documentation revamp
-Message-ID: <YaD9DVL10AZBLVS5@kroah.com>
-References: <20211126081611.11001-1-jslaby@suse.cz>
+        id S1377964AbhKZPeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 10:34:21 -0500
+Received: from vps-vb.mhejs.net ([37.28.154.113]:33326 "EHLO vps-vb.mhejs.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346110AbhKZPcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 10:32:20 -0500
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1mqd9R-0000FR-T0; Fri, 26 Nov 2021 16:28:37 +0100
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Yanan Wang <wangyanan55@huawei.com>,
+        Andrew Jones <drjones@redhat.com>, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: selftests: page_table_test: fix calculation of guest_test_phys_mem
+Date:   Fri, 26 Nov 2021 16:28:31 +0100
+Message-Id: <52e487458c3172923549bbcf9dfccfbe6faea60b.1637940473.git.maciej.szmigiero@oracle.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211126081611.11001-1-jslaby@suse.cz>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 09:15:48AM +0100, Jiri Slaby wrote:
-> This series adds/updates:
-> 1) kernel-doc documentation for most exported functions, and
-> 2) adds a chapter to Documentation/tty to glue it all together.
-> 
-> I think it's a good base for further improvements. It deduplicates
-> and unify multiple documentation files.
+From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
 
-Wow, thanks for this!  All now queued up, much appreciated.
+A kvm_page_table_test run with its default settings fails on VMX due to
+memory region add failure:
+> ==== Test Assertion Failure ====
+>  lib/kvm_util.c:952: ret == 0
+>  pid=10538 tid=10538 errno=17 - File exists
+>     1  0x00000000004057d1: vm_userspace_mem_region_add at kvm_util.c:947
+>     2  0x0000000000401ee9: pre_init_before_test at kvm_page_table_test.c:302
+>     3   (inlined by) run_test at kvm_page_table_test.c:374
+>     4  0x0000000000409754: for_each_guest_mode at guest_modes.c:53
+>     5  0x0000000000401860: main at kvm_page_table_test.c:500
+>     6  0x00007f82ae2d8554: ?? ??:0
+>     7  0x0000000000401894: _start at ??:?
+>  KVM_SET_USER_MEMORY_REGION IOCTL failed,
+>  rc: -1 errno: 17
+>  slot: 1 flags: 0x0
+>  guest_phys_addr: 0xc0000000 size: 0x40000000
 
-greg k-h
+This is because the memory range that this test is trying to add
+(0x0c0000000 - 0x100000000) conflicts with LAPIC mapping at 0x0fee00000.
+
+Looking at the code it seems that guest_test_*phys*_mem variable gets
+mistakenly overwritten with guest_test_*virt*_mem while trying to adjust
+the former for alignment.
+With the correct variable adjusted this test runs successfully.
+
+Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+---
+ tools/testing/selftests/kvm/kvm_page_table_test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/kvm/kvm_page_table_test.c b/tools/testing/selftests/kvm/kvm_page_table_test.c
+index 3836322add00..ba1fdc3dcf4a 100644
+--- a/tools/testing/selftests/kvm/kvm_page_table_test.c
++++ b/tools/testing/selftests/kvm/kvm_page_table_test.c
+@@ -280,7 +280,7 @@ static struct kvm_vm *pre_init_before_test(enum vm_guest_mode mode, void *arg)
+ #ifdef __s390x__
+ 	alignment = max(0x100000, alignment);
+ #endif
+-	guest_test_phys_mem = align_down(guest_test_virt_mem, alignment);
++	guest_test_phys_mem = align_down(guest_test_phys_mem, alignment);
+ 
+ 	/* Set up the shared data structure test_args */
+ 	test_args.vm = vm;
