@@ -2,85 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E753445F132
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4D6745F133
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:00:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354543AbhKZQDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:03:18 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:54764 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354283AbhKZQBQ (ORCPT
+        id S1378193AbhKZQDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:03:44 -0500
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:13535 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1351932AbhKZQBn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:01:16 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5335F622C5
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 15:58:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45238C9305D;
-        Fri, 26 Nov 2021 15:58:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637942282;
-        bh=gZuFeWhX8aYEFfgCgLdFOTAhyoodpTyiMfQWqdN3cQc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZRJy9/Hoet1/gB0LF/fhIt456dLDbwEylz22ivHMV6ddVnjFlMHQN7jsuQOstHPX5
-         UJn+lUvppNHJczwVR1yhq+LZiXJDOPcVKBiT38elMa/eDJfBMTnHNQc5XALyLEg7eb
-         u6QjT5SRYdqIW3pl/rgFR9fkH2M9ObRo420oZ1Qg=
-Date:   Fri, 26 Nov 2021 16:58:00 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Zhaoyu Liu <zackary.liu.pro@gmail.com>
-Cc:     masahiroy@kernel.org, ripxorip@gmail.com, mpe@ellerman.id.au,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scripts/tags: merge "TAGS" and "tags" in case
-Message-ID: <YaEECIyT3LT7JQzQ@kroah.com>
-References: <20211103153522.GA23842@pc>
+        Fri, 26 Nov 2021 11:01:43 -0500
+IronPort-Data: =?us-ascii?q?A9a23=3A4Fb3CKMmEU7sQsvvrR10lsFynXyQoLVcMsFnjC/?=
+ =?us-ascii?q?WdVXvhmkrgWYBnTRMD2HXPvePNDSnLdh1OYSyp0ICuZTUm99gGjLY11k9FiMQ8?=
+ =?us-ascii?q?ZKt6fexdxqrYXvKdqUvdK/WhiknQoGowPscEzmM+X9BDpC79SMljPjSGOKmYAL?=
+ =?us-ascii?q?5EnsZqTFMGX5JZS1Ly7ZRbr5A2bBVMivV0T/Ai5W31GyNh1aYBlkpB5er83uDi?=
+ =?us-ascii?q?hhdVAQw5TTSbdgT1LPXeuJ84Jg3fcldJFOgKmVY83LTegrN8F251juxExYFAde?=
+ =?us-ascii?q?51++hIghbGfuLYlbL0CIMHba6hF5DoDYz2+A1LpLwa28O0WXPzos3kYoT88boE?=
+ =?us-ascii?q?2/FPYWV8AgZextFFyB3e6lP57bDJVC+t9aSxgvIaRMAxt0wVxBuZtNCkgpwKSQ?=
+ =?us-ascii?q?UnRACExgEbRCCg/i/wr+2VMFqmMUvLcCtN4Qa0lljxyzYCfpjSJTHa6HL/sNDm?=
+ =?us-ascii?q?m9pwMdUEp72a8MfLzgpcxXEZxxGP0w/CZQikePujX76GxVUpUyUrqcr+WXe5BJ?=
+ =?us-ascii?q?+3aKrM9fPfNGOA8JPkS6wqmfP8mL2AxcXHMKQxCDD8X+2gOLL2yThV+o6Frq+/?=
+ =?us-ascii?q?+JqiVuT7moNCREXXB2wpvzRok2vUshbIkMd9iYnha4s9UCqR5/2WBjQiHqIswE?=
+ =?us-ascii?q?VXdVZFcU89gCBy6OS6AGcbkAATzhceJkludUwSDgCyFCEhZXqCCZpvbnTTmiSn?=
+ =?us-ascii?q?p+QrDWvKW0JIGAYbAcaQgYfpdruuoc+ilTIVNkLOLbznNT/FDXY2z2MozUinbI?=
+ =?us-ascii?q?VjN5N26jT1UrInjelvYTAZggr5wnWVySu6QYRWWIPT+RE8nDQ6eoFddzJCwja+?=
+ =?us-ascii?q?SFbxY3EtLpIE4mL0i2LWuQEWr+zj8tp+Qb02TZHd6TNPRz0k5J7Qb1t3Q=3D?=
+ =?us-ascii?q?=3D?=
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A8gdBXqN1feC728BcTtSjsMiBIKoaSvp037Dk?=
+ =?us-ascii?q?7SxMoHtuA6mlfqGV7ZYmPHDP4wr5NEtMpTniAtjifZq/z/9ICOAqVN+ftW/d11?=
+ =?us-ascii?q?dAR7sN0WKN+Vfd8lXFltJg6Q=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.87,266,1631570400"; 
+   d="scan'208";a="6390362"
+Received: from clt-128-93-176-202.vpn.inria.fr ([128.93.176.202])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 16:58:25 +0100
+Date:   Fri, 26 Nov 2021 16:58:22 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Akhil R <akhilrajeev@nvidia.com>
+cc:     kbuild-all@lists.01.org, dan.j.williams@intel.com,
+        devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
+        jonathanh@nvidia.com, kyarlagadda@nvidia.com, ldewangan@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        p.zabel@pengutronix.de, rgumasta@nvidia.com
+Subject: [PATCH] dmaengine: tegra: fix platform_no_drv_owner.cocci warnings
+Message-ID: <alpine.DEB.2.22.394.2111261655450.18994@hadrien>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211103153522.GA23842@pc>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 03, 2021 at 11:35:29PM +0800, Zhaoyu Liu wrote:
-> merge "TAGS" and "tags" for the code more concise
-> 
-> Signed-off-by: Zhaoyu Liu <zackary.liu.pro@gmail.com>
-> ---
->  scripts/tags.sh | 14 +++++---------
->  1 file changed, 5 insertions(+), 9 deletions(-)
-> 
-> diff --git a/scripts/tags.sh b/scripts/tags.sh
-> index 16d475b3e203..a9181dd0fee2 100755
-> --- a/scripts/tags.sh
-> +++ b/scripts/tags.sh
-> @@ -315,15 +315,11 @@ case "$1" in
->  		dogtags
->  		;;
->  
-> -	"tags")
-> -		rm -f tags
-> -		xtags ctags
-> -		remove_structs=y
-> -		;;
-> -
-> -	"TAGS")
-> -		rm -f TAGS
-> -		xtags etags
-> +	"TAGS" | "tags")
-> +		rm -f $1
-> +		xtags $([ $1 = "tags" ]	\
-> +			&& echo ctags		\
-> +			|| echo etags)
->  		remove_structs=y
->  		;;
+From: kernel test robot <lkp@intel.com>
 
-Ick, that's much harder to read and understand.
+No need to set .owner here. The core will do it.
 
-What is wrong with the existing code?  It's obvious and makes sense, it
-is not duplicating any lines here except the one "remove_structs=y"
-which is fine.
+Generated by: scripts/coccinelle/api/platform_no_drv_owner.cocci
 
-I'm not going to take this, sorry.
+CC: Akhil R <akhilrajeev@nvidia.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+---
 
-greg k-h
+url:    https://github.com/0day-ci/linux/commits/Akhil-R/Add-NVIDIA-Tegra-GPC-DMA-driver/20211122-173019
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+:::::: branch date: 29 hours ago
+:::::: commit date: 29 hours ago
+
+ tegra186-gpc-dma.c |    1 -
+ 1 file changed, 1 deletion(-)
+
+--- a/drivers/dma/tegra186-gpc-dma.c
++++ b/drivers/dma/tegra186-gpc-dma.c
+@@ -1268,7 +1268,6 @@ static const struct __maybe_unused dev_p
+ static struct platform_driver tegra_dmac_driver = {
+ 	.driver = {
+ 		.name	= "tegra-gpcdma",
+-		.owner = THIS_MODULE,
+ 		.pm	= &tegra_dma_dev_pm_ops,
+ 		.of_match_table = tegra_dma_of_match,
+ 	},
