@@ -2,100 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5F745E71F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 06:17:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B8545E724
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 06:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344133AbhKZFU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 00:20:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235611AbhKZFSy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 00:18:54 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6140CC061746;
-        Thu, 25 Nov 2021 21:15:42 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id 200so7158933pga.1;
-        Thu, 25 Nov 2021 21:15:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EKzwqlZ/U7YNENuKROdSQMpO6S/HGCWA7OjlBzmX4w8=;
-        b=nCitiwdZTOKTdPmNQN+JLWqnGE2y31yMpK4Aco0Jja8dVpzQTGdHh15fFQ0CSGbr0s
-         bVV3umujDDvLzJ0IlTMM7T0Na9kQpIs7OgW/pWaZU0SrtYbb5HNsxBB4+GceOhBQdlu2
-         jVvclEdKTO6+c7ZVQ9CvrKsfja9GWkh25nE5CDi/DXgWktAaalIF3mRKxBWig8vB/5m8
-         UbqnxrVkPRAbKhip/E8Oc4vIKb4XtD5AQ+Vqyv2+8zIUP1w5EtUs0TfDwVwfr8MYp+Ar
-         Cby3aOeFr4wiBaYXaBqCAw6a14TxEb5o3XNe/M3YOFje2fJfRZRI5OMQ+IkxPK9eQTJL
-         CrLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EKzwqlZ/U7YNENuKROdSQMpO6S/HGCWA7OjlBzmX4w8=;
-        b=vlyer2uUeRQeqwhQSly6h75BV2wKuyWxdFCnww+4JeIfDkdJXezKMQSbqziCiwbECF
-         EmZaqldZ7taYhlSAhF8+gvM4dQiWJ8o0ZFUEQj3Nk+bouztuQe4NeAOFLXMFUfDOkd4H
-         y23IBVmeW2L4kXMj5AHkleOORlP917wsV4sa2WV2dlgZTLAqtnnOTt7QOjBoeap8yxYh
-         V5gQ4fcoloEz9ZrOJ+PpAEidb2gx02h1kms7BkKn6BkVkSLtvp7rHmpsKrzjSlA0KhwS
-         6rgwFMEGaWR0bh15hT/PT1a4SNXK6aN6qdv9jeaCUQESvD5mhOH7XcRU4umnwa2OZIng
-         yDeg==
-X-Gm-Message-State: AOAM532ju2ZUEPGErOuhjrFsDBK06iC59vYg2DqDNYH1f34XJk0PaU8z
-        dw6sVrKVNaL8inwI5NynJUslzWaNJMApWg==
-X-Google-Smtp-Source: ABdhPJwkIZdrdhIx9N9dz4aWGWTIxkxMngbh5VYC21Q+XBeRdsOhoXYwxVOD+/xW7OgWABSw1bV0kw==
-X-Received: by 2002:a63:88c1:: with SMTP id l184mr5672741pgd.521.1637903741509;
-        Thu, 25 Nov 2021 21:15:41 -0800 (PST)
-Received: from 7YHHR73.igp.broadcom.net ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id lb4sm10326377pjb.18.2021.11.25.21.15.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 21:15:41 -0800 (PST)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        Manish Rangankar <mrangankar@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com (supporter:QLOGIC QL41xxx ISCSI
-        DRIVER), "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org (open list:QLOGIC QL41xxx ISCSI DRIVER)
-Subject: [PATCH 2/2] scsi: qedi: Fix SYSFS_FLAG_FW_SEL_BOOT formatting
-Date:   Thu, 25 Nov 2021 21:15:29 -0800
-Message-Id: <20211126051529.5380-3-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211126051529.5380-1-f.fainelli@gmail.com>
-References: <20211126051529.5380-1-f.fainelli@gmail.com>
+        id S1350236AbhKZFXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 00:23:39 -0500
+Received: from mga02.intel.com ([134.134.136.20]:41881 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352518AbhKZFVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 00:21:38 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="222835192"
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="222835192"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 21:15:58 -0800
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="510513613"
+Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.255.31.165]) ([10.255.31.165])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 21:15:55 -0800
+Subject: Re: [kbuild-all] Re: [PATCH 1/8] powerpc/mm: Make slice specific to
+ book3s/64
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        kernel test robot <lkp@intel.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, alex@ghiti.fr
+Cc:     linux-mm@kvack.org, kbuild-all@lists.01.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <14e2c0b0d4fff49c1cb30166f54ce8e445e17b16.1637570556.git.christophe.leroy@csgroup.eu>
+ <202111222218.RhruLp7S-lkp@intel.com>
+ <adefca8d-5fd4-b9ad-dfb8-0cf334440935@csgroup.eu>
+ <da5038fd-611a-a0b3-10b7-35dac6817e6a@csgroup.eu>
+From:   "Chen, Rong A" <rong.a.chen@intel.com>
+Message-ID: <802212cd-87d6-cb7b-768d-9794d08eb4f8@intel.com>
+Date:   Fri, 26 Nov 2021 13:15:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <da5038fd-611a-a0b3-10b7-35dac6817e6a@csgroup.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The format used for formatting SYSFS_FLAG_FW_SEL_BOOT creates the
-following warning:
 
-drivers/scsi/qedi/qedi_main.c:2259:35: warning: format specifies type
-'char' but the argument has type 'int' [-Wformat]
-                   rc = snprintf(buf, 3, "%hhd\n", SYSFS_FLAG_FW_SEL_BOOT);
 
-Fix this to use %d since this is a plain integer.
+On 11/24/2021 9:49 PM, Christophe Leroy wrote:
+> 
+> 
+> Le 24/11/2021 à 13:10, Christophe Leroy a écrit :
+>>
+>>
+>> Le 22/11/2021 à 15:48, kernel test robot a écrit :
+>>> Hi Christophe,
+>>>
+>>> I love your patch! Perhaps something to improve:
+>>>
+>>> [auto build test WARNING on powerpc/next]
+>>> [also build test WARNING on hnaz-mm/master linus/master v5.16-rc2 
+>>> next-20211118]
+>>> [If your patch is applied to the wrong git tree, kindly drop us a note.
+>>> And when submitting patch, we suggest to use '--base' as documented in
+>>> https://git-scm.com/docs/git-format-patch]
+>>>
+>>> url: 
+>>> https://github.com/0day-ci/linux/commits/Christophe-Leroy/Convert-powerpc-to-default-topdown-mmap-layout/20211122-165115 
+>>>
+>>> base: 
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next
+>>> config: powerpc64-randconfig-s031-20211122 (attached as .config)
+>>> compiler: powerpc64-linux-gcc (GCC) 11.2.0
+>>> reproduce:
+>>>          wget 
+>>> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross 
+>>> -O ~/bin/make.cross
+>>>          chmod +x ~/bin/make.cross
+>>>          # apt-get install sparse
+>>>          # sparse version: v0.6.4-dirty
+>>>          # 
+>>> https://github.com/0day-ci/linux/commit/1d0b7cc86d08f25f595b52d8c39ba9ca1d29a30a 
+>>>
+>>>          git remote add linux-review https://github.com/0day-ci/linux
+>>>          git fetch --no-tags linux-review 
+>>> Christophe-Leroy/Convert-powerpc-to-default-topdown-mmap-layout/20211122-165115 
+>>>
+>>>          git checkout 1d0b7cc86d08f25f595b52d8c39ba9ca1d29a30a
+>>>          # save the attached .config to linux build tree
+>>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 
+>>> make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' 
+>>> ARCH=powerpc64
+>>>
+>>> If you fix the issue, kindly add following tag as appropriate
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>
+>>> All warnings (new ones prefixed by >>):
+>>>
+>>>     arch/powerpc/mm/book3s64/slice.c: In function 
+>>> 'slice_get_unmapped_area':
+>>>>> arch/powerpc/mm/book3s64/slice.c:639:1: warning: the frame size of 
+>>>>> 1040 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+>>>       639 | }
+>>>           | ^
+>>
+>>
+>> The problem was already existing when slice.c was in arch/powerpc/mm/
+>>
+>> This patch doesn't introduce the problem.
+>>
+> 
+> In fact the problem is really added by yourself mister 'kernel test robot'.
+> 
+> CONFIG_FRAME_WARN is supposed to be 2048 on 64 bit architectures.
+> 
+> It the robot starts to reduce that value, it is on its own ....
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/scsi/qedi/qedi_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Christophe,
 
-diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
-index f1c933070884..367a0337b53e 100644
---- a/drivers/scsi/qedi/qedi_main.c
-+++ b/drivers/scsi/qedi/qedi_main.c
-@@ -2254,7 +2254,7 @@ qedi_show_boot_tgt_info(struct qedi_ctx *qedi, int type,
- 			     mchap_secret);
- 		break;
- 	case ISCSI_BOOT_TGT_FLAGS:
--		rc = snprintf(buf, 3, "%hhd\n", SYSFS_FLAG_FW_SEL_BOOT);
-+		rc = snprintf(buf, 3, "%d\n", SYSFS_FLAG_FW_SEL_BOOT);
- 		break;
- 	case ISCSI_BOOT_TGT_NIC_ASSOC:
- 		rc = snprintf(buf, 3, "0\n");
--- 
-2.25.1
+Thanks for the information, we'll set the default value for FRAME_WARN 
+in randconfig tests.
 
+Best Regards,
+Rong Chen
+
+> 
+> 
+> config FRAME_WARN
+>      int "Warn for stack frames larger than"
+>      range 0 8192
+>      default 2048 if GCC_PLUGIN_LATENT_ENTROPY
+>      default 1536 if (!64BIT && (PARISC || XTENSA))
+>      default 1024 if (!64BIT && !PARISC)
+>      default 2048 if 64BIT
+>      help
+>        Tell gcc to warn at build time for stack frames larger than this.
+>        Setting this too low will cause a lot of warnings.
+>        Setting it to 0 disables the warning.
+> _______________________________________________
+> kbuild-all mailing list -- kbuild-all@lists.01.org
+> To unsubscribe send an email to kbuild-all-leave@lists.01.org
