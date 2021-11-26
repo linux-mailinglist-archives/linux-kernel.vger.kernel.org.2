@@ -2,117 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76ECE45F169
+	by mail.lfdr.de (Postfix) with ESMTP id 23C9C45F168
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:13:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378461AbhKZQQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:16:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28333 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1378276AbhKZQOd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1378428AbhKZQQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:16:38 -0500
+Received: from mout.gmx.net ([212.227.17.22]:48219 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1378268AbhKZQOd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Nov 2021 11:14:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637943080;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VpB61RKKcKX+MlDxlfZx6xj32ByRUriXdcJ+FdXVsVo=;
-        b=SWNTqdaCmkbfhv4Pt2rb08U4GszT6w4OMJvAApIvsHn6Q+AeI3GEpoQEp6ij1XWl5CNVib
-        nn4LKh/x/Fuhekm8mpDOukDoItNOHkc4GjUgj6T56SdQHUuvkEyKybLPR7srYlTWNuvOyi
-        DoiwvhV/tnZf+OP98KiL5FPSObKgLwM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-220-KH-eGFcOOU6_UGsMnCRNJA-1; Fri, 26 Nov 2021 11:11:15 -0500
-X-MC-Unique: KH-eGFcOOU6_UGsMnCRNJA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC513190A7A0;
-        Fri, 26 Nov 2021 16:11:13 +0000 (UTC)
-Received: from [10.39.195.16] (unknown [10.39.195.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6AF9510016FE;
-        Fri, 26 Nov 2021 16:11:09 +0000 (UTC)
-Message-ID: <ee41580b-7c1f-eca0-539d-e96f56c7c1db@redhat.com>
-Date:   Fri, 26 Nov 2021 17:11:08 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1637943072;
+        bh=b4YFw+0lviZ5gjiIocUIVpjVYRhRWpQwEvX2hIhIf7k=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=JRvrh9XAnD9jpITcRyzRr8++6PNAC0kYVstKmzJBrGHGWI/QJSFckPLPSEoWktDkK
+         ubtI/Yw87PzIU+xYMHP56YpRqytQ5isfcLZZeA/zCkLHYAvhwfVJEaaZxP9lAEMTHQ
+         o/+hzI/6WBOfd1sO2zSr+EUU4ieP7OctFzVjs+yA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.59] ([46.223.119.124]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MTRQq-1n2qdg081E-00TjdX; Fri, 26
+ Nov 2021 17:11:12 +0100
+Subject: Re: [PATCH] serial: amba-pl011: do not request memory region twice
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux@armlinux.org.uk, jirislaby@kernel.org,
+        p.rosenberger@kunbus.com, lukas@wunner.de,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211126143925.18758-1-LinoSanfilippo@gmx.de>
+ <YaD9JW8i9vxmWWhk@kroah.com>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <8bad0596-c983-6915-67d0-0cda9ac70e5c@gmx.de>
+Date:   Fri, 26 Nov 2021 17:11:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] KVM: selftests: page_table_test: fix calculation of
- guest_test_phys_mem
+In-Reply-To: <YaD9JW8i9vxmWWhk@kroah.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Yanan Wang <wangyanan55@huawei.com>,
-        Andrew Jones <drjones@redhat.com>, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <52e487458c3172923549bbcf9dfccfbe6faea60b.1637940473.git.maciej.szmigiero@oracle.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <52e487458c3172923549bbcf9dfccfbe6faea60b.1637940473.git.maciej.szmigiero@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:oM+crlb5dF2zfFGXu0GtJ3xrshNlL0SNK2p6Up4bDM9CRQovALK
+ UF6I0hcHX1V73vymxHGsKMnHf75hxCfOHFZywwaZmDJ63I1t00Qq/YBWa7XKIO5Pme0LYsg
+ PkjH3WLw00CqkRm4+4DUK6tWT+saxe0F2Gltyq4N/vBEH5NgHxokI/3VJG6UqUNvRgWmDHH
+ Qb1nA4i2YOcchGU9NaVnA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:u2u7o5Q1nI4=:FmcdA61A25nRlPd3EznTFu
+ XwSJiEhhcNuWegrmNiI+yb40O9nfNeKyrBtcHYsvgBoHhBxxhBYvfP+h3/CyhE4Aaxzy0cyf3
+ wrJXc8UoOLpHze30hjiWxzFCfx36DvCOpQ+sV1SoVqs7irgdf04LnNV/TRr60J/NeZc66Cq60
+ 11U13/ysvgT11YNcSARrVRaBIUtDIuLoDUjAZqV9AZOFmhWzq/zSRQfKvDB+hrTXcJJScD2Ht
+ vZWZsdvH218k0Wpc9Z816Wg5s3X0g7XcXLi6dgaTj+A6ATP9t/EL1rzropSeu1+Veu7e1xuMI
+ IRw+JrGFsbkNdpR6+JwA7eFAUrNIFHQrdhQ/+udMb9BkSyzVAxvyCdUchUH++EVtchYniu3xI
+ JmD9VZ7s7eE5/Al9Taep7wImJ5Z9zbm7l3YivsEtkAOu0H4x/CQU/YLroPyNYJwnrjUNMlIh+
+ MguoTh5EEDcCnY/68YqjChDVm23YZ0NWxkT66oAWAXZKV2cvDYEtBHtBrvD4zqJ3nIi7hM7DA
+ jI6f0nFU/WcPV13jQfDWu7O8c+HjBHwiHHi6gL6NbHJHc2/TWGt/SiFn/81KBgPQQux7Xyfeh
+ iZLhHymgC2iMYsXNCm/31yk+ikkN4BJfiHJBfrGGcmcFPyLOpEe5iyeb0Aj1pQlek8/q4MLTd
+ 1DgsKPLmKIV0s/UHo2uK6EQrmNUjiQ/U/JsUjPGT3tD1T7pznuMKkV2bl0yVRXcWI1mKDIYzQ
+ /EUbwoFQYyKbNfDNySNpldCNjwcKkSsqUTjy7dcMXr0f1X9HEjFHswsV+f8/tyVGN5mZ2QIfX
+ z5CP0m1D8g0/ZOzrKx4RQh5J6TFQPfpPB3q6XmVpHiJu9ZP0c8SLkifnPRgYUihE1K7mf+DV4
+ mbL7/uX+GiBLiqmnPfDIMPSONyFsWoUnbBsXdnp+8sNG2VT4al4k0v94qjif/1WrYeyR+5uK6
+ hc5L8hVp9SYrE/EypMSOuspYxziVEZzWLNR0xNKtlQU4x8MC0GlHgaCMehf6+1kWIJsKkbEJ/
+ CHAQwSA0ji66EAYgHso4BZkfNH+UPLiV6C5W5wfROaaH6cjZ5h/UzM0xoWcIk9ukbjmLtdqJ/
+ wiWU5aurTlqj00=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/21 16:28, Maciej S. Szmigiero wrote:
-> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
-> 
-> A kvm_page_table_test run with its default settings fails on VMX due to
-> memory region add failure:
->> ==== Test Assertion Failure ====
->>   lib/kvm_util.c:952: ret == 0
->>   pid=10538 tid=10538 errno=17 - File exists
->>      1  0x00000000004057d1: vm_userspace_mem_region_add at kvm_util.c:947
->>      2  0x0000000000401ee9: pre_init_before_test at kvm_page_table_test.c:302
->>      3   (inlined by) run_test at kvm_page_table_test.c:374
->>      4  0x0000000000409754: for_each_guest_mode at guest_modes.c:53
->>      5  0x0000000000401860: main at kvm_page_table_test.c:500
->>      6  0x00007f82ae2d8554: ?? ??:0
->>      7  0x0000000000401894: _start at ??:?
->>   KVM_SET_USER_MEMORY_REGION IOCTL failed,
->>   rc: -1 errno: 17
->>   slot: 1 flags: 0x0
->>   guest_phys_addr: 0xc0000000 size: 0x40000000
-> 
-> This is because the memory range that this test is trying to add
-> (0x0c0000000 - 0x100000000) conflicts with LAPIC mapping at 0x0fee00000.
-> 
-> Looking at the code it seems that guest_test_*phys*_mem variable gets
-> mistakenly overwritten with guest_test_*virt*_mem while trying to adjust
-> the former for alignment.
-> With the correct variable adjusted this test runs successfully.
-> 
-> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-> ---
->   tools/testing/selftests/kvm/kvm_page_table_test.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/kvm_page_table_test.c b/tools/testing/selftests/kvm/kvm_page_table_test.c
-> index 3836322add00..ba1fdc3dcf4a 100644
-> --- a/tools/testing/selftests/kvm/kvm_page_table_test.c
-> +++ b/tools/testing/selftests/kvm/kvm_page_table_test.c
-> @@ -280,7 +280,7 @@ static struct kvm_vm *pre_init_before_test(enum vm_guest_mode mode, void *arg)
->   #ifdef __s390x__
->   	alignment = max(0x100000, alignment);
->   #endif
-> -	guest_test_phys_mem = align_down(guest_test_virt_mem, alignment);
-> +	guest_test_phys_mem = align_down(guest_test_phys_mem, alignment);
->   
->   	/* Set up the shared data structure test_args */
->   	test_args.vm = vm;
-> 
 
-Queued, thanks.
+Hi,
 
-Paolo
+On 26.11.21 at 16:28, Greg KH wrote:
+> On Fri, Nov 26, 2021 at 03:39:25PM +0100, Lino Sanfilippo wrote:
+>> The driver attempts to request and release the IO memory region for a u=
+art
+>> port twice:
+>>
+>> First during the probe() function devm_ioremap_resource() is used to
+>> allocate and map the ports memory.
+>> Then a combo of pl011_config_port() and pl011_release_port() is used to
+>> request/release the same memory area. These functions are called by the
+>> serial core as soon as the uart is registered/unregistered.
+>>
+>> However since the allocation request via devm_ioremap_resource() alread=
+y
+>> succeeds, the attempt to claim the memory again via pl011_config_port()
+>> fails. This failure remains unnoticed, since the concerning return valu=
+e is
+>> not evaluated.
+>> Later at module unload also the attempt to release the unclaimed memory
+>> in pl011_release_port() fails. This time the failure results in a =E2=
+=80=9CTrying
+>> to free nonexistent resource" warning printed by the serial core.
+>>
+>> Fix these issues by removing the callbacks that implement the redundant
+>> memory allocation/release.
+>>
+>> Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
+>> ---
+>>
+>> This patch was tested on a 5.10 Raspberry Pi kernel with a CM3.
+>
+> What commit id does this change fix?
+>
+> thanks,
+>
+> greg k-h
+>
 
+AFAICS its commit 3873e2d7f63a ("drivers: PL011: refactor pl011_probe()") =
+which
+changed  devm_ioremap() in pl011_setup_port() to  devm_ioremap_resource().
+Since the latter not only remaps but also requests the memory region it
+collides with the memory request in pl011_config_port(). I will add an app=
+ropriate
+Fixes tag for this.
+
+Regards,
+Lino
