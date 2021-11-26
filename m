@@ -2,126 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8F845F6BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 23:05:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AEAC45F6BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 23:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243392AbhKZWIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 17:08:25 -0500
-Received: from mga17.intel.com ([192.55.52.151]:21578 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244366AbhKZWGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 17:06:23 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="216428648"
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="216428648"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 14:03:10 -0800
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="498579817"
-Received: from iaoflynx-mobl3.amr.corp.intel.com (HELO localhost) ([10.252.10.246])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 14:03:07 -0800
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Hans Verkuil <hverkuil@xs4all.nl>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH] docs: conf.py: fix support for Readthedocs v 1.0.0
-In-Reply-To: <59f64802-c3dc-74cd-8f35-878e3fac64e2@infradead.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <f0660b1d24bc9bc07b13fe9a25ccb69ca14e916d.1637923850.git.mchehab+huawei@kernel.org>
- <13c40ed9-a51f-7496-7224-03b563bb6695@gmail.com>
- <59f64802-c3dc-74cd-8f35-878e3fac64e2@infradead.org>
-Date:   Sat, 27 Nov 2021 00:03:04 +0200
-Message-ID: <87sfvik21z.fsf@intel.com>
+        id S242815AbhKZWM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 17:12:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234741AbhKZWK5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 17:10:57 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B86CDC06173E;
+        Fri, 26 Nov 2021 14:07:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wx8LefqrmaL7hNN7/gVpJleg+PonaO/cczr6R2BoD00=; b=OZq1Qoyl8UMeOifsrrdF/RyTDD
+        pzYzJpPls4qfWAvlDSvhaqpS+B9r7Th236tq1LmAv78J3/lhxwvNqb7r7eNRyL5c77W08oKrWsWDY
+        RpNPr1uTizkMcpvfkmd6rMivZipaj2Tdvmrf1wj4KoPxh+qan1cpQM3poyntYuvwMPt/pvZa2L9Wm
+        Pibf1cVfUpDHEm2ZoDzcbhrbInTW+h/X5BlYzbbBVqMLZXYGEy5W0GyALx/PAWeTtYwjJqpgsfsgH
+        QXu0968ZDUA5fAnRKaoLUVIDl+9KXrLOc7r6dCPbr6t1UFeFkyF4qIUVp4f3Q3odm0qhCJ7FvpYCu
+        4h239dsQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mqjNR-00CLFd-80; Fri, 26 Nov 2021 22:07:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 27F5E300093;
+        Fri, 26 Nov 2021 23:07:29 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0743C2DC70762; Fri, 26 Nov 2021 23:07:29 +0100 (CET)
+Date:   Fri, 26 Nov 2021 23:07:29 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Peter Oskolkov <posk@posk.io>, Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org, Paul Turner <pjt@google.com>,
+        Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>
+Subject: Re: [PATCH v0.9.1 3/6] sched/umcg: implement UMCG syscalls
+Message-ID: <YaFaoQsIBUmq1S/q@hirez.programming.kicks-ass.net>
+References: <20211122211327.5931-1-posk@google.com>
+ <20211122211327.5931-4-posk@google.com>
+ <20211124200822.GF721624@worktop.programming.kicks-ass.net>
+ <CAFTs51Uka8VRCHuGidw7mRwATufp87U6S8SWUVod_kU-h6T3ew@mail.gmail.com>
+ <YaEUts3RbOLyvAjl@hirez.programming.kicks-ass.net>
+ <87a6hqhbgh.ffs@tglx>
+ <YaFY0KqfPhmZjK7n@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YaFY0KqfPhmZjK7n@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Nov 2021, Randy Dunlap <rdunlap@infradead.org> wrote:
-> On 11/26/21 6:33 AM, Akira Yokosawa wrote:
->> Hi Mauro,
->> 
->> On Fri, Nov 26, 2021 at 11:50:53AM +0100, Mauro Carvalho Chehab wrote:
->>> As described at:
->>> 	https://stackoverflow.com/questions/23211695/modifying-content-width-of-the-sphinx-theme-read-the-docs
->>>
->>> since Sphinx 1.8, the standard way to setup a custom theme is
->>> to use html_css_files. While using html_context is OK with RTD
->>> 0.5.2, it doesn't work with 1.0.0, causing the theme to not load,
->>> producing a very weird html.
->>>
->>> Tested with:
->>> 	- Sphinx 2.4.4 + sphinx-rtd-theme 0.5.2
->>> 	- Sphinx 2.4.4 + sphinx-rtd-theme 1.0.0
->>> 	- Sphinx 4.3.0 + sphinx-rtd-theme 1.0.0
->>>
->>> Reported-by: Hans Verkuil <hverkuil@xs4all.nl>
->>> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->>> ---
->>>   Documentation/conf.py | 13 +++++++++----
->>>   1 file changed, 9 insertions(+), 4 deletions(-)
->> 
->> So I have an issue with this simple change.
->> As I said to Jon in another thread [1], in which Jon didn't show any
->> interest, this update changes the look of generated HTML pages
->> (I should say) rather drastically, and it looks quite distracting
->> for my eyes.  The style might be acceptable for API documentations,
->> but kernel-doc has abundant natural language contents.
->
-> I agree 100% that the sans serif font is not desirable and not as
-> easy on the eyes as the serif font is.
-> Hopefully there is a way to change that.
+On Fri, Nov 26, 2021 at 10:59:44PM +0100, Peter Zijlstra wrote:
 
-Taking a step back, choosing the sphinx-rtd-theme to begin with was
-purely arbitrary, I didn't put much effort into checking the
-alternatives, and as far as I recall, neither did Jon. There were more
-pressing issues at the time to get the documentation generation ball
-rolling at all.
-
-Obviously anyone can change the theme for themselves, and I guess the
-question is rather what the default is, and, subsequently, what gets
-used at [1].
-
-I haven't followed the development on this closely, but I am somewhat
-surprised at the amount of theme overrides having been added, and it
-begs the question whether there'd perhaps be a readily available stock
-theme that would be better suited than sphinx-rtd-theme?
+> That seems to loose the freezable crud.. then again, since we're
+> interruptible, that shouldn't matter. Lemme go do that.
 
 
-BR,
-Jani.
+---
 
-
-[1] https://www.kernel.org/doc/html/latest/
-
-
-
->
->> [1]: https://lkml.kernel.org/r/550fe790-b18d-f882-4c70-477b596facc7@gmail.com
->> 
->> I think there should be some knobs for customizing the styles.
->> But I don't know much about css.
->> 
->> Can anybody restore the current look of kernel-doc HTML pages
->> in a sphinx-rtd-theme-1.0.0-compatible way?
->> 
->> Sidenote:
->> 
->> The change (html_css_files) actually works with
->>     - Sphinx 1.7.9 + sphinx-rtd-theme 1.0.0
->> 
->> This contradicts the Sphinx documentation saying that html_css_files
->> was new to Sphinx 1.8.  This might be related to the changes in
->> sphinx-rtd-theme side, but I have no evidence.
->> 
->> Any suggestion is welcome!
->
-> thanks.
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
+--- a/kernel/sched/umcg.c
++++ b/kernel/sched/umcg.c
+@@ -52,7 +52,7 @@ static int umcg_pin_pages(void)
+ 
+ 	server = umcg_get_task(server_tid);
+ 	if (!server)
+-		return -EINVAL;
++		return -ESRCH;
+ 
+ 	if (pin_user_pages_fast((unsigned long)self, 1, 0,
+ 				&tsk->umcg_worker_page) != 1)
+@@ -358,18 +358,10 @@ int umcg_wait(u64 timo)
+ {
+ 	struct task_struct *tsk = current;
+ 	struct umcg_task __user *self = tsk->umcg_task;
+-	struct hrtimer_sleeper timeout;
+ 	struct page *page = NULL;
+ 	u32 state;
+ 	int ret;
+ 
+-	if (timo) {
+-		hrtimer_init_sleeper_on_stack(&timeout, tsk->umcg_clock,
+-					      HRTIMER_MODE_ABS);
+-		hrtimer_set_expires_range_ns(&timeout.timer, (s64)timo,
+-					     tsk->timer_slack_ns);
+-	}
+-
+ 	for (;;) {
+ 		set_current_state(TASK_INTERRUPTIBLE);
+ 
+@@ -415,22 +407,16 @@ int umcg_wait(u64 timo)
+ 			break;
+ 		}
+ 
+-		if (timo)
+-			hrtimer_sleeper_start_expires(&timeout, HRTIMER_MODE_ABS);
+-
+-		freezable_schedule();
+-
+-		ret = -ETIMEDOUT;
+-		if (timo && !timeout.task)
++		if (!schedule_hrtimeout_range_clock(timo ? &timo : NULL,
++						    tsk->timer_slack_ns,
++						    HRTIMER_MODE_ABS,
++						    tsk->umcg_clock)) {
++			ret = -ETIMEDOUT;
+ 			break;
++		}
+ 	}
+ 	__set_current_state(TASK_RUNNING);
+ 
+-	if (timo) {
+-		hrtimer_cancel(&timeout.timer);
+-		destroy_hrtimer_on_stack(&timeout.timer);
+-	}
+-
+ 	return ret;
+ }
+ 
+@@ -515,7 +501,8 @@ void umcg_notify_resume(struct pt_regs *
+ 		goto done;
+ 
+ 	if (state & UMCG_TF_PREEMPT) {
+-		umcg_pin_pages();
++		if (umcg_pin_pages())
++			goto die;
+ 
+ 		if (umcg_update_state(tsk, UMCG_TASK_RUNNING,
+ 				      UMCG_TASK_RUNNABLE, &next_tid))
+@@ -586,7 +573,9 @@ SYSCALL_DEFINE2(umcg_wait, u32, flags, u
+ 		tsk->flags &= ~PF_UMCG_WORKER;
+ 
+ 	/* see umcg_sys_{enter,exit}() */
+-	umcg_pin_pages();
++	ret = umcg_pin_pages();
++	if (ret)
++		return ret;
+ 
+ 	ret = umcg_update_state(tsk, UMCG_TASK_RUNNING, UMCG_TASK_RUNNABLE, &next_tid);
+ 	if (ret)
