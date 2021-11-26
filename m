@@ -2,142 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 335B045EE40
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:42:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9710945EE41
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377632AbhKZMpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 07:45:41 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:38500 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377497AbhKZMnh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 07:43:37 -0500
-Received: by mail-io1-f72.google.com with SMTP id l124-20020a6b3e82000000b005ed165a1506so11625669ioa.5
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 04:40:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=J9pKVZSmKtwpuPTSe05C26OqSqmxQieJZ73iDt5ItI0=;
-        b=CfiM4t8p+Ss06rg13vY6PD3S/ADGRSFm+UU31cZ13t0qC2qGUQG+YwuADNNeYnm4og
-         a/0rtOUjLil2f4+mFy2vUx9Zd8JdDFBRH1S6sQz6HtjkNla4YPzKbz6hiF+gAIgmf7xl
-         nbSsMaRl19REaNn+Xlslw198aF5Hxlyoe0hj3iKuIq+87PHID7ErioXa1s3QkzrH0oqX
-         YLWdoyncJkVPHc5Nr53NwE1+AmLrh/ur5yWNY+sMZ6KZcaFTazWw/+AKWh+l+59skt4A
-         +ev3ow7+mWZBKCs5j1T0ydowd/WStHpKBqv+XfBXFtd+XazQ0H0z2YviPKfyOL14RzOb
-         UYJA==
-X-Gm-Message-State: AOAM531IHbs9/Oly5CqZikQz70pujVkGo+ubMHxIvUaMPDFM6WsLULE4
-        YJVTlKqk0Y8q+SzXxsqQ4xdNmk+kgmkEu41v5Cqk2ELdLMkf
-X-Google-Smtp-Source: ABdhPJwydALsw0AUDvn4BmRA+g86FQGhU3lx8A/9xuaGrBTfSq1Twc1ieT2/aFzMEui8c6EGkmhxQqbuF8ILwkHql9cxc9nYpkfu
+        id S1377678AbhKZMqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 07:46:02 -0500
+Received: from pegase2.c-s.fr ([93.17.235.10]:52117 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235185AbhKZMoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 07:44:02 -0500
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4J0vVR6Fksz9sSM;
+        Fri, 26 Nov 2021 13:40:47 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id q6fGhm_M0oOy; Fri, 26 Nov 2021 13:40:47 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4J0vVR5FPYz9sRt;
+        Fri, 26 Nov 2021 13:40:47 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A01F08B77D;
+        Fri, 26 Nov 2021 13:40:47 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id zLliDJAzAMvt; Fri, 26 Nov 2021 13:40:47 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.204.6])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 52C618B763;
+        Fri, 26 Nov 2021 13:40:47 +0100 (CET)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1AQCebcK518739
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Fri, 26 Nov 2021 13:40:37 +0100
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1AQCeZWX518712;
+        Fri, 26 Nov 2021 13:40:35 +0100
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] powerpc/32s: Allocate one 256k IBAT instead of two consecutives 128k IBATs
+Date:   Fri, 26 Nov 2021 13:40:35 +0100
+Message-Id: <ab58b296832b0ec650e2203200e060adbcb2677d.1637930421.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-X-Received: by 2002:a6b:3b49:: with SMTP id i70mr34689542ioa.12.1637930424017;
- Fri, 26 Nov 2021 04:40:24 -0800 (PST)
-Date:   Fri, 26 Nov 2021 04:40:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001729c705d1b065f7@google.com>
-Subject: [syzbot] possible deadlock in __io_commit_cqring_flush
-From:   syzbot <syzbot+ff49a3059d49b0ca0eec@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1637930434; l=2524; s=20211009; h=from:subject:message-id; bh=iZX5KDjRSG9keLKYeWXaDkEzsljIu8vWVO5ORJ5LHiM=; b=iNeljMTDjgTn9C8NMyoj/XEQuWHYs06mT/M7ralRR+J+0tItjj0tb55ZthTxA4eJKxE6GOLjXE+f g79rV3bGAPD+joNQExQ0Co4qtBW0qUa+G3IxEnj+xklJFLOeQJTW
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Today we have the following IBATs allocated:
 
-syzbot found the following issue on:
+	---[ Instruction Block Address Translation ]---
+	0: 0xc0000000-0xc03fffff 0x00000000         4M Kernel   x     m
+	1: 0xc0400000-0xc05fffff 0x00400000         2M Kernel   x     m
+	2: 0xc0600000-0xc06fffff 0x00600000         1M Kernel   x     m
+	3: 0xc0700000-0xc077ffff 0x00700000       512K Kernel   x     m
+	4: 0xc0780000-0xc079ffff 0x00780000       128K Kernel   x     m
+	5: 0xc07a0000-0xc07bffff 0x007a0000       128K Kernel   x     m
+	6:         -
+	7:         -
 
-HEAD commit:    a4849f6000e2 Merge tag 'drm-fixes-2021-11-26' of git://ano..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10d5f726b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=75f05fb8d1a152d3
-dashboard link: https://syzkaller.appspot.com/bug?extid=ff49a3059d49b0ca0eec
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+The two 128K should be a single 256K instead.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+When _etext is not aligned to 128Kbytes, the system will allocate
+all necessary BATs to the lower 128Kbytes boundary, then allocate
+an additional 128Kbytes BAT for the remaining block.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ff49a3059d49b0ca0eec@syzkaller.appspotmail.com
+Instead, align the top to 128Kbytes so that the function directly
+allocates a 256Mbytes last block:
 
-============================================
-WARNING: possible recursive locking detected
-5.16.0-rc2-syzkaller #0 Not tainted
---------------------------------------------
-syz-executor.1/8766 is trying to acquire lock:
-ffff888096b57418 (&ctx->timeout_lock){+.+.}-{2:2}, at: spin_lock_irq include/linux/spinlock.h:374 [inline]
-ffff888096b57418 (&ctx->timeout_lock){+.+.}-{2:2}, at: io_flush_timeouts fs/io_uring.c:1587 [inline]
-ffff888096b57418 (&ctx->timeout_lock){+.+.}-{2:2}, at: __io_commit_cqring_flush+0x108/0x50d fs/io_uring.c:1618
+	---[ Instruction Block Address Translation ]---
+	0: 0xc0000000-0xc03fffff 0x00000000         4M Kernel   x     m
+	1: 0xc0400000-0xc05fffff 0x00400000         2M Kernel   x     m
+	2: 0xc0600000-0xc06fffff 0x00600000         1M Kernel   x     m
+	3: 0xc0700000-0xc077ffff 0x00700000       512K Kernel   x     m
+	4: 0xc0780000-0xc07bffff 0x00780000       256K Kernel   x     m
+	5:         -
+	6:         -
+	7:         -
 
-but task is already holding lock:
-ffff888096b57418 (&ctx->timeout_lock){+.+.}-{2:2}, at: spin_lock_irq include/linux/spinlock.h:374 [inline]
-ffff888096b57418 (&ctx->timeout_lock){+.+.}-{2:2}, at: io_poll_remove_all+0x50/0x235 fs/io_uring.c:5702
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&ctx->timeout_lock);
-  lock(&ctx->timeout_lock);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-2 locks held by syz-executor.1/8766:
- #0: ffff888096b573d8 (&ctx->completion_lock#2){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:349 [inline]
- #0: ffff888096b573d8 (&ctx->completion_lock#2){+.+.}-{2:2}, at: io_poll_remove_all+0x48/0x235 fs/io_uring.c:5701
- #1: ffff888096b57418 (&ctx->timeout_lock){+.+.}-{2:2}, at: spin_lock_irq include/linux/spinlock.h:374 [inline]
- #1: ffff888096b57418 (&ctx->timeout_lock){+.+.}-{2:2}, at: io_poll_remove_all+0x50/0x235 fs/io_uring.c:5702
-
-stack backtrace:
-CPU: 0 PID: 8766 Comm: syz-executor.1 Not tainted 5.16.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_deadlock_bug kernel/locking/lockdep.c:2956 [inline]
- check_deadlock kernel/locking/lockdep.c:2999 [inline]
- validate_chain kernel/locking/lockdep.c:3788 [inline]
- __lock_acquire.cold+0x149/0x3ab kernel/locking/lockdep.c:5027
- lock_acquire kernel/locking/lockdep.c:5637 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5602
- __raw_spin_lock_irq include/linux/spinlock_api_smp.h:119 [inline]
- _raw_spin_lock_irq+0x32/0x50 kernel/locking/spinlock.c:170
- spin_lock_irq include/linux/spinlock.h:374 [inline]
- io_flush_timeouts fs/io_uring.c:1587 [inline]
- __io_commit_cqring_flush+0x108/0x50d fs/io_uring.c:1618
- io_commit_cqring fs/io_uring.c:1626 [inline]
- io_poll_remove_one fs/io_uring.c:5684 [inline]
- io_poll_remove_one.cold+0xd/0x12 fs/io_uring.c:5674
- io_poll_remove_all+0x1af/0x235 fs/io_uring.c:5709
- io_ring_ctx_wait_and_kill+0x1cc/0x322 fs/io_uring.c:9534
- io_uring_release+0x42/0x46 fs/io_uring.c:9554
- __fput+0x286/0x9f0 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- tracehook_notify_resume include/linux/tracehook.h:189 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
- exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:207
- __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f087b422ae9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f0878977188 EFLAGS: 00000246 ORIG_RAX: 0000000000000009
-RAX: 0000000020ffa000 RBX: 00007f087b536020 RCX: 00007f087b422ae9
-RDX: 0000000003000001 RSI: 0000000000004000 RDI: 0000000020ffa000
-RBP: 00007f087b47cf6d R08: 0000000000000003 R09: 0000000010000000
-R10: 0000000000000012 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffe7626bd9f R14: 00007f0878977300 R15: 0000000000022000
- </TASK>
-
-
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/powerpc/mm/book3s32/mmu.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/arch/powerpc/mm/book3s32/mmu.c b/arch/powerpc/mm/book3s32/mmu.c
+index 27061583a010..33ab63d56435 100644
+--- a/arch/powerpc/mm/book3s32/mmu.c
++++ b/arch/powerpc/mm/book3s32/mmu.c
+@@ -196,18 +196,17 @@ void mmu_mark_initmem_nx(void)
+ 	int nb = mmu_has_feature(MMU_FTR_USE_HIGH_BATS) ? 8 : 4;
+ 	int i;
+ 	unsigned long base = (unsigned long)_stext - PAGE_OFFSET;
+-	unsigned long top = (unsigned long)_etext - PAGE_OFFSET;
++	unsigned long top = ALIGN((unsigned long)_etext - PAGE_OFFSET, SZ_128K);
+ 	unsigned long border = (unsigned long)__init_begin - PAGE_OFFSET;
+ 	unsigned long size;
+ 
+-	for (i = 0; i < nb - 1 && base < top && top - base > (128 << 10);) {
++	for (i = 0; i < nb - 1 && base < top;) {
+ 		size = block_size(base, top);
+ 		setibat(i++, PAGE_OFFSET + base, base, size, PAGE_KERNEL_TEXT);
+ 		base += size;
+ 	}
+ 	if (base < top) {
+ 		size = block_size(base, top);
+-		size = max(size, 128UL << 10);
+ 		if ((top - base) > size) {
+ 			size <<= 1;
+ 			if (strict_kernel_rwx_enabled() && base + size > border)
+-- 
+2.33.1
+
