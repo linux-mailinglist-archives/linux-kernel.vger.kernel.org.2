@@ -2,198 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69CC745EC7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:22:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE3745EC99
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:26:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240472AbhKZLZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 06:25:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50858 "EHLO
+        id S241643AbhKZL3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 06:29:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240519AbhKZLXZ (ORCPT
+        with ESMTP id S243476AbhKZL1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 06:23:25 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E7DC08EC23;
-        Fri, 26 Nov 2021 02:36:46 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id 15A131F467C2
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637923005; bh=p544riZzn0zdZeLNWHq9SL3/SLvcyH1A0FpJe0Rsn+0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=hjtQtps9kXNuPLBmlY2WeaWZATca4V3B6fIKceWVsKTCWNsruDy5Oysk3SGd0tIMq
-         G1/tIKNrUy1kjGdscl7zaxgTsHv/1JCQkkZn2/oBFnSpaiIVHpJQE0Xog/vbubM6mi
-         +b2548o880QSYR+qBBGicZT0dAoFxfKe6VoXASBgCQPJG2MMVWEfTnda53DDkrAB6s
-         h3IMCa41Asvauoym98hreN7JIr2go+Ip7BFaWIDHyC9yN78J9W7sejMNRZ4hF7V9OF
-         H4/e1y+6pHJ8vKAS8zESl1TLlyn1UTlCxoupKazp/sfTtk8Zl3oEjKG4b0pMWfETNI
-         DijXYTGWQ/bCg==
-Subject: Re: [PATCH 3/3] arm64: dts: mediatek: Add USB xHCI controller for
- mt8195
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211102060049.1843-1-chunfeng.yun@mediatek.com>
- <20211102060049.1843-3-chunfeng.yun@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Message-ID: <9db3cb96-ac67-151d-5674-b56c5abbe348@collabora.com>
-Date:   Fri, 26 Nov 2021 11:36:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 26 Nov 2021 06:27:23 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1891C06179E
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:39:56 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id j140-20020a1c2392000000b003399ae48f58so10350382wmj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:39:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=eEOAK+Cf03lXZLaEkmNwb12jRPlVUMgen83gdYf33Eg=;
+        b=DjaajmbIsKB9yMfgL/taA4pTpsc8kcUwXrfJlALf9JjhOfJk//UcPxuHdGf468nTUs
+         pxwYkAp95XHwagf4tebbYD2u654HCpsPvbN10HD6UptZy6RfqD4/UpmrlluNrVfrxzst
+         038QJyvfHuL0tJMtpypMmqRybUEk3NlrRNh/9QbIYh6FeZGZdiNe7DL/3f9MCd6jJtR/
+         zvJGWnxmKESRHm0kG+IcZeZFt4MSIEBTmaspCdmwwFN84fVVilCbbnJm7xYZTvSN6jJx
+         nbQRtV6chtpgtnFUs15KkHDtFsbtphFZPKurccAFDjpMwAusO+ZJ9an3EdqR12EGFBbt
+         lsRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=eEOAK+Cf03lXZLaEkmNwb12jRPlVUMgen83gdYf33Eg=;
+        b=1JYRWCeGh5PeVpNveqVQR4TY2WyjR6t4lhUpvhEhJx2aSglYC5nEfFecYExny4bx92
+         DwqDVKd7GL3b2zXpbG4b/Htiqgu6Jx4ihX9s2VSvOdmi+GElOKYCd5eyjcMsN+BRex21
+         NlHQ/ZjC4OFpp+fnGW7yKczFIlrWJ9iS6/4v/poVGUdtaCQtJCd0S8QYwyG1kB4xp2S+
+         x1REkUGz5sFK/tp9orZF1H3erDl//R2sHQq5dLlD97ezBZDz/8kzSSNqMDgD4kjzhSri
+         UTduFYACV9bVmpM/H/JfiSstT+5vOKB4c7zPDxS6nyRZCv/ITW1rRl5IOM7WiciZthBQ
+         Eqgg==
+X-Gm-Message-State: AOAM532e65tiYhSXtHrojAQuaTF1tqMLeS3oYCwDVHMgCZimGVChQSTp
+        /xuerIkusdaOKL5uiZgwyabGrdwR8J4H/g==
+X-Google-Smtp-Source: ABdhPJxBfoTzoNbY0PHI41v/czzcwdiOWjFBenHv+Z0zooM9k5xQiSu81UJFybPMsuF3nHHSjDmEvA==
+X-Received: by 2002:a7b:c7cb:: with SMTP id z11mr14510921wmk.152.1637923195234;
+        Fri, 26 Nov 2021 02:39:55 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:1d51:a6f6:77af:b142])
+        by smtp.gmail.com with ESMTPSA id r11sm5155267wrw.5.2021.11.26.02.39.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 02:39:54 -0800 (PST)
+Date:   Fri, 26 Nov 2021 11:39:49 +0100
+From:   Marco Elver <elver@google.com>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: Enable KCSAN
+Message-ID: <YaC5dbsw/uDYOVEv@elver.google.com>
+References: <20211126080008.77202-1-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20211102060049.1843-3-chunfeng.yun@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211126080008.77202-1-wangkefeng.wang@huawei.com>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 02/11/21 07:00, Chunfeng Yun ha scritto:
-> Add all four USB xHCI controllers for MT8195
+On Fri, Nov 26, 2021 at 04:00PM +0800, Kefeng Wang wrote:
+> This patch enables KCSAN for arm64, with updates to build rules
+> to not use KCSAN for several incompatible compilation units.
 > 
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> Tested selftest and kcsan_test, and all passed.
+> 
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+
+Nice! Although I think Mark (Cc'd) also had been working on this and
+probably knows what, if anything, is still missing.
+
+For one, have you tested gcc 11? To make it work with gcc 11, my
+preferred solution is that you simply squash this:
+
+---
+
+diff --git a/kernel/kcsan/Makefile b/kernel/kcsan/Makefile
+index c2bb07f5bcc7..d7d0b51b79f5 100644
+--- a/kernel/kcsan/Makefile
++++ b/kernel/kcsan/Makefile
+@@ -8,6 +8,7 @@ CFLAGS_REMOVE_debugfs.o = $(CC_FLAGS_FTRACE)
+ CFLAGS_REMOVE_report.o = $(CC_FLAGS_FTRACE)
+ 
+ CFLAGS_core.o := $(call cc-option,-fno-conserve-stack) \
++		 $(call cc-option,-mno-outline-atomics) \
+ 	-fno-stack-protector -DDISABLE_BRANCH_PROFILING
+ 
+ obj-y := core.o debugfs.o report.o
+
+---
+
+[ I have changes to kernel/kcsan/Makefile that I expect to land in -next
+  soon'ish, the above is small enough that git can auto-merge. ]
+
+gcc somehow made outline-atomics the default (unlike clang), which will
+cause linker errors for kernel/kcsan/core.o. While the support for
+builtin atomics shouldn't be required on arm64, I want it to be
+(compile-)testable on all architectures. Although there's an exception
+that certain compiler instrumentation actually require working builtin
+atomics support, specifically GCOV_KERNEL.
+
+Thanks,
+-- Marco
+
 > ---
->   arch/arm64/boot/dts/mediatek/mt8195.dtsi | 79 ++++++++++++++++++++++++
->   1 file changed, 79 insertions(+)
+> Tested on Qemu with clang 13, based on 5.16-rc2.
 > 
-
-Hello!
-Thanks for the patch! However, there is something to improve...
-
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-> index a59c0e9d1fc2..263eebfd2ea1 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-> @@ -8,6 +8,7 @@
->   #include <dt-bindings/clock/mt8195-clk.h>
->   #include <dt-bindings/interrupt-controller/arm-gic.h>
->   #include <dt-bindings/interrupt-controller/irq.h>
-> +#include <dt-bindings/phy/phy.h>
->   #include <dt-bindings/power/mt8195-power.h>
->   
->   / {
-> @@ -823,6 +824,26 @@
->   			status = "disabled";
->   		};
->   
-> +		xhci0: usb@11200000 {
-> +			compatible = "mediatek,mt8195-xhci", "mediatek,mtk-xhci";
-> +			reg = <0 0x11200000 0 0x1000>, <0 0x11203e00 0 0x0100>;
-> +			reg-names = "mac", "ippc";
-> +			interrupts = <GIC_SPI 129 IRQ_TYPE_LEVEL_HIGH 0>;
-
-Here, and on the other xhci nodes (from what I know, xhci{0,1,3}), you should use
-interrupts-extended and declare the wakeup interrupt on pio.
-
-			interrupts-extended = <&gic GIC_SPI 129 IRQ_TYPE_LEVEL_HIGH 0>,
-
-					      <&pio 219 IRQ_TYPE_LEVEL_LOW>;
-
-			interrupt-names = "host", "wakeup";
-
-
-> +			phys = <&u2port0 PHY_TYPE_USB2>, <&u3port0 PHY_TYPE_USB3>;
-> +			assigned-clocks = <&topckgen CLK_TOP_USB_TOP>,
-> +					  <&topckgen CLK_TOP_SSUSB_XHCI>;
-> +			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D5_D4>,
-> +						 <&topckgen CLK_TOP_UNIVPLL_D5_D4>;
-> +			clocks = <&infracfg_ao CLK_INFRA_AO_SSUSB>,
-> +				 <&infracfg_ao CLK_INFRA_AO_SSUSB_XHCI>,
-> +				 <&topckgen CLK_TOP_SSUSB_REF>,
-> +				 <&apmixedsys CLK_APMIXED_USB1PLL>;
-> +			clock-names = "sys_ck", "xhci_ck", "ref_ck", "mcu_ck";
-> +			mediatek,syscon-wakeup = <&pericfg 0x400 103>;
-> +			wakeup-source;
-> +			status = "disabled";
-> +		};
-> +
->   		mmc0: mmc@11230000 {
->   			compatible = "mediatek,mt8195-mmc", "mediatek,mt8192-mmc";
->   			reg = <0 0x11230000 0 0x10000>,
-> @@ -843,6 +864,64 @@
->   			status = "disabled";
->   		};
->   
-> +		xhci1: usb@11290000 {
-> +			compatible = "mediatek,mt8195-xhci", "mediatek,mtk-xhci";
-> +			reg = <0 0x11290000 0 0x1000>, <0 0x11293e00 0 0x0100>;
-> +			reg-names = "mac", "ippc";
-> +			interrupts = <GIC_SPI 530 IRQ_TYPE_LEVEL_HIGH 0>;
-
-			interrupts-extended = <&gic GIC_SPI 530 IRQ_TYPE_LEVEL_HIGH 0>,
-
-					      <&pio 218 IRQ_TYPE_LEVEL_LOW>;
-
-> +			phys = <&u2port1 PHY_TYPE_USB2>;
-> +			assigned-clocks = <&topckgen CLK_TOP_USB_TOP_1P>,
-> +					  <&topckgen CLK_TOP_SSUSB_XHCI_1P>;
-> +			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D5_D4>,
-> +						 <&topckgen CLK_TOP_UNIVPLL_D5_D4>;
-> +			clocks = <&pericfg_ao CLK_PERI_AO_SSUSB_1P_BUS>,
-> +				 <&pericfg_ao CLK_PERI_AO_SSUSB_1P_XHCI>,
-> +				 <&topckgen CLK_TOP_SSUSB_P1_REF>,
-> +				 <&apmixedsys CLK_APMIXED_USB1PLL>;
-> +			clock-names = "sys_ck", "xhci_ck", "ref_ck", "mcu_ck";
-> +			mediatek,syscon-wakeup = <&pericfg 0x400 104>;
-> +			wakeup-source;
-> +			status = "disabled";
-> +		};
-> +
-> +		xhci2: usb@112a0000 {
-> +			compatible = "mediatek,mt8195-xhci", "mediatek,mtk-xhci";
-> +			reg = <0 0x112a0000 0 0x1000>, <0 0x112a3e00 0 0x0100>;
-> +			reg-names = "mac", "ippc";
-> +			interrupts = <GIC_SPI 533 IRQ_TYPE_LEVEL_HIGH 0>;
-> +			phys = <&u2port2 PHY_TYPE_USB2>;
-> +			assigned-clocks = <&topckgen CLK_TOP_USB_TOP_2P>,
-> +					  <&topckgen CLK_TOP_SSUSB_XHCI_2P>;
-> +			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D5_D4>,
-> +						 <&topckgen CLK_TOP_UNIVPLL_D5_D4>;
-> +			clocks = <&pericfg_ao CLK_PERI_AO_SSUSB_2P_BUS>,
-> +				 <&pericfg_ao CLK_PERI_AO_SSUSB_2P_XHCI>,
-> +				 <&topckgen CLK_TOP_SSUSB_P2_REF>;
-> +			clock-names = "sys_ck", "xhci_ck", "ref_ck";
-> +			mediatek,syscon-wakeup = <&pericfg 0x400 105>;
-> +			status = "disabled";
-> +		};
-> +
-> +		xhci3: usb@112b0000 {
-> +			compatible = "mediatek,mt8195-xhci", "mediatek,mtk-xhci";
-> +			reg = <0 0x112b0000 0 0x1000>, <0 0x112b3e00 0 0x0100>;
-> +			reg-names = "mac", "ippc";
-> +			interrupts = <GIC_SPI 536 IRQ_TYPE_LEVEL_HIGH 0>;
-
-			interrupts-extended = <&gic GIC_SPI 536 IRQ_TYPE_LEVEL_HIGH 0>,
-
-					      <&pio 221 IRQ_TYPE_LEVEL_LOW>;
-
-			interrupts-names = "host", "wakeup";
-
-> +			phys = <&u2port3 PHY_TYPE_USB2>;
-> +			assigned-clocks = <&topckgen CLK_TOP_USB_TOP_3P>,
-> +					  <&topckgen CLK_TOP_SSUSB_XHCI_3P>;
-> +			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D5_D4>,
-> +						 <&topckgen CLK_TOP_UNIVPLL_D5_D4>;
-> +			clocks = <&pericfg_ao CLK_PERI_AO_SSUSB_3P_BUS>,
-> +				 <&pericfg_ao CLK_PERI_AO_SSUSB_3P_XHCI>,
-> +				 <&topckgen CLK_TOP_SSUSB_P3_REF>;
-> +			clock-names = "sys_ck", "xhci_ck", "ref_ck";
-> +			mediatek,syscon-wakeup = <&pericfg 0x400 106>;
-> +			wakeup-source;
-> +			usb2-lpm-disable;
-> +			status = "disabled";
-> +		};
-> +
->   		nor_flash: nor@1132c000 {
->   			compatible = "mediatek,mt8195-nor", "mediatek,mt8173-nor";
->   			reg = <0 0x1132c000 0 0x1000>;
+> [    0.221518] kcsan: enabled early
+> [    0.222422] kcsan: strict mode configured
+> ...
+> [    5.839223] kcsan: selftest: 3/3 tests passed
+> ...
+> [  517.895102] # kcsan: pass:24 fail:0 skip:0 total:24
+> [  517.896393] # Totals: pass:168 fail:0 skip:0 total:168
+> [  517.897502] ok 1 - kcsan
 > 
-
-Regards,
-- Angelo
+>  arch/arm64/Kconfig               | 1 +
+>  arch/arm64/kernel/vdso/Makefile  | 1 +
+>  arch/arm64/kvm/hyp/nvhe/Makefile | 1 +
+>  3 files changed, 3 insertions(+)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 4ff73299f8a9..0ac90875f71d 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -150,6 +150,7 @@ config ARM64
+>  	select HAVE_ARCH_KASAN_VMALLOC if HAVE_ARCH_KASAN
+>  	select HAVE_ARCH_KASAN_SW_TAGS if HAVE_ARCH_KASAN
+>  	select HAVE_ARCH_KASAN_HW_TAGS if (HAVE_ARCH_KASAN && ARM64_MTE)
+> +	select HAVE_ARCH_KCSAN
+>  	select HAVE_ARCH_KFENCE
+>  	select HAVE_ARCH_KGDB
+>  	select HAVE_ARCH_MMAP_RND_BITS
+> diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
+> index 700767dfd221..60813497a381 100644
+> --- a/arch/arm64/kernel/vdso/Makefile
+> +++ b/arch/arm64/kernel/vdso/Makefile
+> @@ -32,6 +32,7 @@ ccflags-y += -DDISABLE_BRANCH_PROFILING -DBUILD_VDSO
+>  CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os $(CC_FLAGS_SCS) $(GCC_PLUGINS_CFLAGS) \
+>  				$(CC_FLAGS_LTO)
+>  KASAN_SANITIZE			:= n
+> +KCSAN_SANITIZE			:= n
+>  UBSAN_SANITIZE			:= n
+>  OBJECT_FILES_NON_STANDARD	:= y
+>  KCOV_INSTRUMENT			:= n
+> diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
+> index c3c11974fa3b..24b2c2425b38 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/Makefile
+> +++ b/arch/arm64/kvm/hyp/nvhe/Makefile
+> @@ -89,6 +89,7 @@ KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_FTRACE) $(CC_FLAGS_SCS) $(CC_FLAGS_CFI)
+>  # cause crashes. Just disable it.
+>  GCOV_PROFILE	:= n
+>  KASAN_SANITIZE	:= n
+> +KCSAN_SANITIZE	:= n
+>  UBSAN_SANITIZE	:= n
+>  KCOV_INSTRUMENT	:= n
+>  
+> -- 
+> 2.26.2
+> 
