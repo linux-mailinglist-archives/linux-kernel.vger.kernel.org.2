@@ -2,229 +2,933 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFBE45EC71
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86EE045EC81
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:22:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241375AbhKZLYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 06:24:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58581 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239623AbhKZLWR (ORCPT
+        id S240939AbhKZL0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 06:26:09 -0500
+Received: from so254-9.mailgun.net ([198.61.254.9]:39227 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233209AbhKZLYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 06:22:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637925545;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DEigbysMKZscWuG/nrx9AX2D3SqvZ+Fu4CJlrP/uHHg=;
-        b=S8GHzCFXOpCjNLtLUbCIXJ8idcgHHjmsIEYlunlqrnSbKpdRbT3iUkaik7P6l8xQIecK0W
-        zOPuNwI1kIsjaL+HvUJAXwXxzX3vN+fQshtC3LSwcr1neZc6O01quQGdoR/48jyQm0ME3W
-        mkmL9GQ5wl8+i9aYruWNkGzvpUR1rN0=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-232-W6sOcMQ3OSKhJlySnOBoiw-1; Fri, 26 Nov 2021 06:19:03 -0500
-X-MC-Unique: W6sOcMQ3OSKhJlySnOBoiw-1
-Received: by mail-ed1-f72.google.com with SMTP id n11-20020aa7c68b000000b003e7d68e9874so7788649edq.8
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 03:19:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=DEigbysMKZscWuG/nrx9AX2D3SqvZ+Fu4CJlrP/uHHg=;
-        b=tqbqeWIUSwLd1h3KJYhTwiVwn0bX6ZaUQxNHSAXNvACsvCjmkTezCn/JvlDn4FdYJS
-         EnWLXdC0vJ55xZ9puYuRRSyAU2dTJbrRX+7sv5y0Enkz4osu4PjH6B2Fe7uE5GShCrgQ
-         +Z1Q5UWhRL2Gzi+yHni5fkwSQo0+RncAXWtbGe4OHZoEewIAM3nxTiRtW4jxV+XodCPw
-         Dk5DE6r+bXmKRR8D3eKfHTbMsRmzFHHEN+JqacGRfMsDFrvUL04DCaaivw7JyWBPNVME
-         9ujBsDD+FN1w6F4joaTw8aCaekdh6P6/n2y95Vye9jccJBYTLx7dRYVHbRcckdWYgZb2
-         wfYA==
-X-Gm-Message-State: AOAM532BB1IXlnWW7eJus3CneRysbaIjTgmiRhhHqd/ORudt6nlXMVj8
-        cTe/VCRfWPOfoAUGbTpgsfoWfWfy2wHfoGuuBDzJGC+ghy+ZR6LTZie7khM14vzSJqmwwpArZt4
-        qeJ0ingR1QZgXri9rTmzJNEsg
-X-Received: by 2002:a05:6402:185:: with SMTP id r5mr44737574edv.259.1637925542415;
-        Fri, 26 Nov 2021 03:19:02 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwahPgaHB3vNloRByTEj2b+ZXi68UUpneC/4sfhsoKP7oJ8BOIxq7zoR/6CW0ILA40KMefQgw==
-X-Received: by 2002:a05:6402:185:: with SMTP id r5mr44737558edv.259.1637925542223;
-        Fri, 26 Nov 2021 03:19:02 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id sa3sm3072930ejc.113.2021.11.26.03.19.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Nov 2021 03:19:01 -0800 (PST)
-Message-ID: <5c6511e1-1264-a2f8-377c-a9da34469468@redhat.com>
-Date:   Fri, 26 Nov 2021 12:19:00 +0100
+        Fri, 26 Nov 2021 06:24:08 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1637925655; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=PCj6m3oPQysDBzr9wG9dfn9SrRsgZsQc/BypmpkCZaA=; b=Lxxl0T69vkk+W1h0+QhpbyOLcIAryPdBQIrQx9g/OaOfj2jc+x8/PmHysZeG1Ps9Fhf7jAa5
+ b1eQV9AUE6ksCdBsZtHU9Cb0zkWhxgPUj0NpgdPRKTGUNA2VAjSgAaD0kqTHYoHfzUiEonUX
+ 9cQ4mogVgXOr2wAgxhzOBTHoPZ4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 61a0c316df12ba53c40ac241 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Nov 2021 11:20:54
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D5625C4360C; Fri, 26 Nov 2021 11:20:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.242.143.72] (unknown [202.46.23.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 04925C4360C;
+        Fri, 26 Nov 2021 11:20:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 04925C4360C
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v5 06/10] ASoC: qcom: Add support for codec dma driver
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org,
+        judyhsiao@chromium.org
+Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
+References: <1637581599-24120-1-git-send-email-srivasam@codeaurora.org>
+ <1637581599-24120-2-git-send-email-srivasam@codeaurora.org>
+ <3900e628-4baf-ddc9-e033-adc07fdf66c1@linaro.org>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <46e95033-e0bd-2326-8c63-860a744878ec@codeaurora.org>
+Date:   Fri, 26 Nov 2021 16:50:41 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH v6 03/15] i2c: acpi: Add i2c_acpi_new_device_by_fwnode()
- function
+In-Reply-To: <3900e628-4baf-ddc9-e033-adc07fdf66c1@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-References: <20211125165412.535063-1-hdegoede@redhat.com>
- <20211125165412.535063-4-hdegoede@redhat.com>
- <CAHp75VdBf-xNfx5a70LWnP7-qJpjB9gWSVQExqCz3emrgrT7Zw@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CAHp75VdBf-xNfx5a70LWnP7-qJpjB9gWSVQExqCz3emrgrT7Zw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 11/25/21 18:22, Andy Shevchenko wrote:
-> On Thu, Nov 25, 2021 at 6:54 PM Hans de Goede <hdegoede@redhat.com> wrote:
+On 11/23/2021 5:58 PM, Srinivas Kandagatla wrote:
+Thanks for valuable time Srini!!!
+>
+> On 22/11/2021 11:46, Srinivasa Rao Mandadapu wrote:
+>> Upadate lpass cpu and platform driver to support audio over codec dma
+>> in ADSP bypass use case.
 >>
->> Change i2c_acpi_new_device() into i2c_acpi_new_device_by_fwnode() and
->> add a static inline wrapper providing the old i2c_acpi_new_device()
->> behavior.
->>
->> This is necessary because in some cases we may only have access
->> to the fwnode / acpi_device and not to the matching physical-node
->> struct device *.
-> 
-> One nit-pick below.
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
-Thank you, I've fixed the nit-pick in my local tree, either for v7 of
-the series, of for in the immutable branch which I plan to create for
-this.
-
-Regards,
-
-Hans
-
-
-
->> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
->> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+>> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+>> Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
+>> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
 >> ---
->> Changes in v6:
->> - New patch in v6 of this patch series
->> ---
->>  drivers/i2c/i2c-core-acpi.c | 18 ++++++++++++------
->>  include/linux/i2c.h         | 17 +++++++++++++----
->>  2 files changed, 25 insertions(+), 10 deletions(-)
+>>   sound/soc/qcom/common.c         |  39 ++++
+>>   sound/soc/qcom/common.h         |   1 +
+>
+> common.c is mostly intended to be used by machine drivers, so I would 
+> suggest that you move it to lpass.h and make is_cdc_dma_port a static 
+> inlnie function.
+>
+Okay. will move to lpass.h
+>>   sound/soc/qcom/lpass-cpu.c      |  60 +++++-
+>>   sound/soc/qcom/lpass-platform.c | 424 
+>> ++++++++++++++++++++++++++++++++++++++--
+>>   4 files changed, 508 insertions(+), 16 deletions(-)
 >>
->> diff --git a/drivers/i2c/i2c-core-acpi.c b/drivers/i2c/i2c-core-acpi.c
->> index 04338cbd08a9..1db3cc5fc47f 100644
->> --- a/drivers/i2c/i2c-core-acpi.c
->> +++ b/drivers/i2c/i2c-core-acpi.c
->> @@ -476,8 +476,9 @@ struct notifier_block i2c_acpi_notifier = {
->>  };
->>
->>  /**
->> - * i2c_acpi_new_device - Create i2c-client for the Nth I2cSerialBus resource
->> - * @dev:     Device owning the ACPI resources to get the client from
-> 
->> + * i2c_acpi_new_device_by_fwnode - Create i2c-client for the Nth I2cSerialBus
->> + * resource
-> 
-> Can be on one line.
-> 
->> + * @fwnode:  fwnode with the ACPI resources to get the client from
->>   * @index:   Index of ACPI resource to get
->>   * @info:    describes the I2C device; note this is modified (addr gets set)
->>   * Context: can sleep
->> @@ -493,15 +494,20 @@ struct notifier_block i2c_acpi_notifier = {
->>   * Returns a pointer to the new i2c-client, or error pointer in case of failure.
->>   * Specifically, -EPROBE_DEFER is returned if the adapter is not found.
->>   */
->> -struct i2c_client *i2c_acpi_new_device(struct device *dev, int index,
->> -                                      struct i2c_board_info *info)
->> +struct i2c_client *i2c_acpi_new_device_by_fwnode(struct fwnode_handle *fwnode,
->> +                                                int index,
->> +                                                struct i2c_board_info *info)
->>  {
->> -       struct acpi_device *adev = ACPI_COMPANION(dev);
->>         struct i2c_acpi_lookup lookup;
->>         struct i2c_adapter *adapter;
->> +       struct acpi_device *adev;
->>         LIST_HEAD(resource_list);
->>         int ret;
->>
->> +       adev = to_acpi_device_node(fwnode);
->> +       if (!adev)
->> +               return ERR_PTR(-ENODEV);
->> +
->>         memset(&lookup, 0, sizeof(lookup));
->>         lookup.info = info;
->>         lookup.device_handle = acpi_device_handle(adev);
->> @@ -523,7 +529,7 @@ struct i2c_client *i2c_acpi_new_device(struct device *dev, int index,
->>
->>         return i2c_new_client_device(adapter, info);
->>  }
->> -EXPORT_SYMBOL_GPL(i2c_acpi_new_device);
->> +EXPORT_SYMBOL_GPL(i2c_acpi_new_device_by_fwnode);
->>
->>  bool i2c_acpi_waive_d0_probe(struct device *dev)
->>  {
->> diff --git a/include/linux/i2c.h b/include/linux/i2c.h
->> index 16119ac1aa97..7d4f52ceb7b5 100644
->> --- a/include/linux/i2c.h
->> +++ b/include/linux/i2c.h
->> @@ -1025,8 +1025,9 @@ bool i2c_acpi_get_i2c_resource(struct acpi_resource *ares,
->>                                struct acpi_resource_i2c_serialbus **i2c);
->>  int i2c_acpi_client_count(struct acpi_device *adev);
->>  u32 i2c_acpi_find_bus_speed(struct device *dev);
->> -struct i2c_client *i2c_acpi_new_device(struct device *dev, int index,
->> -                                      struct i2c_board_info *info);
->> +struct i2c_client *i2c_acpi_new_device_by_fwnode(struct fwnode_handle *fwnode,
->> +                                                int index,
->> +                                                struct i2c_board_info *info);
->>  struct i2c_adapter *i2c_acpi_find_adapter_by_handle(acpi_handle handle);
->>  bool i2c_acpi_waive_d0_probe(struct device *dev);
->>  #else
->> @@ -1043,8 +1044,9 @@ static inline u32 i2c_acpi_find_bus_speed(struct device *dev)
->>  {
->>         return 0;
->>  }
->> -static inline struct i2c_client *i2c_acpi_new_device(struct device *dev,
->> -                                       int index, struct i2c_board_info *info)
->> +static inline struct i2c_client *i2c_acpi_new_device_by_fwnode(
->> +                                       struct fwnode_handle *fwnode, int index,
->> +                                       struct i2c_board_info *info)
->>  {
->>         return ERR_PTR(-ENODEV);
->>  }
->> @@ -1058,4 +1060,11 @@ static inline bool i2c_acpi_waive_d0_probe(struct device *dev)
->>  }
->>  #endif /* CONFIG_ACPI */
->>
->> +static inline struct i2c_client *i2c_acpi_new_device(struct device *dev,
->> +                                                    int index,
->> +                                                    struct i2c_board_info *info)
+>> diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
+>> index 09af007..26d3752 100644
+>> --- a/sound/soc/qcom/common.c
+>> +++ b/sound/soc/qcom/common.c
+>> @@ -4,6 +4,7 @@
+>>     #include <linux/module.h>
+>>   #include "common.h"
+>> +#include "lpass.h"
+>>     int qcom_snd_parse_of(struct snd_soc_card *card)
+>>   {
+>> @@ -169,4 +170,42 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+>>   }
+>>   EXPORT_SYMBOL(qcom_snd_parse_of);
+>>   +bool is_cdc_dma_port(int dai_id)
 >> +{
->> +       return i2c_acpi_new_device_by_fwnode(dev_fwnode(dev), index, info);
+>> +    switch (dai_id) {
+>> +    case LPASS_CDC_DMA_RX0:
+>> +    case LPASS_CDC_DMA_RX1:
+>> +    case LPASS_CDC_DMA_RX2:
+>> +    case LPASS_CDC_DMA_RX3:
+>> +    case LPASS_CDC_DMA_RX4:
+>> +    case LPASS_CDC_DMA_RX5:
+>> +    case LPASS_CDC_DMA_RX6:
+>> +    case LPASS_CDC_DMA_RX7:
+>> +    case LPASS_CDC_DMA_RX8:
+>> +    case LPASS_CDC_DMA_RX9:
+>> +    case LPASS_CDC_DMA_TX0:
+>> +    case LPASS_CDC_DMA_TX1:
+>> +    case LPASS_CDC_DMA_TX2:
+>> +    case LPASS_CDC_DMA_TX3:
+>> +    case LPASS_CDC_DMA_TX4:
+>> +    case LPASS_CDC_DMA_TX5:
+>> +    case LPASS_CDC_DMA_TX6:
+>> +    case LPASS_CDC_DMA_TX7:
+>> +    case LPASS_CDC_DMA_TX8:
+>> +    case LPASS_CDC_DMA_VA_TX0:
+>> +    case LPASS_CDC_DMA_VA_TX1:
+>> +    case LPASS_CDC_DMA_VA_TX2:
+>> +    case LPASS_CDC_DMA_VA_TX3:
+>> +    case LPASS_CDC_DMA_VA_TX4:
+>> +    case LPASS_CDC_DMA_VA_TX5:
+>> +    case LPASS_CDC_DMA_VA_TX6:
+>> +    case LPASS_CDC_DMA_VA_TX7:
+>> +    case LPASS_CDC_DMA_VA_TX8:
+>> +        return true;
+>> +    default:
+>> +        return false;
+>> +    }
+>> +}
+>> +EXPORT_SYMBOL(is_cdc_dma_port);
+>> +
+>>   MODULE_LICENSE("GPL v2");
+>> diff --git a/sound/soc/qcom/common.h b/sound/soc/qcom/common.h
+>> index f05c05b..a8fea4c 100644
+>> --- a/sound/soc/qcom/common.h
+>> +++ b/sound/soc/qcom/common.h
+>> @@ -7,5 +7,6 @@
+>>   #include <sound/soc.h>
+>>     int qcom_snd_parse_of(struct snd_soc_card *card);
+>> +bool is_cdc_dma_port(int dai_id);
+>>     #endif
+>> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+>> index 3bd9eb3..9e6656c 100644
+>> --- a/sound/soc/qcom/lpass-cpu.c
+>> +++ b/sound/soc/qcom/lpass-cpu.c
+>> @@ -17,6 +17,7 @@
+>>   #include <sound/soc.h>
+>>   #include <sound/soc-dai.h>
+>>   #include "lpass-lpaif-reg.h"
+>> +#include "common.h"
+>>   #include "lpass.h"
+>>     #define LPASS_CPU_MAX_MI2S_LINES    4
+>> @@ -857,7 +858,9 @@ static void of_lpass_cpu_parse_dai_data(struct 
+>> device *dev,
+>>           }
+>>           if (id == LPASS_DP_RX) {
+>>               data->hdmi_port_enable = 1;
+>> -        } else {
+>> +        } else if (is_cdc_dma_port(id))
+>> +            data->codec_dma_enable = 1;
+>> +        else {
+>>               data->mi2s_playback_sd_mode[id] =
+>>                   of_lpass_cpu_parse_sd_lines(dev, node,
+>>                                   "qcom,playback-sd-lines");
+>> @@ -872,6 +875,7 @@ int asoc_qcom_lpass_cpu_platform_probe(struct 
+>> platform_device *pdev)
+>>   {
+>>       struct lpass_data *drvdata;
+>>       struct device_node *dsp_of_node;
+>> +    struct resource *res;
+>>       struct lpass_variant *variant;
+>>       struct device *dev = &pdev->dev;
+>>       const struct of_device_id *match;
+>> @@ -897,6 +901,58 @@ int asoc_qcom_lpass_cpu_platform_probe(struct 
+>> platform_device *pdev)
+>>         of_lpass_cpu_parse_dai_data(dev, drvdata);
+>>   +    drvdata->num_clks =  variant->num_clks;
+>> +    if (drvdata->codec_dma_enable) {
+>> +        drvdata->rxtx_lpaif =
+>> +                devm_platform_ioremap_resource_byname(pdev, 
+>> "lpass-rxtx-lpaif");
+>> +        if (IS_ERR(drvdata->rxtx_lpaif))
+>> +            return PTR_ERR(drvdata->rxtx_lpaif);
+>> +
+>> +        drvdata->va_lpaif = 
+>> devm_platform_ioremap_resource_byname(pdev, "lpass-va-lpaif");
+>> +        if (IS_ERR(drvdata->va_lpaif))
+>> +            return PTR_ERR(drvdata->va_lpaif);
+>> +
+>> +        lpass_rxtx_regmap_config.max_register = 
+>> LPAIF_CDC_WRDMAPER_REG(variant,
+>> +                    variant->rxtx_wrdma_channels +
+>> +                    variant->rxtx_wrdma_channel_start, 
+>> LPASS_CDC_DMA_TX3);
+>> +
+>> +        drvdata->rxtx_lpaif_map = devm_regmap_init_mmio(dev, 
+>> drvdata->rxtx_lpaif,
+>> +                    &lpass_rxtx_regmap_config);
+>> +        if (IS_ERR(drvdata->rxtx_lpaif_map)) {
+>> +            dev_err(dev, "error initializing rxtx regmap: %ld\n",
+>> +                PTR_ERR(drvdata->rxtx_lpaif_map));
+>> +            return PTR_ERR(drvdata->rxtx_lpaif_map);
+>> +        }
+>> +        lpass_va_regmap_config.max_register = 
+>> LPAIF_CDC_WRDMAPER_REG(variant,
+>> +                    variant->va_wrdma_channels +
+>> +                    variant->va_wrdma_channel_start, 
+>> LPASS_CDC_DMA_VA_TX0);
+>> +
+>> +        drvdata->va_lpaif_map = devm_regmap_init_mmio(dev, 
+>> drvdata->va_lpaif,
+>> +                    &lpass_va_regmap_config);
+>> +        if (IS_ERR(drvdata->va_lpaif_map)) {
+>> +            dev_err(dev, "error initializing va regmap: %ld\n",
+>> +                PTR_ERR(drvdata->va_lpaif_map));
+> there is a 100 chars limit now, so you can wrap this to a single line.
+>
+Okay. it's crossing 102 lines.
+>> +            return PTR_ERR(drvdata->va_lpaif_map);
+>> +        }
+>> +        drvdata->cdc_clks = devm_kcalloc(dev, 
+>> variant->cdc_dma_num_clks,
+>> +                    sizeof(*drvdata->cdc_clks), GFP_KERNEL);
+>> +        drvdata->cdc_num_clks = variant->cdc_dma_num_clks;
+> double space after =
+>
+okay.
+>> +
+>> +        for (i = 0; i < drvdata->cdc_num_clks; i++)
+>> +            drvdata->cdc_clks[i].id = variant->cdc_dma_clk_names[i];
+>> +
+>> +        ret = devm_clk_bulk_get(dev, drvdata->cdc_num_clks, 
+>> drvdata->cdc_clks);
+>> +        if (ret) {
+>> +            dev_err(dev, "Failed to get clocks %d\n", ret);
+>> +            return ret;
+>> +        }
+>> +
+>> +        res = platform_get_resource_byname(pdev, IORESOURCE_MEM, 
+>> "lpass-rxtx-cdc-dma-lpm");
+>> +        drvdata->rxtx_cdc_dma_lpm_buf = res->start;
+>> +
+>> +        res = platform_get_resource_byname(pdev, IORESOURCE_MEM, 
+>> "lpass-va-cdc-dma-lpm");
+>> +        drvdata->va_cdc_dma_lpm_buf = res->start;
+>> +    }
+>>       drvdata->lpaif = devm_platform_ioremap_resource_byname(pdev, 
+>> "lpass-lpaif");
+>>       if (IS_ERR(drvdata->lpaif))
+>>           return PTR_ERR(drvdata->lpaif);
+>> @@ -939,7 +995,7 @@ int asoc_qcom_lpass_cpu_platform_probe(struct 
+>> platform_device *pdev)
+>>         for (i = 0; i < variant->num_dai; i++) {
+>>           dai_id = variant->dai_driver[i].id;
+>> -        if (dai_id == LPASS_DP_RX)
+>> +        if (dai_id == LPASS_DP_RX || is_cdc_dma_port(dai_id))
+>>               continue;
+>>             drvdata->mi2s_osr_clk[dai_id] = devm_clk_get_optional(dev,
+>> diff --git a/sound/soc/qcom/lpass-platform.c 
+>> b/sound/soc/qcom/lpass-platform.c
+>> index 59c0884..4b79908 100644
+>> --- a/sound/soc/qcom/lpass-platform.c
+>> +++ b/sound/soc/qcom/lpass-platform.c
+>> @@ -14,12 +14,15 @@
+>>   #include <linux/regmap.h>
+>>   #include <sound/soc.h>
+>>   #include "lpass-lpaif-reg.h"
+>> +#include "common.h"
+>>   #include "lpass.h"
+>>     #define DRV_NAME "lpass-platform"
+>>     #define LPASS_PLATFORM_BUFFER_SIZE    (24 *  2 * 1024)
+>>   #define LPASS_PLATFORM_PERIODS        2
+>> +#define LPSAS_RXTX_CDC_DMA_LPM_BUFF_SIZE (24 * 1024)
+>> +#define LPSAS_VA_CDC_DMA_LPM_BUFF_SIZE (12 * 1024)
+>>     static const struct snd_pcm_hardware lpass_platform_pcm_hardware = {
+>>       .info            =    SNDRV_PCM_INFO_MMAP |
+>> @@ -45,6 +48,103 @@ static const struct snd_pcm_hardware 
+>> lpass_platform_pcm_hardware = {
+>>       .fifo_size        =    0,
+>>   };
+>>   +static const struct snd_pcm_hardware lpass_platform_rxtx_hardware = {
+>> +    .info            =    SNDRV_PCM_INFO_MMAP |
+>> +                    SNDRV_PCM_INFO_MMAP_VALID |
+>> +                    SNDRV_PCM_INFO_INTERLEAVED |
+>> +                    SNDRV_PCM_INFO_PAUSE |
+>> +                    SNDRV_PCM_INFO_RESUME,
+>> +    .formats        =    SNDRV_PCM_FMTBIT_S16 |
+>> +                    SNDRV_PCM_FMTBIT_S24 |
+>> +                    SNDRV_PCM_FMTBIT_S32,
+>> +    .rates            =    SNDRV_PCM_RATE_8000_192000,
+>> +    .rate_min        =    8000,
+>> +    .rate_max        =    192000,
+>> +    .channels_min        =    1,
+>> +    .channels_max        =    8,
+>> +    .buffer_bytes_max    =    LPSAS_RXTX_CDC_DMA_LPM_BUFF_SIZE,
+>> +    .period_bytes_max    =    LPSAS_RXTX_CDC_DMA_LPM_BUFF_SIZE /
+>> +                        LPASS_PLATFORM_PERIODS,
+>> +    .period_bytes_min    =    LPSAS_RXTX_CDC_DMA_LPM_BUFF_SIZE /
+>> +                        LPASS_PLATFORM_PERIODS,
+>> +    .periods_min        =    LPASS_PLATFORM_PERIODS,
+>> +    .periods_max        =    LPASS_PLATFORM_PERIODS,
+>> +    .fifo_size        =    0,
+>> +};
+>> +
+>> +static const struct snd_pcm_hardware lpass_platform_va_hardware = {
+>> +    .info            =    SNDRV_PCM_INFO_MMAP |
+>> +                    SNDRV_PCM_INFO_MMAP_VALID |
+>> +                    SNDRV_PCM_INFO_INTERLEAVED |
+>> +                    SNDRV_PCM_INFO_PAUSE |
+>> +                    SNDRV_PCM_INFO_RESUME,
+>> +    .formats        =    SNDRV_PCM_FMTBIT_S16 |
+>> +                    SNDRV_PCM_FMTBIT_S24 |
+>> +                    SNDRV_PCM_FMTBIT_S32,
+>> +    .rates            =    SNDRV_PCM_RATE_8000_192000,
+>> +    .rate_min        =    8000,
+>> +    .rate_max        =    192000,
+>> +    .channels_min        =    1,
+>> +    .channels_max        =    8,
+>> +    .buffer_bytes_max    =    LPSAS_VA_CDC_DMA_LPM_BUFF_SIZE,
+>> +    .period_bytes_max    =    LPSAS_VA_CDC_DMA_LPM_BUFF_SIZE /
+>> +                        LPASS_PLATFORM_PERIODS,
+>> +    .period_bytes_min    =    LPSAS_VA_CDC_DMA_LPM_BUFF_SIZE /
+>> +                        LPASS_PLATFORM_PERIODS,
+>> +    .periods_min        =    LPASS_PLATFORM_PERIODS,
+>> +    .periods_max        =    LPASS_PLATFORM_PERIODS,
+>> +    .fifo_size        =    0,
+>> +};
+>> +
+>> +static int lpass_platform_alloc_rxtx_dmactl_fields(struct device *dev,
+>> +                     struct regmap *map)
+>> +{
+>> +    struct lpass_data *drvdata = dev_get_drvdata(dev);
+>> +    struct lpass_variant *v = drvdata->variant;
+>> +    struct lpaif_dmactl *rd_dmactl, *wr_dmactl;
+>> +    int rval;
+>> +
+>> +    drvdata->rxtx_rd_dmactl = devm_kzalloc(dev, sizeof(struct 
+>> lpaif_dmactl),
+>> +                      GFP_KERNEL);
+>> +    if (drvdata->rxtx_rd_dmactl == NULL)
+>> +        return -ENOMEM;
+>> +
+>> +    drvdata->rxtx_wr_dmactl = devm_kzalloc(dev, sizeof(struct 
+>> lpaif_dmactl),
+>> +                      GFP_KERNEL);
+>> +    if (drvdata->rxtx_wr_dmactl == NULL)
+>> +        return -ENOMEM;
+>> +
+>> +    rd_dmactl = drvdata->rxtx_rd_dmactl;
+>> +    wr_dmactl = drvdata->rxtx_wr_dmactl;
+>
+> may be rewrite this to:
+>
+>     rd_dmactl = devm_kzalloc(dev, sizeof(*rd_dmactl), GFP_KERNEL);
+>     if (rd_dmactl == NULL)
+>         return -ENOMEM;
+>
+>     wr_dmactl = devm_kzalloc(dev, sizeof(*wr_dmactl), GFP_KERNEL);
+>     if (wr_dmactl == NULL)
+>         return -ENOMEM;
+>
+>     drvdata->rxtx_rd_dmactl = rd_dmactl;
+>     drvdata->rxtx_wr_dmactl = wr_dmactl;
+>
+Okay.
+>
+>> +
+>> +    rval = devm_regmap_field_bulk_alloc(dev, map, &rd_dmactl->intf,
+>> +                        &v->rxtx_rdma_intf, 15);
+>
+> can we define this magic number 15 properly?
+Okay.
+>> +    if (rval)
+>> +        return rval;
+>> +
+>> +    return devm_regmap_field_bulk_alloc(dev, map, &wr_dmactl->intf,
+>> +                        &v->rxtx_wrdma_intf, 15);
 >> +}
 >> +
->>  #endif /* _LINUX_I2C_H */
->> --
->> 2.33.1
+>> +static int lpass_platform_alloc_va_dmactl_fields(struct device *dev,
+>> +                     struct regmap *map)
+>> +{
+>> +    struct lpass_data *drvdata = dev_get_drvdata(dev);
+>> +    struct lpass_variant *v = drvdata->variant;
+>> +    struct lpaif_dmactl *wr_dmactl;
+>> +
+>> +    drvdata->va_wr_dmactl = devm_kzalloc(dev, sizeof(struct 
+>> lpaif_dmactl),
+>> +                      GFP_KERNEL);
+>> +    if (drvdata->va_wr_dmactl == NULL)
+>> +        return -ENOMEM;
+>> +
+>> +    wr_dmactl = drvdata->va_wr_dmactl;
+> simillar comment.
+>
+Okay.
+>> +
+>> +    return devm_regmap_field_bulk_alloc(dev, map, &wr_dmactl->intf,
+>> +                        &v->va_wrdma_intf, 15);
+>> +}
+>> +
+>> +
+>>   static int lpass_platform_alloc_dmactl_fields(struct device *dev,
+>>                        struct regmap *map)
+>>   {
+>> @@ -126,22 +226,43 @@ static int lpass_platform_pcmops_open(struct 
+>> snd_soc_component *component,
+>>       if (cpu_dai->driver->id == LPASS_DP_RX) {
+>>           map = drvdata->hdmiif_map;
+>>           drvdata->hdmi_substream[dma_ch] = substream;
+>> +    } else if (dai_id == LPASS_CDC_DMA_RX0 || dai_id == 
+>> LPASS_CDC_DMA_TX3) {
+>> +        map = drvdata->rxtx_lpaif_map;
+>> +        drvdata->rxtx_substream[dma_ch] = substream;
+>> +    } else if (dai_id == LPASS_CDC_DMA_VA_TX0) {
+>> +        map = drvdata->va_lpaif_map;
+>> +        drvdata->va_substream[dma_ch] = substream;
+>>       } else {
+>>           map = drvdata->lpaif_map;
+>>           drvdata->substream[dma_ch] = substream;
+>>       }
+>>       data->dma_ch = dma_ch;
+>> -    ret = regmap_write(map,
+>> -            LPAIF_DMACTL_REG(v, dma_ch, dir, data->i2s_port), 0);
+>> -    if (ret) {
+>> -        dev_err(soc_runtime->dev,
+>> -            "error writing to rdmactl reg: %d\n", ret);
+>> -        return ret;
+>> +    if (!(dai_id == LPASS_CDC_DMA_RX0 ||
+>> +        dai_id == LPASS_CDC_DMA_TX3 ||
+>> +        dai_id == LPASS_CDC_DMA_VA_TX0)) {
+>> +        ret = regmap_write(map, LPAIF_DMACTL_REG(v, dma_ch, dir, 
+>> data->i2s_port), 0);
+>> +        if (ret) {
+>> +            dev_err(soc_runtime->dev,
+>> +                "error writing to rdmactl reg: %d\n", ret);
+>> +            return ret;
+>> +        }
+>>       }
+>> -    snd_soc_set_runtime_hwparams(substream, 
+>> &lpass_platform_pcm_hardware);
+>> -
+>> -    runtime->dma_bytes = lpass_platform_pcm_hardware.buffer_bytes_max;
+>>   +    switch (dai_id) {
+>> +    case LPASS_CDC_DMA_RX0:
+>> +    case LPASS_CDC_DMA_TX3:
+>> +        snd_soc_set_runtime_hwparams(substream, 
+>> &lpass_platform_rxtx_hardware);
+>> +        runtime->dma_bytes = 
+>> lpass_platform_rxtx_hardware.buffer_bytes_max;
+>> +        break;
+>> +    case LPASS_CDC_DMA_VA_TX0:
+>> +        snd_soc_set_runtime_hwparams(substream, 
+>> &lpass_platform_va_hardware);
+>> +        runtime->dma_bytes = 
+>> lpass_platform_va_hardware.buffer_bytes_max;
+>> +        break;
+>> +    default:
+>> +        snd_soc_set_runtime_hwparams(substream, 
+>> &lpass_platform_pcm_hardware);
+>> +        runtime->dma_bytes = 
+>> lpass_platform_pcm_hardware.buffer_bytes_max;
+>> +        break;
+>> +    }
+>>       ret = snd_pcm_hw_constraint_integer(runtime,
+>>               SNDRV_PCM_HW_PARAM_PERIODS);
+>>       if (ret < 0) {
+>> @@ -168,6 +289,10 @@ static int lpass_platform_pcmops_close(struct 
+>> snd_soc_component *component,
+>>       data = runtime->private_data;
+>>       if (dai_id == LPASS_DP_RX)
+>>           drvdata->hdmi_substream[data->dma_ch] = NULL;
+>> +    else if (dai_id == LPASS_CDC_DMA_RX0 || dai_id == 
+>> LPASS_CDC_DMA_TX3)
+>> +        drvdata->rxtx_substream[data->dma_ch] = NULL;
+>> +    else if (dai_id == LPASS_CDC_DMA_VA_TX0)
+>> +        drvdata->va_substream[data->dma_ch] = NULL;
+>>       else
+>>           drvdata->substream[data->dma_ch] = NULL;
+>>       if (v->free_dma_channel)
+>> @@ -198,14 +323,27 @@ static void __get_lpaif_handle(struct 
+>> snd_pcm_substream *substream,
+>>           if (dai_id == LPASS_DP_RX) {
+>>               l_dmactl = drvdata->hdmi_rd_dmactl;
+>>               l_map = drvdata->hdmiif_map;
+>> +        } else if (dai_id == LPASS_CDC_DMA_RX0) {
+>> +            l_map = drvdata->rxtx_lpaif_map;
+>> +            l_dmactl = drvdata->rxtx_rd_dmactl;
+>>           } else {
+>>               l_dmactl = drvdata->rd_dmactl;
+>>               l_map = drvdata->lpaif_map;
+>>           }
+>>       } else {
+>> -        l_dmactl = drvdata->wr_dmactl;
+>> -        l_id = pcm_data->dma_ch - v->wrdma_channel_start;
+>> -        l_map = drvdata->lpaif_map;
+>> +        if (dai_id == LPASS_CDC_DMA_TX3) {
+>> +            l_dmactl = drvdata->rxtx_wr_dmactl;
+>> +            l_map = drvdata->rxtx_lpaif_map;
+>> +            l_id = pcm_data->dma_ch - v->rxtx_wrdma_channel_start;
+>> +        } else if (dai_id == LPASS_CDC_DMA_VA_TX0) {
+>> +            l_dmactl = drvdata->va_wr_dmactl;
+>> +            l_map = drvdata->va_lpaif_map;
+>> +            l_id = pcm_data->dma_ch - v->va_wrdma_channel_start;
+>> +        } else {
+>> +            l_dmactl = drvdata->wr_dmactl;
+>> +            l_id = pcm_data->dma_ch - v->wrdma_channel_start;
+>> +            l_map = drvdata->lpaif_map;
+>> +        }
+>>       }
+>>       if (dmactl)
+>>           *dmactl = l_dmactl;
+>> @@ -256,6 +394,10 @@ static int 
+>> lpass_platform_pcmops_hw_params(struct snd_soc_component *component,
+>>       }
+>>         switch (dai_id) {
+>> +    case LPASS_CDC_DMA_RX0:
+>> +    case LPASS_CDC_DMA_TX3:
+>> +    case LPASS_CDC_DMA_VA_TX0:
+>
+> Is there a reason why we can not add support to other CDC_DMA dais as 
+> part of this patchset?
+>
+Okay.. will include all possible dais.
+>> +        break;
+>>       case LPASS_DP_RX:
+>>           ret = regmap_fields_write(dmactl->burst8, id,
+>>                               LPAIF_DMACTL_BURSTEN_INCR4);
+>> @@ -380,6 +522,10 @@ static int lpass_platform_pcmops_hw_free(struct 
+>> snd_soc_component *component,
+>>         if (dai_id == LPASS_DP_RX)
+>>           map = drvdata->hdmiif_map;
+>> +    else if (dai_id == LPASS_CDC_DMA_RX0 ||
+>> +        dai_id == LPASS_CDC_DMA_TX3 ||
+>> +        dai_id == LPASS_CDC_DMA_VA_TX0)
+>> +        return 0;
+>>       else
+>>           map = drvdata->lpaif_map;
+>>   @@ -434,6 +580,16 @@ static int 
+>> lpass_platform_pcmops_prepare(struct snd_soc_component *component,
+>>           return ret;
+>>       }
+>>   +    if (dai_id == LPASS_CDC_DMA_RX0 ||
+>> +        dai_id == LPASS_CDC_DMA_TX3 ||
+>> +        dai_id == LPASS_CDC_DMA_VA_TX0) {
+>> +        ret = regmap_fields_write(dmactl->fifowm, id, 
+>> LPAIF_DMACTL_FIFOWM_8);
+>> +        if (ret) {
+>> +            dev_err(soc_runtime->dev, "error writing fifowm field to 
+>> dmactl reg: %d, id: %d\n",
+>> +                ret, id);
+>> +            return ret;
+>> +        }
+>> +    }
+>>       ret = regmap_fields_write(dmactl->enable, id, 
+>> LPAIF_DMACTL_ENABLE_ON);
+>>       if (ret) {
+>>           dev_err(soc_runtime->dev, "error writing to rdmactl reg: 
+>> %d\n",
+>> @@ -476,6 +632,22 @@ static int lpass_platform_pcmops_trigger(struct 
+>> snd_soc_component *component,
+>>               return ret;
+>>           }
+>>           switch (dai_id) {
+>> +        case LPASS_CDC_DMA_RX0:
+>> +        case LPASS_CDC_DMA_TX3:
+>> +        case LPASS_CDC_DMA_VA_TX0:
+>> +            ret = regmap_fields_write(dmactl->dyncclk, id, 
+>> LPAIF_DMACTL_DYNCLK_ON);
+>> +            if (ret) {
+>> +                dev_err(soc_runtime->dev,
+>> +                    "error writing to rdmactl reg field: %d\n", ret);
+>> +                return ret;
+>> +            }
+>> +            reg_irqclr = LPAIF_RXTX_IRQCLEAR_REG(v, 
+>> LPAIF_IRQ_PORT_HOST, dai_id);
+>> +            val_irqclr = LPAIF_IRQ_ALL(ch);
+>> +
+>> +            reg_irqen = LPAIF_RXTX_IRQEN_REG(v, LPAIF_IRQ_PORT_HOST, 
+>> dai_id);
+>> +            val_mask = LPAIF_IRQ_ALL(ch);
+>> +            val_irqen = LPAIF_IRQ_ALL(ch);
+>> +            break;
+>>           case LPASS_DP_RX:
+>>               ret = regmap_fields_write(dmactl->dyncclk, id,
+>>                        LPAIF_DMACTL_DYNCLK_ON);
+>> @@ -540,6 +712,24 @@ static int lpass_platform_pcmops_trigger(struct 
+>> snd_soc_component *component,
+>>               return ret;
+>>           }
+>>           switch (dai_id) {
+>> +        case LPASS_CDC_DMA_RX0:
+>> +        case LPASS_CDC_DMA_TX3:
+>> +        case LPASS_CDC_DMA_VA_TX0:
+>> +            ret = regmap_fields_write(dmactl->dyncclk, id, 
+>> LPAIF_DMACTL_DYNCLK_OFF);
+>> +            if (ret) {
+>> +                dev_err(soc_runtime->dev,
+>> +                    "error writing to rdmactl reg field: %d\n", ret);
+>> +                return ret;
+>> +            }
+>> +
+>> +            reg_irqclr = LPAIF_RXTX_IRQCLEAR_REG(v, 
+>> LPAIF_IRQ_PORT_HOST, dai_id);
+>> +            val_irqclr = LPAIF_IRQ_ALL(ch);
+>> +
+>> +            reg_irqen = LPAIF_RXTX_IRQEN_REG(v, LPAIF_IRQ_PORT_HOST, 
+>> dai_id);
+>> +            val_mask = LPAIF_IRQ_ALL(ch);
+>> +            val_irqen = LPAIF_IRQ_ALL(ch);
+>> +
+>> +        break;
+>>           case LPASS_DP_RX:
+>>               ret = regmap_fields_write(dmactl->dyncclk, id,
+>>                        LPAIF_DMACTL_DYNCLK_OFF);
+>> @@ -619,6 +809,38 @@ static snd_pcm_uframes_t 
+>> lpass_platform_pcmops_pointer(
+>>       return bytes_to_frames(substream->runtime, curr_addr - base_addr);
+>>   }
+>>   +static int lpass_platform_cdc_dma_mmap(struct snd_soc_component 
+>> *component,
+>> +            struct snd_pcm_substream *substream,
+>> +            struct vm_area_struct *vma)
+>> +{
+>> +    struct snd_pcm_runtime *runtime = substream->runtime;
+>> +    unsigned long size, offset;
+>> +
+>> +    vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+>> +    size = vma->vm_end - vma->vm_start;
+>> +    offset = vma->vm_pgoff << PAGE_SHIFT;
+>> +    return io_remap_pfn_range(vma, vma->vm_start,
+>> +            (runtime->dma_addr + offset) >> PAGE_SHIFT,
+>> +            size, vma->vm_page_prot);
+>> +
+>> +}
+>> +
+>> +static int lpass_platform_pcmops_mmap(struct snd_soc_component 
+>> *component,
+>> +                      struct snd_pcm_substream *substream,
+>> +                      struct vm_area_struct *vma)
+>> +{
+>> +    struct snd_soc_pcm_runtime *soc_runtime = 
+>> asoc_substream_to_rtd(substream);
+>> +    struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_runtime, 0);
+>> +    unsigned int dai_id = cpu_dai->driver->id;
+>> +
+>> +    if (dai_id == LPASS_CDC_DMA_RX0 ||
+>> +        dai_id == LPASS_CDC_DMA_TX3 ||
+>> +        dai_id == LPASS_CDC_DMA_VA_TX0) {
+>> +        return lpass_platform_cdc_dma_mmap(component, substream, vma);
+>> +    }
+>> +    return 0;
+>> +}
+>> +
+>>   static irqreturn_t lpass_dma_interrupt_handler(
+>>               struct snd_pcm_substream *substream,
+>>               struct lpass_data *drvdata,
+>> @@ -635,6 +857,14 @@ static irqreturn_t lpass_dma_interrupt_handler(
+>>         mask = LPAIF_IRQ_ALL(chan);
+>>       switch (dai_id) {
+>> +    case LPASS_CDC_DMA_RX0:
+>> +    case LPASS_CDC_DMA_TX3:
+>> +    case LPASS_CDC_DMA_VA_TX0:
+>> +        map = (dai_id == LPASS_CDC_DMA_VA_TX0) ?
+>> +                drvdata->va_lpaif_map : drvdata->rxtx_lpaif_map;
+>> +        reg = LPAIF_RXTX_IRQCLEAR_REG(v, LPAIF_IRQ_PORT_HOST, dai_id);
+>> +        val = 0;
+>> +        break;
+>>       case LPASS_DP_RX:
+>>           map = drvdata->hdmiif_map;
+>>           reg = LPASS_HDMITX_APP_IRQCLEAR_REG(v);
+>> @@ -758,18 +988,112 @@ static irqreturn_t 
+>> lpass_platform_hdmiif_irq(int irq, void *data)
+>>                   return rv;
+>>           }
+>>       }
+>> +    return IRQ_HANDLED;
+>> +}
+>> +
+>> +static irqreturn_t lpass_platform_rxtxif_irq(int irq, void *data)
+>> +{
+>> +    struct lpass_data *drvdata = data;
+>> +    struct lpass_variant *v = drvdata->variant;
+>> +    unsigned int irqs;
+>> +    int rv, chan;
+>> +
+>> +    rv = regmap_read(drvdata->rxtx_lpaif_map,
+>> +            LPAIF_RXTX_IRQSTAT_REG(v, LPAIF_IRQ_PORT_HOST, 
+>> LPASS_CDC_DMA_RX0), &irqs);
+>> +    if (rv)
+>> +        return IRQ_NONE;
+>> +    /* Handle per channel interrupts */
+>> +    for (chan = 0; chan < LPASS_MAX_CDC_DMA_CHANNELS; chan++) {
+>> +        if (irqs & LPAIF_IRQ_ALL(chan) && 
+>> drvdata->rxtx_substream[chan]) {
+>> +            rv = lpass_dma_interrupt_handler(
+>> +                        drvdata->rxtx_substream[chan],
+>> +                        drvdata, chan, irqs);
+>> +            if (rv != IRQ_HANDLED)
+>> +                return rv;
+>> +        }
+>> +    }
+>> +
+>> +    return IRQ_HANDLED;
+>> +}
+>> +
+>> +static irqreturn_t lpass_platform_vaif_irq(int irq, void *data)
+>> +{
+>> +    struct lpass_data *drvdata = data;
+>> +    struct lpass_variant *v = drvdata->variant;
+>> +    unsigned int irqs;
+>> +    int rv, chan;
+>>   +    rv = regmap_read(drvdata->va_lpaif_map,
+>> +            LPAIF_RXTX_IRQSTAT_REG(v, LPAIF_IRQ_PORT_HOST,
+>> +            LPASS_CDC_DMA_VA_TX0), &irqs);
+>> +    if (rv)
+>> +        return IRQ_NONE;
+>> +    /* Handle per channel interrupts */
+>> +    for (chan = 0; chan < LPASS_MAX_VA_CDC_DMA_CHANNELS; chan++) {
+>> +        if (irqs & LPAIF_IRQ_ALL(chan) && 
+>> drvdata->va_substream[chan]) {
+>> +            rv = lpass_dma_interrupt_handler(
+>> +                        drvdata->va_substream[chan],
+>> +                        drvdata, chan, irqs);
+>> +            if (rv != IRQ_HANDLED)
+>> +                return rv;
+>> +        }
+>> +    }
+>>       return IRQ_HANDLED;
+>>   }
+>>   +static int lpass_platform_prealloc_cdc_dma_buffer(struct 
+>> snd_soc_component *component,
+>> +            struct snd_pcm *pcm, int dai_id)
+>> +{
+>> +    struct lpass_data *drvdata = 
+>> snd_soc_component_get_drvdata(component);
+>> +    struct snd_pcm_substream *substream;
+>> +    struct snd_dma_buffer *buf;
+>> +    int ret;
+>> +
+>> +    if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream)
+>> +        substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
+>> +    else
+>> +        substream = pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream;
+>> +
+>> +    ret = dma_coerce_mask_and_coherent(pcm->card->dev, 
+>> DMA_BIT_MASK(64));
+>> +    if (ret)
+>> +        return ret;
+>> +
+>> +    buf = &substream->dma_buffer;
+>> +    buf->dev.dev = pcm->card->dev;
+>> +    buf->private_data = NULL;
+>> +
+>> +    /* Assign Codec DMA buffer pointers */
+>> +    buf->dev.type = SNDRV_DMA_TYPE_CONTINUOUS;
+>> +    if (dai_id == LPASS_CDC_DMA_RX0) {
+>> +        buf->bytes = lpass_platform_rxtx_hardware.buffer_bytes_max;
+>> +        buf->addr = drvdata->rxtx_cdc_dma_lpm_buf;
+>> +    } else if (dai_id == LPASS_CDC_DMA_TX3) {
+>> +        buf->bytes = lpass_platform_rxtx_hardware.buffer_bytes_max;
+>> +        buf->addr = drvdata->rxtx_cdc_dma_lpm_buf + 
+>> LPSAS_RXTX_CDC_DMA_LPM_BUFF_SIZE;
+>> +    } else if (dai_id == LPASS_CDC_DMA_VA_TX0) {
+>> +        buf->bytes = lpass_platform_va_hardware.buffer_bytes_max;
+>> +        buf->addr = drvdata->va_cdc_dma_lpm_buf;
+>> +    }
+>> +
+>> +    buf->area = (unsigned char * __force)ioremap(buf->addr, 
+>> buf->bytes);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>>   static int lpass_platform_pcm_new(struct snd_soc_component *component,
+>>                     struct snd_soc_pcm_runtime *soc_runtime)
+>>   {
+>>       struct snd_pcm *pcm = soc_runtime->pcm;
+>> +    struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_runtime, 0);
+>> +    unsigned int dai_id = cpu_dai->driver->id;
+>> +
+>>       size_t size = lpass_platform_pcm_hardware.buffer_bytes_max;
+>>   -    return snd_pcm_set_fixed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
+>> -                        component->dev, size);
+>> +    if (is_cdc_dma_port(dai_id))
+>> +        return lpass_platform_prealloc_cdc_dma_buffer(component, 
+>> pcm, dai_id);
+> May be a comment here would be nice for reader to understand why we 
+> allocate this buffer.
+Okay. will add comments.
+>
+>> +    else
+>> +        return snd_pcm_set_fixed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
+>> +                        component->dev, size);
+>>   }
+>>     static int lpass_platform_pcmops_suspend(struct snd_soc_component 
+>> *component)
+>> @@ -804,6 +1128,22 @@ static int lpass_platform_pcmops_resume(struct 
+>> snd_soc_component *component)
+>>       return regcache_sync(map);
+>>   }
+>>   +int lpass_platform_copy(struct snd_soc_component *component,
+>> +             struct snd_pcm_substream *substream, int channel,
+>> +             unsigned long pos, void __user *buf, unsigned long bytes)
+>> +{
+>> +    struct snd_pcm_runtime *rt = substream->runtime;
+>> +
+>> +    unsigned char *dma_buf = rt->dma_area + pos +
+>> +                channel * (rt->dma_bytes / rt->channels);
+>> +
+>> +    if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+>> +        return copy_from_user_toio(dma_buf, buf, bytes);
+>> +    else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+>> +        return copy_to_user_fromio(buf, dma_buf, bytes);
+>> +
+>> +    return 0;
+>> +}
+>>     static const struct snd_soc_component_driver 
+>> lpass_component_driver = {
+>>       .name        = DRV_NAME,
+>> @@ -814,9 +1154,11 @@ static const struct snd_soc_component_driver 
+>> lpass_component_driver = {
+>>       .prepare    = lpass_platform_pcmops_prepare,
+>>       .trigger    = lpass_platform_pcmops_trigger,
+>>       .pointer    = lpass_platform_pcmops_pointer,
+>> +    .mmap        = lpass_platform_pcmops_mmap,
+>
+> isn't this just snd_pcm_lib_mmap_iomem for cdc dma.
+Yes. it's required for only cdc dma.
+>
+>>       .pcm_construct    = lpass_platform_pcm_new,
+>>       .suspend        = lpass_platform_pcmops_suspend,
+>>       .resume            = lpass_platform_pcmops_resume,
+>> +    .copy_user        = lpass_platform_copy,
+>
+> Why do we need this for other non cdc dma dais?
+>
+>
+> Am thinking that we shoudl have a seperate instance of this for dais 
+> that can only do dma with hardware buffers.
+Okay. How to maintain 2 instances in the same platform driver?
+>
+>>     };
+>>   @@ -854,6 +1196,60 @@ int asoc_qcom_lpass_platform_register(struct 
+>> platform_device *pdev)
+>>           return ret;
+>>       }
+>>   +    if (drvdata->codec_dma_enable) {
+>> +        ret = regmap_write(drvdata->rxtx_lpaif_map,
+>> +            LPAIF_RXTX_IRQEN_REG(v, LPAIF_IRQ_PORT_HOST, 
+>> LPASS_CDC_DMA_TX3), 0x0);
+>> +        if (ret) {
+>> +            dev_err(&pdev->dev, "error writing to rxtx irqen reg: 
+>> %d\n", ret);
+>> +            return ret;
+>> +        }
+>> +        ret = regmap_write(drvdata->va_lpaif_map,
+>> +            LPAIF_RXTX_IRQEN_REG(v, LPAIF_IRQ_PORT_HOST, 
+>> LPASS_CDC_DMA_VA_TX0), 0x0);
+>> +        if (ret) {
+>> +            dev_err(&pdev->dev, "error writing to rxtx irqen reg: 
+>> %d\n", ret);
+>> +            return ret;
+>> +        }
+>> +        drvdata->rxtxif_irq = platform_get_irq_byname(pdev, 
+>> "lpass-irq-rxtxif");
+>> +        if (drvdata->rxtxif_irq < 0)
+>> +            return -ENODEV;
+>> +
+>> +        ret = devm_request_irq(&pdev->dev, drvdata->rxtxif_irq,
+>> +                lpass_platform_rxtxif_irq, IRQF_TRIGGER_RISING,
+>> +                "lpass-irq-rxtxif", drvdata);
+>> +        if (ret) {
+>> +            dev_err(&pdev->dev, "rxtx irq request failed: %d\n", ret);
+>> +            return ret;
+>> +        }
+>> +
+>> +        ret = lpass_platform_alloc_rxtx_dmactl_fields(&pdev->dev,
+>> +                         drvdata->rxtx_lpaif_map);
+>> +        if (ret) {
+>> +            dev_err(&pdev->dev,
+>> +                "error initializing rxtx dmactl fields: %d\n", ret);
+>> +            return ret;
+>> +        }
+>> +
+>> +        drvdata->vaif_irq = platform_get_irq_byname(pdev, 
+>> "lpass-irq-vaif");
+>> +        if (drvdata->vaif_irq < 0)
+>> +            return -ENODEV;
+>> +
+>> +        ret = devm_request_irq(&pdev->dev, drvdata->vaif_irq,
+>> +                lpass_platform_vaif_irq, IRQF_TRIGGER_RISING,
+>> +                "lpass-irq-vaif", drvdata);
+>> +        if (ret) {
+>> +            dev_err(&pdev->dev, "va irq request failed: %d\n", ret);
+>> +            return ret;
+>> +        }
+>> +
+>> +        ret = lpass_platform_alloc_va_dmactl_fields(&pdev->dev,
+>> +                         drvdata->va_lpaif_map);
+>> +        if (ret) {
+>> +            dev_err(&pdev->dev,
+>> +                "error initializing va dmactl fields: %d\n", ret);
+>> +            return ret;
+>> +        }
+>> +    }
+>> +
+>>       if (drvdata->hdmi_port_enable) {
+>>           drvdata->hdmiif_irq = platform_get_irq_byname(pdev, 
+>> "lpass-irq-hdmi");
+>>           if (drvdata->hdmiif_irq < 0)
 >>
-> 
-> 
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
