@@ -2,184 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D474C45E81C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 07:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 296AC45E81D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 07:54:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358957AbhKZG5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 01:57:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47942 "EHLO
+        id S1359021AbhKZG5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 01:57:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358952AbhKZGy6 (ORCPT
+        with ESMTP id S232116AbhKZGy6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Nov 2021 01:54:58 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A2DC06174A;
-        Thu, 25 Nov 2021 22:50:57 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id y12so34553221eda.12;
-        Thu, 25 Nov 2021 22:50:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WVuV06/cptT1Gv9Nh1FCyXLQ2/5cgjt2/gcb2z+eqVY=;
-        b=NvnXTWQqpYcTMVuD/hsfAtDmpuu+159ataecL65048pQEZJcW1YIc7s5YEaFfEZGAW
-         /SUci0G1FbsjMC+hkIVIWnWr/UPWSnRjfi3vQ0f07Cn8F0EeO26cWcoegxBTy/waVH07
-         C29dFdUQ4y2VtroOGkyY5QXddXMHOoygQHbZUS8z7zWOqe9JSHmlNDn6ccUYlT7aE7DV
-         vqlvFmbMawXR/u4MfEcmX3vC6zYORDG/15A/keH8mUPrRGYZrGL/ofp3RIYLXypI8sKb
-         aVNnenQOgPIyfeH8eN/8ZFRgHNZgUTk7I3g1VjFL5n0EZRZliRY5uJ2t1uxW3KY3L2he
-         52JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WVuV06/cptT1Gv9Nh1FCyXLQ2/5cgjt2/gcb2z+eqVY=;
-        b=UE77qE1n00s/n3tGgTRh4ZBM9f0sg/9u+C8ezNK2eAHkvF1scnPz3xvcCc9AcFu2wO
-         hsFPKpzkPgICuieFDpcpO/EY4CauFEK4b3FqMnU2SMHNQr1H8Bu5EemE21MqGSPQiCpb
-         wQ1Pf5CFUxpKX7f5Yw00u4mCwVRNDr7l8N2/mHjFri/UM/PP95cITlyuk21ybOaoCJD3
-         QICwWgy55IARZn6FGevlMiKm7+YC1vtERaaxlN0dJmd+SNW5X1QZ/w9mFYXQrmNjWINY
-         YsL5T1eY4/AvhEwWlInXtmVANFptqBf2Ky8cA/YnhAuMVjPK1uJCzQwxt0/ZI49xrT9S
-         ivmg==
-X-Gm-Message-State: AOAM5333U7gSWaQI9AvDUFKYo0hjIxxEyvY2GUYv08yL4/cdCrr3sQyW
-        Vv8f/sUaU2XzPjeaEFjv7qy/98RMid/FRSWdFF8=
-X-Google-Smtp-Source: ABdhPJx8X9vyVj6yDpfeRKFVlX9L8cA2ZOAn2GLHThn+GMMqesR17BemqeE/O4inXNH4tiAq2g4YGiyfL2Y6jfftL7A=
-X-Received: by 2002:a17:907:a088:: with SMTP id hu8mr37820887ejc.234.1637909455616;
- Thu, 25 Nov 2021 22:50:55 -0800 (PST)
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD712C061756;
+        Thu, 25 Nov 2021 22:51:08 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id A800C4255D;
+        Fri, 26 Nov 2021 06:51:04 +0000 (UTC)
+Subject: Re: [PATCH v4 0/4] Add DTs for all Apple M1 (t8103) devices
+To:     Janne Grunau <j@jannau.net>, Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Mark Kettenis <mark.kettenis@xs4all.nl>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211123224926.7722-1-j@jannau.net>
+From:   Hector Martin <marcan@marcan.st>
+Message-ID: <277222bd-e3b5-3140-b18f-acd93399c97e@marcan.st>
+Date:   Fri, 26 Nov 2021 15:51:02 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211124151915.GA6163@haolee.io> <YZ5o/VmU59evp65J@dhcp22.suse.cz>
- <CA+PpKPmy-u_BxYMCQOFyz78t2+3uM6nR9mQeX+MPyH6H2tOOHA@mail.gmail.com>
- <YZ8DZHERun6Fej2P@casper.infradead.org> <20211125080238.GA7356@haolee.io>
- <YZ9e3pzHKmn5nev0@dhcp22.suse.cz> <20211125123133.GA7758@haolee.io> <YZ+bI1fNpKar0bSU@dhcp22.suse.cz>
-In-Reply-To: <YZ+bI1fNpKar0bSU@dhcp22.suse.cz>
-From:   Hao Lee <haolee.swjtu@gmail.com>
-Date:   Fri, 26 Nov 2021 14:50:44 +0800
-Message-ID: <CA+PpKP=hsuBmvv09OcD2Nct8B8Cqa03UfKFHAHzKxwE0SXGP4g@mail.gmail.com>
-Subject: Re: [PATCH] mm: reduce spinlock contention in release_pages()
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>, vdavydov.dev@gmail.com,
-        Shakeel Butt <shakeelb@google.com>, cgroups@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211123224926.7722-1-j@jannau.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 10:18 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Thu 25-11-21 12:31:33, Hao Lee wrote:
-> > On Thu, Nov 25, 2021 at 11:01:02AM +0100, Michal Hocko wrote:
-> > > On Thu 25-11-21 08:02:38, Hao Lee wrote:
-> > > > On Thu, Nov 25, 2021 at 03:30:44AM +0000, Matthew Wilcox wrote:
-> > > > > On Thu, Nov 25, 2021 at 11:24:02AM +0800, Hao Lee wrote:
-> > > > > > On Thu, Nov 25, 2021 at 12:31 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > > > We do batch currently so no single task should be
-> > > > > > > able to monopolize the cpu for too long. Why this is not sufficient?
-> > > > > >
-> > > > > > uncharge and unref indeed take advantage of the batch process, but
-> > > > > > del_from_lru needs more time to complete. Several tasks will contend
-> > > > > > spinlock in the loop if nr is very large.
-> > > > >
-> > > > > Is SWAP_CLUSTER_MAX too large?  Or does your architecture's spinlock
-> > > > > implementation need to be fixed?
-> > > > >
-> > > >
-> > > > My testing server is x86_64 with 5.16-rc2. The spinlock should be normal.
-> > > >
-> > > > I think lock_batch is not the point. lock_batch only break spinning time
-> > > > into small parts, but it doesn't reduce spinning time. The thing may get
-> > > > worse if lock_batch is very small.
-> > > >
-> > > > Here is an example about two tasks contending spinlock. Let's assume each
-> > > > task need a total of 4 seconds in critical section to complete its work.
-> > > >
-> > > > Example1:
-> > > >
-> > > > lock_batch = x
-> > > >
-> > > > task A      taskB
-> > > > hold 4s     wait 4s
-> > > >             hold 4s
-> > > >
-> > > > total waiting time is 4s.
-> > >
-> > > 4s holding time is _way_ too long and something that this path should
-> > > never really reach. We are talking about SWAP_CLUSTER_MAX worth of LRU
-> > > pages. Sure there might be a bunch of pages freed that are not on LRU
-> > > but those are only added to a list. So again what is the actual problem?
-> > >
-> >
-> > The measurement unit in my example may not be rigorous and may confuse you.
-> > What I mean is the batch processing can only gives each task fairness to
-> > compete for this spinlock, but it can't reduce the wasted cpu cycles during
-> > spinning waiting, no matter what the batch size is.
->
-> Correct. But isn't that a nature of pretty much any spinlock based
-> contention? There is not really much to be done except for removing the
-> lock.
+On 24/11/2021 07.49, Janne Grunau wrote:
+> Hej all,
+> 
+> hopefully the last iteration of this series. Thanks for the reviews.
+> 
+> Changes since v3:
+>   - fixed typo in "arm64: dts: apple: t8103: Add cd321x nodes" commit
+>     message
+>   - fixed node order by address in t8103.dtsi
+>   - removed clock-names property from i2c nodes
+>   - renamed cd321x nodes to "usb-pd"
+>   - added Reviewed-by and Acked-by tags
+> 
+> This series is available as branch at
+>      https://github.com/jannau/linux/tree/apple_m1/dt-for-5.17_v4
+> 
+> For reference the message from v3:
+> 
+> this series extends the device tree files and bindings to all current
+> Apple M1 devices. Specifically it adds DTs for following devices:
+> - MacBook Air (M1, 2020)
+> - Macbook Pro (13-inch, M1, 2020)
+> - iMac (24-inch, M1, 2021)
+> 
+> It also adds i2c and cd321x devices nodes. Bindings and code changes for
+> those were merged for 5.16 without adding devices to the device tree.
+> Patches are include in a single series for dependencies
+> 
+> Series depends for functionality and dtbs verification on
+> "[PATCH 0/3] Apple Arm patform device tree and bindings fixes".
+> 
+> 
+> Janne Grunau (4):
+>    dt-bindings: arm: apple: Add iMac (24-inch 2021) to Apple bindings
+>    arm64: dts: apple: Add missing M1 (t8103) devices
+>    arm64: dts: apple: t8103: Add i2c nodes
+>    arm64: dts: apple: t8103: Add cd321x nodes
+> 
+>   .../devicetree/bindings/arm/apple.yaml        |  6 +-
+>   arch/arm64/boot/dts/apple/Makefile            |  4 +
+>   arch/arm64/boot/dts/apple/t8103-j274.dts      | 33 ++-----
+>   arch/arm64/boot/dts/apple/t8103-j293.dts      | 41 +++++++++
+>   arch/arm64/boot/dts/apple/t8103-j313.dts      | 33 +++++++
+>   arch/arm64/boot/dts/apple/t8103-j456.dts      | 59 +++++++++++++
+>   arch/arm64/boot/dts/apple/t8103-j457.dts      | 47 ++++++++++
+>   arch/arm64/boot/dts/apple/t8103-jxxx.dtsi     | 67 ++++++++++++++
+>   arch/arm64/boot/dts/apple/t8103.dtsi          | 87 +++++++++++++++++++
+>   9 files changed, 347 insertions(+), 30 deletions(-)
+>   create mode 100644 arch/arm64/boot/dts/apple/t8103-j293.dts
+>   create mode 100644 arch/arm64/boot/dts/apple/t8103-j313.dts
+>   create mode 100644 arch/arm64/boot/dts/apple/t8103-j456.dts
+>   create mode 100644 arch/arm64/boot/dts/apple/t8103-j457.dts
+>   create mode 100644 arch/arm64/boot/dts/apple/t8103-jxxx.dtsi
+> 
+> 
+> base-commit: fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf
+> prerequisite-patch-id: 6827208d4389960d14555ee96768586179f9e8a7
+> prerequisite-patch-id: d5f23530f8cb99fbd9355f4bf0ccbaaca0cd6d7c
+> prerequisite-patch-id: 40ab5e8cc6dc6b5d44f075d8409f39966452bfb3
+> 
 
-Yes...
+Acked-by: Hector Martin <marcan@marcan.st>
 
-> Batching helps to amortize the spinning for the actual useful work
-> so that the spinning is not predominant. Trylocking to reduce that
-> spinning can be helpful only if you _know_ that other useful work could
-> be done and that you do not dalay the locked work way to much. This is a
-> tricky balance to make.
 
-Exactly, thanks for explanation.
+Applied locally to asahi-soc/dt (with the #4 commit message fixed); that 
+needs to be on top of the fixes branch, so I'll wait for Rob's ack on 
+the binding change there before sending out the pulls. Thanks!
 
->
-> > No matter what the
-> > lock_batch is set, the following perf report won't change much. Many cpu
-> > cycles are wasted on spinning. Other tasks running on the same cores will be
-> > delayed, which is unacceptable for our latency-critical jobs.
->
-> Could you share more about requirements for those? Why is unmapping in
-> any of their hot paths which really require low latencies? Because as
-> long as unmapping requires a shared resource - like lru lock - then you
-> have a bottle necks.
-
-We deploy best-effort (BE) jobs (e.g. bigdata, machine learning) and
-latency-critical (LC) jobs (e.g. map navigation, payments services) on the
-same servers to improve resource utilization. The running time of BE jobs are
-very short, but its memory consumption is large, and these jobs will run
-periodically. The LC jobs are long-run services and are sensitive to delays
-because jitters may cause customer churn.
-
-If a batch of BE jobs are finished simultaneously, lots of memory are freed,
-and spinlock contentions happen. BE jobs don't care about these contentions,
-but contentions cause them to spend more time in kernel mode, and thus, LC
-jobs running on the same cpu cores will be delayed and jitters occur. (The
-kernel preemption is disabled on our servers, and we try not to separate
-LC/BE using cpuset in order to achieve "complete mixture deployment"). Then
-LC services people will complain about the poor service stability. This
-scenario has occurred several times, so we want to find a way to avoid it.
-
->
-> > I'm trying to
-> > find if it's possible to reduce the delay and the contention , after all,
-> > 59.50% is too high. This is why I post the thoughtless `cond_resched()`
-> > approach.
->
-> What is the base for that 59.5%? Also how representative this is for
-> your sensitive workload?
-
-Unfortunately, we haven't found an accurate relationship between the
-acceptable jitters and the perf percentage. A reference datum is indeed
-essential, and we will try to setup it. Thanks for your tips.
-
->
-> > Here is the perf report when executing ./usemem -j 4096 -n 20 10g -s 5
-> >
-> > +   59.50%  usemem           [kernel.vmlinux]               [k] native_queued_spin_lock_slowpath
-> > +    4.36%  usemem           [kernel.vmlinux]               [k] check_preemption_disabled
-> > +    4.31%  usemem           [kernel.vmlinux]               [k] free_pcppages_bulk
-> > +    3.11%  usemem           [kernel.vmlinux]               [k] release_pages
-> > +    2.12%  usemem           [kernel.vmlinux]               [k] __mod_memcg_lruvec_state
-> > +    2.02%  usemem           [kernel.vmlinux]               [k] __list_del_entry_valid
-> > +    1.98%  usemem           [kernel.vmlinux]               [k] __mod_node_page_state
-> > +    1.67%  usemem           [kernel.vmlinux]               [k] unmap_page_range
-> > +    1.51%  usemem           [kernel.vmlinux]               [k] __mod_zone_page_state
-> --
-> Michal Hocko
-> SUSE Labs
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
