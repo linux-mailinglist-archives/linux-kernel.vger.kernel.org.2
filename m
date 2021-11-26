@@ -2,84 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE1845F0B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:31:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8E645F0D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:37:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377964AbhKZPeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:34:21 -0500
-Received: from vps-vb.mhejs.net ([37.28.154.113]:33326 "EHLO vps-vb.mhejs.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346110AbhKZPcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:32:20 -0500
-Received: from MUA
-        by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <mail@maciej.szmigiero.name>)
-        id 1mqd9R-0000FR-T0; Fri, 26 Nov 2021 16:28:37 +0100
-From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Yanan Wang <wangyanan55@huawei.com>,
-        Andrew Jones <drjones@redhat.com>, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: selftests: page_table_test: fix calculation of guest_test_phys_mem
-Date:   Fri, 26 Nov 2021 16:28:31 +0100
-Message-Id: <52e487458c3172923549bbcf9dfccfbe6faea60b.1637940473.git.maciej.szmigiero@oracle.com>
-X-Mailer: git-send-email 2.33.0
+        id S1378165AbhKZPlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 10:41:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231773AbhKZPi7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 10:38:59 -0500
+X-Greylist: delayed 327 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 26 Nov 2021 07:29:19 PST
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE4BC0613F4;
+        Fri, 26 Nov 2021 07:29:18 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 57BF2622A6;
+        Fri, 26 Nov 2021 15:29:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3743DC93056;
+        Fri, 26 Nov 2021 15:29:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637940557;
+        bh=tIcKsGkixjO2bAVBkpPEOSXSKG6bYATN9ROIsuTm8ZQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DUohIP4xtZGwU92wBJBPFqGd15/YAX6U0lrrzpuHKTnyTH6r0A9GudAzgyci3LzQQ
+         5hQAtQZba79Vl4Z8hyxiOrjJzGdgxyyGBqZ/DKodWmbhkKGtr0fuoCbU1DdcS0umru
+         oqlua9GHiJt/+uyjAnZ/AWU2VTChfBJNbc1V0Brs=
+Date:   Fri, 26 Nov 2021 16:28:37 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     linux@armlinux.org.uk, jirislaby@kernel.org,
+        p.rosenberger@kunbus.com, lukas@wunner.de,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] serial: amba-pl011: do not request memory region twice
+Message-ID: <YaD9JW8i9vxmWWhk@kroah.com>
+References: <20211126143925.18758-1-LinoSanfilippo@gmx.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211126143925.18758-1-LinoSanfilippo@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+On Fri, Nov 26, 2021 at 03:39:25PM +0100, Lino Sanfilippo wrote:
+> The driver attempts to request and release the IO memory region for a uart
+> port twice:
+> 
+> First during the probe() function devm_ioremap_resource() is used to
+> allocate and map the ports memory.
+> Then a combo of pl011_config_port() and pl011_release_port() is used to
+> request/release the same memory area. These functions are called by the
+> serial core as soon as the uart is registered/unregistered.
+> 
+> However since the allocation request via devm_ioremap_resource() already
+> succeeds, the attempt to claim the memory again via pl011_config_port()
+> fails. This failure remains unnoticed, since the concerning return value is
+> not evaluated.
+> Later at module unload also the attempt to release the unclaimed memory
+> in pl011_release_port() fails. This time the failure results in a “Trying
+> to free nonexistent resource" warning printed by the serial core.
+> 
+> Fix these issues by removing the callbacks that implement the redundant
+> memory allocation/release.
+> 
+> Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
+> ---
+> 
+> This patch was tested on a 5.10 Raspberry Pi kernel with a CM3.
 
-A kvm_page_table_test run with its default settings fails on VMX due to
-memory region add failure:
-> ==== Test Assertion Failure ====
->  lib/kvm_util.c:952: ret == 0
->  pid=10538 tid=10538 errno=17 - File exists
->     1  0x00000000004057d1: vm_userspace_mem_region_add at kvm_util.c:947
->     2  0x0000000000401ee9: pre_init_before_test at kvm_page_table_test.c:302
->     3   (inlined by) run_test at kvm_page_table_test.c:374
->     4  0x0000000000409754: for_each_guest_mode at guest_modes.c:53
->     5  0x0000000000401860: main at kvm_page_table_test.c:500
->     6  0x00007f82ae2d8554: ?? ??:0
->     7  0x0000000000401894: _start at ??:?
->  KVM_SET_USER_MEMORY_REGION IOCTL failed,
->  rc: -1 errno: 17
->  slot: 1 flags: 0x0
->  guest_phys_addr: 0xc0000000 size: 0x40000000
+What commit id does this change fix?
 
-This is because the memory range that this test is trying to add
-(0x0c0000000 - 0x100000000) conflicts with LAPIC mapping at 0x0fee00000.
+thanks,
 
-Looking at the code it seems that guest_test_*phys*_mem variable gets
-mistakenly overwritten with guest_test_*virt*_mem while trying to adjust
-the former for alignment.
-With the correct variable adjusted this test runs successfully.
-
-Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
----
- tools/testing/selftests/kvm/kvm_page_table_test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/kvm/kvm_page_table_test.c b/tools/testing/selftests/kvm/kvm_page_table_test.c
-index 3836322add00..ba1fdc3dcf4a 100644
---- a/tools/testing/selftests/kvm/kvm_page_table_test.c
-+++ b/tools/testing/selftests/kvm/kvm_page_table_test.c
-@@ -280,7 +280,7 @@ static struct kvm_vm *pre_init_before_test(enum vm_guest_mode mode, void *arg)
- #ifdef __s390x__
- 	alignment = max(0x100000, alignment);
- #endif
--	guest_test_phys_mem = align_down(guest_test_virt_mem, alignment);
-+	guest_test_phys_mem = align_down(guest_test_phys_mem, alignment);
- 
- 	/* Set up the shared data structure test_args */
- 	test_args.vm = vm;
+greg k-h
