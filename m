@@ -2,86 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E031745EAEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08EAC45EB09
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:07:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376618AbhKZKEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 05:04:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47710 "EHLO mail.kernel.org"
+        id S1348175AbhKZKKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:10:08 -0500
+Received: from mga12.intel.com ([192.55.52.136]:29576 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1376422AbhKZKCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 05:02:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 74E7C61038;
-        Fri, 26 Nov 2021 09:58:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637920738;
-        bh=tZGY6dNlK8/AMHNAonDLG4iu1hKpaY0sGMxToT3+ww8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=UDh+vGEdTW6y2n4FeBdt5x5NVGQEI9O3V1xrUy/z6WM4RyGpxkN4QAdRcy1KqY/eu
-         kVp9g08zhj8tp+ob6f2qHbp6cSr27rFguUj8REH5DCHTw4y3w8mItndi7+mFsN8dyW
-         y+Thu/GwrtPuRuyjBdZpmLM9/zqmhYoIw7r2tq4VvBa+KvKf7DPkhfz1UVixRxvDlc
-         IEycN/bEFEUZL2vWTIzv0A8tU0i9Mm+7LyysYCh5GX+Vjgry5d6mzX7E33zP+0MJh1
-         cAVTAzcSo1YYrTH8Wl5EPJzIM66XH61bCEbXWygB4LQQOeEiHW9a3CGKZXJuom8paH
-         sxOiEXStsF8Gw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Rich Felker <dalias@libc.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: [PATCH] futex: Fix sparc32/m68k/nds32 build regression
-Date:   Fri, 26 Nov 2021 10:58:40 +0100
-Message-Id: <20211126095852.455492-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S238722AbhKZKIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 05:08:07 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="215665448"
+X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
+   d="scan'208";a="215665448"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 01:59:26 -0800
+X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
+   d="scan'208";a="498358086"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 01:59:24 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mqY0o-00Ak6P-Vj;
+        Fri, 26 Nov 2021 11:59:22 +0200
+Date:   Fri, 26 Nov 2021 11:59:22 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Prchal <jiri.prchal@aksignal.cz>
+Subject: Re: [PATCH v1 00/10] misc: at25: Code cleanups and improvements
+Message-ID: <YaCv+mkge5AqYm8R@smile.fi.intel.com>
+References: <20211125213203.86693-1-andriy.shevchenko@linux.intel.com>
+ <CAK8P3a3Pu-ygd9dkhS=d2ZGKjbt0V=mdxaEG8tXUhueSKMJXQg@mail.gmail.com>
+ <YaCucfdYfGCuBBiS@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YaCucfdYfGCuBBiS@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, Nov 26, 2021 at 11:52:49AM +0200, Andy Shevchenko wrote:
+> On Thu, Nov 25, 2021 at 11:03:26PM +0100, Arnd Bergmann wrote:
+> > On Thu, Nov 25, 2021 at 10:31 PM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
 
-In one of the revisions of my futex cleanup series, I botched
-up a rename of some function names, breaking sparc32, m68k
-and nds32:
+...
 
-include/asm-generic/futex.h:17:2: error: implicit declaration of function 'futex_atomic_cmpxchg_inatomic_local_generic'; did you mean 'futex_atomic_cmpxchg_inatomic_local'? [-Werror=implicit-function-declaration]
+> > It would be nice to change the three remaining board files that fill
+> > struct spi_eeprom so they use device properties and unify the
+> > rest of the probe path. Not sure how much of a change that would
+> > be.
+> 
+> Do you have a chance to test that if it appears to be the case?
 
-Fix the macros to point to the correct functions.
+There is one more, actually: arch/mips/txx9/generic/spi_eeprom.c.
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Fixes: 3f2bedabb62c ("futex: Ensure futex_atomic_cmpxchg_inatomic() is present")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- include/asm-generic/futex.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+But above perhaps some OMAP people can help with... Dunno.
 
-diff --git a/include/asm-generic/futex.h b/include/asm-generic/futex.h
-index 30e7fa63b5df..66d6843bfd02 100644
---- a/include/asm-generic/futex.h
-+++ b/include/asm-generic/futex.h
-@@ -14,9 +14,9 @@
-  *
-  */
- #define futex_atomic_cmpxchg_inatomic(uval, uaddr, oldval, newval) \
--	futex_atomic_cmpxchg_inatomic_local_generic(uval, uaddr, oldval, newval)
-+	futex_atomic_cmpxchg_inatomic_local(uval, uaddr, oldval, newval)
- #define arch_futex_atomic_op_inuser(op, oparg, oval, uaddr) \
--	arch_futex_atomic_op_inuser_local_generic(op, oparg, oval, uaddr)
-+	futex_atomic_op_inuser_local(op, oparg, oval, uaddr)
- #endif /* CONFIG_SMP */
- #endif
- 
 -- 
-2.29.2
+With Best Regards,
+Andy Shevchenko
+
 
