@@ -2,120 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D7245F247
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD4445F1D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:26:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378643AbhKZQln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:41:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239797AbhKZQjl (ORCPT
+        id S230479AbhKZQ3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:29:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:58703 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231395AbhKZQ1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:39:41 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDC1C06175D;
-        Fri, 26 Nov 2021 08:22:17 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6C7BE622DC;
-        Fri, 26 Nov 2021 16:22:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C62FC93056;
-        Fri, 26 Nov 2021 16:22:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637943736;
-        bh=DomO1hDprNDoTOXmYbCNRX87KPgD9L75o2eSX1KroPk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WJA20yYaWcCwOvxoKKYkje04BrkazBeI9hI0NuJyYVDA9lsHVyhAepqBN5e7eRqZN
-         E5WebqoyALxWQ8zYDrYUB2XKkNMqCo70u+iXnD5XZ0TCSpn9NMsH49oC0Te6182rgJ
-         bJFE76XgG1K2ykLGhLzIZ+4UJeQWRblcVd0FYNuE=
-Date:   Fri, 26 Nov 2021 17:22:14 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Stephan Mueller <smueller@chronox.de>
-Cc:     Simo Sorce <simo@redhat.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Tso Ted <tytso@mit.edu>,
-        linux-crypto@vger.kernel.org, Willy Tarreau <w@1wt.eu>,
-        Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Petr Tesarik <ptesarik@suse.cz>,
-        John Haxby <john.haxby@oracle.com>,
-        Alexander Lobakin <alobakin@mailbox.org>,
-        Jirka Hladky <jhladky@redhat.com>
-Subject: Re: [PATCH v43 01/15] Linux Random Number Generator
-Message-ID: <YaEJtv4A6SoDFYjc@kroah.com>
-References: <2036923.9o76ZdvQCi@positron.chronox.de>
- <56d2da397bb53f71c0354b102c3b40940e9b4eda.camel@redhat.com>
- <YaEA0fyowmFlDfmK@kroah.com>
- <22137816.pfsBpAd9cS@tauon.chronox.de>
+        Fri, 26 Nov 2021 11:27:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637943835;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=keITFTEdFi5E9hp2LFE/RvLMU4rsiAlnNkpkNDD9Jvo=;
+        b=a79KN8bEvfvP26dqUGgmeb33FtW0/klaUV+7uEm/HW3xHsfdvc9i7nTWd9HXFr1DiuQW5q
+        UWv9C5lsFnAXAV396SkRwEsFwbodpWzQxCXQIDQl1Wk3Muuzr4G/pcErKcRYKzyv4H1+gW
+        BGNl7fZOjcikxrimdTVWTgXzeBXLU8Q=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-291-SPsyeWzeMg2oNkRjPw7ZIA-1; Fri, 26 Nov 2021 11:23:54 -0500
+X-MC-Unique: SPsyeWzeMg2oNkRjPw7ZIA-1
+Received: by mail-ed1-f69.google.com with SMTP id a3-20020a05640213c300b003e7d12bb925so8446124edx.9
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 08:23:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=keITFTEdFi5E9hp2LFE/RvLMU4rsiAlnNkpkNDD9Jvo=;
+        b=4PkCMeUpiObyTgQs+MO5DmyNONOSekPh97hRoAMkRBHKRAHNlynCbHG4RoJTq7mvzT
+         lbCvhan/FxP9EvMhV9GPDx7Ug3PFXdrffwAKDkGGl3XHsWDUXRNs0OUopDA14ZH9iVum
+         heV3yFCgRgGUY0FdZGAfrZxeJZ0AaIoHRYBeBZifxDaf7BDKfvN+6rPf4Eh40GEes7YN
+         fM3RlPHS7fg2R9n2ymNJUAwJDjI+OTTfVJCHydXIpeHoythBLue6BOys/gyDABwRpWAF
+         meb74gGmlpxZRUDUCExF08yNdgbFxVFV8hUGdlvWevCshwdo29SG8z+y6cSQu4QCtaVG
+         4zfg==
+X-Gm-Message-State: AOAM532xRVTUCyD/rNwV2OpGAKQwJZBIKdFCsw5Nud+UnPCbPJ5NzZjt
+        6fh72+QoZd4yfoZDhoUjmLvwC57bDvTSkUfu0UbJ7OzW+n4p7u7lNW4wGtFrn6dYicmuCnUeeB9
+        dEzb6rBUKD1wyZp0ILG63sgG/q2I0esK+xy7++mka
+X-Received: by 2002:a17:906:390:: with SMTP id b16mr38618832eja.522.1637943833293;
+        Fri, 26 Nov 2021 08:23:53 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx/5Lm7haoggq+jLsvlVThHn5G2U/wwavJ0uSjFE0xk77eTpLkcug+uMs/Exh4ce7XHzo8pTVY4fEMtNQHx6II=
+X-Received: by 2002:a17:906:390:: with SMTP id b16mr38618800eja.522.1637943833142;
+ Fri, 26 Nov 2021 08:23:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <22137816.pfsBpAd9cS@tauon.chronox.de>
+References: <20211025040607.92786-1-wefu@redhat.com> <mhng-ac32ff92-86cb-4377-ba63-de1856e84fb1@palmerdabbelt-glaptop>
+ <CAJF2gTT90V6gQw12XZEXB1TJXb5QNdXM6qcfXh1yzWzDPExgPQ@mail.gmail.com>
+ <20211102055857.GB26925@lst.de> <CAJF2gTSfp+JZ4YxiynVA4KO0Z4PwJ4_uF8UO3Tx3mDOHPnFTeQ@mail.gmail.com>
+ <CA+YCwK=vMtKC0DrhSJ7apgZ4s4_8fzGoRxY2mKEjjyJZjNW2QQ@mail.gmail.com> <20211108075244.GA26350@lst.de>
+In-Reply-To: <20211108075244.GA26350@lst.de>
+From:   Wei Fu <wefu@redhat.com>
+Date:   Sat, 27 Nov 2021 00:23:42 +0800
+Message-ID: <CA+YCwKke6ER=Sv6O3zGkqvtfOvw+1VBR3-7w_SS_PTQyGBN=_w@mail.gmail.com>
+Subject: Re: [RESEND PATCH V3 0/2] riscv: add RISC-V Svpbmt Standard Extension supports
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Guo Ren <guoren@kernel.org>, Anup Patel <Anup.Patel@wdc.com>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>,
+        Philipp Tomsich <philipp.tomsich@vrull.eu>,
+        liush <liush@allwinnertech.com>,
+        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        taiten.peng@canonical.com,
+        Aniket Ponkshe <aniket.ponkshe@canonical.com>,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        Gordan Markus <gordan.markus@canonical.com>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Greg Favor <gfavor@ventanamicro.com>,
+        Andrea Mondelli <andrea.mondelli@huawei.com>,
+        Jonathan Behrens <behrensj@mit.edu>,
+        "Xinhaoqu (Freddie)" <xinhaoqu@huawei.com>,
+        Bill Huffman <huffman@cadence.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Allen Baum <allen.baum@esperantotech.com>,
+        Josh Scheid <jscheid@ventanamicro.com>,
+        Richard Trauben <rtrauben@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 05:15:59PM +0100, Stephan Mueller wrote:
-> Am Freitag, 26. November 2021, 16:44:17 CET schrieb Greg Kroah-Hartman:
-> 
-> Hi Greg,
-> 
-> > On Mon, Nov 22, 2021 at 09:59:01AM -0500, Simo Sorce wrote:
-> > > Jason,
-> > > have you previously produced a list of reasoned concerns with this
-> > > patchset and direction?
-> > > 
-> > > This specific email is not really useful to me to understand the
-> > > concerns as it does not contain actionable suggestion or critique.
-> > > 
-> > > I personally find the direction fine, and with my distribution hat on I
-> > > can say that FIPS is essential for us and any design must include an
-> > > option to be FIPS certifiable.
-> > > 
-> > > As NIST keeps improving their testing capabilities and rigorous
-> > > cryptographic design of the CSPRNGs as well as entropy sources the
-> > > kernel must also adapt.
-> > > 
-> > > Stephan is providing a path forward, and I haven't seen any other
-> > > proposal, let alone code, that provide improvements in this area.
-> > > I am pretty sure the design can be improved if there is detailed and
-> > > actionable feedback on what to change.
-> > > 
-> > > I hope the path forward can be one of collaboration rather then mere
-> > > opposition.
-> > 
-> > Replacement of the existing code to cut over to the new one is not
-> > collaboration, it's the exact opposite.
-> > 
-> > Submitting patches to the existing codebase to implement the
-> > "requirements" is the proper way forward, why has that never been done.
-> 
-> It has been attempted by Nikolai Stange without avail - no comments were 
-> received, let alone it was integrated.
+Hi Christoph,
 
-Links to the patches and discussion please?
+On Mon, Nov 8, 2021 at 3:52 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Sun, Nov 07, 2021 at 03:12:51PM +0800, Wei Fu wrote:
+> > How about
+> >
+> > config RISCV_SVPBMT
+> > bool
+> > depends on 64BIT && MMU
+> > default y
+>
+> Yes.  You can shorten this a bit more using def_bool if you want.
+Sorry for the late reply, OK, fixing it now
+>
 
-thanks,
-
-greg k-h
