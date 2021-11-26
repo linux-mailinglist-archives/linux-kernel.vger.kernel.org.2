@@ -2,143 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60D445ED9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:10:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8311445EDAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377511AbhKZMNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 07:13:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33092 "EHLO
+        id S1376834AbhKZMPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 07:15:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377237AbhKZML2 (ORCPT
+        with ESMTP id S1377339AbhKZMN3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 07:11:28 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C308BC061D79;
-        Fri, 26 Nov 2021 03:36:19 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id k2so18198139lji.4;
-        Fri, 26 Nov 2021 03:36:19 -0800 (PST)
+        Fri, 26 Nov 2021 07:13:29 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F84C0619E0;
+        Fri, 26 Nov 2021 03:39:17 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id p13so1024842pfw.2;
+        Fri, 26 Nov 2021 03:39:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YwchqcLp4vuWkP53NqIQryr+Cx6rF4LvbCWU6gG8vgs=;
-        b=Wx4C6KctFZg7aqSyKW+5+/sbQhhBjaUfjiH74wowUy/K6HSWCuCDM7VOY9VqbnmvKA
-         UM4eGn95CuRCRfYKXzdLqbHNiNvlWX+kM3hoLmDwsJlpoE5OWoOdY5rApuDlp5HbetZy
-         +25hea9st2iqjThXTwqUrO7lXT9SyYVYMPfHBecz7hSsskk04t/+RlaY5R1Xk3kRnWiM
-         d00+D8VKXzttb3URv6kH2eAKfN1oHCdv2L8DxGQJfWlOohi9IEGWfVOUxl/oJWv9FaZM
-         /uoMbZQBu3QNp0le87EDcovGewCvWN44pvCby93xViSPs2a4SgY30hSjneBeBMCWemFz
-         jLIA==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=ambWW/4YEyu662pYE46PBmuDJfo9av+csYLqJQyv9eI=;
+        b=be/+Ee7qIA99Wogw9aDbu8FGuY+NkyZyPMuDQQQMyfJu74GW/p4hwR7Uk3SV8SOWot
+         OTvvRslVrIRWr+jhwF4djz3GnmhzFxoTjzdSB66EYMTFp4ObhQoXBUaxMmS0E8ljOC5C
+         BvMJB5gq9CLv6RX+bLXdcwcuXLE+FMY5lUFCbxIImkmK67mwpllFQSs45yZerfLFiBCR
+         DbhWdfqUQ3x6YsTjsY/25enAc6WD87puZv3GLXecg2pr4iVTltkGoYwbxLChdmS97p73
+         BAHuN7hbOH9DJ41QGZsyZO96dnKzD8IZFOupSItaLv9c137ht8NLB+g2Qd6+KKgLGpSA
+         nk6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YwchqcLp4vuWkP53NqIQryr+Cx6rF4LvbCWU6gG8vgs=;
-        b=ZFawKg8LNvazXRaEf2G/D/2voGGt3WEcAQMvzjdHCMAE5PE2+U6RwKUk8t/h/Bfmiv
-         gbnGkJJLyIhLtBZK3ucGNkAF8W3hot6ND5D/Ri1iIS94AHRfSeBX71SsOeLBrxhi1zJd
-         xK1YWa5e69viBLBXyJvf9HWD0VblIFFipCnIchPy3Mqp5bpNmXXn9Hk9S1DWJeToAEhg
-         nW/R+hAxAnGT1fxjRbgd6s6jl9ptnlwNLA07t3cGiJ6pfbPx+C8OQ8vKfn1fabUE6sF6
-         abHmaF7XYvrajvjiNceXuC04xfuxDAvWI69LeyapB1G6eKp2TOrAszl/darevB/3tWza
-         0DHA==
-X-Gm-Message-State: AOAM530NsV9qFQwM/IGBoS3JH4uSZPpw0syomlpT67VhVlVjwG3wLSgB
-        aifMZu6GfvLdFux2kAZhrccjbdX3QEk=
-X-Google-Smtp-Source: ABdhPJytBhhNePIUfAl1MAlNnjKZMQsdxRpfRZWlULulpz+FR6PPbXkhKwOOp3vvUBd3DN2P3l00gA==
-X-Received: by 2002:a2e:9450:: with SMTP id o16mr29615658ljh.444.1637926577785;
-        Fri, 26 Nov 2021 03:36:17 -0800 (PST)
-Received: from kari-VirtualBox ([31.132.12.44])
-        by smtp.gmail.com with ESMTPSA id f14sm552842lfv.180.2021.11.26.03.36.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 03:36:17 -0800 (PST)
-Date:   Fri, 26 Nov 2021 13:36:15 +0200
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     yangerkun <yangerkun@huawei.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>, ntfs3@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [ramfs] 0858d7da8a: canonical_address#:#[##]
-Message-ID: <20211126113615.nmegssvcrmjlodku@kari-VirtualBox>
-References: <20211125140816.GC3109@xsang-OptiPlex-9020>
- <CAHk-=widXZyzRiEzmYuG-bLVtNsptxt4TqAhy75Tbio-V_9oNQ@mail.gmail.com>
- <68587446-fb74-b411-ba19-dd52395567c9@huawei.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=ambWW/4YEyu662pYE46PBmuDJfo9av+csYLqJQyv9eI=;
+        b=S5+c/cfo7ZU8D+LjNbTGkk3UFkdKKUpmHnQsN2v0WOjqoif9Q+ccKd+9ifcNuejygq
+         gkfwSCsEzd1UAO2lRx30M2+78NJqp/MtkoXSsFGEg9SilZ66gr79kFi3CbiGiEJ5IKyh
+         SPTW0mb4rzsBU1uTfq0tN8FFbWf8In9BmbsrOqCr3NUjMWMSJA9Buoc1VgHnUb9jYGqH
+         8e+ekpCf0z3kMNJ/bl8riwtUIyZEM3NOFKR1d6Ii9Y9WOblduyEU22ATNi7jx1+OW1j4
+         6wCeEY+2CXo2vG1vChVGqBPIZVyeC77ek51HTomluaPZOJRDEMTNFlEPBw9NxfdvKcP6
+         Udcg==
+X-Gm-Message-State: AOAM533UW3JqewjFv/52R8TPlYFwwrLlE0H8H6XB9OMlqI7cp5lGoUkh
+        Tg1NAZ53TR6hFwFWogPz5ug=
+X-Google-Smtp-Source: ABdhPJyqblxnRgV5wg5BPP9Vi1R0NhHs6AkjTX8lIUxkdCJzlfse/09nmYdMwJ3MumBswrLh4eDT7g==
+X-Received: by 2002:a65:5a8e:: with SMTP id c14mr20429967pgt.241.1637926756738;
+        Fri, 26 Nov 2021 03:39:16 -0800 (PST)
+Received: from ?IPV6:2404:f801:0:5:8000::50b? ([2404:f801:9000:18:efec::50b])
+        by smtp.gmail.com with ESMTPSA id f21sm7243932pfe.69.2021.11.26.03.39.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Nov 2021 03:39:16 -0800 (PST)
+Message-ID: <e874b4c3-1d09-8d2a-bd59-80bae7e554d6@gmail.com>
+Date:   Fri, 26 Nov 2021 19:39:03 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <68587446-fb74-b411-ba19-dd52395567c9@huawei.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH 3/5] hyperv/IOMMU: Enable swiotlb bounce buffer for
+ Isolation VM
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, jgross@suse.com, sstabellini@kernel.org,
+        boris.ostrovsky@oracle.com, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, joro@8bytes.org, will@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, m.szyprowski@samsung.com,
+        robin.murphy@arm.com, xen-devel@lists.xenproject.org,
+        michael.h.kelley@microsoft.com,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        netdev@vger.kernel.org, vkuznets@redhat.com, brijesh.singh@amd.com,
+        konrad.wilk@oracle.com, parri.andrea@gmail.com,
+        thomas.lendacky@amd.com, dave.hansen@intel.com
+References: <20211116153923.196763-1-ltykernel@gmail.com>
+ <20211116153923.196763-4-ltykernel@gmail.com> <20211117100142.GB10330@lst.de>
+ <c93bf3d4-75c1-bc3d-2789-1d65e7c19158@gmail.com>
+ <20211126074022.GA23659@lst.de>
+From:   Tianyu Lan <ltykernel@gmail.com>
+In-Reply-To: <20211126074022.GA23659@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 09:54:56AM +0800, yangerkun wrote:
-> Cc ntfs3:
+On 11/26/2021 3:40 PM, Christoph Hellwig wrote:
+> On Wed, Nov 17, 2021 at 10:00:08PM +0800, Tianyu Lan wrote:
+>> On 11/17/2021 6:01 PM, Christoph Hellwig wrote:
+>>> This doesn't really have much to do with normal DMA mapping,
+>>> so why does this direct through the dma ops?
+>>>
+>>
+>> According to the previous discussion, dma_alloc_noncontigous()
+>> and dma_vmap_noncontiguous() may be used to handle the noncontigous
+>> memory alloc/map in the netvsc driver. So add alloc/free and vmap/vunmap
+>> callbacks here to handle the case. The previous patch v4 & v5 handles
+>> the allocation and map in the netvsc driver. If this should not go though
+>> dma ops, We also may make it as vmbus specific function and keep
+>> the function in the vmbus driver.
 > 
-> Maybe it's a problem like this:
+> But that only makes sense if they can actually use the normal DMA ops.
+> If you implement your own incomplete ops and require to use them you
+> do nothing but adding indirect calls to your fast path and making the
+> code convoluted.
 > 
-> do_new_mount
->   fs_context_for_mount
->     alloc_fs_context
->       ntfs_init_fs_context
->         sbi = kzalloc(sizeof(struct ntfs_sb_info), GFP_NOFS);
->         fc->s_fs_info = sbi;
->   vfs_get_tree
->     ntfs_fs_get_tree
->       get_tree_bdev
->         blkdev_get_by_path  // return error and sbi->sb will be NULL
->   put_fs_context
->     ntfs_fs_free
->       put_ntfs
->         ntfs_update_mftmirr
->           struct super_block *sb = sbi->sb; // NULL
->           u32 blocksize = sb->s_blocksize; // BOOM
-> 
-> It's actually a ntfs3 bug which may be introduced by:
-> 
-> 610f8f5a7baf fs/ntfs3: Use new api for mounting
 
-Yeap. Thank you very much. Will send patch for this in within 24h.
+Because the generic part implementation can't meet the netvsc driver
+requests that allocate 16M memory and map pages via vmap_pfn(). So add 
+Hyperv alloc_noncontiguous and vmap_noncontiguous callbacks. If this is
+not a right way. we should call these hyper-V functions in the netvsc
+driver directly, right?
 
-> On 2021/11/26 2:03, Linus Torvalds wrote:
-> > On Thu, Nov 25, 2021 at 6:08 AM kernel test robot <oliver.sang@intel.com> wrote:
-> > > FYI, we noticed the following commit (built with clang-14):
-> > > 
-> > > commit: 0858d7da8a09e440fb192a0239d20249a2d16af8 ("ramfs: fix mount source show for ramfs")
-> > 
-> > Funky. That commit seems to have nothing to do with the oops:
-> > 
-> > > [  806.257788][  T204] /dev/root: Can't open blockdev
-> > > [  806.259101][  T204] general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] SMP KASAN
-> > > [  806.263082][  T204] KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
-> > 
-> > Not a very helpful error message,a nd the KASAN comment makes little sense, but
-> > 
-> > > [ 806.267540][ T204] RIP: 0010:ntfs_update_mftmirr (kbuild/src/consumer/fs/ntfs3/fsntfs.c:834)
-> > 
-> > That's
-> > 
-> >          u32 blocksize = sb->s_blocksize;
-> > 
-> > and presumably with KASAN you end up getting hat odd 0xdffffc0000000003 thing.
-> > 
-> > Anyway, looks like sb is NULL, and the code is
-> > 
-> >    int ntfs_update_mftmirr(struct ntfs_sb_info *sbi, int wait)
-> >    {
-> >          int err;
-> >          struct super_block *sb = sbi->sb;
-> >          u32 blocksize = sb->s_blocksize;
-> >          sector_t block1, block2;
-> > 
-> > although I have no idea how sbi->sb could be NULL.
-> > 
-> > Konstantin? See
-> > 
-> >      https://lore.kernel.org/lkml/20211125140816.GC3109@xsang-OptiPlex-9020/
-> > 
-> > for the full thing.
-> > 
-> >               Linus
-> > .
-> > 
+Could you have a look at Michael summary about this series we made and
+give some guides?
+
+https://www.mail-archive.com/xen-devel@lists.xenproject.org/msg109284.html
+
+Thanks.
+
+
+
+
+
