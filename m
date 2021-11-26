@@ -2,183 +2,406 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C830B45ED24
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CCFE45EC95
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377126AbhKZMAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 07:00:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350360AbhKZL6T (ORCPT
+        id S238995AbhKZL1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 06:27:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27827 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238967AbhKZLZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 06:58:19 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B223C08EA4A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 03:22:24 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id u1so17843958wru.13
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 03:22:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CH/BjpiBpZ/vu5u2YjAKcdVgEIZZP8RkoskTORrwc7k=;
-        b=W901Nj+xtSh1aiNfDE0AMKIOsC0ArWr80z7PJf34QwtvFBSITUMZJSslyGMx8aPwXY
-         HQfI4jtvf0PCFqM897iRWJdpPQ4XWSloTbGLYMFzxUZ1vcTn+L80wzKw8BdLfc9LiV2u
-         ewffAgUhVp48ltm6XiHTIVmMc8d95+6AmyqXpms7XlCf84xW7mXJD73hqyq8UNT4mNj7
-         uURucMcPRvMlkXf0FdFQMUzDogO2xGYu4s1rxMYMwUJTwJpTiRMkFs05fq0WULaP7Bx8
-         xRppUITefkkT5MNMHS60YpOb/6vEI3s1VHGY7meb8dAbqBvHy0YJsuxTad9hr1B6ULlc
-         rZOw==
+        Fri, 26 Nov 2021 06:25:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637925759;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5wQ71Ekph3DRe2BFAcFX0uixh6OWYjGAxQ/auMSN/pI=;
+        b=cqT1eScQyodS7BZeO/YeyDL9OYCAZa3Zdu4c8KUsGdIpASCo5REpRYiCR26Ynj53B8wd/P
+        I34nqsF9zKJ1kt8vnOPIaASa9Ez7EsEw48ZxLb04zd7fLMx55ABPdpiRGG6dhlsSUBdLam
+        w0jiWjJv3ATxe47qN25D9onICOzziZc=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-350-_znD0_jEOhisAqz2UeLdQg-1; Fri, 26 Nov 2021 06:22:38 -0500
+X-MC-Unique: _znD0_jEOhisAqz2UeLdQg-1
+Received: by mail-ed1-f70.google.com with SMTP id m17-20020aa7d351000000b003e7c0bc8523so7795286edr.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 03:22:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=CH/BjpiBpZ/vu5u2YjAKcdVgEIZZP8RkoskTORrwc7k=;
-        b=c9YSGI0xXVRPKyC1vz5ORz5iHdM7S5sSu9Fxd1IudCoZL1SrttkFTEhMxNZlMk4vC7
-         A25F86a3mtZDvUYHT378ijIPpEukEyKAkXCoXFArRoAbIw2uxYGTBXaH5PKtyrXEMOFU
-         7NgmxFCWRnsEl9IUn8JA/K+MbyiUMvX4KTVKR1F/H3OtTy9l3RUfcf5UMno/vRmC2MWX
-         OulrMMJY8TIeO40/i3LpoMiooxmSeuLAR2A9ARRk0iQDmYauzLDovsAh1yRNzTBx5KCI
-         umeRnGHfvC7dCzrzL+PbrjWKLPt6CMV1VEp6Ts/XOcyu4p3cFJW/zvUg94MDQm3ae+2m
-         1XcQ==
-X-Gm-Message-State: AOAM531QkDL0B4d6/KFMJ2AdpGXBMZfbgv0gJNE25p0Xqao291zaCBQM
-        YBNbPBv/E2zB0eASjejCMfXQ2w==
-X-Google-Smtp-Source: ABdhPJybvJVDj9O9DJ2NwSgzjlWPPDKmXV88NtvDPWzA4oqWQr33oPSWf1DuSfpq0COI7AIp00Woiw==
-X-Received: by 2002:adf:e38d:: with SMTP id e13mr12839437wrm.402.1637925742716;
-        Fri, 26 Nov 2021 03:22:22 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:47ed:5339:c53f:6a8? ([2a01:e34:ed2f:f020:47ed:5339:c53f:6a8])
-        by smtp.googlemail.com with ESMTPSA id l11sm5101510wrp.61.2021.11.26.03.22.20
+        bh=5wQ71Ekph3DRe2BFAcFX0uixh6OWYjGAxQ/auMSN/pI=;
+        b=EV/K0Xcy0IY1P0uNKuKHAsU/KdY3Cg06pgsItN5q2MG3+lm+bVllwe2OzflRw/AOTR
+         KpLGy6Yim4vvxs/gpTJDz7UP4bmleU4yvS5kQViRrWLg4bYAX1YJmdkcHkQkX5o8jRkE
+         CdFA7gnPeXbTC2T8e5sh3OwArRsJZA7mRmCcrSJeQsaL73IB1imU0uHnACJzPY0u/Fhj
+         XMY6Fya+IUcfg2hT1DJwVMYvHIHRHcoawZj086++d+Rks+xqdz2IDYHQxJSLSpQlJR42
+         tbKMeJbaYywPCt7He/VKzVY8Lz01BkOu5h9FtOBYrmrfyIo+Uk21OS4lCiGvgQgr7yk/
+         GZbw==
+X-Gm-Message-State: AOAM531YVCevlA5ZbP/f2P/Wmfq/44o0hlAC+OGBxkhy6Nn3ZrR9gkGR
+        h6O8NkY1F2QWudOzADnC4BcaQzdN6ZKPf9BkK8SGWCH8KhR3yCpF/Kh/mHMKIQXmpCu/flIKjUg
+        YSGcRRBzZ9emMtTsyI77DfGSY
+X-Received: by 2002:a17:906:fcbb:: with SMTP id qw27mr37500924ejb.320.1637925756921;
+        Fri, 26 Nov 2021 03:22:36 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxPOFL2cQbmr2W2mt4cULzTQZVhO7d08bazuCPqd8d7L4mLsxhcBClNOG0Ss2AXat+dwi95iw==
+X-Received: by 2002:a17:906:fcbb:: with SMTP id qw27mr37500907ejb.320.1637925756666;
+        Fri, 26 Nov 2021 03:22:36 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id y19sm642739edq.2.2021.11.26.03.22.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Nov 2021 03:22:21 -0800 (PST)
-Subject: Re: [PATCH] sched/idle: Export cpu_idle_poll_ctrl() symbol
-To:     Maulik Shah <quic_mkshah@quicinc.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ulf.hansson@linaro.org, quic_lsrao@quicinc.com,
-        rnayak@codeaurora.org, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-References: <1637831676-32737-1-git-send-email-quic_mkshah@quicinc.com>
- <YZ9ctgCBYJEEjuwt@hirez.programming.kicks-ass.net>
- <687d97b6-347a-92c0-34ba-00331dfb6c82@quicinc.com>
- <0fb74083-e378-e1b4-624b-4f2076f237df@linaro.org>
- <4427fe8d-c96d-d1f7-3ef2-674000b61b93@quicinc.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <444f74f7-43cc-fc48-7417-ccbcf8e176c8@linaro.org>
-Date:   Fri, 26 Nov 2021 12:22:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 26 Nov 2021 03:22:36 -0800 (PST)
+Message-ID: <19aeff06-d397-5f88-6d07-f76a2073b682@redhat.com>
+Date:   Fri, 26 Nov 2021 12:22:35 +0100
 MIME-Version: 1.0
-In-Reply-To: <4427fe8d-c96d-d1f7-3ef2-674000b61b93@quicinc.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH v6 05/15] regulator: Introduce tps68470-regulator driver
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <20211125165412.535063-1-hdegoede@redhat.com>
+ <20211125165412.535063-6-hdegoede@redhat.com>
+ <YaAdIG+2MZPsdI+F@pendragon.ideasonboard.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <YaAdIG+2MZPsdI+F@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/11/2021 06:56, Maulik Shah wrote:
-> Hi Daniel,
+Hi Laurent,
+
+On 11/26/21 00:32, Laurent Pinchart wrote:
+> Hi Hans,
 > 
-> On 11/25/2021 10:56 PM, Daniel Lezcano wrote:
->> On 25/11/2021 15:13, Maulik Shah wrote:
->>> Hi Peter,
->>>
->>> On 11/25/2021 3:21 PM, Peter Zijlstra wrote:
->>>> On Thu, Nov 25, 2021 at 02:44:36PM +0530, Maulik Shah wrote:
->>>>> Export cpu_idle_poll_ctrl() so that module drivers can use same.
->>>> This does not seem like a really safe interface to expose to the
->>>> world.
->>> Thanks for the review.
->>>
->>> Keeping the cpuidle enabled from boot up may delay/increase the boot up
->>> time.
->>> Below is our use case to force cpuidle to stay in cpu_idle_poll().
->>>
->>> We keep cpuidle disabled from boot up using "nohlt" option of kernel
->>> command line which internally sets cpu_idle_force_poll = 1;
->>> and once the device bootup reaches till certain point (for example the
->>> android homescreen is up) userspace may notify a
->>> vendor module driver which can invoke cpu_idle_poll_ctrl(false); to come
->>> out of poll mode.
->>> So vendor module driver needs cpu_idle_poll_ctrl() exported symbol.
->>>
->>> We can not take PM-QoS from driver to prevent deep cpuidle since all the
->>> vendor modules are kept in a separate partition and will be loaded only
->>> after kernel boot up is done
->>> and by this time kernel already starts executing deep cpuidle modes.
->>>> Surely the better solution is to rework things to not rely on this. I'm
->>>> fairly sure it's not hard to write a cpuidle driver that does much the
->>>> same.
->>> The other option i think is to pass cpuidle.off=1 in kernel command line
->>> and then add enable_cpuidle() in drivers/cpuidle/cpuidle.c
->>> something similar as below which can be called by vendor module.
->>>
->>> void enable_cpuidle(void)
->>> {
->>>          off = 0;
->>> }
->>> EXPORT_SYMBOL_GPL(enable_cpuidle);
->>>
->>> This may be a good option since we have already disable_cpuidle() but
->>> not enable_cpuidle().
->>>
->>> void disable_cpuidle(void)
->>> {
->>>          off = 1;
->>> }
->>>
->>> Hi Rafael/Daniel, can you please let me know your suggestion on
->>> this/similar implementation?
->> Did you try to use the QoS latency? Sounds like it is exactly for this
->> purpose.
->>
->> Set it to zero to force cpuidle to choose the shallowest idle state and
->> then INT_MAX to disable the constraint.
->>
->>   cpu_latency_qos_add_request();
->>
->> Hope that helps
->>
->>    -- Daniel
-> The PM-QoS is not helping here since all the vendor drivers are kept in
-> a separate partition
-> and will be loaded only after kernel boot up is done and by the time
-> vendor kernel modules are inserted
-> takes QoS, kernel/menu governor already starts executing deep cpuidle
-> modes.
+> Thank you for the patch.
 > 
-> kernel start (t0)---------Menu governor loads (t1)----------vendor
-> modules loaded (t2)----------Usespace ready(t3)
+> I've had a quick look and the driver seems fine. Just a few comments
+> below.
 > 
-> Untill (t2), its only core kernel/android kernel which don't have any
-> vendor driver which can take QoS.
-> If we take QoS, it can be taken only from point (t2) but CPUs still
-> enter deep idle state between (t1) to (t2).
+> On Thu, Nov 25, 2021 at 05:54:02PM +0100, Hans de Goede wrote:
+>> The TPS68470 PMIC provides Clocks, GPIOs and Regulators. At present in
+>> the kernel the Regulators and Clocks are controlled by an OpRegion
+>> driver designed to work with power control methods defined in ACPI, but
+>> some platforms lack those methods, meaning drivers need to be able to
+>> consume the resources of these chips through the usual frameworks.
+>>
+>> This commit adds a driver for the regulators provided by the tps68470,
+>> and is designed to bind to the platform_device registered by the
+>> intel_skl_int3472 module.
+>>
+>> This is based on this out of tree driver written by Intel:
+>> https://github.com/intel/linux-intel-lts/blob/4.14/base/drivers/regulator/tps68470-regulator.c
+>> with various cleanups added.
+>>
+>> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+>> ---
+>> Changes in v6:
+>> - Drop the unused volt_table argument from the TPS68470_REGULATOR() macro
+>> - While working on VCM (voice coil motor) support for the camera-module behind
+>>   this PMIC I learned that the VIO voltage is always on. Instead of pointing its
+>>   enable_reg and enable_mask at the same register-bits as the VSIO regulator
+>>   (which is wrong), add a new tps68470_always_on_reg_ops struct without
+>>   is_enabled, enable and disable ops and use that for the VIO regulator.
+>>
+>> Changes in v5:
+>> - Small comment / code cleanups based on review from Andy
+>>
+>> Changes in v4:
+>> - Make the top comment block use c++ style comments
+>> - Drop the bogus builtin regulator_init_data
+>> - Add || COMPILE_TEST to Kconfig snippet
+>> - Make the driver enable the PMIC clk when enabling the Core buck
+>>   regulator, this switching regulator needs the PLL to be on
+>>
+>> Changes in v2:
+>> - Update the comment on why a subsys_initcall is used to register the drv
+>> - Make struct regulator_ops const
+>> ---
+>>  drivers/regulator/Kconfig              |   9 ++
+>>  drivers/regulator/Makefile             |   1 +
+>>  drivers/regulator/tps68470-regulator.c | 201 +++++++++++++++++++++++++
+>>  3 files changed, 211 insertions(+)
+>>  create mode 100644 drivers/regulator/tps68470-regulator.c
+>>
+>> diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+>> index 6be9b1c8a615..ebe46e09510e 100644
+>> --- a/drivers/regulator/Kconfig
+>> +++ b/drivers/regulator/Kconfig
+>> @@ -1339,6 +1339,15 @@ config REGULATOR_TPS65912
+>>  	help
+>>  	    This driver supports TPS65912 voltage regulator chip.
+>>  
+>> +config REGULATOR_TPS68470
+>> +	tristate "TI TPS68470 PMIC Regulators Driver"
+>> +	depends on INTEL_SKL_INT3472 || COMPILE_TEST
+>> +	help
+>> +	  This driver adds support for the TPS68470 PMIC to register
+>> +	  regulators against the usual framework.
+>> +
+>> +	  The module will be called "tps68470-regulator".
+>> +
+>>  config REGULATOR_TWL4030
+>>  	tristate "TI TWL4030/TWL5030/TWL6030/TPS659x0 PMIC"
+>>  	depends on TWL4030_CORE
+>> diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
+>> index b07d2a22df0b..257331d2caed 100644
+>> --- a/drivers/regulator/Makefile
+>> +++ b/drivers/regulator/Makefile
+>> @@ -159,6 +159,7 @@ obj-$(CONFIG_REGULATOR_TPS6586X) += tps6586x-regulator.o
+>>  obj-$(CONFIG_REGULATOR_TPS65910) += tps65910-regulator.o
+>>  obj-$(CONFIG_REGULATOR_TPS65912) += tps65912-regulator.o
+>>  obj-$(CONFIG_REGULATOR_TPS65132) += tps65132-regulator.o
+>> +obj-$(CONFIG_REGULATOR_TPS68470) += tps68470-regulator.o
+>>  obj-$(CONFIG_REGULATOR_TWL4030) += twl-regulator.o twl6030-regulator.o
+>>  obj-$(CONFIG_REGULATOR_UNIPHIER) += uniphier-regulator.o
+>>  obj-$(CONFIG_REGULATOR_VCTRL) += vctrl-regulator.o
+>> diff --git a/drivers/regulator/tps68470-regulator.c b/drivers/regulator/tps68470-regulator.c
+>> new file mode 100644
+>> index 000000000000..9ad2d1eae8fe
+>> --- /dev/null
+>> +++ b/drivers/regulator/tps68470-regulator.c
+>> @@ -0,0 +1,201 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +//
+>> +// Regulator driver for TPS68470 PMIC
+>> +//
+>> +// Copyright (c) 2021 Red Hat Inc.
+>> +// Copyright (C) 2018 Intel Corporation
+>> +//
+>> +// Authors:
+>> +//	Hans de Goede <hdegoede@redhat.com>
+>> +//	Zaikuo Wang <zaikuo.wang@intel.com>
+>> +//	Tianshu Qiu <tian.shu.qiu@intel.com>
+>> +//	Jian Xu Zheng <jian.xu.zheng@intel.com>
+>> +//	Yuning Pu <yuning.pu@intel.com>
+>> +//	Rajmohan Mani <rajmohan.mani@intel.com>
+>> +
+>> +#include <linux/clk.h>
+>> +#include <linux/device.h>
+>> +#include <linux/err.h>
+>> +#include <linux/init.h>
+>> +#include <linux/kernel.h>
+>> +#include <linux/mfd/tps68470.h>
+>> +#include <linux/module.h>
+>> +#include <linux/platform_data/tps68470.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/regulator/driver.h>
+>> +#include <linux/regulator/machine.h>
+>> +
+>> +struct tps68470_regulator_data {
+>> +	struct clk *clk;
+>> +};
+>> +
+>> +#define TPS68470_REGULATOR(_name, _id, _ops, _n,			\
+>> +			   _vr, _vm, _er, _em, _lr, _nlr)		\
+>> +	[TPS68470_ ## _name] = {					\
+>> +		.name			= # _name,			\
+>> +		.id			= _id,				\
+>> +		.ops			= &_ops,			\
+>> +		.n_voltages		= _n,				\
+>> +		.type			= REGULATOR_VOLTAGE,		\
+>> +		.owner			= THIS_MODULE,			\
+>> +		.vsel_reg		= _vr,				\
+>> +		.vsel_mask		= _vm,				\
+>> +		.enable_reg		= _er,				\
+>> +		.enable_mask		= _em,				\
+>> +		.linear_ranges		= _lr,				\
+>> +		.n_linear_ranges	= _nlr,				\
+>> +	}
+>> +
+>> +static const struct linear_range tps68470_ldo_ranges[] = {
+>> +	REGULATOR_LINEAR_RANGE(875000, 0, 125, 17800),
+>> +};
+>> +
+>> +static const struct linear_range tps68470_core_ranges[] = {
+>> +	REGULATOR_LINEAR_RANGE(900000, 0, 42, 25000),
+>> +};
+>> +
+>> +static int tps68470_regulator_enable(struct regulator_dev *rdev)
+>> +{
+>> +	struct tps68470_regulator_data *data = rdev->reg_data;
+>> +	int ret;
+>> +
+>> +	/* The Core buck regulator needs the PMIC's PLL to be enabled */
+>> +	if (rdev->desc->id == TPS68470_CORE) {
+>> +		ret = clk_prepare_enable(data->clk);
+>> +		if (ret) {
+>> +			dev_err(&rdev->dev, "Error enabling TPS68470 clock\n");
+>> +			return ret;
+>> +		}
+>> +	}
+>> +
+>> +	return regulator_enable_regmap(rdev);
+>> +}
+>> +
+>> +static int tps68470_regulator_disable(struct regulator_dev *rdev)
+>> +{
+>> +	struct tps68470_regulator_data *data = rdev->reg_data;
+>> +
+>> +	if (rdev->desc->id == TPS68470_CORE)
+>> +		clk_disable_unprepare(data->clk);
+>> +
+>> +	return regulator_disable_regmap(rdev);
+>> +}
+>> +
+>> +/* Operations permitted on DCDCx, LDO2, LDO3 and LDO4 */
+>> +static const struct regulator_ops tps68470_regulator_ops = {
+>> +	.is_enabled		= regulator_is_enabled_regmap,
+>> +	.enable			= tps68470_regulator_enable,
+>> +	.disable		= tps68470_regulator_disable,
+>> +	.get_voltage_sel	= regulator_get_voltage_sel_regmap,
+>> +	.set_voltage_sel	= regulator_set_voltage_sel_regmap,
+>> +	.list_voltage		= regulator_list_voltage_linear_range,
+>> +	.map_voltage		= regulator_map_voltage_linear_range,
+>> +};
+>> +
+>> +static const struct regulator_ops tps68470_always_on_reg_ops = {
+>> +	.get_voltage_sel	= regulator_get_voltage_sel_regmap,
+>> +	.set_voltage_sel	= regulator_set_voltage_sel_regmap,
+>> +	.list_voltage		= regulator_list_voltage_linear_range,
+>> +	.map_voltage		= regulator_map_voltage_linear_range,
+>> +};
+>> +
+>> +static const struct regulator_desc regulators[] = {
+>> +	TPS68470_REGULATOR(CORE, TPS68470_CORE, tps68470_regulator_ops, 43,
+>> +			   TPS68470_REG_VDVAL, TPS68470_VDVAL_DVOLT_MASK,
+>> +			   TPS68470_REG_VDCTL, TPS68470_VDCTL_EN_MASK,
+>> +			   tps68470_core_ranges, ARRAY_SIZE(tps68470_core_ranges)),
+>> +	TPS68470_REGULATOR(ANA, TPS68470_ANA, tps68470_regulator_ops, 126,
+>> +			   TPS68470_REG_VAVAL, TPS68470_VAVAL_AVOLT_MASK,
+>> +			   TPS68470_REG_VACTL, TPS68470_VACTL_EN_MASK,
+>> +			   tps68470_ldo_ranges, ARRAY_SIZE(tps68470_ldo_ranges)),
+>> +	TPS68470_REGULATOR(VCM, TPS68470_VCM, tps68470_regulator_ops, 126,
+>> +			   TPS68470_REG_VCMVAL, TPS68470_VCMVAL_VCVOLT_MASK,
+>> +			   TPS68470_REG_VCMCTL, TPS68470_VCMCTL_EN_MASK,
+>> +			   tps68470_ldo_ranges, ARRAY_SIZE(tps68470_ldo_ranges)),
+>> +	TPS68470_REGULATOR(VIO, TPS68470_VIO, tps68470_always_on_reg_ops, 126,
+>> +			   TPS68470_REG_VIOVAL, TPS68470_VIOVAL_IOVOLT_MASK,
+>> +			   0, 0,
+>> +			   tps68470_ldo_ranges, ARRAY_SIZE(tps68470_ldo_ranges)),
+>> +/*
+>> + * (1) This regulator must have the same voltage as VIO if S_IO LDO is used to
+>> + *     power a sensor/VCM which I2C is daisy chained behind the PMIC.
+>> + * (2) If there is no I2C daisy chain it can be set freely.
+>> + */
 > 
-> So to prevent this passing "cpuidle.off=1" or "nohlt" in kernel command
-> line can keep deep cpuidle states disabled from boot up and
-> once vendor modules are ready at (t2) or (t3), it can either invoke
-> newly added enable_cpuidle() or cpu_idle_poll_ctrl(false);
-> to comeout of polling mode and start executing deep low power modes.
+> Do we need safety checks for this ?
 
-I understand. The approach is valid but I'm wondering if it should fall
-under a more global feature with a perf <-> power cursor
+There really is no way to deal this condition needs to matches inside the driver,
+this should be enforced by setting proper constraints on the 2 regulators where
+the PMIC is used with a sensor I2C daisy chained behind it.
 
-If the goal is to be as fast as possible at boot time, the cursor should
-be set to 'perf and then changed to 'power' after the system has booted.
+> 
+>> +	TPS68470_REGULATOR(VSIO, TPS68470_VSIO, tps68470_regulator_ops, 126,
+>> +			   TPS68470_REG_VSIOVAL, TPS68470_VSIOVAL_IOVOLT_MASK,
+>> +			   TPS68470_REG_S_I2C_CTL, TPS68470_S_I2C_CTL_EN_MASK,
+>> +			   tps68470_ldo_ranges, ARRAY_SIZE(tps68470_ldo_ranges)),
+>> +	TPS68470_REGULATOR(AUX1, TPS68470_AUX1, tps68470_regulator_ops, 126,
+>> +			   TPS68470_REG_VAUX1VAL, TPS68470_VAUX1VAL_AUX1VOLT_MASK,
+>> +			   TPS68470_REG_VAUX1CTL, TPS68470_VAUX1CTL_EN_MASK,
+>> +			   tps68470_ldo_ranges, ARRAY_SIZE(tps68470_ldo_ranges)),
+>> +	TPS68470_REGULATOR(AUX2, TPS68470_AUX2, tps68470_regulator_ops, 126,
+>> +			   TPS68470_REG_VAUX2VAL, TPS68470_VAUX2VAL_AUX2VOLT_MASK,
+>> +			   TPS68470_REG_VAUX2CTL, TPS68470_VAUX2CTL_EN_MASK,
+>> +			   tps68470_ldo_ranges, ARRAY_SIZE(tps68470_ldo_ranges)),
+>> +};
+>> +
+>> +static int tps68470_regulator_probe(struct platform_device *pdev)
+>> +{
+>> +	struct device *dev = &pdev->dev;
+>> +	struct tps68470_regulator_platform_data *pdata = dev_get_platdata(dev);
+>> +	struct tps68470_regulator_data *data;
+>> +	struct regulator_config config = { };
+>> +	struct regulator_dev *rdev;
+>> +	int i;
+>> +
+>> +	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+>> +	if (!data)
+>> +		return -ENOMEM;
+>> +
+>> +	data->clk = devm_clk_get(dev, "tps68470-clk");
+>> +	if (IS_ERR(data->clk))
+>> +		return dev_err_probe(dev, PTR_ERR(data->clk), "getting tps68470-clk\n");
+>> +
+>> +	config.dev = dev->parent;
+>> +	config.regmap = dev_get_drvdata(dev->parent);
+>> +	config.driver_data = data;
+>> +
+>> +	for (i = 0; i < TPS68470_NUM_REGULATORS; i++) {
+>> +		if (pdata)
+>> +			config.init_data = pdata->reg_init_data[i];
+>> +		else
+>> +			config.init_data = NULL;
+>> +
+>> +		rdev = devm_regulator_register(dev, &regulators[i], &config);
+>> +		if (IS_ERR(rdev))
+>> +			return dev_err_probe(dev, PTR_ERR(data->clk),
+> 
+> This should be PTR_ERR(rdev).
 
-So not only cpuidle but also any other subsystems can skip the PM path
-or go the highest performance state (assuming the PM code is compiled-in
-for the devices).
+Good catch, thanks. Fixed for v7.
+
+Regards,
+
+Hans
 
 
+> 
+>> +					     "registering %s regulator\n",
+>> +					     regulators[i].name);
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static struct platform_driver tps68470_regulator_driver = {
+>> +	.driver = {
+>> +		.name = "tps68470-regulator",
+>> +	},
+>> +	.probe = tps68470_regulator_probe,
+>> +};
+>> +
+>> +/*
+>> + * The ACPI tps68470 probe-ordering depends on the clk/gpio/regulator drivers
+>> + * registering before the drivers for the camera-sensors which use them bind.
+>> + * subsys_initcall() ensures this when the drivers are builtin.
+>> + */
+>> +static int __init tps68470_regulator_init(void)
+>> +{
+>> +	return platform_driver_register(&tps68470_regulator_driver);
+>> +}
+>> +subsys_initcall(tps68470_regulator_init);
+>> +
+>> +static void __exit tps68470_regulator_exit(void)
+>> +{
+>> +	platform_driver_unregister(&tps68470_regulator_driver);
+>> +}
+>> +module_exit(tps68470_regulator_exit);
+>> +
+>> +MODULE_ALIAS("platform:tps68470-regulator");
+>> +MODULE_DESCRIPTION("TPS68470 voltage regulator driver");
+>> +MODULE_LICENSE("GPL v2");
+> 
 
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
