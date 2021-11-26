@@ -2,128 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F05145E90F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:15:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AAF045E90C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:15:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359322AbhKZIS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 03:18:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345932AbhKZIQ0 (ORCPT
+        id S1353280AbhKZISN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 03:18:13 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:50276 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245061AbhKZIQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 03:16:26 -0500
-Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C419C061574;
-        Fri, 26 Nov 2021 00:13:14 -0800 (PST)
-Received: by mail-vk1-xa2f.google.com with SMTP id b125so5427162vkb.9;
-        Fri, 26 Nov 2021 00:13:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jGr4SQOtI3OKR7URJguRef34t+2i0vrpPA6yb0Sp7wg=;
-        b=lL5ABMGDw2KPlAzr0zNHdmvR+f/wSP+8JlCDRXY+8alLFVUNY1zpJMAeLyl3CUbtQ/
-         8SNHORpC3PFTJGVzlktPpVvLWBzimxIutr82BZy502Omi48IWV1J8ECVwg+htrAN2kyY
-         nUx+7Nu0BiA25KFxuhsdnPoQDXrKJC/JXDpjxokjIuAZQJqVwfHE5uyDCnckYERO25RP
-         IvDcTWlsqckD3LCT7bl2Cq6mm60XeVoGtcXXrOHmZOQ4e5UF4wSsC5w+NgZI/Ps2Ps3e
-         nFWjavJ7eNurZVYxR6L+2l/e9tCrocvxuxjWpRntZEQF6oEMJj2FupkyAGFRGZOdzz/T
-         pEEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jGr4SQOtI3OKR7URJguRef34t+2i0vrpPA6yb0Sp7wg=;
-        b=PuKVVwCGCStjznnfbWTyqNPH7nRatjCbMftSrG1c6Pxgt44exqQ8tRB1rg6ME4nee6
-         n596DDbcLO65aLC7ZyhFDBvzfiCjVC8y2NRZPRTsgsPg3BY6fygiDloKtbDMf9XoYoAK
-         OXNEC0xEIpHiuo5fQ29IRL/V442FV9r0cp0FMWDd6jT8RZuqr7IellqmGiuFRgli0FWk
-         C24c9VyQ5nBS7fgrby92vZs1fELbn/0/i34DqDuN9L5Vs25qYe+YwMCEs24Fw5yGGv9+
-         Y10esD1JXZIoB1trC3bSo8bT+aHovxkSeH5rLlbB8hYpIFqPwtsglu5KvyEejs7nnXs1
-         CyHw==
-X-Gm-Message-State: AOAM530OzhA9fWMbqQJv6OSBN+8wJkLIaN2GJu2neGTRQx7clNIi4dJs
-        YFqjKdvUVUEhaBNA3pqjIyKKcno2pS4=
-X-Google-Smtp-Source: ABdhPJytWfThRfinZNAeMgC9ZghoceJGAe0EgyCtL+tkrVk/LEmxpObnRkJiYt3cGZI6tEqWMzcGog==
-X-Received: by 2002:a1f:3807:: with SMTP id f7mr17662328vka.28.1637914393161;
-        Fri, 26 Nov 2021 00:13:13 -0800 (PST)
-Received: from tresc043793.tre-sc.gov.br ([187.94.103.218])
-        by smtp.gmail.com with ESMTPSA id r24sm3231509vsn.1.2021.11.26.00.13.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 00:13:12 -0800 (PST)
-From:   luizluca@gmail.com
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        alsi@bang-olufsen.dk,
-        Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Subject: [PATCH v2] net: dsa: realtek-smi: fix indirect reg access for ports>3
-Date:   Fri, 26 Nov 2021 05:12:52 -0300
-Message-Id: <20211126081252.32254-1-luizluca@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211126063645.19094-1-luizluca@gmail.com>
-References: <20211126063645.19094-1-luizluca@gmail.com>
+        Fri, 26 Nov 2021 03:16:12 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id D3C62212BE;
+        Fri, 26 Nov 2021 08:12:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637914378; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ua0rBLw8yMpkW2HLi3jHWYnyPiVI4NNJN3p9/B3y9s4=;
+        b=UmvBkqt0lj5+Fgh0MMELE8rCv+KKdsojs+C+3ixFhsIH0s4g6pao9D5Iu4c8EVGr0uuP8C
+        4tiD0kRX0jD2hWi//DKZTirv4d5cFg/b4J2BkonMJTAxzWJWxV5/MU6Aae73kIrqqPP1qI
+        kOueYEXXZJeZUb8R0wjq5sl8joLDgbM=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 45A17A3B81;
+        Fri, 26 Nov 2021 08:12:58 +0000 (UTC)
+Date:   Fri, 26 Nov 2021 09:12:56 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oliver Sang <oliver.sang@intel.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Roman Gushchin <guro@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
+        zhengjun.xing@linux.intel.com, fengwei.yin@intel.com
+Subject: Re: [memcg, kmem]  58056f7750:  hackbench.throughput 10.3%
+ improvement
+Message-ID: <YaCXCJc4TD5YpDXX@dhcp22.suse.cz>
+References: <20211124083435.GB18309@xsang-OptiPlex-9020>
+ <YZ5v2LZlpzHieq/+@dhcp22.suse.cz>
+ <20211126031748.GA11450@xsang-OptiPlex-9020>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211126031748.GA11450@xsang-OptiPlex-9020>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+On Fri 26-11-21 11:17:48, Oliver Sang wrote:
+> Hi Michal Hocko,
+> 
+> On Wed, Nov 24, 2021 at 06:01:12PM +0100, Michal Hocko wrote:
+> > On Wed 24-11-21 16:34:35, kernel test robot wrote:
+> > > 
+> > > 
+> > > Greeting,
+> > > 
+> > > FYI, we noticed a 10.3% improvement of hackbench.throughput due to commit:
+> > > 
+> > > 
+> > > commit: 58056f77502f3567b760c9a8fc8d2e9081515b2d ("memcg, kmem: further deprecate kmem.limit_in_bytes")
+> > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> > 
+> > I am really surprised to see an improvement from this patch. I do not
+> > expect your benchmarking would be using kmem limit. The above patch
+> > hasn't really removed the page counter out of the picture so there
+> > shouldn't be any real reason for performance improvement. I strongly
+> > suspect this is just some benchmark artifact or unreliable evaluation.
+> 
+> Fengwei Yin helped further analyze this improvement.
+> 
+> The patch changed the behavior of function obj_cgroup_charge_pages. It's shown
+> in the perf-callstack as following line:
+> 
+>    5.63 ± 11%      -5.6        0.00        perf-profile.calltrace.cycles-pp.page_counter_try_charge.obj_cgroup_charge_pages.obj_cgroup_charge.kmem_cache_alloc_node.__alloc_skb
+> 
+> So Fengwei prepared a patch which reverting the changes in
+> obj_cgroup_charge_pages in 58056f7750 (as attached mod.patch)
+> 
+> by this patch, the performance is similar to 16f6bf266c, the improvement
+> disappear.
 
-This switch family can have up to 8 ports {0..7}. However,
-INDIRECT_ACCESS_ADDRESS_PHYNUM_MASK was using 2 bits instead of 3,
-dropping the most significant bit during indirect register reads and
-writes. Reading or writing ports 4, 5, 6, and 7 registers was actually
-manipulating, respectively, ports 0, 1, 2, and 3 registers.
+I am still quite surprised and do not understand it. The only practical
+difference the said commit has done is
+s@page_counter_try_charge@page_counter_charge@
 
-rtl8365mb_phy_{read,write} will now returns -EINVAL if phy is greater
-than 7.
+Withtout a limit in place the try_charge always succeeds. There
+should be only a single if (new > c->max) branch executed and always
+false.
+The code is also slightly larger but all that sounds like to little to
+make such a larger change. Maybe this is some microarchitecture specific
+result. Or can you reproduce on other HW as well.
 
-v2:
-- fix affected ports in commit message
-
-Fixes: 4af2950c50c8 ("net: dsa: realtek-smi: add rtl8365mb subdriver for RTL8365MB-VC")
-Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
----
- drivers/net/dsa/rtl8365mb.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/dsa/rtl8365mb.c b/drivers/net/dsa/rtl8365mb.c
-index baaae97283c5..f4414ac74b61 100644
---- a/drivers/net/dsa/rtl8365mb.c
-+++ b/drivers/net/dsa/rtl8365mb.c
-@@ -107,6 +107,7 @@
- #define RTL8365MB_LEARN_LIMIT_MAX_8365MB_VC	2112
- 
- /* Family-specific data and limits */
-+#define RTL8365MB_PHYADDRMAX	7
- #define RTL8365MB_NUM_PHYREGS	32
- #define RTL8365MB_PHYREGMAX	(RTL8365MB_NUM_PHYREGS - 1)
- #define RTL8365MB_MAX_NUM_PORTS	(RTL8365MB_CPU_PORT_NUM_8365MB_VC + 1)
-@@ -176,7 +177,7 @@
- #define RTL8365MB_INDIRECT_ACCESS_STATUS_REG			0x1F01
- #define RTL8365MB_INDIRECT_ACCESS_ADDRESS_REG			0x1F02
- #define   RTL8365MB_INDIRECT_ACCESS_ADDRESS_OCPADR_5_1_MASK	GENMASK(4, 0)
--#define   RTL8365MB_INDIRECT_ACCESS_ADDRESS_PHYNUM_MASK		GENMASK(6, 5)
-+#define   RTL8365MB_INDIRECT_ACCESS_ADDRESS_PHYNUM_MASK		GENMASK(7, 5)
- #define   RTL8365MB_INDIRECT_ACCESS_ADDRESS_OCPADR_9_6_MASK	GENMASK(11, 8)
- #define   RTL8365MB_PHY_BASE					0x2000
- #define RTL8365MB_INDIRECT_ACCESS_WRITE_DATA_REG		0x1F03
-@@ -679,6 +680,8 @@ static int rtl8365mb_phy_read(struct realtek_smi *smi, int phy, int regnum)
- 	u16 val;
- 	int ret;
- 
-+	if (phy > RTL8365MB_PHYADDRMAX)
-+		return -EINVAL;
- 	if (regnum > RTL8365MB_PHYREGMAX)
- 		return -EINVAL;
- 
-@@ -704,6 +707,8 @@ static int rtl8365mb_phy_write(struct realtek_smi *smi, int phy, int regnum,
- 	u32 ocp_addr;
- 	int ret;
- 
-+	if (phy > RTL8365MB_PHYADDRMAX)
-+		return -EINVAL;
- 	if (regnum > RTL8365MB_PHYREGMAX)
- 		return -EINVAL;
- 
 -- 
-2.33.1
-
+Michal Hocko
+SUSE Labs
