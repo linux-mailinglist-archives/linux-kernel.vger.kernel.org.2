@@ -2,113 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 048AD45F12A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:55:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8A545F11B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:53:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353901AbhKZP6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:58:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378140AbhKZP4r (ORCPT
+        id S1354119AbhKZP4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 10:56:43 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:52042 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354201AbhKZPym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:56:47 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648BFC0619F1;
-        Fri, 26 Nov 2021 07:44:21 -0800 (PST)
+        Fri, 26 Nov 2021 10:54:42 -0500
+X-Greylist: delayed 302 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Nov 2021 10:54:42 EST
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EF0856227D;
-        Fri, 26 Nov 2021 15:44:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D557AC93056;
-        Fri, 26 Nov 2021 15:44:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637941460;
-        bh=NxlDA0cHHqiW0SMHHhqlrl0ssnqzbE6tYWoESXaKZTg=;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E655F622B1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 15:46:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B8C9C93056;
+        Fri, 26 Nov 2021 15:46:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637941587;
+        bh=b4Kjpba7B4xdXA8ajrnoUEksRT03kaVzqIxfFUFKJXo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OQetu7gsir66DYGD0q+9OWJdAUy33RSMRRaGccWQ8TTVljDMswxTGG+5gpWv/7dpb
-         o32AeeqexTPlmHuwF2fEIQ330A0aZgWgZJqCn24dfr1WGUHrZQuxWgUcSgEpdGcYm3
-         x/H7zJru9kbI374LzirrPbdWIvsnDGvP/8A87oE4=
-Date:   Fri, 26 Nov 2021 16:44:17 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Simo Sorce <simo@redhat.com>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
-        Tso Ted <tytso@mit.edu>, linux-crypto@vger.kernel.org,
-        Willy Tarreau <w@1wt.eu>, Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Petr Tesarik <ptesarik@suse.cz>,
-        John Haxby <john.haxby@oracle.com>,
-        Alexander Lobakin <alobakin@mailbox.org>,
-        Jirka Hladky <jhladky@redhat.com>
-Subject: Re: [PATCH v43 01/15] Linux Random Number Generator
-Message-ID: <YaEA0fyowmFlDfmK@kroah.com>
-References: <2036923.9o76ZdvQCi@positron.chronox.de>
- <4641592.OV4Wx5bFTl@positron.chronox.de>
- <CAHmME9oaS4TOpk7rQ73BRKeVLjMUNyt6EFyeOX=hZSkFBPDu0g@mail.gmail.com>
- <56d2da397bb53f71c0354b102c3b40940e9b4eda.camel@redhat.com>
+        b=LKZG9ESne8pWqAxsEJ+5ZAaDepKcPTxEnLNpkf26h/dHGDVxqRy8MZGaLybxpjiwk
+         jvMQF2fyGTLzM1X9np+lB6lEoEav71s+JcOXkj69cT1CX0CfsAis+lpSTL+dFpkBY6
+         VYO5Pqmf8z1ToJtsT+aB0TNqjFjvIzKiayn06F0PVKsjjMpqQUSYMcKqoZlKJZJKVF
+         75Ab/iZg7aD0I7lbFnNRiusm3pj89RspCjLZGmjsQTAT36bF56gzajhzb+GtW5aaan
+         WIJSZeNKiHCRmXQrOW+WXW5nDBUIBJb7LGGiVCTuMKNtAErKL5r6QEAUzDzZnLmh2N
+         96VfjGqO4hq5g==
+Date:   Fri, 26 Nov 2021 08:46:21 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, llvm@lists.linux.dev,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH] powerpc: mm: radix_tlb: rearrange the if-else block
+Message-ID: <YaEBTbjGyUBmISGK@archlinux-ax161>
+References: <20211125154406.470082-1-anders.roxell@linaro.org>
+ <6b1e51a8-2f4d-2024-df90-a35c926d7a30@csgroup.eu>
+ <CAK8P3a0n_n+PnfYmAdS9923yheLqYXRp8=65hKf9abLCRAX8ig@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <56d2da397bb53f71c0354b102c3b40940e9b4eda.camel@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK8P3a0n_n+PnfYmAdS9923yheLqYXRp8=65hKf9abLCRAX8ig@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 09:59:01AM -0500, Simo Sorce wrote:
-> Jason,
-> have you previously produced a list of reasoned concerns with this
-> patchset and direction?
+On Fri, Nov 26, 2021 at 02:59:29PM +0100, Arnd Bergmann wrote:
+> On Fri, Nov 26, 2021 at 2:43 PM Christophe Leroy
+> <christophe.leroy@csgroup.eu> wrote:
+> > Le 25/11/2021 à 16:44, Anders Roxell a écrit :
+> > Can't you fix CLANG instead :) ?
+> >
+> > Or just add an else to the IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) that
+> > sets hstart and hend to 0 ?
 > 
-> This specific email is not really useful to me to understand the
-> concerns as it does not contain actionable suggestion or critique.
+> That doesn't sound any less risky than duplicating the code, it can lead to
+> incorrect changes just as easily if a patch ends up actually flushing at the
+> wrong address, and the compiler fails to complain because of the bogus
+> initialization.
 > 
-> I personally find the direction fine, and with my distribution hat on I
-> can say that FIPS is essential for us and any design must include an
-> option to be FIPS certifiable.
+> > Or just put hstart and hend calculation outside the IS_ENABLED() ? After
+> > all GCC should drop the calculation when not used.
 > 
-> As NIST keeps improving their testing capabilities and rigorous
-> cryptographic design of the CSPRNGs as well as entropy sources the
-> kernel must also adapt.
-> 
-> Stephan is providing a path forward, and I haven't seen any other
-> proposal, let alone code, that provide improvements in this area.
-> I am pretty sure the design can be improved if there is detailed and
-> actionable feedback on what to change.
-> 
-> I hope the path forward can be one of collaboration rather then mere
-> opposition.
+> I like this one. I'm still unsure how clang can get so confused about whether
+> the variables are initialized or not, usually it handles this much better than
+> gcc. My best guess is that one of the memory clobbers makes it conclude
+> that 'hflush' can be true when it gets written to by an inline asm.
 
-Replacement of the existing code to cut over to the new one is not
-collaboration, it's the exact opposite.
+As far as I am aware, clang's analysis does not evaluate variables when
+generating a control flow graph and using that for static analysis:
 
-Submitting patches to the existing codebase to implement the
-"requirements" is the proper way forward, why has that never been done.
+https://godbolt.org/z/PdGxoq9j7
 
-Remember, evolution is the correct way of kernel development, not
-intelligent design :)
+Based on the control flow graph, it knows that hstart and hend are
+uninitialized because IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) gets
+expanded to 0 by the preprocessor but it does not seem like it can piece
+together that hflush's value of false is only changed to true under the
+now 'if (0) {' branch, meaning that all the calls to __tlbiel_va_range()
+never get evaluated. That may or may not be easy to fix in clang but we
+run into issues like this so infrequently.
 
-thanks,
+At any rate, the below diff works for me.
 
-greg k-h
+Cheers,
+Nathan
+
+diff --git a/arch/powerpc/mm/book3s64/radix_tlb.c b/arch/powerpc/mm/book3s64/radix_tlb.c
+index 7724af19ed7e..156a631df976 100644
+--- a/arch/powerpc/mm/book3s64/radix_tlb.c
++++ b/arch/powerpc/mm/book3s64/radix_tlb.c
+@@ -1174,12 +1174,10 @@ static inline void __radix__flush_tlb_range(struct mm_struct *mm,
+ 		bool hflush = false;
+ 		unsigned long hstart, hend;
+ 
+-		if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
+-			hstart = (start + PMD_SIZE - 1) & PMD_MASK;
+-			hend = end & PMD_MASK;
+-			if (hstart < hend)
+-				hflush = true;
+-		}
++		hstart = (start + PMD_SIZE - 1) & PMD_MASK;
++		hend = end & PMD_MASK;
++		if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) && hstart < hend)
++			hflush = true;
+ 
+ 		if (type == FLUSH_TYPE_LOCAL) {
+ 			asm volatile("ptesync": : :"memory");
