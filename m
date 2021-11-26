@@ -2,119 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F9A345EF37
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:34:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6833B45EFEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348618AbhKZNhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 08:37:41 -0500
-Received: from foss.arm.com ([217.140.110.172]:34014 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352433AbhKZNfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 08:35:40 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3345311D4;
-        Fri, 26 Nov 2021 05:32:27 -0800 (PST)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 306713F66F;
-        Fri, 26 Nov 2021 05:32:26 -0800 (PST)
-From:   Valentin Schneider <Valentin.Schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Vincent Donnefort <Vincent.Donnefort@arm.com>,
-        peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
-        dietmar.eggemann@arm.com
-Subject: Re: [PATCH] sched/fair: Fix detection of per-CPU kthreads waking a task
-In-Reply-To: <CAKfTPtCnusWJXJLDEudQ_q8MWaZYbPJK-QjAbBYWFW8Nw-J+Ww@mail.gmail.com>
-References: <20211124154239.3191366-1-vincent.donnefort@arm.com> <CAKfTPtDX8sOfguZhJt5QV3j5D_JetcgncuF2w+uLa0XDk7UXkw@mail.gmail.com> <8735nkcwov.mognet@arm.com> <CAKfTPtDPskVdEd-KQ_cwe-R_zVFPQOgdbk9x+3eD12pKs8fGFw@mail.gmail.com> <87zgpsb6de.mognet@arm.com> <CAKfTPtCnusWJXJLDEudQ_q8MWaZYbPJK-QjAbBYWFW8Nw-J+Ww@mail.gmail.com>
-Date:   Fri, 26 Nov 2021 13:32:03 +0000
-Message-ID: <87sfvjavqk.mognet@arm.com>
+        id S1377680AbhKZOdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 09:33:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351127AbhKZObm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 09:31:42 -0500
+X-Greylist: delayed 419 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 26 Nov 2021 05:46:30 PST
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2339CC0613FA;
+        Fri, 26 Nov 2021 05:46:29 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B1F4A62288;
+        Fri, 26 Nov 2021 13:39:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83BD4C93056;
+        Fri, 26 Nov 2021 13:39:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637933969;
+        bh=NC4SpiZ2SHdTDSCTPOpq9t5x7oRVWD4HdHwzbrrZNBQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LnzuaG0aGkSbR11VcYAhw+LABMdgP93Eb79e+hjZKIh/WOMreVmEeXBxIpXzyXXms
+         BGTLlweG4pPZYKxUtGXROXQClLNB3esFBYx+eQUBYRgyA+GVObOOdBCjD7dSj5mcJE
+         oniJJGSEqxtsYfCiu0YgPTAJynNzUVpcc9YGmdWQlSkk8msyd9OQBHV3w33o4UKcCV
+         jzbckwgg1rO5e+AqN+wuVvV+czHcDglgU85iBbjs2zjRz/DimZWx3G+/ktXeSrGYZt
+         OOPazXpd42BZegLzm3RZaaaFs4EGjXET5mb2im3HE7FwmRUy3g0d+h+saTXQhBRYtT
+         808fo/59GQffQ==
+Date:   Fri, 26 Nov 2021 13:39:22 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org,
+        judyhsiao@chromium.org,
+        Venkata Prasad Potturu <potturu@codeaurora.org>
+Subject: Re: [PATCH v6 10/10] ASoC: qcom: SC7280: Update config for building
+ codec dma drivers
+Message-ID: <YaDjiip57q5hDe+l@sirena.org.uk>
+References: <1637928282-2819-1-git-send-email-srivasam@codeaurora.org>
+ <1637928282-2819-11-git-send-email-srivasam@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="8VdVWGcSreCkYakr"
+Content-Disposition: inline
+In-Reply-To: <1637928282-2819-11-git-send-email-srivasam@codeaurora.org>
+X-Cookie: You fill a much-needed gap.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/11/21 09:23, Vincent Guittot wrote:
-> On Thu, 25 Nov 2021 at 16:30, Valentin Schneider
-> <Valentin.Schneider@arm.com> wrote:
->> On 25/11/21 14:23, Vincent Guittot wrote:
->> > If we want to filter wakeup
->> > generated by interrupt context while a per cpu kthread is running, it
->> > would be better to fix all cases and test the running context like
->> > this
->> >
->>
->> I think that could make sense - though can the idle task issue wakeups in
->> process context? If so that won't be sufficient. A quick audit tells me:
->>
->> o rcu_nocb_flush_deferred_wakeup() happens before calling into cpuidle
->> o I didn't see any wakeup issued from the cpu_pm_notifier call chain
->> o I'm not entirely sure about flush_smp_call_function_from_idle(). I found
->>   this thing in RCU:
->>
->>   smp_call_function_single(cpu, rcu_exp_handler)
->>
->>     rcu_exp_handler()
->>       rcu_report_exp_rdp()
->>         rcu_report_exp_cpu_mult()
->>           __rcu_report_exp_rnp()
->>             swake_up_one()
->>
->> IIUC if set_nr_if_polling() then the smp_call won't send an IPI and should be
->> handled in that flush_foo_from_idle() call.
->
-> Aren't all these planned to wakeup on local cpu  ? so i don't  see any
-> real problem there
->
 
-Hm so other than boot time oddities I think that does end up with threads
-of an !UNBOUND (so pcpu) workqueue...
+--8VdVWGcSreCkYakr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->>
->> I'd be tempted to stick your VincentD's conditions together, just to be
->> safe...
->
-> More than safe I would prefer that we fix the correct root cause
-> instead of hiding it
->
+On Fri, Nov 26, 2021 at 05:34:42PM +0530, Srinivasa Rao Mandadapu wrote:
 
-I did play around a bit to see if this could be true when evaluating that
-is_per_cpu_kthread() condition:
+> This patch set depends on:
+>     -- https://patchwork.kernel.org/project/alsa-devel/list/?series=582321
 
-  is_idle_task(current) && in_task() && p->nr_cpus_allowed > 1
+To repeat yet again:
 
-but no luck so far. An in_task() check would appear sufficient, but how's
-this?
+Please include human readable descriptions of things like commits and
+issues being discussed in e-mail in your mails, this makes them much
+easier for humans to read especially when they have no internet access.
+I do frequently catch up on my mail on flights or while otherwise
+travelling so this is even more pressing for me than just being about
+making things a bit easier to read.
 
----
+--8VdVWGcSreCkYakr
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 884f29d07963..f45806b7f47a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6390,14 +6390,18 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 		return prev;
- 
- 	/*
--	 * Allow a per-cpu kthread to stack with the wakee if the
--	 * kworker thread and the tasks previous CPUs are the same.
--	 * The assumption is that the wakee queued work for the
--	 * per-cpu kthread that is now complete and the wakeup is
--	 * essentially a sync wakeup. An obvious example of this
-+	 * Allow a per-cpu kthread to stack with the wakee if the kworker thread
-+	 * and the tasks previous CPUs are the same.  The assumption is that the
-+	 * wakee queued work for the per-cpu kthread that is now complete and
-+	 * the wakeup is essentially a sync wakeup. An obvious example of this
- 	 * pattern is IO completions.
-+	 *
-+	 * Ensure the wakeup is issued by the kthread itself, and don't match
-+	 * against the idle task because that could override the
-+	 * available_idle_cpu(target) check done higher up.
- 	 */
--	if (is_per_cpu_kthread(current) &&
-+	if (is_per_cpu_kthread(current) && !is_idle_task(current) &&
-+	    in_task() &&
- 	    prev == smp_processor_id() &&
- 	    this_rq()->nr_running <= 1) {
- 		return prev;
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGg44kACgkQJNaLcl1U
+h9B2PAf9HFtpuSJkMDBV0v+tqGL4HutQce5WtAopOh7XBAr+9F4S0Zc/wjf7/rEo
+XsZ5s26AzXEBFCam543O95L/8xOKJoRBTCpzNI9shL0I9Us7v3OrnpKmtlmFfguz
+pdHWM/ynf7GukdQkiKCjFdvb7ecDnIhcUotEmrod4v0JlHbTa8oTNHAm3xW1sOVV
+aJN9QVOLSErb033mTnfCRakno8KqclFjBFrYE9Kr5mQTGHwduq36zTDrVM268eyX
+LH+vhF0mKVUkfuTZKQbY/8NpnLbmBSnQ6Uf4LjBs1itPiv9cWJGuE/lPqB8GNecj
+VIfGGvzQFpOlGDGmYRb4RAyPvuOJAg==
+=eXdC
+-----END PGP SIGNATURE-----
+
+--8VdVWGcSreCkYakr--
