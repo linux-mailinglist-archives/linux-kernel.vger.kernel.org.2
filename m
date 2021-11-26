@@ -2,88 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9EC45F185
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 704F545F18B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:16:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378400AbhKZQSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:18:12 -0500
-Received: from mswedge1.sunplus.com ([60.248.182.113]:52112 "EHLO
-        mg.sunplus.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1378396AbhKZQQL (ORCPT
+        id S1378452AbhKZQTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:19:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:37652 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1378494AbhKZQRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:16:11 -0500
-X-MailGates: (flag:3,DYNAMIC,RELAY,NOHOST:PASS)(compute_score:DELIVER,40
-        ,3)
-Received: from 172.17.9.112
-        by mg01.sunplus.com with MailGates ESMTP Server V5.0(15732:0:AUTH_RELAY)
-        (envelope-from <wells.lu@sunplus.com>); Sat, 27 Nov 2021 00:12:50 +0800 (CST)
-Received: from sphcmbx02.sunplus.com.tw (172.17.9.112) by
- sphcmbx02.sunplus.com.tw (172.17.9.112) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Sat, 27 Nov 2021 00:12:47 +0800
-Received: from sphcmbx02.sunplus.com.tw ([::1]) by sphcmbx02.sunplus.com.tw
- ([fe80::f8bb:bd77:a854:5b9e%14]) with mapi id 15.00.1497.023; Sat, 27 Nov
- 2021 00:12:47 +0800
-From:   =?utf-8?B?V2VsbHMgTHUg5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     Wells Lu <wellslutw@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        =?utf-8?B?VmluY2VudCBTaGloIOaWvemMlem0uw==?= 
-        <vincent.shih@sunplus.com>
-Subject: RE: [PATCH v2 2/2] net: ethernet: Add driver for Sunplus SP7021
-Thread-Topic: [PATCH v2 2/2] net: ethernet: Add driver for Sunplus SP7021
-Thread-Index: AQHX1ttDZ0jKVsi7r0auZS2tEQF+d6wADq2AgAXn1uCADjVYcP//wFkAgAFNSvCAADlOgIAAnUMA
-Date:   Fri, 26 Nov 2021 16:12:46 +0000
-Message-ID: <38e40bc4c0de409ca959bcb847c1fc96@sphcmbx02.sunplus.com.tw>
-References: <cover.1636620754.git.wells.lu@sunplus.com>
- <519b61af544f4c6920012d44afd35a0f8761b24f.1636620754.git.wells.lu@sunplus.com>
- <YY7/v1msiaqJF3Uy@lunn.ch>
- <7cccf9f79363416ca8115a7ed9b1b7fd@sphcmbx02.sunplus.com.tw>
- <YZ+pzFRCB0faDikb@lunn.ch>
- <6c1ce569d2dd46eba8d4b0be84d6159b@sphcmbx02.sunplus.com.tw>
- <YaDxc2+HKUYxsmX4@lunn.ch>
-In-Reply-To: <YaDxc2+HKUYxsmX4@lunn.ch>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [172.25.108.39]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Fri, 26 Nov 2021 11:17:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637943227;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TivTs0wWKeTxFbwRk84lL1Qj0tiDczM43dDBlfnrKZ0=;
+        b=SD+FQtl17li5QPmcLhLq8oum8F3TWlbpyYyaT2QQUjgBC2Yfnx4X6Z0n9PEXOgNgwSZOYC
+        QRfFCTKP40ZfqtFpDLtO3sarSF+qIi/55SVOyQcQzTwWmnXbvo48OG050xif7xyZkIxDWD
+        Er/mZ+EejxJLX4MvcLgS2Nhj7r4umCo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-589-c8l_yIgkMAufgYBwubM3zQ-1; Fri, 26 Nov 2021 11:13:42 -0500
+X-MC-Unique: c8l_yIgkMAufgYBwubM3zQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6F9ED1023F4D;
+        Fri, 26 Nov 2021 16:13:40 +0000 (UTC)
+Received: from [10.39.195.16] (unknown [10.39.195.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6E7EE76606;
+        Fri, 26 Nov 2021 16:13:37 +0000 (UTC)
+Message-ID: <4fcb162a-738b-64e7-6326-9f9967d1b8a8@redhat.com>
+Date:   Fri, 26 Nov 2021 17:13:36 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 2/4] RISC-V: KVM: Add VM capability to allow userspace get
+ GPA size
+Content-Language: en-US
+To:     Anup Patel <anup.patel@wdc.com>, Shuah Khan <shuah@kernel.org>,
+        Atish Patra <atishp@atishpatra.org>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Anup Patel <anup@brainfault.org>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20211126154020.342924-1-anup.patel@wdc.com>
+ <20211126154020.342924-3-anup.patel@wdc.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211126154020.342924-3-anup.patel@wdc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQW5kcmV3LA0KDQoNCkZyb20gZGF0YSBwcm92aWRlZCBieSBBU0lDIGVuZ2luZWVyLCBNQUMg
-b2YgU1A3MDIxIG9ubHkNCnJlYWRzIHRoZSA0IHJlZ2lzdGVycyBvZiBQSFk6DQowOiBDb250cm9s
-IHJlZ2lzdGVyDQoxOiBTdGF0dXMgcmVnaXN0ZXINCjQ6IEF1dG8tbmVnb3RpYXRpb24gYWR2ZXJ0
-aXNlbWVudCByZWdpc3Rlcg0KNTogQXV0by1uZWdvdGlhdGlvbiBsaW5rIHBhcnRuZXIgYWJpbGl0
-eSByZWdpc3Rlcg0KDQpJdCBkb2VzIG5vdCByZWFkIGFueSBvdGhlciByZWdpc3RlcnMgb2YgUEhZ
-Lg0KDQoNCkJlc3QgcmVnYXJkcywNCldlbGxzIEx1DQoNCg0KPiA+IEhpIEFuZHJldywNCj4gPg0K
-PiA+IEkgc2V0IHBoeS1pZCByZWdpc3RlcnMgdG8gMzAgYW5kIDMxIGFuZCBmb3VuZCB0aGUgcmVh
-ZC1iYWNrIHZhbHVlcyBvZg0KPiA+IG1kaW8gcmVhZCBjb21tYW5kcyBmcm9tIENQVSBhcmUgYWxs
-IDB4MDAwMC4NCj4gPg0KPiA+IEkgY29uc3VsdGVkIHdpdGggYW4gQVNJQyBlbmdpbmVlci4gU2hl
-IGNvbmZpcm1lZCB0aGF0IGlmIHBoeS1pZCBvZiBhDQo+ID4gbWRpbyBjb21tYW5kIGZyb20gQ1BV
-IGRvZXMgbm90IG1hdGNoIGFueSBwaHktaWQgcmVnaXN0ZXJzLCB0aGUgbWRpbw0KPiA+IGNvbW1h
-bmQgd2lsbCBub3QgYmUgc2VudCBvdXQuDQo+ID4NCj4gPiBTaGUgZXhwbGFpbmVkIGlmIHBoeS1p
-ZCBvZiBhIG1kaW8gY29tbWFuZCBkb2VzIG5vdCBtYXRjaCBhbnkgcGh5LWlkDQo+ID4gcmVnaXN0
-ZXJzIChyZXByZXNlbnQgYWRkcmVzc2VzIG9mIGV4dGVybmFsIFBIWXMpLCB3aHkgTUFDIG5lZWRz
-IHRvDQo+ID4gc2VuZCBhIGNvbW1hbmQgdG8gbm9uLWV4aXN0aW5nIFBIWT8NCj4gDQo+IFJlYWRz
-IG9yIHdyaXRlcyBvbiBhIHJlYWwgUEhZIHdoaWNoIExpbnV4IGlzIGRyaXZpbmcgY2FuIGhhdmUg
-c2lkZSBlZmZlY3RzLiBUaGVyZSBpcyBhDQo+IGxpbmsgc3RhdHVlIHJlZ2lzdGVyIHdoaWNoIGxh
-dGNoZXMuIFJlYWQgaXQgb25jZSwgeW91IGdldCB0aGUgbGFzdCBzdGF0dXMsIHJlYWQgaXQgYWdh
-aW4sDQo+IHlvdSBnZXQgdGhlIGN1cnJlbnQgc3RhdHVzLiBJZiB0aGUgTUFDIGhhcmR3YXJlIGlz
-IHJlYWRpbmcgdGhpcyByZWdpc3RlciBhcyB3ZWxsIGEgTGludXgsDQo+IGJhZCB0aGluZ3Mgd2ls
-bCBoYXBwZW4uIEEgcmVhZCBvbiB0aGUgaW50ZXJydXB0IHN0YXR1cyByZWdpc3RlciBvZnRlbiBj
-bGVhcnMgdGhlIGludGVycnVwdHMuDQo+IFNvIExpbnV4IHdpbGwgbm90IHNlZSB0aGUgaW50ZXJy
-dXB0cy4NCj4gDQo+IFNvIHlvdSBuZWVkIHRvIG1ha2Ugc3VyZSB5b3UgaGFyZHdhcmUgaXMgbm90
-IHRvdWNoaW5nIGEgUEhZIHdoaWNoIExpbnV4IHVzZXMuIFdoaWNoIGlzDQo+IHdoeSBpIHN1Z2dl
-c3RlZCB1c2luZyBNRElPIGJ1cyBhZGRyZXNzIDMxLCB3aGljaCBnZW5lcmFsbHkgZG9lcyBub3Qg
-aGF2ZSBhIFBIWSBhdCB0aGF0DQo+IGFkZHJlc3MuDQo+IA0KPiAJICBBbmRyZXcNCg==
+On 11/26/21 16:40, Anup Patel wrote:
+> The GPA size supported for a RISC-V Guest/VM is based on the MMU mode
+> used by G-stage translation. The KVM RISC-V will detect and use the
+> best possible MMU mode for the G-stage in kvm_arch_init().
+> 
+> We add a RISC-V specific VM capability KVM_CAP_RISCV_VM_GPA_SIZE which
+
+You can make it just KVM_CAP_VM_GPA_BITS instead - it's useful on other 
+architectures as well.
+
+Paolo
+
+> can be used by KVM userspace to get guest physical address (GPA) size
+> (i.e. number of GPA bits) supported for a Guest/VM.
+> 
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> ---
+>   arch/riscv/include/asm/kvm_host.h | 1 +
+>   arch/riscv/kvm/mmu.c              | 5 +++++
+>   arch/riscv/kvm/vm.c               | 3 +++
+>   include/uapi/linux/kvm.h          | 1 +
+>   4 files changed, 10 insertions(+)
+> 
+> diff --git a/arch/riscv/include/asm/kvm_host.h b/arch/riscv/include/asm/kvm_host.h
+> index 37589b953bcb..ae5d238607fe 100644
+> --- a/arch/riscv/include/asm/kvm_host.h
+> +++ b/arch/riscv/include/asm/kvm_host.h
+> @@ -221,6 +221,7 @@ void kvm_riscv_stage2_free_pgd(struct kvm *kvm);
+>   void kvm_riscv_stage2_update_hgatp(struct kvm_vcpu *vcpu);
+>   void kvm_riscv_stage2_mode_detect(void);
+>   unsigned long kvm_riscv_stage2_mode(void);
+> +int kvm_riscv_stage2_gpa_size(void);
+>   
+>   void kvm_riscv_stage2_vmid_detect(void);
+>   unsigned long kvm_riscv_stage2_vmid_bits(void);
+> diff --git a/arch/riscv/kvm/mmu.c b/arch/riscv/kvm/mmu.c
+> index 9ffd0255af43..9b6d6465094f 100644
+> --- a/arch/riscv/kvm/mmu.c
+> +++ b/arch/riscv/kvm/mmu.c
+> @@ -760,3 +760,8 @@ unsigned long kvm_riscv_stage2_mode(void)
+>   {
+>   	return stage2_mode >> HGATP_MODE_SHIFT;
+>   }
+> +
+> +int kvm_riscv_stage2_gpa_size(void)
+> +{
+> +	return stage2_gpa_bits;
+> +}
+> diff --git a/arch/riscv/kvm/vm.c b/arch/riscv/kvm/vm.c
+> index fb18af34a4b5..ae97f6929897 100644
+> --- a/arch/riscv/kvm/vm.c
+> +++ b/arch/riscv/kvm/vm.c
+> @@ -82,6 +82,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>   	case KVM_CAP_NR_MEMSLOTS:
+>   		r = KVM_USER_MEM_SLOTS;
+>   		break;
+> +	case KVM_CAP_RISCV_VM_GPA_SIZE:
+> +		r = kvm_riscv_stage2_gpa_size();
+> +		break;
+>   	default:
+>   		r = 0;
+>   		break;
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index 1daa45268de2..dac98df3101d 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -1131,6 +1131,7 @@ struct kvm_ppc_resize_hpt {
+>   #define KVM_CAP_EXIT_ON_EMULATION_FAILURE 204
+>   #define KVM_CAP_ARM_MTE 205
+>   #define KVM_CAP_VM_MOVE_ENC_CONTEXT_FROM 206
+> +#define KVM_CAP_RISCV_VM_GPA_SIZE 207
+>   
+>   #ifdef KVM_CAP_IRQ_ROUTING
+>   
+> 
+
