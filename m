@@ -2,85 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728ED45E7E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 07:35:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6EEC45E7ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 07:38:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358752AbhKZGik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 01:38:40 -0500
-Received: from soltyk.jannau.net ([144.76.91.90]:42720 "EHLO soltyk.jannau.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1358953AbhKZGgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 01:36:38 -0500
-Received: by soltyk.jannau.net (Postfix, from userid 1000)
-        id DD5AD261B6F; Fri, 26 Nov 2021 07:33:24 +0100 (CET)
-Date:   Fri, 26 Nov 2021 07:33:24 +0100
-From:   Janne Grunau <j@jannau.net>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/4] Add DTs for all Apple M1 (t8103) devices
-Message-ID: <20211126063324.GB28130@jannau.net>
-References: <20211122225807.8105-1-j@jannau.net>
- <b38bb236-d739-4514-e79a-d7666ae23337@marcan.st>
+        id S1345137AbhKZGlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 01:41:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352627AbhKZGjs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 01:39:48 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EB4C06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 22:36:35 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id r25so34524247edq.7
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 22:36:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=sR4bE0NaEJT8kqnrkcq81SC0Zzpxt+IY9PP0eL34kP0=;
+        b=CbVrXOzvxxbfv3qbIYKpd2IeswV/mFYdKTexoGdslGPvY0oB3Lws06WiYtyX+Pyia2
+         p8y9vypuJJVBMCcenxKQwmXPj1WAKlgk+9/zzxRzK6XuBgdnUuwNggw2kW9UtOqAnNPt
+         L5oYo9eGFWIql0KpDwIc0Y/lfrTMZvWb0NydPQSMoJrEp5pIiYwECrmiIgoyDa4yY9YH
+         74uPJRVtA74jJxbaar7bK9Oi1ShuJyGDpnQhRVqmsdAK7mF1fpAgBsXgd1yE+E7O5GR8
+         G08vVH7Am/NIpXTkcKcqRaT8IZBFvs9UJpI8//xhD6diw17XnJL4MM6yQsnJc3sRkwMo
+         fiTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=sR4bE0NaEJT8kqnrkcq81SC0Zzpxt+IY9PP0eL34kP0=;
+        b=vezrWs85oFWU1Agr3J+o4UI3HfU+eSV3TdRXY1TDZdlT1/61Qt17Ly+FuBGLIQVZWx
+         HdT5dLVr68Jd/1UGlbsfbPoZ6nRvYdmUi+vZRosnxG9m3zK2kFHnCRaFfX18TNX0nlmC
+         Xer9V/FvR8seTBUAwXMpoc7sQtKWAGe0pinTjuyAhNoo+fBcX57piKX0q152rHP2h/ah
+         xikkc85e4NtGxp1GVkdzwJBfyI7RKA3a/gtTPuNuGYbkKti1CBANapNclIclXW+jF6pT
+         1oHGWUHDYZAB92nllW/Y1dzYsipNdJyuNhs5bk4g5IZ+mbIOJTS7adLgICsrvqnk3CCB
+         e32Q==
+X-Gm-Message-State: AOAM530QObSnWZ0kCUECIqy7rziYojGACyXaDO622wcjENtrCsIZ33wd
+        u/S1R0o9+2dfZKpVr1vmSFzOv6FZ7l1csmDd31JTUGHDtETaKw==
+X-Google-Smtp-Source: ABdhPJx5456zm9hyuonDqN4j9teCoM9TaP9W4TcPkO2Rw2VGMkjLzMjboBm0zq6eesKgRUlHlqerUKYN/fFy90zALAU=
+X-Received: by 2002:a50:e003:: with SMTP id e3mr45648822edl.374.1637908593998;
+ Thu, 25 Nov 2021 22:36:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b38bb236-d739-4514-e79a-d7666ae23337@marcan.st>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211125092028.153766171@linuxfoundation.org>
+In-Reply-To: <20211125092028.153766171@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 26 Nov 2021 12:06:22 +0530
+Message-ID: <CA+G9fYv4vrno=g9aEtodD26=6wHAjoGuHNbzeo9dSwRNz+pJ+w@mail.gmail.com>
+Subject: Re: [PATCH 5.4 000/100] 5.4.162-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hej,
+On Thu, 25 Nov 2021 at 15:03, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.162 release.
+> There are 100 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 27 Nov 2021 09:20:07 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.162-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On 2021-11-26 14:39:16 +0900, Hector Martin wrote:
-> On 23/11/2021 07.58, Janne Grunau wrote:
-> > 
-> > Janne Grunau (4):
-> >    dt-bindings: arm: apple: Add iMac (24-inch 2021) to Apple bindings
-> >    arm64: dts: apple: Add missing M1 (t8103) devices
-> >    arm64: dts: apple: t8103: Add i2c nodes
-> >    arm64: dts: apple: t8103: Add cd321x nodes
-> > 
-> >   .../devicetree/bindings/arm/apple.yaml        |  6 +-
-> >   arch/arm64/boot/dts/apple/Makefile            |  4 +
-> >   arch/arm64/boot/dts/apple/t8103-j274.dts      | 33 +------
-> >   arch/arm64/boot/dts/apple/t8103-j293.dts      | 41 +++++++++
-> >   arch/arm64/boot/dts/apple/t8103-j313.dts      | 33 +++++++
-> >   arch/arm64/boot/dts/apple/t8103-j456.dts      | 59 ++++++++++++
-> >   arch/arm64/boot/dts/apple/t8103-j457.dts      | 47 ++++++++++
-> >   arch/arm64/boot/dts/apple/t8103-jxxx.dtsi     | 67 ++++++++++++++
-> >   arch/arm64/boot/dts/apple/t8103.dtsi          | 92 +++++++++++++++++++
-> >   9 files changed, 352 insertions(+), 30 deletions(-)
-> >   create mode 100644 arch/arm64/boot/dts/apple/t8103-j293.dts
-> >   create mode 100644 arch/arm64/boot/dts/apple/t8103-j313.dts
-> >   create mode 100644 arch/arm64/boot/dts/apple/t8103-j456.dts
-> >   create mode 100644 arch/arm64/boot/dts/apple/t8103-j457.dts
-> >   create mode 100644 arch/arm64/boot/dts/apple/t8103-jxxx.dtsi
-> > 
-> 
-> Whole series is:
-> 
-> Tested-by: Hector Martin <marcan@marcan.st>
-> 
-> on j274, j313, j456.
-> 
-> Thanks! If you spin up a v4 with the minor comments addressed, I'll be happy
-> to merge it :)
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-there is already a v4 with Sven's comments addressed at
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-https://lore.kernel.org/linux-arm-kernel/20211123224926.7722-1-j@jannau.net/
+## Build
+* kernel: 5.4.162-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.4.y
+* git commit: 79d16e9015f9481842007405bc120a66d77cf1f1
+* git describe: v5.4.161-101-g79d16e9015f9
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
+61-101-g79d16e9015f9
 
-Jean-Marc Ranger notified me off-list of a typo in "arm64: dts: apple: 
-t8103: Add cd321x nodes" commit messages: 'addiotional'.
+## No regressions (compared to v5.4.161-99-g60345e6d23ca)
 
-I don't think it's worth spinning up a v5 for fixing that typo.
+## No fixes (compared to v5.4.161-99-g60345e6d23ca)
 
-thanks,
 
-Janne
+## Test result summary
+total: 90948, pass: 75346, fail: 766, skip: 13680, xfail: 1156
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 258 total, 258 passed, 0 failed
+* arm64: 36 total, 36 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 20 total, 20 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 34 total, 34 passed, 0 failed
+* parisc: 12 total, 12 passed, 0 failed
+* powerpc: 54 total, 48 passed, 6 failed
+* riscv: 24 total, 24 passed, 0 failed
+* s390: 12 total, 12 passed, 0 failed
+* sh: 20 total, 20 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 36 total, 36 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
