@@ -2,109 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A4645E87B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:29:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B14145E87D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:31:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359127AbhKZHcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 02:32:46 -0500
-Received: from mout.kundenserver.de ([212.227.126.135]:46441 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359187AbhKZHap (ORCPT
+        id S1359233AbhKZHeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 02:34:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232938AbhKZHcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 02:30:45 -0500
-Received: from mail-wm1-f46.google.com ([209.85.128.46]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1N8oKc-1mW8px1Dz4-015uBr; Fri, 26 Nov 2021 08:27:31 +0100
-Received: by mail-wm1-f46.google.com with SMTP id y196so7311768wmc.3;
-        Thu, 25 Nov 2021 23:27:22 -0800 (PST)
-X-Gm-Message-State: AOAM532PJ5TLi39uUBALKFdumHYVhqQ/+IjIi3R4c8D46jKXHgLKF3OO
-        j1mi+rd8pH2fwpSKWhB8KmT8F/dafBnKjZ7GyG4=
-X-Google-Smtp-Source: ABdhPJwK86Skrk2YmCmSiuMFmnHaqvZ1U3KPASRzBlbM0wrP/xDhUqP4iFQAlSro++uvXuH7ec3ujn7iCmdS8Z6gAaY=
-X-Received: by 2002:a05:600c:6d2:: with SMTP id b18mr13791114wmn.98.1637911641786;
- Thu, 25 Nov 2021 23:27:21 -0800 (PST)
+        Fri, 26 Nov 2021 02:32:22 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B2BC061574;
+        Thu, 25 Nov 2021 23:29:09 -0800 (PST)
+Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1mqVfO-0006Q9-Rs; Fri, 26 Nov 2021 08:29:06 +0100
+Message-ID: <12cefa81-495b-3083-5f19-b319c704ebf7@leemhuis.info>
+Date:   Fri, 26 Nov 2021 08:29:05 +0100
 MIME-Version: 1.0
-References: <20211126060024.3290177-1-alistair.francis@opensource.wdc.com> <20211126060024.3290177-5-alistair.francis@opensource.wdc.com>
-In-Reply-To: <20211126060024.3290177-5-alistair.francis@opensource.wdc.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 26 Nov 2021 08:27:06 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a18g4J9k2GaPp2-MR3AGFi31yP_CkrqZUhELFyyJr_w-w@mail.gmail.com>
-Message-ID: <CAK8P3a18g4J9k2GaPp2-MR3AGFi31yP_CkrqZUhELFyyJr_w-w@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] uapi: futex: Add a futex waitv syscall
-To:     Alistair Francis <alistair.francis@opensource.wdc.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alistair Francis <alistair23@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alistair Francis <alistair.francis@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:hDMB6BPhy7ucXmPCswZzwURCLbdvyS1tqmVFI60//t5sIbWD5/o
- zeJNlVe/9CNnd5grUHhSwsf2CvHlZuYBqaF+5h1YSrYfgakho8p7JLvQtmxSWUrLp5MsqrL
- ev59aZEgvn7ybeLsVxe1TPwN7t7VZlxNlWYFhimuCcSnHM1nECoARDHK8FfPwOBG8sGPLPz
- bFxutrLaaEIdnUTP1svbQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Kh0i1O50Cto=:oRppCdZj7w8e2kkmC5I3Qp
- 4w2g16rmLp2ArQjMoXSbGlUv1+W1zYuZoMI79ketRD73QMmTXgUfuHHuRe9jmL4MPcV/mxP6A
- gC2qewMmZvw6DQ9qrHXx937Yy1psZ2CKIL2TdkQOKhotPds+PhgSrY4LxSr5jhStJ3FFOTgvG
- LRp4Eirdd36eBxGQEEeJVapFHluXmdDds4QRVOrl1sOnG3k0hL5uVxc/dn/Koa0TdzRii3Zpf
- Tog2IFzjBTNLH5h4vDm7CZOtzKzmGHVhDXICXtdXLYSoN9XGmAvQu3u2d4iZ59pQ9++g4LaK9
- Ve73xQNKnmuRzdhF3RKmKUQHz5r6UX7nmvOzEHXq9CyHz1c9wQV7FYa2x58Vehgycp5Ag6+oY
- Ys38sBdqb02zKjBqIE0kz0SBvvM1NI8ihglQ+tIJ+R1bZphiFCR/KP+EfPVQxGOIwTBPbTH4O
- QwMfLhBJqn3Yy3lAshDo8opYqsQnBhslQxW6xDjP/3F3cgYEJtBgRmPPrbEGMLKK8jlBP3Y6F
- pBscGM15X2wjsVjMwAEQQCWEO20PpRPHFHvs5kaWBRVrSmzW9lpoNWJv2R67N1u8Eln2RapQW
- QWcnX18YWQFIM1iskvaJXoA7R/3M9++rMMOs/yF6Chnx27cjDH8kRVc1C62PxPzn4MsXfDZDT
- QT8G14KFG6dMBtCZo5FfErRIrWhzbVD6IFSqz4/MSFx5tuFgcsQ/PCgsSCSwUfRa+ADipXEko
- FX+PuaH1RmkSzKOB8QfCqfllZuWpZQQ69Vr0eQrYnNMRihzDyarSFLKcLvWq+6EyYTP+lGSyP
- hA5+M8xcvkTEKpsLg+Dgv0mZCgAT8nqido7+kzXRzm9BZhS6xAwbhQYmAtLM3TroALNbabv0i
- oW6Q965nzYHj/uX3Mc179PwWZt2pWJbVFPH87doKVq1WnzlcbfeobMxoACL9XOCILfYKBtbjX
- 47vGt9FwwC759aK3jpvCEpneI5yjY1P8Z4LIO0scmq3Oi5se6Lh2JhweEiuib/9yDdeHytS1y
- /wCcAvWSVpVvEIYFI5TWgloJRq3Xr9I4danfxOzmnJV2BbZR3j8BnTT1SzQn/bP+S1xnvdFzS
- 4wlbLqqjYo6kikKzgExs0WBDJmOyoUj5Aw8KTg1vDjFF3EUhH5vxy/RacgxGA2kcEeKuCCoxi
- 2c3SI=
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Content-Language: en-BS
+To:     Eric Wong <e@80x24.org>
+Cc:     workflows@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, git@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Kees Cook <keescook@chromium.org>
+References: <cover.1637566224.git.linux@leemhuis.info>
+ <6b760115ecdd3687d4b82680b284f55a04f3ad90.1637566224.git.linux@leemhuis.info>
+ <20211123185237.M476855@dcvr>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Subject: Re: [RFC PATCH v1 1/1] docs: add the new commit-msg tags 'Reported:'
+ and 'Reviewed:'
+In-Reply-To: <20211123185237.M476855@dcvr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1637911750;b7264f3e;
+X-HE-SMSGID: 1mqVfO-0006Q9-Rs
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 7:00 AM Alistair Francis
-<alistair.francis@opensource.wdc.com> wrote:
->
-> From: Alistair Francis <alistair.francis@wdc.com>
->
-> This commit adds a futex waitv syscall wrapper that is exposed to
-> userspace.
->
-> Neither the kernel or glibc currently expose a futex wrapper, so
-> userspace is left performing raw syscalls. As the futex_waitv syscall
-> always expects a 64-bit time_t this can be tricky for 32-bit systems to
-> get correct.
->
-> In order to avoid userspace incorrectly passing the wrong timeouts let's
-> expose a public helper function that ensures the kernel is passed the
-> correct timeout struct.
->
-> Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+Ccing Linus Walleij, who added this, and Kees, who apparently came up
+with this originally.
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-> +/**
-> + * futex_waitv - Wait at multiple futexes, wake on any
-> + * @waiters:    Array of waiters
-> + * @nr_waiters: Length of waiters array
-> + * @flags: Operation flags
-> + * @timo:  Optional timeout for operation
-> + */
-> +static inline int
-> +__kernel_futex_syscall_waitv(volatile struct futex_waitv *waiters, unsigned long nr_waiters,
-> +                             unsigned long flags, struct timespec *timo, clockid_t clockid)
+On 23.11.21 19:52, Eric Wong wrote:
+> Thorsten Leemhuis <linux@leemhuis.info> wrote:
+>> diff --git a/Documentation/maintainer/configure-git.rst b/Documentation/maintainer/configure-git.rst
+>> index 80ae5030a590..8429d45d661c 100644
+>> --- a/Documentation/maintainer/configure-git.rst
+>> +++ b/Documentation/maintainer/configure-git.rst
+> 
+> <snip>, +cc git@vger
+> 
+>> @@ -56,7 +56,7 @@ by adding the following hook into your git:
+>>  	$ cat >.git/hooks/applypatch-msg <<'EOF'
+>>  	#!/bin/sh
+>>  	. git-sh-setup
+>> -	perl -pi -e 's|^Message-Id:\s*<?([^>]+)>?$|Link: https://lore.kernel.org/r/$1|g;' "$1"
+>> +	perl -pi -e 's|^Message-Id:\s*<?([^>]+)>?$|Reviewed: https://lore.kernel.org/r/$1|g;' "$1"
+> 
+> Side note: that regexp should match "Message-ID" case-insensitively.
+> git send-email is an outlier in its capitalization of "Message-Id",
+> most RFCs capitalize it "Message-ID", as do common MUAs.
 
-Same thing about the mismatched function name
+Argh :-/
 
-       Arnd
+It's still totally unclear if that or a similar patch will be accepted.
+And even if it is: the "don't do two different things in one commit"
+rule might not be that strict enforced when it comes to the Linux
+kernel's docs, but changing this regexp as part of another patch crosses
+the line.
+
+IOW: we afaics need a separate patch to make the regexp
+case-insensitively. Eric, do you want to submit one, as you brought it
+up? Or are there any other volunteers?
+
+Ciao, Thorsten
