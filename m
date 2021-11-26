@@ -2,107 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFF7745EF2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:30:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 084C645EED2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353354AbhKZNeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 08:34:10 -0500
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17237 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1349749AbhKZNcG (ORCPT
+        id S241573AbhKZNMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 08:12:41 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:48838 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240981AbhKZNKc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 08:32:06 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1637931974; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=Nof1v9BjaZLa7U9Yw6BND9HDJOH3W5sxq6+upyF6vQOwB4Fc7Q2Yals6F5Ev+BOs/3i0PxfG0xvE+O0hk6npLibCux886M6+C9CiVPEXU4Mw4T8H49sjONWiVTKUygo8+QhbRrP5qB3Wp7oe/0jz2Sww3Y6ZONEE1r3UuHuq9+U=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1637931974; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=A0WNNhMG+hvp6w62fCn0B0olJUzJi3Z1eLpxpY+eTuc=; 
-        b=Q5hyVYzY/rmWRH0Exs1Otf9lIdMDa7AnCS9Ts/aK9iWdPuq+sS3zY+2PHm3c6NjQAuZJ0kW8DkOFe8wPYrglJEOpfjLQ2bA5qqBTeQP6Sq3RDTn/Z6IUAH0BlY3lqNAC+nwrSGfofx+Nht0gUlmTcA2xRqAGHLfA+f6jVdcmy5M=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1637931974;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=A0WNNhMG+hvp6w62fCn0B0olJUzJi3Z1eLpxpY+eTuc=;
-        b=QLPGL/NGXGIHUbDmJRtqm1rYDzwsYVYhL6xb/SqFrPS+okFeG85Tofcxx/DygeMG
-        hQdbHWL4KO/uP/Zd7nwdoPwQJxfotEHuiW7KBoXafa5rptxgAeUsC5MOPHP7tRtUJx6
-        grp2ryMBW3GYlXfNtjtp/AhO3kFuhaTCsAbyerXI=
-Received: from mail.baihui.com by mx.zoho.com.cn
-        with SMTP id 1637931970561213.4333284052757; Fri, 26 Nov 2021 21:06:10 +0800 (CST)
-Date:   Fri, 26 Nov 2021 21:06:10 +0800
-From:   Chengguang Xu <cgxu519@mykernel.net>
-Reply-To: cgxu519@mykernel.net
-To:     "Jan Kara" <jack@suse.cz>
-Cc:     "miklos" <miklos@szeredi.hu>, "amir73il" <amir73il@gmail.com>,
-        "linux-unionfs" <linux-unionfs@vger.kernel.org>,
-        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "Chengguang Xu" <charliecgxu@tencent.com>,
-        "ronyjin" <ronyjin@tencent.com>
-Message-ID: <17d5c5a6fed.f090bcae10973.4735687401243313694@mykernel.net>
-In-Reply-To: <20211126091007.GB13004@quack2.suse.cz>
-References: <20211122030038.1938875-1-cgxu519@mykernel.net>
- <20211122030038.1938875-3-cgxu519@mykernel.net> <20211126091007.GB13004@quack2.suse.cz>
-Subject: Re: [RFC PATCH V6 2/7] ovl: mark overlayfs inode dirty when it has
- upper
+        Fri, 26 Nov 2021 08:10:32 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 151DD1FDFC;
+        Fri, 26 Nov 2021 13:07:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637932037; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=PYmPwItgfTb5oIyrcokImikMn/WoV6sWjXym+41Fkss=;
+        b=LWHL+8lUy7vS+IxjraC1bVY1oiHezfkeT5BpaFB02cle6T9pAyU0mP6xe0Rxwfyoit6f8Y
+        boAqoTZN0mER9qL+9YWB6yZ5n8Q0Tso/E1gKG7Rm44Fi3K7pOnfTM3ldAt1WYGTWpfl3Kb
+        CkfEOsI4YOx5IVnZgJa3Sfdjcq5entI=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D0F3213C3C;
+        Fri, 26 Nov 2021 13:07:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ustiMgTcoGFBLAAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Fri, 26 Nov 2021 13:07:16 +0000
+From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Cc:     minipli@grsecurity.net, Valentin.Schneider@arm.com,
+        bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
+        juri.lelli@redhat.com, kevin.tanguy@corp.ovh.com, mgorman@suse.de,
+        mingo@redhat.com, mkoutny@suse.com, odin@uged.al,
+        peterz@infradead.org, rostedt@goodmis.org, spender@grsecurity.net,
+        vincent.guittot@linaro.org, tj@kernel.org
+Subject: [RFC PATCH] sched/fair: Filter by css_is_dying() in the last tg_unthrottle_up()
+Date:   Fri, 26 Nov 2021 14:06:19 +0100
+Message-Id: <20211126130619.30730-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Importance: Medium
-User-Agent: ZohoCN Mail
-X-Mailer: ZohoCN Mail
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=BA=94, 2021-11-26 17:10:07 Jan Kara <=
-jack@suse.cz> =E6=92=B0=E5=86=99 ----
- > On Mon 22-11-21 11:00:33, Chengguang Xu wrote:
- > > From: Chengguang Xu <charliecgxu@tencent.com>
- > >=20
- > > We simply mark overlayfs inode dirty when it has upper,
- > > it's much simpler than mark dirtiness on modification.
- > >=20
- > > Signed-off-by: Chengguang Xu <charliecgxu@tencent.com>
- > > ---
- > >  fs/overlayfs/inode.c | 4 +++-
- > >  fs/overlayfs/util.c  | 1 +
- > >  2 files changed, 4 insertions(+), 1 deletion(-)
- > >=20
- > > diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
- > > index 1f36158c7dbe..027ffc0a2539 100644
- > > --- a/fs/overlayfs/inode.c
- > > +++ b/fs/overlayfs/inode.c
- > > @@ -778,8 +778,10 @@ void ovl_inode_init(struct inode *inode, struct o=
-vl_inode_params *oip,
- > >  {
- > >      struct inode *realinode;
- > > =20
- > > -    if (oip->upperdentry)
- > > +    if (oip->upperdentry) {
- > >          OVL_I(inode)->__upperdentry =3D oip->upperdentry;
- > > +        mark_inode_dirty(inode);
- > > +    }
- > >      if (oip->lowerpath && oip->lowerpath->dentry)
- > >          OVL_I(inode)->lower =3D igrab(d_inode(oip->lowerpath->dentry)=
-);
- > >      if (oip->lowerdata)
- >=20
- > Hum, does this get called only for inodes with upper inode existing? I
- > suppose we do not need to track inodes that were not copied up because t=
-hey
- > cannot be dirty? I'm sorry, my knowledge of overlayfs is rather limited =
-so
- > I may be missing something basic.
- >=20
+The commit b027789e5e50 ("sched/fair: Prevent dead task groups from
+regaining cfs_rq's") tackled the issue of use-after-free of cfs_rqs
+surviving on the leaf list after cgroup removal. Two key changes of the
+fix are:
+- move destroy_cfs_bandwidth() before the list_del_leaf_cfs_rq() so that
+  tg_unthrottle_up(cfs_rq) will not re-add the cfs_rq into the list,
+- insert RCU GP between task_group tree unlinking and leaf list removal
+  (ancestors walk the tree and could call tg_unthrottle_up() (re-add)
+  too).
 
-Well, as long as overly inode has upper it can be modified without copy-up,
-so we need to track all overlay inodes which have upper inode.
+This is correct but it makes the task_group removal path in cpu
+controller unnecessarily complex. This patch simplifies the code by
+removing the GP but ensuring that cfs_rq won't be re-added when it is
+going away. The css_is_dying() check and list_add_leaf_cfs_rq() cannot
+race against sched_released_group() because they are both in one RCU
+read section and cpu_cgroup_css_released() is called after an RCU GP
+(more precisely the sequence is: rmdir, css_is_dying()=1, GP,
+.css_offline(), .css_released()).
 
-Thanks,
-Chengguang
+Autogroups are not cgroups so they are not affected by bandwidth timer
+(GP before free is kept).
 
+Cc: Tejun Heo <tj@kernel.org>
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
+---
+ kernel/sched/autogroup.c | 10 ++++++--
+ kernel/sched/core.c      | 55 ++++++++--------------------------------
+ kernel/sched/fair.c      |  6 +++++
+ kernel/sched/sched.h     |  4 +--
+ 4 files changed, 27 insertions(+), 48 deletions(-)
+
+As explained in the message, this relies on the RCU GP between css_is_dying()
+returning false and the potential .css_offline() call. 
+This is stated in the css_is_dying() documentation:
+
+> the actual offline operations are RCU delayed and this test returns %true
+> also when @css is scheduled to be offlined.
+
+On the other hand the documentation of the underlying
+percpu_ref_kill_and_confirm() says (to discourage relying on GP):
+
+> There are no implied RCU grace periods between kill and release.
+
+This seems to discord with each other at first thought. (That's why I marked
+this RFC.)
+
+However, if one takes into account that percpu_refs as used by css are never
+switched to atomic besides the actual killing (and they start in per-cpu mode),
+the GP (inserted in __percpu_ref_switch_to_atomic()) is warranted.
+
+
+diff --git a/kernel/sched/autogroup.c b/kernel/sched/autogroup.c
+index 8629b37d118e..e53d1ea9afc0 100644
+--- a/kernel/sched/autogroup.c
++++ b/kernel/sched/autogroup.c
+@@ -22,6 +22,11 @@ void autogroup_free(struct task_group *tg)
+ 	kfree(tg->autogroup);
+ }
+ 
++static void sched_free_group_rcu(struct rcu_head *rcu)
++{
++	sched_free_group(container_of(rcu, struct task_group, rcu));
++}
++
+ static inline void autogroup_destroy(struct kref *kref)
+ {
+ 	struct autogroup *ag = container_of(kref, struct autogroup, kref);
+@@ -31,8 +36,9 @@ static inline void autogroup_destroy(struct kref *kref)
+ 	ag->tg->rt_se = NULL;
+ 	ag->tg->rt_rq = NULL;
+ #endif
+-	sched_release_group(ag->tg);
+-	sched_destroy_group(ag->tg);
++	sched_released_group(ag->tg);
++	/* Wait for possible concurrent references to cfs_rqs complete: */
++	call_rcu(&ag->tg->rcu, sched_free_group_rcu);
+ }
+ 
+ static inline void autogroup_kref_put(struct autogroup *ag)
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 3c9b0fda64ac..2c5b22f54ab8 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -9711,7 +9711,7 @@ static inline void alloc_uclamp_sched_group(struct task_group *tg,
+ #endif
+ }
+ 
+-static void sched_free_group(struct task_group *tg)
++void sched_free_group(struct task_group *tg)
+ {
+ 	free_fair_sched_group(tg);
+ 	free_rt_sched_group(tg);
+@@ -9719,22 +9719,6 @@ static void sched_free_group(struct task_group *tg)
+ 	kmem_cache_free(task_group_cache, tg);
+ }
+ 
+-static void sched_free_group_rcu(struct rcu_head *rcu)
+-{
+-	sched_free_group(container_of(rcu, struct task_group, rcu));
+-}
+-
+-static void sched_unregister_group(struct task_group *tg)
+-{
+-	unregister_fair_sched_group(tg);
+-	unregister_rt_sched_group(tg);
+-	/*
+-	 * We have to wait for yet another RCU grace period to expire, as
+-	 * print_cfs_stats() might run concurrently.
+-	 */
+-	call_rcu(&tg->rcu, sched_free_group_rcu);
+-}
+-
+ /* allocate runqueue etc for a new task group */
+ struct task_group *sched_create_group(struct task_group *parent)
+ {
+@@ -9777,40 +9761,23 @@ void sched_online_group(struct task_group *tg, struct task_group *parent)
+ 	online_fair_sched_group(tg);
+ }
+ 
+-/* rcu callback to free various structures associated with a task group */
+-static void sched_unregister_group_rcu(struct rcu_head *rhp)
+-{
+-	/* Now it should be safe to free those cfs_rqs: */
+-	sched_unregister_group(container_of(rhp, struct task_group, rcu));
+-}
+-
+-void sched_destroy_group(struct task_group *tg)
+-{
+-	/* Wait for possible concurrent references to cfs_rqs complete: */
+-	call_rcu(&tg->rcu, sched_unregister_group_rcu);
+-}
+-
+-void sched_release_group(struct task_group *tg)
++void sched_released_group(struct task_group *tg)
+ {
+ 	unsigned long flags;
+ 
+ 	/*
+-	 * Unlink first, to avoid walk_tg_tree_from() from finding us (via
+-	 * sched_cfs_period_timer()).
+-	 *
+-	 * For this to be effective, we have to wait for all pending users of
+-	 * this task group to leave their RCU critical section to ensure no new
+-	 * user will see our dying task group any more. Specifically ensure
+-	 * that tg_unthrottle_up() won't add decayed cfs_rq's to it.
+-	 *
+-	 * We therefore defer calling unregister_fair_sched_group() to
+-	 * sched_unregister_group() which is guarantied to get called only after the
+-	 * current RCU grace period has expired.
++	 * We get here only after all CPUs see tg as dying and an RCU grace
++	 * period. Despite that there may still be concurrent RCU readers
++	 * (walk_tg_tree_from() or task_group list) in their RCU sections.
++	 * Their references to tg stay valid only inside the RCU read section.
+ 	 */
+ 	spin_lock_irqsave(&task_group_lock, flags);
+ 	list_del_rcu(&tg->list);
+ 	list_del_rcu(&tg->siblings);
+ 	spin_unlock_irqrestore(&task_group_lock, flags);
++
++	unregister_fair_sched_group(tg);
++	unregister_rt_sched_group(tg);
+ }
+ 
+ static void sched_change_group(struct task_struct *tsk, int type)
+@@ -9925,7 +9892,7 @@ static void cpu_cgroup_css_released(struct cgroup_subsys_state *css)
+ {
+ 	struct task_group *tg = css_tg(css);
+ 
+-	sched_release_group(tg);
++	sched_released_group(tg);
+ }
+ 
+ static void cpu_cgroup_css_free(struct cgroup_subsys_state *css)
+@@ -9935,7 +9902,7 @@ static void cpu_cgroup_css_free(struct cgroup_subsys_state *css)
+ 	/*
+ 	 * Relies on the RCU grace period between css_released() and this.
+ 	 */
+-	sched_unregister_group(tg);
++	sched_free_group(tg);
+ }
+ 
+ /*
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 6e476f6d9435..b3081ece2e16 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4762,6 +4762,12 @@ static int tg_unthrottle_up(struct task_group *tg, void *data)
+ 		cfs_rq->throttled_clock_task_time += rq_clock_task(rq) -
+ 					     cfs_rq->throttled_clock_task;
+ 
++		/*
++		 * Last tg_unthrottle_up() may happen in a task_group being removed,
++		 * it is only RCU protected so don't store it into leaf list.
++		 */
++		if (css_is_dying(&tg->css))
++			return 0;
+ 		/* Add cfs_rq with load or one or more already running entities to the list */
+ 		if (!cfs_rq_is_decayed(cfs_rq) || cfs_rq->nr_running)
+ 			list_add_leaf_cfs_rq(cfs_rq);
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 0e66749486e7..560151258d92 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -503,8 +503,8 @@ extern int sched_rt_can_attach(struct task_group *tg, struct task_struct *tsk);
+ extern struct task_group *sched_create_group(struct task_group *parent);
+ extern void sched_online_group(struct task_group *tg,
+ 			       struct task_group *parent);
+-extern void sched_destroy_group(struct task_group *tg);
+-extern void sched_release_group(struct task_group *tg);
++extern void sched_released_group(struct task_group *tg);
++extern void sched_free_group(struct task_group *tg);
+ 
+ extern void sched_move_task(struct task_struct *tsk);
+ 
+-- 
+2.33.1
 
