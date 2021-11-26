@@ -2,59 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7D445EFF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE8745EF84
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:01:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377720AbhKZOjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 09:39:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238097AbhKZOgx (ORCPT
+        id S1349993AbhKZOFB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 26 Nov 2021 09:05:01 -0500
+Received: from mout.kundenserver.de ([212.227.126.134]:38625 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230147AbhKZOC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 09:36:53 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C269C061792
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 05:56:34 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id k2so18956225lji.4
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 05:56:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=uAJacGh/S2+f5JCEbk6JciXT5NiGJwQRo+DeaikSL9Y=;
-        b=VK42b90r3hTkN7HU+aSkqWAtzEDiaQ2VNbwVwz38cFZH17vo7w2qZxrxs7JOHFEgLx
-         JRd55izY4id5kDAfzf2k5Anpu2LnS8kZWz/gQ+QMMKX7FokBbUEggbyLXa43E0lm4pPE
-         n12gti4it0GJ1yiHhLCHDjJzZAai0l34g80NUZY9FTSvVdAs46BnUgaJEyFWQahMYoRD
-         GZ9h549FU0ZlTtd3rfZKlvfCObT5dkIllddPqx6qkTlsZfmoB4CjaXFVmuoYC/0mTucS
-         49qvkZzor+2T686NRV7hr/OHoLF13jQCbqvmVE2nYv+8PtyshR0iHG7riRMEKB7H020D
-         cOfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=uAJacGh/S2+f5JCEbk6JciXT5NiGJwQRo+DeaikSL9Y=;
-        b=za/zOevUYv27zPcwiz6onny2mSPw48I+c5vcWkL8O/4HfH6wKaQKCEkqzaU3e7/oas
-         HuntrBvMqiaO+nW8acricXJQJzqbQ6siC1ogk1oOg8U/ZWGHJbmtDRE8oU+EEGRkQKNR
-         Kjrwk1QiRDfKjzV2JmcgIaG7k/Yy6VuIafRCcC9ZIfZkt3oaRBWi2lQs2tPtVOplMK/O
-         3O8IM4UbTOLeQg6kzgeUUBFDLepZwnvgegyTqy42rsQlpKeHe516Bmuzm92XMI+QlMQo
-         wXTLknpx/3HwZfu3ucYNwPH10raiZU36K/xt/huRipd6WgPEDPPBkJsAzKrUD8tjGHqJ
-         JkVw==
-X-Gm-Message-State: AOAM530Id7iMCf3kE26+E1NkDiQKcg+jMp6gi38DVbb9Jga4jsu9vctQ
-        LLRH/lw6yJVF/vWd2MnJ5jgNdtmKyJtaObV0liQ=
-X-Google-Smtp-Source: ABdhPJzQQkOdp1Xzw5+OhXdSZsjxEuRjQjpVsI7L9Oz7XX2Nn/GKPL9dVbr2CJBXE2lRZP2XkEmoA0KqQxKAH7375s0=
-X-Received: by 2002:a2e:a314:: with SMTP id l20mr32610214lje.86.1637934992494;
- Fri, 26 Nov 2021 05:56:32 -0800 (PST)
+        Fri, 26 Nov 2021 09:02:59 -0500
+Received: from mail-wm1-f54.google.com ([209.85.128.54]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MHo6Y-1mnqcB3y5e-00Etq5 for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021
+ 14:59:45 +0100
+Received: by mail-wm1-f54.google.com with SMTP id n33-20020a05600c502100b0032fb900951eso10784532wmr.4
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 05:59:45 -0800 (PST)
+X-Gm-Message-State: AOAM532Iv3npJZbxk5x0tZJNA4IQOmCGlCIetSORSkHDlzfWVKsXsVov
+        OdcTf7bsfiGm8l1GS6wEEdTIhJ+qlNAmuSK/j0I=
+X-Google-Smtp-Source: ABdhPJwLo2gvIaV7a7BIVtCOjM0MfS2JQcBHF9YHLbK8BZai46KYcznJM7hhcadb89FUv1DDYSJlNeq22biIjPHaGvA=
+X-Received: by 2002:a05:600c:6d2:: with SMTP id b18mr15934623wmn.98.1637935185632;
+ Fri, 26 Nov 2021 05:59:45 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a05:6504:304f:0:0:0:0 with HTTP; Fri, 26 Nov 2021 05:56:32
- -0800 (PST)
-From:   Liu Gaoshan <graceel047@gmail.com>
-Date:   Fri, 26 Nov 2021 05:56:32 -0800
-Message-ID: <CAOTqtT60avJ3oRkj-CyVnNLmtVLDaH-G323ZW8GvT_qYbC4NSQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
+References: <20211125154406.470082-1-anders.roxell@linaro.org> <6b1e51a8-2f4d-2024-df90-a35c926d7a30@csgroup.eu>
+In-Reply-To: <6b1e51a8-2f4d-2024-df90-a35c926d7a30@csgroup.eu>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 26 Nov 2021 14:59:29 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0n_n+PnfYmAdS9923yheLqYXRp8=65hKf9abLCRAX8ig@mail.gmail.com>
+Message-ID: <CAK8P3a0n_n+PnfYmAdS9923yheLqYXRp8=65hKf9abLCRAX8ig@mail.gmail.com>
+Subject: Re: [PATCH] powerpc: mm: radix_tlb: rearrange the if-else block
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Anders Roxell <anders.roxell@linaro.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Arnd Bergmann <arnd@arndb.de>, llvm@lists.linux.dev,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:hGSB75CjeR/oKAfwRFTXVfARdCQowz6zWpjPFSzGnacBIA8CG2m
+ U/3X1XKwVqGa1UJhPFfF4cCLynul7HFJpTQJ+HtfDl3OOujRF7045SLhpwg9iZF6ah01bGy
+ TEruEfIgQPAy3bKhANxvMNGYyWwEvnAbKG8mXPe2+YXmOVKjx3DgITUK7Y02ipUfwU7n2TH
+ xD/lzz9/F5YgLJ+SJ/5HA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:RQuRoF2Ic54=:4E90zqvQst62E9q90dwFS0
+ wKzn7y8xwWiEE1YsPelPw4bJrW/grOjpmQzYK25BmxYt6JNs+0KOkWmoR0zOasVf46HGmRiVo
+ PD2hulRc0obALv05rzz8AUCc6mf9LVuPXChqTXcRO15RkvViMH5SoCDhvhpuQMdk8FffhC7ES
+ wL3qNKdNyx0t6XRTvWNCY3ItzNDzm2ZdrYo0YHHH0HBmpgwCeyLI1vSldWpehGOPZA48cFRDK
+ OuPIIDf+OAHjlL8lcK39paiSi0PvxM22euMd5veETJpHO1NgK41EpQCgpo+tEEK7PWQLeABNq
+ Gl0o//U2G0qV5bNhw7FN5j8G5oCNWoY3wlZzGchebl8tx6ePaIR3jAtTW28Sx4IiMEjnGbFAY
+ aFzLok0AJ7jju7aAbigdX+pdC59qxWFrjCTKh8kwxqswykckRkvcyx2L2+RVjR7H0UNF3VwRD
+ Uc6WLrEcgUDIgRelVNKEISWiEYiqOzzwKT6GnznMC+DDrzLSRCY7wDQ4nFw9+NebqDzh2osNX
+ x2rzXWCK+4ULK+EqWlJISC0zxL9hakmKyp2tVPb7IiTk1Nb9aEXRA3c+j0npZHy29UTSOfoW0
+ iHiKlOnWKUHrgvveQEoz1kwoIXF3pkKr+IKU6rG69Jq+4ksWOym6yfzlSDwYSCEBRXVhWXqdD
+ cJaBkAqj6oSncFDawolhnRDsWJeCy5EIZE9nbPeZ8fM46CZ2gFA6NuHm3sb8F1llCPKo=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-am Mr Liu Gaoshan, an account officer with industrial & commercial
-Bank of china, I am requesting your parnership in Re-profilling funds
+On Fri, Nov 26, 2021 at 2:43 PM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
+> Le 25/11/2021 à 16:44, Anders Roxell a écrit :
+> Can't you fix CLANG instead :) ?
+>
+> Or just add an else to the IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) that
+> sets hstart and hend to 0 ?
+
+That doesn't sound any less risky than duplicating the code, it can lead to
+incorrect changes just as easily if a patch ends up actually flushing at the
+wrong address, and the compiler fails to complain because of the bogus
+initialization.
+
+> Or just put hstart and hend calculation outside the IS_ENABLED() ? After
+> all GCC should drop the calculation when not used.
+
+I like this one. I'm still unsure how clang can get so confused about whether
+the variables are initialized or not, usually it handles this much better than
+gcc. My best guess is that one of the memory clobbers makes it conclude
+that 'hflush' can be true when it gets written to by an inline asm.
+
+        Arnd
