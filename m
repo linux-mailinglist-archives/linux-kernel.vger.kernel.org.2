@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43ADE45EE5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:58:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F6245EE66
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377529AbhKZNBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 08:01:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:59285 "EHLO
+        id S232717AbhKZNDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 08:03:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35136 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347986AbhKZM7j (ORCPT
+        by vger.kernel.org with ESMTP id S1377401AbhKZNBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 07:59:39 -0500
+        Fri, 26 Nov 2021 08:01:31 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637931386;
+        s=mimecast20190719; t=1637931498;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Et9E/ithShfXgunEZwY5wgPwrsvEeSfHkQyeQlhEjGc=;
-        b=AZwlbZPb07ivL1fNKeuP40Fnmdx+uJOU4ktYqa3mejeCAOOwh6OOikfAQCNB2P4iPStK6D
-        4ptstv+MljjeNYXI/KjuaW29C1POozY8vXz5J0nvNed+ryvejO1RFBGhq25BpgukfU3PJj
-        7G1v4mRoBzL4R04OzJlxQMwZ1+ZYe2s=
+        bh=07gYPm51QmP01NPxr0xY8xNHChiDq7dEoTRgz7R1Jo4=;
+        b=bXLJMUUighI55hjyA7TBmM94L9FNRHOL8Qx3kI5S0eFp5GrUteU1NxUVfaAoiw/8pL0FQ0
+        lOD05qjWT82P983AkMBjzISFDKfIsoYKvXOnqN5pkWp+x+hC+u7Ptdo7n8qgoyXgZZFZ4s
+        rVeKPJhgqo1iG3f6YojFONzlOuhWnSM=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-587-Rkk-tMbMOdeaHgo_W5C-0Q-1; Fri, 26 Nov 2021 07:56:16 -0500
-X-MC-Unique: Rkk-tMbMOdeaHgo_W5C-0Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-228-Bs_NHJ67NEuvWgyOB9Ni0A-1; Fri, 26 Nov 2021 07:58:13 -0500
+X-MC-Unique: Bs_NHJ67NEuvWgyOB9Ni0A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3374080A1A7;
-        Fri, 26 Nov 2021 12:56:14 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 06AB1100C609;
+        Fri, 26 Nov 2021 12:58:06 +0000 (UTC)
 Received: from [10.39.195.16] (unknown [10.39.195.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8CB0160BE5;
-        Fri, 26 Nov 2021 12:56:04 +0000 (UTC)
-Message-ID: <e72acd9e-eb0d-8060-c89e-b8804d0b0305@redhat.com>
-Date:   Fri, 26 Nov 2021 13:56:02 +0100
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9C28C604CC;
+        Fri, 26 Nov 2021 12:58:02 +0000 (UTC)
+Message-ID: <c2977edf-8ab8-9751-677d-991b653823f1@redhat.com>
+Date:   Fri, 26 Nov 2021 13:58:01 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.2.0
-Subject: Re: [PATCH 11/12] KVM: X86: Check root_level only in
- fast_pgd_switch()
+Subject: Re: [PATCH 12/12] KVM: X86: Walk shadow page starting with
+ shadow_root_level
 Content-Language: en-US
 To:     Lai Jiangshan <jiangshanlai@gmail.com>,
         linux-kernel@vger.kernel.org
@@ -56,12 +56,12 @@ Cc:     kvm@vger.kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
         Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
         "H. Peter Anvin" <hpa@zytor.com>
 References: <20211124122055.64424-1-jiangshanlai@gmail.com>
- <20211124122055.64424-12-jiangshanlai@gmail.com>
+ <20211124122055.64424-13-jiangshanlai@gmail.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211124122055.64424-12-jiangshanlai@gmail.com>
+In-Reply-To: <20211124122055.64424-13-jiangshanlai@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -69,34 +69,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 11/24/21 13:20, Lai Jiangshan wrote:
 > From: Lai Jiangshan <laijs@linux.alibaba.com>
 > 
-> If root_level >= 4, shadow_root_level must be >= 4 too.
-> Checking only root_level can reduce a check.
+> Walking from the root page of the shadow page table should start with
+> the level of the shadow page table: shadow_root_level.
+> 
+> Also change a small defect in audit_mappings(), it is believed
+> that the current walking level is more valuable to print.
 > 
 > Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 > ---
->   arch/x86/kvm/mmu/mmu.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
+>   arch/x86/kvm/mmu/mmu_audit.c | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
 > 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 9fb9927264d8..1dc8bfd12ecd 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -4136,8 +4136,7 @@ static bool fast_pgd_switch(struct kvm_vcpu *vcpu, gpa_t new_pgd,
->   	 * having to deal with PDPTEs. We may add support for 32-bit hosts/VMs
->   	 * later if necessary.
->   	 */
-> -	if (mmu->shadow_root_level >= PT64_ROOT_4LEVEL &&
-> -	    mmu->root_level >= PT64_ROOT_4LEVEL)
-> +	if (mmu->root_level >= PT64_ROOT_4LEVEL)
->   		return cached_root_available(vcpu, new_pgd, new_role);
+> diff --git a/arch/x86/kvm/mmu/mmu_audit.c b/arch/x86/kvm/mmu/mmu_audit.c
+> index 9e7dcf999f08..6bbbf85b3e46 100644
+> --- a/arch/x86/kvm/mmu/mmu_audit.c
+> +++ b/arch/x86/kvm/mmu/mmu_audit.c
+> @@ -63,7 +63,7 @@ static void mmu_spte_walk(struct kvm_vcpu *vcpu, inspect_spte_fn fn)
+>   		hpa_t root = vcpu->arch.mmu->root_hpa;
 >   
->   	return false;
+>   		sp = to_shadow_page(root);
+> -		__mmu_spte_walk(vcpu, sp, fn, vcpu->arch.mmu->root_level);
+> +		__mmu_spte_walk(vcpu, sp, fn, vcpu->arch.mmu->shadow_root_level);
+>   		return;
+>   	}
+>   
+> @@ -119,8 +119,7 @@ static void audit_mappings(struct kvm_vcpu *vcpu, u64 *sptep, int level)
+>   	hpa =  pfn << PAGE_SHIFT;
+>   	if ((*sptep & PT64_BASE_ADDR_MASK) != hpa)
+>   		audit_printk(vcpu->kvm, "levels %d pfn %llx hpa %llx "
+> -			     "ent %llxn", vcpu->arch.mmu->root_level, pfn,
+> -			     hpa, *sptep);
+> +			     "ent %llxn", level, pfn, hpa, *sptep);
+>   }
+>   
+>   static void inspect_spte_has_rmap(struct kvm *kvm, u64 *sptep)
 > 
 
-Hmm, I think this is more confusing.  I *think* that adding support for 
-PAE would be mostly an issue with the guest PDPTRs, and not with the 
-shadow PDPTRs, but without thinking more about it I'm leaning towards 
-not applying this patch.
+Queued all except patch 11, thanks.
 
 Paolo
 
