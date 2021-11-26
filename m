@@ -2,162 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB46B45F703
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 23:59:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B211345F706
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 23:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243492AbhKZXC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 18:02:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32836 "EHLO
+        id S245595AbhKZXDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 18:03:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233555AbhKZXAX (ORCPT
+        with ESMTP id S232627AbhKZXBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 18:00:23 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E19C06175F;
-        Fri, 26 Nov 2021 14:54:10 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 26 Nov 2021 18:01:07 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00FAAC061574;
+        Fri, 26 Nov 2021 14:57:53 -0800 (PST)
+Received: from mail.kernel.org (unknown [198.145.29.99])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0488B623A3;
-        Fri, 26 Nov 2021 22:54:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD857C53FC1;
-        Fri, 26 Nov 2021 22:54:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637967249;
-        bh=wgwhl0vthk1SYT38pOOpBGqWhn49l+32PRqKIAXu8do=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=hgwtoUsgAaIdQubAGtcox5fizWr49Wxlahb8cpxW7M3PbZ3qg3gEWcuFl4fZS9KiO
-         ZgkXFf38f29S2xBYJF7jlIzMuS5awdZbMxVATe37UDOPeoZ1sBQW0t6gzqqDRpFHB7
-         iIXJNXHBKqkmrCXilL8svUsleT+O/uEIWgpcd1KPgP5p0b9/uRAwyAJEj1tnPEQ9gR
-         Uc9ysbUIKYG6P97fBYeEGsxWN10h9Eg41XAxM5AmxJS/Z8GGIERZYgQ9QIhWiSSd4Y
-         xL8CX+D3F+rnTZYyRuAKmIZCen5VidM7LKtTM5kZHP8Gdc7V1rBytQIBRpYuaSoVZn
-         tfbqIt47rXQgg==
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 8F1A527C0054;
-        Fri, 26 Nov 2021 17:54:07 -0500 (EST)
-Received: from imap48 ([10.202.2.98])
-  by compute6.internal (MEProxy); Fri, 26 Nov 2021 17:54:07 -0500
-X-ME-Sender: <xms:jmWhYSENwGPexJOxq3abZliNmtNm8sB3DT3cjG0D6uJmF-RSRxpbdQ>
-    <xme:jmWhYTVZ8wSVNZqgj6qzpeLm3toD6zkvTfBzYcvVlz0Vh9_TtUNru2GFAIhm5JcXF
-    ULXk4OBy6HksnrdftI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrheefgddtvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepfdetnhgu
-    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
-    frrghtthgvrhhnpedvleehjeejvefhuddtgeegffdtjedtffegveethedvgfejieevieeu
-    feevuedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
-    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
-    drlhhuthhordhush
-X-ME-Proxy: <xmx:jmWhYcLx_ufKSwyrMjBwe_0tSFDnW5WXCvx1aDQX_d0e0qv3GrjhSA>
-    <xmx:jmWhYcGnfDQmOzFnkwKhJaEqGf0TQUt1YFQsqrtYUTdS2CSWrKByCA>
-    <xmx:jmWhYYWX-pf0ouyemfgxzkGVdXNAsEcdXfJSkfgO5sw10IilsD42_w>
-    <xmx:j2WhYcQ6f82W28yJZ2MKqzY89DnSVy-IrW8ht3AoL2fV8AxUilB1D_Oo04k>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id D5A4021E006E; Fri, 26 Nov 2021 17:54:06 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1371-g2296cc3491-fm-20211109.003-g2296cc34
-Mime-Version: 1.0
-Message-Id: <9641b76e-9ae0-4c26-97b6-76ecde34f0ef@www.fastmail.com>
-In-Reply-To: <87lf1ais27.fsf@oldenburg.str.redhat.com>
-References: <87h7bzjaer.fsf@oldenburg.str.redhat.com>
- <4728eeae-8f1b-4541-b05a-4a0f35a459f7@www.fastmail.com>
- <87lf1ais27.fsf@oldenburg.str.redhat.com>
-Date:   Fri, 26 Nov 2021 14:53:45 -0800
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Florian Weimer" <fweimer@redhat.com>
-Cc:     linux-arch@vger.kernel.org,
-        "Linux API" <linux-api@vger.kernel.org>,
-        linux-x86_64@vger.kernel.org, kernel-hardening@lists.openwall.com,
-        linux-mm@kvack.org, "the arch/x86 maintainers" <x86@kernel.org>,
-        musl@lists.openwall.com,
-        "Dave Hansen via Libc-alpha" <libc-alpha@sourceware.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Dave Hansen" <dave.hansen@intel.com>,
-        "Kees Cook" <keescook@chromium.org>
-Subject: Re: [PATCH] x86: Implement arch_prctl(ARCH_VSYSCALL_LOCKOUT) to disable
- vsyscall
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        by ams.source.kernel.org (Postfix) with ESMTPS id 804DDB8290E;
+        Fri, 26 Nov 2021 22:57:52 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDB2C60174;
+        Fri, 26 Nov 2021 22:57:48 +0000 (UTC)
+Date:   Fri, 26 Nov 2021 22:57:44 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
+ with sub-page faults
+Message-ID: <YaFmaJqyie6KZ2bY@arm.com>
+References: <YaAROdPCqNzSKCjh@arm.com>
+ <20211124192024.2408218-1-catalin.marinas@arm.com>
+ <20211124192024.2408218-4-catalin.marinas@arm.com>
+ <YZ6arlsi2L3LVbFO@casper.infradead.org>
+ <YZ6idVy3zqQC4atv@arm.com>
+ <CAHc6FU4-P9sVexcNt5CDQxROtMAo=kH8hEu==AAhZ_+Zv53=Ag@mail.gmail.com>
+ <20211126222945.549971-1-agruenba@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211126222945.549971-1-agruenba@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 26, 2021 at 11:29:45PM +0100, Andreas Gruenbacher wrote:
+> On Thu, Nov 25, 2021 at 11:42 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > As per Linus' reply, we can work around this by doing
+> > a sub-page fault_in_writable(point_of_failure, align) where 'align'
+> > should cover the copy_to_user() impreciseness.
+> >
+> > (of course, fault_in_writable() takes the full size argument but behind
+> > the scene it probes the 'align' prefix at sub-page fault granularity)
+> 
+> That doesn't make sense; we don't want fault_in_writable() to fail or
+> succeed depending on the alignment of the address range passed to it.
 
+If we know that the arch copy_to_user() has an error of say maximum 16
+bytes (or 15 rather on arm64), we can instead get fault_in_writeable()
+to probe first 16 bytes rather than 1.
 
-On Fri, Nov 26, 2021, at 12:24 PM, Florian Weimer wrote:
-> * Andy Lutomirski:
->
->> On Fri, Nov 26, 2021, at 5:47 AM, Florian Weimer wrote:
->>> Distributions struggle with changing the default for vsyscall
->>> emulation because it is a clear break of userspace ABI, something
->>> that should not happen.
->>>
->>> The legacy vsyscall interface is supposed to be used by libcs only,
->>> not by applications.  This commit adds a new arch_prctl request,
->>> ARCH_VSYSCALL_LOCKOUT.  Newer libcs can adopt this request to signal
->>> to the kernel that the process does not need vsyscall emulation.
->>> The kernel can then disable it for the remaining lifetime of the
->>> process.  Legacy libcs do not perform this call, so vsyscall remains
->>> enabled for them.  This approach should achieves backwards
->>> compatibility (perfect compatibility if the assumption that only lib=
-cs
->>> use vsyscall is accurate), and it provides full hardening for new
->>> binaries.
->>
->> Why is a lockout needed instead of just a toggle?  By the time an
->> attacker can issue prctls, an emulated vsyscall seems like a pretty
->> minor exploit technique.  And programs that load legacy modules or
->> instrument other programs might need to re-enable them.
->
-> For glibc, I plan to add an environment variable to disable the lockou=
-t.
-> There's no ELF markup that would allow us to do this during dlopen.
-> (And after this change, you can run an old distribution in a chroot
-> for legacy software, something that the userspace ABI break prevents.)
->
-> If it can be disabled, people will definitely say, =E2=80=9Cwe get mor=
-e complete
-> hardening if we break old userspace=E2=80=9D.  I want to avoid that.  =
-(People
-> will say that anyway because there's this fairly large window of libcs
-> that don't use vsyscalls anymore, but have not been patched yet to do
-> the lockout.)
+> Have a look at the below code to see what I mean.  Function
+> copy_to_user_nofault_unaligned() should be further optimized, maybe as
+> mm/maccess.c:copy_from_kernel_nofault() and/or per architecture
+> depending on the actual alignment rules; I'm not sure.
+[...]
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -2051,13 +2051,30 @@ static noinline int key_in_sk(struct btrfs_key *key,
+>  	return 1;
+>  }
+>  
+> +size_t copy_to_user_nofault_unaligned(void __user *to, void *from, size_t size)
+> +{
+> +	size_t rest = copy_to_user_nofault(to, from, size);
+> +
+> +	if (rest) {
+> +		size_t n;
+> +
+> +		for (n = size - rest; n < size; n++) {
+> +			if (copy_to_user_nofault(to + n, from + n, 1))
+> +				break;
+> +		}
+> +		rest = size - n;
+> +	}
+> +	return rest;
 
-I=E2=80=99m having trouble following the logic. What I mean is that I th=
-ink it should be possible to do the arch_prctl again to turn vsyscalls b=
-ack on.
+That's what I was trying to avoid. That's basically a fall-back to byte
+at a time copy (we do this in copy_mount_options(); at some point we
+even had a copy_from_user_exact() IIRC).
 
->
-> Maybe the lockout also simplifies the implementation?
->
->> Also, the interaction with emulate mode is somewhat complex. For now,
->> let=E2=80=99s support this in xonly mode only. A complete implementat=
-ion will
->> require nontrivial mm work.  I had that implemented pre-KPTI, but KPTI
->> made it more complicated.
->
-> I admit I only looked at the code in emulate_vsyscall.  It has code th=
-at
-> seems to deal with faults not due to instruction fetch, and also checks
-> for vsyscall=3Demulate mode.  But it seems that we don't get to this p=
-oint
-> for reads in vsyscall=3Demulate mode, presumably because the page is
-> already mapped?
+Linus' idea (if I got it correctly) was instead to slightly extend the
+probing in fault_in_writeable() for the beginning of the buffer from 1
+byte to some per-arch range.
 
-Yes, and, with KPTI off, it=E2=80=99s nontrivial to unmap it. I have cod=
-e for this, but I=E2=80=99m not sure the complexity is worthwhile.
+I attempted the above here and works ok:
 
->
->> Finally, /proc/self/maps should be wired up via the gate_area code.
->
-> Should the "[vsyscall]" string change to something else if execution is
-> disabled?
+https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=devel/btrfs-live-lock-fix
 
-I think the line should disappear entirely, just like booting with vsysc=
-all=3Dnone.
+but too late to post it this evening, I'll do it in the next day or so
+as an alternative to this series.
 
->
-> Thanks,
-> Florian
+-- 
+Catalin
