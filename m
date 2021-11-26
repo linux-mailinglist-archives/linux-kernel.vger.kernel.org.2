@@ -2,63 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B47945F186
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9EC45F185
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:16:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378645AbhKZQSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:18:16 -0500
-Received: from shark3.inbox.lv ([194.152.32.83]:46066 "EHLO shark3.inbox.lv"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378399AbhKZQQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:16:12 -0500
-Received: from shark3.inbox.lv (localhost [127.0.0.1])
-        by shark3-out.inbox.lv (Postfix) with ESMTP id 5B0352801A7;
-        Fri, 26 Nov 2021 18:12:57 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.lv; s=30062014;
-        t=1637943177; bh=TwIFssNIvXJ6jzXj4xg2DtQzCcD9xeNHMIWR/MW2OK4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References;
-        b=Cspyo0iS/t9692vdkNaHGPbrUbUV8yXtyFzjzz+1RPd8v6LXhpAjITj/zKKqsMQ+X
-         eM34kH5hvytdnsF0GpoDcwrOiOamLK4G046QjPXfROeSDmHP8LtPrhgSfsfaq2Y5QD
-         9jZCuEOZ9spLRYCO7sC3lFRoOCQjtCUb+umbJmqQ=
-Received: from localhost (localhost [127.0.0.1])
-        by shark3-in.inbox.lv (Postfix) with ESMTP id 538FA2801A1;
-        Fri, 26 Nov 2021 18:12:57 +0200 (EET)
-Received: from shark3.inbox.lv ([127.0.0.1])
-        by localhost (shark3.inbox.lv [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id 2YM-lk9sV_IA; Fri, 26 Nov 2021 18:12:57 +0200 (EET)
-Received: from mail.inbox.lv (pop1 [127.0.0.1])
-        by shark3-in.inbox.lv (Postfix) with ESMTP id 1D86D280116;
-        Fri, 26 Nov 2021 18:12:57 +0200 (EET)
-Date:   Sat, 27 Nov 2021 01:12:46 +0900
-From:   Alexey Avramov <hakavlad@inbox.lv>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Rik van Riel <riel@surriel.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Darrick Wong <djwong@kernel.org>, regressions@lists.linux.dev,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] mm: vmscan: Reduce throttling due to a failure to
- make progress
-Message-ID: <20211127011246.7a8ac7b8@mail.inbox.lv>
-In-Reply-To: <20211125151853.8540-1-mgorman@techsingularity.net>
-References: <20211125151853.8540-1-mgorman@techsingularity.net>
-X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+        id S1378400AbhKZQSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:18:12 -0500
+Received: from mswedge1.sunplus.com ([60.248.182.113]:52112 "EHLO
+        mg.sunplus.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1378396AbhKZQQL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 11:16:11 -0500
+X-MailGates: (flag:3,DYNAMIC,RELAY,NOHOST:PASS)(compute_score:DELIVER,40
+        ,3)
+Received: from 172.17.9.112
+        by mg01.sunplus.com with MailGates ESMTP Server V5.0(15732:0:AUTH_RELAY)
+        (envelope-from <wells.lu@sunplus.com>); Sat, 27 Nov 2021 00:12:50 +0800 (CST)
+Received: from sphcmbx02.sunplus.com.tw (172.17.9.112) by
+ sphcmbx02.sunplus.com.tw (172.17.9.112) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Sat, 27 Nov 2021 00:12:47 +0800
+Received: from sphcmbx02.sunplus.com.tw ([::1]) by sphcmbx02.sunplus.com.tw
+ ([fe80::f8bb:bd77:a854:5b9e%14]) with mapi id 15.00.1497.023; Sat, 27 Nov
+ 2021 00:12:47 +0800
+From:   =?utf-8?B?V2VsbHMgTHUg5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Wells Lu <wellslutw@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        =?utf-8?B?VmluY2VudCBTaGloIOaWvemMlem0uw==?= 
+        <vincent.shih@sunplus.com>
+Subject: RE: [PATCH v2 2/2] net: ethernet: Add driver for Sunplus SP7021
+Thread-Topic: [PATCH v2 2/2] net: ethernet: Add driver for Sunplus SP7021
+Thread-Index: AQHX1ttDZ0jKVsi7r0auZS2tEQF+d6wADq2AgAXn1uCADjVYcP//wFkAgAFNSvCAADlOgIAAnUMA
+Date:   Fri, 26 Nov 2021 16:12:46 +0000
+Message-ID: <38e40bc4c0de409ca959bcb847c1fc96@sphcmbx02.sunplus.com.tw>
+References: <cover.1636620754.git.wells.lu@sunplus.com>
+ <519b61af544f4c6920012d44afd35a0f8761b24f.1636620754.git.wells.lu@sunplus.com>
+ <YY7/v1msiaqJF3Uy@lunn.ch>
+ <7cccf9f79363416ca8115a7ed9b1b7fd@sphcmbx02.sunplus.com.tw>
+ <YZ+pzFRCB0faDikb@lunn.ch>
+ <6c1ce569d2dd46eba8d4b0be84d6159b@sphcmbx02.sunplus.com.tw>
+ <YaDxc2+HKUYxsmX4@lunn.ch>
+In-Reply-To: <YaDxc2+HKUYxsmX4@lunn.ch>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [172.25.108.39]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: OK
-X-ESPOL: AJ2EQ38cmnBBsMa9LpgOlO7lx8rAKFdj4mfmvc49ixdFz9PMtNdrcW+QBYXuHxy7cWTD
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->After the patch, the test gets killed after roughly 15 seconds which is
->the same length of time taken in 5.15.
-
-In my tests, the 5.15 still performs much better.
-
-New question: is timeout=1 has sense? Will it save CPU?
+SGkgQW5kcmV3LA0KDQoNCkZyb20gZGF0YSBwcm92aWRlZCBieSBBU0lDIGVuZ2luZWVyLCBNQUMg
+b2YgU1A3MDIxIG9ubHkNCnJlYWRzIHRoZSA0IHJlZ2lzdGVycyBvZiBQSFk6DQowOiBDb250cm9s
+IHJlZ2lzdGVyDQoxOiBTdGF0dXMgcmVnaXN0ZXINCjQ6IEF1dG8tbmVnb3RpYXRpb24gYWR2ZXJ0
+aXNlbWVudCByZWdpc3Rlcg0KNTogQXV0by1uZWdvdGlhdGlvbiBsaW5rIHBhcnRuZXIgYWJpbGl0
+eSByZWdpc3Rlcg0KDQpJdCBkb2VzIG5vdCByZWFkIGFueSBvdGhlciByZWdpc3RlcnMgb2YgUEhZ
+Lg0KDQoNCkJlc3QgcmVnYXJkcywNCldlbGxzIEx1DQoNCg0KPiA+IEhpIEFuZHJldywNCj4gPg0K
+PiA+IEkgc2V0IHBoeS1pZCByZWdpc3RlcnMgdG8gMzAgYW5kIDMxIGFuZCBmb3VuZCB0aGUgcmVh
+ZC1iYWNrIHZhbHVlcyBvZg0KPiA+IG1kaW8gcmVhZCBjb21tYW5kcyBmcm9tIENQVSBhcmUgYWxs
+IDB4MDAwMC4NCj4gPg0KPiA+IEkgY29uc3VsdGVkIHdpdGggYW4gQVNJQyBlbmdpbmVlci4gU2hl
+IGNvbmZpcm1lZCB0aGF0IGlmIHBoeS1pZCBvZiBhDQo+ID4gbWRpbyBjb21tYW5kIGZyb20gQ1BV
+IGRvZXMgbm90IG1hdGNoIGFueSBwaHktaWQgcmVnaXN0ZXJzLCB0aGUgbWRpbw0KPiA+IGNvbW1h
+bmQgd2lsbCBub3QgYmUgc2VudCBvdXQuDQo+ID4NCj4gPiBTaGUgZXhwbGFpbmVkIGlmIHBoeS1p
+ZCBvZiBhIG1kaW8gY29tbWFuZCBkb2VzIG5vdCBtYXRjaCBhbnkgcGh5LWlkDQo+ID4gcmVnaXN0
+ZXJzIChyZXByZXNlbnQgYWRkcmVzc2VzIG9mIGV4dGVybmFsIFBIWXMpLCB3aHkgTUFDIG5lZWRz
+IHRvDQo+ID4gc2VuZCBhIGNvbW1hbmQgdG8gbm9uLWV4aXN0aW5nIFBIWT8NCj4gDQo+IFJlYWRz
+IG9yIHdyaXRlcyBvbiBhIHJlYWwgUEhZIHdoaWNoIExpbnV4IGlzIGRyaXZpbmcgY2FuIGhhdmUg
+c2lkZSBlZmZlY3RzLiBUaGVyZSBpcyBhDQo+IGxpbmsgc3RhdHVlIHJlZ2lzdGVyIHdoaWNoIGxh
+dGNoZXMuIFJlYWQgaXQgb25jZSwgeW91IGdldCB0aGUgbGFzdCBzdGF0dXMsIHJlYWQgaXQgYWdh
+aW4sDQo+IHlvdSBnZXQgdGhlIGN1cnJlbnQgc3RhdHVzLiBJZiB0aGUgTUFDIGhhcmR3YXJlIGlz
+IHJlYWRpbmcgdGhpcyByZWdpc3RlciBhcyB3ZWxsIGEgTGludXgsDQo+IGJhZCB0aGluZ3Mgd2ls
+bCBoYXBwZW4uIEEgcmVhZCBvbiB0aGUgaW50ZXJydXB0IHN0YXR1cyByZWdpc3RlciBvZnRlbiBj
+bGVhcnMgdGhlIGludGVycnVwdHMuDQo+IFNvIExpbnV4IHdpbGwgbm90IHNlZSB0aGUgaW50ZXJy
+dXB0cy4NCj4gDQo+IFNvIHlvdSBuZWVkIHRvIG1ha2Ugc3VyZSB5b3UgaGFyZHdhcmUgaXMgbm90
+IHRvdWNoaW5nIGEgUEhZIHdoaWNoIExpbnV4IHVzZXMuIFdoaWNoIGlzDQo+IHdoeSBpIHN1Z2dl
+c3RlZCB1c2luZyBNRElPIGJ1cyBhZGRyZXNzIDMxLCB3aGljaCBnZW5lcmFsbHkgZG9lcyBub3Qg
+aGF2ZSBhIFBIWSBhdCB0aGF0DQo+IGFkZHJlc3MuDQo+IA0KPiAJICBBbmRyZXcNCg==
