@@ -2,69 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFAC45E86D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:20:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9323245E86F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359136AbhKZHXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 02:23:55 -0500
-Received: from mga07.intel.com ([134.134.136.100]:24250 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232938AbhKZHVy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 02:21:54 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="299027074"
-X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
-   d="scan'208";a="299027074"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 23:18:41 -0800
-X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
-   d="scan'208";a="554826905"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 23:18:35 -0800
-Received: by lahna (sSMTP sendmail emulation); Fri, 26 Nov 2021 09:18:32 +0200
-Date:   Fri, 26 Nov 2021 09:18:32 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
-        linux-clk@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v6 03/15] i2c: acpi: Add i2c_acpi_new_device_by_fwnode()
- function
-Message-ID: <YaCKSPbEWTRlnFr2@lahna>
-References: <20211125165412.535063-1-hdegoede@redhat.com>
- <20211125165412.535063-4-hdegoede@redhat.com>
+        id S1352886AbhKZHZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 02:25:24 -0500
+Received: from mout.kundenserver.de ([217.72.192.75]:36489 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352901AbhKZHXX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 02:23:23 -0500
+Received: from mail-wr1-f50.google.com ([209.85.221.50]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MHndY-1mnoMh405W-00Ew3W; Fri, 26 Nov 2021 08:20:09 +0100
+Received: by mail-wr1-f50.google.com with SMTP id r8so16554664wra.7;
+        Thu, 25 Nov 2021 23:20:09 -0800 (PST)
+X-Gm-Message-State: AOAM530YTVhtZdjNiO0FYWaKcWvEin9mBQ7YWMJj3MIdquUI2PjjPql/
+        9W208ywtIs79wl14oImlsaTGoMsNeIfnlUuSOb0=
+X-Google-Smtp-Source: ABdhPJzZwWlD2B3L8ZKxMP+6Iw52iLVzMbJFKx/TFmY1gNnt9IEggU9uLBROHoo9pcxPbq1sCUgEFqfcp4SmYx9h+ko=
+X-Received: by 2002:adf:d091:: with SMTP id y17mr12829566wrh.418.1637911209569;
+ Thu, 25 Nov 2021 23:20:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211125165412.535063-4-hdegoede@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20211126060024.3290177-1-alistair.francis@opensource.wdc.com>
+In-Reply-To: <20211126060024.3290177-1-alistair.francis@opensource.wdc.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 26 Nov 2021 08:19:53 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1WPgrkw5N9acSZ1bRPjBUS0bXSjSBRSW2pYA-m-mc=Qw@mail.gmail.com>
+Message-ID: <CAK8P3a1WPgrkw5N9acSZ1bRPjBUS0bXSjSBRSW2pYA-m-mc=Qw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/6] perf bench futex: Add support for 32-bit systems
+ with 64-bit time_t
+To:     Alistair Francis <alistair.francis@opensource.wdc.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alistair Francis <alistair23@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:hYmhYfv1vXnsBy8eWwNIgqRIfL6Tno94tKUg3ZEupl2gRlzxgmi
+ D/Q5tOf5zg+x8+HJ4lt2u89AnavIrhlZlAEEtTRii1xJkBUj1px1ksF1XU+Lfj+yxqVx8GM
+ Atc7RIGeNkpmaKmdN06EVFF6q8QqzFM46UoyN/YUcVPYzGXa9/I3QzycelUOpPtY4mSoh63
+ NsTq4zWN628DGMI8P1U+Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:JXIaV9G0zME=:Fgf+SZKwynQ+mY9X0XzFM7
+ Q4QniIx2EhGIubc0USdhUdwwaA2WQ9ojUlBKdGMYmx4PTNPawXv6xDcjlSQSGU64zztite3WH
+ 6+NQLexK9uPnYM+1IoGnu+jnFSXE6A7OFTNPnQCTUuIXAMIgyOjdMfmfFt7zIwvYDsyU8vFIX
+ 3q/7BsN1cupn8RUsFUbkmWknEc013TaliNcXe+6rtWYiXqz6LXaDMhg5W3LjqZQcR9fQ8fKpq
+ vHBl8Pp74RyanlAaiZP1ynwX1yeYxP/iyJLaa66Qie37fQkOzW89TgqxEYA4UIExH7368cL8D
+ ddtS6WzUWrqdtDtaOK5okxN076DCfsRtxc4229DyzOXkMU06Phti0bX0dwVWf4uEsg43/d2nE
+ s5QjcYUfL4aUTuCP/E022jXGIqkEtjrNlmvWjRA4WFPSvcBwV2BwGuqV7VPBm82zDr6W7NdXo
+ iBSu3RbugNHGACty01hKUFtzaSTrUTO23o/Zq3NI46mrLUmyIZYc9eJMT73uCnSpeHKz92XWu
+ LV1H1r64LVbrVd47MlVGJF2cPX+o/DFJ5mDFVAgrUQV/tw4OkwH6xYOcyWTPESIc0yUQqloyM
+ SpTci7uC93WMr4J+LgETlbOUhI4VdVY5iOtdvmBGe2CCD5uMZbdiYA/OUEHDgeFWqZ96fMvGm
+ mTNf7yHtqYUhpdjTj//0wuabNlaX8t3TggMTUCmVf32WY1qvh8IV8xuPt4FxA9Pa+O11BivYJ
+ V/5iUS+4TIPoHqiHEedaaFGeZqRBKvRc/LIS9OcBhWcdERNde+kDrJw5EBTlsoetKYlDHLR03
+ Xil9VaYDBxMchwBj/JcfzE+G4zeGz+h1G4O78m9z7plWH91A2Q=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 05:54:00PM +0100, Hans de Goede wrote:
-> Change i2c_acpi_new_device() into i2c_acpi_new_device_by_fwnode() and
-> add a static inline wrapper providing the old i2c_acpi_new_device()
-> behavior.
-> 
-> This is necessary because in some cases we may only have access
-> to the fwnode / acpi_device and not to the matching physical-node
-> struct device *.
-> 
-> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+On Fri, Nov 26, 2021 at 7:00 AM Alistair Francis
+<alistair.francis@opensource.wdc.com> wrote:
+> From: Alistair Francis <alistair.francis@wdc.com>
+>
+> Some 32-bit architectures (such are 32-bit RISC-V) only have a 64-bit
+> time_t and as such don't have the SYS_futex syscall. This patch will
+> allow us to use the SYS_futex_time64 syscall on those platforms.
+>
+> This also converts the futex calls to be y2038 safe (when built for a
+> 5.1+ kernel).
+>
+> This is a revert of commit ba4026b09d83acf56c040b6933eac7916c27e728
+> "Revert "perf bench futex: Add support for 32-bit systems with 64-bit time_t"".
+>
+> The original commit was reverted as including linux/time_types.h would
+> fail to compile on older kernels. This commit doesn't include
+> linux/time_types.h to avoid this issue.
+>
+> Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
 
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
