@@ -2,155 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7C045F2CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 18:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5DA45F31B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 18:41:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237424AbhKZRYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 12:24:22 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41324 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231520AbhKZRWU (ORCPT
+        id S235901AbhKZRoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 12:44:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231638AbhKZRmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 12:22:20 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AQHFqXi030074;
-        Fri, 26 Nov 2021 17:19:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-transfer-encoding
- : mime-version; s=pp1; bh=b7ntKJBdYE4PWhHtmSjJVHxK46N8CKvYSfv9jWeLfCM=;
- b=pT+uMYM7mEjQfSnJddWOyOm9ODic3jf0CJ/pKnI42iYIj15/LZyViqkHdCrTBGnbhYGH
- YP4tyQ3xebUSYwvU+2mJSs1oKqPmGXfSnuU42DhvOBmamaPlTXRzYwcAS1beTtf+prrI
- Txz+XX0Q4ZyN2m7A+A52pwwvIShpLkzOZJXfmxYkJ/ZpoN2AtCB3BuyeXnSPH+hG1O07
- Ih9FmNMwZ7ZAU/xXcF1wqO49rkxUDKVmothGdzq7nnZJttD4lUFRuIof3cfzLJctPbE0
- OYBmI5rQYqiqlqXH38yTCIoP9p0XIBujqW0s7UpPWDLlbPDiIjpopdFM+CS59vTCT6fB tQ== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ck3u1820g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Nov 2021 17:19:00 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AQHCoGt013600;
-        Fri, 26 Nov 2021 17:18:57 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma01fra.de.ibm.com with ESMTP id 3cernab6sf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Nov 2021 17:18:57 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AQHBdsl64225782
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Nov 2021 17:11:39 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 38DFA4C040;
-        Fri, 26 Nov 2021 17:18:55 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EB8234C052;
-        Fri, 26 Nov 2021 17:18:54 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 26 Nov 2021 17:18:54 +0000 (GMT)
-From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Faiyaz Mohammed <faiyazm@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] mm/slub: fix endianness bug for alloc/free_traces attributes
-Date:   Fri, 26 Nov 2021 18:18:48 +0100
-Message-Id: <20211126171848.17534-1-gerald.schaefer@linux.ibm.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <7c909b82-8e1c-a8ce-516d-e3aa9bc2fd81@suse.cz>
-References: <7c909b82-8e1c-a8ce-516d-e3aa9bc2fd81@suse.cz>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 5FYrfJZA68Nx5hNKW32gQhs0rNmK-4d1
-X-Proofpoint-ORIG-GUID: 5FYrfJZA68Nx5hNKW32gQhs0rNmK-4d1
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 26 Nov 2021 12:42:53 -0500
+Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3F5C0619D3;
+        Fri, 26 Nov 2021 09:19:23 -0800 (PST)
+Received: from [2a04:4540:1400:cf00:853a:6162:5f49:5bef]
+        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <john@phrozen.org>)
+        id 1mqesV-0007LY-4v; Fri, 26 Nov 2021 18:19:15 +0100
+Message-ID: <fe218610-660c-929b-39f3-5146b2fe9aad@phrozen.org>
+Date:   Fri, 26 Nov 2021 18:19:14 +0100
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-26_04,2021-11-25_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- bulkscore=0 suspectscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- clxscore=1015 adultscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111260099
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH v4 12/12] gpio: Add support for Airoha EN7523 GPIO
+ controller
+Content-Language: en-GB
+To:     Felix Fietkau <nbd@nbd.name>, linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org
+References: <20211125110738.41028-1-nbd@nbd.name>
+ <20211125110738.41028-13-nbd@nbd.name>
+From:   John Crispin <john@phrozen.org>
+In-Reply-To: <20211125110738.41028-13-nbd@nbd.name>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On big-endian s390, the alloc/free_traces attributes produce endless
-output, because of always 0 idx in slab_debugfs_show().
 
-idx is de-referenced from *v, which points to a loff_t value, with
 
-unsigned int idx = *(unsigned int *)v;
+On 25.11.21 12:07, Felix Fietkau wrote:
+> + * @dir1: The direction register for the lower 16 pins.
 
-This will only give the upper 32 bits on big-endian, which remain 0.
+s/lower/higher/
 
-Instead of only fixing this de-reference, during discussion it seemed
-more appropriate to change the seq_ops so that they use an explicit
-iterator in private loc_track struct.
+just spotted that one aswell
 
-This patch adds idx to loc_track, which will also fix the endianness bug.
-
-Link: https://lore.kernel.org/r/20211117193932.4049412-1-gerald.schaefer@linux.ibm.com
-Fixes: 64dd68497be7 ("mm: slub: move sysfs slab alloc/free interfaces to debugfs")
-Cc: <stable@vger.kernel.org> # v5.14+
-Reported-by: Steffen Maier <maier@linux.ibm.com>
-Signed-off-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
----
- mm/slub.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/mm/slub.c b/mm/slub.c
-index a8626825a829..abe7db581d68 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -5081,6 +5081,7 @@ struct loc_track {
- 	unsigned long max;
- 	unsigned long count;
- 	struct location *loc;
-+	loff_t idx;
- };
- 
- static struct dentry *slab_debugfs_root;
-@@ -6052,11 +6053,11 @@ __initcall(slab_sysfs_init);
- #if defined(CONFIG_SLUB_DEBUG) && defined(CONFIG_DEBUG_FS)
- static int slab_debugfs_show(struct seq_file *seq, void *v)
- {
--
--	struct location *l;
--	unsigned int idx = *(unsigned int *)v;
- 	struct loc_track *t = seq->private;
-+	struct location *l;
-+	unsigned long idx;
- 
-+	idx = (unsigned long) t->idx;
- 	if (idx < t->count) {
- 		l = &t->loc[idx];
- 
-@@ -6105,16 +6106,18 @@ static void *slab_debugfs_next(struct seq_file *seq, void *v, loff_t *ppos)
- {
- 	struct loc_track *t = seq->private;
- 
--	v = ppos;
--	++*ppos;
-+	t->idx = ++(*ppos);
- 	if (*ppos <= t->count)
--		return v;
-+		return ppos;
- 
- 	return NULL;
- }
- 
- static void *slab_debugfs_start(struct seq_file *seq, loff_t *ppos)
- {
-+	struct loc_track *t = seq->private;
-+
-+	t->idx = *ppos;
- 	return ppos;
- }
- 
--- 
-2.32.0
+	John
 
