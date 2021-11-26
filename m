@@ -2,91 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0AF45F6AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 22:54:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8387045F6B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 22:58:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241648AbhKZV5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 16:57:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47952 "EHLO
+        id S242135AbhKZWCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 17:02:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241843AbhKZVzw (ORCPT
+        with ESMTP id S241820AbhKZWAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 16:55:52 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED7E0C061746;
-        Fri, 26 Nov 2021 13:52:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=go92kDNk8htS9RciSYEL5olMCBjzci3dlAvsk/icQJ8=; b=mZp5Z8vaGZJK8cG0vOg3h2MB3A
-        6HAWjKLwhiRVFzFswrhpyL3h1pBw19hVrCf8CftPE5f7YhZ+URYPboMAlTyg4EuJ9OdI1N9D+Y2l/
-        KeOoXkvEwW8ultlrRPuA6TvNSKCftl/GZ/5QgNK63dDgLHQITYNcwDUqV2/v8b9v0e06FpLKIz1DN
-        oAXE+/+BNDitd+raU5VeXBVzmLS8LgyPjEihPmndfuojQf7rtu5cjKWPOwhKBMI2PIhIygxuK3+A+
-        wHPXJnCYKrKViMJ6tmin8nXapVnXicQXMFHn8ZTMQgtN7MUhEMQtSgS+aYF0Y1ArFAsYMhR1N9E3L
-        4j2AnYtw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mqj8h-00CITn-2X; Fri, 26 Nov 2021 21:52:16 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A8E873000DD;
-        Fri, 26 Nov 2021 22:52:13 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8BBD82DC6C83F; Fri, 26 Nov 2021 22:52:13 +0100 (CET)
-Date:   Fri, 26 Nov 2021 22:52:13 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Peter Oskolkov <posk@posk.io>, Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@google.com>,
-        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
-        Thierry Delisle <tdelisle@uwaterloo.ca>
-Subject: Re: [PATCH v0.9.1 3/6] sched/umcg: implement UMCG syscalls
-Message-ID: <YaFXDYm7s7A6HDTG@hirez.programming.kicks-ass.net>
-References: <20211122211327.5931-1-posk@google.com>
- <20211122211327.5931-4-posk@google.com>
- <20211124211927.GG721624@worktop.programming.kicks-ass.net>
- <877dcuhbbe.ffs@tglx>
+        Fri, 26 Nov 2021 17:00:01 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A52C06173E
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 13:56:48 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id u3so27265983lfl.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 13:56:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=telus.net; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=QWWtOidMzsjvAKxeAS7b8lTc05KdXZeQanVTUq2qbEo=;
+        b=GcKt20lEaAogQDEQAun3vb0IjBQ/H18zsvVKCJZqsvuBjlberwkcwifN0FAXHA/FW9
+         OU5IBLKi3cAIYY4KK8COo0liUi6zUZT9bQ1OzcQQil3rBIUqH2ZQAbOQXqdWOmAilEpH
+         kHaOL5rA6bZi68A7rjeR8h4wqrMKVAT3kAak/RFxeVuFCuMaztinDbRJ4h3B2UZk9/oG
+         WRMZ4nRta2hrIboaZLndKvO9IfokMLreyKCeFytQUyXC4jbG1t6jKTxRuGwlgD38ZkQz
+         usGUgTBH7IV6Qc2gs39BNO0MM2wi0x6JTulxLdUQjuRkrZ7RFVAmgytZO9Rn9QDQAoiE
+         7Jfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=QWWtOidMzsjvAKxeAS7b8lTc05KdXZeQanVTUq2qbEo=;
+        b=Omcxci4g06Gm/kNBtNFneEYvMWBYTUaUiiYnHuSBzZ2igPhU/hPUyc+e4lPLdvY17O
+         cZBcF/RidrvepUROjgWEagCj8yex9aXA12lQyJkzXuxgS57g2Fx6ImmpU4b6WFH/0PJm
+         Z/u3tKXbG2UyvSxVU7LUZz37eYHRGVr/6YQIxeWZ9x7i41ZwKBqum+njGSRCOenDUnxG
+         MFyNkRF01RpCTHwqDXobex4+mDbvxHHAUOFV+4o79GbTJwJBB7e39PsqDTb9GnPjIdsS
+         MvM2TbwmqIVzobVRyHUU5czU+cUkp9+rO9qNzlySFH3X0Rro6cFvh+90owZeQhz1HD+t
+         KrNw==
+X-Gm-Message-State: AOAM533uPY/M237ulIIKZKlDIGoHrR9XGwekbuuTK7fgdu3nZzUWE39M
+        Ap1lk3guud0By3T25vXQ2xOrnafBQeYrKa5BN7rcnQ==
+X-Google-Smtp-Source: ABdhPJwtljwAmkD/NkmAfbPf/8CARqBuGrgIww0VlMYRN8503DRr8KdefbcChfI+9TFiMZaHNLBVnkFwJMtNsautp2g=
+X-Received: by 2002:a05:6512:3a87:: with SMTP id q7mr31614406lfu.515.1637963806464;
+ Fri, 26 Nov 2021 13:56:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877dcuhbbe.ffs@tglx>
+References: <20210401183654.27214-1-daniel.lezcano@linaro.org>
+ <20210401183654.27214-3-daniel.lezcano@linaro.org> <CAAYoRsURO1tf03nfiki1uaXYEmTKQyYKUeTyKW+vefrVzCO7jg@mail.gmail.com>
+ <CAJZ5v0hcuq0qriHbc=XHbCo8fJMAV1dbCBws3M9GktN17aCE_g@mail.gmail.com> <acb3ac6c-d6e6-c3f7-6b04-12d3a1fbf0a1@linaro.org>
+In-Reply-To: <acb3ac6c-d6e6-c3f7-6b04-12d3a1fbf0a1@linaro.org>
+From:   Doug Smythies <dsmythies@telus.net>
+Date:   Fri, 26 Nov 2021 13:56:36 -0800
+Message-ID: <CAAYoRsXftJbk0q7sjc8fvQJcWtjnsG-SrdhrvWHQbK2vw4TQLQ@mail.gmail.com>
+Subject: Re: [PATCH v6 3/7] powercap/drivers/dtpm: Simplify the dtpm table
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        dsmythies <dsmythies@telus.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 10:11:17PM +0100, Thomas Gleixner wrote:
-> On Wed, Nov 24 2021 at 22:19, Peter Zijlstra wrote:
-> > On Mon, Nov 22, 2021 at 01:13:24PM -0800, Peter Oskolkov wrote:
+On Fri, Nov 26, 2021 at 9:43 AM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> On 26/11/2021 18:21, Rafael J. Wysocki wrote:
+> > Hi Doug,
 > >
-> >> +	 * Timestamp: a 46-bit CLOCK_MONOTONIC timestamp, at 16ns resolution.
+> > On Fri, Nov 26, 2021 at 6:08 PM Doug Smythies <dsmythies@telus.net> wro=
+te:
+> >>
+> >> Hi Daniel,
+> >>
+> >> This patch introduces a regression, at least on my test system.
+> >> I can no longer change CPU frequency scaling drivers, for example
+> >> from intel_cpufreq (A.K.A intel_pstate in passive mode) to intel_pstat=
+e
+> >> (A.K.A. active mode). The task just hangs forever.
+> >>
+> >> I bisected the kernel and got this commit as the result.
+> >> As a double check, I reverted this commit:
+> >> 7a89d7eacf8e84f2afb94db5ae9d9f9faa93f01c
+> >> on kernel 5.16-rc2 and the issue was resolved.
+> >>
+> >> While your email is fairly old, I observe that it was only included as=
+ of
+> >> kernel 5.16-rc1.
+> >>
+> >> Command Example that never completes:
+> >>
+> >> $ echo passive | sudo tee /sys/devices/system/cpu/intel_pstate/status
+> >>
+> >> syslog excerpt attached.
 > >
-> >> +static int umcg_update_state(u64 __user *state_ts, u64 *expected, u64 desired,
-> >> +				bool may_fault)
-> >> +{
-> >> +	u64 curr_ts = (*expected) >> (64 - UMCG_STATE_TIMESTAMP_BITS);
-> >> +	u64 next_ts = ktime_get_ns() >> UMCG_STATE_TIMESTAMP_GRANULARITY;
+> > This looks like it may be problematic:
 > >
-> > I'm still very hesitant to use ktime (fear the HPET); but I suppose it
-> > makes sense to use a time base that's accessible to userspace. Was
-> > MONOTONIC_RAW considered?
-> 
-> MONOTONIC_RAW is not really useful as you can't sleep on it and it won't
-> solve the HPET crap either.
+> > diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
+> > index f6076de39540..98841524a782 100644
+> > --- a/drivers/powercap/dtpm_cpu.c
+> > +++ b/drivers/powercap/dtpm_cpu.c
+> > @@ -204,7 +204,7 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
+> >        return ret;
+> > }
+> >
+> > -int dtpm_register_cpu(struct dtpm *parent)
+> > +static int __init dtpm_cpu_init(void)
+> > {
+> >        int ret;
+> >
+> > so please try to remove the __init annotation from dtpm_cpu_init() and
+> > see if that helps.
+>
+> Yes, actually that should be called only if it is configured properly.
+> The dtpm_cpu just initializes itself unconditionally, I did not figured
+> out there is the usually allyesconfig used by default by the distros.
+>
+> That should be fixed with a proper DT configuration [1]
 
-But it's ns are of equal size to sched_clock(), if both share TSC IIRC.
-Whereas MONOTONIC, being subject to ntp rate stuff, has differently
-sized ns.
+I added your 5 patch set on top of 5.16-rc2 and confirm it fixes
+the issue. I tested both ways, with CONFIG_OF not set, forcing the
+CONFIG_DTPM stuff off, and with CONFIG_OF=3Dy.
 
-The only time that's relevant though is when you're going to mix these
-timestamps with CLOCK_THREAD_CPUTIME_ID, which might just be
-interesting.
+Oh, I used V2 of the patch set from earlier today.
 
-But yeah, not being able to sleep on it ruins the party.
+... Doug
+
+>
+> [1]
+> https://lore.kernel.org/all/20211124125506.2971069-3-daniel.lezcano@linar=
+o.org/
+>
+> --
+> <http://www.linaro.org/> Linaro.org =E2=94=82 Open source software for AR=
+M SoCs
+>
+> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+> <http://twitter.com/#!/linaroorg> Twitter |
+> <http://www.linaro.org/linaro-blog/> Blog
