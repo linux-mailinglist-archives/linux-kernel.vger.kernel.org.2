@@ -2,98 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD9445E8F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:04:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BCC645E8FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:08:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359271AbhKZIHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 03:07:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346525AbhKZIFX (ORCPT
+        id S1348000AbhKZILO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 03:11:14 -0500
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:30337 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243068AbhKZIJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 03:05:23 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F5EC061574;
-        Fri, 26 Nov 2021 00:02:08 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id nh10-20020a17090b364a00b001a69adad5ebso7473097pjb.2;
-        Fri, 26 Nov 2021 00:02:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XzJnyLoKoL2r9pDH+TfKJ6Ptns8brv9wzjSrYeFUJRY=;
-        b=jYJZELPktFDX7CAoqTDsvJJLwcNzfbMrmElOJUr1wILVd3TKfNK9SZRHu6MReoeKzX
-         /xNnRvvMsmBCTVXsTz0Lh6qogczs0HrsLC9QTWkqPTzeax6bqmTisblUwI2vOc14olut
-         YZfoeuGCgOeDGY4RTJhzVx5Btag+g6ZO32+rEQ0Bc9cAk/pWJCHk8aWXybqa8gGj8qBc
-         NwOTsOjhhTV8KWOYIOm7HmFFqxOysUS/Y6GL0hIqyn2uKRiza7SXB5ePY+gL6EvJiRmS
-         S596D4sN38VUDzi5TfDZ/qWH3aOMjYePRr1l/gEMjXrfXeOEg3ekHoETIuUOEtQCEvls
-         PKIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XzJnyLoKoL2r9pDH+TfKJ6Ptns8brv9wzjSrYeFUJRY=;
-        b=OkMeh8lOVHfI0tcT8zqX9Kz/u4BiSOllKG33AylV5AIbKsyl5iCVL6SXE/8P2T3yhY
-         yPc3kViJN8bJgNGtb/ZLPCkzvUdX960+DnEgPqye0hnNMSjzFliiO8eJOssl0ZcMPmO2
-         6xeuvW86o0jdhF6/7thjtF5RwKWrxdPKBIWIkoyXswuC5cxzJbkNV6+PHwcwOG5QZOKZ
-         1mnsT4YjTG241ByWdvOgrEe7FmBj+RZCXUzSEPFawcKwHmG/VODXlI2zlG4pmIceBkvK
-         tjpaaOey9VkGwC8HcP5mp/27xjoOC3kl+GAXB0qlU/gHQ59FumUHhSe+qezeW/pL5zjX
-         OpFg==
-X-Gm-Message-State: AOAM530mxa0NxTBjfn4qwEoUZ5L5oAQeHBIGl80BFMIAob2GtNQfrGdL
-        0br4YsO0kXcSJ26y30o64qg=
-X-Google-Smtp-Source: ABdhPJyEIio+8d028r9zLBU0pWPVjuBfThCeUykJYzCCPF1yuy0UCnKT6HniyuVMlUo9f3fCyvvY3A==
-X-Received: by 2002:a17:902:ecc7:b0:141:e920:3b4c with SMTP id a7-20020a170902ecc700b00141e9203b4cmr36931831plh.64.1637913728169;
-        Fri, 26 Nov 2021 00:02:08 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id h128sm5589315pfg.212.2021.11.26.00.02.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 00:02:07 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: deng.changcheng@zte.com.cn
-To:     nbd@nbd.name
-Cc:     lorenzo.bianconi83@gmail.com, ryder.lee@mediatek.com,
-        shayne.chen@mediatek.com, sean.wang@mediatek.com,
-        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        matthias.bgg@gmail.com, deren.wu@mediatek.com,
-        deng.changcheng@zte.com.cn, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] mt76: mt7921: fix boolreturn.cocci warning
-Date:   Fri, 26 Nov 2021 08:02:01 +0000
-Message-Id: <20211126080201.75259-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Fri, 26 Nov 2021 03:09:13 -0500
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 1AQ85ReW007942;
+        Fri, 26 Nov 2021 17:05:27 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 1AQ85ReW007942
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1637913927;
+        bh=xV82un84SA1pxZd0d3WZun40uvU7CdhSQtixOQLcY+k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RRffPrU5OUtNbCIhpEglYnf1uYwVq2PWqpM6mtVWL/PsFha9TMhaqbDC7UZw0ATWZ
+         bfVAikEe9FC0kyTfOev/JxpgixHDoFvj9CHvWeBuDVN2j2liIoycW7v0kh3PM8NQ2R
+         BqfPxiExJA0z0dPMl3C0W5V/l311t3xSM2hY/a2wyk4zmetWvf2VxE/2gA5dzOTb0R
+         vUD2qtiY+070CMr3puRasES1JJoiyFHrnRjXZFjWbQSYAJmKsMJAQYFBzmo6fGc3hn
+         eFCQyFvNyIPNP+Vbyy6X8VL9xIA1iQfoJu5jqyC44vACRva55wMAypeVTVG2fz2bwf
+         ETPBZVH6D2l+g==
+X-Nifty-SrcIP: [209.85.215.180]
+Received: by mail-pg1-f180.google.com with SMTP id s137so7513774pgs.5;
+        Fri, 26 Nov 2021 00:05:27 -0800 (PST)
+X-Gm-Message-State: AOAM532Ynfwa0J/JOw2lc0fVIJh2Mh525in6WStHRscqdLf9fhyrlXJZ
+        TXOKBBAyTBTFG1AKcbTccvYvzZZx0Rk/82HvsG8=
+X-Google-Smtp-Source: ABdhPJxHVJf+5wo0HH7EZXOME6q3X45+vNx8ZTz7oRjJGVwlHhzJmMt/tNRSKQI2E9RWCFfk6eeISOKMqlI7CmaFm8o=
+X-Received: by 2002:a05:6a00:807:b0:49f:d6ab:590c with SMTP id
+ m7-20020a056a00080700b0049fd6ab590cmr19717957pfk.32.1637913926600; Fri, 26
+ Nov 2021 00:05:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CGME20211125162141eucas1p288a33941afc09ce74bd59368495c8581@eucas1p2.samsung.com>
+ <20211125162055.3583991-1-l.stelmach@samsung.com>
+In-Reply-To: <20211125162055.3583991-1-l.stelmach@samsung.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 26 Nov 2021 17:04:49 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARUqA-6tkQXFkvLQXvd4Hc=2Vu1ueoFC8gS6A3qQG1UiQ@mail.gmail.com>
+Message-ID: <CAK7LNARUqA-6tkQXFkvLQXvd4Hc=2Vu1ueoFC8gS6A3qQG1UiQ@mail.gmail.com>
+Subject: Re: [PATCH] streamline_config.pl: show the full Kconfig name
+To:     =?UTF-8?Q?=C5=81ukasz_Stelmach?= <l.stelmach@samsung.com>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changcheng Deng <deng.changcheng@zte.com.cn>
+On Fri, Nov 26, 2021 at 1:21 AM =C5=81ukasz Stelmach <l.stelmach@samsung.co=
+m> wrote:
+>
+> Show the very same file name that was passed to open()
+> in case the operation failed.
+>
+> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
+> ---
 
-./drivers/net/wireless/mediatek/mt76/mt7921/sdio_mac.c: 223: 8-9: WARNING:
-return of 0/1 in function 'mt7921s_tx_status_data' with return type bool
+Applied to linux-kbuild. Thanks.
 
-Return statements in functions returning bool should use true/false
-instead of 1/0.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
----
- drivers/net/wireless/mediatek/mt76/mt7921/sdio_mac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>  scripts/kconfig/streamline_config.pl | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/scripts/kconfig/streamline_config.pl b/scripts/kconfig/strea=
+mline_config.pl
+> index 1a5fea0519eb..3387ad7508f7 100755
+> --- a/scripts/kconfig/streamline_config.pl
+> +++ b/scripts/kconfig/streamline_config.pl
+> @@ -170,7 +170,7 @@ sub read_kconfig {
+>         $source =3D~ s/\$\($env\)/$ENV{$env}/;
+>      }
+>
+> -    open(my $kinfile, '<', $source) || die "Can't open $kconfig";
+> +    open(my $kinfile, '<', $source) || die "Can't open $source";
+>      while (<$kinfile>) {
+>         chomp;
+>
+> --
+> 2.30.2
+>
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/sdio_mac.c b/drivers/net/wireless/mediatek/mt76/mt7921/sdio_mac.c
-index 137f86a6dbf8..be17ce3ff06e 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/sdio_mac.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/sdio_mac.c
-@@ -216,5 +216,5 @@ bool mt7921s_tx_status_data(struct mt76_dev *mdev, u8 *update)
- 	mt7921_mac_sta_poll(dev);
- 	mt7921_mutex_release(dev);
- 
--	return 0;
-+	return false;
- }
--- 
-2.25.1
 
+--=20
+Best Regards
+Masahiro Yamada
