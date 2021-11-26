@@ -2,163 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C316345ECB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:32:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF14045ECB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:33:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346914AbhKZLfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 06:35:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:24487 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231465AbhKZLdx (ORCPT
+        id S239479AbhKZLhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 06:37:06 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:48906 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241470AbhKZLfF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 06:33:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637926240;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z5ik7YG8p9gNvEW13DLwcnNRZjdhh0zPjIHxbhsbWM0=;
-        b=AiHfSlh5BnqH6yQuOwzNMi5Nc962DobpTKXZqiwiEdN5sr8syo3u2wtQc2xPW6/Bi694E2
-        ndjq3HTIpytA2CV+1TG92pX9dDcaZ8OIYnJ4mUos4UHS8EaNIWvAtWcdmTjD3NLDK9PB1w
-        U08HnWewiUUu1c31edp2Cbg1Rq3rqKo=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-591-ez09oipsPcakMvWtFRLauw-1; Fri, 26 Nov 2021 06:30:38 -0500
-X-MC-Unique: ez09oipsPcakMvWtFRLauw-1
-Received: by mail-ed1-f69.google.com with SMTP id v10-20020aa7d9ca000000b003e7bed57968so7752140eds.23
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 03:30:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Z5ik7YG8p9gNvEW13DLwcnNRZjdhh0zPjIHxbhsbWM0=;
-        b=Y0f8lsC+z8vlgV6vAwNFYuTqshXfTLzalhsAIjxQU1lZfp+DPF91dpod+xZVp4QWbs
-         O06XsgyiPl8y4Cr4ZnkzsYn6mJSQN+DLtIH1my8DN1bY9u3c6kznGtiTu5lp10H28tSR
-         SPVZVBSHcNH4qpe0vOsGk+iLz35yUymIhv9wOnu0kREX9RrgvaltqGGYIy7bIrGMVjh5
-         Wz45Png5TZGK199AkHIsQ1OQlTl6nh7aQX2r/CTiM2Pbg2z+/c6UfjI0HDp68SS9KpXc
-         R79tmk1YOROwSmjaVvk5Hn7kFsUECPpUDGNHvWgG1CB3nVenYrbdd1MY7z+R+3/W5omZ
-         osxA==
-X-Gm-Message-State: AOAM532agu1AUW+E10s+bdqMQ5iQgL+7m9y1j/0dmz1qCppsudMZhmO3
-        4MZOGiLc8k278yCuW4Ip1Epq1M5O0Vbz0PeJmrT3cyGcoij+arvBWk7grULJpa+j+/pc05sYICb
-        GOfcf+in5LJzN5CTS2kMwaEv2
-X-Received: by 2002:aa7:cc09:: with SMTP id q9mr46331667edt.102.1637926237550;
-        Fri, 26 Nov 2021 03:30:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwNH3TFN6QArzI7U0tifV1PgV6k8S+lW361fy2F8KWSB9PeK9LJbHHVOGhB5qwhp+O2mToBGw==
-X-Received: by 2002:aa7:cc09:: with SMTP id q9mr46331643edt.102.1637926237378;
-        Fri, 26 Nov 2021 03:30:37 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c1e:bf00:1054:9d19:e0f0:8214? (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id b7sm4303521edd.26.2021.11.26.03.30.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Nov 2021 03:30:37 -0800 (PST)
-Message-ID: <03306e12-40ec-39ab-3b40-42b0395e1b65@redhat.com>
-Date:   Fri, 26 Nov 2021 12:30:36 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH v6 07/15] platform/x86: int3472: Enable I2c daisy chain
-Content-Language: en-US
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
+        Fri, 26 Nov 2021 06:35:05 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id 3466B1F40F8F
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1637926312; bh=Z08lk0U3gE9idQY2UHOsHi2Y/LtVNVNvgUIc/pHVcm4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ktoDK0IEUdW9tfd4QC5pPS6iT2MeAAMe6pq0vgclQpa9QgKyiYI0FukT3AvYqzs9U
+         BGL3HQZjQkGOYU82HTgGbq81INbNSPHKC04of48oiamvkL13OJlcWs45EpI2g0P2uW
+         p+VGMG71eLgOPYULVhK/jW+mpA9dC2ieM0LA8KkGTHeyN/gwTtLYcLSm4RjAT2qbML
+         fOiBT8uRltEZVF24fI3/lLfr3+nTmf8yZf49TDuV5LCuaxYrqCXA8N4aBkvbZZxm26
+         HrPXTJUT658aHqZfi6IAVscleCWbhUgfZHKNUtV40rAhjRJ0HvUJ90hNAf255EAILn
+         67/9oWpQQEUfQ==
+Subject: Re: [PATCH v6 3/3] mailbox: mediatek: add support for adsp mailbox
+ controller
+To:     "allen-kh.cheng" <allen-kh.cheng@mediatek.com>,
         Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
-        linux-clk@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-References: <20211125165412.535063-1-hdegoede@redhat.com>
- <20211125165412.535063-8-hdegoede@redhat.com>
- <YaAel9HuAvemRg2s@pendragon.ideasonboard.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <YaAel9HuAvemRg2s@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     Linux-ALSA <alsa-devel@alsa-project.org>, tzungbi@google.com,
+        cujomalainey@google.com,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        sound-open-firmware@alsa-project.org
+References: <20211126093021.25462-1-allen-kh.cheng@mediatek.com>
+ <20211126093021.25462-4-allen-kh.cheng@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Message-ID: <87f7bcf7-303f-b88f-ff32-4d79fd2eaf3b@collabora.com>
+Date:   Fri, 26 Nov 2021 12:31:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20211126093021.25462-4-allen-kh.cheng@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 11/26/21 00:39, Laurent Pinchart wrote:
-> Hi Hans,
+Il 26/11/21 10:30, allen-kh.cheng ha scritto:
+> From: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
 > 
-> Thank you for the patch.
+> This patch is to for MediaTek ADSP IPC mailbox controller driver
+> It is used to send short messages between processors with adsp
 > 
-> On Thu, Nov 25, 2021 at 05:54:04PM +0100, Hans de Goede wrote:
->> From: Daniel Scally <djrscally@gmail.com>
->>
->> The TPS68470 PMIC has an I2C passthrough mode through which I2C traffic
->> can be forwarded to a device connected to the PMIC as though it were
->> connected directly to the system bus. Enable this mode when the chip
->> is initialised.
+> Signed-off-by: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
+> Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+> ---
+>   drivers/mailbox/Kconfig            |   7 ++
+>   drivers/mailbox/Makefile           |   2 +
+>   drivers/mailbox/mtk-adsp-mailbox.c | 178 +++++++++++++++++++++++++++++
+>   3 files changed, 187 insertions(+)
+>   create mode 100644 drivers/mailbox/mtk-adsp-mailbox.c
 > 
-> Is there any drawback doing this unconditionally, if nothing is
-> connected to the bus on the other side (including no pull-ups) ?
 
-I actually never took a really close look at this patch, I just
-sorta inherited it from Daniel.
+Hello! Thanks for the patch!
+However, there's something to improve...
 
-Now that I have taken a close look, I see that it is setting the
-exact same bits as which get set when enabling the VSIO regulator.
+> diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
+> index c9fc06c7e685..c44a0102585d 100644
+> --- a/drivers/mailbox/Kconfig
+> +++ b/drivers/mailbox/Kconfig
+> @@ -226,6 +226,13 @@ config STM32_IPCC
+>   	  with hardware for Inter-Processor Communication Controller (IPCC)
+>   	  between processors. Say Y here if you want to have this support.
+>   
+> +config MTK_ADSP_IPC_MBOX
+> +	tristate "MediaTek ADSP Mailbox Controller"
+> +	depends on ARCH_MEDIATEK || COMPILE_TEST
+> +	help
+> +	  Say yes here to add support for MediaTek ADSP IPC mailbox controller
+> +	  driver. It is used to send short messages between processors with dsp.
+> +
+>   config MTK_CMDQ_MBOX
+>   	tristate "MediaTek CMDQ Mailbox Support"
+>   	depends on ARCH_MEDIATEK || COMPILE_TEST
+> diff --git a/drivers/mailbox/Makefile b/drivers/mailbox/Makefile
+> index c2089f04887e..13d5c81852ca 100644
+> --- a/drivers/mailbox/Makefile
+> +++ b/drivers/mailbox/Makefile
+> @@ -49,6 +49,8 @@ obj-$(CONFIG_TEGRA_HSP_MBOX)	+= tegra-hsp.o
+>   
+>   obj-$(CONFIG_STM32_IPCC) 	+= stm32-ipcc.o
+>   
+> +obj-$(CONFIG_MTK_ADSP_IPC_MBOX)	+= mtk-adsp-mailbox.o
+> +
+>   obj-$(CONFIG_MTK_CMDQ_MBOX)	+= mtk-cmdq-mailbox.o
+>   
+>   obj-$(CONFIG_ZYNQMP_IPI_MBOX)	+= zynqmp-ipi-mailbox.o
+> diff --git a/drivers/mailbox/mtk-adsp-mailbox.c b/drivers/mailbox/mtk-adsp-mailbox.c
+> new file mode 100644
+> index 000000000000..8928bb3874c4
+> --- /dev/null
+> +++ b/drivers/mailbox/mtk-adsp-mailbox.c
+> @@ -0,0 +1,178 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2021 MediaTek Corporation. All rights reserved.
+> + * Author: Allen-KH Cheng <allen-kh.cheng@mediatek.com>
+> + */
+> +
+> +#include <linux/firmware/mediatek/mtk-adsp-ipc.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/io.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mailbox_controller.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +#include <linux/slab.h>
+> +
+> +/* adsp mbox register offset */
+> +#define MTK_ADSP_MBOX_IN_CMD 0x00
+> +#define MTK_ADSP_MBOX_IN_CMD_CLR 0x04
+> +#define MTK_ADSP_MBOX_OUT_CMD 0x1c
+> +#define MTK_ADSP_MBOX_OUT_CMD_CLR 0x20
+> +#define MTK_ADSP_MBOX_IN_MSG0 0x08
+> +#define MTK_ADSP_MBOX_IN_MSG1 0x0C
+> +#define MTK_ADSP_MBOX_OUT_MSG0 0x24
+> +#define MTK_ADSP_MBOX_OUT_MSG1 0x28
+> +
+> +struct mtk_adsp_mbox_priv {
+> +	struct device *dev;
+> +	struct mbox_controller mbox;
+> +	void __iomem *va_mboxreg;
+> +};
+> +
+> +static irqreturn_t mtk_adsp_ipc_irq_handler(int irq, void *data)
+> +{
+> +	struct mbox_chan *ch = data;
+> +	struct adsp_mbox_ch_info *ch_info = ch->con_priv;
+> +	void __iomem *reg = ch_info->va_reg;
+> +	u32 op = readl(reg + MTK_ADSP_MBOX_OUT_CMD);
+> +
+> +	writel(op, reg + MTK_ADSP_MBOX_OUT_CMD_CLR);
+> +
+> +	return IRQ_WAKE_THREAD;
+> +}
+> +
+> +static irqreturn_t mtk_adsp_ipc_handler(int irq, void *data)
+> +{
+> +	struct mbox_chan *ch = data;
+> +	struct adsp_mbox_ch_info *ch_info = ch->con_priv;
+> +
+> +	mbox_chan_received_data(ch, ch_info);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static struct mbox_chan *mtk_adsp_mbox_xlate(struct mbox_controller *mbox,
+> +					     const struct of_phandle_args *sp)
+> +{
+> +	return &mbox->chans[sp->args[0]];
+> +}
+> +
+> +static int mtk_adsp_mbox_startup(struct mbox_chan *chan)
+> +{
+> +	struct adsp_mbox_ch_info *ch_info = chan->con_priv;
+> +	void __iomem *reg = ch_info->va_reg;
+> +
+> +	/* Clear DSP mbox command */
+> +	writel(0xFFFFFFFF, reg + MTK_ADSP_MBOX_IN_CMD_CLR);
+> +	writel(0xFFFFFFFF, reg + MTK_ADSP_MBOX_OUT_CMD_CLR);
+> +
+> +	return 0;
+> +}
+> +
+> +static void mtk_adsp_mbox_shutdown(struct mbox_chan *chan)
+> +{
+> +	struct adsp_mbox_ch_info *ch_info = chan->con_priv;
+> +	void __iomem *reg = ch_info->va_reg;
+> +
+> +	/* Clear DSP mbox command */
+> +	writel(0xFFFFFFFF, reg + MTK_ADSP_MBOX_IN_CMD_CLR);
+> +	writel(0xFFFFFFFF, reg + MTK_ADSP_MBOX_OUT_CMD_CLR);
+> +	chan->con_priv = NULL;
+> +}
+> +
+> +static int mtk_adsp_mbox_send_data(struct mbox_chan *chan, void *data)
+> +{
+> +	struct adsp_mbox_ch_info *ch_info = chan->con_priv;
+> +	void __iomem *reg = ch_info->va_reg;
+> +
+> +	writel(ch_info->ipc_op_val, reg + MTK_ADSP_MBOX_IN_CMD);
+> +
+> +	return 0;
+> +}
+> +
+> +static bool mtk_adsp_mbox_last_tx_done(struct mbox_chan *chan)
+> +{
+> +	struct adsp_mbox_ch_info *ch_info = chan->con_priv;
+> +	void __iomem *reg = ch_info->va_reg;
+> +
+> +	return readl(reg + MTK_ADSP_MBOX_IN_CMD) == 0;
+> +}
+> +
+> +static const struct mbox_chan_ops adsp_mbox_chan_ops = {
+> +	.send_data	= mtk_adsp_mbox_send_data,
+> +	.startup	= mtk_adsp_mbox_startup,
+> +	.shutdown	= mtk_adsp_mbox_shutdown,
+> +	.last_tx_done	= mtk_adsp_mbox_last_tx_done,
+> +};
+> +
+> +static int mtk_adsp_mbox_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct mbox_controller *mbox;
+> +	struct mtk_adsp_mbox_priv *priv;
+> +	struct resource *res;
 
-The idea here is that the I2C-passthrough only gets enabled when
-the VSIO regulator is turned on, because some sensors end up
-shorting the I2C pins to ground when the sensor is not powered.
+drivers/mailbox/mtk-adsp-mailbox.c: In function ‘mtk_adsp_mbox_probe’:
 
-Since we set these bits when powering up the VSIO regulator
-and since we do that before trying to talk to the sensor
-I don't think that we need this (hack) anymore.
+drivers/mailbox/mtk-adsp-mailbox.c:114:19: warning: unused variable ‘res’ 
+[-Wunused-variable]
 
-I will give things a try without this change and if things
-still work I will drop this patch from the set.
+   114 |  struct resource *res;
 
-Daniel, what do you think?
+
+Please remove this unused variable
+
+> +	struct adsp_mbox_ch_info *ch_info;
+> +	int ret;
+> +	int irq;
+
+What about `int irq, ret;` ?
+
+> +
+> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	mbox = &priv->mbox;
+> +	mbox->dev = dev;
+> +	mbox->ops = &adsp_mbox_chan_ops;
+> +	mbox->txdone_irq = false;
+> +	mbox->txdone_poll = true;
+> +	mbox->of_xlate = mtk_adsp_mbox_xlate;
+> +	mbox->num_chans = 1;
+> +	mbox->chans = devm_kzalloc(mbox->dev, sizeof(*mbox->chans), GFP_KERNEL);
+> +	if (!mbox->chans)
+> +		return -ENOMEM;
+> +
+> +	priv->va_mboxreg = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(priv->va_mboxreg))
+> +		return PTR_ERR(priv->va_mboxreg);
+> +
+> +	irq = platform_get_irq(pdev, 0);
+> +	if (irq < 0)
+> +		return irq;
+> +
+> +	ret = devm_request_threaded_irq(dev, irq,
+> +					mtk_adsp_ipc_irq_handler, mtk_adsp_ipc_handler,
+> +					IRQF_TRIGGER_NONE, dev_name(dev),
+> +					mbox->chans);
+
+Please don't break this line, 88 columns is still ok.
+
+
+After addressing these issues,
+
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
 
 Regards,
+- Angelo
 
-Hans
-
-
-
-
-
-
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/* set adsp mbox channel info */
+> +	ch_info = devm_kzalloc(dev, sizeof(*ch_info), GFP_KERNEL);
+> +	if (!ch_info)
+> +		return -ENOMEM;
+> +
+> +	ch_info->va_reg = priv->va_mboxreg;
+> +	mbox->chans->con_priv = ch_info;
+> +	platform_set_drvdata(pdev, priv);
+> +
+> +	return devm_mbox_controller_register(dev, &priv->mbox);
+> +}
+> +
+> +static const struct of_device_id mtk_adsp_mbox_of_match[] = {
+> +	{ .compatible = "mediatek,mt8195-adsp-mbox", },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, mtk_adsp_mbox_of_match);
+> +
+> +static struct platform_driver mtk_adsp_ipc_mbox_driver = {
+> +	.probe		= mtk_adsp_mbox_probe,
+> +	.driver = {
+> +		.name	= "mtk_adsp_mbox",
+> +		.of_match_table = mtk_adsp_mbox_of_match,
+> +	},
+> +};
+> +module_platform_driver(mtk_adsp_ipc_mbox_driver);
+> +
+> +MODULE_AUTHOR("Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>");
+> +MODULE_DESCRIPTION("MTK ADSP mailbox IPC driver");
+> +MODULE_LICENSE("GPL v2");
 > 
->> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
->> Signed-off-by: Daniel Scally <djrscally@gmail.com>
->> ---
->>  .../x86/intel/int3472/intel_skl_int3472_tps68470.c         | 7 +++++++
->>  1 file changed, 7 insertions(+)
->>
->> diff --git a/drivers/platform/x86/intel/int3472/intel_skl_int3472_tps68470.c b/drivers/platform/x86/intel/int3472/intel_skl_int3472_tps68470.c
->> index c05b4cf502fe..42e688f4cad4 100644
->> --- a/drivers/platform/x86/intel/int3472/intel_skl_int3472_tps68470.c
->> +++ b/drivers/platform/x86/intel/int3472/intel_skl_int3472_tps68470.c
->> @@ -45,6 +45,13 @@ static int tps68470_chip_init(struct device *dev, struct regmap *regmap)
->>  		return ret;
->>  	}
->>  
->> +	/* Enable I2C daisy chain */
->> +	ret = regmap_write(regmap, TPS68470_REG_S_I2C_CTL, 0x03);
->> +	if (ret) {
->> +		dev_err(dev, "Failed to enable i2c daisy chain\n");
->> +		return ret;
->> +	}
->> +
->>  	dev_info(dev, "TPS68470 REVID: 0x%02x\n", version);
->>  
->>  	return 0;
-> 
-
