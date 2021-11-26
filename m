@@ -2,148 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C614F45F2A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 18:11:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D90CE45F316
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 18:40:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbhKZROh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 12:14:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31322 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240120AbhKZRMg (ORCPT
+        id S233740AbhKZRnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 12:43:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231892AbhKZRlt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 12:12:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637946563;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oJRbVgERr9nHJtHlBxfAUiQ5IlIj7tB/ekCKPBmxO0Q=;
-        b=hNq31kYwLmY0p426wEZ5QisRBWuXEns/MMf4Sk/pQIGpw/kMkpw+Hpke0xQHAm6HeoznQa
-        FaiQd5sEBsXEUeaQrzzcTJfaISneslgGJ6buz6WIaC2Xu+qaSzBNYg/WKCIU1tByGll3JT
-        itkSiuWZfScx0lveL+z/FiNKGeqNI+w=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-246--6yEFHbAPTygmr1GVawxfw-1; Fri, 26 Nov 2021 12:09:21 -0500
-X-MC-Unique: -6yEFHbAPTygmr1GVawxfw-1
-Received: by mail-wr1-f70.google.com with SMTP id v17-20020adfedd1000000b0017c5e737b02so1782904wro.18
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 09:09:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:organization:in-reply-to
-         :content-transfer-encoding;
-        bh=oJRbVgERr9nHJtHlBxfAUiQ5IlIj7tB/ekCKPBmxO0Q=;
-        b=MHg1PAlbZXePtqeCsC6uNJ3blBQzTHxGi0Iq5PEaF1GeeF8YVfBhpOdj5ojVp3w4pQ
-         e1wsmM4ZTvKQzo6GT94UkwyB86v5Liax9PhHawng6XUoYTRHgJI2pA3rlpcWrfdnGM4L
-         Iyh9Xbu6LffBfNGwYHCocNFKhwGPFpA5N1EMDrcRNUHv6AdFit928A78Lqj0gcGshWUl
-         s9pFU0YGneiTWaqrWt+v1TAI0ZRYIlRxGMvgYAuZdYYppatnPJgN5ApE9/+5VL9d9tDm
-         gD2Yr92A3shyW3R1rQa5FJc2RTPmbTsQtGR/r4Y6L2p46TnoKr2196e2Cv0LzxUoDSP/
-         PrNQ==
-X-Gm-Message-State: AOAM5321ER8sGsAvDh7DAaNyF9/PncCd5BPGt2Tz9de6fMQREXt+Y2U2
-        Staon4wIfDtjvnaSHO1qMZfeJe1MZKTZqzZukM+7i6kGGmt8jUhbtItcG7R8x+G7BkSIRo8YH+b
-        UOaD9QGOr4bETwdodTnaVTk5T
-X-Received: by 2002:adf:f542:: with SMTP id j2mr15018866wrp.616.1637946560595;
-        Fri, 26 Nov 2021 09:09:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwL5L/tD86RCqX1ISPfhzJW00g+afueiNingL26c2hmcDa5qME3mu8KGtYbsk2q2oF3mxNTgQ==
-X-Received: by 2002:adf:f542:: with SMTP id j2mr15018833wrp.616.1637946560333;
-        Fri, 26 Nov 2021 09:09:20 -0800 (PST)
-Received: from [192.168.3.132] (p5b0c69e1.dip0.t-ipconnect.de. [91.12.105.225])
-        by smtp.gmail.com with ESMTPSA id j40sm7815934wms.16.2021.11.26.09.09.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Nov 2021 09:09:19 -0800 (PST)
-Message-ID: <963e5934-094d-3ed5-3a49-c25dd7a17fb8@redhat.com>
-Date:   Fri, 26 Nov 2021 18:09:13 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v3 3/3] KVM: s390: gaccess: Cleanup access to guest pages
-Content-Language: en-US
-To:     Janis Schoetterl-Glausch <scgl@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        Fri, 26 Nov 2021 12:41:49 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DDDC061375;
+        Fri, 26 Nov 2021 09:16:29 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D4B41612E8;
+        Fri, 26 Nov 2021 17:10:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62C3EC93056;
+        Fri, 26 Nov 2021 17:10:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637946624;
+        bh=L6p+xuALx/hWf8VhNxB6GhCXng5TdKvWILFI/TqVbAs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lVg9v/QWFud6lNs2xDPXJyJ6Kila07ysdf/dxVAzkfUz2h8+Nc0xACBZKir9eblcs
+         lmLaljhQuqqcQjXDbsg7s49vrjtcLk35ReVtplw1VxL3Qtbtz/MN1TANoWZ0CrfUf6
+         /FjzJwAKxEnafpWlg/yGDI1r2BqTWyUilvafRQz+tEFWuQQ8mSKx13bAGReVTOyr30
+         7VmbX5liaV2Lmt6s2K2Cz06b5Dm6quNJARYj3cS9wMOxTyhNtatIVfdsrkxJTKZUN/
+         yXOQPu9kMxix2eHI5ZALYcMHoB8f5jJw4L0JoRpKMUKAoZuLtKSc2F5Z00WJAG9MlY
+         AxYUKo0fW+l6w==
+Date:   Fri, 26 Nov 2021 18:10:07 +0100
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     andrew@lunn.ch, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20211126164549.7046-1-scgl@linux.ibm.com>
- <20211126164549.7046-4-scgl@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20211126164549.7046-4-scgl@linux.ibm.com>
+Subject: Re: [PATCH v2 1/2] arm/arm64: dts: Enable CP0 GPIOs for CN9130-CRB
+Message-ID: <20211126181007.77b5b15e@thinkpad>
+In-Reply-To: <20211018011211.3836590-2-chris.packham@alliedtelesis.co.nz>
+References: <20211018011211.3836590-1-chris.packham@alliedtelesis.co.nz>
+        <20211018011211.3836590-2-chris.packham@alliedtelesis.co.nz>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.11.21 17:45, Janis Schoetterl-Glausch wrote:
-> Introduce a helper function for guest frame access.
-> 
-> Signed-off-by: Janis Schoetterl-Glausch <scgl@linux.ibm.com>
-> Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
-> ---
->  arch/s390/kvm/gaccess.c | 24 ++++++++++++++++--------
->  1 file changed, 16 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/s390/kvm/gaccess.c b/arch/s390/kvm/gaccess.c
-> index c09659609d68..9193f0de40b1 100644
-> --- a/arch/s390/kvm/gaccess.c
-> +++ b/arch/s390/kvm/gaccess.c
-> @@ -866,6 +866,20 @@ static int guest_range_to_gpas(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar,
->  	return 0;
->  }
->  
-> +static int access_guest_page(struct kvm *kvm, enum gacc_mode mode, gpa_t gpa,
-> +			     void *data, unsigned int len)
-> +{
-> +	const unsigned int offset = offset_in_page(gpa);
-> +	const gfn_t gfn = gpa_to_gfn(gpa);
-> +	int rc;
-> +
-> +	if (mode == GACC_STORE)
-> +		rc = kvm_write_guest_page(kvm, gfn, data, offset, len);
-> +	else
-> +		rc = kvm_read_guest_page(kvm, gfn, data, offset, len);
-> +	return rc;
-> +}
-> +
->  int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
->  		 unsigned long len, enum gacc_mode mode)
->  {
-> @@ -896,10 +910,7 @@ int access_guest(struct kvm_vcpu *vcpu, unsigned long ga, u8 ar, void *data,
->  	rc = guest_range_to_gpas(vcpu, ga, ar, gpas, len, asce, mode);
->  	for (idx = 0; idx < nr_pages && !rc; idx++) {
->  		fragment_len = min(PAGE_SIZE - offset_in_page(gpas[idx]), len);
-> -		if (mode == GACC_STORE)
-> -			rc = kvm_write_guest(vcpu->kvm, gpas[idx], data, fragment_len);
-> -		else
-> -			rc = kvm_read_guest(vcpu->kvm, gpas[idx], data, fragment_len);
-> +		rc = access_guest_page(vcpu->kvm, mode, gpas[idx], data, fragment_len);
->  		len -= fragment_len;
->  		data += fragment_len;
->  	}
-> @@ -920,10 +931,7 @@ int access_guest_real(struct kvm_vcpu *vcpu, unsigned long gra,
->  	while (len && !rc) {
->  		gpa = kvm_s390_real_to_abs(vcpu, gra);
->  		fragment_len = min(PAGE_SIZE - offset_in_page(gpa), len);
-> -		if (mode)
-> -			rc = write_guest_abs(vcpu, gpa, data, fragment_len);
-> -		else
-> -			rc = read_guest_abs(vcpu, gpa, data, fragment_len);
-> +		rc = access_guest_page(vcpu->kvm, mode, gpa, data, fragment_len);
->  		len -= fragment_len;
->  		gra += fragment_len;
->  		data += fragment_len;
-> 
+On Mon, 18 Oct 2021 14:12:10 +1300
+Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+> Enable the CP0 GPIO devices for the CN9130-CRB. This is needed for a
+> number of the peripheral devices to function.
+>=20
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
--- 
-Thanks,
-
-David / dhildenb
-
+Reviewed-by: Marek Beh=C3=BAn <kabel@kernel.org>
