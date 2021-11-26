@@ -2,180 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7CD45E3FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 02:24:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A22E45E400
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 02:24:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357357AbhKZB1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 20:27:19 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:15869 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239553AbhKZBZT (ORCPT
+        id S1357430AbhKZB1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 20:27:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234110AbhKZBZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 20:25:19 -0500
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4J0cQm5rrlz91NJ;
-        Fri, 26 Nov 2021 09:21:36 +0800 (CST)
-Received: from dggema774-chm.china.huawei.com (10.1.198.216) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.20; Fri, 26 Nov 2021 09:22:02 +0800
-Received: from [10.67.102.197] (10.67.102.197) by
- dggema774-chm.china.huawei.com (10.1.198.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.20; Fri, 26 Nov 2021 09:22:01 +0800
-Subject: Re: [PATCH v2 2/2] powerpc:85xx: fix timebase sync issue when
- CONFIG_HOTPLUG_CPU=n
-To:     Martin Kennedy <hurricos@gmail.com>
-CC:     <Yuantian.Tang@feescale.com>, <benh@kernel.crashing.org>,
-        <chenhui.zhao@freescale.com>, <chenjianguo3@huawei.com>,
-        <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <liuwenliang@huawei.com>,
-        <mpe@ellerman.id.au>, <oss@buserror.net>,
-        <paul.gortmaker@windriver.com>, <paulus@samba.org>,
-        <stable@vger.kernel.org>, <wangle6@huawei.com>,
-        "Christian Lamparter" <chunkeey@gmail.com>
-References: <CANA18Uxu5dUYOkDmXpYtLc8iQuAYMv1UujkmEo1bkhm3CqxMAA@mail.gmail.com>
- <3c7523a3-2de2-3a76-2f46-9e4cf38f40b6@huawei.com>
- <CANA18Uyba4kMJQrbCSZVTFep2Exe5izE45whNJgwwUvNSEcNLg@mail.gmail.com>
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-Message-ID: <5f56f1af-9404-21fa-eda0-05a75d769427@huawei.com>
-Date:   Fri, 26 Nov 2021 09:22:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0.1
+        Thu, 25 Nov 2021 20:25:34 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6C8C06175A;
+        Thu, 25 Nov 2021 17:22:22 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id v138so15950732ybb.8;
+        Thu, 25 Nov 2021 17:22:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/AuK3UsdxLLun6xgCFMS/tOh8hgjjFh2UXvJjyqMQ+4=;
+        b=dNQ9V7RFgOtI5LBHlHWvWSUZJBuOOikWTaMvde/ve4l1TW5imDIyIl8Sq1BOHYylzh
+         ycMvrCkfceZNsVJEsZ4Fn6y5dTwcA+HNu7radLD+nW5LgDdht9VAltzGE5DoqTRuX/Jk
+         Ql36+QOatU3MFfGtJ2E2+/yTPYnrBkx5mcxRo7ItPr1jHPfPLgK1KKqVJSs0o6ZroKyl
+         GG7RwHaFlrSGpsUW2UU7ylzro66IfQAVWNXeJxR2+lyKuKLSUwLU25fJzpbfAAisPDAs
+         zauHc9xdhotzwyNDSH77FcC7K6b699Dc0V5QHWduq2SMvzSnn55E+AibuyW+F5ZzBgHg
+         klzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/AuK3UsdxLLun6xgCFMS/tOh8hgjjFh2UXvJjyqMQ+4=;
+        b=3BxN4PD1HaI4fKe45LwGHDjvVoduU284VXjKJLwkYUjp5lFt5XRV7MUtmtCinyeJTG
+         0seCJVtvt5vYGnrzWu2LfoCPeIYxBNRjWbl9+Co7SY2oUlZw8Oe6lhetwp6pK3CCOphV
+         8FTMcY/SX9nkodqlM4tyLL1sblOKQrAhlHQmdAHYgdKyVkquaAx9/NNRpo8Uk3EpLV/8
+         YbE+mIu+oXq8EhKCXu1IhDdUpaJwelUoQCBqCnHwEwSfDi1B6Exdq0/BWbnttmd3gKt4
+         qipkmfAK+N2cIeggTWLdV0Zif/fpZbfBFMPI2GHvGY4XZtatIZY85ZID8sxQDMcvyrAw
+         8nNw==
+X-Gm-Message-State: AOAM530RYZPYeNVsevy3D0U7eLEpM/5ZuAwDZtc9msQ7yijLL8s3JDXA
+        PduSYwFGmYJO3tuXfpOFoDIquDrkPypyX6AJzaU=
+X-Google-Smtp-Source: ABdhPJyK99pr86Wn5ega0gJnlezD61CL0sntzSsHRpGMfE6i6M3xUD9FpfXEvmBq1ZiYa6r7dqCPI5oWfmM35ZlJpP0=
+X-Received: by 2002:a05:6902:68d:: with SMTP id i13mr11443772ybt.2.1637889741663;
+ Thu, 25 Nov 2021 17:22:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CANA18Uyba4kMJQrbCSZVTFep2Exe5izE45whNJgwwUvNSEcNLg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.197]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggema774-chm.china.huawei.com (10.1.198.216)
-X-CFilter-Loop: Reflected
+References: <1637804167-8323-1-git-send-email-yangtiezhu@loongson.cn> <0ca847a8-78a5-6ad9-ab4b-62dcda33df7c@iogearbox.net>
+In-Reply-To: <0ca847a8-78a5-6ad9-ab4b-62dcda33df7c@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 25 Nov 2021 17:22:10 -0800
+Message-ID: <CAEf4BzYiEeSW=9dCnPdNhA4ORSFUL6y7ZVFOiHR5k9AcccFv+g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf, mips: Fix build errors about __NR_bpf undeclared
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/11/25 22:34, Martin Kennedy wrote:
-> Hi there,
-> 
-> Yes, I can test this patch.
-> 
-> I have added it to my tree and removed the reversion, and can confirm
-> that the second CPU comes up correctly now.
-> 
-> Martin
-> 
-Thank you very much for your report and testing, I'll send a patch later
+On Thu, Nov 25, 2021 at 3:05 PM Daniel Borkmann <daniel@iogearbox.net> wrot=
+e:
+>
+> [ +Johan ]
+>
+> On 11/25/21 2:36 AM, Tiezhu Yang wrote:
+> > Add the __NR_bpf definitions to fix the following build errors for mips=
+.
+> >
+> >   $ cd tools/bpf/bpftool
+> >   $ make
+> >   [...]
+> >   bpf.c:54:4: error: #error __NR_bpf not defined. libbpf does not suppo=
+rt your arch.
+> >    #  error __NR_bpf not defined. libbpf does not support your arch.
+> >       ^~~~~
+> >   bpf.c: In function =E2=80=98sys_bpf=E2=80=99:
+> >   bpf.c:66:17: error: =E2=80=98__NR_bpf=E2=80=99 undeclared (first use =
+in this function); did you mean =E2=80=98__NR_brk=E2=80=99?
+> >     return syscall(__NR_bpf, cmd, attr, size);
+> >                    ^~~~~~~~
+> >                    __NR_brk
+> >   [...]
+> >   In file included from gen_loader.c:15:0:
+> >   skel_internal.h: In function =E2=80=98skel_sys_bpf=E2=80=99:
+> >   skel_internal.h:53:17: error: =E2=80=98__NR_bpf=E2=80=99 undeclared (=
+first use in this function); did you mean =E2=80=98__NR_brk=E2=80=99?
+> >     return syscall(__NR_bpf, cmd, attr, size);
+> >                    ^~~~~~~~
+> >                    __NR_brk
+> >
+> > We can see the following generated definitions:
+> >
+> >   $ grep -r "#define __NR_bpf" arch/mips
+> >   arch/mips/include/generated/uapi/asm/unistd_o32.h:#define __NR_bpf (_=
+_NR_Linux + 355)
+> >   arch/mips/include/generated/uapi/asm/unistd_n64.h:#define __NR_bpf (_=
+_NR_Linux + 315)
+> >   arch/mips/include/generated/uapi/asm/unistd_n32.h:#define __NR_bpf (_=
+_NR_Linux + 319)
+> >
+> > The __NR_Linux is defined in arch/mips/include/uapi/asm/unistd.h:
+> >
+> >   $ grep -r "#define __NR_Linux" arch/mips
+> >   arch/mips/include/uapi/asm/unistd.h:#define __NR_Linux      4000
+> >   arch/mips/include/uapi/asm/unistd.h:#define __NR_Linux      5000
+> >   arch/mips/include/uapi/asm/unistd.h:#define __NR_Linux      6000
+> >
+> > That is to say, __NR_bpf is
+> > 4000 + 355 =3D 4355 for mips o32,
+> > 6000 + 319 =3D 6319 for mips n32,
+> > 5000 + 315 =3D 5315 for mips n64.
+> >
+> > So use the GCC pre-defined macro _ABIO32, _ABIN32 and _ABI64 [1] to def=
+ine
+> > the corresponding __NR_bpf.
+> >
+> > This patch is similar with commit bad1926dd2f6 ("bpf, s390: fix build f=
+or
+> > libbpf and selftest suite").
+> >
+> > [1] https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dblob;f=3Dgcc/config/mips/m=
+ips.h#l549
+> >
+> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> > ---
+> >
+> > v2: use a final number without __NR_Linux to define __NR_bpf
+> >      suggested by Andrii Nakryiko, thank you.
+> >
+> >   tools/build/feature/test-bpf.c |  6 ++++++
+> >   tools/lib/bpf/bpf.c            |  6 ++++++
+> >   tools/lib/bpf/skel_internal.h  | 10 ++++++++++
+> >   3 files changed, 22 insertions(+)
+> >
+> > diff --git a/tools/build/feature/test-bpf.c b/tools/build/feature/test-=
+bpf.c
+> > index 82070ea..727d22e 100644
+> > --- a/tools/build/feature/test-bpf.c
+> > +++ b/tools/build/feature/test-bpf.c
+> > @@ -14,6 +14,12 @@
+> >   #  define __NR_bpf 349
+> >   # elif defined(__s390__)
+> >   #  define __NR_bpf 351
+> > +# elif defined(__mips__) && defined(_ABIO32)
+> > +#  define __NR_bpf 4355
+> > +# elif defined(__mips__) && defined(_ABIN32)
+> > +#  define __NR_bpf 6319
+> > +# elif defined(__mips__) && defined(_ABI64)
+> > +#  define __NR_bpf 5315
+> >   # else
+> >   #  error __NR_bpf not defined. libbpf does not support your arch.
+> >   # endif
+> > diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> > index 94560ba..17f9fe2 100644
+> > --- a/tools/lib/bpf/bpf.c
+> > +++ b/tools/lib/bpf/bpf.c
+> > @@ -50,6 +50,12 @@
+> >   #  define __NR_bpf 351
+> >   # elif defined(__arc__)
+> >   #  define __NR_bpf 280
+> > +# elif defined(__mips__) && defined(_ABIO32)
+> > +#  define __NR_bpf 4355
+> > +# elif defined(__mips__) && defined(_ABIN32)
+> > +#  define __NR_bpf 6319
+> > +# elif defined(__mips__) && defined(_ABI64)
+> > +#  define __NR_bpf 5315
+> >   # else
+> >   #  error __NR_bpf not defined. libbpf does not support your arch.
+> >   # endif
+> > diff --git a/tools/lib/bpf/skel_internal.h b/tools/lib/bpf/skel_interna=
+l.h
+> > index 9cf6670..064da66 100644
+> > --- a/tools/lib/bpf/skel_internal.h
+> > +++ b/tools/lib/bpf/skel_internal.h
+> > @@ -7,6 +7,16 @@
+> >   #include <sys/syscall.h>
+> >   #include <sys/mman.h>
+> >
+> > +#ifndef __NR_bpf
+> > +# if defined(__mips__) && defined(_ABIO32)
+> > +#  define __NR_bpf 4355
+> > +# elif defined(__mips__) && defined(_ABIN32)
+> > +#  define __NR_bpf 6319
+> > +# elif defined(__mips__) && defined(_ABI64)
+> > +#  define __NR_bpf 5315
+> > +# endif
+> > +#endif
+>
+> Bit unfortunate that mips is the only arch where we run into this apparen=
+tly? :/
+> Given we also redefine a skel_sys_bpf(), maybe libbpf should just provide=
+ something
+> like a `LIBBPF_API int libbpf_sys_bpf(enum bpf_cmd cmd, [...])` so we rel=
+y implicitly
+> only on the libbpf-internal __NR_bpf instead of duplicating again?
 
-Thanks
-Xiaoming Ni
+Unfortunately the point of skel_internal.h is to not depend on libbpf
+APIs. I think for now it should be fine to have this duplication (not
+that those numbers are going to change ever) and we can improve this
+later.
 
-> On Thu, Nov 25, 2021 at 2:23 AM Xiaoming Ni <nixiaoming@huawei.com> wrote:
->>
->> On 2021/11/25 12:20, Martin Kennedy wrote:
->>> Hi there,
->>>
->>> I have bisected OpenWrt master, and then the Linux kernel down to this
->>> change, to confirm that this change causes a kernel panic on my
->>> P1020RDB-based, dual-core Aerohive HiveAP 370, at initialization of
->>> the second CPU:
->>>
->>> :
->>> [    0.000000] Linux version 5.10.80 (labby@lobon)
->>> (powerpc-openwrt-linux-musl-gcc (OpenWrt GCC 11.2.0
->>> r18111+1-ebb6f9287e) 11.2.0, GNU ld (GNU Binutils) 2.37) #0 SMP Thu
->>> Nov 25 02:49:35 2021
->>> [    0.000000] Using P1020 RDB machine description
->>> :
->>> [    0.627233] smp: Bringing up secondary CPUs ...
->>> [    0.681659] kernel tried to execute user page (0) - exploit attempt? (uid: 0)
->>> [    0.766618] BUG: Unable to handle kernel instruction fetch (NULL pointer?)
->>> [    0.848899] Faulting instruction address: 0x00000000
->>> [    0.908273] Oops: Kernel access of bad area, sig: 11 [#1]
->>> [    0.972851] BE PAGE_SIZE=4K SMP NR_CPUS=2 P1020 RDB
->>> [    1.031179] Modules linked in:
->>> [    1.067640] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.80 #0
->>> [    1.139507] NIP:  00000000 LR: c0021d2c CTR: 00000000
->>> [    1.199921] REGS: c1051cf0 TRAP: 0400   Not tainted  (5.10.80)
->>> [    1.269705] MSR:  00021000 <CE,ME>  CR: 84020202  XER: 00000000
->>> [    1.340534]
->>> [    1.340534] GPR00: c0021cb8 c1051da8 c1048000 00000001 00029000
->>> 00000000 00000001 00000000
->>> [    1.340534] GPR08: 00000001 00000000 c08b0000 00000040 22000208
->>> 00000000 c00032c4 00000000
->>> [    1.340534] GPR16: 00000000 00000000 00000000 00000000 00000000
->>> 00000000 00029000 00000001
->>> [    1.340534] GPR24: 1ffff240 20000000 dffff240 c080a1f4 00000001
->>> c08ae0a8 00000001 dffff240
->>> [    1.758220] NIP [00000000] 0x0
->>> [    1.794688] LR [c0021d2c] smp_85xx_kick_cpu+0xe8/0x568
->>> [    1.856126] Call Trace:
->>> [    1.885295] [c1051da8] [c0021cb8] smp_85xx_kick_cpu+0x74/0x568 (unreliable)
->>> [    1.968633] [c1051de8] [c0011460] __cpu_up+0xc0/0x228
->>> [    2.029038] [c1051e18] [c0031bbc] bringup_cpu+0x30/0x224
->>> [    2.092572] [c1051e48] [c0031f3c] cpu_up.constprop.0+0x180/0x33c
->>> [    2.164443] [c1051e88] [c00322e8] bringup_nonboot_cpus+0x88/0xc8
->>> [    2.236326] [c1051eb8] [c07e67bc] smp_init+0x30/0x78
->>> [    2.295698] [c1051ed8] [c07d9e28] kernel_init_freeable+0x118/0x2a8
->>> [    2.369641] [c1051f18] [c00032d8] kernel_init+0x14/0x124
->>> [    2.433176] [c1051f38] [c0010278] ret_from_kernel_thread+0x14/0x1c
->>> [    2.507125] Instruction dump:
->>> [    2.542541] XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
->>> XXXXXXXX XXXXXXXX
->>> [    2.635242] XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
->>> XXXXXXXX XXXXXXXX
->>> [    2.727952] ---[ end trace 9b796a4bafb6bc14 ]---
->>> [    2.783149]
->>> [    3.800879] Kernel panic - not syncing: Fatal exception
->>> [    3.862353] Rebooting in 1 seconds..
->>> [    5.905097] System Halted, OK to turn off power
->>>
->>> Without this patch, the kernel no longer panics:
->>>
->>> [    0.627232] smp: Bringing up secondary CPUs ...
->>> [    0.681857] smp: Brought up 1 node, 2 CPUs
->>>
->>> Here is the kernel configuration for this built kernel:
->>> https://git.openwrt.org/?p=openwrt/openwrt.git;a=blob_plain;f=target/linux/mpc85xx/config-5.10;hb=HEAD
->>>
->>> In case a force-push is needed for the source repository
->>> (https://github.com/Hurricos/openwrt/commit/ad19bdfc77d60ee1c52b41bb4345fdd02284c4cf),
->>> here is the device tree for this board:
->>> https://paste.c-net.org/TrousersSliced
->>>
->>> Martin
->>> .
->>>
->> When CONFIG_FSL_PMC is set to n, cpu_up_prepare is not assigned to
->> mpc85xx_pm_ops. I suspect that this is the cause of the current null
->> pointer access.
->> I do not have the corresponding board test environment. Can you help me
->> to test whether the following patch solves the problem?
->>
->> diff --git a/arch/powerpc/platforms/85xx/smp.c
->> b/arch/powerpc/platforms/85xx/smp.c
->> index 83f4a6389a28..d7081e9af65c 100644
->> --- a/arch/powerpc/platforms/85xx/smp.c
->> +++ b/arch/powerpc/platforms/85xx/smp.c
->> @@ -220,7 +220,7 @@ static int smp_85xx_start_cpu(int cpu)
->>           local_irq_save(flags);
->>           hard_irq_disable();
->>
->> -   if (qoriq_pm_ops)
->> + if (qoriq_pm_ops && qoriq_pm_ops->cpu_up_prepare)
->>                   qoriq_pm_ops->cpu_up_prepare(cpu);
->>
->>           /* if cpu is not spinning, reset it */
->> @@ -292,7 +292,7 @@ static int smp_85xx_kick_cpu(int nr)
->>                   booting_thread_hwid = cpu_thread_in_core(nr);
->>                   primary = cpu_first_thread_sibling(nr);
->>
->> -           if (qoriq_pm_ops)
->> +         if (qoriq_pm_ops && qoriq_pm_ops->cpu_up_prepare)
->>                           qoriq_pm_ops->cpu_up_prepare(nr);
->>
->>                   /*
->>
->>
-> .
-> 
-
+>
+> >   /* This file is a base header for auto-generated *.lskel.h files.
+> >    * Its contents will change and may become part of auto-generation in=
+ the future.
+> >    *
+> >
+>
