@@ -2,472 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE6245EF1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:28:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A5145EF22
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348146AbhKZNbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 08:31:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50066 "EHLO
+        id S1350939AbhKZNdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 08:33:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235745AbhKZN3b (ORCPT
+        with ESMTP id S240968AbhKZNa7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 08:29:31 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C2DC061A20
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 04:39:41 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mqaVk-0000MD-KH; Fri, 26 Nov 2021 13:39:28 +0100
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mqaVj-00CVVx-3w; Fri, 26 Nov 2021 13:39:27 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net v3 1/1] net: dsa: microchip: implement multi-bridge support
-Date:   Fri, 26 Nov 2021 13:39:26 +0100
-Message-Id: <20211126123926.2981028-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
+        Fri, 26 Nov 2021 08:30:59 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36953C0613B4
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 04:42:18 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id l25so38208679eda.11
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 04:42:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1aJx2QnFUEeTZRRrLqYEK/nTxPoSb0FQB0KD407GCkQ=;
+        b=oAi0AnTDtQ0QCnAOmZa6sHU6qklaBmvB2Dnib9FwD+qa+hLEN3XlbpnKVaoHsMQzGM
+         DBUQupJ8OG9WcpkXB9+iUkMRteX7B9HPYOU/vDmpHN2JS+3NScgYx9ZJdxDhdJG5ujMt
+         GMGof7JXfszUoCkTC5zwAx73NT+lIW4Fbwd9F+zOIzeEn4u5iTBz9qXMaqPn1N1VfzcA
+         44mhZaFeisG1W4Oh1Fy5WOUhOnkSx+t+mFl8SCBivUl8GtxUStav/pjHvItBMBYjL6g6
+         qNbGiyUyEkYckHhsSvWNqhhrzNvzjc4B4+Wr0Jb2UudF6+qPWSXkn80XB8ULVEU/20Bi
+         S4uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1aJx2QnFUEeTZRRrLqYEK/nTxPoSb0FQB0KD407GCkQ=;
+        b=gcygQYUmhNhzxZBTKlv/NSI1O22I6KDwpwoHsWyZaC/0A3au5AmiXBbth3ukCdM21G
+         pHFnN9DfDWohVla2htbJ8DU5zBhjdtAEionqpHpOMUmBZTJyjE++SiYBL/tuOzg96pss
+         Mfi6G1zoswXhUzhPQFmUKVfMCzfu54AM1AViZxoh7DayXDe0SJeoNoUfEC/jtnGI8wXb
+         Y2isf+1rHJWH5VIKe7jYEGk9BKhKwMEmYoM51Qof0+z3HYDfjllzO0fSSFVeKnA3qIe6
+         WftEdb0FCiAMSbX05zJ7jGlHmv+JBUDrD9DQu1iOw4CvL7NikKfI5yQpXhXBiGK4BYnU
+         p8tQ==
+X-Gm-Message-State: AOAM532pnMSzFfNrfytC9FMjXEdqQIJnJoNf4DGuxckYRTE0J0wdw2L2
+        5XXxZCtGAK/+lMQ3RfegKdn4JNYFuNwZ4v5y1v6pZw==
+X-Google-Smtp-Source: ABdhPJyJChkNkHdxT8C0VAbm9mM9omTAukKIwQ1VyaZS1LQ6mPLuqeqGknC+fQColrPQwpFWy3zuNlOZM8WtlS06cK4=
+X-Received: by 2002:a17:906:489b:: with SMTP id v27mr37847667ejq.567.1637930536266;
+ Fri, 26 Nov 2021 04:42:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20211125160503.347646915@linuxfoundation.org>
+In-Reply-To: <20211125160503.347646915@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 26 Nov 2021 18:12:03 +0530
+Message-ID: <CA+G9fYsRBz4AQ2wWNoSxyzBCNK2zCViX8JkoewodybQGrkn+QA@mail.gmail.com>
+Subject: Re: [PATCH 4.4 000/159] 4.4.293-rc3 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        f.fainelli@gmail.com, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current driver version is able to handle only one bridge at time.
-Configuring two bridges on two different ports would end up shorting this
-bridges by HW. To reproduce it:
+On Thu, 25 Nov 2021 at 21:37, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.4.293 release.
+> There are 159 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 27 Nov 2021 16:04:43 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.293-rc3.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-	ip l a name br0 type bridge
-	ip l a name br1 type bridge
-	ip l s dev br0 up
-	ip l s dev br1 up
-	ip l s lan1 master br0
-	ip l s dev lan1 up
-	ip l s lan2 master br1
-	ip l s dev lan2 up
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-	Ping on lan1 and get response on lan2, which should not happen.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-This happened, because current driver version is storing one global "Port VLAN
-Membership" and applying it to all ports which are members of any
-bridge.
-To solve this issue, we need to handle each port separately.
+## Build
+* kernel: 4.4.293-rc3
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-4.4.y
+* git commit: 026850c9b4d089e2bb4e9cfb10a53278a5a6fc53
+* git describe: v4.4.292-160-g026850c9b4d0
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.2=
+92-160-g026850c9b4d0
 
-This patch is dropping the global port member storage and calculating
-membership dynamically depending on STP state and bridge participation.
+## No regressions (compared to v4.4.292-162-g118b5f50cf5b)
 
-Note: STP support was broken before this patch and should be fixed
-separately.
+## No fixes (compared to v4.4.292-162-g118b5f50cf5b)
 
-Fixes: c2e866911e25 ("net: dsa: microchip: break KSZ9477 DSA driver into two files")
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/net/dsa/microchip/ksz8795.c    | 56 +++-------------------
- drivers/net/dsa/microchip/ksz9477.c    | 66 ++++----------------------
- drivers/net/dsa/microchip/ksz_common.c | 50 ++++++++++---------
- drivers/net/dsa/microchip/ksz_common.h |  4 --
- 4 files changed, 43 insertions(+), 133 deletions(-)
 
-diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
-index 43fc3087aeb3..013e9c02be71 100644
---- a/drivers/net/dsa/microchip/ksz8795.c
-+++ b/drivers/net/dsa/microchip/ksz8795.c
-@@ -1002,57 +1002,32 @@ static void ksz8_cfg_port_member(struct ksz_device *dev, int port, u8 member)
- 	data &= ~PORT_VLAN_MEMBERSHIP;
- 	data |= (member & dev->port_mask);
- 	ksz_pwrite8(dev, port, P_MIRROR_CTRL, data);
--	dev->ports[port].member = member;
- }
- 
- static void ksz8_port_stp_state_set(struct dsa_switch *ds, int port, u8 state)
- {
- 	struct ksz_device *dev = ds->priv;
--	int forward = dev->member;
- 	struct ksz_port *p;
--	int member = -1;
- 	u8 data;
- 
--	p = &dev->ports[port];
--
- 	ksz_pread8(dev, port, P_STP_CTRL, &data);
- 	data &= ~(PORT_TX_ENABLE | PORT_RX_ENABLE | PORT_LEARN_DISABLE);
- 
- 	switch (state) {
- 	case BR_STATE_DISABLED:
- 		data |= PORT_LEARN_DISABLE;
--		if (port < dev->phy_port_cnt)
--			member = 0;
- 		break;
- 	case BR_STATE_LISTENING:
- 		data |= (PORT_RX_ENABLE | PORT_LEARN_DISABLE);
--		if (port < dev->phy_port_cnt &&
--		    p->stp_state == BR_STATE_DISABLED)
--			member = dev->host_mask | p->vid_member;
- 		break;
- 	case BR_STATE_LEARNING:
- 		data |= PORT_RX_ENABLE;
- 		break;
- 	case BR_STATE_FORWARDING:
- 		data |= (PORT_TX_ENABLE | PORT_RX_ENABLE);
--
--		/* This function is also used internally. */
--		if (port == dev->cpu_port)
--			break;
--
--		/* Port is a member of a bridge. */
--		if (dev->br_member & BIT(port)) {
--			dev->member |= BIT(port);
--			member = dev->member;
--		} else {
--			member = dev->host_mask | p->vid_member;
--		}
- 		break;
- 	case BR_STATE_BLOCKING:
- 		data |= PORT_LEARN_DISABLE;
--		if (port < dev->phy_port_cnt &&
--		    p->stp_state == BR_STATE_DISABLED)
--			member = dev->host_mask | p->vid_member;
- 		break;
- 	default:
- 		dev_err(ds->dev, "invalid STP state: %d\n", state);
-@@ -1060,22 +1035,11 @@ static void ksz8_port_stp_state_set(struct dsa_switch *ds, int port, u8 state)
- 	}
- 
- 	ksz_pwrite8(dev, port, P_STP_CTRL, data);
-+
-+	p = &dev->ports[port];
- 	p->stp_state = state;
--	/* Port membership may share register with STP state. */
--	if (member >= 0 && member != p->member)
--		ksz8_cfg_port_member(dev, port, (u8)member);
--
--	/* Check if forwarding needs to be updated. */
--	if (state != BR_STATE_FORWARDING) {
--		if (dev->br_member & BIT(port))
--			dev->member &= ~BIT(port);
--	}
- 
--	/* When topology has changed the function ksz_update_port_member
--	 * should be called to modify port forwarding behavior.
--	 */
--	if (forward != dev->member)
--		ksz_update_port_member(dev, port);
-+	ksz_update_port_member(dev, port);
- }
- 
- static void ksz8_flush_dyn_mac_table(struct ksz_device *dev, int port)
-@@ -1341,7 +1305,7 @@ static void ksz8795_cpu_interface_select(struct ksz_device *dev, int port)
- 
- static void ksz8_port_setup(struct ksz_device *dev, int port, bool cpu_port)
- {
--	struct ksz_port *p = &dev->ports[port];
-+	struct dsa_switch *ds = dev->ds;
- 	struct ksz8 *ksz8 = dev->priv;
- 	const u32 *masks;
- 	u8 member;
-@@ -1368,10 +1332,11 @@ static void ksz8_port_setup(struct ksz_device *dev, int port, bool cpu_port)
- 		if (!ksz_is_ksz88x3(dev))
- 			ksz8795_cpu_interface_select(dev, port);
- 
--		member = dev->port_mask;
-+		member = dsa_user_ports(ds);
- 	} else {
--		member = dev->host_mask | p->vid_member;
-+		member = BIT(dsa_upstream_port(ds, port));
- 	}
-+
- 	ksz8_cfg_port_member(dev, port, member);
- }
- 
-@@ -1392,20 +1357,13 @@ static void ksz8_config_cpu_port(struct dsa_switch *ds)
- 	ksz_cfg(dev, regs[S_TAIL_TAG_CTRL], masks[SW_TAIL_TAG_ENABLE], true);
- 
- 	p = &dev->ports[dev->cpu_port];
--	p->vid_member = dev->port_mask;
- 	p->on = 1;
- 
- 	ksz8_port_setup(dev, dev->cpu_port, true);
--	dev->member = dev->host_mask;
- 
- 	for (i = 0; i < dev->phy_port_cnt; i++) {
- 		p = &dev->ports[i];
- 
--		/* Initialize to non-zero so that ksz_cfg_port_member() will
--		 * be called.
--		 */
--		p->vid_member = BIT(i);
--		p->member = dev->port_mask;
- 		ksz8_port_stp_state_set(ds, i, BR_STATE_DISABLED);
- 
- 		/* Last port may be disabled. */
-diff --git a/drivers/net/dsa/microchip/ksz9477.c b/drivers/net/dsa/microchip/ksz9477.c
-index 854e25f43fa7..353b5f981740 100644
---- a/drivers/net/dsa/microchip/ksz9477.c
-+++ b/drivers/net/dsa/microchip/ksz9477.c
-@@ -391,7 +391,6 @@ static void ksz9477_cfg_port_member(struct ksz_device *dev, int port,
- 				    u8 member)
- {
- 	ksz_pwrite32(dev, port, REG_PORT_VLAN_MEMBERSHIP__4, member);
--	dev->ports[port].member = member;
- }
- 
- static void ksz9477_port_stp_state_set(struct dsa_switch *ds, int port,
-@@ -400,8 +399,6 @@ static void ksz9477_port_stp_state_set(struct dsa_switch *ds, int port,
- 	struct ksz_device *dev = ds->priv;
- 	struct ksz_port *p = &dev->ports[port];
- 	u8 data;
--	int member = -1;
--	int forward = dev->member;
- 
- 	ksz_pread8(dev, port, P_STP_CTRL, &data);
- 	data &= ~(PORT_TX_ENABLE | PORT_RX_ENABLE | PORT_LEARN_DISABLE);
-@@ -409,40 +406,18 @@ static void ksz9477_port_stp_state_set(struct dsa_switch *ds, int port,
- 	switch (state) {
- 	case BR_STATE_DISABLED:
- 		data |= PORT_LEARN_DISABLE;
--		if (port != dev->cpu_port)
--			member = 0;
- 		break;
- 	case BR_STATE_LISTENING:
- 		data |= (PORT_RX_ENABLE | PORT_LEARN_DISABLE);
--		if (port != dev->cpu_port &&
--		    p->stp_state == BR_STATE_DISABLED)
--			member = dev->host_mask | p->vid_member;
- 		break;
- 	case BR_STATE_LEARNING:
- 		data |= PORT_RX_ENABLE;
- 		break;
- 	case BR_STATE_FORWARDING:
- 		data |= (PORT_TX_ENABLE | PORT_RX_ENABLE);
--
--		/* This function is also used internally. */
--		if (port == dev->cpu_port)
--			break;
--
--		member = dev->host_mask | p->vid_member;
--		mutex_lock(&dev->dev_mutex);
--
--		/* Port is a member of a bridge. */
--		if (dev->br_member & (1 << port)) {
--			dev->member |= (1 << port);
--			member = dev->member;
--		}
--		mutex_unlock(&dev->dev_mutex);
- 		break;
- 	case BR_STATE_BLOCKING:
- 		data |= PORT_LEARN_DISABLE;
--		if (port != dev->cpu_port &&
--		    p->stp_state == BR_STATE_DISABLED)
--			member = dev->host_mask | p->vid_member;
- 		break;
- 	default:
- 		dev_err(ds->dev, "invalid STP state: %d\n", state);
-@@ -451,23 +426,8 @@ static void ksz9477_port_stp_state_set(struct dsa_switch *ds, int port,
- 
- 	ksz_pwrite8(dev, port, P_STP_CTRL, data);
- 	p->stp_state = state;
--	mutex_lock(&dev->dev_mutex);
--	/* Port membership may share register with STP state. */
--	if (member >= 0 && member != p->member)
--		ksz9477_cfg_port_member(dev, port, (u8)member);
--
--	/* Check if forwarding needs to be updated. */
--	if (state != BR_STATE_FORWARDING) {
--		if (dev->br_member & (1 << port))
--			dev->member &= ~(1 << port);
--	}
- 
--	/* When topology has changed the function ksz_update_port_member
--	 * should be called to modify port forwarding behavior.
--	 */
--	if (forward != dev->member)
--		ksz_update_port_member(dev, port);
--	mutex_unlock(&dev->dev_mutex);
-+	ksz_update_port_member(dev, port);
- }
- 
- static void ksz9477_flush_dyn_mac_table(struct ksz_device *dev, int port)
-@@ -1168,10 +1128,10 @@ static void ksz9477_phy_errata_setup(struct ksz_device *dev, int port)
- 
- static void ksz9477_port_setup(struct ksz_device *dev, int port, bool cpu_port)
- {
--	u8 data8;
--	u8 member;
--	u16 data16;
- 	struct ksz_port *p = &dev->ports[port];
-+	struct dsa_switch *ds = dev->ds;
-+	u8 data8, member;
-+	u16 data16;
- 
- 	/* enable tag tail for host port */
- 	if (cpu_port)
-@@ -1250,12 +1210,12 @@ static void ksz9477_port_setup(struct ksz_device *dev, int port, bool cpu_port)
- 		ksz_pwrite8(dev, port, REG_PORT_XMII_CTRL_1, data8);
- 		p->phydev.duplex = 1;
- 	}
--	mutex_lock(&dev->dev_mutex);
-+
- 	if (cpu_port)
--		member = dev->port_mask;
-+		member = dsa_user_ports(ds);
- 	else
--		member = dev->host_mask | p->vid_member;
--	mutex_unlock(&dev->dev_mutex);
-+		member = BIT(dsa_upstream_port(ds, port));
-+
- 	ksz9477_cfg_port_member(dev, port, member);
- 
- 	/* clear pending interrupts */
-@@ -1276,8 +1236,6 @@ static void ksz9477_config_cpu_port(struct dsa_switch *ds)
- 			const char *prev_mode;
- 
- 			dev->cpu_port = i;
--			dev->host_mask = (1 << dev->cpu_port);
--			dev->port_mask |= dev->host_mask;
- 			p = &dev->ports[i];
- 
- 			/* Read from XMII register to determine host port
-@@ -1312,23 +1270,15 @@ static void ksz9477_config_cpu_port(struct dsa_switch *ds)
- 
- 			/* enable cpu port */
- 			ksz9477_port_setup(dev, i, true);
--			p->vid_member = dev->port_mask;
- 			p->on = 1;
- 		}
- 	}
- 
--	dev->member = dev->host_mask;
--
- 	for (i = 0; i < dev->port_cnt; i++) {
- 		if (i == dev->cpu_port)
- 			continue;
- 		p = &dev->ports[i];
- 
--		/* Initialize to non-zero so that ksz_cfg_port_member() will
--		 * be called.
--		 */
--		p->vid_member = (1 << i);
--		p->member = dev->port_mask;
- 		ksz9477_port_stp_state_set(ds, i, BR_STATE_DISABLED);
- 		p->on = 1;
- 		if (i < dev->phy_port_cnt)
-diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-index 7c2968a639eb..8a04302018dc 100644
---- a/drivers/net/dsa/microchip/ksz_common.c
-+++ b/drivers/net/dsa/microchip/ksz_common.c
-@@ -22,21 +22,40 @@
- 
- void ksz_update_port_member(struct ksz_device *dev, int port)
- {
--	struct ksz_port *p;
-+	struct ksz_port *p = &dev->ports[port];
-+	struct dsa_switch *ds = dev->ds;
-+	u8 port_member = 0, cpu_port;
-+	const struct dsa_port *dp;
- 	int i;
- 
--	for (i = 0; i < dev->port_cnt; i++) {
--		if (i == port || i == dev->cpu_port)
-+	if (!dsa_is_user_port(ds, port))
-+		return;
-+
-+	dp = dsa_to_port(ds, port);
-+	cpu_port = BIT(dsa_upstream_port(ds, port));
-+
-+	for (i = 0; i < ds->num_ports; i++) {
-+		const struct dsa_port *other_dp = dsa_to_port(ds, i);
-+		struct ksz_port *other_p = &dev->ports[i];
-+		u8 val = 0;
-+
-+		if (!dsa_is_user_port(ds, i))
- 			continue;
--		p = &dev->ports[i];
--		if (!(dev->member & (1 << i)))
-+		if (port == i)
-+			continue;
-+		if (!dp->bridge_dev || dp->bridge_dev != other_dp->bridge_dev)
- 			continue;
- 
--		/* Port is a member of the bridge and is forwarding. */
--		if (p->stp_state == BR_STATE_FORWARDING &&
--		    p->member != dev->member)
--			dev->dev_ops->cfg_port_member(dev, i, dev->member);
-+		if (other_p->stp_state == BR_STATE_FORWARDING &&
-+		    p->stp_state == BR_STATE_FORWARDING) {
-+			val |= BIT(port);
-+			port_member |= BIT(i);
-+		}
-+
-+		dev->dev_ops->cfg_port_member(dev, i, val | cpu_port);
- 	}
-+
-+	dev->dev_ops->cfg_port_member(dev, port, port_member | cpu_port);
- }
- EXPORT_SYMBOL_GPL(ksz_update_port_member);
- 
-@@ -175,12 +194,6 @@ EXPORT_SYMBOL_GPL(ksz_get_ethtool_stats);
- int ksz_port_bridge_join(struct dsa_switch *ds, int port,
- 			 struct net_device *br)
- {
--	struct ksz_device *dev = ds->priv;
--
--	mutex_lock(&dev->dev_mutex);
--	dev->br_member |= (1 << port);
--	mutex_unlock(&dev->dev_mutex);
--
- 	/* port_stp_state_set() will be called after to put the port in
- 	 * appropriate state so there is no need to do anything.
- 	 */
-@@ -192,13 +205,6 @@ EXPORT_SYMBOL_GPL(ksz_port_bridge_join);
- void ksz_port_bridge_leave(struct dsa_switch *ds, int port,
- 			   struct net_device *br)
- {
--	struct ksz_device *dev = ds->priv;
--
--	mutex_lock(&dev->dev_mutex);
--	dev->br_member &= ~(1 << port);
--	dev->member &= ~(1 << port);
--	mutex_unlock(&dev->dev_mutex);
--
- 	/* port_stp_state_set() will be called after to put the port in
- 	 * forwarding state so there is no need to do anything.
- 	 */
-diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
-index 1597c63988b4..54b456bc8972 100644
---- a/drivers/net/dsa/microchip/ksz_common.h
-+++ b/drivers/net/dsa/microchip/ksz_common.h
-@@ -25,8 +25,6 @@ struct ksz_port_mib {
- };
- 
- struct ksz_port {
--	u16 member;
--	u16 vid_member;
- 	bool remove_tag;		/* Remove Tag flag set, for ksz8795 only */
- 	int stp_state;
- 	struct phy_device phydev;
-@@ -83,8 +81,6 @@ struct ksz_device {
- 	struct ksz_port *ports;
- 	struct delayed_work mib_read;
- 	unsigned long mib_read_interval;
--	u16 br_member;
--	u16 member;
- 	u16 mirror_rx;
- 	u16 mirror_tx;
- 	u32 features;			/* chip specific features */
--- 
-2.30.2
+## Test result summary
+total: 44842, pass: 35892, fail: 206, skip: 7725, xfail: 1019
 
+## Build Summary
+* arm: 129 total, 129 passed, 0 failed
+* arm64: 31 total, 31 passed, 0 failed
+* i386: 18 total, 18 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 22 total, 22 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 18 total, 18 passed, 0 failed
+
+## Test suites summary
+* fwts
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
