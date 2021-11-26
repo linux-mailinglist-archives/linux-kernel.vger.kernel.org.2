@@ -2,99 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB60745F502
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:05:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E27245F519
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:18:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbhKZTIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 14:08:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38460 "EHLO
+        id S235181AbhKZTVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 14:21:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231467AbhKZTGr (ORCPT
+        with ESMTP id S233186AbhKZTTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 14:06:47 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90A1C07E5ED;
-        Fri, 26 Nov 2021 10:28:38 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id r5so8874911pgi.6;
-        Fri, 26 Nov 2021 10:28:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:from:subject:to:cc
-         :references:content-language:in-reply-to:content-transfer-encoding;
-        bh=E+dMA1iECTp5/2ca3sGCrH/unKsv0u0VZpUy2oqv8pg=;
-        b=pNiI8pByuEyWHxOU1df4HUvGEMfDRtS1L3ne7JYKZcRVmfe54rjMG/FbMBqeHbBB2M
-         dQ1a0GHS8Er1qy9gq452/fhocXXTP4AomIn+CHwqQdK2WCLxYM8tbh+fWUpL9z3AUPJP
-         3tSFbScKjukt4yZzLOUIzgiMS2z2GsLiKhf4uho4sSR3ooQCwb40wkLRzuwCw1bNlb5L
-         Z6Iqgy/5yXk0s0yfTWw7CmjSSc826c344SvJG1X9mw27nyPuOy5f4kCm4d/ulishu9+0
-         HPRfk2a+IdmXd+dFjon+mnpVMiOxRF5BpFGQRPeWUNV6T3MwoPoNLAZGddDwder8ZKw1
-         UlLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
-         :subject:to:cc:references:content-language:in-reply-to
-         :content-transfer-encoding;
-        bh=E+dMA1iECTp5/2ca3sGCrH/unKsv0u0VZpUy2oqv8pg=;
-        b=Bes2rm/QRzQF3G5MldhrFezUnBZiqhGEFk5jz54X2LfSvffZgddvTY4j2f1Eh0yYhE
-         yuQvGlYk73OCY4WQjcThcRwUx0BjdVKozQCrxeKC4fFCkvOmOr+KWkS7K4Q/MXigQKGR
-         2r4eiE1+UpdmUMxJaheYZ5mGXx3xv2ZKVd3UE7YZ1VGd3LbjTGsrZC0gJIpX1rs05LeL
-         PMiW/KLk/+2vJczES9eNxulCb+9YzpOdpUIc+MPdB7Wd10oFj30L1oy2FoEZx+44ns6A
-         pXIaAQWVXq7x1S9oegwohG/eBZ2cYIOj4wBMe6rsa6SqcP6OAvuH0dWoRbKyLT959FRP
-         hV9g==
-X-Gm-Message-State: AOAM533maTiSjoKXgt2krhcRHOw1doZYKDUVPtJqMbjt+92AJC3v9R0s
-        T0z6FBSuOv5extfit4MGm5U=
-X-Google-Smtp-Source: ABdhPJx4HiLqWiRSg8B+5GAqkgKARdnb1eWHqBx8H5FdreatOzLUPRMSabwD5kyTImzYasDtQ5ipgQ==
-X-Received: by 2002:a63:ee53:: with SMTP id n19mr8711878pgk.593.1637951318391;
-        Fri, 26 Nov 2021 10:28:38 -0800 (PST)
-Received: from [10.230.1.174] ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id z4sm8620973pfh.15.2021.11.26.10.28.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Nov 2021 10:28:37 -0800 (PST)
-Message-ID: <516de9b9-685d-ba65-a284-4dda155be9c2@gmail.com>
-Date:   Fri, 26 Nov 2021 10:28:36 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH 5.10 000/153] 5.10.82-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20211125092029.973858485@linuxfoundation.org>
-Content-Language: en-US
-In-Reply-To: <20211125092029.973858485@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Fri, 26 Nov 2021 14:19:49 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2240C061A1E
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 10:41:30 -0800 (PST)
+Received: from mail.kernel.org (unknown [198.145.29.99])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AC02E62321
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 18:35:09 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 092EC60041;
+        Fri, 26 Nov 2021 18:35:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637951709;
+        bh=7driNm2WVc92ubSabALVsvKyR0qbyWJzS4X9tddEVRI=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Sd+Ud/y8XILA0q5BnaT1Oxz9J2AJaJpUyOtemJjO2toIr1rR4h6WsxU8i+vZw5h8y
+         z97kOlzsTmGze4IN+FImoM24jJVtDcvPlEwRfAK+MrlLZLATABHI6OwFEJBoUUJ2pj
+         ONLhgYwC+PfXXJEbeEOG/arwbk45xAoSUO9Et7h7+70vEJnV3rAJ3a1C1kEgD9N/7r
+         2BoGaP8JbhVbBDHEb8pyK9fbiGokkFrt8Aez5RMHt7/G8B+vyT1Y/5Foz4CplwWh8c
+         4inNlmaDy4jJoAPfIKnmEne6Ca6z8ERJmBwJNfsYsZ81MZUsGcipTDxn6x+QfJXMS+
+         IKyFn8x/UWG2g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E779260A3E;
+        Fri, 26 Nov 2021 18:35:07 +0000 (UTC)
+Subject: Re: [GIT PULL] Staging driver fixes for 5.16-rc3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YaD6DdgslN17VWV8@kroah.com>
+References: <YaD6DdgslN17VWV8@kroah.com>
+X-PR-Tracked-List-Id: <linux-staging.lists.linux.dev>
+X-PR-Tracked-Message-Id: <YaD6DdgslN17VWV8@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.16-rc3
+X-PR-Tracked-Commit-Id: b535917c51acc97fb0761b1edec85f1f3d02bda4
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 703374418e93006a4b42a9b607e8e438bdf6b087
+Message-Id: <163795170788.22939.11490049493260235702.pr-tracker-bot@kernel.org>
+Date:   Fri, 26 Nov 2021 18:35:07 +0000
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Fri, 26 Nov 2021 16:15:25 +0100:
 
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.16-rc3
 
-On 11/25/2021 1:23 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.82 release.
-> There are 153 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 27 Nov 2021 09:20:04 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.82-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/703374418e93006a4b42a9b607e8e438bdf6b087
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+Thank you!
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Florian
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
