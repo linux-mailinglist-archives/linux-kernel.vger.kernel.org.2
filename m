@@ -2,78 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D31145F27B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A78B845F284
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233822AbhKZQyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:54:33 -0500
-Received: from foss.arm.com ([217.140.110.172]:35702 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236291AbhKZQwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:52:33 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 88B301042;
-        Fri, 26 Nov 2021 08:49:19 -0800 (PST)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 86E763F7B4;
-        Fri, 26 Nov 2021 08:49:18 -0800 (PST)
-From:   Valentin Schneider <Valentin.Schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Vincent Donnefort <Vincent.Donnefort@arm.com>,
-        peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
-        dietmar.eggemann@arm.com
-Subject: Re: [PATCH] sched/fair: Fix detection of per-CPU kthreads waking a task
-In-Reply-To: <CAKfTPtC4iXXaptm9+2bHvX2E3xAWU4M3xN0ZuwpFQ1RyXAyxyA@mail.gmail.com>
-References: <20211124154239.3191366-1-vincent.donnefort@arm.com> <CAKfTPtDX8sOfguZhJt5QV3j5D_JetcgncuF2w+uLa0XDk7UXkw@mail.gmail.com> <8735nkcwov.mognet@arm.com> <CAKfTPtDPskVdEd-KQ_cwe-R_zVFPQOgdbk9x+3eD12pKs8fGFw@mail.gmail.com> <87zgpsb6de.mognet@arm.com> <CAKfTPtCnusWJXJLDEudQ_q8MWaZYbPJK-QjAbBYWFW8Nw-J+Ww@mail.gmail.com> <87sfvjavqk.mognet@arm.com> <CAKfTPtC4iXXaptm9+2bHvX2E3xAWU4M3xN0ZuwpFQ1RyXAyxyA@mail.gmail.com>
-Date:   Fri, 26 Nov 2021 16:49:12 +0000
-Message-ID: <87pmqmc16f.mognet@arm.com>
+        id S234876AbhKZQ52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:57:28 -0500
+Received: from outbound-smtp25.blacknight.com ([81.17.249.193]:48778 "EHLO
+        outbound-smtp25.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235558AbhKZQz1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 11:55:27 -0500
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp25.blacknight.com (Postfix) with ESMTPS id 8670BCB584
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 16:52:13 +0000 (GMT)
+Received: (qmail 10917 invoked from network); 26 Nov 2021 16:52:13 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 26 Nov 2021 16:52:13 -0000
+Date:   Fri, 26 Nov 2021 16:52:11 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Alexey Avramov <hakavlad@inbox.lv>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rik van Riel <riel@surriel.com>,
+        Mike Galbraith <efault@gmx.de>,
+        Darrick Wong <djwong@kernel.org>, regressions@lists.linux.dev,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] mm: vmscan: Reduce throttling due to a failure to
+ make progress
+Message-ID: <20211126165211.GL3366@techsingularity.net>
+References: <20211125151853.8540-1-mgorman@techsingularity.net>
+ <20211127011246.7a8ac7b8@mail.inbox.lv>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20211127011246.7a8ac7b8@mail.inbox.lv>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/11/21 15:40, Vincent Guittot wrote:
-> On Fri, 26 Nov 2021 at 14:32, Valentin Schneider
-> <Valentin.Schneider@arm.com> wrote:
->>         /*
->> -        * Allow a per-cpu kthread to stack with the wakee if the
->> -        * kworker thread and the tasks previous CPUs are the same.
->> -        * The assumption is that the wakee queued work for the
->> -        * per-cpu kthread that is now complete and the wakeup is
->> -        * essentially a sync wakeup. An obvious example of this
->> +        * Allow a per-cpu kthread to stack with the wakee if the kworker thread
->> +        * and the tasks previous CPUs are the same.  The assumption is that the
->> +        * wakee queued work for the per-cpu kthread that is now complete and
->> +        * the wakeup is essentially a sync wakeup. An obvious example of this
->>          * pattern is IO completions.
->> +        *
->> +        * Ensure the wakeup is issued by the kthread itself, and don't match
->> +        * against the idle task because that could override the
->> +        * available_idle_cpu(target) check done higher up.
->>          */
->> -       if (is_per_cpu_kthread(current) &&
->> +       if (is_per_cpu_kthread(current) && !is_idle_task(current) &&
->
-> still i don't see the need of !is_idle_task(current)
->
+On Sat, Nov 27, 2021 at 01:12:46AM +0900, Alexey Avramov wrote:
+> >After the patch, the test gets killed after roughly 15 seconds which is
+> >the same length of time taken in 5.15.
+> 
+> In my tests, the 5.15 still performs much better.
+> 
 
-Admittedly, belts and braces. The existing condition checks rq->nr_running <= 1
-which can lead to coscheduling when the wakeup is issued by the idle task
-(or even if rq->nr_running == 0, you can have rq->ttwu_pending without
-having sent an IPI due to polling). Essentially this overrides the first
-check in sis() that uses idle_cpu(target) (prev == smp_processor_id() ==
-target).
+How much better?
 
-I couldn't prove such wakeups can happen right now, but if/when they do
-(AIUI it would just take someone to add a wake_up_process() down some
-smp_call_function() callback) then we'll need the above. If you're still
-not convinced by now, I won't push it further.
+> New question: is timeout=1 has sense? Will it save CPU?
 
->
->> +           in_task() &&
->>             prev == smp_processor_id() &&
->>             this_rq()->nr_running <= 1) {
->>                 return prev;
->>
+It's the minimum stall time available -- it's 1 tick so the exact stall
+time depends on HZ and yes, it's to stall to wait for something to
+happen. It'll get woken early if another reclaimer makes forward progress.
+
+This patch on top will stall less. I sent it already but it may not be
+clear that I meant it to be applied on top of this patch.
+
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 176ddd28df21..167ea4f324a8 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -3404,8 +3404,8 @@ static void consider_reclaim_throttle(pg_data_t *pgdat, struct scan_control *sc)
+ 	if (current_is_kswapd())
+ 		return;
+ 
+-	/* Throttle if making no progress at high prioities. */
+-	if (sc->priority < DEF_PRIORITY - 2 && !sc->nr_reclaimed)
++	/* Throttle if making no progress at high priority. */
++	if (sc->priority == 1 && !sc->nr_reclaimed)
+ 		reclaim_throttle(pgdat, VMSCAN_THROTTLE_NOPROGRESS);
+ }
+ 
+
+-- 
+Mel Gorman
+SUSE Labs
