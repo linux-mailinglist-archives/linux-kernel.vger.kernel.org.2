@@ -2,123 +2,426 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 415F745EE43
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:43:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8755345EE36
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:41:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377708AbhKZMqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 07:46:55 -0500
-Received: from mga14.intel.com ([192.55.52.115]:54187 "EHLO mga14.intel.com"
+        id S1345972AbhKZMox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 07:44:53 -0500
+Received: from thoth.sbs.de ([192.35.17.2]:49800 "EHLO thoth.sbs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377237AbhKZMoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 07:44:54 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="235898752"
-X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
-   d="scan'208";a="235898752"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 04:40:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
-   d="scan'208";a="457650719"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 26 Nov 2021 04:39:58 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqaWE-00086k-4x; Fri, 26 Nov 2021 12:39:58 +0000
-Date:   Fri, 26 Nov 2021 20:39:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: mm/khugepaged.c:2181:13: warning: stack frame size (3808) exceeds
- limit (2048) in 'khugepaged_do_scan'
-Message-ID: <202111262010.UBcefCrE-lkp@intel.com>
+        id S1377237AbhKZMmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 07:42:51 -0500
+Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
+        by thoth.sbs.de (8.15.2/8.15.2) with ESMTPS id 1AQCdC6N001686
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Nov 2021 13:39:12 +0100
+Received: from md1za8fc.ad001.siemens.net ([139.22.47.90])
+        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 1AQCdAdV022198;
+        Fri, 26 Nov 2021 13:39:10 +0100
+Date:   Fri, 26 Nov 2021 13:39:09 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
+        <platform-driver-x86@vger.kernel.org>,
+        <linux-watchdog@vger.kernel.org>
+Cc:     Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        "Gerd Haeussler" <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Enrico Weigelt <lkml@metux.net>
+Subject: Re: [PATCH v3 1/4] platform/x86: simatic-ipc: add main driver for
+ Siemens devices
+Message-ID: <20211126133909.33fb1937@md1za8fc.ad001.siemens.net>
+In-Reply-To: <20210329174928.18816-2-henning.schild@siemens.com>
+References: <20210329174928.18816-1-henning.schild@siemens.com>
+        <20210329174928.18816-2-henning.schild@siemens.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   a4849f6000e29235a2707f22e39da6b897bb9543
-commit: 2b5067a8143e34aa3fa57a20fb8a3c40d905f942 mm: mmap_lock: add tracepoints around lock acquisition
-date:   12 months ago
-config: mips-randconfig-r013-20211124 (https://download.01.org/0day-ci/archive/20211126/202111262010.UBcefCrE-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 67a1c45def8a75061203461ab0060c75c864df1c)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install mips cross compiling tool for clang build
-        # apt-get install binutils-mips-linux-gnu
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2b5067a8143e34aa3fa57a20fb8a3c40d905f942
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout 2b5067a8143e34aa3fa57a20fb8a3c40d905f942
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=mips 
+Am Mon, 29 Mar 2021 19:49:25 +0200
+schrieb Henning Schild <henning.schild@siemens.com>:
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+> This mainly implements detection of these devices and will allow
+> secondary drivers to work on such machines.
+> 
+> The identification is DMI-based with a vendor specific way to tell
+> them apart in a reliable way.
+> 
+> Drivers for LEDs and Watchdogs will follow to make use of that
+> platform detection.
+> 
+> Signed-off-by: Henning Schild <henning.schild@siemens.com>
+> ---
+>  drivers/platform/x86/Kconfig                  |  12 ++
+>  drivers/platform/x86/Makefile                 |   3 +
+>  drivers/platform/x86/simatic-ipc.c            | 169
+> ++++++++++++++++++ .../platform_data/x86/simatic-ipc-base.h      |
+> 29 +++ include/linux/platform_data/x86/simatic-ipc.h |  72 ++++++++
+>  5 files changed, 285 insertions(+)
+>  create mode 100644 drivers/platform/x86/simatic-ipc.c
+>  create mode 100644 include/linux/platform_data/x86/simatic-ipc-base.h
+>  create mode 100644 include/linux/platform_data/x86/simatic-ipc.h
+> 
+> diff --git a/drivers/platform/x86/Kconfig
+> b/drivers/platform/x86/Kconfig index 461ec61530eb..1eaa03d0d183 100644
+> --- a/drivers/platform/x86/Kconfig
+> +++ b/drivers/platform/x86/Kconfig
+> @@ -1289,6 +1289,18 @@ config INTEL_TELEMETRY
+>  	  directly via debugfs files. Various tools may use
+>  	  this interface for SoC state monitoring.
+>  
+> +config SIEMENS_SIMATIC_IPC
+> +	tristate "Siemens Simatic IPC Class driver"
+> +	depends on PCI
+> +	help
+> +	  This Simatic IPC class driver is the central of several
+> drivers. It
+> +	  is mainly used for system identification, after which
+> drivers in other
+> +	  classes will take care of driving specifics of those
+> machines.
+> +	  i.e. LEDs and watchdog.
+> +
+> +	  To compile this driver as a module, choose M here: the
+> module
+> +	  will be called simatic-ipc.
+> +
+>  endif # X86_PLATFORM_DEVICES
+>  
+>  config PMC_ATOM
+> diff --git a/drivers/platform/x86/Makefile
+> b/drivers/platform/x86/Makefile index 60d554073749..26cdebf2e701
+> 100644 --- a/drivers/platform/x86/Makefile
+> +++ b/drivers/platform/x86/Makefile
+> @@ -138,3 +138,6 @@ obj-$(CONFIG_INTEL_TELEMETRY)		+=
+> intel_telemetry_core.o \ intel_telemetry_pltdrv.o \
+>  					   intel_telemetry_debugfs.o
+>  obj-$(CONFIG_PMC_ATOM)			+= pmc_atom.o
+> +
+> +# Siemens Simatic Industrial PCs
+> +obj-$(CONFIG_SIEMENS_SIMATIC_IPC)	+= simatic-ipc.o
+> diff --git a/drivers/platform/x86/simatic-ipc.c
+> b/drivers/platform/x86/simatic-ipc.c new file mode 100644
+> index 000000000000..52e8596bc63d
+> --- /dev/null
+> +++ b/drivers/platform/x86/simatic-ipc.c
+> @@ -0,0 +1,169 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Siemens SIMATIC IPC platform driver
+> + *
+> + * Copyright (c) Siemens AG, 2018-2021
+> + *
+> + * Authors:
+> + *  Henning Schild <henning.schild@siemens.com>
+> + *  Jan Kiszka <jan.kiszka@siemens.com>
+> + *  Gerd Haeussler <gerd.haeussler.ext@siemens.com>
+> + */
+> +
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +
+> +#include <linux/dmi.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/pci.h>
+> +#include <linux/platform_data/x86/simatic-ipc.h>
+> +#include <linux/platform_device.h>
+> +
+> +static struct platform_device *ipc_led_platform_device;
+> +static struct platform_device *ipc_wdt_platform_device;
+> +
+> +static const struct dmi_system_id simatic_ipc_whitelist[] = {
+> +	{
+> +		.matches = {
+> +			DMI_MATCH(DMI_SYS_VENDOR, "SIEMENS AG"),
+> +		},
+> +	},
+> +	{}
+> +};
+> +
+> +static struct simatic_ipc_platform platform_data;
+> +
+> +static struct {
+> +	u32 station_id;
+> +	u8 led_mode;
+> +	u8 wdt_mode;
+> +} device_modes[] = {
+> +	{SIMATIC_IPC_IPC127E, SIMATIC_IPC_DEVICE_127E,
+> SIMATIC_IPC_DEVICE_NONE},
+> +	{SIMATIC_IPC_IPC227D, SIMATIC_IPC_DEVICE_227D,
+> SIMATIC_IPC_DEVICE_NONE},
+> +	{SIMATIC_IPC_IPC227E, SIMATIC_IPC_DEVICE_427E,
+> SIMATIC_IPC_DEVICE_227E},
+> +	{SIMATIC_IPC_IPC277E, SIMATIC_IPC_DEVICE_NONE,
+> SIMATIC_IPC_DEVICE_227E},
+> +	{SIMATIC_IPC_IPC427D, SIMATIC_IPC_DEVICE_427E,
+> SIMATIC_IPC_DEVICE_NONE},
+> +	{SIMATIC_IPC_IPC427E, SIMATIC_IPC_DEVICE_427E,
+> SIMATIC_IPC_DEVICE_427E},
+> +	{SIMATIC_IPC_IPC477E, SIMATIC_IPC_DEVICE_NONE,
+> SIMATIC_IPC_DEVICE_427E}, +};
+> +
+> +static int register_platform_devices(u32 station_id)
+> +{
+> +	u8 ledmode = SIMATIC_IPC_DEVICE_NONE;
+> +	u8 wdtmode = SIMATIC_IPC_DEVICE_NONE;
+> +	int i;
+> +
+> +	platform_data.devmode = SIMATIC_IPC_DEVICE_NONE;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(device_modes); i++) {
+> +		if (device_modes[i].station_id == station_id) {
+> +			ledmode = device_modes[i].led_mode;
+> +			wdtmode = device_modes[i].wdt_mode;
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (ledmode != SIMATIC_IPC_DEVICE_NONE) {
+> +		platform_data.devmode = ledmode;
+> +		ipc_led_platform_device =
+> +			platform_device_register_data(NULL,
+> +				KBUILD_MODNAME "_leds",
+> PLATFORM_DEVID_NONE,
+> +				&platform_data,
+> +				sizeof(struct simatic_ipc_platform));
+> +		if (IS_ERR(ipc_led_platform_device))
+> +			return PTR_ERR(ipc_led_platform_device);
+> +
+> +		pr_debug("device=%s created\n",
+> +			 ipc_led_platform_device->name);
+> +	}
+> +
+> +	if (wdtmode != SIMATIC_IPC_DEVICE_NONE) {
+> +		platform_data.devmode = wdtmode;
+> +		ipc_wdt_platform_device =
+> +			platform_device_register_data(NULL,
+> +				KBUILD_MODNAME "_wdt",
+> PLATFORM_DEVID_NONE,
+> +				&platform_data,
+> +				sizeof(struct simatic_ipc_platform));
+> +		if (IS_ERR(ipc_wdt_platform_device))
+> +			return PTR_ERR(ipc_wdt_platform_device);
+> +
+> +		pr_debug("device=%s created\n",
+> +			 ipc_wdt_platform_device->name);
+> +	}
+> +
+> +	if (ledmode == SIMATIC_IPC_DEVICE_NONE &&
+> +	    wdtmode == SIMATIC_IPC_DEVICE_NONE) {
+> +		pr_warn("unsupported IPC detected, station
+> id=%08x\n",
+> +			station_id);
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +
 
-All warnings (new ones prefixed by >>):
+extra newline, should be removed
 
->> mm/khugepaged.c:2181:13: warning: stack frame size (3808) exceeds limit (2048) in 'khugepaged_do_scan' [-Wframe-larger-than]
-   static void khugepaged_do_scan(void)
-               ^
-   1 warning generated.
-   Assembler messages:
-   Warning: a different -march was already specified, is now octeon
+> +/* FIXME: this should eventually be done with generic P2SB discovery
+> code */ +/*
+> + * Get membase address from PCI, used in leds and wdt modul. Here we
+> read
 
+/modul/module/
 
-vim +/khugepaged_do_scan +2181 mm/khugepaged.c
+was pointed out already but forgotten about
 
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2180  
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26 @2181  static void khugepaged_do_scan(void)
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2182  {
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2183  	struct page *hpage = NULL;
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2184  	unsigned int progress = 0, pass_through_head = 0;
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2185  	unsigned int pages = khugepaged_pages_to_scan;
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2186  	bool wait = true;
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2187  
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2188  	barrier(); /* write khugepaged_pages_to_scan to local stack */
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2189  
-a980df33e9351e Kirill A. Shutemov 2020-06-03  2190  	lru_add_drain_all();
-a980df33e9351e Kirill A. Shutemov 2020-06-03  2191  
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2192  	while (progress < pages) {
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2193  		if (!khugepaged_prealloc_page(&hpage, &wait))
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2194  			break;
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2195  
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2196  		cond_resched();
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2197  
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2198  		if (unlikely(kthread_should_stop() || try_to_freeze()))
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2199  			break;
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2200  
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2201  		spin_lock(&khugepaged_mm_lock);
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2202  		if (!khugepaged_scan.mm_slot)
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2203  			pass_through_head++;
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2204  		if (khugepaged_has_work() &&
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2205  		    pass_through_head < 2)
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2206  			progress += khugepaged_scan_mm_slot(pages - progress,
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2207  							    &hpage);
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2208  		else
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2209  			progress = pages;
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2210  		spin_unlock(&khugepaged_mm_lock);
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2211  	}
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2212  
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2213  	if (!IS_ERR_OR_NULL(hpage))
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2214  		put_page(hpage);
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2215  }
-b46e756f5e4703 Kirill A. Shutemov 2016-07-26  2216  
+Henning
 
-:::::: The code at line 2181 was first introduced by commit
-:::::: b46e756f5e47031c67658ff036e5ffe27062fa43 thp: extract khugepaged from mm/huge_memory.c
+> + * the bar0. The final address calculation is done in the
+> appropriate modules
+> + */
+> +u32 simatic_ipc_get_membase0(unsigned int p2sb)
+> +{
+> +	struct pci_bus *bus;
+> +	u32 bar0 = 0;
+> +	/*
+> +	 * The GPIO memory is in bar0 of the hidden P2SB device.
+> +	 * Unhide the device to have a quick look at it, before we
+> hide it
+> +	 * again.
+> +	 * Also grab the pci rescan lock so that device does not get
+> discovered
+> +	 * and remapped while it is visible.
+> +	 * This code is inspired by drivers/mfd/lpc_ich.c
+> +	 */
+> +	bus = pci_find_bus(0, 0);
+> +	pci_lock_rescan_remove();
+> +	pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x0);
+> +	pci_bus_read_config_dword(bus, p2sb, PCI_BASE_ADDRESS_0,
+> &bar0); +
+> +	bar0 &= ~0xf;
+> +	pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x1);
+> +	pci_unlock_rescan_remove();
+> +
+> +	return bar0;
+> +}
+> +EXPORT_SYMBOL(simatic_ipc_get_membase0);
+> +
+> +static int __init simatic_ipc_init_module(void)
+> +{
+> +	const struct dmi_system_id *match;
+> +	u32 station_id;
+> +	int err;
+> +
+> +	match = dmi_first_match(simatic_ipc_whitelist);
+> +	if (!match)
+> +		return 0;
+> +
+> +	err = dmi_walk(simatic_ipc_find_dmi_entry_helper,
+> &station_id); +
+> +	if (err || station_id == SIMATIC_IPC_INVALID_STATION_ID) {
+> +		pr_warn("DMI entry %d not found\n",
+> SIMATIC_IPC_DMI_ENTRY_OEM);
+> +		return 0;
+> +	}
+> +
+> +	return register_platform_devices(station_id);
+> +}
+> +
+> +static void __exit simatic_ipc_exit_module(void)
+> +{
+> +	platform_device_unregister(ipc_led_platform_device);
+> +	ipc_led_platform_device = NULL;
+> +
+> +	platform_device_unregister(ipc_wdt_platform_device);
+> +	ipc_wdt_platform_device = NULL;
+> +}
+> +
+> +module_init(simatic_ipc_init_module);
+> +module_exit(simatic_ipc_exit_module);
+> +
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_AUTHOR("Gerd Haeussler <gerd.haeussler.ext@siemens.com>");
+> +MODULE_ALIAS("dmi:*:svnSIEMENSAG:*");
+> diff --git a/include/linux/platform_data/x86/simatic-ipc-base.h
+> b/include/linux/platform_data/x86/simatic-ipc-base.h new file mode
+> 100644 index 000000000000..62d2bc774067
+> --- /dev/null
+> +++ b/include/linux/platform_data/x86/simatic-ipc-base.h
+> @@ -0,0 +1,29 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Siemens SIMATIC IPC drivers
+> + *
+> + * Copyright (c) Siemens AG, 2018-2021
+> + *
+> + * Authors:
+> + *  Henning Schild <henning.schild@siemens.com>
+> + *  Gerd Haeussler <gerd.haeussler.ext@siemens.com>
+> + */
+> +
+> +#ifndef __PLATFORM_DATA_X86_SIMATIC_IPC_BASE_H
+> +#define __PLATFORM_DATA_X86_SIMATIC_IPC_BASE_H
+> +
+> +#include <linux/types.h>
+> +
+> +#define SIMATIC_IPC_DEVICE_NONE 0
+> +#define SIMATIC_IPC_DEVICE_227D 1
+> +#define SIMATIC_IPC_DEVICE_427E 2
+> +#define SIMATIC_IPC_DEVICE_127E 3
+> +#define SIMATIC_IPC_DEVICE_227E 4
+> +
+> +struct simatic_ipc_platform {
+> +	u8	devmode;
+> +};
+> +
+> +u32 simatic_ipc_get_membase0(unsigned int p2sb);
+> +
+> +#endif /* __PLATFORM_DATA_X86_SIMATIC_IPC_BASE_H */
+> diff --git a/include/linux/platform_data/x86/simatic-ipc.h
+> b/include/linux/platform_data/x86/simatic-ipc.h new file mode 100644
+> index 000000000000..f3b76b39776b
+> --- /dev/null
+> +++ b/include/linux/platform_data/x86/simatic-ipc.h
+> @@ -0,0 +1,72 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Siemens SIMATIC IPC drivers
+> + *
+> + * Copyright (c) Siemens AG, 2018-2021
+> + *
+> + * Authors:
+> + *  Henning Schild <henning.schild@siemens.com>
+> + *  Gerd Haeussler <gerd.haeussler.ext@siemens.com>
+> + */
+> +
+> +#ifndef __PLATFORM_DATA_X86_SIMATIC_IPC_H
+> +#define __PLATFORM_DATA_X86_SIMATIC_IPC_H
+> +
+> +#include <linux/dmi.h>
+> +#include <linux/platform_data/x86/simatic-ipc-base.h>
+> +
+> +#define SIMATIC_IPC_DMI_ENTRY_OEM	129
+> +/* binary type */
+> +#define SIMATIC_IPC_DMI_TYPE		0xff
+> +#define SIMATIC_IPC_DMI_GROUP		0x05
+> +#define SIMATIC_IPC_DMI_ENTRY		0x02
+> +#define SIMATIC_IPC_DMI_TID		0x02
+> +
+> +enum simatic_ipc_station_ids {
+> +	SIMATIC_IPC_INVALID_STATION_ID = 0,
+> +	SIMATIC_IPC_IPC227D = 0x00000501,
+> +	SIMATIC_IPC_IPC427D = 0x00000701,
+> +	SIMATIC_IPC_IPC227E = 0x00000901,
+> +	SIMATIC_IPC_IPC277E = 0x00000902,
+> +	SIMATIC_IPC_IPC427E = 0x00000A01,
+> +	SIMATIC_IPC_IPC477E = 0x00000A02,
+> +	SIMATIC_IPC_IPC127E = 0x00000D01,
+> +};
+> +
+> +static inline u32 simatic_ipc_get_station_id(u8 *data, int max_len)
+> +{
+> +	struct {
+> +		u8	type;		/* type (0xff =
+> binary) */
+> +		u8	len;		/* len of data entry */
+> +		u8	group;
+> +		u8	entry;
+> +		u8	tid;
+> +		__le32	station_id;	/* station id (LE)
+> */
+> +	} __packed * data_entry = (void *)data + sizeof(struct
+> dmi_header); +
+> +	while ((u8 *)data_entry < data + max_len) {
+> +		if (data_entry->type == SIMATIC_IPC_DMI_TYPE &&
+> +		    data_entry->len == sizeof(*data_entry) &&
+> +		    data_entry->group == SIMATIC_IPC_DMI_GROUP &&
+> +		    data_entry->entry == SIMATIC_IPC_DMI_ENTRY &&
+> +		    data_entry->tid == SIMATIC_IPC_DMI_TID) {
+> +			return le32_to_cpu(data_entry->station_id);
+> +		}
+> +		data_entry = (void *)((u8 *)(data_entry) +
+> data_entry->len);
+> +	}
+> +
+> +	return SIMATIC_IPC_INVALID_STATION_ID;
+> +}
+> +
+> +static inline void
+> +simatic_ipc_find_dmi_entry_helper(const struct dmi_header *dh, void
+> *_data) +{
+> +	u32 *id = _data;
+> +
+> +	if (dh->type != SIMATIC_IPC_DMI_ENTRY_OEM)
+> +		return;
+> +
+> +	*id = simatic_ipc_get_station_id((u8 *)dh, dh->length);
+> +}
+> +
+> +#endif /* __PLATFORM_DATA_X86_SIMATIC_IPC_H */
 
-:::::: TO: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
