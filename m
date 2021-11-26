@@ -2,95 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4716445F6C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 23:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B7C45F6CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 23:19:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244783AbhKZWR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 17:17:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52304 "EHLO
+        id S243454AbhKZWWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 17:22:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243454AbhKZWPz (ORCPT
+        with ESMTP id S243532AbhKZWUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 17:15:55 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 022DBC061746;
-        Fri, 26 Nov 2021 14:12:42 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id l16so21413316wrp.11;
-        Fri, 26 Nov 2021 14:12:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zYiadRhNNssRL10U2exdYiy/ZtbsaPvzaUpEf1LyXzQ=;
-        b=QlIRHwAHcq4D8jHGbjoR4a/M513JCgzzk+uQcp+D0ltqpbZueJswOxZvhyNmOCN1ay
-         5lNOzPRDpEgWgJOSEW7bMhcIU+5LppYAnn8pIPR1orU9bl/2C0sxtFXFv0cXRJmKiy83
-         rqK/LWcLGllh95tThLzK39fXcXWInZ2UVc9J1O/RhdMaD3+kAyfq2D3k39aa9k/bYVvc
-         mC2HvsashzzkW0cSgiqLYS7Srzzoo9cBM/kkn38Dj71davkk2aJHIB/HyQZyokBjV9UA
-         aZg8fBy1cH9ytEaOguJmcekzw1hTLFqu+9pqOGZy5VtXZt5JYQrVP9heznR84Fu89Nwd
-         kNRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zYiadRhNNssRL10U2exdYiy/ZtbsaPvzaUpEf1LyXzQ=;
-        b=wrHZrCJrrottb40dQTkv2mSk1th+o7IAKMi4JySYaPytmt7kvwGtEey+dOeMMWmC7f
-         HBfRTI7+/O7IP7gHRZDj7IkUrnGsC2Ow5pQONlThhm/hhWuTJoE9fqP+3iUDfV+Gl2zo
-         sZxHrNwixeUPDb4aVl+OsmZ6S8xjHohQi0sjc7YKP3JiRvBUQiyjdmehqvut0+iPZGAb
-         kRzEszyBbCiS+Vf3MrA+uGjyf4tlwlZ76L2cvG6OmWR548mJVcshzF4Dg2QvppuI4DfO
-         xVEZsV0Vzau64zA6tn6gqnUfufMZjn+x6fAMPgBBKAPLjUuovxqPG58rBLFVzDLbFsqr
-         40uA==
-X-Gm-Message-State: AOAM533MPlNKZh66MkZzvRW+KwTgyeosBTBD/Z76UbhRvZS72Kx5f5bk
-        2hhjRPgNZlTfam7kXqoJVN1H
-X-Google-Smtp-Source: ABdhPJyjwm80wgN80iNVkpbxs8y7KzhCYWHeboUV6F2q0r9e59FfKMxVK3MdSV+B8Ah5wWRcio37UA==
-X-Received: by 2002:adf:ee0c:: with SMTP id y12mr16766262wrn.82.1637964760617;
-        Fri, 26 Nov 2021 14:12:40 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id r15sm11884970wmh.13.2021.11.26.14.12.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 14:12:40 -0800 (PST)
-From:   Colin Ian King <colin.i.king@googlemail.com>
-X-Google-Original-From: Colin Ian King <colin.i.king@gmail.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-clk@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] clk: stm32mp1: remove redundant assignment to pointer data
-Date:   Fri, 26 Nov 2021 22:12:39 +0000
-Message-Id: <20211126221239.1100960-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        Fri, 26 Nov 2021 17:20:07 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85BAC06173E;
+        Fri, 26 Nov 2021 14:16:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EntB1bbOJyfmGweu3RU+T8l6UeFUccPmGGuVsMlG2Eo=; b=AC8lhUU5E49eFZoE4e2sHAnAX9
+        kHHIAqB6luQZYLE4LWZ7ew4taByaDQ3nIwp6HUbjkeIXIYYgmmvQyL++HpXPPAuEoWjKaVtpuUv0J
+        hDRUuMHv3vB6OavPVAlSbd8/4HJNbAj7iGK8yieFViHswVFTxtksTJZiwGFqbhpneWAr3PTa5BBq5
+        cXM7HmcBycjUxcQ73JPFl0lFgYBu+hi3Be2LqMatUPmHoWKFaBNHeb3mn7R7UQBMcP8MuOo3H/d1D
+        paiCR2xp77kYzrGSFDvuDHl6XvX6ujijYsTZOu2obCZpfqqjmUiurJR2T6IOuSr/GsmMrTSNQFSlW
+        JMOb6tZA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mqjWN-00CN1H-DW; Fri, 26 Nov 2021 22:16:44 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4E2D83000DD;
+        Fri, 26 Nov 2021 23:16:43 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 338A52DC5775F; Fri, 26 Nov 2021 23:16:43 +0100 (CET)
+Date:   Fri, 26 Nov 2021 23:16:43 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Peter Oskolkov <posk@posk.io>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org, Paul Turner <pjt@google.com>,
+        Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>
+Subject: Re: [PATCH v0.9.1 3/6] sched/umcg: implement UMCG syscalls
+Message-ID: <YaFcyzq0WpnXu+2R@hirez.programming.kicks-ass.net>
+References: <20211122211327.5931-1-posk@google.com>
+ <20211122211327.5931-4-posk@google.com>
+ <20211124200822.GF721624@worktop.programming.kicks-ass.net>
+ <CAFTs51Uka8VRCHuGidw7mRwATufp87U6S8SWUVod_kU-h6T3ew@mail.gmail.com>
+ <YaEUts3RbOLyvAjl@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YaEUts3RbOLyvAjl@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pointer data is being initialized with a value and a few lines
-later on being re-assigned the same value, so this re-assignment is
-redundant. Clean up the code and remove it.
+On Fri, Nov 26, 2021 at 06:09:10PM +0100, Peter Zijlstra wrote:
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/clk/clk-stm32mp1.c | 2 --
- 1 file changed, 2 deletions(-)
+> @@ -155,8 +159,7 @@ static unsigned long exit_to_user_mode_l
+>  	 * Before returning to user space ensure that all pending work
+>  	 * items have been completed.
+>  	 */
+> -	while (ti_work & EXIT_TO_USER_MODE_WORK) {
+> -
+> +	do {
+>  		local_irq_enable_exit_to_user(ti_work);
+>  
+>  		if (ti_work & _TIF_NEED_RESCHED)
+> @@ -168,6 +171,10 @@ static unsigned long exit_to_user_mode_l
+>  		if (ti_work & _TIF_PATCH_PENDING)
+>  			klp_update_patch_state(current);
+>  
+> +		/* must be before handle_signal_work(); terminates on sigpending */
+> +		if (ti_work & _TIF_UMCG)
+> +			umcg_notify_resume(regs);
+> +
+>  		if (ti_work & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL))
+>  			handle_signal_work(regs, ti_work);
+>  
+> @@ -188,7 +195,7 @@ static unsigned long exit_to_user_mode_l
+>  		tick_nohz_user_enter_prepare();
+>  
+>  		ti_work = READ_ONCE(current_thread_info()->flags);
+> -	}
+> +	} while (ti_work & EXIT_TO_USER_MODE_WORK);
+>  
+>  	/* Return the latest work state for arch_exit_to_user_mode() */
+>  	return ti_work;
+> @@ -203,7 +210,7 @@ static void exit_to_user_mode_prepare(st
+>  	/* Flush pending rcuog wakeup before the last need_resched() check */
+>  	tick_nohz_user_enter_prepare();
+>  
+> -	if (unlikely(ti_work & EXIT_TO_USER_MODE_WORK))
+> +	if (unlikely(ti_work & (EXIT_TO_USER_MODE_WORK | _TIF_UMCG)))
+>  		ti_work = exit_to_user_mode_loop(regs, ti_work);
+>  
+>  	arch_exit_to_user_mode_prepare(regs, ti_work);
 
-diff --git a/drivers/clk/clk-stm32mp1.c b/drivers/clk/clk-stm32mp1.c
-index 4bd1fe7d8af4..863274aa50e3 100644
---- a/drivers/clk/clk-stm32mp1.c
-+++ b/drivers/clk/clk-stm32mp1.c
-@@ -2253,8 +2253,6 @@ static int stm32_rcc_reset_init(struct device *dev, void __iomem *base,
- 	const struct stm32_rcc_match_data *data = match->data;
- 	struct stm32_reset_data *reset_data = NULL;
- 
--	data = match->data;
--
- 	reset_data = kzalloc(sizeof(*reset_data), GFP_KERNEL);
- 	if (!reset_data)
- 		return -ENOMEM;
--- 
-2.33.1
+Thomas, since you're looking at this. I'm not quite sure I got this
+right. The intent is that when _TIF_UMCG is set (and it is never cleared
+until the task unregisters) it is called at least once.
+
+The thinking is that if umcg_wait() gets interrupted, we'll drop out,
+handle the signal and then resume the wait, which can obviously happen
+any number of times.
+
+It's just that I'm never quite sure where signal crud happens; I'm
+assuming handle_signal_work() simply mucks about with regs (sets sp and
+ip etc.. to the signal stack) and drops out of kernel mode, and on
+re-entry we do this whole merry cycle once again. But I never actually
+dug that deep.
+
 
