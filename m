@@ -2,61 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C743245F122
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:54:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D499945F125
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:54:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378305AbhKZP5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:57:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53298 "EHLO
+        id S1378316AbhKZP5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 10:57:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352017AbhKZPzs (ORCPT
+        with ESMTP id S1345458AbhKZPzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:55:48 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7342CC06179B;
-        Fri, 26 Nov 2021 07:44:00 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id d24so19606780wra.0;
-        Fri, 26 Nov 2021 07:44:00 -0800 (PST)
+        Fri, 26 Nov 2021 10:55:49 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C8D3C0619EA;
+        Fri, 26 Nov 2021 07:44:02 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id o19-20020a1c7513000000b0033a93202467so7099093wmc.2;
+        Fri, 26 Nov 2021 07:44:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GLkyoLUKpRjZnUdDc279znKmoge1lvnkGD50/gVexkQ=;
-        b=OqVKngMbKLP1DHv9TsYenjFQef9cX6K7kJey9mSlOp6MZOzu3usOtwBL0qb2SNi4EK
-         ffP1HlR1pHpOe7MCNiKzCLNi/xllzf8RTz6nNXz4Ujt3LAOaN6OLa7vnaZb7XvQFGXPF
-         btNKgwianGoMtkWVm7adowHH4JIvmWOGvnzXBPija5qvt9p8cdv12LiLl3M1Lmfvi+cg
-         tEM5Svnk6RyH9iHSCwTb8TWGt1YCB9XSU78W7pamTXnBNDyEkCt3x3+QevXjCso/2Wpi
-         ydRzASYt1K/q3legxeFrgeQYmFHYGCJIjFyNqC8DckkEMt1RMRrNhrU1Ib2hJR3i/uDO
-         W26Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Vwik1mNyYOqHPapDPau3aXiBOWO/s+qGHcQQOuPlOlo=;
+        b=lNhEXTCpWNUM0kA/YZetRxWEfoskR9epcAPlrhHy7Eg3wdHRlO9mdyGvSioewMfzov
+         KeWFt8hposfcdrE6uHBbN9I1jebhbGRQnga2AdcLnMtwyuPjft4DjR+33ko0Xokw35kA
+         N/zAuWvtmOEZpjQcgD6cl828sSjwvlobLf1wztIeWVc4n5xDlQW7elcMzoxyIayVwHJz
+         FF8iJ0nFrBPpqDhwYKD6qB7KT+gOCwkcp2D28m2cCAWM40GxNKfVvvWNo9XQ7wiP1Urn
+         w4gwy58tq3ORYpoEAYsniInGT9fE7XbEsfsP/yeqdTb9Au2tPlIU4gyPLNAddMpyQ7Ib
+         zF0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GLkyoLUKpRjZnUdDc279znKmoge1lvnkGD50/gVexkQ=;
-        b=M5jpD0/p4wu/GwrS3a/tJDS5oDp68a6Fe/lbrvMtbMDQXQNsyQRwfed6DNH00IQB6X
-         EQ33xvevXYEsb52NzCNwIEKUjIdEqAlTLWTQS65VjSHQRIQY7AKzSy/8sTot29iwvlvw
-         JJ3j+F2roZ6n7QDO+IIW169UTMIFTcy0fA0wdnVaC5GExRfsBRB7PHujfxZcH0fSTI0W
-         AoJSJH63p6mZG0uDf9gowNmtaoeq22t8G3P+g3Lxh6SyqQ8CQxV9BJ50CFlqxYJx29PP
-         ViMlnoZyJVYBF3xga4miiM626lK7qcbRJZTSLKBwwqII/ZYSWu9Hhl/2zBvYOCuPn1mn
-         Ch4A==
-X-Gm-Message-State: AOAM532lmQ5FooTvGo/YgJBFKbdes4xK34s4oAk1xENxfxnD4OYJ7TXl
-        bUsjRG9KbFOEetzEdhaDA0Y=
-X-Google-Smtp-Source: ABdhPJz32axiOIaYWuL5xgqmPKeOpKTpr4MPYCFIT4SmwfpsM90/cnVDf90UkxFLZUgJBM6pUasxug==
-X-Received: by 2002:adf:fa4b:: with SMTP id y11mr15142087wrr.460.1637941439074;
-        Fri, 26 Nov 2021 07:43:59 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Vwik1mNyYOqHPapDPau3aXiBOWO/s+qGHcQQOuPlOlo=;
+        b=d3OrJGCxpgl60ChKkQUWcYIBRI5m6gybfXeFplVgLM5AETmtPD3zlBVCZrVLz7LjDb
+         6MLbUl4tnReVjOVCfiRuMz6TDi/PbvBDA7/UZtx9f0ots4o+oaupdGaadoeazMU5+4uf
+         +VvTOtC3ByqZ34sfuGCl2kFOJXLqbDYUf02noQ0HG0SFri6kBHtR7c1MxtOIqWN+iaa5
+         BGPou9qTPpsbT/L/Cbi9EHFhCYoxCrTJ3V/ZcTyIzZi/rWWbguBo33Ip2yKFu8n7M65/
+         w0DnWHEQzrugxWIVqfnHmemDoc5qZyxFYCg/wO94PpA1mAt3J+Et2hSIWP4cmplO3u9M
+         NA9Q==
+X-Gm-Message-State: AOAM531RoqeuH0HN5V5QGBmw+OdTuh1rRM/goh8HbJuMLOiz7G6KxxwY
+        Ki1uvENMZNI5ryDwnyEtViU=
+X-Google-Smtp-Source: ABdhPJyna8G70WLf5w5vpFT9RgXoRgiwSletYSWvInDUnf9igjG7bcUOLu7KFSJe6TJVbtLbitzkVg==
+X-Received: by 2002:a1c:1b15:: with SMTP id b21mr16095117wmb.174.1637941441249;
+        Fri, 26 Nov 2021 07:44:01 -0800 (PST)
 Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
-        by smtp.gmail.com with ESMTPSA id p13sm11372400wmi.0.2021.11.26.07.43.57
+        by smtp.gmail.com with ESMTPSA id p13sm11372400wmi.0.2021.11.26.07.44.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 07:43:58 -0800 (PST)
+        Fri, 26 Nov 2021 07:44:00 -0800 (PST)
 From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
+To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>
 Cc:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/3] RK356x/Quartz64 Model A SPI
-Date:   Fri, 26 Nov 2021 16:43:41 +0100
-Message-Id: <20211126154344.724316-1-frattaroli.nicolas@gmail.com>
+Subject: [PATCH 1/3] dt-bindings: spi: spi-rockchip: Add rk3568-spi compatible
+Date:   Fri, 26 Nov 2021 16:43:42 +0100
+Message-Id: <20211126154344.724316-2-frattaroli.nicolas@gmail.com>
 X-Mailer: git-send-email 2.34.0
+In-Reply-To: <20211126154344.724316-1-frattaroli.nicolas@gmail.com>
+References: <20211126154344.724316-1-frattaroli.nicolas@gmail.com>
 MIME-Version: 1.0
 X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
@@ -64,33 +68,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The first patch of this series adds a compatible for rk3568-spi
-to the DT bindings.
+This adds a compatible string for the SPI controller found on
+the RK3566 and RK3568 SoCs.
 
-The second adds the SPI nodes for RK3566 and RK3568 SoCs. The nodes
-were lifted from the downstream vendor kernel's devicetree, and were
-double-checked for correctness.
+Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+---
+ Documentation/devicetree/bindings/spi/spi-rockchip.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-The third patch sets up the broken-out SPI pins on the Quartz64
-Model A; they use the "m1" set of the pins, not the "m0" set. I
-assume the "m" stands for "mux".
-
-I've tested both patches by connecting an MCP2515 SPI CAN bus
-controller to the spi pins, which initialised fine.
-
-Regards,
-Nicolas Frattaroli
-
-Nicolas Frattaroli (3):
-  dt-bindings: spi: spi-rockchip: Add rk3568-spi compatible
-  arm64: dts: rockchip: Add spi nodes on rk356x
-  arm64: dts: rockchip: Add spi1 pins on Quartz64 A
-
- .../devicetree/bindings/spi/spi-rockchip.yaml |  1 +
- .../boot/dts/rockchip/rk3566-quartz64-a.dts   |  5 ++
- arch/arm64/boot/dts/rockchip/rk356x.dtsi      | 68 +++++++++++++++++++
- 3 files changed, 74 insertions(+)
-
+diff --git a/Documentation/devicetree/bindings/spi/spi-rockchip.yaml b/Documentation/devicetree/bindings/spi/spi-rockchip.yaml
+index 7f987e79337c..52a78a2e362e 100644
+--- a/Documentation/devicetree/bindings/spi/spi-rockchip.yaml
++++ b/Documentation/devicetree/bindings/spi/spi-rockchip.yaml
+@@ -33,6 +33,7 @@ properties:
+               - rockchip,rk3328-spi
+               - rockchip,rk3368-spi
+               - rockchip,rk3399-spi
++              - rockchip,rk3568-spi
+               - rockchip,rv1126-spi
+           - const: rockchip,rk3066-spi
+ 
 -- 
 2.34.0
 
