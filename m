@@ -2,228 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9875F45F057
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:06:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D9545F051
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:06:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353817AbhKZPJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:09:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42822 "EHLO
+        id S1377886AbhKZPJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 10:09:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346753AbhKZPHq (ORCPT
+        with ESMTP id S1353992AbhKZPHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:07:46 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C866C0613B4;
-        Fri, 26 Nov 2021 06:51:38 -0800 (PST)
+        Fri, 26 Nov 2021 10:07:36 -0500
+X-Greylist: delayed 530 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 26 Nov 2021 06:50:25 PST
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB1BC06179E
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 06:50:25 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 94BACB827EB;
-        Fri, 26 Nov 2021 14:43:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAA1EC004E1;
-        Fri, 26 Nov 2021 14:43:51 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EFD53622A9
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 14:50:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6469C9305D;
+        Fri, 26 Nov 2021 14:50:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637937832;
-        bh=eHdxVaxHiuruMF/9Td8JoiWopFdjBhE0ZD897U8weQU=;
+        s=k20201202; t=1637938224;
+        bh=s1q37RCQIwajhGA+DkImquqdXKMhY8FQHPrpGfdbiDM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z4wHuKmwrcGSBJwwGzCOqIi/9n7zgCfT0+vucq/Kwv1xcEtrkCshvG+dC+L+9OS6J
-         KOA85PW+J0owUGdn7LFHypacJ3SrM8WNBk5WGqG9ZdkUgeE3ZBcHsImgpcKhjYAzAK
-         OWGt+LR3HDKKu+uWpjEBCIvslfML7v4flRvP/yy+jJajPkpjYA5Clt5au1gTV1GGCN
-         iLU3lS2qPABXmWbkuqaP6OTJaUh5aQWWWHismcJb0KDzCzyhsHL+hjlKRhHZ/JpOoT
-         ICxtPjI87aOuXpr0Biw3MrwT6zZo/HLZiiGfIyIDa8Of8zgPBbXae2EQzLlK08ytn3
-         DsUJDpVqu8/tA==
-Received: by pali.im (Postfix)
-        id 8C608EF6; Fri, 26 Nov 2021 15:43:49 +0100 (CET)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        =?UTF-8?q?Jan=20Kundr=C3=A1t?= <jan.kundrat@cesnet.cz>
-Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] PCI: mvebu: Add support for compiling driver as module
-Date:   Fri, 26 Nov 2021 15:43:07 +0100
-Message-Id: <20211126144307.7568-3-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211126144307.7568-1-pali@kernel.org>
-References: <20211126144307.7568-1-pali@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        b=oaKdSrXIxZ43L2Xkz38OnzQSwZgTzRECeokkA4sgMv7PvPo4C6lY/o/J1+BJhWSGl
+         egNGLxcilg6B5KtrBF2Qf+0sX7YpkNW0UIEw5Vdt+l5crsi/3AmmvIXTagwHWfY8zX
+         hcYlolNpfWaUrzJgZV3NGcDjk5JiJ74NyWXSou0Zjg2IEVGDAS8reLgVlxvANkKbLh
+         IE2sDabIvZethf3RVkJ1T9PZJbVLVB4XuKrZETktdh2V8ripkdw6OkCrOqSBaX8TXR
+         Y0fUFVyiEz/X5U0Bx94lyucRUkfPGbAb+Giv1uyOiqoYXgbK2zbYK3EI5NlwOY4D7f
+         bymv0oP1ykmsA==
+From:   SeongJae Park <sj@kernel.org>
+To:     akpm@linux-foundation.org
+Cc:     oleksandr@natalenko.name, john.stultz@linaro.org,
+        tglx@linutronix.de, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, SeongJae Park <sj@kernel.org>
+Subject: [PATCH v3 1/2] timers: Implement usleep_idle_range()
+Date:   Fri, 26 Nov 2021 14:50:14 +0000
+Message-Id: <20211126145015.15862-2-sj@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20211126145015.15862-1-sj@kernel.org>
+References: <20211126145015.15862-1-sj@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now when driver uses devm_pci_remap_iospace() function, it is possible
-implement ->remove() callback for unbinding device from driver.
+Some kernel threads such as DAMON could need to repeatedly sleep in
+micro seconds level.  Because usleep_range() sleeps in uninterruptible
+state, however, such threads would make /proc/loadavg reports fake load.
 
-Implement mvebu_pcie_remove() callback with proper cleanup phase, drop
-driver's suppress_bind_attrs flag and switch type of CONFIG_PCI_MVEBU
-option from bool to tristate.
+To help such cases, this commit implements a variant of usleep_range()
+called usleep_idle_range().  It is same to usleep_range() but sets the
+state of the current task as TASK_IDLE while sleeping.
 
-This allows to compile pci-mvebu.c driver as loadable module pci-mvebu.ko
-with ability to unload it.
-
-Signed-off-by: Pali Rohár <pali@kernel.org>
+Suggested-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
- drivers/pci/controller/Kconfig     |  2 +-
- drivers/pci/controller/pci-mvebu.c | 91 +++++++++++++++++++++++++-----
- 2 files changed, 77 insertions(+), 16 deletions(-)
+ include/linux/delay.h | 14 +++++++++++++-
+ kernel/time/timer.c   | 16 +++++++++-------
+ 2 files changed, 22 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
-index 93b141110537..67189bcd5d89 100644
---- a/drivers/pci/controller/Kconfig
-+++ b/drivers/pci/controller/Kconfig
-@@ -4,7 +4,7 @@ menu "PCI controller drivers"
- 	depends on PCI
- 
- config PCI_MVEBU
--	bool "Marvell EBU PCIe controller"
-+	tristate "Marvell EBU PCIe controller"
- 	depends on ARCH_MVEBU || ARCH_DOVE || COMPILE_TEST
- 	depends on MVEBU_MBUS
- 	depends on ARM
-diff --git a/drivers/pci/controller/pci-mvebu.c b/drivers/pci/controller/pci-mvebu.c
-index f2180e4630a1..f43492695f94 100644
---- a/drivers/pci/controller/pci-mvebu.c
-+++ b/drivers/pci/controller/pci-mvebu.c
-@@ -6,6 +6,7 @@
+diff --git a/include/linux/delay.h b/include/linux/delay.h
+index 8eacf67eb212..039e7e0c7378 100644
+--- a/include/linux/delay.h
++++ b/include/linux/delay.h
+@@ -20,6 +20,7 @@
   */
  
- #include <linux/kernel.h>
-+#include <linux/module.h>
- #include <linux/pci.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
-@@ -145,22 +146,13 @@ static void mvebu_pcie_set_local_dev_nr(struct mvebu_pcie_port *port, int nr)
- 	mvebu_writel(port, stat, PCIE_STAT_OFF);
- }
+ #include <linux/math.h>
++#include <linux/sched.h>
  
--/*
-- * Setup PCIE BARs and Address Decode Wins:
-- * BAR[0] -> internal registers (needed for MSI)
-- * BAR[1] -> covers all DRAM banks
-- * BAR[2] -> Disabled
-- * WIN[0-3] -> DRAM bank[0-3]
-- */
--static void mvebu_pcie_setup_wins(struct mvebu_pcie_port *port)
-+static void mvebu_pcie_disable_wins(struct mvebu_pcie_port *port)
+ extern unsigned long loops_per_jiffy;
+ 
+@@ -58,7 +59,18 @@ void calibrate_delay(void);
+ void __attribute__((weak)) calibration_delay_done(void);
+ void msleep(unsigned int msecs);
+ unsigned long msleep_interruptible(unsigned int msecs);
+-void usleep_range(unsigned long min, unsigned long max);
++void usleep_range_state(unsigned long min, unsigned long max,
++			unsigned int state);
++
++static inline void usleep_range(unsigned long min, unsigned long max)
++{
++	usleep_range_state(min, max, TASK_UNINTERRUPTIBLE);
++}
++
++static inline void usleep_idle_range(unsigned long min, unsigned long max)
++{
++	usleep_range_state(min, max, TASK_IDLE);
++}
+ 
+ static inline void ssleep(unsigned int seconds)
  {
--	const struct mbus_dram_target_info *dram;
--	u32 size;
- 	int i;
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index e3d2c23c413d..85f1021ad459 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -2054,26 +2054,28 @@ unsigned long msleep_interruptible(unsigned int msecs)
+ EXPORT_SYMBOL(msleep_interruptible);
  
--	dram = mv_mbus_dram_info();
-+	mvebu_writel(port, 0, PCIE_BAR_LO_OFF(0));
-+	mvebu_writel(port, 0, PCIE_BAR_HI_OFF(0));
+ /**
+- * usleep_range - Sleep for an approximate time
+- * @min: Minimum time in usecs to sleep
+- * @max: Maximum time in usecs to sleep
++ * usleep_range_state - Sleep for an approximate time in a given state
++ * @min:	Minimum time in usecs to sleep
++ * @max:	Maximum time in usecs to sleep
++ * @state:	State of the current task that will be while sleeping
+  *
+  * In non-atomic context where the exact wakeup time is flexible, use
+- * usleep_range() instead of udelay().  The sleep improves responsiveness
++ * usleep_range_state() instead of udelay().  The sleep improves responsiveness
+  * by avoiding the CPU-hogging busy-wait of udelay(), and the range reduces
+  * power usage by allowing hrtimers to take advantage of an already-
+  * scheduled interrupt instead of scheduling a new one just for this sleep.
+  */
+-void __sched usleep_range(unsigned long min, unsigned long max)
++void __sched usleep_range_state(unsigned long min, unsigned long max,
++				unsigned int state)
+ {
+ 	ktime_t exp = ktime_add_us(ktime_get(), min);
+ 	u64 delta = (u64)(max - min) * NSEC_PER_USEC;
  
--	/* First, disable and clear BARs and windows. */
- 	for (i = 1; i < 3; i++) {
- 		mvebu_writel(port, 0, PCIE_BAR_CTRL_OFF(i));
- 		mvebu_writel(port, 0, PCIE_BAR_LO_OFF(i));
-@@ -176,6 +168,25 @@ static void mvebu_pcie_setup_wins(struct mvebu_pcie_port *port)
- 	mvebu_writel(port, 0, PCIE_WIN5_CTRL_OFF);
- 	mvebu_writel(port, 0, PCIE_WIN5_BASE_OFF);
- 	mvebu_writel(port, 0, PCIE_WIN5_REMAP_OFF);
-+}
-+
-+/*
-+ * Setup PCIE BARs and Address Decode Wins:
-+ * BAR[0] -> internal registers (needed for MSI)
-+ * BAR[1] -> covers all DRAM banks
-+ * BAR[2] -> Disabled
-+ * WIN[0-3] -> DRAM bank[0-3]
-+ */
-+static void mvebu_pcie_setup_wins(struct mvebu_pcie_port *port)
-+{
-+	const struct mbus_dram_target_info *dram;
-+	u32 size;
-+	int i;
-+
-+	dram = mv_mbus_dram_info();
-+
-+	/* First, disable and clear BARs and windows. */
-+	mvebu_pcie_disable_wins(port);
- 
- 	/* Setup windows for DDR banks.  Count total DDR size on the fly. */
- 	size = 0;
-@@ -1082,6 +1093,52 @@ static int mvebu_pcie_probe(struct platform_device *pdev)
- 	return pci_host_probe(bridge);
+ 	for (;;) {
+-		__set_current_state(TASK_UNINTERRUPTIBLE);
++		__set_current_state(state);
+ 		/* Do not return before the requested sleep time has elapsed */
+ 		if (!schedule_hrtimeout_range(&exp, delta, HRTIMER_MODE_ABS))
+ 			break;
+ 	}
  }
- 
-+static int mvebu_pcie_remove(struct platform_device *pdev)
-+{
-+	struct mvebu_pcie *pcie = platform_get_drvdata(pdev);
-+	struct pci_host_bridge *bridge = pci_host_bridge_from_priv(pcie);
-+	u32 cmd;
-+	int i;
-+
-+	/* Remove PCI bus with all devices. */
-+	pci_lock_rescan_remove();
-+	pci_stop_root_bus(bridge->bus);
-+	pci_remove_root_bus(bridge->bus);
-+	pci_unlock_rescan_remove();
-+
-+	for (i = 0; i < pcie->nports; i++) {
-+		struct mvebu_pcie_port *port = &pcie->ports[i];
-+
-+		if (!port->base)
-+			continue;
-+
-+		/* Disable Root Bridge I/O space, memory space and bus mastering. */
-+		cmd = mvebu_readl(port, PCIE_CMD_OFF);
-+		cmd &= ~(PCI_COMMAND_IO | PCI_COMMAND_MEMORY | PCI_COMMAND_MASTER);
-+		mvebu_writel(port, cmd, PCIE_CMD_OFF);
-+
-+		/* Mask all interrupt sources. */
-+		mvebu_writel(port, 0, PCIE_MASK_OFF);
-+
-+		/* Free config space for emulated root bridge. */
-+		pci_bridge_emul_cleanup(&port->bridge);
-+
-+		/* Disable and clear BARs and windows. */
-+		mvebu_pcie_disable_wins(port);
-+
-+		/* Delete PCIe IO and MEM windows. */
-+		if (port->iowin.size)
-+			mvebu_pcie_del_windows(port, port->iowin.base, port->iowin.size);
-+		if (port->memwin.size)
-+			mvebu_pcie_del_windows(port, port->memwin.base, port->memwin.size);
-+
-+		/* Power down card and disable clocks. Must be the last step. */
-+		mvebu_pcie_powerdown(port);
-+	}
-+
-+	return 0;
-+}
-+
- static const struct of_device_id mvebu_pcie_of_match_table[] = {
- 	{ .compatible = "marvell,armada-xp-pcie", },
- 	{ .compatible = "marvell,armada-370-pcie", },
-@@ -1098,10 +1155,14 @@ static struct platform_driver mvebu_pcie_driver = {
- 	.driver = {
- 		.name = "mvebu-pcie",
- 		.of_match_table = mvebu_pcie_of_match_table,
--		/* driver unloading/unbinding currently not supported */
--		.suppress_bind_attrs = true,
- 		.pm = &mvebu_pcie_pm_ops,
- 	},
- 	.probe = mvebu_pcie_probe,
-+	.remove = mvebu_pcie_remove,
- };
--builtin_platform_driver(mvebu_pcie_driver);
-+module_platform_driver(mvebu_pcie_driver);
-+
-+MODULE_AUTHOR("Thomas Petazzoni <thomas.petazzoni@bootlin.com>");
-+MODULE_AUTHOR("Pali Rohár <pali@kernel.org>");
-+MODULE_DESCRIPTION("Marvell EBU PCIe controller");
-+MODULE_LICENSE("GPL v2");
+-EXPORT_SYMBOL(usleep_range);
++EXPORT_SYMBOL(usleep_range_state);
 -- 
-2.20.1
+2.17.1
 
