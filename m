@@ -2,234 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B4B45E85D
+	by mail.lfdr.de (Postfix) with ESMTP id 253EE45E85B
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359228AbhKZHUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 02:20:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359104AbhKZHSE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 02:18:04 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 153B1C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:14:52 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id g14so34859252edb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:14:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PGZaZsF4EEc9XJ4D4bs2n2YA93FNTJvPRvvwgPjhqc4=;
-        b=W/k2gqxv+jtRh0g+zQiB9dCNWO2wF6PR0H4q5yR1KylyrnUTGOA7SU5a6j9OBV/7YD
-         co7yD5YIwVCfU+QuiG4N6Ph7q7QQVH3EPIl+HE7WqhS5sawelTaizu4+x9Hj1g6+OMy2
-         nH/dBe68Hu03OhuLvnjjeAGncmjTaGbzwotecVyuJhfyo/LzscaWI7IQ8V9DCX5kSyO1
-         wHIfn9NvXI3649vbCg8QhKwYzkOzO07qmFYLPmSE1Om3NmlbiOKWRrvz+Als/2uWorVL
-         CCzy8NJPYg3Mc3uf9NvYpnr+MFj52nCMcakQgdDM9gVW58GyGJrIapbUMhJkxl2idKhw
-         es2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PGZaZsF4EEc9XJ4D4bs2n2YA93FNTJvPRvvwgPjhqc4=;
-        b=LQSk5/n8jI/iItXXzOX0yfQXwR/AhXQXZi6NitoZl6/L3kqNXAxpFNznAqkcAjtaJJ
-         XRr52YkEV/Q3zwzb4w2mUJyiKTEkW2ghahflvVWIxd5qFctm1Vs+xQxksrJa4k4sFWoY
-         4eZurYGy8I6KkWgGzy+IGTJW4KO4qF/uQUBTECbqpwfDffY9hbvTdlVuKKco+pBD25WK
-         /CfDD7zgTyYbDcmDDh0AJE8We2VcvZIykMkLBHRGYuh5RhsRDRmxY1KiKvpEkZBXpDpk
-         JAIgDmnoiO5XsvHQX0YBgK/foYJp4AerXdAZOVwToCX9jbtbSo15BNJExFb+n8qNKHqt
-         1oFw==
-X-Gm-Message-State: AOAM533/JorUW9WUTa1B6OG7ZHaZEylhcILJq9qkxyaHnvRr6z5vAwH+
-        lWjscsiCVsdB5yFWXbh3VfahW58QkSavM2ik//ffHg==
-X-Google-Smtp-Source: ABdhPJwfYTlvO8igc642vud2krop4us0/PqOfA9T8jWGOjB2R791aI2P3dPIDSLeLf4KVyhkmS3kZ5EWcjxelnCUzZc=
-X-Received: by 2002:a05:6402:4312:: with SMTP id m18mr44459592edc.273.1637910890442;
- Thu, 25 Nov 2021 23:14:50 -0800 (PST)
-MIME-Version: 1.0
-References: <20211125160544.661624121@linuxfoundation.org>
-In-Reply-To: <20211125160544.661624121@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 26 Nov 2021 12:44:39 +0530
-Message-ID: <CA+G9fYszi_Onb4tOJWnjyFyLqyKoHupiF+5TTWjJJeYCzcH4pg@mail.gmail.com>
-Subject: Re: [PATCH 4.19 000/320] 4.19.218-rc3 review
+        id S1359221AbhKZHUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 02:20:04 -0500
+Received: from mx24.baidu.com ([111.206.215.185]:33028 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1359001AbhKZHSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 02:18:02 -0500
+Received: from BC-Mail-Ex12.internal.baidu.com (unknown [172.31.51.52])
+        by Forcepoint Email with ESMTPS id DAB70995F93BBB3390A2;
+        Fri, 26 Nov 2021 15:14:41 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex12.internal.baidu.com (172.31.51.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.20; Fri, 26 Nov 2021 15:14:41 +0800
+Received: from localhost (172.31.63.8) by BJHW-MAIL-EX27.internal.baidu.com
+ (10.127.64.42) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.20; Fri, 26
+ Nov 2021 15:14:41 +0800
+Date:   Fri, 26 Nov 2021 15:14:44 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+CC:     Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-staging@lists.linux.dev>
+Subject: Re: [PATCH v3 1/3] staging: zynpu: Add driver support for ARM(China)
+ ZHOUYI AI accelerator
+Message-ID: <20211126071444.GA32426@LAPTOP-UKSR4ENP.internal.baidu.com>
+References: <20211126021904.32325-1-caihuoqing@baidu.com>
+ <20211126021904.32325-2-caihuoqing@baidu.com>
+ <YaCCFv2DLzeng+UE@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YaCCFv2DLzeng+UE@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex11.internal.baidu.com (172.31.51.51) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Nov 2021 at 21:38, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.218 release.
-> There are 320 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 27 Nov 2021 16:05:05 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.218-rc3.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
+On 26 11月 21 07:43:34, Greg Kroah-Hartman wrote:
+> On Fri, Nov 26, 2021 at 10:18:59AM +0800, Cai Huoqing wrote:
+> > ZHOUYI NPU is an AI accelerator chip which is integrated into ARM SOC,
+> > such as Allwinner R329 SOC.
+> > Add driver support for this AI accelerator here.
+> > 
+> > This driver is not standard linux style, there are some clean up works,
+> > fixing code style, refactorring.
+> > And it only works with a closed source usermode driver, so need to
+> > reverse the libraries, and impelement it, then open source
+> > the usermode driver.
+> > So add this driver to linux-staging
+> 
+> Sorry, but no, I can not take this driver into the kernel tree until
+> there is an open source user of the new api that you are creating with
+> this driver.  This was discussed many times on the linux-kernel mailing
+> list and at the Linux kernel summit a few months ago (see the summary at
+> lwn.net about it.)
+> 
+> So please work on that first, and then we will be glad to revisit taking
+> this kernel driver into the tree.
+OK, I will do that.
+And after doing some clean up, try to take this code to the "real" linux tree.
+
+Thanks,
+Cai
+> 
+> Also, it is much simpler just to take a few hours and clean up the
+> coding style issues yourself rather than relying on the community to do
+> it for you over a few months.
+> 
 > thanks,
->
+> 
 > greg k-h
-
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 4.19.218-rc3
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.19.y
-* git commit: 616d1abb623837b0f3740984b9209ce6d488c24f
-* git describe: v4.19.217-321-g616d1abb6238
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
-.217-321-g616d1abb6238
-
-## No regressions (compared to v4.19.217-323-ge179aa5db430)
-
-## Fixes (compared to v4.19.217-323-ge179aa5db430)
-
-## Test result summary
-total: 76935, pass: 62199, fail: 752, skip: 12436, xfail: 1548
-
-## Build Summary
-* arm: 130 total, 130 passed, 0 failed
-* arm64: 35 total, 35 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 19 total, 19 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 26 total, 26 passed, 0 failed
-* s390: 12 total, 12 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 22 total, 22 passed, 0 failed
-
-## Test suites summary
-* fwts
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
