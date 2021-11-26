@@ -2,143 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DEE845ED8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:09:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D60D445ED9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:10:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377298AbhKZMM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 07:12:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
+        id S1377511AbhKZMNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 07:13:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377428AbhKZMKz (ORCPT
+        with ESMTP id S1377237AbhKZML2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 07:10:55 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 165E9C061D78;
-        Fri, 26 Nov 2021 03:36:07 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id 8C3911F46833
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637926565; bh=GIN8NoFGOSznfLIa1UX7Cx0wpd48djpTS3XTrBwxP9Q=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=lZK3eP0ZA/iBWLFpQoU5OPkTE18dCbYBdQ1mKszmuTulvkifopnqeZp8OsEiv7GAu
-         RCLdmKj/fK+LVGYjHBz2bPbpRyE/ZwiSjLnqbQQ7i9dVX6+Fd51wThoFc7zVOspUyP
-         JO3+KR/f5O6qTgVzDQZZK5nmlcSCuncVTz/86w99gOT+sr+G/tScpGIJG1+81z5DFq
-         lvz//6jrIxmZx6zGp5gMs2cUVe1nrcpemkjLq+qZ09/EQGyd5+RBPOnLJ/AlnILeBZ
-         kmpbUnkcZfAkpR/wrRkFXllVKynfJplCP7ERDwfclm3DFRoVTmE+LVUIenUy4vpLiY
-         x4i9nW99BwfMw==
-Subject: Re: [PATCH v6 1/3] dt-bindings: mediatek: add adsp-mbox document
-To:     "allen-kh.cheng" <allen-kh.cheng@mediatek.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>
-Cc:     Linux-ALSA <alsa-devel@alsa-project.org>, tzungbi@google.com,
-        cujomalainey@google.com,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        sound-open-firmware@alsa-project.org
-References: <20211126093021.25462-1-allen-kh.cheng@mediatek.com>
- <20211126093021.25462-2-allen-kh.cheng@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Message-ID: <56c862fd-2fc3-4cbb-97a8-154a9faabd6f@collabora.com>
-Date:   Fri, 26 Nov 2021 12:36:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 26 Nov 2021 07:11:28 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C308BC061D79;
+        Fri, 26 Nov 2021 03:36:19 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id k2so18198139lji.4;
+        Fri, 26 Nov 2021 03:36:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YwchqcLp4vuWkP53NqIQryr+Cx6rF4LvbCWU6gG8vgs=;
+        b=Wx4C6KctFZg7aqSyKW+5+/sbQhhBjaUfjiH74wowUy/K6HSWCuCDM7VOY9VqbnmvKA
+         UM4eGn95CuRCRfYKXzdLqbHNiNvlWX+kM3hoLmDwsJlpoE5OWoOdY5rApuDlp5HbetZy
+         +25hea9st2iqjThXTwqUrO7lXT9SyYVYMPfHBecz7hSsskk04t/+RlaY5R1Xk3kRnWiM
+         d00+D8VKXzttb3URv6kH2eAKfN1oHCdv2L8DxGQJfWlOohi9IEGWfVOUxl/oJWv9FaZM
+         /uoMbZQBu3QNp0le87EDcovGewCvWN44pvCby93xViSPs2a4SgY30hSjneBeBMCWemFz
+         jLIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YwchqcLp4vuWkP53NqIQryr+Cx6rF4LvbCWU6gG8vgs=;
+        b=ZFawKg8LNvazXRaEf2G/D/2voGGt3WEcAQMvzjdHCMAE5PE2+U6RwKUk8t/h/Bfmiv
+         gbnGkJJLyIhLtBZK3ucGNkAF8W3hot6ND5D/Ri1iIS94AHRfSeBX71SsOeLBrxhi1zJd
+         xK1YWa5e69viBLBXyJvf9HWD0VblIFFipCnIchPy3Mqp5bpNmXXn9Hk9S1DWJeToAEhg
+         nW/R+hAxAnGT1fxjRbgd6s6jl9ptnlwNLA07t3cGiJ6pfbPx+C8OQ8vKfn1fabUE6sF6
+         abHmaF7XYvrajvjiNceXuC04xfuxDAvWI69LeyapB1G6eKp2TOrAszl/darevB/3tWza
+         0DHA==
+X-Gm-Message-State: AOAM530NsV9qFQwM/IGBoS3JH4uSZPpw0syomlpT67VhVlVjwG3wLSgB
+        aifMZu6GfvLdFux2kAZhrccjbdX3QEk=
+X-Google-Smtp-Source: ABdhPJytBhhNePIUfAl1MAlNnjKZMQsdxRpfRZWlULulpz+FR6PPbXkhKwOOp3vvUBd3DN2P3l00gA==
+X-Received: by 2002:a2e:9450:: with SMTP id o16mr29615658ljh.444.1637926577785;
+        Fri, 26 Nov 2021 03:36:17 -0800 (PST)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id f14sm552842lfv.180.2021.11.26.03.36.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 03:36:17 -0800 (PST)
+Date:   Fri, 26 Nov 2021 13:36:15 +0200
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     yangerkun <yangerkun@huawei.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>, ntfs3@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [ramfs] 0858d7da8a: canonical_address#:#[##]
+Message-ID: <20211126113615.nmegssvcrmjlodku@kari-VirtualBox>
+References: <20211125140816.GC3109@xsang-OptiPlex-9020>
+ <CAHk-=widXZyzRiEzmYuG-bLVtNsptxt4TqAhy75Tbio-V_9oNQ@mail.gmail.com>
+ <68587446-fb74-b411-ba19-dd52395567c9@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20211126093021.25462-2-allen-kh.cheng@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <68587446-fb74-b411-ba19-dd52395567c9@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 26/11/21 10:30, allen-kh.cheng ha scritto:
-> From: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
+On Fri, Nov 26, 2021 at 09:54:56AM +0800, yangerkun wrote:
+> Cc ntfs3:
 > 
-> This patch adds document for mediatek adsp mbox
+> Maybe it's a problem like this:
 > 
-> Signed-off-by: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
-> ---
->   .../bindings/mailbox/mtk,adsp-mbox.yaml       | 52 +++++++++++++++++++
->   1 file changed, 52 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
+> do_new_mount
+>   fs_context_for_mount
+>     alloc_fs_context
+>       ntfs_init_fs_context
+>         sbi = kzalloc(sizeof(struct ntfs_sb_info), GFP_NOFS);
+>         fc->s_fs_info = sbi;
+>   vfs_get_tree
+>     ntfs_fs_get_tree
+>       get_tree_bdev
+>         blkdev_get_by_path  // return error and sbi->sb will be NULL
+>   put_fs_context
+>     ntfs_fs_free
+>       put_ntfs
+>         ntfs_update_mftmirr
+>           struct super_block *sb = sbi->sb; // NULL
+>           u32 blocksize = sb->s_blocksize; // BOOM
 > 
-> diff --git a/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml b/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
-> new file mode 100644
-> index 000000000000..a0149566ae56
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
-> @@ -0,0 +1,52 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mailbox/mtk,adsp-mbox.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Mediatek ADSP mailbox
-> +
-> +maintainers:
-> +  - Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
-> +
-> +description: |
-> +  The MTK ADSP mailbox Inter-Processor Communication (IPC) enables the SoC
-> +  to ommunicate with ADSP by passing messages through two mailbox channels.
-> +  The MTK ADSP mailbox IPC also provides the ability for one processor to
-> +  signal the other processor using interrupts.
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: mediatek,mt8195-adsp-mbox
-> +
-> +  "#mbox-cells":
-> +    const: 0
-> +
-> +  reg:
-> +    description:
-> +      Physical address base for dsp mbox base registers.
-> +
-> +  interrupts:
-> +    description:
-> +      adsp mbox interrupt
-> +
-> +required:
-> +  - compatible
-> +  - "#mbox-cells"
-> +  - reg
-> +  - interrupts
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +    adsp_mailbox0:adsp_mailbox0@10816000 {
-
-This should be:
-
-adsp_mailbox0: mailbox@10816000 {
-
-> +        compatible = "mediatek,mt8195-adsp-mbox";
-> +        #mbox-cells = <0>;
-> +        reg = <0x10816000 0x1000>;
-> +        interrupts = <GIC_SPI 702 IRQ_TYPE_LEVEL_HIGH 0>;
-> +    };
+> It's actually a ntfs3 bug which may be introduced by:
 > 
+> 610f8f5a7baf fs/ntfs3: Use new api for mounting
 
-Regards,
-- Angelo
+Yeap. Thank you very much. Will send patch for this in within 24h.
+
+> On 2021/11/26 2:03, Linus Torvalds wrote:
+> > On Thu, Nov 25, 2021 at 6:08 AM kernel test robot <oliver.sang@intel.com> wrote:
+> > > FYI, we noticed the following commit (built with clang-14):
+> > > 
+> > > commit: 0858d7da8a09e440fb192a0239d20249a2d16af8 ("ramfs: fix mount source show for ramfs")
+> > 
+> > Funky. That commit seems to have nothing to do with the oops:
+> > 
+> > > [  806.257788][  T204] /dev/root: Can't open blockdev
+> > > [  806.259101][  T204] general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] SMP KASAN
+> > > [  806.263082][  T204] KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
+> > 
+> > Not a very helpful error message,a nd the KASAN comment makes little sense, but
+> > 
+> > > [ 806.267540][ T204] RIP: 0010:ntfs_update_mftmirr (kbuild/src/consumer/fs/ntfs3/fsntfs.c:834)
+> > 
+> > That's
+> > 
+> >          u32 blocksize = sb->s_blocksize;
+> > 
+> > and presumably with KASAN you end up getting hat odd 0xdffffc0000000003 thing.
+> > 
+> > Anyway, looks like sb is NULL, and the code is
+> > 
+> >    int ntfs_update_mftmirr(struct ntfs_sb_info *sbi, int wait)
+> >    {
+> >          int err;
+> >          struct super_block *sb = sbi->sb;
+> >          u32 blocksize = sb->s_blocksize;
+> >          sector_t block1, block2;
+> > 
+> > although I have no idea how sbi->sb could be NULL.
+> > 
+> > Konstantin? See
+> > 
+> >      https://lore.kernel.org/lkml/20211125140816.GC3109@xsang-OptiPlex-9020/
+> > 
+> > for the full thing.
+> > 
+> >               Linus
+> > .
+> > 
