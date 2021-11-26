@@ -2,80 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2212645F00E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:41:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7A845F010
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377917AbhKZOoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 09:44:07 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:53558 "EHLO vps0.lunn.ch"
+        id S1377800AbhKZOpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 09:45:39 -0500
+Received: from mout.gmx.net ([212.227.17.22]:53935 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239136AbhKZOmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 09:42:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=XlFnGXJRxbZVEZqCmUzRQIQzW8wnQfRuzqfUvNPIFuY=; b=0r
-        k4f5DKGSK7K0pld8PqF44Jmuv4DpfKS1V1ikeBCCbxuXHR5bUwteJQV/nIJOVCLYdI+GdWhb0y0E1
-        fNRBtImuo7f12MCAFa6G0GtJZNPeS/fLEYz2h43EQUIfoHBpSSOh98Cm/OgeIjAkQfBrZI30ujCM2
-        yTWrhuQZTfeWF1k=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mqcN9-00Eha7-S0; Fri, 26 Nov 2021 15:38:43 +0100
-Date:   Fri, 26 Nov 2021 15:38:43 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Wells Lu =?utf-8?B?5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
-Cc:     Wells Lu <wellslutw@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        Vincent Shih =?utf-8?B?5pa96YyV6bS7?= 
-        <vincent.shih@sunplus.com>
-Subject: Re: [PATCH v2 2/2] net: ethernet: Add driver for Sunplus SP7021
-Message-ID: <YaDxc2+HKUYxsmX4@lunn.ch>
-References: <cover.1636620754.git.wells.lu@sunplus.com>
- <519b61af544f4c6920012d44afd35a0f8761b24f.1636620754.git.wells.lu@sunplus.com>
- <YY7/v1msiaqJF3Uy@lunn.ch>
- <7cccf9f79363416ca8115a7ed9b1b7fd@sphcmbx02.sunplus.com.tw>
- <YZ+pzFRCB0faDikb@lunn.ch>
- <6c1ce569d2dd46eba8d4b0be84d6159b@sphcmbx02.sunplus.com.tw>
+        id S1377736AbhKZOni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 09:43:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1637937610;
+        bh=aivfgVJGYJA3M4zTVSJx0lVs5qEnmFfDIA+NXAOCsW4=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=BHL7+Bn3V2UbD/qCjVEC4b6fw5u3ixR3LxhjGuC5Sdpr5akIQ3nwNytM/SdP0VWLz
+         ImfN+9zlDT0SMj/HKJVwbNp0oJ6rtn9oGVIlY9ElTYpLnkMz6df4G6G8wjrvMMHUCD
+         J3rHBR6Vt9AcJJi58UH3hm71JBXjVRRu1EJ9Znz8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from Venus.fritz.box ([46.223.119.124]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MyKHc-1mgVXC1wCK-00yeyN; Fri, 26
+ Nov 2021 15:40:10 +0100
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+To:     gregkh@linuxfoundation.org
+Cc:     linux@armlinux.org.uk, jirislaby@kernel.org,
+        p.rosenberger@kunbus.com, lukas@wunner.de,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Subject: [PATCH] serial: amba-pl011: do not request memory region twice
+Date:   Fri, 26 Nov 2021 15:39:25 +0100
+Message-Id: <20211126143925.18758-1-LinoSanfilippo@gmx.de>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6c1ce569d2dd46eba8d4b0be84d6159b@sphcmbx02.sunplus.com.tw>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:q06nxNUSDkpdGRw3TjBAr0L5n/H5X3LkSf3ICnEfVhY53iUwVrh
+ EuoGc8ljihAjsFjBTfgLGVxYmHyhQTJnGzLTUvnrcrvG0uZJRw9h6ia8x/QMBg7q1vAKRfv
+ MhOMQ2OBcAx2ozY6iBAQHUAz2Ia38M3onaaDziXnUdKmNCWBZ513+Xy1p++ZFsvkKt7Z5a0
+ nY07ShsSsKvbElHMCJQEw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:a0NMEAqkvzc=:jh2xhgPGQxeSiKXr1sj5qk
+ yRtMfCvqkZIiIFqYuYWhCVfklsvxROBvlA3HhpJPt/Ka+N51XfVOj97gnw+KJsfFTWlwgK0f8
+ qX7wogJsnrblTsVHixZVcOoFKXfcmIBvkGnXT4niGlYv2Po/fNegOLJS6+CS6TyQ24j8SKliW
+ KA1JxRzFe3p/yH4Uz/oALW0ZOiAfo0VQKTZSXjnHTERxcHIbVMWeDYqKSYbRS3Dz+BhhZCE3x
+ A0Tc48KlAV/2SuST3iuKsn/y938FH/WiGa25ruo5ao7Uj/R9/2jVW/Os5OZr2lZJU9gNiW9WB
+ u0gZJk7mj8y41oxWE4adkIAyTjSv+dAZx521zAl6CCuSdwAckGxDAedMsnMq/oC8t5IJhusRP
+ 0wBXFIilQB1VFSWsWAx6iTqyTLkpFPshQN9DxK8C+coej39IRPEOd83gla+TeCzr7ZL9U+8dR
+ BBAmIHyy9DkcR0m+AXkeHk1cJJADFaqiEt6yLJaQpwfKf/zmZIb7sNaL+FOWLd4nCqKeES9NL
+ AnQBOAUZAPmsBxa9Sz05RxN9yKn8lCCEuY54cFCqtv/4pIW9v6JY0AXk7csb9sYantL8WQZxh
+ nas5tXV+cdzYS9TiAbzwNC1MWE+8FPwuJg06BPGOcPLXuExrBqQAvAdZiawBTm8q3JDLMWuhp
+ zVg216kmGxBMw7yPhIzhjHT/XmYF88hEoW62hjTOP5fkPM0MEsCkWXCTKh6XPCKU9aNolFSQP
+ TE+yxLieQ0KHqSoFVUYmmcZrCNeBohuCR6aCIflrdYrr8MJYtyGnlTVtuErXswa4xRLZ47k+z
+ oF3aybynAS69LeLbI/UbyzWHfy2jnAJ/JRn5ZmiZuS/+jsc2Y9OySDW6qJ5SrCR7fj13/AS+v
+ GU/PXM2XfXTk5n6+VcVGK5TH2LoaCGFzrz4/3RNufZCZejMXwpXNtPNRjYfOH6RMyV2ivRbqz
+ F1eU7UqcGHah8bv4BiiE1MZZgRs9ZIgP6F8qRJed0gojOEkuawq7qFGQq5UKflRbhiLST3mzH
+ BaIzJHea7eqphjetOQ9/9gH8vyoaG3wtWYNry4hT7cqDLkb1I/86pSRcH9eWJn4JM3Do8qNLI
+ cKmcdWgjcFpqC0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 03:56:28AM +0000, Wells Lu 呂芳騰 wrote:
-> Hi Andrew,
-> 
-> I set phy-id registers to 30 and 31 and found the read-back
-> values of mdio read commands from CPU are all 0x0000.
-> 
-> I consulted with an ASIC engineer. She confirmed that if
-> phy-id of a mdio command from CPU does not match any 
-> phy-id registers, the mdio command will not be sent out.
-> 
-> She explained if phy-id of a mdio command does not match 
-> any phy-id registers (represent addresses of external PHYs),
-> why MAC needs to send a command to non-existing PHY?
-
-Reads or writes on a real PHY which Linux is driving can have side
-effects. There is a link statue register which latches. Read it once,
-you get the last status, read it again, you get the current status. If
-the MAC hardware is reading this register as well a Linux, bad things
-will happen. A read on the interrupt status register often clears the
-interrupts. So Linux will not see the interrupts.
-
-So you need to make sure you hardware is not touching a PHY which
-Linux uses. Which is why i suggested using MDIO bus address 31, which
-generally does not have a PHY at that address.
-
-	  Andrew
+VGhlIGRyaXZlciBhdHRlbXB0cyB0byByZXF1ZXN0IGFuZCByZWxlYXNlIHRoZSBJTyBtZW1vcnkg
+cmVnaW9uIGZvciBhIHVhcnQKcG9ydCB0d2ljZToKCkZpcnN0IGR1cmluZyB0aGUgcHJvYmUoKSBm
+dW5jdGlvbiBkZXZtX2lvcmVtYXBfcmVzb3VyY2UoKSBpcyB1c2VkIHRvCmFsbG9jYXRlIGFuZCBt
+YXAgdGhlIHBvcnRzIG1lbW9yeS4KVGhlbiBhIGNvbWJvIG9mIHBsMDExX2NvbmZpZ19wb3J0KCkg
+YW5kIHBsMDExX3JlbGVhc2VfcG9ydCgpIGlzIHVzZWQgdG8KcmVxdWVzdC9yZWxlYXNlIHRoZSBz
+YW1lIG1lbW9yeSBhcmVhLiBUaGVzZSBmdW5jdGlvbnMgYXJlIGNhbGxlZCBieSB0aGUKc2VyaWFs
+IGNvcmUgYXMgc29vbiBhcyB0aGUgdWFydCBpcyByZWdpc3RlcmVkL3VucmVnaXN0ZXJlZC4KCkhv
+d2V2ZXIgc2luY2UgdGhlIGFsbG9jYXRpb24gcmVxdWVzdCB2aWEgZGV2bV9pb3JlbWFwX3Jlc291
+cmNlKCkgYWxyZWFkeQpzdWNjZWVkcywgdGhlIGF0dGVtcHQgdG8gY2xhaW0gdGhlIG1lbW9yeSBh
+Z2FpbiB2aWEgcGwwMTFfY29uZmlnX3BvcnQoKQpmYWlscy4gVGhpcyBmYWlsdXJlIHJlbWFpbnMg
+dW5ub3RpY2VkLCBzaW5jZSB0aGUgY29uY2VybmluZyByZXR1cm4gdmFsdWUgaXMKbm90IGV2YWx1
+YXRlZC4KTGF0ZXIgYXQgbW9kdWxlIHVubG9hZCBhbHNvIHRoZSBhdHRlbXB0IHRvIHJlbGVhc2Ug
+dGhlIHVuY2xhaW1lZCBtZW1vcnkKaW4gcGwwMTFfcmVsZWFzZV9wb3J0KCkgZmFpbHMuIFRoaXMg
+dGltZSB0aGUgZmFpbHVyZSByZXN1bHRzIGluIGEg4oCcVHJ5aW5nCnRvIGZyZWUgbm9uZXhpc3Rl
+bnQgcmVzb3VyY2UiIHdhcm5pbmcgcHJpbnRlZCBieSB0aGUgc2VyaWFsIGNvcmUuCgpGaXggdGhl
+c2UgaXNzdWVzIGJ5IHJlbW92aW5nIHRoZSBjYWxsYmFja3MgdGhhdCBpbXBsZW1lbnQgdGhlIHJl
+ZHVuZGFudAptZW1vcnkgYWxsb2NhdGlvbi9yZWxlYXNlLgoKU2lnbmVkLW9mZi1ieTogTGlubyBT
+YW5maWxpcHBvIDxMaW5vU2FuZmlsaXBwb0BnbXguZGU+Ci0tLQoKVGhpcyBwYXRjaCB3YXMgdGVz
+dGVkIG9uIGEgNS4xMCBSYXNwYmVycnkgUGkga2VybmVsIHdpdGggYSBDTTMuCgoKIGRyaXZlcnMv
+dHR5L3NlcmlhbC9hbWJhLXBsMDExLmMgfCAyNSArLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAx
+IGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDI0IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdp
+dCBhL2RyaXZlcnMvdHR5L3NlcmlhbC9hbWJhLXBsMDExLmMgYi9kcml2ZXJzL3R0eS9zZXJpYWwv
+YW1iYS1wbDAxMS5jCmluZGV4IGQzNjFjZDg0ZmY4Yy4uOTE2NzBlZTI1NDg1IDEwMDY0NAotLS0g
+YS9kcml2ZXJzL3R0eS9zZXJpYWwvYW1iYS1wbDAxMS5jCisrKyBiL2RyaXZlcnMvdHR5L3Nlcmlh
+bC9hbWJhLXBsMDExLmMKQEAgLTIxODMsMzIgKzIxODMsMTMgQEAgc3RhdGljIGNvbnN0IGNoYXIg
+KnBsMDExX3R5cGUoc3RydWN0IHVhcnRfcG9ydCAqcG9ydCkKIAlyZXR1cm4gdWFwLT5wb3J0LnR5
+cGUgPT0gUE9SVF9BTUJBID8gdWFwLT50eXBlIDogTlVMTDsKIH0KIAotLyoKLSAqIFJlbGVhc2Ug
+dGhlIG1lbW9yeSByZWdpb24ocykgYmVpbmcgdXNlZCBieSAncG9ydCcKLSAqLwotc3RhdGljIHZv
+aWQgcGwwMTFfcmVsZWFzZV9wb3J0KHN0cnVjdCB1YXJ0X3BvcnQgKnBvcnQpCi17Ci0JcmVsZWFz
+ZV9tZW1fcmVnaW9uKHBvcnQtPm1hcGJhc2UsIFNaXzRLKTsKLX0KLQotLyoKLSAqIFJlcXVlc3Qg
+dGhlIG1lbW9yeSByZWdpb24ocykgYmVpbmcgdXNlZCBieSAncG9ydCcKLSAqLwotc3RhdGljIGlu
+dCBwbDAxMV9yZXF1ZXN0X3BvcnQoc3RydWN0IHVhcnRfcG9ydCAqcG9ydCkKLXsKLQlyZXR1cm4g
+cmVxdWVzdF9tZW1fcmVnaW9uKHBvcnQtPm1hcGJhc2UsIFNaXzRLLCAidWFydC1wbDAxMSIpCi0J
+CQkhPSBOVUxMID8gMCA6IC1FQlVTWTsKLX0KLQogLyoKICAqIENvbmZpZ3VyZS9hdXRvY29uZmln
+dXJlIHRoZSBwb3J0LgogICovCiBzdGF0aWMgdm9pZCBwbDAxMV9jb25maWdfcG9ydChzdHJ1Y3Qg
+dWFydF9wb3J0ICpwb3J0LCBpbnQgZmxhZ3MpCiB7Ci0JaWYgKGZsYWdzICYgVUFSVF9DT05GSUdf
+VFlQRSkgeworCWlmIChmbGFncyAmIFVBUlRfQ09ORklHX1RZUEUpCiAJCXBvcnQtPnR5cGUgPSBQ
+T1JUX0FNQkE7Ci0JCXBsMDExX3JlcXVlc3RfcG9ydChwb3J0KTsKLQl9CiB9CiAKIC8qCkBAIC0y
+Mjc1LDggKzIyNTYsNiBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHVhcnRfb3BzIGFtYmFfcGwwMTFf
+cG9wcyA9IHsKIAkuZmx1c2hfYnVmZmVyCT0gcGwwMTFfZG1hX2ZsdXNoX2J1ZmZlciwKIAkuc2V0
+X3Rlcm1pb3MJPSBwbDAxMV9zZXRfdGVybWlvcywKIAkudHlwZQkJPSBwbDAxMV90eXBlLAotCS5y
+ZWxlYXNlX3BvcnQJPSBwbDAxMV9yZWxlYXNlX3BvcnQsCi0JLnJlcXVlc3RfcG9ydAk9IHBsMDEx
+X3JlcXVlc3RfcG9ydCwKIAkuY29uZmlnX3BvcnQJPSBwbDAxMV9jb25maWdfcG9ydCwKIAkudmVy
+aWZ5X3BvcnQJPSBwbDAxMV92ZXJpZnlfcG9ydCwKICNpZmRlZiBDT05GSUdfQ09OU09MRV9QT0xM
+CkBAIC0yMzA2LDggKzIyODUsNiBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHVhcnRfb3BzIHNic2Ff
+dWFydF9wb3BzID0gewogCS5zaHV0ZG93bgk9IHNic2FfdWFydF9zaHV0ZG93biwKIAkuc2V0X3Rl
+cm1pb3MJPSBzYnNhX3VhcnRfc2V0X3Rlcm1pb3MsCiAJLnR5cGUJCT0gcGwwMTFfdHlwZSwKLQku
+cmVsZWFzZV9wb3J0CT0gcGwwMTFfcmVsZWFzZV9wb3J0LAotCS5yZXF1ZXN0X3BvcnQJPSBwbDAx
+MV9yZXF1ZXN0X3BvcnQsCiAJLmNvbmZpZ19wb3J0CT0gcGwwMTFfY29uZmlnX3BvcnQsCiAJLnZl
+cmlmeV9wb3J0CT0gcGwwMTFfdmVyaWZ5X3BvcnQsCiAjaWZkZWYgQ09ORklHX0NPTlNPTEVfUE9M
+TAoKYmFzZS1jb21taXQ6IGE0ODQ5ZjYwMDBlMjkyMzVhMjcwN2YyMmUzOWRhNmI4OTdiYjk1NDMK
+LS0gCjIuMzMuMQoK
