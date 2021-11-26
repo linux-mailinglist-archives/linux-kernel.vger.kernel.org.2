@@ -2,65 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F97745F014
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E6545F01E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377842AbhKZOqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 09:46:21 -0500
-Received: from mga06.intel.com ([134.134.136.31]:13942 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349336AbhKZOoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 09:44:21 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="296474562"
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="296474562"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 06:41:07 -0800
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="599022304"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 06:41:03 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mqcPN-00AoIi-3u;
-        Fri, 26 Nov 2021 16:41:01 +0200
-Date:   Fri, 26 Nov 2021 16:41:00 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: Re: [PATCH v1 1/1] MIPS: TXx9: Convert SPI platform data to software
- nodes
-Message-ID: <YaDx/MaMuajAEp1H@smile.fi.intel.com>
-References: <20211126102339.28908-1-andriy.shevchenko@linux.intel.com>
- <CAK8P3a3GuGgdp7Gq5N9XKTGhKbBUym9BiEb94RWyL1CDxS0ffw@mail.gmail.com>
- <CAMuHMdV4HVn+GcCBNQ+1-Kva2XiHQ03L5y9JLXH7qONtBvkV+w@mail.gmail.com>
+        id S1377844AbhKZOuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 09:50:07 -0500
+Received: from goliath.siemens.de ([192.35.17.28]:38507 "EHLO
+        goliath.siemens.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345231AbhKZOsG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 09:48:06 -0500
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by goliath.siemens.de (8.15.2/8.15.2) with ESMTPS id 1AQEiT7E011393
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Nov 2021 15:44:29 +0100
+Received: from md1za8fc.ad001.siemens.net ([139.22.47.90])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 1AQEiRhZ027622;
+        Fri, 26 Nov 2021 15:44:28 +0100
+Date:   Fri, 26 Nov 2021 15:44:27 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
+Subject: Re: [PATCH v3 2/4] leds: simatic-ipc-leds: add new driver for
+ Siemens Industial PCs
+Message-ID: <20211126154427.41bf024e@md1za8fc.ad001.siemens.net>
+In-Reply-To: <CAHp75VeX89T7t=Q7-q56sndbfRyuPDEUjSMsMFo4sS8cb9AAmw@mail.gmail.com>
+References: <20210329174928.18816-1-henning.schild@siemens.com>
+        <20210329174928.18816-3-henning.schild@siemens.com>
+        <CAHp75Vdh_YAJLE4DWPhxhYY1g5Fc_7EFgr4FED3crpfpzwXeRg@mail.gmail.com>
+        <20211126142827.78d2348d@md1za8fc.ad001.siemens.net>
+        <CAHp75VeX89T7t=Q7-q56sndbfRyuPDEUjSMsMFo4sS8cb9AAmw@mail.gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdV4HVn+GcCBNQ+1-Kva2XiHQ03L5y9JLXH7qONtBvkV+w@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 01:16:22PM +0100, Geert Uytterhoeven wrote:
-> On Fri, Nov 26, 2021 at 11:58 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> > On Fri, Nov 26, 2021 at 11:23 AM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
+Am Fri, 26 Nov 2021 16:02:48 +0200
+schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
 
-...
+> On Fri, Nov 26, 2021 at 3:28 PM Henning Schild
+> <henning.schild@siemens.com> wrote:
+> > Am Tue, 30 Mar 2021 14:04:35 +0300
+> > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:  
+> > > On Mon, Mar 29, 2021 at 8:59 PM Henning Schild
+> > > <henning.schild@siemens.com> wrote:  
+> 
+> ...
+> 
+> > > > +static struct simatic_ipc_led simatic_ipc_leds_mem[] = {
+> > > > +       {0x500 + 0x1A0, "red:" LED_FUNCTION_STATUS "-1"},
+> > > > +       {0x500 + 0x1A8, "green:" LED_FUNCTION_STATUS "-1"},
+> > > > +       {0x500 + 0x1C8, "red:" LED_FUNCTION_STATUS "-2"},
+> > > > +       {0x500 + 0x1D0, "green:" LED_FUNCTION_STATUS "-2"},
+> > > > +       {0x500 + 0x1E0, "red:" LED_FUNCTION_STATUS "-3"},
+> > > > +       {0x500 + 0x198, "green:" LED_FUNCTION_STATUS "-3"},
+> > > > +       { }
+> > > > +};  
+> > >
+> > > It seems to me like poking GPIO controller registers directly.
+> > > This is not good. The question still remains: Can we simply
+> > > register a GPIO (pin control) driver and use an LED GPIO driver
+> > > with an additional board file that instantiates it?  
+> >
+> > The short answer for v4 will be "No we can not!". The pinctrl
+> > drivers do not currently probe on any of the devices and attempts
+> > to fix that have failed or gut stuck. I tried to help out where i
+> > could and waited for a long time.  
+> 
+> I see, unfortunately I have stuck with some other (more important
+> tasks) and can't fulfil this, but I still consider it's no go for
+> driver poking pin control registers directly. Lemme see if I can
+> prioritize this for next week.
 
-> Probably all of this can be removed, given the SPI controller driver
-> itself was removed in commit 74523a5dae0c96d6 ("spi: txx9: Remove
-> driver")?
+I just sent v4. And am sick of waiting on you. Sorry to be that clear
+here. I want that order changed! If you still end up being fast,
+perfect. But i want to be faster!
 
-Even better! Let Thomas speak on this.
+> > Now my take is to turn the order around. We go in like that and will
+> > happily switch to pinctrl if that ever comes up on the machines.
+> > Meaning P2SB series on top of this, no more delays please.  
+> 
+> I don't want to slip bad code into the kernel where we can avoid that.
 
--- 
-With Best Regards,
-Andy Shevchenko
+It is not bad code! That is unfair to say. It can be improved on and
+that is what we have a FIXME line for. The worst code is code that is
+not there ... devices without drivers!
+That is bad, not i minor poke of parts of a resource no other driver
+claimed!
 
+> > We do use request_region so have a mutex in place. Meaning we really
+> > only touch GPIO while pinctrl does not!  
+> 
+> I haven't got this. On Intel SoCs GPIO is a part of pin control
+> registers. You can't touch GPIO without touching pin control.
 
+i meant pin control, if it ever did probe it would reserve the region
+and push our hack out, or the other way around ... no conflict!
+To get both we just need a simple patch and switch to pinctrl, just
+notify me once your stuff is ready and i will write that patch.
+ 
+> > I see no issue here, waited for a long time and now expect to be
+> > allowed to get merged first.  
+> 
+> Okay, I have these questions / asks so far:
+> 1) Can firmware be fixed in order to provide an ACPI table for the pin
+> control devices?
+
+No. The firmware will only receive security but no feature updates ...
+
+> 2) Can you share firmware (BIOS ROM file I suppose) that I may flash
+> on an Apollo Lake machine and see if I can reproduce the issue?
+
+I do not have access. But all you need is a firware with no ACPI entry
+and P2SB hidden. Or simply patch out the two probe paths ;). 
+
+> 3) As may be a last resort, can you share (remotely) or even send to
+> us the device in question to try?
+
+We are talking about multiple devices. Not just that one apollo lake on
+which your patches kind of worked.
+
+But showed some weirdness which could really become a problem if
+someone decided to add an ACPI entry ..
+
+It pin 42 name could be 
+GPIO_LOOKUP_IDX("apollolake-pinctrl.0", 42
+or
+GPIO_LOOKUP_IDX("INT3452:01", 42
+
+I guess that conflict will have to be dealt with before your can switch
+to probing pinctrl drivers based on cpu model and not only ACPI/P2SB any
+longer.
+
+regards,
+Henning
