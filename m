@@ -2,66 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA5545E914
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:17:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0434C45E919
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:18:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346974AbhKZIUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 03:20:23 -0500
-Received: from smtprelay0213.hostedemail.com ([216.40.44.213]:56532 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1359299AbhKZISW (ORCPT
+        id S1359319AbhKZIV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 03:21:26 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:50424 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353557AbhKZITZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 03:18:22 -0500
-Received: from omf17.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 9666E180A25C8;
-        Fri, 26 Nov 2021 08:15:06 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf17.hostedemail.com (Postfix) with ESMTPA id 8825EE00036E;
-        Fri, 26 Nov 2021 08:15:02 +0000 (UTC)
-Message-ID: <aa7ad39528c768dfd3a33890cf7d14b59ba3a5fc.camel@perches.com>
-Subject: Re: [PATCH][next] hugetlb: Fix spelling mistake "hierarichal" ->
- "hierarchical"
-From:   Joe Perches <joe@perches.com>
-To:     Colin Ian King <colin.i.king@googlemail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 26 Nov 2021 00:15:04 -0800
-In-Reply-To: <20211125090635.23508-1-colin.i.king@gmail.com>
-References: <20211125090635.23508-1-colin.i.king@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+        Fri, 26 Nov 2021 03:19:25 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3B69B21923;
+        Fri, 26 Nov 2021 08:16:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637914572; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=d074oInTejkFXY9rgF+E9NUJOneyB+3TLDkZb0cvCJU=;
+        b=R1giVOXL1xA5GgHDbfcDSwJLhdCUrzPHQ548xav41aXTPtM2eEPbEpcmcGPcMPnzUKPy8h
+        HmjjV6HcEavGr6l2kfJfp6l+y+PZtaYepMlYQoqxXS12bwsGfpC3R2nfQZyWOxdJFXgmv6
+        ry8XoGEw8NcZ/Ln3w1CB0eywO6A7GPA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637914572;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=d074oInTejkFXY9rgF+E9NUJOneyB+3TLDkZb0cvCJU=;
+        b=qc5PNXxMVOVu27nkiAE/0lWiXFVTWo2FKDfLrn3Ykwwr5D8vV0Cc2zewYWfcMbSV56KRJK
+        bw1ajoh+9JsqtPAA==
+Received: from localhost.localdomain (unknown [10.100.208.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 1152DA3B81;
+        Fri, 26 Nov 2021 08:16:12 +0000 (UTC)
+From:   Jiri Slaby <jslaby@suse.cz>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiri Slaby <jslaby@suse.cz>
+Subject: [PATCH 00/23] tty: documentation revamp
+Date:   Fri, 26 Nov 2021 09:15:48 +0100
+Message-Id: <20211126081611.11001-1-jslaby@suse.cz>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.60
-X-Stat-Signature: zduh9f8tp1nobnocxexjweddxcud9wtu
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 8825EE00036E
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+gfAvX6ESF28PxboOQwQbTRp4ragM60F4=
-X-HE-Tag: 1637914502-589088
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-11-25 at 09:06 +0000, Colin Ian King wrote:
-> There is a spelling mistake in a literal string and a comment. Fix them.
-[]
-> diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
-[]
-> @@ -495,11 +495,11 @@ static int hugetlb_cgroup_read_numa_stat(struct seq_file *seq, void *dummy)
->  	 * The hierarchical total is pretty much the value recorded by the
->  	 * counter, so use that.
->  	 */
-> -	seq_printf(seq, "%stotal=%lu", legacy ? "hierarichal_" : "",
-> +	seq_printf(seq, "%stotal=%lu", legacy ? "hierarchical_" : "",
->  		   page_counter_read(&h_cg->hugepage[idx]) * PAGE_SIZE);
+This series adds/updates:
+1) kernel-doc documentation for most exported functions, and
+2) adds a chapter to Documentation/tty to glue it all together.
 
-Not sure this should be changed as seq output is nominally ABI.
+I think it's a good base for further improvements. It deduplicates
+and unify multiple documentation files.
 
->  
->  	/*
-> -	 * For each node, transverse the css tree to obtain the hierarichal
-> +	 * For each node, transverse the css tree to obtain the hierarchical
+Jiri Slaby (23):
+  tty: finish kernel-doc of tty_struct members
+  tty: add kernel-doc for tty_port
+  tty: add kernel-doc for tty_driver
+  tty: add kernel-doc for tty_operations
+  tty: add kernel-doc for tty_port_operations
+  tty: add kernel-doc for tty_ldisc_ops
+  tty: combine tty_operations triple docs into kernel-doc
+  tty: combine tty_ldisc_ops docs into kernel-doc
+  tty: reformat tty_struct::flags into kernel-doc
+  tty: reformat TTY_DRIVER_ flags into kernel-doc
+  tty: reformat kernel-doc in tty_port.c
+  tty: reformat kernel-doc in tty_io.c
+  tty: reformat kernel-doc in tty_ldisc.c
+  tty: reformat kernel-doc in tty_buffer.c
+  tty: fix kernel-doc in n_tty.c
+  tty: reformat kernel-doc in n_tty.c
+  tty: add kernel-doc for more tty_driver functions
+  tty: add kernel-doc for more tty_port functions
+  tty: move tty_ldisc docs to new Documentation/tty/
+  tty: make tty_ldisc docs up-to-date
+  tty: more kernel-doc for tty_ldisc
+  tty: add kernel-doc for tty_standard_install
+  Documentation: add TTY chapter
 
-Fixing the comment typo is good.  Thanks.
+ Documentation/driver-api/serial/index.rst |   1 -
+ Documentation/driver-api/serial/tty.rst   | 328 --------
+ Documentation/index.rst                   |   1 +
+ Documentation/tty/index.rst               |  63 ++
+ Documentation/tty/n_tty.rst               |  22 +
+ Documentation/tty/tty_buffer.rst          |  46 ++
+ Documentation/tty/tty_driver.rst          | 128 ++++
+ Documentation/tty/tty_internals.rst       |  31 +
+ Documentation/tty/tty_ldisc.rst           |  85 +++
+ Documentation/tty/tty_port.rst            |  70 ++
+ Documentation/tty/tty_struct.rst          |  81 ++
+ drivers/tty/n_tty.c                       | 688 ++++++++---------
+ drivers/tty/tty_buffer.c                  | 251 +++---
+ drivers/tty/tty_io.c                      | 889 +++++++++++-----------
+ drivers/tty/tty_ldisc.c                   | 292 ++++---
+ drivers/tty/tty_port.c                    | 223 ++++--
+ include/linux/tty.h                       | 153 +++-
+ include/linux/tty_driver.h                | 572 ++++++++------
+ include/linux/tty_ldisc.h                 | 278 +++----
+ include/linux/tty_port.h                  | 131 ++--
+ 20 files changed, 2408 insertions(+), 1925 deletions(-)
+ delete mode 100644 Documentation/driver-api/serial/tty.rst
+ create mode 100644 Documentation/tty/index.rst
+ create mode 100644 Documentation/tty/n_tty.rst
+ create mode 100644 Documentation/tty/tty_buffer.rst
+ create mode 100644 Documentation/tty/tty_driver.rst
+ create mode 100644 Documentation/tty/tty_internals.rst
+ create mode 100644 Documentation/tty/tty_ldisc.rst
+ create mode 100644 Documentation/tty/tty_port.rst
+ create mode 100644 Documentation/tty/tty_struct.rst
 
+-- 
+2.34.0
 
