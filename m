@@ -2,105 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E47F45F6EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 23:40:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D00D45F6F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 23:43:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245332AbhKZWoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 17:44:01 -0500
-Received: from mail-pf1-f169.google.com ([209.85.210.169]:39553 "EHLO
-        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243757AbhKZWmA (ORCPT
+        id S245299AbhKZWqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 17:46:30 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:32676 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245116AbhKZWo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 17:42:00 -0500
-Received: by mail-pf1-f169.google.com with SMTP id i12so10157526pfd.6
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 14:38:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=MiJphoBmVhNFPT/wcZKae8pCULUw8u3DXyyuIxPFFoQ=;
-        b=6Uam8D4ZS2my2TUFT9FRfgBHz4HfLSfElFRCPdvlPKr3rNm+9REWZGo8vVDotTeBlR
-         C5OcrI+hOnODaL8NbI21VIpPRqJbeERxRl0B7tlVzK3QLWhlOFWVvdAF7k8Hcl/yvfjG
-         Ht26R2m25OV/HSUCh1qYNFokOBEa5nrpahVfkO21zZPOYv3GekWLwmPQqpN2RewxqjdX
-         DqYIY442fz4+C+Fb1Aav4PxQTXxdEI3MplqQ8PUuqkPIE9G0IJt2RI4wIKotJa0F5C6M
-         liHjkj5grLcx2y5SSAWJrPQFZJn68i5fhYkMpXCfmwmVO25XLAGwC9inPsl3SMVPisHy
-         9b6Q==
-X-Gm-Message-State: AOAM533prHyNW2XetSoj8KFZuiXJRtEkAmH/5GSrMEiGhF4HaiNALlfr
-        KLltxBqtw+TSygCWv1sFvUs=
-X-Google-Smtp-Source: ABdhPJxyXoqCF5BemDwzMjWtBArkWtscBbxKccx1tzuWe+1f5Akk7+/C/kPrV0lrgpzh8UT0MxfWTQ==
-X-Received: by 2002:a63:5b4d:: with SMTP id l13mr11538128pgm.120.1637966326943;
-        Fri, 26 Nov 2021 14:38:46 -0800 (PST)
-Received: from ?IPV6:2601:647:4000:d7:feaa:14ff:fe9d:6dbd? ([2601:647:4000:d7:feaa:14ff:fe9d:6dbd])
-        by smtp.gmail.com with ESMTPSA id t3sm9186037pfg.94.2021.11.26.14.38.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Nov 2021 14:38:46 -0800 (PST)
-Message-ID: <daf91b05-4529-f3fe-957b-fce23f7cf763@acm.org>
-Date:   Fri, 26 Nov 2021 14:38:45 -0800
+        Fri, 26 Nov 2021 17:44:28 -0500
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-166-QV9_LRS0PZikqvg_y7xmSw-1; Fri, 26 Nov 2021 22:41:11 +0000
+X-MC-Unique: QV9_LRS0PZikqvg_y7xmSw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.26; Fri, 26 Nov 2021 22:41:10 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.026; Fri, 26 Nov 2021 22:41:10 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Eric Dumazet' <edumazet@google.com>
+CC:     Noah Goldstein <goldstein.w.n@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "alexanderduyck@fb.com" <alexanderduyck@fb.com>,
+        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
+        "lkp@intel.com" <lkp@intel.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        X86 ML <x86@kernel.org>
+Subject: RE: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12:
+ error: implicit declaration of function 'load_unaligned_zeropad'
+Thread-Topic: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12:
+ error: implicit declaration of function 'load_unaligned_zeropad'
+Thread-Index: AQHX4bFY91qWVfGwmUGWCXjqsQaln6wWDW5QgAAQxICAAEM4IA==
+Date:   Fri, 26 Nov 2021 22:41:10 +0000
+Message-ID: <8a6fe34e0f2f4739af39a5935a74b823@AcuMS.aculab.com>
+References: <CANn89i+hQTn26hK-4CA=cAwCxEMzogqD30PYdqz4NP8kjmH2gg@mail.gmail.com>
+ <CANn89i+K6=Kc0weayD_phAPn9YT=2UUje+1BZfg=kUiLp7ELqQ@mail.gmail.com>
+ <619eee05.1c69fb81.4b686.4bbc@mx.google.com>
+ <CANn89iJdQ1VTLYUKu1hYNm4wF__ZzrwNYr28v_vGM0MCybJpxg@mail.gmail.com>
+ <CAFUsyf+5zp+p_0TPFLr-fMNry0M_CnNAFDG30PKDuy2jA5MhNw@mail.gmail.com>
+ <CANn89iLtZmSyBYtvJ0nxdrM3CKyf3D9y9AWBC4GVbPCxtjOROw@mail.gmail.com>
+ <4dbf7f8d095b46a8a45e285d0ec8f8b0@AcuMS.aculab.com>
+ <CANn89iJubuJxjVp4fx78-bjKBN3e9JsdAwZxj4XO6g2_7ZPqJQ@mail.gmail.com>
+In-Reply-To: <CANn89iJubuJxjVp4fx78-bjKBN3e9JsdAwZxj4XO6g2_7ZPqJQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: esp_scsi.c:undefined reference to `scsi_done'
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-References: <202111252028.JcclVVMH-lkp@intel.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <202111252028.JcclVVMH-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/25/21 04:18, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   5f53fa508db098c9d372423a6dac31c8a5679cdf
-> commit: f8ab27d9649440a4fa6e77bbea939a62fd44df27 scsi: esp_scsi: Call scsi_done() directly
-> date:   6 weeks ago
-> config: mips-buildonly-randconfig-r002-20211124 (https://download.01.org/0day-ci/archive/20211125/202111252028.JcclVVMH-lkp@intel.com/config)
-> compiler: mips64-linux-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f8ab27d9649440a4fa6e77bbea939a62fd44df27
->          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->          git fetch --no-tags linus master
->          git checkout f8ab27d9649440a4fa6e77bbea939a62fd44df27
->          # save the config file to linux build tree
->          mkdir build_dir
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=mips SHELL=/bin/bash
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->     mips64-linux-ld: drivers/scsi/esp_scsi.o: in function `esp_setsync':
->     esp_scsi.c:(.text+0xc04): undefined reference to `spi_display_xfer_agreement'
+RnJvbTogRXJpYyBEdW1hemV0DQo+IFNlbnQ6IDI2IE5vdmVtYmVyIDIwMjEgMTg6MTANCi4uLg0K
+PiA+IEFGQUlDVCAoZnJvbSBhIHBkZikgYnN3YXAzMigpIGFuZCByb3IoeCwgOCkgYXJlIGxpa2Vs
+eSB0byBiZQ0KPiA+IHRoZSBzYW1lIHNwZWVkIGJ1dCBtYXkgdXNlIGRpZmZlcmVudCBleGVjdXRp
+b24gdW5pdHMuDQoNClRoZSA2NGJpdCBzaGlmdHMvcm90YXRlcyBhcmUgYWxzbyBvbmx5IG9uZSBj
+bG9jay4NCkl0IGlzIHRoZSBic3dhcDY0IHRoYXQgY2FuIGJlIHR3by4NCg0KPiA+IEludGVsIHNl
+ZW0gc28gaGF2ZSBtYW5hZ2VkIHRvIHNsb3cgZG93biByb3IoeCwgJWNsKSB0byAzIGNsb2Nrcw0K
+PiA+IGluIHNhbmR5IGJyaWRnZSAtIGFuZCBzdGlsbCBub3QgZml4ZWQgaXQuDQo+ID4gQWx0aG91
+Z2ggdGhlIGNvbXBpbGVyIG1pZ2h0IGJlIG1ha2luZyBhIHBpZ3MtYnJlYWtmYXN0IG9mIHRoZQ0K
+PiA+IHJlZ2lzdGVyIGFsbG9jYXRpb24gd2hlbiB5b3UgdHJpZWQgc2V0dGluZyAnb2RkID0gOCcu
+DQo+ID4NCj4gPiBXZWVrcyBjYW4gYmUgc3BlbnQgZmlkZGxpbmcgd2l0aCB0aGlzIGNvZGUgOi0o
+DQo+IA0KPiBZZXMsIGFuZCBpbiB0aGUgZW5kLCBpdCB3b24ndCBiZSBhYmxlIHRvIGNvbXBldGUg
+d2l0aCAgYQ0KPiBzcGVjaWFsaXplZC9pbmxpbmVkIGlwdjZfY3N1bV9wYXJ0aWFsKCkNCg0KSSBi
+ZXQgbW9zdCBvZiB0aGUgZ2FpbiBjb21lcyBmcm9tIGtub3dpbmcgdGhlcmUgaXMgYSBub24temVy
+bw0Kd2hvbGUgbnVtYmVyIG9mIDMyYml0IHdvcmRzLg0KVGhlIHBlc2t5IGVkZ2UgY29uZGl0aW9u
+cyBjb3N0Lg0KDQpBbmQgZXZlbiB0aGVuIHlvdSBuZWVkIHRvIGdldCBpdCByaWdodCENClRoZSBv
+bmUgZm9yIHN1bW1pbmcgdGhlIDUtd29yZCBJUHY0IGhlYWRlciBpcyBhY3R1YWxseSBob3JyaWQN
+Cm9uIEludGVsIGNwdSBwcmlvciB0byBIYXN3ZWxsIGJlY2F1c2UgJ2FkYycgaGFzIGEgbGF0ZW5j
+eSBvZiAyLg0KT24gU2FuZHkgYnJpZGdlIHRoZSBjYXJyeSBvdXRwdXQgaXMgdmFsaWQgb24gdGhl
+IG5leHQgY2xvY2ssDQpzbyBhZGRpbmcgdG8gYWx0ZXJuYXRlIHJlZ2lzdGVycyBkb3VibGVzIHRo
+cm91Z2hwdXQuDQooVGhhdCBjb3VsZCBlYXNpbHkgYmUgZG9uZSBpbiB0aGUgY3VycmVudCBmdW5j
+dGlvbiBhbmQgd2lsbA0KbWFrZSBhIGJpZyBkaWZmZXJlbnQgb24gdGhvc2UgY3B1LikNCg0KQnV0
+IGJhc2ljYWxseSB0aGUgY3VycmVudCBnZW5lcmljIGNvZGUgaGFzIHRoZSBsb29wIHVucm9sbGVk
+DQpmdXJ0aGVyIHRoYW4gaXMgbmVjZXNzYXJ5IGZvciBtb2Rlcm4gKG5vbi1hdG9tKSBjcHUuDQpU
+aGF0IGp1c3QgYWRkcyBtb3JlIGNvZGUgb3V0c2lkZSB0aGUgbG9vcC4NCg0KSSBkaWQgbWFuYWdl
+ZCB0byBnZXQgMTIgYnl0ZXMvY2xvY2sgdXNpbmcgYWRjby9hZG94IHdpdGggb25seQ0KMzIgYnl0
+ZXMgZWFjaCBpdGVyYXRpb24uDQpUaGF0IHdpbGwgcmVxdWlyZSBhbGlnbmVkIGJ1ZmZlcnMuDQoN
+CkFsaWdubWVudCB3b24ndCBtYXR0ZXIgZm9yICdhZGMnIGxvb3BzIGJlY2F1c2UgdGhlcmUgYXJl
+IHR3bw0KJ21lbW9yeSByZWFkJyB1bml0cyAtIGJ1dCB0aGVyZSBpcyB0aGUgZWxlcGhhbnQ6DQoN
+ClNhbmR5IGJyaWRnZSBDYWNoZSBiYW5rIGNvbmZsaWN0cw0KRWFjaCBjb25zZWN1dGl2ZSAxMjgg
+Ynl0ZXMsIG9yIHR3byBjYWNoZSBsaW5lcywgaW4gdGhlIGRhdGEgY2FjaGUgaXMgZGl2aWRlZA0K
+aW50byA4IGJhbmtzIG9mIDE2IGJ5dGVzIGVhY2guIEl0IGlzIG5vdCBwb3NzaWJsZSB0byBkbyB0
+d28gbWVtb3J5IHJlYWRzIGluDQp0aGUgc2FtZSBjbG9jayBjeWNsZSBpZiB0aGUgdHdvIG1lbW9y
+eSBhZGRyZXNzZXMgaGF2ZSB0aGUgc2FtZSBiYW5rIG51bWJlciwNCmkuZS4gaWYgYml0IDQgLSA2
+IGluIHRoZSB0d28gYWRkcmVzc2VzIGFyZSB0aGUgc2FtZS4NCgk7IEV4YW1wbGUgOS41LiBTYW5k
+eSBicmlkZ2UgY2FjaGUgYmFuayBjb25mbGljdA0KCW1vdiBlYXgsIFtyc2ldIDsgVXNlIGJhbmsg
+MCwgYXNzdW1pbmcgcnNpIGlzIGRpdmlzaWJsZSBieSA0MEgNCgltb3YgZWJ4LCBbcnNpKzEwMEhd
+IDsgVXNlIGJhbmsgMC4gQ2FjaGUgYmFuayBjb25mbGljdA0KCW1vdiBlY3gsIFtyc2krMTEwSF0g
+OyBVc2UgYmFuayAxLiBObyBjYWNoZSBiYW5rIGNvbmZsaWN0DQoNClRoYXQgaXNuJ3QgYSBwcm9i
+bGVtIG9uIEhhc3dlbGwsIGJ1dCBpdCBpcyBwcm9iYWJseSB3b3J0aCBvcmRlcmluZw0KdGhlICdh
+ZGMnIGluIHRoZSBsb29wIHRvIHJlZHVjZSB0aGUgbnVtYmVyIG9mIGNvbmZsaWN0cy4NCkkgZGlk
+bid0IHRyeSB0byBsb29rIGZvciB0aGF0IHRob3VnaC4NCkkgb25seSByZW1lbWJlciB0ZXN0aW5n
+IGFsaWduZWQgYnVmZmVycyBvbiBTYW5keS9JdnkgYnJpZGdlLg0KQWRkaW5nIHRvIGFsdGVybmF0
+ZSByZWdpc3RlcnMgaGVscGVkIG5vIGVuZC4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRk
+cmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBN
+SzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-(+Masahiro Yamada)
-
-In the config file mentioned above I found the following:
-
-CONFIG_SCSI_SPI_ATTRS=m
-CONFIG_JAZZ_ESP=y
-
-And in drivers/scsi/Kconfig I found the following:
-
-config JAZZ_ESP
-	bool "MIPS JAZZ FAS216 SCSI support"
-	depends on MACH_JAZZ && SCSI
-	select SCSI_SPI_ATTRS
-	help
-	  [ ... ]
-
-I think this indicates a bug in the kbuild infrastructure: if 
-CONFIG_JAZZ_ESP is set to 'y' then CONFIG_SCSI_SPI_ATTRS also should be 
-set to 'y'.
-
-Thanks,
-
-Bart.
