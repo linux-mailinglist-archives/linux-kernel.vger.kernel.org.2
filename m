@@ -2,104 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD20545F2CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 18:20:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7C045F2CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 18:21:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236326AbhKZRXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 12:23:55 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:28950 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231310AbhKZRVy (ORCPT
+        id S237424AbhKZRYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 12:24:22 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41324 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231520AbhKZRWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 12:21:54 -0500
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-85-p6P5kx9jPIac9PXsayavaA-1; Fri, 26 Nov 2021 17:18:35 +0000
-X-MC-Unique: p6P5kx9jPIac9PXsayavaA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.26; Fri, 26 Nov 2021 17:18:34 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.026; Fri, 26 Nov 2021 17:18:34 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Eric Dumazet' <edumazet@google.com>,
-        Noah Goldstein <goldstein.w.n@gmail.com>
-CC:     Johannes Berg <johannes@sipsolutions.net>,
-        "alexanderduyck@fb.com" <alexanderduyck@fb.com>,
-        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
-        "lkp@intel.com" <lkp@intel.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        X86 ML <x86@kernel.org>
-Subject: RE: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12:
- error: implicit declaration of function 'load_unaligned_zeropad'
-Thread-Topic: [tip:x86/core 1/1] arch/x86/um/../lib/csum-partial_64.c:98:12:
- error: implicit declaration of function 'load_unaligned_zeropad'
-Thread-Index: AQHX4bFY91qWVfGwmUGWCXjqsQaln6wWDW5Q
-Date:   Fri, 26 Nov 2021 17:18:34 +0000
-Message-ID: <4dbf7f8d095b46a8a45e285d0ec8f8b0@AcuMS.aculab.com>
-References: <CANn89i+hQTn26hK-4CA=cAwCxEMzogqD30PYdqz4NP8kjmH2gg@mail.gmail.com>
- <CANn89i+K6=Kc0weayD_phAPn9YT=2UUje+1BZfg=kUiLp7ELqQ@mail.gmail.com>
- <619eee05.1c69fb81.4b686.4bbc@mx.google.com>
- <CANn89iJdQ1VTLYUKu1hYNm4wF__ZzrwNYr28v_vGM0MCybJpxg@mail.gmail.com>
- <CAFUsyf+5zp+p_0TPFLr-fMNry0M_CnNAFDG30PKDuy2jA5MhNw@mail.gmail.com>
- <CANn89iLtZmSyBYtvJ0nxdrM3CKyf3D9y9AWBC4GVbPCxtjOROw@mail.gmail.com>
-In-Reply-To: <CANn89iLtZmSyBYtvJ0nxdrM3CKyf3D9y9AWBC4GVbPCxtjOROw@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 26 Nov 2021 12:22:20 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AQHFqXi030074;
+        Fri, 26 Nov 2021 17:19:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : content-transfer-encoding
+ : mime-version; s=pp1; bh=b7ntKJBdYE4PWhHtmSjJVHxK46N8CKvYSfv9jWeLfCM=;
+ b=pT+uMYM7mEjQfSnJddWOyOm9ODic3jf0CJ/pKnI42iYIj15/LZyViqkHdCrTBGnbhYGH
+ YP4tyQ3xebUSYwvU+2mJSs1oKqPmGXfSnuU42DhvOBmamaPlTXRzYwcAS1beTtf+prrI
+ Txz+XX0Q4ZyN2m7A+A52pwwvIShpLkzOZJXfmxYkJ/ZpoN2AtCB3BuyeXnSPH+hG1O07
+ Ih9FmNMwZ7ZAU/xXcF1wqO49rkxUDKVmothGdzq7nnZJttD4lUFRuIof3cfzLJctPbE0
+ OYBmI5rQYqiqlqXH38yTCIoP9p0XIBujqW0s7UpPWDLlbPDiIjpopdFM+CS59vTCT6fB tQ== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ck3u1820g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Nov 2021 17:19:00 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AQHCoGt013600;
+        Fri, 26 Nov 2021 17:18:57 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma01fra.de.ibm.com with ESMTP id 3cernab6sf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Nov 2021 17:18:57 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AQHBdsl64225782
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Nov 2021 17:11:39 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 38DFA4C040;
+        Fri, 26 Nov 2021 17:18:55 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EB8234C052;
+        Fri, 26 Nov 2021 17:18:54 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 26 Nov 2021 17:18:54 +0000 (GMT)
+From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Faiyaz Mohammed <faiyazm@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] mm/slub: fix endianness bug for alloc/free_traces attributes
+Date:   Fri, 26 Nov 2021 18:18:48 +0100
+Message-Id: <20211126171848.17534-1-gerald.schaefer@linux.ibm.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <7c909b82-8e1c-a8ce-516d-e3aa9bc2fd81@suse.cz>
+References: <7c909b82-8e1c-a8ce-516d-e3aa9bc2fd81@suse.cz>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 5FYrfJZA68Nx5hNKW32gQhs0rNmK-4d1
+X-Proofpoint-ORIG-GUID: 5FYrfJZA68Nx5hNKW32gQhs0rNmK-4d1
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-26_04,2021-11-25_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ bulkscore=0 suspectscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
+ clxscore=1015 adultscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111260099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogRXJpYyBEdW1hemV0DQo+IFNlbnQ6IDI1IE5vdmVtYmVyIDIwMjEgMDQ6MDENCi4uLg0K
-PiA+IFRoZSBvdXRwdXRzIHNlZW0gdG8gbWF0Y2ggaWYgYGJ1ZmZgIGlzIGFsaWduZWQgdG8gNjQt
-Yml0LiBTdGlsbCBzZWUNCj4gPiBkaWZmZXJlbmNlIHdpdGggYGNzdW1fZm9sZChjc3VtX3BhcnRp
-YWwoKSlgIGlmIGBidWZmYCBpcyBub3QgNjQtYml0IGFsaWduZWQuDQo+ID4NCj4gPiBUaGUgY29t
-bWVudCBhdCB0aGUgdG9wIHNheXMgaXQncyAiYmVzdCIgdG8gaGF2ZSBgYnVmZmAgNjQtYml0IGFs
-aWduZWQgYnV0DQo+ID4gdGhlIGNvZGUgbG9naWMgc2VlbXMgbWVhbnQgdG8gc3VwcG9ydCB0aGUg
-bWlzYWxpZ25lZCBjYXNlIHNvIG5vdA0KPiA+IHN1cmUgaWYgaXQncyBhbiBpc3N1ZS4NCj4gPg0K
-PiANCj4gSXQgaXMgYW4gaXNzdWUgaW4gZ2VuZXJhbCwgbm90IGluIHN0YW5kYXJkIGNhc2VzIGJl
-Y2F1c2UgbmV0d29yaw0KPiBoZWFkZXJzIGFyZSBhbGlnbmVkLg0KPiANCj4gSSB0aGluayBpdCBj
-YW1lIHdoZW4gSSBmb2xkZWQgY3N1bV9wYXJ0aWFsKCkgYW5kIGRvX2NzdW0oKSwgSSBmb3Jnb3QN
-Cj4gdG8gcm9yKCkgdGhlIHNlZWQuDQo+IA0KPiBJIHN1c3BlY3QgdGhlIGZvbGxvd2luZyB3b3Vs
-ZCBoZWxwOg0KPiANCj4gZGlmZiAtLWdpdCBhL2FyY2gveDg2L2xpYi9jc3VtLXBhcnRpYWxfNjQu
-YyBiL2FyY2gveDg2L2xpYi9jc3VtLXBhcnRpYWxfNjQuYw0KPiBpbmRleCAxZWI4ZjJkMTFmN2M3
-ODViZTYyNGViYTMxNWZlOWNhNzk4OWZkNTZkLi5lZTdiMGU3YTYwNTViY2JlZjQyZDIyZjdlMWQ4
-ZjUyZGRiZDZiZTZkDQo+IDEwMDY0NA0KPiAtLS0gYS9hcmNoL3g4Ni9saWIvY3N1bS1wYXJ0aWFs
-XzY0LmMNCj4gKysrIGIvYXJjaC94ODYvbGliL2NzdW0tcGFydGlhbF82NC5jDQo+IEBAIC00MSw2
-ICs0MSw3IEBAIF9fd3N1bSBjc3VtX3BhcnRpYWwoY29uc3Qgdm9pZCAqYnVmZiwgaW50IGxlbiwg
-X193c3VtIHN1bSkNCj4gICAgICAgICBpZiAodW5saWtlbHkob2RkKSkgew0KPiAgICAgICAgICAg
-ICAgICAgaWYgKHVubGlrZWx5KGxlbiA9PSAwKSkNCj4gICAgICAgICAgICAgICAgICAgICAgICAg
-cmV0dXJuIHN1bTsNCj4gKyAgICAgICAgICAgICAgIHRlbXA2NCA9IHJvcjMyKChfX2ZvcmNlIHU2
-NClzdW0sIDgpOw0KPiAgICAgICAgICAgICAgICAgdGVtcDY0ICs9ICgqKHVuc2lnbmVkIGNoYXIg
-KilidWZmIDw8IDgpOw0KPiAgICAgICAgICAgICAgICAgbGVuLS07DQo+ICAgICAgICAgICAgICAg
-ICBidWZmKys7DQoNCllvdSBjYW4gc2F2ZSBhbiBpbnN0cnVjdGlvbiAoYXMgaWYgdGhpcyBwYXRo
-IG1hdHRlcnMpIGJ5Og0KCQkJdGVtcDY0ID0gc3VtICsgKih1bnNpZ25lZCBjaGFyICopYnVmZjsN
-CgkJCXRlbXA2NCA8PD0gODsNCkFsdGhvdWdoIHRoYXQgcHJvYmFibHkgZmFsbHMgZm91bCBvZiA2
-NGJpdCBzaGlmdHMgYmVpbmcgc2xvdy4NClNvIG1heWJlIGp1c3Q6DQoJCQlzdW0gKz0gKih1bnNp
-Z25lZCBjaGFyICopYnVmZjsNCgkJCXRlbXA2NCA9IGJzd2FwMzIoc3VtKTsNCkFGQUlDVCAoZnJv
-bSBhIHBkZikgYnN3YXAzMigpIGFuZCByb3IoeCwgOCkgYXJlIGxpa2VseSB0byBiZQ0KdGhlIHNh
-bWUgc3BlZWQgYnV0IG1heSB1c2UgZGlmZmVyZW50IGV4ZWN1dGlvbiB1bml0cy4NCg0KSW50ZWwg
-c2VlbSBzbyBoYXZlIG1hbmFnZWQgdG8gc2xvdyBkb3duIHJvcih4LCAlY2wpIHRvIDMgY2xvY2tz
-DQppbiBzYW5keSBicmlkZ2UgLSBhbmQgc3RpbGwgbm90IGZpeGVkIGl0Lg0KQWx0aG91Z2ggdGhl
-IGNvbXBpbGVyIG1pZ2h0IGJlIG1ha2luZyBhIHBpZ3MtYnJlYWtmYXN0IG9mIHRoZQ0KcmVnaXN0
-ZXIgYWxsb2NhdGlvbiB3aGVuIHlvdSB0cmllZCBzZXR0aW5nICdvZGQgPSA4Jy4NCg0KV2Vla3Mg
-Y2FuIGJlIHNwZW50IGZpZGRsaW5nIHdpdGggdGhpcyBjb2RlIDotKA0KDQoJRGF2aWQNCg0KLQ0K
-UmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1p
-bHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVz
-KQ0K
+On big-endian s390, the alloc/free_traces attributes produce endless
+output, because of always 0 idx in slab_debugfs_show().
+
+idx is de-referenced from *v, which points to a loff_t value, with
+
+unsigned int idx = *(unsigned int *)v;
+
+This will only give the upper 32 bits on big-endian, which remain 0.
+
+Instead of only fixing this de-reference, during discussion it seemed
+more appropriate to change the seq_ops so that they use an explicit
+iterator in private loc_track struct.
+
+This patch adds idx to loc_track, which will also fix the endianness bug.
+
+Link: https://lore.kernel.org/r/20211117193932.4049412-1-gerald.schaefer@linux.ibm.com
+Fixes: 64dd68497be7 ("mm: slub: move sysfs slab alloc/free interfaces to debugfs")
+Cc: <stable@vger.kernel.org> # v5.14+
+Reported-by: Steffen Maier <maier@linux.ibm.com>
+Signed-off-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+---
+ mm/slub.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/mm/slub.c b/mm/slub.c
+index a8626825a829..abe7db581d68 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -5081,6 +5081,7 @@ struct loc_track {
+ 	unsigned long max;
+ 	unsigned long count;
+ 	struct location *loc;
++	loff_t idx;
+ };
+ 
+ static struct dentry *slab_debugfs_root;
+@@ -6052,11 +6053,11 @@ __initcall(slab_sysfs_init);
+ #if defined(CONFIG_SLUB_DEBUG) && defined(CONFIG_DEBUG_FS)
+ static int slab_debugfs_show(struct seq_file *seq, void *v)
+ {
+-
+-	struct location *l;
+-	unsigned int idx = *(unsigned int *)v;
+ 	struct loc_track *t = seq->private;
++	struct location *l;
++	unsigned long idx;
+ 
++	idx = (unsigned long) t->idx;
+ 	if (idx < t->count) {
+ 		l = &t->loc[idx];
+ 
+@@ -6105,16 +6106,18 @@ static void *slab_debugfs_next(struct seq_file *seq, void *v, loff_t *ppos)
+ {
+ 	struct loc_track *t = seq->private;
+ 
+-	v = ppos;
+-	++*ppos;
++	t->idx = ++(*ppos);
+ 	if (*ppos <= t->count)
+-		return v;
++		return ppos;
+ 
+ 	return NULL;
+ }
+ 
+ static void *slab_debugfs_start(struct seq_file *seq, loff_t *ppos)
+ {
++	struct loc_track *t = seq->private;
++
++	t->idx = *ppos;
+ 	return ppos;
+ }
+ 
+-- 
+2.32.0
 
