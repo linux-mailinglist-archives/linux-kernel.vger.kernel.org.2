@@ -2,126 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1F845E8E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:57:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B716745E8E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:50:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344792AbhKZIAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 03:00:32 -0500
-Received: from alexa-out-tai-02.qualcomm.com ([103.229.16.227]:25248 "EHLO
-        alexa-out-tai-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345072AbhKZH6b (ORCPT
+        id S1359275AbhKZHx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 02:53:57 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:47020 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1345308AbhKZHv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 02:58:31 -0500
-X-Greylist: delayed 380 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Nov 2021 02:58:30 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637913319; x=1669449319;
-  h=from:to:cc:subject:date:message-id;
-  bh=NJ5svLlAZ6xiVU1WgloAaItcZWYgqCd5TquR5rLHZc4=;
-  b=BS53quzcX5xP3GCVe1g6NslXw67Mw5nva8WzNH5oJ0mi92lbNXe1aWHb
-   b1XyVEsNNdv2KfaokqkQnWXYMcfNVa3Iz4K17WxbePM6wMBv6xTbYS9D4
-   hDhaUjSC9tuMXUDzbr9gxhEAZQunQjoChyePr/21u172RG+6BVINayc2C
-   E=;
-Received: from ironmsg01-tai.qualcomm.com ([10.249.140.6])
-  by alexa-out-tai-02.qualcomm.com with ESMTP; 26 Nov 2021 15:48:57 +0800
-X-QCInternal: smtphost
-Received: from jianbinz-gv.ap.qualcomm.com ([10.238.176.241])
-  by ironmsg01-tai.qualcomm.com with ESMTP; 26 Nov 2021 15:48:53 +0800
-Received: by jianbinz-gv.ap.qualcomm.com (Postfix, from userid 3963613)
-        id 9BAAC1F00C19; Fri, 26 Nov 2021 15:48:51 +0800 (CST)
-From:   jianbin zhang <quic_jianbinz@quicinc.com>
-To:     alexandre.belloni@bootlin.com, a.zummo@towertech.it
-Cc:     jianbinz <quic_jianbinz@quicinc.com>, linux-kernel@vger.kernel.org,
-        linux-rtc@vger.kernel.org
-Subject: [PATCH] rtc: pm8xxx: Disable alarm irq if alarm time is less than rtc time and alarm irq is enabled
-Date:   Fri, 26 Nov 2021 15:48:45 +0800
-Message-Id: <20211126074845.9160-1-quic_jianbinz@quicinc.com>
+        Fri, 26 Nov 2021 02:51:56 -0500
+X-UUID: 7dea0e9ce0d44794bebfb2a2117cd8c3-20211126
+X-UUID: 7dea0e9ce0d44794bebfb2a2117cd8c3-20211126
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <guangming.cao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 396952874; Fri, 26 Nov 2021 15:48:41 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Fri, 26 Nov 2021 15:48:39 +0800
+Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
+ mtkcas11.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Fri, 26 Nov 2021 15:48:38 +0800
+From:   <guangming.cao@mediatek.com>
+To:     <greg@kroah.com>
+CC:     <Brian.Starkey@arm.com>, <benjamin.gaignard@linaro.org>,
+        <christian.koenig@amd.com>, <dri-devel@lists.freedesktop.org>,
+        <guangming.cao@mediatek.com>, <john.stultz@linaro.org>,
+        <labbott@redhat.com>, <linaro-mm-sig@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <lmark@codeaurora.org>,
+        <matthias.bgg@gmail.com>, <robin.murphy@arm.com>,
+        <stable@vger.kernel.org>, <sumit.semwal@linaro.org>,
+        <wsd_upstream@mediatek.com>, <kuan-ying.lee@mediatek.com>,
+        Guangming <Guangming.Cao@mediatek.com>
+Subject: [PATCH v4] dma-buf: system_heap: Use 'for_each_sgtable_sg' in pages free flow
+Date:   Fri, 26 Nov 2021 15:49:04 +0800
+Message-ID: <20211126074904.88388-1-guangming.cao@mediatek.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <YaB/JHP/pMbgRJ1O@kroah.com>
+References: <YaB/JHP/pMbgRJ1O@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: jianbinz <quic_jianbinz@quicinc.com>
+From: Guangming <Guangming.Cao@mediatek.com>
 
-If device is boot up by rtc alarm, the alarm irq will still be enabled and
-the alarm time is smaller than current rtc time before any alarm is set or canceled.
+For previous version, it uses 'sg_table.nent's to traverse sg_table in pages
+free flow.
+However, 'sg_table.nents' is reassigned in 'dma_map_sg', it means the number of
+created entries in the DMA adderess space.
+So, use 'sg_table.nents' in pages free flow will case some pages can't be freed.
 
-If the device is shutdown this time, the device will reboot automatically.
+Here we should use sg_table.orig_nents to free pages memory, but use the
+sgtable helper 'for each_sgtable_sg'(, instead of the previous rather common
+helper 'for_each_sg' which maybe cause memory leak) is much better.
 
-So disable irq if alarm time is less than rtc time and irq is enabled.
-
-Reproduced steps:
-1/ set the alarm
-2/ shutdown
-3/ alarm happens, the device boots
-4/ shutdown
-5/ alarm irq is still set, device boots again
-
-The plan to solve the issue is to acknowledge and clear the irq at step
-3 in pm8xxx driver.
-
-Signed-off-by: jianbin zhang <quic_jianbinz@quicinc.com>
+Fixes: d963ab0f15fb0 ("dma-buf: system_heap: Allocate higher order pages if available")
+Signed-off-by: Guangming <Guangming.Cao@mediatek.com>
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+Cc: <stable@vger.kernel.org> # 5.11.*
 ---
- drivers/rtc/rtc-pm8xxx.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+v4: Correct commit message
+    1. Cc stable@vger.kernel.org in commit message and add required kernel version.
+    2. Add reviewed-by since patch V2 and V4 are same and V2 is reviewed by Robin.
+    3. There is no new code change in V4.
+V3: Cc stable@vger.kernel.org
+    1. This patch needs to be merged stable branch, add stable@vger.kernel.org
+       in mail list.
+    2. Correct some spelling mistake.
+    3. There is No new code change in V3.
+V2: use 'for_each_sgtable_sg' to 'replece for_each_sg' as suggested by Robin.
 
-diff --git a/drivers/rtc/rtc-pm8xxx.c b/drivers/rtc/rtc-pm8xxx.c
-index 29a1c65661e9..c8a75d3e9c43 100644
---- a/drivers/rtc/rtc-pm8xxx.c
-+++ b/drivers/rtc/rtc-pm8xxx.c
-@@ -267,16 +267,19 @@ static int pm8xxx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
- {
- 	int rc;
- 	unsigned int ctrl_reg;
-+	unsigned long irq_flags;
- 	u8 value[NUM_8_BIT_RTC_REGS];
- 	unsigned long secs;
- 	struct pm8xxx_rtc *rtc_dd = dev_get_drvdata(dev);
- 	const struct pm8xxx_rtc_regs *regs = rtc_dd->regs;
+---
+ drivers/dma-buf/heaps/system_heap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+index 23a7e74ef966..8660508f3684 100644
+--- a/drivers/dma-buf/heaps/system_heap.c
++++ b/drivers/dma-buf/heaps/system_heap.c
+@@ -289,7 +289,7 @@ static void system_heap_dma_buf_release(struct dma_buf *dmabuf)
+ 	int i;
  
-+	spin_lock_irqsave(&rtc_dd->ctrl_reg_lock, irq_flags);
-+
- 	rc = regmap_bulk_read(rtc_dd->regmap, regs->alarm_rw, value,
- 			      sizeof(value));
- 	if (rc) {
- 		dev_err(dev, "RTC alarm time read failed\n");
--		return rc;
-+		goto rtc_rw_fail;
- 	}
+ 	table = &buffer->sg_table;
+-	for_each_sg(table->sgl, sg, table->nents, i) {
++	for_each_sgtable_sg(table, sg, i) {
+ 		struct page *page = sg_page(sg);
  
- 	secs = value[0] | (value[1] << 8) | (value[2] << 16) |
-@@ -287,14 +290,30 @@ static int pm8xxx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
- 	rc = regmap_read(rtc_dd->regmap, regs->alarm_ctrl, &ctrl_reg);
- 	if (rc) {
- 		dev_err(dev, "Read from RTC alarm control register failed\n");
--		return rc;
-+		goto rtc_rw_fail;
-+	}
-+
-+	if (ctrl_reg && (rtc_tm_to_ktime(alarm->time) >=
-+				rtc_dd->rtc->aie_timer.node.expires)) {
-+		ctrl_reg &= ~regs->alarm_en;
-+		rc = regmap_write(rtc_dd->regmap, regs->alarm_ctrl, ctrl_reg);
-+		if (rc) {
-+			dev_err(dev, "Update RTC control register failed \n");
-+			goto rtc_rw_fail;
-+		}
- 	}
- 	alarm->enabled = !!(ctrl_reg & PM8xxx_RTC_ALARM_ENABLE);
- 
-+	spin_unlock_irqrestore(&rtc_dd->ctrl_reg_lock, irq_flags);
-+
- 	dev_dbg(dev, "Alarm set for - h:m:s=%ptRt, y-m-d=%ptRdr\n",
- 		&alarm->time, &alarm->time);
- 
- 	return 0;
-+
-+rtc_rw_fail:
-+	spin_unlock_irqrestore(&rtc_dd->ctrl_reg_lock, irq_flags);
-+	return rc;
- }
- 
- static int pm8xxx_rtc_alarm_irq_enable(struct device *dev, unsigned int enable)
+ 		__free_pages(page, compound_order(page));
 -- 
 2.17.1
 
