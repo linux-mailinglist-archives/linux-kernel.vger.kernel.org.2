@@ -2,292 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D0B45E7F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 07:40:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D45E45E80A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 07:45:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235165AbhKZGnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 01:43:33 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:52787 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234932AbhKZGlc (ORCPT
+        id S1358805AbhKZGs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 01:48:59 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:21406 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235031AbhKZGqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 01:41:32 -0500
-Received: by mail-il1-f200.google.com with SMTP id y3-20020a056e021be300b0029f6c440695so10760436ilv.19
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 22:38:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=VExpyIgqdaCzryc4TFabc+PLnHrJh8zh2aH26egvCug=;
-        b=nVnf8LvMNKxJF2Lck84q87fkWzvuK7ljTYWtRhIciBvCi48Rhk0AGAlKy32YwXWof2
-         aT9ncoQrjE0GsgHMfVVZHfAU1NykNPs4+96VdEy4MwuPKr/a14EakKjbmRm7b/YwSKmH
-         YW8m2xvcnN9B1cFRpNsPXImhxjtK1vxJeZhfGwerQ2T4CEb6VP6QGZJ2XWfjcRokRjuK
-         4ko36fxGpysQb5Ewf3dgtSX1WY88B3b0bQsDBKRf8SSGXgNJT9lRUYx1RomxAXOIRXKQ
-         HGLhI/7UlGFZ1CMm2E7l5cFpf6ggqW6VrkcVak9dnlKq67uDFPLcjl76YVjFwv6ajvMT
-         apNA==
-X-Gm-Message-State: AOAM532TpMZ3209SnBvg1PVKKi4c+h8/APRIpE9KMRI2WRLQicYpNo8x
-        5oTQzwH5ISLOK7wRHpxVyuPuESoNRUrXMqucLfYnu0nxaIUD
-X-Google-Smtp-Source: ABdhPJyHKSJ1zXIJHFqLtCPfQH3QqpmPXMrEwCcAhDNdbmV5oAcai/gU2Q9RWXO+ujdiwn21QUiJXK+i3b/ueMXtgo6ahJd77E9U
+        Fri, 26 Nov 2021 01:46:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1637909020; x=1669445020;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=81djdkdc47FUE/EYNJG317LoWautFHfqHIKQVdWFeYk=;
+  b=coej0gHke1wfPl1YqGTGKQjxAnUE1GxwoctM/iqdmVQbYEv8nyMhJgAb
+   9eUOCR2X1kJVQpjVbal3MiPjzG3lEgAf1dnpK3EZ7j1F+lrDM/aK5Ilk4
+   ePnhw2WPc6byYSYhLsczUQgxMIBzLiKJabVdu1MGQax8R/T8wtLuk4sC0
+   c=;
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 25 Nov 2021 22:43:39 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 22:43:38 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Thu, 25 Nov 2021 22:43:38 -0800
+Received: from [10.50.30.35] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Thu, 25 Nov
+ 2021 22:43:36 -0800
+Message-ID: <4b7aae44-8287-5a5a-7d78-0d4fcbfd2c65@quicinc.com>
+Date:   Fri, 26 Nov 2021 12:13:32 +0530
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c46:: with SMTP id d6mr1970203ilg.140.1637908699751;
- Thu, 25 Nov 2021 22:38:19 -0800 (PST)
-Date:   Thu, 25 Nov 2021 22:38:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000392b1305d1ab56ab@google.com>
-Subject: [syzbot] linux-next test error: WARNING: held lock freed in kernfs_destroy_root
-From:   syzbot <syzbot+9e5d9f74a10f9590610b@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org, sfr@canb.auug.org.au,
-        syzkaller-bugs@googlegroups.com, tj@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH v2] of: base: Skip CPU nodes with "fail"/"fail-..." status
+Content-Language: en-US
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20211122114536.2981-1-matthias.schiffer@ew.tq-group.com>
+From:   Sai Prakash Ranjan <quic_saipraka@quicinc.com>
+In-Reply-To: <20211122114536.2981-1-matthias.schiffer@ew.tq-group.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 11/22/2021 5:15 PM, Matthias Schiffer wrote:
+> Allow fully disabling CPU nodes using status = "fail".
+>
+> This allows a bootloader to change the number of available CPUs (for
+> example when a common DTS is used for SoC variants with different numbers
+> of cores) without deleting the nodes altogether, which could require
+> additional fixups to avoid dangling phandle references.
+>
+> Unknown status values (everything that is not "okay"/"ok", "disabled" or
+> "fail"/"fail-...") will continue to be interpreted like "disabled",
+> meaning that the CPU can be enabled during boot.
+>
+> References:
+> - https://www.lkml.org/lkml/2020/8/26/1237
+> - https://www.spinics.net/lists/devicetree-spec/msg01007.html
+> - https://github.com/devicetree-org/dt-schema/pull/61
+>
+> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> ---
+>
+> v2: Treat unknown status values like "disabled", not like "fail"
+>
+>
+>   drivers/of/base.c | 27 +++++++++++++++++++++++++++
+>   1 file changed, 27 insertions(+)
+>
+> diff --git a/drivers/of/base.c b/drivers/of/base.c
+> index 61de453b885c..5b907600f5b0 100644
+> --- a/drivers/of/base.c
+> +++ b/drivers/of/base.c
+> @@ -650,6 +650,28 @@ bool of_device_is_available(const struct device_node *device)
+>   }
+>   EXPORT_SYMBOL(of_device_is_available);
+>   
+> +/**
+> + *  __of_device_is_fail - check if a device has status "fail" or "fail-..."
+> + *
+> + *  @device: Node to check status for, with locks already held
+> + *
+> + *  Return: True if the status property is set to "fail" or "fail-..." (for any
+> + *  error code suffix), false otherwise
+> + */
+> +static bool __of_device_is_fail(const struct device_node *device)
+> +{
+> +	const char *status;
+> +
+> +	if (!device)
+> +		return false;
+> +
+> +	status = __of_get_property(device, "status", NULL);
+> +	if (status == NULL)
+> +		return false;
+> +
+> +	return !strcmp(status, "fail") || !strncmp(status, "fail-", 5);
+> +}
+> +
+>   /**
+>    *  of_device_is_big_endian - check if a device has BE registers
+>    *
+> @@ -796,6 +818,9 @@ EXPORT_SYMBOL(of_get_next_available_child);
+>    * of_get_next_cpu_node - Iterate on cpu nodes
+>    * @prev:	previous child of the /cpus node, or NULL to get first
+>    *
+> + * Unusable CPUs (those with the status property set to "fail" or "fail-...")
+> + * will be skipped.
+> + *
+>    * Return: A cpu node pointer with refcount incremented, use of_node_put()
+>    * on it when done. Returns NULL when prev is the last child. Decrements
+>    * the refcount of prev.
+> @@ -817,6 +842,8 @@ struct device_node *of_get_next_cpu_node(struct device_node *prev)
+>   		of_node_put(node);
+>   	}
+>   	for (; next; next = next->sibling) {
+> +		if (__of_device_is_fail(next))
+> +			continue;
+>   		if (!(of_node_name_eq(next, "cpu") ||
+>   		      __of_node_is_type(next, "cpu")))
+>   			continue;
 
-syzbot found the following issue on:
+Thanks for the patch, we have a similar usecase coming up and this is 
+very useful than fixing up phandles.
 
-HEAD commit:    f30a24ed97b4 Add linux-next specific files for 20211126
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=16802fa1b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=be9183de0824e4d7
-dashboard link: https://syzkaller.appspot.com/bug?extid=9e5d9f74a10f9590610b
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+Tested-by: Sai Prakash Ranjan <quic_saipraka@quicinc.com>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9e5d9f74a10f9590610b@syzkaller.appspotmail.com
-
-cgroup: Unknown subsys name 'net'
-=========================
-WARNING: held lock freed!
-5.16.0-rc2-next-20211126-syzkaller #0 Not tainted
--------------------------
-syz-executor/6532 is freeing memory ffff88807f06e400-ffff88807f06e5ff, with a lock still held there!
-ffff88807f06e548 (&root->kernfs_rwsem){++++}-{3:3}, at: kernfs_remove fs/kernfs/dir.c:1396 [inline]
-ffff88807f06e548 (&root->kernfs_rwsem){++++}-{3:3}, at: kernfs_destroy_root+0x81/0xb0 fs/kernfs/dir.c:964
-2 locks held by syz-executor/6532:
- #0: ffffffff8bbc5d48 (cgroup_mutex){+.+.}-{3:3}, at: cgroup_lock_and_drain_offline+0xa5/0x900 kernel/cgroup/cgroup.c:2998
- #1: ffff88807f06e548 (&root->kernfs_rwsem){++++}-{3:3}, at: kernfs_remove fs/kernfs/dir.c:1396 [inline]
- #1: ffff88807f06e548 (&root->kernfs_rwsem){++++}-{3:3}, at: kernfs_destroy_root+0x81/0xb0 fs/kernfs/dir.c:964
-
-stack backtrace:
-CPU: 0 PID: 6532 Comm: syz-executor Not tainted 5.16.0-rc2-next-20211126-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_freed_lock_bug kernel/locking/lockdep.c:6388 [inline]
- debug_check_no_locks_freed.cold+0x9d/0xa9 kernel/locking/lockdep.c:6421
- slab_free_hook mm/slub.c:1695 [inline]
- slab_free_freelist_hook+0x73/0x1c0 mm/slub.c:1749
- slab_free mm/slub.c:3513 [inline]
- kfree+0xe0/0x430 mm/slub.c:4561
- kernfs_put.part.0+0x331/0x540 fs/kernfs/dir.c:548
- kernfs_put+0x42/0x50 fs/kernfs/dir.c:513
- __kernfs_remove+0x7a3/0xb20 fs/kernfs/dir.c:1382
- kernfs_remove fs/kernfs/dir.c:1397 [inline]
- kernfs_destroy_root+0x89/0xb0 fs/kernfs/dir.c:964
- cgroup_setup_root+0x3a6/0xad0 kernel/cgroup/cgroup.c:2077
- cgroup1_root_to_use kernel/cgroup/cgroup-v1.c:1194 [inline]
- cgroup1_get_tree+0xd33/0x1390 kernel/cgroup/cgroup-v1.c:1211
- vfs_get_tree+0x89/0x2f0 fs/super.c:1500
- do_new_mount fs/namespace.c:2988 [inline]
- path_mount+0x1320/0x1fa0 fs/namespace.c:3318
- do_mount fs/namespace.c:3331 [inline]
- __do_sys_mount fs/namespace.c:3539 [inline]
- __se_sys_mount fs/namespace.c:3516 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3516
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f517c6f401a
-Code: 48 c7 c2 bc ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 b8 04 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe8ba71698 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffe8ba71828 RCX: 00007f517c6f401a
-RDX: 00007f517c756fd6 RSI: 00007f517c74d29a RDI: 00007f517c74bd71
-RBP: 00007f517c74d29a R08: 00007f517c74d3f7 R09: 0000000000000026
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffe8ba716a0
-R13: 00007ffe8ba71848 R14: 00007ffe8ba71770 R15: 00007f517c74d3f1
- </TASK>
-==================================================================
-BUG: KASAN: use-after-free in __up_write kernel/locking/rwsem.c:1318 [inline]
-BUG: KASAN: use-after-free in up_write+0x3ac/0x470 kernel/locking/rwsem.c:1576
-Read of size 8 at addr ffff88807f06e540 by task syz-executor/6532
-
-CPU: 1 PID: 6532 Comm: syz-executor Not tainted 5.16.0-rc2-next-20211126-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_address_description.constprop.0.cold+0xa5/0x3ed mm/kasan/report.c:247
- __kasan_report mm/kasan/report.c:433 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:450
- __up_write kernel/locking/rwsem.c:1318 [inline]
- up_write+0x3ac/0x470 kernel/locking/rwsem.c:1576
- cgroup_setup_root+0x3a6/0xad0 kernel/cgroup/cgroup.c:2077
- cgroup1_root_to_use kernel/cgroup/cgroup-v1.c:1194 [inline]
- cgroup1_get_tree+0xd33/0x1390 kernel/cgroup/cgroup-v1.c:1211
- vfs_get_tree+0x89/0x2f0 fs/super.c:1500
- do_new_mount fs/namespace.c:2988 [inline]
- path_mount+0x1320/0x1fa0 fs/namespace.c:3318
- do_mount fs/namespace.c:3331 [inline]
- __do_sys_mount fs/namespace.c:3539 [inline]
- __se_sys_mount fs/namespace.c:3516 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3516
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f517c6f401a
-Code: 48 c7 c2 bc ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 b8 04 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe8ba71698 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffe8ba71828 RCX: 00007f517c6f401a
-RDX: 00007f517c756fd6 RSI: 00007f517c74d29a RDI: 00007f517c74bd71
-RBP: 00007f517c74d29a R08: 00007f517c74d3f7 R09: 0000000000000026
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffe8ba716a0
-R13: 00007ffe8ba71848 R14: 00007ffe8ba71770 R15: 00007f517c74d3f1
- </TASK>
-
-Allocated by task 6532:
- kasan_save_stack+0x1e/0x50 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:434 [inline]
- ____kasan_kmalloc mm/kasan/common.c:513 [inline]
- ____kasan_kmalloc mm/kasan/common.c:472 [inline]
- __kasan_kmalloc+0xa9/0xd0 mm/kasan/common.c:522
- kmalloc include/linux/slab.h:590 [inline]
- kzalloc include/linux/slab.h:724 [inline]
- kernfs_create_root+0x4c/0x410 fs/kernfs/dir.c:913
- cgroup_setup_root+0x243/0xad0 kernel/cgroup/cgroup.c:2018
- cgroup1_root_to_use kernel/cgroup/cgroup-v1.c:1194 [inline]
- cgroup1_get_tree+0xd33/0x1390 kernel/cgroup/cgroup-v1.c:1211
- vfs_get_tree+0x89/0x2f0 fs/super.c:1500
- do_new_mount fs/namespace.c:2988 [inline]
- path_mount+0x1320/0x1fa0 fs/namespace.c:3318
- do_mount fs/namespace.c:3331 [inline]
- __do_sys_mount fs/namespace.c:3539 [inline]
- __se_sys_mount fs/namespace.c:3516 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3516
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Freed by task 6532:
- kasan_save_stack+0x1e/0x50 mm/kasan/common.c:38
- kasan_set_track+0x21/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:370
- ____kasan_slab_free mm/kasan/common.c:366 [inline]
- ____kasan_slab_free mm/kasan/common.c:328 [inline]
- __kasan_slab_free+0x103/0x170 mm/kasan/common.c:374
- kasan_slab_free include/linux/kasan.h:235 [inline]
- slab_free_hook mm/slub.c:1723 [inline]
- slab_free_freelist_hook+0x8b/0x1c0 mm/slub.c:1749
- slab_free mm/slub.c:3513 [inline]
- kfree+0xe0/0x430 mm/slub.c:4561
- kernfs_put.part.0+0x331/0x540 fs/kernfs/dir.c:548
- kernfs_put+0x42/0x50 fs/kernfs/dir.c:513
- __kernfs_remove+0x7a3/0xb20 fs/kernfs/dir.c:1382
- kernfs_remove fs/kernfs/dir.c:1397 [inline]
- kernfs_destroy_root+0x89/0xb0 fs/kernfs/dir.c:964
- cgroup_setup_root+0x3a6/0xad0 kernel/cgroup/cgroup.c:2077
- cgroup1_root_to_use kernel/cgroup/cgroup-v1.c:1194 [inline]
- cgroup1_get_tree+0xd33/0x1390 kernel/cgroup/cgroup-v1.c:1211
- vfs_get_tree+0x89/0x2f0 fs/super.c:1500
- do_new_mount fs/namespace.c:2988 [inline]
- path_mount+0x1320/0x1fa0 fs/namespace.c:3318
- do_mount fs/namespace.c:3331 [inline]
- __do_sys_mount fs/namespace.c:3539 [inline]
- __se_sys_mount fs/namespace.c:3516 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3516
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The buggy address belongs to the object at ffff88807f06e400
- which belongs to the cache kmalloc-512 of size 512
-The buggy address is located 320 bytes inside of
- 512-byte region [ffff88807f06e400, ffff88807f06e600)
-The buggy address belongs to the page:
-page:ffffea0001fc1b00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x7f06c
-head:ffffea0001fc1b00 order:2 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000010200 ffffea00008d1b00 dead000000000002 ffff888010c41c80
-raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 2, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 5789, ts 47991282663, free_ts 38208673784
- prep_new_page mm/page_alloc.c:2433 [inline]
- get_page_from_freelist+0xa72/0x2f40 mm/page_alloc.c:4164
- __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5376
- alloc_pages+0x1a7/0x300 mm/mempolicy.c:2192
- alloc_slab_page mm/slub.c:1793 [inline]
- allocate_slab mm/slub.c:1930 [inline]
- new_slab+0x261/0x460 mm/slub.c:1993
- ___slab_alloc+0x798/0xf30 mm/slub.c:3022
- __slab_alloc.constprop.0+0x4d/0xa0 mm/slub.c:3109
- slab_alloc_node mm/slub.c:3200 [inline]
- slab_alloc mm/slub.c:3242 [inline]
- __kmalloc+0x2fb/0x340 mm/slub.c:4419
- kmalloc include/linux/slab.h:595 [inline]
- load_elf_phdrs+0x103/0x210 fs/binfmt_elf.c:479
- load_elf_binary+0x18f4/0x4da0 fs/binfmt_elf.c:959
- search_binary_handler fs/exec.c:1724 [inline]
- exec_binprm fs/exec.c:1765 [inline]
- bprm_execve fs/exec.c:1834 [inline]
- bprm_execve+0x7ef/0x19b0 fs/exec.c:1796
- do_execveat_common+0x5e3/0x780 fs/exec.c:1923
- do_execve fs/exec.c:1991 [inline]
- __do_sys_execve fs/exec.c:2067 [inline]
- __se_sys_execve fs/exec.c:2062 [inline]
- __x64_sys_execve+0x8f/0xc0 fs/exec.c:2062
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1351 [inline]
- free_pcp_prepare+0x414/0xb60 mm/page_alloc.c:1403
- free_unref_page_prepare mm/page_alloc.c:3324 [inline]
- free_unref_page+0x19/0x690 mm/page_alloc.c:3403
- qlink_free mm/kasan/quarantine.c:146 [inline]
- qlist_free_all+0x5a/0xf0 mm/kasan/quarantine.c:165
- kasan_quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:272
- __kasan_slab_alloc+0xa2/0xc0 mm/kasan/common.c:444
- kasan_slab_alloc include/linux/kasan.h:259 [inline]
- slab_post_alloc_hook mm/slab.h:519 [inline]
- slab_alloc_node mm/slub.c:3234 [inline]
- slab_alloc mm/slub.c:3242 [inline]
- __kmalloc+0x1e7/0x340 mm/slub.c:4419
- kmalloc include/linux/slab.h:595 [inline]
- tomoyo_realpath_from_path+0xc3/0x620 security/tomoyo/realpath.c:254
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_path_perm+0x21b/0x400 security/tomoyo/file.c:822
- security_inode_getattr+0xcf/0x140 security/security.c:1334
- vfs_getattr fs/stat.c:157 [inline]
- vfs_statx+0x164/0x390 fs/stat.c:225
- vfs_fstatat fs/stat.c:243 [inline]
- vfs_lstat include/linux/fs.h:3358 [inline]
- __do_sys_newlstat+0x91/0x110 fs/stat.c:398
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Memory state around the buggy address:
- ffff88807f06e400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88807f06e480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88807f06e500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                           ^
- ffff88807f06e580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88807f06e600: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-Sai
