@@ -2,122 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E643445F5EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 21:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 331E945F5F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 21:37:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240344AbhKZU3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 15:29:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51420 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240259AbhKZU1m (ORCPT
+        id S237655AbhKZUlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 15:41:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234041AbhKZUjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 15:27:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637958269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VaMSLSvOMBZUZjoiq/5xjj3U/SyEVvXyMfJTnAZhnLg=;
-        b=XXwuRlXLFXuuvZwLmUfS1hlhmvC+B9LxTeEH45BRz7uqKpRyrZJsrIuok3zaylsJ0gmtOj
-        sqTpHlPVTDNJkYB90enEm/HH1JyoXEEL2nwFwCFytQFPRTOJNWhneZWIOmCT8Xw7iLH5RK
-        Cv0Hd9CAvjpVX1eHOeGUmgC0iWlPIZA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-502-fN5c24S2MZKxNZ159z5v3g-1; Fri, 26 Nov 2021 15:24:23 -0500
-X-MC-Unique: fN5c24S2MZKxNZ159z5v3g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Fri, 26 Nov 2021 15:39:00 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E35C06174A;
+        Fri, 26 Nov 2021 12:27:19 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0105102CB29;
-        Fri, 26 Nov 2021 20:24:21 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.192.29])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6CCE95D740;
-        Fri, 26 Nov 2021 20:24:18 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     "Andy Lutomirski" <luto@kernel.org>
-Cc:     linux-arch@vger.kernel.org,
-        "Linux API" <linux-api@vger.kernel.org>,
-        linux-x86_64@vger.kernel.org, kernel-hardening@lists.openwall.com,
-        linux-mm@kvack.org, "the arch/x86 maintainers" <x86@kernel.org>,
-        musl@lists.openwall.com,
-        "Dave Hansen via Libc-alpha" <libc-alpha@sourceware.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Dave Hansen" <dave.hansen@intel.com>,
-        "Kees Cook" <keescook@chromium.org>
-Subject: Re: [PATCH] x86: Implement arch_prctl(ARCH_VSYSCALL_LOCKOUT) to
- disable vsyscall
-References: <87h7bzjaer.fsf@oldenburg.str.redhat.com>
-        <4728eeae-8f1b-4541-b05a-4a0f35a459f7@www.fastmail.com>
-Date:   Fri, 26 Nov 2021 21:24:16 +0100
-In-Reply-To: <4728eeae-8f1b-4541-b05a-4a0f35a459f7@www.fastmail.com> (Andy
-        Lutomirski's message of "Fri, 26 Nov 2021 10:58:26 -0800")
-Message-ID: <87lf1ais27.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D3DC6B828C9;
+        Fri, 26 Nov 2021 20:27:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5FC5C004E1;
+        Fri, 26 Nov 2021 20:27:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637958436;
+        bh=QM2OHNxT6azeLWqJ+md9LhQ+Vv96dNnVoq5Sbyr5d6s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e/geKY9CfT8EnMc+9fY37Z6Bo8Dbb2LFC7YVS3dMI7cjp8p2k/eZ3uZTmI5nrJSVG
+         pNoYY4lhGbpGxm2OXiQL//jQG86dOprEs9ChN3K500QsGPYQm3FazWTGPbxRIithSv
+         UHRoa3QSIpP8oBecB5+YVVkVZ08QsVphVBED4ppRFbL7i4mVhK8GZNPU8vuxpaSrxK
+         aMKYz50pebjN+2LEvz/ooNijfEq+aPDM7by6Pkd+exb1B1Qxt3qubT58qAdG/7POLh
+         tCk8ANGfPL3NrwPLij8vfIQn+Mm++DLspX4iFanNhOGL2s9efAckDCWKLOg9G1FVGx
+         quWBHCqZ1u5sw==
+Date:   Fri, 26 Nov 2021 13:27:11 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH 14/20] media: adv7511: drop unused functions
+Message-ID: <YaFDHyiiIvSPPknY@archlinux-ax161>
+References: <cover.1637781097.git.mchehab+huawei@kernel.org>
+ <031cdb0042f8239a6746831f5c8f89cf4aef6107.1637781097.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <031cdb0042f8239a6746831f5c8f89cf4aef6107.1637781097.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Andy Lutomirski:
+On Wed, Nov 24, 2021 at 08:13:17PM +0100, Mauro Carvalho Chehab wrote:
+> Those are aliases for another function and not used at the
+> current implementation. So, just drop it.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-> On Fri, Nov 26, 2021, at 5:47 AM, Florian Weimer wrote:
->> Distributions struggle with changing the default for vsyscall
->> emulation because it is a clear break of userspace ABI, something
->> that should not happen.
->>
->> The legacy vsyscall interface is supposed to be used by libcs only,
->> not by applications.  This commit adds a new arch_prctl request,
->> ARCH_VSYSCALL_LOCKOUT.  Newer libcs can adopt this request to signal
->> to the kernel that the process does not need vsyscall emulation.
->> The kernel can then disable it for the remaining lifetime of the
->> process.  Legacy libcs do not perform this call, so vsyscall remains
->> enabled for them.  This approach should achieves backwards
->> compatibility (perfect compatibility if the assumption that only libcs
->> use vsyscall is accurate), and it provides full hardening for new
->> binaries.
->
-> Why is a lockout needed instead of just a toggle?  By the time an
-> attacker can issue prctls, an emulated vsyscall seems like a pretty
-> minor exploit technique.  And programs that load legacy modules or
-> instrument other programs might need to re-enable them.
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-For glibc, I plan to add an environment variable to disable the lockout.
-There's no ELF markup that would allow us to do this during dlopen.
-(And after this change, you can run an old distribution in a chroot
-for legacy software, something that the userspace ABI break prevents.)
-
-If it can be disabled, people will definitely say, =E2=80=9Cwe get more com=
-plete
-hardening if we break old userspace=E2=80=9D.  I want to avoid that.  (Peop=
-le
-will say that anyway because there's this fairly large window of libcs
-that don't use vsyscalls anymore, but have not been patched yet to do
-the lockout.)
-
-Maybe the lockout also simplifies the implementation?
-
-> Also, the interaction with emulate mode is somewhat complex. For now,
-> let=E2=80=99s support this in xonly mode only. A complete implementation =
-will
-> require nontrivial mm work.  I had that implemented pre-KPTI, but KPTI
-> made it more complicated.
-
-I admit I only looked at the code in emulate_vsyscall.  It has code that
-seems to deal with faults not due to instruction fetch, and also checks
-for vsyscall=3Demulate mode.  But it seems that we don't get to this point
-for reads in vsyscall=3Demulate mode, presumably because the page is
-already mapped?
-
-> Finally, /proc/self/maps should be wired up via the gate_area code.
-
-Should the "[vsyscall]" string change to something else if execution is
-disabled?
-
-Thanks,
-Florian
-
+> ---
+> 
+> To avoid mailbombing on a large number of people, only mailing lists were C/C on the cover.
+> See [PATCH 00/20] at: https://lore.kernel.org/all/cover.1637781097.git.mchehab+huawei@kernel.org/
+> 
+>  drivers/media/i2c/adv7511-v4l2.c | 22 ----------------------
+>  1 file changed, 22 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/adv7511-v4l2.c b/drivers/media/i2c/adv7511-v4l2.c
+> index 41f4e749a859..8e13cae40ec5 100644
+> --- a/drivers/media/i2c/adv7511-v4l2.c
+> +++ b/drivers/media/i2c/adv7511-v4l2.c
+> @@ -270,28 +270,6 @@ static int adv7511_pktmem_rd(struct v4l2_subdev *sd, u8 reg)
+>  	return adv_smbus_read_byte_data(state->i2c_pktmem, reg);
+>  }
+>  
+> -static int adv7511_pktmem_wr(struct v4l2_subdev *sd, u8 reg, u8 val)
+> -{
+> -	struct adv7511_state *state = get_adv7511_state(sd);
+> -	int ret;
+> -	int i;
+> -
+> -	for (i = 0; i < 3; i++) {
+> -		ret = i2c_smbus_write_byte_data(state->i2c_pktmem, reg, val);
+> -		if (ret == 0)
+> -			return 0;
+> -	}
+> -	v4l2_err(sd, "%s: i2c write error\n", __func__);
+> -	return ret;
+> -}
+> -
+> -/* To set specific bits in the register, a clear-mask is given (to be AND-ed),
+> -   and then the value-mask (to be OR-ed). */
+> -static inline void adv7511_pktmem_wr_and_or(struct v4l2_subdev *sd, u8 reg, u8 clr_mask, u8 val_mask)
+> -{
+> -	adv7511_pktmem_wr(sd, reg, (adv7511_pktmem_rd(sd, reg) & clr_mask) | val_mask);
+> -}
+> -
+>  static inline bool adv7511_have_hotplug(struct v4l2_subdev *sd)
+>  {
+>  	return adv7511_rd(sd, 0x42) & MASK_ADV7511_HPD_DETECT;
+> -- 
+> 2.33.1
+> 
+> 
