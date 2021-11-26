@@ -2,149 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B96245F06D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:12:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F24F45F075
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:15:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378016AbhKZPP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:15:59 -0500
-Received: from mga18.intel.com ([134.134.136.126]:47878 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354128AbhKZPN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:13:56 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="222548406"
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="222548406"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 07:10:43 -0800
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="457703842"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 07:10:40 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mqcs1-00Aogm-Ii;
-        Fri, 26 Nov 2021 17:10:37 +0200
-Date:   Fri, 26 Nov 2021 17:10:37 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Henning Schild <henning.schild@siemens.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Tan Jui Nee <jui.nee.tan@intel.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Jonathan Yong <jonathan.yong@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com
-Subject: Re: [PATCH v1 3/7] PCI: New Primary to Sideband (P2SB) bridge
- support library
-Message-ID: <YaD47Vk0pAufkhD8@smile.fi.intel.com>
-References: <YGYPiCekM3clFEsD@smile.fi.intel.com>
- <20210401184446.GA1528755@bjorn-Precision-5520>
- <YOwyVXz9QMyRqs4B@smile.fi.intel.com>
+        id S1354162AbhKZPSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 10:18:48 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:54416 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349756AbhKZPQr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 10:16:47 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 29E2C1FD37;
+        Fri, 26 Nov 2021 15:13:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637939613; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aJOhYnFu/ijkoWQOT2VWDCkLUQNOUwrPYFHaaC4YjWY=;
+        b=HHSU1HT7X9C90Xzb9P7/jxGsY6mIMnZdke3/iAFWp9kJ/P1aFgIBivMe8iyYRWBPfenirK
+        uCnXuzO34JjfKWGnlv3sD09Ghmybbp1tULxKDHWJYfgW+ExxK5JDJ+/tGgDh0fv+VZQd2t
+        YroNbfonwGMJd6bVnxv7OWtz9MKliKk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637939613;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aJOhYnFu/ijkoWQOT2VWDCkLUQNOUwrPYFHaaC4YjWY=;
+        b=voHB17S1KLtEg5ZcmQgYw0WnKhqNNqFK2iR+mKLUAxny+ghvcE1ainaSnrdtYiMElMnM8a
+        sbp+1g4znMEADnCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E839313C5C;
+        Fri, 26 Nov 2021 15:13:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Fiz4N5z5oGFGZwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 26 Nov 2021 15:13:32 +0000
+Message-ID: <78775967-03dc-8d0a-a994-e07ce673b765@suse.cz>
+Date:   Fri, 26 Nov 2021 16:13:32 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YOwyVXz9QMyRqs4B@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH v2 1/4] mm/vmalloc: alloc GFP_NO{FS,IO} for vmalloc
+Content-Language: en-US
+To:     Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
+        Christoph Hellwig <hch@lst.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Michal Hocko <mhocko@suse.com>
+References: <20211122153233.9924-1-mhocko@kernel.org>
+ <20211122153233.9924-2-mhocko@kernel.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20211122153233.9924-2-mhocko@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 03:15:17PM +0300, Andy Shevchenko wrote:
-> On Thu, Apr 01, 2021 at 01:44:46PM -0500, Bjorn Helgaas wrote:
-> > On Thu, Apr 01, 2021 at 09:23:04PM +0300, Andy Shevchenko wrote:
-> > > On Thu, Apr 01, 2021 at 11:42:56AM -0500, Bjorn Helgaas wrote:
-> > > > On Thu, Apr 01, 2021 at 06:45:02PM +0300, Andy Shevchenko wrote:
-> > > > > On Tue, Mar 09, 2021 at 09:42:52AM +0100, Henning Schild wrote:
-> > > > > > Am Mon, 8 Mar 2021 19:42:21 -0600
-> > > > > > schrieb Bjorn Helgaas <helgaas@kernel.org>:
-> > > > > > > On Mon, Mar 08, 2021 at 09:16:50PM +0200, Andy Shevchenko wrote:
-> > > > > > > > On Mon, Mar 08, 2021 at 12:52:12PM -0600, Bjorn Helgaas wrote:  
-> > > > > > > > > On Mon, Mar 08, 2021 at 02:20:16PM +0200, Andy Shevchenko wrote:  
-> > > > > 
-> > > > > ...
-> > > > > 
-> > > > > > > > > > +	/* Read the first BAR of the device in question */
-> > > > > > > > > > +	__pci_bus_read_base(bus, devfn, pci_bar_unknown, mem,
-> > > > > > > > > > PCI_BASE_ADDRESS_0, true);  
-> > > > > > > > > 
-> > > > > > > > > I don't get this.  Apparently this normally hidden device is
-> > > > > > > > > consuming PCI address space.  The PCI core needs to know
-> > > > > > > > > about this.  If it doesn't, the PCI core may assign this
-> > > > > > > > > space to another device.  
-> > > > > > > > 
-> > > > > > > > Right, it returns all 1:s to any request so PCI core *thinks*
-> > > > > > > > it's plugged off (like D3cold or so).  
-> > > > > > > 
-> > > > > > > I'm asking about the MMIO address space.  The BAR is a register
-> > > > > > > in config space.  AFAICT, clearing P2SBC_HIDE_BYTE makes that
-> > > > > > > BAR visible.  The BAR describes a region of PCI address space.
-> > > > > > > It looks like setting P2SBC_HIDE_BIT makes the BAR disappear
-> > > > > > > from config space, but it sounds like the PCI address space
-> > > > > > > *described* by the BAR is still claimed by the device.  If the
-> > > > > > > device didn't respond to that MMIO space, you would have no
-> > > > > > > reason to read the BAR at all.
-> > > > > > > 
-> > > > > > > So what keeps the PCI core from assigning that MMIO space to
-> > > > > > > another device?
-> > > > > > 
-> > > > > > The device will respond to MMIO while being hidden. I am afraid
-> > > > > > nothing stops a collision, except for the assumption that the BIOS
-> > > > > > is always right and PCI devices never get remapped. But just
-> > > > > > guessing here.
-> > > > > > 
-> > > > > > I have seen devices with coreboot having the P2SB visible, and
-> > > > > > most likely relocatable. Making it visible in Linux and not hiding
-> > > > > > it again might work, but probably only as long as Linux will not
-> > > > > > relocate it.  Which i am afraid might seriously upset the BIOS,
-> > > > > > depending on what a device does with those GPIOs and which parts
-> > > > > > are implemented in the BIOS.
-> > > > > 
-> > > > > So the question is, do we have knobs in PCI core to mark device
-> > > > > fixes in terms of BARs, no relocation must be applied, no other
-> > > > > devices must have the region?
-> > > > 
-> > > > I think the closest thing is the IORESOURCE_PCI_FIXED bit that we use
-> > > > for things that must not be moved.  Generally PCI resources are
-> > > > associated with a pci_dev, and we set IORESOURCE_PCI_FIXED for BARs,
-> > > > e.g., dev->resource[n].  We do that for IDE legacy regions (see
-> > > > LEGACY_IO_RESOURCE), Langwell devices (pci_fixed_bar_fixup()),
-> > > > "enhanced allocation" (pci_ea_flags()), and some quirks (quirk_io()).
-> > > > 
-> > > > In your case, the device is hidden so it doesn't respond to config
-> > > > accesses, so there is no pci_dev for it.
-> > > 
-> > > Yes, and the idea is to unhide it on the early stage.
-> > > Would it be possible to quirk it to fix the IO resources?
-> > 
-> > If I read your current patch right, it unhides the device, reads the
-> > BAR, then hides the device again.  I didn't see that it would create a
-> > pci_dev for it.
-> > 
-> > If you unhide it and then enumerate it normally (and mark the BAR as
-> > IORESOURCE_PCI_FIXED to make sure we never move it), that might work.
-> > Then there should be a pci_dev for it, and it would then show up in
-> > sysfs, lspci, etc.  And we should insert the BAR in iomem_resource, so
-> > we should see it in /proc/iomem and we won't accidentally put
-> > something else on top of it.
+On 11/22/21 16:32, Michal Hocko wrote:
+> From: Michal Hocko <mhocko@suse.com>
 > 
-> If the PCI device is present and we have ACPI description for the one or more
-> devices (currently pin control), wouldn't be a conflicting resources issue?
+> vmalloc historically hasn't supported GFP_NO{FS,IO} requests because
+> page table allocations do not support externally provided gfp mask
+> and performed GFP_KERNEL like allocations.
 > 
-> When would be the suitable place to avoid that?
+> Since few years we have scope (memalloc_no{fs,io}_{save,restore}) APIs
+> to enforce NOFS and NOIO constrains implicitly to all allocators within
+> the scope. There was a hope that those scopes would be defined on a
+> higher level when the reclaim recursion boundary starts/stops (e.g. when
+> a lock required during the memory reclaim is required etc.). It seems
+> that not all NOFS/NOIO users have adopted this approach and instead
+> they have taken a workaround approach to wrap a single [k]vmalloc
+> allocation by a scope API.
+> 
+> These workarounds do not serve the purpose of a better reclaim recursion
+> documentation and reduction of explicit GFP_NO{FS,IO} usege so let's
+> just provide them with the semantic they are asking for without a need
+> for workarounds.
+> 
+> Add support for GFP_NOFS and GFP_NOIO to vmalloc directly. All internal
+> allocations already comply with the given gfp_mask. The only current
+> exception is vmap_pages_range which maps kernel page tables. Infer the
+> proper scope API based on the given gfp mask.
+> 
+> Signed-off-by: Michal Hocko <mhocko@suse.com>
 
-Given another thought on that and I think we can't unhide entire P2SB due to
-possible ACPI tables present which may or may not fully or partially describe
-devices behind that bridge, so, I would stick with current approach.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-> > > > resource, fills it in, sets IORESOURCE_PCI_FIXED, and does something
-> > > > similar to pci_claim_resource()?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+> ---
+>  mm/vmalloc.c | 22 ++++++++++++++++++++--
+>  1 file changed, 20 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index d2a00ad4e1dd..17ca7001de1f 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -2926,6 +2926,8 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>  	unsigned long array_size;
+>  	unsigned int nr_small_pages = size >> PAGE_SHIFT;
+>  	unsigned int page_order;
+> +	unsigned int flags;
+> +	int ret;
+>  
+>  	array_size = (unsigned long)nr_small_pages * sizeof(struct page *);
+>  	gfp_mask |= __GFP_NOWARN;
+> @@ -2967,8 +2969,24 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>  		goto fail;
+>  	}
+>  
+> -	if (vmap_pages_range(addr, addr + size, prot, area->pages,
+> -			page_shift) < 0) {
+> +	/*
+> +	 * page tables allocations ignore external gfp mask, enforce it
+> +	 * by the scope API
+> +	 */
+> +	if ((gfp_mask & (__GFP_FS | __GFP_IO)) == __GFP_IO)
+> +		flags = memalloc_nofs_save();
+> +	else if ((gfp_mask & (__GFP_FS | __GFP_IO)) == 0)
+> +		flags = memalloc_noio_save();
+> +
+> +	ret = vmap_pages_range(addr, addr + size, prot, area->pages,
+> +			page_shift);
+> +
+> +	if ((gfp_mask & (__GFP_FS | __GFP_IO)) == __GFP_IO)
+> +		memalloc_nofs_restore(flags);
+> +	else if ((gfp_mask & (__GFP_FS | __GFP_IO)) == 0)
+> +		memalloc_noio_restore(flags);
+> +
+> +	if (ret < 0) {
+>  		warn_alloc(orig_gfp_mask, NULL,
+>  			"vmalloc error: size %lu, failed to map pages",
+>  			area->nr_pages * PAGE_SIZE);
+> 
 
