@@ -2,104 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF25845E3C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 01:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B9845E3C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 01:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357314AbhKZAn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 19:43:58 -0500
-Received: from mga04.intel.com ([192.55.52.120]:37253 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1357254AbhKZAl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 19:41:56 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="234316297"
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="234316297"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 16:37:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="457515106"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 25 Nov 2021 16:36:57 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqPEW-000794-NR; Fri, 26 Nov 2021 00:36:56 +0000
-Date:   Fri, 26 Nov 2021 08:36:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, alex@ghiti.fr
-Cc:     kbuild-all@lists.01.org, linux-mm@kvack.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 9/9] powerpc: Simplify and move arch_randomize_brk()
-Message-ID: <202111260844.kcgKX5Uk-lkp@intel.com>
-References: <4c5a2b18774552c2226573f7069ffeee71ad77cb.1637828367.git.christophe.leroy@csgroup.eu>
+        id S1357269AbhKZAqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 19:46:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357348AbhKZAoW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 19:44:22 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059D4C061756;
+        Thu, 25 Nov 2021 16:37:39 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id 207so15380536ljf.10;
+        Thu, 25 Nov 2021 16:37:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nMCkcNkVJHrUMMEDkKpjCXIAHsxHK0m1G/QamSr9K6g=;
+        b=UOqnunqsnMn5D9EP50S6+aOvQtPLUoltWmiTz6HxAhNzfbeySPSOPGeOl6o9gABXgU
+         R4ubclYHdlRX/BhMdfS1jWkG+fx/GwEjHYhLmMyhYRbVU5p2soAScnBgla+f61DspLaW
+         QvobT/wWL/czGrNtFt6a5rHvXebhv8swzGkNZJ6DFxe41OVxtfJs5md2N7rp0rN2Zdx8
+         wMILAGpUX4RVGbQ+122bfZuPENrC4mmZq/HHdW7BujRF/sVVeOFFYgRyChokKnOP9JlX
+         mBxaFOVisanu7dN4p6ozGotLMcmu+jTYYrUalnhR9hvpXuj3j0qijHE1mQwao6xSQv/B
+         xJ5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nMCkcNkVJHrUMMEDkKpjCXIAHsxHK0m1G/QamSr9K6g=;
+        b=BM0WUuARVXwSrkQv93RubEnTEtgS0Lcbedy3cjv/yggaFrvuTnzd7QfjX4033zMTzh
+         MhLl9uaWN/vFfcfnjZuIg71ipvxwwWiIuG04/jwXqLHFcrCclxFtYTj/pHdCzQn2tM7k
+         XJ5AQc2XjwNKUZ5vbIMalUPj08NB1BMO+biHZ0LSJ3Ro03rewyIPDAYmS5aF4VuOKETq
+         TSzZMKjaVqKNRWNOhy2eKBziPV1tZoL8ylHxqVLx0WzjiOIaPCkDLy31tMy1j1iJnW6B
+         uS+O0wCm+YkOdbdztuN1knpWpBISAPSDfEXHcehgEmDkvW2GZ+qByaVepkQ02wTamSju
+         qu+A==
+X-Gm-Message-State: AOAM533QLPi/DuCBGj+YumoAsIQYjcTjSELMX465E3kbSpuu228ucYS4
+        0qfppWWnJhjApOeVIbVhJTo=
+X-Google-Smtp-Source: ABdhPJyRX2L7hSbd3SNG4rggc/Cqlf6BaeolJPYAw1mQLBCAr4IT8k78ET/p4iE+e6YKJMpdWksvAg==
+X-Received: by 2002:a2e:a4ba:: with SMTP id g26mr28851298ljm.152.1637887057377;
+        Thu, 25 Nov 2021 16:37:37 -0800 (PST)
+Received: from [192.168.2.145] (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
+        by smtp.googlemail.com with ESMTPSA id e5sm377433lfs.51.2021.11.25.16.37.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Nov 2021 16:37:36 -0800 (PST)
+Subject: Re: [PATCH v4] i2c: tegra: Add the ACPI support
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Akhil R <akhilrajeev@nvidia.com>
+Cc:     Christian Koenig <christian.koenig@amd.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        linaro-mm-sig@lists.linaro.org,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+References: <1637859224-5179-1-git-send-email-akhilrajeev@nvidia.com>
+ <CAHp75VfPPpTNCaM+GhcqZS53ts-20GBzm+4OWLAjND=z79pgxg@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <aa63a45d-43a0-9aaf-cad3-2f4f66d707e7@gmail.com>
+Date:   Fri, 26 Nov 2021 03:37:35 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4c5a2b18774552c2226573f7069ffeee71ad77cb.1637828367.git.christophe.leroy@csgroup.eu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAHp75VfPPpTNCaM+GhcqZS53ts-20GBzm+4OWLAjND=z79pgxg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+25.11.2021 22:28, Andy Shevchenko пишет:
+>> -       err = reset_control_reset(i2c_dev->rst);
+>> +       if (handle)
+>> +               err = acpi_evaluate_object(handle, "_RST", NULL, NULL);
+> Does it compile for CONFIG_ACPI=n case?
+> 
 
-I love your patch! Perhaps something to improve:
-
-[auto build test WARNING on powerpc/next]
-[also build test WARNING on hnaz-mm/master linus/master v5.16-rc2 next-20211125]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/0day-ci/linux/commits/Christophe-Leroy/Convert-powerpc-to-default-topdown-mmap-layout/20211125-162916
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next
-config: riscv-allyesconfig (https://download.01.org/0day-ci/archive/20211126/202111260844.kcgKX5Uk-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/554c475dfb73dc352708dff3589b55845b3dd751
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Christophe-Leroy/Convert-powerpc-to-default-topdown-mmap-layout/20211125-162916
-        git checkout 554c475dfb73dc352708dff3589b55845b3dd751
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=riscv SHELL=/bin/bash drivers/net/wireless/mediatek/mt76/mt7915/ drivers/pci/controller/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
->> drivers/pci/controller/pci-xgene.c:52: warning: "SZ_1T" redefined
-      52 | #define SZ_1T                           (SZ_1G*1024ULL)
-         | 
-   In file included from arch/riscv/include/asm/pgtable.h:10,
-                    from include/linux/pgtable.h:6,
-                    from arch/riscv/include/asm/io.h:15,
-                    from include/linux/io.h:13,
-                    from drivers/pci/controller/pci-xgene.c:11:
-   include/linux/sizes.h:51: note: this is the location of the previous definition
-      51 | #define SZ_1T                           _AC(0x10000000000, ULL)
-         | 
-
-
-vim +/SZ_1T +52 drivers/pci/controller/pci-xgene.c
-
-5f6b6ccdbe1cdfa drivers/pci/host/pci-xgene.c Tanmay Inamdar 2014-10-01  45  
-5f6b6ccdbe1cdfa drivers/pci/host/pci-xgene.c Tanmay Inamdar 2014-10-01  46  #define LINK_UP_MASK			0x00000100
-5f6b6ccdbe1cdfa drivers/pci/host/pci-xgene.c Tanmay Inamdar 2014-10-01  47  #define AXI_EP_CFG_ACCESS		0x10000
-5f6b6ccdbe1cdfa drivers/pci/host/pci-xgene.c Tanmay Inamdar 2014-10-01  48  #define EN_COHERENCY			0xF0000000
-5f6b6ccdbe1cdfa drivers/pci/host/pci-xgene.c Tanmay Inamdar 2014-10-01  49  #define EN_REG				0x00000001
-5f6b6ccdbe1cdfa drivers/pci/host/pci-xgene.c Tanmay Inamdar 2014-10-01  50  #define OB_LO_IO			0x00000002
-5f6b6ccdbe1cdfa drivers/pci/host/pci-xgene.c Tanmay Inamdar 2014-10-01  51  #define XGENE_PCIE_DEVICEID		0xE004
-5f6b6ccdbe1cdfa drivers/pci/host/pci-xgene.c Tanmay Inamdar 2014-10-01 @52  #define SZ_1T				(SZ_1G*1024ULL)
-5f6b6ccdbe1cdfa drivers/pci/host/pci-xgene.c Tanmay Inamdar 2014-10-01  53  #define PIPE_PHY_RATE_RD(src)		((0xc000 & (u32)(src)) >> 0xe)
-5f6b6ccdbe1cdfa drivers/pci/host/pci-xgene.c Tanmay Inamdar 2014-10-01  54  
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+It compiles and works fine with CONFIG_ACPI=n.
