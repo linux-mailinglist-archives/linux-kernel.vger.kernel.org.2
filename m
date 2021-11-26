@@ -2,67 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF7145E8FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1A545E90B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352878AbhKZILT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 03:11:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:44426 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346253AbhKZIJS (ORCPT
+        id S1359354AbhKZIPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 03:15:18 -0500
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:65350 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243068AbhKZINS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 03:09:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637913965;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M//eB/FJBtYBGKBx+oH9sHQCtuYI5BupCwuN5dEn5+M=;
-        b=C1qF71Pai+MwzHnnRjXY9xklTdKjlDchYX16s5PvBhQRWeMbq8kEGHFkQaurqpn8vinfNq
-        ktU3WCo6+KjD+SLI1MW/yP6+bEQCztIWo8YFbnQ0juNGqaRnJnWCwgc3/2/9d3PVsvY/rB
-        +8lmrHoLRIsWAvjXKsZOC6WhKtuq9Cw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-563-X654_A8nOrSIgsG3Y3glDA-1; Fri, 26 Nov 2021 03:06:01 -0500
-X-MC-Unique: X654_A8nOrSIgsG3Y3glDA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E428781CCB4;
-        Fri, 26 Nov 2021 08:05:59 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 54B46196F8;
-        Fri, 26 Nov 2021 08:05:57 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20211125192727.74360e85@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20211125192727.74360e85@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <163776465314.1844202.9057900281265187616.stgit@warthog.procyon.org.uk>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     dhowells@redhat.com, Eiichi Tsukata <eiichi.tsukata@nutanix.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-afs@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] rxrpc: Fix rxrpc_peer leak in rxrpc_look_up_bundle()
+        Fri, 26 Nov 2021 03:13:18 -0500
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 1AQ7iYfs032630;
+        Fri, 26 Nov 2021 15:44:34 +0800 (GMT-8)
+        (envelope-from jammy_huang@aspeedtech.com)
+Received: from [192.168.2.115] (192.168.2.115) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 26 Nov
+ 2021 16:08:49 +0800
+Message-ID: <b66655ac-eac8-835a-7917-0c1d035d5309@aspeedtech.com>
+Date:   Fri, 26 Nov 2021 16:08:50 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2790422.1637913956.1@warthog.procyon.org.uk>
-Date:   Fri, 26 Nov 2021 08:05:56 +0000
-Message-ID: <2790423.1637913956@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH v5 05/10] media: v4l: Add definition for the Aspeed JPEG
+ format
+Content-Language: en-US
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+CC:     "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "laurent.pinchart@ideasonboard.com" 
+        <laurent.pinchart@ideasonboard.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20211118074030.685-1-jammy_huang@aspeedtech.com>
+ <20211118074030.685-6-jammy_huang@aspeedtech.com>
+ <YZZIDNCLJXwrqY4W@paasikivi.fi.intel.com>
+ <0bed6093-0af6-4fc4-716f-6cf8b1302320@aspeedtech.com>
+ <YZzBPFHZ7MPwTWSm@paasikivi.fi.intel.com>
+From:   Jammy Huang <jammy_huang@aspeedtech.com>
+In-Reply-To: <YZzBPFHZ7MPwTWSm@paasikivi.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [192.168.2.115]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 1AQ7iYfs032630
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jakub Kicinski <kuba@kernel.org> wrote:
+Hi Sakari,
 
-> Are these supposed to go to net? They are addressed To: the author.
+On 2021/11/23 下午 06:23, Sakari Ailus wrote:
+> Hi Jammy,
+>
+> On Fri, Nov 19, 2021 at 10:02:40AM +0800, Jammy Huang wrote:
+>> Hi Sakari,
+>>
+>> On 2021/11/18 下午 08:33, Sakari Ailus wrote:
+>>> Hi Jammy,
+>>>
+>>> On Thu, Nov 18, 2021 at 03:40:26PM +0800, Jammy Huang wrote:
+>>>> This introduces support for the Aspeed JPEG format, where the new frame
+>>>> can refer to previous frame to reduce the amount of compressed data. The
+>>>> concept is similar to I/P frame of video compression. I will compare the
+>>>> new frame with previous one to decide which macroblock's data is
+>>>> changed, and only the changed macroblocks will be compressed.
+>>>>
+>>>> This Aspeed JPEG format is used by the video engine on Aspeed platforms,
+>>>> which is generally adapted for remote KVM.
+>>>>
+>>>> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+>>>> ---
+>>>> v5:
+>>>>     - no update
+>>>> v4:
+>>>>     - new
+>>>> ---
+>>>>    Documentation/media/uapi/v4l/pixfmt-reserved.rst | 12 ++++++++++++
+>>>>    drivers/media/v4l2-core/v4l2-ioctl.c             |  1 +
+>>>>    include/uapi/linux/videodev2.h                   |  1 +
+>>>>    3 files changed, 14 insertions(+)
+>>>>
+>>>> diff --git a/Documentation/media/uapi/v4l/pixfmt-reserved.rst b/Documentation/media/uapi/v4l/pixfmt-reserved.rst
+>>>> index b2cd155e691b..23c05063133d 100644
+>>>> --- a/Documentation/media/uapi/v4l/pixfmt-reserved.rst
+>>>> +++ b/Documentation/media/uapi/v4l/pixfmt-reserved.rst
+>>>> @@ -264,6 +264,18 @@ please make a proposal on the linux-media mailing list.
+>>>>    	of tiles, resulting in 32-aligned resolutions for the luminance plane
+>>>>    	and 16-aligned resolutions for the chrominance plane (with 2x2
+>>>>    	subsampling).
+>>>> +    * .. _V4L2-PIX-FMT-AJPG:
+>>>> +
+>>>> +      - ``V4L2_PIX_FMT_AJPG``
+>>>> +      - 'AJPG'
+>>>> +      - ASPEED JPEG format used by the aspeed-video driver on Aspeed platforms,
+>>>> +        which is generally adapted for remote KVM.
+>>>> +        On each frame compression, I will compare the new frame with previous
+>>>> +        one to decide which macroblock's data is changed, and only the changed
+>>>> +        macroblocks will be compressed.
+>>>> +
+>>>> +        You could reference to chapter 36, Video Engine, of AST2600's datasheet
+>>>> +        for more information.
+>>> Is this datasheet publicly available? Do you have a URL?
+>> Sorry, this datasheet is not publicly available.
+>> Hans mentioned this as well in the discussion below:
+>>
+>> https://lkml.org/lkml/2021/11/10/101
+> If the vendor documentation is not publicly available, you'll need to have
+> the format documented here. Alternatively an open source implementation
+> (e.g. LGPL) is presumably fine, too.
+Please refer to 
+https://github.com/AspeedTech-BMC/openbmc/releases/download/v07.02/SDK_User_Guide_v07.02.pdf.
+At Page 132, 'Video stream data format – ASPEED mode compression' 
+describes the data format.
+Is above information  enough??
 
-I'm hoping the author rechecks/reviews them.  I commented on his original
-submission that I thought they could be done slightly differently.
+Besides, I have already had openbmc's kvm support this aspeed format.
+The source code of the implementation will be released after performance 
+tuning finished.
 
-David
+-- 
+Best Regards
+Jammy
 
