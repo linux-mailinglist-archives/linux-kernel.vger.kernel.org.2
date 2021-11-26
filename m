@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75EC145EBCA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 378D845EBDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:43:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376898AbhKZKkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 05:40:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:59218 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1376688AbhKZKh7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 05:37:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637922886;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FvamVlY8+eH2d6eZ0kPB9KuGqvbC7YHJ0BAgKSSORyo=;
-        b=GefqusZP3kpHjBPdX0A4ROr/Nk1t2N8j49Yia2xOh8KKy1MSaJk+o/whNEdNF9MwTMnH8A
-        7bl+UnzHQ/l2vor751smD+CuSxQEpFEZesEBk8i4EdCdyvu9hyIe6nMs7Bb2zMu/YiuOCw
-        ZMz9u+xi06F3TUFNfu+3XVI14lzg/FQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-255-jo1_Ghq0MKmABYCWdo-0gA-1; Fri, 26 Nov 2021 05:34:43 -0500
-X-MC-Unique: jo1_Ghq0MKmABYCWdo-0gA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1821F100CCC2;
-        Fri, 26 Nov 2021 10:34:42 +0000 (UTC)
-Received: from [10.39.195.16] (unknown [10.39.195.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BB90A19C46;
-        Fri, 26 Nov 2021 10:34:29 +0000 (UTC)
-Message-ID: <14e0bf75-27f4-83ec-d52f-82d7d4dab5a7@redhat.com>
-Date:   Fri, 26 Nov 2021 11:34:28 +0100
+        id S1353160AbhKZKqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:46:20 -0500
+Received: from mga17.intel.com ([192.55.52.151]:27408 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245488AbhKZKoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 05:44:19 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="216354063"
+X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
+   d="scan'208";a="216354063"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 02:36:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
+   d="scan'208";a="572093129"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 26 Nov 2021 02:36:25 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqYae-0007xy-C6; Fri, 26 Nov 2021 10:36:24 +0000
+Date:   Fri, 26 Nov 2021 18:36:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Min Li <min.li.xe@renesas.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>
+Subject: powerpc-linux-ld: warning: orphan section `.init.plt' from
+ `drivers/mfd/rsmu_core.o' being placed in section `.init.plt'
+Message-ID: <202111261824.M3qMRnY5-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 2/3] KVM: Use atomic_long_cmpxchg() instead of an
- open-coded variant
-Content-Language: en-US
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Igor Mammedov <imammedo@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1637884349.git.maciej.szmigiero@oracle.com>
- <7bdc7ee3dcc09a109cfaf9fb8662fb49ca0bec2c.1637884349.git.maciej.szmigiero@oracle.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <7bdc7ee3dcc09a109cfaf9fb8662fb49ca0bec2c.1637884349.git.maciej.szmigiero@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/21 01:31, Maciej S. Szmigiero wrote:
-> -		if ((long)old == atomic_long_read(&slots->last_used_slot))
-> -			atomic_long_set(&slots->last_used_slot, (long)new);
-> +		/*
-> +		 * The atomicity isn't strictly required here since we are
-> +		 * operating on an inactive memslots set anyway.
-> +		 */
-> +		atomic_long_cmpxchg(&slots->last_used_slot,
-> +				    (unsigned long)old, (unsigned long)new);
+Hi Min,
 
-I think using read/set is more readable than a comment saying that 
-atomicity is not required.
+First bad commit (maybe != root cause):
 
-It's a fairly common pattern, and while I agree that it's a PITA to 
-write atomic_long_read and atomic_long_set, the person that reads the 
-code is also helped by read/set, because they know they have to think 
-about ownership invariants rather than concurrency invariants.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   a4849f6000e29235a2707f22e39da6b897bb9543
+commit: a1867f85e06edacd82956d3422caa2b9074f4321 mfd: Add Renesas Synchronization Management Unit (SMU) support
+date:   5 months ago
+config: powerpc-randconfig-r034-20211123 (https://download.01.org/0day-ci/archive/20211126/202111261824.M3qMRnY5-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a1867f85e06edacd82956d3422caa2b9074f4321
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout a1867f85e06edacd82956d3422caa2b9074f4321
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=powerpc SHELL=/bin/bash
 
-Paolo
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
+All warnings (new ones prefixed by >>):
+
+>> powerpc-linux-ld: warning: orphan section `.init.plt' from `drivers/mfd/rsmu_core.o' being placed in section `.init.plt'
+   powerpc-linux-ld: arch/powerpc/sysdev/cpm_gpio.o:(.rodata+0xd0): undefined reference to `cpm1_gpiochip_add16'
+   powerpc-linux-ld: arch/powerpc/sysdev/cpm_gpio.o:(.rodata+0x194): undefined reference to `cpm1_gpiochip_add32'
+   powerpc-linux-ld: arch/powerpc/sysdev/cpm_gpio.o:(.rodata+0x258): undefined reference to `cpm1_gpiochip_add16'
+   powerpc-linux-ld: arch/powerpc/sysdev/cpm_gpio.o:(.rodata+0x31c): undefined reference to `cpm1_gpiochip_add16'
+   powerpc-linux-ld: arch/powerpc/platforms/8xx/m8xx_setup.o: in function `cpm_cascade':
+   m8xx_setup.c:(.text+0x28): undefined reference to `cpm_get_irq'
+   powerpc-linux-ld: arch/powerpc/platforms/8xx/m8xx_setup.o: in function `mpc8xx_set_rtc_time':
+   m8xx_setup.c:(.text+0x46): undefined reference to `mpc8xx_immr'
+   powerpc-linux-ld: m8xx_setup.c:(.text+0x52): undefined reference to `mpc8xx_immr'
+   powerpc-linux-ld: arch/powerpc/platforms/8xx/m8xx_setup.o: in function `mpc8xx_get_rtc_time':
+   m8xx_setup.c:(.text+0x92): undefined reference to `mpc8xx_immr'
+   powerpc-linux-ld: m8xx_setup.c:(.text+0x9e): undefined reference to `mpc8xx_immr'
+   powerpc-linux-ld: arch/powerpc/platforms/8xx/m8xx_setup.o: in function `mpc8xx_restart':
+   m8xx_setup.c:(.text+0xda): undefined reference to `mpc8xx_immr'
+   powerpc-linux-ld: arch/powerpc/platforms/8xx/m8xx_setup.o:m8xx_setup.c:(.text+0xe6): more undefined references to `mpc8xx_immr' follow
+   powerpc-linux-ld: arch/powerpc/platforms/8xx/m8xx_setup.o: in function `mpc8xx_pics_init':
+   m8xx_setup.c:(.init.text+0x2c8): undefined reference to `cpm_pic_init'
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
