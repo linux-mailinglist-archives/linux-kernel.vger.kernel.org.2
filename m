@@ -2,174 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 340DA45E9D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:03:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3D045E9E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:06:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359760AbhKZJGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 04:06:38 -0500
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:43196
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1376258AbhKZJEg (ORCPT
+        id S1347287AbhKZJJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 04:09:06 -0500
+Received: from mail-ua1-f43.google.com ([209.85.222.43]:33660 "EHLO
+        mail-ua1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1359748AbhKZJHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 04:04:36 -0500
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5625A40744
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 09:01:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1637917281;
-        bh=JSDkQxEaFeO4Aa8CU5V1RSZd3JdJHwQwA3XYeu58L54=;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-         Content-Type:In-Reply-To;
-        b=D8idFLkyy6NiQjr57fzJYJK7QbMdIc3v5nW0Z33wcLVK+IOhVb3bPJUa6CZYxKT2G
-         dc8gBah51WcYSHYB/r7fZAMqTkfrAxyzNucz9kSTcyHfP/S0UpmrUT/E4fF/m4lMXE
-         XWEkPRIHNBkboEBLEF2rblSWDHSCqBcR4A/RJtXB30ZDca0SKq1OL0il16H+XGLmgt
-         TllzPyDmZFq7BaxjV846RZGuXdL3F+nYZ67nNl4SHyuiOuYh7mb/LrFMoOGGBw0Ss1
-         OtTssg4wPWKAjwY1itKglwKNWOTJImIQdHc3CiJ3+1zXqB1IlbK6JfscXhaaAaYMh+
-         9B5EaGEBldipQ==
-Received: by mail-ed1-f70.google.com with SMTP id q17-20020aa7da91000000b003e7c0641b9cso7477948eds.12
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 01:01:21 -0800 (PST)
+        Fri, 26 Nov 2021 04:07:05 -0500
+Received: by mail-ua1-f43.google.com with SMTP id a14so17365642uak.0;
+        Fri, 26 Nov 2021 01:03:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JSDkQxEaFeO4Aa8CU5V1RSZd3JdJHwQwA3XYeu58L54=;
-        b=jzo9/f/qEgIJ4ApzbtQyM6Xu/v0YvTuCohdAXKWbH+r3tRqeTGI7yu/bVnxTsvrZmN
-         btcTeHzyofUrhVUrKvZv/guk+TGdKVBjuZizJYBafBeWMM6YAdW8r8ou7IxXxDn1Kj3C
-         TFEq5a4IiaRBSulZAvKATyxNKbjteyLZfjBdi5sjVc7vot8WgCA50SiUigDI5Y1wHUzP
-         /FQd6mHeGxPv6c8XlfwSjEQBmk0uOsWTMOUW/Wk6C5m/CUvHWe5n0E7FramfUGAF3zW4
-         Ioxb99m1TxEVm7PfqX54rS+xD0CMaaw2f0c30i7SA5wikwz2O9ujwEPsfSkRnK/rw3VV
-         xW5w==
-X-Gm-Message-State: AOAM531lyS7BWYxe4hpU6CR9GheS/kEyXrpE6xInsmV8CqXN59FCQb2q
-        bnUNBL8IqCRd2Xm6MPG2sBCs4j1C+nXqZD6W8czzk+28iPa/zrFzdmmPRSWC/mtxZ3HUu6HK2n0
-        kjppftK4brEcHqrotJlTSEAINDQMhelNBh/ZYNGnekQ==
-X-Received: by 2002:a05:6402:11d2:: with SMTP id j18mr45510564edw.318.1637917280837;
-        Fri, 26 Nov 2021 01:01:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxA/gPOhfwr63nIN4QqNwMF4BDsoXBkVZzPKhinuy/tb4GYEkRp4MHzCZGHTX+pLz5/8jbGgQ==
-X-Received: by 2002:a05:6402:11d2:: with SMTP id j18mr45510536edw.318.1637917280547;
-        Fri, 26 Nov 2021 01:01:20 -0800 (PST)
-Received: from localhost ([2001:67c:1560:8007::aac:c1b6])
-        by smtp.gmail.com with ESMTPSA id e4sm3026588ejs.13.2021.11.26.01.01.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 01:01:19 -0800 (PST)
-Date:   Fri, 26 Nov 2021 10:01:19 +0100
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/seccomp: fix check of fds being assigned
-Message-ID: <YaCiX+ypndYf/0QP@arighi-desktop>
-References: <20211115165227.101124-1-andrea.righi@canonical.com>
- <202111180933.BE5101720@keescook>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rtczldvNbGmrR5ykoDUfpIb1hDrMTteo+qnCjEU6gxM=;
+        b=BzvIgCA55HFrGJdHz3K8j4yBECJFrGuA8cqUPURhb6gESAdA1xSHkKNCY2FQ3CT+J3
+         XIXCrXJKguo1bjvPFiliJ60PcISgAhvmqCBerxOv9VTUlBDjvO0SCT8cKRB5LStvnT/c
+         Wfh8IrdhjCyPgcvRcJgMotLQXKlV8IlP4b2S4vPKDfLkyvJsxligV5pybxvh/+oCCaBg
+         SnWdbNtIl3ZqeeCQsU++tn7BNAFxhHULJekVg4WDFwAcu6PJkcmS6gdMxfwAawu3bXoK
+         MctzPZWtM/yuTzTbnI7L8h+SxRKxnzegf7bLdxvEgKCrlqBALWkn4J5PFzcKYVqi7F3l
+         6/3Q==
+X-Gm-Message-State: AOAM533S3dmW66KECScuplIC+9BUn8NkyjHNyLA9DfncTDe1ZOmkakuj
+        WxhMEOkm3Ol0weIZrrHSHCWT0JkYmtiYAw==
+X-Google-Smtp-Source: ABdhPJwwFkscLGWyMPhLRJWZjIo2o4YeORft1JuaDT8pCf0ChSKSx61WWd9vwyUDUn1auvdcqklDYw==
+X-Received: by 2002:a67:fa59:: with SMTP id j25mr16126005vsq.30.1637917431922;
+        Fri, 26 Nov 2021 01:03:51 -0800 (PST)
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com. [209.85.221.178])
+        by smtp.gmail.com with ESMTPSA id p3sm3345680vsr.3.2021.11.26.01.03.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Nov 2021 01:03:51 -0800 (PST)
+Received: by mail-vk1-f178.google.com with SMTP id u68so5501899vke.11;
+        Fri, 26 Nov 2021 01:03:51 -0800 (PST)
+X-Received: by 2002:a05:6122:104f:: with SMTP id z15mr13511423vkn.39.1637917430800;
+ Fri, 26 Nov 2021 01:03:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202111180933.BE5101720@keescook>
+References: <20211125152317.162958-1-geert@linux-m68k.org>
+In-Reply-To: <20211125152317.162958-1-geert@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 26 Nov 2021 10:03:39 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVg-r3P_SPqDK7K4rYLzLP+=Wy9KatiNrpK7ebKJSx-Tg@mail.gmail.com>
+Message-ID: <CAMuHMdVg-r3P_SPqDK7K4rYLzLP+=Wy9KatiNrpK7ebKJSx-Tg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: timer: sifive,clint: Fix number of interrupts
+To:     Jessica Clarke <jrtc27@jrtc27.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <anup.patel@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 09:37:03AM -0800, Kees Cook wrote:
-> On Mon, Nov 15, 2021 at 05:52:27PM +0100, Andrea Righi wrote:
-> > There might be an arbitrary free open fd slot when we run the addfd
-> > sub-test, so checking for progressive numbers of file descriptors
-> > starting from memfd is not always a reliable check and we could get the
-> > following failure:
-> > 
-> >   #  RUN           global.user_notification_addfd ...
-> >   # seccomp_bpf.c:3989:user_notification_addfd:Expected listener (18) == nextfd++ (9)
-> 
-> What injected 9 extra fds into this test?
-> 
+On Thu, Nov 25, 2021 at 4:23 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> To improve human readability and enable automatic validation, the tuples
+> in "interrupts-extended" properties should be grouped using angle
+> brackets.  As the DT bindings lack an upper bound on the number of
+> interrupts, thus assuming one, proper grouping is currently flagged as
+> an error.
+>
+> Fix this by adding the missing "maxItems", limiting it to 10 interrupts
+> (two interrupts for a system management core, and two interrupts per
+> core for other cores), which should be sufficient for now.
+>
+> Group the tuples in the example.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  .../devicetree/bindings/timer/sifive,clint.yaml          | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/timer/sifive,clint.yaml b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+> index a35952f487426988..55bec2d059807c48 100644
+> --- a/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+> +++ b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+> @@ -43,6 +43,7 @@ properties:
+>
+>    interrupts-extended:
+>      minItems: 1
+> +    maxItems: 10
 
-We run the kselftest inside a framework (bash/python scripts basically)
-and this is what I see (I added a simple `ls -l /proc/pid/fd` in
-seccomp_bpf.c after memfd is created):
+Cfr. Jessica's comment on my PLIC patch:
 
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # #  RUN           global.user_notification_addfd ...
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # total 0
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 0 -> /dev/pts/0
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 1 -> pipe:[28844]
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 10 -> /dev/pts/0
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 11 -> /dev/pts/0
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 12 -> /home/ubuntu/autotest/client/results/default/ubuntu_kernel_selftests.seccomp:seccomp_bpf/debug/ubuntu_kernel_selftests.seccomp:seccomp_bpf.DEBUG
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 13 -> /home/ubuntu/autotest/client/results/default/ubuntu_kernel_selftests.seccomp:seccomp_bpf/debug/ubuntu_kernel_selftests.seccomp:seccomp_bpf.INFO
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 14 -> /home/ubuntu/autotest/client/results/default/ubuntu_kernel_selftests.seccomp:seccomp_bpf/debug/ubuntu_kernel_selftests.seccomp:seccomp_bpf.WARNING
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 15 -> /home/ubuntu/autotest/client/results/default/ubuntu_kernel_selftests.seccomp:seccomp_bpf/debug/ubuntu_kernel_selftests.seccomp:seccomp_bpf.ERROR
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 16 -> pipe:[27608]
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 17 -> pipe:[27609]
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 2 -> pipe:[28844]
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 3 -> pipe:[27803]
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 4 -> pipe:[26387]
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 5 -> /home/ubuntu/autotest/client/results/default/debug/client.WARNING
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 6 -> /home/ubuntu/autotest/client/results/default/debug/client.ERROR
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 7 -> /dev/pts/0
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 8 -> /memfd:test (deleted)
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 9 -> /dev/pts/0
-11/26 08:50:08 DEBUG|     utils:0153| [stdout] # # seccomp_bpf.c:3993:user_notification_addfd:Expected listener (18) == nextfd++ (9)
-11/26 08:50:09 DEBUG|     utils:0153| [stdout] # # user_notification_addfd: Test terminated by assertion
-11/26 08:50:09 DEBUG|     utils:0153| [stdout] # #          FAIL  global.user_notification_addfd
+The maximum supported by the CLINT memory map is 8192.
+Device-specific limits would be 4 for k210 and jh7100, and 10 for
+fu540.
 
-As we can see memfd has been allocated in a hole (fd=8) and listener
-will get fd=18, so checking for sequential fd numbers is not working in
-this case.
+Gr{oetje,eeting}s,
 
-> >   # user_notification_addfd: Test terminated by assertion
-> > 
-> > Simply check if memfd and listener are valid file descriptors and start
-> > counting for progressive file checking with the listener fd.
-> 
-> Hm, so I attempted to fix this once already:
-> 93e720d710df ("selftests/seccomp: More closely track fds being assigned")
-> so I'm not sure the proposed patch really improves it in the general
-> case.
+                        Geert
 
-I agree that my patch doesn't fix 100% of the cases, we may still have
-fd holes.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-> 
-> > Fixes: 93e720d710df ("selftests/seccomp: More closely track fds being assigned")
-> > Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-> > ---
-> >  tools/testing/selftests/seccomp/seccomp_bpf.c | 5 ++---
-> >  1 file changed, 2 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> > index d425688cf59c..4f37153378a1 100644
-> > --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-> > +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> > @@ -3975,18 +3975,17 @@ TEST(user_notification_addfd)
-> >  	/* There may be arbitrary already-open fds at test start. */
-> >  	memfd = memfd_create("test", 0);
-> >  	ASSERT_GE(memfd, 0);
-> > -	nextfd = memfd + 1;
-> >  
-> >  	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-> >  	ASSERT_EQ(0, ret) {
-> >  		TH_LOG("Kernel does not support PR_SET_NO_NEW_PRIVS!");
-> >  	}
-> >  
-> > -	/* fd: 4 */
-> >  	/* Check that the basic notification machinery works */
-> >  	listener = user_notif_syscall(__NR_getppid,
-> >  				      SECCOMP_FILTER_FLAG_NEW_LISTENER);
-> > -	ASSERT_EQ(listener, nextfd++);
-> > +	ASSERT_GE(listener, 0);
-> > +	nextfd = listener + 1;
-> 
-> e.g. if there was a hole in the fd map for memfd, why not listener too?
-> 
-> Should the test dup2 memfd up to fd 100 and start counting there or
-> something? What is the condition that fills the fds for this process?
-
-How about getting the allocated fd numbers from /proc/pid/fd and
-figuring out the next fd number taking also the holes into account?
-
-Thanks,
--Andrea
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
