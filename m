@@ -2,111 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC3345EA5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:27:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A3B45EA74
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:34:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376361AbhKZJaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 04:30:23 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:56530 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235652AbhKZJ2W (ORCPT
+        id S1376333AbhKZJhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 04:37:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232710AbhKZJfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 04:28:22 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id DB98C212BC;
-        Fri, 26 Nov 2021 09:25:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637918708; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+BmyZ6nHsjemv7f4v1pkF+IOWYslCFmtmkVz+Xq0J28=;
-        b=OC44tj16AZJCpddzarYtO2rqZeK442EbB86zjW2HXf2ltg0/a7I8mpqT5KBW+k3XN1gFDg
-        zEaq80YY1SrCkmBGDOdrN6AjU+tD6wmSVXHvMzXrh9BHQz8e63j7axhMFZFt+haNQD/N3y
-        vxaZZ7O3kBND1DhbThlTLpV3S8r3y0w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637918708;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+BmyZ6nHsjemv7f4v1pkF+IOWYslCFmtmkVz+Xq0J28=;
-        b=0ALdFhr5x+iuvXanawyssRtSdKo0ZqsSJB+d2sz0AFmNQEBMEa6zMfK3cmBu9plyqHKcge
-        NsjtGWyKTuzJIVBA==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 9D684A3B87;
-        Fri, 26 Nov 2021 09:25:08 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 8EFDE1E11F3; Fri, 26 Nov 2021 10:25:08 +0100 (CET)
-Date:   Fri, 26 Nov 2021 10:25:08 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Chengguang Xu <cgxu519@mykernel.net>
-Cc:     miklos@szeredi.hu, jack@suse.cz, amir73il@gmail.com,
-        linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chengguang Xu <charliecgxu@tencent.com>
-Subject: Re: [RFC PATCH V6 7/7] ovl: implement containerized syncfs for
- overlayfs
-Message-ID: <20211126092508.GG13004@quack2.suse.cz>
-References: <20211122030038.1938875-1-cgxu519@mykernel.net>
- <20211122030038.1938875-8-cgxu519@mykernel.net>
+        Fri, 26 Nov 2021 04:35:16 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF24C0613E0;
+        Fri, 26 Nov 2021 01:26:21 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id 5C18E1F46742
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1637918779; bh=RZZMdLZe+frl5NeinRGjT60ZCs3bDCTm8bd2vGIWYxU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=CMSPNnmkh8LJZdT2NGjAofryIcTSQ9/lo/FTRbyld5ugGLnF6+IOhNXdNEEL2aIoM
+         n2cQTnwp6DsiX7xLZgqi9TYa72PSqU502GYiJUQWJz2yZWY8g1QrVpIIhVzuwQq2vI
+         6eWCGzgGf00rZlyVZ1z3xJ7BTPGfUi9Xns3Td0A9i/01y4QXgIkXc+0AZ6eRawjArj
+         rXGFCmzKd6T01mCYFwXiy2KSDGeIiizDWjRMzqgvUHm3i9sAaD7uBfB4wBcdRek2tv
+         Fp/+Ti49MMnGx7R8MpUplhvp78kM59133FijmDYbfGPPrJpSiKSsMt31WPh8YsFCk1
+         bh6e5KeOTe9UA==
+Subject: Re: [PATCH] drm/msm: Initialize MDSS irq domain at probe time
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, robdclark@gmail.com
+Cc:     sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        maxime@cerno.tech, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        jami.kettunen@somainline.org
+References: <20211125150947.354076-1-angelogioacchino.delregno@collabora.com>
+ <32cdade5-1487-9182-e939-4d93f8a27ad6@linaro.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Message-ID: <2b37dfd3-c3be-2640-56d0-25c9971c4f50@collabora.com>
+Date:   Fri, 26 Nov 2021 10:26:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211122030038.1938875-8-cgxu519@mykernel.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <32cdade5-1487-9182-e939-4d93f8a27ad6@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 22-11-21 11:00:38, Chengguang Xu wrote:
-> From: Chengguang Xu <charliecgxu@tencent.com>
+Il 26/11/21 01:06, Dmitry Baryshkov ha scritto:
+> On 25/11/2021 18:09, AngeloGioacchino Del Regno wrote:
+>> Since commit 8f59ee9a570c ("drm/msm/dsi: Adjust probe order"), the
+>> DSI host gets initialized earlier, but this caused unability to probe
+>> the entire stack of components because they all depend on interrupts
+>> coming from the main `mdss` node (mdp5, or dpu1).
+>>
+>> To fix this issue, also anticipate probing mdp5 or dpu1 by initializing
+>> them at msm_pdev_probe() time: this will make sure that we add the
+>> required interrupt controller mapping before dsi and/or other components
+>> try to initialize, finally satisfying the dependency.
+>>
+>> While at it, also change the allocation of msm_drm_private to use the
+>> devm variant of kzalloc().
+>>
+>> Fixes: 8f59ee9a570c ("drm/msm/dsi: Adjust probe order")
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 > 
-> Now overlayfs can only sync own dirty inodes during syncfs,
-> so remove unnecessary sync_filesystem() on upper file system.
+> Another issue (or a pack of issues):
+> Now the msm_drm_init() is unbalanced with msm_drm_uninit(). Bits of code (putting 
+> the drm dev, removing the IRQ domain, etc) have to be called now from the 
+> msm_pdev_remove() function rather than from the unbind path.
 > 
-> Signed-off-by: Chengguang Xu <charliecgxu@tencent.com>
+> The following changes fix the observed issues here, however additional care should 
+> be taken.
+> 
 
-Looks good. Feel free to add:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Hello Dmitry,
 
-								Honza
+thanks for the thorough review (and solutions!).
+Are you going to push your changes on top, or should I send a V2?
 
-> ---
->  fs/overlayfs/super.c | 14 +++++---------
->  1 file changed, 5 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-> index ccffcd96491d..213b795a6a86 100644
-> --- a/fs/overlayfs/super.c
-> +++ b/fs/overlayfs/super.c
-> @@ -292,18 +292,14 @@ static int ovl_sync_fs(struct super_block *sb, int wait)
->  	/*
->  	 * Not called for sync(2) call or an emergency sync (SB_I_SKIP_SYNC).
->  	 * All the super blocks will be iterated, including upper_sb.
-> -	 *
-> -	 * If this is a syncfs(2) call, then we do need to call
-> -	 * sync_filesystem() on upper_sb, but enough if we do it when being
-> -	 * called with wait == 1.
->  	 */
-> -	if (!wait)
-> -		return 0;
-> -
->  	upper_sb = ovl_upper_mnt(ofs)->mnt_sb;
-> -
->  	down_read(&upper_sb->s_umount);
-> -	ret = sync_filesystem(upper_sb);
-> +	if (wait)
-> +		wait_sb_inodes(upper_sb);
-> +	if (upper_sb->s_op->sync_fs)
-> +		upper_sb->s_op->sync_fs(upper_sb, wait);
-> +	ret = ovl_sync_upper_blockdev(upper_sb, wait);
->  	up_read(&upper_sb->s_umount);
->  
->  	return ret;
-> -- 
-> 2.27.0
-> 
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Cheers,
+- Angelo
