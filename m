@@ -2,218 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5CFC45EC8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:23:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C830B45ED24
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:57:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348248AbhKZL0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 06:26:24 -0500
-Received: from relay11.mail.gandi.net ([217.70.178.231]:52681 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239294AbhKZLYU (ORCPT
+        id S1377126AbhKZMAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 07:00:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350360AbhKZL6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 06:24:20 -0500
-Received: (Authenticated sender: maxime.chevallier@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 7D602100017;
-        Fri, 26 Nov 2021 11:21:05 +0000 (UTC)
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     davem@davemloft.net
-Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thomas.petazzoni@bootlin.com, gregory.clement@bootlin.com,
-        Andrew Lunn <andrew@lunn.ch>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH net-next v2 4/4] net: mvneta: Add TC traffic shaping offload
-Date:   Fri, 26 Nov 2021 12:20:56 +0100
-Message-Id: <20211126112056.849123-5-maxime.chevallier@bootlin.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20211126112056.849123-1-maxime.chevallier@bootlin.com>
-References: <20211126112056.849123-1-maxime.chevallier@bootlin.com>
+        Fri, 26 Nov 2021 06:58:19 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B223C08EA4A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 03:22:24 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id u1so17843958wru.13
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 03:22:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CH/BjpiBpZ/vu5u2YjAKcdVgEIZZP8RkoskTORrwc7k=;
+        b=W901Nj+xtSh1aiNfDE0AMKIOsC0ArWr80z7PJf34QwtvFBSITUMZJSslyGMx8aPwXY
+         HQfI4jtvf0PCFqM897iRWJdpPQ4XWSloTbGLYMFzxUZ1vcTn+L80wzKw8BdLfc9LiV2u
+         ewffAgUhVp48ltm6XiHTIVmMc8d95+6AmyqXpms7XlCf84xW7mXJD73hqyq8UNT4mNj7
+         uURucMcPRvMlkXf0FdFQMUzDogO2xGYu4s1rxMYMwUJTwJpTiRMkFs05fq0WULaP7Bx8
+         xRppUITefkkT5MNMHS60YpOb/6vEI3s1VHGY7meb8dAbqBvHy0YJsuxTad9hr1B6ULlc
+         rZOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CH/BjpiBpZ/vu5u2YjAKcdVgEIZZP8RkoskTORrwc7k=;
+        b=c9YSGI0xXVRPKyC1vz5ORz5iHdM7S5sSu9Fxd1IudCoZL1SrttkFTEhMxNZlMk4vC7
+         A25F86a3mtZDvUYHT378ijIPpEukEyKAkXCoXFArRoAbIw2uxYGTBXaH5PKtyrXEMOFU
+         7NgmxFCWRnsEl9IUn8JA/K+MbyiUMvX4KTVKR1F/H3OtTy9l3RUfcf5UMno/vRmC2MWX
+         OulrMMJY8TIeO40/i3LpoMiooxmSeuLAR2A9ARRk0iQDmYauzLDovsAh1yRNzTBx5KCI
+         umeRnGHfvC7dCzrzL+PbrjWKLPt6CMV1VEp6Ts/XOcyu4p3cFJW/zvUg94MDQm3ae+2m
+         1XcQ==
+X-Gm-Message-State: AOAM531QkDL0B4d6/KFMJ2AdpGXBMZfbgv0gJNE25p0Xqao291zaCBQM
+        YBNbPBv/E2zB0eASjejCMfXQ2w==
+X-Google-Smtp-Source: ABdhPJybvJVDj9O9DJ2NwSgzjlWPPDKmXV88NtvDPWzA4oqWQr33oPSWf1DuSfpq0COI7AIp00Woiw==
+X-Received: by 2002:adf:e38d:: with SMTP id e13mr12839437wrm.402.1637925742716;
+        Fri, 26 Nov 2021 03:22:22 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:47ed:5339:c53f:6a8? ([2a01:e34:ed2f:f020:47ed:5339:c53f:6a8])
+        by smtp.googlemail.com with ESMTPSA id l11sm5101510wrp.61.2021.11.26.03.22.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Nov 2021 03:22:21 -0800 (PST)
+Subject: Re: [PATCH] sched/idle: Export cpu_idle_poll_ctrl() symbol
+To:     Maulik Shah <quic_mkshah@quicinc.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ulf.hansson@linaro.org, quic_lsrao@quicinc.com,
+        rnayak@codeaurora.org, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+References: <1637831676-32737-1-git-send-email-quic_mkshah@quicinc.com>
+ <YZ9ctgCBYJEEjuwt@hirez.programming.kicks-ass.net>
+ <687d97b6-347a-92c0-34ba-00331dfb6c82@quicinc.com>
+ <0fb74083-e378-e1b4-624b-4f2076f237df@linaro.org>
+ <4427fe8d-c96d-d1f7-3ef2-674000b61b93@quicinc.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <444f74f7-43cc-fc48-7417-ccbcf8e176c8@linaro.org>
+Date:   Fri, 26 Nov 2021 12:22:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <4427fe8d-c96d-d1f7-3ef2-674000b61b93@quicinc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mvneta controller is able to do some tocken-bucket per-queue traffic
-shaping. This commit adds support for setting these using the TC mqprio
-interface.
+On 26/11/2021 06:56, Maulik Shah wrote:
+> Hi Daniel,
+> 
+> On 11/25/2021 10:56 PM, Daniel Lezcano wrote:
+>> On 25/11/2021 15:13, Maulik Shah wrote:
+>>> Hi Peter,
+>>>
+>>> On 11/25/2021 3:21 PM, Peter Zijlstra wrote:
+>>>> On Thu, Nov 25, 2021 at 02:44:36PM +0530, Maulik Shah wrote:
+>>>>> Export cpu_idle_poll_ctrl() so that module drivers can use same.
+>>>> This does not seem like a really safe interface to expose to the
+>>>> world.
+>>> Thanks for the review.
+>>>
+>>> Keeping the cpuidle enabled from boot up may delay/increase the boot up
+>>> time.
+>>> Below is our use case to force cpuidle to stay in cpu_idle_poll().
+>>>
+>>> We keep cpuidle disabled from boot up using "nohlt" option of kernel
+>>> command line which internally sets cpu_idle_force_poll = 1;
+>>> and once the device bootup reaches till certain point (for example the
+>>> android homescreen is up) userspace may notify a
+>>> vendor module driver which can invoke cpu_idle_poll_ctrl(false); to come
+>>> out of poll mode.
+>>> So vendor module driver needs cpu_idle_poll_ctrl() exported symbol.
+>>>
+>>> We can not take PM-QoS from driver to prevent deep cpuidle since all the
+>>> vendor modules are kept in a separate partition and will be loaded only
+>>> after kernel boot up is done
+>>> and by this time kernel already starts executing deep cpuidle modes.
+>>>> Surely the better solution is to rework things to not rely on this. I'm
+>>>> fairly sure it's not hard to write a cpuidle driver that does much the
+>>>> same.
+>>> The other option i think is to pass cpuidle.off=1 in kernel command line
+>>> and then add enable_cpuidle() in drivers/cpuidle/cpuidle.c
+>>> something similar as below which can be called by vendor module.
+>>>
+>>> void enable_cpuidle(void)
+>>> {
+>>>          off = 0;
+>>> }
+>>> EXPORT_SYMBOL_GPL(enable_cpuidle);
+>>>
+>>> This may be a good option since we have already disable_cpuidle() but
+>>> not enable_cpuidle().
+>>>
+>>> void disable_cpuidle(void)
+>>> {
+>>>          off = 1;
+>>> }
+>>>
+>>> Hi Rafael/Daniel, can you please let me know your suggestion on
+>>> this/similar implementation?
+>> Did you try to use the QoS latency? Sounds like it is exactly for this
+>> purpose.
+>>
+>> Set it to zero to force cpuidle to choose the shallowest idle state and
+>> then INT_MAX to disable the constraint.
+>>
+>>   cpu_latency_qos_add_request();
+>>
+>> Hope that helps
+>>
+>>    -- Daniel
+> The PM-QoS is not helping here since all the vendor drivers are kept in
+> a separate partition
+> and will be loaded only after kernel boot up is done and by the time
+> vendor kernel modules are inserted
+> takes QoS, kernel/menu governor already starts executing deep cpuidle
+> modes.
+> 
+> kernel start (t0)---------Menu governor loads (t1)----------vendor
+> modules loaded (t2)----------Usespace ready(t3)
+> 
+> Untill (t2), its only core kernel/android kernel which don't have any
+> vendor driver which can take QoS.
+> If we take QoS, it can be taken only from point (t2) but CPUs still
+> enter deep idle state between (t1) to (t2).
+> 
+> So to prevent this passing "cpuidle.off=1" or "nohlt" in kernel command
+> line can keep deep cpuidle states disabled from boot up and
+> once vendor modules are ready at (t2) or (t3), it can either invoke
+> newly added enable_cpuidle() or cpu_idle_poll_ctrl(false);
+> to comeout of polling mode and start executing deep low power modes.
 
-The token-bucket parameters are customisable, but the current
-implementation configures them to have a 10kbps resolution for the
-rate limitation, since it allows to cover the whole range of max_rate
-values from 10kbps to 5Gbps with 10kbps increments.
+I understand. The approach is valid but I'm wondering if it should fall
+under a more global feature with a perf <-> power cursor
 
-Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
----
-V2 : Use div_u64_rem for u64 division, as suggested by Jakub. It also
-     allowed to simplify the code a little bit.
+If the goal is to be as fast as possible at boot time, the cursor should
+be set to 'perf and then changed to 'power' after the system has booted.
 
- drivers/net/ethernet/marvell/mvneta.c | 120 +++++++++++++++++++++++++-
- 1 file changed, 119 insertions(+), 1 deletion(-)
+So not only cpuidle but also any other subsystems can skip the PM path
+or go the highest performance state (assuming the PM code is compiled-in
+for the devices).
 
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index aba452e8abfe..2368ae3f0e10 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -248,12 +248,39 @@
- #define      MVNETA_TXQ_SENT_DESC_MASK           0x3fff0000
- #define MVNETA_PORT_TX_RESET                     0x3cf0
- #define      MVNETA_PORT_TX_DMA_RESET            BIT(0)
-+#define MVNETA_TXQ_CMD1_REG			 0x3e00
-+#define      MVNETA_TXQ_CMD1_BW_LIM_SEL_V1	 BIT(3)
-+#define      MVNETA_TXQ_CMD1_BW_LIM_EN		 BIT(0)
-+#define MVNETA_REFILL_NUM_CLK_REG		 0x3e08
-+#define      MVNETA_REFILL_MAX_NUM_CLK		 0x0000ffff
- #define MVNETA_TX_MTU                            0x3e0c
- #define MVNETA_TX_TOKEN_SIZE                     0x3e14
- #define      MVNETA_TX_TOKEN_SIZE_MAX            0xffffffff
-+#define MVNETA_TXQ_BUCKET_REFILL_REG(q)		 (0x3e20 + ((q) << 2))
-+#define      MVNETA_TXQ_BUCKET_REFILL_PERIOD_MASK	0x3ff00000
-+#define      MVNETA_TXQ_BUCKET_REFILL_PERIOD_SHIFT	20
-+#define      MVNETA_TXQ_BUCKET_REFILL_VALUE_MAX	 0x0007ffff
- #define MVNETA_TXQ_TOKEN_SIZE_REG(q)             (0x3e40 + ((q) << 2))
- #define      MVNETA_TXQ_TOKEN_SIZE_MAX           0x7fffffff
- 
-+/* The values of the bucket refill base period and refill period are taken from
-+ * the reference manual, and adds up to a base resolution of 10Kbps. This allows
-+ * to cover all rate-limit values from 10Kbps up to 5Gbps
-+ */
-+
-+/* Base period for the rate limit algorithm */
-+#define MVNETA_TXQ_BUCKET_REFILL_BASE_PERIOD_NS	100
-+
-+/* Number of Base Period to wait between each bucket refill */
-+#define MVNETA_TXQ_BUCKET_REFILL_PERIOD	1000
-+
-+/* The base resolution for rate limiting, in bps. Any max_rate value should be
-+ * a multiple of that value.
-+ */
-+#define MVNETA_TXQ_RATE_LIMIT_RESOLUTION (NSEC_PER_SEC / \
-+					 (MVNETA_TXQ_BUCKET_REFILL_BASE_PERIOD_NS * \
-+					  MVNETA_TXQ_BUCKET_REFILL_PERIOD))
-+
- #define MVNETA_LPI_CTRL_0                        0x2cc0
- #define MVNETA_LPI_CTRL_1                        0x2cc4
- #define      MVNETA_LPI_REQUEST_ENABLE           BIT(0)
-@@ -4906,11 +4933,74 @@ static void mvneta_map_vlan_prio_to_rxq(struct mvneta_port *pp, u8 pri, u8 rxq)
- 	mvreg_write(pp, MVNETA_VLAN_PRIO_TO_RXQ, val);
- }
- 
-+static int mvneta_enable_per_queue_rate_limit(struct mvneta_port *pp)
-+{
-+	unsigned long core_clk_rate;
-+	u32 refill_cycles;
-+	u32 val;
-+
-+	core_clk_rate = clk_get_rate(pp->clk);
-+	if (!core_clk_rate)
-+		return -EINVAL;
-+
-+	refill_cycles = MVNETA_TXQ_BUCKET_REFILL_BASE_PERIOD_NS /
-+			(NSEC_PER_SEC / core_clk_rate);
-+
-+	if (refill_cycles > MVNETA_REFILL_MAX_NUM_CLK)
-+		return -EINVAL;
-+
-+	/* Enable bw limit algorithm version 3 */
-+	val = mvreg_read(pp, MVNETA_TXQ_CMD1_REG);
-+	val &= ~(MVNETA_TXQ_CMD1_BW_LIM_SEL_V1 | MVNETA_TXQ_CMD1_BW_LIM_EN);
-+	mvreg_write(pp, MVNETA_TXQ_CMD1_REG, val);
-+
-+	/* Set the base refill rate */
-+	mvreg_write(pp, MVNETA_REFILL_NUM_CLK_REG, refill_cycles);
-+
-+	return 0;
-+}
-+
-+static void mvneta_disable_per_queue_rate_limit(struct mvneta_port *pp)
-+{
-+	u32 val = mvreg_read(pp, MVNETA_TXQ_CMD1_REG);
-+
-+	val |= (MVNETA_TXQ_CMD1_BW_LIM_SEL_V1 | MVNETA_TXQ_CMD1_BW_LIM_EN);
-+	mvreg_write(pp, MVNETA_TXQ_CMD1_REG, val);
-+}
-+
-+static int mvneta_setup_queue_rates(struct mvneta_port *pp, int queue,
-+				    u64 min_rate, u64 max_rate)
-+{
-+	u32 refill_val, rem;
-+	u32 val = 0;
-+
-+	/* Convert to from Bps to bps */
-+	max_rate *= 8;
-+
-+	if (min_rate)
-+		return -EINVAL;
-+
-+	refill_val = div_u64_rem(max_rate, MVNETA_TXQ_RATE_LIMIT_RESOLUTION,
-+				 &rem);
-+
-+	if (rem || !refill_val ||
-+	    refill_val > MVNETA_TXQ_BUCKET_REFILL_VALUE_MAX)
-+		return -EINVAL;
-+
-+	val = refill_val;
-+	val |= (MVNETA_TXQ_BUCKET_REFILL_PERIOD <<
-+		MVNETA_TXQ_BUCKET_REFILL_PERIOD_SHIFT);
-+
-+	mvreg_write(pp, MVNETA_TXQ_BUCKET_REFILL_REG(queue), val);
-+
-+	return 0;
-+}
-+
- static int mvneta_setup_mqprio(struct net_device *dev,
- 			       struct tc_mqprio_qopt_offload *mqprio)
- {
- 	struct mvneta_port *pp = netdev_priv(dev);
--	int rxq, tc;
-+	int rxq, txq, tc, ret;
- 	u8 num_tc;
- 
- 	if (mqprio->qopt.hw != TC_MQPRIO_HW_OFFLOAD_TCS)
-@@ -4924,6 +5014,7 @@ static int mvneta_setup_mqprio(struct net_device *dev,
- 	mvneta_clear_rx_prio_map(pp);
- 
- 	if (!num_tc) {
-+		mvneta_disable_per_queue_rate_limit(pp);
- 		netdev_reset_tc(dev);
- 		return 0;
- 	}
-@@ -4944,6 +5035,33 @@ static int mvneta_setup_mqprio(struct net_device *dev,
- 		}
- 	}
- 
-+	if (mqprio->shaper != TC_MQPRIO_SHAPER_BW_RATE) {
-+		mvneta_disable_per_queue_rate_limit(pp);
-+		return 0;
-+	}
-+
-+	if (mqprio->qopt.num_tc > txq_number)
-+		return -EINVAL;
-+
-+	ret = mvneta_enable_per_queue_rate_limit(pp);
-+	if (ret)
-+		return ret;
-+
-+	for (tc = 0; tc < mqprio->qopt.num_tc; tc++) {
-+		for (txq = mqprio->qopt.offset[tc];
-+		     txq < mqprio->qopt.count[tc] + mqprio->qopt.offset[tc];
-+		     txq++) {
-+			if (txq >= txq_number)
-+				return -EINVAL;
-+
-+			ret = mvneta_setup_queue_rates(pp, txq,
-+						       mqprio->min_rate[tc],
-+						       mqprio->max_rate[tc]);
-+			if (ret)
-+				return ret;
-+		}
-+	}
-+
- 	return 0;
- }
- 
+
+
+
 -- 
-2.25.4
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
