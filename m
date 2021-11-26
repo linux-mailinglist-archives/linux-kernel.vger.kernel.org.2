@@ -2,139 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6BDF45E8F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C47BF45E8E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:51:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347122AbhKZIFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 03:05:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344463AbhKZIDm (ORCPT
+        id S1353122AbhKZHyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 02:54:47 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:27299 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344718AbhKZHwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 03:03:42 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 790F1C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:59:57 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id z5so35428332edd.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:59:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0xI7/7Qmq/8rziraYyi5hfmxS8XBzgKRuj2SZVAFPtY=;
-        b=IwOcILYAYW/qN9TXAWOP1gxs0ryKVBNZkY8vHBVcgSJS10If/vrlp5iXr+QXjbr2t6
-         kFxcRrW578+lv449f4REJz4oc6fuFGIoYXHlTNiu5v2+po02wpgUU3z74Tnym5ygThrp
-         FcGHCteyJHYI+Zio7Qd/sEs9KVIvK/55xpr9OoYrV9fCVrXL38IGPpY8yyKvypNSP47w
-         z+gHyfob4TBjWyc3EX7NXgJDL5YaNi6dmUYgHK5CTt69cMhctm9WEtlNU7t7r3+YSNDz
-         Wu9uMKC2wGnXuvygA/l/lm8XVkJOlRRFOa+928saOsq0cd6g8CWjZKvxNEv4GgabDvae
-         UNuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0xI7/7Qmq/8rziraYyi5hfmxS8XBzgKRuj2SZVAFPtY=;
-        b=dN9SZQor6wvTNx/wAlkkvmG8/Q0MEgAL5dAjAQNTVr5IhTofy8AVWu1uNdkBlyfxOh
-         IdqhLXtrTUE7KDc7tWZRStIYtA9DsMRnqiqrxU6kt9CDOmqmYlCsr3QLi6aYob3gn69k
-         626X1A4J75ToCgJ5/6G7rhybW4JquvGbcVc5ZfmCg7LYz2fEOFs8Eje/Wq9LxU80387P
-         kSMxp75f5CMiMNvWHhyYWQj2K4MBJ3/lPyait+6n9QD3mp4b6MNFcg3wwUIEqFLWrocm
-         pWIxGSjqGwhREA3QhyFTU0rSk/PnMO7BP2cThUk4epD/JhNQNmiXLA98HKsEXVXipqCf
-         tzHg==
-X-Gm-Message-State: AOAM530GmN9SgVQd9v2u78wj9us6NrljICJYNHVgL5UBXI8tNXuY/n6m
-        4tBfcHTA0HriCH+2Io7edr8uCm4PiWPMk8qKn3Rx4LicA/8=
-X-Google-Smtp-Source: ABdhPJy0dhQqCWLBvB70vV5CG5ap8OQoHh9QoX/SBUn+4JoEA/zikBbSmzrwGhh4+/WLUQ1f0w/tazR2oPOIplZWcOk=
-X-Received: by 2002:a17:907:2cc4:: with SMTP id hg4mr37551999ejc.112.1637913595861;
- Thu, 25 Nov 2021 23:59:55 -0800 (PST)
+        Fri, 26 Nov 2021 02:52:43 -0500
+Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4J0n2G2XNVzbj6t;
+        Fri, 26 Nov 2021 15:49:26 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 26 Nov 2021 15:49:04 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 26 Nov 2021 15:49:04 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Marco Elver <elver@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH] arm64: Enable KCSAN
+Date:   Fri, 26 Nov 2021 16:00:08 +0800
+Message-ID: <20211126080008.77202-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20211125150730.188487-1-sudeep.holla@arm.com> <20211125182543.GE56473@e120937-lin>
-In-Reply-To: <20211125182543.GE56473@e120937-lin>
-From:   Etienne Carriere <etienne.carriere@linaro.org>
-Date:   Fri, 26 Nov 2021 08:59:45 +0100
-Message-ID: <CAN5uoS_0crJm+ywd6Jg3NxtzO5gyREp35TTfbvFrpsuUyG6MLw@mail.gmail.com>
-Subject: Re: [PATCH] firmware: arm_scmi: optee: Drop the support for the OPTEE
- shared dynamic buffer
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Sudeep,
+This patch enables KCSAN for arm64, with updates to build rules
+to not use KCSAN for several incompatible compilation units.
 
-On Thu, 25 Nov 2021 at 19:25, Cristian Marussi <cristian.marussi@arm.com> wrote:
->
-> On Thu, Nov 25, 2021 at 03:07:30PM +0000, Sudeep Holla wrote:
-> > The shared memory buffer allocated by the optee driver is normal cached
-> > memory and can't be used with IOMEM APIs used in shmem_*.
-> >
-> > We currently support only IO memory for shared memory and supporting
-> > normal cached memory needs more changes and needs to be thought through
-> > properly. So for now, let us drop the support for this OPTEE shared buffer.
-> >
-> > Cc: Cristian Marussi <cristian.marussi@arm.com>
-> > Cc: Etienne Carriere <etienne.carriere@linaro.org>
-> > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> > ---
->
-> Hi,
->
->
-> >  drivers/firmware/arm_scmi/optee.c | 19 +------------------
-> >  1 file changed, 1 insertion(+), 18 deletions(-)
-> >
-> > diff --git a/drivers/firmware/arm_scmi/optee.c b/drivers/firmware/arm_scmi/optee.c
-> > index 901737c9f5f8..175b39bcd470 100644
-> > --- a/drivers/firmware/arm_scmi/optee.c
-> > +++ b/drivers/firmware/arm_scmi/optee.c
-> > @@ -282,23 +282,6 @@ static void scmi_optee_clear_channel(struct scmi_chan_info *cinfo)
-> >       shmem_clear_channel(channel->shmem);
-> >  }
-> >
-> > -static int setup_dynamic_shmem(struct device *dev, struct scmi_optee_channel *channel)
-> > -{
-> > -     const size_t msg_size = SCMI_OPTEE_MAX_MSG_SIZE;
-> > -
-> > -     channel->tee_shm = tee_shm_alloc_kernel_buf(scmi_optee_private->tee_ctx, msg_size);
-> > -     if (IS_ERR(channel->tee_shm)) {
-> > -             dev_err(channel->cinfo->dev, "shmem allocation failed\n");
-> > -             return -ENOMEM;
-> > -     }
-> > -
-> > -     channel->shmem = (void *)tee_shm_get_va(channel->tee_shm, 0);
-> > -     memset(channel->shmem, 0, msg_size);
-> > -     shmem_clear_channel(channel->shmem);
-> > -
-> > -     return 0;
-> > -}
-> > -
-> >  static int setup_static_shmem(struct device *dev, struct scmi_chan_info *cinfo,
-> >                             struct scmi_optee_channel *channel)
-> >  {
-> > @@ -342,7 +325,7 @@ static int setup_shmem(struct device *dev, struct scmi_chan_info *cinfo,
-> >       if (of_find_property(cinfo->dev->of_node, "shmem", NULL))
-> >               return setup_static_shmem(dev, cinfo, channel);
-> >       else
-> > -             return setup_dynamic_shmem(dev, channel);
-> > +             return -ENOMEM;
-> >  }
-> >
+Tested selftest and kcsan_test, and all passed.
 
-I would rather find an alternate way to support tee shared memory.
-I think OP-TEE could use msg.c format when handling tee memory. Linux
-and OP-TEE Scmi transport discovery negotiate the channel type and
-support for msg format could allow OP-TEE to use its shm management. I
-will prepare an implementation but if you prefer the current remove
-support and later introduce back tee shm support, I'm fine.
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+---
+Tested on Qemu with clang 13, based on 5.16-rc2.
 
-Best regards,
-Etienne
+[    0.221518] kcsan: enabled early
+[    0.222422] kcsan: strict mode configured
+...
+[    5.839223] kcsan: selftest: 3/3 tests passed
+...
+[  517.895102] # kcsan: pass:24 fail:0 skip:0 total:24
+[  517.896393] # Totals: pass:168 fail:0 skip:0 total:168
+[  517.897502] ok 1 - kcsan
 
->
-> LGTM.
->
-> Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
->
-> Thanks,
-> Cristian
+ arch/arm64/Kconfig               | 1 +
+ arch/arm64/kernel/vdso/Makefile  | 1 +
+ arch/arm64/kvm/hyp/nvhe/Makefile | 1 +
+ 3 files changed, 3 insertions(+)
+
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 4ff73299f8a9..0ac90875f71d 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -150,6 +150,7 @@ config ARM64
+ 	select HAVE_ARCH_KASAN_VMALLOC if HAVE_ARCH_KASAN
+ 	select HAVE_ARCH_KASAN_SW_TAGS if HAVE_ARCH_KASAN
+ 	select HAVE_ARCH_KASAN_HW_TAGS if (HAVE_ARCH_KASAN && ARM64_MTE)
++	select HAVE_ARCH_KCSAN
+ 	select HAVE_ARCH_KFENCE
+ 	select HAVE_ARCH_KGDB
+ 	select HAVE_ARCH_MMAP_RND_BITS
+diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
+index 700767dfd221..60813497a381 100644
+--- a/arch/arm64/kernel/vdso/Makefile
++++ b/arch/arm64/kernel/vdso/Makefile
+@@ -32,6 +32,7 @@ ccflags-y += -DDISABLE_BRANCH_PROFILING -DBUILD_VDSO
+ CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os $(CC_FLAGS_SCS) $(GCC_PLUGINS_CFLAGS) \
+ 				$(CC_FLAGS_LTO)
+ KASAN_SANITIZE			:= n
++KCSAN_SANITIZE			:= n
+ UBSAN_SANITIZE			:= n
+ OBJECT_FILES_NON_STANDARD	:= y
+ KCOV_INSTRUMENT			:= n
+diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
+index c3c11974fa3b..24b2c2425b38 100644
+--- a/arch/arm64/kvm/hyp/nvhe/Makefile
++++ b/arch/arm64/kvm/hyp/nvhe/Makefile
+@@ -89,6 +89,7 @@ KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_FTRACE) $(CC_FLAGS_SCS) $(CC_FLAGS_CFI)
+ # cause crashes. Just disable it.
+ GCOV_PROFILE	:= n
+ KASAN_SANITIZE	:= n
++KCSAN_SANITIZE	:= n
+ UBSAN_SANITIZE	:= n
+ KCOV_INSTRUMENT	:= n
+ 
+-- 
+2.26.2
+
