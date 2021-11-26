@@ -2,100 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79C845F561
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:45:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49BA445F537
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236687AbhKZTs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 14:48:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236890AbhKZTq5 (ORCPT
+        id S236615AbhKZTfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 14:35:24 -0500
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:46025 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233715AbhKZTdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 14:46:57 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFCE2C061574;
-        Fri, 26 Nov 2021 11:27:33 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id y26so26473475lfa.11;
-        Fri, 26 Nov 2021 11:27:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=O1kK9AYBtc9AD0KhODE7NvT+qyLPdaRS8n6Xu3GYNXw=;
-        b=N1PRWlXx8pANbj2NPlTiFayoeMPh+egborEJg1CHEWS4T9yk/adQRe6+QCzUZQ6MmN
-         WvtMl2kAOP7xFb8hFb9LJ5UegafHCsOwlMoTuvyy7pm6LUorAW9q87DHBc6eUlHgGgxf
-         3Dqa7Pcv1e4TpqvAR4zeCIR4nCNalsOwQh3wt5Gw49/fBmE3kcxsSE5PEgFXE8zqJdBn
-         RNXcG631LSVnNsHbmkJxT8d0B29g0ScP020YoYZikbVOTOtuo7oWpzxQ+7MrqjySUz/m
-         E3OLLuJNBcA0ZTWzczJ0bjsJgngSsUXNp5IF8KtZuqGSZLnoWSCZ+VXocUNDrS/somke
-         QlMQ==
+        Fri, 26 Nov 2021 14:33:24 -0500
+Received: by mail-ot1-f43.google.com with SMTP id a23-20020a9d4717000000b0056c15d6d0caso15252020otf.12;
+        Fri, 26 Nov 2021 11:30:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=O1kK9AYBtc9AD0KhODE7NvT+qyLPdaRS8n6Xu3GYNXw=;
-        b=pOrCMh/YePxT3dy95KxJfoRGNIQn2lD1WRBZ6dEQ5sLNgKakHTXZe2gvlDKIFwxfh8
-         Y0FvxIvE5z1yvlGdWaIrTIut0WYy43uv29pw/ApvaOmWUNL14ZWcvg+bJjjyvSGf1XoC
-         3ifXn+CndiQ6IGdnu6SapGBgNrqaZF+ygTmkhllBeBEkLlnzHdTBfeZB6txdYJ+Z+tU5
-         degwkIruIS0+MyXDOFjDMeBH1KDOjmv/MwUvs8MITkqwxuYOosUuxyU5Ja1Zz3dDJtTJ
-         OvboAUC/kuqwRCc5y5fGEKPvfhNhf1axPnnUy+whDqGlgesYPQfntBrfm4sqZ5XDuWmJ
-         IPiw==
-X-Gm-Message-State: AOAM533fn3O7DwRGV/cqy6N95ZTEoNNzCO3zaX3JO5guaGDsxdbRQtR2
-        EbN6zNcvR01OqASsWPRb7F20638x6jQ=
-X-Google-Smtp-Source: ABdhPJwsAOi539yLJqNfE5zyJYLxjjvJ1laZK+5s4ZfumYwXzUr5B/hLGXjZ6PwZEC6MzWPg7sf1cA==
-X-Received: by 2002:a19:4f02:: with SMTP id d2mr32018081lfb.547.1637954852084;
-        Fri, 26 Nov 2021 11:27:32 -0800 (PST)
-Received: from [192.168.1.103] ([178.176.72.184])
-        by smtp.gmail.com with ESMTPSA id a30sm565161ljd.134.2021.11.26.11.27.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Nov 2021 11:27:31 -0800 (PST)
-Subject: Re: [PATCH -next V5 0/2] fix two bugs when trying rmmod sata_fsl
-To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Baokun Li <libaokun1@huawei.com>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     yebin10@huawei.com, yukuai3@huawei.com
-References: <20211126020307.2168767-1-libaokun1@huawei.com>
- <4469be5f-01a9-5d10-9dc3-b703f36a1ea4@opensource.wdc.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <52d961ae-e4e0-00fb-0753-518125edc560@gmail.com>
-Date:   Fri, 26 Nov 2021 22:27:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P0Ds7jWfKymmq417H8ZAqR46BLCCsJEqfr+3f1b84Y0=;
+        b=dCuY87a10JjYtW8PIdU3kou/VjBg5+xpOCUxrsnwa8Xf/zX/gluvqCXpZ1QlvCcKRi
+         wKsKzZm47oB0t2Acpn5o2K1S43fW2IbPRYYcPYBPG5VrHxZ+GzKgVa+UsEwTsKy3sht4
+         mBhxlxrP+t2KiJssprCCyXEqR1EP4Ej3aUkmY5646AuXS4++kYvibEF+OhRgEZUQ9ui5
+         0kANv0TkbLABd5ODfvX8+1ghRZ8S0SrhKJNo5ovTzfgBFTD6c/ZwCDX9pQR1mKOwAl6O
+         wrp3VXDPY+lrOBX2y9cJgUFozsde5G8/tVkhEzGc+6qT2iZazS3teMtv31a1O1t359Fu
+         LCpw==
+X-Gm-Message-State: AOAM533AK9hUBvUnKuDPE1ormLxWMOU1WqfLQHiL2PGrSV24tDLnCeSd
+        Ya/iMMjOptVNTSgFMgThbWE6V03CgdKP2+ol1lI=
+X-Google-Smtp-Source: ABdhPJy/OnHHxYJcyA4pvtVU62Jn57J07ierdEuYoO4nzllyf/tL7K4g963mQLlcAd5k78q6PTvqlx+QUT9m3Ighf0E=
+X-Received: by 2002:a05:6830:348f:: with SMTP id c15mr30253933otu.254.1637955010619;
+ Fri, 26 Nov 2021 11:30:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <4469be5f-01a9-5d10-9dc3-b703f36a1ea4@opensource.wdc.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210401183654.27214-1-daniel.lezcano@linaro.org>
+ <20210401183654.27214-3-daniel.lezcano@linaro.org> <CAAYoRsURO1tf03nfiki1uaXYEmTKQyYKUeTyKW+vefrVzCO7jg@mail.gmail.com>
+ <CAJZ5v0hcuq0qriHbc=XHbCo8fJMAV1dbCBws3M9GktN17aCE_g@mail.gmail.com> <CAAYoRsXLTYKGK_doqDqgerQ+uW3UhMYki7FfBy3cAhbfXiCrXA@mail.gmail.com>
+In-Reply-To: <CAAYoRsXLTYKGK_doqDqgerQ+uW3UhMYki7FfBy3cAhbfXiCrXA@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 26 Nov 2021 20:29:58 +0100
+Message-ID: <CAJZ5v0hDa4dmEJD0EYnOzfDBNC-GU99DM_d7bsTCCoSaP-o3CA@mail.gmail.com>
+Subject: Re: [PATCH v6 3/7] powercap/drivers/dtpm: Simplify the dtpm table
+To:     Doug Smythies <dsmythies@telus.net>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Fri, Nov 26, 2021 at 8:10 PM Doug Smythies <dsmythies@telus.net> wrote:
+>
+> On Fri, Nov 26, 2021 at 9:22 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > Hi Doug,
+> >
+> > On Fri, Nov 26, 2021 at 6:08 PM Doug Smythies <dsmythies@telus.net> wrote:
+> > >
+> > > Hi Daniel,
+> > >
+> > > This patch introduces a regression, at least on my test system.
+> > > I can no longer change CPU frequency scaling drivers, for example
+> > > from intel_cpufreq (A.K.A intel_pstate in passive mode) to intel_pstate
+> > > (A.K.A. active mode). The task just hangs forever.
+> > >
+> > > I bisected the kernel and got this commit as the result.
+> > > As a double check, I reverted this commit:
+> > > 7a89d7eacf8e84f2afb94db5ae9d9f9faa93f01c
+> > > on kernel 5.16-rc2 and the issue was resolved.
+> > >
+> > > While your email is fairly old, I observe that it was only included as of
+> > > kernel 5.16-rc1.
+> > >
+> > > Command Example that never completes:
+> > >
+> > > $ echo passive | sudo tee /sys/devices/system/cpu/intel_pstate/status
+> > >
+> > > syslog excerpt attached.
+> >
+> > This looks like it may be problematic:
+> >
+> > diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
+> > index f6076de39540..98841524a782 100644
+> > --- a/drivers/powercap/dtpm_cpu.c
+> > +++ b/drivers/powercap/dtpm_cpu.c
+> > @@ -204,7 +204,7 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
+> >        return ret;
+> > }
+> >
+> > -int dtpm_register_cpu(struct dtpm *parent)
+> > +static int __init dtpm_cpu_init(void)
+> > {
+> >        int ret;
+> >
+> > so please try to remove the __init annotation from dtpm_cpu_init() and
+> > see if that helps.
+>
+> Hi Rafael,
+>
+> That did not fix the issue.
+> Just to be clear this is what I did, on top of 5.16-rc2:
+>
+> $ git diff
+> diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
+> index b740866b228d..26d1a87bdec6 100644
+> --- a/drivers/powercap/dtpm_cpu.c
+> +++ b/drivers/powercap/dtpm_cpu.c
+> @@ -231,7 +231,7 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
+>         return ret;
+>  }
+>
+> -static int __init dtpm_cpu_init(void)
+> +static int dtpm_cpu_init(void)
+>  {
+>         int ret;
 
-On 11/26/21 4:56 AM, Damien Le Moal wrote:
+OK
 
->> V1->V2:
->> 	Fixed the check on the return value of platform_get_irq().
->> 	And propagate errors up to sata_fsl_probe()'s callers.
->> V2->V3:
->> 	Add fixed and CC stable and modified the patch description.
->> V3->V4:
->> 	Use a single structure.
->> V4->V5:
->> 	Delete duplicate dev_err() message.
->>
->> Baokun Li (2):
->>   sata_fsl: fix UAF in sata_fsl_port_stop when rmmod sata_fsl
->>   sata_fsl: fix warning in remove_proc_entry when rmmod sata_fsl
->>
->>  drivers/ata/sata_fsl.c | 20 +++++++++++++-------
->>  1 file changed, 13 insertions(+), 7 deletions(-)
->>
-> 
-> The series looks good to me now.
-> 
-> Sergei ? Are you OK with it ?
-
-   Yeah, I'll just give the patches by Reviewed-by's.
-
-MBR, Sergei
+This needs to be fixed or we'll need to revert commit
+7a89d7eacf8e84f2afb94db5ae9d9f9faa93f01c for 5.16.
