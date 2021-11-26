@@ -2,95 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7746A45E41A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 02:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0D245E41C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 02:38:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344307AbhKZBky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 20:40:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343810AbhKZBix (ORCPT
+        id S1357369AbhKZBl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 20:41:57 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:27298 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231815AbhKZBj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 20:38:53 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90667C061574;
-        Thu, 25 Nov 2021 17:35:41 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id x131so7337347pfc.12;
-        Thu, 25 Nov 2021 17:35:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BC6SGqll2uc/Zv/S1kgQ3STL+1ZHDPjKpDU0asoxWCM=;
-        b=TnDzylDFZtfPCO+3RZNOIlB4jX60ZxezOab4G01BceqytfGO0wR2P54JICIVdeIPXa
-         qCU3gY7aynOiJuPmybr/4VnDE7oHFSktcMjW0hg0k5cngqDeBCi10XOJCEtITFk/Y1uy
-         jl33CWtTi2Ek1Y760ObcfgxljT14/crK2Q4J33MpAvRo9ccy9sM97vIkXEf6P5jTOEyT
-         n7o4Idjsf4x1a3m0MDtEIX2/lHosYXN8lbXU0gSbhPeqEsoA2SI9JwXsMgRn0mzjph7D
-         gU8NwYofoEYaaNIcV5fiH6q7XkJa+7o9F75Y6255tUplTCGVy82OiE+Hd2T1hZwjU1o1
-         rEcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BC6SGqll2uc/Zv/S1kgQ3STL+1ZHDPjKpDU0asoxWCM=;
-        b=eRt77qRkTS/RSCsjjwL98B4KRRTr+lRvqX4sUF7OoqY6AsnkCawzSoPKyho/BiwY3s
-         qiUcCDDvz4ydevh8kVH9qaHbk6wH37INJySR/GFoqjz6NkLJATciKer9tw6rc63RY55U
-         mAli++XWhCHl0A7HujsIcgvvBpo10kG3/GSugGMO2c/q0FgnYfaXAE13T2NImQQhfiiZ
-         yehYYxOc3zm7cg2Or54MbqGe3Z6olTnNKU5vOGyjtfCbXpaNb1kaR6IXsCfe16zG2A6m
-         XT1abgr4OgwphdMZZ9s/1ZihXbt8NR/ufxzxFjumCfPGoHt4nAcSTGYbBpSKz3HaXLgQ
-         +44w==
-X-Gm-Message-State: AOAM5324OgK5cfdAZpdbQNKpjhXaOI1CZ3/yOHko+/RaPN/Hq/uRRPmP
-        O0qQ5bNZi9dj4XJEj+DdgmjY3ay2e2g=
-X-Google-Smtp-Source: ABdhPJxxhoRPWvSi7qP2HqlGcwQFPXdVX9wsMvQJG2frSrOtm2O9eiZy7JM9XwabCs3MJc/F9lkLkw==
-X-Received: by 2002:a63:145d:: with SMTP id 29mr18972313pgu.264.1637890541142;
-        Thu, 25 Nov 2021 17:35:41 -0800 (PST)
-Received: from localhost ([103.99.179.247])
-        by smtp.gmail.com with ESMTPSA id d10sm4772832pfl.139.2021.11.25.17.35.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 17:35:40 -0800 (PST)
-Date:   Fri, 26 Nov 2021 09:35:36 +0800
-From:   Calvin Zhang <calvinzhang.cool@gmail.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] mm: kmemleak: alloc gray object for reserved region with
- direct map.
-Message-ID: <YaA56JVYPfzCsawG@debian>
-References: <20211123090641.3654006-1-calvinzhang.cool@gmail.com>
- <YZ/FQXS3gWZ2xfEy@arm.com>
+        Thu, 25 Nov 2021 20:39:57 -0500
+Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4J0cm80jY9zbj5R;
+        Fri, 26 Nov 2021 09:36:40 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 26 Nov 2021 09:36:42 +0800
+Subject: Re: [PATCH -next V4 2/2] sata_fsl: fix warning in remove_proc_entry
+ when rmmod sata_fsl
+To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <sergei.shtylyov@gmail.com>, <yebin10@huawei.com>,
+        <yukuai3@huawei.com>, Hulk Robot <hulkci@huawei.com>
+References: <20211123014159.3442998-1-libaokun1@huawei.com>
+ <20211123014159.3442998-3-libaokun1@huawei.com>
+ <c760f12c-c296-9184-7952-9b76c84fe48f@opensource.wdc.com>
+From:   "libaokun (A)" <libaokun1@huawei.com>
+Message-ID: <e4e32cd3-4bfe-9207-0bc2-b6367204c386@huawei.com>
+Date:   Fri, 26 Nov 2021 09:36:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZ/FQXS3gWZ2xfEy@arm.com>
+In-Reply-To: <c760f12c-c296-9184-7952-9b76c84fe48f@opensource.wdc.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 05:17:53PM +0000, Catalin Marinas wrote:
->On Tue, Nov 23, 2021 at 05:06:41PM +0800, Calvin Zhang wrote:
->> Reserved regions with direct mapping may contain references to other
->> regions. CMA region with fixed location is reserved without creating
->> kmemleak_object for it.
->> 
->> So add them as gray kmemleak objects.
+在 2021/11/26 7:47, Damien Le Moal 写道:
+> On 2021/11/23 10:41, Baokun Li wrote:
+>> Trying to remove the fsl-sata module in the PPC64 GNU/Linux
+>> leads to the following warning:
+>>   ------------[ cut here ]------------
+>>   remove_proc_entry: removing non-empty directory 'irq/69',
+>>     leaking at least 'fsl-sata[ff0221000.sata]'
+>>   WARNING: CPU: 3 PID: 1048 at fs/proc/generic.c:722
+>>     .remove_proc_entry+0x20c/0x220
+>>   IRQMASK: 0
+>>   NIP [c00000000033826c] .remove_proc_entry+0x20c/0x220
+>>   LR [c000000000338268] .remove_proc_entry+0x208/0x220
+>>   Call Trace:
+>>    .remove_proc_entry+0x208/0x220 (unreliable)
+>>    .unregister_irq_proc+0x104/0x140
+>>    .free_desc+0x44/0xb0
+>>    .irq_free_descs+0x9c/0xf0
+>>    .irq_dispose_mapping+0x64/0xa0
+>>    .sata_fsl_remove+0x58/0xa0 [sata_fsl]
+>>    .platform_drv_remove+0x40/0x90
+>>    .device_release_driver_internal+0x160/0x2c0
+>>    .driver_detach+0x64/0xd0
+>>    .bus_remove_driver+0x70/0xf0
+>>    .driver_unregister+0x38/0x80
+>>    .platform_driver_unregister+0x14/0x30
+>>    .fsl_sata_driver_exit+0x18/0xa20 [sata_fsl]
+>>   ---[ end trace 0ea876d4076908f5 ]---
+>>
+>> The driver creates the mapping by calling irq_of_parse_and_map(),
+>> so it also has to dispose the mapping. But the easy way out is to
+>> simply use platform_get_irq() instead of irq_of_parse_map(). Also
+>> we should adapt return value checking and propagate error values.
+>>
+>> In this case the mapping is not managed by the device but by
+>> the of core, so the device has not to dispose the mapping.
+>>
+>> Fixes: faf0b2e5afe7 ("drivers/ata: add support to Freescale 3.0Gbps SATA Controller")
+>> Cc: stable@vger.kernel.org
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> ---
+>> V1->V2:
+>> 	Adapt return value checking and propagate error values.
+>> V2->V3:
+>> 	Add fixed and CC stable.
+>>
+>>   drivers/ata/sata_fsl.c | 7 +++----
+>>   1 file changed, 3 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/ata/sata_fsl.c b/drivers/ata/sata_fsl.c
+>> index 2eb216792695..8e7c49793f91 100644
+>> --- a/drivers/ata/sata_fsl.c
+>> +++ b/drivers/ata/sata_fsl.c
+>> @@ -1490,8 +1490,9 @@ static int sata_fsl_probe(struct platform_device *ofdev)
+>>   	host_priv->ssr_base = ssr_base;
+>>   	host_priv->csr_base = csr_base;
+>>   
+>> -	irq = irq_of_parse_and_map(ofdev->dev.of_node, 0);
+>> -	if (!irq) {
+>> +	irq = platform_get_irq(ofdev, 0);
+>> +	if (irq < 0) {
+>> +		retval = irq;
+>>   		dev_err(&ofdev->dev, "invalid irq from platform\n");
+> Nit: platform_get_irq() already prints an error message in case of failure. So
+> while at it, you could remove this one here.
+
+I've seen a similar change in cf9441adb1a3("ASoC: Remove dev_err() usage 
+after platform_get_irq()"),
+
+but I'm not sure if it needs to be changed here. Now that you have 
+pointed out the problem,
+
+I will send a patch V5 with the changes suggested by you. Thank you!
+
+
 >
->Do you get any kmemleak false positives without this patch? It would be
->good to include them in the commit message.
-
-Sorry, no. I thought it was possible before I saw this commit:
-620951e27457 ("mm/cma: make kmemleak ignore CMA regions"). 
-
+>>   		goto error_exit_with_cleanup;
+>>   	}
+>> @@ -1567,8 +1568,6 @@ static int sata_fsl_remove(struct platform_device *ofdev)
+>>   
+>>   	ata_host_detach(host);
+>>   
+>> -	irq_dispose_mapping(host_priv->irq);
+>> -
+>>   	return 0;
+>>   }
+>>   
+>>
 >
->Without seeing a false positive caused by this, I'm not convinced it is
->the right approach. You mentioned CMA but telling kmemleak about the
->whole CMA region is a pretty big hammer. I'd rather add individual
->kmemleak_alloc_*() calls in cma_alloc().
+-- 
+With Best Regards,
+Baokun Li
+.
 
-Yeah, I agree.
-
---
-Calvin
 
