@@ -2,122 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9710945EE41
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30CBB45EE42
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377678AbhKZMqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 07:46:02 -0500
-Received: from pegase2.c-s.fr ([93.17.235.10]:52117 "EHLO pegase2.c-s.fr"
+        id S1377698AbhKZMqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 07:46:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235185AbhKZMoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 07:44:02 -0500
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4J0vVR6Fksz9sSM;
-        Fri, 26 Nov 2021 13:40:47 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id q6fGhm_M0oOy; Fri, 26 Nov 2021 13:40:47 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4J0vVR5FPYz9sRt;
-        Fri, 26 Nov 2021 13:40:47 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A01F08B77D;
-        Fri, 26 Nov 2021 13:40:47 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id zLliDJAzAMvt; Fri, 26 Nov 2021 13:40:47 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.204.6])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 52C618B763;
-        Fri, 26 Nov 2021 13:40:47 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1AQCebcK518739
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Fri, 26 Nov 2021 13:40:37 +0100
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1AQCeZWX518712;
-        Fri, 26 Nov 2021 13:40:35 +0100
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH] powerpc/32s: Allocate one 256k IBAT instead of two consecutives 128k IBATs
-Date:   Fri, 26 Nov 2021 13:40:35 +0100
-Message-Id: <ab58b296832b0ec650e2203200e060adbcb2677d.1637930421.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.33.1
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1637930434; l=2524; s=20211009; h=from:subject:message-id; bh=iZX5KDjRSG9keLKYeWXaDkEzsljIu8vWVO5ORJ5LHiM=; b=iNeljMTDjgTn9C8NMyoj/XEQuWHYs06mT/M7ralRR+J+0tItjj0tb55ZthTxA4eJKxE6GOLjXE+f g79rV3bGAPD+joNQExQ0Co4qtBW0qUa+G3IxEnj+xklJFLOeQJTW
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+        id S229660AbhKZMoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 07:44:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E29860E97;
+        Fri, 26 Nov 2021 12:40:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637930460;
+        bh=PtLFYszo+ndVAvYga2gEvJrizrI+bv8lmcpdPwOpDLo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=h+ATzUBxuvTjw8Q3nJ8qXTp9fhU7+bGemYx0AyqV8BEa7E003tEqzRlNZa3UFE1qM
+         tI6/zsY4dW4udKXwezz4eTBMs26nNeLO56p5w5Bp5edIqLpZqX3MndWvWK+0dXMMVi
+         bL6qd+OhfdseAgU60iYsuJ19oTP9DyfpVYZhHSWtEpjdsIn1QcYH18iBz69aUF1pJx
+         O4alsITA5oHuoQqfiyV7avXdjKcMK2zIFLBY2Pu7aidWkQEWukdnS5tcvtdvPKZaFR
+         vUpsAVXFhq1MHxFJmHoa5d2P850uE1mTpW+eGdGJ5l0VecqssiXyct2YYe5ObtpqOE
+         URovcWxFH9cuw==
+Date:   Fri, 26 Nov 2021 21:40:55 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH] tracing: Iterate trace_[ku]probe objects directly
+Message-Id: <20211126214055.b6a84e8add8f7ae3deb9411b@kernel.org>
+In-Reply-To: <20211125202852.406405-1-jolsa@kernel.org>
+References: <20211125202852.406405-1-jolsa@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Today we have the following IBATs allocated:
+On Thu, 25 Nov 2021 21:28:52 +0100
+Jiri Olsa <jolsa@redhat.com> wrote:
 
-	---[ Instruction Block Address Translation ]---
-	0: 0xc0000000-0xc03fffff 0x00000000         4M Kernel   x     m
-	1: 0xc0400000-0xc05fffff 0x00400000         2M Kernel   x     m
-	2: 0xc0600000-0xc06fffff 0x00600000         1M Kernel   x     m
-	3: 0xc0700000-0xc077ffff 0x00700000       512K Kernel   x     m
-	4: 0xc0780000-0xc079ffff 0x00780000       128K Kernel   x     m
-	5: 0xc07a0000-0xc07bffff 0x007a0000       128K Kernel   x     m
-	6:         -
-	7:         -
+> As suggested by Linus [1] using list_for_each_entry to iterate
+> directly trace_[ku]probe objects so we can skip another call to
+> container_of in these loops.
+> 
 
-The two 128K should be a single 256K instead.
+This looks very good to me :)
 
-When _etext is not aligned to 128Kbytes, the system will allocate
-all necessary BATs to the lower 128Kbytes boundary, then allocate
-an additional 128Kbytes BAT for the remaining block.
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-Instead, align the top to 128Kbytes so that the function directly
-allocates a 256Mbytes last block:
+Thank you!
 
-	---[ Instruction Block Address Translation ]---
-	0: 0xc0000000-0xc03fffff 0x00000000         4M Kernel   x     m
-	1: 0xc0400000-0xc05fffff 0x00400000         2M Kernel   x     m
-	2: 0xc0600000-0xc06fffff 0x00600000         1M Kernel   x     m
-	3: 0xc0700000-0xc077ffff 0x00700000       512K Kernel   x     m
-	4: 0xc0780000-0xc07bffff 0x00780000       256K Kernel   x     m
-	5:         -
-	6:         -
-	7:         -
+> [1] https://lore.kernel.org/r/CAHk-=wjakjw6-rDzDDBsuMoDCqd+9ogifR_EE1F0K-jYek1CdA@mail.gmail.com
+> 
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  kernel/trace/trace_kprobe.c | 13 ++++---------
+>  kernel/trace/trace_uprobe.c | 23 ++++++++---------------
+>  2 files changed, 12 insertions(+), 24 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> index 33272a7b6912..1cddb42af20c 100644
+> --- a/kernel/trace/trace_kprobe.c
+> +++ b/kernel/trace/trace_kprobe.c
+> @@ -327,11 +327,9 @@ static inline int __enable_trace_kprobe(struct trace_kprobe *tk)
+>  
+>  static void __disable_trace_kprobe(struct trace_probe *tp)
+>  {
+> -	struct trace_probe *pos;
+>  	struct trace_kprobe *tk;
+>  
+> -	list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
+> -		tk = container_of(pos, struct trace_kprobe, tp);
+> +	list_for_each_entry(tk, trace_probe_probe_list(tp), tp.list) {
+>  		if (!trace_kprobe_is_registered(tk))
+>  			continue;
+>  		if (trace_kprobe_is_return(tk))
+> @@ -348,7 +346,7 @@ static void __disable_trace_kprobe(struct trace_probe *tp)
+>  static int enable_trace_kprobe(struct trace_event_call *call,
+>  				struct trace_event_file *file)
+>  {
+> -	struct trace_probe *pos, *tp;
+> +	struct trace_probe *tp;
+>  	struct trace_kprobe *tk;
+>  	bool enabled;
+>  	int ret = 0;
+> @@ -369,8 +367,7 @@ static int enable_trace_kprobe(struct trace_event_call *call,
+>  	if (enabled)
+>  		return 0;
+>  
+> -	list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
+> -		tk = container_of(pos, struct trace_kprobe, tp);
+> +	list_for_each_entry(tk, trace_probe_probe_list(tp), tp.list) {
+>  		if (trace_kprobe_has_gone(tk))
+>  			continue;
+>  		ret = __enable_trace_kprobe(tk);
+> @@ -559,11 +556,9 @@ static bool trace_kprobe_has_same_kprobe(struct trace_kprobe *orig,
+>  					 struct trace_kprobe *comp)
+>  {
+>  	struct trace_probe_event *tpe = orig->tp.event;
+> -	struct trace_probe *pos;
+>  	int i;
+>  
+> -	list_for_each_entry(pos, &tpe->probes, list) {
+> -		orig = container_of(pos, struct trace_kprobe, tp);
+> +	list_for_each_entry(orig, &tpe->probes, tp.list) {
+>  		if (strcmp(trace_kprobe_symbol(orig),
+>  			   trace_kprobe_symbol(comp)) ||
+>  		    trace_kprobe_offset(orig) != trace_kprobe_offset(comp))
+> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+> index f5f0039d31e5..a9a294e6b183 100644
+> --- a/kernel/trace/trace_uprobe.c
+> +++ b/kernel/trace/trace_uprobe.c
+> @@ -409,12 +409,10 @@ static bool trace_uprobe_has_same_uprobe(struct trace_uprobe *orig,
+>  					 struct trace_uprobe *comp)
+>  {
+>  	struct trace_probe_event *tpe = orig->tp.event;
+> -	struct trace_probe *pos;
+>  	struct inode *comp_inode = d_real_inode(comp->path.dentry);
+>  	int i;
+>  
+> -	list_for_each_entry(pos, &tpe->probes, list) {
+> -		orig = container_of(pos, struct trace_uprobe, tp);
+> +	list_for_each_entry(orig, &tpe->probes, tp.list) {
+>  		if (comp_inode != d_real_inode(orig->path.dentry) ||
+>  		    comp->offset != orig->offset)
+>  			continue;
+> @@ -1075,14 +1073,12 @@ static int trace_uprobe_enable(struct trace_uprobe *tu, filter_func_t filter)
+>  
+>  static void __probe_event_disable(struct trace_probe *tp)
+>  {
+> -	struct trace_probe *pos;
+>  	struct trace_uprobe *tu;
+>  
+>  	tu = container_of(tp, struct trace_uprobe, tp);
+>  	WARN_ON(!uprobe_filter_is_empty(tu->tp.event->filter));
+>  
+> -	list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
+> -		tu = container_of(pos, struct trace_uprobe, tp);
+> +	list_for_each_entry(tu, trace_probe_probe_list(tp), tp.list) {
+>  		if (!tu->inode)
+>  			continue;
+>  
+> @@ -1094,7 +1090,7 @@ static void __probe_event_disable(struct trace_probe *tp)
+>  static int probe_event_enable(struct trace_event_call *call,
+>  			struct trace_event_file *file, filter_func_t filter)
+>  {
+> -	struct trace_probe *pos, *tp;
+> +	struct trace_probe *tp;
+>  	struct trace_uprobe *tu;
+>  	bool enabled;
+>  	int ret;
+> @@ -1129,8 +1125,7 @@ static int probe_event_enable(struct trace_event_call *call,
+>  	if (ret)
+>  		goto err_flags;
+>  
+> -	list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
+> -		tu = container_of(pos, struct trace_uprobe, tp);
+> +	list_for_each_entry(tu, trace_probe_probe_list(tp), tp.list) {
+>  		ret = trace_uprobe_enable(tu, filter);
+>  		if (ret) {
+>  			__probe_event_disable(tp);
+> @@ -1275,7 +1270,7 @@ static bool trace_uprobe_filter_add(struct trace_uprobe_filter *filter,
+>  static int uprobe_perf_close(struct trace_event_call *call,
+>  			     struct perf_event *event)
+>  {
+> -	struct trace_probe *pos, *tp;
+> +	struct trace_probe *tp;
+>  	struct trace_uprobe *tu;
+>  	int ret = 0;
+>  
+> @@ -1287,8 +1282,7 @@ static int uprobe_perf_close(struct trace_event_call *call,
+>  	if (trace_uprobe_filter_remove(tu->tp.event->filter, event))
+>  		return 0;
+>  
+> -	list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
+> -		tu = container_of(pos, struct trace_uprobe, tp);
+> +	list_for_each_entry(tu, trace_probe_probe_list(tp), tp.list) {
+>  		ret = uprobe_apply(tu->inode, tu->offset, &tu->consumer, false);
+>  		if (ret)
+>  			break;
+> @@ -1300,7 +1294,7 @@ static int uprobe_perf_close(struct trace_event_call *call,
+>  static int uprobe_perf_open(struct trace_event_call *call,
+>  			    struct perf_event *event)
+>  {
+> -	struct trace_probe *pos, *tp;
+> +	struct trace_probe *tp;
+>  	struct trace_uprobe *tu;
+>  	int err = 0;
+>  
+> @@ -1312,8 +1306,7 @@ static int uprobe_perf_open(struct trace_event_call *call,
+>  	if (trace_uprobe_filter_add(tu->tp.event->filter, event))
+>  		return 0;
+>  
+> -	list_for_each_entry(pos, trace_probe_probe_list(tp), list) {
+> -		tu = container_of(pos, struct trace_uprobe, tp);
+> +	list_for_each_entry(tu, trace_probe_probe_list(tp), tp.list) {
+>  		err = uprobe_apply(tu->inode, tu->offset, &tu->consumer, true);
+>  		if (err) {
+>  			uprobe_perf_close(call, event);
+> -- 
+> 2.33.1
+> 
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/mm/book3s32/mmu.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/mm/book3s32/mmu.c b/arch/powerpc/mm/book3s32/mmu.c
-index 27061583a010..33ab63d56435 100644
---- a/arch/powerpc/mm/book3s32/mmu.c
-+++ b/arch/powerpc/mm/book3s32/mmu.c
-@@ -196,18 +196,17 @@ void mmu_mark_initmem_nx(void)
- 	int nb = mmu_has_feature(MMU_FTR_USE_HIGH_BATS) ? 8 : 4;
- 	int i;
- 	unsigned long base = (unsigned long)_stext - PAGE_OFFSET;
--	unsigned long top = (unsigned long)_etext - PAGE_OFFSET;
-+	unsigned long top = ALIGN((unsigned long)_etext - PAGE_OFFSET, SZ_128K);
- 	unsigned long border = (unsigned long)__init_begin - PAGE_OFFSET;
- 	unsigned long size;
- 
--	for (i = 0; i < nb - 1 && base < top && top - base > (128 << 10);) {
-+	for (i = 0; i < nb - 1 && base < top;) {
- 		size = block_size(base, top);
- 		setibat(i++, PAGE_OFFSET + base, base, size, PAGE_KERNEL_TEXT);
- 		base += size;
- 	}
- 	if (base < top) {
- 		size = block_size(base, top);
--		size = max(size, 128UL << 10);
- 		if ((top - base) > size) {
- 			size <<= 1;
- 			if (strict_kernel_rwx_enabled() && base + size > border)
 -- 
-2.33.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
