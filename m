@@ -2,82 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 546F745EF11
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B04B245EF16
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:24:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242136AbhKZN0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 08:26:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54828 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344842AbhKZNYs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 08:24:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637932895;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=34sYTYVyXuYs+CPwdd7XUd+SQ49NoZZow/8OSNllSUk=;
-        b=ZHhbOW3ZJvxh3mNOjXY9jHAse83NiDWu6fUuBFAaVkBSffCLlkSQG3d63eel10UxuPZasc
-        xw3YX4pdK8FBBLoWTpKB8hOsBSVMnmZGxTtLz6jm62eLNpgERgNI/tahltV1GTGYqS4eSS
-        UeEIBs5UNy/6+cx0gRQ+9xDwy79H9bY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-554-w7tcNeMNOCyLupiTaHXOFA-1; Fri, 26 Nov 2021 08:21:34 -0500
-X-MC-Unique: w7tcNeMNOCyLupiTaHXOFA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E7FFD80F051;
-        Fri, 26 Nov 2021 13:21:32 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5911F5C1CF;
-        Fri, 26 Nov 2021 13:21:32 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     laijs@linux.alibaba.com, stable@vger.kernel.org
-Subject: [PATCH] KVM: MMU: shadow nested paging does not have PKU
-Date:   Fri, 26 Nov 2021 08:21:31 -0500
-Message-Id: <20211126132131.26077-1-pbonzini@redhat.com>
+        id S1348299AbhKZN2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 08:28:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50426 "EHLO mail.kernel.org"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237137AbhKZN0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 08:26:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7ADC360E53;
+        Fri, 26 Nov 2021 13:22:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637932970;
+        bh=PNB+pY2UTXPBHUsNInngg94qXAVwoG1OVtOEIHyZKM8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ULJqGfoJnRpCE3ncR+zoG8Nq+ze/4yDi52VwViCr+B0S56Iaqg2tWm+elIo8ZHZrz
+         nJmLdYWCplCIxEokdIxALsuhqH38Iozu7NvJzFcCOBcUM2y37ufY9zeP/LfS/gsJOQ
+         XsAaIP5NpI47mKmyWBwFFk0iviKwh1oACncZX6gVNs3DhzdX51y1l87NuhD6LDkwpS
+         HKjGILrxu4Ud7EMFcWJkAL1TPNR1mJB/NMv0HnuxWvUGdPuniMY8LdRACRX5bklWfz
+         g2tFAV4dOnM392/akeJdIyDmOLDkoEFJohCSCNnnsK1EAKOMCDHxdKkn4cxNJQj+m0
+         FdXlm4p45Pd4Q==
+Date:   Fri, 26 Nov 2021 13:22:46 +0000
+From:   Will Deacon <will@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     catalin.marinas@arm.com, mark.rutland@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: [GIT PULL] arm64 fixes for -rc3
+Message-ID: <20211126132245.GA20204@willie-the-truck>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initialize the mask for PKU permissions as if CR4.PKE=0, avoiding
-incorrect interpretations of the nested hypervisor's page tables.
+Hi Linus,
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/mmu/mmu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+When you get a chance, please can you pull these three arm64 fixes? The
+main one is a fix to the way in which we evaluate the macro arguments to
+our uaccess routines, which we _think_ might be the root cause behind
+some unkillable tasks we've seen in the Android arm64 CI farm (testing is
+ongoing). In any case, it's worth fixing.
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 5942e9c6dd6e..a33b5361bc67 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4855,7 +4855,7 @@ void kvm_init_shadow_npt_mmu(struct kvm_vcpu *vcpu, unsigned long cr0,
- 	struct kvm_mmu *context = &vcpu->arch.guest_mmu;
- 	struct kvm_mmu_role_regs regs = {
- 		.cr0 = cr0,
--		.cr4 = cr4,
-+		.cr4 = cr4 & ~X86_CR4_PKE,
- 		.efer = efer,
- 	};
- 	union kvm_mmu_role new_role;
-@@ -4919,7 +4919,7 @@ void kvm_init_shadow_ept_mmu(struct kvm_vcpu *vcpu, bool execonly,
- 	context->direct_map = false;
- 
- 	update_permission_bitmask(context, true);
--	update_pkru_bitmask(context);
-+	context->pkru_mask = 0;
- 	reset_rsvds_bits_mask_ept(vcpu, context, execonly);
- 	reset_ept_shadow_zero_bits_mask(vcpu, context, execonly);
- }
--- 
-2.31.1
+Other than that, we've toned down an over-zealous VM_BUG_ON() and fixed
+ftrace stack unwinding in a bunch of cases.
 
+Please pull.
+
+Thanks,
+
+Will
+
+--->8
+
+The following changes since commit fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf:
+
+  Linux 5.16-rc1 (2021-11-14 13:56:52 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
+
+for you to fetch changes up to 94902d849e85093aafcdbea2be8e2beff47233e6:
+
+  arm64: uaccess: avoid blocking within critical sections (2021-11-24 09:16:26 +0000)
+
+----------------------------------------------------------------
+arm64 fixes for -rc3
+
+- Evaluate uaccess macro arguments outside of the critical section
+
+- Tighten up VM_BUG_ON() in pmd_populate_kernel() to avoid false positive
+
+- Fix ftrace stack unwinding using HAVE_FUNCTION_GRAPH_RET_ADDR_PTR
+
+----------------------------------------------------------------
+Mark Rutland (2):
+      arm64: ftrace: use HAVE_FUNCTION_GRAPH_RET_ADDR_PTR
+      arm64: uaccess: avoid blocking within critical sections
+
+Pingfan Liu (1):
+      arm64: mm: Fix VM_BUG_ON(mm != &init_mm) for trans_pgd
+
+ arch/arm64/include/asm/ftrace.h     | 11 +++++++++
+ arch/arm64/include/asm/pgalloc.h    |  2 +-
+ arch/arm64/include/asm/stacktrace.h |  6 -----
+ arch/arm64/include/asm/uaccess.h    | 48 +++++++++++++++++++++++++++++++------
+ arch/arm64/kernel/ftrace.c          |  6 ++---
+ arch/arm64/kernel/stacktrace.c      | 18 +++++++-------
+ 6 files changed, 64 insertions(+), 27 deletions(-)
