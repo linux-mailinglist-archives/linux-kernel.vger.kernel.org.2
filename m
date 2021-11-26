@@ -2,95 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8122845F11E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A51F445F145
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:04:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354336AbhKZP5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:57:44 -0500
-Received: from mga11.intel.com ([192.55.52.93]:44146 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378062AbhKZPzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:55:43 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="233174261"
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="233174261"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 07:51:49 -0800
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="607902111"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 07:51:46 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mqdVo-00ApLI-AP;
-        Fri, 26 Nov 2021 17:51:44 +0200
-Date:   Fri, 26 Nov 2021 17:51:44 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     lianzhi chang <changlianzhi@uniontech.com>
-Cc:     linux-kernel@vger.kernel.org, dmitry.torokhov@gmail.com,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org, 282827961@qq.com
-Subject: Re: [PATCH v17] tty: Fix the keyboard led light display problem
-Message-ID: <YaECkE+Tc7btwAEO@smile.fi.intel.com>
-References: <20211126112727.14939-1-changlianzhi@uniontech.com>
+        id S1378319AbhKZQHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:07:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1378140AbhKZQFq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 11:05:46 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F254C061371
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 07:54:33 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7401F622BA;
+        Fri, 26 Nov 2021 15:54:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BBDEC93056;
+        Fri, 26 Nov 2021 15:54:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637942071;
+        bh=WOOQ113ctzMnTFkP8ZcZnIHdwNH/Fb3G9USm0u/hRg8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GC6v97BD/K/gXkBdZOHGCwLSjuKV4ZaxQHwBRwqkB34IWgVkBxKvzfwB0nebvz6u2
+         F7yMi4CWcY8NL6NMOl7Nr8IhBfbLkueBjbZyALnqd1/8FWXANJ4Kc//zBlDf622bRE
+         aKvPO13iQjlhN/YvwfgekiPv9FnLMl1oCKbZYb7o=
+Date:   Fri, 26 Nov 2021 16:54:29 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     bp@suse.de, akpm@linux-foundation.org, josh@joshtriplett.org,
+        rishabhb@codeaurora.org, kubakici@wp.pl, maco@android.com,
+        david.brown@linaro.org, bjorn.andersson@linaro.org,
+        linux-wireless@vger.kernel.org, keescook@chromium.org,
+        shuah@kernel.org, mfuzzey@parkeon.com, zohar@linux.vnet.ibm.com,
+        dhowells@redhat.com, pali.rohar@gmail.com, tiwai@suse.de,
+        arend.vanspriel@broadcom.com, zajec5@gmail.com, nbroeking@me.com,
+        broonie@kernel.org, dmitry.torokhov@gmail.com, dwmw2@infradead.org,
+        torvalds@linux-foundation.org, Abhay_Salunke@dell.com,
+        jewalt@lgsinnovations.com, cantabile.desu@gmail.com, ast@fb.com,
+        andresx7@gmail.com, brendanhiggins@google.com, yzaikin@google.com,
+        sfr@canb.auug.org.au, rdunlap@infradead.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v4 0/4] firmware_loader: built-in API and make x86 use it
+Message-ID: <YaEDNa7Vhse7t41a@kroah.com>
+References: <20211025195031.4169165-1-mcgrof@kernel.org>
+ <YZRJpcZ4LgBzhge0@bombadil.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211126112727.14939-1-changlianzhi@uniontech.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <YZRJpcZ4LgBzhge0@bombadil.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 07:27:27PM +0800, lianzhi chang wrote:
-> By judging the value of kb->kbdmode to determine whether it is necessary
-> to forcibly set the led state of the keyboard when switching between
-> different ttys. Solve the problem of the inconsistency between the
-> keyboard led status and the keyboard lock status in some scenarios,
-> such as the scenario where the desktop and tty switch mutually.
+On Tue, Nov 16, 2021 at 04:15:33PM -0800, Luis Chamberlain wrote:
+> On Mon, Oct 25, 2021 at 12:50:27PM -0700, Luis Chamberlain wrote:
+> > The only change on this v4 is to fix a kconfig dependency
+> > (EXTRA_FIRMWARE != "") which I missed to address on the v3 series.
+> 
+> Hey Greg, now that the merge window is closed let me know if you'd like
+> a resend of this or if you can take it as-is.
 
-Since it will be a next version, see one comment below you may address as well.
+All now queued up, thanks.
 
-...
-
-> +	/*
-> +	 * When switching VT, according to the value of kb->kbdmode,
-> +	 * judge whether it is necessary to force the keyboard light
-> +	 * state to be issued.
-> +	 */
-> +	kb = kbd_table + fg_console;
-> +	if (kb->kbdmode == VC_RAW ||
-> +	     kb->kbdmode == VC_MEDIUMRAW ||
-> +	     kb->kbdmode == VC_OFF) {
-
-checkpatch usually complains on indentation above.
-
-Can you simply do it like
-
-	if (kb->kbdmode == VC_RAW ||
-	    kb->kbdmode == VC_MEDIUMRAW ||
-	    kb->kbdmode == VC_OFF) {
-
-?
-
-Alternatively it might be converted to a switch-case, but it takes more LOCs.
-
-	switch {
-	case VC_RAW:
-	case VC_MEDIUMRAW :
-	case VC_OFF:
-		vt_switch = true;
-		set_leds();
-		break;
-	default:
-		break;
-	}
-
-> +		vt_switch = true;
-> +		set_leds();
-> +	}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+greg k-h
