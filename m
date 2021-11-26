@@ -2,128 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3C545F54C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:39:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F371F45F549
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238726AbhKZTmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 14:42:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46644 "EHLO
+        id S238355AbhKZTmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 14:42:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236891AbhKZTkL (ORCPT
+        with ESMTP id S230376AbhKZTkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 14:40:11 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95828C06175E;
-        Fri, 26 Nov 2021 11:16:37 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 74AE7622DE;
-        Fri, 26 Nov 2021 19:14:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 165FCC9305B;
-        Fri, 26 Nov 2021 19:14:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637954074;
-        bh=+nhGICWJsd+aB+/kny95kMmh4ozyIUj/GYIKSit7jPs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=H17Adt7eVq/zWrESvaVF96l0cxNH5c9QpPTAkKXRFd6BssbhDBOoDVcXei9WahPGu
-         VoZagFZTJH6H5lK2Vz6KzqwilW8EF/9gmqrLEXawz6OaOWuTIvyeeX4jCjd17GQqPR
-         r3UxsajHuP68vEAKqu4VG68ZXUtFiysGXJJJ+B8es4MdX7jlAU4gNm77c9gS3MYkdw
-         Svu8hLrqcsueFu/liiwcl+SS3QuuTQyOtQ0XFnh0ieJ6ryCBiaYHBzhY9HH+7VLLgA
-         WHhBUAUVME3lcd6Ah56newvqk22x1kTyzpW5ofGDYifSajp+Hc9qB1qZO+OSYzh5ji
-         MnXBPWWuuxYOQ==
-Date:   Fri, 26 Nov 2021 11:14:31 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 net-next 21/26] ice: add XDP and XSK generic
- per-channel statistics
-Message-ID: <20211126111431.4a2ed007@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <87ee72ah56.fsf@toke.dk>
-References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
-        <20211123163955.154512-22-alexandr.lobakin@intel.com>
-        <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
-        <87bl28bga6.fsf@toke.dk>
-        <20211125170708.127323-1-alexandr.lobakin@intel.com>
-        <20211125094440.6c402d63@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20211125204007.133064-1-alexandr.lobakin@intel.com>
-        <87sfvj9k13.fsf@toke.dk>
-        <20211126100611.514df099@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <87ee72ah56.fsf@toke.dk>
+        Fri, 26 Nov 2021 14:40:03 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE872C06175A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 11:14:43 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id z6so9761017pfe.7
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 11:14:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iC8QW0FdwJEZGDL1E+nNH1jnGDYm7HQtGrqRLcMJWPc=;
+        b=hgih+9z7xFCrSSLnJ6jZ2PX2qyLrM/vuYl1/6v+u45hBAyr1kHS6sQgiunUs76MjeS
+         SCPMSsLISI5EznmqtRehLPu2xqOzXXFLh8MAwtjGjrjLoru2sFXHCOON4nnhzl7PF7jq
+         V0hcvcH6sgwjeUHbLP/Xu9w4X5ixVwstkqyGBPeqKmFnUUgz61cM1rTctQh6nd1Z/yIS
+         nA1KmbDvNa5nhxbEfxDYbt/+IBSyORquykkPr8DA5MB+TCwM0Hm+rbim9tOHOjhneQ/f
+         hIpKTnvN0LpDX+ct+IjMsB5Hcog4ey0jXSiEyMtg+XWqKKvmOmJn/jqXAucAYtLdLHWn
+         F8Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iC8QW0FdwJEZGDL1E+nNH1jnGDYm7HQtGrqRLcMJWPc=;
+        b=xEQtKs/5ampFbNssVPooTkYX6IX94JwJth83FSrql9Pc6H7ArWzqlfBRDVufclRzXk
+         HdbHAy9OskdOHCpIbVOaWHnG+DEYDBzvHNIb4Y5aDOUy/JBJK7UJeRi0lGlc9MASFCHa
+         O/N2oSpZg5Iv8g5BR4i9EiQxdrvtKE82s0kPHBws5Qx52JNTH6/dwMaIUPYGeVICODCZ
+         c5yyeGnlXWzUvoZLzzahkF3wDaevFTtZagkMPwpaEsWtPgDHerpbjScnwQ1X480bjxeE
+         docBvXLHo9AJ3LmogN0WR3VwNptEj8myyq0EkILZpjR1Zzuu2FwoA3yU3un7zBq3mnDH
+         lmvg==
+X-Gm-Message-State: AOAM5334qOvyA2QyybyjzU4zrigob+HUdlJ9ZcYNSnvsnHDGc7qfTxGQ
+        B8tvdajf5v5ULjGn8bO1JwTkze8fl2rhjulULh0=
+X-Google-Smtp-Source: ABdhPJzv7mCyU+oLxzsruPLj/ql1BoUYZC/kboYFBWmVP724de+GDkw+l82aZlmeXUwDfBjJXOHIjkJUPbGxGFMP37o=
+X-Received: by 2002:a63:31ce:: with SMTP id x197mr20144500pgx.14.1637954083527;
+ Fri, 26 Nov 2021 11:14:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20211125193852.3617-1-goldstein.w.n@gmail.com>
+ <CANn89iLnH5B11CtzZ14nMFP7b--7aOfnQqgmsER+NYNzvnVurQ@mail.gmail.com>
+ <CAFUsyfK-znRWJN7FTMdJaDTd45DgtBQ9ckKGyh8qYqn0eFMMFA@mail.gmail.com>
+ <CANn89iJA1JOevgLSK019VYXKkLJsMjV-u9ZHvrgZ+XUypRWwfQ@mail.gmail.com>
+ <CAFUsyfLeVGW8etXHuSGvYy_RoS3RGaA1L+NLKnpc7EsSMVORBg@mail.gmail.com>
+ <CANn89iJxMhGfp364rPu6p_ZLrKnM1qWF_NWrw4_oL_KG+piByg@mail.gmail.com> <CAFUsyfJ33cKFQdUagHQ_b4N80CfBtGQZhyA4CN_JLgEmXEX=DA@mail.gmail.com>
+In-Reply-To: <CAFUsyfJ33cKFQdUagHQ_b4N80CfBtGQZhyA4CN_JLgEmXEX=DA@mail.gmail.com>
+From:   Noah Goldstein <goldstein.w.n@gmail.com>
+Date:   Fri, 26 Nov 2021 13:14:32 -0600
+Message-ID: <CAFUsyf+TuU2Xe5Guy5yiFWsV-JZSjUJxcGZv=f0BYDSmODV+_w@mail.gmail.com>
+Subject: Re: [PATCH v1] x86/lib: Optimize 8x loop and memory clobbers in csum_partial.c
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com,
+        Borislav Petkov <bp@alien8.de>, dave.hansen@linux.intel.com,
+        X86 ML <x86@kernel.org>, hpa@zytor.com, peterz@infradead.org,
+        alexanderduyck@fb.com, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Nov 2021 19:47:17 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> > Fair. In all honesty I said that hoping to push for a more flexible
-> > approach hidden entirely in BPF, and not involving driver changes.
-> > Assuming the XDP program has more fine grained stats we should be able
-> > to extract those instead of double-counting. Hence my vague "let's work
-> > with apps" comment.
+On Fri, Nov 26, 2021 at 12:50 PM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
+>
+> On Fri, Nov 26, 2021 at 12:27 PM Eric Dumazet <edumazet@google.com> wrote:
 > >
-> > For example to a person familiar with the workload it'd be useful to
-> > know if program returned XDP_DROP because of configured policy or
-> > failure to parse a packet. I don't think that sort distinction is
-> > achievable at the level of standard stats.
+> > On Fri, Nov 26, 2021 at 10:17 AM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
+> > >
 > >
-> > The information required by the admin is higher level. As you say the
-> > primary concern there is "how many packets did XDP eat". =20
->=20
-> Right, sure, I am also totally fine with having only a somewhat
-> restricted subset of stats available at the interface level and make
-> everything else be BPF-based. I'm hoping we can converge of a common
-> understanding of what this "minimal set" should be :)
->=20
-> > Speaking of which, one thing that badly needs clarification is our
-> > expectation around XDP packets getting counted towards the interface
-> > stats. =20
->=20
-> Agreed. My immediate thought is that "XDP packets are interface packets"
-> but that is certainly not what we do today, so not sure if changing it
-> at this point would break things?
+> > >
+> > > Makes sense. Although if you inline I think you definitely will want a more
+> > > conservative clobber than just "memory". Also I think with 40 you also will
+> > > get some value from two counters.
+> > >
+> > > Did you see the number/question I posted about two accumulators for 32
+> > > byte case?
+> > > Its a judgement call about latency vs throughput that I don't really have an
+> > > answer for.
+> > >
+> >
+> > The thing I do not know is if using more units would slow down the
+> > hyper thread ?
 
-I'd vote for taking the risk and trying to align all the drivers.
+Did some quick tests with the latency/throughput benchmarks running
+in parallel on two hyperthreads on the same processors. The 32 byte case
+latency advantage goes with 2 accum and there is still a slight regression
+in throughput. The larger cases that hit the loop still still have improvements
+both in tput and latency with 2 accum.
+
+>
+> There are more uops in the two accumulator version so it could be concern
+> iff the other hyperthread is bottlenecked on p06 throughput. My general
+> understanding is this is not the common case and that the very premise of
+> hyperthreads is that most bottlenecks are related to memory fetch or resolving
+> control flow.
+>
+> >
+> > Would using ADCX/ADOX would be better in this respect ?
+>
+> What would code using those instructions look like? Having trouble
+> seeing how to use them here.
