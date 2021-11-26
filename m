@@ -2,89 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378D845EBDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:43:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B465445EBD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353160AbhKZKqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 05:46:20 -0500
-Received: from mga17.intel.com ([192.55.52.151]:27408 "EHLO mga17.intel.com"
+        id S1377124AbhKZKnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:43:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245488AbhKZKoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 05:44:19 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="216354063"
-X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
-   d="scan'208";a="216354063"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 02:36:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
-   d="scan'208";a="572093129"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 26 Nov 2021 02:36:25 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqYae-0007xy-C6; Fri, 26 Nov 2021 10:36:24 +0000
-Date:   Fri, 26 Nov 2021 18:36:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Min Li <min.li.xe@renesas.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>
-Subject: powerpc-linux-ld: warning: orphan section `.init.plt' from
- `drivers/mfd/rsmu_core.o' being placed in section `.init.plt'
-Message-ID: <202111261824.M3qMRnY5-lkp@intel.com>
+        id S1376803AbhKZKlc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 05:41:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 159AB61041;
+        Fri, 26 Nov 2021 10:38:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637923099;
+        bh=4xdG1XjuMGv2R+XtUqKaNb5YEb8kRlTKPJERGNtwtO4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=TXvwzwDZUogrxKQpWrdwPk3PMBEBmbpDtNdb5EXtFGLCgFkseVB26RKwC7s7RHVQv
+         QVYjqI3lhB0jUwD7a6rltllh2LqOtiQoUY+OiIATpaNNtn1zoiwbXOOEZQOck+Gdbq
+         +WkcOomVSfFD+i7eHQpYF8HYKIrfV+DGhMPXPlyl3n04ryA//n9JNVktLJ2NYRDUBD
+         6tY/kAw40cJgSJfEFsLj48Khn/tjpKLhUPV9u/dfjCvwbs2B7fqZG2F5GF1YFeGtnP
+         ApT/YjGxnAb1Z3cOE0v+q/X2sYabuwlhZWgojjJTT15SS7gptDw7ke/+ez5p/1XcAp
+         ho1c8R3pKxpkA==
+Date:   Fri, 26 Nov 2021 11:38:13 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [PULL REQUEST] i2c for v5.16
+Message-ID: <YaC5FYorV4yyQnaE@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="uGfK5BB4nqioyEtN"
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Min,
 
-First bad commit (maybe != root cause):
+--uGfK5BB4nqioyEtN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   a4849f6000e29235a2707f22e39da6b897bb9543
-commit: a1867f85e06edacd82956d3422caa2b9074f4321 mfd: Add Renesas Synchronization Management Unit (SMU) support
-date:   5 months ago
-config: powerpc-randconfig-r034-20211123 (https://download.01.org/0day-ci/archive/20211126/202111261824.M3qMRnY5-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a1867f85e06edacd82956d3422caa2b9074f4321
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout a1867f85e06edacd82956d3422caa2b9074f4321
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=powerpc SHELL=/bin/bash
+Linus,
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+I2C has an interrupt storm fix for the i801, better timeout handling for
+the new virtio driver, and some documentation fixes this time.
 
-All warnings (new ones prefixed by >>):
+Please pull.
 
->> powerpc-linux-ld: warning: orphan section `.init.plt' from `drivers/mfd/rsmu_core.o' being placed in section `.init.plt'
-   powerpc-linux-ld: arch/powerpc/sysdev/cpm_gpio.o:(.rodata+0xd0): undefined reference to `cpm1_gpiochip_add16'
-   powerpc-linux-ld: arch/powerpc/sysdev/cpm_gpio.o:(.rodata+0x194): undefined reference to `cpm1_gpiochip_add32'
-   powerpc-linux-ld: arch/powerpc/sysdev/cpm_gpio.o:(.rodata+0x258): undefined reference to `cpm1_gpiochip_add16'
-   powerpc-linux-ld: arch/powerpc/sysdev/cpm_gpio.o:(.rodata+0x31c): undefined reference to `cpm1_gpiochip_add16'
-   powerpc-linux-ld: arch/powerpc/platforms/8xx/m8xx_setup.o: in function `cpm_cascade':
-   m8xx_setup.c:(.text+0x28): undefined reference to `cpm_get_irq'
-   powerpc-linux-ld: arch/powerpc/platforms/8xx/m8xx_setup.o: in function `mpc8xx_set_rtc_time':
-   m8xx_setup.c:(.text+0x46): undefined reference to `mpc8xx_immr'
-   powerpc-linux-ld: m8xx_setup.c:(.text+0x52): undefined reference to `mpc8xx_immr'
-   powerpc-linux-ld: arch/powerpc/platforms/8xx/m8xx_setup.o: in function `mpc8xx_get_rtc_time':
-   m8xx_setup.c:(.text+0x92): undefined reference to `mpc8xx_immr'
-   powerpc-linux-ld: m8xx_setup.c:(.text+0x9e): undefined reference to `mpc8xx_immr'
-   powerpc-linux-ld: arch/powerpc/platforms/8xx/m8xx_setup.o: in function `mpc8xx_restart':
-   m8xx_setup.c:(.text+0xda): undefined reference to `mpc8xx_immr'
-   powerpc-linux-ld: arch/powerpc/platforms/8xx/m8xx_setup.o:m8xx_setup.c:(.text+0xe6): more undefined references to `mpc8xx_immr' follow
-   powerpc-linux-ld: arch/powerpc/platforms/8xx/m8xx_setup.o: in function `mpc8xx_pics_init':
-   m8xx_setup.c:(.init.text+0x2c8): undefined reference to `cpm_pic_init'
+Thanks,
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+   Wolfram
+
+
+The following changes since commit 136057256686de39cc3a07c2e39ef6bc43003ff6:
+
+  Linux 5.16-rc2 (2021-11-21 13:47:39 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
+
+for you to fetch changes up to bed68f4f4db429a0bf544887e64dc710e5a690ea:
+
+  docs: i2c: smbus-protocol: mention the repeated start condition (2021-11-23 12:59:41 +0100)
+
+----------------------------------------------------------------
+Abel Vesa (1):
+      dt-bindings: i2c: imx-lpi2c: Fix i.MX 8QM compatible matching
+
+Jarkko Nikula (1):
+      i2c: i801: Fix interrupt storm from SMB_ALERT signal
+
+Jean Delvare (1):
+      i2c: i801: Restore INTREN on unload
+
+Miquel Raynal (1):
+      docs: i2c: smbus-protocol: mention the repeated start condition
+
+Vincent Whitchurch (1):
+      i2c: virtio: disable timeout handling
+
+
+with much appreciated quality assurance from
+----------------------------------------------------------------
+Jarkko Nikula (1):
+      (Test) i2c: i801: Restore INTREN on unload
+
+Jean Delvare (2):
+      (Rev.) i2c: i801: Fix interrupt storm from SMB_ALERT signal
+      (Test) i2c: i801: Fix interrupt storm from SMB_ALERT signal
+
+Viresh Kumar (1):
+      (Rev.) i2c: virtio: disable timeout handling
+
+ .../devicetree/bindings/i2c/i2c-imx-lpi2c.yaml     |  5 ++--
+ Documentation/i2c/smbus-protocol.rst               | 14 ++++++----
+ drivers/i2c/busses/i2c-i801.c                      | 32 +++++++++++++++++-----
+ drivers/i2c/busses/i2c-virtio.c                    | 14 ++++------
+ 4 files changed, 41 insertions(+), 24 deletions(-)
+
+--uGfK5BB4nqioyEtN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmGguREACgkQFA3kzBSg
+KbZO7hAAkhmxgAaA+S4pjiST1Eud0AlW1omJH2aPUdY9Nypqbe7jmydrnx1VG86+
+O1jwwVdeI0JxXRTpeYEA/ajPxdJKZTFqBlwhvRWxZ9fuRslrcj4X0cdUOA+luz75
+gjeQ7zHYtcpx2jMhCYS3L/xgGR1sgQtS5IDl9fUEL1KLkeBFqSxDrpzFkmUBCn+B
+OLw1J9tr+ItRvPd74pPuUWKnEax2CrKRxrAOMTx/4MMPN8B/6PONo8O5KOQrOYnJ
+MACjzB+X4efMyeG8o0iwnTCeLOAD/KE9GWUXGnR8xiTvOlRmRA3EPBUM5BZY188T
+Kh0Es1no8YoRWc1qYkQrvaz+PPnear4P4p0cLXf0IjTv9zmiIwa3cRBtl54w7+lG
+iDBd6E0Dqb9XEey5rP3dySjHfNywymtOJdL8PG9YiLTYPUF6JqZXVSSmMHDi9JaM
+y2PntHWsQUqy+VDC8TNPYPoEzscbMWTF4MmHegM9lqi3wpBjQB+paRHg1UsRJ8kx
++Elw+2ziiqltXXA5PDAkrbMg+ooMbBZeqAIPpXug0tQX14vUXIrrsm+Hz0WJiN1Z
+38JWvok/QZvqCJeG/Md06nBVcuYFaZ+2qmlYZZPkxk59q6MBvDqP0pLJ2SSv5L1T
+/pN3IxVU6RKGJLfAZKkUfou5wSxaPVQIhBUriUXLcvRV43t+1ko=
+=EDSd
+-----END PGP SIGNATURE-----
+
+--uGfK5BB4nqioyEtN--
