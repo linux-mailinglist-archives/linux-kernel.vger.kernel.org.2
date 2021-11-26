@@ -2,112 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973C345F696
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 22:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0AF45F6AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 22:54:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241648AbhKZVme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 16:42:34 -0500
-Received: from mga14.intel.com ([192.55.52.115]:44111 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242915AbhKZVkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 16:40:33 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="235958751"
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="235958751"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 13:37:19 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="675657553"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 26 Nov 2021 13:37:17 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqiuC-0008cn-Ek; Fri, 26 Nov 2021 21:37:16 +0000
-Date:   Sat, 27 Nov 2021 05:36:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH v2 1/3] staging: zynpu: Add driver support for ARM(China)
- ZHOUYI AI accelerator
-Message-ID: <202111270521.Fwtu770n-lkp@intel.com>
-References: <20211124084620.628-2-caihuoqing@baidu.com>
+        id S241648AbhKZV5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 16:57:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241843AbhKZVzw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 16:55:52 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED7E0C061746;
+        Fri, 26 Nov 2021 13:52:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=go92kDNk8htS9RciSYEL5olMCBjzci3dlAvsk/icQJ8=; b=mZp5Z8vaGZJK8cG0vOg3h2MB3A
+        6HAWjKLwhiRVFzFswrhpyL3h1pBw19hVrCf8CftPE5f7YhZ+URYPboMAlTyg4EuJ9OdI1N9D+Y2l/
+        KeOoXkvEwW8ultlrRPuA6TvNSKCftl/GZ/5QgNK63dDgLHQITYNcwDUqV2/v8b9v0e06FpLKIz1DN
+        oAXE+/+BNDitd+raU5VeXBVzmLS8LgyPjEihPmndfuojQf7rtu5cjKWPOwhKBMI2PIhIygxuK3+A+
+        wHPXJnCYKrKViMJ6tmin8nXapVnXicQXMFHn8ZTMQgtN7MUhEMQtSgS+aYF0Y1ArFAsYMhR1N9E3L
+        4j2AnYtw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mqj8h-00CITn-2X; Fri, 26 Nov 2021 21:52:16 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A8E873000DD;
+        Fri, 26 Nov 2021 22:52:13 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8BBD82DC6C83F; Fri, 26 Nov 2021 22:52:13 +0100 (CET)
+Date:   Fri, 26 Nov 2021 22:52:13 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Peter Oskolkov <posk@posk.io>, Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>,
+        Thierry Delisle <tdelisle@uwaterloo.ca>
+Subject: Re: [PATCH v0.9.1 3/6] sched/umcg: implement UMCG syscalls
+Message-ID: <YaFXDYm7s7A6HDTG@hirez.programming.kicks-ass.net>
+References: <20211122211327.5931-1-posk@google.com>
+ <20211122211327.5931-4-posk@google.com>
+ <20211124211927.GG721624@worktop.programming.kicks-ass.net>
+ <877dcuhbbe.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211124084620.628-2-caihuoqing@baidu.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <877dcuhbbe.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cai,
+On Fri, Nov 26, 2021 at 10:11:17PM +0100, Thomas Gleixner wrote:
+> On Wed, Nov 24 2021 at 22:19, Peter Zijlstra wrote:
+> > On Mon, Nov 22, 2021 at 01:13:24PM -0800, Peter Oskolkov wrote:
+> >
+> >> +	 * Timestamp: a 46-bit CLOCK_MONOTONIC timestamp, at 16ns resolution.
+> >
+> >> +static int umcg_update_state(u64 __user *state_ts, u64 *expected, u64 desired,
+> >> +				bool may_fault)
+> >> +{
+> >> +	u64 curr_ts = (*expected) >> (64 - UMCG_STATE_TIMESTAMP_BITS);
+> >> +	u64 next_ts = ktime_get_ns() >> UMCG_STATE_TIMESTAMP_GRANULARITY;
+> >
+> > I'm still very hesitant to use ktime (fear the HPET); but I suppose it
+> > makes sense to use a time base that's accessible to userspace. Was
+> > MONOTONIC_RAW considered?
+> 
+> MONOTONIC_RAW is not really useful as you can't sleep on it and it won't
+> solve the HPET crap either.
 
-I love your patch! Perhaps something to improve:
+But it's ns are of equal size to sched_clock(), if both share TSC IIRC.
+Whereas MONOTONIC, being subject to ntp rate stuff, has differently
+sized ns.
 
-[auto build test WARNING on staging/staging-testing]
+The only time that's relevant though is when you're going to mix these
+timestamps with CLOCK_THREAD_CPUTIME_ID, which might just be
+interesting.
 
-url:    https://github.com/0day-ci/linux/commits/Cai-Huoqing/staging-zynpu-Add-driver-support-for-ARM-China-ZHOUYI-AI-accelerator/20211124-164741
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git 1189d2fb15a4b09b2e8dd01d60a0817d985d933d
-config: arm64-buildonly-randconfig-r006-20211126 (https://download.01.org/0day-ci/archive/20211127/202111270521.Fwtu770n-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 5162b558d8c0b542e752b037e72a69d5fd51eb1e)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install arm64 cross compiling tool for clang build
-        # apt-get install binutils-aarch64-linux-gnu
-        # https://github.com/0day-ci/linux/commit/95965c589ea2e279e082e3c9aa18c2ddd8494d64
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Cai-Huoqing/staging-zynpu-Add-driver-support-for-ARM-China-ZHOUYI-AI-accelerator/20211124-164741
-        git checkout 95965c589ea2e279e082e3c9aa18c2ddd8494d64
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash drivers/iio/ drivers/irqchip/ drivers/spi/ drivers/staging/zynpu/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
->> drivers/staging/zynpu/zynpu_session.c:747:20: warning: no previous prototype for function 'zynpu_session_get_wait_queue' [-Wmissing-prototypes]
-   wait_queue_head_t *zynpu_session_get_wait_queue(struct zynpu_session *session, int uthread_id)
-                      ^
-   drivers/staging/zynpu/zynpu_session.c:747:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   wait_queue_head_t *zynpu_session_get_wait_queue(struct zynpu_session *session, int uthread_id)
-   ^
-   static 
-   1 warning generated.
-
-
-vim +/zynpu_session_get_wait_queue +747 drivers/staging/zynpu/zynpu_session.c
-
-   746	
- > 747	wait_queue_head_t *zynpu_session_get_wait_queue(struct zynpu_session *session, int uthread_id)
-   748	{
-   749	    struct zynpu_thread_wait_queue *queue = NULL;
-   750	
-   751		if (!session) {
-   752			pr_err("invalid input session to be null!");
-   753			return NULL;
-   754		}
-   755	
-   756		/* LOCK */
-   757		spin_lock(&session->job_lock);
-   758		queue = get_thread_wait_queue_no_lock(session->wait_queue_head, uthread_id);
-   759		spin_unlock(&session->job_lock);
-   760		/* UNLOCK */
-   761	
-   762		if (queue)
-   763			return &queue->p_wait;
-   764	
-   765		return NULL;
-   766	}
-   767	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+But yeah, not being able to sleep on it ruins the party.
