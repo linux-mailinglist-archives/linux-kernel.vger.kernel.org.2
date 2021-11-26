@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C700C45F25A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:46:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E8245F25C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:46:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378443AbhKZQtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:49:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
+        id S238338AbhKZQtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:49:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238131AbhKZQrq (ORCPT
+        with ESMTP id S239650AbhKZQrq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Nov 2021 11:47:46 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E758C0613E1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 08:33:49 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D4AFD622DD
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 16:33:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F09BC93056;
-        Fri, 26 Nov 2021 16:33:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637944428;
-        bh=xmCaT2GzT6CZatw5KD1Q984keLtGzkGYqh1jtWg33us=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IjCbw62VD93Z0v6UPOPwTuv5NYyohfLX78i3SgdWyAt56L6jsH7i/FZ9T4B6mzJ2Z
-         c0QqVnzRah95dSR5i+5DC/oIWBPWjJH153fRxlZ5Ps7PaiBSfouro0ObKLUAnQnF+n
-         Ntk2WFP1EIHR/Fsdv0SRMKhknU/OOTLpkXzvZxQw=
-Date:   Fri, 26 Nov 2021 17:33:45 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>
-Subject: Re: [PATCH 1/2] kobject: don't delay to cleanup module kobject
-Message-ID: <YaEMaWMT+PmMvSwg@kroah.com>
-References: <20211105063710.4092936-1-ming.lei@redhat.com>
- <20211105063710.4092936-2-ming.lei@redhat.com>
- <YaEGcEoCqVHwGEZH@kroah.com>
- <YaELQGKCQovNqTAp@T590>
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEFF6C0613ED;
+        Fri, 26 Nov 2021 08:34:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uneliOWtZMP7i1QI58GzHZvDj/yxdUW4ods64b/KyKg=; b=IxgNGZpqAKx4V9m5NpisDuE2xs
+        MuCMQXIGt9saJvZ9v9Q8jDFpMIuS7hz8Ju4/CapgBbXI76fEq0OaO2oV9piTp9CLUwGoPu3cou4iI
+        4XzNzTEo/jV/yFkpwH6SUcPR3Rjkj/bIelf8NS4reu0mEwTkzM2CJHv3knoOBQMdhD/+VRG7Hib6p
+        BcG1xSzqHKdV9tLvsDT9u11bb8229O3ltdlbqeUwG0eYyh05Xiw2dw/2wvFjs/Rai7xLgN9fPIT/N
+        QttLihlR1jj/MRpPE5YLGfDsKfnKcaLiZCdvFJMPvZ9zzwvWyYqRpvGAD/DOQ9oVCgEmCXauIOqlg
+        jle0Vhcw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mqeAo-000k2v-Bg; Fri, 26 Nov 2021 16:34:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1F78D300230;
+        Fri, 26 Nov 2021 17:34:04 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CC5762DC57755; Fri, 26 Nov 2021 17:34:04 +0100 (CET)
+Date:   Fri, 26 Nov 2021 17:34:04 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Maulik Shah <quic_mkshah@quicinc.com>
+Cc:     bjorn.andersson@linaro.org, rafael@kernel.org,
+        daniel.lezcano@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ulf.hansson@linaro.org, quic_lsrao@quicinc.com,
+        rnayak@codeaurora.org, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Subject: Re: [PATCH 2/4] sched/core: Export symbols used by cpuidle governors
+Message-ID: <YaEMfIqBxv350Wjx@hirez.programming.kicks-ass.net>
+References: <1637830481-21709-1-git-send-email-quic_mkshah@quicinc.com>
+ <1637830481-21709-3-git-send-email-quic_mkshah@quicinc.com>
+ <YZ9Y2w2xIrw39B/K@hirez.programming.kicks-ass.net>
+ <f7a1c6de-ae1d-1615-1212-bdb9bdcdbcbc@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YaELQGKCQovNqTAp@T590>
+In-Reply-To: <f7a1c6de-ae1d-1615-1212-bdb9bdcdbcbc@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 27, 2021 at 12:28:48AM +0800, Ming Lei wrote:
-> On Fri, Nov 26, 2021 at 05:08:16PM +0100, Greg Kroah-Hartman wrote:
-> > On Fri, Nov 05, 2021 at 02:37:09PM +0800, Ming Lei wrote:
-> > > CONFIG_DEBUG_KOBJECT_RELEASE is used for debugging kobject release/cleanup
-> > > issue. The module kobject is released after module_exit() returns. If
-> > > this kobject is delayed too much, and may cause other kobject's
-> > > cleaned up a bit earlier before freeing module, then real issue is
-> > > hidden.
-> > > 
-> > > So don't delay module kobject's cleanup, meantime module kobject is
-> > > always cleaned up synchronously, and we needn't module kobject's
-> > > cleanup.
-> > > 
-> > > Signed-off-by: Ming Lei <ming.lei@redhat.com>
-> > > ---
-> > >  lib/kobject.c | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > > 
-> > > diff --git a/lib/kobject.c b/lib/kobject.c
-> > > index ea53b30cf483..4c0dbe11be3d 100644
-> > > --- a/lib/kobject.c
-> > > +++ b/lib/kobject.c
-> > > @@ -16,6 +16,7 @@
-> > >  #include <linux/stat.h>
-> > >  #include <linux/slab.h>
-> > >  #include <linux/random.h>
-> > > +#include <linux/module.h>
-> > >  
-> > >  /**
-> > >   * kobject_namespace() - Return @kobj's namespace tag.
-> > > @@ -727,6 +728,10 @@ static void kobject_release(struct kref *kref)
-> > >  	struct kobject *kobj = container_of(kref, struct kobject, kref);
-> > >  #ifdef CONFIG_DEBUG_KOBJECT_RELEASE
-> > >  	unsigned long delay = HZ + HZ * (get_random_int() & 0x3);
-> > > +
-> > > +	if (kobj->ktype == &module_ktype)
-> > > +		delay = 0;
-> > 
-> > No, there should not be anything "special" about module kobjects to get
-> > this kind of treatment.  They should work like any other kobject and
-> > clean up properly when needed.
+On Thu, Nov 25, 2021 at 07:01:44PM +0530, Maulik Shah wrote:
+> Hi Peter,
 > 
-> Here setting 0 delay for module kobject is just for making DEBUG_KOBJECT_RELEASE
-> reliable to detect/report issues. Otherwise if the random delay for module
-> kobject is bigger than other kobjects, potential use-after-after won't
-> be exposed.
+> On 11/25/2021 3:05 PM, Peter Zijlstra wrote:
+> > On Thu, Nov 25, 2021 at 02:24:39PM +0530, Maulik Shah wrote:
+> > > Export symbols that are used by cpuidle menu governor in preparation
+> > > to allow cpuidle governors to be compiled as modules.
+> > > 
+> > > Cc: Ingo Molnar <mingo@redhat.com>
+> > > Cc: Peter Zijlstra <peterz@infradead.org>
+> > > Cc: Juri Lelli <juri.lelli@redhat.com>
+> > > Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> > > Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
+> > > ---
+> > >   kernel/sched/core.c | 1 +
+> > >   1 file changed, 1 insertion(+)
+> > > 
+> > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > > index 8cffe31..1d031e0 100644
+> > > --- a/kernel/sched/core.c
+> > > +++ b/kernel/sched/core.c
+> > > @@ -5047,6 +5047,7 @@ unsigned int nr_iowait_cpu(int cpu)
+> > >   {
+> > >   	return atomic_read(&cpu_rq(cpu)->nr_iowait);
+> > >   }
+> > > +EXPORT_SYMBOL(nr_iowait_cpu);
+> > NACK, that function is batshit insane, exporting it serves nobody.
+> Thanks for the review.
+> Exporting is to serve cpuidle menu governor when its compiled as module
+> (last patch in this series).
+> 
+> otherwise we get below error during compilation,
+> ERROR: modpost: "nr_iowait_cpu" [drivers/cpuidle/governors/menu.ko]
+> undefined!
+> 
+> Do you suggest to use something else instead of this?
 
-So you now can not debug the module kobject code?
-
-This needs to be documented really really really well why this kobject
-type is somehow "special" in the code.  We should not special-case these
-things unless you have a great reason, and I am not yet convinced.
-
-thanks,
-
-greg k-h
+Yeah, schedutil :-)
