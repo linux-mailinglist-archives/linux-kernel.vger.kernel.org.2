@@ -2,262 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3526D45E3B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 01:33:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1389D45E3BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 01:35:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357299AbhKZAgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 19:36:54 -0500
-Received: from vps-vb.mhejs.net ([37.28.154.113]:55300 "EHLO vps-vb.mhejs.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235709AbhKZAev (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 19:34:51 -0500
-Received: from MUA
-        by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <mail@maciej.szmigiero.name>)
-        id 1mqP9H-0007HP-9z; Fri, 26 Nov 2021 01:31:31 +0100
-From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Igor Mammedov <imammedo@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] KVM: Make kvm_for_each_memslot_in_gfn_range() strict and use iterators
-Date:   Fri, 26 Nov 2021 01:31:09 +0100
-Message-Id: <4e6962905b2fc003acabf8bbee3a0ec1d634966c.1637884349.git.maciej.szmigiero@oracle.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <cover.1637884349.git.maciej.szmigiero@oracle.com>
-References: <cover.1637884349.git.maciej.szmigiero@oracle.com>
+        id S239092AbhKZAiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 19:38:52 -0500
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:34098
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1356942AbhKZAgv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 19:36:51 -0500
+Received: from localhost.localdomain (unknown [10.101.196.174])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id A1FAD3F213;
+        Fri, 26 Nov 2021 00:33:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1637886816;
+        bh=pZyOpAOsBNBKC0LJfUWhxgl1vnefr2uNGuiT9FUXFR0=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=qh0pvH15s2U358i9GjHKYVZiqYQYKWGDApHHx/yQgzTlcdvdlGHJ6s8a6n9caFa7X
+         ZOK09d/NWuPNfgWHUsDeov7G1TwrmvxAHLbNgmFH5KLzEPv4RnmueJQsTIwajg+Rkw
+         ctUulrZSbNHWA0MP7RP79eoPf/rC/Wd8+hLl4KZsBfjm7JSCxPOz8aJfUYsg2YSf4i
+         ZobcJ+327f3AHzdLeEnmp+j3CHsCanzOzGI6cgvVj5CXobVCSXS2w6m3djYxnZcTFK
+         wiszkZE/lbbPP2doqhcWnlN3tZ58lyBFhU1AMOncOkhsyXqT7oO7l3eKtr3LZi5sSQ
+         KpQpomVlvAEZQ==
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Arnd Bergmann <arnd@arndb.de>, Ricky Wu <ricky_wu@realtek.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] misc: rtsx: Avoid mangling IRQ during runtime PM
+Date:   Fri, 26 Nov 2021 08:32:44 +0800
+Message-Id: <20211126003246.1068770-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+After commit 5b4258f6721f ("misc: rtsx: rts5249 support runtime PM"), when the
+rtsx controller is runtime suspended, bring CPUs offline and back online, the
+runtime resume of the controller will fail:
 
-Make kvm_for_each_memslot_in_gfn_range() return only memslots at least
-partially intersecting the requested range.
-At the same time modify its implementation to use iterators.
+[   47.319391] smpboot: CPU 1 is now offline
+[   47.414140] x86: Booting SMP configuration:
+[   47.414147] smpboot: Booting Node 0 Processor 1 APIC 0x2
+[   47.571334] smpboot: CPU 2 is now offline
+[   47.686055] smpboot: Booting Node 0 Processor 2 APIC 0x4
+[   47.808174] smpboot: CPU 3 is now offline
+[   47.878146] smpboot: Booting Node 0 Processor 3 APIC 0x6
+[   48.003679] smpboot: CPU 4 is now offline
+[   48.086187] smpboot: Booting Node 0 Processor 4 APIC 0x1
+[   48.239627] smpboot: CPU 5 is now offline
+[   48.326059] smpboot: Booting Node 0 Processor 5 APIC 0x3
+[   48.472193] smpboot: CPU 6 is now offline
+[   48.574181] smpboot: Booting Node 0 Processor 6 APIC 0x5
+[   48.743375] smpboot: CPU 7 is now offline
+[   48.838047] smpboot: Booting Node 0 Processor 7 APIC 0x7
+[   48.965447] __common_interrupt: 1.35 No irq handler for vector
+[   51.174065] mmc0: error -110 doing runtime resume
+[   54.978088] I/O error, dev mmcblk0, sector 21479 op 0x1:(WRITE) flags 0x0 phys_seg 11 prio class 0
+[   54.978108] Buffer I/O error on dev mmcblk0p1, logical block 19431, lost async page write
+[   54.978129] Buffer I/O error on dev mmcblk0p1, logical block 19432, lost async page write
+[   54.978134] Buffer I/O error on dev mmcblk0p1, logical block 19433, lost async page write
+[   54.978137] Buffer I/O error on dev mmcblk0p1, logical block 19434, lost async page write
+[   54.978141] Buffer I/O error on dev mmcblk0p1, logical block 19435, lost async page write
+[   54.978145] Buffer I/O error on dev mmcblk0p1, logical block 19436, lost async page write
+[   54.978148] Buffer I/O error on dev mmcblk0p1, logical block 19437, lost async page write
+[   54.978152] Buffer I/O error on dev mmcblk0p1, logical block 19438, lost async page write
+[   54.978155] Buffer I/O error on dev mmcblk0p1, logical block 19439, lost async page write
+[   54.978160] Buffer I/O error on dev mmcblk0p1, logical block 19440, lost async page write
+[   54.978244] mmc0: card aaaa removed
+[   54.978452] FAT-fs (mmcblk0p1): FAT read failed (blocknr 4257)
 
-This simplifies kvm_check_memslot_overlap() a bit.
+There's interrupt immediately raised on rtsx_pci_write_register() in
+runtime resume routine, but the IRQ handler hasn't registered yet.
 
-Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+So we can either move rtsx_pci_write_register() after rtsx_pci_acquire_irq(),
+or just stop mangling IRQ on runtime PM. Choose the latter to save some
+CPU cycles.
+
+BugLink: https://bugs.launchpad.net/bugs/1951784
+Fixes: 5b4258f6721f ("misc: rtsx: rts5249 support runtime PM")
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 ---
- arch/x86/kvm/mmu/mmu.c   |  11 ++---
- include/linux/kvm_host.h | 104 +++++++++++++++++++++++++--------------
- virt/kvm/kvm_main.c      |  17 ++-----
- 3 files changed, 75 insertions(+), 57 deletions(-)
+ drivers/misc/cardreader/rtsx_pcr.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 8f0035517450..009eb27d34d3 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5715,23 +5715,22 @@ static bool __kvm_zap_rmaps(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
- {
- 	const struct kvm_memory_slot *memslot;
- 	struct kvm_memslots *slots;
--	struct rb_node *node;
-+	struct kvm_memslot_iter iter;
- 	bool flush = false;
- 	gfn_t start, end;
--	int i, idx;
-+	int i;
+diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
+index 8c72eb590f79d..6ac509c1821c9 100644
+--- a/drivers/misc/cardreader/rtsx_pcr.c
++++ b/drivers/misc/cardreader/rtsx_pcr.c
+@@ -1803,8 +1803,6 @@ static int rtsx_pci_runtime_suspend(struct device *device)
+ 	mutex_lock(&pcr->pcr_mutex);
+ 	rtsx_pci_power_off(pcr, HOST_ENTER_S3);
  
- 	if (!kvm_memslots_have_rmaps(kvm))
- 		return flush;
- 
- 	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
- 		slots = __kvm_memslots(kvm, i);
--		idx = slots->node_idx;
- 
--		kvm_for_each_memslot_in_gfn_range(node, slots, gfn_start, gfn_end) {
--			memslot = container_of(node, struct kvm_memory_slot, gfn_node[idx]);
-+		kvm_for_each_memslot_in_gfn_range(&iter, slots, gfn_start, gfn_end) {
-+			memslot = kvm_memslot_iter_slot(&iter);
- 			start = max(gfn_start, memslot->base_gfn);
- 			end = min(gfn_end, memslot->base_gfn + memslot->npages);
--			if (start >= end)
-+			if (WARN_ON_ONCE(start >= end))
- 				continue;
- 
- 			flush = slot_handle_level_range(kvm, memslot, kvm_zap_rmapp,
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 3932bb091099..580d9abd97c1 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -841,74 +841,104 @@ struct kvm_memory_slot *id_to_memslot(struct kvm_memslots *slots, int id)
- 	return NULL;
- }
- 
--static inline
--struct rb_node *kvm_memslots_gfn_upper_bound(struct kvm_memslots *slots, gfn_t gfn)
-+/* Iterator used for walking memslots that overlap a gfn range. */
-+struct kvm_memslot_iter {
-+	struct kvm_memslots *slots;
-+	gfn_t end;
-+	struct rb_node *node;
-+};
-+
-+static inline void kvm_memslot_iter_start(struct kvm_memslot_iter *iter,
-+					  struct kvm_memslots *slots,
-+					  gfn_t start, gfn_t end)
- {
- 	int idx = slots->node_idx;
--	struct rb_node *node, *result = NULL;
-+	struct rb_node *tmp;
-+	struct kvm_memory_slot *slot;
- 
--	for (node = slots->gfn_tree.rb_node; node; ) {
--		struct kvm_memory_slot *slot;
-+	iter->slots = slots;
-+	iter->end = end;
- 
--		slot = container_of(node, struct kvm_memory_slot, gfn_node[idx]);
--		if (gfn < slot->base_gfn) {
--			result = node;
--			node = node->rb_left;
--		} else
--			node = node->rb_right;
-+	/*
-+	 * Find the so called "upper bound" of a key - the first node that has
-+	 * its key strictly greater than the searched one (the start gfn in our case).
-+	 */
-+	iter->node = NULL;
-+	for (tmp = slots->gfn_tree.rb_node; tmp; ) {
-+		slot = container_of(tmp, struct kvm_memory_slot, gfn_node[idx]);
-+		if (start < slot->base_gfn) {
-+			iter->node = tmp;
-+			tmp = tmp->rb_left;
-+		} else {
-+			tmp = tmp->rb_right;
-+		}
- 	}
- 
--	return result;
--}
+-	free_irq(pcr->irq, (void *)pcr);
 -
--static inline
--struct rb_node *kvm_for_each_in_gfn_first(struct kvm_memslots *slots, gfn_t start)
--{
--	struct rb_node *node;
--
- 	/*
- 	 * Find the slot with the lowest gfn that can possibly intersect with
- 	 * the range, so we'll ideally have slot start <= range start
- 	 */
--	node = kvm_memslots_gfn_upper_bound(slots, start);
--	if (node) {
--		struct rb_node *pnode;
--
-+	if (iter->node) {
- 		/*
- 		 * A NULL previous node means that the very first slot
- 		 * already has a higher start gfn.
- 		 * In this case slot start > range start.
- 		 */
--		pnode = rb_prev(node);
--		if (pnode)
--			node = pnode;
-+		tmp = rb_prev(iter->node);
-+		if (tmp)
-+			iter->node = tmp;
- 	} else {
- 		/* a NULL node below means no slots */
--		node = rb_last(&slots->gfn_tree);
-+		iter->node = rb_last(&slots->gfn_tree);
- 	}
+ 	mutex_unlock(&pcr->pcr_mutex);
  
--	return node;
-+	if (iter->node) {
-+		/*
-+		 * It is possible in the slot start < range start case that the
-+		 * found slot ends before or at range start (slot end <= range start)
-+		 * and so it does not overlap the requested range.
-+		 *
-+		 * In such non-overlapping case the next slot (if it exists) will
-+		 * already have slot start > range start, otherwise the logic above
-+		 * would have found it instead of the current slot.
-+		 */
-+		slot = container_of(iter->node, struct kvm_memory_slot, gfn_node[idx]);
-+		if (slot->base_gfn + slot->npages <= start)
-+			iter->node = rb_next(iter->node);
-+	}
- }
+ 	pcr->is_runtime_suspended = true;
+@@ -1825,8 +1823,6 @@ static int rtsx_pci_runtime_resume(struct device *device)
+ 	mutex_lock(&pcr->pcr_mutex);
  
--static inline
--bool kvm_for_each_in_gfn_no_more(struct kvm_memslots *slots, struct rb_node *node, gfn_t end)
-+static inline struct kvm_memory_slot *kvm_memslot_iter_slot(struct kvm_memslot_iter *iter)
-+{
-+	return container_of(iter->node, struct kvm_memory_slot, gfn_node[iter->slots->node_idx]);
-+}
-+
-+static inline bool kvm_memslot_iter_is_valid(struct kvm_memslot_iter *iter)
- {
- 	struct kvm_memory_slot *memslot;
+ 	rtsx_pci_write_register(pcr, HOST_SLEEP_STATE, 0x03, 0x00);
+-	rtsx_pci_acquire_irq(pcr);
+-	synchronize_irq(pcr->irq);
  
--	memslot = container_of(node, struct kvm_memory_slot, gfn_node[slots->node_idx]);
-+	if (!iter->node)
-+		return false;
-+
-+	memslot = kvm_memslot_iter_slot(iter);
- 
- 	/*
- 	 * If this slot starts beyond or at the end of the range so does
- 	 * every next one
- 	 */
--	return memslot->base_gfn >= end;
-+	return memslot->base_gfn < iter->end;
-+}
-+
-+static inline void kvm_memslot_iter_next(struct kvm_memslot_iter *iter)
-+{
-+	iter->node = rb_next(iter->node);
- }
- 
--/* Iterate over each memslot *possibly* intersecting [start, end) range */
--#define kvm_for_each_memslot_in_gfn_range(node, slots, start, end)	\
--	for (node = kvm_for_each_in_gfn_first(slots, start);		\
--	     node && !kvm_for_each_in_gfn_no_more(slots, node, end);	\
--	     node = rb_next(node))					\
-+/* Iterate over each memslot at least partially intersecting [start, end) range */
-+#define kvm_for_each_memslot_in_gfn_range(iter, slots, start, end)	 \
-+	for (kvm_memslot_iter_start(iter, slots, start, end);		 \
-+	     kvm_memslot_iter_is_valid(iter);				 \
-+	     kvm_memslot_iter_next(iter))
- 
- /*
-  * KVM_SET_USER_MEMORY_REGION ioctl allows the following operations:
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 367c1cba26d2..d6503b92b3cf 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1797,22 +1797,11 @@ static int kvm_set_memslot(struct kvm *kvm,
- static bool kvm_check_memslot_overlap(struct kvm_memslots *slots, int id,
- 				      gfn_t start, gfn_t end)
- {
--	int idx = slots->node_idx;
--	struct rb_node *node;
--
--	kvm_for_each_memslot_in_gfn_range(node, slots, start, end) {
--		struct kvm_memory_slot *cslot;
--		gfn_t cend;
-+	struct kvm_memslot_iter iter;
- 
--		cslot = container_of(node, struct kvm_memory_slot, gfn_node[idx]);
--		cend = cslot->base_gfn + cslot->npages;
--		if (cslot->id == id)
--			continue;
--
--		/* kvm_for_each_in_gfn_no_more() guarantees that cslot->base_gfn < nend */
--		if (cend > start)
-+	kvm_for_each_memslot_in_gfn_range(&iter, slots, start, end)
-+		if (kvm_memslot_iter_slot(&iter)->id != id)
- 			return true;
--	}
- 
- 	return false;
- }
+ 	if (pcr->ops->fetch_vendor_settings)
+ 		pcr->ops->fetch_vendor_settings(pcr);
+-- 
+2.32.0
+
