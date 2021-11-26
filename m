@@ -2,210 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F52745EDE9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF0F45EDED
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:32:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347767AbhKZMei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 07:34:38 -0500
-Received: from mga09.intel.com ([134.134.136.24]:37544 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347215AbhKZMce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 07:32:34 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="235478921"
-X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
-   d="scan'208";a="235478921"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 04:29:21 -0800
-X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
-   d="scan'208";a="607851585"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 04:29:19 -0800
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with ESMTP id 6306820165;
-        Fri, 26 Nov 2021 14:28:47 +0200 (EET)
-Date:   Fri, 26 Nov 2021 14:28:47 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     mchehab@kernel.org, broonie@kernel.org, kernel@puri.sm,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-pm@vger.kernel.org, Angus Ainslie <angus@akkea.ca>
-Subject: Re: [PATCH v2] media: i2c: dw9714: add optional regulator support
-Message-ID: <YaDS/+QbTWRl3cOS@paasikivi.fi.intel.com>
-References: <20211126090107.1243558-1-martin.kepplinger@puri.sm>
- <YaC6nZIQOsrpBY8V@paasikivi.fi.intel.com>
- <8d72c895ece6dce7d8badb241eebcbe076a03f81.camel@puri.sm>
+        id S1377428AbhKZMfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 07:35:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:47090 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237716AbhKZMdf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 07:33:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637929822;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wJpjstKjFgGO5wW+gqXS3RJS7pxbzNnoYG45SxgIaVs=;
+        b=iGDRW/69Gv6HKv0lLNnQv0m8Vf80ZRVrftmQUxRPjBBwFtQkqYGjdmFmdfXbTB9qFKZvUf
+        tkME6CPDR44IfqVOGAUrbR3p1Bwr1DnQq1RTw1jRMVpRXfYlXLM+vwGK/Zhw47Xjh1uLPt
+        iWjxcbqj5zryUbxMBwbAG+KvKsJXsxo=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-441-VEIGO42AP3iKtl9OcwCTbg-1; Fri, 26 Nov 2021 07:30:21 -0500
+X-MC-Unique: VEIGO42AP3iKtl9OcwCTbg-1
+Received: by mail-ed1-f72.google.com with SMTP id t9-20020aa7d709000000b003e83403a5cbso7918411edq.19
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 04:30:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=wJpjstKjFgGO5wW+gqXS3RJS7pxbzNnoYG45SxgIaVs=;
+        b=tJFRnSwS2efh3J1t5f5SWswHuUT9zTjZUTxWuF9y/n5C3pCPwYNlzgaeEIh794chAU
+         81BAEnCN5Dswa2n7QGlRNlPtzOqfV49sIKW57ibfm7amExQ7q60PkiaSgMNi36gA25oP
+         J/fOcCsL5wLCPafftDnYqnJjPwISuME1RdEPWiR3BH+y52w4Uw3+bg843XVFeM9BMFcW
+         eBNzTLSTVfOsCKEUbGOUSNBdW7g034aoHo1DHvyeMudR09+YYcqiV1xPfSP2lnspPoNQ
+         X8iicxvD5uSgjA8L7IHS9Xy6IH+pKVMT8yQ57LFkM2Cb/G1lX2SyWT+BSd3ooMcM1UaL
+         o8vA==
+X-Gm-Message-State: AOAM533P4FrYg8M1zXkblEGX7NPnIIp3NSgaAZtM0Xy/CTOTkA6Gw/+H
+        VwMEBMUgm3OCdxAnOoM1vflT+4bcoYZU1VFViKvKUQMdkExpUbiCY6xAqBz3xPi7iS7ZdUdDhmW
+        0lMyjGAHLLPaLggk+HPPiw0Md
+X-Received: by 2002:a17:906:9253:: with SMTP id c19mr38089910ejx.63.1637929818654;
+        Fri, 26 Nov 2021 04:30:18 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzFpOGQFmWiCNvf6rQhtfEjSpRvn9st0kQKBRiIz3dQouSyrrzQoU3PWI7Fk46YpVzPcL/lig==
+X-Received: by 2002:a17:906:9253:: with SMTP id c19mr38089763ejx.63.1637929817373;
+        Fri, 26 Nov 2021 04:30:17 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id l18sm2825795ejo.114.2021.11.26.04.30.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 04:30:16 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 0A5011802A0; Fri, 26 Nov 2021 13:30:16 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 net-next 21/26] ice: add XDP and XSK generic
+ per-channel statistics
+In-Reply-To: <20211125204007.133064-1-alexandr.lobakin@intel.com>
+References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
+ <20211123163955.154512-22-alexandr.lobakin@intel.com>
+ <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
+ <87bl28bga6.fsf@toke.dk>
+ <20211125170708.127323-1-alexandr.lobakin@intel.com>
+ <20211125094440.6c402d63@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20211125204007.133064-1-alexandr.lobakin@intel.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 26 Nov 2021 13:30:16 +0100
+Message-ID: <87sfvj9k13.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8d72c895ece6dce7d8badb241eebcbe076a03f81.camel@puri.sm>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 12:06:03PM +0100, Martin Kepplinger wrote:
-> Am Freitag, dem 26.11.2021 um 12:44 +0200 schrieb Sakari Ailus:
-> > Hi Martin,
-> > 
-> > On Fri, Nov 26, 2021 at 10:01:07AM +0100, Martin Kepplinger wrote:
-> > > From: Angus Ainslie <angus@akkea.ca>
-> > > 
-> > > Allow the dw9714 to control a regulator and adjust suspend() and
-> > > resume()
-> > > to support both runtime and system pm.
-> > > 
-> > > Signed-off-by: Angus Ainslie <angus@akkea.ca>
-> > > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> > > ---
-> > > 
-> > > revision history
-> > > ----------------
-> > > 
-> > > v2: (thank you Mark)
-> > >  * simplify the regulator_get_optional() error path
-> > >  * fix regulator usage during probe()
-> > > 
-> > > v1:
-> > > https://lore.kernel.org/linux-media/20211125080922.978583-1-martin.kepplinger@puri.sm/
-> > > 
-> > > 
-> > > 
-> > >  drivers/media/i2c/dw9714.c | 39
-> > > ++++++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 39 insertions(+)
-> > > 
-> > > diff --git a/drivers/media/i2c/dw9714.c
-> > > b/drivers/media/i2c/dw9714.c
-> > > index 3863dfeb8293..e8cc19b89861 100644
-> > > --- a/drivers/media/i2c/dw9714.c
-> > > +++ b/drivers/media/i2c/dw9714.c
-> > > @@ -5,6 +5,7 @@
-> > >  #include <linux/i2c.h>
-> > >  #include <linux/module.h>
-> > >  #include <linux/pm_runtime.h>
-> > > +#include <linux/regulator/consumer.h>
-> > >  #include <media/v4l2-ctrls.h>
-> > >  #include <media/v4l2-device.h>
-> > >  #include <media/v4l2-event.h>
-> > > @@ -36,6 +37,7 @@ struct dw9714_device {
-> > >         struct v4l2_ctrl_handler ctrls_vcm;
-> > >         struct v4l2_subdev sd;
-> > >         u16 current_val;
-> > > +       struct regulator *vcc;
-> > >  };
-> > >  
-> > >  static inline struct dw9714_device *to_dw9714_vcm(struct v4l2_ctrl
-> > > *ctrl)
-> > > @@ -145,6 +147,21 @@ static int dw9714_probe(struct i2c_client
-> > > *client)
-> > >         if (dw9714_dev == NULL)
-> > >                 return -ENOMEM;
-> > >  
-> > > +       dw9714_dev->vcc = devm_regulator_get_optional(&client->dev,
-> > > "vcc");
-> > 
-> > You you used regular devm_regulator_get(), you could remove the error
-> > handling below. If there's no regulator, you'll simply get a dummy
-> > one.
-> 
-> ok thanks
-> 
-> 
-> > 
-> > > +       if (IS_ERR(dw9714_dev->vcc)) {
-> > > +               dev_dbg(&client->dev, "No vcc regulator found:
-> > > %ld\n",
-> > > +                       PTR_ERR(dw9714_dev->vcc));
-> > > +               dw9714_dev->vcc = NULL;
-> > > +       }
-> > > +
-> > > +       if (dw9714_dev->vcc) {
-> > 
-> > With (dummy) regulators, these checks become unnecessary.
-> > 
-> > > +               rval = regulator_enable(dw9714_dev->vcc);
-> > > +               if (rval < 0) {
-> > > +                       dev_err(&client->dev, "failed to enable
-> > > vcc: %d\n", rval);
-> > > +                       return rval;
-> > > +               }
-> > > +       }
-> > > +
-> > >         v4l2_i2c_subdev_init(&dw9714_dev->sd, client, &dw9714_ops);
-> > >         dw9714_dev->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE |
-> > >                                 V4L2_SUBDEV_FL_HAS_EVENTS;
-> > > @@ -200,6 +217,9 @@ static int __maybe_unused
-> > > dw9714_vcm_suspend(struct device *dev)
-> > >         struct dw9714_device *dw9714_dev = sd_to_dw9714_vcm(sd);
-> > >         int ret, val;
-> > >  
-> > > +       if (pm_runtime_suspended(&client->dev))
-> > > +               return 0;
-> > 
-> > This can't take place in a runtime PM suspend callback. You'll need
-> > to add
-> > system suspend callback for this.
-> 
-> but this function is both the system and runtime suspend callback.
-> doesn't splitting up the callbacks just add lines of code
-> unnecessarily?
+Alexander Lobakin <alexandr.lobakin@intel.com> writes:
 
-Hmm. After thinking about this a little, I think this could indeed work.
+> From: Jakub Kicinski <kuba@kernel.org>
+> Date: Thu, 25 Nov 2021 09:44:40 -0800
+>
+>> On Thu, 25 Nov 2021 18:07:08 +0100 Alexander Lobakin wrote:
+>> > > This I agree with, and while I can see the layering argument for putting
+>> > > them into 'ip' and rtnetlink instead of ethtool, I also worry that these
+>> > > counters will simply be lost in obscurity, so I do wonder if it wouldn't
+>> > > be better to accept the "layering violation" and keeping them all in the
+>> > > 'ethtool -S' output?  
+>> > 
+>> > I don't think we should harm the code and the logics in favor of
+>> > 'some of the users can face something'. We don't control anything
+>> > related to XDP using Ethtool at all, but there is some XDP-related
+>> > stuff inside iproute2 code, so for me it's even more intuitive to
+>> > have them there.
+>> > Jakub, may be you'd like to add something at this point?
+>> 
+>> TBH I wasn't following this thread too closely since I saw Daniel
+>> nacked it already. I do prefer rtnl xstats, I'd just report them 
+>> in -s if they are non-zero. But doesn't sound like we have an agreement
+>> whether they should exist or not.
+>
+> Right, just -s is fine, if we drop the per-channel approach.
 
-Yeah, please leave it as-is.
+I agree that adding them to -s is fine (and that resolves my "no one
+will find them" complain as well). If it crowds the output we could also
+default to only output'ing a subset, and have the more detailed
+statistics hidden behind a verbose switch (or even just in the JSON
+output)?
 
-> 
-> > 
-> > > +
-> > >         for (val = dw9714_dev->current_val & ~(DW9714_CTRL_STEPS -
-> > > 1);
-> > >              val >= 0; val -= DW9714_CTRL_STEPS) {
-> > >                 ret = dw9714_i2c_write(client,
-> > > @@ -208,6 +228,13 @@ static int __maybe_unused
-> > > dw9714_vcm_suspend(struct device *dev)
-> > >                         dev_err_once(dev, "%s I2C failure: %d",
-> > > __func__, ret);
-> > >                 usleep_range(DW9714_CTRL_DELAY_US,
-> > > DW9714_CTRL_DELAY_US + 10);
-> > >         }
-> > > +
-> > > +       if (dw9714_dev->vcc) {
-> > > +               ret = regulator_disable(dw9714_dev->vcc);
-> > > +               if (ret)
-> > > +                       dev_err(dev, "Failed to disable vcc: %d\n",
-> > > ret);
-> > > +       }
-> > > +
-> > >         return 0;
-> > >  }
-> > >  
-> > > @@ -224,6 +251,18 @@ static int  __maybe_unused
-> > > dw9714_vcm_resume(struct device *dev)
-> > >         struct dw9714_device *dw9714_dev = sd_to_dw9714_vcm(sd);
-> > >         int ret, val;
-> > >  
-> > > +       if (pm_runtime_suspended(&client->dev))
-> > 
-> > Same for this one.
-> > 
-> > > +               return 0;
-> > > +
-> > > +       if (dw9714_dev->vcc) {
-> > > +               ret = regulator_enable(dw9714_dev->vcc);
-> > > +               if (ret) {
-> > > +                       dev_err(dev, "Failed to enable vcc: %d\n",
-> > > ret);
-> > > +                       return ret;
-> > > +               }
-> > > +               usleep_range(1000, 2000);
-> > > +       }
-> > > +
-> > >         for (val = dw9714_dev->current_val % DW9714_CTRL_STEPS;
-> > >              val < dw9714_dev->current_val + DW9714_CTRL_STEPS - 1;
-> > >              val += DW9714_CTRL_STEPS) {
-> > 
-> 
-> 
+>> Can we think of an approach which would make cloudflare and cilium
+>> happy? Feels like we're trying to make the slightly hypothetical 
+>> admin happy while ignoring objections of very real users.
+>
+> The initial idea was to only uniform the drivers. But in general
+> you are right, 10 drivers having something doesn't mean it's
+> something good.
 
--- 
-Sakari Ailus
+I don't think it's accurate to call the admin use case "hypothetical".
+We're expending a significant effort explaining to people that XDP can
+"eat" your packets, and not having any standard statistics makes this
+way harder. We should absolutely cater to our "early adopters", but if
+we want XDP to see wider adoption, making it "less weird" is critical!
+
+> Maciej, I think you were talking about Cilium asking for those stats
+> in Intel drivers? Could you maybe provide their exact usecases/needs
+> so I'll orient myself? I certainly remember about XSK Tx packets and
+> bytes.
+> And speaking of XSK Tx, we have per-socket stats, isn't that enough?
+
+IMO, as long as the packets are accounted for in the regular XDP stats,
+having a whole separate set of stats only for XSK is less important.
+
+>> Please leave the per-channel stats out. They make a precedent for
+>> channel stats which should be an attribute of a channel. Working for 
+>> a large XDP user for a couple of years now I can tell you from my own
+>> experience I've not once found them useful. In fact per-queue stats are
+>> a major PITA as they crowd the output.
+>
+> Oh okay. My very first iterations were without this, but then I
+> found most of the drivers expose their XDP stats per-channel. Since
+> I didn't plan to degrade the functionality, they went that way.
+
+I personally find the per-channel stats quite useful. One of the primary
+reasons for not achieving full performance with XDP is broken
+configuration of packet steering to CPUs, and having per-channel stats
+is a nice way of seeing this. I can see the point about them being way
+too verbose in the default output, though, and I do generally filter the
+output as well when viewing them. But see my point above about only
+printing a subset of the stats by default; per-channel stats could be
+JSON-only, for instance?
+
+-Toke
+
