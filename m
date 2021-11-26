@@ -2,126 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FCAB45F596
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 21:00:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDCE745F563
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237756AbhKZUDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 15:03:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232948AbhKZUBu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 15:01:50 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A075DC061396;
-        Fri, 26 Nov 2021 11:43:45 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id e11so20592649ljo.13;
-        Fri, 26 Nov 2021 11:43:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nQPpnZfbRUbuXuOwLW/n2B3yCkU4irvEjLPosYUfYAA=;
-        b=nzrCYv6lykwqtrBXVd2Ar3Zv3iwMoJW5RoOvW9ZhQV67IydETSTc08RqGivCArzAZh
-         d/vIijIwoT4XESeznt9VhYL+0l1aCHZ493cWXmM40FtsZo4Lwx4/DB8urH9FotY/6L6t
-         iutRBklfKRD7QxA7b3pm9g3Mga9TGTmMDgnc8pKfnirHuZhiWpcEqmAk/iBsaZUONiAu
-         AD3RxpxSp8ifZU2AimY6CUvEo7s0EJiwya9ouG7j47VGGjjZF3NYLYN7AR4mX875fsw3
-         f23ohF5H6X0B8JfwDsk6QtZUv41JUlIWCpACU1PBW0srg/tf1ZGcpnK3bYNKIN+To+Xc
-         Q12A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nQPpnZfbRUbuXuOwLW/n2B3yCkU4irvEjLPosYUfYAA=;
-        b=NR0HZjX9epJFWzBXztV6+wvvF6DHCTfCmfMF0UngwjfLuWNqk1AfBxn3LRjhKsyzji
-         6ojLg8TNiHKmPYpBXA57/7Cultbb15WS7F8W+3Y7sqSADK7FijxUV2uXF/CIZsufaTNF
-         ZyGJjVULf19fjy1RFcDPrHdVQt8wWN757T9HM1SHlDs028vIQSOkgdS9Jd4lXFFlAl72
-         Ag4ry25Ukpedfu9R3KnbvQVJyX7OeFIgU1d2GBjv+b92LsZIe1Y+AwVkrx20LjcdGIRV
-         no1plOo11PSvlyXY7AaZS3nbO3UngdIzT4QLO1TlUDwM5M+kJG/NaCHOgWlIKCB+XAUp
-         GP/A==
-X-Gm-Message-State: AOAM533xQN1P190duDuRg9iSPe9ABSj4mzaxGQDLWSOAYnzk3cJVmMXU
-        Sf0GF67SW1dnT69R3MJD6nY=
-X-Google-Smtp-Source: ABdhPJzizYMSrgLgpnrhnG8Vbw4+FR+VlkOOpCkav2wnrfCEuYoBxFQFW39RYwDGE3D/vd2U5GnLdA==
-X-Received: by 2002:a2e:a305:: with SMTP id l5mr33119964lje.73.1637955823975;
-        Fri, 26 Nov 2021 11:43:43 -0800 (PST)
-Received: from [192.168.1.103] ([178.176.72.184])
-        by smtp.gmail.com with ESMTPSA id m28sm572111lfq.189.2021.11.26.11.43.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Nov 2021 11:43:43 -0800 (PST)
-Subject: Re: [PATCH -next V5 1/2] sata_fsl: fix UAF in sata_fsl_port_stop when
- rmmod sata_fsl
-To:     Baokun Li <libaokun1@huawei.com>, damien.lemoal@opensource.wdc.com,
-        axboe@kernel.dk, tj@kernel.org, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     yebin10@huawei.com, yukuai3@huawei.com, stable@vger.kernel.org,
-        Hulk Robot <hulkci@huawei.com>
-References: <20211126020307.2168767-1-libaokun1@huawei.com>
- <20211126020307.2168767-2-libaokun1@huawei.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <f8acc1f0-62d1-3c80-840f-1e38e21ad3c9@gmail.com>
-Date:   Fri, 26 Nov 2021 22:43:42 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S239002AbhKZTth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 14:49:37 -0500
+Received: from mga06.intel.com ([134.134.136.31]:60856 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233483AbhKZTrg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 14:47:36 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="296511450"
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
+   d="scan'208";a="296511450"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 11:44:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
+   d="scan'208";a="607971271"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 26 Nov 2021 11:44:14 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqh8n-0008VL-Cp; Fri, 26 Nov 2021 19:44:13 +0000
+Date:   Sat, 27 Nov 2021 03:43:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: sound/soc/tegra/tegra210_adx.c:125:14: sparse: sparse: restricted
+ snd_pcm_format_t degrades to integer
+Message-ID: <202111270332.sDUjP9Xg-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20211126020307.2168767-2-libaokun1@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/21 5:03 AM, Baokun Li wrote:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   1bff7d7e8c487b9b0ceab70b43b781f1d45f55eb
+commit: a99ab6f395a9e45ca3f9047e9b88d6e02737419f ASoC: tegra: Add Tegra210 based ADX driver
+date:   10 weeks ago
+config: riscv-randconfig-s032-20211126 (https://download.01.org/0day-ci/archive/20211127/202111270332.sDUjP9Xg-lkp@intel.com/config)
+compiler: riscv32-linux-gcc (GCC) 11.2.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a99ab6f395a9e45ca3f9047e9b88d6e02737419f
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout a99ab6f395a9e45ca3f9047e9b88d6e02737419f
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=riscv SHELL=/bin/bash sound/soc/tegra/
 
-> When the `rmmod sata_fsl.ko` command is executed in the PPC64 GNU/Linux,
-> a bug is reported:
->  ==================================================================
->  BUG: Unable to handle kernel data access on read at 0x80000800805b502c
->  Oops: Kernel access of bad area, sig: 11 [#1]
->  NIP [c0000000000388a4] .ioread32+0x4/0x20
->  LR [80000000000c6034] .sata_fsl_port_stop+0x44/0xe0 [sata_fsl]
->  Call Trace:
->   .free_irq+0x1c/0x4e0 (unreliable)
->   .ata_host_stop+0x74/0xd0 [libata]
->   .release_nodes+0x330/0x3f0
->   .device_release_driver_internal+0x178/0x2c0
->   .driver_detach+0x64/0xd0
->   .bus_remove_driver+0x70/0xf0
->   .driver_unregister+0x38/0x80
->   .platform_driver_unregister+0x14/0x30
->   .fsl_sata_driver_exit+0x18/0xa20 [sata_fsl]
->   .__se_sys_delete_module+0x1ec/0x2d0
->   .system_call_exception+0xfc/0x1f0
->   system_call_common+0xf8/0x200
->  ==================================================================
-> 
-> The triggering of the BUG is shown in the following stack:
-> 
-> driver_detach
->   device_release_driver_internal
->     __device_release_driver
->       drv->remove(dev) --> platform_drv_remove/platform_remove
->         drv->remove(dev) --> sata_fsl_remove
->           iounmap(host_priv->hcr_base);			<---- unmap
->           kfree(host_priv);                             <---- free
->       devres_release_all
->         release_nodes
->           dr->node.release(dev, dr->data) --> ata_host_stop
->             ap->ops->port_stop(ap) --> sata_fsl_port_stop
->                 ioread32(hcr_base + HCONTROL)           <---- UAF
->             host->ops->host_stop(host)
-> 
-> The iounmap(host_priv->hcr_base) and kfree(host_priv) functions should
-> not be executed in drv->remove. These functions should be executed in
-> host_stop after port_stop. Therefore, we move these functions to the
-> new function sata_fsl_host_stop and bind the new function to host_stop.
-> 
-> Fixes: faf0b2e5afe7 ("drivers/ata: add support to Freescale 3.0Gbps SATA Controller")
-> Cc: stable@vger.kernel.org
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
 
-MBR, Sergei
+sparse warnings: (new ones prefixed by >>)
+>> sound/soc/tegra/tegra210_adx.c:125:14: sparse: sparse: restricted snd_pcm_format_t degrades to integer
+   sound/soc/tegra/tegra210_adx.c:128:14: sparse: sparse: restricted snd_pcm_format_t degrades to integer
+   sound/soc/tegra/tegra210_adx.c:131:14: sparse: sparse: restricted snd_pcm_format_t degrades to integer
+>> sound/soc/tegra/tegra210_adx.c:153:38: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned int format @@     got restricted snd_pcm_format_t @@
+   sound/soc/tegra/tegra210_adx.c:153:38: sparse:     expected unsigned int format
+   sound/soc/tegra/tegra210_adx.c:153:38: sparse:     got restricted snd_pcm_format_t
+   sound/soc/tegra/tegra210_adx.c:162:56: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned int format @@     got restricted snd_pcm_format_t @@
+   sound/soc/tegra/tegra210_adx.c:162:56: sparse:     expected unsigned int format
+   sound/soc/tegra/tegra210_adx.c:162:56: sparse:     got restricted snd_pcm_format_t
+
+vim +125 sound/soc/tegra/tegra210_adx.c
+
+   109	
+   110	static int tegra210_adx_set_audio_cif(struct snd_soc_dai *dai,
+   111					      unsigned int channels,
+   112					      unsigned int format,
+   113					      unsigned int reg)
+   114	{
+   115		struct tegra210_adx *adx = snd_soc_dai_get_drvdata(dai);
+   116		struct tegra_cif_conf cif_conf;
+   117		int audio_bits;
+   118	
+   119		memset(&cif_conf, 0, sizeof(struct tegra_cif_conf));
+   120	
+   121		if (channels < 1 || channels > 16)
+   122			return -EINVAL;
+   123	
+   124		switch (format) {
+ > 125		case SNDRV_PCM_FORMAT_S8:
+   126			audio_bits = TEGRA_ACIF_BITS_8;
+   127			break;
+   128		case SNDRV_PCM_FORMAT_S16_LE:
+   129			audio_bits = TEGRA_ACIF_BITS_16;
+   130			break;
+   131		case SNDRV_PCM_FORMAT_S32_LE:
+   132			audio_bits = TEGRA_ACIF_BITS_32;
+   133			break;
+   134		default:
+   135			return -EINVAL;
+   136		}
+   137	
+   138		cif_conf.audio_ch = channels;
+   139		cif_conf.client_ch = channels;
+   140		cif_conf.audio_bits = audio_bits;
+   141		cif_conf.client_bits = audio_bits;
+   142	
+   143		tegra_set_cif(adx->regmap, reg, &cif_conf);
+   144	
+   145		return 0;
+   146	}
+   147	
+   148	static int tegra210_adx_out_hw_params(struct snd_pcm_substream *substream,
+   149					      struct snd_pcm_hw_params *params,
+   150					      struct snd_soc_dai *dai)
+   151	{
+   152		return tegra210_adx_set_audio_cif(dai, params_channels(params),
+ > 153				params_format(params),
+   154				TEGRA210_ADX_TX1_CIF_CTRL + ((dai->id - 1) * TEGRA210_ADX_AUDIOCIF_CH_STRIDE));
+   155	}
+   156	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
