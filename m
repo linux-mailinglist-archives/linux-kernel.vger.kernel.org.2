@@ -2,86 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFF845F10C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:48:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C743245F122
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378272AbhKZPvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:51:14 -0500
-Received: from mga07.intel.com ([134.134.136.100]:56837 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237966AbhKZPtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:49:13 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="299083269"
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="299083269"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 07:43:32 -0800
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="458226709"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 07:43:29 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mqdNm-00ApEa-9w;
-        Fri, 26 Nov 2021 17:43:26 +0200
-Date:   Fri, 26 Nov 2021 17:43:26 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Tan Jui Nee <jui.nee.tan@intel.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Jonathan Yong <jonathan.yong@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Cc:     Jean Delvare <jdelvare@suse.com>, Peter Tyser <ptyser@xes-inc.com>,
-        hdegoede@redhat.com, henning.schild@siemens.com
-Subject: Re: [rfc, PATCH v1 0/7] PCI: introduce p2sb helper
-Message-ID: <YaEAnri0yM3CgnbQ@smile.fi.intel.com>
-References: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
+        id S1378305AbhKZP5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 10:57:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352017AbhKZPzs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 10:55:48 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7342CC06179B;
+        Fri, 26 Nov 2021 07:44:00 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id d24so19606780wra.0;
+        Fri, 26 Nov 2021 07:44:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GLkyoLUKpRjZnUdDc279znKmoge1lvnkGD50/gVexkQ=;
+        b=OqVKngMbKLP1DHv9TsYenjFQef9cX6K7kJey9mSlOp6MZOzu3usOtwBL0qb2SNi4EK
+         ffP1HlR1pHpOe7MCNiKzCLNi/xllzf8RTz6nNXz4Ujt3LAOaN6OLa7vnaZb7XvQFGXPF
+         btNKgwianGoMtkWVm7adowHH4JIvmWOGvnzXBPija5qvt9p8cdv12LiLl3M1Lmfvi+cg
+         tEM5Svnk6RyH9iHSCwTb8TWGt1YCB9XSU78W7pamTXnBNDyEkCt3x3+QevXjCso/2Wpi
+         ydRzASYt1K/q3legxeFrgeQYmFHYGCJIjFyNqC8DckkEMt1RMRrNhrU1Ib2hJR3i/uDO
+         W26Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GLkyoLUKpRjZnUdDc279znKmoge1lvnkGD50/gVexkQ=;
+        b=M5jpD0/p4wu/GwrS3a/tJDS5oDp68a6Fe/lbrvMtbMDQXQNsyQRwfed6DNH00IQB6X
+         EQ33xvevXYEsb52NzCNwIEKUjIdEqAlTLWTQS65VjSHQRIQY7AKzSy/8sTot29iwvlvw
+         JJ3j+F2roZ6n7QDO+IIW169UTMIFTcy0fA0wdnVaC5GExRfsBRB7PHujfxZcH0fSTI0W
+         AoJSJH63p6mZG0uDf9gowNmtaoeq22t8G3P+g3Lxh6SyqQ8CQxV9BJ50CFlqxYJx29PP
+         ViMlnoZyJVYBF3xga4miiM626lK7qcbRJZTSLKBwwqII/ZYSWu9Hhl/2zBvYOCuPn1mn
+         Ch4A==
+X-Gm-Message-State: AOAM532lmQ5FooTvGo/YgJBFKbdes4xK34s4oAk1xENxfxnD4OYJ7TXl
+        bUsjRG9KbFOEetzEdhaDA0Y=
+X-Google-Smtp-Source: ABdhPJz32axiOIaYWuL5xgqmPKeOpKTpr4MPYCFIT4SmwfpsM90/cnVDf90UkxFLZUgJBM6pUasxug==
+X-Received: by 2002:adf:fa4b:: with SMTP id y11mr15142087wrr.460.1637941439074;
+        Fri, 26 Nov 2021 07:43:59 -0800 (PST)
+Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
+        by smtp.gmail.com with ESMTPSA id p13sm11372400wmi.0.2021.11.26.07.43.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 07:43:58 -0800 (PST)
+From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
+Cc:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] RK356x/Quartz64 Model A SPI
+Date:   Fri, 26 Nov 2021 16:43:41 +0100
+Message-Id: <20211126154344.724316-1-frattaroli.nicolas@gmail.com>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 02:20:13PM +0200, Andy Shevchenko wrote:
-> There are a few users and even at least one more is coming
-> that would like to utilize p2sb mechanisms like hide/unhide
-> a device from PCI configuration space.
-> 
-> Here is the series to deduplicate existing users and provide
-> a generic way for new comers.
-> 
-> It also includes a patch to enable GPIO controllers on Apollo Lake
-> when it's used with ABL bootloader w/o ACPI support.
-> 
-> Please, comment on the approach and individual patches.
-> 
-> (Since it's cross subsystem, the PCI seems like a main one and
->  I think it makes sense to route it thru it with immutable tag
->  or branch provided for the others).
+The first patch of this series adds a compatible for rk3568-spi
+to the DT bindings.
 
-TWIMC, after refreshing (a bit) my memories on this thread, I think the roadmap
-may look like the following:
+The second adds the SPI nodes for RK3566 and RK3568 SoCs. The nodes
+were lifted from the downstream vendor kernel's devicetree, and were
+double-checked for correctness.
 
-1) exporting necessary APIs from PCI core to avoid code dup;
-2) moving pci-p2sb.c out from PCI to PDx86 where it seems naturally fit;
-3) addressing comments on patches that are not going to change their location /
-functionality;
-4) adding tags, etc.
+The third patch sets up the broken-out SPI pins on the Quartz64
+Model A; they use the "m1" set of the pins, not the "m0" set. I
+assume the "m" stands for "mux".
 
-Any objections?
+I've tested both patches by connecting an MCP2515 SPI CAN bus
+controller to the spi pins, which initialised fine.
 
-Meanwhile I will try to setup a machine with ACPI tables to test the code if
-they have not been provided.
+Regards,
+Nicolas Frattaroli
+
+Nicolas Frattaroli (3):
+  dt-bindings: spi: spi-rockchip: Add rk3568-spi compatible
+  arm64: dts: rockchip: Add spi nodes on rk356x
+  arm64: dts: rockchip: Add spi1 pins on Quartz64 A
+
+ .../devicetree/bindings/spi/spi-rockchip.yaml |  1 +
+ .../boot/dts/rockchip/rk3566-quartz64-a.dts   |  5 ++
+ arch/arm64/boot/dts/rockchip/rk356x.dtsi      | 68 +++++++++++++++++++
+ 3 files changed, 74 insertions(+)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.34.0
 
