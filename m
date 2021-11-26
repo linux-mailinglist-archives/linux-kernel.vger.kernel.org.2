@@ -2,83 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E2645F4FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:04:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB60745F502
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:05:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231942AbhKZTHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 14:07:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38714 "EHLO
+        id S233186AbhKZTIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 14:08:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229672AbhKZTFy (ORCPT
+        with ESMTP id S231467AbhKZTGr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 14:05:54 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7F3C08EAE0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 10:27:19 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id v11so20394649wrw.10
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 10:27:19 -0800 (PST)
+        Fri, 26 Nov 2021 14:06:47 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90A1C07E5ED;
+        Fri, 26 Nov 2021 10:28:38 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id r5so8874911pgi.6;
+        Fri, 26 Nov 2021 10:28:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bEdmFaJ1LdkBlcJ8ExSvzEd5k9oTy182V+ctNy3yUV0=;
-        b=ccv29rgetrRb8F/+HByzZuboYJNhjjDCdO5Ma5xj29UHe3JyqdvBWlsgPNrcKBDGQd
-         LbDas6J4bJAhzFoEj+amPBzyl5kwckjJpTcHGdqr1eyhrcuZebrJ7ZtCxOXKslz2X2+s
-         zgiZmjlRK34SUxbtOVnjyOVbt/L4KXjRzOhbUEKycygB5iS91fHobnaC5ML3HZeuu4uf
-         7+Huws6FQlSFACwoDjjEJWcPxPelDOnEZYWi0/jf8zR1DnRmTZTrvrCm3WSPaYNTwCyJ
-         GHPkltjuKlUXdEQ3FShKP5JljPu77FUSxEC6nsWXIQv+CXamGWhQ8K3O0q+ZZS3c1IMc
-         kKzQ==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:from:subject:to:cc
+         :references:content-language:in-reply-to:content-transfer-encoding;
+        bh=E+dMA1iECTp5/2ca3sGCrH/unKsv0u0VZpUy2oqv8pg=;
+        b=pNiI8pByuEyWHxOU1df4HUvGEMfDRtS1L3ne7JYKZcRVmfe54rjMG/FbMBqeHbBB2M
+         dQ1a0GHS8Er1qy9gq452/fhocXXTP4AomIn+CHwqQdK2WCLxYM8tbh+fWUpL9z3AUPJP
+         3tSFbScKjukt4yZzLOUIzgiMS2z2GsLiKhf4uho4sSR3ooQCwb40wkLRzuwCw1bNlb5L
+         Z6Iqgy/5yXk0s0yfTWw7CmjSSc826c344SvJG1X9mw27nyPuOy5f4kCm4d/ulishu9+0
+         HPRfk2a+IdmXd+dFjon+mnpVMiOxRF5BpFGQRPeWUNV6T3MwoPoNLAZGddDwder8ZKw1
+         UlLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bEdmFaJ1LdkBlcJ8ExSvzEd5k9oTy182V+ctNy3yUV0=;
-        b=6RL9US2NByHxfvcB6l6dnk3o+4pxQpBUv50ZE4rAM501cll4OwWIOuLkOIkaYlrNA7
-         kr55aYBYi9o8ajnihJV7RbNKDOSte3EPJ4Z0Pr3wY30Wyp/e1HBXgC5Z41lOFPp9n3sL
-         U/79yZXzRIqNL1dHnsXxp3Cs4o0q/GnelKbkQp7Kv34twySY+2b/qzcgiSp9N3jdBw70
-         YYmIYP5/z7B4Y2NGQGxBLs+hobQGHS68jHGtZ8z1I5Z2iS8w8pE3WXFVyuyU9NewL7Oc
-         Rl9IZo5FRA+DefA626Pc9TNVNeS+nwUsgrJIIV4uo07Bl+im176nGXDFHMaqpDofMCyC
-         qbFA==
-X-Gm-Message-State: AOAM530a3QAIby/NJPBOI0bC1BQuyjL5zK2hEGWSxpDAnbrmKCEB1CgR
-        DasB+Yp2XR5n2g41DNUDgzygstVrr4H0SmaRUgJWYg==
-X-Google-Smtp-Source: ABdhPJzkapDl3mJ7aOTvQJVbeAxT2512UGxnQgv4bf76bFnL4Omq2r0x7xJ3Tma3HprCZy2J9CD0ed4Qhcws4VSAfro=
-X-Received: by 2002:adf:f0c5:: with SMTP id x5mr14934180wro.484.1637951237799;
- Fri, 26 Nov 2021 10:27:17 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
+         :subject:to:cc:references:content-language:in-reply-to
+         :content-transfer-encoding;
+        bh=E+dMA1iECTp5/2ca3sGCrH/unKsv0u0VZpUy2oqv8pg=;
+        b=Bes2rm/QRzQF3G5MldhrFezUnBZiqhGEFk5jz54X2LfSvffZgddvTY4j2f1Eh0yYhE
+         yuQvGlYk73OCY4WQjcThcRwUx0BjdVKozQCrxeKC4fFCkvOmOr+KWkS7K4Q/MXigQKGR
+         2r4eiE1+UpdmUMxJaheYZ5mGXx3xv2ZKVd3UE7YZ1VGd3LbjTGsrZC0gJIpX1rs05LeL
+         PMiW/KLk/+2vJczES9eNxulCb+9YzpOdpUIc+MPdB7Wd10oFj30L1oy2FoEZx+44ns6A
+         pXIaAQWVXq7x1S9oegwohG/eBZ2cYIOj4wBMe6rsa6SqcP6OAvuH0dWoRbKyLT959FRP
+         hV9g==
+X-Gm-Message-State: AOAM533maTiSjoKXgt2krhcRHOw1doZYKDUVPtJqMbjt+92AJC3v9R0s
+        T0z6FBSuOv5extfit4MGm5U=
+X-Google-Smtp-Source: ABdhPJx4HiLqWiRSg8B+5GAqkgKARdnb1eWHqBx8H5FdreatOzLUPRMSabwD5kyTImzYasDtQ5ipgQ==
+X-Received: by 2002:a63:ee53:: with SMTP id n19mr8711878pgk.593.1637951318391;
+        Fri, 26 Nov 2021 10:28:38 -0800 (PST)
+Received: from [10.230.1.174] ([192.19.161.250])
+        by smtp.gmail.com with ESMTPSA id z4sm8620973pfh.15.2021.11.26.10.28.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Nov 2021 10:28:37 -0800 (PST)
+Message-ID: <516de9b9-685d-ba65-a284-4dda155be9c2@gmail.com>
+Date:   Fri, 26 Nov 2021 10:28:36 -0800
 MIME-Version: 1.0
-References: <20211125193852.3617-1-goldstein.w.n@gmail.com>
- <CANn89iLnH5B11CtzZ14nMFP7b--7aOfnQqgmsER+NYNzvnVurQ@mail.gmail.com>
- <CAFUsyfK-znRWJN7FTMdJaDTd45DgtBQ9ckKGyh8qYqn0eFMMFA@mail.gmail.com>
- <CANn89iJA1JOevgLSK019VYXKkLJsMjV-u9ZHvrgZ+XUypRWwfQ@mail.gmail.com> <CAFUsyfLeVGW8etXHuSGvYy_RoS3RGaA1L+NLKnpc7EsSMVORBg@mail.gmail.com>
-In-Reply-To: <CAFUsyfLeVGW8etXHuSGvYy_RoS3RGaA1L+NLKnpc7EsSMVORBg@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 26 Nov 2021 10:27:06 -0800
-Message-ID: <CANn89iJxMhGfp364rPu6p_ZLrKnM1qWF_NWrw4_oL_KG+piByg@mail.gmail.com>
-Subject: Re: [PATCH v1] x86/lib: Optimize 8x loop and memory clobbers in csum_partial.c
-To:     Noah Goldstein <goldstein.w.n@gmail.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com,
-        Borislav Petkov <bp@alien8.de>, dave.hansen@linux.intel.com,
-        X86 ML <x86@kernel.org>, hpa@zytor.com, peterz@infradead.org,
-        alexanderduyck@fb.com, open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH 5.10 000/153] 5.10.82-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20211125092029.973858485@linuxfoundation.org>
+Content-Language: en-US
+In-Reply-To: <20211125092029.973858485@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 10:17 AM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
->
 
->
-> Makes sense. Although if you inline I think you definitely will want a more
-> conservative clobber than just "memory". Also I think with 40 you also will
-> get some value from two counters.
->
-> Did you see the number/question I posted about two accumulators for 32
-> byte case?
-> Its a judgement call about latency vs throughput that I don't really have an
-> answer for.
->
 
-The thing I do not know is if using more units would slow down the
-hyper thread ?
+On 11/25/2021 1:23 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.82 release.
+> There are 153 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 27 Nov 2021 09:20:04 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.82-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Would using ADCX/ADOX would be better in this respect ?
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
+
