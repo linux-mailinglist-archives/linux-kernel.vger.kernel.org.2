@@ -2,124 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C95D45F557
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:43:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBC945F528
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:25:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234938AbhKZTqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 14:46:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239711AbhKZToB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 14:44:01 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33200C0619E6
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 11:21:48 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id c4so20674877wrd.9
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 11:21:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8nVNUR+3p/gnWY1XLO42iNk5LNWflOD5rmaXoMlYh38=;
-        b=ctS/NxLBu+VrbpCp9QXMGMb/hqkSAAC1cuxwSxVAZIfZDC/YLiCGkL9jkcgJv6GcrW
-         so3V2rGOYRxO7aTtr4Ln1eDi1g3bxHitMF0AUbfj8bLCiw5AIpGQ5oIkgV6S98Qn34OB
-         He8JNN9JcgEAzM5liQj6c70Ye79pbipZ/Ct83mM6m+fxkCxLEvWfQ+7WNmRRiy/xz8zE
-         eiI06KvRQCq1gOzG2s8oxaI5iKDIv6iThUcvMouFxqgP6+2bFHDaMrl1biNz0ENuXR8n
-         01qMfdh9x780BdNsPS/KuJsJL20zMVHDJ/epDmVMCRcRGkitversqgvmOiGh0YXfSp61
-         fYRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8nVNUR+3p/gnWY1XLO42iNk5LNWflOD5rmaXoMlYh38=;
-        b=y5BKGSDHjiNxS6gw8jpLbhoHfWO8Yq9alhO36d7HcYQOboJIqVQ6JxaAZSV2RwAq0h
-         4SjL07C+JMR4SG4mBvSb2wNV6mBhdX8cvNDjeFPmkRvBW/fEp5+IC4ezS//tUSzP0ddn
-         zHBA+EvXv5ftVab0tooyYoTCZEDw5qq57fos9vyOfDG/RYB8obokW7r0/Vs+xDVcUfig
-         rApl2S1XfzBFCrZ9HiYOVBUHNXgk6EzGGfFyVL44DvN/YhP5r+cnG4qZtgfRGNWG2lJQ
-         c8C4BwJ9PqLR8GNEFDH3aeJFhcaFyCNnLjzV2eOigAdF0YN7cGNVhbkFBgFDGmQJGy1p
-         y9lw==
-X-Gm-Message-State: AOAM531ANlc3sTmDktstityVZMaPohluRmaYU5sXy1XsdAnOgmubLj3I
-        +ZCGdLTYEAGjGH6MN+uXOWjWNBP8tI6v1NA3WDBC1Q==
-X-Google-Smtp-Source: ABdhPJwyCE4gize9e+DvxQJBq7TZCKBhAEc5Z+7ME7Sw+7sMPk64p5EvI8IAOXmvlFknilTeAPKX8a71//tXJrgcKa0=
-X-Received: by 2002:adf:fb86:: with SMTP id a6mr16052623wrr.35.1637954506497;
- Fri, 26 Nov 2021 11:21:46 -0800 (PST)
+        id S234556AbhKZT2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 14:28:30 -0500
+Received: from mga18.intel.com ([134.134.136.126]:22947 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231474AbhKZT03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 14:26:29 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="222579122"
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
+   d="scan'208";a="222579122"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 11:23:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
+   d="scan'208";a="539323646"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 26 Nov 2021 11:23:13 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqgoS-0008Tn-Gd; Fri, 26 Nov 2021 19:23:12 +0000
+Date:   Sat, 27 Nov 2021 03:23:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, alex@ghiti.fr
+Cc:     kbuild-all@lists.01.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 9/9] powerpc: Simplify and move arch_randomize_brk()
+Message-ID: <202111270342.b1Y85fuz-lkp@intel.com>
+References: <4c5a2b18774552c2226573f7069ffeee71ad77cb.1637828367.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-References: <20211125193852.3617-1-goldstein.w.n@gmail.com>
- <CANn89iLnH5B11CtzZ14nMFP7b--7aOfnQqgmsER+NYNzvnVurQ@mail.gmail.com>
- <CAFUsyfK-znRWJN7FTMdJaDTd45DgtBQ9ckKGyh8qYqn0eFMMFA@mail.gmail.com>
- <CANn89iJA1JOevgLSK019VYXKkLJsMjV-u9ZHvrgZ+XUypRWwfQ@mail.gmail.com>
- <CAFUsyfLeVGW8etXHuSGvYy_RoS3RGaA1L+NLKnpc7EsSMVORBg@mail.gmail.com>
- <CANn89iJxMhGfp364rPu6p_ZLrKnM1qWF_NWrw4_oL_KG+piByg@mail.gmail.com>
- <CAFUsyfJ33cKFQdUagHQ_b4N80CfBtGQZhyA4CN_JLgEmXEX=DA@mail.gmail.com> <CAFUsyf+TuU2Xe5Guy5yiFWsV-JZSjUJxcGZv=f0BYDSmODV+_w@mail.gmail.com>
-In-Reply-To: <CAFUsyf+TuU2Xe5Guy5yiFWsV-JZSjUJxcGZv=f0BYDSmODV+_w@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 26 Nov 2021 11:21:34 -0800
-Message-ID: <CANn89iLjw7YeWNGNtVNi690adJfoSVwgLScrtx-zSyh=COZRsQ@mail.gmail.com>
-Subject: Re: [PATCH v1] x86/lib: Optimize 8x loop and memory clobbers in csum_partial.c
-To:     Noah Goldstein <goldstein.w.n@gmail.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com,
-        Borislav Petkov <bp@alien8.de>, dave.hansen@linux.intel.com,
-        X86 ML <x86@kernel.org>, hpa@zytor.com, peterz@infradead.org,
-        alexanderduyck@fb.com, open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4c5a2b18774552c2226573f7069ffeee71ad77cb.1637828367.git.christophe.leroy@csgroup.eu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 11:14 AM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
->
-> On Fri, Nov 26, 2021 at 12:50 PM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
-> >
-> > On Fri, Nov 26, 2021 at 12:27 PM Eric Dumazet <edumazet@google.com> wrote:
-> > >
-> > > On Fri, Nov 26, 2021 at 10:17 AM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
-> > > >
-> > >
-> > > >
-> > > > Makes sense. Although if you inline I think you definitely will want a more
-> > > > conservative clobber than just "memory". Also I think with 40 you also will
-> > > > get some value from two counters.
-> > > >
-> > > > Did you see the number/question I posted about two accumulators for 32
-> > > > byte case?
-> > > > Its a judgement call about latency vs throughput that I don't really have an
-> > > > answer for.
-> > > >
-> > >
-> > > The thing I do not know is if using more units would slow down the
-> > > hyper thread ?
->
-> Did some quick tests with the latency/throughput benchmarks running
-> in parallel on two hyperthreads on the same processors. The 32 byte case
-> latency advantage goes with 2 accum and there is still a slight regression
-> in throughput. The larger cases that hit the loop still still have improvements
-> both in tput and latency with 2 accum.
+Hi Christophe,
 
-Great. I also played with rorx instruction, because it removes one
-"adcl $0,..." step
+I love your patch! Perhaps something to improve:
 
-__wsum ipv6_csum_partial(const void *buff, int len, __wsum sum)
-{
-u64 temp64;
-u64 tmp;
-u32 res32;
+[auto build test WARNING on powerpc/next]
+[also build test WARNING on hnaz-mm/master linus/master v5.16-rc2 next-20211126]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-if (unlikely(len != 40))
-return csum_partial(buff, len, sum);
+url:    https://github.com/0day-ci/linux/commits/Christophe-Leroy/Convert-powerpc-to-default-topdown-mmap-layout/20211125-162916
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next
+config: powerpc64-buildonly-randconfig-r006-20211125 (https://download.01.org/0day-ci/archive/20211127/202111270342.b1Y85fuz-lkp@intel.com/config)
+compiler: powerpc64-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/554c475dfb73dc352708dff3589b55845b3dd751
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Christophe-Leroy/Convert-powerpc-to-default-topdown-mmap-layout/20211125-162916
+        git checkout 554c475dfb73dc352708dff3589b55845b3dd751
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=powerpc SHELL=/bin/bash arch/powerpc/mm/book3s64/
 
-temp64 = (__force u64)sum;
-asm("addq 0*8(%[src]),%[temp64]\n\t"
-    "adcq 1*8(%[src]),%[temp64]\n\t"
-    "adcq 2*8(%[src]),%[temp64]\n\t"
-    "adcq 3*8(%[src]),%[temp64]\n\t"
-    "adcq 4*8(%[src]),%[temp64]\n\t"
-    "mov  %k[temp64],%[res32]\n\t"
-    "rorx $32,%[temp64],%[temp64]\n\t"
-    "adcl %k[temp64],%[res32]\n\t"
-    "adcl $0,%[res32]"
-    : [temp64] "+r" (temp64), [res32] "=r" (res32)
-    : [src] "r" (buff)
-    : "memory");
-return (__force __wsum)res32;
-}
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> arch/powerpc/mm/book3s64/hash_utils.c:2077:15: warning: no previous prototype for 'arch_randomize_brk' [-Wmissing-prototypes]
+    2077 | unsigned long arch_randomize_brk(struct mm_struct *mm)
+         |               ^~~~~~~~~~~~~~~~~~
+
+
+vim +/arch_randomize_brk +2077 arch/powerpc/mm/book3s64/hash_utils.c
+
+  2076	
+> 2077	unsigned long arch_randomize_brk(struct mm_struct *mm)
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
