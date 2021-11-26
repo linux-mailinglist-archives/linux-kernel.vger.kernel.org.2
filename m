@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F3B45F51B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E00345F524
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:21:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235789AbhKZTV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 14:21:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41332 "EHLO
+        id S235813AbhKZTY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 14:24:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233255AbhKZTTz (ORCPT
+        with ESMTP id S234020AbhKZTW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 14:19:55 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C318C061A24;
-        Fri, 26 Nov 2021 10:41:31 -0800 (PST)
+        Fri, 26 Nov 2021 14:22:57 -0500
+X-Greylist: delayed 379 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 26 Nov 2021 10:41:41 PST
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E04C08EB1E
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 10:41:41 -0800 (PST)
 Received: from mail.kernel.org (unknown [198.145.29.99])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AAB6C62338;
-        Fri, 26 Nov 2021 18:35:15 +0000 (UTC)
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2423C6008E;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1ED79B82865
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 18:35:17 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9A4F06024A;
         Fri, 26 Nov 2021 18:35:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1637951715;
-        bh=90Pew1VjM3fxxyuTXSlJJwIU0g0YhylRQJIYJZBsgBs=;
+        bh=MRHkwg5wdPehjmIE0/twNralXsSblTJ+VD1q/7aWW8M=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=sjOz+8EG8jj4XHNSRpqCSf6BxwEQP+5Ubhhp/IPQ7pjSeJYAxprit1T68vltizQq3
-         GXg+bYrw2XL+D8X62jrlTNxcBjv971ReKYyEd6x5u9ZFDk5VpqM7M+xy800gCauJrm
-         MyVQR+IeLfNhsZIujWnhnCxNf4uXrOSHNQtugchy+VdqdBLZGj6r1rpppg8yWhgxe6
-         1+yaFld0SoB2NErobHVe2HBy0OY83KxSWle7YH4kb3DZ79sKEZuV7gNhV4wgJKk1nQ
-         Lo3VbC/c/WMA0PqVaZtr6NSBHpZ9yM1MhZe6xhhasxHxY++hADu8o6TM+LMil2IHRE
-         6i51xjDZ6HUsA==
+        b=g+s+5LhjhaeSQap6+PziGN2Olb3uGxx7MF+N8cQak5jZcCS2WvistYlavu6UMWRFA
+         DHRzTPiAbw7wDoF53Lipg5bQ0z1pioKLnErHZDUu4TXJJ90OSvic52MkUVPdVLlYAV
+         qIdsPMmDiRn3H0fAnv2w0XT33HltziwsZDoG10Mw43c4klgK61FSSHabIEwZWY9Q1I
+         0bwXrPDxYKSzXD3MO2RS8KH62/89ojqVr5HLKCxn2SCvvuuaPLeHo4OhBWFPFUNFJf
+         sCHeEuzVLDXq1repJynCBsJj93OeulaUYqdYEsntKqyxx3tATb6f0wpjELyy48AwKw
+         zX0prIG2VrhxQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1DB1D60A3E;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 943D6609D5;
         Fri, 26 Nov 2021 18:35:15 +0000 (UTC)
-Subject: Re: [PULL REQUEST] i2c for v5.16
+Subject: Re: [GIT PULL] Char/Misc driver fix for 5.16-rc3
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YaC5FYorV4yyQnaE@kunai>
-References: <YaC5FYorV4yyQnaE@kunai>
+In-Reply-To: <YaD6J4/erxgzssrB@kroah.com>
+References: <YaD6J4/erxgzssrB@kroah.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YaC5FYorV4yyQnaE@kunai>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
-X-PR-Tracked-Commit-Id: bed68f4f4db429a0bf544887e64dc710e5a690ea
+X-PR-Tracked-Message-Id: <YaD6J4/erxgzssrB@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.16-rc3
+X-PR-Tracked-Commit-Id: c21a80ca0684ec2910344d72556c816cb8940c01
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 80d75202f033f51581020a5ac06699d4dff89e73
-Message-Id: <163795171511.22939.11310940243320684912.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 1bff7d7e8c487b9b0ceab70b43b781f1d45f55eb
+Message-Id: <163795171560.22939.8151541832685789274.pr-tracker-bot@kernel.org>
 Date:   Fri, 26 Nov 2021 18:35:15 +0000
-To:     Wolfram Sang <wsa@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 26 Nov 2021 11:38:13 +0100:
+The pull request you sent on Fri, 26 Nov 2021 16:15:51 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.16-rc3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/80d75202f033f51581020a5ac06699d4dff89e73
+https://git.kernel.org/torvalds/c/1bff7d7e8c487b9b0ceab70b43b781f1d45f55eb
 
 Thank you!
 
