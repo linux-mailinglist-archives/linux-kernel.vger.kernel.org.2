@@ -2,127 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490F045F19F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:19:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B30DB45F19B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:19:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378348AbhKZQWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:22:51 -0500
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:30048 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235743AbhKZQUt (ORCPT
+        id S1349878AbhKZQWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:22:21 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:35344 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238600AbhKZQUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:20:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637943362;
-    s=strato-dkim-0002; d=chronox.de;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=vOlwVp8xFow1jZY5Q+b8GlcSPjy9Js3pFWCymHaTE2A=;
-    b=EHwSNeXberIlexXc+km6egqG3AQnRxo4M2DzwVHT9h8aOlGqNGA1x28rYWWyLwLF4D
-    KZ3CCb4e/bUOKsreUbCm2sDxucaxhmtNGHimIS2ftGETMuML1DdWFxq3+B+o9JLozBMp
-    hiBgqbayasa6cfi0BZnOy1BTLr0rG8kWPpHa+Z9in38thMbw1fCJtRl2hCbR3kksoLpX
-    u9fZ2/g0VRoWspS3KgxRD45jQ6lG/WwsnZvD89oHeT/8x3XhTaV4NrcUdbXhdYRENRRy
-    Xl1KYwlBsWpWYMlv+Hp/Fwgk5Zi6csYmDAyI8HvXQBt4kXTuJX9aqmtXUCxjF2bAMjvm
-    n/+Q==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaIPScDPs="
-X-RZG-CLASS-ID: mo00
-Received: from tauon.chronox.de
-    by smtp.strato.de (RZmta 47.34.10 DYNA|AUTH)
-    with ESMTPSA id 006230xAQGFxFM2
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Fri, 26 Nov 2021 17:15:59 +0100 (CET)
-From:   Stephan Mueller <smueller@chronox.de>
-To:     Simo Sorce <simo@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>, Tso Ted <tytso@mit.edu>,
-        linux-crypto@vger.kernel.org, Willy Tarreau <w@1wt.eu>,
-        Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Petr Tesarik <ptesarik@suse.cz>,
-        John Haxby <john.haxby@oracle.com>,
-        Alexander Lobakin <alobakin@mailbox.org>,
-        Jirka Hladky <jhladky@redhat.com>
-Subject: Re: [PATCH v43 01/15] Linux Random Number Generator
-Date:   Fri, 26 Nov 2021 17:15:59 +0100
-Message-ID: <22137816.pfsBpAd9cS@tauon.chronox.de>
-In-Reply-To: <YaEA0fyowmFlDfmK@kroah.com>
-References: <2036923.9o76ZdvQCi@positron.chronox.de> <56d2da397bb53f71c0354b102c3b40940e9b4eda.camel@redhat.com> <YaEA0fyowmFlDfmK@kroah.com>
+        Fri, 26 Nov 2021 11:20:11 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 526BD622E1;
+        Fri, 26 Nov 2021 16:16:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F206C9305F;
+        Fri, 26 Nov 2021 16:16:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637943417;
+        bh=N15suIuxWgr1KyMACv0zVzLXpDxzRFxTfYvJFDF1ZIU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JqxCwj9gOUZDwUpQ24qGeTFrk5cj14f8cgJdRwAL/us15pH28Gljzu8jRJFXAk/mf
+         yebVGUOxOpUWYwM+d7ScCChT/QpYfjoOm5XZSK+VK9w1xi6BO/aVKFUABJBO2mE0Jm
+         kLI24DV98TxnsqXGOqw3VhKFTiDeY0jKoPew/rOA=
+Date:   Fri, 26 Nov 2021 17:16:54 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     ira.weiny@intel.com
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2] Documentation/auxiliary_bus: Clarify auxiliary_device
+ creation
+Message-ID: <YaEIdmRV2A1yclub@kroah.com>
+References: <87k0hq2oxc.fsf@meer.lwn.net>
+ <20211102225310.3677785-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211102225310.3677785-1-ira.weiny@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Freitag, 26. November 2021, 16:44:17 CET schrieb Greg Kroah-Hartman:
-
-Hi Greg,
-
-> On Mon, Nov 22, 2021 at 09:59:01AM -0500, Simo Sorce wrote:
-> > Jason,
-> > have you previously produced a list of reasoned concerns with this
-> > patchset and direction?
-> > 
-> > This specific email is not really useful to me to understand the
-> > concerns as it does not contain actionable suggestion or critique.
-> > 
-> > I personally find the direction fine, and with my distribution hat on I
-> > can say that FIPS is essential for us and any design must include an
-> > option to be FIPS certifiable.
-> > 
-> > As NIST keeps improving their testing capabilities and rigorous
-> > cryptographic design of the CSPRNGs as well as entropy sources the
-> > kernel must also adapt.
-> > 
-> > Stephan is providing a path forward, and I haven't seen any other
-> > proposal, let alone code, that provide improvements in this area.
-> > I am pretty sure the design can be improved if there is detailed and
-> > actionable feedback on what to change.
-> > 
-> > I hope the path forward can be one of collaboration rather then mere
-> > opposition.
+On Tue, Nov 02, 2021 at 03:53:10PM -0700, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
-> Replacement of the existing code to cut over to the new one is not
-> collaboration, it's the exact opposite.
+> The documentation for creating an auxiliary device is a 3 step not a 2
+> step process.  Specifically the requirements of setting the name, id,
+> dev.release, and dev.parent fields was not clear as a precursor to the '2
+> step' process documented.
 > 
-> Submitting patches to the existing codebase to implement the
-> "requirements" is the proper way forward, why has that never been done.
-
-It has been attempted by Nikolai Stange without avail - no comments were 
-received, let alone it was integrated.
+> Clarify by declaring this a 3 step process starting with setting the
+> fields of struct auxiliary_device correctly.
 > 
-> Remember, evolution is the correct way of kernel development, not
-> intelligent design :)
+> Also add some sample code and tie the change into the rest of the
+> documentation.
 > 
-> thanks,
+> Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 > 
-> greg k-h
+> ---
+> Changes from V1:
+> 	From Jonathan
+> 		Fix auxiliary spelling
+> ---
+>  Documentation/driver-api/auxiliary_bus.rst | 77 +++++++++++++++++-----
+>  1 file changed, 59 insertions(+), 18 deletions(-)
 
+Can you please resend the whole series, trying to just resend one patch
+in the middle is horrible for our tools and to try to figure this out.
 
-Ciao
-Stephan
+Would you like to have to unwind this?  Please make it simple for
+maintainers to review and if ok, apply your changes.
 
+thanks,
 
+greg k-h
