@@ -2,230 +2,403 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B94D745EFEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:31:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC10345EFF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:32:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377839AbhKZOe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 09:34:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36062 "EHLO
+        id S1377643AbhKZOft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 09:35:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347485AbhKZOcw (ORCPT
+        with ESMTP id S1377736AbhKZOds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 09:32:52 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7FFCC0619D4
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 05:46:41 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id 207so18811556ljf.10
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 05:46:41 -0800 (PST)
+        Fri, 26 Nov 2021 09:33:48 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE983C08EAF4
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 05:47:36 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id v11so18753358wrw.10
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 05:47:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Y3JNS8GgbmLlHGRNlVebJ7jzFzYCyF+UNJdV2SzK5S8=;
-        b=x5z4QaAkcc6wxr2yC72ViW5Ce5NdFvNl06dNKQN5daHWDy/iWMhk+bC1Kj/G4untRm
-         rreA9r4UH/Vy+FPHAQvABN0Clmu6ZG0YEcv6YzqN/Cbzg99zYfbZdwZ+iz+R5PJjs+nc
-         8yqVJjzvjvSs9cXsMflF7r0J/UuFInodIMBdligYY+mqHp5pHwd4+UOH9lUqu31pRY88
-         pJoYlil3s8fnA9k4aFagJ9Zlku1nd33f5yC8tE0XxpxDr8K3I0usGWsPxY+sAnKzAf7H
-         fJYGtEaRZcMpZ6yACvNbRqdBhuqM8IMzMz7jC53jOErta5/Vfs4SA3WlIQgfAhynCPpH
-         sYHA==
+        bh=ilFZNaSrD2yO9GvJ+ZtcdgQ/kF1TuTNqabeR4SrmBnY=;
+        b=HJxwW8LpyXLW/6+HCNTKUcdhVNR+HLDzGQixwwoejYw/FJnwrFUD5gcsu1umjMyVbH
+         Et754tMCZMktpZd5a90kvCKImuolgpW/r21IPRZzfXA77qQ3GJFJpVDlecS5VE6WE29H
+         MXiqW+Zs/I6h1kOCqQ5UWo5o73oUx8coG30fba4mbvceUW8tLN5I3C0xZnRd1mCulE8S
+         G1uJR05dRnpLeUGettM/ODA7Vnma41sTxtnga9RjRjNZpToC0rI8AkR43xCUg1sEfPMr
+         nWf4cjnYgFC0Om9dvsTOia0bn775jDoSDO6rleJjwOCJrKXB9o0lYw0uI5vWkLrh8pZr
+         M5lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Y3JNS8GgbmLlHGRNlVebJ7jzFzYCyF+UNJdV2SzK5S8=;
-        b=Vl6s5G83RBXC3T7bxpKRd2l0G0dKGPtfHWjAtfhfR5FrHtuLPrZvT7i/Wy0RO9Awhg
-         XpSBTl+McXXSaSSHh6tSA4WZEhpCne/TM6RkEX+fALNe6xso1q4uXyjQfHNvBlZlhKO/
-         iKz2gpo+LzZ72ZPRFVwPUDZFpM67WeZlTjWqA3bJvi3nWipqgeqIips3s7a1So6nO57L
-         uXwnZLOL4nvZ/o/io5otGTB6Uic7OoLOFlaOWwXZ8DXQhLEEehyP3VWdXdNA4wU77Xzb
-         V0VSxt6eIL3tpNOXFXyzcEn3UETzYkKcoZgZDj7dTxcrzoFol8Ts8GNR+HR/iMyznY+h
-         Yrew==
-X-Gm-Message-State: AOAM5304Bcy4juAw136KCv4pMe77SdbYM2VRMndvYxgzEW9T998tRMs1
-        gBtUNFRu0ESeTh9Gg5DaeVtiKP2VLzXDJ4l7xjKJ8g==
-X-Google-Smtp-Source: ABdhPJw33H0HS3ABzC5VTy3/+T4sr6OfCFsquND5FsE/dTB+lAsjDpUhrh/8nTjfE0mqOUo8QydMYRS960t1jXXuuO4=
-X-Received: by 2002:a05:651c:10b1:: with SMTP id k17mr30894488ljn.463.1637934399771;
- Fri, 26 Nov 2021 05:46:39 -0800 (PST)
+        bh=ilFZNaSrD2yO9GvJ+ZtcdgQ/kF1TuTNqabeR4SrmBnY=;
+        b=WQUL0aTP34VFqkZl/13e8rsKYZPuS5TM7zz9+4FOGYWt6908t1d0O801dIwovYrWMl
+         DYpe8dKwCvHR2pfGHZxSZ9RILqXXrjRv9N/rV1J0eEFhtR0aGmBpGJl6CfF7g5j2QUNb
+         HzAUeU46q5B0oJ2jDajFB7swQqQwRSrvwr6QZBOsQlW29Vxhqu9tPBSzxAwSiokvg/EB
+         48bDnR3p8WEoq1Hg+P53lHYHwfejiQ5BFPg5+PHurZYUgNX/R3sW87Kq/++SIdYSiHMB
+         fGizFNcVlQkLQ0EyN/B9NoNu0KZzSbvMAOQcIgikMGvp9AqOTKUNgcQXYv2CudzeCOoT
+         XLHQ==
+X-Gm-Message-State: AOAM533MHjeFnEcfucM7HkZQ7KT3w6dRKWCupajBdIJI1qBXwPBcKVvN
+        gewneUxYM4tH9uvub2rJHMVnwg8O8TqxEHXqj64=
+X-Google-Smtp-Source: ABdhPJxn5Xv9h4/8TMKifuZWRmjjFCAnWGUxNuTzHmZLVvjpY2PafPlTBGdjEgwsz9GxEo2D3QLBXopQp41sxHpbEzc=
+X-Received: by 2002:a5d:53cb:: with SMTP id a11mr14596421wrw.357.1637934455411;
+ Fri, 26 Nov 2021 05:47:35 -0800 (PST)
 MIME-Version: 1.0
-References: <20211026222626.39222-1-ulf.hansson@linaro.org>
- <20211027020235.GA1306582@rowland.harvard.edu> <CAPDyKFpgHJA-duQSA2uqhccrDxFqWXO1R1DJxo=aOkT5FyX+Ag@mail.gmail.com>
- <20211027143343.GC1319606@rowland.harvard.edu> <CAPDyKFoMS-0WqNjtsrGy5-SV3RRbpgA3_HS5XDtNHH9wFgLhXg@mail.gmail.com>
- <CAJZ5v0iKMKhdxP9htt-fVm1RVBJnRO-pzJ9eySbBOSviSXCAdQ@mail.gmail.com>
- <CAPDyKFqR1S5Hw_RM90b44qETieW1f_59+k3KExdMXPpk_3Yygg@mail.gmail.com>
- <CAPDyKFrzjxdP0oC2CtuxuRsePyX5Y7mFJe4BttMduk4+WEnfag@mail.gmail.com> <CAJZ5v0hrTDsCUn4vgmFrTTgd6H=orh-Kb5b3+_H9St4n8fTxBw@mail.gmail.com>
-In-Reply-To: <CAJZ5v0hrTDsCUn4vgmFrTTgd6H=orh-Kb5b3+_H9St4n8fTxBw@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 26 Nov 2021 14:46:02 +0100
-Message-ID: <CAPDyKFre=tp4919FLoeU-wjLDJ02zmHaXY4wgTUmfmFbeaCadQ@mail.gmail.com>
-Subject: Re: [PATCH] PM: runtime: Allow rpm_resume() to succeed when runtime
- PM is disabled
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20211113120632.94754-1-xiehuan09@gmail.com> <20211113120632.94754-2-xiehuan09@gmail.com>
+ <20211119230118.2f8689d630817cb103161402@kernel.org> <CAEr6+EAcfhF15vsYrkBWsjZEFe=LZ4ZfbgPM2BC9sGpweofEfA@mail.gmail.com>
+In-Reply-To: <CAEr6+EAcfhF15vsYrkBWsjZEFe=LZ4ZfbgPM2BC9sGpweofEfA@mail.gmail.com>
+From:   Jeff Xie <xiehuan09@gmail.com>
+Date:   Fri, 26 Nov 2021 21:47:24 +0800
+Message-ID: <CAEr6+EAjtk2TA5bDP7-D=VhwwXzL2Pq172NCbr7XnNT9ynPpow@mail.gmail.com>
+Subject: Re: [RFC][PATCH v5 2/4] trace/objtrace: get the value of the object
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, mingo@redhat.com,
+        Tom Zanussi <zanussi@kernel.org>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Nov 2021 at 14:30, Rafael J. Wysocki <rafael@kernel.org> wrote:
+Hi Masami,
+
+On Mon, Nov 22, 2021 at 1:15 AM Jeff Xie <xiehuan09@gmail.com> wrote:
 >
-> On Fri, Nov 26, 2021 at 1:20 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> >
-> > On Mon, 1 Nov 2021 at 10:27, Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > >
-> > > On Fri, 29 Oct 2021 at 20:27, Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > > >
-> > > > On Fri, Oct 29, 2021 at 12:20 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > > >
-> > > > > On Wed, 27 Oct 2021 at 16:33, Alan Stern <stern@rowland.harvard.edu> wrote:
-> > > > > >
-> > > > > > On Wed, Oct 27, 2021 at 12:55:43PM +0200, Ulf Hansson wrote:
-> > > > > > > On Wed, 27 Oct 2021 at 04:02, Alan Stern <stern@rowland.harvard.edu> wrote:
-> > > > > > > >
-> > > > > > > > On Wed, Oct 27, 2021 at 12:26:26AM +0200, Ulf Hansson wrote:
-> > > > > > > > > During system suspend, the PM core sets dev->power.is_suspended for the
-> > > > > > > > > device that is being suspended. This flag is also being used in
-> > > > > > > > > rpm_resume(), to allow it to succeed by returning 1, assuming that runtime
-> > > > > > > > > PM has been disabled and the runtime PM status is RPM_ACTIVE, for the
-> > > > > > > > > device.
-> > > > > > > > >
-> > > > > > > > > To make this behaviour a bit more useful, let's drop the check for the
-> > > > > > > > > dev->power.is_suspended flag in rpm_resume(), as it doesn't really need to
-> > > > > > > > > be limited to this anyway.
-> > > > > > > > >
-> > > > > > > > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > > > > > > > > ---
-> > > > > > > > >  drivers/base/power/runtime.c | 4 ++--
-> > > > > > > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > > > > > >
-> > > > > > > > > diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-> > > > > > > > > index ec94049442b9..fadc278e3a66 100644
-> > > > > > > > > --- a/drivers/base/power/runtime.c
-> > > > > > > > > +++ b/drivers/base/power/runtime.c
-> > > > > > > > > @@ -742,8 +742,8 @@ static int rpm_resume(struct device *dev, int rpmflags)
-> > > > > > > > >   repeat:
-> > > > > > > > >       if (dev->power.runtime_error)
-> > > > > > > > >               retval = -EINVAL;
-> > > > > > > > > -     else if (dev->power.disable_depth == 1 && dev->power.is_suspended
-> > > > > > > > > -         && dev->power.runtime_status == RPM_ACTIVE)
-> > > > > > > > > +     else if (dev->power.disable_depth > 0 &&
-> > > > > > > > > +             dev->power.runtime_status == RPM_ACTIVE)
-> > > > > > > >
-> > > > > > > > IIRC there was a good reason why the original code checked for
-> > > > > > > > disable_depth == 1 rather than > 0.  But I don't remember exactly what
-> > > > > > > > the reason was.  Maybe it had something to do with the fact that during
-> > > > > > > > a system sleep __device_suspend_late calls __pm_runtime_disable, and the
-> > > > > > > > code was checking that there were no other disables in effect.
-> > > > > > >
-> > > > > > > The check was introduced in the below commit:
-> > > > > > >
-> > > > > > > Commit 6f3c77b040fc
-> > > > > > > Author: Kevin Hilman <khilman@ti.com>
-> > > > > > > Date:   Fri Sep 21 22:47:34 2012 +0000
-> > > > > > > PM / Runtime: let rpm_resume() succeed if RPM_ACTIVE, even when disabled, v2
-> > > > > > >
-> > > > > > > By reading the commit message it's pretty clear to me that the check
-> > > > > > > was added to cover only one specific use case, during system suspend.
-> > > > > > >
-> > > > > > > That is, that a driver may want to call pm_runtime_get_sync() from a
-> > > > > > > late/noirq callback (when the PM core has disabled runtime PM), to
-> > > > > > > understand whether the device is still powered on and accessible.
-> > > > > > >
-> > > > > > > > This is
-> > > > > > > > related to the documented behavior of rpm_resume (it's supposed to fail
-> > > > > > > > with -EACCES if the device is disabled for runtime PM, no matter what
-> > > > > > > > power state the device is in).
-> > > > > > > >
-> > > > > > > > That probably is also the explanation for why dev->power.is_suspended
-> > > > > > > > gets checked: It's how the code tells whether a system sleep is in
-> > > > > > > > progress.
-> > > > > > >
-> > > > > > > Yes, you are certainly correct about the current behaviour. It's there
-> > > > > > > for a reason.
-> > > > > > >
-> > > > > > > On the other hand I would be greatly surprised if this change would
-> > > > > > > cause any issues. Of course, I can't make guarantees, but I am, of
-> > > > > > > course, willing to help to fix problems if those happen.
-> > > > > > >
-> > > > > > > As a matter of fact, I think the current behaviour looks quite
-> > > > > > > inconsistent, as it depends on whether the device is being system
-> > > > > > > suspended.
-> > > > > > >
-> > > > > > > Moreover, for syscore devices (dev->power.syscore is set for them),
-> > > > > > > the PM core doesn't set the "is_suspended" flag. Those can benefit
-> > > > > > > from a common behaviour.
-> > > > > > >
-> > > > > > > Finally, I think the "is_suspended" flag actually needs to be
-> > > > > > > protected by a lock when set by the PM core, as it's being used in two
-> > > > > > > separate execution paths. Although, rather than adding a lock for
-> > > > > > > protection, we can just rely on the "disable_depth" in rpm_resume().
-> > > > > > > It would be easier and makes the behaviour consistent too.
-> > > > > >
-> > > > > > As long as is_suspended isn't _written_ in two separate execution paths,
-> > > > > > we're probably okay without a lock -- provided the code doesn't mind
-> > > > > > getting an indefinite result when a read races with a write.
-> > > > >
-> > > > > Well, indefinite doesn't sound very good to me for these cases, even
-> > > > > if it most likely never will happen.
-> > > > >
-> > > > > >
-> > > > > > > > So overall, I suspect this change should not be made.  But some other
-> > > > > > > > improvement (like a nice comment) might be in order.
-> > > > > > > >
-> > > > > > > > Alan Stern
-> > > > > > >
-> > > > > > > Thanks for reviewing!
-> > > > > >
-> > > > > > You're welcome.  Whatever you eventually decide to do should be okay
-> > > > > > with me.  I just wanted to make sure that you understood the deeper
-> > > > > > issue here and had given it some thought.  For example, it may turn out
-> > > > > > that you can resolve matters simply by updating the documentation.
-> > > > >
-> > > > > I observed the issue on cpuidle-psci. The devices it operates upon are
-> > > > > assigned as syscore devices and these are hooked up to a genpd.
-> > > > >
-> > > > > A call to pm_runtime_get_sync() can happen even after the PM core has
-> > > > > disabled runtime PM in the "late" phase. So the error code is received
-> > > > > for these real use-cases.
-> > > > >
-> > > > > Now, as we currently don't check the return value of
-> > > > > pm_runtime_get_sync() in cpuidle-psci, it's not a big deal. But it
-> > > > > certainly seems worth fixing in my opinion.
-> > > > >
-> > > > > Let's see if Rafael has some thoughts around this.
-> > > >
-> > > > Am I thinking correctly that this is mostly about working around the
-> > > > limitations of pm_runtime_force_suspend()?
-> > >
-> > > No, this isn't related at all.
-> > >
-> > > The cpuidle-psci driver doesn't have PM callbacks, thus using
-> > > pm_runtime_force_suspend() would not work here.
-> >
-> > Just wanted to send a ping on this to see if we can come to a
-> > conclusion. Or maybe we did? :-)
-> >
-> > I think in the end, what slightly bothers me, is that the behavior is
-> > a bit inconsistent. Although, maybe it's the best we can do.
+> Hi Masami,
 >
-> I've been thinking about this and it looks like we can do better, but
-> instead of talking about this I'd rather send a patch.
+> On Fri, Nov 19, 2021 at 10:01 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> > Hi Jeff,
+> >
+> > On Sat, 13 Nov 2021 20:06:30 +0800
+> > Jeff Xie <xiehuan09@gmail.com> wrote:
+> >
+> > Please describe here what feature this patch adds.
+> > How to use, and new syntax, etc.
+> >
+> > BTW, the syntax for this value trace is a bit confusing.
+> >
+> > objtrace:add:OFFS(OBJ):TYPE[:COUNT]
+> >
+> > This trace "OBJ", but from the user point of view, this seems to trace
+> > "OFFS(OBJ)".
+> >
+> > I rather like make it optional and split from OBJ as below;
+> >
+> > objtrace:add:OBJ[,OFFS:TYPE][:COUNT]
 
-Alright.
+I have been thinking about this place for a long time, would it be
+better if it like below?
+objtrace:add:OBJ[,OFFS][:TYPE][:COUNT]
 
-I was thinking along the lines of make similar changes for
-rpm_idle|suspend(). That would make the behaviour even more
-consistent, I think.
+If the user does not specify the type, the default type will be u64.
 
-Perhaps that's what you have in mind? :-)
-
+> >
+> > (Note that the part braced by [] is optional.)
 >
-> Stay tuned.
+> Thank you for your suggestion, it does seem clearer, I will modify it like this.
+>
+> > Thank you,
+> >
+> > > Signed-off-by: Jeff Xie <xiehuan09@gmail.com>
+> > > ---
+> > >  kernel/trace/trace_entries.h |   5 +-
+> > >  kernel/trace/trace_object.c  | 121 +++++++++++++++++++++++++++++------
+> > >  kernel/trace/trace_output.c  |   6 +-
+> > >  3 files changed, 107 insertions(+), 25 deletions(-)
+> > >
+> > > diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.h
+> > > index bb120d9498a9..2407c45a568c 100644
+> > > --- a/kernel/trace/trace_entries.h
+> > > +++ b/kernel/trace/trace_entries.h
+> > > @@ -413,8 +413,9 @@ FTRACE_ENTRY(object, trace_object_entry,
+> > >               __field(        unsigned long,          ip              )
+> > >               __field(        unsigned long,          parent_ip       )
+> > >               __field(        unsigned long,          object          )
+> > > +             __field(        unsigned long,          value           )
+> > >       ),
+> > >
+> > > -     F_printk(" %ps <-- %ps object:%lx\n",
+> > > -              (void *)__entry->ip, (void *)__entry->parent_ip, __entry->object)
+> > > +     F_printk(" %ps <-- %ps object:%lx value:%lx\n", (void *)__entry->ip,
+> > > +            (void *)__entry->parent_ip, __entry->object, __entry->value)
+> > >  );
+> > > diff --git a/kernel/trace/trace_object.c b/kernel/trace/trace_object.c
+> > > index 69465c2ffb7e..14993f7d0e5a 100644
+> > > --- a/kernel/trace/trace_object.c
+> > > +++ b/kernel/trace/trace_object.c
+> > > @@ -11,14 +11,25 @@
+> > >
+> > >  static DEFINE_PER_CPU(atomic_t, trace_object_event_disable);
+> > >  static struct trace_event_file event_trace_file;
+> > > -static const int max_args_num = 6;
+> > >  static const int max_obj_pool = 10;
+> > >  static atomic_t trace_object_ref;
+> > >  static int exit_trace_object(void);
+> > >  static int init_trace_object(void);
+> > >
+> > > +struct objtrace_trigger_data {
+> > > +     struct ftrace_event_field *field;
+> > > +     long offset;
+> > > +     int type_size;
+> > > +};
+> > > +
+> > > +struct objtrace_fetch_type {
+> > > +     char *name;
+> > > +     int type_size;
+> > > +};
+> > > +
+> > >  struct object_instance {
+> > >       void *object;
+> > > +     int obj_type_size;
+> > >       struct freelist_node freelist;
+> > >  };
+> > >
+> > > @@ -59,8 +70,7 @@ static bool object_empty(void)
+> > >       return ret;
+> > >  }
+> > >
+> > > -
+> > > -static void set_trace_object(void *obj)
+> > > +static void set_trace_object(void *obj, int type_size)
+> > >  {
+> > >       struct freelist_node *fn;
+> > >       struct object_instance *ins;
+> > > @@ -79,6 +89,7 @@ static void set_trace_object(void *obj)
+> > >
+> > >       ins = container_of(fn, struct object_instance, freelist);
+> > >       ins->object = obj;
+> > > +     ins->obj_type_size = type_size;
+> > >
+> > >       freelist_add(&ins->freelist, &obj_pool->customer_freelist);
+> > >       atomic_inc(&obj_pool->nobject);
+> > > @@ -135,7 +146,7 @@ static int init_object_pool(void)
+> > >  }
+> > >
+> > >  static void submit_trace_object(unsigned long ip, unsigned long parent_ip,
+> > > -                              unsigned long object)
+> > > +                              unsigned long object, unsigned long value)
+> > >  {
+> > >
+> > >       struct trace_buffer *buffer;
+> > > @@ -152,6 +163,7 @@ static void submit_trace_object(unsigned long ip, unsigned long parent_ip,
+> > >       entry->ip                       = ip;
+> > >       entry->parent_ip                = parent_ip;
+> > >       entry->object                   = object;
+> > > +     entry->value                    = value;
+> > >
+> > >       event_trigger_unlock_commit(&event_trace_file, buffer, event,
+> > >               entry, pc);
+> > > @@ -161,10 +173,11 @@ static void
+> > >  trace_object_events_call(unsigned long ip, unsigned long parent_ip,
+> > >               struct ftrace_ops *op, struct ftrace_regs *fregs)
+> > >  {
+> > > -     struct pt_regs *pt_regs = ftrace_get_regs(fregs);
+> > > -     unsigned long obj;
+> > > +     struct freelist_node *node;
+> > > +     struct object_instance *inst;
+> > > +     unsigned long val = 0;
+> > >       long disabled;
+> > > -     int cpu, n;
+> > > +     int cpu;
+> > >
+> > >       preempt_disable_notrace();
+> > >
+> > > @@ -177,10 +190,14 @@ trace_object_events_call(unsigned long ip, unsigned long parent_ip,
+> > >       if (object_empty())
+> > >               goto out;
+> > >
+> > > -     for (n = 0; n < max_args_num; n++) {
+> > > -             obj = regs_get_kernel_argument(pt_regs, n);
+> > > -             if (object_exist((void *)obj))
+> > > -                     submit_trace_object(ip, parent_ip, obj);
+> > > +     node = obj_pool->customer_freelist.head;
+> > > +
+> > > +     while (node) {
+> > > +             inst = container_of(node, struct object_instance, freelist);
+> > > +             if (copy_from_kernel_nofault(&val, inst->object, inst->obj_type_size))
+> > > +                     goto out;
+> > > +             submit_trace_object(ip, parent_ip, (unsigned long)inst->object, val);
+> > > +             node = node->next;
+> > >       }
+> > >
+> > >  out:
+> > > @@ -198,12 +215,14 @@ trace_object_trigger(struct event_trigger_data *data,
+> > >                  struct trace_buffer *buffer,  void *rec,
+> > >                  struct ring_buffer_event *event)
+> > >  {
+> > > +     struct objtrace_trigger_data *obj_data = data->private_data;
+> > > +     struct ftrace_event_field *field;
+> > > +     void *obj, *val = NULL;
+> > >
+> > > -     struct ftrace_event_field *field = data->private_data;
+> > > -     void *obj = NULL;
+> > > -
+> > > -     memcpy(&obj, rec + field->offset, sizeof(obj));
+> > > -     set_trace_object(obj);
+> > > +     field = obj_data->field;
+> > > +     memcpy(&val, rec + field->offset, sizeof(val));
+> > > +     obj = val + obj_data->offset;
+> > > +     set_trace_object(obj, obj_data->type_size);
+> > >  }
+> > >
+> > >  static void
+> > > @@ -350,6 +369,22 @@ static void unregister_object_trigger(char *glob, struct event_trigger_ops *ops,
+> > >       }
+> > >  }
+> > >
+> > > +static const struct objtrace_fetch_type objtrace_fetch_types[] = {
+> > > +     {"u8", 1},
+> > > +     {"s8", 1},
+> > > +     {"x8", 1},
+> > > +     {"u16", 2},
+> > > +     {"s16", 2},
+> > > +     {"x16", 2},
+> > > +     {"u32", 4},
+> > > +     {"s32", 4},
+> > > +     {"x32", 4},
+> > > +     {"u64", 8},
+> > > +     {"s64", 8},
+> > > +     {"x64", 8},
+> > > +     {}
+> > > +};
+> > > +
+> > >  static int
+> > >  event_object_trigger_callback(struct event_command *cmd_ops,
+> > >                      struct trace_event_file *file,
+> > > @@ -357,13 +392,15 @@ event_object_trigger_callback(struct event_command *cmd_ops,
+> > >  {
+> > >       struct event_trigger_data *trigger_data;
+> > >       struct event_trigger_ops *trigger_ops;
+> > > +     struct objtrace_trigger_data *obj_data;
+> > >       struct trace_event_call *call;
+> > >       struct ftrace_event_field *field;
+> > >       char *objtrace_cmd;
+> > > +     long offset = 0;
+> > >       char *trigger = NULL;
+> > > -     char *arg;
+> > > +     char *arg, *type, *tr, *tr_end;
+> > >       char *number;
+> > > -     int ret;
+> > > +     int ret, i, type_size = 0;
+> > >
+> > >       ret = -EINVAL;
+> > >       if (!param)
+> > > @@ -386,6 +423,38 @@ event_object_trigger_callback(struct event_command *cmd_ops,
+> > >       arg = strsep(&trigger, ":");
+> > >       if (!arg)
+> > >               goto out;
+> > > +
+> > > +     tr = strchr(arg, '(');
+> > > +     /* now force to get the value of the val. */
+> > > +     if (!tr)
+> > > +             goto out;
+> > > +     tr_end = strchr(tr, ')');
+> > > +     if (!tr_end)
+> > > +             goto out;
+> > > +     *tr++ = '\0';
+> > > +     *tr_end = '\0';
+> > > +     ret = kstrtol(arg, 0, &offset);
+> > > +     if (ret)
+> > > +             goto out;
+> > > +     arg = tr;
+> > > +     ret = -EINVAL;
+> > > +     if (!trigger)
+> > > +             goto out;
+> > > +
+> > > +     type = strsep(&trigger, ":");
+> > > +     if (!type)
+> > > +             goto out;
+> > > +     for (i = 0; objtrace_fetch_types[i].name; i++) {
+> > > +             if (strcmp(objtrace_fetch_types[i].name, type) == 0) {
+> > > +                     type_size = objtrace_fetch_types[i].type_size;
+> > > +                     break;
+> > > +             }
+> > > +     }
+> > > +
+> > > +     if (type_size == 0)
+> > > +             goto out;
+> > > +
+> > > +
+> > >       call = file->event_call;
+> > >       field = trace_find_event_field(call, arg);
+> > >       if (!field)
+> > > @@ -394,19 +463,30 @@ event_object_trigger_callback(struct event_command *cmd_ops,
+> > >       trigger_ops = cmd_ops->get_trigger_ops(cmd, trigger);
+> > >
+> > >       ret = -ENOMEM;
+> > > +     obj_data = kzalloc(sizeof(*obj_data), GFP_KERNEL);
+> > > +     if (!obj_data)
+> > > +             goto out;
+> > > +
+> > > +     obj_data->field = field;
+> > > +     obj_data->offset = offset;
+> > > +     obj_data->type_size = type_size;
+> > > +
+> > >       trigger_data = kzalloc(sizeof(*trigger_data), GFP_KERNEL);
+> > > -     if (!trigger_data)
+> > > +     if (!trigger_data) {
+> > > +             kfree(obj_data);
+> > >               goto out;
+> > > +     }
+> > >
+> > >       trigger_data->count = -1;
+> > >       trigger_data->ops = trigger_ops;
+> > >       trigger_data->cmd_ops = cmd_ops;
+> > > -     trigger_data->private_data = field;
+> > > +     trigger_data->private_data = obj_data;
+> > >       INIT_LIST_HEAD(&trigger_data->list);
+> > >       INIT_LIST_HEAD(&trigger_data->named_list);
+> > >
+> > >       if (glob[0] == '!') {
+> > >               cmd_ops->unreg(glob+1, trigger_ops, trigger_data, file);
+> > > +             kfree(obj_data);
+> > >               kfree(trigger_data);
+> > >               ret = 0;
+> > >               goto out;
+> > > @@ -461,6 +541,7 @@ event_object_trigger_callback(struct event_command *cmd_ops,
+> > >   out_free:
+> > >       if (cmd_ops->set_filter)
+> > >               cmd_ops->set_filter(NULL, trigger_data, NULL);
+> > > +     kfree(obj_data);
+> > >       kfree(trigger_data);
+> > >       goto out;
+> > >  }
+> > > diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+> > > index 76ca560af693..c8c427c23127 100644
+> > > --- a/kernel/trace/trace_output.c
+> > > +++ b/kernel/trace/trace_output.c
+> > > @@ -1562,6 +1562,7 @@ static enum print_line_t trace_object_print(struct trace_iterator *iter, int fla
+> > >       trace_assign_type(field, iter->ent);
+> > >       print_fn_trace(s, field->ip, field->parent_ip, flags);
+> > >       trace_seq_printf(s, " object:0x%lx", field->object);
+> > > +     trace_seq_printf(s, " value:0x%lx", field->value);
+> > >       trace_seq_putc(s, '\n');
+> > >
+> > >       return trace_handle_return(s);
+> > > @@ -1574,9 +1575,8 @@ static enum print_line_t trace_object_raw(struct trace_iterator *iter, int flags
+> > >
+> > >       trace_assign_type(field, iter->ent);
+> > >
+> > > -     trace_seq_printf(&iter->seq, "%lx %lx\n",
+> > > -                      field->ip,
+> > > -                      field->parent_ip);
+> > > +     trace_seq_printf(&iter->seq, "%lx %lx %lx %lx\n", field->ip,
+> > > +                     field->parent_ip, field->object, field->value);
+> > >
+> > >       return trace_handle_return(&iter->seq);
+> > >  }
+> > > --
+> > > 2.25.1
+> > >
+> >
+> >
+> > --
+> > Masami Hiramatsu <mhiramat@kernel.org>
+>
+> Thanks,
+> ---
+> JeffXie
 
-Cool, thanks!
-
-Kind regards
-Uffe
+---
+JeffXie
