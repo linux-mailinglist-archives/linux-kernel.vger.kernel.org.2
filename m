@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CAF45EF6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB0A45EEA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353719AbhKZNvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 08:51:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352202AbhKZNtB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 08:49:01 -0500
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406D5C0619F8
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 05:04:28 -0800 (PST)
-Received: from dslb-178-004-171-146.178.004.pools.vodafone-ip.de ([178.4.171.146] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1mqatp-0006Hl-Cj; Fri, 26 Nov 2021 14:04:21 +0100
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH v2 4/4] staging: r8188eu: loadparam needs no net_device
-Date:   Fri, 26 Nov 2021 14:04:00 +0100
-Message-Id: <20211126130400.26151-5-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211126130400.26151-1-martin@kaiser.cx>
-References: <20211125164745.8188-1-martin@kaiser.cx>
- <20211126130400.26151-1-martin@kaiser.cx>
+        id S239048AbhKZNK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 08:10:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46676 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229737AbhKZNI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 08:08:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4991D610A7;
+        Fri, 26 Nov 2021 13:05:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637931914;
+        bh=7kWyWOzNhvpzrbyXFw3NApkY4l5o3i0sxnomHklyFkQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UqziiORfQ5oNDPEF5+/34wqiUp9Dn7l/0h8oEgqIpyhwqnyMzePlvT+LvV8FrtqpB
+         7CE6konpS/+G2GKVaz2Gr2+meHnZmgunZfcj7FX5STy/wLF5hFNwvKiVlGDatJeWd5
+         3uT+c9rkrGVZnbR3qFpy3rGOim+/K4EKCW1P9geg1L2XMnr1zXuM7gtHZg/briTrKi
+         k46UFoiZ8kDPNWngXiqg2WPBsLAkuu80c/86IQIAsv9fZW6JHAu1lP/HD1vVHDeZt2
+         J6idDo8+ddG8aGnL0oj3mOpHtgo0lCaif0qytQIXv0hvhgTEI3a4c974l92QkWnfJn
+         CLjWx4CmTjS0A==
+Date:   Fri, 26 Nov 2021 13:05:09 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     mchehab@kernel.org, sakari.ailus@linux.intel.com, kernel@puri.sm,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-pm@vger.kernel.org, Angus Ainslie <angus@akkea.ca>
+Subject: Re: [PATCH v2] media: i2c: dw9714: add optional regulator support
+Message-ID: <YaDbhSsh5vKBsZai@sirena.org.uk>
+References: <20211126090107.1243558-1-martin.kepplinger@puri.sm>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="+3BsLA530vjlUXPc"
+Content-Disposition: inline
+In-Reply-To: <20211126090107.1243558-1-martin.kepplinger@puri.sm>
+X-Cookie: You fill a much-needed gap.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the second parameter of the loadparam function. This parameter
-is not used.
 
-Reviewed-by: Michael Straube <straube.linux@gmail.com>
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
----
-v2:
- - add Reviewed-by
+--+3BsLA530vjlUXPc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- drivers/staging/r8188eu/os_dep/os_intfs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Fri, Nov 26, 2021 at 10:01:07AM +0100, Martin Kepplinger wrote:
 
-diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
-index 397981bc9a62..02700834c587 100644
---- a/drivers/staging/r8188eu/os_dep/os_intfs.c
-+++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
-@@ -153,7 +153,7 @@ MODULE_PARM_DESC(rtw_notch_filter, "0:Disable, 1:Enable, 2:Enable only for P2P")
- module_param_named(debug, rtw_debug, int, 0444);
- MODULE_PARM_DESC(debug, "Set debug level (1-9) (default 1)");
- 
--static uint loadparam(struct adapter *padapter,  struct  net_device *pnetdev)
-+static uint loadparam(struct adapter *padapter)
- {
- 	struct registry_priv  *registry_par = &padapter->registrypriv;
- 
-@@ -371,7 +371,7 @@ struct net_device *rtw_init_netdev(struct adapter *old_padapter)
- 	pnetdev->wireless_handlers = (struct iw_handler_def *)&rtw_handlers_def;
- 
- 	/* step 2. */
--	loadparam(padapter, pnetdev);
-+	loadparam(padapter);
- 
- 	return pnetdev;
- }
--- 
-2.20.1
+> +	dw9714_dev->vcc = devm_regulator_get_optional(&client->dev, "vcc");
+> +	if (IS_ERR(dw9714_dev->vcc)) {
+> +		dev_dbg(&client->dev, "No vcc regulator found: %ld\n",
+> +			PTR_ERR(dw9714_dev->vcc));
+> +		dw9714_dev->vcc = NULL;
+> +	}
 
+To repeat my original feedback: unless the supply can be physically
+absent you should use regulator_get().   The _optional variants are only
+for cases where the supply might be physically absent.
+
+--+3BsLA530vjlUXPc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGg24QACgkQJNaLcl1U
+h9D7uAf/YWhxPh6vIyKOyKhroBRkkkeqy4vHZaGVEcwetiDdf/NkDXbVP6W4QskA
+7GO7fD8SXgrZC6oWqGasy2gx7Qf5lqMFezcpxpzNOulrieEI9XLRKCVj4LRM8iSD
+wLzC88AcEG5uqLt0g/Fi1Lz32VjFVNGA6yq3riz3srXdL+ZV5MOfnX4dDpcoHcuD
+mDsM1tgkhWVG7tLffFk/s5+zr7ZP/szPJul6WRRnj+kcxO9EikkrlVAxKaOLGfgU
+ov1X7FzX6V2iSltnz/g83W+tf/ZYnbw20zyPpi6eElTTDpVYHLZeli4IlnjjMbj/
+em0ysfhJXTVdTJhY7qrq8rg/g2Rr7Q==
+=IhNf
+-----END PGP SIGNATURE-----
+
+--+3BsLA530vjlUXPc--
