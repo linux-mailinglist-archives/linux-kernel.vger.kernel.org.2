@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6EB045E943
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:21:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6EC745E946
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359592AbhKZIYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 03:24:19 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:33064 "EHLO
+        id S1359733AbhKZIYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 03:24:31 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:33062 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359349AbhKZIV1 (ORCPT
+        with ESMTP id S1359338AbhKZIV1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Nov 2021 03:21:27 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id DA6811FE02;
-        Fri, 26 Nov 2021 08:16:14 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 1804F1FE03;
+        Fri, 26 Nov 2021 08:16:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637914574; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1637914575; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/ZA4TBupCC8UMnNo/P/APYTyOqXkB94D9R2KQO3yypo=;
-        b=RntoN/B2+tbl3wzh1+Z06s7PNhrtVOZsKOdf+qVUBQSsi2O86cx3tiXfh5O3fsqA1VMzYX
-        68n80f6umCuozXmLKfw/9oDiQFLPScH+QJqCB2xV0Y7JGfuQcLUZJOUxTkBi27wADZRmKt
-        7lHzv9sFs1/1a0FFwN4+X7sv9r3z48g=
+        bh=4AiwwZafpgK+lZQ2/Vffdt6wjrWmatT6diHc/MH/85w=;
+        b=vBUV/jmn+ZXKXX2ggROYX9FaE5PqfEZRgpqkICmuHVlmPs/QlwYF8kUpfmCZggWViGNnen
+        NxHkKe9cssfCIwc9fdmrO09IF7upuxXaZBthMSrOJh7RjplSrPYA9Yy6YbNv1VIBH+Ehqd
+        i/XwTavRTOLIcUKnzynGIR2swQ8404U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637914574;
+        s=susede2_ed25519; t=1637914575;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/ZA4TBupCC8UMnNo/P/APYTyOqXkB94D9R2KQO3yypo=;
-        b=7gYXdTrY+cPoCGBuJzw6iOO5nYjsjg9JT4WefGMTJsr5IvANCsTGDE2Y2hUA/H3Ji/mdgE
-        OOXZ4iCpiICz6SDg==
+        bh=4AiwwZafpgK+lZQ2/Vffdt6wjrWmatT6diHc/MH/85w=;
+        b=DnETIUTkkNTbE/TcIU/o+hFfADqt6axBsvDkQyxeJnFgmSvs8s5M8tMofRnUPIfZmoD6Ec
+        W/DZed5zFmot5yAg==
 Received: from localhost.localdomain (unknown [10.100.208.98])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id B08D9A3B81;
+        by relay2.suse.de (Postfix) with ESMTPS id E2265A3B84;
         Fri, 26 Nov 2021 08:16:14 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 13/23] tty: reformat kernel-doc in tty_ldisc.c
-Date:   Fri, 26 Nov 2021 09:16:01 +0100
-Message-Id: <20211126081611.11001-14-jslaby@suse.cz>
+Subject: [PATCH 14/23] tty: reformat kernel-doc in tty_buffer.c
+Date:   Fri, 26 Nov 2021 09:16:02 +0100
+Message-Id: <20211126081611.11001-15-jslaby@suse.cz>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211126081611.11001-1-jslaby@suse.cz>
 References: <20211126081611.11001-1-jslaby@suse.cz>
@@ -70,509 +70,416 @@ Kernel-doc is a bit strict about some formatting. So fix these:
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/tty_ldisc.c | 292 ++++++++++++++++++----------------------
- 1 file changed, 132 insertions(+), 160 deletions(-)
+ drivers/tty/tty_buffer.c | 251 +++++++++++++++++++--------------------
+ 1 file changed, 124 insertions(+), 127 deletions(-)
 
-diff --git a/drivers/tty/tty_ldisc.c b/drivers/tty/tty_ldisc.c
-index 3e4e0b20b4bb..776d8a62f77c 100644
---- a/drivers/tty/tty_ldisc.c
-+++ b/drivers/tty/tty_ldisc.c
-@@ -47,17 +47,14 @@ static DEFINE_RAW_SPINLOCK(tty_ldiscs_lock);
- static struct tty_ldisc_ops *tty_ldiscs[NR_LDISCS];
+diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
+index 5b6875057ce2..646510476c30 100644
+--- a/drivers/tty/tty_buffer.c
++++ b/drivers/tty/tty_buffer.c
+@@ -39,20 +39,15 @@
+ #define TTY_BUFFER_PAGE	(((PAGE_SIZE - sizeof(struct tty_buffer)) / 2) & ~0xFF)
  
  /**
-- *	tty_register_ldisc	-	install a line discipline
-- *	@new_ldisc: pointer to the ldisc object
-+ * tty_register_ldisc	-	install a line discipline
-+ * @new_ldisc: pointer to the ldisc object
+- *	tty_buffer_lock_exclusive	-	gain exclusive access to buffer
+- *	tty_buffer_unlock_exclusive	-	release exclusive access
++ * tty_buffer_lock_exclusive	-	gain exclusive access to buffer
++ * @port: tty port owning the flip buffer
   *
-- *	Installs a new line discipline into the kernel. The discipline
-- *	is set up as unreferenced and then made available to the kernel
-- *	from this point onwards.
-+ * Installs a new line discipline into the kernel. The discipline is set up as
-+ * unreferenced and then made available to the kernel from this point onwards.
+- *	@port: tty port owning the flip buffer
++ * Guarantees safe use of the &tty_ldisc_ops.receive_buf() method by excluding
++ * the buffer work and any pending flush from using the flip buffer. Data can
++ * continue to be added concurrently to the flip buffer from the driver side.
   *
-- *	Locking:
-- *		takes tty_ldiscs_lock to guard against ldisc races
-+ * Locking: takes %tty_ldiscs_lock to guard against ldisc races
+- *	Guarantees safe use of the line discipline's receive_buf() method by
+- *	excluding the buffer work and any pending flush from using the flip
+- *	buffer. Data can continue to be added concurrently to the flip buffer
+- *	from the driver side.
+- *
+- *	On release, the buffer work is restarted if there is data in the
+- *	flip buffer
++ * See also tty_buffer_unlock_exclusive().
   */
 -
- int tty_register_ldisc(struct tty_ldisc_ops *new_ldisc)
+ void tty_buffer_lock_exclusive(struct tty_port *port)
  {
- 	unsigned long flags;
-@@ -75,14 +72,13 @@ int tty_register_ldisc(struct tty_ldisc_ops *new_ldisc)
- EXPORT_SYMBOL(tty_register_ldisc);
- 
- /**
-- *	tty_unregister_ldisc	-	unload a line discipline
-- *	@ldisc: ldisc number
-+ * tty_unregister_ldisc	-	unload a line discipline
-+ * @ldisc: ldisc number
-  *
-- *	Remove a line discipline from the kernel providing it is not
-- *	currently in use.
-+ * Remove a line discipline from the kernel providing it is not currently in
-+ * use.
-  *
-- *	Locking:
-- *		takes tty_ldiscs_lock to guard against ldisc races
-+ * Locking: takes %tty_ldiscs_lock to guard against ldisc races
-  */
- 
- void tty_unregister_ldisc(struct tty_ldisc_ops *ldisc)
-@@ -122,27 +118,25 @@ static void put_ldops(struct tty_ldisc_ops *ldops)
+ 	struct tty_bufhead *buf = &port->buf;
+@@ -62,6 +57,14 @@ void tty_buffer_lock_exclusive(struct tty_port *port)
  }
+ EXPORT_SYMBOL_GPL(tty_buffer_lock_exclusive);
  
- static int tty_ldisc_autoload = IS_BUILTIN(CONFIG_LDISC_AUTOLOAD);
-+
- /**
-- *	tty_ldisc_get		-	take a reference to an ldisc
-- *	@tty: tty device
-- *	@disc: ldisc number
-- *
-- *	Takes a reference to a line discipline. Deals with refcounts and
-- *	module locking counts.
-- *
-- *	Returns: -EINVAL if the discipline index is not [N_TTY..NR_LDISCS] or
-- *			 if the discipline is not registered
-- *		 -EAGAIN if request_module() failed to load or register the
-- *			 discipline
-- *		 -ENOMEM if allocation failure
-- *
-- *		 Otherwise, returns a pointer to the discipline and bumps the
-- *		 ref count
-- *
-- *	Locking:
-- *		takes tty_ldiscs_lock to guard against ldisc races
-+ * tty_ldisc_get	-	take a reference to an ldisc
-+ * @tty: tty device
-+ * @disc: ldisc number
-+ *
-+ * Takes a reference to a line discipline. Deals with refcounts and module
-+ * locking counts. If the discipline is not available, its module loaded, if
-+ * possible.
-+ *
-+ * Returns:
-+ * * -%EINVAL if the discipline index is not [%N_TTY .. %NR_LDISCS] or if the
-+ *   discipline is not registered
-+ * * -%EAGAIN if request_module() failed to load or register the discipline
-+ * * -%ENOMEM if allocation failure
-+ * * Otherwise, returns a pointer to the discipline and bumps the ref count
-+ *
-+ * Locking: takes %tty_ldiscs_lock to guard against ldisc races
-  */
--
- static struct tty_ldisc *tty_ldisc_get(struct tty_struct *tty, int disc)
- {
- 	struct tty_ldisc *ld;
-@@ -176,10 +170,11 @@ static struct tty_ldisc *tty_ldisc_get(struct tty_struct *tty, int disc)
- 	return ld;
- }
- 
--/*
-- *	tty_ldisc_put		-	release the ldisc
 +/**
-+ * tty_ldisc_put	-	release the ldisc
-+ * @ld: lisdsc to release
-  *
-- *	Complement of tty_ldisc_get().
-+ * Complement of tty_ldisc_get().
-  */
- static void tty_ldisc_put(struct tty_ldisc *ld)
- {
-@@ -226,25 +221,22 @@ const struct seq_operations tty_ldiscs_seq_ops = {
- };
- 
- /**
-- *	tty_ldisc_ref_wait	-	wait for the tty ldisc
-- *	@tty: tty device
-+ * tty_ldisc_ref_wait	-	wait for the tty ldisc
-+ * @tty: tty device
-  *
-- *	Dereference the line discipline for the terminal and take a
-- *	reference to it. If the line discipline is in flux then
-- *	wait patiently until it changes.
-+ * Dereference the line discipline for the terminal and take a reference to it.
-+ * If the line discipline is in flux then wait patiently until it changes.
-  *
-- *	Returns: NULL if the tty has been hungup and not re-opened with
-- *		 a new file descriptor, otherwise valid ldisc reference
-+ * Returns: %NULL if the tty has been hungup and not re-opened with a new file
-+ * descriptor, otherwise valid ldisc reference
-  *
-- *	Note 1: Must not be called from an IRQ/timer context. The caller
-- *	must also be careful not to hold other locks that will deadlock
-- *	against a discipline change, such as an existing ldisc reference
-- *	(which we check for)
-+ * Note 1: Must not be called from an IRQ/timer context. The caller must also
-+ * be careful not to hold other locks that will deadlock against a discipline
-+ * change, such as an existing ldisc reference (which we check for).
-  *
-- *	Note 2: a file_operations routine (read/poll/write) should use this
-- *	function to wait for any ldisc lifetime events to finish.
-+ * Note 2: a file_operations routine (read/poll/write) should use this function
-+ * to wait for any ldisc lifetime events to finish.
-  */
--
- struct tty_ldisc *tty_ldisc_ref_wait(struct tty_struct *tty)
- {
- 	struct tty_ldisc *ld;
-@@ -258,14 +250,13 @@ struct tty_ldisc *tty_ldisc_ref_wait(struct tty_struct *tty)
- EXPORT_SYMBOL_GPL(tty_ldisc_ref_wait);
- 
- /**
-- *	tty_ldisc_ref		-	get the tty ldisc
-- *	@tty: tty device
-+ * tty_ldisc_ref	-	get the tty ldisc
-+ * @tty: tty device
-  *
-- *	Dereference the line discipline for the terminal and take a
-- *	reference to it. If the line discipline is in flux then
-- *	return NULL. Can be called from IRQ and timer functions.
-+ * Dereference the line discipline for the terminal and take a reference to it.
-+ * If the line discipline is in flux then return %NULL. Can be called from IRQ
-+ * and timer functions.
-  */
--
- struct tty_ldisc *tty_ldisc_ref(struct tty_struct *tty)
- {
- 	struct tty_ldisc *ld = NULL;
-@@ -280,13 +271,12 @@ struct tty_ldisc *tty_ldisc_ref(struct tty_struct *tty)
- EXPORT_SYMBOL_GPL(tty_ldisc_ref);
- 
- /**
-- *	tty_ldisc_deref		-	free a tty ldisc reference
-- *	@ld: reference to free up
-+ * tty_ldisc_deref	-	free a tty ldisc reference
-+ * @ld: reference to free up
-  *
-- *	Undoes the effect of tty_ldisc_ref or tty_ldisc_ref_wait. May
-- *	be called in IRQ context.
-+ * Undoes the effect of tty_ldisc_ref() or tty_ldisc_ref_wait(). May be called
-+ * in IRQ context.
-  */
--
- void tty_ldisc_deref(struct tty_ldisc *ld)
- {
- 	ldsem_up_read(&ld->tty->ldisc_sem);
-@@ -386,13 +376,12 @@ static void tty_ldisc_unlock_pair(struct tty_struct *tty,
- }
- 
- /**
-- *	tty_ldisc_flush	-	flush line discipline queue
-- *	@tty: tty
-+ * tty_ldisc_flush		-	flush line discipline queue
-+ * @tty: tty to flush ldisc for
-  *
-- *	Flush the line discipline queue (if any) and the tty flip buffers
-- *	for this tty.
-+ * Flush the line discipline queue (if any) and the tty flip buffers for this
-+ * @tty.
-  */
--
- void tty_ldisc_flush(struct tty_struct *tty)
- {
- 	struct tty_ldisc *ld = tty_ldisc_ref(tty);
-@@ -404,21 +393,18 @@ void tty_ldisc_flush(struct tty_struct *tty)
- EXPORT_SYMBOL_GPL(tty_ldisc_flush);
- 
- /**
-- *	tty_set_termios_ldisc		-	set ldisc field
-- *	@tty: tty structure
-- *	@disc: line discipline number
-+ * tty_set_termios_ldisc	-	set ldisc field
-+ * @tty: tty structure
-+ * @disc: line discipline number
-  *
-- *	This is probably overkill for real world processors but
-- *	they are not on hot paths so a little discipline won't do
-- *	any harm.
-+ * This is probably overkill for real world processors but they are not on hot
-+ * paths so a little discipline won't do any harm.
-  *
-- *	The line discipline-related tty_struct fields are reset to
-- *	prevent the ldisc driver from re-using stale information for
-- *	the new ldisc instance.
-+ * The line discipline-related tty_struct fields are reset to prevent the ldisc
-+ * driver from re-using stale information for the new ldisc instance.
-  *
-- *	Locking: takes termios_rwsem
-+ * Locking: takes termios_rwsem
-  */
--
- static void tty_set_termios_ldisc(struct tty_struct *tty, int disc)
- {
- 	down_write(&tty->termios_rwsem);
-@@ -430,16 +416,14 @@ static void tty_set_termios_ldisc(struct tty_struct *tty, int disc)
- }
- 
- /**
-- *	tty_ldisc_open		-	open a line discipline
-- *	@tty: tty we are opening the ldisc on
-- *	@ld: discipline to open
-+ * tty_ldisc_open		-	open a line discipline
-+ * @tty: tty we are opening the ldisc on
-+ * @ld: discipline to open
-  *
-- *	A helper opening method. Also a convenient debugging and check
-- *	point.
-+ * A helper opening method. Also a convenient debugging and check point.
-  *
-- *	Locking: always called with BTM already held.
-+ * Locking: always called with BTM already held.
-  */
--
- static int tty_ldisc_open(struct tty_struct *tty, struct tty_ldisc *ld)
- {
- 	WARN_ON(test_and_set_bit(TTY_LDISC_OPEN, &tty->flags));
-@@ -457,14 +441,12 @@ static int tty_ldisc_open(struct tty_struct *tty, struct tty_ldisc *ld)
- }
- 
- /**
-- *	tty_ldisc_close		-	close a line discipline
-- *	@tty: tty we are opening the ldisc on
-- *	@ld: discipline to close
-+ * tty_ldisc_close		-	close a line discipline
-+ * @tty: tty we are opening the ldisc on
-+ * @ld: discipline to close
-  *
-- *	A helper close method. Also a convenient debugging and check
-- *	point.
-+ * A helper close method. Also a convenient debugging and check point.
-  */
--
- static void tty_ldisc_close(struct tty_struct *tty, struct tty_ldisc *ld)
- {
- 	lockdep_assert_held_write(&tty->ldisc_sem);
-@@ -476,14 +458,13 @@ static void tty_ldisc_close(struct tty_struct *tty, struct tty_ldisc *ld)
- }
- 
- /**
-- *	tty_ldisc_failto	-	helper for ldisc failback
-- *	@tty: tty to open the ldisc on
-- *	@ld: ldisc we are trying to fail back to
-+ * tty_ldisc_failto	-	helper for ldisc failback
-+ * @tty: tty to open the ldisc on
-+ * @ld: ldisc we are trying to fail back to
-  *
-- *	Helper to try and recover a tty when switching back to the old
-- *	ldisc fails and we need something attached.
-+ * Helper to try and recover a tty when switching back to the old ldisc fails
-+ * and we need something attached.
-  */
--
- static int tty_ldisc_failto(struct tty_struct *tty, int ld)
- {
- 	struct tty_ldisc *disc = tty_ldisc_get(tty, ld);
-@@ -501,14 +482,13 @@ static int tty_ldisc_failto(struct tty_struct *tty, int ld)
- }
- 
- /**
-- *	tty_ldisc_restore	-	helper for tty ldisc change
-- *	@tty: tty to recover
-- *	@old: previous ldisc
-+ * tty_ldisc_restore	-	helper for tty ldisc change
-+ * @tty: tty to recover
-+ * @old: previous ldisc
-  *
-- *	Restore the previous line discipline or N_TTY when a line discipline
-- *	change fails due to an open error
-+ * Restore the previous line discipline or %N_TTY when a line discipline change
-+ * fails due to an open error
-  */
--
- static void tty_ldisc_restore(struct tty_struct *tty, struct tty_ldisc *old)
- {
- 	/* There is an outstanding reference here so this is safe */
-@@ -528,16 +508,15 @@ static void tty_ldisc_restore(struct tty_struct *tty, struct tty_ldisc *old)
- }
- 
- /**
-- *	tty_set_ldisc		-	set line discipline
-- *	@tty: the terminal to set
-- *	@disc: the line discipline number
-- *
-- *	Set the discipline of a tty line. Must be called from a process
-- *	context. The ldisc change logic has to protect itself against any
-- *	overlapping ldisc change (including on the other end of pty pairs),
-- *	the close of one side of a tty/pty pair, and eventually hangup.
-+ * tty_set_ldisc		-	set line discipline
-+ * @tty: the terminal to set
-+ * @disc: the line discipline number
++ * tty_buffer_unlock_exclusive	-	release exclusive access
++ * @port: tty port owning the flip buffer
 + *
-+ * Set the discipline of a tty line. Must be called from a process context. The
-+ * ldisc change logic has to protect itself against any overlapping ldisc
-+ * change (including on the other end of pty pairs), the close of one side of a
-+ * tty/pty pair, and eventually hangup.
-  */
--
- int tty_set_ldisc(struct tty_struct *tty, int disc)
++ * The buffer work is restarted if there is data in the flip buffer.
++ *
++ * See also tty_buffer_lock_exclusive().
++ */
+ void tty_buffer_unlock_exclusive(struct tty_port *port)
  {
- 	int retval;
-@@ -613,10 +592,10 @@ int tty_set_ldisc(struct tty_struct *tty, int disc)
- EXPORT_SYMBOL_GPL(tty_set_ldisc);
+ 	struct tty_bufhead *buf = &port->buf;
+@@ -77,17 +80,16 @@ void tty_buffer_unlock_exclusive(struct tty_port *port)
+ EXPORT_SYMBOL_GPL(tty_buffer_unlock_exclusive);
  
  /**
-- *	tty_ldisc_kill	-	teardown ldisc
-- *	@tty: tty being released
-+ * tty_ldisc_kill	-	teardown ldisc
-+ * @tty: tty being released
+- *	tty_buffer_space_avail	-	return unused buffer space
+- *	@port: tty port owning the flip buffer
++ * tty_buffer_space_avail	-	return unused buffer space
++ * @port: tty port owning the flip buffer
   *
-- *	Perform final close of the ldisc and reset tty->ldisc
-+ * Perform final close of the ldisc and reset @tty->ldisc
+- *	Returns the # of bytes which can be written by the driver without
+- *	reaching the buffer limit.
++ * Returns: the # of bytes which can be written by the driver without reaching
++ * the buffer limit.
+  *
+- *	Note: this does not guarantee that memory is available to write
+- *	the returned # of bytes (use tty_prepare_flip_string_xxx() to
+- *	pre-allocate if memory guarantee is required).
++ * Note: this does not guarantee that memory is available to write the returned
++ * # of bytes (use tty_prepare_flip_string() to pre-allocate if memory
++ * guarantee is required).
   */
- static void tty_ldisc_kill(struct tty_struct *tty)
+-
+ unsigned int tty_buffer_space_avail(struct tty_port *port)
  {
-@@ -633,12 +612,11 @@ static void tty_ldisc_kill(struct tty_struct *tty)
+ 	int space = port->buf.mem_limit - atomic_read(&port->buf.mem_used);
+@@ -107,13 +109,12 @@ static void tty_buffer_reset(struct tty_buffer *p, size_t size)
  }
  
  /**
-- *	tty_reset_termios	-	reset terminal state
-- *	@tty: tty to reset
-+ * tty_reset_termios	-	reset terminal state
-+ * @tty: tty to reset
+- *	tty_buffer_free_all		-	free buffers used by a tty
+- *	@port: tty port to free from
++ * tty_buffer_free_all		-	free buffers used by a tty
++ * @port: tty port to free from
   *
-- *	Restore a terminal to the driver default state.
-+ * Restore a terminal to the driver default state.
+- *	Remove all the buffers pending on a tty whether queued with data
+- *	or in the free ring. Must be called when the tty is no longer in use
++ * Remove all the buffers pending on a tty whether queued with data or in the
++ * free ring. Must be called when the tty is no longer in use.
   */
 -
- static void tty_reset_termios(struct tty_struct *tty)
+ void tty_buffer_free_all(struct tty_port *port)
  {
- 	down_write(&tty->termios_rwsem);
-@@ -650,19 +628,17 @@ static void tty_reset_termios(struct tty_struct *tty)
- 
- 
- /**
-- *	tty_ldisc_reinit	-	reinitialise the tty ldisc
-- *	@tty: tty to reinit
-- *	@disc: line discipline to reinitialize
-+ * tty_ldisc_reinit	-	reinitialise the tty ldisc
-+ * @tty: tty to reinit
-+ * @disc: line discipline to reinitialize
-  *
-- *	Completely reinitialize the line discipline state, by closing the
-- *	current instance, if there is one, and opening a new instance. If
-- *	an error occurs opening the new non-N_TTY instance, the instance
-- *	is dropped and tty->ldisc reset to NULL. The caller can then retry
-- *	with N_TTY instead.
-+ * Completely reinitialize the line discipline state, by closing the current
-+ * instance, if there is one, and opening a new instance. If an error occurs
-+ * opening the new non-%N_TTY instance, the instance is dropped and @tty->ldisc
-+ * reset to %NULL. The caller can then retry with %N_TTY instead.
-  *
-- *	Returns 0 if successful, otherwise error code < 0
-+ * Returns: 0 if successful, otherwise error code < 0
-  */
--
- int tty_ldisc_reinit(struct tty_struct *tty, int disc)
- {
- 	struct tty_ldisc *ld;
-@@ -692,21 +668,20 @@ int tty_ldisc_reinit(struct tty_struct *tty, int disc)
+ 	struct tty_bufhead *buf = &port->buf;
+@@ -142,17 +143,17 @@ void tty_buffer_free_all(struct tty_port *port)
  }
  
  /**
-- *	tty_ldisc_hangup		-	hangup ldisc reset
-- *	@tty: tty being hung up
-- *	@reinit: whether to re-initialise the tty
-+ * tty_ldisc_hangup	-	hangup ldisc reset
-+ * @tty: tty being hung up
-+ * @reinit: whether to re-initialise the tty
-  *
-- *	Some tty devices reset their termios when they receive a hangup
-- *	event. In that situation we must also switch back to N_TTY properly
-- *	before we reset the termios data.
-+ * Some tty devices reset their termios when they receive a hangup event. In
-+ * that situation we must also switch back to %N_TTY properly before we reset
-+ * the termios data.
-  *
-- *	Locking: We can take the ldisc mutex as the rest of the code is
-- *	careful to allow for this.
-+ * Locking: We can take the ldisc mutex as the rest of the code is careful to
-+ * allow for this.
-  *
-- *	In the pty pair case this occurs in the close() path of the
-- *	tty itself so we must be careful about locking rules.
-+ * In the pty pair case this occurs in the close() path of the tty itself so we
-+ * must be careful about locking rules.
+- *	tty_buffer_alloc	-	allocate a tty buffer
+- *	@port: tty port
+- *	@size: desired size (characters)
+- *
+- *	Allocate a new tty buffer to hold the desired number of characters.
+- *	We round our buffers off in 256 character chunks to get better
+- *	allocation behaviour.
+- *	Return NULL if out of memory or the allocation would exceed the
+- *	per device queue
++ * tty_buffer_alloc	-	allocate a tty buffer
++ * @port: tty port
++ * @size: desired size (characters)
++ *
++ * Allocate a new tty buffer to hold the desired number of characters. We
++ * round our buffers off in 256 character chunks to get better allocation
++ * behaviour.
++ *
++ * Returns: %NULL if out of memory or the allocation would exceed the per
++ * device queue.
   */
 -
- void tty_ldisc_hangup(struct tty_struct *tty, bool reinit)
+ static struct tty_buffer *tty_buffer_alloc(struct tty_port *port, size_t size)
  {
- 	struct tty_ldisc *ld;
-@@ -752,15 +727,14 @@ void tty_ldisc_hangup(struct tty_struct *tty, bool reinit)
+ 	struct llist_node *free;
+@@ -185,14 +186,13 @@ static struct tty_buffer *tty_buffer_alloc(struct tty_port *port, size_t size)
  }
  
  /**
-- *	tty_ldisc_setup			-	open line discipline
-- *	@tty: tty being shut down
-- *	@o_tty: pair tty for pty/tty pairs
-+ * tty_ldisc_setup	-	open line discipline
-+ * @tty: tty being shut down
-+ * @o_tty: pair tty for pty/tty pairs
+- *	tty_buffer_free		-	free a tty buffer
+- *	@port: tty port owning the buffer
+- *	@b: the buffer to free
++ * tty_buffer_free		-	free a tty buffer
++ * @port: tty port owning the buffer
++ * @b: the buffer to free
   *
-- *	Called during the initial open of a tty/pty pair in order to set up the
-- *	line disciplines and bind them to the tty. This has no locking issues
-- *	as the device isn't yet active.
-+ * Called during the initial open of a tty/pty pair in order to set up the line
-+ * disciplines and bind them to the @tty. This has no locking issues as the
-+ * device isn't yet active.
+- *	Free a tty buffer, or add it to the free list according to our
+- *	internal strategy
++ * Free a tty buffer, or add it to the free list according to our internal
++ * strategy.
   */
 -
- int tty_ldisc_setup(struct tty_struct *tty, struct tty_struct *o_tty)
+ static void tty_buffer_free(struct tty_port *port, struct tty_buffer *b)
  {
- 	int retval = tty_ldisc_open(tty, tty->ldisc);
-@@ -783,13 +757,12 @@ int tty_ldisc_setup(struct tty_struct *tty, struct tty_struct *o_tty)
+ 	struct tty_bufhead *buf = &port->buf;
+@@ -207,17 +207,15 @@ static void tty_buffer_free(struct tty_port *port, struct tty_buffer *b)
  }
  
  /**
-- *	tty_ldisc_release		-	release line discipline
-- *	@tty: tty being shut down (or one end of pty pair)
-+ * tty_ldisc_release	-	release line discipline
-+ * @tty: tty being shut down (or one end of pty pair)
+- *	tty_buffer_flush		-	flush full tty buffers
+- *	@tty: tty to flush
+- *	@ld:  optional ldisc ptr (must be referenced)
++ * tty_buffer_flush		-	flush full tty buffers
++ * @tty: tty to flush
++ * @ld: optional ldisc ptr (must be referenced)
   *
-- *	Called during the final close of a tty or a pty pair in order to shut
-- *	down the line discpline layer. On exit, each tty's ldisc is NULL.
-+ * Called during the final close of a tty or a pty pair in order to shut down
-+ * the line discpline layer. On exit, each tty's ldisc is %NULL.
+- *	flush all the buffers containing receive data. If ld != NULL,
+- *	flush the ldisc input buffer.
++ * Flush all the buffers containing receive data. If @ld != %NULL, flush the
++ * ldisc input buffer.
+  *
+- *	Locking: takes buffer lock to ensure single-threaded flip buffer
+- *		 'consumer'
++ * Locking: takes buffer lock to ensure single-threaded flip buffer 'consumer'.
   */
 -
- void tty_ldisc_release(struct tty_struct *tty)
+ void tty_buffer_flush(struct tty_struct *tty, struct tty_ldisc *ld)
  {
- 	struct tty_struct *o_tty = tty->link;
-@@ -814,13 +787,12 @@ void tty_ldisc_release(struct tty_struct *tty)
+ 	struct tty_port *port = tty->port;
+@@ -244,17 +242,18 @@ void tty_buffer_flush(struct tty_struct *tty, struct tty_ldisc *ld)
  }
  
  /**
-- *	tty_ldisc_init		-	ldisc setup for new tty
-- *	@tty: tty being allocated
-+ * tty_ldisc_init	-	ldisc setup for new tty
-+ * @tty: tty being allocated
+- *	__tty_buffer_request_room		-	grow tty buffer if needed
+- *	@port: tty port
+- *	@size: size desired
+- *	@flags: buffer flags if new buffer allocated (default = 0)
++ * __tty_buffer_request_room	-	grow tty buffer if needed
++ * @port: tty port
++ * @size: size desired
++ * @flags: buffer flags if new buffer allocated (default = 0)
++ *
++ * Make at least @size bytes of linear space available for the tty buffer.
   *
-- *	Set up the line discipline objects for a newly allocated tty. Note that
-- *	the tty structure is not completely set up when this call is made.
-+ * Set up the line discipline objects for a newly allocated tty. Note that the
-+ * tty structure is not completely set up when this call is made.
+- *	Make at least size bytes of linear space available for the tty
+- *	buffer. If we fail return the size we managed to find.
++ * Will change over to a new buffer if the current buffer is encoded as
++ * %TTY_NORMAL (so has no flags buffer) and the new buffer requires a flags
++ * buffer.
+  *
+- *	Will change over to a new buffer if the current buffer is encoded as
+- *	TTY_NORMAL (so has no flags buffer) and the new buffer requires
+- *	a flags buffer.
++ * Returns: the size we managed to find.
+  */
+ static int __tty_buffer_request_room(struct tty_port *port, size_t size,
+ 				     int flags)
+@@ -300,16 +299,17 @@ int tty_buffer_request_room(struct tty_port *port, size_t size)
+ EXPORT_SYMBOL_GPL(tty_buffer_request_room);
+ 
+ /**
+- *	tty_insert_flip_string_fixed_flag - Add characters to the tty buffer
+- *	@port: tty port
+- *	@chars: characters
+- *	@flag: flag value for each character
+- *	@size: size
+- *
+- *	Queue a series of bytes to the tty buffering. All the characters
+- *	passed are marked with the supplied flag. Returns the number added.
++ * tty_insert_flip_string_fixed_flag - add characters to the tty buffer
++ * @port: tty port
++ * @chars: characters
++ * @flag: flag value for each character
++ * @size: size
++ *
++ * Queue a series of bytes to the tty buffering. All the characters passed are
++ * marked with the supplied flag.
++ *
++ * Returns: the number added.
   */
 -
- int tty_ldisc_init(struct tty_struct *tty)
+ int tty_insert_flip_string_fixed_flag(struct tty_port *port,
+ 		const unsigned char *chars, char flag, size_t size)
  {
- 	struct tty_ldisc *ld = tty_ldisc_get(tty, N_TTY);
-@@ -832,11 +804,11 @@ int tty_ldisc_init(struct tty_struct *tty)
+@@ -338,17 +338,17 @@ int tty_insert_flip_string_fixed_flag(struct tty_port *port,
+ EXPORT_SYMBOL(tty_insert_flip_string_fixed_flag);
+ 
+ /**
+- *	tty_insert_flip_string_flags	-	Add characters to the tty buffer
+- *	@port: tty port
+- *	@chars: characters
+- *	@flags: flag bytes
+- *	@size: size
+- *
+- *	Queue a series of bytes to the tty buffering. For each character
+- *	the flags array indicates the status of the character. Returns the
+- *	number added.
++ * tty_insert_flip_string_flags	-	add characters to the tty buffer
++ * @port: tty port
++ * @chars: characters
++ * @flags: flag bytes
++ * @size: size
++ *
++ * Queue a series of bytes to the tty buffering. For each character the flags
++ * array indicates the status of the character.
++ *
++ * Returns: the number added.
+  */
+-
+ int tty_insert_flip_string_flags(struct tty_port *port,
+ 		const unsigned char *chars, const char *flags, size_t size)
+ {
+@@ -376,13 +376,13 @@ int tty_insert_flip_string_flags(struct tty_port *port,
+ EXPORT_SYMBOL(tty_insert_flip_string_flags);
+ 
+ /**
+- *	__tty_insert_flip_char   -	Add one character to the tty buffer
+- *	@port: tty port
+- *	@ch: character
+- *	@flag: flag byte
++ * __tty_insert_flip_char   -	add one character to the tty buffer
++ * @port: tty port
++ * @ch: character
++ * @flag: flag byte
+  *
+- *	Queue a single byte to the tty buffering, with an optional flag.
+- *	This is the slow path of tty_insert_flip_char.
++ * Queue a single byte @ch to the tty buffering, with an optional flag. This is
++ * the slow path of tty_insert_flip_char().
+  */
+ int __tty_insert_flip_char(struct tty_port *port, unsigned char ch, char flag)
+ {
+@@ -402,18 +402,19 @@ int __tty_insert_flip_char(struct tty_port *port, unsigned char ch, char flag)
+ EXPORT_SYMBOL(__tty_insert_flip_char);
+ 
+ /**
+- *	tty_prepare_flip_string		-	make room for characters
+- *	@port: tty port
+- *	@chars: return pointer for character write area
+- *	@size: desired size
+- *
+- *	Prepare a block of space in the buffer for data. Returns the length
+- *	available and buffer pointer to the space which is now allocated and
+- *	accounted for as ready for normal characters. This is used for drivers
+- *	that need their own block copy routines into the buffer. There is no
+- *	guarantee the buffer is a DMA target!
++ * tty_prepare_flip_string	-	make room for characters
++ * @port: tty port
++ * @chars: return pointer for character write area
++ * @size: desired size
++ *
++ * Prepare a block of space in the buffer for data.
++ *
++ * This is used for drivers that need their own block copy routines into the
++ * buffer. There is no guarantee the buffer is a DMA target!
++ *
++ * Returns: the length available and buffer pointer (@chars) to the space which
++ * is now allocated and accounted for as ready for normal characters.
+  */
+-
+ int tty_prepare_flip_string(struct tty_port *port, unsigned char **chars,
+ 		size_t size)
+ {
+@@ -432,16 +433,16 @@ int tty_prepare_flip_string(struct tty_port *port, unsigned char **chars,
+ EXPORT_SYMBOL_GPL(tty_prepare_flip_string);
+ 
+ /**
+- *	tty_ldisc_receive_buf		-	forward data to line discipline
+- *	@ld:	line discipline to process input
+- *	@p:	char buffer
+- *	@f:	TTY_* flags buffer
+- *	@count:	number of bytes to process
++ * tty_ldisc_receive_buf	-	forward data to line discipline
++ * @ld: line discipline to process input
++ * @p: char buffer
++ * @f: %TTY_NORMAL, %TTY_BREAK, etc. flags buffer
++ * @count: number of bytes to process
+  *
+- *	Callers other than flush_to_ldisc() need to exclude the kworker
+- *	from concurrent use of the line discipline, see paste_selection().
++ * Callers other than flush_to_ldisc() need to exclude the kworker from
++ * concurrent use of the line discipline, see paste_selection().
+  *
+- *	Returns the number of bytes processed
++ * Returns: the number of bytes processed.
+  */
+ int tty_ldisc_receive_buf(struct tty_ldisc *ld, const unsigned char *p,
+ 			  const char *f, int count)
+@@ -474,18 +475,16 @@ receive_buf(struct tty_port *port, struct tty_buffer *head, int count)
  }
  
  /**
-- *	tty_ldisc_deinit	-	ldisc cleanup for new tty
-- *	@tty: tty that was allocated recently
-+ * tty_ldisc_deinit	-	ldisc cleanup for new tty
-+ * @tty: tty that was allocated recently
+- *	flush_to_ldisc
+- *	@work: tty structure passed from work queue.
++ * flush_to_ldisc		-	flush data from buffer to ldisc
++ * @work: tty structure passed from work queue.
   *
-- *	The tty structure must not becompletely set up (tty_ldisc_setup) when
-- *      this call is made.
-+ * The tty structure must not be completely set up (tty_ldisc_setup()) when
-+ * this call is made.
+- *	This routine is called out of the software interrupt to flush data
+- *	from the buffer chain to the line discipline.
++ * This routine is called out of the software interrupt to flush data from the
++ * buffer chain to the line discipline.
+  *
+- *	The receive_buf method is single threaded for each tty instance.
++ * The receive_buf() method is single threaded for each tty instance.
+  *
+- *	Locking: takes buffer lock to ensure single-threaded flip buffer
+- *		 'consumer'
++ * Locking: takes buffer lock to ensure single-threaded flip buffer 'consumer'.
   */
- void tty_ldisc_deinit(struct tty_struct *tty)
+-
+ static void flush_to_ldisc(struct work_struct *work)
  {
+ 	struct tty_port *port = container_of(work, struct tty_port, buf.work);
+@@ -533,16 +532,15 @@ static void flush_to_ldisc(struct work_struct *work)
+ }
+ 
+ /**
+- *	tty_flip_buffer_push	-	terminal
+- *	@port: tty port to push
++ * tty_flip_buffer_push		-	push terminal buffers
++ * @port: tty port to push
+  *
+- *	Queue a push of the terminal flip buffers to the line discipline.
+- *	Can be called from IRQ/atomic context.
++ * Queue a push of the terminal flip buffers to the line discipline. Can be
++ * called from IRQ/atomic context.
+  *
+- *	In the event of the queue being busy for flipping the work will be
+- *	held off and retried later.
++ * In the event of the queue being busy for flipping the work will be held off
++ * and retried later.
+  */
+-
+ void tty_flip_buffer_push(struct tty_port *port)
+ {
+ 	struct tty_bufhead *buf = &port->buf;
+@@ -557,13 +555,12 @@ void tty_flip_buffer_push(struct tty_port *port)
+ EXPORT_SYMBOL(tty_flip_buffer_push);
+ 
+ /**
+- *	tty_buffer_init		-	prepare a tty buffer structure
+- *	@port: tty port to initialise
++ * tty_buffer_init		-	prepare a tty buffer structure
++ * @port: tty port to initialise
+  *
+- *	Set up the initial state of the buffer management for a tty device.
+- *	Must be called before the other tty buffer functions are used.
++ * Set up the initial state of the buffer management for a tty device. Must be
++ * called before the other tty buffer functions are used.
+  */
+-
+ void tty_buffer_init(struct tty_port *port)
+ {
+ 	struct tty_bufhead *buf = &port->buf;
+@@ -580,14 +577,14 @@ void tty_buffer_init(struct tty_port *port)
+ }
+ 
+ /**
+- *	tty_buffer_set_limit	-	change the tty buffer memory limit
+- *	@port: tty port to change
+- *	@limit: memory limit to set
++ * tty_buffer_set_limit		-	change the tty buffer memory limit
++ * @port: tty port to change
++ * @limit: memory limit to set
++ *
++ * Change the tty buffer memory limit.
+  *
+- *	Change the tty buffer memory limit.
+- *	Must be called before the other tty buffer functions are used.
++ * Must be called before the other tty buffer functions are used.
+  */
+-
+ int tty_buffer_set_limit(struct tty_port *port, int limit)
+ {
+ 	if (limit < MIN_TTYB_SIZE)
 -- 
 2.34.0
 
