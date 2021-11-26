@@ -2,234 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C9345E8A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:43:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0148345E8D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:48:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbhKZHqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 02:46:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359154AbhKZHoO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 02:44:14 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C087C061761
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:41:00 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id g14so35093150edb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:41:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=h6lcrRKDmFjPs1+f9KwgLLZePVGc9EcC4As5PUh0URM=;
-        b=uP2YHov+kO2Gx8u+1VrSqSyjPSc9WRktRkNn0Rvn7iLn+w+ZODdUBmaau9Byzq8KRK
-         vU3apB1SblLdz5Yk9KL6GU7H4OvHeZfWLycrps8csqQ3+KtLYpe90viwJsHMNrvFxP80
-         P8uKJ4XtteN2RMNReCnvBYQS9GTn/ct0ZK4SLEJ2flC2r7t5vaa8NdNg57tJmwy9yEmo
-         DrmdKami71b0xMvCC/krfUzqH6TQU4L51WdCCAuuHqBOfI+5LpRAg+ng4e/v7BO5W+ME
-         8q31Huak5zeBfeJJka1No6DaXEKnzRhlYuWO8utX5+1L2qqExo94QE29iMZkf4AWSNXY
-         ycVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=h6lcrRKDmFjPs1+f9KwgLLZePVGc9EcC4As5PUh0URM=;
-        b=pYaRHIX8GzKFcHpZkT1JMZg8+tzKllncAn587ixiKeGKAs19lBw1IX9+nSqka8mJs9
-         YNgoDtyvlzvwAd1EoXC3WMo/TQkApsgV/0mcSrNh/RDZyqogJVB/Meo/ukOz0JDT9Xkz
-         rTnYjIU1xTuFYuU46g6eT3lAM2ferne5ZpuF3+RgpotjwJzdFvBXGPptb4S5F/Od2bSZ
-         eMFKGJMbCZN2epfGaP3gpKHbbPDnvybLw5YfHoIKyDQbMp2kPr2R2D3Pn5Rrrz5rqsjp
-         3p1SmhZHqpzJ+sB02h9CMGKcfYNIBpIfw8eTrNX501mP3p20YIWvy/Arccp10P9cPu9J
-         +DWw==
-X-Gm-Message-State: AOAM532QLVNZXOS48jTikX8T+walA8Ne8wTHElIFustnB3sH8e37r8k1
-        iDj62AsmeVVhRj2y4gU6/dTITsYMK0FKe+pZ+qdy9w==
-X-Google-Smtp-Source: ABdhPJxH3dIgYhr97uDn0zv2XQdV7H+F7wxnIoOoN9olmK4bxsvc0XZwTNRyodGjD031/9IVC97EUO//MIsMPzASluU=
-X-Received: by 2002:a50:e003:: with SMTP id e3mr45901399edl.374.1637912459014;
- Thu, 25 Nov 2021 23:40:59 -0800 (PST)
+        id S1345173AbhKZHvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 02:51:35 -0500
+Received: from mga05.intel.com ([192.55.52.43]:42971 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1353099AbhKZHtc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 02:49:32 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="321858951"
+X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
+   d="scan'208";a="321858951"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 23:46:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
+   d="scan'208";a="598369797"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 25 Nov 2021 23:46:19 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqVw2-0007mF-Eb; Fri, 26 Nov 2021 07:46:18 +0000
+Date:   Fri, 26 Nov 2021 15:45:48 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [hare-scsi-devel:auth.v5 11/12]
+ drivers/nvme/target/fabrics-cmd-auth.c:346:30: sparse: sparse: incorrect
+ type in assignment (different base types)
+Message-ID: <202111261548.YAoOcBe0-lkp@intel.com>
 MIME-Version: 1.0
-References: <20211125160530.072182872@linuxfoundation.org>
-In-Reply-To: <20211125160530.072182872@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 26 Nov 2021 13:10:47 +0530
-Message-ID: <CA+G9fYuHAF_OLEOqWYgrsxbTq7xqgXNXhEd_3KQOq0fO4+D5PA@mail.gmail.com>
-Subject: Re: [PATCH 4.14 000/248] 4.14.256-rc3 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
-        f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Nov 2021 at 21:38, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.256 release.
-> There are 248 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 27 Nov 2021 16:04:58 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.256-rc3.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/hare/scsi-devel.git auth.v5
+head:   1d58df043579d325e3c2a5926a89282183393f49
+commit: 6ca636fe7f5c7c1d040fb4328ef7b47a62165a7e [11/12] nvmet-auth: Diffie-Hellman key exchange support
+config: nios2-randconfig-s031-20211115 (https://download.01.org/0day-ci/archive/20211126/202111261548.YAoOcBe0-lkp@intel.com/config)
+compiler: nios2-linux-gcc (GCC) 11.2.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://git.kernel.org/pub/scm/linux/kernel/git/hare/scsi-devel.git/commit/?id=6ca636fe7f5c7c1d040fb4328ef7b47a62165a7e
+        git remote add hare-scsi-devel https://git.kernel.org/pub/scm/linux/kernel/git/hare/scsi-devel.git
+        git fetch --no-tags hare-scsi-devel auth.v5
+        git checkout 6ca636fe7f5c7c1d040fb4328ef7b47a62165a7e
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=nios2 
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-## Build
-* kernel: 4.14.256-rc3
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.14.y
-* git commit: 84f842ef3cc15ea9ea46cab24c9c76fbb20a30e3
-* git describe: v4.14.255-249-g84f842ef3cc1
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
-.255-249-g84f842ef3cc1
+sparse warnings: (new ones prefixed by >>)
+   drivers/nvme/target/fabrics-cmd-auth.c:20:30: sparse: sparse: invalid assignment: |=
+   drivers/nvme/target/fabrics-cmd-auth.c:20:30: sparse:    left side has type restricted __le32
+   drivers/nvme/target/fabrics-cmd-auth.c:20:30: sparse:    right side has type int
+   drivers/nvme/target/fabrics-cmd-auth.c:84:22: sparse: sparse: cast to restricted __le32
+   drivers/nvme/target/fabrics-cmd-auth.c:84:22: sparse: sparse: cast from restricted __le16
+>> drivers/nvme/target/fabrics-cmd-auth.c:346:30: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] dhvlen @@     got restricted __le32 [usertype] @@
+   drivers/nvme/target/fabrics-cmd-auth.c:346:30: sparse:     expected restricted __le16 [usertype] dhvlen
+   drivers/nvme/target/fabrics-cmd-auth.c:346:30: sparse:     got restricted __le32 [usertype]
 
-## No regressions (compared to v4.14.255-251-g2f2090beb462)
+vim +346 drivers/nvme/target/fabrics-cmd-auth.c
 
-## No fixes (compared to v4.14.255-251-g2f2090beb462)
+   315	
+   316	static int nvmet_auth_challenge(struct nvmet_req *req, void *d, int al)
+   317	{
+   318		struct nvmf_auth_dhchap_challenge_data *data = d;
+   319		struct nvmet_ctrl *ctrl = req->sq->ctrl;
+   320		int ret = 0;
+   321		int hash_len = nvme_auth_hmac_hash_len(ctrl->shash_id);
+   322		int data_size = sizeof(*d) + hash_len;
+   323	
+   324		if (ctrl->dh_tfm)
+   325			data_size += ctrl->dh_keysize;
+   326		if (al < data_size) {
+   327			pr_debug("%s: buffer too small (al %d need %d)\n", __func__,
+   328				 al, data_size);
+   329			return -EINVAL;
+   330		}
+   331		memset(data, 0, data_size);
+   332		req->sq->dhchap_s1 = ctrl->dhchap_seqnum++;
+   333		data->auth_type = NVME_AUTH_DHCHAP_MESSAGES;
+   334		data->auth_id = NVME_AUTH_DHCHAP_MESSAGE_CHALLENGE;
+   335		data->t_id = cpu_to_le16(req->sq->dhchap_tid);
+   336		data->hashid = ctrl->shash_id;
+   337		data->hl = hash_len;
+   338		data->seqnum = cpu_to_le32(req->sq->dhchap_s1);
+   339		req->sq->dhchap_c1 = kmalloc(data->hl, GFP_KERNEL);
+   340		if (!req->sq->dhchap_c1)
+   341			return -ENOMEM;
+   342		get_random_bytes(req->sq->dhchap_c1, data->hl);
+   343		memcpy(data->cval, req->sq->dhchap_c1, data->hl);
+   344		if (ctrl->dh_tfm) {
+   345			data->dhgid = ctrl->dh_gid;
+ > 346			data->dhvlen = cpu_to_le32(ctrl->dh_keysize);
+   347			ret = nvmet_auth_ctrl_exponential(req, data->cval + data->hl,
+   348							  ctrl->dh_keysize);
+   349		}
+   350		pr_debug("%s: ctrl %d qid %d seq %d transaction %d hl %d dhvlen %d\n",
+   351			 __func__, ctrl->cntlid, req->sq->qid, req->sq->dhchap_s1,
+   352			 req->sq->dhchap_tid, data->hl, ctrl->dh_keysize);
+   353		return ret;
+   354	}
+   355	
 
-## Test result summary
-total: 78547, pass: 62884, fail: 737, skip: 12758, xfail: 2168
-
-## Build Summary
-* arm: 130 total, 130 passed, 0 failed
-* arm64: 32 total, 32 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 19 total, 19 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 22 total, 22 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 19 total, 19 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
