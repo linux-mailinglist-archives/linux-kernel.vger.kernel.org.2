@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B47B45EEE9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9679245EF14
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:23:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242168AbhKZNPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 08:15:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:43294 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240230AbhKZNNl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 08:13:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637932227;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PZES8D7Poy0DqzKfMkUuWcd49HA4pFsS42pgSE0hH14=;
-        b=faYAWRCLtB+dL5HvQfmC6nRD4TNp5/0/vZN7T1fliNJq9CV3NqMmzOygZFxQpnnsoDPKta
-        HVyoOy9xV6AeXvsaTl69JAkuUKyyf9zcxB8c/YqhKCBHKJmTeUaLJ19yJPnmA1XiKeHi/+
-        C0WvEKioj6MIcpdR6PZL9taTQMBB+C4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-403-Iokdj43yO1yVe4M3MosZig-1; Fri, 26 Nov 2021 08:10:24 -0500
-X-MC-Unique: Iokdj43yO1yVe4M3MosZig-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75DC71006AA4;
-        Fri, 26 Nov 2021 13:10:21 +0000 (UTC)
-Received: from [10.39.195.16] (unknown [10.39.195.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6965E5C1CF;
-        Fri, 26 Nov 2021 13:10:18 +0000 (UTC)
-Message-ID: <07f67369-a921-09d4-019d-d4141f970c1c@redhat.com>
-Date:   Fri, 26 Nov 2021 14:10:17 +0100
+        id S245728AbhKZN1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 08:27:07 -0500
+Received: from mga01.intel.com ([192.55.52.88]:33099 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232187AbhKZNZG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 08:25:06 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="259566139"
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
+   d="scan'208";a="259566139"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 05:11:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
+   d="scan'208";a="607863687"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 26 Nov 2021 05:10:59 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqb0F-000895-3H; Fri, 26 Nov 2021 13:10:59 +0000
+Date:   Fri, 26 Nov 2021 21:10:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [tglx-devel:msi 90/101] legacy.c:undefined reference to
+ `msi_device_populate_sysfs'
+Message-ID: <202111262105.6xBC0RW6-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] KVM: x86/mmu: Handle "default" period when selectively
- waking kthread
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Junaid Shahid <junaids@google.com>
-References: <20211120015706.3830341-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211120015706.3830341-1-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/21 02:57, Sean Christopherson wrote:
-> +/*
-> + * Calculate the effective recovery period, accounting for '0' meaning "let KVM
-> + * select a period of ~1 hour per page".  Returns true if recovery is enabled.
-> + */
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git msi
+head:   1bd31f3b9bc0cc3328fe9030a6b240ac1772d60a
+commit: 56feb45643467df8db6a3b57cb07fb4b1f4a1505 [90/101] genirq/msi: Simplify sysfs handling
+config: ia64-defconfig (https://download.01.org/0day-ci/archive/20211126/202111262105.6xBC0RW6-lkp@intel.com/config)
+compiler: ia64-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git/commit/?id=56feb45643467df8db6a3b57cb07fb4b1f4a1505
+        git remote add tglx-devel https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git
+        git fetch --no-tags tglx-devel msi
+        git checkout 56feb45643467df8db6a3b57cb07fb4b1f4a1505
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=ia64 SHELL=/bin/bash
 
-Slightly better: "let KVM select a halving time of ~1 hour".  Queued 
-with this change, thanks.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Paolo
+All errors (new ones prefixed by >>):
 
+   ia64-linux-ld: drivers/pci/msi/legacy.o: in function `pci_msi_legacy_setup_msi_irqs':
+>> legacy.c:(.text+0x2b2): undefined reference to `msi_device_populate_sysfs'
+   ia64-linux-ld: drivers/pci/msi/legacy.o: in function `pci_msi_legacy_teardown_msi_irqs':
+>> legacy.c:(.text+0x392): undefined reference to `msi_device_destroy_sysfs'
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
