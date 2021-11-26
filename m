@@ -2,146 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F6F45E6DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 05:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3660845E6C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 05:14:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358274AbhKZEds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 23:33:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358191AbhKZEbo (ORCPT
+        id S1346269AbhKZERL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 23:17:11 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:28175 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245048AbhKZEPK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 23:31:44 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A17C061D5E;
-        Thu, 25 Nov 2021 20:11:22 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id o14so5850536plg.5;
-        Thu, 25 Nov 2021 20:11:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=dH9vX4Nxo9Cf82Buyn6+6qDtIVOrljk6cIN+0S0PjHs=;
-        b=HbHq0wwCD1GH7D8cUEtRKWcCkTQqozKYYsynYy25fWygDqSRTz3FPmEP+NxIizXPOe
-         tr969p9H75hsqO//dwSSsLaZ07J4xUZ5aFbFpgLypd6O6j+Qs6/vgsGytEoupQEM5mTR
-         YThY7x0YXRMHiLHXuOMRNp1FsoF1KRMvzqTxSR87llD+wNQqkztdierHuKtcJvdzvIDV
-         K3eW+0BNfnvv7xTJJBOm3Z5JfC5z29EMfkr90WdGfWNA3wliv5pR04vFepydkTlnZon/
-         82hgOvYldMJ/kN+o2Kigw+fXJOzLWRHLOpLfSl5uksjnXUpeA0XX98ZAvQqPjwtYS5Z/
-         bEvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=dH9vX4Nxo9Cf82Buyn6+6qDtIVOrljk6cIN+0S0PjHs=;
-        b=x/VELMe1Ufzdr1frnfN3EGr5gh/q/4NBDuWkKLIvB1Qukn8CqA+vdtlRlPEI7jyh5s
-         FUZsxeZ2en01LgXfLFPIsNskKMksdoyDnIDg9zzRGtC0AiNMbDrJ03nwa6cCecBNJqZI
-         yvzZ6EAhRjULgwr12G+1F87I3ejdNb0gjmrqZJrTP23ITbM8m0sUgWEkbughqnCwoTb8
-         jDiws/sHRFFLmKoDHNa/a+OCL1DH0Xr43z6iUCJO3HYrc82VprmOFFM4eHCX35inhPm7
-         mvG+1e9Kg4bqS7CV3c9xj4jv0kvvfVUoCLIx4LbwABiYxfAIHwWbXCSNA+en1yCw/X1e
-         cDkg==
-X-Gm-Message-State: AOAM530hG+PlDVUELWmoIAUYLRqAHPxjGPWLvNptz4v0pmcdxaTgz20a
-        651wc46XfKW81hrH8kqrIfKXkLbs+U4=
-X-Google-Smtp-Source: ABdhPJxX6TxNi81h9TI69Ag/+v1fY9/EoFdHMQp+hJyloAWvDJ/Ty2yTyQo4nTEba2VqXTUtNW++RQ==
-X-Received: by 2002:a17:90b:1c81:: with SMTP id oo1mr12767578pjb.5.1637899881675;
-        Thu, 25 Nov 2021 20:11:21 -0800 (PST)
-Received: from [192.168.11.5] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id m12sm5421704pfk.27.2021.11.25.20.11.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Nov 2021 20:11:21 -0800 (PST)
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Joel Colledge <joel.colledge@linbit.com>
-Cc:     Philipp Reisner <philipp.reisner@linbit.com>,
-        Lars Ellenberg <lars.ellenberg@linbit.com>,
-        drbd-dev@lists.linbit.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-From:   Akira Yokosawa <akiyks@gmail.com>
-Subject: [PATCH v2] docs: admin-guide/blockdev: Remove digraph of node-states
-Message-ID: <7df04f45-8746-e666-1a9d-a998f1ab1f91@gmail.com>
-Date:   Fri, 26 Nov 2021 13:11:17 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Thu, 25 Nov 2021 23:15:10 -0500
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4J0h9725V5z8vbq;
+        Fri, 26 Nov 2021 12:10:03 +0800 (CST)
+Received: from dggema774-chm.china.huawei.com (10.1.198.216) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.20; Fri, 26 Nov 2021 12:11:56 +0800
+Received: from use12-sp2.huawei.com (10.67.189.174) by
+ dggema774-chm.china.huawei.com (10.1.198.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.20; Fri, 26 Nov 2021 12:11:55 +0800
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+To:     <hurricos@gmail.com>, <Yuantian.Tang@feescale.com>,
+        <benh@kernel.crashing.org>, <chenhui.zhao@freescale.com>,
+        <chenjianguo3@huawei.com>, <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <liuwenliang@huawei.com>, <mpe@ellerman.id.au>, <oss@buserror.net>,
+        <paul.gortmaker@windriver.com>, <paulus@samba.org>,
+        <stable@vger.kernel.org>, <wangle6@huawei.com>,
+        <chunkeey@gmail.com>
+CC:     <nixiaoming@huawei.com>
+Subject: [PATCH] powerpc/85xx: fix oops when CONFIG_FSL_PMC=n
+Date:   Fri, 26 Nov 2021 12:11:53 +0800
+Message-ID: <20211126041153.16926-1-nixiaoming@huawei.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <5f56f1af-9404-21fa-eda0-05a75d769427@huawei.com>
+References: <5f56f1af-9404-21fa-eda0-05a75d769427@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.189.174]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema774-chm.china.huawei.com (10.1.198.216)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While node-states-8.dot has two digraphs, the dot(1) command can
-not properly handle multiple graphs in a DOT file and the
-kernel-doc page at
+When CONFIG_FSL_PMC is set to n, no value is assigned to cpu_up_prepare
+ in the mpc85xx_pm_ops structure. As a result, oops is triggered in
+ smp_85xx_start_cpu().
 
-    https://www.kernel.org/doc/html/latest/admin-guide/blockdev/drbd/figures.html
+	[    0.627233] smp: Bringing up secondary CPUs ...
+	[    0.681659] kernel tried to execute user page (0) - exploit attempt? (uid: 0)
+	[    0.766618] BUG: Unable to handle kernel instruction fetch (NULL pointer?)
+	[    0.848899] Faulting instruction address: 0x00000000
+	[    0.908273] Oops: Kernel access of bad area, sig: 11 [#1]
+	...
+	[    1.758220] NIP [00000000] 0x0
+	[    1.794688] LR [c0021d2c] smp_85xx_kick_cpu+0xe8/0x568
+	[    1.856126] Call Trace:
+	[    1.885295] [c1051da8] [c0021cb8] smp_85xx_kick_cpu+0x74/0x568 (unreliable)
+	[    1.968633] [c1051de8] [c0011460] __cpu_up+0xc0/0x228
+	[    2.029038] [c1051e18] [c0031bbc] bringup_cpu+0x30/0x224
+	[    2.092572] [c1051e48] [c0031f3c] cpu_up.constprop.0+0x180/0x33c
+	[    2.164443] [c1051e88] [c00322e8] bringup_nonboot_cpus+0x88/0xc8
+	[    2.236326] [c1051eb8] [c07e67bc] smp_init+0x30/0x78
+	[    2.295698] [c1051ed8] [c07d9e28] kernel_init_freeable+0x118/0x2a8
+	[    2.369641] [c1051f18] [c00032d8] kernel_init+0x14/0x124
+	[    2.433176] [c1051f38] [c0010278] ret_from_kernel_thread+0x14/0x1c
 
-fails to render the graphs.
-
-It turned out that the digraph of node_states can be removed.
-
-Quote from Joel's reflection:
-
-    On reflection, the digraph node_states can be removed entirely.
-    It is too basic to contain any useful information. In addition
-    it references "ioctl_set_state". The ioctl configuration
-    interface for DRBD has long been removed. In fact, it was never
-    in the upstream version of DRBD.
-
-Remove node_states and rename the DOT file peer_states-8.dot.
-
-Suggested-by: Joel Colledge <joel.colledge@linbit.com>
-Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
-Cc: Philipp Reisner <philipp.reisner@linbit.com>
-Cc: Lars Ellenberg <lars.ellenberg@linbit.com>
+Fixes: c45361abb9185b ("powerpc/85xx: fix timebase sync issue when
+ CONFIG_HOTPLUG_CPU=n")
+Link: https://lore.kernel.org/lkml/CANA18Uyba4kMJQrbCSZVTFep2Exe5izE45whNJgwwUvNSEcNLg@mail.gmail.com/
+Reported-by: Martin Kennedy <hurricos@gmail.com>
+Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+Tested-by: Martin Kennedy <hurricos@gmail.com>
+Cc: stable@vger.kernel.org
 ---
-Changes in v1 [1] -> v2
+ arch/powerpc/platforms/85xx/smp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- - As suggested by Joel, remove the digraph of node_states.
- - Rename the DOT file peers-states-8.dot.
- - Update the change log and the patch title.
- - Add Joel's Suggested-by.
-
-[1]: https://lkml.kernel.org/r/3cbff170-582b-b6cf-0988-e0d0c9b47505@gmail.com
-
-Joel, are you OK with this change going through the -doc tree?
-
-        Thanks, Akira
---
- Documentation/admin-guide/blockdev/drbd/figures.rst          | 4 ++--
- .../blockdev/drbd/{node-states-8.dot => peer-states-8.dot}   | 5 -----
- 2 files changed, 2 insertions(+), 7 deletions(-)
- rename Documentation/admin-guide/blockdev/drbd/{node-states-8.dot => peer-states-8.dot} (71%)
-
-diff --git a/Documentation/admin-guide/blockdev/drbd/figures.rst b/Documentation/admin-guide/blockdev/drbd/figures.rst
-index bd9a4901fe46..9f73253ea353 100644
---- a/Documentation/admin-guide/blockdev/drbd/figures.rst
-+++ b/Documentation/admin-guide/blockdev/drbd/figures.rst
-@@ -25,6 +25,6 @@ Sub graphs of DRBD's state transitions
-     :alt:   disk-states-8.dot
-     :align: center
+diff --git a/arch/powerpc/platforms/85xx/smp.c b/arch/powerpc/platforms/85xx/smp.c
+index 83f4a6389a28..d7081e9af65c 100644
+--- a/arch/powerpc/platforms/85xx/smp.c
++++ b/arch/powerpc/platforms/85xx/smp.c
+@@ -220,7 +220,7 @@ static int smp_85xx_start_cpu(int cpu)
+ 	local_irq_save(flags);
+ 	hard_irq_disable();
  
--.. kernel-figure:: node-states-8.dot
--    :alt:   node-states-8.dot
-+.. kernel-figure:: peer-states-8.dot
-+    :alt:   peer-states-8.dot
-     :align: center
-diff --git a/Documentation/admin-guide/blockdev/drbd/node-states-8.dot b/Documentation/admin-guide/blockdev/drbd/peer-states-8.dot
-similarity index 71%
-rename from Documentation/admin-guide/blockdev/drbd/node-states-8.dot
-rename to Documentation/admin-guide/blockdev/drbd/peer-states-8.dot
-index bfa54e1f8016..6dc3954954d6 100644
---- a/Documentation/admin-guide/blockdev/drbd/node-states-8.dot
-+++ b/Documentation/admin-guide/blockdev/drbd/peer-states-8.dot
-@@ -1,8 +1,3 @@
--digraph node_states {
--	Secondary -> Primary           [ label = "ioctl_set_state()" ]
--	Primary   -> Secondary 	       [ label = "ioctl_set_state()" ]
--}
--
- digraph peer_states {
- 	Secondary -> Primary           [ label = "recv state packet" ]
- 	Primary   -> Secondary 	       [ label = "recv state packet" ]
-
-base-commit: b96ff02ab2be1791248237b1bf318aaf62e8b701
+-	if (qoriq_pm_ops)
++	if (qoriq_pm_ops && qoriq_pm_ops->cpu_up_prepare)
+ 		qoriq_pm_ops->cpu_up_prepare(cpu);
+ 
+ 	/* if cpu is not spinning, reset it */
+@@ -292,7 +292,7 @@ static int smp_85xx_kick_cpu(int nr)
+ 		booting_thread_hwid = cpu_thread_in_core(nr);
+ 		primary = cpu_first_thread_sibling(nr);
+ 
+-		if (qoriq_pm_ops)
++		if (qoriq_pm_ops && qoriq_pm_ops->cpu_up_prepare)
+ 			qoriq_pm_ops->cpu_up_prepare(nr);
+ 
+ 		/*
 -- 
-2.17.1
+2.27.0
 
