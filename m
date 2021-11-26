@@ -2,95 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6833B45EFEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:30:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A1245EF57
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377680AbhKZOdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 09:33:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351127AbhKZObm (ORCPT
+        id S1349096AbhKZNrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 08:47:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:26193 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352433AbhKZNpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 09:31:42 -0500
-X-Greylist: delayed 419 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 26 Nov 2021 05:46:30 PST
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2339CC0613FA;
-        Fri, 26 Nov 2021 05:46:29 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 26 Nov 2021 08:45:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637934160;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qv4Kw9RIW39ZiswcLW6UjMfgb9X0DOPxTe7NmLh2c2M=;
+        b=WuUqGngwRrnqS7TrtTNvirIN0NRi4Q9Ke47Dqmvhr3erxdPAUhgJXJtdWowPZZ4vt5tJo8
+        zaJTHue/NrCUxCZy4CA8+cB8lJMGAWiVg/DnlCUH0Ol9+LEO5zyZhyvMYSIo/Fmb9tzT5M
+        VZlWrvwiFCwC1IytS1dvOF1re7VU/kY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-591-E_29GzgtP2-OYAERnJ26nA-1; Fri, 26 Nov 2021 08:42:37 -0500
+X-MC-Unique: E_29GzgtP2-OYAERnJ26nA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B1F4A62288;
-        Fri, 26 Nov 2021 13:39:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83BD4C93056;
-        Fri, 26 Nov 2021 13:39:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637933969;
-        bh=NC4SpiZ2SHdTDSCTPOpq9t5x7oRVWD4HdHwzbrrZNBQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LnzuaG0aGkSbR11VcYAhw+LABMdgP93Eb79e+hjZKIh/WOMreVmEeXBxIpXzyXXms
-         BGTLlweG4pPZYKxUtGXROXQClLNB3esFBYx+eQUBYRgyA+GVObOOdBCjD7dSj5mcJE
-         oniJJGSEqxtsYfCiu0YgPTAJynNzUVpcc9YGmdWQlSkk8msyd9OQBHV3w33o4UKcCV
-         jzbckwgg1rO5e+AqN+wuVvV+czHcDglgU85iBbjs2zjRz/DimZWx3G+/ktXeSrGYZt
-         OOPazXpd42BZegLzm3RZaaaFs4EGjXET5mb2im3HE7FwmRUy3g0d+h+saTXQhBRYtT
-         808fo/59GQffQ==
-Date:   Fri, 26 Nov 2021 13:39:22 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
-        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org,
-        judyhsiao@chromium.org,
-        Venkata Prasad Potturu <potturu@codeaurora.org>
-Subject: Re: [PATCH v6 10/10] ASoC: qcom: SC7280: Update config for building
- codec dma drivers
-Message-ID: <YaDjiip57q5hDe+l@sirena.org.uk>
-References: <1637928282-2819-1-git-send-email-srivasam@codeaurora.org>
- <1637928282-2819-11-git-send-email-srivasam@codeaurora.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 898228015BA;
+        Fri, 26 Nov 2021 13:42:35 +0000 (UTC)
+Received: from t480s.redhat.com (unknown [10.39.193.226])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A0C8D72FA6;
+        Fri, 26 Nov 2021 13:42:10 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, Zi Yan <ziy@nvidia.com>,
+        Gavin Shan <gshan@redhat.com>, Hui Zhu <teawater@gmail.com>,
+        Eric Ren <renzhengeek@gmail.com>,
+        Sebastien Boeuf <sebastien.boeuf@intel.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org
+Subject: [PATCH v1 0/2] virtio-mem: prepare for granularity smaller than MAX_ORDER - 1
+Date:   Fri, 26 Nov 2021 14:42:07 +0100
+Message-Id: <20211126134209.17332-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="8VdVWGcSreCkYakr"
-Content-Disposition: inline
-In-Reply-To: <1637928282-2819-11-git-send-email-srivasam@codeaurora.org>
-X-Cookie: You fill a much-needed gap.
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The virtio-mem driver currently supports logical hot(un)plug in
+MAX_ORDER - 1 granularity (4MiB on x86-64) or bigger. We want to support
+pageblock granularity (2MiB on x86-64), to make hot(un)plug even more
+flexible, and to improve hotunplug when using ZONE_NORMAL.
 
---8VdVWGcSreCkYakr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+With pageblock granularity, we then have a granularity comparable to
+hugepage ballooning. Further, there are ideas to increase MAX_ORDER, so
+we really want to decouple it from MAX_ORDER.
 
-On Fri, Nov 26, 2021 at 05:34:42PM +0530, Srinivasa Rao Mandadapu wrote:
+While ZONE_MOVABLE should mostly work already, alloc_contig_range() still
+needs work to be able to properly handle pageblock granularity on
+ZONE_NORMAL. This support is in the works [1], so let's prepare
+virtio-mem for supporting smaller granularity than MAX_ORDER - 1.
 
-> This patch set depends on:
->     -- https://patchwork.kernel.org/project/alsa-devel/list/?series=582321
+Tested with ZONE_MOVABLE after removing the MAX_ORDER - 1 granularity
+limitation in virtio-mem, and using different device block sizes (2MiB,
+4MiB, 8MiB).
 
-To repeat yet again:
+[1] https://lkml.kernel.org/r/20211115193725.737539-1-zi.yan@sent.com
 
-Please include human readable descriptions of things like commits and
-issues being discussed in e-mail in your mails, this makes them much
-easier for humans to read especially when they have no internet access.
-I do frequently catch up on my mail on flights or while otherwise
-travelling so this is even more pressing for me than just being about
-making things a bit easier to read.
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Zi Yan <ziy@nvidia.com>
+Cc: Gavin Shan <gshan@redhat.com>
+Cc: Hui Zhu <teawater@gmail.com>
+Cc: Eric Ren <renzhengeek@gmail.com>
+Cc: Sebastien Boeuf <sebastien.boeuf@intel.com>
+Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc: virtualization@lists.linux-foundation.org
+Cc: linux-mm@kvack.org
 
---8VdVWGcSreCkYakr
-Content-Type: application/pgp-signature; name="signature.asc"
+David Hildenbrand (2):
+  virtio-mem: prepare page onlining code for granularity smaller than
+    MAX_ORDER - 1
+  virtio-mem: prepare fake page onlining code for granularity smaller
+    than MAX_ORDER - 1
 
------BEGIN PGP SIGNATURE-----
+ drivers/virtio/virtio_mem.c | 110 ++++++++++++++++++++++++------------
+ 1 file changed, 74 insertions(+), 36 deletions(-)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmGg44kACgkQJNaLcl1U
-h9B2PAf9HFtpuSJkMDBV0v+tqGL4HutQce5WtAopOh7XBAr+9F4S0Zc/wjf7/rEo
-XsZ5s26AzXEBFCam543O95L/8xOKJoRBTCpzNI9shL0I9Us7v3OrnpKmtlmFfguz
-pdHWM/ynf7GukdQkiKCjFdvb7ecDnIhcUotEmrod4v0JlHbTa8oTNHAm3xW1sOVV
-aJN9QVOLSErb033mTnfCRakno8KqclFjBFrYE9Kr5mQTGHwduq36zTDrVM268eyX
-LH+vhF0mKVUkfuTZKQbY/8NpnLbmBSnQ6Uf4LjBs1itPiv9cWJGuE/lPqB8GNecj
-VIfGGvzQFpOlGDGmYRb4RAyPvuOJAg==
-=eXdC
------END PGP SIGNATURE-----
+-- 
+2.31.1
 
---8VdVWGcSreCkYakr--
