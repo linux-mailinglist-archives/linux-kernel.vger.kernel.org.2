@@ -2,102 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B45D45F0AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:28:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1482F45F0AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:28:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378094AbhKZPbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:31:12 -0500
-Received: from thoth.sbs.de ([192.35.17.2]:40409 "EHLO thoth.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344954AbhKZP3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:29:11 -0500
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
-        by thoth.sbs.de (8.15.2/8.15.2) with ESMTPS id 1AQFPYhY005209
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Nov 2021 16:25:34 +0100
-Received: from md1za8fc.ad001.siemens.net ([139.22.47.90])
-        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 1AQFPXnP025738;
-        Fri, 26 Nov 2021 16:25:33 +0100
-Date:   Fri, 26 Nov 2021 16:25:32 +0100
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>,
-        Michael Haener <michael.haener@siemens.com>
-Subject: Re: [PATCH v4 4/4] platform/x86: pmc_atom: improve critclk_systems
- matching for Siemens PCs
-Message-ID: <20211126162532.1cd42766@md1za8fc.ad001.siemens.net>
-In-Reply-To: <CAHp75Vf6x4-AYPPEMf7qXTi-RF92mdUn6rhghBpJ5avQAjYRzA@mail.gmail.com>
-References: <20211126141027.16161-1-henning.schild@siemens.com>
-        <20211126141027.16161-5-henning.schild@siemens.com>
-        <CAHp75Vf6x4-AYPPEMf7qXTi-RF92mdUn6rhghBpJ5avQAjYRzA@mail.gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1354495AbhKZPb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 10:31:56 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:41928 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354715AbhKZP3z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 10:29:55 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3E1A5622B2;
+        Fri, 26 Nov 2021 15:26:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7771BC53FCA;
+        Fri, 26 Nov 2021 15:26:39 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="fH4FAr7a"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1637940397;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ipM/TXyq3fa2xD6xL+IODfRBAa1n0lqHCOEC6lhGz2w=;
+        b=fH4FAr7ax00biFRspLsNjb0ze3JPDHFQiXw5nz3dCryky0GVjtS7odrrBG4SXFEnuMPupb
+        C2rBVxwhqhzGHZtfe1Vkui9Kv/3RpHXES00WTFF0HitxpBYX8DbwD7DlSx07p0XbnTXy7w
+        obXYs76FMoUXfcO17O5JJI58FIkJK9U=
+Received: by mail.zx2c4.com (OpenSMTPD) with ESMTPSA id 68512c0f (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Fri, 26 Nov 2021 15:26:37 +0000 (UTC)
+Received: by mail-yb1-f180.google.com with SMTP id 131so21171038ybc.7;
+        Fri, 26 Nov 2021 07:26:37 -0800 (PST)
+X-Gm-Message-State: AOAM531HfnOkXbi0adWvvKN8DyC5lx9FKQwm7xz+aeZET5kLpbOqaZh0
+        H2+j9tjgJQV3j8tbFmHGnag+KcWgDfoIr4rQM3w=
+X-Google-Smtp-Source: ABdhPJz1jC7tzRI2Jev0YFMgIakMjnOGUeXIERuvNVU50Dbr302WyOqELo2lVx6sJzZ8S49+xbTN3CiBb8Raeb2tmIk=
+X-Received: by 2002:a25:acd4:: with SMTP id x20mr16477398ybd.416.1637940395629;
+ Fri, 26 Nov 2021 07:26:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20211126143329.2689618-1-arnd@kernel.org> <CAHmME9rotnZRzqeD43FJmSX6-i2CwvUVpXHrFkLGt+qVVdxK7A@mail.gmail.com>
+ <CAK8P3a2KfmmGDbVHULWevB0hv71P2oi2ZCHEAqT=8dQfa0=cqQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a2KfmmGDbVHULWevB0hv71P2oi2ZCHEAqT=8dQfa0=cqQ@mail.gmail.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Fri, 26 Nov 2021 10:26:09 -0500
+X-Gmail-Original-Message-ID: <CAHmME9q3ihG6OukcbhgkzwMUY7y+N3tKrGu2aRHjkgmAv4j=WQ@mail.gmail.com>
+Message-ID: <CAHmME9q3ihG6OukcbhgkzwMUY7y+N3tKrGu2aRHjkgmAv4j=WQ@mail.gmail.com>
+Subject: Re: [PATCH] crypto: siphash - use _unaligned version by default
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jean-Philippe Aumasson <jeanphilippe.aumasson@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Fri, 26 Nov 2021 16:51:00 +0200
-schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
+On Fri, Nov 26, 2021 at 10:18 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> I have not tested this specific patch on all platforms, but I did
+> extensive testing of the get_unaligned()/put_unaligned() helpers
+> in my rewrite earlier this year[1], making sure that these are NOPs
+> on all the important architectures, and that they prevent the use
+> of trapping ldrd/ldm instructions on ARMv6/ARMv7.
 
-> On Fri, Nov 26, 2021 at 4:10 PM Henning Schild
-> <henning.schild@siemens.com> wrote:
-> >
-> > Siemens industrial PCs unfortunately can not always be properly
-> > identified the way we used to. An earlier commit introduced code
-> > that allows proper identification without looking at DMI strings
-> > that could differ based on product branding.
-> > Switch over to that proper way and revert commits that used to
-> > collect the machines based on unstable strings.  
-> 
-> Usually we start a series with fixes, but I guess it's fine here since
-> this can be taken separately, right?
-> 
-> ...
+If you're confident that the codegen doesn't change for ARMv8 and
+x86{,_64}, then:
 
-It can not be taken because it needs p1 to work. And p1 is mainly here
-for p2 and p3 really. Splitting the patches up into
+Reviewed-by: Jason A. Donenfeld <Jason@zx2c4.com>
 
-p1.1
-p4
-p1.2
-p2
-p3
+We should probably Cc stable@, right?
 
-would be possible but a lot of work for just that ordering topic i
-guess.
+I'm preparing a patchset for DaveM's stable tree today, and I can take
+this in that patchset.
 
-> > +#include <linux/platform_data/x86/simatic-ipc.h>  
-> 
-> Seems not.  Question is then, what Fixes tags would  mean in this
-> case?
-> 
-
-Which of the several tags confuses you? Maybe i just need to drop a few.
-
-the original problem is
-Fixes: 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
-which introduced the need for several quirks
-Fixes: e8796c6c69d1 ("platform/x86: pmc_atom: Add Siemens CONNECT...")
-Fixes: f110d252ae79 ("platform/x86: pmc_atom: Add Siemens SIMATIC...")
-Fixes: ad0d315b4d4e ("platform/x86: pmc_atom: Add Siemens SIMATIC...")
-These quirks use unstable dmi information. Unstable because the
-DMI_PRODUCT_VERSION can be branded. Yes weird ... we do not allow new
-ACPI entries but do allow custom dmi ...
-p1 introduces the use of stable dmi and p4 brings that into the quirk
-table ... fixing all the quirks based on customizable
-DMI_PRODUCT_VERSION
-
-Henning
+Jason
