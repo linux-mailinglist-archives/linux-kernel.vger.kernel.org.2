@@ -2,144 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4378545EC2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:05:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F10DD45ECD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:41:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237689AbhKZLIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 06:08:45 -0500
-Received: from mx.socionext.com ([202.248.49.38]:29987 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230336AbhKZLGo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 06:06:44 -0500
-Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
-  by mx.socionext.com with ESMTP; 26 Nov 2021 20:03:30 +0900
-Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
-        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id 78AD8206E701;
-        Fri, 26 Nov 2021 20:03:30 +0900 (JST)
-Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Fri, 26 Nov 2021 20:03:30 +0900
-Received: from yuzu2.css.socionext.com (yuzu2 [172.31.9.57])
-        by kinkan2.css.socionext.com (Postfix) with ESMTP id 37D02B62E0;
-        Fri, 26 Nov 2021 20:03:30 +0900 (JST)
-Received: from [10.212.1.68] (unknown [10.212.1.68])
-        by yuzu2.css.socionext.com (Postfix) with ESMTP id 121EF10D20;
-        Fri, 26 Nov 2021 20:03:30 +0900 (JST)
-Message-ID: <5729f6e6-983a-f8b2-c5f3-ff07d8f43650@socionext.com>
-Date:   Fri, 26 Nov 2021 20:03:29 +0900
+        id S1376803AbhKZLoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 06:44:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231490AbhKZLmx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 06:42:53 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E64C07E5E7;
+        Fri, 26 Nov 2021 03:04:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=LMb0rklF0FhVxidjDs0zJKE7sk6toKA4FBFMBdMwhPE=; b=ilVo3g6YYkO50ZXaIB1f0xNad1
+        AR0bmIzUIzw6LdFMI5erbTHy91hEn0cP3ZvhXiS8OaZ2YuIXphuZdk6Am15JOc3Eo7M3iLokEygnd
+        i8cQuAVsceiO0+K3tA2+hZCteRIsyL4IkqXI9W4vopo6zA+8KxBrbVHGlwv+eTXi72S3QZoB6eLxa
+        ZNfM0BtXzI3lSAM1GT7gWLtx3xBBeHr05rXP/zywk8HQ7QuWC3ZttqBkxAqLSiqx3XiYbchhGg8lO
+        MlJTjZrNXIrGWxANvOceOlUCLblw8NUVPKskyCXfNYZQAILlRtBvQ0gh21vd0l8Ha4P1JYerGuDt4
+        ArlB/89Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55912)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mqZ1m-0002yu-7J; Fri, 26 Nov 2021 11:04:26 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mqZ1l-0003Da-Do; Fri, 26 Nov 2021 11:04:25 +0000
+Date:   Fri, 26 Nov 2021 11:04:25 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        UNGLinuxDriver@microchip.com, p.zabel@pengutronix.de,
+        andrew@lunn.ch, netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v4 3/6] net: lan966x: add port module support
+Message-ID: <YaC/OT0f2JKBPMOb@shell.armlinux.org.uk>
+References: <20211126090540.3550913-1-horatiu.vultur@microchip.com>
+ <20211126090540.3550913-4-horatiu.vultur@microchip.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v3 2/2] dt-bindings: pinctrl: add bindings for Milbeaut
- pin controller
-Content-Language: en-US
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        orito.takao@socionext.com,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>
-References: <1637834276-10466-1-git-send-email-sugaya.taichi@socionext.com>
- <1637834276-10466-3-git-send-email-sugaya.taichi@socionext.com>
- <CACRpkdbgMMKJwS0cUi3D2swHYbbBH6ofSeOhyXy6qiMFrU5a8Q@mail.gmail.com>
-From:   Sugaya Taichi <sugaya.taichi@socionext.com>
-In-Reply-To: <CACRpkdbgMMKJwS0cUi3D2swHYbbBH6ofSeOhyXy6qiMFrU5a8Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211126090540.3550913-4-horatiu.vultur@microchip.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/11/26 10:14, Linus Walleij wrote:
-> On Thu, Nov 25, 2021 at 10:58 AM Sugaya Taichi
-> <sugaya.taichi@socionext.com> wrote:
+On Fri, Nov 26, 2021 at 10:05:37AM +0100, Horatiu Vultur wrote:
+> This patch adds support for netdev and phylink in the switch. The
+> injection + extraction is register based. This will be replaced with DMA
+> accees.
 > 
->> Add Device Tree bindings documentation for pin controller of
->> the Milbeaut SoCs.
->>
->> Signed-off-by: Sugaya Taichi <sugaya.taichi@socionext.com>
-> 
-> What is weird about this binding is what is not there:
-> this is just GPIO, where are the pin mux and config
-> nodes? The driver surely tries to use them.
-> 
-> Please use the existing standard bindings for functions
-> and groups etc, check the other bindings.
-> 
-> Yours,
-> Linus Walleij
-> 
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 
-Thank you for comments.
+This looks mostly good now, thanks. There's one remaining issue:
 
-I realized this is just GPIO by your comment.
-OK I check them more.
+> +int lan966x_port_pcs_set(struct lan966x_port *port,
+> +			 struct lan966x_port_config *config)
+> +{
+> +	struct lan966x *lan966x = port->lan966x;
+> +	bool inband_aneg = false;
+> +	bool outband;
+> +	int err;
+> +
+> +	lan966x_port_link_down(port);
 
-Thanks,
-Taichi Sugaya
+This looks like something the MAC layer should be doing. Phylink won't
+change the interface mode by just calling the PCS - it will do this
+sequence, known as a major reconfiguration:
 
->> ---
->>   .../pinctrl/socionext,milbeaut-pinctrl.yaml        | 51 ++++++++++++++++++++++
->>   1 file changed, 51 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/pinctrl/socionext,milbeaut-pinctrl.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/pinctrl/socionext,milbeaut-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/socionext,milbeaut-pinctrl.yaml
->> new file mode 100644
->> index 0000000..78bc2d4
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/pinctrl/socionext,milbeaut-pinctrl.yaml
->> @@ -0,0 +1,51 @@
->> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/pinctrl/socionext,milbeaut-pinctrl.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Milbeaut SoCs pin controller
->> +
->> +maintainers:
->> +  - Taichi Sugaya <sugaya.taichi@socionext.com>
->> +
->> +description: |
->> +  Bindings for memory-mapped pin controller of the Milbeaut SoCs.
->> +
->> +properties:
->> +  $nodename:
->> +    pattern: "pinctrl"
->> +
->> +  compatible:
->> +    enum:
->> +      - socionext,milbeaut-m10v-pinctrl
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  reg-names:
->> +    const: "pinctrl"
->> +
->> +  gpio-controller: true
->> +
->> +  "#gpio-cells":
->> +    const: 2
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - reg-names
->> +  - gpio-controller
->> +  - "#gpio-cells"
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    pinctrl: pinctrl@1d022000 {
->> +        compatible = "socionext,milbeaut-m10v-pinctrl";
->> +        reg = <0x1d022000 0x1000>;
->> +        reg-names = "pinctrl";
->> +        gpio-controller;
->> +        #gpio-cells = <2>;
->> +    };
->> --
->> 2.7.4
->>
+mac_link_down() (if the link was previously up)
+mac_prepare()
+mac_config()
+if (pcs_config() > 0)
+  pcs_an_restart()
+mac_finish()
+
+pcs_config() will also be called thusly:
+
+if (pcs_config() > 0)
+  pcs_an_restart()
+
+to change the ethtool advertising mask which changes the inband advert
+or the Autoneg bit, which has an effect only on your DEV_PCS1G_ANEG_CFG()
+register, and this may be called with the link up or down.
+
+Also, pcs_config() is supposed to return 0 if the inband advert has not
+changed, or positive if it has (so pcs_an_restart() is called to cause
+in-band negotiation to be restarted.)
+
+Note also that pcs_an_restart() may  also be called when ethtool
+requests negotiation restart when we're operating in 802.3z modes.
+
+So, my question is - do you need to be so heavy weight with the call to
+lan966x_port_link_down() to take everything down when pcs_config() is
+called, and is it really in the right place through the sequence for
+a major reconfiguration?
+
+Thanks.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
