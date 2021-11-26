@@ -2,132 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645DE45EA2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:16:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6765D45EA31
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:18:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345567AbhKZJTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 04:19:45 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:38772 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238592AbhKZJRo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 04:17:44 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 113941FDFC;
-        Fri, 26 Nov 2021 09:14:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637918071; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FDUSoaVt0lTZVk0aMZeEyXLl/ppZReczcS4VhXv16hQ=;
-        b=GTb3EcYUvNfHi0uJQNUx3uerbmokj59xiqz7vZUikqhxlW6Qs9pRmSG3LzkP9nxPG6XeC/
-        bPbuTFIWC5BciyIAy2Z+e9CEwcG3eo65wXkhuuA3PUYY4BoHFJThPlFLU5UWZ48Behqp4D
-        WtSRyJqIZr9qdLgCpzExrVjLoPfXLw8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637918071;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FDUSoaVt0lTZVk0aMZeEyXLl/ppZReczcS4VhXv16hQ=;
-        b=4zvz7z45ub2sjQQIVAbDft9reNg2/tqZhHKo7MWyhooaPLZ8kod5xDGhefvX83NKwtSBTb
-        OBbli8va0kPF6KDQ==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 50205A3B81;
-        Fri, 26 Nov 2021 09:14:30 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 325F41E11F3; Fri, 26 Nov 2021 10:14:30 +0100 (CET)
-Date:   Fri, 26 Nov 2021 10:14:30 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Chengguang Xu <cgxu519@mykernel.net>
-Cc:     miklos@szeredi.hu, jack@suse.cz, amir73il@gmail.com,
-        linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chengguang Xu <charliecgxu@tencent.com>
-Subject: Re: [RFC PATCH V6 3/7] ovl: implement overlayfs' own ->write_inode
- operation
-Message-ID: <20211126091430.GC13004@quack2.suse.cz>
-References: <20211122030038.1938875-1-cgxu519@mykernel.net>
- <20211122030038.1938875-4-cgxu519@mykernel.net>
+        id S240180AbhKZJV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 04:21:27 -0500
+Received: from mga03.intel.com ([134.134.136.65]:21447 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231935AbhKZJTX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 04:19:23 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="235576428"
+X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
+   d="scan'208";a="235576428"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 01:15:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
+   d="scan'208";a="607790551"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 26 Nov 2021 01:15:22 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqXKD-0007t6-JZ; Fri, 26 Nov 2021 09:15:21 +0000
+Date:   Fri, 26 Nov 2021 17:14:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        davem@davemloft.net
+Cc:     kbuild-all@lists.01.org,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        thomas.petazzoni@bootlin.com, gregory.clement@bootlin.com,
+        Andrew Lunn <andrew@lunn.ch>,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Subject: Re: [PATCH net-next 4/4] net: mvneta: Add TC traffic shaping offload
+Message-ID: <202111261722.xQYnccxe-lkp@intel.com>
+References: <20211125154813.579169-5-maxime.chevallier@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211122030038.1938875-4-cgxu519@mykernel.net>
+In-Reply-To: <20211125154813.579169-5-maxime.chevallier@bootlin.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 22-11-21 11:00:34, Chengguang Xu wrote:
-> From: Chengguang Xu <charliecgxu@tencent.com>
-> 
-> Sync dirty data and meta of upper inode in overlayfs' ->write_inode()
-> and redirty overlayfs' inode.
-> 
-> Signed-off-by: Chengguang Xu <charliecgxu@tencent.com>
+Hi Maxime,
 
-Looks good. I'm still not 100% convinced keeping inodes dirty all the time
-will not fire back in excessive writeback activity (e.g. flush worker will
-traverse the list of all dirty inodes every 30 seconds and try to write
-them) but I guess we can start with this and if people complain, dirtiness
-handling can be improved. So feel free to add:
+Thank you for the patch! Yet something to improve:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+[auto build test ERROR on net-next/master]
 
-								Honza
+url:    https://github.com/0day-ci/linux/commits/Maxime-Chevallier/net-mvneta-mqprio-cleanups-and-shaping-support/20211125-235035
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git 305e95bb893cc50f7c59edf2b47d95effe73498a
+config: arm-defconfig (https://download.01.org/0day-ci/archive/20211126/202111261722.xQYnccxe-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/789fe6c5e8c95ee076c1476c860591c00fa06555
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Maxime-Chevallier/net-mvneta-mqprio-cleanups-and-shaping-support/20211125-235035
+        git checkout 789fe6c5e8c95ee076c1476c860591c00fa06555
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arm SHELL=/bin/bash
 
-> ---
->  fs/overlayfs/super.c | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
-> 
-> diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-> index 18a12088a37b..12acf0ec7395 100644
-> --- a/fs/overlayfs/super.c
-> +++ b/fs/overlayfs/super.c
-> @@ -15,6 +15,7 @@
->  #include <linux/seq_file.h>
->  #include <linux/posix_acl_xattr.h>
->  #include <linux/exportfs.h>
-> +#include <linux/writeback.h>
->  #include "overlayfs.h"
->  
->  MODULE_AUTHOR("Miklos Szeredi <miklos@szeredi.hu>");
-> @@ -406,12 +407,32 @@ static int ovl_remount(struct super_block *sb, int *flags, char *data)
->  	return ret;
->  }
->  
-> +static int ovl_write_inode(struct inode *inode,
-> +			   struct writeback_control *wbc)
-> +{
-> +	struct ovl_fs *ofs = inode->i_sb->s_fs_info;
-> +	struct inode *upper_inode = ovl_inode_upper(inode);
-> +	int ret = 0;
-> +
-> +	if (!upper_inode)
-> +		return 0;
-> +
-> +	if (!ovl_should_sync(ofs))
-> +		return 0;
-> +
-> +	ret = write_inode_now(upper_inode, wbc->sync_mode == WB_SYNC_ALL);
-> +	mark_inode_dirty(inode);
-> +
-> +	return ret;
-> +}
-> +
->  static const struct super_operations ovl_super_operations = {
->  	.alloc_inode	= ovl_alloc_inode,
->  	.free_inode	= ovl_free_inode,
->  	.destroy_inode	= ovl_destroy_inode,
->  	.drop_inode	= generic_delete_inode,
->  	.put_super	= ovl_put_super,
-> +	.write_inode	= ovl_write_inode,
->  	.sync_fs	= ovl_sync_fs,
->  	.statfs		= ovl_statfs,
->  	.show_options	= ovl_show_options,
-> -- 
-> 2.27.0
-> 
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   arm-linux-gnueabi-ld: drivers/net/ethernet/marvell/mvneta.o: in function `mvneta_setup_mqprio':
+>> mvneta.c:(.text+0x2a3c): undefined reference to `__aeabi_uldivmod'
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
