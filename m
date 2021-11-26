@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ADCE45E539
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 03:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD0545E5D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 04:00:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358413AbhKZCkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 21:40:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48050 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1358176AbhKZCiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 21:38:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C25A6120E;
-        Fri, 26 Nov 2021 02:33:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637894025;
-        bh=q8nOXiEsn2t8A6ekNr7cIY0OmtEJD6FLJWD55i/I3wA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=XgKiuWBZEidA8wpe7QpgwJv9mdQd2uiPLnPsyfaOgrC23iiGP4dEK/WRUNCyzZXdz
-         oSXszqgrgmAKceXaSeDUPuCTZFTzHZjwjv1swbJnemEL3kLNTb9VmixRDotc6Cc6TB
-         WKJZX/VkAm7OFenUNIRh0fliqYnqnkD/d/1btza+MtnVjA1gQWWatojg1vhSIFYy+/
-         4KTyPA0qZvrsWb/J0DPOyzcEv8rrRbkxkqBslFih8wMdINQrQpMv/vxFNlhXBwUL0x
-         nbIuOR2Xod5kBQ+9WW2qsSsKluYMeeXnP6ciLt6JHXOZs3zNmlHrT1zmqUErqjGchd
-         u/ARxBfDAgl8A==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, cluster-devel@redhat.com
-Subject: [PATCH AUTOSEL 5.10 01/28] gfs2: release iopen glock early in evict
-Date:   Thu, 25 Nov 2021 21:33:16 -0500
-Message-Id: <20211126023343.442045-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
+        id S1358994AbhKZCpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 21:45:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1358672AbhKZCnY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 21:43:24 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0ECDC06137B;
+        Thu, 25 Nov 2021 18:33:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=JLO8pQd3dWbfDB47JY6jJOriLrL+UkwgnSoi8Q/Wrxo=; b=cplvTOdpkBzO9776SQk31S3TKQ
+        yK+w0VqpS8oDw5a87MCcaH6HGR38PeRcVYgGa064xzNQJUjA73CdSn74+rWvbbvrNbyjDi1+zkafl
+        GA6DU6d5570UCOnNn0xed73VRD6P+78PssqjjLZf8A4shylcwPMTKWcIi8MZV+dAbZJ0IjnSHrqs5
+        1N2IE4o0Ayg00C6GrY2thGlG6dzzJwjxrdLGiE5mhnLk7XWaxR0MIwlrIoCgT9JQOoa2jPsIUilN8
+        4nlfI5UjYknHn4DiTgB/r3dJizRtnnLoQvJAhruGLNVpECaI/CcZ1puXvgK7GaMnynQIhPnqmCPYX
+        bPlO8H2w==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mqR36-0091PI-W5; Fri, 26 Nov 2021 02:33:17 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        linux-hyperv@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH] hv: utils: add PTP_1588_CLOCK to Kconfig to fix build
+Date:   Thu, 25 Nov 2021 18:33:16 -0800
+Message-Id: <20211126023316.25184-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+The hyperv utilities use PTP clock interfaces and should depend a
+a kconfig symbol such that they will be built as a loadable module or
+builtin so that linker errors do not happen.
 
-[ Upstream commit 49462e2be119d38c5eb5759d0d1b712df3a41239 ]
+Prevents these build errors:
 
-Before this patch, evict would clear the iopen glock's gl_object after
-releasing the inode glock.  In the meantime, another process could reuse
-the same block and thus glocks for a new inode.  It would lock the inode
-glock (exclusively), and then the iopen glock (shared).  The shared
-locking mode doesn't provide any ordering against the evict, so by the
-time the iopen glock is reused, evict may not have gotten to setting
-gl_object to NULL.
+ld: drivers/hv/hv_util.o: in function `hv_timesync_deinit':
+hv_util.c:(.text+0x37d): undefined reference to `ptp_clock_unregister'
+ld: drivers/hv/hv_util.o: in function `hv_timesync_init':
+hv_util.c:(.text+0x738): undefined reference to `ptp_clock_register'
 
-Fix that by releasing the iopen glock before the inode glock in
-gfs2_evict_inode.
-
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>gl_object
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 46a971913611a ("Staging: hv: move hyperv code out of staging directory")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: "K. Y. Srinivasan" <kys@microsoft.com>
+Cc: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: Stephen Hemminger <sthemmin@microsoft.com>
+Cc: Wei Liu <wei.liu@kernel.org>
+Cc: Dexuan Cui <decui@microsoft.com>
+Cc: linux-hyperv@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/gfs2/super.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/hv/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/gfs2/super.c b/fs/gfs2/super.c
-index 6a355e1347d7f..d2b7ecbd1b150 100644
---- a/fs/gfs2/super.c
-+++ b/fs/gfs2/super.c
-@@ -1438,13 +1438,6 @@ static void gfs2_evict_inode(struct inode *inode)
- 	gfs2_ordered_del_inode(ip);
- 	clear_inode(inode);
- 	gfs2_dir_hash_inval(ip);
--	if (ip->i_gl) {
--		glock_clear_object(ip->i_gl, ip);
--		wait_on_bit_io(&ip->i_flags, GIF_GLOP_PENDING, TASK_UNINTERRUPTIBLE);
--		gfs2_glock_add_to_lru(ip->i_gl);
--		gfs2_glock_put_eventually(ip->i_gl);
--		ip->i_gl = NULL;
--	}
- 	if (gfs2_holder_initialized(&ip->i_iopen_gh)) {
- 		struct gfs2_glock *gl = ip->i_iopen_gh.gh_gl;
+--- linux-next-20211125.orig/drivers/hv/Kconfig
++++ linux-next-20211125/drivers/hv/Kconfig
+@@ -19,6 +19,7 @@ config HYPERV_TIMER
+ config HYPERV_UTILS
+ 	tristate "Microsoft Hyper-V Utilities driver"
+ 	depends on HYPERV && CONNECTOR && NLS
++	depends on PTP_1588_CLOCK_OPTIONAL
+ 	help
+ 	  Select this option to enable the Hyper-V Utilities.
  
-@@ -1457,6 +1450,13 @@ static void gfs2_evict_inode(struct inode *inode)
- 		gfs2_holder_uninit(&ip->i_iopen_gh);
- 		gfs2_glock_put_eventually(gl);
- 	}
-+	if (ip->i_gl) {
-+		glock_clear_object(ip->i_gl, ip);
-+		wait_on_bit_io(&ip->i_flags, GIF_GLOP_PENDING, TASK_UNINTERRUPTIBLE);
-+		gfs2_glock_add_to_lru(ip->i_gl);
-+		gfs2_glock_put_eventually(ip->i_gl);
-+		ip->i_gl = NULL;
-+	}
- }
- 
- static struct inode *gfs2_alloc_inode(struct super_block *sb)
--- 
-2.33.0
-
