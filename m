@@ -2,151 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E6545F01E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:46:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0FE845F02E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377844AbhKZOuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 09:50:07 -0500
-Received: from goliath.siemens.de ([192.35.17.28]:38507 "EHLO
-        goliath.siemens.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345231AbhKZOsG (ORCPT
+        id S1377892AbhKZOzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 09:55:36 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:54534 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350728AbhKZOxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 09:48:06 -0500
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by goliath.siemens.de (8.15.2/8.15.2) with ESMTPS id 1AQEiT7E011393
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Nov 2021 15:44:29 +0100
-Received: from md1za8fc.ad001.siemens.net ([139.22.47.90])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 1AQEiRhZ027622;
-        Fri, 26 Nov 2021 15:44:28 +0100
-Date:   Fri, 26 Nov 2021 15:44:27 +0100
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
-Subject: Re: [PATCH v3 2/4] leds: simatic-ipc-leds: add new driver for
- Siemens Industial PCs
-Message-ID: <20211126154427.41bf024e@md1za8fc.ad001.siemens.net>
-In-Reply-To: <CAHp75VeX89T7t=Q7-q56sndbfRyuPDEUjSMsMFo4sS8cb9AAmw@mail.gmail.com>
-References: <20210329174928.18816-1-henning.schild@siemens.com>
-        <20210329174928.18816-3-henning.schild@siemens.com>
-        <CAHp75Vdh_YAJLE4DWPhxhYY1g5Fc_7EFgr4FED3crpfpzwXeRg@mail.gmail.com>
-        <20211126142827.78d2348d@md1za8fc.ad001.siemens.net>
-        <CAHp75VeX89T7t=Q7-q56sndbfRyuPDEUjSMsMFo4sS8cb9AAmw@mail.gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Fri, 26 Nov 2021 09:53:35 -0500
+X-Greylist: delayed 528 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Nov 2021 09:53:35 EST
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 710CB622A8
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 14:50:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 446D7C93056;
+        Fri, 26 Nov 2021 14:50:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637938221;
+        bh=GiaptIVWd8QNsuTNopHV7m08Achws66EMxuWiX5Oqr4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KIhTRDIUdHPRj+ZyZ9Zy7ATS7SKOJCyB6Q35AY0W9iAejXLR73QmVeUkcWTbx9VJw
+         N37YvVf3iwdDSHj+Y7a5uloZ7IbZgTiJba5Wv+dXLBhXSEusDcpWmt3B/fg9YjxKBQ
+         +KPiqDDLHt+KlMhqy5FLjQEbMhm5LKw5v6LAjyRAPbzvrfXQGBeano3RvciZWTgg+u
+         FLSj7TRUbEVLk/v3AkJQZJuxiKfP++wqvzcXQ++HxyISABQmsbHwgGGxBabid2+tJQ
+         rbj19ytBsGx23yhKsywgXQhxzfBuMEX72XxenWVdqxrAJ542QGblfby1Dq7gXZxM3P
+         Gm7Vp2ZBOtePw==
+From:   SeongJae Park <sj@kernel.org>
+To:     akpm@linux-foundation.org
+Cc:     oleksandr@natalenko.name, john.stultz@linaro.org,
+        tglx@linutronix.de, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, SeongJae Park <sj@kernel.org>
+Subject: [PATCH v3 0/2] mm/damon: Fix fake /proc/loadavg reports
+Date:   Fri, 26 Nov 2021 14:50:13 +0000
+Message-Id: <20211126145015.15862-1-sj@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Fri, 26 Nov 2021 16:02:48 +0200
-schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
+This patchset fixes DAMON's fake load report issue.  The first patch
+makes yet another variant of usleep_range() for this fix, and the second
+patch fixes the issue of DAMON by making it using the newly introduced
+function.
 
-> On Fri, Nov 26, 2021 at 3:28 PM Henning Schild
-> <henning.schild@siemens.com> wrote:
-> > Am Tue, 30 Mar 2021 14:04:35 +0300
-> > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:  
-> > > On Mon, Mar 29, 2021 at 8:59 PM Henning Schild
-> > > <henning.schild@siemens.com> wrote:  
-> 
-> ...
-> 
-> > > > +static struct simatic_ipc_led simatic_ipc_leds_mem[] = {
-> > > > +       {0x500 + 0x1A0, "red:" LED_FUNCTION_STATUS "-1"},
-> > > > +       {0x500 + 0x1A8, "green:" LED_FUNCTION_STATUS "-1"},
-> > > > +       {0x500 + 0x1C8, "red:" LED_FUNCTION_STATUS "-2"},
-> > > > +       {0x500 + 0x1D0, "green:" LED_FUNCTION_STATUS "-2"},
-> > > > +       {0x500 + 0x1E0, "red:" LED_FUNCTION_STATUS "-3"},
-> > > > +       {0x500 + 0x198, "green:" LED_FUNCTION_STATUS "-3"},
-> > > > +       { }
-> > > > +};  
-> > >
-> > > It seems to me like poking GPIO controller registers directly.
-> > > This is not good. The question still remains: Can we simply
-> > > register a GPIO (pin control) driver and use an LED GPIO driver
-> > > with an additional board file that instantiates it?  
-> >
-> > The short answer for v4 will be "No we can not!". The pinctrl
-> > drivers do not currently probe on any of the devices and attempts
-> > to fix that have failed or gut stuck. I tried to help out where i
-> > could and waited for a long time.  
-> 
-> I see, unfortunately I have stuck with some other (more important
-> tasks) and can't fulfil this, but I still consider it's no go for
-> driver poking pin control registers directly. Lemme see if I can
-> prioritize this for next week.
+I think these need to be applied on v5.15.y, but the second patch cannot
+cleanly applied there as is.  I will back-port this on v5.15.y and post
+later once this is merged in the mainline.  If you think this is not
+appropriate for stable tree, please let me know.
 
-I just sent v4. And am sick of waiting on you. Sorry to be that clear
-here. I want that order changed! If you still end up being fast,
-perfect. But i want to be faster!
+Changelog
+---------
 
-> > Now my take is to turn the order around. We go in like that and will
-> > happily switch to pinctrl if that ever comes up on the machines.
-> > Meaning P2SB series on top of this, no more delays please.  
-> 
-> I don't want to slip bad code into the kernel where we can avoid that.
+From v2
+(https://lore.kernel.org/linux-mm/20211125160830.30153-1-sj@kernel.org/)
+- Cc Oleksandr (Oleksandr Natalenko)
+- Add 'Suggested-by:' for Andrew Morton on the first patch
 
-It is not bad code! That is unfair to say. It can be improved on and
-that is what we have a FIXME line for. The worst code is code that is
-not there ... devices without drivers!
-That is bad, not i minor poke of parts of a resource no other driver
-claimed!
+From v1
+(https://lore.kernel.org/linux-mm/20211124145219.32866-1-sj@kernel.org/)
+- Avoid copy-and-pasting usleep_delay() in DAMON code (Andrew Morton)
 
-> > We do use request_region so have a mutex in place. Meaning we really
-> > only touch GPIO while pinctrl does not!  
-> 
-> I haven't got this. On Intel SoCs GPIO is a part of pin control
-> registers. You can't touch GPIO without touching pin control.
+SeongJae Park (2):
+  timers: Implement usleep_idle_range()
+  mm/damon/core: Fix fake load reports due to uninterruptible sleeps
 
-i meant pin control, if it ever did probe it would reserve the region
-and push our hack out, or the other way around ... no conflict!
-To get both we just need a simple patch and switch to pinctrl, just
-notify me once your stuff is ready and i will write that patch.
- 
-> > I see no issue here, waited for a long time and now expect to be
-> > allowed to get merged first.  
-> 
-> Okay, I have these questions / asks so far:
-> 1) Can firmware be fixed in order to provide an ACPI table for the pin
-> control devices?
+ include/linux/delay.h | 14 +++++++++++++-
+ kernel/time/timer.c   | 16 +++++++++-------
+ mm/damon/core.c       |  6 +++---
+ 3 files changed, 25 insertions(+), 11 deletions(-)
 
-No. The firmware will only receive security but no feature updates ...
+-- 
+2.17.1
 
-> 2) Can you share firmware (BIOS ROM file I suppose) that I may flash
-> on an Apollo Lake machine and see if I can reproduce the issue?
-
-I do not have access. But all you need is a firware with no ACPI entry
-and P2SB hidden. Or simply patch out the two probe paths ;). 
-
-> 3) As may be a last resort, can you share (remotely) or even send to
-> us the device in question to try?
-
-We are talking about multiple devices. Not just that one apollo lake on
-which your patches kind of worked.
-
-But showed some weirdness which could really become a problem if
-someone decided to add an ACPI entry ..
-
-It pin 42 name could be 
-GPIO_LOOKUP_IDX("apollolake-pinctrl.0", 42
-or
-GPIO_LOOKUP_IDX("INT3452:01", 42
-
-I guess that conflict will have to be dealt with before your can switch
-to probing pinctrl drivers based on cpu model and not only ACPI/P2SB any
-longer.
-
-regards,
-Henning
