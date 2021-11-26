@@ -2,87 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412C345F716
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 00:08:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9560945F719
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 00:09:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343657AbhKZXLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 18:11:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35742 "EHLO
+        id S245452AbhKZXML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 18:12:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231679AbhKZXJg (ORCPT
+        with ESMTP id S245470AbhKZXKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 18:09:36 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C95C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 15:06:23 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id r25so44363657edq.7
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 15:06:22 -0800 (PST)
+        Fri, 26 Nov 2021 18:10:08 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A8DC061759;
+        Fri, 26 Nov 2021 15:06:55 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id p18so9292295wmq.5;
+        Fri, 26 Nov 2021 15:06:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=googlemail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=+dZaITcZBt90z1oqsumsEwuslKh6nLTGZIBE5hBYKeg=;
-        b=EzV6k65lbx7QcXkxyIKCcXDzVI7ORoNHi+4xgPC08pVwHsCOFP/rIzoQ6BCYfAqLv7
-         s4Q5hpq+jhvBKYtldNczh8PeWDtJr7346xm8MMsVnB1sKMl4e97PQL+Z4EpDkCt62QIU
-         YbaspfNgfDqRERxNS6JzBF2hs4VRWkYyh50MypdHtk6G8gEuD0kqwoYrJlOZqZwM1BxG
-         oMOG1PsZkglohrcOcVpifju9osdmY2yM1jZcYaeRC358efOMgjWGyVKZXrUemQeadL3/
-         sZCjD7oO2uHhr0K2mB1VaGQq7eyvbFvoOAzVGff6TTV4UnOIgINFDWNUkHNaVoodfcMp
-         KTkg==
+        bh=fpiGdrzOUvOueMAGHR97ttYfgicr+sSs1c6mjDMywB8=;
+        b=CP9wTYpVOcuuFcOJia67RjPX3q4Ls6/fmDl8uxxlpBtt4KdLw06I9BzNB/vSrFbyw6
+         O+OIiUGuYSJcwBQ64pu7wLfmOXkAUCMsPZXJvoF4fDukL+Hs/WRqBPZZYoWvFVomLz8w
+         nRxp6yEIC2D1q5Kx+zSbQVQCjlOBvx6NVVCOcG4R1cU8HN9CJqG+t9ja/t8gKkE1mc1F
+         50TT/yQhMWL+hGE3CYraJTDdXecNZRYg436WN2IgMLXa88UrgnmGkNeHQJSFQ0Px4O7X
+         BnMlsggf7EdUKrmFlp4eBcJ/tcfKUHjALHjsqjBel98QFr3/waYugXDdeimPJ6geIPvv
+         BYfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=+dZaITcZBt90z1oqsumsEwuslKh6nLTGZIBE5hBYKeg=;
-        b=nm39Md9Ty/3uPUWY3vW+ao1UaTa3tvhytx1sElqtZKONeoocyXrIVIr4mix4mysB/g
-         B7afkssyccY9BX3yA3I0JK/jfWawLvCM2T85PBJ3IDJD89DWJO29qo9ULPddOUL98mmF
-         658egItJWKjqPLOgqPok7utJC5i9UcW6Cr8t7hrsTyKwmadqUSBueZ+lxnO5OZW5e2On
-         IihvRVx7gjzLFlA85h1x/WbNJF2rAzWx7tNrO/IViZcqNzCaIyWxtzyBAe0caAk213kf
-         /yg2Ub4IYevUGK+EntuS2UeIy1QLzOtLK5DiOK73bjNmpET03VQnYrvZf0JeT8Mu7p4B
-         jkCg==
-X-Gm-Message-State: AOAM530s1oTBuNbJ0PHyuq25zIRmnvfjiwXHcIicHgzm/3DJ0FPVOc+I
-        YbGIobAK7WcsBOG1TcAx4DMqyw==
-X-Google-Smtp-Source: ABdhPJz4vlmWEyXRQtVC4Lj1sj+KYn4XcVXuDojzatks16AzF0kHPL72CAQHiH8jbtLLC3JWHD5pVw==
-X-Received: by 2002:a17:906:730b:: with SMTP id di11mr42281246ejc.97.1637967981599;
-        Fri, 26 Nov 2021 15:06:21 -0800 (PST)
-Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id sd2sm4241198ejc.22.2021.11.26.15.06.20
+        bh=fpiGdrzOUvOueMAGHR97ttYfgicr+sSs1c6mjDMywB8=;
+        b=5nYyXV9gIHqUR5oLn/C9saB/d1vmC68j6xJSJhMa0lOUmeq6Cxal25Lg6n7KgW8ect
+         6A2x51iqc4fnUMOwBvVYpxcwhWjy5oAUpoqixnYX5lZOULI3iyK1FIRGxRt1GC4DmGYj
+         25xZKR0IA6Uq/R6w77wAcvHwEvMMWOjcU+LZ2R4b8QJ7fTtzRSRNPThVTzNpbgWihn19
+         OWtQ4eTF6owXIFkEc/B1qXyNc2vj8UEJTC3Xjwz71hPYU3ZGIbi3/61PvquIUiKFlUg2
+         v185faq101VWTl9s/j+pcSxn0FvgOh8IgfI/E/PrE0ews7+xsw0ffYfsUWuYEwTlma7W
+         gRGg==
+X-Gm-Message-State: AOAM532m3+Dgrj12Pji79ZbipsCOLqMlJmNmI15NZMnAoks/T2AgASkM
+        EvXpIo6VILPpnQs5hzTmDw==
+X-Google-Smtp-Source: ABdhPJxI8bFqnOhNhjUn+uieFffwFiGxfkKvLjMln4sA+q1Igj3acfmCK0mo27qEdNNLUIMWgYx21g==
+X-Received: by 2002:a7b:c763:: with SMTP id x3mr19186121wmk.31.1637968013914;
+        Fri, 26 Nov 2021 15:06:53 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id az4sm12279603wmb.20.2021.11.26.15.06.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 15:06:21 -0800 (PST)
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: [PATCH] dt-bindings: mfd: syscon: Add samsung,exynos850-sysreg
-Date:   Sat, 27 Nov 2021 01:06:20 +0200
-Message-Id: <20211126230620.478-1-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.30.2
+        Fri, 26 Nov 2021 15:06:53 -0800 (PST)
+From:   Colin Ian King <colin.i.king@googlemail.com>
+X-Google-Original-From: Colin Ian King <colin.i.king@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] block: Remove redundant initialization of variable ret
+Date:   Fri, 26 Nov 2021 23:06:52 +0000
+Message-Id: <20211126230652.1175636-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document Samsung Exynos850 compatible for system registers.
+The variable ret is being initialized with a value that is never
+read, it is being updated later on. The assignment is redundant and
+can be removed.
 
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 ---
- Documentation/devicetree/bindings/mfd/syscon.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ block/bdev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
-index 5de16388a089..fdd96e378df0 100644
---- a/Documentation/devicetree/bindings/mfd/syscon.yaml
-+++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
-@@ -57,6 +57,7 @@ properties:
-               - samsung,exynos4-sysreg
-               - samsung,exynos5-sysreg
-               - samsung,exynos5433-sysreg
-+              - samsung,exynos850-sysreg
-               - samsung,exynosautov9-sysreg
+diff --git a/block/bdev.c b/block/bdev.c
+index 886a08a045a6..26eefa5de6ca 100644
+--- a/block/bdev.c
++++ b/block/bdev.c
+@@ -665,7 +665,7 @@ static void blkdev_flush_mapping(struct block_device *bdev)
+ static int blkdev_get_whole(struct block_device *bdev, fmode_t mode)
+ {
+ 	struct gendisk *disk = bdev->bd_disk;
+-	int ret = 0;
++	int ret;
  
-           - const: syscon
+ 	if (disk->fops->open) {
+ 		ret = disk->fops->open(bdev, mode);
 -- 
-2.30.2
+2.33.1
 
