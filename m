@@ -2,220 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BDE1460E24
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 05:53:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA79460F1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Nov 2021 07:59:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237083AbhK2E4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 23:56:51 -0500
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:44872 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231447AbhK2Eyu (ORCPT
+        id S234702AbhK2HCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Nov 2021 02:02:31 -0500
+Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17217 "EHLO
+        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234755AbhK2HAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 23:54:50 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1AT4pGCD029147;
-        Sun, 28 Nov 2021 22:51:16 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1638161476;
-        bh=jKols7nBDFKxYfjcKeEhtTKbFkUv99+4f3BWJlVrEiQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=QDkCQOJRGQUzdYLrhx1aXUolvA0n0lduN0cCx+x4A6hj3j/jJa0KPuxRbR66fNBju
-         pZqOLzbGZMDVbPZ0hkI/Gr6gDB0cG5tIXXa+duMZ0/ac4qvdNRO1IGegpa9p0u5M3+
-         36BskJkU1NyQ9DHl7wRuBNdvoXdFxXlYermaj3fQ=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1AT4pGgK122427
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 28 Nov 2021 22:51:16 -0600
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Sun, 28
- Nov 2021 22:51:15 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Sun, 28 Nov 2021 22:51:15 -0600
-Received: from [10.250.232.185] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1AT4pCGm113967;
-        Sun, 28 Nov 2021 22:51:12 -0600
-Subject: Re: [PATCH RFC v3 4/4] phy: phy-can-transceiver: Add support for
- setting mux
-To:     Peter Rosin <peda@axentia.se>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-can@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>
-References: <20211123081222.27979-1-a-govindraju@ti.com>
- <20211123081222.27979-5-a-govindraju@ti.com>
- <a1d9d0c6-e0df-2e06-d8e8-8770a9eb4b4a@axentia.se>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <cdba9694-8878-5e5f-c16c-db9366bfe2b9@ti.com>
-Date:   Mon, 29 Nov 2021 10:21:11 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 29 Nov 2021 02:00:30 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1637903008; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=kTT6Em4JDS6/n2VGliGLaE9S+PknFWxGAUiJO4w9UcrhWM6NIlMzAx+PtzMv9HHDSNv2cP27qumLZNCOYVAznwtp8lXf6M/LqY/Gq/p/xzSUwgrV46aHdZiKMf+5JRO3Rs62wyy89VzmskC+loYa07G1bKLiqEwExGzYIzOszds=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1637903008; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
+        bh=e1fy8d/F7bO0bxbGs9DFbseWsVknlDYWORiYHfsGIf8=; 
+        b=D+d85SWg0ltZ94GnKtm7vV4/uUrRM6weqrb89FGTFtj4m89M2NfrXFUGJ9ojdiV/cZ7+gXsL/DBAa5KTV0Lqxv9KvyfNtzn2BrUtCvKpdzg8Gea5yYl3qHhHkcIcA/HcrdwmahOTG4+DUxHVrliJfPOrrOC6vMZtZRPBfJibA2Q=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1637903008;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=e1fy8d/F7bO0bxbGs9DFbseWsVknlDYWORiYHfsGIf8=;
+        b=Nl3r5ejY1FHl1ts5hqefnDJ9sJvZpsLJORZ3A4KioqoF7ibhdDL7ysWhdndMlvgk
+        bhsk/ZFNRmLwXCekMD84/SnA7kYzSfipuQe6dfXL/7ye+fUekX6MpcNkMD/JsBtfPKT
+        eXfIDlXUdRRy6lvszTi851IoRCvWRkSeoVID5kQk=
+Received: from mail.baihui.com by mx.zoho.com.cn
+        with SMTP id 163790300607680.6143952720198; Fri, 26 Nov 2021 13:03:26 +0800 (CST)
+Date:   Fri, 26 Nov 2021 13:03:26 +0800
+From:   Chengguang Xu <cgxu519@mykernel.net>
+Reply-To: cgxu519@mykernel.net
+To:     "Amir Goldstein" <amir73il@gmail.com>
+Cc:     "Miklos Szeredi" <miklos@szeredi.hu>, "Jan Kara" <jack@suse.cz>,
+        "overlayfs" <linux-unionfs@vger.kernel.org>,
+        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "Chengguang Xu" <charliecgxu@tencent.com>
+Message-ID: <17d5aa0795d.fdfda4a49855.5158536783597235118@mykernel.net>
+In-Reply-To: <CAOQ4uxhrg=MAL7sArmP47oyF_QmhG-1b=srs30VNdiT-9s-P0w@mail.gmail.com>
+References: <20211122030038.1938875-1-cgxu519@mykernel.net> <20211122030038.1938875-8-cgxu519@mykernel.net> <CAOQ4uxhrg=MAL7sArmP47oyF_QmhG-1b=srs30VNdiT-9s-P0w@mail.gmail.com>
+Subject: Re: [RFC PATCH V6 7/7] ovl: implement containerized syncfs for
+ overlayfs
 MIME-Version: 1.0
-In-Reply-To: <a1d9d0c6-e0df-2e06-d8e8-8770a9eb4b4a@axentia.se>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Importance: Medium
+User-Agent: ZohoCN Mail
+X-Mailer: ZohoCN Mail
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
-
-On 25/11/21 7:37 pm, Peter Rosin wrote:
-> Hi!
-> 
-> On 2021-11-23 09:12, Aswath Govindraju wrote:
->> On some boards, for routing CAN signals from controller to transceiver,
->> muxes might need to be set. Therefore, add support for setting the mux by
->> reading the mux-controls property from the device tree node.
->>
->> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
->> ---
->>  drivers/phy/Kconfig               |  1 +
->>  drivers/phy/phy-can-transceiver.c | 22 ++++++++++++++++++++++
->>  2 files changed, 23 insertions(+)
->>
->> diff --git a/drivers/phy/Kconfig b/drivers/phy/Kconfig
->> index 82b63e60c5a2..300b0f2b5f84 100644
->> --- a/drivers/phy/Kconfig
->> +++ b/drivers/phy/Kconfig
->> @@ -64,6 +64,7 @@ config USB_LGM_PHY
->>  config PHY_CAN_TRANSCEIVER
->>  	tristate "CAN transceiver PHY"
->>  	select GENERIC_PHY
->> +	select MULTIPLEXER
->>  	help
->>  	  This option enables support for CAN transceivers as a PHY. This
->>  	  driver provides function for putting the transceivers in various
->> diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
->> index 6f3fe37dee0e..6c94e3846410 100644
->> --- a/drivers/phy/phy-can-transceiver.c
->> +++ b/drivers/phy/phy-can-transceiver.c
->> @@ -10,6 +10,7 @@
->>  #include<linux/module.h>
->>  #include<linux/gpio.h>
->>  #include<linux/gpio/consumer.h>
->> +#include <linux/mux/consumer.h>
->>  
->>  struct can_transceiver_data {
->>  	u32 flags;
->> @@ -21,13 +22,22 @@ struct can_transceiver_phy {
->>  	struct phy *generic_phy;
->>  	struct gpio_desc *standby_gpio;
->>  	struct gpio_desc *enable_gpio;
->> +	struct mux_state *mux_state;
->>  };
->>  
->>  /* Power on function */
->>  static int can_transceiver_phy_power_on(struct phy *phy)
->>  {
->> +	int ret;
->>  	struct can_transceiver_phy *can_transceiver_phy = phy_get_drvdata(phy);
->>  
->> +	if (can_transceiver_phy->mux_state) {
->> +		ret = mux_state_select(can_transceiver_phy->mux_state);
->> +		if (ret) {
->> +			dev_err(&phy->dev, "Failed to select CAN mux: %d\n", ret);
->> +			return ret;
->> +		}
->> +	}
->>  	if (can_transceiver_phy->standby_gpio)
->>  		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 0);
->>  	if (can_transceiver_phy->enable_gpio)
->> @@ -45,6 +55,8 @@ static int can_transceiver_phy_power_off(struct phy *phy)
->>  		gpiod_set_value_cansleep(can_transceiver_phy->standby_gpio, 1);
->>  	if (can_transceiver_phy->enable_gpio)
->>  		gpiod_set_value_cansleep(can_transceiver_phy->enable_gpio, 0);
->> +	if (can_transceiver_phy->mux_state)
->> +		mux_state_deselect(can_transceiver_phy->mux_state);
-> 
-> Careful, it is not obvious that you are following the documentation you
-> added in patch 3/4
-> 
-> + * Therefore, make sure to call mux_state_deselect() when the operation is
-> + * complete and the mux-control is free for others to use, but do not call
-> + * mux_state_deselect() if mux_state_select() fails.
-> 
-> Or, are you absolutely certain that can_transceiver_phy_power_off cannot,
-> in any curcumstance, be called without a successful previous call to can_transceiver_phy_power_on? Or that can_transceiver_phy_power_on will
-> never ever be called again without a can_transceiver_phy_power_off in
-> between the two on calls?
-> 
-> If there is any doubt, you need to remember if you have selected/deselected
-> the mux. Maybe this should be remebered inside struct mux_state so that it
-> is always safe to call mux_state_select/mux_state_deselect? That's one way
-> to solve this difficulty.
-> 
-> But then again, the phy layer might ensure that extra precaution is not
-> needed. But it might also be that it for sure is intended that this is solved
-> in the phy layer, but that callbacks (or whatever) has been added "after the
-> fact" and that an extra "on" or "off" has just been just shrugged at.
-> 
-
-Thank you for pointing this out. I did forget to think about this case.
-However, as you mentioned the phy layer does indeed only call the
-can_transceiver_phy_power_off only if can_transceiver_phy_power_on was
-called earlier and this is being done using power_count,
-
-int phy_power_off(struct phy *phy)
-{
-        int ret;
-
-        if (!phy)
-                return 0;
-
-        mutex_lock(&phy->mutex);
-        if (phy->power_count == 1 && phy->ops->power_off) {
-                ret =  phy->ops->power_off(phy);
-                if (ret < 0) {
-                        dev_err(&phy->dev, "phy poweroff failed -->
-%d\n", ret);
-                        mutex_unlock(&phy->mutex);
-                        return ret;
-                }
-        }
-        --phy->power_count;
-        mutex_unlock(&phy->mutex);
-        phy_pm_runtime_put(phy);
-
-        if (phy->pwr)
-                regulator_disable(phy->pwr);
-
-        return 0;
-}
+ ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=80, 2021-11-22 15:40:59 Amir Golds=
+tein <amir73il@gmail.com> =E6=92=B0=E5=86=99 ----
+ > On Mon, Nov 22, 2021 at 5:01 AM Chengguang Xu <cgxu519@mykernel.net> wro=
+te:
+ > >
+ > > From: Chengguang Xu <charliecgxu@tencent.com>
+ > >
+ > > Now overlayfs can only sync own dirty inodes during syncfs,
+ > > so remove unnecessary sync_filesystem() on upper file system.
+ > >
+ > > Signed-off-by: Chengguang Xu <charliecgxu@tencent.com>
+ > > ---
+ > >  fs/overlayfs/super.c | 14 +++++---------
+ > >  1 file changed, 5 insertions(+), 9 deletions(-)
+ > >
+ > > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+ > > index ccffcd96491d..213b795a6a86 100644
+ > > --- a/fs/overlayfs/super.c
+ > > +++ b/fs/overlayfs/super.c
+ > > @@ -292,18 +292,14 @@ static int ovl_sync_fs(struct super_block *sb, i=
+nt wait)
+ > >         /*
+ > >          * Not called for sync(2) call or an emergency sync (SB_I_SKIP=
+_SYNC).
+ > >          * All the super blocks will be iterated, including upper_sb.
+ > > -        *
+ > > -        * If this is a syncfs(2) call, then we do need to call
+ > > -        * sync_filesystem() on upper_sb, but enough if we do it when =
+being
+ > > -        * called with wait =3D=3D 1.
+ > >          */
+ > > -       if (!wait)
+ > > -               return 0;
+ > > -
+ > >         upper_sb =3D ovl_upper_mnt(ofs)->mnt_sb;
+ > > -
+ > >         down_read(&upper_sb->s_umount);
+ > > -       ret =3D sync_filesystem(upper_sb);
+ > > +       if (wait)
+ > > +               wait_sb_inodes(upper_sb);
+ > > +       if (upper_sb->s_op->sync_fs)
+ > > +               upper_sb->s_op->sync_fs(upper_sb, wait);
+ > > +       ret =3D ovl_sync_upper_blockdev(upper_sb, wait);
+ >=20
+ > I think it will be cleaner to use a helper ovl_sync_upper_filesystem()
+ > with everything from  upper_sb =3D ... and a comment to explain that
+ > this is a variant of __sync_filesystem() where all the dirty inodes writ=
+e
+ > have already been started.
+ >=20
+=20
+I agree with you.=20
 
 Thanks,
-Aswath
-
-> Cheers,
-> Peter
-> 
->>  
->>  	return 0;
->>  }
->> @@ -95,6 +107,16 @@ static int can_transceiver_phy_probe(struct platform_device *pdev)
->>  	match = of_match_node(can_transceiver_phy_ids, pdev->dev.of_node);
->>  	drvdata = match->data;
->>  
->> +	if (of_property_read_bool(dev->of_node, "mux-controls")) {
->> +		struct mux_state *mux_state;
->> +
->> +		mux_state = devm_mux_state_get(dev, NULL);
->> +		if (IS_ERR(mux_state))
->> +			return dev_err_probe(&pdev->dev, PTR_ERR(mux_state),
->> +					     "failed to get mux\n");
->> +		can_transceiver_phy->mux_state = mux_state;
->> +	}
->> +
->>  	phy = devm_phy_create(dev, dev->of_node,
->>  			      &can_transceiver_phy_ops);
->>  	if (IS_ERR(phy)) {
->>
-
+Chengguang
