@@ -2,97 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A1A45EB60
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 689B045EB64
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:25:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353256AbhKZK2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 05:28:22 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:48138 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347899AbhKZK0R (ORCPT
+        id S1377150AbhKZK23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:28:29 -0500
+Received: from forward500p.mail.yandex.net ([77.88.28.110]:39234 "EHLO
+        forward500p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1376791AbhKZK0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 05:26:17 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id 3C2961F46711
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
-        t=1637922183; bh=tC0SyAbEYha2W5DuJX/94Auu6fwRk+YS3BdMTsOqCdQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=UxZ/ODblNQq6rPMmMzGLyqXXC0AE0V/nQ+htGUUpwUEQH0D779nSlUlFsHQNi307j
-         juPEvS65RPTmfd/UjwP/UH8YE8coYc2sIJxyqdvF8pIjNOCHzKrkxn0jCmZ0WAFP+e
-         e7UwH6W89PnouveUvnuxq1Tf/qdVrWOmAuxVbR/j3nroA1nkkERAE8fvQZKoxygEVk
-         SVhFI2B9T2F4rGPmrgf7dj7j0bcplou6T7frX3lZjBvzriKau62r6WhbtLoFVct5vZ
-         Wb9bNsUUWpigBdW2bqk6rMKPiCthm6xxEUH4rrYvi6SrfNChFgKfA4B3FpGsdSmgee
-         VO72zcFnUhEEQ==
-Subject: Re: [PATCH v6 5/7] drm/mediatek: dpi: Add dpintf support
-To:     Guillaume Ranquet <granquet@baylibre.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Markus Schneider-Pargmann <msp@baylibre.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211110130623.20553-1-granquet@baylibre.com>
- <20211110130623.20553-6-granquet@baylibre.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Message-ID: <d7e5e360-0a0e-344e-0c96-8209403aad88@collabora.com>
-Date:   Fri, 26 Nov 2021 11:23:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 26 Nov 2021 05:26:25 -0500
+X-Greylist: delayed 4414 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Nov 2021 05:26:24 EST
+Received: from myt6-0c96ceb81798.qloud-c.yandex.net (myt6-0c96ceb81798.qloud-c.yandex.net [IPv6:2a02:6b8:c12:2ca1:0:640:c96:ceb8])
+        by forward500p.mail.yandex.net (Yandex) with ESMTP id D83EDF01DAE;
+        Fri, 26 Nov 2021 13:23:10 +0300 (MSK)
+Received: from myt5-ca5ec8faf378.qloud-c.yandex.net (myt5-ca5ec8faf378.qloud-c.yandex.net [2a02:6b8:c12:2514:0:640:ca5e:c8fa])
+        by myt6-0c96ceb81798.qloud-c.yandex.net (mxback/Yandex) with ESMTP id cMbiGnzSOD-NAC4mgdG;
+        Fri, 26 Nov 2021 13:23:10 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1637922190;
+        bh=C8h7n/snmrr7VMsjaotT+OXGgDBbrOtd9iXOJRm2QR8=;
+        h=In-Reply-To:Subject:To:From:References:Date:Message-ID:Cc;
+        b=RIEak6uJM8ICqsffw3HIWdQ5sJMkOyM4wvX+XvqrvtakgvT51k7ELMJqQ08oQ2hHB
+         Q08zfOOJZ13b6mIKIU17MhygAaR4zGRzs8vAnf67qZij+Dtiv4xcHWY62bsmDGlojS
+         51X5WjyCSP4TwM0T7Jq66pqzcH1yV0/Zrji4NK0w=
+Authentication-Results: myt6-0c96ceb81798.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
+Received: by myt5-ca5ec8faf378.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id pmKXsvOiW4-N9wq2Gcw;
+        Fri, 26 Nov 2021 13:23:09 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+X-Yandex-Fwd: 2
+Date:   Fri, 26 Nov 2021 13:23:08 +0300
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc:     David Abdurachmanov <david.abdurachmanov@sifive.com>,
+        Support Opensource <Support.Opensource@diasemi.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] rtc: da9063: add as wakeup source
+Message-ID: <20211126132308.7b265f17@redslave.neermore.group>
+In-Reply-To: <DB9PR10MB465287595152C33A43FDBCDA80639@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+References: <20211123140604.21655-1-nikita.shubin@maquefel.me>
+        <DB9PR10MB465224854946DABA0F75515980609@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+        <20211126120935.188e672a@redslave.neermore.group>
+        <DB9PR10MB465287595152C33A43FDBCDA80639@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20211110130623.20553-6-granquet@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 10/11/21 14:06, Guillaume Ranquet ha scritto:
-> From: Markus Schneider-Pargmann <msp@baylibre.com>
+Hello Adam!
+
+On Fri, 26 Nov 2021 09:50:18 +0000
+Adam Thomson <Adam.Thomson.Opensource@diasemi.com> wrote:
+
+> On 26 November 2021 09:10, Nikita Shubin wrote:
 > 
-> dpintf is the displayport interface hardware unit. This unit is similar
-> to dpi and can reuse most of the code.
+> > > Can you please make the commit message more detailed, explaining
+> > > why you're making this change; what it adds/fixes/removes/etc.?
+> > > Right now just reading this I'm unclear as to why you're adding a
+> > > call to device_init_wakeup() here. The generic I2C client code
+> > > will mark the parent MFD device as a wake source, if the relevant
+> > > boolean 'wakeup' is defined in DT, so what does this add?  
+> > 
+> > Sorry for long response had to double check setting wakeup-source in
+> > case i have missed something.
+> > 
+> > I2C_CLIENT_WAKE is set in of_i2c_get_board_info - the place da9063
+> > rtc would never get to.
+> > 
+> > Setting "wakeup-source" for pmic indeed marks it as wakeup source,
+> > but that's not exactly we want.
+> > 
+> > What we want is "wakealarm" in RTC sysfs directory, to be able to
+> > set alarm so we can wake up from SHUTDOWN/DELIVERY/RTC mode of
+> > da9063.
+> > 
+> > We do have /sys/class/rtc/rtc0/wakealarm if marking da9063-rtc as
+> > device_init_wakeup.
+> > 
+> > Unfortunately marking pmic or rtc as wakeup-source in device tree
+> > gives us nothing.
+> > 
+> > ls /proc/device-tree/soc/i2c\@10030000/pmic\@58/
+> > compatible            interrupt-parent  name  regulators
+> > wakeup-source interrupt-controller  interrupts        reg   rtc
+> >     wdt
+> > 
+> > ls /proc/device-tree/soc/i2c\@10030000/pmic\@58/rtc/
+> > compatible  name  wakeup-source
+> > 
+> > ls /sys/class/rtc/rtc0/wakealarm
+> > ls: cannot access '/sys/class/rtc/rtc0/wakealarm': No such file or
+> > directory
+> > 
+> > So i currently see that either da9063 RTC should be marked as wakeup
+> > source, or the da9063 MFD should somehow set that for RTC.
+> > 
+> > And we want this even if CONFIG_PM is off.
+> > 
+> > Mentioning "/sys/class/rtc/rtc0/wakealarm" in commit message would
+> > be enough ?  
 > 
-> This patch adds support for mt8195-dpintf to this dpi driver. Main
-> differences are:
->   - Some features/functional components are not available for dpintf
->     which are now excluded from code execution once is_dpintf is set
->   - dpintf can and needs to choose between different clockdividers based
->     on the clockspeed. This is done by choosing a different clock parent.
->   - There are two additional clocks that need to be managed. These are
->     only set for dpintf and will be set to NULL if not supplied. The
->     clk_* calls handle these as normal clocks then.
->   - Some register contents differ slightly between the two components. To
->     work around this I added register bits/masks with a DPINTF_ prefix
->     and use them where different.
+> Thanks for the detailed response; it helped a lot. Having reviewed
+> the core code along with your description I know understand what's
+> happening here. Basically marking as 'wakeup-source' is simply a
+> means to expose the sysfs attribute to user-space.
 > 
-> Based on a separate driver for dpintf created by
-> Jason-JH.Lin <jason-jh.lin@mediatek.com>.
+> Yes I think in the commit message you should be clear that there's a
+> need to access the sys attribute 'wakealarm' in the RTC core and
+> clarify exactly why there is that need. Your commit log should be
+> good enough so that if anyone else needs to look at this later they
+> completely understand the intention behind the change.
 > 
-> Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-> Signed-off-by: Guillaume Ranquet <granquet@baylibre.com>
+> By the way, I assume the functionality you're looking for could also
+> have been achieved through using the /dev/rtcX instance for DA9063?
 
+Thank you for pointing this out, indeed i missed that obvious thing.
 
-Hello Guillaume, Markus
+We can also simply set alarm via rtcwake, even if CONFIG_PM is off:
 
+rtcwake -m no -s 60
 
-
-Strictly speaking about functionality, the entire series is totally fine,
-
-however, I cannot give you a R-b on patches 6 and 7, since this code should
-
-*really* make use of phy_get(), like suggested by Vinod.
-
-
-
-In any case, for this patch:
-
-
-
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-
+Now i am not sure we should make changes to da9063-rtc driver - what do
+you think ?
