@@ -2,102 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33E945ECC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:36:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BEF645ECC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347495AbhKZLje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 06:39:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53490 "EHLO
+        id S1345318AbhKZLmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 06:42:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238200AbhKZLha (ORCPT
+        with ESMTP id S232467AbhKZLkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 06:37:30 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D494C06137C
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:59:42 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id b12so17789133wrh.4
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:59:42 -0800 (PST)
+        Fri, 26 Nov 2021 06:40:42 -0500
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D059C07E5C4
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 03:01:40 -0800 (PST)
+Received: by mail-ua1-x930.google.com with SMTP id y5so17771885ual.7
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 03:01:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Du2PtzgOfw4HRDmhLDCGMhaCR4NTsNe8hn+DYVThXx0=;
-        b=LYuq/DfCvRVOaIrRpdnEo1jS/BzEp0YOkzQdU6dZsN18J0Wn2qWon/paTLAsdCNQUl
-         TXswERVe22YD/XMTLB9TXIG+VaDLAPkEZxPLCNV8vJew0PFgTj3TZ/VCaTX+QORE0deK
-         p1TSf76RZ6n5LxuUW8FVrdSufkoLW7gKsUqDRkurSZ14MydR6qzr0skid3AdtnS6kxfo
-         l14xzQ9lsndqg+9DJPl5GbNSxVlbnlEE3W/gCYfKRKj8fZH+HUByhXT2TMAFfVC/3aMi
-         am43j5tSckDw1DtoNfnJP5EN9Y6nvnx771gMp6vO8wmIcOG/hSNuWycqjMRvDhPV6Zs7
-         fNEQ==
+        d=vanguardiasur-com-ar.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VfCtaX4nYDdpJw7ayQvcL4LVofxZOCQFKwISJsQg6bs=;
+        b=st1LsY3L1javWhtNrW1s+bzHDmqdKGtHJgpAXf7gEYNBtxodIgNXvEEuaQsJrUadVN
+         HqgSORuLHm4AHe+/7G5BZXMXl2FM8NemGXiav0qL799Ed0xbPcMYxLV/+dBkNEeKpbDp
+         z/Oy7DayhfYWWamCaAo3qM04ZByVPpEWPVGMnBHwkJmqoY2a+ajvqRiM8Wz6Mg2fgwmU
+         qiKvUrNXshZgrzzmDYApeotkdMdTF9NZCwMdrPjHbZ8UVY9jfbt9bIli51OrwfwMMx6G
+         1X/TnjXyRGnxRkknK2uS09DXjzugR01Y2DG/C68H5pkVIoZJjTGo9URxhiCuy9uSf0/4
+         sc/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=Du2PtzgOfw4HRDmhLDCGMhaCR4NTsNe8hn+DYVThXx0=;
-        b=4h00X33kuhK/5UNpgGG7NLL/ssBy0midzQk0SeLDnYHk4X6JjEvmGArxumSyUPodns
-         xaTCE6lxLF19Z2+6pFqmkzihDbEQKgTaLPnNTwPum+Ydic3X0APu10HdF2OixYUGzq/+
-         0YnsvzOO91SOPScyk+Sc9tv1bIYctC/LsqVoXXuDuGoD5es5YuvFamtFmYx9y9lC25py
-         JKpb3EkEr3ks3nGRxn04geYmAePRcfnsVJ5bcctt6Jua4XHElzmnhMGtjumJ8tA3Se/F
-         5TyekuuOfbaftbwkKlzGI0yqhyYU0HNx6TuBZIFuuuGrGjqqQ+H5Qv/en+bKoSmBjHmW
-         8ILQ==
-X-Gm-Message-State: AOAM531UH3QXZQMGvrSpAfHJBgEs52wCaPzkmeNSKnmNvbqemBJD4ppO
-        7zt/Q+LA3EsLMo7IdZNSoLs0zPqoPeHYMhnf3JY=
-X-Google-Smtp-Source: ABdhPJz1oSeeYSMVOR731wMHN+9PMRTNSgJ3YN30BQsgoR4QPApdoRjxeiDkMpXboAsN6QaXSEyH+9L0GVztSaCyYlg=
-X-Received: by 2002:adf:f60e:: with SMTP id t14mr13961955wrp.112.1637924380677;
- Fri, 26 Nov 2021 02:59:40 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VfCtaX4nYDdpJw7ayQvcL4LVofxZOCQFKwISJsQg6bs=;
+        b=dXYf9wNmh7jJrmVz2SX9/NJ5aHWD6bYOw9hA1DcltBYfNxZGXrHEHe9NcqhTwbNmIa
+         UioDeKcar4jnQKxSvf6Df4dCbZx1aHS3eYb7B11EYd7j7W0h6f/uT75iKY5fMXvuUo31
+         dxH75ruafERdooGa7jHap9o6pv3Cz/qCQ7pLHkofD/mKnZc5AmacQthq4T1/ILIMPlb1
+         VaHXxKIFpVEXpPTbAJNWnKarob7nR7U7YBnDi2wT7ghNg6NJRJIxWw2fv7xc8GTu+v3u
+         cmBNhteiT8RN2INbA6oEKYrOrRLsIBDpFo70824Tavsk8YIkPMRA1QNbpmst7g7L2itA
+         isYg==
+X-Gm-Message-State: AOAM530tsHToqC9CnlDnVY78F/X88EHU48YIDfBk3yxxgLMxoXOqOg06
+        5tMJQpHgUw/G4YS3e82yBJdhKg==
+X-Google-Smtp-Source: ABdhPJy4vNwDp7VWQDYoJrfz1AV/MW3mIe7R1va7IunkR7hg03NRJHn3eTZH3Ptcyx884GW2gGe5pQ==
+X-Received: by 2002:a67:f64c:: with SMTP id u12mr15740354vso.69.1637924499584;
+        Fri, 26 Nov 2021 03:01:39 -0800 (PST)
+Received: from eze-laptop ([2803:9800:98c2:8470:9f4:8e2a:88e5:ec01])
+        by smtp.gmail.com with ESMTPSA id i1sm3093486vkn.55.2021.11.26.03.01.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 03:01:38 -0800 (PST)
+Date:   Fri, 26 Nov 2021 08:01:34 -0300
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     mchehab@kernel.org, p.zabel@pengutronix.de,
+        gregkh@linuxfoundation.org, hverkuil-cisco@xs4all.nl,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev, kernel@collabora.com
+Subject: Re: [PATCH v3 3/4] media: hantro: Use syscon instead of 'ctrl'
+ register
+Message-ID: <YaC+jkYwouR9Aa0s@eze-laptop>
+References: <20211125155650.630977-1-benjamin.gaignard@collabora.com>
+ <20211125155650.630977-4-benjamin.gaignard@collabora.com>
 MIME-Version: 1.0
-Sender: 1joypeters@gmail.com
-Received: by 2002:adf:f60f:0:0:0:0:0 with HTTP; Fri, 26 Nov 2021 02:59:40
- -0800 (PST)
-From:   DINA MCKENNA <dinamckennahowley@gmail.com>
-Date:   Fri, 26 Nov 2021 10:59:40 +0000
-X-Google-Sender-Auth: jvRGMGMfzFhw4Ie1Yx16VdkjxJY
-Message-ID: <CA+F+MbZsStKZG=-1bVu9w+uaNTObuP-xJPBHU_z-Fhr5cVm-MA@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211125155650.630977-4-benjamin.gaignard@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello My Dear,.
+Hi Benjamin,
 
-Please do not feel disturbed for contacting =C2=A0you in this regards, It
-was based on the critical health condition I found myself. =C2=A0My names
-are Mrs. Dina Mckenna Howley.. A widow and am suffering from brain
-tumor disease and this illness has gotten to a very bad stage, I
- married my husband for Ten years without any child. =C2=A0My husband died
-after a brief illness that lasted for few  days.
-Since the death of my husband, I decided not to remarry again, When my
-late husband was alive he deposited the sum of =C2=A0($ 11,000,000.00,
-Eleven Million Dollars) with the Bank. Presently this money is still
-in bank. And My  Doctor told me that I don't have much time to live
-because my illness has gotten to a very bad stage, Having known my
-condition I  decided to entrust over the deposited fund under your
-custody to take care of the less-privileged ones therein your country
-or position,
-which i believe that you will utilize this money the way I am going to
-instruct herein.
+On Thu, Nov 25, 2021 at 04:56:49PM +0100, Benjamin Gaignard wrote:
+> In order to be able to share the control hardware block between
+> VPUs use a syscon instead a ioremap it in the driver.
+> To keep the compatibility with older DT if 'nxp,imx8mq-vpu-ctrl'
+> phandle is not found look at 'ctrl' reg-name.
+> With the method it becomes useless to provide a list of register
+> names so remove it.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+> 
+> Please note that the only purpose of this commit is to allow to test
+> G2 hardware block for IMX8MQ until a proper solution isuing power domain
+> can be found. Do not merge it.
 
-However all I need and required from you is your sincerity and ability
-to carry out the transaction successfully and fulfill my final wish in
-implementing the charitable project as it requires absolute trust and
-devotion without any failure and I will be glad to see that the bank
-finally release and transfer the fund into your bank account in your
-country even before I die here in the hospital, because my present
-health condition is very critical at the moment everything needs to be
-process rapidly as soon as possible.
-It will be my pleasure to compensate you as my Investment
-Manager/Partner with 35 % percent of the total fund for your effort in
- handling the transaction, 5 % percent for any expenses or processing
-charges fee that will involve during this process while 60% of the
-fund will be Invested into the charity project there in your country
-for the mutual benefit of the orphans and the less privileges ones.
-Meanwhile I am waiting for your prompt respond, if only you are
-interested for further details of the transaction and execution of
-this  humanitarian project for the glory and honor of God the merciful
-compassionate.
-May God bless you and your family.
-Regards,
-Mrs.Dina Mckenna Howley.
-written from Hospital.
+It's been too many months waiting for the BLK-CTRL to be solved.
+Perhaps we can consider merging this approach instead.
+
+Thanks,
+Ezequiel
+
+> ---
+>  drivers/staging/media/hantro/hantro.h       |  5 ++-
+>  drivers/staging/media/hantro/imx8m_vpu_hw.c | 48 +++++++++++++--------
+>  2 files changed, 34 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
+> index 7da23f7f207a..616b5a6854cd 100644
+> --- a/drivers/staging/media/hantro/hantro.h
+> +++ b/drivers/staging/media/hantro/hantro.h
+> @@ -13,6 +13,7 @@
+>  #define HANTRO_H_
+>  
+>  #include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+>  #include <linux/videodev2.h>
+>  #include <linux/wait.h>
+>  #include <linux/clk.h>
+> @@ -174,7 +175,7 @@ hantro_vdev_to_func(struct video_device *vdev)
+>   * @reg_bases:		Mapped addresses of VPU registers.
+>   * @enc_base:		Mapped address of VPU encoder register for convenience.
+>   * @dec_base:		Mapped address of VPU decoder register for convenience.
+> - * @ctrl_base:		Mapped address of VPU control block.
+> + * @ctrl_base:		Regmap of VPU control block.
+>   * @vpu_mutex:		Mutex to synchronize V4L2 calls.
+>   * @irqlock:		Spinlock to synchronize access to data structures
+>   *			shared with interrupt handlers.
+> @@ -193,7 +194,7 @@ struct hantro_dev {
+>  	void __iomem **reg_bases;
+>  	void __iomem *enc_base;
+>  	void __iomem *dec_base;
+> -	void __iomem *ctrl_base;
+> +	struct regmap *ctrl_base;
+>  
+>  	struct mutex vpu_mutex;	/* video_device lock */
+>  	spinlock_t irqlock;
+> diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
+> index 1a43f6fceef9..d7a63b41eb0e 100644
+> --- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
+> +++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
+> @@ -7,6 +7,7 @@
+>  
+>  #include <linux/clk.h>
+>  #include <linux/delay.h>
+> +#include <linux/mfd/syscon.h>
+>  
+>  #include "hantro.h"
+>  #include "hantro_jpeg.h"
+> @@ -25,30 +26,28 @@
+>  #define CTRL_G1_PP_FUSE		0x0c
+>  #define CTRL_G2_DEC_FUSE	0x10
+>  
+> +static const struct regmap_config ctrl_regmap_ctrl = {
+> +	.reg_bits = 32,
+> +	.val_bits = 32,
+> +	.reg_stride = 0x14,
+> +};
+> +
+>  static void imx8m_soft_reset(struct hantro_dev *vpu, u32 reset_bits)
+>  {
+> -	u32 val;
+> -
+>  	/* Assert */
+> -	val = readl(vpu->ctrl_base + CTRL_SOFT_RESET);
+> -	val &= ~reset_bits;
+> -	writel(val, vpu->ctrl_base + CTRL_SOFT_RESET);
+> +	regmap_update_bits(vpu->ctrl_base, CTRL_SOFT_RESET, reset_bits, 0);
+>  
+>  	udelay(2);
+>  
+>  	/* Release */
+> -	val = readl(vpu->ctrl_base + CTRL_SOFT_RESET);
+> -	val |= reset_bits;
+> -	writel(val, vpu->ctrl_base + CTRL_SOFT_RESET);
+> +	regmap_update_bits(vpu->ctrl_base, CTRL_SOFT_RESET,
+> +			   reset_bits, reset_bits);
+>  }
+>  
+>  static void imx8m_clk_enable(struct hantro_dev *vpu, u32 clock_bits)
+>  {
+> -	u32 val;
+> -
+> -	val = readl(vpu->ctrl_base + CTRL_CLOCK_ENABLE);
+> -	val |= clock_bits;
+> -	writel(val, vpu->ctrl_base + CTRL_CLOCK_ENABLE);
+> +	regmap_update_bits(vpu->ctrl_base, CTRL_CLOCK_ENABLE,
+> +			   clock_bits, clock_bits);
+>  }
+>  
+>  static int imx8mq_runtime_resume(struct hantro_dev *vpu)
+> @@ -65,9 +64,9 @@ static int imx8mq_runtime_resume(struct hantro_dev *vpu)
+>  	imx8m_clk_enable(vpu, CLOCK_G1 | CLOCK_G2);
+>  
+>  	/* Set values of the fuse registers */
+> -	writel(0xffffffff, vpu->ctrl_base + CTRL_G1_DEC_FUSE);
+> -	writel(0xffffffff, vpu->ctrl_base + CTRL_G1_PP_FUSE);
+> -	writel(0xffffffff, vpu->ctrl_base + CTRL_G2_DEC_FUSE);
+> +	regmap_write(vpu->ctrl_base, CTRL_G1_DEC_FUSE, 0xffffffff);
+> +	regmap_write(vpu->ctrl_base, CTRL_G1_PP_FUSE, 0xffffffff);
+> +	regmap_write(vpu->ctrl_base, CTRL_G2_DEC_FUSE, 0xffffffff);
+>  
+>  	clk_bulk_disable_unprepare(vpu->variant->num_clocks, vpu->clocks);
+>  
+> @@ -211,7 +210,22 @@ static irqreturn_t imx8m_vpu_g2_irq(int irq, void *dev_id)
+>  
+>  static int imx8mq_vpu_hw_init(struct hantro_dev *vpu)
+>  {
+> -	vpu->ctrl_base = vpu->reg_bases[vpu->variant->num_regs - 1];
+> +	struct device_node *np = vpu->dev->of_node;
+> +
+> +	vpu->ctrl_base = syscon_regmap_lookup_by_phandle(np, "nxp,imx8m-vpu-ctrl");
+> +	if (IS_ERR(vpu->ctrl_base)) {
+> +		struct resource *res;
+> +		void __iomem *ctrl;
+> +
+> +		res = platform_get_resource_byname(vpu->pdev, IORESOURCE_MEM, "ctrl");
+> +		ctrl = devm_ioremap_resource(vpu->dev, res);
+> +		if (IS_ERR(ctrl))
+> +			return PTR_ERR(ctrl);
+> +
+> +		vpu->ctrl_base = devm_regmap_init_mmio(vpu->dev, ctrl, &ctrl_regmap_ctrl);
+> +		if (IS_ERR(vpu->ctrl_base))
+> +			return PTR_ERR(vpu->ctrl_base);
+> +	}
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.30.2
+> 
