@@ -2,185 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD75A45F31D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 18:42:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4118045F353
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 19:01:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236310AbhKZRpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 12:45:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:53319 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229555AbhKZRn2 (ORCPT
+        id S236293AbhKZSE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 13:04:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235600AbhKZSCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 12:43:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637948414;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iQdg5fJJJalZgdk7/Dz8jdU4YnFhsfNkMpDrBm8mB5U=;
-        b=Et5ZkVSRbNaeRZjxKFv6lYHdRShXVDMDRP/FcRchdAeobf96pTnegCmmJTPS/KIxZhVS9X
-        oOPnatjP5u1w8sMRfF1SioD0Cd7zmoVifyZ+HT0+FGRul6lM9aPN+iThB2ybDm/zQEdf3S
-        1BfbFTMZ0w38XKBN1z3oXQFOZTD5SVU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-503-tzUQyjUsOCucaVTGYQbqSQ-1; Fri, 26 Nov 2021 12:40:13 -0500
-X-MC-Unique: tzUQyjUsOCucaVTGYQbqSQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF4FE612A0;
-        Fri, 26 Nov 2021 17:40:09 +0000 (UTC)
-Received: from [10.39.195.16] (unknown [10.39.195.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 09A875D9CA;
-        Fri, 26 Nov 2021 17:39:50 +0000 (UTC)
-Message-ID: <93344a29-0231-0e38-0951-1519ff6979a8@redhat.com>
-Date:   Fri, 26 Nov 2021 18:39:49 +0100
+        Fri, 26 Nov 2021 13:02:54 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA999C0613F2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 09:40:30 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id c6-20020a05600c0ac600b0033c3aedd30aso7269041wmr.5
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 09:40:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=W8td6vEPKxADiJQFmlrhuwiA6Bp6UV5M0SX5QzKONIo=;
+        b=BfjoJUobqTMEq9KNZqO/G4e3eTzCqfn2c/zMsEGs8rQ/X/tDm2m7NrxstzLNg3Riux
+         LfyMk9cL1qjovsTfZY0HHxyZuCCAKwp73rX5NKILX4c8puU11FV4TRhZRwOAGuUjQvcQ
+         8PoxTHipOiU02voQDwN2amVe26qugqcy+18EFrkO9TXbNcp5ki1AW2nSOXdU/BcH3Cfq
+         xEgyQMgG1MXZbvjGd9dEvhZ2AKgFKHp9jgYO0o2/v72uU8wU8slXxpgd1SG88VlFb0Hx
+         2VjIHLHeJrE+dTwBCjsuXHY6Mk8FjhXW9BA3XW5L0doAzxJGkKKcid7rNcjuuTLoiHyD
+         yfOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=W8td6vEPKxADiJQFmlrhuwiA6Bp6UV5M0SX5QzKONIo=;
+        b=Oh8mnD2wRzWWvSqyBji967nfk+T0Dym/yCQl+ylXGBEe3jjtzbJt/hUsFAg4FKnhp9
+         AMZ3IHyIw4cMx4Xh3GeFwMPZIIagwxpOQoQV5LPhprp0LWV6GIedCxaLgqcbozfP+Ue2
+         X4K+VoHBOEjeUJliRKf3kvhQTyIy+06n8+d7O+veJIPKQMYl8K1TZynodo+7nrNMxlZE
+         xBd7leqrwNT+RUFKDUt3riYHg1DKFw1+aLS/81wLTAGIzJWVbHgT1KD1czvzTGnGdIRT
+         hg+Jkp2QCiYhlrP9WjHMYq0lL8NzHu5+8QKBuxSsi97VxR2ON7e7ikUxpt8J7Aszvrk4
+         oK6w==
+X-Gm-Message-State: AOAM532sx9G+LCCFz/HKgAUoR7Qx3tUzahn6TYmuE/pjk/A082saalFQ
+        HsMp0HjGJNeultIAN8hcbgVL5Q==
+X-Google-Smtp-Source: ABdhPJyiejxvdKECGDvPJh9q3/ZB2Tt7wodvwW7t4tLf9B+VhlzIRvu6qs6lbZmkf/GEBfd7JZIEtA==
+X-Received: by 2002:a05:600c:501f:: with SMTP id n31mr16993345wmr.101.1637948429061;
+        Fri, 26 Nov 2021 09:40:29 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:70b:e5b5:f868:20cf? ([2a01:e34:ed2f:f020:70b:e5b5:f868:20cf])
+        by smtp.googlemail.com with ESMTPSA id l3sm8027009wmq.46.2021.11.26.09.40.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Nov 2021 09:40:28 -0800 (PST)
+Subject: Re: [PATCH v6 3/7] powercap/drivers/dtpm: Simplify the dtpm table
+To:     Doug Smythies <dsmythies@telus.net>
+Cc:     Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        lukasz.luba@arm.com, "Rafael J. Wysocki" <rafael@kernel.org>,
+        gregkh@linuxfoundation.org
+References: <20210401183654.27214-1-daniel.lezcano@linaro.org>
+ <20210401183654.27214-3-daniel.lezcano@linaro.org>
+ <CAAYoRsURO1tf03nfiki1uaXYEmTKQyYKUeTyKW+vefrVzCO7jg@mail.gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <1e75f7ff-4b1b-ff47-2344-903605067693@linaro.org>
+Date:   Fri, 26 Nov 2021 18:40:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 3/4] KVM: x86: Use different callback if msr access
- comes from the emulator
+In-Reply-To: <CAAYoRsURO1tf03nfiki1uaXYEmTKQyYKUeTyKW+vefrVzCO7jg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Hou Wenlong <houwenlong93@linux.alibaba.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1635842679.git.houwenlong93@linux.alibaba.com>
- <34208da8f51580a06e45afefac95afea0e3f96e3.1635842679.git.houwenlong93@linux.alibaba.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <34208da8f51580a06e45afefac95afea0e3f96e3.1635842679.git.houwenlong93@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/21 10:15, Hou Wenlong wrote:
-> If msr access triggers an exit to userspace, the
-> complete_userspace_io callback would skip instruction by vendor
-> callback for kvm_skip_emulated_instruction(). However, when msr
-> access comes from the emulator, e.g. if kvm.force_emulation_prefix
-> is enabled and the guest uses rdmsr/wrmsr with kvm prefix,
-> VM_EXIT_INSTRUCTION_LEN in vmcs is invalid and
-> kvm_emulate_instruction() should be used to skip instruction
-> instead.
+On 26/11/2021 18:08, Doug Smythies wrote:
+> Hi Daniel,
 > 
-> As Sean noted, unlike the previous case, there's no #UD if
-> unrestricted guest is disabled and the guest accesses an MSR in
-> Big RM. So the correct way to fix this is to attach a different
-> callback when the msr access comes from the emulator.
+> This patch introduces a regression, at least on my test system.
+> I can no longer change CPU frequency scaling drivers, for example
+> from intel_cpufreq (A.K.A intel_pstate in passive mode) to intel_pstate
+> (A.K.A. active mode). The task just hangs forever.
 > 
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Hou Wenlong <houwenlong93@linux.alibaba.com>
-> ---
+> I bisected the kernel and got this commit as the result.
+> As a double check, I reverted this commit:
+> 7a89d7eacf8e84f2afb94db5ae9d9f9faa93f01c
+> on kernel 5.16-rc2 and the issue was resolved.
+> 
+> While your email is fairly old, I observe that it was only included as of
+> kernel 5.16-rc1.
 
-Queued with a small tweak: complete_emulated_msr_access is a version
-of kvm_complete_insn_gp for emulated instructions, so call it
-complete_emulated_insn_gp and give it an err argument.
+Could it be related to and fixed by:
 
-Also I renamed __complete_emulated to complete_userspace_rdmsr, since
-it applies also to the "fast" case.
+https://lore.kernel.org/all/20211108062345.273855-1-daniel.lezcano@linaro.org/
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index e651ff56b4ad..3928c96d28be 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -711,6 +711,17 @@ int kvm_complete_insn_gp(struct kvm_vcpu *vcpu, int err)
-  }
-  EXPORT_SYMBOL_GPL(kvm_complete_insn_gp);
-  
-+static int complete_emulated_insn_gp(struct kvm_vcpu *vcpu, int err)
-+{
-+	if (err) {
-+		kvm_inject_gp(vcpu, 0);
-+		return 1;
-+	}
-+
-+	return kvm_emulate_instruction(vcpu, EMULTYPE_NO_DECODE | EMULTYPE_SKIP |
-+				       EMULTYPE_COMPLETE_USER_EXIT);
-+}
-+
-  void kvm_inject_page_fault(struct kvm_vcpu *vcpu, struct x86_exception *fault)
-  {
-  	++vcpu->stat.pf_guest;
-@@ -1816,7 +1827,7 @@ int kvm_set_msr(struct kvm_vcpu *vcpu, u32 index, u64 data)
-  }
-  EXPORT_SYMBOL_GPL(kvm_set_msr);
-  
--static void __complete_emulated_rdmsr(struct kvm_vcpu *vcpu)
-+static void complete_userspace_rdmsr(struct kvm_vcpu *vcpu)
-  {
-  	if (!vcpu->run->msr.error) {
-  		kvm_rax_write(vcpu, (u32)vcpu->run->msr.data);
-@@ -1826,37 +1837,24 @@ static void __complete_emulated_rdmsr(struct kvm_vcpu *vcpu)
-  
-  static int complete_emulated_msr_access(struct kvm_vcpu *vcpu)
-  {
--	if (vcpu->run->msr.error) {
--		kvm_inject_gp(vcpu, 0);
--		return 1;
--	}
--
--	return kvm_emulate_instruction(vcpu, EMULTYPE_NO_DECODE | EMULTYPE_SKIP |
--				       EMULTYPE_COMPLETE_USER_EXIT);
-+	return complete_emulated_insn_gp(vcpu, vcpu->run->msr.error);
-  }
-  
-  static int complete_emulated_rdmsr(struct kvm_vcpu *vcpu)
-  {
--	__complete_emulated_rdmsr(vcpu);
--
-+	complete_userspace_rdmsr(vcpu);
-  	return complete_emulated_msr_access(vcpu);
-  }
-  
--static int complete_emulated_wrmsr(struct kvm_vcpu *vcpu)
-+static int complete_fast_msr_access(struct kvm_vcpu *vcpu)
-  {
--	return complete_emulated_msr_access(vcpu);
-+	return static_call(kvm_x86_complete_emulated_msr)(vcpu, vcpu->run->msr.error);
-  }
-  
-  static int complete_fast_rdmsr(struct kvm_vcpu *vcpu)
-  {
--	__complete_emulated_rdmsr(vcpu);
--
--	return static_call(kvm_x86_complete_emulated_msr)(vcpu, vcpu->run->msr.error);
--}
--
--static int complete_fast_wrmsr(struct kvm_vcpu *vcpu)
--{
--	return static_call(kvm_x86_complete_emulated_msr)(vcpu, vcpu->run->msr.error);
-+	complete_userspace_rdmsr(vcpu);
-+	return complete_fast_msr_access(vcpu);
-  }
-  
-  static u64 kvm_msr_reason(int r)
-@@ -1931,7 +1929,7 @@ int kvm_emulate_wrmsr(struct kvm_vcpu *vcpu)
-  	} else {
-  		/* MSR write failed? See if we should ask user space */
-  		if (kvm_msr_user_space(vcpu, ecx, KVM_EXIT_X86_WRMSR, data,
--				       complete_fast_wrmsr, r))
-+				       complete_fast_msr_access, r))
-  			return 0;
-  		/* Signal all other negative errors to userspace */
-  		if (r < 0)
-@@ -7429,7 +7427,7 @@ static int emulator_set_msr(struct x86_emulate_ctxt *ctxt,
-  	r = kvm_set_msr(vcpu, msr_index, data);
-  
-  	if (r && kvm_msr_user_space(vcpu, msr_index, KVM_EXIT_X86_WRMSR, data,
--				    complete_emulated_wrmsr, r)) {
-+				    complete_emulated_msr_access, r)) {
-  		/* Bounce to user space */
-  		return X86EMUL_IO_NEEDED;
-  	}
+?
 
+> Command Example that never completes:
+> 
+> $ echo passive | sudo tee /sys/devices/system/cpu/intel_pstate/status
+> 
+> syslog excerpt attached.
+> 
+> ... Doug
+
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
