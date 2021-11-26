@@ -2,122 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49BA445F537
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:32:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D05F45F566
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236615AbhKZTfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 14:35:24 -0500
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:46025 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233715AbhKZTdY (ORCPT
+        id S237959AbhKZTvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 14:51:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234965AbhKZTs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 14:33:24 -0500
-Received: by mail-ot1-f43.google.com with SMTP id a23-20020a9d4717000000b0056c15d6d0caso15252020otf.12;
+        Fri, 26 Nov 2021 14:48:58 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A6EC06175F;
         Fri, 26 Nov 2021 11:30:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P0Ds7jWfKymmq417H8ZAqR46BLCCsJEqfr+3f1b84Y0=;
-        b=dCuY87a10JjYtW8PIdU3kou/VjBg5+xpOCUxrsnwa8Xf/zX/gluvqCXpZ1QlvCcKRi
-         wKsKzZm47oB0t2Acpn5o2K1S43fW2IbPRYYcPYBPG5VrHxZ+GzKgVa+UsEwTsKy3sht4
-         mBhxlxrP+t2KiJssprCCyXEqR1EP4Ej3aUkmY5646AuXS4++kYvibEF+OhRgEZUQ9ui5
-         0kANv0TkbLABd5ODfvX8+1ghRZ8S0SrhKJNo5ovTzfgBFTD6c/ZwCDX9pQR1mKOwAl6O
-         wrp3VXDPY+lrOBX2y9cJgUFozsde5G8/tVkhEzGc+6qT2iZazS3teMtv31a1O1t359Fu
-         LCpw==
-X-Gm-Message-State: AOAM533AK9hUBvUnKuDPE1ormLxWMOU1WqfLQHiL2PGrSV24tDLnCeSd
-        Ya/iMMjOptVNTSgFMgThbWE6V03CgdKP2+ol1lI=
-X-Google-Smtp-Source: ABdhPJy/OnHHxYJcyA4pvtVU62Jn57J07ierdEuYoO4nzllyf/tL7K4g963mQLlcAd5k78q6PTvqlx+QUT9m3Ighf0E=
-X-Received: by 2002:a05:6830:348f:: with SMTP id c15mr30253933otu.254.1637955010619;
- Fri, 26 Nov 2021 11:30:10 -0800 (PST)
+Received: from mail.kernel.org (unknown [198.145.29.99])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 33BA962346;
+        Fri, 26 Nov 2021 19:30:10 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id A90A46024A;
+        Fri, 26 Nov 2021 19:30:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637955009;
+        bh=dmZjjxF0kpvN51hC6J3wKkaZ5YW+fKIWoqs/Sw9sprQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Rlw0ffbeANT4nFEhAvklxsjfoZNt+1kGRzflZvEjUDVivTodODouWGG2qkTGoyNBQ
+         tVhKFW8ysfntcPI0vbNSR+LVy4IhNKJbOvWjtllU5nG4cSSxM6RQNmXE1/qLcD9NOH
+         LTE0ZXB369BPwaWBlme1sOTQyVXoY5D3YOcD9YT/IP9GAc7tGQKVwVWEnycqJxYxmF
+         rXSS7h5E0ZJPjzBq7R/ZetTHzznOljUQVcFqHCbYo9VhvNl6trZo4oUcGnbc8fxFl6
+         b8gkCF2Xk8KSjkam3SfYh+6dOHvpV4PYi6yz6SBlrk3w63ydD2UVng27IkVsvsSh4k
+         Ik3Znr2Q+2SMg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 924C460A6C;
+        Fri, 26 Nov 2021 19:30:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210401183654.27214-1-daniel.lezcano@linaro.org>
- <20210401183654.27214-3-daniel.lezcano@linaro.org> <CAAYoRsURO1tf03nfiki1uaXYEmTKQyYKUeTyKW+vefrVzCO7jg@mail.gmail.com>
- <CAJZ5v0hcuq0qriHbc=XHbCo8fJMAV1dbCBws3M9GktN17aCE_g@mail.gmail.com> <CAAYoRsXLTYKGK_doqDqgerQ+uW3UhMYki7FfBy3cAhbfXiCrXA@mail.gmail.com>
-In-Reply-To: <CAAYoRsXLTYKGK_doqDqgerQ+uW3UhMYki7FfBy3cAhbfXiCrXA@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 26 Nov 2021 20:29:58 +0100
-Message-ID: <CAJZ5v0hDa4dmEJD0EYnOzfDBNC-GU99DM_d7bsTCCoSaP-o3CA@mail.gmail.com>
-Subject: Re: [PATCH v6 3/7] powercap/drivers/dtpm: Simplify the dtpm table
-To:     Doug Smythies <dsmythies@telus.net>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] ethtool: ioctl: fix potential NULL deref in
+ ethtool_set_coalesce()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163795500959.14661.4830039441198215968.git-patchwork-notify@kernel.org>
+Date:   Fri, 26 Nov 2021 19:30:09 +0000
+References: <20211126175543.28000-1-jwi@linux.ibm.com>
+In-Reply-To: <20211126175543.28000-1-jwi@linux.ibm.com>
+To:     Julian Wiedmann <jwi@linux.ibm.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, moyufeng@huawei.com,
+        tanhuazhong@huawei.com, andrew@lunn.ch, hkallweit1@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 8:10 PM Doug Smythies <dsmythies@telus.net> wrote:
->
-> On Fri, Nov 26, 2021 at 9:22 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > Hi Doug,
-> >
-> > On Fri, Nov 26, 2021 at 6:08 PM Doug Smythies <dsmythies@telus.net> wrote:
-> > >
-> > > Hi Daniel,
-> > >
-> > > This patch introduces a regression, at least on my test system.
-> > > I can no longer change CPU frequency scaling drivers, for example
-> > > from intel_cpufreq (A.K.A intel_pstate in passive mode) to intel_pstate
-> > > (A.K.A. active mode). The task just hangs forever.
-> > >
-> > > I bisected the kernel and got this commit as the result.
-> > > As a double check, I reverted this commit:
-> > > 7a89d7eacf8e84f2afb94db5ae9d9f9faa93f01c
-> > > on kernel 5.16-rc2 and the issue was resolved.
-> > >
-> > > While your email is fairly old, I observe that it was only included as of
-> > > kernel 5.16-rc1.
-> > >
-> > > Command Example that never completes:
-> > >
-> > > $ echo passive | sudo tee /sys/devices/system/cpu/intel_pstate/status
-> > >
-> > > syslog excerpt attached.
-> >
-> > This looks like it may be problematic:
-> >
-> > diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
-> > index f6076de39540..98841524a782 100644
-> > --- a/drivers/powercap/dtpm_cpu.c
-> > +++ b/drivers/powercap/dtpm_cpu.c
-> > @@ -204,7 +204,7 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
-> >        return ret;
-> > }
-> >
-> > -int dtpm_register_cpu(struct dtpm *parent)
-> > +static int __init dtpm_cpu_init(void)
-> > {
-> >        int ret;
-> >
-> > so please try to remove the __init annotation from dtpm_cpu_init() and
-> > see if that helps.
->
-> Hi Rafael,
->
-> That did not fix the issue.
-> Just to be clear this is what I did, on top of 5.16-rc2:
->
-> $ git diff
-> diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
-> index b740866b228d..26d1a87bdec6 100644
-> --- a/drivers/powercap/dtpm_cpu.c
-> +++ b/drivers/powercap/dtpm_cpu.c
-> @@ -231,7 +231,7 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
->         return ret;
->  }
->
-> -static int __init dtpm_cpu_init(void)
-> +static int dtpm_cpu_init(void)
->  {
->         int ret;
+Hello:
 
-OK
+This patch was applied to netdev/net.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
-This needs to be fixed or we'll need to revert commit
-7a89d7eacf8e84f2afb94db5ae9d9f9faa93f01c for 5.16.
+On Fri, 26 Nov 2021 18:55:43 +0100 you wrote:
+> ethtool_set_coalesce() now uses both the .get_coalesce() and
+> .set_coalesce() callbacks. But the check for their availability is
+> buggy, so changing the coalesce settings on a device where the driver
+> provides only _one_ of the callbacks results in a NULL pointer
+> dereference instead of an -EOPNOTSUPP.
+> 
+> Fix the condition so that the availability of both callbacks is
+> ensured. This also matches the netlink code.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net] ethtool: ioctl: fix potential NULL deref in ethtool_set_coalesce()
+    https://git.kernel.org/netdev/net/c/0276af2176c7
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
