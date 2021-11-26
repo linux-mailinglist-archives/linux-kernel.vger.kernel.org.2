@@ -2,120 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1064A45F061
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:11:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B96245F06D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349273AbhKZPPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:15:00 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:43698 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349785AbhKZPMy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:12:54 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id DAB612191A;
-        Fri, 26 Nov 2021 15:09:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637939380; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cU0u1ErYfWJN1z5VHiy7kYCcJFmwRVG6KI1gkeUqUx0=;
-        b=TUSWZNPKKrdfBXzvAGx2Kbhs53F5LWklUyEuRqQPxUekEie7Q6w4yPDHollgtu6eP+gCgL
-        K5uEwT0vjdWFdbkK8Qft+2gUwGOg+9TNqkxKnIZSW7UX7Rbp8if6YunYiXYPNuviwBk2GC
-        gDEv06tj/loWg8Mjz9BJZmUeDHJvkmo=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id BDE94A3B81;
-        Fri, 26 Nov 2021 15:09:40 +0000 (UTC)
-Date:   Fri, 26 Nov 2021 16:09:40 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     NeilBrown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [PATCH v2 2/4] mm/vmalloc: add support for __GFP_NOFAIL
-Message-ID: <YaD4tFV1P4vwBVEL@dhcp22.suse.cz>
-References: <20211122153233.9924-1-mhocko@kernel.org>
- <20211122153233.9924-3-mhocko@kernel.org>
- <YZ06nna7RirAI+vJ@pc638.lan>
- <20211123170238.f0f780ddb800f1316397f97c@linux-foundation.org>
- <163772381628.1891.9102201563412921921@noble.neil.brown.name>
- <20211123194833.4711add38351d561f8a1ae3e@linux-foundation.org>
- <163773141164.1891.1440920123016055540@noble.neil.brown.name>
- <919f547e-beb7-34b7-7835-9e1625600323@suse.cz>
+        id S1378016AbhKZPP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 10:15:59 -0500
+Received: from mga18.intel.com ([134.134.136.126]:47878 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1354128AbhKZPN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 10:13:56 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="222548406"
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
+   d="scan'208";a="222548406"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 07:10:43 -0800
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
+   d="scan'208";a="457703842"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 07:10:40 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mqcs1-00Aogm-Ii;
+        Fri, 26 Nov 2021 17:10:37 +0200
+Date:   Fri, 26 Nov 2021 17:10:37 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Henning Schild <henning.schild@siemens.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Jean Delvare <jdelvare@suse.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Tan Jui Nee <jui.nee.tan@intel.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Jonathan Yong <jonathan.yong@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com
+Subject: Re: [PATCH v1 3/7] PCI: New Primary to Sideband (P2SB) bridge
+ support library
+Message-ID: <YaD47Vk0pAufkhD8@smile.fi.intel.com>
+References: <YGYPiCekM3clFEsD@smile.fi.intel.com>
+ <20210401184446.GA1528755@bjorn-Precision-5520>
+ <YOwyVXz9QMyRqs4B@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <919f547e-beb7-34b7-7835-9e1625600323@suse.cz>
+In-Reply-To: <YOwyVXz9QMyRqs4B@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 26-11-21 15:50:15, Vlastimil Babka wrote:
-> On 11/24/21 06:23, NeilBrown wrote:
-> >> 
-> >> I forget why radix_tree_preload used a cpu-local store rather than a
-> >> per-task one.
-> >> 
-> >> Plus "what order pages would you like" and "on which node" and "in
-> >> which zone", etc...
+On Mon, Jul 12, 2021 at 03:15:17PM +0300, Andy Shevchenko wrote:
+> On Thu, Apr 01, 2021 at 01:44:46PM -0500, Bjorn Helgaas wrote:
+> > On Thu, Apr 01, 2021 at 09:23:04PM +0300, Andy Shevchenko wrote:
+> > > On Thu, Apr 01, 2021 at 11:42:56AM -0500, Bjorn Helgaas wrote:
+> > > > On Thu, Apr 01, 2021 at 06:45:02PM +0300, Andy Shevchenko wrote:
+> > > > > On Tue, Mar 09, 2021 at 09:42:52AM +0100, Henning Schild wrote:
+> > > > > > Am Mon, 8 Mar 2021 19:42:21 -0600
+> > > > > > schrieb Bjorn Helgaas <helgaas@kernel.org>:
+> > > > > > > On Mon, Mar 08, 2021 at 09:16:50PM +0200, Andy Shevchenko wrote:
+> > > > > > > > On Mon, Mar 08, 2021 at 12:52:12PM -0600, Bjorn Helgaas wrote:  
+> > > > > > > > > On Mon, Mar 08, 2021 at 02:20:16PM +0200, Andy Shevchenko wrote:  
+> > > > > 
+> > > > > ...
+> > > > > 
+> > > > > > > > > > +	/* Read the first BAR of the device in question */
+> > > > > > > > > > +	__pci_bus_read_base(bus, devfn, pci_bar_unknown, mem,
+> > > > > > > > > > PCI_BASE_ADDRESS_0, true);  
+> > > > > > > > > 
+> > > > > > > > > I don't get this.  Apparently this normally hidden device is
+> > > > > > > > > consuming PCI address space.  The PCI core needs to know
+> > > > > > > > > about this.  If it doesn't, the PCI core may assign this
+> > > > > > > > > space to another device.  
+> > > > > > > > 
+> > > > > > > > Right, it returns all 1:s to any request so PCI core *thinks*
+> > > > > > > > it's plugged off (like D3cold or so).  
+> > > > > > > 
+> > > > > > > I'm asking about the MMIO address space.  The BAR is a register
+> > > > > > > in config space.  AFAICT, clearing P2SBC_HIDE_BYTE makes that
+> > > > > > > BAR visible.  The BAR describes a region of PCI address space.
+> > > > > > > It looks like setting P2SBC_HIDE_BIT makes the BAR disappear
+> > > > > > > from config space, but it sounds like the PCI address space
+> > > > > > > *described* by the BAR is still claimed by the device.  If the
+> > > > > > > device didn't respond to that MMIO space, you would have no
+> > > > > > > reason to read the BAR at all.
+> > > > > > > 
+> > > > > > > So what keeps the PCI core from assigning that MMIO space to
+> > > > > > > another device?
+> > > > > > 
+> > > > > > The device will respond to MMIO while being hidden. I am afraid
+> > > > > > nothing stops a collision, except for the assumption that the BIOS
+> > > > > > is always right and PCI devices never get remapped. But just
+> > > > > > guessing here.
+> > > > > > 
+> > > > > > I have seen devices with coreboot having the P2SB visible, and
+> > > > > > most likely relocatable. Making it visible in Linux and not hiding
+> > > > > > it again might work, but probably only as long as Linux will not
+> > > > > > relocate it.  Which i am afraid might seriously upset the BIOS,
+> > > > > > depending on what a device does with those GPIOs and which parts
+> > > > > > are implemented in the BIOS.
+> > > > > 
+> > > > > So the question is, do we have knobs in PCI core to mark device
+> > > > > fixes in terms of BARs, no relocation must be applied, no other
+> > > > > devices must have the region?
+> > > > 
+> > > > I think the closest thing is the IORESOURCE_PCI_FIXED bit that we use
+> > > > for things that must not be moved.  Generally PCI resources are
+> > > > associated with a pci_dev, and we set IORESOURCE_PCI_FIXED for BARs,
+> > > > e.g., dev->resource[n].  We do that for IDE legacy regions (see
+> > > > LEGACY_IO_RESOURCE), Langwell devices (pci_fixed_bar_fixup()),
+> > > > "enhanced allocation" (pci_ea_flags()), and some quirks (quirk_io()).
+> > > > 
+> > > > In your case, the device is hidden so it doesn't respond to config
+> > > > accesses, so there is no pci_dev for it.
+> > > 
+> > > Yes, and the idea is to unhide it on the early stage.
+> > > Would it be possible to quirk it to fix the IO resources?
 > > 
-> > "what order" - only order-0 I hope.  I'd hazard a guess that 90% of
-> > current NOFAIL allocations only need one page (providing slub is used -
-> > slab seems to insist on high-order pages sometimes).
-> 
-> Yeah AFAIK SLUB can prefer higher orders than SLAB, but also allows fallback
-> to smallest order that's enough (thus 0 unless the objects are larger than a
-> page).
-> 
-> > "which node" - whichever.  Unless __GFP_HARDWALL is set, alloc_page()
-> > will fall-back to "whichever" anyway, and NOFAIL with HARDWALL is
-> > probably a poor choice.
-> > "which zone" - NORMAL.  I cannot find any NOFAIL allocations that want
-> > DMA.  fs/ntfs asks for __GFP_HIGHMEM with NOFAIL, but that that doesn't
-> > *requre* highmem.
+> > If I read your current patch right, it unhides the device, reads the
+> > BAR, then hides the device again.  I didn't see that it would create a
+> > pci_dev for it.
 > > 
-> > Of course, before designing this interface too precisely we should check
-> > if anyone can use it.  From a quick through the some of the 100-ish
-> > users of __GFP_NOFAIL I'd guess that mempools would help - the
-> > preallocation should happen at init-time, not request-time.  Maybe if we
-> > made mempools even more light weight .... though that risks allocating a
-> > lot of memory that will never get used.
-> > 
-> > This brings me back to the idea that
-> >     alloc_page(wait and reclaim allowed)
-> > should only fail on OOM_KILL.  That way kernel threads are safe, and
-> > user-threads are free to return ENOMEM knowing it won't get to
+> > If you unhide it and then enumerate it normally (and mark the BAR as
+> > IORESOURCE_PCI_FIXED to make sure we never move it), that might work.
+> > Then there should be a pci_dev for it, and it would then show up in
+> > sysfs, lspci, etc.  And we should insert the BAR in iomem_resource, so
+> > we should see it in /proc/iomem and we won't accidentally put
+> > something else on top of it.
 > 
-> Hm I thought that's already pretty much the case of the "too small to fail"
-> of today. IIRC there's exactly that gotcha that OOM KILL can result in such
-> allocation failure. But I believe that approach is rather fragile. If you
-> encounter such an allocation not checking the resulting page != NULL, you
-> can only guess which one is true:
+> If the PCI device is present and we have ACPI description for the one or more
+> devices (currently pin control), wouldn't be a conflicting resources issue?
 > 
-> - the author simply forgot to check at all
-> - the author relied on "too small to fail" without realizing the gotcha
-> - at the time of writing the code was verified that it can be only run in
-> kernel thread context, not user and
->   - it is still true
->   - it stopped being true at some later point
->   - might be hard to even decide which is the case
-> 
-> IIRC at some point we tried to abolish the "too small to fail" rule because
-> of this, but Linus denied that. But the opposite - make it hard guarantee in
-> all cases - also didn't happen, so...
+> When would be the suitable place to avoid that?
 
-Yeah. IMHO we should treat each missing check for allocation failure
-(except for GFP_NOFAIL) as a bug regardless the practical implementation
-that say that small allocations do not fail. Because they can fail and
-we should never subscribe to official support implicit non-fail
-semantic.
+Given another thought on that and I think we can't unhide entire P2SB due to
+possible ACPI tables present which may or may not fully or partially describe
+devices behind that bridge, so, I would stick with current approach.
+
+> > > > resource, fills it in, sets IORESOURCE_PCI_FIXED, and does something
+> > > > similar to pci_claim_resource()?
+
 -- 
-Michal Hocko
-SUSE Labs
+With Best Regards,
+Andy Shevchenko
+
+
