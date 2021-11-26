@@ -2,16 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 868CD45ECBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BCEF45ECA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245543AbhKZLiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 06:38:10 -0500
-Received: from smtpbguseast1.qq.com ([54.204.34.129]:48888 "EHLO
-        smtpbguseast1.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347687AbhKZLgJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 06:36:09 -0500
+        id S241231AbhKZLdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 06:33:01 -0500
+Received: from smtpbgeu2.qq.com ([18.194.254.142]:52950 "EHLO smtpbgeu2.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241470AbhKZLbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 06:31:00 -0500
+X-Greylist: delayed 2338 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Nov 2021 06:30:59 EST
 X-QQ-mid: bizesmtp36t1637926061tdr1ln5d
 Received: from localhost.localdomain (unknown [113.57.152.160])
         by esmtp6.qq.com (ESMTP) with 
