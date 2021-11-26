@@ -2,199 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165A245E3AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 01:28:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F3545E3AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 01:29:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238462AbhKZAb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 19:31:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346344AbhKZA31 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 19:29:27 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B61C06173E
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 16:26:15 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id u3so19961278lfl.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 16:26:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ULEeSU3LKj9dHbNjZ+wW9dIVHqv9jNyz7Kz7dNf303A=;
-        b=Bxstt1Brj1xbiFXm44anso8UKf/3bGvcXySWRwsd9O31iFprDihzA2t7Oj7lb6rTma
-         G8ezVsVdZ1K9dJnaC+gRNTAvUexHfNt/vfRUI9ocfMwCgqxQW4rHtosswL3Usv7zSEje
-         5n40Cp0AghDKBIT+lgQHl/qIONlqi7GLNbBJWQsB+4a5WjmDk9cKGrnOu39a7R9jLjgb
-         i8x3byUm5fnt+Q5wdyfyG3uBz++6mw55NJyjCER/tfnMZh6aFyseNsCveppJ5NA2hxly
-         GzzGMiHVlftrY0vUx74OXcWho7ZOt2SYhPF7ge9y5Hs4RR2taHroIsoK/SBykrrzjiAh
-         0PRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ULEeSU3LKj9dHbNjZ+wW9dIVHqv9jNyz7Kz7dNf303A=;
-        b=k7sTFy0VQi2qzZJAfbdPpwuQudt2Cvrd4Ve4PLYoCwabP0vj59esGzMW8ChgUnTANL
-         ccdbJSwqwNln5NqANqB376OwXT+wyzAKNR9Qml9Tv9/ImjdcZXizumEZF2Z6lp/fMo6+
-         //p0ZUk6lKR3aQoLsxMlAgJhRTuZv7ABSeUlvpKpPwPIwxuU0l2JR+TfkMAg0WVLSdFW
-         2r5jAapxjb5lmzqOJcHUsD6n+mdIvL5HvMO3YzkHhcPyQozQ1o/g/bcsP08tBRkDsiwL
-         Ebkrld99/BzRgFrv9/IV1zWi778zpRyI7+s/fUter6bMQuZ50XODj30KG0Q59uzFLI8W
-         2kPg==
-X-Gm-Message-State: AOAM532NosBstlY6aolSYzXMRT72OCSLGu+KUtR+/lxsJXse10B1n3t8
-        feShap10Yvsxxo9KQd3P8HS1zQ==
-X-Google-Smtp-Source: ABdhPJy/5TtyvNOPAR5phFf4AC3qB6IyLlAGCnrkbtWmL85ISfkfv3NCVYz/Cyvixuzx44V2qSlLSw==
-X-Received: by 2002:a05:6512:374b:: with SMTP id a11mr27016850lfs.48.1637886373517;
-        Thu, 25 Nov 2021 16:26:13 -0800 (PST)
-Received: from eriador.lan ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id 3sm375880lfr.77.2021.11.25.16.26.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 16:26:12 -0800 (PST)
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Saravana Kannan <saravanak@google.com>
-Subject: [PATCH] of: property: stop parsing remote-endpoint graph properties
-Date:   Fri, 26 Nov 2021 03:26:12 +0300
-Message-Id: <20211126002612.1030246-1-dmitry.baryshkov@linaro.org>
-X-Mailer: git-send-email 2.33.0
+        id S1351860AbhKZAcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 19:32:12 -0500
+Received: from mga12.intel.com ([192.55.52.136]:47660 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237355AbhKZAaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 19:30:11 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="215608214"
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="215608214"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 16:26:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
+   d="scan'208";a="498220062"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 25 Nov 2021 16:26:57 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqP4q-00078k-L4; Fri, 26 Nov 2021 00:26:56 +0000
+Date:   Fri, 26 Nov 2021 08:26:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, 0day robot <lkp@intel.com>
+Subject: drivers/gpu/drm/rockchip/rockchip_drm_vop2.c:2678:21: warning:
+ variable 'main_plane' is uninitialized when used here
+Message-ID: <202111260815.v5s0FohX-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When parsing remote-endpoint properties, two counter devlinks will be
-created, resulting in the circular dependency, which is later broken. In
-most of the cases, the order in which depency is broken does not matter
-(or is correct). However lately I stumbled upon the following
-configuration.
+tree:   https://github.com/0day-ci/linux/commits/UPDATE-20211117-234622/Sascha-Hauer/drm-rockchip-RK356x-VOP2-support/20211117-223601
+head:   bb17f3afe532266901ec476abd66abd2178e5cfb
+commit: bb17f3afe532266901ec476abd66abd2178e5cfb drm: rockchip: Add VOP2 driver
+date:   8 days ago
+config: hexagon-randconfig-r002-20211118 (https://download.01.org/0day-ci/archive/20211126/202111260815.v5s0FohX-lkp@intel.com/config)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/bb17f3afe532266901ec476abd66abd2178e5cfb
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review UPDATE-20211117-234622/Sascha-Hauer/drm-rockchip-RK356x-VOP2-support/20211117-223601
+        git checkout bb17f3afe532266901ec476abd66abd2178e5cfb
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=hexagon 
 
-In this case for some reason devlink code decided to break the loop by
-making panel depend on the bridge driver, enforcing that bridge is
-probed before the panel.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-However in such cases the bridge will lookup next bridge or panel using
-drm_of_find_panel_or_bridge() in the probe callback. Thus we have a
-deadlock: panel is waiting for the bridge because of the devlink
-dependency and bridge probe() expects the panel to be available and thus
-returns -EPROBE_DEFER.
+All warnings (new ones prefixed by >>):
 
-To prevent such deadlocks, stop parsing the remote-endpoint property and
-let drivers decide their probe order using standard -EPROBE_DEFER
-returns.
+>> drivers/gpu/drm/rockchip/rockchip_drm_vop2.c:2678:21: warning: variable 'main_plane' is uninitialized when used here [-Wuninitialized]
+                           top_win_pstate = main_plane->state;
+                                            ^~~~~~~~~~
+   drivers/gpu/drm/rockchip/rockchip_drm_vop2.c:2661:30: note: initialize the variable 'main_plane' to silence this warning
+           struct drm_plane *main_plane;
+                                       ^
+                                        = NULL
+>> drivers/gpu/drm/rockchip/rockchip_drm_vop2.c:2943:20: warning: variable 'plane' set but not used [-Wunused-but-set-variable]
+           struct drm_plane *plane;
+                             ^
+   2 warnings generated.
+--
+>> drivers/gpu/drm/rockchip/rockchip_vop2_reg.c:521:35: warning: unused variable 'rk3568_area1_scl' [-Wunused-const-variable]
+   static const struct vop2_scl_regs rk3568_area1_scl = {
+                                     ^
+>> drivers/gpu/drm/rockchip/rockchip_vop2_reg.c:541:35: warning: unused variable 'rk3568_area2_scl' [-Wunused-const-variable]
+   static const struct vop2_scl_regs rk3568_area2_scl = {
+                                     ^
+>> drivers/gpu/drm/rockchip/rockchip_vop2_reg.c:561:35: warning: unused variable 'rk3568_area3_scl' [-Wunused-const-variable]
+   static const struct vop2_scl_regs rk3568_area3_scl = {
+                                     ^
+   3 warnings generated.
 
-DTS except follows:
 
-/ {
-        panel0 {
-                compatible = "powertip,ph800480t013-idf02";
-                power-supply = <&vreg_l11c_3p3>;
-                backlight = <&lcd0_reg>;
-                port {
-                        panel0_in: endpoint {
-                                remote-endpoint = <&bridge0_out>;
-                        };
-                };
-        };
-};
+vim +/main_plane +2678 drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
 
-&dsi0 {
-        #address-cells = <1>;
-        #size-cells = <0>;
-        status = "okay";
+  2644	
+  2645	/*
+  2646	 * src: top layer
+  2647	 * dst: bottom layer.
+  2648	 * Cluster mixer default use win1 as top layer
+  2649	 */
+  2650	static void vop2_setup_cluster_alpha(struct vop2 *vop2, struct vop2_cluster *cluster)
+  2651	{
+  2652		uint32_t src_color_ctrl_offset = vop2->data->ctrl->cluster0_src_color_ctrl.offset;
+  2653		uint32_t dst_color_ctrl_offset = vop2->data->ctrl->cluster0_dst_color_ctrl.offset;
+  2654		uint32_t src_alpha_ctrl_offset = vop2->data->ctrl->cluster0_src_alpha_ctrl.offset;
+  2655		uint32_t dst_alpha_ctrl_offset = vop2->data->ctrl->cluster0_dst_alpha_ctrl.offset;
+  2656		uint32_t offset = (cluster->main->data->phys_id * 0x10);
+  2657		struct vop2_alpha_config alpha_config;
+  2658		struct vop2_alpha alpha;
+  2659		struct vop2_win *main_win = cluster->main;
+  2660		struct vop2_win *sub_win = cluster->sub;
+  2661		struct drm_plane *main_plane;
+  2662		struct drm_plane_state *top_win_pstate;
+  2663		struct drm_plane_state *bottom_win_pstate;
+  2664		bool src_pixel_alpha_en = false;
+  2665		uint16_t src_glb_alpha_val, dst_glb_alpha_val;
+  2666		bool premulti_en = false;
+  2667		bool swap = false;
+  2668	
+  2669		if (!sub_win) {
+  2670			/* At one win mode, win0 is dst/bottom win, and win1 is a all zero src/top win */
+  2671			top_win_pstate = NULL;
+  2672			bottom_win_pstate = main_win->base.state;
+  2673			src_glb_alpha_val = 0;
+  2674			dst_glb_alpha_val = main_win->base.state->alpha;
+  2675		} else {
+  2676			if (main_win->base.state->zpos > sub_win->base.state->zpos) {
+  2677				swap = 1;
+> 2678				top_win_pstate = main_plane->state;
+  2679				bottom_win_pstate = sub_win->base.state;
+  2680				src_glb_alpha_val = main_win->base.state->alpha;
+  2681				dst_glb_alpha_val = sub_win->base.state->alpha;
+  2682			} else {
+  2683				swap = 0;
+  2684				top_win_pstate = sub_win->base.state;
+  2685				bottom_win_pstate = main_plane->state;
+  2686				src_glb_alpha_val = sub_win->base.state->alpha;
+  2687				dst_glb_alpha_val = main_win->base.state->alpha;
+  2688			}
+  2689	
+  2690			if (!top_win_pstate->fb)
+  2691				return;
+  2692	
+  2693			if (top_win_pstate->pixel_blend_mode == DRM_MODE_BLEND_PREMULTI)
+  2694				premulti_en = true;
+  2695			else
+  2696				premulti_en = false;
+  2697	
+  2698			src_pixel_alpha_en = is_alpha_support(top_win_pstate->fb->format->format);
+  2699		}
+  2700	
+  2701		if (!bottom_win_pstate->fb)
+  2702			return;
+  2703	
+  2704		alpha_config.src_premulti_en = premulti_en;
+  2705		alpha_config.dst_premulti_en = false;
+  2706		alpha_config.src_pixel_alpha_en = src_pixel_alpha_en;
+  2707		alpha_config.dst_pixel_alpha_en = true; /* alpha value need transfer to next mix */
+  2708		alpha_config.src_glb_alpha_value = src_glb_alpha_val;
+  2709		alpha_config.dst_glb_alpha_value = dst_glb_alpha_val;
+  2710		vop2_parse_alpha(&alpha_config, &alpha);
+  2711	
+  2712		alpha.src_color_ctrl.bits.src_dst_swap = swap;
+  2713		vop2_writel(vop2, src_color_ctrl_offset + offset, alpha.src_color_ctrl.val);
+  2714		vop2_writel(vop2, dst_color_ctrl_offset + offset, alpha.dst_color_ctrl.val);
+  2715		vop2_writel(vop2, src_alpha_ctrl_offset + offset, alpha.src_alpha_ctrl.val);
+  2716		vop2_writel(vop2, dst_alpha_ctrl_offset + offset, alpha.dst_alpha_ctrl.val);
+  2717	}
+  2718	
 
-        bridge@0 {
-                reg = <0>;
-                compatible = "toshiba,tc358762";
-
-                ports {
-                        #address-cells = <1>;
-                        #size-cells = <0>;
-
-                        port@0 {
-                                reg = <0>;
-                                bridge0_in: endpoint {
-                                        remote-endpoint = <&dsi0_out>;
-                                };
-                        };
-
-                        port@1 {
-                                reg = <1>;
-                                bridge0_out: endpoint {
-                                        remote-endpoint = <&panel0_in>;
-                                };
-                        };
-                };
-        };
-        ports {
-                port@1 {
-                        endpoint {
-                                remote-endpoint = <&bridge0_in>;
-                                data-lanes = <0 1 2 3>;
-                        };
-                };
-        };
-
-};
-
-Fixes: f7514a663016 ("of: property: fw_devlink: Add support for remote-endpoint")
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Stephen Boyd <swboyd@chromium.org>
-Cc: Saravana Kannan <saravanak@google.com>
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- drivers/of/property.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
-
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index f7229e4030e3..83548076ee63 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1249,7 +1249,6 @@ static struct device_node *parse_##fname(struct device_node *np,	     \
-  * @parse_prop.index: For properties holding a list of phandles, this is the
-  *		      index into the list
-  * @optional: Describes whether a supplier is mandatory or not
-- * @node_not_dev: The consumer node containing the property is never a device.
-  *
-  * Returns:
-  * parse_prop() return values are
-@@ -1261,7 +1260,6 @@ struct supplier_bindings {
- 	struct device_node *(*parse_prop)(struct device_node *np,
- 					  const char *prop_name, int index);
- 	bool optional;
--	bool node_not_dev;
- };
- 
- DEFINE_SIMPLE_PROP(interconnects, "interconnects", "#interconnect-cells")
-@@ -1285,7 +1283,6 @@ DEFINE_SIMPLE_PROP(pinctrl5, "pinctrl-5", NULL)
- DEFINE_SIMPLE_PROP(pinctrl6, "pinctrl-6", NULL)
- DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
- DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
--DEFINE_SIMPLE_PROP(remote_endpoint, "remote-endpoint", NULL)
- DEFINE_SIMPLE_PROP(pwms, "pwms", "#pwm-cells")
- DEFINE_SIMPLE_PROP(resets, "resets", "#reset-cells")
- DEFINE_SIMPLE_PROP(leds, "leds", NULL)
-@@ -1388,7 +1385,6 @@ static const struct supplier_bindings of_supplier_bindings[] = {
- 	{ .parse_prop = parse_pinctrl6, },
- 	{ .parse_prop = parse_pinctrl7, },
- 	{ .parse_prop = parse_pinctrl8, },
--	{ .parse_prop = parse_remote_endpoint, .node_not_dev = true, },
- 	{ .parse_prop = parse_pwms, },
- 	{ .parse_prop = parse_resets, },
- 	{ .parse_prop = parse_leds, },
-@@ -1437,9 +1433,7 @@ static int of_link_property(struct device_node *con_np, const char *prop_name)
- 		while ((phandle = s->parse_prop(con_np, prop_name, i))) {
- 			struct device_node *con_dev_np;
- 
--			con_dev_np = s->node_not_dev
--					? of_get_compat_node(con_np)
--					: of_node_get(con_np);
-+			con_dev_np = of_node_get(con_np);
- 			matched = true;
- 			i++;
- 			of_link_to_phandle(con_dev_np, phandle);
--- 
-2.33.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
