@@ -2,84 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D6745F133
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:00:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE4D45F138
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:01:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378193AbhKZQDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:03:44 -0500
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:13535 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351932AbhKZQBn (ORCPT
+        id S1378289AbhKZQEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:04:55 -0500
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:60261 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344571AbhKZQCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:01:43 -0500
-IronPort-Data: =?us-ascii?q?A9a23=3A4Fb3CKMmEU7sQsvvrR10lsFynXyQoLVcMsFnjC/?=
- =?us-ascii?q?WdVXvhmkrgWYBnTRMD2HXPvePNDSnLdh1OYSyp0ICuZTUm99gGjLY11k9FiMQ8?=
- =?us-ascii?q?ZKt6fexdxqrYXvKdqUvdK/WhiknQoGowPscEzmM+X9BDpC79SMljPjSGOKmYAL?=
- =?us-ascii?q?5EnsZqTFMGX5JZS1Ly7ZRbr5A2bBVMivV0T/Ai5W31GyNh1aYBlkpB5er83uDi?=
- =?us-ascii?q?hhdVAQw5TTSbdgT1LPXeuJ84Jg3fcldJFOgKmVY83LTegrN8F251juxExYFAde?=
- =?us-ascii?q?51++hIghbGfuLYlbL0CIMHba6hF5DoDYz2+A1LpLwa28O0WXPzos3kYoT88boE?=
- =?us-ascii?q?2/FPYWV8AgZextFFyB3e6lP57bDJVC+t9aSxgvIaRMAxt0wVxBuZtNCkgpwKSQ?=
- =?us-ascii?q?UnRACExgEbRCCg/i/wr+2VMFqmMUvLcCtN4Qa0lljxyzYCfpjSJTHa6HL/sNDm?=
- =?us-ascii?q?m9pwMdUEp72a8MfLzgpcxXEZxxGP0w/CZQikePujX76GxVUpUyUrqcr+WXe5BJ?=
- =?us-ascii?q?+3aKrM9fPfNGOA8JPkS6wqmfP8mL2AxcXHMKQxCDD8X+2gOLL2yThV+o6Frq+/?=
- =?us-ascii?q?+JqiVuT7moNCREXXB2wpvzRok2vUshbIkMd9iYnha4s9UCqR5/2WBjQiHqIswE?=
- =?us-ascii?q?VXdVZFcU89gCBy6OS6AGcbkAATzhceJkludUwSDgCyFCEhZXqCCZpvbnTTmiSn?=
- =?us-ascii?q?p+QrDWvKW0JIGAYbAcaQgYfpdruuoc+ilTIVNkLOLbznNT/FDXY2z2MozUinbI?=
- =?us-ascii?q?VjN5N26jT1UrInjelvYTAZggr5wnWVySu6QYRWWIPT+RE8nDQ6eoFddzJCwja+?=
- =?us-ascii?q?SFbxY3EtLpIE4mL0i2LWuQEWr+zj8tp+Qb02TZHd6TNPRz0k5J7Qb1t3Q=3D?=
- =?us-ascii?q?=3D?=
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A8gdBXqN1feC728BcTtSjsMiBIKoaSvp037Dk?=
- =?us-ascii?q?7SxMoHtuA6mlfqGV7ZYmPHDP4wr5NEtMpTniAtjifZq/z/9ICOAqVN+ftW/d11?=
- =?us-ascii?q?dAR7sN0WKN+Vfd8lXFltJg6Q=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.87,266,1631570400"; 
-   d="scan'208";a="6390362"
-Received: from clt-128-93-176-202.vpn.inria.fr ([128.93.176.202])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 16:58:25 +0100
-Date:   Fri, 26 Nov 2021 16:58:22 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Akhil R <akhilrajeev@nvidia.com>
-cc:     kbuild-all@lists.01.org, dan.j.williams@intel.com,
-        devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
-        jonathanh@nvidia.com, kyarlagadda@nvidia.com, ldewangan@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        p.zabel@pengutronix.de, rgumasta@nvidia.com
-Subject: [PATCH] dmaengine: tegra: fix platform_no_drv_owner.cocci warnings
-Message-ID: <alpine.DEB.2.22.394.2111261655450.18994@hadrien>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Fri, 26 Nov 2021 11:02:55 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 7C1B33201C28;
+        Fri, 26 Nov 2021 10:59:39 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Fri, 26 Nov 2021 10:59:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=dmgaTP58NH4ePLiMzG6Qj5sblT+
+        /q5Jgks1Y7IsxJ78=; b=lmXs7FQqFmEbxO4q8ojSaE+MkGKchooj7FD+9YAJenI
+        cBvdhtXOIlid4c4USb4QSldF6nIIheabMZR4jOXoFoX0JiXPiJ/wHDx7Lv4Y7dvX
+        oHW3KIq+4JBhCBnlJYBZUisllOMC2AgnTvlpVxc7fohBDnm8pKW7C9Td05+26XoM
+        Y5Ws1IK1O+177LTj+Wqgus6YrNSoekUhBk/qd5IfXTgu4BkHcM4QSgfw3ntLQkfF
+        Kn3uGGYRhBM7DDrpQ45/ysVMRvxeZa2J3qKjoNL3bqswu/tDO95MyMg+WCjFgBW4
+        OAxDyPUdJNS+MgJU6oIEknZ4UPiUr3fmdOQrdJVtVPQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=dmgaTP
+        58NH4ePLiMzG6Qj5sblT+/q5Jgks1Y7IsxJ78=; b=kF3ABcUMu12eLzyYnO7l+a
+        D0Igwxzy5bB4Cq+QwbP16bPPgKw0cdPH5maJPKcNAq3yEY2/mHgHgrIghT156SQn
+        zgUYJHCrdjmvIOhkfDgZbkv+DDXv/BgD7/cViXcPt0r3lrkt9WKHSpVxn16LSwLA
+        GabdZiYxo92KnT4MypRKbQRGPGN3muO6fxXiLNmu8BZI9RCE8kg/KTSZCiMYreaS
+        E+ISpsqJGTupc+E1I71q7QzsSdzUnC0XifTL6AAeMzK8C8IsPSyCCWdLG/6aKegB
+        9OPqhljg0kwpejWpYGtztkUv4DYqhh8K1S1QeBfkQ4aP7Ttg5UzkT6WZyL3d8iKQ
+        ==
+X-ME-Sender: <xms:agShYYS69Y-YjA4CnQBLdwsmGl6J3ZVM0beT_DjtC--IQFz8bx3CPw>
+    <xme:agShYVwe2cJxBHOikUagDSyKmxOr5yMC6SfKL8lIjiNaVXNez9e6QaOgeKwhFkCPW
+    jV3LUPSDNPdAt0kuZk>
+X-ME-Received: <xmr:agShYV3t6MMgzNimVdsaHWC_T07bLfJDzYVAZWFRtlpeeFj8rJMopA9ZuwWpz7rRSvdUHtLJ33mlxnD5lEAz7VvgoB6IRc2QJw4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrhedvgdekudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
+    igihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:agShYcAKDmz8_16VpNidQG_JQ-YxPST4YXo8VKIQNcAPRsOaaVMXhw>
+    <xmx:agShYRjY5kTYQ7v0sht9mlkf-8buJ1vqGH3zM8ZzElCu_1oGp6iREw>
+    <xmx:agShYYoudkPAGFAa5FxrV5lRH-gype9Os8Y89D5jiMqAJhfkRD85HA>
+    <xmx:agShYSXn0TWmxg1aPemRas7vbQG6qaqGtSVZJcmklBfOzv27o3LB4Q>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 26 Nov 2021 10:59:37 -0500 (EST)
+Date:   Fri, 26 Nov 2021 16:59:35 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] leds: sun50i-r329: New driver for the R329/D1 LED
+ controller
+Message-ID: <20211126155935.2zagoe6gfkh5pi22@houat>
+References: <20211119054044.16286-1-samuel@sholland.org>
+ <20211119054044.16286-2-samuel@sholland.org>
+ <20211119082850.lrfq2wuyzhyvczdi@gilmour>
+ <fd4d08ee-3048-a54a-58d2-9510413c166f@sholland.org>
+ <20211123163945.xj2xmqymj3dkba55@gilmour>
+ <e753c12a-d586-18fc-7f4a-01a9f6df1750@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ff7kew5vgfu2vnrs"
+Content-Disposition: inline
+In-Reply-To: <e753c12a-d586-18fc-7f4a-01a9f6df1750@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
 
-No need to set .owner here. The core will do it.
+--ff7kew5vgfu2vnrs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Generated by: scripts/coccinelle/api/platform_no_drv_owner.cocci
+On Thu, Nov 25, 2021 at 09:26:15AM -0600, Samuel Holland wrote:
+> >>>> +	ret =3D sun50i_r329_ledc_resume(dev);
+> >>>> +	if (ret)
+> >>>> +		return ret;
+> >>>
+> >>> You seem to fill the runtime_pm hooks, but only call them directly and
+> >>> never enable runtime_pm on that device, is that intentional?
+> >>
+> >> Yes. I did not want to delay the initial version by adding runtime PM
+> >> (and debugging the refcounts) when the driver already works now.
+> >> However, I had runtime/system PM in mind while writing the driver.
+> >>
+> >> If you think it is too confusing, I could rename the functions to
+> >> something like sun50i_r329_ledc_hw_init / sun50i_r329_ledc_hw_exit.
+> >=20
+> > It's not really the functions themselves that are confusing but rather
+> > that you set them as runtime_pm hooks.
+>=20
+> I do not set these functions as runtime PM hooks. SIMPLE_DEV_PM_OPS only =
+sets
+> the system PM hooks, for "suspend to RAM and hibernation." Maybe you are
+> thinking of SET_RUNTIME_PM_OPS, which I do not use?
 
-CC: Akhil R <akhilrajeev@nvidia.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
----
+Ah, right, it's all good then, sorry for the noise
 
-url:    https://github.com/0day-ci/linux/commits/Akhil-R/Add-NVIDIA-Tegra-GPC-DMA-driver/20211122-173019
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-:::::: branch date: 29 hours ago
-:::::: commit date: 29 hours ago
+Maxime
 
- tegra186-gpc-dma.c |    1 -
- 1 file changed, 1 deletion(-)
+--ff7kew5vgfu2vnrs
+Content-Type: application/pgp-signature; name="signature.asc"
 
---- a/drivers/dma/tegra186-gpc-dma.c
-+++ b/drivers/dma/tegra186-gpc-dma.c
-@@ -1268,7 +1268,6 @@ static const struct __maybe_unused dev_p
- static struct platform_driver tegra_dmac_driver = {
- 	.driver = {
- 		.name	= "tegra-gpcdma",
--		.owner = THIS_MODULE,
- 		.pm	= &tegra_dma_dev_pm_ops,
- 		.of_match_table = tegra_dma_of_match,
- 	},
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYaEEZwAKCRDj7w1vZxhR
+xfsMAP4rc4xw/hAxBA7YrYauzpDFwW6NfMfLg7G896MyXDz7TAEAiMcCp2cjEa9O
+WDUvlMV0RLyF7t54wrMybSVPFw/73gk=
+=OiNf
+-----END PGP SIGNATURE-----
+
+--ff7kew5vgfu2vnrs--
