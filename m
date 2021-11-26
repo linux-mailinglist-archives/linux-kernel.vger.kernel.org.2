@@ -2,77 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E6FB45EA98
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:43:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C3145EA9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376421AbhKZJqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 04:46:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:54206 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1376428AbhKZJoC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 04:44:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637919650;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7UUe35TCPwnWrlRfuadrJjdwO/yhSUHrYr8BjHXjKnE=;
-        b=PVg9JXUNuA0Uk/eggsrFyMyEQkHMtRr7MtaLhLTxcsQiKExoScDQHPs/LRc9V4/0zWDZn7
-        Q7LoJw7QHH5dBjb1JGiI/3mHh9XsCmQvgKFwld3V/QYiw/RmojjOlEI+yeXoRNEe0OIxKz
-        +AljRw/Y9OtdtS5aRGb8gBPo/fZutVs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-537-iMtrPbjDPVKCij-lsuqYIQ-1; Fri, 26 Nov 2021 04:40:44 -0500
-X-MC-Unique: iMtrPbjDPVKCij-lsuqYIQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3B2FE83DD20;
-        Fri, 26 Nov 2021 09:40:42 +0000 (UTC)
-Received: from [10.39.194.96] (unknown [10.39.194.96])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F1B8E19C46;
-        Fri, 26 Nov 2021 09:40:17 +0000 (UTC)
-Message-ID: <7693d3a8-fea7-fb61-b3fb-d0bf8a89c57b@redhat.com>
-Date:   Fri, 26 Nov 2021 10:40:16 +0100
+        id S1376524AbhKZJqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 04:46:54 -0500
+Received: from mga17.intel.com ([192.55.52.151]:24552 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238162AbhKZJov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 04:44:51 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="216348133"
+X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
+   d="scan'208";a="216348133"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 01:40:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
+   d="scan'208";a="650940319"
+Received: from kuha.fi.intel.com ([10.237.72.166])
+  by fmsmga001.fm.intel.com with SMTP; 26 Nov 2021 01:40:45 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 26 Nov 2021 11:40:44 +0200
+Date:   Fri, 26 Nov 2021 11:40:44 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        wonchung@google.com, bleung@chromium.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Noralf =?iso-8859-1?Q?Tr=F8nnes?= <noralf@tronnes.org>,
+        Rajat Jain <rajatja@google.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH 0/4] usb: Use notifier for linking Type C ports.
+Message-ID: <YaCrnMAEXnG+VO6d@kuha.fi.intel.com>
+References: <20211124231028.696982-1-pmalani@chromium.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [RFC PATCH v3 53/59] KVM: x86: Add a helper function to restore 4
- host MSRs on exit to user space
-Content-Language: en-US
-To:     Chao Gao <chao.gao@intel.com>, Thomas Gleixner <tglx@linutronix.de>
-Cc:     isaku.yamahata@intel.com, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@gmail.com
-References: <cover.1637799475.git.isaku.yamahata@intel.com>
- <4ede5c987a4ae938a37ab7fe70d5e1d561ee97d4.1637799475.git.isaku.yamahata@intel.com>
- <878rxcht3g.ffs@tglx> <20211126091913.GA11523@gao-cwp>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211126091913.GA11523@gao-cwp>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124231028.696982-1-pmalani@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/21 10:19, Chao Gao wrote:
-> Of course. Will remove all "later patch" phrases.
+On Wed, Nov 24, 2021 at 03:10:06PM -0800, Prashant Malani wrote:
+> This series resolves the cyclic dependency error which was introduced by
+> commit 63cd78617350 ("usb: Link the ports to the connectors they are
+> attached to") which lead to it being reverted. The approach here is to
+> use a notifier to link a new Type C port to pre-existing USB ports
+> instead of calling an iterator of usb ports from the Type C connector
+> class. This allows commit 63cd78617350 ("usb: Link the ports to the
+> connectors they are attached to") to then be submitted without any
+> depmod cyclic dependency error.
+> 
+> The final patch removes the usb port iterator since it is no longer
+> needed.
 
-Chao, see my comment on patch 54, for how to do this.  In this case, 
-this patch would be right before the one that enables KVM_RUN on a TDX 
-module.
+This is not enough. Build the Type-C Class as a module and the USB bus
+statically, and the links will not get created.
 
-Paolo
+I'm not sure you actually achieve much with this series, and I'm not
+sure this approach will ever fully solve the problem. As long as we
+have to declare API, we will have the circular dependency issue on our
+hands. But there are ways to avoid that.
 
+There is for example the component framework (drivers/base/component.c)
+that I've been thinking about using here. In this case it would work
+so that you declare the USB Type-C part as your aggregate driver, and
+everything that is connected to it (so USB ports, DisplayPorts, TBT,
+etc.) would then just declare themselves as general components. Could
+you take a look at that?
+
+thanks,
+
+-- 
+heikki
