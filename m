@@ -2,133 +2,360 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1918D45F002
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:38:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A484445EF8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:05:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377766AbhKZOlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 09:41:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377828AbhKZOjG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 09:39:06 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB14C0619DE;
-        Fri, 26 Nov 2021 06:03:25 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id w1so39517069edc.6;
-        Fri, 26 Nov 2021 06:03:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JBMGUDVxwKtvGxZl8Me4y2JzyAcn1+e3Ny5rJgr5yXo=;
-        b=GTvJ+9xGy0b+U9k5O+gjafXYaURTKxwOjBRV82D0mrG4fmhpjqkJSx/m14EMsuLBgy
-         xWVBppUlJvyRIaID1UHB4qCw45EEeWY9CCKPtgqH9FdbfKkJtGDh6W1ABKhsk5XD9pG/
-         +CjLOF5PlKRtNZRKinhuNaVP30boQ/ZRARpSE1QPYN9zVtMnS/w623fEPkugwgbQldmE
-         jea4JICn6QFcOiaFxxMscNlSfR2QwHtKNlg9pgCvFUnDSKn7yed6m2E11K3p39RuS9Xg
-         CHPr2DXhgFfZ3e31K5VY+ZJgzhVN9LqkDXg0Ml1z2gi/wwtWz7JhqmZm35kR60tNaN2X
-         h7aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JBMGUDVxwKtvGxZl8Me4y2JzyAcn1+e3Ny5rJgr5yXo=;
-        b=BdNSk8VU/2NiaiI06caXgd0DWFMzX1jkhKQ/gvXxiWjAzRh2CGm9QIHKzvD9Rc2e43
-         g2bxXKaoaT+tEHLJK6+PBXihMXZlPHRT6BQq5YA2AJI8VgREUBQXhhC5t4ce9SkcPmU0
-         V0ol9ZiHqgyo5kIOuO/0vBg4udHj30SYNHNhh9ywFOqTdkiParGwXzRqTcnYPX2ndFdK
-         wXKGk1i/wc+ajArPVLv5JGFo/JIVxfexa/KeDahcFqp9OD2AcvfkwRU2yNpuusAAfjC5
-         /A7gY6HYz9EPnmBp8ya+Nsq+Fcw/KZOryLSkYUvtPA1wsM3hZXHMhbeZjCQbWOEQVMMo
-         cEpg==
-X-Gm-Message-State: AOAM533hyHwYRt/arfNneOPdwyEQKQ9+GHIb13WPUpYbTug6wjxOah0g
-        FxcXjBgFbmTbpfifs832OkUH0PAZYt9+EDrUzEY=
-X-Google-Smtp-Source: ABdhPJwQcvfywxLUOt/7eTZuUFffT9ho18Gm9PwKOl+HSnZEPb47vv8qfxiuT32OkPVQ9/VpvEuQO9pn+dI3MI5yF/U=
-X-Received: by 2002:a50:d741:: with SMTP id i1mr47189263edj.37.1637935404131;
- Fri, 26 Nov 2021 06:03:24 -0800 (PST)
+        id S1353488AbhKZOIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 09:08:23 -0500
+Received: from mga03.intel.com ([134.134.136.65]:44080 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237803AbhKZOGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 09:06:22 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="235607167"
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
+   d="scan'208";a="235607167"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 06:03:09 -0800
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
+   d="scan'208";a="498409922"
+Received: from oletychx-mobl.ger.corp.intel.com (HELO [10.252.50.138]) ([10.252.50.138])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 06:03:06 -0800
+Message-ID: <cc2c3e2c-6993-b742-53d6-c6078a3ced09@linux.intel.com>
+Date:   Fri, 26 Nov 2021 15:03:04 +0100
 MIME-Version: 1.0
-References: <20210329174928.18816-1-henning.schild@siemens.com>
- <20210329174928.18816-3-henning.schild@siemens.com> <CAHp75Vdh_YAJLE4DWPhxhYY1g5Fc_7EFgr4FED3crpfpzwXeRg@mail.gmail.com>
- <20211126142827.78d2348d@md1za8fc.ad001.siemens.net>
-In-Reply-To: <20211126142827.78d2348d@md1za8fc.ad001.siemens.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 26 Nov 2021 16:02:48 +0200
-Message-ID: <CAHp75VeX89T7t=Q7-q56sndbfRyuPDEUjSMsMFo4sS8cb9AAmw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] leds: simatic-ipc-leds: add new driver for Siemens
- Industial PCs
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.3.2
+Subject: Re: [PATCH v7 2/6] drm/sprd: add Unisoc's drm kms master
+Content-Language: en-US
+To:     Kevin Tang <kevin3.tang@gmail.com>, mripard@kernel.org,
+        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        robh+dt@kernel.org, mark.rutland@arm.com, pony1.wu@gmail.com
+Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+References: <20211025093418.20545-1-kevin3.tang@gmail.com>
+ <20211025093418.20545-3-kevin3.tang@gmail.com>
+From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+In-Reply-To: <20211025093418.20545-3-kevin3.tang@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 3:28 PM Henning Schild
-<henning.schild@siemens.com> wrote:
-> Am Tue, 30 Mar 2021 14:04:35 +0300
-> schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
-> > On Mon, Mar 29, 2021 at 8:59 PM Henning Schild
-> > <henning.schild@siemens.com> wrote:
-
-...
-
-> > > +static struct simatic_ipc_led simatic_ipc_leds_mem[] = {
-> > > +       {0x500 + 0x1A0, "red:" LED_FUNCTION_STATUS "-1"},
-> > > +       {0x500 + 0x1A8, "green:" LED_FUNCTION_STATUS "-1"},
-> > > +       {0x500 + 0x1C8, "red:" LED_FUNCTION_STATUS "-2"},
-> > > +       {0x500 + 0x1D0, "green:" LED_FUNCTION_STATUS "-2"},
-> > > +       {0x500 + 0x1E0, "red:" LED_FUNCTION_STATUS "-3"},
-> > > +       {0x500 + 0x198, "green:" LED_FUNCTION_STATUS "-3"},
-> > > +       { }
-> > > +};
-> >
-> > It seems to me like poking GPIO controller registers directly. This
-> > is not good. The question still remains: Can we simply register a
-> > GPIO (pin control) driver and use an LED GPIO driver with an
-> > additional board file that instantiates it?
+On 25-10-2021 11:34, Kevin Tang wrote:
+> Adds drm support for the Unisoc's display subsystem.
 >
-> The short answer for v4 will be "No we can not!". The pinctrl drivers
-> do not currently probe on any of the devices and attempts to fix that
-> have failed or gut stuck. I tried to help out where i could and waited
-> for a long time.
+> This is drm kms driver, this driver provides support for the
+> application framework in Android, Yocto and more.
+>
+> Application framework can access Unisoc's display internal
+> peripherals through libdrm or libkms, it's test ok by modetest
+> (DRM/KMS test tool) and Android HWComposer.
+>
+> Cc: Orson Zhai <orsonzhai@gmail.com>
+> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+> Signed-off-by: Kevin Tang <kevin.tang@unisoc.com>
+>
+> v4:
+>   - Move the devm_drm_dev_alloc to master_ops->bind function.
+>   - The managed drmm_mode_config_init() it is no longer necessary for drivers to explicitly call drm_mode_config_cleanup, so delete it.
+>
+> v5:
+>   - Remove subdir-ccflgas-y for Makefile.
+>   - Keep the selects sorted by alphabet for Kconfig.
+> ---
+>  drivers/gpu/drm/Kconfig         |   2 +
+>  drivers/gpu/drm/Makefile        |   1 +
+>  drivers/gpu/drm/sprd/Kconfig    |  11 ++
+>  drivers/gpu/drm/sprd/Makefile   |   3 +
+>  drivers/gpu/drm/sprd/sprd_drm.c | 203 ++++++++++++++++++++++++++++++++
+>  drivers/gpu/drm/sprd/sprd_drm.h |  16 +++
+>  6 files changed, 236 insertions(+)
+>  create mode 100644 drivers/gpu/drm/sprd/Kconfig
+>  create mode 100644 drivers/gpu/drm/sprd/Makefile
+>  create mode 100644 drivers/gpu/drm/sprd/sprd_drm.c
+>  create mode 100644 drivers/gpu/drm/sprd/sprd_drm.h
+>
+> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+> index 2a926d0de..8220be1b5 100644
+> --- a/drivers/gpu/drm/Kconfig
+> +++ b/drivers/gpu/drm/Kconfig
+> @@ -380,6 +380,8 @@ source "drivers/gpu/drm/xlnx/Kconfig"
+>  
+>  source "drivers/gpu/drm/gud/Kconfig"
+>  
+> +source "drivers/gpu/drm/sprd/Kconfig"
+> +
+>  config DRM_HYPERV
+>  	tristate "DRM Support for Hyper-V synthetic video device"
+>  	depends on DRM && PCI && MMU && HYPERV
+> diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
+> index 0dff40bb8..ec2756806 100644
+> --- a/drivers/gpu/drm/Makefile
+> +++ b/drivers/gpu/drm/Makefile
+> @@ -127,3 +127,4 @@ obj-$(CONFIG_DRM_TIDSS) += tidss/
+>  obj-y			+= xlnx/
+>  obj-y			+= gud/
+>  obj-$(CONFIG_DRM_HYPERV) += hyperv/
+> +obj-$(CONFIG_DRM_SPRD) += sprd/
+> diff --git a/drivers/gpu/drm/sprd/Kconfig b/drivers/gpu/drm/sprd/Kconfig
+> new file mode 100644
+> index 000000000..726c3e76d
+> --- /dev/null
+> +++ b/drivers/gpu/drm/sprd/Kconfig
+> @@ -0,0 +1,11 @@
+> +config DRM_SPRD
+> +	tristate "DRM Support for Unisoc SoCs Platform"
+> +	depends on ARCH_SPRD || COMPILE_TEST
+> +	depends on DRM && OF
+> +	select DRM_GEM_CMA_HELPER
+> +	select DRM_KMS_CMA_HELPER
+> +	select DRM_KMS_HELPER
+> +	help
+> +	  Choose this option if you have a Unisoc chipset.
+> +	  If M is selected the module will be called sprd_drm.
+> +
+> diff --git a/drivers/gpu/drm/sprd/Makefile b/drivers/gpu/drm/sprd/Makefile
+> new file mode 100644
+> index 000000000..9850f00b8
+> --- /dev/null
+> +++ b/drivers/gpu/drm/sprd/Makefile
+> @@ -0,0 +1,3 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +obj-y := sprd_drm.o
+> diff --git a/drivers/gpu/drm/sprd/sprd_drm.c b/drivers/gpu/drm/sprd/sprd_drm.c
+> new file mode 100644
+> index 000000000..bb87f28f2
+> --- /dev/null
+> +++ b/drivers/gpu/drm/sprd/sprd_drm.c
+> @@ -0,0 +1,203 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2020 Unisoc Inc.
+> + */
+> +
+> +#include <linux/component.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/of_graph.h>
+> +#include <linux/of_platform.h>
+> +
+> +#include <drm/drm_atomic_helper.h>
+> +#include <drm/drm_crtc_helper.h>
+> +#include <drm/drm_drv.h>
+> +#include <drm/drm_gem_cma_helper.h>
+> +#include <drm/drm_gem_framebuffer_helper.h>
+> +#include <drm/drm_of.h>
+> +#include <drm/drm_probe_helper.h>
+> +#include <drm/drm_vblank.h>
+> +
+> +#include "sprd_drm.h"
+> +
+> +#define DRIVER_NAME	"sprd"
+> +#define DRIVER_DESC	"Spreadtrum SoCs' DRM Driver"
+> +#define DRIVER_DATE	"20200201"
+> +#define DRIVER_MAJOR	1
+> +#define DRIVER_MINOR	0
+> +
+> +static const struct drm_mode_config_helper_funcs sprd_drm_mode_config_helper = {
+> +	.atomic_commit_tail = drm_atomic_helper_commit_tail_rpm,
+> +};
+> +
+> +static const struct drm_mode_config_funcs sprd_drm_mode_config_funcs = {
+> +	.fb_create = drm_gem_fb_create,
+> +	.atomic_check = drm_atomic_helper_check,
+> +	.atomic_commit = drm_atomic_helper_commit,
+> +};
+> +
+> +static void sprd_drm_mode_config_init(struct drm_device *drm)
+> +{
+> +	drm->mode_config.min_width = 0;
+> +	drm->mode_config.min_height = 0;
+> +	drm->mode_config.max_width = 8192;
+> +	drm->mode_config.max_height = 8192;
+> +	drm->mode_config.allow_fb_modifiers = true;
+> +
+> +	drm->mode_config.funcs = &sprd_drm_mode_config_funcs;
+> +	drm->mode_config.helper_private = &sprd_drm_mode_config_helper;
+> +}
+> +
+> +DEFINE_DRM_GEM_CMA_FOPS(sprd_drm_fops);
+> +
+> +static struct drm_driver sprd_drm_drv = {
+> +	.driver_features	= DRIVER_GEM | DRIVER_MODESET | DRIVER_ATOMIC,
+> +	.fops			= &sprd_drm_fops,
+> +
+> +	/* GEM Operations */
+> +	DRM_GEM_CMA_DRIVER_OPS,
+> +
+> +	.name			= DRIVER_NAME,
+> +	.desc			= DRIVER_DESC,
+> +	.date			= DRIVER_DATE,
+> +	.major			= DRIVER_MAJOR,
+> +	.minor			= DRIVER_MINOR,
+> +};
+> +
+> +static int sprd_drm_bind(struct device *dev)
+> +{
+> +	struct platform_device *pdev = to_platform_device(dev);
+> +	struct drm_device *drm;
+> +	struct sprd_drm *sprd;
+> +	int ret;
+> +
+> +	sprd = devm_drm_dev_alloc(dev, &sprd_drm_drv, struct sprd_drm, drm);
+> +	if (IS_ERR(sprd))
+> +		return PTR_ERR(sprd);
+> +
+> +	drm = &sprd->drm;
+> +	platform_set_drvdata(pdev, drm);
+> +
+> +	ret = drmm_mode_config_init(drm);
+> +	if (ret)
+> +		return ret;
+> +
+> +	sprd_drm_mode_config_init(drm);
+> +
+> +	/* bind and init sub drivers */
+> +	ret = component_bind_all(drm->dev, drm);
+> +	if (ret) {
+> +		drm_err(drm, "failed to bind all component.\n");
+> +		return ret;
+> +	}
+> +
+> +	/* vblank init */
+> +	ret = drm_vblank_init(drm, drm->mode_config.num_crtc);
+> +	if (ret) {
+> +		drm_err(drm, "failed to initialize vblank.\n");
+> +		goto err_unbind_all;
+> +	}
+> +
+> +	/* reset all the states of crtc/plane/encoder/connector */
+> +	drm_mode_config_reset(drm);
+> +
+> +	/* init kms poll for handling hpd */
+> +	drm_kms_helper_poll_init(drm);
+> +
+> +	ret = drm_dev_register(drm, 0);
+> +	if (ret < 0)
+> +		goto err_kms_helper_poll_fini;
+> +
+> +	return 0;
+> +
+> +err_kms_helper_poll_fini:
+> +	drm_kms_helper_poll_fini(drm);
+> +err_unbind_all:
+> +	component_unbind_all(drm->dev, drm);
+> +	return ret;
+> +}
+> +
+> +static void sprd_drm_unbind(struct device *dev)
+> +{
+> +	struct drm_device *drm = dev_get_drvdata(dev);
+> +
+> +	drm_dev_unregister(drm);
+> +
+> +	drm_kms_helper_poll_fini(drm);
+> +
+> +	component_unbind_all(drm->dev, drm);
+> +}
+> +
+> +static const struct component_master_ops drm_component_ops = {
+> +	.bind = sprd_drm_bind,
+> +	.unbind = sprd_drm_unbind,
+> +};
+> +
+> +static int compare_of(struct device *dev, void *data)
+> +{
+> +	return dev->of_node == data;
+> +}
+> +
+> +static int sprd_drm_probe(struct platform_device *pdev)
+> +{
+> +	return drm_of_component_probe(&pdev->dev, compare_of, &drm_component_ops);
+> +}
+> +
+> +static int sprd_drm_remove(struct platform_device *pdev)
+> +{
+> +	component_master_del(&pdev->dev, &drm_component_ops);
+> +	return 0;
+> +}
+> +
+> +static void sprd_drm_shutdown(struct platform_device *pdev)
+> +{
+> +	struct drm_device *drm = platform_get_drvdata(pdev);
+> +
+> +	if (!drm) {
+> +		drm_warn(drm, "drm device is not available, no shutdown\n");
+> +		return;
+> +	}
+> +
+> +	drm_atomic_helper_shutdown(drm);
+> +}
+> +
+> +static const struct of_device_id drm_match_table[] = {
+> +	{ .compatible = "sprd,display-subsystem", },
+> +	{ /* sentinel */ },
+> +};
+> +MODULE_DEVICE_TABLE(of, drm_match_table);
+> +
+> +static struct platform_driver sprd_drm_driver = {
+> +	.probe = sprd_drm_probe,
+> +	.remove = sprd_drm_remove,
+> +	.shutdown = sprd_drm_shutdown,
+> +	.driver = {
+> +		.name = "sprd-drm-drv",
+> +		.of_match_table = drm_match_table,
+> +	},
+> +};
+> +
+> +static struct platform_driver *sprd_drm_drivers[]  = {
+> +	&sprd_drm_driver,
+> +};
+> +
+> +static int __init sprd_drm_init(void)
+> +{
+> +	return platform_register_drivers(sprd_drm_drivers,
+> +					ARRAY_SIZE(sprd_drm_drivers));
+> +}
+> +
+> +static void __exit sprd_drm_exit(void)
+> +{
+> +	platform_unregister_drivers(sprd_drm_drivers,
+> +				    ARRAY_SIZE(sprd_drm_drivers));
+> +}
+> +
+> +module_init(sprd_drm_init);
+> +module_exit(sprd_drm_exit);
+> +
+> +MODULE_AUTHOR("Leon He <leon.he@unisoc.com>");
+> +MODULE_AUTHOR("Kevin Tang <kevin.tang@unisoc.com>");
+> +MODULE_DESCRIPTION("Unisoc DRM KMS Master Driver");
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/gpu/drm/sprd/sprd_drm.h b/drivers/gpu/drm/sprd/sprd_drm.h
+> new file mode 100644
+> index 000000000..9781fd591
+> --- /dev/null
+> +++ b/drivers/gpu/drm/sprd/sprd_drm.h
+> @@ -0,0 +1,16 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2020 Unisoc Inc.
+> + */
+> +
+> +#ifndef _SPRD_DRM_H_
+> +#define _SPRD_DRM_H_
+> +
+> +#include <drm/drm_atomic.h>
+> +#include <drm/drm_print.h>
+> +
+> +struct sprd_drm {
+> +	struct drm_device drm;
+> +};
 
-I see, unfortunately I have stuck with some other (more important
-tasks) and can't fulfil this, but I still consider it's no go for
-driver poking pin control registers directly. Lemme see if I can
-prioritize this for next week.
+I've seen this in the patch adding sprd_plane too, are you planning to extend both structs?
 
-> Now my take is to turn the order around. We go in like that and will
-> happily switch to pinctrl if that ever comes up on the machines.
-> Meaning P2SB series on top of this, no more delays please.
+~Maarten
 
-I don't want to slip bad code into the kernel where we can avoid that.
-
-> We do use request_region so have a mutex in place. Meaning we really
-> only touch GPIO while pinctrl does not!
-
-I haven't got this. On Intel SoCs GPIO is a part of pin control
-registers. You can't touch GPIO without touching pin control.
-
-> I see no issue here, waited for a long time and now expect to be
-> allowed to get merged first.
-
-Okay, I have these questions / asks so far:
-1) Can firmware be fixed in order to provide an ACPI table for the pin
-control devices?
-2) Can you share firmware (BIOS ROM file I suppose) that I may flash
-on an Apollo Lake machine and see if I can reproduce the issue?
-3) As may be a last resort, can you share (remotely) or even send to
-us the device in question to try?
-
--- 
-With Best Regards,
-Andy Shevchenko
