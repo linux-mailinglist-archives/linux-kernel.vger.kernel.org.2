@@ -2,87 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42BDD45EDF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:33:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F52745EDE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:31:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352564AbhKZMhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 07:37:03 -0500
-Received: from mga07.intel.com ([134.134.136.100]:44524 "EHLO mga07.intel.com"
+        id S1347767AbhKZMei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 07:34:38 -0500
+Received: from mga09.intel.com ([134.134.136.24]:37544 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377259AbhKZMfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 07:35:02 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="299061174"
+        id S1347215AbhKZMce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 07:32:34 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="235478921"
 X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
-   d="scan'208";a="299061174"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 04:29:00 -0800
-X-ExtLoop1: 1
+   d="scan'208";a="235478921"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 04:29:21 -0800
 X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
-   d="scan'208";a="457648785"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 26 Nov 2021 04:28:58 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqaLZ-00085P-J0; Fri, 26 Nov 2021 12:28:57 +0000
-Date:   Fri, 26 Nov 2021 20:28:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Peter Collingbourne <pcc@google.com>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: mm/kasan/sw_tags.c:211:6: warning: no previous prototype for
- function 'kasan_tag_mismatch'
-Message-ID: <202111262016.vdEfdFNO-lkp@intel.com>
+   d="scan'208";a="607851585"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 04:29:19 -0800
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with ESMTP id 6306820165;
+        Fri, 26 Nov 2021 14:28:47 +0200 (EET)
+Date:   Fri, 26 Nov 2021 14:28:47 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     mchehab@kernel.org, broonie@kernel.org, kernel@puri.sm,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-pm@vger.kernel.org, Angus Ainslie <angus@akkea.ca>
+Subject: Re: [PATCH v2] media: i2c: dw9714: add optional regulator support
+Message-ID: <YaDS/+QbTWRl3cOS@paasikivi.fi.intel.com>
+References: <20211126090107.1243558-1-martin.kepplinger@puri.sm>
+ <YaC6nZIQOsrpBY8V@paasikivi.fi.intel.com>
+ <8d72c895ece6dce7d8badb241eebcbe076a03f81.camel@puri.sm>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8d72c895ece6dce7d8badb241eebcbe076a03f81.camel@puri.sm>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Fri, Nov 26, 2021 at 12:06:03PM +0100, Martin Kepplinger wrote:
+> Am Freitag, dem 26.11.2021 um 12:44 +0200 schrieb Sakari Ailus:
+> > Hi Martin,
+> > 
+> > On Fri, Nov 26, 2021 at 10:01:07AM +0100, Martin Kepplinger wrote:
+> > > From: Angus Ainslie <angus@akkea.ca>
+> > > 
+> > > Allow the dw9714 to control a regulator and adjust suspend() and
+> > > resume()
+> > > to support both runtime and system pm.
+> > > 
+> > > Signed-off-by: Angus Ainslie <angus@akkea.ca>
+> > > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> > > ---
+> > > 
+> > > revision history
+> > > ----------------
+> > > 
+> > > v2: (thank you Mark)
+> > >  * simplify the regulator_get_optional() error path
+> > >  * fix regulator usage during probe()
+> > > 
+> > > v1:
+> > > https://lore.kernel.org/linux-media/20211125080922.978583-1-martin.kepplinger@puri.sm/
+> > > 
+> > > 
+> > > 
+> > >  drivers/media/i2c/dw9714.c | 39
+> > > ++++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 39 insertions(+)
+> > > 
+> > > diff --git a/drivers/media/i2c/dw9714.c
+> > > b/drivers/media/i2c/dw9714.c
+> > > index 3863dfeb8293..e8cc19b89861 100644
+> > > --- a/drivers/media/i2c/dw9714.c
+> > > +++ b/drivers/media/i2c/dw9714.c
+> > > @@ -5,6 +5,7 @@
+> > >  #include <linux/i2c.h>
+> > >  #include <linux/module.h>
+> > >  #include <linux/pm_runtime.h>
+> > > +#include <linux/regulator/consumer.h>
+> > >  #include <media/v4l2-ctrls.h>
+> > >  #include <media/v4l2-device.h>
+> > >  #include <media/v4l2-event.h>
+> > > @@ -36,6 +37,7 @@ struct dw9714_device {
+> > >         struct v4l2_ctrl_handler ctrls_vcm;
+> > >         struct v4l2_subdev sd;
+> > >         u16 current_val;
+> > > +       struct regulator *vcc;
+> > >  };
+> > >  
+> > >  static inline struct dw9714_device *to_dw9714_vcm(struct v4l2_ctrl
+> > > *ctrl)
+> > > @@ -145,6 +147,21 @@ static int dw9714_probe(struct i2c_client
+> > > *client)
+> > >         if (dw9714_dev == NULL)
+> > >                 return -ENOMEM;
+> > >  
+> > > +       dw9714_dev->vcc = devm_regulator_get_optional(&client->dev,
+> > > "vcc");
+> > 
+> > You you used regular devm_regulator_get(), you could remove the error
+> > handling below. If there's no regulator, you'll simply get a dummy
+> > one.
+> 
+> ok thanks
+> 
+> 
+> > 
+> > > +       if (IS_ERR(dw9714_dev->vcc)) {
+> > > +               dev_dbg(&client->dev, "No vcc regulator found:
+> > > %ld\n",
+> > > +                       PTR_ERR(dw9714_dev->vcc));
+> > > +               dw9714_dev->vcc = NULL;
+> > > +       }
+> > > +
+> > > +       if (dw9714_dev->vcc) {
+> > 
+> > With (dummy) regulators, these checks become unnecessary.
+> > 
+> > > +               rval = regulator_enable(dw9714_dev->vcc);
+> > > +               if (rval < 0) {
+> > > +                       dev_err(&client->dev, "failed to enable
+> > > vcc: %d\n", rval);
+> > > +                       return rval;
+> > > +               }
+> > > +       }
+> > > +
+> > >         v4l2_i2c_subdev_init(&dw9714_dev->sd, client, &dw9714_ops);
+> > >         dw9714_dev->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE |
+> > >                                 V4L2_SUBDEV_FL_HAS_EVENTS;
+> > > @@ -200,6 +217,9 @@ static int __maybe_unused
+> > > dw9714_vcm_suspend(struct device *dev)
+> > >         struct dw9714_device *dw9714_dev = sd_to_dw9714_vcm(sd);
+> > >         int ret, val;
+> > >  
+> > > +       if (pm_runtime_suspended(&client->dev))
+> > > +               return 0;
+> > 
+> > This can't take place in a runtime PM suspend callback. You'll need
+> > to add
+> > system suspend callback for this.
+> 
+> but this function is both the system and runtime suspend callback.
+> doesn't splitting up the callbacks just add lines of code
+> unnecessarily?
 
-FYI, the error/warning still remains.
+Hmm. After thinking about this a little, I think this could indeed work.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   a4849f6000e29235a2707f22e39da6b897bb9543
-commit: 1cbdf60bd1b74e397d48aa877367cfc621f45ffe kasan: arm64: support specialized outlined tag mismatch checks
-date:   6 months ago
-config: arm64-randconfig-r003-20211116 (https://download.01.org/0day-ci/archive/20211126/202111262016.vdEfdFNO-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project fbe72e41b99dc7994daac300d208a955be3e4a0a)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install arm64 cross compiling tool for clang build
-        # apt-get install binutils-aarch64-linux-gnu
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1cbdf60bd1b74e397d48aa877367cfc621f45ffe
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout 1cbdf60bd1b74e397d48aa877367cfc621f45ffe
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=arm64 
+Yeah, please leave it as-is.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+> 
+> > 
+> > > +
+> > >         for (val = dw9714_dev->current_val & ~(DW9714_CTRL_STEPS -
+> > > 1);
+> > >              val >= 0; val -= DW9714_CTRL_STEPS) {
+> > >                 ret = dw9714_i2c_write(client,
+> > > @@ -208,6 +228,13 @@ static int __maybe_unused
+> > > dw9714_vcm_suspend(struct device *dev)
+> > >                         dev_err_once(dev, "%s I2C failure: %d",
+> > > __func__, ret);
+> > >                 usleep_range(DW9714_CTRL_DELAY_US,
+> > > DW9714_CTRL_DELAY_US + 10);
+> > >         }
+> > > +
+> > > +       if (dw9714_dev->vcc) {
+> > > +               ret = regulator_disable(dw9714_dev->vcc);
+> > > +               if (ret)
+> > > +                       dev_err(dev, "Failed to disable vcc: %d\n",
+> > > ret);
+> > > +       }
+> > > +
+> > >         return 0;
+> > >  }
+> > >  
+> > > @@ -224,6 +251,18 @@ static int  __maybe_unused
+> > > dw9714_vcm_resume(struct device *dev)
+> > >         struct dw9714_device *dw9714_dev = sd_to_dw9714_vcm(sd);
+> > >         int ret, val;
+> > >  
+> > > +       if (pm_runtime_suspended(&client->dev))
+> > 
+> > Same for this one.
+> > 
+> > > +               return 0;
+> > > +
+> > > +       if (dw9714_dev->vcc) {
+> > > +               ret = regulator_enable(dw9714_dev->vcc);
+> > > +               if (ret) {
+> > > +                       dev_err(dev, "Failed to enable vcc: %d\n",
+> > > ret);
+> > > +                       return ret;
+> > > +               }
+> > > +               usleep_range(1000, 2000);
+> > > +       }
+> > > +
+> > >         for (val = dw9714_dev->current_val % DW9714_CTRL_STEPS;
+> > >              val < dw9714_dev->current_val + DW9714_CTRL_STEPS - 1;
+> > >              val += DW9714_CTRL_STEPS) {
+> > 
+> 
+> 
 
-All warnings (new ones prefixed by >>):
-
->> mm/kasan/sw_tags.c:211:6: warning: no previous prototype for function 'kasan_tag_mismatch' [-Wmissing-prototypes]
-   void kasan_tag_mismatch(unsigned long addr, unsigned long access_info,
-        ^
-   mm/kasan/sw_tags.c:211:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   void kasan_tag_mismatch(unsigned long addr, unsigned long access_info,
-   ^
-   static 
-   1 warning generated.
-
-
-vim +/kasan_tag_mismatch +211 mm/kasan/sw_tags.c
-
-   210	
- > 211	void kasan_tag_mismatch(unsigned long addr, unsigned long access_info,
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+Sakari Ailus
