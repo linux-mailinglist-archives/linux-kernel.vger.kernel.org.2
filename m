@@ -2,104 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE66945F1E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:30:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4418445F250
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348778AbhKZQdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:33:11 -0500
-Received: from mout.gmx.net ([212.227.17.20]:32889 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233028AbhKZQbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:31:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1637944063;
-        bh=2FuWrYm0oF6CCTDO60vNNKc1zTVcBTvOrclycCWWDE4=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=TKH/iqvWKZyjEM14QQmgMoqp3jr+up1Nc5ceiwA3snuisiB+iZAaUB5q52xEqjevK
-         lppP1Y6e2SKlgus8Ra7q3bSB96NtjuzWiIEiagne/87XXrQ9avvFVCSTIceE58FQb/
-         FEGz3MGMZ+lN1VAcJn3TQLIfnaXHQ7XiSJgQB1yA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.59] ([46.223.119.124]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MeCtj-1mIxkO17MV-00bOIM; Fri, 26
- Nov 2021 17:27:43 +0100
-Subject: Re: [PATCH] serial: amba-pl011: do not request memory region twice
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        p.rosenberger@kunbus.com, lukas@wunner.de,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211126143925.18758-1-LinoSanfilippo@gmx.de>
- <YaEGvkBl8YT33YAR@shell.armlinux.org.uk>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Message-ID: <7e7dae62-ac66-e5cd-f801-add3a9f81dc6@gmx.de>
-Date:   Fri, 26 Nov 2021 17:27:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1352672AbhKZQpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:45:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245494AbhKZQnq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 11:43:46 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C94AC0619D8
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 08:28:25 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 168B3B8272C
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 16:28:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CED9C93056;
+        Fri, 26 Nov 2021 16:28:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637944102;
+        bh=gmwd/U4xyQPM2smltF/FD6JYAawcil0k29c20nXQr1M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1VExt6UJbxL/vHe23x0bsXdpiYVOrXEffk6rt4sD/ABCOTIXSxg3Nr0kZqrvYN0qt
+         0p817BVRaQjt1eEJ5OdgSUC4dAnyRLWjOdZxlACpdVGpBAcDR4RsRdCf47lmuYAbGS
+         0aRB5PkQkwcKS33CCdQV24u7CZml98Tn1hUoUUbQ=
+Date:   Fri, 26 Nov 2021 17:28:19 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Wang ShaoBo <bobo.shaobowang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, rafael@kernel.org,
+        sudeep.holla@arm.com, peterz@infradead.org,
+        cj.chengjian@huawei.com, huawei.libin@huawei.com,
+        weiyongjun1@huawei.com
+Subject: Re: [PATCH] arch_topology: Fix missing clear cluster_cpumask in
+ remove_cpu_topology()
+Message-ID: <YaELI8+QnBeXXIVm@kroah.com>
+References: <20211110095856.469360-1-bobo.shaobowang@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <YaEGvkBl8YT33YAR@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:MNEMVyXWJGSzM0kpMnSE9zv4C/1vRByDyEWd0A6PULjzOV3IV/v
- S+GY3Z4V/EtQOVieSs972iC3RBwnA7oEk6lgFfF/nx6JcTu7d1TAWU2ZVIGTfrCnXunaBpo
- igRPNTqrUQn4tsr8DTGFSrsAy0zF7ShXzS4gsrJ0d3GcLfSNQyOH7q+dSDDKNZWoZJAs1hL
- vi9wd+CSvOH+ueftn/3zw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:jqO3TJzYf8U=:Wskog9aFVnEa/8Isw3TSLN
- c8OxzJudhsMVVrYzAdUpGJ6wiyX189aDRonrlw0r0HLfbzR2eq85agKVV0IRxkWTeTB6KhaJS
- 2ibHuDFo7M7PisNnLe7f4SC5I4hzpup9UqkA3bIDbMA0TBrUmGXbsquuORzLMPUiBpOSMp8cG
- gf0tUgfLRuFdNoEXuCo577LNaNZ+BjDHK5LbVZn3H74eAGMFF2pcyb8VRg6PiMxXQFtnUuRNo
- u8lP+6Aq0zKQ+7wOw/i3Yi7pmBn1UuXxS7lfUpKWDraWoIpNCxkbrUea8p83XGrSbDXqZHp9b
- VVLTUJyJpWi2t66cNcpYr3l0iiWA9HgiV7NcUQd+bJUnL4WzNJ4aFgpsRs3XT5wgNZh9jP7Gx
- BrEIJteK6OBbLJ3ppwwM2OizWhNNhMkMdn4VJxNzSJsGmp0UWpXjXhG6J4Ov8RVWYVds/4WA9
- Nja7/lhh/kuf+v9bIt/DXPk+LvKWPjYY9Mr738IWMnn0XA7m++kOQUl9F36gZmDdeNTHKSAo3
- HVTGZdpoXgsBfwQRNOmXW/ijAtxaqfVdtL/93gptwiYPrU1JoN1EIy+NKMERrpBs0Fz8bnL+2
- C/rCiMgXC6zI9un5f2PY+ksZKFkeisqfWjDfrL8z7mKoOlQj4EwIhbmmCkqFg2G6xB5nU+pT4
- 8pEclYBn37rQyarQHD7OMxgKxAWDarFzPH0LlJzQwFpuaB1rZeL8A1zhIUCfL4NNc/x5UPC9B
- /sz/mB52eFytYrp0oJe/3Yap2hzw5jKW8LhBqatZlM2noozK2DDnTZ/DQp1t6lTDtslTaNp1w
- rDmGG4u5jN14MJ9KIX/67gtBvHkzU89pr45//hX7al02P3UER4spcivXv3C7d9bsrJYibZakW
- Z/IknUG9qKHI5TWLq6P/MzVjNMlyfGxBcyIHaV9kpRU2uTlcfYSGl+/JSIqCu2VdAtGxrULuF
- TTx0fnshH91k3ZSc1wDHpn0hPl3bsos/agX/Qxhww1q8RfwpQPY0M0aejhnKFh8rXhoAqooaR
- 60che63bUnYxJpQ0P4HnuaQekDSXquCy7Q0hWIMeMNKFguUmMwJcDiK3cdFNOBcTgav7WgwsL
- hLChDe9kAJUnM0=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211110095856.469360-1-bobo.shaobowang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Nov 10, 2021 at 05:58:56PM +0800, Wang ShaoBo wrote:
+> When testing cpu online and offline, warning happened like this:
+> 
+> [  146.746743] WARNING: CPU: 92 PID: 974 at kernel/sched/topology.c:2215 build_sched_domains+0x81c/0x11b0
+> [  146.749988] CPU: 92 PID: 974 Comm: kworker/92:2 Not tainted 5.15.0 #9
+> [  146.750402] Hardware name: Huawei TaiShan 2280 V2/BC82AMDDA, BIOS 1.79 08/21/2021
+> [  146.751213] Workqueue: events cpuset_hotplug_workfn
+> [  146.751629] pstate: 00400009 (nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [  146.752048] pc : build_sched_domains+0x81c/0x11b0
+> [  146.752461] lr : build_sched_domains+0x414/0x11b0
+> [  146.752860] sp : ffff800040a83a80
+> [  146.753247] x29: ffff800040a83a80 x28: ffff20801f13a980 x27: ffff20800448ae00
+> [  146.753644] x26: ffff800012a858e8 x25: ffff800012ea48c0 x24: 0000000000000000
+> [  146.754039] x23: ffff800010ab7d60 x22: ffff800012f03758 x21: 000000000000005f
+> [  146.754427] x20: 000000000000005c x19: ffff004080012840 x18: ffffffffffffffff
+> [  146.754814] x17: 3661613030303230 x16: 30303078303a3239 x15: ffff800011f92b48
+> [  146.755197] x14: ffff20be3f95cef6 x13: 2e6e69616d6f642d x12: 6465686373204c4c
+> [  146.755578] x11: ffff20bf7fc83a00 x10: 0000000000000040 x9 : 0000000000000000
+> [  146.755957] x8 : 0000000000000002 x7 : ffffffffe0000000 x6 : 0000000000000002
+> [  146.756334] x5 : 0000000090000000 x4 : 00000000f0000000 x3 : 0000000000000001
+> [  146.756705] x2 : 0000000000000080 x1 : ffff800012f03860 x0 : 0000000000000001
+> [  146.757070] Call trace:
+> [  146.757421]  build_sched_domains+0x81c/0x11b0
+> [  146.757771]  partition_sched_domains_locked+0x57c/0x978
+> [  146.758118]  rebuild_sched_domains_locked+0x44c/0x7f0
+> [  146.758460]  rebuild_sched_domains+0x2c/0x48
+> [  146.758791]  cpuset_hotplug_workfn+0x3fc/0x888
+> [  146.759114]  process_one_work+0x1f4/0x480
+> [  146.759429]  worker_thread+0x48/0x460
+> [  146.759734]  kthread+0x158/0x168
+> [  146.760030]  ret_from_fork+0x10/0x20
+> [  146.760318] ---[ end trace 82c44aad6900e81a ]---
+> 
+> For some architectures like risc-v and arm64 which use common code
+> clear_cpu_topology() in shutting down CPUx, When CONFIG_SCHED_CLUSTER
+> is set, cluster_sibling in cpu_topology of each sibling adjacent
+> to CPUx is missed clearing, this causes checking failed in
+> topology_span_sane() and rebuilding topology failure at end when CPU online.
+> 
+> Different sibling's cluster_sibling in cpu_topology[] when CPU92 offline
+> (CPU 92, 93, 94, 95 are in one cluster):
+> 
+> Before revision:
+> CPU                 [92]      [93]      [94]      [95]
+> cluster_sibling     [92]     [92-95]   [92-95]   [92-95]
+> 
+> After revision:
+> CPU                 [92]      [93]      [94]      [95]
+> cluster_sibling     [92]     [93-95]   [93-95]   [93-95]
+> 
+> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+> ---
+>  drivers/base/arch_topology.c | 2 ++
+>  1 file changed, 2 insertions(+)
 
-On 26.11.21 at 17:09, Russell King (Oracle) wrote:
-> On Fri, Nov 26, 2021 at 03:39:25PM +0100, Lino Sanfilippo wrote:
->> The driver attempts to request and release the IO memory region for a u=
-art
->> port twice:
->>
->> First during the probe() function devm_ioremap_resource() is used to
->> allocate and map the ports memory.
->> Then a combo of pl011_config_port() and pl011_release_port() is used to
->> request/release the same memory area. These functions are called by the
->> serial core as soon as the uart is registered/unregistered.
->>
->> However since the allocation request via devm_ioremap_resource() alread=
-y
->> succeeds, the attempt to claim the memory again via pl011_config_port()
->> fails. This failure remains unnoticed, since the concerning return valu=
-e is
->> not evaluated.
->> Later at module unload also the attempt to release the unclaimed memory
->> in pl011_release_port() fails. This time the failure results in a =E2=
-=80=9CTrying
->> to free nonexistent resource" warning printed by the serial core.
->>
->> Fix these issues by removing the callbacks that implement the redundant
->> memory allocation/release.
->
-> I think you will also need the verify_port method to also deny changing
-> port->mapbase.
->
+What commit id does this fix?
 
+thanks,
 
-Right, I will add this, thanks for the hint!
-
-Regards,
-Lino
-
+greg k-h
