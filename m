@@ -2,67 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D4945F588
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:52:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 192AB45F545
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:38:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237456AbhKZT4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 14:56:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231942AbhKZTx7 (ORCPT
+        id S236087AbhKZTlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 14:41:45 -0500
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:34366 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232719AbhKZTjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 14:53:59 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB56BC061D63;
-        Fri, 26 Nov 2021 11:34:55 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5BD8962346;
-        Fri, 26 Nov 2021 19:34:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71224C9305B;
-        Fri, 26 Nov 2021 19:34:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637955294;
-        bh=N9aA0eu5MMmJxiq8ygVUF3Cp3I6S2rsTKe45E1ABP/c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YM84d47UfTGUQhkROLjBwmu2L/B0sJIG1+2oYx4qFjAmqb2Im1hQiAgvEh1cr/uiZ
-         s6NpMjHcrvM08rdO8XYQFoKek2Y/p2fNg7uEbh3UFC5WiWk1Y6CPnxOK6i2LEkWtAO
-         cM/CNU9XSmVKdaLjUqTRo+n7sAR8eqWTNFJxFeooBg0JnvqXxGtP9rTsz7a4qrrKcn
-         oU5prI1vrsiaxW5I+M0XfbmiaUhk0wEqOrYS6rplTl5M7GNRwr82ufA0t7loolLxKx
-         AFKrp8RAFCxQO2DT9914MhNuBg3rBTn8moj3bbFJk/QryXZtjeWrUHoqykkclBwBNt
-         AaMbJq7CaBR0g==
-Date:   Fri, 26 Nov 2021 11:34:53 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Sven Schuchmann <schuchmann@schleissheimer.de>
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: usb: lan78xx: lan78xx_phy_init(): use PHY_POLL
- instead of "0" if no IRQ is available
-Message-ID: <20211126113440.5463ff74@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YaED/p7O0iYQF6bW@lunn.ch>
-References: <20211126152040.29058-1-schuchmann@schleissheimer.de>
-        <YaED/p7O0iYQF6bW@lunn.ch>
+        Fri, 26 Nov 2021 14:39:44 -0500
+Received: by mail-ot1-f49.google.com with SMTP id x19-20020a9d7053000000b0055c8b39420bso15332640otj.1;
+        Fri, 26 Nov 2021 11:36:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=glw+Kw+qAlQl558xudGtlPvGeHEeJq6ZUeY+roOhbWI=;
+        b=08aHGlvHP/X2JEt4ZybKNSpqGkFpBOT147NPhyYUMT+2NluYGO0FkrNDdA9zEEzhmD
+         WW2b0IGowVyln0pm1667vuu+16c5/MO+5TFbB/m0QFZOgPD9jeVzCNuxQcl+9AC2Dq8z
+         FBReq5aL2GsBodvxv3k6D7KWxQCHFxgARyH+zQOAeAf/f4yX/7A64wmNB9tBkcqWEUY/
+         5EBBWzU2EBX2bj4LZqSXdUgfLP7BdYF08ZxJD3bJHxabx4IbXgKNlPyFSt2ctqoDhImc
+         jXmIxSOrzp/pC41U/f+qsO+7w1kAxjX4kBhDxw4Gjt5WJRt+ziULqO26fyRlF71ZQHPB
+         YoHA==
+X-Gm-Message-State: AOAM530353kqRLIwsCCf0gIRtlB5gFWMN42L9DdsTcMh1cjR1Z5fptbI
+        N/x8+3fjjI2HExGhFL769CGK5AFwhBabod04sNutmUgzE+o=
+X-Google-Smtp-Source: ABdhPJz50cOaIYD3OvSmD107GGMQcdk82DQ6jfjK96cnQ6C+f7ZtYCr5I6GMqROiichrZ1d0qMFhDgSfX6nzzrFTH4I=
+X-Received: by 2002:a05:6830:1e57:: with SMTP id e23mr29606122otj.16.1637955390721;
+ Fri, 26 Nov 2021 11:36:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 26 Nov 2021 20:36:20 +0100
+Message-ID: <CAJZ5v0jNK=LfKcXDR+ibnczM3+D+GHH_-UCMi=sj47aaLxXoJA@mail.gmail.com>
+Subject: [GIT PULL] Power management fixes for v5.16-rc3
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Nov 2021 16:57:50 +0100 Andrew Lunn wrote:
-> On Fri, Nov 26, 2021 at 04:20:40PM +0100, Sven Schuchmann wrote:
-> > On most systems request for IRQ 0 will fail, phylib will print an error message
-> > and fall back to polling. To fix this set the phydev->irq to PHY_POLL if no IRQ
-> > is available.
-> > 
-> > Signed-off-by: Sven Schuchmann <schuchmann@schleissheimer.de>  
-> 
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Hi Linus,
 
-Fixes: cc89c323a30e ("lan78xx: Use irq_domain for phy interrupt from USB Int. EP")
+Please pull from the tag
 
-right?
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pm-5.16-rc3
+
+with top-most commit 7803516dbe26518115408d53a500ccb4d6a7d1c7
+
+ Merge branch 'pm-sleep'
+
+on top of commit 136057256686de39cc3a07c2e39ef6bc43003ff6
+
+ Linux 5.16-rc2
+
+to receive power management fixes for 5.16-rc3.
+
+These address 3 issues in the intel_pstate driver and fix 2 problems
+related to hibernation.
+
+Specifics:
+
+ - Make intel_pstate work correctly on Ice Lake server systems with
+   out-of-band performance control enabled (Adamos Ttofari).
+
+ - Fix EPP handling in intel_pstate during CPU offline and online in
+   the active mode (Rafael Wysocki).
+
+ - Make intel_pstate support ITMT on asymmetric systems with
+   overclocking enabled (Srinivas Pandruvada).
+
+ - Fix hibernation image saving when using the user space interface
+   based on the snapshot special device file (Evan Green).
+
+ - Make the hibernation code release the snapshot block device using
+   the same mode that was used when acquiring it (Thomas Zeitlhofer).
+
+Thanks!
+
+
+---------------
+
+Adamos Ttofari (1):
+      cpufreq: intel_pstate: Add Ice Lake server to out-of-band IDs
+
+Evan Green (1):
+      PM: hibernate: Fix snapshot partial write lengths
+
+Rafael J. Wysocki (1):
+      cpufreq: intel_pstate: Fix active mode offline/online EPP handling
+
+Srinivas Pandruvada (1):
+      cpufreq: intel_pstate: ITMT support for overclocked system
+
+Thomas Zeitlhofer (1):
+      PM: hibernate: use correct mode for swsusp_close()
+
+---------------
+
+ drivers/cpufreq/intel_pstate.c | 17 +++++++++++++++++
+ kernel/power/hibernate.c       |  6 +++---
+ kernel/power/user.c            |  2 +-
+ 3 files changed, 21 insertions(+), 4 deletions(-)
