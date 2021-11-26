@@ -2,229 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F372545F4F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 19:49:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF7F45F4F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 19:57:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243661AbhKZSwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 13:52:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20550 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243560AbhKZSug (ORCPT
+        id S232697AbhKZTAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 14:00:19 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:48364 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229646AbhKZS6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 13:50:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637952443;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O6rbfWik1xYZrbAijVAfDmHvfjyDH76LNjEVf+e9aLQ=;
-        b=erjQEf9ju+vDaulJZd24jsoYjFCJP+xNuOCG/FTaF1uJO9G+onC+G4JtmRNNLjv0llVRmv
-        KueKDDyqJcF+lYpIHnmzyD/WMxL5ubWx8Cxzh37VeWFqo2jMFKe0eNBDMysNOvCBrKcH+v
-        R6BtIvYIdGcKJrH3GDGhmH30k3N1KXw=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-458-cC7LkHgfNJGHh6ZQEcKLDg-1; Fri, 26 Nov 2021 13:47:22 -0500
-X-MC-Unique: cC7LkHgfNJGHh6ZQEcKLDg-1
-Received: by mail-ed1-f69.google.com with SMTP id l15-20020a056402124f00b003e57269ab87so8643313edw.6
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 10:47:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=O6rbfWik1xYZrbAijVAfDmHvfjyDH76LNjEVf+e9aLQ=;
-        b=J4BYHtxCf2sBxgDhzBjrP0cvTJBrECo9ZzZARqlBS6gaJ0D2QHVhNaliOBpwYcntmQ
-         Vevq6J8m0bN1D+mIO7C/4PldY9ieCFeNXL5Q3xCNn9haOxTTGnye4Y3pZkYv3dhQM6gI
-         nUstfvcs8uncm8hJ3vfz9DxlVXHVPKSKbAHqPf4SvbHlTel7IQ3IdM8CRDVOfIT6EfEo
-         2Rr0NspJVN+kI+0BrAhgQKkT+Fo3dttJqJgGkltRnToHR/y6Tj7DiIhUD9c+jwmdeSgo
-         elgXBV4Nj5tiLfkmWyC2qq8EhATyeuvg7g3pKwT5HbwwkO67GEAnVIPlVeXaf5Cd39T1
-         PJyQ==
-X-Gm-Message-State: AOAM531nUMOdKwsiIrYN5/AlCtiu5n6hr+vo5DCn3L0Gs+K5sAKnh4dE
-        d/DrNK9VHLmiIZgAN+L3xR+rOU5qODoXG96XVTNzJ1ugMqOhBnSHBn1Lw5NuXEWJqLekXWysy5n
-        HbATn4VFyi1Dkxj6XBNUfKp0T
-X-Received: by 2002:a50:f09b:: with SMTP id v27mr50640041edl.53.1637952439510;
-        Fri, 26 Nov 2021 10:47:19 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJysqEUXaashQMp696tzO9iR2R9x+kWsok2AbHg4/IoknOktCZ+sa6SV7IRItNNVUIbLVIF90Q==
-X-Received: by 2002:a50:f09b:: with SMTP id v27mr50639967edl.53.1637952439132;
-        Fri, 26 Nov 2021 10:47:19 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id z6sm4779036edc.76.2021.11.26.10.47.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 10:47:18 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id EB3281802A0; Fri, 26 Nov 2021 19:47:17 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 net-next 21/26] ice: add XDP and XSK generic
- per-channel statistics
-In-Reply-To: <20211126100611.514df099@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
- <20211123163955.154512-22-alexandr.lobakin@intel.com>
- <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
- <87bl28bga6.fsf@toke.dk>
- <20211125170708.127323-1-alexandr.lobakin@intel.com>
- <20211125094440.6c402d63@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20211125204007.133064-1-alexandr.lobakin@intel.com>
- <87sfvj9k13.fsf@toke.dk>
- <20211126100611.514df099@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 26 Nov 2021 19:47:17 +0100
-Message-ID: <87ee72ah56.fsf@toke.dk>
+        Fri, 26 Nov 2021 13:58:18 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4FD6262330;
+        Fri, 26 Nov 2021 18:55:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7230EC93056;
+        Fri, 26 Nov 2021 18:55:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637952904;
+        bh=gtBDOf+Hvarye7/1kb+5zZAMsxQUS/gW1IZ5yAwRGiM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hUmRsRUW1H/ipwzlnhHGll3UMynD470cUbdTAwfhmLF8KmHg+J1ngYLCViOgkCsbS
+         wmQoK7zcK75pqNHGp5jO4JrbMA4DGXNTZK9KToZbwcdfbjZI3YgBHb4zlpcqMxIr5c
+         D9tKhIT4+ZBca8wM7NXtPcncKdmZfA/aVQ7YwLOt0mAwArl3zVjqbqzq9d2RF/buEr
+         dPUfRBVm5OwRFgN6LKHWAkSkJQcuub/ywkomAo0ZacLCDGLl3oDLfkyxK3OyO+QcEy
+         ScIIAsTadrjix6xa+CzdaquSq80vT9ToG4BddfQ2f+DJjsBTDZDtqsfreX1MYJ8Ngt
+         rgsu/pdNRychg==
+Date:   Fri, 26 Nov 2021 11:54:58 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH 01/20] media: adv7842: get rid of two unused functions
+Message-ID: <YaEtgrPMAcrjJdYa@archlinux-ax161>
+References: <cover.1637781097.git.mchehab+huawei@kernel.org>
+ <e97de1cfd545c5861634619112770cf0710a6241.1637781097.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e97de1cfd545c5861634619112770cf0710a6241.1637781097.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jakub Kicinski <kuba@kernel.org> writes:
+On Wed, Nov 24, 2021 at 08:13:04PM +0100, Mauro Carvalho Chehab wrote:
+> Those functions just call a V4L2 core macro, and aren't used
+> anywhere. Get rid of them, in order to avoid clang warnings with
+> W=1.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-> On Fri, 26 Nov 2021 13:30:16 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> >> TBH I wasn't following this thread too closely since I saw Daniel
->> >> nacked it already. I do prefer rtnl xstats, I'd just report them=20
->> >> in -s if they are non-zero. But doesn't sound like we have an agreeme=
-nt
->> >> whether they should exist or not.=20=20
->> >
->> > Right, just -s is fine, if we drop the per-channel approach.=20=20
->>=20
->> I agree that adding them to -s is fine (and that resolves my "no one
->> will find them" complain as well). If it crowds the output we could also
->> default to only output'ing a subset, and have the more detailed
->> statistics hidden behind a verbose switch (or even just in the JSON
->> output)?
->>=20
->> >> Can we think of an approach which would make cloudflare and cilium
->> >> happy? Feels like we're trying to make the slightly hypothetical=20
->> >> admin happy while ignoring objections of very real users.=20=20
->> >
->> > The initial idea was to only uniform the drivers. But in general
->> > you are right, 10 drivers having something doesn't mean it's
->> > something good.=20=20
->>=20
->> I don't think it's accurate to call the admin use case "hypothetical".
->> We're expending a significant effort explaining to people that XDP can
->> "eat" your packets, and not having any standard statistics makes this
->> way harder. We should absolutely cater to our "early adopters", but if
->> we want XDP to see wider adoption, making it "less weird" is critical!
->
-> Fair. In all honesty I said that hoping to push for a more flexible
-> approach hidden entirely in BPF, and not involving driver changes.
-> Assuming the XDP program has more fine grained stats we should be able
-> to extract those instead of double-counting. Hence my vague "let's work
-> with apps" comment.
->
-> For example to a person familiar with the workload it'd be useful to
-> know if program returned XDP_DROP because of configured policy or
-> failure to parse a packet. I don't think that sort distinction is
-> achievable at the level of standard stats.
->
-> The information required by the admin is higher level. As you say the
-> primary concern there is "how many packets did XDP eat".
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-Right, sure, I am also totally fine with having only a somewhat
-restricted subset of stats available at the interface level and make
-everything else be BPF-based. I'm hoping we can converge of a common
-understanding of what this "minimal set" should be :)
-
-> Speaking of which, one thing that badly needs clarification is our
-> expectation around XDP packets getting counted towards the interface
-> stats.
-
-Agreed. My immediate thought is that "XDP packets are interface packets"
-but that is certainly not what we do today, so not sure if changing it
-at this point would break things?
-
->> > Maciej, I think you were talking about Cilium asking for those stats
->> > in Intel drivers? Could you maybe provide their exact usecases/needs
->> > so I'll orient myself? I certainly remember about XSK Tx packets and
->> > bytes.
->> > And speaking of XSK Tx, we have per-socket stats, isn't that enough?=
-=20=20
->>=20
->> IMO, as long as the packets are accounted for in the regular XDP stats,
->> having a whole separate set of stats only for XSK is less important.
->>=20
->> >> Please leave the per-channel stats out. They make a precedent for
->> >> channel stats which should be an attribute of a channel. Working for=
-=20
->> >> a large XDP user for a couple of years now I can tell you from my own
->> >> experience I've not once found them useful. In fact per-queue stats a=
-re
->> >> a major PITA as they crowd the output.=20=20
->> >
->> > Oh okay. My very first iterations were without this, but then I
->> > found most of the drivers expose their XDP stats per-channel. Since
->> > I didn't plan to degrade the functionality, they went that way.=20=20
->>=20
->> I personally find the per-channel stats quite useful. One of the primary
->> reasons for not achieving full performance with XDP is broken
->> configuration of packet steering to CPUs, and having per-channel stats
->> is a nice way of seeing this.
->
-> Right, that's about the only thing I use it for as well. "Is the load
-> evenly distributed?"  But that's not XDP specific and not worth
-> standardizing for, yet, IMO, because..
->
->> I can see the point about them being way too verbose in the default
->> output, though, and I do generally filter the output as well when
->> viewing them. But see my point above about only printing a subset of
->> the stats by default; per-channel stats could be JSON-only, for
->> instance?
->
-> we don't even know what constitutes a channel today. And that will
-> become increasingly problematic as importance of application specific
-> queues increases (zctap etc). IMO until the ontological gaps around
-> queues are filled we should leave per-queue stats in ethtool -S.
-
-Hmm, right, I see. I suppose that as long as the XDP packets show up in
-one of the interface counters in ethtool -S, it's possible to answer the
-load distribution issue, and any further debugging (say, XDP drops on a
-certain queue due to CPU-based queue indexing on TX) can be delegated to
-BPF-based tools...
-
--Toke
-
+> ---
+> 
+> To avoid mailbombing on a large number of people, only mailing lists were C/C on the cover.
+> See [PATCH 00/20] at: https://lore.kernel.org/all/cover.1637781097.git.mchehab+huawei@kernel.org/
+> 
+>  drivers/media/i2c/adv7842.c | 10 ----------
+>  1 file changed, 10 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/adv7842.c b/drivers/media/i2c/adv7842.c
+> index 7f8acbdf0db4..9d6eed0f8281 100644
+> --- a/drivers/media/i2c/adv7842.c
+> +++ b/drivers/media/i2c/adv7842.c
+> @@ -256,21 +256,11 @@ static inline struct v4l2_subdev *to_sd(struct v4l2_ctrl *ctrl)
+>  	return &container_of(ctrl->handler, struct adv7842_state, hdl)->sd;
+>  }
+>  
+> -static inline unsigned hblanking(const struct v4l2_bt_timings *t)
+> -{
+> -	return V4L2_DV_BT_BLANKING_WIDTH(t);
+> -}
+> -
+>  static inline unsigned htotal(const struct v4l2_bt_timings *t)
+>  {
+>  	return V4L2_DV_BT_FRAME_WIDTH(t);
+>  }
+>  
+> -static inline unsigned vblanking(const struct v4l2_bt_timings *t)
+> -{
+> -	return V4L2_DV_BT_BLANKING_HEIGHT(t);
+> -}
+> -
+>  static inline unsigned vtotal(const struct v4l2_bt_timings *t)
+>  {
+>  	return V4L2_DV_BT_FRAME_HEIGHT(t);
+> -- 
+> 2.33.1
+> 
+> 
