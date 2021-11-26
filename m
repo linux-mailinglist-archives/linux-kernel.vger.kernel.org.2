@@ -2,112 +2,472 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA76E45EF1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE6245EF1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242561AbhKZNbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 08:31:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49950 "EHLO
+        id S1348146AbhKZNbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 08:31:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243260AbhKZN27 (ORCPT
+        with ESMTP id S235745AbhKZN3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 08:28:59 -0500
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28251C06175B;
-        Fri, 26 Nov 2021 04:39:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=In-Reply-To:Content-Type:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description; bh=6Q8FkNR0DNeahIkoGpQtYJLzOambxup0KYyLRA9vCcY=; b=hjUMA
-        LFrtuLT9/WLkRW0wCzOVZzXTcy0gZsOZt0xnR9prHD9xP991ArgEVv91sadR6YmjKUf8H+dBJS4XI
-        jpfipRFa9k76XKDJQhhOYdiDHVYlnXHxCvKJr+zZYeo4/vXFyy9Z2VUGET8+ARF+ZM7+TKlbdbIrd
-        79G2asIgrjBrk9/v1p6rcLSBodwCOxYvNsM4YA9HWGxyCmaWNrcRYcT7WqJbiT+P0/zUeqv973zAs
-        TJljWxj28IWz+vm3b1vNSdHe2yMdgx/wWys7Cxqlyo2guwQevyXIlVftaoTWTeibzfDCOeCiMTfsf
-        qCqTy/ELzRKDsi1GOs6DvBYR//wog==;
-Received: from [81.174.171.191] (helo=donbot)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1mqaVM-0005gT-LX; Fri, 26 Nov 2021 12:39:04 +0000
-Date:   Fri, 26 Nov 2021 12:39:03 +0000
-From:   John Keeping <john@metanate.com>
-To:     Jaehoon Chung <jh80.chung@samsung.com>
-Cc:     linux-mmc@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH 4/4] mmc: dw_mmc: exynos: use common_caps
-Message-ID: <YaDVZ94vQ/O5djuA@donbot>
-References: <20211124184603.3897245-1-john@metanate.com>
- <CGME20211124184628epcas1p4130e325d30e2e32113f5c5cdf2d6c85d@epcas1p4.samsung.com>
- <20211124184603.3897245-5-john@metanate.com>
- <bfb7cc7f-d01a-f99e-2085-d1b3e252d7dd@samsung.com>
+        Fri, 26 Nov 2021 08:29:31 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C2DC061A20
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 04:39:41 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mqaVk-0000MD-KH; Fri, 26 Nov 2021 13:39:28 +0100
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mqaVj-00CVVx-3w; Fri, 26 Nov 2021 13:39:27 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net v3 1/1] net: dsa: microchip: implement multi-bridge support
+Date:   Fri, 26 Nov 2021 13:39:26 +0100
+Message-Id: <20211126123926.2981028-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bfb7cc7f-d01a-f99e-2085-d1b3e252d7dd@samsung.com>
-X-Authenticated: YES
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 08:38:20AM +0900, Jaehoon Chung wrote:
-> On 11/25/21 3:46 AM, John Keeping wrote:
-> > Move the common MMC_CAP_CMD23 capability to common_caps so that only the
-> > special case of MMC_CAP_1_8V_DDR and MMC_CAP_8_BIT_DATA are set via
-> > caps/num_caps.  Both of those can, and should, be set via device tree
-> > properties instead, so we can now say that exynos_dwmmc_caps is only
-> > used for backwards compatibility.
-> > 
-> > Signed-off-by: John Keeping <john@metanate.com>
-> 
-> 
-> Reviewed-by: Jaehoon Chung <jh80.chung@samsung.com>
-> 
-> Added minor comment..
-> 
-> > ---
-> >  drivers/mmc/host/dw_mmc-exynos.c | 9 +++++----
-> >  1 file changed, 5 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/mmc/host/dw_mmc-exynos.c b/drivers/mmc/host/dw_mmc-exynos.c
-> > index c2dd29ef45c6..f76eeeb0cc53 100644
-> > --- a/drivers/mmc/host/dw_mmc-exynos.c
-> > +++ b/drivers/mmc/host/dw_mmc-exynos.c
-> > @@ -526,15 +526,16 @@ static int dw_mci_exynos_prepare_hs400_tuning(struct dw_mci *host,
-> >  
-> >  /* Common capabilities of Exynos4/Exynos5 SoC */
-> >  static unsigned long exynos_dwmmc_caps[4] = {
-> > -	MMC_CAP_1_8V_DDR | MMC_CAP_8_BIT_DATA | MMC_CAP_CMD23,
-> > -	MMC_CAP_CMD23,
-> > -	MMC_CAP_CMD23,
-> > -	MMC_CAP_CMD23,
-> > +	MMC_CAP_1_8V_DDR | MMC_CAP_8_BIT_DATA,
-> > +	0,
-> > +	0,
-> > +	0,
-> >  };
-> 
-> It can be removed all things.
+Current driver version is able to handle only one bridge at time.
+Configuring two bridges on two different ports would end up shorting this
+bridges by HW. To reproduce it:
 
-Do you mean that the MMC_CAP_1_8V_DDR | MMC_CAP_8_BIT_DATA entries are
-not needed at all?
+	ip l a name br0 type bridge
+	ip l a name br1 type bridge
+	ip l s dev br0 up
+	ip l s dev br1 up
+	ip l s lan1 master br0
+	ip l s dev lan1 up
+	ip l s lan2 master br1
+	ip l s dev lan2 up
 
-I know those can be set via DT but I don't think any Exynos DTs are
-currently using mmc-ddr-1_8v, so removing MMC_CAP_1_8V_DDR looks like a
-change in behaviour.
+	Ping on lan1 and get response on lan2, which should not happen.
 
-MMC_CAP_8_BIT_DATA looks easier to remove, although
-exynos4412-p4note.dtsi seems to set the incorrect bus-width for mshc_0
-so there would be a change of behaviour on that platform from removing
-this.
+This happened, because current driver version is storing one global "Port VLAN
+Membership" and applying it to all ports which are members of any
+bridge.
+To solve this issue, we need to handle each port separately.
 
-Maybe it makes sense to add a warning in dw_mci_init_slot_caps() if any
-new caps are set by drv_data->caps[ctrl_id], to make it clear that this
-is deprecated.
+This patch is dropping the global port member storage and calculating
+membership dynamically depending on STP state and bridge participation.
 
+Note: STP support was broken before this patch and should be fixed
+separately.
 
-Regards,
-John
+Fixes: c2e866911e25 ("net: dsa: microchip: break KSZ9477 DSA driver into two files")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ drivers/net/dsa/microchip/ksz8795.c    | 56 +++-------------------
+ drivers/net/dsa/microchip/ksz9477.c    | 66 ++++----------------------
+ drivers/net/dsa/microchip/ksz_common.c | 50 ++++++++++---------
+ drivers/net/dsa/microchip/ksz_common.h |  4 --
+ 4 files changed, 43 insertions(+), 133 deletions(-)
+
+diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
+index 43fc3087aeb3..013e9c02be71 100644
+--- a/drivers/net/dsa/microchip/ksz8795.c
++++ b/drivers/net/dsa/microchip/ksz8795.c
+@@ -1002,57 +1002,32 @@ static void ksz8_cfg_port_member(struct ksz_device *dev, int port, u8 member)
+ 	data &= ~PORT_VLAN_MEMBERSHIP;
+ 	data |= (member & dev->port_mask);
+ 	ksz_pwrite8(dev, port, P_MIRROR_CTRL, data);
+-	dev->ports[port].member = member;
+ }
+ 
+ static void ksz8_port_stp_state_set(struct dsa_switch *ds, int port, u8 state)
+ {
+ 	struct ksz_device *dev = ds->priv;
+-	int forward = dev->member;
+ 	struct ksz_port *p;
+-	int member = -1;
+ 	u8 data;
+ 
+-	p = &dev->ports[port];
+-
+ 	ksz_pread8(dev, port, P_STP_CTRL, &data);
+ 	data &= ~(PORT_TX_ENABLE | PORT_RX_ENABLE | PORT_LEARN_DISABLE);
+ 
+ 	switch (state) {
+ 	case BR_STATE_DISABLED:
+ 		data |= PORT_LEARN_DISABLE;
+-		if (port < dev->phy_port_cnt)
+-			member = 0;
+ 		break;
+ 	case BR_STATE_LISTENING:
+ 		data |= (PORT_RX_ENABLE | PORT_LEARN_DISABLE);
+-		if (port < dev->phy_port_cnt &&
+-		    p->stp_state == BR_STATE_DISABLED)
+-			member = dev->host_mask | p->vid_member;
+ 		break;
+ 	case BR_STATE_LEARNING:
+ 		data |= PORT_RX_ENABLE;
+ 		break;
+ 	case BR_STATE_FORWARDING:
+ 		data |= (PORT_TX_ENABLE | PORT_RX_ENABLE);
+-
+-		/* This function is also used internally. */
+-		if (port == dev->cpu_port)
+-			break;
+-
+-		/* Port is a member of a bridge. */
+-		if (dev->br_member & BIT(port)) {
+-			dev->member |= BIT(port);
+-			member = dev->member;
+-		} else {
+-			member = dev->host_mask | p->vid_member;
+-		}
+ 		break;
+ 	case BR_STATE_BLOCKING:
+ 		data |= PORT_LEARN_DISABLE;
+-		if (port < dev->phy_port_cnt &&
+-		    p->stp_state == BR_STATE_DISABLED)
+-			member = dev->host_mask | p->vid_member;
+ 		break;
+ 	default:
+ 		dev_err(ds->dev, "invalid STP state: %d\n", state);
+@@ -1060,22 +1035,11 @@ static void ksz8_port_stp_state_set(struct dsa_switch *ds, int port, u8 state)
+ 	}
+ 
+ 	ksz_pwrite8(dev, port, P_STP_CTRL, data);
++
++	p = &dev->ports[port];
+ 	p->stp_state = state;
+-	/* Port membership may share register with STP state. */
+-	if (member >= 0 && member != p->member)
+-		ksz8_cfg_port_member(dev, port, (u8)member);
+-
+-	/* Check if forwarding needs to be updated. */
+-	if (state != BR_STATE_FORWARDING) {
+-		if (dev->br_member & BIT(port))
+-			dev->member &= ~BIT(port);
+-	}
+ 
+-	/* When topology has changed the function ksz_update_port_member
+-	 * should be called to modify port forwarding behavior.
+-	 */
+-	if (forward != dev->member)
+-		ksz_update_port_member(dev, port);
++	ksz_update_port_member(dev, port);
+ }
+ 
+ static void ksz8_flush_dyn_mac_table(struct ksz_device *dev, int port)
+@@ -1341,7 +1305,7 @@ static void ksz8795_cpu_interface_select(struct ksz_device *dev, int port)
+ 
+ static void ksz8_port_setup(struct ksz_device *dev, int port, bool cpu_port)
+ {
+-	struct ksz_port *p = &dev->ports[port];
++	struct dsa_switch *ds = dev->ds;
+ 	struct ksz8 *ksz8 = dev->priv;
+ 	const u32 *masks;
+ 	u8 member;
+@@ -1368,10 +1332,11 @@ static void ksz8_port_setup(struct ksz_device *dev, int port, bool cpu_port)
+ 		if (!ksz_is_ksz88x3(dev))
+ 			ksz8795_cpu_interface_select(dev, port);
+ 
+-		member = dev->port_mask;
++		member = dsa_user_ports(ds);
+ 	} else {
+-		member = dev->host_mask | p->vid_member;
++		member = BIT(dsa_upstream_port(ds, port));
+ 	}
++
+ 	ksz8_cfg_port_member(dev, port, member);
+ }
+ 
+@@ -1392,20 +1357,13 @@ static void ksz8_config_cpu_port(struct dsa_switch *ds)
+ 	ksz_cfg(dev, regs[S_TAIL_TAG_CTRL], masks[SW_TAIL_TAG_ENABLE], true);
+ 
+ 	p = &dev->ports[dev->cpu_port];
+-	p->vid_member = dev->port_mask;
+ 	p->on = 1;
+ 
+ 	ksz8_port_setup(dev, dev->cpu_port, true);
+-	dev->member = dev->host_mask;
+ 
+ 	for (i = 0; i < dev->phy_port_cnt; i++) {
+ 		p = &dev->ports[i];
+ 
+-		/* Initialize to non-zero so that ksz_cfg_port_member() will
+-		 * be called.
+-		 */
+-		p->vid_member = BIT(i);
+-		p->member = dev->port_mask;
+ 		ksz8_port_stp_state_set(ds, i, BR_STATE_DISABLED);
+ 
+ 		/* Last port may be disabled. */
+diff --git a/drivers/net/dsa/microchip/ksz9477.c b/drivers/net/dsa/microchip/ksz9477.c
+index 854e25f43fa7..353b5f981740 100644
+--- a/drivers/net/dsa/microchip/ksz9477.c
++++ b/drivers/net/dsa/microchip/ksz9477.c
+@@ -391,7 +391,6 @@ static void ksz9477_cfg_port_member(struct ksz_device *dev, int port,
+ 				    u8 member)
+ {
+ 	ksz_pwrite32(dev, port, REG_PORT_VLAN_MEMBERSHIP__4, member);
+-	dev->ports[port].member = member;
+ }
+ 
+ static void ksz9477_port_stp_state_set(struct dsa_switch *ds, int port,
+@@ -400,8 +399,6 @@ static void ksz9477_port_stp_state_set(struct dsa_switch *ds, int port,
+ 	struct ksz_device *dev = ds->priv;
+ 	struct ksz_port *p = &dev->ports[port];
+ 	u8 data;
+-	int member = -1;
+-	int forward = dev->member;
+ 
+ 	ksz_pread8(dev, port, P_STP_CTRL, &data);
+ 	data &= ~(PORT_TX_ENABLE | PORT_RX_ENABLE | PORT_LEARN_DISABLE);
+@@ -409,40 +406,18 @@ static void ksz9477_port_stp_state_set(struct dsa_switch *ds, int port,
+ 	switch (state) {
+ 	case BR_STATE_DISABLED:
+ 		data |= PORT_LEARN_DISABLE;
+-		if (port != dev->cpu_port)
+-			member = 0;
+ 		break;
+ 	case BR_STATE_LISTENING:
+ 		data |= (PORT_RX_ENABLE | PORT_LEARN_DISABLE);
+-		if (port != dev->cpu_port &&
+-		    p->stp_state == BR_STATE_DISABLED)
+-			member = dev->host_mask | p->vid_member;
+ 		break;
+ 	case BR_STATE_LEARNING:
+ 		data |= PORT_RX_ENABLE;
+ 		break;
+ 	case BR_STATE_FORWARDING:
+ 		data |= (PORT_TX_ENABLE | PORT_RX_ENABLE);
+-
+-		/* This function is also used internally. */
+-		if (port == dev->cpu_port)
+-			break;
+-
+-		member = dev->host_mask | p->vid_member;
+-		mutex_lock(&dev->dev_mutex);
+-
+-		/* Port is a member of a bridge. */
+-		if (dev->br_member & (1 << port)) {
+-			dev->member |= (1 << port);
+-			member = dev->member;
+-		}
+-		mutex_unlock(&dev->dev_mutex);
+ 		break;
+ 	case BR_STATE_BLOCKING:
+ 		data |= PORT_LEARN_DISABLE;
+-		if (port != dev->cpu_port &&
+-		    p->stp_state == BR_STATE_DISABLED)
+-			member = dev->host_mask | p->vid_member;
+ 		break;
+ 	default:
+ 		dev_err(ds->dev, "invalid STP state: %d\n", state);
+@@ -451,23 +426,8 @@ static void ksz9477_port_stp_state_set(struct dsa_switch *ds, int port,
+ 
+ 	ksz_pwrite8(dev, port, P_STP_CTRL, data);
+ 	p->stp_state = state;
+-	mutex_lock(&dev->dev_mutex);
+-	/* Port membership may share register with STP state. */
+-	if (member >= 0 && member != p->member)
+-		ksz9477_cfg_port_member(dev, port, (u8)member);
+-
+-	/* Check if forwarding needs to be updated. */
+-	if (state != BR_STATE_FORWARDING) {
+-		if (dev->br_member & (1 << port))
+-			dev->member &= ~(1 << port);
+-	}
+ 
+-	/* When topology has changed the function ksz_update_port_member
+-	 * should be called to modify port forwarding behavior.
+-	 */
+-	if (forward != dev->member)
+-		ksz_update_port_member(dev, port);
+-	mutex_unlock(&dev->dev_mutex);
++	ksz_update_port_member(dev, port);
+ }
+ 
+ static void ksz9477_flush_dyn_mac_table(struct ksz_device *dev, int port)
+@@ -1168,10 +1128,10 @@ static void ksz9477_phy_errata_setup(struct ksz_device *dev, int port)
+ 
+ static void ksz9477_port_setup(struct ksz_device *dev, int port, bool cpu_port)
+ {
+-	u8 data8;
+-	u8 member;
+-	u16 data16;
+ 	struct ksz_port *p = &dev->ports[port];
++	struct dsa_switch *ds = dev->ds;
++	u8 data8, member;
++	u16 data16;
+ 
+ 	/* enable tag tail for host port */
+ 	if (cpu_port)
+@@ -1250,12 +1210,12 @@ static void ksz9477_port_setup(struct ksz_device *dev, int port, bool cpu_port)
+ 		ksz_pwrite8(dev, port, REG_PORT_XMII_CTRL_1, data8);
+ 		p->phydev.duplex = 1;
+ 	}
+-	mutex_lock(&dev->dev_mutex);
++
+ 	if (cpu_port)
+-		member = dev->port_mask;
++		member = dsa_user_ports(ds);
+ 	else
+-		member = dev->host_mask | p->vid_member;
+-	mutex_unlock(&dev->dev_mutex);
++		member = BIT(dsa_upstream_port(ds, port));
++
+ 	ksz9477_cfg_port_member(dev, port, member);
+ 
+ 	/* clear pending interrupts */
+@@ -1276,8 +1236,6 @@ static void ksz9477_config_cpu_port(struct dsa_switch *ds)
+ 			const char *prev_mode;
+ 
+ 			dev->cpu_port = i;
+-			dev->host_mask = (1 << dev->cpu_port);
+-			dev->port_mask |= dev->host_mask;
+ 			p = &dev->ports[i];
+ 
+ 			/* Read from XMII register to determine host port
+@@ -1312,23 +1270,15 @@ static void ksz9477_config_cpu_port(struct dsa_switch *ds)
+ 
+ 			/* enable cpu port */
+ 			ksz9477_port_setup(dev, i, true);
+-			p->vid_member = dev->port_mask;
+ 			p->on = 1;
+ 		}
+ 	}
+ 
+-	dev->member = dev->host_mask;
+-
+ 	for (i = 0; i < dev->port_cnt; i++) {
+ 		if (i == dev->cpu_port)
+ 			continue;
+ 		p = &dev->ports[i];
+ 
+-		/* Initialize to non-zero so that ksz_cfg_port_member() will
+-		 * be called.
+-		 */
+-		p->vid_member = (1 << i);
+-		p->member = dev->port_mask;
+ 		ksz9477_port_stp_state_set(ds, i, BR_STATE_DISABLED);
+ 		p->on = 1;
+ 		if (i < dev->phy_port_cnt)
+diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
+index 7c2968a639eb..8a04302018dc 100644
+--- a/drivers/net/dsa/microchip/ksz_common.c
++++ b/drivers/net/dsa/microchip/ksz_common.c
+@@ -22,21 +22,40 @@
+ 
+ void ksz_update_port_member(struct ksz_device *dev, int port)
+ {
+-	struct ksz_port *p;
++	struct ksz_port *p = &dev->ports[port];
++	struct dsa_switch *ds = dev->ds;
++	u8 port_member = 0, cpu_port;
++	const struct dsa_port *dp;
+ 	int i;
+ 
+-	for (i = 0; i < dev->port_cnt; i++) {
+-		if (i == port || i == dev->cpu_port)
++	if (!dsa_is_user_port(ds, port))
++		return;
++
++	dp = dsa_to_port(ds, port);
++	cpu_port = BIT(dsa_upstream_port(ds, port));
++
++	for (i = 0; i < ds->num_ports; i++) {
++		const struct dsa_port *other_dp = dsa_to_port(ds, i);
++		struct ksz_port *other_p = &dev->ports[i];
++		u8 val = 0;
++
++		if (!dsa_is_user_port(ds, i))
+ 			continue;
+-		p = &dev->ports[i];
+-		if (!(dev->member & (1 << i)))
++		if (port == i)
++			continue;
++		if (!dp->bridge_dev || dp->bridge_dev != other_dp->bridge_dev)
+ 			continue;
+ 
+-		/* Port is a member of the bridge and is forwarding. */
+-		if (p->stp_state == BR_STATE_FORWARDING &&
+-		    p->member != dev->member)
+-			dev->dev_ops->cfg_port_member(dev, i, dev->member);
++		if (other_p->stp_state == BR_STATE_FORWARDING &&
++		    p->stp_state == BR_STATE_FORWARDING) {
++			val |= BIT(port);
++			port_member |= BIT(i);
++		}
++
++		dev->dev_ops->cfg_port_member(dev, i, val | cpu_port);
+ 	}
++
++	dev->dev_ops->cfg_port_member(dev, port, port_member | cpu_port);
+ }
+ EXPORT_SYMBOL_GPL(ksz_update_port_member);
+ 
+@@ -175,12 +194,6 @@ EXPORT_SYMBOL_GPL(ksz_get_ethtool_stats);
+ int ksz_port_bridge_join(struct dsa_switch *ds, int port,
+ 			 struct net_device *br)
+ {
+-	struct ksz_device *dev = ds->priv;
+-
+-	mutex_lock(&dev->dev_mutex);
+-	dev->br_member |= (1 << port);
+-	mutex_unlock(&dev->dev_mutex);
+-
+ 	/* port_stp_state_set() will be called after to put the port in
+ 	 * appropriate state so there is no need to do anything.
+ 	 */
+@@ -192,13 +205,6 @@ EXPORT_SYMBOL_GPL(ksz_port_bridge_join);
+ void ksz_port_bridge_leave(struct dsa_switch *ds, int port,
+ 			   struct net_device *br)
+ {
+-	struct ksz_device *dev = ds->priv;
+-
+-	mutex_lock(&dev->dev_mutex);
+-	dev->br_member &= ~(1 << port);
+-	dev->member &= ~(1 << port);
+-	mutex_unlock(&dev->dev_mutex);
+-
+ 	/* port_stp_state_set() will be called after to put the port in
+ 	 * forwarding state so there is no need to do anything.
+ 	 */
+diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
+index 1597c63988b4..54b456bc8972 100644
+--- a/drivers/net/dsa/microchip/ksz_common.h
++++ b/drivers/net/dsa/microchip/ksz_common.h
+@@ -25,8 +25,6 @@ struct ksz_port_mib {
+ };
+ 
+ struct ksz_port {
+-	u16 member;
+-	u16 vid_member;
+ 	bool remove_tag;		/* Remove Tag flag set, for ksz8795 only */
+ 	int stp_state;
+ 	struct phy_device phydev;
+@@ -83,8 +81,6 @@ struct ksz_device {
+ 	struct ksz_port *ports;
+ 	struct delayed_work mib_read;
+ 	unsigned long mib_read_interval;
+-	u16 br_member;
+-	u16 member;
+ 	u16 mirror_rx;
+ 	u16 mirror_tx;
+ 	u32 features;			/* chip specific features */
+-- 
+2.30.2
+
