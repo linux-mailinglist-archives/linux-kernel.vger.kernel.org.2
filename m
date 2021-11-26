@@ -2,102 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DF745F160
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:12:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D31D545F174
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:14:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378360AbhKZQPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:15:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57212 "EHLO
+        id S1378549AbhKZQRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:17:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378343AbhKZQNm (ORCPT
+        with ESMTP id S231590AbhKZQPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:13:42 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA353C061396;
-        Fri, 26 Nov 2021 08:02:15 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id h16-20020a9d7990000000b0055c7ae44dd2so14521079otm.10;
-        Fri, 26 Nov 2021 08:02:15 -0800 (PST)
+        Fri, 26 Nov 2021 11:15:40 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308C2C0613B1;
+        Fri, 26 Nov 2021 08:02:59 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id x15so40752496edv.1;
+        Fri, 26 Nov 2021 08:02:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PbeEnRWON9pb9nGRnrDkYtKRKVz+bBqeqfOhcC0/LMY=;
-        b=QlJ9BT79vV+UgbBLPVB9SHqwpuKF958qe/4Mo/aARVO9cwjFiv/Uw2PK81fwi8831u
-         Kip3tKmilWiTExI1OXx7XUqnowj7MjbDU8c22FkUt5c4bOr2jJtcjkKaYB3w7oBuwHPP
-         G7tS/FN5o7g8VZ4NO4BPxVFPv5Yv8SYiAX4yDHAdYoZgaG1h6KsW8PC+ritaYArqGSzm
-         hXjEbnx2+wi117uh94SJkoqMIZOFZ3UaHFzldYRjpbkAm4bg4cY5HTDh5zEs2pOjLzkG
-         uGTntQHgts3Y2ky15w5GgWss37Lqggj8cl8c5y60WWmXoI4upgPFMjHam7LRlTgKoNje
-         cF/Q==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dI+lMja+jGti/SnF5owFEZllst2L4ChAuUwddK8NtgY=;
+        b=Mqq+10/IPjXe9peZgl7PLgOFhtjpXU1wLidHxG1ESsiEJBCLcTTvIdLtIgUmWjr6do
+         x15PGJN1Jw+Pl8lawIJkfmHW/Xk7zYp9lVZd5Iyl/+mr5YGCurbeVCBtrToZ1PXdf0Wi
+         Ncw6qd0DTMsUi/gg3jMuWt5CvqiODtWcpbMHzRNlY8oy3HkwoxPIOEbMDbBKYZBg9dOS
+         f1nnQChHbvFxMmdlRI7tVbnwIMknfqbat/78YduVNXoX5E4t0qJSlgtwWdf/jqoicg6m
+         awGYZTBJHhf5NI9qs/ZBY2Tdzu6f01T8CQOzqt1O6LQAF26PMf02bVdEX5tpO2uyYsG7
+         eU5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=PbeEnRWON9pb9nGRnrDkYtKRKVz+bBqeqfOhcC0/LMY=;
-        b=s0+eRKuz3H2AtRX5dGGrCJq8JeiAhS0Nysm+6NSwx8IGqVwW9mcarcQpMB0MPn/9ew
-         IV73+M1PHH+VEGlLEWCWV+PL9YJmuzqqyEbFW8fDFP60hzhpA6sWeLAqpzd4rvKVNd7K
-         bTvf8GUwFdZyuBu/9OVowFUv91o433yNHA06FGatxsFT/3EKlyjvFpDHcbR8rM2Z4BOX
-         EJq+cM+zjr6NefMbzVJAtxk/5OXawZMTu/CSuR/PixphG/xvhXwQLDV40Ly2K7dqumnd
-         cDnknCZmVbUuNv2Ue6+ZyDDQ749WAY0wj7Eh3xKovFd25yoUH2ZSUV0IClbl/hTcquOV
-         O6Cg==
-X-Gm-Message-State: AOAM531dn5RrnmFCA+SjHjQ66flrOes92adY1oCUcaiemsWL2DsfZZC9
-        6Oh8unatM5CRmoHc/4fN660=
-X-Google-Smtp-Source: ABdhPJwV1CDUTlflKha7g6Adxid3NIOO8qLf9lChHNmx1HWiM56hDEuK98fgA+qincEt48HzMVN2XQ==
-X-Received: by 2002:a05:6830:169a:: with SMTP id k26mr29165571otr.64.1637942535128;
-        Fri, 26 Nov 2021 08:02:15 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r11sm1132492oth.48.2021.11.26.08.02.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Nov 2021 08:02:14 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v4 0/4] add device drivers for Siemens Industrial PCs
-To:     Henning Schild <henning.schild@siemens.com>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-watchdog@vger.kernel.org
-Cc:     Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Enrico Weigelt <lkml@metux.net>
-References: <20211126141027.16161-1-henning.schild@siemens.com>
- <20211126163410.2806de5f@md1za8fc.ad001.siemens.net>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <a1a6c43d-401c-19f1-9773-696402974f6b@roeck-us.net>
-Date:   Fri, 26 Nov 2021 08:02:11 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        bh=dI+lMja+jGti/SnF5owFEZllst2L4ChAuUwddK8NtgY=;
+        b=I2Z+CZs84n0d9HmV0LYLgdEMR69HS4HMy3ad+z8FKHap2t9ZHNMP7nN4t+VKOzkstU
+         D7XKGe0bLBNU5iqlYPwHOncf3fsSZ3Yn4DDSViPjENIIZ985ggPMDhSYCgWkK45JKdtB
+         q2MhCtIdwK/A42A0zJdQ2+ZDDDlMxKYfHybq4MHL3XXEHOlYT7IxuqrQSIkGZhQpGfOA
+         xtbWnxtoYWwJXx0zKAlMK1BeKMw8xyabs+jiUlm7NidSHiimXhxgQcDvDwkDI08nPrlN
+         wCWD/+Jd5CIQFsRr/S4UDlyZ8e4e3UAMsUYHCqnt8E8vNhExZRQD7p3qysYwoCxwbShg
+         6ITw==
+X-Gm-Message-State: AOAM532l5xMUh7abTmPiHrwjgfifCeO2fvXt1ez6+OHE0YVO8P2EWZ0e
+        9f/bdO+G+y2SIpVQ6OINON9wVAbU8/8=
+X-Google-Smtp-Source: ABdhPJx9jX4Py8Z78pgCEHWCYDcFd6+OnJDZ4525BbKIOIIIu+22in4vRAhC0j5hV5ahUm6DKJtQxg==
+X-Received: by 2002:a17:906:6b13:: with SMTP id q19mr38744807ejr.221.1637942577674;
+        Fri, 26 Nov 2021 08:02:57 -0800 (PST)
+Received: from demon-pc.localdomain ([188.24.96.74])
+        by smtp.gmail.com with ESMTPSA id y15sm4188324edr.35.2021.11.26.08.02.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 08:02:57 -0800 (PST)
+From:   Cosmin Tanislav <demonsingur@gmail.com>
+Cc:     demonsingur@gmail.com, cosmin.tanislav@analog.com,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>, linux-gpio@vger.kernel.org
+Subject: [PATCH v6 0/3] Add AD74413R driver
+Date:   Fri, 26 Nov 2021 18:02:16 +0200
+Message-Id: <20211126160219.674665-1-demonsingur@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <20211126163410.2806de5f@md1za8fc.ad001.siemens.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/21 7:34 AM, Henning Schild wrote:
-> Hi all,
-> 
-> in p3 not too much was left open so i hope this might be the last and
-> might be quick.
-> 
-> The two points that have been open where:
->   1 wish to split wdt driver into two
->   2 wish to use pinctrl for LEDs/WDT
-> 
-> 1 was ignored for now. We can split later when we add more devices. It
-> remains unclear if splitting is the way to go when more devices come.
 
-The code is already quite messy, in part because memory regions are
-declared locally and not passed through the parent device as they should.
-I don't see how splitting the driver into multiple drivers would improve
-the situation. The platform code claims to be inspired by the lpc_ich
-driver. Maybe it should take a real example from that and pass version
-or variant specific details through platform data instead of maintaining
-it in the watchdog driver.
+The AD74412R and AD74413R are quad-channel software configurable input/output
+solutions for building and process control applications. They contain
+functionality for analog output, analog input, digital input, resistance
+temperature detector, and thermocouple measurements integrated
+into a single chip solution with an SPI interface.
+The devices feature a 16-bit ADC and four configurable 13-bit DACs to provide
+four configurable input/output channels and a suite of diagnostic functions.
+The AD74413R differentiates itself from the AD74412R by being HART-compatible.
 
-Guenter
+V1 -> V2
+ * sign off using company email
+
+V2 -> V3
+ * replace gpo config firmware flag with one flag specifying whether gpo is in
+   comparator mode
+ * create two separate gpiochips, one output-only for GPO pins not in
+   comparator mode and one input-only for the value of digital input channels
+ * wire up all gpo functionalities using pinconf
+ * keep number of characters per line under 80
+ * rework locking
+ * do not invalidate other chip revisions
+ * do not set indio device parent
+ * print probe error for refin regulator
+ * move conversion from range register value to range / offset / raw offset
+   into separate function
+ * module.h -> mod_devicetable.h
+ * use generic firmware interface functions
+ * add comment regarding cache alignment
+ * add comment regarding ADC channels buffered read setup
+ * un-inline comment regarding 100us delay for conversion start
+ * inline return statements
+ * remove assignments to val2 where not necessary
+ * local_channels -> chans
+ * index -> i
+ * channel_config -> config
+ * IIO_ALTVOLTAGE -> IIO_VOLTAGE
+ * .info_mask_shared_by_type_available -> .info_mask_separate_available
+ * remove unlikely probe error messages
+ * use an array indexed by channel function for retrieving iio channels
+ * count iio channels while parsing
+ * move HART rate rejection outside of setter
+ * move channel function validation outside of setter
+ * use SPI messages for read and write
+ * validate DAC code earlier
+ * simplify switches to only handle existing iio channels
+ * pass indio_dev into functions needing access to it
+ * pass spi into devm_regmap_init
+ * dt-bindings: sort compatibles
+ * dt-bindings: remove driver word from description
+ * dt-bindings: remove refin supply description
+ * dt-bindings: specify channel function default value
+ * dt-bindings: remove maxItems from scalar value
+
+V3 -> v4
+ * remove double gpo from macro name
+ * reset at probe
+ * config -> chip_info and store chip name inside chip info
+ * cacheline align every DMA buffer
+ * simplify generation of adc samples message by caching xfer, tx_buf and rx_buf
+ * use mask itself for writing the value of channel enable and gpo data
+ * move reg read and write transfers to the same buffers and use local
+   variables for transfers
+ * merge the two for loops handling gpio configuration
+ * let firmware decide irq edge
+ * remove INDIO_BUFFER_SOFTWARE already set by iio framwork
+ * do not set trigger device parent
+ * return dev_err_probe for regulator error case
+ * do not set cs_change to 0 when not needed
+ * do not set spi device drvdata as it is not needed
+ * fix bug regarding wrong channels being created for resistance input,
+   digital input, and current input with hart
+ * use voltage input channels spec for high impedance mode
+ * put () around macro parameters
+ * merge AD74413R_CHANNEL macro into its uses
+ * remove unused switch case scope
+ * inline return IIO_VAL_INT
+ * use {get,put}_unaligned_be16
+ * use proper types for reg and val
+ * move default case handling into switch statements
+ * pass driver state into regmap functions
+ * use genmask for generating a 16bit max value
+ * alphanumeric order for part numbers
+ * dt-bindings: remove $ref from ohms value
+
+V4 -> V5
+ * dt-bindings: include headers necessary
+ * dt-bindings: add IRQ_TYPE_EDGE_FALLING to interrupt flags
+ * dt-bindings: ohm -> ohms
+ * dt-bindings: spi0 -> spi
+
+V5 -> V6
+ * fix warnings regarding overflows
+
+Cosmin Tanislav (3):
+  iio: add adddac subdirectory
+  dt-bindings: iio: add AD74413R
+  iio: addac: add AD74413R driver
+
+ .../bindings/iio/addac/adi,ad74413r.yaml      |  157 ++
+ MAINTAINERS                                   |    9 +
+ drivers/iio/Kconfig                           |    1 +
+ drivers/iio/Makefile                          |    1 +
+ drivers/iio/addac/Kconfig                     |   20 +
+ drivers/iio/addac/Makefile                    |    7 +
+ drivers/iio/addac/ad74413r.c                  | 1473 +++++++++++++++++
+ include/dt-bindings/iio/addac/adi,ad74413r.h  |   21 +
+ 8 files changed, 1689 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/addac/adi,ad74413r.yaml
+ create mode 100644 drivers/iio/addac/Kconfig
+ create mode 100644 drivers/iio/addac/Makefile
+ create mode 100644 drivers/iio/addac/ad74413r.c
+ create mode 100644 include/dt-bindings/iio/addac/adi,ad74413r.h
+
+-- 
+2.34.1
+
