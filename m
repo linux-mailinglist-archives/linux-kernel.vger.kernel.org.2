@@ -2,136 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1A545E90B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:12:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F50245E908
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:11:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359354AbhKZIPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 03:15:18 -0500
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:65350 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243068AbhKZINS (ORCPT
+        id S1353394AbhKZIOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 03:14:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346223AbhKZIMg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 03:13:18 -0500
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1AQ7iYfs032630;
-        Fri, 26 Nov 2021 15:44:34 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from [192.168.2.115] (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 26 Nov
- 2021 16:08:49 +0800
-Message-ID: <b66655ac-eac8-835a-7917-0c1d035d5309@aspeedtech.com>
-Date:   Fri, 26 Nov 2021 16:08:50 +0800
+        Fri, 26 Nov 2021 03:12:36 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5A4C06175D
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 00:09:23 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id b68so8160806pfg.11
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 00:09:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/YNKBs5usPgzpPqq6ik3NWOvzOHf+lZiBAS4akQ6+MM=;
+        b=NWsHTunyuPmjiha7Z6av7nj9o2qg1IhGgN58uu6F+rlX/zgqST3eb2gvnZVJgpmu8r
+         OTPEwjozqGVtTERphQ8dXtIVKXtQ3znSHxBdpE60nD+9HbNOy5vCw0uh2RNJEhapdj6U
+         /9/4+HtwRnQote0pl/3Ma/daT0trFvHzH3Bs+nT+I1xj3unQ6vtAY1c3whVaZlaAj2nh
+         sng3er8E7whvhBr4Usm74M6UjuhgdztPOoGcaWLPeZSEWhN5iAkx3b/kST0eFijVzX9A
+         A8+d3EEgPeAk0pFUhZ195/gq98Q+Z9QunMAnhSR6mzTftQzlmd9V91eGy3poUPk5eCan
+         292A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/YNKBs5usPgzpPqq6ik3NWOvzOHf+lZiBAS4akQ6+MM=;
+        b=YRjOlhh2GitJPnIa2Ts9ru9vN8dsGSHW+O+Fw9zjhd+bpeojm9pWmtvx19ED0JkQpi
+         rI46o1jjk+QxuDIWtnWw6Y/2+Mp0EbIKw4bwfctlszfZCHP101oh10+SXPz0i5b1+ZR3
+         H/eKBm2LhUBpTQjSdLzhW8uLr+snvEGI4v3p878cOkwSRC7W4vHC1spWACWj2v4DEKYd
+         oKWyoMWUWj9iBo+EyTz1qb+009LxDIIj19i8hhZW6/iwWNHGAZM4r9k2Dd398tae40Gl
+         WpxX17YoIkP8fSyDsb4y+hGoT+gf6yDx+vyVgj/kVYSx9f7V/Y74iMnukluKNlck6aRK
+         JM5A==
+X-Gm-Message-State: AOAM5309vsx1UssYXejBGCQHpULmDLN+7UU3SZM2IOM1WKDvRZcWj4pa
+        2WxEY9/qQInrmVvMpQqv2wjJyMGCdy8=
+X-Google-Smtp-Source: ABdhPJyLM8ggQ9gF6ni+vIW1jlOhqcC1ZVJyzFR8CwvkP9TPfGjR6d74WZa6pPppH5faU8j40tPzuQ==
+X-Received: by 2002:a63:7c4f:: with SMTP id l15mr7168872pgn.310.1637914163509;
+        Fri, 26 Nov 2021 00:09:23 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id p128sm5743428pfg.125.2021.11.26.00.09.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 00:09:23 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: deng.changcheng@zte.com.cn
+To:     tglx@linutronix.de
+Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, akpm@linux-foundation.org,
+        aneesh.kumar@linux.ibm.com, sfr@canb.auug.org.au,
+        deng.changcheng@zte.com.cn, linux-kernel@vger.kernel.org,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] x86: mm: fix boolreturn.cocci warning
+Date:   Fri, 26 Nov 2021 08:09:17 +0000
+Message-Id: <20211126080917.75495-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH v5 05/10] media: v4l: Add definition for the Aspeed JPEG
- format
-Content-Language: en-US
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-CC:     "eajames@linux.ibm.com" <eajames@linux.ibm.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "laurent.pinchart@ideasonboard.com" 
-        <laurent.pinchart@ideasonboard.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20211118074030.685-1-jammy_huang@aspeedtech.com>
- <20211118074030.685-6-jammy_huang@aspeedtech.com>
- <YZZIDNCLJXwrqY4W@paasikivi.fi.intel.com>
- <0bed6093-0af6-4fc4-716f-6cf8b1302320@aspeedtech.com>
- <YZzBPFHZ7MPwTWSm@paasikivi.fi.intel.com>
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-In-Reply-To: <YZzBPFHZ7MPwTWSm@paasikivi.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1AQ7iYfs032630
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-On 2021/11/23 下午 06:23, Sakari Ailus wrote:
-> Hi Jammy,
->
-> On Fri, Nov 19, 2021 at 10:02:40AM +0800, Jammy Huang wrote:
->> Hi Sakari,
->>
->> On 2021/11/18 下午 08:33, Sakari Ailus wrote:
->>> Hi Jammy,
->>>
->>> On Thu, Nov 18, 2021 at 03:40:26PM +0800, Jammy Huang wrote:
->>>> This introduces support for the Aspeed JPEG format, where the new frame
->>>> can refer to previous frame to reduce the amount of compressed data. The
->>>> concept is similar to I/P frame of video compression. I will compare the
->>>> new frame with previous one to decide which macroblock's data is
->>>> changed, and only the changed macroblocks will be compressed.
->>>>
->>>> This Aspeed JPEG format is used by the video engine on Aspeed platforms,
->>>> which is generally adapted for remote KVM.
->>>>
->>>> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
->>>> ---
->>>> v5:
->>>>     - no update
->>>> v4:
->>>>     - new
->>>> ---
->>>>    Documentation/media/uapi/v4l/pixfmt-reserved.rst | 12 ++++++++++++
->>>>    drivers/media/v4l2-core/v4l2-ioctl.c             |  1 +
->>>>    include/uapi/linux/videodev2.h                   |  1 +
->>>>    3 files changed, 14 insertions(+)
->>>>
->>>> diff --git a/Documentation/media/uapi/v4l/pixfmt-reserved.rst b/Documentation/media/uapi/v4l/pixfmt-reserved.rst
->>>> index b2cd155e691b..23c05063133d 100644
->>>> --- a/Documentation/media/uapi/v4l/pixfmt-reserved.rst
->>>> +++ b/Documentation/media/uapi/v4l/pixfmt-reserved.rst
->>>> @@ -264,6 +264,18 @@ please make a proposal on the linux-media mailing list.
->>>>    	of tiles, resulting in 32-aligned resolutions for the luminance plane
->>>>    	and 16-aligned resolutions for the chrominance plane (with 2x2
->>>>    	subsampling).
->>>> +    * .. _V4L2-PIX-FMT-AJPG:
->>>> +
->>>> +      - ``V4L2_PIX_FMT_AJPG``
->>>> +      - 'AJPG'
->>>> +      - ASPEED JPEG format used by the aspeed-video driver on Aspeed platforms,
->>>> +        which is generally adapted for remote KVM.
->>>> +        On each frame compression, I will compare the new frame with previous
->>>> +        one to decide which macroblock's data is changed, and only the changed
->>>> +        macroblocks will be compressed.
->>>> +
->>>> +        You could reference to chapter 36, Video Engine, of AST2600's datasheet
->>>> +        for more information.
->>> Is this datasheet publicly available? Do you have a URL?
->> Sorry, this datasheet is not publicly available.
->> Hans mentioned this as well in the discussion below:
->>
->> https://lkml.org/lkml/2021/11/10/101
-> If the vendor documentation is not publicly available, you'll need to have
-> the format documented here. Alternatively an open source implementation
-> (e.g. LGPL) is presumably fine, too.
-Please refer to 
-https://github.com/AspeedTech-BMC/openbmc/releases/download/v07.02/SDK_User_Guide_v07.02.pdf.
-At Page 132, 'Video stream data format – ASPEED mode compression' 
-describes the data format.
-Is above information  enough??
+./arch/x86/include/asm/pgtable.h: 1394: 9-10: WARNING: return of 0/1 in
+function '__pte_access_permitted' with return type bool
 
-Besides, I have already had openbmc's kvm support this aspeed format.
-The source code of the implementation will be released after performance 
-tuning finished.
+Return statements in functions returning bool should use true/false
+instead of 1/0.
 
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+---
+ arch/x86/include/asm/pgtable.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index 448cd01eb3ec..fc4801d1863c 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -1366,7 +1366,7 @@ static inline bool __pte_access_permitted(unsigned long pteval, bool write)
+ 		need_pte_bits |= _PAGE_RW;
+ 
+ 	if ((pteval & need_pte_bits) != need_pte_bits)
+-		return 0;
++		return false;
+ 
+ 	return __pkru_allows_pkey(pte_flags_pkey(pteval), write);
+ }
 -- 
-Best Regards
-Jammy
+2.25.1
 
