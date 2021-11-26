@@ -2,68 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08EAC45EB09
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 249C345EAF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:03:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348175AbhKZKKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 05:10:08 -0500
-Received: from mga12.intel.com ([192.55.52.136]:29576 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238722AbhKZKIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 05:08:07 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="215665448"
-X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
-   d="scan'208";a="215665448"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 01:59:26 -0800
-X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
-   d="scan'208";a="498358086"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 01:59:24 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mqY0o-00Ak6P-Vj;
-        Fri, 26 Nov 2021 11:59:22 +0200
-Date:   Fri, 26 Nov 2021 11:59:22 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        id S1352956AbhKZKGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:06:08 -0500
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:62704 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343615AbhKZKEH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 05:04:07 -0500
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 1AQ9aCln042552;
+        Fri, 26 Nov 2021 17:36:12 +0800 (GMT-8)
+        (envelope-from neal_liu@aspeedtech.com)
+Received: from localhost.localdomain (192.168.10.10) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 26 Nov
+ 2021 18:00:28 +0800
+From:   Neal Liu <neal_liu@aspeedtech.com>
+To:     Alan Stern <stern@rowland.harvard.edu>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Prchal <jiri.prchal@aksignal.cz>
-Subject: Re: [PATCH v1 00/10] misc: at25: Code cleanups and improvements
-Message-ID: <YaCv+mkge5AqYm8R@smile.fi.intel.com>
-References: <20211125213203.86693-1-andriy.shevchenko@linux.intel.com>
- <CAK8P3a3Pu-ygd9dkhS=d2ZGKjbt0V=mdxaEG8tXUhueSKMJXQg@mail.gmail.com>
- <YaCucfdYfGCuBBiS@smile.fi.intel.com>
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Neal Liu <neal_liu@aspeedtech.com>, Tao Ren <rentao.bupt@gmail.com>
+Subject: [PATCH] usb: uhci: add aspeed ast2600 uhci support
+Date:   Fri, 26 Nov 2021 18:00:21 +0800
+Message-ID: <20211126100021.2331024-1-neal_liu@aspeedtech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YaCucfdYfGCuBBiS@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.10.10]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 1AQ9aCln042552
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 11:52:49AM +0200, Andy Shevchenko wrote:
-> On Thu, Nov 25, 2021 at 11:03:26PM +0100, Arnd Bergmann wrote:
-> > On Thu, Nov 25, 2021 at 10:31 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
+Enable ast2600 uhci quirks.
 
-...
+Signed-off-by: Neal Liu <neal_liu@aspeedtech.com>
+---
+ drivers/usb/host/uhci-platform.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> > It would be nice to change the three remaining board files that fill
-> > struct spi_eeprom so they use device properties and unify the
-> > rest of the probe path. Not sure how much of a change that would
-> > be.
-> 
-> Do you have a chance to test that if it appears to be the case?
-
-There is one more, actually: arch/mips/txx9/generic/spi_eeprom.c.
-
-But above perhaps some OMAP people can help with... Dunno.
-
+diff --git a/drivers/usb/host/uhci-platform.c b/drivers/usb/host/uhci-platform.c
+index 70dbd95c3f06..be9e9db7cad1 100644
+--- a/drivers/usb/host/uhci-platform.c
++++ b/drivers/usb/host/uhci-platform.c
+@@ -113,7 +113,8 @@ static int uhci_hcd_platform_probe(struct platform_device *pdev)
+ 				num_ports);
+ 		}
+ 		if (of_device_is_compatible(np, "aspeed,ast2400-uhci") ||
+-		    of_device_is_compatible(np, "aspeed,ast2500-uhci")) {
++		    of_device_is_compatible(np, "aspeed,ast2500-uhci") ||
++		    of_device_is_compatible(np, "aspeed,ast2600-uhci")) {
+ 			uhci->is_aspeed = 1;
+ 			dev_info(&pdev->dev,
+ 				 "Enabled Aspeed implementation workarounds\n");
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
