@@ -2,94 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4137245EBE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5589345EBEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:51:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347253AbhKZKvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 05:51:46 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:33162 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231164AbhKZKtn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 05:49:43 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 8E47A2191E;
-        Fri, 26 Nov 2021 10:46:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637923589; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9YdYQ/QDOZ9ujDOWQAlnJ0DA9EtWFPO4uXJDqWq55J8=;
-        b=CVDzatEG+gWBqlCmhrJjzygJY+XwRfcK07I1UtlWI05DnbvL1DSrHPfAElyHrj4Ycr6QLt
-        uweguk+nnzzfJjyGyX81qA8AH9BSS1VPauDyTa30l3lJwy/s1pSZdWw2tGzHPKs7ughFGJ
-        wnne3H49SvTo+whWmQGnMAY12Krwf2E=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 77507A3B84;
-        Fri, 26 Nov 2021 10:46:29 +0000 (UTC)
-Date:   Fri, 26 Nov 2021 11:46:29 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Hao Lee <haolee.swjtu@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>, vdavydov.dev@gmail.com,
-        Shakeel Butt <shakeelb@google.com>, cgroups@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: reduce spinlock contention in release_pages()
-Message-ID: <YaC7BcTSijFj+bxR@dhcp22.suse.cz>
-References: <20211124151915.GA6163@haolee.io>
- <YZ5o/VmU59evp65J@dhcp22.suse.cz>
- <CA+PpKPmy-u_BxYMCQOFyz78t2+3uM6nR9mQeX+MPyH6H2tOOHA@mail.gmail.com>
- <YZ8DZHERun6Fej2P@casper.infradead.org>
- <20211125080238.GA7356@haolee.io>
- <YZ9e3pzHKmn5nev0@dhcp22.suse.cz>
- <20211125123133.GA7758@haolee.io>
- <YZ+bI1fNpKar0bSU@dhcp22.suse.cz>
- <CA+PpKP=hsuBmvv09OcD2Nct8B8Cqa03UfKFHAHzKxwE0SXGP4g@mail.gmail.com>
+        id S231474AbhKZKyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:54:20 -0500
+Received: from smtpbgsg1.qq.com ([54.254.200.92]:41543 "EHLO smtpbgsg1.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1376959AbhKZKwS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 05:52:18 -0500
+X-QQ-mid: bizesmtp40t1637923721tlakymwu
+Received: from localhost.localdomain (unknown [113.57.152.160])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Fri, 26 Nov 2021 18:48:35 +0800 (CST)
+X-QQ-SSF: B1400000002000B0F000B00A0000000
+X-QQ-FEAT: gYiVu/z0yd/cH6TA/IFyselHzYKBnHqikAZUpdSoLWaw5MR6yle1DFaVNAwSY
+        RjTA7vLp0Fb51uBIC4YxNtvC4eUN0dR392wPj1z4W4II3MEW5OXJzppWwIvGBcy4st89HC8
+        sT4hiG5F6c07d610jyiVNxt2CAusPYq8332hqy74JNzpRk1bIdl46dE6AAv4OfTXldA96Wn
+        DmUELnwUdJVyvfRh3VpGDbo8tYz8Y+NVNiZvWlcmXISqBCs4NyfOaD/Z6irfYEMSSKUIrTT
+        TV1r9bWX9HStDxHZmQMTvVXSx+uRJ4DejQ1lozvt1YBpqgrPNhMprF3iRv9ls99m4RAa1qP
+        1IwBVtdt1I1DrSuNK9iouR130pFVtjC5qLsObC+n6sy6P2uLN0=
+X-QQ-GoodBg: 2
+From:   lianzhi chang <changlianzhi@uniontech.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
+        282827961@qq.com, lianzhi chang <changlianzhi@uniontech.com>
+Subject: [PATCH v16] tty: Fix the keyboard led light display problem
+Date:   Fri, 26 Nov 2021 18:48:32 +0800
+Message-Id: <20211126104832.11371-1-changlianzhi@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+PpKP=hsuBmvv09OcD2Nct8B8Cqa03UfKFHAHzKxwE0SXGP4g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign1
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 26-11-21 14:50:44, Hao Lee wrote:
-> On Thu, Nov 25, 2021 at 10:18 PM Michal Hocko <mhocko@suse.com> wrote:
-[...]
-> > Could you share more about requirements for those? Why is unmapping in
-> > any of their hot paths which really require low latencies? Because as
-> > long as unmapping requires a shared resource - like lru lock - then you
-> > have a bottle necks.
-> 
-> We deploy best-effort (BE) jobs (e.g. bigdata, machine learning) and
-> latency-critical (LC) jobs (e.g. map navigation, payments services) on the
-> same servers to improve resource utilization. The running time of BE jobs are
-> very short, but its memory consumption is large, and these jobs will run
-> periodically. The LC jobs are long-run services and are sensitive to delays
-> because jitters may cause customer churn.
+When the desktop and tty switch mutually, the led state of the
+keyboard may be inconsistent with the state of the keyboard lock.
+This is because the desktop environment (Xorg, etc.) is bound to
+a tty, and the kb->kbdmode attribute of this tty is set to VC_OFF.
+This leads to the fact that in the desktop environment, the bound
+tty will not set the keyboard light state, so in the current tty
+scene, the values of ledstate and kb->ledflagstate are always 0.
+This leads to two situations: (1) When switching from the desktop
+to another tty, the code inside VT still compares ledstate with
+the kb->ledflagstate of the next tty. If they are equal, then
+after the switch is completed, The keyboard light will maintain
+the state of the previous desktop settings, and the state of the
+keyboard lock may be inconsistent; (2) When switching from another
+tty to the desktop, according to the code logic, it may still
+trigger the desktop bound tty to set the keyboard light state.
+After the switch is completed, the keyboard light is forcibly
+turned off. I think in this case, the tty should not set the
+keyboard light, and give control to Xorg etc. to handle it.
+The current modification judges the value of kb->kbdmode.
+In some modes, when switching VT, the current tty keyboard
+light status is forcibly issued. And when switching to the
+desktop, the tty no longer sets the keyboard light.
 
-Have you tried to isolate those workloads by memory cgroups? That could
-help for lru lock at least. You are likely going to hit other locks on
-the way though. E.g. zone lock in the page allocator but that might be
-less problematic in the end. If you isolate your long running services
-to a different NUMA node then you can get even less interaction.
+Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
+Suggested-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+ v15:
+ (1) Modify the description information;
+ (2) When switching VT, add the judgment on the two modes of
+ VC_RAW and VC_MEDIUMRAW in the place where it is determined
+ whether it is mandatory to set the led state of the
+ keyboard, which is consistent with other places.
+ v16:
+ Change the signature; change the format of the note text.
+ 
+ drivers/tty/vt/keyboard.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-> If a batch of BE jobs are finished simultaneously, lots of memory are freed,
-> and spinlock contentions happen. BE jobs don't care about these contentions,
-> but contentions cause them to spend more time in kernel mode, and thus, LC
-> jobs running on the same cpu cores will be delayed and jitters occur. (The
-> kernel preemption is disabled on our servers, and we try not to separate
-> LC/BE using cpuset in order to achieve "complete mixture deployment"). Then
-> LC services people will complain about the poor service stability. This
-> scenario has occurred several times, so we want to find a way to avoid it.
-
-It will be hard and a constant fight to get reasonably low latencies on
-a non preemptible kernel. It would likely be better to partition CPUs
-between latency sensitive and BE jobs. I can see how that might not be
-really practical but especially with non-preemptible kernels you have a
-large space for priority inversions that is hard to forsee or contain.
+diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+index c7fbbcdcc346..e60ac9f39d6c 100644
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -153,6 +153,7 @@ static int shift_state = 0;
+ 
+ static unsigned int ledstate = -1U;			/* undefined */
+ static unsigned char ledioctl;
++static bool vt_switch;
+ 
+ /*
+  * Notifier list for console keyboard events
+@@ -412,9 +413,21 @@ static void do_compute_shiftstate(void)
+ /* We still have to export this method to vt.c */
+ void vt_set_leds_compute_shiftstate(void)
+ {
++	struct kbd_struct *kb;
+ 	unsigned long flags;
+ 
+-	set_leds();
++	/*
++	 * When switching VT, according to the value of kb->kbdmode,
++	 * judge whether it is necessary to force the keyboard light
++	 * state to be issued.
++	 */
++	kb = kbd_table + fg_console;
++	if (kb->kbdmode == VC_RAW ||
++	     kb->kbdmode == VC_MEDIUMRAW ||
++	     kb->kbdmode == VC_OFF) {
++		vt_switch = true;
++		set_leds();
++	}
+ 
+ 	spin_lock_irqsave(&kbd_event_lock, flags);
+ 	do_compute_shiftstate();
+@@ -1255,6 +1268,11 @@ static void kbd_bh(struct tasklet_struct *unused)
+ 	leds |= (unsigned int)kbd->lockstate << 8;
+ 	spin_unlock_irqrestore(&led_lock, flags);
+ 
++	if (vt_switch) {
++		ledstate = ~leds;
++		vt_switch = false;
++	}
++
+ 	if (leds != ledstate) {
+ 		kbd_propagate_led_state(ledstate, leds);
+ 		ledstate = leds;
 -- 
-Michal Hocko
-SUSE Labs
+2.20.1
+
+
+
