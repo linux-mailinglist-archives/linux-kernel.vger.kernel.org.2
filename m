@@ -2,82 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D86D45E9B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:54:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1257A45E9B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:55:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359774AbhKZI6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 03:58:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346114AbhKZI4E (ORCPT
+        id S1359631AbhKZI7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 03:59:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23523 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1359668AbhKZI46 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 03:56:04 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06789C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 00:52:52 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id r11so35845990edd.9
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 00:52:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=zVlKoJV5QCc33RQJubZEDQDRV60YVKYMw2KVtAWGMJk=;
-        b=NM4yTnJE0+o3ugqNFxXEo4OV5mIAfzHUHFzC5zanm8KgSMfwYrWnbOoQrsH74nWOip
-         bALPWQlBGob9nbdY9cB+tUpPWX726hc2DftxNdRguXE2YaosbZFFVkArXx3xytU+jTVx
-         aTpOpZd/OhpQj9waqKrK65PWmozxQwr2Wp4T5OCLFNsuuF5Tz08iMqqJZunln83mgAnU
-         YcI81809lPE/fzb/lvr32Fp74eoiUkbIkzkKlP8DtxkoXc4Vsmz+cUB1MoX2yt3Ge1tg
-         NddOm69ha3VQgy35m8MSLzyZ4419RWav18IqoMe9m5Hns80VZTjTc7MDH+bgVALBxCb+
-         p1YQ==
+        Fri, 26 Nov 2021 03:56:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637916826;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CaUZGIbLdBQv+xSVNcxZeXO0Rrr3XbXIVmiKg++vUEg=;
+        b=TLfIlXUKKGWG5IZgcZS2olj1a8r+/+C9pXmGT5EGDj4Q4GDdk/BEFY/lPNl/CnrGwrEse2
+        Jkm9EodrRLQblIYZHEB2Fjkrf5fRe+/+n50bdCYQWbdYMGq6eB8YKvvv/WM8QXU/G2p/LC
+        SdYT70muxtwCRvCFMg1yLAFpDXNJCls=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-568-5PKIOl4HOwa12y9NX2RC5A-1; Fri, 26 Nov 2021 03:53:45 -0500
+X-MC-Unique: 5PKIOl4HOwa12y9NX2RC5A-1
+Received: by mail-ed1-f70.google.com with SMTP id n11-20020aa7c68b000000b003e7d68e9874so7460480edq.8
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 00:53:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=zVlKoJV5QCc33RQJubZEDQDRV60YVKYMw2KVtAWGMJk=;
-        b=On9j1nHeIrr6BbxJ3F3adibgX5va9ta+3Rnw9Btks/ogwviHpCpVieTE8rfKPYb62T
-         Ied5i9PCYJ3S5dXGtAMWQWDjIhE1rtirbfepyPYskCqF/HlAuJpVE6GeGCWqvF3cjyDn
-         6eGdQAwXWD8leX4CzN4AVXhw7lIFso7yZyzBCEX+cXjkuDqAZTZvfSCBVpXE960gkbrP
-         Qg+kW+Fzhk6w24fGnzPqJTNXZmHWr2aYhkLPkW6+l4yqtz6MyG7rTvlheXUW/EcSqUHX
-         WUysaFIkI8OCanGVLVl8tspIRr34iaMnzbKDLFPTVAHS2G8YmFGNoYOZXKnk9BkYNtJQ
-         LRHQ==
-X-Gm-Message-State: AOAM532kkXr1S9dk453v3uhq+pbtFpqj+B/KSzg9RXKdQhNCHpuJx/gq
-        bN0XUQogOcPUgh0qtjl0R6o368gWCbIXBVNdwyU=
-X-Google-Smtp-Source: ABdhPJz01pTADrEoUWYeOTNxhDwZ+0FcAiysD9eZ4IbZx1cGLPgvTnE/WYwegnU3otOTqnXePLokCHeBMDZRcy3MOlw=
-X-Received: by 2002:a17:907:3f83:: with SMTP id hr3mr37856568ejc.555.1637916770475;
- Fri, 26 Nov 2021 00:52:50 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CaUZGIbLdBQv+xSVNcxZeXO0Rrr3XbXIVmiKg++vUEg=;
+        b=jV5X6a4yjFDcLKMG2wlc109XXPYc6VNE5IIdyje1MZ8Yr+dAvekgaQHJdMXfBrfKZD
+         w+3fhr14guub42umb4FA3ctFUsilfIugIzL4kt6Khfq8huNxS9GjJUHFO1K6u2o3QV84
+         oNX9SJCqJ+Md3GVo7q2nXLEcAAg+fBGzUCcwxwnJ9mvXkpuQPVn4KVqtJOVi2ttLqlGG
+         LENTOW83IxjjWsGsKJYuWRjVglgc9MHZLDPwHZjlBKxxV+RQdZ7RPqP2fC3wUqcfA27N
+         WqjId4yWCa03B0cEDolpwMh4axkwrOltlUzjp62d5h+x3SFj8C6IKMh8l6wVDPYdiXII
+         7ekg==
+X-Gm-Message-State: AOAM531WAn4sUlYMG/uDI0rNAFZ/nW2wpSLPSgzbWKwTguqRIRvj7ylU
+        Q8gbLj6QELHU9Gsd9ZufmTYyku2xailnnq97Z3UZ45iiStzFapzWjolWAiQc3DSJYy7KyGHQDa+
+        /5YYXw/FK4FVyGDqV4dN8+Y8H
+X-Received: by 2002:aa7:dc15:: with SMTP id b21mr46576153edu.237.1637916823725;
+        Fri, 26 Nov 2021 00:53:43 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJynBNBQYN4uVWk4F98nCH01OPXWR80eaHC0GF284fqeGM0GYz3eAtEIKkZwxdcR6T714EoA9w==
+X-Received: by 2002:aa7:dc15:: with SMTP id b21mr46576143edu.237.1637916823589;
+        Fri, 26 Nov 2021 00:53:43 -0800 (PST)
+Received: from steredhat (host-79-46-195-175.retail.telecomitalia.it. [79.46.195.175])
+        by smtp.gmail.com with ESMTPSA id d1sm3608298edn.56.2021.11.26.00.53.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 00:53:43 -0800 (PST)
+Date:   Fri, 26 Nov 2021 09:53:41 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Wei Wang <wei.w.wang@intel.com>
+Cc:     mst@redhat.com, stefanha@redhat.com, davem@davemloft.net,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2] virtio/vsock: fix the transport to work with
+ VMADDR_CID_ANY
+Message-ID: <20211126085341.wiab2frkcbmkg4ca@steredhat>
+References: <20211126011823.1760-1-wei.w.wang@intel.com>
 MIME-Version: 1.0
-Received: by 2002:a17:906:c194:0:0:0:0 with HTTP; Fri, 26 Nov 2021 00:52:49
- -0800 (PST)
-Reply-To: mrsaishag45@gmail.com
-From:   Mrs Aisha Al-Qaddafi <asiha7154@gmail.com>
-Date:   Fri, 26 Nov 2021 00:52:49 -0800
-Message-ID: <CAFsn1c6y=4465FFZuMUb+VfXjB4YjxBOK+41HSRkMOyLbH4cEA@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20211126011823.1760-1-wei.w.wang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I came across your e-mail contact prior a private search while in need
-of your assistance. My name is Aisha Gaddafi a single
+On Thu, Nov 25, 2021 at 08:18:23PM -0500, Wei Wang wrote:
+>The VMADDR_CID_ANY flag used by a socket means that the socket isn't bound
+>to any specific CID. For example, a host vsock server may want to be bound
+>with VMADDR_CID_ANY, so that a guest vsock client can connect to the host
+>server with CID=VMADDR_CID_HOST (i.e. 2), and meanwhile, a host vsock
+>client can connect to the same local server with CID=VMADDR_CID_LOCAL
+>(i.e. 1).
+>
+>The current implementation sets the destination socket's svm_cid to a
+>fixed CID value after the first client's connection, which isn't an
+>expected operation. For example, if the guest client first connects to the
+>host server, the server's svm_cid gets set to VMADDR_CID_HOST, then other
+>host clients won't be able to connect to the server anymore.
+>
+>Reproduce steps:
+>1. Run the host server:
+>   socat VSOCK-LISTEN:1234,fork -
+>2. Run a guest client to connect to the host server:
+>   socat - VSOCK-CONNECT:2:1234
+>3. Run a host client to connect to the host server:
+>   socat - VSOCK-CONNECT:1:1234
+>
+>Without this patch, step 3. above fails to connect, and socat complains
+>"socat[1720] E connect(5, AF=40 cid:1 port:1234, 16): Connection
+>reset by peer".
+>With this patch, the above works well.
+>
+>Fixes: c0cfa2d8a788 ("vsock: add multi-transports support")
+>Signed-off-by: Wei Wang <wei.w.wang@intel.com>
+>---
+> net/vmw_vsock/virtio_transport_common.c | 3 ++-
+> 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Mother and a Widow with three Children. I am the only biological
-Daughter of late Libyan President (Late Colonel Muammar
+Usually fixes for net/vmw_vsock/* are applied through the net tree 
+(netdev@vger.kernel.org) that seems not CCed. Please use 
+./scripts/get_maintainer.pl next time.
 
-Gaddafi).
+Maybe this one can be queued by Michael, let's wait a bit, otherwise 
+please resend CCing netdev and using "net" tag.
 
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and i need a
+Anyway the patch LGTM:
 
-trusted investment Manager/Partner because of my current refugee
-status, however, I am interested in you for investment
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-project assistance in your country, may be from there, we can build
-business relationship in the nearest future.
-
-I am willing to negotiate investment/business profit sharing ratio
-with you base on the future investment earning profits.
-If you are willing to handle this project on my behalf kindly reply
-urgent to enable me provide you more information about
-
-Best Regards
-Mrs Aisha Al-Qaddafi
