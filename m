@@ -2,130 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4254345E429
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 02:52:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E19145E439
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 02:54:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357528AbhKZBz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 20:55:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357463AbhKZBx5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 20:53:57 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9946AC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 17:50:45 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id c4so15219740wrd.9
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 17:50:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ue+ydJFjsfN5rd8y2Zo0UmtI3oU+9VqtaCaChqusUO4=;
-        b=kXAsc3mjmWv9rUz4lB+vUNHm0Sr0p32DgP+/S8zwaD/EafvX9STH5ZFNz7Cgh3lW4f
-         erOfieBjkr/PBxp6CarPf6AXnjI4FbFALtNhHzW6AALWGJV42SLdsNV42t+q39ODeDWw
-         Jxi1O4tiftDa3Z2MxeWcSKVCsG+/1+iJIaLsUOe8ALMK3mNw/ifu4354yplVI6gIYJDY
-         bNYHjS5H5tl4EP64yis7lWB//URbVQGDIdQIUq6pBSqRUgD3WLcuzFGP+uQMVJGBT5kw
-         G5u+w2T/rnLXlgNeurUZSWqiXonlLWjbQo0zffYplthvFhKNmZBzlvGzZDYRW1OnIELg
-         CWAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ue+ydJFjsfN5rd8y2Zo0UmtI3oU+9VqtaCaChqusUO4=;
-        b=FX4WvWPy9Plfob9oH2y7DB1rkdpDpCrZSnqC1mOLEMKsAKunTQdjnupQ29JapjO428
-         UJPdMaPsxZjYvllrYLtdETkLWIBPWFe1rHoLTnO9Z0Pu7/sMCZ3PuLbHJpQf5diyAoSN
-         Q37tVBcH+vOWY+MvkJKt3IVMWF3Yb0TeJ1Y5Sjxml0299yc4SMJq9dyMfAJgW2bBFkIq
-         pyqxnxu2+Gp9J+BIQf8ghZKCp2oa+uLbuXNX5mEqcP/zppt+oSUoHWwGA2rjavgssLt/
-         YJhkb5Ops4OfjPGDnDI5Bmi6rhaU0lcKVLE38zA0uoLaXNuasLOo5ylDj7LQKeukPffC
-         +qxQ==
-X-Gm-Message-State: AOAM530F7945EvZFd1M0cPmsR2cHVQkgI49KaoG26mxVZLU/OffI8xka
-        PlUd/SYxu7PRXyIA5MSX3BYivJUGM94Ugxfw/qQT2Q==
-X-Google-Smtp-Source: ABdhPJw5/dBmybdmG22b7pw2fTf20H2BZ4oTSKV8OjjQssoabMfKGjg9VlqDquLgR+HMtMGgAxStqcMOVJrjyY/Cc90=
-X-Received: by 2002:adf:ef4f:: with SMTP id c15mr11584812wrp.226.1637891443685;
- Thu, 25 Nov 2021 17:50:43 -0800 (PST)
+        id S1357615AbhKZB5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 20:57:50 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:35568 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1349802AbhKZBzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 20:55:43 -0500
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_9PSPaBh1ooBAA--.6419S2;
+        Fri, 26 Nov 2021 09:52:18 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v9 1/3] MIPS: Loongson64: Add Loongson-2K1000 reset platform driver
+Date:   Fri, 26 Nov 2021 09:52:14 +0800
+Message-Id: <20211126015216.26605-1-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-References: <20211125193852.3617-1-goldstein.w.n@gmail.com>
-In-Reply-To: <20211125193852.3617-1-goldstein.w.n@gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 25 Nov 2021 17:50:31 -0800
-Message-ID: <CANn89iLnH5B11CtzZ14nMFP7b--7aOfnQqgmsER+NYNzvnVurQ@mail.gmail.com>
-Subject: Re: [PATCH v1] x86/lib: Optimize 8x loop and memory clobbers in csum_partial.c
-To:     Noah Goldstein <goldstein.w.n@gmail.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        peterz@infradead.org, alexanderduyck@fb.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dx_9PSPaBh1ooBAA--.6419S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAFW3tw4fAFyfGFy5Kr4Uurg_yoW5Wr1fpF
+        Z8Cw43Ar4rXa17Ka1fJFyUuFW5ZwnayFWj9Fy2v34UZas8WFZ5J3Zrta4FvF9rWr1xJFWa
+        qFsYqFW5CF4ruw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkab7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjc
+        xK6I8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr
+        0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVWkMxAI
+        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+        CI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07bOWl9UUUUU=
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 11:38 AM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
->
-> Modify the 8x loop to that it uses two independent
-> accumulators. Despite adding more instructions the latency and
-> throughput of the loop is improved because the `adc` chains can now
-> take advantage of multiple execution units.
+Add power management register operations to support reboot and poweroff.
 
-Nice !
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+---
+v8-v9:
+No change
+---
+ drivers/platform/mips/Kconfig      |  6 ++++
+ drivers/platform/mips/Makefile     |  1 +
+ drivers/platform/mips/ls2k-reset.c | 53 ++++++++++++++++++++++++++++++
+ 3 files changed, 60 insertions(+)
+ create mode 100644 drivers/platform/mips/ls2k-reset.c
 
-Note that I get better results if I do a different split, because the
-second chain gets shorter.
+diff --git a/drivers/platform/mips/Kconfig b/drivers/platform/mips/Kconfig
+index 8ac149173c64b..d421e14823957 100644
+--- a/drivers/platform/mips/Kconfig
++++ b/drivers/platform/mips/Kconfig
+@@ -30,4 +30,10 @@ config RS780E_ACPI
+ 	help
+ 	  Loongson RS780E PCH ACPI Controller driver.
+ 
++config LS2K_RESET
++	bool "Loongson-2K1000 Reset Controller"
++	depends on MACH_LOONGSON64 || COMPILE_TEST
++	help
++	  Loongson-2K1000 Reset Controller driver.
++
+ endif # MIPS_PLATFORM_DEVICES
+diff --git a/drivers/platform/mips/Makefile b/drivers/platform/mips/Makefile
+index 1781490987773..4c71444e453a6 100644
+--- a/drivers/platform/mips/Makefile
++++ b/drivers/platform/mips/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-$(CONFIG_CPU_HWMON) += cpu_hwmon.o
+ obj-$(CONFIG_RS780E_ACPI) += rs780e-acpi.o
++obj-$(CONFIG_LS2K_RESET) += ls2k-reset.o
+diff --git a/drivers/platform/mips/ls2k-reset.c b/drivers/platform/mips/ls2k-reset.c
+new file mode 100644
+index 0000000000000..b70e7b8a092c2
+--- /dev/null
++++ b/drivers/platform/mips/ls2k-reset.c
+@@ -0,0 +1,53 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *  Copyright (C) 2021, Qing Zhang <zhangqing@loongson.cn>
++ *  Loongson-2K1000 reset support
++ */
++
++#include <linux/of_address.h>
++#include <linux/pm.h>
++#include <asm/reboot.h>
++
++#define	PM1_STS		0x0c /* Power Management 1 Status Register */
++#define	PM1_CNT		0x14 /* Power Management 1 Control Register */
++#define	RST_CNT		0x30 /* Reset Control Register */
++
++static void __iomem *base;
++
++static void ls2k_restart(char *command)
++{
++	writel(0x1, base + RST_CNT);
++}
++
++static void ls2k_poweroff(void)
++{
++	/* Clear */
++	writel((readl(base + PM1_STS) & 0xffffffff), base + PM1_STS);
++	/* Sleep Enable | Soft Off*/
++	writel(GENMASK(12, 10) | BIT(13), base + PM1_CNT);
++}
++
++static int ls2k_reset_init(void)
++{
++	struct device_node *np;
++
++	np = of_find_compatible_node(NULL, NULL, "loongson,ls2k-pm");
++	if (!np) {
++		pr_info("Failed to get PM node\n");
++		return -ENODEV;
++	}
++
++	base = of_iomap(np, 0);
++	if (!base) {
++		pr_info("Failed to map PM register base address\n");
++		return -ENOMEM;
++	}
++
++	_machine_restart = ls2k_restart;
++	pm_power_off = ls2k_poweroff;
++
++	of_node_put(np);
++	return 0;
++}
++
++arch_initcall(ls2k_reset_init);
+-- 
+2.31.0
 
-First chain adds 5*8 bytes from the buffer, but first bytes are a mere
-load, so that is really 4+1 additions.
-
-Second chain adds 3*8 bytes from the buffer, plus the result coming
-from the first chain, also 4+1 additions.
-
-asm("movq 0*8(%[src]),%[res_tmp]\n\t"
-    "addq 1*8(%[src]),%[res_tmp]\n\t"
-    "adcq 2*8(%[src]),%[res_tmp]\n\t"
-    "adcq 3*8(%[src]),%[res_tmp]\n\t"
-    "adcq 4*8(%[src]),%[res_tmp]\n\t"
-    "adcq $0,%[res_tmp]\n\t"
-    "addq 5*8(%[src]),%[res]\n\t"
-    "adcq 6*8(%[src]),%[res]\n\t"
-    "adcq 7*8(%[src]),%[res]\n\t"
-    "adcq %[res_tmp],%[res]\n\t"
-    "adcq $0,%[res]"
-    : [res] "+r" (temp64), [res_tmp] "=&r"(temp_accum)
-    : [src] "r" (buff)
-    : "memory");
-
-
->
-> Make the memory clobbers more precise. 'buff' is read only and we know
-> the exact usage range. There is no reason to write-clobber all memory.
-
-Not sure if that matters in this function ? Or do we expect it being inlined ?
-
-Personally, I find the "memory" constraint to be more readable than these casts
-"m"(*(const char(*)[64])buff));
-
->
-> Relative performance changes on Tigerlake:
->
-> Time Unit: Ref Cycles
-> Size Unit: Bytes
->
-> size,   lat old,    lat new,    tput old,   tput new
->    0,     4.972,      5.054,       4.864,      4.870
-
-Really what matters in modern networking is the case for 40 bytes, and
-eventually 8 bytes.
-
-Can you add these two cases in this nice table ?
-
-We hardly have to checksum anything with NIC that are not decades old.
-
-Apparently making the 64byte loop slightly longer incentives  gcc to
-move it away (our intent with the unlikely() hint).
-
-Anyway I am thinking of providing a specialized inline version for
-IPv6 header checksums (40 + x*8 bytes, x being 0  pretty much all the
-time),
-so we will likely not use csum_partial() anymore.
-
-Thanks !
