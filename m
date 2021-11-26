@@ -2,131 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14FA945F277
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:50:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D31145F27B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:51:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240084AbhKZQx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:53:26 -0500
-Received: from pegase2.c-s.fr ([93.17.235.10]:57857 "EHLO pegase2.c-s.fr"
+        id S233822AbhKZQyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:54:33 -0500
+Received: from foss.arm.com ([217.140.110.172]:35702 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241037AbhKZQvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:51:25 -0500
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4J10zv3Fykz9sSM;
-        Fri, 26 Nov 2021 17:48:11 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id iT1NlAx0KOb0; Fri, 26 Nov 2021 17:48:11 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4J10zv2TKfz9sSL;
-        Fri, 26 Nov 2021 17:48:11 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2D17B8B781;
-        Fri, 26 Nov 2021 17:48:11 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 4YWlgfbD8PPb; Fri, 26 Nov 2021 17:48:11 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.204.6])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C3D328B763;
-        Fri, 26 Nov 2021 17:48:10 +0100 (CET)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 1AQGm0JW535496
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Fri, 26 Nov 2021 17:48:00 +0100
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 1AQGlwhX535494;
-        Fri, 26 Nov 2021 17:47:58 +0100
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Evgeniy Polyakov <zbr@ioremap.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v2] w1: Misuse of get_user()/put_user() reported by sparse
-Date:   Fri, 26 Nov 2021 17:47:58 +0100
-Message-Id: <926b572075a26835f4e39d05710cd1b75fd4d5a4.1637945194.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.33.1
+        id S236291AbhKZQwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 11:52:33 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 88B301042;
+        Fri, 26 Nov 2021 08:49:19 -0800 (PST)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 86E763F7B4;
+        Fri, 26 Nov 2021 08:49:18 -0800 (PST)
+From:   Valentin Schneider <Valentin.Schneider@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Vincent Donnefort <Vincent.Donnefort@arm.com>,
+        peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
+        dietmar.eggemann@arm.com
+Subject: Re: [PATCH] sched/fair: Fix detection of per-CPU kthreads waking a task
+In-Reply-To: <CAKfTPtC4iXXaptm9+2bHvX2E3xAWU4M3xN0ZuwpFQ1RyXAyxyA@mail.gmail.com>
+References: <20211124154239.3191366-1-vincent.donnefort@arm.com> <CAKfTPtDX8sOfguZhJt5QV3j5D_JetcgncuF2w+uLa0XDk7UXkw@mail.gmail.com> <8735nkcwov.mognet@arm.com> <CAKfTPtDPskVdEd-KQ_cwe-R_zVFPQOgdbk9x+3eD12pKs8fGFw@mail.gmail.com> <87zgpsb6de.mognet@arm.com> <CAKfTPtCnusWJXJLDEudQ_q8MWaZYbPJK-QjAbBYWFW8Nw-J+Ww@mail.gmail.com> <87sfvjavqk.mognet@arm.com> <CAKfTPtC4iXXaptm9+2bHvX2E3xAWU4M3xN0ZuwpFQ1RyXAyxyA@mail.gmail.com>
+Date:   Fri, 26 Nov 2021 16:49:12 +0000
+Message-ID: <87pmqmc16f.mognet@arm.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1637945277; l=2705; s=20211009; h=from:subject:message-id; bh=SVUMkVnipXBjjq9DCo0mD5/KzMfOIiozrkaDhNORXKs=; b=juPaoguppVb32lY8pgYiub5+I7hjx7U5hpFro3lMp9EqeH7x70MekAOrY3fzVUtEFJ0MpZpzshNd 5cQ4vpG6AHZ7+FvY3pNlumwYLWG6vUiRzeraGWXVIX4otRjLA54n
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/w1/slaves/w1_ds28e04.c:342:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char [noderef] __user *_pu_addr @@     got char *buf @@
-   drivers/w1/slaves/w1_ds28e04.c:342:13: sparse:     expected char [noderef] __user *_pu_addr
-   drivers/w1/slaves/w1_ds28e04.c:342:13: sparse:     got char *buf
->> drivers/w1/slaves/w1_ds28e04.c:356:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char const [noderef] __user *_gu_addr @@     got char const *buf @@
-   drivers/w1/slaves/w1_ds28e04.c:356:13: sparse:     expected char const [noderef] __user *_gu_addr
-   drivers/w1/slaves/w1_ds28e04.c:356:13: sparse:     got char const *buf
+On 26/11/21 15:40, Vincent Guittot wrote:
+> On Fri, 26 Nov 2021 at 14:32, Valentin Schneider
+> <Valentin.Schneider@arm.com> wrote:
+>>         /*
+>> -        * Allow a per-cpu kthread to stack with the wakee if the
+>> -        * kworker thread and the tasks previous CPUs are the same.
+>> -        * The assumption is that the wakee queued work for the
+>> -        * per-cpu kthread that is now complete and the wakeup is
+>> -        * essentially a sync wakeup. An obvious example of this
+>> +        * Allow a per-cpu kthread to stack with the wakee if the kworker thread
+>> +        * and the tasks previous CPUs are the same.  The assumption is that the
+>> +        * wakee queued work for the per-cpu kthread that is now complete and
+>> +        * the wakeup is essentially a sync wakeup. An obvious example of this
+>>          * pattern is IO completions.
+>> +        *
+>> +        * Ensure the wakeup is issued by the kthread itself, and don't match
+>> +        * against the idle task because that could override the
+>> +        * available_idle_cpu(target) check done higher up.
+>>          */
+>> -       if (is_per_cpu_kthread(current) &&
+>> +       if (is_per_cpu_kthread(current) && !is_idle_task(current) &&
+>
+> still i don't see the need of !is_idle_task(current)
+>
 
-The buffer buf is a failsafe buffer in kernel space, it's not user
-memory hence doesn't deserve the use of get_user() or put_user().
+Admittedly, belts and braces. The existing condition checks rq->nr_running <= 1
+which can lead to coscheduling when the wakeup is issued by the idle task
+(or even if rq->nr_running == 0, you can have rq->ttwu_pending without
+having sent an IPI due to polling). Essentially this overrides the first
+check in sis() that uses idle_cpu(target) (prev == smp_processor_id() ==
+target).
 
-Access 'buf' content directly.
+I couldn't prove such wakeups can happen right now, but if/when they do
+(AIUI it would just take someone to add a wake_up_process() down some
+smp_call_function() callback) then we'll need the above. If you're still
+not convinced by now, I won't push it further.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/202111190526.K5vb7NWC-lkp@intel.com/T/
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v2: Use sysfs_emit() and kstrtobool()
----
- drivers/w1/slaves/w1_ds28e04.c | 25 +++----------------------
- 1 file changed, 3 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/w1/slaves/w1_ds28e04.c b/drivers/w1/slaves/w1_ds28e04.c
-index e4f336111edc..98f80f412cfd 100644
---- a/drivers/w1/slaves/w1_ds28e04.c
-+++ b/drivers/w1/slaves/w1_ds28e04.c
-@@ -32,7 +32,7 @@ static int w1_strong_pullup = 1;
- module_param_named(strong_pullup, w1_strong_pullup, int, 0);
- 
- /* enable/disable CRC checking on DS28E04-100 memory accesses */
--static char w1_enable_crccheck = 1;
-+static bool w1_enable_crccheck = true;
- 
- #define W1_EEPROM_SIZE		512
- #define W1_PAGE_COUNT		16
-@@ -339,32 +339,13 @@ static BIN_ATTR_RW(pio, 1);
- static ssize_t crccheck_show(struct device *dev, struct device_attribute *attr,
- 			     char *buf)
- {
--	if (put_user(w1_enable_crccheck + 0x30, buf))
--		return -EFAULT;
--
--	return sizeof(w1_enable_crccheck);
-+	return sysfs_emit(buf, "%d\n", w1_enable_crccheck);
- }
- 
- static ssize_t crccheck_store(struct device *dev, struct device_attribute *attr,
- 			      const char *buf, size_t count)
- {
--	char val;
--
--	if (count != 1 || !buf)
--		return -EINVAL;
--
--	if (get_user(val, buf))
--		return -EFAULT;
--
--	/* convert to decimal */
--	val = val - 0x30;
--	if (val != 0 && val != 1)
--		return -EINVAL;
--
--	/* set the new value */
--	w1_enable_crccheck = val;
--
--	return sizeof(w1_enable_crccheck);
-+	return kstrtobool(buf, &w1_enable_crccheck) ? : count;
- }
- 
- static DEVICE_ATTR_RW(crccheck);
--- 
-2.33.1
-
+>
+>> +           in_task() &&
+>>             prev == smp_processor_id() &&
+>>             this_rq()->nr_running <= 1) {
+>>                 return prev;
+>>
