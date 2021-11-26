@@ -2,89 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4349945EBB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:33:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C6B45EBB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:33:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377087AbhKZKgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 05:36:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:33040 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1377125AbhKZKel (ORCPT
+        id S1377145AbhKZKgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:36:54 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:48200 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232057AbhKZKex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 05:34:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637922688;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lfDWgoSwBK/MbRVa0hEi5B9pRdTSSilaYnNnpfFZZdo=;
-        b=RFJ+KsXjXt0SclGaHzoDCIa0VfFA7vk7B3ranDCJNHNfbL0+Ee8r7BJrOWYtMTiM+76DSP
-        mNnFn3qvhR2Cq3JlBw4r8XKtxHq3rZQddcK3KPsZpPL1iNH23dOm9w2kXrz6xVva9dPNkV
-        UKOb2qyfy+iCwvNfFT/dUuZpX2cabzs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-211-atf-egpfOHGIpfERul5uyg-1; Fri, 26 Nov 2021 05:31:25 -0500
-X-MC-Unique: atf-egpfOHGIpfERul5uyg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D68BC2F22;
-        Fri, 26 Nov 2021 10:31:23 +0000 (UTC)
-Received: from [10.39.195.16] (unknown [10.39.195.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0DCD25D740;
-        Fri, 26 Nov 2021 10:31:18 +0000 (UTC)
-Message-ID: <48dc971d-e5ee-0024-e539-89a050e7cf5e@redhat.com>
-Date:   Fri, 26 Nov 2021 11:31:17 +0100
+        Fri, 26 Nov 2021 05:34:53 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id D11DC1F46790
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1637922699; bh=H06EdMXymS4zBmamOUkgbxwP59hf5SsyyaBQT8e4hSc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=P3w+IgB2bojbnEejZcPtLhFEklaVwa+TxNDQ+wPhx6G4l0QlNc7VKNvc3XXjAcatT
+         4OPpLFN0c5JfxqzNXSh+u2OuTdh4oMir4cEFw7LsDHojbsz+TOTJdQs4eQL6dSbYGA
+         btzOqeqMJV4MizPDsRNt/xT56Lonoo11oWLav8TLDY2Mq618hEE46Bn7VSzMAo2mRP
+         rKtNDLjwQNAOVt0p6hF1h75m9nSGVrfHsmdNUUGG1ul/46szMMEE9Vnoi16a24LW2Y
+         SN8iJM+0CYZKx+j3bdBSUeS9oTLOUry5Q7dMNK4/CuHJNRpvzlKYF3eo88pqFkf97h
+         lho9hf+PJcgOA==
+Subject: Re: [PATCH 1/3] dt-bindings: usb: mtk-xhci: add support ip-sleep for
+ mt8195
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211102060049.1843-1-chunfeng.yun@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Message-ID: <ef3991ab-846d-0d2f-5fde-3677c2f7db9c@collabora.com>
+Date:   Fri, 26 Nov 2021 11:31:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] KVM: selftests: use ARRAY_SIZE
+In-Reply-To: <20211102060049.1843-1-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Greg KH <greg@kroah.com>, cgel.zte@gmail.com
-Cc:     shuah@kernel.org, deng.changcheng@zte.com.cn, mlevitsk@redhat.com,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
-References: <20211124092256.37966-1-deng.changcheng@zte.com.cn>
- <YZ4J23oFTTDpjSa8@kroah.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <YZ4J23oFTTDpjSa8@kroah.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/21 10:46, Greg KH wrote:
->> From: Changcheng Deng<deng.changcheng@zte.com.cn>
->>
->> Use ARRAY_SIZE instead of dividing sizeof array with sizeof an element.
->>
->> Reported-by: Zeal Robot<zealci@zte.com.cn>
->> Signed-off-by: Changcheng Deng<deng.changcheng@zte.com.cn>
-> Your email address does not match these here, you need to provide a
-> signed-off-by as well.
+Il 02/11/21 07:00, Chunfeng Yun ha scritto:
+> There are 4 USB controllers on MT8195, each controller's wakeup control is
+> different, add some spicific versions for them.
 > 
-> And are you_SURE_  that you can use kernel #defines in userspace testing
-> code?
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-Dpeends on which, but ARRAY_SIZE is among those that can be used:
-
-$ git grep '#define ARRAY_SIZE' 'tools/*.h'
-tools/gpio/gpio-utils.h:#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
-tools/iio/iio_utils.h:#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
-tools/include/linux/kernel.h:#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
-tools/testing/selftests/bpf/progs/profiler.inc.h:#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
-tools/testing/selftests/cgroup/cgroup_util.h:#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
-tools/testing/selftests/kselftest_harness.h:#define ARRAY_SIZE(a)	(sizeof(a) / sizeof(a[0]))
-tools/testing/selftests/landlock/common.h:#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-tools/testing/selftests/vm/pkey-helpers.h:#define ARRAY_SIZE(x) (sizeof(x) / sizeof(*(x)))
-tools/virtio/linux/kernel.h:#define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
-
-In particular, most KVM tests already include linux/kernel.h
-indirectly via linux/list.h.
-
-Paolo
-
+Acked-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
