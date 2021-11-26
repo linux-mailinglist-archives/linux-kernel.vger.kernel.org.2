@@ -2,115 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 808F545EFF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:36:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFB745F039
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231996AbhKZOjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 09:39:12 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:52742 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353859AbhKZOgR (ORCPT
+        id S1353676AbhKZPAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 10:00:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242685AbhKZO6Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 09:36:17 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 797C21FD37;
-        Fri, 26 Nov 2021 14:33:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637937183; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g1fzidqYL56unlF2FIZaeBfX9obUguACzN89MufyMIc=;
-        b=gSdaIOsERXGSL4TcKaCGE34ifCcO4tN5LkUbIo5l5zencb0sOYtKQV23sGzLRTabNo6Qm0
-        RGvDuaCb5wjOOdHZmrF1hQYbOFCBbtTdRBcjzB32z0Wi9aoJu8tul70eFzwGeeOZsICIgh
-        rYwWgO2R2J5v/udnjSUr65XeO93anPo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637937183;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g1fzidqYL56unlF2FIZaeBfX9obUguACzN89MufyMIc=;
-        b=5AvR0gFY4EcOv+pKuePvzmi8iNrvxM1Fs9pOD3oqmHWIGu/E+t9Uju8jBwHedGbIC8xzmd
-        rCeom3mC5Eb1YMAA==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id EF5A1A3B83;
-        Fri, 26 Nov 2021 14:33:02 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id BFC4E1E11F3; Fri, 26 Nov 2021 15:32:59 +0100 (CET)
-Date:   Fri, 26 Nov 2021 15:32:59 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Chengguang Xu <cgxu519@mykernel.net>
-Cc:     Jan Kara <jack@suse.cz>, miklos <miklos@szeredi.hu>,
-        amir73il <amir73il@gmail.com>,
-        linux-unionfs <linux-unionfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Chengguang Xu <charliecgxu@tencent.com>,
-        ronyjin <ronyjin@tencent.com>
-Subject: Re: [RFC PATCH V6 2/7] ovl: mark overlayfs inode dirty when it has
- upper
-Message-ID: <20211126143259.GH13004@quack2.suse.cz>
-References: <20211122030038.1938875-1-cgxu519@mykernel.net>
- <20211122030038.1938875-3-cgxu519@mykernel.net>
- <20211126091007.GB13004@quack2.suse.cz>
- <17d5c5a6fed.f090bcae10973.4735687401243313694@mykernel.net>
+        Fri, 26 Nov 2021 09:58:25 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E841EC0619F2;
+        Fri, 26 Nov 2021 06:33:43 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id n85so9117104pfd.10;
+        Fri, 26 Nov 2021 06:33:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:cc:references:subject:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YX75Xm+1AS7y1jBvySQK8BxyX1jnK7N8WeJaX2rpj0o=;
+        b=qJMJY5rkDlRLMAZAM35ZfZdQhahnF6C94D2/N8SgjoCYWxZpJ0IN0VBKJomH0SCJ02
+         SLYd9zl6zA3jRwyucOp7PLb029i3QiwZxgnFQaQCeubnEZuICwpLMZ4qRS0O+/MdPoeH
+         awo127bqomqxUy46GKjSPd2nHZdilYQtQPXaHhJs/D7B+ONY9qOMJZ+aYSXfR350jMJs
+         RIdFyCqjv5D1HcLKgEz3ieQXY3LL32IgDVxDvVdzprt+Zfi8vfkIgrL40TEgBNboU3tg
+         Sl8YK94w5KYDKfjYdAI0MsEZRM+qZHzW+LvclwDKnzaeObFPL1XmfM9VYE5YZnxhmTdv
+         sDXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:subject:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YX75Xm+1AS7y1jBvySQK8BxyX1jnK7N8WeJaX2rpj0o=;
+        b=3Ssp7BadPL5D044TUUJqAM6yQ/AsZSnVmHBtG3cypsLVyNuDfH5n/8an3WtYXq83tg
+         1FXYP3umneyAWZTWpN74ywPkzAotlWmRV8s0VQTSRJxOsw2siaOFl0v6y/IIJLTSjIyW
+         laU5axBr5/gVtwFksgvktg4cBEMo0TmpUlijbS7RrtDbRK/KA60fQ969uzjp0S0UddKe
+         LCsMeOShK8Lx3z+Jv2nZClP5xtoWPtpORMCcrev7s3pC1nLNSpoNdhwkqBDYt5KJResO
+         gCaSGH8bMKCYDSj6dSA6CrgLdELMwJ+KJ/kVY5+W+6M6GGJ3eeHRSKkzlrbNiUdRhh6m
+         DZXg==
+X-Gm-Message-State: AOAM5302zmgb2gXYFtxrQ0mnx+HaB/EF3YVgKP53F7U6brBU0x+LVOhY
+        b/O0hUeXOY0FUEfbqU5tC8w=
+X-Google-Smtp-Source: ABdhPJzuoh1S6Am/7fW3VVWnDqsXEBLM46Q1V78Q/NyQv9iX+xsyxxVet3kyEMlWf5kErzz9un9mGA==
+X-Received: by 2002:a63:f94c:: with SMTP id q12mr7763826pgk.617.1637937223381;
+        Fri, 26 Nov 2021 06:33:43 -0800 (PST)
+Received: from [192.168.11.5] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id ne22sm5806373pjb.18.2021.11.26.06.33.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Nov 2021 06:33:42 -0800 (PST)
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Hans Verkuil <hverkuil@xs4all.nl>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <f0660b1d24bc9bc07b13fe9a25ccb69ca14e916d.1637923850.git.mchehab+huawei@kernel.org>
+Subject: Re: [PATCH] docs: conf.py: fix support for Readthedocs v 1.0.0
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <13c40ed9-a51f-7496-7224-03b563bb6695@gmail.com>
+Date:   Fri, 26 Nov 2021 23:33:39 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <f0660b1d24bc9bc07b13fe9a25ccb69ca14e916d.1637923850.git.mchehab+huawei@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <17d5c5a6fed.f090bcae10973.4735687401243313694@mykernel.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 26-11-21 21:06:10, Chengguang Xu wrote:
->  ---- 在 星期五, 2021-11-26 17:10:07 Jan Kara <jack@suse.cz> 撰写 ----
->  > On Mon 22-11-21 11:00:33, Chengguang Xu wrote:
->  > > From: Chengguang Xu <charliecgxu@tencent.com>
->  > > 
->  > > We simply mark overlayfs inode dirty when it has upper,
->  > > it's much simpler than mark dirtiness on modification.
->  > > 
->  > > Signed-off-by: Chengguang Xu <charliecgxu@tencent.com>
->  > > ---
->  > >  fs/overlayfs/inode.c | 4 +++-
->  > >  fs/overlayfs/util.c  | 1 +
->  > >  2 files changed, 4 insertions(+), 1 deletion(-)
->  > > 
->  > > diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
->  > > index 1f36158c7dbe..027ffc0a2539 100644
->  > > --- a/fs/overlayfs/inode.c
->  > > +++ b/fs/overlayfs/inode.c
->  > > @@ -778,8 +778,10 @@ void ovl_inode_init(struct inode *inode, struct ovl_inode_params *oip,
->  > >  {
->  > >      struct inode *realinode;
->  > >  
->  > > -    if (oip->upperdentry)
->  > > +    if (oip->upperdentry) {
->  > >          OVL_I(inode)->__upperdentry = oip->upperdentry;
->  > > +        mark_inode_dirty(inode);
->  > > +    }
->  > >      if (oip->lowerpath && oip->lowerpath->dentry)
->  > >          OVL_I(inode)->lower = igrab(d_inode(oip->lowerpath->dentry));
->  > >      if (oip->lowerdata)
->  > 
->  > Hum, does this get called only for inodes with upper inode existing? I
->  > suppose we do not need to track inodes that were not copied up because they
->  > cannot be dirty? I'm sorry, my knowledge of overlayfs is rather limited so
->  > I may be missing something basic.
->  > 
+Hi Mauro,
+
+On Fri, Nov 26, 2021 at 11:50:53AM +0100, Mauro Carvalho Chehab wrote:
+> As described at:
+> 	https://stackoverflow.com/questions/23211695/modifying-content-width-of-the-sphinx-theme-read-the-docs
 > 
-> Well, as long as overly inode has upper it can be modified without copy-up,
-> so we need to track all overlay inodes which have upper inode.
+> since Sphinx 1.8, the standard way to setup a custom theme is
+> to use html_css_files. While using html_context is OK with RTD
+> 0.5.2, it doesn't work with 1.0.0, causing the theme to not load,
+> producing a very weird html.
+> 
+> Tested with:
+> 	- Sphinx 2.4.4 + sphinx-rtd-theme 0.5.2
+> 	- Sphinx 2.4.4 + sphinx-rtd-theme 1.0.0
+> 	- Sphinx 4.3.0 + sphinx-rtd-theme 1.0.0
+> 
+> Reported-by: Hans Verkuil <hverkuil@xs4all.nl>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  Documentation/conf.py | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
 
-OK, and oip->upperdentry is set only if there's upper inode, now I
-understand. Thanks for explanation and feel free to add:
+So I have an issue with this simple change.
+As I said to Jon in another thread [1], in which Jon didn't show any
+interest, this update changes the look of generated HTML pages
+(I should say) rather drastically, and it looks quite distracting
+for my eyes.  The style might be acceptable for API documentations,
+but kernel-doc has abundant natural language contents.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+[1]: https://lkml.kernel.org/r/550fe790-b18d-f882-4c70-477b596facc7@gmail.com
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+I think there should be some knobs for customizing the styles.
+But I don't know much about css.
+
+Can anybody restore the current look of kernel-doc HTML pages
+in a sphinx-rtd-theme-1.0.0-compatible way?
+
+Sidenote:
+
+The change (html_css_files) actually works with
+   - Sphinx 1.7.9 + sphinx-rtd-theme 1.0.0
+
+This contradicts the Sphinx documentation saying that html_css_files
+was new to Sphinx 1.8.  This might be related to the changes in
+sphinx-rtd-theme side, but I have no evidence.
+
+Any suggestion is welcome!
+
+Regards, Akira
+
