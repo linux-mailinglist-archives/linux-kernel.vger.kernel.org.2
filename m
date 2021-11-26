@@ -2,91 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E614545F103
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:46:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D8B45F0E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:41:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354292AbhKZPtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:49:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378079AbhKZPrl (ORCPT
+        id S1378090AbhKZPov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 10:44:51 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:55760 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353766AbhKZPmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:47:41 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D772C0613F8
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 07:39:23 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id v23so11838264iom.12
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 07:39:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=274Q/ZAR2tJK2tvrv6ob2tLr8yiaidfzpxRndGsg+Jw=;
-        b=VILeHlJ58UYc/45Jyz0QIBZo5je0NWjHDkZc7Slj4nmZOkq6P9/xbXke7Q6zWVZgzf
-         CdLMHgGoDy106GlBIwv2PFCrXX+tgUca/8EOoPwZtCvKd4zegO0F6GNS7HcYk1bZP6Uy
-         mmRZobVs87Hzz8vPEtgioM6q2d8jILrAX3DsYAGmJs8rjaPVoLul2LYqBuEpPkPthAh9
-         ViT8VqvN+rGLebfFYA2FPFY5EypgOjJOSjaFNrKCo++oaZ6sUgIvJ056hmk9ZD6qBmId
-         N6N094YWVL3jf6GCAk8gdXH0V3ylTxFhBLfvU88u5Cfjr8NWh3OJNgs0zCJEzo2tjHpC
-         mbnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=274Q/ZAR2tJK2tvrv6ob2tLr8yiaidfzpxRndGsg+Jw=;
-        b=8E/sRBZqWzJHR2Ar6/CNR8oQ/OA/clDmdsXNA108FSkDxMtZR0iGc+4grbTatVZhzm
-         xL9M7PA86jGbD7i5Og19DCO12ljw0XkD4T7nIoK5By9pSpUsbBPiLY0HWAwBhaOkNPCs
-         urPn/bDVWAOWJ1NNwlb2b5fFsfpEyR6HSwORahTL3Mwv+ror/iJDrM8QT8wWQB5r8tTT
-         zf0uXmAvEKP+3suf9s4jaaddOxRROLTm3lF1RuNtdodW5Ug4+f4sdbm0eyRTKifU3dCF
-         KzR6vN7RIN46HqTyq11M9o5/G3616jBeGjrFgwG8E6Qm7hKE2lFsEoERFyAuD01fbqfj
-         fj9g==
-X-Gm-Message-State: AOAM533CbLIjh6RvWzR2xM34O4xAKLmGNZDRIUhz+fKsi9rUEZfXmWqX
-        yEgHAL4UWdeoZUVk4YbA/RtsN24XJvy8aI9i
-X-Google-Smtp-Source: ABdhPJzQdGcpJo8sMqqf55R9qprT9dw8UY5pSjpXa2ITLDMJZDJcUG2UlSUi12nSVpKZxN+fVT8//Q==
-X-Received: by 2002:a05:6638:3182:: with SMTP id z2mr41736223jak.134.1637941162695;
-        Fri, 26 Nov 2021 07:39:22 -0800 (PST)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id a4sm3367274ild.52.2021.11.26.07.39.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Nov 2021 07:39:22 -0800 (PST)
-Subject: Re: [syzbot] inconsistent lock state in io_poll_remove_all
-To:     syzbot <syzbot+51ce8887cdef77c9ac83@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000c7ba4b05d1adb200@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <cc6aeb46-1cfc-ac3e-0764-c2f930b6f28e@kernel.dk>
-Date:   Fri, 26 Nov 2021 08:39:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 26 Nov 2021 10:42:50 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3B6061FC9E;
+        Fri, 26 Nov 2021 15:39:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637941176; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BhyEhqHtTuj99AdPufyfoXzSQOWQVOHXskivTH5sMcI=;
+        b=qyIZyaRgWdYi+c71/vcCA3uIzOXt3wQ5+W9eO45pW/dXfMvHqoUXeUVrRrdPKhMvCWL0Oo
+        KqQHkWms93mb+LdmcGAv4GZXYp4uBwc5DWG26i0cXfz2Pp158BqOh+wR1IDtGsMCpmKpzI
+        CQ9WkHmDyQRuZzDKnURVfuN+3zYOO80=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637941176;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BhyEhqHtTuj99AdPufyfoXzSQOWQVOHXskivTH5sMcI=;
+        b=VCI0g9wWkVurTo0/wdcmn+HhlZytA0tm318QA+bVR+1cbaqBeGRU7REudRmR71D9LKM5si
+        E7yfzopF4N00y8DA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0405313C65;
+        Fri, 26 Nov 2021 15:39:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id cpCQO7f/oGF4cQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 26 Nov 2021 15:39:35 +0000
+Message-ID: <e98a7a8e-3365-c27f-d267-982ddc94f948@suse.cz>
+Date:   Fri, 26 Nov 2021 16:39:35 +0100
 MIME-Version: 1.0
-In-Reply-To: <000000000000c7ba4b05d1adb200@google.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH v2 3/4] mm/vmalloc: be more explicit about supported gfp
+ flags.
 Content-Language: en-US
+To:     Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Dave Chinner <david@fromorbit.com>, Neil Brown <neilb@suse.de>,
+        Christoph Hellwig <hch@lst.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Michal Hocko <mhocko@suse.com>
+References: <20211122153233.9924-1-mhocko@kernel.org>
+ <20211122153233.9924-4-mhocko@kernel.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20211122153233.9924-4-mhocko@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/21 2:27 AM, syzbot wrote:
-> Hello,
+On 11/22/21 16:32, Michal Hocko wrote:
+> From: Michal Hocko <mhocko@suse.com>
 > 
-> syzbot found the following issue on:
+> b7d90e7a5ea8 ("mm/vmalloc: be more explicit about supported gfp flags")
+> has been merged prematurely without the rest of the series and without
+> addressed review feedback from Neil. Fix that up now. Only wording is
+> changed slightly.
 > 
-> HEAD commit:    a4849f6000e2 Merge tag 'drm-fixes-2021-11-26' of git://ano..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11162e9ab00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=bf85c53718a1e697
-> dashboard link: https://syzkaller.appspot.com/bug?extid=51ce8887cdef77c9ac83
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+51ce8887cdef77c9ac83@syzkaller.appspotmail.com
+> Signed-off-by: Michal Hocko <mhocko@suse.com>
 
-#syz fix io_uring: fix link traversal locking
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
--- 
-Jens Axboe
+> ---
+>  mm/vmalloc.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index b6aed4f94a85..b1c115ec13be 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -3021,12 +3021,14 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>   *
+>   * Allocate enough pages to cover @size from the page level
+>   * allocator with @gfp_mask flags. Please note that the full set of gfp
+> - * flags are not supported. GFP_KERNEL would be a preferred allocation mode
+> - * but GFP_NOFS and GFP_NOIO are supported as well. Zone modifiers are not
+> - * supported. From the reclaim modifiers__GFP_DIRECT_RECLAIM is required (aka
+> - * GFP_NOWAIT is not supported) and only __GFP_NOFAIL is supported (aka
+> - * __GFP_NORETRY and __GFP_RETRY_MAYFAIL are not supported).
+> - * __GFP_NOWARN can be used to suppress error messages about failures.
+> + * flags are not supported. GFP_KERNEL, GFP_NOFS and GFP_NOIO are all
+> + * supported.
+> + * Zone modifiers are not supported. From the reclaim modifiers
+> + * __GFP_DIRECT_RECLAIM is required (aka GFP_NOWAIT is not supported)
+> + * and only __GFP_NOFAIL is supported (i.e. __GFP_NORETRY and
+> + * __GFP_RETRY_MAYFAIL are not supported).
+> + *
+> + * __GFP_NOWARN can be used to suppress failures messages.
+>   *
+>   * Map them into contiguous kernel virtual space, using a pagetable
+>   * protection of @prot.
+> 
 
