@@ -2,76 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD43245EDD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42BDD45EDF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:33:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377391AbhKZM3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 07:29:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:33220 "EHLO foss.arm.com"
+        id S1352564AbhKZMhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 07:37:03 -0500
+Received: from mga07.intel.com ([134.134.136.100]:44524 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237112AbhKZM1E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 07:27:04 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 05AE711D4;
-        Fri, 26 Nov 2021 04:23:52 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.34.174])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0B7003F66F;
-        Fri, 26 Nov 2021 04:23:50 -0800 (PST)
-Date:   Fri, 26 Nov 2021 12:23:48 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [mark:arm64/stacktrace/arch-stack-walk 9/11]
- arch/arm64/kernel/time.c:49:9: error: implicit declaration of function
- 'arch_stack_walk'
-Message-ID: <YaDR1MXFkwFYEwHU@FVFF77S0Q05N>
-References: <202111241909.UDKmhCqg-lkp@intel.com>
+        id S1377259AbhKZMfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 07:35:02 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="299061174"
+X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
+   d="scan'208";a="299061174"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 04:29:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
+   d="scan'208";a="457648785"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 26 Nov 2021 04:28:58 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqaLZ-00085P-J0; Fri, 26 Nov 2021 12:28:57 +0000
+Date:   Fri, 26 Nov 2021 20:28:45 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Peter Collingbourne <pcc@google.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: mm/kasan/sw_tags.c:211:6: warning: no previous prototype for
+ function 'kasan_tag_mismatch'
+Message-ID: <202111262016.vdEfdFNO-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202111241909.UDKmhCqg-lkp@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 07:37:58PM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git arm64/stacktrace/arch-stack-walk
-> head:   e982ef8a4c9b8bc2f92b7cdafbae70aa31b679d1
-> commit: 36fa81ac0d771ba0080197745a39dbe94562c615 [9/11] arm64: Make profile_pc() use arch_stack_walk()
-> config: arm64-alldefconfig (https://download.01.org/0day-ci/archive/20211124/202111241909.UDKmhCqg-lkp@intel.com/config)
-> compiler: aarch64-linux-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/commit/?id=36fa81ac0d771ba0080197745a39dbe94562c615
->         git remote add mark https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git
->         git fetch --no-tags mark arm64/stacktrace/arch-stack-walk
->         git checkout 36fa81ac0d771ba0080197745a39dbe94562c615
->         # save the config file to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=arm64 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    arch/arm64/kernel/time.c: In function 'profile_pc':
-> >> arch/arm64/kernel/time.c:49:9: error: implicit declaration of function 'arch_stack_walk' [-Werror=implicit-function-declaration]
->       49 |         arch_stack_walk(profile_pc_cb, &prof_pc, current, regs);
->          |         ^~~~~~~~~~~~~~~
->    arch/arm64/kernel/time.c: At top level:
->    arch/arm64/kernel/time.c:55:13: warning: no previous prototype for 'time_init' [-Wmissing-prototypes]
->       55 | void __init time_init(void)
->          |             ^~~~~~~~~
->    cc1: some warnings being treated as errors
+Hi Peter,
 
-The problem here is that arch_stack_walk() is defined in <linux/stacktrace.h>,
-but we only include <asm/stacktrace.h>.
+FYI, the error/warning still remains.
 
-The same is true for other files in arm64, but we happen to get a transitive
-include of <linux/stacktrace.h> by chance; I'll go fix the whole series...
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   a4849f6000e29235a2707f22e39da6b897bb9543
+commit: 1cbdf60bd1b74e397d48aa877367cfc621f45ffe kasan: arm64: support specialized outlined tag mismatch checks
+date:   6 months ago
+config: arm64-randconfig-r003-20211116 (https://download.01.org/0day-ci/archive/20211126/202111262016.vdEfdFNO-lkp@intel.com/config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project fbe72e41b99dc7994daac300d208a955be3e4a0a)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # install arm64 cross compiling tool for clang build
+        # apt-get install binutils-aarch64-linux-gnu
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1cbdf60bd1b74e397d48aa877367cfc621f45ffe
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout 1cbdf60bd1b74e397d48aa877367cfc621f45ffe
+        # save the config file to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=arm64 
 
-Thanks,
-Mark.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> mm/kasan/sw_tags.c:211:6: warning: no previous prototype for function 'kasan_tag_mismatch' [-Wmissing-prototypes]
+   void kasan_tag_mismatch(unsigned long addr, unsigned long access_info,
+        ^
+   mm/kasan/sw_tags.c:211:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   void kasan_tag_mismatch(unsigned long addr, unsigned long access_info,
+   ^
+   static 
+   1 warning generated.
+
+
+vim +/kasan_tag_mismatch +211 mm/kasan/sw_tags.c
+
+   210	
+ > 211	void kasan_tag_mismatch(unsigned long addr, unsigned long access_info,
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
