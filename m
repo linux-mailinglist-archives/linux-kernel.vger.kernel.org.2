@@ -2,92 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BF845ECBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:36:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B33E945ECC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:36:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240373AbhKZLjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 06:39:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53446 "EHLO
+        id S1347495AbhKZLje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 06:39:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242550AbhKZLhW (ORCPT
+        with ESMTP id S238200AbhKZLha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 06:37:22 -0500
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44BC6C0698DB
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:56:45 -0800 (PST)
-Received: by mail-ua1-x944.google.com with SMTP id i6so17735493uae.6
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:56:45 -0800 (PST)
+        Fri, 26 Nov 2021 06:37:30 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D494C06137C
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:59:42 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id b12so17789133wrh.4
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:59:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=1mWmKyg34vlNfOejQ4Q/r+QB+22yx7RmVHSk6pM+Glg=;
-        b=HxXfyg54s3L6EMpYRA2e+z6k9WGnvp0pOtVjbs008nZmY9XUuT9iOYJ+f7XIHGgqJx
-         URaEpXZubwNO3C/zpLloJ+xZOZph9kFYagYAx0nusTRXGpMIaiev1o/sxAfrYjDkC3br
-         VFP43ucmPmiNRyplNctYH/we6eV0Y8Plm+1/s4ioyX8Wq/MGPpY6teiVCLxWl2jRIQ/h
-         it6bcnYehZXoMZTmcnDGkxVyStlFK8KLYBFin/1W0CoedUASAA29UCZH1fccB1EeMAQI
-         gtb5oHQ/H6Tyi3Vu2q39GfP0ro2qN9urVYIyBw3wsETc8T3nUPzsuNRnHf4PR60JLV7+
-         sXrw==
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Du2PtzgOfw4HRDmhLDCGMhaCR4NTsNe8hn+DYVThXx0=;
+        b=LYuq/DfCvRVOaIrRpdnEo1jS/BzEp0YOkzQdU6dZsN18J0Wn2qWon/paTLAsdCNQUl
+         TXswERVe22YD/XMTLB9TXIG+VaDLAPkEZxPLCNV8vJew0PFgTj3TZ/VCaTX+QORE0deK
+         p1TSf76RZ6n5LxuUW8FVrdSufkoLW7gKsUqDRkurSZ14MydR6qzr0skid3AdtnS6kxfo
+         l14xzQ9lsndqg+9DJPl5GbNSxVlbnlEE3W/gCYfKRKj8fZH+HUByhXT2TMAFfVC/3aMi
+         am43j5tSckDw1DtoNfnJP5EN9Y6nvnx771gMp6vO8wmIcOG/hSNuWycqjMRvDhPV6Zs7
+         fNEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=1mWmKyg34vlNfOejQ4Q/r+QB+22yx7RmVHSk6pM+Glg=;
-        b=1UUzQDwKV8YITE6AyJp3y19L1SB2ca5yDqFmLiN7/mvHt5MOd18CmqWjLlVGfU6XuO
-         MPezt2S2Imr5EdUdtflTc1OaiERiUfWjjMj9brIN3r158ABQ/kviHzxCQhgOd4S+mhwl
-         BuhwszZ+txU0exsz41a+ZR706BuO84Go/bGHpmmSC6w2WbgfGsIJJ16R/O1F8+jBsCfY
-         67TdGLV6oEFbgVfHPGKJ+kel5D0E0Ccxl6lySlJBEeP3JV6yL5Q/1Z63vZb+RhR4deEH
-         f3tWZKxJDVktAKWPfe6hARs4j1YArtGXVJkTL/Pix5zaSEiLWYB2zjnh9kO5zj375Wnh
-         QnAw==
-X-Gm-Message-State: AOAM533hOq9jTIp+FHUpfgMSs9G8g7NX07PRvuu4n4547oJl2ctK8mul
-        OVZmomGGLcIxIjR0RuXzgduM4X6fZ94H9oZPwaE=
-X-Google-Smtp-Source: ABdhPJyBr0+VX+7WvSG/8xtgoimwgQLoX4KkbX1FI6yNTh/mQwTEBI6f9e5g7GmxTLeoUpeF6Cpw2iHbDk0wZMya34s=
-X-Received: by 2002:ab0:750c:: with SMTP id m12mr32021094uap.119.1637924204160;
- Fri, 26 Nov 2021 02:56:44 -0800 (PST)
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=Du2PtzgOfw4HRDmhLDCGMhaCR4NTsNe8hn+DYVThXx0=;
+        b=4h00X33kuhK/5UNpgGG7NLL/ssBy0midzQk0SeLDnYHk4X6JjEvmGArxumSyUPodns
+         xaTCE6lxLF19Z2+6pFqmkzihDbEQKgTaLPnNTwPum+Ydic3X0APu10HdF2OixYUGzq/+
+         0YnsvzOO91SOPScyk+Sc9tv1bIYctC/LsqVoXXuDuGoD5es5YuvFamtFmYx9y9lC25py
+         JKpb3EkEr3ks3nGRxn04geYmAePRcfnsVJ5bcctt6Jua4XHElzmnhMGtjumJ8tA3Se/F
+         5TyekuuOfbaftbwkKlzGI0yqhyYU0HNx6TuBZIFuuuGrGjqqQ+H5Qv/en+bKoSmBjHmW
+         8ILQ==
+X-Gm-Message-State: AOAM531UH3QXZQMGvrSpAfHJBgEs52wCaPzkmeNSKnmNvbqemBJD4ppO
+        7zt/Q+LA3EsLMo7IdZNSoLs0zPqoPeHYMhnf3JY=
+X-Google-Smtp-Source: ABdhPJz1oSeeYSMVOR731wMHN+9PMRTNSgJ3YN30BQsgoR4QPApdoRjxeiDkMpXboAsN6QaXSEyH+9L0GVztSaCyYlg=
+X-Received: by 2002:adf:f60e:: with SMTP id t14mr13961955wrp.112.1637924380677;
+ Fri, 26 Nov 2021 02:59:40 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:ab0:20b3:0:0:0:0:0 with HTTP; Fri, 26 Nov 2021 02:56:43
+Sender: 1joypeters@gmail.com
+Received: by 2002:adf:f60f:0:0:0:0:0 with HTTP; Fri, 26 Nov 2021 02:59:40
  -0800 (PST)
-Reply-To: uchennailobitenone@gmail.com
-From:   uchenna <robertanderson6016@gmail.com>
-Date:   Fri, 26 Nov 2021 02:56:43 -0800
-Message-ID: <CA+o7mw36n9Rs3iinNWWjtcHL8ZsfcqgifoAuTDVXL4RZeic7bg@mail.gmail.com>
-Subject: 
+From:   DINA MCKENNA <dinamckennahowley@gmail.com>
+Date:   Fri, 26 Nov 2021 10:59:40 +0000
+X-Google-Sender-Auth: jvRGMGMfzFhw4Ie1Yx16VdkjxJY
+Message-ID: <CA+F+MbZsStKZG=-1bVu9w+uaNTObuP-xJPBHU_z-Fhr5cVm-MA@mail.gmail.com>
+Subject: Hello,
 To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-May the Almighty Lord be with you....
-Am A WIDOW TO LATE MR David Lunner,  I AM 59 .YEARS OLD. My name is
-Josephine HOLLAND.  I am married to Late Mr. David HOLLAND, who worked
-in the France Embassy a here in Lome -Togo West Africa for nine years
-before he died in the
-year 2019.
+Hello My Dear,.
 
-You are chosen to Receive A Donation Cash Grant of my late husband
-that funds $5.7,000,  000,00 (Five Million Seven Hundred Thousand
-United States Dollars) to help the poor and orphanages through your
-sincere help before my death. I am suffering from long time cancer of
-the Breast, from all indication my conditions is really deteriorating
-and it is quite obvious that I wouldn't live any more longer according
-to my doctor because the cancer has gotten to a very bad stage that no
-hope for me to be a living person again, All i need from you is your
-sincerity to use this funds to do this project as i desired and I need
-your information as where My Bank will be sending the funds,
+Please do not feel disturbed for contacting =C2=A0you in this regards, It
+was based on the critical health condition I found myself. =C2=A0My names
+are Mrs. Dina Mckenna Howley.. A widow and am suffering from brain
+tumor disease and this illness has gotten to a very bad stage, I
+ married my husband for Ten years without any child. =C2=A0My husband died
+after a brief illness that lasted for few  days.
+Since the death of my husband, I decided not to remarry again, When my
+late husband was alive he deposited the sum of =C2=A0($ 11,000,000.00,
+Eleven Million Dollars) with the Bank. Presently this money is still
+in bank. And My  Doctor told me that I don't have much time to live
+because my illness has gotten to a very bad stage, Having known my
+condition I  decided to entrust over the deposited fund under your
+custody to take care of the less-privileged ones therein your country
+or position,
+which i believe that you will utilize this money the way I am going to
+instruct herein.
 
-such as:
-Receiver's name:_ Address:_ Phone
-number:_ Country:_
-
-Please do not be offended by the way or manner I came to you as a
-stranger to do this, it is about the only way I could get to you after
-going through your contacts Id. I shall give you the contacts of the
-bank. For legitimacy with  a letter of authority that will establish
-you as my appointed beneficiary of this money.
-
-I am waiting for your reply.
-From Sister Josephine HOLLAND.
-
-You should contact me through my private email address:
-
-mrsjosephineoneholland@gmail.com
+However all I need and required from you is your sincerity and ability
+to carry out the transaction successfully and fulfill my final wish in
+implementing the charitable project as it requires absolute trust and
+devotion without any failure and I will be glad to see that the bank
+finally release and transfer the fund into your bank account in your
+country even before I die here in the hospital, because my present
+health condition is very critical at the moment everything needs to be
+process rapidly as soon as possible.
+It will be my pleasure to compensate you as my Investment
+Manager/Partner with 35 % percent of the total fund for your effort in
+ handling the transaction, 5 % percent for any expenses or processing
+charges fee that will involve during this process while 60% of the
+fund will be Invested into the charity project there in your country
+for the mutual benefit of the orphans and the less privileges ones.
+Meanwhile I am waiting for your prompt respond, if only you are
+interested for further details of the transaction and execution of
+this  humanitarian project for the glory and honor of God the merciful
+compassionate.
+May God bless you and your family.
+Regards,
+Mrs.Dina Mckenna Howley.
+written from Hospital.
