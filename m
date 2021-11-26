@@ -2,79 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C53A45F59F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 21:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA3745F5A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 21:08:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239954AbhKZUEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 15:04:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50556 "EHLO
+        id S240091AbhKZUL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 15:11:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbhKZUCH (ORCPT
+        with ESMTP id S234041AbhKZUJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 15:02:07 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D75C0619EC
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 11:44:57 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id o20so42650613eds.10
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 11:44:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=T2WjcJMogJUqwl7auwMJR6uAomfwfWvBoMmZ62DhD5s=;
-        b=HtcaQXsaNEzfzLJkKGbxnOEKWSL8ViT8fA+EwlSZ1jyD9lC9dTU93MeZ6Pd1AU75SK
-         WvNIqyR7rZZP1OtjQsKwMMKs0oW3rQjvTu4ugkFC+6R1IQtOdywvS4ARx6rPrt94Yann
-         /lcJfzzagrRSqQ+La502zhgxPLDI6A1PBhrZ8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=T2WjcJMogJUqwl7auwMJR6uAomfwfWvBoMmZ62DhD5s=;
-        b=67wxxmVX8saEK7C0fOIjIlE/QRGVt5AW0cpiqdu+4iEyCRpuWp0PvfQko7Ks9ZESyT
-         ZjIGXaGTavej1Sy56KM+FCWczCoHzZTchXCJqSucjPKS4GLNJ0VCR3NRTH9VZGEUhscV
-         9sfpy/vKZG5RfXMMlyj4B3a3Nd4omszNWPxM0FGPC69UwOqZ55xUp5MrZEm/qd8Fv0Ye
-         RVmQ7fuxLXMcTVQnmO7tH06YcqtXOOZAZhl5+e1yYpPAjgltWLomeQ5cvv0pqGmZYaIz
-         Fq551Q94k/jZNmLv64ES79ocH01k3V/7fClueG4cOcR0MoDONf+yvBh/NGpCeJVZqj5Z
-         a9sw==
-X-Gm-Message-State: AOAM532EJaiAzjmpTFU3aPbWpWYxJmysjqdP9gFeK5XE5WOoOaW1WmPL
-        TVIDxwhTyTmdAoYyaKmojKu0EQ==
-X-Google-Smtp-Source: ABdhPJyRGOCQd4lVfadvwALi/7ZG7nxnUMUhAM3e1UTEwNd/2IVfVaQp1SQh3AOJ9cVnVUAt9Hcghw==
-X-Received: by 2002:a05:6402:1a42:: with SMTP id bf2mr50827763edb.64.1637955895925;
-        Fri, 26 Nov 2021 11:44:55 -0800 (PST)
-Received: from miu.piliscsaba.redhat.com (catv-178-48-189-3.catv.broadband.hu. [178.48.189.3])
-        by smtp.gmail.com with ESMTPSA id nb4sm3674514ejc.21.2021.11.26.11.44.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 11:44:55 -0800 (PST)
-Date:   Fri, 26 Nov 2021 20:44:53 +0100
-From:   Miklos Szeredi <miklos@szeredi.hu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [GIT PULL] fuse fixes for 5.16-rc3
-Message-ID: <YaE5NdAaxf0vuEew@miu.piliscsaba.redhat.com>
+        Fri, 26 Nov 2021 15:09:24 -0500
+X-Greylist: delayed 369 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 26 Nov 2021 11:51:41 PST
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF891C0613F7;
+        Fri, 26 Nov 2021 11:51:41 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 55EBCCE214F;
+        Fri, 26 Nov 2021 19:45:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1FA6C9305B;
+        Fri, 26 Nov 2021 19:45:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637955928;
+        bh=JlkJzr1SrPdPWVhr7fx+q1Cp9W1kkae6hPLwNgywBoM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Pi7EPswSpwzP3Xsa219981/77HNlCL7C7Wt3T+H08THyGxY2PPoD2Eb7LbTUKabnj
+         ogUvlSBn8PuSLWrcxdLtYWhx3liqukdUSKyIJasNY8naTKQm+vsJ1qomz7Mn8dqhY8
+         ci2HA2DmesCpzdICMz3XEAiC08fRNpTUratR+o/6L3xBdkO3qTfg0JA86ydHOJsF1E
+         Ze2kQTzw8WfmFa14UNaQUX4N5FxdjN6ss9Nm1njBefmvMe/f7xiCBcunliwlA3kdmf
+         AkUUgQE0fe3ozRjm5dtQLtRGnX3sef4/+gRO6XzhHjIqxKMMgmpRoX3nRFBooaZhUl
+         Qtd0uA6MI+LTw==
+Date:   Fri, 26 Nov 2021 12:45:23 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH 07/20] media: si21xx: report eventual errors at
+ set_frontend
+Message-ID: <YaE5Uz0+dEtG7gaN@archlinux-ax161>
+References: <cover.1637781097.git.mchehab+huawei@kernel.org>
+ <36d55de3be035253bf1b07506db13eab04ad803d.1637781097.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <36d55de3be035253bf1b07506db13eab04ad803d.1637781097.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Nov 24, 2021 at 08:13:10PM +0100, Mauro Carvalho Chehab wrote:
+> If an error occurs while setting the registers at set_frontend,
+> it is silently ignored. Yet, the variable status is updated.
+> 
+> Change the logic to return an error if it fails to write values
+> to the registers.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Please pull from:
+I am not super familiar with the different return codes so I assume it
+is appropriate (the sites that I see calling set_frontend() appears to
+only check for a negative return code).
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git tags/fuse-fixes-5.16-rc3
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-Fix a regression caused by a bugfix in the previous release.  The symptom
-is a VM_BUG_ON triggered from splice to the fuse device.  Unfortunately the
-original bugfix was already backported to a number of stable releases, so
-this fix-fix will need to be backported as well.
-
-Thanks,
-Miklos
-
-----------------------------------------------------------------
-Miklos Szeredi (1):
-      fuse: release pipe buf after last use
-
----
- fs/fuse/dev.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+> ---
+> 
+> To avoid mailbombing on a large number of people, only mailing lists were C/C on the cover.
+> See [PATCH 00/20] at: https://lore.kernel.org/all/cover.1637781097.git.mchehab+huawei@kernel.org/
+> 
+>  drivers/media/dvb-frontends/si21xx.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/media/dvb-frontends/si21xx.c b/drivers/media/dvb-frontends/si21xx.c
+> index e31eb2c5cc4c..001b23588389 100644
+> --- a/drivers/media/dvb-frontends/si21xx.c
+> +++ b/drivers/media/dvb-frontends/si21xx.c
+> @@ -711,7 +711,7 @@ static int si21xx_set_frontend(struct dvb_frontend *fe)
+>  	int i;
+>  	bool inband_interferer_div2[ALLOWABLE_FS_COUNT];
+>  	bool inband_interferer_div4[ALLOWABLE_FS_COUNT];
+> -	int status;
+> +	int status = 0;
+>  
+>  	/* allowable sample rates for ADC in MHz */
+>  	int afs[ALLOWABLE_FS_COUNT] = { 200, 192, 193, 194, 195,
+> @@ -747,8 +747,6 @@ static int si21xx_set_frontend(struct dvb_frontend *fe)
+>  	rf_freq = 10 * c->frequency ;
+>  	data_rate = c->symbol_rate / 100;
+>  
+> -	status = PASS;
+> -
+>  	band_low = (rf_freq - lnb_lo) - ((lnb_uncertanity * 200)
+>  					+ (data_rate * 135)) / 200;
+>  
+> @@ -832,6 +830,9 @@ static int si21xx_set_frontend(struct dvb_frontend *fe)
+>  	state->fs = sample_rate;/*ADC MHz*/
+>  	si21xx_setacquire(fe, c->symbol_rate, c->fec_inner);
+>  
+> +	if (status)
+> +		return -EREMOTEIO;
+> +
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.33.1
+> 
+> 
