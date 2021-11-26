@@ -2,102 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1B845F43A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 19:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D3745F44E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 19:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243620AbhKZS2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 13:28:12 -0500
-Received: from ivanoab7.miniserver.com ([37.128.132.42]:59112 "EHLO
-        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231614AbhKZS0C (ORCPT
+        id S242076AbhKZS2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 13:28:50 -0500
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:43971 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241981AbhKZS0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 13:26:02 -0500
-Received: from [192.168.18.6] (helo=jain.kot-begemot.co.uk)
-        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1mqfrn-0002RG-Qw; Fri, 26 Nov 2021 18:22:40 +0000
-Received: from madding.kot-begemot.co.uk ([192.168.3.98])
-        by jain.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1mqfri-00637Z-Mx; Fri, 26 Nov 2021 18:22:33 +0000
-Subject: Re: [PATCH 4.9] hugetlbfs: flush TLBs correctly after
- huge_pmd_unshare
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-References: <3BD89231-2CB9-4CE5-B0FA-5B58419D7CB8@gmail.com>
- <7a2feed4-7c73-c7ad-881e-c980235c8293@cambridgegreys.com>
- <C1607574-0A6F-4CEC-B488-795750EEF968@gmail.com>
-From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Organization: Cambridge Greys
-Message-ID: <5e2db11a-46ac-9b15-7b76-f27b718606c5@cambridgegreys.com>
-Date:   Fri, 26 Nov 2021 18:22:30 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Fri, 26 Nov 2021 13:26:45 -0500
+Received: by mail-oi1-f182.google.com with SMTP id o4so20240024oia.10;
+        Fri, 26 Nov 2021 10:23:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wJs4qIzN7tdGNmWLLZgECzleFNg3olCYYbAdn6+WWTc=;
+        b=6T8ZKy+NG2ZIRHIV2ZzSvmXO4sg6DG8DWkbCzJ+WGrnYD0C0vCY8GkPJP44mx05Smx
+         4Jfdp398eP1fECIVArKfsC+5nYsMy87R95yN0PLS1qyaAcUs4ms1mVZcgD77SeXzyD1f
+         cyUsunXTcqSfAE3ONTvKTDDwBkSZh+El5fINA4QqZ1qNrc6Dz7RR8OCPs4F8eoHbbeYX
+         cwUWevMtcKYo44tlhgukUukfrUUGEyCdLALs/vHUh7I6tQW7c++6pjwZan5mHOogezPb
+         TbBCagRywn1zaFDAViDTTTCsGQ1g72IJ+ynxABR2Q+EtfbW43X3KSKnn9i4gmDGNxJcw
+         skFA==
+X-Gm-Message-State: AOAM531PlLWZuTJ2Lax7fAcTRpy5Mpb5vVvaZfOYXiSdYm/ZiAltqkXH
+        irA2zxBNsvXju3LQmql4P7MT2XZ1ss4E44gE3kC1NVD4
+X-Google-Smtp-Source: ABdhPJzwvmUTZUjytwHBzf5yT8L/DTo17kJm5ogcH2Ay644b3htcu+cr8LWWD5sF4zgQE5f9tTbseeDeb1vLvSFax3w=
+X-Received: by 2002:a05:6808:14c3:: with SMTP id f3mr24781640oiw.51.1637951012267;
+ Fri, 26 Nov 2021 10:23:32 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <C1607574-0A6F-4CEC-B488-795750EEF968@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -2.0
-X-Spam-Score: -1.0
-X-Clacks-Overhead: GNU Terry Pratchett
+References: <20210401183654.27214-1-daniel.lezcano@linaro.org>
+ <20210401183654.27214-3-daniel.lezcano@linaro.org> <CAAYoRsURO1tf03nfiki1uaXYEmTKQyYKUeTyKW+vefrVzCO7jg@mail.gmail.com>
+ <1e75f7ff-4b1b-ff47-2344-903605067693@linaro.org>
+In-Reply-To: <1e75f7ff-4b1b-ff47-2344-903605067693@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 26 Nov 2021 19:23:21 +0100
+Message-ID: <CAJZ5v0jtOVs=P2HxGoL2pATwCj9ZxsAnH_ZWL_vMFNjpMsqrng@mail.gmail.com>
+Subject: Re: [PATCH v6 3/7] powercap/drivers/dtpm: Simplify the dtpm table
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Doug Smythies <dsmythies@telus.net>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/11/2021 17:49, Nadav Amit wrote:
-> 
->> On Nov 26, 2021, at 2:21 AM, Anton Ivanov <anton.ivanov@cambridgegreys.com> wrote:
->>
->>
->>
->> On 26/11/2021 06:08, Nadav Amit wrote:
->>> Below is a patch to address CVE-2021-4002 [1] that I created to backport
->>> to 4.9. The stable kernels of 4.14 and prior ones do not have unified
->>> TLB flushing code, and I managed to mess up the arch code a couple of
->>> times.
->>> Now that the CVE is public, I would appreciate your review of this
->>> patch. I send 4.9 for review - the other ones (4.14 and prior) are
->>> pretty similar.
->>> [1] https://www.openwall.com/lists/oss-security/2021/11/25/1
->>> Thanks,
->>> Nadav
->>
->> I do not quite see the rationale for patching um
->>
->> It supports only standard size pages. You should not be able to map a huge page there (and hugetlbfs).
->>
->> I have "non-standard page size" somewhere towards the end of my queue, but it keeps falling through - not enough spare time to work on it.
-> 
-> Thanks for your review.
-> 
-> I did not look at the dependencies, so I did not even look if
-> hugetlbfs depends on !um.
-> 
-> Do you prefer that for um, I will just do a BUG()? I prefer
-> to have a stub just to avoid potential build issues.
-> 
-> 
+On Fri, Nov 26, 2021 at 6:40 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> On 26/11/2021 18:08, Doug Smythies wrote:
+> > Hi Daniel,
+> >
+> > This patch introduces a regression, at least on my test system.
+> > I can no longer change CPU frequency scaling drivers, for example
+> > from intel_cpufreq (A.K.A intel_pstate in passive mode) to intel_pstate
+> > (A.K.A. active mode). The task just hangs forever.
+> >
+> > I bisected the kernel and got this commit as the result.
+> > As a double check, I reverted this commit:
+> > 7a89d7eacf8e84f2afb94db5ae9d9f9faa93f01c
+> > on kernel 5.16-rc2 and the issue was resolved.
+> >
+> > While your email is fairly old, I observe that it was only included as of
+> > kernel 5.16-rc1.
+>
+> Could it be related to and fixed by:
+>
+> https://lore.kernel.org/all/20211108062345.273855-1-daniel.lezcano@linaro.org/
+>
+> ?
 
-Stub will be fine.
-
-I was just checking in case I missed something.
-
-Brgds,
-
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+It seems so, but that patch is present in 5.16-rc2.
