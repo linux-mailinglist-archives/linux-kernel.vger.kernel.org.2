@@ -2,123 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BF545E7F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 07:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D0B45E7F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 07:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358999AbhKZGmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 01:42:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345573AbhKZGkk (ORCPT
+        id S235165AbhKZGnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 01:43:33 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:52787 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234932AbhKZGlc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 01:40:40 -0500
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16511C06175E;
-        Thu, 25 Nov 2021 22:37:28 -0800 (PST)
-Received: by mail-vk1-xa36.google.com with SMTP id s17so5328766vka.5;
-        Thu, 25 Nov 2021 22:37:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1xpT3RV99heuUx/ONfQuPNIHfJj6008zQ/R5vdkdv3E=;
-        b=FTu97cpX7NvwlAAL5kE7zmY21kEqO65Q8xWojLdoU2HHGbRu93vSmT+lbjbPtODyV8
-         kPblNQF8tFJvjMAzJfrQPD4cLNnfhj3zATFOn/F9ZMfwpZECbGgqv8NeBqz7ZrvhX1nn
-         uVdDpWORFB4HkzsPt9bTs4B1GqY80vSaqEgd+G2NnjuC4S+xMJXXv1J8DJk3hLITJRzd
-         UeiKcDftOuPVSJA5xzBO/nC2LPTK7lCS4yq0pnidogfU8Fdefr4u4glecqN8mlfjzcRV
-         nBl4jevsisilJY0Br9aUqkICJmPeBUMtaWhwh1/kx9TyxOPnnH2m4yJZPa0PZ6usdMSj
-         KXLA==
+        Fri, 26 Nov 2021 01:41:32 -0500
+Received: by mail-il1-f200.google.com with SMTP id y3-20020a056e021be300b0029f6c440695so10760436ilv.19
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 22:38:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1xpT3RV99heuUx/ONfQuPNIHfJj6008zQ/R5vdkdv3E=;
-        b=Lxo62KpHb4twhWJ8BH5HKDi/mQuRX3giTf2/GaZ2MAXeEI2SFAfKoryg/a3aaUqTzY
-         /K6T2H+9xT8+TvvieOX4YA9OuPfmzddLkBeaqDRdtJXpEMEsbvgp0v/hUwoVZh2NpDky
-         V+IVds62YsFlOXKZwfwInaFP2IzeH7JVcdJABYeU35ANZoFR9ACIsmmG6EpfJeOvNvA6
-         fIbuJ58oRRHywD9HhMD014bhjs6jEJCkRdkW8WjvxLMQgVPSSZJKb5QIMqiiC6L4D8Fu
-         34O9Lyo8u6z3Z+dvnsTTBZfxdbgvLPLiN6dHkbqDQGa/jaDOElT4XuLactTy+FZm1BnH
-         XtNQ==
-X-Gm-Message-State: AOAM532Pgr7b9HK8EUZQqfLRMhdo2Bok47mSSKCkcy6fFlmPdH7WyS3y
-        Idz1/6dgupPuzxWSUb/eqlKAynE+x94=
-X-Google-Smtp-Source: ABdhPJxCCzrNuA97IXzlFBv9MYcGe1BvXV76i3FnSBtG56oib6HP8iawNdBSo8mX00WssKTGITTruw==
-X-Received: by 2002:a05:6122:510:: with SMTP id x16mr17928421vko.20.1637908646980;
-        Thu, 25 Nov 2021 22:37:26 -0800 (PST)
-Received: from tresc043793.tre-sc.gov.br (187-049-235-234.floripa.net.br. [187.49.235.234])
-        by smtp.gmail.com with ESMTPSA id h10sm2989524vsl.34.2021.11.25.22.37.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 22:37:26 -0800 (PST)
-From:   luizluca@gmail.com
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        alsi@bang-olufsen.dk,
-        Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Subject: [PATCH] net: dsa: realtek-smi: fix indirect reg access for ports>4
-Date:   Fri, 26 Nov 2021 03:36:45 -0300
-Message-Id: <20211126063645.19094-1-luizluca@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=VExpyIgqdaCzryc4TFabc+PLnHrJh8zh2aH26egvCug=;
+        b=nVnf8LvMNKxJF2Lck84q87fkWzvuK7ljTYWtRhIciBvCi48Rhk0AGAlKy32YwXWof2
+         aT9ncoQrjE0GsgHMfVVZHfAU1NykNPs4+96VdEy4MwuPKr/a14EakKjbmRm7b/YwSKmH
+         YW8m2xvcnN9B1cFRpNsPXImhxjtK1vxJeZhfGwerQ2T4CEb6VP6QGZJ2XWfjcRokRjuK
+         4ko36fxGpysQb5Ewf3dgtSX1WY88B3b0bQsDBKRf8SSGXgNJT9lRUYx1RomxAXOIRXKQ
+         HGLhI/7UlGFZ1CMm2E7l5cFpf6ggqW6VrkcVak9dnlKq67uDFPLcjl76YVjFwv6ajvMT
+         apNA==
+X-Gm-Message-State: AOAM532TpMZ3209SnBvg1PVKKi4c+h8/APRIpE9KMRI2WRLQicYpNo8x
+        5oTQzwH5ISLOK7wRHpxVyuPuESoNRUrXMqucLfYnu0nxaIUD
+X-Google-Smtp-Source: ABdhPJyHKSJ1zXIJHFqLtCPfQH3QqpmPXMrEwCcAhDNdbmV5oAcai/gU2Q9RWXO+ujdiwn21QUiJXK+i3b/ueMXtgo6ahJd77E9U
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1c46:: with SMTP id d6mr1970203ilg.140.1637908699751;
+ Thu, 25 Nov 2021 22:38:19 -0800 (PST)
+Date:   Thu, 25 Nov 2021 22:38:19 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000392b1305d1ab56ab@google.com>
+Subject: [syzbot] linux-next test error: WARNING: held lock freed in kernfs_destroy_root
+From:   syzbot <syzbot+9e5d9f74a10f9590610b@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org, sfr@canb.auug.org.au,
+        syzkaller-bugs@googlegroups.com, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Hello,
 
-This switch family can have up to 8 ports {0..7}. However,
-INDIRECT_ACCESS_ADDRESS_PHYNUM_MASK was using 2 bits instead of 3,
-dropping the most significant bit during indirect register reads and
-writes. Reading or writing ports 5, 6, and 7 registers was actually
-manipulating, respectively, ports 0, 1, and 2 registers.
+syzbot found the following issue on:
 
-rtl8365mb_phy_{read,write} will now returns -EINVAL if phy is greater
-than 7.
+HEAD commit:    f30a24ed97b4 Add linux-next specific files for 20211126
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=16802fa1b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=be9183de0824e4d7
+dashboard link: https://syzkaller.appspot.com/bug?extid=9e5d9f74a10f9590610b
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Fixes: 4af2950c50c8 ("net: dsa: realtek-smi: add rtl8365mb subdriver for RTL8365MB-VC")
-Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9e5d9f74a10f9590610b@syzkaller.appspotmail.com
+
+cgroup: Unknown subsys name 'net'
+=========================
+WARNING: held lock freed!
+5.16.0-rc2-next-20211126-syzkaller #0 Not tainted
+-------------------------
+syz-executor/6532 is freeing memory ffff88807f06e400-ffff88807f06e5ff, with a lock still held there!
+ffff88807f06e548 (&root->kernfs_rwsem){++++}-{3:3}, at: kernfs_remove fs/kernfs/dir.c:1396 [inline]
+ffff88807f06e548 (&root->kernfs_rwsem){++++}-{3:3}, at: kernfs_destroy_root+0x81/0xb0 fs/kernfs/dir.c:964
+2 locks held by syz-executor/6532:
+ #0: ffffffff8bbc5d48 (cgroup_mutex){+.+.}-{3:3}, at: cgroup_lock_and_drain_offline+0xa5/0x900 kernel/cgroup/cgroup.c:2998
+ #1: ffff88807f06e548 (&root->kernfs_rwsem){++++}-{3:3}, at: kernfs_remove fs/kernfs/dir.c:1396 [inline]
+ #1: ffff88807f06e548 (&root->kernfs_rwsem){++++}-{3:3}, at: kernfs_destroy_root+0x81/0xb0 fs/kernfs/dir.c:964
+
+stack backtrace:
+CPU: 0 PID: 6532 Comm: syz-executor Not tainted 5.16.0-rc2-next-20211126-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_freed_lock_bug kernel/locking/lockdep.c:6388 [inline]
+ debug_check_no_locks_freed.cold+0x9d/0xa9 kernel/locking/lockdep.c:6421
+ slab_free_hook mm/slub.c:1695 [inline]
+ slab_free_freelist_hook+0x73/0x1c0 mm/slub.c:1749
+ slab_free mm/slub.c:3513 [inline]
+ kfree+0xe0/0x430 mm/slub.c:4561
+ kernfs_put.part.0+0x331/0x540 fs/kernfs/dir.c:548
+ kernfs_put+0x42/0x50 fs/kernfs/dir.c:513
+ __kernfs_remove+0x7a3/0xb20 fs/kernfs/dir.c:1382
+ kernfs_remove fs/kernfs/dir.c:1397 [inline]
+ kernfs_destroy_root+0x89/0xb0 fs/kernfs/dir.c:964
+ cgroup_setup_root+0x3a6/0xad0 kernel/cgroup/cgroup.c:2077
+ cgroup1_root_to_use kernel/cgroup/cgroup-v1.c:1194 [inline]
+ cgroup1_get_tree+0xd33/0x1390 kernel/cgroup/cgroup-v1.c:1211
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1500
+ do_new_mount fs/namespace.c:2988 [inline]
+ path_mount+0x1320/0x1fa0 fs/namespace.c:3318
+ do_mount fs/namespace.c:3331 [inline]
+ __do_sys_mount fs/namespace.c:3539 [inline]
+ __se_sys_mount fs/namespace.c:3516 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3516
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f517c6f401a
+Code: 48 c7 c2 bc ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 b8 04 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe8ba71698 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffe8ba71828 RCX: 00007f517c6f401a
+RDX: 00007f517c756fd6 RSI: 00007f517c74d29a RDI: 00007f517c74bd71
+RBP: 00007f517c74d29a R08: 00007f517c74d3f7 R09: 0000000000000026
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffe8ba716a0
+R13: 00007ffe8ba71848 R14: 00007ffe8ba71770 R15: 00007f517c74d3f1
+ </TASK>
+==================================================================
+BUG: KASAN: use-after-free in __up_write kernel/locking/rwsem.c:1318 [inline]
+BUG: KASAN: use-after-free in up_write+0x3ac/0x470 kernel/locking/rwsem.c:1576
+Read of size 8 at addr ffff88807f06e540 by task syz-executor/6532
+
+CPU: 1 PID: 6532 Comm: syz-executor Not tainted 5.16.0-rc2-next-20211126-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_address_description.constprop.0.cold+0xa5/0x3ed mm/kasan/report.c:247
+ __kasan_report mm/kasan/report.c:433 [inline]
+ kasan_report.cold+0x83/0xdf mm/kasan/report.c:450
+ __up_write kernel/locking/rwsem.c:1318 [inline]
+ up_write+0x3ac/0x470 kernel/locking/rwsem.c:1576
+ cgroup_setup_root+0x3a6/0xad0 kernel/cgroup/cgroup.c:2077
+ cgroup1_root_to_use kernel/cgroup/cgroup-v1.c:1194 [inline]
+ cgroup1_get_tree+0xd33/0x1390 kernel/cgroup/cgroup-v1.c:1211
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1500
+ do_new_mount fs/namespace.c:2988 [inline]
+ path_mount+0x1320/0x1fa0 fs/namespace.c:3318
+ do_mount fs/namespace.c:3331 [inline]
+ __do_sys_mount fs/namespace.c:3539 [inline]
+ __se_sys_mount fs/namespace.c:3516 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3516
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f517c6f401a
+Code: 48 c7 c2 bc ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 b8 04 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe8ba71698 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffe8ba71828 RCX: 00007f517c6f401a
+RDX: 00007f517c756fd6 RSI: 00007f517c74d29a RDI: 00007f517c74bd71
+RBP: 00007f517c74d29a R08: 00007f517c74d3f7 R09: 0000000000000026
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffe8ba716a0
+R13: 00007ffe8ba71848 R14: 00007ffe8ba71770 R15: 00007f517c74d3f1
+ </TASK>
+
+Allocated by task 6532:
+ kasan_save_stack+0x1e/0x50 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:434 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:513 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:472 [inline]
+ __kasan_kmalloc+0xa9/0xd0 mm/kasan/common.c:522
+ kmalloc include/linux/slab.h:590 [inline]
+ kzalloc include/linux/slab.h:724 [inline]
+ kernfs_create_root+0x4c/0x410 fs/kernfs/dir.c:913
+ cgroup_setup_root+0x243/0xad0 kernel/cgroup/cgroup.c:2018
+ cgroup1_root_to_use kernel/cgroup/cgroup-v1.c:1194 [inline]
+ cgroup1_get_tree+0xd33/0x1390 kernel/cgroup/cgroup-v1.c:1211
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1500
+ do_new_mount fs/namespace.c:2988 [inline]
+ path_mount+0x1320/0x1fa0 fs/namespace.c:3318
+ do_mount fs/namespace.c:3331 [inline]
+ __do_sys_mount fs/namespace.c:3539 [inline]
+ __se_sys_mount fs/namespace.c:3516 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3516
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Freed by task 6532:
+ kasan_save_stack+0x1e/0x50 mm/kasan/common.c:38
+ kasan_set_track+0x21/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:370
+ ____kasan_slab_free mm/kasan/common.c:366 [inline]
+ ____kasan_slab_free mm/kasan/common.c:328 [inline]
+ __kasan_slab_free+0x103/0x170 mm/kasan/common.c:374
+ kasan_slab_free include/linux/kasan.h:235 [inline]
+ slab_free_hook mm/slub.c:1723 [inline]
+ slab_free_freelist_hook+0x8b/0x1c0 mm/slub.c:1749
+ slab_free mm/slub.c:3513 [inline]
+ kfree+0xe0/0x430 mm/slub.c:4561
+ kernfs_put.part.0+0x331/0x540 fs/kernfs/dir.c:548
+ kernfs_put+0x42/0x50 fs/kernfs/dir.c:513
+ __kernfs_remove+0x7a3/0xb20 fs/kernfs/dir.c:1382
+ kernfs_remove fs/kernfs/dir.c:1397 [inline]
+ kernfs_destroy_root+0x89/0xb0 fs/kernfs/dir.c:964
+ cgroup_setup_root+0x3a6/0xad0 kernel/cgroup/cgroup.c:2077
+ cgroup1_root_to_use kernel/cgroup/cgroup-v1.c:1194 [inline]
+ cgroup1_get_tree+0xd33/0x1390 kernel/cgroup/cgroup-v1.c:1211
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1500
+ do_new_mount fs/namespace.c:2988 [inline]
+ path_mount+0x1320/0x1fa0 fs/namespace.c:3318
+ do_mount fs/namespace.c:3331 [inline]
+ __do_sys_mount fs/namespace.c:3539 [inline]
+ __se_sys_mount fs/namespace.c:3516 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3516
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff88807f06e400
+ which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 320 bytes inside of
+ 512-byte region [ffff88807f06e400, ffff88807f06e600)
+The buggy address belongs to the page:
+page:ffffea0001fc1b00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x7f06c
+head:ffffea0001fc1b00 order:2 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000010200 ffffea00008d1b00 dead000000000002 ffff888010c41c80
+raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 2, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 5789, ts 47991282663, free_ts 38208673784
+ prep_new_page mm/page_alloc.c:2433 [inline]
+ get_page_from_freelist+0xa72/0x2f40 mm/page_alloc.c:4164
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5376
+ alloc_pages+0x1a7/0x300 mm/mempolicy.c:2192
+ alloc_slab_page mm/slub.c:1793 [inline]
+ allocate_slab mm/slub.c:1930 [inline]
+ new_slab+0x261/0x460 mm/slub.c:1993
+ ___slab_alloc+0x798/0xf30 mm/slub.c:3022
+ __slab_alloc.constprop.0+0x4d/0xa0 mm/slub.c:3109
+ slab_alloc_node mm/slub.c:3200 [inline]
+ slab_alloc mm/slub.c:3242 [inline]
+ __kmalloc+0x2fb/0x340 mm/slub.c:4419
+ kmalloc include/linux/slab.h:595 [inline]
+ load_elf_phdrs+0x103/0x210 fs/binfmt_elf.c:479
+ load_elf_binary+0x18f4/0x4da0 fs/binfmt_elf.c:959
+ search_binary_handler fs/exec.c:1724 [inline]
+ exec_binprm fs/exec.c:1765 [inline]
+ bprm_execve fs/exec.c:1834 [inline]
+ bprm_execve+0x7ef/0x19b0 fs/exec.c:1796
+ do_execveat_common+0x5e3/0x780 fs/exec.c:1923
+ do_execve fs/exec.c:1991 [inline]
+ __do_sys_execve fs/exec.c:2067 [inline]
+ __se_sys_execve fs/exec.c:2062 [inline]
+ __x64_sys_execve+0x8f/0xc0 fs/exec.c:2062
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1351 [inline]
+ free_pcp_prepare+0x414/0xb60 mm/page_alloc.c:1403
+ free_unref_page_prepare mm/page_alloc.c:3324 [inline]
+ free_unref_page+0x19/0x690 mm/page_alloc.c:3403
+ qlink_free mm/kasan/quarantine.c:146 [inline]
+ qlist_free_all+0x5a/0xf0 mm/kasan/quarantine.c:165
+ kasan_quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:272
+ __kasan_slab_alloc+0xa2/0xc0 mm/kasan/common.c:444
+ kasan_slab_alloc include/linux/kasan.h:259 [inline]
+ slab_post_alloc_hook mm/slab.h:519 [inline]
+ slab_alloc_node mm/slub.c:3234 [inline]
+ slab_alloc mm/slub.c:3242 [inline]
+ __kmalloc+0x1e7/0x340 mm/slub.c:4419
+ kmalloc include/linux/slab.h:595 [inline]
+ tomoyo_realpath_from_path+0xc3/0x620 security/tomoyo/realpath.c:254
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_path_perm+0x21b/0x400 security/tomoyo/file.c:822
+ security_inode_getattr+0xcf/0x140 security/security.c:1334
+ vfs_getattr fs/stat.c:157 [inline]
+ vfs_statx+0x164/0x390 fs/stat.c:225
+ vfs_fstatat fs/stat.c:243 [inline]
+ vfs_lstat include/linux/fs.h:3358 [inline]
+ __do_sys_newlstat+0x91/0x110 fs/stat.c:398
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Memory state around the buggy address:
+ ffff88807f06e400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88807f06e480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88807f06e500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                           ^
+ ffff88807f06e580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88807f06e600: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
+
+
 ---
- drivers/net/dsa/rtl8365mb.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/net/dsa/rtl8365mb.c b/drivers/net/dsa/rtl8365mb.c
-index baaae97283c5..f4414ac74b61 100644
---- a/drivers/net/dsa/rtl8365mb.c
-+++ b/drivers/net/dsa/rtl8365mb.c
-@@ -107,6 +107,7 @@
- #define RTL8365MB_LEARN_LIMIT_MAX_8365MB_VC	2112
- 
- /* Family-specific data and limits */
-+#define RTL8365MB_PHYADDRMAX	7
- #define RTL8365MB_NUM_PHYREGS	32
- #define RTL8365MB_PHYREGMAX	(RTL8365MB_NUM_PHYREGS - 1)
- #define RTL8365MB_MAX_NUM_PORTS	(RTL8365MB_CPU_PORT_NUM_8365MB_VC + 1)
-@@ -176,7 +177,7 @@
- #define RTL8365MB_INDIRECT_ACCESS_STATUS_REG			0x1F01
- #define RTL8365MB_INDIRECT_ACCESS_ADDRESS_REG			0x1F02
- #define   RTL8365MB_INDIRECT_ACCESS_ADDRESS_OCPADR_5_1_MASK	GENMASK(4, 0)
--#define   RTL8365MB_INDIRECT_ACCESS_ADDRESS_PHYNUM_MASK		GENMASK(6, 5)
-+#define   RTL8365MB_INDIRECT_ACCESS_ADDRESS_PHYNUM_MASK		GENMASK(7, 5)
- #define   RTL8365MB_INDIRECT_ACCESS_ADDRESS_OCPADR_9_6_MASK	GENMASK(11, 8)
- #define   RTL8365MB_PHY_BASE					0x2000
- #define RTL8365MB_INDIRECT_ACCESS_WRITE_DATA_REG		0x1F03
-@@ -679,6 +680,8 @@ static int rtl8365mb_phy_read(struct realtek_smi *smi, int phy, int regnum)
- 	u16 val;
- 	int ret;
- 
-+	if (phy > RTL8365MB_PHYADDRMAX)
-+		return -EINVAL;
- 	if (regnum > RTL8365MB_PHYREGMAX)
- 		return -EINVAL;
- 
-@@ -704,6 +707,8 @@ static int rtl8365mb_phy_write(struct realtek_smi *smi, int phy, int regnum,
- 	u32 ocp_addr;
- 	int ret;
- 
-+	if (phy > RTL8365MB_PHYADDRMAX)
-+		return -EINVAL;
- 	if (regnum > RTL8365MB_PHYREGMAX)
- 		return -EINVAL;
- 
--- 
-2.33.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
