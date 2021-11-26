@@ -2,119 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 301CE45E94D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:22:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 547B845E953
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:24:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359797AbhKZIZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 03:25:01 -0500
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:36102 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245061AbhKZIW2 (ORCPT
+        id S1359594AbhKZI1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 03:27:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1359656AbhKZIZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 03:22:28 -0500
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1AQ7r4nW033248;
-        Fri, 26 Nov 2021 15:53:04 +0800 (GMT-8)
-        (envelope-from jammy_huang@aspeedtech.com)
-Received: from [192.168.2.115] (192.168.2.115) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 26 Nov
- 2021 16:17:20 +0800
-Message-ID: <b6ba49f3-a9ed-f5e6-959c-309db8cce7f6@aspeedtech.com>
-Date:   Fri, 26 Nov 2021 16:17:20 +0800
+        Fri, 26 Nov 2021 03:25:17 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01B36C061746;
+        Fri, 26 Nov 2021 00:19:14 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id z5so35624067edd.3;
+        Fri, 26 Nov 2021 00:19:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=kjPIuejmixJMckieSdz7EIHII2l1faqnfhtqJyiLPM4=;
+        b=fK9prnbv0PgpM0XPK1J1kI3fYoKY1EnF26gdp4hAdKZqzqcdAyMykY/pJuWeRfy/PP
+         LFwYrs0duVCYpYc0xMUUNZAz5JvDemy+BxEV/+9NXgLcokMtKtbeh39HRqcL+Z9erQcs
+         4SkRvNsIZgVh2z1Yzw4371DyMD8xz4ik2R0bHJV51vh/XI6SZgjweua1jgE79JFnaBgv
+         jdx2vO9NNWbfnGeGak//yYO8h6LHfyDcNGktZNGnBY+UhySfucH9RBZI8gIylwYA/0WV
+         S7DTWjrlyb3s/R73ktFJI2kBVDvoFk/UZtepflRPF6iBJqVjCnDaEWOYd8sEcHSjoR8g
+         ie6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
+         :subject:content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=kjPIuejmixJMckieSdz7EIHII2l1faqnfhtqJyiLPM4=;
+        b=ETJoYmQkNIQi1us71XWv4AlxPBi/jbAtknWl6RbmoB5pKmym/jT6eedr+5+/O9CsaT
+         38NChhI3kmmDVj5AlMnvqBpSz/Faj0uCVc0lIR1PUBz4htVZm3NuxVG4BRKZ1Nakpdln
+         s5LHwe6Z5wbrds///9quSOpY4IBaqV8fu6s8OciIQqxTwE/usQut1GUlVnlAoz2dLm7/
+         bJfEJQ8td8NcCQjzq5qOHQ/tpdQtm+WP3gHKz+KotWkzA3XvolohZfmT5hJdvY8jQ9mC
+         dBeS+xWrjcK+AEsT7pbxejpxPAF8HoqzZkT1If2B6B8WQLTO1CsZOEl/YJslqzEfW04e
+         TbHQ==
+X-Gm-Message-State: AOAM532Q819r3O306pISBN1t8uST1KF2vCxu3AZvji1jD1jhXMv5iys5
+        1Bg37K/2llHNqemJi9mC1Ic=
+X-Google-Smtp-Source: ABdhPJwWcSXj8uTzn0NQlmVjeVOpfI6OHn7sYLjajMwrHTgztjLUvEUmX3agGBpOD5IVUeNaFWwy0Q==
+X-Received: by 2002:a17:906:6a1a:: with SMTP id qw26mr37453031ejc.489.1637914752497;
+        Fri, 26 Nov 2021 00:19:12 -0800 (PST)
+Received: from ?IPV6:2001:b07:add:ec09:c399:bc87:7b6c:fb2a? ([2001:b07:add:ec09:c399:bc87:7b6c:fb2a])
+        by smtp.googlemail.com with ESMTPSA id m22sm3309711eda.97.2021.11.26.00.19.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Nov 2021 00:19:12 -0800 (PST)
+Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
+Message-ID: <d449a4c2-131d-5406-b7a2-7549bacc02f9@redhat.com>
+Date:   Fri, 26 Nov 2021 09:18:59 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH v5 00/10] add aspeed-jpeg support for aspeed-video
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [RFC PATCH v3 23/59] KVM: x86: Allow host-initiated WRMSR to set
+ X2APIC regardless of CPUID
 Content-Language: en-US
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>, <eajames@linux.ibm.com>,
-        <mchehab@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-        <sakari.ailus@linux.intel.com>, <gregkh@linuxfoundation.org>,
-        <laurent.pinchart@ideasonboard.com>, <linux-media@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-References: <20211118074030.685-1-jammy_huang@aspeedtech.com>
- <5ab806d1-e407-1fa4-83ec-93ebe8df7db4@xs4all.nl>
-From:   Jammy Huang <jammy_huang@aspeedtech.com>
-In-Reply-To: <5ab806d1-e407-1fa4-83ec-93ebe8df7db4@xs4all.nl>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [192.168.2.115]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1AQ7r4nW033248
+To:     Thomas Gleixner <tglx@linutronix.de>, isaku.yamahata@intel.com,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
+        Connor Kuehl <ckuehl@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     isaku.yamahata@gmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <cover.1637799475.git.isaku.yamahata@intel.com>
+ <63556f13e9608cbccf97d356be46a345772d76d3.1637799475.git.isaku.yamahata@intel.com>
+ <87fsrkja4j.ffs@tglx>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <87fsrkja4j.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+On 11/25/21 20:41, Thomas Gleixner wrote:
+> On Wed, Nov 24 2021 at 16:20, isaku yamahata wrote:
+>> Let userspace, or in the case of TDX, KVM itself, enable X2APIC even if
+>> X2APIC is not reported as supported in the guest's CPU model.  KVM
+>> generally does not force specific ordering between ioctls(), e.g. this
+>> forces userspace to configure CPUID before MSRs.  And for TDX, vCPUs
+>> will always run with X2APIC enabled, e.g. KVM will want/need to enable
+>> X2APIC from time zero.
+> 
+> This is complete crap. Fix the broken user space and do not add
+> horrible hacks to the kernel.
 
-Please refer to Page 132, 'Video stream data format – ASPEED mode compression' of
-https://github.com/AspeedTech-BMC/openbmc/releases/download/v07.02/SDK_User_Guide_v07.02.pdf
+tl;dr: I agree that it's a userspace issue but "configure CPUID before 
+MSR" is not the issue (in fact QEMU calls KVM_SET_CPUID2 before any call 
+to KVM_SET_MSRS).
 
-Is above information enough??
-Or maybe we can postpone this series until the source code for this format ready.
-I think I can accomplish it by the end of this year.
+We have quite a few other cases in which KVM_GET/SET_MSR is allowed to 
+get/set MSRs in ways that the guests are not allowed to do.
 
-On 2021/11/25 下午 10:31, Hans Verkuil wrote:
-> Hi Jammy,
->
-> I suggest posting a v3 that moves the patches that deal with the
-> Aspeed JPEG format to the end of the series. That way I can easily
-> merge the patches up to that point, and the Aspeed JPEG support can
-> be handled separately.
->
-> I'm not sure if it can be merged without that format being documented,
-> either in pixfmt-reserved.rst, by implementing support for it in
-> libv4lconvert from v4l-utils, or by providing a URL to some other
-> publicly available source code. We really don't like adding pixel
-> formats that cannot be interpreted by someone without access to the
-> datasheets.
->
-> Regards,
->
-> 	Hans
->
-> On 18/11/2021 08:40, Jammy Huang wrote:
->> The aim of this series is to add aspeed-jpeg support for aspeed-video
->> driver.
->>
->> To achieve this major goal some refactors are included.
->>
->> In the last, debugfs information is also updated per this change.
->>
->> Changes in v5:
->>   - Use model data to tell different soc
->>
->> Changes in v4:
->>   - Add definition for the Aspeed JPEG format
->>   - Reserve controls for ASPEED
->>   - Use s_fmt to update format rather than new control
->>   - Update aspeed hq quality range, 1 ~ 12
->>
->>
->> Jammy Huang (10):
->>    media: aspeed: move err-handling together to the bottom
->>    media: aspeed: use v4l2_info/v4l2_warn/v4l2_dbg for log
->>    media: aspeed: add more debug log messages
->>    media: aspeed: refactor to gather format/compress settings
->>    media: v4l: Add definition for the Aspeed JPEG format
->>    media: v4l2-ctrls: Reserve controls for ASPEED
->>    media: aspeed: use model-data
->>    media: aspeed: Support aspeed mode to reduce compressed data
->>    media: aspeed: add comments and macro
->>    media: aspeed: Extend debug message
->>
->>   .../media/uapi/v4l/pixfmt-reserved.rst        |  12 +
->>   drivers/media/platform/aspeed-video.c         | 534 ++++++++++++++----
->>   drivers/media/v4l2-core/v4l2-ioctl.c          |   1 +
->>   include/uapi/linux/aspeed-video.h             |  15 +
->>   include/uapi/linux/v4l2-controls.h            |   5 +
->>   include/uapi/linux/videodev2.h                |   1 +
->>   6 files changed, 467 insertions(+), 101 deletions(-)
->>   create mode 100644 include/uapi/linux/aspeed-video.h
->>
--- 
-Best Regards
-Jammy
+In general, there are several reasons for this:
 
+- simplifying userspace so that it can use the same list of MSRs for all 
+guests (likely, the list that KVM provides with KVM_GET_MSR_INDEX_LIST). 
+  For example MSR_TSC_AUX is only exposed to the guest if RDTSCP or 
+RDPID are available, but the host can always access it.  This is usually 
+the reason why host accesses to MSRs override CPUID.
+
+- simplifying userspace so that it does not have to go through the 
+various steps of a state machine; for example, it's okay if userspace 
+goes DISABLED->X2APIC instead of having to do DISABLED->XAPIC->X2APIC.
+
+- allowing userspace to set a reset value, for example overriding the 
+lock bit in MSR_IA32_FEAT_CTL.
+
+- read-only MSRs that are really "CPUID-like", i.e. they give the guest 
+information about processor features (for example the VMX feature MSRs)
+
+- MSRs had some weird limitations that were lifted later by introducing 
+additional MSRs; for example KVM always allows the host to write to the 
+full-width MSR_IA32_PMC0 counters, because they are a saner version of 
+MSR_IA32_PERFCTR0 and there's no reason for userspace to inflict 
+MSR_IA32_PERFCTR0 on userspace.
+
+So the host_initiated check doesn't _necessarily_ count as a horrible 
+hack in the kernel.  However, in this case we have a trusted domain 
+without X2APIC.  I'm not sure this configuration is clearly bogus.  One 
+could imagine special-purpose VMs that don't need interrupts at all. 
+For full guests such as the ones that QEMU runs, I agree with Thomas 
+that userspace must be fixed to enforce x2apic for TDX guests.
+
+Paolo
