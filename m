@@ -2,119 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 653FC45F162
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:12:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76ECE45F169
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:13:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378386AbhKZQQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:16:04 -0500
-Received: from pegase2.c-s.fr ([93.17.235.10]:53781 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1354425AbhKZQOB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:14:01 -0500
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4J108l2YfHz9sSM;
-        Fri, 26 Nov 2021 17:10:47 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id k7gFLdaq-XHi; Fri, 26 Nov 2021 17:10:47 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4J108l1pGXz9sSL;
-        Fri, 26 Nov 2021 17:10:47 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2EFE28B781;
-        Fri, 26 Nov 2021 17:10:47 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id ttGKRtCaua7U; Fri, 26 Nov 2021 17:10:47 +0100 (CET)
-Received: from [192.168.204.6] (unknown [192.168.204.6])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id ABD9E8B763;
-        Fri, 26 Nov 2021 17:10:46 +0100 (CET)
-Message-ID: <39ec092d-428c-7fce-7291-a88a4caf8b9f@csgroup.eu>
-Date:   Fri, 26 Nov 2021 17:10:46 +0100
+        id S1378461AbhKZQQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:16:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28333 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1378276AbhKZQOd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 11:14:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637943080;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VpB61RKKcKX+MlDxlfZx6xj32ByRUriXdcJ+FdXVsVo=;
+        b=SWNTqdaCmkbfhv4Pt2rb08U4GszT6w4OMJvAApIvsHn6Q+AeI3GEpoQEp6ij1XWl5CNVib
+        nn4LKh/x/Fuhekm8mpDOukDoItNOHkc4GjUgj6T56SdQHUuvkEyKybLPR7srYlTWNuvOyi
+        DoiwvhV/tnZf+OP98KiL5FPSObKgLwM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-220-KH-eGFcOOU6_UGsMnCRNJA-1; Fri, 26 Nov 2021 11:11:15 -0500
+X-MC-Unique: KH-eGFcOOU6_UGsMnCRNJA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC513190A7A0;
+        Fri, 26 Nov 2021 16:11:13 +0000 (UTC)
+Received: from [10.39.195.16] (unknown [10.39.195.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6AF9510016FE;
+        Fri, 26 Nov 2021 16:11:09 +0000 (UTC)
+Message-ID: <ee41580b-7c1f-eca0-539d-e96f56c7c1db@redhat.com>
+Date:   Fri, 26 Nov 2021 17:11:08 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] w1: Misuse of get_user()/put_user() reported by sparse
-Content-Language: fr-FR
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Evgeniy Polyakov <zbr@ioremap.net>, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kernel test robot <lkp@intel.com>
-References: <2163689da6544c289254b3c69848acc36db998f5.1637313047.git.christophe.leroy@csgroup.eu>
- <YaEEqeKyWPfUP7vM@kroah.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-In-Reply-To: <YaEEqeKyWPfUP7vM@kroah.com>
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] KVM: selftests: page_table_test: fix calculation of
+ guest_test_phys_mem
+Content-Language: en-US
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Yanan Wang <wangyanan55@huawei.com>,
+        Andrew Jones <drjones@redhat.com>, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <52e487458c3172923549bbcf9dfccfbe6faea60b.1637940473.git.maciej.szmigiero@oracle.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <52e487458c3172923549bbcf9dfccfbe6faea60b.1637940473.git.maciej.szmigiero@oracle.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 26/11/2021 à 17:00, Greg Kroah-Hartman a écrit :
-> On Fri, Nov 19, 2021 at 10:15:09AM +0100, Christophe Leroy wrote:
->> sparse warnings: (new ones prefixed by >>)
->>>> drivers/w1/slaves/w1_ds28e04.c:342:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char [noderef] __user *_pu_addr @@     got char *buf @@
->>     drivers/w1/slaves/w1_ds28e04.c:342:13: sparse:     expected char [noderef] __user *_pu_addr
->>     drivers/w1/slaves/w1_ds28e04.c:342:13: sparse:     got char *buf
->>>> drivers/w1/slaves/w1_ds28e04.c:356:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char const [noderef] __user *_gu_addr @@     got char const *buf @@
->>     drivers/w1/slaves/w1_ds28e04.c:356:13: sparse:     expected char const [noderef] __user *_gu_addr
->>     drivers/w1/slaves/w1_ds28e04.c:356:13: sparse:     got char const *buf
->>
->> The buffer buf is a failsafe buffer in kernel space, it's not user
->> memory hence doesn't deserve the use of get_user() or put_user().
->>
->> Access 'buf' content directly.
->>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Link: https://lore.kernel.org/lkml/202111190526.K5vb7NWC-lkp@intel.com/T/
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->>   drivers/w1/slaves/w1_ds28e04.c | 10 ++--------
->>   1 file changed, 2 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/w1/slaves/w1_ds28e04.c b/drivers/w1/slaves/w1_ds28e04.c
->> index e4f336111edc..d75bb16fb7a1 100644
->> --- a/drivers/w1/slaves/w1_ds28e04.c
->> +++ b/drivers/w1/slaves/w1_ds28e04.c
->> @@ -339,10 +339,7 @@ static BIN_ATTR_RW(pio, 1);
->>   static ssize_t crccheck_show(struct device *dev, struct device_attribute *attr,
->>   			     char *buf)
->>   {
->> -	if (put_user(w1_enable_crccheck + 0x30, buf))
->> -		return -EFAULT;
->> -
->> -	return sizeof(w1_enable_crccheck);
->> +	return sprintf(buf, "%d", w1_enable_crccheck);
+On 11/26/21 16:28, Maciej S. Szmigiero wrote:
+> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
 > 
-> This should be sysfs_emit(), right?
-
-Ok
-
+> A kvm_page_table_test run with its default settings fails on VMX due to
+> memory region add failure:
+>> ==== Test Assertion Failure ====
+>>   lib/kvm_util.c:952: ret == 0
+>>   pid=10538 tid=10538 errno=17 - File exists
+>>      1  0x00000000004057d1: vm_userspace_mem_region_add at kvm_util.c:947
+>>      2  0x0000000000401ee9: pre_init_before_test at kvm_page_table_test.c:302
+>>      3   (inlined by) run_test at kvm_page_table_test.c:374
+>>      4  0x0000000000409754: for_each_guest_mode at guest_modes.c:53
+>>      5  0x0000000000401860: main at kvm_page_table_test.c:500
+>>      6  0x00007f82ae2d8554: ?? ??:0
+>>      7  0x0000000000401894: _start at ??:?
+>>   KVM_SET_USER_MEMORY_REGION IOCTL failed,
+>>   rc: -1 errno: 17
+>>   slot: 1 flags: 0x0
+>>   guest_phys_addr: 0xc0000000 size: 0x40000000
 > 
->>   }
->>   
->>   static ssize_t crccheck_store(struct device *dev, struct device_attribute *attr,
->> @@ -353,11 +350,8 @@ static ssize_t crccheck_store(struct device *dev, struct device_attribute *attr,
->>   	if (count != 1 || !buf)
->>   		return -EINVAL;
->>   
->> -	if (get_user(val, buf))
->> -		return -EFAULT;
->> -
->>   	/* convert to decimal */
->> -	val = val - 0x30;
->> +	val = *buf - 0x30;
+> This is because the memory range that this test is trying to add
+> (0x0c0000000 - 0x100000000) conflicts with LAPIC mapping at 0x0fee00000.
 > 
-> Why not use a proper function that can parse a string and turn it into a
-> number?
+> Looking at the code it seems that guest_test_*phys*_mem variable gets
+> mistakenly overwritten with guest_test_*virt*_mem while trying to adjust
+> the former for alignment.
+> With the correct variable adjusted this test runs successfully.
+> 
+> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+> ---
+>   tools/testing/selftests/kvm/kvm_page_table_test.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/kvm_page_table_test.c b/tools/testing/selftests/kvm/kvm_page_table_test.c
+> index 3836322add00..ba1fdc3dcf4a 100644
+> --- a/tools/testing/selftests/kvm/kvm_page_table_test.c
+> +++ b/tools/testing/selftests/kvm/kvm_page_table_test.c
+> @@ -280,7 +280,7 @@ static struct kvm_vm *pre_init_before_test(enum vm_guest_mode mode, void *arg)
+>   #ifdef __s390x__
+>   	alignment = max(0x100000, alignment);
+>   #endif
+> -	guest_test_phys_mem = align_down(guest_test_virt_mem, alignment);
+> +	guest_test_phys_mem = align_down(guest_test_phys_mem, alignment);
+>   
+>   	/* Set up the shared data structure test_args */
+>   	test_args.vm = vm;
+> 
 
-I wanted to keep the change minimal. But I can also replace it with some 
-scanf.
+Queued, thanks.
 
-But don't we have any generic function to read and store a bool after all ?
+Paolo
 
-Thanks
-Christophe
