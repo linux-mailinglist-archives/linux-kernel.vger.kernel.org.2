@@ -2,199 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0410C45EABE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 639A745EAC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231916AbhKZJzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 04:55:05 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35898 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1376564AbhKZJxE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 04:53:04 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AQ9iC6V013741;
-        Fri, 26 Nov 2021 09:49:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to; s=pp1;
- bh=JxwmMPWnjU4ayvBmgR6H2tJICxhtE//tq5JQb1By7DU=;
- b=FWYbB1/XCXIPC4tkwDTptDhrdCdbiAihSZ3/6043bFCY/Kyt6PkAWmagMv+IipdncMQP
- E9Y173Ig9x9B2CYzSFKaEtdgfiBDcrbcOMUlbaDnL06rEupWrq2aEoJKaGbKZvliKI6q
- lbj0I7YDC+pSN2wQXjPDU09rGyyiosaojZ2+hr/C6KffQgF7MjtouKI+kX/wM/OhPOaS
- Cb4kuoeCGL/eRr5JBzmHa7YMmxHc76qNr4kzmbML2DlPeOMc9hZa2wfBT6No4xU2M5B5
- N+VlCirEOprTZpLrUCMFxSSJRL+DQDsb5rLFt/sRulE2+6YBUsDQAscwF9tHtpsX2bii Fw== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3cju4ytuar-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Nov 2021 09:49:44 +0000
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AQ9mWEP005482;
-        Fri, 26 Nov 2021 09:49:43 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma05fra.de.ibm.com with ESMTP id 3cernafg4a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Nov 2021 09:49:42 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AQ9neZp28115310
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Nov 2021 09:49:40 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 48632AE058;
-        Fri, 26 Nov 2021 09:49:40 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F10AEAE059;
-        Fri, 26 Nov 2021 09:49:36 +0000 (GMT)
-Received: from smtpclient.apple (unknown [9.211.41.253])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri, 26 Nov 2021 09:49:36 +0000 (GMT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [FYI][PATCH 1/1] tools headers UAPI: Sync powerpc syscall table
- file changed by new futex_waitv syscall
-From:   Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-In-Reply-To: <YZ/1OU9mJuyS2HMa@kernel.org>
-Date:   Fri, 26 Nov 2021 15:19:32 +0530
-Cc:     =?utf-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@collabora.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
+        id S1376494AbhKZJzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 04:55:39 -0500
+Received: from mail-eopbgr130058.outbound.protection.outlook.com ([40.107.13.58]:29093
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237535AbhKZJxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 04:53:37 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D6CwzCsMX9hWw3++cyxIB+7qRlFtH2bE0rBgnBXiF4itG8G1ENUS2iMk/jlPsaXOy40YO3knJt1YVIy2kX0vxY7cIypQ4g3a/usCvVRzAljjYCmAjrhQL20B3cvG8v8/3n5cUkxHtmIQsJ7NohB837mpFsiJVOT6uKYgKd2xKM87fQf/Yr+zip7pT7gdgZN/z5uJGmJ8GhFjnaXk/wilaHBZG+5Eg/QEZc2Kw4ZxGBaJx4FllAkoM/nGNDe/DOVXXQmTwEBkMnDePa4CQ6VeFnnEc3ryQn2N5f4ZbsrnlAH6LaKpZ1WJAYD3ARl83+Tj1lFhR9mISKNeGO8O/sIAZw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cYoQ2ugbcliUJqzVqL4ipBMBKPL0N9ej+MnTjvjaSzA=;
+ b=D6YoCccwDnlD1tNSty7mEWdsX/f5V6Ent+py1zbh4OU3DFuXhVzsJvqVvCZYv7r7GfAP8PbvrvBLM61JLvHiN6z2HU+reSQC4m6SvGwFVq3BKdXE58rn1rD/T7LFtUkqQdG+UPf0sF+BVYac1Mei9t5wFvCSpg1/3MEhgBqa8VZxK9RzMSllTTH4ScCfPmISVTEF7zEl3aepLzNqhlwDN138tlsXtOcVlCPtowT7W3HiMbq4fwXq8TFki+XZ/JBCSjGMxCjM9etXeQlIG3juKhrLVJgtc+VnUu6Y7H2j1PyMFltHj+TzFBoWaZrH+4SM8SbGxlewUEFb5MJqBWAfig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
+ dkim=pass header.d=diasemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cYoQ2ugbcliUJqzVqL4ipBMBKPL0N9ej+MnTjvjaSzA=;
+ b=LnLaciH+dy9Zr7mfdxTBKq2G/T4Syg60+bYs78lF7RIWWlmdoXxkW5DOQyNC35UAb+RdGyM0aLuR6mFRH1s+qDqj3d2EBDoL1u5awi25YJcnD8B63W0+LSUEbNnboNujfS/6T9Nk/1Zv7OqURJisaA1v/k4vdha9H3KgqmrfJm8=
+Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:255::23)
+ by DB8PR10MB3129.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:111::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.20; Fri, 26 Nov
+ 2021 09:50:19 +0000
+Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::852d:c54f:8414:3276]) by DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::852d:c54f:8414:3276%3]) with mapi id 15.20.4734.020; Fri, 26 Nov 2021
+ 09:50:19 +0000
+From:   Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>,
+        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+CC:     David Abdurachmanov <david.abdurachmanov@sifive.com>,
+        Support Opensource <Support.Opensource@diasemi.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2] rtc: da9063: add as wakeup source
+Thread-Topic: [PATCH v2] rtc: da9063: add as wakeup source
+Thread-Index: AQHX4HNzUIS5EGphikWduNMlpOwuLawRLClQgARdmYCAAAoNYA==
+Date:   Fri, 26 Nov 2021 09:50:18 +0000
+Message-ID: <DB9PR10MB465287595152C33A43FDBCDA80639@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+References: <20211123140604.21655-1-nikita.shubin@maquefel.me>
+        <DB9PR10MB465224854946DABA0F75515980609@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+ <20211126120935.188e672a@redslave.neermore.group>
+In-Reply-To: <20211126120935.188e672a@redslave.neermore.group>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=diasemi.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4b480c7b-808a-4ee3-bb7f-08d9b0c22813
+x-ms-traffictypediagnostic: DB8PR10MB3129:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-microsoft-antispam-prvs: <DB8PR10MB3129C7DF2F24E5EE9520D2EEA7639@DB8PR10MB3129.EURPRD10.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wSZxiFbRLRa5Mv2VQ5aQkX2tvkZlspyWZa4GU0pTu9meug9SBhWk5Jz+yLwYtHY4e4MyrPNRE5VR0YJtzaxXxiqSYMAZbtDZAGT4gMvZzW9fTKM4gMUU6lnZAMmnfb65JtPcK7Ytc5P7DHgoKIvfo5v7f8EecBMr4xbBYD89ys1lMVKMiALFIxdA7NAa6xQWaJgsgF/4A/WNRin8O/Wh4Lew49SeEAPv+5n9bt1RXrQNC8PqrHyTrbUlf5WSu1m071KN7bWHqyLzLtYRZ6Gyut2MU3pFZRxJ/A70T/i4RdEdVTERBW+uVHHX71RKm08dwovABqJ86+CxH8Rko4DleFcbqy6Gt9ltjXV/GjRt18maDr1ew+r5RClaxrKLmj1Qa6k9UGg6eO3kmzZSVBTPGY8GL66HjcIKAFe39p2aVLe7aWjJEMoOr2Ze42lC130pBSFbEuHsLAhHnuRvjCMKEVG3kpvUHqGXF83NzJCWW0WhZo7p0ZDwq1bRM5dOaJShoGlQvZNqNcAMZsQbVryqv+houB/s0mRSAkFHfQTPccU+Q7ohM0bhKsskzgK2TqOAFdU5dcwQqVl6tExYzjGSgqjo2s1NMrU6k1H2iwYuTlvri7u3aRxTHzoZKwWmjQe//i67/6ThZZcFD5yXQujn+pAvaihlihYc8f9qDcNzjjgNJO9VCueYOlxeIbLPL42Hi5c7NnQSklusRjSfX4xmfg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(186003)(52536014)(33656002)(64756008)(8676002)(66556008)(6506007)(38100700002)(66476007)(38070700005)(66946007)(66446008)(54906003)(110136005)(8936002)(2906002)(53546011)(508600001)(9686003)(122000001)(7696005)(26005)(83380400001)(76116006)(55016003)(71200400001)(86362001)(4326008)(5660300002)(55236004);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?uyiuTjZtrBKGiuiVcR9FNYqoK4wMPjz2Z6vFEgVhfwQXaFsP2negksBTo/Kp?=
+ =?us-ascii?Q?N62oAn4jUaMjF7ACaQdcxKyi5poHY/59dmZBg9I7VNXLm7ldpYcxaV6/+avy?=
+ =?us-ascii?Q?VOL9fFHgnaTeGcWK3owNmmtZDA1R3qeADVLGs8bFIUAUjZfDqsBqVXf3MZpb?=
+ =?us-ascii?Q?YCC/Q/Rdwwdw6s9qee2csdd0dOFsoip+CZKjPsuoqjuwVzoADqhFFYSH2q2Q?=
+ =?us-ascii?Q?Ljo7Ulj0hVBEM1pAvbImUmHFimbYkxOZJkHhWWUwiKH+P1UnrYKItrXgHyhH?=
+ =?us-ascii?Q?/pSxvTCuFMuEHMqKl8e04TvwOtItcXC2bCuKPxY7Wk9O6uH1bbuYO2fSqJdL?=
+ =?us-ascii?Q?4o30u05XnD/m7R06mfxWtTPsOeOyDWMC4p8Wzx2s43txceYIMode4mJ55eJi?=
+ =?us-ascii?Q?QZBwnTmIExdxN6mCsNmoCfcQwjrDizuZ299rcJuo+8G4WeeICmVgo4Z/3h7n?=
+ =?us-ascii?Q?6wd+sZDI8IsknC3zjF0LWFJEPMkPVa4H/aVv0U88vlwAah+KSpK24ZrKyan5?=
+ =?us-ascii?Q?Cvnqd11OV349cB3HZfb25qh1byl2gG+/9bBfpL9gAJlIRpg2ulFI/xK9LL4L?=
+ =?us-ascii?Q?ieUQUokjJfmbupyLaigBlAC0tkdH4cbIAf0ubBN4llgo8q7bHgveEl4Jognn?=
+ =?us-ascii?Q?GKr2d5afPYWYLQ0/btzAno1YW5UF7JaOYNd6vbPZIXH6e3WXrD6dHGua7QwA?=
+ =?us-ascii?Q?eU3MLflA8qcvCPQtgpfF3zO2oo82GDLNI5PyEZqy6GcWlX7bY4vPohq76lFP?=
+ =?us-ascii?Q?2UWuaGRPEwUB7ylIcCIDv4eNpG8hhdct1x9xfrg2/mdzb+3tuXvvgAFAeIpt?=
+ =?us-ascii?Q?935Nyoq1XCirZB5sXmjtFHHCpmctN4TlkgHTKOYSUkGLdPmYzjOuz7NZpeCr?=
+ =?us-ascii?Q?CTx/r0Z0eAbAZRQ3w47JaWhc48H+STGcf0NPuqeJZTsNn2d5paGT9rnMovQo?=
+ =?us-ascii?Q?gWGqWQU0OJhPh+oju5PeAhPkVDt7pfcGTFc6TVtePALHVsywOQVuiZoEFvR4?=
+ =?us-ascii?Q?7gbQ9r0v3mu3mjL9ymOgW9TzExWALSCVV6OHthHzk3gbjqJoA5iOLnoZGXWg?=
+ =?us-ascii?Q?yuCLl+X1Yc+WTcWxWNcAaE059P6ACVJYDZk5Cg5WLCA79vFs88IJSVAwQXqg?=
+ =?us-ascii?Q?+zmGROhDocTwzFLZU3V5zBNvZ3CmgwZ5m4xDQvh6MJAfs8My2HRz7KD5Al5h?=
+ =?us-ascii?Q?FCi33NGb+qNB/6VaND8z9bD0BEa0J6kuIG6vtnGVRJ8KjOsrdAPfbhpkcVLD?=
+ =?us-ascii?Q?IOFEGM/dnUovcBvpYMmUOqe3YGeKw0oCpwiV6vw2fhiySnq01jVIxPWx7ZWA?=
+ =?us-ascii?Q?5Wgizd1aS4D7UQ1YGMqMyf56n64ihBUMXSaxtR0PkiXX7gNBwZQqyS+VdB3i?=
+ =?us-ascii?Q?YimlYGs/nnRfwvu7qzE52CAip/pZETy+1CrVACVIV5gylQDlfG02UkjEEyVw?=
+ =?us-ascii?Q?bel8twY7YVhN9WtxECyo3xuhv0jZQS5OWu7HaBgHskskMJRN+gdhOLaA8zzQ?=
+ =?us-ascii?Q?beB+bwP9rcrTeRWBDxWDLadyEcudDv/sUODXeDvcTo038rIazwIjmb6Wodgl?=
+ =?us-ascii?Q?QkihEYRSfMcuV0rRkdYZNf2ZoSXnRZmopjNMQZ6cDl4AqncMbeSsMK1iT+Im?=
+ =?us-ascii?Q?qpnWgJPZLfyic4GBlbQ8dXgbuwYLnBDfGGte8kP/tcX6fEQhc0uKShSXNRPi?=
+ =?us-ascii?Q?EMchLg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <308BB8D5-95DF-40EF-9155-CEAC0422BBD4@linux.vnet.ibm.com>
-References: <YZ/1OU9mJuyS2HMa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: fbN4_fUIog3PZ4ymGyPlK_yW6G7e6Kge
-X-Proofpoint-ORIG-GUID: fbN4_fUIog3PZ4ymGyPlK_yW6G7e6Kge
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-26_02,2021-11-25_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
- spamscore=0 mlxlogscore=999 suspectscore=0 lowpriorityscore=0
- malwarescore=0 impostorscore=0 phishscore=0 priorityscore=1501
- adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111260055
+MIME-Version: 1.0
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b480c7b-808a-4ee3-bb7f-08d9b0c22813
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Nov 2021 09:50:18.9105
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8Uw7oYy9n2xY3iwBNdj6Zkn6DwUpiv2dignpBE3xBC8pZyes3uzVysvGQhBKFPwDVAt0lwdV6d6DYUQhINgm34NYLANgDHFfb+y2sTu8sFU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR10MB3129
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 26 November 2021 09:10, Nikita Shubin wrote:
 
+> > Can you please make the commit message more detailed, explaining why
+> > you're making this change; what it adds/fixes/removes/etc.? Right now
+> > just reading this I'm unclear as to why you're adding a call to
+> > device_init_wakeup() here. The generic I2C client code will mark the
+> > parent MFD device as a wake source, if the relevant boolean 'wakeup'
+> > is defined in DT, so what does this add?
+>=20
+> Sorry for long response had to double check setting wakeup-source in
+> case i have missed something.
+>=20
+> I2C_CLIENT_WAKE is set in of_i2c_get_board_info - the place da9063 rtc
+> would never get to.
+>=20
+> Setting "wakeup-source" for pmic indeed marks it as wakeup source, but
+> that's not exactly we want.
+>=20
+> What we want is "wakealarm" in RTC sysfs directory, to be able to set
+> alarm so we can wake up from SHUTDOWN/DELIVERY/RTC mode of da9063.
+>=20
+> We do have /sys/class/rtc/rtc0/wakealarm if marking da9063-rtc as
+> device_init_wakeup.
+>=20
+> Unfortunately marking pmic or rtc as wakeup-source in device tree gives
+> us nothing.
+>=20
+> ls /proc/device-tree/soc/i2c\@10030000/pmic\@58/
+> compatible            interrupt-parent  name  regulators  wakeup-source
+> interrupt-controller  interrupts        reg   rtc         wdt
+>=20
+> ls /proc/device-tree/soc/i2c\@10030000/pmic\@58/rtc/
+> compatible  name  wakeup-source
+>=20
+> ls /sys/class/rtc/rtc0/wakealarm
+> ls: cannot access '/sys/class/rtc/rtc0/wakealarm': No such file or
+> directory
+>=20
+> So i currently see that either da9063 RTC should be marked as wakeup
+> source, or the da9063 MFD should somehow set that for RTC.
+>=20
+> And we want this even if CONFIG_PM is off.
+>=20
+> Mentioning "/sys/class/rtc/rtc0/wakealarm" in commit message would be
+> enough ?
 
-> On 26-Nov-2021, at 2:12 AM, Arnaldo Carvalho de Melo <acme@kernel.org> =
-wrote:
->=20
-> To pick the changes in this cset:
->=20
->  a0eb2da92b715d0c ("futex: Wireup futex_waitv syscall")
->=20
-> That add support for this new syscall in tools such as 'perf trace'.
->=20
-> For instance, this is now possible (adapted from the x86_64 test =
-output):
->=20
->  # perf trace -e futex_waitv
->  ^C#
->  # perf trace -v -e futex_waitv
->  event qualifier tracepoint filter: (common_pid !=3D 807333 && =
-common_pid !=3D 3564) && (id =3D=3D 449)
->  ^C#
->  # perf trace -v -e futex* --max-events 10
->  event qualifier tracepoint filter: (common_pid !=3D 812168 && =
-common_pid !=3D 3564) && (id =3D=3D 221 || id =3D=3D 449)
->  mmap size 528384B
->           ? (         ): Timer/219310  ... [continued]: futex())       =
-                                     =3D -1 ETIMEDOUT (Connection timed =
-out)
->       0.012 ( 0.002 ms): Timer/219310 futex(uaddr: 0x7fd0b152d3c8, op: =
-WAKE|PRIVATE_FLAG, val: 1)           =3D 0
->       0.024 ( 0.060 ms): Timer/219310 futex(uaddr: 0x7fd0b152d420, op: =
-WAIT_BITSET|PRIVATE_FLAG, utime: 0x7fd0b1657840, val3: MATCH_ANY) =3D 0
->       0.086 ( 0.001 ms): Timer/219310 futex(uaddr: 0x7fd0b152d3c8, op: =
-WAKE|PRIVATE_FLAG, val: 1)           =3D 0
->       0.088 (         ): Timer/219310 futex(uaddr: 0x7fd0b152d424, op: =
-WAIT_BITSET|PRIVATE_FLAG, utime: 0x7fd0b1657840, val3: MATCH_ANY) ...
->       0.075 ( 0.005 ms): Web Content/219299 futex(uaddr: =
-0x7fd0b152d420, op: WAKE|PRIVATE_FLAG, val: 1)     =3D 1
->       0.169 ( 0.004 ms): Web Content/219299 futex(uaddr: =
-0x7fd0b152d424, op: WAKE|PRIVATE_FLAG, val: 1)     =3D 1
->       0.088 ( 0.089 ms): Timer/219310  ... [continued]: futex())       =
-                                     =3D 0
->       0.179 ( 0.001 ms): Timer/219310 futex(uaddr: 0x7fd0b152d3c8, op: =
-WAKE|PRIVATE_FLAG, val: 1)           =3D 0
->       0.181 (         ): Timer/219310 futex(uaddr: 0x7fd0b152d420, op: =
-WAIT_BITSET|PRIVATE_FLAG, utime: 0x7fd0b1657840, val3: MATCH_ANY) ...
->  #
->=20
-> That is the filter expression attached to the =
-raw_syscalls:sys_{enter,exit}
-> tracepoints.
->=20
->  $ grep futex tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
->  221	32	futex				sys_futex_time32
->  221	64	futex				sys_futex
->  221	spu	futex				sys_futex
->  422	32	futex_time64			sys_futex			=
-sys_futex
->  449	common  futex_waitv                     sys_futex_waitv
->  $
->=20
+Thanks for the detailed response; it helped a lot. Having reviewed the core=
+ code
+along with your description I know understand what's happening here. Basica=
+lly
+marking as 'wakeup-source' is simply a means to expose the sysfs attribute =
+to
+user-space.
 
-Hi Arnaldo,
+Yes I think in the commit message you should be clear that there's a need t=
+o
+access the sys attribute 'wakealarm' in the RTC core and clarify exactly wh=
+y
+there is that need. Your commit log should be good enough so that if anyone=
+ else
+needs to look at this later they completely understand the intention behind=
+ the
+change.
 
-I checked this in powerpc by using :
-perf trace -v -e futex_waitv=20
-And also using functional selftest from =
-'tools/testing/selftests/futex/functional/futex_waitv=E2=80=99, to make =
-sure =E2=80=98futex_waitv=E2=80=99 comes in the perf trace result.
-
-Just a minor suggestion change. Below warning mentioned in this patch is =
-for s390. But I verified that this patch fixes the perf build warning in =
-powerpc also. So would be good to put the warning logs for powerpc:
-
-Warning: Kernel ABI header at =
-'tools/perf/arch/powerpc/entry/syscalls/syscall.tbl' differs from latest =
-version at 'arch/powerpc/kernel/syscalls/syscall.tbl'
-diff -u tools/perf/arch/powerpc/entry/syscalls/syscall.tbl =
-arch/powerpc/kernel/syscalls/syscall.tbl
-
-Reviewed-and-Tested-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-
-Thanks
-Athira
-
-> This addresses this perf build warnings:
->=20
->  Warning: Kernel ABI header at =
-'tools/perf/arch/s390/entry/syscalls/syscall.tbl' differs from latest =
-version at 'arch/s390/kernel/syscalls/syscall.tbl'
->  diff -u tools/perf/arch/s390/entry/syscalls/syscall.tbl =
-arch/s390/kernel/syscalls/syscall.tbl
->=20
-> Cc: Andr=C3=83=C2=A9 Almeida <andrealmeid@collabora.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> ---
-> tools/perf/arch/powerpc/entry/syscalls/syscall.tbl | 1 +
-> 1 file changed, 1 insertion(+)
->=20
-> diff --git a/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl =
-b/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
-> index 7bef917cc84e6499..15109af9d0754d5f 100644
-> --- a/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
-> +++ b/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
-> @@ -528,3 +528,4 @@
-> 446	common	landlock_restrict_self		=
-sys_landlock_restrict_self
-> # 447 reserved for memfd_secret
-> 448	common	process_mrelease		sys_process_mrelease
-> +449	common  futex_waitv                     sys_futex_waitv
-> --=20
-> 2.31.1
->=20
->=20
-
+By the way, I assume the functionality you're looking for could also have b=
+een
+achieved through using the /dev/rtcX instance for DA9063?
