@@ -2,91 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F3E45F702
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 23:59:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB46B45F703
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 23:59:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234828AbhKZXCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 18:02:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33272 "EHLO
+        id S243492AbhKZXC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 18:02:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241928AbhKZXAW (ORCPT
+        with ESMTP id S233555AbhKZXAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 18:00:22 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B77C06175E;
-        Fri, 26 Nov 2021 14:53:31 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id p27-20020a05600c1d9b00b0033bf8532855so7695712wms.3;
-        Fri, 26 Nov 2021 14:53:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=T3FV8iy9Zjp3vvRz4CguAsn6fxTAtVVJ0X26/BtHGfk=;
-        b=OyQa6U0qJnr5lI8DPNyFKOv3jacVjuQIl5erQC9UjkdHUeI2YV5ACTY8CWmxD2ssY0
-         440vm8aR7nGOktbR/6nq93aZBGvDhsrO2cY97mdCxAlI5B+9bSSHoRRyYpgl2L2aTVOC
-         +aKEHxjrKZaKQG53FQfVEuP6mjQaAQBmW8EL85itXLS1ErEpu+XtTYaa5PVtSfRu3YeU
-         sjnhCeq06BfRytxxPefOLAGt69Q4fy6JB0Crvd+tmMycleBEP8srrhbGaygLPpP/BeI6
-         8jv64n5pzqeH6FXFz1CMAiMUip/bdKNaSTB1oHpiqU59gavCSJLhIdNDLLgaGv9kF+r9
-         wHuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=T3FV8iy9Zjp3vvRz4CguAsn6fxTAtVVJ0X26/BtHGfk=;
-        b=DxVlYvsvnMsAvjXm4tMC+n5LD6yEGjf8UWpQGfPQWwA2A4hrMbrGbUewStbIKUIlR6
-         xHSZYF4k1TPRaxbPqZvK40NSQ1NxZfcyA9ST/Cd6VwgmEmJ4h9iR5Iq7hturq73o/eJm
-         C+GXE3AcyoJ9lRPEshanNlEmxpGsZoWZoFhcdpS/C72HlXHn+m0S6XJR0dvtqi4ju2Va
-         SJaIs8rRH+csDvXuiAySxVm6w7N718RIVg+rMDKq/GXnZXLnZGXylOkbf7y8YcR5tttD
-         /JprZt/ggSB+5++AKj+HwhGXq8nGDgLQQNb6txQHyXp9lhc/jjS77CWB8VudzzwnBBxQ
-         HF0w==
-X-Gm-Message-State: AOAM5309WX30InlueotIV3oUZtLPWbLsv1baba/XtgNaxH9lEgqQf26V
-        BHBc3fAYhukVsqx/VDfj2Q==
-X-Google-Smtp-Source: ABdhPJwS5uBB6FHcbY4s9TdyBfLmGioIhq0k48qrFDgvhUsC2Ve6qcYxi94GhQnFDrqvKIwwx/rz6w==
-X-Received: by 2002:a7b:cbd1:: with SMTP id n17mr18771519wmi.145.1637967210365;
-        Fri, 26 Nov 2021 14:53:30 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id s8sm6858874wro.19.2021.11.26.14.53.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 14:53:30 -0800 (PST)
-From:   Colin Ian King <colin.i.king@googlemail.com>
-X-Google-Original-From: Colin Ian King <colin.i.king@gmail.com>
-To:     Michal Simek <monstr@monstr.eu>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] microblaze/mm/highmem: Remove redundant initialization of variable maxmem
-Date:   Fri, 26 Nov 2021 22:53:29 +0000
-Message-Id: <20211126225329.1150651-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.33.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Fri, 26 Nov 2021 18:00:23 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E19C06175F;
+        Fri, 26 Nov 2021 14:54:10 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0488B623A3;
+        Fri, 26 Nov 2021 22:54:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD857C53FC1;
+        Fri, 26 Nov 2021 22:54:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637967249;
+        bh=wgwhl0vthk1SYT38pOOpBGqWhn49l+32PRqKIAXu8do=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=hgwtoUsgAaIdQubAGtcox5fizWr49Wxlahb8cpxW7M3PbZ3qg3gEWcuFl4fZS9KiO
+         ZgkXFf38f29S2xBYJF7jlIzMuS5awdZbMxVATe37UDOPeoZ1sBQW0t6gzqqDRpFHB7
+         iIXJNXHBKqkmrCXilL8svUsleT+O/uEIWgpcd1KPgP5p0b9/uRAwyAJEj1tnPEQ9gR
+         Uc9ysbUIKYG6P97fBYeEGsxWN10h9Eg41XAxM5AmxJS/Z8GGIERZYgQ9QIhWiSSd4Y
+         xL8CX+D3F+rnTZYyRuAKmIZCen5VidM7LKtTM5kZHP8Gdc7V1rBytQIBRpYuaSoVZn
+         tfbqIt47rXQgg==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 8F1A527C0054;
+        Fri, 26 Nov 2021 17:54:07 -0500 (EST)
+Received: from imap48 ([10.202.2.98])
+  by compute6.internal (MEProxy); Fri, 26 Nov 2021 17:54:07 -0500
+X-ME-Sender: <xms:jmWhYSENwGPexJOxq3abZliNmtNm8sB3DT3cjG0D6uJmF-RSRxpbdQ>
+    <xme:jmWhYTVZ8wSVNZqgj6qzpeLm3toD6zkvTfBzYcvVlz0Vh9_TtUNru2GFAIhm5JcXF
+    ULXk4OBy6HksnrdftI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrheefgddtvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepfdetnhgu
+    hicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenucggtf
+    frrghtthgvrhhnpedvleehjeejvefhuddtgeegffdtjedtffegveethedvgfejieevieeu
+    feevuedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedukeeh
+    ieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinhhugi
+    drlhhuthhordhush
+X-ME-Proxy: <xmx:jmWhYcLx_ufKSwyrMjBwe_0tSFDnW5WXCvx1aDQX_d0e0qv3GrjhSA>
+    <xmx:jmWhYcGnfDQmOzFnkwKhJaEqGf0TQUt1YFQsqrtYUTdS2CSWrKByCA>
+    <xmx:jmWhYYWX-pf0ouyemfgxzkGVdXNAsEcdXfJSkfgO5sw10IilsD42_w>
+    <xmx:j2WhYcQ6f82W28yJZ2MKqzY89DnSVy-IrW8ht3AoL2fV8AxUilB1D_Oo04k>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id D5A4021E006E; Fri, 26 Nov 2021 17:54:06 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1371-g2296cc3491-fm-20211109.003-g2296cc34
+Mime-Version: 1.0
+Message-Id: <9641b76e-9ae0-4c26-97b6-76ecde34f0ef@www.fastmail.com>
+In-Reply-To: <87lf1ais27.fsf@oldenburg.str.redhat.com>
+References: <87h7bzjaer.fsf@oldenburg.str.redhat.com>
+ <4728eeae-8f1b-4541-b05a-4a0f35a459f7@www.fastmail.com>
+ <87lf1ais27.fsf@oldenburg.str.redhat.com>
+Date:   Fri, 26 Nov 2021 14:53:45 -0800
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Florian Weimer" <fweimer@redhat.com>
+Cc:     linux-arch@vger.kernel.org,
+        "Linux API" <linux-api@vger.kernel.org>,
+        linux-x86_64@vger.kernel.org, kernel-hardening@lists.openwall.com,
+        linux-mm@kvack.org, "the arch/x86 maintainers" <x86@kernel.org>,
+        musl@lists.openwall.com,
+        "Dave Hansen via Libc-alpha" <libc-alpha@sourceware.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Dave Hansen" <dave.hansen@intel.com>,
+        "Kees Cook" <keescook@chromium.org>
+Subject: Re: [PATCH] x86: Implement arch_prctl(ARCH_VSYSCALL_LOCKOUT) to disable
+ vsyscall
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable maxmem is being initialized with a value that is never
-read, it is being updated later on. The assignment is redundant and
-can be removed.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- arch/microblaze/mm/init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/microblaze/mm/init.c b/arch/microblaze/mm/init.c
-index 952f35b335b2..f328d4549fad 100644
---- a/arch/microblaze/mm/init.c
-+++ b/arch/microblaze/mm/init.c
-@@ -144,7 +144,7 @@ int page_is_ram(unsigned long pfn)
-  */
- static void mm_cmdline_setup(void)
- {
--	unsigned long maxmem = 0;
-+	unsigned long maxmem;
- 	char *p = cmd_line;
- 
- 	/* Look for mem= option on command line */
--- 
-2.33.1
+On Fri, Nov 26, 2021, at 12:24 PM, Florian Weimer wrote:
+> * Andy Lutomirski:
+>
+>> On Fri, Nov 26, 2021, at 5:47 AM, Florian Weimer wrote:
+>>> Distributions struggle with changing the default for vsyscall
+>>> emulation because it is a clear break of userspace ABI, something
+>>> that should not happen.
+>>>
+>>> The legacy vsyscall interface is supposed to be used by libcs only,
+>>> not by applications.  This commit adds a new arch_prctl request,
+>>> ARCH_VSYSCALL_LOCKOUT.  Newer libcs can adopt this request to signal
+>>> to the kernel that the process does not need vsyscall emulation.
+>>> The kernel can then disable it for the remaining lifetime of the
+>>> process.  Legacy libcs do not perform this call, so vsyscall remains
+>>> enabled for them.  This approach should achieves backwards
+>>> compatibility (perfect compatibility if the assumption that only lib=
+cs
+>>> use vsyscall is accurate), and it provides full hardening for new
+>>> binaries.
+>>
+>> Why is a lockout needed instead of just a toggle?  By the time an
+>> attacker can issue prctls, an emulated vsyscall seems like a pretty
+>> minor exploit technique.  And programs that load legacy modules or
+>> instrument other programs might need to re-enable them.
+>
+> For glibc, I plan to add an environment variable to disable the lockou=
+t.
+> There's no ELF markup that would allow us to do this during dlopen.
+> (And after this change, you can run an old distribution in a chroot
+> for legacy software, something that the userspace ABI break prevents.)
+>
+> If it can be disabled, people will definitely say, =E2=80=9Cwe get mor=
+e complete
+> hardening if we break old userspace=E2=80=9D.  I want to avoid that.  =
+(People
+> will say that anyway because there's this fairly large window of libcs
+> that don't use vsyscalls anymore, but have not been patched yet to do
+> the lockout.)
 
+I=E2=80=99m having trouble following the logic. What I mean is that I th=
+ink it should be possible to do the arch_prctl again to turn vsyscalls b=
+ack on.
+
+>
+> Maybe the lockout also simplifies the implementation?
+>
+>> Also, the interaction with emulate mode is somewhat complex. For now,
+>> let=E2=80=99s support this in xonly mode only. A complete implementat=
+ion will
+>> require nontrivial mm work.  I had that implemented pre-KPTI, but KPTI
+>> made it more complicated.
+>
+> I admit I only looked at the code in emulate_vsyscall.  It has code th=
+at
+> seems to deal with faults not due to instruction fetch, and also checks
+> for vsyscall=3Demulate mode.  But it seems that we don't get to this p=
+oint
+> for reads in vsyscall=3Demulate mode, presumably because the page is
+> already mapped?
+
+Yes, and, with KPTI off, it=E2=80=99s nontrivial to unmap it. I have cod=
+e for this, but I=E2=80=99m not sure the complexity is worthwhile.
+
+>
+>> Finally, /proc/self/maps should be wired up via the gate_area code.
+>
+> Should the "[vsyscall]" string change to something else if execution is
+> disabled?
+
+I think the line should disappear entirely, just like booting with vsysc=
+all=3Dnone.
+
+>
+> Thanks,
+> Florian
