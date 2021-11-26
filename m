@@ -2,148 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437CF45EBAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D70745EB49
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:23:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376920AbhKZKgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 05:36:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377018AbhKZKeT (ORCPT
+        id S1376820AbhKZK0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:26:40 -0500
+Received: from ivanoab7.miniserver.com ([37.128.132.42]:59010 "EHLO
+        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232988AbhKZKYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 05:34:19 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B79C061784;
-        Fri, 26 Nov 2021 02:21:10 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id o13so17501284wrs.12;
-        Fri, 26 Nov 2021 02:21:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:content-language:to
-         :references:from:subject:in-reply-to:content-transfer-encoding;
-        bh=yZ/tCit1NmMtiFas6Nxi4G9wPKK7nJJkoETrht0RK38=;
-        b=OSTduz72gGcF+/TB3oTsc0dWxUQmTbPuv3bA2jRmjrsGzPvedTL6GnXWzPe0fdc1SV
-         FUq8R1RxvUcaKvqEW5YmqpXpC5EVSjkYPJnDRgFgELe28S34AVKwSvuqiLKLag122Kl1
-         WyoK6ZO+yY0P5X7d6xadqcVyckrU1VS8hVtbuPLITziuCSjQ3G8t6Mci4jqGQMtqTJcy
-         Bevsfdzs130wDDKMQPp/B0J2ks6lxJlVkC2A4kygJp7VE+iIage7ZQ/usV4QsWOo81+Y
-         8iHRNqs8vv45yH7Z4vbDa4FJQT1kLMFvIFBm7SZcqhcR4ZcNNuaMdHDPjmxUomuDu/SE
-         TUDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:references:from:subject:in-reply-to
-         :content-transfer-encoding;
-        bh=yZ/tCit1NmMtiFas6Nxi4G9wPKK7nJJkoETrht0RK38=;
-        b=ecwVGGSIu5SHwDVFqOGmdhB8d2aZ94njDwjpYs+IuKDNM70lz8Qd/Bzn/fotPvcb1Z
-         xCIA4pnMIu8kTRpsn7HCOZCRXXT9Qe2x8gHkm4YBmnmoXWHs2D66o+NIN32al5AjWqaF
-         PKInVKLe228kaU93Tz0iqJ3pzWFzXF0a03+kHnjO5zliykHclTsmR7dA3pDiCk/HLD9M
-         49Q5xopv6eRWJWG49vI7oqu78zUbSBAsMLS0AAXpk63RFQtNQQcSP/aHF8rc3DNjoKa6
-         +gsgrXwnxSwTu5K7oIBtPfH99yzDa+R4/ECkHV/LNd0KY3NvWicy+ihIlSmbFpDqT3Gf
-         0COw==
-X-Gm-Message-State: AOAM530bkXd37vYSGSsTMv+q44NKYNIqE+Pc5+HSbfieh9bWYYnziau0
-        LtFBJdqAHnTt32hq+WWfdZ4=
-X-Google-Smtp-Source: ABdhPJyeS+5pbpcOHAqvyN/g/r7R5Rkqo4J/Nr/TdC4nBezU/fWjN+afDxc5nAp6zdcpO6XyWzoXsQ==
-X-Received: by 2002:a5d:648e:: with SMTP id o14mr12900579wri.69.1637922069507;
-        Fri, 26 Nov 2021 02:21:09 -0800 (PST)
-Received: from ?IPV6:2003:ea:8f1a:f00:eda0:b7b0:4339:bfa2? (p200300ea8f1a0f00eda0b7b04339bfa2.dip0.t-ipconnect.de. [2003:ea:8f1a:f00:eda0:b7b0:4339:bfa2])
-        by smtp.googlemail.com with ESMTPSA id w15sm4967366wrk.77.2021.11.26.02.21.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Nov 2021 02:21:09 -0800 (PST)
-Message-ID: <c6d37ae0-9ccb-a527-4f55-e96972813a53@gmail.com>
-Date:   Fri, 26 Nov 2021 11:21:03 +0100
+        Fri, 26 Nov 2021 05:24:38 -0500
+Received: from [192.168.18.6] (helo=jain.kot-begemot.co.uk)
+        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1mqYLv-0000d8-W8; Fri, 26 Nov 2021 10:21:15 +0000
+Received: from jain.kot-begemot.co.uk ([192.168.3.3])
+        by jain.kot-begemot.co.uk with esmtp (Exim 4.94.2)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1mqYLq-005WHS-Pn; Fri, 26 Nov 2021 10:21:10 +0000
+Subject: Re: [PATCH 4.9] hugetlbfs: flush TLBs correctly after
+ huge_pmd_unshare
+To:     Nadav Amit <nadav.amit@gmail.com>, Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+References: <3BD89231-2CB9-4CE5-B0FA-5B58419D7CB8@gmail.com>
+From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <7a2feed4-7c73-c7ad-881e-c980235c8293@cambridgegreys.com>
+Date:   Fri, 26 Nov 2021 10:21:07 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
+In-Reply-To: <3BD89231-2CB9-4CE5-B0FA-5B58419D7CB8@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Yinbo Zhu <zhuyinbo@loongson.cn>, Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-References: <1637919957-21635-1-git-send-email-zhuyinbo@loongson.cn>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH v2 1/2] modpost: file2alias: fixup mdio alias garbled code
- in modules.alias
-In-Reply-To: <1637919957-21635-1-git-send-email-zhuyinbo@loongson.cn>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Spam-Score: -2.0
+X-Spam-Score: -1.0
+X-Clacks-Overhead: GNU Terry Pratchett
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.11.2021 10:45, Yinbo Zhu wrote:
-> After module compilation, module alias mechanism will generate a ugly
-> mdio modules alias configure if ethernet phy was selected, this patch
-> is to fixup mdio alias garbled code.
-> 
-> In addition, that ugly alias configure will cause ethernet phy module
-> doens't match udev, phy module auto-load is fail, but add this patch
-> that it is well mdio driver alias configure match phy device uevent.
-> 
-I think Andrew asked you for an example already.
-For which PHY's the driver isn't auto-loaded?
 
-In addition your commit descriptions are hard to read, especially the
-one for patch 2. Could you please try to change them to proper English?
-Not being a native speaker myself ..
 
-> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+On 26/11/2021 06:08, Nadav Amit wrote:
+> Below is a patch to address CVE-2021-4002 [1] that I created to backport
+> to 4.9. The stable kernels of 4.14 and prior ones do not have unified
+> TLB flushing code, and I managed to mess up the arch code a couple of
+> times.
+> 
+> Now that the CVE is public, I would appreciate your review of this
+> patch. I send 4.9 for review - the other ones (4.14 and prior) are
+> pretty similar.
+> 
+> [1] https://www.openwall.com/lists/oss-security/2021/11/25/1
+> 
+> Thanks,
+> Nadav
+
+I do not quite see the rationale for patching um
+
+It supports only standard size pages. You should not be able to map a huge page there (and hugetlbfs).
+
+I have "non-standard page size" somewhere towards the end of my queue, but it keeps falling through - not enough spare time to work on it.
+
+Brgds,
+
+A.
+
+> 
+> -- >8 --
+> 
+> From: Nadav Amit <namit@vmware.com>
+> Date: Sat, 20 Nov 2021 12:55:21 -0800
+> Subject: [kernel v4.9 ] hugetlbfs: flush TLBs correctly after
+>   huge_pmd_unshare
+> 
+> When __unmap_hugepage_range() calls to huge_pmd_unshare() succeed, a TLB
+> flush is missing. This TLB flush must be performed before releasing the
+> i_mmap_rwsem, in order to prevent an unshared PMDs page from being
+> released and reused before the TLB flush took place.
+> 
+> Arguably, a comprehensive solution would use mmu_gather interface to
+> batch the TLB flushes and the PMDs page release, however it is not an
+> easy solution: (1) try_to_unmap_one() and try_to_migrate_one() also call
+> huge_pmd_unshare() and they cannot use the mmu_gather interface; and (2)
+> deferring the release of the page reference for the PMDs page until
+> after i_mmap_rwsem is dropeed can confuse huge_pmd_unshare() into
+> thinking PMDs are shared when they are not.
+> 
+> Fix __unmap_hugepage_range() by adding the missing TLB flush, and
+> forcing a flush when unshare is successful.
+> 
+> Fixes: 24669e58477e ("hugetlb: use mmu_gather instead of a temporary linked list for accumulating pages)" # 3.6
+> Signed-off-by: Nadav Amit <namit@vmware.com>
 > ---
-> Change in v2:
-> 		Add a MDIO_ANY_ID for considering some special phy device 
-> 		which phy id doesn't be read from phy register.
+>   arch/arm/include/asm/tlb.h  |  8 ++++++++
+>   arch/ia64/include/asm/tlb.h | 10 ++++++++++
+>   arch/s390/include/asm/tlb.h | 14 ++++++++++++++
+>   arch/sh/include/asm/tlb.h   | 10 ++++++++++
+>   arch/um/include/asm/tlb.h   | 12 ++++++++++++
+>   include/asm-generic/tlb.h   |  2 ++
+>   mm/hugetlb.c                | 19 +++++++++++++++++++
+>   mm/memory.c                 | 16 ++++++++++++++++
+>   8 files changed, 91 insertions(+)
 > 
-> 
->  include/linux/mod_devicetable.h |  2 ++
->  scripts/mod/file2alias.c        | 17 +----------------
->  2 files changed, 3 insertions(+), 16 deletions(-)
-> 
-> diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
-> index ae2e75d..7bd23bf 100644
-> --- a/include/linux/mod_devicetable.h
-> +++ b/include/linux/mod_devicetable.h
-> @@ -595,6 +595,8 @@ struct platform_device_id {
->  	kernel_ulong_t driver_data;
->  };
->  
-> +#define MDIO_ANY_ID (~0)
+> diff --git a/arch/arm/include/asm/tlb.h b/arch/arm/include/asm/tlb.h
+> index 1e25cd80589e..1cee2d540956 100644
+> --- a/arch/arm/include/asm/tlb.h
+> +++ b/arch/arm/include/asm/tlb.h
+> @@ -278,6 +278,14 @@ tlb_remove_pmd_tlb_entry(struct mmu_gather *tlb, pmd_t *pmdp, unsigned long addr
+>   	tlb_add_flush(tlb, addr);
+>   }
+>   
+> +static inline void
+> +tlb_flush_pmd_range(struct mmu_gather *tlb, unsigned long address,
+> +		    unsigned long size)
+> +{
+> +	tlb_add_flush(tlb, address);
+> +	tlb_add_flush(tlb, address + size - PMD_SIZE);
+> +}
 > +
->  #define MDIO_NAME_SIZE		32
->  #define MDIO_MODULE_PREFIX	"mdio:"
->  
-> diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
-> index 49aba86..63f3149 100644
-> --- a/scripts/mod/file2alias.c
-> +++ b/scripts/mod/file2alias.c
-> @@ -1027,24 +1027,9 @@ static int do_platform_entry(const char *filename,
->  static int do_mdio_entry(const char *filename,
->  			 void *symval, char *alias)
->  {
-> -	int i;
->  	DEF_FIELD(symval, mdio_device_id, phy_id);
-> -	DEF_FIELD(symval, mdio_device_id, phy_id_mask);
-> -
->  	alias += sprintf(alias, MDIO_MODULE_PREFIX);
-> -
-> -	for (i = 0; i < 32; i++) {
-> -		if (!((phy_id_mask >> (31-i)) & 1))
-> -			*(alias++) = '?';
-> -		else if ((phy_id >> (31-i)) & 1)
-> -			*(alias++) = '1';
-> -		else
-> -			*(alias++) = '0';
-> -	}
-> -
-> -	/* Terminate the string */
-> -	*alias = 0;
-> -
-> +	ADD(alias, "p", phy_id != MDIO_ANY_ID, phy_id);
->  	return 1;
->  }
->  
+>   #define pte_free_tlb(tlb, ptep, addr)	__pte_free_tlb(tlb, ptep, addr)
+>   #define pmd_free_tlb(tlb, pmdp, addr)	__pmd_free_tlb(tlb, pmdp, addr)
+>   #define pud_free_tlb(tlb, pudp, addr)	pud_free((tlb)->mm, pudp)
+> diff --git a/arch/ia64/include/asm/tlb.h b/arch/ia64/include/asm/tlb.h
+> index 77e541cf0e5d..34f4a5359561 100644
+> --- a/arch/ia64/include/asm/tlb.h
+> +++ b/arch/ia64/include/asm/tlb.h
+> @@ -272,6 +272,16 @@ __tlb_remove_tlb_entry (struct mmu_gather *tlb, pte_t *ptep, unsigned long addre
+>   	tlb->end_addr = address + PAGE_SIZE;
+>   }
+>   
+> +static inline void
+> +tlb_flush_pmd_range(struct mmu_gather *tlb, unsigned long address,
+> +		    unsigned long size)
+> +{
+> +	if (tlb->start_addr > address)
+> +		tlb->start_addr = address;
+> +	if (tlb->end_addr < address + size)
+> +		tlb->end_addr = address + size;
+> +}
+> +
+>   #define tlb_migrate_finish(mm)	platform_tlb_migrate_finish(mm)
+>   
+>   #define tlb_start_vma(tlb, vma)			do { } while (0)
+> diff --git a/arch/s390/include/asm/tlb.h b/arch/s390/include/asm/tlb.h
+> index 15711de10403..d2681d5a3d5a 100644
+> --- a/arch/s390/include/asm/tlb.h
+> +++ b/arch/s390/include/asm/tlb.h
+> @@ -116,6 +116,20 @@ static inline void tlb_remove_page_size(struct mmu_gather *tlb,
+>   	return tlb_remove_page(tlb, page);
+>   }
+>   
+> +static inline void tlb_flush_pmd_range(struct mmu_gather *tlb,
+> +				unsigned long address, unsigned long size)
+> +{
+> +	/*
+> +	 * the range might exceed the original range that was provided to
+> +	 * tlb_gather_mmu(), so we need to update it despite the fact it is
+> +	 * usually not updated.
+> +	 */
+> +	if (tlb->start > address)
+> +		tlb->start = address;
+> +	if (tlb->end < address + size)
+> +		tlb->end = address + size;
+> +}
+> +
+>   /*
+>    * pte_free_tlb frees a pte table and clears the CRSTE for the
+>    * page table from the tlb.
+> diff --git a/arch/sh/include/asm/tlb.h b/arch/sh/include/asm/tlb.h
+> index 025cdb1032f6..7aba716fd9a5 100644
+> --- a/arch/sh/include/asm/tlb.h
+> +++ b/arch/sh/include/asm/tlb.h
+> @@ -115,6 +115,16 @@ static inline bool __tlb_remove_page_size(struct mmu_gather *tlb,
+>   	return __tlb_remove_page(tlb, page);
+>   }
+>   
+> +static inline voide
+> +tlb_flush_pmd_range(struct mmu_gather *tlb, unsigned long address,
+> +		    unsigned long size)
+> +{
+> +	if (tlb->start > address)
+> +		tlb->start = address;
+> +	if (tlb->end < address + size)
+> +		tlb->end = address + size;
+> +}
+> +
+>   static inline bool __tlb_remove_pte_page(struct mmu_gather *tlb,
+>   					 struct page *page)
+>   {
+> diff --git a/arch/um/include/asm/tlb.h b/arch/um/include/asm/tlb.h
+> index 821ff0acfe17..6fb47b17179f 100644
+> --- a/arch/um/include/asm/tlb.h
+> +++ b/arch/um/include/asm/tlb.h
+> @@ -128,6 +128,18 @@ static inline void tlb_remove_page_size(struct mmu_gather *tlb,
+>   	return tlb_remove_page(tlb, page);
+>   }
+>   
+> +static inline void
+> +tlb_flush_pmd_range(struct mmu_gather *tlb, unsigned long address,
+> +		    unsigned long size)
+> +{
+> +	tlb->need_flush = 1;
+> +
+> +	if (tlb->start > address)
+> +		tlb->start = address;
+> +	if (tlb->end < address + size)
+> +		tlb->end = address + size;
+> +}
+> +
+>   /**
+>    * tlb_remove_tlb_entry - remember a pte unmapping for later tlb invalidation.
+>    *
+> diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
+> index c6d667187608..e9851100c0f7 100644
+> --- a/include/asm-generic/tlb.h
+> +++ b/include/asm-generic/tlb.h
+> @@ -123,6 +123,8 @@ void tlb_finish_mmu(struct mmu_gather *tlb, unsigned long start,
+>   							unsigned long end);
+>   extern bool __tlb_remove_page_size(struct mmu_gather *tlb, struct page *page,
+>   				   int page_size);
+> +void tlb_flush_pmd_range(struct mmu_gather *tlb, unsigned long address,
+> +			 unsigned long size);
+>   
+>   static inline void __tlb_adjust_range(struct mmu_gather *tlb,
+>   				      unsigned long address)
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index de89e9295f6c..7d51211995b9 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -3395,6 +3395,7 @@ void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
+>   	unsigned long sz = huge_page_size(h);
+>   	const unsigned long mmun_start = start;	/* For mmu_notifiers */
+>   	const unsigned long mmun_end   = end;	/* For mmu_notifiers */
+> +	bool force_flush = false;
+>   
+>   	WARN_ON(!is_vm_hugetlb_page(vma));
+>   	BUG_ON(start & ~huge_page_mask(h));
+> @@ -3411,6 +3412,8 @@ void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
+>   		ptl = huge_pte_lock(h, mm, ptep);
+>   		if (huge_pmd_unshare(mm, &address, ptep)) {
+>   			spin_unlock(ptl);
+> +			tlb_flush_pmd_range(tlb, address & PUD_MASK, PUD_SIZE);
+> +			force_flush = true;
+>   			continue;
+>   		}
+>   
+> @@ -3467,6 +3470,22 @@ void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
+>   	}
+>   	mmu_notifier_invalidate_range_end(mm, mmun_start, mmun_end);
+>   	tlb_end_vma(tlb, vma);
+> +
+> +	/*
+> +	 * If we unshared PMDs, the TLB flush was not recorded in mmu_gather. We
+> +	 * could defer the flush until now, since by holding i_mmap_rwsem we
+> +	 * guaranteed that the last refernece would not be dropped. But we must
+> +	 * do the flushing before we return, as otherwise i_mmap_rwsem will be
+> +	 * dropped and the last reference to the shared PMDs page might be
+> +	 * dropped as well.
+> +	 *
+> +	 * In theory we could defer the freeing of the PMD pages as well, but
+> +	 * huge_pmd_unshare() relies on the exact page_count for the PMD page to
+> +	 * detect sharing, so we cannot defer the release of the page either.
+> +	 * Instead, do flush now.
+> +	 */
+> +	if (force_flush)
+> +		tlb_flush_mmu(tlb);
+>   }
+>   
+>   void __unmap_hugepage_range_final(struct mmu_gather *tlb,
+> diff --git a/mm/memory.c b/mm/memory.c
+> index be592d434ad8..c2890dc104d9 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -320,6 +320,22 @@ bool __tlb_remove_page_size(struct mmu_gather *tlb, struct page *page, int page_
+>   	return false;
+>   }
+>   
+> +void tlb_flush_pmd_range(struct mmu_gather *tlb, unsigned long address,
+> +			 unsigned long size)
+> +{
+> +	if (tlb->page_size != 0 && tlb->page_size != PMD_SIZE)
+> +		tlb_flush_mmu(tlb);
+> +
+> +	tlb->page_size = PMD_SIZE;
+> +	tlb->start = min(tlb->start, address);
+> +	tlb->end = max(tlb->end, address + size);
+> +	/*
+> +	 * Track the last address with which we adjusted the range. This
+> +	 * will be used later to adjust again after a mmu_flush due to
+> +	 * failed __tlb_remove_page
+> +	 */
+> +	tlb->addr = address + size - PMD_SIZE;
+> +}
+>   #endif /* HAVE_GENERIC_MMU_GATHER */
+>   
+>   #ifdef CONFIG_HAVE_RCU_TABLE_FREE
 > 
 
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
