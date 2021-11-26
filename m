@@ -2,426 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8755345EE36
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:41:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 335B045EE40
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:42:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345972AbhKZMox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 07:44:53 -0500
-Received: from thoth.sbs.de ([192.35.17.2]:49800 "EHLO thoth.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377237AbhKZMmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 07:42:51 -0500
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
-        by thoth.sbs.de (8.15.2/8.15.2) with ESMTPS id 1AQCdC6N001686
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Nov 2021 13:39:12 +0100
-Received: from md1za8fc.ad001.siemens.net ([139.22.47.90])
-        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 1AQCdAdV022198;
-        Fri, 26 Nov 2021 13:39:10 +0100
-Date:   Fri, 26 Nov 2021 13:39:09 +0100
-From:   Henning Schild <henning.schild@siemens.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
-        <platform-driver-x86@vger.kernel.org>,
-        <linux-watchdog@vger.kernel.org>
-Cc:     Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        "Gerd Haeussler" <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Enrico Weigelt <lkml@metux.net>
-Subject: Re: [PATCH v3 1/4] platform/x86: simatic-ipc: add main driver for
- Siemens devices
-Message-ID: <20211126133909.33fb1937@md1za8fc.ad001.siemens.net>
-In-Reply-To: <20210329174928.18816-2-henning.schild@siemens.com>
-References: <20210329174928.18816-1-henning.schild@siemens.com>
-        <20210329174928.18816-2-henning.schild@siemens.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1377632AbhKZMpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 07:45:41 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:38500 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1377497AbhKZMnh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 07:43:37 -0500
+Received: by mail-io1-f72.google.com with SMTP id l124-20020a6b3e82000000b005ed165a1506so11625669ioa.5
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 04:40:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=J9pKVZSmKtwpuPTSe05C26OqSqmxQieJZ73iDt5ItI0=;
+        b=CfiM4t8p+Ss06rg13vY6PD3S/ADGRSFm+UU31cZ13t0qC2qGUQG+YwuADNNeYnm4og
+         a/0rtOUjLil2f4+mFy2vUx9Zd8JdDFBRH1S6sQz6HtjkNla4YPzKbz6hiF+gAIgmf7xl
+         nbSsMaRl19REaNn+Xlslw198aF5Hxlyoe0hj3iKuIq+87PHID7ErioXa1s3QkzrH0oqX
+         YLWdoyncJkVPHc5Nr53NwE1+AmLrh/ur5yWNY+sMZ6KZcaFTazWw/+AKWh+l+59skt4A
+         +ev3ow7+mWZBKCs5j1T0ydowd/WStHpKBqv+XfBXFtd+XazQ0H0z2YviPKfyOL14RzOb
+         UYJA==
+X-Gm-Message-State: AOAM531IHbs9/Oly5CqZikQz70pujVkGo+ubMHxIvUaMPDFM6WsLULE4
+        YJVTlKqk0Y8q+SzXxsqQ4xdNmk+kgmkEu41v5Cqk2ELdLMkf
+X-Google-Smtp-Source: ABdhPJwydALsw0AUDvn4BmRA+g86FQGhU3lx8A/9xuaGrBTfSq1Twc1ieT2/aFzMEui8c6EGkmhxQqbuF8ILwkHql9cxc9nYpkfu
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a6b:3b49:: with SMTP id i70mr34689542ioa.12.1637930424017;
+ Fri, 26 Nov 2021 04:40:24 -0800 (PST)
+Date:   Fri, 26 Nov 2021 04:40:24 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001729c705d1b065f7@google.com>
+Subject: [syzbot] possible deadlock in __io_commit_cqring_flush
+From:   syzbot <syzbot+ff49a3059d49b0ca0eec@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mon, 29 Mar 2021 19:49:25 +0200
-schrieb Henning Schild <henning.schild@siemens.com>:
+Hello,
 
-> This mainly implements detection of these devices and will allow
-> secondary drivers to work on such machines.
-> 
-> The identification is DMI-based with a vendor specific way to tell
-> them apart in a reliable way.
-> 
-> Drivers for LEDs and Watchdogs will follow to make use of that
-> platform detection.
-> 
-> Signed-off-by: Henning Schild <henning.schild@siemens.com>
-> ---
->  drivers/platform/x86/Kconfig                  |  12 ++
->  drivers/platform/x86/Makefile                 |   3 +
->  drivers/platform/x86/simatic-ipc.c            | 169
-> ++++++++++++++++++ .../platform_data/x86/simatic-ipc-base.h      |
-> 29 +++ include/linux/platform_data/x86/simatic-ipc.h |  72 ++++++++
->  5 files changed, 285 insertions(+)
->  create mode 100644 drivers/platform/x86/simatic-ipc.c
->  create mode 100644 include/linux/platform_data/x86/simatic-ipc-base.h
->  create mode 100644 include/linux/platform_data/x86/simatic-ipc.h
-> 
-> diff --git a/drivers/platform/x86/Kconfig
-> b/drivers/platform/x86/Kconfig index 461ec61530eb..1eaa03d0d183 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -1289,6 +1289,18 @@ config INTEL_TELEMETRY
->  	  directly via debugfs files. Various tools may use
->  	  this interface for SoC state monitoring.
->  
-> +config SIEMENS_SIMATIC_IPC
-> +	tristate "Siemens Simatic IPC Class driver"
-> +	depends on PCI
-> +	help
-> +	  This Simatic IPC class driver is the central of several
-> drivers. It
-> +	  is mainly used for system identification, after which
-> drivers in other
-> +	  classes will take care of driving specifics of those
-> machines.
-> +	  i.e. LEDs and watchdog.
-> +
-> +	  To compile this driver as a module, choose M here: the
-> module
-> +	  will be called simatic-ipc.
-> +
->  endif # X86_PLATFORM_DEVICES
->  
->  config PMC_ATOM
-> diff --git a/drivers/platform/x86/Makefile
-> b/drivers/platform/x86/Makefile index 60d554073749..26cdebf2e701
-> 100644 --- a/drivers/platform/x86/Makefile
-> +++ b/drivers/platform/x86/Makefile
-> @@ -138,3 +138,6 @@ obj-$(CONFIG_INTEL_TELEMETRY)		+=
-> intel_telemetry_core.o \ intel_telemetry_pltdrv.o \
->  					   intel_telemetry_debugfs.o
->  obj-$(CONFIG_PMC_ATOM)			+= pmc_atom.o
-> +
-> +# Siemens Simatic Industrial PCs
-> +obj-$(CONFIG_SIEMENS_SIMATIC_IPC)	+= simatic-ipc.o
-> diff --git a/drivers/platform/x86/simatic-ipc.c
-> b/drivers/platform/x86/simatic-ipc.c new file mode 100644
-> index 000000000000..52e8596bc63d
-> --- /dev/null
-> +++ b/drivers/platform/x86/simatic-ipc.c
-> @@ -0,0 +1,169 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Siemens SIMATIC IPC platform driver
-> + *
-> + * Copyright (c) Siemens AG, 2018-2021
-> + *
-> + * Authors:
-> + *  Henning Schild <henning.schild@siemens.com>
-> + *  Jan Kiszka <jan.kiszka@siemens.com>
-> + *  Gerd Haeussler <gerd.haeussler.ext@siemens.com>
-> + */
-> +
-> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> +
-> +#include <linux/dmi.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/pci.h>
-> +#include <linux/platform_data/x86/simatic-ipc.h>
-> +#include <linux/platform_device.h>
-> +
-> +static struct platform_device *ipc_led_platform_device;
-> +static struct platform_device *ipc_wdt_platform_device;
-> +
-> +static const struct dmi_system_id simatic_ipc_whitelist[] = {
-> +	{
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "SIEMENS AG"),
-> +		},
-> +	},
-> +	{}
-> +};
-> +
-> +static struct simatic_ipc_platform platform_data;
-> +
-> +static struct {
-> +	u32 station_id;
-> +	u8 led_mode;
-> +	u8 wdt_mode;
-> +} device_modes[] = {
-> +	{SIMATIC_IPC_IPC127E, SIMATIC_IPC_DEVICE_127E,
-> SIMATIC_IPC_DEVICE_NONE},
-> +	{SIMATIC_IPC_IPC227D, SIMATIC_IPC_DEVICE_227D,
-> SIMATIC_IPC_DEVICE_NONE},
-> +	{SIMATIC_IPC_IPC227E, SIMATIC_IPC_DEVICE_427E,
-> SIMATIC_IPC_DEVICE_227E},
-> +	{SIMATIC_IPC_IPC277E, SIMATIC_IPC_DEVICE_NONE,
-> SIMATIC_IPC_DEVICE_227E},
-> +	{SIMATIC_IPC_IPC427D, SIMATIC_IPC_DEVICE_427E,
-> SIMATIC_IPC_DEVICE_NONE},
-> +	{SIMATIC_IPC_IPC427E, SIMATIC_IPC_DEVICE_427E,
-> SIMATIC_IPC_DEVICE_427E},
-> +	{SIMATIC_IPC_IPC477E, SIMATIC_IPC_DEVICE_NONE,
-> SIMATIC_IPC_DEVICE_427E}, +};
-> +
-> +static int register_platform_devices(u32 station_id)
-> +{
-> +	u8 ledmode = SIMATIC_IPC_DEVICE_NONE;
-> +	u8 wdtmode = SIMATIC_IPC_DEVICE_NONE;
-> +	int i;
-> +
-> +	platform_data.devmode = SIMATIC_IPC_DEVICE_NONE;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(device_modes); i++) {
-> +		if (device_modes[i].station_id == station_id) {
-> +			ledmode = device_modes[i].led_mode;
-> +			wdtmode = device_modes[i].wdt_mode;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (ledmode != SIMATIC_IPC_DEVICE_NONE) {
-> +		platform_data.devmode = ledmode;
-> +		ipc_led_platform_device =
-> +			platform_device_register_data(NULL,
-> +				KBUILD_MODNAME "_leds",
-> PLATFORM_DEVID_NONE,
-> +				&platform_data,
-> +				sizeof(struct simatic_ipc_platform));
-> +		if (IS_ERR(ipc_led_platform_device))
-> +			return PTR_ERR(ipc_led_platform_device);
-> +
-> +		pr_debug("device=%s created\n",
-> +			 ipc_led_platform_device->name);
-> +	}
-> +
-> +	if (wdtmode != SIMATIC_IPC_DEVICE_NONE) {
-> +		platform_data.devmode = wdtmode;
-> +		ipc_wdt_platform_device =
-> +			platform_device_register_data(NULL,
-> +				KBUILD_MODNAME "_wdt",
-> PLATFORM_DEVID_NONE,
-> +				&platform_data,
-> +				sizeof(struct simatic_ipc_platform));
-> +		if (IS_ERR(ipc_wdt_platform_device))
-> +			return PTR_ERR(ipc_wdt_platform_device);
-> +
-> +		pr_debug("device=%s created\n",
-> +			 ipc_wdt_platform_device->name);
-> +	}
-> +
-> +	if (ledmode == SIMATIC_IPC_DEVICE_NONE &&
-> +	    wdtmode == SIMATIC_IPC_DEVICE_NONE) {
-> +		pr_warn("unsupported IPC detected, station
-> id=%08x\n",
-> +			station_id);
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +
+syzbot found the following issue on:
 
-extra newline, should be removed
+HEAD commit:    a4849f6000e2 Merge tag 'drm-fixes-2021-11-26' of git://ano..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10d5f726b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=75f05fb8d1a152d3
+dashboard link: https://syzkaller.appspot.com/bug?extid=ff49a3059d49b0ca0eec
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-> +/* FIXME: this should eventually be done with generic P2SB discovery
-> code */ +/*
-> + * Get membase address from PCI, used in leds and wdt modul. Here we
-> read
+Unfortunately, I don't have any reproducer for this issue yet.
 
-/modul/module/
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ff49a3059d49b0ca0eec@syzkaller.appspotmail.com
 
-was pointed out already but forgotten about
+============================================
+WARNING: possible recursive locking detected
+5.16.0-rc2-syzkaller #0 Not tainted
+--------------------------------------------
+syz-executor.1/8766 is trying to acquire lock:
+ffff888096b57418 (&ctx->timeout_lock){+.+.}-{2:2}, at: spin_lock_irq include/linux/spinlock.h:374 [inline]
+ffff888096b57418 (&ctx->timeout_lock){+.+.}-{2:2}, at: io_flush_timeouts fs/io_uring.c:1587 [inline]
+ffff888096b57418 (&ctx->timeout_lock){+.+.}-{2:2}, at: __io_commit_cqring_flush+0x108/0x50d fs/io_uring.c:1618
 
-Henning
+but task is already holding lock:
+ffff888096b57418 (&ctx->timeout_lock){+.+.}-{2:2}, at: spin_lock_irq include/linux/spinlock.h:374 [inline]
+ffff888096b57418 (&ctx->timeout_lock){+.+.}-{2:2}, at: io_poll_remove_all+0x50/0x235 fs/io_uring.c:5702
 
-> + * the bar0. The final address calculation is done in the
-> appropriate modules
-> + */
-> +u32 simatic_ipc_get_membase0(unsigned int p2sb)
-> +{
-> +	struct pci_bus *bus;
-> +	u32 bar0 = 0;
-> +	/*
-> +	 * The GPIO memory is in bar0 of the hidden P2SB device.
-> +	 * Unhide the device to have a quick look at it, before we
-> hide it
-> +	 * again.
-> +	 * Also grab the pci rescan lock so that device does not get
-> discovered
-> +	 * and remapped while it is visible.
-> +	 * This code is inspired by drivers/mfd/lpc_ich.c
-> +	 */
-> +	bus = pci_find_bus(0, 0);
-> +	pci_lock_rescan_remove();
-> +	pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x0);
-> +	pci_bus_read_config_dword(bus, p2sb, PCI_BASE_ADDRESS_0,
-> &bar0); +
-> +	bar0 &= ~0xf;
-> +	pci_bus_write_config_byte(bus, p2sb, 0xE1, 0x1);
-> +	pci_unlock_rescan_remove();
-> +
-> +	return bar0;
-> +}
-> +EXPORT_SYMBOL(simatic_ipc_get_membase0);
-> +
-> +static int __init simatic_ipc_init_module(void)
-> +{
-> +	const struct dmi_system_id *match;
-> +	u32 station_id;
-> +	int err;
-> +
-> +	match = dmi_first_match(simatic_ipc_whitelist);
-> +	if (!match)
-> +		return 0;
-> +
-> +	err = dmi_walk(simatic_ipc_find_dmi_entry_helper,
-> &station_id); +
-> +	if (err || station_id == SIMATIC_IPC_INVALID_STATION_ID) {
-> +		pr_warn("DMI entry %d not found\n",
-> SIMATIC_IPC_DMI_ENTRY_OEM);
-> +		return 0;
-> +	}
-> +
-> +	return register_platform_devices(station_id);
-> +}
-> +
-> +static void __exit simatic_ipc_exit_module(void)
-> +{
-> +	platform_device_unregister(ipc_led_platform_device);
-> +	ipc_led_platform_device = NULL;
-> +
-> +	platform_device_unregister(ipc_wdt_platform_device);
-> +	ipc_wdt_platform_device = NULL;
-> +}
-> +
-> +module_init(simatic_ipc_init_module);
-> +module_exit(simatic_ipc_exit_module);
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_AUTHOR("Gerd Haeussler <gerd.haeussler.ext@siemens.com>");
-> +MODULE_ALIAS("dmi:*:svnSIEMENSAG:*");
-> diff --git a/include/linux/platform_data/x86/simatic-ipc-base.h
-> b/include/linux/platform_data/x86/simatic-ipc-base.h new file mode
-> 100644 index 000000000000..62d2bc774067
-> --- /dev/null
-> +++ b/include/linux/platform_data/x86/simatic-ipc-base.h
-> @@ -0,0 +1,29 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Siemens SIMATIC IPC drivers
-> + *
-> + * Copyright (c) Siemens AG, 2018-2021
-> + *
-> + * Authors:
-> + *  Henning Schild <henning.schild@siemens.com>
-> + *  Gerd Haeussler <gerd.haeussler.ext@siemens.com>
-> + */
-> +
-> +#ifndef __PLATFORM_DATA_X86_SIMATIC_IPC_BASE_H
-> +#define __PLATFORM_DATA_X86_SIMATIC_IPC_BASE_H
-> +
-> +#include <linux/types.h>
-> +
-> +#define SIMATIC_IPC_DEVICE_NONE 0
-> +#define SIMATIC_IPC_DEVICE_227D 1
-> +#define SIMATIC_IPC_DEVICE_427E 2
-> +#define SIMATIC_IPC_DEVICE_127E 3
-> +#define SIMATIC_IPC_DEVICE_227E 4
-> +
-> +struct simatic_ipc_platform {
-> +	u8	devmode;
-> +};
-> +
-> +u32 simatic_ipc_get_membase0(unsigned int p2sb);
-> +
-> +#endif /* __PLATFORM_DATA_X86_SIMATIC_IPC_BASE_H */
-> diff --git a/include/linux/platform_data/x86/simatic-ipc.h
-> b/include/linux/platform_data/x86/simatic-ipc.h new file mode 100644
-> index 000000000000..f3b76b39776b
-> --- /dev/null
-> +++ b/include/linux/platform_data/x86/simatic-ipc.h
-> @@ -0,0 +1,72 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Siemens SIMATIC IPC drivers
-> + *
-> + * Copyright (c) Siemens AG, 2018-2021
-> + *
-> + * Authors:
-> + *  Henning Schild <henning.schild@siemens.com>
-> + *  Gerd Haeussler <gerd.haeussler.ext@siemens.com>
-> + */
-> +
-> +#ifndef __PLATFORM_DATA_X86_SIMATIC_IPC_H
-> +#define __PLATFORM_DATA_X86_SIMATIC_IPC_H
-> +
-> +#include <linux/dmi.h>
-> +#include <linux/platform_data/x86/simatic-ipc-base.h>
-> +
-> +#define SIMATIC_IPC_DMI_ENTRY_OEM	129
-> +/* binary type */
-> +#define SIMATIC_IPC_DMI_TYPE		0xff
-> +#define SIMATIC_IPC_DMI_GROUP		0x05
-> +#define SIMATIC_IPC_DMI_ENTRY		0x02
-> +#define SIMATIC_IPC_DMI_TID		0x02
-> +
-> +enum simatic_ipc_station_ids {
-> +	SIMATIC_IPC_INVALID_STATION_ID = 0,
-> +	SIMATIC_IPC_IPC227D = 0x00000501,
-> +	SIMATIC_IPC_IPC427D = 0x00000701,
-> +	SIMATIC_IPC_IPC227E = 0x00000901,
-> +	SIMATIC_IPC_IPC277E = 0x00000902,
-> +	SIMATIC_IPC_IPC427E = 0x00000A01,
-> +	SIMATIC_IPC_IPC477E = 0x00000A02,
-> +	SIMATIC_IPC_IPC127E = 0x00000D01,
-> +};
-> +
-> +static inline u32 simatic_ipc_get_station_id(u8 *data, int max_len)
-> +{
-> +	struct {
-> +		u8	type;		/* type (0xff =
-> binary) */
-> +		u8	len;		/* len of data entry */
-> +		u8	group;
-> +		u8	entry;
-> +		u8	tid;
-> +		__le32	station_id;	/* station id (LE)
-> */
-> +	} __packed * data_entry = (void *)data + sizeof(struct
-> dmi_header); +
-> +	while ((u8 *)data_entry < data + max_len) {
-> +		if (data_entry->type == SIMATIC_IPC_DMI_TYPE &&
-> +		    data_entry->len == sizeof(*data_entry) &&
-> +		    data_entry->group == SIMATIC_IPC_DMI_GROUP &&
-> +		    data_entry->entry == SIMATIC_IPC_DMI_ENTRY &&
-> +		    data_entry->tid == SIMATIC_IPC_DMI_TID) {
-> +			return le32_to_cpu(data_entry->station_id);
-> +		}
-> +		data_entry = (void *)((u8 *)(data_entry) +
-> data_entry->len);
-> +	}
-> +
-> +	return SIMATIC_IPC_INVALID_STATION_ID;
-> +}
-> +
-> +static inline void
-> +simatic_ipc_find_dmi_entry_helper(const struct dmi_header *dh, void
-> *_data) +{
-> +	u32 *id = _data;
-> +
-> +	if (dh->type != SIMATIC_IPC_DMI_ENTRY_OEM)
-> +		return;
-> +
-> +	*id = simatic_ipc_get_station_id((u8 *)dh, dh->length);
-> +}
-> +
-> +#endif /* __PLATFORM_DATA_X86_SIMATIC_IPC_H */
+other info that might help us debug this:
+ Possible unsafe locking scenario:
 
+       CPU0
+       ----
+  lock(&ctx->timeout_lock);
+  lock(&ctx->timeout_lock);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+2 locks held by syz-executor.1/8766:
+ #0: ffff888096b573d8 (&ctx->completion_lock#2){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:349 [inline]
+ #0: ffff888096b573d8 (&ctx->completion_lock#2){+.+.}-{2:2}, at: io_poll_remove_all+0x48/0x235 fs/io_uring.c:5701
+ #1: ffff888096b57418 (&ctx->timeout_lock){+.+.}-{2:2}, at: spin_lock_irq include/linux/spinlock.h:374 [inline]
+ #1: ffff888096b57418 (&ctx->timeout_lock){+.+.}-{2:2}, at: io_poll_remove_all+0x50/0x235 fs/io_uring.c:5702
+
+stack backtrace:
+CPU: 0 PID: 8766 Comm: syz-executor.1 Not tainted 5.16.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_deadlock_bug kernel/locking/lockdep.c:2956 [inline]
+ check_deadlock kernel/locking/lockdep.c:2999 [inline]
+ validate_chain kernel/locking/lockdep.c:3788 [inline]
+ __lock_acquire.cold+0x149/0x3ab kernel/locking/lockdep.c:5027
+ lock_acquire kernel/locking/lockdep.c:5637 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5602
+ __raw_spin_lock_irq include/linux/spinlock_api_smp.h:119 [inline]
+ _raw_spin_lock_irq+0x32/0x50 kernel/locking/spinlock.c:170
+ spin_lock_irq include/linux/spinlock.h:374 [inline]
+ io_flush_timeouts fs/io_uring.c:1587 [inline]
+ __io_commit_cqring_flush+0x108/0x50d fs/io_uring.c:1618
+ io_commit_cqring fs/io_uring.c:1626 [inline]
+ io_poll_remove_one fs/io_uring.c:5684 [inline]
+ io_poll_remove_one.cold+0xd/0x12 fs/io_uring.c:5674
+ io_poll_remove_all+0x1af/0x235 fs/io_uring.c:5709
+ io_ring_ctx_wait_and_kill+0x1cc/0x322 fs/io_uring.c:9534
+ io_uring_release+0x42/0x46 fs/io_uring.c:9554
+ __fput+0x286/0x9f0 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f087b422ae9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f0878977188 EFLAGS: 00000246 ORIG_RAX: 0000000000000009
+RAX: 0000000020ffa000 RBX: 00007f087b536020 RCX: 00007f087b422ae9
+RDX: 0000000003000001 RSI: 0000000000004000 RDI: 0000000020ffa000
+RBP: 00007f087b47cf6d R08: 0000000000000003 R09: 0000000010000000
+R10: 0000000000000012 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffe7626bd9f R14: 00007f0878977300 R15: 0000000000022000
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
