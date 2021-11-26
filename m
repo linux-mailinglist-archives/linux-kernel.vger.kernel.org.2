@@ -2,159 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0D745E8ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:59:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BDF45E8F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359258AbhKZICU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 03:02:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34816 "EHLO
+        id S1347122AbhKZIFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 03:05:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244652AbhKZIAT (ORCPT
+        with ESMTP id S1344463AbhKZIDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 03:00:19 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8746DC061748;
-        Thu, 25 Nov 2021 23:57:06 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id t5so35535906edd.0;
-        Thu, 25 Nov 2021 23:57:06 -0800 (PST)
+        Fri, 26 Nov 2021 03:03:42 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 790F1C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:59:57 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id z5so35428332edd.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:59:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=xVmmFD53SJ7PAnxPXhXSC2iqJgq0Jvekhj0t+s7AyaU=;
-        b=FTL6dnLrUTwY/7rxSMfQXftU8kZycSuCvNLCn4RCM9UWZEhyz8YijN+E9dNJsN/LnC
-         K9/n6Mw5S+roeS9WIRu4SYgXxlQs5pU4uxTcZVOcFvLwkDCrsm7slJIgaJMPwkcULGSq
-         fWLTde4vsPoSGp7S75DzTJZgnJ9lCQLGVCK1rKISxiIpy/KcdEj3zxo7z++eAZ0JYNTR
-         Cb6VqHYrb7rE8WKgFfrR17ckiMjprdO1s3zSFQq3n+Ew7E///SR4Ft0L0XKhBYn4+NOB
-         7cZIWHl0eDHznmV6Qw+wm2dJpgB0aDRW0R8yjp6gjXQj9q339Yy5cb8CME4qHEl0z5hM
-         OwvQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0xI7/7Qmq/8rziraYyi5hfmxS8XBzgKRuj2SZVAFPtY=;
+        b=IwOcILYAYW/qN9TXAWOP1gxs0ryKVBNZkY8vHBVcgSJS10If/vrlp5iXr+QXjbr2t6
+         kFxcRrW578+lv449f4REJz4oc6fuFGIoYXHlTNiu5v2+po02wpgUU3z74Tnym5ygThrp
+         FcGHCteyJHYI+Zio7Qd/sEs9KVIvK/55xpr9OoYrV9fCVrXL38IGPpY8yyKvypNSP47w
+         z+gHyfob4TBjWyc3EX7NXgJDL5YaNi6dmUYgHK5CTt69cMhctm9WEtlNU7t7r3+YSNDz
+         Wu9uMKC2wGnXuvygA/l/lm8XVkJOlRRFOa+928saOsq0cd6g8CWjZKvxNEv4GgabDvae
+         UNuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
-         :subject:content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=xVmmFD53SJ7PAnxPXhXSC2iqJgq0Jvekhj0t+s7AyaU=;
-        b=srVllVQ8Z7CqmrueOFGx4wVjs7oD+qPg9ZCyiS3YVKjTXHI//Uwxy/368yDeFup2wB
-         E/xuC4kKTWkFXZyQYohUdgLlniqMuP6VMDixcYEhg5pxNIAwYOaDKWQYV6CgiIsHuHbT
-         Yi47SgbKBpHF/3DrztxZO6GTp8Jdncrz/IIclp3KWXpWq6dPLeLo5Ma8Bt95QvMTXTgb
-         APIpwkn5ep+PUad94Mz9OTo/Vze+e2JPmwtJkS45RLfDtDR6En9VwvyUw+5Kh5iykYcD
-         PnanQ3zsCqowXnWDgk/XwlQ9WlO+UC0wlmqlo31hRhfPxlXJmEp+GvIlAaAP1uGZmn8b
-         BSTw==
-X-Gm-Message-State: AOAM531NmmDtZy0Zramm++w/Au6bL13kDwLk2gWaHAiR/uZ+vwruGxMm
-        Bzi3FFenx6ZN1sz3vnolGvM=
-X-Google-Smtp-Source: ABdhPJyDz71af7EXgWAaGgYwa2idTzNkbdSFiRbkPP2U0d2sbxmNputA7cWH5t5IlEDL2bX2eElpbA==
-X-Received: by 2002:a17:907:c03:: with SMTP id ga3mr36176792ejc.180.1637913425099;
-        Thu, 25 Nov 2021 23:57:05 -0800 (PST)
-Received: from ?IPV6:2001:b07:add:ec09:c399:bc87:7b6c:fb2a? ([2001:b07:add:ec09:c399:bc87:7b6c:fb2a])
-        by smtp.googlemail.com with ESMTPSA id g21sm2624155ejt.87.2021.11.25.23.57.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Nov 2021 23:57:04 -0800 (PST)
-Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
-Message-ID: <d8b3c2cb-f0a0-52dd-2dfd-64fa190dd372@redhat.com>
-Date:   Fri, 26 Nov 2021 08:56:59 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0xI7/7Qmq/8rziraYyi5hfmxS8XBzgKRuj2SZVAFPtY=;
+        b=dN9SZQor6wvTNx/wAlkkvmG8/Q0MEgAL5dAjAQNTVr5IhTofy8AVWu1uNdkBlyfxOh
+         IdqhLXtrTUE7KDc7tWZRStIYtA9DsMRnqiqrxU6kt9CDOmqmYlCsr3QLi6aYob3gn69k
+         626X1A4J75ToCgJ5/6G7rhybW4JquvGbcVc5ZfmCg7LYz2fEOFs8Eje/Wq9LxU80387P
+         kSMxp75f5CMiMNvWHhyYWQj2K4MBJ3/lPyait+6n9QD3mp4b6MNFcg3wwUIEqFLWrocm
+         pWIxGSjqGwhREA3QhyFTU0rSk/PnMO7BP2cThUk4epD/JhNQNmiXLA98HKsEXVXipqCf
+         tzHg==
+X-Gm-Message-State: AOAM530GmN9SgVQd9v2u78wj9us6NrljICJYNHVgL5UBXI8tNXuY/n6m
+        4tBfcHTA0HriCH+2Io7edr8uCm4PiWPMk8qKn3Rx4LicA/8=
+X-Google-Smtp-Source: ABdhPJy0dhQqCWLBvB70vV5CG5ap8OQoHh9QoX/SBUn+4JoEA/zikBbSmzrwGhh4+/WLUQ1f0w/tazR2oPOIplZWcOk=
+X-Received: by 2002:a17:907:2cc4:: with SMTP id hg4mr37551999ejc.112.1637913595861;
+ Thu, 25 Nov 2021 23:59:55 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [RFC PATCH v3 54/59] KVM: X86: Introduce initial_tsc_khz in
- struct kvm_arch
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>, isaku.yamahata@intel.com,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, erdemaktas@google.com,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     isaku.yamahata@gmail.com, Xiaoyao Li <xiaoyao.li@intel.com>
-References: <cover.1637799475.git.isaku.yamahata@intel.com>
- <5ba3573c8b82fcbdc3f3994f6d4d2a3c40445be9.1637799475.git.isaku.yamahata@intel.com>
- <875ysghrp8.ffs@tglx> <741df444-5cd0-2049-f93a-c2521e4f426d@redhat.com>
- <87tufzhl56.ffs@tglx>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <87tufzhl56.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211125150730.188487-1-sudeep.holla@arm.com> <20211125182543.GE56473@e120937-lin>
+In-Reply-To: <20211125182543.GE56473@e120937-lin>
+From:   Etienne Carriere <etienne.carriere@linaro.org>
+Date:   Fri, 26 Nov 2021 08:59:45 +0100
+Message-ID: <CAN5uoS_0crJm+ywd6Jg3NxtzO5gyREp35TTfbvFrpsuUyG6MLw@mail.gmail.com>
+Subject: Re: [PATCH] firmware: arm_scmi: optee: Drop the support for the OPTEE
+ shared dynamic buffer
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/21 00:26, Thomas Gleixner wrote:
-> Paolo,
-> 
-> On Thu, Nov 25 2021 at 23:13, Paolo Bonzini wrote:
->> On 11/25/21 22:05, Thomas Gleixner wrote:
->> If there are some patches that are actually independent, go ahead and
->> submit them early.  But more practically, for the bulk of the changes
->> what you need to do is:
->>
->> 1) incorporate into patch 55 a version of tdx.c that essentially does
->> KVM_BUG_ON or WARN_ON for each function.  Temporarily keep the same huge
->> patch that adds the remaining 2000 lines of tdx.c
-> 
-> There is absolutely no reason to populate anything upfront at all.
-> Why?
-> 
-> Simply because that whole muck cannot work until all pieces are in place.
+Hello Sudeep,
 
-It can, sort of.  It cannot run a complete guest, but it could in 
-principle run a toy guest with a custom userspace, like the ones that 
-make up tools/testing/selftests/kvm.  (Note that KVM_BUG_ON marks the VM 
-as bugged but doesn't hang the whole machine).
+On Thu, 25 Nov 2021 at 19:25, Cristian Marussi <cristian.marussi@arm.com> wrote:
+>
+> On Thu, Nov 25, 2021 at 03:07:30PM +0000, Sudeep Holla wrote:
+> > The shared memory buffer allocated by the optee driver is normal cached
+> > memory and can't be used with IOMEM APIs used in shmem_*.
+> >
+> > We currently support only IO memory for shared memory and supporting
+> > normal cached memory needs more changes and needs to be thought through
+> > properly. So for now, let us drop the support for this OPTEE shared buffer.
+> >
+> > Cc: Cristian Marussi <cristian.marussi@arm.com>
+> > Cc: Etienne Carriere <etienne.carriere@linaro.org>
+> > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> > ---
+>
+> Hi,
+>
+>
+> >  drivers/firmware/arm_scmi/optee.c | 19 +------------------
+> >  1 file changed, 1 insertion(+), 18 deletions(-)
+> >
+> > diff --git a/drivers/firmware/arm_scmi/optee.c b/drivers/firmware/arm_scmi/optee.c
+> > index 901737c9f5f8..175b39bcd470 100644
+> > --- a/drivers/firmware/arm_scmi/optee.c
+> > +++ b/drivers/firmware/arm_scmi/optee.c
+> > @@ -282,23 +282,6 @@ static void scmi_optee_clear_channel(struct scmi_chan_info *cinfo)
+> >       shmem_clear_channel(channel->shmem);
+> >  }
+> >
+> > -static int setup_dynamic_shmem(struct device *dev, struct scmi_optee_channel *channel)
+> > -{
+> > -     const size_t msg_size = SCMI_OPTEE_MAX_MSG_SIZE;
+> > -
+> > -     channel->tee_shm = tee_shm_alloc_kernel_buf(scmi_optee_private->tee_ctx, msg_size);
+> > -     if (IS_ERR(channel->tee_shm)) {
+> > -             dev_err(channel->cinfo->dev, "shmem allocation failed\n");
+> > -             return -ENOMEM;
+> > -     }
+> > -
+> > -     channel->shmem = (void *)tee_shm_get_va(channel->tee_shm, 0);
+> > -     memset(channel->shmem, 0, msg_size);
+> > -     shmem_clear_channel(channel->shmem);
+> > -
+> > -     return 0;
+> > -}
+> > -
+> >  static int setup_static_shmem(struct device *dev, struct scmi_chan_info *cinfo,
+> >                             struct scmi_optee_channel *channel)
+> >  {
+> > @@ -342,7 +325,7 @@ static int setup_shmem(struct device *dev, struct scmi_chan_info *cinfo,
+> >       if (of_find_property(cinfo->dev->of_node, "shmem", NULL))
+> >               return setup_static_shmem(dev, cinfo, channel);
+> >       else
+> > -             return setup_dynamic_shmem(dev, channel);
+> > +             return -ENOMEM;
+> >  }
+> >
 
-AMD was working on infrastructure to do this for SEV and SEV-ES.
+I would rather find an alternate way to support tee shared memory.
+I think OP-TEE could use msg.c format when handling tee memory. Linux
+and OP-TEE Scmi transport discovery negotiate the channel type and
+support for msg format could allow OP-TEE to use its shm management. I
+will prepare an implementation but if you prefer the current remove
+support and later introduce back tee shm support, I'm fine.
 
-> So why would you provide:
-> 
-> handle_A(...) { BUG(); }
-> ..
-> handle_Z(...) { BUG(); }
-> 
-> with all the invocations in the common emulation dispatcher:
-> 
->    handle_stuff(reason)
->    {
->          switch(reason) {
->          case A: return handle_A();
->          ...
->          case Z: return handle_Z();
->          default: BUG();
->          }
->    };
+Best regards,
+Etienne
 
-If it's a switch statement that's good, but the common case is more 
-similar to this:
-
-  vmx_handle_A(...) { ... }
-+tdx_handle_A(...) { ... }
-+
-+vt_handle_A(...) {
-+    if (is_tdx(vcpu->kvm))
-+        tdx_handle_A(...);
-+    else
-+        vmx_handle_A(...);
-+}
-
-...
-
--     .handle_A = vmx_handle_A,
-+     .handle_A = vt_handle_A,
-
-And you could indeed do it in a single patch, without adding the stub 
-tdx_handle_A upfront.  But you would have code that is broken and who 
-knows what the effects would be of calling vmx_handle_A on a TDX virtual 
-machine.  It could be an error, or it could be memory corruption.
-
-
-> In both scenarious you cannot boot a TDX guest until you reached $Z, but
-> in the gradual one you and the reviewers have the pleasure of looking at
-> one thing at a time.
-
-I think both of them are gradual.  Not having the stubs might be a 
-little more gradual, but it is a very minor issue for the reviewability 
-of the whole thing.
-
-Paolo
+>
+> LGTM.
+>
+> Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
+>
+> Thanks,
+> Cristian
