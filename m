@@ -2,96 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 679F146055F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 10:00:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 316B34605AD
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 11:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234775AbhK1JDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 04:03:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231666AbhK1JBe (ORCPT
+        id S1357089AbhK1Kb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 05:31:58 -0500
+Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17244 "EHLO
+        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234612AbhK1K35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 04:01:34 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF269C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 00:58:18 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id g25-20020a25b119000000b005c5e52a0574so17714162ybj.5
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 00:58:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=B+bepFFO60RHu083vmt4BCiYb9T8HQxbga3/n6RHU9Q=;
-        b=XDdX8MnED/VSwoaAVg6qptHPu+vCMYQdvGnOvsXMUpiwlqBuZrvj5FZJ2eIa9SJ40v
-         QRg7EbhhPPEzzgdt4BRNFS8ADBlpl1pR2MhJh1k15vfAKAIH/Dp+YrSBwxu/P2Hp+Uv5
-         gpH0LzbgViA0A5KbSKvSBARAx4iB9kwWzW5OCwfQYZwDKyo3QoWFk/4S/WBB0CmB4Olp
-         sEvNtmkrSoy2uXDiUJz7zKE2ohIbuuNIOIH1ooYb3sbjnAw8PX/TPBRNGNK7Kmi4YDkB
-         eIGMaB2wkpU5Mbyv0spIXKR94guJma9vLTz+imcP1MqfVRH6XCdtJB4GatrZjS0VpewY
-         wr7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=B+bepFFO60RHu083vmt4BCiYb9T8HQxbga3/n6RHU9Q=;
-        b=yIb8j2P6yLMyEHDdfX6mQ5QqGgYCkZG5cMXxWpXaMES6AgW104pyeS9HNr5NQL9RVy
-         4UiZ1rZD/ptMQvbESs2vgvEeIQfCDnYBfdQuGrOf+FeXkAwS/YfkHZkWk3+L3lau2EnI
-         v5hAW1z5fOWFLwdiA7R4uIWF+keoIN65HzdLZytqXkcR3HEFZwbm5zMiQ9muRgJ30ec1
-         81jXahH5RlI2sIpGy+9o1Ksqfu2BEUYeDa3NmbmNwjBIRYnmhpG+7NlLBYkTS4GCYkNS
-         tUxnkrw4fTc5DBA0dwjSk+GXzqNb2KelwIQbdwEYJ4jET4SfLQoyJVaQ2UXes1b8rgcT
-         7R0A==
-X-Gm-Message-State: AOAM533sDT4CX3Yi2qdgcYERH8fgu14JgxkvC9+g6I9fhqwUCrkbA/me
-        dm3UO/CeU/GwaYqulzjmqKgDTn0xWfsv
-X-Google-Smtp-Source: ABdhPJzmEIPX+KpstpW0QlHCvyNyp2Hfk5Y4i62l/KwfAm7bAHYPdiwD98ymagB8SC72m50dmi8i6a5yFWL6
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:24f5:bc1a:df07:6b3d])
- (user=irogers job=sendgmr) by 2002:a25:311:: with SMTP id 17mr27600974ybd.483.1638089897440;
- Sun, 28 Nov 2021 00:58:17 -0800 (PST)
-Date:   Sun, 28 Nov 2021 00:58:10 -0800
-Message-Id: <20211128085810.4027314-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.34.0.rc2.393.gf8c9666880-goog
-Subject: [PATCH] perf test: Reset shadow counts before loading
-From:   Ian Rogers <irogers@google.com>
-To:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        "Paul A . Clarke" <pc@us.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
+        Sun, 28 Nov 2021 05:29:57 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1637903008; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=kTT6Em4JDS6/n2VGliGLaE9S+PknFWxGAUiJO4w9UcrhWM6NIlMzAx+PtzMv9HHDSNv2cP27qumLZNCOYVAznwtp8lXf6M/LqY/Gq/p/xzSUwgrV46aHdZiKMf+5JRO3Rs62wyy89VzmskC+loYa07G1bKLiqEwExGzYIzOszds=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1637903008; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
+        bh=e1fy8d/F7bO0bxbGs9DFbseWsVknlDYWORiYHfsGIf8=; 
+        b=D+d85SWg0ltZ94GnKtm7vV4/uUrRM6weqrb89FGTFtj4m89M2NfrXFUGJ9ojdiV/cZ7+gXsL/DBAa5KTV0Lqxv9KvyfNtzn2BrUtCvKpdzg8Gea5yYl3qHhHkcIcA/HcrdwmahOTG4+DUxHVrliJfPOrrOC6vMZtZRPBfJibA2Q=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1637903008;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=e1fy8d/F7bO0bxbGs9DFbseWsVknlDYWORiYHfsGIf8=;
+        b=Nl3r5ejY1FHl1ts5hqefnDJ9sJvZpsLJORZ3A4KioqoF7ibhdDL7ysWhdndMlvgk
+        bhsk/ZFNRmLwXCekMD84/SnA7kYzSfipuQe6dfXL/7ye+fUekX6MpcNkMD/JsBtfPKT
+        eXfIDlXUdRRy6lvszTi851IoRCvWRkSeoVID5kQk=
+Received: from mail.baihui.com by mx.zoho.com.cn
+        with SMTP id 163790300607680.6143952720198; Fri, 26 Nov 2021 13:03:26 +0800 (CST)
+Date:   Fri, 26 Nov 2021 13:03:26 +0800
+From:   Chengguang Xu <cgxu519@mykernel.net>
+Reply-To: cgxu519@mykernel.net
+To:     "Amir Goldstein" <amir73il@gmail.com>
+Cc:     "Miklos Szeredi" <miklos@szeredi.hu>, "Jan Kara" <jack@suse.cz>,
+        "overlayfs" <linux-unionfs@vger.kernel.org>,
+        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "Chengguang Xu" <charliecgxu@tencent.com>
+Message-ID: <17d5aa0795d.fdfda4a49855.5158536783597235118@mykernel.net>
+In-Reply-To: <CAOQ4uxhrg=MAL7sArmP47oyF_QmhG-1b=srs30VNdiT-9s-P0w@mail.gmail.com>
+References: <20211122030038.1938875-1-cgxu519@mykernel.net> <20211122030038.1938875-8-cgxu519@mykernel.net> <CAOQ4uxhrg=MAL7sArmP47oyF_QmhG-1b=srs30VNdiT-9s-P0w@mail.gmail.com>
+Subject: Re: [RFC PATCH V6 7/7] ovl: implement containerized syncfs for
+ overlayfs
+MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Importance: Medium
+User-Agent: ZohoCN Mail
+X-Mailer: ZohoCN Mail
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Otherwise load counting is an average. Without this change
-duration_time in test_memory_bandwidth will alter its value if an
-earlier test contains duration_time.
+ ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=80, 2021-11-22 15:40:59 Amir Golds=
+tein <amir73il@gmail.com> =E6=92=B0=E5=86=99 ----
+ > On Mon, Nov 22, 2021 at 5:01 AM Chengguang Xu <cgxu519@mykernel.net> wro=
+te:
+ > >
+ > > From: Chengguang Xu <charliecgxu@tencent.com>
+ > >
+ > > Now overlayfs can only sync own dirty inodes during syncfs,
+ > > so remove unnecessary sync_filesystem() on upper file system.
+ > >
+ > > Signed-off-by: Chengguang Xu <charliecgxu@tencent.com>
+ > > ---
+ > >  fs/overlayfs/super.c | 14 +++++---------
+ > >  1 file changed, 5 insertions(+), 9 deletions(-)
+ > >
+ > > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+ > > index ccffcd96491d..213b795a6a86 100644
+ > > --- a/fs/overlayfs/super.c
+ > > +++ b/fs/overlayfs/super.c
+ > > @@ -292,18 +292,14 @@ static int ovl_sync_fs(struct super_block *sb, i=
+nt wait)
+ > >         /*
+ > >          * Not called for sync(2) call or an emergency sync (SB_I_SKIP=
+_SYNC).
+ > >          * All the super blocks will be iterated, including upper_sb.
+ > > -        *
+ > > -        * If this is a syncfs(2) call, then we do need to call
+ > > -        * sync_filesystem() on upper_sb, but enough if we do it when =
+being
+ > > -        * called with wait =3D=3D 1.
+ > >          */
+ > > -       if (!wait)
+ > > -               return 0;
+ > > -
+ > >         upper_sb =3D ovl_upper_mnt(ofs)->mnt_sb;
+ > > -
+ > >         down_read(&upper_sb->s_umount);
+ > > -       ret =3D sync_filesystem(upper_sb);
+ > > +       if (wait)
+ > > +               wait_sb_inodes(upper_sb);
+ > > +       if (upper_sb->s_op->sync_fs)
+ > > +               upper_sb->s_op->sync_fs(upper_sb, wait);
+ > > +       ret =3D ovl_sync_upper_blockdev(upper_sb, wait);
+ >=20
+ > I think it will be cleaner to use a helper ovl_sync_upper_filesystem()
+ > with everything from  upper_sb =3D ... and a comment to explain that
+ > this is a variant of __sync_filesystem() where all the dirty inodes writ=
+e
+ > have already been started.
+ >=20
+=20
+I agree with you.=20
 
-This patch fixes an issue that's introduced in the proposed patch:
-https://lore.kernel.org/lkml/20211124015226.3317994-1-irogers@google.com/
-in perf test "Parse and process metrics".
-
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/tests/parse-metric.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/perf/tests/parse-metric.c b/tools/perf/tests/parse-metric.c
-index 574b7e4efd3a..07b6f4ec024f 100644
---- a/tools/perf/tests/parse-metric.c
-+++ b/tools/perf/tests/parse-metric.c
-@@ -109,6 +109,7 @@ static void load_runtime_stat(struct runtime_stat *st, struct evlist *evlist,
- 	struct evsel *evsel;
- 	u64 count;
- 
-+	perf_stat__reset_shadow_stats();
- 	evlist__for_each_entry(evlist, evsel) {
- 		count = find_value(evsel->name, vals);
- 		perf_stat__update_shadow_stats(evsel, count, 0, st);
--- 
-2.34.0.rc2.393.gf8c9666880-goog
-
+Thanks,
+Chengguang
