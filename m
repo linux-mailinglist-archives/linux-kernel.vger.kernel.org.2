@@ -2,106 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AAF045E90C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:15:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA5545E914
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:17:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353280AbhKZISN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 03:18:13 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:50276 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245061AbhKZIQM (ORCPT
+        id S1346974AbhKZIUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 03:20:23 -0500
+Received: from smtprelay0213.hostedemail.com ([216.40.44.213]:56532 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1359299AbhKZISW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 03:16:12 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D3C62212BE;
-        Fri, 26 Nov 2021 08:12:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637914378; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ua0rBLw8yMpkW2HLi3jHWYnyPiVI4NNJN3p9/B3y9s4=;
-        b=UmvBkqt0lj5+Fgh0MMELE8rCv+KKdsojs+C+3ixFhsIH0s4g6pao9D5Iu4c8EVGr0uuP8C
-        4tiD0kRX0jD2hWi//DKZTirv4d5cFg/b4J2BkonMJTAxzWJWxV5/MU6Aae73kIrqqPP1qI
-        kOueYEXXZJeZUb8R0wjq5sl8joLDgbM=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 45A17A3B81;
-        Fri, 26 Nov 2021 08:12:58 +0000 (UTC)
-Date:   Fri, 26 Nov 2021 09:12:56 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oliver Sang <oliver.sang@intel.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Roman Gushchin <guro@fb.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
-        zhengjun.xing@linux.intel.com, fengwei.yin@intel.com
-Subject: Re: [memcg, kmem]  58056f7750:  hackbench.throughput 10.3%
- improvement
-Message-ID: <YaCXCJc4TD5YpDXX@dhcp22.suse.cz>
-References: <20211124083435.GB18309@xsang-OptiPlex-9020>
- <YZ5v2LZlpzHieq/+@dhcp22.suse.cz>
- <20211126031748.GA11450@xsang-OptiPlex-9020>
+        Fri, 26 Nov 2021 03:18:22 -0500
+Received: from omf17.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 9666E180A25C8;
+        Fri, 26 Nov 2021 08:15:06 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf17.hostedemail.com (Postfix) with ESMTPA id 8825EE00036E;
+        Fri, 26 Nov 2021 08:15:02 +0000 (UTC)
+Message-ID: <aa7ad39528c768dfd3a33890cf7d14b59ba3a5fc.camel@perches.com>
+Subject: Re: [PATCH][next] hugetlb: Fix spelling mistake "hierarichal" ->
+ "hierarchical"
+From:   Joe Perches <joe@perches.com>
+To:     Colin Ian King <colin.i.king@googlemail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 26 Nov 2021 00:15:04 -0800
+In-Reply-To: <20211125090635.23508-1-colin.i.king@gmail.com>
+References: <20211125090635.23508-1-colin.i.king@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211126031748.GA11450@xsang-OptiPlex-9020>
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.60
+X-Stat-Signature: zduh9f8tp1nobnocxexjweddxcud9wtu
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 8825EE00036E
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+gfAvX6ESF28PxboOQwQbTRp4ragM60F4=
+X-HE-Tag: 1637914502-589088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 26-11-21 11:17:48, Oliver Sang wrote:
-> Hi Michal Hocko,
-> 
-> On Wed, Nov 24, 2021 at 06:01:12PM +0100, Michal Hocko wrote:
-> > On Wed 24-11-21 16:34:35, kernel test robot wrote:
-> > > 
-> > > 
-> > > Greeting,
-> > > 
-> > > FYI, we noticed a 10.3% improvement of hackbench.throughput due to commit:
-> > > 
-> > > 
-> > > commit: 58056f77502f3567b760c9a8fc8d2e9081515b2d ("memcg, kmem: further deprecate kmem.limit_in_bytes")
-> > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> > 
-> > I am really surprised to see an improvement from this patch. I do not
-> > expect your benchmarking would be using kmem limit. The above patch
-> > hasn't really removed the page counter out of the picture so there
-> > shouldn't be any real reason for performance improvement. I strongly
-> > suspect this is just some benchmark artifact or unreliable evaluation.
-> 
-> Fengwei Yin helped further analyze this improvement.
-> 
-> The patch changed the behavior of function obj_cgroup_charge_pages. It's shown
-> in the perf-callstack as following line:
-> 
->    5.63 ± 11%      -5.6        0.00        perf-profile.calltrace.cycles-pp.page_counter_try_charge.obj_cgroup_charge_pages.obj_cgroup_charge.kmem_cache_alloc_node.__alloc_skb
-> 
-> So Fengwei prepared a patch which reverting the changes in
-> obj_cgroup_charge_pages in 58056f7750 (as attached mod.patch)
-> 
-> by this patch, the performance is similar to 16f6bf266c, the improvement
-> disappear.
+On Thu, 2021-11-25 at 09:06 +0000, Colin Ian King wrote:
+> There is a spelling mistake in a literal string and a comment. Fix them.
+[]
+> diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
+[]
+> @@ -495,11 +495,11 @@ static int hugetlb_cgroup_read_numa_stat(struct seq_file *seq, void *dummy)
+>  	 * The hierarchical total is pretty much the value recorded by the
+>  	 * counter, so use that.
+>  	 */
+> -	seq_printf(seq, "%stotal=%lu", legacy ? "hierarichal_" : "",
+> +	seq_printf(seq, "%stotal=%lu", legacy ? "hierarchical_" : "",
+>  		   page_counter_read(&h_cg->hugepage[idx]) * PAGE_SIZE);
 
-I am still quite surprised and do not understand it. The only practical
-difference the said commit has done is
-s@page_counter_try_charge@page_counter_charge@
+Not sure this should be changed as seq output is nominally ABI.
 
-Withtout a limit in place the try_charge always succeeds. There
-should be only a single if (new > c->max) branch executed and always
-false.
-The code is also slightly larger but all that sounds like to little to
-make such a larger change. Maybe this is some microarchitecture specific
-result. Or can you reproduce on other HW as well.
+>  
+>  	/*
+> -	 * For each node, transverse the css tree to obtain the hierarichal
+> +	 * For each node, transverse the css tree to obtain the hierarchical
 
--- 
-Michal Hocko
-SUSE Labs
+Fixing the comment typo is good.  Thanks.
+
+
