@@ -2,145 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA8945E9DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:04:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 340DA45E9D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:03:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359788AbhKZJGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 04:06:40 -0500
-Received: from comms.puri.sm ([159.203.221.185]:35038 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1376262AbhKZJEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 04:04:38 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id B4A69E1252;
-        Fri, 26 Nov 2021 01:01:25 -0800 (PST)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id GyawlSRMnNDE; Fri, 26 Nov 2021 01:01:21 -0800 (PST)
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     martin.kepplinger@puri.sm, mchehab@kernel.org, broonie@kernel.org,
-        sakari.ailus@linux.intel.com
-Cc:     kernel@puri.sm, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-pm@vger.kernel.org,
-        Angus Ainslie <angus@akkea.ca>
-Subject: [PATCH v2] media: i2c: dw9714: add optional regulator support
-Date:   Fri, 26 Nov 2021 10:01:07 +0100
-Message-Id: <20211126090107.1243558-1-martin.kepplinger@puri.sm>
+        id S1359760AbhKZJGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 04:06:38 -0500
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:43196
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1376258AbhKZJEg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 04:04:36 -0500
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 5625A40744
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 09:01:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1637917281;
+        bh=JSDkQxEaFeO4Aa8CU5V1RSZd3JdJHwQwA3XYeu58L54=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Type:In-Reply-To;
+        b=D8idFLkyy6NiQjr57fzJYJK7QbMdIc3v5nW0Z33wcLVK+IOhVb3bPJUa6CZYxKT2G
+         dc8gBah51WcYSHYB/r7fZAMqTkfrAxyzNucz9kSTcyHfP/S0UpmrUT/E4fF/m4lMXE
+         XWEkPRIHNBkboEBLEF2rblSWDHSCqBcR4A/RJtXB30ZDca0SKq1OL0il16H+XGLmgt
+         TllzPyDmZFq7BaxjV846RZGuXdL3F+nYZ67nNl4SHyuiOuYh7mb/LrFMoOGGBw0Ss1
+         OtTssg4wPWKAjwY1itKglwKNWOTJImIQdHc3CiJ3+1zXqB1IlbK6JfscXhaaAaYMh+
+         9B5EaGEBldipQ==
+Received: by mail-ed1-f70.google.com with SMTP id q17-20020aa7da91000000b003e7c0641b9cso7477948eds.12
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 01:01:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JSDkQxEaFeO4Aa8CU5V1RSZd3JdJHwQwA3XYeu58L54=;
+        b=jzo9/f/qEgIJ4ApzbtQyM6Xu/v0YvTuCohdAXKWbH+r3tRqeTGI7yu/bVnxTsvrZmN
+         btcTeHzyofUrhVUrKvZv/guk+TGdKVBjuZizJYBafBeWMM6YAdW8r8ou7IxXxDn1Kj3C
+         TFEq5a4IiaRBSulZAvKATyxNKbjteyLZfjBdi5sjVc7vot8WgCA50SiUigDI5Y1wHUzP
+         /FQd6mHeGxPv6c8XlfwSjEQBmk0uOsWTMOUW/Wk6C5m/CUvHWe5n0E7FramfUGAF3zW4
+         Ioxb99m1TxEVm7PfqX54rS+xD0CMaaw2f0c30i7SA5wikwz2O9ujwEPsfSkRnK/rw3VV
+         xW5w==
+X-Gm-Message-State: AOAM531lyS7BWYxe4hpU6CR9GheS/kEyXrpE6xInsmV8CqXN59FCQb2q
+        bnUNBL8IqCRd2Xm6MPG2sBCs4j1C+nXqZD6W8czzk+28iPa/zrFzdmmPRSWC/mtxZ3HUu6HK2n0
+        kjppftK4brEcHqrotJlTSEAINDQMhelNBh/ZYNGnekQ==
+X-Received: by 2002:a05:6402:11d2:: with SMTP id j18mr45510564edw.318.1637917280837;
+        Fri, 26 Nov 2021 01:01:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxA/gPOhfwr63nIN4QqNwMF4BDsoXBkVZzPKhinuy/tb4GYEkRp4MHzCZGHTX+pLz5/8jbGgQ==
+X-Received: by 2002:a05:6402:11d2:: with SMTP id j18mr45510536edw.318.1637917280547;
+        Fri, 26 Nov 2021 01:01:20 -0800 (PST)
+Received: from localhost ([2001:67c:1560:8007::aac:c1b6])
+        by smtp.gmail.com with ESMTPSA id e4sm3026588ejs.13.2021.11.26.01.01.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 01:01:19 -0800 (PST)
+Date:   Fri, 26 Nov 2021 10:01:19 +0100
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests/seccomp: fix check of fds being assigned
+Message-ID: <YaCiX+ypndYf/0QP@arighi-desktop>
+References: <20211115165227.101124-1-andrea.righi@canonical.com>
+ <202111180933.BE5101720@keescook>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202111180933.BE5101720@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Angus Ainslie <angus@akkea.ca>
+On Thu, Nov 18, 2021 at 09:37:03AM -0800, Kees Cook wrote:
+> On Mon, Nov 15, 2021 at 05:52:27PM +0100, Andrea Righi wrote:
+> > There might be an arbitrary free open fd slot when we run the addfd
+> > sub-test, so checking for progressive numbers of file descriptors
+> > starting from memfd is not always a reliable check and we could get the
+> > following failure:
+> > 
+> >   #  RUN           global.user_notification_addfd ...
+> >   # seccomp_bpf.c:3989:user_notification_addfd:Expected listener (18) == nextfd++ (9)
+> 
+> What injected 9 extra fds into this test?
+> 
 
-Allow the dw9714 to control a regulator and adjust suspend() and resume()
-to support both runtime and system pm.
+We run the kselftest inside a framework (bash/python scripts basically)
+and this is what I see (I added a simple `ls -l /proc/pid/fd` in
+seccomp_bpf.c after memfd is created):
 
-Signed-off-by: Angus Ainslie <angus@akkea.ca>
-Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
----
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # #  RUN           global.user_notification_addfd ...
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # total 0
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 0 -> /dev/pts/0
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 1 -> pipe:[28844]
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 10 -> /dev/pts/0
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 11 -> /dev/pts/0
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 12 -> /home/ubuntu/autotest/client/results/default/ubuntu_kernel_selftests.seccomp:seccomp_bpf/debug/ubuntu_kernel_selftests.seccomp:seccomp_bpf.DEBUG
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 13 -> /home/ubuntu/autotest/client/results/default/ubuntu_kernel_selftests.seccomp:seccomp_bpf/debug/ubuntu_kernel_selftests.seccomp:seccomp_bpf.INFO
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 14 -> /home/ubuntu/autotest/client/results/default/ubuntu_kernel_selftests.seccomp:seccomp_bpf/debug/ubuntu_kernel_selftests.seccomp:seccomp_bpf.WARNING
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 15 -> /home/ubuntu/autotest/client/results/default/ubuntu_kernel_selftests.seccomp:seccomp_bpf/debug/ubuntu_kernel_selftests.seccomp:seccomp_bpf.ERROR
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 16 -> pipe:[27608]
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 17 -> pipe:[27609]
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 2 -> pipe:[28844]
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 3 -> pipe:[27803]
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 4 -> pipe:[26387]
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 5 -> /home/ubuntu/autotest/client/results/default/debug/client.WARNING
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # l-wx------ 1 root root 64 Nov 26 08:50 6 -> /home/ubuntu/autotest/client/results/default/debug/client.ERROR
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 7 -> /dev/pts/0
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 8 -> /memfd:test (deleted)
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # lrwx------ 1 root root 64 Nov 26 08:50 9 -> /dev/pts/0
+11/26 08:50:08 DEBUG|     utils:0153| [stdout] # # seccomp_bpf.c:3993:user_notification_addfd:Expected listener (18) == nextfd++ (9)
+11/26 08:50:09 DEBUG|     utils:0153| [stdout] # # user_notification_addfd: Test terminated by assertion
+11/26 08:50:09 DEBUG|     utils:0153| [stdout] # #          FAIL  global.user_notification_addfd
 
-revision history
-----------------
+As we can see memfd has been allocated in a hole (fd=8) and listener
+will get fd=18, so checking for sequential fd numbers is not working in
+this case.
 
-v2: (thank you Mark)
- * simplify the regulator_get_optional() error path
- * fix regulator usage during probe()
+> >   # user_notification_addfd: Test terminated by assertion
+> > 
+> > Simply check if memfd and listener are valid file descriptors and start
+> > counting for progressive file checking with the listener fd.
+> 
+> Hm, so I attempted to fix this once already:
+> 93e720d710df ("selftests/seccomp: More closely track fds being assigned")
+> so I'm not sure the proposed patch really improves it in the general
+> case.
 
-v1:
-https://lore.kernel.org/linux-media/20211125080922.978583-1-martin.kepplinger@puri.sm/
+I agree that my patch doesn't fix 100% of the cases, we may still have
+fd holes.
 
+> 
+> > Fixes: 93e720d710df ("selftests/seccomp: More closely track fds being assigned")
+> > Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+> > ---
+> >  tools/testing/selftests/seccomp/seccomp_bpf.c | 5 ++---
+> >  1 file changed, 2 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> > index d425688cf59c..4f37153378a1 100644
+> > --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
+> > +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> > @@ -3975,18 +3975,17 @@ TEST(user_notification_addfd)
+> >  	/* There may be arbitrary already-open fds at test start. */
+> >  	memfd = memfd_create("test", 0);
+> >  	ASSERT_GE(memfd, 0);
+> > -	nextfd = memfd + 1;
+> >  
+> >  	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
+> >  	ASSERT_EQ(0, ret) {
+> >  		TH_LOG("Kernel does not support PR_SET_NO_NEW_PRIVS!");
+> >  	}
+> >  
+> > -	/* fd: 4 */
+> >  	/* Check that the basic notification machinery works */
+> >  	listener = user_notif_syscall(__NR_getppid,
+> >  				      SECCOMP_FILTER_FLAG_NEW_LISTENER);
+> > -	ASSERT_EQ(listener, nextfd++);
+> > +	ASSERT_GE(listener, 0);
+> > +	nextfd = listener + 1;
+> 
+> e.g. if there was a hole in the fd map for memfd, why not listener too?
+> 
+> Should the test dup2 memfd up to fd 100 and start counting there or
+> something? What is the condition that fills the fds for this process?
 
+How about getting the allocated fd numbers from /proc/pid/fd and
+figuring out the next fd number taking also the holes into account?
 
- drivers/media/i2c/dw9714.c | 39 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
-
-diff --git a/drivers/media/i2c/dw9714.c b/drivers/media/i2c/dw9714.c
-index 3863dfeb8293..e8cc19b89861 100644
---- a/drivers/media/i2c/dw9714.c
-+++ b/drivers/media/i2c/dw9714.c
-@@ -5,6 +5,7 @@
- #include <linux/i2c.h>
- #include <linux/module.h>
- #include <linux/pm_runtime.h>
-+#include <linux/regulator/consumer.h>
- #include <media/v4l2-ctrls.h>
- #include <media/v4l2-device.h>
- #include <media/v4l2-event.h>
-@@ -36,6 +37,7 @@ struct dw9714_device {
- 	struct v4l2_ctrl_handler ctrls_vcm;
- 	struct v4l2_subdev sd;
- 	u16 current_val;
-+	struct regulator *vcc;
- };
- 
- static inline struct dw9714_device *to_dw9714_vcm(struct v4l2_ctrl *ctrl)
-@@ -145,6 +147,21 @@ static int dw9714_probe(struct i2c_client *client)
- 	if (dw9714_dev == NULL)
- 		return -ENOMEM;
- 
-+	dw9714_dev->vcc = devm_regulator_get_optional(&client->dev, "vcc");
-+	if (IS_ERR(dw9714_dev->vcc)) {
-+		dev_dbg(&client->dev, "No vcc regulator found: %ld\n",
-+			PTR_ERR(dw9714_dev->vcc));
-+		dw9714_dev->vcc = NULL;
-+	}
-+
-+	if (dw9714_dev->vcc) {
-+		rval = regulator_enable(dw9714_dev->vcc);
-+		if (rval < 0) {
-+			dev_err(&client->dev, "failed to enable vcc: %d\n", rval);
-+			return rval;
-+		}
-+	}
-+
- 	v4l2_i2c_subdev_init(&dw9714_dev->sd, client, &dw9714_ops);
- 	dw9714_dev->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE |
- 				V4L2_SUBDEV_FL_HAS_EVENTS;
-@@ -200,6 +217,9 @@ static int __maybe_unused dw9714_vcm_suspend(struct device *dev)
- 	struct dw9714_device *dw9714_dev = sd_to_dw9714_vcm(sd);
- 	int ret, val;
- 
-+	if (pm_runtime_suspended(&client->dev))
-+		return 0;
-+
- 	for (val = dw9714_dev->current_val & ~(DW9714_CTRL_STEPS - 1);
- 	     val >= 0; val -= DW9714_CTRL_STEPS) {
- 		ret = dw9714_i2c_write(client,
-@@ -208,6 +228,13 @@ static int __maybe_unused dw9714_vcm_suspend(struct device *dev)
- 			dev_err_once(dev, "%s I2C failure: %d", __func__, ret);
- 		usleep_range(DW9714_CTRL_DELAY_US, DW9714_CTRL_DELAY_US + 10);
- 	}
-+
-+	if (dw9714_dev->vcc) {
-+		ret = regulator_disable(dw9714_dev->vcc);
-+		if (ret)
-+			dev_err(dev, "Failed to disable vcc: %d\n", ret);
-+	}
-+
- 	return 0;
- }
- 
-@@ -224,6 +251,18 @@ static int  __maybe_unused dw9714_vcm_resume(struct device *dev)
- 	struct dw9714_device *dw9714_dev = sd_to_dw9714_vcm(sd);
- 	int ret, val;
- 
-+	if (pm_runtime_suspended(&client->dev))
-+		return 0;
-+
-+	if (dw9714_dev->vcc) {
-+		ret = regulator_enable(dw9714_dev->vcc);
-+		if (ret) {
-+			dev_err(dev, "Failed to enable vcc: %d\n", ret);
-+			return ret;
-+		}
-+		usleep_range(1000, 2000);
-+	}
-+
- 	for (val = dw9714_dev->current_val % DW9714_CTRL_STEPS;
- 	     val < dw9714_dev->current_val + DW9714_CTRL_STEPS - 1;
- 	     val += DW9714_CTRL_STEPS) {
--- 
-2.30.2
-
+Thanks,
+-Andrea
