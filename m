@@ -2,64 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12ABC45F5FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 21:42:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D54E45F5FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 21:42:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239995AbhKZUpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 15:45:21 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:33958 "EHLO
+        id S240416AbhKZUp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 15:45:27 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:34020 "EHLO
         dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbhKZUnV (ORCPT
+        with ESMTP id S234041AbhKZUn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 15:43:21 -0500
+        Fri, 26 Nov 2021 15:43:26 -0500
 Received: from mail.kernel.org (unknown [198.145.29.99])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B756362379;
-        Fri, 26 Nov 2021 20:40:07 +0000 (UTC)
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1619560184;
-        Fri, 26 Nov 2021 20:40:07 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 259046237E;
+        Fri, 26 Nov 2021 20:40:13 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 711D860041;
+        Fri, 26 Nov 2021 20:40:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637959207;
-        bh=vlInJ/DK+J61Zx5PEJdRH1trST/kJcn44p12hpI+00o=;
+        s=k20201202; t=1637959212;
+        bh=6o7xyG05uFQQ4K0xAaAbq+Bl1zLsVU0mtKKjMexqDQQ=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Fgc1843IKf5Vc7ey+i2y2iawA6iSb4chX+ctCHBA4CPQVSxi2zpv2w1oRWBJeDMfC
-         0aqDn9pif76Z32EhGEpb5incdcKUVnU2U8lNk3Xixtkw8Kp8i2eroBd8td5sbkpNIL
-         MgwVCcOInA2xpQJJo15KNP1XSibVgalPFzm2It9Jhm1lxPqrS2RFoOoqoQ1tZ0kktk
-         BdPtyFdhBcU+dyDrWuqopsAxgbOJs8MBaqrdYJY7x4mdA4RzmtdKZQIi7rybN3OLmL
-         pwoAMTJsBg5PpsPrt86XizvWQP8ma6C8kUZZmfwR8BaEpYUdAAcTXEVgQ/4ZDghUC1
-         LZRSiPyQ8ZYHw==
+        b=Z9olwYfpQakV7W+Txcapb9NRzPHRVbyUnmBlMsXLhc2tzy6ir92UPWepdz3rZK88r
+         OIqk5aPwjTOnW7JoIXxM1BjxuM0BK/umWkfNem9EBhDgH2ktRFh481kKdb/Noqb3v9
+         pcOd5E+nUcGFuYYkMX07E/0v9NDfAZDIprFUq/5T2xzaf6MOmZ1Tut8dMafo8s5McP
+         moTZFi5t2rHVoazk9I3tqBTdtITC1eTNfmSw22CiNNuxRpR0AnZE4QbHOgmDc37gXl
+         nCjpK6EFrQk5/7vFn1SU0q4s8RqOtYyUlAyMK429JTuZW+wKmIK+IvyJOLFLTNJtV9
+         UVhfy+dXco62w==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id F0B21609D5;
-        Fri, 26 Nov 2021 20:40:06 +0000 (UTC)
-Subject: Re: [GIT PULL] ACPI fixes for v5.16-rc3
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6AB5260A4E;
+        Fri, 26 Nov 2021 20:40:12 +0000 (UTC)
+Subject: Re: [GIT PULL] fuse fixes for 5.16-rc3
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAJZ5v0hQaF-ANLc4JO=Ub_JMsqLFpZev_gmpb=NPpg=zmqcauA@mail.gmail.com>
-References: <CAJZ5v0hQaF-ANLc4JO=Ub_JMsqLFpZev_gmpb=NPpg=zmqcauA@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-acpi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAJZ5v0hQaF-ANLc4JO=Ub_JMsqLFpZev_gmpb=NPpg=zmqcauA@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.16-rc3
-X-PR-Tracked-Commit-Id: 2e13e5aeda156f747919c7111723b9302836fb38
+In-Reply-To: <YaE5NdAaxf0vuEew@miu.piliscsaba.redhat.com>
+References: <YaE5NdAaxf0vuEew@miu.piliscsaba.redhat.com>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YaE5NdAaxf0vuEew@miu.piliscsaba.redhat.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git tags/fuse-fixes-5.16-rc3
+X-PR-Tracked-Commit-Id: 473441720c8616dfaf4451f9c7ea14f0eb5e5d65
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5367cf1c3ad02f7f14d79733814302a96cc97b96
-Message-Id: <163795920691.10744.16179332108716724763.pr-tracker-bot@kernel.org>
-Date:   Fri, 26 Nov 2021 20:40:06 +0000
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
+X-PR-Merge-Commit-Id: 925c94371c5532659f8eb5bcf3b71f78622e4f68
+Message-Id: <163795921242.10744.6190991168903339012.pr-tracker-bot@kernel.org>
+Date:   Fri, 26 Nov 2021 20:40:12 +0000
+To:     Miklos Szeredi <miklos@szeredi.hu>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 26 Nov 2021 20:38:05 +0100:
+The pull request you sent on Fri, 26 Nov 2021 20:44:53 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.16-rc3
+> git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git tags/fuse-fixes-5.16-rc3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5367cf1c3ad02f7f14d79733814302a96cc97b96
+https://git.kernel.org/torvalds/c/925c94371c5532659f8eb5bcf3b71f78622e4f68
 
 Thank you!
 
