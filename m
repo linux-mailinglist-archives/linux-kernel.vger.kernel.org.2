@@ -2,105 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC8045E421
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 02:44:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CE845E42B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 02:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357335AbhKZBsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 20:48:01 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:15870 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351614AbhKZBqA (ORCPT
+        id S1357539AbhKZB4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 20:56:10 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:14982 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357472AbhKZByI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 20:46:00 -0500
-Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4J0ctf4YQbz91NH;
-        Fri, 26 Nov 2021 09:42:18 +0800 (CST)
-Received: from ubuntu-82.huawei.com (10.175.104.82) by
- dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.20; Fri, 26 Nov 2021 09:42:46 +0800
-From:   Ziyang Xuan <william.xuanziyang@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <petrm@nvidia.com>, <netdev@vger.kernel.org>,
+        Thu, 25 Nov 2021 20:54:08 -0500
+Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4J0d1c2PBmzZd2n;
+        Fri, 26 Nov 2021 09:48:20 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
+ (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Fri, 26 Nov
+ 2021 09:50:54 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <damien.lemoal@opensource.wdc.com>, <axboe@kernel.dk>,
+        <tj@kernel.org>, <linux-ide@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH net] net: vlan: fix underflow for the real_dev refcnt
-Date:   Fri, 26 Nov 2021 09:59:42 +0800
-Message-ID: <20211126015942.2918542-1-william.xuanziyang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+CC:     <sergei.shtylyov@gmail.com>, <yebin10@huawei.com>,
+        <libaokun1@huawei.com>, <yukuai3@huawei.com>
+Subject: [PATCH -next V5 0/2] fix two bugs when trying rmmod sata_fsl
+Date:   Fri, 26 Nov 2021 10:03:05 +0800
+Message-ID: <20211126020307.2168767-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeml757-chm.china.huawei.com (10.1.199.137)
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Inject error before dev_hold(real_dev) in register_vlan_dev(),
-and execute the following testcase:
+V1->V2:
+	Fixed the check on the return value of platform_get_irq().
+	And propagate errors up to sata_fsl_probe()'s callers.
+V2->V3:
+	Add fixed and CC stable and modified the patch description.
+V3->V4:
+	Use a single structure.
+V4->V5:
+	Delete duplicate dev_err() message.
 
-ip link add dev dummy1 type dummy
-ip link add name dummy1.100 link dummy1 type vlan id 100
-ip link del dev dummy1
+Baokun Li (2):
+  sata_fsl: fix UAF in sata_fsl_port_stop when rmmod sata_fsl
+  sata_fsl: fix warning in remove_proc_entry when rmmod sata_fsl
 
-When the dummy netdevice is removed, we will get a WARNING as following:
+ drivers/ata/sata_fsl.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-=======================================================================
-refcount_t: decrement hit 0; leaking memory.
-WARNING: CPU: 2 PID: 0 at lib/refcount.c:31 refcount_warn_saturate+0xbf/0x1e0
-
-and an endless loop of:
-
-=======================================================================
-unregister_netdevice: waiting for dummy1 to become free. Usage count = -1073741824
-
-That is because dev_put(real_dev) in vlan_dev_free() be called without
-dev_hold(real_dev) in register_vlan_dev(). It makes the refcnt of real_dev
-underflow.
-
-Move the dev_hold(real_dev) to vlan_dev_init() which is the call-back of
-ndo_init(). That makes dev_hold() and dev_put() for vlan's real_dev
-symmetrical.
-
-Fixes: 563bcbae3ba2 ("net: vlan: fix a UAF in vlan_dev_real_dev()")
-Reported-by: Petr Machata <petrm@nvidia.com>
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
----
- net/8021q/vlan.c     | 3 ---
- net/8021q/vlan_dev.c | 3 +++
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
-index a3a0a5e994f5..abaa5d96ded2 100644
---- a/net/8021q/vlan.c
-+++ b/net/8021q/vlan.c
-@@ -184,9 +184,6 @@ int register_vlan_dev(struct net_device *dev, struct netlink_ext_ack *extack)
- 	if (err)
- 		goto out_unregister_netdev;
- 
--	/* Account for reference in struct vlan_dev_priv */
--	dev_hold(real_dev);
--
- 	vlan_stacked_transfer_operstate(real_dev, dev, vlan);
- 	linkwatch_fire_event(dev); /* _MUST_ call rfc2863_policy() */
- 
-diff --git a/net/8021q/vlan_dev.c b/net/8021q/vlan_dev.c
-index ab6dee28536d..a54535cbcf4c 100644
---- a/net/8021q/vlan_dev.c
-+++ b/net/8021q/vlan_dev.c
-@@ -615,6 +615,9 @@ static int vlan_dev_init(struct net_device *dev)
- 	if (!vlan->vlan_pcpu_stats)
- 		return -ENOMEM;
- 
-+	/* Get vlan's reference to real_dev */
-+	dev_hold(real_dev);
-+
- 	return 0;
- }
- 
 -- 
-2.25.1
+2.31.1
 
