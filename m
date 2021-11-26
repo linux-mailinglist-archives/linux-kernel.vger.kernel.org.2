@@ -2,102 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7428545F2CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 18:20:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A98D45F318
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 18:40:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235046AbhKZRXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 12:23:39 -0500
-Received: from foss.arm.com ([217.140.110.172]:35924 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230473AbhKZRVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 12:21:38 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BADA911D4;
-        Fri, 26 Nov 2021 09:18:24 -0800 (PST)
-Received: from ubiquitous (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B88683F7B4;
-        Fri, 26 Nov 2021 09:18:23 -0800 (PST)
-Date:   Fri, 26 Nov 2021 17:18:17 +0000
-From:   Vincent Donnefort <vincent.donnefort@arm.com>
-To:     Valentin Schneider <Valentin.Schneider@arm.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>, peterz@infradead.org,
-        mingo@redhat.com, linux-kernel@vger.kernel.org,
-        mgorman@techsingularity.net, dietmar.eggemann@arm.com
-Subject: Re: [PATCH] sched/fair: Fix detection of per-CPU kthreads waking a
- task
-Message-ID: <20211126171817.GA3798214@ubiquitous>
-References: <20211124154239.3191366-1-vincent.donnefort@arm.com>
- <CAKfTPtDX8sOfguZhJt5QV3j5D_JetcgncuF2w+uLa0XDk7UXkw@mail.gmail.com>
- <8735nkcwov.mognet@arm.com>
- <CAKfTPtDPskVdEd-KQ_cwe-R_zVFPQOgdbk9x+3eD12pKs8fGFw@mail.gmail.com>
- <87zgpsb6de.mognet@arm.com>
- <CAKfTPtCnusWJXJLDEudQ_q8MWaZYbPJK-QjAbBYWFW8Nw-J+Ww@mail.gmail.com>
- <87sfvjavqk.mognet@arm.com>
- <CAKfTPtC4iXXaptm9+2bHvX2E3xAWU4M3xN0ZuwpFQ1RyXAyxyA@mail.gmail.com>
- <87pmqmc16f.mognet@arm.com>
+        id S234729AbhKZRoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 12:44:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229670AbhKZRmB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 12:42:01 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0108C06137E;
+        Fri, 26 Nov 2021 09:18:21 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id x6so41484206edr.5;
+        Fri, 26 Nov 2021 09:18:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YszGERDeECoMOZaP29/5y/59DxPqeaNztlt3/qz1DSQ=;
+        b=YURDCbcg2Zi2uj6U53+fUclZRJ+Z6QuyvcHC8U2BW+t3nuWnO1YVaLZ6tmaxtHMjcP
+         lN9SUJu0DqaBoPJ+UIDuC8cxEgLPEh8V2VnKsNXJSED5KaAaUp3rG8rpge+Eg4RZsVg5
+         /jjZEKrS+xWMvT2iSi4EETruqrrcFkMctYzpyTgXORfIo1lsuvZcmVX97Gs9oy/5Bo75
+         5SQ281z5DYXXn7TUQWak8+NCNnorbvo5Oh0eSkmBEaiej62Uc7AJjAOIGUfACHWFDSQw
+         QOy3Vim6eycMIxunHc9iPGzRzaHjLP4zBjo8CcKkI35DEOqG+2dmNAIfPPosfuCECaLt
+         PQaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YszGERDeECoMOZaP29/5y/59DxPqeaNztlt3/qz1DSQ=;
+        b=IUHeJ0XnRVTawNSrnayr2uN/6u0+kq7x7iVJYbumCtdLfX1TjJg4fD+9Q5kcw6hP0/
+         vy04J6dSP0aO6zqzU9Ly2xgC47NB10DYLPORUO+wWwkTBjhBMmCWrWygXwglNY9SmmMm
+         hR0Sxn79ZfM1DTn6kBat+43IUkQvqXsrMMNEEesEFonElBDcOZvT8w3E2vEMHBJmkkyu
+         Wdk35KSDCIPzDQku1k8y8jFngzymFeqrCf27Jf2+bVKeOSlsAgfKz5U8d5x4s7LxsH/j
+         jXbVgygR84uYMUC93/BtjkODghypYvTs5ae4yPLEHmuXisX5vweuDL4yuo46wA3iE0Ng
+         PNDQ==
+X-Gm-Message-State: AOAM531z2ocEY44gAtV+rjF5+lkpNPJlBtJWXvzekiQezNgWYwT2VTdC
+        wQZAthvf0relmgF3hKiFWic=
+X-Google-Smtp-Source: ABdhPJyqvxtKrHddLLi/xtSEJmBvf/jHJglJSqpUHfu4TNZIhPrFrC2N7hDDaAJQlNbbFeRHDmO1aA==
+X-Received: by 2002:a05:6402:11cb:: with SMTP id j11mr51131484edw.38.1637947100439;
+        Fri, 26 Nov 2021 09:18:20 -0800 (PST)
+Received: from skbuf ([188.25.173.50])
+        by smtp.gmail.com with ESMTPSA id hp3sm3565638ejc.61.2021.11.26.09.18.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 09:18:19 -0800 (PST)
+Date:   Fri, 26 Nov 2021 19:18:18 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     Kurt Kanzenbach <kurt@linutronix.de>,
+        Martin Kaistra <martin.kaistra@linutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 7/7] net: dsa: b53: Expose PTP timestamping ioctls to
+ userspace
+Message-ID: <20211126171818.bvlxjoz7hu5w7bi5@skbuf>
+References: <20211106001804.GA24062@hoboy.vegasvil.org>
+ <20211106003606.qvfkitgyzoutznlw@skbuf>
+ <20211107140534.GB18693@hoboy.vegasvil.org>
+ <20211107142703.tid4l4onr6y2gxic@skbuf>
+ <20211108144824.GD7170@hoboy.vegasvil.org>
+ <20211125170518.socgptqrhrds2vl3@skbuf>
+ <87r1b3nw93.fsf@kurt>
+ <20211126163108.GA27081@hoboy.vegasvil.org>
+ <CA+h21hq=6eMrCJ=TS+zdrxHhuxcmVFLU0hzGmhLXUGFU-vLhPg@mail.gmail.com>
+ <20211126170348.GE27081@hoboy.vegasvil.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87pmqmc16f.mognet@arm.com>
+In-Reply-To: <20211126170348.GE27081@hoboy.vegasvil.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 04:49:12PM +0000, Valentin Schneider wrote:
-> On 26/11/21 15:40, Vincent Guittot wrote:
-> > On Fri, 26 Nov 2021 at 14:32, Valentin Schneider
-> > <Valentin.Schneider@arm.com> wrote:
-> >>         /*
-> >> -        * Allow a per-cpu kthread to stack with the wakee if the
-> >> -        * kworker thread and the tasks previous CPUs are the same.
-> >> -        * The assumption is that the wakee queued work for the
-> >> -        * per-cpu kthread that is now complete and the wakeup is
-> >> -        * essentially a sync wakeup. An obvious example of this
-> >> +        * Allow a per-cpu kthread to stack with the wakee if the kworker thread
-> >> +        * and the tasks previous CPUs are the same.  The assumption is that the
-> >> +        * wakee queued work for the per-cpu kthread that is now complete and
-> >> +        * the wakeup is essentially a sync wakeup. An obvious example of this
-> >>          * pattern is IO completions.
-> >> +        *
-> >> +        * Ensure the wakeup is issued by the kthread itself, and don't match
-> >> +        * against the idle task because that could override the
-> >> +        * available_idle_cpu(target) check done higher up.
-> >>          */
-> >> -       if (is_per_cpu_kthread(current) &&
-> >> +       if (is_per_cpu_kthread(current) && !is_idle_task(current) &&
-> >
-> > still i don't see the need of !is_idle_task(current)
-> >
+On Fri, Nov 26, 2021 at 09:03:48AM -0800, Richard Cochran wrote:
+> On Fri, Nov 26, 2021 at 06:42:57PM +0200, Vladimir Oltean wrote:
+> > I'm still missing something obvious, aren't I?
 > 
-> Admittedly, belts and braces. The existing condition checks rq->nr_running <= 1
-> which can lead to coscheduling when the wakeup is issued by the idle task
-> (or even if rq->nr_running == 0, you can have rq->ttwu_pending without
-> having sent an IPI due to polling). Essentially this overrides the first
-> check in sis() that uses idle_cpu(target) (prev == smp_processor_id() ==
-> target).
+> You said there are "many more" drivers with this bug, but I'm saying
+> that most drivers correctly upgrade the ioctl request.
 > 
-> I couldn't prove such wakeups can happen right now, but if/when they do
-> (AIUI it would just take someone to add a wake_up_process() down some
-> smp_call_function() callback) then we'll need the above. If you're still
-> not convinced by now, I won't push it further.
+> So far we have b53 and ocelot doing the buggy downgrade.  I guess it
+> will require a tree wide audit to discover the "many more"...
 
-From a quick experiment, even with the asym_fits_capacity(), I can trigger
-the following:
+Ah, yes, I assure you that there are many more drivers doing wacky
+stuff, for example sja1105 will take any RX filter that isn't NONE, and
+then reports it back as PTP_V2_L2_EVENT.
+https://elixir.bootlin.com/linux/latest/source/drivers/net/dsa/sja1105/sja1105_ptp.c#L89
 
-[    0.118855] select_idle_sibling: wakee=kthreadd:2 nr_cpus_allowed=8 current=swapper/0:1 in_task=1
-[    0.128214] select_idle_sibling: wakee=rcu_gp:3 nr_cpus_allowed=8 current=swapper/0:1 in_task=1
-[    0.137327] select_idle_sibling: wakee=rcu_par_gp:4 nr_cpus_allowed=8 current=swapper/0:1 in_task=1
-[    0.147221] select_idle_sibling: wakee=kworker/u16:0:7 nr_cpus_allowed=8 current=swapper/0:1 in_task=1
-[    0.156994] select_idle_sibling: wakee=mm_percpu_wq:8 nr_cpus_allowed=8 current=swapper/0:1 in_task=1
-[    0.171943] select_idle_sibling: wakee=rcu_sched:10 nr_cpus_allowed=8 current=swapper/0:1 in_task=1
-
-So the in_task() condition doesn't appear to be enough to filter wakeups
-while we have the swapper as a current.
-
-> 
-> >
-> >> +           in_task() &&
-> >>             prev == smp_processor_id() &&
-> >>             this_rq()->nr_running <= 1) {
-> >>                 return prev;
-> >>
+Somehow at this stage I don't even want to know about any other drivers,
+since I might feel the urge to patch them and I don't really have the
+necessary free time for that right now :D
