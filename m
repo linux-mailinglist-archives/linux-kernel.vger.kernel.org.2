@@ -2,111 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A27445ED03
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:53:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0988F45EDD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:25:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348198AbhKZL4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 06:56:51 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4173 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346217AbhKZLyu (ORCPT
+        id S1350206AbhKZM2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 07:28:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235463AbhKZM0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 06:54:50 -0500
-Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4J0tNK6fbQz67y1l;
-        Fri, 26 Nov 2021 19:50:25 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 26 Nov 2021 12:51:35 +0100
-Received: from [10.202.227.179] (10.202.227.179) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 26 Nov 2021 11:51:34 +0000
-Subject: Re: [PATCH RFT 0/3] blk-mq: Optimise blk_mq_queue_tag_busy_iter() for
- shared tags
-To:     Kashyap Desai <kashyap.desai@broadcom.com>, <axboe@kernel.dk>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <ming.lei@redhat.com>, <hare@suse.de>
-References: <1635852455-39935-1-git-send-email-john.garry@huawei.com>
- <7fba1b1e-63a6-6315-e5ca-6d5ae9de6dbb@huawei.com>
- <b18285f4aa0e8be796aea19cdfde0293@mail.gmail.com>
- <9859e133-e3b8-4e53-dfad-cbf75ed3102f@huawei.com>
- <9b092ca49e9b5415772cd950a3c12584@mail.gmail.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <fbdf64cd-7d31-f470-b93c-5b42a1e1cf40@huawei.com>
-Date:   Fri, 26 Nov 2021 11:51:33 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Fri, 26 Nov 2021 07:26:46 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD85BC061399;
+        Fri, 26 Nov 2021 03:52:11 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id u3so23653199lfl.2;
+        Fri, 26 Nov 2021 03:52:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FO4VBFnJmFurD2UzwMUBKDGtdPRzRFFL5pbgvr6OIHE=;
+        b=KNnn4KLAPOrudXuGH603uhr8HkHMQuc/NZJJZjsg2JRzHZb0D0GxNm0hyj2PplChq3
+         apwonvfPdXQqh5NvcO6Y2tVtP5TrAcca2ELU7BBIxoLadDuQr45DSUB2T8TXfvrqBbCp
+         vBpAsJs2s4alIKcm2kio1ec0oFbPIR7aSbTxlHG+M8flMmmsJWDpTtlWQIc+O/L1/GKY
+         D0tr/hrL5iZNdzfCNTL0P2o3LPPy73/RfMpeh6G77dgbbM9y3e9hITshizcOg08jRqn+
+         41+/rqoBe49ltf3OJ53VI2wJU4eNZb0L8oRiUAGHRgnzaDl5sQHM2sI5vXYfZezvY3Oe
+         OI3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FO4VBFnJmFurD2UzwMUBKDGtdPRzRFFL5pbgvr6OIHE=;
+        b=scaCUnbjPQQkM0BvH9OlkKY2TE3lwNiGGhq6ej7iPRilNhsUGmiRZ63bK3JJy5sGWQ
+         rnRhDQtTdIBHY+8WGMBgX2/VFeG2Jh2eoNfarfosSId/vt8AQAGWfslYF76yOhgYAtGY
+         wrFrOM/46U4Zet55AgHSIjQofQCqS7axQnCzGmwRhuKnAkyC6/jKvh73qiiLQ49N4ttQ
+         uhoow4ovn8Wk00aBsXnh1BnXkokD+/95dJlDh19tFrRkB+ls3bYHz401PtPurv9UmNmH
+         QtVqxny+40a+2gKJ1MbNQb9UsWuA4O2+zcF7HwNxDmeHDZTcQVd6vrFUzxem+aYDpzsM
+         S5gA==
+X-Gm-Message-State: AOAM530YBld9MCY9YHXMtdJcTBAwVdMBmW+PI3b4+5xtdJ8WEis4TsDR
+        C1DNMWAOii6Z0xJL0G3Ly/U=
+X-Google-Smtp-Source: ABdhPJxhuNo7zNlSNKnh6lK7cs0lfHFvVg9IF/LOx2XuqynLIf8ajSj4M4U52mAIelNciAxREQnHhg==
+X-Received: by 2002:a19:f242:: with SMTP id d2mr29542032lfk.516.1637927530039;
+        Fri, 26 Nov 2021 03:52:10 -0800 (PST)
+Received: from kari-VirtualBox ([31.132.12.44])
+        by smtp.gmail.com with ESMTPSA id b13sm557874lfv.200.2021.11.26.03.52.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 03:52:09 -0800 (PST)
+Date:   Fri, 26 Nov 2021 13:52:07 +0200
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Rushab Shah <rushabshah32@gmail.com>
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jiri Kosina <trivial@kernel.org>, ntfs3@lists.linux.dev,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Doc/fs/ntfs3: Fix a trivial typo
+Message-ID: <20211126115207.jgtmr2skapg5exzv@kari-VirtualBox>
+References: <20211116193138.335050-1-rushabshah32@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <9b092ca49e9b5415772cd950a3c12584@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.179]
-X-ClientProxiedBy: lhreml749-chm.china.huawei.com (10.201.108.199) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211116193138.335050-1-rushabshah32@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/11/2021 11:25, Kashyap Desai wrote:
->>>
->>> I will continue testing and let you know how it goes.
->> ok, good to know, thanks. But I would still like to know what is
->> triggering
->> blk_mq_queue_tag_busy_iter() so often. Indeed, as mentioned in this cover
->> letter, this function was hardly optimised before for shared sbitmap.
-> If I give  "--disk_util=0" option in my fio run, caller of "
-> blk_mq_queue_tag_busy_iter" reduced drastically.
-> As part of <fio> run, application call diskutils operations and it is almost
-> same as doing "cat /proc/stats" in loop.
-> Looking at fio code, it call diskstats every 250 msec. Here is sample fio
-> logs -
+On Tue, Nov 16, 2021 at 11:31:38AM -0800, Rushab Shah wrote:
+> Correct the typo effectice -> effective
 > 
-> diskutil 87720 /sys/block/sdb/stat: stat read ok? 0
-> diskutil 87720 update io ticks
-> diskutil 87720 open stat file: /sys/block/sdb/stat
-> diskutil 87720 /sys/block/sdb/stat: 127853173        0 1022829056 241827073
-> 0        0        0        0      255   984012 241827073        0        0
-> 0        0        0        0
+> Signed-off-by: Rushab Shah <rushabshah32@gmail.com>
+
+Reviewed-by: Kari Argillander <kari.argillander@gmail.com>
+
+> ---
+>  Documentation/filesystems/ntfs3.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> There is one more call trace, but not sure why it is getting executed in my
-> test.  Below path does not execute so frequently but it consumes cpu (not
-> noticeable on my setup)
-> 
-> kthread
->          worker_thread
->          process_one_work
->          blk_mq_timeout_work
->          blk_mq_queue_tag_busy_iter
->          bt_iter
->          blk_mq_find_and_get_req
->          _raw_spin_lock_irqsave
->          native_queued_spin_lock_slowpath
+> diff --git a/Documentation/filesystems/ntfs3.rst b/Documentation/filesystems/ntfs3.rst
+> index d67ccd22c63b..05e9c49b7400 100644
+> --- a/Documentation/filesystems/ntfs3.rst
+> +++ b/Documentation/filesystems/ntfs3.rst
+> @@ -104,7 +104,7 @@ this table marked with no it means default is without **no**.
+>  Todo list
+>  =========
+>  - Full journaling support over JBD. Currently journal replaying is supported
+> -  which is not necessarily as effectice as JBD would be.
+> +  which is not necessarily as effective as JBD would be.
+>  
+>  References
+>  ==========
+> -- 
+> 2.34.0
 > 
 > 
-
-It would be still nice to know where this is coming from.
-
-> This patch set improves above call trace even after disk_util=0 is set.
-ok, fine. Thanks for testing.
-
-So I guess that this is a regression, and you would want this series for 
-v5.16, right? My changes were made with v5.17 in mind.
-
-I am not sure how Jens feels about it, since the changes are 
-significant. It would be a lot easier to argue for v5.16 if we got to 
-this point earlier in the cycle...
-
-Anyway, it would be good to have full review first, so please help with 
-that.
-
-@Ming, can you please give feedback on 3/3 here?
-
-BTW, I am on vacation next week and can't help progress then, so any 
-assistance would be good.
-
-Thanks,
-John
