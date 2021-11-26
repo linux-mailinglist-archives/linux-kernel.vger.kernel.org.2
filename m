@@ -2,63 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 009F545F6D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 23:20:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E7045F6D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 23:25:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244913AbhKZWYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 17:24:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53634 "EHLO
+        id S244340AbhKZW23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 17:28:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233615AbhKZWWE (ORCPT
+        with ESMTP id S233729AbhKZW02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 17:22:04 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA6B5C061574;
-        Fri, 26 Nov 2021 14:18:50 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id o13so21384219wrs.12;
-        Fri, 26 Nov 2021 14:18:50 -0800 (PST)
+        Fri, 26 Nov 2021 17:26:28 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9267C06173E;
+        Fri, 26 Nov 2021 14:23:14 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id r9-20020a7bc089000000b00332f4abf43fso8173513wmh.0;
+        Fri, 26 Nov 2021 14:23:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=8YPOf/hryHXLNf5LZMrhfLPR/t5FxaDsdYpZZbn9qeA=;
-        b=SAOmx1u+b9+/SH8EqbHf0gb/dxmO2bkyeCAIwQBrMKZ7EvZvpx3ScaGlZxHm8jT95Z
-         swm58WRmEwpOkEjxMVi+lqc5bX0TzP7BaGyGByM7VGLfbEkM7dpkEInJcnCKM/uCUf5L
-         RE+2FkoY0n1sNWSVnlLqXdldFP5/9OxFlijQaXSi6aKzJWard7iMkkBu+IraRbvMqdV8
-         fAHj/Fo4wmoZ2xYx8FPu+KyhgS0WtlpndS4Bp/1y+st3QRx2eNtF/bMlPD+PIHUejNJT
-         fEMuhHvXmfOHQfIB9teoiqOu6l1X3r17Y4aIiIEib6f1CWt1Fl0f8hyKcm74QKYyLfMj
-         tsQg==
+        bh=Z+4t5OMP+y8asfHJx9yemcdXWelcG0CCFormBoppS2w=;
+        b=Gzxae8UGy2wtl+rrwGkZkZQPrLUDgc0Nc9kSYiZm5VyR4AcHrSzQE1oIXHanuNvRlS
+         1COJ8mspv1pFLIiNp+fQiWfqN+bt1VwfFl4A53f95zL/Dgz8Nf5Qrbz1TN6DY79QXC5n
+         I1C8c9Vr859QaoU2P23LgpGx2F861z9dHPKs/okYG9jkSjH6NoayVuMnjkw90spw6aSy
+         vd30uuk2MUSBBVJ5oSdHS2ERGWYE3nswWJLhmne6f0d4EM0LhIXvvZSJpJuHvvVKM/Gd
+         W/Pyj6CStsRIcW6pj7SzAE0Z8A7LYK2qnJ65VdusgNkoZisOd6e4qedsS+52/dEtREPr
+         w+Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=8YPOf/hryHXLNf5LZMrhfLPR/t5FxaDsdYpZZbn9qeA=;
-        b=eW0H2SH5MP4jGvhXVza4QwVbw70uq/lSuDMwFDTqa+IILIto4+tYFPHhlNrHzj6en8
-         q9RJVir+zl2hR+igJ9IACSVyRfQlJ89LPY3B6/P5SJL6UneVc7UIs0paVywChSc6hUGm
-         88bXn2d8lRhCNdWni8ZMyEv+BOppMYzUSWMycouA29G5MwxcrFKYz48FOSJ24u/tcX6q
-         kY0vaqpts8hW5/ypNZNH7Jnbi+Tr59KCH8sj712UKV+RvpWMm8SsNTR9AiFVx0IJNCs8
-         F4UimJFOSwvqSoCvRdP+/f+XUyjnnwvtS2dfaFtODhsRgBQNQwm7aUKIEXhjQ5azIIqp
-         L+IA==
-X-Gm-Message-State: AOAM5324upOW+xtueqIqWbDKNOYYQz/FICvzulijoAMYua41NakPIhVy
-        LFrQVmPRrmq4sQ==
-X-Google-Smtp-Source: ABdhPJzpv1hu+dk1JBApzyvzlN/nfu36ibqkZGgaQtsO4EvvZHjLPhpWgb7j1GDiHcPgqf2FxMTJGg==
-X-Received: by 2002:adf:cc91:: with SMTP id p17mr16899891wrj.589.1637965129359;
-        Fri, 26 Nov 2021 14:18:49 -0800 (PST)
+        bh=Z+4t5OMP+y8asfHJx9yemcdXWelcG0CCFormBoppS2w=;
+        b=uobiXqoruj1envOpUFQcVSHq1mI7uV41uePzkcJKVI4LLGJQW+8mRX4eLxr+NGdlMk
+         bpYIaGbCAfYepjogg5MafxagRPAS2DbMmSSEQGBBe0YV4mWEdjOlb1CKrlqbsLjiVOLI
+         BuahldWJ4qJZBYFmDjF0qJAokCCgg/6ABccvXacJd35gDBX/d/BNAazLCE+qD7iIIOTh
+         qBi440S/gu7m/VNtkvMZ3mVXIZMdmNImoRZ5I0gVWUXSHVxXob9fpWFdfk9t2aoKqDr/
+         9zuk7j19FII0xGoNf4UMvmzRrXlvBlQsLdDOv/cvhMIO8Nly4ZyBpPHnkA8qJTrTP8YJ
+         Susg==
+X-Gm-Message-State: AOAM532KJvypWQjuC25wzhODacsAhE2HZKBPH4za7vRz6LdIvqdJrip0
+        /JQxPCxwooHx8Q==
+X-Google-Smtp-Source: ABdhPJzMntEXDyGjqAPNcqmlryFDYENzBgRQiOuclEM7RYDtf91okuklzP7kFyID/PcFnkVcWS1P5Q==
+X-Received: by 2002:a05:600c:19d1:: with SMTP id u17mr18789968wmq.148.1637965393404;
+        Fri, 26 Nov 2021 14:23:13 -0800 (PST)
 Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id j40sm8547915wms.16.2021.11.26.14.18.48
+        by smtp.gmail.com with ESMTPSA id d7sm6349690wrw.87.2021.11.26.14.23.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 14:18:49 -0800 (PST)
+        Fri, 26 Nov 2021 14:23:13 -0800 (PST)
 From:   Colin Ian King <colin.i.king@googlemail.com>
 X-Google-Original-From: Colin Ian King <colin.i.king@gmail.com>
-To:     Tony Luck <tony.luck@intel.com>, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>, linux-edac@vger.kernel.org
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Vineet Gupta <vgupta@kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org
 Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] EDAC/sb_edac: Remove redundant initialization of variable rc
-Date:   Fri, 26 Nov 2021 22:18:48 +0000
-Message-Id: <20211126221848.1125321-1-colin.i.king@gmail.com>
+Subject: [PATCH] ARC: perf: Remove redundant initialization of variable idx
+Date:   Fri, 26 Nov 2021 22:23:12 +0000
+Message-Id: <20211126222312.1125594-1-colin.i.king@gmail.com>
 X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -67,28 +72,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable rc is being initialized with a value that is never
+The variable idx is being initialized with a value that is never
 read, it is being updated later on. The assignment is redundant and
 can be removed.
 
 Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 ---
- drivers/edac/sb_edac.c | 2 +-
+ arch/arc/kernel/perf_event.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/edac/sb_edac.c b/drivers/edac/sb_edac.c
-index 1522d4aa2ca6..9678ab97c7ac 100644
---- a/drivers/edac/sb_edac.c
-+++ b/drivers/edac/sb_edac.c
-@@ -3439,7 +3439,7 @@ MODULE_DEVICE_TABLE(x86cpu, sbridge_cpuids);
- 
- static int sbridge_probe(const struct x86_cpu_id *id)
+diff --git a/arch/arc/kernel/perf_event.c b/arch/arc/kernel/perf_event.c
+index 145722f80c9b..f5dd799ddb9e 100644
+--- a/arch/arc/kernel/perf_event.c
++++ b/arch/arc/kernel/perf_event.c
+@@ -361,7 +361,7 @@ static int arc_pmu_add(struct perf_event *event, int flags)
  {
--	int rc = -ENODEV;
-+	int rc;
- 	u8 mc, num_mc = 0;
- 	struct sbridge_dev *sbridge_dev;
- 	struct pci_id_table *ptable = (struct pci_id_table *)id->driver_data;
+ 	struct arc_pmu_cpu *pmu_cpu = this_cpu_ptr(&arc_pmu_cpu);
+ 	struct hw_perf_event *hwc = &event->hw;
+-	int idx = hwc->idx;
++	int idx;
+ 
+ 	idx = ffz(pmu_cpu->used_mask[0]);
+ 	if (idx == arc_pmu->n_counters)
 -- 
 2.33.1
 
