@@ -2,131 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14BC545EC7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69CC745EC7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:22:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245552AbhKZLZ3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 26 Nov 2021 06:25:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50854 "EHLO
+        id S240472AbhKZLZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 06:25:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240528AbhKZLXZ (ORCPT
+        with ESMTP id S240519AbhKZLXZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Nov 2021 06:23:25 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B297C08EC1F
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:36:39 -0800 (PST)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mqYan-0002aX-6K; Fri, 26 Nov 2021 11:36:33 +0100
-Received: from pza by lupine with local (Exim 4.94.2)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mqYaj-0006P8-DU; Fri, 26 Nov 2021 11:36:29 +0100
-Message-ID: <63a467164c985cadce0e28e50508363a8d2f6622.camel@pengutronix.de>
-Subject: Re: [PATCH v3 1/2] SPI: Add SPI driver for Sunplus SP7021
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Lh Kuo =?UTF-8?Q?=E9=83=AD=E5=8A=9B=E8=B1=AA?= 
-        <lh.Kuo@sunplus.com>, Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, "LH.Kuo" <lhjeff911@gmail.com>,
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E7DC08EC23;
+        Fri, 26 Nov 2021 02:36:46 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id 15A131F467C2
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1637923005; bh=p544riZzn0zdZeLNWHq9SL3/SLvcyH1A0FpJe0Rsn+0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=hjtQtps9kXNuPLBmlY2WeaWZATca4V3B6fIKceWVsKTCWNsruDy5Oysk3SGd0tIMq
+         G1/tIKNrUy1kjGdscl7zaxgTsHv/1JCQkkZn2/oBFnSpaiIVHpJQE0Xog/vbubM6mi
+         +b2548o880QSYR+qBBGicZT0dAoFxfKe6VoXASBgCQPJG2MMVWEfTnda53DDkrAB6s
+         h3IMCa41Asvauoym98hreN7JIr2go+Ip7BFaWIDHyC9yN78J9W7sejMNRZ4hF7V9OF
+         H4/e1y+6pHJ8vKAS8zESl1TLlyn1UTlCxoupKazp/sfTtk8Zl3oEjKG4b0pMWfETNI
+         DijXYTGWQ/bCg==
+Subject: Re: [PATCH 3/3] arm64: dts: mediatek: Add USB xHCI controller for
+ mt8195
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rob Herring <robh+dt@kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "dvorkin@tibbo.com" <dvorkin@tibbo.com>,
-        "qinjian@cqplus1.com" <qinjian@cqplus1.com>,
-        Wells Lu =?UTF-8?Q?=E5=91=82=E8=8A=B3=E9=A8=B0?= 
-        <wells.lu@sunplus.com>
-Date:   Fri, 26 Nov 2021 11:36:29 +0100
-In-Reply-To: <33d50e94059b4734939db60b5c531bc9@sphcmbx02.sunplus.com.tw>
-References: <1635747525-31243-1-git-send-email-lh.kuo@sunplus.com>
-         <cover.1637547799.git.lh.kuo@sunplus.com>
-         <e5f2549224cf875d81306ef5f6e98db1cfd81c2e.1637547799.git.lh.kuo@sunplus.com>
-         <CAHp75Vd2=OHbrpGtsU8AMXdtNfvSPhpc7vhzkWnahaV48XbfUQ@mail.gmail.com>
-         <YZz0n6Mpjl3tKmMe@sirena.org.uk>
-         <CAHp75Vf6+monqu4Hq-yoFSohD9tNFqZTuKjqDDKAJE3Om2BUYQ@mail.gmail.com>
-         <6eb68a8153ba46c48862d00f7aa6e0fe@sphcmbx02.sunplus.com.tw>
-         <CAHp75VftSORts5cbDxvfyHgqhxmb7K74BfPd=mST+75C+Ch9dQ@mail.gmail.com>
-         <33d50e94059b4734939db60b5c531bc9@sphcmbx02.sunplus.com.tw>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.38.3-1 
+        Mathias Nyman <mathias.nyman@intel.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211102060049.1843-1-chunfeng.yun@mediatek.com>
+ <20211102060049.1843-3-chunfeng.yun@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Message-ID: <9db3cb96-ac67-151d-5674-b56c5abbe348@collabora.com>
+Date:   Fri, 26 Nov 2021 11:36:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20211102060049.1843-3-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi LH,
-
-On Fri, 2021-11-26 at 07:40 +0000, Lh Kuo 郭力豪 wrote:
-[...]
-> Amended as follows, is it okay?
+Il 02/11/21 07:00, Chunfeng Yun ha scritto:
+> Add all four USB xHCI controllers for MT8195
 > 
-> 	ret = devm_request_irq(dev, pspim->mas_irq, sp7021_spi_mas_irq
-> 			, IRQF_TRIGGER_RISING, pdev->name, pspim);
-> 	if (ret)
-> 		return ret;
-
-Comma at the end of the line and align the next line with the opening
-parenthesis:
-
-	ret = devm_request_irq(dev, pspim->mas_irq, sp7021_spi_mas_irq,
-			       IRQF_TRIGGER_RISING, pdev->name, pspim);
-
-You can use scripts/checkpatch --strict to find these issues before
-review.
-
-> > >         pspim->rstc = devm_reset_control_get_exclusive(dev, NULL);
-> > >         if (IS_ERR(pspim->rstc)) {
-> > >                 return dev_err_probe(dev, PTR_ERR(pspim->rstc), "rst
-> > > get fail\n");
-> > 
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+>   arch/arm64/boot/dts/mediatek/mt8195.dtsi | 79 ++++++++++++++++++++++++
+>   1 file changed, 79 insertions(+)
 > 
-> Amended as follows, is it okay?
+
+Hello!
+Thanks for the patch! However, there is something to improve...
+
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
+> index a59c0e9d1fc2..263eebfd2ea1 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8195.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
+> @@ -8,6 +8,7 @@
+>   #include <dt-bindings/clock/mt8195-clk.h>
+>   #include <dt-bindings/interrupt-controller/arm-gic.h>
+>   #include <dt-bindings/interrupt-controller/irq.h>
+> +#include <dt-bindings/phy/phy.h>
+>   #include <dt-bindings/power/mt8195-power.h>
+>   
+>   / {
+> @@ -823,6 +824,26 @@
+>   			status = "disabled";
+>   		};
+>   
+> +		xhci0: usb@11200000 {
+> +			compatible = "mediatek,mt8195-xhci", "mediatek,mtk-xhci";
+> +			reg = <0 0x11200000 0 0x1000>, <0 0x11203e00 0 0x0100>;
+> +			reg-names = "mac", "ippc";
+> +			interrupts = <GIC_SPI 129 IRQ_TYPE_LEVEL_HIGH 0>;
+
+Here, and on the other xhci nodes (from what I know, xhci{0,1,3}), you should use
+interrupts-extended and declare the wakeup interrupt on pio.
+
+			interrupts-extended = <&gic GIC_SPI 129 IRQ_TYPE_LEVEL_HIGH 0>,
+
+					      <&pio 219 IRQ_TYPE_LEVEL_LOW>;
+
+			interrupt-names = "host", "wakeup";
+
+
+> +			phys = <&u2port0 PHY_TYPE_USB2>, <&u3port0 PHY_TYPE_USB3>;
+> +			assigned-clocks = <&topckgen CLK_TOP_USB_TOP>,
+> +					  <&topckgen CLK_TOP_SSUSB_XHCI>;
+> +			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D5_D4>,
+> +						 <&topckgen CLK_TOP_UNIVPLL_D5_D4>;
+> +			clocks = <&infracfg_ao CLK_INFRA_AO_SSUSB>,
+> +				 <&infracfg_ao CLK_INFRA_AO_SSUSB_XHCI>,
+> +				 <&topckgen CLK_TOP_SSUSB_REF>,
+> +				 <&apmixedsys CLK_APMIXED_USB1PLL>;
+> +			clock-names = "sys_ck", "xhci_ck", "ref_ck", "mcu_ck";
+> +			mediatek,syscon-wakeup = <&pericfg 0x400 103>;
+> +			wakeup-source;
+> +			status = "disabled";
+> +		};
+> +
+>   		mmc0: mmc@11230000 {
+>   			compatible = "mediatek,mt8195-mmc", "mediatek,mt8192-mmc";
+>   			reg = <0 0x11230000 0 0x10000>,
+> @@ -843,6 +864,64 @@
+>   			status = "disabled";
+>   		};
+>   
+> +		xhci1: usb@11290000 {
+> +			compatible = "mediatek,mt8195-xhci", "mediatek,mtk-xhci";
+> +			reg = <0 0x11290000 0 0x1000>, <0 0x11293e00 0 0x0100>;
+> +			reg-names = "mac", "ippc";
+> +			interrupts = <GIC_SPI 530 IRQ_TYPE_LEVEL_HIGH 0>;
+
+			interrupts-extended = <&gic GIC_SPI 530 IRQ_TYPE_LEVEL_HIGH 0>,
+
+					      <&pio 218 IRQ_TYPE_LEVEL_LOW>;
+
+> +			phys = <&u2port1 PHY_TYPE_USB2>;
+> +			assigned-clocks = <&topckgen CLK_TOP_USB_TOP_1P>,
+> +					  <&topckgen CLK_TOP_SSUSB_XHCI_1P>;
+> +			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D5_D4>,
+> +						 <&topckgen CLK_TOP_UNIVPLL_D5_D4>;
+> +			clocks = <&pericfg_ao CLK_PERI_AO_SSUSB_1P_BUS>,
+> +				 <&pericfg_ao CLK_PERI_AO_SSUSB_1P_XHCI>,
+> +				 <&topckgen CLK_TOP_SSUSB_P1_REF>,
+> +				 <&apmixedsys CLK_APMIXED_USB1PLL>;
+> +			clock-names = "sys_ck", "xhci_ck", "ref_ck", "mcu_ck";
+> +			mediatek,syscon-wakeup = <&pericfg 0x400 104>;
+> +			wakeup-source;
+> +			status = "disabled";
+> +		};
+> +
+> +		xhci2: usb@112a0000 {
+> +			compatible = "mediatek,mt8195-xhci", "mediatek,mtk-xhci";
+> +			reg = <0 0x112a0000 0 0x1000>, <0 0x112a3e00 0 0x0100>;
+> +			reg-names = "mac", "ippc";
+> +			interrupts = <GIC_SPI 533 IRQ_TYPE_LEVEL_HIGH 0>;
+> +			phys = <&u2port2 PHY_TYPE_USB2>;
+> +			assigned-clocks = <&topckgen CLK_TOP_USB_TOP_2P>,
+> +					  <&topckgen CLK_TOP_SSUSB_XHCI_2P>;
+> +			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D5_D4>,
+> +						 <&topckgen CLK_TOP_UNIVPLL_D5_D4>;
+> +			clocks = <&pericfg_ao CLK_PERI_AO_SSUSB_2P_BUS>,
+> +				 <&pericfg_ao CLK_PERI_AO_SSUSB_2P_XHCI>,
+> +				 <&topckgen CLK_TOP_SSUSB_P2_REF>;
+> +			clock-names = "sys_ck", "xhci_ck", "ref_ck";
+> +			mediatek,syscon-wakeup = <&pericfg 0x400 105>;
+> +			status = "disabled";
+> +		};
+> +
+> +		xhci3: usb@112b0000 {
+> +			compatible = "mediatek,mt8195-xhci", "mediatek,mtk-xhci";
+> +			reg = <0 0x112b0000 0 0x1000>, <0 0x112b3e00 0 0x0100>;
+> +			reg-names = "mac", "ippc";
+> +			interrupts = <GIC_SPI 536 IRQ_TYPE_LEVEL_HIGH 0>;
+
+			interrupts-extended = <&gic GIC_SPI 536 IRQ_TYPE_LEVEL_HIGH 0>,
+
+					      <&pio 221 IRQ_TYPE_LEVEL_LOW>;
+
+			interrupts-names = "host", "wakeup";
+
+> +			phys = <&u2port3 PHY_TYPE_USB2>;
+> +			assigned-clocks = <&topckgen CLK_TOP_USB_TOP_3P>,
+> +					  <&topckgen CLK_TOP_SSUSB_XHCI_3P>;
+> +			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D5_D4>,
+> +						 <&topckgen CLK_TOP_UNIVPLL_D5_D4>;
+> +			clocks = <&pericfg_ao CLK_PERI_AO_SSUSB_3P_BUS>,
+> +				 <&pericfg_ao CLK_PERI_AO_SSUSB_3P_XHCI>,
+> +				 <&topckgen CLK_TOP_SSUSB_P3_REF>;
+> +			clock-names = "sys_ck", "xhci_ck", "ref_ck";
+> +			mediatek,syscon-wakeup = <&pericfg 0x400 106>;
+> +			wakeup-source;
+> +			usb2-lpm-disable;
+> +			status = "disabled";
+> +		};
+> +
+>   		nor_flash: nor@1132c000 {
+>   			compatible = "mediatek,mt8195-nor", "mediatek,mt8173-nor";
+>   			reg = <0 0x1132c000 0 0x1000>;
 > 
-> 	pspim->rstc = devm_reset_control_get_exclusive(dev, NULL);
-> 	if (IS_ERR(pspim->rstc))
-> 		return dev_err_probe(dev, PTR_ERR(pspim->rstc), "rst get fail\n");
 
-Yes.
-> > 
-
-> > >         ret = devm_spi_register_controller(dev, ctlr);
-> > 
-> > You can't mix non-devm with devm APIs. Either all non-devm, or devm followed by non-devm.
-> > 
-> 
->   I don't understand so I need to change to spi_register_controller(ctlr)?   why?
-
-devm_spi_register_controller() shouldn't be called after
-pm_runtime_enable().
-
-You could either switch to devm_pm_runtime_enable() or move the
-pm_runtime_enable() after the devm_spi_register_controller() call if
-possible, or switch to spi_register_controller().
-
-> I modified the remove-function as follows. I think devm_spi_register_controller(dev, ctlr); should be no problem in the probe funciton.
-> static int sp7021_spi_controller_remove(struct platform_device *pdev)
-> {
-> 	struct spi_controller *ctlr = dev_get_drvdata(&pdev->dev);
-> 	struct sp7021_spi_ctlr *pspim = spi_master_get_devdata(ctlr);
-> 
-> 	pm_runtime_disable(&pdev->dev);
-
-I'm not sure if the SPI framework requires the spi_controller to be
-unregistered before hardware is powered off, maybe it is enough to call
-spi_controller_suspend() in the right place?
-
-> 	pm_runtime_set_suspended(&pdev->dev);
-> 	reset_control_assert(pspim->rstc);
-> 	clk_disable_unprepare(pspim->spi_clk);
-> 
-> 	return 0;
-> }
-
-regards
-Philipp
+Regards,
+- Angelo
