@@ -2,72 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5873345EB81
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:26:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BDA845EB83
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:26:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377088AbhKZKaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 05:30:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39082 "EHLO
+        id S1377114AbhKZKaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:30:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376947AbhKZK1Z (ORCPT
+        with ESMTP id S1377105AbhKZK2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 05:27:25 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2BC5C061375;
-        Fri, 26 Nov 2021 02:15:56 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id u17so6378556plg.9;
-        Fri, 26 Nov 2021 02:15:56 -0800 (PST)
+        Fri, 26 Nov 2021 05:28:04 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C24C061376
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:16:03 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id s137so7765266pgs.5
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:16:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=v2b5IPHKA6jFRATzjbxNc3v/Tk2B7ZS0kG45l1odXAs=;
-        b=HdO/AChZT8Q3d2p8RUelLTEhzvTKtCP14gID/d6Srw+u6SiMwNJmiUhlnQDJnDQibo
-         wPPUfDlnvF+KNgJDQeN54Ad3Q+fJpoFv3mpzNiTrXgwJ4p4IEX6aE2aJPj6gL/ZbA22r
-         /XobemIGzqIA3T9Qr7cKZ62TaDtmhAoI1X9ccnJURWSezEQyp/dZnihYqKDgw1haRx6V
-         5HXAZhCcd7z3xpPvyTXjun0asNQV1p3dhRGVfrlltQEb+DyArXwMtVUBxfq7+R6Ybrxc
-         Eg8oIjrIzty9MfqNJIugsi4lBWbVikccpxIDcbTy0y4mH889jGdGCe28p2yI20XDpXLi
-         LKmA==
+        bh=wZsbg53lYImAQV+JHZZc0noyY1gHV9sh2C3zDggNJz0=;
+        b=dmyuNyyT7C/UHUhm3jsINLu+mWvvx6v2y1PPcNnjwlhw+psoA6z+wzNq+tvmW3vY/r
+         R7PVHjqCmARyr9JEg4eY6lk2YfDV/1qSMNWDLkSw3vq2PmavZwZYq0ecmMev4Qq7b3M2
+         VGsr4hWfq+V96mVXKjNy4Z6xp6uwn/lFHuZ3w32S/5nCK5dPx3Xa5Z2mUwWXtS0TZ199
+         a26nTuAQEdWvlfJMD1VmuORMkLPqODalFQFwOvss/qJO/z2JyXdmUrFOsa+XMZhHvciI
+         tNpLa2g+2faMz4qQiAoPMd79kY/+7ndJGhax/xRPmwMVwFnMw4Cd7ZQKqi5crVryNDpB
+         i6xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=v2b5IPHKA6jFRATzjbxNc3v/Tk2B7ZS0kG45l1odXAs=;
-        b=EWr1k/rdDnl0bAAQMf6zHXoyRxEl6YMna8mG7o95Qaj3Etw14KLeypWAdG5FhwaUba
-         K1I3h5zu5LG8ig1j5RwwGZM7qyvN8dHjXdQ6jLRtqNoQlWNSrqqpUXEv9UcLvTpyz8CA
-         EtUS1a9UqXoY00XVHEdB+5Kjsmt86n9MG6xQDs4rACSQSMCjP/ISFb7lUoteo//DV62N
-         isWD+NsqIjXWqUu0jMdiDgCNrEtWEWp7//uZyqnBSnlmVxfiz94/tKksl5FT+uMJSJc7
-         VPl97hpLwS2v+mGmusax1ORMhHl/zavlHNpITdFxCAKXImmdyR5HPRguGNMHFytWIISq
-         PPGQ==
-X-Gm-Message-State: AOAM533lisJgWojv4OWbPb4aI/FvXY6WDawFXTWc8VSNMO+E+dCBHTgD
-        hChcNri1rSvcal7nvrGg1jHqcQ1nLBs=
-X-Google-Smtp-Source: ABdhPJyvYOYqfz6x5BB8zuhPfAn5EpATGAP+odljyXCrTDhBWJ8299Lt92C4aYysuC/6JtlV0v3niA==
-X-Received: by 2002:a17:90b:4ac1:: with SMTP id mh1mr14589143pjb.30.1637921756282;
-        Fri, 26 Nov 2021 02:15:56 -0800 (PST)
+        bh=wZsbg53lYImAQV+JHZZc0noyY1gHV9sh2C3zDggNJz0=;
+        b=EcFCN2UG75A9X/ThSV0dKRC61hv26gIqW+O+HtuldQy0Sl20PHo4dJO9UtAMrf+DsB
+         ay8eWeceN7m6FubKUjvMsKPymOUJ9ZfX6WmRW+4O13M2QsOTZnD64cGnwjqIlpJxCL66
+         /kioDHdh4rtmPCt+c3uu7TmGkRW+3QFgBMqwE1WHANhDE9Es6FDDC/S0JZNxPvR1SNbs
+         oCYGsV4vbh6kNY+VSBFNeCFIN3rRe7eJZl1TaR4pJaNE6nf7jUnJVm5xhHdBdzK1RLJ5
+         sFBun2v1sMd4Jw3Ri76T87Y8swVyvX3KNQJ9Ir50R9KqpaxpYEtqpcd6t7qZZtZjxZfU
+         tm8w==
+X-Gm-Message-State: AOAM530VCzLALrYPH0bhuMlN6aEEO1rMxozxSXsii7HItt/IPqYcOtMb
+        N6yXHq1Q+2NJh4wh1SJba1FEqJQtikk=
+X-Google-Smtp-Source: ABdhPJz8Uze34w4DNClzKAEyRYRqaZrWg3BMfCbBZYzF6EiUbgo2+/vt2yq8IeLdnemeR/fyfYp2nw==
+X-Received: by 2002:a63:190b:: with SMTP id z11mr20439919pgl.414.1637921762797;
+        Fri, 26 Nov 2021 02:16:02 -0800 (PST)
 Received: from localhost ([47.251.3.230])
-        by smtp.gmail.com with ESMTPSA id d2sm6282334pfu.203.2021.11.26.02.15.55
+        by smtp.gmail.com with ESMTPSA id h4sm1799500pfi.79.2021.11.26.02.16.01
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 26 Nov 2021 02:15:56 -0800 (PST)
+        Fri, 26 Nov 2021 02:16:02 -0800 (PST)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
-        Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Juergen Gross <jgross@suse.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <jgross@suse.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-edac@vger.kernel.org
-Subject: [PATCH V6 38/49] x86/debug, mce: Use C entry code
-Date:   Fri, 26 Nov 2021 18:11:58 +0800
-Message-Id: <20211126101209.8613-39-jiangshanlai@gmail.com>
+        Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH V6 39/49] x86/idtentry.h: Move the definitions *IDTENTRY_{MCE|DEBUG}* up
+Date:   Fri, 26 Nov 2021 18:11:59 +0800
+Message-Id: <20211126101209.8613-40-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20211126101209.8613-1-jiangshanlai@gmail.com>
 References: <20211126101209.8613-1-jiangshanlai@gmail.com>
@@ -79,79 +71,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Use DEFINE_IDTENTRY_IST_ENTRY to emit C entry function in C files and
-use the function directly in entry_64.S.
-
-It also removes stack-protector from C files because the C entry code
-can NOT use percpu register until GSBASE is properly switched.
-And stack-protector depends on the percpu register to work.
+Move them closer to the related definitions and reduce a #ifdef entry.
 
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/entry/entry_64.S        | 10 +---------
- arch/x86/include/asm/idtentry.h  |  1 +
- arch/x86/kernel/Makefile         |  1 +
- arch/x86/kernel/cpu/mce/Makefile |  3 +++
- 4 files changed, 6 insertions(+), 9 deletions(-)
+ arch/x86/include/asm/idtentry.h | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index bd5e005316a3..ac05cbf894f5 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -465,16 +465,8 @@ SYM_CODE_START(\asmsym)
- 	testb	$3, CS(%rsp)
- 	jnz	.Lfrom_usermode_switch_stack_\@
- 
--	/* paranoid_entry returns GS information for paranoid_exit in EBX. */
--	call	paranoid_entry
--
--	UNWIND_HINT_REGS
--
- 	movq	%rsp, %rdi		/* pt_regs pointer */
--
--	call	\cfunc
--
--	call	paranoid_exit
-+	call	ist_\cfunc
- 	jmp	restore_regs_and_return_to_kernel
- 
- 	/* Switch to the regular task stack and use the noist entry point */
 diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index 7b17ffa43e10..f274e4e2ca17 100644
+index f274e4e2ca17..737fbbe19d84 100644
 --- a/arch/x86/include/asm/idtentry.h
 +++ b/arch/x86/include/asm/idtentry.h
-@@ -358,6 +358,7 @@ __visible __entry_text void ist_##func(struct pt_regs *regs)		\
-  * Maps to DEFINE_IDTENTRY_RAW
-  */
- #define DEFINE_IDTENTRY_IST(func)					\
-+	DEFINE_IDTENTRY_IST_ENTRY(func)					\
- 	DEFINE_IDTENTRY_RAW(func)
+@@ -372,6 +372,14 @@ __visible __entry_text void ist_##func(struct pt_regs *regs)		\
+ #define DEFINE_IDTENTRY_NOIST(func)					\
+ 	DEFINE_IDTENTRY_RAW(noist_##func)
  
++#define DECLARE_IDTENTRY_MCE		DECLARE_IDTENTRY_IST
++#define DEFINE_IDTENTRY_MCE		DEFINE_IDTENTRY_IST
++#define DEFINE_IDTENTRY_MCE_USER	DEFINE_IDTENTRY_NOIST
++
++#define DECLARE_IDTENTRY_DEBUG		DECLARE_IDTENTRY_IST
++#define DEFINE_IDTENTRY_DEBUG		DEFINE_IDTENTRY_IST
++#define DEFINE_IDTENTRY_DEBUG_USER	DEFINE_IDTENTRY_NOIST
++
  /**
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 2ff3e600f426..8ac45801ba8b 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -50,6 +50,7 @@ KCOV_INSTRUMENT		:= n
+  * DECLARE_IDTENTRY_DF - Declare functions for double fault
+  * @vector:	Vector number (ignored for C)
+@@ -446,16 +454,6 @@ __visible noinstr void func(struct pt_regs *regs,			\
+ #define DECLARE_IDTENTRY_NMI		DECLARE_IDTENTRY_RAW
+ #define DEFINE_IDTENTRY_NMI		DEFINE_IDTENTRY_RAW
  
- CFLAGS_head$(BITS).o	+= -fno-stack-protector
- CFLAGS_cc_platform.o	+= -fno-stack-protector
-+CFLAGS_traps.o		+= -fno-stack-protector
+-#ifdef CONFIG_X86_64
+-#define DECLARE_IDTENTRY_MCE		DECLARE_IDTENTRY_IST
+-#define DEFINE_IDTENTRY_MCE		DEFINE_IDTENTRY_IST
+-#define DEFINE_IDTENTRY_MCE_USER	DEFINE_IDTENTRY_NOIST
+-
+-#define DECLARE_IDTENTRY_DEBUG		DECLARE_IDTENTRY_IST
+-#define DEFINE_IDTENTRY_DEBUG		DEFINE_IDTENTRY_IST
+-#define DEFINE_IDTENTRY_DEBUG_USER	DEFINE_IDTENTRY_NOIST
+-#endif
+-
+ #else /* !__ASSEMBLY__ */
  
- CFLAGS_irq.o := -I $(srctree)/$(src)/../include/asm/trace
- 
-diff --git a/arch/x86/kernel/cpu/mce/Makefile b/arch/x86/kernel/cpu/mce/Makefile
-index 015856abdbb1..555963416ec3 100644
---- a/arch/x86/kernel/cpu/mce/Makefile
-+++ b/arch/x86/kernel/cpu/mce/Makefile
-@@ -1,4 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
-+
-+CFLAGS_core.o			+= -fno-stack-protector
-+
- obj-y				=  core.o severity.o genpool.o
- 
- obj-$(CONFIG_X86_ANCIENT_MCE)	+= winchip.o p5.o
+ /*
 -- 
 2.19.1.6.gb485710b
 
