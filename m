@@ -2,103 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4672F45F2E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 18:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6181B45F298
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 18:04:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235176AbhKZRbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 12:31:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231163AbhKZR3R (ORCPT
+        id S238821AbhKZRHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 12:07:52 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:41546 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231339AbhKZRFv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 12:29:17 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB84EC061D70
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 09:00:29 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id i6so9728394ila.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 09:00:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tQtthRCNnYrfJcVMMnWDbVVhagpc5qS2XN1hQdvDB7I=;
-        b=yWHdl+l1h/mRXF3EF3cPuFDiDPXhK4MZqA0f5Yl75S2QiKo1WaTdZBePyIgsY77JwX
-         2+W8vBofz6cMKRtnz7QH4ec2Q3ok8ID1EA1U9g0L3+uCi4RPfyIRnHbwMj9ba1WBybAf
-         n2MCqc4WZZ39Jb+emMJOP2wWyE81FM5YpVCZu7JGl5JSeGOMEhxIHbBkgIxF7TPCjgGG
-         sXOyBnwhSD+9YjVRloTBdVEJEl8rlDc0sWnsv/OE+j07iDiq4Sb34Q3rArwS8s8xkpCe
-         6/H0ZF5UgdKqTQ1s/2FvvqjYPGcJEDariQnrnHXS1oyl53Mk7QCfv2H4GPjfGCpBtYA3
-         zvDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tQtthRCNnYrfJcVMMnWDbVVhagpc5qS2XN1hQdvDB7I=;
-        b=lCk+jqdgwj6EzWAOTsw2Rk3vUuBe6N2rfITIgQ/rFTRV8+wrOq9HZcmMPvPHWAhF1H
-         5eVZo47ehrcnLgcRL7IfOBt5z5f6KZMADWedi8OcRsIFqO2YADUF6heDYD06Gnplg8c7
-         Q0qk6i4ZxDD0i61UFnX1KzeoPI/d4DYU+S96uFZcN9Osx8g4ADLE89NMsjgpwnykHPlm
-         Sc7Pn8Y2u8fvpJoDcRM20zh2wmfgxI9qvGT8FPUnjxySnKeMsmyiOJrYh1C3QJj7FUIx
-         y8RTEK7izfF9xjCxbh6hqhrBe3qFMROeG/c5SstRoXwdJhYQkx5cMA/WyVboTOeK5X+7
-         DzAA==
-X-Gm-Message-State: AOAM530R2QbyU8p48MnCu+rIPRmkYoeGdQkzXZmxpGe34L724X5gYThq
-        xlPHT8/FXTpXYIDLBeYx6Srydg==
-X-Google-Smtp-Source: ABdhPJzLiJVxgsef9VGHmpWZT7frZYjg0y8TnFVgfy3+K1aJ7l4YRfHKMVIv5jPWR/SOjefaOKnXQg==
-X-Received: by 2002:a05:6e02:1a47:: with SMTP id u7mr18310859ilv.258.1637946029295;
-        Fri, 26 Nov 2021 09:00:29 -0800 (PST)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id b3sm3745498ile.26.2021.11.26.09.00.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Nov 2021 09:00:28 -0800 (PST)
-Subject: Re: drivers/block/zram/zram_drv.c:1824:45: warning: unused variable
- 'zram_wb_devops'
-To:     kernel test robot <lkp@intel.com>, Christoph Hellwig <hch@lst.de>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-References: <202111261614.gCJMqcyh-lkp@intel.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <1761b548-0d05-a5b6-f5c6-8529f8e531a2@kernel.dk>
-Date:   Fri, 26 Nov 2021 10:00:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 26 Nov 2021 12:05:51 -0500
+X-Greylist: delayed 6451 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Nov 2021 12:05:50 EST
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 33CA0B82857
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 17:02:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46BDBC93056;
+        Fri, 26 Nov 2021 17:02:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637946149;
+        bh=yuE+BreTQT02yvn8X1u7k+Z03tC9pJONhbHdFlU5fDw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GFLbnAlBGzqnesySG38WMS+nG1yJXFvLI/1+fMGUeZqqUIr0EIeDBFs/WIj8Z26dP
+         6RQEXrEF46kuRe4u9SD0Z5PIxUVKoIsXDGoMe/0L0DswGLOB+/8AlZnTc/J3JWiMfI
+         TEBS/ZopFOFZvVOIj5Q+G3Mmtr8gPDV4b3jgSJ9U=
+Date:   Fri, 26 Nov 2021 18:02:27 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Evgeniy Polyakov <zbr@ioremap.net>, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v2] w1: Misuse of get_user()/put_user() reported by sparse
+Message-ID: <YaETI1AD0dt/Haqv@kroah.com>
+References: <926b572075a26835f4e39d05710cd1b75fd4d5a4.1637945194.git.christophe.leroy@csgroup.eu>
+ <YaERVtyYpJ+BTQ/f@kroah.com>
+ <8e5493ac-dd05-9bad-c9ae-169114e0fdcf@csgroup.eu>
 MIME-Version: 1.0
-In-Reply-To: <202111261614.gCJMqcyh-lkp@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8e5493ac-dd05-9bad-c9ae-169114e0fdcf@csgroup.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/21 1:54 AM, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   a4849f6000e29235a2707f22e39da6b897bb9543
-> commit: a8b456d01cd6b37191f14248f3e2bdbe5ce3a89e bdi: remove BDI_CAP_SYNCHRONOUS_IO
-> date:   1 year, 2 months ago
-> config: x86_64-buildonly-randconfig-r003-20211116 (https://download.01.org/0day-ci/archive/20211126/202111261614.gCJMqcyh-lkp@intel.com/config)
-> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project fbe72e41b99dc7994daac300d208a955be3e4a0a)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a8b456d01cd6b37191f14248f3e2bdbe5ce3a89e
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout a8b456d01cd6b37191f14248f3e2bdbe5ce3a89e
->         # save the config file to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=x86_64 
+On Fri, Nov 26, 2021 at 05:57:58PM +0100, Christophe Leroy wrote:
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> All warnings (new ones prefixed by >>):
+> Le 26/11/2021 à 17:54, Greg Kroah-Hartman a écrit :
+> > On Fri, Nov 26, 2021 at 05:47:58PM +0100, Christophe Leroy wrote:
+> > > sparse warnings: (new ones prefixed by >>)
+> > > > > drivers/w1/slaves/w1_ds28e04.c:342:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char [noderef] __user *_pu_addr @@     got char *buf @@
+> > >     drivers/w1/slaves/w1_ds28e04.c:342:13: sparse:     expected char [noderef] __user *_pu_addr
+> > >     drivers/w1/slaves/w1_ds28e04.c:342:13: sparse:     got char *buf
+> > > > > drivers/w1/slaves/w1_ds28e04.c:356:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char const [noderef] __user *_gu_addr @@     got char const *buf @@
+> > >     drivers/w1/slaves/w1_ds28e04.c:356:13: sparse:     expected char const [noderef] __user *_gu_addr
+> > >     drivers/w1/slaves/w1_ds28e04.c:356:13: sparse:     got char const *buf
+> > > 
+> > > The buffer buf is a failsafe buffer in kernel space, it's not user
+> > > memory hence doesn't deserve the use of get_user() or put_user().
+> > > 
+> > > Access 'buf' content directly.
+> > > 
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Link: https://lore.kernel.org/lkml/202111190526.K5vb7NWC-lkp@intel.com/T/
+> > > Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> > > ---
+> > > v2: Use sysfs_emit() and kstrtobool()
+> > > ---
+> > >   drivers/w1/slaves/w1_ds28e04.c | 25 +++----------------------
+> > >   1 file changed, 3 insertions(+), 22 deletions(-)
+> > > 
+> > > diff --git a/drivers/w1/slaves/w1_ds28e04.c b/drivers/w1/slaves/w1_ds28e04.c
+> > > index e4f336111edc..98f80f412cfd 100644
+> > > --- a/drivers/w1/slaves/w1_ds28e04.c
+> > > +++ b/drivers/w1/slaves/w1_ds28e04.c
+> > > @@ -32,7 +32,7 @@ static int w1_strong_pullup = 1;
+> > >   module_param_named(strong_pullup, w1_strong_pullup, int, 0);
+> > >   /* enable/disable CRC checking on DS28E04-100 memory accesses */
+> > > -static char w1_enable_crccheck = 1;
+> > > +static bool w1_enable_crccheck = true;
+> > >   #define W1_EEPROM_SIZE		512
+> > >   #define W1_PAGE_COUNT		16
+> > > @@ -339,32 +339,13 @@ static BIN_ATTR_RW(pio, 1);
+> > >   static ssize_t crccheck_show(struct device *dev, struct device_attribute *attr,
+> > >   			     char *buf)
+> > >   {
+> > > -	if (put_user(w1_enable_crccheck + 0x30, buf))
+> > > -		return -EFAULT;
+> > > -
+> > > -	return sizeof(w1_enable_crccheck);
+> > > +	return sysfs_emit(buf, "%d\n", w1_enable_crccheck);
+> > >   }
+> > >   static ssize_t crccheck_store(struct device *dev, struct device_attribute *attr,
+> > >   			      const char *buf, size_t count)
+> > >   {
+> > > -	char val;
+> > > -
+> > > -	if (count != 1 || !buf)
+> > > -		return -EINVAL;
+> > > -
+> > > -	if (get_user(val, buf))
+> > > -		return -EFAULT;
+> > > -
+> > > -	/* convert to decimal */
+> > > -	val = val - 0x30;
+> > > -	if (val != 0 && val != 1)
+> > > -		return -EINVAL;
+> > > -
+> > > -	/* set the new value */
+> > > -	w1_enable_crccheck = val;
+> > > -
+> > > -	return sizeof(w1_enable_crccheck);
+> > > +	return kstrtobool(buf, &w1_enable_crccheck) ? : count;
+> > 
+> > Please spell this line out, using ? : is unreadable at times.
+> > 
 > 
->>> drivers/block/zram/zram_drv.c:1824:45: warning: unused variable 'zram_wb_devops' [-Wunused-const-variable]
->    static const struct block_device_operations zram_wb_devops = {
->                                                ^
->    1 warning generated.
+> You prefer something like:
+> 
+> 	int err = kstrtobool(buf, &w1_enable_crccheck);
+> 
+> 	return err ? err : count;
+> 
+> 
+> Or
+> 
+> 	int err = kstrtobool(buf, &w1_enable_crccheck);
+> 
+> 	if (err)
+> 		return err;
+> 
+> 	return count;
 
-https://git.kernel.dk/cgit/linux-block/commit/?h=block-5.16&id=d422f40163087408b56290156ba233fc5ada53e4
+This one.  Write code for people to read first, compiler second.
 
--- 
-Jens Axboe
+thanks,
 
+greg k-h
