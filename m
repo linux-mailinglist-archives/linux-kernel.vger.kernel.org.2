@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D79C45E870
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 703D245E862
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359159AbhKZH07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 02:26:59 -0500
-Received: from mga02.intel.com ([134.134.136.20]:54438 "EHLO mga02.intel.com"
+        id S1359167AbhKZHUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 02:20:42 -0500
+Received: from mga17.intel.com ([192.55.52.151]:50798 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346206AbhKZHY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 02:24:58 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="222846987"
+        id S1359154AbhKZHSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 02:18:33 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="216330824"
 X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
-   d="scan'208";a="222846987"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 23:15:20 -0800
+   d="scan'208";a="216330824"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 23:15:20 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,265,1631602800"; 
-   d="scan'208";a="457584805"
+   d="scan'208";a="607763104"
 Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 25 Nov 2021 23:15:18 -0800
+  by orsmga004.jf.intel.com with ESMTP; 25 Nov 2021 23:15:18 -0800
 Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mqVS1-0007ku-Ub; Fri, 26 Nov 2021 07:15:17 +0000
-Date:   Fri, 26 Nov 2021 15:15:05 +0800
+        id 1mqVS1-0007kw-Uw; Fri, 26 Nov 2021 07:15:17 +0000
+Date:   Fri, 26 Nov 2021 15:15:08 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Qingqing Zhuo <Qingqing.Zhuo@amd.com>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
 Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Subject: drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn301/dcn301_fpu.c:304:1:
- warning: the frame size of 1080 bytes is larger than 1024 bytes
-Message-ID: <202111261520.euS99l9U-lkp@intel.com>
+        Will Deacon <will@kernel.org>,
+        Matthias Brugger <mbrugger@suse.com>
+Subject: arch/arm64/kernel/hibernate.c:202:44: sparse: sparse: cast from
+ restricted gfp_t
+Message-ID: <202111261554.Z01D3rTb-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -41,96 +41,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qingqing,
-
-FYI, the error/warning still remains.
-
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   a4849f6000e29235a2707f22e39da6b897bb9543
-commit: 31484207feb23e6cdb12827560442ab294855923 drm/amd/display: move FPU associated DCN301 code to DML folder
-date:   4 weeks ago
-config: i386-randconfig-r026-20211116 (https://download.01.org/0day-ci/archive/20211126/202111261520.euS99l9U-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build):
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=31484207feb23e6cdb12827560442ab294855923
+commit: 50f53fb721817a6efa541cca24f1b7caa84801c1 arm64: trans_pgd: make trans_pgd_map_page generic
+date:   10 months ago
+config: arm64-allmodconfig (https://download.01.org/0day-ci/archive/20211126/202111261554.Z01D3rTb-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 11.2.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=50f53fb721817a6efa541cca24f1b7caa84801c1
         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
         git fetch --no-tags linus master
-        git checkout 31484207feb23e6cdb12827560442ab294855923
+        git checkout 50f53fb721817a6efa541cca24f1b7caa84801c1
         # save the config file to linux build tree
-        make W=1 ARCH=i386 
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=arm64 SHELL=/bin/bash arch/arm64/kernel/
 
 If you fix the issue, kindly add following tag as appropriate
 Reported-by: kernel test robot <lkp@intel.com>
 
-All warnings (new ones prefixed by >>):
 
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn301/dcn301_fpu.c: In function 'dcn301_update_bw_bounding_box':
->> drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn301/dcn301_fpu.c:304:1: warning: the frame size of 1080 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-     304 | }
-         | ^
+sparse warnings: (new ones prefixed by >>)
+   arch/arm64/kernel/hibernate.c:181:39: sparse: sparse: cast to restricted gfp_t
+>> arch/arm64/kernel/hibernate.c:202:44: sparse: sparse: cast from restricted gfp_t
 
+vim +202 arch/arm64/kernel/hibernate.c
 
-vim +304 drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn301/dcn301_fpu.c
-
-   247	
-   248	void dcn301_update_bw_bounding_box(struct dc *dc, struct clk_bw_params *bw_params)
-   249	{
-   250		struct dcn301_resource_pool *pool = TO_DCN301_RES_POOL(dc->res_pool);
-   251		struct clk_limit_table *clk_table = &bw_params->clk_table;
-   252		struct _vcs_dpi_voltage_scaling_st clock_limits[DC__VOLTAGE_STATES];
-   253		unsigned int i, closest_clk_lvl;
-   254		int j;
-   255	
-   256		dc_assert_fp_enabled();
-   257	
-   258		/* Default clock levels are used for diags, which may lead to overclocking. */
-   259		if (!IS_DIAG_DC(dc->ctx->dce_environment)) {
-   260			dcn3_01_ip.max_num_otg = pool->base.res_cap->num_timing_generator;
-   261			dcn3_01_ip.max_num_dpp = pool->base.pipe_count;
-   262			dcn3_01_soc.num_chans = bw_params->num_channels;
-   263	
-   264			ASSERT(clk_table->num_entries);
-   265			for (i = 0; i < clk_table->num_entries; i++) {
-   266				/* loop backwards*/
-   267				for (closest_clk_lvl = 0, j = dcn3_01_soc.num_states - 1; j >= 0; j--) {
-   268					if ((unsigned int) dcn3_01_soc.clock_limits[j].dcfclk_mhz <= clk_table->entries[i].dcfclk_mhz) {
-   269						closest_clk_lvl = j;
-   270						break;
-   271					}
-   272				}
-   273	
-   274				clock_limits[i].state = i;
-   275				clock_limits[i].dcfclk_mhz = clk_table->entries[i].dcfclk_mhz;
-   276				clock_limits[i].fabricclk_mhz = clk_table->entries[i].fclk_mhz;
-   277				clock_limits[i].socclk_mhz = clk_table->entries[i].socclk_mhz;
-   278				clock_limits[i].dram_speed_mts = clk_table->entries[i].memclk_mhz * 2;
-   279	
-   280				clock_limits[i].dispclk_mhz = dcn3_01_soc.clock_limits[closest_clk_lvl].dispclk_mhz;
-   281				clock_limits[i].dppclk_mhz = dcn3_01_soc.clock_limits[closest_clk_lvl].dppclk_mhz;
-   282				clock_limits[i].dram_bw_per_chan_gbps = dcn3_01_soc.clock_limits[closest_clk_lvl].dram_bw_per_chan_gbps;
-   283				clock_limits[i].dscclk_mhz = dcn3_01_soc.clock_limits[closest_clk_lvl].dscclk_mhz;
-   284				clock_limits[i].dtbclk_mhz = dcn3_01_soc.clock_limits[closest_clk_lvl].dtbclk_mhz;
-   285				clock_limits[i].phyclk_d18_mhz = dcn3_01_soc.clock_limits[closest_clk_lvl].phyclk_d18_mhz;
-   286				clock_limits[i].phyclk_mhz = dcn3_01_soc.clock_limits[closest_clk_lvl].phyclk_mhz;
-   287			}
-   288	
-   289			for (i = 0; i < clk_table->num_entries; i++)
-   290				dcn3_01_soc.clock_limits[i] = clock_limits[i];
-   291	
-   292			if (clk_table->num_entries) {
-   293				dcn3_01_soc.num_states = clk_table->num_entries;
-   294				/* duplicate last level */
-   295				dcn3_01_soc.clock_limits[dcn3_01_soc.num_states] = dcn3_01_soc.clock_limits[dcn3_01_soc.num_states - 1];
-   296				dcn3_01_soc.clock_limits[dcn3_01_soc.num_states].state = dcn3_01_soc.num_states;
-   297			}
-   298		}
-   299	
-   300		dcn3_01_soc.dispclk_dppclk_vco_speed_mhz = dc->clk_mgr->dentist_vco_freq_khz / 1000.0;
-   301		dc->dml.soc.dispclk_dppclk_vco_speed_mhz = dc->clk_mgr->dentist_vco_freq_khz / 1000.0;
-   302	
-   303		dml_init_instance(&dc->dml, &dcn3_01_soc, &dcn3_01_ip, DML_PROJECT_DCN30);
- > 304	}
-   305	
+   183	
+   184	/*
+   185	 * Copies length bytes, starting at src_start into an new page,
+   186	 * perform cache maintenance, then maps it at the specified address low
+   187	 * address as executable.
+   188	 *
+   189	 * This is used by hibernate to copy the code it needs to execute when
+   190	 * overwriting the kernel text. This function generates a new set of page
+   191	 * tables, which it loads into ttbr0.
+   192	 *
+   193	 * Length is provided as we probably only want 4K of data, even on a 64K
+   194	 * page system.
+   195	 */
+   196	static int create_safe_exec_page(void *src_start, size_t length,
+   197					 unsigned long dst_addr,
+   198					 phys_addr_t *phys_dst_addr)
+   199	{
+   200		struct trans_pgd_info trans_info = {
+   201			.trans_alloc_page	= hibernate_page_alloc,
+ > 202			.trans_alloc_arg	= (void *)GFP_ATOMIC,
+   203		};
+   204	
+   205		void *page = (void *)get_safe_page(GFP_ATOMIC);
+   206		pgd_t *trans_pgd;
+   207		int rc;
+   208	
+   209		if (!page)
+   210			return -ENOMEM;
+   211	
+   212		memcpy(page, src_start, length);
+   213		__flush_icache_range((unsigned long)page, (unsigned long)page + length);
+   214	
+   215		trans_pgd = (void *)get_safe_page(GFP_ATOMIC);
+   216		if (!trans_pgd)
+   217			return -ENOMEM;
+   218	
+   219		rc = trans_pgd_map_page(&trans_info, trans_pgd, page, dst_addr,
+   220					PAGE_KERNEL_EXEC);
+   221		if (rc)
+   222			return rc;
+   223	
+   224		/*
+   225		 * Load our new page tables. A strict BBM approach requires that we
+   226		 * ensure that TLBs are free of any entries that may overlap with the
+   227		 * global mappings we are about to install.
+   228		 *
+   229		 * For a real hibernate/resume cycle TTBR0 currently points to a zero
+   230		 * page, but TLBs may contain stale ASID-tagged entries (e.g. for EFI
+   231		 * runtime services), while for a userspace-driven test_resume cycle it
+   232		 * points to userspace page tables (and we must point it at a zero page
+   233		 * ourselves). Elsewhere we only (un)install the idmap with preemption
+   234		 * disabled, so T0SZ should be as required regardless.
+   235		 */
+   236		cpu_set_reserved_ttbr0();
+   237		local_flush_tlb_all();
+   238		write_sysreg(phys_to_ttbr(virt_to_phys(trans_pgd)), ttbr0_el1);
+   239		isb();
+   240	
+   241		*phys_dst_addr = virt_to_phys(page);
+   242	
+   243		return 0;
+   244	}
+   245	
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
