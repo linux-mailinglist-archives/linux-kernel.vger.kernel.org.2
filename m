@@ -2,88 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6511F45ECC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:36:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DEE845ED8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348475AbhKZLkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 06:40:05 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:55228 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S241570AbhKZLiF (ORCPT
+        id S1377298AbhKZMM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 07:12:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1377428AbhKZMKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 06:38:05 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1AQAIQGG005791;
-        Fri, 26 Nov 2021 12:34:39 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=selector1;
- bh=t9BKOAnNH3/ir6fGgTKt/gxb6w6S9NYgh/v5dE749Lk=;
- b=Y91G++Exgef0SjdUHnFKX2ctR+4/xDbf1vo4KZBAx418t76tFKrNPXMai/eDpGGcCnWR
- BsKsVu2P7EPX++ogveSDG8UrGgk8Zkd7TAS9aqXZUfGsht1MUMXLsxwpem19R1EX246a
- +q+6lyQ0LhyZZ3XtfQqkVR2f8fx0FJ5lxyBMj3uunMaAJRjDEOW9w1BM+lhSJ3JIvqz+
- t/nfM2A06iHfzT4h09ghGZz03lQ9Dh01PlQbVobWdafRHdK/3M2KMC+HVni5oKxMUaDG
- IhOGHM006w577nMCcym9hO8oih0b3mYyB7wVd1gR9STX387t+jXDm1xIINBQlmvLfGLp Kw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3cjptfarr9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Nov 2021 12:34:39 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CE88910002A;
-        Fri, 26 Nov 2021 12:34:38 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C2BFB2261F2;
-        Fri, 26 Nov 2021 12:34:38 +0100 (CET)
-Received: from localhost (10.75.127.47) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.26; Fri, 26 Nov 2021 12:34:38
- +0100
-From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-To:     <alexandre.torgue@foss.st.com>
-CC:     <robh+dt@kernel.org>, <amelie.delaunay@foss.st.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <fabrice.gasnier@foss.st.com>, <fabien.dessenne@foss.st.com>
-Subject: [PATCH] ARM: dts: stm32: fix stusb1600 pinctrl used on stm32mp157c-dk
-Date:   Fri, 26 Nov 2021 12:33:40 +0100
-Message-ID: <1637926420-5116-1-git-send-email-fabrice.gasnier@foss.st.com>
-X-Mailer: git-send-email 2.7.4
+        Fri, 26 Nov 2021 07:10:55 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 165E9C061D78;
+        Fri, 26 Nov 2021 03:36:07 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id 8C3911F46833
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1637926565; bh=GIN8NoFGOSznfLIa1UX7Cx0wpd48djpTS3XTrBwxP9Q=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=lZK3eP0ZA/iBWLFpQoU5OPkTE18dCbYBdQ1mKszmuTulvkifopnqeZp8OsEiv7GAu
+         RCLdmKj/fK+LVGYjHBz2bPbpRyE/ZwiSjLnqbQQ7i9dVX6+Fd51wThoFc7zVOspUyP
+         JO3+KR/f5O6qTgVzDQZZK5nmlcSCuncVTz/86w99gOT+sr+G/tScpGIJG1+81z5DFq
+         lvz//6jrIxmZx6zGp5gMs2cUVe1nrcpemkjLq+qZ09/EQGyd5+RBPOnLJ/AlnILeBZ
+         kmpbUnkcZfAkpR/wrRkFXllVKynfJplCP7ERDwfclm3DFRoVTmE+LVUIenUy4vpLiY
+         x4i9nW99BwfMw==
+Subject: Re: [PATCH v6 1/3] dt-bindings: mediatek: add adsp-mbox document
+To:     "allen-kh.cheng" <allen-kh.cheng@mediatek.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     Linux-ALSA <alsa-devel@alsa-project.org>, tzungbi@google.com,
+        cujomalainey@google.com,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        sound-open-firmware@alsa-project.org
+References: <20211126093021.25462-1-allen-kh.cheng@mediatek.com>
+ <20211126093021.25462-2-allen-kh.cheng@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Message-ID: <56c862fd-2fc3-4cbb-97a8-154a9faabd6f@collabora.com>
+Date:   Fri, 26 Nov 2021 12:36:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-26_03,2021-11-25_02,2020-04-07_01
+In-Reply-To: <20211126093021.25462-2-allen-kh.cheng@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A pinctrl handle is used to setup a pull-up on the stusb1600 IRQ pin (that
-is open drain).
-When in ANALOG state, no pull-up can be applied in the GPIO HW controller,
-still the setting is done into the register. The pull-up is effective
-currently, only when the GPIO IRQ is requested. The correct setting is to
-use directly the GPIO, instead of ANALOG state.
+Il 26/11/21 10:30, allen-kh.cheng ha scritto:
+> From: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
+> 
+> This patch adds document for mediatek adsp mbox
+> 
+> Signed-off-by: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
+> ---
+>   .../bindings/mailbox/mtk,adsp-mbox.yaml       | 52 +++++++++++++++++++
+>   1 file changed, 52 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml b/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
+> new file mode 100644
+> index 000000000000..a0149566ae56
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
+> @@ -0,0 +1,52 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mailbox/mtk,adsp-mbox.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mediatek ADSP mailbox
+> +
+> +maintainers:
+> +  - Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
+> +
+> +description: |
+> +  The MTK ADSP mailbox Inter-Processor Communication (IPC) enables the SoC
+> +  to ommunicate with ADSP by passing messages through two mailbox channels.
+> +  The MTK ADSP mailbox IPC also provides the ability for one processor to
+> +  signal the other processor using interrupts.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: mediatek,mt8195-adsp-mbox
+> +
+> +  "#mbox-cells":
+> +    const: 0
+> +
+> +  reg:
+> +    description:
+> +      Physical address base for dsp mbox base registers.
+> +
+> +  interrupts:
+> +    description:
+> +      adsp mbox interrupt
+> +
+> +required:
+> +  - compatible
+> +  - "#mbox-cells"
+> +  - reg
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    adsp_mailbox0:adsp_mailbox0@10816000 {
 
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
----
- arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This should be:
 
-diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-index 5f060fe..3b65130 100644
---- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
-@@ -1718,7 +1718,7 @@
- 
- 	stusb1600_pins_a: stusb1600-0 {
- 		pins {
--			pinmux = <STM32_PINMUX('I', 11, ANALOG)>;
-+			pinmux = <STM32_PINMUX('I', 11, GPIO)>;
- 			bias-pull-up;
- 		};
- 	};
--- 
-2.7.4
+adsp_mailbox0: mailbox@10816000 {
 
+> +        compatible = "mediatek,mt8195-adsp-mbox";
+> +        #mbox-cells = <0>;
+> +        reg = <0x10816000 0x1000>;
+> +        interrupts = <GIC_SPI 702 IRQ_TYPE_LEVEL_HIGH 0>;
+> +    };
+> 
+
+Regards,
+- Angelo
