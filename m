@@ -2,92 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1723045F550
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:40:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88CBA45F555
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:42:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239468AbhKZTna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 14:43:30 -0500
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:42963 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234565AbhKZTl3 (ORCPT
+        id S238667AbhKZTpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 14:45:30 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:43126 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235789AbhKZTn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 14:41:29 -0500
-Received: by mail-oi1-f179.google.com with SMTP id n66so20591567oia.9;
-        Fri, 26 Nov 2021 11:38:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=F9WHBsDLTzuit4FpL95JXqUXCEDgLzm46M8tiPrpblo=;
-        b=IslsSqvKbM35zNe++g6CRj8TJ2wnMyRMiM5UXXGGbsuooazcTucLGvy+bG97Jq6LBt
-         T8FYMKHHavu7A6GvpyIsOYRQtAFGKNc8fOCNv470g6xrtyUqQuMiSp+FBl8cWpDn6d4t
-         YiB3yo76K9c6a180SSHcGG+VR6a6qW7N++NQ7UuEsuwc2f7XlYy1K2noOHpyo71qzIE5
-         AF5EKtmcVI6qDsg0+3FLh0BzCg+wqYI5a92L9YMqCcNWSf/NePj+Hfjh94J73za92rWA
-         3ufjbN5L8c0P3+Yhd7bXKlHxdRVuEiK4DJf80HNbJcKhJlIRsZBALkAKj+Ntq1DepURM
-         JSLQ==
-X-Gm-Message-State: AOAM532KqvM9fhZxvhMJyuYqcKSGrAMw7msNrJWyNASZ6JPEJtiDzGjK
-        pN8g3iQtdgvJCZcJC68XBBzzFW3rhSk7d5JZabIplOJ9RsM=
-X-Google-Smtp-Source: ABdhPJxDuNFd5kP8PSZzKLlxI8I7yqqCWq8JrwFtCZ+uIOI9GIMxK3nSuVvjhKTtdG61/NUxeoKptwCjDCwJ2ahRLAo=
-X-Received: by 2002:a05:6808:14c2:: with SMTP id f2mr24949459oiw.154.1637955496108;
- Fri, 26 Nov 2021 11:38:16 -0800 (PST)
+        Fri, 26 Nov 2021 14:43:26 -0500
+Received: from mail.kernel.org (unknown [198.145.29.99])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id BAAD8B82878;
+        Fri, 26 Nov 2021 19:40:11 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 0A1A56008E;
+        Fri, 26 Nov 2021 19:40:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637955610;
+        bh=w1b7XWA9tNv+Nab5II8UYjlJWkCRhNumycNwmGRIRmM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=AZOY+szSkWOJRVBS53sHwINGMlnhXjul5UjJ8qHrb/RupEs3jzCxSFuEZp7HUMG+t
+         qqfWHXnPsKZgXx3vMB1UjMFGE3FYDCOH62/PTPEMwS+RRR/MjC9UbXjyEO6hu8VtdO
+         yXqPOxeZ28IV8i7rdTqhDv1enX3SqH6x0Qb9PeHhwFLE4fgCLJxUaDoYOH6ir2BtbY
+         xNFK4jMRHJVoxiafmZzZIQpYZ8SRzVeOLyOgiD7oUbsdTI02j+asFoM/mgDqeLmvWg
+         MxS9vRL1m4NQYXOiuhcwHQxnsTM/CG2M8KyLt5svY52FA8eD8xSF5n5k8NtirAH6XL
+         T1LOhNgigVP5w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E95AB60BE3;
+        Fri, 26 Nov 2021 19:40:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 26 Nov 2021 20:38:05 +0100
-Message-ID: <CAJZ5v0hQaF-ANLc4JO=Ub_JMsqLFpZev_gmpb=NPpg=zmqcauA@mail.gmail.com>
-Subject: [GIT PULL] ACPI fixes for v5.16-rc3
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: qed: fix the array may be out of bound
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163795560995.18431.9745144977645514241.git-patchwork-notify@kernel.org>
+Date:   Fri, 26 Nov 2021 19:40:09 +0000
+References: <20211125113610.273841-1-zhangyue1@kylinos.cn>
+In-Reply-To: <20211125113610.273841-1-zhangyue1@kylinos.cn>
+To:     zhangyue <zhangyue1@kylinos.cn>
+Cc:     aelior@marvell.com, GR-everest-linux-l2@marvell.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hello:
 
-Please pull from the tag
+This patch was applied to netdev/net.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- acpi-5.16-rc3
+On Thu, 25 Nov 2021 19:36:10 +0800 you wrote:
+> If the variable 'p_bit->flags' is always 0,
+> the loop condition is always 0.
+> 
+> The variable 'j' may be greater than or equal to 32.
+> 
+> At this time, the array 'p_aeu->bits[32]' may be out
+> of bound.
+> 
+> [...]
 
-with top-most commit 2e13e5aeda156f747919c7111723b9302836fb38
+Here is the summary with links:
+  - net: qed: fix the array may be out of bound
+    https://git.kernel.org/netdev/net/c/0435a4d08032
 
- Merge branch 'acpi-properties'
-
-on top of commit 136057256686de39cc3a07c2e39ef6bc43003ff6
-
- Linux 5.16-rc2
-
-to receive ACPI fixes for 5.16-rc3.
-
-These fix a NULL pointer dereference in the CPPC library code and
-a locking issue related to printing the names of ACPI device nodes
-in the device properties framework.
-
-Specifics:
-
- - Fix NULL pointer dereference in the CPPC library code occurring
-   on hybrid systems without CPPC support (Rafael Wysocki).
-
- - Avoid attempts to acquire a semaphore with interrupts off when
-   printing the names of ACPI device nodes and clean up code on
-   top of that fix (Sakari Ailus).
-
-Thanks!
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
----------------
-
-Rafael J. Wysocki (1):
-      ACPI: CPPC: Add NULL pointer check to cppc_get_perf()
-
-Sakari Ailus (2):
-      ACPI: Get acpi_device's parent from the parent field
-      ACPI: Make acpi_node_get_parent() local
-
----------------
-
- drivers/acpi/cppc_acpi.c |  9 ++++++++-
- drivers/acpi/property.c  | 14 +++++---------
- include/linux/acpi.h     |  7 -------
- 3 files changed, 13 insertions(+), 17 deletions(-)
