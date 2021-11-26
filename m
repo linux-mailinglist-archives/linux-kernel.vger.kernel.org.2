@@ -2,82 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF0545EE4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BD345EDB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:13:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347449AbhKZMzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 07:55:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232999AbhKZMx3 (ORCPT
+        id S1377344AbhKZMRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 07:17:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:31125 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240234AbhKZMPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 07:53:29 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C8D6C061D71;
-        Fri, 26 Nov 2021 04:09:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=UP4o40WovA7VvfxJGeCFvSn5F8UzSAraxCMx7u1V3Yc=; b=V9aBUG9nLRQMWSYWkP6fNVUjCR
-        kmHWbkMIrEfjPyGss+0DGQvjmNEkTVD4Z3RcjAev3qJ82+3pb67hhgit7sl8CNkJhWL+6U5Fzzwdf
-        y8OuvJGWdnq011dm14Ct/OQPg5trCrEYw0THrtFtlxz+QCr5xckbB06LbRr0DAw+qNphVsUbYkp89
-        Bx4CSevdfarvcS3Y/QCIrAyma/y/2bSpzAgsS0MwNOf1ht8oCDFMw6nV22SElNCBZuSHphjTkDRNP
-        0g326QgJEwLT98u1GCk7xDXzzFZrgq3bwJkisMk2kucWs1QAir/F77SeBbdKggq2H5JwJtlVY2ffb
-        gdXoZ3Fg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55914)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mqa2M-00031A-T9; Fri, 26 Nov 2021 12:09:06 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mqa2L-0003Fe-33; Fri, 26 Nov 2021 12:09:05 +0000
-Date:   Fri, 26 Nov 2021 12:09:05 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Horatiu Vultur <horatiu.vultur@microchip.com>, andrew@lunn.ch,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: phy: micrel: Add config_init for LAN8814
-Message-ID: <YaDOYc+RWZ35lKjB@shell.armlinux.org.uk>
-References: <20211126103833.3609945-1-horatiu.vultur@microchip.com>
- <402780af-9d12-45dd-e435-e7279f1b9263@gmail.com>
+        Fri, 26 Nov 2021 07:15:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637928714;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zEaiHOjKPvvIeFADV9AA6fu7Ajtt1ugf/mQmvT607mI=;
+        b=LpfEc5hZUPabCmBWYqXAdbFXgFvT8GH42qIS6zx5MwXt5J5AdP5KzwKyKfrk2P31AZ5CM/
+        Ma3pBHuSObzxSYDmqSHmOwpTtcSf3qx4PHigcDfKvaaPINTrccWqVQ94e661lAObb5q/qn
+        LdK9ZlShWGJfx3tKr7BukPKXSAHY2QY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-37-RWWi0uN7PW6PmQv2eA2g0Q-1; Fri, 26 Nov 2021 07:11:51 -0500
+X-MC-Unique: RWWi0uN7PW6PmQv2eA2g0Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D4CF190A7A1;
+        Fri, 26 Nov 2021 12:11:49 +0000 (UTC)
+Received: from [10.39.195.16] (unknown [10.39.195.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 085A35C1D5;
+        Fri, 26 Nov 2021 12:11:46 +0000 (UTC)
+Message-ID: <79642370-5e60-5830-b171-ca58a6e859ad@redhat.com>
+Date:   Fri, 26 Nov 2021 13:11:45 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <402780af-9d12-45dd-e435-e7279f1b9263@gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 0/2] KVM: nVMX: Fix VPID + !EPT TLB bugs
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+References: <20211125014944.536398-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211125014944.536398-1-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 12:57:33PM +0100, Heiner Kallweit wrote:
-> Not directly related to just this patch:
-> Did you consider implementing the read_page and write_page PHY driver
-> callbacks? Then you could use phylib functions like phy_modify_paged et al
-> and you wouldn't have to open-code the paged register operations.
+On 11/25/21 02:49, Sean Christopherson wrote:
+> Fix two bugs reported by Lai where KVM mishandles guest-scoped TLB flushes
+> when L2 is active.  Bugs confirmed (and confirmed fixed) by the VPID+access
+> test (patches posted for kvm-unit-tests).
 > 
-> I think write_page would just be
-> phy_write(phydev, LAN_EXT_PAGE_ACCESS_CONTROL, page);
-> phy_write(phydev, LAN_EXT_PAGE_ACCESS_ADDRESS_DATA, addr);
-> phy_write(phydev, LAN_EXT_PAGE_ACCESS_CONTROL, (page | LAN_EXT_PAGE_ACCESS_CTRL_EP_FUNC));
+> Sean Christopherson (2):
+>    KVM: nVMX: Flush current VPID (L1 vs. L2) for KVM_REQ_TLB_FLUSH_GUEST
+>    KVM: nVMX: Emulate guest TLB flush on nested VM-Enter with new vpid12
 > 
-> and read_page
-> phy_read(phydev, LAN_EXT_PAGE_ACCESS_CONTROL);
+>   arch/x86/kvm/vmx/nested.c | 45 +++++++++++++++++----------------------
+>   arch/x86/kvm/vmx/vmx.c    | 23 ++++++++++++--------
+>   arch/x86/kvm/x86.c        | 28 ++++++++++++++++++++----
+>   arch/x86/kvm/x86.h        |  7 +-----
+>   4 files changed, 59 insertions(+), 44 deletions(-)
+> 
 
-Remember that read_page() and write_page() must be implemented using
-the unlocked accessors since the MDIO bus lock is held prior to calling
-them. So these should be __phy_write() and __phy_read().
+Queued, thanks (but I split the first in two).
 
-The use of the helpers you mention above also bring greater safety to
-the read-modify-write accesses, since with these accessors, the whole
-set of accesses are done while holding the bus lock.
+Paolo
 
-Thanks.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
