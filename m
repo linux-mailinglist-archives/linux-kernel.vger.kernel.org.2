@@ -2,57 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC18145E774
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 06:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B720A45E779
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 06:36:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358665AbhKZFhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 00:37:33 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:57156 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242823AbhKZFfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 00:35:31 -0500
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mqTqM-0008RY-7r; Fri, 26 Nov 2021 13:32:18 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mqTqK-0004Zq-KG; Fri, 26 Nov 2021 13:32:16 +0800
-Date:   Fri, 26 Nov 2021 13:32:16 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Kai Ye <yekai13@huawei.com>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wangzhou1@hisilicon.com
-Subject: Re: [PATCH 0/4] crypto: hisilicon/qm - misc clean up and fixes
-Message-ID: <20211126053216.GE17477@gondor.apana.org.au>
-References: <20211120044739.5667-1-yekai13@huawei.com>
+        id S1358219AbhKZFj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 00:39:26 -0500
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:19808 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344016AbhKZFhZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 00:37:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1637904853; x=1669440853;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ezOHgYaF5ocrjdNaIhBrXDMQCvdxCutXFPf/Cjp9RgA=;
+  b=QAhRdC+jIV9/qz3+7kVLYSVzEsJO9zbZ21bxHX0NGVx9kIEAvwAnTDcl
+   ds9SPoBL3vyjyIB4D396j+e4o/t+82LISFPFAEfqkR09hFFDYUlIPffjt
+   iM0VURwXC7l4oNewWksXH19CAdnS/k05H1pW6QGwzPl3QJ2cqJcOyz77W
+   Q=;
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 25 Nov 2021 21:34:12 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg01-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 21:34:12 -0800
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.922.19; Thu, 25 Nov 2021 21:34:12 -0800
+Received: from fixkernel.com (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Thu, 25 Nov
+ 2021 21:34:08 -0800
+Date:   Fri, 26 Nov 2021 00:34:04 -0500
+From:   Qian Cai <quic_qiancai@quicinc.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+CC:     Alexey Gladkov <legion@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: BUG: KASAN: use-after-free in dec_rlimit_ucounts
+Message-ID: <YaBxzDGyWxU/836N@fixkernel.com>
+References: <YZV7Z+yXbsx9p3JN@fixkernel.com>
+ <875ysptfgi.fsf@email.froward.int.ebiederm.org>
+ <YZa4YbcOyjtD3+pL@fixkernel.com>
+ <87k0h5rxle.fsf@email.froward.int.ebiederm.org>
+ <YZ6zXEZf9qHLFyIp@fixkernel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20211120044739.5667-1-yekai13@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YZ6zXEZf9qHLFyIp@fixkernel.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 20, 2021 at 12:47:35PM +0800, Kai Ye wrote:
-> 1. Modify the value of qos initialization in resetting.
-> 2. Some optimizations.
+On Wed, Nov 24, 2021 at 04:49:19PM -0500, Qian Cai wrote:
+> Hmm, I don't know if that or it is just this platfrom is lucky to trigger
+> the race condition quickly, but I can't reproduce it on x86 so far. I am
+> Cc'ing a few arm64 people to see if they have spot anything I might be
+> missing. The original bug report is here:
 > 
-> Kai Ye (4):
->   crypto: hisilicon - modify the value of engine type rate
->   crypto: hisilicon/qm - modify the value of qos initialization
->   crypto: hisilicon/qm - some optimizations of ths qos write process
->   crypto: hisilicon/qm - simplified the calculation of qos shaper
->     parameters
-> 
->  drivers/crypto/hisilicon/hpre/hpre_main.c |   2 +-
->  drivers/crypto/hisilicon/qm.c             | 183 +++++++++++++---------
->  drivers/crypto/hisilicon/sec2/sec_main.c  |   2 +-
->  drivers/crypto/hisilicon/zip/zip_main.c   |   4 +-
->  4 files changed, 112 insertions(+), 79 deletions(-)
+> https://lore.kernel.org/lkml/YZV7Z+yXbsx9p3JN@fixkernel.com/
 
-All applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Okay, I am finally able to reproduce this on x86_64 with the latest
+mainline as well by setting CONFIG_USER_NS and KASAN on the top of
+defconfig (I did not realize it did not select CONFIG_USER_NS in the first
+place). Anyway, it still took less than 5-minute by running:
+
+$ trinity -C 48
