@@ -2,191 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB6F45F0E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:42:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A271745F0F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:43:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354133AbhKZPqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:46:01 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:4174 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377923AbhKZPoA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:44:00 -0500
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4J0zPX2h4tz67fMV;
-        Fri, 26 Nov 2021 23:36:48 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 26 Nov 2021 16:40:45 +0100
-Received: from localhost.localdomain (10.69.192.58) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 26 Nov 2021 15:40:42 +0000
-From:   John Garry <john.garry@huawei.com>
-To:     <jinpu.wang@cloud.ionos.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>
-CC:     <Viswas.G@microchip.com>, <Ajish.Koshy@microchip.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH] scsi: pm8001: Fix phys_to_virt() usage on dma_addr_t
-Date:   Fri, 26 Nov 2021 23:35:33 +0800
-Message-ID: <1637940933-107862-1-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S1378275AbhKZPqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 10:46:17 -0500
+Received: from mga12.intel.com ([192.55.52.136]:41356 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1377982AbhKZPoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 10:44:11 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="215703206"
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
+   d="scan'208";a="215703206"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 07:38:53 -0800
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
+   d="scan'208";a="599034554"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 07:38:50 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mqdJH-00ApBO-5f;
+        Fri, 26 Nov 2021 17:38:47 +0200
+Date:   Fri, 26 Nov 2021 17:38:46 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Jean Delvare <jdelvare@suse.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Tan Jui Nee <jui.nee.tan@intel.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Jonathan Yong <jonathan.yong@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com,
+        henning.schild@siemens.com
+Subject: Re: [PATCH v1 3/7] PCI: New Primary to Sideband (P2SB) bridge
+ support library
+Message-ID: <YaD/hspdA/j0tL5h@smile.fi.intel.com>
+References: <YEZ4IitUa+I9HM5F@smile.fi.intel.com>
+ <20210309014221.GA1831206@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210309014221.GA1831206@bjorn-Precision-5520>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver supports a "direct" mode of operation, where the SMP req frame
-is directly copied into the command payload (and vice-versa for the SMP
-resp).
+On Mon, Mar 08, 2021 at 07:42:21PM -0600, Bjorn Helgaas wrote:
+> On Mon, Mar 08, 2021 at 09:16:50PM +0200, Andy Shevchenko wrote:
+> > On Mon, Mar 08, 2021 at 12:52:12PM -0600, Bjorn Helgaas wrote:
+> > > On Mon, Mar 08, 2021 at 02:20:16PM +0200, Andy Shevchenko wrote:
+> > > > From: Jonathan Yong <jonathan.yong@intel.com>
+> > > > 
+> > > > There is already one and at least one more user is coming which
+> > > > requires an access to Primary to Sideband bridge (P2SB) in order to
+> > > > get IO or MMIO bar hidden by BIOS. Create a library to access P2SB
+> > > > for x86 devices.
+> > > 
+> > > Can you include a spec reference?
+> > 
+> > I'm not sure I have a public link to the spec. It's the 100 Series PCH [1].
+> > The document number to look for is 546955 [2] and there actually a bit of
+> > information about this.
+> 
+> This link, found by googling for "p2sb bridge", looks like it might
+> have relevant public links:
+> 
+> https://lab.whitequark.org/notes/2017-11-08/accessing-intel-ich-pch-gpios/
+> 
+> I'd prefer if you could dig out the relevant sections because I really
+> don't know how to identify them.
 
-To get at the SMP req frame data in the scatterlist the driver uses
-phys_to_virt() on the DMA mapped memory dma_addr_t . This is broken,
-and subsequently crashes as follows when an IOMMU is enabled:
+I'm not sure I understand what you would like to see. The information about
+P2SB here has confidential tag. I probably can use the document number and cite
+couple of paragraphs from it. Would it be sufficient?
 
- Unable to handle kernel paging request at virtual address
-ffff0000fcebfb00
-	...
- pc : pm80xx_chip_smp_req+0x2d0/0x3d0
- lr : pm80xx_chip_smp_req+0xac/0x3d0
- pm80xx_chip_smp_req+0x2d0/0x3d0
- pm8001_task_exec.constprop.0+0x368/0x520
- pm8001_queue_command+0x1c/0x30
- smp_execute_task_sg+0xdc/0x204
- sas_discover_expander.part.0+0xac/0x6cc
- sas_discover_root_expander+0x8c/0x150
- sas_discover_domain+0x3ac/0x6a0
- process_one_work+0x1d0/0x354
- worker_thread+0x13c/0x470
- kthread+0x17c/0x190
- ret_from_fork+0x10/0x20
- Code: 371806e1 910006d6 6b16033f 54000249 (38766b05)
- ---[ end trace b91d59aaee98ea2d ]---
-note: kworker/u192:0[7] exited with preempt_count 1
+> > > I'm trying to figure out why this
+> > > belongs in drivers/pci/.  It looks very device-specific.
+> > 
+> > Because it's all about access to PCI configuration spaces of the (hidden)
+> > devices.
+> 
+> The PCI core generally doesn't deal with device-specific config
+> registers.
 
-Instead use kmap{_atomic}().
+The location is purely based on practical reason, after the fact that P2SB
+is a PCI device, of deduplicating BAR decoding code. I can easily move this
+outside of PCI subsystem, but I will need to export this function instead.
+Would it work for you?
 
-Signed-off-by: John Garry <john.garry@huawei.com>
---
-I would appreciate if someone could test this change a bit more.
+> > [1]: https://ark.intel.com/content/www/us/en/ark/products/series/98456/intel-100-series-desktop-chipsets.html
+> > [2]: https://medium.com/@jacksonchen_43335/bios-gpio-p2sb-70e9b829b403
 
-Even though my system boots and I can mount the disks now, SCSI error
-handling kicks eventually in for some erroneously completed tasks.
-That's even on my x86 machine, IIRC. I think the card FW needs updating.
+...
 
-diff --git a/drivers/scsi/pm8001/pm80xx_hwi.c b/drivers/scsi/pm8001/pm80xx_hwi.c
-index b9f6d83ff380..0e2221b4f411 100644
---- a/drivers/scsi/pm8001/pm80xx_hwi.c
-+++ b/drivers/scsi/pm8001/pm80xx_hwi.c
-@@ -3053,7 +3053,6 @@ mpi_smp_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
- 	struct smp_completion_resp *psmpPayload;
- 	struct task_status_struct *ts;
- 	struct pm8001_device *pm8001_dev;
--	char *pdma_respaddr = NULL;
- 
- 	psmpPayload = (struct smp_completion_resp *)(piomb + 4);
- 	status = le32_to_cpu(psmpPayload->status);
-@@ -3080,19 +3079,23 @@ mpi_smp_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
- 		if (pm8001_dev)
- 			atomic_dec(&pm8001_dev->running_req);
- 		if (pm8001_ha->smp_exp_mode == SMP_DIRECT) {
-+			struct scatterlist *sg_resp = &t->smp_task.smp_resp;
-+			u8 *payload;
-+			void *to;
-+
- 			pm8001_dbg(pm8001_ha, IO,
- 				   "DIRECT RESPONSE Length:%d\n",
- 				   param);
--			pdma_respaddr = (char *)(phys_to_virt(cpu_to_le64
--						((u64)sg_dma_address
--						(&t->smp_task.smp_resp))));
-+			to = kmap_atomic(sg_page(sg_resp));
-+			payload = to + sg_resp->offset;
- 			for (i = 0; i < param; i++) {
--				*(pdma_respaddr+i) = psmpPayload->_r_a[i];
-+				*(payload + i) = psmpPayload->_r_a[i];
- 				pm8001_dbg(pm8001_ha, IO,
- 					   "SMP Byte%d DMA data 0x%x psmp 0x%x\n",
--					   i, *(pdma_respaddr + i),
-+					   i, *(payload + i),
- 					   psmpPayload->_r_a[i]);
- 			}
-+			kunmap_atomic(to);
- 		}
- 		break;
- 	case IO_ABORTED:
-@@ -4236,14 +4239,14 @@ static int pm80xx_chip_smp_req(struct pm8001_hba_info *pm8001_ha,
- 	struct sas_task *task = ccb->task;
- 	struct domain_device *dev = task->dev;
- 	struct pm8001_device *pm8001_dev = dev->lldd_dev;
--	struct scatterlist *sg_req, *sg_resp;
-+	struct scatterlist *sg_req, *sg_resp, *smp_req;
- 	u32 req_len, resp_len;
- 	struct smp_req smp_cmd;
- 	u32 opc;
- 	struct inbound_queue_table *circularQ;
--	char *preq_dma_addr = NULL;
--	__le64 tmp_addr;
- 	u32 i, length;
-+	u8 *payload;
-+	u8 *to;
- 
- 	memset(&smp_cmd, 0, sizeof(smp_cmd));
- 	/*
-@@ -4280,8 +4283,9 @@ static int pm80xx_chip_smp_req(struct pm8001_hba_info *pm8001_ha,
- 		pm8001_ha->smp_exp_mode = SMP_INDIRECT;
- 
- 
--	tmp_addr = cpu_to_le64((u64)sg_dma_address(&task->smp_task.smp_req));
--	preq_dma_addr = (char *)phys_to_virt(tmp_addr);
-+	smp_req = &task->smp_task.smp_req;
-+	to = kmap(sg_page(smp_req));
-+	payload = to + smp_req->offset;
- 
- 	/* INDIRECT MODE command settings. Use DMA */
- 	if (pm8001_ha->smp_exp_mode == SMP_INDIRECT) {
-@@ -4289,7 +4293,7 @@ static int pm80xx_chip_smp_req(struct pm8001_hba_info *pm8001_ha,
- 		/* for SPCv indirect mode. Place the top 4 bytes of
- 		 * SMP Request header here. */
- 		for (i = 0; i < 4; i++)
--			smp_cmd.smp_req16[i] = *(preq_dma_addr + i);
-+			smp_cmd.smp_req16[i] = *(payload + i);
- 		/* exclude top 4 bytes for SMP req header */
- 		smp_cmd.long_smp_req.long_req_addr =
- 			cpu_to_le64((u64)sg_dma_address
-@@ -4320,20 +4324,20 @@ static int pm80xx_chip_smp_req(struct pm8001_hba_info *pm8001_ha,
- 		pm8001_dbg(pm8001_ha, IO, "SMP REQUEST DIRECT MODE\n");
- 		for (i = 0; i < length; i++)
- 			if (i < 16) {
--				smp_cmd.smp_req16[i] = *(preq_dma_addr+i);
-+				smp_cmd.smp_req16[i] = *(payload+i);
- 				pm8001_dbg(pm8001_ha, IO,
- 					   "Byte[%d]:%x (DMA data:%x)\n",
- 					   i, smp_cmd.smp_req16[i],
--					   *(preq_dma_addr));
-+					   *(payload));
- 			} else {
--				smp_cmd.smp_req[i] = *(preq_dma_addr+i);
-+				smp_cmd.smp_req[i] = *(payload+i);
- 				pm8001_dbg(pm8001_ha, IO,
- 					   "Byte[%d]:%x (DMA data:%x)\n",
- 					   i, smp_cmd.smp_req[i],
--					   *(preq_dma_addr));
-+					   *(payload));
- 			}
- 	}
--
-+	kunmap(sg_page(smp_req));
- 	build_smp_cmd(pm8001_dev->device_id, smp_cmd.tag,
- 				&smp_cmd, pm8001_ha->smp_exp_mode, length);
- 	rc = pm8001_mpi_build_cmd(pm8001_ha, circularQ, opc, &smp_cmd,
+> The code suggests that a register on this device controls whether a
+> different device is visible in config space.  I think it will be
+> better if we can describe what's happening.
+
+Actually it seems incorrect assumption (while it works by some reason).
+I have to double test this.
+
+From the doc:
+
+"The P2SB is enumerated as a normal PCI device. ...
+Writing a 1 to the P2SBC.HIDE field in the P2SB PCI Configuration space
+hides the device; writing a 0 to this field, unhides the device."
+
+It clearly states the P2SB PCI configuration space.
+
+Also it looks like Henning pointed out to this by asking why we need too many
+parameters to the function.
+
+...
+
+> > > > +	/* Unhide the P2SB device */
+> > > > +	pci_bus_write_config_byte(bus, df, P2SBC_HIDE_BYTE, 0);
+> > > > +
+> > > > +	/* Read the first BAR of the device in question */
+> > > > +	__pci_bus_read_base(bus, devfn, pci_bar_unknown, mem, PCI_BASE_ADDRESS_0, true);
+> > > 
+> > > I don't get this.  Apparently this normally hidden device is consuming
+> > > PCI address space.  The PCI core needs to know about this.  If it
+> > > doesn't, the PCI core may assign this space to another device.
+> > 
+> > Right, it returns all 1:s to any request so PCI core *thinks* it's
+> > plugged off (like D3cold or so).
+> 
+> I'm asking about the MMIO address space.
+
+> The BAR is a register in
+> config space.  AFAICT, clearing P2SBC_HIDE_BYTE makes that BAR
+> visible.  The BAR describes a region of PCI address space.  It looks
+> like setting P2SBC_HIDE_BIT makes the BAR disappear from config space,
+> but it sounds like the PCI address space *described* by the BAR is
+> still claimed by the device.  If the device didn't respond to that
+> MMIO space, you would have no reason to read the BAR at all.
+> 
+> So what keeps the PCI core from assigning that MMIO space to another
+> device?
+> 
+> This all sounds quite irregular from the point of view of the PCI
+> core.  If a device responds to address space that is not described by
+> a standard PCI BAR, or by an EA capability, or by one of the legacy
+> VGA or IDE exceptions, we have a problem.  That space must be
+> described *somehow* in a generic way, e.g., ACPI or similar.
+> 
+> What happens if CONFIG_PCI_P2SB is unset?  The device doesn't know
+> that, and if it is still consuming MMIO address space that we don't
+> know about, that's a problem.
+
+Yeah, Henning already answered on this and I believe that nothing prevents OS
+to try that addresses for other PCI devices, except the memory region
+reservation (by ACPI and / or e820 meaning). It means that we rely on firmware
+to do the right thing if it hides the P2SB bar.
+
+And at the same time P2SB bar is used as a part of telling OS where the *fixed*
+16Mb region of MMIO is located.
+
+> > > > +	/* Hide the P2SB device */
+> > > > +	pci_bus_write_config_byte(bus, df, P2SBC_HIDE_BYTE, P2SBC_HIDE_BIT);
+
 -- 
-2.17.1
+With Best Regards,
+Andy Shevchenko
+
 
