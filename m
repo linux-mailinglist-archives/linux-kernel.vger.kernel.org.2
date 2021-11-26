@@ -2,116 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0CF45ED46
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:59:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D6C45EDE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:30:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377177AbhKZMC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 07:02:58 -0500
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:37260
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346217AbhKZMA5 (ORCPT
+        id S1377369AbhKZMd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 07:33:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235369AbhKZMb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 07:00:57 -0500
-Received: from localhost.localdomain (unknown [10.101.196.174])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 0D4683F1C0;
-        Fri, 26 Nov 2021 11:57:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1637927862;
-        bh=eV+QmyQswD4I2BWptekGk432GeDddqsdJec6l2n5sQw=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=LE2OtPLbKlcRrlT437XxQVG215Tract7e+8qbkDPxrZscZJtSKTR78HTm1qZ0Nkl6
-         sRr7cnAHOLYJ6AOKQYZH3ZK1D4D0hD2xnZX25zG/kZyUOUl0hRMo9G3Ey1pdR6E1vJ
-         NW5Eps1AD9AxU1AMIQqg9STN3uFzvwHNMp4JcyFooI8+pdgd0wMygl30w3JzCnhyOK
-         MCn2mPcojTovdO1FtOLsI5LQ4ba6mmBuijYpLb0/cTsCZUSuuBEN3yRpBSUZNQqdHD
-         JpcAkZsKR1U1sxUxBydfIHuuaC13sT8CYQ3eaLenGt7FiaKJQ4H7r1/J55IdVvDNzs
-         3fL/MxQd7jCiQ==
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     gregkh@linuxfoundation.org
-Cc:     stern@rowland.harvard.edu, mathias.nyman@linux.intel.com,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Andrew Lunn <andrew@lunn.ch>, Rajat Jain <rajatja@google.com>,
-        Chris Chiu <chris.chiu@canonical.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] usb: core: Avoid doing warm reset on disconnect event
-Date:   Fri, 26 Nov 2021 19:56:51 +0800
-Message-Id: <20211126115652.1134230-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Fri, 26 Nov 2021 07:31:27 -0500
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3C4C08E884
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 03:57:07 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:97b:45b9:deec:78a4])
+        by laurent.telenet-ops.be with bizsmtp
+        id Nzx32600F2ipgwy01zx3dj; Fri, 26 Nov 2021 12:57:05 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mqZqg-000R9L-Rh; Fri, 26 Nov 2021 12:57:02 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mqZqg-001ZuC-BM; Fri, 26 Nov 2021 12:57:02 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] dt-bindings: net: cdns,macb: Convert to json-schema
+Date:   Fri, 26 Nov 2021 12:57:00 +0100
+Message-Id: <104dcbfd22f95fc77de9fe15e8abd83869603ea5.1637927673.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unplugging USB device may cause an incorrect warm reset loop:
-[  143.039019] xhci_hcd 0000:00:14.0: Port change event, 2-3, id 19, portsc: 0x4202c0
-[  143.039025] xhci_hcd 0000:00:14.0: handle_port_status: starting usb2 port polling.
-[  143.039051] hub 2-0:1.0: state 7 ports 10 chg 0000 evt 0008
-[  143.039058] xhci_hcd 0000:00:14.0: Get port status 2-3 read: 0x4202c0, return 0x4102c0
-[  143.039092] xhci_hcd 0000:00:14.0: clear port3 connect change, portsc: 0x4002c0
-[  143.039096] usb usb2-port3: link state change
-[  143.039099] xhci_hcd 0000:00:14.0: clear port3 link state change, portsc: 0x2c0
-[  143.039101] usb usb2-port3: do warm reset
-[  143.096736] xhci_hcd 0000:00:14.0: Get port status 2-3 read: 0x2b0, return 0x2b0
-[  143.096751] usb usb2-port3: not warm reset yet, waiting 50ms
-[  143.131500] xhci_hcd 0000:00:14.0: Can't queue urb, port error, link inactive
-[  143.138260] xhci_hcd 0000:00:14.0: Port change event, 2-3, id 19, portsc: 0x2802a0
-[  143.138263] xhci_hcd 0000:00:14.0: handle_port_status: starting usb2 port polling.
-[  143.160756] xhci_hcd 0000:00:14.0: Get port status 2-3 read: 0x2802a0, return 0x3002a0
-[  143.160798] usb usb2-port3: not warm reset yet, waiting 200ms
+Convert the Cadence MACB/GEM Ethernet controller Device Tree binding
+documentation to json-schema.
 
-The warm reset is due to its PLS is in eSS.Inactive state. However, USB
-3.2 spec table 10-13 mentions "Ports can be disabled by either a fault
-condition (disconnect event or other fault condition)", xHCI 1.2 spec
-table 5-27 also states that "This flag shall automatically be cleared to
-‘0’ by a disconnect event or other fault condition." on PED.
+Re-add "cdns,gem" (removed in commit a217d8711da5c87f ("dt-bindings:
+Remove PicoXcell bindings")) as there are active users on non-PicoXcell
+platforms.
+Add missing "ether_clk" clock.
+Add missing properties.
 
-So use CSC = 0 and PED = 0 as indication that device is disconnecting to
-avoid doing warm reset.
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-v2:
- - Change the variable type to bool.
+ .../devicetree/bindings/net/cdns,macb.yaml    | 162 ++++++++++++++++++
+ .../devicetree/bindings/net/macb.txt          |  60 -------
+ 2 files changed, 162 insertions(+), 60 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/cdns,macb.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/macb.txt
 
- drivers/usb/core/hub.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-index a9a04ea967019..4f081df70ecf2 100644
---- a/drivers/usb/core/hub.c
-+++ b/drivers/usb/core/hub.c
-@@ -5564,6 +5564,7 @@ static void port_event(struct usb_hub *hub, int port1)
- 		__must_hold(&port_dev->status_lock)
- {
- 	int connect_change;
-+	bool disconnect = false;
- 	struct usb_port *port_dev = hub->ports[port1 - 1];
- 	struct usb_device *udev = port_dev->child;
- 	struct usb_device *hdev = hub->hdev;
-@@ -5579,6 +5580,9 @@ static void port_event(struct usb_hub *hub, int port1)
- 	if (portchange & USB_PORT_STAT_C_CONNECTION) {
- 		usb_clear_port_feature(hdev, port1, USB_PORT_FEAT_C_CONNECTION);
- 		connect_change = 1;
-+		if (!(portstatus & USB_PORT_STAT_CONNECTION) &&
-+		    !(portstatus & USB_PORT_STAT_ENABLE))
-+			disconnect = true;
- 	}
- 
- 	if (portchange & USB_PORT_STAT_C_ENABLE) {
-@@ -5647,7 +5651,7 @@ static void port_event(struct usb_hub *hub, int port1)
- 	 * Warm reset a USB3 protocol port if it's in
- 	 * SS.Inactive state.
- 	 */
--	if (hub_port_warm_reset_required(hub, port1, portstatus)) {
-+	if (hub_port_warm_reset_required(hub, port1, portstatus) && !disconnect) {
- 		dev_dbg(&port_dev->dev, "do warm reset\n");
- 		if (!udev || !(portstatus & USB_PORT_STAT_CONNECTION)
- 				|| udev->state == USB_STATE_NOTATTACHED) {
+diff --git a/Documentation/devicetree/bindings/net/cdns,macb.yaml b/Documentation/devicetree/bindings/net/cdns,macb.yaml
+new file mode 100644
+index 0000000000000000..c7d00350430aa503
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/cdns,macb.yaml
+@@ -0,0 +1,162 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/cdns,macb.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Cadence MACB/GEM Ethernet controller
++
++maintainers:
++  - Nicolas Ferre <nicolas.ferre@microchip.com>
++  - Claudiu Beznea <claudiu.beznea@microchip.com>
++
++properties:
++  compatible:
++    oneOf:
++      - items:
++          - enum:
++              - cdns,at91rm9200-emac  # Atmel at91rm9200 SoC
++          - const: cdns,emac          # Generic
++
++      - items:
++          - enum:
++              - cdns,zynq-gem         # Xilinx Zynq-7xxx SoC
++              - cdns,zynqmp-gem       # Xilinx Zynq Ultrascale+ MPSoC
++          - const: cdns,gem           # Generic
++
++      - items:
++          - enum:
++              - cdns,at91sam9260-macb # Atmel at91sam9 SoCs
++              - cdns,sam9x60-macb     # Microchip sam9x60 SoC
++          - const: cdns,macb          # Generic
++
++      - items:
++          - enum:
++              - atmel,sama5d3-macb    # 10/100Mbit IP on Atmel sama5d3 SoCs
++          - enum:
++              - cdns,at91sam9260-macb # Atmel at91sam9 SoCs.
++          - const: cdns,macb          # Generic
++
++      - enum:
++          - atmel,sama5d29-gem        # GEM XL IP (10/100) on Atmel sama5d29 SoCs
++          - atmel,sama5d2-gem         # GEM IP (10/100) on Atmel sama5d2 SoCs
++          - atmel,sama5d3-gem         # Gigabit IP on Atmel sama5d3 SoCs
++          - atmel,sama5d4-gem         # GEM IP (10/100) on Atmel sama5d4 SoCs
++          - cdns,at32ap7000-macb      # Other 10/100 usage or use the generic form
++          - cdns,np4-macb             # NP4 SoC devices
++          - microchip,sama7g5-emac    # Microchip SAMA7G5 ethernet interface
++          - microchip,sama7g5-gem     # Microchip SAMA7G5 gigabit ethernet interface
++          - sifive,fu540-c000-gem     # SiFive FU540-C000 SoC
++          - cdns,emac                 # Generic
++          - cdns,gem                  # Generic
++          - cdns,macb                 # Generic
++
++  reg:
++    minItems: 1
++    items:
++      - description: Basic register set
++      - description: GEMGXL Management block registers on SiFive FU540-C000 SoC
++
++  interrupts:
++    minItems: 1
++    maxItems: 8
++    description: One interrupt per available hardware queue
++
++  clocks:
++    minItems: 1
++    maxItems: 5
++
++  clock-names:
++    minItems: 1
++    items:
++      - enum: [ ether_clk, hclk, pclk ]
++      - enum: [ hclk, pclk ]
++      - const: tx_clk
++      - enum: [ rx_clk, tsu_clk ]
++      - const: tsu_clk
++
++  local-mac-address: true
++
++  phy-mode: true
++
++  phy-handle: true
++
++  fixed-link: true
++
++  iommus:
++    maxItems: 1
++
++  power-domains:
++    maxItems: 1
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++  '#stream-id-cells':
++    const: 1
++
++  mdio:
++    type: object
++    description:
++      Node containing PHY children. If this node is not present, then PHYs will
++      be direct children.
++
++patternProperties:
++  "^ethernet-phy@[0-9a-f]$":
++    type: object
++    $ref: ethernet-phy.yaml#
++
++    properties:
++      reset-gpios: true
++
++      magic-packet:
++        description:
++          Indicates that the hardware supports waking up via magic packet.
++
++    unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - phy-mode
++
++allOf:
++  - $ref: ethernet-controller.yaml#
++
++  - if:
++      not:
++        properties:
++          compatible:
++            contains:
++              const: sifive,fu540-c000-gem
++    then:
++      properties:
++        reg:
++          maxItems: 1
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    macb0: ethernet@fffc4000 {
++            compatible = "cdns,at32ap7000-macb";
++            reg = <0xfffc4000 0x4000>;
++            interrupts = <21>;
++            phy-mode = "rmii";
++            local-mac-address = [3a 0e 03 04 05 06];
++            clock-names = "pclk", "hclk", "tx_clk";
++            clocks = <&clkc 30>, <&clkc 30>, <&clkc 13>;
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            ethernet-phy@1 {
++                    reg = <0x1>;
++                    reset-gpios = <&pioE 6 1>;
++            };
++    };
+diff --git a/Documentation/devicetree/bindings/net/macb.txt b/Documentation/devicetree/bindings/net/macb.txt
+deleted file mode 100644
+index a1b06fd1962e4d93..0000000000000000
+--- a/Documentation/devicetree/bindings/net/macb.txt
++++ /dev/null
+@@ -1,60 +0,0 @@
+-* Cadence MACB/GEM Ethernet controller
+-
+-Required properties:
+-- compatible: Should be "cdns,[<chip>-]{macb|gem}"
+-  Use "cdns,at91rm9200-emac" Atmel at91rm9200 SoC.
+-  Use "cdns,at91sam9260-macb" for Atmel at91sam9 SoCs.
+-  Use "cdns,sam9x60-macb" for Microchip sam9x60 SoC.
+-  Use "cdns,np4-macb" for NP4 SoC devices.
+-  Use "cdns,at32ap7000-macb" for other 10/100 usage or use the generic form: "cdns,macb".
+-  Use "atmel,sama5d2-gem" for the GEM IP (10/100) available on Atmel sama5d2 SoCs.
+-  Use "atmel,sama5d29-gem" for GEM XL IP (10/100) available on Atmel sama5d29 SoCs.
+-  Use "atmel,sama5d3-macb" for the 10/100Mbit IP available on Atmel sama5d3 SoCs.
+-  Use "atmel,sama5d3-gem" for the Gigabit IP available on Atmel sama5d3 SoCs.
+-  Use "atmel,sama5d4-gem" for the GEM IP (10/100) available on Atmel sama5d4 SoCs.
+-  Use "cdns,zynq-gem" Xilinx Zynq-7xxx SoC.
+-  Use "cdns,zynqmp-gem" for Zynq Ultrascale+ MPSoC.
+-  Use "sifive,fu540-c000-gem" for SiFive FU540-C000 SoC.
+-  Use "microchip,sama7g5-emac" for Microchip SAMA7G5 ethernet interface.
+-  Use "microchip,sama7g5-gem" for Microchip SAMA7G5 gigabit ethernet interface.
+-  Or the generic form: "cdns,emac".
+-- reg: Address and length of the register set for the device
+-	For "sifive,fu540-c000-gem", second range is required to specify the
+-	address and length of the registers for GEMGXL Management block.
+-- interrupts: Should contain macb interrupt
+-- phy-mode: See ethernet.txt file in the same directory.
+-- clock-names: Tuple listing input clock names.
+-	Required elements: 'pclk', 'hclk'
+-	Optional elements: 'tx_clk'
+-	Optional elements: 'rx_clk' applies to cdns,zynqmp-gem
+-	Optional elements: 'tsu_clk'
+-- clocks: Phandles to input clocks.
+-
+-Optional properties:
+-- mdio: node containing PHY children. If this node is not present, then PHYs
+-        will be direct children.
+-
+-The MAC address will be determined using the optional properties
+-defined in ethernet.txt.
+-
+-Optional properties for PHY child node:
+-- reset-gpios : Should specify the gpio for phy reset
+-- magic-packet : If present, indicates that the hardware supports waking
+-  up via magic packet.
+-- phy-handle : see ethernet.txt file in the same directory
+-
+-Examples:
+-
+-	macb0: ethernet@fffc4000 {
+-		compatible = "cdns,at32ap7000-macb";
+-		reg = <0xfffc4000 0x4000>;
+-		interrupts = <21>;
+-		phy-mode = "rmii";
+-		local-mac-address = [3a 0e 03 04 05 06];
+-		clock-names = "pclk", "hclk", "tx_clk";
+-		clocks = <&clkc 30>, <&clkc 30>, <&clkc 13>;
+-		ethernet-phy@1 {
+-			reg = <0x1>;
+-			reset-gpios = <&pioE 6 1>;
+-		};
+-	};
 -- 
-2.32.0
+2.25.1
 
