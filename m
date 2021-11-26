@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E8245F25C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:46:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D469F45F257
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:45:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238338AbhKZQtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:49:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239650AbhKZQrq (ORCPT
+        id S231174AbhKZQsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:48:23 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:48962 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1378460AbhKZQqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:47:46 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEFF6C0613ED;
-        Fri, 26 Nov 2021 08:34:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uneliOWtZMP7i1QI58GzHZvDj/yxdUW4ods64b/KyKg=; b=IxgNGZpqAKx4V9m5NpisDuE2xs
-        MuCMQXIGt9saJvZ9v9Q8jDFpMIuS7hz8Ju4/CapgBbXI76fEq0OaO2oV9piTp9CLUwGoPu3cou4iI
-        4XzNzTEo/jV/yFkpwH6SUcPR3Rjkj/bIelf8NS4reu0mEwTkzM2CJHv3knoOBQMdhD/+VRG7Hib6p
-        BcG1xSzqHKdV9tLvsDT9u11bb8229O3ltdlbqeUwG0eYyh05Xiw2dw/2wvFjs/Rai7xLgN9fPIT/N
-        QttLihlR1jj/MRpPE5YLGfDsKfnKcaLiZCdvFJMPvZ9zzwvWyYqRpvGAD/DOQ9oVCgEmCXauIOqlg
-        jle0Vhcw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mqeAo-000k2v-Bg; Fri, 26 Nov 2021 16:34:06 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1F78D300230;
-        Fri, 26 Nov 2021 17:34:04 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CC5762DC57755; Fri, 26 Nov 2021 17:34:04 +0100 (CET)
-Date:   Fri, 26 Nov 2021 17:34:04 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Maulik Shah <quic_mkshah@quicinc.com>
-Cc:     bjorn.andersson@linaro.org, rafael@kernel.org,
-        daniel.lezcano@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ulf.hansson@linaro.org, quic_lsrao@quicinc.com,
-        rnayak@codeaurora.org, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: [PATCH 2/4] sched/core: Export symbols used by cpuidle governors
-Message-ID: <YaEMfIqBxv350Wjx@hirez.programming.kicks-ass.net>
-References: <1637830481-21709-1-git-send-email-quic_mkshah@quicinc.com>
- <1637830481-21709-3-git-send-email-quic_mkshah@quicinc.com>
- <YZ9Y2w2xIrw39B/K@hirez.programming.kicks-ass.net>
- <f7a1c6de-ae1d-1615-1212-bdb9bdcdbcbc@quicinc.com>
+        Fri, 26 Nov 2021 11:46:17 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 35BF2212BD;
+        Fri, 26 Nov 2021 16:43:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637944982;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fmBvewAO8mTwkpsCQPRg1igFqC3ChA+p22fO+6l0PPE=;
+        b=duP48ZS+TCtwDH5L3z96anN30Oj70SYnxUhMPpbW0T+VPm2AK9ka0IinIUYu4ChfXpdKbC
+        f8IZsiB/L6/FeYO6+PYfTkSHYauXm9UeZ38hJdrXNeh6Ytwwj+9m3vgjITH9z3+KnQjhfZ
+        mcVJZSYeP1JTGBXhWoCDf1bK7AXg9Fo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637944982;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fmBvewAO8mTwkpsCQPRg1igFqC3ChA+p22fO+6l0PPE=;
+        b=5s4aCH6YWzWhJOA2vKNRBndbY/L0bi8pskC/m8XiVaQCVBtnxm4NkcJIiKwt62/cSHm1PZ
+        4WKq5pkxWBb7fjDw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 15FC4A3B81;
+        Fri, 26 Nov 2021 16:43:01 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id F01A3DA735; Fri, 26 Nov 2021 17:42:52 +0100 (CET)
+Date:   Fri, 26 Nov 2021 17:42:52 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
+ with sub-page faults
+Message-ID: <20211126164252.GB28560@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-btrfs@vger.kernel.org
+References: <20211124192024.2408218-1-catalin.marinas@arm.com>
+ <20211124192024.2408218-4-catalin.marinas@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f7a1c6de-ae1d-1615-1212-bdb9bdcdbcbc@quicinc.com>
+In-Reply-To: <20211124192024.2408218-4-catalin.marinas@arm.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 07:01:44PM +0530, Maulik Shah wrote:
-> Hi Peter,
+On Wed, Nov 24, 2021 at 07:20:24PM +0000, Catalin Marinas wrote:
+> Commit a48b73eca4ce ("btrfs: fix potential deadlock in the search
+> ioctl") addressed a lockdep warning by pre-faulting the user pages and
+> attempting the copy_to_user_nofault() in an infinite loop. On
+> architectures like arm64 with MTE, an access may fault within a page at
+> a location different from what fault_in_writeable() probed. Since the
+> sk_offset is rewound to the previous struct btrfs_ioctl_search_header
+> boundary, there is no guaranteed forward progress and search_ioctl() may
+> live-lock.
 > 
-> On 11/25/2021 3:05 PM, Peter Zijlstra wrote:
-> > On Thu, Nov 25, 2021 at 02:24:39PM +0530, Maulik Shah wrote:
-> > > Export symbols that are used by cpuidle menu governor in preparation
-> > > to allow cpuidle governors to be compiled as modules.
-> > > 
-> > > Cc: Ingo Molnar <mingo@redhat.com>
-> > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > Cc: Juri Lelli <juri.lelli@redhat.com>
-> > > Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> > > Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
-> > > ---
-> > >   kernel/sched/core.c | 1 +
-> > >   1 file changed, 1 insertion(+)
-> > > 
-> > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > > index 8cffe31..1d031e0 100644
-> > > --- a/kernel/sched/core.c
-> > > +++ b/kernel/sched/core.c
-> > > @@ -5047,6 +5047,7 @@ unsigned int nr_iowait_cpu(int cpu)
-> > >   {
-> > >   	return atomic_read(&cpu_rq(cpu)->nr_iowait);
-> > >   }
-> > > +EXPORT_SYMBOL(nr_iowait_cpu);
-> > NACK, that function is batshit insane, exporting it serves nobody.
-> Thanks for the review.
-> Exporting is to serve cpuidle menu governor when its compiled as module
-> (last patch in this series).
+> Use fault_in_exact_writeable() instead which probes the entire user
+> buffer for faults at sub-page granularity.
 > 
-> otherwise we get below error during compilation,
-> ERROR: modpost: "nr_iowait_cpu" [drivers/cpuidle/governors/menu.ko]
-> undefined!
-> 
-> Do you suggest to use something else instead of this?
+> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+> Reported-by: Al Viro <viro@zeniv.linux.org.uk>
 
-Yeah, schedutil :-)
+Acked-by: David Sterba <dsterba@suse.com>
