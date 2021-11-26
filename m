@@ -2,211 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0322D45F593
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7308045F599
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 21:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239008AbhKZUAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 15:00:22 -0500
-Received: from lizzard.sbs.de ([194.138.37.39]:60158 "EHLO lizzard.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232373AbhKZT6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 14:58:17 -0500
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 1AQJsVYj009484
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Nov 2021 20:54:32 +0100
-Received: from md1za8fc.ad001.siemens.net ([139.22.47.90])
-        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 1AQJsVcj029083;
-        Fri, 26 Nov 2021 20:54:31 +0100
-Date:   Fri, 26 Nov 2021 20:54:30 +0100
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
-Subject: Re: [PATCH v3 2/4] leds: simatic-ipc-leds: add new driver for
- Siemens Industial PCs
-Message-ID: <20211126205430.066df521@md1za8fc.ad001.siemens.net>
-In-Reply-To: <CAHp75Ve+2HXNP0R-45a9Zkspf4TLTdr2xApHr8ww=BOtp=P4HQ@mail.gmail.com>
-References: <20210329174928.18816-1-henning.schild@siemens.com>
-        <20210329174928.18816-3-henning.schild@siemens.com>
-        <CAHp75Vdh_YAJLE4DWPhxhYY1g5Fc_7EFgr4FED3crpfpzwXeRg@mail.gmail.com>
-        <20211126142827.78d2348d@md1za8fc.ad001.siemens.net>
-        <CAHp75VeX89T7t=Q7-q56sndbfRyuPDEUjSMsMFo4sS8cb9AAmw@mail.gmail.com>
-        <20211126154427.41bf024e@md1za8fc.ad001.siemens.net>
-        <CAHp75Ve+2HXNP0R-45a9Zkspf4TLTdr2xApHr8ww=BOtp=P4HQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S238219AbhKZUDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 15:03:55 -0500
+Received: from mail-mw2nam12on2134.outbound.protection.outlook.com ([40.107.244.134]:28593
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233715AbhKZUBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 15:01:53 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nKVmpMfQlW6CccuweBynkiR8wg/jy9m69tA8/8hoOOs2V/m8pGIzgIXl9yctljYDSosSsWNEoVbnAo+B0bS8E01kiPnTRbYSj+xLnWC/5h7/ij7biLLsH17aciVIsVsQmIVl1+ozR+7yUI2D9M2tUgJ9lzS9qwrYCdn+TrpaiS8g63gx2ioTxweTAO2jKnGRq0xcGh3GUWkA3tD7jQosxoA1UsbHCLUosD15vFaqApid+YSOoQ7E0JJUaKIp5E+XZywcUr9P139rBkCxx1U+YCdBq4WBYct0RiQAJQu6N6ldxva0CAy2+FWCHJO8n9KfKLobZk+Gzqx1L9YDxaSWtQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=I/NBCgEANHGCdr1kHr3d73UZRlFRVDOSTfPKXlp3dsg=;
+ b=WGC6MTK5lhBNKkKsjfVNux6XIUrmrS+ONVp0WRtpFkHrYkTQADjcq9gOg15GYt7Kzxt89C5B6kY9S+h+VzWgs2xt2bQUaBhgi5jEA1xGVt14iorjHxhlTJ5WvdeOX/Ahl8Os6xZXs3DP3VE/WQq3WgwrJfNDXavzOOwCCQwo2+oRcxlt93oGRhxZ+8XI5ZvcsYjj/xJin80pL1441sFgSG1CZVhc/kkbptZ877HvIHEoeSkZsm+L5rSqoWkAkVc24FOLEPvuJNWn7J8u252YirgnWT3egVE3YxPzOuJqMT9E3B1iKiWs44G8Rv7CG+cuYl7tu+ELjAUiITcWTLwzow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=in-advantage.com; dmarc=pass action=none
+ header.from=in-advantage.com; dkim=pass header.d=in-advantage.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=inadvantage.onmicrosoft.com; s=selector2-inadvantage-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=I/NBCgEANHGCdr1kHr3d73UZRlFRVDOSTfPKXlp3dsg=;
+ b=GcCK1zwSW59NQiXHb+6qWdjboFNFWa4QIPjDluqV8quEnfOrpjvYKSrS8RfvRhhHKcm1+n+PO441FNBQ2OCTASAN2Wrj9W+U16YE2PISq6ctQ3yOY4lsLlQKdytgDFNgje5ryZ0cXaAaIOIiHPbsY5J+ZSjVddQqfEpebxnJyfs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=in-advantage.com;
+Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
+ (2603:10b6:301:35::37) by CO1PR10MB4562.namprd10.prod.outlook.com
+ (2603:10b6:303:93::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.22; Fri, 26 Nov
+ 2021 19:58:38 +0000
+Received: from MWHPR1001MB2351.namprd10.prod.outlook.com
+ ([fe80::6430:b20:8805:cd9f]) by MWHPR1001MB2351.namprd10.prod.outlook.com
+ ([fe80::6430:b20:8805:cd9f%5]) with mapi id 15.20.4734.023; Fri, 26 Nov 2021
+ 19:58:37 +0000
+Date:   Fri, 26 Nov 2021 11:58:32 -0800
+From:   Colin Foster <colin.foster@in-advantage.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>
+Subject: Re: [PATCH v2 net-next 3/3] net: dsa: ocelot: felix: utilize shared
+ mscc-miim driver for indirect MDIO access
+Message-ID: <20211126195832.GA3778508@euler>
+References: <20211125201301.3748513-1-colin.foster@in-advantage.com>
+ <20211125201301.3748513-4-colin.foster@in-advantage.com>
+ <20211126005824.cu4oz64hlxgogr4q@skbuf>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211126005824.cu4oz64hlxgogr4q@skbuf>
+X-ClientProxiedBy: MWHPR1601CA0003.namprd16.prod.outlook.com
+ (2603:10b6:300:da::13) To MWHPR1001MB2351.namprd10.prod.outlook.com
+ (2603:10b6:301:35::37)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from euler (67.185.175.147) by MWHPR1601CA0003.namprd16.prod.outlook.com (2603:10b6:300:da::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.23 via Frontend Transport; Fri, 26 Nov 2021 19:58:37 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2b093e56-53ff-4e29-5808-08d9b117229d
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4562:
+X-Microsoft-Antispam-PRVS: <CO1PR10MB456281C8E0945D0FB8C99CD5A4639@CO1PR10MB4562.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CDTiQhTt0yCgv1iYE+2aOnZkiZVO0hy+IAEoYsfEbShVO6n8UQIuhSfFWjfrx4PsYsk0k2X8jkiywiMQ+2V4Ia65Hs6+yOn11tfu6v/IS1lLy+bKWfMqEEMdf45jANviNpeVprLGyqReEe6cLWUbTfw3Wvm7XmoOn44Gn7E7Fu76w8pYJvVGaV1GUocqKF/jrxtMu3nh7mi4nb34MSarz59d2xhYhxGhlHfix1GeSdjZai0LOuxaqks6CjhmKsZiDF6XFyS3H6GJv8XYIknFpqtr/g53OAVnGnoVVhr3P7Y9zXUz/FKy10HdqAHfUG6oGOaazjqZhIke5uU2Q8EPiQ+N3bIa6qjn4JVO/Uc+BAx5MbkvabPplAJJ8q4CHCNMQ3wanJSQM5eT385kW0SFiN1gFx9PkY29Hqo90c13NPJF+BezyAt3oYZGaWCW71laZOt4e0WTu4j+CTK8WiLmLQl2Rk98Zl88ZsFsR4OEzAIo1BtmRHL7eDtIl0tW0PtWythb+4Ma6BvTjed+XgfLpghdbLfuE7iYNNd0+9gkE6aHXElVpTwnxJ6LAgujSyk2q7ZvcgMBVLRsQWmSjx/zk8A7VgdzbuXbbOwgCCqk3R9R0pfNyN64Y+S3LV8yWY7A4VUoEv1bnwGbYkzZk5+bQLhP9itqmtTOJG0CESq67nsetDM57A+bFtVMJ1VPgcbo/nVg6KgZryAhQqdDQ9rF2g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2351.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(396003)(366004)(376002)(39830400003)(6916009)(66556008)(54906003)(316002)(1076003)(186003)(9686003)(6496006)(66946007)(6666004)(66476007)(55016003)(38350700002)(44832011)(83380400001)(38100700002)(26005)(8936002)(33656002)(956004)(508600001)(86362001)(5660300002)(33716001)(7416002)(8676002)(4326008)(2906002)(9576002)(52116002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TgJhnkS0MR8M/Z/9z0pBCIs/p5gjvWBXshCgBNjrNBr2imi5INxWGsBgKnb7?=
+ =?us-ascii?Q?RQ+H881PCGEjduZQQjo3KeXBjn8Ln0alFXEHtH8iEv7WaSAtbITc9TGFEoyo?=
+ =?us-ascii?Q?e7Z4KpfdMykpD2kju7FM30V1YuIBYh6EdZ3Qm2NOdhLq5KvlTo3KYfrLhjGE?=
+ =?us-ascii?Q?dTxSs+GtiHuKu13PTe9/LOv9S+GNxkZmEMlzKxKSL8dCV2WWeOD0pEII+wBl?=
+ =?us-ascii?Q?bXsLP1vT8ywR6akgrdp8X1f+f3MvHbBrsSiGxj6pb9I308y8DspOZUdZz53n?=
+ =?us-ascii?Q?aUnTYGBNbYQqJKNfPX1ly0uNXQhffPTaHbodFmqAuLwaA46lCIHtKbmI+Lq8?=
+ =?us-ascii?Q?50hs9T1T6mXsxy+NQJ81Bet9lHOKE/9Sv8PpiHyX5aw07Xc4rud5zjRpABht?=
+ =?us-ascii?Q?KzZZxW5+gRCni6kAU4UKXOEl0wokze+aSialh7LfE6YYwHu009u1LyfVbSFi?=
+ =?us-ascii?Q?fR2db4O2tI0rYOA/cr2SS1mv+tKmkOPYUohcXwlgYVdDkBkfVN7Wb352KI8/?=
+ =?us-ascii?Q?E/YHtjX4z898GArjNfFd8u2wfSuUoFZCdp3ycgQyXZSvEOW5nnJLe0M1a8m5?=
+ =?us-ascii?Q?TqWVSNSYdcyeXDvIlg0GA1a67OYPf0uj1tLqQviqpNwfBtKQdr3gNuph4DVY?=
+ =?us-ascii?Q?d2avULGqyJ4pLyXtPBJw6sKLVNigIZZPR/ESiFMON3PWc95f+CYOs+Zy93MQ?=
+ =?us-ascii?Q?G5e3hdvWR8taF/purOs+8CEI9lxAOlRpAuABoUbt8KB+/5zEqSBDqDrHo5mf?=
+ =?us-ascii?Q?Yj/Czx6UH+BxBxxh4t3RelyFB9R3sln1D9u+i5oXZcjtC3HwZ12rvGX3VRCH?=
+ =?us-ascii?Q?zuYCY4NR4wVkVdWl+Psq3zNSgIr1TwJqJeXsThuBnSlalsr4qEGi7wpwpV+b?=
+ =?us-ascii?Q?MQ3LhRULLvG2WVH4lG1EhzBAfmddaA8PikWBQzrwdGfJiYj1Jip43DniiQDB?=
+ =?us-ascii?Q?f5fYmDHMGnidpxYSZrvNqTkyk4vjg4DdHhmhtUZ1WlyOHvogAGqL+DQWABfw?=
+ =?us-ascii?Q?QSMdhp0YoftgSY1PD/VjqJ7deKJkyixIG1D7g60Rz4QlQlvf8M5XLwn4Jq3r?=
+ =?us-ascii?Q?9Co1S6OFG7SczgA5/Pc4/+Auwf3mMBO9mPsRXfngqqCKtOYmXj41WumVc0m0?=
+ =?us-ascii?Q?yDlQjfluGybxOukzaAwJkv+OX4kSOXgmFbCOiIUGgrzFthFIcs2Hic1aLPDY?=
+ =?us-ascii?Q?PnChvEAWKbyqOFlUuAm3LTpM78YN/7DlldxFTOHCJGO805toh7LyvTP9czxI?=
+ =?us-ascii?Q?xkAS0FVpcKFso32bRiNeZNiOcJQf1SoG9R3VYLx54LjOHkmqgCaqn9HvHvTK?=
+ =?us-ascii?Q?rIDDQPwjweWpyINxHh9o1yTM7Wa0zfDW2Yv0IRMU0paUu+L3kiL+hDG3skwy?=
+ =?us-ascii?Q?P7eT7fUiSKthKDw07EhE9ZkR3OahrciGl02h3uLqJJSA7HmiTyz8+0jdslKP?=
+ =?us-ascii?Q?tXXte/6QB+RSPEgtHEv5Nt84zYUXJ74ZifTvRxzqorAoWI5EgGuZaUW2qzZR?=
+ =?us-ascii?Q?K0ZLHZBqemVv4GavVXbdYrXUOoDi54RIB4s74XchEUu1SGo4W/8nOKk5UgdT?=
+ =?us-ascii?Q?it5P0XyObpUOsSoACsx4vxJSGLZFZJJ9r9GmEo2s80LXS56lD74aI2y4/QR+?=
+ =?us-ascii?Q?BoQUHNnyvRXCF694H0nkLYEZQWNxqeRc10/fCnlhNu3aGXAxSBkSEExr2wCN?=
+ =?us-ascii?Q?w5s6xQ=3D=3D?=
+X-OriginatorOrg: in-advantage.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2b093e56-53ff-4e29-5808-08d9b117229d
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2351.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Nov 2021 19:58:37.6944
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 48e842ca-fbd8-4633-a79d-0c955a7d3aae
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KLAezfPbNAZxkiCzblRm3C32A25jK1vpPvtdWVyIF8xZcO56JseqbbvZ56erJmx3cII8fcstgNXhJyBClXtiRsPHS3sKBQj8MpzBt1jbdbU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4562
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Fri, 26 Nov 2021 16:59:54 +0200
-schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
+Hi Vladimir,
 
-> On Fri, Nov 26, 2021 at 4:44 PM Henning Schild
-> <henning.schild@siemens.com> wrote:
-> > Am Fri, 26 Nov 2021 16:02:48 +0200
-> > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:  
-> > > On Fri, Nov 26, 2021 at 3:28 PM Henning Schild
-> > > <henning.schild@siemens.com> wrote:  
-> > > > Am Tue, 30 Mar 2021 14:04:35 +0300
-> > > > schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:  
-> > > > > On Mon, Mar 29, 2021 at 8:59 PM Henning Schild
-> > > > > <henning.schild@siemens.com> wrote:  
+On Fri, Nov 26, 2021 at 12:58:25AM +0000, Vladimir Oltean wrote:
+> On Thu, Nov 25, 2021 at 12:13:01PM -0800, Colin Foster wrote:
+> > Switch to a shared MDIO access implementation by way of the mdio-mscc-miim
+> > driver.
+> > 
+> > Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
+> > ---
 > 
-> ...
-> 
-> > > > > > +static struct simatic_ipc_led simatic_ipc_leds_mem[] = {
-> > > > > > +       {0x500 + 0x1A0, "red:" LED_FUNCTION_STATUS "-1"},
-> > > > > > +       {0x500 + 0x1A8, "green:" LED_FUNCTION_STATUS "-1"},
-> > > > > > +       {0x500 + 0x1C8, "red:" LED_FUNCTION_STATUS "-2"},
-> > > > > > +       {0x500 + 0x1D0, "green:" LED_FUNCTION_STATUS "-2"},
-> > > > > > +       {0x500 + 0x1E0, "red:" LED_FUNCTION_STATUS "-3"},
-> > > > > > +       {0x500 + 0x198, "green:" LED_FUNCTION_STATUS "-3"},
-> > > > > > +       { }
-> > > > > > +};  
-> > > > >
-> > > > > It seems to me like poking GPIO controller registers directly.
-> > > > > This is not good. The question still remains: Can we simply
-> > > > > register a GPIO (pin control) driver and use an LED GPIO
-> > > > > driver with an additional board file that instantiates it?  
-> > > >
-> > > > The short answer for v4 will be "No we can not!". The pinctrl
-> > > > drivers do not currently probe on any of the devices and
-> > > > attempts to fix that have failed or gut stuck. I tried to help
-> > > > out where i could and waited for a long time.  
-> > >
-> > > I see, unfortunately I have stuck with some other (more important
-> > > tasks) and can't fulfil this, but I still consider it's no go for
-> > > driver poking pin control registers directly. Lemme see if I can
-> > > prioritize this for next week.  
-> >
-> > I just sent v4. And am sick of waiting on you. Sorry to be that
-> > clear here. I want that order changed! If you still end up being
-> > fast, perfect. But i want to be faster!  
-> 
-> It's good that you are honest, honesty is what we missed a lot!
+> I'm sorry, I still wasn't able to boot the T1040RDB to test these, it
+> looks like it's bricked or something. I'll try to do more debugging
+> tomorrow.
 
-I was always honest, hope that was not missed from my side ... let
-alone a lot.
+No rush - I clearly have a couple things yet to work out. I appreciate
+your time!
 
-> > > > Now my take is to turn the order around. We go in like that and
-> > > > will happily switch to pinctrl if that ever comes up on the
-> > > > machines. Meaning P2SB series on top of this, no more delays
-> > > > please.  
-> > >
-> > > I don't want to slip bad code into the kernel where we can avoid
-> > > that.  
-> >
-> > It is not bad code! That is unfair to say. It can be improved on and
-> > that is what we have a FIXME line for. The worst code is code that
-> > is not there ... devices without drivers!  
-> 
-> Okay, that's how you interpret the term "bad". Probably I had to use
-> something else to explain that it's racy with the very same case if
-> one adds an ACPI support to it.
-
-It is only racy when the firmware would change (which i am
-unfortunately pretty sure it will not), or if pinctrl would probe
-without P2SB or ACPI. (where you say "Not gonna happen.")
-
-Or i could say "fortunately pretty sure" because that means pinctrl
-will never probe, hence no race!
-
-> > That is bad, not i minor poke of parts of a resource no other driver
-> > claimed!
 > >  
-> > > > We do use request_region so have a mutex in place. Meaning we
-> > > > really only touch GPIO while pinctrl does not!  
-> > >
-> > > I haven't got this. On Intel SoCs GPIO is a part of pin control
-> > > registers. You can't touch GPIO without touching pin control.  
-> >
-> > i meant pin control, if it ever did probe it would reserve the
-> > region and push our hack out, or the other way around ... no
-> > conflict! To get both we just need a simple patch and switch to
-> > pinctrl, just notify me once your stuff is ready and i will write
-> > that patch.  
+> > -	ret = regmap_read(miim->regs, MSCC_MIIM_REG_DATA, &val);
+> > -
+> > +	ret = regmap_read(miim->regs,
+> > +			  MSCC_MIIM_REG_DATA + miim->mii_status_offset, &val);
 > 
-> While thinking more on it, the quickest solution here is to do a P2SB
-> game based on DMI strings in the board code for the platform
-> (somewhere under PDx86).
+> I'd be tempted to create one separate regmap for DEVCPU_MIIM which
+> starts precisely at 0x8700AC, and therefore does not need adjustment
+> with an offset here. What do you think?
 
-Not sure what you suggest here. p1 does pretty fancy DMI to be really
-sure to only match specific devices, and only then we do our own P2SB
-base address discover and region reservation.
+I've gone back and forth on this. 
 
-> > > > I see no issue here, waited for a long time and now expect to be
-> > > > allowed to get merged first.  
-> > >
-> > > Okay, I have these questions / asks so far:
-> > > 1) Can firmware be fixed in order to provide an ACPI table for
-> > > the pin control devices?  
-> >
-> > No. The firmware will only receive security but no feature updates
-> > ... 
-> > > 2) Can you share firmware (BIOS ROM file I suppose) that I may
-> > > flash on an Apollo Lake machine and see if I can reproduce the
-> > > issue?  
-> >
-> > I do not have access. But all you need is a firware with no ACPI
-> > entry and P2SB hidden. Or simply patch out the two probe paths ;).  
+My current decision is to bring around those offset variables. I
+understand it is clunky - and ends up bleeding into several drivers
+(pinctrl, miim, possibly some others I haven't gotten to yet...) I'll be
+the first to say I don't like this architecture.
+
+The benefit of this is we don't have several "micro-regmaps" running
+around, overlapping. 
+
+On the other hand, maybe smaller regmaps wouldn't be the worst thing. It
+might make debugging pinctrl easier if I have
+sys/kernel/debug/regmap/spi0.0-ocelot_spi-devcpu-gcb-gpio insetead of
+just sys/kernel/debug/regmap/spi0.0-ocelot_spi-devcpu-gcb.
+
+
+So while my initial thought was "don't make extra regmaps when they
+aren't needed" I'm now thinking "make extra regmaps for drivers when
+they make sense." It would also make behavior consistent with how the
+full VSC7514 driver acts.
+
+
+The last option I haven't put much consideration toward would be to
+move some of the decision making to the device tree. The main ocelot
+driver appears to leave a lot of these addresses out. For instance
+Documentation/devicetree/bindings/pinctrl/mscc,ocelot-pinctrl.txt. 
+That added DT complexity could remove needs for lines like this:
+> > +			     ocelot->map[GCB][GCB_MIIM_MII_STATUS & REG_MASK],
+But that would probably impose DT changes on Seville and Felix, which is
+the last thing I want to do.
+
+
+
+So at the end of the day, I'm now leaning toward creating a new, smaller
+regmap space. It will be a proper subset of the GCB regmap. This would be 
+applied here to mdio-mscc-miim, but also the pinctrl-ocelot (GCB:GPIO) and 
+pinctrl-microchip-sgpio (GCB:SIO_CTRL) drivers as well for the 7512_spi
+driver. I don't know of a better way to get the base address than the
+code I referenced above. But I think that is probably the design I
+dislike the least.
+
+
 > 
-> Yes, probably that will work.
-
-I wonder how you would probe without the two with your "Not gonna
-happen.". But maybe your patches will open my eyes and i have been
-blind all the time.
-
-> > > 3) As may be a last resort, can you share (remotely) or even send
-> > > to us the device in question to try?  
-> >
-> > We are talking about multiple devices. Not just that one apollo
-> > lake on which your patches kind of worked.
-> >
-> > But showed some weirdness which could really become a problem if
-> > someone decided to add an ACPI entry ..  
+> >  	if (ret < 0) {
+> >  		WARN_ONCE(1, "mscc miim read data reg error %d\n", ret);
+> >  		goto out;
+> > @@ -134,7 +140,9 @@ static int mscc_miim_write(struct mii_bus *bus, int mii_id,
+> >  	if (ret < 0)
+> >  		goto out;
+> >  
+> > -	ret = regmap_write(miim->regs, MSCC_MIIM_REG_CMD, MSCC_MIIM_CMD_VLD |
+> > +	ret = regmap_write(miim->regs,
+> > +			   MSCC_MIIM_REG_CMD + miim->mii_status_offset,
+> > +			   MSCC_MIIM_CMD_VLD |
+> >  			   (mii_id << MSCC_MIIM_CMD_PHYAD_SHIFT) |
+> >  			   (regnum << MSCC_MIIM_CMD_REGAD_SHIFT) |
+> >  			   (value << MSCC_MIIM_CMD_WRDATA_SHIFT) |
+> > @@ -149,16 +157,19 @@ static int mscc_miim_write(struct mii_bus *bus, int mii_id,
+> >  static int mscc_miim_reset(struct mii_bus *bus)
+> >  {
+> >  	struct mscc_miim_dev *miim = bus->priv;
+> > +	int offset = miim->phy_reset_offset;
+> >  	int ret;
+> >  
+> >  	if (miim->phy_regs) {
+> > -		ret = regmap_write(miim->phy_regs, MSCC_PHY_REG_PHY_CFG, 0);
+> > +		ret = regmap_write(miim->phy_regs,
+> > +				   MSCC_PHY_REG_PHY_CFG + offset, 0);
+> >  		if (ret < 0) {
+> >  			WARN_ONCE(1, "mscc reset set error %d\n", ret);
+> >  			return ret;
+> >  		}
+> >  
+> > -		ret = regmap_write(miim->phy_regs, MSCC_PHY_REG_PHY_CFG, 0x1ff);
+> > +		ret = regmap_write(miim->phy_regs,
+> > +				   MSCC_PHY_REG_PHY_CFG + offset, 0x1ff);
+> >  		if (ret < 0) {
+> >  			WARN_ONCE(1, "mscc reset clear error %d\n", ret);
+> >  			return ret;
+> > @@ -176,8 +187,9 @@ static const struct regmap_config mscc_miim_regmap_config = {
+> >  	.reg_stride	= 4,
+> >  };
+> >  
+> > -static int mscc_miim_setup(struct device *dev, struct mii_bus **pbus,
+> > -			   struct regmap *mii_regmap, struct regmap *phy_regmap)
+> > +int mscc_miim_setup(struct device *dev, struct mii_bus **pbus, const char *name,
+> > +		    struct regmap *mii_regmap, int status_offset,
+> > +		    struct regmap *phy_regmap, int reset_offset)
+> >  {
+> >  	struct mscc_miim_dev *miim;
+> >  	struct mii_bus *bus;
+> > @@ -186,7 +198,7 @@ static int mscc_miim_setup(struct device *dev, struct mii_bus **pbus,
+> >  	if (!bus)
+> >  		return -ENOMEM;
+> >  
+> > -	bus->name = "mscc_miim";
+> > +	bus->name = name;
+> >  	bus->read = mscc_miim_read;
+> >  	bus->write = mscc_miim_write;
+> >  	bus->reset = mscc_miim_reset;
+> > @@ -198,10 +210,15 @@ static int mscc_miim_setup(struct device *dev, struct mii_bus **pbus,
+> >  	*pbus = bus;
+> >  
+> >  	miim->regs = mii_regmap;
+> > +	miim->mii_status_offset = status_offset;
+> >  	miim->phy_regs = phy_regmap;
+> > +	miim->phy_reset_offset = reset_offset;
 > 
-> Then it should have different DMI strings or so, it won't be the
-> _same_ platform anymore.
+> The reset_offset is unused. Will vsc7514_spi need it?
 
-There is different DMI in place. p1 introduces
-"enum simatic_ipc_station_ids" with currently 7 different devices
-matched with not a string but a "binary" behind
-SIMATIC_IPC_DMI_ENTRY_OEM. The struct can be found in
-simatic_ipc_get_station_id
+Yes, the SPI driver currently uses the phy_regs regmap to reset the phys
+when registering the bus. I suppose it isn't necessary to expose that
+for Seville right now, since Seville didn't do resetting of the phys at
+this point.
 
-Our strings could be custom, but that binary allows for real DMI
-identifaction of those currently proposed 7 "platforms".
-
-See p4 where i revert string-based DMI matching with
-SIMATIC_IPC_DMI_ENTRY_OEM-based. Make sure to look at my answer to a
-question in v4 p4 on that DMI topic.
-
-regards,
-Henning
-
-> > It pin 42 name could be
-> > GPIO_LOOKUP_IDX("apollolake-pinctrl.0", 42
-> > or
-> > GPIO_LOOKUP_IDX("INT3452:01", 42  
+> > +	GCB_PHY_PHY_CFG,
 > 
-> > I guess that conflict will have to be dealt with before your can
-> > switch to probing pinctrl drivers based on cpu model and not only
-> > ACPI/P2SB any longer.  
-> 
-> Not gonna happen.
-> 
+> This appears extraneous, you are still using MSCC_PHY_REG_PHY_CFG.
+
+This is related to the comment above. They're both artifacts of the
+vsc7512_spi driver and aren't currently used in Seville. For the 7512
+this would get defined as 0x00f0 inside vsc7512_gcb_regmap. As suggested
+way above, it sounds like the direction (for vsc7512_spi) is to create
+two additional regmaps. 
+One that would be GCB:MIIM. Then mdio-mscc-miim.c could refer to
+GCB:MIIM:MII_CMD by way of the internal MSCC_MIIM_REG_CMD macro, as an
+example. 
+
+The same would go for MSCC_PHY_REG_PHY_CFG. If the driver is to reset
+the phys during initialization, a regmap at GCB:PHY could be passed in.
+Then the offsets MSCC_PHY_REG_PHY_CFG and MSCC_PHY_REG_PHY_STATUS could
+be referenced.
+
+
+So to summarize these changes for v3:
+* Create new regmaps instead of offset variables
+* Don't expose phy_regmap in mscc_miim_setup yet?
+* Don't create GCB_PHY_PHY_CFG yet?
+
 
