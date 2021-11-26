@@ -2,194 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F75345EC36
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:08:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 587BA45ECDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:44:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234063AbhKZLLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 06:11:53 -0500
-Received: from comms.puri.sm ([159.203.221.185]:38200 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231490AbhKZLJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 06:09:52 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id A2E19E1252;
-        Fri, 26 Nov 2021 03:06:09 -0800 (PST)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id D8m_uiIACRvh; Fri, 26 Nov 2021 03:06:08 -0800 (PST)
-Message-ID: <8d72c895ece6dce7d8badb241eebcbe076a03f81.camel@puri.sm>
-Subject: Re: [PATCH v2] media: i2c: dw9714: add optional regulator support
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     mchehab@kernel.org, broonie@kernel.org, kernel@puri.sm,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-pm@vger.kernel.org, Angus Ainslie <angus@akkea.ca>
-Date:   Fri, 26 Nov 2021 12:06:03 +0100
-In-Reply-To: <YaC6nZIQOsrpBY8V@paasikivi.fi.intel.com>
-References: <20211126090107.1243558-1-martin.kepplinger@puri.sm>
-         <YaC6nZIQOsrpBY8V@paasikivi.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        id S1347640AbhKZLrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 06:47:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242206AbhKZLpf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 06:45:35 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D3CC0619F8
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 03:06:59 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id i13so6898722qvm.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 03:06:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=YWCZ3fojdi4NfKzhjDOPDnS4At+SJY9lzdeZc4JYD/g=;
+        b=j2cfiWDuMVhpk1ibXtOjgctz8doYoNABZiLWwVDBMliGNaVuwOMWD2KlC4fRLoNf+E
+         RD/Tu3E2hU7+2twMrWAMNfBuX/EpzJNik/QQTT9VYT64vPmnd0z+r6cnTZCU3Y703v+e
+         LNqIa9IymQct3WYjn0tyhfnqYEJ87ijRUZrOnowZw9QBJpgaEfzenAV0cliWw8IT+AFB
+         kdY/LCkqtnKR9xiPXl4LyEiosrUbEZMw1Bi/rw0Fpxul+pk6+YZRY5Jy+BX53Ugj52HK
+         b6Tx7XbkJt0YwRxWzDyCkBjo/xscqZNbrEF1r/h7tSOhIvWZIOrGa8BlAJKG7nZs+sNl
+         MWdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=YWCZ3fojdi4NfKzhjDOPDnS4At+SJY9lzdeZc4JYD/g=;
+        b=CZiVs+Yzpq5JVzrNxQRDSbxmlSa2y0nuZ+ZF2ivrvSWM043WW2yQ528T8L6tPRk6e4
+         1notfgdBNw+k9U0AgxMs7+j/nbudpYplXPdQ6bCkMJePuFivMK1F3AdW6JoqhB3pu+5V
+         AD/mYqTT5HqbiQSJ3k2D9R9D/QtpU0KtSk0MGJeywuelXsvQUQ3SoMksNGCL56JN3VCz
+         kDJV4vepjjd7CjVRRlolkGe6cL26nBMv05jtKlcD7PmFcePZEA0ZS0OjNUFSEtbznM8z
+         ApBdLkC4h1wkYGfFFLdwRYSxb61Lwga/TRDclvnKQH74A17hmij3bnRVRVKdLJNs4mse
+         zbig==
+X-Gm-Message-State: AOAM5322HV8Aaa4z7n+O5pWDzQTWRrMis2cMfXgd7KNcieSrn8NHw90i
+        8nfFmCfWjyFtgletJp/kij27l71AsJlR2g096XqIgg==
+X-Google-Smtp-Source: ABdhPJwM3gGfu/bZI8z9rEqxh9zPLz5J5NFRwiU5rdfNRCEhS4k+U05E6m6DzKvLn/LhyEGyPSxluPG54adIQD4c1WU=
+X-Received: by 2002:a0c:8031:: with SMTP id 46mr11871238qva.126.1637924818229;
+ Fri, 26 Nov 2021 03:06:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Alexander Potapenko <glider@google.com>
+Date:   Fri, 26 Nov 2021 12:06:22 +0100
+Message-ID: <CAG_fn=V9T6OKPonSjsi9PmWB0hMHFC=yawozdft8i1-MSxrv=w@mail.gmail.com>
+Subject: Potential information leak in save_xstate_epilog()
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>
+Cc:     Dmitriy Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        Taras Madan <tarasmadan@google.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Freitag, dem 26.11.2021 um 12:44 +0200 schrieb Sakari Ailus:
-> Hi Martin,
-> 
-> On Fri, Nov 26, 2021 at 10:01:07AM +0100, Martin Kepplinger wrote:
-> > From: Angus Ainslie <angus@akkea.ca>
-> > 
-> > Allow the dw9714 to control a regulator and adjust suspend() and
-> > resume()
-> > to support both runtime and system pm.
-> > 
-> > Signed-off-by: Angus Ainslie <angus@akkea.ca>
-> > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> > ---
-> > 
-> > revision history
-> > ----------------
-> > 
-> > v2: (thank you Mark)
-> >  * simplify the regulator_get_optional() error path
-> >  * fix regulator usage during probe()
-> > 
-> > v1:
-> > https://lore.kernel.org/linux-media/20211125080922.978583-1-martin.kepplinger@puri.sm/
-> > 
-> > 
-> > 
-> >  drivers/media/i2c/dw9714.c | 39
-> > ++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 39 insertions(+)
-> > 
-> > diff --git a/drivers/media/i2c/dw9714.c
-> > b/drivers/media/i2c/dw9714.c
-> > index 3863dfeb8293..e8cc19b89861 100644
-> > --- a/drivers/media/i2c/dw9714.c
-> > +++ b/drivers/media/i2c/dw9714.c
-> > @@ -5,6 +5,7 @@
-> >  #include <linux/i2c.h>
-> >  #include <linux/module.h>
-> >  #include <linux/pm_runtime.h>
-> > +#include <linux/regulator/consumer.h>
-> >  #include <media/v4l2-ctrls.h>
-> >  #include <media/v4l2-device.h>
-> >  #include <media/v4l2-event.h>
-> > @@ -36,6 +37,7 @@ struct dw9714_device {
-> >         struct v4l2_ctrl_handler ctrls_vcm;
-> >         struct v4l2_subdev sd;
-> >         u16 current_val;
-> > +       struct regulator *vcc;
-> >  };
-> >  
-> >  static inline struct dw9714_device *to_dw9714_vcm(struct v4l2_ctrl
-> > *ctrl)
-> > @@ -145,6 +147,21 @@ static int dw9714_probe(struct i2c_client
-> > *client)
-> >         if (dw9714_dev == NULL)
-> >                 return -ENOMEM;
-> >  
-> > +       dw9714_dev->vcc = devm_regulator_get_optional(&client->dev,
-> > "vcc");
-> 
-> You you used regular devm_regulator_get(), you could remove the error
-> handling below. If there's no regulator, you'll simply get a dummy
-> one.
+Hi Chang, Thomas, Borislav,
 
-ok thanks
+"x86/fpu/signal: Prepare for variable sigframe length" has presumably
+introduced an information leak to the userspace.
 
+According to https://elixir.bootlin.com/linux/v5.16-rc2/source/arch/x86/ker=
+nel/fpu/signal.c#L126,
+save_sw_bytes() only initializes the first 20 bytes of sw_bytes, but
+then the whole struct is copied to the userspace.
 
-> 
-> > +       if (IS_ERR(dw9714_dev->vcc)) {
-> > +               dev_dbg(&client->dev, "No vcc regulator found:
-> > %ld\n",
-> > +                       PTR_ERR(dw9714_dev->vcc));
-> > +               dw9714_dev->vcc = NULL;
-> > +       }
-> > +
-> > +       if (dw9714_dev->vcc) {
-> 
-> With (dummy) regulators, these checks become unnecessary.
-> 
-> > +               rval = regulator_enable(dw9714_dev->vcc);
-> > +               if (rval < 0) {
-> > +                       dev_err(&client->dev, "failed to enable
-> > vcc: %d\n", rval);
-> > +                       return rval;
-> > +               }
-> > +       }
-> > +
-> >         v4l2_i2c_subdev_init(&dw9714_dev->sd, client, &dw9714_ops);
-> >         dw9714_dev->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE |
-> >                                 V4L2_SUBDEV_FL_HAS_EVENTS;
-> > @@ -200,6 +217,9 @@ static int __maybe_unused
-> > dw9714_vcm_suspend(struct device *dev)
-> >         struct dw9714_device *dw9714_dev = sd_to_dw9714_vcm(sd);
-> >         int ret, val;
-> >  
-> > +       if (pm_runtime_suspended(&client->dev))
-> > +               return 0;
-> 
-> This can't take place in a runtime PM suspend callback. You'll need
-> to add
-> system suspend callback for this.
+KMSAN report follows:
 
-but this function is both the system and runtime suspend callback.
-doesn't splitting up the callbacks just add lines of code
-unnecessarily?
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+BUG: KMSAN: kernel-infoleak in instrument_copy_to_user
+./include/linux/instrumented.h:121
+BUG: KMSAN: kernel-infoleak in __copy_to_user ./include/linux/uaccess.h:154
+BUG: KMSAN: kernel-infoleak in save_xstate_epilog+0x2df/0x510
+arch/x86/kernel/fpu/signal.c:127
+ instrument_copy_to_user ./include/linux/instrumented.h:121
+ __copy_to_user ./include/linux/uaccess.h:154
+ save_xstate_epilog+0x2df/0x510 arch/x86/kernel/fpu/signal.c:127
+ copy_fpstate_to_sigframe+0x861/0xb60 arch/x86/kernel/fpu/signal.c:245
+ get_sigframe+0x656/0x7e0 arch/x86/kernel/signal.c:296
+ __setup_rt_frame+0x14d/0x2a60 arch/x86/kernel/signal.c:471
+ setup_rt_frame arch/x86/kernel/signal.c:781
+ handle_signal arch/x86/kernel/signal.c:825
+ arch_do_signal_or_restart+0x417/0xdd0 arch/x86/kernel/signal.c:870
+ handle_signal_work kernel/entry/common.c:149
+ exit_to_user_mode_loop+0x1f6/0x490 kernel/entry/common.c:173
+ exit_to_user_mode_prepare kernel/entry/common.c:208
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:290
+ syscall_exit_to_user_mode+0x7e/0xc0 kernel/entry/common.c:302
+ do_syscall_64+0x60/0xd0 arch/x86/entry/common.c:88
+ entry_SYSCALL_64_after_hwframe+0x44/0xae ??:?
 
-> 
-> > +
-> >         for (val = dw9714_dev->current_val & ~(DW9714_CTRL_STEPS -
-> > 1);
-> >              val >= 0; val -= DW9714_CTRL_STEPS) {
-> >                 ret = dw9714_i2c_write(client,
-> > @@ -208,6 +228,13 @@ static int __maybe_unused
-> > dw9714_vcm_suspend(struct device *dev)
-> >                         dev_err_once(dev, "%s I2C failure: %d",
-> > __func__, ret);
-> >                 usleep_range(DW9714_CTRL_DELAY_US,
-> > DW9714_CTRL_DELAY_US + 10);
-> >         }
-> > +
-> > +       if (dw9714_dev->vcc) {
-> > +               ret = regulator_disable(dw9714_dev->vcc);
-> > +               if (ret)
-> > +                       dev_err(dev, "Failed to disable vcc: %d\n",
-> > ret);
-> > +       }
-> > +
-> >         return 0;
-> >  }
-> >  
-> > @@ -224,6 +251,18 @@ static int  __maybe_unused
-> > dw9714_vcm_resume(struct device *dev)
-> >         struct dw9714_device *dw9714_dev = sd_to_dw9714_vcm(sd);
-> >         int ret, val;
-> >  
-> > +       if (pm_runtime_suspended(&client->dev))
-> 
-> Same for this one.
-> 
-> > +               return 0;
-> > +
-> > +       if (dw9714_dev->vcc) {
-> > +               ret = regulator_enable(dw9714_dev->vcc);
-> > +               if (ret) {
-> > +                       dev_err(dev, "Failed to enable vcc: %d\n",
-> > ret);
-> > +                       return ret;
-> > +               }
-> > +               usleep_range(1000, 2000);
-> > +       }
-> > +
-> >         for (val = dw9714_dev->current_val % DW9714_CTRL_STEPS;
-> >              val < dw9714_dev->current_val + DW9714_CTRL_STEPS - 1;
-> >              val += DW9714_CTRL_STEPS) {
-> 
+Local variable sw_bytes created at:
+ save_xstate_epilog+0x80/0x510 arch/x86/kernel/fpu/signal.c:121
+ copy_fpstate_to_sigframe+0x861/0xb60 arch/x86/kernel/fpu/signal.c:245
 
+Bytes 20-47 of 48 are uninitialized
+Memory access of size 48 starts at ffff8880801d3a18
+Data copied to user address 00007ffd90e2ef50
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
 
+--=20
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
