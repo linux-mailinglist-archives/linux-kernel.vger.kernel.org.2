@@ -2,151 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8BC245E6ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 05:41:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9975845E6EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 05:42:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244438AbhKZEo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 23:44:58 -0500
-Received: from so254-9.mailgun.net ([198.61.254.9]:17556 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343961AbhKZEm4 (ORCPT
+        id S233319AbhKZEqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 23:46:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:53414 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229798AbhKZEoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 23:42:56 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1637901584; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
- Subject: Sender; bh=+pUbjW7Z8WLps/cKoiWRu8LdT/rmntmlr+hAGcdaE8Y=; b=sr4sTVbHvOnvk0f2islkiKJ6mRNN3/rRKrrvXop/dlYawFpUrMxZssGS4Izm8pX5KVIdqTgp
- m/kxtg9nxBCkNioXQPRjx4e43H1+D+EAyfK3CzX8TVrPu/s7JOfhdFm1XwxILXyCvLw7E+wZ
- stSdd4JoXzJ/FopyOCK8wDpBXjw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 61a0650fdf12ba53c451f6aa (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Nov 2021 04:39:43
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B1922C43619; Fri, 26 Nov 2021 04:39:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-7.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.242.143.72] (unknown [202.46.23.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DA7BAC4338F;
-        Fri, 26 Nov 2021 04:39:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org DA7BAC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v5 00/10] Add support for audio on SC7280 based targets
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org,
-        judyhsiao@chromium.org
-References: <1637239714-11211-1-git-send-email-srivasam@codeaurora.org>
- <5f750cfc-dace-59a7-2eb4-4831a313064c@linaro.org>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <f8d17e44-c131-8ca5-6abd-baea44d72044@codeaurora.org>
-Date:   Fri, 26 Nov 2021 10:09:34 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Thu, 25 Nov 2021 23:44:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637901652;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KXDnhWi2lUYPDK6SyEW/Lwdc8ugbHrrHb9AhpqrT7Ds=;
+        b=a1ZDuy2e8F+97Qy5Na5eBI2qWjr0uja5/AW2ILq26Tr2FoJq93thrHcPaXpBXa3jHF04L8
+        mm8iAbZKmTp2lYBVzwFAHj4mlfjPsNSjb5aJ1yyyoC3xDMdJvT3i9wudrJzOEkgZl+DTYe
+        DSXF0ZebIi+4V+XBPFw3hgTplz0PZks=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-125-TMWfBDz1Mv2e8tqPM5i9Og-1; Thu, 25 Nov 2021 23:40:51 -0500
+X-MC-Unique: TMWfBDz1Mv2e8tqPM5i9Og-1
+Received: by mail-lj1-f198.google.com with SMTP id a7-20020a05651c210700b00219132ab503so2710106ljq.12
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 20:40:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KXDnhWi2lUYPDK6SyEW/Lwdc8ugbHrrHb9AhpqrT7Ds=;
+        b=rTr5ugMURN6Zn5VXyu2Ba3x4ufpQOc6Pw9cqWVmqPR9+vwLX3s0CC0hQxmh6z1oTLF
+         GFGoygLFkZt7qiHAV3lM1cEAoVp38ErmsHqSSbdoa5yvUfR3bmjQXH0F1989/A+7i790
+         TRIjXHfXOrtG8A2M2XeP02VzuZOKaH7lRzRxltsYDblvjpW9jWemucoDw1MqxJNRRDhR
+         FI7y+2iAjCBzStARo3t4GG7RvE/XFAYdUQwr/AKyWc5lJxRv7J1bgt7Nu76Ek2yNl40F
+         j8aEJO4trOk5zCGs742lo63l6VhFJP1sCSD+DhaK38jDvPSyMBLTIhRqz2HnO9oP+f8Q
+         iCxw==
+X-Gm-Message-State: AOAM531VMZ0ZdFP3qpjRZpDSc1ERJJub8X5GAL+yIZxmJ0Hf1fBZTAvy
+        XCU+nG4Wcr1dHs8h0C4Szk98k/lpz9ecwopb4HHVZY+dtL77gpjWejEQUYpImZIwSRCENeN4b+v
+        eOY1eYLhW00xkmtO2OZ02spbKmSPh0zjskkg9vu1b
+X-Received: by 2002:a2e:2ac1:: with SMTP id q184mr29135775ljq.420.1637901649403;
+        Thu, 25 Nov 2021 20:40:49 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx9I5mU3QuZFkDuRPx0Xw0T8Go262yO+nZT2CPCiRrJPdz2yhCYrQfj1jDQiyWXOOYvCeOvH2AKgtNQcLIDrW8=
+X-Received: by 2002:a2e:2ac1:: with SMTP id q184mr29135753ljq.420.1637901649134;
+ Thu, 25 Nov 2021 20:40:49 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <5f750cfc-dace-59a7-2eb4-4831a313064c@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20211125063034.12347-1-jasowang@redhat.com> <202111252001.Z5tli1Np-lkp@intel.com>
+In-Reply-To: <202111252001.Z5tli1Np-lkp@intel.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Fri, 26 Nov 2021 12:40:38 +0800
+Message-ID: <CACGkMEuOGR9K4Nq++EG9RzE3F7G6Rj9P0kkOyrJHm=K-Vap9Ow@mail.gmail.com>
+Subject: Re: [PATCH] virtio-mmio: harden interrupt
+To:     kernel test robot <lkp@intel.com>
+Cc:     mst <mst@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev, kbuild-all@lists.01.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 25, 2021 at 8:08 PM kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Jason,
+>
+> I love your patch! Perhaps something to improve:
+>
+> [auto build test WARNING on linus/master]
+> [also build test WARNING on v5.16-rc2 next-20211125]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
 
-On 11/23/2021 5:58 PM, Srinivas Kandagatla wrote:
-Thanks for your time Srini!!!
+Will fix this in V2.
+
+Thanks
+
 >
-> On 18/11/2021 12:48, Srinivasa Rao Mandadapu wrote:
->> This patch set is to add support for Audio over wcd codec,
->> digital mics, through digital codecs and without ADSP.
->> This patch set depends on:
+> url:    https://github.com/0day-ci/linux/commits/Jason-Wang/virtio-mmio-harden-interrupt/20211125-143334
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 5f53fa508db098c9d372423a6dac31c8a5679cdf
+> config: mips-buildonly-randconfig-r003-20211125 (https://download.01.org/0day-ci/archive/20211125/202111252001.Z5tli1Np-lkp@intel.com/config)
+> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 67a1c45def8a75061203461ab0060c75c864df1c)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install mips cross compiling tool for clang build
+>         # apt-get install binutils-mips-linux-gnu
+>         # https://github.com/0day-ci/linux/commit/e19a8a1a95bd891090863b2d6828b8dc55d3633f
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Jason-Wang/virtio-mmio-harden-interrupt/20211125-143334
+>         git checkout e19a8a1a95bd891090863b2d6828b8dc55d3633f
+>         # save the config file to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=mips
 >
->>     -- 
->> https://patchwork.kernel.org/project/alsa-devel/list/?series=570161
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 >
->>     -- 
->> https://patchwork.kernel.org/project/alsa-devel/list/?series=572615
+> All warnings (new ones prefixed by >>):
 >
-> Except this one, rest of the patches are already in sound-next.
-> and the only dependency I see here is the final patch which adds 
-> Kconfigs to the soundcard SND_SOC_SC7280.
-> Why not just move those two lines in the patchset that adds the 
-> soundcard?
+> >> drivers/virtio/virtio_mmio.c:105:6: warning: no previous prototype for function 'vm_disable_cbs' [-Wmissing-prototypes]
+>    void vm_disable_cbs(struct virtio_device *vdev)
+>         ^
+>    drivers/virtio/virtio_mmio.c:105:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+>    void vm_disable_cbs(struct virtio_device *vdev)
+>    ^
+>    static
+> >> drivers/virtio/virtio_mmio.c:121:6: warning: no previous prototype for function 'vm_enable_cbs' [-Wmissing-prototypes]
+>    void vm_enable_cbs(struct virtio_device *vdev)
+>         ^
+>    drivers/virtio/virtio_mmio.c:121:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+>    void vm_enable_cbs(struct virtio_device *vdev)
+>    ^
+>    static
+>    2 warnings generated.
 >
 >
+> vim +/vm_disable_cbs +105 drivers/virtio/virtio_mmio.c
 >
-> --srini
+>    103
+>    104  /* disable irq handlers */
+>  > 105  void vm_disable_cbs(struct virtio_device *vdev)
+>    106  {
+>    107          struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
+>    108          int irq = platform_get_irq(vm_dev->pdev, 0);
+>    109
+>    110          /*
+>    111           * The below synchronize() guarantees that any
+>    112           * interrupt for this line arriving after
+>    113           * synchronize_irq() has completed is guaranteed to see
+>    114           * intx_soft_enabled == false.
+>    115           */
+>    116          WRITE_ONCE(vm_dev->intr_soft_enabled, false);
+>    117          synchronize_irq(irq);
+>    118  }
+>    119
+>    120  /* enable irq handlers */
+>  > 121  void vm_enable_cbs(struct virtio_device *vdev)
+>    122  {
+>    123          struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
+>    124          int irq = platform_get_irq(vm_dev->pdev, 0);
+>    125
+>    126          disable_irq(irq);
+>    127          /*
+>    128           * The above disable_irq() provides TSO ordering and
+>    129           * as such promotes the below store to store-release.
+>    130           */
+>    131          WRITE_ONCE(vm_dev->intr_soft_enabled, true);
+>    132          enable_irq(irq);
+>    133          return;
+>    134  }
+>    135
 >
-Okay. will move this dependency to corresponding patch.
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 >
->>     -- 
->> https://patchwork.kernel.org/project/alsa-devel/list/?series=559677
->
->>
->> Changes Since V4:
->>      -- Remove unused variable in lpass-sc7280 platform driver.
->> Changes Since V3:
->>      -- Remove redundant power domain controls. As power domains can 
->> be configured from dtsi.
->> Changes Since V2:
->>      -- Split lpass sc7280 cpu driver patch and create regmap config 
->> patch.
->>      -- Create patches based on latest kernel tip.
->>      -- Add helper function to get dma control and lpaif handle.
->>      -- Remove unused variables.
->> Changes Since V1:
->>      -- Typo errors fix
->>      -- CPU driver readable/writable apis optimization.
->>      -- Add Missing config patch
->>      -- Add Common api for repeated dmactl initialization.
->>
->> Srinivasa Rao Mandadapu (10):
->>    ASoC: qcom: Move lpass_pcm_data structure to lpass header
->>    ASoC: qcom: lpass: Add dma fields for codec dma lpass interface
->>    ASoC: qcom: Add register definition for codec rddma and wrdma
->>    ASoC: qcom: Add lpass CPU driver for codec dma control
->>    ASoC: qcom: Add helper function to get dma control and lpaif handle
->>    ASoC: qcom: Add support for codec dma driver
->>    ASoC: qcom: Add regmap config support for codec dma driver
->>    ASoC: dt-bindings: Add SC7280 sound card bindings
->>    ASoC: qcom: lpass-sc7280: Add platform driver for lpass audio
->>    ASoC: qcom: SC7280: Update config for building codec dma drivers
->>
->>   .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  |  69 ++-
->>   sound/soc/qcom/Kconfig                             |  13 +
->>   sound/soc/qcom/Makefile                            |   4 +
->>   sound/soc/qcom/common.c                            |  39 ++
->>   sound/soc/qcom/common.h                            |   1 +
->>   sound/soc/qcom/lpass-cdc-dma.c                     | 195 ++++++++
->>   sound/soc/qcom/lpass-cpu.c                         | 245 +++++++++-
->>   sound/soc/qcom/lpass-lpaif-reg.h                   | 103 ++++-
->>   sound/soc/qcom/lpass-platform.c                    | 513 
->> ++++++++++++++++++---
->>   sound/soc/qcom/lpass-sc7280.c                      | 416 
->> +++++++++++++++++
->>   sound/soc/qcom/lpass.h                             | 150 ++++++
->>   11 files changed, 1669 insertions(+), 79 deletions(-)
->>   create mode 100644 sound/soc/qcom/lpass-cdc-dma.c
->>   create mode 100644 sound/soc/qcom/lpass-sc7280.c
->>
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
