@@ -2,133 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB914607C6
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 18:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5809460907
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 19:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358551AbhK1RDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Nov 2021 12:03:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35862 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1353742AbhK1RBS (ORCPT
+        id S233045AbhK1SoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Nov 2021 13:44:10 -0500
+Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17282 "EHLO
+        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235824AbhK1SmJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Nov 2021 12:01:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1638118681;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tpGHUKYpaVNMq1Y1Pd0vJp6cIrA5ck5KtEzHZ7z/FWA=;
-        b=P8mePlWWEXaQlSemS+fCDHX1I6HZsgq35W9gVdmU6N0MMaAGIO8HEJszCiG9nX+pJPbfU7
-        OyUXiAo4TGV1fwXULa60SJnmynaYvmZIdHfcoMBo7pLxjS119lYOTOXjPfag+P8WKPHu0/
-        JWpueewJDyhdwUBvyZM9/ZinhR7uO4Q=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-588-LPh8gTRSPE6FTawHBb8HZA-1; Sun, 28 Nov 2021 11:58:00 -0500
-X-MC-Unique: LPh8gTRSPE6FTawHBb8HZA-1
-Received: by mail-wm1-f71.google.com with SMTP id r129-20020a1c4487000000b00333629ed22dso10531579wma.6
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Nov 2021 08:57:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tpGHUKYpaVNMq1Y1Pd0vJp6cIrA5ck5KtEzHZ7z/FWA=;
-        b=qmYIu3gznjcYmuWkmIdwyHV5Yipk1u0qD99L7ZNUciLCKfzfmZRJpHAw6rIBEul7Fz
-         UyB/5LVTLvTdX9CNXvEZ1xHo4oYV7pc0zpU7V/+WADmxJEszhcnx7rahQwj8LGPgvDmR
-         LC3Do+y1A1BZx+LPti6Z0LZC+q2CwrrQNYSL1c78Ux1TiRDg1XoiM/5ij26o2cFIYhET
-         eLYb5NLBApD6fehjXOql+rTyc9nnm0M6bXtMBA5iTmXmHeAdbJ2a0ea8//jKe6sxsP3k
-         ON8TcQKKXs1UM7RYgxwy+eINKzrF3WHIDw5N7TOJvTvE6YgP8pXiL8ruihZq07S4Blcg
-         XPuQ==
-X-Gm-Message-State: AOAM533xdZLoPyYZmOVtrpFeyT33rehdVt1REAJXsOqR2aKQvWAmLOlC
-        Bv+67KDZmKEvbSS1TMIc6RUsrWDeh6uUHaefhDBegVpeOSVJB6x+3ItKs9fBLDTa/pwITVZvkbT
-        kIo3WzSVL3geJz2OIH1EWY3GT
-X-Received: by 2002:a5d:6da2:: with SMTP id u2mr27679712wrs.273.1638118678999;
-        Sun, 28 Nov 2021 08:57:58 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzO+Uv4zcLBq6km16KM6CRY+H9R0szixLWE7fiDK/EVPKzwCJ9aJCnO1p7uvI44PAyiOCGEjA==
-X-Received: by 2002:a5d:6da2:: with SMTP id u2mr27679699wrs.273.1638118678861;
-        Sun, 28 Nov 2021 08:57:58 -0800 (PST)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id g18sm20503404wmq.4.2021.11.28.08.57.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Nov 2021 08:57:58 -0800 (PST)
-Date:   Sun, 28 Nov 2021 17:57:56 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com
-Subject: Re: [PATCH 2/2] perf evsel: Improve error message for uncore events
-Message-ID: <YaO1FIOYpF/Y5BDK@krava>
-References: <20211123020341.3073673-1-irogers@google.com>
- <20211123020341.3073673-2-irogers@google.com>
+        Sun, 28 Nov 2021 13:42:09 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1637903008; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=kTT6Em4JDS6/n2VGliGLaE9S+PknFWxGAUiJO4w9UcrhWM6NIlMzAx+PtzMv9HHDSNv2cP27qumLZNCOYVAznwtp8lXf6M/LqY/Gq/p/xzSUwgrV46aHdZiKMf+5JRO3Rs62wyy89VzmskC+loYa07G1bKLiqEwExGzYIzOszds=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1637903008; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
+        bh=e1fy8d/F7bO0bxbGs9DFbseWsVknlDYWORiYHfsGIf8=; 
+        b=D+d85SWg0ltZ94GnKtm7vV4/uUrRM6weqrb89FGTFtj4m89M2NfrXFUGJ9ojdiV/cZ7+gXsL/DBAa5KTV0Lqxv9KvyfNtzn2BrUtCvKpdzg8Gea5yYl3qHhHkcIcA/HcrdwmahOTG4+DUxHVrliJfPOrrOC6vMZtZRPBfJibA2Q=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1637903008;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=e1fy8d/F7bO0bxbGs9DFbseWsVknlDYWORiYHfsGIf8=;
+        b=Nl3r5ejY1FHl1ts5hqefnDJ9sJvZpsLJORZ3A4KioqoF7ibhdDL7ysWhdndMlvgk
+        bhsk/ZFNRmLwXCekMD84/SnA7kYzSfipuQe6dfXL/7ye+fUekX6MpcNkMD/JsBtfPKT
+        eXfIDlXUdRRy6lvszTi851IoRCvWRkSeoVID5kQk=
+Received: from mail.baihui.com by mx.zoho.com.cn
+        with SMTP id 163790300607680.6143952720198; Fri, 26 Nov 2021 13:03:26 +0800 (CST)
+Date:   Fri, 26 Nov 2021 13:03:26 +0800
+From:   Chengguang Xu <cgxu519@mykernel.net>
+Reply-To: cgxu519@mykernel.net
+To:     "Amir Goldstein" <amir73il@gmail.com>
+Cc:     "Miklos Szeredi" <miklos@szeredi.hu>, "Jan Kara" <jack@suse.cz>,
+        "overlayfs" <linux-unionfs@vger.kernel.org>,
+        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "Chengguang Xu" <charliecgxu@tencent.com>
+Message-ID: <17d5aa0795d.fdfda4a49855.5158536783597235118@mykernel.net>
+In-Reply-To: <CAOQ4uxhrg=MAL7sArmP47oyF_QmhG-1b=srs30VNdiT-9s-P0w@mail.gmail.com>
+References: <20211122030038.1938875-1-cgxu519@mykernel.net> <20211122030038.1938875-8-cgxu519@mykernel.net> <CAOQ4uxhrg=MAL7sArmP47oyF_QmhG-1b=srs30VNdiT-9s-P0w@mail.gmail.com>
+Subject: Re: [RFC PATCH V6 7/7] ovl: implement containerized syncfs for
+ overlayfs
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211123020341.3073673-2-irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Importance: Medium
+User-Agent: ZohoCN Mail
+X-Mailer: ZohoCN Mail
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 06:03:41PM -0800, Ian Rogers wrote:
-> When a group has multiple events and the leader fails it can yield
-> errors like:
-> 
-> $ perf stat -e '{uncore_imc/cas_count_read/},instructions' /bin/true
-> Error:
-> The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (uncore_imc/cas_count_read/).
-> /bin/dmesg | grep -i perf may provide additional information.
-> 
-> However, when not the group leader <not supported> is given:
-> 
-> $ perf stat -e '{instructions,uncore_imc/cas_count_read/}' /bin/true
-> ...
->          1,619,057      instructions
->    <not supported> MiB  uncore_imc/cas_count_read/
-> 
-> This is necessary because get_group_fd will fail if the leader fails and
-> is the direct result of the check on line 750 of builtin-stat.c in
-> stat_handle_error that returns COUNTER_SKIP for the latter case.
-> 
-> This patch improves the error message to:
-> 
-> $ perf stat -e '{uncore_imc/cas_count_read/},instructions' /bin/true
-> Error:
-> Invalid event (uncore_imc/cas_count_read/) in per-thread mode, enable system wide with '-a'.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/evsel.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index a59fb2ecb84e..48696ff4bddb 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -2950,6 +2950,11 @@ int evsel__open_strerror(struct evsel *evsel, struct target *target,
->  			return scnprintf(msg, size, "wrong clockid (%d).", clockid);
->  		if (perf_missing_features.aux_output)
->  			return scnprintf(msg, size, "The 'aux_output' feature is not supported, update the kernel.");
-> +		if ((evsel__leader(evsel) == evsel) &&
-> +		    (evsel->core.leader->nr_members > 1))
-> +			return scnprintf(msg, size,
-> +	"Invalid event (%s) in per-thread mode, enable system wide with '-a'.",
-> +					evsel__name(evsel));
+ ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=80, 2021-11-22 15:40:59 Amir Golds=
+tein <amir73il@gmail.com> =E6=92=B0=E5=86=99 ----
+ > On Mon, Nov 22, 2021 at 5:01 AM Chengguang Xu <cgxu519@mykernel.net> wro=
+te:
+ > >
+ > > From: Chengguang Xu <charliecgxu@tencent.com>
+ > >
+ > > Now overlayfs can only sync own dirty inodes during syncfs,
+ > > so remove unnecessary sync_filesystem() on upper file system.
+ > >
+ > > Signed-off-by: Chengguang Xu <charliecgxu@tencent.com>
+ > > ---
+ > >  fs/overlayfs/super.c | 14 +++++---------
+ > >  1 file changed, 5 insertions(+), 9 deletions(-)
+ > >
+ > > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+ > > index ccffcd96491d..213b795a6a86 100644
+ > > --- a/fs/overlayfs/super.c
+ > > +++ b/fs/overlayfs/super.c
+ > > @@ -292,18 +292,14 @@ static int ovl_sync_fs(struct super_block *sb, i=
+nt wait)
+ > >         /*
+ > >          * Not called for sync(2) call or an emergency sync (SB_I_SKIP=
+_SYNC).
+ > >          * All the super blocks will be iterated, including upper_sb.
+ > > -        *
+ > > -        * If this is a syncfs(2) call, then we do need to call
+ > > -        * sync_filesystem() on upper_sb, but enough if we do it when =
+being
+ > > -        * called with wait =3D=3D 1.
+ > >          */
+ > > -       if (!wait)
+ > > -               return 0;
+ > > -
+ > >         upper_sb =3D ovl_upper_mnt(ofs)->mnt_sb;
+ > > -
+ > >         down_read(&upper_sb->s_umount);
+ > > -       ret =3D sync_filesystem(upper_sb);
+ > > +       if (wait)
+ > > +               wait_sb_inodes(upper_sb);
+ > > +       if (upper_sb->s_op->sync_fs)
+ > > +               upper_sb->s_op->sync_fs(upper_sb, wait);
+ > > +       ret =3D ovl_sync_upper_blockdev(upper_sb, wait);
+ >=20
+ > I think it will be cleaner to use a helper ovl_sync_upper_filesystem()
+ > with everything from  upper_sb =3D ... and a comment to explain that
+ > this is a variant of __sync_filesystem() where all the dirty inodes writ=
+e
+ > have already been started.
+ >=20
+=20
+I agree with you.=20
 
-should we rather check 'target' pointer for the per-thread mode?
-I'm not sure that per-thread mode will always be the case for the failure
-
-jirka
-
->  		break;
->  	case ENODATA:
->  		return scnprintf(msg, size, "Cannot collect data source with the load latency event alone. "
-> -- 
-> 2.34.0.rc2.393.gf8c9666880-goog
-> 
-
+Thanks,
+Chengguang
