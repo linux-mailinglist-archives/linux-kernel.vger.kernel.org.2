@@ -2,91 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6A245E88A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:36:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB0645E88E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:39:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359330AbhKZHjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 02:39:31 -0500
-Received: from mout.kundenserver.de ([217.72.192.74]:39701 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359172AbhKZHha (ORCPT
+        id S1359281AbhKZHmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 02:42:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1359344AbhKZHka (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 02:37:30 -0500
-Received: from mail-wm1-f46.google.com ([209.85.128.46]) by
- mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MqJyX-1mDeXq0eKx-00nQTh; Fri, 26 Nov 2021 08:34:17 +0100
-Received: by mail-wm1-f46.google.com with SMTP id p18so7327402wmq.5;
-        Thu, 25 Nov 2021 23:34:09 -0800 (PST)
-X-Gm-Message-State: AOAM5336bNQOlvzMTg304JaftQFOXdMh7m01kbJrjHCd+xpAL6hNuQAf
-        3l556sZuvdNmFVlF6wTe90WxzMkk74wE7R3vhCg=
-X-Google-Smtp-Source: ABdhPJxp5EqM4wHfXdz4pLs9xKz8Rq2xZ+tJjDPCTW21MFnsGEjZ2KLKdyfGZGKrZ542uGzfxCDQaVNpVpxwzTgooeI=
-X-Received: by 2002:a05:600c:6d2:: with SMTP id b18mr13827477wmn.98.1637912049389;
- Thu, 25 Nov 2021 23:34:09 -0800 (PST)
+        Fri, 26 Nov 2021 02:40:30 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414F1C0613FA
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:36:09 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id r25so35043671edq.7
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:36:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=elJioYNUbOzp4AX6n16wfmeroXlPwEb1AcJcD/HfIlo=;
+        b=cuYI5lX/w13XGoVbijkOcO0Df4iXXCO1KO1DxzVauzOtOpZ0r0mFw6GSEMYZO/MhCk
+         C+fYevTdEUz6ikNlEUUntAM1UVhHtIRY7L9oQpVQd0vSsa1uVTnJTnoKX6zjd2q1Vjhb
+         6qQx+JTKIEl/UW7oDydJaJ+S2NWWVFnbuTVDyLaEZBH2YTP9P3SG6bFp1r2k0QsEQUl8
+         jgIRKNdHqIXML1bZP0VzKqxE9tUWPZcNyD1lv6LWBCjcAjUDloHEA86g5QrPKgtKrpLD
+         M8/G+zxvjWHcHUUQ30sg6gJdilMsshmSs/p6DCcKC+XBJB4s/OX+uZ/a0gjzJtyJ6Dz5
+         Yj2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=elJioYNUbOzp4AX6n16wfmeroXlPwEb1AcJcD/HfIlo=;
+        b=eezwJZ2uI9lToGlG6ts0nQ9EChcKiNY5/7H4noncJt4lZ5o5bZhZ+VDpu70GgmWc+0
+         0ywpN2OZwe710dn++Z2pSxTAZcTjMvyigCQAYqZejO9jYbuPayCa3BM7bhJuyNT6h5aL
+         afo3dh3uNOpQyV7kXrNr2MixGlAPx6Ht0qKAZnn6wGYi+LJiWYqJdN+2W8ymbpNOSHYL
+         wdQx+9pIglT1gNzxM1SWxwEYQMxjaQpzEg7hj3xUVOeJAWAbTimjspfW3/9lFhofCKad
+         yBVQ4PX2OmarZkphQYvZtQZdSQ2w0nGINKKmCkh0W8qJspMDSElGopwM2MrDL4JdyaaE
+         Y67A==
+X-Gm-Message-State: AOAM533dbtiCAOwpfowChJVQ7gGmYNiTpf2RF1fZrxy3xP/mXwkUi4OV
+        M4CrnY1P9uvf31L2VGpV1E4=
+X-Google-Smtp-Source: ABdhPJziieAYsblkX51ypxlNpIpLASnQWiqy4Ol2QSm24dq/SP/qvVTPJVxq7n6D39x3WcD7zizgOw==
+X-Received: by 2002:a17:907:608f:: with SMTP id ht15mr1635858ejc.300.1637912167916;
+        Thu, 25 Nov 2021 23:36:07 -0800 (PST)
+Received: from alb3rt0-VirtualBox ([151.22.100.250])
+        by smtp.gmail.com with ESMTPSA id k21sm3169110edo.87.2021.11.25.23.36.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 23:36:07 -0800 (PST)
+Date:   Fri, 26 Nov 2021 08:36:05 +0100
+From:   Alberto Merciai <alb3rt0.m3rciai@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     joe@perches.com, forest@alittletooquiet.net,
+        karolinadrobnik@gmail.com, lucas.henneman@linaro.org,
+        dan.carpenter@oracle.com, tomm.merciai@gmail.com,
+        eantoranz@gmail.com, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH v5] staging: vt6655: refactor camelcase uCurrRSSI to
+ current_rssi
+Message-ID: <20211126073605.GA4537@alb3rt0-VirtualBox>
+References: <20211118211128.GA156436@t470p>
+ <YZ+9yDiG1SoWrWED@kroah.com>
 MIME-Version: 1.0
-References: <20211126060024.3290177-1-alistair.francis@opensource.wdc.com> <20211126060024.3290177-6-alistair.francis@opensource.wdc.com>
-In-Reply-To: <20211126060024.3290177-6-alistair.francis@opensource.wdc.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 26 Nov 2021 08:33:53 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3EMyg5SuKnbjnUvUhRkoqNuWoEPh_hoTU4abjR4a8PgQ@mail.gmail.com>
-Message-ID: <CAK8P3a3EMyg5SuKnbjnUvUhRkoqNuWoEPh_hoTU4abjR4a8PgQ@mail.gmail.com>
-Subject: Re: [PATCH v3 6/6] selftests: futex: Use futex_waitv helper function
-To:     Alistair Francis <alistair.francis@opensource.wdc.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alistair Francis <alistair23@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alistair Francis <alistair.francis@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:/7avdmX9M783BFe12nqah47RZPB2F9uEmjOg/9l2em/jqCDP6LP
- FPfAbKDopfoMGkWA3H+e3pKw95T7ZgiJZPBU7ak2B8cWPu7dN3MM1BKbLbwsaro7u3IgmS1
- U2iUKsLEqMXtOSSXXyxPq+79nGlbxUWrnbQ3kRGL46yrZcwc8047dEKUv3jO55YIl/mwskH
- /mlOlYny4YWt62IUDsRjw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:sUiUVFMQWn4=:qKtIAB3wMHU+hlGi+V4NAC
- 23LbHUyMjqHOXt/FZrzjiuLw5Y8WJQlVmOs84CY2oXmPIUzEmy4q4Lb0HYNzF6GhAeOB2ngB/
- /bEkKWOnTReyb5mOz9E7qas/K1mDIhPrLHIzuQLqnhLnYspE77DC6iaIbMld22YaLDZOAOPf9
- dCa8RyHqZy3sauNMkgxS6BfWhv/EBv8/QOmOncolUCvGaBIEYVPTq4/CX3Fu308aLV+UuxWx2
- jP/iUKOq+a4BJeSJcENmrie5+OfZQdRHKHBl15x3JU4rKiZg+XQxHV+UFzw8gXc4PQUESwhYr
- RuR+WWcJ/zALv6TveltpjbCPaAS0JGnO4DShW3esEu4GW39/WsSR71+zj8N4+cWlrhN8clJJC
- ZxyZC6Mikun4sXoh0qmBc4Yhmeqj+h8Z2CCgX6x9evEFlMMFGuDrqjCf2imQppK+d5tKaNw5j
- HYTvl4DOx3kZ3mMeX+CMX4PvsXQmSOQDMi0ctFXnTONkUOeKLSf6JcEg53hy+QZYbTyWpKbUk
- EDHmzMjeEFsR0al8RQlweH4WimBegNmnxA8o4mrzp3fHNnLGErKk9Oz9LXeE4wUQkdgEGPzRc
- l2tTJtOCfm8h89gYQZRIlMdFHMdrIkpWsSnHiafKzvUR+9HQyCVzYPMUIgTM34nCTARW+I5RD
- PpZkMLYNjRaZOEjwmYaiuvEdes8Lkc7niSGikSLgLOTu38c9SlH5dhqXELZ34oP22anW1Qkl8
- epCCAxw+ux/DE2lkgOhuXd7+7F+iSo835fw++IxSswbutb2ukiV/5bbydEKgl6LwZ9v9iXzw7
- oHjL8ljlGc/+57VaDUt405z+GwAZmGh3JWn+ctIUSDv9ExecHk=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZ+9yDiG1SoWrWED@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 7:00 AM Alistair Francis
-<alistair.francis@opensource.wdc.com> wrote:
->
-> From: Alistair Francis <alistair.francis@wdc.com>
->
-> Use the publically exposed __kernel_futex_syscall_waitv() helper
-> function for the futex_waitv tests.
->
-> Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
 
-I think it would be nicer to wrap __kernel_futex_syscall_waitv() here
+> I'm totally lost, sorry.
+I did a bit confusion, I'm lost too... :P
 
-> -static inline int futex_waitv(volatile struct futex_waitv *waiters, unsigned long nr_waiters,
-> -                             unsigned long flags, struct timespec *timo, clockid_t clockid)
-> -{
-> -       return syscall(__NR_futex_waitv, waiters, nr_waiters, flags, timo, clockid);
-> -}
+> Please resend this again and properly set the version number.
+Sure, I will.
 
-Basically just changing this part to call the new function
+Thanks,
+Alberto
 
-         Arnd
+
