@@ -2,67 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC8545F65C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 22:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBAC45F69A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 22:41:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242019AbhKZVbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 16:31:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242335AbhKZV3X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 16:29:23 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CE2C061758
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 13:26:09 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1637961967;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WjNUKG+s4Ps6r9zLUOn5nxDOIRtHOKUgQW134JHaKqA=;
-        b=R4JIywl7ZbItEW3yhvSHkyA5fdPrGPcSzi9z2XIywE8OB2SOlRnSGfIMftPWUGgjWkkB1l
-        tnqHNeVTvegOL+8EpCYrXsaF49Jbwd1hVkznuH1p0cZl6fvfHSBvRZAsc8HlcZ83ByJkOd
-        BbZrfhUW6OINrRi/T3j67J2YAdh222SQ/Rp/hJVrkQ7zltGs4Mh4e/NuBzN7QICZLpl/zL
-        dj0KA/d0N0i5KzdFZo/vAfD31v3+EByGzG46ItN8i14nX+jDLfjoR9e0FQpAPSnOwoZ6wm
-        YBWAk3vRy7XPfcgnJl/c5NWiqbndeIMcvrZgjf6vSHPHbgw7+Y6tZdO9LZoOIQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1637961967;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WjNUKG+s4Ps6r9zLUOn5nxDOIRtHOKUgQW134JHaKqA=;
-        b=6TZNzD8/CFcvWt1+cHtze92ARSCHNIQ9lcjE40DBzdEnafmhCTxpeOKsNA44tZ5RG2CIBu
-        Ti1ZHyTkfwZaInDw==
-To:     SeongJae Park <sj@kernel.org>, akpm@linux-foundation.org
-Cc:     oleksandr@natalenko.name, john.stultz@linaro.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH v3 1/2] timers: Implement usleep_idle_range()
-In-Reply-To: <20211126145015.15862-2-sj@kernel.org>
-References: <20211126145015.15862-1-sj@kernel.org>
- <20211126145015.15862-2-sj@kernel.org>
-Date:   Fri, 26 Nov 2021 22:26:06 +0100
-Message-ID: <874k7yhamp.ffs@tglx>
+        id S242815AbhKZVoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 16:44:22 -0500
+Received: from sv2306.xserver.jp ([183.90.238.7]:54052 "EHLO sv2306.xserver.jp"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235155AbhKZVmV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 16:42:21 -0500
+X-Greylist: delayed 500 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Nov 2021 16:42:21 EST
+Received: from virusgw2301.xserver.jp (virusgw2301.xserver.jp [183.90.238.243])
+        by sv2306.xserver.jp (Postfix) with ESMTP id 90040107493F2C;
+        Sat, 27 Nov 2021 06:30:46 +0900 (JST)
+Received: from sv2306.xserver.jp (183.90.238.7)
+ by virusgw2301.xserver.jp (F-Secure/fsigk_smtp/521/virusgw2301.xserver.jp);
+ Sat, 27 Nov 2021 06:30:46 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/521/virusgw2301.xserver.jp)
+Received: by sv2306.xserver.jp (Postfix, from userid 20173)
+        id 8DAA110748C0DA; Sat, 27 Nov 2021 06:30:46 +0900 (JST)
+To:     linux-kernel@vger.kernel.org, support@space-activation.com
+Subject: =?UTF-8?B?44Of44OE44Kr44Or77yB5Lya6K2w5a6k44Go44Ob44O844OrICIyOGVtc3p5?=  =?UTF-8?B?Ig==?=
+Date:   Fri, 26 Nov 2021 21:30:46 +0000
+From:   =?UTF-8?B?44Of44OE44Kr44Or77yB5Lya6K2w5a6k44Go44Ob44O844Or?= 
+        <support@kaigishitsu-hall.site>
+Message-ID: <pp9hCYiSy9fK7oUVis3TYnQmBPWKOvSdo6i2I1OTXI@kaigishitsu-hall.site>
+X-Mailer: PHPMailer 6.5.0 (https://github.com/PHPMailer/PHPMailer)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26 2021 at 14:50, SeongJae Park wrote:
-> Some kernel threads such as DAMON could need to repeatedly sleep in
-> micro seconds level.  Because usleep_range() sleeps in uninterruptible
-> state, however, such threads would make /proc/loadavg reports fake load.
->
-> To help such cases, this commit implements a variant of usleep_range()
-> called usleep_idle_range().  It is same to usleep_range() but sets the
-> state of the current task as TASK_IDLE while sleeping.
->
-> Suggested-by: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: SeongJae Park <sj@kernel.org>
+差出人: [ミツカル！会議室とホール] <[support@space-activation.com]>
+題名: 28emszy
+❤️ Alice want to meet you! Click Here: http://bit.do/fSGXu?n7b ❤️
+h8v3gq様
 
-Andrew, I assume you want to pick that up along with the mm fix, right?
+お問い合わせ頂きまして誠にありがとうございます。
+内容を確認させて頂いたうえ、担当の者よりご連絡をさせて頂きます。
 
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+どうぞ宜しくお願い申し上げます。
+
+
+メッセージ本文:
+my1ushbh
+
+
+お電話番号
+525070226018
+
+-- 
+このメールは ミツカル！会議室とホール (https://kaigishitsu-hall.site) のお問い合わせフォームから送信されました
+
