@@ -2,97 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A6445EB50
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:24:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A71D345EB58
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:24:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376918AbhKZK1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 05:27:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37734 "EHLO
+        id S1377017AbhKZK1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:27:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234938AbhKZKZT (ORCPT
+        with ESMTP id S236925AbhKZKZU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 05:25:19 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95367C0613DD;
-        Fri, 26 Nov 2021 02:13:08 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id n33-20020a05600c502100b0032fb900951eso10302002wmr.4;
-        Fri, 26 Nov 2021 02:13:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vzTvyouU61sKV6UzmShEtlrYxuTMTHNu/9QphS5zFwg=;
-        b=CA+l1ddK5dRyH7g6WXUpBj5rQUWA36Zt+kQd5TwUxvWAki/Aos5rrMHPbmYoB/3zpu
-         3lm01616YP/X468ypBCirFNBXW5DAbFUUPUm2LjnuXWBkuYs0BdixqFJQ131a/kyOx01
-         geDDoGTIT9Xy8l448JFIDpML7ehm4KxOFwmkFSdnPmTG5LphQlyybaZYiUgT59iuruZ9
-         Qn++J+Excp717sUjaIVWMn0OqR9haODMVkZHcoeeTeRTx9yGJrN8wXUxu3Y+AXQhJQGD
-         ctiZe4XDfvnMfzneILJpPTwH3RHIP0Sj7Cgp7qhixpFN29c7zd+ML3PaNjKvgsESWOsk
-         fIOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vzTvyouU61sKV6UzmShEtlrYxuTMTHNu/9QphS5zFwg=;
-        b=HSDfhC3nr0SwAnSAYWxF6PG6M+cBM9LbooCbf8U5aL5UVJQDGv3SRhajAMsocsQ3GV
-         0AFnIiPSKAM3Bp3Afx1XZlC4zd2QuomDrp8HF2fgXUpK5IsHlzQGZrWrlsgRp5nditgV
-         Kt0h56F/rS/5xHng9m7TGAqACjjvXjN8rotH7dw7WccMXu8mIxdyOI9IiS16sBY9i81C
-         FJF9MY/xmWpJZ9ei2HMtxrv4aH/jHzHyHw7ishVuM/MMmHNwx05WzZHKE9TATP+tazpp
-         h7EeZJlqsbvnJ6xyUW6yl4V1Y8kD3lXN9ufCX4ULOOEcGO2r8b7pg/HQjtLnRVnLLqRk
-         aesg==
-X-Gm-Message-State: AOAM530SP+YEVdE+nibLS3mSrmBNKZNtrxRw+IoqOCH4/Wl3AUa4WTPS
-        A4Q7TMlQJWp8ySmpfuumOlw=
-X-Google-Smtp-Source: ABdhPJy07wkm4qHiUPv/8ZeN3H3PnrJfwyPrsh1mfgL1zsVglJtQrn8cTeowgxRDTn1sEdQ5Xj6uaA==
-X-Received: by 2002:a05:600c:a08:: with SMTP id z8mr14498433wmp.52.1637921587186;
-        Fri, 26 Nov 2021 02:13:07 -0800 (PST)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id g124sm10244008wme.28.2021.11.26.02.13.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 02:13:06 -0800 (PST)
-Date:   Fri, 26 Nov 2021 10:13:04 +0000
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 000/320] 4.19.218-rc3 review
-Message-ID: <YaCzMLDa3/JyZklf@debian>
-References: <20211125160544.661624121@linuxfoundation.org>
+        Fri, 26 Nov 2021 05:25:20 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE2AC0617A0;
+        Fri, 26 Nov 2021 02:13:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=h9UPv+50JCaEFOcwRwsn9FMVjmHhh3/liD/qtV8KSCA=; b=sejiql9+IejN+6ZkDDn8Fcjy5z
+        i4tz8aWQXrmeYnaqLtSrTrh785s98pGwWXO8zAmXCy2DfXUQy+5OepEWBMeMWtaaIevVI2R9nhnJY
+        4y5puldJ3F2wi6lx+0oy/6HHWelHjWExl7FOF0KiN86ZRN2crRvI01A33mIYdFzOt+lyXTLHiuCdJ
+        5lRokC8DAdmFxHNscOAqFUs0L4DT3+cPWguqU/g3NZnruguZgHJF8pggzuykcSGoInHmaFJ+OlwnW
+        kmIkiDMV03hm61LVpB3Qp2NuPgnVmhsbhREn26OvgZOte2iHW0lYIgoZanQjtXMFByCkRDZr1XxEE
+        a8OY70Lw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55908)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mqYEV-0002um-8x; Fri, 26 Nov 2021 10:13:31 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mqYER-0003CE-Jx; Fri, 26 Nov 2021 10:13:27 +0000
+Date:   Fri, 26 Nov 2021 10:13:27 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Yinbo Zhu <zhuyinbo@loongson.cn>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] net: mdio: fixup ethernet phy module auto-load
+ function
+Message-ID: <YaCzR5457hi4YI5G@shell.armlinux.org.uk>
+References: <1637919957-21635-1-git-send-email-zhuyinbo@loongson.cn>
+ <1637919957-21635-2-git-send-email-zhuyinbo@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211125160544.661624121@linuxfoundation.org>
+In-Reply-To: <1637919957-21635-2-git-send-email-zhuyinbo@loongson.cn>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Thu, Nov 25, 2021 at 05:07:31PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.218 release.
-> There are 320 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Nov 26, 2021 at 05:45:57PM +0800, Yinbo Zhu wrote:
+> the phy_id is only phy identifier, that phy module auto-load function
+> should according the phy_id event rather than other information, this
+> patch is remove other unnecessary information and add phy_id event in
+> mdio_uevent function and ethernet phy module auto-load function will
+> work well.
 > 
-> Responses should be made by Sat, 27 Nov 2021 16:05:05 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+> ---
+>  drivers/net/phy/mdio_bus.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+> index 6865d93..999f0d4 100644
+> --- a/drivers/net/phy/mdio_bus.c
+> +++ b/drivers/net/phy/mdio_bus.c
+> @@ -962,12 +962,12 @@ static int mdio_bus_match(struct device *dev, struct device_driver *drv)
+>  
+>  static int mdio_uevent(struct device *dev, struct kobj_uevent_env *env)
+>  {
+> -	int rc;
+> +	struct phy_device *pdev;
+>  
+> -	/* Some devices have extra OF data and an OF-style MODALIAS */
+> -	rc = of_device_uevent_modalias(dev, env);
+> -	if (rc != -ENODEV)
+> -		return rc;
+> +	pdev = to_phy_device(dev);
+> +
+> +	if (add_uevent_var(env, "MODALIAS=mdio:p%08X", pdev->phy_id))
+> +		return -ENOMEM;
+>  
+>  	return 0;
+>  }
 
-Build test:
-mips (gcc version 11.2.1 20211112): 63 configs -> no failure
-arm (gcc version 11.2.1 20211112): 116 configs -> no new failure
-arm64 (gcc version 11.2.1 20211112): 2 configs -> no failure
-x86_64 (gcc version 11.2.1 20211112): 4 configs -> no failure
+No. I think we've been over the reasons already. It _will_ break
+existing module loading.
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
+If I look at the PHY IDs on my Clearfog board:
 
-[1]. https://openqa.qa.codethink.co.uk/tests/435
+/sys/bus/mdio_bus/devices/f1072004.mdio-mii:00/phy_id:0x01410dd1
+/sys/bus/mdio_bus/devices/mv88e6xxx-0:00/phy_id:0x01410eb1
+/sys/bus/mdio_bus/devices/mv88e6xxx-0:01/phy_id:0x01410eb1
+/sys/bus/mdio_bus/devices/mv88e6xxx-0:02/phy_id:0x01410eb1
+/sys/bus/mdio_bus/devices/mv88e6xxx-0:03/phy_id:0x01410eb1
+/sys/bus/mdio_bus/devices/mv88e6xxx-0:04/phy_id:0x01410eb1
+/sys/bus/mdio_bus/devices/mv88e6xxx-0:0f/phy_id:0x01410ea1
 
+and then look at the PHY IDs that the kernel uses in the drivers, and
+thus will be used in the module's alias tables.
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+#define MARVELL_PHY_ID_88E1510          0x01410dd0
+#define MARVELL_PHY_ID_88E1540          0x01410eb0
+#define MARVELL_PHY_ID_88E1545          0x01410ea0
 
---
-Regards
-Sudip
+These numbers are different. This is not just one board. The last nibble
+of the PHY ID is generally the PHY revision, but that is not universal.
+See Atheros PHYs, where we match the entire ID except bit 4.
 
+You can not "simplify" the "ugly" matching like this. It's the way it is
+for good reason. Using the whole ID will _not_ cause a match, and your
+change will cause a regression.
+
+> @@ -991,7 +991,7 @@ static int mdio_uevent(struct device *dev, struct kobj_uevent_env *env)
+>  };
+>  
+>  struct bus_type mdio_bus_type = {
+> -	.name		= "mdio_bus",
+> +	.name		= "mdio",
+>  	.dev_groups	= mdio_bus_dev_groups,
+>  	.match		= mdio_bus_match,
+>  	.uevent		= mdio_uevent,
+
+Definitely no, this won't be accepted, and is in any case a separate
+change that is unrelated to the first hunk of the patch.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
