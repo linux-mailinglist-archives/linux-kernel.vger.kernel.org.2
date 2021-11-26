@@ -2,115 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D3545F1D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:26:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2161645F1D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:26:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239595AbhKZQ31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:29:27 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:39036 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234731AbhKZQ10 (ORCPT
+        id S1354387AbhKZQ3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:29:34 -0500
+Received: from outbound-smtp03.blacknight.com ([81.17.249.16]:49571 "EHLO
+        outbound-smtp03.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238131AbhKZQ1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:27:26 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3A5FA622E2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 16:24:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11490C93056;
-        Fri, 26 Nov 2021 16:24:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637943852;
-        bh=Vgi66QN9GrkmxWdokZZIUkz1w8SHaCVhZ2xKywc0LJk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t4bsyMz9sZ5SdNFbi8Lg+l0uMiN0ey9VkB0gZ4ewsPhDJKphrgo30OqgVl+Ib/hSy
-         EnbF/tBud01uOKhBFfvaP88G5aI3yq4HPJp0GGxo5Vtv1vKTxg1DuYkD9aCYf+8qDc
-         rMmxt6KmHuJFNfdoWl/FJDeKrEaiClZLjGWxbUyk=
-Date:   Fri, 26 Nov 2021 17:24:09 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Evgeniy Polyakov <zbr@ioremap.net>, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] w1: Misuse of get_user()/put_user() reported by sparse
-Message-ID: <YaEKKeNW70WJe38G@kroah.com>
-References: <2163689da6544c289254b3c69848acc36db998f5.1637313047.git.christophe.leroy@csgroup.eu>
- <YaEEqeKyWPfUP7vM@kroah.com>
- <39ec092d-428c-7fce-7291-a88a4caf8b9f@csgroup.eu>
+        Fri, 26 Nov 2021 11:27:32 -0500
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp03.blacknight.com (Postfix) with ESMTPS id D4153C0D59
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 16:24:18 +0000 (GMT)
+Received: (qmail 24859 invoked from network); 26 Nov 2021 16:24:18 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 26 Nov 2021 16:24:18 -0000
+Date:   Fri, 26 Nov 2021 16:24:16 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Alexey Avramov <hakavlad@inbox.lv>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, mhocko@suse.com,
+        vbabka@suse.cz, neilb@suse.de, akpm@linux-foundation.org,
+        corbet@lwn.net, riel@surriel.com, hannes@cmpxchg.org,
+        david@fromorbit.com, willy@infradead.org, hdanton@sina.com,
+        penguin-kernel@i-love.sakura.ne.jp, oleksandr@natalenko.name,
+        kernel@xanmod.org, michael@michaellarabel.com, aros@gmx.com,
+        hakavlad@gmail.com
+Subject: Re: mm: 5.16 regression: reclaim_throttle leads to stall in near-OOM
+ conditions
+Message-ID: <20211126162416.GK3366@techsingularity.net>
+References: <20211124011954.7cab9bb4@mail.inbox.lv>
+ <20211124103550.GE3366@techsingularity.net>
+ <20211124195449.33f31e7f@mail.inbox.lv>
+ <20211124115007.GG3366@techsingularity.net>
+ <20211124214443.5c179d34@mail.inbox.lv>
+ <20211124143303.GH3366@techsingularity.net>
+ <20211127010631.4e33a432@mail.inbox.lv>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <39ec092d-428c-7fce-7291-a88a4caf8b9f@csgroup.eu>
+In-Reply-To: <20211127010631.4e33a432@mail.inbox.lv>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 05:10:46PM +0100, Christophe Leroy wrote:
+On Sat, Nov 27, 2021 at 01:06:31AM +0900, Alexey Avramov wrote:
+> >Please let me know if this version works any better
 > 
+> It's better, but not the same as 5.15.
 > 
-> Le 26/11/2021 à 17:00, Greg Kroah-Hartman a écrit :
-> > On Fri, Nov 19, 2021 at 10:15:09AM +0100, Christophe Leroy wrote:
-> > > sparse warnings: (new ones prefixed by >>)
-> > > > > drivers/w1/slaves/w1_ds28e04.c:342:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char [noderef] __user *_pu_addr @@     got char *buf @@
-> > >     drivers/w1/slaves/w1_ds28e04.c:342:13: sparse:     expected char [noderef] __user *_pu_addr
-> > >     drivers/w1/slaves/w1_ds28e04.c:342:13: sparse:     got char *buf
-> > > > > drivers/w1/slaves/w1_ds28e04.c:356:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char const [noderef] __user *_gu_addr @@     got char const *buf @@
-> > >     drivers/w1/slaves/w1_ds28e04.c:356:13: sparse:     expected char const [noderef] __user *_gu_addr
-> > >     drivers/w1/slaves/w1_ds28e04.c:356:13: sparse:     got char const *buf
-> > > 
-> > > The buffer buf is a failsafe buffer in kernel space, it's not user
-> > > memory hence doesn't deserve the use of get_user() or put_user().
-> > > 
-> > > Access 'buf' content directly.
-> > > 
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Link: https://lore.kernel.org/lkml/202111190526.K5vb7NWC-lkp@intel.com/T/
-> > > Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> > > ---
-> > >   drivers/w1/slaves/w1_ds28e04.c | 10 ++--------
-> > >   1 file changed, 2 insertions(+), 8 deletions(-)
-> > > 
-> > > diff --git a/drivers/w1/slaves/w1_ds28e04.c b/drivers/w1/slaves/w1_ds28e04.c
-> > > index e4f336111edc..d75bb16fb7a1 100644
-> > > --- a/drivers/w1/slaves/w1_ds28e04.c
-> > > +++ b/drivers/w1/slaves/w1_ds28e04.c
-> > > @@ -339,10 +339,7 @@ static BIN_ATTR_RW(pio, 1);
-> > >   static ssize_t crccheck_show(struct device *dev, struct device_attribute *attr,
-> > >   			     char *buf)
-> > >   {
-> > > -	if (put_user(w1_enable_crccheck + 0x30, buf))
-> > > -		return -EFAULT;
-> > > -
-> > > -	return sizeof(w1_enable_crccheck);
-> > > +	return sprintf(buf, "%d", w1_enable_crccheck);
-> > 
-> > This should be sysfs_emit(), right?
+> Sometimes stall is short, sometimes is long (3 `tail /dev/zero` test):
 > 
-> Ok
-> 
-> > 
-> > >   }
-> > >   static ssize_t crccheck_store(struct device *dev, struct device_attribute *attr,
-> > > @@ -353,11 +350,8 @@ static ssize_t crccheck_store(struct device *dev, struct device_attribute *attr,
-> > >   	if (count != 1 || !buf)
-> > >   		return -EINVAL;
-> > > -	if (get_user(val, buf))
-> > > -		return -EFAULT;
-> > > -
-> > >   	/* convert to decimal */
-> > > -	val = val - 0x30;
-> > > +	val = *buf - 0x30;
-> > 
-> > Why not use a proper function that can parse a string and turn it into a
-> > number?
-> 
-> I wanted to keep the change minimal. But I can also replace it with some
-> scanf.
-> 
-> But don't we have any generic function to read and store a bool after all ?
 
-Yes we do, please use kstrtobool().
+It's somewhat expected. If the system is able to make some sort of
+progress and kswapd is active, it'll throttle until progress is
+impossible. It'll be somewhat variable how long it can keep making
+progress be it discarding page cache or writing to swap but it'll only
+OOM when the system is truly OOM.
 
-thanks,
+Might be worth trying the patch below on top. It will delay throttling
+for longer with the caveat that CPU usage due to reclaim when very low
+on memory may be excessive.
 
-greg k-h
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 176ddd28df21..167ea4f324a8 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -3404,8 +3404,8 @@ static void consider_reclaim_throttle(pg_data_t *pgdat, struct scan_control *sc)
+ 	if (current_is_kswapd())
+ 		return;
+ 
+-	/* Throttle if making no progress at high prioities. */
+-	if (sc->priority < DEF_PRIORITY - 2 && !sc->nr_reclaimed)
++	/* Throttle if making no progress at high priority. */
++	if (sc->priority == 1 && !sc->nr_reclaimed)
+ 		reclaim_throttle(pgdat, VMSCAN_THROTTLE_NOPROGRESS);
+ }
+
