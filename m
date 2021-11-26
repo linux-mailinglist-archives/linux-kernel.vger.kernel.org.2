@@ -2,400 +2,465 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977F645ECD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C0245EDBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347124AbhKZLqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 06:46:22 -0500
-Received: from so254-9.mailgun.net ([198.61.254.9]:61011 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351047AbhKZLoU (ORCPT
+        id S234554AbhKZMSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 07:18:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229721AbhKZMQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 06:44:20 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1637926867; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=/ZEuKj4bQJYJW9WhSqQR5z/eUKnybN7H2nOzwjPZXXs=; b=p0grr+mlFtx0TeGCoULyfq+mMqWonGrEiuOoE4/uBPY5i3m1XftWvEbDlzs4GBcDcR7mIqG/
- 6BPDW9zsg7C8TKTUB7xFSQAdOdA9DMGI/xDIMWMK3RQuhA49xYicZN0nKP0RS4+1fCRNbzTQ
- qQu78JX5Lr/Zxbq+ybsdR/+YHlo=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 61a0c7d31abc6f02d0e06df6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Nov 2021 11:41:07
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D8310C43618; Fri, 26 Nov 2021 11:41:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.242.143.72] (unknown [202.46.23.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BBA9DC4338F;
-        Fri, 26 Nov 2021 11:40:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org BBA9DC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v5 04/10] ASoC: qcom: Add lpass CPU driver for codec dma
- control
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org,
-        judyhsiao@chromium.org
-Cc:     Venkata Prasad Potturu <potturu@codeaurora.org>
-References: <1637239714-11211-1-git-send-email-srivasam@codeaurora.org>
- <1637239714-11211-5-git-send-email-srivasam@codeaurora.org>
- <03051fc7-5f52-2a09-4136-6a1c717c3e75@linaro.org>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <f880d9e3-62cf-4045-99a0-8baddc0119f4@codeaurora.org>
-Date:   Fri, 26 Nov 2021 17:10:57 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Fri, 26 Nov 2021 07:16:20 -0500
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD005C0698D8
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 03:41:54 -0800 (PST)
+Received: from dslb-178-004-171-146.178.004.pools.vodafone-ip.de ([178.4.171.146] helo=martin-debian-2.paytec.ch)
+        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <martin@kaiser.cx>)
+        id 1mqZbw-0005no-ET; Fri, 26 Nov 2021 12:41:48 +0100
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: [PATCH v2] staging: r8188eu: use a delayed worker for led updates
+Date:   Fri, 26 Nov 2021 12:41:35 +0100
+Message-Id: <20211126114135.18228-1-martin@kaiser.cx>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20211125162513.25039-1-martin@kaiser.cx>
+References: <20211125162513.25039-1-martin@kaiser.cx>
 MIME-Version: 1.0
-In-Reply-To: <03051fc7-5f52-2a09-4136-6a1c717c3e75@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The led layer uses a combination of timer and worker for periodic led
+updates, e.g. for blinking. The reason seems to be that blocking
+operations like a usb read are not allowed in a timer handler.
 
-On 11/23/2021 5:57 PM, Srinivas Kandagatla wrote:
-Thanks for your time Srini!!
->
-> On 18/11/2021 12:48, Srinivasa Rao Mandadapu wrote:
->> Add lpass cpu driver to support audio over codec dma for
->> ADSP bypass usecase.
->>
->> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
->> Co-developed-by: Venkata Prasad Potturu <potturu@codeaurora.org>
->> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
->> ---
->>   sound/soc/qcom/lpass-cdc-dma.c | 195 
->> +++++++++++++++++++++++++++++++++++++++++
->>   sound/soc/qcom/lpass.h         |   1 +
->>   2 files changed, 196 insertions(+)
->>   create mode 100644 sound/soc/qcom/lpass-cdc-dma.c
->>
->> diff --git a/sound/soc/qcom/lpass-cdc-dma.c 
->> b/sound/soc/qcom/lpass-cdc-dma.c
->> new file mode 100644
->> index 0000000..f5bfda9
->> --- /dev/null
->> +++ b/sound/soc/qcom/lpass-cdc-dma.c
->> @@ -0,0 +1,195 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/*
->> + * Copyright (c) 2021 The Linux Foundation. All rights reserved.
->> + *
->> + * lpass-cdc-dma.c -- ALSA SoC WCD -CPU DAI driver for QTi LPASS WCD
->> + */
->> +
->> +#include <linux/clk.h>
->> +#include <linux/module.h>
->> +#include <sound/soc.h>
->> +#include <sound/soc-dai.h>
->> +
->> +#include "lpass-lpaif-reg.h"
->> +#include "lpass.h"
->> +
->> +static void __get_dmactl_handle(struct snd_pcm_substream *substream, 
->> struct snd_soc_dai *dai,
->> +                    struct lpaif_dmactl **dmactl, int *id)
->
-> Please rename this with an lpass prefix, Also indentation looks bit 
-> off here.
-Okay.
->
->> +{
->> +    struct snd_soc_pcm_runtime *soc_runtime = 
->> asoc_substream_to_rtd(substream);
->> +    struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_runtime, 0);
->> +    struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
->> +    struct snd_pcm_runtime *rt = substream->runtime;
->> +    struct lpass_pcm_data *pcm_data = rt->private_data;
->> +    struct lpass_variant *v = drvdata->variant;
->> +    int dir = substream->stream;
->> +    unsigned int dai_id = cpu_dai->driver->id;
->> +
->> +    if (dir == SNDRV_PCM_STREAM_PLAYBACK) {
->> +        *dmactl = drvdata->rxtx_rd_dmactl;
->> +        *id = pcm_data->dma_ch;
->> +    } else {
->> +        if (dai_id == LPASS_CDC_DMA_TX3) {
->> +            *dmactl = drvdata->rxtx_wr_dmactl;
->> +            *id = pcm_data->dma_ch - v->rxtx_wrdma_channel_start;
->> +        } else if (dai_id == LPASS_CDC_DMA_VA_TX0) {
->> +            *dmactl = drvdata->va_wr_dmactl;
->> +            *id = pcm_data->dma_ch - v->va_wrdma_channel_start;
->> +        }
->
-> use switch case here, also something like this makes more sense rather 
-> that just dealing with TX3 and VA TX0
-okay. will change accordingly and add other cdc dma ports.
->
-> switch (dai_id) {
-> case: LPASS_CDC_DMA_RX0 ... LPASS_CDC_DMA_RX8:
->     *dmactl = drvdata->rxtx_wr_dmactl;
->     *id = pcm_data->dma_ch;
->     break;
-> case: LPASS_CDC_DMA_TX0 ... LPASS_CDC_DMA_TX8:
->     *dmactl = drvdata->rxtx_wr_dmactl;
->     *id = pcm_data->dma_ch - v->rxtx_wrdma_channel_start;
->     break;
-> case LPASS_CDC_DMA_VA_TX0 ...  LPASS_CDC_DMA_VA_TX8:
->     *dmactl = drvdata->rxtx_wr_dmactl;
->     *id = pcm_data->dma_ch - v->va_wrdma_channel_start;
->     break;
-> default:
->     dev_err(dev, "Invalid dai id for dma ctl\n");
->     break;
-> }
->
->> +    }
->> +}
->> +
->> +static int __lpass_platform_codec_intf_init(struct snd_soc_dai *dai,
->> +                     struct snd_pcm_substream *substream)
->
-> Indentation is off, I think most of the code has simillar issue.
-Okay. will change in all places.
->
->> +{
->> +    struct snd_soc_pcm_runtime *soc_runtime = 
->> asoc_substream_to_rtd(substream);
->> +    struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(soc_runtime, 0);
->> +    struct lpaif_dmactl *dmactl;
->> +    int dir = substream->stream;
->> +    int ret, id, codec_intf;
->> +    unsigned int dai_id = cpu_dai->driver->id;
->> +
->> +    if (dir == SNDRV_PCM_STREAM_PLAYBACK)
->> +        codec_intf = LPASS_CDC_DMA_RX0_INTERFACE;
->
-> Why are we limiting this to just RX0, it should be trivial to add 
-> support to other RX and TX dais.
->
-> Add a helper to convert the dai ids to interface indexs
-Okay. will change accordingly.
->
->> +    else
->> +        codec_intf = LPASS_CDC_DMA_INTERFACE(dai_id);
->> +
->> +    __get_dmactl_handle(substream, dai, &dmactl, &id);
->
-> We are not checking if dmactl is valid or not, best is to have a error 
-> returned from __get_dmactl_handle() and handle it properly here.
-Okay. will add error handling.
->> +
->> +    ret = regmap_fields_write(dmactl->codec_intf, id, codec_intf);
->> +    if (ret) {
->> +        dev_err(soc_runtime->dev,
-> Why not use a local declare a local dev pointer and use it here, it 
-> will save lines here.
-Okay.
->> +            "error writing to dmactl codec_intf reg field: %d\n", ret);
->> +        return ret;
->> +    }
->> +    ret = regmap_fields_write(dmactl->codec_fs_sel, id, 0x0);
->> +    if (ret) {
->> +        dev_err(soc_runtime->dev,
->> +            "error writing to dmactl codec_fs_sel reg field: %d\n", 
->> ret);
->> +        return ret;
->> +    }
->> +    ret = regmap_fields_write(dmactl->codec_fs_delay, id, 0x0);
->> +    if (ret) {
->> +        dev_err(soc_runtime->dev,
->> +            "error writing to dmactl codec_fs_delay reg field: 
->> %d\n", ret);
->> +        return ret;
->> +    }
->> +    ret = regmap_fields_write(dmactl->codec_pack, id, 0x1);
->> +    if (ret) {
->> +        dev_err(soc_runtime->dev,
->> +            "error writing to dmactl codec_pack reg field: %d\n", ret);
->> +        return ret;
->> +    }
->> +    ret = regmap_fields_write(dmactl->codec_enable, id, 
->> LPAIF_DMACTL_ENABLE_ON);
->> +    if (ret) {
->> +        dev_err(soc_runtime->dev,
->> +            "error writing to dmactl codec_enable reg field: %d\n", 
->> ret);
->> +        return ret;
->> +    }
->> +    return 0;
->> +}
->> +
->> +static int lpass_wcd_daiops_startup(struct snd_pcm_substream 
->> *substream,
->> +        struct snd_soc_dai *dai)
->> +{
->> +    struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
->> +    int ret;
->> +
->> +    ret = clk_bulk_prepare_enable(drvdata->cdc_num_clks, 
->> drvdata->cdc_clks);
->> +    if (ret) {
->> +        dev_err(dai->dev, "error in enabling cdc dma clks: %d\n", ret);
->> +        return ret;
->> +    }
->> +
->> +    return 0;
->
-> may be just do
-> return clk_bulk_prepare_enable(drvdata->cdc_num_clks, drvdata->cdc_clks);
->
-> soc_dai_ret() should print an error if startup fails.
->
-Okay.
->
->
->> +}
->> +
->> +static void lpass_wcd_daiops_shutdown(struct snd_pcm_substream 
->> *substream,
->> +        struct snd_soc_dai *dai)
->> +{
->> +    struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
->> +
->> +    clk_bulk_disable_unprepare(drvdata->cdc_num_clks, 
->> drvdata->cdc_clks);
->> +}
->> +
->> +static int lpass_wcd_daiops_hw_params(struct snd_pcm_substream 
->> *substream,
->> +        struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
->> +{
->> +    struct snd_soc_pcm_runtime *soc_runtime = 
->> asoc_substream_to_rtd(substream);
->> +    struct lpaif_dmactl *dmactl;
->> +    unsigned int ret, regval;
->> +    unsigned int channels = params_channels(params);
->> +    int id;
->> +
->> +    __get_dmactl_handle(substream, dai, &dmactl, &id);
->
-> may be move it after switch case and handle the errors.
-Okay. will move it below.
->> +
->> +    switch (channels) {
->> +    case 1:
->> +        regval = LPASS_CDC_DMA_INTF_ONE_CHANNEL;
->> +        break;
->> +    case 2:
->> +        regval = LPASS_CDC_DMA_INTF_TWO_CHANNEL;
->> +        break;
->> +    case 4:
->> +        regval = LPASS_CDC_DMA_INTF_FOUR_CHANNEL;
->> +        break;
->> +    case 6:
->> +        regval = LPASS_CDC_DMA_INTF_SIX_CHANNEL;
->> +        break;
->> +    case 8:
->> +        regval = LPASS_CDC_DMA_INTF_EIGHT_CHANNEL;
->> +        break;
->> +    default:
->> +        dev_err(soc_runtime->dev, "invalid PCM config\n");
->> +        return -EINVAL;
->> +    }
->> +
->> +    ret = regmap_fields_write(dmactl->codec_channel, id, regval);
->> +    if (ret) {
->> +        dev_err(soc_runtime->dev,
->> +            "error writing to dmactl codec_channel reg field: %d\n", 
->> ret);
->> +        return ret;
->> +    }
->> +    return 0;
->> +}
->> +
->> +static int lpass_wcd_daiops_trigger(struct snd_pcm_substream 
->> *substream,
->> +        int cmd, struct snd_soc_dai *dai)
->> +{
->> +    struct snd_soc_pcm_runtime *soc_runtime = 
->> asoc_substream_to_rtd(substream);
->> +    struct lpaif_dmactl *dmactl;
->> +    int ret = 0, id;
->> +
->> +    __get_dmactl_handle(substream, dai, &dmactl, &id);
->
-> move it inside the case where this is really used.
-Okay.
->
->> +
->> +    switch (cmd) {
->> +    case SNDRV_PCM_TRIGGER_START:
->> +    case SNDRV_PCM_TRIGGER_RESUME:
->> +    case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
->> +        __lpass_platform_codec_intf_init(dai, substream);
->> +        break;
->> +    case SNDRV_PCM_TRIGGER_STOP:
->> +    case SNDRV_PCM_TRIGGER_SUSPEND:
->> +    case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
->> +        ret = regmap_fields_write(dmactl->codec_enable, id, 
->> LPAIF_DMACTL_ENABLE_OFF);
->> +        if (ret) {
->> +            dev_err(soc_runtime->dev,
->> +                "error writing to dmactl codec_enable reg: %d\n", ret);
->> +            return ret;
->> +        }
->> +
->> +        break;
->
-> missing default:
-Okay. will add it.
->
->> +    }
->> +    return ret;
->> +}
->> +
->> +const struct snd_soc_dai_ops asoc_qcom_lpass_wcd_dai_ops = {
->> +    .startup    = lpass_wcd_daiops_startup,
->> +    .shutdown    = lpass_wcd_daiops_shutdown,
->> +    .hw_params    = lpass_wcd_daiops_hw_params,
->> +    .trigger    = lpass_wcd_daiops_trigger,
->> +};
->> +EXPORT_SYMBOL_GPL(asoc_qcom_lpass_wcd_dai_ops);
->> +
->> +MODULE_DESCRIPTION("QTi LPASS CDC DMA Driver");
->> +MODULE_LICENSE("GPL v2");
->
-> use
-> MODULE_LICENSE("GPL");
->
-> more info in ./Documentation/process/license-rules.rst
->
-> --srini
-Okay.
->> diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
->> index b068534..f912425 100644
->> --- a/sound/soc/qcom/lpass.h
->> +++ b/sound/soc/qcom/lpass.h
->> @@ -414,5 +414,6 @@ int asoc_qcom_lpass_cpu_dai_probe(struct 
->> snd_soc_dai *dai);
->>   extern const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops;
->>   int lpass_cpu_pcm_new(struct snd_soc_pcm_runtime *rtd,
->>                   struct snd_soc_dai *dai);
->> +extern const struct snd_soc_dai_ops asoc_qcom_lpass_wcd_dai_ops;
->>     #endif /* __LPASS_H__ */
->>
+Replace the combination of timer and worker with a delayed worker.
+
+Convert the timeout defines from milliseconds to jiffies to make them
+usable as delays for the delayed worker. Shorten the names of the defines
+and rename the work item to make checkpatch happy.
+
+Other layers may call SwLedControlMode1 to update the led state. Such
+an update may result in cancelling the delayed worker. SwLedControlMode1
+might be called in interrupt context, we must use cancel_delayed_work to
+cancel the worker. cancel_delayed_work_sync waits until the worker is
+finished, this is not allowed in interrupt context.
+
+DeInitLed871x is called when the driver is removed or when the system
+goes into standby. We may use cancel_delayed_work_sync here to cancel
+the delayed worker.
+
+Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+---
+v2:
+ - do not block if we cancel a delayed worker in interrupt context
+
+ drivers/staging/r8188eu/core/rtw_led.c    | 106 ++++++++++------------
+ drivers/staging/r8188eu/include/rtw_led.h |  16 ++--
+ 2 files changed, 53 insertions(+), 69 deletions(-)
+
+diff --git a/drivers/staging/r8188eu/core/rtw_led.c b/drivers/staging/r8188eu/core/rtw_led.c
+index ae46fd48f940..1eda366c61aa 100644
+--- a/drivers/staging/r8188eu/core/rtw_led.c
++++ b/drivers/staging/r8188eu/core/rtw_led.c
+@@ -4,20 +4,10 @@
+ #include "../include/drv_types.h"
+ #include "../include/rtw_led.h"
+ 
+-void BlinkTimerCallback(struct timer_list *t)
+-{
+-	struct LED_871x *pLed = from_timer(pLed, t, BlinkTimer);
+-	struct adapter *padapter = pLed->padapter;
+-
+-	if ((padapter->bSurpriseRemoved) || (padapter->bDriverStopped))
+-		return;
+-
+-	schedule_work(&pLed->BlinkWorkItem);
+-}
+-
+ void BlinkWorkItemCallback(struct work_struct *work)
+ {
+-	struct LED_871x *pLed = container_of(work, struct LED_871x, BlinkWorkItem);
++	struct delayed_work *dwork = to_delayed_work(work);
++	struct LED_871x *pLed = container_of(dwork, struct LED_871x, blink_work);
+ 	BlinkHandler(pLed);
+ }
+ 
+@@ -45,14 +35,12 @@ void InitLed871x(struct adapter *padapter, struct LED_871x *pLed, enum LED_PIN_8
+ 
+ 	ResetLedStatus(pLed);
+ 
+-	timer_setup(&pLed->BlinkTimer, BlinkTimerCallback, 0);
+-	INIT_WORK(&pLed->BlinkWorkItem, BlinkWorkItemCallback);
++	INIT_DELAYED_WORK(&pLed->blink_work, BlinkWorkItemCallback);
+ }
+ 
+ void DeInitLed871x(struct LED_871x *pLed)
+ {
+-	cancel_work_sync(&pLed->BlinkWorkItem);
+-	_cancel_timer_ex(&pLed->BlinkTimer);
++	cancel_delayed_work_sync(&pLed->blink_work);
+ 	ResetLedStatus(pLed);
+ }
+ 
+@@ -80,14 +68,14 @@ static void SwLedBlink1(struct LED_871x *pLed)
+ 			pLed->BlinkingLedState = RTW_LED_OFF;
+ 		else
+ 			pLed->BlinkingLedState = RTW_LED_ON;
+-		_set_timer(&pLed->BlinkTimer, LED_BLINK_NO_LINK_INTERVAL_ALPHA);
++		schedule_delayed_work(&pLed->blink_work, LED_BLINK_NO_LINK_INTVL);
+ 		break;
+ 	case LED_BLINK_NORMAL:
+ 		if (pLed->bLedOn)
+ 			pLed->BlinkingLedState = RTW_LED_OFF;
+ 		else
+ 			pLed->BlinkingLedState = RTW_LED_ON;
+-		_set_timer(&pLed->BlinkTimer, LED_BLINK_LINK_INTERVAL_ALPHA);
++		schedule_delayed_work(&pLed->blink_work, LED_BLINK_LINK_INTVL);
+ 		break;
+ 	case LED_BLINK_SCAN:
+ 		pLed->BlinkTimes--;
+@@ -101,7 +89,7 @@ static void SwLedBlink1(struct LED_871x *pLed)
+ 					pLed->BlinkingLedState = RTW_LED_OFF;
+ 				else
+ 					pLed->BlinkingLedState = RTW_LED_ON;
+-				_set_timer(&pLed->BlinkTimer, LED_BLINK_LINK_INTERVAL_ALPHA);
++				schedule_delayed_work(&pLed->blink_work, LED_BLINK_LINK_INTVL);
+ 			} else if (!check_fwstate(pmlmepriv, _FW_LINKED)) {
+ 				pLed->bLedNoLinkBlinkInProgress = true;
+ 				pLed->CurrLedState = LED_BLINK_SLOWLY;
+@@ -109,7 +97,7 @@ static void SwLedBlink1(struct LED_871x *pLed)
+ 					pLed->BlinkingLedState = RTW_LED_OFF;
+ 				else
+ 					pLed->BlinkingLedState = RTW_LED_ON;
+-				_set_timer(&pLed->BlinkTimer, LED_BLINK_NO_LINK_INTERVAL_ALPHA);
++				schedule_delayed_work(&pLed->blink_work, LED_BLINK_NO_LINK_INTVL);
+ 			}
+ 			pLed->bLedScanBlinkInProgress = false;
+ 		} else {
+@@ -117,7 +105,7 @@ static void SwLedBlink1(struct LED_871x *pLed)
+ 				pLed->BlinkingLedState = RTW_LED_OFF;
+ 			else
+ 				pLed->BlinkingLedState = RTW_LED_ON;
+-			_set_timer(&pLed->BlinkTimer, LED_BLINK_SCAN_INTERVAL_ALPHA);
++			schedule_delayed_work(&pLed->blink_work, LED_BLINK_SCAN_INTVL);
+ 		}
+ 		break;
+ 	case LED_BLINK_TXRX:
+@@ -132,7 +120,7 @@ static void SwLedBlink1(struct LED_871x *pLed)
+ 					pLed->BlinkingLedState = RTW_LED_OFF;
+ 				else
+ 					pLed->BlinkingLedState = RTW_LED_ON;
+-				_set_timer(&pLed->BlinkTimer, LED_BLINK_LINK_INTERVAL_ALPHA);
++				schedule_delayed_work(&pLed->blink_work, LED_BLINK_LINK_INTVL);
+ 			} else if (!check_fwstate(pmlmepriv, _FW_LINKED)) {
+ 				pLed->bLedNoLinkBlinkInProgress = true;
+ 				pLed->CurrLedState = LED_BLINK_SLOWLY;
+@@ -140,7 +128,7 @@ static void SwLedBlink1(struct LED_871x *pLed)
+ 					pLed->BlinkingLedState = RTW_LED_OFF;
+ 				else
+ 					pLed->BlinkingLedState = RTW_LED_ON;
+-				_set_timer(&pLed->BlinkTimer, LED_BLINK_NO_LINK_INTERVAL_ALPHA);
++				schedule_delayed_work(&pLed->blink_work, LED_BLINK_NO_LINK_INTVL);
+ 			}
+ 			pLed->bLedBlinkInProgress = false;
+ 		} else {
+@@ -148,7 +136,7 @@ static void SwLedBlink1(struct LED_871x *pLed)
+ 				pLed->BlinkingLedState = RTW_LED_OFF;
+ 			else
+ 				pLed->BlinkingLedState = RTW_LED_ON;
+-			_set_timer(&pLed->BlinkTimer, LED_BLINK_FASTER_INTERVAL_ALPHA);
++			schedule_delayed_work(&pLed->blink_work, LED_BLINK_FASTER_INTVL);
+ 		}
+ 		break;
+ 	case LED_BLINK_WPS:
+@@ -156,7 +144,7 @@ static void SwLedBlink1(struct LED_871x *pLed)
+ 			pLed->BlinkingLedState = RTW_LED_OFF;
+ 		else
+ 			pLed->BlinkingLedState = RTW_LED_ON;
+-		_set_timer(&pLed->BlinkTimer, LED_BLINK_SCAN_INTERVAL_ALPHA);
++		schedule_delayed_work(&pLed->blink_work, LED_BLINK_SCAN_INTVL);
+ 		break;
+ 	case LED_BLINK_WPS_STOP:	/* WPS success */
+ 		if (pLed->BlinkingLedState == RTW_LED_ON)
+@@ -171,12 +159,12 @@ static void SwLedBlink1(struct LED_871x *pLed)
+ 				pLed->BlinkingLedState = RTW_LED_OFF;
+ 			else
+ 				pLed->BlinkingLedState = RTW_LED_ON;
+-			_set_timer(&pLed->BlinkTimer, LED_BLINK_LINK_INTERVAL_ALPHA);
++			schedule_delayed_work(&pLed->blink_work, LED_BLINK_LINK_INTVL);
+ 
+ 			pLed->bLedWPSBlinkInProgress = false;
+ 		} else {
+ 			pLed->BlinkingLedState = RTW_LED_OFF;
+-			_set_timer(&pLed->BlinkTimer, LED_BLINK_WPS_SUCESS_INTERVAL_ALPHA);
++			schedule_delayed_work(&pLed->blink_work, LED_BLINK_WPS_SUCESS_INTVL);
+ 		}
+ 		break;
+ 	default:
+@@ -198,11 +186,11 @@ static void SwLedControlMode1(struct adapter *padapter, enum LED_CTL_MODE LedAct
+ 			if (pLed->CurrLedState == LED_BLINK_SCAN || IS_LED_WPS_BLINKING(pLed))
+ 				return;
+ 			if (pLed->bLedLinkBlinkInProgress) {
+-				_cancel_timer_ex(&pLed->BlinkTimer);
++				cancel_delayed_work(&pLed->blink_work);
+ 				pLed->bLedLinkBlinkInProgress = false;
+ 			}
+ 			if (pLed->bLedBlinkInProgress) {
+-				_cancel_timer_ex(&pLed->BlinkTimer);
++				cancel_delayed_work(&pLed->blink_work);
+ 				pLed->bLedBlinkInProgress = false;
+ 			}
+ 
+@@ -212,7 +200,7 @@ static void SwLedControlMode1(struct adapter *padapter, enum LED_CTL_MODE LedAct
+ 				pLed->BlinkingLedState = RTW_LED_OFF;
+ 			else
+ 				pLed->BlinkingLedState = RTW_LED_ON;
+-			_set_timer(&pLed->BlinkTimer, LED_BLINK_NO_LINK_INTERVAL_ALPHA);
++			schedule_delayed_work(&pLed->blink_work, LED_BLINK_NO_LINK_INTVL);
+ 		}
+ 		break;
+ 	case LED_CTL_LINK:
+@@ -220,11 +208,11 @@ static void SwLedControlMode1(struct adapter *padapter, enum LED_CTL_MODE LedAct
+ 			if (pLed->CurrLedState == LED_BLINK_SCAN || IS_LED_WPS_BLINKING(pLed))
+ 				return;
+ 			if (pLed->bLedNoLinkBlinkInProgress) {
+-				_cancel_timer_ex(&pLed->BlinkTimer);
++				cancel_delayed_work(&pLed->blink_work);
+ 				pLed->bLedNoLinkBlinkInProgress = false;
+ 			}
+ 			if (pLed->bLedBlinkInProgress) {
+-				_cancel_timer_ex(&pLed->BlinkTimer);
++				cancel_delayed_work(&pLed->blink_work);
+ 				pLed->bLedBlinkInProgress = false;
+ 			}
+ 			pLed->bLedLinkBlinkInProgress = true;
+@@ -233,7 +221,7 @@ static void SwLedControlMode1(struct adapter *padapter, enum LED_CTL_MODE LedAct
+ 				pLed->BlinkingLedState = RTW_LED_OFF;
+ 			else
+ 				pLed->BlinkingLedState = RTW_LED_ON;
+-			_set_timer(&pLed->BlinkTimer, LED_BLINK_LINK_INTERVAL_ALPHA);
++			schedule_delayed_work(&pLed->blink_work, LED_BLINK_LINK_INTVL);
+ 		}
+ 		break;
+ 	case LED_CTL_SITE_SURVEY:
+@@ -243,15 +231,15 @@ static void SwLedControlMode1(struct adapter *padapter, enum LED_CTL_MODE LedAct
+ 			if (IS_LED_WPS_BLINKING(pLed))
+ 				return;
+ 			if (pLed->bLedNoLinkBlinkInProgress) {
+-				_cancel_timer_ex(&pLed->BlinkTimer);
++				cancel_delayed_work(&pLed->blink_work);
+ 				pLed->bLedNoLinkBlinkInProgress = false;
+ 			}
+ 			if (pLed->bLedLinkBlinkInProgress) {
+-				_cancel_timer_ex(&pLed->BlinkTimer);
++				cancel_delayed_work(&pLed->blink_work);
+ 				pLed->bLedLinkBlinkInProgress = false;
+ 			}
+ 			if (pLed->bLedBlinkInProgress) {
+-				_cancel_timer_ex(&pLed->BlinkTimer);
++				cancel_delayed_work(&pLed->blink_work);
+ 				pLed->bLedBlinkInProgress = false;
+ 			}
+ 			pLed->bLedScanBlinkInProgress = true;
+@@ -261,7 +249,7 @@ static void SwLedControlMode1(struct adapter *padapter, enum LED_CTL_MODE LedAct
+ 				pLed->BlinkingLedState = RTW_LED_OFF;
+ 			else
+ 				pLed->BlinkingLedState = RTW_LED_ON;
+-			_set_timer(&pLed->BlinkTimer, LED_BLINK_SCAN_INTERVAL_ALPHA);
++			schedule_delayed_work(&pLed->blink_work, LED_BLINK_SCAN_INTVL);
+ 		 }
+ 		break;
+ 	case LED_CTL_TX:
+@@ -270,11 +258,11 @@ static void SwLedControlMode1(struct adapter *padapter, enum LED_CTL_MODE LedAct
+ 			if (pLed->CurrLedState == LED_BLINK_SCAN || IS_LED_WPS_BLINKING(pLed))
+ 				return;
+ 			if (pLed->bLedNoLinkBlinkInProgress) {
+-				_cancel_timer_ex(&pLed->BlinkTimer);
++				cancel_delayed_work(&pLed->blink_work);
+ 				pLed->bLedNoLinkBlinkInProgress = false;
+ 			}
+ 			if (pLed->bLedLinkBlinkInProgress) {
+-				_cancel_timer_ex(&pLed->BlinkTimer);
++				cancel_delayed_work(&pLed->blink_work);
+ 				pLed->bLedLinkBlinkInProgress = false;
+ 			}
+ 			pLed->bLedBlinkInProgress = true;
+@@ -284,26 +272,26 @@ static void SwLedControlMode1(struct adapter *padapter, enum LED_CTL_MODE LedAct
+ 				pLed->BlinkingLedState = RTW_LED_OFF;
+ 			else
+ 				pLed->BlinkingLedState = RTW_LED_ON;
+-			_set_timer(&pLed->BlinkTimer, LED_BLINK_FASTER_INTERVAL_ALPHA);
++			schedule_delayed_work(&pLed->blink_work, LED_BLINK_FASTER_INTVL);
+ 		}
+ 		break;
+ 	case LED_CTL_START_WPS: /* wait until xinpin finish */
+ 	case LED_CTL_START_WPS_BOTTON:
+ 		 if (!pLed->bLedWPSBlinkInProgress) {
+ 			if (pLed->bLedNoLinkBlinkInProgress) {
+-				_cancel_timer_ex(&pLed->BlinkTimer);
++				cancel_delayed_work(&pLed->blink_work);
+ 				pLed->bLedNoLinkBlinkInProgress = false;
+ 			}
+ 			if (pLed->bLedLinkBlinkInProgress) {
+-				_cancel_timer_ex(&pLed->BlinkTimer);
++				cancel_delayed_work(&pLed->blink_work);
+ 				pLed->bLedLinkBlinkInProgress = false;
+ 			}
+ 			if (pLed->bLedBlinkInProgress) {
+-				_cancel_timer_ex(&pLed->BlinkTimer);
++				cancel_delayed_work(&pLed->blink_work);
+ 				pLed->bLedBlinkInProgress = false;
+ 			}
+ 			if (pLed->bLedScanBlinkInProgress) {
+-				_cancel_timer_ex(&pLed->BlinkTimer);
++				cancel_delayed_work(&pLed->blink_work);
+ 				pLed->bLedScanBlinkInProgress = false;
+ 			}
+ 			pLed->bLedWPSBlinkInProgress = true;
+@@ -312,42 +300,42 @@ static void SwLedControlMode1(struct adapter *padapter, enum LED_CTL_MODE LedAct
+ 				pLed->BlinkingLedState = RTW_LED_OFF;
+ 			else
+ 				pLed->BlinkingLedState = RTW_LED_ON;
+-			_set_timer(&pLed->BlinkTimer, LED_BLINK_SCAN_INTERVAL_ALPHA);
++			schedule_delayed_work(&pLed->blink_work, LED_BLINK_SCAN_INTVL);
+ 		 }
+ 		break;
+ 	case LED_CTL_STOP_WPS:
+ 		if (pLed->bLedNoLinkBlinkInProgress) {
+-			_cancel_timer_ex(&pLed->BlinkTimer);
++			cancel_delayed_work(&pLed->blink_work);
+ 			pLed->bLedNoLinkBlinkInProgress = false;
+ 		}
+ 		if (pLed->bLedLinkBlinkInProgress) {
+-			_cancel_timer_ex(&pLed->BlinkTimer);
++			cancel_delayed_work(&pLed->blink_work);
+ 			pLed->bLedLinkBlinkInProgress = false;
+ 		}
+ 		if (pLed->bLedBlinkInProgress) {
+-			_cancel_timer_ex(&pLed->BlinkTimer);
++			cancel_delayed_work(&pLed->blink_work);
+ 			pLed->bLedBlinkInProgress = false;
+ 		}
+ 		if (pLed->bLedScanBlinkInProgress) {
+-			_cancel_timer_ex(&pLed->BlinkTimer);
++			cancel_delayed_work(&pLed->blink_work);
+ 			pLed->bLedScanBlinkInProgress = false;
+ 		}
+ 		if (pLed->bLedWPSBlinkInProgress)
+-			_cancel_timer_ex(&pLed->BlinkTimer);
++			cancel_delayed_work(&pLed->blink_work);
+ 		else
+ 			pLed->bLedWPSBlinkInProgress = true;
+ 		pLed->CurrLedState = LED_BLINK_WPS_STOP;
+ 		if (pLed->bLedOn) {
+ 			pLed->BlinkingLedState = RTW_LED_OFF;
+-			_set_timer(&pLed->BlinkTimer, LED_BLINK_WPS_SUCESS_INTERVAL_ALPHA);
++			schedule_delayed_work(&pLed->blink_work, LED_BLINK_WPS_SUCESS_INTVL);
+ 		} else {
+ 			pLed->BlinkingLedState = RTW_LED_ON;
+-			_set_timer(&pLed->BlinkTimer, 0);
++			schedule_delayed_work(&pLed->blink_work, 0);
+ 		}
+ 		break;
+ 	case LED_CTL_STOP_WPS_FAIL:
+ 		if (pLed->bLedWPSBlinkInProgress) {
+-			_cancel_timer_ex(&pLed->BlinkTimer);
++			cancel_delayed_work(&pLed->blink_work);
+ 			pLed->bLedWPSBlinkInProgress = false;
+ 		}
+ 		pLed->bLedNoLinkBlinkInProgress = true;
+@@ -356,29 +344,29 @@ static void SwLedControlMode1(struct adapter *padapter, enum LED_CTL_MODE LedAct
+ 			pLed->BlinkingLedState = RTW_LED_OFF;
+ 		else
+ 			pLed->BlinkingLedState = RTW_LED_ON;
+-		_set_timer(&pLed->BlinkTimer, LED_BLINK_NO_LINK_INTERVAL_ALPHA);
++		schedule_delayed_work(&pLed->blink_work, LED_BLINK_NO_LINK_INTVL);
+ 		break;
+ 	case LED_CTL_POWER_OFF:
+ 		pLed->CurrLedState = RTW_LED_OFF;
+ 		pLed->BlinkingLedState = RTW_LED_OFF;
+ 		if (pLed->bLedNoLinkBlinkInProgress) {
+-			_cancel_timer_ex(&pLed->BlinkTimer);
++			cancel_delayed_work(&pLed->blink_work);
+ 			pLed->bLedNoLinkBlinkInProgress = false;
+ 		}
+ 		if (pLed->bLedLinkBlinkInProgress) {
+-			_cancel_timer_ex(&pLed->BlinkTimer);
++			cancel_delayed_work(&pLed->blink_work);
+ 			pLed->bLedLinkBlinkInProgress = false;
+ 		}
+ 		if (pLed->bLedBlinkInProgress) {
+-			_cancel_timer_ex(&pLed->BlinkTimer);
++			cancel_delayed_work(&pLed->blink_work);
+ 			pLed->bLedBlinkInProgress = false;
+ 		}
+ 		if (pLed->bLedWPSBlinkInProgress) {
+-			_cancel_timer_ex(&pLed->BlinkTimer);
++			cancel_delayed_work(&pLed->blink_work);
+ 			pLed->bLedWPSBlinkInProgress = false;
+ 		}
+ 		if (pLed->bLedScanBlinkInProgress) {
+-			_cancel_timer_ex(&pLed->BlinkTimer);
++			cancel_delayed_work(&pLed->blink_work);
+ 			pLed->bLedScanBlinkInProgress = false;
+ 		}
+ 		SwLedOff(padapter, pLed);
+diff --git a/drivers/staging/r8188eu/include/rtw_led.h b/drivers/staging/r8188eu/include/rtw_led.h
+index c035fe267635..7e901aae92fb 100644
+--- a/drivers/staging/r8188eu/include/rtw_led.h
++++ b/drivers/staging/r8188eu/include/rtw_led.h
+@@ -13,11 +13,11 @@
+ #define LED_BLINK_SLOWLY_INTERVAL		200
+ #define LED_BLINK_LONG_INTERVAL			400
+ 
+-#define LED_BLINK_NO_LINK_INTERVAL_ALPHA	1000
+-#define LED_BLINK_LINK_INTERVAL_ALPHA		500	/* 500 */
+-#define LED_BLINK_SCAN_INTERVAL_ALPHA		180	/* 150 */
+-#define LED_BLINK_FASTER_INTERVAL_ALPHA		50
+-#define LED_BLINK_WPS_SUCESS_INTERVAL_ALPHA	5000
++#define LED_BLINK_NO_LINK_INTVL			msecs_to_jiffies(1000)
++#define LED_BLINK_LINK_INTVL			msecs_to_jiffies(500)
++#define LED_BLINK_SCAN_INTVL			msecs_to_jiffies(180)
++#define LED_BLINK_FASTER_INTVL			msecs_to_jiffies(50)
++#define LED_BLINK_WPS_SUCESS_INTVL		msecs_to_jiffies(5000)
+ 
+ #define LED_BLINK_NORMAL_INTERVAL_NETTRONIX	100
+ #define LED_BLINK_SLOWLY_INTERVAL_NETTRONIX	2000
+@@ -105,15 +105,12 @@ struct LED_871x {
+ 
+ 	u32 BlinkTimes; /*  Number of times to toggle led state for blinking. */
+ 
+-	struct timer_list BlinkTimer; /*  Timer object for led blinking. */
+-
+ 	/*  ALPHA, added by chiyoko, 20090106 */
+ 	u8 bLedNoLinkBlinkInProgress;
+ 	u8 bLedLinkBlinkInProgress;
+ 	u8 bLedStartToLinkBlinkInProgress;
+ 	u8 bLedScanBlinkInProgress;
+-	struct work_struct BlinkWorkItem; /* Workitem used by BlinkTimer to
+-					   * manipulate H/W to blink LED. */
++	struct delayed_work blink_work;
+ };
+ 
+ #define IS_LED_WPS_BLINKING(_LED_871x)					\
+@@ -143,7 +140,6 @@ struct led_priv{
+ 			(adapt)->ledpriv.LedControlHandler((adapt), (action)); \
+ 	} while (0)
+ 
+-void BlinkTimerCallback(struct timer_list *t);
+ void BlinkWorkItemCallback(struct work_struct *work);
+ 
+ void ResetLedStatus(struct LED_871x * pLed);
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.20.1
 
