@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6DD345EF62
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DEA545EF66
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 14:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242814AbhKZNtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 08:49:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54056 "EHLO
+        id S1377552AbhKZNuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 08:50:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240968AbhKZNrp (ORCPT
+        with ESMTP id S1377600AbhKZNsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 08:47:45 -0500
+        Fri, 26 Nov 2021 08:48:17 -0500
 Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C89C0619D6
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24ABC0619D7
         for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 05:04:22 -0800 (PST)
 Received: from dslb-178-004-171-146.178.004.pools.vodafone-ip.de ([178.4.171.146] helo=martin-debian-2.paytec.ch)
         by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.89)
         (envelope-from <martin@kaiser.cx>)
-        id 1mqatm-0006Hl-BI; Fri, 26 Nov 2021 14:04:18 +0100
+        id 1mqatn-0006Hl-CD; Fri, 26 Nov 2021 14:04:19 +0100
 From:   Martin Kaiser <martin@kaiser.cx>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
@@ -27,9 +27,9 @@ Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
         Michael Straube <straube.linux@gmail.com>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH v2 1/4] staging: r8188eu: remove pm_netdev_open
-Date:   Fri, 26 Nov 2021 14:03:57 +0100
-Message-Id: <20211126130400.26151-2-martin@kaiser.cx>
+Subject: [PATCH v2 2/4] staging: r8188eu: remove _ps_open_RF
+Date:   Fri, 26 Nov 2021 14:03:58 +0100
+Message-Id: <20211126130400.26151-3-martin@kaiser.cx>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20211126130400.26151-1-martin@kaiser.cx>
 References: <20211125164745.8188-1-martin@kaiser.cx>
@@ -40,69 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only caller of pm_netdev_open sets bnormal to true. In this case,
-pm_netdev_open just calls netdev_open.
+The _ps_open_RF function is empty. Remove it.
 
-Remove pm_netdev_open and call netdev_open directly.
-
-Reviewed-by: Michael Straube <straube.linux@gmail.com>
 Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 ---
 v2:
- - add Reviewed-by
+ - remove _ps_open_RF prototype
 
- drivers/staging/r8188eu/include/usb_osintf.h |  1 -
- drivers/staging/r8188eu/os_dep/os_intfs.c    | 11 -----------
- drivers/staging/r8188eu/os_dep/usb_intf.c    |  2 +-
- 3 files changed, 1 insertion(+), 13 deletions(-)
+ drivers/staging/r8188eu/hal/usb_halinit.c      | 8 --------
+ drivers/staging/r8188eu/include/rtl8188e_hal.h | 1 -
+ 2 files changed, 9 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/include/usb_osintf.h b/drivers/staging/r8188eu/include/usb_osintf.h
-index 624298b4bd0b..3e777ca52745 100644
---- a/drivers/staging/r8188eu/include/usb_osintf.h
-+++ b/drivers/staging/r8188eu/include/usb_osintf.h
-@@ -16,7 +16,6 @@ extern int rtw_mc2u_disable;
- u8 usbvendorrequest(struct dvobj_priv *pdvobjpriv, enum bt_usb_request brequest,
- 		    enum rt_usb_wvalue wvalue, u8 windex, void *data,
- 		    u8 datalen, u8 isdirectionin);
--int pm_netdev_open(struct net_device *pnetdev, u8 bnormal);
- void netdev_br_init(struct net_device *netdev);
- void dhcp_flag_bcast(struct adapter *priv, struct sk_buff *skb);
- void *scdb_findEntry(struct adapter *priv, unsigned char *ipAddr);
-diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
-index 5a5f182d30c9..397981bc9a62 100644
---- a/drivers/staging/r8188eu/os_dep/os_intfs.c
-+++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
-@@ -760,17 +760,6 @@ void rtw_ips_dev_unload(struct adapter *padapter)
- 		rtw_hal_deinit(padapter);
+diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
+index 04518e9838ea..995ea4a55435 100644
+--- a/drivers/staging/r8188eu/hal/usb_halinit.c
++++ b/drivers/staging/r8188eu/hal/usb_halinit.c
+@@ -615,8 +615,6 @@ u32 rtl8188eu_hal_init(struct adapter *Adapter)
+ 	HAL_INIT_PROFILE_TAG(HAL_INIT_STAGES_BEGIN);
+ 
+ 	if (Adapter->pwrctrlpriv.bkeepfwalive) {
+-		_ps_open_RF(Adapter);
+-
+ 		if (haldata->odmpriv.RFCalibrateInfo.bIQKInitialized) {
+ 			PHY_IQCalibrate_8188E(Adapter, true);
+ 		} else {
+@@ -852,12 +850,6 @@ u32 rtl8188eu_hal_init(struct adapter *Adapter)
+ 	return status;
  }
  
--int pm_netdev_open(struct net_device *pnetdev, u8 bnormal)
+-void _ps_open_RF(struct adapter *adapt)
 -{
--	int status;
--
--	if (bnormal)
--		status = netdev_open(pnetdev);
--	else
--		status =  (_SUCCESS == ips_netdrv_open((struct adapter *)rtw_netdev_priv(pnetdev))) ? (0) : (-1);
--	return status;
+-	/* here call with bRegSSPwrLvl 1, bRegSSPwrLvl 2 needs to be verified */
+-	/* phy_SsPwrSwitch92CU(adapt, rf_on, 1); */
 -}
 -
- int netdev_close(struct net_device *pnetdev)
+ static void _ps_close_RF(struct adapter *adapt)
  {
- 	struct adapter *padapter = (struct adapter *)rtw_netdev_priv(pnetdev);
-diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
-index ba74cfc9a523..e66046c82973 100644
---- a/drivers/staging/r8188eu/os_dep/usb_intf.c
-+++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
-@@ -297,7 +297,7 @@ static int rtw_resume(struct usb_interface *pusb_intf)
- 		pwrpriv->bkeepfwalive = false;
+ 	/* here call with bRegSSPwrLvl 1, bRegSSPwrLvl 2 needs to be verified */
+diff --git a/drivers/staging/r8188eu/include/rtl8188e_hal.h b/drivers/staging/r8188eu/include/rtl8188e_hal.h
+index 5848f1d4191a..176b82219459 100644
+--- a/drivers/staging/r8188eu/include/rtl8188e_hal.h
++++ b/drivers/staging/r8188eu/include/rtl8188e_hal.h
+@@ -331,6 +331,5 @@ void rtl8188e_read_chip_version(struct adapter *padapter);
  
- 	DBG_88E("bkeepfwalive(%x)\n", pwrpriv->bkeepfwalive);
--	if (pm_netdev_open(pnetdev, true) != 0) {
-+	if (netdev_open(pnetdev) != 0) {
- 		mutex_unlock(&pwrpriv->lock);
- 		goto exit;
- 	}
+ s32 rtl8188e_iol_efuse_patch(struct adapter *padapter);
+ void rtw_cancel_all_timer(struct adapter *padapter);
+-void _ps_open_RF(struct adapter *adapt);
+ 
+ #endif /* __RTL8188E_HAL_H__ */
 -- 
 2.20.1
 
