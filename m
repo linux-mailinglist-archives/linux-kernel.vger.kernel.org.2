@@ -2,74 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49AFB45F646
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 22:20:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A97145F64A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 22:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242274AbhKZVYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 16:24:08 -0500
-Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:56430 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242899AbhKZVV6 (ORCPT
+        id S243070AbhKZVZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 16:25:23 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:49532 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244403AbhKZVXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 16:21:58 -0500
-Received: from pop-os.home ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id qic7mXi0d1UGBqicGm0pwP; Fri, 26 Nov 2021 22:18:44 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Fri, 26 Nov 2021 22:18:44 +0100
-X-ME-IP: 86.243.171.122
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     john.garry@huawei.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 3/3] scsi: hisi_sas: Use non-atomic bitmap functions when possible
-Date:   Fri, 26 Nov 2021 22:18:26 +0100
-Message-Id: <8ee33e463523db080e6a2c06f332e47abb69359b.1637961191.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <4afa3f71e66c941c660627c7f5b0223b51968ebb.1637961191.git.christophe.jaillet@wanadoo.fr>
-References: <4afa3f71e66c941c660627c7f5b0223b51968ebb.1637961191.git.christophe.jaillet@wanadoo.fr>
+        Fri, 26 Nov 2021 16:23:22 -0500
+Received: from mail.kernel.org (unknown [198.145.29.99])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3F50A6237E;
+        Fri, 26 Nov 2021 21:20:09 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id ACE6F6008E;
+        Fri, 26 Nov 2021 21:20:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637961608;
+        bh=moi86rKF1ITSxySSx4zc0RuevUbXQCMXQfYVDU/TYEM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=bN1YktrI6PDk/jFYOjBQyVGkjnr31bSYzdmY9IiSPBXR0HeldaYZMU2UCOkQKj0+w
+         ql6YSdfjYRHS0HpWQlgBxX+FfA5pZX0gonPVbCqQX7aRFOKbm7c2jKqqe5ddyetkj6
+         g+PeY4Nw2K1+egXuC4DAyu/1HJ+KbwCFbJHQebRM9Nyjvnl3LsIQHdVdyfGGNfkZJS
+         FGxqR6QNlVuQGeWywYnP/n/yVuUf2mr5pzmpjqZJDODPTQH5TTolHdibdJIOLO2eOx
+         u1xDoqi1NC3TIb6YQMCFw38y4ySKOx7lHaE+/skVAK76xGbdh2XqC4AsTVMPegNYPs
+         WW+F3GbqvWdhQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A332360A6C;
+        Fri, 26 Nov 2021 21:20:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2] bpf,
+ mips: Fix build errors about __NR_bpf undeclared
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163796160866.30899.10399099274793745280.git-patchwork-notify@kernel.org>
+Date:   Fri, 26 Nov 2021 21:20:08 +0000
+References: <1637804167-8323-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1637804167-8323-1-git-send-email-yangtiezhu@loongson.cn>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        lixuefeng@loongson.cn, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All uses of the 'hisi_hba->slot_index_tags' bitmap are protected with the
-'hisi_hba->lock' spinlock.
+Hello:
 
-So prefer the non-atomic '__[set|clear]_bit()' functions to save a few
-cycles.
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/scsi/hisi_sas/hisi_sas_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Thu, 25 Nov 2021 09:36:07 +0800 you wrote:
+> Add the __NR_bpf definitions to fix the following build errors for mips.
+> 
+>  $ cd tools/bpf/bpftool
+>  $ make
+>  [...]
+>  bpf.c:54:4: error: #error __NR_bpf not defined. libbpf does not support your arch.
+>   #  error __NR_bpf not defined. libbpf does not support your arch.
+>      ^~~~~
+>  bpf.c: In function ‘sys_bpf’:
+>  bpf.c:66:17: error: ‘__NR_bpf’ undeclared (first use in this function); did you mean ‘__NR_brk’?
+>    return syscall(__NR_bpf, cmd, attr, size);
+>                   ^~~~~~~~
+>                   __NR_brk
+>  [...]
+>  In file included from gen_loader.c:15:0:
+>  skel_internal.h: In function ‘skel_sys_bpf’:
+>  skel_internal.h:53:17: error: ‘__NR_bpf’ undeclared (first use in this function); did you mean ‘__NR_brk’?
+>    return syscall(__NR_bpf, cmd, attr, size);
+>                   ^~~~~~~~
+>                   __NR_brk
+> 
+> [...]
 
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c b/drivers/scsi/hisi_sas/hisi_sas_main.c
-index d4f5d093bde4..889c36fa9309 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_main.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
-@@ -158,7 +158,7 @@ static void hisi_sas_slot_index_clear(struct hisi_hba *hisi_hba, int slot_idx)
- {
- 	void *bitmap = hisi_hba->slot_index_tags;
- 
--	clear_bit(slot_idx, bitmap);
-+	__clear_bit(slot_idx, bitmap);
- }
- 
- static void hisi_sas_slot_index_free(struct hisi_hba *hisi_hba, int slot_idx)
-@@ -175,7 +175,7 @@ static void hisi_sas_slot_index_set(struct hisi_hba *hisi_hba, int slot_idx)
- {
- 	void *bitmap = hisi_hba->slot_index_tags;
- 
--	set_bit(slot_idx, bitmap);
-+	__set_bit(slot_idx, bitmap);
- }
- 
- static int hisi_sas_slot_index_alloc(struct hisi_hba *hisi_hba,
+Here is the summary with links:
+  - [bpf-next,v2] bpf, mips: Fix build errors about __NR_bpf undeclared
+    https://git.kernel.org/bpf/bpf-next/c/e32cb12ff52a
+
+You are awesome, thank you!
 -- 
-2.30.2
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
