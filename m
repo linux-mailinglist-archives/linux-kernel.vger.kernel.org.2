@@ -2,92 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BCC645E8FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:08:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF7145E8FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348000AbhKZILO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 03:11:14 -0500
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:30337 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243068AbhKZIJN (ORCPT
+        id S1352878AbhKZILT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 03:11:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:44426 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1346253AbhKZIJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 03:09:13 -0500
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 1AQ85ReW007942;
-        Fri, 26 Nov 2021 17:05:27 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 1AQ85ReW007942
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1637913927;
-        bh=xV82un84SA1pxZd0d3WZun40uvU7CdhSQtixOQLcY+k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RRffPrU5OUtNbCIhpEglYnf1uYwVq2PWqpM6mtVWL/PsFha9TMhaqbDC7UZw0ATWZ
-         bfVAikEe9FC0kyTfOev/JxpgixHDoFvj9CHvWeBuDVN2j2liIoycW7v0kh3PM8NQ2R
-         BqfPxiExJA0z0dPMl3C0W5V/l311t3xSM2hY/a2wyk4zmetWvf2VxE/2gA5dzOTb0R
-         vUD2qtiY+070CMr3puRasES1JJoiyFHrnRjXZFjWbQSYAJmKsMJAQYFBzmo6fGc3hn
-         eFCQyFvNyIPNP+Vbyy6X8VL9xIA1iQfoJu5jqyC44vACRva55wMAypeVTVG2fz2bwf
-         ETPBZVH6D2l+g==
-X-Nifty-SrcIP: [209.85.215.180]
-Received: by mail-pg1-f180.google.com with SMTP id s137so7513774pgs.5;
-        Fri, 26 Nov 2021 00:05:27 -0800 (PST)
-X-Gm-Message-State: AOAM532Ynfwa0J/JOw2lc0fVIJh2Mh525in6WStHRscqdLf9fhyrlXJZ
-        TXOKBBAyTBTFG1AKcbTccvYvzZZx0Rk/82HvsG8=
-X-Google-Smtp-Source: ABdhPJxHVJf+5wo0HH7EZXOME6q3X45+vNx8ZTz7oRjJGVwlHhzJmMt/tNRSKQI2E9RWCFfk6eeISOKMqlI7CmaFm8o=
-X-Received: by 2002:a05:6a00:807:b0:49f:d6ab:590c with SMTP id
- m7-20020a056a00080700b0049fd6ab590cmr19717957pfk.32.1637913926600; Fri, 26
- Nov 2021 00:05:26 -0800 (PST)
+        Fri, 26 Nov 2021 03:09:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637913965;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=M//eB/FJBtYBGKBx+oH9sHQCtuYI5BupCwuN5dEn5+M=;
+        b=C1qF71Pai+MwzHnnRjXY9xklTdKjlDchYX16s5PvBhQRWeMbq8kEGHFkQaurqpn8vinfNq
+        ktU3WCo6+KjD+SLI1MW/yP6+bEQCztIWo8YFbnQ0juNGqaRnJnWCwgc3/2/9d3PVsvY/rB
+        +8lmrHoLRIsWAvjXKsZOC6WhKtuq9Cw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-563-X654_A8nOrSIgsG3Y3glDA-1; Fri, 26 Nov 2021 03:06:01 -0500
+X-MC-Unique: X654_A8nOrSIgsG3Y3glDA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E428781CCB4;
+        Fri, 26 Nov 2021 08:05:59 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 54B46196F8;
+        Fri, 26 Nov 2021 08:05:57 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20211125192727.74360e85@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20211125192727.74360e85@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <163776465314.1844202.9057900281265187616.stgit@warthog.procyon.org.uk>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     dhowells@redhat.com, Eiichi Tsukata <eiichi.tsukata@nutanix.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        linux-afs@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] rxrpc: Fix rxrpc_peer leak in rxrpc_look_up_bundle()
 MIME-Version: 1.0
-References: <CGME20211125162141eucas1p288a33941afc09ce74bd59368495c8581@eucas1p2.samsung.com>
- <20211125162055.3583991-1-l.stelmach@samsung.com>
-In-Reply-To: <20211125162055.3583991-1-l.stelmach@samsung.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 26 Nov 2021 17:04:49 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARUqA-6tkQXFkvLQXvd4Hc=2Vu1ueoFC8gS6A3qQG1UiQ@mail.gmail.com>
-Message-ID: <CAK7LNARUqA-6tkQXFkvLQXvd4Hc=2Vu1ueoFC8gS6A3qQG1UiQ@mail.gmail.com>
-Subject: Re: [PATCH] streamline_config.pl: show the full Kconfig name
-To:     =?UTF-8?Q?=C5=81ukasz_Stelmach?= <l.stelmach@samsung.com>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2790422.1637913956.1@warthog.procyon.org.uk>
+Date:   Fri, 26 Nov 2021 08:05:56 +0000
+Message-ID: <2790423.1637913956@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 1:21 AM =C5=81ukasz Stelmach <l.stelmach@samsung.co=
-m> wrote:
->
-> Show the very same file name that was passed to open()
-> in case the operation failed.
->
-> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
-> ---
+Jakub Kicinski <kuba@kernel.org> wrote:
 
-Applied to linux-kbuild. Thanks.
+> Are these supposed to go to net? They are addressed To: the author.
 
+I'm hoping the author rechecks/reviews them.  I commented on his original
+submission that I thought they could be done slightly differently.
 
->  scripts/kconfig/streamline_config.pl | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/scripts/kconfig/streamline_config.pl b/scripts/kconfig/strea=
-mline_config.pl
-> index 1a5fea0519eb..3387ad7508f7 100755
-> --- a/scripts/kconfig/streamline_config.pl
-> +++ b/scripts/kconfig/streamline_config.pl
-> @@ -170,7 +170,7 @@ sub read_kconfig {
->         $source =3D~ s/\$\($env\)/$ENV{$env}/;
->      }
->
-> -    open(my $kinfile, '<', $source) || die "Can't open $kconfig";
-> +    open(my $kinfile, '<', $source) || die "Can't open $source";
->      while (<$kinfile>) {
->         chomp;
->
-> --
-> 2.30.2
->
+David
 
-
---=20
-Best Regards
-Masahiro Yamada
