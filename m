@@ -2,179 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE1D45F6DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 23:32:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F5945F6E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 23:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244962AbhKZWdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 17:33:16 -0500
-Received: from www62.your-server.de ([213.133.104.62]:44440 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243757AbhKZWbL (ORCPT
+        id S245307AbhKZWfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 17:35:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:37186 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244814AbhKZWdP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 17:31:11 -0500
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mqjgd-000AaT-NR; Fri, 26 Nov 2021 23:27:19 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mqjgc-0003zq-Pf; Fri, 26 Nov 2021 23:27:18 +0100
-Subject: Re: [PATCH v2 net-next 21/26] ice: add XDP and XSK generic
- per-channel statistics
-To:     Jakub Kicinski <kuba@kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vu?= =?UTF-8?Q?sen?= 
-        <toke@redhat.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
- <20211123163955.154512-22-alexandr.lobakin@intel.com>
- <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net> <87bl28bga6.fsf@toke.dk>
- <20211125170708.127323-1-alexandr.lobakin@intel.com>
- <20211125094440.6c402d63@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20211125204007.133064-1-alexandr.lobakin@intel.com> <87sfvj9k13.fsf@toke.dk>
- <20211126100611.514df099@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <871ae82a-3d5b-2693-2f77-7c86d725a056@iogearbox.net>
-Date:   Fri, 26 Nov 2021 23:27:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Fri, 26 Nov 2021 17:33:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637965795;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=60GQppTRbM0Y6JEekxv0GQtYQ7RJBSFOw1vmFV9kc08=;
+        b=SkniaxV2BNqN0LLJuJolVYRYt9eAqdSzEbuKpCpVOPNAUdEgjm1YeyZnTdQYdoUjfef+mk
+        Zem+qVFLQG2l+27gj5cyfB8WXrUXchXhAle4dNtofjsa7fpY8JOw76mG3/nfi73AGgaQ8h
+        wy6ZlIH0XDV+R5aa+Fv81g5lqm2bYF4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-467-G2VY6lUqOVax6YCkCg6tZA-1; Fri, 26 Nov 2021 17:29:52 -0500
+X-MC-Unique: G2VY6lUqOVax6YCkCg6tZA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3BC921006AA0;
+        Fri, 26 Nov 2021 22:29:50 +0000 (UTC)
+Received: from max.com (unknown [10.40.193.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AB5425C1CF;
+        Fri, 26 Nov 2021 22:29:46 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware with sub-page faults
+Date:   Fri, 26 Nov 2021 23:29:45 +0100
+Message-Id: <20211126222945.549971-1-agruenba@redhat.com>
+In-Reply-To: <YaAROdPCqNzSKCjh@arm.com>
+References: <YaAROdPCqNzSKCjh@arm.com> <20211124192024.2408218-1-catalin.marinas@arm.com> <20211124192024.2408218-4-catalin.marinas@arm.com> <YZ6arlsi2L3LVbFO@casper.infradead.org> <YZ6idVy3zqQC4atv@arm.com> <CAHc6FU4-P9sVexcNt5CDQxROtMAo=kH8hEu==AAhZ_+Zv53=Ag@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211126100611.514df099@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26365/Fri Nov 26 10:23:49 2021)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/26/21 7:06 PM, Jakub Kicinski wrote:
-> On Fri, 26 Nov 2021 13:30:16 +0100 Toke Høiland-Jørgensen wrote:
->>>> TBH I wasn't following this thread too closely since I saw Daniel
->>>> nacked it already. I do prefer rtnl xstats, I'd just report them
->>>> in -s if they are non-zero. But doesn't sound like we have an agreement
->>>> whether they should exist or not.
->>>
->>> Right, just -s is fine, if we drop the per-channel approach.
->>
->> I agree that adding them to -s is fine (and that resolves my "no one
->> will find them" complain as well). If it crowds the output we could also
->> default to only output'ing a subset, and have the more detailed
->> statistics hidden behind a verbose switch (or even just in the JSON
->> output)?
->>
->>>> Can we think of an approach which would make cloudflare and cilium
->>>> happy? Feels like we're trying to make the slightly hypothetical
->>>> admin happy while ignoring objections of very real users.
->>>
->>> The initial idea was to only uniform the drivers. But in general
->>> you are right, 10 drivers having something doesn't mean it's
->>> something good.
->>
->> I don't think it's accurate to call the admin use case "hypothetical".
->> We're expending a significant effort explaining to people that XDP can
->> "eat" your packets, and not having any standard statistics makes this
->> way harder. We should absolutely cater to our "early adopters", but if
->> we want XDP to see wider adoption, making it "less weird" is critical!
-> 
-> Fair. In all honesty I said that hoping to push for a more flexible
-> approach hidden entirely in BPF, and not involving driver changes.
-> Assuming the XDP program has more fine grained stats we should be able
-> to extract those instead of double-counting. Hence my vague "let's work
-> with apps" comment.
-> 
-> For example to a person familiar with the workload it'd be useful to
-> know if program returned XDP_DROP because of configured policy or
-> failure to parse a packet. I don't think that sort distinction is
-> achievable at the level of standard stats.
+On Thu, Nov 25, 2021 at 11:42 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> On Thu, Nov 25, 2021 at 11:25:54PM +0100, Andreas Gruenbacher wrote:
+> > On Wed, Nov 24, 2021 at 9:37 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > > On Wed, Nov 24, 2021 at 08:03:58PM +0000, Matthew Wilcox wrote:
+> > > > On Wed, Nov 24, 2021 at 07:20:24PM +0000, Catalin Marinas wrote:
+> > > > > +++ b/fs/btrfs/ioctl.c
+> > > > > @@ -2223,7 +2223,8 @@ static noinline int search_ioctl(struct inode *inode,
+> > > > >
+> > > > >     while (1) {
+> > > > >             ret = -EFAULT;
+> > > > > -           if (fault_in_writeable(ubuf + sk_offset, *buf_size - sk_offset))
+> > > > > +           if (fault_in_exact_writeable(ubuf + sk_offset,
+> > > > > +                                        *buf_size - sk_offset))
+> > > > >                     break;
+> > > > >
+> > > > >             ret = btrfs_search_forward(root, &key, path, sk->min_transid);
+> > > >
+> > > > Couldn't we avoid all of this nastiness by doing ...
+> > >
+> > > I had a similar attempt initially but I concluded that it doesn't work:
+> > >
+> > > https://lore.kernel.org/r/YS40qqmXL7CMFLGq@arm.com
+> > >
+> > > > @@ -2121,10 +2121,9 @@ static noinline int copy_to_sk(struct btrfs_path *path,
+> > > >                  * problem. Otherwise we'll fault and then copy the buffer in
+> > > >                  * properly this next time through
+> > > >                  */
+> > > > -               if (copy_to_user_nofault(ubuf + *sk_offset, &sh, sizeof(sh))) {
+> > > > -                       ret = 0;
+> > > > +               ret = __copy_to_user_nofault(ubuf + *sk_offset, &sh, sizeof(sh));
+> > > > +               if (ret)
+> > >
+> > > There is no requirement for the arch implementation to be exact and copy
+> > > the maximum number of bytes possible. It can fail early while there are
+> > > still some bytes left that would not fault. The only requirement is that
+> > > if it is restarted from where it faulted, it makes some progress (on
+> > > arm64 there is one extra byte).
+> > >
+> > > >                         goto out;
+> > > > -               }
+> > > >
+> > > >                 *sk_offset += sizeof(sh);
+> > > > @@ -2196,6 +2195,7 @@ static noinline int search_ioctl(struct inode *inode,
+> > > >         int ret;
+> > > >         int num_found = 0;
+> > > >         unsigned long sk_offset = 0;
+> > > > +       unsigned long next_offset = 0;
+> > > >
+> > > >         if (*buf_size < sizeof(struct btrfs_ioctl_search_header)) {
+> > > >                 *buf_size = sizeof(struct btrfs_ioctl_search_header);
+> > > > @@ -2223,7 +2223,8 @@ static noinline int search_ioctl(struct inode *inode,
+> > > >
+> > > >         while (1) {
+> > > >                 ret = -EFAULT;
+> > > > -               if (fault_in_writeable(ubuf + sk_offset, *buf_size - sk_offset))
+> > > > +               if (fault_in_writeable(ubuf + sk_offset + next_offset,
+> > > > +                                       *buf_size - sk_offset - next_offset))
+> > > >                         break;
+> > > >
+> > > >                 ret = btrfs_search_forward(root, &key, path, sk->min_transid);
+> > > > @@ -2235,11 +2236,12 @@ static noinline int search_ioctl(struct inode *inode,
+> > > >                 ret = copy_to_sk(path, &key, sk, buf_size, ubuf,
+> > > >                                  &sk_offset, &num_found);
+> > > >                 btrfs_release_path(path);
+> > > > -               if (ret)
+> > > > +               if (ret > 0)
+> > > > +                       next_offset = ret;
+> > >
+> > > So after this point, ubuf+sk_offset+next_offset is writeable by
+> > > fault_in_writable(). If copy_to_user() was attempted on
+> > > ubuf+sk_offset+next_offset, all would be fine, but copy_to_sk() restarts
+> > > the copy from ubuf+sk_offset, so it returns exacting the same ret as in
+> > > the previous iteration.
+> >
+> > So this means that after a short copy_to_user_nofault(), copy_to_sk()
+> > needs to figure out the actual point of failure. We'll have the same
+> > problem elsewhere, so this should probably be a generic helper. The
+> > alignment hacks are arch specific, so maybe we can have a generic
+> > version that assumes no alignment restrictions, with arch-specific
+> > overrides.
+> >
+> > Once we know the exact point of failure, a
+> > fault_in_writeable(point_of_failure, 1) in search_ioctl() will tell if
+> > the failure is pertinent. Once we know that the failure isn't
+> > pertinent, we're safe to retry the original fault_in_writeable().
+>
+> The "exact point of failure" is problematic since copy_to_user() may
+> fail a few bytes before the actual fault point (e.g. by doing an
+> unaligned store).
 
-Agree on the additional context. How often have you looked at tc clsact
-/dropped/ stats specifically when you debug a more complex BPF program
-there?
+That's why after the initial failure, we must keep trying until we hit
+the actual point of failure independent of alignment.  If there's even a
+single writable byte left, fault_in_writable() won't fail and we'll be
+stuck in a loop.
 
-   # tc -s qdisc show clsact dev foo
-   qdisc clsact ffff: parent ffff:fff1
-    Sent 6800 bytes 120 pkt (dropped 0, overlimits 0 requeues 0)
-    backlog 0b 0p requeues 0
+On the other hand, once we've reached the actual point of failure, the
+existing version of fault_in_writeable() will work for sub-page faults
+as well.
 
-Similarly, XDP_PASS counters may be of limited use as well for same reason
-(and I think we might not even have a tc counter equivalent for it).
+> As per Linus' reply, we can work around this by doing
+> a sub-page fault_in_writable(point_of_failure, align) where 'align'
+> should cover the copy_to_user() impreciseness.
+>
+> (of course, fault_in_writable() takes the full size argument but behind
+> the scene it probes the 'align' prefix at sub-page fault granularity)
 
-> The information required by the admin is higher level. As you say the
-> primary concern there is "how many packets did XDP eat".
+That doesn't make sense; we don't want fault_in_writable() to fail or
+succeed depending on the alignment of the address range passed to it.
 
-Agree. Above said, for XDP_DROP I would see one use case where you compare
-different drivers or bond vs no bond as we did in the past in [0] when
-testing against a packet generator (although I don't see bond driver covered
-in this series here yet where it aggregates the XDP stats from all bond slave
-devs).
-
-On a higher-level wrt "how many packets did XDP eat", it would make sense
-to have the stats for successful XDP_{TX,REDIRECT} given these are out
-of reach from a BPF prog PoV - we can only count there how many times we
-returned with XDP_TX but not whether the pkt /successfully made it/.
-
-In terms of error cases, could we just standardize all drivers on the behavior
-of e.g. mlx5e_xdp_handle(), meaning, a failure from XDP_{TX,REDIRECT} will
-hit the trace_xdp_exception() and then fallthrough to bump a drop counter
-(same as we bump in XDP_DROP then). So the drop counter will account for
-program drops but also driver-related drops.
-
-At some later point the trace_xdp_exception() could be extended with an error
-code that the driver would propagate (given some of them look quite similar
-across drivers, fwiw), and then whoever wants to do further processing with
-them can do so via bpftrace or other tooling.
-
-So overall wrt this series: from the lrstats we'd be /dropping/ the pass,
-tx_errors, redirect_errors, invalid, aborted counters. And we'd be /keeping/
-bytes & packets counters that XDP sees, (driver-)successful tx & redirect
-counters as well as drop counter. Also, XDP bytes & packets counters should
-not be counted twice wrt ethtool stats.
-
-   [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9e2ee5c7e7c35d195e2aa0692a7241d47a433d1e
+Have a look at the below code to see what I mean.  Function
+copy_to_user_nofault_unaligned() should be further optimized, maybe as
+mm/maccess.c:copy_from_kernel_nofault() and/or per architecture
+depending on the actual alignment rules; I'm not sure.
 
 Thanks,
-Daniel
+Andreas
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 4e03a6d3aa32..067408fd26f9 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -6764,7 +6764,8 @@ void read_extent_buffer(const struct extent_buffer *eb, void *dstv,
+ 
+ int read_extent_buffer_to_user_nofault(const struct extent_buffer *eb,
+ 				       void __user *dstv,
+-				       unsigned long start, unsigned long len)
++				       unsigned long start, unsigned long len,
++				       void __user **copy_failure)
+ {
+ 	size_t cur;
+ 	size_t offset;
+@@ -6773,6 +6774,7 @@ int read_extent_buffer_to_user_nofault(const struct extent_buffer *eb,
+ 	char __user *dst = (char __user *)dstv;
+ 	unsigned long i = get_eb_page_index(start);
+ 	int ret = 0;
++	size_t rest;
+ 
+ 	WARN_ON(start > eb->len);
+ 	WARN_ON(start + len > eb->start + eb->len);
+@@ -6784,7 +6786,9 @@ int read_extent_buffer_to_user_nofault(const struct extent_buffer *eb,
+ 
+ 		cur = min(len, (PAGE_SIZE - offset));
+ 		kaddr = page_address(page);
+-		if (copy_to_user_nofault(dst, kaddr + offset, cur)) {
++		rest = copy_to_user_nofault_unaligned(dst, kaddr + offset, cur);
++		if (rest) {
++			*copy_failure = dst + cur - rest;
+ 			ret = -EFAULT;
+ 			break;
+ 		}
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index 0399cf8e3c32..833ff597a27f 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -238,9 +238,11 @@ int memcmp_extent_buffer(const struct extent_buffer *eb, const void *ptrv,
+ void read_extent_buffer(const struct extent_buffer *eb, void *dst,
+ 			unsigned long start,
+ 			unsigned long len);
++size_t copy_to_user_nofault_unaligned(void __user *to, void *from, size_t size);
+ int read_extent_buffer_to_user_nofault(const struct extent_buffer *eb,
+ 				       void __user *dst, unsigned long start,
+-				       unsigned long len);
++				       unsigned long len,
++				       void __user **copy_failure);
+ void write_extent_buffer_fsid(const struct extent_buffer *eb, const void *src);
+ void write_extent_buffer_chunk_tree_uuid(const struct extent_buffer *eb,
+ 		const void *src);
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index fb8cc9642ac4..646f9c0251d9 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -2051,13 +2051,30 @@ static noinline int key_in_sk(struct btrfs_key *key,
+ 	return 1;
+ }
+ 
++size_t copy_to_user_nofault_unaligned(void __user *to, void *from, size_t size)
++{
++	size_t rest = copy_to_user_nofault(to, from, size);
++
++	if (rest) {
++		size_t n;
++
++		for (n = size - rest; n < size; n++) {
++			if (copy_to_user_nofault(to + n, from + n, 1))
++				break;
++		}
++		rest = size - n;
++	}
++	return rest;
++}
++
+ static noinline int copy_to_sk(struct btrfs_path *path,
+ 			       struct btrfs_key *key,
+ 			       struct btrfs_ioctl_search_key *sk,
+ 			       size_t *buf_size,
+ 			       char __user *ubuf,
+ 			       unsigned long *sk_offset,
+-			       int *num_found)
++			       int *num_found,
++			       void __user **copy_failure)
+ {
+ 	u64 found_transid;
+ 	struct extent_buffer *leaf;
+@@ -2069,6 +2086,7 @@ static noinline int copy_to_sk(struct btrfs_path *path,
+ 	int i;
+ 	int slot;
+ 	int ret = 0;
++	size_t rest;
+ 
+ 	leaf = path->nodes[0];
+ 	slot = path->slots[0];
+@@ -2121,7 +2139,9 @@ static noinline int copy_to_sk(struct btrfs_path *path,
+ 		 * problem. Otherwise we'll fault and then copy the buffer in
+ 		 * properly this next time through
+ 		 */
+-		if (copy_to_user_nofault(ubuf + *sk_offset, &sh, sizeof(sh))) {
++		rest = copy_to_user_nofault_unaligned(ubuf + *sk_offset, &sh, sizeof(sh));
++		if (rest) {
++			*copy_failure = ubuf + *sk_offset + sizeof(sh) - rest;
+ 			ret = 0;
+ 			goto out;
+ 		}
+@@ -2135,7 +2155,8 @@ static noinline int copy_to_sk(struct btrfs_path *path,
+ 			 * * sk_offset so we copy the full thing again.
+ 			 */
+ 			if (read_extent_buffer_to_user_nofault(leaf, up,
+-						item_off, item_len)) {
++						item_off, item_len,
++						copy_failure)) {
+ 				ret = 0;
+ 				*sk_offset -= sizeof(sh);
+ 				goto out;
+@@ -2222,6 +2243,8 @@ static noinline int search_ioctl(struct inode *inode,
+ 	key.offset = sk->min_offset;
+ 
+ 	while (1) {
++		void __user *copy_failure = NULL;
++
+ 		ret = -EFAULT;
+ 		if (fault_in_writeable(ubuf + sk_offset, *buf_size - sk_offset))
+ 			break;
+@@ -2233,11 +2256,13 @@ static noinline int search_ioctl(struct inode *inode,
+ 			goto err;
+ 		}
+ 		ret = copy_to_sk(path, &key, sk, buf_size, ubuf,
+-				 &sk_offset, &num_found);
++				 &sk_offset, &num_found, &copy_failure);
+ 		btrfs_release_path(path);
+ 		if (ret)
+ 			break;
+-
++		ret = -EFAULT;
++		if (copy_failure && fault_in_writeable(copy_failure, 1))
++			break;
+ 	}
+ 	if (ret > 0)
+ 		ret = 0;
+
