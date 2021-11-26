@@ -2,108 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667BB45E438
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 02:54:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECAFB45E43C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 02:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357612AbhKZB5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 20:57:48 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:35570 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1357502AbhKZBzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 20:55:43 -0500
-Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_9PSPaBh1ooBAA--.6419S4;
-        Fri, 26 Nov 2021 09:52:19 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v9 3/3] dt-bindings: mips: Add Loongson-2K1000 reset support
-Date:   Fri, 26 Nov 2021 09:52:16 +0800
-Message-Id: <20211126015216.26605-3-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20211126015216.26605-1-zhangqing@loongson.cn>
-References: <20211126015216.26605-1-zhangqing@loongson.cn>
+        id S1357524AbhKZCAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 21:00:12 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15871 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357469AbhKZB6L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 20:58:11 -0500
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4J0d8j5JRXz91CD;
+        Fri, 26 Nov 2021 09:54:29 +0800 (CST)
+Received: from kwepemm600019.china.huawei.com (7.193.23.64) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 26 Nov 2021 09:54:57 +0800
+Received: from [10.174.177.210] (10.174.177.210) by
+ kwepemm600019.china.huawei.com (7.193.23.64) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 26 Nov 2021 09:54:56 +0800
+Subject: Re: [ramfs] 0858d7da8a: canonical_address#:#[##]
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        <almaz.alexandrovich@paragon-software.com>,
+        <kari.argillander@gmail.com>
+CC:     Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, <lkp@lists.01.org>,
+        kernel test robot <lkp@intel.com>, <ntfs3@lists.linux.dev>,
+        <linux-fsdevel@vger.kernel.org>
+References: <20211125140816.GC3109@xsang-OptiPlex-9020>
+ <CAHk-=widXZyzRiEzmYuG-bLVtNsptxt4TqAhy75Tbio-V_9oNQ@mail.gmail.com>
+From:   yangerkun <yangerkun@huawei.com>
+Message-ID: <68587446-fb74-b411-ba19-dd52395567c9@huawei.com>
+Date:   Fri, 26 Nov 2021 09:54:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dx_9PSPaBh1ooBAA--.6419S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxJF15Xw13Zr1rtF1kCr1xXwb_yoW8XF4rpF
-        nxC3W7Kr4F9F13uws3KFy8Aw1rZr9aya4xXF47tr1Dtwn8Ga1Yvw1ak3Z8ZF17GF18XFWU
-        XFZ7urWUKa42kw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUB2b7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUXwA2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF
-        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcV
-        CY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2
-        jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64
-        kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm
-        72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6w4l42xK82IYc2
-        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
-        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE
-        42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
-        kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIg18DUUUU
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+In-Reply-To: <CAHk-=widXZyzRiEzmYuG-bLVtNsptxt4TqAhy75Tbio-V_9oNQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.210]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600019.china.huawei.com (7.193.23.64)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch the DT binding to a YAML schema to enable the DT validation.
+Cc ntfs3:
 
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
----
-v8-v9:
-only modify 'make DT_CHECKER_FLAGS=-m dt_binding_check' warnings/errors
----
- .../bindings/mips/loongson/ls2k-reset.yaml    | 38 +++++++++++++++++++
- 1 file changed, 38 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mips/loongson/ls2k-reset.yaml
+Maybe it's a problem like this:
 
-diff --git a/Documentation/devicetree/bindings/mips/loongson/ls2k-reset.yaml b/Documentation/devicetree/bindings/mips/loongson/ls2k-reset.yaml
-new file mode 100644
-index 0000000000000..20b5836efd90a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mips/loongson/ls2k-reset.yaml
-@@ -0,0 +1,38 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/mips/loongson/ls2k-reset.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Loongson 2K1000 PM Controller
-+
-+maintainers:
-+  - Qing Zhang <zhangqing@loongson.cn>
-+
-+description: |
-+  This controller can be found in Loongson-2K1000 Soc systems.
-+
-+properties:
-+  compatible:
-+    const: loongson,ls2k-pm
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    bus {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+        pm: reset-controller@1fe07000 {
-+            compatible = "loongson,ls2k-pm";
-+            reg = <0 0x1fe07000 0 0x422>;
-+        };
-+    };
-+...
--- 
-2.31.0
+do_new_mount
+   fs_context_for_mount
+     alloc_fs_context
+       ntfs_init_fs_context
+         sbi = kzalloc(sizeof(struct ntfs_sb_info), GFP_NOFS);
+         fc->s_fs_info = sbi;
+   vfs_get_tree
+     ntfs_fs_get_tree
+       get_tree_bdev
+         blkdev_get_by_path  // return error and sbi->sb will be NULL
+   put_fs_context
+     ntfs_fs_free
+       put_ntfs
+         ntfs_update_mftmirr
+           struct super_block *sb = sbi->sb; // NULL
+           u32 blocksize = sb->s_blocksize; // BOOM
 
+It's actually a ntfs3 bug which may be introduced by:
+
+610f8f5a7baf fs/ntfs3: Use new api for mounting
+
+
+On 2021/11/26 2:03, Linus Torvalds wrote:
+> On Thu, Nov 25, 2021 at 6:08 AM kernel test robot <oliver.sang@intel.com> wrote:
+>> FYI, we noticed the following commit (built with clang-14):
+>>
+>> commit: 0858d7da8a09e440fb192a0239d20249a2d16af8 ("ramfs: fix mount source show for ramfs")
+> 
+> Funky. That commit seems to have nothing to do with the oops:
+> 
+>> [  806.257788][  T204] /dev/root: Can't open blockdev
+>> [  806.259101][  T204] general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] SMP KASAN
+>> [  806.263082][  T204] KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
+> 
+> Not a very helpful error message,a nd the KASAN comment makes little sense, but
+> 
+>> [ 806.267540][ T204] RIP: 0010:ntfs_update_mftmirr (kbuild/src/consumer/fs/ntfs3/fsntfs.c:834)
+> 
+> That's
+> 
+>          u32 blocksize = sb->s_blocksize;
+> 
+> and presumably with KASAN you end up getting hat odd 0xdffffc0000000003 thing.
+> 
+> Anyway, looks like sb is NULL, and the code is
+> 
+>    int ntfs_update_mftmirr(struct ntfs_sb_info *sbi, int wait)
+>    {
+>          int err;
+>          struct super_block *sb = sbi->sb;
+>          u32 blocksize = sb->s_blocksize;
+>          sector_t block1, block2;
+> 
+> although I have no idea how sbi->sb could be NULL.
+> 
+> Konstantin? See
+> 
+>      https://lore.kernel.org/lkml/20211125140816.GC3109@xsang-OptiPlex-9020/
+> 
+> for the full thing.
+> 
+>               Linus
+> .
+> 
