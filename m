@@ -2,93 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C8A45F04D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:06:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F29645F056
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353907AbhKZPJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:09:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42774 "EHLO
+        id S1377952AbhKZPJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 10:09:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353998AbhKZPHg (ORCPT
+        with ESMTP id S1345647AbhKZPHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:07:36 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A92C06179F
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 06:51:30 -0800 (PST)
+        Fri, 26 Nov 2021 10:07:41 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A48AC061394;
+        Fri, 26 Nov 2021 06:51:38 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 73C4762299
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 14:41:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D751C93056;
-        Fri, 26 Nov 2021 14:41:33 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 16AB0B827E9;
+        Fri, 26 Nov 2021 14:43:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F894C93056;
+        Fri, 26 Nov 2021 14:43:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637937693;
-        bh=UFkWL1t4sncycpVxqqdL4yjI2wz5vOWpmHtnhkS5ft4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:From;
-        b=o7PtzE6Bf/Eoa7qNkl4R4yUBUAefevQSCSuG98p/KOq/jgn82/yJjobaadiiCw+gI
-         od6DmwBfwzEGEsr4Rrew0NwAf84/F6Ft/+JZXsa1ylwRsmXTVO51D6/VB0GiaqaQmB
-         g5K1otDW5qB3q0yg1hOPo42J+j8cJXTItR3ZLOJrAJvS++7OSX2pkjZ6RKTkjAV9Vz
-         D8XFqtPLvTRNyphXeFiL6caO7KjHpotqJx6opYcgTBS378WKuT0ZGyrjLGMcLptTg0
-         0zAtunIdkJuxS3gnS+2ypjsn6gGiKgVOxTqNdvzgakpkE4Jk3LihebR7v7UFrRfOxJ
-         1w9Fx0ug52guQ==
-From:   SeongJae Park <sj@kernel.org>
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc:     akpm@linux-foundation.org, SeongJae Park <sj@kernel.org>,
-        john.stultz@linaro.org, tglx@linutronix.de, linux-mm@kvack.org,
+        s=k20201202; t=1637937830;
+        bh=2XIXUqn3rmvs2jKnXm8FsegNV2jP9zSM2yorfQ+9KAU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=O/aCITp4ImZZprzinafiszuQzab6PqFPPl8V/S0tqW8ErOgZjuHsXbQVrtbUVUNqV
+         Fg2qR9/fhdapvNL5X3sM7Ccys0mnSenNIcm57Ek96YXkYnYyxi7tX4/Y/8mlGA8Isa
+         e0x+Zjc6euiyWUOP6haeF/wAcKXmOrKe6dQEGLSrXequAGsuqLTmmSiJb0JVxXTG+u
+         3NZ0ww+v5IUTNxeYP0qKZxveNykZ+iW7JmKn1VMww3sn6CepJc+sH4XUNvJtfiJNCS
+         JUnciNivNT0xp/yhFFhLEop6uIXnC5jHNzDLa4VBSRxIkludDWjGPkyqg/xjpAnjY8
+         eYp9NIp2kWxYQ==
+Received: by pali.im (Postfix)
+        id 5DD2D5ED; Fri, 26 Nov 2021 15:43:47 +0100 (CET)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        =?UTF-8?q?Jan=20Kundr=C3=A1t?= <jan.kundrat@cesnet.cz>
+Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] mm/damon: Fix fake /proc/loadavg reports
-Date:   Fri, 26 Nov 2021 14:41:30 +0000
-Message-Id: <20211126144130.15460-1-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
+Subject: [PATCH 0/2] PCI: mvebu: Add support for unbinding and unloading driver
+Date:   Fri, 26 Nov 2021 15:43:05 +0100
+Message-Id: <20211126144307.7568-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <23071693.Kees4NU7H7@natalenko.name>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Nov 2021 15:37:12 +0100 Oleksandr Natalenko <oleksandr@natalenko.name> wrote:
+This patch series add support for unbinding device from pci-mvebu driver,
+allow to compile pci-mvebu.c as kernel module pci-mvebu.ko and allow to
+rmmod this module.
 
-> Hello.
-> 
-> On čtvrtek 25. listopadu 2021 17:08:28 CET SeongJae Park wrote:
-> > This patchset fixes DAMON's fake load report issue.  The first patch
-> > makes yet another variant of usleep_range() for this fix, and the second
-> > patch fixes the issue of DAMON by making it using the newly introduced
-> > function.
-> > 
-> > I think these need to be applied on v5.15.y, but the second patch cannot
-> > cleanly applied there as is.  I will back-port this on v5.15.y and post
-> > later once this is merged in the mainline.  If you think this is not
-> > appropriate for stable tree, please let me know.
-> > 
-> > Changelog
-> > ---------
-> > 
-> > >From v1
-> > 
-> > (https://lore.kernel.org/linux-mm/20211124145219.32866-1-sj@kernel.org/)
-> > - Avoid copy-and-pasting usleep_delay() in DAMON code (Andrew Morton)
-> > 
-> > SeongJae Park (2):
-> >   timers: Implement usleep_idle_range()
-> >   mm/damon/core: Fix fake load reports due to uninterruptible sleeps
-> > 
-> >  include/linux/delay.h | 14 +++++++++++++-
-> >  kernel/time/timer.c   | 16 +++++++++-------
-> >  mm/damon/core.c       |  6 +++---
-> >  3 files changed, 25 insertions(+), 11 deletions(-)
-> 
-> I'd appreciate if you Cc me as a reporter since I'm going to test this.
+This patch series depends on another patch series which converts
+pci-mvebu.c driver to use devm_pci_remap_iospace() function:
 
-Oops, sorry for forgetting that.  I also forgot adding 'Suggested-by:' for
-Andrew Morton on the first patch.  I will do that and resend, Cc-ing you.
+"arm: ioremap: Remove pci_ioremap_io() and mvebu_pci_host_probe()":
+https://lore.kernel.org/linux-pci/20211124154116.916-1-pali@kernel.org/
 
-> 
-> Thanks.
-> 
-> -- 
-> Oleksandr Natalenko (post-factum)
-> 
+Without usage of devm_pci_remap_iospace() it is not possible to bind
+device to pci-mvebu driver again after unbinding it.
+
+Tested on Turris Omnia - Armada 385 board.
+
+Pali Rohár (2):
+  bus: mvebu-mbus: Export symbols for public API window functions
+  PCI: mvebu: Add support for compiling driver as module
+
+ drivers/bus/mvebu-mbus.c           |  5 ++
+ drivers/pci/controller/Kconfig     |  2 +-
+ drivers/pci/controller/pci-mvebu.c | 91 +++++++++++++++++++++++++-----
+ 3 files changed, 82 insertions(+), 16 deletions(-)
+
+-- 
+2.20.1
+
