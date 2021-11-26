@@ -2,135 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0A7545E7C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 07:17:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E90145E7D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 07:26:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345835AbhKZGU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 01:20:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231645AbhKZGS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 01:18:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD05461108;
-        Fri, 26 Nov 2021 06:15:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637907344;
-        bh=7i6gFe2C6oGCBK0Fvigb5z0S/fOiViYh88W5TJHbEdM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=PMvUPJArqSFpqe5bgiJj/i4GO8Rm7LNL0v4paqVTouvuFSgmiObf02taeYQSjdKMQ
-         FYHHKn1gT1/26Bw9WOha+cZH1mApVsmhD8p6mycHbY7LrxTEQ3V8MTe4O6jDB3+MFm
-         f0d+0VCQiOGEXIo3/MxO7K7alUZNhB3ejHMVNm00NNDzvFbIHJWps9yd2gT/20nT8u
-         E4xrV66mNv3BIwLmE/pa2ywqbPvf56FmbhFY4wweCczeDWLHvsmXGUk/4dyktyOwz4
-         OjuMgWs/gecdF68x1YBUJZew0pifoMvwdgc5vtQpp5mnkxovHrF0YduoMF+GYTw3lF
-         SyRdmEzmpwy4Q==
-Date:   Fri, 26 Nov 2021 11:45:40 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Phy <linux-phy@lists.infradead.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: [GIT PULL]: Generic phy fixes for v5.16
-Message-ID: <YaB7jK+ADoUQHWjh@matsya>
+        id S1358974AbhKZG32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 01:29:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352569AbhKZG10 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 01:27:26 -0500
+Received: from mx.msync.work (mx.msync.work [IPv6:2a01:4f9:2b:2dc2::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CDB5C061746
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 22:24:14 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 6CA701D1B97;
+        Fri, 26 Nov 2021 06:24:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lexina.in; s=dkim;
+        t=1637907849; h=from:subject:date:message-id:to:cc:mime-version:
+         content-transfer-encoding; bh=ksOo59b9zPzpZ/xtZN+pj91AfwpAwnF4ANOJtE5pGEc=;
+        b=ghGJUQwM6wRg8zSTKAxvvcaivOFvayoBy6tPj44WSZZHRID9l5k0uA75isxt5YoFkffXEj
+        jljmj1oBhjIYJ6SSpv6NA4PYz7PfjizXvFDF6J/3PhB2iB5RngvrgyCTAHPqUnIAItpdPw
+        J21HnU2ZjttKWOQzngr8t1eGOskYE0vQWi9zt+Ab1cxcWSntbUC5Lni4ChTNJWhnENfgxB
+        EGYdiHsZEsp7w43H1Mtmp7tXATXOREFO8J3kYvQCcAxT8bWFwbkh/n5X6AILyBQeoiVlHs
+        Plq0Oo75OdCJr32j/3SIK5qnbW71GwYZo3CRag9lM55FmvbXlar2Y6dCN3y4Yw==
+From:   Vyacheslav Bocharov <adeep@lexina.in>
+To:     Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>
+Cc:     linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        devicetree@vger.kernel.org
+Subject: [RESEND PATCH] arm64: meson: fix dts for JetHub D1
+Date:   Fri, 26 Nov 2021 09:21:28 +0300
+Message-Id: <20211126062127.3084029-1-adeep@lexina.in>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Wb8CkePjKWIP3qbP"
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix misplace of cpu_cooling_maps for JetHub D1, move it to right place.
 
---Wb8CkePjKWIP3qbP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Vyacheslav Bocharov <adeep@lexina.in>
+---
+ .../amlogic/meson-axg-jethome-jethub-j100.dts | 30 +++++++++----------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-Hello Greg,
+diff --git a/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts b/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
+index 52ebe371df26..561eec21b4de 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
+@@ -134,23 +134,23 @@ cpu_critical: cpu-critical {
+ 					type = "critical";
+ 				};
+ 			};
+-		};
+ 
+-		cpu_cooling_maps: cooling-maps {
+-			map0 {
+-				trip = <&cpu_passive>;
+-				cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+-						<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+-						<&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+-						<&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+-			};
++			cpu_cooling_maps: cooling-maps {
++				map0 {
++					trip = <&cpu_passive>;
++					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++							<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++							<&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++							<&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++				};
+ 
+-			map1 {
+-				trip = <&cpu_hot>;
+-				cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+-						<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+-						<&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+-						<&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++				map1 {
++					trip = <&cpu_hot>;
++					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++							<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++							<&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++							<&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++				};
+ 			};
+ 		};
+ 	};
+-- 
+2.30.2
 
-Please pull to recieve bunch of fixes for generic phy subsystem. These
-contain mostly kernel-doc warning fixes along with couple of driver
-fixes.
-
-The following changes since commit fa55b7dcdc43c1aa1ba12bca9d2dd4318c2a0dbf:
-
-  Linux 5.16-rc1 (2021-11-14 13:56:52 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-=
-fixes-5.16
-
-for you to fetch changes up to f0ae8685b2858fc1dabf5ea743642abb5f242375:
-
-  phy: HiSilicon: Fix copy and paste bug in error handling (2021-11-23 10:4=
-2:13 +0530)
-
-----------------------------------------------------------------
-phy: fixes for 5.16
-
-Fixes for:
- - kernel-doc warnings for various drivers
- - error handling fix for HiSilicon driver
- - name fix for zynqmp phy
- - property name fix in stm32 phy
-
-----------------------------------------------------------------
-Amelie Delaunay (1):
-      phy: stm32: fix st,slow-hs-slew-rate with st,decrease-hs-slew-rate
-
-Dan Carpenter (1):
-      phy: HiSilicon: Fix copy and paste bug in error handling
-
-Liam Beguin (1):
-      dt-bindings: phy: zynqmp-psgtr: fix USB phy name
-
-Randy Dunlap (1):
-      phy: ti: report 2 non-kernel-doc comments
-
-Vinod Koul (6):
-      phy: mvebu-cp110-utmi: Fix kernel-doc warns
-      phy: qualcomm: qmp: Add missing struct documentation
-      phy: qualcomm: usb-hsic: Fix the kernel-doc warn
-      phy: ti: tusb1210: Fix the kernel-doc warn
-      phy: qualcomm: ipq806x-usb: Fix kernel-doc style
-      phy: ti: omap-usb2: Fix the kernel-doc style
-
- .../devicetree/bindings/phy/xlnx,zynqmp-psgtr.yaml |  2 +-
- drivers/phy/hisilicon/phy-hi3670-pcie.c            |  4 ++--
- drivers/phy/marvell/phy-mvebu-cp110-utmi.c         |  4 ++--
- drivers/phy/qualcomm/phy-qcom-ipq806x-usb.c        | 26 ++++++++++++------=
-----
- drivers/phy/qualcomm/phy-qcom-qmp.c                |  3 +++
- drivers/phy/qualcomm/phy-qcom-usb-hsic.c           |  2 +-
- drivers/phy/st/phy-stm32-usbphyc.c                 |  2 +-
- drivers/phy/ti/phy-am654-serdes.c                  |  2 +-
- drivers/phy/ti/phy-j721e-wiz.c                     |  2 +-
- drivers/phy/ti/phy-omap-usb2.c                     |  6 ++---
- drivers/phy/ti/phy-tusb1210.c                      |  2 +-
- 11 files changed, 30 insertions(+), 25 deletions(-)
-
-Thanks
---=20
-~Vinod
-
---Wb8CkePjKWIP3qbP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmGge4wACgkQfBQHDyUj
-g0dsdw//T5ZvdCm1jzrV62/7wFTeHNNOXXnfmPCF0oe4E+CfIUs6ZPLbrauC8etG
-ySobv58PBNuwUUw/LTVgIzcws+NRZIh/b79hFW1ieH50zYyUlcOi2uS1wyRIjOVt
-rZYtnFWUezsm4u46+43u5uK9aEU9Vrkmet5zMABm86FnuAtvuvvcSCO9VbeaHet9
-NFcoqTLK6Smt13pLOdDTf2iBq3VuiNa1HEQ2EsCKp3JL2fZ8UjsHfajz5f5kILhl
-LrS0FKztMuXivOcTDM7Wb8tfiRkmTsDAeVizpuZej/zJTnyASYT4B8MgIZeemoPv
-Wrv6Knv0UVWwjr/4Wxu4DpEJ9QhiOG9gdGPkBlrfVgWInN6MjX+3/YZBBDWsULMf
-1egKmHcNGYi3b2sNS1gXmeviCdD+GmBFEj4pKe9ldCCZqupzohKv9RQ3arvCOpyT
-cc7wLma61+LzXONgv0sGf/lh0uVZ6Fb0Vk62pjXyI327JTZhIYJGI37kwjSqhY5W
-oCY9lKOI6JhDeKCp09PMndllutMGgy83IBHKiBadEFM70Fmg4ZQnGdZ56PhD8PhC
-9QelLNDSks1925FUpFZwk28hRnXjC/m7PNBI3qszVbImKurcPUTG2SmSPwwchsUm
-OXgOOQKTBxevObj42HbWSttbbUn6kEuuSNxLTbw78ozvFCWcwPY=
-=5fSZ
------END PGP SIGNATURE-----
-
---Wb8CkePjKWIP3qbP--
