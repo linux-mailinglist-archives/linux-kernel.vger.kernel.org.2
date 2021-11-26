@@ -2,122 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94AD045E949
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A16F45E94A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:21:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353235AbhKZIYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 03:24:45 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:33070 "EHLO
+        id S1359765AbhKZIYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 03:24:49 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:33072 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359387AbhKZIV2 (ORCPT
+        with ESMTP id S1359388AbhKZIV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Nov 2021 03:21:28 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 6518E1FE07;
+        by smtp-out2.suse.de (Postfix) with ESMTP id 919901FE08;
         Fri, 26 Nov 2021 08:16:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1637914576; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+         mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kTtokjpAippHq+goLKPHeC6KR/s9ykM7J1nfpJjQoo8=;
-        b=O5EFknxh0RGcasko9Y9V29riKyHf0YMZlUjrVphDVdM4XggRqgA06KyjQJg/EoJsWFPbFQ
-        0Cs0PEnbKc1XZOV7yS0CLlFrRtgVM1IN8VMTve2Wn3/eS93e2onrOkzsN6+N/sbA7GBpfo
-        KJzpgywod0MuSlA83e3ceUucbzeOTnw=
+        bh=zizbo0v8V0/9goKyaDFNJbLnlQPJeSquNL/rl6aiDcA=;
+        b=CE9z8pizxX7+jtQCM++acDf6AU86BlOO/w5HFrOkAd/ldI8+1QSrtrFLdiTiDtmxUEG8mK
+        LlmN3cVpHH0kxCqF7VnqHT5XBBLUHKuaz0aUqCH9uGCxY+Rme39BVqMNtR2hFvvnK3+SFE
+        Gugo12pZB/cdsRuGEluC8qolspvZk+A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1637914576;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+         mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kTtokjpAippHq+goLKPHeC6KR/s9ykM7J1nfpJjQoo8=;
-        b=zxW9g3PkkMg339NAAz8A1ZXJHAzVloRxcn/LY3XQKuWwi8x+eDSVxAHpiyWRJxwArcMowm
-        egOithNlpsFQzyAA==
+        bh=zizbo0v8V0/9goKyaDFNJbLnlQPJeSquNL/rl6aiDcA=;
+        b=m/4yC/7S1pzthyIOQZ1awX0kSRteH78G9jAm9yPzHojQ2wWbF8B118Jab72E2jWgUY7l5x
+        Wmfq2YpDKcS0GlBg==
 Received: from localhost.localdomain (unknown [10.100.208.98])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 3CCB7A3B81;
+        by relay2.suse.de (Postfix) with ESMTPS id 6A4BAA3B87;
         Fri, 26 Nov 2021 08:16:16 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 20/23] tty: make tty_ldisc docs up-to-date
-Date:   Fri, 26 Nov 2021 09:16:08 +0100
-Message-Id: <20211126081611.11001-21-jslaby@suse.cz>
+Subject: [PATCH 21/23] tty: more kernel-doc for tty_ldisc
+Date:   Fri, 26 Nov 2021 09:16:09 +0100
+Message-Id: <20211126081611.11001-22-jslaby@suse.cz>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211126081611.11001-1-jslaby@suse.cz>
 References: <20211126081611.11001-1-jslaby@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some of the docs in this document were a bit obsolete. Clean it up a bit
-and make it correspond to the current state.
+Extend and highlight tty_ldisc documentation for kernel-doc even more.
+
+We don't need to describe tty_ldisc_ref* functions again. Instead, just
+include their kernel-doc from code.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- Documentation/tty/tty_ldisc.rst | 39 ++++++++++++++++-----------------
- 1 file changed, 19 insertions(+), 20 deletions(-)
+ Documentation/tty/tty_ldisc.rst | 42 +++++++++++++++------------------
+ 1 file changed, 19 insertions(+), 23 deletions(-)
 
 diff --git a/Documentation/tty/tty_ldisc.rst b/Documentation/tty/tty_ldisc.rst
-index 8e48ab72f965..69dee9ca6540 100644
+index 69dee9ca6540..65885d97595c 100644
 --- a/Documentation/tty/tty_ldisc.rst
 +++ b/Documentation/tty/tty_ldisc.rst
-@@ -6,31 +6,30 @@ TTY Line Discipline
+@@ -28,6 +28,12 @@ enter and exit although this detail matters not).
+ .. kernel-doc:: drivers/tty/tty_ldisc.c
+    :identifiers: tty_register_ldisc tty_unregister_ldisc
  
- .. contents:: :local:
- 
--Line disciplines are registered with tty_register_ldisc() passing the
--discipline number and the ldisc structure. At the point of registration the
--discipline must be ready to use and it is possible it will get used before
--the call returns success. If the call returns an error then it won't get
--called. Do not re-use ldisc numbers as they are part of the userspace ABI
--and writing over an existing ldisc will cause demons to eat your computer.
--After the return the ldisc data has been copied so you may free your own
--copy of the structure. You must not re-register over the top of the line
-+Registration
-+============
-+
-+Line disciplines are registered with tty_register_ldisc() passing the ldisc
-+structure. At the point of registration the discipline must be ready to use and
-+it is possible it will get used before the call returns success. If the call
-+returns an error then it won’t get called. Do not re-use ldisc numbers as they
-+are part of the userspace ABI and writing over an existing ldisc will cause
-+demons to eat your computer. You must not re-register over the top of the line
- discipline even with the same data or your computer again will be eaten by
--demons.
--
--In order to remove a line discipline call tty_unregister_ldisc().
--In ancient times this always worked. In modern times the function will
--return -EBUSY if the ldisc is currently in use. Since the ldisc referencing
--code manages the module counts this should not usually be a concern.
-+demons. In order to remove a line discipline call tty_unregister_ldisc().
- 
- Heed this warning: the reference count field of the registered copies of the
- tty_ldisc structure in the ldisc table counts the number of lines using this
--discipline. The reference count of the tty_ldisc structure within a tty
--counts the number of active users of the ldisc at this instant. In effect it
--counts the number of threads of execution within an ldisc method (plus those
--about to enter and exit although this detail matters not).
-+discipline. The reference count of the tty_ldisc structure within a tty counts
-+the number of active users of the ldisc at this instant. In effect it counts
-+the number of threads of execution within an ldisc method (plus those about to
-+enter and exit although this detail matters not).
++Other Functions
++===============
 +
 +.. kernel-doc:: drivers/tty/tty_ldisc.c
-+   :identifiers: tty_register_ldisc tty_unregister_ldisc
++   :identifiers: tty_set_ldisc tty_ldisc_flush
++
+ Line Discipline Operations Reference
+ ====================================
  
--Line Discipline Methods
--=======================
-+Line Discipline Operations Reference
-+====================================
+@@ -53,31 +59,21 @@ Callers to the line discipline functions from the tty layer are required to
+ take line discipline locks. The same is true of calls from the driver side
+ but not yet enforced.
  
- .. kernel-doc:: include/linux/tty_ldisc.h
-    :identifiers: tty_ldisc_ops
+-Three calls are now provided::
+-
+-	ldisc = tty_ldisc_ref(tty);
+-
+-takes a handle to the line discipline in the tty and returns it. If no ldisc
+-is currently attached or the ldisc is being closed and re-opened at this
+-point then NULL is returned. While this handle is held the ldisc will not
+-change or go away::
+-
+-	tty_ldisc_deref(ldisc)
+-
+-Returns the ldisc reference and allows the ldisc to be closed. Returning the
+-reference takes away your right to call the ldisc functions until you take
+-a new reference::
+-
+-	ldisc = tty_ldisc_ref_wait(tty);
+-
+-Performs the same function as tty_ldisc_ref except that it will wait for an
+-ldisc change to complete and then return a reference to the new ldisc.
++.. kernel-doc:: drivers/tty/tty_ldisc.c
++   :identifiers: tty_ldisc_ref_wait tty_ldisc_ref tty_ldisc_deref
+ 
+ While these functions are slightly slower than the old code they should have
+ minimal impact as most receive logic uses the flip buffers and they only
+ need to take a reference when they push bits up through the driver.
+ 
+-A caution: The ldisc->open(), ldisc->close() and driver->set_ldisc
+-functions are called with the ldisc unavailable. Thus tty_ldisc_ref will
+-fail in this situation if used within these functions. Ldisc and driver
+-code calling its own functions must be careful in this case.
++A caution: The :c:member:`tty_ldisc_ops.open()`,
++:c:member:`tty_ldisc_ops.close()` and :c:member:`tty_driver.set_ldisc()`
++functions are called with the ldisc unavailable. Thus tty_ldisc_ref() will fail
++in this situation if used within these functions.  Ldisc and driver code
++calling its own functions must be careful in this case.
++
++Internal Functions
++==================
++
++.. kernel-doc:: drivers/tty/tty_ldisc.c
++   :internal:
 -- 
 2.34.0
 
