@@ -2,129 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21AC345F547
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:38:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A904645F52B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:25:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237565AbhKZTl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 14:41:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236843AbhKZTj7 (ORCPT
+        id S236461AbhKZT26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 14:28:58 -0500
+Received: from 113.196.136.146.ll.static.sparqnet.net ([113.196.136.146]:56572
+        "EHLO mg.sunplus.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233715AbhKZT05 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 14:39:59 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD89C06137F
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 11:10:26 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id d11so20504032ljg.8
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 11:10:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v/nUUlQokdOLB5PSt1hTFYmsrGcrpyJxvqeThYufta0=;
-        b=K9WBxs+3np+gSoWZtnavrHrjriDztJXlfxsI+dVokPvfBqmrSfb5XN/a0ceS/YRmwx
-         RTsKXMs91VEb4IYWDICy+Bl/3ZkLpDcIAtgZz2BZ0gb+rpCBHDMqW0ncoau1t1QtUryi
-         9+588tQ+Tz6al9+xOamT/hukkPvcb8c+43yXYg9R8dWHCNdOhzK8j4O/r4CpRLMTRsG/
-         KEoDFJU2hKMh/xhRm+G68JBEBVN+WU67Y5KhDlmvyGwmF+2PjlrLI+yRJAOmbQI565ql
-         czJwKsOe7kG/dfVG2MUAnQz/p6UXOHVj7NUaGpyPTn138d3x1SJuPEnbf94sN6VsC9G4
-         MdpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v/nUUlQokdOLB5PSt1hTFYmsrGcrpyJxvqeThYufta0=;
-        b=a3cq/laafC62Q6hp+T7Q0cY+jpU2lY+1YlxKFmYSv1OuXzxhnvA2w6Do3zy/OjIxL4
-         5akTQMnm2Y6kNBgSxD0fz+lPCSinJuEY+0P/8pxfxJ/3xlLKQskoiAKaLfyxkOTa2xXC
-         l+/UWE7I2J1hCgovmEZsixzQr0JqWSqIs+svkDflBE0+iczhzFa+rhJIu8AlH6xflXWv
-         N/kBA9NQsfgz7rlEl9VtN0Dem9/SP720qR65+5DM0w2BN9YW20hMM90XhYtqNK4yGhCE
-         jGIE0Q+lhmO1erTXTnoe6+xyDZG5lEtlu/HNC6TflwjThYkJdB3XxaiIxJYdPwd2Pgnl
-         GjDQ==
-X-Gm-Message-State: AOAM530ADCutkZk3WPhoxB3kxTtqYPvaJfJU1BTmDEOwuGcJvV9HW6zo
-        a40Ah7E6kmTApC04F9+InxMAaKrv7cQJF5NHMjigikiBecDTUA==
-X-Google-Smtp-Source: ABdhPJypBSwqOQ9WVkGSOuyRXqzgnhCvnOD4ehYZQOCksgsTkpoE/ivcICzXSabIi1UMQ2sEmf33ofWhsDG7jedcxpQ=
-X-Received: by 2002:a2e:9e08:: with SMTP id e8mr32848587ljk.472.1637953824609;
- Fri, 26 Nov 2021 11:10:24 -0800 (PST)
+        Fri, 26 Nov 2021 14:26:57 -0500
+X-MailGates: (flag:3,DYNAMIC,RELAY,NOHOST:PASS)(compute_score:DELIVER,40
+        ,3)
+Received: from 172.17.9.112
+        by mg02.sunplus.com with MailGates ESMTP Server V5.0(47497:0:AUTH_RELAY)
+        (envelope-from <wells.lu@sunplus.com>); Sat, 27 Nov 2021 03:23:29 +0800 (CST)
+Received: from sphcmbx02.sunplus.com.tw (172.17.9.112) by
+ sphcmbx02.sunplus.com.tw (172.17.9.112) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Sat, 27 Nov 2021 03:13:24 +0800
+Received: from sphcmbx02.sunplus.com.tw ([::1]) by sphcmbx02.sunplus.com.tw
+ ([fe80::f8bb:bd77:a854:5b9e%14]) with mapi id 15.00.1497.023; Sat, 27 Nov
+ 2021 03:13:24 +0800
+From:   =?utf-8?B?V2VsbHMgTHUg5ZGC6Iqz6aiw?= <wells.lu@sunplus.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Wells Lu <wellslutw@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        =?utf-8?B?VmluY2VudCBTaGloIOaWvemMlem0uw==?= 
+        <vincent.shih@sunplus.com>
+Subject: RE: [PATCH v2 2/2] net: ethernet: Add driver for Sunplus SP7021
+Thread-Topic: [PATCH v2 2/2] net: ethernet: Add driver for Sunplus SP7021
+Thread-Index: AQHX1ttDZ0jKVsi7r0auZS2tEQF+d6wADq2AgAXn1uCADjVYcP//wFkAgAFNSvCAADlOgIAAnUMA//+c8QCAAI9HsA==
+Date:   Fri, 26 Nov 2021 19:13:23 +0000
+Message-ID: <b41b754050a14c598b723825ab277322@sphcmbx02.sunplus.com.tw>
+References: <cover.1636620754.git.wells.lu@sunplus.com>
+ <519b61af544f4c6920012d44afd35a0f8761b24f.1636620754.git.wells.lu@sunplus.com>
+ <YY7/v1msiaqJF3Uy@lunn.ch>
+ <7cccf9f79363416ca8115a7ed9b1b7fd@sphcmbx02.sunplus.com.tw>
+ <YZ+pzFRCB0faDikb@lunn.ch>
+ <6c1ce569d2dd46eba8d4b0be84d6159b@sphcmbx02.sunplus.com.tw>
+ <YaDxc2+HKUYxsmX4@lunn.ch>
+ <38e40bc4c0de409ca959bcb847c1fc96@sphcmbx02.sunplus.com.tw>
+ <YaEiRt+vqt1Ix8xb@lunn.ch>
+In-Reply-To: <YaEiRt+vqt1Ix8xb@lunn.ch>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [172.25.108.39]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210401183654.27214-1-daniel.lezcano@linaro.org>
- <20210401183654.27214-3-daniel.lezcano@linaro.org> <CAAYoRsURO1tf03nfiki1uaXYEmTKQyYKUeTyKW+vefrVzCO7jg@mail.gmail.com>
- <CAJZ5v0hcuq0qriHbc=XHbCo8fJMAV1dbCBws3M9GktN17aCE_g@mail.gmail.com>
-In-Reply-To: <CAJZ5v0hcuq0qriHbc=XHbCo8fJMAV1dbCBws3M9GktN17aCE_g@mail.gmail.com>
-From:   Doug Smythies <dsmythies@telus.net>
-Date:   Fri, 26 Nov 2021 11:10:14 -0800
-Message-ID: <CAAYoRsXLTYKGK_doqDqgerQ+uW3UhMYki7FfBy3cAhbfXiCrXA@mail.gmail.com>
-Subject: Re: [PATCH v6 3/7] powercap/drivers/dtpm: Simplify the dtpm table
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dsmythies <dsmythies@telus.net>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 9:22 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> Hi Doug,
->
-> On Fri, Nov 26, 2021 at 6:08 PM Doug Smythies <dsmythies@telus.net> wrote:
-> >
-> > Hi Daniel,
-> >
-> > This patch introduces a regression, at least on my test system.
-> > I can no longer change CPU frequency scaling drivers, for example
-> > from intel_cpufreq (A.K.A intel_pstate in passive mode) to intel_pstate
-> > (A.K.A. active mode). The task just hangs forever.
-> >
-> > I bisected the kernel and got this commit as the result.
-> > As a double check, I reverted this commit:
-> > 7a89d7eacf8e84f2afb94db5ae9d9f9faa93f01c
-> > on kernel 5.16-rc2 and the issue was resolved.
-> >
-> > While your email is fairly old, I observe that it was only included as of
-> > kernel 5.16-rc1.
-> >
-> > Command Example that never completes:
-> >
-> > $ echo passive | sudo tee /sys/devices/system/cpu/intel_pstate/status
-> >
-> > syslog excerpt attached.
->
-> This looks like it may be problematic:
->
-> diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
-> index f6076de39540..98841524a782 100644
-> --- a/drivers/powercap/dtpm_cpu.c
-> +++ b/drivers/powercap/dtpm_cpu.c
-> @@ -204,7 +204,7 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
->        return ret;
-> }
->
-> -int dtpm_register_cpu(struct dtpm *parent)
-> +static int __init dtpm_cpu_init(void)
-> {
->        int ret;
->
-> so please try to remove the __init annotation from dtpm_cpu_init() and
-> see if that helps.
-
-Hi Rafael,
-
-That did not fix the issue.
-Just to be clear this is what I did, on top of 5.16-rc2:
-
-$ git diff
-diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
-index b740866b228d..26d1a87bdec6 100644
---- a/drivers/powercap/dtpm_cpu.c
-+++ b/drivers/powercap/dtpm_cpu.c
-@@ -231,7 +231,7 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
-        return ret;
- }
-
--static int __init dtpm_cpu_init(void)
-+static int dtpm_cpu_init(void)
- {
-        int ret;
+SGkgQW5kcmV3LA0KDQpJIHJlYWQgc3BlY2lmaWNhdGlvbiBvZiBJQ1BsdXMgSVAxMDFHICgxME0v
+MTAwTSBQSFkpLg0KQml0cyBvZiByZWdpc3RlciAwIChjb250cm9sKSBhbmQgcmVnaXN0ZXIgMSAo
+c3RhdHVzKSANCmFyZSBSL1cgb3IgUk8gdHlwZS4gVGhleSB3aWxsIG5vdCBiZSBjbGVhcmVkIGFm
+dGVyIA0KcmVhZC4gTm8gbWF0dGVyIGhvdyBtYW55IHRpbWVzIHRoZXkgYXJlIHJlYWQsIHRoZSAN
+CnJlYWQtYmFjayB2YWx1ZSBpcyB0aGUgc2FtZS4NCg0KRm9yIGV4YW1wbGUsDQpWYWx1ZSBvZiBy
+ZWdpc3RlciAwIChjb250cm9sKSBpcyAweDMxMDANClZhbHVlIG9mIHJlZ2lzdGVyIDEgKHN0YXR1
+cykgaXMgMHg3ODZkIA0KDQpUaGUgcmVhZC1iYWNrIHZhbHVlcyBhcmUgYWx3YXlzIHRoZSBzYW1l
+IHVubGVzcyB5b3UgDQp1bnBsdWcgdGhlIGNhYmxlLg0KDQpCZXNpZGVzLCB3ZSB1c2UgcG9sbGlu
+ZyBtb2RlIChwaHlkZXYtPmlycSA9IFBIWV9QT0xMKSANClBIWSBzdGF0ZS1tYWNoaW5lIGlzIHRy
+aWdnZXJlZCBieSB1c2luZyAxLUh6IHdvcmstDQpxdWV1ZSwgbm90IGludGVycnVwdC4NCg0KV2Ug
+ZGlkbid0IGZpbmQgYW55IHByb2JsZW0gYWZ0ZXIgbWFueSB0ZXN0cyBhZnRlciANCnVzaW5nICdm
+b3JjZScgbW9kZS4NCg0KQ2FuIHdlIGdvIHdpdGggdGhpcyBhcHByb2FjaD8NCg0KDQpCZXN0IHJl
+Z2FyZHMsDQpXZWxscw0KDQoNCj4gPiBIaSBBbmRyZXcsDQo+ID4NCj4gPg0KPiA+IEZyb20gZGF0
+YSBwcm92aWRlZCBieSBBU0lDIGVuZ2luZWVyLCBNQUMgb2YgU1A3MDIxIG9ubHkgcmVhZHMgdGhl
+IDQNCj4gPiByZWdpc3RlcnMgb2YgUEhZOg0KPiA+IDA6IENvbnRyb2wgcmVnaXN0ZXINCj4gPiAx
+OiBTdGF0dXMgcmVnaXN0ZXINCj4gDQo+IFRoaXMgaXMgdGhlIHJlZ2lzdGVyIHdoaWNoIGhhcyBs
+YXRjaGluZyBvZiB0aGUgbGluayBzdGF0dXMuIGdlbnBoeV91cGRhdGVfbGluaygpIGV4cGVjdHMN
+Cj4gdGhpcyBsYXRjaGluZyBiZWhhdmlvdXIsIGFuZCBpZiB0aGUgaGFyZHdhcmUgcmVhZHMgdGhl
+IHJlZ2lzdGVyLCB0aGF0IGJlaGF2aW91ciBpcyBub3QNCj4gZ29pbmcgdG8gaGFwcGVuLg0KPiAN
+Cj4gCUFuZHJldw0K
