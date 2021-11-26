@@ -2,108 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB7245ECDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:44:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F75345EC36
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:08:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347412AbhKZLrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 06:47:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376874AbhKZLpY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 06:45:24 -0500
-Received: from lb1-smtp-cloud7.xs4all.net (lb1-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24E25C035407
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 03:06:08 -0800 (PST)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id qZ3Jmw333CMnAqZ3Mm4QdY; Fri, 26 Nov 2021 12:06:05 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1637924765; bh=6jqLRaVWxvzfwNzbh9z4cF802Tbb77anMzzoXodYiqU=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=mtqkoDaGDI0CI1M/KEq8tlBKom9LwM8RI0XhycNR9jnQuy2zWeDRQprJhlRM/l5nE
-         V6YLlZ3VL7qQ/eZwrGnmy0WEk3MIboyGy5ng2IkI98e1d38EN3eWIvpyH6b5aCMkOa
-         LuVgLwbzy/4mEqj7lRYLiC6qykP2LPHO+oU9BxLup7lnBSy5rrA/fDdVbrkf6QAD+W
-         OSTDEiZ/0+TQlAb7i2SqIgUlkbq72nNI8+BbdODi+JL1jvFFX/zuqEMDRiF/jWOwte
-         rzlrOTv+QDRCEOnQxtp6FAkw9souBjgEezz0A4t3YHekMDqa+PU8v6MIanSkpGGaoE
-         pV29OxqCkVaUw==
-Subject: Re: [PATCH] docs: conf.py: fix support for Readthedocs v 1.0.0
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-kernel@vger.kernel.org
-References: <f0660b1d24bc9bc07b13fe9a25ccb69ca14e916d.1637923850.git.mchehab+huawei@kernel.org>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <c3b0fdfa-6cfa-875f-e1d9-938b3f3d77c4@xs4all.nl>
-Date:   Fri, 26 Nov 2021 12:06:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+        id S234063AbhKZLLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 06:11:53 -0500
+Received: from comms.puri.sm ([159.203.221.185]:38200 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231490AbhKZLJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 06:09:52 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id A2E19E1252;
+        Fri, 26 Nov 2021 03:06:09 -0800 (PST)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id D8m_uiIACRvh; Fri, 26 Nov 2021 03:06:08 -0800 (PST)
+Message-ID: <8d72c895ece6dce7d8badb241eebcbe076a03f81.camel@puri.sm>
+Subject: Re: [PATCH v2] media: i2c: dw9714: add optional regulator support
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     mchehab@kernel.org, broonie@kernel.org, kernel@puri.sm,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-pm@vger.kernel.org, Angus Ainslie <angus@akkea.ca>
+Date:   Fri, 26 Nov 2021 12:06:03 +0100
+In-Reply-To: <YaC6nZIQOsrpBY8V@paasikivi.fi.intel.com>
+References: <20211126090107.1243558-1-martin.kepplinger@puri.sm>
+         <YaC6nZIQOsrpBY8V@paasikivi.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-In-Reply-To: <f0660b1d24bc9bc07b13fe9a25ccb69ca14e916d.1637923850.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfOlZ3D9arNt5xBzCivu0KOlT0txwo2pyVL1ePjBwwYvM8ASduyNV6wDH/e+fVcjKvOzquM4p7aPMDdUnp25M3k+f7LmLFvnxjE8X7eoWBRFKokAmb5mY
- ps+KVUeLvnTCaBpdyg50gCvp8WsN0A2IdhIIeXvWdLOyN6IdHM8E7/S8O6sPOlHUn15fuBJG+36glB+u7BHui4mMlltZhW0j4C0H1PH48B5Jx2ILm5sCZLoQ
- 4LBeWGi0zAYrM4WJ76zwfGJzUP4ZBZakmo333mCB5jo+VespNOcQcH7DtvGSJzarzeWjyMZK/+OU60rP3wfH3g==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/11/2021 11:50, Mauro Carvalho Chehab wrote:
-> As described at:
-> 	https://stackoverflow.com/questions/23211695/modifying-content-width-of-the-sphinx-theme-read-the-docs
+Am Freitag, dem 26.11.2021 um 12:44 +0200 schrieb Sakari Ailus:
+> Hi Martin,
 > 
-> since Sphinx 1.8, the standard way to setup a custom theme is
-> to use html_css_files. While using html_context is OK with RTD
-> 0.5.2, it doesn't work with 1.0.0, causing the theme to not load,
-> producing a very weird html.
+> On Fri, Nov 26, 2021 at 10:01:07AM +0100, Martin Kepplinger wrote:
+> > From: Angus Ainslie <angus@akkea.ca>
+> > 
+> > Allow the dw9714 to control a regulator and adjust suspend() and
+> > resume()
+> > to support both runtime and system pm.
+> > 
+> > Signed-off-by: Angus Ainslie <angus@akkea.ca>
+> > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> > ---
+> > 
+> > revision history
+> > ----------------
+> > 
+> > v2: (thank you Mark)
+> >  * simplify the regulator_get_optional() error path
+> >  * fix regulator usage during probe()
+> > 
+> > v1:
+> > https://lore.kernel.org/linux-media/20211125080922.978583-1-martin.kepplinger@puri.sm/
+> > 
+> > 
+> > 
+> >  drivers/media/i2c/dw9714.c | 39
+> > ++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 39 insertions(+)
+> > 
+> > diff --git a/drivers/media/i2c/dw9714.c
+> > b/drivers/media/i2c/dw9714.c
+> > index 3863dfeb8293..e8cc19b89861 100644
+> > --- a/drivers/media/i2c/dw9714.c
+> > +++ b/drivers/media/i2c/dw9714.c
+> > @@ -5,6 +5,7 @@
+> >  #include <linux/i2c.h>
+> >  #include <linux/module.h>
+> >  #include <linux/pm_runtime.h>
+> > +#include <linux/regulator/consumer.h>
+> >  #include <media/v4l2-ctrls.h>
+> >  #include <media/v4l2-device.h>
+> >  #include <media/v4l2-event.h>
+> > @@ -36,6 +37,7 @@ struct dw9714_device {
+> >         struct v4l2_ctrl_handler ctrls_vcm;
+> >         struct v4l2_subdev sd;
+> >         u16 current_val;
+> > +       struct regulator *vcc;
+> >  };
+> >  
+> >  static inline struct dw9714_device *to_dw9714_vcm(struct v4l2_ctrl
+> > *ctrl)
+> > @@ -145,6 +147,21 @@ static int dw9714_probe(struct i2c_client
+> > *client)
+> >         if (dw9714_dev == NULL)
+> >                 return -ENOMEM;
+> >  
+> > +       dw9714_dev->vcc = devm_regulator_get_optional(&client->dev,
+> > "vcc");
 > 
-> Tested with:
-> 	- Sphinx 2.4.4 + sphinx-rtd-theme 0.5.2
-> 	- Sphinx 2.4.4 + sphinx-rtd-theme 1.0.0
-> 	- Sphinx 4.3.0 + sphinx-rtd-theme 1.0.0
+> You you used regular devm_regulator_get(), you could remove the error
+> handling below. If there's no regulator, you'll simply get a dummy
+> one.
+
+ok thanks
+
+
 > 
-> Reported-by: Hans Verkuil <hverkuil@xs4all.nl>
-
-Tested-by: Hans Verkuil <hverkuil@xs4all.nl>
-
-Much appreciated! Looks a lot better now :-)
-
-Regards,
-
-	Hans
-
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/conf.py | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
+> > +       if (IS_ERR(dw9714_dev->vcc)) {
+> > +               dev_dbg(&client->dev, "No vcc regulator found:
+> > %ld\n",
+> > +                       PTR_ERR(dw9714_dev->vcc));
+> > +               dw9714_dev->vcc = NULL;
+> > +       }
+> > +
+> > +       if (dw9714_dev->vcc) {
 > 
-> diff --git a/Documentation/conf.py b/Documentation/conf.py
-> index 17f7cee56987..7bc72be63fd2 100644
-> --- a/Documentation/conf.py
-> +++ b/Documentation/conf.py
-> @@ -249,11 +249,16 @@ except ImportError:
->  
->  html_static_path = ['sphinx-static']
->  
-> -html_context = {
-> -    'css_files': [
-> +if major <= 1 and (minor < 8):
-> +    html_context = {
-> +        'css_files': [
-> +            '_static/theme_overrides.css',
-> +        ],
-> +    }
-> +else:
-> +    html_css_files = [
->          '_static/theme_overrides.css',
-> -    ],
-> -}
-> +    ]
->  
->  # Add any extra paths that contain custom files (such as robots.txt or
->  # .htaccess) here, relative to this directory. These files are copied
+> With (dummy) regulators, these checks become unnecessary.
 > 
+> > +               rval = regulator_enable(dw9714_dev->vcc);
+> > +               if (rval < 0) {
+> > +                       dev_err(&client->dev, "failed to enable
+> > vcc: %d\n", rval);
+> > +                       return rval;
+> > +               }
+> > +       }
+> > +
+> >         v4l2_i2c_subdev_init(&dw9714_dev->sd, client, &dw9714_ops);
+> >         dw9714_dev->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE |
+> >                                 V4L2_SUBDEV_FL_HAS_EVENTS;
+> > @@ -200,6 +217,9 @@ static int __maybe_unused
+> > dw9714_vcm_suspend(struct device *dev)
+> >         struct dw9714_device *dw9714_dev = sd_to_dw9714_vcm(sd);
+> >         int ret, val;
+> >  
+> > +       if (pm_runtime_suspended(&client->dev))
+> > +               return 0;
+> 
+> This can't take place in a runtime PM suspend callback. You'll need
+> to add
+> system suspend callback for this.
+
+but this function is both the system and runtime suspend callback.
+doesn't splitting up the callbacks just add lines of code
+unnecessarily?
+
+> 
+> > +
+> >         for (val = dw9714_dev->current_val & ~(DW9714_CTRL_STEPS -
+> > 1);
+> >              val >= 0; val -= DW9714_CTRL_STEPS) {
+> >                 ret = dw9714_i2c_write(client,
+> > @@ -208,6 +228,13 @@ static int __maybe_unused
+> > dw9714_vcm_suspend(struct device *dev)
+> >                         dev_err_once(dev, "%s I2C failure: %d",
+> > __func__, ret);
+> >                 usleep_range(DW9714_CTRL_DELAY_US,
+> > DW9714_CTRL_DELAY_US + 10);
+> >         }
+> > +
+> > +       if (dw9714_dev->vcc) {
+> > +               ret = regulator_disable(dw9714_dev->vcc);
+> > +               if (ret)
+> > +                       dev_err(dev, "Failed to disable vcc: %d\n",
+> > ret);
+> > +       }
+> > +
+> >         return 0;
+> >  }
+> >  
+> > @@ -224,6 +251,18 @@ static int  __maybe_unused
+> > dw9714_vcm_resume(struct device *dev)
+> >         struct dw9714_device *dw9714_dev = sd_to_dw9714_vcm(sd);
+> >         int ret, val;
+> >  
+> > +       if (pm_runtime_suspended(&client->dev))
+> 
+> Same for this one.
+> 
+> > +               return 0;
+> > +
+> > +       if (dw9714_dev->vcc) {
+> > +               ret = regulator_enable(dw9714_dev->vcc);
+> > +               if (ret) {
+> > +                       dev_err(dev, "Failed to enable vcc: %d\n",
+> > ret);
+> > +                       return ret;
+> > +               }
+> > +               usleep_range(1000, 2000);
+> > +       }
+> > +
+> >         for (val = dw9714_dev->current_val % DW9714_CTRL_STEPS;
+> >              val < dw9714_dev->current_val + DW9714_CTRL_STEPS - 1;
+> >              val += DW9714_CTRL_STEPS) {
+> 
+
 
