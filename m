@@ -2,98 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A319445F53E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B65FC45F543
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:35:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231942AbhKZTh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 14:37:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45262 "EHLO
+        id S238821AbhKZTiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 14:38:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhKZTfz (ORCPT
+        with ESMTP id S237520AbhKZTgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 14:35:55 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8EC7C0613F7;
-        Fri, 26 Nov 2021 11:00:55 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id f18so26431197lfv.6;
-        Fri, 26 Nov 2021 11:00:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hbVvjT6BTM4cuLV45+AKdDv4R9gtdX2cGu1ybizgxi4=;
-        b=pndDKkiR05Ugzl9EOl/8X9Hho2Lyb89Hi90HXJYoRbFDjjtoAqfZjNPtGxxqGDiAri
-         SDH3rowQo9KvLBCGGax2Jz5LkkcV4W/PcSsPz0ge97hDHpt+aZGM3DVAkSczjbCJ17hk
-         QNcdaXEV1/R9nkjxyZs7H3M1vOyX/xl4U17X3MfkOOwaHtqxsaSZRIctkMeB3BhdMt3h
-         fcb+DdjVkBWgVwwpcSiCZvEcNJ4M13G6KDhZWOY3Y3XcM1LLUhm36X9RvynKoKpI8C6J
-         QK9mAXzPpn6cbcKNX947yyaaBoPWKgncA3VP549ufm+f1bZ+wGaM5e7FTxTJJTJesfvP
-         3hBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hbVvjT6BTM4cuLV45+AKdDv4R9gtdX2cGu1ybizgxi4=;
-        b=3TlWCXghdpz48i/qFqLgaDs4POneAZ8/Bpx2V5+qp++1/tE9Rzp02qWRvEKUOOjMMH
-         p/hvwKUxUxccdqA2mGRpCnakrBjUyE0gyxNHWntnL9IA/ziRDcu58eca7KgnApZPXmG8
-         2pWW5QwOnoFvC6a7JrMgZvLFeif6CPP70i97gVsYDFgzmzRpWdfurP3tDV8F4VhhlO8+
-         7a+td0QqCicFt6q2uLwy0+441h00dQnwToVJqgL3KIsLnmY157rIkmPH70dY2aFj7fnK
-         ItyORhMM51A7OVfgbeZ69oGDsSvaH9WBB5pLgatebEvRuxa3SIWFtzPLnVD7ZKDRpDlI
-         ktaA==
-X-Gm-Message-State: AOAM5334IZF9lLYCAgylLBvSsEpy5oqRnMyeO5XymyVazyJptOhGBmyw
-        k9XLrrqh9leOV8EKmhcpb16ae95ISoXYWEOO1/TYZw==
-X-Google-Smtp-Source: ABdhPJxDbr9Hg9v7B/VEhJY9ZM1EL2mbocdaC4ZiMrYAvjJHyITuYn/QFO5KG0Pm5g39XxCEGUNuZQ==
-X-Received: by 2002:a05:6512:3d0b:: with SMTP id d11mr32378690lfv.542.1637953254292;
-        Fri, 26 Nov 2021 11:00:54 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id i17sm562818lfe.281.2021.11.26.11.00.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 11:00:53 -0800 (PST)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH] rcu: Fix description of kvfree_rcu()
-Date:   Fri, 26 Nov 2021 20:00:45 +0100
-Message-Id: <20211126190045.1992-1-urezki@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 26 Nov 2021 14:36:11 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF418C0613BE;
+        Fri, 26 Nov 2021 11:03:00 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6ED5162339;
+        Fri, 26 Nov 2021 19:03:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFAADC9305B;
+        Fri, 26 Nov 2021 19:02:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637953379;
+        bh=TuzXVBqhnzassDzQH6WK9CNxr5U+CTB3GUMvwU6qJO8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mNDBV3aTr4vMdbD4tMK3jUHRFiVgwF3EjCB99atYiG9m2JSXISezm/V/t5J4fqxxc
+         3c06YOlPgG1i4f5a2j4IK1a2CR6nKjZS2RG1QBOeKNvNo2OACG1AkgufcdC52dl2ze
+         G0VezTUG3ym1HiKmb4/qSqf1xPfuT75r2wpWYWYrj2khQekVUm4hU5+tmwfq+Urahr
+         EBx93tFyR9eIsTaSyeeVBp52LWyWv6/w4rHwZXkQL0oAD5ihHIRwWDfuSBNmBl2j3K
+         BzI+nLKzYg/WQ3pYyAEjZMmHjtZa4+focbUy+frrHVg7WFxPoVeyWwmuJxTlP/fevL
+         Y5/qWsy3a9dpg==
+Date:   Fri, 26 Nov 2021 12:02:54 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH 05/20] media: drxk: drop operation_mode from set_dvbt()
+Message-ID: <YaEvXpVHRUXv1xtZ@archlinux-ax161>
+References: <cover.1637781097.git.mchehab+huawei@kernel.org>
+ <1a2a3fa651a90bd1e4d00318d67bfe0488e98df2.1637781097.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1a2a3fa651a90bd1e4d00318d67bfe0488e98df2.1637781097.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The passed "ptr" parameter might be wrongly interpreted
-therefore rephrase it to prevent people from being confused.
+On Wed, Nov 24, 2021 at 08:13:08PM +0100, Mauro Carvalho Chehab wrote:
+> This var is set, but never used. So, drop it.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+> 
+> To avoid mailbombing on a large number of people, only mailing lists were C/C on the cover.
+> See [PATCH 00/20] at: https://lore.kernel.org/all/cover.1637781097.git.mchehab+huawei@kernel.org/
+> 
+>  drivers/media/dvb-frontends/drxk_hard.c | 6 ------
+>  1 file changed, 6 deletions(-)
+> 
+> diff --git a/drivers/media/dvb-frontends/drxk_hard.c b/drivers/media/dvb-frontends/drxk_hard.c
+> index d7fc2595f15b..afa0ac85313f 100644
+> --- a/drivers/media/dvb-frontends/drxk_hard.c
+> +++ b/drivers/media/dvb-frontends/drxk_hard.c
+> @@ -3720,7 +3720,6 @@ static int set_dvbt(struct drxk_state *state, u16 intermediate_freqk_hz,
+>  {
+>  	u16 cmd_result = 0;
+>  	u16 transmission_params = 0;
+> -	u16 operation_mode = 0;
+>  	u32 iqm_rc_rate_ofs = 0;
+>  	u32 bandwidth = 0;
+>  	u16 param1;
+> @@ -3760,7 +3759,6 @@ static int set_dvbt(struct drxk_state *state, u16 intermediate_freqk_hz,
+>  	switch (state->props.transmission_mode) {
+>  	case TRANSMISSION_MODE_AUTO:
+>  	default:
+> -		operation_mode |= OFDM_SC_RA_RAM_OP_AUTO_MODE__M;
+>  		fallthrough;	/* try first guess DRX_FFTMODE_8K */
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- include/linux/rcupdate.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think that all these fallthrough annotations in these blocks are
+useless now and can be eliminated, as the block contains no code to
+fallthrough on.
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 88b42eb46406..9d7df8d36af0 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -924,7 +924,7 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
-  *
-  *     kvfree_rcu(ptr);
-  *
-- * where @ptr is a pointer to kvfree().
-+ * where @ptr is the pointer to be freed by kvfree().
-  *
-  * Please note, head-less way of freeing is permitted to
-  * use from a context that has to follow might_sleep()
--- 
-2.30.2
-
+>  	case TRANSMISSION_MODE_8K:
+>  		transmission_params |= OFDM_SC_RA_RAM_OP_PARAM_MODE_8K;
+> @@ -3774,7 +3772,6 @@ static int set_dvbt(struct drxk_state *state, u16 intermediate_freqk_hz,
+>  	switch (state->props.guard_interval) {
+>  	default:
+>  	case GUARD_INTERVAL_AUTO:
+> -		operation_mode |= OFDM_SC_RA_RAM_OP_AUTO_GUARD__M;
+>  		fallthrough;	/* try first guess DRX_GUARD_1DIV4 */
+>  	case GUARD_INTERVAL_1_4:
+>  		transmission_params |= OFDM_SC_RA_RAM_OP_PARAM_GUARD_4;
+> @@ -3795,7 +3792,6 @@ static int set_dvbt(struct drxk_state *state, u16 intermediate_freqk_hz,
+>  	case HIERARCHY_AUTO:
+>  	case HIERARCHY_NONE:
+>  	default:
+> -		operation_mode |= OFDM_SC_RA_RAM_OP_AUTO_HIER__M;
+>  		/* try first guess SC_RA_RAM_OP_PARAM_HIER_NO */
+>  		/* transmission_params |= OFDM_SC_RA_RAM_OP_PARAM_HIER_NO; */
+>  		fallthrough;
+> @@ -3815,7 +3811,6 @@ static int set_dvbt(struct drxk_state *state, u16 intermediate_freqk_hz,
+>  	switch (state->props.modulation) {
+>  	case QAM_AUTO:
+>  	default:
+> -		operation_mode |= OFDM_SC_RA_RAM_OP_AUTO_CONST__M;
+>  		fallthrough;	/* try first guess DRX_CONSTELLATION_QAM64 */
+>  	case QAM_64:
+>  		transmission_params |= OFDM_SC_RA_RAM_OP_PARAM_CONST_QAM64;
+> @@ -3858,7 +3853,6 @@ static int set_dvbt(struct drxk_state *state, u16 intermediate_freqk_hz,
+>  	switch (state->props.code_rate_HP) {
+>  	case FEC_AUTO:
+>  	default:
+> -		operation_mode |= OFDM_SC_RA_RAM_OP_AUTO_RATE__M;
+>  		fallthrough;	/* try first guess DRX_CODERATE_2DIV3 */
+>  	case FEC_2_3:
+>  		transmission_params |= OFDM_SC_RA_RAM_OP_PARAM_RATE_2_3;
+> -- 
+> 2.33.1
+> 
+> 
