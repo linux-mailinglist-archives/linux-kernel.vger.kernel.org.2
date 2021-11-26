@@ -2,109 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F7545E9C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C8945E9C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:59:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359739AbhKZJCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 04:02:53 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:49000 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347368AbhKZJAp (ORCPT
+        id S1347212AbhKZJCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 04:02:46 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:39793 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346386AbhKZJAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 04:00:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1637917053; x=1669453053;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=EYjeCTwdteyE7IMR2jhdzrSkl27yNe3saVoMlhUd2e8=;
-  b=hVLC724v546Qy+5ghal9VJUm1Gj38LWEaGRiMBPr8ecZ7NeZxwtyGvB6
-   +aqHVY34b5BQBj0vXXNpql+p8HnWS0gpYEo29ZiGx8R8MPTHay6KcWqp+
-   KzMHZn8iczegtDmhIRdvSUnXSm4RxEfKHE5sR1hQqf1kDxLhGS6g+mRCQ
-   U=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 26 Nov 2021 00:57:33 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 00:57:32 -0800
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.19; Fri, 26 Nov 2021 00:57:31 -0800
-Received: from [10.216.34.137] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.19; Fri, 26 Nov
- 2021 00:57:27 -0800
-Subject: Re: [PATCH V3 1/4] dt-bindings: leds: Add pm8350c pmic support
-To:     Trilok Soni <quic_tsoni@quicinc.com>, Pavel Machek <pavel@ucw.cz>,
-        "Rob Herring" <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <bjorn.andersson@linaro.org>
-CC:     <mka@chromium.org>, <swboyd@chromium.org>,
-        <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        satya priya <skakit@codeaurora.org>
-References: <1635507893-25490-1-git-send-email-quic_c_skakit@quicinc.com>
- <1635507893-25490-2-git-send-email-quic_c_skakit@quicinc.com>
- <7bbc2d70-9b18-7e2f-1121-49d4342341ca@quicinc.com>
-From:   "Satya Priya Kakitapalli (Temp)" <quic_c_skakit@quicinc.com>
-Message-ID: <22ecbdc4-0203-bc68-5c17-3b1b81c0a488@quicinc.com>
-Date:   Fri, 26 Nov 2021 14:27:23 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Fri, 26 Nov 2021 04:00:41 -0500
+Received: by mail-io1-f71.google.com with SMTP id m6-20020a0566022e8600b005ec18906edaso10920985iow.6
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 00:57:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=+ZdFpkiLtv13tOitXr7b9AxWjDNFefMT3T/lTbzaWiU=;
+        b=UmNaoy7m52IlIv4ZREobk9/NQ/F+CNWnE19R7W4b1O+PyagYWcnih+tQyBeaJ3pjbP
+         k+fNOGXg6ufgYQY/b0YnpN4ng8+5eh+I4LxYCKMxGyUJiDebsdiRGxO4yt7K22voJ8Zf
+         kPT4Cp3JOPtrT1yJ9ocnPam1fudx5z7x254Ch+RJN1lzEbbze4ZmQVSGVj+ZrOvZLCHl
+         2Q+ZerxusxxHuU9L9SleCbLiRcqn83A/LSKwxkH4IoEZH2UBuFDa+nrKWDJ1uOXRe5zf
+         6H+JvE9RPmXO7BwVWYum17BWXAbdD3pkLkk4J8GlnMB72gfcBpgOdN/qOt5QhcfAnPDY
+         TFnA==
+X-Gm-Message-State: AOAM532/teC2qjuu70RzDM1FOtEj+R12AcORb0ccESUW/mNq3vrFzsPs
+        dKNSUeOWkrj4V9s4Kc3d5s/tmaGE2LlPbzLKwqpV8midylEH
+X-Google-Smtp-Source: ABdhPJz6gOYAmD5/yzJZF1VtwR4nV2nNfm5HNkkckREe/forcRZjvBD8u2VBf75iUE9RDqiyjWV2PC3Ee7IH8NFNSNfTkSu7KLI4
 MIME-Version: 1.0
-In-Reply-To: <7bbc2d70-9b18-7e2f-1121-49d4342341ca@quicinc.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+X-Received: by 2002:a05:6638:2484:: with SMTP id x4mr41025035jat.51.1637917049218;
+ Fri, 26 Nov 2021 00:57:29 -0800 (PST)
+Date:   Fri, 26 Nov 2021 00:57:29 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e3eee305d1ad47e7@google.com>
+Subject: [syzbot] inconsistent lock state in io_timeout_fn
+From:   syzbot <syzbot+3cb756a49d2f394a9ee3@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-On 10/29/2021 10:53 PM, Trilok Soni wrote:
-> On 10/29/2021 4:44 AM, Satya Priya wrote:
->> From: satya priya <skakit@codeaurora.org>
->>
->> Add pm8350c pmic pwm support.
->>
->> Signed-off-by: satya priya <skakit@codeaurora.org>
->
-> If you are sending email form quic_c_skakit@quicinc.com then can you 
-> please use the same email for SOB as well?
->
+syzbot found the following issue on:
 
-Okay, I'll resend the V3 by changing SOB.
+HEAD commit:    a4849f6000e2 Merge tag 'drm-fixes-2021-11-26' of git://ano..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14388465b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=75f05fb8d1a152d3
+dashboard link: https://syzkaller.appspot.com/bug?extid=3cb756a49d2f394a9ee3
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3cb756a49d2f394a9ee3@syzkaller.appspotmail.com
+
+================================
+WARNING: inconsistent lock state
+5.16.0-rc2-syzkaller #0 Not tainted
+--------------------------------
+inconsistent {HARDIRQ-ON-W} -> {IN-HARDIRQ-W} usage.
+syz-executor.1/22058 [HC1[1]:SC0[0]:HE0:SE1] takes:
+ffff888078e11418 (&ctx->timeout_lock
+){?.+.}-{2:2}
+, at: io_timeout_fn+0x6f/0x360 fs/io_uring.c:5943
+{HARDIRQ-ON-W} state was registered at:
+  __trace_hardirqs_on_caller kernel/locking/lockdep.c:4224 [inline]
+  lockdep_hardirqs_on_prepare kernel/locking/lockdep.c:4292 [inline]
+  lockdep_hardirqs_on_prepare+0x135/0x400 kernel/locking/lockdep.c:4244
+  trace_hardirqs_on+0x5b/0x1c0 kernel/trace/trace_preemptirq.c:49
+  __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:159 [inline]
+  _raw_spin_unlock_irq+0x1f/0x40 kernel/locking/spinlock.c:202
+  spin_unlock_irq include/linux/spinlock.h:399 [inline]
+  __io_poll_remove_one fs/io_uring.c:5669 [inline]
+  __io_poll_remove_one fs/io_uring.c:5654 [inline]
+  io_poll_remove_one+0x236/0x870 fs/io_uring.c:5680
+  io_poll_remove_all+0x1af/0x235 fs/io_uring.c:5709
+  io_ring_ctx_wait_and_kill+0x1cc/0x322 fs/io_uring.c:9534
+  io_uring_release+0x42/0x46 fs/io_uring.c:9554
+  __fput+0x286/0x9f0 fs/file_table.c:280
+  task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+  exit_task_work include/linux/task_work.h:32 [inline]
+  do_exit+0xc14/0x2b40 kernel/exit.c:832
+  do_group_exit+0x125/0x310 kernel/exit.c:929
+  get_signal+0x47d/0x2220 kernel/signal.c:2852
+  arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:868
+  handle_signal_work kernel/entry/common.c:148 [inline]
+  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+  exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:207
+  __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
+irq event stamp: 24938
+hardirqs last  enabled at (24937): [<ffffffff8946bc7f>] __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:159 [inline]
+hardirqs last  enabled at (24937): [<ffffffff8946bc7f>] _raw_spin_unlock_irq+0x1f/0x40 kernel/locking/spinlock.c:202
+hardirqs last disabled at (24938): [<ffffffff8943d3fb>] sysvec_apic_timer_interrupt+0xb/0xc0 arch/x86/kernel/apic/apic.c:1097
+softirqs last  enabled at (24820): [<ffffffff8146a9b3>] invoke_softirq kernel/softirq.c:432 [inline]
+softirqs last  enabled at (24820): [<ffffffff8146a9b3>] __irq_exit_rcu+0x123/0x180 kernel/softirq.c:636
+softirqs last disabled at (24739): [<ffffffff8146a9b3>] invoke_softirq kernel/softirq.c:432 [inline]
+softirqs last disabled at (24739): [<ffffffff8146a9b3>] __irq_exit_rcu+0x123/0x180 kernel/softirq.c:636
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&ctx->timeout_lock);
+  <Interrupt>
+    lock(&ctx->timeout_lock);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor.1/22058:
+ #0: ffff888078e110a8 (&ctx->uring_lock){+.+.}-{3:3}, at: tctx_task_work+0x2b3/0x630 fs/io_uring.c:2203
+
+stack backtrace:
+CPU: 1 PID: 22058 Comm: syz-executor.1 Not tainted 5.16.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_usage_bug kernel/locking/lockdep.c:203 [inline]
+ valid_state kernel/locking/lockdep.c:3945 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:4148 [inline]
+ mark_lock.cold+0x61/0x8e kernel/locking/lockdep.c:4605
+ mark_usage kernel/locking/lockdep.c:4497 [inline]
+ __lock_acquire+0x149d/0x54a0 kernel/locking/lockdep.c:4981
+ lock_acquire kernel/locking/lockdep.c:5637 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5602
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:162
+ io_timeout_fn+0x6f/0x360 fs/io_uring.c:5943
+ __run_hrtimer kernel/time/hrtimer.c:1685 [inline]
+ __hrtimer_run_queues+0x609/0xe50 kernel/time/hrtimer.c:1749
+ hrtimer_interrupt+0x31c/0x790 kernel/time/hrtimer.c:1811
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1086 [inline]
+ __sysvec_apic_timer_interrupt+0x146/0x530 arch/x86/kernel/apic/apic.c:1103
+ sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1097
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:__raw_spin_unlock_irq include/linux/spinlock_api_smp.h:160 [inline]
+RIP: 0010:_raw_spin_unlock_irq+0x25/0x40 kernel/locking/spinlock.c:202
+Code: 0f 1f 44 00 00 55 48 8b 74 24 08 48 89 fd 48 83 c7 18 e8 6e f0 15 f8 48 89 ef e8 b6 66 16 f8 e8 81 20 37 f8 fb bf 01 00 00 00 <e8> 86 30 09 f8 65 8b 05 6f b3 bb 76 85 c0 74 02 5d c3 e8 8b 88 b9
+RSP: 0018:ffffc90017697c40 EFLAGS: 00000206
+RAX: 0000000000006169 RBX: 0000000000000000 RCX: 1ffffffff1ffcf06
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
+RBP: ffff888078e11400 R08: 0000000000000001 R09: ffffffff8ff71b3f
+R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
+R13: ffff88806fb39c80 R14: 0000000003938700 R15: ffff888035613b40
+ spin_unlock_irq include/linux/spinlock.h:399 [inline]
+ io_timeout fs/io_uring.c:6223 [inline]
+ io_issue_sqe+0x3789/0x7010 fs/io_uring.c:6662
+ __io_queue_sqe fs/io_uring.c:6976 [inline]
+ io_req_task_submit+0xce/0x450 fs/io_uring.c:2282
+ tctx_task_work+0x1b3/0x630 fs/io_uring.c:2206
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_signal include/linux/tracehook.h:214 [inline]
+ handle_signal_work kernel/entry/common.c:146 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ exit_to_user_mode_prepare+0x256/0x290 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f4040412ae9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f403d988188 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
+RAX: 0000000000000200 RBX: 00007f4040525f60 RCX: 00007f4040412ae9
+RDX: 0000000000000000 RSI: 00000000000045f5 RDI: 0000000000000004
+RBP: 00007f404046cf6d R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fff712de00f R14: 00007f403d988300 R15: 0000000000022000
+ </TASK>
+I/O error, dev loop3, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+Buffer I/O error on dev loop3, logical block 0, async page read
+I/O error, dev loop3, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+Buffer I/O error on dev loop3, logical block 0, async page read
+I/O error, dev loop3, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+Buffer I/O error on dev loop3, logical block 0, async page read
+----------------
+Code disassembly (best guess):
+   0:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+   5:	55                   	push   %rbp
+   6:	48 8b 74 24 08       	mov    0x8(%rsp),%rsi
+   b:	48 89 fd             	mov    %rdi,%rbp
+   e:	48 83 c7 18          	add    $0x18,%rdi
+  12:	e8 6e f0 15 f8       	callq  0xf815f085
+  17:	48 89 ef             	mov    %rbp,%rdi
+  1a:	e8 b6 66 16 f8       	callq  0xf81666d5
+  1f:	e8 81 20 37 f8       	callq  0xf83720a5
+  24:	fb                   	sti
+  25:	bf 01 00 00 00       	mov    $0x1,%edi
+* 2a:	e8 86 30 09 f8       	callq  0xf80930b5 <-- trapping instruction
+  2f:	65 8b 05 6f b3 bb 76 	mov    %gs:0x76bbb36f(%rip),%eax        # 0x76bbb3a5
+  36:	85 c0                	test   %eax,%eax
+  38:	74 02                	je     0x3c
+  3a:	5d                   	pop    %rbp
+  3b:	c3                   	retq
+  3c:	e8                   	.byte 0xe8
+  3d:	8b                   	.byte 0x8b
+  3e:	88                   	.byte 0x88
+  3f:	b9                   	.byte 0xb9
 
 
->
->> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
->> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
->> Acked-by: Rob Herring <robh@kernel.org>
->> ---
->> Changes in V2:
->>   - No changes.
->>
->> Changes in V3:
->>   - No changes.
->>
->>   Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git 
->> a/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml 
->> b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
->> index 336bd8e..409a4c7 100644
->> --- a/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
->> +++ b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
->> @@ -19,6 +19,7 @@ properties:
->>       enum:
->>         - qcom,pm8150b-lpg
->>         - qcom,pm8150l-lpg
->> +      - qcom,pm8350c-pwm
->>         - qcom,pm8916-pwm
->>         - qcom,pm8941-lpg
->>         - qcom,pm8994-lpg
->>
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
