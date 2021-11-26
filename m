@@ -2,196 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F33D445F153
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:08:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2F245F18D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:16:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378256AbhKZQME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:12:04 -0500
-Received: from shark2.inbox.lv ([194.152.32.82]:55402 "EHLO shark2.inbox.lv"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345470AbhKZQKD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:10:03 -0500
-Received: from shark2.inbox.lv (localhost [127.0.0.1])
-        by shark2-out.inbox.lv (Postfix) with ESMTP id BE764C015F;
-        Fri, 26 Nov 2021 18:06:48 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.lv; s=30062014;
-        t=1637942808; bh=LYlfqfN/p4CoI7DBXi0f/WvkxvZ8vxrtupJd2Moz1GE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References;
-        b=e82Cz+Vs0qcVfHadb82UAp86h3VUBxxvjbQ6I5cBEPkmJNV35PKvqXeXLytDok3+A
-         KLS5S+MFqv1MqPLqLQQwFVHJfBk8tfU9QzMuu6oGPmdMvIGk/7G/Vnhx1rcWCJVPSd
-         RhaRc0lbAXg3Bri3yi4jLq7rb9pKq8rwC4jA6EC8=
-Received: from localhost (localhost [127.0.0.1])
-        by shark2-in.inbox.lv (Postfix) with ESMTP id B09B0C0143;
-        Fri, 26 Nov 2021 18:06:48 +0200 (EET)
-Received: from shark2.inbox.lv ([127.0.0.1])
-        by localhost (shark2.inbox.lv [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id 7LvLnqRdlLUp; Fri, 26 Nov 2021 18:06:48 +0200 (EET)
-Received: from mail.inbox.lv (pop1 [127.0.0.1])
-        by shark2-in.inbox.lv (Postfix) with ESMTP id E0292C00F6;
-        Fri, 26 Nov 2021 18:06:47 +0200 (EET)
-Date:   Sat, 27 Nov 2021 01:06:31 +0900
-From:   Alexey Avramov <hakavlad@inbox.lv>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, mhocko@suse.com,
-        vbabka@suse.cz, neilb@suse.de, akpm@linux-foundation.org,
-        corbet@lwn.net, riel@surriel.com, hannes@cmpxchg.org,
-        david@fromorbit.com, willy@infradead.org, hdanton@sina.com,
-        penguin-kernel@i-love.sakura.ne.jp, oleksandr@natalenko.name,
-        kernel@xanmod.org, michael@michaellarabel.com, aros@gmx.com,
-        hakavlad@gmail.com
-Subject: Re: mm: 5.16 regression: reclaim_throttle leads to stall in
- near-OOM conditions
-Message-ID: <20211127010631.4e33a432@mail.inbox.lv>
-In-Reply-To: <20211124143303.GH3366@techsingularity.net>
-References: <20211124011954.7cab9bb4@mail.inbox.lv>
-        <20211124103550.GE3366@techsingularity.net>
-        <20211124195449.33f31e7f@mail.inbox.lv>
-        <20211124115007.GG3366@techsingularity.net>
-        <20211124214443.5c179d34@mail.inbox.lv>
-        <20211124143303.GH3366@techsingularity.net>
-X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+        id S238900AbhKZQTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:19:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230143AbhKZQRH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 11:17:07 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2501AC0613B8;
+        Fri, 26 Nov 2021 08:08:21 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: kholk11)
+        with ESMTPSA id F02011F46A35
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=collabora.com; s=mail;
+        t=1637942898; bh=Ci7/9ZWyAcBVEF/jeNsVFmDeMz8SORfGUiL+pIGvVyw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=lM0OTiHiCIbsae3BTfRWTQXRE+weAUvwS0yqAkN+U86aeBt28UDaxhD80op9jk4Za
+         oaD7xgNfY6HYBIqtdcrmY80q5Y3hRQ/EOKinSsM+K+cFaPuQwFyla/uHEA0U0mMXXg
+         f+hGI7UkdQ3iizQxrd8y6M+kYSFhYbvpZOxrOyX9wlQ6xFqFuTMywIlih/LzWlKOh1
+         HypFpXLnts3R9dkrrbWF+qfXs+B5FB0NAzMF3Y4kL33VhbLk57B1lTjqX41xNW+pyk
+         XGTm3UpuNU9rAHZiqzEOc0UV3HEHXIi995YlTlh3jTgC3k5QMqef/c02JIOaA6oQP4
+         8BSo3NGd5KEZw==
+Subject: Re: [PATCH] drm/msm: Initialize MDSS irq domain at probe time
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, robdclark@gmail.com
+Cc:     sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        maxime@cerno.tech, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        jami.kettunen@somainline.org
+References: <20211125150947.354076-1-angelogioacchino.delregno@collabora.com>
+ <32cdade5-1487-9182-e939-4d93f8a27ad6@linaro.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Message-ID: <59fc38f7-564a-8596-364a-502db6bb04ed@collabora.com>
+Date:   Fri, 26 Nov 2021 17:08:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: OK
-X-ESPOL: EZqEIBwB+wpLucmiUuRh4Or6x9a2SFsiuzn4zbosmgxU9uyBr7wBfW6TGofmHgq/cWbD
+In-Reply-To: <32cdade5-1487-9182-e939-4d93f8a27ad6@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->Please let me know if this version works any better
+Il 26/11/21 01:06, Dmitry Baryshkov ha scritto:
+> On 25/11/2021 18:09, AngeloGioacchino Del Regno wrote:
+>> Since commit 8f59ee9a570c ("drm/msm/dsi: Adjust probe order"), the
+>> DSI host gets initialized earlier, but this caused unability to probe
+>> the entire stack of components because they all depend on interrupts
+>> coming from the main `mdss` node (mdp5, or dpu1).
+>>
+>> To fix this issue, also anticipate probing mdp5 or dpu1 by initializing
+>> them at msm_pdev_probe() time: this will make sure that we add the
+>> required interrupt controller mapping before dsi and/or other components
+>> try to initialize, finally satisfying the dependency.
+>>
+>> While at it, also change the allocation of msm_drm_private to use the
+>> devm variant of kzalloc().
+>>
+>> Fixes: 8f59ee9a570c ("drm/msm/dsi: Adjust probe order")
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> 
+> Another issue (or a pack of issues):
+> Now the msm_drm_init() is unbalanced with msm_drm_uninit(). Bits of code (putting 
+> the drm dev, removing the IRQ domain, etc) have to be called now from the 
+> msm_pdev_remove() function rather than from the unbind path.
+> 
+> The following changes fix the observed issues here, however additional care should 
+> be taken.
+> 
+> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+> index 5a92417d21d0..0abb16256b61 100644
+> --- a/drivers/gpu/drm/msm/msm_drv.c
+> +++ b/drivers/gpu/drm/msm/msm_drv.c
+> @@ -342,7 +342,6 @@ static int msm_drm_uninit(struct device *dev)
+>          struct drm_device *ddev = platform_get_drvdata(pdev);
+>          struct msm_drm_private *priv = ddev->dev_private;
+>          struct msm_kms *kms = priv->kms;
+> -       struct msm_mdss *mdss = priv->mdss;
+>          int i;
+> 
+>          /*
+> @@ -402,14 +401,7 @@ static int msm_drm_uninit(struct device *dev)
+> 
+>          component_unbind_all(dev, ddev);
+> 
+> -       if (mdss && mdss->funcs)
+> -               mdss->funcs->destroy(ddev);
+> -
+> -       ddev->dev_private = NULL;
+> -       drm_dev_put(ddev);
+> -
+>          destroy_workqueue(priv->wq);
+> -       kfree(priv);
+> 
+>          return 0;
+>   }
+> @@ -515,7 +507,6 @@ static int msm_drm_init(struct device *dev, const
+>          struct drm_device *ddev = platform_get_drvdata(pdev);
+>          struct msm_drm_private *priv = ddev->dev_private;
+>          struct msm_kms *kms = priv->kms;
+> -       struct msm_mdss *mdss = priv->mdss;
+>          int ret, i;
+> 
+>          priv->wq = alloc_ordered_workqueue("msm", 0);
+> @@ -538,12 +529,12 @@ static int msm_drm_init(struct device *dev, const
+> 
+>          ret = msm_init_vram(ddev);
+>          if (ret)
+> -               goto err_destroy_mdss;
+> +               return ret;
+> 
+>          /* Bind all our sub-components: */
+>          ret = component_bind_all(dev, ddev);
+>          if (ret)
+> -               goto err_destroy_mdss;
+> +               return ret;
+> 
+>          dma_set_max_seg_size(dev, UINT_MAX);
+> 
+> @@ -649,10 +640,6 @@ static int msm_drm_init(struct device *dev, const
+>   err_msm_uninit:
+>          msm_drm_uninit(dev);
+>          return ret;
+> -err_destroy_mdss:
+> -       if (mdss && mdss->funcs)
+> -               mdss->funcs->destroy(ddev);
+> -       return ret;
+>   }
+> 
+>   /*
+> @@ -1424,9 +1411,20 @@ static int msm_pdev_probe(struct platform_device
+> 
+>   static int msm_pdev_remove(struct platform_device *pdev)
+>   {
+> +       struct drm_device *ddev = platform_get_drvdata(pdev);
+> +       struct msm_drm_private *priv = ddev->dev_private;
+> +       struct msm_mdss *mdss = priv->mdss;
+> +
+>          component_master_del(&pdev->dev, &msm_drm_ops);
+> +
+>          of_platform_depopulate(&pdev->dev);
+> 
+> +       if (mdss && mdss->funcs)
+> +               mdss->funcs->destroy(ddev);
+> +
+> +       ddev->dev_private = NULL;
+> +       drm_dev_put(ddev);
+> +
+>          return 0;
+>   }
+> 
+> 
+> 
 
-It's better, but not the same as 5.15.
+Hello,
+I had a chance to get back to this patch... and there's a bit more to do...
 
-Sometimes stall is short, sometimes is long (3 `tail /dev/zero` test):
+Applying your suggestion makes the kernel crash when removing the DSI panel:
 
-2021-11-27 00:49:04,977: Starting psi2log, target: SYSTEM_WIDE, mode: 2, interval: 2 sec, log file: /tmpfs/1, suppress output: False
-2021-11-27 00:49:04,978: PSI source dir: /proc/pressure/, source files: cpu, io, memory
-2021-11-27 00:49:04,981: Process memory locked with MCL_CURRENT | MCL_FUTURE | MCL_ONFAULT
-2021-11-27 00:49:04,981: ======|=============|=============|
-2021-11-27 00:49:04,981:  cpu  |      io     |    memory   |
-2021-11-27 00:49:04,981: ----- | ----------- | ----------- |
-2021-11-27 00:49:04,982:  some |  some  full |  some  full | interval
-2021-11-27 00:49:04,982: ----- | ----- ----- | ----- ----- | --------
-2021-11-27 00:49:06,984:   1.5 |   8.2   7.8 |   0.0   0.0 | 2.002
-2021-11-27 00:49:08,986:   1.4 |   0.8   0.8 |   0.0   0.0 | 2.002
-2021-11-27 00:49:10,989:   1.6 |   4.2   3.9 |   0.0   0.0 | 2.003
-2021-11-27 00:49:12,991:   1.2 |   2.2   2.1 |   0.0   0.0 | 2.002
-2021-11-27 00:49:14,993:   1.0 |   0.6   0.6 |   0.0   0.0 | 2.002
-2021-11-27 00:49:16,996:   1.0 |   1.3   1.2 |   0.0   0.0 | 2.002
-2021-11-27 00:49:18,997:   2.1 |   0.2   0.1 |   0.0   0.0 | 2.001
-2021-11-27 00:49:20,999:   1.0 |   0.6   0.4 |   0.0   0.0 | 2.003
-2021-11-27 00:49:23,001:   1.2 |   1.0   0.9 |   0.0   0.0 | 2.001
-2021-11-27 00:49:25,003:   0.9 |   0.0   0.0 |   0.0   0.0 | 2.003
-2021-11-27 00:49:27,005:   1.0 |   0.1   0.1 |   0.0   0.0 | 2.001
-2021-11-27 00:49:29,007:   1.0 |   0.3   0.2 |   0.0   0.0 | 2.002
-2021-11-27 00:49:31,009:   0.9 |   2.8   2.1 |   0.0   0.0 | 2.002
-2021-11-27 00:49:33,011:   1.0 |   0.1   0.1 |   0.0   0.0 | 2.003
-2021-11-27 00:49:35,014:   1.1 |   0.5   0.4 |   0.0   0.0 | 2.002
-2021-11-27 00:49:37,016:   1.1 |   2.8   2.6 |   0.0   0.0 | 2.002
-2021-11-27 00:49:39,017:   0.8 |   0.1   0.1 |   0.0   0.0 | 2.001
-2021-11-27 00:49:41,019:   0.6 |   0.0   0.0 |   0.0   0.0 | 2.002
-2021-11-27 00:49:43,021:   1.0 |   0.4   0.2 |   0.0   0.0 | 2.002
-2021-11-27 00:49:45,025:   1.2 |   0.4   0.2 |   0.0   0.0 | 2.004
-2021-11-27 00:49:47,027:   1.0 |   4.4   4.0 |   0.0   0.0 | 2.002
-2021-11-27 00:49:49,029:   0.9 |   0.1   0.1 |   0.0   0.0 | 2.001
-2021-11-27 00:49:51,031:   0.9 |   0.2   0.2 |   0.0   0.0 | 2.002
-2021-11-27 00:49:53,033:   1.0 |   4.6   3.2 |   0.0   0.0 | 2.002
-2021-11-27 00:49:55,035:   0.8 |   0.1   0.1 |   0.0   0.0 | 2.002
-2021-11-27 00:49:57,037:   0.7 |   0.0   0.0 |   0.0   0.0 | 2.002
-2021-11-27 00:49:59,039:   0.9 |   0.1   0.1 |   0.0   0.0 | 2.002
-2021-11-27 00:50:01,041:   0.8 |   0.0   0.0 |   0.0   0.0 | 2.002
-2021-11-27 00:50:03,044:   1.0 |   3.3   3.2 |   0.0   0.0 | 2.003
-2021-11-27 00:50:05,045:   1.0 |   0.1   0.0 |   0.0   0.0 | 2.001
-2021-11-27 00:50:07,047:   0.9 |   0.0   0.0 |   0.0   0.0 | 2.002
-2021-11-27 00:50:09,049:   0.9 |   0.4   0.4 |   0.0   0.0 | 2.002
-2021-11-27 00:50:11,051:   0.9 |   0.4   0.4 |   0.0   0.0 | 2.002
-2021-11-27 00:50:13,053:   0.9 |   0.1   0.1 |   0.0   0.0 | 2.003
-2021-11-27 00:50:15,055:   1.1 |   0.4   0.3 |   0.0   0.0 | 2.002
-2021-11-27 00:50:17,057:   1.1 |   0.0   0.0 |   0.0   0.0 | 2.002
-2021-11-27 00:50:19,059:   0.9 |   6.9   6.0 |   0.0   0.0 | 2.003
-2021-11-27 00:50:21,061:   1.1 |   1.5   1.4 |   0.0   0.0 | 2.001
-2021-11-27 00:50:23,063:   0.9 |   3.9   3.8 |   0.0   0.0 | 2.002
-2021-11-27 00:50:25,065:   0.5 |   0.0   0.0 |   0.0   0.0 | 2.002
-2021-11-27 00:50:27,067:   0.4 |   0.0   0.0 |   0.0   0.0 | 2.003
-2021-11-27 00:50:29,070:   0.7 |  10.0   8.8 |   8.5   8.4 | 2.003
-2021-11-27 00:50:31,072:   0.1 |  89.1  76.4 |  22.6  22.5 | 2.002
-2021-11-27 00:50:33,074:   0.3 |  93.6  80.0 |  30.7  30.6 | 2.002
-2021-11-27 00:50:35,077:   0.7 |  90.5  76.9 |  67.7  67.3 | 2.002 <-- short stall
-2021-11-27 00:50:37,079:   1.0 |  92.6  84.5 |  40.5  40.2 | 2.002
-2021-11-27 00:50:39,082:   0.3 |  92.8  91.5 |   0.0   0.0 | 2.003
-2021-11-27 00:50:41,084:   1.0 |  93.2  89.3 |   0.0   0.0 | 2.003
-2021-11-27 00:50:43,087:   0.7 |  85.4  82.5 |   0.0   0.0 | 2.003
-2021-11-27 00:50:45,089:   0.5 |  65.1  62.9 |   0.0   0.0 | 2.002
-2021-11-27 00:50:47,091:   0.5 |  57.6  55.6 |   2.4   2.4 | 2.002
-2021-11-27 00:50:49,093:   0.1 |  80.2  79.7 |  58.4  58.2 | 2.002
-2021-11-27 00:50:51,096:   0.1 |  62.3  54.9 |  83.9  83.4 | 2.002
-2021-11-27 00:50:53,096:   0.2 |  53.8  52.9 |  95.2  94.5 | 2.001
-2021-11-27 00:50:55,099:   0.2 |  78.4  75.7 |  93.1  92.6 | 2.002
-2021-11-27 00:50:57,101:   0.1 |  66.4  64.2 |  97.9  97.4 | 2.002
-2021-11-27 00:50:59,103:   0.1 |  70.7  68.2 |  91.7  91.2 | 2.002
-2021-11-27 00:51:01,105:   0.2 |  54.5  54.1 |  92.4  91.8 | 2.001
-2021-11-27 00:51:03,107:   0.2 |  43.0  42.7 |  94.5  94.1 | 2.002
-2021-11-27 00:51:05,109:   0.3 |  26.6  26.0 |  98.0  96.8 | 2.002
-2021-11-27 00:51:07,111:   0.5 |  18.3  17.9 |  98.9  97.4 | 2.002
-2021-11-27 00:51:09,114:   0.3 |  22.7  22.2 |  97.7  96.9 | 2.002
-2021-11-27 00:51:11,116:   0.6 |  21.3  19.9 |  93.7  91.2 | 2.002 <-- medium stall
-2021-11-27 00:51:13,117:   0.2 |  98.4  96.4 |   0.9   0.9 | 2.001
-2021-11-27 00:51:15,119:   0.2 |  92.9  91.7 |   0.0   0.0 | 2.003
-2021-11-27 00:51:17,121:   1.1 |  92.7  88.3 |   0.0   0.0 | 2.001
-2021-11-27 00:51:19,123:   0.8 |  81.7  78.3 |   0.0   0.0 | 2.003
-2021-11-27 00:51:21,125:   0.6 |  63.8  59.3 |   0.0   0.0 | 2.002
-2021-11-27 00:51:23,128:   0.8 |  44.3  37.7 |   1.0   1.0 | 2.002
-2021-11-27 00:51:25,130:   0.1 |  79.3  78.7 |  48.8  48.7 | 2.002
-2021-11-27 00:51:27,132:   0.1 |  69.7  69.3 |  79.2  79.0 | 2.002
-2021-11-27 00:51:29,135:   0.3 |  50.2  45.4 |  80.0  79.7 | 2.002
-2021-11-27 00:51:31,136:   0.2 |  69.9  66.8 |  85.1  84.7 | 2.002
-2021-11-27 00:51:33,139:   0.2 |  39.4  39.0 |  96.2  95.9 | 2.002
-2021-11-27 00:51:35,140:   0.3 |  56.4  52.2 |  94.9  94.5 | 2.002
-2021-11-27 00:51:37,143:   0.5 |  27.9  26.7 |  96.9  96.7 | 2.002
-2021-11-27 00:51:39,146:   0.6 |   2.1   2.1 |  97.8  97.6 | 2.003
-2021-11-27 00:51:41,149:   0.4 |   1.9   1.8 |  96.9  96.7 | 2.003
-2021-11-27 00:51:43,151:   0.7 |   0.2   0.2 |  99.7  99.5 | 2.003
-2021-11-27 00:51:45,153:   0.6 |   0.0   0.0 |  98.4  98.2 | 2.002
-2021-11-27 00:51:47,156:   0.6 |   0.0   0.0 |  97.6  97.5 | 2.002
-2021-11-27 00:51:49,159:   0.5 |   0.6   0.6 |  99.2  99.1 | 2.003
-2021-11-27 00:51:51,160:   0.6 |   3.3   3.3 |  98.7  98.4 | 2.002
-2021-11-27 00:51:53,163:   0.7 |   2.2   2.2 |  96.4  96.2 | 2.002
-2021-11-27 00:51:55,165:   0.6 |   0.7   0.6 |  98.5  98.3 | 2.002
-2021-11-27 00:51:57,167:   0.6 |   0.0   0.0 | 100.0  99.9 | 2.002
-2021-11-27 00:51:59,169:   0.7 |   1.4   1.4 |  99.3  99.2 | 2.002
-2021-11-27 00:52:01,172:   0.7 |   1.9   1.8 |  98.4  98.2 | 2.002
-2021-11-27 00:52:03,174:   0.9 |   0.0   0.0 |  98.3  98.1 | 2.002
-2021-11-27 00:52:05,177:   0.5 |   3.3   3.2 |  99.0  98.8 | 2.003
-2021-11-27 00:52:07,179:   0.6 |   2.3   2.3 |  97.8  97.6 | 2.002
-2021-11-27 00:52:09,181:   0.8 |   1.8   1.8 |  98.3  98.1 | 2.002
-2021-11-27 00:52:11,184:   1.0 |   0.3   0.3 |  98.1  97.9 | 2.003
-2021-11-27 00:52:13,187:   1.1 |   0.8   0.8 |  98.3  98.1 | 2.003
-2021-11-27 00:52:15,189:   0.8 |   1.3   1.3 |  98.3  98.1 | 2.002
-2021-11-27 00:52:17,191:   0.7 |   1.2   1.2 |  96.4  96.2 | 2.002
-2021-11-27 00:52:19,194:   1.0 |   0.0   0.0 |  99.0  98.7 | 2.002
-2021-11-27 00:52:21,197:   0.7 |   0.6   0.6 |  99.2  99.0 | 2.003
-2021-11-27 00:52:23,199:   0.9 |   0.0   0.0 | 100.0  99.8 | 2.003
-2021-11-27 00:52:25,202:   0.6 |   2.2   2.1 |  97.0  96.8 | 2.002
-2021-11-27 00:52:27,204:   0.9 |   0.7   0.6 |  96.7  96.5 | 2.002
-2021-11-27 00:52:29,207:   0.7 |   5.4   5.2 |  98.5  98.3 | 2.003
-2021-11-27 00:52:31,209:   0.7 |  13.2  12.4 |  95.8  95.5 | 2.002
-2021-11-27 00:52:33,212:   1.0 |  10.5   9.9 |  97.8  97.6 | 2.003
-2021-11-27 00:52:35,213:   0.5 |  21.2  20.3 |  96.8  96.5 | 2.001
-2021-11-27 00:52:37,215:   0.5 |   1.5   1.5 |  96.9  96.7 | 2.002
-2021-11-27 00:52:39,217:   0.9 |   1.7   1.7 |  97.9  97.7 | 2.002
-2021-11-27 00:52:41,220:   1.4 |   0.0   0.0 | 100.0  99.7 | 2.002
-2021-11-27 00:52:43,222:   0.7 |   0.1   0.1 |  99.0  98.8 | 2.002
-2021-11-27 00:52:45,224:   0.6 |   0.2   0.1 | 100.0  99.8 | 2.002
-2021-11-27 00:52:47,227:   1.1 |   0.0   0.0 |  99.7  99.4 | 2.002
-2021-11-27 00:52:49,229:   0.8 |   0.0   0.0 | 100.0  99.8 | 2.002
-2021-11-27 00:52:51,231:   0.7 |   0.0   0.0 | 100.0  99.8 | 2.002
-2021-11-27 00:53:13,283: WARNING: abnormal interval (22.052 sec), metrics may be provided incorrect
-2021-11-27 00:53:13,283:   0.7 |  12.9  12.6 |  90.5  90.1 | 22.052 <-- long stall
-2021-11-27 00:53:15,286:   0.2 |  91.1  88.9 |   6.0   5.9 | 2.003
-2021-11-27 00:53:17,288:   0.6 |  91.5  89.2 |   0.0   0.0 | 2.003
-2021-11-27 00:53:19,291:   1.2 |  93.4  87.1 |   0.0   0.0 | 2.003
-2021-11-27 00:53:21,293:   1.1 |  80.7  74.4 |   0.0   0.0 | 2.002
-2021-11-27 00:53:23,295:   1.1 |  76.0  71.0 |   0.0   0.0 | 2.003
-2021-11-27 00:53:25,296:   1.0 |  40.0  35.9 |   0.0   0.0 | 2.001
-2021-11-27 00:53:27,297:   1.0 |  27.4  25.5 |   0.0   0.0 | 2.0
+[   92.084668] Unable to handle kernel paging request at virtual address 
+ffffdd7f137945d8
+
+[   92.092848] Mem abort info:
+
+[   92.095758]   ESR = 0x96000007
+
+[   92.098918]   EC = 0x25: DABT (current EL), IL = 32 bits
+
+[   92.104395]   SET = 0, FnV = 0
+
+[   92.107545]   EA = 0, S1PTW = 0
+
+[   92.110785]   FSC = 0x07: level 3 translation fault
+
+[   92.115802] Data abort info:
+
+[   92.118767]   ISV = 0, ISS = 0x00000007
+
+[   92.122720]   CM = 0, WnR = 0
+
+[   92.125770] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000082466000
+
+[   92.132668] [ffffdd7f137945d8] pgd=100000017ffff003, p4d=100000017ffff003, 
+pud=10000001034bb003, pmd=1000000108ec2003, pte=0000000000000000
+
+[   92.145530] Internal error: Oops: 96000007 [#1] SMP
+
+[   92.150557] Modules linked in: af_alg ipv6 uvcvideo videobuf2_vmalloc 
+snd_soc_hdmi_codec venus_enc venus_dec videobuf2_dma_contig videobuf2_memops 
+cdc_ether usbnet hci_uart ath10k_snoc msm venus_core r8152 ath10k_core btqca btbcm 
+v4l2_mem2mem ti_sn65dsi86(-) ath gpu_sched videobuf2_v4l2 sx9310 cros_ec_typec 
+drm_dp_aux_bus bluetooth mac80211 snd_soc_rt5682_i2c qrtr typec drm_kms_helper 
+sbs_battery snd_soc_rt5682 videobuf2_common cros_usbpd_charger cros_usbpd_logger 
+cros_ec_chardev elan_i2c pwm_cros_ec industrialio_triggered_buffer qcom_q6v5_mss 
+videodev snd_soc_rl6231 kfifo_buf qcom_spmi_adc5 drm snd_soc_sc7180 
+qcom_vadc_common qcom_pil_info qcom_spmi_temp_alarm ecdh_generic crct10dif_ce 
+libarc4 mc snd_soc_qcom_common ecc qcom_stats qcom_q6v5 ipa cfg80211 
+snd_soc_lpass_sc7180 i2c_qcom_geni reset_qcom_pdc qcom_sysmon dispcc_sc7180 
+spi_geni_qcom snd_soc_lpass_hdmi videocc_sc7180 qcom_common qcom_glink_smem 
+snd_soc_lpass_cpu spi_qcom_qspi lpasscorecc_sc7180 qmi_helpers gpucc_sc7180
+
+[   92.150710]  snd_soc_lpass_platform icc_osm_l3 mdt_loader qcom_wdt 
+snd_soc_max98357a socinfo rmtfs_mem pwm_bl rfkill uinput btrfs blake2b_generic 
+libcrc32c xor xor_neon raid6_pq zstd_compress cuse fuse [last unloaded: panel_edp]
+
+[   92.239499] CPU: 2 PID: 1627 Comm: rmmod Not tainted 5.16.0-rc2-next-20211125+ #29
+
+[   92.239508] Hardware name: Google Lazor Limozeen without Touchscreen (rev5 - 
+rev8) (DT)
+
+[   92.239512] pstate: 60400009 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+
+[   92.239518] pc : drm_panel_disable+0x80/0xe0 [drm]
+
+[   92.268628] rfkill: input handler enabled
+
+[   92.276336] lr : drm_panel_disable+0x6c/0xe0 [drm]
+
+[   92.297469] sp : ffff80000c7c38a0
+
+[   92.297474] x29: ffff80000c7c38a0 x28: ffffdd7f136e6e68 x27: ffff280ed1801400
+
+[   92.308207] x26: ffff280ec46c5080 x25: ffff280ec46b3880 x24: ffffdd7f1341e6f8
+
+[   92.315534] x23: 0000000000000038 x22: ffff280ec46c50d8 x21: ffff280ec0a28e00
+
+[   92.322858] x20: 0000000000000000 x19: ffff280ec3de7c80 x18: 0000000000000020
+
+[   92.330191] x17: 0000000000000000 x16: ffffdd7f4b7acec0 x15: 0000000000000000
+
+[   92.337531] x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000000
+
+[   92.344859] x11: 0000000000000000 x10: 0000000000000000 x9 : ffffdd7f13335000
+
+[   92.352182] x8 : ffff280f03fed280 x7 : 0000000000000001 x6 : ffff280edf1c2600
+
+[   92.359504] x5 : 0000000000000002 x4 : ffff280f03fed280 x3 : ffff280ec4689820
+
+[   92.366835] x2 : 0000000000000000 x1 : ffffdd7f137945c8 x0 : 0000000000000000
+
+[   92.374159] Call trace:
+
+[   92.376682]  drm_panel_disable+0x80/0xe0 [drm]
+
+[   92.381367]  panel_bridge_disable+0x18/0x2c [drm_kms_helper]
+
+[   92.387281]  drm_atomic_bridge_chain_disable+0x98/0xd0 [drm]
+
+[   92.393194]  disable_outputs+0xfc/0x31c [drm_kms_helper]
+
+[   92.398738]  drm_atomic_helper_commit_modeset_disables+0x20/0x50 [drm_kms_helper]
+
+[   92.406482]  msm_atomic_commit_tail+0x188/0x500 [msm]
+
+[   92.411772]  commit_tail+0xa4/0x184 [drm_kms_helper]
+
+[   92.416954]  drm_atomic_helper_commit+0x164/0x3fc [drm_kms_helper]
+
+[   92.423373]  drm_atomic_commit+0x50/0x60 [drm]
+
+[   92.428064]  drm_atomic_helper_disable_all+0x1f8/0x20c [drm_kms_helper]
+
+[   92.434989]  drm_atomic_helper_shutdown+0x80/0x130 [drm_kms_helper]
+
+[   92.441497]  msm_drm_uninit.isra.0+0x14c/0x174 [msm]
+
+[   92.446729]  msm_drm_unbind+0x14/0x20 [msm]
+
+[   92.451125]  component_del+0xa8/0x160
+
+[   92.454898]  dsi_dev_detach+0x24/0x30 [msm]
+
+[   92.459294]  dsi_host_detach+0x20/0x64 [msm]
+
+[   92.463764]  devm_mipi_dsi_detach+0x2c/0x40
+
+[   92.468069]  devm_action_release+0x18/0x24
+
+[   92.472278]  devres_release_group+0x100/0x1b0
+
+[   92.476755]  i2c_device_remove+0x48/0xf0
+
+[   92.480790]  __device_release_driver+0x188/0x23c
+
+[   92.485534]  driver_detach+0xfc/0x1e0
+
+[   92.489303]  bus_remove_driver+0x5c/0xd0
+
+[   92.493333]  driver_unregister+0x34/0x64
+
+[   92.497363]  i2c_del_driver+0x58/0x70
+
+[   92.501134]  ti_sn65dsi86_exit+0x44/0x98c [ti_sn65dsi86]
+
+[   92.506611]  __arm64_sys_delete_module+0x198/0x22c
+
+[   92.511535]  invoke_syscall+0x48/0x114
+
+[   92.515389]  el0_svc_common.constprop.0+0x44/0xec
+
+[   92.520223]  do_el0_svc+0x28/0x90
+
+[   92.523629]  el0_svc+0x20/0x60
+
+[   92.526780]  el0t_64_sync_handler+0xec/0xf0
+
+[   92.531085]  el0t_64_sync+0x1a0/0x1a4
+
+[   92.534879] Code: f94013f5 52800000 f9400a61 b40000a1 (f9400821)
+
+[   92.541134] ---[ end trace 1bc553757c40a199 ]---
+
+
+
+I'll look into this.
+In the meanwhile, if anyone has any suggestion before I solve this issue,
+as to speed up getting this fix done (as it's pretty much critical), you're
+welcome.
