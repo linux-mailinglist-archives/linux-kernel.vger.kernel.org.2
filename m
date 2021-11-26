@@ -2,173 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A271745F0F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:43:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E614545F103
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:46:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378275AbhKZPqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:46:17 -0500
-Received: from mga12.intel.com ([192.55.52.136]:41356 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377982AbhKZPoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:44:11 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="215703206"
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="215703206"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 07:38:53 -0800
-X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
-   d="scan'208";a="599034554"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 07:38:50 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mqdJH-00ApBO-5f;
-        Fri, 26 Nov 2021 17:38:47 +0200
-Date:   Fri, 26 Nov 2021 17:38:46 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Tan Jui Nee <jui.nee.tan@intel.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Jonathan Yong <jonathan.yong@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com,
-        henning.schild@siemens.com
-Subject: Re: [PATCH v1 3/7] PCI: New Primary to Sideband (P2SB) bridge
- support library
-Message-ID: <YaD/hspdA/j0tL5h@smile.fi.intel.com>
-References: <YEZ4IitUa+I9HM5F@smile.fi.intel.com>
- <20210309014221.GA1831206@bjorn-Precision-5520>
+        id S1354292AbhKZPtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 10:49:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1378079AbhKZPrl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 10:47:41 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D772C0613F8
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 07:39:23 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id v23so11838264iom.12
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 07:39:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=274Q/ZAR2tJK2tvrv6ob2tLr8yiaidfzpxRndGsg+Jw=;
+        b=VILeHlJ58UYc/45Jyz0QIBZo5je0NWjHDkZc7Slj4nmZOkq6P9/xbXke7Q6zWVZgzf
+         CdLMHgGoDy106GlBIwv2PFCrXX+tgUca/8EOoPwZtCvKd4zegO0F6GNS7HcYk1bZP6Uy
+         mmRZobVs87Hzz8vPEtgioM6q2d8jILrAX3DsYAGmJs8rjaPVoLul2LYqBuEpPkPthAh9
+         ViT8VqvN+rGLebfFYA2FPFY5EypgOjJOSjaFNrKCo++oaZ6sUgIvJ056hmk9ZD6qBmId
+         N6N094YWVL3jf6GCAk8gdXH0V3ylTxFhBLfvU88u5Cfjr8NWh3OJNgs0zCJEzo2tjHpC
+         mbnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=274Q/ZAR2tJK2tvrv6ob2tLr8yiaidfzpxRndGsg+Jw=;
+        b=8E/sRBZqWzJHR2Ar6/CNR8oQ/OA/clDmdsXNA108FSkDxMtZR0iGc+4grbTatVZhzm
+         xL9M7PA86jGbD7i5Og19DCO12ljw0XkD4T7nIoK5By9pSpUsbBPiLY0HWAwBhaOkNPCs
+         urPn/bDVWAOWJ1NNwlb2b5fFsfpEyR6HSwORahTL3Mwv+ror/iJDrM8QT8wWQB5r8tTT
+         zf0uXmAvEKP+3suf9s4jaaddOxRROLTm3lF1RuNtdodW5Ug4+f4sdbm0eyRTKifU3dCF
+         KzR6vN7RIN46HqTyq11M9o5/G3616jBeGjrFgwG8E6Qm7hKE2lFsEoERFyAuD01fbqfj
+         fj9g==
+X-Gm-Message-State: AOAM533CbLIjh6RvWzR2xM34O4xAKLmGNZDRIUhz+fKsi9rUEZfXmWqX
+        yEgHAL4UWdeoZUVk4YbA/RtsN24XJvy8aI9i
+X-Google-Smtp-Source: ABdhPJzQdGcpJo8sMqqf55R9qprT9dw8UY5pSjpXa2ITLDMJZDJcUG2UlSUi12nSVpKZxN+fVT8//Q==
+X-Received: by 2002:a05:6638:3182:: with SMTP id z2mr41736223jak.134.1637941162695;
+        Fri, 26 Nov 2021 07:39:22 -0800 (PST)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id a4sm3367274ild.52.2021.11.26.07.39.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Nov 2021 07:39:22 -0800 (PST)
+Subject: Re: [syzbot] inconsistent lock state in io_poll_remove_all
+To:     syzbot <syzbot+51ce8887cdef77c9ac83@syzkaller.appspotmail.com>,
+        asml.silence@gmail.com, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000c7ba4b05d1adb200@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <cc6aeb46-1cfc-ac3e-0764-c2f930b6f28e@kernel.dk>
+Date:   Fri, 26 Nov 2021 08:39:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210309014221.GA1831206@bjorn-Precision-5520>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <000000000000c7ba4b05d1adb200@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 07:42:21PM -0600, Bjorn Helgaas wrote:
-> On Mon, Mar 08, 2021 at 09:16:50PM +0200, Andy Shevchenko wrote:
-> > On Mon, Mar 08, 2021 at 12:52:12PM -0600, Bjorn Helgaas wrote:
-> > > On Mon, Mar 08, 2021 at 02:20:16PM +0200, Andy Shevchenko wrote:
-> > > > From: Jonathan Yong <jonathan.yong@intel.com>
-> > > > 
-> > > > There is already one and at least one more user is coming which
-> > > > requires an access to Primary to Sideband bridge (P2SB) in order to
-> > > > get IO or MMIO bar hidden by BIOS. Create a library to access P2SB
-> > > > for x86 devices.
-> > > 
-> > > Can you include a spec reference?
-> > 
-> > I'm not sure I have a public link to the spec. It's the 100 Series PCH [1].
-> > The document number to look for is 546955 [2] and there actually a bit of
-> > information about this.
+On 11/26/21 2:27 AM, syzbot wrote:
+> Hello,
 > 
-> This link, found by googling for "p2sb bridge", looks like it might
-> have relevant public links:
+> syzbot found the following issue on:
 > 
-> https://lab.whitequark.org/notes/2017-11-08/accessing-intel-ich-pch-gpios/
+> HEAD commit:    a4849f6000e2 Merge tag 'drm-fixes-2021-11-26' of git://ano..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=11162e9ab00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=bf85c53718a1e697
+> dashboard link: https://syzkaller.appspot.com/bug?extid=51ce8887cdef77c9ac83
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 > 
-> I'd prefer if you could dig out the relevant sections because I really
-> don't know how to identify them.
-
-I'm not sure I understand what you would like to see. The information about
-P2SB here has confidential tag. I probably can use the document number and cite
-couple of paragraphs from it. Would it be sufficient?
-
-> > > I'm trying to figure out why this
-> > > belongs in drivers/pci/.  It looks very device-specific.
-> > 
-> > Because it's all about access to PCI configuration spaces of the (hidden)
-> > devices.
+> Unfortunately, I don't have any reproducer for this issue yet.
 > 
-> The PCI core generally doesn't deal with device-specific config
-> registers.
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+51ce8887cdef77c9ac83@syzkaller.appspotmail.com
 
-The location is purely based on practical reason, after the fact that P2SB
-is a PCI device, of deduplicating BAR decoding code. I can easily move this
-outside of PCI subsystem, but I will need to export this function instead.
-Would it work for you?
-
-> > [1]: https://ark.intel.com/content/www/us/en/ark/products/series/98456/intel-100-series-desktop-chipsets.html
-> > [2]: https://medium.com/@jacksonchen_43335/bios-gpio-p2sb-70e9b829b403
-
-...
-
-> The code suggests that a register on this device controls whether a
-> different device is visible in config space.  I think it will be
-> better if we can describe what's happening.
-
-Actually it seems incorrect assumption (while it works by some reason).
-I have to double test this.
-
-From the doc:
-
-"The P2SB is enumerated as a normal PCI device. ...
-Writing a 1 to the P2SBC.HIDE field in the P2SB PCI Configuration space
-hides the device; writing a 0 to this field, unhides the device."
-
-It clearly states the P2SB PCI configuration space.
-
-Also it looks like Henning pointed out to this by asking why we need too many
-parameters to the function.
-
-...
-
-> > > > +	/* Unhide the P2SB device */
-> > > > +	pci_bus_write_config_byte(bus, df, P2SBC_HIDE_BYTE, 0);
-> > > > +
-> > > > +	/* Read the first BAR of the device in question */
-> > > > +	__pci_bus_read_base(bus, devfn, pci_bar_unknown, mem, PCI_BASE_ADDRESS_0, true);
-> > > 
-> > > I don't get this.  Apparently this normally hidden device is consuming
-> > > PCI address space.  The PCI core needs to know about this.  If it
-> > > doesn't, the PCI core may assign this space to another device.
-> > 
-> > Right, it returns all 1:s to any request so PCI core *thinks* it's
-> > plugged off (like D3cold or so).
-> 
-> I'm asking about the MMIO address space.
-
-> The BAR is a register in
-> config space.  AFAICT, clearing P2SBC_HIDE_BYTE makes that BAR
-> visible.  The BAR describes a region of PCI address space.  It looks
-> like setting P2SBC_HIDE_BIT makes the BAR disappear from config space,
-> but it sounds like the PCI address space *described* by the BAR is
-> still claimed by the device.  If the device didn't respond to that
-> MMIO space, you would have no reason to read the BAR at all.
-> 
-> So what keeps the PCI core from assigning that MMIO space to another
-> device?
-> 
-> This all sounds quite irregular from the point of view of the PCI
-> core.  If a device responds to address space that is not described by
-> a standard PCI BAR, or by an EA capability, or by one of the legacy
-> VGA or IDE exceptions, we have a problem.  That space must be
-> described *somehow* in a generic way, e.g., ACPI or similar.
-> 
-> What happens if CONFIG_PCI_P2SB is unset?  The device doesn't know
-> that, and if it is still consuming MMIO address space that we don't
-> know about, that's a problem.
-
-Yeah, Henning already answered on this and I believe that nothing prevents OS
-to try that addresses for other PCI devices, except the memory region
-reservation (by ACPI and / or e820 meaning). It means that we rely on firmware
-to do the right thing if it hides the P2SB bar.
-
-And at the same time P2SB bar is used as a part of telling OS where the *fixed*
-16Mb region of MMIO is located.
-
-> > > > +	/* Hide the P2SB device */
-> > > > +	pci_bus_write_config_byte(bus, df, P2SBC_HIDE_BYTE, P2SBC_HIDE_BIT);
+#syz fix io_uring: fix link traversal locking
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+Jens Axboe
 
