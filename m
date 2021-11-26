@@ -2,85 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5EB45ECF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:49:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E112A45ECF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 12:51:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351099AbhKZLxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 06:53:01 -0500
-Received: from foss.arm.com ([217.140.110.172]:32862 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231812AbhKZLvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 06:51:00 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F311A1FB;
-        Fri, 26 Nov 2021 03:47:46 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.34.174])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1CD033F66F;
-        Fri, 26 Nov 2021 03:47:45 -0800 (PST)
-Date:   Fri, 26 Nov 2021 11:47:38 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: lib/atomic64.c:82:5: warning: no previous prototype for
- 'generic_atomic64_and_return'
-Message-ID: <YaDJWgwqdzNeCFLW@FVFF77S0Q05N>
-References: <202111120712.RtQHZohY-lkp@intel.com>
+        id S1347672AbhKZLyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 06:54:17 -0500
+Received: from so254-9.mailgun.net ([198.61.254.9]:12283 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349018AbhKZLwQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 06:52:16 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1637927339; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=oZgdyvo1io3Ueda7LDecb0wwryFOu5iilAfeWEuxHaA=; b=MUnG4gFsunEXQjqgYn/5vTxOByX3Bwuca7bKrbPyc0WdHOATjW1bUhP64jHah9dEICD/AMBM
+ xaBxD2Q5jHoZ8Sbff6NuwzbvD9tWJZ/I/EUvVfaolzNJOgoCPB8/PUTv2kb3UdtN9ZYRyz/q
+ axVftwN9l9DYLRZpAqRQaDchxy0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 61a0c9ab1abc6f02d0e40ac3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Nov 2021 11:48:59
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3E990C43616; Fri, 26 Nov 2021 11:48:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.242.143.72] (unknown [202.46.23.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9BBDEC4338F;
+        Fri, 26 Nov 2021 11:48:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 9BBDEC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v4 00/10] Add support for audio on SC7280 based targets
+To:     Mark Brown <broonie@kernel.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org,
+        judyhsiao@chromium.org
+References: <1635838265-27346-1-git-send-email-srivasam@codeaurora.org>
+ <YZUT6BQKz00jXov9@sirena.org.uk>
+ <e01729cd-0b2b-fe27-809b-c75ccbb6fac4@codeaurora.org>
+ <YZ+z+XPyecvDJA88@sirena.org.uk>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <e69ac087-f78c-65e0-4ea9-dc408a69255c@codeaurora.org>
+Date:   Fri, 26 Nov 2021 17:18:51 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202111120712.RtQHZohY-lkp@intel.com>
+In-Reply-To: <YZ+z+XPyecvDJA88@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 07:08:19AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   debe436e77c72fcee804fb867f275e6d31aa999c
-> commit: 1bdadf46eff6804ace5fa46b6856da4799f12b5c locking/atomic: atomic64: support ARCH_ATOMIC
-> date:   6 months ago
-> config: arc-randconfig-r032-20211109 (attached as .config)
-> compiler: arc-elf-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1bdadf46eff6804ace5fa46b6856da4799f12b5c
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 1bdadf46eff6804ace5fa46b6856da4799f12b5c
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=arc 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
 
-> >> lib/atomic64.c:82:5: warning: no previous prototype for 'generic_atomic64_and_return' [-Wmissing-prototypes]
+On 11/25/2021 9:34 PM, Mark Brown wrote:
+> On Thu, Nov 18, 2021 at 03:35:46PM +0530, Srinivasa Rao Mandadapu wrote:
+>> On 11/17/2021 8:08 PM, Mark Brown wrote:
+>>> On Tue, Nov 02, 2021 at 01:00:55PM +0530, Srinivasa Rao Mandadapu wrote:
+>>>
+>>>> This patch set depends on:
+>>>> 	-- https://patchwork.kernel.org/project/alsa-devel/list/?series=570161
+>>>> 	-- https://patchwork.kernel.org/project/alsa-devel/list/?series=572615
+>>>> 	-- https://patchwork.kernel.org/project/alsa-devel/list/?series=559677
+>>> None of those links seem to show any patches (or errors)?
+>> Sorry for Inconvenience Rob. I think due to it's status change patches are
+>> not being appeared on provided link.
+> I'm not Rob...
+Sorry.. Brown.😁
+>
+>> With removing filter able to see patch set. Below are the links with view
+>> filter change.
+>>
+>> -- 
+>> https://patchwork.kernel.org/project/alsa-devel/list/?series=570161&archive=both&state=*
+> Please note this bit of the mail:
+>
+>>> Please include human readable descriptions of things like commits and
+>>> issues being discussed in e-mail in your mails, this makes them much
+>>> easier for humans to read especially when they have no internet access.
+>>> I do frequently catch up on my mail on flights or while otherwise
+>>> travelling so this is even more pressing for me than just being about
+>>> making things a bit easier to read.
+> So it looks like we still depend on at least the sc7280 machine driver?
+Yes. Currently it depends on Machine driver.
 
-> >> lib/atomic64.c:82:5: warning: no previous prototype for 'generic_atomic64_or_return' [-Wmissing-prototypes]
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-> >> lib/atomic64.c:82:5: warning: no previous prototype for 'generic_atomic64_xor_return' [-Wmissing-prototypes]
-
-Ah, there are not meant to be return forms of the and/or/xor operations, so
-we're pointlessly building code that cannot be used (but this is not otherwise
-harmful).
-
-That said, I think this is nothing to do with commit:
-
-  1bdadf46eff6804a ("locking/atomic: atomic64: support ARCH_ATOMIC")
-
-... and is in fact a latent issue introduced by commit:
-
-  28aa2bda2211f432 ("locking/atomic: Implement atomic{,64,_long}_fetch_{add,sub,and,andnot,or,xor}{,_relaxed,_acquire,_release}()")
-
-... where we accidentally left the:
-
-   ATOMIC64_OP_RETURN(op, c_op)
-
-... line for the and/or/xor atomics, even though that wasn't necessary.
-
-This is trivial to avoid, so I'll send a patch shortly.
-
-Thanks,
-Mark.
