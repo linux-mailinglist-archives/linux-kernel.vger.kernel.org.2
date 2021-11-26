@@ -2,164 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0FD45EA84
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:38:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0AE745EA86
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 10:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376430AbhKZJlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 04:41:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48544 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232227AbhKZJjk (ORCPT
+        id S1376391AbhKZJmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 04:42:45 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:34661 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346777AbhKZJkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 04:39:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637919387;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZiB1krVbys9eLFZwfwXkN03MgzksWAvLFVCizihUdLQ=;
-        b=gdoKuGJfk/ZkfI3WGt4CjVnGAEk0iH3D3ImGdm4kRylrLkEkTVdYTslJcgCr0NSAHhdC0G
-        8Wtj516hIWMMc5SnAjVLsZdarV1eXxPSVWoBZcVovvmyCVM21UljspTb5KzixjQ7nr6fC+
-        9AYh4WxQPqYFB/3xcL2UYX6M6160Poo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-310-X1dZrJEmMaqIH4AqUjn_kA-1; Fri, 26 Nov 2021 04:36:25 -0500
-X-MC-Unique: X1dZrJEmMaqIH4AqUjn_kA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4B639101AFA7;
-        Fri, 26 Nov 2021 09:36:24 +0000 (UTC)
-Received: from localhost (ovpn-12-133.pek2.redhat.com [10.72.12.133])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3BC0322719;
-        Fri, 26 Nov 2021 09:36:22 +0000 (UTC)
-Date:   Fri, 26 Nov 2021 17:36:20 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
-        linux-s390@vger.kernel.org, kexec@lists.infradead.org,
-        hca@linux.ibm.com, prudo@redhat.com
-Subject: Re: [PATCH v2 1/2] s390/kexec: check the return value of
- ipl_report_finish
-Message-ID: <20211126093620.GK21646@MiWiFi-R3L-srv>
-References: <20211116032557.14075-1-bhe@redhat.com>
- <202111261649.WZQbFG5g-lkp@intel.com>
+        Fri, 26 Nov 2021 04:40:41 -0500
+Received: by mail-il1-f198.google.com with SMTP id e1-20020a056e020b2100b00299addac2a4so11339008ilu.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 01:37:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=MmnedyTLzJgG7oe6EM9q6sC3y57f1LJn104IiettUpE=;
+        b=6F0muUoz6/RJGjKYiVhNprEtihAYG5PXS9Q2OIMxqwU9s3nKGELzF+G2HXEFPHir+K
+         ULhEUIWL8prhjZxsRGAblnc/90gDfSC4kv6WTAIfIdnMlTN/Sv/zdaNnh1CK0z1RvUHp
+         QnLiNhHnGtj53VfGJhn1txV/+8/7BYiDYjG03hwN7khybq1Q5pc5Q3o6/OVVE3PbEW5G
+         +wJmX40Dh1wbmGayacdVfAwZ6lr+Ve9o+oYHc6ujumX/REv/8M1YgUMk7kcUu9Ii8BAX
+         HSRP5Ov2oXVmqTLySltiySm6vLJqJISK3QMlGxa19147cLqsm3JFiVrp90Sfi/zQhPzG
+         3W/w==
+X-Gm-Message-State: AOAM532YcPZZwAAeLo3kX3hX7cZzy7/OD6uf83j+yufo9HbrqWZvcASS
+        YDE4aze4KY7fDrJmnuQHHU/drM0M94H/S3eOposZRuh0J1u/
+X-Google-Smtp-Source: ABdhPJy37b5PTegImp6QezqxSwgKP0LWVTGn+GEM3LLL43/g7eUoZDDkd5EVuJ/Srv/22lkOIQ56daM22Gdcr0e6GZmmTJ4TruzZ
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202111261649.WZQbFG5g-lkp@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Received: by 2002:a05:6e02:484:: with SMTP id b4mr30432612ils.173.1637919448179;
+ Fri, 26 Nov 2021 01:37:28 -0800 (PST)
+Date:   Fri, 26 Nov 2021 01:37:28 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e12a2605d1add69d@google.com>
+Subject: [syzbot] inconsistent lock state in io_link_timeout_fn
+From:   syzbot <syzbot+3368aadcd30425ceb53b@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-On 11/26/21 at 04:21pm, kernel test robot wrote:
-> Hi Baoquan,
-> 
-> I love your patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on s390/features]
-> [also build test WARNING on kvms390/next]
-> [cannot apply to linux/master linus/master v5.16-rc2 next-20211126]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Baoquan-He/s390-kexec-check-the-return-value-of-ipl_report_finish/20211116-112827
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git features
-> config: s390-allyesconfig (https://download.01.org/0day-ci/archive/20211126/202111261649.WZQbFG5g-lkp@intel.com/config)
-> compiler: s390-linux-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/27ed543b2d76a1d948c64d4404c180ba31ca8cff
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Baoquan-He/s390-kexec-check-the-return-value-of-ipl_report_finish/20211116-112827
->         git checkout 27ed543b2d76a1d948c64d4404c180ba31ca8cff
->         # save the config file to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=s390 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    arch/s390/kernel/ipl.c: In function 'ipl_report_finish':
-> >> arch/s390/kernel/ipl.c:2159:24: warning: returning 'void *' from a function with return type 'int' makes integer from pointer without a cast [-Wint-conversion]
->     2159 |                 return ERR_PTR(-ENOMEM);
->          |                        ^~~~~~~~~~~~~~~~
-S390 maintainer has taken another way to fix the issue, so this patch
-1/1 is dropped, then this issue identified by lkp doesn't exist any
-more. 
+syzbot found the following issue on:
 
-> 
-> 
-> vim +2159 arch/s390/kernel/ipl.c
-> 
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2146  
-> 27ed543b2d76a1 Baoquan He         2021-11-16  2147  int ipl_report_finish(struct ipl_report *report, void **ipl_buf)
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2148  {
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2149  	struct ipl_report_certificate *cert;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2150  	struct ipl_report_component *comp;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2151  	struct ipl_rb_certificates *certs;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2152  	struct ipl_parameter_block *ipib;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2153  	struct ipl_rb_components *comps;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2154  	struct ipl_rl_hdr *rl_hdr;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2155  	void *buf, *ptr;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2156  
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2157  	buf = vzalloc(report->size);
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2158  	if (!buf)
-> 937347ac56bfca Martin Schwidefsky 2019-02-25 @2159  		return ERR_PTR(-ENOMEM);
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2160  	ptr = buf;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2161  
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2162  	memcpy(ptr, report->ipib, report->ipib->hdr.len);
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2163  	ipib = ptr;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2164  	if (ipl_secure_flag)
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2165  		ipib->hdr.flags |= IPL_PL_FLAG_SIPL;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2166  	ipib->hdr.flags |= IPL_PL_FLAG_IPLSR;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2167  	ptr += report->ipib->hdr.len;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2168  	ptr = PTR_ALIGN(ptr, 8);
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2169  
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2170  	rl_hdr = ptr;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2171  	ptr += sizeof(*rl_hdr);
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2172  
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2173  	comps = ptr;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2174  	comps->rbt = IPL_RBT_COMPONENTS;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2175  	ptr += sizeof(*comps);
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2176  	list_for_each_entry(comp, &report->components, list) {
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2177  		memcpy(ptr, &comp->entry, sizeof(comp->entry));
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2178  		ptr += sizeof(comp->entry);
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2179  	}
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2180  	comps->len = ptr - (void *)comps;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2181  
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2182  	certs = ptr;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2183  	certs->rbt = IPL_RBT_CERTIFICATES;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2184  	ptr += sizeof(*certs);
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2185  	list_for_each_entry(cert, &report->certificates, list) {
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2186  		memcpy(ptr, &cert->entry, sizeof(cert->entry));
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2187  		ptr += sizeof(cert->entry);
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2188  	}
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2189  	certs->len = ptr - (void *)certs;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2190  	rl_hdr->len = ptr - (void *)rl_hdr;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2191  
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2192  	list_for_each_entry(cert, &report->certificates, list) {
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2193  		memcpy(ptr, cert->key, cert->entry.len);
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2194  		ptr += cert->entry.len;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2195  	}
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2196  
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2197  	BUG_ON(ptr > buf + report->size);
-> 27ed543b2d76a1 Baoquan He         2021-11-16  2198  	*ipl_buf = buf;
-> 27ed543b2d76a1 Baoquan He         2021-11-16  2199  
-> 27ed543b2d76a1 Baoquan He         2021-11-16  2200  	return 0;
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2201  }
-> 937347ac56bfca Martin Schwidefsky 2019-02-25  2202  
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
+HEAD commit:    a4849f6000e2 Merge tag 'drm-fixes-2021-11-26' of git://ano..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1542553eb00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=75f05fb8d1a152d3
+dashboard link: https://syzkaller.appspot.com/bug?extid=3368aadcd30425ceb53b
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3368aadcd30425ceb53b@syzkaller.appspotmail.com
+
+================================
+WARNING: inconsistent lock state
+5.16.0-rc2-syzkaller #0 Not tainted
+--------------------------------
+inconsistent {HARDIRQ-ON-W} -> {IN-HARDIRQ-W} usage.
+syz-executor.1/14925 [HC1[1]:SC0[0]:HE0:SE1] takes:
+ffff888028b7e418 (&ctx->timeout_lock){?.+.}-{2:2}, at: io_link_timeout_fn+0x6b/0x470 fs/io_uring.c:6904
+{HARDIRQ-ON-W} state was registered at:
+  __trace_hardirqs_on_caller kernel/locking/lockdep.c:4224 [inline]
+  lockdep_hardirqs_on_prepare kernel/locking/lockdep.c:4292 [inline]
+  lockdep_hardirqs_on_prepare+0x135/0x400 kernel/locking/lockdep.c:4244
+  trace_hardirqs_on+0x5b/0x1c0 kernel/trace/trace_preemptirq.c:49
+  __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:159 [inline]
+  _raw_spin_unlock_irq+0x1f/0x40 kernel/locking/spinlock.c:202
+  spin_unlock_irq include/linux/spinlock.h:399 [inline]
+  __io_poll_remove_one fs/io_uring.c:5669 [inline]
+  __io_poll_remove_one fs/io_uring.c:5654 [inline]
+  io_poll_remove_one+0x236/0x870 fs/io_uring.c:5680
+  io_poll_remove_all+0x1af/0x235 fs/io_uring.c:5709
+  io_ring_ctx_wait_and_kill+0x1cc/0x322 fs/io_uring.c:9534
+  io_uring_release+0x42/0x46 fs/io_uring.c:9554
+  __fput+0x286/0x9f0 fs/file_table.c:280
+  task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+  tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+  exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+  exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:207
+  __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
+irq event stamp: 1634
+hardirqs last  enabled at (1633): [<ffffffff8946bc7f>] __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:159 [inline]
+hardirqs last  enabled at (1633): [<ffffffff8946bc7f>] _raw_spin_unlock_irq+0x1f/0x40 kernel/locking/spinlock.c:202
+hardirqs last disabled at (1634): [<ffffffff8943d3fb>] sysvec_apic_timer_interrupt+0xb/0xc0 arch/x86/kernel/apic/apic.c:1097
+softirqs last  enabled at (238): [<ffffffff8146a9b3>] invoke_softirq kernel/softirq.c:432 [inline]
+softirqs last  enabled at (238): [<ffffffff8146a9b3>] __irq_exit_rcu+0x123/0x180 kernel/softirq.c:636
+softirqs last disabled at (233): [<ffffffff8146a9b3>] invoke_softirq kernel/softirq.c:432 [inline]
+softirqs last disabled at (233): [<ffffffff8146a9b3>] __irq_exit_rcu+0x123/0x180 kernel/softirq.c:636
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&ctx->timeout_lock);
+  <Interrupt>
+    lock(&ctx->timeout_lock);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor.1/14925:
+ #0: ffff888028b7e0a8 (&ctx->uring_lock){+.+.}-{3:3}, at: __do_sys_io_uring_enter+0xf60/0x1f50 fs/io_uring.c:10042
+
+stack backtrace:
+CPU: 0 PID: 14925 Comm: syz-executor.1 Not tainted 5.16.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_usage_bug kernel/locking/lockdep.c:203 [inline]
+ valid_state kernel/locking/lockdep.c:3945 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:4148 [inline]
+ mark_lock.cold+0x61/0x8e kernel/locking/lockdep.c:4605
+ mark_usage kernel/locking/lockdep.c:4497 [inline]
+ __lock_acquire+0x149d/0x54a0 kernel/locking/lockdep.c:4981
+ lock_acquire kernel/locking/lockdep.c:5637 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5602
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:162
+ io_link_timeout_fn+0x6b/0x470 fs/io_uring.c:6904
+ __run_hrtimer kernel/time/hrtimer.c:1685 [inline]
+ __hrtimer_run_queues+0x609/0xe50 kernel/time/hrtimer.c:1749
+ hrtimer_interrupt+0x31c/0x790 kernel/time/hrtimer.c:1811
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1086 [inline]
+ __sysvec_apic_timer_interrupt+0x146/0x530 arch/x86/kernel/apic/apic.c:1103
+ sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1097
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:__raw_spin_unlock_irq include/linux/spinlock_api_smp.h:160 [inline]
+RIP: 0010:_raw_spin_unlock_irq+0x25/0x40 kernel/locking/spinlock.c:202
+Code: 0f 1f 44 00 00 55 48 8b 74 24 08 48 89 fd 48 83 c7 18 e8 6e f0 15 f8 48 89 ef e8 b6 66 16 f8 e8 81 20 37 f8 fb bf 01 00 00 00 <e8> 86 30 09 f8 65 8b 05 6f b3 bb 76 85 c0 74 02 5d c3 e8 8b 88 b9
+RSP: 0018:ffffc90004827ae8 EFLAGS: 00000202
+RAX: 0000000000000661 RBX: ffff888028b7e000 RCX: 1ffffffff1ffa99e
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
+RBP: ffff888028b7e400 R08: 0000000000000001 R09: ffffffff8ff71b07
+R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000001
+R13: ffff888028b7e400 R14: ffff888028b7e188 R15: ffff88802650a290
+ spin_unlock_irq include/linux/spinlock.h:399 [inline]
+ io_queue_linked_timeout+0x292/0x430 fs/io_uring.c:6943
+ io_queue_sqe_arm_apoll+0x15d/0x1a0 fs/io_uring.c:6967
+ __io_queue_sqe fs/io_uring.c:6991 [inline]
+ io_queue_sqe fs/io_uring.c:7018 [inline]
+ io_submit_sqe fs/io_uring.c:7221 [inline]
+ io_submit_sqes+0x796a/0x8a20 fs/io_uring.c:7327
+ __do_sys_io_uring_enter+0xf6e/0x1f50 fs/io_uring.c:10043
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7ff8e9ef4ae9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ff8e746a188 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
+RAX: ffffffffffffffda RBX: 00007ff8ea007f60 RCX: 00007ff8e9ef4ae9
+RDX: 0000000000000000 RSI: 0000000000006700 RDI: 0000000000000005
+RBP: 00007ff8e9f4ef6d R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ff8ea53bb2f R14: 00007ff8e746a300 R15: 0000000000022000
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+   5:	55                   	push   %rbp
+   6:	48 8b 74 24 08       	mov    0x8(%rsp),%rsi
+   b:	48 89 fd             	mov    %rdi,%rbp
+   e:	48 83 c7 18          	add    $0x18,%rdi
+  12:	e8 6e f0 15 f8       	callq  0xf815f085
+  17:	48 89 ef             	mov    %rbp,%rdi
+  1a:	e8 b6 66 16 f8       	callq  0xf81666d5
+  1f:	e8 81 20 37 f8       	callq  0xf83720a5
+  24:	fb                   	sti
+  25:	bf 01 00 00 00       	mov    $0x1,%edi
+* 2a:	e8 86 30 09 f8       	callq  0xf80930b5 <-- trapping instruction
+  2f:	65 8b 05 6f b3 bb 76 	mov    %gs:0x76bbb36f(%rip),%eax        # 0x76bbb3a5
+  36:	85 c0                	test   %eax,%eax
+  38:	74 02                	je     0x3c
+  3a:	5d                   	pop    %rbp
+  3b:	c3                   	retq
+  3c:	e8                   	.byte 0xe8
+  3d:	8b                   	.byte 0x8b
+  3e:	88                   	.byte 0x88
+  3f:	b9                   	.byte 0xb9
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
