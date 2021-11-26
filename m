@@ -2,113 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D2345E6C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 05:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32ECC45E68A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 04:29:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344730AbhKZEVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 23:21:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358042AbhKZETb (ORCPT
+        id S1357663AbhKZDc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 22:32:26 -0500
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:44650
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230304AbhKZDa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 23:19:31 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B16E5C061371
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 19:22:07 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id n12so20822091lfe.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 19:22:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j2riostl8I3En/NCJyGW1SsfiJ9Pn5IQIwltro7skKk=;
-        b=fnFQ0+7iZs1qfcYQQKmkSaAVSG2WHNbDUv3Zxueq1xHczBw8x0ikh986DxT57SBLyl
-         KhcWP+iCph0+sPCp40Fda1D0KUUJ8CqZhks5kT4gBdEFGoR4NiJ4S1FnWhEhulfQPEYP
-         LRFAqg/8zNuKXRYoKHbA8qiDxnFn3O39aDGvyen1FHd32qovrEsfXx1LDEo0tGkiji9Z
-         0oWMzfwRkrA+QkYYZbY+rVWgErH1a2PrD3x6qcEBI9P7MlpYvu1OhiltUgSWHnok6Lqn
-         6i40UznZHnnj3vmxkxAU0Ts86RNIVaecIq/hngrER1wurWjg8iurwVko/F092HvZbfB+
-         AQmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j2riostl8I3En/NCJyGW1SsfiJ9Pn5IQIwltro7skKk=;
-        b=muexFkoEYJJ/65RolcsANX69A0xV4AxRvAxqY0k6cHA+2HX/pFmy0QYTYPkod+Be3g
-         VYiPUxdHAfi7rKBymcvFwAOl27zdASs1AX0sGDlL1N8BE74TK8M1jiW9JqzsEI4N5pA/
-         DEwrU1801DajzREzSCQZGxHecplE1zSOZa6ZIpVNjTxnt7200RehsYlm/G5EDCL5wXPj
-         UafxVYz3kXqVTxkzARimbXVnL6eiuDnASIoXD6w69CITYmhsljJzDWw9kzDFGrsKxdgE
-         dumWzKommH7j1ml8swu+VRBe5rgULJlNNHkCPiv04Em1K9AiRZLDPkiIFxhDxezDJvYt
-         mc0A==
-X-Gm-Message-State: AOAM533tSDuByhf+YPir7q+9pw9jZKwRIDfcKiJZCr+XgeVDc4aMV52T
-        nge4/PsJhKaUEci5boLjVqW2x8gqS+pVntZ+LXDJrg==
-X-Google-Smtp-Source: ABdhPJwIoaSTaZnNxPgZ0/H6M5visCL6XtgOrCuvhZfsrdDnhmoGzvIQOdxLcbYy3sLWSDHwkX0O7cIFC9u0EAGhMps=
-X-Received: by 2002:ac2:4e02:: with SMTP id e2mr27902737lfr.264.1637896925610;
- Thu, 25 Nov 2021 19:22:05 -0800 (PST)
-MIME-Version: 1.0
-References: <20211120201230.920082-1-shakeelb@google.com> <25b36a5c-5bbd-5423-0c67-05cd6c1432a7@redhat.com>
- <CALvZod5L1C1DV_DVs9O3xZm6CJnriunAoj89YLDdCp7ef5yBxA@mail.gmail.com> <YZ9kUD5AG6inbUEg@xz-m1.local>
-In-Reply-To: <YZ9kUD5AG6inbUEg@xz-m1.local>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 25 Nov 2021 19:21:54 -0800
-Message-ID: <CALvZod7L5Ga2xZOy_hgocsTxSuOYs840TiviOAhRwz59ATubWg@mail.gmail.com>
-Subject: Re: [PATCH] mm: split thp synchronously on MADV_DONTNEED
-To:     Peter Xu <peterx@redhat.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Thu, 25 Nov 2021 22:30:26 -0500
+Received: from localhost.localdomain (unknown [10.101.196.174])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id A5D3D41DF6;
+        Fri, 26 Nov 2021 03:27:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1637897232;
+        bh=vHP6c9N8j5OhKGnWFmc24lI/KclLdUnZPq6vHBJtGvk=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=F52AU9mnbkPXhC5oRoU1NjNIjX4GNfDOcZ0gSzgJApbMv3q7C95oX9RIAxY4cOFiX
+         RQTMy/YO95xV7bXwSqK/HLkaXg9G3C4VBUvFhgGlkIy++ePjILFxMMQF/6HKvkU1tu
+         Haejln6y6O05pT+vFFY44AJMs3VeuEEIEIqSCsz43EOH+ODTKhUpLKO3a9GOdqRO7/
+         a3SbFySiBWF3HvI3RRAPmBqBd4OjuIIHWw6daMc4Zj1+ZhoLROsI4pS/E1QvOmItL0
+         noCm+dU4dT/AGUe/zJkU6jCmc5gclK8VNiIem4KBtoqMIhpQsFnfgf29sJGfPj+RTT
+         WAyUsb+nHWn5Q==
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     gregkh@linuxfoundation.org
+Cc:     stern@rowland.harvard.edu, mathias.nyman@linux.intel.com,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Bixuan Cui <cuibixuan@huawei.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        Rajat Jain <rajatja@google.com>, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: [PATCH] usb: core: Avoid doing warm reset on disconnect event
+Date:   Fri, 26 Nov 2021 11:26:21 +0800
+Message-Id: <20211126032622.1101448-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 2:24 AM Peter Xu <peterx@redhat.com> wrote:
->
-> On Mon, Nov 22, 2021 at 10:40:54AM -0800, Shakeel Butt wrote:
-> > > Do we have a performance evaluation how much overhead is added e.g., for
-> > > a single 4k MADV_DONTNEED call on a THP or on a MADV_DONTNEED call that
-> > > covers the whole THP?
-> >
-> > I did a simple benchmark of madvise(MADV_DONTNEED) on 10000 THPs on
-> > x86 for both settings you suggested. I don't see any statistically
-> > significant difference with and without the patch. Let me know if you
-> > want me to try something else.
->
-> I'm a bit surprised that sync split thp didn't bring any extra overhead.
->
-> "unmap whole thp" is understandable from that pov, because afaict that won't
-> even trigger any thp split anyway even delayed, if this is the simplest case
-> that only this process mapped this thp, and it mapped once.
->
-> For "unmap 4k upon thp" IIUC that's the worst case and zapping 4k should be
-> fast; while what I don't understand since thp split requires all hand-made work
-> for copying thp flags into small pages and so on, so I thought there should at
-> least be some overhead measured.  Shakeel, could there be something overlooked
-> in the test, or maybe it's me that overlooked?
->
+Unplugging USB device may cause an incorrect warm reset loop:
+[  143.039019] xhci_hcd 0000:00:14.0: Port change event, 2-3, id 19, portsc: 0x4202c0
+[  143.039025] xhci_hcd 0000:00:14.0: handle_port_status: starting usb2 port polling.
+[  143.039051] hub 2-0:1.0: state 7 ports 10 chg 0000 evt 0008
+[  143.039058] xhci_hcd 0000:00:14.0: Get port status 2-3 read: 0x4202c0, return 0x4102c0
+[  143.039092] xhci_hcd 0000:00:14.0: clear port3 connect change, portsc: 0x4002c0
+[  143.039096] usb usb2-port3: link state change
+[  143.039099] xhci_hcd 0000:00:14.0: clear port3 link state change, portsc: 0x2c0
+[  143.039101] usb usb2-port3: do warm reset
+[  143.096736] xhci_hcd 0000:00:14.0: Get port status 2-3 read: 0x2b0, return 0x2b0
+[  143.096751] usb usb2-port3: not warm reset yet, waiting 50ms
+[  143.131500] xhci_hcd 0000:00:14.0: Can't queue urb, port error, link inactive
+[  143.138260] xhci_hcd 0000:00:14.0: Port change event, 2-3, id 19, portsc: 0x2802a0
+[  143.138263] xhci_hcd 0000:00:14.0: handle_port_status: starting usb2 port polling.
+[  143.160756] xhci_hcd 0000:00:14.0: Get port status 2-3 read: 0x2802a0, return 0x3002a0
+[  143.160798] usb usb2-port3: not warm reset yet, waiting 200ms
 
-Thanks for making me rerun this and yes indeed I had a very silly bug in the
-benchmark code (i.e. madvise the same page for the whole loop) and this is
-indeed several times slower than without the patch (sorry David for misleading
-you).
+The warm reset is due to its PLS is in eSS.Inactive state. However, USB
+3.2 spec table 10-13 mentions "Ports can be disabled by either a fault
+condition (disconnect event or other fault condition)", xHCI 1.2 spec
+table 5-27 also states that "This flag shall automatically be cleared to
+‘0’ by a disconnect event or other fault condition." on PED.
 
-To better understand what is happening, I profiled the benchmark:
+So use CSC = 0 and PED = 0 as indication that device is disconnecting to
+avoid doing warm reset.
 
--   31.27%     0.01%  dontneed  [kernel.kallsyms]  [k] zap_page_range_sync
-   - 31.27% zap_page_range_sync
-      - 30.25% split_local_deferred_list
-         - 30.16% split_huge_page_to_list
-            - 21.05% try_to_migrate
-               + rmap_walk_anon
-            - 7.47% remove_migration_ptes
-               + 7.34% rmap_walk_locked
-      + 1.02% zap_page_range_details
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ drivers/usb/core/hub.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-The overhead is not due to copying page flags but rather due to two rmap walks.
-I don't think this much overhead is justified for current users of MADV_DONTNEED
-and munmap. I have to rethink the approach.
+diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+index 86658a81d2844..abd5a83d194b0 100644
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -5530,6 +5530,7 @@ static void port_event(struct usb_hub *hub, int port1)
+ 		__must_hold(&port_dev->status_lock)
+ {
+ 	int connect_change;
++	int disconnect = 0;
+ 	struct usb_port *port_dev = hub->ports[port1 - 1];
+ 	struct usb_device *udev = port_dev->child;
+ 	struct usb_device *hdev = hub->hdev;
+@@ -5545,6 +5546,9 @@ static void port_event(struct usb_hub *hub, int port1)
+ 	if (portchange & USB_PORT_STAT_C_CONNECTION) {
+ 		usb_clear_port_feature(hdev, port1, USB_PORT_FEAT_C_CONNECTION);
+ 		connect_change = 1;
++		if (!(portstatus & USB_PORT_STAT_CONNECTION) &&
++		    !(portstatus & USB_PORT_STAT_ENABLE))
++			disconnect = 1;
+ 	}
+ 
+ 	if (portchange & USB_PORT_STAT_C_ENABLE) {
+@@ -5613,7 +5617,7 @@ static void port_event(struct usb_hub *hub, int port1)
+ 	 * Warm reset a USB3 protocol port if it's in
+ 	 * SS.Inactive state.
+ 	 */
+-	if (hub_port_warm_reset_required(hub, port1, portstatus)) {
++	if (hub_port_warm_reset_required(hub, port1, portstatus) && !disconnect) {
+ 		dev_dbg(&port_dev->dev, "do warm reset\n");
+ 		if (!udev || !(portstatus & USB_PORT_STAT_CONNECTION)
+ 				|| udev->state == USB_STATE_NOTATTACHED) {
+-- 
+2.32.0
 
-thanks,
-Shakeel
