@@ -2,112 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9D045E70F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 06:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 952E545E709
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 06:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245144AbhKZFPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 00:15:18 -0500
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17203 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343688AbhKZFNP (ORCPT
+        id S235453AbhKZFMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 00:12:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231657AbhKZFKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 00:13:15 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1637903008; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=kTT6Em4JDS6/n2VGliGLaE9S+PknFWxGAUiJO4w9UcrhWM6NIlMzAx+PtzMv9HHDSNv2cP27qumLZNCOYVAznwtp8lXf6M/LqY/Gq/p/xzSUwgrV46aHdZiKMf+5JRO3Rs62wyy89VzmskC+loYa07G1bKLiqEwExGzYIzOszds=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1637903008; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=e1fy8d/F7bO0bxbGs9DFbseWsVknlDYWORiYHfsGIf8=; 
-        b=D+d85SWg0ltZ94GnKtm7vV4/uUrRM6weqrb89FGTFtj4m89M2NfrXFUGJ9ojdiV/cZ7+gXsL/DBAa5KTV0Lqxv9KvyfNtzn2BrUtCvKpdzg8Gea5yYl3qHhHkcIcA/HcrdwmahOTG4+DUxHVrliJfPOrrOC6vMZtZRPBfJibA2Q=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1637903008;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=e1fy8d/F7bO0bxbGs9DFbseWsVknlDYWORiYHfsGIf8=;
-        b=Nl3r5ejY1FHl1ts5hqefnDJ9sJvZpsLJORZ3A4KioqoF7ibhdDL7ysWhdndMlvgk
-        bhsk/ZFNRmLwXCekMD84/SnA7kYzSfipuQe6dfXL/7ye+fUekX6MpcNkMD/JsBtfPKT
-        eXfIDlXUdRRy6lvszTi851IoRCvWRkSeoVID5kQk=
-Received: from mail.baihui.com by mx.zoho.com.cn
-        with SMTP id 163790300607680.6143952720198; Fri, 26 Nov 2021 13:03:26 +0800 (CST)
-Date:   Fri, 26 Nov 2021 13:03:26 +0800
-From:   Chengguang Xu <cgxu519@mykernel.net>
-Reply-To: cgxu519@mykernel.net
-To:     "Amir Goldstein" <amir73il@gmail.com>
-Cc:     "Miklos Szeredi" <miklos@szeredi.hu>, "Jan Kara" <jack@suse.cz>,
-        "overlayfs" <linux-unionfs@vger.kernel.org>,
-        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "Chengguang Xu" <charliecgxu@tencent.com>
-Message-ID: <17d5aa0795d.fdfda4a49855.5158536783597235118@mykernel.net>
-In-Reply-To: <CAOQ4uxhrg=MAL7sArmP47oyF_QmhG-1b=srs30VNdiT-9s-P0w@mail.gmail.com>
-References: <20211122030038.1938875-1-cgxu519@mykernel.net> <20211122030038.1938875-8-cgxu519@mykernel.net> <CAOQ4uxhrg=MAL7sArmP47oyF_QmhG-1b=srs30VNdiT-9s-P0w@mail.gmail.com>
-Subject: Re: [RFC PATCH V6 7/7] ovl: implement containerized syncfs for
- overlayfs
+        Fri, 26 Nov 2021 00:10:14 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BC0C061574;
+        Thu, 25 Nov 2021 21:06:59 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4J0jQj6J2mz4xZ0;
+        Fri, 26 Nov 2021 16:06:53 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1637903217;
+        bh=XDXo32ilfpNP9MsyByXrlv5irAatsADgZd48jBqXTf8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EpY8l3OtTaH82UR0Ifn3gabVgl9XadekCvC9AOgnau2U2wjw4ZWzkn/RgpHrJD9tS
+         aVJuYiN+4JaRWLfdGw7BZor9418oPyAVwvh/KIjhLijQt1PFYqMl5JIYHkb7TcldNs
+         XDzIT2f3ORpkYrMKgkqDPbvepryF1YVrgv4uds90sNxY9biU+9yyUSHdDEyqAL3VX0
+         ToGpoprQNwxz+EM0SmsYsHs1X2eGz/mHh/sPQD3VUtSOjwLliMDmByH77CNk6KZ+35
+         33pNeWbLORE0Q3/n+Zm3+4fzNnj+yseUEMOuAH3bBElYYMeBRVlyOUlJnDMM9cVmfQ
+         VmSoCnOWLY/vg==
+Date:   Fri, 26 Nov 2021 16:06:51 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yongqiang Liu <liuyongqiang13@huawei.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Alexander Potapenko <glider@google.com>
+Subject: Re: [next] kasan: shadow.c:528:33: error: 'VM_DELAY_KMEMLEAK'
+ undeclared
+Message-ID: <20211126160651.318875c3@canb.auug.org.au>
+In-Reply-To: <4d951721-caa2-f692-293d-ee8b93e62597@huawei.com>
+References: <CA+G9fYuLv7491Q2AHcaUAQ2AQeFBQgx8w0DzK95Qf6Fh9gGFfQ@mail.gmail.com>
+        <4d951721-caa2-f692-293d-ee8b93e62597@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Importance: Medium
-User-Agent: ZohoCN Mail
-X-Mailer: ZohoCN Mail
+Content-Type: multipart/signed; boundary="Sig_/SRXfIYePoVpjN.GRgC9+DIT";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=80, 2021-11-22 15:40:59 Amir Golds=
-tein <amir73il@gmail.com> =E6=92=B0=E5=86=99 ----
- > On Mon, Nov 22, 2021 at 5:01 AM Chengguang Xu <cgxu519@mykernel.net> wro=
-te:
- > >
- > > From: Chengguang Xu <charliecgxu@tencent.com>
- > >
- > > Now overlayfs can only sync own dirty inodes during syncfs,
- > > so remove unnecessary sync_filesystem() on upper file system.
- > >
- > > Signed-off-by: Chengguang Xu <charliecgxu@tencent.com>
- > > ---
- > >  fs/overlayfs/super.c | 14 +++++---------
- > >  1 file changed, 5 insertions(+), 9 deletions(-)
- > >
- > > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
- > > index ccffcd96491d..213b795a6a86 100644
- > > --- a/fs/overlayfs/super.c
- > > +++ b/fs/overlayfs/super.c
- > > @@ -292,18 +292,14 @@ static int ovl_sync_fs(struct super_block *sb, i=
-nt wait)
- > >         /*
- > >          * Not called for sync(2) call or an emergency sync (SB_I_SKIP=
-_SYNC).
- > >          * All the super blocks will be iterated, including upper_sb.
- > > -        *
- > > -        * If this is a syncfs(2) call, then we do need to call
- > > -        * sync_filesystem() on upper_sb, but enough if we do it when =
-being
- > > -        * called with wait =3D=3D 1.
- > >          */
- > > -       if (!wait)
- > > -               return 0;
- > > -
- > >         upper_sb =3D ovl_upper_mnt(ofs)->mnt_sb;
- > > -
- > >         down_read(&upper_sb->s_umount);
- > > -       ret =3D sync_filesystem(upper_sb);
- > > +       if (wait)
- > > +               wait_sb_inodes(upper_sb);
- > > +       if (upper_sb->s_op->sync_fs)
- > > +               upper_sb->s_op->sync_fs(upper_sb, wait);
- > > +       ret =3D ovl_sync_upper_blockdev(upper_sb, wait);
- >=20
- > I think it will be cleaner to use a helper ovl_sync_upper_filesystem()
- > with everything from  upper_sb =3D ... and a comment to explain that
- > this is a variant of __sync_filesystem() where all the dirty inodes writ=
-e
- > have already been started.
- >=20
-=20
-I agree with you.=20
+--Sig_/SRXfIYePoVpjN.GRgC9+DIT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Chengguang
+Hi all,
+
+On Thu, 25 Nov 2021 15:34:06 +0800 Kefeng Wang <wangkefeng.wang@huawei.com>=
+ wrote:
+>
+> Sorry for the missing change of VM_DEFER_KMEMLEAK.
+>=20
+> I will=C2=A0 add Fixes tag and resend v4.
+
+I have applied the following patch to linux-next today:
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Fri, 26 Nov 2021 15:34:11 +1100
+Subject: [PATCH] mm: kasan: fix VM_DELAY_KMEMLEAK typo
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ mm/kasan/shadow.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+index 2ade2f484562..94136f84b449 100644
+--- a/mm/kasan/shadow.c
++++ b/mm/kasan/shadow.c
+@@ -525,7 +525,7 @@ int kasan_module_alloc(void *addr, size_t size, gfp_t g=
+fp_mask)
+ 		vm->flags |=3D VM_KASAN;
+ 		kmemleak_ignore(ret);
+=20
+-		if (vm->flags & VM_DELAY_KMEMLEAK)
++		if (vm->flags & VM_DEFER_KMEMLEAK)
+ 			kmemleak_vmalloc(vm, size, gfp_mask);
+=20
+ 		return 0;
+--=20
+2.33.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/SRXfIYePoVpjN.GRgC9+DIT
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmGga2sACgkQAVBC80lX
+0GynbQf/ZYlJJA3FqVItDbfu5pbGIECoZjOAcMM3Ga0RrOL2NtD2Wq4W+gqk5SEs
+3DHO4DFRwxS55HEQeEZTiuZpmRbsXCOx4Jg9EjuusGhNaN7+3sRf2KPvvDQGO+/h
+h07NjhB13pT2If6XaQYpxKhPtCnTVxvKbZgKXqNIYNtS0CZmVK5hQEKksWFJVRwJ
+UenXnR9aRDtpf9Ly6gZ/uVosHzCmk0K11ExygGGcWRK5xy9vTnn9Aw6vpxWuhvMY
+dIvY8piAFGQS5DtZwSXonR6QXHr+TQh3xWlrFNLwKgMlBi+LBWgV2yZcBeHbZ2fJ
+Sr6AtsTABhp+y/XhNjKQXf/etacESg==
+=iWb2
+-----END PGP SIGNATURE-----
+
+--Sig_/SRXfIYePoVpjN.GRgC9+DIT--
