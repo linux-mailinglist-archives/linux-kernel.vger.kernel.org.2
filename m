@@ -2,133 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C199A45EC09
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3591645EBA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:31:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234035AbhKZLCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 06:02:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232041AbhKZLAv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 06:00:51 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D79C4C08EA3D;
-        Fri, 26 Nov 2021 02:28:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=TV9geI3pefr1PEB8Jp2tszmjn2Seeeo5pcnatqfJP5k=; b=rKXbP9Y5VpN5pXTkZNjF7zTtW7
-        xXUXssxHzuVMj2cp0fBi25HRXYaOx9UnukCbdLjxDKyP04jn+VQ6ixQ0XjpgRrrBzxJC33IN2gOr8
-        7fDOylJO1uy+3skZvcVBGoQKIMNJQjQ/kbPZ30qYaWSgRnKZKeJrUrTwco+uuFKyy4LKOcSXxSkKW
-        TZv4W8YkOkyWj8bP/EfUJsiSWV6bIxnLxMoVnHGnrSCCG03qCsDCdAZHQRpUZgjW/8JHukgUBlKxU
-        VyODCr/GYdbPLCWJncPB5SupN8swCpk7IAAdF4A7kfK6zQdXLz0m1JhGmg1271OltvuCD1jwOR55E
-        fve85ZmA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55910)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mqYST-0002wP-Ag; Fri, 26 Nov 2021 10:27:57 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mqYSR-0003CQ-Ee; Fri, 26 Nov 2021 10:27:55 +0000
-Date:   Fri, 26 Nov 2021 10:27:55 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     zhuyinbo <zhuyinbo@loongson.cn>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, masahiroy@kernel.org,
-        michal.lkml@markovi.net, ndesaulniers@google.com
-Subject: Re: [PATCH v1 1/2] modpost: file2alias: fixup mdio alias garbled
- code in modules.alias
-Message-ID: <YaC2qyfGhOnT3Nve@shell.armlinux.org.uk>
-References: <1637583298-20321-1-git-send-email-zhuyinbo@loongson.cn>
- <YZukJBsf3qMOOK+Y@lunn.ch>
- <5b561d5f-d7ac-4d90-e69e-5a80a73929e0@loongson.cn>
- <YZxqLi7/JDN9mQoK@lunn.ch>
- <0a9e959a-bcd1-f649-b4cd-bd0f65fc71aa@loongson.cn>
- <YZzykR2rcXnu/Hzx@lunn.ch>
- <92c667be-7d33-7742-5fb9-7e5670024911@loongson.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <92c667be-7d33-7742-5fb9-7e5670024911@loongson.cn>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+        id S1376952AbhKZKeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:34:11 -0500
+Received: from foss.arm.com ([217.140.110.172]:60462 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347825AbhKZKcJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 05:32:09 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 83B781042;
+        Fri, 26 Nov 2021 02:28:56 -0800 (PST)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AFBED3F5A1;
+        Fri, 26 Nov 2021 02:28:55 -0800 (PST)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     vincenzo.frascino@arm.com, shuah@kernel.org,
+        Cristian Marussi <cristian.marussi@arm.com>
+Subject: [PATCH] kselftest: Fix vdso_test_time to pass on skips
+Date:   Fri, 26 Nov 2021 10:28:46 +0000
+Message-Id: <20211126102846.5550-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 05:34:36PM +0800, zhuyinbo wrote:
-> Hi Andrew,
-> 
-> 
->     I don't get udev log, but I can find that phy module wether be load by
-> lsmod ways,  and you can try
-> 
->     it in any a phy deice and in any arch platform.   in addition,  I will
-> send v2 version patch that need consider
-> 
->     some phy device doesn't follow IEEE802.3 protocol strictly and doesn't
-> read phy id from phy register successfully,
+When a vDSO symbol is not found, all the testcases in vdso_test_abi usually
+report a SKIP, which, in turn, is reported back to Kselftest as a PASS.
 
-I'm not sure I understand what you've said above correctly.
+Testcase vdso_test_time, instead, reporting a SKIP, causes the whole set of
+tests within vdso_test_abi to be considered FAIL when symbol is not found.
 
-You seem to be saying that the module has been loaded (it appears in
-lsmod) but it doesn't get bound to the PHY device? If that is correct,
-there isn't a problem with the modalias, but there's something wrong
-in the driver matching.
+Fix it reporting a PASS when vdso_test_time cannot find the vdso symbol.
 
-The last sentence seems to point at a completely different problem -
-one concerning an inability to correctly read the PHY ID from the PHY
-itself. If that's the case, then that isn't a problem with modalias,
-it's a problem with reading the PHY ID.
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+---
+Seen as a failure on both a JUNO and a Dragonboard on both recent and old
+kernels/testruns:
 
+root@deb-buster-arm64:~# /opt/ksft/vDSO/vdso_test_abi
+[vDSO kselftest] VDSO_VERSION: LINUX_2.6.39
+The time is 1637922136.675304
+The time is 1637922136.675361000
+The resolution is 0 1
+clock_id: CLOCK_REALTIME [PASS]
+The time is 1927.760604900
+The resolution is 0 1
+clock_id: CLOCK_BOOTTIME [PASS]
+The time is 1637922136.675649700
+The resolution is 0 1
+clock_id: CLOCK_TAI [PASS]
+The time is 1637922136.672000000
+The resolution is 0 4000000
+clock_id: CLOCK_REALTIME_COARSE [PASS]
+The time is 1927.761005600
+The resolution is 0 1
+clock_id: CLOCK_MONOTONIC [PASS]
+The time is 1927.761132780
+The resolution is 0 1
+clock_id: CLOCK_MONOTONIC_RAW [PASS]
+The time is 1927.757093740
+The resolution is 0 4000000
+clock_id: CLOCK_MONOTONIC_COARSE [PASS]
+Could not find __kernel_time              <<< This caused a FAIL as a whole
+root@deb-buster-arm64:~# echo $?
+1
 
-The existing modalias scheme doesn't care about the format of the ID.
-Normally the least significant four bits are the PHY revision, but that
-doesn't always hold. Let's take a couple of examples:
+e.g.: https://lkft.validation.linaro.org/scheduler/job/2192570#L27778
+---
+ tools/testing/selftests/vDSO/vdso_test_abi.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-The PHY ID for a Marvell PHY is 0x01410dd1. This will expand to:
-
-mdio:00000001010000010000110111010001
-
-The kernel modalias tables will be generated from an ID of 0x01410dd0
-with a mask of 0xfffffff0. The mask means "ignore the bottom four bits".
-So, we end up with this in the module's alias table:
-
-mdio:0000000101000001000011011101????
-
-udev knows that "?" is a wildcard. Consequently the above matches.
-
-On an Atheros PHY, this has an ID value of 0x004dd072. The driver also
-has a value of 0x004dd072 and a mask of 0xffffffef, meaning bit 4 is
-ignored:
-
-mdio:00000000010011011101000001110010 <= PHY ID
-mdio:000000000100110111010000011?0010 <= module alias table
-
-This will also match a PHY with id 0x004dd062.
-
-mdio:00000000010011011101000001100010 <= PHY ID
-
-The current modalias approach is flexible. Publishing the raw hex ID
-and having an exact match is too inflexible for phylib and will lead to
-users reporting regressions.
-
-Please show us:
-
-1) the contents of the phy_id file for the PHY you are having problems
-   with. This can be found in /sys/bus/mdio_bus/devices/.../phy_id
-
-2) which driver in the kernel is a problem.
-
-Thanks.
-
+diff --git a/tools/testing/selftests/vDSO/vdso_test_abi.c b/tools/testing/selftests/vDSO/vdso_test_abi.c
+index 3d603f1394af..7dcc66d1cecf 100644
+--- a/tools/testing/selftests/vDSO/vdso_test_abi.c
++++ b/tools/testing/selftests/vDSO/vdso_test_abi.c
+@@ -90,8 +90,9 @@ static int vdso_test_time(void)
+ 		(vdso_time_t)vdso_sym(version, name[2]);
+ 
+ 	if (!vdso_time) {
++		/* Skip if symbol not found: consider skipped tests as passed */
+ 		printf("Could not find %s\n", name[2]);
+-		return KSFT_SKIP;
++		return KSFT_PASS;
+ 	}
+ 
+ 	long ret = vdso_time(NULL);
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.17.1
+
