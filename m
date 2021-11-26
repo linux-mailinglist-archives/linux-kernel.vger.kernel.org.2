@@ -2,109 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4418445F250
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4ED45F1E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352672AbhKZQpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:45:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245494AbhKZQnq (ORCPT
+        id S233851AbhKZQeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:34:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:45067 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230241AbhKZQcU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:43:46 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C94AC0619D8
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 08:28:25 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 26 Nov 2021 11:32:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637944147;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Dm5YxVikGIEz3sRqCWSi6yuJcTiabnvcQxgoKgt87pg=;
+        b=cAnx5IWzhFCfIyALcGYQ1aAiaaOHcrRINsptE/DjPkUPm9yQiDgDp5XZZ2ajdVIQQR/kdm
+        uuOw/gkwC3GpWA0OGwMC5WawvnCw+x/9f1DvJHytqJRxKuUEoBpxdiky26xvEZw0iUFe6W
+        pvOY9Co0D+AOqYcKPO/Wt9SPcstkNLY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-467-KH8_8qlgMaamLo-QOr4lBA-1; Fri, 26 Nov 2021 11:29:04 -0500
+X-MC-Unique: KH8_8qlgMaamLo-QOr4lBA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 168B3B8272C
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 16:28:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CED9C93056;
-        Fri, 26 Nov 2021 16:28:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637944102;
-        bh=gmwd/U4xyQPM2smltF/FD6JYAawcil0k29c20nXQr1M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1VExt6UJbxL/vHe23x0bsXdpiYVOrXEffk6rt4sD/ABCOTIXSxg3Nr0kZqrvYN0qt
-         0p817BVRaQjt1eEJ5OdgSUC4dAnyRLWjOdZxlACpdVGpBAcDR4RsRdCf47lmuYAbGS
-         0aRB5PkQkwcKS33CCdQV24u7CZml98Tn1hUoUUbQ=
-Date:   Fri, 26 Nov 2021 17:28:19 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Wang ShaoBo <bobo.shaobowang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, rafael@kernel.org,
-        sudeep.holla@arm.com, peterz@infradead.org,
-        cj.chengjian@huawei.com, huawei.libin@huawei.com,
-        weiyongjun1@huawei.com
-Subject: Re: [PATCH] arch_topology: Fix missing clear cluster_cpumask in
- remove_cpu_topology()
-Message-ID: <YaELI8+QnBeXXIVm@kroah.com>
-References: <20211110095856.469360-1-bobo.shaobowang@huawei.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1AE961017965;
+        Fri, 26 Nov 2021 16:29:03 +0000 (UTC)
+Received: from T590 (ovpn-8-25.pek2.redhat.com [10.72.8.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D5A5260854;
+        Fri, 26 Nov 2021 16:28:53 +0000 (UTC)
+Date:   Sat, 27 Nov 2021 00:28:48 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>
+Subject: Re: [PATCH 1/2] kobject: don't delay to cleanup module kobject
+Message-ID: <YaELQGKCQovNqTAp@T590>
+References: <20211105063710.4092936-1-ming.lei@redhat.com>
+ <20211105063710.4092936-2-ming.lei@redhat.com>
+ <YaEGcEoCqVHwGEZH@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211110095856.469360-1-bobo.shaobowang@huawei.com>
+In-Reply-To: <YaEGcEoCqVHwGEZH@kroah.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 05:58:56PM +0800, Wang ShaoBo wrote:
-> When testing cpu online and offline, warning happened like this:
+On Fri, Nov 26, 2021 at 05:08:16PM +0100, Greg Kroah-Hartman wrote:
+> On Fri, Nov 05, 2021 at 02:37:09PM +0800, Ming Lei wrote:
+> > CONFIG_DEBUG_KOBJECT_RELEASE is used for debugging kobject release/cleanup
+> > issue. The module kobject is released after module_exit() returns. If
+> > this kobject is delayed too much, and may cause other kobject's
+> > cleaned up a bit earlier before freeing module, then real issue is
+> > hidden.
+> > 
+> > So don't delay module kobject's cleanup, meantime module kobject is
+> > always cleaned up synchronously, and we needn't module kobject's
+> > cleanup.
+> > 
+> > Signed-off-by: Ming Lei <ming.lei@redhat.com>
+> > ---
+> >  lib/kobject.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/lib/kobject.c b/lib/kobject.c
+> > index ea53b30cf483..4c0dbe11be3d 100644
+> > --- a/lib/kobject.c
+> > +++ b/lib/kobject.c
+> > @@ -16,6 +16,7 @@
+> >  #include <linux/stat.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/random.h>
+> > +#include <linux/module.h>
+> >  
+> >  /**
+> >   * kobject_namespace() - Return @kobj's namespace tag.
+> > @@ -727,6 +728,10 @@ static void kobject_release(struct kref *kref)
+> >  	struct kobject *kobj = container_of(kref, struct kobject, kref);
+> >  #ifdef CONFIG_DEBUG_KOBJECT_RELEASE
+> >  	unsigned long delay = HZ + HZ * (get_random_int() & 0x3);
+> > +
+> > +	if (kobj->ktype == &module_ktype)
+> > +		delay = 0;
 > 
-> [  146.746743] WARNING: CPU: 92 PID: 974 at kernel/sched/topology.c:2215 build_sched_domains+0x81c/0x11b0
-> [  146.749988] CPU: 92 PID: 974 Comm: kworker/92:2 Not tainted 5.15.0 #9
-> [  146.750402] Hardware name: Huawei TaiShan 2280 V2/BC82AMDDA, BIOS 1.79 08/21/2021
-> [  146.751213] Workqueue: events cpuset_hotplug_workfn
-> [  146.751629] pstate: 00400009 (nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [  146.752048] pc : build_sched_domains+0x81c/0x11b0
-> [  146.752461] lr : build_sched_domains+0x414/0x11b0
-> [  146.752860] sp : ffff800040a83a80
-> [  146.753247] x29: ffff800040a83a80 x28: ffff20801f13a980 x27: ffff20800448ae00
-> [  146.753644] x26: ffff800012a858e8 x25: ffff800012ea48c0 x24: 0000000000000000
-> [  146.754039] x23: ffff800010ab7d60 x22: ffff800012f03758 x21: 000000000000005f
-> [  146.754427] x20: 000000000000005c x19: ffff004080012840 x18: ffffffffffffffff
-> [  146.754814] x17: 3661613030303230 x16: 30303078303a3239 x15: ffff800011f92b48
-> [  146.755197] x14: ffff20be3f95cef6 x13: 2e6e69616d6f642d x12: 6465686373204c4c
-> [  146.755578] x11: ffff20bf7fc83a00 x10: 0000000000000040 x9 : 0000000000000000
-> [  146.755957] x8 : 0000000000000002 x7 : ffffffffe0000000 x6 : 0000000000000002
-> [  146.756334] x5 : 0000000090000000 x4 : 00000000f0000000 x3 : 0000000000000001
-> [  146.756705] x2 : 0000000000000080 x1 : ffff800012f03860 x0 : 0000000000000001
-> [  146.757070] Call trace:
-> [  146.757421]  build_sched_domains+0x81c/0x11b0
-> [  146.757771]  partition_sched_domains_locked+0x57c/0x978
-> [  146.758118]  rebuild_sched_domains_locked+0x44c/0x7f0
-> [  146.758460]  rebuild_sched_domains+0x2c/0x48
-> [  146.758791]  cpuset_hotplug_workfn+0x3fc/0x888
-> [  146.759114]  process_one_work+0x1f4/0x480
-> [  146.759429]  worker_thread+0x48/0x460
-> [  146.759734]  kthread+0x158/0x168
-> [  146.760030]  ret_from_fork+0x10/0x20
-> [  146.760318] ---[ end trace 82c44aad6900e81a ]---
-> 
-> For some architectures like risc-v and arm64 which use common code
-> clear_cpu_topology() in shutting down CPUx, When CONFIG_SCHED_CLUSTER
-> is set, cluster_sibling in cpu_topology of each sibling adjacent
-> to CPUx is missed clearing, this causes checking failed in
-> topology_span_sane() and rebuilding topology failure at end when CPU online.
-> 
-> Different sibling's cluster_sibling in cpu_topology[] when CPU92 offline
-> (CPU 92, 93, 94, 95 are in one cluster):
-> 
-> Before revision:
-> CPU                 [92]      [93]      [94]      [95]
-> cluster_sibling     [92]     [92-95]   [92-95]   [92-95]
-> 
-> After revision:
-> CPU                 [92]      [93]      [94]      [95]
-> cluster_sibling     [92]     [93-95]   [93-95]   [93-95]
-> 
-> Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
-> ---
->  drivers/base/arch_topology.c | 2 ++
->  1 file changed, 2 insertions(+)
+> No, there should not be anything "special" about module kobjects to get
+> this kind of treatment.  They should work like any other kobject and
+> clean up properly when needed.
 
-What commit id does this fix?
+Here setting 0 delay for module kobject is just for making DEBUG_KOBJECT_RELEASE
+reliable to detect/report issues. Otherwise if the random delay for module
+kobject is bigger than other kobjects, potential use-after-after won't
+be exposed.
 
-thanks,
 
-greg k-h
+Thanks,
+Ming
+
