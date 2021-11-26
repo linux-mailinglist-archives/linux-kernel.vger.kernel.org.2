@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702D345E9A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:53:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 719D445E9AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:53:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353399AbhKZI42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 03:56:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:23611 "EHLO
+        id S1359338AbhKZI4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 03:56:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49246 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1353737AbhKZIy0 (ORCPT
+        by vger.kernel.org with ESMTP id S1359387AbhKZIyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 03:54:26 -0500
+        Fri, 26 Nov 2021 03:54:40 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637916673;
+        s=mimecast20190719; t=1637916687;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=m0q1FtV/hCmMxBW6bOw7HA8YRfBLsTGYeP2j6B9MS2M=;
-        b=PvGi/rzQFxmh164CYooeBN9hznOZfGqdIcbM+lGMZIa1ipCAsoAsKgCIWIm40KaMJpg5Hs
-        3bw9S+cETp97ob3TXcMqE7+kaNC/hwKpqp7GwgjHwKE198AH0R9WfRYCfr3nSCU1r5g9XC
-        StnewvjxZxc2WpOTIow40TGP8Wu348Q=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=buxrUV+g6E7RgVJ5J84jnki/Cx5fv7dc0O2MOtNji5E=;
+        b=WGzQH/BzAFcveQFiX4iYUNaELgpUcqefBRVGfYWjwLQwBjDdMID5B3zGudzmagV7GwnDwG
+        W6XtniruGTiG70aSHA4DEQYmfWx7noEiOgrv1oaiHa5nUzbO1/YKDTfoQDhwwHiitG97b7
+        xnIaOTrjH03Yszt6Cp0m7tmkx5eEpEQ=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-291-Ja9wqEJEM029RlbSu5ynAA-1; Fri, 26 Nov 2021 03:51:12 -0500
-X-MC-Unique: Ja9wqEJEM029RlbSu5ynAA-1
-Received: by mail-wm1-f71.google.com with SMTP id ay34-20020a05600c1e2200b00337fd217772so4992080wmb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 00:51:11 -0800 (PST)
+ us-mta-288-XwtCo46WNWaQh-k4fGgyLA-1; Fri, 26 Nov 2021 03:51:26 -0500
+X-MC-Unique: XwtCo46WNWaQh-k4fGgyLA-1
+Received: by mail-wr1-f71.google.com with SMTP id h13-20020adfa4cd000000b001883fd029e8so1551125wrb.11
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 00:51:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:organization:in-reply-to
          :content-transfer-encoding;
-        bh=m0q1FtV/hCmMxBW6bOw7HA8YRfBLsTGYeP2j6B9MS2M=;
-        b=tiA+f65E5/zOWejz61egYRqBlm/yH+jZc+QrTPnrkpU552q1XjbGamRMvRpDXZTB79
-         s/om5YHCoUxOXLU8C0m58h9H0bG8gYWssA/yWwtHJm07axQW3flKfTfhZOw9gpAchldL
-         cr5BU4bm05C1W/sC1fZdr66YRoHqyAYUSj9UjpI/IeuL8+nmBqtPOxGRo97RiTyyXk6S
-         Po5ucttBb7P7ol/BZvJFvchOZUGVNRzcXa0/a4fPrJsTg5JtosdLX/JizEae6pwsye+8
-         eMiZUJzYTuu/W9Q41bI/yoxY7n9ipXIqv+y6l3x4bz4fkN/UOf5fhaJMGUZd3JzOFyY8
-         UnBA==
-X-Gm-Message-State: AOAM532A8Lk/e11k6zk/mjk/FPJ4Q/IfAkp9jlYe0Ejm02PlpReq9HeU
-        N1WPXDo3g/IgMvKw2aSyzqSyPzezMz1yDIaBe06EByB2Nlgcri9PFbpgiXrvNpDYB03meu/YQbt
-        /TSDLMG2USCSOoQvBRhbGPsau
-X-Received: by 2002:a5d:5643:: with SMTP id j3mr12864179wrw.138.1637916671003;
-        Fri, 26 Nov 2021 00:51:11 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyJWBwXygeN6NpMAN/QamV/bgObotWaHpViXb90YpSCTC9w/eitvSmw9kmmsoYm62fZ47Za3w==
-X-Received: by 2002:a5d:5643:: with SMTP id j3mr12864158wrw.138.1637916670803;
-        Fri, 26 Nov 2021 00:51:10 -0800 (PST)
+        bh=buxrUV+g6E7RgVJ5J84jnki/Cx5fv7dc0O2MOtNji5E=;
+        b=W/2TmB0WGf2DQZoDM5INToLxTHwLUiVtt1Olnpn9xCu7k63tgyHG3LepFV9+9jNKX6
+         gol5TiHqRSKimFIKqpzXhu33Zsw+gKx5XH2VZoApAF7tu3la0wW9a8IrxxhzZrgx20nj
+         utYMQsbqUwiCuNQWmRFBFCqPfpn6meMroyS5xvUIdO+Utu5JTf3JOYrfgcwedPCGlibo
+         ODgUnRWYNXp/Iy64nVdv8RE7ihG/9+R+GOQl9I9ITqxs3aqXHAUADmxA/0I4AjYuFRiY
+         GGAWLRo2V49dNBxynqKBbnfGazTjBDJkTQS1W9L1nunhjusc4RYCugrOhuu1feHYhVos
+         HDTQ==
+X-Gm-Message-State: AOAM53018aMhnKHQUeb+ZIzJ/D1msQ8vG5U2WrXRe8wdntCmNe6LAQmV
+        v0FwUNLgtcAJ7Wik5281LoHzJePZIoIlfy20YTXUgfWd9qN/nRdGkdvN+8o6fcHvNcZlaYffvjF
+        lM1Yq5wrM7Y7dIYHmaMLW+6YD
+X-Received: by 2002:adf:9e01:: with SMTP id u1mr12555720wre.561.1637916684810;
+        Fri, 26 Nov 2021 00:51:24 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz+zRTh3M3Te7Zo+O1GLnjMROjijj+1i34zEBnuPKXwHZMOgzY2YMCX6RlCP4Doiy0fPswqhw==
+X-Received: by 2002:adf:9e01:: with SMTP id u1mr12555706wre.561.1637916684638;
+        Fri, 26 Nov 2021 00:51:24 -0800 (PST)
 Received: from [192.168.3.132] (p5b0c69e1.dip0.t-ipconnect.de. [91.12.105.225])
-        by smtp.gmail.com with ESMTPSA id r62sm5373757wmr.35.2021.11.26.00.51.09
+        by smtp.gmail.com with ESMTPSA id f7sm12695103wmg.6.2021.11.26.00.51.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Nov 2021 00:51:10 -0800 (PST)
-Message-ID: <33f597f0-3237-112e-692f-add18c4ca976@redhat.com>
-Date:   Fri, 26 Nov 2021 09:51:09 +0100
+        Fri, 26 Nov 2021 00:51:24 -0800 (PST)
+Message-ID: <74c1d756-3f7c-7085-0ae9-2c082dce63b2@redhat.com>
+Date:   Fri, 26 Nov 2021 09:51:23 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.2.0
-Subject: Re: [PATCH AUTOSEL 5.10 3/4] virtio-mem: support
+Subject: Re: [PATCH AUTOSEL 5.15 7/7] virtio-mem: support
  VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE
 Content-Language: en-US
 To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
@@ -71,11 +71,11 @@ Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
         Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
         Wei Yang <richard.weiyang@linux.alibaba.com>,
         virtualization@lists.linux-foundation.org
-References: <20211126023034.440961-1-sashal@kernel.org>
- <20211126023034.440961-3-sashal@kernel.org>
+References: <20211126023006.440839-1-sashal@kernel.org>
+ <20211126023006.440839-7-sashal@kernel.org>
 From:   David Hildenbrand <david@redhat.com>
 Organization: Red Hat
-In-Reply-To: <20211126023034.440961-3-sashal@kernel.org>
+In-Reply-To: <20211126023006.440839-7-sashal@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -106,8 +106,68 @@ On 26.11.21 03:30, Sasha Levin wrote:
 > 4. Sanitized access to virtio-mem device memory via /proc/vmcore in
 >    commit ce2814622e84 ("virtio-mem: kdump mode to sanitize /proc/vmcore
 >    access")
+> 
+> "Accidential" access to unplugged memory is no longer possible; we can
+> support the new VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE feature that will be
+> required by some hypervisors implementing virtio-mem in the near future.
+> 
+> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: Marek Kedzierski <mkedzier@redhat.com>
+> Cc: Hui Zhu <teawater@gmail.com>
+> Cc: Sebastien Boeuf <sebastien.boeuf@intel.com>
+> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  drivers/virtio/virtio_mem.c     | 1 +
+>  include/uapi/linux/virtio_mem.h | 9 ++++++---
+>  2 files changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+> index bef8ad6bf4661..78dfdc9c98a1c 100644
+> --- a/drivers/virtio/virtio_mem.c
+> +++ b/drivers/virtio/virtio_mem.c
+> @@ -2758,6 +2758,7 @@ static unsigned int virtio_mem_features[] = {
+>  #if defined(CONFIG_NUMA) && defined(CONFIG_ACPI_NUMA)
+>  	VIRTIO_MEM_F_ACPI_PXM,
+>  #endif
+> +	VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE,
+>  };
+>  
+>  static const struct virtio_device_id virtio_mem_id_table[] = {
+> diff --git a/include/uapi/linux/virtio_mem.h b/include/uapi/linux/virtio_mem.h
+> index 70e01c687d5eb..e9122f1d0e0cb 100644
+> --- a/include/uapi/linux/virtio_mem.h
+> +++ b/include/uapi/linux/virtio_mem.h
+> @@ -68,9 +68,10 @@
+>   * explicitly triggered (VIRTIO_MEM_REQ_UNPLUG).
+>   *
+>   * There are no guarantees what will happen if unplugged memory is
+> - * read/written. Such memory should, in general, not be touched. E.g.,
+> - * even writing might succeed, but the values will simply be discarded at
+> - * random points in time.
+> + * read/written. In general, unplugged memory should not be touched, because
+> + * the resulting action is undefined. There is one exception: without
+> + * VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE, unplugged memory inside the usable
+> + * region can be read, to simplify creation of memory dumps.
+>   *
+>   * It can happen that the device cannot process a request, because it is
+>   * busy. The device driver has to retry later.
+> @@ -87,6 +88,8 @@
+>  
+>  /* node_id is an ACPI PXM and is valid */
+>  #define VIRTIO_MEM_F_ACPI_PXM		0
+> +/* unplugged memory must not be accessed */
+> +#define VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE	1
+>  
+>  
+>  /* --- virtio-mem: guest -> host requests --- */
+> 
 
-As 2. and 4. are part of v5.16-rc1 but not v5.10-stable
+As 2. and 4. are part of v5.16-rc1 but not v5.15-stable
 
 Nacked-by: David Hildenbrand <david@redhat.com>
 
