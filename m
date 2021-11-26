@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C59045EB6F
+	by mail.lfdr.de (Postfix) with ESMTP id C6EA845EB70
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:26:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376866AbhKZK3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 05:29:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38922 "EHLO
+        id S1377216AbhKZK3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:29:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376659AbhKZK0s (ORCPT
+        with ESMTP id S1376839AbhKZK0s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Nov 2021 05:26:48 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A252C0613F6
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:14:31 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id r5so7712046pgi.6
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:14:31 -0800 (PST)
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94AE2C0613F7
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:14:36 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id o4so8449716pfp.13
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:14:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Q1uAwa5mh/A+Y1QgspOM0kINrNdUtZUm8swqhcD3uPA=;
-        b=Lk0EMEo/YmHOJRT1i1B00DcmzbrlL95CveJaUFiAKb7AM43bC/AiSMegywuyJOhZrn
-         8XBn4IW8xshQnE009fuQ8ESSPiGZIhXQVFt14c5C6QPjzDPx7r6dx9a0TqXShmhLZ7xs
-         GLalRHnRcpGybnUqcNH6P+CiHU4K7oj6+VI2dtoAQIoJSR1Jd1YIVSDmJ9s+YzPGRFnF
-         i5IoFA1ilfI+vAfZV2tm5HECxnYBd1UZz3730RmtLhuvVwZ8cnj3fkkb6kZ9Drmt/YBF
-         dM/WJX0KW8w9VQKMyDPsYDyKtwjJIMku9Ilo2v+EbelPm/3ZQRZMtNDKiRW3lkVPFGOB
-         6qlQ==
+        bh=WphTuTVslZby+oDEm50XCSesh2uHM5bzyfp9NXbgOWI=;
+        b=k0X6V4metHesMtIJSF8o+z2oobK3Q8suSwWHGWR0iaDaQhFiMAGThtshq+9iHc/T9v
+         eiB8O38T/07bEzSFsX5s9FI8fEQqu2ZDWsjJ9PicJU1COIfVI8o3tpINx1GZDUEmB4nU
+         eaVZ7LGEcKRLzC10cPWDIyfADjVLLhsniYJgv06isyUZdoL3zmoLdWUIxXsilVgPxCr/
+         X2TOlHGGumweA4x4QnoOkWE0dGsN7KPRXcPePkm750f9VCQMXoM2FxOCjkaTVg/MjcVj
+         cHaN8zgzfILo3WYTuQtDpbEcd+fU7UjRDHawK/y2rFuesMya62bZeXm9iiCmprlwaohd
+         h+fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Q1uAwa5mh/A+Y1QgspOM0kINrNdUtZUm8swqhcD3uPA=;
-        b=mWhDiMgdoF/TTFZ4x5nYM7udhsXdBAvc6N+3IiFEO4+h3Q9iYgtHNYAfFr3AdbYiy5
-         mj6ihFJ9sp0PG0e+I5rofisSfIAOMYjsq57StVGTJK1hgDAQu+2khHFyphGNAlhBe42/
-         nJPH1ojR0lsnHGYz4VnUfwNFRDU2FoyHNiHOEHf2N6b2AHOFUcipIO3JNxqxBAF/JlC4
-         oy4uRLN/2PLHuZnJnrk+22YoLwK3ci1tsPOCHcn8+RdLcrfc1X6fO01jt0TVvw3677jX
-         XtvgPGsOUGJcpzNAHm8ePgb/3+3PyUYai8XlhCS+ypdK+aM1a5spS0PwF60UMck80vu1
-         I0sg==
-X-Gm-Message-State: AOAM532/PvshC+2vfjPyUL09mjTTw5TYB8YLlrvQS4DT0kHPIjdb+pJQ
-        y3hvFE4l59K/ZxpiK/mDawuT55hNOD0=
-X-Google-Smtp-Source: ABdhPJyknhovuqQi/7hEJs0zOtHA4EKaGTCSGOsP4RBThkRxF6zRPJy0tIwOjpofoRS2WiKM54PgJQ==
-X-Received: by 2002:a05:6a00:807:b0:49f:d6ab:590c with SMTP id m7-20020a056a00080700b0049fd6ab590cmr20313839pfk.32.1637921670844;
-        Fri, 26 Nov 2021 02:14:30 -0800 (PST)
+        bh=WphTuTVslZby+oDEm50XCSesh2uHM5bzyfp9NXbgOWI=;
+        b=a4viWz8iiBVwAx4fIWCrIUC/SIqh7EDtDPCkt9F5qJJNrvUaBPRJ3sqxhO2I7kDahC
+         uMAjcIkjnaIgytUckm+rxKP+I1I2x6oi7KYC1qzspAQ0h50nmJsI63x4aMO1CudY23gP
+         yzYj/K3C+3VPKWt+lRkrATS47Xk1P0BAzgck4UOgDN90f46D9trHs31nW+9kBjLkHBo+
+         1Z3h3xpZU9NPui4np41coqi5i06itsvPJ7KCBwOcXyqKLpOGO/hfowVEPYaXkpbfGSUH
+         Z+DMjwEtaZE0gokoa5APR82yQNgTdHxADPVqnuSVlPmmiEDh7Ua0IqkrSaqpGOPrci5s
+         uXZQ==
+X-Gm-Message-State: AOAM531X/piyPghvDPpeQv5YITMTjzFTo3byVDOVcz1GYPyVW3wtATNT
+        lfJwsfdhRnkRQtBHWyDXbDc+rhjZ6xo=
+X-Google-Smtp-Source: ABdhPJwoVWVLcfzgaUEczHZbGpGFB0hvuuLvKmyVFnc3t1mKep89/lgZIso2Af7CuhkjyctjDFHoRA==
+X-Received: by 2002:a63:844a:: with SMTP id k71mr20750151pgd.101.1637921676119;
+        Fri, 26 Nov 2021 02:14:36 -0800 (PST)
 Received: from localhost ([47.251.3.230])
-        by smtp.gmail.com with ESMTPSA id q18sm6000717pfn.83.2021.11.26.02.14.29
+        by smtp.gmail.com with ESMTPSA id z15sm6210770pfc.2.2021.11.26.02.14.35
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 26 Nov 2021 02:14:30 -0800 (PST)
+        Fri, 26 Nov 2021 02:14:35 -0800 (PST)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
@@ -55,14 +55,10 @@ Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <jgross@suse.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>
-Subject: [PATCH V6 24/49] x86/entry: Use idtentry macro for entry_INT80_compat
-Date:   Fri, 26 Nov 2021 18:11:44 +0800
-Message-Id: <20211126101209.8613-25-jiangshanlai@gmail.com>
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH V6 25/49] x86/entry: Convert SWAPGS to swapgs in entry_SYSENTER_compat()
+Date:   Fri, 26 Nov 2021 18:11:45 +0800
+Message-Id: <20211126101209.8613-26-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20211126101209.8613-1-jiangshanlai@gmail.com>
 References: <20211126101209.8613-1-jiangshanlai@gmail.com>
@@ -74,245 +70,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-entry_INT80_compat is identical to idtentry macro except a special
-handling for %rax in the prolog.
-
-Add the prolog to idtentry and use idtentry for entry_INT80_compat.
+XENPV has its own entry point for SYSENTER, it doesn't use
+entry_SYSENTER_compat.  So the pv-awared SWAPGS can be changed to
+swapgs.
 
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/entry/entry_64.S        |  18 ++++++
- arch/x86/entry/entry_64_compat.S | 102 -------------------------------
- arch/x86/include/asm/idtentry.h  |  47 ++++++++++++++
- arch/x86/include/asm/proto.h     |   4 --
- 4 files changed, 65 insertions(+), 106 deletions(-)
+ arch/x86/entry/entry_64_compat.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 16b2215bdb23..dd0cb43627a3 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -371,6 +371,24 @@ SYM_CODE_START(\asmsym)
- 		pushq	$-1			/* ORIG_RAX: no syscall to restart */
- 	.endif
- 
-+	.if \vector == IA32_SYSCALL_VECTOR
-+		/*
-+		 * User tracing code (ptrace or signal handlers) might assume
-+		 * that the saved RAX contains a 32-bit number when we're
-+		 * invoking a 32-bit syscall.  Just in case the high bits are
-+		 * nonzero, zero-extend the syscall number.  (This could almost
-+		 * certainly be deleted with no ill effects.)
-+		 */
-+		movl	%eax, %eax
-+
-+		/*
-+		 * do_int80_syscall_32() expects regs->orig_ax to be user ax,
-+		 * and regs->ax to be $-ENOSYS.
-+		 */
-+		movq	%rax, (%rsp)
-+		movq	$-ENOSYS, %rax
-+	.endif
-+
- 	.if \vector == X86_TRAP_BP
- 		/*
- 		 * If coming from kernel space, create a 6-word gap to allow the
 diff --git a/arch/x86/entry/entry_64_compat.S b/arch/x86/entry/entry_64_compat.S
-index 0051cf5c792d..a4fcea0cab14 100644
+index a4fcea0cab14..72e017c3941f 100644
 --- a/arch/x86/entry/entry_64_compat.S
 +++ b/arch/x86/entry/entry_64_compat.S
-@@ -311,105 +311,3 @@ sysret32_from_system_call:
- 	swapgs
- 	sysretl
- SYM_CODE_END(entry_SYSCALL_compat)
--
--/*
-- * 32-bit legacy system call entry.
-- *
-- * 32-bit x86 Linux system calls traditionally used the INT $0x80
-- * instruction.  INT $0x80 lands here.
-- *
-- * This entry point can be used by 32-bit and 64-bit programs to perform
-- * 32-bit system calls.  Instances of INT $0x80 can be found inline in
-- * various programs and libraries.  It is also used by the vDSO's
-- * __kernel_vsyscall fallback for hardware that doesn't support a faster
-- * entry method.  Restarted 32-bit system calls also fall back to INT
-- * $0x80 regardless of what instruction was originally used to do the
-- * system call.
-- *
-- * This is considered a slow path.  It is not used by most libc
-- * implementations on modern hardware except during process startup.
-- *
-- * Arguments:
-- * eax  system call number
-- * ebx  arg1
-- * ecx  arg2
-- * edx  arg3
-- * esi  arg4
-- * edi  arg5
-- * ebp  arg6
-- */
--SYM_CODE_START(entry_INT80_compat)
--	UNWIND_HINT_EMPTY
--	/*
--	 * Interrupts are off on entry.
--	 */
--	ASM_CLAC			/* Do this early to minimize exposure */
+@@ -49,7 +49,7 @@
+ SYM_CODE_START(entry_SYSENTER_compat)
+ 	UNWIND_HINT_EMPTY
+ 	/* Interrupts are off on entry. */
 -	SWAPGS
--
--	/*
--	 * User tracing code (ptrace or signal handlers) might assume that
--	 * the saved RAX contains a 32-bit number when we're invoking a 32-bit
--	 * syscall.  Just in case the high bits are nonzero, zero-extend
--	 * the syscall number.  (This could almost certainly be deleted
--	 * with no ill effects.)
--	 */
--	movl	%eax, %eax
--
--	/* switch to thread stack expects orig_ax and rdi to be pushed */
--	pushq	%rax			/* pt_regs->orig_ax */
--	pushq	%rdi			/* pt_regs->di */
--
--	/* Need to switch before accessing the thread stack. */
--	SWITCH_TO_KERNEL_CR3 scratch_reg=%rdi
--
--	/* In the Xen PV case we already run on the thread stack. */
--	ALTERNATIVE "", "jmp .Lint80_keep_stack", X86_FEATURE_XENPV
--
--	movq	%rsp, %rdi
--	movq	PER_CPU_VAR(cpu_current_top_of_stack), %rsp
--
--	pushq	6*8(%rdi)		/* regs->ss */
--	pushq	5*8(%rdi)		/* regs->rsp */
--	pushq	4*8(%rdi)		/* regs->eflags */
--	pushq	3*8(%rdi)		/* regs->cs */
--	pushq	2*8(%rdi)		/* regs->ip */
--	pushq	1*8(%rdi)		/* regs->orig_ax */
--	pushq	(%rdi)			/* pt_regs->di */
--.Lint80_keep_stack:
--
--	pushq	%rsi			/* pt_regs->si */
--	xorl	%esi, %esi		/* nospec   si */
--	pushq	%rdx			/* pt_regs->dx */
--	xorl	%edx, %edx		/* nospec   dx */
--	pushq	%rcx			/* pt_regs->cx */
--	xorl	%ecx, %ecx		/* nospec   cx */
--	pushq	$-ENOSYS		/* pt_regs->ax */
--	pushq   %r8			/* pt_regs->r8 */
--	xorl	%r8d, %r8d		/* nospec   r8 */
--	pushq   %r9			/* pt_regs->r9 */
--	xorl	%r9d, %r9d		/* nospec   r9 */
--	pushq   %r10			/* pt_regs->r10*/
--	xorl	%r10d, %r10d		/* nospec   r10 */
--	pushq   %r11			/* pt_regs->r11 */
--	xorl	%r11d, %r11d		/* nospec   r11 */
--	pushq   %rbx                    /* pt_regs->rbx */
--	xorl	%ebx, %ebx		/* nospec   rbx */
--	pushq   %rbp                    /* pt_regs->rbp */
--	xorl	%ebp, %ebp		/* nospec   rbp */
--	pushq   %r12                    /* pt_regs->r12 */
--	xorl	%r12d, %r12d		/* nospec   r12 */
--	pushq   %r13                    /* pt_regs->r13 */
--	xorl	%r13d, %r13d		/* nospec   r13 */
--	pushq   %r14                    /* pt_regs->r14 */
--	xorl	%r14d, %r14d		/* nospec   r14 */
--	pushq   %r15                    /* pt_regs->r15 */
--	xorl	%r15d, %r15d		/* nospec   r15 */
--
--	UNWIND_HINT_REGS
--
--	cld
--
--	movq	%rsp, %rdi
--	call	do_int80_syscall_32
--	jmp	swapgs_restore_regs_and_return_to_usermode
--SYM_CODE_END(entry_INT80_compat)
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index 6779def97591..49fabc3e3f0d 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -207,6 +207,20 @@ __visible noinstr void func(struct pt_regs *regs,			\
- 									\
- static noinline void __##func(struct pt_regs *regs, u32 vector)
++	swapgs
  
-+/**
-+ * DECLARE_IDTENTRY_IA32_EMULATION - Declare functions for int80
-+ * @vector:	Vector number (ignored for C)
-+ * @asm_func:	Function name of the entry point
-+ * @cfunc:	The C handler called from the ASM entry point (ignored for C)
-+ *
-+ * Declares two functions:
-+ * - The ASM entry point: asm_func
-+ * - The XEN PV trap entry point: xen_##asm_func (maybe unused)
-+ */
-+#define DECLARE_IDTENTRY_IA32_EMULATION(vector, asm_func, cfunc)	\
-+	asmlinkage void asm_func(void);					\
-+	asmlinkage void xen_##asm_func(void)
-+
- /**
-  * DECLARE_IDTENTRY_SYSVEC - Declare functions for system vector entry points
-  * @vector:	Vector number (ignored for C)
-@@ -433,6 +447,35 @@ __visible noinstr void func(struct pt_regs *regs,			\
- #define DECLARE_IDTENTRY_ERRORCODE(vector, func)			\
- 	idtentry vector asm_##func func has_error_code=1
- 
-+/*
-+ * 32-bit legacy system call entry.
-+ *
-+ * 32-bit x86 Linux system calls traditionally used the INT $0x80
-+ * instruction.  INT $0x80 lands here.
-+ *
-+ * This entry point can be used by 32-bit and 64-bit programs to perform
-+ * 32-bit system calls.  Instances of INT $0x80 can be found inline in
-+ * various programs and libraries.  It is also used by the vDSO's
-+ * __kernel_vsyscall fallback for hardware that doesn't support a faster
-+ * entry method.  Restarted 32-bit system calls also fall back to INT
-+ * $0x80 regardless of what instruction was originally used to do the
-+ * system call.
-+ *
-+ * This is considered a slow path.  It is not used by most libc
-+ * implementations on modern hardware except during process startup.
-+ *
-+ * Arguments:
-+ * eax  system call number
-+ * ebx  arg1
-+ * ecx  arg2
-+ * edx  arg3
-+ * esi  arg4
-+ * edi  arg5
-+ * ebp  arg6
-+ */
-+#define DECLARE_IDTENTRY_IA32_EMULATION(vector, asm_func, cfunc)	\
-+	idtentry vector asm_func cfunc has_error_code=0
-+
- /* Special case for 32bit IRET 'trap'. Do not emit ASM code */
- #define DECLARE_IDTENTRY_SW(vector, func)
- 
-@@ -634,6 +677,10 @@ DECLARE_IDTENTRY_IRQ(X86_TRAP_OTHER,	common_interrupt);
- DECLARE_IDTENTRY_IRQ(X86_TRAP_OTHER,	spurious_interrupt);
- #endif
- 
-+#ifdef CONFIG_IA32_EMULATION
-+DECLARE_IDTENTRY_IA32_EMULATION(IA32_SYSCALL_VECTOR,	entry_INT80_compat, do_int80_syscall_32);
-+#endif
-+
- /* System vector entry points */
- #ifdef CONFIG_X86_LOCAL_APIC
- DECLARE_IDTENTRY_SYSVEC(ERROR_APIC_VECTOR,		sysvec_error_interrupt);
-diff --git a/arch/x86/include/asm/proto.h b/arch/x86/include/asm/proto.h
-index 33ae276c8b34..597c767091cb 100644
---- a/arch/x86/include/asm/proto.h
-+++ b/arch/x86/include/asm/proto.h
-@@ -29,10 +29,6 @@ void entry_SYSENTER_compat(void);
- void __end_entry_SYSENTER_compat(void);
- void entry_SYSCALL_compat(void);
- void entry_SYSCALL_compat_safe_stack(void);
--void entry_INT80_compat(void);
--#ifdef CONFIG_XEN_PV
--void xen_entry_INT80_compat(void);
--#endif
- #endif
- 
- void x86_configure_nx(void);
+ 	pushq	%rax
+ 	SWITCH_TO_KERNEL_CR3 scratch_reg=%rax
 -- 
 2.19.1.6.gb485710b
 
