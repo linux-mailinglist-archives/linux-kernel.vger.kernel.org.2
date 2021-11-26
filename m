@@ -2,83 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C0C45F006
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:39:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BDDE45F007
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:39:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353224AbhKZOm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 09:42:29 -0500
-Received: from vulcan.natalenko.name ([104.207.131.136]:42476 "EHLO
-        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350522AbhKZOk2 (ORCPT
+        id S1377853AbhKZOmx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 26 Nov 2021 09:42:53 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:60987 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350908AbhKZOkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 09:40:28 -0500
-Received: from spock.localnet (unknown [83.148.33.151])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Fri, 26 Nov 2021 09:40:51 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-377-FEoH74sPP-WpnJKCXXDBfQ-1; Fri, 26 Nov 2021 09:37:34 -0500
+X-MC-Unique: FEoH74sPP-WpnJKCXXDBfQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id AB15ACBFF9E;
-        Fri, 26 Nov 2021 15:37:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1637937433;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XsT7BbzclkZONDz+Xm/rpdBzgDHUBzk2CdDy05rQbSo=;
-        b=uNN95HhG5FAJuTITzs9HHG9rrtIywK9/Q1JzJT4PJAxnDZ/Y2hqZCrFZw6/Y6CfKm21dp/
-        LPPVA/n4Eg9tAPoIQ65K0zWD0I0sBVhb8moHp4ctgiw1llzjVJHT8wt2liPlztsS6BwvOf
-        G1rbCyZ8s3vV5NYQjyA142oApkbqJiA=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     akpm@linux-foundation.org, SeongJae Park <sj@kernel.org>
-Cc:     john.stultz@linaro.org, tglx@linutronix.de, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH v2 0/2] mm/damon: Fix fake /proc/loadavg reports
-Date:   Fri, 26 Nov 2021 15:37:12 +0100
-Message-ID: <23071693.Kees4NU7H7@natalenko.name>
-In-Reply-To: <20211125160830.30153-1-sj@kernel.org>
-References: <20211125160830.30153-1-sj@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 24BCA2F22;
+        Fri, 26 Nov 2021 14:37:33 +0000 (UTC)
+Received: from comp-core-i7-2640m-0182e6.redhat.com (unknown [10.36.110.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0955C60BF4;
+        Fri, 26 Nov 2021 14:37:31 +0000 (UTC)
+From:   Alexey Gladkov <legion@kernel.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux.dev>
+Cc:     "Eric W . Biederman" <ebiederm@xmission.com>
+Subject: [PATCH v1 0/2] ucounts: Fix rlimit max values check
+Date:   Fri, 26 Nov 2021 15:37:25 +0100
+Message-Id: <cover.1637934917.git.legion@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+Checking the rlimit value specified in init_user_ns from the created userns does
+not work properly. The issue is that the maximum value is taken by the same
+rules as for ucounts. Because of this, we check the current rlimit counter value
+with RLIM_INFINITY in init_user_ns.
 
-On =C4=8Dtvrtek 25. listopadu 2021 17:08:28 CET SeongJae Park wrote:
-> This patchset fixes DAMON's fake load report issue.  The first patch
-> makes yet another variant of usleep_range() for this fix, and the second
-> patch fixes the issue of DAMON by making it using the newly introduced
-> function.
->=20
-> I think these need to be applied on v5.15.y, but the second patch cannot
-> cleanly applied there as is.  I will back-port this on v5.15.y and post
-> later once this is merged in the mainline.  If you think this is not
-> appropriate for stable tree, please let me know.
->=20
-> Changelog
-> ---------
->=20
-> >From v1
->=20
-> (https://lore.kernel.org/linux-mm/20211124145219.32866-1-sj@kernel.org/)
-> - Avoid copy-and-pasting usleep_delay() in DAMON code (Andrew Morton)
->=20
-> SeongJae Park (2):
->   timers: Implement usleep_idle_range()
->   mm/damon/core: Fix fake load reports due to uninterruptible sleeps
->=20
->  include/linux/delay.h | 14 +++++++++++++-
->  kernel/time/timer.c   | 16 +++++++++-------
->  mm/damon/core.c       |  6 +++---
->  3 files changed, 25 insertions(+), 11 deletions(-)
+--
 
-I'd appreciate if you Cc me as a reporter since I'm going to test this.
+Alexey Gladkov (2):
+  ucounts: Fix rlimit max values check
+  ucounts: Move rlimit max values from ucounts max
 
-Thanks.
+ include/linux/user_namespace.h | 13 ++++++++++---
+ kernel/fork.c                  |  8 ++++----
+ kernel/ucount.c                | 15 +++++++++------
+ kernel/user_namespace.c        |  8 ++++----
+ 4 files changed, 27 insertions(+), 17 deletions(-)
 
-=2D-=20
-Oleksandr Natalenko (post-factum)
-
+-- 
+2.33.0
 
