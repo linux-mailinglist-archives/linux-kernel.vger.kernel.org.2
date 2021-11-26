@@ -2,161 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB97345F72D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 00:20:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2824045F733
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Nov 2021 00:25:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239603AbhKZXXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 18:23:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:49529 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233555AbhKZXVi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 18:21:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637968704;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YgiQvwMbp08vBlE12HoXheM5NwL03lkPTtYhHTWGGHs=;
-        b=APSiIw4dzdDjoJ8lzQdcJfxBCIG1TJidc0QeGc49DRqeRR69kHVlu/ikaV5Vg3l7/U/pkf
-        KSvhUzpAbvAFVYBiNcVY+rdiY1RdLiJAAx9gUtk73OUPFptgeM23qfdWbHs0uMAkS/7v2r
-        aor5yfgCdHaZNY4lml0tiXgrsgWEwM0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-275-sWHclhRxM6Sgyilt0QJolw-1; Fri, 26 Nov 2021 18:18:23 -0500
-X-MC-Unique: sWHclhRxM6Sgyilt0QJolw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BBCC38042EA;
-        Fri, 26 Nov 2021 23:18:20 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.192.29])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 745515D740;
-        Fri, 26 Nov 2021 23:18:17 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     "Andy Lutomirski" <luto@kernel.org>
-Cc:     linux-arch@vger.kernel.org,
-        "Linux API" <linux-api@vger.kernel.org>,
-        linux-x86_64@vger.kernel.org, kernel-hardening@lists.openwall.com,
-        linux-mm@kvack.org, "the arch/x86 maintainers" <x86@kernel.org>,
-        musl@lists.openwall.com,
-        "Dave Hansen via Libc-alpha" <libc-alpha@sourceware.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Dave Hansen" <dave.hansen@intel.com>,
-        "Kees Cook" <keescook@chromium.org>
-Subject: Re: [PATCH] x86: Implement arch_prctl(ARCH_VSYSCALL_LOCKOUT) to
- disable vsyscall
-References: <87h7bzjaer.fsf@oldenburg.str.redhat.com>
-        <4728eeae-8f1b-4541-b05a-4a0f35a459f7@www.fastmail.com>
-        <87lf1ais27.fsf@oldenburg.str.redhat.com>
-        <9641b76e-9ae0-4c26-97b6-76ecde34f0ef@www.fastmail.com>
-Date:   Sat, 27 Nov 2021 00:18:14 +0100
-In-Reply-To: <9641b76e-9ae0-4c26-97b6-76ecde34f0ef@www.fastmail.com> (Andy
-        Lutomirski's message of "Fri, 26 Nov 2021 14:53:45 -0800")
-Message-ID: <878rxaik09.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        id S245595AbhKZX2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 18:28:41 -0500
+Received: from mga17.intel.com ([192.55.52.151]:63666 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233537AbhKZX0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 18:26:38 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10180"; a="216433142"
+X-IronPort-AV: E=Sophos;i="5.87,267,1631602800"; 
+   d="scan'208";a="216433142"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 15:23:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,267,1631602800"; 
+   d="scan'208";a="675670557"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 26 Nov 2021 15:23:20 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mqkYq-0008kz-14; Fri, 26 Nov 2021 23:23:20 +0000
+Date:   Sat, 27 Nov 2021 07:22:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     cgel.zte@gmail.com, jiri@nvidia.com
+Cc:     kbuild-all@lists.01.org, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Ruyi <lv.ruyi@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH] devlink: use min() to make code cleaner
+Message-ID: <202111270712.SjCO9Kz9-lkp@intel.com>
+References: <20211125071414.53147-1-lv.ruyi@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211125071414.53147-1-lv.ruyi@zte.com.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Andy Lutomirski:
+Hi,
 
-> On Fri, Nov 26, 2021, at 12:24 PM, Florian Weimer wrote:
->> * Andy Lutomirski:
->>
->>> On Fri, Nov 26, 2021, at 5:47 AM, Florian Weimer wrote:
->>>> Distributions struggle with changing the default for vsyscall
->>>> emulation because it is a clear break of userspace ABI, something
->>>> that should not happen.
->>>>
->>>> The legacy vsyscall interface is supposed to be used by libcs only,
->>>> not by applications.  This commit adds a new arch_prctl request,
->>>> ARCH_VSYSCALL_LOCKOUT.  Newer libcs can adopt this request to signal
->>>> to the kernel that the process does not need vsyscall emulation.
->>>> The kernel can then disable it for the remaining lifetime of the
->>>> process.  Legacy libcs do not perform this call, so vsyscall remains
->>>> enabled for them.  This approach should achieves backwards
->>>> compatibility (perfect compatibility if the assumption that only libcs
->>>> use vsyscall is accurate), and it provides full hardening for new
->>>> binaries.
->>>
->>> Why is a lockout needed instead of just a toggle?  By the time an
->>> attacker can issue prctls, an emulated vsyscall seems like a pretty
->>> minor exploit technique.  And programs that load legacy modules or
->>> instrument other programs might need to re-enable them.
->>
->> For glibc, I plan to add an environment variable to disable the lockout.
->> There's no ELF markup that would allow us to do this during dlopen.
->> (And after this change, you can run an old distribution in a chroot
->> for legacy software, something that the userspace ABI break prevents.)
->>
->> If it can be disabled, people will definitely say, =E2=80=9Cwe get more =
-complete
->> hardening if we break old userspace=E2=80=9D.  I want to avoid that.  (P=
-eople
->> will say that anyway because there's this fairly large window of libcs
->> that don't use vsyscalls anymore, but have not been patched yet to do
->> the lockout.)
->
-> I=E2=80=99m having trouble following the logic. What I mean is that I thi=
-nk it
-> should be possible to do the arch_prctl again to turn vsyscalls back
-> on.
+Thank you for the patch! Perhaps something to improve:
 
-The =E2=80=9CBy the time an attacker can issue prctls=E2=80=9D argument doe=
-s resonate
-with me, but I'm not the one who needs convincing.
+[auto build test WARNING on linus/master]
+[also build test WARNING on v5.16-rc2 next-20211126]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-I can turn this into a toggle, and we could probably default our builds
-to vsyscalls=3Dxonly.  Given the userspace ABI impact, we'd still have to
-upstream the toggle.  Do you see a chance of a patch a long these lines
-going in at all, given that it's an incomplete solution for
-vsyscall=3Demulate?
+url:    https://github.com/0day-ci/linux/commits/cgel-zte-gmail-com/devlink-use-min-to-make-code-cleaner/20211125-151715
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 5f53fa508db098c9d372423a6dac31c8a5679cdf
+config: x86_64-randconfig-s022-20211126 (https://download.01.org/0day-ci/archive/20211127/202111270712.SjCO9Kz9-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://github.com/0day-ci/linux/commit/836e00794d541adc38bfd77e1714579f2223a231
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review cgel-zte-gmail-com/devlink-use-min-to-make-code-cleaner/20211125-151715
+        git checkout 836e00794d541adc38bfd77e1714579f2223a231
+        # save the config file to linux build tree
+        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=x86_64 SHELL=/bin/bash net/core/
 
->> Maybe the lockout also simplifies the implementation?
->>
->>> Also, the interaction with emulate mode is somewhat complex. For now,
->>> let=E2=80=99s support this in xonly mode only. A complete implementatio=
-n will
->>> require nontrivial mm work.  I had that implemented pre-KPTI, but KPTI
->>> made it more complicated.
->>
->> I admit I only looked at the code in emulate_vsyscall.  It has code that
->> seems to deal with faults not due to instruction fetch, and also checks
->> for vsyscall=3Demulate mode.  But it seems that we don't get to this poi=
-nt
->> for reads in vsyscall=3Demulate mode, presumably because the page is
->> already mapped?
->
-> Yes, and, with KPTI off, it=E2=80=99s nontrivial to unmap it. I have code=
- for
-> this, but I=E2=80=99m not sure the complexity is worthwhile.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Huh.  KPTI is the new thing, right?  Does it make things harder or not?
-I'm confused.
 
-If we knew at execve time that the new process image doesn't have
-vsyscall, would that be easier to set up?  vsyscall opt-out could be
-triggered by an ELF NOTE segment on the program interpreter (or main
-program if there isn't one).
+sparse warnings: (new ones prefixed by >>)
+>> net/core/devlink.c:5762:29: sparse: sparse: incompatible types in comparison expression (different type sizes):
+>> net/core/devlink.c:5762:29: sparse:    unsigned long long *
+>> net/core/devlink.c:5762:29: sparse:    int *
 
->>> Finally, /proc/self/maps should be wired up via the gate_area code.
->>
->> Should the "[vsyscall]" string change to something else if execution is
->> disabled?
->
-> I think the line should disappear entirely, just like booting with
-> vsyscall=3Dnone.
+vim +5762 net/core/devlink.c
 
-Hmm.  But only for vsyscall=3Dxonly, right?  With vsyscall=3Demulate,
-reading at those addresses will still succeed.
+  5737	
+  5738	static int devlink_nl_region_read_snapshot_fill(struct sk_buff *skb,
+  5739							struct devlink *devlink,
+  5740							struct devlink_region *region,
+  5741							struct nlattr **attrs,
+  5742							u64 start_offset,
+  5743							u64 end_offset,
+  5744							u64 *new_offset)
+  5745	{
+  5746		struct devlink_snapshot *snapshot;
+  5747		u64 curr_offset = start_offset;
+  5748		u32 snapshot_id;
+  5749		int err = 0;
+  5750	
+  5751		*new_offset = start_offset;
+  5752	
+  5753		snapshot_id = nla_get_u32(attrs[DEVLINK_ATTR_REGION_SNAPSHOT_ID]);
+  5754		snapshot = devlink_region_snapshot_get_by_id(region, snapshot_id);
+  5755		if (!snapshot)
+  5756			return -EINVAL;
+  5757	
+  5758		while (curr_offset < end_offset) {
+  5759			u32 data_size;
+  5760			u8 *data;
+  5761	
+> 5762			data_size = min(end_offset - curr_offset, DEVLINK_REGION_READ_CHUNK_SIZE);
+  5763	
+  5764			data = &snapshot->data[curr_offset];
+  5765			err = devlink_nl_cmd_region_read_chunk_fill(skb, devlink,
+  5766								    data, data_size,
+  5767								    curr_offset);
+  5768			if (err)
+  5769				break;
+  5770	
+  5771			curr_offset += data_size;
+  5772		}
+  5773		*new_offset = curr_offset;
+  5774	
+  5775		return err;
+  5776	}
+  5777	
 
-Thanks,
-Florian
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
