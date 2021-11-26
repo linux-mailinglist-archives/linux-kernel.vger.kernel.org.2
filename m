@@ -2,131 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4574602A5
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 01:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D004602F9
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Nov 2021 03:20:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356784AbhK1Ast (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Nov 2021 19:48:49 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:12892 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356720AbhK1Aqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Nov 2021 19:46:46 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4J1qTm1DhtzNL;
-        Sun, 28 Nov 2021 01:43:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1638060207; bh=ymi2rjesYlmYsrxY12X8vblXPJWiCK3o6T/SGnAjDZo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C6SfBZOFpiANlfwmDvX4OuIMVOJSlYKPAQ7cePS7VCRqQvRDRXyoU4e1HDyFW5286
-         aMp77cXaWF2QuMJ//PO7Wx9adwPHxvzWlhsVptz1Bv8pKTYitnPzWsGYgxjQNrOvV7
-         Uk484prqIxJAORTEmmGB3fc8u4Kn87uEVHmrPcrNw+TikFuKmaRxmZpfI/D7x9DxOR
-         HEK/DHm3KCkqlnpSbmB87Uzzanvh59D/q1WHxqRBbTNokUG7ZgWXQQKaJ+DCHFVboG
-         CiQGnas3tcMmGH5URTeE0feIhbti0vtOii+M7lKOB+wnpM9RCc3cCyDZ3xGFva1jKa
-         oHCSKPMXxlqVw==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.3 at mail
-Date:   Sun, 28 Nov 2021 01:43:22 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
-        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v4 08/25] kernel: Add combined power-off+restart handler
- call chain API
-Message-ID: <YaLQqks8cB0vWp6Q@qmqm.qmqm.pl>
-References: <20211126180101.27818-1-digetx@gmail.com>
- <20211126180101.27818-9-digetx@gmail.com>
+        id S235429AbhK1CXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Nov 2021 21:23:40 -0500
+Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17287 "EHLO
+        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229725AbhK1CVi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Nov 2021 21:21:38 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1637903008; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=kTT6Em4JDS6/n2VGliGLaE9S+PknFWxGAUiJO4w9UcrhWM6NIlMzAx+PtzMv9HHDSNv2cP27qumLZNCOYVAznwtp8lXf6M/LqY/Gq/p/xzSUwgrV46aHdZiKMf+5JRO3Rs62wyy89VzmskC+loYa07G1bKLiqEwExGzYIzOszds=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1637903008; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
+        bh=e1fy8d/F7bO0bxbGs9DFbseWsVknlDYWORiYHfsGIf8=; 
+        b=D+d85SWg0ltZ94GnKtm7vV4/uUrRM6weqrb89FGTFtj4m89M2NfrXFUGJ9ojdiV/cZ7+gXsL/DBAa5KTV0Lqxv9KvyfNtzn2BrUtCvKpdzg8Gea5yYl3qHhHkcIcA/HcrdwmahOTG4+DUxHVrliJfPOrrOC6vMZtZRPBfJibA2Q=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1637903008;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=e1fy8d/F7bO0bxbGs9DFbseWsVknlDYWORiYHfsGIf8=;
+        b=Nl3r5ejY1FHl1ts5hqefnDJ9sJvZpsLJORZ3A4KioqoF7ibhdDL7ysWhdndMlvgk
+        bhsk/ZFNRmLwXCekMD84/SnA7kYzSfipuQe6dfXL/7ye+fUekX6MpcNkMD/JsBtfPKT
+        eXfIDlXUdRRy6lvszTi851IoRCvWRkSeoVID5kQk=
+Received: from mail.baihui.com by mx.zoho.com.cn
+        with SMTP id 163790300607680.6143952720198; Fri, 26 Nov 2021 13:03:26 +0800 (CST)
+Date:   Fri, 26 Nov 2021 13:03:26 +0800
+From:   Chengguang Xu <cgxu519@mykernel.net>
+Reply-To: cgxu519@mykernel.net
+To:     "Amir Goldstein" <amir73il@gmail.com>
+Cc:     "Miklos Szeredi" <miklos@szeredi.hu>, "Jan Kara" <jack@suse.cz>,
+        "overlayfs" <linux-unionfs@vger.kernel.org>,
+        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "Chengguang Xu" <charliecgxu@tencent.com>
+Message-ID: <17d5aa0795d.fdfda4a49855.5158536783597235118@mykernel.net>
+In-Reply-To: <CAOQ4uxhrg=MAL7sArmP47oyF_QmhG-1b=srs30VNdiT-9s-P0w@mail.gmail.com>
+References: <20211122030038.1938875-1-cgxu519@mykernel.net> <20211122030038.1938875-8-cgxu519@mykernel.net> <CAOQ4uxhrg=MAL7sArmP47oyF_QmhG-1b=srs30VNdiT-9s-P0w@mail.gmail.com>
+Subject: Re: [RFC PATCH V6 7/7] ovl: implement containerized syncfs for
+ overlayfs
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211126180101.27818-9-digetx@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Importance: Medium
+User-Agent: ZohoCN Mail
+X-Mailer: ZohoCN Mail
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 09:00:44PM +0300, Dmitry Osipenko wrote:
-> SoC platforms often have multiple ways of how to perform system's
-> power-off and restart operations. Meanwhile today's kernel is limited to
-> a single option. Add combined power-off+restart handler call chain API,
-> which is inspired by the restart API. The new API provides both power-off
-> and restart functionality.
-> 
-> The old pm_power_off method will be kept around till all users are
-> converted to the new API.
-> 
-> Current restart API will be replaced by the new unified API since
-> new API is its superset. The restart functionality of the sys-off handler
-> API is built upon the existing restart-notifier APIs.
-> 
-> In order to ease conversion to the new API, convenient helpers are added
-> for the common use-cases. They will reduce amount of boilerplate code and
-> remove global variables. These helpers preserve old behaviour for cases
-> where only one power-off handler is expected, this is what all existing
-> drivers want, and thus, they could be easily converted to the new API.
-> Users of the new API should explicitly enable power-off chaining by
-> setting corresponding flag of the power_handler structure.
-[...]
+ ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=80, 2021-11-22 15:40:59 Amir Golds=
+tein <amir73il@gmail.com> =E6=92=B0=E5=86=99 ----
+ > On Mon, Nov 22, 2021 at 5:01 AM Chengguang Xu <cgxu519@mykernel.net> wro=
+te:
+ > >
+ > > From: Chengguang Xu <charliecgxu@tencent.com>
+ > >
+ > > Now overlayfs can only sync own dirty inodes during syncfs,
+ > > so remove unnecessary sync_filesystem() on upper file system.
+ > >
+ > > Signed-off-by: Chengguang Xu <charliecgxu@tencent.com>
+ > > ---
+ > >  fs/overlayfs/super.c | 14 +++++---------
+ > >  1 file changed, 5 insertions(+), 9 deletions(-)
+ > >
+ > > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+ > > index ccffcd96491d..213b795a6a86 100644
+ > > --- a/fs/overlayfs/super.c
+ > > +++ b/fs/overlayfs/super.c
+ > > @@ -292,18 +292,14 @@ static int ovl_sync_fs(struct super_block *sb, i=
+nt wait)
+ > >         /*
+ > >          * Not called for sync(2) call or an emergency sync (SB_I_SKIP=
+_SYNC).
+ > >          * All the super blocks will be iterated, including upper_sb.
+ > > -        *
+ > > -        * If this is a syncfs(2) call, then we do need to call
+ > > -        * sync_filesystem() on upper_sb, but enough if we do it when =
+being
+ > > -        * called with wait =3D=3D 1.
+ > >          */
+ > > -       if (!wait)
+ > > -               return 0;
+ > > -
+ > >         upper_sb =3D ovl_upper_mnt(ofs)->mnt_sb;
+ > > -
+ > >         down_read(&upper_sb->s_umount);
+ > > -       ret =3D sync_filesystem(upper_sb);
+ > > +       if (wait)
+ > > +               wait_sb_inodes(upper_sb);
+ > > +       if (upper_sb->s_op->sync_fs)
+ > > +               upper_sb->s_op->sync_fs(upper_sb, wait);
+ > > +       ret =3D ovl_sync_upper_blockdev(upper_sb, wait);
+ >=20
+ > I think it will be cleaner to use a helper ovl_sync_upper_filesystem()
+ > with everything from  upper_sb =3D ... and a comment to explain that
+ > this is a variant of __sync_filesystem() where all the dirty inodes writ=
+e
+ > have already been started.
+ >=20
+=20
+I agree with you.=20
 
-Hi,
-
-A general question: do we really need three distinct chains for this?
-Can't there be only one that chain of callbacks that get a stage
-(RESTART_PREPARE, RESTART, POWER_OFF_PREPARE, POWER_OFF) and can ignore
-them at will? Calling through POWER_OFF_PREPARE would also return
-whether that POWER_OFF is possible (for kernel_can_power_off()).
-
-I would also split this patch into preparation cleanups (like wrapping
-pm_power_off call with a function) and adding the notifier-based
-implementation.
-
-Best Regards
-Micha³ Miros³aw
+Thanks,
+Chengguang
