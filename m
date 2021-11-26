@@ -2,144 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB7345E3A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 01:21:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 165A245E3AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 01:28:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238031AbhKZAYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 19:24:12 -0500
-Received: from mga14.intel.com ([192.55.52.115]:6781 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230476AbhKZAWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 19:22:11 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="235823509"
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="235823509"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Nov 2021 16:16:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,263,1631602800"; 
-   d="scan'208";a="498218836"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 25 Nov 2021 16:16:57 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mqOvA-000783-Eb; Fri, 26 Nov 2021 00:16:56 +0000
-Date:   Fri, 26 Nov 2021 08:16:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ryan Taylor <Ryan.Taylor@amd.com>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: drivers/gpu/drm/amd/amdgpu/amdgpu_vkms.c:399:5: warning: no previous
- prototype for function 'amdgpu_vkms_output_init'
-Message-ID: <202111260806.ISy82sTq-lkp@intel.com>
+        id S238462AbhKZAb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 19:31:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346344AbhKZA31 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 19:29:27 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B61C06173E
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 16:26:15 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id u3so19961278lfl.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 16:26:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ULEeSU3LKj9dHbNjZ+wW9dIVHqv9jNyz7Kz7dNf303A=;
+        b=Bxstt1Brj1xbiFXm44anso8UKf/3bGvcXySWRwsd9O31iFprDihzA2t7Oj7lb6rTma
+         G8ezVsVdZ1K9dJnaC+gRNTAvUexHfNt/vfRUI9ocfMwCgqxQW4rHtosswL3Usv7zSEje
+         5n40Cp0AghDKBIT+lgQHl/qIONlqi7GLNbBJWQsB+4a5WjmDk9cKGrnOu39a7R9jLjgb
+         i8x3byUm5fnt+Q5wdyfyG3uBz++6mw55NJyjCER/tfnMZh6aFyseNsCveppJ5NA2hxly
+         GzzGMiHVlftrY0vUx74OXcWho7ZOt2SYhPF7ge9y5Hs4RR2taHroIsoK/SBykrrzjiAh
+         0PRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ULEeSU3LKj9dHbNjZ+wW9dIVHqv9jNyz7Kz7dNf303A=;
+        b=k7sTFy0VQi2qzZJAfbdPpwuQudt2Cvrd4Ve4PLYoCwabP0vj59esGzMW8ChgUnTANL
+         ccdbJSwqwNln5NqANqB376OwXT+wyzAKNR9Qml9Tv9/ImjdcZXizumEZF2Z6lp/fMo6+
+         //p0ZUk6lKR3aQoLsxMlAgJhRTuZv7ABSeUlvpKpPwPIwxuU0l2JR+TfkMAg0WVLSdFW
+         2r5jAapxjb5lmzqOJcHUsD6n+mdIvL5HvMO3YzkHhcPyQozQ1o/g/bcsP08tBRkDsiwL
+         Ebkrld99/BzRgFrv9/IV1zWi778zpRyI7+s/fUter6bMQuZ50XODj30KG0Q59uzFLI8W
+         2kPg==
+X-Gm-Message-State: AOAM532NosBstlY6aolSYzXMRT72OCSLGu+KUtR+/lxsJXse10B1n3t8
+        feShap10Yvsxxo9KQd3P8HS1zQ==
+X-Google-Smtp-Source: ABdhPJy/5TtyvNOPAR5phFf4AC3qB6IyLlAGCnrkbtWmL85ISfkfv3NCVYz/Cyvixuzx44V2qSlLSw==
+X-Received: by 2002:a05:6512:374b:: with SMTP id a11mr27016850lfs.48.1637886373517;
+        Thu, 25 Nov 2021 16:26:13 -0800 (PST)
+Received: from eriador.lan ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id 3sm375880lfr.77.2021.11.25.16.26.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 16:26:12 -0800 (PST)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Saravana Kannan <saravanak@google.com>
+Subject: [PATCH] of: property: stop parsing remote-endpoint graph properties
+Date:   Fri, 26 Nov 2021 03:26:12 +0300
+Message-Id: <20211126002612.1030246-1-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   8ced7ca3570333998ad2088d5a6275701970e28e
-commit: 733ee71ae0d03a8b03711dca8bc94c8ac05a6bc3 drm/amdgpu: replace dce_virtual with amdgpu_vkms (v3)
-date:   4 months ago
-config: i386-randconfig-a015-20210927 (https://download.01.org/0day-ci/archive/20211126/202111260806.ISy82sTq-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project dc6e8dfdfe7efecfda318d43a06fae18b40eb498)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=733ee71ae0d03a8b03711dca8bc94c8ac05a6bc3
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout 733ee71ae0d03a8b03711dca8bc94c8ac05a6bc3
-        # save the config file to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=i386 
+When parsing remote-endpoint properties, two counter devlinks will be
+created, resulting in the circular dependency, which is later broken. In
+most of the cases, the order in which depency is broken does not matter
+(or is correct). However lately I stumbled upon the following
+configuration.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+In this case for some reason devlink code decided to break the loop by
+making panel depend on the bridge driver, enforcing that bridge is
+probed before the panel.
 
-All warnings (new ones prefixed by >>):
+However in such cases the bridge will lookup next bridge or panel using
+drm_of_find_panel_or_bridge() in the probe callback. Thus we have a
+deadlock: panel is waiting for the bridge because of the devlink
+dependency and bridge probe() expects the panel to be available and thus
+returns -EPROBE_DEFER.
 
->> drivers/gpu/drm/amd/amdgpu/amdgpu_vkms.c:399:5: warning: no previous prototype for function 'amdgpu_vkms_output_init' [-Wmissing-prototypes]
-   int amdgpu_vkms_output_init(struct drm_device *dev,
-       ^
-   drivers/gpu/drm/amd/amdgpu/amdgpu_vkms.c:399:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   int amdgpu_vkms_output_init(struct drm_device *dev,
-   ^
-   static 
-   1 warning generated.
+To prevent such deadlocks, stop parsing the remote-endpoint property and
+let drivers decide their probe order using standard -EPROBE_DEFER
+returns.
 
+DTS except follows:
 
-vim +/amdgpu_vkms_output_init +399 drivers/gpu/drm/amd/amdgpu/amdgpu_vkms.c
+/ {
+        panel0 {
+                compatible = "powertip,ph800480t013-idf02";
+                power-supply = <&vreg_l11c_3p3>;
+                backlight = <&lcd0_reg>;
+                port {
+                        panel0_in: endpoint {
+                                remote-endpoint = <&bridge0_out>;
+                        };
+                };
+        };
+};
 
-84ec374bd58036 Ryan Taylor 2021-06-07  398  
-84ec374bd58036 Ryan Taylor 2021-06-07 @399  int amdgpu_vkms_output_init(struct drm_device *dev,
-84ec374bd58036 Ryan Taylor 2021-06-07  400  			    struct amdgpu_vkms_output *output, int index)
-84ec374bd58036 Ryan Taylor 2021-06-07  401  {
-84ec374bd58036 Ryan Taylor 2021-06-07  402  	struct drm_connector *connector = &output->connector;
-84ec374bd58036 Ryan Taylor 2021-06-07  403  	struct drm_encoder *encoder = &output->encoder;
-84ec374bd58036 Ryan Taylor 2021-06-07  404  	struct drm_crtc *crtc = &output->crtc;
-84ec374bd58036 Ryan Taylor 2021-06-07  405  	struct drm_plane *primary, *cursor = NULL;
-84ec374bd58036 Ryan Taylor 2021-06-07  406  	int ret;
-84ec374bd58036 Ryan Taylor 2021-06-07  407  
-84ec374bd58036 Ryan Taylor 2021-06-07  408  	primary = amdgpu_vkms_plane_init(dev, DRM_PLANE_TYPE_PRIMARY, index);
-84ec374bd58036 Ryan Taylor 2021-06-07  409  	if (IS_ERR(primary))
-84ec374bd58036 Ryan Taylor 2021-06-07  410  		return PTR_ERR(primary);
-84ec374bd58036 Ryan Taylor 2021-06-07  411  
-84ec374bd58036 Ryan Taylor 2021-06-07  412  	ret = amdgpu_vkms_crtc_init(dev, crtc, primary, cursor);
-84ec374bd58036 Ryan Taylor 2021-06-07  413  	if (ret)
-84ec374bd58036 Ryan Taylor 2021-06-07  414  		goto err_crtc;
-84ec374bd58036 Ryan Taylor 2021-06-07  415  
-84ec374bd58036 Ryan Taylor 2021-06-07  416  	ret = drm_connector_init(dev, connector, &amdgpu_vkms_connector_funcs,
-84ec374bd58036 Ryan Taylor 2021-06-07  417  				 DRM_MODE_CONNECTOR_VIRTUAL);
-84ec374bd58036 Ryan Taylor 2021-06-07  418  	if (ret) {
-84ec374bd58036 Ryan Taylor 2021-06-07  419  		DRM_ERROR("Failed to init connector\n");
-84ec374bd58036 Ryan Taylor 2021-06-07  420  		goto err_connector;
-84ec374bd58036 Ryan Taylor 2021-06-07  421  	}
-84ec374bd58036 Ryan Taylor 2021-06-07  422  
-84ec374bd58036 Ryan Taylor 2021-06-07  423  	drm_connector_helper_add(connector, &amdgpu_vkms_conn_helper_funcs);
-84ec374bd58036 Ryan Taylor 2021-06-07  424  
-84ec374bd58036 Ryan Taylor 2021-06-07  425  	ret = drm_simple_encoder_init(dev, encoder, DRM_MODE_ENCODER_VIRTUAL);
-84ec374bd58036 Ryan Taylor 2021-06-07  426  	if (ret) {
-84ec374bd58036 Ryan Taylor 2021-06-07  427  		DRM_ERROR("Failed to init encoder\n");
-84ec374bd58036 Ryan Taylor 2021-06-07  428  		goto err_encoder;
-84ec374bd58036 Ryan Taylor 2021-06-07  429  	}
-84ec374bd58036 Ryan Taylor 2021-06-07  430  	encoder->possible_crtcs = 1 << index;
-84ec374bd58036 Ryan Taylor 2021-06-07  431  
-84ec374bd58036 Ryan Taylor 2021-06-07  432  	ret = drm_connector_attach_encoder(connector, encoder);
-84ec374bd58036 Ryan Taylor 2021-06-07  433  	if (ret) {
-84ec374bd58036 Ryan Taylor 2021-06-07  434  		DRM_ERROR("Failed to attach connector to encoder\n");
-84ec374bd58036 Ryan Taylor 2021-06-07  435  		goto err_attach;
-84ec374bd58036 Ryan Taylor 2021-06-07  436  	}
-84ec374bd58036 Ryan Taylor 2021-06-07  437  
-84ec374bd58036 Ryan Taylor 2021-06-07  438  	drm_mode_config_reset(dev);
-84ec374bd58036 Ryan Taylor 2021-06-07  439  
-84ec374bd58036 Ryan Taylor 2021-06-07  440  	return 0;
-84ec374bd58036 Ryan Taylor 2021-06-07  441  
-84ec374bd58036 Ryan Taylor 2021-06-07  442  err_attach:
-84ec374bd58036 Ryan Taylor 2021-06-07  443  	drm_encoder_cleanup(encoder);
-84ec374bd58036 Ryan Taylor 2021-06-07  444  
-84ec374bd58036 Ryan Taylor 2021-06-07  445  err_encoder:
-84ec374bd58036 Ryan Taylor 2021-06-07  446  	drm_connector_cleanup(connector);
-84ec374bd58036 Ryan Taylor 2021-06-07  447  
-84ec374bd58036 Ryan Taylor 2021-06-07  448  err_connector:
-84ec374bd58036 Ryan Taylor 2021-06-07  449  	drm_crtc_cleanup(crtc);
-84ec374bd58036 Ryan Taylor 2021-06-07  450  
-84ec374bd58036 Ryan Taylor 2021-06-07  451  err_crtc:
-84ec374bd58036 Ryan Taylor 2021-06-07  452  	drm_plane_cleanup(primary);
-84ec374bd58036 Ryan Taylor 2021-06-07  453  
-84ec374bd58036 Ryan Taylor 2021-06-07  454  	return ret;
-84ec374bd58036 Ryan Taylor 2021-06-07  455  }
-733ee71ae0d03a Ryan Taylor 2021-06-18  456  
+&dsi0 {
+        #address-cells = <1>;
+        #size-cells = <0>;
+        status = "okay";
 
-:::::: The code at line 399 was first introduced by commit
-:::::: 84ec374bd580364a32818c9fc269c19d6e931cab drm/amdgpu: create amdgpu_vkms (v4)
+        bridge@0 {
+                reg = <0>;
+                compatible = "toshiba,tc358762";
 
-:::::: TO: Ryan Taylor <Ryan.Taylor@amd.com>
-:::::: CC: Alex Deucher <alexander.deucher@amd.com>
+                ports {
+                        #address-cells = <1>;
+                        #size-cells = <0>;
 
+                        port@0 {
+                                reg = <0>;
+                                bridge0_in: endpoint {
+                                        remote-endpoint = <&dsi0_out>;
+                                };
+                        };
+
+                        port@1 {
+                                reg = <1>;
+                                bridge0_out: endpoint {
+                                        remote-endpoint = <&panel0_in>;
+                                };
+                        };
+                };
+        };
+        ports {
+                port@1 {
+                        endpoint {
+                                remote-endpoint = <&bridge0_in>;
+                                data-lanes = <0 1 2 3>;
+                        };
+                };
+        };
+
+};
+
+Fixes: f7514a663016 ("of: property: fw_devlink: Add support for remote-endpoint")
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Stephen Boyd <swboyd@chromium.org>
+Cc: Saravana Kannan <saravanak@google.com>
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/of/property.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
+
+diff --git a/drivers/of/property.c b/drivers/of/property.c
+index f7229e4030e3..83548076ee63 100644
+--- a/drivers/of/property.c
++++ b/drivers/of/property.c
+@@ -1249,7 +1249,6 @@ static struct device_node *parse_##fname(struct device_node *np,	     \
+  * @parse_prop.index: For properties holding a list of phandles, this is the
+  *		      index into the list
+  * @optional: Describes whether a supplier is mandatory or not
+- * @node_not_dev: The consumer node containing the property is never a device.
+  *
+  * Returns:
+  * parse_prop() return values are
+@@ -1261,7 +1260,6 @@ struct supplier_bindings {
+ 	struct device_node *(*parse_prop)(struct device_node *np,
+ 					  const char *prop_name, int index);
+ 	bool optional;
+-	bool node_not_dev;
+ };
+ 
+ DEFINE_SIMPLE_PROP(interconnects, "interconnects", "#interconnect-cells")
+@@ -1285,7 +1283,6 @@ DEFINE_SIMPLE_PROP(pinctrl5, "pinctrl-5", NULL)
+ DEFINE_SIMPLE_PROP(pinctrl6, "pinctrl-6", NULL)
+ DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
+ DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
+-DEFINE_SIMPLE_PROP(remote_endpoint, "remote-endpoint", NULL)
+ DEFINE_SIMPLE_PROP(pwms, "pwms", "#pwm-cells")
+ DEFINE_SIMPLE_PROP(resets, "resets", "#reset-cells")
+ DEFINE_SIMPLE_PROP(leds, "leds", NULL)
+@@ -1388,7 +1385,6 @@ static const struct supplier_bindings of_supplier_bindings[] = {
+ 	{ .parse_prop = parse_pinctrl6, },
+ 	{ .parse_prop = parse_pinctrl7, },
+ 	{ .parse_prop = parse_pinctrl8, },
+-	{ .parse_prop = parse_remote_endpoint, .node_not_dev = true, },
+ 	{ .parse_prop = parse_pwms, },
+ 	{ .parse_prop = parse_resets, },
+ 	{ .parse_prop = parse_leds, },
+@@ -1437,9 +1433,7 @@ static int of_link_property(struct device_node *con_np, const char *prop_name)
+ 		while ((phandle = s->parse_prop(con_np, prop_name, i))) {
+ 			struct device_node *con_dev_np;
+ 
+-			con_dev_np = s->node_not_dev
+-					? of_get_compat_node(con_np)
+-					: of_node_get(con_np);
++			con_dev_np = of_node_get(con_np);
+ 			matched = true;
+ 			i++;
+ 			of_link_to_phandle(con_dev_np, phandle);
+-- 
+2.33.0
+
