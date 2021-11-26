@@ -2,99 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0A045E655
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 04:01:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EACE845E65B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 04:01:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358934AbhKZCu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 21:50:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1358612AbhKZCrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 21:47:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC13361371;
-        Fri, 26 Nov 2021 02:37:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637894238;
-        bh=RBX6W4w3jScpLmp10EJSozwbbpPAsKTdowIUKbcjGiA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UgpebikjVKnC+nvgReVfdWgriluJ/BOQ2JRrE81e6LCvgWY+xUVLtnTCwErot5ClC
-         tZAKD1wLHggkI0/+gul5bAJiNAedVvCQc980VrS6ETUtjFtnrusslqxMrzN88ZeXME
-         oNAfTTc98gSQS2I7Q8jFm+bnMokvSb2RMJXM6w0Gkw4LXxMJT405rxZWcgg92V1MC9
-         4GG4ktG8nhEBSWzPUss1mDO+fMD2US07YVSIHSed914k0mrCX3NhCNEyRcmjTJ+5Qe
-         SNYJKQZVEhs27JFvWD4WNjPe+H4CyAMIrW0NBhXpsB5JQZlWVMf8NY38axzipiSlnn
-         8Hd+AAPYZIBCQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Teng Qi <starmiku1207184332@gmail.com>,
-        TOTE Robot <oslab@tsinghua.edu.cn>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, kuba@kernel.org,
-        tanghui20@huawei.com, zhangyue1@kylinos.cn, netdev@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 6/6] net: ethernet: dec: tulip: de4x5: fix possible array overflows in type3_infoblock()
-Date:   Thu, 25 Nov 2021 21:37:01 -0500
-Message-Id: <20211126023701.443472-6-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211126023701.443472-1-sashal@kernel.org>
-References: <20211126023701.443472-1-sashal@kernel.org>
+        id S1359263AbhKZCv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 21:51:59 -0500
+Received: from smtpbguseast3.qq.com ([54.243.244.52]:34954 "EHLO
+        smtpbguseast3.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1359267AbhKZCsS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Nov 2021 21:48:18 -0500
+X-QQ-mid: bizesmtp46t1637894675t7d2w1m9
+Received: from localhost.localdomain (unknown [113.57.152.160])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Fri, 26 Nov 2021 10:44:25 +0800 (CST)
+X-QQ-SSF: B1400000002000B0F000B00A0000000
+X-QQ-FEAT: Mzskoac49OgLCZCEqrgR0I0dpqAh7G35zNfJOeFSrdlT9deVfRkdC7ggXIQWj
+        R94jVao+ovJHw9zQNgV7gQevFYGdLd4VSn7AZMH/zuAU9SC0Z3WqcOgSy4vgLERpBe2J+O9
+        AdenW2V/7V9ov7FCwOLBeGk7Wmy1gEz1esbcG12/ityCG6olTyhvsPpYEd9WFTTQsCtUrFp
+        Y6p7wgbwvqudrahuE9+f2fsAYNTyfmhtmONTlkW0uq3Y6ti+QEbVKDHe9DnS95mqB6BohFn
+        zllmspLLFwUzUqV2Ol0XLKL0GPRVi46P4eh6m9yDKfMdD+EJDupRYxQlhlsslEUesspByEp
+        k4Hsog6w+mIjTXuwZVeXdQ6qgvKnYXj2igHUphY
+X-QQ-GoodBg: 2
+From:   lianzhi chang <changlianzhi@uniontech.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, andriy.shevchenko@linux.intel.com,
+        282827961@qq.com, lianzhi chang <changlianzhi@uniontech.com>
+Subject: [PATCH v15] tty: Fix the keyboard led light display problem
+Date:   Fri, 26 Nov 2021 10:44:23 +0800
+Message-Id: <20211126024423.17218-1-changlianzhi@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign6
+X-QQ-Bgrelay: 1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Teng Qi <starmiku1207184332@gmail.com>
+When the desktop and tty switch mutually, the led state of the
+keyboard may be inconsistent with the state of the keyboard lock.
+This is because the desktop environment (Xorg, etc.) is bound to
+a tty, and the kb->kbdmode attribute of this tty is set to VC_OFF.
+This leads to the fact that in the desktop environment, the bound
+tty will not set the keyboard light state, so in the current tty
+scene, the values of ledstate and kb->ledflagstate are always 0.
+This leads to two situations: (1) When switching from the desktop
+to another tty, the code inside VT still compares ledstate with
+the kb->ledflagstate of the next tty. If they are equal, then
+after the switch is completed, The keyboard light will maintain
+the state of the previous desktop settings, and the state of the
+keyboard lock may be inconsistent; (2) When switching from another
+tty to the desktop, according to the code logic, it may still
+trigger the desktop bound tty to set the keyboard light state.
+After the switch is completed, the keyboard light is forcibly
+turned off. I think in this case, the tty should not set the
+keyboard light, and give control to Xorg etc. to handle it.
+The current modification judges the value of kb->kbdmode.
+In some modes, when switching VT, the current tty keyboard
+light status is forcibly issued. And when switching to the
+desktop, the tty no longer sets the keyboard light.
 
-[ Upstream commit 0fa68da72c3be09e06dd833258ee89c33374195f ]
-
-The definition of macro MOTO_SROM_BUG is:
-  #define MOTO_SROM_BUG    (lp->active == 8 && (get_unaligned_le32(
-  dev->dev_addr) & 0x00ffffff) == 0x3e0008)
-
-and the if statement
-  if (MOTO_SROM_BUG) lp->active = 0;
-
-using this macro indicates lp->active could be 8. If lp->active is 8 and
-the second comparison of this macro is false. lp->active will remain 8 in:
-  lp->phy[lp->active].gep = (*p ? p : NULL); p += (2 * (*p) + 1);
-  lp->phy[lp->active].rst = (*p ? p : NULL); p += (2 * (*p) + 1);
-  lp->phy[lp->active].mc  = get_unaligned_le16(p); p += 2;
-  lp->phy[lp->active].ana = get_unaligned_le16(p); p += 2;
-  lp->phy[lp->active].fdx = get_unaligned_le16(p); p += 2;
-  lp->phy[lp->active].ttm = get_unaligned_le16(p); p += 2;
-  lp->phy[lp->active].mci = *p;
-
-However, the length of array lp->phy is 8, so array overflows can occur.
-To fix these possible array overflows, we first check lp->active and then
-return -EINVAL if it is greater or equal to ARRAY_SIZE(lp->phy) (i.e. 8).
-
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Teng Qi <starmiku1207184332@gmail.com>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
+Suggested-by: dmitry.torokhov <dmitry.torokhov@gmail.com>
 ---
- drivers/net/ethernet/dec/tulip/de4x5.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ v15:
+ (1) Modify the description information;
+ (2) When switching VT, add the judgment on the two modes of
+ VC_RAW and VC_MEDIUMRAW in the place where it is determined
+ whether it is mandatory to set the led state of the
+ keyboard, which is consistent with other places.
+ 
+ drivers/tty/vt/keyboard.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/dec/tulip/de4x5.c b/drivers/net/ethernet/dec/tulip/de4x5.c
-index 7c4150a83a082..ffc9c7947b93f 100644
---- a/drivers/net/ethernet/dec/tulip/de4x5.c
-+++ b/drivers/net/ethernet/dec/tulip/de4x5.c
-@@ -4701,6 +4701,10 @@ type3_infoblock(struct net_device *dev, u_char count, u_char *p)
-         lp->ibn = 3;
-         lp->active = *p++;
- 	if (MOTO_SROM_BUG) lp->active = 0;
-+	/* if (MOTO_SROM_BUG) statement indicates lp->active could
-+	 * be 8 (i.e. the size of array lp->phy) */
-+	if (WARN_ON(lp->active >= ARRAY_SIZE(lp->phy)))
-+		return -EINVAL;
- 	lp->phy[lp->active].gep = (*p ? p : NULL); p += (2 * (*p) + 1);
- 	lp->phy[lp->active].rst = (*p ? p : NULL); p += (2 * (*p) + 1);
- 	lp->phy[lp->active].mc  = get_unaligned_le16(p); p += 2;
+diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+index c7fbbcdcc346..98ec12001368 100644
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -153,6 +153,7 @@ static int shift_state = 0;
+ 
+ static unsigned int ledstate = -1U;			/* undefined */
+ static unsigned char ledioctl;
++static bool vt_switch;
+ 
+ /*
+  * Notifier list for console keyboard events
+@@ -412,9 +413,20 @@ static void do_compute_shiftstate(void)
+ /* We still have to export this method to vt.c */
+ void vt_set_leds_compute_shiftstate(void)
+ {
++	struct kbd_struct *kb;
+ 	unsigned long flags;
+ 
+-	set_leds();
++	/* When switching VT, according to the value of kb->kbdmode,
++	 * judge whether it is necessary to force the keyboard light
++	 * state to be issued.
++	 */
++	kb = kbd_table + fg_console;
++	if (kb->kbdmode == VC_RAW ||
++	     kb->kbdmode == VC_MEDIUMRAW ||
++	     kb->kbdmode == VC_OFF) {
++		vt_switch = true;
++		set_leds();
++	}
+ 
+ 	spin_lock_irqsave(&kbd_event_lock, flags);
+ 	do_compute_shiftstate();
+@@ -1255,6 +1267,11 @@ static void kbd_bh(struct tasklet_struct *unused)
+ 	leds |= (unsigned int)kbd->lockstate << 8;
+ 	spin_unlock_irqrestore(&led_lock, flags);
+ 
++	if (vt_switch) {
++		ledstate = ~leds;
++		vt_switch = false;
++	}
++
+ 	if (leds != ledstate) {
+ 		kbd_propagate_led_state(ledstate, leds);
+ 		ledstate = leds;
 -- 
-2.33.0
+2.20.1
+
+
 
