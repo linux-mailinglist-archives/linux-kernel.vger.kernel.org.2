@@ -2,157 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB5D45F042
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 16:01:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F97745F014
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 15:43:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354084AbhKZPFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 10:05:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352552AbhKZPDF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:03:05 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05647C061A14
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 06:40:24 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id z8so19178058ljz.9
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 06:40:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rIdKeW/dAGscvoK8MixFLMLDadZJz5sH4y2hAFdXrwI=;
-        b=T2WP5pv/2sn8nAxsqENra9MgpPkvovXiH2/naINgUEB36QAAPk6nUkACEPnGaWx7kL
-         U4pgir3OI1tcBPwBhjIg4ovYZPUyMBvnh3UdQy2ETNi4YpjkWdwpoQ8iaHV7+wRdZNuQ
-         Ce4Co5g98m9a3fMYIeorfsRXTeo0kRej/Mv6WbKfhgXWcyc/Pc8+97UODpCIV/uIfC36
-         ZNh0iI1Gj4LWHpZr3qoZbonJlGyw3V6fJJGYq8KTqxcOgAuDQbc5WKjjjtqOptmOdRU8
-         iNAhFPcKhwmTLsiR0TK+VNv+nknysHzrNMrYmpidh5WCLyXJTjanvXTmZ8gNCc7QVaUc
-         g5iQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rIdKeW/dAGscvoK8MixFLMLDadZJz5sH4y2hAFdXrwI=;
-        b=ArPx5GsIgvBSvTTYoyGeD54YTATuPkUw+qqs2+ql3CbcBKn0w0ZKfCJkP43v99hr9j
-         QO7LpYKdeScB91it9kCHtwqwelmp/XRvL9sTj0/JM3p5Yqc6UR/1yv2ekhsMKtha+4rO
-         NJnN3AKR7l1NQLbpJl2612bilbE7YCB7eGpRBsJ3cbqxfUAXoijcYmrRS0DOFOW1Ryqm
-         MpSvRhoVC4nIpYf8+5cEB7OnuF309X3/4lbepWJta2nQ1qol/a/J6oyvEuAZoRQArLcj
-         Tjxmo7TCHz+vTwkAC8nlUlfZjInhr6SpeF7m0BXUWgx4QbU7EPI3Hns+bo2a+PcYiE31
-         tyhQ==
-X-Gm-Message-State: AOAM5317TI9cbvRLlKnaLaPanj/ucFR0UK6ap3S3hrtbuTMcwtfUjRlS
-        u7c6J1HxVkCgEa6rfteQ4d4Bw7KbNAHNzYil8eDDvw==
-X-Google-Smtp-Source: ABdhPJz1U91rK34SOLm4s87HRbW5+9mUphftju6pEro8uAqYbjPko/mRGu7aEU2+q1iJ7HZTdSw5kRLo4fsZR3+ckpk=
-X-Received: by 2002:a05:651c:1257:: with SMTP id h23mr31099472ljh.17.1637937622133;
- Fri, 26 Nov 2021 06:40:22 -0800 (PST)
+        id S1377842AbhKZOqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 09:46:21 -0500
+Received: from mga06.intel.com ([134.134.136.31]:13942 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349336AbhKZOoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 09:44:21 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10179"; a="296474562"
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
+   d="scan'208";a="296474562"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 06:41:07 -0800
+X-IronPort-AV: E=Sophos;i="5.87,266,1631602800"; 
+   d="scan'208";a="599022304"
+Received: from smile.fi.intel.com ([10.237.72.184])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2021 06:41:03 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mqcPN-00AoIi-3u;
+        Fri, 26 Nov 2021 16:41:01 +0200
+Date:   Fri, 26 Nov 2021 16:41:00 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: Re: [PATCH v1 1/1] MIPS: TXx9: Convert SPI platform data to software
+ nodes
+Message-ID: <YaDx/MaMuajAEp1H@smile.fi.intel.com>
+References: <20211126102339.28908-1-andriy.shevchenko@linux.intel.com>
+ <CAK8P3a3GuGgdp7Gq5N9XKTGhKbBUym9BiEb94RWyL1CDxS0ffw@mail.gmail.com>
+ <CAMuHMdV4HVn+GcCBNQ+1-Kva2XiHQ03L5y9JLXH7qONtBvkV+w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211124154239.3191366-1-vincent.donnefort@arm.com>
- <CAKfTPtDX8sOfguZhJt5QV3j5D_JetcgncuF2w+uLa0XDk7UXkw@mail.gmail.com>
- <8735nkcwov.mognet@arm.com> <CAKfTPtDPskVdEd-KQ_cwe-R_zVFPQOgdbk9x+3eD12pKs8fGFw@mail.gmail.com>
- <87zgpsb6de.mognet@arm.com> <CAKfTPtCnusWJXJLDEudQ_q8MWaZYbPJK-QjAbBYWFW8Nw-J+Ww@mail.gmail.com>
- <87sfvjavqk.mognet@arm.com>
-In-Reply-To: <87sfvjavqk.mognet@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 26 Nov 2021 15:40:10 +0100
-Message-ID: <CAKfTPtC4iXXaptm9+2bHvX2E3xAWU4M3xN0ZuwpFQ1RyXAyxyA@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: Fix detection of per-CPU kthreads waking a task
-To:     Valentin Schneider <Valentin.Schneider@arm.com>
-Cc:     Vincent Donnefort <Vincent.Donnefort@arm.com>,
-        peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
-        dietmar.eggemann@arm.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdV4HVn+GcCBNQ+1-Kva2XiHQ03L5y9JLXH7qONtBvkV+w@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Nov 2021 at 14:32, Valentin Schneider
-<Valentin.Schneider@arm.com> wrote:
->
-> On 26/11/21 09:23, Vincent Guittot wrote:
-> > On Thu, 25 Nov 2021 at 16:30, Valentin Schneider
-> > <Valentin.Schneider@arm.com> wrote:
-> >> On 25/11/21 14:23, Vincent Guittot wrote:
-> >> > If we want to filter wakeup
-> >> > generated by interrupt context while a per cpu kthread is running, it
-> >> > would be better to fix all cases and test the running context like
-> >> > this
-> >> >
-> >>
-> >> I think that could make sense - though can the idle task issue wakeups in
-> >> process context? If so that won't be sufficient. A quick audit tells me:
-> >>
-> >> o rcu_nocb_flush_deferred_wakeup() happens before calling into cpuidle
-> >> o I didn't see any wakeup issued from the cpu_pm_notifier call chain
-> >> o I'm not entirely sure about flush_smp_call_function_from_idle(). I found
-> >>   this thing in RCU:
-> >>
-> >>   smp_call_function_single(cpu, rcu_exp_handler)
-> >>
-> >>     rcu_exp_handler()
-> >>       rcu_report_exp_rdp()
-> >>         rcu_report_exp_cpu_mult()
-> >>           __rcu_report_exp_rnp()
-> >>             swake_up_one()
-> >>
-> >> IIUC if set_nr_if_polling() then the smp_call won't send an IPI and should be
-> >> handled in that flush_foo_from_idle() call.
-> >
-> > Aren't all these planned to wakeup on local cpu  ? so i don't  see any
-> > real problem there
-> >
->
-> Hm so other than boot time oddities I think that does end up with threads
-> of an !UNBOUND (so pcpu) workqueue...
->
-> >>
-> >> I'd be tempted to stick your VincentD's conditions together, just to be
-> >> safe...
-> >
-> > More than safe I would prefer that we fix the correct root cause
-> > instead of hiding it
-> >
->
-> I did play around a bit to see if this could be true when evaluating that
-> is_per_cpu_kthread() condition:
->
->   is_idle_task(current) && in_task() && p->nr_cpus_allowed > 1
->
-> but no luck so far. An in_task() check would appear sufficient, but how's
-> this?
->
-> ---
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 884f29d07963..f45806b7f47a 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6390,14 +6390,18 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->                 return prev;
->
->         /*
-> -        * Allow a per-cpu kthread to stack with the wakee if the
-> -        * kworker thread and the tasks previous CPUs are the same.
-> -        * The assumption is that the wakee queued work for the
-> -        * per-cpu kthread that is now complete and the wakeup is
-> -        * essentially a sync wakeup. An obvious example of this
-> +        * Allow a per-cpu kthread to stack with the wakee if the kworker thread
-> +        * and the tasks previous CPUs are the same.  The assumption is that the
-> +        * wakee queued work for the per-cpu kthread that is now complete and
-> +        * the wakeup is essentially a sync wakeup. An obvious example of this
->          * pattern is IO completions.
-> +        *
-> +        * Ensure the wakeup is issued by the kthread itself, and don't match
-> +        * against the idle task because that could override the
-> +        * available_idle_cpu(target) check done higher up.
->          */
-> -       if (is_per_cpu_kthread(current) &&
-> +       if (is_per_cpu_kthread(current) && !is_idle_task(current) &&
+On Fri, Nov 26, 2021 at 01:16:22PM +0100, Geert Uytterhoeven wrote:
+> On Fri, Nov 26, 2021 at 11:58 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> > On Fri, Nov 26, 2021 at 11:23 AM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
 
-still i don't see the need of !is_idle_task(current)
+...
+
+> Probably all of this can be removed, given the SPI controller driver
+> itself was removed in commit 74523a5dae0c96d6 ("spi: txx9: Remove
+> driver")?
+
+Even better! Let Thomas speak on this.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-> +           in_task() &&
->             prev == smp_processor_id() &&
->             this_rq()->nr_running <= 1) {
->                 return prev;
->
