@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66BEB45EB5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A41EC45EB62
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:25:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376770AbhKZK2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 05:28:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38788 "EHLO
+        id S1353474AbhKZK21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:28:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376760AbhKZK0M (ORCPT
+        with ESMTP id S239294AbhKZK0S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 05:26:12 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9CFC0613F1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:14:09 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so9564974pjc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:14:09 -0800 (PST)
+        Fri, 26 Nov 2021 05:26:18 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92EB2C0613F3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:14:15 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id b13so6401406plg.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 02:14:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1BGZRfXfMSY4o4kXP4qoPOMxY6wXNm1SmD8FQmrwJoE=;
-        b=QAeHO0nKtumssCDIX5lZbS27AMG401Tv9XidV7o3suOGOAMxbL25Zcz9OzQYJua2xV
-         qdVma7GDLp+Sf6EQwfUQAfFnYle5zVnQcE6yEgz52fjE6Zt4cVLBSaM3uTXsmsFcbTmG
-         8JvTrEc1Vd0Rh5vwszWUVdo8CudZaGkdYLzkT2GrhPnw1SgYwx0ESU4wbHxU/xmfDDCK
-         6JdyIL4XI/cWyGL/4KRhnRUNE4WVAR94uTW1RUWHWuspw9yJP4m0ihcad3rfKKd8ssJs
-         a2R4lOl0xp340zSNtQZ4YQtFxyH45t4Uf28UNBHgMkjmJ4uBD4/6f69W28VZUnDJHn7P
-         KpjA==
+        bh=/sECo0GpgifEJ2MV3wheABZwv7jRSxT6iKt29SsZfcE=;
+        b=Z0+Spa7B+BCqXcLfz0YGZbrC4jKq+xdxprwO07cbH7WKhUBh2ZtmgFkfVrXSG6ezCv
+         ohZN+0gnQaMJWv/6k55oCm8cCDLI+s4rQ3C7b5dSx5PQeqa2E98+/rLNnXtvKP9Qh/Eh
+         TcsSmlGb05SFhoDnI4iFDBn3E2gUSSW98mSScSziNdPHkBsxyl8htm1At0hcQ/IIV2Br
+         23P6c61d4zGGO3Kd+E2lVNT2ayepvRMdQaecT5/VgK3JZ8a/KjC603wMb5joM6PMQonS
+         Sbxt0eqOhZP8bhlePW9CIMyR621o909XXYnQIChNrwBo/tUALvfuM583Euq9eKrEWpFd
+         36Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1BGZRfXfMSY4o4kXP4qoPOMxY6wXNm1SmD8FQmrwJoE=;
-        b=DuXnvubOUfF3gfrN74Y4r1qx4hEIR3D7glmErL9+ftQIZLIXPfkfj4Of15gf5nW8O8
-         eo6c6Ab7ncSGmNizkV3sbxXbGe4IHegnV4CM5FZrwQ++QlHxKWZXpjNYAgdZ27zEGD3Y
-         F3ReWtjei2gSbsbYfyl+AkIH7SfD8Wuew0RtXEM/xl5zhqwKyYaPd1UvAaQtdVnHi8Kp
-         NhCicgGKdo9ba4j7LdM72WK+UaOhnbr8o5x356fsGvNCL1cQfAfvUBrOcRxsnIx+1aqX
-         9oI5R2EHp5coD4mMse2nfxUkcATx51kkm9WJyzmiL0IS6iSOqdFnLaMx73WlSgWFgzds
-         Aztw==
-X-Gm-Message-State: AOAM532QFENu25BDvxR9xAf6B5mDsbcWyjt3qWGEsjuNt5z41/6ZrI7f
-        ijNxkiVMfvFh4nI3pP44VF5Ipiaa+kY=
-X-Google-Smtp-Source: ABdhPJxn8Z9OXUYYQbfZbnYuIwDGsupK6eUQMq2gPeATLyaShdIWZZnAHOjegx3aIV1mko9Jmk5A/g==
-X-Received: by 2002:a17:90a:fe87:: with SMTP id co7mr14512495pjb.21.1637921649196;
-        Fri, 26 Nov 2021 02:14:09 -0800 (PST)
+        bh=/sECo0GpgifEJ2MV3wheABZwv7jRSxT6iKt29SsZfcE=;
+        b=35fHvKOagwBm9taKGL8sm2H8WthB3gtcxWyfVbOpPKjQpn+YjkkgppemTP8x6AZ82a
+         3SQwc/QSa4YaIDYnJQONYpXcXC5WL68kJ5EYr9kQAWSFnzm1opM/ADjxVPPbqbJfGxJr
+         DEJmoAQKywx5Cd5jGue+HelXP8sJIfUK2grtqchyK89UZyblSvHnsmzOMawWlDPpGxTH
+         TyjEtwV7eUhwQcF/ZruLkcXUnlwf8sUHxeACOWtfY3H0ReRjwte52wi1gj5LSMZGwch+
+         MftYP/gcfPeGGGn2lTmNOys2YYqPYYo4qboh73sjqYIDp8JFdh9RRhdo/ZskDfCGTjgO
+         9Y3Q==
+X-Gm-Message-State: AOAM531ZVaDjzPHmZ43gAJoQ8gKY67dx1vlFtgzRhMmc7MsDfE9TwgKk
+        6/jDDCLd3137sTIhzv8K8F4EenKd53Q=
+X-Google-Smtp-Source: ABdhPJxhCfFzGpJeUBI0jehJ+XzbHvcgJ03uSVcU70la5hCPgW42/9kIeQqi0cuBVJXdzEx0runZmA==
+X-Received: by 2002:a17:902:7d96:b0:142:87dc:7dd3 with SMTP id a22-20020a1709027d9600b0014287dc7dd3mr35974897plm.11.1637921655027;
+        Fri, 26 Nov 2021 02:14:15 -0800 (PST)
 Received: from localhost ([47.251.3.230])
-        by smtp.gmail.com with ESMTPSA id a2sm4719057pgn.20.2021.11.26.02.14.08
+        by smtp.gmail.com with ESMTPSA id mq14sm11741862pjb.54.2021.11.26.02.14.14
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 26 Nov 2021 02:14:08 -0800 (PST)
+        Fri, 26 Nov 2021 02:14:14 -0800 (PST)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
@@ -56,9 +56,9 @@ Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH V6 21/49] x86/entry: Don't call error_entry for XENPV
-Date:   Fri, 26 Nov 2021 18:11:41 +0800
-Message-Id: <20211126101209.8613-22-jiangshanlai@gmail.com>
+Subject: [PATCH V6 22/49] x86/entry: Convert SWAPGS to swapgs in error_entry()
+Date:   Fri, 26 Nov 2021 18:11:42 +0800
+Message-Id: <20211126101209.8613-23-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20211126101209.8613-1-jiangshanlai@gmail.com>
 References: <20211126101209.8613-1-jiangshanlai@gmail.com>
@@ -70,39 +70,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-When in XENPV, it is already in the task stack, and it can't fault
-at native_irq_return_iret nor asm_load_gs_index_gs_change since
-XENPV uses its own pvops for iret and load_gs_index().  And it
-doesn't need to switch CR3.  So it can skip invoking error_entry().
+XENPV doesn't use error_entry() anymore, so the pv-aware SWAPGS can be
+changed to native swapgs.
+
+It is prepared for later patch to convert error_entry() to C code, which
+uses native_swapgs() directly.  Converting SWAPGS to swapgs in ASM
+error_entry first to ensure the later patch has zero semantic change.
 
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/entry/entry_64.S | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ arch/x86/entry/entry_64.S | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 09bd77e49249..c09e5a4dfbbf 100644
+index c09e5a4dfbbf..4d88cd0c46c6 100644
 --- a/arch/x86/entry/entry_64.S
 +++ b/arch/x86/entry/entry_64.S
-@@ -325,8 +325,17 @@ SYM_CODE_END(ret_from_fork)
- 	PUSH_AND_CLEAR_REGS
- 	ENCODE_FRAME_POINTER
+@@ -994,7 +994,7 @@ SYM_CODE_START_LOCAL(error_entry)
+ 	 * We entered from user mode or we're pretending to have entered
+ 	 * from user mode due to an IRET fault.
+ 	 */
+-	SWAPGS
++	swapgs
+ 	FENCE_SWAPGS_USER_ENTRY
+ 	/* We have user CR3.  Change to kernel CR3. */
+ 	SWITCH_TO_KERNEL_CR3 scratch_reg=%rax
+@@ -1026,7 +1026,7 @@ SYM_CODE_START_LOCAL(error_entry)
+ 	 * gsbase and proceed.  We'll fix up the exception and land in
+ 	 * .Lgs_change's error handler with kernel gsbase.
+ 	 */
+-	SWAPGS
++	swapgs
  
--	call	error_entry
--	movq	%rax, %rsp			/* switch stack settled by sync_regs() */
-+	/*
-+	 * Call error_entry and switch stack settled by sync_regs().
-+	 *
-+	 * When in XENPV, it is already in the task stack, and it can't fault
-+	 * at native_irq_return_iret nor asm_load_gs_index_gs_change since
-+	 * XENPV uses its own pvops for iret and load_gs_index().  And it
-+	 * doesn't need to switch CR3.  So it can skip invoking error_entry().
-+	 */
-+	ALTERNATIVE "call error_entry; movq %rax, %rsp", \
-+		"", X86_FEATURE_XENPV
-+
- 	ENCODE_FRAME_POINTER
- 	UNWIND_HINT_REGS
+ 	/*
+ 	 * The above code has no serializing instruction.  So do an lfence
+@@ -1048,7 +1048,7 @@ SYM_CODE_START_LOCAL(error_entry)
+ 	 * We came from an IRET to user mode, so we have user
+ 	 * gsbase and CR3.  Switch to kernel gsbase and CR3:
+ 	 */
+-	SWAPGS
++	swapgs
+ 	FENCE_SWAPGS_USER_ENTRY
+ 	SWITCH_TO_KERNEL_CR3 scratch_reg=%rax
  
 -- 
 2.19.1.6.gb485710b
