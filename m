@@ -2,99 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EEFE45F4BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 19:36:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8EA45F398
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 19:14:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243625AbhKZSj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 13:39:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238027AbhKZShz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 13:37:55 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C36C06175E;
-        Fri, 26 Nov 2021 10:11:34 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id w33-20020a17090a6ba400b001a722a06212so8379562pjj.0;
-        Fri, 26 Nov 2021 10:11:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:from:subject:to:cc
-         :references:content-language:in-reply-to:content-transfer-encoding;
-        bh=vJxL61/isUIklsbGfuI2DlV8JdwN6TK/RwNC9sAhGIU=;
-        b=NpODqnkLvTEJ/L1f34SBgrJCBT/sybowYiZuUMX1PLs6NVzq2SqbZrREvhvUqhbFxq
-         ToBD5llJO82sxjmd/M5BFoGYHVTbag0BqtQpDRdgiDBl53UyBPqC+RkRkytu6ASYu1aV
-         prNmsNYZArLdr5NbUE+aQljML+vMfjE9aNNoNv+fNZNoylSIsluPBDyj5NLHJxi06+MC
-         ra4PoBHW2zYVFMz4kypR8QXxpSSt/lr+IRi37ZWIIaxN8bbT/yhwhvLRTWprYPVkIUFv
-         PlaSLaTXfOLUo6dwWAnkSTRqcSaHBdQMBenuaS3tNgCLl/n1i+rjL6qkG71MVf3HKbQf
-         zkpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
-         :subject:to:cc:references:content-language:in-reply-to
-         :content-transfer-encoding;
-        bh=vJxL61/isUIklsbGfuI2DlV8JdwN6TK/RwNC9sAhGIU=;
-        b=aFBJO2WPmdU5BMKtmAiwg5ShEZmKT8AVx4icrO3F7p0Q1Rg/LJMKEGkK5u/09Glboe
-         ZjZ21EQxOn/oInssroTqxrFI7DH27t0eVkKCxcuEmGDVaOrg5HvLJES/orHDXR0uqBG9
-         U4kEziCOR8OBFCzNagyVdHyO3lt+tHRfh98OpAvlEAGsgYAhrjbCCse5cJgTPqoFgo61
-         rMTWZLFDn0k8sKjDpFJo4Ggsg75Y3tTFj78DoI32got9GNxHpYClsaEiUe0NR8RZT6LG
-         WyNqg8pz9EIlYsZVlFthlaW433IV2muwXsAluqXhfZuc4bVFXYLeamwSoEQiQiiyyTan
-         jYaA==
-X-Gm-Message-State: AOAM531LB3iOLHhD+ChshHx1x8A+gMYwpUQ75WuIK5Xxj5gI057iDw9i
-        +6rZ6s9NQXYaY4mpryfWlF4=
-X-Google-Smtp-Source: ABdhPJyxUM+GLnjRMoMmpLlyT0bxX6sefnSXlAQXA58SpflFtsvXwyro2GrxJ4E7riNuAHzPehHwwQ==
-X-Received: by 2002:a17:90a:7004:: with SMTP id f4mr16958621pjk.156.1637950293600;
-        Fri, 26 Nov 2021 10:11:33 -0800 (PST)
-Received: from [10.230.1.174] ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id d13sm7926944pfu.196.2021.11.26.10.11.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Nov 2021 10:11:33 -0800 (PST)
-Message-ID: <52374902-f1e7-5055-a26e-be269d10ce15@gmail.com>
-Date:   Fri, 26 Nov 2021 10:11:31 -0800
+        id S236540AbhKZSR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 13:17:56 -0500
+Received: from lizzard.sbs.de ([194.138.37.39]:59450 "EHLO lizzard.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229929AbhKZSPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 13:15:45 -0500
+Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 1AQIC5RD019147
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Nov 2021 19:12:05 +0100
+Received: from md1za8fc.ad001.siemens.net ([139.22.47.90])
+        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 1AQIC4ie019339;
+        Fri, 26 Nov 2021 19:12:04 +0100
+Date:   Fri, 26 Nov 2021 19:12:03 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>, Enrico Weigelt <lkml@metux.net>
+Subject: Re: [PATCH v4 2/4] leds: simatic-ipc-leds: add new driver for
+ Siemens Industial PCs
+Message-ID: <20211126191203.663e0d90@md1za8fc.ad001.siemens.net>
+In-Reply-To: <CAHp75VcD0FQuG_AToNkVHHD9e6WV6=18P4U0cSi0qzD3FL=ssw@mail.gmail.com>
+References: <20211126141027.16161-1-henning.schild@siemens.com>
+        <20211126141027.16161-3-henning.schild@siemens.com>
+        <CAHp75VcD0FQuG_AToNkVHHD9e6WV6=18P4U0cSi0qzD3FL=ssw@mail.gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH 5.4 000/100] 5.4.162-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20211125092028.153766171@linuxfoundation.org>
-Content-Language: en-US
-In-Reply-To: <20211125092028.153766171@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am Fri, 26 Nov 2021 17:02:00 +0200
+schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
 
+> On Fri, Nov 26, 2021 at 4:10 PM Henning Schild
+> <henning.schild@siemens.com> wrote:
+> >
+> > This driver adds initial support for several devices from Siemens.
+> > It is based on a platform driver introduced in an earlier commit.  
+> 
+> ...
+> 
+> > +static struct simatic_ipc_led simatic_ipc_leds_mem[] = {
+> > +       {0x500 + 0x1A0, "red:" LED_FUNCTION_STATUS "-1"},
+> > +       {0x500 + 0x1A8, "green:" LED_FUNCTION_STATUS "-1"},
+> > +       {0x500 + 0x1C8, "red:" LED_FUNCTION_STATUS "-2"},
+> > +       {0x500 + 0x1D0, "green:" LED_FUNCTION_STATUS "-2"},
+> > +       {0x500 + 0x1E0, "red:" LED_FUNCTION_STATUS "-3"},
+> > +       {0x500 + 0x198, "green:" LED_FUNCTION_STATUS "-3"},
+> > +       { }
+> > +};  
+> 
+> Like I said, this is not okay.
+> 
+> Why can't you simply enable the pinctrl driver and use it?
 
-On 11/25/2021 1:23 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.162 release.
-> There are 100 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 27 Nov 2021 09:20:07 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.162-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+I propose we set up a call, that might help clearing up the situation.
+If you agree please send me an email and possibly propose a time-slot.
+I would take it from there and send you a meeting link.
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+regards,
+Henning
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+> 
+> 
 
