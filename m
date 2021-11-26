@@ -2,81 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB0645E88E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C46C45E88D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:39:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359281AbhKZHmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 02:42:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359344AbhKZHka (ORCPT
+        id S1353985AbhKZHmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 02:42:13 -0500
+Received: from mout.kundenserver.de ([217.72.192.74]:35271 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353785AbhKZHkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 02:40:30 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414F1C0613FA
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:36:09 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id r25so35043671edq.7
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 23:36:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=elJioYNUbOzp4AX6n16wfmeroXlPwEb1AcJcD/HfIlo=;
-        b=cuYI5lX/w13XGoVbijkOcO0Df4iXXCO1KO1DxzVauzOtOpZ0r0mFw6GSEMYZO/MhCk
-         C+fYevTdEUz6ikNlEUUntAM1UVhHtIRY7L9oQpVQd0vSsa1uVTnJTnoKX6zjd2q1Vjhb
-         6qQx+JTKIEl/UW7oDydJaJ+S2NWWVFnbuTVDyLaEZBH2YTP9P3SG6bFp1r2k0QsEQUl8
-         jgIRKNdHqIXML1bZP0VzKqxE9tUWPZcNyD1lv6LWBCjcAjUDloHEA86g5QrPKgtKrpLD
-         M8/G+zxvjWHcHUUQ30sg6gJdilMsshmSs/p6DCcKC+XBJB4s/OX+uZ/a0gjzJtyJ6Dz5
-         Yj2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=elJioYNUbOzp4AX6n16wfmeroXlPwEb1AcJcD/HfIlo=;
-        b=eezwJZ2uI9lToGlG6ts0nQ9EChcKiNY5/7H4noncJt4lZ5o5bZhZ+VDpu70GgmWc+0
-         0ywpN2OZwe710dn++Z2pSxTAZcTjMvyigCQAYqZejO9jYbuPayCa3BM7bhJuyNT6h5aL
-         afo3dh3uNOpQyV7kXrNr2MixGlAPx6Ht0qKAZnn6wGYi+LJiWYqJdN+2W8ymbpNOSHYL
-         wdQx+9pIglT1gNzxM1SWxwEYQMxjaQpzEg7hj3xUVOeJAWAbTimjspfW3/9lFhofCKad
-         yBVQ4PX2OmarZkphQYvZtQZdSQ2w0nGINKKmCkh0W8qJspMDSElGopwM2MrDL4JdyaaE
-         Y67A==
-X-Gm-Message-State: AOAM533dbtiCAOwpfowChJVQ7gGmYNiTpf2RF1fZrxy3xP/mXwkUi4OV
-        M4CrnY1P9uvf31L2VGpV1E4=
-X-Google-Smtp-Source: ABdhPJziieAYsblkX51ypxlNpIpLASnQWiqy4Ol2QSm24dq/SP/qvVTPJVxq7n6D39x3WcD7zizgOw==
-X-Received: by 2002:a17:907:608f:: with SMTP id ht15mr1635858ejc.300.1637912167916;
-        Thu, 25 Nov 2021 23:36:07 -0800 (PST)
-Received: from alb3rt0-VirtualBox ([151.22.100.250])
-        by smtp.gmail.com with ESMTPSA id k21sm3169110edo.87.2021.11.25.23.36.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Nov 2021 23:36:07 -0800 (PST)
-Date:   Fri, 26 Nov 2021 08:36:05 +0100
-From:   Alberto Merciai <alb3rt0.m3rciai@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     joe@perches.com, forest@alittletooquiet.net,
-        karolinadrobnik@gmail.com, lucas.henneman@linaro.org,
-        dan.carpenter@oracle.com, tomm.merciai@gmail.com,
-        eantoranz@gmail.com, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH v5] staging: vt6655: refactor camelcase uCurrRSSI to
- current_rssi
-Message-ID: <20211126073605.GA4537@alb3rt0-VirtualBox>
-References: <20211118211128.GA156436@t470p>
- <YZ+9yDiG1SoWrWED@kroah.com>
+        Fri, 26 Nov 2021 02:40:12 -0500
+Received: from mail-wr1-f50.google.com ([209.85.221.50]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MDhth-1mjfNE1AfP-00Aldj; Fri, 26 Nov 2021 08:36:59 +0100
+Received: by mail-wr1-f50.google.com with SMTP id d24so16767234wra.0;
+        Thu, 25 Nov 2021 23:36:59 -0800 (PST)
+X-Gm-Message-State: AOAM532uLvDwSqnJJPhm3IpzqjnOI19vTLKJc3EPUtZ4+UrFqTyLTQ3p
+        CweDxlMhJs4wRj35qzhrL4EHNhVNwHn8YhycXu0=
+X-Google-Smtp-Source: ABdhPJxSj0rezcz4IfyWjfYsOWvMXGXNMnkGvFoWgiLLP3fW4pdm3tA67p68pITqojNXldDVfKE4N/+eM/LzDnTfLeI=
+X-Received: by 2002:a05:6000:110b:: with SMTP id z11mr12328335wrw.32.1637912218852;
+ Thu, 25 Nov 2021 23:36:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZ+9yDiG1SoWrWED@kroah.com>
+References: <20211126060024.3290177-1-alistair.francis@opensource.wdc.com> <20211126060024.3290177-4-alistair.francis@opensource.wdc.com>
+In-Reply-To: <20211126060024.3290177-4-alistair.francis@opensource.wdc.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 26 Nov 2021 08:36:43 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3QT+hu-nPBn=nBMYO50Tn4qenLNox7qEAg33KUPtAXSg@mail.gmail.com>
+Message-ID: <CAK8P3a3QT+hu-nPBn=nBMYO50Tn4qenLNox7qEAg33KUPtAXSg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/6] selftests: futex: Add support for 32-bit systems
+ with 64-bit time_t
+To:     Alistair Francis <alistair.francis@opensource.wdc.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alistair Francis <alistair23@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alistair Francis <alistair.francis@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:yidijYki8m7Z5c3Wmn5yuCSxsj1OTWmNgnOXelDww7nBoWyNem2
+ FQ5IXshkLlMQMsm+FAtacU/KYIBSSeJj9JUj65fxuJecGn1VW/LxCkQAaOTsLkrUs36dq+0
+ eVRWnb7Z7Kz86LhtJDpJhxJLUuub68p05qtyKpd8EYN7HpUBK6OjHqgf5/AHOIUmCOSD2+V
+ /Vc6ExNlhSSofIe+XOlDQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oBRD5kkSWDw=:U0uUcwd592I2duZ3ubroZr
+ +9cZDbnW1PaUD8W5JXci4rhmiDe1ySlAw1gdeFNkWkDfqCDYYQZtQ2N3XZ+DQEqyCY6+nngRV
+ MqrFuFIs0nW9KbzaiIrUdwshupiqd2Vowk5QHnXj7LdZfG6N1+wMpwTV5fofJezXPA/c/WTlr
+ M/CFdxr5kj6MT22LBGFPHkecVMS3UZFfV7yxxZlJYYOJFzgyUK2CbaePLMlcnIkY2lDO6eZI1
+ hLhpO+5h9s/ngq+oz1Ou2HA1KgpTC4mZbKaBn6/BBBWI/vW4zVJgdcpWdz0xplksPiYPWUD4Q
+ eq6mQn6yW5pIECsKe7nYX8g5UOIfZ9IN8/M8pwy2XIzR9+ql6KK1ezLQPFLezT7qgr5sUDFhv
+ LYclgcATyTAwhqeHKIX9clqGujOkwqGUAxmI8YSFlHtMP2ZYg1YOGDGEE4z41htK5HZw9gJLn
+ flxtQx3A6vg8k7qmrpksncQpi84Cyi7ghVr0LnsjQbt80wcTgklNfLCIxdwBKGxRfVuH7pd0Z
+ RtLLwf8cN0tYVXvCEBKuRwTEDS8OniPsWSNaBXSYT6G0Ij0w0PKuOpk8TW2XhPCiV5RSnUDij
+ CatFFLEa+WzmorKtUaweezEMX30EM+62VJ/dY9PaHR1NW7/e3fS1MI7+2a+yZ/g/joG4kp/iF
+ YBqaY0So/m+IcH4PwRazuvliW7mzL5ViMPKSixtlFSf7SarGtqCPNgShI6169HbQ9gZU45ssh
+ Z5ZqxUXyNWpgjG/3NnJ9Vki83RJKfOJKTghPqYWmu268PcmvA3Qhsrz9dHvFwvGS1X9EOsp6i
+ 8wX5+GB0DLhZJiqKaFRvRaRqijjVSKwJavVtwsq2L0NopPalvU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 26, 2021 at 7:00 AM Alistair Francis
+<alistair.francis@opensource.wdc.com> wrote:
+>
+> From: Alistair Francis <alistair.francis@wdc.com>
+>
+> Using the new __kernel_futex_syscall*() functions let's add support for
+> 32-bit systems with a 64-bit time_t. We can just direclty call the
+> publically exposed __kernel_futex_syscall_timeout() and
+> __kernel_futex_syscall_nr_requeue() functions to do this.
+>
+> Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+> ---
+>  tools/testing/selftests/futex/functional/futex_requeue_pi.c | 2 +-
+>  tools/testing/selftests/futex/include/futextest.h           | 5 +++--
+>  2 files changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/testing/selftests/futex/functional/futex_requeue_pi.c b/tools/testing/selftests/futex/functional/futex_requeue_pi.c
+> index 1ee5518ee6b7..d3673996fed4 100644
+> --- a/tools/testing/selftests/futex/functional/futex_requeue_pi.c
+> +++ b/tools/testing/selftests/futex/functional/futex_requeue_pi.c
+> @@ -294,7 +294,7 @@ int unit_test(int broadcast, long lock, int third_party_owner, long timeout_ns)
+>                 secs = (ts.tv_nsec + timeout_ns) / 1000000000;
+>                 ts.tv_nsec = ((int64_t)ts.tv_nsec + timeout_ns) % 1000000000;
+>                 ts.tv_sec += secs;
+> -               info("ts.tv_sec  = %ld\n", ts.tv_sec);
+> +               info("ts.tv_sec  = %lld\n", ts.tv_sec);
+>                 info("ts.tv_nsec = %ld\n", ts.tv_nsec);
+>                 tsp = &ts;
+>         }
 
-> I'm totally lost, sorry.
-I did a bit confusion, I'm lost too... :P
+I think this causes a warning on 64-bit builds now, you have to add a
+cast to 'long long'
+to make it work everywhere.
 
-> Please resend this again and properly set the version number.
-Sure, I will.
-
-Thanks,
-Alberto
-
-
+         Arnd
