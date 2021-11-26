@@ -2,133 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEBB245F1DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:27:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA0E45F1DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378405AbhKZQaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:30:20 -0500
-Received: from pegase2.c-s.fr ([93.17.235.10]:55117 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231970AbhKZQ2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:28:19 -0500
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4J10TF2KRXz9sSM;
-        Fri, 26 Nov 2021 17:25:05 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id gUCo4gl_1BVF; Fri, 26 Nov 2021 17:25:05 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4J10TF1RBWz9sSL;
-        Fri, 26 Nov 2021 17:25:05 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 214D88B781;
-        Fri, 26 Nov 2021 17:25:05 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id pKQRMnP2DWp8; Fri, 26 Nov 2021 17:25:05 +0100 (CET)
-Received: from [192.168.204.6] (unknown [192.168.204.6])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 565248B763;
-        Fri, 26 Nov 2021 17:25:04 +0100 (CET)
-Message-ID: <90ea33c6-2e93-ea19-3052-90e15979578f@csgroup.eu>
-Date:   Fri, 26 Nov 2021 17:25:04 +0100
+        id S238192AbhKZQbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:31:16 -0500
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:58085 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238745AbhKZQ3P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 11:29:15 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 531283200708;
+        Fri, 26 Nov 2021 11:26:01 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Fri, 26 Nov 2021 11:26:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=4KvT7F7q5WrSih8F9Cj3xPKgOTO
+        OwUquNqv/1YHmL9o=; b=jgpZfPPMtK/uXoQuaI36Edf/rqbtl9imkG06XWyd+bE
+        D60ZdPewQmjR2CEVrp/L7w/zf09NogA/nShU+/ghBQ9PgrDLdBYpSE74kuQmTyXX
+        0iuXIGVYwRNzPLva9AfjI2FUdGo4N+cQfu01Tu+8uNSRXa5ldKOQMUrjnLJUZI4X
+        rABTI3+UxdoYIELe4Qij2TDvpBFKV5DACyZdG7lMBz04sA/r/ZwZuXgOhmY8E52y
+        CYRjRPfFrdo/+5lBy1mICW6pk+xi9drJ22fqr0Lnd1wMbgu0hShkuJb2PuRhIczw
+        e1WXX+k7JE/ALsSzF3cyUNajzgtk+oEIg4GVXIw42IA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=4KvT7F
+        7q5WrSih8F9Cj3xPKgOTOOwUquNqv/1YHmL9o=; b=aRyQ6rISli5+xM8/omVIS0
+        x2tSsOu1ma/NPIC+wEQqQUAu1XjoNC3T6dPZtOUietQ4+lckSdP7owX/EQUFDVnh
+        hkAHZNcSPlZap5GmhB90rC1KBkJrb+zTkiduWAJhnKh2UNAKVYVCPc6OVpJxrPqW
+        PpbQ1BHX2rugDXcBKLvX26q5TNCLVcAysGiYF9TndGfMNzH0uWxvOdYsT4D6zQJt
+        tlmql8J8CVqTnpDkK0Qpo7nRXHXfpRFMxXxeRTW0IcBd/aLgLtBc4FLFapsOkbjC
+        vrUFSEGmq9e92DyiZdS9T2k7E+T+OMfy2gy31Cu2wBJrrQkH3LZesphOX62/5I2w
+        ==
+X-ME-Sender: <xms:mAqhYYR4OxrqAdUfIClPwmvo3ei0YKAFAr89dTc_BBsDzUpf54kbEg>
+    <xme:mAqhYVwEP3PeoSORyJM5cd9SlQGqg8vBw4CLsR_tu7_bt2fwl6ZJwUJB7O3xSd0QV
+    pl-DzsZSde1p77ya10>
+X-ME-Received: <xmr:mAqhYV3b73Oy461TOUwWgVwUxA9o9fIwoKG21jXxtLK8cxpfDWwbok64fl6kA7wC78E7IL_be6eDOTtuYlsCvlPLAVwnIrT3b90>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddrhedvgdekiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtjeenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeeutdfgjeeuudehvefgvedvtedtudelfffgffekledtffekgedukeejueevieeg
+    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
+    igihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:mAqhYcBg1QBsCDHz76Q2HJN07EFw2kWTFFMe0W9ci2FGAtYJlujU-A>
+    <xmx:mAqhYRh2Cv1rOjdXWSFeZKwagNgh9mPv0i2Umz1G8wHT51WlE8QPAg>
+    <xmx:mAqhYYp0lFJOnu2OO7DdXAg_hNMbRM5elzbP2ldugzpuKKLDFYLphg>
+    <xmx:mAqhYcUGSOewK6cIkqgvVaxXwrbmdMBPNTS6nfcDL8CLWG8nXPualQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 26 Nov 2021 11:26:00 -0500 (EST)
+Date:   Fri, 26 Nov 2021 17:25:58 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
+Cc:     wens@csie.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Michael Klein <michael@fossekall.de>
+Subject: Re: [PATCH] ARM: dts: sun8i: Adjust power key nodes
+Message-ID: <20211126162558.5wkiy2bdmeutn7e7@houat>
+References: <20211122213637.922088-1-jernej.skrabec@gmail.com>
+ <20211123103219.4y2pjywt2uxunc5s@gilmour>
+ <3138437.aeNJFYEL58@kista>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] powerpc: mm: radix_tlb: rearrange the if-else block
-Content-Language: fr-FR
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Anders Roxell <anders.roxell@linaro.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, llvm@lists.linux.dev,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-References: <20211125154406.470082-1-anders.roxell@linaro.org>
- <6b1e51a8-2f4d-2024-df90-a35c926d7a30@csgroup.eu>
- <CAK8P3a0n_n+PnfYmAdS9923yheLqYXRp8=65hKf9abLCRAX8ig@mail.gmail.com>
- <YaEBTbjGyUBmISGK@archlinux-ax161>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-In-Reply-To: <YaEBTbjGyUBmISGK@archlinux-ax161>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wgw7urj4luna2nuu"
+Content-Disposition: inline
+In-Reply-To: <3138437.aeNJFYEL58@kista>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--wgw7urj4luna2nuu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Le 26/11/2021 à 16:46, Nathan Chancellor a écrit :
-> On Fri, Nov 26, 2021 at 02:59:29PM +0100, Arnd Bergmann wrote:
->> On Fri, Nov 26, 2021 at 2:43 PM Christophe Leroy
->> <christophe.leroy@csgroup.eu> wrote:
->>> Le 25/11/2021 à 16:44, Anders Roxell a écrit :
->>> Can't you fix CLANG instead :) ?
->>>
->>> Or just add an else to the IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) that
->>> sets hstart and hend to 0 ?
->>
->> That doesn't sound any less risky than duplicating the code, it can lead to
->> incorrect changes just as easily if a patch ends up actually flushing at the
->> wrong address, and the compiler fails to complain because of the bogus
->> initialization.
->>
->>> Or just put hstart and hend calculation outside the IS_ENABLED() ? After
->>> all GCC should drop the calculation when not used.
->>
->> I like this one. I'm still unsure how clang can get so confused about whether
->> the variables are initialized or not, usually it handles this much better than
->> gcc. My best guess is that one of the memory clobbers makes it conclude
->> that 'hflush' can be true when it gets written to by an inline asm.
-> 
-> As far as I am aware, clang's analysis does not evaluate variables when
-> generating a control flow graph and using that for static analysis:
-> 
-> https://godbolt.org/z/PdGxoq9j7
-> 
-> Based on the control flow graph, it knows that hstart and hend are
-> uninitialized because IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) gets
-> expanded to 0 by the preprocessor but it does not seem like it can piece
-> together that hflush's value of false is only changed to true under the
-> now 'if (0) {' branch, meaning that all the calls to __tlbiel_va_range()
-> never get evaluated. That may or may not be easy to fix in clang but we
-> run into issues like this so infrequently.
-> 
-> At any rate, the below diff works for me.
-> 
-> Cheers,
-> Nathan
-> 
-> diff --git a/arch/powerpc/mm/book3s64/radix_tlb.c b/arch/powerpc/mm/book3s64/radix_tlb.c
-> index 7724af19ed7e..156a631df976 100644
-> --- a/arch/powerpc/mm/book3s64/radix_tlb.c
-> +++ b/arch/powerpc/mm/book3s64/radix_tlb.c
-> @@ -1174,12 +1174,10 @@ static inline void __radix__flush_tlb_range(struct mm_struct *mm,
->   		bool hflush = false;
->   		unsigned long hstart, hend;
->   
-> -		if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
-> -			hstart = (start + PMD_SIZE - 1) & PMD_MASK;
-> -			hend = end & PMD_MASK;
-> -			if (hstart < hend)
-> -				hflush = true;
-> -		}
-> +		hstart = (start + PMD_SIZE - 1) & PMD_MASK;
-> +		hend = end & PMD_MASK;
-> +		if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) && hstart < hend)
-> +			hflush = true;
+On Tue, Nov 23, 2021 at 05:42:55PM +0100, Jernej =C5=A0krabec wrote:
+> Hi!
+>=20
+> Dne torek, 23. november 2021 ob 11:32:19 CET je Maxime Ripard napisal(a):
+> > Hi,
+> >=20
+> > On Mon, Nov 22, 2021 at 10:36:37PM +0100, Jernej Skrabec wrote:
+> > > Several H3 and one H2+ board have power key nodes, which are slightly
+> > > off. Some are missing wakeup-source property and some have BTN_0 code
+> > > assigned instead of KEY_POWER.
+> > >=20
+> > > Adjust them, so they can function as intended by designer.
+> > >=20
+> > > Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+> > > [BananaPi M2 Zero changes]
+> > > Signed-off-by: Michael Klein <michael@fossekall.de>
+> >=20
+> > This looks a bit weird. If Michael is the author, then his SoB should be
+> > here first and mentioned either in From or Co-developed-by.
+> >=20
+> > If you are, I'm not sure why he's mentioned?
+>=20
+> I'm main author and Michael just adapted BananaPi M2 Zero DT based on my=
+=20
+> changes. What is preferred way to mark him as co-author?
 
-Yes I like that much better.
+Co-developed-by would be the way to go then
 
-Maybe even better with
+Maxime
 
-	hflush = IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) && hstart < hend;
+--wgw7urj4luna2nuu
+Content-Type: application/pgp-signature; name="signature.asc"
 
-(And remove default false value at declaration).
+-----BEGIN PGP SIGNATURE-----
 
->   
->   		if (type == FLUSH_TYPE_LOCAL) {
->   			asm volatile("ptesync": : :"memory");
-> 
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYaEKlgAKCRDj7w1vZxhR
+xW5WAP0WFEwnYvZgjWkUDwvcnRL73xLfaKOfHHLNS//l7TDeIgD+K0F3/JIve0OB
+PzUsICsxdi6aTGapHmnL1iuJDxmxwwc=
+=Q2RU
+-----END PGP SIGNATURE-----
+
+--wgw7urj4luna2nuu--
