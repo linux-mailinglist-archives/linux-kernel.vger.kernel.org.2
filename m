@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2760F45EB23
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC2545EB01
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 11:04:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347031AbhKZKTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 05:19:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231801AbhKZKRS (ORCPT
+        id S1376550AbhKZKHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 05:07:23 -0500
+Received: from mout.kundenserver.de ([217.72.192.75]:42357 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1376595AbhKZKFW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 05:17:18 -0500
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE832C061A18;
-        Fri, 26 Nov 2021 02:02:39 -0800 (PST)
-Received: by mail-ua1-x929.google.com with SMTP id r15so17547301uao.3;
-        Fri, 26 Nov 2021 02:02:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:user-agent:in-reply-to:references
-         :message-id:mime-version:content-transfer-encoding;
-        bh=j4ytlG5pvDnusgKvXJWq8t0KtDNGMzWoJMrzxJhoLtE=;
-        b=k8enL30dxp63sLpC48tMA3x8lvrDWYT6J5Yt6KBCyIsHqIwZkSHzVdLYtl8u+Rdm42
-         dFSnd/s3CfxIWyvuDyF5+1D2jTbh/G3q6mvxUy6dP0CpZcO+1PvKYXhbgMEXitZ8Bxk+
-         CnCc9qUcBQ4/tSpkX0BR5iyQUDF+2kedpv/SpB9oZROmiuQSD5bHgI/kybJoaHDRqlE+
-         sdli1kj84DCUQmLGIjzwHAfNxsGRUaOQN1tKMe0v2nWRqb4hcfc4QVqNwLvLLi4yN6Th
-         3M9a7EShODviry+6KkS9ftU/IFm+4BlKj79WVhfpxGNnDDBjtNWI3V2b1qznBdTSuzyg
-         VdBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:user-agent:in-reply-to
-         :references:message-id:mime-version:content-transfer-encoding;
-        bh=j4ytlG5pvDnusgKvXJWq8t0KtDNGMzWoJMrzxJhoLtE=;
-        b=DkGtun1t1iJ0CXVk30zImsBnf2iAQr32IXzh9SFtFzEn8G+sh+kW6ZgRjrJyQAcK1N
-         NqqLFnKkWWWVU5oNc6uP4R+pULpK3YXQp7Fe33wP5Bqmv+dHaMIj6zYrcQn5dcsaTrm6
-         24TvTCvIxt7t7Nf8DhpTq7PK8Mgf3B+uqeabGw6qiNqK8SU7RGmvvmqr/gv/IzgUpIZW
-         DrfqDsKknZrbPOZRxXq5sThM+ROKo7XXXzZhwi1Lxe3a5ULgD1HxSvsU4BrxHmytsmsq
-         FY9QH2zKHARJdPZedbB4756WqnzAx/zgJGJROLd/YqxoZtVrB0O5fJdibvWzMY95+9M3
-         ddkA==
-X-Gm-Message-State: AOAM532PianCIsMUAzIWaT3dEgJIuxoIGoR7JRmZ4Sf/m12KDTU/tzxw
-        V5aXopN66uXaO+kFfJb47IrBfHJf3s8=
-X-Google-Smtp-Source: ABdhPJyBDnjBHHBXqgcu2/nqBsWPTWTqnaFAX+ebJj508f4Xjpq08j4nSnUdULDTsXK26cxXY1oQVQ==
-X-Received: by 2002:a9f:21d7:: with SMTP id 81mr32190839uac.39.1637920958769;
-        Fri, 26 Nov 2021 02:02:38 -0800 (PST)
-Received: from [127.0.0.1] ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id n27sm3643966uab.5.2021.11.26.02.02.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 26 Nov 2021 02:02:38 -0800 (PST)
-Date:   Fri, 26 Nov 2021 07:01:16 -0300
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-To:     Heiko Carstens <hca@linux.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     Vasily Gorbik <gor@linux.ibm.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: =?US-ASCII?Q?Re=3A_=5BFYI=5D=5BPATCH_1/1=5D_tools_h?= =?US-ASCII?Q?eaders_UAPI=3A_Sync_s390_syscal?= =?US-ASCII?Q?l_table_file_changed_by_new_?= =?US-ASCII?Q?futex=5Fwaitv_syscall_Reply-To=3A?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <YaCug8LEHYmZ9G6E@osiris>
-References: <YZ/2qRW/TScYTP1U@kernel.org> <YaCug8LEHYmZ9G6E@osiris>
-Message-ID: <E1590C4C-2941-4922-A388-30780C9E01FA@gmail.com>
+        Fri, 26 Nov 2021 05:05:22 -0500
+Received: from mail-wr1-f54.google.com ([209.85.221.54]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MysBI-1mdobC2PhK-00vzMs; Fri, 26 Nov 2021 11:02:08 +0100
+Received: by mail-wr1-f54.google.com with SMTP id a9so17438886wrr.8;
+        Fri, 26 Nov 2021 02:02:08 -0800 (PST)
+X-Gm-Message-State: AOAM532cuVChVhdFiB5hZOgW8ljmsgYTSjcJJ0/g7ufvAyi8kJeyaVU4
+        bvFcG375lOiKx5fi9smBVdeakcRHHxFK0QHhdzo=
+X-Google-Smtp-Source: ABdhPJzFJM0amVDbfr0ThWQOxlaqw/CkOvAjZpzR6q6B6pDAhAVNA2MrC8usYZfdpHh3tsHDHDJxOWOtOTV3P4S0POI=
+X-Received: by 2002:a5d:6886:: with SMTP id h6mr13181894wru.287.1637920927998;
+ Fri, 26 Nov 2021 02:02:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20211126145201.5aefa68c@canb.auug.org.au>
+In-Reply-To: <20211126145201.5aefa68c@canb.auug.org.au>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 26 Nov 2021 11:01:52 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a078LiivyzUiH+D--iRsQGTcQ_hy=-h7crynrbQ6ZYn6A@mail.gmail.com>
+Message-ID: <CAK8P3a078LiivyzUiH+D--iRsQGTcQ_hy=-h7crynrbQ6ZYn6A@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the tip tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:PY7vnkVlzsiUc0R/D0CCz5Pd+BN7Aqv7dGALwpy23fQLH4pZa0I
+ /nbvBw04Ed+HL6KF6lnwi91bXmTyPzCvylMgZNsgL0L/Dy9S9qY9tqTFuG7e2ME8waVIamT
+ JBhYwRsvplew9o0USl+7u2OZe51PYuIJvuxUxKbGvUCS3/dWFIo15i9b6jtgebJu1xv6xUW
+ VcgXUrYSrb233EBNekn5A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:A6SMa8U3rlc=:+Y/mGX1AzmrUAFMl25+yhl
+ 3x1TeHOhFNx4K7HlWdfPdPbJxEarRPeuWRX2N3HVhxC9BRZzb2hH7tz2+W5JJogOXJ6u2JURl
+ y7ewxKJEiHMYjGT+x0uF873QLAIeUT0EU4wrmqMkHPxO4PSkFsFOqFaOAzXaT8HMkDR/Qa566
+ wcUtFwqCLBIKMRYtZDc5bdyHPmZF7gT9qaqhoLRjMs+mT3PpBsXi+vYNGDhJbvkzM2QGAQ+pY
+ x4s7jsVIc+hcyc0bk/8K9r4Ghu9tJ6P2QyKTOqY9SkPkbf1ulXMpKatEGK1nk8pxqtks9/E+8
+ R9MMqmnsH1/I9D6iLlc3gFtPXPS2XHGoiPPdaYlAX/OQ+nNramW0hUXCqH/9s7T0+kWe+HnjM
+ 2uSLy4Ts2R9DEBDU6IordYRABwIH2kg3qXuEAWkynWuf7zBETHtBffVHxGwdzWX/w0pWgfsQ0
+ 8gB+x9zrnJjZv0ciKGKTQPnUIVpXE0GEOp95ptdthbEX7bcpmFMoqiaL6neRnHxlgHM06rM2q
+ uyhNK86DKlxZXBBG34qkgQRituh7FDCQgrhrA1IlyOJy1R7XoA4p7hVJzUc6wiq2rKAWVrpri
+ 5q2iRY0BKSLOH2PBDBa9uAhSBn+a1ePodUkACJM9B8iBSOhoWe4FZppk/9LbwHP3Lnj3DlUHD
+ KfEuLSzSTMNlO2O0A7uq4/Pb4ouEPiob2FMvVvyoe8DVwx0ooy2pGYnuAjqaE7oTpvbRprbKM
+ 1hhmNVKGqCVE3fqzibkjpiOJos/E5JshaXVcuItoIHS2o2AxS7S9a4y40ZF/rUut2lbTgC1SF
+ rEJuaJ/9uu6yMTlbgP+x3bPGZgv3smKj6sjyZD8WIgr8eiLGRA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On November 26, 2021 6:53:07 AM GMT-03:00, Heiko Carstens <hca@linux=2Eibm=
-=2Ecom> wrote:
->Hi Arnaldo,
+On Fri, Nov 26, 2021 at 4:52 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 >
->> To pick the changes in this cset:
->>=20
->>   6c122360cf2f4c5a ("s390: wire up sys_futex_waitv system call")
->>=20
->> That add support for this new syscall in tools such as 'perf trace'=2E
->=2E=2E=2E
->> This addresses this perf build warnings:
->>=20
->>   Warning: Kernel ABI header at 'tools/perf/arch/s390/entry/syscalls/sy=
-scall=2Etbl' differs from latest version at 'arch/s390/kernel/syscalls/sysc=
-all=2Etbl'
->>   diff -u tools/perf/arch/s390/entry/syscalls/syscall=2Etbl arch/s390/k=
-ernel/syscalls/syscall=2Etbl
->>=20
->> Cc: Heiko Carstens <hca@linux=2Eibm=2Ecom>
->> Cc: Vasily Gorbik <gor@linux=2Eibm=2Ecom>
->> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat=2Ecom>
->> ---
->>  tools/perf/arch/s390/entry/syscalls/syscall=2Etbl | 1 +
->>  1 file changed, 1 insertion(+)
+> Hi all,
 >
->I can happily pick this up for the s390 tree, but I'm not sure if that
->is want you want?
+> After merging the tip tree, today's linux-next build (sparc defconfig)
+> failed like this:
+>
+> In file included from arch/sparc/include/asm/futex_32.h:4:0,
+>                  from arch/sparc/include/asm/futex.h:7,
+>                  from kernel/futex/futex.h:12,
+>                  from kernel/futex/core.c:41:
+> kernel/futex/core.c: In function 'futex_cmpxchg_value_locked':
+> include/asm-generic/futex.h:17:2: error: implicit declaration of function 'futex_atomic_cmpxchg_inatomic_local_generic'; did you mean 'futex_atomic_cmpxchg_inatomic_local'? [-Werror=implicit-function-declaration]
+>   futex_atomic_cmpxchg_inatomic_local_generic(uval, uaddr, oldval, newval)
+>   ^
+> include/asm-generic/futex.h:17:2: note: in definition of macro 'futex_atomic_cmpxchg_inatomic'
+>   futex_atomic_cmpxchg_inatomic_local_generic(uval, uaddr, oldval, newval)
+>   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Just FYI and to give the opportunity to people to chime in in case somethi=
-ng is wrong somehow=2E
+Thanks a lot for the report, I sent a fix now:
 
-Also to advertise the feature=2E
+https://lore.kernel.org/lkml/20211126095852.455492-1-arnd@kernel.org
 
-I'm pushing this upstream myself,
-
-Thanks,
-
-- Arnaldo
+        Arnd
