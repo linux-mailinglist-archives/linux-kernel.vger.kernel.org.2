@@ -2,101 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8A045E3F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 02:17:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F204445E3F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 02:20:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357382AbhKZBUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 20:20:32 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:31906 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234110AbhKZBS1 (ORCPT
+        id S237959AbhKZBYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 20:24:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243791AbhKZBWI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 20:18:27 -0500
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4J0cHM0kSdzcbRG;
-        Fri, 26 Nov 2021 09:15:11 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 26 Nov 2021 09:15:13 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 26 Nov 2021 09:15:12 +0800
-Subject: Re: [PATCH 5.10 000/153] 5.10.82-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20211125092029.973858485@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <b94749b5-8689-7fd4-272a-67ed694695c1@huawei.com>
-Date:   Fri, 26 Nov 2021 09:15:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 25 Nov 2021 20:22:08 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F0CC06175D
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 17:17:30 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id n66so15767782oia.9
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 17:17:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Od+ySjjFhxRYMYxmCjjF/atFp38NKQiXX3R9mG25u1U=;
+        b=rlaNmopmdxpmRhI68bh9xfiePxM4NRw3sd2puoAGv1UUCg+x//QQ8mlRn0P0A97ELO
+         iLW82dW1jC90Tmmc52xSGvLME0s+tzAMwyt03JEhV7UREahtYafqdEiJ4/1djK+3ZePH
+         uWMa3sc+6hBmilVZjLOzJBl8VXh3yB36nwdq6nJPS0RHVqtWaX7KnYKmm/MhM8MYlFt/
+         U3u0Ve9k5/XkJQiAgklfCrkW9Dytey2eth/ItjPVL02L2oGvdxrDkxcoL1o2fp07MGIs
+         zBCfY3HNb7PiZEDIxSMSgU3zIKzQ8L6DcDq08NrKa7sakmt8i+vmUk7hqGhKQKu5vQCN
+         tXzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Od+ySjjFhxRYMYxmCjjF/atFp38NKQiXX3R9mG25u1U=;
+        b=26zlu94szwSJ93aSlvjBH31AsU3T6xjZ/r7bcoIPZ1ZRoql+hWPTeaLm8fjgOLo2vw
+         O80d9F0HRwZ9bKj/MfOQsV4TPydyXUrum/l2FdwuauKoVe3WrwV6SLtseIwGGSwE7yNi
+         NHmsjg+vc7FaKwcjhfIlgRbi4h9ZRQ4rp1ZDtwc8Iz9qJN4vs6E6/+5GIIO/My5DpoBS
+         rv+gtAx9QoNBQbrz3Z5739I3ow/wUKYvDGDsnKqe07eEqytvZLVYvpyKlZAAYnoeAGhv
+         mmv0l2cF30gO1jjWlWGqUc/NbRi/fCzSm51PGVdEthQ2kw8g3k6SSn5MkHxjP7alVxVD
+         bnvA==
+X-Gm-Message-State: AOAM531P5MJMElAa/ein+f224nhwFhC+TqumbAtkuYYSfJY9m2aDSjMn
+        LGtclgDV9J/YUH8YatsM0h2LunAoHcfafW00BeRWDg==
+X-Google-Smtp-Source: ABdhPJxN8xXtCL8trbzcImBq6BHkAMLjbBKtbeSeg2aMmb/JvoO7mh5sEnm3HadQxxajk60V9jJ8teZFmcZSZZ7yEEU=
+X-Received: by 2002:a05:6808:60e:: with SMTP id y14mr19809406oih.162.1637889449635;
+ Thu, 25 Nov 2021 17:17:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211125092029.973858485@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
+References: <20211108214148.9724-1-shreeya.patel@collabora.com>
+ <YYp8JzxfLK2u0fU4@arch-x1c3> <87tugdxkj6.fsf@collabora.com> <d7d8bd97-3c12-bf04-a0ad-e0f391158d01@collabora.com>
+In-Reply-To: <d7d8bd97-3c12-bf04-a0ad-e0f391158d01@collabora.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 26 Nov 2021 02:17:17 +0100
+Message-ID: <CACRpkdbPKW10YrzCPKPiJpPTAPPBSiV9CUiJgvasozOfjNbUKg@mail.gmail.com>
+Subject: Re: [PATCH] gpio: Initialize gc->irq.domain before setting gc->to_irq
+To:     Shreeya Patel <shreeya.patel@collabora.com>
+Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
+        andy.shevchenko@gmail.com, sebastian.reichel@collabora.com,
+        brgl@bgdev.pl, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com,
+        Emil Velikov <emil.velikov@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 25, 2021 at 11:56 AM Shreeya Patel
+<shreeya.patel@collabora.com> wrote:
+> On 16/11/21 1:23 am, Gabriel Krisman Bertazi wrote:
+> > Emil Velikov <emil.velikov@collabora.com> writes:
 
+> >> Hi Shreeya, all,
+> >>
+> >> On 2021/11/09, Shreeya Patel wrote:
+> >>> There is a race in registering of gc->irq.domain when
+> >>> probing the I2C driver.
+> >>> This sometimes leads to a Kernel NULL pointer dereference
+> >>> in gpiochip_to_irq function which uses the domain variable.
+> >>>
+> >>> To avoid this issue, set gc->to_irq after domain is
+> >>> initialized. This will make sure whenever gpiochip_to_irq
+> >>> is called, it has domain already initialized.
+> >>>
+> >> What is stopping the next developer to moving the assignment to the
+> >> incorrect place? Aka should we add an inline comment about this?
+> > I agree with Emil.  The patch seems like a workaround that doesn't
+> > really solve the underlying issue.  I'm not familiar with this code, but
+> > it seems that gc is missing a lock during this initialization, to prevent
+> > it from exposing a partially initialized gc->irq.
+>
+> I do not see any locking mechanism used for protecting the use of gc
+> members before they are
+> initialized. We faced a very similar problem with gc->to_irq as well
+> where we had to return EPROBE_DEFER until it was initialized and ready
+> to be used.
+>
+> Linus, do you have any suggestion on what would be the correct way to
+> fix this issue of race in registration of gc members?
 
-On 2021/11/25 17:23, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.82 release.
-> There are 153 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 27 Nov 2021 09:20:04 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.82-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Not really, we just haven't faced the issue until now because it is only
+now that people have actually added all these devlinks and deferred
+probing and what not that actually starts to stress the system and
+now that results in it being less stable, right?
 
-Tested on arm64 and x86 for 5.10.82-rc2,
+How do other subsystems do it?
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.10.y
-Version: 5.10.82-rc2
-Commit: c7ee3713feb580103e956dd5980d3805868a677d
-Compiler: gcc version 7.3.0 (GCC)
-
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 9019
-passed: 9019
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 9019
-passed: 9019
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+Yours,
+Linus Walleij
