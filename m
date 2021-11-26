@@ -2,105 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6B045F241
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:38:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE29C45F1C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 17:22:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378606AbhKZQlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 11:41:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378603AbhKZQjC (ORCPT
+        id S239431AbhKZQZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 11:25:52 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:37500 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231174AbhKZQXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 11:39:02 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17CBC061D79;
-        Fri, 26 Nov 2021 08:20:02 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id u22so19728677lju.7;
-        Fri, 26 Nov 2021 08:20:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hEN8lxqzB5PkjPszcdUxNpJc6epYJF7n5YUfahDhZts=;
-        b=oTcerw3jboBSgaI5lBASiQ0+yvoxajfozbWkKUsSmofKDE934IXHDdxNhB8W9inQH8
-         Deth1OvQaNwgcuyT1EYOl7z37XeRTOtofk3rfAARsYrFqOpJrZaMP2yWgRj3wWz8rhOS
-         c9Dce6wjkImXLFLe+QdB7nP22gzehsMpGLBEEMDo0XSy8AW6kq9BhVWDy3FC77Jlsbrv
-         NXnqGvMr1srJooL0mlDZs8j2QAzGmCQDiJde7E6dgpDRF550dE9c1UQxnnqLqUJtU5t6
-         jyg7JecYzESPBU3YZ5QeRjpyQX3JKtntQB7xj3ORrmWmqbKeewF4FQ6LCWyGzgfuLizK
-         K0vA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hEN8lxqzB5PkjPszcdUxNpJc6epYJF7n5YUfahDhZts=;
-        b=c+EAppiS65X0fc8XT8Gp/Ek9tkLOj201YnULLo/2ubmWmPJErbxtPfjaERTzBwDY3/
-         8TnjrtKx+YiSb21aQeHL55JYRG8hnKFweksnQlPfmDxrBiA5zVNoNp6ZuT4d9hRTIBtu
-         QmKpytVaNzXz6a2V38XAwMe+bG3oq+vLHRxySomiUYmkMKfByoyk7G+5feWWCTTfQUll
-         WcoyOkyeWoJ+FFrTOrblU2l6ME7i6gn+F5jqKoeOUA9QMsPbkDUBDZ6LlNRaOvJNza5O
-         opb3hI4HxJ+vrT0EkE+8GOb9tfMiCqrgQpC4IY6YgtsHtlmpC6p9bseid8Qs45h97J3g
-         m57g==
-X-Gm-Message-State: AOAM532jcRO1nHf2xLURy0YX+EWyhGxjsdJqf5QsN3LDM268Uj130ePp
-        oK9FTewxbtMebh1WhZxlXN8=
-X-Google-Smtp-Source: ABdhPJzz5wBDSCE4Eo1QRQj2umu9yNSwj9Kxjmg73qAOgEls3WYa2Hilna7xfBmiFLf2MVj1rIyQ9w==
-X-Received: by 2002:a2e:a792:: with SMTP id c18mr32236469ljf.443.1637943601285;
-        Fri, 26 Nov 2021 08:20:01 -0800 (PST)
-Received: from localhost.localdomain (94-29-48-99.dynamic.spd-mgts.ru. [94.29.48.99])
-        by smtp.gmail.com with ESMTPSA id t7sm613381lfl.260.2021.11.26.08.19.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Nov 2021 08:20:00 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Agneli <poczt@protonmail.ch>, Rob Herring <robh+dt@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH v2 20/20] ARM: tegra: paz00: Enable S/PDIF and HDMI audio
-Date:   Fri, 26 Nov 2021 19:18:07 +0300
-Message-Id: <20211126161807.15776-21-digetx@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211126161807.15776-1-digetx@gmail.com>
-References: <20211126161807.15776-1-digetx@gmail.com>
+        Fri, 26 Nov 2021 11:23:50 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 95DE9622DE
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 16:20:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68770C93056;
+        Fri, 26 Nov 2021 16:20:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1637943637;
+        bh=hHzRt7omLgTYdRrbsO+/umgidnNO13xR556zj8JayD0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OU7kIkqGCRQBVPSI8iC61SEzs/vzOLWDmnGz10io8BXjvDU9j+zY5r3vswzII2Kxx
+         LTCO1RYfvy38jA4a9Cp9AoYfhiT9DAAErpUYq7wRz6KgZ1PsBOuGCkz0vebzthKBdJ
+         TblfX41vmjawq79ENmCy+7uDI9eune4sK1upJjzo=
+Date:   Fri, 26 Nov 2021 17:20:34 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sergey Shtylyov <s.shtylyov@omp.ru>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] platform: finally disallow IRQ0 in platform_get_irq()
+ and its ilk
+Message-ID: <YaEJUiZRhkGRZqpt@kroah.com>
+References: <5e001ec1-d3f1-bcb8-7f30-a6301fd9930c@omp.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5e001ec1-d3f1-bcb8-7f30-a6301fd9930c@omp.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable S/PDIF controller to enable HDMI audio support on Toshiba AC100.
-Use nvidia,fixed-parent-rate property that prevents audio rate conflict
-between S/PDIF and I2S.
+On Sat, Nov 06, 2021 at 11:26:47PM +0300, Sergey Shtylyov wrote:
+> The commit a85a6c86c25b ("driver core: platform: Clarify that IRQ 0 is
+> invalid") only calls WARN() when IRQ0 is about to be returned, however
+> using IRQ0 is considered invalid (according to Linus) outside the arch/
+> code where it's used by the i8253 drivers. Many driver subsystems treat
+> 0 specially (e.g. as an indication of the polling mode by libata), so
+> the users of platform_get_irq[_byname]() in them would have to filter
+> out IRQ0 explicitly and this (quite obviously) doesn't scale...
+> Let's finally get this straight and return -EINVAL instead of IRQ0!
+> 
+> Fixes: a85a6c86c25b ("driver core: platform: Clarify that IRQ 0 is invalid")
+> Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+> 
+> ---
+> The patch is against the 'driver-core-linus' branch of Greg Kroah-Hartman's
+> 'driver-core.git' repo.
+> 
+>  drivers/base/platform.c |    6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> Index: driver-core/drivers/base/platform.c
+> ===================================================================
+> --- driver-core.orig/drivers/base/platform.c
+> +++ driver-core/drivers/base/platform.c
+> @@ -231,7 +231,8 @@ int platform_get_irq_optional(struct pla
+>  out_not_found:
+>  	ret = -ENXIO;
+>  out:
+> -	WARN(ret == 0, "0 is an invalid IRQ number\n");
+> +	if (WARN(!ret, "0 is an invalid IRQ number\n"))
+> +		return -EINVAL;
 
-Tested-by: Agneli <poczt@protonmail.ch>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/boot/dts/tegra20-paz00.dts | 8 ++++++++
- 1 file changed, 8 insertions(+)
+You need to get approval from the interrrupt developers for this type of
+change, as it is a change and might break existing platforms, right?
 
-diff --git a/arch/arm/boot/dts/tegra20-paz00.dts b/arch/arm/boot/dts/tegra20-paz00.dts
-index 5b2260f61f05..921a811632a1 100644
---- a/arch/arm/boot/dts/tegra20-paz00.dts
-+++ b/arch/arm/boot/dts/tegra20-paz00.dts
-@@ -264,8 +264,16 @@ conf_ld17_0 {
- 		};
- 	};
- 
-+	spdif@70002400 {
-+		status = "okay";
-+
-+		nvidia,fixed-parent-rate;
-+	};
-+
- 	i2s@70002800 {
- 		status = "okay";
-+
-+		nvidia,fixed-parent-rate;
- 	};
- 
- 	serial@70006000 {
--- 
-2.33.1
+thanks,
 
+greg k-h
