@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DEC45F36D
+	by mail.lfdr.de (Postfix) with ESMTP id A2AC345F36E
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 19:06:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233002AbhKZSJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 13:09:56 -0500
-Received: from mailgate.ics.forth.gr ([139.91.1.2]:64612 "EHLO
+        id S238862AbhKZSKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 13:10:00 -0500
+Received: from mailgate.ics.forth.gr ([139.91.1.2]:64616 "EHLO
         mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237460AbhKZSHv (ORCPT
+        with ESMTP id S237404AbhKZSHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Nov 2021 13:07:51 -0500
 Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
-        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 1AQI4aXI005325
+        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 1AQI4afx005326
         for <linux-kernel@vger.kernel.org>; Fri, 26 Nov 2021 20:04:36 +0200 (EET)
 DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
         q=dns/txt; i=@ics.forth.gr; t=1637949871; x=1640541871;
@@ -21,74 +21,97 @@ DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
         Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
         Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
         List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=G7hqs6XkmVh0r9F43+KthFWHpCGCPs2cR9auzvLaORA=;
-        b=H3h33uTpd/IsJk+daVt9SOGxKcwSc3JQvvUO4P/bsRTpmRh0ABxdeN5TNHhfKpJy
-        ODtc7hnx/7GBDrtLhaCMuURv2Fl5FNjFkimyiSTY+ZYF8MUzbkSJKRnPK+I/VbC0
-        uuPJajveHuJK4pCI6Kzlr0ZwxzcynHaR1Lep8nJV9vvg3zOUrJzfCriDbzbY2l0o
-        UYg0/OPBylkTs/snrHI7efIOTyvdi8nodJTexDl5ejt1UUc5Ld5rGFN23J1eGX6o
-        JiqHmgQt3+P04UOJIg2mfAluUSkMcn32yWG/8PBSilsQzmHGVetmXNlKGRnuNQg5
-        Eq7wG6xauTMeLxco+H2CiA==;
-X-AuditID: 8b5b014d-9ba4a7000000460a-aa-61a121af4fbd
+        bh=HwZwqj1Qv59IMeyNmkXzER8KB6AH7iTuvaLwYU2PapU=;
+        b=BVqeGD+8xaZowUssCk5lhXjmAYmLl2S5BxHrzCurO5rm/Ls5vv0HyVT9i84ORE5l
+        A8VsKL3znz+puvAGTBeK2hqTn5EgCKSNb64bNqojcL9a96y4XHtrOq11/qamrxXo
+        muPEUW4P/PoeqxHqGee2mEw7ug/DK3THPrdJBc7Uq3CqVzz2SYIOTkJNbqm1Vm5v
+        gMHrvscXnZOw//NDeJDKvZzm+UPL92rz5tEZR5TiNsG8VZFEgFB+C3WLxRkits3E
+        qDLXKAoDogthUOU/7SxtPhPkVO4S1kNJ7dIh/w6eipMiWPvBVvNt6FEF7vaoNCp8
+        19WuOEQ9VHXxW7KRWaX8dw==;
+X-AuditID: 8b5b014d-9a2477000000460a-ab-61a121affcd5
 Received: from enigma.ics.forth.gr (enigma-2.ics.forth.gr [139.91.151.35])
-        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id A9.14.17930.FA121A16; Fri, 26 Nov 2021 20:04:31 +0200 (EET)
+        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id B9.14.17930.FA121A16; Fri, 26 Nov 2021 20:04:31 +0200 (EET)
 X-ICS-AUTH-INFO: Authenticated user: mick@ics.forth.gr at ics.forth.gr
 From:   Nick Kossifidis <mick@ics.forth.gr>
 To:     palmer@dabbelt.com, paul.walmsley@sifive.com, aou@eecs.berkeley.edu
 Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Nick Kossifidis <mick@ics.forth.gr>, stable@vger.kernel.org
-Subject: [PATCH 2/3] riscv: use hart id instead of cpu id on machine_kexec
-Date:   Fri, 26 Nov 2021 20:04:10 +0200
-Message-Id: <20211126180411.187597-2-mick@ics.forth.gr>
+        Nick Kossifidis <mick@ics.forth.gr>
+Subject: [PATCH 3/3] riscv: try to allocate crashkern region from 32bit addressible memory
+Date:   Fri, 26 Nov 2021 20:04:11 +0200
+Message-Id: <20211126180411.187597-3-mick@ics.forth.gr>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211126180411.187597-1-mick@ics.forth.gr>
 References: <20211126180411.187597-1-mick@ics.forth.gr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBLMWRmVeSWpSXmKPExsXSHT1dWXe94sJEgxub2Sy2/p7FbnF51xw2
-        i22fW9gsmt+dY7d4ebmH2aJtFr/Fgo2PGB3YPd68fMnicbjjC7vHw02XmDw2L6n3uNR8nd3j
-        8ya5ALYoLpuU1JzMstQifbsEroy1O96zFezjqlh79wVLA+N/ji5GTg4JAROJi98vs3QxcnEI
-        CRxjlOj7dp8FIuEmcfv+TlYQm01AU2L+pYNgcREBd4nVk/8wgTQwC7QzSsy89QcsISzgJTH/
-        +lRGEJtFQFViydEGJhCbV8BcovXXQWaIofISp5YdBIpzcHAKWEjs+B0JEhYCKnm/aSUrRLmg
-        xMmZT8BGMgOVN2+dzTyBkW8WktQsJKkFjEyrGAUSy4z1MpOL9dLyi0oy9NKLNjGCA5PRdwfj
-        7c1v9Q4xMnEwHmKU4GBWEuF1DpyfKMSbklhZlVqUH19UmpNafIhRmoNFSZyXV29CvJBAemJJ
-        anZqakFqEUyWiYNTqoFJZJ6q4QOtFWucG7Rbd5l6F5p8Eb+v+yEtdT7rwX+ruZ/OVHQ63DWr
-        lE/9/MXq8u9a9VW/xdfMD79ok7jkrLn9d4Mldy5tfZ/qtELratfM7Pchxvd+Xt7PZ/ftGcvO
-        V9eddSZfjTFlaLqhb3JKQKMoIG/ellj/hua4KV/enZ2718dngZa5vIhAU8i+gPxZLttjHrOp
-        qz53UY1leDuvp69RvubDpu8vX5Ztfv147s/Q/ZeeHX4acUXRuHNTgsgM/ZMSz7aYtV37VMt0
-        y1Qpvte6ypWD4f2BeEaH7QkHZdc6T7+4yPbOd9bGnxftO9ofPj/Cs95WoUtXSGm6wp3dj1Yp
-        mdzPbbtr4ptfvLicv5lDiaU4I9FQi7moOBEAHofzrrsCAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrILMWRmVeSWpSXmKPExsXSHT1dWXe94sJEg5/HeSy2/p7FbnF51xw2
+        i22fW9gsmt+dY7d4ebmH2aJtFr8Dm8ebly9ZPA53fGH3eLjpEpPH5iX1Hpear7N7fN4kF8AW
+        xWWTkpqTWZZapG+XwJXxbuEepoIDAhVHNi9gbGCcy9vFyMkhIWAi0fLzClsXIxeHkMAxRomp
+        SzYyQiTcJG7f38kKYrMJaErMv3SQBcQWEXCXWD35DxOIzSyQL7HtyznmLkYODmGBKIk5v8xB
+        wiwCqhLdD6czg9i8AuYSTTd/sEGMlJc4tewgE0g5p4CFxI7fkSBhIaCS95tWskKUC0qcnPmE
+        BWK6vETz1tnMExj5ZiFJzUKSWsDItIpRILHMWC8zuVgvLb+oJEMvvWgTIzgUGX13MN7e/Fbv
+        ECMTB+MhRgkOZiURXufA+YlCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeXn1JsQLCaQnlqRmp6YW
+        pBbBZJk4OKUamHjsE5N4f8/xspgfHv27T6FjpdbE6VbfD/QfsJcrOMzQk3NNmPfBjTV2XK1p
+        QhudhPYt5HxxeuqKZ81rNV9YP5n4/Cofa1ef5PL7pmdur06XmX9Ny/MyJ6u+23PGrqg/h7f+
+        1mc4G8HfVXvYtiRjzq4PGk/Y92Wmv2zZs6RdwIBxi77Zyc4pMRMTVcuDOy//jNRco2MS9/Ll
+        wo+T0rlyFutxN21uC5u+IvRp4e+cN6Ive1vfVO2aafr73apWe+u1rpWFcWej1lXIsjK9D/7u
+        du2cf1sGo32NtUK5qGeM46b7q92VGx5fTOjYK5n4/Vfv5ZA2m6ulCQ4lz8yCe0/cr3h7/kZ1
+        Ojf3ptdfpFivKrEUZyQaajEXFScCAHgKg0a0AgAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-raw_smp_processor_id() doesn't return the hart id as stated in
-arch/riscv/include/asm/smp.h, use smp_processor_id() instead
-to get the cpu id, and cpuid_to_hartid_map() to pass the hart id
-to the next kernel. This fixes kexec on HiFive Unleashed/Unmatched
-where cpu ids and hart ids don't match (on qemu-virt they match).
+When allocating chrash kernel region without explicitly specifying its
+base address/size, memblock_phys_alloc_range will attempt to allocate
+memory top to bottom (memblock.bottom_up is false), so the crash
+kernel region will end up in highmem on 64bit systems. This way
+swiotlb can't work on the crash kernel, since there won't be any
+32bit addressible memory available for the bounce buffers.
 
-Fixes: fba8a8674f68 ("RISC-V: Add kexec support")
+Try to allocate 32bit addressible memory if available, for the
+crash kernel by restricting the top search address to be less
+than SZ_4G. If that fails fallback to the previous behavior.
+
+I tested this on HiFive Unmatched where the pci-e controller needs
+swiotlb to work, with this patch it's possible to access the pci-e
+controller on crash kernel and mount the rootfs from the nvme.
 
 Signed-off-by: Nick Kossifidis <mick@ics.forth.gr>
-Cc: stable@vger.kernel.org
 ---
- arch/riscv/kernel/machine_kexec.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/riscv/mm/init.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/arch/riscv/kernel/machine_kexec.c b/arch/riscv/kernel/machine_kexec.c
-index e6eca271a..cbef0fc73 100644
---- a/arch/riscv/kernel/machine_kexec.c
-+++ b/arch/riscv/kernel/machine_kexec.c
-@@ -169,7 +169,8 @@ machine_kexec(struct kimage *image)
- 	struct kimage_arch *internal = &image->arch;
- 	unsigned long jump_addr = (unsigned long) image->start;
- 	unsigned long first_ind_entry = (unsigned long) &image->head;
--	unsigned long this_hart_id = raw_smp_processor_id();
-+	unsigned long this_cpu_id = smp_processor_id();
-+	unsigned long this_hart_id = cpuid_to_hartid_map(this_cpu_id);
- 	unsigned long fdt_addr = internal->fdt_addr;
- 	void *control_code_buffer = page_address(image->control_code_page);
- 	riscv_kexec_method kexec_method = NULL;
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 24b2b8044..1963a517e 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -812,13 +812,22 @@ static void __init reserve_crashkernel(void)
+ 	/*
+ 	 * Current riscv boot protocol requires 2MB alignment for
+ 	 * RV64 and 4MB alignment for RV32 (hugepage size)
++	 *
++	 * Try to alloc from 32bit addressible physical memory so that
++	 * swiotlb can work on the crash kernel.
+ 	 */
+ 	crash_base = memblock_phys_alloc_range(crash_size, PMD_SIZE,
+-					       search_start, search_end);
++					       search_start,
++					       min(search_end, (unsigned long) SZ_4G));
+ 	if (crash_base == 0) {
+-		pr_warn("crashkernel: couldn't allocate %lldKB\n",
+-			crash_size >> 10);
+-		return;
++		/* Try again without restricting region to 32bit addressible memory */
++		crash_base = memblock_phys_alloc_range(crash_size, PMD_SIZE,
++						search_start, search_end);
++		if (crash_base == 0) {
++			pr_warn("crashkernel: couldn't allocate %lldKB\n",
++				crash_size >> 10);
++			return;
++		}
+ 	}
+ 
+ 	pr_info("crashkernel: reserved 0x%016llx - 0x%016llx (%lld MB)\n",
 -- 
 2.32.0
 
