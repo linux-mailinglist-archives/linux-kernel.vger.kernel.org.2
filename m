@@ -2,152 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A45D445E8DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:50:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1F845E8E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:57:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348056AbhKZHx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 02:53:28 -0500
-Received: from mout.kundenserver.de ([212.227.126.133]:59545 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243068AbhKZHv1 (ORCPT
+        id S1344792AbhKZIAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 03:00:32 -0500
+Received: from alexa-out-tai-02.qualcomm.com ([103.229.16.227]:25248 "EHLO
+        alexa-out-tai-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345072AbhKZH6b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 02:51:27 -0500
-Received: from leknes.fjasle.eu ([92.116.70.26]) by mrelayeu.kundenserver.de
- (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MmDZI-1m8Plh47uK-00iFvg; Fri, 26 Nov 2021 08:48:02 +0100
-Received: from lillesand.fjasle.eu (unknown [IPv6:fd00::eadf:70ff:fe12:9041])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
-         client-signature RSA-PSS (2048 bits) client-digest SHA256)
-        (Client CN "lillesand.fjasle.eu", Issuer "Fake LE Intermediate X1" (not verified))
-        by leknes.fjasle.eu (Postfix) with ESMTPS id A8FC13C57D;
-        Fri, 26 Nov 2021 08:48:00 +0100 (CET)
-Authentication-Results: leknes.fjasle.eu; dkim=none; dkim-atps=neutral
-Received: by lillesand.fjasle.eu (Postfix, from userid 1000)
-        id D142A106F1B; Fri, 26 Nov 2021 08:47:59 +0100 (CET)
-Date:   Fri, 26 Nov 2021 08:47:59 +0100
-From:   Nicolas Schier <nicolas@fjasle.eu>
-To:     David Howells <dhowells@redhat.com>, linux-cachefs@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [RESEND] fscache: re-match MODULE_PARM_DESC() calls to
- module parameters
-Message-ID: <YaCRLx0/CvrxqlZM@lillesand.fjasle.eu>
-References: <YTX02eiVawkpTquX@fjasle.eu>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="tephn8Z5lGDb1jFQ"
-Content-Disposition: inline
-In-Reply-To: <YTX02eiVawkpTquX@fjasle.eu>
-X-Operating-System: Debian GNU/Linux bookworm/sid
-Jabber-ID: nicolas@jabber.no
-X-Provags-ID: V03:K1:ZtYkmr9w5hy014mLoecCecpDJ1YoEVbGE/AMW5XS4wxcswZPp1l
- YEvzU84XphZgM4rbLtzWqJ1dt91uWo8jFrvH5PhPcWhsFXs0xv96LeEvbtg9WFl/KMPzHwk
- 04vE0t5oa2n5BH2YgFjFlr+pl6SCN3isbiB4vtqs5UMTkEQUr6JtjWNxlewVQlJ0q4zEn/A
- AdCNXZafMAG8xord9rj1w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2Vow/qss8kI=:DXiSvVpVtVtNM6SzsHWts4
- utRTFNp3tnJJzwHnlveIYeMhen/M3lS7stRO3AcTZFHTiwYYyRhC3TGCQypj4cyIwx2dXtS9Z
- 46+q1y0Ls4+VxWULV2wmjFs69zQ/VzCwiTrxsO/V9CQ5XsUd5xeVPQf/Z1GTNvDvOpaRHj+G0
- nZzJIzdYm9oOK7mgLNHsKBex7hkYBY2zFzghMJuhX+CwZoCKprjHXduGjaQDAEkgZs24kli7e
- hVPAH4IHbGOcueQ8tFFZEmU3jnXXpm8nit1CTnmmKA35f5eJxgWhCoqPekXivsgtXlWSJn4VO
- BRAkwNYqHkiTbrSptqJvPN4ZU2qEhOrECLFpfTF4TCdyGSViW+ro7EtNPXPaDisDI31qD6945
- k4zAUVbDQt6nHYPn4pHC4I7kVmBMdhwk9ixfiS6SnKlXb1s1ILYxhBBggJt0aXawpcz93SE8n
- 1kV5Dt7hV4RG9U6ciZJ2Iv/lESEuafedS24YTZS+ta97wfwt8FtNVugbbu6B82WcrHBYFY7ma
- UG6jSp7hHfJxboN7k966q680sRIisoGYzyQtlKlWm1zl0GEI7u+R2yVzvsI9KBMgMsFdiZm0D
- wupsceejsaRW1UWm9evSeao9t3qID7Xeg5xrzlt5vZFeMjwZfwbdLaC4ByxzjLaBtE21mR9Fa
- 8fAurYepK2xOgBsmas4LMpNnr95XiRmOwPw0W4+5fOEK0JJh7ldWWl2fR5KBwPEN4oPU=
+        Fri, 26 Nov 2021 02:58:31 -0500
+X-Greylist: delayed 380 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Nov 2021 02:58:30 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1637913319; x=1669449319;
+  h=from:to:cc:subject:date:message-id;
+  bh=NJ5svLlAZ6xiVU1WgloAaItcZWYgqCd5TquR5rLHZc4=;
+  b=BS53quzcX5xP3GCVe1g6NslXw67Mw5nva8WzNH5oJ0mi92lbNXe1aWHb
+   b1XyVEsNNdv2KfaokqkQnWXYMcfNVa3Iz4K17WxbePM6wMBv6xTbYS9D4
+   hDhaUjSC9tuMXUDzbr9gxhEAZQunQjoChyePr/21u172RG+6BVINayc2C
+   E=;
+Received: from ironmsg01-tai.qualcomm.com ([10.249.140.6])
+  by alexa-out-tai-02.qualcomm.com with ESMTP; 26 Nov 2021 15:48:57 +0800
+X-QCInternal: smtphost
+Received: from jianbinz-gv.ap.qualcomm.com ([10.238.176.241])
+  by ironmsg01-tai.qualcomm.com with ESMTP; 26 Nov 2021 15:48:53 +0800
+Received: by jianbinz-gv.ap.qualcomm.com (Postfix, from userid 3963613)
+        id 9BAAC1F00C19; Fri, 26 Nov 2021 15:48:51 +0800 (CST)
+From:   jianbin zhang <quic_jianbinz@quicinc.com>
+To:     alexandre.belloni@bootlin.com, a.zummo@towertech.it
+Cc:     jianbinz <quic_jianbinz@quicinc.com>, linux-kernel@vger.kernel.org,
+        linux-rtc@vger.kernel.org
+Subject: [PATCH] rtc: pm8xxx: Disable alarm irq if alarm time is less than rtc time and alarm irq is enabled
+Date:   Fri, 26 Nov 2021 15:48:45 +0800
+Message-Id: <20211126074845.9160-1-quic_jianbinz@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: jianbinz <quic_jianbinz@quicinc.com>
 
---tephn8Z5lGDb1jFQ
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+If device is boot up by rtc alarm, the alarm irq will still be enabled and
+the alarm time is smaller than current rtc time before any alarm is set or canceled.
 
-On Mon Sep  6 13:00:41 2021 Nicolas Schier wrote:
-> Fix calls of MODULE_PARM_DESC() such that the first argument matches=20
-> the
-> actual module parameter name.  This changes the 'parm' section in the
-> output of `modinfo fscache` from:
->=20
->     parm: defer_lookup:uint
->     parm: fscache_defer_lookup:Defer cookie lookup to background thread
->     parm: defer_create:uint
->     parm: fscache_defer_create:Defer cookie creation to background thread
->     parm: debug:uint
->     parm: fscache_debug:FS-Cache debugging mask
->=20
-> into:
->=20
->     parm: defer_lookup:Defer cookie lookup to background thread (uint)
->     parm: defer_create:Defer cookie creation to background thread (uint)
->     parm: debug:FS-Cache debugging mask (uint)
-> .
->=20
-> Signed-off-by: Nicolas Schier <nicolas@fjasle.eu>
-> ---
->  fs/fscache/main.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->=20
-> --
-> Resend unmodified as list approval for linux-cachefs@r.c timed out.
->=20
-> diff --git a/fs/fscache/main.c b/fs/fscache/main.c
-> index c1e6cc9091aa..ccb06dc0a6e9 100644
-> --- a/fs/fscache/main.c
-> +++ b/fs/fscache/main.c
-> @@ -22,19 +22,19 @@ MODULE_LICENSE("GPL");
->  unsigned fscache_defer_lookup =3D 1;
->  module_param_named(defer_lookup, fscache_defer_lookup, uint,
->  		   S_IWUSR | S_IRUGO);
-> -MODULE_PARM_DESC(fscache_defer_lookup,
-> +MODULE_PARM_DESC(defer_lookup,
->  		 "Defer cookie lookup to background thread");
-> =20
->  unsigned fscache_defer_create =3D 1;
->  module_param_named(defer_create, fscache_defer_create, uint,
->  		   S_IWUSR | S_IRUGO);
-> -MODULE_PARM_DESC(fscache_defer_create,
-> +MODULE_PARM_DESC(defer_create,
->  		 "Defer cookie creation to background thread");
-> =20
->  unsigned fscache_debug;
->  module_param_named(debug, fscache_debug, uint,
->  		   S_IWUSR | S_IRUGO);
-> -MODULE_PARM_DESC(fscache_debug,
-> +MODULE_PARM_DESC(debug,
->  		 "FS-Cache debugging mask");
-> =20
->  struct kobject *fscache_root;
-> --=20
-> 2.30.1
+If the device is shutdown this time, the device will reboot automatically.
 
-David,  I got no feedback on this here, yet.  Shall I fix something or=20
-is there anything wrong with the patch? =20
+So disable irq if alarm time is less than rtc time and irq is enabled.
 
-Kind regards,
-Nicolas
+Reproduced steps:
+1/ set the alarm
+2/ shutdown
+3/ alarm happens, the device boots
+4/ shutdown
+5/ alarm irq is still set, device boots again
 
---tephn8Z5lGDb1jFQ
-Content-Type: application/pgp-signature; name="signature.asc"
+The plan to solve the issue is to acknowledge and clear the irq at step
+3 in pm8xxx driver.
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: jianbin zhang <quic_jianbinz@quicinc.com>
+---
+ drivers/rtc/rtc-pm8xxx.c | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
-iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmGgkS8ACgkQB1IKcBYm
-EmkV4hAAgsK+KGS+gHIn+QYzN4RY4hNVUo2dIX6990kgZQhiuJr0Ut7WbOUwOEw3
-JeazkIu2S77G3G6kE2weUfeFft3dS+C6BqYI9GbmRWCTfPeUlg1PUq4/WIIfIC5V
-Anln4x1Jzyx4ZLMPAevtHkIUvmN+57joAcksdX4GWblcvLUjELD9zccoY67oLcyG
-oPX3jtUK8/eUTcltWo+lcWFPaMv/7Aa9pN3CNtZacseVUnlYuQ53QYz7ZK6PqcZe
-NYRCCFZZvxAGf8AfGaieH/T/e2CU/FLuD3D3LFAj6uYfC1sQQO0ErQMLr1sJlu2H
-i+Bjw6NDtS9WLFOrI0w+MZwa6fT3SRPq7MLOVlC7q9jFjVOR/tBZcpxoZLYH9gdV
-ApZlSXBghkZqkRaOX2GzdfruS2ZpJusL2dSyoL9JiawdxbUi91VPL5J+TtovBetx
-NZfVnLw2brdhQYj8TbEyJI1j8YB9wyVz+L1IxpeJH0e2bpB0EnPS9zBzVquCN2UV
-KEcijQK31vUJyRCC31YZRh1tC2dVLUs8UKxLMAvaepZI/WY0wbS/YYMoh1pHFQ1t
-1ZjzxDHg3ua1ck9t51nt2nyBxOBWFZdlEXjJdM5dhySaEutWsvW2Yn21IRJe5Sns
-NRvzm+iQ2mGambLVkvKMeOI+HnkoJIxNWxCN2IXCbQI1kZC34r4=
-=u7j8
------END PGP SIGNATURE-----
+diff --git a/drivers/rtc/rtc-pm8xxx.c b/drivers/rtc/rtc-pm8xxx.c
+index 29a1c65661e9..c8a75d3e9c43 100644
+--- a/drivers/rtc/rtc-pm8xxx.c
++++ b/drivers/rtc/rtc-pm8xxx.c
+@@ -267,16 +267,19 @@ static int pm8xxx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
+ {
+ 	int rc;
+ 	unsigned int ctrl_reg;
++	unsigned long irq_flags;
+ 	u8 value[NUM_8_BIT_RTC_REGS];
+ 	unsigned long secs;
+ 	struct pm8xxx_rtc *rtc_dd = dev_get_drvdata(dev);
+ 	const struct pm8xxx_rtc_regs *regs = rtc_dd->regs;
+ 
++	spin_lock_irqsave(&rtc_dd->ctrl_reg_lock, irq_flags);
++
+ 	rc = regmap_bulk_read(rtc_dd->regmap, regs->alarm_rw, value,
+ 			      sizeof(value));
+ 	if (rc) {
+ 		dev_err(dev, "RTC alarm time read failed\n");
+-		return rc;
++		goto rtc_rw_fail;
+ 	}
+ 
+ 	secs = value[0] | (value[1] << 8) | (value[2] << 16) |
+@@ -287,14 +290,30 @@ static int pm8xxx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
+ 	rc = regmap_read(rtc_dd->regmap, regs->alarm_ctrl, &ctrl_reg);
+ 	if (rc) {
+ 		dev_err(dev, "Read from RTC alarm control register failed\n");
+-		return rc;
++		goto rtc_rw_fail;
++	}
++
++	if (ctrl_reg && (rtc_tm_to_ktime(alarm->time) >=
++				rtc_dd->rtc->aie_timer.node.expires)) {
++		ctrl_reg &= ~regs->alarm_en;
++		rc = regmap_write(rtc_dd->regmap, regs->alarm_ctrl, ctrl_reg);
++		if (rc) {
++			dev_err(dev, "Update RTC control register failed \n");
++			goto rtc_rw_fail;
++		}
+ 	}
+ 	alarm->enabled = !!(ctrl_reg & PM8xxx_RTC_ALARM_ENABLE);
+ 
++	spin_unlock_irqrestore(&rtc_dd->ctrl_reg_lock, irq_flags);
++
+ 	dev_dbg(dev, "Alarm set for - h:m:s=%ptRt, y-m-d=%ptRdr\n",
+ 		&alarm->time, &alarm->time);
+ 
+ 	return 0;
++
++rtc_rw_fail:
++	spin_unlock_irqrestore(&rtc_dd->ctrl_reg_lock, irq_flags);
++	return rc;
+ }
+ 
+ static int pm8xxx_rtc_alarm_irq_enable(struct device *dev, unsigned int enable)
+-- 
+2.17.1
 
---tephn8Z5lGDb1jFQ--
