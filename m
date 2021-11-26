@@ -2,92 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D951E45E450
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 03:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B32C45E45D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 03:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357481AbhKZCWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 21:22:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45372 "EHLO
+        id S1357645AbhKZCYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 21:24:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245310AbhKZCUD (ORCPT
+        with ESMTP id S243836AbhKZCWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 21:20:03 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D5B9C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 18:16:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=6vEAJlNPl1ic28avxji2uZsjO8Onw8hpf5i06ixac48=; b=B8uYRYH904JPj26E0SQ1DJNmcV
-        qNf1k1wWNZKP/3vjGinAIDCYScdPA1xPmyL3VATCXpvmUb3IkUQy3ZTffaeFPUmMEuagYTuVRA6ka
-        gUxGzLTLLHHnEMtfG7JAnsEmg91OaOvg45C2Gn+6eSV5Tn4H2E/RLNexEoy63KwhnkNnnJh34WD5X
-        NPWxSJS212BypruUxTbWq951Nd1kOSDDRAkjv/oWvUn3NQ9lXABCoMbliAxF3ylErmVnsgwi4L4ao
-        zkkkUPrdy/eXE+NJ6JsI+AxrJhbUjVy2hHuHoyaMcJ9tgD+N7reLgSv4VcwLxLu7a8wLKxn2j9+Il
-        31sJHtiA==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mqQmc-0090Ps-IL; Fri, 26 Nov 2021 02:16:14 +0000
-Subject: Re: ERROR: start_text address is c000000000000500, should be
- c000000000000100
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <202111242215.KCExqByj-lkp@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <999e4424-c7c7-7b18-ca26-0ee44db5754b@infradead.org>
-Date:   Thu, 25 Nov 2021 18:16:14 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 25 Nov 2021 21:22:40 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9BD0C06175E
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 18:19:00 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id b13so5717379plg.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 18:19:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bM6Fsy903VGJv2jAMfpfXYHtBI784i695Cw2d2teF3E=;
+        b=e8xG/DFaA2GH2poFwsbLQk0wCUsz7UDPd7xomkVjV448uNiKE/EfdBSnXvQOVNokwl
+         mJoTxDfGuseAOgqjTliOwXLN4EfTfIrcJ5Lxj7SV9J4Hjr/jwwsdQfmCvlCO2w4W5UcC
+         tgKulVv0IJqsT1o2q/Zf9/wXY+f4/lSkeHp9mxW6Upf/CfHpI843nEa9LDxsUhjrTaXj
+         n3ixHILEGem5dUiX57B4VWUs5m+jQxSfwwEkXPsdarHXossAuwy0/Ayu2xl8PGvu4MRa
+         8XlfNW880vcnIffzXH7KvwMSdguYvpVbj6sFi/gANaNic//rUSBChAaR51R24BD5QKBj
+         GBcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bM6Fsy903VGJv2jAMfpfXYHtBI784i695Cw2d2teF3E=;
+        b=Fui4IxhSj5uNieTKpbOT/Qlbv3nokEIXUjAVoBIM6OxP+ne09VRV96UYYzUboqvwvo
+         Na3rklRbx+en0a8lmxDTBZia/zCvNtNRUztE74SiFRM2YKQr2RCnTU/z0man7BQyFJfU
+         9pi1/cBIqw8g5HShbnNUDFEhXQaKr3C9El/Dkhoko5Bni5jX7qARRROZNt+Ab7ARBhru
+         axkuLTbNIWsib2O8fMEMCkvi+o/3Otak+P2F60Khy3Z1zE3uehyigAQTgjM85t/R3yn8
+         GUku01/XAw/BuKaHqzM7eD0UVx7JFDYlVjrJjTIeZyVtDhb6JpdXoPw7vF4RNVXLnuwA
+         1wdg==
+X-Gm-Message-State: AOAM530Lx26WwCjtBFXXm9YBdLEzNcAP+iR8HzkJDmVIFYguNncWQWhH
+        7IQVQSSVtETUqEKYcBc7ziZE37ucMSt5lpB0QUE=
+X-Google-Smtp-Source: ABdhPJx4dPZ8mx012CRXXtmmqXjq+RU7Kf4jVTZO6ayM6WX3pY+ErgHai+24a0OdkMcaTIzeUfgICx2bePPNGwsFxo4=
+X-Received: by 2002:a17:902:ab14:b0:143:77d8:2558 with SMTP id
+ ik20-20020a170902ab1400b0014377d82558mr34926759plb.54.1637893140374; Thu, 25
+ Nov 2021 18:19:00 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <202111242215.KCExqByj-lkp@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211125193852.3617-1-goldstein.w.n@gmail.com>
+ <CANn89iLnH5B11CtzZ14nMFP7b--7aOfnQqgmsER+NYNzvnVurQ@mail.gmail.com> <CAFUsyfK-znRWJN7FTMdJaDTd45DgtBQ9ckKGyh8qYqn0eFMMFA@mail.gmail.com>
+In-Reply-To: <CAFUsyfK-znRWJN7FTMdJaDTd45DgtBQ9ckKGyh8qYqn0eFMMFA@mail.gmail.com>
+From:   Noah Goldstein <goldstein.w.n@gmail.com>
+Date:   Thu, 25 Nov 2021 20:18:49 -0600
+Message-ID: <CAFUsyfLKqonuKAh4k2qdBa24H1wQtR5FkAmmtXQGBpyizi6xvQ@mail.gmail.com>
+Subject: Re: [PATCH v1] x86/lib: Optimize 8x loop and memory clobbers in csum_partial.c
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com,
+        Borislav Petkov <bp@alien8.de>, dave.hansen@linux.intel.com,
+        X86 ML <x86@kernel.org>, hpa@zytor.com, peterz@infradead.org,
+        alexanderduyck@fb.com, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/21 6:31 AM, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   5d9f4cf36721aba199975a9be7863a3ff5cd4b59
-> commit: 47c258d71ebfc832a760a1dc6540cf3c33968023 powerpc/head_check: use stdout for error messages
-> date:   3 months ago
-> config: powerpc64-randconfig-r033-20211123 (https://download.01.org/0day-ci/archive/20211124/202111242215.KCExqByj-lkp@intel.com/config)
-> compiler: powerpc64-linux-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=47c258d71ebfc832a760a1dc6540cf3c33968023
->          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->          git fetch --no-tags linus master
->          git checkout 47c258d71ebfc832a760a1dc6540cf3c33968023
->          # save the config file to linux build tree
->          mkdir build_dir
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=powerpc SHELL=/bin/bash
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->>> ERROR: start_text address is c000000000000500, should be c000000000000100
->>> ERROR: try to enable LD_HEAD_STUB_CATCH config option
->>> ERROR: see comments in arch/powerpc/tools/head_check.sh
-> 
-> ---
+On Thu, Nov 25, 2021 at 8:15 PM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
+>
+> On Thu, Nov 25, 2021 at 7:50 PM Eric Dumazet <edumazet@google.com> wrote:
+> >
+> > On Thu, Nov 25, 2021 at 11:38 AM Noah Goldstein <goldstein.w.n@gmail.com> wrote:
+> > >
+> > > Modify the 8x loop to that it uses two independent
+> > > accumulators. Despite adding more instructions the latency and
+> > > throughput of the loop is improved because the `adc` chains can now
+> > > take advantage of multiple execution units.
+> >
+> > Nice !
+> >
+> > Note that I get better results if I do a different split, because the
+> > second chain gets shorter.
+> >
+> > First chain adds 5*8 bytes from the buffer, but first bytes are a mere
+> > load, so that is really 4+1 additions.
+> >
+> > Second chain adds 3*8 bytes from the buffer, plus the result coming
+> > from the first chain, also 4+1 additions.
+>
+> Good call. With that approach I also see an improvement for the 32 byte
+> case (which is on the hot path) so this change might actually matter :)
+>
+> >
+> > asm("movq 0*8(%[src]),%[res_tmp]\n\t"
+> >     "addq 1*8(%[src]),%[res_tmp]\n\t"
+> >     "adcq 2*8(%[src]),%[res_tmp]\n\t"
+> >     "adcq 3*8(%[src]),%[res_tmp]\n\t"
+> >     "adcq 4*8(%[src]),%[res_tmp]\n\t"
+> >     "adcq $0,%[res_tmp]\n\t"
+> >     "addq 5*8(%[src]),%[res]\n\t"
+> >     "adcq 6*8(%[src]),%[res]\n\t"
+> >     "adcq 7*8(%[src]),%[res]\n\t"
+> >     "adcq %[res_tmp],%[res]\n\t"
+> >     "adcq $0,%[res]"
+> >     : [res] "+r" (temp64), [res_tmp] "=&r"(temp_accum)
+> >     : [src] "r" (buff)
+> >     : "memory");
+> >
+> >
+> > >
+> > > Make the memory clobbers more precise. 'buff' is read only and we know
+> > > the exact usage range. There is no reason to write-clobber all memory.
+> >
+> > Not sure if that matters in this function ? Or do we expect it being inlined ?
+>
+> It may matter for LTO build. I also think it can matter for the loop
+> case. I didn't see
+> any difference when playing around with the function in userland with:
+>
+> ```
+> gcc -O3 -march=native -mtune=native checksum.c -o checksum
+> ```
+>
+> but IIRC if the clobber is loops with inline assembly payloads can be
+> de-optimized if GCC can't prove the iterations don't affect each other.
+>
+>
+> >
+> > Personally, I find the "memory" constraint to be more readable than these casts
+> > "m"(*(const char(*)[64])buff));
+> >
+>
+> Hmm, I personally find it more readable if I can tell what memory
+> transforms happen
+> just from reading the clobbers, but you're the maintainer.
+>
+> Do you want it changed in V2?
+>
+> > >
+> > > Relative performance changes on Tigerlake:
+> > >
+> > > Time Unit: Ref Cycles
+> > > Size Unit: Bytes
+> > >
+> > > size,   lat old,    lat new,    tput old,   tput new
+> > >    0,     4.972,      5.054,       4.864,      4.870
+> >
+> > Really what matters in modern networking is the case for 40 bytes, and
+> > eventually 8 bytes.
+> >
+> > Can you add these two cases in this nice table ?
+> >
+>
+> Sure, with your suggestion in the 32 byte cases there is an improvement there
+> too.
+>
+> > We hardly have to checksum anything with NIC that are not decades old.
+> >
+> > Apparently making the 64byte loop slightly longer incentives  gcc to
+> > move it away (our intent with the unlikely() hint).
 
-
-Hm, interesting. After following the directions above and setting
-CONFIG_LD_HEAD_STUB_CATCH=y and then rebuilding, the "should be" address
-has changed:
-
-ERROR: start_text address is c000000000000500, should be c000000000000200
-ERROR: try to enable LD_HEAD_STUB_CATCH config option
-ERROR: see comments in arch/powerpc/tools/head_check.sh
-
-
-Michael, any ideas?
-
--- 
-~Randy
+Do you think the 40/48 byte case might be better of in GAS assembly. It's
+a bit difficult to get proper control flow optimization with GCC +
+inline assembly
+even with likely/unlikely (i.e expanding the 64 byte case moves it off hotpath,
+cmov + ror instead of fallthrough for hotpath).
+> >
+> > Anyway I am thinking of providing a specialized inline version for
+> > IPv6 header checksums (40 + x*8 bytes, x being 0  pretty much all the
+> > time),
+> > so we will likely not use csum_partial() anymore.
+>
+> I see. For now is it worth adding a case for 40 in this implementation?
+>
+>     if(likely(len == 40)) {
+>         // optimized 40 + buff aligned case
+>     }
+>     else {
+>         // existing code
+>     }
+>
+>
+> >
+> > Thanks !
