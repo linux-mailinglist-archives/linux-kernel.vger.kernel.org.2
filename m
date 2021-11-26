@@ -2,108 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C47BF45E8E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 08:51:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD9445E8F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 09:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353122AbhKZHyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 02:54:47 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:27299 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344718AbhKZHwn (ORCPT
+        id S1359271AbhKZIHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 03:07:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346525AbhKZIFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 02:52:43 -0500
-Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4J0n2G2XNVzbj6t;
-        Fri, 26 Nov 2021 15:49:26 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 26 Nov 2021 15:49:04 +0800
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 26 Nov 2021 15:49:04 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Marco Elver <elver@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH] arm64: Enable KCSAN
-Date:   Fri, 26 Nov 2021 16:00:08 +0800
-Message-ID: <20211126080008.77202-1-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
+        Fri, 26 Nov 2021 03:05:23 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F5EC061574;
+        Fri, 26 Nov 2021 00:02:08 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id nh10-20020a17090b364a00b001a69adad5ebso7473097pjb.2;
+        Fri, 26 Nov 2021 00:02:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XzJnyLoKoL2r9pDH+TfKJ6Ptns8brv9wzjSrYeFUJRY=;
+        b=jYJZELPktFDX7CAoqTDsvJJLwcNzfbMrmElOJUr1wILVd3TKfNK9SZRHu6MReoeKzX
+         /xNnRvvMsmBCTVXsTz0Lh6qogczs0HrsLC9QTWkqPTzeax6bqmTisblUwI2vOc14olut
+         YZfoeuGCgOeDGY4RTJhzVx5Btag+g6ZO32+rEQ0Bc9cAk/pWJCHk8aWXybqa8gGj8qBc
+         NwOTsOjhhTV8KWOYIOm7HmFFqxOysUS/Y6GL0hIqyn2uKRiza7SXB5ePY+gL6EvJiRmS
+         S596D4sN38VUDzi5TfDZ/qWH3aOMjYePRr1l/gEMjXrfXeOEg3ekHoETIuUOEtQCEvls
+         PKIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XzJnyLoKoL2r9pDH+TfKJ6Ptns8brv9wzjSrYeFUJRY=;
+        b=OkMeh8lOVHfI0tcT8zqX9Kz/u4BiSOllKG33AylV5AIbKsyl5iCVL6SXE/8P2T3yhY
+         yPc3kViJN8bJgNGtb/ZLPCkzvUdX960+DnEgPqye0hnNMSjzFliiO8eJOssl0ZcMPmO2
+         6xeuvW86o0jdhF6/7thjtF5RwKWrxdPKBIWIkoyXswuC5cxzJbkNV6+PHwcwOG5QZOKZ
+         1mnsT4YjTG241ByWdvOgrEe7FmBj+RZCXUzSEPFawcKwHmG/VODXlI2zlG4pmIceBkvK
+         tjpaaOey9VkGwC8HcP5mp/27xjoOC3kl+GAXB0qlU/gHQ59FumUHhSe+qezeW/pL5zjX
+         OpFg==
+X-Gm-Message-State: AOAM530mxa0NxTBjfn4qwEoUZ5L5oAQeHBIGl80BFMIAob2GtNQfrGdL
+        0br4YsO0kXcSJ26y30o64qg=
+X-Google-Smtp-Source: ABdhPJyEIio+8d028r9zLBU0pWPVjuBfThCeUykJYzCCPF1yuy0UCnKT6HniyuVMlUo9f3fCyvvY3A==
+X-Received: by 2002:a17:902:ecc7:b0:141:e920:3b4c with SMTP id a7-20020a170902ecc700b00141e9203b4cmr36931831plh.64.1637913728169;
+        Fri, 26 Nov 2021 00:02:08 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id h128sm5589315pfg.212.2021.11.26.00.02.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 00:02:07 -0800 (PST)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: deng.changcheng@zte.com.cn
+To:     nbd@nbd.name
+Cc:     lorenzo.bianconi83@gmail.com, ryder.lee@mediatek.com,
+        shayne.chen@mediatek.com, sean.wang@mediatek.com,
+        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        matthias.bgg@gmail.com, deren.wu@mediatek.com,
+        deng.changcheng@zte.com.cn, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] mt76: mt7921: fix boolreturn.cocci warning
+Date:   Fri, 26 Nov 2021 08:02:01 +0000
+Message-Id: <20211126080201.75259-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch enables KCSAN for arm64, with updates to build rules
-to not use KCSAN for several incompatible compilation units.
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-Tested selftest and kcsan_test, and all passed.
+./drivers/net/wireless/mediatek/mt76/mt7921/sdio_mac.c: 223: 8-9: WARNING:
+return of 0/1 in function 'mt7921s_tx_status_data' with return type bool
 
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Return statements in functions returning bool should use true/false
+instead of 1/0.
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
 ---
-Tested on Qemu with clang 13, based on 5.16-rc2.
+ drivers/net/wireless/mediatek/mt76/mt7921/sdio_mac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[    0.221518] kcsan: enabled early
-[    0.222422] kcsan: strict mode configured
-...
-[    5.839223] kcsan: selftest: 3/3 tests passed
-...
-[  517.895102] # kcsan: pass:24 fail:0 skip:0 total:24
-[  517.896393] # Totals: pass:168 fail:0 skip:0 total:168
-[  517.897502] ok 1 - kcsan
-
- arch/arm64/Kconfig               | 1 +
- arch/arm64/kernel/vdso/Makefile  | 1 +
- arch/arm64/kvm/hyp/nvhe/Makefile | 1 +
- 3 files changed, 3 insertions(+)
-
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 4ff73299f8a9..0ac90875f71d 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -150,6 +150,7 @@ config ARM64
- 	select HAVE_ARCH_KASAN_VMALLOC if HAVE_ARCH_KASAN
- 	select HAVE_ARCH_KASAN_SW_TAGS if HAVE_ARCH_KASAN
- 	select HAVE_ARCH_KASAN_HW_TAGS if (HAVE_ARCH_KASAN && ARM64_MTE)
-+	select HAVE_ARCH_KCSAN
- 	select HAVE_ARCH_KFENCE
- 	select HAVE_ARCH_KGDB
- 	select HAVE_ARCH_MMAP_RND_BITS
-diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
-index 700767dfd221..60813497a381 100644
---- a/arch/arm64/kernel/vdso/Makefile
-+++ b/arch/arm64/kernel/vdso/Makefile
-@@ -32,6 +32,7 @@ ccflags-y += -DDISABLE_BRANCH_PROFILING -DBUILD_VDSO
- CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os $(CC_FLAGS_SCS) $(GCC_PLUGINS_CFLAGS) \
- 				$(CC_FLAGS_LTO)
- KASAN_SANITIZE			:= n
-+KCSAN_SANITIZE			:= n
- UBSAN_SANITIZE			:= n
- OBJECT_FILES_NON_STANDARD	:= y
- KCOV_INSTRUMENT			:= n
-diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
-index c3c11974fa3b..24b2c2425b38 100644
---- a/arch/arm64/kvm/hyp/nvhe/Makefile
-+++ b/arch/arm64/kvm/hyp/nvhe/Makefile
-@@ -89,6 +89,7 @@ KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_FTRACE) $(CC_FLAGS_SCS) $(CC_FLAGS_CFI)
- # cause crashes. Just disable it.
- GCOV_PROFILE	:= n
- KASAN_SANITIZE	:= n
-+KCSAN_SANITIZE	:= n
- UBSAN_SANITIZE	:= n
- KCOV_INSTRUMENT	:= n
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/sdio_mac.c b/drivers/net/wireless/mediatek/mt76/mt7921/sdio_mac.c
+index 137f86a6dbf8..be17ce3ff06e 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/sdio_mac.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/sdio_mac.c
+@@ -216,5 +216,5 @@ bool mt7921s_tx_status_data(struct mt76_dev *mdev, u8 *update)
+ 	mt7921_mac_sta_poll(dev);
+ 	mt7921_mutex_release(dev);
  
+-	return 0;
++	return false;
+ }
 -- 
-2.26.2
+2.25.1
 
