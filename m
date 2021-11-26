@@ -2,94 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6539E45EDCD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C8E45EDD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 13:25:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350445AbhKZMZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 07:25:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46941 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236412AbhKZMXs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 07:23:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637929234;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=G6NT3DrZmCCNBPqWpyXXbQjjwiq+lUHxRUgVi/aTnUw=;
-        b=DKTIClU53Qw9Eri+CYhsESA35hB7HONf/T2WanvidtpAmQsy2/YAhsnIrXZLIk2c/H5L1L
-        j/c/zPq11n7SsXTgTDwvWDXZ2ZEI9pskUKP4V1UnwFU2AYBiVo/v52Gh4F1H3FgEbx+H1B
-        gMJzfNnF/jUZbuhdviV0YJgfKCn2EDc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-358-2BDCmzvePa-8jGaiSRT3vg-1; Fri, 26 Nov 2021 07:20:33 -0500
-X-MC-Unique: 2BDCmzvePa-8jGaiSRT3vg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 953D9839A42;
-        Fri, 26 Nov 2021 12:20:32 +0000 (UTC)
-Received: from [10.39.195.16] (unknown [10.39.195.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DD7EA608BA;
-        Fri, 26 Nov 2021 12:20:29 +0000 (UTC)
-Message-ID: <16368a89-99ea-e52c-47b6-bd006933ec1f@redhat.com>
-Date:   Fri, 26 Nov 2021 13:20:28 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 2/2] KVM: x86: Forbid KVM_SET_CPUID{,2} after KVM_RUN
-Content-Language: en-US
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-References: <20211122175818.608220-1-vkuznets@redhat.com>
- <20211122175818.608220-3-vkuznets@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <20211122175818.608220-3-vkuznets@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        id S1377317AbhKZM2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 07:28:54 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:38780 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238353AbhKZM0x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Nov 2021 07:26:53 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Ax2sjF0aBhFi8AAA--.152S2;
+        Fri, 26 Nov 2021 20:23:34 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Miklos Szeredi <miklos@szeredi.hu>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH] fuse: Rename virtio_fs.c to virtiofs.c and clean up Makefile
+Date:   Fri, 26 Nov 2021 20:23:33 +0800
+Message-Id: <1637929413-22687-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Ax2sjF0aBhFi8AAA--.152S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1xXry5tw4UXFyfWFWkXrb_yoW8Ww4xpw
+        18Cr1rGry7XrW7GayfGF1Uu3yjkrn7Gr17Gr4kXwnIgrn8XayUAr1jyFyjkws7Zry5XF40
+        qr1Fqr429r4vvF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkab7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8Jr0_Cr
+        1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Xr1l42xK
+        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jYsjUUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/22/21 18:58, Vitaly Kuznetsov wrote:
-> -	 * KVM does not correctly handle changing guest CPUID after KVM_RUN, as
-> -	 * MAXPHYADDR, GBPAGES support, AMD reserved bit behavior, etc.. aren't
-> -	 * tracked in kvm_mmu_page_role.  As a result, KVM may miss guest page
-> -	 * faults due to reusing SPs/SPTEs.  Alert userspace, but otherwise
-> -	 * sweep the problem under the rug.
-> -	 *
-> -	 * KVM's horrific CPUID ABI makes the problem all but impossible to
-> -	 * solve, as correctly handling multiple vCPU models (with respect to
-> -	 * paging and physical address properties) in a single VM would require
-> -	 * tracking all relevant CPUID information in kvm_mmu_page_role.  That
-> -	 * is very undesirable as it would double the memory requirements for
-> -	 * gfn_track (see struct kvm_mmu_page_role comments), and in practice
-> -	 * no sane VMM mucks with the core vCPU model on the fly.
-> +	 * Changing guest CPUID after KVM_RUN is forbidden, see the comment in
-> +	 * kvm_arch_vcpu_ioctl().
->   	 */
+No need to generate virtio_fs.o first and then link to virtiofs.o, just
+rename virtio_fs.c to virtiofs.c and remove "virtiofs-y := virtio_fs.o"
+in Makefile. Additionally, update MAINTAINERS.
 
-The second part of the comment still applies to kvm_mmu_after_set_cpuid 
-more than to kvm_arch_vcpu_ioctl().
+Without this patch:
 
->  		r = -EFAULT;
-> [...]
-> +		if (vcpu->arch.last_vmentry_cpu != -1)
-> +			goto out;
-> +
->  		if (copy_from_user(&cpuid, cpuid_arg, sizeof(cpuid)))
->  			goto out;
->  		r = kvm_vcpu_ioctl_set_cpuid(vcpu, &cpuid, cpuid_arg->entries);
+  CC [M]  fs/fuse/virtio_fs.o
+  LD [M]  fs/fuse/virtiofs.o
+  MODPOST modules-only.symvers
+  GEN     Module.symvers
+  CC [M]  fs/fuse/virtiofs.mod.o
+  LD [M]  fs/fuse/virtiofs.ko
 
-This should be an EINVAL.
+With this patch:
 
-Tweaked and queued nevertheless, thanks.
+  CC [M]  fs/fuse/virtiofs.o
+  MODPOST modules-only.symvers
+  GEN     Module.symvers
+  CC [M]  fs/fuse/virtiofs.mod.o
+  LD [M]  fs/fuse/virtiofs.ko
 
-Paolo
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ MAINTAINERS                         | 2 +-
+ fs/fuse/Makefile                    | 2 --
+ fs/fuse/{virtio_fs.c => virtiofs.c} | 0
+ 3 files changed, 1 insertion(+), 3 deletions(-)
+ rename fs/fuse/{virtio_fs.c => virtiofs.c} (100%)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 7a2345c..8c2ad7b 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -20152,7 +20152,7 @@ L:	linux-fsdevel@vger.kernel.org
+ S:	Supported
+ W:	https://virtio-fs.gitlab.io/
+ F:	Documentation/filesystems/virtiofs.rst
+-F:	fs/fuse/virtio_fs.c
++F:	fs/fuse/virtiofs.c
+ F:	include/uapi/linux/virtio_fs.h
+ 
+ VIRTIO GPIO DRIVER
+diff --git a/fs/fuse/Makefile b/fs/fuse/Makefile
+index 0c48b35..5f10fe6 100644
+--- a/fs/fuse/Makefile
++++ b/fs/fuse/Makefile
+@@ -9,5 +9,3 @@ obj-$(CONFIG_VIRTIO_FS) += virtiofs.o
+ 
+ fuse-y := dev.o dir.o file.o inode.o control.o xattr.o acl.o readdir.o ioctl.o
+ fuse-$(CONFIG_FUSE_DAX) += dax.o
+-
+-virtiofs-y := virtio_fs.o
+diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtiofs.c
+similarity index 100%
+rename from fs/fuse/virtio_fs.c
+rename to fs/fuse/virtiofs.c
+-- 
+2.1.0
 
