@@ -2,87 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E062F45F58F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4DE145F558
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 20:43:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237012AbhKZT7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Nov 2021 14:59:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236615AbhKZT5u (ORCPT
+        id S237007AbhKZTqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Nov 2021 14:46:15 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:38032 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236633AbhKZToB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Nov 2021 14:57:50 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25981C0613F9;
-        Fri, 26 Nov 2021 11:40:11 -0800 (PST)
-Received: from mail.kernel.org (unknown [198.145.29.99])
+        Fri, 26 Nov 2021 14:44:01 -0500
+X-Greylist: delayed 2741 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Nov 2021 14:44:01 EST
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A8D4862356;
-        Fri, 26 Nov 2021 19:40:10 +0000 (UTC)
-Received: by mail.kernel.org (Postfix) with ESMTPS id EE4FE601FA;
-        Fri, 26 Nov 2021 19:40:09 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EEE0F62349;
+        Fri, 26 Nov 2021 19:40:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B266C9305E;
+        Fri, 26 Nov 2021 19:40:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637955610;
-        bh=gZcfDZRWbi0lwEwboFbHH2tZWLnMQsT5dnASfyBMbxg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=mddIfmcoHSPPq1CjHNcv6vA9OwL1dBtwwGonwikdQfHbWPiaREc5SpiPOQQr1dyo2
-         YbSkUNg66inVoPax5WQhBlJSIibapZ0hBNqVv1hgAbK6WROs3mR8b8AZkDO/1AMxg3
-         Qe/xX684O5pBhxZk1dnp/nbksyyvZPMihTqA1q7FQ/SEJ2/Wj+MESTAW1x06DxwMzg
-         7/DwxRLJysvKDFuk8AkTHqUV9bc+exLxPwklO7r/WduTGb5aPRL7cv3IuXj02H8vGk
-         nT6gVgWALsq3U3ecZU0/5wh3pCWtcp8yC+ILmRbnEYbNoEdYUDjilui7XjoXrhSE5I
-         cj5OU/MRmWUIw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DE4AE609D5;
-        Fri, 26 Nov 2021 19:40:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1637955644;
+        bh=oG8oK2pVUUnHX6IJxtTQVBsz/ygOdYwME2YFP9YtwU4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jIxgUV3RtzzoC11+Zri1Dd1KbeT+w2ZJgAOlUAlpgFs73KzC+YGl7ZPBOzdy2rCiH
+         H364zFlz5S+/e3lDSy06G9EypaAZU83hVgSASZl95AZ34keoUJUGyWJnu2RQlUYqjo
+         VTuU8e5qBngyb4l1g136fWmL2RuKNEhcF/KOyj0nt6WWM4zrzoZjbCPJiu49sDSoUE
+         Z2U3RK/JI44ovbH84p/DIbyCVvGvBOk+wnTzCrmt4YSdI26KZyGNwEfKqMgKwusTTx
+         vMMbDj2TWzEQqKBhLacSAZU9WellgcIpukyaElgcK0XmClcVxqqHja5C95bLqNDW6c
+         rnztxyUJ3glaQ==
+Date:   Fri, 26 Nov 2021 12:40:38 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Antti Palosaari <crope@iki.fi>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH 06/20] media: m88ds3103: drop reg11 calculus from
+ m88ds3103b_select_mclk()
+Message-ID: <YaE4Nkvp9NCfGItD@archlinux-ax161>
+References: <cover.1637781097.git.mchehab+huawei@kernel.org>
+ <9e528a0ce280d8ce99f9bfe1a725baafa6bf1408.1637781097.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 0/4] net: hns3: add some fixes for -net
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163795560990.18431.5458942100313021092.git-patchwork-notify@kernel.org>
-Date:   Fri, 26 Nov 2021 19:40:09 +0000
-References: <20211126120318.33921-1-huangguangbin2@huawei.com>
-In-Reply-To: <20211126120318.33921-1-huangguangbin2@huawei.com>
-To:     Guangbin Huang <huangguangbin2@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, wangjie125@huawei.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lipeng321@huawei.com, chenhao288@hisilicon.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9e528a0ce280d8ce99f9bfe1a725baafa6bf1408.1637781097.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Wed, Nov 24, 2021 at 08:13:09PM +0100, Mauro Carvalho Chehab wrote:
+> This vaklue is never used at the code. So, drop it.
 
-This series was applied to netdev/net.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
+       ^ value
 
-On Fri, 26 Nov 2021 20:03:14 +0800 you wrote:
-> This series adds some fixes for the HNS3 ethernet driver.
+> Solves a W=1 clang warning.
 > 
-> Guangbin Huang (1):
->   net: hns3: fix VF RSS failed problem after PF enable multi-TCs
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+
+I would expect GCC to warn about this as well.
+
+> ---
 > 
-> Hao Chen (2):
->   net: hns3: add check NULL address for page pool
->   net: hns3: fix one incorrect value of page pool info when queried by
->     debugfs
+> To avoid mailbombing on a large number of people, only mailing lists were C/C on the cover.
+> See [PATCH 00/20] at: https://lore.kernel.org/all/cover.1637781097.git.mchehab+huawei@kernel.org/
 > 
-> [...]
-
-Here is the summary with links:
-  - [net,1/4] net: hns3: fix VF RSS failed problem after PF enable multi-TCs
-    https://git.kernel.org/netdev/net/c/8d2ad993aa05
-  - [net,2/4] net: hns3: add check NULL address for page pool
-    https://git.kernel.org/netdev/net/c/b8af344cfea1
-  - [net,3/4] net: hns3: fix one incorrect value of page pool info when queried by debugfs
-    https://git.kernel.org/netdev/net/c/9c1479174870
-  - [net,4/4] net: hns3: fix incorrect components info of ethtool --reset command
-    https://git.kernel.org/netdev/net/c/82229c4dbb8a
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>  drivers/media/dvb-frontends/m88ds3103.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/drivers/media/dvb-frontends/m88ds3103.c b/drivers/media/dvb-frontends/m88ds3103.c
+> index 02e8aa11e36e..bce0f42f3d19 100644
+> --- a/drivers/media/dvb-frontends/m88ds3103.c
+> +++ b/drivers/media/dvb-frontends/m88ds3103.c
+> @@ -451,7 +451,7 @@ static int m88ds3103b_select_mclk(struct m88ds3103_dev *dev)
+>  
+>  static int m88ds3103b_set_mclk(struct m88ds3103_dev *dev, u32 mclk_khz)
+>  {
+> -	u8 reg11 = 0x0A, reg15, reg16, reg1D, reg1E, reg1F, tmp;
+> +	u8 reg15, reg16, reg1D, reg1E, reg1F, tmp;
+>  	u8 sm, f0 = 0, f1 = 0, f2 = 0, f3 = 0;
+>  	u16 pll_div_fb, N;
+>  	u32 div;
+> @@ -480,8 +480,6 @@ static int m88ds3103b_set_mclk(struct m88ds3103_dev *dev, u32 mclk_khz)
+>  	div /= mclk_khz;
+>  
+>  	if (dev->cfg->ts_mode == M88DS3103_TS_SERIAL) {
+> -		reg11 |= 0x02;
+> -
+>  		if (div <= 32) {
+>  			N = 2;
+>  
+> @@ -532,8 +530,6 @@ static int m88ds3103b_set_mclk(struct m88ds3103_dev *dev, u32 mclk_khz)
+>  		else if ((f3 < 8) && (f3 != 0))
+>  			f3 = 8;
+>  	} else {
+> -		reg11 &= ~0x02;
+> -
+>  		if (div <= 32) {
+>  			N = 2;
+>  
+> -- 
+> 2.33.1
+> 
+> 
