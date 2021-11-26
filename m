@@ -2,120 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1389D45E3BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 01:35:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 822BA45E3BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Nov 2021 01:38:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239092AbhKZAiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Nov 2021 19:38:52 -0500
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:34098
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1356942AbhKZAgv (ORCPT
+        id S1351602AbhKZAlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Nov 2021 19:41:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244362AbhKZAjn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Nov 2021 19:36:51 -0500
-Received: from localhost.localdomain (unknown [10.101.196.174])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id A1FAD3F213;
-        Fri, 26 Nov 2021 00:33:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1637886816;
-        bh=pZyOpAOsBNBKC0LJfUWhxgl1vnefr2uNGuiT9FUXFR0=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=qh0pvH15s2U358i9GjHKYVZiqYQYKWGDApHHx/yQgzTlcdvdlGHJ6s8a6n9caFa7X
-         ZOK09d/NWuPNfgWHUsDeov7G1TwrmvxAHLbNgmFH5KLzEPv4RnmueJQsTIwajg+Rkw
-         ctUulrZSbNHWA0MP7RP79eoPf/rC/Wd8+hLl4KZsBfjm7JSCxPOz8aJfUYsg2YSf4i
-         ZobcJ+327f3AHzdLeEnmp+j3CHsCanzOzGI6cgvVj5CXobVCSXS2w6m3djYxnZcTFK
-         wiszkZE/lbbPP2doqhcWnlN3tZ58lyBFhU1AMOncOkhsyXqT7oO7l3eKtr3LZi5sSQ
-         KpQpomVlvAEZQ==
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Arnd Bergmann <arnd@arndb.de>, Ricky Wu <ricky_wu@realtek.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] misc: rtsx: Avoid mangling IRQ during runtime PM
-Date:   Fri, 26 Nov 2021 08:32:44 +0800
-Message-Id: <20211126003246.1068770-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 25 Nov 2021 19:39:43 -0500
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10141C0613E1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 16:33:43 -0800 (PST)
+Received: by mail-oi1-x22c.google.com with SMTP id r26so15627970oiw.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Nov 2021 16:33:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wx6Lre/FTRaYP7Is5riEW5pRWhsJX4cKj5NqRQzThSc=;
+        b=NRSbnWOxKZkNVWUQAQwSoDFrn2GECScFvopaEjnHRamjfijmCRYWeYsJ00frHFcjkk
+         usiUMEJK595ZJaVYGufyFOWpOvmJ2Otpz8XvKNt3V4uP1QRG0rfTsirYe7kKKCiKHY0l
+         Ok98HXXplUNDbyIDCpEd2YBdmNxGBKGtN+5IBjlZ4jJMWgwEcwib32Zz/zcmse59w0WD
+         C/3hG+QF5cBSLv06oZvS+4z9PxYhQm54q5VjqVR3rxOzeVloztXiI8Hreqh7OKjPTSiY
+         MTA6AvZKCvSUHtuoVe2HeKCcCntSdORm3XjBRHaIOOVHG34jgU1XQYERMG2HK8b08r6M
+         TfJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wx6Lre/FTRaYP7Is5riEW5pRWhsJX4cKj5NqRQzThSc=;
+        b=S697w41yhBCHkTDvH95Y4iNPRj0zC8I4G3kOgjm61TCLoVCtovwrWKMAfeBbv6uF+G
+         VGFVTvnzJjA6V0nEB61Q0FoI2DYaj6fLlBiv50H14Rl1oE5zyBGQU8ydWvgzXVYarPaA
+         ayZCUUqCKzoG0F9ZaSMp9r+VlYAi+qSNzGCjDCXp9IIzZqEdhUYNLQMMSVg1IxE+TWvW
+         URLRiwMyJKd8x5bVtjtiUT3o47d+I3dgQy6ssJYhbhCVd30yWdHHB8mUxV4HjiF2jIKO
+         v66a6AehI1iqSb58OAvsH3UNpZY/5Uo9O2grb5t3nNXLZgE1es/RWhTOd0ZIi2WNKrl2
+         8YFA==
+X-Gm-Message-State: AOAM5322K+rZvdil64G+mDbE6gyDQdv0hEgAo/rrWfOVdvZzL5YMRtPX
+        IrbrUNEXIEEc8ZN6yJmv5o8xs8ULo6ZUqOILaF06yw==
+X-Google-Smtp-Source: ABdhPJwgB6TLAOnlEmGYCT6cRaq84tftvhq3x9i14xmCeBq8BnVeKoXTirpt/FSbuhEm+BGOR1qfH64xNOMA8+zN0cg=
+X-Received: by 2002:a54:4791:: with SMTP id o17mr20157592oic.114.1637886822370;
+ Thu, 25 Nov 2021 16:33:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211123155144.21708-1-lakshmi.sowjanya.d@intel.com> <20211123155144.21708-3-lakshmi.sowjanya.d@intel.com>
+In-Reply-To: <20211123155144.21708-3-lakshmi.sowjanya.d@intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 26 Nov 2021 01:33:31 +0100
+Message-ID: <CACRpkdanKspORKBa2ETRvQyBkzgCssca-fFE+QcybZY=GYmMAQ@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] pinctrl: Add Intel Thunder Bay pinctrl driver
+To:     lakshmi.sowjanya.d@intel.com
+Cc:     linux-gpio@vger.kernel.org, bgolaszewski@baylibre.com,
+        linux-kernel@vger.kernel.org, andriy.shevchenko@linux.intel.com,
+        tamal.saha@intel.com, pandith.n@intel.com,
+        kenchappa.demakkanavar@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 5b4258f6721f ("misc: rtsx: rts5249 support runtime PM"), when the
-rtsx controller is runtime suspended, bring CPUs offline and back online, the
-runtime resume of the controller will fail:
+Hi Lakshmi,
 
-[   47.319391] smpboot: CPU 1 is now offline
-[   47.414140] x86: Booting SMP configuration:
-[   47.414147] smpboot: Booting Node 0 Processor 1 APIC 0x2
-[   47.571334] smpboot: CPU 2 is now offline
-[   47.686055] smpboot: Booting Node 0 Processor 2 APIC 0x4
-[   47.808174] smpboot: CPU 3 is now offline
-[   47.878146] smpboot: Booting Node 0 Processor 3 APIC 0x6
-[   48.003679] smpboot: CPU 4 is now offline
-[   48.086187] smpboot: Booting Node 0 Processor 4 APIC 0x1
-[   48.239627] smpboot: CPU 5 is now offline
-[   48.326059] smpboot: Booting Node 0 Processor 5 APIC 0x3
-[   48.472193] smpboot: CPU 6 is now offline
-[   48.574181] smpboot: Booting Node 0 Processor 6 APIC 0x5
-[   48.743375] smpboot: CPU 7 is now offline
-[   48.838047] smpboot: Booting Node 0 Processor 7 APIC 0x7
-[   48.965447] __common_interrupt: 1.35 No irq handler for vector
-[   51.174065] mmc0: error -110 doing runtime resume
-[   54.978088] I/O error, dev mmcblk0, sector 21479 op 0x1:(WRITE) flags 0x0 phys_seg 11 prio class 0
-[   54.978108] Buffer I/O error on dev mmcblk0p1, logical block 19431, lost async page write
-[   54.978129] Buffer I/O error on dev mmcblk0p1, logical block 19432, lost async page write
-[   54.978134] Buffer I/O error on dev mmcblk0p1, logical block 19433, lost async page write
-[   54.978137] Buffer I/O error on dev mmcblk0p1, logical block 19434, lost async page write
-[   54.978141] Buffer I/O error on dev mmcblk0p1, logical block 19435, lost async page write
-[   54.978145] Buffer I/O error on dev mmcblk0p1, logical block 19436, lost async page write
-[   54.978148] Buffer I/O error on dev mmcblk0p1, logical block 19437, lost async page write
-[   54.978152] Buffer I/O error on dev mmcblk0p1, logical block 19438, lost async page write
-[   54.978155] Buffer I/O error on dev mmcblk0p1, logical block 19439, lost async page write
-[   54.978160] Buffer I/O error on dev mmcblk0p1, logical block 19440, lost async page write
-[   54.978244] mmc0: card aaaa removed
-[   54.978452] FAT-fs (mmcblk0p1): FAT read failed (blocknr 4257)
+thanks for your patch! Interesting chip! This is looking very good.
 
-There's interrupt immediately raised on rtsx_pci_write_register() in
-runtime resume routine, but the IRQ handler hasn't registered yet.
+I bet Andy will also give you some attention to details unless you
+had some already internally at Intel.
 
-So we can either move rtsx_pci_write_register() after rtsx_pci_acquire_irq(),
-or just stop mangling IRQ on runtime PM. Choose the latter to save some
-CPU cycles.
+On Tue, Nov 23, 2021 at 4:52 PM <lakshmi.sowjanya.d@intel.com> wrote:
 
-BugLink: https://bugs.launchpad.net/bugs/1951784
-Fixes: 5b4258f6721f ("misc: rtsx: rts5249 support runtime PM")
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/misc/cardreader/rtsx_pcr.c | 4 ----
- 1 file changed, 4 deletions(-)
+This caught my eye:
 
-diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
-index 8c72eb590f79d..6ac509c1821c9 100644
---- a/drivers/misc/cardreader/rtsx_pcr.c
-+++ b/drivers/misc/cardreader/rtsx_pcr.c
-@@ -1803,8 +1803,6 @@ static int rtsx_pci_runtime_suspend(struct device *device)
- 	mutex_lock(&pcr->pcr_mutex);
- 	rtsx_pci_power_off(pcr, HOST_ENTER_S3);
- 
--	free_irq(pcr->irq, (void *)pcr);
--
- 	mutex_unlock(&pcr->pcr_mutex);
- 
- 	pcr->is_runtime_suspended = true;
-@@ -1825,8 +1823,6 @@ static int rtsx_pci_runtime_resume(struct device *device)
- 	mutex_lock(&pcr->pcr_mutex);
- 
- 	rtsx_pci_write_register(pcr, HOST_SLEEP_STATE, 0x03, 0x00);
--	rtsx_pci_acquire_irq(pcr);
--	synchronize_irq(pcr->irq);
- 
- 	if (pcr->ops->fetch_vendor_settings)
- 		pcr->ops->fetch_vendor_settings(pcr);
--- 
-2.32.0
+> +#define THB_BOARD_SPECIFIC_GPIO_REQUIREMENTS_HANDLE    (1u)
 
+We don't do this kind of conditionals, either it is there or not.
+Drop this define since it is always 1
+
+> +#if (THB_BOARD_SPECIFIC_GPIO_REQUIREMENTS_HANDLE)
+> +
+> +static u32 thb_gpio_board_requirements_handle(struct gpio_chip *chip)
+> +{
+> +       u32 offset, reg;
+> +
+> +       /* 0x43 = register Offset for gpio_power_int_setup/4u */
+> +       offset = 0x43;
+> +       reg = thb_gpio_read_reg(chip, offset);
+> +
+> +       /* Keeping all power interrupts to Level-High triggered as suggested by HW team */
+> +       reg |= 0x1E;
+> +
+> +       return thb_gpio_write_reg(chip, offset, reg);
+> +}
+
+This looks like something that can just be inlined into probe(), some HW
+set-up?
+
+> +       struct gpio_chip *chip = &tpc->chip;
+(..)
+> +       chip->get               = thunderbay_gpio_get_value;
+> +       chip->set               = thunderbay_gpio_set_value;
+
+It should be trivial to also implement
+
+.set_config = gpiochip_generic_config
+
+just like the other Intel drivers. This is great because it will make
+things like the generic bit-banged GPIO I2C bus use the open drain
+hardware support from the chip. (Etc)
+
+> +       /* Register pin mapping between GPIO and PinControl */
+> +       ret = gpiochip_add_pin_range(chip, dev_name(tpc->dev), 0, 0, chip->ngpio);
+> +       if (ret) {
+> +               dev_err(tpc->dev, "Failed to add gpiochip pin range\n");
+> +               return ret;
+> +       }
+
+It's usually better to put these ranges into the device tree. The
+gpiolib core will handle it. See gpio-ranges in
+Documentation/devicetree/bindings/gpio/gpio.txt
+
+> +#if (THB_BOARD_SPECIFIC_GPIO_REQUIREMENTS_HANDLE)
+> +       /* function to handle THB board specific requirements */
+> +       ret = thb_gpio_board_requirements_handle(chip);
+> +#endif
+
+Just inline that function's code in here.
+
+Yours,
+Linus Walleij
